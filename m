@@ -2,109 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFFEF7FCFEA
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 08:29:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFED07FCFE8
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 08:29:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230179AbjK2H3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 02:29:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38516 "EHLO
+        id S229831AbjK2H33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 02:29:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230057AbjK2H3h (ORCPT
+        with ESMTP id S229554AbjK2H31 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 02:29:37 -0500
-Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64230DA;
-        Tue, 28 Nov 2023 23:29:39 -0800 (PST)
-Received: from francesco-nb.int.toradex.com (31-10-206-125.static.upc.ch [31.10.206.125])
-        by mail11.truemail.it (Postfix) with ESMTPA id 3023420395;
-        Wed, 29 Nov 2023 08:29:36 +0100 (CET)
-Date:   Wed, 29 Nov 2023 08:29:30 +0100
-From:   Francesco Dolcini <francesco@dolcini.it>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, Andrew Davis <afd@ti.com>,
-        Andrew Lunn <andrew@lunn.ch>, Arnd Bergmann <arnd@arndb.de>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Chen-Yu Tsai <wens@kernel.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Michal Simek <michal.simek@amd.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Nishanth Menon <nm@ti.com>, Olof Johansson <olof@lixom.net>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        linux-rockchip@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org,
-        linux-amlogic@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        workflows@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v3] docs: dt-bindings: add DTS Coding Style document
-Message-ID: <ZWboWqELHbIrblnz@francesco-nb.int.toradex.com>
-References: <20231125184422.12315-1-krzysztof.kozlowski@linaro.org>
+        Wed, 29 Nov 2023 02:29:27 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 948A9B0
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 23:29:34 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD0D9C433C8;
+        Wed, 29 Nov 2023 07:29:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701242974;
+        bh=JeS974xooxXbY2aUbrV+BCTn2Y8BWdv08zOfWtRHTxs=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=ZM2ntIIB8LEbvWSNluhL7GsoM2lrtXQUYuc26m2cI2DaeWvTnNA9Z15PurRR0jith
+         kSB9COSrxtY4UDD9NvFrtlZK7Rqf0cMLqLE52iGMdOIxUXyzKgudmJYTqhUf/ugNIy
+         H+btzFiS+yFb7WQakZrT3k5sl+y1af7DkVYtBcaCGTZncF01MAHhIwcJH7B7SLx9ZZ
+         ruvL+5pcbdTZQHnTCTaACsjVwyT0YPEJDDqPOol8EkuzxweuSTAsg2IEOns44rlUBR
+         tekCD+Q85psU29Y4nNSdX/19aVqB1Dq/xYRbTzrXxOULv0bfqgE9OwKWeXwuj9Ruef
+         1dH5DIekawzaw==
+From:   =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+To:     Charlie Jenkins <charlie@rivosinc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, Ron Economos <re@w6rz.net>,
+        Samuel Holland <samuel.holland@sifive.com>,
+        Andreas Schwab <schwab@linux-m68k.org>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Charlie Jenkins <charlie@rivosinc.com>
+Subject: Re: [PATCH v4 1/2] riscv: Safely remove entries from relocation list
+In-Reply-To: <20231127-module_linking_freeing-v4-1-a2ca1d7027d0@rivosinc.com>
+References: <20231127-module_linking_freeing-v4-0-a2ca1d7027d0@rivosinc.com>
+ <20231127-module_linking_freeing-v4-1-a2ca1d7027d0@rivosinc.com>
+Date:   Wed, 29 Nov 2023 08:29:31 +0100
+Message-ID: <877cm19fvo.fsf@all.your.base.are.belong.to.us>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231125184422.12315-1-krzysztof.kozlowski@linaro.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 25, 2023 at 07:44:22PM +0100, Krzysztof Kozlowski wrote:
-> Document preferred coding style for Devicetree sources (DTS and DTSI),
-> to bring consistency among all (sub)architectures and ease in reviews.
+Charlie Jenkins <charlie@rivosinc.com> writes:
 
-Thank Krzysztof, we had most of this collected as BKM in some internal
-documents and it's great to see the effort to consolidate this and add
-it to the kernel documentation.
-
+> Use the safe versions of list and hlist iteration to safely remove
+> entries from the module relocation lists. To allow mutliple threads to
+> load modules concurrently, move relocation list pointers onto the stack
+> rather than using global variables.
+>
+> Fixes: 8fd6c5142395 ("riscv: Add remaining module relocations")
+> Reported-by: Ron Economos <re@w6rz.net>
+> Closes: https://lore.kernel.org/linux-riscv/444de86a-7e7c-4de7-5d1d-c1c40=
+eefa4ba@w6rz.net
+> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
 > ---
-> +Following order of properties in device nodes is preferred:
-> +
-> +1. compatible
-> +2. reg
-> +3. ranges
-> +4. Standard/common properties (defined by common bindings, e.g. without
-> +   vendor-prefixes)
-> +5. Vendor-specific properties
-> +6. status (if applicable)
-> +7. Child nodes, where each node is preceded with a blank line
+>  arch/riscv/kernel/module.c | 110 +++++++++++++++++++++++++++++++++------=
+------
+>  1 file changed, 82 insertions(+), 28 deletions(-)
+>
+> diff --git a/arch/riscv/kernel/module.c b/arch/riscv/kernel/module.c
+> index 56a8c78e9e21..53593fe58cd8 100644
+> --- a/arch/riscv/kernel/module.c
+> +++ b/arch/riscv/kernel/module.c
+> @@ -40,15 +40,6 @@ struct relocation_handlers {
+>  				  long buffer);
+>  };
+>=20=20
+> -unsigned int initialize_relocation_hashtable(unsigned int num_relocation=
+s);
+> -void process_accumulated_relocations(struct module *me);
+> -int add_relocation_to_accumulate(struct module *me, int type, void *loca=
+tion,
+> -				 unsigned int hashtable_bits, Elf_Addr v);
+> -
+> -struct hlist_head *relocation_hashtable;
+> -
+> -struct list_head used_buckets_list;
+> -
+>  /*
+>   * The auipc+jalr instruction pair can reach any PC-relative offset
+>   * in the range [-2^31 - 2^11, 2^31 - 2^11)
+> @@ -604,7 +595,10 @@ static const struct relocation_handlers reloc_handle=
+rs[] =3D {
+>  	/* 192-255 nonstandard ABI extensions  */
+>  };
+>=20=20
+> -void process_accumulated_relocations(struct module *me)
+> +static void
+> +process_accumulated_relocations(struct module *me,
 
-On point 4, do you have a more explicit way to define what is an actual
-standard/common property? You mention the vendor-prefixes as an example,
-is this just an example or this is the whole definition?
+Nit/breaks my workflow ;-): Don't bother if you're not respinning for
+other reasons. The linebreak after return type makes it harder to grep
+the code (and also is not in line with the layout with rest of this).
 
-What would be the order for this for example (from an existing DTS file)?
 
-	reg_sdhc1_vmmc: regulator-sdhci1 {
-		compatible = "regulator-fixed";
-		pinctrl-names = "default";
-		pinctrl-0 = <&pinctrl_sd1_pwr_en>;
-		enable-active-high;
-		gpio = <&main_gpio0 29 GPIO_ACTIVE_HIGH>;
-		off-on-delay-us = <100000>;
-		regulator-max-microvolt = <3300000>;
-		regulator-min-microvolt = <3300000>;
-		regulator-name = "+V3.3_SD";
-		startup-delay-us = <2000>;
-	};
-
-I guess the point that is not obvious to me here is where do we want
-pinctrl. I like it at position between 3 and 4, the rationale is that is
-a very frequent property and this way it will be in a similar place for
-every node.
-
-Francesco
-
+Bj=C3=B6rn
