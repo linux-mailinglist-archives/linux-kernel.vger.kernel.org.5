@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0D607FD2CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 10:32:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E26F77FD2CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 10:32:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229498AbjK2JcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 04:32:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44398 "EHLO
+        id S231623AbjK2Jch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 04:32:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231360AbjK2JcK (ORCPT
+        with ESMTP id S231274AbjK2JcU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 04:32:10 -0500
+        Wed, 29 Nov 2023 04:32:20 -0500
 Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B972213F;
-        Wed, 29 Nov 2023 01:31:43 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D85E1FEE;
+        Wed, 29 Nov 2023 01:31:58 -0800 (PST)
 Received: from pyrite.hamster-moth.ts.net (h175-177-049-135.catv02.itscom.jp [175.177.49.135])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 736FA2B6;
-        Wed, 29 Nov 2023 10:30:58 +0100 (CET)
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id B58862B6;
+        Wed, 29 Nov 2023 10:31:13 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1701250265;
-        bh=Ivci0RIdZox1QiCzMM0eBouiiFmKKEtb5YIkQNAQ3HY=;
+        s=mail; t=1701250281;
+        bh=mJ4UNX0sJTsJlj1KPGeUn8FdbosXEmT20xBZ0fX5pX4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=H+GaGd/Mvd577CKM47ZqEdGDKy7TtRBM1fO5smyYn1ulrdAlXRM531mw/N7Gtc6pO
-         z5eq3XiCNsg/DCUIox2IIOncFaiDOOiEQyxZB3EIWMTRbct/whRTJSDTJmb0QTsGg6
-         V1c1Q5R+yo8ALwsM413vSDzzchnsk0di9AiaKJeI=
+        b=duQqJegxA5ltyL5+sJyfwSIfVzIqTNLz+OKkqLm9ide36PPT8xVHacN4dMCVOf2In
+         pTYGKFYC+aIxpbS4kuZurW4SKH4AWpxl9giTw8JquWA5GQKJEdmSApWwFvRKccfiRr
+         qmivmYMYL33yKhAbxbQaHM+q8Spy/5CFpJkklQF0=
 From:   Paul Elder <paul.elder@ideasonboard.com>
 To:     linux-media@vger.kernel.org, devicetree@vger.kernel.org
 Cc:     kieran.bingham@ideasonboard.com, tomi.valkeinen@ideasonboard.com,
         umang.jain@ideasonboard.com,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         Paul Elder <paul.elder@ideasonboard.com>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -38,17 +39,18 @@ Cc:     kieran.bingham@ideasonboard.com, tomi.valkeinen@ideasonboard.com,
         Pengutronix Kernel Team <kernel@pengutronix.de>,
         Fabio Estevam <festevam@gmail.com>,
         NXP Linux Team <linux-imx@nxp.com>,
-        Marek Vasut <marex@denx.de>,
+        Tim Harvey <tharvey@gateworks.com>,
+        Philippe Schenker <philippe.schenker@toradex.com>,
         Alexander Stein <alexander.stein@ew.tq-group.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Adam Ford <aford173@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Frank Li <Frank.Li@nxp.com>,
+        Marek Vasut <marex@denx.de>,
+        Gregor Herburger <gregor.herburger@ew.tq-group.com>,
+        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+        linux-kernel@vger.kernel.org (open list),
         linux-arm-kernel@lists.infradead.org (moderated list:ARM/FREESCALE IMX
-        / MXC ARM ARCHITECTURE), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 1/2] arm64: dts: imx8mp: Add DT nodes for the two ISPs
-Date:   Wed, 29 Nov 2023 18:31:12 +0900
-Message-Id: <20231129093113.255161-2-paul.elder@ideasonboard.com>
+        / MXC ARM ARCHITECTURE)
+Subject: [PATCH 2/2] arm64: dts: imx8mp: Add overlays for ISP instances
+Date:   Wed, 29 Nov 2023 18:31:13 +0900
+Message-Id: <20231129093113.255161-3-paul.elder@ideasonboard.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231129093113.255161-1-paul.elder@ideasonboard.com>
 References: <20231129093113.255161-1-paul.elder@ideasonboard.com>
@@ -63,77 +65,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ISP supports both CSI and parallel interfaces, where port 0
-corresponds to the former and port 1 corresponds to the latter. Since
-the i.MX8MP's ISPs are connected by the parallel interface to the CSI
-receiver, set them both to port 1.
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
+Add two overlay to enable each ISP instance. The ISP is wired directly
+to the CSIS for now, bypassing the ISI completely.
+
+Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 Signed-off-by: Paul Elder <paul.elder@ideasonboard.com>
 ---
- arch/arm64/boot/dts/freescale/imx8mp.dtsi | 50 +++++++++++++++++++++++
- 1 file changed, 50 insertions(+)
+ arch/arm64/boot/dts/freescale/Makefile        |  2 ++
+ .../arm64/boot/dts/freescale/imx8mp-isp1.dtso | 36 +++++++++++++++++++
+ .../arm64/boot/dts/freescale/imx8mp-isp2.dtso | 36 +++++++++++++++++++
+ 3 files changed, 74 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mp-isp1.dtso
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mp-isp2.dtso
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mp.dtsi b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-index c9a610ba4836..25579d4c58f2 100644
---- a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-@@ -1604,6 +1604,56 @@ isi_in_1: endpoint {
- 				};
- 			};
- 
-+			isp_0: isp@32e10000 {
-+				compatible = "fsl,imx8mp-isp";
-+				reg = <0x32e10000 0x10000>;
-+				interrupts = <GIC_SPI 74 IRQ_TYPE_LEVEL_HIGH>;
-+				clocks = <&clk IMX8MP_CLK_MEDIA_ISP_ROOT>,
-+					 <&clk IMX8MP_CLK_MEDIA_AXI_ROOT>,
-+					 <&clk IMX8MP_CLK_MEDIA_APB_ROOT>;
-+				clock-names = "isp", "aclk", "hclk";
-+				assigned-clocks = <&clk IMX8MP_CLK_MEDIA_ISP>;
-+				assigned-clock-parents = <&clk IMX8MP_SYS_PLL2_500M>;
-+				assigned-clock-rates = <500000000>;
-+				power-domains = <&media_blk_ctrl IMX8MP_MEDIABLK_PD_ISP>;
-+				fsl,blk-ctrl = <&media_blk_ctrl 0>;
-+				status = "disabled";
+diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
+index 300049037eb0..f97dfac11189 100644
+--- a/arch/arm64/boot/dts/freescale/Makefile
++++ b/arch/arm64/boot/dts/freescale/Makefile
+@@ -113,6 +113,8 @@ dtb-$(CONFIG_ARCH_MXC) += imx8mp-dhcom-pdk2.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8mp-dhcom-pdk3.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8mp-evk.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8mp-icore-mx8mp-edimm2.2.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mp-isp1.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx8mp-isp2.dtbo
+ dtb-$(CONFIG_ARCH_MXC) += imx8mp-msc-sm2s-ep1.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8mp-phyboard-pollux-rdk.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8mp-tqma8mpql-mba8mpxl.dtb
+diff --git a/arch/arm64/boot/dts/freescale/imx8mp-isp1.dtso b/arch/arm64/boot/dts/freescale/imx8mp-isp1.dtso
+new file mode 100644
+index 000000000000..cf394ed224ab
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mp-isp1.dtso
+@@ -0,0 +1,36 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright 2022 Ideas on Board Oy
++ */
 +
-+				ports {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
++/dts-v1/;
++/plugin/;
 +
-+					port@1 {
-+						reg = <1>;
-+					};
-+				};
++#include <dt-bindings/media/video-interfaces.h>
++
++&isi_0 {
++	status = "disabled";
++
++	ports {
++		port@0 {
++			/delete-node/ endpoint;
++		};
++	};
++};
++
++&isp_0 {
++	status = "okay";
++
++	ports {
++		port@1 {
++			isp0_in: endpoint {
++				bus-type = <MEDIA_BUS_TYPE_PARALLEL>;
++				remote-endpoint = <&mipi_csi_0_out>;
 +			};
++		};
++	};
++};
 +
-+			isp_1: isp@32e20000 {
-+				compatible = "fsl,imx8mp-isp";
-+				reg = <0x32e20000 0x10000>;
-+				interrupts = <GIC_SPI 75 IRQ_TYPE_LEVEL_HIGH>;
-+				clocks = <&clk IMX8MP_CLK_MEDIA_ISP_ROOT>,
-+					 <&clk IMX8MP_CLK_MEDIA_AXI_ROOT>,
-+					 <&clk IMX8MP_CLK_MEDIA_APB_ROOT>;
-+				clock-names = "isp", "aclk", "hclk";
-+				assigned-clocks = <&clk IMX8MP_CLK_MEDIA_ISP>;
-+				assigned-clock-parents = <&clk IMX8MP_SYS_PLL2_500M>;
-+				assigned-clock-rates = <500000000>;
-+				power-domains = <&media_blk_ctrl IMX8MP_MEDIABLK_PD_ISP>;
-+				fsl,blk-ctrl = <&media_blk_ctrl 1>;
-+				status = "disabled";
++&mipi_csi_0_out {
++	remote-endpoint = <&isp0_in>;
++};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mp-isp2.dtso b/arch/arm64/boot/dts/freescale/imx8mp-isp2.dtso
+new file mode 100644
+index 000000000000..14e2e7b2617f
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mp-isp2.dtso
+@@ -0,0 +1,36 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright 2022 Ideas on Board Oy
++ */
 +
-+				ports {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
++/dts-v1/;
++/plugin/;
 +
-+					port@1 {
-+						reg = <1>;
-+					};
-+				};
++#include <dt-bindings/media/video-interfaces.h>
++
++&isi_0 {
++	status = "disabled";
++
++	ports {
++		port@1 {
++			/delete-node/ endpoint;
++		};
++	};
++};
++
++&isp_1 {
++	status = "okay";
++
++	ports {
++		port@1 {
++			isp1_in: endpoint {
++				bus-type = <MEDIA_BUS_TYPE_PARALLEL>;
++				remote-endpoint = <&mipi_csi_1_out>;
 +			};
++		};
++	};
++};
 +
- 			dewarp: dwe@32e30000 {
- 				compatible = "nxp,imx8mp-dw100";
- 				reg = <0x32e30000 0x10000>;
++&mipi_csi_1_out {
++	remote-endpoint = <&isp1_in>;
++};
 -- 
 2.39.2
 
