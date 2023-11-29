@@ -2,116 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A80A7FDEA6
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 18:45:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66AB87FDEA8
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 18:45:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230103AbjK2RpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 12:45:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44234 "EHLO
+        id S230140AbjK2Rpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 12:45:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbjK2RpH (ORCPT
+        with ESMTP id S230432AbjK2Rpb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 12:45:07 -0500
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F46D112;
-        Wed, 29 Nov 2023 09:45:14 -0800 (PST)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id 09DF55C02BA;
-        Wed, 29 Nov 2023 12:45:12 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Wed, 29 Nov 2023 12:45:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm3; t=1701279912; x=1701366312; bh=6G
-        7IT/Y1jFfvBeoGH3Rt7qh2CE2/hGJu4agITadubDU=; b=meC0G2VmkKl3g7OBWK
-        nh2tjz8RFuOUGlReuOKjJgg+rYbG2sHmE5vhMO+kjETfXsfAoBLtR328SaoCqwZW
-        5TLbvvgN6IUdeSJM2T0CgWVUNQf4y+lWVyewxzxuTstU6vv/AODKo6oPSGEf9Gx7
-        5/X4bb02reUNaq5Ol4Wx4QS9zlXQYq0dZru5uSkIw7zKir1d6DukCEGK38q87v33
-        JJqsV5OAZ3fun9N15vUXKnYxQtInzrnVeZ1BoSxo3McH4gQ8jCKPkcqtEPUCPchO
-        xtT2X3qSj9vseLJU7e1Y7AHLTIH6EyUF9bcvS1Lpurje3JeJ5ahmDgzuKUIZL63s
-        VCTg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1701279912; x=1701366312; bh=6G7IT/Y1jFfvB
-        eoGH3Rt7qh2CE2/hGJu4agITadubDU=; b=oXy1/rknpubOIFgpzRF9euwcOLTPI
-        pxBf3vJPXkx6q8uCe9+XdEFnH5u8n4767scv50MA1A6LJd41LtlxJZAoDLsPy0Ej
-        uYt6OdCAywUm1xK0d6lt0582kra/xhjQkJOq+tn39nJxuk8BlaGaI8vV2UkjzdGX
-        yiwWn3XhahlTTW9bSo5b+BNxFI++G2SEShYyNVl4rddfpmRzw/Hek8NZyrAjXorI
-        bgRGe29e7q/uL3uKwEb7byeNEbQ2EpoGLrKMFZ8V4DI/okyzCqm3su6dfe3VdyGm
-        ev/WypPAIEi6BdFYVS1oWaZWsyW/cqrGrpnAW/Pf1RkXCuItT4+IXEFZA==
-X-ME-Sender: <xms:pnhnZa6eymBOO4TKATClO5dvCZpdUaSKz-j9Egaw1wAD7vdD9ZMkMw>
-    <xme:pnhnZT4ANLWwTBHnYU6h1hdv8zQl2iSOHHtCn2JcQShK4_PT0042bHDeVtAnZ8BJI
-    JpzDN9Zfoxa_eX64_k>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeihedguddtfecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdet
-    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
-    htthgvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedt
-    keetffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:pnhnZZcm5NMOo61NyXDe9HZm2NEVjniWzznsFbg5Y_XoGwLmiTGbOQ>
-    <xmx:pnhnZXKE5_whbIGPhxO5YRrdjXTUg571b5XlLg_PgRrpD3V5kplkHA>
-    <xmx:pnhnZeKU7eAZcmDIcMgVnNr81YqL8-4Ko0WyYfx_8bheab0YIg9v5w>
-    <xmx:qHhnZbWljuYvYKWLg1uNigJlHcmtEwA31LHf4d-_LqFBlGqEoxoCVw>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id AC574B6008D; Wed, 29 Nov 2023 12:45:10 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1234-gac66594aae-fm-20231122.001-gac66594a
+        Wed, 29 Nov 2023 12:45:31 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D926012C
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 09:45:37 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4BDB2C433C7;
+        Wed, 29 Nov 2023 17:45:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701279937;
+        bh=KIKFPp9BUhkaU/2v9P9pMinmYm10lPKZw6CRfN0EZXc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KeBk4XygSV3H0Is1ff9twMb+Vvnsb+6+M0b40/ajSzkslItd2N+/xFslXdoPIxyPt
+         7Hb2LdvV+cUc+utmT8UXA+hFN97KoFCgk5tZvcsbKxbw4f3Ybmd9Fh5857EGaBghHW
+         G4T/giZZD88DarE3ZLYNYr3IuZB6XQDObaTajLo9qVz9LwZ88Qcl0b3Pf0+YwW787Q
+         qXz67vU/Bfl9lhgbrgnCE0tpKC3+6jrUns53wktIfF0SYRQVkbusQdzqAYjwJap2jH
+         2SUnH7BPId3PoDLHiVajSo0tsKYMlNyQoSNIj6zwfkk5bCXQl27axRVNYytWYSlUuZ
+         tbw2WyRqN6QHg==
+Date:   Wed, 29 Nov 2023 12:45:35 -0500
+From:   Sasha Levin <sashal@kernel.org>
+To:     Pavel Machek <pavel@denx.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        stable@vger.kernel.org, patches@lists.linux.dev,
+        LKML <linux-kernel@vger.kernel.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        allen.lkml@gmail.com, alexander.deucher@amd.com,
+        mario.limonciello@amd.com, zhujun2@cmss.chinamobile.com,
+        skhan@linuxfoundation.org, bhelgaas@google.com
+Subject: Re: [PATCH 4.14 00/53] 4.14.331-rc2 review
+Message-ID: <ZWd4v-7Qnc2gde5L@sashalap>
+References: <20231125163059.878143365@linuxfoundation.org>
+ <ZWUBaYipygLMkfjz@duo.ucw.cz>
+ <f4a7634-3d34-af29-36ca-6f3439b4ce9@linux.intel.com>
+ <ZWZQCJtD7kmX9iRO@duo.ucw.cz>
+ <2023112818-browse-floss-eb6f@gregkh>
+ <ZWZSKgxjSRcA/qUK@duo.ucw.cz>
+ <2023112844-sesame-overdrawn-5853@gregkh>
+ <ZWb9vGuZck1sGBIN@duo.ucw.cz>
 MIME-Version: 1.0
-Message-Id: <0cb00798-6510-4456-81fd-90131b97fdb8@app.fastmail.com>
-In-Reply-To: <20231129174722.7d4e768c@xps-13>
-References: <20231127164623.1008176-1-m.felsch@pengutronix.de>
- <CAMRc=MdsEWxJLHL__zYXGEMYvvLSH99GsTRv_NTaVXt2fGtNvg@mail.gmail.com>
- <20231129174722.7d4e768c@xps-13>
-Date:   Wed, 29 Nov 2023 18:44:50 +0100
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Miquel Raynal" <miquel.raynal@bootlin.com>,
-        "Bartosz Golaszewski" <brgl@bgdev.pl>
-Cc:     "Marco Felsch" <m.felsch@pengutronix.de>,
-        "Richard Weinberger" <richard@nod.at>,
-        "Vignesh Raghavendra" <vigneshr@ti.com>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        linux-i2c@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        "Pengutronix Kernel Team" <kernel@pengutronix.de>,
-        "Heiner Kallweit" <hkallweit1@gmail.com>,
-        "Jean Delvare" <jdelvare@suse.de>
-Subject: Re: [RFC PATCH] mtd: devices: add AT24 eeprom support
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZWb9vGuZck1sGBIN@duo.ucw.cz>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023, at 17:47, Miquel Raynal wrote:
-> brgl@bgdev.pl wrote on Wed, 29 Nov 2023 10:10:28 +0100:
->> Though if I'm being honest - I would prefer a single driver with
->> backwards compatibility. Have you estimated the effort it would take
->> to abstract both nvmem and mtd?
+On Wed, Nov 29, 2023 at 10:00:44AM +0100, Pavel Machek wrote:
+>On Tue 2023-11-28 21:10:03, Greg Kroah-Hartman wrote:
+>> On Tue, Nov 28, 2023 at 09:48:42PM +0100, Pavel Machek wrote:
+>> > Hi!
+>> >
+>> > > > > > > Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+>> > > > > > >     RDMA/hfi1: Use FIELD_GET() to extract Link Width
+>> > > > > >
+>> > > > > > This is a good cleanup, but not a bugfix.
+>> > > > > >
+>> > > > > > > Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+>> > > > > > >     atm: iphase: Do PCI error checks on own line
+>> > > > > >
+>> > > > > > Just a cleanup, not sure why it was picked for stable.
+>> > > > >
+>> > > > > Just an additional bit of information, there have been quite many cleanups
+>> > > > > from me which have recently gotten the stable notification for some
+>> > > > > mysterious reason. When I had tens of them in my inbox and for various
+>> > > > > kernel versions, I immediately stopped caring to stop it from happening.
+>> > > > >
+>> > > > > AFAIK, I've not marked those for stable inclusion so I've no idea what
+>> > > > > got them included.
+>> > > >
+>> > > > Fixes tag can do it. Plus, "AUTOSEL" robot does it randomly, with no
+>> > > > human oversight :-(.
+>> > >
+>> > > the autosel bot has lots of oversight.
+>> >
+>> > Can you describe how that oversight works?
+>>
+>> There have been many papers and presentations about it, no need for me
+>> to say it all here again...
 >
-> Also agreed :-)
+>Give a pointer.
+>
+>And explain why AUTOSEL is full of cleanups, as noticed by Ilpo, me
+>and others. AFAICT Sasha does not hand-check patches picked by
+>AUTOSEL, simply spams the mailing lists, and hopes that maintainers
+>will react. And they won't, because they don't understand the
 
-+1
+Awesome feedback, thanks.
 
-I think this particularly makes sense in the light the other
-at24 driver that was recently removed in commit 0113a99b8a75
-("eeprom: Remove deprecated legacy eeprom driver").
+>implications, and simply ignore the spam. Or they will, and Sasha
+>simply ignores the reply.
 
-The other problem with having two drivers is the need to
-arbitrate between them, e.g. when you have a machine with
-two at24 devices but want to use one of each for the two
-subsystems. This does not really work with our DT probing
-logic at the moment.
+Incorrect, I just gotten tired of litigating this with *you*.
 
-     Arnd
+How about this: instead of complaining about work you get for free, try
+doing it yourself and send us a list of patches that should go into the
+-stable tree during the next merge window. Deal?
+
+-- 
+Thanks,
+Sasha
