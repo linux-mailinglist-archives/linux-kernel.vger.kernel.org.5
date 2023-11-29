@@ -2,105 +2,306 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DDCE7FD1BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 10:09:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C71757FD1C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 10:09:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232715AbjK2JIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 04:08:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54444 "EHLO
+        id S232720AbjK2JJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 04:09:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232589AbjK2JIw (ORCPT
+        with ESMTP id S232596AbjK2JJr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 04:08:52 -0500
-Received: from gofer.mess.org (gofer.mess.org [IPv6:2a02:8011:d000:212::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31E0385;
-        Wed, 29 Nov 2023 01:08:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
-        t=1701248932; bh=Xv3LVDjykwD/IOkFuRPxIVNxFelutLAZSXS7jeSQqIE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BAZ/6qGNguReQ4NFwPXT8Bi2uaQNZ0Q93gRgXJPFRYxINiE+0NAHwqYEo8gcRktTI
-         g5OWo09C5jJHok3S1c3vfX72MgTtnOlRCfK/TqM9Rhw5IHY9zlrMU0Lm6ESMeYefR5
-         o0o+IWUBwaImm3Ew7Uz5W7jNB5PpjVR/Xzp9G3VEMAH3MPFJnFwTN5A/JF0jvSM53H
-         TD72MGqWdop+SC6I4X83nrxxAJKPcPymeSSvEn8ptLrmEICedV7+oDpdhH/aFgVPau
-         +Aaz/bRn6yA421udzBxvVtiTPtc21WHM3jUynkqXosp+xZ5HbIh4FPd2hzKqYs08uU
-         fPTAj/lk7FXSA==
-Received: by gofer.mess.org (Postfix, from userid 1000)
-        id CB5B0100100; Wed, 29 Nov 2023 09:08:52 +0000 (GMT)
-Date:   Wed, 29 Nov 2023 09:08:52 +0000
-From:   Sean Young <sean@mess.org>
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     linux-media@vger.kernel.org, linux-pwm@vger.kernel.org,
-        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Jonathan Corbet <corbet@lwn.net>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Support Opensource <support.opensource@diasemi.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        Mark Gross <markgross@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Helge Deller <deller@gmx.de>,
-        Jani Nikula <jani.nikula@intel.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-hwmon@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-leds@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-fbdev@vger.kernel.org
-Subject: Re: [PATCH v5 1/4] pwm: rename pwm_apply_state() to
- pwm_apply_cansleep()
-Message-ID: <ZWb_pEixK07cRlnr@gofer.mess.org>
-References: <cover.1700323916.git.sean@mess.org>
- <2b973840d800ffb71c2683c37bc996e0cf90a140.1700323916.git.sean@mess.org>
- <ZWClpnMRg_vjuI_R@orome.fritz.box>
+        Wed, 29 Nov 2023 04:09:47 -0500
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F5B019B9
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 01:09:50 -0800 (PST)
+Received: from pps.filterd (m0288072.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3AT8dhvr020396;
+        Wed, 29 Nov 2023 10:09:38 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        message-id:date:mime-version:subject:to:cc:references:from
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        selector1; bh=H77pSzwV/GJlNBuJdp9+mr4WCeYF1w1B7xnr6bOLnR8=; b=rC
+        neTTauWgURHBxaRXc4lxLvyq1vIvLFzOGr48UeXBErZpyIUPW7VsrjSn2GRau8X+
+        AV8jRG6ztsKlEZPxaQ2se0mpZ6ejqX3gxoJILZQV1D+g0+pGQozwaQH2CCT1Q67u
+        5VabtIp2+Oi9hQfOw9KgEnO1WCZeDME2MKOce9Yb2+zYOaeOl4bzwVlSA5AR0yHL
+        XFEwY6p+zkZsw4z+6yaedmbkYv2thJYTPxJvQln9X3lvCH7EBt3nqKXV8SB8kkbU
+        qDe6dwSwYEHVNHbOnGWrvMCplGptKGPAfK9kJWYQCqiCL8JRYC2PD1SfNEYwyqNH
+        L5SZdrrCcr0T6F/NghIQ==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3uk77m0j47-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 29 Nov 2023 10:09:38 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id BF0B210002A;
+        Wed, 29 Nov 2023 10:09:36 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id B53662128A3;
+        Wed, 29 Nov 2023 10:09:36 +0100 (CET)
+Received: from [10.201.20.163] (10.201.20.163) by SHFDAG1NODE2.st.com
+ (10.75.129.70) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 29 Nov
+ 2023 10:09:36 +0100
+Message-ID: <b0c0cbc0-776e-4587-bc1c-654a5154492c@foss.st.com>
+Date:   Wed, 29 Nov 2023 10:09:35 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZWClpnMRg_vjuI_R@orome.fritz.box>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] tee: Use iov_iter to better support shared buffer
+ registration
+Content-Language: en-US
+To:     Sumit Garg <sumit.garg@linaro.org>
+CC:     Jens Wiklander <jens.wiklander@linaro.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        <op-tee@lists.trustedfirmware.org>, <linux-kernel@vger.kernel.org>
+References: <20231128081928.329420-1-arnaud.pouliquen@foss.st.com>
+ <CAFA6WYOJcKrSmK1LaUDB01nBdCLU=RcGRt_VMkhOXdGnQUC0xw@mail.gmail.com>
+From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
+Organization: STMicroelectronics
+In-Reply-To: <CAFA6WYOJcKrSmK1LaUDB01nBdCLU=RcGRt_VMkhOXdGnQUC0xw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.201.20.163]
+X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To SHFDAG1NODE2.st.com
+ (10.75.129.70)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-29_06,2023-11-27_01,2023-05-22_02
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 24, 2023 at 02:31:18PM +0100, Thierry Reding wrote:
-> On Sat, Nov 18, 2023 at 04:16:17PM +0000, Sean Young wrote:
-> > In order to introduce a pwm api which can be used from atomic context,
-> > we will need two functions for applying pwm changes:
-> > 
-> > 	int pwm_apply_cansleep(struct pwm *, struct pwm_state *);
-> > 	int pwm_apply_atomic(struct pwm *, struct pwm_state *);
-> > 
-> > This commit just deals with renaming pwm_apply_state(), a following
-> > commit will introduce the pwm_apply_atomic() function.
+Hi Sumit,
+
+
+On 11/29/23 07:57, Sumit Garg wrote:
+> Hi Arnaud,
 > 
-> Sorry, I still don't agree with that _cansleep suffix. I think it's the
-> wrong terminology. Just because something can sleep doesn't mean that it
-> ever will. "Might sleep" is much more accurate because it says exactly
-> what might happen and indicates what we're guarding against.
+> On Tue, 28 Nov 2023 at 13:49, Arnaud Pouliquen
+> <arnaud.pouliquen@foss.st.com> wrote:
+>>
+>> It is not possible to register buffers allocated with vmalloc.
+> 
+> I would rephrase it as:
+> 
+> Currently it's not possible to register kernel buffers with TEE
+> which are allocated via vmalloc.
+> 
+>> Use iov_iter and associated helper functions to manage the page
+>> registration for all type of memories.
+>>
+>> Suggested-by: Christoph Hellwig <hch@infradead.org>
+>> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+>> ---
+>>
+>> Update from V2 to V3:
+>> - break lines longer than 80 columns.
+>>
+>> Update from V1 to V2:
+>> - replace ITER_SOURCE by ITER_DEST flag in tee_shm_register_user_buf(),
+>> - replace IS_ERR_OR NULL(shm) by IS_ERR(shm) in tee_shm_register_user_buf().
+>>
+>> V1:
+>> The support of buffer registration allocated with vmalloc is no more
+>> available since c83900393aa1 ("tee: Remove vmalloc page support").
+>>
+>> This patch is an alternative to a revert and resulted from a discussion
+>> with Christopher Hellwig [1].
+>>
+>> This patch has been tested using xtest tool in optee qemu environment [2]
+>> and using the series related to the remoteproc tee that should be
+>> proposed soon [3].
+>>
+>> References:
+>> [1] https://lore.kernel.org/linux-arm-kernel/18a8528d-7d9d-6ed0-0045-5ee47dd39fb2@foss.st.com/T/#m8ec683c44fcd9b69c2aee42eaed0793afac9dd18in
+>> [2] https://optee.readthedocs.io/en/latest/building/devices/qemu.html#build-instructions
+>> [3] https://lore.kernel.org/linux-arm-kernel/18a8528d-7d9d-6ed0-0045-5ee47dd39fb2@foss.st.com/T/#maca0a1fc897aadd54c7deac432e11473fe970d1d
+>> ---
+>>  drivers/tee/tee_shm.c | 77 ++++++++++++++++++++++++-------------------
+>>  1 file changed, 43 insertions(+), 34 deletions(-)
+>>
+>> diff --git a/drivers/tee/tee_shm.c b/drivers/tee/tee_shm.c
+>> index 673cf0359494..fe0a205be7ef 100644
+>> --- a/drivers/tee/tee_shm.c
+>> +++ b/drivers/tee/tee_shm.c
+>> @@ -22,23 +22,16 @@ static void shm_put_kernel_pages(struct page **pages, size_t page_count)
+>>                 put_page(pages[n]);
+>>  }
+>>
+>> -static int shm_get_kernel_pages(unsigned long start, size_t page_count,
+>> -                               struct page **pages)
+>> +static void shm_get_kernel_pages(struct page **pages, size_t page_count)
+>>  {
+>> -       struct page *page;
+>>         size_t n;
+>>
+>> -       if (WARN_ON_ONCE(is_vmalloc_addr((void *)start) ||
+>> -                        is_kmap_addr((void *)start)))
+>> -               return -EINVAL;
+>> -
+>> -       page = virt_to_page((void *)start);
+>> -       for (n = 0; n < page_count; n++) {
+>> -               pages[n] = page + n;
+>> +       /*
+>> +        * iov_iter_extract_kvec_pages does not get reference on the pages,
+>> +        * get a pin on them.
+>> +        */
+>> +       for (n = 0; n < page_count; n++)
+>>                 get_page(pages[n]);
+>> -       }
+>> -
+>> -       return page_count;
+>>  }
+>>
+>>  static void release_registered_pages(struct tee_shm *shm)
+>> @@ -214,13 +207,13 @@ struct tee_shm *tee_shm_alloc_priv_buf(struct tee_context *ctx, size_t size)
+>>  EXPORT_SYMBOL_GPL(tee_shm_alloc_priv_buf);
+>>
+>>  static struct tee_shm *
+>> -register_shm_helper(struct tee_context *ctx, unsigned long addr,
+>> -                   size_t length, u32 flags, int id)
+>> +register_shm_helper(struct tee_context *ctx, struct iov_iter *iter, u32 flags,
+>> +                   int id)
+>>  {
+>>         struct tee_device *teedev = ctx->teedev;
+>>         struct tee_shm *shm;
+>> -       unsigned long start;
+>> -       size_t num_pages;
+>> +       unsigned long start, addr;
+>> +       size_t num_pages, length, len, off;
+>>         void *ret;
+>>         int rc;
+>>
+>> @@ -245,31 +238,32 @@ register_shm_helper(struct tee_context *ctx, unsigned long addr,
+>>         shm->flags = flags;
+>>         shm->ctx = ctx;
+>>         shm->id = id;
+>> -       addr = untagged_addr(addr);
+>> +       addr = (unsigned long)iter_iov_addr(iter);
+> 
+> Why did you drop untagged_addr() here?
 
-Sorry, I forgot about this in the last round. I've renamed it _might_sleep
-in v6 which I'll post shortly.
+Right, better too keep it
 
+> 
+>> +       length = iter_iov_len(iter);
+>>         start = rounddown(addr, PAGE_SIZE);
+>> -       shm->offset = addr - start;
+>> -       shm->size = length;
+>> -       num_pages = (roundup(addr + length, PAGE_SIZE) - start) / PAGE_SIZE;
+>> +       num_pages = iov_iter_npages(iter, INT_MAX);
+>> +       if (!num_pages) {
+>> +               ret = ERR_PTR(-ENOMEM);
+>> +               goto err_ctx_put;
+>> +       }
+>> +
+>>         shm->pages = kcalloc(num_pages, sizeof(*shm->pages), GFP_KERNEL);
+>>         if (!shm->pages) {
+>>                 ret = ERR_PTR(-ENOMEM);
+>>                 goto err_free_shm;
+>>         }
+>>
+>> -       if (flags & TEE_SHM_USER_MAPPED)
+>> -               rc = pin_user_pages_fast(start, num_pages, FOLL_WRITE,
+>> -                                        shm->pages);
+>> -       else
+>> -               rc = shm_get_kernel_pages(start, num_pages, shm->pages);
+>> -       if (rc > 0)
+>> -               shm->num_pages = rc;
+>> -       if (rc != num_pages) {
+>> -               if (rc >= 0)
+>> -                       rc = -ENOMEM;
+>> -               ret = ERR_PTR(rc);
+>> +       len = iov_iter_extract_pages(iter, &shm->pages, LONG_MAX, num_pages, 0,
+>> +                                    &off);
+>> +       if (len != length) {
+> 
+> Any particular reason for this check?
 
-Sean
+Cross-checking to answer to your comment, I just released that
+iov_iter_extract_pages returns ssize_t not size_t.
+Therefore, I need to change the type of len and replace the check with
+(len <= 0).
+
+> 
+>> +               ret = len ? ERR_PTR(len) : ERR_PTR(-ENOMEM);
+>>                 goto err_put_shm_pages;
+>>         }
+>>
+>> +       shm->offset = off;
+>> +       shm->size = len;
+>> +       shm->num_pages = num_pages;
+>> +
+>>         rc = teedev->desc->ops->shm_register(ctx, shm, shm->pages,
+>>                                              shm->num_pages, start);
+>>         if (rc) {
+>> @@ -307,6 +301,8 @@ struct tee_shm *tee_shm_register_user_buf(struct tee_context *ctx,
+>>         u32 flags = TEE_SHM_USER_MAPPED | TEE_SHM_DYNAMIC;
+>>         struct tee_device *teedev = ctx->teedev;
+>>         struct tee_shm *shm;
+>> +       struct iovec iov;
+>> +       struct iov_iter iter;
+>>         void *ret;
+>>         int id;
+>>
+>> @@ -319,7 +315,10 @@ struct tee_shm *tee_shm_register_user_buf(struct tee_context *ctx,
+>>         if (id < 0)
+>>                 return ERR_PTR(id);
+>>
+>> -       shm = register_shm_helper(ctx, addr, length, flags, id);
+>> +       iov.iov_base = (void __user *)addr;
+>> +       iov.iov_len = length;
+>> +       iov_iter_init(&iter, ITER_DEST, &iov, 1, length);
+> 
+> We should rather use import_ubuf() instead of this and the above
+> access_ok() check.
+
+Thanks for the advice, I will test it.
+
+> 
+>> +       shm = register_shm_helper(ctx, &iter, flags, id);
+>>         if (IS_ERR(shm)) {
+>>                 mutex_lock(&teedev->mutex);
+>>                 idr_remove(&teedev->idr, id);
+>> @@ -351,9 +350,19 @@ struct tee_shm *tee_shm_register_user_buf(struct tee_context *ctx,
+>>  struct tee_shm *tee_shm_register_kernel_buf(struct tee_context *ctx,
+>>                                             void *addr, size_t length)
+>>  {
+>> +       struct tee_shm *shm;
+>>         u32 flags = TEE_SHM_DYNAMIC;
+>> +       struct kvec kvec;
+>> +       struct iov_iter iter;
+>>
+>> -       return register_shm_helper(ctx, (unsigned long)addr, length, flags, -1);
+>> +       kvec.iov_base = addr;
+>> +       kvec.iov_len = length;
+>> +       iov_iter_kvec(&iter, ITER_DEST, &kvec, 1, length);
+>> +       shm = register_shm_helper(ctx, &iter, flags, -1);
+>> +       if (!IS_ERR(shm))
+>> +               shm_get_kernel_pages(shm->pages, shm->num_pages);
+> 
+> The kernel pages reference should be taken before invoking
+> teedev->desc->ops->shm_register(). So you should move this to
+> register_shm_helper() instead. You can use iov_iter_is_kvec() to know
+> if you have to get a reference or not.
+
+Yes much better
+
+Thanks!
+Arnaud
+
+> 
+> -Sumit
+> 
+>> +
+>> +       return shm;
+>>  }
+>>  EXPORT_SYMBOL_GPL(tee_shm_register_kernel_buf);
+>>
+>> --
+>> 2.25.1
+>>
