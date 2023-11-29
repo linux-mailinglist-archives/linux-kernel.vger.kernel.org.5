@@ -2,73 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D4727FDBE6
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 16:47:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 200657FDBEA
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 16:47:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235027AbjK2Pr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 10:47:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45492 "EHLO
+        id S1343871AbjK2Pro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 10:47:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235043AbjK2PrU (ORCPT
+        with ESMTP id S1343972AbjK2Prc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 10:47:20 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D880170E
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 07:47:23 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id D3936C433C8;
-        Wed, 29 Nov 2023 15:47:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701272842;
-        bh=d3gt2pREE1sy0WhzSvItx8bCjSwa/mbOlEtQRCq9L6k=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=DvUBnjI50H6IOBbIP4gW3m4Sh6GuvFG2us3wE250WoFZlQ+rxcXOdVYWsH32pAj4x
-         K+NyTVdi2uNOTA4vvZezEJLV2IFffQLYX0icV6GZQayqsSV1yG0PxBfTs75KnoPk4+
-         sd2NJyZiQ//p1gbYJA1VlGIpoIsDBJlb9ZVaNmrrGK/Y6QUdalovo3X94FtyZDRicN
-         QUmAeb9iR/HJtnilyelFqE/j6XwtuoC5oXHMcER+PZgFCJWXRFrvDLwn32JJJgQGgK
-         MF3xdd8CvfClbf/+zJ3spBNsc5icOZoZkxtFQbUsafeVL2aFtKyLiLrjccL6Bx73hS
-         V+YBl6ff84idw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C129EDFAA81;
-        Wed, 29 Nov 2023 15:47:22 +0000 (UTC)
-Subject: Re: [GIT PULL] Pin control fixes for v6.7
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CACRpkdZtVNZFWSUgb4=gUE2mQRb=aT_3=zRv1U71Vsq0Mm34eg@mail.gmail.com>
-References: <CACRpkdZtVNZFWSUgb4=gUE2mQRb=aT_3=zRv1U71Vsq0Mm34eg@mail.gmail.com>
-X-PR-Tracked-List-Id: <linux-gpio.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CACRpkdZtVNZFWSUgb4=gUE2mQRb=aT_3=zRv1U71Vsq0Mm34eg@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git tags/pinctrl-v6.7-2
-X-PR-Tracked-Commit-Id: 90785ea8158b6923c5d6a024f2b1c076110577b5
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 3b47bc037bd44f142ac09848e8d3ecccc726be99
-Message-Id: <170127284278.10361.6469775362333533374.pr-tracker-bot@kernel.org>
-Date:   Wed, 29 Nov 2023 15:47:22 +0000
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Maria Yu <quic_aiquny@quicinc.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Chester Lin <clin@suse.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 29 Nov 2023 10:47:32 -0500
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 300E61717
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 07:47:38 -0800 (PST)
+Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2c8879a1570so88196141fa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 07:47:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701272856; x=1701877656; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hRJn66jmWmp7/ZR7vFS84ebK8490j6jGvEbdIOkMUdw=;
+        b=YWKUxlDhX6TSVXpg8bGLHebAQsogvU8SuEEDxQKYBml20Mci+SZRmWYBif/3zcLbEu
+         aCNuC6JeC13k7Ox/hJHP6vZQRdW1mp4DRKxPRFSJmJwCkq79HejIxwpc3STGblOy6uyZ
+         tlmH83khr9ysJlLTNXPoXW6d0Akbq2Te10KLIWVucaH3svAJHKcZvPSrDSlGxTPlv+Yc
+         xS1qeW3HnCS+xKOtfwPHcbm7hjPzCFuy0rxl9yUuzfXAGhkTPTxaZFa+lqBQv9Mxa+eO
+         WhJALhhJsC3xXHscNrK1wj1p8d2yr+AEQsLpknpm6mOKUa8xrZow8vaXNTokGlJxffPw
+         zoOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701272856; x=1701877656;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hRJn66jmWmp7/ZR7vFS84ebK8490j6jGvEbdIOkMUdw=;
+        b=mKZg1SubVjJ1WBaMkHVL4rjjAgKXxPuH8fNVZ+a01KL3G8nYYnbynZY/fFlgmcMTnp
+         mXPdUrFsNEMXdR3WsAow5/Rz0zKoJ8zr2gZ7wqBw42L4/iQU3zfEULHlKRSISMGztIge
+         yHmUQ7VVv2xM/kNAgpEIP52Rpgn7zt5+2Dx7ABZ+3dmSoip9/qroReLv0vV+B8tX7Uyl
+         Gr4ZN9k4KPnZU8y5YqMQuNj2XKECyeFRBUiqbA8KWjGn6Wn0EP1XUXr5sDzbZul43sG0
+         m2HHb+hXhH1nUwfj9YZiByld2knT1tatuMwlUviJ2RLQCM+bHwQ7s25HWV2sIv2xE00C
+         85mQ==
+X-Gm-Message-State: AOJu0YxfiH8DURqbUlIp9EWjq+d9KtrGw7xU8oTIFTWXjeWhDinjWnR9
+        VoJ7C1pvCepL0wny7/ZHRa0ANw==
+X-Google-Smtp-Source: AGHT+IETEW5DdmUBBS65qune7HAaHWNsQy2FXMNw+Ke7eh3cjph9mF3UhiHnJUJcTGvL4QTqjgC0Tg==
+X-Received: by 2002:a2e:9ccb:0:b0:2c9:be24:5bcf with SMTP id g11-20020a2e9ccb000000b002c9be245bcfmr1641523ljj.14.1701272856198;
+        Wed, 29 Nov 2023 07:47:36 -0800 (PST)
+Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
+        by smtp.gmail.com with ESMTPSA id u8-20020a05600c19c800b004030e8ff964sm2690644wmq.34.2023.11.29.07.47.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Nov 2023 07:47:35 -0800 (PST)
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+To:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        xiazhengqiao <xiazhengqiao@huaqin.corp-partner.google.com>
+Cc:     mripard@kernel.org, dianders@google.com, tzimmermann@suse.de,
+        quic_jesszhan@quicinc.com
+In-Reply-To: <20231129084115.7918-1-xiazhengqiao@huaqin.corp-partner.google.com>
+References: <20231129084115.7918-1-xiazhengqiao@huaqin.corp-partner.google.com>
+Subject: Re: [PATCH v2 RESEND] drm/panel: starry-2081101qfh032011-53g: Fine
+ tune the panel power sequence
+Message-Id: <170127285546.3101813.16310801657747690818.b4-ty@linaro.org>
+Date:   Wed, 29 Nov 2023 16:47:35 +0100
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 29 Nov 2023 13:09:03 +0100:
+Hi,
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git tags/pinctrl-v6.7-2
+On Wed, 29 Nov 2023 16:41:15 +0800, xiazhengqiao wrote:
+> For the "starry, 2081101qfh032011-53g" panel, it is stipulated in the
+> panel spec that MIPI needs to keep the LP11 state before the
+> lcm_reset pin is pulled high.
+> 
+> 
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/3b47bc037bd44f142ac09848e8d3ecccc726be99
+Thanks, Applied to https://anongit.freedesktop.org/git/drm/drm-misc.git (drm-misc-fixes)
 
-Thank you!
+[1/1] drm/panel: starry-2081101qfh032011-53g: Fine tune the panel power sequence
+      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=fc1ccc16271a0526518f19f460fed63d575a8a42
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Neil
+
