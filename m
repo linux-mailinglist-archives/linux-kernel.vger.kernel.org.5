@@ -2,136 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A52B7FCB58
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 01:31:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B58CA7FCB5E
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 01:33:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376675AbjK2AbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 19:31:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34596 "EHLO
+        id S1376673AbjK2Adj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 19:33:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229718AbjK2AbA (ORCPT
+        with ESMTP id S229718AbjK2Adh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 19:31:00 -0500
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EDC619AA
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 16:31:05 -0800 (PST)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-a00ac0101d9so836583366b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 16:31:04 -0800 (PST)
+        Tue, 28 Nov 2023 19:33:37 -0500
+Received: from codeconstruct.com.au (pi.codeconstruct.com.au [203.29.241.158])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD8DC1998;
+        Tue, 28 Nov 2023 16:33:43 -0800 (PST)
+Received: from [192.168.68.112] (ppp118-210-131-38.adl-adc-lon-bras33.tpg.internode.on.net [118.210.131.38])
+        by mail.codeconstruct.com.au (Postfix) with ESMTPSA id 6FE6820173;
+        Wed, 29 Nov 2023 08:33:40 +0800 (AWST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701217863; x=1701822663; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yDVw23sOg2UrJKrxIvmA3Ztov9BQ3aaP2pKc9NVQp+Q=;
-        b=gDwjyiF7xNTtWpq7+MYFD/sxdzxaRyGsMPmmguE6RLn9kMovj79BXTluE+6i4TQyWC
-         /sVq1cKGb+r9h7ZU21fez0kbz3B6t2VAohfsCM3+3AaLjFTOhrwuGJ6lkhxbobIG/sIl
-         N3U5AwUGZXsTAJ2WcKn1qO0yCbQdipNorV4GlHJKl0EyMJKmM2yMY8TTl1x/GBNiLRnj
-         eEg/gnWreW4Ql8i3VMqQyOt7wAjrmbgNfd4pH1QdTnxKlV2FUXP7ZpTUWX4ydvmDAI4x
-         jMUcsziXQf71dqjWrWOHnMAqxfmly1bHEKlaZp1DIOrJVbVAtd+Ul9CbM8qtQzUQvY1I
-         GqlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701217863; x=1701822663;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yDVw23sOg2UrJKrxIvmA3Ztov9BQ3aaP2pKc9NVQp+Q=;
-        b=kJRuH+5lkI0tA2pG52SuSimrWCdbYzFWY+JAV0gmml2e2nG8x7/L1nILKI64Km6w8E
-         PgZEopgzYBIwdnIWzOAEWuBZkb//sp3sCfPt3zl1hJ9hNR8/m8upzXkNNtRzmhYIDgxx
-         4Zyq9ZqjXkbAALKBJ7GhsSmgl0lhAXDMelTHfZbTVIoZaXkGkOdTjK6usoKI8fxYxWMT
-         /J84I0yLnEc3WdhlGSut+O8uApe5Ak+Yiyz/UpBYHw/BZO6S3RNmF9acqQP0c3Bf/BXZ
-         cVLudHbHKTcYdyybJLn89K7IZBNKQYUhf2htg8AUHqbswA6HYziIhSx81hTS6fZ9+Bra
-         h+sA==
-X-Gm-Message-State: AOJu0Yw1oc//p7WjeN//7RiHRTAfvZCRR5jPBrmvxR0jP270nVTtI8Zj
-        fQbnIeW3t3Zk+WhZBF8ac7fBGqZB0ScOt++h6XYd0Q==
-X-Google-Smtp-Source: AGHT+IHC8UEOvU50jtsS7Vr0gcms1iLEnVOENRdNMxAoPBJBLye7+u3ipcvLY8pzJUFqT19PG/Ngi5chQxCjwtOqCvY=
-X-Received: by 2002:a17:906:48d5:b0:a11:7ba8:6891 with SMTP id
- d21-20020a17090648d500b00a117ba86891mr5048211ejt.67.1701217863358; Tue, 28
- Nov 2023 16:31:03 -0800 (PST)
-MIME-Version: 1.0
-References: <20231128204938.1453583-1-pasha.tatashin@soleen.com>
- <CAJD7tkb1FqTqwONrp2nphBDkEamQtPCOFm0208H3tp0Gq2OLMQ@mail.gmail.com>
- <CA+CK2bB3nHfu1Z6_6fqN3YTAzKXMiJ12MOWpbs8JY7rQo4Fq0g@mail.gmail.com>
- <CAJD7tkZZNhf4KGV+7N+z8NFpJrvyeNudXU-WdVeE8Rm9pobfgQ@mail.gmail.com>
- <20231128235214.GD1312390@ziepe.ca> <CAJD7tkbbq6bHtPn7yE3wSS693OSthh1eBDvF-_MWZfDMXDYPKw@mail.gmail.com>
- <20231129002826.GG1312390@ziepe.ca>
-In-Reply-To: <20231129002826.GG1312390@ziepe.ca>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Tue, 28 Nov 2023 16:30:27 -0800
-Message-ID: <CAJD7tkbxhK7XFcf7h+XE2poNuOsFBQFrxZyeFr=9DoEG_acssA@mail.gmail.com>
-Subject: Re: [PATCH 00/16] IOMMU memory observability
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Pasha Tatashin <pasha.tatashin@soleen.com>,
-        akpm@linux-foundation.org, alex.williamson@redhat.com,
-        alim.akhtar@samsung.com, alyssa@rosenzweig.io,
-        asahi@lists.linux.dev, baolu.lu@linux.intel.com,
-        bhelgaas@google.com, cgroups@vger.kernel.org, corbet@lwn.net,
-        david@redhat.com, dwmw2@infradead.org, hannes@cmpxchg.org,
-        heiko@sntech.de, iommu@lists.linux.dev, jasowang@redhat.com,
-        jernej.skrabec@gmail.com, jonathanh@nvidia.com, joro@8bytes.org,
-        kevin.tian@intel.com, krzysztof.kozlowski@linaro.org,
-        kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-rockchip@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev,
-        linux-tegra@vger.kernel.org, lizefan.x@bytedance.com,
-        marcan@marcan.st, mhiramat@kernel.org, mst@redhat.com,
-        m.szyprowski@samsung.com, netdev@vger.kernel.org,
-        paulmck@kernel.org, rdunlap@infradead.org, robin.murphy@arm.com,
-        samuel@sholland.org, suravee.suthikulpanit@amd.com,
-        sven@svenpeter.dev, thierry.reding@gmail.com, tj@kernel.org,
-        tomas.mudrunka@gmail.com, vdumpa@nvidia.com,
-        virtualization@lists.linux.dev, wens@csie.org, will@kernel.org,
-        yu-cheng.yu@intel.com
+        d=codeconstruct.com.au; s=2022a; t=1701218021;
+        bh=+WS89WTcKCHrEbe/yOsqOJI9VuSu2zv7xlF8oc8yqX8=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=CdESjDWDMLB0K5t8mldNMDgWHYXdJNIbYBo3NdZ1sS/jPkBR89TnoURcGR2EYdlR7
+         wVNeuiHIGYL2kLxm/iCtC9vqiCl+b1xiVZT3SH4drgvnGWPIju/Za6bgwGaR/csEXw
+         /ixxbHNVHCMAkWj2GoqKqRqgbG55eUJeZTlKfppfdvYwEuNpSTKSfQ3icgM3LCecD4
+         A/I2d2gN1K6PwUaDKuHC9kRAS0ZBq39GCdAG2364XZ8FqLqhpWSHZCzLXvbI9YeIqK
+         Y8YJAWcf8oAVAZXN3ujiXJdqs5+EiXXMihjpEfKV2E0za7c0n+GTpjo6gCmMx9iGOr
+         rwNhDHXWrs4UQ==
+Message-ID: <2186c3b9ac92f03c68e8a2dd9fda871f80a6d664.camel@codeconstruct.com.au>
+Subject: Re: [PATCH v2 RESEND 2/2] i2c: aspeed: Acknowledge Tx done with and
+ without ACK irq late
+From:   Andrew Jeffery <andrew@codeconstruct.com.au>
+To:     Quan Nguyen <quan@os.amperecomputing.com>,
+        Brendan Higgins <brendan.higgins@linux.dev>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Wolfram Sang <wsa@kernel.org>,
+        Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>,
+        Guenter Roeck <linux@roeck-us.net>, linux-i2c@vger.kernel.org,
+        openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Cc:     Cosmo Chou <chou.cosmo@gmail.com>,
+        Open Source Submission <patches@amperecomputing.com>,
+        Phong Vo <phong@os.amperecomputing.com>,
+        "Thang Q . Nguyen" <thang@os.amperecomputing.com>
+Date:   Wed, 29 Nov 2023 11:03:39 +1030
+In-Reply-To: <20231128075236.2724038-3-quan@os.amperecomputing.com>
+References: <20231128075236.2724038-1-quan@os.amperecomputing.com>
+         <20231128075236.2724038-3-quan@os.amperecomputing.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Evolution 3.46.4-2 
+MIME-Version: 1.0
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 4:28=E2=80=AFPM Jason Gunthorpe <jgg@ziepe.ca> wrot=
-e:
->
-> On Tue, Nov 28, 2023 at 04:25:03PM -0800, Yosry Ahmed wrote:
->
-> > > > Right, but as I mention above, if userspace starts depending on thi=
-s
-> > > > equation, we won't be able to add any more classes of "secondary" p=
-age
-> > > > tables to SecPageTables. I'd like to avoid that if possible. We can=
- do
-> > > > the subtraction in the kernel.
-> > >
-> > > What Sean had suggested was that SecPageTables was always intended to
-> > > account all the non-primary mmu memory used by page tables. If this i=
-s
-> > > the case we shouldn't be trying to break it apart into finer
-> > > counters. These are big picture counters, not detailed allocation by
-> > > owner counters.
-> >
-> > Right, I agree with that, but if SecPageTables includes page tables
-> > from multiple sources, and it is observed to be suspiciously high, the
-> > logical next step is to try to find the culprit, right?
->
-> You can make that case already, if it is high wouldn't you want to
-> find the exact VMM process that was making it high?
->
-> It is a sign of fire, not a detailed debug tool.
+On Tue, 2023-11-28 at 14:52 +0700, Quan Nguyen wrote:
+> Commit 2be6b47211e1 ("i2c: aspeed: Acknowledge most interrupts early in
+> interrupt handler") acknowledges most interrupts early before the slave
+> irq handler is executed, except for the "Receive Done Interrupt status"
+> which is acknowledged late in the interrupt.
+> However, it is observed that the early acknowledgment of "Transmit Done
+> Interrupt Status" (with ACK or NACK) often causes the interrupt to be
+> raised in READ REQUEST state, resulting in "Unexpected ACK on read
+> request." complaint messages.
+>=20
+> Assuming that the "Transmit Done" interrupt should only be acknowledged
+> once it is truly processed, this commit fixes this issue by acknowledging
+> this interrupt for both ACK and NACK cases late in the interrupt handler
+> also.
+>=20
+> Fixes: 2be6b47211e1 ("i2c: aspeed: Acknowledge most interrupts early in i=
+nterrupt handler")
+> Signed-off-by: Quan Nguyen <quan@os.amperecomputing.com>
+> ---
+> v2:
+>   + Split to separate series [Joel]
+>   + Added the Fixes line [Joel]
+>   + Fixed multiline comment [Joel]
+>   + Refactor irq clearing code [Joel, Guenter]
+>   + Revised commit message [Joel]
+>   + Revised commit message [Quan]
+>   + About a note to remind why the readl() should immediately follow the
+> writel() to fix the race condition when clearing irq status from commit
+> c926c87b8e36 ("i2c: aspeed: Avoid i2c interrupt status clear race
+> condition"), I think it looks straight forward in this patch and decided
+> not to add that note. [Joel]
+>=20
+> v1:
+>   + First introduced in
+> https://lore.kernel.org/all/20210519074934.20712-1-quan@os.amperecomputin=
+g.com/
+> ---
+>  drivers/i2c/busses/i2c-aspeed.c | 17 +++++++++--------
+>  1 file changed, 9 insertions(+), 8 deletions(-)
+>=20
+> diff --git a/drivers/i2c/busses/i2c-aspeed.c b/drivers/i2c/busses/i2c-asp=
+eed.c
+> index 79476b46285b..3231f430e335 100644
+> --- a/drivers/i2c/busses/i2c-aspeed.c
+> +++ b/drivers/i2c/busses/i2c-aspeed.c
+> @@ -611,8 +611,9 @@ static irqreturn_t aspeed_i2c_bus_irq(int irq, void *=
+dev_id)
+> =20
+>  	spin_lock(&bus->lock);
+>  	irq_received =3D readl(bus->base + ASPEED_I2C_INTR_STS_REG);
+> -	/* Ack all interrupts except for Rx done */
+> -	writel(irq_received & ~ASPEED_I2CD_INTR_RX_DONE,
+> +	/* Ack all interrupts except for Rx done and Tx done with/without ACK *=
+/
 
-Fair enough. We can always add separate counters later if needed,
-potentially under KVM stats to get more fine-grained details as you
-mentioned.
+I'm not a huge fan of this comment, it just says what the code does. It
+would be much better to explain *why* the code does what it does.
 
-I am only worried about users subtracting the iommu-only counter to
-get a KVM counter. We should at least document that  SecPageTables may
-be expanded to include other sources later to avoid that.
+I realise describing what the code does was already the gist of the
+comment and that you're just updating it to match the change to the
+code, but that's my entire problem with it. We'd be better off deleting
+it if we're not going to explain why the masking is necessary.
 
->
-> Jason
+> +	writel(irq_received &
+> +	       ~(ASPEED_I2CD_INTR_RX_DONE | ASPEED_I2CD_INTR_TX_ACK | ASPEED_I2=
+CD_INTR_TX_NAK),
+>  	       bus->base + ASPEED_I2C_INTR_STS_REG);
+>  	readl(bus->base + ASPEED_I2C_INTR_STS_REG);
+>  	irq_received &=3D ASPEED_I2CD_INTR_RECV_MASK;
+> @@ -657,12 +658,12 @@ static irqreturn_t aspeed_i2c_bus_irq(int irq, void=
+ *dev_id)
+>  			"irq handled !=3D irq. expected 0x%08x, but was 0x%08x\n",
+>  			irq_received, irq_handled);
+> =20
+> -	/* Ack Rx done */
+> -	if (irq_received & ASPEED_I2CD_INTR_RX_DONE) {
+> -		writel(ASPEED_I2CD_INTR_RX_DONE,
+> -		       bus->base + ASPEED_I2C_INTR_STS_REG);
+> -		readl(bus->base + ASPEED_I2C_INTR_STS_REG);
+> -	}
+> +	/* Ack Rx done and Tx done with/without ACK */
+> +	writel(irq_received &
+> +	       (ASPEED_I2CD_INTR_RX_DONE | ASPEED_I2CD_INTR_TX_ACK | ASPEED_I2C=
+D_INTR_TX_NAK),
+> +	       bus->base + ASPEED_I2C_INTR_STS_REG);
+> +	readl(bus->base + ASPEED_I2C_INTR_STS_REG);
+
+I'm not sure why the write was conditional, but I'm not sure that
+making it unconditional is valid either? Why the change? Why not add
+the extra interrupt bits to the condition in addition to the value mask
+for the write?
+
+Andrew
