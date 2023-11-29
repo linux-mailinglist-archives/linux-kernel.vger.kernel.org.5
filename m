@@ -2,148 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C4287FDDAE
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 17:56:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D2B77FDDB5
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 17:57:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232992AbjK2Qz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 11:55:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46516 "EHLO
+        id S231356AbjK2Q50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 11:57:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233160AbjK2Qzt (ORCPT
+        with ESMTP id S229498AbjK2Q5Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 11:55:49 -0500
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83BB6D1
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 08:55:54 -0800 (PST)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5cddc35545dso79930287b3.2
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 08:55:54 -0800 (PST)
+        Wed, 29 Nov 2023 11:57:25 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 154AFBC
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 08:57:30 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-40b40423df8so33457155e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 08:57:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701276953; x=1701881753; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=unbZFkiD0dHweTLgp1OYP68ojVuVgwsL9BVcNl+eCj0=;
-        b=ZHu6IwecdEJq762miAS3Om9MTNmVo8wTHYwvvBUO9TFlduLm2RhZPyjKON/lhUc40n
-         Y7z6t4Ws5yrtGwOpdxFnTtz+DCoNhslTrjCwyUtKvZ1nUyfpM/7aAM8OFr96JWKKpg0w
-         u/sj0wG66pfilbDxeIFiNg0E22XHst6ybyCS8ucnMtUCkhl31D6dB9U13Tm/zlXXUsGR
-         mMpI57qoQriXTWaYZJPRW50t4AKy3xAgZHQAyr7MMLJtLbwaprUihbGY2ZE2sCI0wMvD
-         uSHZpsbwfao/FQUH2IjMBeXye3i3DsZgEFSU/Sr4SQ/V/ZQxbel9Kx36WhQxkfHWgbuG
-         0jGw==
+        d=arista.com; s=google; t=1701277048; x=1701881848; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=b7aJz0uHa7SewL8HnYCUsCQUx9Soa+Sr5uJxTLKLlKs=;
+        b=GwyzD+BN8sne4vzp82UGQSMSYfGW79rAlTVrXM1FRIcKwj18LURJp+qOC/GcvF+R2d
+         waPLjDxJ3lXIE2CjyOA5zepcRDgz4lmvQ5G/Ygr0Oa+VwagyQq3jeRTrV9r/PVxFuK1s
+         EPggNZX2OjGFhBIBpIpep6H2+AoC5OSOPxJf8ot1v/2N3bgEYfZOkgcrjKIdJgIJfqVN
+         zc26BDVDxVuxshJLspr64J6+OPPyWJGqoVrkNk1LCWxEmWODMPRu33l6AWWOBRmBbhn1
+         4D1qM22Rm0BODu230l5Z/P+XGS2oY/woctgspJ1rk83JD7GahUzU8F1Db5Z/jC/+AAK0
+         Dl/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701276953; x=1701881753;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=unbZFkiD0dHweTLgp1OYP68ojVuVgwsL9BVcNl+eCj0=;
-        b=TlZOFcTJUaY6EJUG2VQmZ86aLVRtS9+483MWIfabE6hFHTFrgTfLLSoShykXrmthUz
-         NH9CVLRyfff91+GqYTzYAu+z0KWw8JEyBu/HI/hgsVv3saktB3oZQxnrWBFvho9L7wOJ
-         NHhod9odXokrhpcg+XsMQ9jUIjV6npz7o3Yqg/Ajn9nMPoSmg/xwqm6Gjnywl6eLBAhR
-         m6yTUEmgAMgkynDfNPaor1qqKTKXUBXz1fXI1yRh+tldoIWVVcqpi/0IKwzonaKsMlir
-         tZ597gYtQtVszRdQ1GJUWamuJxXzCK1hVdvk27Qrxv9pItwt1T7frf3964DIQ9Bmq3eG
-         S9zQ==
-X-Gm-Message-State: AOJu0YyEZ3eYHV7tbIdaOFiJRbeTAkFF1aPznQLhrJ1uLmxInXkNwjx/
-        u126YWg4D9WOQ2OJ5O+rteiKr2wGVM9rqzQ=
-X-Google-Smtp-Source: AGHT+IEpWMlZIbVFMqFnLabAnmVr/lPqw+N8K9vWZ1Skq6PXRN+J94RDlgF3JQbaZlH+xbk7iE6skGya8a4JWqA=
-X-Received: from aliceryhl2.c.googlers.com ([fda3:e722:ac3:cc00:68:949d:c0a8:572])
- (user=aliceryhl job=sendgmr) by 2002:a05:690c:3183:b0:5ca:4a99:7008 with SMTP
- id fd3-20020a05690c318300b005ca4a997008mr630558ywb.10.1701276953779; Wed, 29
- Nov 2023 08:55:53 -0800 (PST)
-Date:   Wed, 29 Nov 2023 16:55:51 +0000
-In-Reply-To: <20231129-zwiespalt-exakt-f1446d88a62a@brauner>
-Mime-Version: 1.0
-References: <20231129-zwiespalt-exakt-f1446d88a62a@brauner>
-X-Mailer: git-send-email 2.43.0.rc1.413.gea7ed67945-goog
-Message-ID: <20231129165551.3476910-1-aliceryhl@google.com>
-Subject: Re: [PATCH 4/7] rust: file: add `FileDescriptorReservation`
-From:   Alice Ryhl <aliceryhl@google.com>
-To:     brauner@kernel.org
-Cc:     a.hindborg@samsung.com, alex.gaynor@gmail.com,
-        aliceryhl@google.com, arve@android.com, benno.lossin@proton.me,
-        bjorn3_gh@protonmail.com, boqun.feng@gmail.com,
-        cmllamas@google.com, dan.j.williams@intel.com, dxu@dxuuu.xyz,
-        gary@garyguo.net, gregkh@linuxfoundation.org,
-        joel@joelfernandes.org, keescook@chromium.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        maco@android.com, ojeda@kernel.org, peterz@infradead.org,
-        rust-for-linux@vger.kernel.org, surenb@google.com,
-        tglx@linutronix.de, tkjos@android.com, viro@zeniv.linux.org.uk,
-        wedsonaf@gmail.com, willy@infradead.org
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1701277048; x=1701881848;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=b7aJz0uHa7SewL8HnYCUsCQUx9Soa+Sr5uJxTLKLlKs=;
+        b=nFtD3veIc5YacLQ8SyCCpmOTVaqymYG4CwPrzS8YHdzmTDgDVSwW/H/IXzji/evrwd
+         AaJo3Lgc3FfJQjVxrZLOa3iY6JWKu8fh5Mj7yW2W1EBVRNvNY8JEUtLmucd6Lw/vHGro
+         6S5UCSmR6qBOuOW6mhm49FeAkfatR9UE8Dbb7mnios59K297D4UDKiyovMTswA6kWizR
+         NR8eEYEJHf6YQ/nXfnim17QJpSEt/0nRQcCB5NqQirBp6vOyA3yVVRwPdoa5p4/bX895
+         +5hQNIE2bommZku7ASpG8lqcjBlwxtVF9MAIOJhCUjvrIUHVW3mwcSe5KWpNtQynvxJS
+         xxkA==
+X-Gm-Message-State: AOJu0YyZm3ZTwCPWINcKG/iFNE8a1jkdV2TjehPmLe95d65PjB9AmfnO
+        fqu1nCvBPnXKDc2KJGUpq8C3gQ==
+X-Google-Smtp-Source: AGHT+IGvkYBjosEudVQ+49uvXPcnSWT1An1RijbQznPrsjN4wM5WkIEgwsLadS+Kpuj7lhAfU/UhSg==
+X-Received: by 2002:a05:600c:524f:b0:40b:4ba1:c4f2 with SMTP id fc15-20020a05600c524f00b0040b4ba1c4f2mr4713557wmb.30.1701277048480;
+        Wed, 29 Nov 2023 08:57:28 -0800 (PST)
+Received: from Mindolluin.ire.aristanetworks.com ([217.173.96.166])
+        by smtp.gmail.com with ESMTPSA id s20-20020a05600c45d400b003fe1fe56202sm2876823wmo.33.2023.11.29.08.57.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Nov 2023 08:57:27 -0800 (PST)
+From:   Dmitry Safonov <dima@arista.com>
+To:     David Ahern <dsahern@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     linux-kernel@vger.kernel.org, Dmitry Safonov <dima@arista.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Francesco Ruggeri <fruggeri05@gmail.com>,
+        Salam Noureddine <noureddine@arista.com>,
+        Simon Horman <horms@kernel.org>, netdev@vger.kernel.org
+Subject: [PATCH v4 0/7] TCP-AO fixes
+Date:   Wed, 29 Nov 2023 16:57:14 +0000
+Message-ID: <20231129165721.337302-1-dima@arista.com>
+X-Mailer: git-send-email 2.43.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christian Brauner <brauner@kernel.org> writes:
-> Can we follow the traditional file terminology, i.e.,
-> get_unused_fd_flags() and fd_install()? At least at the beginning this
-> might be quite helpful instead of having to mentally map new() and
-> commit() onto the C functions.
+Hi,
 
-Sure, I'll do that in the next version.
+Changes from v3:
+- Don't restrict adding any keys on TCP-AO connection in VRF, but only
+  the ones that don't match l3index (David)
 
->> +    /// Prevent values of this type from being moved to a different task.
->> +    ///
->> +    /// This is necessary because the C FFI calls assume that `current` is set to the task that
->> +    /// owns the fd in question.
->> +    _not_send_sync: PhantomData<*mut ()>,
-> 
-> I don't fully understand this. Can you explain in a little more detail
-> what you mean by this and how this works?
+Changes from v2:
+- rwlocks are problematic in net code (Paolo)
+  Changed the SNE code to avoid spin/rw locks on RX/TX fastpath by
+  double-accounting SEQ numbers for TCP-AO enabled connections.
 
-Yeah, so, this has to do with the Rust trait `Send` that controls
-whether it's okay for a value to get moved from one thread to another.
-In this case, we don't want it to be `Send` so that it can't be moved to
-another thread, since current might be different there.
+Changes from v1:
+- Use tcp_can_repair_sock() helper to limit TCP_AO_REPAIR (Eric)
+- Instead of hook to listen() syscall, allow removing current/rnext keys
+  on TCP_LISTEN (addressing Eric's objection)
+- Add sne_lock to protect snd_sne/rcv_sne
+- Don't move used_tcp_ao in struct tcp_request_sock (Eric)
 
-The `Send` trait is automatically applied to structs whenever *all*
-fields of the struct are `Send`. So to ensure that a struct is not
-`Send`, you add a field that is not `Send`.
+I've been working on TCP-AO key-rotation selftests and as a result
+exercised some corner-cases that are not usually met in production.
 
-The `PhantomData` type used here is a special zero-sized type.
-Basically, it says "pretend this struct has a field of type `*mut ()`,
-but don't actually add the field". So for the purposes of `Send`, it has
-a non-Send field, but since its wrapped in `PhantomData`, the field is
-not there at runtime.
+Here are a bunch of semi-related fixes:
+- Documentation typo (reported by Markus Elfring)
+- Proper alignment for TCP-AO option in TCP header that has MAC length
+  of non 4 bytes (now a selftest with randomized maclen/algorithm/etc
+  passes)
+- 3 uAPI restricting patches that disallow more things to userspace in
+  order to prevent it shooting itself in any parts of the body
+- SNEs READ_ONCE()/WRITE_ONCE() that went missing by my human factor
+- Avoid storing MAC length from SYN header as SYN-ACK will use
+  rnext_key.maclen (drops an extra check that fails on new selftests)
 
->> +        Ok(Self {
->> +            fd: fd as _,
-> 
-> This is a cast to a u32?
+Please, consider applying/pulling.
 
-Yes.
+The following changes since commit 3b47bc037bd44f142ac09848e8d3ecccc726be99:
 
-> Can you please draft a quick example how that return value would be
-> expected to be used by a caller? It's really not clear
+  Merge tag 'pinctrl-v6.7-2' of git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl (2023-11-29 06:45:22 -0800)
 
-The most basic usage would look like this:
+are available in the Git repository at:
 
-	// First, reserve the fd.
-	let reservation = FileDescriptorReservation::new(O_CLOEXEC)?;
+  git@github.com:0x7f454c46/linux.git tcp-ao-post-merge-v4
 
-	// Then, somehow get a file to put in it.
-	let file = get_file_using_fallible_operation()?;
+for you to fetch changes up to adb1a6e8d2034c1e17b6a84a512c71aa4c41c1d2:
 
-	// Finally, commit it to the fd.
-	reservation.commit(file);
+  net/tcp: Don't store TCP-AO maclen on reqsk (2023-11-29 16:14:14 +0000)
 
-In Rust Binder, reservations are used here:
-https://github.com/Darksonn/linux/blob/dca45e6c7848e024709b165a306cdbe88e5b086a/drivers/android/allocation.rs#L199-L210
-https://github.com/Darksonn/linux/blob/dca45e6c7848e024709b165a306cdbe88e5b086a/drivers/android/allocation.rs#L512-L541
+----------------------------------------------------------------
 
->> +    pub fn commit(self, file: ARef<File>) {
->> +        // SAFETY: `self.fd` was previously returned by `get_unused_fd_flags`, and `file.ptr` is
->> +        // guaranteed to have an owned ref count by its type invariants.
->> +        unsafe { bindings::fd_install(self.fd, file.0.get()) };
-> 
-> Why file.0.get()? Where did that come from?
+Thanks,
+             Dmitry
 
-This gets a raw pointer to the C type.
+Cc: David Ahern <dsahern@kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Dmitry Safonov <0x7f454c46@gmail.com>
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Francesco Ruggeri <fruggeri05@gmail.com>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Paolo Abeni <pabeni@redhat.com>
+Cc: Salam Noureddine <noureddine@arista.com>
+Cc: Simon Horman <horms@kernel.org>
+Cc: netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
 
-The `.0` part is a field access. `ARef` struct is a tuple struct, so its
-fields are unnamed. However, the fields can still be accessed by index.
+Dmitry Safonov (7):
+  Documentation/tcp: Fix an obvious typo
+  net/tcp: Consistently align TCP-AO option in the header
+  net/tcp: Limit TCP_AO_REPAIR to non-listen sockets
+  net/tcp: Allow removing current/rnext TCP-AO keys on TCP_LISTEN
+    sockets
+  net/tcp: Don't add key with non-matching VRF on connected sockets
+  net/tcp: Store SNEs + SEQs on ao_info
+  net/tcp: Don't store TCP-AO maclen on reqsk
 
-Alice
+ Documentation/networking/tcp_ao.rst |  2 +-
+ include/linux/tcp.h                 |  8 +--
+ include/net/tcp_ao.h                | 31 +++++++++--
+ net/ipv4/tcp.c                      | 13 ++++-
+ net/ipv4/tcp_ao.c                   | 80 ++++++++++++++++++-----------
+ net/ipv4/tcp_fastopen.c             |  2 +
+ net/ipv4/tcp_input.c                | 26 ++++++----
+ net/ipv4/tcp_ipv4.c                 |  4 +-
+ net/ipv4/tcp_minisocks.c            |  2 +-
+ net/ipv4/tcp_output.c               | 16 +++---
+ net/ipv6/tcp_ipv6.c                 |  2 +-
+ 11 files changed, 122 insertions(+), 64 deletions(-)
+
+
+base-commit: 3b47bc037bd44f142ac09848e8d3ecccc726be99
+-- 
+2.43.0
+
