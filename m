@@ -2,415 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9D027FDDEE
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 18:07:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B30C57FDF94
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 19:45:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229960AbjK2RHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 12:07:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41670 "EHLO
+        id S231660AbjK2Spm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 13:45:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbjK2RG7 (ORCPT
+        with ESMTP id S231467AbjK2Spj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 12:06:59 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12DD194
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 09:07:04 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0472C433C8;
-        Wed, 29 Nov 2023 17:06:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701277623;
-        bh=8ovlfa1jt1/2RsMv84ug7kOY4w3Kdl7fxXEWpoiPyc8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jErP8aZipGQn9AL7a6Rn8uXDKqUA8Rm4FqEXzQxdBb6lBkRgjYSmfK7tJOcjqN/qI
-         u2WrnBagL9Oc3neXQegD84MgB7PD9Dp+OaEg4ZzuGkIgGHPdzKh5wBRDvw6foLc5iv
-         NvT9Kyxq3yx961wAEJos3jdxxNqJdZoDm/YLEN01nWmwKGnqLcg8I/UQLjRkDIWIj1
-         hmPoYaUOvwWaZxjMlm0YfXJhcOJq7EZM6AzuAwzk0STykpAabVtPiaeYFsrDyXrWmk
-         A3RZ/TXG+A4/YEz3d+cickXh2zA2jgrYTw+ArcqBVSzIJCoStEmX/dbaRVub6spb5Y
-         /rpfbS+BgXnOQ==
-Date:   Wed, 29 Nov 2023 18:06:55 +0100
-From:   Christian Brauner <brauner@kernel.org>
-To:     Alice Ryhl <aliceryhl@google.com>
-Cc:     Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?utf-8?B?QmrDtnJu?= Roy Baron <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arve =?utf-8?B?SGrDuG5uZXbDpWc=?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Carlos Llamas <cmllamas@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 1/7] rust: file: add Rust abstraction for `struct file`
-Message-ID: <20231129-geleckt-verebben-04ea0c08a53c@brauner>
-References: <20231129-alice-file-v1-0-f81afe8c7261@google.com>
- <20231129-alice-file-v1-1-f81afe8c7261@google.com>
+        Wed, 29 Nov 2023 13:45:39 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1519A1B4;
+        Wed, 29 Nov 2023 10:45:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701283545; x=1732819545;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=cKJeFNkIQAf+/tiMMgC+hJ3Nk+Hnaj6HJWSuL5lnedo=;
+  b=jRCEbeLwuepAT3ho4szAd9g+6HYrPSUxEr+U6jLv4+DfNuNtHPq6IwLw
+   OYQY7VKtgb/fOY9YhM0Zl5GahCfQD/XyvyRqk1X+QKIirurcKy8+wn+E4
+   sHiLLcfQKuUuSXo2ayKb+o0vXUFk11DSx+q6qrid0e1f67LOOv8fJ5Wif
+   pa9Uk7oaeEu9MGlUVBfAIlIrwEp6V2BLfB7ko074ItTxfpLXG4sqsZDIS
+   VlrCT4vUCflzMkfQlq/4WZDrkRkHNxudxzKmp5eZXDs9v0opS9wDqsDAd
+   7bN0e5dSSJyi0IGoIhDTxWj/sFg0uFZBGDK1tm3iq65zz04e7fwBv6EAl
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="383602809"
+X-IronPort-AV: E=Sophos;i="6.04,237,1695711600"; 
+   d="scan'208";a="383602809"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 10:45:44 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="942421675"
+X-IronPort-AV: E=Sophos;i="6.04,237,1695711600"; 
+   d="scan'208";a="942421675"
+Received: from caw1-mobl1.amr.corp.intel.com (HELO [10.255.229.136]) ([10.255.229.136])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 10:45:43 -0800
+Message-ID: <3d36d707-86f7-44fe-a613-64e264bb53cd@linux.intel.com>
+Date:   Wed, 29 Nov 2023 11:07:20 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231129-alice-file-v1-1-f81afe8c7261@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] soundwire: qcom: allow multi-link on newer devices
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Sanyog Kale <sanyog.r.kale@intel.com>,
+        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Cc:     Mark Brown <broonie@kernel.org>
+References: <20231128150049.412236-1-krzysztof.kozlowski@linaro.org>
+ <e43db38a-206d-4ea5-8813-23e1f918dd65@linux.intel.com>
+ <ab0fc6e0-a358-42e7-92e5-77ceea53a546@linaro.org>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <ab0fc6e0-a358-42e7-92e5-77ceea53a546@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 12:51:07PM +0000, Alice Ryhl wrote:
-> From: Wedson Almeida Filho <wedsonaf@gmail.com>
+
+
+On 11/29/23 10:43, Krzysztof Kozlowski wrote:
+> On 28/11/2023 16:35, Pierre-Louis Bossart wrote:
+>>>  static enum sdw_command_response qcom_swrm_xfer_msg(struct sdw_bus *bus,
+>>>  						    struct sdw_msg *msg)
+>>>  {
+>>> @@ -1078,6 +1090,7 @@ static const struct sdw_master_port_ops qcom_swrm_port_ops = {
+>>>  };
+>>>  
+>>>  static const struct sdw_master_ops qcom_swrm_ops = {
+>>> +	.read_prop = qcom_swrm_read_prop,
+>>
+>> nit-pick: read_prop() literally means "read platform properties".
+>>
+>> The functionality implemented in this callback looks more like an
+>> initialization done in a probe, no?
 > 
-> This abstraction makes it possible to manipulate the open files for a
-> process. The new `File` struct wraps the C `struct file`. When accessing
-> it using the smart pointer `ARef<File>`, the pointer will own a
-> reference count to the file. When accessing it as `&File`, then the
-> reference does not own a refcount, but the borrow checker will ensure
-> that the reference count does not hit zero while the `&File` is live.
+> Yes, but multi_link is being set by sdw_bus_master_add() just before
+> calling read_prop(). It looks a bit odd, because "bus" comes from the
+> caller and is probably zero-ed already. Therefore I assumed the code did
+> it on purpose - ignored multi_link set before sdw_bus_master_add(),
 
-Could you explain this in more details please? Ideally with some C and
-how that translates to your Rust wrappers, please. Sorry, this is going
-to be a long journey...
+On the Intel side, there's a bit of luck here.
 
+The caller intel_link_probe() does not set the multi-link property, but
+it's set in intel_link_startup() *AFTER* reading the properties - but we
+don't have any properties related to multi-link, only the ability to
+discard specific links.
+
+>>>  	.xfer_msg = qcom_swrm_xfer_msg,
+>>>  	.pre_bank_switch = qcom_swrm_pre_bank_switch,
+>>>  	.post_bank_switch = qcom_swrm_post_bank_switch,
+>>> @@ -1196,6 +1209,15 @@ static int qcom_swrm_stream_alloc_ports(struct qcom_swrm_ctrl *ctrl,
+>>>  
+>>>  	mutex_lock(&ctrl->port_lock);
+>>>  	list_for_each_entry(m_rt, &stream->master_list, stream_node) {
+>>
+>> just realizing this now, are you sure the 'port_lock' is the proper
+>> means to protecting the stream->master_list? I don't see this used
+>> anywhere else in stream.c. I think you need to use bus_lock.
 > 
-> Since this is intended to manipulate the open files of a process, we
-> introduce a `from_fd` constructor that corresponds to the C `fget`
-> method. In future patches, it will become possible to create a new fd in
-> a process and bind it to a `File`. Rust Binder will use these to send
-> fds from one process to another.
+> This is from ctrl, internal driver structure:
 > 
-> We also provide a method for accessing the file's flags. Rust Binder
-> will use this to access the flags of the Binder fd to check whether the
-> non-blocking flag is set, which affects what the Binder ioctl does.
-> 
-> This introduces a struct for the EBADF error type, rather than just
-> using the Error type directly. This has two advantages:
-> * `File::from_fd` returns a `Result<ARef<File>, BadFdError>`, which the
->   compiler will represent as a single pointer, with null being an error.
->   This is possible because the compiler understands that `BadFdError`
->   has only one possible value, and it also understands that the
->   `ARef<File>` smart pointer is guaranteed non-null.
-> * Additionally, we promise to users of the method that the method can
->   only fail with EBADF, which means that they can rely on this promise
->   without having to inspect its implementation.
-> That said, there are also two disadvantages:
-> * Defining additional error types involves boilerplate.
-> * The question mark operator will only utilize the `From` trait once,
->   which prevents you from using the question mark operator on
->   `BadFdError` in methods that return some third error type that the
->   kernel `Error` is convertible into. (However, it works fine in methods
->   that return `Error`.)
-> 
-> Signed-off-by: Wedson Almeida Filho <wedsonaf@gmail.com>
-> Co-developed-by: Daniel Xu <dxu@dxuuu.xyz>
-> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> Co-developed-by: Alice Ryhl <aliceryhl@google.com>
-> Signed-off-by: Alice Ryhl <aliceryhl@google.com>
-> ---
->  rust/bindings/bindings_helper.h |   2 +
->  rust/helpers.c                  |   7 ++
->  rust/kernel/file.rs             | 182 ++++++++++++++++++++++++++++++++++++++++
->  rust/kernel/lib.rs              |   1 +
->  4 files changed, 192 insertions(+)
-> 
-> diff --git a/rust/bindings/bindings_helper.h b/rust/bindings/bindings_helper.h
-> index 85f013ed4ca4..beed3ef1fbc3 100644
-> --- a/rust/bindings/bindings_helper.h
-> +++ b/rust/bindings/bindings_helper.h
-> @@ -8,6 +8,8 @@
->  
->  #include <kunit/test.h>
->  #include <linux/errname.h>
-> +#include <linux/file.h>
-> +#include <linux/fs.h>
->  #include <linux/slab.h>
->  #include <linux/refcount.h>
->  #include <linux/wait.h>
-> diff --git a/rust/helpers.c b/rust/helpers.c
-> index 70e59efd92bc..03141a3608a4 100644
-> --- a/rust/helpers.c
-> +++ b/rust/helpers.c
-> @@ -25,6 +25,7 @@
->  #include <linux/build_bug.h>
->  #include <linux/err.h>
->  #include <linux/errname.h>
-> +#include <linux/fs.h>
->  #include <linux/mutex.h>
->  #include <linux/refcount.h>
->  #include <linux/sched/signal.h>
-> @@ -157,6 +158,12 @@ void rust_helper_init_work_with_key(struct work_struct *work, work_func_t func,
->  }
->  EXPORT_SYMBOL_GPL(rust_helper_init_work_with_key);
->  
-> +struct file *rust_helper_get_file(struct file *f)
-> +{
-> +	return get_file(f);
-> +}
-> +EXPORT_SYMBOL_GPL(rust_helper_get_file);
-> +
->  /*
->   * `bindgen` binds the C `size_t` type as the Rust `usize` type, so we can
->   * use it in contexts where Rust expects a `usize` like slice (array) indices.
-> diff --git a/rust/kernel/file.rs b/rust/kernel/file.rs
-> new file mode 100644
-> index 000000000000..ee4ec8b919af
-> --- /dev/null
-> +++ b/rust/kernel/file.rs
-> @@ -0,0 +1,182 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +//! Files and file descriptors.
-> +//!
-> +//! C headers: [`include/linux/fs.h`](../../../../include/linux/fs.h) and
-> +//! [`include/linux/file.h`](../../../../include/linux/file.h)
-> +
-> +use crate::{
-> +    bindings,
-> +    error::{code::*, Error, Result},
-> +    types::{ARef, AlwaysRefCounted, Opaque},
-> +};
-> +use core::ptr;
-> +
-> +/// Flags associated with a [`File`].
-> +pub mod flags {
-> +    /// File is opened in append mode.
-> +    pub const O_APPEND: u32 = bindings::O_APPEND;
-> +
-> +    /// Signal-driven I/O is enabled.
-> +    pub const O_ASYNC: u32 = bindings::FASYNC;
-> +
-> +    /// Close-on-exec flag is set.
-> +    pub const O_CLOEXEC: u32 = bindings::O_CLOEXEC;
-> +
-> +    /// File was created if it didn't already exist.
-> +    pub const O_CREAT: u32 = bindings::O_CREAT;
-> +
-> +    /// Direct I/O is enabled for this file.
-> +    pub const O_DIRECT: u32 = bindings::O_DIRECT;
-> +
-> +    /// File must be a directory.
-> +    pub const O_DIRECTORY: u32 = bindings::O_DIRECTORY;
-> +
-> +    /// Like [`O_SYNC`] except metadata is not synced.
-> +    pub const O_DSYNC: u32 = bindings::O_DSYNC;
-> +
-> +    /// Ensure that this file is created with the `open(2)` call.
-> +    pub const O_EXCL: u32 = bindings::O_EXCL;
-> +
-> +    /// Large file size enabled (`off64_t` over `off_t`).
-> +    pub const O_LARGEFILE: u32 = bindings::O_LARGEFILE;
-> +
-> +    /// Do not update the file last access time.
-> +    pub const O_NOATIME: u32 = bindings::O_NOATIME;
-> +
-> +    /// File should not be used as process's controlling terminal.
-> +    pub const O_NOCTTY: u32 = bindings::O_NOCTTY;
-> +
-> +    /// If basename of path is a symbolic link, fail open.
-> +    pub const O_NOFOLLOW: u32 = bindings::O_NOFOLLOW;
-> +
-> +    /// File is using nonblocking I/O.
-> +    pub const O_NONBLOCK: u32 = bindings::O_NONBLOCK;
-> +
-> +    /// Also known as `O_NDELAY`.
-> +    ///
-> +    /// This is effectively the same flag as [`O_NONBLOCK`] on all architectures
-> +    /// except SPARC64.
-> +    pub const O_NDELAY: u32 = bindings::O_NDELAY;
-> +
-> +    /// Used to obtain a path file descriptor.
-> +    pub const O_PATH: u32 = bindings::O_PATH;
-> +
-> +    /// Write operations on this file will flush data and metadata.
-> +    pub const O_SYNC: u32 = bindings::O_SYNC;
-> +
-> +    /// This file is an unnamed temporary regular file.
-> +    pub const O_TMPFILE: u32 = bindings::O_TMPFILE;
-> +
-> +    /// File should be truncated to length 0.
-> +    pub const O_TRUNC: u32 = bindings::O_TRUNC;
-> +
-> +    /// Bitmask for access mode flags.
-> +    ///
-> +    /// # Examples
-> +    ///
-> +    /// ```
-> +    /// use kernel::file;
-> +    /// # fn do_something() {}
-> +    /// # let flags = 0;
-> +    /// if (flags & file::flags::O_ACCMODE) == file::flags::O_RDONLY {
-> +    ///     do_something();
-> +    /// }
-> +    /// ```
-> +    pub const O_ACCMODE: u32 = bindings::O_ACCMODE;
-> +
-> +    /// File is read only.
-> +    pub const O_RDONLY: u32 = bindings::O_RDONLY;
-> +
-> +    /// File is write only.
-> +    pub const O_WRONLY: u32 = bindings::O_WRONLY;
-> +
-> +    /// File can be both read and written.
-> +    pub const O_RDWR: u32 = bindings::O_RDWR;
-> +}
-> +
-> +/// Wraps the kernel's `struct file`.
-> +///
-> +/// # Invariants
-> +///
-> +/// Instances of this type are always ref-counted, that is, a call to `get_file` ensures that the
-> +/// allocation remains valid at least until the matching call to `fput`.
-> +#[repr(transparent)]
-> +pub struct File(Opaque<bindings::file>);
-> +
-> +// SAFETY: By design, the only way to access a `File` is via an immutable reference or an `ARef`.
-> +// This means that the only situation in which a `File` can be accessed mutably is when the
-> +// refcount drops to zero and the destructor runs. It is safe for that to happen on any thread, so
-> +// it is ok for this type to be `Send`.
-> +unsafe impl Send for File {}
-> +
-> +// SAFETY: It's OK to access `File` through shared references from other threads because we're
-> +// either accessing properties that don't change or that are properly synchronised by C code.
+> struct qcom_swrm_ctrl *ctrl
 
-Uhm, what guarantees are you talking about specifically, please?
-Examples would help.
+My point what that all other instances where list_for_each_entry() is
+used on stream->master list rely on the bus_lock.
 
-> +unsafe impl Sync for File {}
-> +
-> +impl File {
-> +    /// Constructs a new `struct file` wrapper from a file descriptor.
-> +    ///
-> +    /// The file descriptor belongs to the current process.
-> +    pub fn from_fd(fd: u32) -> Result<ARef<Self>, BadFdError> {
-> +        // SAFETY: FFI call, there are no requirements on `fd`.
-> +        let ptr = ptr::NonNull::new(unsafe { bindings::fget(fd) }).ok_or(BadFdError)?;
-> +
-> +        // INVARIANT: `fget` increments the refcount before returning.
-> +        Ok(unsafe { ARef::from_raw(ptr.cast()) })
-> +    }
+You may be fine in this specific case with a QCOM-specific lock, not
+sure if there's any risk. At any rate that is not introduced by this
+patch, so for now
 
-I think this is really misnamed.
-
-File reference counting has two modes. For simplicity let's ignore
-fdget_pos() for now:
-
-(1) fdget()
-    Return file either with or without an increased reference count.
-    If the fdtable was shared increment reference count, if not don't
-    increment refernce count.
-(2) fget()
-    Always increase refcount.
-
-Your File implementation currently only deals with (2). And this
-terminology is terribly important as far as I'm concerned. This wants to
-be fget() and not from_fd(). The latter tells me nothing. I feel we
-really need to try and mirror the current naming closely. Not
-religiously ofc but core stuff such as this really benefits from having
-an almost 1:1 mapping between C names and Rust names, I think.
-Especially in the beginning.
-
-> +
-> +    /// Creates a reference to a [`File`] from a valid pointer.
-> +    ///
-> +    /// # Safety
-> +    ///
-> +    /// The caller must ensure that `ptr` points at a valid file and that its refcount does not
-> +    /// reach zero during the lifetime 'a.
-> +    pub unsafe fn from_ptr<'a>(ptr: *const bindings::file) -> &'a File {
-> +        // INVARIANT: The safety requirements guarantee that the refcount does not hit zero during
-> +        // 'a. The cast is okay because `File` is `repr(transparent)`.
-> +        unsafe { &*ptr.cast() }
-> +    }
-
-How does that work and what is this used for? It's required that a
-caller has called from_fd()/fget() first before from_ptr() can be used?
-
-Can you show how this would be used in an example, please? Unless you
-hold file_lock it is now invalid to access fields in struct file just
-with rcu lock held for example. Which is why returning a pointer without
-holding a reference seems dodgy. I'm probably just missing context.
-
-> +
-> +    /// Returns the flags associated with the file.
-> +    ///
-> +    /// The flags are a combination of the constants in [`flags`].
-> +    pub fn flags(&self) -> u32 {
-> +        // This `read_volatile` is intended to correspond to a READ_ONCE call.
-> +        //
-> +        // SAFETY: The file is valid because the shared reference guarantees a nonzero refcount.
-
-I really need to understand what you mean by shared reference. At least
-in the current C implementation you can't share a reference without
-another task as the other task might fput() behind you and then you're
-hosed. That's why we have the fdget() logic.
-
-> +        //
-> +        // TODO: Replace with `read_once` when available on the Rust side.
-> +        unsafe { core::ptr::addr_of!((*self.0.get()).f_flags).read_volatile() }
-> +    }
-> +}
-> +
-> +// SAFETY: The type invariants guarantee that `File` is always ref-counted.
-> +unsafe impl AlwaysRefCounted for File {
-> +    fn inc_ref(&self) {
-> +        // SAFETY: The existence of a shared reference means that the refcount is nonzero.
-> +        unsafe { bindings::get_file(self.0.get()) };
-> +    }
-
-Why inc_ref() and not just get_file()?
-
-> +
-> +    unsafe fn dec_ref(obj: ptr::NonNull<Self>) {
-> +        // SAFETY: The safety requirements guarantee that the refcount is nonzero.
-> +        unsafe { bindings::fput(obj.cast().as_ptr()) }
-> +    }
-
-Ok, so this makes me think that from_ptr() requires you to have called
-from_fd()/fget() first which would be good.
-
-> +}
-> +
-> +/// Represents the `EBADF` error code.
-> +///
-> +/// Used for methods that can only fail with `EBADF`.
-> +pub struct BadFdError;
-> +
-> +impl From<BadFdError> for Error {
-> +    fn from(_: BadFdError) -> Error {
-> +        EBADF
-> +    }
-> +}
-> +
-> +impl core::fmt::Debug for BadFdError {
-> +    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-> +        f.pad("EBADF")
-> +    }
-> +}
-> diff --git a/rust/kernel/lib.rs b/rust/kernel/lib.rs
-> index e6aff80b521f..ce9abceab784 100644
-> --- a/rust/kernel/lib.rs
-> +++ b/rust/kernel/lib.rs
-> @@ -34,6 +34,7 @@
->  mod allocator;
->  mod build_assert;
->  pub mod error;
-> +pub mod file;
->  pub mod init;
->  pub mod ioctl;
->  #[cfg(CONFIG_KUNIT)]
-> 
-> -- 
-> 2.43.0.rc1.413.gea7ed67945-goog
-> 
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
