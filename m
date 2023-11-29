@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA6077FE216
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 22:35:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BC327FE217
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 22:35:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234557AbjK2Vey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 16:34:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59690 "EHLO
+        id S234574AbjK2Ve7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 16:34:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234440AbjK2Vev (ORCPT
+        with ESMTP id S229742AbjK2Vex (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 16:34:51 -0500
+        Wed, 29 Nov 2023 16:34:53 -0500
 Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0849595
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 13:34:58 -0800 (PST)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5d1b2153ba1so4572177b3.2
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 13:34:57 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0389BD7D
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 13:35:00 -0800 (PST)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5d2f58660d4so3319987b3.2
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 13:34:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701293697; x=1701898497; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1701293699; x=1701898499; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=o0vBYr5JM7GPlHuM+wfhHkEVfDthy0I/VW5myloZwv8=;
-        b=kegeFLM6hm8HwUxPO/LU0x+VB0Cp2vfgNxzFroEx+HwG89uxGg88vtxvIDe3wUN1aT
-         aXPwxc45UNO2o6zW9gCY7hnqkFUnReL62w839oNTy8IuBILVnFxVNOaEMs5zgQ4zB6xi
-         vIdjIUkMoQwWJkcnEkGjCIdibgtB4qVKRsf9zrnmTNWF6/jvG02HfX7fxKP/FLYIwOhN
-         V4VUFX8TR3Szft76yo7dl20kl2mx5ZpONrEYG+Dm0qI5g7TG4HgNnURYofwl79cBEqzg
-         Auheu2y9H7wC8GKQjM7nYRN6H+NEhFK8VjNavZN2Kg5AqbzczHAcJmEMoOsp/Qs1qwI1
-         Hfjg==
+        bh=XRVp3dZOza3BPJg1hP4prPeqJnELXQfl8OwEl5/3ecI=;
+        b=E5kxKLHc2RkBpypwPjiAH9ejAMmO3mhTaadbxDv1Qe8CJK2fh2aizYvTBTdiBKa0qg
+         cTac753lguvqEcWaT5ZpQGOvN1D5bdCpSKRMDm40+73POJOAStfONhJeWn6qDR1wtBtT
+         HoPICAI2caJmoDOntjwkiH1uTYoB0jAd7nRvlcaaPKPRk6KIbyhCEmlHSOxFQPR5EK+e
+         eNMERwoz3uHWQUU1SoAzHT/+0Peq0rN26eDvcxA9NF3EnDytK7NHSXNF3E4CdmbIR2+i
+         ML6lLP9+9Mni0pceZ0SBP5ttuQ9iFj1NYUP55iO86JsnoQR9c8xAyz/XPSN7WSIk5R2k
+         4UGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701293697; x=1701898497;
+        d=1e100.net; s=20230601; t=1701293699; x=1701898499;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=o0vBYr5JM7GPlHuM+wfhHkEVfDthy0I/VW5myloZwv8=;
-        b=HWIerJNvDEBjfy4+K6TH8eNteuJQ8frwc/Hmv22k4qVstUMG7EPDak6v7hhFmhzl/u
-         Qhdm9jjJtYZq8+9zVUQg/cB5zfnwd0lc5ATEwYpBKS2KLLkw8LRKtvMkzJqasEpPDFEd
-         b57zCrxg9X3ug3SQ4daGIS47Ie6ZDkd1CiftncK+dajnF7IUsFH5FaqtkqOiSi3FVeYp
-         B3wn7XOFV6/vyosWfBUO8n5gRJJwSjjnQbaqs6MkrXAIrnhRzjiLHrMgvdbl2CZmhaiL
-         QIQ0xrRx4FPvA0VyEN3lX7lstaTzQ9wOr72qxBx1NIfcGUWz4Vp2onmfyG2M06U4rlog
-         2oaQ==
-X-Gm-Message-State: AOJu0YwEr3TMDbrswMJ05Mz5WI+j+uIMVDYgQ1C9DVjMJQb7hHEztVlD
-        QwWS5rp1Oj+LkcdrS8fp0/cysYwd37Sx
-X-Google-Smtp-Source: AGHT+IFwVkcH7Zb7hs06bJ3a0wb4DBQ6crLz02hS8w2L/4ueyja0cSGDE086Z9HIoY0ycPGKG6M8/fjTMPNG
+        bh=XRVp3dZOza3BPJg1hP4prPeqJnELXQfl8OwEl5/3ecI=;
+        b=AeJuF946Uzx5TNAlcQebf5mWYXR7YS28u4C6b9KKtAInujnxM0T9j3oYb4Zw/oRLr1
+         pa6HtN6TsLaTuVFb0twLyU9FKr5ZupX3ZcqjtBuojfjjI3gl+W7okMfpvuTs9gubity2
+         FnYmG/14gz9x86GmjEgaq+d0eudCZLaYHTKfpFI2yO4zkEufxW2j4IHnmIcP294LXzJb
+         NTRODWtAsWXB+/ftuuSeCheueyQYaFxZHIhkf92PxjujCVcGLobnl7S/+f8qx3q99xnK
+         Ji5x2cRXNnImkdh5y/Oo69Vujl2nabLapSojxl5cb2OW1wLLajPl9OfWzus478zyHDQh
+         lmzA==
+X-Gm-Message-State: AOJu0YwOwzK8Avz2vi2pLNWlpj3iURim/VwH406ByYA9V90WaiT5uMzr
+        aCDiorUsURqiv0CQuE/l/AQzb7gkZ/QL
+X-Google-Smtp-Source: AGHT+IEpGmq6z8SUXOSm9a+7bIuqfanFRJQ8FfDPo4Ti3gSXTSrQOwyTKUfJ4iwslN3aoy/Zf6MpNgzkPqLw
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:763b:80fa:23ca:96f8])
- (user=irogers job=sendgmr) by 2002:a05:690c:842:b0:5cc:cd5e:8f0e with SMTP id
- bz2-20020a05690c084200b005cccd5e8f0emr583925ywb.0.1701293697326; Wed, 29 Nov
- 2023 13:34:57 -0800 (PST)
-Date:   Wed, 29 Nov 2023 13:34:27 -0800
+ (user=irogers job=sendgmr) by 2002:a81:ff05:0:b0:5cd:c47d:d89a with SMTP id
+ k5-20020a81ff05000000b005cdc47dd89amr666680ywn.2.1701293699266; Wed, 29 Nov
+ 2023 13:34:59 -0800 (PST)
+Date:   Wed, 29 Nov 2023 13:34:28 -0800
 In-Reply-To: <20231129213428.2227448-1-irogers@google.com>
-Message-Id: <20231129213428.2227448-3-irogers@google.com>
+Message-Id: <20231129213428.2227448-4-irogers@google.com>
 Mime-Version: 1.0
 References: <20231129213428.2227448-1-irogers@google.com>
 X-Mailer: git-send-email 2.43.0.rc1.413.gea7ed67945-goog
-Subject: [PATCH v2 3/4] perf test: Use common python setup library
+Subject: [PATCH v2 4/4] perf test: Add basic list test
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -78,117 +78,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Avoid replicated logic by having a common library to set the PYTHON
-environment variable.
+Test that json output produces valid json.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/tests/shell/lib/setup_python.sh       | 16 ++++++++++++++++
- tools/perf/tests/shell/stat+json_output.sh       | 16 +++-------------
- tools/perf/tests/shell/stat_metrics_values.sh    | 14 ++++----------
- .../tests/shell/test_perf_data_converter_json.sh | 13 +++----------
- 4 files changed, 26 insertions(+), 33 deletions(-)
- create mode 100644 tools/perf/tests/shell/lib/setup_python.sh
+ tools/perf/tests/shell/list.sh | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
+ create mode 100755 tools/perf/tests/shell/list.sh
 
-diff --git a/tools/perf/tests/shell/lib/setup_python.sh b/tools/perf/tests/shell/lib/setup_python.sh
-new file mode 100644
-index 000000000000..c2fce1793538
+diff --git a/tools/perf/tests/shell/list.sh b/tools/perf/tests/shell/list.sh
+new file mode 100755
+index 000000000000..22b004f2b23e
 --- /dev/null
-+++ b/tools/perf/tests/shell/lib/setup_python.sh
-@@ -0,0 +1,16 @@
++++ b/tools/perf/tests/shell/list.sh
+@@ -0,0 +1,19 @@
 +#!/bin/sh
++# perf list tests
 +# SPDX-License-Identifier: GPL-2.0
 +
-+if [ "x$PYTHON" = "x" ]
-+then
-+  python3 --version >/dev/null 2>&1 && PYTHON=python3
-+fi
-+if [ "x$PYTHON" = "x" ]
-+then
-+  python --version >/dev/null 2>&1 && PYTHON=python
-+fi
-+if [ "x$PYTHON" = "x" ]
-+then
-+  echo Skipping test, python not detected please set environment variable PYTHON.
-+  exit 2
-+fi
-diff --git a/tools/perf/tests/shell/stat+json_output.sh b/tools/perf/tests/shell/stat+json_output.sh
-index 196e22672c50..3bc900533a5d 100755
---- a/tools/perf/tests/shell/stat+json_output.sh
-+++ b/tools/perf/tests/shell/stat+json_output.sh
-@@ -8,20 +8,10 @@ set -e
- 
- skip_test=0
- 
-+shelldir=$(dirname "$0")
-+# shellcheck source=lib/setup_python.sh
-+. "${shelldir}"/lib/setup_python.sh
- pythonchecker=$(dirname $0)/lib/perf_json_output_lint.py
--if [ "x$PYTHON" == "x" ]
--then
--	if which python3 > /dev/null
--	then
--		PYTHON=python3
--	elif which python > /dev/null
--	then
--		PYTHON=python
--	else
--		echo Skipping test, python not detected please set environment variable PYTHON.
--		exit 2
--	fi
--fi
- 
- stat_output=$(mktemp /tmp/__perf_test.stat_output.json.XXXXX)
- 
-diff --git a/tools/perf/tests/shell/stat_metrics_values.sh b/tools/perf/tests/shell/stat_metrics_values.sh
-index ad94c936de7e..7ca172599aa6 100755
---- a/tools/perf/tests/shell/stat_metrics_values.sh
-+++ b/tools/perf/tests/shell/stat_metrics_values.sh
-@@ -1,16 +1,10 @@
- #!/bin/bash
- # perf metrics value validation
- # SPDX-License-Identifier: GPL-2.0
--if [ "x$PYTHON" == "x" ]
--then
--	if which python3 > /dev/null
--	then
--		PYTHON=python3
--	else
--		echo Skipping test, python3 not detected please set environment variable PYTHON.
--		exit 2
--	fi
--fi
++set -e
++err=0
 +
 +shelldir=$(dirname "$0")
 +# shellcheck source=lib/setup_python.sh
 +. "${shelldir}"/lib/setup_python.sh
- 
- grep -q GenuineIntel /proc/cpuinfo || { echo Skipping non-Intel; exit 2; }
- 
-diff --git a/tools/perf/tests/shell/test_perf_data_converter_json.sh b/tools/perf/tests/shell/test_perf_data_converter_json.sh
-index 6ded58f98f55..c4f1b59d116f 100755
---- a/tools/perf/tests/shell/test_perf_data_converter_json.sh
-+++ b/tools/perf/tests/shell/test_perf_data_converter_json.sh
-@@ -6,16 +6,9 @@ set -e
- 
- err=0
- 
--if [ "$PYTHON" = "" ] ; then
--	if which python3 > /dev/null ; then
--		PYTHON=python3
--	elif which python > /dev/null ; then
--		PYTHON=python
--	else
--		echo Skipping test, python not detected please set environment variable PYTHON.
--		exit 2
--	fi
--fi
-+shelldir=$(dirname "$0")
-+# shellcheck source=lib/setup_python.sh
-+. "${shelldir}"/lib/setup_python.sh
- 
- perfdata=$(mktemp /tmp/__perf_test.perf.data.XXXXX)
- result=$(mktemp /tmp/__perf_test.output.json.XXXXX)
++
++test_list_json() {
++  echo "Json output test"
++  perf list -j | $PYTHON -m json.tool
++  echo "Json output test [Success]"
++}
++
++test_list_json
++exit $err
 -- 
 2.43.0.rc1.413.gea7ed67945-goog
 
