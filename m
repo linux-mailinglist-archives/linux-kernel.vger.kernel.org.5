@@ -2,64 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91A6B7FD808
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 14:26:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11F297FD80B
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 14:28:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234045AbjK2N0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 08:26:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43948 "EHLO
+        id S234007AbjK2N2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 08:28:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234196AbjK2N0C (ORCPT
+        with ESMTP id S230437AbjK2N2V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 08:26:02 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 708E010F2
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 05:26:08 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB338C433C7;
-        Wed, 29 Nov 2023 13:26:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701264368;
-        bh=TUtFqUYMxnqyBPs9bbVQmVM4vqhJdSRfDfGOD1whTY4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=udDTPg/QJRBP5QkpTiMeh9UGd3LbkIMJ6OSPtVr20lXV2I0dSmD487VSLmr4+dqmS
-         vJlRP0vpDsNw7Iwl4FU3MqaW+PIcEuvFqVcO5vM7Om6rCkZ8ccS7B5TBf3SnzFQ+lx
-         Gb+zwkl+A0q2bPQy4qnxPBJdhuZ16ezAceq6u74P8hwadHT3y+T6sS2sBzEVBkkbZv
-         ZYMnNWDnUJgkFyAN0fyACMe9PDIsBSIDt/UK+Bu+rGG8Nalg/o+G3M2fn/JbbzNtC6
-         6jCaKByn83ISVpSAPlJHtjfOUqJQyuN2HnQzcer9cY8HAL4qMIm9SG9Vsl/PCPUywk
-         G7B81I+QbUNpQ==
-Date:   Wed, 29 Nov 2023 14:26:05 +0100
-From:   Maxime Ripard <mripard@kernel.org>
-To:     Jani Nikula <jani.nikula@linux.intel.com>
-Cc:     Ville =?utf-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Emma Anholt <emma@anholt.net>,
-        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
-        Samuel Holland <samuel@sholland.org>,
-        Sandy Huang <hjc@rock-chips.com>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        linux-doc@vger.kernel.org, Hans Verkuil <hverkuil@xs4all.nl>,
-        linux-rockchip@lists.infradead.org, Chen-Yu Tsai <wens@csie.org>,
-        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
-        linux-sunxi@lists.linux.dev, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v4 05/45] drm/connector: Check drm_connector_init
- pointers arguments
-Message-ID: <xnhbd52q3sicro6heheu6fb3zo3g342njbz67dki44wumhy57i@aaovlbqhojan>
-References: <20231128-kms-hdmi-connector-state-v4-0-c7602158306e@kernel.org>
- <20231128-kms-hdmi-connector-state-v4-5-c7602158306e@kernel.org>
- <87h6l66nth.fsf@intel.com>
- <v3hplco5fdedv6bnc6mwx2zhhw4xxdiekha26ykhc5cmy7ol77@2irk3w4hmabw>
- <ZWXv1Oi_sH0BRWao@intel.com>
- <2mnodqvu2oo674vspiy4gxhglu3it5cq47acx5itnbwevgc4cf@c7h2bvnx3m2n>
- <8734wo7vbx.fsf@intel.com>
- <kygezdrfz56zj6lmq6l5s5yyys2urgq3id7r5n4mb3afn5kc5q@eswnd6a2ihqc>
- <87ttp46b49.fsf@intel.com>
+        Wed, 29 Nov 2023 08:28:21 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30F50A3;
+        Wed, 29 Nov 2023 05:28:28 -0800 (PST)
+Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 533C76602F2A;
+        Wed, 29 Nov 2023 13:28:26 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1701264507;
+        bh=Rdu1NaKSj2kzBeybGne4kRQi1ROpMAaHqNT1VOxkkV0=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=JnvVyn4Lq9o5kVeK/OFctReEqNq9aOvb3z3dKUeB9dvDlSxL1sMAFEJA0QKwAMs4z
+         dP82xlCUWSV0vkDwZwqLmr1tdhXpvcWi7Hh8ivz0O4dTn2gJhGMzSVAqkDPGDIv33Q
+         zhytACMP9mlxNvUVGg04i8ADhiMXSIfmOvHRimc2SBA99ydxLJIvTmqVtofKpmblsf
+         pCvpHWbsKc6yOhZoplKBVozGhestOMNDPD8csqTz6g5j56enmA4358ibDrYguj43P/
+         +TNMSElGTp7r2yzlfp8PDbcqK3hTPt6jcVZ3B18z1+WXKitymG9Yuwc/OL+t/t/bcB
+         4OAkUNu9o3BQA==
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+To:     linux-mediatek@lists.infradead.org,
+        Eugen Hristev <eugen.hristev@collabora.com>
+Cc:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        krzysztof.kozlowski+dt@linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, matthias.bgg@gmail.com,
+        kernel@collabora.com
+Subject: Re: [PATCH] arm64: dts: mediatek: mt7622: fix memory node warning check
+Date:   Wed, 29 Nov 2023 14:27:33 +0100
+Message-ID: <170126437824.153055.16156664615192644481.b4-ty@collabora.com>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20230814065042.4973-1-eugen.hristev@collabora.com>
+References: <20230814065042.4973-1-eugen.hristev@collabora.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="7y6ja2ijtruwy6p6"
-Content-Disposition: inline
-In-Reply-To: <87ttp46b49.fsf@intel.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -69,173 +62,19 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---7y6ja2ijtruwy6p6
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Mon, 14 Aug 2023 09:50:42 +0300, Eugen Hristev wrote:
+> dtbs_check throws a warning at the memory node:
+> Warning (unit_address_vs_reg): /memory: node has a reg or ranges property, but no unit name
+> 
+> fix by adding the address into the node name.
+> 
+> 
 
-On Wed, Nov 29, 2023 at 01:40:38PM +0200, Jani Nikula wrote:
-> On Wed, 29 Nov 2023, Maxime Ripard <mripard@kernel.org> wrote:
-> > On Wed, Nov 29, 2023 at 11:38:42AM +0200, Jani Nikula wrote:
-> >> On Wed, 29 Nov 2023, Maxime Ripard <mripard@kernel.org> wrote:
-> >> > Hi Ville,
-> >> >
-> >> > On Tue, Nov 28, 2023 at 03:49:08PM +0200, Ville Syrj=E4l=E4 wrote:
-> >> >> On Tue, Nov 28, 2023 at 02:29:40PM +0100, Maxime Ripard wrote:
-> >> >> > On Tue, Nov 28, 2023 at 02:54:02PM +0200, Jani Nikula wrote:
-> >> >> > > On Tue, 28 Nov 2023, Maxime Ripard <mripard@kernel.org> wrote:
-> >> >> > > > All the drm_connector_init variants take at least a pointer t=
-o the
-> >> >> > > > device, connector and hooks implementation.
-> >> >> > > >
-> >> >> > > > However, none of them check their value before dereferencing =
-those
-> >> >> > > > pointers which can lead to a NULL-pointer dereference if the =
-author
-> >> >> > > > isn't careful.
-> >> >> > >=20
-> >> >> > > Arguably oopsing on the spot is preferrable when this can't be =
-caused by
-> >> >> > > user input. It's always a mistake that should be caught early d=
-uring
-> >> >> > > development.
-> >> >> > >=20
-> >> >> > > Not everyone checks the return value of drm_connector_init and =
-friends,
-> >> >> > > so those cases will lead to more mysterious bugs later. And pro=
-bably
-> >> >> > > oopses as well.
-> >> >> >=20
-> >> >> > So maybe we can do both then, with something like
-> >> >> >=20
-> >> >> > if (WARN_ON(!dev))
-> >> >> >    return -EINVAL
-> >> >> >=20
-> >> >> > if (drm_WARN_ON(dev, !connector || !funcs))
-> >> >> >    return -EINVAL;
-> >> >> >=20
-> >> >> > I'd still like to check for this, so we can have proper testing, =
-and we
-> >> >> > already check for those pointers in some places (like funcs in
-> >> >> > drm_connector_init), so if we don't cover everything we're incons=
-istent.
-> >> >>=20
-> >> >> People will invariably cargo-cult this kind of stuff absolutely
-> >> >> everywhere and then all your functions will have tons of dead
-> >> >> code to check their arguments.
-> >> >
-> >> > And that's a bad thing because... ?
-> >> >
-> >> > Also, are you really saying that checking that your arguments make s=
-ense
-> >> > is cargo-cult?
-> >>=20
-> >> It's a powerful thing to be able to assume a NULL argument is always a
-> >> fatal programming error on the caller's side, and should oops and get
-> >> caught immediately. It's an assertion.
-> >
-> > Yeah, but we're not really doing that either. We have no explicit
-> > assertion anywhere. We take a pointer in, and just hope that it will be
-> > dereferenced later on and that the kernel will crash. The pointer to the
-> > functions especially is only deferenced very later on.
-> >
-> > And assertions might be powerful, but being able to notice errors and
-> > debug them is too. A panic takes away basically any remote access to
-> > debug. If you don't have a console, you're done.
-> >
-> >> We're not talking about user input or anything like that here.
-> >>=20
-> >> If you start checking for things that can't happen, and return errors
-> >> for them, you start gracefully handling things that don't have anything
-> >> graceful about them.
-> >
-> > But there's nothing graceful to do here: you just return from your probe
-> > function that you couldn't probe and that's it. Just like you do when
-> > you can't map your registers, or get your interrupt, or register into
-> > any framework (including drm_dev_register that pretty much every driver
-> > handles properly if it returns an error, without being graceful about
-> > it).
->=20
-> Those are all dynamic things that can fail.
->=20
-> Quite different from passing NULL dev, connector, or funcs to
-> drm_connector_init() and friends.
->=20
-> I think it's wrong to set the example that everything needs to be
-> checked, everything needs to return an error, every call needs to check
-> for error return, all the time, everywhere. People absolutely will cargo
-> cult that, and that's what Ville is referring to.
->=20
-> If you pass NULL dev, connector, or funcs to drm_connector_init() I
-> think you absolutely deserve to get an oops.
->=20
-> For dev, you could possibly not have reached the function with NULL
-> dev. (And __drm_connector_init() has dev->mode_config before the check,
-> so you'll get a static analyzer warning about dereference before the
-> check.) If you have NULL connector, you didn't check for allocation
-> failure earlier. If you have NULL funcs, you just passed NULL, because
-> it's generally supposed to be a pointer to a static const struct.
->=20
-> >> Having such checks in place trains people to think they *may* happen.
-> >
-> > In most cases, kmalloc can't fail. We seem to have a very different
-> > policy towards it.
->=20
-> Again, dynamic in nature and can fail.
->=20
-> >> While it should fail fast and loud at the developer's first smoke test,
-> >> and get fixed then and there.
-> >
-> > Returning an error + a warning also qualifies for "fail fast and loud".
-> > But keeps the system alive for someone to notice in any case.
->=20
-> But where do you draw the line?
+Applied, thanks!
 
-This also applies to static things then.
-drm_connector_attach_scaling_mode_property() or
-drm_mode_create_colorspace_property() (or plenty of others) will check
-on the value of the supported scaling modes colorspaces, even though
-they are static.
+[1/1] arm64: dts: mediatek: mt7622: fix memory node warning check
+      commit: 022597b6e520b5c21894b9693bde215a5d788a17
 
-It looks like we have that policy of "just assert and roll with it" for
-pointers, but not for other static values passed to those initialization
-functions.
-
-> If we keep adding these checks to things that actually can't happen,
-> we teach developers we need to check for impossible things. And we
-> teach them not to trust anything.
-
-Well, I certainly don't trust drivers to get things right.
-
-> I scroll down the file and reach drm_connector_attach_edid_property().
-> Should we NULL check connector? Should we change the function to int
-> and return a value? Should the caller check the value? Then there's
-> drm_connector_attach_encoder(). And
-> drm_connector_has_possible_encoder(). And so on and so forth.
->=20
-> Where do you draw the line?
-
-If things can fail, we should expect the caller to handle the failure
-somehow. The documentation of drm_connector_attach_encoder() states that
-it can fail, so we should expect it.
-drm_connector_has_possible_encoder() doesn't so we can assume it can't
-fail.
-
-If the function can fail but wasn't designed or documented as such, then
-it's on the function. If it was but the caller didn't handle the error
-case, then that's on the caller.
-
-Maxime
-
---7y6ja2ijtruwy6p6
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZWc77AAKCRDj7w1vZxhR
-xcPrAQDQgezjaCRFLrm1ci7OMYB0pviCvKKwSrlxIJ/UMQY1KAEA8KhoH2NL0IXS
-+jKammOWS5C+nAavD5K9RVEDaU4Cpw8=
-=E2qM
------END PGP SIGNATURE-----
-
---7y6ja2ijtruwy6p6--
+Best regards,
+-- 
+AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
