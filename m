@@ -2,56 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C15C7FD8FA
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 15:10:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 975547FD8FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 15:10:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234197AbjK2OJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 09:09:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53314 "EHLO
+        id S234177AbjK2OKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 09:10:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234177AbjK2OJu (ORCPT
+        with ESMTP id S233762AbjK2OKG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 09:09:50 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 260A319A
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 06:09:57 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71893C433CB;
-        Wed, 29 Nov 2023 14:09:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701266996;
-        bh=EDjusMs1DYoal+gcKiDBBMs5RwqSkiX1BaWanw29mek=;
-        h=In-Reply-To:References:From:Date:Subject:To:Cc:From;
-        b=S70NsF+lAeEKDe9aRjxDyN4QIpnKFQCfHQHTV3jMcfr09ENsZNDoH2MIz0QT3GZJB
-         cvA1513h1hM0UwYjuCrtascIqOwYYeuQpTao0DOeuvepTAwNLmx/elQssrnl0qnX6R
-         Bo7Wy9/gajPr+Y7aSWU2HMjLpJF68aBwFyuJmkqGboXpISwa+pUdtQaiX8n3ZF3P0I
-         x6Eh8919OGWBcw3Cv7uVNqIuhWf3q9xA+SuxaBjYMxazf6IoBkBFJGSlmuhCm+/1AE
-         h0mTLB9lfPA1Y13S4UzhrUSTIVFPO9ns8ZOvgjPBumG3RAp5cCtNJZlJG/G13T/Hqt
-         H2ookyDKu+opA==
-Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-58dd6d9ae96so168775eaf.1;
-        Wed, 29 Nov 2023 06:09:56 -0800 (PST)
-X-Gm-Message-State: AOJu0YzPxW679nRKSEB3EdNIzzz1dm/fKudwJsLrhTIq6rtTip8+dsrx
-        sKQQhnLyL1+ZatrJWKSpGIMpTV0BvNIJMZ0z41o=
-X-Google-Smtp-Source: AGHT+IH8UvJdRPohiGCK0IAkKoQtYgYCFbUsrpA81a095NPNU2VfFFGotqSU8/GlMaQqJugBatWABvX0vMmPgues8NM=
-X-Received: by 2002:a05:6820:1c99:b0:58d:d938:26ac with SMTP id
- ct25-20020a0568201c9900b0058dd93826acmr857952oob.8.1701266995541; Wed, 29 Nov
- 2023 06:09:55 -0800 (PST)
+        Wed, 29 Nov 2023 09:10:06 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C1FA1AD;
+        Wed, 29 Nov 2023 06:10:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701267013; x=1732803013;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=MN4A6IGsZ2ef5MgVmL424WRLbkGtvA0G27iaAixyti4=;
+  b=KLAGKr+UhptKv2t0VwImV2pDTGcQrkS2ROZuz3BPWUc4g8IH+P0vdzMd
+   MhcnFwz/wEuMVMjEIKT3+5TfqFonHoEb5aKAssTvk+uYYTDtB3exdz0dZ
+   eMT4SctT/deZ8sfMuPI4nTSQ4/fF253HyvERRjgRw7CFzjV1xP8QxKkxJ
+   EC85QOpKbKMZDp3K7QQdkMOiCN2rgI/snQ3pVgadOaePGS9GKno0EUR2m
+   f0m2Z6pCk8lOt/uctwodI9NwIIw4nvsIgLVxTVEHWlTLVgsZ18NEmnEzJ
+   1RcjqYSEWn1+wbdjuyjjVydgEn8hjdmKwQGwtGpGs8CP/m/vuIr0KsZaQ
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="373351613"
+X-IronPort-AV: E=Sophos;i="6.04,235,1695711600"; 
+   d="scan'208";a="373351613"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 06:10:13 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="772692335"
+X-IronPort-AV: E=Sophos;i="6.04,235,1695711600"; 
+   d="scan'208";a="772692335"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga007.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 06:10:10 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1r8LGR-00000000SPV-3Lb3;
+        Wed, 29 Nov 2023 16:10:07 +0200
+Date:   Wed, 29 Nov 2023 16:10:07 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     Linux ACPI <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Michal Wilczynski <michal.wilczynski@intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Mario Limonciello <mario.limonciello@amd.com>
+Subject: Re: [PATCH v1 4/4] ACPI: OSL: Use GFP_KERNEL for work item
+ allocations
+Message-ID: <ZWdGP3wH1uvESpfe@smile.fi.intel.com>
+References: <3281896.aeNJFYEL58@kreacher>
+ <3552364.iIbC2pHGDl@kreacher>
 MIME-Version: 1.0
-Received: by 2002:ac9:5bce:0:b0:507:5de0:116e with HTTP; Wed, 29 Nov 2023
- 06:09:54 -0800 (PST)
-In-Reply-To: <0000000000009401fb060b28a2e1@google.com>
-References: <0000000000009401fb060b28a2e1@google.com>
-From:   Namjae Jeon <linkinjeon@kernel.org>
-Date:   Wed, 29 Nov 2023 23:09:54 +0900
-X-Gmail-Original-Message-ID: <CAKYAXd-WLUQcyMAWd_R4PKRcciRh=faNnixv38abWmj7V=To9Q@mail.gmail.com>
-Message-ID: <CAKYAXd-WLUQcyMAWd_R4PKRcciRh=faNnixv38abWmj7V=To9Q@mail.gmail.com>
-Subject: Re: [syzbot] Monthly exfat report (Nov 2023)
-To:     syzbot <syzbot+listb51f932ee38ecac1b05d@syzkaller.appspotmail.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sj1557.seo@samsung.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3552364.iIbC2pHGDl@kreacher>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,73 +75,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2023-11-28 6:03 GMT+09:00, syzbot
-<syzbot+listb51f932ee38ecac1b05d@syzkaller.appspotmail.com>:
-> Hello exfat maintainers/developers,
-Hi,
->
-> This is a 31-day syzbot report for the exfat subsystem.
-> All related reports/information can be found at:
-> https://syzkaller.appspot.com/upstream/s/exfat
->
-> During the period, 1 new issues were detected and 0 were fixed.
-> In total, 7 issues are still open and 12 have been fixed so far.
->
-> Some of the still happening issues:
->
-> Ref Crashes Repro Title
-> <1> 225     No    INFO: task hung in path_openat (7)
-There is no reproducer and I couldn't find where it is connected to exfat.
->
-> https://syzkaller.appspot.com/bug?extid=950a0cdaa2fdd14f5bdc
-> <2> 150     No    INFO: task hung in exfat_sync_fs
-There is no reproducer... Let me know how to reproduce it.
-This can happen when disk speed is very low and a lot of writes occur.
-Is that so?
+On Wed, Nov 29, 2023 at 02:52:22PM +0100, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> 
+> After the recent modification changing the ACPI SCI interrupt handler
+> into a threaded one, the SCI interrupt handler code does not run in
+> interrupt context any more and acpi_os_execute(), that may be invoked
+> by it, need not use GFP_ATOMIC for allocating work items.
+> 
+> Make it use GFP_KERNEL instead.
 
->
-> https://syzkaller.appspot.com/bug?extid=205c2644abdff9d3f9fc
-> <3> 119     Yes   WARNING in drop_nlink (2)
-I'm curious how this issue was classified as an exfat issue.
-When looking at the backtrace, this issue appears to be an hfsplus issue.
+True, threader IRQ handler can sleep.
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
- hfsplus_unlink+0x3fe/0x790 fs/hfsplus/dir.c:381
- hfsplus_rename+0xc8/0x1c0 fs/hfsplus/dir.c:547
- vfs_rename+0xaba/0xde0 fs/namei.c:4844
->
-> https://syzkaller.appspot.com/bug?extid=651ca866e5e2b4b5095b
-> <4> 38      Yes   INFO: task hung in exfat_write_inode
-I could not reproduce this by using C reproducer provided by you.
-Can you confirm that this really cannot be reproduced using it?
+-- 
+With Best Regards,
+Andy Shevchenko
 
->
-> https://syzkaller.appspot.com/bug?extid=2f73ed585f115e98aee8
-> <5> 1       No    UBSAN: shift-out-of-bounds in exfat_fill_super (2)
-This is false alarm. ->sect_size_bits could not be greater than 12 by
-the check below.
 
-        /*
-         * sect_size_bits could be at least 9 and at most 12.
-         */
-        if (p_boot->sect_size_bits < EXFAT_MIN_SECT_SIZE_BITS ||
-            p_boot->sect_size_bits > EXFAT_MAX_SECT_SIZE_BITS) {
-                exfat_err(sb, "bogus sector size bits : %u",
-                                p_boot->sect_size_bits);
-                return -EINVAL;
-        }
->
-> https://syzkaller.appspot.com/bug?extid=d33808a177641a02213e
->
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> To disable reminders for individual bugs, reply with the following command:
-> #syz set <Ref> no-reminders
->
-> To change bug's subsystems, reply with:
-> #syz set <Ref> subsystems: new-subsystem
->
-> You may send multiple commands in a single email message.
->
