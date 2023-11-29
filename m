@@ -2,109 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75FFF7FDDF3
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 18:08:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 252207FDDFB
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 18:10:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230491AbjK2RIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 12:08:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55836 "EHLO
+        id S230519AbjK2RKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 12:10:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229799AbjK2RIn (ORCPT
+        with ESMTP id S229509AbjK2RKa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 12:08:43 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 031BFBE;
-        Wed, 29 Nov 2023 09:08:50 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id 98e67ed59e1d1-280cd4e6f47so1132485a91.1;
-        Wed, 29 Nov 2023 09:08:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701277729; x=1701882529; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=O76Cfk68KhrIxRJmJnZsx1C518bMCKM0WCIhUwoBo8w=;
-        b=PRYgMA3F0Bp6pNkgNKeUdAQlRGC+iPlG85TnoAVupre+1QPulwS0cHnlgeTje09G9A
-         mPE7vzEXEWAr7pe4MHdfWmcbN/vsIaEW8AYHQJGMuyEYVBdbOCIW0MSb+9yaPxPTnk5m
-         LjuzykqfsG8ZEb+b6YvwfnLxZWPkAg9K3Wx3sY/5Non09c2a36k5GhWO56mxIZjsci1E
-         QUreYyc3TDav+GGV5ctRTr4ubn6PT4c7WK43Mycl37yAgFAB7woFzqOw7Pi1m+BiT6tf
-         /mp8kc0nNXQI2Pj71NKG+YFbEp0KH1uagoghh0QPrx6Kzdjs4x1U7/m3IPM5RvmGHEB9
-         2+yA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701277729; x=1701882529;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=O76Cfk68KhrIxRJmJnZsx1C518bMCKM0WCIhUwoBo8w=;
-        b=kDKJc+wi3XGQCze3nzmQuGPPIAamvXl/MIt54+h85wSB//FZfZ0RiEuuIztDMXl7pE
-         +Cx3Z6UPiRaAy1oUB5U7Lb64vEV7lepv4mc9zNQZEYTKIGQDevieBZBftgn1xEqwPAss
-         21cmyDvpuZHTARY4A87Z0dNPdZCW48zeOoihkBKU/S0vGUYaW7mEKgxqIAZdYsJ1c/DY
-         x/iZvulchB7doGhINUfGT/hZaET2PjZp4glkyGwYxIW6aWr60cgjgDsu3Lu16ZXEuavl
-         57R9rxG+L7Ud7Rnma5rgjBPpnWRPHRx9rrvbSPx2lR7PBfLpf9q8wkSuCVdkcjAfqXoB
-         O+Cg==
-X-Gm-Message-State: AOJu0Yxi01M8CIE28NXf3DTlWmlzikAgf8ZaFsee7XMt9A2V0CmUw8hK
-        +lpoLfNLRW95DNTMI2XT+h4IdNxySM1GfUqgVwQ=
-X-Google-Smtp-Source: AGHT+IFtel5cMuSoclx/RD5jpcO3jFsf4gFjr/2yk0h//Bk9GZrDN+VMoKMUdgmJ/KVAvyVH4q/bBMMt3AS7ri8wwtQ=
-X-Received: by 2002:a17:90a:d996:b0:285:f76:9d6e with SMTP id
- d22-20020a17090ad99600b002850f769d6emr19702101pjv.3.1701277729276; Wed, 29
- Nov 2023 09:08:49 -0800 (PST)
+        Wed, 29 Nov 2023 12:10:30 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9D27BC;
+        Wed, 29 Nov 2023 09:10:35 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 486F7219B5;
+        Wed, 29 Nov 2023 17:10:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1701277834; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vzwYMvZH+lLs7nIcf9848QxwWYfgK9k6V/VFPR/CPRo=;
+        b=c5lp+V55CaoT+Xdq7Wwd+8OE9dGrFAn2IzXhIrl90H2aFxKRO6Ii6NJEzhC7kZQmNiA1RG
+        cd9t4hK0Yg4/h5Z+6oIfZSu4CPnTItNmi9PW9op1hC60azk4mNv3lNiAKZZPZP4eAAUZ8j
+        NputPfcch4/rlsKJdpGm3lxHYX0cirI=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1B94213637;
+        Wed, 29 Nov 2023 17:10:34 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+        by imap1.dmz-prg2.suse.org with ESMTPSA
+        id AycXA4pwZ2V1DgAAD6G6ig
+        (envelope-from <mhocko@suse.com>); Wed, 29 Nov 2023 17:10:34 +0000
+Date:   Wed, 29 Nov 2023 18:10:33 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Dmitry Rokosov <ddrokosov@salutedevices.com>
+Cc:     akpm@linux-foundation.org, rostedt@goodmis.org,
+        mhiramat@kernel.org, hannes@cmpxchg.org, roman.gushchin@linux.dev,
+        shakeelb@google.com, muchun.song@linux.dev, kernel@sberdevices.ru,
+        rockosov@gmail.com, cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] mm: memcg: introduce new event to trace
+ shrink_memcg
+Message-ID: <ZWdwifakPuMZbFUV@tiehlicka>
+References: <20231123193937.11628-1-ddrokosov@salutedevices.com>
+ <20231123193937.11628-3-ddrokosov@salutedevices.com>
+ <ZWRifQgRR0570oDY@tiehlicka>
+ <20231127113644.btg2xrcpjhq4cdgu@CAB-WSD-L081021>
+ <ZWSQji7UDSYa1m5M@tiehlicka>
+ <20231127161637.5eqxk7xjhhyr5tj4@CAB-WSD-L081021>
+ <ZWWzwhWnW1_iX0FP@tiehlicka>
+ <20231129152057.x7fhbcvwtsmkbdpb@CAB-WSD-L081021>
+ <ZWdhjYPjbsoUE_mI@tiehlicka>
+ <20231129165752.7r4o3jylbxrj7inb@CAB-WSD-L081021>
 MIME-Version: 1.0
-References: <20231129161459.1002323-1-andriy.shevchenko@linux.intel.com>
- <20231129161459.1002323-17-andriy.shevchenko@linux.intel.com>
- <CAOMZO5CZpQjWKimNReUkwHOc-mF8vWoq2HDhjGKSu6E3g5-aVw@mail.gmail.com> <ZWduPKmBWkaIdLhi@smile.fi.intel.com>
-In-Reply-To: <ZWduPKmBWkaIdLhi@smile.fi.intel.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Wed, 29 Nov 2023 14:08:38 -0300
-Message-ID: <CAOMZO5C_dhvx70nk1HOSZdw8hMMmED69tdsXgydXdpnxHTJ58Q@mail.gmail.com>
-Subject: Re: [PATCH v4 16/23] pinctrl: imx: Convert to use grp member
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        =?UTF-8?Q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
-        Jianlong Huang <jianlong.huang@starfivetech.com>,
-        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        openbmc@lists.ozlabs.org, linux-mips@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Shawn Guo <shawnguo@kernel.org>, Jacky Bai <ping.bai@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sean Wang <sean.wang@kernel.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Hal Feng <hal.feng@starfivetech.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231129165752.7r4o3jylbxrj7inb@CAB-WSD-L081021>
+Authentication-Results: smtp-out1.suse.de;
+        none
+X-Spam-Level: 
+X-Spamd-Result: default: False [-3.80 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         NEURAL_HAM_LONG(-1.00)[-1.000];
+         RCVD_COUNT_THREE(0.00)[3];
+         DKIM_SIGNED(0.00)[suse.com:s=susede1];
+         NEURAL_HAM_SHORT(-0.20)[-0.993];
+         RCPT_COUNT_TWELVE(0.00)[14];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         MID_RHS_NOT_FQDN(0.50)[];
+         FREEMAIL_CC(0.00)[linux-foundation.org,goodmis.org,kernel.org,cmpxchg.org,linux.dev,google.com,sberdevices.ru,gmail.com,vger.kernel.org,kvack.org];
+         RCVD_TLS_ALL(0.00)[];
+         BAYES_HAM(-3.00)[100.00%]
+X-Spam-Score: -3.80
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 2:01=E2=80=AFPM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> It's explained in the first paragraph in the cover letter. Do you
-> want to copy this into each commit message?
+On Wed 29-11-23 19:57:52, Dmitry Rokosov wrote:
+> On Wed, Nov 29, 2023 at 05:06:37PM +0100, Michal Hocko wrote:
+> > On Wed 29-11-23 18:20:57, Dmitry Rokosov wrote:
+> > > On Tue, Nov 28, 2023 at 10:32:50AM +0100, Michal Hocko wrote:
+> > > > On Mon 27-11-23 19:16:37, Dmitry Rokosov wrote:
+> > [...]
+> > > > > 2) With this approach, we will not have the ability to trace a situation
+> > > > > where the kernel is requesting reclaim for a specific memcg, but due to
+> > > > > limits issues, we are unable to run it.
+> > > > 
+> > > > I do not follow. Could you be more specific please?
+> > > > 
+> > > 
+> > > I'm referring to a situation where kswapd() or another kernel mm code
+> > > requests some reclaim pages from memcg, but memcg rejects it due to
+> > > limits checkers. This occurs in the shrink_node_memcgs() function.
+> > 
+> > Ohh, you mean reclaim protection
+> > 
+> > > ===
+> > > 		mem_cgroup_calculate_protection(target_memcg, memcg);
+> > > 
+> > > 		if (mem_cgroup_below_min(target_memcg, memcg)) {
+> > > 			/*
+> > > 			 * Hard protection.
+> > > 			 * If there is no reclaimable memory, OOM.
+> > > 			 */
+> > > 			continue;
+> > > 		} else if (mem_cgroup_below_low(target_memcg, memcg)) {
+> > > 			/*
+> > > 			 * Soft protection.
+> > > 			 * Respect the protection only as long as
+> > > 			 * there is an unprotected supply
+> > > 			 * of reclaimable memory from other cgroups.
+> > > 			 */
+> > > 			if (!sc->memcg_low_reclaim) {
+> > > 				sc->memcg_low_skipped = 1;
+> > > 				continue;
+> > > 			}
+> > > 			memcg_memory_event(memcg, MEMCG_LOW);
+> > > 		}
+> > > ===
+> > > 
+> > > With separate shrink begin()/end() tracepoints we can detect such
+> > > problem.
+> > 
+> > How? You are only reporting the number of reclaimed pages and no
+> > reclaimed pages could be not just because of low/min limits but
+> > generally because of other reasons. You would need to report also the
+> > number of scanned/isolated pages.
+> >  
+> 
+> From my perspective, if memory control group (memcg) protection
+> restrictions occur, we can identify them by the absence of the end()
+> pair of begin(). Other reasons will have both tracepoints raised.
 
-Yes, much better to have the information into each commit message.
+That is not really great way to detect that TBH. Trace events could be
+lost and then you simply do not know what has happened.
+
+-- 
+Michal Hocko
+SUSE Labs
