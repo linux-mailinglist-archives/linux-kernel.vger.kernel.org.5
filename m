@@ -2,105 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D735E7FE0D0
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 21:13:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 566217FE0DA
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 21:15:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231171AbjK2UNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 15:13:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33200 "EHLO
+        id S232524AbjK2UPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 15:15:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229556AbjK2UNU (ORCPT
+        with ESMTP id S229556AbjK2UPm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 15:13:20 -0500
-Received: from mail-oa1-x29.google.com (mail-oa1-x29.google.com [IPv6:2001:4860:4864:20::29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0972D67
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 12:13:26 -0800 (PST)
-Received: by mail-oa1-x29.google.com with SMTP id 586e51a60fabf-1f9decb7446so49127fac.2
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 12:13:26 -0800 (PST)
+        Wed, 29 Nov 2023 15:15:42 -0500
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66671D69
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 12:15:48 -0800 (PST)
+Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-5c5fb06b131so148163a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 12:15:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1701288806; x=1701893606; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1701288948; x=1701893748; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=bmvK7iHRPD4drkhDHPt0FzrLQ9Gqv9eBxE9BLp7oDgo=;
-        b=ENFWgvo3fwf80ZbQRvuBEqdA/QoMEZHjYYTy0dLvz2Bl2DrHTqLK8hg2mNiUK4IgEm
-         FZlNKGbZhvZfz6MUFMH0sQ1CGN3CvWc947QBtgi3PIwKWY1tsikIAzhe473ZT7bav9jd
-         s7m4F9OaWkhJDoTkhd3AeUu2ueW0bFgEZB3QrAmhaL31KfMYbW6fQWNWWK747jNxWJpT
-         ci1oUQRzdn9zIDKb1WH0NkFvw2M95kThZ3t6ADsgd8a4Poaogw7kAIerTG3YS9Db5AXq
-         Wb16y3Rlh/cly56esjGoENLAySICrPTG2VNsKamU1IauUV88tH2cSU0mpqFUMouwGDkE
-         aFng==
+        bh=jotP4vYpPJo//cpTI3uXY4V9lpzWkYj/fK6F2WyIseA=;
+        b=hcdfwa4TYcjUsd4YezCO6cbH/PkKleuvxCuGnZoxGifuXLSJvfQZOm/1KrNR32M4CY
+         TzKCy+vq+86ljb5r9bxSkTOK/rwW8sUqP023BbJ0FDV+beFBFTstZ49SRNuEFe99uSdW
+         2K3KvdnptVVMNAWbLYfloZ86JP7odnEBhv8pI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701288806; x=1701893606;
+        d=1e100.net; s=20230601; t=1701288948; x=1701893748;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=bmvK7iHRPD4drkhDHPt0FzrLQ9Gqv9eBxE9BLp7oDgo=;
-        b=aMepXQnBtwBh77oVBvltSVA2q8qWFjcRyv/Y52MHF0GQKHUdgLYEcEvO5JcMRob0t9
-         qFiWBvBTT9/KTDMLRccXPWT3zncEgMYRkdeytuGP2WsHig2yytM3+qi/iGxO9bihZkvF
-         9MnG5k6nngKcHJw9T7FI4HKpYLKE0ZpTNk+XxUNrPfIF5aGXe50E1xjxYQfwtPgdsisB
-         is2vNTUhzji8sVACowBra7xU/sWlaCJUtqi0YiFVhpeqRvAuFD+jzMOiiZyo5TNb2UO9
-         GfrQqRoB1DLGSlLV6jOrGiXDJdObSGKJJwuCHS0XVAGyDeoiKyXEbZ/249PDbrF1cWw1
-         jdAg==
-X-Gm-Message-State: AOJu0YzTR+wS/5AW8YBUxb5FaA1HxotSnvQ4ZE2frfGn+3hB5qjSBJen
-        sE4AiU++Ancv3hqcUkw2qO0GRg==
-X-Google-Smtp-Source: AGHT+IHDvOIdEFEEYA5mpwqmFFuD4VQhNSBzRUUw32RQyjUEYG/3aTKK4gbxat50WL0ewYuq2y3Y1A==
-X-Received: by 2002:a05:6870:d88d:b0:1fa:25df:4031 with SMTP id oe13-20020a056870d88d00b001fa25df4031mr20698625oac.4.1701288805852;
-        Wed, 29 Nov 2023 12:13:25 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-134-23-187.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.134.23.187])
-        by smtp.gmail.com with ESMTPSA id lk7-20020a0568703e0700b001fa35df2cb7sm2226220oab.6.2023.11.29.12.13.25
+        bh=jotP4vYpPJo//cpTI3uXY4V9lpzWkYj/fK6F2WyIseA=;
+        b=kjmF5r+juyK09cKZCTxZqYd39wlR9aUdu4WcZeQ7hZWHESrEOwgCes5RpO6pfWgmR4
+         v0b7PawYDSFXjueBH/8ZErLURMpYXTiy6Zh82mGvsGOBRuZo7czyftBNibeDqT6KiU0V
+         YkESnME+1/j4oGWBUU8tSYSaTfPtd6ZMDar7u09UEHfQ2S4Gw5Cpg1thkW9+awX7v9g8
+         NnMC8rD/1xO40L8EsTBm1/x8obd3TOecZmKHPY4uYRchu9zokXBlCs4sZyI18BLB7fvi
+         IeTO+o7hP6Ex9tJeL6jZxSlcf8Z22x/t/grsRZX/1FINvdcl0duBcNEM6SZR8A1Us2ul
+         cT3w==
+X-Gm-Message-State: AOJu0Yxvi5LulPS0nPzZnCBu0CwlDnYopqpsHyyghFOe8OUWyW5cVViT
+        UGJ7vs0IgUNq5RyCRphX7BYhzA==
+X-Google-Smtp-Source: AGHT+IG534o8LlbEMOfFzpwYToM7hK+n/JXeWeW9JF2pDdVckMCGK6vCE97PcNRJj6shzwBCP8zRfA==
+X-Received: by 2002:a05:6a20:e113:b0:18c:5c04:a55e with SMTP id kr19-20020a056a20e11300b0018c5c04a55emr17283060pzb.49.1701288947811;
+        Wed, 29 Nov 2023 12:15:47 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id v15-20020aa7850f000000b006cde291d429sm194972pfn.39.2023.11.29.12.15.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Nov 2023 12:13:25 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1r8Qw0-005pRb-Cz;
-        Wed, 29 Nov 2023 16:13:24 -0400
-Date:   Wed, 29 Nov 2023 16:13:24 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Kevin Tian <kevin.tian@intel.com>, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] iommu/vt-d: Disable PCI ATS in legacy passthrough
- mode
-Message-ID: <20231129201324.GL1312390@ziepe.ca>
-References: <20231114011036.70142-1-baolu.lu@linux.intel.com>
- <20231114011036.70142-3-baolu.lu@linux.intel.com>
+        Wed, 29 Nov 2023 12:15:47 -0800 (PST)
+Date:   Wed, 29 Nov 2023 12:15:46 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
+        Brian Foster <bfoster@redhat.com>,
+        linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH][next] bcachefs: Replace zero-length arrays with
+ flexible-array members
+Message-ID: <202311291215.9BBCD8E@keescook>
+References: <ZWYv/ywR/qxUhVSU@work>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231114011036.70142-3-baolu.lu@linux.intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <ZWYv/ywR/qxUhVSU@work>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 14, 2023 at 09:10:35AM +0800, Lu Baolu wrote:
-> When IOMMU hardware operates in legacy mode, the TT field of the context
-> entry determines the translation type, with three supported types (Section
-> 9.3 Context Entry):
+On Tue, Nov 28, 2023 at 12:22:55PM -0600, Gustavo A. R. Silva wrote:
+> Fake flexible arrays (zero-length and one-element arrays) are
+> deprecated, and should be replaced by flexible-array members.
 > 
-> - DMA translation without device TLB support
-> - DMA translation with device TLB support
-> - Passthrough mode with translated and translation requests blocked
+> So, replace zero-length arrays with flexible-array members
+> in multiple structures.
 > 
-> Device TLB support is absent when hardware is configured in passthrough
-> mode.
-> 
-> Disable the PCI ATS feature when IOMMU is configured for passthrough
-> translation type in legacy (non-scalable) mode.
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-Oh.. That is the same horrible outcome that ARM has :(
+These look like straight-forward conversions. Thanks!
 
-The issue is what to do if the RID translation is in identity but a
-PASID is attached that should be using ATS - eg do you completely
-loose SVA support if the RID is set to the optimized identity mode?
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-I vote no. We should make the drivers aware that they should not use
-ATS on their RIDs instead :(
-
-Jason
+-- 
+Kees Cook
