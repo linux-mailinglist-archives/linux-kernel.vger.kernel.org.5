@@ -2,75 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB7C57FDF07
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 19:01:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24F857FDF0B
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 19:05:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232769AbjK2SBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 13:01:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49844 "EHLO
+        id S230432AbjK2SEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 13:04:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232543AbjK2SAz (ORCPT
+        with ESMTP id S229501AbjK2SEw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 13:00:55 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F143B194;
-        Wed, 29 Nov 2023 10:00:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701280856; x=1732816856;
-  h=from:date:subject:mime-version:content-transfer-encoding:
-   message-id:references:in-reply-to:to:cc;
-  bh=UzNYx2klhz/20kKuKajkCuf3Q8j7YQi/dCHkgJunIgs=;
-  b=N4tgxvLWFS/g5ZrUCWNkFEb3J09ADLoewOWc11mW1yyXlTf2QMo/Flyg
-   oNryQro6yXoZChcyPT3sLBI9AD/XhH7DztqPF+mdLNjTb536Om2MJZq5M
-   s62fSlrk6J4mynIfpkbNWaYHDLzVeAiN3BbL4duldvAMgc4oJSTFJm5og
-   NAPBv/MrzMTx0a8EZjdldpBzH0o+ucHLLefeCHq1ufXzpKGiZD/j7N75y
-   mbogbTl7PhWNE8Kw7Kqxfs/ysNSiFbUDFAkCDuh1sRu1t/bvuGjB6cuYH
-   QauGczgylWGN/xTQl5i3wXknC3/mn2PRJuQrSFs1MkAvGCSf45/gzWbSN
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="457524513"
-X-IronPort-AV: E=Sophos;i="6.04,237,1695711600"; 
-   d="scan'208";a="457524513"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 10:00:52 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="835096138"
-X-IronPort-AV: E=Sophos;i="6.04,237,1695711600"; 
-   d="scan'208";a="835096138"
-Received: from iweiny-desk3.amr.corp.intel.com (HELO localhost) ([10.212.127.168])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 10:00:52 -0800
-From:   Ira Weiny <ira.weiny@intel.com>
-Date:   Wed, 29 Nov 2023 10:00:46 -0800
-Subject: [PATCH 6/6] cxl/memdev: Register for and process CPER events
+        Wed, 29 Nov 2023 13:04:52 -0500
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE4CCAF;
+        Wed, 29 Nov 2023 10:04:58 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-40b479ec4a3so112505e9.2;
+        Wed, 29 Nov 2023 10:04:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701281097; x=1701885897; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=H4jESqZmpMEPxH+fuQOnMVYUEdrJMqMVfKBMqgWEv/A=;
+        b=RlikZ1NKQOUHfhO4FvxmJPFCBoClwaV/5E1rnnzrJTT92aT+8bJdaE71xffxRpL0O9
+         Z2PrIi6dIyIUW9Gg4Bk7yigYEMy+SS7u7F5sjOpCOuQbO65RCpp0njHRP2ywUltAMJyn
+         z+9ypAlWYshgWz1y7uHm52NyvNNXpwdXqGoZMVTR1OZOyolXZtRA6Bhtu5ckiOJg34In
+         fZ8ghtC4ETA+sQ+p9Mr5p2tfvfrrBtJBclHAJXI/ZHupjlAf8uejGXsWnqES7gtjzvg3
+         dD1JXUrdWau46Xda0aYLLU2oEcvZGTxeRMwofYfE92bCjBiLm35ydZY7W+xxHrKEyiPz
+         rRdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701281097; x=1701885897;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=H4jESqZmpMEPxH+fuQOnMVYUEdrJMqMVfKBMqgWEv/A=;
+        b=wobf5WiCmaa1Hg6A1oyEOzVdXvU6E5zyeu3Kur8x9O5xq0RBSb0oNQFrirvI6zoGQp
+         ZXu3rZjqeGsJmjczXbzUNf9zIaLatFSG7uP2ywo3HJqhFNXu8KBzZc1+UyVuBxLkPokI
+         qgGfccxEZ9iPKqIYBOitxU4jSCFgf3o2VUSlL1CEBeMYdqdtVQb6fM52fErJsXeRP0dT
+         java1npC2aP2mQwq7q28EBaDnPcucn8J6Meb9KaqPCdqpyW3zuUgkfqMdzy9EJ0IBgOI
+         1SkuqF0dXO5m1UuREFB6Iss6XU6cZGdMZ19R+BkGV5iwL90GOgLb273AAhdLs9GJJxRG
+         VWtg==
+X-Gm-Message-State: AOJu0YxJ2Yyt/3BH9nw312GKzWkXGABnk0QZNO4Goji+1tdMg1UISO/L
+        NrNbaZizYFtWn8wIHUMiwuo=
+X-Google-Smtp-Source: AGHT+IFLTA4R08YIGhe/kznCDigznewvoiILsXBmrSH8RS0rlFq3qOqKk2onvEvKnhtWK2lDpBB5QQ==
+X-Received: by 2002:a05:600c:1c9d:b0:40b:3933:f994 with SMTP id k29-20020a05600c1c9d00b0040b3933f994mr15197936wms.25.1701281096993;
+        Wed, 29 Nov 2023 10:04:56 -0800 (PST)
+Received: from skbuf ([188.26.185.12])
+        by smtp.gmail.com with ESMTPSA id je16-20020a05600c1f9000b003fc0505be19sm3054640wmb.37.2023.11.29.10.04.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Nov 2023 10:04:56 -0800 (PST)
+Date:   Wed, 29 Nov 2023 20:04:53 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
+        Christian Marangi <ansuelsmth@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Rob Herring <robh@kernel.org>,
+        Florian Fainelli <florian.fainelli@broadcom.com>
+Subject: Re: [PATCH net-next v9 4/5] dt-bindings: marvell: Rewrite MV88E6xxx
+ in schema
+Message-ID: <20231129180453.2bkmvuxihtp3yeyz@skbuf>
+References: <20231127-marvell-88e6152-wan-led-v9-0-272934e04681@linaro.org>
+ <20231127-marvell-88e6152-wan-led-v9-4-272934e04681@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230601-cxl-cper-v1-6-d19f1ac18ab6@intel.com>
-References: <20230601-cxl-cper-v1-0-d19f1ac18ab6@intel.com>
-In-Reply-To: <20230601-cxl-cper-v1-0-d19f1ac18ab6@intel.com>
-To:     Dan Williams <dan.j.williams@intel.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>,
-        Shiju Jose <shiju.jose@huawei.com>
-Cc:     Yazen Ghannam <yazen.ghannam@amd.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Alison Schofield <alison.schofield@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Ard Biesheuvel <ardb@kernel.org>, linux-efi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-cxl@vger.kernel.org,
-        Ira Weiny <ira.weiny@intel.com>
-X-Mailer: b4 0.13-dev-0f7f0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1701280847; l=6220;
- i=ira.weiny@intel.com; s=20221222; h=from:subject:message-id;
- bh=UzNYx2klhz/20kKuKajkCuf3Q8j7YQi/dCHkgJunIgs=;
- b=2MmmtkBqgAOA6rAvGpyGOJJZgA5n/0L0n+BXi/du4BLqrcixBKeC9Nkwlc12W9ErGO+wdEdtY
- bPS2fq//WuMAxOJr92jbpIxM+2ItzwI42JhvpVSE9mW4FdPNBOxNrLK
-X-Developer-Key: i=ira.weiny@intel.com; a=ed25519;
- pk=brwqReAJklzu/xZ9FpSsMPSQ/qkSalbg6scP3w809Ec=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231127-marvell-88e6152-wan-led-v9-4-272934e04681@linaro.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,179 +89,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the firmware has configured CXL event support to be firmware first
-the OS can process those events through CPER records.  The CXL layer has
-unique DPA to HPA knowledge and standard event trace parsing in place.
-Matching memory devices to the CPER records can be done via Bus, Device,
-Function which is part of the CPER record header.
+On Mon, Nov 27, 2023 at 04:43:07PM +0100, Linus Walleij wrote:
+> This is an attempt to rewrite the Marvell MV88E6xxx switch bindings
+> in YAML schema.
+> 
+> The current text binding says:
+>   WARNING: This binding is currently unstable. Do not program it into a
+>   FLASH never to be changed again. Once this binding is stable, this
+>   warning will be removed.
+> 
+> Well that never happened before we switched to YAML markup,
+> we can't have it like this, what about fixing the mess?
+> 
+> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+> ---
 
-Detect firmware first, register a notifier callback for each memdev, and
-trace events when they match the proper device.
-
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
----
- drivers/cxl/core/mbox.c | 31 +++++++++++++++++++++-----
- drivers/cxl/cxlmem.h    |  6 +++++
- drivers/cxl/pci.c       | 58 ++++++++++++++++++++++++++++++++++++++++++++++++-
- 3 files changed, 89 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/cxl/core/mbox.c b/drivers/cxl/core/mbox.c
-index 5ccc3843b736..8a0d4f67540d 100644
---- a/drivers/cxl/core/mbox.c
-+++ b/drivers/cxl/core/mbox.c
-@@ -860,9 +860,30 @@ static const uuid_t mem_mod_event_uuid =
- 	UUID_INIT(0xfe927475, 0xdd59, 0x4339,
- 		  0xa5, 0x86, 0x79, 0xba, 0xb1, 0x13, 0xb7, 0x74);
- 
--static void cxl_event_trace_record(const struct cxl_memdev *cxlmd,
--				   enum cxl_event_log_type type,
--				   struct cxl_event_record_raw *record)
-+void cxl_event_trace_record(const struct cxl_memdev *cxlmd,
-+			    enum cxl_event_log_type type,
-+			    enum cxl_event_type event_type,
-+			    union cxl_event *event)
-+{
-+	switch (event_type) {
-+	case CXL_CPER_EVENT_GEN_MEDIA:
-+		trace_cxl_general_media(cxlmd, type, &gen_media_event_uuid,
-+					&event->gen_media);
-+		break;
-+	case CXL_CPER_EVENT_DRAM:
-+		trace_cxl_dram(cxlmd, type, &dram_event_uuid, &event->dram);
-+		break;
-+	case CXL_CPER_EVENT_MEM_MODULE:
-+		trace_cxl_memory_module(cxlmd, type, &mem_mod_event_uuid,
-+					&event->mem_module);
-+		break;
-+	}
-+}
-+EXPORT_SYMBOL_NS_GPL(cxl_event_trace_record, CXL);
-+
-+static void __cxl_event_trace_record(const struct cxl_memdev *cxlmd,
-+				     enum cxl_event_log_type type,
-+				     struct cxl_event_record_raw *record)
- {
- 	union cxl_event *evt = &record->event;
- 	uuid_t *id = &record->id;
-@@ -985,8 +1006,8 @@ static void cxl_mem_get_records_log(struct cxl_memdev_state *mds,
- 			break;
- 
- 		for (i = 0; i < nr_rec; i++)
--			cxl_event_trace_record(cxlmd, type,
--					       &payload->records[i]);
-+			__cxl_event_trace_record(cxlmd, type,
-+						 &payload->records[i]);
- 
- 		if (payload->flags & CXL_GET_EVENT_FLAG_OVERFLOW)
- 			trace_cxl_overflow(cxlmd, type, payload);
-diff --git a/drivers/cxl/cxlmem.h b/drivers/cxl/cxlmem.h
-index f0e7ebb84f02..9cb0e3448780 100644
---- a/drivers/cxl/cxlmem.h
-+++ b/drivers/cxl/cxlmem.h
-@@ -481,6 +481,8 @@ struct cxl_memdev_state {
- 	struct cxl_security_state security;
- 	struct cxl_fw_state fw;
- 
-+	struct notifier_block cxl_cper_nb;
-+
- 	struct rcuwait mbox_wait;
- 	int (*mbox_send)(struct cxl_memdev_state *mds,
- 			 struct cxl_mbox_cmd *cmd);
-@@ -778,6 +780,10 @@ void set_exclusive_cxl_commands(struct cxl_memdev_state *mds,
- void clear_exclusive_cxl_commands(struct cxl_memdev_state *mds,
- 				  unsigned long *cmds);
- void cxl_mem_get_event_records(struct cxl_memdev_state *mds, u32 status);
-+void cxl_event_trace_record(const struct cxl_memdev *cxlmd,
-+			    enum cxl_event_log_type type,
-+			    enum cxl_event_type event_type,
-+			    union cxl_event *event);
- int cxl_set_timestamp(struct cxl_memdev_state *mds);
- int cxl_poison_state_init(struct cxl_memdev_state *mds);
- int cxl_mem_get_poison(struct cxl_memdev *cxlmd, u64 offset, u64 len,
-diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
-index 0155fb66b580..ec65c11baf17 100644
---- a/drivers/cxl/pci.c
-+++ b/drivers/cxl/pci.c
-@@ -1,5 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0-only
- /* Copyright(c) 2020 Intel Corporation. All rights reserved. */
-+#include <asm-generic/unaligned.h>
- #include <linux/io-64-nonatomic-lo-hi.h>
- #include <linux/moduleparam.h>
- #include <linux/module.h>
-@@ -741,6 +742,59 @@ static bool cxl_event_int_is_fw(u8 setting)
- 	return mode == CXL_INT_FW;
- }
- 
-+#define CXL_EVENT_HDR_FLAGS_REC_SEVERITY GENMASK(1, 0)
-+static int cxl_cper_event_call(struct notifier_block *nb, unsigned long action,
-+			       void *data)
-+{
-+	struct cxl_cper_notifier_data *nd = data;
-+	struct cper_cxl_event_devid *device_id = &nd->rec->hdr.device_id;
-+	enum cxl_event_log_type log_type;
-+	struct cxl_memdev_state *mds;
-+	struct cxl_dev_state *cxlds;
-+	struct pci_dev *pdev;
-+	unsigned int devfn;
-+	u32 hdr_flags;
-+
-+	mds = container_of(nb, struct cxl_memdev_state, cxl_cper_nb);
-+
-+	devfn = PCI_DEVFN(device_id->device_num, device_id->func_num);
-+	pdev = pci_get_domain_bus_and_slot(device_id->segment_num,
-+					   device_id->bus_num, devfn);
-+	cxlds = pci_get_drvdata(pdev);
-+	if (cxlds != &mds->cxlds) {
-+		pci_dev_put(pdev);
-+		return NOTIFY_DONE;
-+	}
-+
-+	/* Fabricate a log type */
-+	hdr_flags = get_unaligned_le24(nd->rec->event.generic.hdr.flags);
-+	log_type = FIELD_GET(CXL_EVENT_HDR_FLAGS_REC_SEVERITY, hdr_flags);
-+
-+	cxl_event_trace_record(mds->cxlds.cxlmd, log_type, nd->event_type,
-+			       &nd->rec->event);
-+	pci_dev_put(pdev);
-+	return NOTIFY_OK;
-+}
-+
-+static void cxl_unregister_cper_events(void *_mds)
-+{
-+	struct cxl_memdev_state *mds = _mds;
-+
-+	unregister_cxl_cper_notifier(&mds->cxl_cper_nb);
-+}
-+
-+static void register_cper_events(struct cxl_memdev_state *mds)
-+{
-+	mds->cxl_cper_nb.notifier_call = cxl_cper_event_call;
-+
-+	if (register_cxl_cper_notifier(&mds->cxl_cper_nb)) {
-+		dev_err(mds->cxlds.dev, "CPER registration failed\n");
-+		return;
-+	}
-+
-+	devm_add_action_or_reset(mds->cxlds.dev, cxl_unregister_cper_events, mds);
-+}
-+
- static int cxl_event_config(struct pci_host_bridge *host_bridge,
- 			    struct cxl_memdev_state *mds)
- {
-@@ -751,8 +805,10 @@ static int cxl_event_config(struct pci_host_bridge *host_bridge,
- 	 * When BIOS maintains CXL error reporting control, it will process
- 	 * event records.  Only one agent can do so.
- 	 */
--	if (!host_bridge->native_cxl_error)
-+	if (!host_bridge->native_cxl_error) {
-+		register_cper_events(mds);
- 		return 0;
-+	}
- 
- 	rc = cxl_mem_alloc_event_buf(mds);
- 	if (rc)
-
--- 
-2.42.0
-
+Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
