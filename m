@@ -2,127 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 676D97FD7D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 14:21:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5750B7FD7DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 14:22:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233973AbjK2NVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 08:21:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34868 "EHLO
+        id S233927AbjK2NWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 08:22:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233483AbjK2NVh (ORCPT
+        with ESMTP id S233836AbjK2NWc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 08:21:37 -0500
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1647DA8
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 05:21:43 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-a03a9009572so914487166b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 05:21:43 -0800 (PST)
+        Wed, 29 Nov 2023 08:22:32 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECDAD83
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 05:22:37 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-54b545ec229so4694536a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 05:22:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701264101; x=1701868901; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=CKqVgmmmP85xT7paIKn2Y6mbmwhcI9WsvGmtiq0rLgg=;
-        b=jGHLNph1X6nT5BohT2XCfbasLVuvBF9aqleZOSw+I/f2NV8wW7ZpjMwMnE/3RgiIRC
-         CAD7Ckxu55aI6tL48aa+O3YrbVM5+GBFbRVI7a+sd3KZVffVAaWyiw7Wod0JK5WDCYzS
-         DWEVXjjWvGJ+BgSzNKO0zLuEF5yG4pNRCgbexb4paex+sqow8yAumbSxGlFeuRJeqPMm
-         yjBEfhKdNo1+HD4zTWFNXwM434sRpN3EaBwxqmdQygvsOgqdhWubPNsfhaCGf0EPXKfg
-         F7Kt9XzbjLMyG0CLrpVK0SYwvKZUiEZmblSDZLpVlUpPqTCnIYUf45gXXtp2P8bDwbtf
-         bfSQ==
+        d=fooishbar-org.20230601.gappssmtp.com; s=20230601; t=1701264156; x=1701868956; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=/VP3ii8qzlwzBFXOUvCIlM2ChKhNv0Z2flI0ZUJ06go=;
+        b=tZ0e393k6tGqc7Kfw0mVPdohIqElSw69RXqLpX8IwWMLhdVRjk2+lGHUCDMdL35iVT
+         VhEnZDDghUrA+ZSFTlGpI2xPDFPoqJVBUMnn6rt3QxyFWKUfq/Ujde27tTe9cffSaB85
+         +yI1Sd5CdrOnyAReBZHQSjBrONOvCVCKMAtRKXSYfXEABpvbHhQfKFwMuYJfperB/X4a
+         tLlggBN/LzPTJL/794bzw/k7dWpS12qPEUK2A+EQ2miVEPon3fjBQbiCgsYSWqcyMr4k
+         uJSqvYRewfMuGhaPteitj06eDuPPfEoqwH2G9jBk7FwvrUac+HfMFVGdv1PMyeJkcE7+
+         7OTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701264101; x=1701868901;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CKqVgmmmP85xT7paIKn2Y6mbmwhcI9WsvGmtiq0rLgg=;
-        b=kiqLlVlL5vaXE+snhmrcT1ZFSKEk77cnqyUefLUO//KivHx2VPC9mTs7i+8iFRek4v
-         RRs9a3JCzDJgkRY5GDR2cQXIeCu8EHHaZ90ET2B7XMskkSwJQMvB5dN71m+iQ0eGkWu7
-         Z78Ux/IvH2bGI/g2ReHydJASEpVqKG93ctGmUqajSmdfXxfEmNm8XeDGihEuz3ofUhQo
-         EL2u2iSVRLDtpUc2SytxvBnaoMA3Rovvu92QWrhytSQzAEzaAKHvF3+KmHzeSqyoohGk
-         hu+9uYroXCykFl5YPwxjnaiaXO+QJOMOGLO1j9Wt3U43p9uyYSfKwrPL946EL96IILq5
-         MA6A==
-X-Gm-Message-State: AOJu0YxqecTZD9d61i2JQ++MGvbiMWHdpFrIzr/IdUI3xqU9Rtz0fhUn
-        WTxUnsrOtZNpjX5KRweohkbWCnU5fh3F9Iq+lEM=
-X-Google-Smtp-Source: AGHT+IHHyUSZ6isQL9Gg3P4bkNKgpkgRqY7gYY8XwE/b6ZVC89XZtodpS6v9WiSekYotO/DV7gB4aA==
-X-Received: by 2002:a17:906:c445:b0:a02:8b23:895d with SMTP id ck5-20020a170906c44500b00a028b23895dmr13115240ejb.35.1701264101545;
-        Wed, 29 Nov 2023 05:21:41 -0800 (PST)
-Received: from [192.168.209.173] (178235187166.dynamic-4-waw-k-2-3-0.vectranet.pl. [178.235.187.166])
-        by smtp.gmail.com with ESMTPSA id rv24-20020a17090710d800b00a0958af2387sm6510255ejb.201.2023.11.29.05.21.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Nov 2023 05:21:40 -0800 (PST)
-Message-ID: <2d6c7d2e-c8f5-4e7f-901a-8ca208d7b442@linaro.org>
-Date:   Wed, 29 Nov 2023 14:21:38 +0100
+        d=1e100.net; s=20230601; t=1701264156; x=1701868956;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/VP3ii8qzlwzBFXOUvCIlM2ChKhNv0Z2flI0ZUJ06go=;
+        b=CZIjW1s0UnptsV3JfVEZEmMgkv20DcdJudONFr3FVQaVtBLvHvdZy+0TagTL3F3rtR
+         myJvHtqKcWa2CgTKEEM+n57mX+3r33eChdG8JbBwttMfg1pvLeT2mmOYPpKs9roDa/Vw
+         A2RyY2DW6H09PEOauIUQJ1TPQdJnHsKPvlON9SLaItb3rbpaoPsUXFtFdhTONlXU42PH
+         QzdgxFWhb8JK6necNpK6NlYzOL+Fo2DK0jasvIGo39PgviRHgtOUkLrEiiLZJ7TdJdG0
+         8/xGbsVMLUpCrSv6VlLzDEpHs69u8kmnIDJydshdNv9d8TKdLRcN8aFxFjvB4W3td8v/
+         HULg==
+X-Gm-Message-State: AOJu0YwKZ4NncjUn/1Iec1ycaekTymakP7gkbuxtqWnaG4cv6MtJRMk7
+        q9FdjeoviM1rzInxuMFmbtmeE9ouxFmQ2RjeFWWS/A==
+X-Google-Smtp-Source: AGHT+IESfQEmd7uikH5eYlpIkIXnzdfz7yOnSZr9KANdmLWdgeBrFVefxKHw37NvqQrsvZJsay74wE6WyTTIfjyDBNw=
+X-Received: by 2002:a17:906:3f88:b0:a02:a2cc:66b8 with SMTP id
+ b8-20020a1709063f8800b00a02a2cc66b8mr11788067ejj.14.1701264156218; Wed, 29
+ Nov 2023 05:22:36 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] pinctrl: qcom: Convert to platform remove callback
- returning void
-Content-Language: en-US
-To:     Tengfei Fan <quic_tengfan@quicinc.com>, andersson@kernel.org,
-        agross@kernel.org, linus.walleij@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel@quicinc.com
-References: <20231129100422.16659-1-quic_tengfan@quicinc.com>
- <20231129100422.16659-2-quic_tengfan@quicinc.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
- BB/OmIWU6X+LZW6P88ZmHe+KeyABLMP5s1tJNK1j4ntT7mECcWZDzafPWF4F6m4WJOG27kTJ
- HGWdmtO+RvadOVi6CoUDqALsmfS3MUG5Pj2Ne9+0jRg4hEnB92AyF9rW2G3qisFcwPgvatt7
- TXD5E38mLyOPOUyXNj9XpDbt1hNwKQfiidmPh5e7VNAWRnW1iCMMoKqzM1Anzq7e5Afyeifz
- zRcQPLaqrPjnKqZGL2BKQSZDh6NkI5ZLRhhHQf61fkWcUpTp1oDC6jWVfT7hwRVIQLrrNj9G
- MpPzrlN4YuAqKeIer1FMt8cq64ifgTzxHzXsMcUdclzq2LTk2RXaPl6Jg/IXWqUClJHbamSk
- t1bfif3SnmhA6TiNvEpDKPiT3IDs42THU6ygslrBxyROQPWLI9IL1y8S6RtEh8H+NZQWZNzm
- UQ3imZirlPjxZtvz1BtnnBWS06e7x/UEAguj7VHCuymVgpl2Za17d1jj81YN5Rp5L9GXxkV1
- aUEwONM3eCI3qcYm5JNc5X+JthZOWsbIPSC1Rhxz3JmWIwP1udr5E3oNRe9u2LIEq+wH/toH
- kpPDhTeMkvt4KfE5m5ercid9+ZXAqoaYLUL4HCEw+HW0DXcKDwARAQABzShLb25yYWQgRHli
- Y2lvIDxrb25yYWQuZHliY2lvQGxpbmFyby5vcmc+wsGOBBMBCAA4FiEEU24if9oCL2zdAAQV
- R4cBcg5dfFgFAmQ5bqwCGwMFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQR4cBcg5dfFjO
- BQ//YQV6fkbqQCceYebGg6TiisWCy8LG77zV7DB0VMIWJv7Km7Sz0QQrHQVzhEr3trNenZrf
- yy+o2tQOF2biICzbLM8oyQPY8B///KJTWI2khoB8IJSJq3kNG68NjPg2vkP6CMltC/X3ohAo
- xL2UgwN5vj74QnlNneOjc0vGbtA7zURNhTz5P/YuTudCqcAbxJkbqZM4WymjQhe0XgwHLkiH
- 5LHSZ31MRKp/+4Kqs4DTXMctc7vFhtUdmatAExDKw8oEz5NbskKbW+qHjW1XUcUIrxRr667V
- GWH6MkVceT9ZBrtLoSzMLYaQXvi3sSAup0qiJiBYszc/VOu3RbIpNLRcXN3KYuxdQAptacTE
- mA+5+4Y4DfC3rUSun+hWLDeac9z9jjHm5rE998OqZnOU9aztbd6zQG5VL6EKgsVXAZD4D3RP
- x1NaAjdA3MD06eyvbOWiA5NSzIcC8UIQvgx09xm7dThCuQYJR4Yxjd+9JPJHI6apzNZpDGvQ
- BBZzvwxV6L1CojUEpnilmMG1ZOTstktWpNzw3G2Gis0XihDUef0MWVsQYJAl0wfiv/0By+XK
- mm2zRR+l/dnzxnlbgJ5pO0imC2w0TVxLkAp0eo0LHw619finad2u6UPQAkZ4oj++iIGrJkt5
- Lkn2XgB+IW8ESflz6nDY3b5KQRF8Z6XLP0+IEdLOOARkOW7yEgorBgEEAZdVAQUBAQdAwmUx
- xrbSCx2ksDxz7rFFGX1KmTkdRtcgC6F3NfuNYkYDAQgHwsF2BBgBCAAgFiEEU24if9oCL2zd
- AAQVR4cBcg5dfFgFAmQ5bvICGwwACgkQR4cBcg5dfFju1Q//Xta1ShwL0MLSC1KL1lXGXeRM
- 8arzfyiB5wJ9tb9U/nZvhhdfilEDLe0jKJY0RJErbdRHsalwQCrtq/1ewQpMpsRxXzAjgfRN
- jc4tgxRWmI+aVTzSRpywNahzZBT695hMz81cVZJoZzaV0KaMTlSnBkrviPz1nIGHYCHJxF9r
- cIu0GSIyUjZ/7xslxdvjpLth16H27JCWDzDqIQMtg61063gNyEyWgt1qRSaK14JIH/DoYRfn
- jfFQSC8bffFjat7BQGFz4ZpRavkMUFuDirn5Tf28oc5ebe2cIHp4/kajTx/7JOxWZ80U70mA
- cBgEeYSrYYnX+UJsSxpzLc/0sT1eRJDEhI4XIQM4ClIzpsCIN5HnVF76UQXh3a9zpwh3dk8i
- bhN/URmCOTH+LHNJYN/MxY8wuukq877DWB7k86pBs5IDLAXmW8v3gIDWyIcgYqb2v8QO2Mqx
- YMqL7UZxVLul4/JbllsQB8F/fNI8AfttmAQL9cwo6C8yDTXKdho920W4WUR9k8NT/OBqWSyk
- bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
- nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
- izWDgYvmBE8=
-In-Reply-To: <20231129100422.16659-2-quic_tengfan@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+References: <20231129121841.253223-1-vignesh.raman@collabora.com> <20231129121841.253223-7-vignesh.raman@collabora.com>
+In-Reply-To: <20231129121841.253223-7-vignesh.raman@collabora.com>
+From:   Daniel Stone <daniel@fooishbar.org>
+Date:   Wed, 29 Nov 2023 13:22:24 +0000
+Message-ID: <CAPj87rPKywWa8KxTCeJQz4vvgTwhPzL+y4aCX9zxZDkkfrvsoQ@mail.gmail.com>
+Subject: Re: [PATCH v6 06/10] drm: ci: mediatek: Set IGT_FORCE_DRIVER for mt8173
+To:     Vignesh Raman <vignesh.raman@collabora.com>
+Cc:     helen.koike@collabora.com, airlied@gmail.com, daniel@ffwll.ch,
+        daniels@collabora.com, emma@anholt.net,
+        gustavo.padovan@collabora.com, linux-arm-msm@vger.kernel.org,
+        guilherme.gallo@collabora.com, sergi.blanch.torne@collabora.com,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        virtualization@lists.linux-foundation.org,
+        david.heidelberg@collabora.com, linux-mediatek@lists.infradead.org,
+        linux-rockchip@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29.11.2023 11:04, Tengfei Fan wrote:
-> Use .remove_new() instead of .remove() for converting to plarform remove
-s/plarform/platform
+Hi Vignesh,
 
-> callback returning void.
-> 
-> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
-> ---
-The commit title should include the platform name, i.e.
-pinctrl: qcom: sm4450: xxx
+On Wed, 29 Nov 2023 at 12:19, Vignesh Raman <vignesh.raman@collabora.com> wrote:
+> Expected driver for mt8173 is "mediatek" and for mt8183
+> it is "panfrost". Set IGT_FORCE_DRIVER to 'mediatek' as
+> the expected driver for mt8173.
 
-The change itself looks good
+Actually, for mt8183 it's both. And for mt8173 it will probably be
+mediatek+pvr pretty soon. Each of these SoCs (like most Arm devices)
+have a separate display controller and GPU, with different drivers for
+each. They'll run different tests with different xfails. So we should
+figure out a way to support igt running for both devices on the one
+system.
 
-Konrad
+Cheers,
+Daniel
