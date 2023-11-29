@@ -2,122 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66AB87FDEA8
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 18:45:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 095AB7FDEAD
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 18:47:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230140AbjK2Rpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 12:45:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55522 "EHLO
+        id S231246AbjK2RrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 12:47:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230432AbjK2Rpb (ORCPT
+        with ESMTP id S229501AbjK2RrL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 12:45:31 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D926012C
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 09:45:37 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4BDB2C433C7;
-        Wed, 29 Nov 2023 17:45:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701279937;
-        bh=KIKFPp9BUhkaU/2v9P9pMinmYm10lPKZw6CRfN0EZXc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KeBk4XygSV3H0Is1ff9twMb+Vvnsb+6+M0b40/ajSzkslItd2N+/xFslXdoPIxyPt
-         7Hb2LdvV+cUc+utmT8UXA+hFN97KoFCgk5tZvcsbKxbw4f3Ybmd9Fh5857EGaBghHW
-         G4T/giZZD88DarE3ZLYNYr3IuZB6XQDObaTajLo9qVz9LwZ88Qcl0b3Pf0+YwW787Q
-         qXz67vU/Bfl9lhgbrgnCE0tpKC3+6jrUns53wktIfF0SYRQVkbusQdzqAYjwJap2jH
-         2SUnH7BPId3PoDLHiVajSo0tsKYMlNyQoSNIj6zwfkk5bCXQl27axRVNYytWYSlUuZ
-         tbw2WyRqN6QHg==
-Date:   Wed, 29 Nov 2023 12:45:35 -0500
-From:   Sasha Levin <sashal@kernel.org>
-To:     Pavel Machek <pavel@denx.de>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        stable@vger.kernel.org, patches@lists.linux.dev,
-        LKML <linux-kernel@vger.kernel.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-        allen.lkml@gmail.com, alexander.deucher@amd.com,
-        mario.limonciello@amd.com, zhujun2@cmss.chinamobile.com,
-        skhan@linuxfoundation.org, bhelgaas@google.com
-Subject: Re: [PATCH 4.14 00/53] 4.14.331-rc2 review
-Message-ID: <ZWd4v-7Qnc2gde5L@sashalap>
-References: <20231125163059.878143365@linuxfoundation.org>
- <ZWUBaYipygLMkfjz@duo.ucw.cz>
- <f4a7634-3d34-af29-36ca-6f3439b4ce9@linux.intel.com>
- <ZWZQCJtD7kmX9iRO@duo.ucw.cz>
- <2023112818-browse-floss-eb6f@gregkh>
- <ZWZSKgxjSRcA/qUK@duo.ucw.cz>
- <2023112844-sesame-overdrawn-5853@gregkh>
- <ZWb9vGuZck1sGBIN@duo.ucw.cz>
+        Wed, 29 Nov 2023 12:47:11 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8B54D1;
+        Wed, 29 Nov 2023 09:47:17 -0800 (PST)
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AT2DFD0003183;
+        Wed, 29 Nov 2023 17:47:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=9D/c0zYcD6qyD3co2fDOOrez7t4+DKIKuMSCZDqtPTY=;
+ b=RfdP2G+9ABoRS1Vmt7mzdtlxK8vfCWrU01NNJSrtKnfzTj5yqbUgfpSFt7HJ0JqScNRG
+ eBLjs5wXRI22U9DbMEiJG28fU0M5+XgnqwTiqBBXAt++llymhbzd8cjFa8pRLppMBIIb
+ bqqRf8lg9FYinAREcbCN3zwI5wF09882WP+UQMqvh9sd1mtGPABst8ssbpXlNX205TkK
+ QseTRfJ2j50ZQATRqQAuZyudBite05cXLXGPFZrxpBAHl2x2FavDVpGBrND3au6Tjx8g
+ G/oMadktyudKM5zr61LiF1QmPAHp5W6cN9q6+c99+8cizoQpDf0RupfuHO5UxO93J4jb Cw== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3unnpeu5ed-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 29 Nov 2023 17:47:08 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3ATHl7P3001378
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 29 Nov 2023 17:47:07 GMT
+Received: from khsieh-linux1.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Wed, 29 Nov 2023 09:47:06 -0800
+From:   Kuogee Hsieh <quic_khsieh@quicinc.com>
+To:     <dri-devel@lists.freedesktop.org>, <robdclark@gmail.com>,
+        <sean@poorly.run>, <swboyd@chromium.org>, <dianders@chromium.org>,
+        <vkoul@kernel.org>, <daniel@ffwll.ch>, <airlied@gmail.com>,
+        <agross@kernel.org>, <dmitry.baryshkov@linaro.org>,
+        <andersson@kernel.org>
+CC:     Kuogee Hsieh <quic_khsieh@quicinc.com>,
+        <quic_abhinavk@quicinc.com>, <quic_jesszhan@quicinc.com>,
+        <quic_sbillaka@quicinc.com>, <marijn.suijten@somainline.org>,
+        <freedreno@lists.freedesktop.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v8 0/7] incorporate pm runtime framework and eDP clean up
+Date:   Wed, 29 Nov 2023 09:46:43 -0800
+Message-ID: <1701280010-32476-1-git-send-email-quic_khsieh@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZWb9vGuZck1sGBIN@duo.ucw.cz>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: CYX9_UL5BXvbZj7UiSiuKUBwm2wd9Mgl
+X-Proofpoint-ORIG-GUID: CYX9_UL5BXvbZj7UiSiuKUBwm2wd9Mgl
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-29_15,2023-11-29_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 impostorscore=0
+ mlxscore=0 phishscore=0 mlxlogscore=786 priorityscore=1501 adultscore=0
+ clxscore=1011 bulkscore=0 malwarescore=0 suspectscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
+ definitions=main-2311290135
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 10:00:44AM +0100, Pavel Machek wrote:
->On Tue 2023-11-28 21:10:03, Greg Kroah-Hartman wrote:
->> On Tue, Nov 28, 2023 at 09:48:42PM +0100, Pavel Machek wrote:
->> > Hi!
->> >
->> > > > > > > Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
->> > > > > > >     RDMA/hfi1: Use FIELD_GET() to extract Link Width
->> > > > > >
->> > > > > > This is a good cleanup, but not a bugfix.
->> > > > > >
->> > > > > > > Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
->> > > > > > >     atm: iphase: Do PCI error checks on own line
->> > > > > >
->> > > > > > Just a cleanup, not sure why it was picked for stable.
->> > > > >
->> > > > > Just an additional bit of information, there have been quite many cleanups
->> > > > > from me which have recently gotten the stable notification for some
->> > > > > mysterious reason. When I had tens of them in my inbox and for various
->> > > > > kernel versions, I immediately stopped caring to stop it from happening.
->> > > > >
->> > > > > AFAIK, I've not marked those for stable inclusion so I've no idea what
->> > > > > got them included.
->> > > >
->> > > > Fixes tag can do it. Plus, "AUTOSEL" robot does it randomly, with no
->> > > > human oversight :-(.
->> > >
->> > > the autosel bot has lots of oversight.
->> >
->> > Can you describe how that oversight works?
->>
->> There have been many papers and presentations about it, no need for me
->> to say it all here again...
->
->Give a pointer.
->
->And explain why AUTOSEL is full of cleanups, as noticed by Ilpo, me
->and others. AFAICT Sasha does not hand-check patches picked by
->AUTOSEL, simply spams the mailing lists, and hopes that maintainers
->will react. And they won't, because they don't understand the
+The purpose of this patch series is to incorporate pm runtime framework
+into MSM eDP/DP driver so that eDP panel can be detected by DRM eDP panel
+driver during system probe time. During incorporating procedure, original
+customized pm realted fucntions, such as dp_pm_prepare(), dp_pm_suspend(),
+dp_pm_resume() and dp_pm_prepare(), are removed and replaced with functions
+provided by pm runtiem framework such as pm_runtime_force_suspend() and
+pm_runtime_force_resume(). In addition, both eDP aux-bus and irq handler
+are bound at system probe time too.
 
-Awesome feedback, thanks.
+Please be noted that v8 patches is rebase on top of latest msm-next branch
 
->implications, and simply ignore the spam. Or they will, and Sasha
->simply ignores the reply.
+Kuogee Hsieh (7):
+  drm/msm/dp: tie dp_display_irq_handler() with dp driver
+  drm/msm/dp: rename is_connected with link_ready
+  drm/msm/dp: use drm_bridge_hpd_notify() to report HPD status changes
+  drm/msm/dp: move parser->parse() and dp_power_client_init() to probe
+  drm/msm/dp: incorporate pm_runtime framework into DP driver
+  drm/msm/dp: delete EV_HPD_INIT_SETUP
+  drm/msm/dp: move of_dp_aux_populate_bus() to eDP probe()
 
-Incorrect, I just gotten tired of litigating this with *you*.
-
-How about this: instead of complaining about work you get for free, try
-doing it yourself and send us a list of patches that should go into the
--stable tree during the next merge window. Deal?
+ drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c |   4 -
+ drivers/gpu/drm/msm/dp/dp_aux.c         |  39 +++-
+ drivers/gpu/drm/msm/dp/dp_display.c     | 337 ++++++++++++--------------------
+ drivers/gpu/drm/msm/dp/dp_display.h     |   3 +-
+ drivers/gpu/drm/msm/dp/dp_drm.c         |  14 +-
+ drivers/gpu/drm/msm/dp/dp_power.c       |  16 --
+ drivers/gpu/drm/msm/dp/dp_power.h       |  11 --
+ drivers/gpu/drm/msm/msm_drv.h           |   5 -
+ 8 files changed, 164 insertions(+), 265 deletions(-)
 
 -- 
-Thanks,
-Sasha
+2.7.4
+
