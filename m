@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B2B27FD121
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 09:41:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9208A7FD122
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 09:41:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229650AbjK2Iki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 03:40:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40760 "EHLO
+        id S230260AbjK2Iky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 03:40:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231221AbjK2IkG (ORCPT
+        with ESMTP id S230305AbjK2Ik0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 03:40:06 -0500
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::228])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BAFD19B7;
-        Wed, 29 Nov 2023 00:40:00 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 245C21BF20B;
-        Wed, 29 Nov 2023 08:39:55 +0000 (UTC)
+        Wed, 29 Nov 2023 03:40:26 -0500
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47A8A1BD9;
+        Wed, 29 Nov 2023 00:40:32 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 707364000B;
+        Wed, 29 Nov 2023 08:40:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1701247199;
+        t=1701247231;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=AKfCywz8yVWhuffi+1nkdllKuJTy6/CWyrIaSRqsEDo=;
-        b=idDYTh8FaXonBvu10jpAJAvqRXDUMcy3ydRDLkNHkYSI9BJ7ZZ9fS23LrJCTTpMILCV7Mi
-        R1hPCxUzohf/QP4DrynIEonaYa9zr6MEo1daksb5YCCT4zwKrP7ain62v8qu/a4E+N7QN+
-        JCt1cwaXAlGnow3OZZMcwB480LkPHgVRDNhAu+gHB6w0RR32dxFedr8Tu8QfTPRMhBgJqq
-        xwr/qxKl9mGj0p88Y3w2fSz7MLsI1ATrVyrOevFeNrlTaHDQMEHQodqtGfzoqMtgBeTS4t
-        uOhMqW2d2oMaG5zOlZ1dcHDDZ72G9Eeb+Z32AxpnBTKTQLLamuWPpoEDJMqqjQ==
-Date:   Wed, 29 Nov 2023 09:39:53 +0100
+        bh=F4WHEu2UhaCM6cUWSOjsX+5/aR0VdKdzzHzZ2V8osTk=;
+        b=mFQLKk5sZBWrCJqIdxGBpDdZukBQ9RPNMxydeLHeMGtsOj6GxRQ6s6Yv42M5B9yiATn2eD
+        nAfzCSN/4dZgSM1jznBDMwyWf6CNZRLf1pPnuCechP4ocpmTeHrTkppsWzeng/Pdg0rcBX
+        TOhfy++gFRC5Nx1QQRqQVm1xrA9yJAn+mRkUjOjBd9uMaoN5NCze5jR5+UkFJwbp7iTm6N
+        QagP+l6Nw5O6ec7CoyHGmuUQoz3wPmtfgJ1WW6HLymibXrhA+i7zThdml212j1ef2p+7fj
+        G31N0HM3zeULewamC5GzuCMoVP56x57IGbxeVpfK4iwCqwASpJ0lCsihCACIUw==
+Date:   Wed, 29 Nov 2023 09:40:26 +0100
 From:   Miquel Raynal <miquel.raynal@bootlin.com>
 To:     AceLan Kao <acelan.kao@canonical.com>
 Cc:     Tudor Ambarus <tudor.ambarus@linaro.org>,
@@ -45,11 +45,12 @@ Cc:     Tudor Ambarus <tudor.ambarus@linaro.org>,
         Mario Kicherer <dev@kicherer.org>,
         Chuanhong Guo <gch981213@gmail.com>, linux-spi@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 1/2] spi: Unify error codes by replacing -ENOTSUPP
- with -EOPNOTSUPP
-Message-ID: <20231129093953.00dc04da@xps-13>
-In-Reply-To: <20231129064311.272422-1-acelan.kao@canonical.com>
+Subject: Re: [PATCH v7 2/2] mtd: spi-nor: Stop reporting warning message
+ when soft reset is not suported
+Message-ID: <20231129094026.4dee1cb1@xps-13>
+In-Reply-To: <20231129064311.272422-2-acelan.kao@canonical.com>
 References: <20231129064311.272422-1-acelan.kao@canonical.com>
+        <20231129064311.272422-2-acelan.kao@canonical.com>
 Organization: Bootlin
 X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
@@ -58,67 +59,30 @@ Content-Transfer-Encoding: quoted-printable
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi AceLan,
 
-acelan.kao@canonical.com wrote on Wed, 29 Nov 2023 14:43:10 +0800:
+acelan.kao@canonical.com wrote on Wed, 29 Nov 2023 14:43:11 +0800:
 
 > From: "Chia-Lin Kao (AceLan)" <acelan.kao@canonical.com>
 >=20
-> This commit updates the SPI subsystem, particularly affecting "SPI MEM"
-> drivers and core parts, by replacing the -ENOTSUPP error code with
-> -EOPNOTSUPP.
+> When the software reset command isn't supported, we now stop reporting
+> the warning message to avoid unnecessary warnings and potential confusion.
 >=20
-> The key motivations for this change are as follows:
-> 1. The spi-nor driver currently uses EOPNOTSUPP, whereas calls to spi-mem
-> might return ENOTSUPP. This update aims to unify the error reporting
-> within the SPI subsystem for clarity and consistency.
->=20
-> 2. The use of ENOTSUPP has been flagged by checkpatch as inappropriate,
-> mainly being reserved for NFS-related errors. To align with kernel coding
-> standards and recommendations, this change is being made.
->=20
-> 3. By using EOPNOTSUPP, we provide more specific context to the error,
-> indicating that a particular operation is not supported. This helps
-> differentiate from the more generic ENOTSUPP error, allowing drivers to
-> better handle and respond to different error scenarios.
->=20
-> Risks and Considerations:
-> While this change is primarily intended as a code cleanup and error code
-> unification, there is a minor risk of breaking user-space applications
-> that rely on specific return codes for unsupported operations. However,
-> this risk is considered low, as such use-cases are unlikely to be common
-> or critical. Nevertheless, developers and users should be aware of this
-> change, especially if they have scripts or tools that specifically handle
-> SPI error codes.
->=20
-> This commit does not introduce any functional changes to the SPI subsystem
-> or the affected drivers.
->=20
+> Reviewed-by: Dhruva Gole <d-gole@ti.com>
+> Reviewed-by: Michael Walle <michael@walle.cc>
+> Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+> Acked-by: Pratyush Yadav <pratyush@kernel.org>
 > Signed-off-by: Chia-Lin Kao (AceLan) <acelan.kao@canonical.com>
->=20
-> ---
-> v5. distinguish -EOPNOTSUPP from -ENOTSUPP
-> v6. a. spi_nor_set_4byte_addr_mode() should check -EOPNOTSUPP, all
->        callbacks of set_4byte_addr_mode() will eventually return
->        -EOPNOTSUPP if the checking failed.
->     b. Update comment to describe the reason for the patch and the
->        affected parts.
->     c. Update the kernel-doc of exec_op() in struct spi_controller_mem_ops
-> v7. added comment for the return code changes may affect userspace, and
->     the risk after this change
-> ---
 
-Looks sensible to me, let's make the conversion.
-
-Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
 Thanks,
 Miqu=C3=A8l
