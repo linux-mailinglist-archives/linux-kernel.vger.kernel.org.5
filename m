@@ -2,75 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 752C77FD040
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 09:00:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E682D7FD04C
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 09:04:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230099AbjK2IAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 03:00:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58652 "EHLO
+        id S229832AbjK2IEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 03:04:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230044AbjK2IAD (ORCPT
+        with ESMTP id S229488AbjK2IEO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 03:00:03 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E59E11990
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 00:00:08 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-548ce39b101so8429174a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 00:00:08 -0800 (PST)
+        Wed, 29 Nov 2023 03:04:14 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DDCE1735
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 00:04:20 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-54acdd65c88so6959662a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 00:04:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701244807; x=1701849607; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=wUfUD/oQz54nGG7jbhVhWy8+i62QavId9Qpb09Q0Qyw=;
-        b=SsZR4+oDpas/jZScqZ7oUKNCMebX09qBx6NIIFkhqwVmAlhKNv4wV2i0c6fbZDowl+
-         PnHiJhKq+VpR5ieOt1v/3pkvx6RjudaQUQFlsAIAB0V47xyxP/DPUcfZwC3WmNtKx7nk
-         irAT/bgKvM11eXCY11a8TKHmJRtWRPyq56WT0n67Lc65B8R4F7yP9+NoV9A33b+XI3f8
-         WWXH0LLue8QzVMVJ6jMRq3fJDVMz0NHkk+lTC4CGS8ehoxEffalqpgaeK/RisgNZTPFw
-         ick8lm6Z12ObX0+dwpYVfp1bd7XDHL0wY1OrUJQ+YoCoxRNC/vfti7ksWQVgoCutHFMn
-         zruQ==
+        d=linaro.org; s=google; t=1701245059; x=1701849859; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=IQNgKi21QGNM6yhhBZjxgV+dgrVijEVFKUYc5UpN0qw=;
+        b=yPD4RyvuHVacXHzD5F7b+tqRFbquIeuvd4vHgqLJaN8vnvtXebIH3fGXAP+E+DWwtC
+         QyDV6gQokz6BRYT6PKqKLRTZPbCp67qunp1IrUsPAlzkEiQ8gNGMszpZdek0PbQpyuz/
+         wp2BcVp+37yyDFAFY6ABbrk/K+RzmihAjqtAESF+bgaQvW6jhsClCkMxrAfkkp8cbuyQ
+         RtA8irigB/0+wj1lAgDfIhBclfrFSgal9KIjF2eWb/Ree7QL6eUdnUAi7RcKgp/GYjMi
+         1SJYnefYZOKBCrah7F7anzCJKwB60AplE0y6v/xKvxlHYFWrjijVtYLlx/rhYisI012O
+         KJCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701244807; x=1701849607;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wUfUD/oQz54nGG7jbhVhWy8+i62QavId9Qpb09Q0Qyw=;
-        b=WQztO8B9syQUm8vsBrT8mqM22oolqZfkf1caPjTbM+J2xd3G0dLeQUjU69ozIsir+f
-         WN722D+x916gcreGcldbmvi5Kb2dvZxlx/TCENTa/Fjg9fSGW6kUUFpQwUqPf440geXJ
-         mUL1/6hFzaRSjk3Wugj8cWBG7HGbIv4zQYaX3Fpp+oED6f/5d9WhngTGq+QfgCODy8ZT
-         wNRMbU32tIEsFTKMS6GHiJ4Rpwd8sebylOynkDuc22GyeXu78q099WIutPaKXdAm59eF
-         OjIYwUAyw3welukuMGuVcYcdL0hJnCaQBeASg9bnMk4cLgbA9LFahnrUQTVvpaY/VXFl
-         mbvQ==
-X-Gm-Message-State: AOJu0Yx2yAQvQzV1v1YDrMi38Qoh5e/WieVEyG6Q6jbG/BndHAGFo1lE
-        iqv+/8ryWE0zyEMZmLF6Bc9DTP/WzJtir6OyVz0=
-X-Google-Smtp-Source: AGHT+IEc14tdp6TvnxmKroZTOZjJqE7gPgswZziSscWMYri53yt+h5aqh/mjyofHXov+LCugo6Wcsg==
-X-Received: by 2002:a05:6402:320e:b0:54b:4e14:ee14 with SMTP id g14-20020a056402320e00b0054b4e14ee14mr8576603eda.23.1701244807219;
-        Wed, 29 Nov 2023 00:00:07 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701245059; x=1701849859;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=IQNgKi21QGNM6yhhBZjxgV+dgrVijEVFKUYc5UpN0qw=;
+        b=UtCidb3n+KJ9yo4V+TfzekrLSxlZECETEHpuB1C9MLY4Ngt62qoWHet9tEhai+1nlC
+         tni/kNFzPYG3QY8lh625uVfJAIEqby3z8p//DnJ0JrJdVgo6SWgx5F3NAeczgdRYqYl8
+         h1bmtkfCGFsKDXVxGh7E9vcp7YRpxtl4UkWGzIultrWfIMe7Kojx3yNkuPCUS1M0EV73
+         d36Ze8D4gNrWM0d+vCneShqyCSaKKBDqlggfx7I7WsCmorPsSzyV1A7eyelOrN5gBf/j
+         zT1dJLHZn/VbteBWE64e3LG1QRMT/ZmrK/z0gTlCA8FqMCH25QdF5JpKAbcFlekudxva
+         iDuQ==
+X-Gm-Message-State: AOJu0YxZ8qAaBmRVjUfTTZ16A+dm3w0/Gif3P7+/5iEli6+HV4p6mA6z
+        BlFQSKH+r/+WO4cHbtLIWvmMpQ==
+X-Google-Smtp-Source: AGHT+IET11xmLABfhINR6SmMhez6ufsGrfgZ0Ea9E7SDq5BgT3koHb0TDqhvx2dXpx8Mx40xD/WM1Q==
+X-Received: by 2002:a17:906:7396:b0:a0e:79b3:3cf5 with SMTP id f22-20020a170906739600b00a0e79b33cf5mr5756752ejl.69.1701245058986;
+        Wed, 29 Nov 2023 00:04:18 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.223.109])
-        by smtp.gmail.com with ESMTPSA id s3-20020a056402014300b00543b2d6f88asm7061697edu.15.2023.11.29.00.00.05
+        by smtp.gmail.com with ESMTPSA id t27-20020a1709063e5b00b009fd727116b4sm7590959eji.129.2023.11.29.00.04.17
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Nov 2023 00:00:06 -0800 (PST)
-Message-ID: <a0ac295b-ea96-475c-acde-5a61de8ca170@linaro.org>
-Date:   Wed, 29 Nov 2023 09:00:04 +0100
+        Wed, 29 Nov 2023 00:04:18 -0800 (PST)
+Message-ID: <adf1e932-a201-475e-a562-4e35954159ee@linaro.org>
+Date:   Wed, 29 Nov 2023 09:04:17 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] pinctrl: samsung: add irq_set_affinity() for non wake
- up external gpio interrupt
-To:     Youngmin Nam <youngmin.nam@samsung.com>,
-        Sam Protsenko <semen.protsenko@linaro.org>
-Cc:     tomasz.figa@gmail.com, s.nawrocki@samsung.com,
-        alim.akhtar@samsung.com, linus.walleij@linaro.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <CGME20231126091120epcas2p4a1320e3b0f9be8f8a0f575a322981d38@epcas2p4.samsung.com>
- <20231126094618.2545116-1-youngmin.nam@samsung.com>
- <bb738a6b-815d-4fad-b73f-559f1ba8cd68@linaro.org> <ZWU75VtJ/mXpMyQr@perf>
- <1fd55b36-0837-4bf7-9fde-e573d6cb214a@linaro.org>
- <CAPLW+4n0SAOTb6wocY-WjkxgSFMbx+nVuqdaPcNYVDsbfg+EfA@mail.gmail.com>
- <ZWbjPIydJRrPnuDy@perf>
+Subject: Re: [PATCH v5 1/2] dt-bindings: iio: pressure: add honeywell,hsc030
 Content-Language: en-US
+To:     Petre Rodan <petre.rodan@subdimension.ro>,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org
+Cc:     Conor Dooley <conor+dt@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Jonathan Cameron <jic23@kernel.org>
+References: <20231129070432.1437-1-petre.rodan@subdimension.ro>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -116,12 +111,12 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <ZWbjPIydJRrPnuDy@perf>
+In-Reply-To: <20231129070432.1437-1-petre.rodan@subdimension.ro>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -129,62 +124,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/11/2023 08:07, Youngmin Nam wrote:
-> On Tue, Nov 28, 2023 at 03:35:53PM -0600, Sam Protsenko wrote:
->> On Tue, Nov 28, 2023 at 1:29 AM Krzysztof Kozlowski
->> <krzysztof.kozlowski@linaro.org> wrote:
->>>
->>> On 28/11/2023 02:01, Youngmin Nam wrote:
->>>> On Mon, Nov 27, 2023 at 10:54:56AM +0100, Krzysztof Kozlowski wrote:
->>>>> On 26/11/2023 10:46, Youngmin Nam wrote:
->>>>>> To support affinity setting for non wake up external gpio interrupt,
->>>>>> add irq_set_affinity callback using irq number from pinctrl driver data.
->>>>>>
->>>>>> Before this patch, changing the irq affinity of gpio interrupt is not possible:
->>>>>>
->>>>>>     # cat /proc/irq/418/smp_affinity
->>>>>>     3ff
->>>>>>     # echo 00f > /proc/irq/418/smp_affinity
->>>>>
->>>>> Does this command succeed on your board?
->>>>>
->>>> Yes.
->>>
->>> Hm, fails all the time one mine.
->>>
->>
->> I tried to test this patch on E850-96, and an attempt to write into
->> smp_affinity (for some GPIO irq) also fails for me:
->>
->>     # echo f0 > smp_affinity
->>     -bash: echo: write error: Input/output error
->>
->> When I add some pr_err() to exynos_irq_set_affinity(), I can't see
->> those printed in dmesg. So I guess exynos_irq_set_affinity() doesn't
->> get called at all. So the error probably happens before
->> .irq_set_affinity callback gets called.
->>
->> Youngmin, can you please try and test this patch on E850-96? This
->> board is already supported in upstream kernel. For example you can use
->> "Volume Up" interrupt for the test, which is GPIO irq.
->>
-> 
-> I intened this affinity setting would work only on *Non* Wakeup External Interrupt.
-> The "Volume Up" on E850-96 board is connected with "gpa0-7" and
-> that is Wakeup External interrupt so that we can't test the callback.
-> 
-> I couldn't find out a pin for the test on E850-96 board yet.
-> We can test if there is a usage of *Non" Wake up External Interrupt of GPIO
-> on E850-96 board.
-> 
-> Do you have any idea ?
+On 29/11/2023 08:04, Petre Rodan wrote:
+> Adds binding for digital Honeywell TruStability HSC and SSC series
+> pressure and temperature sensors.
+> Communication is one way. The sensor only requires 4 bytes worth of
+> clock pulses on both i2c and spi in order to push the data out.
+> The i2c address is hardcoded and depends on the part number.
+> There is no additional GPIO control.
 
-Please test on any upstream platform or upstream your existing platform.
-I hesitate to take this change because I don't trust Samsung that this
-was tested on mainline kernel. OK, for sure 100% it was not tested on
-mainline, but I am afraid that differences were far beyond just missing
-platforms. Therefore the issue might or might not exist at all. Maybe
-issue is caused by other Samsung non-upstreamed code.
+Your threading is broken (not existing) since v4, making it difficult to
+apply the patchset. Please fix it when sending v6.
+
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 Best regards,
 Krzysztof
