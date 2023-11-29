@@ -2,76 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ED557FDDD4
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 18:00:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 866977FDDD8
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 18:01:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231312AbjK2Q77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 11:59:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49758 "EHLO
+        id S231295AbjK2RAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 12:00:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231295AbjK2Q75 (ORCPT
+        with ESMTP id S231292AbjK2RAw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 11:59:57 -0500
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80314DC
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 09:00:03 -0800 (PST)
-Received: by mail-qk1-x733.google.com with SMTP id af79cd13be357-7788ebea620so357048285a.3
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 09:00:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1701277202; x=1701882002; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=U8mgkS00IbNP5jyZ+NO8ODgKFBs6g0ytgBOeKMTZ8ns=;
-        b=Cc5TfHivfaAnMCl2wCcKTmQ8V6KSXeBQ94Qc/hQQqHLMx94l/6q7kPVNFzn7Dor7Om
-         6r5o64nLBMpemmWLPtav/sto+wf49O3ontvSa18PfOd0XXjiMnKZtOqqCXk4x/3rwyzH
-         hQurXNSbwCRv1XenKKEVXvAtxgRL+DXNm9JeEvd+/mwrPPmI5BU/y6SAEoauTneFXVNz
-         iAL1/AENwaUWINoEwMac8Z93ItWqw77TbXbLuXyx+HAL5Iq7+JhO6rV8OxiIGkr454FE
-         5t/LT3LM3bnUyefxYAHxY4BKVtLnyH7KYRruznsMa0lB7/xjGjzc+fVK8VK3xX62Nax9
-         GazQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701277202; x=1701882002;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=U8mgkS00IbNP5jyZ+NO8ODgKFBs6g0ytgBOeKMTZ8ns=;
-        b=npfD0/412PaV19vfAI1QGCxjEUaOARgsGp0hcyqZy+N4IbwpHP6H7tg7cI87wL3YBu
-         dfmo5hdxZ5wE+jJEn9dGYJz/EKlTxJ3L1WUSIrdCZsHXCTDEtUo7qxxbVICMDAxIpsYy
-         lmkU5h/N0ebVCAk9PAEOkGvlZOgmA1yfp6br/E4qRmj1KleQeJvmmuAUqXdr5eeC7ub/
-         rDbA8qXCyVrlH6nMktquv2u/8sC1WZ0qIJIK1bB4md74OOP1IcE2dBigRhRAZypNuv+l
-         iT2g8hFQQgre1lJozqy/uG8TJnEBqxWcEATUys43A1LHA76GGoTIPx5W2wzYLSZrcZbi
-         wjKg==
-X-Gm-Message-State: AOJu0YxY82gz+QGZfjPqjhJ0UyaIS3yJjhT8xz7LCNYJfL2RyW3XxrJE
-        8y96b4Q5HQpNMBnS8MxRhzzHuw==
-X-Google-Smtp-Source: AGHT+IFMmcjiCa+i8CW0+x0EBy+ZJodS4kAFY34IuEihW6YJGVum8lmU2DvIyHxJC59g78xXhTu4kQ==
-X-Received: by 2002:a05:620a:2707:b0:77d:a0ee:f196 with SMTP id b7-20020a05620a270700b0077da0eef196mr14597254qkp.5.1701277202618;
-        Wed, 29 Nov 2023 09:00:02 -0800 (PST)
-Received: from localhost ([2620:10d:c091:400::5:ffba])
-        by smtp.gmail.com with ESMTPSA id rg7-20020a05620a8ec700b0077d8622ee6csm4397763qkn.81.2023.11.29.09.00.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Nov 2023 09:00:02 -0800 (PST)
-Date:   Wed, 29 Nov 2023 12:00:01 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Nhat Pham <nphamcs@gmail.com>
-Cc:     akpm@linux-foundation.org, cerasuolodomenico@gmail.com,
-        yosryahmed@google.com, sjenning@redhat.com, ddstreet@ieee.org,
-        vitaly.wool@konsulko.com, mhocko@kernel.org,
-        roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, chrisl@kernel.org, linux-mm@kvack.org,
-        kernel-team@meta.com, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, shuah@kernel.org
-Subject: Re: [PATCH v7 2/6] memcontrol: add a new function to traverse
- online-only memcg hierarchy
-Message-ID: <20231129170001.GF135852@cmpxchg.org>
-References: <20231127234600.2971029-1-nphamcs@gmail.com>
- <20231127234600.2971029-3-nphamcs@gmail.com>
- <20231129150403.GB135852@cmpxchg.org>
+        Wed, 29 Nov 2023 12:00:52 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E39A2BC;
+        Wed, 29 Nov 2023 09:00:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701277259; x=1732813259;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=M9ssJjd+HXfjISSW4felR1dBwTKed2/2pddd3sy0Bbo=;
+  b=jH/cOi2DhbplREYyau/uulKgPb29GyxMO0+sLryLdtpYT7PbOKSRO70r
+   OVR57oZ+TNqUoexs4teS3mTrYKpMLXJflcvImsU0bKtmBHfDTko1uo1IV
+   4wj1hR5wFN2ccKSauYX44vgPpmhxhfInnSGax/fJ0jw+LnbWrXUEVPvGm
+   3bQjP8GQlPLsIPE+05O6CTLAYygngUc7aZvMav3r4h6PZ3WDbNrZzV9OD
+   7B1vSx8cMVnL+WsohoIpc0Ft5GIWEqe0OUuXXCBbLkyVBPzm72jFRDbrp
+   /yqQaFj/hUhx4xd3XMhTdb6Kp3JD2tWRuO164VBSv3ijEenDlj9VHt+HR
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="6405651"
+X-IronPort-AV: E=Sophos;i="6.04,235,1695711600"; 
+   d="scan'208";a="6405651"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 09:00:58 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="942389594"
+X-IronPort-AV: E=Sophos;i="6.04,235,1695711600"; 
+   d="scan'208";a="942389594"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga005.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 09:00:49 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1r8NvY-00000000Usn-3nmv;
+        Wed, 29 Nov 2023 19:00:44 +0200
+Date:   Wed, 29 Nov 2023 19:00:44 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Fabio Estevam <festevam@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
+        Jianlong Huang <jianlong.huang@starfivetech.com>,
+        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        openbmc@lists.ozlabs.org, linux-mips@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>, Jacky Bai <ping.bai@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Sean Wang <sean.wang@kernel.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Hal Feng <hal.feng@starfivetech.com>
+Subject: Re: [PATCH v4 16/23] pinctrl: imx: Convert to use grp member
+Message-ID: <ZWduPKmBWkaIdLhi@smile.fi.intel.com>
+References: <20231129161459.1002323-1-andriy.shevchenko@linux.intel.com>
+ <20231129161459.1002323-17-andriy.shevchenko@linux.intel.com>
+ <CAOMZO5CZpQjWKimNReUkwHOc-mF8vWoq2HDhjGKSu6E3g5-aVw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231129150403.GB135852@cmpxchg.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOMZO5CZpQjWKimNReUkwHOc-mF8vWoq2HDhjGKSu6E3g5-aVw@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,20 +98,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 10:04:05AM -0500, Johannes Weiner wrote:
-> On Mon, Nov 27, 2023 at 03:45:56PM -0800, Nhat Pham wrote:
-> > The new zswap writeback scheme requires an online-only memcg hierarchy
-> > traversal. Add this functionality via the new mem_cgroup_iter_online()
-> > function - the old mem_cgroup_iter() is a special case of this new
-> > function.
-> > 
-> > Suggested-by: Andrew Morton <akpm@linux-foundation.org>
-> > Signed-off-by: Nhat Pham <nphamcs@gmail.com>
+On Wed, Nov 29, 2023 at 01:36:49PM -0300, Fabio Estevam wrote:
+> Hi Andy,
 > 
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> On Wed, Nov 29, 2023 at 1:15 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> >
+> > Convert drivers to use grp member embedded in struct group_desc.
+> 
+> You explained what you did, but you did not explain the reason.
 
-I saw Michal's reply on the other thread only after I sent this.
+It's explained in the first paragraph in the cover letter. Do you
+want to copy this into each commit message?
 
-I agree with him it would be better to just check mem_cgroup_online()
-in the shinker callsite and leave mem_cgroup_iter() as-is. If it's
-offline, just continue to the next mem_cgroup_iter() invocation.
+Note, `b4 shazam ...` has an ability to consider patch series as Git PR,
+where the cover letter goes as template for the merge commit message.
+That's how I plan to merge it to my tree.
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
