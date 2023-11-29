@@ -2,136 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 892BE7FD985
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 15:35:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D88667FD98A
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 15:35:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233904AbjK2OfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 09:35:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59968 "EHLO
+        id S234434AbjK2Off (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 09:35:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231737AbjK2OfO (ORCPT
+        with ESMTP id S234323AbjK2Of3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 09:35:14 -0500
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 355ADD54
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 06:35:20 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-50bc8e37b5fso393789e87.0
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 06:35:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701268518; x=1701873318; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xNVxZr2PGXk5Amnu5ijH+LBpR+6BGyEPiBFMmHwdOq4=;
-        b=FW8ygdndbfXbds1FutGJGnMhBXS2doU3Gxcafe6mdrmEpthBni1lSgyVjSYFybytPG
-         w4OzwYySeoXqaWXhvbWc7riXH5UCBMbBQZ+w6RL1gS/iove59B1u9rPveAwqK0743uO2
-         IDQgRj6he0q3yAdL3Nw6ulJYUmdiMjeOj42UQU2Q1FOH8MYKhY9FomBeQFmCWE3HYRMA
-         TKlzIT8ZlJNJrjqZcdX7k5L+txUrSMew6Pea6t29l//UChCERWFfEqyMLCsaIvQLWIE0
-         EbNZzdSj7cDYa0VkE2eancyKgCtLf+9nl7q0V7QcxAJAk6qXqGSRp+xSFleGzurcYwxC
-         Hw7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701268518; x=1701873318;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xNVxZr2PGXk5Amnu5ijH+LBpR+6BGyEPiBFMmHwdOq4=;
-        b=GXdkhM/3y6af4N/Egk2b3AZ1puaVv5Ok/1pLtedoH756/8N69bGGBRGFy9nJI5HRgq
-         eaE4lbHg9URmZ3JKjmuS9zjTg8wnD2lQSPp/4QDxUW2JYG3RkOxQgG5ALnkvqc6K3FXe
-         RLEr69urdpIiI7p1XpDHjzvPs7+o5PoAbyp/BTPNQtD8xTHhqgtkHnohsxWTLk0JqR2P
-         eh9fWgeeHzhUxcinbKpE/yfbZbfflTucz9wVH4GiRswvA5hnIz8+Qr0BLlooH/TJHXGS
-         UOtRaQlorfUKmZyrDTHkFG6mqfzUefqvkzqNdkLPdFmEpM1nFJuKBm91iKpXOaEsnZaW
-         +yYA==
-X-Gm-Message-State: AOJu0Ywxj3dfRY8ikFNnzygjaF6ZYVExe2se1ieo3FC1oqngkM5zxljc
-        1WcxfXRuRejK5rFPYk1zQQrC67sNAs22X+C0QaQ=
-X-Google-Smtp-Source: AGHT+IEYOEZo6LhlnRDC5hYBVCzOWl+y5/ywl9mQenA7zKzy9eWL1DSSBL3mTHQV2b+tiYXpzYlAQQ==
-X-Received: by 2002:ac2:5608:0:b0:50b:c4fe:a794 with SMTP id v8-20020ac25608000000b0050bc4fea794mr1237217lfd.24.1701268518458;
-        Wed, 29 Nov 2023 06:35:18 -0800 (PST)
-Received: from [192.168.209.173] (178235187166.dynamic-4-waw-k-2-3-0.vectranet.pl. [178.235.187.166])
-        by smtp.gmail.com with ESMTPSA id cd19-20020a170906b35300b009ff783d892esm8084893ejb.146.2023.11.29.06.35.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Nov 2023 06:35:18 -0800 (PST)
-Message-ID: <3ec70fd9-11a3-4bd3-bd8c-a73c3d44dcde@linaro.org>
-Date:   Wed, 29 Nov 2023 15:35:15 +0100
+        Wed, 29 Nov 2023 09:35:29 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADDFD19A;
+        Wed, 29 Nov 2023 06:35:35 -0800 (PST)
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ATEX1M4007854;
+        Wed, 29 Nov 2023 14:35:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=84dgAyyjWyetZQdS5ITnDLJAcSc79AlusTv7kFI15mM=;
+ b=nUXwUblM1WYfj7+b8+vyi4NgclDC522CYawTZvmpBQ3jEGYKiXbhur8GrRMRDJF6Mj2s
+ /RWFr/XoN35c4w2kJmgKkcMHBC9LSLNSqyCWDnLsyY+HX2izduQ6jc4EplXL4SnyI79d
+ 1GG1L1YQR5/JaEREne5pRRZ3wM7RWcMkAO0SyxPj8om8NYkGPoqlpHd7XhGt40KWU5w8
+ /KZ6RYmzm0+eyxJ/YzNDpyQSB9M4vK5AKv34Oa3h0rFhRYZDzXobpbd1q19UF3OoO2xY
+ 4vYA9Awbb0354S7M9+RaXtSQSO+bJHBq4W5LJ5Xds28v8VjtW4VlzqbXcTxQgfR4U9ek wQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3up75k03tk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 29 Nov 2023 14:35:33 +0000
+Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3ATEXOvf009646;
+        Wed, 29 Nov 2023 14:35:32 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3up75k03t0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 29 Nov 2023 14:35:32 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3ATE6Qe0004403;
+        Wed, 29 Nov 2023 14:35:31 GMT
+Received: from smtprelay05.dal12v.mail.ibm.com ([172.16.1.7])
+        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3ukwy1y71q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 29 Nov 2023 14:35:31 +0000
+Received: from smtpav02.dal12v.mail.ibm.com (smtpav02.dal12v.mail.ibm.com [10.241.53.101])
+        by smtprelay05.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3ATEZV1523397088
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 29 Nov 2023 14:35:31 GMT
+Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0B48C5805F;
+        Wed, 29 Nov 2023 14:35:31 +0000 (GMT)
+Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3971558051;
+        Wed, 29 Nov 2023 14:35:30 +0000 (GMT)
+Received: from li-2c1e724c-2c76-11b2-a85c-ae42eaf3cb3d.ibm.com.com (unknown [9.61.149.198])
+        by smtpav02.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Wed, 29 Nov 2023 14:35:30 +0000 (GMT)
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+To:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     jjherne@linux.ibm.com, pasic@linux.ibm.com,
+        alex.williamson@redhat.com, borntraeger@linux.ibm.com,
+        kwankhede@nvidia.com, frankja@linux.ibm.com,
+        imbrenda@linux.ibm.com, david@redhat.com
+Subject: [PATCH] s390/vfio-ap: handle response code 01 on queue reset
+Date:   Wed, 29 Nov 2023 09:35:24 -0500
+Message-ID: <20231129143529.260264-1-akrowiak@linux.ibm.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] arm64: dts: qcom: sm8550: correct TX Soundwire clock
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Neil Armstrong <neil.armstrong@linaro.org>
-References: <20231129140537.161720-1-krzysztof.kozlowski@linaro.org>
- <20231129140537.161720-2-krzysztof.kozlowski@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20231129140537.161720-2-krzysztof.kozlowski@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: Wh_sxyqNi8eoxitQQ6JunvZBuky1cP6p
+X-Proofpoint-GUID: 47QYZ6reoqUfJKHJWdjE3qAOhmpsEUSD
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-29_12,2023-11-29_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
+ priorityscore=1501 malwarescore=0 mlxscore=0 phishscore=0 mlxlogscore=999
+ adultscore=0 bulkscore=0 spamscore=0 suspectscore=0 impostorscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311290110
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29.11.2023 15:05, Krzysztof Kozlowski wrote:
-> The TX Soundwire controller should take clock from TX macro codec, not
-> VA macro codec clock, otherwise the clock stays disabled.  This looks
-> like a copy-paste issue, because the SC8280xp code uses here correctly
-> clock from TX macro.  The VA macro clock is already consumed by TX macro
-> codec, thus it won't be disabled by this change.
-> 
-> Fixes: 61b006389bb7 ("arm64: dts: qcom: sm8550: add Soundwire controllers")
-> Reported-by: Neil Armstrong <neil.armstrong@linaro.org>
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
-Interestingly, downstream 8550 has
+In the current implementation, response code 01 (AP queue number not valid)
+is handled as a default case along with other response codes returned from
+a queue reset operation that are not handled specifically. Barring a bug,
+response code 01 will occur only when a queue has been externally removed
+from the host's AP configuration; nn this case, the queue must
+be reset by the machine in order to avoid leaking crypto data if/when the
+queue is returned to the host's configuration. The response code 01 case
+will be handled specifically by logging a WARN message followed by cleaning
+up the IRQ resources.
 
-qcom,use-clk-id = <VA_CORE_CLK>;
+Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+---
+ drivers/s390/crypto/vfio_ap_ops.c | 31 +++++++++++++++++++++++++++++++
+ 1 file changed, 31 insertions(+)
 
-which doesn't seem to be used in techpack
+diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
+index 4db538a55192..91d6334574d8 100644
+--- a/drivers/s390/crypto/vfio_ap_ops.c
++++ b/drivers/s390/crypto/vfio_ap_ops.c
+@@ -1652,6 +1652,21 @@ static int apq_status_check(int apqn, struct ap_queue_status *status)
+ 		 * a value indicating a reset needs to be performed again.
+ 		 */
+ 		return -EAGAIN;
++	case AP_RESPONSE_Q_NOT_AVAIL:
++		/*
++		 * This response code indicates the queue is not available.
++		 * Barring a bug, response code 01 will occur only when a queue
++		 * has been externally removed from the host's AP configuration;
++		 * in which case, the queue must be reset by the machine in
++		 * order to avoid leaking crypto data if/when the queue is
++		 * returned to the host's configuration. In this case, let's go
++		 * ahead and log a warning message and return 0 so the AQIC
++		 * resources get cleaned up by the caller.
++		 */
++		WARN(true,
++		     "Unable to reset queue %02x.%04x: not in host AP configuration\n",
++		     AP_QID_CARD(apqn), AP_QID_QUEUE(apqn));
++			return 0;
+ 	default:
+ 		WARN(true,
+ 		     "failed to verify reset of queue %02x.%04x: TAPQ rc=%u\n",
+@@ -1736,6 +1751,22 @@ static void vfio_ap_mdev_reset_queue(struct vfio_ap_queue *q)
+ 		q->reset_status.response_code = 0;
+ 		vfio_ap_free_aqic_resources(q);
+ 		break;
++	case AP_RESPONSE_Q_NOT_AVAIL:
++		/*
++		 * This response code indicates the queue is not available.
++		 * Barring a bug, response code 01 will occur only when a queue
++		 * has been externally removed from the host's AP configuration;
++		 * in which case, the queue must be reset by the machine in
++		 * order to avoid leaking crypto data if/when the queue is
++		 * returned to the host's configuration. In this case, let's go
++		 * ahead and log a warning message then clean up the AQIC
++		 * resources.
++		 */
++		WARN(true,
++		     "Unable to reset queue %02x.%04x: not in host AP configuration\n",
++		     AP_QID_CARD(q->apqn), AP_QID_QUEUE(q->apqn));
++		vfio_ap_free_aqic_resources(q);
++		break;
+ 	default:
+ 		WARN(true,
+ 		     "PQAP/ZAPQ for %02x.%04x failed with invalid rc=%u\n",
+-- 
+2.41.0
 
-Konrad
