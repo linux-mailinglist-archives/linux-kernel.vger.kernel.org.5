@@ -2,173 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41C5D7FD318
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 10:47:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D392E7FD31F
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 10:47:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229848AbjK2JrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 04:47:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45708 "EHLO
+        id S229561AbjK2Jr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 04:47:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjK2JrN (ORCPT
+        with ESMTP id S229974AbjK2JrU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 04:47:13 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1197219BB
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 01:47:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701251236;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8FUL7xaq2WNQBPHMTY8ZTJkkLmUhL7UnsbnYobOmCzM=;
-        b=cF23uCnbDgtBVu/PFjh4DnfmKASshe8nXxLYBnt49brIdjx1mpRO8XsQ5JU9hk6zk1DC+z
-        QDQzqCRUbBOooxBkQmXJDgBQ507MCo0KE3fB/HlsNX71mAbyu8ljKscxUr5X2ci8jEDb94
-        bPZTxEFX9/tNzcRBfXaBGkUPwBuevZw=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-260-ehgvcEH5Nvy-vKQH6U5XAg-1; Wed, 29 Nov 2023 04:47:14 -0500
-X-MC-Unique: ehgvcEH5Nvy-vKQH6U5XAg-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-9fffa4c4f28so489684166b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 01:47:14 -0800 (PST)
+        Wed, 29 Nov 2023 04:47:20 -0500
+Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1190419B2;
+        Wed, 29 Nov 2023 01:47:25 -0800 (PST)
+Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-5cd59f77d2dso61316997b3.3;
+        Wed, 29 Nov 2023 01:47:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701251244; x=1701856044; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=8qPZDWdHAVcZMmK+WGuyolxgHPOaDer+ydi9AIrYvTQ=;
+        b=MW6KFfWpnvkPazes9uJ5z3lzR0/JXzHUa94TnVNHTczlOx2MK2qrjALRBSKjDvmoJ0
+         gFeL/XI0+W1iDNNOz9ssrQWDuAW4AmeN6Y/ReJ4+WhsIoF0re+LQvRxSR9HZyQ6R75ja
+         ePp88dkeJcmyx+FOH9N7SaQ8iWyp7YFxNI6cCRwhHqJSKTW/R9QMlboZraOA+cyEyQqp
+         lhH9sMA9M7prY2BWz2hfUe+dzLg+fEi1XfUf/6zP9q40A/t3V6d6tOgRKXX2x+Yta10Q
+         SaSUDNC/rQY76avhSbYu5c6fEu6Uy4nNV13dL1DCo8aIH0cciUgD2hs7g0WWWkNruVI3
+         OWVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701251233; x=1701856033;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8FUL7xaq2WNQBPHMTY8ZTJkkLmUhL7UnsbnYobOmCzM=;
-        b=gZ0T6Yzm8k2RFLfXrzFtU6BnqGMUVshQ0ujiP5N//JLYZQH8PjEEK3Km/U2kGapoTg
-         0GV/dbrBio7OyaNsXwz+aSRR+DCkSf/oSjAQ2XedJ2D2H4ZhnbKSdfBnFyhVtN3nw90O
-         mhyi7JLkz5ieRY0Iz/PoK2lgCtLVL7KDEgTtQiOpYIRxs6UlERhSMNJgZ8z0bedbuWGM
-         t+5lV2FzqvRLsS8xfKzBHoainz6Z+F4R4sZnqp7tQ0QWruvzcSxrRmD+OLmz/uD9rm/d
-         aUnet5qrQZ2MMdeHJk61Is8m+uYnCIllZ6B7XTzsVnq5n9LdGy1eLFpJ1XcB1g0X/yFr
-         W6pg==
-X-Gm-Message-State: AOJu0YyBdCZVi29yVNq3sW3+jdkqtJaKZMnlftnO5DZUCJNapRtpR1oR
-        urLq8knYokmemNiPJ3az8Bf+cELLTxJBawIAU664WbslOnFep3UtdWyXfcLM5/G/H0V8L5yflif
-        R5VQx90PWUzhiK05W8lxNkn/E
-X-Received: by 2002:a17:906:5349:b0:a0a:391d:2dad with SMTP id j9-20020a170906534900b00a0a391d2dadmr13424741ejo.75.1701251233274;
-        Wed, 29 Nov 2023 01:47:13 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEcdjDb3B9JI1PiGSAemY+jsGIUrA/1PnJLVzsoGUWFBHqpyAnt/MTb5gBPxFzfJMBSJ9M+Hw==
-X-Received: by 2002:a17:906:5349:b0:a0a:391d:2dad with SMTP id j9-20020a170906534900b00a0a391d2dadmr13424728ejo.75.1701251232928;
-        Wed, 29 Nov 2023 01:47:12 -0800 (PST)
-Received: from redhat.com ([2.55.57.48])
-        by smtp.gmail.com with ESMTPSA id s8-20020a170906454800b00997d7aa59fasm7810806ejq.14.2023.11.29.01.47.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Nov 2023 01:47:12 -0800 (PST)
-Date:   Wed, 29 Nov 2023 04:47:08 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     "Ning, Hongyu" <hongyu.ning@linux.intel.com>
-Cc:     xuanzhuo@linux.alibaba.com,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        eperezma@redhat.com, jasowang@redhat.com, shannon.nelson@amd.com,
-        yuanyaogoog@chromium.org, yuehaibing@huawei.com,
-        kirill.shutemov@linux.intel.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com,
-        alexander.shishkin@linux.intel.com
-Subject: Re: [GIT PULL] virtio: features
-Message-ID: <20231129044651-mutt-send-email-mst@kernel.org>
-References: <20230903181338-mutt-send-email-mst@kernel.org>
- <647701d8-c99b-4ca8-9817-137eaefda237@linux.intel.com>
+        d=1e100.net; s=20230601; t=1701251244; x=1701856044;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8qPZDWdHAVcZMmK+WGuyolxgHPOaDer+ydi9AIrYvTQ=;
+        b=Di889yTrXmN8y+1Axyv4J3Bff1jqFk10jbCCpuUTZDhJN5S6U86Ao8ulZB04ToNepA
+         qqjBS950tp6NXl93MbBckYliMj1jNBWmGQPgzwvIdJ9S/3+m+wQroRTt23Mi+WcJEFbe
+         OUl8M2gow5Vwq84zmeRcd9IiMLxjmmwL3ww0JdRn52ibzEWm+B6HB1GmLo5MyZlZ3hbK
+         X3iNGdD3eL3MPj2dy4OoPVMRC2CEn2H3p0/nPK/C/XOgmfCcUcbHV8y8iccW9Co/go75
+         2K6AQxeeb4zxgY+eI1udMP9icJZV/S7r3i+zBmbp9QAASVgMFQ2y0nJtD2JYZyOTwVBb
+         I6hw==
+X-Gm-Message-State: AOJu0YwM5uNbiPAlGcp2qBxKlrvTBNhhMGFyHq4dWAAc48k0yDTAzpmq
+        4eRAkDVJjRUQPgut45sqPKrfpAtVlQohTL4HMu4=
+X-Google-Smtp-Source: AGHT+IHo3hOA6n+50usE2zETLAZfmRy84YOaqNPgxqWdzxdFZ6HxjtqIsiK8LuAqCaDWMDM32YJyquYVVs8cvI/HS8M=
+X-Received: by 2002:a0d:cf44:0:b0:5c7:47f:59e8 with SMTP id
+ r65-20020a0dcf44000000b005c7047f59e8mr22095699ywd.42.1701251244173; Wed, 29
+ Nov 2023 01:47:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <647701d8-c99b-4ca8-9817-137eaefda237@linux.intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230928224051.160851-1-tmaimon77@gmail.com> <7d529b2b9a16f238f533f1c03b4261b2.sboyd@kernel.org>
+In-Reply-To: <7d529b2b9a16f238f533f1c03b4261b2.sboyd@kernel.org>
+From:   Tomer Maimon <tmaimon77@gmail.com>
+Date:   Wed, 29 Nov 2023 11:47:12 +0200
+Message-ID: <CAP6Zq1ie_meX9Kuz3C8KBkYWxjLBDtimk3PS9=zYOhrGxFikBg@mail.gmail.com>
+Subject: Re: [PATCH v20] clk: npcm8xx: add clock controller
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     avifishman70@gmail.com, benjaminfair@google.com, joel@jms.id.au,
+        mturquette@baylibre.com, tali.perry1@gmail.com, venture@google.com,
+        yuenn@google.com, openbmc@lists.ozlabs.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 05:03:50PM +0800, Ning, Hongyu wrote:
-> 
-> 
-> On 2023/9/4 6:13, Michael S. Tsirkin wrote:
-> > The following changes since commit 2dde18cd1d8fac735875f2e4987f11817cc0bc2c:
-> > 
-> >    Linux 6.5 (2023-08-27 14:49:51 -0700)
-> > 
-> > are available in the Git repository at:
-> > 
-> >    https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
-> > 
-> > for you to fetch changes up to 1acfe2c1225899eab5ab724c91b7e1eb2881b9ab:
-> > 
-> >    virtio_ring: fix avail_wrap_counter in virtqueue_add_packed (2023-09-03 18:10:24 -0400)
-> > 
-> > ----------------------------------------------------------------
-> > virtio: features
-> > 
-> > a small pull request this time around, mostly because the
-> > vduse network got postponed to next relase so we can be sure
-> > we got the security store right.
-> > 
-> > Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-> > 
-> > ----------------------------------------------------------------
-> > Eugenio Pérez (4):
-> >        vdpa: add VHOST_BACKEND_F_ENABLE_AFTER_DRIVER_OK flag
-> >        vdpa: accept VHOST_BACKEND_F_ENABLE_AFTER_DRIVER_OK backend feature
-> >        vdpa: add get_backend_features vdpa operation
-> >        vdpa_sim: offer VHOST_BACKEND_F_ENABLE_AFTER_DRIVER_OK
-> > 
-> > Jason Wang (1):
-> >        virtio_vdpa: build affinity masks conditionally
-> > 
-> > Xuan Zhuo (12):
-> >        virtio_ring: check use_dma_api before unmap desc for indirect
-> >        virtio_ring: put mapping error check in vring_map_one_sg
-> >        virtio_ring: introduce virtqueue_set_dma_premapped()
-> >        virtio_ring: support add premapped buf
-> >        virtio_ring: introduce virtqueue_dma_dev()
-> >        virtio_ring: skip unmap for premapped
-> >        virtio_ring: correct the expression of the description of virtqueue_resize()
-> >        virtio_ring: separate the logic of reset/enable from virtqueue_resize
-> >        virtio_ring: introduce virtqueue_reset()
-> >        virtio_ring: introduce dma map api for virtqueue
-> >        virtio_ring: introduce dma sync api for virtqueue
-> >        virtio_net: merge dma operations when filling mergeable buffers
-> 
-> Hi,
-> above patch (upstream commit 295525e29a5b) seems causing a virtnet related
-> Call Trace after WARNING from kernel/dma/debug.c.
-> 
-> details (log and test setup) tracked in
-> https://bugzilla.kernel.org/show_bug.cgi?id=218204
-> 
-> it's recently noticed in a TDX guest testing since v6.6.0 release cycle and
-> can still be reproduced in latest v6.7.0-rc3.
-> 
-> as local bisects results show, above WARNING and Call Trace is linked with
-> this patch, do you mind to take a look?
+Hi Stephen,
 
-Does your testing tree include the fixup
-5720c43d5216b5dbd9ab25595f7c61e55d36d4fc ?
+Thanks for your comments and sorry for the late reply.
 
-> > 
-> > Yuan Yao (1):
-> >        virtio_ring: fix avail_wrap_counter in virtqueue_add_packed
-> > 
-> > Yue Haibing (1):
-> >        vdpa/mlx5: Remove unused function declarations
-> > 
-> >   drivers/net/virtio_net.c           | 230 ++++++++++++++++++---
-> >   drivers/vdpa/mlx5/core/mlx5_vdpa.h |   3 -
-> >   drivers/vdpa/vdpa_sim/vdpa_sim.c   |   8 +
-> >   drivers/vhost/vdpa.c               |  15 +-
-> >   drivers/virtio/virtio_ring.c       | 412 ++++++++++++++++++++++++++++++++-----
-> >   drivers/virtio/virtio_vdpa.c       |  17 +-
-> >   include/linux/vdpa.h               |   4 +
-> >   include/linux/virtio.h             |  22 ++
-> >   include/uapi/linux/vhost_types.h   |   4 +
-> >   9 files changed, 625 insertions(+), 90 deletions(-)
-> > 
+On Sat, 7 Oct 2023 at 02:50, Stephen Boyd <sboyd@kernel.org> wrote:
+>
+> Quoting Tomer Maimon (2023-09-28 15:40:51)
+> > diff --git a/drivers/clk/clk-npcm8xx.c b/drivers/clk/clk-npcm8xx.c
+> > new file mode 100644
+> > index 000000000000..e575a8676ca3
+> > --- /dev/null
+> > +++ b/drivers/clk/clk-npcm8xx.c
+> > @@ -0,0 +1,547 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> [...]
+> > +
+> > +/* configurable dividers: */
+> > +static const struct npcm8xx_clk_div_data npcm8xx_divs[] = {
+> > +       { NPCM8XX_CLKDIV1, 28, 3, NPCM8XX_CLK_S_ADC,
+> > +       { .name = NPCM8XX_CLK_S_PRE_ADC, .index = -1 },
+> > +       CLK_DIVIDER_READ_ONLY | CLK_DIVIDER_POWER_OF_TWO, 0, NPCM8XX_CLK_ADC },
+>
+> Please format this some other way. I assume one line means one clk, but
+> here it is actually three lines. Perhaps something like this?
+Ready in V21
+>
+> > +       {
+> > +             NPCM8XX_CLKDIV1, 28, 3, NPCM8XX_CLK_S_ADC,
+> > +             { .name = NPCM8XX_CLK_S_PRE_ADC, .index = -1 },
+> > +             CLK_DIVIDER_READ_ONLY | CLK_DIVIDER_POWER_OF_TWO, 0, NPCM8XX_CLK_ADC
+> > +       },
+>
+> Please stop using the .name member of struct clk_parent_data. That
+> member is only there to support drivers that are migrating from a
+> binding that didn't specify the parents of clks that are outside of the
+> clk controller with the clocks property in their DT node. I see that the
+> dts exists upstream, but luckily we don't have a driver merged, so we're
+> free to change the binding to specify clks external to the node. The
+> .fw_name member will match a 'clock-names' element for the registering
+> driver's node. The .index member will match the index in the 'clocks'
+> property. Neither of those properties exist in the nuvoton,npcm845-clk
+> DT binding, so neither of those members shall be present. This means
+> that either the binding needs to be updated, or the clk_parent_data
+> structure should be replaced with clk_hw pointers to describe parents.
+> I'm going to guess that there aren't any external clk parents, so to
+> keep things simple this driver should change to use direct clk_hw
+> pointers to describe topology.
+Ready in V21
+>
+> > +       { NPCM8XX_CLKDIV1, 26, 2, NPCM8XX_CLK_S_AHB, { .hw = &hw_pre_clk },
+> > +       CLK_DIVIDER_READ_ONLY, CLK_IS_CRITICAL, NPCM8XX_CLK_AHB },
+> > +       { NPCM8XX_CLKDIV1, 21, 5, NPCM8XX_CLK_S_PRE_ADC,
+> > +       { .hw = &npcm8xx_muxes[6].hw }, CLK_DIVIDER_READ_ONLY, 0, -1 },
+> > +       { NPCM8XX_CLKDIV1, 16, 5, NPCM8XX_CLK_S_UART,
+> > +       { .hw = &npcm8xx_muxes[3].hw }, 0, 0, NPCM8XX_CLK_UART },
+> > +       { NPCM8XX_CLKDIV1, 11, 5, NPCM8XX_CLK_S_MMC,
+> > +       { .hw = &npcm8xx_muxes[2].hw }, CLK_DIVIDER_READ_ONLY, 0,
+> > +       NPCM8XX_CLK_MMC },
+> > +       { NPCM8XX_CLKDIV1, 6, 5, NPCM8XX_CLK_S_SPI3,
+> > +       { .fw_name = NPCM8XX_CLK_S_AHB, .name = NPCM8XX_CLK_S_AHB }, 0, 0,
+> > +       NPCM8XX_CLK_SPI3 },
+> > +       { NPCM8XX_CLKDIV1, 2, 4, NPCM8XX_CLK_S_PCI,
+> > +       { .hw = &npcm8xx_muxes[7].hw }, CLK_DIVIDER_READ_ONLY, 0,
+> > +       NPCM8XX_CLK_PCI },
+>
+> BTW, I looked at the dts file upstream (nuvoton-common-npcm8xx.dtsi).
+> The reset and clock controller start at the same address, which can only
+> mean that they're actually the same device. The two nodes should be
+unfortunately, It is two services (reset and clock) that are handled
+in the same memory space.
+> combined into one node and one driver should match that compatible so
+> that one IO mapping is made for the entire clock and reset contoller
+> register space. If you want, that driver can make two auxiliary device
+> drivers for the reset and clk parts of the io space and then those two
+> drivers can reside in drivers/reset and drivers/clk. I don't know where
+> the driver goes that matches the compatible node though, probably in
+> drivers/soc. This allows us to properly model the logical components
+> that make up the device in hardware (clks and resets) while also
+> allowing any device specific things for that entire register space to
+> live in the soc driver. For example, if some power domain needs to be
+> enabled to access that register space it would be attached to the soc
+> driver.
+Sorry I didn't understand, do you mean to have one driver that handles
+the clock and the reset modules and will sis under driver/soc
+or one driver that handles the reset and clock IO space?
 
+What about using regmap to handle the clock and the reset? for this,
+the NPCM clock driver will use a unique clock setting like it is done
+in Tegra clk.
+https://elixir.bootlin.com/linux/v6.7-rc2/source/drivers/clk/tegra/clk-divider.c
+instead of using clk_divide and clk_mux default services.
+
+Thanks,
+
+Tomer
