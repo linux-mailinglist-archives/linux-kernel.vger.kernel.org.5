@@ -2,113 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6448E7FCD29
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 04:04:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 890A87FCD2B
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 04:07:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376788AbjK2DEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 22:04:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58720 "EHLO
+        id S1376877AbjK2DGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 22:06:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230422AbjK2DEk (ORCPT
+        with ESMTP id S230422AbjK2DGr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 22:04:40 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8316419B1
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 19:04:46 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-6c4eb5fda3cso6158019b3a.2
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 19:04:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1701227086; x=1701831886; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=tJGxAu392s/bORKdAjJBrcSJ8FzTjUlfAs3pgZbxfG8=;
-        b=hs8pfRPGFma1EueAR2BfbQu6ZGHmezoKnRYlJB+1QWez5uW4HNwTgrlzZEKSaM3hOV
-         7PAiCLSZu7G9sli1ScVvO6EHxvxuUo+tbOCjgCJGGWgiyDjanQ6N1IUkzxMK9uOumoo8
-         Gq6In8LxsytvM8HW3Q+dNy2uyenZB/lahzkP0=
+        Tue, 28 Nov 2023 22:06:47 -0500
+Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com [209.85.210.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79A1119A4
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 19:06:49 -0800 (PST)
+Received: by mail-pf1-f197.google.com with SMTP id d2e1a72fcca58-6cdd1ac2b53so247442b3a.1
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 19:06:49 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701227086; x=1701831886;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=tJGxAu392s/bORKdAjJBrcSJ8FzTjUlfAs3pgZbxfG8=;
-        b=mud4WWW7hvtnuSgmSGO+k1SF00vnFT2LlvapfTZlxwsC4Qyb3su9pTy48Gqfgoxz+i
-         vLLs1Oe99TFbcANkT6zeI9K9X0kipezcFJEzJD7qrBERuglsjT/qbYJVLP0Fa1Gueu3v
-         VbpMwYRpo/Vwibq0f7uLpu7GLg4gx4JQ+ijGZHTN+6zzTBIFdyoE3kzZVvqTFfEg8tA5
-         2KeoywWdBklvFkxo0XSLYg+0yO+SIsh6UU/qexiEpx84cOxWl6tHQDjbEb4rS5wgU49n
-         ZI92cG/Hc8ay7Hyetq1KsUWAUmE5IusaPHWZTXuprteniwQRMYnw9soR/NNGP+bYKEDu
-         R53w==
-X-Gm-Message-State: AOJu0YxMDRVNRrdCLYnorUlFlSzloHbrstJbosKkXKFG/HFgP5ALJy6r
-        W7R6MNt1PjHho5GfluZRtCsjAA==
-X-Google-Smtp-Source: AGHT+IGygOdS0FDYG0MeUfrKyvdo448ZeERsKbGVJU3tooOdVfsvGLB+9h5K3ZINX8K1tfa6iwgshw==
-X-Received: by 2002:a05:6a00:10d2:b0:6cb:4bd5:a4c5 with SMTP id d18-20020a056a0010d200b006cb4bd5a4c5mr20961101pfu.9.1701227085930;
-        Tue, 28 Nov 2023 19:04:45 -0800 (PST)
-Received: from smtp.gmail.com ([2620:15c:11a:201:d7b2:b65d:af69:8a53])
-        by smtp.gmail.com with ESMTPSA id u12-20020a056a00098c00b006cd88728572sm4847426pfg.211.2023.11.28.19.04.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Nov 2023 19:04:45 -0800 (PST)
-From:   Stephen Boyd <swboyd@chromium.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, patches@lists.linux.dev,
-        linux-arm-msm@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org,
-        Alexandre TORGUE <alexandre.torgue@foss.st.com>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Douglas Anderson <dianders@chromium.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH v2] dt-bindings: arm: qcom: Fix html link
-Date:   Tue, 28 Nov 2023 19:04:41 -0800
-Message-ID: <20231129030443.2753833-1-swboyd@chromium.org>
-X-Mailer: git-send-email 2.43.0.rc1.413.gea7ed67945-goog
+        d=1e100.net; s=20230601; t=1701227209; x=1701832009;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1+nqvps7RQa/bT52x24V0OlfulXRXPxkZVat7dV0IRs=;
+        b=SyLYC6kU6F3/ylFxHT2QpWjmTL+ORLqhCeJ7t7IsUDk0Be1YxbqYx1Ld8OFh+rxDku
+         6+O/1AnpHAUrAUmw1OlMkqfcvuiwlxgUoViV4kR/m52WQpiSzI/+e6qAmipa0M+Fiwh8
+         QWPXg2Qvan7tVDQUC+SsAv67IgXa6sXru8IuOXQ+6luWgRJBfi894INPavPPNT/Ve3lm
+         Mgmh+Q9cG0ohW7NbJYJSlvicUEQKW/Xt1uFcAHGiG5iCRT800ZLW1IfMrspX4L3j6hcJ
+         DHDAatJnFmh/6ZgYlxg692O5eBBTkOPW4W9KjIzE/CkEg1I3Xyypw5JhmiOJ8mczeNoc
+         wkfA==
+X-Gm-Message-State: AOJu0Yz89oB0Fja9GxIZN2NGn+x4pdvI3lOqrGPwftcYr7C9Qibtv2og
+        nl5sshaVt6Vi3HqXTbyhoRUYBV4fAVbKc8BQEqa9CbE+h50vGww=
+X-Google-Smtp-Source: AGHT+IHRQux5cAz4UECody9NaRYU8Bk23/JUP3NsgjMpB9/Pm+jDjq47YAUjGMMkY4AHhDcGopUpR4bdk/xZiBNv++P710E6r0Yo
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6a00:9398:b0:6c2:bca7:640b with SMTP id
+ ka24-20020a056a00939800b006c2bca7640bmr4600134pfb.3.1701227209056; Tue, 28
+ Nov 2023 19:06:49 -0800 (PST)
+Date:   Tue, 28 Nov 2023 19:06:48 -0800
+In-Reply-To: <000000000000efc64705ff8286a1@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007a6c1c060b41d3f6@google.com>
+Subject: Re: [syzbot] [wireless?] WARNING in rate_control_rate_init
+From:   syzbot <syzbot+62d7eef57b09bfebcd84@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This link got broken by commit e790a4ce5290 ("arm: docs: Move Arm
-documentation to Documentation/arch/") when the doc moved from arm/ to
-arch/arm/. Fix the link so that it can continue to be followed.
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org.
 
-Fixes: e790a4ce5290 ("arm: docs: Move Arm documentation to Documentation/arch/")
-Cc: Alexandre TORGUE <alexandre.torgue@foss.st.com>
-Cc: Yanteng Si <siyanteng@loongson.cn>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
----
+***
 
-Please land this through qcom tree.
+Subject: [wireless?] WARNING in rate_control_rate_init
+Author: eadavis@qq.com
 
-Changes from v1 (https://lore.kernel.org/r/20231128002052.2520402-1-swboyd@chromium.org):
- * Pick up tags
+please test WARNING in rate_control_rate_init
 
- Documentation/devicetree/bindings/arm/qcom.yaml | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 6e2332e0ab53
 
-diff --git a/Documentation/devicetree/bindings/arm/qcom.yaml b/Documentation/devicetree/bindings/arm/qcom.yaml
-index 7f80f48a0954..8a6466d1fc4e 100644
---- a/Documentation/devicetree/bindings/arm/qcom.yaml
-+++ b/Documentation/devicetree/bindings/arm/qcom.yaml
-@@ -138,7 +138,7 @@ description: |
-   There are many devices in the list below that run the standard ChromeOS
-   bootloader setup and use the open source depthcharge bootloader to boot the
-   OS. These devices do not use the scheme described above. For details, see:
--  https://docs.kernel.org/arm/google/chromebook-boot-flow.html
-+  https://docs.kernel.org/arch/arm/google/chromebook-boot-flow.html
+diff --git a/net/mac80211/cfg.c b/net/mac80211/cfg.c
+index 606b1b2e4123..13d52452a124 100644
+--- a/net/mac80211/cfg.c
++++ b/net/mac80211/cfg.c
+@@ -1796,7 +1796,7 @@ static int sta_link_apply_parameters(struct ieee80211_local *local,
+ 	    !params->supported_rates_len &&
+ 	    !params->ht_capa && !params->vht_capa &&
+ 	    !params->he_capa && !params->eht_capa &&
+-	    !params->opmode_notif_used)
++	    !params->opmode_notif_used && 0)
+ 		return 0;
  
- properties:
-   $nodename:
-
-base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
--- 
-https://chromeos.dev
+ 	if (!link || !link_sta)
+@@ -1817,6 +1817,7 @@ static int sta_link_apply_parameters(struct ieee80211_local *local,
+ 	} else if (new_link) {
+ 		return -EINVAL;
+ 	}
++	printk("b, %p \n", rcu_access_pointer(sdata->vif.bss_conf.chanctx_conf));
+ 
+ 	if (params->txpwr_set) {
+ 		link_sta->pub->txpwr.type = params->txpwr.type;
+@@ -1868,6 +1869,7 @@ static int sta_link_apply_parameters(struct ieee80211_local *local,
+ 					      params->opmode_notif,
+ 					      sband->band);
+ 	}
++	printk("e, %p \n", rcu_access_pointer(sdata->vif.bss_conf.chanctx_conf));
+ 
+ 	return ret;
+ }
+@@ -1982,6 +1984,10 @@ static int sta_apply_parameters(struct ieee80211_local *local,
+ 	if (params->listen_interval >= 0)
+ 		sta->listen_interval = params->listen_interval;
+ 
++	printk("b, stp: %d, sa: %d, src: %d\n", 
++			test_sta_flag(sta, WLAN_STA_TDLS_PEER), 
++			test_sta_flag(sta, WLAN_STA_ASSOC), 
++			test_sta_flag(sta, WLAN_STA_RATE_CONTROL));
+ 	ret = sta_link_apply_parameters(local, sta, false,
+ 					&params->link_sta_params);
+ 	if (ret)
+@@ -1996,6 +2002,10 @@ static int sta_apply_parameters(struct ieee80211_local *local,
+ 	if (params->airtime_weight)
+ 		sta->airtime_weight = params->airtime_weight;
+ 
++	printk("a, stp: %d, sa: %d, src: %d\n", 
++			test_sta_flag(sta, WLAN_STA_TDLS_PEER), 
++			test_sta_flag(sta, WLAN_STA_ASSOC), 
++			test_sta_flag(sta, WLAN_STA_RATE_CONTROL));
+ 	/* set the STA state after all sta info from usermode has been set */
+ 	if (test_sta_flag(sta, WLAN_STA_TDLS_PEER) ||
+ 	    set & BIT(NL80211_STA_FLAG_ASSOCIATED)) {
 
