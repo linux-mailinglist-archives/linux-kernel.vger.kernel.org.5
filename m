@@ -2,93 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B46027FD84D
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 14:39:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A51E7FD84A
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 14:37:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233670AbjK2NjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 08:39:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59840 "EHLO
+        id S230467AbjK2Nha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 08:37:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230389AbjK2NjG (ORCPT
+        with ESMTP id S230389AbjK2Nh2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 08:39:06 -0500
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F8D3C1;
-        Wed, 29 Nov 2023 05:39:12 -0800 (PST)
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
- id 295bd8a3e4d37812; Wed, 29 Nov 2023 14:39:10 +0100
-Received: from kreacher.localnet (unknown [195.136.19.94])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        Wed, 29 Nov 2023 08:37:28 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 316B6B2;
+        Wed, 29 Nov 2023 05:37:33 -0800 (PST)
+Received: from [100.107.97.3] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by cloudserver094114.home.pl (Postfix) with ESMTPSA id 5623E6685F2;
-        Wed, 29 Nov 2023 14:39:10 +0100 (CET)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Lukasz Luba <lukasz.luba@arm.com>
-Subject: [PATCH v3 1/2] thermal: trip: Drop a redundant check from thermal_zone_set_trip()
-Date:   Wed, 29 Nov 2023 14:36:07 +0100
-Message-ID: <4897451.31r3eYUQgx@kreacher>
-In-Reply-To: <12350772.O9o76ZdvQC@kreacher>
-References: <12350772.O9o76ZdvQC@kreacher>
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 701F966072FC;
+        Wed, 29 Nov 2023 13:37:31 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1701265052;
+        bh=dEfUC3EV5oGDYk6B9a83HtTpQA6XtTs4iw4qDuoeFo0=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=TAAtLqwstEXbrYyYfk2b5VVO8HT4VC23mQFvamR4C5sils78TFWUOVTwEkWNtv19J
+         EEsMEIJ50A/wYbaBAKXOg8NAbuDyGsapsQFm6dGhhXS9AnKOa5jYK62P6HUpmtbke8
+         Hwtlor0gxd+ffWSecdTQG5UDp8gklIEKWY/IRkJhSnYRb3mbky75IZ7Q7pFx1WN9J3
+         H0gk3PTITlMCBKl1H0/us+3tZmHMurCyExJfHEcy2hdc06VqRcIJQZlsdjduZ4Rq4F
+         2IDCri17FDhatc2A09qc+IREm0gfsDDxxboSvaSAVDZgoEHnkn7NRq/ayw3ScHzXCf
+         bmwu+ZvsNazAA==
+Message-ID: <80cbe288-2960-4937-be47-56610946695d@collabora.com>
+Date:   Wed, 29 Nov 2023 14:37:28 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrudeihedghedvucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepiedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghnihgvlhdrlhgviigtrghnoheslhhinhgrrhhordhorhhgpdhrtghpthhtohepshhrihhnihhvrghsrdhprghnughruhhvrggurgeslhhinhhugidrihhnthgv
- lhdrtghomhdprhgtphhtthhopehruhhirdiihhgrnhhgsehinhhtvghlrdgtohhmpdhrtghpthhtoheplhhukhgrshiirdhluhgsrgesrghrmhdrtghomh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=6 Fuz1=6 Fuz2=6
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] pmdomain: mediatek: fix race condition in power on/power
+ off sequences
+Content-Language: en-US
+To:     Eugen Hristev <eugen.hristev@collabora.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-pm@vger.kernel.org
+Cc:     eballetbo@kernel.org, ulf.hansson@linaro.org,
+        linux-kernel@vger.kernel.org, kernel@collabora.com
+References: <20231129113120.4907-1-eugen.hristev@collabora.com>
+ <fd645c33-1b16-4825-b9ea-eecb578dd2a0@collabora.com>
+ <bf7ac271-1bda-4114-b080-4b20f857dbc2@collabora.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <bf7ac271-1bda-4114-b080-4b20f857dbc2@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Il 29/11/23 14:28, Eugen Hristev ha scritto:
+> On 11/29/23 14:52, AngeloGioacchino Del Regno wrote:
+>> Il 29/11/23 12:31, Eugen Hristev ha scritto:
+>>> It can happen that during the power off sequence for a power domain
+>>> another power on sequence is started, and it can lead to powering on and
+>>> off in the same time for the similar power domain.
+>>> This can happen if parallel probing occurs: one device starts probing, and
+>>> one power domain is probe deferred, this leads to all power domains being
+>>> rolled back and powered off, while in the same time another device starts
+>>> probing and requests powering on the same power domains or similar.
+>>>
+>>> This was encountered on MT8186, when the sequence is :
+>>> Power on SSUSB
+>>> Power on SSUSB_P1
+>>> Power on DIS
+>>>     -> probe deferred
+>>> Power off DIS
+>>> Power off SSUSB_P1
+>>> Power off SSUSB
+>>>
+>>> During the sequence of powering off SSUSB, some new similar sequence starts,
+>>> and during the power on of SSUSB, clocks are enabled.
+>>> In this case, powering off SSUSB fails from the first sequence, because
+>>> power off ACK bit check times out (as clocks are powered back on by the second
+>>> sequence). In consequence, powering it on also times out, and it leads to
+>>> the whole power domain in a bad state.
+>>>
+>>> To solve this issue, added a mutex that locks the whole power off/power on
+>>> sequence such that it would never happen that multiple sequences try to
+>>> enable or disable the same power domain in parallel.
+>>>
+>>> Fixes: 59b644b01cf4 ("soc: mediatek: Add MediaTek SCPSYS power domains")
+>>> Signed-off-by: Eugen Hristev <eugen.hristev@collabora.com>
+>>
+>> I don't think that it's a race between genpd_power_on() and genpd_power_off() calls
+>> at all, because genpd *does* have locking after all... at least for probe and for
+>> parents of a power domain (and more anyway).
+>>
+>> As far as I remember, what happens when you start .probe()'ing a device is:
+>> platform_probe() -> dev_pm_domain_attach() -> genpd_dev_pm_attach()
+>>
+>> There, you end up with
+>>
+>>      if (power_on) {
+>>          genpd_lock(pd);
+>>          ret = genpd_power_on(pd, 0);
+>>          genpd_unlock(pd);
+>>      }
+>>
+>> ...but when you fail probing, you go with genpd_dev_pm_detach(), which then calls
+>>
+>>      /* Check if PM domain can be powered off after removing this device. */
+>>      genpd_queue_power_off_work(pd);
+>>
+>> but even then, you end up being in a worker doing
+>>
+>>      genpd_lock(genpd);
+>>      genpd_power_off(genpd, false, 0);
+>>      genpd_unlock(genpd);
+>>
+>> ...so I don't understand why this mutex can resolve the situation here (also: are
+>> you really sure that the race is solved like that?)
+>>
+>> I'd say that this probably needs more justification and a trace of the actual
+>> situation here.
+>>
+>> Besides, if this really resolves the issue, I would prefer seeing variants of
+>> scpsys_power_{on,off}() functions, because we anyway don't need to lock mutexes
+>> during this driver's probe (add_subdomain calls scpsys_power_on()).
+>> In that case, `scpsys_power_on_unlocked()` would be an idea... but still, please
+>> analyze why your solution works, if it does, because I'm not convinced.
+> 
+> What I see in my tests, is that a power on call for SSUSB domain happens while the 
+> previous power off sequence did not yet complete, most likely while it's waiting in 
+> readx_poll_timeout . This leads to inconsistency of the power domain, not getting 
+> the ACKs next time a power on attempt occurs.
+> 
+> I understand what you say about locks, but in this case the powering off is not 
+> called by the genpd itself, but rather it's called by the rollback probe failed 
+> mechanism : when the probing fails, scpsys_domain_cleanup() is called during the 
+> same probing session.
+> Then it happens that probing begins again and previous cleanup is not yet 
+> completed. I am not sure whether the lock is still held from the previous run, but 
+> it's clearly not waiting for a lock to be released to be called again.
+> 
 
-After recent changes in the thermal framework, a trip points array is
-required for registering a thermal zone that is not tripless, so the
-tz->trips pointer in thermal_zone_set_trip() is never NULL and the
-check involving it is redundant.  Drop that check.
+Sorry but I'm a bit lost now: is the problem about probe deferrals of the USB
+driver, or about probe deferrals of the mtk-pm-domains driver?
 
-No functional impact.
+scpsys_domain_cleanup() is only called upon scpsys_probe() failure.
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
----
-
-v2 -> v3: Add the tag from Lukasz
-
-v1 -> v2: New patch
-
----
- drivers/thermal/thermal_trip.c |    3 ---
- 1 file changed, 3 deletions(-)
-
-Index: linux-pm/drivers/thermal/thermal_trip.c
-===================================================================
---- linux-pm.orig/drivers/thermal/thermal_trip.c
-+++ linux-pm/drivers/thermal/thermal_trip.c
-@@ -153,9 +153,6 @@ int thermal_zone_set_trip(struct thermal
- 	struct thermal_trip t;
- 	int ret;
- 
--	if (!tz->ops->set_trip_temp && !tz->ops->set_trip_hyst && !tz->trips)
--		return -EINVAL;
--
- 	ret = __thermal_zone_get_trip(tz, trip_id, &t);
- 	if (ret)
- 		return ret;
-
-
+>>
+>>> ---
+>>>   drivers/pmdomain/mediatek/mtk-pm-domains.c | 24 +++++++++++++++++-----
+>>>   1 file changed, 19 insertions(+), 5 deletions(-)
+>>>
+>>> diff --git a/drivers/pmdomain/mediatek/mtk-pm-domains.c 
+>>> b/drivers/pmdomain/mediatek/mtk-pm-domains.c
+>>> index d5f0ee05c794..4f136b47e539 100644
+>>> --- a/drivers/pmdomain/mediatek/mtk-pm-domains.c
+>>> +++ b/drivers/pmdomain/mediatek/mtk-pm-domains.c
+>>> @@ -9,6 +9,7 @@
+>>>   #include <linux/io.h>
+>>>   #include <linux/iopoll.h>
+>>>   #include <linux/mfd/syscon.h>
+>>> +#include <linux/mutex.h>
+>>>   #include <linux/of.h>
+>>>   #include <linux/of_clk.h>
+>>>   #include <linux/platform_device.h>
+>>> @@ -56,6 +57,7 @@ struct scpsys {
+>>>       struct device *dev;
+>>>       struct regmap *base;
+>>>       const struct scpsys_soc_data *soc_data;
+>>> +    struct mutex mutex;
+>>>       struct genpd_onecell_data pd_data;
+>>>       struct generic_pm_domain *domains[];
+>>>   };
+>>> @@ -238,9 +240,13 @@ static int scpsys_power_on(struct generic_pm_domain *genpd)
+>>>       bool tmp;
+>>>       int ret;
+>>> +    mutex_lock(&scpsys->mutex);
+>>> +
+>>>       ret = scpsys_regulator_enable(pd->supply);
+>>> -    if (ret)
+>>> +    if (ret) {
+>>> +        mutex_unlock(&scpsys->mutex);
+>>>           return ret;
+>>> +    }
+>>>       ret = clk_bulk_prepare_enable(pd->num_clks, pd->clks);
+>>>       if (ret)
+>>> @@ -291,6 +297,7 @@ static int scpsys_power_on(struct generic_pm_domain *genpd)
+>>>               goto err_enable_bus_protect;
+>>>       }
+>>> +    mutex_unlock(&scpsys->mutex);
+>>>       return 0;
+>>>   err_enable_bus_protect:
+>>> @@ -305,6 +312,7 @@ static int scpsys_power_on(struct generic_pm_domain *genpd)
+>>>       clk_bulk_disable_unprepare(pd->num_clks, pd->clks);
+>>>   err_reg:
+>>>       scpsys_regulator_disable(pd->supply);
+>>> +    mutex_unlock(&scpsys->mutex);
+>>>       return ret;
+>>>   }
+>>> @@ -315,13 +323,15 @@ static int scpsys_power_off(struct generic_pm_domain *genpd)
+>>>       bool tmp;
+>>>       int ret;
+>>> +    mutex_lock(&scpsys->mutex);
+>>> +
+>>>       ret = scpsys_bus_protect_enable(pd);
+>>>       if (ret < 0)
+>>> -        return ret;
+>>> +        goto err_mutex_unlock;
+>>>       ret = scpsys_sram_disable(pd);
+>>>       if (ret < 0)
+>>> -        return ret;
+>>> +        goto err_mutex_unlock;
+>>>       if (pd->data->ext_buck_iso_offs && MTK_SCPD_CAPS(pd, MTK_SCPD_EXT_BUCK_ISO))
+>>>           regmap_set_bits(scpsys->base, pd->data->ext_buck_iso_offs,
+>>> @@ -340,13 +350,15 @@ static int scpsys_power_off(struct generic_pm_domain *genpd)
+>>>       ret = readx_poll_timeout(scpsys_domain_is_on, pd, tmp, !tmp, 
+>>> MTK_POLL_DELAY_US,
+>>>                    MTK_POLL_TIMEOUT);
+>>>       if (ret < 0)
+>>> -        return ret;
+>>> +        goto err_mutex_unlock;
+>>>       clk_bulk_disable_unprepare(pd->num_clks, pd->clks);
+>>>       scpsys_regulator_disable(pd->supply);
+>>> -    return 0;
+>>> +err_mutex_unlock:
+>>> +    mutex_unlock(&scpsys->mutex);
+>>> +    return ret;
+>>>   }
+>>>   static struct
+>>> @@ -700,6 +712,8 @@ static int scpsys_probe(struct platform_device *pdev)
+>>>           return PTR_ERR(scpsys->base);
+>>>       }
+>>> +    mutex_init(&scpsys->mutex);
+>>> +
+>>>       ret = -ENODEV;
+>>>       for_each_available_child_of_node(np, node) {
+>>>           struct generic_pm_domain *domain;
+>>
 
