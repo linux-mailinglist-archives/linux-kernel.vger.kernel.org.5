@@ -2,93 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B2C17FDE1C
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 18:14:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5EE27FDE1F
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 18:16:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231545AbjK2ROf convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 29 Nov 2023 12:14:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41124 "EHLO
+        id S230511AbjK2RPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 12:15:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbjK2ROd (ORCPT
+        with ESMTP id S229501AbjK2RPv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 12:14:33 -0500
-Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com [209.85.167.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D573B2;
-        Wed, 29 Nov 2023 09:14:40 -0800 (PST)
-Received: by mail-oi1-f173.google.com with SMTP id 5614622812f47-3b85d97a529so940777b6e.0;
-        Wed, 29 Nov 2023 09:14:40 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701278079; x=1701882879;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0BTxP1AwTzLXl5jDe0Z7kCtR7I/vrVTah70CPbLH4S0=;
-        b=FAfXAdaC80+Q/W/LPYt8abxZi3DZ7wHCIrgb8ekJsIyBipBlFS+0F94bWGg2zEmybm
-         LVUGyKJ/B6XfYL+2ZIvrinnaEHM2ivItn2bYGt179Yhu+Obg0myMlz1WzabNYERqKuqo
-         xpR9aLdsjpOdNlrXOUDb9K8RauNFJttlDHGA22bGhaNetglJKMlxU0EuKFBW1aYGe7QG
-         6hQ+B5e1aCx1YtriwbdKFztdKSdFin5YiZPX3a9SJQp7ACSwPOHmFlaxp1dHmPIUEmnw
-         BD847Ozc3VMJnCftz15K6sc6wazscd4mSyi1FsEVv4u0XesEulYkjX8dhaV05iJP8FwG
-         xVhQ==
-X-Gm-Message-State: AOJu0YxKumvjeaZL/H3TEY3s+ghfB47PAkrtqpw0O6opCs9dPELVBylz
-        5mKbrJTyHI1WNgPMF4UnVLNYWNFvKoApdHZxUwum78e1
-X-Google-Smtp-Source: AGHT+IG152vCdgIxEMGykqygUQVsz6Hdg5TzKW/KF5ZSpdliYWHwOwYY75niGuSgTIWLtW7dp2Z3NQpnzZuITgaJjIw=
-X-Received: by 2002:a05:6808:d1:b0:3ae:5e6a:5693 with SMTP id
- t17-20020a05680800d100b003ae5e6a5693mr19467747oic.0.1701278079477; Wed, 29
- Nov 2023 09:14:39 -0800 (PST)
+        Wed, 29 Nov 2023 12:15:51 -0500
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::224])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E3DFBC;
+        Wed, 29 Nov 2023 09:15:57 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 5C662E0004;
+        Wed, 29 Nov 2023 17:15:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1701278156;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fi6pfw/YrdlpRPQlqpuxTgYt0q8n78JWGSCcDcbp5EI=;
+        b=i4pse/XMReNnftJ2DWqBLM7jpvYxZPwRWmWUEakFhPmk2HCamL/ds+2m58H3Ce/FcdkE+f
+        S+20MoxlcdoyCAIf6H1l6po+cFGyUk/3AOpPXeLp4PPTay1ItCwJ9O0H1SA5KJ7WUl5isz
+        21iBx0ds/o/eeE2p2AX9bKDkREHNqrbHXhmKfEgcs+3MdPFfxHCHYneAAX8kFuikjYjhxA
+        Mo2YrbnP/BnbOxS9xf41dmjT3mDAwRmeI8CG7DT+Dt2sJcTpJV0Kw/r/We9vnPGLKlXdmt
+        x6ZWVhtk0y8ydlfh9qUfIYLqU/enO6Nw/n3iD3xVle2Md8ZJIWq2oyiuH0anig==
+Date:   Wed, 29 Nov 2023 18:15:55 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Haoran Liu <liuhaoran14@163.com>
+Cc:     claudiu.beznea@tuxon.dev, sre@kernel.org,
+        nicolas.ferre@microchip.com, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] [power/reset] at91-sama5d2: Add error handling in
+ at91_shdwc_probe
+Message-ID: <20231129171555abae472b@mail.local>
+References: <20231129132939.34047-1-liuhaoran14@163.com>
 MIME-Version: 1.0
-References: <12350772.O9o76ZdvQC@kreacher> <4869676.GXAFRqVoOG@kreacher> <ce9297d4-db9f-44c7-a590-2b9d4600be42@linaro.org>
-In-Reply-To: <ce9297d4-db9f-44c7-a590-2b9d4600be42@linaro.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 29 Nov 2023 18:14:28 +0100
-Message-ID: <CAJZ5v0j34VB6mkKjscU0BpQ8wvgeutr_2U50OznsmxSdTVySDw@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] thermal: trip: Rework thermal_zone_set_trip() and
- its callers
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Lukasz Luba <lukasz.luba@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231129132939.34047-1-liuhaoran14@163.com>
+X-GND-Sasl: alexandre.belloni@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+On 29/11/2023 05:29:39-0800, Haoran Liu wrote:
+> This patch adds error handling to the at91_shdwc_probe function
+> in drivers/power/reset/at91-sama5d2_shdwc.c. The function
+> previously did not handle the case where of_match_node could fail,
+> potentially leading to unexpected behavior if the device tree match
+> was unsuccessful.
+> 
+> Signed-off-by: Haoran Liu <liuhaoran14@163.com>
+> ---
+>  drivers/power/reset/at91-sama5d2_shdwc.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/drivers/power/reset/at91-sama5d2_shdwc.c b/drivers/power/reset/at91-sama5d2_shdwc.c
+> index e76b102b57b1..2ac566c83aec 100644
+> --- a/drivers/power/reset/at91-sama5d2_shdwc.c
+> +++ b/drivers/power/reset/at91-sama5d2_shdwc.c
+> @@ -353,6 +353,11 @@ static int __init at91_shdwc_probe(struct platform_device *pdev)
+>  		return PTR_ERR(at91_shdwc->shdwc_base);
+>  
+>  	match = of_match_node(at91_shdwc_of_match, pdev->dev.of_node);
+> +	if (!match) {
 
-On Wed, Nov 29, 2023 at 5:54 PM Daniel Lezcano
-<daniel.lezcano@linaro.org> wrote:
->
->
-> Hi Rafael,
->
-> On 29/11/2023 14:38, Rafael J. Wysocki wrote:
-> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> >
-> > Both trip_point_temp_store() and trip_point_hyst_store() use
-> > thermal_zone_set_trip() to update a given trip point, but none of them
-> > actually needs to change more than one field in struct thermal_trip
-> > representing it.  However, each of them effectively calls
-> > __thermal_zone_get_trip() twice in a row for the same trip index value,
-> > once directly and once via thermal_zone_set_trip(), which is not
-> > particularly efficient, and the way in which thermal_zone_set_trip()
-> > carries out the update is not particularly straightforward.
-> >
-> > Moreover, some checks done by them both need not go under the thermal
-> > zone lock and code duplication between them can be reduced quite a bit
-> > by moving the majority of logic into thermal_zone_set_trip().
-> >
-> > Rework all of the above functions to address the above.
->
-> Please hold on before merging this change. I've some comment about it
-> but I have to double check a couple of things before
+Can you elaborate how this will ever happen?
 
-That's fine, but why don't you make the comment before the double checks?
+> +		dev_err(&pdev->dev, "No matching device found\n");
+> +		return -ENODEV;
+> +	}
+> +
+>  	at91_shdwc->rcfg = match->data;
+>  
+>  	at91_shdwc->sclk = devm_clk_get(&pdev->dev, NULL);
+> -- 
+> 2.17.1
+> 
+
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
