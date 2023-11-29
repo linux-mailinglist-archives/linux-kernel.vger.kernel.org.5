@@ -2,126 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2009B7FCC75
+	by mail.lfdr.de (Postfix) with ESMTP id 75D117FCC76
 	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 02:58:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230133AbjK2Bzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 20:55:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45596 "EHLO
+        id S230157AbjK2B6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 20:58:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbjK2Bzy (ORCPT
+        with ESMTP id S229526AbjK2B6X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 20:55:54 -0500
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AF4410E2
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 17:55:58 -0800 (PST)
-X-UUID: cab1cce556d74a188f85ce9f77454e1b-20231129
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.33,REQID:ce7f5549-2247-485a-b997-199b689ed2d3,IP:5,U
-        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-        :release,TS:0
-X-CID-INFO: VERSION:1.1.33,REQID:ce7f5549-2247-485a-b997-199b689ed2d3,IP:5,URL
-        :0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION:r
-        elease,TS:0
-X-CID-META: VersionHash:364b77b,CLOUDID:64a12f73-1bd3-4f48-b671-ada88705968c,B
-        ulkID:231129093703D52I3TJ5,BulkQuantity:1,Recheck:0,SF:19|44|66|38|24|72|1
-        02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:40,QS:nil,BEC:nil,COL
-        :0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
-X-UUID: cab1cce556d74a188f85ce9f77454e1b-20231129
-X-User: zhongkaihua@kylinos.cn
-Received: from kylin-pc.. [(112.64.161.44)] by mailgw
-        (envelope-from <zhongkaihua@kylinos.cn>)
-        (Generic MTA)
-        with ESMTP id 2058608997; Wed, 29 Nov 2023 09:55:44 +0800
-From:   zhongkaihua <zhongkaihua@kylinos.cn>
-To:     cw00.choi@samsung.com, krzysztof.kozlowski@linaro.org,
-        lee@kernel.org, linux-kernel@vger.kernel.org
-Cc:     huangwei@kylinos.cn, zhang.chen@cs2c.com.cn,
-        Kaihua Zhong <zhongkaihua@kylinos.cn>,
-        k2ci <kernel-bot@kylinos.cn>
-Subject: [PATCH] mfd: fix comment typos
-Date:   Wed, 29 Nov 2023 09:55:26 +0800
-Message-Id: <20231129015526.3302865-1-zhongkaihua@kylinos.cn>
-X-Mailer: git-send-email 2.34.1
+        Tue, 28 Nov 2023 20:58:23 -0500
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E33C810E2;
+        Tue, 28 Nov 2023 17:58:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1701223107;
+        bh=KTkRAxQEjyPl5jlXQA3vSJp+2tyKvgM6H5lB1U5MB1s=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Ez2eEtX2z0QWAPcG0tIu676o5KeoreIHy+fbWPGfoSFV0T02Byib5Rp+/jBhvlW++
+         +h+8bXlKLJ3edK2NcgeEnr3XKaDVaH7d0mB54fEKLXpQDq9GOzoorUjX9J8AaCs3Y2
+         DvWe8JjZ7aFYgwmg4TatuDG5pcCo1QBUJDPSOtpZqtiCrOMRPz9R/9woRXYMd1LZGD
+         EiNufjivHrVVWk8QlPR372rIcpFs+jFA8nH4ThIMIaomDivKXrOYD9tCt8QxlhS8Ex
+         oomJubsSh2v5uE0mznJtqD27NKU1PFqguyp1vTJxwuIsPFhNSeQlAxI9nciSY4udBn
+         99bdGWZ72xXUQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Sg2Xz1NYnz4wx5;
+        Wed, 29 Nov 2023 12:58:27 +1100 (AEDT)
+Date:   Wed, 29 Nov 2023 12:58:26 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the pwm tree
+Message-ID: <20231129125826.08d7d178@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNPARSEABLE_RELAY autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/9l/B7hyCt9u=elJ63TYlxsy";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kaihua Zhong <zhongkaihua@kylinos.cn>
+--Sig_/9l/B7hyCt9u=elJ63TYlxsy
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Fix four comment typos in mfd pmic header files.
+Hi all,
 
-Reported-by: k2ci <kernel-bot@kylinos.cn>
-Signed-off-by: Kaihua Zhong <zhongkaihua@kylinos.cn>
----
- include/linux/mfd/max77693-private.h | 2 +-
- include/linux/mfd/max77843-private.h | 2 +-
- include/linux/mfd/si476x-platform.h  | 2 +-
- include/linux/mfd/tps65910.h         | 2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
+After merging the pwm tree, today's linux-next build (htmldocs) produced
+this warning:
 
-diff --git a/include/linux/mfd/max77693-private.h b/include/linux/mfd/max77693-private.h
-index 311f7d3d2323..54444ff2a5de 100644
---- a/include/linux/mfd/max77693-private.h
-+++ b/include/linux/mfd/max77693-private.h
-@@ -405,7 +405,7 @@ enum max77693_haptic_reg {
- 	MAX77693_HAPTIC_REG_END,
- };
- 
--/* max77693-pmic LSCNFG configuraton register */
-+/* max77693-pmic LSCNFG configuration register */
- #define MAX77693_PMIC_LOW_SYS_MASK      0x80
- #define MAX77693_PMIC_LOW_SYS_SHIFT     7
- 
-diff --git a/include/linux/mfd/max77843-private.h b/include/linux/mfd/max77843-private.h
-index 0bc7454c4dbe..2fb4db67f110 100644
---- a/include/linux/mfd/max77843-private.h
-+++ b/include/linux/mfd/max77843-private.h
-@@ -198,7 +198,7 @@ enum max77843_irq_muic {
- #define MAX77843_MCONFIG_MEN_MASK		BIT(MCONFIG_MEN_SHIFT)
- #define MAX77843_MCONFIG_PDIV_MASK		(0x3 << MCONFIG_PDIV_SHIFT)
- 
--/* Max77843 charger insterrupts */
-+/* Max77843 charger interrupts */
- #define MAX77843_CHG_BYP_I			BIT(0)
- #define MAX77843_CHG_BATP_I			BIT(2)
- #define MAX77843_CHG_BAT_I			BIT(3)
-diff --git a/include/linux/mfd/si476x-platform.h b/include/linux/mfd/si476x-platform.h
-index 18363b773d07..cb99e16ca947 100644
---- a/include/linux/mfd/si476x-platform.h
-+++ b/include/linux/mfd/si476x-platform.h
-@@ -10,7 +10,7 @@
- #ifndef __SI476X_PLATFORM_H__
- #define __SI476X_PLATFORM_H__
- 
--/* It is possible to select one of the four adresses using pins A0
-+/* It is possible to select one of the four addresses using pins A0
-  * and A1 on SI476x */
- #define SI476X_I2C_ADDR_1	0x60
- #define SI476X_I2C_ADDR_2	0x61
-diff --git a/include/linux/mfd/tps65910.h b/include/linux/mfd/tps65910.h
-index 701925db75b3..f67ef0a4e041 100644
---- a/include/linux/mfd/tps65910.h
-+++ b/include/linux/mfd/tps65910.h
-@@ -749,7 +749,7 @@
- #define VDDCTRL_ST_SHIFT                                 0
- 
- 
--/*Register VDDCTRL_OP  (0x28) bit definitios */
-+/*Register VDDCTRL_OP  (0x28) bit definitions */
- #define VDDCTRL_OP_CMD_MASK                              0x80
- #define VDDCTRL_OP_CMD_SHIFT                             7
- #define VDDCTRL_OP_SEL_MASK                              0x7F
--- 
-2.34.1
+include/linux/pwm.h:304: warning: Function parameter or member 'id' not des=
+cribed in 'pwm_chip'
 
+Introduced by commit
+
+  c572f3b9c8b7 ("pwm: Replace PWM chip unique base by unique ID")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/9l/B7hyCt9u=elJ63TYlxsy
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVmmsIACgkQAVBC80lX
+0GxHIwf/fVBbAvvYCncIufkKbQFacKc6xyIgd05waO3RuEFiKP1p6RkLJIAnA+SX
+BHvhd3FQp3akwVxw1pX4uk/e1Q/AmxFADDoJyD1qLiGJoPePKOs0Un8neGwmnbiA
+LMLuIcDnQBOfCfXKTNWPUiFMQU4Ys8kQAYNuGUAvJAA3NTlKVTRPULI03lh+RFHG
+ZkjgCo3p/EAYEbd2xRmjV5Xazw8BwYmKLx1uVSlzOpZ9TatwSNtkeD9pU6d2qCkz
+gcumrLp+U30UkBeYOcsHLyDRj9OfCSlwaUpnJRGKItIygXdbMprokTrV1ARsDJU2
+QVrdOXFAf+TxHj2/ksJTKVd+qpn2FQ==
+=8f+g
+-----END PGP SIGNATURE-----
+
+--Sig_/9l/B7hyCt9u=elJ63TYlxsy--
