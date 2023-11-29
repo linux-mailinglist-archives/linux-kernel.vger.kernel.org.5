@@ -2,103 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B02B47FDF1E
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 19:11:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46AEB7FDF27
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 19:14:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229501AbjK2SLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 13:11:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52648 "EHLO
+        id S231276AbjK2SOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 13:14:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230479AbjK2SLf (ORCPT
+        with ESMTP id S229509AbjK2SON (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 13:11:35 -0500
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C1B5120;
-        Wed, 29 Nov 2023 10:11:42 -0800 (PST)
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6cb74a527ceso17672b3a.2;
-        Wed, 29 Nov 2023 10:11:42 -0800 (PST)
+        Wed, 29 Nov 2023 13:14:13 -0500
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0A4BB9
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 10:14:19 -0800 (PST)
+Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-3331752d2b9so67455f8f.3
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 10:14:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=arista.com; s=google; t=1701281658; x=1701886458; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wY9WeKtXlEdT6ZB9TX0PBdHOlwsuJkt60GHvQlNmDZk=;
+        b=eNe2jYbiHpkwa/ZNkwOKT14qO98/sNJ5OK0f5gcf2tcDDzf6G05TeflGiDnlPn0b/F
+         0jxSCryWYJh/61ZODteUoF8r6sudle8sNM1yGrTdsJjOjjXDkql/4VHQIXo3boRe6szq
+         LSMOp+vWjXRrseRTWyFWY8Jaes+wBc2bm/EJc4fK10Kb1VYQQe8Y2yP6BLIcvkouJfcj
+         VC+dT8srvnfX+I6dAg3oLRuvC2vjnEOBnCt5OTGXG74Qy2aj93cKs31RpOYW0ap1OlHL
+         KN7Pmo9ak++sDXbQQwhOI13g+tXtu6+FZZMky8pD3e6W1rJGuI1c6bap6T2v5ce6L/M/
+         vS1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701281501; x=1701886301;
+        d=1e100.net; s=20230601; t=1701281658; x=1701886458;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4gLDX8cWt3JEEqgRokj5ykqsN5muXxo/Ge+Xctz4FUg=;
-        b=aEV/etGefOoxFxJpyfpe/BJ9/3bIUh7vcvKsG4AM0pMsRd96l4Tr+o6o9z3Pie6GlR
-         Kg2z+I9A6WHY3aLpKOMDwfxd5M7bHrn8bQVtJIYnLYU/ItcZCUMxmgUgM2XX6m27Kayi
-         gGFtjwBzedabiMRok7kUV/KE+RQfZhlB884Lvce7Kh9+Kms4wsHiolnlZBp6rtOnchQd
-         UFIT0brXj7npTB4+lCwpLx6X/F9JY7cginbktC8RzmxfrUwP2EeDLPBHPO7ffZyxlxRa
-         7i+nZJ9bv4HOjymbGLywVwzeL4GC+jfG2FfB0MsCfMiitlHBcvFDzPAmi/JF+apUN1Hj
-         HwQQ==
-X-Gm-Message-State: AOJu0YwPSDX6XGxiUiOxhDIfuMvw+nkS2R5+CNGn9qrTcVTK/QXX1XIB
-        CznU0AA9slbbVwMb3CqVPRw=
-X-Google-Smtp-Source: AGHT+IGy+4WYJhTiQIOswP/E41L9YL8AuNEuZh5o79tqLq/ynbibB9mZf/1DyU/qOz7NtDQNLElZ2g==
-X-Received: by 2002:a05:6a20:e68c:b0:18b:d344:6acd with SMTP id mz12-20020a056a20e68c00b0018bd3446acdmr19899607pzb.10.1701281501391;
-        Wed, 29 Nov 2023 10:11:41 -0800 (PST)
-Received: from ?IPV6:2620:0:1000:8411:af8d:714d:9855:3f9d? ([2620:0:1000:8411:af8d:714d:9855:3f9d])
-        by smtp.gmail.com with ESMTPSA id a9-20020a170902ee8900b001b7f40a8959sm12648546pld.76.2023.11.29.10.11.39
+        bh=wY9WeKtXlEdT6ZB9TX0PBdHOlwsuJkt60GHvQlNmDZk=;
+        b=ATEBJlOt41kfBAMHsX5aqE4BzEQD1p+nXYSBvU8uUqYypvvsZAoIfeel8/ggZtqMvD
+         pCL9KIgiL0f3gubvWeWxjf05O0Ql6qp5ayCdR8axR5gCg/yGBARal2Y9KXKy5L44IhuJ
+         qE9/r3yZ+HJmip0UNrhB0h+AwnglP42QjsuXNZEffX9AiX39cO5Cw6CQwamf75UFScuU
+         x0Bv2xn9lQlj71KuHnrNT8jgdlAQBvwY2OTHCyMuamjQaR5qMUNi4rL0YUS1Gh2RoCgS
+         1v5XAvoACft7jXra4OGHTVqcvuDA7VuQNeoaJ24l6C7KPZ7ge28ASAb5vJblUPypr0J1
+         R1+Q==
+X-Gm-Message-State: AOJu0YzGIr+mwBDwayq15tlXyfiMe06tnoa0hpS0ctfaJpAFAcn13cdK
+        LV/Fn359XZR7ISvxjW5Oax08DQ==
+X-Google-Smtp-Source: AGHT+IHofg/hK+69psa2zHUNArxjJYgRtbYj/y3G4jlgWw7XUJhrw71mnLqzsxXOXWGxw3ObhmdCgQ==
+X-Received: by 2002:a05:6000:88:b0:331:6b82:a3ad with SMTP id m8-20020a056000008800b003316b82a3admr13548656wrx.60.1701281658390;
+        Wed, 29 Nov 2023 10:14:18 -0800 (PST)
+Received: from [10.83.37.178] ([217.173.96.166])
+        by smtp.gmail.com with ESMTPSA id t2-20020a5d4602000000b0032da4c98ab2sm18812649wrq.35.2023.11.29.10.14.17
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Nov 2023 10:11:40 -0800 (PST)
-Message-ID: <0cc74796-2369-4c02-a78f-4f1d5e8337dc@acm.org>
-Date:   Wed, 29 Nov 2023 10:11:38 -0800
+        Wed, 29 Nov 2023 10:14:17 -0800 (PST)
+Message-ID: <df55eb1d-b63a-4652-8103-d2bd7b5d7eda@arista.com>
+Date:   Wed, 29 Nov 2023 18:14:16 +0000
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 01/10] scsi: ufs: host: Rename structure ufs_dev_params
- to ufs_host_params
+Subject: Re: [PATCH v4 6/7] net/tcp: Store SNEs + SEQs on ao_info
 Content-Language: en-US
-To:     Can Guo <quic_cang@quicinc.com>, mani@kernel.org,
-        adrian.hunter@intel.com, cmd4@qualcomm.com, beanhuo@micron.com,
-        avri.altman@wdc.com, junwoo80.lee@samsung.com,
-        martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Nitin Rawat <quic_nitirawa@quicinc.com>,
-        =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-        Brian Masney <bmasney@redhat.com>,
-        "moderated list:ARM/SAMSUNG S3C, S5P AND EXYNOS ARM ARCHITECTURES" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/SAMSUNG S3C, S5P AND EXYNOS ARM ARCHITECTURES" 
-        <linux-samsung-soc@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:UNIVERSAL FLASH STORAGE HOST CONTROLLER DRIVER..." 
-        <linux-mediatek@lists.infradead.org>
-References: <1701246516-11626-1-git-send-email-quic_cang@quicinc.com>
- <1701246516-11626-2-git-send-email-quic_cang@quicinc.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <1701246516-11626-2-git-send-email-quic_cang@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     David Ahern <dsahern@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Francesco Ruggeri <fruggeri05@gmail.com>,
+        Salam Noureddine <noureddine@arista.com>,
+        Simon Horman <horms@kernel.org>, netdev@vger.kernel.org
+References: <20231129165721.337302-1-dima@arista.com>
+ <20231129165721.337302-7-dima@arista.com>
+ <CANn89iJcfn0yEM7Pe4RGY3P0LmOsppXO7c=eVqpwVNdOY2v3zA@mail.gmail.com>
+From:   Dmitry Safonov <dima@arista.com>
+In-Reply-To: <CANn89iJcfn0yEM7Pe4RGY3P0LmOsppXO7c=eVqpwVNdOY2v3zA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/29/23 00:28, Can Guo wrote:
-> Structure ufs_dev_params is actually used in UFS host vendor drivers to
-> declare host specific power mode parameters, like ufs_<vendor>_params or
-> host_cap, which makes the code not very straightforward to read. Rename the
-> structure ufs_dev_params to ufs_host_params and unify the declarations in
-> all vendor drivers to host_params.
+On 11/29/23 18:09, Eric Dumazet wrote:
+> On Wed, Nov 29, 2023 at 5:57 PM Dmitry Safonov <dima@arista.com> wrote:
+>>
+>> RFC 5925 (6.2):
+>>> TCP-AO emulates a 64-bit sequence number space by inferring when to
+>>> increment the high-order 32-bit portion (the SNE) based on
+>>> transitions in the low-order portion (the TCP sequence number).
+>>
+>> snd_sne and rcv_sne are the upper 4 bytes of extended SEQ number.
+>> Unfortunately, reading two 4-bytes pointers can't be performed
+>> atomically (without synchronization).
+>>
+>> In order to avoid locks on TCP fastpath, let's just double-account for
+>> SEQ changes: snd_una/rcv_nxt will be lower 4 bytes of snd_sne/rcv_sne.
+>>
 > 
-> In addition, rename the two functions ufshcd_init_pwr_dev_param() and
-> ufshcd_get_pwr_dev_param() which work based on the ufs_host_params to
-> ufshcd_init_host_params() and ufshcd_negotiate_pwr_params() respectively to
-> avoid confusions.
-> 
-> This change does not change any functionalities or logic.
+> This will not work on 32bit kernels ?
 
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+Yeah, unsure if there's someone who wants to run BGP on 32bit box, so at
+this moment it's already limited:
+
+config TCP_AO
+	bool "TCP: Authentication Option (RFC5925)"
+	select CRYPTO
+	select TCP_SIGPOOL
+	depends on 64BIT && IPV6 != m # seq-number extension needs WRITE_ONCE(u64)
+
+Probably, if there will be a person who is interested in this, it can
+get a spinlock for !CONFIG_64BIT.
+
+> Unless ao->snd_sne and ao->rcv_sneare only read/written under the
+> socket lock (and in this case no READ_ONCE()/WRITE_ONCE() should be
+> necessary)
+
+Thanks,
+            Dmitry
+
