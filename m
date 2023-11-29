@@ -2,124 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D65477FD278
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 10:27:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CC907FD27A
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 10:27:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229477AbjK2J0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 04:26:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54220 "EHLO
+        id S230120AbjK2J1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 04:27:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230184AbjK2J0q (ORCPT
+        with ESMTP id S229535AbjK2J1J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 04:26:46 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CD391BD5
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 01:26:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701250012; x=1732786012;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=poiK1yo9lPuaW4EnpGFoANhEWrq6YSdTlqrnepy9ZE4=;
-  b=IV6kCOItPI7o9obj192WehxRJXNxiCiuqD8Tn4wn0n7IWpWlnJWv4j5m
-   9nfGyPILGYrtggiXDus07SkX9kcKGM61G+cYfqKeoR8U7Cq6q8ltAbvtc
-   e3ENALSVe0T/cvnv+rm+qWjStDOIWCOmdxmhMZMvbYqboTzIJY7IBPvzQ
-   qsEyk/xBJXicDdN7AW1Y+uOx7LLFLJSLLsVg0xMO1+3XDhEaJn5/x61+W
-   fSXMpWRWDR41f5DDG/ctWie8VtG4R0XYueYlUIb6GyNK4QZ0cZaDPQenw
-   jAmZrIOrW4LEGznwm/2iDDLb1i8Q1ualHWVusQtRkI+v2IGXmYULgh6mc
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="395950737"
-X-IronPort-AV: E=Sophos;i="6.04,235,1695711600"; 
-   d="scan'208";a="395950737"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 01:26:52 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="768845355"
-X-IronPort-AV: E=Sophos;i="6.04,235,1695711600"; 
-   d="scan'208";a="768845355"
-Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 01:26:50 -0800
-Received: from kekkonen.localdomain (localhost [127.0.0.1])
-        by kekkonen.fi.intel.com (Postfix) with SMTP id 25FFC11FC11;
-        Wed, 29 Nov 2023 11:26:47 +0200 (EET)
-Date:   Wed, 29 Nov 2023 09:26:47 +0000
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Wentong Wu <wentong.wu@intel.com>
-Cc:     gregkh@linuxfoundation.org, tomas.winkler@intel.com,
-        hdegoede@redhat.com, andriy.shevchenko@linux.intel.com,
-        alexander.usyskin@intel.com, zhifeng.wang@intel.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] mei: Add MEI hardware support for IVSC device
-Message-ID: <ZWcD18B916Xs1JiU@kekkonen.localdomain>
-References: <1701174846-16316-1-git-send-email-wentong.wu@intel.com>
- <1701174846-16316-3-git-send-email-wentong.wu@intel.com>
+        Wed, 29 Nov 2023 04:27:09 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90D8A10E4
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 01:27:15 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-333030a6537so1901330f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 01:27:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701250034; x=1701854834; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wSWOGihLbvWd/HkTOnjJVlcVTUALnSb3Os9ZzOpVteY=;
+        b=NeLyLLe+VNIS0A0ajicixGG/4Wa2hk1Gr88cQEqorRIE1CN8wDFK8Q4siJb+06WPYQ
+         /szl/6+94j8PiSShRK52GK20yPmYQoYIF8aq/FW7zqAYfWH95vuJP5yuWixM6NfY7Ksq
+         E274ERv8c2yy3Ae68MdkTA2Ddet8xVZE69A3SL7Gqzk+Z46WOluHj8mXaYQ586WPocmX
+         1Ne68zSTrBmJtOjCFC+0KmQovjfD0hKzjHLyHCEyIZ9HVznoy3SbuS85K/ifNgs8dwis
+         dma5+rtPToHWqwyoB14LxfLQnHPlqOMcMrPkhSrkojamqWLivTn58vTjLIswTDUSkO9V
+         jxiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701250034; x=1701854834;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=wSWOGihLbvWd/HkTOnjJVlcVTUALnSb3Os9ZzOpVteY=;
+        b=Ito7UiZNEnsAF/xqs9pMaXP/7xVFxY7j9psknpFS5H3Pkh0sxjexh9jhK6CWT+kwgt
+         uabIpwjWHXETJ+/fbSqelRWsrZuliOJ69Iu/AtfBDde6jHpzLX0BQ/pyazYN0hBaB61G
+         O34k2cdhmdoh8Fq7Raa6XsP5Xqq8Uvs7ok7IKnVLRBsmSBbterxajK29tFHnFdI0LW/W
+         BCeAq32Pij05yfjozTVrdb2lbUv8PshhO1y44OKsAQZ3xwEfX/iH90CdzwS8CaKXTiIC
+         GTnSHOuTVwktYxIj8YwJ6u3OvXwx43kHIywDdZ/tBkvfnffAUNMoh6mj4YXvWlz6LAdF
+         c0kA==
+X-Gm-Message-State: AOJu0Yz8aatHciaiZfdySrKqcSJXYXnhU2xE+75xVCCLpg/UXmh6veZr
+        XYiih3DjkMwRTbm79lBOPNEsYQ==
+X-Google-Smtp-Source: AGHT+IEvFDFRW8z6E5TlMnajfmGUr1GR7ySAnhV1pJPndQQNOYzuf0vOlVDE22biyX9j9hGxRzwgvQ==
+X-Received: by 2002:a5d:6309:0:b0:333:85e:a11c with SMTP id i9-20020a5d6309000000b00333085ea11cmr4770557wru.16.1701250033770;
+        Wed, 29 Nov 2023 01:27:13 -0800 (PST)
+Received: from ?IPV6:2a01:e0a:982:cbb0:31d3:eea3:8f97:6a2c? ([2a01:e0a:982:cbb0:31d3:eea3:8f97:6a2c])
+        by smtp.gmail.com with ESMTPSA id l12-20020a5d4bcc000000b00332fbc183ebsm9798399wrt.76.2023.11.29.01.27.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Nov 2023 01:27:13 -0800 (PST)
+Message-ID: <e7a2db20-4d6c-4fd0-ba0e-d8a2057cfbfc@linaro.org>
+Date:   Wed, 29 Nov 2023 10:27:11 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1701174846-16316-3-git-send-email-wentong.wu@intel.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+From:   neil.armstrong@linaro.org
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH] [drm/meson] meson_plane: Add error handling
+Content-Language: en-US, fr
+To:     Haoran Liu <liuhaoran14@163.com>, maarten.lankhorst@linux.intel.com
+Cc:     mripard@kernel.org, tzimmermann@suse.de, airlied@gmail.com,
+        daniel@ffwll.ch, khilman@baylibre.com, jbrunet@baylibre.com,
+        martin.blumenstingl@googlemail.com,
+        dri-devel@lists.freedesktop.org, linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20231129092113.32630-1-liuhaoran14@163.com>
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro Developer Services
+In-Reply-To: <20231129092113.32630-1-liuhaoran14@163.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Wentong,
+Hi,
 
-On Tue, Nov 28, 2023 at 08:34:06PM +0800, Wentong Wu wrote:
-> The protocol used for the IVSC device to communicate with HOST is MEI.
-> The MEI hardware interfaces for the IVSC device are implemented.
+Thanks for your patch!
+
+On 29/11/2023 10:21, Haoran Liu wrote:
+> This patch adds robust error handling to the meson_plane_create
+> function in drivers/gpu/drm/meson/meson_plane.c. The function
+> previously lacked proper handling for potential failure scenarios
+> of the drm_universal_plane_init call.
 > 
-> The APIs are exposed by MEI framework to mei clients, e.g. mei_csi and
-> mei_ace.
-> 
-> Signed-off-by: Wentong Wu <wentong.wu@intel.com>
-> Reviewed-by: Alexander Usyskin <alexander.usyskin@intel.com>
-> Reviewed-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+> Signed-off-by: Haoran Liu <liuhaoran14@163.com>
 > ---
->  drivers/misc/mei/Kconfig        |  13 ++
->  drivers/misc/mei/Makefile       |   3 +
->  drivers/misc/mei/platform-vsc.c | 442 ++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 458 insertions(+)
->  create mode 100644 drivers/misc/mei/platform-vsc.c
+>   drivers/gpu/drm/meson/meson_plane.c | 7 ++++++-
+>   1 file changed, 6 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/misc/mei/Kconfig b/drivers/misc/mei/Kconfig
-> index 470957a..2c5312b 100644
-> --- a/drivers/misc/mei/Kconfig
-> +++ b/drivers/misc/mei/Kconfig
-> @@ -71,6 +71,19 @@ config INTEL_MEI_VSC_HW
->  	  This driver can also be built as a module. If so, the module
->  	  will be called mei-vsc-hw.
->  
-> +config INTEL_MEI_VSC
-> +	tristate "Intel visual sensing controller device with ME interface"
-> +	select INTEL_MEI_VSC_HW
+> diff --git a/drivers/gpu/drm/meson/meson_plane.c b/drivers/gpu/drm/meson/meson_plane.c
+> index 815dfe30492b..67b36398f146 100644
+> --- a/drivers/gpu/drm/meson/meson_plane.c
+> +++ b/drivers/gpu/drm/meson/meson_plane.c
+> @@ -534,6 +534,7 @@ int meson_plane_create(struct meson_drm *priv)
+>   	struct meson_plane *meson_plane;
+>   	struct drm_plane *plane;
+>   	const uint64_t *format_modifiers = format_modifiers_default;
+> +	int ret;
+>   
+>   	meson_plane = devm_kzalloc(priv->drm->dev, sizeof(*meson_plane),
+>   				   GFP_KERNEL);
+> @@ -548,12 +549,16 @@ int meson_plane_create(struct meson_drm *priv)
+>   	else if (meson_vpu_is_compatible(priv, VPU_COMPATIBLE_G12A))
+>   		format_modifiers = format_modifiers_afbc_g12a;
+>   
+> -	drm_universal_plane_init(priv->drm, plane, 0xFF,
+> +	ret = drm_universal_plane_init(priv->drm, plane, 0xFF,
+>   				 &meson_plane_funcs,
+>   				 supported_drm_formats,
+>   				 ARRAY_SIZE(supported_drm_formats),
+>   				 format_modifiers,
+>   				 DRM_PLANE_TYPE_PRIMARY, "meson_primary_plane");
 
-Changing the select here to depends on addresses the Kconfig option
-dependency issue (as select just blindly selects the options while ignoring
-their dependencies).
+Could you re-align those lines aswell ?
 
-I wouldn't mind having a single Kconfig option for the two drivers either.
-They're always used together, aren't they?
+> +	if (ret) {
+> +		devm_kfree(priv->drm->dev, meson_plane);
+> +		return ret;
+> +	}
+>   
+>   	drm_plane_helper_add(plane, &meson_plane_helper_funcs);
+>   
 
-> +	depends on INTEL_MEI
-> +	help
-> +	  Intel MEI over SPI driver for Intel visual sensing controller
-> +	  (IVSC) device embedded in IA platform. It supports camera sharing
-> +	  between IVSC for context sensing and IPU for typical media usage.
-> +	  Select this config will enable transport layer for IVSC device.
-> +
-> +	  This driver can also be built as a module. If so, the module
-> +	  will be called mei-vsc.
-> +
->  source "drivers/misc/mei/hdcp/Kconfig"
->  source "drivers/misc/mei/pxp/Kconfig"
->  source "drivers/misc/mei/gsc_proxy/Kconfig"
-
--- 
-Regards,
-
-Sakari Ailus
+Thanks,
+Neil
