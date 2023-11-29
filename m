@@ -2,175 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA0BA7FCC46
+	by mail.lfdr.de (Postfix) with ESMTP id 3DB4A7FCC44
 	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 02:22:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376694AbjK2BJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 20:09:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56028 "EHLO
+        id S230075AbjK2BL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 20:11:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbjK2BJP (ORCPT
+        with ESMTP id S229526AbjK2BLY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 20:09:15 -0500
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2071.outbound.protection.outlook.com [40.107.92.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27B771727;
-        Tue, 28 Nov 2023 17:09:22 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eve9OURn+hvFXpmyFbc2arotiKecZZ6fsybHNeWtcbkYpZi8gRgL+paBOmeW7YtTzhgJlUfDsqGmTnZQEMdq80v0yVt7zJ0hraRqTahXS71cPp43WkHnAdZudMua5GCLR5GeOuHXjzYZtA4ZHNYNGZvfsVFejtoN2t3JU/51Alx8HKgQC1b7KsCKj6lJNG2Wj2S2E2OXPbisqy0TgJ23rNjKOwor2wLkxw57+jB/ksnTD3rVSF8VNlnmysKiou19CLJt7zaW8B207BVyrh1VrJUStIwV9upAOVDbr/YTu9fYigU3+8gzol6VXOS+VIGvjND3gwUfzwGYnDkE+aB8zQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1VcbSpZNwbf+MqsbiooakwKrVz1RyM9P0afEb+C70bI=;
- b=ioqWFn+UxVve8p/Ib7iU5VWHbsJmi6drd0NlAHAYxKlDrp/89kvrYUp0fmIA0iJi7qlfNkWXvIhRI5VokzDuxeGAaVUuXkMAmjK9zXNIwW4j9nLJoxDPnU5Rv05hBAc5ecu+wrT/sHfgTKISPPTBXE30zGZaiv/JDuqczCWNesTrcR+gfMbq1wIjtdi2K6R+szFX3/b11pb+lco/8suSskz/v4J3eis9JGSQojkMWBEboop+9x6G2vBe92Vg3yEjq5VS+J+kqqDNEMVBbJHiU4I8KEBI/Fi1xCBKilbPnLujvtZ9y8HTQ33q8WC3tR1cE9ZDkLYyhrEu6z3ShArwHQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.233) smtp.rcpttodomain=oracle.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1VcbSpZNwbf+MqsbiooakwKrVz1RyM9P0afEb+C70bI=;
- b=rug1vOIckXhUfGItjv5g9lTR8E2cDwU+qCAE1GShacNybvBcVSS9YwVtXS2J86ks1mU2I2NVCPNJ7REz+xEHQS1BIJjijshxp7q8RCG3dOZ/mzKGye9zNBFox3jh14TZz+mPTl8JILcVjyVBBvWG7zkbCJA/vUdqsakZMrVDpwqefLWIt9KHd3fjWBFQWSkiJxSYkfY/6ZxdbDBF/B12SWXDxIGHrZpLaQqUhLqBL57dauQElbHsr3xfF5abvl6b8PBs2rlF+mS84lzbDcEBexxOuYdp9xduCYdjtSGtA+CXlEDUt0HSLnkFN5eQOOH8cEBx9HkqvSsLBb6IIP5uqA==
-Received: from SJ0PR05CA0017.namprd05.prod.outlook.com (2603:10b6:a03:33b::22)
- by LV2PR12MB5846.namprd12.prod.outlook.com (2603:10b6:408:175::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.29; Wed, 29 Nov
- 2023 01:09:19 +0000
-Received: from CO1PEPF000044F0.namprd05.prod.outlook.com
- (2603:10b6:a03:33b:cafe::16) by SJ0PR05CA0017.outlook.office365.com
- (2603:10b6:a03:33b::22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.22 via Frontend
- Transport; Wed, 29 Nov 2023 01:09:18 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.233) by
- CO1PEPF000044F0.mail.protection.outlook.com (10.167.241.70) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7046.17 via Frontend Transport; Wed, 29 Nov 2023 01:09:18 +0000
-Received: from drhqmail202.nvidia.com (10.126.190.181) by mail.nvidia.com
- (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Tue, 28 Nov
- 2023 17:09:10 -0800
-Received: from drhqmail201.nvidia.com (10.126.190.180) by
- drhqmail202.nvidia.com (10.126.190.181) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.41; Tue, 28 Nov 2023 17:09:09 -0800
-Received: from Asurada-Nvidia (10.127.8.12) by mail.nvidia.com
- (10.126.190.180) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41 via Frontend
- Transport; Tue, 28 Nov 2023 17:09:08 -0800
-Date:   Tue, 28 Nov 2023 17:09:07 -0800
-From:   Nicolin Chen <nicolinc@nvidia.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     "Tian, Kevin" <kevin.tian@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-        "cohuck@redhat.com" <cohuck@redhat.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
-        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
-        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "shameerali.kolothum.thodi@huawei.com" 
-        <shameerali.kolothum.thodi@huawei.com>,
-        "lulu@redhat.com" <lulu@redhat.com>,
-        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>,
-        "joao.m.martins@oracle.com" <joao.m.martins@oracle.com>,
-        "Zeng, Xin" <xin.zeng@intel.com>,
-        "Zhao, Yan Y" <yan.y.zhao@intel.com>
-Subject: Re: [PATCH v6 2/6] iommufd: Add IOMMU_HWPT_INVALIDATE
-Message-ID: <ZWaPM4p7yjJ0sEKk@Asurada-Nvidia>
-References: <fa736836-e136-4ed4-a6af-8ea2f0e7c0dd@intel.com>
- <BN9PR11MB527659462CCB7280055858D98CB4A@BN9PR11MB5276.namprd11.prod.outlook.com>
- <ZVuZOYFzAaCuJjXZ@Asurada-Nvidia>
- <BN9PR11MB5276C8EACE2C300A646EA8A18CBBA@BN9PR11MB5276.namprd11.prod.outlook.com>
- <ZVw/BXxgGCuCZCA6@Asurada-Nvidia>
- <BN9PR11MB52761A9B48A25E89BEECE6308CB8A@BN9PR11MB5276.namprd11.prod.outlook.com>
- <ZWTzoBTDDEWAKMs9@Asurada-Nvidia>
- <BN9PR11MB5276FD60A0EDF8E3F231FCC88CBCA@BN9PR11MB5276.namprd11.prod.outlook.com>
- <ZWaLCSAMIOXTlghk@Asurada-Nvidia>
- <20231129005715.GS436702@nvidia.com>
+        Tue, 28 Nov 2023 20:11:24 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B742C19A7;
+        Tue, 28 Nov 2023 17:11:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701220290; x=1732756290;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=+Ztz3I+XcXE7EnPrEmSxi/fBX/uCg6GXn2cC6TYKYOg=;
+  b=TMLY8R0JNwjDpI3N5upWDqYTVtDS9F42VGQvkr+Xi+LJuodRnkqPcSML
+   t8XWGEKZfng/fVwqGroMAjY9Cp5aVK9+2TdBUycN5zSmeXscAXi7vHHpP
+   +CGXXL2SoSP57Awyd+HCOcPg5UC8U9vj4wBgmp/fTaWDMAtKgMPHBqxE0
+   ZtrkbLuBg+L/R2Z+zwP+/cjjAnMfmQ655pXjbvdpZDF/w6qO87ipyiV7r
+   n94UjntcFpcLzkZ7eBP0waV9nGkC75JMGk2o6DQGUwvRWnoDGduHTP56W
+   F7pS95fzNrb/x88rJlJSSF/Hc8GAqs5qAFUYF7gLokGTIlPMXyX8R7DVC
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="391929084"
+X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
+   d="scan'208";a="391929084"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 17:11:30 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
+   d="scan'208";a="10171897"
+Received: from lkp-server01.sh.intel.com (HELO d584ee6ebdcc) ([10.239.97.150])
+  by orviesa002.jf.intel.com with ESMTP; 28 Nov 2023 17:11:27 -0800
+Received: from kbuild by d584ee6ebdcc with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r896q-0008Na-1G;
+        Wed, 29 Nov 2023 01:11:24 +0000
+Date:   Wed, 29 Nov 2023 09:11:18 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jacky Huang <ychuang570808@gmail.com>, linus.walleij@linaro.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, p.zabel@pengutronix.de, j.neuschaefer@gmx.net
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ychuang3@nuvoton.com, schung@nuvoton.com
+Subject: Re: [PATCH v2 3/4] arm64: dts: nuvoton: Add pinctrl support for
+ ma35d1
+Message-ID: <202311290550.7HCXMJCy-lkp@intel.com>
+References: <20231128061118.575847-4-ychuang570808@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231129005715.GS436702@nvidia.com>
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PEPF000044F0:EE_|LV2PR12MB5846:EE_
-X-MS-Office365-Filtering-Correlation-Id: c8f7232a-6f4d-47e6-31ef-08dbf077d018
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 3PvO6Gt7U02z31q3flqnIVRg23R607lv378JqE2I93Z14rUvFyRezFZnmkOI+GIU6WX7nMbOXWNUGsnOEE3HE9GbjzMG5Kw610hzhCNFfD9SarSZB4uwMCOYpN+wDddz98t0ZBLPQBeOVQXtOpEuq/CJNa1Nq6Q3bNZhhwxBtSdxnsOWY2Mn3n8UR8GelaADaqPRXXiMqUK5tX9EyxTb7G+5Ui40wor22x7WwZ5cTUrj/JNNmdfiBA2u7TJMpxb5nxOESKShGoO15h1FstsMr/xqkSoATIsHkr8/a9HW0I0jubCMYaXs+dsIrEjEWIs/VlC6ogkZsEqzsq03dGYcnkNts67f14i6+2p/s2UbgGQJ9Z3mLkz4wQmeOIc0cjV39Sg6I4Ru92vebZRQ9urVbhfQ0kDaInf1WQDX9VJQqVCiv7lHahdkFex+xLHwTmNNvStBWE884kZcbhr3usdbb1uDXZrnPCwCGUDOszc/KSa829zVJqrbTVfN8n9Ajv3daN5MYFN0Hd5ENuqf/FhBLW6ML4ZgdYjcu3K7k9hGt8WjLZB4Y03zwJ4mse+BKV6KfQsPxHaKY1KxuA35ox/D8GIl2KQIUX6hXDHw7jv4/AqMjWLqLNEXciX0aiawM6kBy/vIpsf5t+w/3Un4b79A2vX+ttHCmVh4wtTwr7R/tGLiAL9DjrKtyQ1tMaxY2tE50XJWCpFmIwwRNeVQGdCbwoeaIyHaZEp2QvXVx87vNZwNMNgsVzuz60iL9KHDqcNN
-X-Forefront-Antispam-Report: CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(396003)(346002)(136003)(376002)(230922051799003)(451199024)(186009)(82310400011)(64100799003)(1800799012)(36840700001)(46966006)(40470700004)(316002)(6636002)(336012)(426003)(9686003)(86362001)(26005)(70206006)(70586007)(47076005)(478600001)(36860700001)(83380400001)(82740400003)(7636003)(356005)(40460700003)(54906003)(7416002)(5660300002)(2906002)(55016003)(6862004)(41300700001)(33716001)(4326008)(8676002)(8936002)(40480700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Nov 2023 01:09:18.5296
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: c8f7232a-6f4d-47e6-31ef-08dbf077d018
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1PEPF000044F0.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV2PR12MB5846
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20231128061118.575847-4-ychuang570808@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 08:57:15PM -0400, Jason Gunthorpe wrote:
-> On Tue, Nov 28, 2023 at 04:51:21PM -0800, Nicolin Chen wrote:
-> > > > I also thought about making this out_driver_error_code per HW.
-> > > > Yet, an error can be either per array or per entry/quest. The
-> > > > array-related error should be reported in the array structure
-> > > > that is a core uAPI, v.s. the per-HW entry structure. Though
-> > > > we could still report an array error in the entry structure
-> > > > at the first entry (or indexed by "array->entry_num")?
-> > > >
-> > > 
-> > > why would there be an array error? array is just a software
-> > > entity containing actual HW invalidation cmds. If there is
-> > > any error with the array itself it should be reported via
-> > > ioctl errno.
-> > 
-> > User array reading is a software operation, but kernel array
-> > reading is a hardware operation that can raise an error when
-> > the memory location to the array is incorrect or so.
-> 
-> Well, we shouldn't get into a situation like that.. By the time the HW
-> got the address it should be valid.
+Hi Jacky,
 
-Oh, that's true. I was trying to say that out_driver_error_code
-was to mimic such a queue validation for user space if an error
-happens to the array.
+kernel test robot noticed the following build errors:
 
-> > With that being said, I think errno (-EIO) could do the job,
-> > as you suggested too.
-> 
-> Do we have any idea what HW failures can be generated by the commands
-> this will execture? IIRC I don't remember seeing any smmu specific
-> codes related to invalid invalidation? Everything is a valid input?
+[auto build test ERROR on linusw-pinctrl/devel]
+[also build test ERROR on linusw-pinctrl/for-next robh/for-next linus/master v6.7-rc3]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-"7.1 Command queue errors" has the info.
+url:    https://github.com/intel-lab-lkp/linux/commits/Jacky-Huang/dt-bindings-reset-Add-syscon-to-nuvoton-ma35d1-system-management-node/20231128-141443
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git devel
+patch link:    https://lore.kernel.org/r/20231128061118.575847-4-ychuang570808%40gmail.com
+patch subject: [PATCH v2 3/4] arm64: dts: nuvoton: Add pinctrl support for ma35d1
+config: arm64-randconfig-001-20231128 (https://download.01.org/0day-ci/archive/20231129/202311290550.7HCXMJCy-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231129/202311290550.7HCXMJCy-lkp@intel.com/reproduce)
 
-Thanks
-Nic
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311290550.7HCXMJCy-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   In file included from arch/arm64/boot/dts/nuvoton/ma35d1-iot-512m.dts:9:
+>> arch/arm64/boot/dts/nuvoton/ma35d1.dtsi:13:10: fatal error: 'dt-bindings/pinctrl/ma35d1-pinfunc.h' file not found
+      13 | #include <dt-bindings/pinctrl/ma35d1-pinfunc.h>
+         |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   1 error generated.
+
+
+vim +13 arch/arm64/boot/dts/nuvoton/ma35d1.dtsi
+
+  > 13	#include <dt-bindings/pinctrl/ma35d1-pinfunc.h>
+    14	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
