@@ -2,248 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C06037FF88A
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 18:40:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2E2B7FF933
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 19:17:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235204AbjK3RkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 12:40:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48638 "EHLO
+        id S1346199AbjK3SRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 13:17:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232284AbjK3Rj6 (ORCPT
+        with ESMTP id S231736AbjK3SR3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 12:39:58 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8D34610DF;
-        Thu, 30 Nov 2023 09:40:02 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D14D3150C;
-        Thu, 30 Nov 2023 09:40:48 -0800 (PST)
-Received: from [10.1.197.60] (eglon.cambridge.arm.com [10.1.197.60])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EF3903F8A4;
-        Thu, 30 Nov 2023 09:39:57 -0800 (PST)
-Message-ID: <874f0170-a829-47db-8882-52b9ed8e869d@arm.com>
-Date:   Thu, 30 Nov 2023 17:39:56 +0000
+        Thu, 30 Nov 2023 13:17:29 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54DD7D6C
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 10:17:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701368255;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CrFEpIsAN5CLxammhD+GAJP9cPsbGGrmnZDHNVsmekk=;
+        b=IRUxCG0hGwUQVZejq7gsGv1XZx/OLIprkTRxKsCmmxhIuFgYGzJKVaOSOb035pRcOivPMA
+        z1ETQjLBCYGRTk/KoOTgwe3BY305ToBwN2hngdla+31UO5oG0w/+6MeQp5hpqJ9wAG9auI
+        1y0aas7erTGZLMWHZxOc4yaVZylByRI=
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
+ [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-547-sG5CK5UePAilhZfOe9nvHg-1; Thu, 30 Nov 2023 13:17:34 -0500
+X-MC-Unique: sG5CK5UePAilhZfOe9nvHg-1
+Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-50bc7296f75so1415814e87.2
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 10:17:33 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701368252; x=1701973052;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CrFEpIsAN5CLxammhD+GAJP9cPsbGGrmnZDHNVsmekk=;
+        b=Y5/3Lv8z66Hgm6YbvGTZPSjw3BdBKo8o1N2DYxotBR1eemKr6Z6upfEROzD0uWusN1
+         oD2GGSlo0q4XWsVyJE33d0zDZQPO2UQckIXRrKfe7SomqFiUErlaIrK+t3Gg8Zt49iyH
+         yVAQdKr8Rj0Y3t6PppmMHUX7pipb5OM382NiaWKq18VNWGKOJPu55qrr7c6Vpn/ONUYD
+         rBvRXXkDIbLeDycO/CbvAsrhCVcsKcj7EbdiXXevyW6nWSpOihTfi1jaHoU7EFf1qjMF
+         DG1NfHdExrmIhh8HNP20Ejz5tUOw5cK4WgImKbpW3mXm6Wn0SBiO/LYtvSYI5D+7FRZl
+         KrgA==
+X-Gm-Message-State: AOJu0YyjiwxU2JDjkeWIQslLyhclah9LpOgg1udTW1rPyCxzTpchrRt9
+        Uf43Ed5gNSRKEzqY2WJ4/EBOJ/MQmNWIQVUiaW7XstBjwVGG6wcIAzMCr00WWhKbtkfeLxE4BaG
+        fzYvZkroqgvynV4Lrob4/ZVVCyDAWtyXQ
+X-Received: by 2002:a05:6512:39c5:b0:50b:c027:70f with SMTP id k5-20020a05651239c500b0050bc027070fmr286lfu.21.1701368252298;
+        Thu, 30 Nov 2023 10:17:32 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFDeqYIAaVd/veLSsPan4ItHCmZAXYpV0ezMbb4/NCI3nQ4Fjl7Bmf1Eq8wWcU569Tv8r8zRw==
+X-Received: by 2002:a17:906:15c:b0:9e7:8ad0:a471 with SMTP id 28-20020a170906015c00b009e78ad0a471mr171135ejh.12.1701366013091;
+        Thu, 30 Nov 2023 09:40:13 -0800 (PST)
+Received: from starship ([5.28.147.32])
+        by smtp.gmail.com with ESMTPSA id 6-20020ac24846000000b0050bc56dd0acsm213436lfy.184.2023.11.30.09.40.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Nov 2023 09:40:11 -0800 (PST)
+Message-ID: <fe7d8df5b6774a83c38b8a6dc244782c943c84b7.camel@redhat.com>
+Subject: Re: [PATCH v7 17/26] KVM: x86: Report KVM supported CET MSRs as
+ to-be-saved
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Yang Weijiang <weijiang.yang@intel.com>, seanjc@google.com,
+        pbonzini@redhat.com, dave.hansen@intel.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     peterz@infradead.org, chao.gao@intel.com,
+        rick.p.edgecombe@intel.com, john.allen@amd.com
+Date:   Thu, 30 Nov 2023 19:40:09 +0200
+In-Reply-To: <20231124055330.138870-18-weijiang.yang@intel.com>
+References: <20231124055330.138870-1-weijiang.yang@intel.com>
+         <20231124055330.138870-18-weijiang.yang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v9 2/2] ACPI: APEI: handle synchronous exceptions in task
- work
-Content-Language: en-GB
-To:     Shuai Xue <xueshuai@linux.alibaba.com>, rafael@kernel.org,
-        wangkefeng.wang@huawei.com, tanxiaofei@huawei.com,
-        mawupeng1@huawei.com, tony.luck@intel.com, linmiaohe@huawei.com,
-        naoya.horiguchi@nec.com, gregkh@linuxfoundation.org,
-        will@kernel.org, jarkko@kernel.org
-Cc:     linux-acpi@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        linux-edac@vger.kernel.org, acpica-devel@lists.linuxfoundation.org,
-        stable@vger.kernel.org, x86@kernel.org, justin.he@arm.com,
-        ardb@kernel.org, ying.huang@intel.com, ashish.kalra@amd.com,
-        baolin.wang@linux.alibaba.com, bp@alien8.de, tglx@linutronix.de,
-        mingo@redhat.com, dave.hansen@linux.intel.com, lenb@kernel.org,
-        hpa@zytor.com, robert.moore@intel.com, lvying6@huawei.com,
-        xiexiuqi@huawei.com, zhuo.song@linux.alibaba.com
-References: <20221027042445.60108-1-xueshuai@linux.alibaba.com>
- <20231007072818.58951-3-xueshuai@linux.alibaba.com>
-From:   James Morse <james.morse@arm.com>
-In-Reply-To: <20231007072818.58951-3-xueshuai@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Shuai,
-
-On 07/10/2023 08:28, Shuai Xue wrote:
-> Hardware errors could be signaled by synchronous interrupt,
-
-I'm struggling with 'synchronous interrupt'. Do you mean arm64's 'precise' (all
-instructions before the exception were executed, and none after).
-Otherwise, surely any interrupt from a background scrubber is inherently asynchronous!
-
-
-> e.g.  when an
-> error is detected by a background scrubber, or signaled by synchronous
-> exception, e.g. when an uncorrected error is consumed. Both synchronous and
-> asynchronous error are queued and handled by a dedicated kthread in
-> workqueue.
+On Fri, 2023-11-24 at 00:53 -0500, Yang Weijiang wrote:
+> Add CET MSRs to the list of MSRs reported to userspace if the feature,
+> i.e. IBT or SHSTK, associated with the MSRs is supported by KVM.
 > 
-> commit 7f17b4a121d0 ("ACPI: APEI: Kick the memory_failure() queue for
-> synchronous errors") keep track of whether memory_failure() work was
-> queued, and make task_work pending to flush out the workqueue so that the
-> work for synchronous error is processed before returning to user-space.
-
-It does it regardless, if user-space was interrupted by APEI any work queued as a result
-of that should be completed before we go back to user-space. Otherwise we can bounce
-between user-space and firmware, with the kernel only running the APEI code, and never
-making progress.
-
-
-> The trick ensures that the corrupted page is unmapped and poisoned. And
-> after returning to user-space, the task starts at current instruction which
-> triggering a page fault in which kernel will send SIGBUS to current process
-> due to VM_FAULT_HWPOISON.
+> SSP can only be read via RDSSP. Writing even requires destructive and
+> potentially faulting operations such as SAVEPREVSSP/RSTORSSP or
+> SETSSBSY/CLRSSBSY. Let the host use a pseudo-MSR that is just a wrapper
+> for the GUEST_SSP field of the VMCS.
 > 
-> However, the memory failure recovery for hwpoison-aware mechanisms does not
-> work as expected. For example, hwpoison-aware user-space processes like
-> QEMU register their customized SIGBUS handler and enable early kill mode by
-> seting PF_MCE_EARLY at initialization. Then the kernel will directy notify
-
-(setting, directly)
-
-> the process by sending a SIGBUS signal in memory failure with wrong
-
-> si_code: the actual user-space process accessing the corrupt memory
-> location, but its memory failure work is handled in a kthread context, so
-> it will send SIGBUS with BUS_MCEERR_AO si_code to the actual user-space
-> process instead of BUS_MCEERR_AR in kill_proc().
-
-This is hard to parse, "the user-space process is accessing"? (dropping 'actual' and
-adding 'is')
-
-
-Wasn't this behaviour fixed by the previous patch?
-
-What problem are you fixing here?
-
-
-> To this end, separate synchronous and asynchronous error handling into
-> different paths like X86 platform does:
+> Suggested-by: Chao Gao <chao.gao@intel.com>
+> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
+> ---
+>  arch/x86/include/uapi/asm/kvm_para.h |  1 +
+>  arch/x86/kvm/vmx/vmx.c               |  2 ++
+>  arch/x86/kvm/x86.c                   | 18 ++++++++++++++++++
+>  3 files changed, 21 insertions(+)
 > 
-> - valid synchronous errors: queue a task_work to synchronously send SIGBUS
->   before ret_to_user.
-
-> - valid asynchronous errors: queue a work into workqueue to asynchronously
->   handle memory failure.
-
-Why? The signal issue was fixed by the previous patch. Why delay the handling of a
-poisoned memory location further?
-
-
-> - abnormal branches such as invalid PA, unexpected severity, no memory
->   failure config support, invalid GUID section, OOM, etc.
-
-... do what?
-
-
-> Then for valid synchronous errors, the current context in memory failure is
-> exactly belongs to the task consuming poison data and it will send SIBBUS
-> with proper si_code.
-
-
-> diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-> index 6f35f724cc14..1675ff77033d 100644
-> --- a/arch/x86/kernel/cpu/mce/core.c
-> +++ b/arch/x86/kernel/cpu/mce/core.c
-> @@ -1334,17 +1334,10 @@ static void kill_me_maybe(struct callback_head *cb)
->  		return;
->  	}
+> diff --git a/arch/x86/include/uapi/asm/kvm_para.h b/arch/x86/include/uapi/asm/kvm_para.h
+> index 6e64b27b2c1e..9864bbcf2470 100644
+> --- a/arch/x86/include/uapi/asm/kvm_para.h
+> +++ b/arch/x86/include/uapi/asm/kvm_para.h
+> @@ -58,6 +58,7 @@
+>  #define MSR_KVM_ASYNC_PF_INT	0x4b564d06
+>  #define MSR_KVM_ASYNC_PF_ACK	0x4b564d07
+>  #define MSR_KVM_MIGRATION_CONTROL	0x4b564d08
+> +#define MSR_KVM_SSP	0x4b564d09
 >  
-> -	/*
-> -	 * -EHWPOISON from memory_failure() means that it already sent SIGBUS
-> -	 * to the current process with the proper error info,
-> -	 * -EOPNOTSUPP means hwpoison_filter() filtered the error event,
-> -	 *
-> -	 * In both cases, no further processing is required.
-> -	 */
->  	if (ret == -EHWPOISON || ret == -EOPNOTSUPP)
->  		return;
->  
-> -	pr_err("Memory error not recovered");
-> +	pr_err("Sending SIGBUS to current task due to memory error not recovered");
->  	kill_me_now(cb);
->  }
->  
-
-I'm not sure how this hunk is relevant to the commit message.
-
-
-> diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
-> index 88178aa6222d..014401a65ed5 100644
-> --- a/drivers/acpi/apei/ghes.c
-> +++ b/drivers/acpi/apei/ghes.c
-> @@ -484,6 +497,18 @@ static bool ghes_do_memory_failure(u64 physical_addr, int flags)
+>  struct kvm_steal_time {
+>  	__u64 steal;
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index be20a60047b1..d3d0d74fef70 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -7009,6 +7009,8 @@ static bool vmx_has_emulated_msr(struct kvm *kvm, u32 index)
+>  	case MSR_AMD64_TSC_RATIO:
+>  		/* This is AMD only.  */
 >  		return false;
+> +	case MSR_KVM_SSP:
+> +		return kvm_cpu_cap_has(X86_FEATURE_SHSTK);
+>  	default:
+>  		return true;
 >  	}
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 44b8cf459dfc..74d2d00a1681 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -1476,6 +1476,9 @@ static const u32 msrs_to_save_base[] = {
 >  
-> +	if (flags == MF_ACTION_REQUIRED && current->mm) {
-> +		twcb = kmalloc(sizeof(*twcb), GFP_ATOMIC);
-> +		if (!twcb)
-> +			return false;
-
-Yuck - New failure modes! This is why the existing code always has this memory allocated
-in struct ghes_estatus_node.
-
-
-> +		twcb->pfn = pfn;
-> +		twcb->flags = flags;
-> +		init_task_work(&twcb->twork, memory_failure_cb);
-> +		task_work_add(current, &twcb->twork, TWA_RESUME);
-> +		return true;
-> +	}
-> +
->  	memory_failure_queue(pfn, flags);
->  	return true;
->  }
-
-[..]
-
-> @@ -696,7 +721,14 @@ static bool ghes_do_proc(struct ghes *ghes,
->  		}
+>  	MSR_IA32_XFD, MSR_IA32_XFD_ERR,
+>  	MSR_IA32_XSS,
+> +	MSR_IA32_U_CET, MSR_IA32_S_CET,
+> +	MSR_IA32_PL0_SSP, MSR_IA32_PL1_SSP, MSR_IA32_PL2_SSP,
+> +	MSR_IA32_PL3_SSP, MSR_IA32_INT_SSP_TAB,
+>  };
+>  
+>  static const u32 msrs_to_save_pmu[] = {
+> @@ -1576,6 +1579,7 @@ static const u32 emulated_msrs_all[] = {
+>  
+>  	MSR_K7_HWCR,
+>  	MSR_KVM_POLL_CONTROL,
+> +	MSR_KVM_SSP,
+>  };
+>  
+>  static u32 emulated_msrs[ARRAY_SIZE(emulated_msrs_all)];
+> @@ -7371,6 +7375,20 @@ static void kvm_probe_msr_to_save(u32 msr_index)
+>  		if (!kvm_caps.supported_xss)
+>  			return;
+>  		break;
+> +	case MSR_IA32_U_CET:
+> +	case MSR_IA32_S_CET:
+> +		if (!kvm_cpu_cap_has(X86_FEATURE_SHSTK) &&
+> +		    !kvm_cpu_cap_has(X86_FEATURE_IBT))
+> +			return;
+> +		break;
+> +	case MSR_IA32_INT_SSP_TAB:
+> +		if (!kvm_cpu_cap_has(X86_FEATURE_LM))
+> +			return;
+> +		fallthrough;
+> +	case MSR_IA32_PL0_SSP ... MSR_IA32_PL3_SSP:
+> +		if (!kvm_cpu_cap_has(X86_FEATURE_SHSTK))
+> +			return;
+> +		break;
+>  	default:
+>  		break;
 >  	}
->  
-> -	return queued;
-> +	/*
-> +	 * If no memory failure work is queued for abnormal synchronous
-> +	 * errors, do a force kill.
-> +	 */
-> +	if (sync && !queued) {
-> +		pr_err("Sending SIGBUS to current task due to memory error not recovered");
-> +		force_sig(SIGBUS);
-> +	}
->  }
 
-I think this is a lot of churn, and this hunk is the the only meaningful change in
-behaviour. Can you explain how this happens?
+I still think that pseudo MSR is a hack that might backfire,
+but I am not going to argue much about this.
+
+Best regards,
+	Maxim Levitsky
 
 
-Wouldn't it be simpler to split ghes_kick_task_work() to have a sync/async version.
-The synchronous version can unconditionally force_sig_mceerr(BUS_MCEERR_AR, ...) after
-memory_failure_queue_kick() - but that still means memory_failure() is unable to disappear
-errors that it fixed - see MF_RECOVERED.
-
-
-
-> diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-> index 4d6e43c88489..0d02f8a0b556 100644
-> --- a/mm/memory-failure.c
-> +++ b/mm/memory-failure.c
-> @@ -2161,9 +2161,12 @@ static int memory_failure_dev_pagemap(unsigned long pfn, int flags,
->   * Must run in process context (e.g. a work queue) with interrupts
->   * enabled and no spinlocks held.
->   *
-> - * Return: 0 for successfully handled the memory error,
-> - *         -EOPNOTSUPP for hwpoison_filter() filtered the error event,
-> - *         < 0(except -EOPNOTSUPP) on failure.
-> + * Return values:
-> + *   0             - success
-> + *   -EOPNOTSUPP   - hwpoison_filter() filtered the error event.
-> + *   -EHWPOISON    - sent SIGBUS to the current process with the proper
-> + *                   error info by kill_accessing_process().
-> + *   other negative values - failure
->   */
->  int memory_failure(unsigned long pfn, int flags)
->  {
-
-I'm not sure how this hunk is relevant to the commit message.
-
-
-Thanks,
-
-James
