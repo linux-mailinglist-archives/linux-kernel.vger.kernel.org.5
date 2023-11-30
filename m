@@ -2,132 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D02E7FF38C
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 16:25:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 300197FF38F
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 16:26:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346283AbjK3PZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 10:25:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55518 "EHLO
+        id S1346234AbjK3P0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 10:26:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346234AbjK3PZh (ORCPT
+        with ESMTP id S232017AbjK3P0R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 10:25:37 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A97710D5;
-        Thu, 30 Nov 2023 07:25:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701357943; x=1732893943;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version:content-id;
-  bh=4NUcRApeHAyahOhS8cxwsZnnTdjEBwRcaIXLlPqZAjY=;
-  b=hViqtfpPQPuQS20LgyMMQa8syK3gxW6obW/fOZDM07jTTc3JxTkcBItv
-   6UK6Zoz435WOZ0isXdglWR7eUeeKiaPy7a9PhCYwLrfUxOyDiuvHlQ6X/
-   GEOgm8VZHrDYHEMW9VNLqnUxcWzBVXRNmp03mQjgMXpA/fF9KcdELAtpn
-   /yV2PgDbQmgIbsA4ALj7jZ6o7FxKcJXVV3mu9udb688WhsJ2jE92Za2D/
-   CRnLLmBAYR77MDH6w5RYlE9XCG3yf7rs7OfD9H3KW0NidVJ+ADiVkfv9o
-   XBQTjUJQza8FUklnkvH7EO3qxVmL8b9ojXkunsGr9FCCDdU1wfYIIqHQC
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="383735190"
-X-IronPort-AV: E=Sophos;i="6.04,239,1695711600"; 
-   d="scan'208";a="383735190"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 07:25:42 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="769341983"
-X-IronPort-AV: E=Sophos;i="6.04,239,1695711600"; 
-   d="scan'208";a="769341983"
-Received: from bergler-mobl.ger.corp.intel.com ([10.249.33.30])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 07:25:40 -0800
-Date:   Thu, 30 Nov 2023 17:25:34 +0200 (EET)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Kunwu Chan <chentao@kylinos.cn>, vadimp@nvidia.com
-cc:     Hans de Goede <hdegoede@redhat.com>, jiri@resnulli.us,
-        shravankr@nvidia.com, kunwu.chan@hotmail.com,
-        platform-driver-x86@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] platform/mellanox: Add a null pointer check in
- mlxbf_pmc_create_groups
-In-Reply-To: <bf29c39f-8d9f-465a-bbc2-45bdb77711b8@kylinos.cn>
-Message-ID: <55c5987b-c991-aa8-a226-c5b1638b474@linux.intel.com>
-References: <20231127063433.1549064-1-chentao@kylinos.cn> <1701224213463629.329.seg@mailgw> <bf29c39f-8d9f-465a-bbc2-45bdb77711b8@kylinos.cn>
+        Thu, 30 Nov 2023 10:26:17 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBBD810E5;
+        Thu, 30 Nov 2023 07:26:18 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 2F54721B21;
+        Thu, 30 Nov 2023 15:26:15 +0000 (UTC)
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id F24E713AB1;
+        Thu, 30 Nov 2023 15:26:14 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+        by imap1.dmz-prg2.suse.org with ESMTPSA
+        id cXTBOpapaGXbYQAAD6G6ig
+        (envelope-from <vbabka@suse.cz>); Thu, 30 Nov 2023 15:26:14 +0000
+Message-ID: <414847ea-b7e7-aa05-5e2d-de50788d9b4d@suse.cz>
+Date:   Thu, 30 Nov 2023 16:26:14 +0100
 MIME-Version: 1.0
-Content-Type: multipart/mixed; BOUNDARY="8323329-2122611288-1701354616=:1808"
-Content-ID: <4c35a37-a862-6055-355-8f5ef74463db@linux.intel.com>
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v2 16/33] mm: slub: Let KMSAN access metadata
+Content-Language: en-US
+To:     Ilya Leoshkevich <iii@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Marco Elver <elver@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Pekka Enberg <penberg@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Cc:     Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-s390@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Sven Schnelle <svens@linux.ibm.com>
+References: <20231121220155.1217090-1-iii@linux.ibm.com>
+ <20231121220155.1217090-17-iii@linux.ibm.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20231121220155.1217090-17-iii@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spamd-Bar: ++++++++++++
+X-Spam-Score: 12.69
+X-Rspamd-Server: rspamd1
+Authentication-Results: smtp-out1.suse.de;
+        dkim=none;
+        spf=softfail (smtp-out1.suse.de: 2a07:de40:b281:104:10:150:64:97 is neither permitted nor denied by domain of vbabka@suse.cz) smtp.mailfrom=vbabka@suse.cz;
+        dmarc=none
+X-Rspamd-Queue-Id: 2F54721B21
+X-Spamd-Result: default: False [12.69 / 50.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+         TO_DN_SOME(0.00)[];
+         R_SPF_SOFTFAIL(4.60)[~all];
+         RCVD_COUNT_THREE(0.00)[3];
+         MX_GOOD(-0.01)[];
+         NEURAL_HAM_SHORT(-0.20)[-1.000];
+         FROM_EQ_ENVFROM(0.00)[];
+         R_DKIM_NA(2.20)[];
+         MIME_TRACE(0.00)[0:+];
+         MID_RHS_MATCH_FROM(0.00)[];
+         BAYES_HAM(-0.00)[20.85%];
+         ARC_NA(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         DMARC_NA(1.20)[suse.cz];
+         NEURAL_SPAM_LONG(3.50)[1.000];
+         RCPT_COUNT_TWELVE(0.00)[24];
+         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FREEMAIL_CC(0.00)[linux.ibm.com,google.com,gmail.com,googlegroups.com,vger.kernel.org,kvack.org,arm.com,linux.dev];
+         RCVD_TLS_ALL(0.00)[];
+         SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
---8323329-2122611288-1701354616=:1808
-Content-Type: text/plain; CHARSET=UTF-8
-Content-Transfer-Encoding: 8BIT
-Content-ID: <93e0c718-4167-6586-d19-4f43d4bf7421@linux.intel.com>
-
-Hi Vadim,
-
-Could you please take a look at this and give advice to Kunwu so we can 
-get all of them squashed in one go.
-
-On Thu, 30 Nov 2023, Kunwu Chan wrote:
-
-> Thanks for your reply.
+On 11/21/23 23:01, Ilya Leoshkevich wrote:
+> Building the kernel with CONFIG_SLUB_DEBUG and CONFIG_KMSAN causes
+> KMSAN to complain about touching redzones in kfree().
 > 
-> Cause i don't know how to deal with in some scenario，such as in
-> 'mlxbf_pmc_init_perftype_counter', when 'attr->dev_attr.attr.name' is null,
-> should return '-ENOMEM' or 'continue' the loop?
+> Fix by extending the existing KASAN-related metadata_access_enable()
+> and metadata_access_disable() functions to KMSAN.
+> 
+> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
 
-I'd have thought returning -ENOMEM would be safe because it just ends up 
-failing probe()? ...And it's not that likely to occur in the first place.
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
--- 
- i.
+> ---
+>  mm/slub.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 169e5f645ea8..6e61c27951a4 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -700,10 +700,12 @@ static int disable_higher_order_debug;
+>  static inline void metadata_access_enable(void)
+>  {
+>  	kasan_disable_current();
+> +	kmsan_disable_current();
+>  }
+>  
+>  static inline void metadata_access_disable(void)
+>  {
+> +	kmsan_enable_current();
+>  	kasan_enable_current();
+>  }
+>  
 
-> 
-> So I'm going to solve it one by one.
-> 
-> Thanks again,
-> Kunwu
-> 
-> On 2023/11/28 17:51, Ilpo Järvinen wrote:
-> > On Mon, 27 Nov 2023, Kunwu Chan wrote:
-> > 
-> > > devm_kasprintf() returns a pointer to dynamically allocated memory
-> > > which can be NULL upon failure.
-> > > 
-> > > Fixes: 1a218d312e65 ("platform/mellanox: mlxbf-pmc: Add Mellanox BlueField
-> > > PMC driver")
-> > > Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
-> > > ---
-> > >   drivers/platform/mellanox/mlxbf-pmc.c | 2 ++
-> > >   1 file changed, 2 insertions(+)
-> > > 
-> > > diff --git a/drivers/platform/mellanox/mlxbf-pmc.c
-> > > b/drivers/platform/mellanox/mlxbf-pmc.c
-> > > index 0b427fc24a96..59bbe5e13f6b 100644
-> > > --- a/drivers/platform/mellanox/mlxbf-pmc.c
-> > > +++ b/drivers/platform/mellanox/mlxbf-pmc.c
-> > > @@ -1882,6 +1882,8 @@ static int mlxbf_pmc_create_groups(struct device
-> > > *dev, int blk_num)
-> > >   	pmc->block[blk_num].block_attr_grp.attrs =
-> > > pmc->block[blk_num].block_attr;
-> > >   	pmc->block[blk_num].block_attr_grp.name = devm_kasprintf(
-> > >   		dev, GFP_KERNEL, pmc->block_name[blk_num]);
-> > > +	if (!pmc->block[blk_num].block_attr_grp.name)
-> > > +		return -ENOMEM;
-> > >   	pmc->groups[pmc->group_num] = &pmc->block[blk_num].block_attr_grp;
-> > >   	pmc->group_num++;
-> > 
-> > I'm totally lost, why did you fix only one devm_kasprintf() location?
-> > Don't all of them need this check?
-> > 
-> 
---8323329-2122611288-1701354616=:1808--
