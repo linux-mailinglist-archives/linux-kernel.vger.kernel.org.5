@@ -2,118 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C47C07FECE5
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 11:35:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F5677FECE9
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 11:36:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344935AbjK3KfI convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 30 Nov 2023 05:35:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47382 "EHLO
+        id S1344863AbjK3KgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 05:36:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbjK3KfG (ORCPT
+        with ESMTP id S235072AbjK3KgM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 05:35:06 -0500
-Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D91910DB;
-        Thu, 30 Nov 2023 02:35:13 -0800 (PST)
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-5cfc3a48ab2so8117387b3.0;
-        Thu, 30 Nov 2023 02:35:13 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701340512; x=1701945312;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DUdP6LeO/4HAezqcq7YXUkxax+n83AqIPO6DNMdfcCg=;
-        b=fM+yICvpWyE3KUK7SHzjzjq+iYJ2Zp5DyGJfuK695CTd4m9c6bOYdDuPMbCkQqY9TV
-         7UFO5Zw8WWvcr5i714gs+7tCynDPqG6syXvOvDXaMCsRYVQyQGtyOueBsYFfcUruLUfj
-         4Bpd1m9Q6goyYq4wP0NbMs6pyRSiubN2AH9iZyWKjU3zYt8GEdcOQdddvI8siXBVl5ON
-         RIt7EK4s3II7oB52RwMs8d/DXRLa1HM7pF35yaWJv/yVInGnDL3Exn68dNCSGkcjVuhp
-         xNbvdAKt+V1EJ9Q6csU88N/TkGYk3cMLxowGleZrMBRUUotog7LU1mOyPiKFKgrBnUoD
-         vPKg==
-X-Gm-Message-State: AOJu0YzBLiW3JEcvjgtW5YMQe3oqD7q3uPBNz4zKC17UrHJRiRdsENj3
-        QmTmRaYPCN8HrxhLkvwHt3B+x09N0TgaGQ==
-X-Google-Smtp-Source: AGHT+IF0pJeBKISCmyDcQ1B1b0A34RUrl6WFHjFX1LvlcVoN7JOfqf+QfLNSvA6QMNG7B5JdHHZrFQ==
-X-Received: by 2002:a81:5344:0:b0:5ca:e4a6:bb47 with SMTP id h65-20020a815344000000b005cae4a6bb47mr21993982ywb.35.1701340512210;
-        Thu, 30 Nov 2023 02:35:12 -0800 (PST)
-Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com. [209.85.128.173])
-        by smtp.gmail.com with ESMTPSA id v127-20020a818585000000b00583b144fe51sm275622ywf.118.2023.11.30.02.35.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Nov 2023 02:35:11 -0800 (PST)
-Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-5cfc3a48ab2so8117187b3.0;
-        Thu, 30 Nov 2023 02:35:11 -0800 (PST)
-X-Received: by 2002:a0d:cc4f:0:b0:5c9:ff96:d78b with SMTP id
- o76-20020a0dcc4f000000b005c9ff96d78bmr21925523ywd.37.1701340511007; Thu, 30
- Nov 2023 02:35:11 -0800 (PST)
+        Thu, 30 Nov 2023 05:36:12 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B69C910DB;
+        Thu, 30 Nov 2023 02:36:18 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0A27C143D;
+        Thu, 30 Nov 2023 02:37:05 -0800 (PST)
+Received: from [10.57.41.237] (unknown [10.57.41.237])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BB8C93F6C4;
+        Thu, 30 Nov 2023 02:36:16 -0800 (PST)
+Message-ID: <31b68b10-9819-4c96-a237-ac04887be305@arm.com>
+Date:   Thu, 30 Nov 2023 10:36:15 +0000
 MIME-Version: 1.0
-References: <20231129161459.1002323-1-andriy.shevchenko@linux.intel.com> <20231129161459.1002323-7-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20231129161459.1002323-7-andriy.shevchenko@linux.intel.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 30 Nov 2023 11:34:59 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdUCEVrg1Dsu9u-cECyXJP4PKXkXibU0QK1G=+juwG9rxQ@mail.gmail.com>
-Message-ID: <CAMuHMdUCEVrg1Dsu9u-cECyXJP4PKXkXibU0QK1G=+juwG9rxQ@mail.gmail.com>
-Subject: Re: [PATCH v4 06/23] pinctrl: core: Make pins const unsigned int
- pointer in struct group_desc
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        =?UTF-8?Q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
-        Jianlong Huang <jianlong.huang@starfivetech.com>,
-        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        openbmc@lists.ozlabs.org, linux-mips@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>, Jacky Bai <ping.bai@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sean Wang <sean.wang@kernel.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Hal Feng <hal.feng@starfivetech.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 3/3] Documentation: arm64: Document the PMU event
+ counting threshold feature
+To:     James Clark <james.clark@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, will@kernel.org,
+        mark.rutland@arm.com, anshuman.khandual@arm.com, namhyung@gmail.com
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231124102857.1106453-1-james.clark@arm.com>
+ <20231124102857.1106453-4-james.clark@arm.com>
+Content-Language: en-GB
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+In-Reply-To: <20231124102857.1106453-4-james.clark@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 5:15 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
-> It's unclear why it's not a const unsigned int pointer from day 1.
-> Make the pins member const unsigned int pointer in struct group_desc.
-> Update necessary APIs.
->
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+On 24/11/2023 10:28, James Clark wrote:
+> Add documentation for the new Perf event open parameters and
+> the threshold_max capability file.
+> 
+> Signed-off-by: James Clark <james.clark@arm.com>
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 
-Gr{oetje,eeting}s,
 
-                        Geert
+> ---
+>   Documentation/arch/arm64/perf.rst | 72 +++++++++++++++++++++++++++++++
+>   1 file changed, 72 insertions(+)
+> 
+> diff --git a/Documentation/arch/arm64/perf.rst b/Documentation/arch/arm64/perf.rst
+> index 1f87b57c2332..41eee68951ff 100644
+> --- a/Documentation/arch/arm64/perf.rst
+> +++ b/Documentation/arch/arm64/perf.rst
+> @@ -164,3 +164,75 @@ and should be used to mask the upper bits as needed.
+>      https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/perf/arch/arm64/tests/user-events.c
+>   .. _tools/lib/perf/tests/test-evsel.c:
+>      https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/lib/perf/tests/test-evsel.c
+> +
+> +Event Counting Threshold
+> +==========================================
+> +
+> +Overview
+> +--------
+> +
+> +FEAT_PMUv3_TH (Armv8.8) permits a PMU counter to increment only on
+> +events whose count meets a specified threshold condition. For example if
+> +threshold_compare is set to 2 ('Greater than or equal'), and the
+> +threshold is set to 2, then the PMU counter will now only increment by
+> +when an event would have previously incremented the PMU counter by 2 or
+> +more on a single processor cycle.
+> +
+> +To increment by 1 after passing the threshold condition instead of the
+> +number of events on that cycle, add the 'threshold_count' option to the
+> +commandline.
+> +
+> +How-to
+> +------
+> +
+> +These are the parameters for controlling the feature:
+> +
+> +.. list-table::
+> +   :header-rows: 1
+> +
+> +   * - Parameter
+> +     - Description
+> +   * - threshold
+> +     - Value to threshold the event by. A value of 0 means that
+> +       thresholding is disabled and the other parameters have no effect.
+> +   * - threshold_compare
+> +     - | Comparison function to use, with the following values supported:
+> +       |
+> +       | 0: Not-equal
+> +       | 1: Equals
+> +       | 2: Greater-than-or-equal
+> +       | 3: Less-than
+> +   * - threshold_count
+> +     - If this is set, count by 1 after passing the threshold condition
+> +       instead of the value of the event on this cycle.
+> +
+> +The threshold, threshold_compare and threshold_count values can be
+> +provided per event, for example:
+> +
+> +.. code-block:: sh
+> +
+> +  perf stat -e stall_slot/threshold=2,threshold_compare=2/ \
+> +            -e dtlb_walk/threshold=10,threshold_compare=3,threshold_count/
+> +
+> +In this example the stall_slot event will count by 2 or more on every
+> +cycle where 2 or more stalls happen. And dtlb_walk will count by 1 on
+> +every cycle where the number of dtlb walks were less than 10.
+> +
+> +The maximum supported threshold value can be read from the caps of each
+> +PMU, for example:
+> +
+> +.. code-block:: sh
+> +
+> +  cat /sys/bus/event_source/devices/armv8_pmuv3/caps/threshold_max
+> +
+> +  0x000000ff
+> +
+> +If a value higher than this is given, then it will be silently clamped
+> +to the maximum. The highest possible maximum is 4095, as the config
+> +field for threshold is limited to 12 bits, and the Perf tool will refuse
+> +to parse higher values.
+> +
+> +If the PMU doesn't support FEAT_PMUv3_TH, then threshold_max will read
+> +0, and both threshold and threshold_compare will be silently ignored.
+> +threshold_max will also read as 0 on aarch32 guests, even if the host
+> +is running on hardware with the feature.
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
