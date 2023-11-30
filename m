@@ -2,107 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32BD87FF32A
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 16:04:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1EDB7FF331
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 16:08:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346115AbjK3PEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 10:04:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37530 "EHLO
+        id S1346120AbjK3PIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 10:08:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346087AbjK3PEi (ORCPT
+        with ESMTP id S1346053AbjK3PIJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 10:04:38 -0500
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B33161B4
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 07:04:44 -0800 (PST)
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com [209.85.160.199])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 0A6A33FA56
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 15:04:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1701356682;
-        bh=FPCmM4heOBQnergRut0J3YYhJg2qbq6GVBQzZL89KsE=;
-        h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=O9h/3Qy/1vfabHMfk/ZnQYOnkTyOsdIhV55HA+wyx2KmqcYkaLsUGW280z/ama6Tb
-         PkqlX+diaUp25Y2KnXLPDze5CCegGl5cFy0AG0uQ3B0ihgi3I2OF0GhedOYSkLsOYi
-         lWTfhnA/27Lmz15tAqhlGFj88xFZHKOLPWaLE6bZoTQjU5Im6epxDrdlnYGW55guw1
-         JLniHMNruhvQQkteJVCFyzqB8DOywFkpQ7QGOZ1r1Lh938S0YN0LySKEO9EucmKurO
-         KF6QjKaJ3N4vek3lcCwAubihjGoHgoEYoHx9cEUEjt32jFr4g3BgTiUOywxLTKBfuF
-         62nhITdg5cFSQ==
-Received: by mail-qt1-f199.google.com with SMTP id d75a77b69052e-41e1d05a5d7so11012131cf.2
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 07:04:41 -0800 (PST)
+        Thu, 30 Nov 2023 10:08:09 -0500
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70709194;
+        Thu, 30 Nov 2023 07:08:15 -0800 (PST)
+Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-50bc053a9a7so1583591e87.1;
+        Thu, 30 Nov 2023 07:08:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701356894; x=1701961694; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ij6He2n7VfO2PU5CQDDnpNgiB61sX85VSjvJ1Sw1Bmk=;
+        b=hdPUlOJiI/Ff2s7sQMMrhjFnfQbj5BZ+RruxmYyMpECMP6pggVNjA4g3xtBjkMMfI5
+         H97EJmHixZFVuQjiuEOqrovzqxOCQ2M0fcirnOV1m/7G0CUSdCSQp8/byR5JqTn5KF+t
+         Bom9sygTG5UmY5y9NgsaKLqUhvAOZJDh+HPj8vBKZXdWBcoxq3sQFe0vS/5XOr3xkNm+
+         UztkkLbvEFtcDciFNC2Nk4LLn7iBEQnl4t/9kiN7G4KZXYdZ/6eazjVm0KYEz7CdquBa
+         7uJpj/Ur/vMTLlFwLgiUdQtT27WdE8TqQKiDRRBSthQmopvpitIYExtlaQQqEx1FZ0PY
+         XkAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701356677; x=1701961477;
-        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FPCmM4heOBQnergRut0J3YYhJg2qbq6GVBQzZL89KsE=;
-        b=YF10mGrHfpPbPGE44FSFUghPYjZuvDViqUpsKtHsJCne7MghaVUnNdmS/gedyCiVyc
-         epuXXutdYTaPKWkVePuTXFH/A2/nlFOnCC1sU912hJ1EngqKg+GqQjCNf9Me7qRftRXg
-         nhmWI/Wx+CIkJb0vTWafQS68K6cGdNNZcNl4v8S39qmmJklvi/hCES/9PqwuseBNZlTY
-         w3cFMfnUNXdAUOUqV3ibFNgCK+JVO2iCzhFNVLjaUGk0eQlIov/KDHuVfgetXr1tlWuC
-         Ygq1tClRv74XVgs5syAwCipfJ+ovTaENxj3E6KLKBIkTfWtICaH29xNE8QQmvZ+XL5Md
-         501w==
-X-Gm-Message-State: AOJu0YxCjZkdNXRNO93bh6KGAXpEJf8GagBaLvcVWPf5pC6znoc4cX0L
-        FWQlHJ7oWvrY7vZrOc7WFI7vh81Zni6O8Dy7adiCzEN9yih4XyxizX3zlZk0hWXU/LJgFQvNoTY
-        L0+C3llkMXJPYHf38tAgJIWHCL7mw5DWHt3jsLKOzazSB978kCfPma1tl1g==
-X-Received: by 2002:a05:622a:22a8:b0:423:991e:8589 with SMTP id ay40-20020a05622a22a800b00423991e8589mr20147213qtb.33.1701356676671;
-        Thu, 30 Nov 2023 07:04:36 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IH9k158ZXjtgNdDUlZzVCNCmNLqRi+AOk+q/iadsE/+/aYALRFnyCxg84z0xW9r9HHy2iLKzeqhcclFfe7hrr0=
-X-Received: by 2002:a05:622a:22a8:b0:423:991e:8589 with SMTP id
- ay40-20020a05622a22a800b00423991e8589mr20147170qtb.33.1701356676224; Thu, 30
- Nov 2023 07:04:36 -0800 (PST)
-Received: from 348282803490 named unknown by gmailapi.google.com with
- HTTPREST; Thu, 30 Nov 2023 16:04:35 +0100
-From:   Emil Renner Berthing <emil.renner.berthing@canonical.com>
-In-Reply-To: <20231130-skating-shindig-af43058fc8ff@spud>
-References: <20231126232746.264302-1-emil.renner.berthing@canonical.com> <20231130-skating-shindig-af43058fc8ff@spud>
-Mime-Version: 1.0
-Date:   Thu, 30 Nov 2023 16:04:35 +0100
-Message-ID: <CAJM55Z_EPMuCbX-_8ABKwT27xdtDX7X2y_nv+o4knVL0DoK2xQ@mail.gmail.com>
-Subject: Re: [PATCH v1 0/8] Add JH7100 errata and update device tree
-To:     Conor Dooley <conor@kernel.org>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>
-Cc:     linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1701356894; x=1701961694;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Ij6He2n7VfO2PU5CQDDnpNgiB61sX85VSjvJ1Sw1Bmk=;
+        b=gvDI1WOLwJIAaULjAefnsovE6NUpIevOGZT435pC48JBHmzfsAKlkUl84fm5K+3Zfk
+         p2uM72xAJDjem/Y789ht8ErkQ0lPIYgwW9Hnt5zXi6puiSun9MKdBIEFGQaZpcqMFPR7
+         NdVnVEOl5QVVJBfTd9SWZXtWMZjl9GjIVE/6FBbP28HK/bidEy2iTJF3gALzZd0K//HF
+         sB/f8suMBfcBXOPZtC89fkly81y4TDJkeeiEgbN7/79yjEbjh8B7lphgQtLR/8Hde/B2
+         d9TbY+VV0xDSYK+gS6BpoKYxPXxkPt3/0w6SJfKkyXfaAyoA6f/kHgSykBgn3+/A+nZ0
+         bi4w==
+X-Gm-Message-State: AOJu0YzKAfwBqqlWR1G1X1Exfxbs24c+rhstLSTA6mDPSgTaTrjr5kvB
+        RQzaG19vay+iFm9tAbYPf/w=
+X-Google-Smtp-Source: AGHT+IFplBfPeB/2YfUE7slWK1oJxGIpl9P3JdyoKk2opcJrfaDpOQAztlmWLQTGZeiURAfWGrLRpA==
+X-Received: by 2002:a05:6512:1386:b0:50b:c96b:5e8 with SMTP id fc6-20020a056512138600b0050bc96b05e8mr3051182lfb.25.1701356893308;
+        Thu, 30 Nov 2023 07:08:13 -0800 (PST)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id o18-20020a05600c4fd200b0040b45282f88sm5865713wmq.36.2023.11.30.07.08.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Nov 2023 07:08:12 -0800 (PST)
+From:   Colin Ian King <colin.i.king@gmail.com>
+To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] btrfs: remove shadowed declaration of variable i in for-loops
+Date:   Thu, 30 Nov 2023 15:08:11 +0000
+Message-Id: <20231130150811.2208562-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,TVD_SUBJ_WIPE_DEBT,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Conor Dooley wrote:
-> On Mon, Nov 27, 2023 at 12:27:38AM +0100, Emil Renner Berthing wrote:
-> > Now that the driver for the SiFive cache controller supports manual
-> > flushing as non-standard cache operations[1] we can add an errata option
-> > for the StarFive JH7100 SoC and update the device tree with the cache
-> > controller, dedicated DMA pool and add MMC nodes for the SD-card and
-> > wifi.
-> >
-> > This series needs the following commit in [1] to work properly:
-> >
-> > 0d5701dc9cd6 ("soc: sifive: ccache: Add StarFive JH7100 support")
-> >
-> > [1]: https://git.kernel.org/pub/scm/linux/kernel/git/conor/linux.git/log/?h=riscv-soc-for-next
->
-> This stuff all seems fine to me. I'd like Palmer to take the first
-> patch, or I suppose I could take it alongside the cache driver changes
-> with an Ack.
+The variable i is declared at the start of function btrfs_qgroup_inherit
+however there are two for-loops that redeclare the variable using a C99
+declaration, causes name shadowing. I believe there is no need for this
+local scoping of i in the loop, so replace the declaration in the loops
+with assignments.
 
-Thanks, makes sense. In addition to the missing Signed-off-by I also forgot to
-update the commit message for patch 4/8, so let me send a v2.
+Cleans up clang scan build warnings:
 
-/Emil
+fs/btrfs/qgroup.c:3194:12: warning: declaration shadows a local variable [-Wshadow]
+ 3194 |                 for (int i = 0; i < inherit->num_qgroups; i++) {
+      |                          ^
+fs/btrfs/qgroup.c:3089:6: note: previous declaration is here
+ 3089 |         int i;
+      |             ^
+fs/btrfs/qgroup.c:3321:12: warning: declaration shadows a local variable [-Wshadow]
+ 3321 |                 for (int i = 0; i < inherit->num_qgroups; i++)
+      |                          ^
+fs/btrfs/qgroup.c:3089:6: note: previous declaration is here
+ 3089 |         int i;
+      |             ^
+
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ fs/btrfs/qgroup.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+index ce446d9d7f23..b1f93dbf468c 100644
+--- a/fs/btrfs/qgroup.c
++++ b/fs/btrfs/qgroup.c
+@@ -3191,7 +3191,7 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
+ 			ret = -ENOMEM;
+ 			goto out;
+ 		}
+-		for (int i = 0; i < inherit->num_qgroups; i++) {
++		for (i = 0; i < inherit->num_qgroups; i++) {
+ 			qlist_prealloc[i] = kzalloc(sizeof(struct btrfs_qgroup_list),
+ 						    GFP_NOFS);
+ 			if (!qlist_prealloc[i]) {
+@@ -3318,7 +3318,7 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
+ 	if (need_rescan)
+ 		qgroup_mark_inconsistent(fs_info);
+ 	if (qlist_prealloc) {
+-		for (int i = 0; i < inherit->num_qgroups; i++)
++		for (i = 0; i < inherit->num_qgroups; i++)
+ 			kfree(qlist_prealloc[i]);
+ 		kfree(qlist_prealloc);
+ 	}
+-- 
+2.39.2
+
