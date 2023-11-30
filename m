@@ -2,125 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 608EA7FEDA2
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 12:15:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 206C87FEDA3
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 12:15:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345043AbjK3LPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 06:15:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46546 "EHLO
+        id S1345102AbjK3LPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 06:15:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231784AbjK3LPR (ORCPT
+        with ESMTP id S1345004AbjK3LPr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 06:15:17 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CFDBD66;
-        Thu, 30 Nov 2023 03:15:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Znib/mlXynP7QEaUM1Vt8q5PW5YyGqKpMcVV5Eojr9w=; b=ToH+CX/UgvXhWlmi0wJzixANXZ
-        vA8DFjG6W4jwaVntxBVQUUlnv+MphluAGUPM5JC2AkJRDsYgCeEOmKlInyZXerqgbApIVB0XRPDPd
-        4pgXT/v5EAN9S37qGe75+0czR6UYDbwMiM240UtqyVPgEwon0Ve5TnFP4PSXtxaexw5Js+xuWypME
-        M4CG9eVG0XQCbTkuQC80GPa6Gb+W76sOBXa+Mm4rAL/sA3VKkh+HEdM8LkI/2Ed9T1cM45J24XeId
-        RR58j2JHrVzHyBsg9u/sMydGIO5589EY5qOTsnt0UtnpE+QdRHrwUXk7/L+qR6rYwza/F47pzLpgU
-        H5eZzCBg==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1r8f0p-0012EQ-2q;
-        Thu, 30 Nov 2023 11:15:20 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 31E97300293; Thu, 30 Nov 2023 12:15:19 +0100 (CET)
-Date:   Thu, 30 Nov 2023 12:15:19 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     linux-kernel@vger.kernel.org,
-        Andrew Cooper <Andrew.Cooper3@citrix.com>
-Cc:     linux-tip-commits@vger.kernel.org,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>, x86@kernel.org
-Subject: Re: [tip: x86/core] x86: Fix CPUIDLE_FLAG_IRQ_ENABLE leaking timer
- reprogram
-Message-ID: <20231130111519.GA20153@noisy.programming.kicks-ass.net>
-References: <20231115151325.6262-3-frederic@kernel.org>
- <170126975511.398.12493947150541739641.tip-bot2@tip-bot2>
+        Thu, 30 Nov 2023 06:15:47 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 632E510D9;
+        Thu, 30 Nov 2023 03:15:53 -0800 (PST)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AUAwMK5028247;
+        Thu, 30 Nov 2023 11:15:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=UCchgxk+aOjoKo5oPkKV27FHvQof4ATdkKGQOfFNAjI=;
+ b=hFy8T9d0tztjQBefR7ESdWDIbznkOygVzWCl8TQ+bsGX59JHjDuWP0mjMxYmMQ+4FzA+
+ 3gkqs3KdlzdIzMdEFHHBf2917rBqOdzSsPuwIfhzE/Mqy/6bPsQg58CUvGt6udVKbWwM
+ RFlZjELMWo4D5SCEVU93udOoPFqGoUKKGK/szTxgTi+G5l+QglB/BrUndjQw+OEWn/D4
+ hanL0JOWIOitItUopKT7VDQJ/ysazJrBY+KTyh4mg4njdgQ0fwSaLzOclH+YWUSF5c/q
+ 9rwV3DfNXlwz2DROEQtnz5Z5VSJsbg8zyC0hZa90wct3KIgjtvpCaaEFSuQJV5nEVzea zQ== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3up5e8u557-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 30 Nov 2023 11:15:50 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AUBFnhS020997
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 30 Nov 2023 11:15:49 GMT
+Received: from [10.239.133.49] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 30 Nov
+ 2023 03:15:46 -0800
+Message-ID: <591e1aca-20ca-4d42-809d-12cd12ddadb3@quicinc.com>
+Date:   Thu, 30 Nov 2023 19:15:44 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <170126975511.398.12493947150541739641.tip-bot2@tip-bot2>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 1/3] arm64: dts: qcom: msm8996: Fix 'in-ports' is a
+ required property
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Tingwei Zhang <quic_tingweiz@quicinc.com>,
+        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
+        Tao Zhang <quic_taozha@quicinc.com>
+References: <20231129143815.7892-1-quic_jinlmao@quicinc.com>
+ <20231129143815.7892-2-quic_jinlmao@quicinc.com>
+ <3527d540-3e3f-4edb-b5f2-6ac481132c06@linaro.org>
+From:   Jinlong Mao <quic_jinlmao@quicinc.com>
+In-Reply-To: <3527d540-3e3f-4edb-b5f2-6ac481132c06@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: mqyFt7FAdP1NBfbr0X_ak4x6n_WbNSaP
+X-Proofpoint-ORIG-GUID: mqyFt7FAdP1NBfbr0X_ak4x6n_WbNSaP
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-30_09,2023-11-30_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ suspectscore=0 phishscore=0 malwarescore=0 lowpriorityscore=0 spamscore=0
+ clxscore=1015 impostorscore=0 adultscore=0 mlxlogscore=675 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311300084
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 02:55:55PM -0000, tip-bot2 for Peter Zijlstra wrote:
-> diff --git a/arch/x86/include/asm/mwait.h b/arch/x86/include/asm/mwait.h
-> index 341ee4f..920426d 100644
-> --- a/arch/x86/include/asm/mwait.h
-> +++ b/arch/x86/include/asm/mwait.h
-> @@ -124,8 +124,15 @@ static __always_inline void mwait_idle_with_hints(unsigned long eax, unsigned lo
->  		}
->  
->  		__monitor((void *)&current_thread_info()->flags, 0, 0);
-> -		if (!need_resched())
-> -			__mwait(eax, ecx);
-> +
-> +		if (!need_resched()) {
-> +			if (ecx & 1) {
-> +				__mwait(eax, ecx);
-> +			} else {
-> +				__sti_mwait(eax, ecx);
-> +				raw_local_irq_disable();
-> +			}
-> +		}
 
-Andrew noted that this is only safe if it precludes #DB from happening
-on mwait, because #DB can wreck the STI shadow thing.
 
-> @@ -159,19 +160,13 @@ static __always_inline int __intel_idle(struct cpuidle_device *dev,
->  static __cpuidle int intel_idle(struct cpuidle_device *dev,
->  				struct cpuidle_driver *drv, int index)
->  {
-> +	return __intel_idle(dev, drv, index, true);
->  }
->  
->  static __cpuidle int intel_idle_irq(struct cpuidle_device *dev,
->  				    struct cpuidle_driver *drv, int index)
->  {
-> +	return __intel_idle(dev, drv, index, false);
->  }
->  
->  static __cpuidle int intel_idle_ibrs(struct cpuidle_device *dev,
-> @@ -184,7 +179,7 @@ static __cpuidle int intel_idle_ibrs(struct cpuidle_device *dev,
->  	if (smt_active)
->  		__update_spec_ctrl(0);
->  
-> +	ret = __intel_idle(dev, drv, index, true);
->  
->  	if (smt_active)
->  		__update_spec_ctrl(spec_ctrl);
-> @@ -196,7 +191,7 @@ static __cpuidle int intel_idle_xstate(struct cpuidle_device *dev,
->  				       struct cpuidle_driver *drv, int index)
->  {
->  	fpu_idle_fpregs();
-> +	return __intel_idle(dev, drv, index, true);
->  }
+On 11/30/2023 4:55 PM, Krzysztof Kozlowski wrote:
+> On 29/11/2023 15:38, Mao Jinlong wrote:
+>> The inport of funnel@3023000 connects to a source which is not supported
+>> in current linux kernel. Remove the device tree node of funnel@3023000
+>> to fix the warning. It will be added once the driver support to the
+>> source is added to linux kernel.
+> 
+> Thanks for the changes, but that's not correct reason to remove DTS
+> code. What kernel supports or not, should be irrelevant for the DTS. DTS
+> for example is used in other projects - did you check if they have the
+> same issues? Anyway, DTS describes the hardware, so how current kernel
+> support defines what is and what is not in the hardware?
+> 
+> 
+> Best regards,
+> Krzysztof
 
-This is so, because all mwait users should be in __cpuidle section,
-which itself is part of the noinstr section and as such
-kprobes/hw-breakpoints etc.. are disallowed.
+Hi Krzysztof,
 
-Notable vmlinux.lds.h has:
+The funnel dt node must have in-ports node. It is to describe the input
+connection of funnel HW. But there is no dt_binding doc to describe the
+DT node of the HW connected to funnel@3023000. So remove the funnel to 
+solve the warning as of now. The funnel will be added back once driver 
+and dt_binding are added for the HW.
 
-#define NOINSTR_TEXT							\
-		ALIGN_FUNCTION();					\
-		__noinstr_text_start = .;				\
-		*(.noinstr.text)					\
-		__cpuidle_text_start = .;				\
-		*(.cpuidle.text)					\
-		__cpuidle_text_end = .;					\
-		__noinstr_text_end = .;
+Documentation/devicetree/bindings/arm/arm,coresight-dynamic-funnel.yaml
+
+Thanks
+Jinlong Mao
+> 
