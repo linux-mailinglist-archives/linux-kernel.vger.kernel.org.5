@@ -2,58 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68BF27FF177
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 15:15:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5DAA7FF176
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 15:15:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345918AbjK3OPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 09:15:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43046 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345897AbjK3OPA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1345902AbjK3OPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 30 Nov 2023 09:15:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43042 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345863AbjK3OO6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Nov 2023 09:14:58 -0500
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D047E85
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 06:15:05 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30B0483
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 06:15:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701353706; x=1732889706;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=3M69+PV2jP46rJp2Fj4poL9L83eFnrFqZEbm5yY8uTA=;
-  b=KO9GBM5ZOoT0/Flb8dQgA2xvWBFJiBjplV15cu7/efhahCFqLbm41PQy
-   frJYuTeQsFa1ZGwMIKpZMuo+OI38JHaH1l6SXme/ShAbSF0/RURXS9J/J
-   FYOY0EqB/8kR7g1bvyko9rbiXhIYx+sZagb05fwxozQJd8c395IfKo3/T
-   U9iI1JcJZ1vGxWnmrzMhr7YEjUt9cMGqTmHVFml6U4/w6eFCcIlEH9TDd
-   Rq+P6wJLUF7ym/zX5p0YVswCTbGxJ8956fRHqhbXb0v3biKE/c7qLOm9b
-   QcqmiJFateUWpOz4Q6jSoeVo7g1Bom8JCD65uCxwgeJJ8C0H7XXh0U2op
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="208248"
+  t=1701353702; x=1732889702;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=ADoKDBlsLBqeTUTkgK5lG6Nm22K4TlWyOqKqzJ1VVFs=;
+  b=JEBI2veiWGNUYksDHoq2xvM92ahbCX5g2kD7t0WBEJ2hw45bhqBbYNyR
+   hkpAFy+t5JuB45ItLrlplSvGuwgNl9QLsBT0wxVH0PcMq+5Aj/DrJs6qt
+   hGokqnAS0cwbg+0xbcZIRGABVpiOmhP3wMU0pmjgrQTkxUdsKGMAbtRKQ
+   8auQh1PBNwANDjnCKN3bSmVUohrj5yKeP8YUXUUGm/OOI5rJlL6h5pY/u
+   p/mu1ulpK5TcL0iYtyLO+ruoBa9PX+GhsQbYu0VbwsVc2jP1RGpfeYIgI
+   TRvlj4gKC0tcZeVZNVRCdDwOI0m+5bBKfxWkp7c5VJhtl/gUVKMaxCX+D
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="208247"
 X-IronPort-AV: E=Sophos;i="6.04,239,1695711600"; 
-   d="scan'208";a="208248"
+   d="scan'208";a="208247"
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 06:15:02 -0800
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 06:15:01 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="803708140"
+X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="803708135"
 X-IronPort-AV: E=Sophos;i="6.04,239,1695711600"; 
-   d="scan'208";a="803708140"
+   d="scan'208";a="803708135"
 Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 30 Nov 2023 06:14:58 -0800
+  by orsmga001.jf.intel.com with ESMTP; 30 Nov 2023 06:14:57 -0800
 Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1r8hoe-00026I-25;
-        Thu, 30 Nov 2023 14:14:56 +0000
-Date:   Thu, 30 Nov 2023 22:14:04 +0800
+        id 1r8hod-00026A-2G;
+        Thu, 30 Nov 2023 14:14:55 +0000
+Date:   Thu, 30 Nov 2023 22:14:06 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     Uros Bizjak <ubizjak@gmail.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
 Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        x86@kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Nadav Amit <namit@vmware.com>
-Subject: [tip:x86/percpu 21/22] arch/x86/include/asm/current.h:46:24: sparse:
- sparse: dereference of noderef expression
-Message-ID: <202311302257.tSFtZnly-lkp@intel.com>
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>
+Subject: arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits
+ from constant value (1b009b becomes 9b)
+Message-ID: <202311302231.sinLrAig-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
@@ -64,142 +66,640 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/percpu
-head:   0548eb067ed664b93043e033295ca71e3e706245
-commit: ed2f752e0e0a21d941ca0ee539ef3d4cd576bc5e [21/22] x86/percpu: Introduce const-qualified const_pcpu_hot to micro-optimize code generation
-config: i386-randconfig-062-20231025 (https://download.01.org/0day-ci/archive/20231130/202311302257.tSFtZnly-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231130/202311302257.tSFtZnly-lkp@intel.com/reproduce)
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   3b47bc037bd44f142ac09848e8d3ecccc726be99
+commit: a789aeba419647c44d7e7320de20fea037c211d0 KVM: VMX: Rename "vmx/evmcs.{ch}" to "vmx/hyperv.{ch}"
+date:   1 year ago
+config: x86_64-randconfig-123-20231130 (https://download.01.org/0day-ci/archive/20231130/202311302231.sinLrAig-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231130/202311302231.sinLrAig-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311302257.tSFtZnly-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311302231.sinLrAig-lkp@intel.com/
 
 sparse warnings: (new ones prefixed by >>)
-   arch/x86/kernel/fpu/init.c: note: in included file (through arch/x86/include/asm/preempt.h, include/linux/preempt.h, include/linux/bottom_half.h, ...):
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a000a becomes a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80688 becomes 688)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80608 becomes 608)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80108 becomes 108)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80388 becomes 388)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (20482 becomes 482)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80b88 becomes b88)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100910 becomes 910)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80188 becomes 188)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80208 becomes 208)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80288 becomes 288)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a000a becomes a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100010 becomes 10)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100710 becomes 710)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100090 becomes 90)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (20402 becomes 402)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80b88 becomes b88)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100790 becomes 790)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100490 becomes 490)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100310 becomes 310)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100590 becomes 590)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100610 becomes 610)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100690 becomes 690)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120912 becomes 912)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100590 becomes 590)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (20002 becomes 2)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (20082 becomes 82)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (20102 becomes 102)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (20182 becomes 182)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (20202 becomes 202)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (20282 becomes 282)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (20302 becomes 302)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (20382 becomes 382)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120012 becomes 12)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120092 becomes 92)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120112 becomes 112)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120192 becomes 192)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120212 becomes 212)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120292 becomes 292)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120312 becomes 312)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120392 becomes 392)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120412 becomes 412)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120492 becomes 492)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120592 becomes 592)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120612 becomes 612)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120512 becomes 512)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120692 becomes 692)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120712 becomes 712)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120792 becomes 792)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120812 becomes 812)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120892 becomes 892)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a019a becomes 19a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a021a becomes 21a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a029a becomes 29a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a031a becomes 31a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a039a becomes 39a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a041a becomes 41a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a049a becomes 49a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a051a becomes 51a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a059a becomes 59a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a061a becomes 61a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120a92 becomes a92)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a089a becomes 89a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a091a becomes 91a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a099a becomes 99a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a028a becomes 28a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a030a becomes 30a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a038a becomes 38a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a040a becomes 40a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a048a becomes 48a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80b08 becomes b08)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100190 becomes 190)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100210 becomes 210)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100190 becomes 190)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100210 becomes 210)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80708 becomes 708)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80788 becomes 788)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80808 becomes 808)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80888 becomes 888)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100390 becomes 390)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100410 becomes 410)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100510 becomes 510)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a008a becomes 8a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a008a becomes 8a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a048a becomes 48a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (180018 becomes 18)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a010a becomes 10a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a010a becomes 10a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80408 becomes 408)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80c88 becomes c88)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (180118 becomes 118)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (180198 becomes 198)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a009a becomes 9a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a028a becomes 28a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a030a becomes 30a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a038a becomes 38a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a040a becomes 40a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100410 becomes 410)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100510 becomes 510)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a081a becomes 81a)
+>> arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1b009b becomes 9b)
+>> arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1b011b becomes 11b)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100410 becomes 410)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100510 becomes 510)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (110011 becomes 11)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (110091 becomes 91)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80508 becomes 508)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80488 becomes 488)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100090 becomes 90)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80488 becomes 488)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80588 becomes 588)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100010 becomes 10)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100090 becomes 90)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100090 becomes 90)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (20402 becomes 402)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a008a becomes 8a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a048a becomes 48a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a009a becomes 9a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (20402 becomes 402)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (20402 becomes 402)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a089a becomes 89a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (20002 becomes 2)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (20082 becomes 82)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (20102 becomes 102)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (20182 becomes 182)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (20202 becomes 202)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (20282 becomes 282)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (20302 becomes 302)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (20382 becomes 382)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120012 becomes 12)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120092 becomes 92)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120112 becomes 112)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120192 becomes 192)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120212 becomes 212)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120292 becomes 292)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120312 becomes 312)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120392 becomes 392)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120412 becomes 412)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120492 becomes 492)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120512 becomes 512)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120692 becomes 692)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120712 becomes 712)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120792 becomes 792)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120812 becomes 812)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120892 becomes 892)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a019a becomes 19a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a021a becomes 21a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a029a becomes 29a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a031a becomes 31a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a039a becomes 39a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a041a becomes 41a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a049a becomes 49a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a051a becomes 51a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a059a becomes 59a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a061a becomes 61a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a089a becomes 89a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a001a becomes 1a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (180118 becomes 118)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a011a becomes 11a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (180198 becomes 198)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a081a becomes 81a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120592 becomes 592)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120612 becomes 612)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120912 becomes 912)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a009a becomes 9a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a028a becomes 28a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a030a becomes 30a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a038a becomes 38a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a040a becomes 40a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (190299 becomes 299)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (20402 becomes 402)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (110311 becomes 311)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (110391 becomes 391)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (180098 becomes 98)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120a92 becomes a92)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a091a becomes 91a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a099a becomes 99a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a061a becomes 61a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a059a becomes 59a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120492 becomes 492)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120412 becomes 412)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a048a becomes 48a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a010a becomes 10a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a008a becomes 8a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a010a becomes 10a)
+>> arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a069a becomes 69a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a018a becomes 18a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (180118 becomes 118)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (180098 becomes 98)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (180198 becomes 198)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a009a becomes 9a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (110011 becomes 11)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100410 becomes 410)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100510 becomes 510)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80408 becomes 408)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80c88 becomes c88)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100710 becomes 710)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (190019 becomes 19)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (110391 becomes 391)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (190019 becomes 19)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (110391 becomes 391)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (190019 becomes 19)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (110391 becomes 391)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100790 becomes 790)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a000a becomes a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (190019 becomes 19)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (110391 becomes 391)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (110391 becomes 391)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (190019 becomes 19)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (110391 becomes 391)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (190019 becomes 19)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (110111 becomes 111)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (190019 becomes 19)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (190019 becomes 19)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (190019 becomes 19)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (110391 becomes 391)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (110111 becomes 111)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (110111 becomes 111)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (110011 becomes 11)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (110111 becomes 111)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (110191 becomes 191)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (190019 becomes 19)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80988 becomes 988)
+>> arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80a08 becomes a08)
 --
-   arch/x86/kernel/fpu/regset.c: note: in included file (through include/linux/sched.h, include/linux/sched/task_stack.h):
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
---
-   arch/x86/kernel/fpu/signal.c: note: in included file (through arch/x86/include/asm/nospec-branch.h, arch/x86/include/asm/paravirt_types.h, arch/x86/include/asm/ptrace.h, ...):
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
---
-   arch/x86/kernel/fpu/core.c: note: in included file (through arch/x86/include/asm/preempt.h, include/linux/preempt.h, include/linux/bottom_half.h, ...):
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   arch/x86/kernel/fpu/core.c:547:39: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
-   arch/x86/kernel/fpu/core.c:547:39: sparse:     expected struct spinlock [usertype] *lock
-   arch/x86/kernel/fpu/core.c:547:39: sparse:     got struct spinlock [noderef] __rcu *
-   arch/x86/kernel/fpu/core.c:551:41: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
-   arch/x86/kernel/fpu/core.c:551:41: sparse:     expected struct spinlock [usertype] *lock
-   arch/x86/kernel/fpu/core.c:551:41: sparse:     got struct spinlock [noderef] __rcu *
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
---
-   arch/x86/kernel/fpu/xstate.c: note: in included file (through arch/x86/include/asm/nospec-branch.h, arch/x86/include/asm/paravirt_types.h, arch/x86/include/asm/ptrace.h, ...):
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
-   arch/x86/kernel/fpu/xstate.c: note: in included file (through arch/x86/include/asm/fpu/regset.h):
-   include/linux/regset.h:28:28: sparse: sparse: self-comparison always evaluates to false
-   arch/x86/kernel/fpu/xstate.c: note: in included file (through arch/x86/include/asm/nospec-branch.h, arch/x86/include/asm/paravirt_types.h, arch/x86/include/asm/ptrace.h, ...):
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
->> arch/x86/include/asm/current.h:46:24: sparse: sparse: dereference of noderef expression
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100410 becomes 410)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a018a becomes 18a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (b008b becomes 8b)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100490 becomes 490)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100310 becomes 310)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a020a becomes 20a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (b010b becomes 10b)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100490 becomes 490)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100310 becomes 310)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100510 becomes 510)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100410 becomes 410)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (30203 becomes 203)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (30203 becomes 203)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (30283 becomes 283)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (30283 becomes 283)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1b019b becomes 19b)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1b021b becomes 21b)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1b029b becomes 29b)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1b031b becomes 31b)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1b041b becomes 41b)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a081a becomes 81a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a081a becomes 81a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a081a becomes 81a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120912 becomes 912)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120912 becomes 912)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120912 becomes 912)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (110311 becomes 311)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120992 becomes 992)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120992 becomes 992)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100610 becomes 610)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100690 becomes 690)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100590 becomes 590)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80408 becomes 408)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80c88 becomes c88)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a039a becomes 39a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a041a becomes 41a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120a92 becomes a92)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a099a becomes 99a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a091a becomes 91a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a048a becomes 48a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a008a becomes 8a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a039a becomes 39a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a041a becomes 41a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120a92 becomes a92)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a099a becomes 99a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a091a becomes 91a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a008a becomes 8a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a048a becomes 48a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a010a becomes 10a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80b88 becomes b88)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a050a becomes 50a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a071a becomes 71a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a079a becomes 79a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a001a becomes 1a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a009a becomes 9a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a011a becomes 11a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a081a becomes 81a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a081a becomes 81a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a011a becomes 11a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (180198 becomes 198)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a011a becomes 11a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a051a becomes 51a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120392 becomes 392)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120892 becomes 892)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a081a becomes 81a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a081a becomes 81a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a011a becomes 11a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a011a becomes 11a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100490 becomes 490)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100490 becomes 490)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120892 becomes 892)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120892 becomes 892)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a028a becomes 28a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a030a becomes 30a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a038a becomes 38a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a040a becomes 40a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a028a becomes 28a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a030a becomes 30a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a038a becomes 38a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a040a becomes 40a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (180118 becomes 118)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a001a becomes 1a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100090 becomes 90)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100090 becomes 90)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100090 becomes 90)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80688 becomes 688)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a009a becomes 9a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100790 becomes 790)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100790 becomes 790)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (180198 becomes 198)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a011a becomes 11a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120492 becomes 492)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a061a becomes 61a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120492 becomes 492)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a061a becomes 61a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120412 becomes 412)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a059a becomes 59a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120412 becomes 412)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a059a becomes 59a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (20402 becomes 402)
+>> arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1b001b becomes 1b)
+>> arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1b009b becomes 9b)
+>> arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1b011b becomes 11b)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (30083 becomes 83)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (30183 becomes 183)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (30003 becomes 3)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (30103 becomes 103)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (30303 becomes 303)
+>> arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1b039b becomes 39b)
+>> arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1b059b becomes 59b)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (130013 becomes 13)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1b041b becomes 41b)
+>> arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1b049b becomes 49b)
+>> arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (b000b becomes b)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (b008b becomes 8b)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (180098 becomes 98)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100010 becomes 10)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100790 becomes 790)
+>> arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80d08 becomes d08)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100790 becomes 790)
+>> arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80d08 becomes d08)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80108 becomes 108)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a000a becomes a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100010 becomes 10)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100090 becomes 90)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100790 becomes 790)
+>> arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80d08 becomes d08)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80708 becomes 708)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80788 becomes 788)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80808 becomes 808)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80888 becomes 888)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (20402 becomes 402)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80588 becomes 588)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (81088 becomes 1088)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100810 becomes 810)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100910 becomes 910)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100190 becomes 190)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100210 becomes 210)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100290 becomes 290)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (30203 becomes 203)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (30283 becomes 283)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1b019b becomes 19b)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1b021b becomes 21b)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80608 becomes 608)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100390 becomes 390)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100410 becomes 410)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80208 becomes 208)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100510 becomes 510)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80288 becomes 288)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a010a becomes 10a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100310 becomes 310)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100490 becomes 490)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (180018 becomes 18)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80b08 becomes b08)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80388 becomes 388)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (20482 becomes 482)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80b88 becomes b88)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a050a becomes 50a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120a92 becomes a92)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a091a becomes 91a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a099a becomes 99a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a008a becomes 8a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80488 becomes 488)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80488 becomes 488)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100710 becomes 710)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (20082 becomes 82)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a021a becomes 21a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (20382 becomes 382)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a051a becomes 51a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120392 becomes 392)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120892 becomes 892)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (20302 becomes 302)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a049a becomes 49a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120312 becomes 312)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120812 becomes 812)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a059a becomes 59a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120412 becomes 412)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a061a becomes 61a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120492 becomes 492)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120992 becomes 992)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120912 becomes 912)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a089a becomes 89a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a048a becomes 48a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100590 becomes 590)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100090 becomes 90)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120912 becomes 912)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100090 becomes 90)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100690 becomes 690)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100590 becomes 590)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100590 becomes 590)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120912 becomes 912)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120912 becomes 912)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120912 becomes 912)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120912 becomes 912)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120912 becomes 912)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120912 becomes 912)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120912 becomes 912)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (110311 becomes 311)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (110111 becomes 111)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (110191 becomes 191)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (190019 becomes 19)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (190019 becomes 19)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120912 becomes 912)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a089a becomes 89a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a089a becomes 89a)
+>> arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a069a becomes 69a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (110311 becomes 311)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (190019 becomes 19)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (180118 becomes 118)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (180198 becomes 198)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (190019 becomes 19)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (190019 becomes 19)
+>> arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a069a becomes 69a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100090 becomes 90)
+>> arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a069a becomes 69a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100090 becomes 90)
+>> arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a069a becomes 69a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100090 becomes 90)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (190019 becomes 19)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (190019 becomes 19)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (190019 becomes 19)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (190019 becomes 19)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (190019 becomes 19)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (110291 becomes 291)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (190019 becomes 19)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120912 becomes 912)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120912 becomes 912)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (90009 becomes 9)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (90009 becomes 9)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100090 becomes 90)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (110391 becomes 391)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (190019 becomes 19)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (190019 becomes 19)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120912 becomes 912)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120912 becomes 912)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (190019 becomes 19)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120912 becomes 912)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120912 becomes 912)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (190019 becomes 19)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (110111 becomes 111)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (110191 becomes 191)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (20482 becomes 482)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (20482 becomes 482)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100490 becomes 490)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100310 becomes 310)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100090 becomes 90)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100010 becomes 10)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a011a becomes 11a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100790 becomes 790)
+>> arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80d08 becomes d08)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a001a becomes 1a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (180118 becomes 118)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (180018 becomes 18)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (180198 becomes 198)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (180098 becomes 98)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a009a becomes 9a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a028a becomes 28a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a030a becomes 30a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a038a becomes 38a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a040a becomes 40a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a071a becomes 71a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a079a becomes 79a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a081a becomes 81a)
+>> arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a069a becomes 69a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a091a becomes 91a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120a92 becomes a92)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a099a becomes 99a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a018a becomes 18a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a010a becomes 10a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a008a becomes 8a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a089a becomes 89a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a020a becomes 20a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a048a becomes 48a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120912 becomes 912)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120992 becomes 992)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (20402 becomes 402)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100510 becomes 510)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100390 becomes 390)
+>> arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1b059b becomes 59b)
+>> arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1b051b becomes 51b)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (30083 becomes 83)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (30103 becomes 103)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (30183 becomes 183)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (30003 becomes 3)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (30203 becomes 203)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (30283 becomes 283)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (30303 becomes 303)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1b019b becomes 19b)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1b021b becomes 21b)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1b029b becomes 29b)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1b031b becomes 31b)
+>> arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1b039b becomes 39b)
+>> arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1b001b becomes 1b)
+>> arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1b009b becomes 9b)
+>> arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1b011b becomes 11b)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1b041b becomes 41b)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (130013 becomes 13)
+>> arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1b049b becomes 49b)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (b008b becomes 8b)
+>> arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (b000b becomes b)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (b010b becomes 10b)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100410 becomes 410)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100110 becomes 110)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100190 becomes 190)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100210 becomes 210)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100590 becomes 590)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100610 becomes 610)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100690 becomes 690)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (110111 becomes 111)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (110191 becomes 191)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (110311 becomes 311)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (110091 becomes 91)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (190019 becomes 19)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (110211 becomes 211)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (110291 becomes 291)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80408 becomes 408)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80c88 becomes c88)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (20402 becomes 402)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100710 becomes 710)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80508 becomes 508)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80488 becomes 488)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80688 becomes 688)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100810 becomes 810)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100890 becomes 890)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (110011 becomes 11)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (90009 becomes 9)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100710 becomes 710)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100790 becomes 790)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80508 becomes 508)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (20402 becomes 402)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (20402 becomes 402)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (20402 becomes 402)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (20402 becomes 402)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80708 becomes 708)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80788 becomes 788)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80808 becomes 808)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80888 becomes 888)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (110111 becomes 111)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (110111 becomes 111)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (110111 becomes 111)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120912 becomes 912)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120912 becomes 912)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120912 becomes 912)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100590 becomes 590)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100590 becomes 590)
+>> arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120b92 becomes b92)
+>> arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120b92 becomes b92)
+>> arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (120b92 becomes b92)
+>> arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1b051b becomes 51b)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100890 becomes 890)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a071a becomes 71a)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1a079a becomes 79a)
+>> arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1b009b becomes 9b)
+>> arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (1b011b becomes 11b)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (110091 becomes 91)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (110211 becomes 211)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100790 becomes 790)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (80b88 becomes b88)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100790 becomes 790)
+   arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (100790 becomes 790)
 
-vim +46 arch/x86/include/asm/current.h
+vim +79 arch/x86/kvm/vmx/hyperv.h
 
-    38	
-    39	/* const-qualified alias to pcpu_hot, aliased by linker. */
-    40	DECLARE_PER_CPU_ALIGNED(const struct pcpu_hot __percpu_seg_override,
-    41				const_pcpu_hot);
-    42	
-    43	static __always_inline struct task_struct *get_current(void)
-    44	{
-    45		if (IS_ENABLED(CONFIG_USE_X86_SEG_SUPPORT))
-  > 46			return const_pcpu_hot.current_task;
-    47	
-    48		return this_cpu_read_stable(pcpu_hot.current_task);
-    49	}
-    50	
+75edce8a45486f arch/x86/kvm/vmx/evmcs.h Sean Christopherson 2018-12-03   75  
+892a42c10ddb94 arch/x86/kvm/vmx/evmcs.h Vitaly Kuznetsov    2022-01-12   76  static __always_inline int evmcs_field_offset(unsigned long field,
+773e8a0425c923 arch/x86/kvm/vmx_evmcs.h Vitaly Kuznetsov    2018-03-20   77  					      u16 *clean_field)
+773e8a0425c923 arch/x86/kvm/vmx_evmcs.h Vitaly Kuznetsov    2018-03-20   78  {
+773e8a0425c923 arch/x86/kvm/vmx_evmcs.h Vitaly Kuznetsov    2018-03-20  @79  	unsigned int index = ROL16(field, 6);
+773e8a0425c923 arch/x86/kvm/vmx_evmcs.h Vitaly Kuznetsov    2018-03-20   80  	const struct evmcs_field *evmcs_field;
+773e8a0425c923 arch/x86/kvm/vmx_evmcs.h Vitaly Kuznetsov    2018-03-20   81  
+892a42c10ddb94 arch/x86/kvm/vmx/evmcs.h Vitaly Kuznetsov    2022-01-12   82  	if (unlikely(index >= nr_evmcs_1_fields))
+773e8a0425c923 arch/x86/kvm/vmx_evmcs.h Vitaly Kuznetsov    2018-03-20   83  		return -ENOENT;
+773e8a0425c923 arch/x86/kvm/vmx_evmcs.h Vitaly Kuznetsov    2018-03-20   84  
+773e8a0425c923 arch/x86/kvm/vmx_evmcs.h Vitaly Kuznetsov    2018-03-20   85  	evmcs_field = &vmcs_field_to_evmcs_1[index];
+773e8a0425c923 arch/x86/kvm/vmx_evmcs.h Vitaly Kuznetsov    2018-03-20   86  
+892a42c10ddb94 arch/x86/kvm/vmx/evmcs.h Vitaly Kuznetsov    2022-01-12   87  	/*
+892a42c10ddb94 arch/x86/kvm/vmx/evmcs.h Vitaly Kuznetsov    2022-01-12   88  	 * Use offset=0 to detect holes in eVMCS. This offset belongs to
+892a42c10ddb94 arch/x86/kvm/vmx/evmcs.h Vitaly Kuznetsov    2022-01-12   89  	 * 'revision_id' but this field has no encoding and is supposed to
+892a42c10ddb94 arch/x86/kvm/vmx/evmcs.h Vitaly Kuznetsov    2022-01-12   90  	 * be accessed directly.
+892a42c10ddb94 arch/x86/kvm/vmx/evmcs.h Vitaly Kuznetsov    2022-01-12   91  	 */
+892a42c10ddb94 arch/x86/kvm/vmx/evmcs.h Vitaly Kuznetsov    2022-01-12   92  	if (unlikely(!evmcs_field->offset))
+892a42c10ddb94 arch/x86/kvm/vmx/evmcs.h Vitaly Kuznetsov    2022-01-12   93  		return -ENOENT;
+892a42c10ddb94 arch/x86/kvm/vmx/evmcs.h Vitaly Kuznetsov    2022-01-12   94  
+773e8a0425c923 arch/x86/kvm/vmx_evmcs.h Vitaly Kuznetsov    2018-03-20   95  	if (clean_field)
+773e8a0425c923 arch/x86/kvm/vmx_evmcs.h Vitaly Kuznetsov    2018-03-20   96  		*clean_field = evmcs_field->clean_field;
+773e8a0425c923 arch/x86/kvm/vmx_evmcs.h Vitaly Kuznetsov    2018-03-20   97  
+773e8a0425c923 arch/x86/kvm/vmx_evmcs.h Vitaly Kuznetsov    2018-03-20   98  	return evmcs_field->offset;
+773e8a0425c923 arch/x86/kvm/vmx_evmcs.h Vitaly Kuznetsov    2018-03-20   99  }
+773e8a0425c923 arch/x86/kvm/vmx_evmcs.h Vitaly Kuznetsov    2018-03-20  100  
+
+:::::: The code at line 79 was first introduced by commit
+:::::: 773e8a0425c923bc02668a2d6534a5ef5a43cc69 x86/kvm: use Enlightened VMCS when running on Hyper-V
+
+:::::: TO: Vitaly Kuznetsov <vkuznets@redhat.com>
+:::::: CC: Radim Krčmář <rkrcmar@redhat.com>
 
 -- 
 0-DAY CI Kernel Test Service
