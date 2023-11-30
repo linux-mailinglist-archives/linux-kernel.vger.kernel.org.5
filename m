@@ -2,61 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8C637FF1C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 15:30:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EABAA7FF1DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 15:32:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232194AbjK3Oar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 09:30:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35996 "EHLO
+        id S232270AbjK3OcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 09:32:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232000AbjK3Oap (ORCPT
+        with ESMTP id S232000AbjK3OcL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 09:30:45 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D435BD;
-        Thu, 30 Nov 2023 06:30:52 -0800 (PST)
+        Thu, 30 Nov 2023 09:32:11 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0805E85
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 06:32:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701354652; x=1732890652;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=PwlpPtfS0HkAlGQkdyt5xqvlLSCwuyy6PwyODlZYJvE=;
-  b=fzXh3bVNyVwED687QQ0zF88qnMoBlI8zRGjg5YPdXtt0mX0EjNPk/+X3
-   PRwy5z6L2+c/bok+acSpK4MjgKUNKJJME+nDjb00gye778AyyeornHfwW
-   Vsz2BOWw1FaCMNqC2wpGlL0RkdG0mP1592QzPbBsVipqJbxZ8XR/3pLAl
-   xpaFRjGkrYnHyFZCiWSZpZrI+NBAlOFBjP5hwBum2gbViyIg4vPR//KpF
-   EaIJ1VKNvB/YtzQLH0jDDEizyHNH7meiK8HicED1p9OvF/B12TCC1VMkx
-   c7Y66/LubhnNOV2TL6E/vHXUOp7s+/CjQLGHtpOAOAfDcwDk/xX6tCnN7
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="392194606"
+  t=1701354738; x=1732890738;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=ew2kPcLfyTuYr73yBcv/Hlg5hDX86dci/VlQ3uXRnrU=;
+  b=QchrlufbQ9Li7H9gTBxf5REqh9bOjgJLLqy7qLfsdcMrQNlTaW1uYJB6
+   3jjqZgAU+Rg3lfd/kAUDd1V50kRQS9072KfCk7RktWCkZ98BoZmhvk7HZ
+   S0kUFo6C0bPpqLuyYRmMpiJ6avxfbrMs3Mlra/DQL4NdV4kU/eGFcaTe6
+   s86+7IAjVNIWTCgs5z46uNW8vsqvvwjohvGrklITc4e+V5UaKAdqaCOrH
+   /RrnfEGsgx6V9KssPPQoRP5YRDj4GaUnaHhxhhysM35GkRGs9Hk0cl/un
+   PT8NrR0VlEAug8OTJhxoL6gmVKRIGVUeH3V7hd9RXZoHDX3jGBMNoVE3n
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="318489"
 X-IronPort-AV: E=Sophos;i="6.04,239,1695711600"; 
-   d="scan'208";a="392194606"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 06:30:52 -0800
+   d="scan'208";a="318489"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 06:32:17 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="913217870"
+X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="860210825"
 X-IronPort-AV: E=Sophos;i="6.04,239,1695711600"; 
-   d="scan'208";a="913217870"
-Received: from rwwalter-mobl.amr.corp.intel.com (HELO [10.212.92.184]) ([10.212.92.184])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 06:30:51 -0800
-Message-ID: <0c2b6e18a95d92a1a8a8ce4f8a110f23391f42ee.camel@linux.intel.com>
-Subject: Re: [PATCH 5/6] platform/x86: ISST: Process read/write blocked
- feature status
-From:   srinivas pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     Ilpo =?ISO-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>, markgross@kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Date:   Thu, 30 Nov 2023 09:30:50 -0500
-In-Reply-To: <853032f0-f49-465b-f164-d49baca51c7b@linux.intel.com>
-References: <20231128185605.3027653-1-srinivas.pandruvada@linux.intel.com>
-         <20231128185605.3027653-6-srinivas.pandruvada@linux.intel.com>
-         <853032f0-f49-465b-f164-d49baca51c7b@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+   d="scan'208";a="860210825"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by FMSMGA003.fm.intel.com with ESMTP; 30 Nov 2023 06:32:16 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id B1A56535; Thu, 30 Nov 2023 16:32:14 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Lee Jones <lee@kernel.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Subject: [PATCH v1 1/1] mfd: intel-lpss: Don't fail probe on success of pci_alloc_irq_vectors()
+Date:   Thu, 30 Nov 2023 16:32:06 +0200
+Message-ID: <20231130143206.1475831-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -67,80 +62,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2023-11-30 at 14:20 +0200, Ilpo J=C3=A4rvinen wrote:
-> On Tue, 28 Nov 2023, Srinivas Pandruvada wrote:
->=20
-> > When a feature is read blocked, don't continue to read SST
-> > information
-> > and register with SST core.
-> >=20
-> > When the feature is write blocked, continue to offer read interface
-> > for
-> > SST parameters, but don't allow any operation to change state. A
-> > state
-> > change results from SST level change, feature change or class of
-> > service
-> > change.
-> >=20
-> > Signed-off-by: Srinivas Pandruvada
-> > <srinivas.pandruvada@linux.intel.com>
-> > ---
-> > =C2=A0.../intel/speed_select_if/isst_tpmi_core.c=C2=A0=C2=A0=C2=A0 | 25
-> > +++++++++++++++++++
-> > =C2=A01 file changed, 25 insertions(+)
-> >=20
-> > diff --git
-> > a/drivers/platform/x86/intel/speed_select_if/isst_tpmi_core.c
-> > b/drivers/platform/x86/intel/speed_select_if/isst_tpmi_core.c
-> > index 0b6d2c864437..ed3a04d6c99c 100644
-> > --- a/drivers/platform/x86/intel/speed_select_if/isst_tpmi_core.c
-> > +++ b/drivers/platform/x86/intel/speed_select_if/isst_tpmi_core.c
-> > @@ -514,6 +516,9 @@ static long isst_if_clos_param(void __user
-> > *argp)
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (!power_domain_info)
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0return -EINVAL;
-> > =C2=A0
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (power_domain_info->write=
-_blocked)
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0return -EPERM;
-> > +
->=20
-> I don't understand this, doesn't this now -EPERM both
-> _write_cp_info() AND
-> _read_cp_info()??? Does _read_cp_info() also change state??
-You have a point here. Unlike other SST features, CP access is useful
-for OS as it know workloads and priorities.
-But I will change for consistency.
+The pci_alloc_irq_vectors() returns a positive number on success.
+Hence we have to filter the negative numbers for error condition.
+Update the check accordingly.
 
-Thanks,
-Srinivas
+Fixes: e6951fb78787 ("mfd: intel-lpss: Use PCI APIs instead of dereferencing")
+Reported-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/mfd/intel-lpss-pci.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->=20
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (clos_param.get_set)=
- {
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0_write_cp_info("clos.min_freq",
-> > clos_param.min_freq_mhz,
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 (SST_CLOS_CONFIG_0_OFFSET +
-> > clos_param.clos * SST_REG_SIZE),
-> > @@ -602,6 +607,9 @@ static long isst_if_clos_assoc(void __user
-> > *argp)
-> > =C2=A0
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0power_domain_info =3D &sst_inst-
-> > >power_domain_info[punit_id];
-> > =C2=A0
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0if (power_domain_info->write_blocked)
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return=
- -EPERM;
->=20
-> Same here, this blocks also the get path?
->=20
->=20
+diff --git a/drivers/mfd/intel-lpss-pci.c b/drivers/mfd/intel-lpss-pci.c
+index 8f5e10817a9c..4621d3950b8f 100644
+--- a/drivers/mfd/intel-lpss-pci.c
++++ b/drivers/mfd/intel-lpss-pci.c
+@@ -44,7 +44,7 @@ static int intel_lpss_pci_probe(struct pci_dev *pdev,
+ 		return ret;
+ 
+ 	ret = pci_alloc_irq_vectors(pdev, 1, 1, PCI_IRQ_LEGACY);
+-	if (ret)
++	if (ret < 0)
+ 		return ret;
+ 
+ 	info = devm_kmemdup(&pdev->dev, data, sizeof(*info), GFP_KERNEL);
+-- 
+2.43.0.rc1.1.gbec44491f096
 
