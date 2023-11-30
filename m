@@ -2,55 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AC487FEE76
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 13:01:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA5057FEE78
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 13:01:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345290AbjK3MAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 07:00:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39216 "EHLO
+        id S1345339AbjK3MBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 07:01:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345305AbjK3MAk (ORCPT
+        with ESMTP id S1345305AbjK3MBC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 07:00:40 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4B2F910FA
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 04:00:46 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9B5551042;
-        Thu, 30 Nov 2023 04:01:32 -0800 (PST)
-Received: from [10.1.34.169] (XHFQ2J9959.cambridge.arm.com [10.1.34.169])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 008BB3F5A1;
-        Thu, 30 Nov 2023 04:00:42 -0800 (PST)
-Message-ID: <1d2f8e43-447e-4af4-96ac-1eefea7d6747@arm.com>
-Date:   Thu, 30 Nov 2023 12:00:41 +0000
+        Thu, 30 Nov 2023 07:01:02 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E394E10E6;
+        Thu, 30 Nov 2023 04:01:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701345666; x=1732881666;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=ZixJZq2C5Em0LPUyj1YLbf7Mo+UhBMXQq3SSosCyiFE=;
+  b=iGtsfSwcOzds0x6FVM+gPzE/Q2EeBn5p9cSbwXlNiio3doKekaJ8zdG8
+   7wNGa6EstXW4abpHwJ4hgyClYJb0CMRPCPIQz0rYM8Dv94ontmFZAP4a5
+   dbhOMBKwiy2JuPiK+jqs+JfKXXQRwEGHFf4Fs9ErEqUfXHaCSYnqbOvcb
+   EyfbNXXunBPSuVbtwXSK0JOeiAO5mLRbxbCkNfAUP0A81V3Hvph5amAC7
+   LPMxg8uSyGcmamOsamb9ApYr0PyQ2NL7l/qhzTcQrMm24mAhQPIcYG3Ql
+   3peeV/1bu9k/IrNu2LM1DM+SYvjYrjYw3HmfVA/ntvaCrg+igiDXpatRJ
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="302983"
+X-IronPort-AV: E=Sophos;i="6.04,237,1695711600"; 
+   d="scan'208";a="302983"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 04:01:06 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="839779672"
+X-IronPort-AV: E=Sophos;i="6.04,237,1695711600"; 
+   d="scan'208";a="839779672"
+Received: from bergler-mobl.ger.corp.intel.com ([10.249.33.30])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 04:01:03 -0800
+Date:   Thu, 30 Nov 2023 14:01:00 +0200 (EET)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+cc:     Hans de Goede <hdegoede@redhat.com>, markgross@kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        platform-driver-x86@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 4/6] platform/x86/intel/tpmi: Move TPMI ID definitions
+In-Reply-To: <20231128185605.3027653-5-srinivas.pandruvada@linux.intel.com>
+Message-ID: <35f3ae1d-d714-69c2-6447-eba312c712c1@linux.intel.com>
+References: <20231128185605.3027653-1-srinivas.pandruvada@linux.intel.com> <20231128185605.3027653-5-srinivas.pandruvada@linux.intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 14/14] arm64/mm: Add ptep_get_and_clear_full() to
- optimize process teardown
-Content-Language: en-GB
-To:     Barry Song <21cnbao@gmail.com>
-Cc:     akpm@linux-foundation.org, andreyknvl@gmail.com,
-        anshuman.khandual@arm.com, ardb@kernel.org,
-        catalin.marinas@arm.com, david@redhat.com, dvyukov@google.com,
-        glider@google.com, james.morse@arm.com, jhubbard@nvidia.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, mark.rutland@arm.com, maz@kernel.org,
-        oliver.upton@linux.dev, ryabinin.a.a@gmail.com,
-        suzuki.poulose@arm.com, vincenzo.frascino@arm.com,
-        wangkefeng.wang@huawei.com, will@kernel.org, willy@infradead.org,
-        yuzenghui@huawei.com, yuzhao@google.com, ziy@nvidia.com
-References: <20231115163018.1303287-15-ryan.roberts@arm.com>
- <20231128081742.39204-1-v-songbaohua@oppo.com>
- <207de995-6d48-41ea-8373-2f9caad9b9c3@arm.com>
- <CAGsJ_4wV-z7u5N3oLM-3kONHe0fmQwO7CSWQk9w0u0EhMroXAA@mail.gmail.com>
- <34da1e06-74da-4e45-b0b5-9c93d64eb64e@arm.com>
- <CAGsJ_4x78VhazGu3cA=W7Nc7yshwHTJjtFYHrCY1SOjC4__qfA@mail.gmail.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <CAGsJ_4x78VhazGu3cA=W7Nc7yshwHTJjtFYHrCY1SOjC4__qfA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
+Content-Type: multipart/mixed; boundary="8323329-904996486-1701345664=:1808"
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,152 +62,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->> Just because you found a pte that maps a page from a large folio, that doesn't
->> mean that all pages from the folio are mapped, and it doesn't mean they are
->> mapped contiguously. We have to deal with partial munmap(), partial mremap()
->> etc. We could split in these cases (and in future it might be sensible to try),
->> but that can fail (due to GUP). So we still have to handle the corner case.
->>
->> But I can imagine doing a batched version of ptep_get_and_clear(), like I did
->> for ptep_set_wrprotects(). And I think this would be an improvement.
->>
->> The reason I haven't done that so far, is because ptep_get_and_clear() returns
->> the pte value when it was cleared and that's hard to do if batching due to the
->> storage requirement. But perhaps you could just return the logical OR of the
->> dirty and young bits across all ptes in the batch. The caller should be able to
->> reconstitute the rest if it needs it?
->>
->> What do you think?
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+
+--8323329-904996486-1701345664=:1808
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: 8BIT
+
+On Tue, 28 Nov 2023, Srinivas Pandruvada wrote:
+
+> Move TPMI ID definitions to common include file. In this way other
+> feature drivers don't have to redefine.
 > 
-> I really don't know why we care about the return value of ptep_get_and_clear()
-> as zap_pte_range() doesn't ask for any ret value at all. so why not totally give
-> up this kind of complex logical OR of dirty and young as they are useless in
-> this case?
-
-That's not the case in v6.7-rc1:
-
-
-static unsigned long zap_pte_range(struct mmu_gather *tlb,
-				struct vm_area_struct *vma, pmd_t *pmd,
-				unsigned long addr, unsigned long end,
-				struct zap_details *details)
-{
-	...
-
-	do {
-		pte_t ptent = ptep_get(pte);
-
-		...
-
-		if (pte_present(ptent)) {
-			...
-
-			ptent = ptep_get_and_clear_full(mm, addr, pte,
-							tlb->fullmm);
-			arch_check_zapped_pte(vma, ptent);
-			tlb_remove_tlb_entry(tlb, pte, addr);
-			zap_install_uffd_wp_if_needed(vma, addr, pte, details,
-						      ptent);
-			if (unlikely(!page)) {
-				ksm_might_unmap_zero_page(mm, ptent);
-				continue;
-			}
-
-			delay_rmap = 0;
-			if (!PageAnon(page)) {
-				if (pte_dirty(ptent)) {
-					set_page_dirty(page);
-					if (tlb_delay_rmap(tlb)) {
-						delay_rmap = 1;
-						force_flush = 1;
-					}
-				}
-				if (pte_young(ptent) && likely(vma_has_recency(vma)))
-					mark_page_accessed(page);
-			}
-
-			...
-		}
-
-		...
-	} while (pte++, addr += PAGE_SIZE, addr != end);
-
-	...
-}
-
-Most importantly, file-backed mappings need the access/dirty bits to propagate that information back to the folio, so it will be written back to disk. x86 is also looking at the dirty bit in arch_check_zapped_pte(), and ksm is using it in ksm_might_unmap_zero_page().
-
-Probably for your use case of anon memory on arm64 on a phone, you don't need the return value. But my solution is also setting cotnpte for file-backed memory, and there are performance wins to be had there, especially for executable mappings where contpte reduces iTLB pressure. (I have other work which ensures these file-backed mappings are in correctly-sized large folios).
-
-So I don't think we can just do a clear without the get part. But I think I have a solution in the shape of clear_ptes(), as described in the other thread, which gives the characteristics you suggest.
-
-
+> Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+> ---
+>  drivers/platform/x86/intel/tpmi.c | 13 -------------
+>  include/linux/intel_tpmi.h        | 13 +++++++++++++
+>  2 files changed, 13 insertions(+), 13 deletions(-)
 > 
-> Is it possible for us to introduce a new api like?
-> 
-> bool clear_folio_ptes(folio, ptep)
-> {
->     if(ptes are contiguous mapped) {
->            clear all ptes all together    // this also clears all CONTPTE
->            return true;
->     }
->     return false;
-> }
-> 
-> in zap_pte_range():
-> 
-> if (large_folio(folio) && clear_folio_ptes(folio, ptep)) {
->          addr += nr - 1
->          pte += nr  -1
-> } else
->          old path.
-> 
-> 
->>
->>>
->>> zap_pte_range is the most frequent behaviour from userspace libc heap
->>> as i explained
->>> before. libc can call madvise(DONTNEED) the most often. It is crucial
->>> to performance.
->>>
->>> and this way can also help drop your full version by moving to full
->>> flushing the whole
->>> large folios? and we don't need to depend on fullmm any more?
->>>
->>>>
->>>> I don't think there is any correctness issue here. But there is a problem with
->>>> fragility, as raised by Alistair. I have some ideas on potentially how to solve
->>>> that. I'm going to try to work on it this afternoon and will post if I get some
->>>> confidence that it is a real solution.
->>>>
->>>> Thanks,
->>>> Ryan
->>>>
->>>>>
->>>>> static inline pte_t __cont_pte_huge_ptep_get_and_clear_flush(struct mm_struct *mm,
->>>>>                                      unsigned long addr,
->>>>>                                      pte_t *ptep,
->>>>>                                      bool flush)
->>>>> {
->>>>>       pte_t orig_pte = ptep_get(ptep);
->>>>>
->>>>>       CHP_BUG_ON(!pte_cont(orig_pte));
->>>>>       CHP_BUG_ON(!IS_ALIGNED(addr, HPAGE_CONT_PTE_SIZE));
->>>>>       CHP_BUG_ON(!IS_ALIGNED(pte_pfn(orig_pte), HPAGE_CONT_PTE_NR));
->>>>>
->>>>>       return get_clear_flush(mm, addr, ptep, PAGE_SIZE, CONT_PTES, flush);
->>>>> }
->>>>>
->>>>> [1] https://github.com/OnePlusOSS/android_kernel_oneplus_sm8550/blob/oneplus/sm8550_u_14.0.0_oneplus11/mm/memory.c#L1539
->>>>>
->>>>>> +     */
->>>>>> +
->>>>>> +    return __ptep_get_and_clear(mm, addr, ptep);
->>>>>> +}
->>>>>> +EXPORT_SYMBOL(contpte_ptep_get_and_clear_full);
->>>>>> +
->>>>>
->>>
->  Thanks
->  Barry
+> diff --git a/drivers/platform/x86/intel/tpmi.c b/drivers/platform/x86/intel/tpmi.c
+> index 44773c210324..14575da91d2c 100644
+> --- a/drivers/platform/x86/intel/tpmi.c
+> +++ b/drivers/platform/x86/intel/tpmi.c
+> @@ -176,19 +176,6 @@ struct tpmi_feature_state {
+>  	u32 locked:1;
+>  } __packed;
+>  
+> -/*
+> - * List of supported TMPI IDs.
+> - * Some TMPI IDs are not used by Linux, so the numbers are not consecutive.
+> - */
+> -enum intel_tpmi_id {
+> -	TPMI_ID_RAPL = 0, /* Running Average Power Limit */
+> -	TPMI_ID_PEM = 1, /* Power and Perf excursion Monitor */
+> -	TPMI_ID_UNCORE = 2, /* Uncore Frequency Scaling */
+> -	TPMI_ID_SST = 5, /* Speed Select Technology */
+> -	TPMI_CONTROL_ID = 0x80, /* Special ID for getting feature status */
+> -	TPMI_INFO_ID = 0x81, /* Special ID for PCI BDF and Package ID information */
+> -};
+> -
+>  /*
+>   * The size from hardware is in u32 units. This size is from a trusted hardware,
+>   * but better to verify for pre silicon platforms. Set size to 0, when invalid.
+> diff --git a/include/linux/intel_tpmi.h b/include/linux/intel_tpmi.h
+> index a240e15ef77f..6c31768cdb83 100644
+> --- a/include/linux/intel_tpmi.h
+> +++ b/include/linux/intel_tpmi.h
+> @@ -12,6 +12,19 @@
+>  #define TPMI_MINOR_VERSION(val)	FIELD_GET(GENMASK(4, 0), val)
+>  #define TPMI_MAJOR_VERSION(val)	FIELD_GET(GENMASK(7, 5), val)
+>  
+> +/*
+> + * List of supported TMPI IDs.
+> + * Some TMPI IDs are not used by Linux, so the numbers are not consecutive.
+> + */
+> +enum intel_tpmi_id {
+> +	TPMI_ID_RAPL = 0, /* Running Average Power Limit */
+> +	TPMI_ID_PEM = 1, /* Power and Perf excursion Monitor */
+> +	TPMI_ID_UNCORE = 2, /* Uncore Frequency Scaling */
+> +	TPMI_ID_SST = 5, /* Speed Select Technology */
+> +	TPMI_CONTROL_ID = 0x80, /* Special ID for getting feature status */
+> +	TPMI_INFO_ID = 0x81, /* Special ID for PCI BDF and Package ID information */
+> +};
 
+While at it, could you align the comments to start at the same column so 
+it would slightly less messy to read.
+
+Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+
+-- 
+ i.
+
+--8323329-904996486-1701345664=:1808--
