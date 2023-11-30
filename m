@@ -2,74 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58E4F7FFD73
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 22:25:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9761A7FFD77
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 22:25:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376869AbjK3VY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 16:24:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35448 "EHLO
+        id S1376888AbjK3VZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 16:25:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376849AbjK3VY5 (ORCPT
+        with ESMTP id S1376849AbjK3VZ3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 16:24:57 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 073BE133
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 13:25:04 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-54af1daf6a9so2241028a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 13:25:03 -0800 (PST)
+        Thu, 30 Nov 2023 16:25:29 -0500
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2DCB10FA
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 13:25:34 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1d048d38881so5068505ad.2
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 13:25:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kali.org; s=google; t=1701379502; x=1701984302; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/8c4Eu/Dubr5HSF4fDhNSD3Be+bs9dIetpJRDNp7v/M=;
-        b=AZXKaZglrga8zJSFfonIzWWCD8rBCBLroR7NAUEwCCey2gOBjhJlv1Zppywp8uWrEx
-         Ac2JxQ6SiMbT5igfh8/EyvPwoKZ8WK8DfFCbFf+foXp0D75W2ZftdWdZBsk2wLngef30
-         mZ/tEyLdt8lNdXgTIPG781oAyyF9VEOLH9T0MvuaNYA3sUJyfMo9HQ3xdjC3lJwQEd35
-         M5XvYOTG46VwCX1sJTB9Ir3DDGw4ifjEs3PvVGigbLqZp1Y0cOBJ3ZSOthgROZ7Mfgxj
-         8+8TAykkqkfkOHfPK1ld47rLhmb529L9FslMLElS3cZyHaozSDIaPU6zPUHhuYXJi3PD
-         UHmg==
+        d=chromium.org; s=google; t=1701379534; x=1701984334; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=a85qT15pDzdpel5gAuB/Pf8iqGvsBNG0rw6z7GTZ+18=;
+        b=kTJ5AfD1oyJZ5xgrDlZ1wWqUF4X2MHy59XeBZO1G+MQvTgxp690SglGE2GDstdGNxg
+         adSryWlfdXZXmcA+Xq4n6e72AH60lYqYhvQ9M2Yrk0L/l+j5hLVRCooCVPsv2Haepeix
+         HcwReOShiQW2KJEaYHs7ojwRUXVahzvGbIRz4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701379502; x=1701984302;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/8c4Eu/Dubr5HSF4fDhNSD3Be+bs9dIetpJRDNp7v/M=;
-        b=Hggao8DzICunMPc3KZY9IK+dLT8bl0tf07BVNsYHIkhfngz9mDz+SgiA2B2YTolmxR
-         R8CyxGWhpmlTNrVBYiuZwFibrsSko4LD3XaLoG7BdzyGCOgcwLA10NxdYkLeVhDGnv+k
-         XXsZr0AwBgs7OBd432mj6Dxn6WgXjunS4gV0s4Df/HU8F50/olnZxAadrv7JQSc4bFRw
-         7943EOgpxyHogsV7O28M/wMLQNSTbWWlQnhNwsdc8qW1zzJA2E0vHTE0G+RXWihxVDkg
-         HPz/JThSNjOH3DwmPC/5Chp8wiR2jJjW5ipzUsrj8NMVVJhd9da3sojrSlZ7U3vbP4e0
-         nrQQ==
-X-Gm-Message-State: AOJu0Yy9yPWxfTm2KxWjhfi1f4Do+HixXme7bTtVRGrTZUxf4gv2qxRx
-        NowixfDpHd6V/MMXCTCE+JalPua9cDlNmpHY6M83Lw==
-X-Google-Smtp-Source: AGHT+IG0ta2XtylneHDppsL8gcmXtn/Q/+7/EPbWdZikXUYS2NOvcQ4OqXc4VNcjnztwP5GcK+tdQYNKGciNXohB/fY=
-X-Received: by 2002:a50:aa9b:0:b0:545:3b25:d142 with SMTP id
- q27-20020a50aa9b000000b005453b25d142mr198098edc.15.1701379502435; Thu, 30 Nov
- 2023 13:25:02 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701379534; x=1701984334;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=a85qT15pDzdpel5gAuB/Pf8iqGvsBNG0rw6z7GTZ+18=;
+        b=D9PDbQOJUpqMceQFm/Y8TYDOAEXvfMNll7xVnHRluvRQMNi7thZCA8ZuDAZW9+k5q2
+         xRYkDamZ0Q9wvdM9PU4eGnhjgPthoHOVtb9jBzQju0JUg1ocnun04ENdqPsezUSHf43r
+         yFNta8MPzWqVuca/Iu82+ByMbzJkQvxB0KVopSprM+xbqkZlrqQwq88lGbVT4yETKLOs
+         7BPDKSvrD4BINmxfu5ct486kMaxC3DEY6objlsWycVePlo4/7jR/wNh0mMPYb3SvnG+s
+         2tGMl/v8zIJS6tNF4w+P8fJCpBVS0c8LlgzBoiXBihqxkPgy/x66/PxRhxYTc0AFjhxT
+         QSqw==
+X-Gm-Message-State: AOJu0YxkwGlfzbW4Rd0Ge/U0lUkShWLDHxteXmCNJnNaxunk/jmEayj4
+        ZvFzgkZRZAfUohtAqSaqdQwxuw==
+X-Google-Smtp-Source: AGHT+IGiYA7iwc3ReI+OQGlKYslymufSwvsJah4H2gMq04CzpdkKFgR/kZAc5Za9Ltu7ai3/MUS0Yw==
+X-Received: by 2002:a17:902:e88b:b0:1cf:d404:5e7c with SMTP id w11-20020a170902e88b00b001cfd4045e7cmr18459112plg.42.1701379534271;
+        Thu, 30 Nov 2023 13:25:34 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id ja17-20020a170902efd100b001cf7c07be50sm1869304plb.58.2023.11.30.13.25.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Nov 2023 13:25:33 -0800 (PST)
+Date:   Thu, 30 Nov 2023 13:25:33 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     Michael Cyr <mikecyr@linux.ibm.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] scsi: ibmvscsi_tgt: replace deprecated strncpy with
+ strscpy
+Message-ID: <202311301315.BAB096926@keescook>
+References: <20231030-strncpy-drivers-scsi-ibmvscsi_tgt-ibmvscsi_tgt-c-v1-1-859b5ce257fd@google.com>
 MIME-Version: 1.0
-References: <20231130192119.32538-1-robdclark@gmail.com>
-In-Reply-To: <20231130192119.32538-1-robdclark@gmail.com>
-From:   Steev Klimaszewski <steev@kali.org>
-Date:   Thu, 30 Nov 2023 15:24:51 -0600
-Message-ID: <CAKXuJqgrKLw7rFdJcgueR4=tUdpP52i0P8pJoins6-9z6=sxfQ@mail.gmail.com>
-Subject: Re: [PATCH] drm/msm/dpu: Correct UBWC settings for sc8280xp
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, Rob Clark <robdclark@chromium.org>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Danylo Piliaiev <dpiliaiev@igalia.com>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231030-strncpy-drivers-scsi-ibmvscsi_tgt-ibmvscsi_tgt-c-v1-1-859b5ce257fd@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,38 +72,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 30, 2023 at 1:21=E2=80=AFPM Rob Clark <robdclark@gmail.com> wro=
-te:
->
-> From: Rob Clark <robdclark@chromium.org>
->
-> The UBWC settings need to match between the display and GPU.  When we
-> updated the GPU settings, we forgot to make the corresponding update on
-> the display side.
->
-> Reported-by: Steev Klimaszewski <steev@kali.org>
-> Fixes: 07e6de738aa6 ("drm/msm/a690: Fix reg values for a690")
-> Signed-off-by: Rob Clark <robdclark@chromium.org>
+On Mon, Oct 30, 2023 at 09:43:20PM +0000, Justin Stitt wrote:
+> strncpy() is deprecated for use on NUL-terminated destination strings
+> [1] and as such we should prefer more robust and less ambiguous string
+> interfaces.
+> 
+> We don't need the NUL-padding behavior that strncpy() provides as vscsi
+> is NUL-allocated in ibmvscsis_probe() which proceeds to call
+> ibmvscsis_adapter_info():
+> |       vscsi = kzalloc(sizeof(*vscsi), GFP_KERNEL);
+> 
+> ibmvscsis_probe() -> ibmvscsis_handle_crq() -> ibmvscsis_parse_command()
+> -> ibmvscsis_mad() -> ibmvscsis_process_mad() -> ibmvscsis_adapter_info()
+> 
+> Following the same idea, `partition_name` is defiend as:
+> |       static char partition_name[PARTITION_NAMELEN] = "UNKNOWN";
+> 
+> ... which is NUL-padded already, meaning strscpy() is the best option.
+> 
+> Considering the above, a suitable replacement is `strscpy` [2] due to
+> the fact that it guarantees NUL-termination on the destination buffer
+> without unnecessarily NUL-padding.
+
+My only worry here is that I don't see if %NUL termination is _required_
+for these variables. (i.e. do we run the risk of truncating these by 1
+byte if they're right at the limit?) Are they __nonstring?
+
+I *think* they're %NUL terminated since they follow the same sizing as
+the global "partition_name", but I'm not sure.
+
+Can any of the SCSI authors comment on this?
+
+> 
+> However, for cap->name let's use strscpy_pad as cap is allocated via
+> dma_alloc_coherent():
+> |       cap = dma_alloc_coherent(&vscsi->dma_dev->dev, olen, &token,
+> |                                GFP_ATOMIC);
+
+This is also true for the "info" allocation (it comes out of DMA).
+
+> 
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
 > ---
->  drivers/gpu/drm/msm/msm_mdss.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/msm/msm_mdss.c b/drivers/gpu/drm/msm/msm_mds=
-s.c
-> index 6865db1e3ce8..29bb38f0bb2c 100644
-> --- a/drivers/gpu/drm/msm/msm_mdss.c
-> +++ b/drivers/gpu/drm/msm/msm_mdss.c
-> @@ -545,7 +545,7 @@ static const struct msm_mdss_data sc8280xp_data =3D {
->         .ubwc_dec_version =3D UBWC_4_0,
->         .ubwc_swizzle =3D 6,
->         .ubwc_static =3D 1,
-> -       .highest_bank_bit =3D 2,
-> +       .highest_bank_bit =3D 3,
->         .macrotile_mode =3D 1,
->  };
->
-> --
-> 2.42.0
->
-Tested on Lenovo Thinkpad X13s
-Tested-by: Steev Klimaszewski <steev@kali.org>
+> Note: build-tested only.
+> 
+> Found with: $ rg "strncpy\("
+> ---
+>  drivers/scsi/ibmvscsi_tgt/ibmvscsi_tgt.c | 14 +++++++-------
+>  1 file changed, 7 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/scsi/ibmvscsi_tgt/ibmvscsi_tgt.c b/drivers/scsi/ibmvscsi_tgt/ibmvscsi_tgt.c
+> index 385f812b8793..cd223ef696e5 100644
+> --- a/drivers/scsi/ibmvscsi_tgt/ibmvscsi_tgt.c
+> +++ b/drivers/scsi/ibmvscsi_tgt/ibmvscsi_tgt.c
+> @@ -1551,17 +1551,17 @@ static long ibmvscsis_adapter_info(struct scsi_info *vscsi,
+>  	if (vscsi->client_data.partition_number == 0)
+>  		vscsi->client_data.partition_number =
+>  			be32_to_cpu(info->partition_number);
+> -	strncpy(vscsi->client_data.srp_version, info->srp_version,
+> +	strscpy(vscsi->client_data.srp_version, info->srp_version,
+>  		sizeof(vscsi->client_data.srp_version));
+> -	strncpy(vscsi->client_data.partition_name, info->partition_name,
+> +	strscpy(vscsi->client_data.partition_name, info->partition_name,
+>  		sizeof(vscsi->client_data.partition_name));
+>  	vscsi->client_data.mad_version = be32_to_cpu(info->mad_version);
+>  	vscsi->client_data.os_type = be32_to_cpu(info->os_type);
+>  
+>  	/* Copy our info */
+> -	strncpy(info->srp_version, SRP_VERSION,
+> +	strscpy(info->srp_version, SRP_VERSION,
+>  		sizeof(info->srp_version));
+> -	strncpy(info->partition_name, vscsi->dds.partition_name,
+> +	strscpy(info->partition_name, vscsi->dds.partition_name,
+>  		sizeof(info->partition_name));
+
+Since "info" is from DMA, let's use the _pad variant here just to be
+safe.
+
+>  	info->partition_number = cpu_to_be32(vscsi->dds.partition_num);
+>  	info->mad_version = cpu_to_be32(MAD_VERSION_1);
+> @@ -1645,8 +1645,8 @@ static int ibmvscsis_cap_mad(struct scsi_info *vscsi, struct iu_entry *iue)
+>  			 be64_to_cpu(mad->buffer),
+>  			 vscsi->dds.window[LOCAL].liobn, token);
+>  	if (rc == H_SUCCESS) {
+> -		strncpy(cap->name, dev_name(&vscsi->dma_dev->dev),
+> -			SRP_MAX_LOC_LEN);
+> +		strscpy_pad(cap->name, dev_name(&vscsi->dma_dev->dev),
+> +			sizeof(cap->name));
+
+And this is a safe conversion to sizeof():
+
+struct capabilities {
+	...
+        char name[SRP_MAX_LOC_LEN];
+
+
+If we can convince ourselves that non of these are __nonstring types,
+then I think with the "info" change above, this should be good.
+
+-Kees
+
+-- 
+Kees Cook
