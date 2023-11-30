@@ -2,213 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 860257FF02D
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 14:31:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01ADD7FF02A
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 14:31:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345586AbjK3NbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 08:31:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37888 "EHLO
+        id S1345583AbjK3Na5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 08:30:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345590AbjK3Nay (ORCPT
+        with ESMTP id S1345610AbjK3Nax (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 08:30:54 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 950DA10D9
+        Thu, 30 Nov 2023 08:30:53 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31C8610F0
         for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 05:31:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701351059;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HkeH8z5wAG0EZn77C+wHu/pOq81k/PDtDdYozZlz3ds=;
-        b=K32Olviwlw13pAILX8VlZWo+9Dr3VhgR6k/LWjh1KE/6/Dxt/y9KJ0QdHCusVk+cJJDfzo
-        s7tTAiK0yKehJhXvdL384ktYYPE4r5RRvbkDTkdsRqDj4wZXb4t+RWB5FuSkHuZONOIdwS
-        WFCGYHNOSXTXWpauuYejW4EECNkVHlc=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-458-4s1j9gqwNdO1jQV8sEsyuw-1; Thu, 30 Nov 2023 08:30:55 -0500
-X-MC-Unique: 4s1j9gqwNdO1jQV8sEsyuw-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-40b2a386e8dso8142575e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 05:30:55 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701351054; x=1701955854;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HkeH8z5wAG0EZn77C+wHu/pOq81k/PDtDdYozZlz3ds=;
-        b=CfY5anjJBp3jvOwJKFiTezBu9gDtSXq3ngfGEM8yKNizbnXDaqmPRU2TL33uInGyXT
-         YRu52x7bFRscZ66x7HvpnUWFqB2pPUEzFLXBFTVrYsIFD1VHcaaJ0BPIbFMKZHlCjusk
-         u4uQsQUey5eRjY00AWd9ZuzD92XY2gQLzGu1zWP/H957IukHGHcOR0BmMI2FTgEvPa/S
-         YL1lEPk1j56IF8moikpX57y+/fzg8sq5pq4GMwmYcnLUbCjxT82ZNMjB8Ngh7JuFOpjf
-         GYBAZslQsk/CFBvXYQFG57CNKRpRj+y4kb1RdtS72Bi/ztKXCob7w181lPekfFJEYpaM
-         5fhA==
-X-Gm-Message-State: AOJu0YwApDXDq0rwceakP3wr5OJ3VfO/XtG4PXQTmSGPuL7PwTEIhf0j
-        z9HrZ3ymUj3mV8KgjjYGJWkO1b/VsLzUbCtUiG4PfJ3xGSLFEv3mTbjUDiveW4Znkazmpp6TVMr
-        5usHRi0NUSP3wRx4X97tINgLP
-X-Received: by 2002:a05:600c:1ca8:b0:408:3707:b199 with SMTP id k40-20020a05600c1ca800b004083707b199mr13614652wms.3.1701351054631;
-        Thu, 30 Nov 2023 05:30:54 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGjpHM1+iZPRdl+e1FulWgEAYU2ZCw+mTBg3DwI47X+uCk0eqgQ6CIDEJNG/sHqcFb+FSGf9w==
-X-Received: by 2002:a05:600c:1ca8:b0:408:3707:b199 with SMTP id k40-20020a05600c1ca800b004083707b199mr13614632wms.3.1701351054328;
-        Thu, 30 Nov 2023 05:30:54 -0800 (PST)
-Received: from sgarzare-redhat (host-79-46-200-199.retail.telecomitalia.it. [79.46.200.199])
-        by smtp.gmail.com with ESMTPSA id d4-20020a05600c3ac400b0040b538047b4sm5528249wms.3.2023.11.30.05.30.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Nov 2023 05:30:53 -0800 (PST)
-Date:   Thu, 30 Nov 2023 14:30:48 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseniy Krasnov <avkrasnov@salutedevices.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Bobby Eshleman <bobby.eshleman@bytedance.com>,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@sberdevices.ru, oxffffaa@gmail.com
-Subject: Re: [PATCH net-next v5 2/3] virtio/vsock: send credit update during
- setting SO_RCVLOWAT
-Message-ID: <u4vwlyg3v4lpz72hnovpkifr3jduen7kwnjn5gvgm3wvfthgpd@6ftqoqjxdim6>
-References: <20231130130840.253733-1-avkrasnov@salutedevices.com>
- <20231130130840.253733-3-avkrasnov@salutedevices.com>
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69D8AC433C7;
+        Thu, 30 Nov 2023 13:30:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701351059;
+        bh=GGplx6KpuPLw09bMktqftv7giakn9VmpBAD9cWeP0fc=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=jtW0lJYRSL7dznQ7fezXH+buD8jYnkyUoT+HbKbWKbxCAi3sst+qXhzIVNiL6c7Uz
+         lvZJyolOYkJz35OkUIAzCVzb+nCibFIrfj2qpe8l1oKuF6ruc+GGttu89pSFf/I0xo
+         873vChbi5Uqk3YqnGmk3U6S4/0OCgexyUbV7JstzO8o5MxJbeTBFksjnP7hCQL+LMY
+         a18ka/HuHx1xp6MAKwZPzTOJFOQwRE9eFA9pfX0yRIAt9fdOlrI4DwQFuSyq19Hsc5
+         oLulGoS2LS3QzpMc+0/3ao8X1THpu5N3FpwUZgcthjb+NgNU6yH82WaGEHj5b9+fmq
+         XuWTLEuS2gSVA==
+Message-ID: <292f5d48-8567-4b60-ad03-6cf70f71bacc@kernel.org>
+Date:   Thu, 30 Nov 2023 15:30:54 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20231130130840.253733-3-avkrasnov@salutedevices.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] USB: typec: tps6598x: use device 'type' field to identify
+ devices
+Content-Language: en-US
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     Alexandru Ardelean <alex@shruggie.ro>,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        gregkh@linuxfoundation.org, christophe.jaillet@wanadoo.fr,
+        a-govindraju@ti.com, trix@redhat.com, abdelalkuor@geotab.com,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+References: <20231123210021.463122-1-alex@shruggie.ro>
+ <ZWdKI9UOZ6INP0Tu@kuha.fi.intel.com>
+ <47ffbb30-34a7-4f5b-b262-3e068e574c8a@kernel.org>
+ <ZWhp9M8165DiTNTd@kuha.fi.intel.com>
+From:   Roger Quadros <rogerq@kernel.org>
+In-Reply-To: <ZWhp9M8165DiTNTd@kuha.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 30, 2023 at 04:08:39PM +0300, Arseniy Krasnov wrote:
->Send credit update message when SO_RCVLOWAT is updated and it is bigger
->than number of bytes in rx queue. It is needed, because 'poll()' will
->wait until number of bytes in rx queue will be not smaller than
->SO_RCVLOWAT, so kick sender to send more data. Otherwise mutual hungup
->for tx/rx is possible: sender waits for free space and receiver is
->waiting data in 'poll()'.
->
->Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
->---
-> Changelog:
-> v1 -> v2:
->  * Update commit message by removing 'This patch adds XXX' manner.
->  * Do not initialize 'send_update' variable - set it directly during
->    first usage.
-> v3 -> v4:
->  * Fit comment in 'virtio_transport_notify_set_rcvlowat()' to 80 chars.
-> v4 -> v5:
->  * Do not change callbacks order in transport structures.
->
-> drivers/vhost/vsock.c                   |  1 +
-> include/linux/virtio_vsock.h            |  1 +
-> net/vmw_vsock/virtio_transport.c        |  1 +
-> net/vmw_vsock/virtio_transport_common.c | 27 +++++++++++++++++++++++++
-> net/vmw_vsock/vsock_loopback.c          |  1 +
-> 5 files changed, 31 insertions(+)
->
->diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
->index f75731396b7e..4146f80db8ac 100644
->--- a/drivers/vhost/vsock.c
->+++ b/drivers/vhost/vsock.c
->@@ -451,6 +451,7 @@ static struct virtio_transport vhost_transport = {
-> 		.notify_buffer_size       = virtio_transport_notify_buffer_size,
->
-> 		.read_skb = virtio_transport_read_skb,
->+		.notify_set_rcvlowat      = virtio_transport_notify_set_rcvlowat
+Hi Heikki,
 
-As we discussed in chat, better the order of the previous version, but
-leaving the line of `.read_skb` untouched (with the final comma).
+On 30/11/2023 12:54, Heikki Krogerus wrote:
+> Hi Roger,
+> 
+>>> Why not just match against the structures themselves?
+>>>
+>>>         if (tps->data == &tps25750_data)
+>>>                 ...
+>>
+>> Then you need to declare tps25750_data and friends at the top of the file?
+>>
+>> A better approach might be to have type agnostic quirk flags for the special
+>> behavior required for different types. This way, multiple devices can share
+>> the same quirk if needed.
+>>
+>> e.g.
+>> NEEDS_POWER_UP instead of TIPD_TYPE_APPLE_CD321X
+>> SKIP_VID_READ instead of TIPD_TYPE_TI_TPS25750X
+>> INIT_ON_RESUME instead of TIPD_TYPE_TI_TPS25750X
+>>
+>> Also rename cd321x_switch_power_state() to tps6598x_switch_power_state().
+> 
+> No. Functions like that isolate cd321x specific functionality into an
+> actual "function" just like they should.
+> 
+> Quirk flags mean that if something breaks, it will almost always break
+> for everybody (there is no real isolation with quirk flags), and when
+> things are fixed and when features are added, we are forced to always
+> "dance" around those quirk flags - you always have to consider them.
+> 
+> Platform/device type checks are just as bad IMO, but in one way they
+> are better than quirk flags. There is no question about what a
+> platform check is checking, but quirk flags can so easily become
+> incomprehensible (just what exactly does it mean when you say
+> NEEDS_POWER_UP, SKIP_VID_READ and so on (you would need to document
+> those quirks, which is waste of effort, and in reality nobody will do).
+> 
+> In case of tipd/code.c, it should be converted into a library that
+> only has the common/shared functionality. CD321, TPS2579x, TPS6598x
+> and what ever there is, then will have a glue driver that handles
+> everything that specific for their controller type.
 
-With that fixed in all transports, feel free to add:
+Do you mean that you want to treat the 3 devices as different incompatible devices
+so each one has a separate driver which warrants for a different DT binding
+for each and also Kconfig symbol?
 
-Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+> 
+> Before this driver is reorganised like that (any volunteers?), we'll
+> have the PD controller type checks, but quirk flags we will not have.
+> 
+> In general, you should only use quirk flags if there is no other
+> way to move forward - they are the last resort. They are dangerous,
+> and even in the best case they reduce the maintenability of the code.
+> 
+> thanks,
+> 
 
-> 	},
->
-> 	.send_pkt = vhost_transport_send_pkt,
->diff --git a/include/linux/virtio_vsock.h b/include/linux/virtio_vsock.h
->index ebb3ce63d64d..c82089dee0c8 100644
->--- a/include/linux/virtio_vsock.h
->+++ b/include/linux/virtio_vsock.h
->@@ -256,4 +256,5 @@ void virtio_transport_put_credit(struct virtio_vsock_sock *vvs, u32 credit);
-> void virtio_transport_deliver_tap_pkt(struct sk_buff *skb);
-> int virtio_transport_purge_skbs(void *vsk, struct sk_buff_head *list);
-> int virtio_transport_read_skb(struct vsock_sock *vsk, skb_read_actor_t read_actor);
->+int virtio_transport_notify_set_rcvlowat(struct vsock_sock *vsk, int val);
-> #endif /* _LINUX_VIRTIO_VSOCK_H */
->diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
->index af5bab1acee1..8007593a3a93 100644
->--- a/net/vmw_vsock/virtio_transport.c
->+++ b/net/vmw_vsock/virtio_transport.c
->@@ -539,6 +539,7 @@ static struct virtio_transport virtio_transport = {
-> 		.notify_buffer_size       = virtio_transport_notify_buffer_size,
->
-> 		.read_skb = virtio_transport_read_skb,
->+		.notify_set_rcvlowat      = virtio_transport_notify_set_rcvlowat
-> 	},
->
-> 	.send_pkt = virtio_transport_send_pkt,
->diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
->index f6dc896bf44c..1cb556ad4597 100644
->--- a/net/vmw_vsock/virtio_transport_common.c
->+++ b/net/vmw_vsock/virtio_transport_common.c
->@@ -1684,6 +1684,33 @@ int virtio_transport_read_skb(struct vsock_sock *vsk, skb_read_actor_t recv_acto
-> }
-> EXPORT_SYMBOL_GPL(virtio_transport_read_skb);
->
->+int virtio_transport_notify_set_rcvlowat(struct vsock_sock *vsk, int val)
->+{
->+	struct virtio_vsock_sock *vvs = vsk->trans;
->+	bool send_update;
->+
->+	spin_lock_bh(&vvs->rx_lock);
->+
->+	/* If number of available bytes is less than new SO_RCVLOWAT value,
->+	 * kick sender to send more data, because sender may sleep in its
->+	 * 'send()' syscall waiting for enough space at our side.
->+	 */
->+	send_update = vvs->rx_bytes < val;
->+
->+	spin_unlock_bh(&vvs->rx_lock);
->+
->+	if (send_update) {
->+		int err;
->+
->+		err = virtio_transport_send_credit_update(vsk);
->+		if (err < 0)
->+			return err;
->+	}
->+
->+	return 0;
->+}
->+EXPORT_SYMBOL_GPL(virtio_transport_notify_set_rcvlowat);
->+
-> MODULE_LICENSE("GPL v2");
-> MODULE_AUTHOR("Asias He");
-> MODULE_DESCRIPTION("common code for virtio vsock");
->diff --git a/net/vmw_vsock/vsock_loopback.c b/net/vmw_vsock/vsock_loopback.c
->index 048640167411..9f4b814fbbc7 100644
->--- a/net/vmw_vsock/vsock_loopback.c
->+++ b/net/vmw_vsock/vsock_loopback.c
->@@ -98,6 +98,7 @@ static struct virtio_transport loopback_transport = {
-> 		.notify_buffer_size       = virtio_transport_notify_buffer_size,
->
-> 		.read_skb = virtio_transport_read_skb,
->+		.notify_set_rcvlowat      = virtio_transport_notify_set_rcvlowat
-> 	},
->
-> 	.send_pkt = vsock_loopback_send_pkt,
->-- 
->2.25.1
->
-
+-- 
+cheers,
+-roger
