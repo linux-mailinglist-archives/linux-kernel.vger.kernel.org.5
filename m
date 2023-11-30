@@ -2,113 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B6067FF031
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 14:32:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 644387FF034
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 14:33:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345556AbjK3NcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 08:32:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53128 "EHLO
+        id S1345565AbjK3NdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 08:33:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232100AbjK3NcS (ORCPT
+        with ESMTP id S232100AbjK3NdC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 08:32:18 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8537BD48;
-        Thu, 30 Nov 2023 05:32:24 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CA30DC15;
-        Thu, 30 Nov 2023 05:33:10 -0800 (PST)
-Received: from raptor (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 415D63F5A1;
-        Thu, 30 Nov 2023 05:32:19 -0800 (PST)
-Date:   Thu, 30 Nov 2023 13:32:16 +0000
-From:   Alexandru Elisei <alexandru.elisei@arm.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Hyesoo Yu <hyesoo.yu@samsung.com>, catalin.marinas@arm.com,
-        will@kernel.org, oliver.upton@linux.dev, maz@kernel.org,
-        james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com,
-        arnd@arndb.de, akpm@linux-foundation.org, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, mhiramat@kernel.org,
-        rppt@kernel.org, hughd@google.com, pcc@google.com,
-        steven.price@arm.com, anshuman.khandual@arm.com,
-        vincenzo.frascino@arm.com, eugenis@google.com, kcc@google.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC v2 19/27] mm: mprotect: Introduce
- PAGE_FAULT_ON_ACCESS for mprotect(PROT_MTE)
-Message-ID: <ZWiO4PWfK2gKDLGr@raptor>
-References: <20231119165721.9849-1-alexandru.elisei@arm.com>
- <CGME20231119165921epcas2p3dce0532847d59a9c3973b4e41102e27d@epcas2p3.samsung.com>
- <20231119165721.9849-20-alexandru.elisei@arm.com>
- <20231129092725.GD2988384@tiffany>
- <ZWh6vl8DfXQbKo9O@raptor>
- <4e7a4054-092c-4e34-ae00-0105d7c9343c@redhat.com>
+        Thu, 30 Nov 2023 08:33:02 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CB8ED6C;
+        Thu, 30 Nov 2023 05:33:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701351189; x=1732887189;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=Y9xAE4jnRRyfj1G4wW1Lotwm4gpNjAn2zAYETZeXOaw=;
+  b=i10DJW9TSl22/CNbIINoSGvsnU1vKerow5s1ScjGckrYdV2tx7CrJXUS
+   +1JEpa7xToNyIhRRMCvM0kYmzhYcN5c1Ax2hEcLx6ew49vDgglb7G+g2z
+   D1QFEE7V1L8B0vNaOmlHB5K36n9PamfSvAmqmtYTKoCpYFMK6EVfiRgVx
+   PQpx7+MyqbFcnXU7shVZhatDfOu+CQOKKbkMx6DaPG8tWVHrvrlRfWJf0
+   YR8NEvytO/5m/6kU58oizP5hQiYf4avDDINGBRbOTNsdnpdkwzmQA3ILZ
+   sPkv8MNjDdxSC/RWoDWB6unuG+CgO2UA6QQEDp6RTnHHMNWOEwBOeW+Y+
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="424472104"
+X-IronPort-AV: E=Sophos;i="6.04,239,1695711600"; 
+   d="scan'208";a="424472104"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 05:33:09 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="769309024"
+X-IronPort-AV: E=Sophos;i="6.04,239,1695711600"; 
+   d="scan'208";a="769309024"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga002.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 05:33:06 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1r8hA7-00000000hwz-003K;
+        Thu, 30 Nov 2023 15:33:03 +0200
+Date:   Thu, 30 Nov 2023 15:33:02 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Petre Rodan <petre.rodan@subdimension.ro>
+Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Angel Iglesias <ang.iglesiasg@gmail.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>,
+        Andreas Klinger <ak@it-klinger.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Subject: Re: [PATCH v6 2/2] iio: pressure: driver for Honeywell HSC/SSC series
+Message-ID: <ZWiPDlNJCbUAtIy8@smile.fi.intel.com>
+References: <20231129170425.3562-1-petre.rodan@subdimension.ro>
+ <20231129170425.3562-2-petre.rodan@subdimension.ro>
+ <ZWdzz7VzCW5ctend@smile.fi.intel.com>
+ <ZWeNNMfqKquDYI9X@sunspire>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <4e7a4054-092c-4e34-ae00-0105d7c9343c@redhat.com>
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZWeNNMfqKquDYI9X@sunspire>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, Nov 29, 2023 at 09:12:52PM +0200, Petre Rodan wrote:
+> On Wed, Nov 29, 2023 at 07:24:31PM +0200, Andy Shevchenko wrote:
+> > On Wed, Nov 29, 2023 at 07:04:12PM +0200, Petre Rodan wrote:
 
-On Thu, Nov 30, 2023 at 01:49:34PM +0100, David Hildenbrand wrote:
-> > > > +
-> > > > +out_retry:
-> > > > +	put_page(page);
-> > > > +	if (vmf->flags & FAULT_FLAG_VMA_LOCK)
-> > > > +		vma_end_read(vma);
-> > > > +	if (fault_flag_allow_retry_first(vmf->flags)) {
-> > > > +		err = VM_FAULT_RETRY;
-> > > > +	} else {
-> > > > +		/* Replay the fault. */
-> > > > +		err = 0;
-> > > 
-> > > Hello!
-> > > 
-> > > Unfortunately, if the page continues to be pinned, it seems like fault will continue to occur.
-> > > I guess it makes system stability issue. (but I'm not familiar with that, so please let me know if I'm mistaken!)
-> > > 
-> > > How about migrating the page when migration problem repeats.
+...
+
+> > > v6: modifications based on Andy's review
+> > >     - use str_has_prefix(), match_string() instead of strncmp()
 > > 
-> > Yes, I had the same though in the previous iteration of the series, the
-> > page was migrated out of the VMA if tag storage couldn't be reserved.
+> > And why not using the respective property API for that case where
+> > match_string() is used?
+> 
+> I'm lost again.
+> 
+> 437:  ret = device_property_read_string(dev, "honeywell,pressure-triplet",
+> 					&triplet);
+> [..]
+> 455:	ret = match_string(hsc_triplet_variants, HSC_VARIANTS_MAX,
+> 						triplet);
+> 		if (ret < 0)
+> 			return dev_err_probe(dev, -EINVAL,
+> 				"honeywell,pressure-triplet is invalid\n");
+> 
+> 		hsc->pmin = hsc_range_config[ret].pmin;
+> 		hsc->pmax = hsc_range_config[ret].pmax;
+> 
+> triplet is got via device_property_read_string(), is there some other property
+> function I should be using?
+
+I think I mentioned that API, but for your convenience
+device_property_match_property_string().
+
+...
+
+> > > +	tmp = div_s64(((s64)(hsc->pmax - hsc->pmin)) * MICRO,
+> > > +		      hsc->outmax - hsc->outmin);
+> > > +	hsc->p_scale = div_s64_rem(tmp, NANO, &hsc->p_scale_dec);
+> > > +	tmp = div_s64(((s64)hsc->pmin * (s64)(hsc->outmax - hsc->outmin)) *
+> > > +		      MICRO, hsc->pmax - hsc->pmin);
 > > 
-> > Only short term pins are allowed on MIGRATE_CMA pages, so I expect that the
-> > pin will be released before the fault is replayed. Because of this, and
-> > because it makes the code simpler, I chose not to migrate the page if tag
-> > storage couldn't be reserved.
+> > Why not put MICRO on the previous line?
 > 
-> There are still some cases that are theoretically problematic: vmsplice()
-> can pin pages forever and doesn't use FOLL_LONGTERM yet.
+> oh well, from the review I understood you were asking for the replacement of
+> NANO with MICRO on the previous instruction and it did not make much sense (
+> units are in pascal and we need a kilopascal output to userland)
 > 
-> All these things also affect other users that rely on movability (e.g., CMA,
-> memory hotunplug).
+> now I understood it's an indentation request. however moving MICRO will cross
+> the 80 column rule. but if there will be yet another modification request
+> I'll move it.
 
-I wasn't aware of that, thank you for the information. Then to ensure that the
-process doesn't hang by replying the loop indefinitely, I'll migrate the page if
-tag storage cannot be reserved. Looking over the code again, I think I can reuse
-the same function that migrates tag storage pages out of the MTE VMA (added in
-patch #21), so no major changes needed.
+I understand that it breaks the 80 character rule, but my point is to have
+consistency between two divisions (see quoted context) along with the logical
+split — line split on argument list split.
 
-Thanks,
-Alex
+-- 
+With Best Regards,
+Andy Shevchenko
 
-> 
-> -- 
-> Cheers,
-> 
-> David / dhildenb
-> 
-> 
+
