@@ -2,89 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F2A57FE90E
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 07:18:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89F9D7FE916
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 07:21:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344615AbjK3GP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 01:15:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41764 "EHLO
+        id S1344602AbjK3GVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 01:21:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344602AbjK3GPZ (ORCPT
+        with ESMTP id S229596AbjK3GVh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 01:15:25 -0500
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5F9D10D4;
-        Wed, 29 Nov 2023 22:15:29 -0800 (PST)
-X-UUID: d7ccbaac8f4711eea33bb35ae8d461a2-20231130
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Type:Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=3M6A7k0XflTWsvj8siywxp0LXUsD7WlkZyI0hPYHAkc=;
-        b=nbFP7pX6th76uHZq9Sx10dn8P5lQi4qn5A5kGTTkxTWV7GkQ7NAyzwPZirj7dw/ryHJj+LTa3iXD8/9AP+cfdJFSfgbCwwFMQ48RibHY5Cnn/QcJMs2OOdMchZ6Ik7Tab9xiWfpnysVJxGDq/lu2hrvy355NHnXc4GBpf6ZrWI0=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.34,REQID:bde9ee02-2a03-4355-a186-443d26b88c1d,IP:0,U
-        RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-        N:release,TS:-25
-X-CID-META: VersionHash:abefa75,CLOUDID:22c63d73-1bd3-4f48-b671-ada88705968c,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
-        DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: d7ccbaac8f4711eea33bb35ae8d461a2-20231130
-Received: from mtkmbs13n1.mediatek.inc [(172.21.101.193)] by mailgw01.mediatek.com
-        (envelope-from <axe.yang@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 57539612; Thu, 30 Nov 2023 14:15:22 +0800
-Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Thu, 30 Nov 2023 14:15:20 +0800
-Received: from mhfsdcap04.gcn.mediatek.inc (10.17.3.154) by
- mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Thu, 30 Nov 2023 14:15:19 +0800
-From:   Axe Yang <axe.yang@mediatek.com>
-To:     Chaotian Jing <chaotian.jing@mediatek.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        "Wenbin Mei" <wenbin.mei@mediatek.com>
-CC:     <linux-mmc@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        Axe Yang <axe.yang@mediatek.com>
-Subject: [PATCH v3 2/2] mmc: mediatek: extend number of tuning steps
-Date:   Thu, 30 Nov 2023 14:15:13 +0800
-Message-ID: <20231130061513.1296-3-axe.yang@mediatek.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231130061513.1296-1-axe.yang@mediatek.com>
-References: <20231130061513.1296-1-axe.yang@mediatek.com>
+        Thu, 30 Nov 2023 01:21:37 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8E89510C6;
+        Wed, 29 Nov 2023 22:21:42 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 972201042;
+        Wed, 29 Nov 2023 22:22:28 -0800 (PST)
+Received: from [10.162.41.8] (a077893.blr.arm.com [10.162.41.8])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6D6423F5A1;
+        Wed, 29 Nov 2023 22:21:38 -0800 (PST)
+Message-ID: <62245c89-2881-411f-9685-a3df022921bc@arm.com>
+Date:   Thu, 30 Nov 2023 11:51:35 +0530
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10--8.977800-8.000000
-X-TMASE-MatchedRID: UNsncxXyULd80yFIYo0rRuGonqgs5zxBRjqOkKPmpa4UlWIKEoGBmc+/
-        a0S0vHt4WZy+62a7b19rOAp0kI1DP9H/WqWljGhSSDkh6bW+bcckMBkEieOjZi8ggN9+4AxXDk6
-        /c+jKAHFIl95haju6JaPNT9pmq5xZMZPj25j8CtwD2WXLXdz+ASlayzmQ9QV0LXc81qaZoAZ6BY
-        sNJ37NLlzcgkMGmqXJbaWmopg96Z1F/TNFimjSuL50lYduDghOEVhvB8sXyyN39JELjK+oYGpHK
-        tkQBynKW3gtfnNC/JHwlIRl/0urFbGynpy6kEvAM71h0SMVl8InKdHifmIw3NEsTITobgNEEUbg
-        QYFHh3i5G69xLZU4ggJ+2GmvVjyvQF24kZp9Ww+eAiCmPx4NwJuJ+Pb8n/VxSnQ4MjwaO9cqtq5
-        d3cxkNUSsCaCt2sGttFxY0DNCfMtlaJ/OXY3Hj82QbiiYbJ67obVfa1MZ60c=
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--8.977800-8.000000
-X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP: 5F28E17A81402823103F41B22B32169FC7BCC3BE05F2A7CE481E6F1EF01D7FA42000:8
-X-MTK:  N
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 2/3] arm64: perf: Add support for event counting
+ threshold
+Content-Language: en-US
+To:     James Clark <james.clark@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, suzuki.poulose@arm.com,
+        will@kernel.org, mark.rutland@arm.com, namhyung@gmail.com
+References: <20231124102857.1106453-1-james.clark@arm.com>
+ <20231124102857.1106453-3-james.clark@arm.com>
+ <2988dbfe-1384-4b2f-9450-29212c835d6d@arm.com>
+ <4515569f-04f8-402f-612d-738184d8baed@arm.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+In-Reply-To: <4515569f-04f8-402f-612d-738184d8baed@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -92,421 +51,266 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Previously, during the MSDC calibration process, a full clock cycle
-actually not be covered, which in some cases didn't yield the best
-results and could cause CRC errors. This problem is particularly
-evident when MSDC is used as an SDIO host. In fact, MSDC support
-tuning up to a maximum of 64 steps, but by default, the step number
-is 32. By increase the tuning step, we are more likely to cover more
-parts of a clock cycle, and get better calibration result.
 
-To illustrate, when tuning 32 steps, if the obtained window has a hole
-near the middle, like this: 0xffc07ff (hex), then the selected delay
-will be the 6 (counting from right to left).
 
-(32 <- 1)
-1111 1111 1100 0000 0000 0111 11(1)1 1111
+On 11/27/23 15:54, James Clark wrote:
+> 
+> 
+> On 27/11/2023 05:32, Anshuman Khandual wrote:
+>>
+>>
+>> On 11/24/23 15:58, James Clark wrote:
+>>> FEAT_PMUv3_TH (Armv8.8) permits a PMU counter to increment only on
+>>> events whose count meets a specified threshold condition. For example if
+>>> PMEVTYPERn.TC (Threshold Control) is set to 0b101 (Greater than or
+>>> equal, count), and the threshold is set to 2, then the PMU counter will
+>>> now only increment by 1 when an event would have previously incremented
+>>> the PMU counter by 2 or more on a single processor cycle.
+>>>
+>>> Three new Perf event config fields, 'threshold', 'threshold_compare' and
+>>> 'threshold_count' have been added to control the feature.
+>>> threshold_compare maps to the upper two bits of PMEVTYPERn.TC and
+>>> threshold_count maps to the first bit of TC. These separate attributes
+>>> have been picked rather than enumerating all the possible combinations
+>>> of the TC field as in the Arm ARM. The attributes would be used on a
+>>> Perf command line like this:
+>>>
+>>>   $ perf stat -e stall_slot/threshold=2,threshold_compare=2/
+>>>
+>>> A new capability for reading out the maximum supported threshold value
+>>> has also been added:
+>>>
+>>>   $ cat /sys/bus/event_source/devices/armv8_pmuv3/caps/threshold_max
+>>>
+>>>   0x000000ff
+>>>
+>>> If a threshold higher than threshold_max is provided, then no error is
+>>> generated but the threshold is clamped to the max value. If
+>>> FEAT_PMUv3_TH isn't implemented or a 32 bit kernel is running, then
+>>> threshold_max reads zero, and neither the 'threshold' nor
+>>> 'threshold_control' parameters will be used.
+>>>
+>>> The threshold is per PMU counter, and there are potentially different
+>>> threshold_max values per PMU type on heterogeneous systems.
+>>>
+>>> Bits higher than 32 now need to be written into PMEVTYPER, so
+>>> armv8pmu_write_evtype() has to be updated to take an unsigned long value
+>>> rather than u32 which gives the correct behavior on both aarch32 and 64.
+>>>
+>>> Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+>>> Signed-off-by: James Clark <james.clark@arm.com>
+>>> ---
+>>>  drivers/perf/arm_pmuv3.c       | 84 +++++++++++++++++++++++++++++++++-
+>>>  include/linux/perf/arm_pmuv3.h |  1 +
+>>>  2 files changed, 84 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/perf/arm_pmuv3.c b/drivers/perf/arm_pmuv3.c
+>>> index 1d40d794f5e4..eb1ef84e1dbb 100644
+>>> --- a/drivers/perf/arm_pmuv3.c
+>>> +++ b/drivers/perf/arm_pmuv3.c
+>>> @@ -15,6 +15,7 @@
+>>>  #include <clocksource/arm_arch_timer.h>
+>>>  
+>>>  #include <linux/acpi.h>
+>>> +#include <linux/bitfield.h>
+>>>  #include <linux/clocksource.h>
+>>>  #include <linux/of.h>
+>>>  #include <linux/perf/arm_pmu.h>
+>>> @@ -294,9 +295,20 @@ static const struct attribute_group armv8_pmuv3_events_attr_group = {
+>>>  	.is_visible = armv8pmu_event_attr_is_visible,
+>>>  };
+>>>  
+>>> +#define THRESHOLD_LOW		2
+>>> +#define THRESHOLD_HIGH		13
+>>> +#define THRESHOLD_CNT		14
+>>> +#define THRESHOLD_CMP_LO	15
+>>> +#define THRESHOLD_CMP_HI	16
+>>> +
+>>>  PMU_FORMAT_ATTR(event, "config:0-15");
+>>>  PMU_FORMAT_ATTR(long, "config1:0");
+>>>  PMU_FORMAT_ATTR(rdpmc, "config1:1");
+>>> +PMU_FORMAT_ATTR(threshold, "config1:" __stringify(THRESHOLD_LOW) "-"
+>>> +				      __stringify(THRESHOLD_HIGH));
+>>> +PMU_FORMAT_ATTR(threshold_compare, "config1:" __stringify(THRESHOLD_CMP_LO) "-"
+>>> +					      __stringify(THRESHOLD_CMP_HI));
+>>> +PMU_FORMAT_ATTR(threshold_count, "config1:" __stringify(THRESHOLD_CNT));
+>>
+>> Small nit - could this be formatted better ? Is not that the column could go
+>> upto 100 without setting off checkpatch.pl warning these days ?
+> 
+> I think it looks perfectly readable to me, is there a specific
+> formatting rule that's been broken? And no, it can't be unindented
+> without exceeding the 100 char limit.
 
-However, if we tune 64 steps, the window obtained may look like this:
-0xfffffffffffc07ff. The final selected delay will be 44, which is
-safer as it is further away from the hole:
+Fair enough. There is nothing broken in here, otherwise checkpatch.pl
+would have warned. I was just wondering if the indentation could have
+been avoided. But as you mentioned, it cannot be without going beyond
+the 100 char limit.
 
-(64 <- 1)
-1111 ... (1)111 1111 1111 1111 1111 1100 0000 0000 0111 1111 1111
+> 
+>>
+>>>  
+>>>  static int sysctl_perf_user_access __read_mostly;
+>>>  
+>>> @@ -310,10 +322,33 @@ static inline bool armv8pmu_event_want_user_access(struct perf_event *event)
+>>>  	return event->attr.config1 & 0x2;
+>>>  }
+>>>  
+>>> +static inline u32 armv8pmu_event_threshold(struct perf_event_attr *attr)
+>>> +{
+>>> +	return FIELD_GET(GENMASK(THRESHOLD_HIGH, THRESHOLD_LOW), attr->config1);
+>>> +}
+>>> +
+>>> +static inline u8 armv8pmu_event_threshold_control(struct perf_event_attr *attr)
+>>> +{
+>>> +	u8 th_compare = FIELD_GET(GENMASK(THRESHOLD_CMP_HI, THRESHOLD_CMP_LO),
+>>> +				  attr->config1);
+>>
+>> Ditto
+>>
+> 
+> There's no rule saying that you can't indent _before_ 100 chars. Most of
+> the code in this file is indented at 80 chars, and consistency is
+> usually valued above other things.
 
-In this case, delay 6 selected through 32 steps tuning is obviously
-not optimal, and this delay is closer to the hole, using it would
-easily cause CRC problems.
+Fair enough.
 
-You will need to configure property "mediatek,tuning-step" in MSDC
-dts node to 64 to extend the steps.
+> 
+>>> +	u8 th_count = FIELD_GET(BIT(THRESHOLD_CNT), attr->config1);
+>>> +
+>>> +	/*
+>>> +	 * The count bit is always the bottom bit of the full control field, and
+>>> +	 * the comparison is the upper two bits, but it's not explicitly
+>>> +	 * labelled in the Arm ARM. For the Perf interface we split it into two
+>>> +	 * fields, so reconstruct it here.
+>>> +	 */
+>>> +	return (th_compare << 1) | th_count;
+>>> +}
+>>> +
+>>>  static struct attribute *armv8_pmuv3_format_attrs[] = {
+>>>  	&format_attr_event.attr,
+>>>  	&format_attr_long.attr,
+>>>  	&format_attr_rdpmc.attr,
+>>> +	&format_attr_threshold.attr,
+>>> +	&format_attr_threshold_compare.attr,
+>>> +	&format_attr_threshold_count.attr,
+>>>  	NULL,
+>>>  };
+>>>  
+>>> @@ -365,10 +400,38 @@ static ssize_t bus_width_show(struct device *dev, struct device_attribute *attr,
+>>>  
+>>>  static DEVICE_ATTR_RO(bus_width);
+>>>  
+>>> +static u32 threshold_max(struct arm_pmu *cpu_pmu)
+>>> +{
+>>> +	/*
+>>> +	 * PMMIR.THWIDTH is readable and non-zero on aarch32, but it would be
+>>> +	 * impossible to write the threshold in the upper 32 bits of PMEVTYPER.
+>>> +	 */
+>>> +	if (IS_ENABLED(CONFIG_ARM))
+>>> +		return 0;
+>>> +
+>>> +	/*
+>>> +	 * The largest value that can be written to PMEVTYPER<n>_EL0.TH is
+>>> +	 * (2 ^ PMMIR.THWIDTH) - 1.
+>>> +	 */
+>>> +	return (1 << FIELD_GET(ARMV8_PMU_THWIDTH, cpu_pmu->reg_pmmir)) - 1;
+>>> +}
+>>> +
+>>> +static ssize_t threshold_max_show(struct device *dev,
+>>> +				  struct device_attribute *attr, char *page)
+>>> +{
+>>> +	struct pmu *pmu = dev_get_drvdata(dev);
+>>> +	struct arm_pmu *cpu_pmu = container_of(pmu, struct arm_pmu, pmu);
+>>> +
+>>> +	return sysfs_emit(page, "0x%08x\n", threshold_max(cpu_pmu));
+>>> +}
+>>> +
+>>> +static DEVICE_ATTR_RO(threshold_max);
+>>> +
+>>>  static struct attribute *armv8_pmuv3_caps_attrs[] = {
+>>>  	&dev_attr_slots.attr,
+>>>  	&dev_attr_bus_slots.attr,
+>>>  	&dev_attr_bus_width.attr,
+>>> +	&dev_attr_threshold_max.attr,
+>>>  	NULL,
+>>>  };
+>>>  
+>>> @@ -552,7 +615,7 @@ static void armv8pmu_write_counter(struct perf_event *event, u64 value)
+>>>  		armv8pmu_write_hw_counter(event, value);
+>>>  }
+>>>  
+>>> -static inline void armv8pmu_write_evtype(int idx, u32 val)
+>>> +static inline void armv8pmu_write_evtype(int idx, unsigned long val)
+>>>  {
+>>>  	u32 counter = ARMV8_IDX_TO_COUNTER(idx);
+>>>  	unsigned long mask = ARMV8_PMU_EVTYPE_EVENT |
+>>> @@ -921,6 +984,10 @@ static int armv8pmu_set_event_filter(struct hw_perf_event *event,
+>>>  				     struct perf_event_attr *attr)
+>>>  {
+>>>  	unsigned long config_base = 0;
+>>> +	struct perf_event *perf_event = container_of(attr, struct perf_event,
+>>> +						     attr);
+>>
+>> Ditto
+>>
+>>> +	struct arm_pmu *cpu_pmu = to_arm_pmu(perf_event->pmu);
+>>> +	u32 th, th_max;
+>>>  
+>>>  	if (attr->exclude_idle)
+>>>  		return -EPERM;
+>>> @@ -952,6 +1019,21 @@ static int armv8pmu_set_event_filter(struct hw_perf_event *event,
+>>>  	if (attr->exclude_user)
+>>>  		config_base |= ARMV8_PMU_EXCLUDE_EL0;
+>>>  
+>>> +	/*
+>>> +	 * Insert event counting threshold (FEAT_PMUv3_TH) values. If
+>>> +	 * FEAT_PMUv3_TH isn't implemented, then THWIDTH (threshold_max) will be
+>>> +	 * 0 and no values will be written.
+>>> +	 */
+>>> +	th_max = threshold_max(cpu_pmu);
+>>> +	if (IS_ENABLED(CONFIG_ARM64) && th_max) {
+>>> +		th = min(armv8pmu_event_threshold(attr), th_max);
+>>> +		if (th) {
+>>> +			config_base |= FIELD_PREP(ARMV8_PMU_EVTYPE_TH, th);
+>>> +			config_base |= FIELD_PREP(ARMV8_PMU_EVTYPE_TC,
+>>> +						  armv8pmu_event_threshold_control(attr));
+>>
+>> Ditto. As mentioned earlier this could have been avoided using a local variable.
+>>
+> 
+> But explained why it's like that on the previous review. It's completely
+> down to personal preference whether a local variable is used or not. I
+> don't see why this is a review comment, it doesn't affect how the code
+> behaves or the readability in any way.
+> 
+> And what could be avoided? No formatting rules have been broken.
 
-Signed-off-by: Axe Yang <axe.yang@mediatek.com>
----
- drivers/mmc/host/mtk-sd.c | 155 ++++++++++++++++++++++++++------------
- 1 file changed, 107 insertions(+), 48 deletions(-)
+Just an indentation could have been avoided, but again nothing is broken
+here to be clear, neither functionality nor the formatting. It was just
+a suggestion, which you could very well ignore.
 
-diff --git a/drivers/mmc/host/mtk-sd.c b/drivers/mmc/host/mtk-sd.c
-index 97f7c3d4be6e..4cd306b3b295 100644
---- a/drivers/mmc/host/mtk-sd.c
-+++ b/drivers/mmc/host/mtk-sd.c
-@@ -252,12 +252,16 @@
- 
- #define MSDC_PAD_TUNE_DATWRDLY	  GENMASK(4, 0)		/* RW */
- #define MSDC_PAD_TUNE_DATRRDLY	  GENMASK(12, 8)	/* RW */
-+#define MSDC_PAD_TUNE_DATRRDLY2	  GENMASK(12, 8)	/* RW */
- #define MSDC_PAD_TUNE_CMDRDLY	  GENMASK(20, 16)	/* RW */
-+#define MSDC_PAD_TUNE_CMDRDLY2	  GENMASK(20, 16)	/* RW */
- #define MSDC_PAD_TUNE_CMDRRDLY	  GENMASK(26, 22)	/* RW */
- #define MSDC_PAD_TUNE_CLKTDLY	  GENMASK(31, 27)	/* RW */
- #define MSDC_PAD_TUNE_RXDLYSEL	  BIT(15)   /* RW */
- #define MSDC_PAD_TUNE_RD_SEL	  BIT(13)   /* RW */
- #define MSDC_PAD_TUNE_CMD_SEL	  BIT(21)   /* RW */
-+#define MSDC_PAD_TUNE_RD2_SEL	  BIT(13)   /* RW */
-+#define MSDC_PAD_TUNE_CMD2_SEL	  BIT(21)   /* RW */
- 
- #define PAD_DS_TUNE_DLY_SEL       BIT(0)	  /* RW */
- #define PAD_DS_TUNE_DLY1	  GENMASK(6, 2)   /* RW */
-@@ -325,7 +329,8 @@
- 
- #define DEFAULT_DEBOUNCE	(8)	/* 8 cycles CD debounce */
- 
--#define PAD_DELAY_MAX	32 /* PAD delay cells */
-+#define PAD_DELAY_HALF	32 /* PAD delay cells */
-+#define PAD_DELAY_FULL	64
- /*--------------------------------------------------------------------------*/
- /* Descriptor Structure                                                     */
- /*--------------------------------------------------------------------------*/
-@@ -461,6 +466,7 @@ struct msdc_host {
- 	u32 hs400_ds_dly3;
- 	u32 hs200_cmd_int_delay; /* cmd internal delay for HS200/SDR104 */
- 	u32 hs400_cmd_int_delay; /* cmd internal delay for HS400 */
-+	u32 tuning_step;
- 	bool hs400_cmd_resp_sel_rising;
- 				 /* cmd response sample selection for HS400 */
- 	bool hs400_mode;	/* current eMMC will run at hs400 mode */
-@@ -1615,7 +1621,7 @@ static irqreturn_t msdc_cmdq_irq(struct msdc_host *host, u32 intsts)
- 	}
- 
- 	if (cmd_err || dat_err) {
--		dev_err(host->dev, "cmd_err = %d, dat_err =%d, intsts = 0x%x",
-+		dev_err(host->dev, "cmd_err = %d, dat_err = %d, intsts = 0x%x",
- 			cmd_err, dat_err, intsts);
- 	}
- 
-@@ -1780,10 +1786,20 @@ static void msdc_init_hw(struct msdc_host *host)
- 				     DATA_K_VALUE_SEL);
- 			sdr_set_bits(host->top_base + EMMC_TOP_CMD,
- 				     PAD_CMD_RD_RXDLY_SEL);
-+			if (host->tuning_step > PAD_DELAY_HALF) {
-+				sdr_set_bits(host->top_base + EMMC_TOP_CONTROL,
-+					     PAD_DAT_RD_RXDLY2_SEL);
-+				sdr_set_bits(host->top_base + EMMC_TOP_CMD,
-+					     PAD_CMD_RD_RXDLY2_SEL);
-+			}
- 		} else {
- 			sdr_set_bits(host->base + tune_reg,
- 				     MSDC_PAD_TUNE_RD_SEL |
- 				     MSDC_PAD_TUNE_CMD_SEL);
-+			if (host->tuning_step > PAD_DELAY_HALF)
-+				sdr_set_bits(host->base + tune_reg + 4,
-+					     MSDC_PAD_TUNE_RD2_SEL |
-+					     MSDC_PAD_TUNE_CMD2_SEL);
- 		}
- 	} else {
- 		/* choose clock tune */
-@@ -1925,24 +1941,24 @@ static void msdc_ops_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
- 		msdc_set_mclk(host, ios->timing, ios->clock);
- }
- 
--static u32 test_delay_bit(u32 delay, u32 bit)
-+static u64 test_delay_bit(u64 delay, u32 bit)
- {
--	bit %= PAD_DELAY_MAX;
--	return delay & BIT(bit);
-+	bit %= PAD_DELAY_FULL;
-+	return delay & BIT_ULL(bit);
- }
- 
--static int get_delay_len(u32 delay, u32 start_bit)
-+static int get_delay_len(u64 delay, u32 start_bit)
- {
- 	int i;
- 
--	for (i = 0; i < (PAD_DELAY_MAX - start_bit); i++) {
-+	for (i = 0; i < (PAD_DELAY_FULL - start_bit); i++) {
- 		if (test_delay_bit(delay, start_bit + i) == 0)
- 			return i;
- 	}
--	return PAD_DELAY_MAX - start_bit;
-+	return PAD_DELAY_FULL - start_bit;
- }
- 
--static struct msdc_delay_phase get_best_delay(struct msdc_host *host, u32 delay)
-+static struct msdc_delay_phase get_best_delay(struct msdc_host *host, u64 delay)
- {
- 	int start = 0, len = 0;
- 	int start_final = 0, len_final = 0;
-@@ -1950,28 +1966,28 @@ static struct msdc_delay_phase get_best_delay(struct msdc_host *host, u32 delay)
- 	struct msdc_delay_phase delay_phase = { 0, };
- 
- 	if (delay == 0) {
--		dev_err(host->dev, "phase error: [map:%x]\n", delay);
-+		dev_err(host->dev, "phase error: [map:%016llx]\n", delay);
- 		delay_phase.final_phase = final_phase;
- 		return delay_phase;
- 	}
- 
--	while (start < PAD_DELAY_MAX) {
-+	while (start < PAD_DELAY_FULL) {
- 		len = get_delay_len(delay, start);
- 		if (len_final < len) {
- 			start_final = start;
- 			len_final = len;
- 		}
- 		start += len ? len : 1;
--		if (len >= 12 && start_final < 4)
-+		if (!upper_32_bits(delay) && len >= 12 && start_final < 4)
- 			break;
- 	}
- 
- 	/* The rule is that to find the smallest delay cell */
- 	if (start_final == 0)
--		final_phase = (start_final + len_final / 3) % PAD_DELAY_MAX;
-+		final_phase = (start_final + len_final / 3) % PAD_DELAY_FULL;
- 	else
--		final_phase = (start_final + len_final / 2) % PAD_DELAY_MAX;
--	dev_dbg(host->dev, "phase: [map:%x] [maxlen:%d] [final:%d]\n",
-+		final_phase = (start_final + len_final / 2) % PAD_DELAY_FULL;
-+	dev_dbg(host->dev, "phase: [map:%016llx] [maxlen:%d] [final:%d]\n",
- 		delay, len_final, final_phase);
- 
- 	delay_phase.maxlen = len_final;
-@@ -1984,30 +2000,68 @@ static inline void msdc_set_cmd_delay(struct msdc_host *host, u32 value)
- {
- 	u32 tune_reg = host->dev_comp->pad_tune_reg;
- 
--	if (host->top_base)
--		sdr_set_field(host->top_base + EMMC_TOP_CMD, PAD_CMD_RXDLY,
--			      value);
--	else
--		sdr_set_field(host->base + tune_reg, MSDC_PAD_TUNE_CMDRDLY,
--			      value);
-+	if (host->top_base) {
-+		if (value < PAD_DELAY_HALF) {
-+			sdr_set_field(host->top_base + EMMC_TOP_CMD, PAD_CMD_RXDLY,
-+				      value);
-+			sdr_set_field(host->top_base + EMMC_TOP_CMD, PAD_CMD_RXDLY2,
-+				      0);
-+		} else {
-+			sdr_set_field(host->top_base + EMMC_TOP_CMD, PAD_CMD_RXDLY,
-+				      PAD_DELAY_HALF - 1);
-+			sdr_set_field(host->top_base + EMMC_TOP_CMD, PAD_CMD_RXDLY2,
-+				      value - PAD_DELAY_HALF);
-+		}
-+	} else {
-+		if (value < PAD_DELAY_HALF) {
-+			sdr_set_field(host->base + tune_reg, MSDC_PAD_TUNE_CMDRDLY,
-+				      value);
-+			sdr_set_field(host->base + tune_reg + 4, MSDC_PAD_TUNE_CMDRDLY2,
-+				      0);
-+		} else {
-+			sdr_set_field(host->base + tune_reg, MSDC_PAD_TUNE_CMDRDLY,
-+				      PAD_DELAY_HALF - 1);
-+			sdr_set_field(host->base + tune_reg + 4, MSDC_PAD_TUNE_CMDRDLY2,
-+				      value - PAD_DELAY_HALF);
-+		}
-+	}
- }
- 
- static inline void msdc_set_data_delay(struct msdc_host *host, u32 value)
- {
- 	u32 tune_reg = host->dev_comp->pad_tune_reg;
- 
--	if (host->top_base)
--		sdr_set_field(host->top_base + EMMC_TOP_CONTROL,
--			      PAD_DAT_RD_RXDLY, value);
--	else
--		sdr_set_field(host->base + tune_reg, MSDC_PAD_TUNE_DATRRDLY,
--			      value);
-+	if (host->top_base) {
-+		if (value < PAD_DELAY_HALF) {
-+			sdr_set_field(host->top_base + EMMC_TOP_CONTROL,
-+				      PAD_DAT_RD_RXDLY, value);
-+			sdr_set_field(host->top_base + EMMC_TOP_CONTROL,
-+				      PAD_DAT_RD_RXDLY2, 0);
-+		} else {
-+			sdr_set_field(host->top_base + EMMC_TOP_CONTROL,
-+				      PAD_DAT_RD_RXDLY, PAD_DELAY_HALF - 1);
-+			sdr_set_field(host->top_base + EMMC_TOP_CONTROL,
-+				      PAD_DAT_RD_RXDLY2, value - PAD_DELAY_HALF);
-+		}
-+	} else {
-+		if (value < PAD_DELAY_HALF) {
-+			sdr_set_field(host->base + tune_reg, MSDC_PAD_TUNE_DATRRDLY,
-+				      value);
-+			sdr_set_field(host->base + tune_reg + 4, MSDC_PAD_TUNE_DATRRDLY2,
-+				      0);
-+		} else {
-+			sdr_set_field(host->base + tune_reg, MSDC_PAD_TUNE_DATRRDLY,
-+				      PAD_DELAY_HALF - 1);
-+			sdr_set_field(host->base + tune_reg + 4, MSDC_PAD_TUNE_DATRRDLY2,
-+				      value - PAD_DELAY_HALF);
-+		}
-+	}
- }
- 
- static int msdc_tune_response(struct mmc_host *mmc, u32 opcode)
- {
- 	struct msdc_host *host = mmc_priv(mmc);
--	u32 rise_delay = 0, fall_delay = 0;
-+	u64 rise_delay = 0, fall_delay = 0;
- 	struct msdc_delay_phase final_rise_delay, final_fall_delay = { 0,};
- 	struct msdc_delay_phase internal_delay_phase;
- 	u8 final_delay, final_maxlen;
-@@ -2023,7 +2077,7 @@ static int msdc_tune_response(struct mmc_host *mmc, u32 opcode)
- 			      host->hs200_cmd_int_delay);
- 
- 	sdr_clr_bits(host->base + MSDC_IOCON, MSDC_IOCON_RSPL);
--	for (i = 0 ; i < PAD_DELAY_MAX; i++) {
-+	for (i = 0; i < host->tuning_step; i++) {
- 		msdc_set_cmd_delay(host, i);
- 		/*
- 		 * Using the same parameters, it may sometimes pass the test,
-@@ -2033,9 +2087,9 @@ static int msdc_tune_response(struct mmc_host *mmc, u32 opcode)
- 		for (j = 0; j < 3; j++) {
- 			mmc_send_tuning(mmc, opcode, &cmd_err);
- 			if (!cmd_err) {
--				rise_delay |= BIT(i);
-+				rise_delay |= BIT_ULL(i);
- 			} else {
--				rise_delay &= ~BIT(i);
-+				rise_delay &= ~BIT_ULL(i);
- 				break;
- 			}
- 		}
-@@ -2047,7 +2101,7 @@ static int msdc_tune_response(struct mmc_host *mmc, u32 opcode)
- 		goto skip_fall;
- 
- 	sdr_set_bits(host->base + MSDC_IOCON, MSDC_IOCON_RSPL);
--	for (i = 0; i < PAD_DELAY_MAX; i++) {
-+	for (i = 0; i < host->tuning_step; i++) {
- 		msdc_set_cmd_delay(host, i);
- 		/*
- 		 * Using the same parameters, it may sometimes pass the test,
-@@ -2057,9 +2111,9 @@ static int msdc_tune_response(struct mmc_host *mmc, u32 opcode)
- 		for (j = 0; j < 3; j++) {
- 			mmc_send_tuning(mmc, opcode, &cmd_err);
- 			if (!cmd_err) {
--				fall_delay |= BIT(i);
-+				fall_delay |= BIT_ULL(i);
- 			} else {
--				fall_delay &= ~BIT(i);
-+				fall_delay &= ~BIT_ULL(i);
- 				break;
- 			}
- 		}
-@@ -2082,12 +2136,12 @@ static int msdc_tune_response(struct mmc_host *mmc, u32 opcode)
- 	if (host->dev_comp->async_fifo || host->hs200_cmd_int_delay)
- 		goto skip_internal;
- 
--	for (i = 0; i < PAD_DELAY_MAX; i++) {
-+	for (i = 0; i < host->tuning_step; i++) {
- 		sdr_set_field(host->base + tune_reg,
- 			      MSDC_PAD_TUNE_CMDRRDLY, i);
- 		mmc_send_tuning(mmc, opcode, &cmd_err);
- 		if (!cmd_err)
--			internal_delay |= BIT(i);
-+			internal_delay |= BIT_ULL(i);
- 	}
- 	dev_dbg(host->dev, "Final internal delay: 0x%x\n", internal_delay);
- 	internal_delay_phase = get_best_delay(host, internal_delay);
-@@ -2121,7 +2175,8 @@ static int hs400_tune_response(struct mmc_host *mmc, u32 opcode)
- 		sdr_clr_bits(host->base + MSDC_IOCON, MSDC_IOCON_RSPL);
- 	else
- 		sdr_set_bits(host->base + MSDC_IOCON, MSDC_IOCON_RSPL);
--	for (i = 0 ; i < PAD_DELAY_MAX; i++) {
-+
-+	for (i = 0; i < PAD_DELAY_HALF; i++) {
- 		sdr_set_field(host->base + PAD_CMD_TUNE,
- 			      PAD_CMD_TUNE_RX_DLY3, i);
- 		/*
-@@ -2151,7 +2206,7 @@ static int hs400_tune_response(struct mmc_host *mmc, u32 opcode)
- static int msdc_tune_data(struct mmc_host *mmc, u32 opcode)
- {
- 	struct msdc_host *host = mmc_priv(mmc);
--	u32 rise_delay = 0, fall_delay = 0;
-+	u64 rise_delay = 0, fall_delay = 0;
- 	struct msdc_delay_phase final_rise_delay, final_fall_delay = { 0,};
- 	u8 final_delay, final_maxlen;
- 	int i, ret;
-@@ -2160,11 +2215,11 @@ static int msdc_tune_data(struct mmc_host *mmc, u32 opcode)
- 		      host->latch_ck);
- 	sdr_clr_bits(host->base + MSDC_IOCON, MSDC_IOCON_DSPL);
- 	sdr_clr_bits(host->base + MSDC_IOCON, MSDC_IOCON_W_DSPL);
--	for (i = 0 ; i < PAD_DELAY_MAX; i++) {
-+	for (i = 0; i < host->tuning_step; i++) {
- 		msdc_set_data_delay(host, i);
- 		ret = mmc_send_tuning(mmc, opcode, NULL);
- 		if (!ret)
--			rise_delay |= BIT(i);
-+			rise_delay |= BIT_ULL(i);
- 	}
- 	final_rise_delay = get_best_delay(host, rise_delay);
- 	/* if rising edge has enough margin, then do not scan falling edge */
-@@ -2174,11 +2229,11 @@ static int msdc_tune_data(struct mmc_host *mmc, u32 opcode)
- 
- 	sdr_set_bits(host->base + MSDC_IOCON, MSDC_IOCON_DSPL);
- 	sdr_set_bits(host->base + MSDC_IOCON, MSDC_IOCON_W_DSPL);
--	for (i = 0; i < PAD_DELAY_MAX; i++) {
-+	for (i = 0; i < host->tuning_step; i++) {
- 		msdc_set_data_delay(host, i);
- 		ret = mmc_send_tuning(mmc, opcode, NULL);
- 		if (!ret)
--			fall_delay |= BIT(i);
-+			fall_delay |= BIT_ULL(i);
- 	}
- 	final_fall_delay = get_best_delay(host, fall_delay);
- 
-@@ -2206,7 +2261,7 @@ static int msdc_tune_data(struct mmc_host *mmc, u32 opcode)
- static int msdc_tune_together(struct mmc_host *mmc, u32 opcode)
- {
- 	struct msdc_host *host = mmc_priv(mmc);
--	u32 rise_delay = 0, fall_delay = 0;
-+	u64 rise_delay = 0, fall_delay = 0;
- 	struct msdc_delay_phase final_rise_delay, final_fall_delay = { 0,};
- 	u8 final_delay, final_maxlen;
- 	int i, ret;
-@@ -2217,12 +2272,12 @@ static int msdc_tune_together(struct mmc_host *mmc, u32 opcode)
- 	sdr_clr_bits(host->base + MSDC_IOCON, MSDC_IOCON_RSPL);
- 	sdr_clr_bits(host->base + MSDC_IOCON,
- 		     MSDC_IOCON_DSPL | MSDC_IOCON_W_DSPL);
--	for (i = 0 ; i < PAD_DELAY_MAX; i++) {
-+	for (i = 0; i < host->tuning_step; i++) {
- 		msdc_set_cmd_delay(host, i);
- 		msdc_set_data_delay(host, i);
- 		ret = mmc_send_tuning(mmc, opcode, NULL);
- 		if (!ret)
--			rise_delay |= BIT(i);
-+			rise_delay |= BIT_ULL(i);
- 	}
- 	final_rise_delay = get_best_delay(host, rise_delay);
- 	/* if rising edge has enough margin, then do not scan falling edge */
-@@ -2233,12 +2288,12 @@ static int msdc_tune_together(struct mmc_host *mmc, u32 opcode)
- 	sdr_set_bits(host->base + MSDC_IOCON, MSDC_IOCON_RSPL);
- 	sdr_set_bits(host->base + MSDC_IOCON,
- 		     MSDC_IOCON_DSPL | MSDC_IOCON_W_DSPL);
--	for (i = 0; i < PAD_DELAY_MAX; i++) {
-+	for (i = 0; i < host->tuning_step; i++) {
- 		msdc_set_cmd_delay(host, i);
- 		msdc_set_data_delay(host, i);
- 		ret = mmc_send_tuning(mmc, opcode, NULL);
- 		if (!ret)
--			fall_delay |= BIT(i);
-+			fall_delay |= BIT_ULL(i);
- 	}
- 	final_fall_delay = get_best_delay(host, fall_delay);
- 
-@@ -2346,7 +2401,7 @@ static int msdc_execute_hs400_tuning(struct mmc_host *mmc, struct mmc_card *card
- 	}
- 
- 	host->hs400_tuning = true;
--	for (i = 0; i < PAD_DELAY_MAX; i++) {
-+	for (i = 0; i < PAD_DELAY_HALF; i++) {
- 		if (host->top_base)
- 			sdr_set_field(host->top_base + EMMC50_PAD_DS_TUNE,
- 				      PAD_DS_DLY1, i);
-@@ -2601,6 +2656,10 @@ static void msdc_of_property_parse(struct platform_device *pdev,
- 	else
- 		host->hs400_cmd_resp_sel_rising = false;
- 
-+	if (of_property_read_u32(pdev->dev.of_node, "mediatek,tuning-step",
-+				 &host->tuning_step))
-+		host->tuning_step = PAD_DELAY_HALF;
-+
- 	if (of_property_read_bool(pdev->dev.of_node,
- 				  "supports-cqe"))
- 		host->cqhci = true;
--- 
-2.25.1
-
+> 
+>>> +		}
+>>> +	}
+>>> +
+>>>  	/*
+>>>  	 * Install the filter into config_base as this is used to
+>>>  	 * construct the event type.
+>>> diff --git a/include/linux/perf/arm_pmuv3.h b/include/linux/perf/arm_pmuv3.h
+>>> index ddd1fec86739..ccbc0f9a74d8 100644
+>>> --- a/include/linux/perf/arm_pmuv3.h
+>>> +++ b/include/linux/perf/arm_pmuv3.h
+>>> @@ -258,6 +258,7 @@
+>>>  #define ARMV8_PMU_BUS_SLOTS_MASK 0xff
+>>>  #define ARMV8_PMU_BUS_WIDTH_SHIFT 16
+>>>  #define ARMV8_PMU_BUS_WIDTH_MASK 0xf
+>>> +#define ARMV8_PMU_THWIDTH GENMASK(23, 20)
+>>>  
+>>>  /*
+>>>   * This code is really good
+>>
+>> Otherwise LGTM
+>>
+>> Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>>
