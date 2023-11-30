@@ -2,306 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F0DA7FFFBD
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 00:54:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 101607FFFBF
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 00:55:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377323AbjK3Xym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 18:54:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48064 "EHLO
+        id S1377334AbjK3Xyt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 18:54:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377273AbjK3Xyk (ORCPT
+        with ESMTP id S1377294AbjK3Xys (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 18:54:40 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DB6110F3;
-        Thu, 30 Nov 2023 15:54:45 -0800 (PST)
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AUM9KYu014159;
-        Thu, 30 Nov 2023 23:54:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=ijrWI9sSXA3+HkIBXwk9RWdiSbgE8OJPfC0OAA7VAlg=;
- b=Vz2eBa1hW2Q2mvYex6Zgdf+S6VX2sEcrWNPZI1jhNRFDu34qjcxYpSIXeQqfxO1VzqLa
- l43BFhIgJR0k/vvmSN0dWdpiMtOv3Jb2rwh/8LtTWMBDHG265ebc+LP6OuOPt5kY27Du
- XlNrseY9iEwAjXMlAxxjtwY/2hOloOxEnr73BuugQRh1GTg5zwwlQGjN4tLo1dHT+Qdw
- K1Dd46cmIdoXsLgSKYutUILAsM2IkcqNxhDumiTn7m9VgtlWyrA5FdGo3QusYsHjCadt
- MmmtAEvk5nBte8a7T5BHCbUP3bJBoDtm9HDqjvuXpCa5xtd1F5SAuQX2s67Gnrdu+yWW vA== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3upgfd36db-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 30 Nov 2023 23:54:38 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AUNsbZm020777
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 30 Nov 2023 23:54:37 GMT
-Received: from [10.71.109.77] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 30 Nov
- 2023 15:54:29 -0800
-Message-ID: <53987859-bf78-9323-4b83-fe25cfef4ed8@quicinc.com>
-Date:   Thu, 30 Nov 2023 15:54:28 -0800
+        Thu, 30 Nov 2023 18:54:48 -0500
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A18910E2
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 15:54:52 -0800 (PST)
+Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2c9c581596eso15792861fa.0
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 15:54:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1701388491; x=1701993291; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sGO8mAdrAqhDRxrlrd1/sOrvK17UXFpdyDtQDEFr48s=;
+        b=P0w3vrmZ/OBgZk9VnvkxG4/ZliZvrM8ERpyZfmVJKGBmM0tfKXgDxFmE5gH8Ht22Id
+         S3vGIHzsLFBxxfAuzBPmoPiSJN6XutpKQFsSnFA8F/TJLS8HKVFcQ+ObIOUlA7g2jaPs
+         MKEt2e59vzN9ezXrHBIXIz3PHN9rxLxs2wsxaZP4fXlpqv/PYHvOm+crQe5Y9wxQoFrd
+         Juyf3ayyw1z/ZgcXRTa2meWQPqkjrcgQbcMhIrz/vm4pBAL7yFlPy/V+Ae1rcJERCia6
+         mDSxhFMmCL5O+b1Ml3PfpzqgdGhEM9S0W+yiIMIZRHCRwCIg188JRqibz4A78+t2YG8H
+         +oUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701388491; x=1701993291;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sGO8mAdrAqhDRxrlrd1/sOrvK17UXFpdyDtQDEFr48s=;
+        b=UpUBdATQrta3T6XJM75OUuTERjJ52nB3WyB40/bDJp2nIcQ+CPwR1nnehKH7l8Utzl
+         SDVmSFLMw6kqrxSbqNRcTHVn9FCsi6Igc989bQnmPI7Cf5wpbYPm3OYsMgu5YeML7SVc
+         IaYQLMKk74BOphHtWrNTnOxZCZevDyEaNHH9d0zDN/vdN1gbI/5qjaBoAswchYJ6mRrJ
+         /3RxqLnvSf2noAahG55Isb2Ncd1fHqeJIGZT/TL6oVf14NoL1x5BsmbusrmCacyv5iYJ
+         2NOWOGBkZriGNsch0KFbLiswpzRwE0bncZBmReNrTRp6H2qEOabjg4huhpRWhm/hktJ9
+         hoCQ==
+X-Gm-Message-State: AOJu0Yzguv7iC/MdMaaSwCT7oKBT+1DtmpLlBPrLMprTS+bQY0IzZ8Wm
+        0jfmLQUtuGf7TJS0gbXkBw+k/Npxew4ypcsYj7XyOA==
+X-Google-Smtp-Source: AGHT+IEDwWrg5ORWAu7cojx2auj03EsJ4gxI7RF6HouCxhjtKTlwjmweO6WdaOgqE9ObA1y9cBqoCf7+CnqtwPLTmwg=
+X-Received: by 2002:a2e:5cc4:0:b0:2c9:c50c:a9c1 with SMTP id
+ q187-20020a2e5cc4000000b002c9c50ca9c1mr203763ljb.6.1701388490692; Thu, 30 Nov
+ 2023 15:54:50 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH 09/16] drm/msm/dpu: add CDM related logic to dpu_hw_ctl
- layer
-Content-Language: en-US
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC:     <freedreno@lists.freedesktop.org>, Rob Clark <robdclark@gmail.com>,
-        "Sean Paul" <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        "David Airlie" <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        <dri-devel@lists.freedesktop.org>, <quic_jesszhan@quicinc.com>,
-        <quic_parellan@quicinc.com>, <quic_khsieh@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20230830224910.8091-1-quic_abhinavk@quicinc.com>
- <20230830224910.8091-10-quic_abhinavk@quicinc.com>
- <CAA8EJpqEDmXRLHK73pHrCHOXRZPUKeA6OqEwvhoqPBrN+rbAaQ@mail.gmail.com>
-From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
-In-Reply-To: <CAA8EJpqEDmXRLHK73pHrCHOXRZPUKeA6OqEwvhoqPBrN+rbAaQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: LwCOEmm5Io1YF_31VS17UfHxaENWXInX
-X-Proofpoint-GUID: LwCOEmm5Io1YF_31VS17UfHxaENWXInX
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-30_24,2023-11-30_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- lowpriorityscore=0 spamscore=0 malwarescore=0 impostorscore=0
- priorityscore=1501 bulkscore=0 clxscore=1015 mlxscore=0 adultscore=0
- phishscore=0 mlxlogscore=795 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2311060000 definitions=main-2311300177
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231121-dev-iio-backend-v1-0-6a3d542eba35@analog.com>
+In-Reply-To: <20231121-dev-iio-backend-v1-0-6a3d542eba35@analog.com>
+From:   David Lechner <dlechner@baylibre.com>
+Date:   Thu, 30 Nov 2023 17:54:39 -0600
+Message-ID: <CAMknhBH0pF_+z_JqWGscELBmAEDyxLAtgQ-j3=6P2MeFXnzhWQ@mail.gmail.com>
+Subject: Re: [PATCH 00/12] iio: add new backend framework
+To:     nuno.sa@analog.com
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-iio@vger.kernel.org,
+        Olivier MOYSAN <olivier.moysan@foss.st.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/30/2023 5:12 PM, Dmitry Baryshkov wrote:
-> On Thu, 31 Aug 2023 at 01:50, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
->>
->> CDM block will need its own logic to program the flush and active
->> bits in the dpu_hw_ctl layer.
->>
->> Make necessary changes in dpu_hw_ctl to support CDM programming.
->>
->> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
->> ---
->>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c | 34 ++++++++++++++++++++++
->>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h | 11 +++++++
->>   2 files changed, 45 insertions(+)
->>
->> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
->> index c278fb9d2b5b..beced9f19740 100644
->> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
->> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
->> @@ -29,11 +29,13 @@
->>   #define   CTL_DSC_ACTIVE                0x0E8
->>   #define   CTL_WB_ACTIVE                 0x0EC
->>   #define   CTL_INTF_ACTIVE               0x0F4
->> +#define   CTL_CDM_ACTIVE                0x0F8
->>   #define   CTL_FETCH_PIPE_ACTIVE         0x0FC
->>   #define   CTL_MERGE_3D_FLUSH            0x100
->>   #define   CTL_DSC_FLUSH                0x104
->>   #define   CTL_WB_FLUSH                  0x108
->>   #define   CTL_INTF_FLUSH                0x110
->> +#define   CTL_CDM_FLUSH                0x114
->>   #define   CTL_INTF_MASTER               0x134
->>   #define   CTL_DSPP_n_FLUSH(n)           ((0x13C) + ((n) * 4))
->>
->> @@ -43,6 +45,7 @@
->>   #define DPU_REG_RESET_TIMEOUT_US        2000
->>   #define  MERGE_3D_IDX   23
->>   #define  DSC_IDX        22
->> +#define CDM_IDX         26
->>   #define  INTF_IDX       31
->>   #define WB_IDX          16
->>   #define  DSPP_IDX       29  /* From DPU hw rev 7.x.x */
->> @@ -104,6 +107,7 @@ static inline void dpu_hw_ctl_clear_pending_flush(struct dpu_hw_ctl *ctx)
->>          ctx->pending_wb_flush_mask = 0;
->>          ctx->pending_merge_3d_flush_mask = 0;
->>          ctx->pending_dsc_flush_mask = 0;
->> +       ctx->pending_cdm_flush_mask = 0;
->>
->>          memset(ctx->pending_dspp_flush_mask, 0,
->>                  sizeof(ctx->pending_dspp_flush_mask));
->> @@ -148,6 +152,10 @@ static inline void dpu_hw_ctl_trigger_flush_v1(struct dpu_hw_ctl *ctx)
->>                  DPU_REG_WRITE(&ctx->hw, CTL_DSC_FLUSH,
->>                                ctx->pending_dsc_flush_mask);
->>
->> +       if (ctx->pending_flush_mask & BIT(CDM_IDX))
->> +               DPU_REG_WRITE(&ctx->hw, CTL_CDM_FLUSH,
->> +                             ctx->pending_cdm_flush_mask);
->> +
->>          DPU_REG_WRITE(&ctx->hw, CTL_FLUSH, ctx->pending_flush_mask);
->>   }
->>
->> @@ -273,6 +281,12 @@ static void dpu_hw_ctl_update_pending_flush_wb(struct dpu_hw_ctl *ctx,
->>          }
->>   }
->>
->> +static void dpu_hw_ctl_update_pending_flush_cdm(struct dpu_hw_ctl *ctx)
->> +{
->> +       ctx->pending_flush_mask |= BIT(CDM_IDX);
->> +
-> 
-> unused empty line.
+On Tue, Nov 21, 2023 at 4:17=E2=80=AFAM Nuno Sa via B4 Relay
+<devnull+nuno.sa.analog.com@kernel.org> wrote:
+>
+> Hi all,
+>
+> This is a Framework to handle complex IIO aggregate devices.
+>
+> The typical architecture is to have one device as the frontend device whi=
+ch
+> can be "linked" against one or multiple backend devices. All the IIO and
+> userspace interface is expected to be registers/managed by the frontend
+> device which will callback into the backends when needed (to get/set
+> some configuration that it does not directly control).
+>
+> The basic framework interface is pretty simple:
+>  - Backends should register themselves with @devm_iio_backend_register()
+>  - Frontend devices should get backends with @devm_iio_backend_get()
+>
+> (typical provider - consumer stuff)
 >
 
-Yes indeed.
+The "typical provider - consumer stuff" seems pretty straight forward
+for finding and connecting two different devices, but the definition
+of what is a frontend and what is a backend seems a bit nebulous. It
+would be nice to seem some example devicetree to be able to get a
+better picture of how this will be used in practices (links to the the
+hardware docs for those examples would be nice too).
 
->> +}
->> +
->>   static void dpu_hw_ctl_update_pending_flush_wb_v1(struct dpu_hw_ctl *ctx,
->>                  enum dpu_wb wb)
->>   {
->> @@ -301,6 +315,12 @@ static void dpu_hw_ctl_update_pending_flush_dsc_v1(struct dpu_hw_ctl *ctx,
->>          ctx->pending_flush_mask |= BIT(DSC_IDX);
->>   }
->>
->> +static void dpu_hw_ctl_update_pending_flush_cdm_v1(struct dpu_hw_ctl *ctx)
->> +{
->> +       ctx->pending_cdm_flush_mask |= BIT(0);
-> 
-> I'd assume this is because there is just CDM_0? Then it still might be
-> better to write BIT(cdm->idx - CDM_0).
-> 
-
-Ack.
-
->> +       ctx->pending_flush_mask |= BIT(CDM_IDX);
->> +}
->> +
->>   static void dpu_hw_ctl_update_pending_flush_dspp(struct dpu_hw_ctl *ctx,
->>          enum dpu_dspp dspp, u32 dspp_sub_blk)
->>   {
->> @@ -504,6 +524,7 @@ static void dpu_hw_ctl_intf_cfg_v1(struct dpu_hw_ctl *ctx,
->>          u32 intf_active = 0;
->>          u32 wb_active = 0;
->>          u32 mode_sel = 0;
->> +       u32 cdm_active = 0;
->>
->>          /* CTL_TOP[31:28] carries group_id to collate CTL paths
->>           * per VM. Explicitly disable it until VM support is
->> @@ -517,6 +538,7 @@ static void dpu_hw_ctl_intf_cfg_v1(struct dpu_hw_ctl *ctx,
->>
->>          intf_active = DPU_REG_READ(c, CTL_INTF_ACTIVE);
->>          wb_active = DPU_REG_READ(c, CTL_WB_ACTIVE);
->> +       cdm_active = DPU_REG_READ(c, CTL_CDM_ACTIVE);
->>
->>          if (cfg->intf)
->>                  intf_active |= BIT(cfg->intf - INTF_0);
->> @@ -534,6 +556,9 @@ static void dpu_hw_ctl_intf_cfg_v1(struct dpu_hw_ctl *ctx,
->>
->>          if (cfg->dsc)
->>                  DPU_REG_WRITE(c, CTL_DSC_ACTIVE, cfg->dsc);
->> +
->> +       if (cfg->cdm)
->> +               DPU_REG_WRITE(c, CTL_CDM_ACTIVE, cfg->cdm);
->>   }
->>
->>   static void dpu_hw_ctl_intf_cfg(struct dpu_hw_ctl *ctx,
->> @@ -577,6 +602,7 @@ static void dpu_hw_ctl_reset_intf_cfg_v1(struct dpu_hw_ctl *ctx,
->>          u32 wb_active = 0;
->>          u32 merge3d_active = 0;
->>          u32 dsc_active;
->> +       u32 cdm_active;
->>
->>          /*
->>           * This API resets each portion of the CTL path namely,
->> @@ -612,6 +638,12 @@ static void dpu_hw_ctl_reset_intf_cfg_v1(struct dpu_hw_ctl *ctx,
->>                  dsc_active &= ~cfg->dsc;
->>                  DPU_REG_WRITE(c, CTL_DSC_ACTIVE, dsc_active);
->>          }
->> +
->> +       if (cfg->cdm) {
->> +               cdm_active = DPU_REG_READ(c, CTL_CDM_ACTIVE);
->> +               cdm_active &= ~cfg->cdm;
->> +               DPU_REG_WRITE(c, CTL_CDM_ACTIVE, cdm_active);
->> +       }
->>   }
->>
->>   static void dpu_hw_ctl_set_fetch_pipe_active(struct dpu_hw_ctl *ctx,
->> @@ -645,12 +677,14 @@ static void _setup_ctl_ops(struct dpu_hw_ctl_ops *ops,
->>                  ops->update_pending_flush_wb = dpu_hw_ctl_update_pending_flush_wb_v1;
->>                  ops->update_pending_flush_dsc =
->>                          dpu_hw_ctl_update_pending_flush_dsc_v1;
->> +               ops->update_pending_flush_cdm = dpu_hw_ctl_update_pending_flush_cdm_v1;
->>          } else {
->>                  ops->trigger_flush = dpu_hw_ctl_trigger_flush;
->>                  ops->setup_intf_cfg = dpu_hw_ctl_intf_cfg;
->>                  ops->update_pending_flush_intf =
->>                          dpu_hw_ctl_update_pending_flush_intf;
->>                  ops->update_pending_flush_wb = dpu_hw_ctl_update_pending_flush_wb;
->> +               ops->update_pending_flush_cdm = dpu_hw_ctl_update_pending_flush_cdm;
->>          }
->>          ops->clear_pending_flush = dpu_hw_ctl_clear_pending_flush;
->>          ops->update_pending_flush = dpu_hw_ctl_update_pending_flush;
->> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h
->> index 1c242298ff2e..6dd44dfdfb61 100644
->> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h
->> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h
->> @@ -39,6 +39,7 @@ struct dpu_hw_stage_cfg {
->>    * @mode_3d:               3d mux configuration
->>    * @merge_3d:              3d merge block used
->>    * @intf_mode_sel:         Interface mode, cmd / vid
->> + * @cdm:                   CDM block used
->>    * @stream_sel:            Stream selection for multi-stream interfaces
->>    * @dsc:                   DSC BIT masks used
->>    */
->> @@ -48,6 +49,7 @@ struct dpu_hw_intf_cfg {
->>          enum dpu_3d_blend_mode mode_3d;
->>          enum dpu_merge_3d merge_3d;
->>          enum dpu_ctl_mode_sel intf_mode_sel;
->> +       enum dpu_cdm cdm;
->>          int stream_sel;
->>          unsigned int dsc;
->>   };
->> @@ -166,6 +168,13 @@ struct dpu_hw_ctl_ops {
->>          void (*update_pending_flush_dsc)(struct dpu_hw_ctl *ctx,
->>                                           enum dpu_dsc blk);
->>
->> +       /**
->> +        * OR in the given flushbits to the cached pending_(cdm_)flush_mask
->> +        * No effect on hardware
->> +        * @ctx: ctl path ctx pointer
->> +        */
->> +       void (*update_pending_flush_cdm)(struct dpu_hw_ctl *ctx);
->> +
->>          /**
->>           * Write the value of the pending_flush_mask to hardware
->>           * @ctx       : ctl path ctx pointer
->> @@ -239,6 +248,7 @@ struct dpu_hw_ctl_ops {
->>    * @pending_intf_flush_mask: pending INTF flush
->>    * @pending_wb_flush_mask: pending WB flush
->>    * @pending_dsc_flush_mask: pending DSC flush
->> + * @pending_cdm_flush_mask: pending CDM flush
->>    * @ops: operation list
->>    */
->>   struct dpu_hw_ctl {
->> @@ -256,6 +266,7 @@ struct dpu_hw_ctl {
->>          u32 pending_merge_3d_flush_mask;
->>          u32 pending_dspp_flush_mask[DSPP_MAX - DSPP_0];
->>          u32 pending_dsc_flush_mask;
->> +       u32 pending_cdm_flush_mask;
->>
->>          /* ops */
->>          struct dpu_hw_ctl_ops ops;
->> --
->> 2.40.1
->>
-> 
-> 
+In addition to the backend ops given in this series, what are some
+other expected ops that could be added in the future? Do we need some
+kind of spec to say "I need a backend with feature X and feature Y" or
+"I need a backend with compatible string" rather than just "I need a
+generic backend"?
