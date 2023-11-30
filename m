@@ -2,192 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FBE77FFBAA
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 20:42:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BBC07FFBAE
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 20:43:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235348AbjK3Tma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 14:42:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44390 "EHLO
+        id S1376499AbjK3TnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 14:43:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229746AbjK3TmY (ORCPT
+        with ESMTP id S235272AbjK3TnS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 14:42:24 -0500
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B42671716;
-        Thu, 30 Nov 2023 11:42:13 -0800 (PST)
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
- id fdca47921025942d; Thu, 30 Nov 2023 20:42:11 +0100
-Received: from kreacher.localnet (unknown [195.136.19.94])
+        Thu, 30 Nov 2023 14:43:18 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0D3DD7F
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 11:43:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701373404;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1LzR82TZZoRBH/QGAZ8DY5Aa+itdrUDM4gzCDXUwKhE=;
+        b=LxVJiDGbAnDe/LOuqwr3l/qTI2kCRrYewu0z2DZ7vLMy9CNyoaWkTHHOcvMeRKlmhCvoYX
+        Tt6MzUGGLXRnTsr75uoV2ir3ZjeibQDrUxLcDdD3A6/QT1kJvVCd38avupTz15p3sZxRfo
+        DC9wIYeGWrUHiBVU7gJD4EIn+bhGQf4=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-673-HioBAyClOBG-ZY4j2hqARw-1; Thu,
+ 30 Nov 2023 14:43:22 -0500
+X-MC-Unique: HioBAyClOBG-ZY4j2hqARw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by cloudserver094114.home.pl (Postfix) with ESMTPSA id 65878668637;
-        Thu, 30 Nov 2023 20:42:11 +0100 (CET)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Lukasz Luba <lukasz.luba@arm.com>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>
-Subject: [PATCH v1.1 2/2] thermal: sysfs: Simplifications of trip point attribute callbacks
-Date:   Thu, 30 Nov 2023 20:42:11 +0100
-Message-ID: <12355894.O9o76ZdvQC@kreacher>
-In-Reply-To: <5754079.DvuYhMxLoT@kreacher>
-References: <5754079.DvuYhMxLoT@kreacher>
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id AB73B381CBA1;
+        Thu, 30 Nov 2023 19:43:21 +0000 (UTC)
+Received: from oldenburg.str.redhat.com (unknown [10.2.16.45])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 046491121307;
+        Thu, 30 Nov 2023 19:43:19 +0000 (UTC)
+From:   Florian Weimer <fweimer@redhat.com>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Tycho Andersen <tycho@tycho.pizza>,
+        Christian Brauner <brauner@kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        Tycho Andersen <tandersen@netflix.com>
+Subject: Re: [RFC 1/3] pidfd: allow pidfd_open() on non-thread-group leaders
+References: <20231130163946.277502-1-tycho@tycho.pizza>
+        <874jh3t7e9.fsf@oldenburg.str.redhat.com>
+        <ZWjaSAhG9KI2i9NK@tycho.pizza>
+        <a07b7ae6-8e86-4a87-9347-e6e1a0f2ee65@efficios.com>
+Date:   Thu, 30 Nov 2023 20:43:18 +0100
+In-Reply-To: <a07b7ae6-8e86-4a87-9347-e6e1a0f2ee65@efficios.com> (Mathieu
+        Desnoyers's message of "Thu, 30 Nov 2023 14:00:01 -0500")
+Message-ID: <87ttp3rprd.fsf@oldenburg.str.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.3 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrudeijedguddvjecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvffeuiedtgfdvtddugeeujedtffetteegfeekffdvfedttddtuefhgeefvdejhfenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeeipdhrtghpthhtohepuggrnhhivghlrdhlvgiitggrnhhosehlihhnrghrohdrohhrghdprhgtphhtthhopehluhhkrghsiidrlhhusggrsegrrhhmrdgtohhmpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepshhr
- ihhnihhvrghsrdhprghnughruhhvrggurgeslhhinhhugidrihhnthgvlhdrtghomhdprhgtphhtthhopehruhhirdiihhgrnhhgsehinhhtvghlrdgtohhm
-X-DCC--Metrics: v370.home.net.pl 1024; Body=6 Fuz1=6 Fuz2=6
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+* Mathieu Desnoyers:
 
-The _show() callback functions of the trip point sysfs attributes,
-temperature, hysteresis and type, need not use thermal zone locking,
-because the layout of the data structures they access does not change
-after the thermal zone registration.
+>>> I'd like to offer a userspace API which allows safe stashing of
+>>> unreachable file descriptors on a service thread.
 
-Namely, they all need to access a specific entry in the thermal
-zone's trips[] table that is always present for non-tripless thermal
-zones and its size cannot change after the thermal zone has been
-registered.  Thus it is always safe to access the trips[] table of a
-registered thermal zone from each of the sysfs attributes in question.
+>> By "safe" here do you mean not accessible via pidfd_getfd()?
 
-Moreover, the type of a trip point does not change after registering its
-thermal zone, and while its temperature and hysteresis can change, for
-example due to a firmware-induced thermal zone update, holding the zone
-lock around reading them is pointless, because it does not prevent stale
-values from being returned to user space.  For example, a trip point
-temperature can always change ater trip_point_temp_show() has read it
-and before the function's return statement is executed, regardless of
-whether or not zone locking is used.
+No, unreachable by close/close_range/dup2/dup3.  I expect we can do an
+intra-process transfer using /proc, but I'm hoping for something nicer.
 
-For this reason, drop the zone locking from trip_point_type_show(),
-trip_point_temp_show(), and trip_point_hyst_show().
-
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
-
-v1 -> v1.1: Use >= instead of > (which was incorrect) in 3 places.
-
----
- drivers/thermal/thermal_sysfs.c |   60 ++++++++++++++--------------------------
- 1 file changed, 21 insertions(+), 39 deletions(-)
-
-Index: linux-pm/drivers/thermal/thermal_sysfs.c
-===================================================================
---- linux-pm.orig/drivers/thermal/thermal_sysfs.c
-+++ linux-pm/drivers/thermal/thermal_sysfs.c
-@@ -83,25 +83,18 @@ trip_point_type_show(struct device *dev,
- 		     char *buf)
- {
- 	struct thermal_zone_device *tz = to_thermal_zone(dev);
--	struct thermal_trip trip;
--	int trip_id, result;
-+	int trip_id;
-+
-+	if (!device_is_registered(dev))
-+		return -ENODEV;
- 
- 	if (sscanf(attr->attr.name, "trip_point_%d_type", &trip_id) != 1)
- 		return -EINVAL;
- 
--	mutex_lock(&tz->lock);
--
--	if (device_is_registered(dev))
--		result = __thermal_zone_get_trip(tz, trip_id, &trip);
--	else
--		result = -ENODEV;
--
--	mutex_unlock(&tz->lock);
--
--	if (result)
--		return result;
-+	if (trip_id < 0 || trip_id >= tz->num_trips)
-+		return -EINVAL;
- 
--	switch (trip.type) {
-+	switch (tz->trips[trip_id].type) {
- 	case THERMAL_TRIP_CRITICAL:
- 		return sprintf(buf, "critical\n");
- 	case THERMAL_TRIP_HOT:
-@@ -164,25 +157,18 @@ trip_point_temp_show(struct device *dev,
- 		     char *buf)
- {
- 	struct thermal_zone_device *tz = to_thermal_zone(dev);
--	struct thermal_trip trip;
--	int trip_id, ret;
-+	int trip_id;
-+
-+	if (!device_is_registered(dev))
-+		return -ENODEV;
- 
- 	if (sscanf(attr->attr.name, "trip_point_%d_temp", &trip_id) != 1)
- 		return -EINVAL;
- 
--	mutex_lock(&tz->lock);
--
--	if (device_is_registered(dev))
--		ret = __thermal_zone_get_trip(tz, trip_id, &trip);
--	else
--		ret = -ENODEV;
--
--	mutex_unlock(&tz->lock);
--
--	if (ret)
--		return ret;
-+	if (trip_id < 0 || trip_id >= tz->num_trips)
-+		return -EINVAL;
- 
--	return sprintf(buf, "%d\n", trip.temperature);
-+	return sprintf(buf, "%d\n", tz->trips[trip_id].temperature);
- }
- 
- static ssize_t
-@@ -234,22 +220,18 @@ trip_point_hyst_show(struct device *dev,
- 		     char *buf)
- {
- 	struct thermal_zone_device *tz = to_thermal_zone(dev);
--	struct thermal_trip trip;
--	int trip_id, ret;
-+	int trip_id;
-+
-+	if (!device_is_registered(dev))
-+		return -ENODEV;
- 
- 	if (sscanf(attr->attr.name, "trip_point_%d_hyst", &trip_id) != 1)
- 		return -EINVAL;
- 
--	mutex_lock(&tz->lock);
--
--	if (device_is_registered(dev))
--		ret = __thermal_zone_get_trip(tz, trip_id, &trip);
--	else
--		ret = -ENODEV;
--
--	mutex_unlock(&tz->lock);
-+	if (trip_id < 0 || trip_id >= tz->num_trips)
-+		return -EINVAL;
- 
--	return ret ? ret : sprintf(buf, "%d\n", trip.hysteresis);
-+	return sprintf(buf, "%d\n", tz->trips[trip_id].hysteresis);
- }
- 
- static ssize_t
-
-
+Thanks,
+Florian
 
