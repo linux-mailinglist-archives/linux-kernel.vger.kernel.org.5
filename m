@@ -2,122 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 341C97FE9E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 08:45:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA7437FE9E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 08:45:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229641AbjK3Ho4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 02:44:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44868 "EHLO
+        id S1344694AbjK3HpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 02:45:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231687AbjK3Hoy (ORCPT
+        with ESMTP id S231743AbjK3HpB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 02:44:54 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D964D6C
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 23:44:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701330299;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kFX81jkgr22XnPLJhetZKt46F/xnkz4cCCAQykO/SFc=;
-        b=XyVIkhwzl+zGAxLTEjzT3p1UETgjn0DwdeHUjPXRBdq8z9LL0B8l041jaHQpG8IKBRxrQt
-        zF8Y+L3tsVebLSKBiyyt+LeEV6PrXCOgIQEzpyUoV7Cg4l2jZxspr98E+v1/aScW1lG7Px
-        hDefYpjQL15tdJh8lY3V9GOxiFTfDnA=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-417-AHfMViECMDaF78Bs7fn4Uw-1; Thu, 30 Nov 2023 02:44:56 -0500
-X-MC-Unique: AHfMViECMDaF78Bs7fn4Uw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id CD3E6185A781;
-        Thu, 30 Nov 2023 07:44:55 +0000 (UTC)
-Received: from localhost (unknown [10.72.113.121])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D7468C1596F;
-        Thu, 30 Nov 2023 07:44:44 +0000 (UTC)
-Date:   Thu, 30 Nov 2023 15:44:41 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     fuqiang wang <fuqiang.wang@easystack.cn>
-Cc:     Vivek Goyal <vgoyal@redhat.com>, Dave Young <dyoung@redhat.com>,
-        kexec@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] kexec: avoid out of bounds in crash_exclude_mem_range()
-Message-ID: <ZWg9aZYoo0v+tCQ8@MiWiFi-R3L-srv>
-References: <20231127025641.62210-1-fuqiang.wang@easystack.cn>
+        Thu, 30 Nov 2023 02:45:01 -0500
+Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com [209.85.215.200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30CF7D6C
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 23:45:06 -0800 (PST)
+Received: by mail-pg1-f200.google.com with SMTP id 41be03b00d2f7-5c5fe3b00f6so647051a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 23:45:06 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701330305; x=1701935105;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AvDVdklXpOO28r2h4hM/HbFeKnvYdtyejaI7kcvG/3Y=;
+        b=qZ58e+LTB3hr04BN+vv3XWwnrlqlUyLNBRXIztEidE4+zV/Kt+ujVIW+GzXm9ejlNJ
+         J4xLjSfDe9dSeHTqjXRnALbMu3X4KrmA04Wsj6IDS8ah8Uwid2YyZDpUUzqvGqG4g6vW
+         XyrzUxqWLc6VFLSHPdOXjbJPTswCjd23cDk6Kjld1IV2Rdooz3ESxVA2xYf5wp+28fTu
+         V+wdnHkZF0ZYqLPM16T2ICu0ZeKk3CCdkcTEPpHE7LZPUhdC7gDf3pq0EfJYrD5DOUQl
+         DqZbdCc6tukShdJiAzQXdNjBKweoaGR7W30aohw1obxCe9kw/xuGTTpuKRD92qdtGaA8
+         CIEw==
+X-Gm-Message-State: AOJu0YyEoxoKHZrcRZ9ZTrg7XCpLYEKg0fPVLqxN9Oq9mY0w3e0jXwk6
+        tDT+Rl5RvdQSLRsVnxgO66ipQAGH6/pnJ8t1Zy4qhDM6352fPP4=
+X-Google-Smtp-Source: AGHT+IF0DxaOnUA6efG+zkn0dRYM3rvuXN8AzplCWV2JW76tPQ2PYT/atIzSO3RqgWFDtssFVeB7pcPBYZzlR8LePyiOXP3/lhKi
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231127025641.62210-1-fuqiang.wang@easystack.cn>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a63:e310:0:b0:5b9:63f2:e4cc with SMTP id
+ f16-20020a63e310000000b005b963f2e4ccmr3477838pgh.2.1701330305575; Wed, 29 Nov
+ 2023 23:45:05 -0800 (PST)
+Date:   Wed, 29 Nov 2023 23:45:05 -0800
+In-Reply-To: <20231130072806.1240587-1-lizhi.xu@windriver.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000826f8f060b59d4ea@google.com>
+Subject: Re: [syzbot] [exfat?] INFO: task hung in exfat_write_inode
+From:   syzbot <syzbot+2f73ed585f115e98aee8@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, lizhi.xu@windriver.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/27/23 at 10:56am, fuqiang wang wrote:
-> When the split happened, judge whether mem->nr_ranges is equal to
-> mem->max_nr_ranges. If it is true, return -ENOMEM.
-> 
-> The advantage of doing this is that it can avoid array bounds caused by
-> some bugs. E.g., Before commit 4831be702b95 ("arm64/kexec: Fix missing
-> extra range for crashkres_low."), reserve both high and low memories for
-> the crashkernel may cause out of bounds.
-> 
-> On the other hand, move this code before the split to ensure that the
-> array will not be changed when return error.
+Hello,
 
-If out of array boundary is caused, means the laoding failed, whether
-the out of boundary happened or not. I don't see how this code change
-makes sense. Do I miss anything?
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+WARNING: bad unlock balance in __exfat_truncate
 
-Thanks
-Baoquan
+=====================================
+WARNING: bad unlock balance detected!
+6.1.0-syzkaller-11044-gf9ff5644bcc0-dirty #0 Not tainted
+-------------------------------------
+syz-executor.1/5525 is trying to release lock (&sbi->s_lock) at:
+[<ffffffff8247908a>] __exfat_truncate+0x45a/0x7f0 fs/exfat/file.c:163
+but there are no more locks to release!
 
-> 
-> Signed-off-by: fuqiang wang <fuqiang.wang@easystack.cn>
-> ---
->  kernel/crash_core.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/kernel/crash_core.c b/kernel/crash_core.c
-> index efe87d501c8c..ffdc246cf425 100644
-> --- a/kernel/crash_core.c
-> +++ b/kernel/crash_core.c
-> @@ -611,6 +611,9 @@ int crash_exclude_mem_range(struct crash_mem *mem,
->  		}
->  
->  		if (p_start > start && p_end < end) {
-> +			/* Split happened */
-> +			if (mem->nr_ranges == mem->max_nr_ranges)
-> +				return -ENOMEM;
->  			/* Split original range */
->  			mem->ranges[i].end = p_start - 1;
->  			temp_range.start = p_end + 1;
-> @@ -626,9 +629,6 @@ int crash_exclude_mem_range(struct crash_mem *mem,
->  	if (!temp_range.end)
->  		return 0;
->  
-> -	/* Split happened */
-> -	if (i == mem->max_nr_ranges - 1)
-> -		return -ENOMEM;
->  
->  	/* Location where new range should go */
->  	j = i + 1;
-> -- 
-> 2.42.0
-> 
-> 
-> _______________________________________________
-> kexec mailing list
-> kexec@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/kexec
-> 
+other info that might help us debug this:
+4 locks held by syz-executor.1/5525:
+ #0: ffff88802a1e4460 (sb_writers#14){.+.+}-{0:0}, at: do_renameat2+0x3eb/0xd20 fs/namei.c:4866
+ #1: ffff88802a1e4748 (&type->s_vfs_rename_key#2){+.+.}-{3:3}, at: lock_rename+0x58/0x280 fs/namei.c:2994
+ #2: ffff88806489b970 (&sb->s_type->i_mutex_key#21/1){+.+.}-{3:3}, at: inode_lock_nested include/linux/fs.h:791 [inline]
+ #2: ffff88806489b970 (&sb->s_type->i_mutex_key#21/1){+.+.}-{3:3}, at: lock_rename+0xa4/0x280 fs/namei.c:2998
+ #3: ffff88806489d9b0 (&sb->s_type->i_mutex_key#21/2){+.+.}-{3:3}, at: inode_lock_nested include/linux/fs.h:791 [inline]
+ #3: ffff88806489d9b0 (&sb->s_type->i_mutex_key#21/2){+.+.}-{3:3}, at: lock_rename+0xd8/0x280 fs/namei.c:2999
+
+stack backtrace:
+CPU: 1 PID: 5525 Comm: syz-executor.1 Not tainted 6.1.0-syzkaller-11044-gf9ff5644bcc0-dirty #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x100/0x178 lib/dump_stack.c:106
+ print_unlock_imbalance_bug include/trace/events/lock.h:69 [inline]
+ __lock_release kernel/locking/lockdep.c:5345 [inline]
+ lock_release.cold+0x49/0x4e kernel/locking/lockdep.c:5688
+ __mutex_unlock_slowpath+0xa3/0x640 kernel/locking/mutex.c:907
+ __exfat_truncate+0x45a/0x7f0 fs/exfat/file.c:163
+ exfat_evict_inode+0x263/0x340 fs/exfat/inode.c:624
+ evict+0x2ed/0x6b0 fs/inode.c:664
+ iput_final fs/inode.c:1747 [inline]
+ iput.part.0+0x5ea/0x8c0 fs/inode.c:1773
+ iput+0x5c/0x80 fs/inode.c:1763
+ dentry_unlink_inode+0x292/0x430 fs/dcache.c:401
+ __dentry_kill+0x3b8/0x640 fs/dcache.c:607
+ dentry_kill fs/dcache.c:745 [inline]
+ dput+0x6aa/0xf70 fs/dcache.c:913
+ do_renameat2+0x46a/0xd20 fs/namei.c:4932
+ __do_sys_rename fs/namei.c:4976 [inline]
+ __se_sys_rename fs/namei.c:4974 [inline]
+ __x64_sys_rename+0x81/0xa0 fs/namei.c:4974
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f464c67cb29
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f464361e0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000052
+RAX: ffffffffffffffda RBX: 00007f464c79c050 RCX: 00007f464c67cb29
+RDX: 0000000000000000 RSI: 0000000020000080 RDI: 0000000020000040
+RBP: 00007f464c6c847a R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000006e R14: 00007f464c79c050 R15: 00007ffd9781fcc8
+ </TASK>
+
+
+Tested on:
+
+commit:         f9ff5644 Merge tag 'hsi-for-6.2' of git://git.kernel.o..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=1140c364e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1bf08f50e8fff9ad
+dashboard link: https://syzkaller.appspot.com/bug?extid=2f73ed585f115e98aee8
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=12aa5254e80000
 
