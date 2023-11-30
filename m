@@ -2,166 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DF2A7FFC86
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 21:31:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A25D97FFC8A
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 21:32:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232456AbjK3Ubf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 15:31:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34858 "EHLO
+        id S1376697AbjK3Uc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 15:32:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235171AbjK3UbY (ORCPT
+        with ESMTP id S229493AbjK3UcY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 15:31:24 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CC43170D;
-        Thu, 30 Nov 2023 12:31:30 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1cfd78f8a12so13332255ad.2;
-        Thu, 30 Nov 2023 12:31:30 -0800 (PST)
+        Thu, 30 Nov 2023 15:32:24 -0500
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8F0710F9
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 12:32:30 -0800 (PST)
+Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-a00a9c6f1e9so200425366b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 12:32:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701376290; x=1701981090; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=lT0qrYRiDsoV72KTkVoQoxtzRhRHGxESaqbx7R1F6QI=;
-        b=LdM7Q6hAcp15xEH1rfR+GbqvsNlXhLE+gIJ/oINoOTRXgGiOBE5f64jDTilhoOvlHI
-         FTY3+uW6NZcsiLtRMUERioA+k/KSayE1n12BC92GRvvYaDcljhq8NCNX/QPWeQRphaIX
-         bkWjGAdj4+qYVqe2qwE5SRntQYOzh7ZdtIRUK71PuxSfB2e0Y0rPEqkCBjGJTd69MyGP
-         DcBurbkVIGea2iQApqp3mt4exPbVF0IAF46Rrr96CPzCjNaWmrRBzgrVGZoAvF5u55mR
-         JZ4YmclYH0iiqDZ0o+oVHQN9SaOUmYZs8z4ajJcLfMGONiTDdBZI7FtsXnMo0aFU/8p/
-         QTXw==
+        d=chromium.org; s=google; t=1701376349; x=1701981149; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eyV2gGCTHlRr6FFC1cUH0SLaifrXymYajx2/Ty5GB1w=;
+        b=VAgxEePj53u5EM//Qi/HrAclM1gseJ6DJ9FsYCnbBB4v9BLaidfAAhnzc809l7Qudq
+         JYWJ77C/pssWrK13CNxq1FUGoZWTwCzS6OtBRRgMmp/3qwFZCRUd2LNkmhVysbrpM6Nm
+         BVEKIsB++DDuOz7040X4eIEX7q3fcyZapA/AQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701376290; x=1701981090;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lT0qrYRiDsoV72KTkVoQoxtzRhRHGxESaqbx7R1F6QI=;
-        b=n96OvYiA9GXX38g0X6zIfxo7BLuwxoBSzVgkRLevG8d2gIIP//H7qvzZv6Yp7h67WV
-         eiSEuiecvEx6+dAj2ITYz4ybBimeqkV6qJt3kwINpTfaYRvLpciX8e3TbFCrxVY1x1cV
-         7jL2fJ63EH08LQr2AnwJMi5hM9xwPgqqfkfz1EJnY4/f2W3Rljr6nt5Tod+oPodWUvJ+
-         ngFeCCIONxC9ZL23b6EaR+/Z/ypIqg03/yEOdmqEYUzfOjYgVyuAR85A9FLAvsbiEtHc
-         2H3PPaNvzBs4Hkt6Gg4zZH6JqF9Bu1y12e5atRdgW3Zrthe1/FvTkB8+fAeQrWmo+KTl
-         f9Tw==
-X-Gm-Message-State: AOJu0Yzn9QuZzZBuBA9MUeRnyaj/mqQTx+3L2T6BU+p5yDu6RvTlhb2y
-        fpI4gRCjUeY+03WnmDsbWYon0OEYJRI=
-X-Google-Smtp-Source: AGHT+IH+fM8rY+srhKUulbpuwzzszQvrLQtPs1KYVPFZ6Cif94ZGQ+xD00dT7a2F8WpaOPp5r2tCfA==
-X-Received: by 2002:a17:902:d303:b0:1cc:5691:5113 with SMTP id b3-20020a170902d30300b001cc56915113mr24799769plc.26.1701376289637;
-        Thu, 30 Nov 2023 12:31:29 -0800 (PST)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id d13-20020a170903230d00b001cf68d103easm1824937plh.46.2023.11.30.12.31.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Nov 2023 12:31:28 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <43effb57-abbd-46bb-ac7d-cab9616a4532@roeck-us.net>
-Date:   Thu, 30 Nov 2023 12:31:26 -0800
+        d=1e100.net; s=20230601; t=1701376349; x=1701981149;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eyV2gGCTHlRr6FFC1cUH0SLaifrXymYajx2/Ty5GB1w=;
+        b=l0B0YuL+BqKR82PWW1RcRF9O9eRrxu59dU4f2ieQSaugwyeeTmxvQVgYbRgSvtiitW
+         g3xtzyZmIqyKCDgJvjd3/Xt1uYfSzzm0KUWEkjZc3pjhq2O1GGfPn7gMj5aRglP5yX8o
+         eLQYzt3CimHl/wBDlqTCFJDI0albDe0bjhABQPflbHF22OXQE9yMm6eSQ7RzTmRC7/l0
+         Jp1G1SsxFFfisGaSg+YEQK6xxkCShSOATpMWYcX/Iw8LlIp3ep17xTBBMNCskuF5ParF
+         vy1JTUfkQnjpJF7Is9I0C8h30961dC4Km6mL13SznQ70oPUD2t+1egkO+v7LQVJHH+sK
+         UsIA==
+X-Gm-Message-State: AOJu0YxraM3cRabgAWYhI6JymX3p32bg/1+4zKLNR2XQ2k3h/aGkGnRW
+        ZZm2EXs3ca//fJNZVGMRDLbhnk1a5eu9Cx2KSf9Jkw==
+X-Google-Smtp-Source: AGHT+IHch7YUz9AbRflkh8eyE87tR9bbxlt1KhgjFd/Th7L8HVFlQINXZUmMZzuBhflV8YKfOIRD582CZAmHBaA7wGo=
+X-Received: by 2002:a17:907:9148:b0:a19:a19b:7890 with SMTP id
+ l8-20020a170907914800b00a19a19b7890mr79310ejs.83.1701376348966; Thu, 30 Nov
+ 2023 12:32:28 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] hwmon: (pc87360) Bounds check data->innr usage
-Content-Language: en-US
-To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        Kees Cook <keescook@chromium.org>,
-        Jim Cromie <jim.cromie@gmail.com>
-Cc:     Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <20231130200207.work.679-kees@kernel.org>
- <cdc00899-cf44-44dd-b708-6cf7dc4b8375@embeddedor.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <cdc00899-cf44-44dd-b708-6cf7dc4b8375@embeddedor.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+References: <20231129172200.430674-1-sjg@chromium.org> <20231129172200.430674-3-sjg@chromium.org>
+ <CAK7LNARRYWhFyTXRXPC_z6RL=KUW6pO-Lsz1mgGd1jxPiHxe+w@mail.gmail.com>
+In-Reply-To: <CAK7LNARRYWhFyTXRXPC_z6RL=KUW6pO-Lsz1mgGd1jxPiHxe+w@mail.gmail.com>
+From:   Simon Glass <sjg@chromium.org>
+Date:   Thu, 30 Nov 2023 13:32:17 -0700
+Message-ID: <CAPnjgZ2y=EONroCbCA7AqVaaax1Sdujy1A3NwFugwxiug490tA@mail.gmail.com>
+Subject: Re: [PATCH v7 2/2] arm64: boot: Support Flat Image Tree
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Tom Rini <trini@konsulko.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        U-Boot Mailing List <u-boot@lists.denx.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Terrell <terrelln@fb.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Will Deacon <will@kernel.org>, linux-kbuild@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_PDS_OTHER_BAD_TLD,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_SPF_WL autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/30/23 12:11, Gustavo A. R. Silva wrote:
-> 
-> 
-> On 11/30/23 14:02, Kees Cook wrote:
->> Without visibility into the initializers for data->innr, GCC suspects
->> using it as an index could walk off the end of the various 14-element
->> arrays in data. Perform an explicit clamp to the array size. Silences
->> the following warning with GCC 12+:
->>
->> ../drivers/hwmon/pc87360.c: In function 'pc87360_update_device':
->> ../drivers/hwmon/pc87360.c:341:49: warning: writing 1 byte into a region of size 0 [-Wstringop-overflow=]
->>    341 |                                 data->in_max[i] = pc87360_read_value(data,
->>        |                                 ~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
->>    342 |                                                   LD_IN, i,
->>        |                                                   ~~~~~~~~~
->>    343 |                                                   PC87365_REG_IN_MAX);
->>        |                                                   ~~~~~~~~~~~~~~~~~~~
->> ../drivers/hwmon/pc87360.c:209:12: note: at offset 255 into destination object 'in_max' of size 14
->>    209 |         u8 in_max[14];          /* Register value */
->>        |            ^~~~~~
->>
->> Cc: Jim Cromie <jim.cromie@gmail.com>
->> Cc: Jean Delvare <jdelvare@suse.com>
->> Cc: Guenter Roeck <linux@roeck-us.net>
->> Cc: linux-hwmon@vger.kernel.org
->> Signed-off-by: Kees Cook <keescook@chromium.org>
-> 
-> Looks good to me.
-> 
-> Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> 
+Hi Masahiro,
 
-Guess I'll apply it, even though it is quite pointless. But arguing against
-such changes seems like shouting into the wind, so whatever.
+On Thu, 30 Nov 2023 at 08:39, Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> On Thu, Nov 30, 2023 at 2:22=E2=80=AFAM Simon Glass <sjg@chromium.org> wr=
+ote:
+> >
+> > Add a script which produces a Flat Image Tree (FIT), a single file
+> > containing the built kernel and associated devicetree files.
+> > Compression defaults to gzip which gives a good balance of size and
+> > performance.
+> >
+> > The files compress from about 86MB to 24MB using this approach.
+> >
+> > The FIT can be used by bootloaders which support it, such as U-Boot
+> > and Linuxboot. It permits automatic selection of the correct
+> > devicetree, matching the compatible string of the running board with
+> > the closest compatible string in the FIT. There is no need for
+> > filenames or other workarounds.
+> >
+> > Add a 'make image.fit' build target for arm64, as well.
+> >
+> > The FIT can be examined using 'dumpimage -l'.
+> >
+> > This features requires pylibfdt (use 'pip install libfdt'). It also
+> > requires compression utilities for the algorithm being used. Supported
+> > compression options are the same as the Image.xxx files. For now there
+> > is no way to change the compression other than by editing the rule for
+> > $(obj)/image.fit
+> >
+> > While FIT supports a ramdisk / initrd, no attempt is made to support
+> > this here, since it must be built separately from the Linux build.
+> >
+> > Signed-off-by: Simon Glass <sjg@chromium.org>
+> > ---
+> >
+> > Changes in v7:
+> > - Add Image as a dependency of image.fit
+> > - Drop kbuild tag
+> > - Add dependency on dtbs
+> > - Drop unnecessary path separator for dtbs
+> > - Rebase to -next
+> >
+> > Changes in v5:
+> > - Drop patch previously applied
+> > - Correct compression rule which was broken in v4
+> >
+> > Changes in v4:
+> > - Use single quotes for UIMAGE_NAME
+> >
+> > Changes in v3:
+> > - Drop temporary file image.itk
+> > - Drop patch 'Use double quotes for image name'
+> > - Drop double quotes in use of UIMAGE_NAME
+> > - Drop unnecessary CONFIG_EFI_ZBOOT condition for help
+> > - Avoid hard-coding "arm64" for the DT architecture
+> >
+> > Changes in v2:
+> > - Drop patch previously applied
+> > - Add .gitignore file
+> > - Move fit rule to Makefile.lib using an intermediate file
+> > - Drop dependency on CONFIG_EFI_ZBOOT
+> > - Pick up .dtb files separately from the kernel
+> > - Correct pylint too-many-args warning for write_kernel()
+> > - Include the kernel image in the file count
+> > - Add a pointer to the FIT spec and mention of its wide industry usage
+> > - Mention the kernel version in the FIT description
+> >
+> >  MAINTAINERS                |   7 +
+> >  arch/arm64/Makefile        |   9 +-
+> >  arch/arm64/boot/.gitignore |   1 +
+> >  arch/arm64/boot/Makefile   |   6 +-
+> >  scripts/Makefile.lib       |  13 ++
+> >  scripts/make_fit.py        | 289 +++++++++++++++++++++++++++++++++++++
+> >  6 files changed, 322 insertions(+), 3 deletions(-)
+> >  create mode 100755 scripts/make_fit.py
+> >
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index 14587be87a33..d609f0e8deb3 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -1585,6 +1585,13 @@ F:       Documentation/process/maintainer-soc*.r=
+st
+> >  F:     arch/arm/boot/dts/Makefile
+> >  F:     arch/arm64/boot/dts/Makefile
+> >
+> > +ARM64 FIT SUPPORT
+> > +M:     Simon Glass <sjg@chromium.org>
+> > +L:     linux-arm-kernel@lists.infradead.org (moderated for non-subscri=
+bers)
+> > +S:     Maintained
+> > +F:     arch/arm64/boot/Makefile
+> > +F:     scripts/make_fit.py
+> > +
+> >  ARM ARCHITECTED TIMER DRIVER
+> >  M:     Mark Rutland <mark.rutland@arm.com>
+> >  M:     Marc Zyngier <maz@kernel.org>
+> > diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
+> > index 1bd4fae6e806..18e092de7cdb 100644
+> > --- a/arch/arm64/Makefile
+> > +++ b/arch/arm64/Makefile
+> > @@ -36,6 +36,8 @@ ifeq ($(CONFIG_BROKEN_GAS_INST),y)
+> >  $(warning Detected assembler with broken .inst; disassembly will be un=
+reliable)
+> >  endif
+> >
+> > +KBUILD_DTBS      :=3D dtbs
+>
+>
+> Please remove this, and hard-code
+>
+>  image.fit: dtbs
 
-There are several other similar "unchecked" loops, including loops for
-fannr and tempnr. The driver would misbehave badly if any of those would
-ever be outside the valid range, both when accessing the hardware and
-writing into various arrays.
+OK
 
-Guenter
+>
+>
+>
+> >
+> >  $(obj)/Image: vmlinux FORCE
+> >         $(call if_changed,objcopy)
+> > @@ -39,6 +40,9 @@ $(obj)/Image.lzo: $(obj)/Image FORCE
+> >  $(obj)/Image.zst: $(obj)/Image FORCE
+> >         $(call if_changed,zstd)
+> >
+> > +$(obj)/image.fit: $(obj)/Image FORCE
+> > +       $(call cmd,fit,gzip)
+>
+>
+> The gzip parameter is not used.
+> Please do
+>
+>      $(call cmd,fit)
 
+I do want to be able to control the compression algo. I added a
+FIT_COMPRESS for that, so that this arg is used.
+>
+> In the python script, functions are separated with two blank lines,
+> but there is only one blank line between parse_args() and setup_fit().
+>
+>
+> I do not mind either way because it does not contain any class,
+> but please keep consistency.
+
+OK
+
+Regards,
+Simon
