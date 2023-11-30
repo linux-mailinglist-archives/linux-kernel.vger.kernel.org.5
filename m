@@ -2,119 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A8AE7FF842
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 18:31:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6646F7FF906
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 19:05:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346119AbjK3Raw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 12:30:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36964 "EHLO
+        id S1346717AbjK3SE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 13:04:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231837AbjK3Rau (ORCPT
+        with ESMTP id S231958AbjK3SEz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 12:30:50 -0500
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D511E0;
-        Thu, 30 Nov 2023 09:30:57 -0800 (PST)
-Received: by mail-oi1-x22e.google.com with SMTP id 5614622812f47-3b842c1511fso725499b6e.1;
-        Thu, 30 Nov 2023 09:30:57 -0800 (PST)
+        Thu, 30 Nov 2023 13:04:55 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05D2010D9
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 10:05:01 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-3316d09c645so1086982f8f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 10:05:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701365456; x=1701970256; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Z5YRUv/f6nb2mEoxA9rov/7w4nJ9wOVnYZN9JamrwUs=;
-        b=iWA41sSnAvNYx51mJyPXszdWm7Q0uCOrDFlFKhS+ypwcndpE4qeSdlYrQFwiyNsVOQ
-         qOnzxrCVCYaDu3VMF0PIbUcUEjX3EtrqEDOMmG3ObBbkZfEywgzraOFEuvX7GxUXMbyq
-         FbMVYcrfT6Yw675gIst5btvue/nmgvYGJeBK9+o1tbP4NZg9kY964tmL0Bh4sFulcK4v
-         oqoGfjtwCvOxDhwDO5A3pdxB+tVatp7aHy8Ak9SreO8ACAjlQS532vKRtAvULbVmPH1h
-         MQx3jzlGyzlmEsqQ2QiKZYoKQctn47DgBwWI/I2NezeaMuNOFPbrlL+RFrviD9cso/ly
-         SuPQ==
+        d=gmail.com; s=20230601; t=1701367499; x=1701972299; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=R6d9jPwSWN6yLTXx2alJGabuq1uAhjr4p52aUUSqzQY=;
+        b=hynOf0zoKM+k6MEXIrdpc/GrWOCScOFVh5MNjgggP0MOeL0LH4UCRcbPg7rSeR5BGO
+         fyKerwNrq3KZVKSBNSQUj726J03Zfq9/htBhNNiEdjP/1pYGw2cnvr6R3Vm4CoAazdSw
+         tGyU8GOS9YW8x7Fj68VRuRQu1cqnKGbhgPEb9vjCq9Xn+MPwlRdbJ+LG4TF1WpQnJCco
+         aBa7XWmmAiPjEUf8TuZD6o2QxyWCqN2VBg+2bunKNfTmVbetbmdnnWZHrM1X/A4bLXcG
+         3CyOhCEJar+5gSRZ01hqWDlJFjIrHN7Lc/Ad459ljBoRMP44hzcNqX/Txvqgd4hKkLJL
+         Gbrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701365456; x=1701970256;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1701367499; x=1701972299;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Z5YRUv/f6nb2mEoxA9rov/7w4nJ9wOVnYZN9JamrwUs=;
-        b=wZFajKsNYMe59cT8ljwkKMpCTQM8HcpmGkgS2D4ww1G+WRZon4yDT2qOH2W7v0c53z
-         xt0DfcCQdQ+TrbmJAkOV4Lp5m9jmRdNPrp2okl6Ys575oLOybcfnjaH+VB1c6eLs6SyV
-         /QOg+GYxjbnQszCPus41w6dYoN+5i8C3alK3RtfAKNlw5Q466eEl3Mnlh9a+mQRjSl7F
-         hfrdwIHOPOlIVgU6hn+bSLpTcCACKGXpUijDhe0My6GGp2emoyTIup7+DsOwXKLg/1Ha
-         E/7Ekxg0oHL03Q9AGbiWsmh4xDfDSjgNJjaUwnC902LJayGKufhFZ6idrhrwCM830tib
-         OYPw==
-X-Gm-Message-State: AOJu0YwC/t++G4KbXMXdqNnUtuMWGVLYvkxJcY7Q4L5C9Q7n/s9gnqrB
-        jS6Pz+eii6nHg2WQ2Q4xwwhUx8lOTRg=
-X-Google-Smtp-Source: AGHT+IEnsEy4DAK9uP7174pLgRWpsJcBmvH7Opw9P5zmGTO/iRNwRfk0QxYcClZGaY4qfeqbBCi45g==
-X-Received: by 2002:a05:6808:3a0d:b0:3b6:d639:35b0 with SMTP id gr13-20020a0568083a0d00b003b6d63935b0mr287110oib.50.1701365456518;
-        Thu, 30 Nov 2023 09:30:56 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id i13-20020a54408d000000b003b2e2d134a5sm243807oii.35.2023.11.30.09.30.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Nov 2023 09:30:55 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Thu, 30 Nov 2023 09:30:53 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     deller@kernel.org
-Cc:     linux-parisc@vger.kernel.org, Helge Deller <deller@gmx.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 8/8] parisc: Reduce size of __bug_table[] on 64-bit
- kernel by half
-Message-ID: <ef74368d-1fd6-4fd0-81dc-bcf04892cc13@roeck-us.net>
-References: <20231124144158.158993-1-deller@kernel.org>
- <20231124144158.158993-16-deller@kernel.org>
+        bh=R6d9jPwSWN6yLTXx2alJGabuq1uAhjr4p52aUUSqzQY=;
+        b=PZO3SaPApfYAyM4YCMscKNoiXDzpAdsGZinKnzs617iwYSeM+1oLjAUijsdufRxQI2
+         //cHQB3hT2nauZ8QwQnRK71ohv1tPGm4sk9i+Y9p1SrAh/HusmrGxOBu6VfPhxmdxYPk
+         KLMkSH19NhBYfbOVYgEHBzPVQvG1ug1VGziVslBSLZr7eHnkeraRgGBNER2CkuTcgNDR
+         AECr8jvtsnjfKch/vxOWoxoSFYUADWjGAuCGLfDRDD/0PwUVZliCm1kog4K6hIjW6V3h
+         hNoU5qmfgcfOKIHSxHEs5KvUzJgCIwzDLVrZlPCjkKWXEAIpPN1rqId3SkYp691M/lyf
+         Fo6Q==
+X-Gm-Message-State: AOJu0YwVeKR2v6ds0kq7SlYv9Ml2dWeyPOwZ0HSHovJADi9OoCDDMllK
+        hwNLSdst/1sDNWn7BlxI+ZjE73WaKyFUuXBlzao7VXyRdQ==
+X-Google-Smtp-Source: AGHT+IHLN6apI117jRKkfLFG90hZjLVUS6Mz4AAI0pfkS/prY+jJudjlOvU1vaJQpX2SAjCXtY+xahLXrBmUcjiXn8Y=
+X-Received: by 2002:ac2:531b:0:b0:50b:d48a:4485 with SMTP id
+ c27-20020ac2531b000000b0050bd48a4485mr2130lfh.57.1701365468422; Thu, 30 Nov
+ 2023 09:31:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231124144158.158993-16-deller@kernel.org>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+References: <20231120104152.13740-1-bp@alien8.de> <20231120104152.13740-2-bp@alien8.de>
+ <dc3835e3-0731-4230-bbb9-336bbe3d042b@amd.com> <20231130171316.GLZWjCrHGHl+VVp724@fat_crate.local>
+In-Reply-To: <20231130171316.GLZWjCrHGHl+VVp724@fat_crate.local>
+From:   Brian Gerst <brgerst@gmail.com>
+Date:   Thu, 30 Nov 2023 12:30:57 -0500
+Message-ID: <CAMzpN2j+4gUmUSghPjUDrQBLMn70FVT0cAAbZLkjk90y3L1jBQ@mail.gmail.com>
+Subject: Re: [PATCH 01/13] x86/CPU/AMD: Add ZenX generations flags
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Tom Lendacky <thomas.lendacky@amd.com>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 24, 2023 at 03:41:13PM +0100, deller@kernel.org wrote:
-> From: Helge Deller <deller@gmx.de>
-> 
-> Enable GENERIC_BUG_RELATIVE_POINTERS which will store 32-bit relative
-> offsets to the bug address and the source file name instead of 64-bit
-> absolute addresses. This effectively reduces the size of the
-> __bug_table[] array by half on 64-bit kernels.
-> 
-> Signed-off-by: Helge Deller <deller@gmx.de>
+On Thu, Nov 30, 2023 at 12:14=E2=80=AFPM Borislav Petkov <bp@alien8.de> wro=
+te:
+>
+> On Thu, Nov 30, 2023 at 11:05:14AM -0600, Tom Lendacky wrote:
+> > Previously just being family 17h or 19h would get X86_FEATURE_ZEN set. =
+With
+> > this, if the model check doesn't match, you won't get any X86_FEATURE_Z=
+EN*
+> > set. Should you do set X86_FEATURE_ZEN here, e.g. lowest common denomin=
+ator
+> > for the family?
+>
+> My assumption/expectation is that those WARNs should never happen
+> because they will be caught early enough in enablement and I will get
+> patches.
+>
+> Besides, X86_FEATURE_ZEN means only Zen1 now.
 
-With this patch in mainline, parisc:tinyconfig fails to build.
+It should be renamed to X86_FEATURE_ZEN1 for clarity.
 
-ecurity/commoncap.c: In function 'cap_capset':
-arch/parisc/include/asm/bug.h:71:17: error: invalid 'asm': operand number out of range
-   71 |                 asm volatile("\n"                                       \
-      |                 ^~~
-
-and many similar errors. Bisect log attached.
-
-Guenter
-
----
-# bad: [3b47bc037bd44f142ac09848e8d3ecccc726be99] Merge tag 'pinctrl-v6.7-2' of git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl
-# good: [98b1cc82c4affc16f5598d4fa14b1858671b2263] Linux 6.7-rc2
-git bisect start 'HEAD' 'v6.7-rc2'
-# good: [f1a09972a45ae63efbd1587337c4be13b1893330] Merge tag 'ata-6.7-rc3' of git://git.kernel.org/pub/scm/linux/kernel/git/dlemoal/libata
-git bisect good f1a09972a45ae63efbd1587337c4be13b1893330
-# good: [090472ed9c922e699dc61dd601a9b376a64f4390] Merge tag 'usb-6.7-rc3' of git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb
-git bisect good 090472ed9c922e699dc61dd601a9b376a64f4390
-# bad: [2cc14f52aeb78ce3f29677c2de1f06c0e91471ab] Linux 6.7-rc3
-git bisect bad 2cc14f52aeb78ce3f29677c2de1f06c0e91471ab
-# good: [4892711acee0915a8a4ae02e1af3dc70ce000024] Merge tag 'x86-urgent-2023-11-26' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip
-git bisect good 4892711acee0915a8a4ae02e1af3dc70ce000024
-# bad: [43266838515d30dc0c45d5c7e6e7edacee6cce92] parisc: Reduce size of the bug_table on 64-bit kernel by half
-git bisect bad 43266838515d30dc0c45d5c7e6e7edacee6cce92
-# good: [07eecff8ae78df7f28800484d31337e1f9bfca3a] parisc: Mark jump_table naturally aligned
-git bisect good 07eecff8ae78df7f28800484d31337e1f9bfca3a
-# good: [c9fcb2b65c2849e8ff3be23fd8828312fb68dc19] parisc: Ensure 32-bit alignment on parisc unwind section
-git bisect good c9fcb2b65c2849e8ff3be23fd8828312fb68dc19
-# good: [e5f3e299a2b1e9c3ece24a38adfc089aef307e8a] parisc: Drop the HP-UX ENOSYM and EREMOTERELEASE error codes
-git bisect good e5f3e299a2b1e9c3ece24a38adfc089aef307e8a
-# first bad commit: [43266838515d30dc0c45d5c7e6e7edacee6cce92] parisc: Reduce size of the bug_table on 64-bit kernel by half
+Brian Gerst
