@@ -2,144 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 394D07FEE5E
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 12:57:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D02B7FEE52
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 12:56:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345287AbjK3L5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 06:57:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55812 "EHLO
+        id S231912AbjK3L4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 06:56:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345214AbjK3L5X (ORCPT
+        with ESMTP id S231784AbjK3L43 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 06:57:23 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCA9599
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 03:57:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701345449;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to; bh=6RcSbHR7cFN6wAchAsaYdBBxf6WBZ1koqQk/TqaNhwk=;
-        b=Xwupty/nMJJhM/yZticViVqt36a0O2GGZSLPnwYwxxdWGRjA1TMHB122zTXcg5hti9MwSY
-        bHFWH/6m6a6H87MZCTi6aY+WEJENuH0Q59/ZCP5tVjDIgkVlJMoIGb3qAiikch1KHE5Q+U
-        TTTr8k2Y/dBo6QagV4BsJAGNmwVfUzg=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-102-cbkPqBosOSuYjqSifHfZyA-1; Thu,
- 30 Nov 2023 06:57:25 -0500
-X-MC-Unique: cbkPqBosOSuYjqSifHfZyA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4944238117F3;
-        Thu, 30 Nov 2023 11:57:25 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.226.2])
-        by smtp.corp.redhat.com (Postfix) with SMTP id ED0951C060B1;
-        Thu, 30 Nov 2023 11:57:23 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Thu, 30 Nov 2023 12:56:19 +0100 (CET)
-Date:   Thu, 30 Nov 2023 12:56:17 +0100
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] afs: use read_seqbegin() in afs_check_validity() and
- afs_getattr()
-Message-ID: <20231130115617.GA21584@redhat.com>
+        Thu, 30 Nov 2023 06:56:29 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF12093
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 03:56:35 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9003C433C9;
+        Thu, 30 Nov 2023 11:56:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701345395;
+        bh=0gaYOMvA2ibyG2CRywXLakjvDH9m4tn3Iws7Ip0IFnk=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=F7cv5wVhDmf6y3haumJzUzuGObqDB8fsop8lxgis0NXfhce1Gu2EAxU59Rw0jEH8K
+         tFYbuDsGjObiAtkkoE0T74GjDgQpmb6DCV/ESM+c4LAwSSxuTRJWRDbjQiqiHSZdsF
+         WuyPpO3fdLTbE9X4g+6ED2cGp1l18mUwUBFKod2Di7A6J5huIHNKzees2K1kCh0b4i
+         5YV4RfmQhInv4sVCXSNiSX0eqaFWcOUX9FhsN7g54cgHhYnedFhI6U48+VhkYGb2Hi
+         Ti075xZIagUrtm73SRmTy/d0yFRrd4O/KW9VD6xlDTbnq40xrxvi4oWyjRyIfYTt95
+         q8dxT83LO2hNQ==
+Message-ID: <a41227df-9ceb-44d9-8d9a-eddfcf7d5fab@kernel.org>
+Date:   Thu, 30 Nov 2023 12:56:26 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231130115537.GA21550@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 1/4] dt-bindings: pinctrl: qcom: Add SM4450 pinctrl
+To:     Tengfei Fan <quic_tengfan@quicinc.com>, andersson@kernel.org,
+        agross@kernel.org, konrad.dybcio@linaro.org,
+        linus.walleij@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel@quicinc.com
+References: <20231130024046.25938-1-quic_tengfan@quicinc.com>
+ <20231130024046.25938-2-quic_tengfan@quicinc.com>
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <20231130024046.25938-2-quic_tengfan@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-David Howells says:
+On 30/11/2023 03:40, Tengfei Fan wrote:
+> Add device tree binding Documentation details for Qualcomm SM4450
+> TLMM device.
+> 
 
- (3) afs_check_validity().
- (4) afs_getattr().
+Please use scripts/get_maintainers.pl to get a list of necessary people
+and lists to CC. It might happen, that command when run on an older
+kernel, gives you outdated entries. Therefore please be sure you base
+your patches on recent Linux kernel.
 
-     These are both pretty short, so your solution is probably good for them.
-     That said, afs_vnode_commit_status() can spend a long time under the
-     write lock - and pretty much every file RPC op returns a status update.
+You missed at least devicetree list (maybe more), so this won't be
+tested by automated tooling. Performing review on untested code might be
+a waste of time, thus I will skip this patch entirely till you follow
+the process allowing the patch to be tested.
 
-Change these functions to use read_seqbegin(). This simplifies the code
-and doesn't change the current behaviour, the "seq" counter is always even
-so read_seqbegin_or_lock() can never take the lock.
+Please kindly resend and include all necessary To/Cc entries.
 
-Signed-off-by: Oleg Nesterov <oleg@redhat.com>
----
- fs/afs/inode.c | 15 ++++++---------
- 1 file changed, 6 insertions(+), 9 deletions(-)
 
-diff --git a/fs/afs/inode.c b/fs/afs/inode.c
-index 78efc9719349..a6ae74d5b698 100644
---- a/fs/afs/inode.c
-+++ b/fs/afs/inode.c
-@@ -629,10 +629,10 @@ bool afs_check_validity(struct afs_vnode *vnode)
- 	enum afs_cb_break_reason need_clear = afs_cb_break_no_break;
- 	time64_t now = ktime_get_real_seconds();
- 	unsigned int cb_break;
--	int seq = 0;
-+	int seq;
- 
- 	do {
--		read_seqbegin_or_lock(&vnode->cb_lock, &seq);
-+		seq = read_seqbegin(&vnode->cb_lock);
- 		cb_break = vnode->cb_break;
- 
- 		if (test_bit(AFS_VNODE_CB_PROMISED, &vnode->flags)) {
-@@ -650,9 +650,7 @@ bool afs_check_validity(struct afs_vnode *vnode)
- 			need_clear = afs_cb_break_no_promise;
- 		}
- 
--	} while (need_seqretry(&vnode->cb_lock, seq));
--
--	done_seqretry(&vnode->cb_lock, seq);
-+	} while (read_seqretry(&vnode->cb_lock, seq));
- 
- 	if (need_clear == afs_cb_break_no_break)
- 		return true;
-@@ -755,7 +753,7 @@ int afs_getattr(struct mnt_idmap *idmap, const struct path *path,
- 	struct inode *inode = d_inode(path->dentry);
- 	struct afs_vnode *vnode = AFS_FS_I(inode);
- 	struct key *key;
--	int ret, seq = 0;
-+	int ret, seq;
- 
- 	_enter("{ ino=%lu v=%u }", inode->i_ino, inode->i_generation);
- 
-@@ -772,7 +770,7 @@ int afs_getattr(struct mnt_idmap *idmap, const struct path *path,
- 	}
- 
- 	do {
--		read_seqbegin_or_lock(&vnode->cb_lock, &seq);
-+		seq = read_seqbegin(&vnode->cb_lock);
- 		generic_fillattr(&nop_mnt_idmap, request_mask, inode, stat);
- 		if (test_bit(AFS_VNODE_SILLY_DELETED, &vnode->flags) &&
- 		    stat->nlink > 0)
-@@ -784,9 +782,8 @@ int afs_getattr(struct mnt_idmap *idmap, const struct path *path,
- 		 */
- 		if (S_ISDIR(inode->i_mode))
- 			stat->size = vnode->netfs.remote_i_size;
--	} while (need_seqretry(&vnode->cb_lock, seq));
-+	} while (read_seqretry(&vnode->cb_lock, seq));
- 
--	done_seqretry(&vnode->cb_lock, seq);
- 	return 0;
- }
- 
--- 
-2.25.1.362.g51ebf55
+> ---
+>  .../bindings/pinctrl/qcom,sm4450-tlmm.yaml    | 151 ++++++++++++++++++
+>  1 file changed, 151 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,sm4450-tlmm.yaml
+> 
+
+...
+
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    tlmm: pinctrl@f100000 {
+> +      compatible = "qcom,sm4450-tlmm";
+> +      reg = <0x0f100000 0x300000>;
+> +      gpio-controller;
+> +      #gpio-cells = <2>;
+> +      gpio-ranges = <&tlmm 0 0 137>;
+> +      interrupt-controller;
+> +      #interrupt-cells = <2>;
+> +      interrupts = <GIC_SPI 208 IRQ_TYPE_LEVEL_HIGH>;
+> +
+> +      gpio-wo-state {
+> +          pins = "gpio1";
+
+Messed indentation.
+
+
+
+Best regards,
+Krzysztof
 
