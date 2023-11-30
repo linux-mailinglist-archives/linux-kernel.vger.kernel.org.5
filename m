@@ -2,172 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C45E7FF037
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 14:33:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AC387FF038
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 14:34:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345593AbjK3NdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 08:33:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53492 "EHLO
+        id S1345587AbjK3Ne0 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 30 Nov 2023 08:34:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235176AbjK3NdT (ORCPT
+        with ESMTP id S1345518AbjK3NeY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 08:33:19 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F80A10A
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 05:33:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701351204;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lIdax5nkZnwudivN9rSoOKpFOEYMEgv4l8J3J8z/rRE=;
-        b=IhH3UnSgjHbkd/winX+Kckwc/Q19FFssG0XUaefzu0WWtJLpYNV3IKWnt3fJQcEOHriOgT
-        A3ZbNQcD70Qpnfx0tWVuFUEaZCcM0H6P2JtXLEwBoKiwz11xolz1N0w7DY1GH/eUUl32Pz
-        lHQ3gvv0Cfdt4yZebWud1Ahb9Onzn4Y=
-Received: from mail-yw1-f199.google.com (mail-yw1-f199.google.com
- [209.85.128.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-609--Fw0J-5vNfWjNhcQYTpyMw-1; Thu, 30 Nov 2023 08:33:16 -0500
-X-MC-Unique: -Fw0J-5vNfWjNhcQYTpyMw-1
-Received: by mail-yw1-f199.google.com with SMTP id 00721157ae682-5cddc35545dso15843737b3.2
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 05:33:16 -0800 (PST)
+        Thu, 30 Nov 2023 08:34:24 -0500
+Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADB2D90;
+        Thu, 30 Nov 2023 05:34:30 -0800 (PST)
+Received: by mail-oi1-f180.google.com with SMTP id 5614622812f47-3b89d4be037so158253b6e.0;
+        Thu, 30 Nov 2023 05:34:30 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701351196; x=1701955996;
+        d=1e100.net; s=20230601; t=1701351270; x=1701956070;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=lIdax5nkZnwudivN9rSoOKpFOEYMEgv4l8J3J8z/rRE=;
-        b=FCZVbbWHq4T2Qx68FRUZgaGivyRZ3o4CIrb3fp8/TYyMoIgBEv11yhrPu5Gxot/4Be
-         D2VPB3H/F0HCuWfq8I8BV5JzQV9hyGjbJNNVf5EKdSv3YlseMVQXSFD7IOlpNFYgG8RA
-         Bsz/8au4cc8D/0s+swFKtI+JtCLgn71wME62EAF6uWRsv6g05DBaMC5wP7cDw/aB4U8U
-         LqdEqHouszEKRl8cGfJXfkLV5O4XPTMAeJf4vyQZyrv45wkxZ/j2PxBVmCCGQM0HbQ1o
-         zf8CK8VdSfUgRmh3zRPYngpgb2XZgzhIulJO1WldefUeeqV5fvp2IARQmoUCzZDjCvaj
-         W70Q==
-X-Gm-Message-State: AOJu0YzsqpnelMn1l620C04E9RG1gb3EI+IaAiZZtZcyTeIxhOl2xI+S
-        SKzf0+wsmTJtHNqVFrNHAfsUnnIv4fqcly/ftlTbWgQUARHfDhSBmxN19cTJBoylFaXDVn+/6eD
-        rR3hJXUk0J5Y5+WZz7LVz3QyMq7RVCVjHbcUJOnv/
-X-Received: by 2002:a05:690c:26c5:b0:5ce:2148:d4cf with SMTP id eb5-20020a05690c26c500b005ce2148d4cfmr20665601ywb.7.1701351196243;
-        Thu, 30 Nov 2023 05:33:16 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEyHMfB1iLmJUS19oxGI8jchledMhy59y3Chc3JAP3cbaAu3Lb3Zgy8ugriUEexPf+OP5vCDjPkByF3Ed/Hc9I=
-X-Received: by 2002:a05:690c:26c5:b0:5ce:2148:d4cf with SMTP id
- eb5-20020a05690c26c500b005ce2148d4cfmr20665576ywb.7.1701351195958; Thu, 30
- Nov 2023 05:33:15 -0800 (PST)
+        bh=GsSkd9Z+ooFtNFrUCB0W0bjBZ4BzCMhvYDCWIVJBLa0=;
+        b=OMN0Ljvg91iW3CvtWNjas0gVXQB6QkEjxF+to9Jefve1d83o7TYJY3Bdk6URSpZeZw
+         7DWcsG+5jBquzOQ4enbR6yChDZfe93P9gzFQXub5/sBLOxe18ZkL3U2VI4Q/Pv/IqIPm
+         xDPq6cpYlXWnVh1EOGuORJCToBp/XH7wwnl1DN08GTu7b8GwlA/VBPJdFvBlLVBMaQv6
+         0XeLP4i1VR/NZdk01xyq/NhqmRS0r1pIoBRMNOFtXcnAy6lrWzhSJ/iGa9DR8eY0Pu6r
+         uqixeSmQDocxdjOw6hFMwo82JpNQRAEjpPe/HBn986/lO/7Dw6KXlNHys220rJ3eF85M
+         99+w==
+X-Gm-Message-State: AOJu0YzcsaZujsEX5N/hsbM513uNLhT42lrroF4srNEDnoKPM0iW9dn2
+        S6CXrzBxa1Be3F4+bCbx3bWBuymBF7IWLZHlF5U=
+X-Google-Smtp-Source: AGHT+IEXYJjceEHnm1gru2z0MY1Ph6o5bcJvngCnRk+nJcyzn7kvn7eBTi47P8u5YV9hbA3I7mMr0z1Vcp7lJapQKeE=
+X-Received: by 2002:a05:6808:2016:b0:3ae:5650:c6ae with SMTP id
+ q22-20020a056808201600b003ae5650c6aemr2277022oiw.0.1701351269934; Thu, 30 Nov
+ 2023 05:34:29 -0800 (PST)
 MIME-Version: 1.0
-References: <CAO7dBbUVQn8xzPZQhhw1XqF+sQT0c6phk4sda+X=MrR6RmPE0A@mail.gmail.com>
- <ZWJllXCN0SDIELrX@dwarf.suse.cz> <CAO7dBbVJ=ytRra_77VRZ8ud1wVkP9fub=Vj6cfTkx=CnYg5J2A@mail.gmail.com>
- <ZWVMUxmi66xLZPsr@MiWiFi-R3L-srv> <ZWWuBSiZZdF2W12j@tiehlicka>
- <ZWbyDx3TJ7zo3jCw@MiWiFi-R3L-srv> <91a31ce5-63d1-7470-18f7-92b039fda8e6@redhat.com>
- <ZWf64BowWrYqA2Rf@MiWiFi-R3L-srv> <ZWhg_b3O6piZtkQ-@tiehlicka>
- <ZWh6ax8YmkhxAzIf@MiWiFi-R3L-srv> <ZWiOO-KNJ82f6Gxu@tiehlicka>
-In-Reply-To: <ZWiOO-KNJ82f6Gxu@tiehlicka>
-From:   Pingfan Liu <piliu@redhat.com>
-Date:   Thu, 30 Nov 2023 21:33:04 +0800
-Message-ID: <CAF+s44QSJL5e6BVTAyyHR9Kzx7RJqZSkR=uXEypaouK_XuBbEw@mail.gmail.com>
-Subject: Re: [PATCH 0/4] kdump: crashkernel reservation from CMA
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Baoquan He <bhe@redhat.com>, Donald Dutile <ddutile@redhat.com>,
-        Jiri Bohac <jbohac@suse.cz>, Tao Liu <ltao@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        Dave Young <dyoung@redhat.com>, kexec@lists.infradead.org,
-        linux-kernel@vger.kernel.org
+References: <20231110185503.46117-1-mario.limonciello@amd.com> <20231110185503.46117-2-mario.limonciello@amd.com>
+In-Reply-To: <20231110185503.46117-2-mario.limonciello@amd.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 30 Nov 2023 14:34:19 +0100
+Message-ID: <CAJZ5v0hAw99pfdrqgg8AxfeCHcBWeoB2J9bR1sN9a2dU=x79Ag@mail.gmail.com>
+Subject: Re: [PATCH 1/3] PCI: Call PCI ACPI _DSM with consistent revision argument
+To:     Mario Limonciello <mario.limonciello@amd.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 30, 2023 at 9:29=E2=80=AFPM Michal Hocko <mhocko@suse.com> wrot=
-e:
+On Fri, Nov 10, 2023 at 9:32 PM Mario Limonciello
+<mario.limonciello@amd.com> wrote:
 >
-> On Thu 30-11-23 20:04:59, Baoquan He wrote:
-> > On 11/30/23 at 11:16am, Michal Hocko wrote:
-> > > On Thu 30-11-23 11:00:48, Baoquan He wrote:
-> > > [...]
-> > > > Now, we are worried if there's risk if the CMA area is retaken into=
- kdump
-> > > > kernel as system RAM. E.g is it possible that 1st kernel's ongoing =
-RDMA
-> > > > or DMA will interfere with kdump kernel's normal memory accessing?
-> > > > Because kdump kernel usually only reset and initialize the needed
-> > > > device, e.g dump target. Those unneeded devices will be unshutdown =
-and
-> > > > let go.
-> > >
-> > > I do not really want to discount your concerns but I am bit confused =
-why
-> > > this matters so much. First of all, if there is a buggy RDMA driver
-> > > which doesn't use the proper pinning API (which would migrate away fr=
-om
-> > > the CMA) then what is the worst case? We will get crash kernel corrup=
-ted
-> > > potentially and fail to take a proper kernel crash, right? Is this
-> > > worrisome? Yes. Is it a real roadblock? I do not think so. The proble=
-m
-> > > seems theoretical to me and it is not CMA usage at fault here IMHO. I=
-t
-> > > is the said theoretical driver that needs fixing anyway.
-> > >
-> > > Now, it is really fair to mention that CMA backed crash kernel memory
-> > > has some limitations
-> > >     - CMA reservation can only be used by the userspace in the
-> > >       primary kernel. If the size is overshot this might have
-> > >       negative impact on kernel allocations
-> > >     - userspace memory dumping in the crash kernel is fundamentally
-> > >       incomplete.
-> >
-> > I am not sure if we are talking about the same thing. My concern is:
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > 1) system corrutption happened, crash dumping is prepared, cpu and
-> > interrupt controllers are shutdown;
-> > 2) all pci devices are kept alive;
-> > 3) kdump kernel boot up, initialization is only done on those devices
-> > which drivers are added into kdump kernel's initrd;
-> > 4) those on-flight DMA engine could be still working if their kernel
-> > module is not loaded;
-> >
-> > In this case, if the DMA's destination is located in crashkernel=3D,cma
-> > region, the DMA writting could continue even when kdump kernel has put
-> > important kernel data into the area. Is this possible or absolutely not
-> > possible with DMA, RDMA, or any other stuff which could keep accessing
-> > that area?
+> The PCI ACPI _DSM is called across multiple places in the PCI core
+> with different arguments for the revision.
 >
-> I do nuderstand your concern. But as already stated if anybody uses
-> movable memory (CMA including) as a target of {R}DMA then that memory
-> should be properly pinned. That would mean that the memory will be
-> migrated to somewhere outside of movable (CMA) memory before the
-> transfer is configured. So modulo bugs this shouldn't really happen.
-> Are there {R}DMA drivers that do not pin memory correctly? Possibly. Is
-> that a road bloack to not using CMA to back crash kernel memory, I do
-> not think so. Those drivers should be fixed instead.
+> The PCI firmware specification specifies that this is an incorrect
+> behavior.
+> "OSPM must invoke all Functions other than Function 0 with the
+>  same Revision ID value"
 >
-I think that is our concern. Is there any method to guarantee that
-will not happen instead of 'should be' ?
-Any static analysis during compiling time or dynamic checking method?
+> Link: https://members.pcisig.com/wg/PCI-SIG/document/15350
+>       PCI Firmware specification 3.3, section 4.6
+> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
 
-If this can be resolved, I think this method is promising.
+Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Thanks,
+and I haven't seen much activity related to this series, so I'm not
+sure what's happening to it.
 
-Pingfan
+Regardless, I think that the remaining two patches are better sent
+along with the first users of the new APIs.
 
-> > The existing crashkernel=3D syntax can gurantee the reserved crashkerne=
-l
-> > area for kdump kernel is safe.
+> ---
+>  drivers/acpi/pci_root.c  |  3 ++-
+>  drivers/pci/pci-acpi.c   |  6 ++++--
+>  drivers/pci/pci-label.c  |  4 ++--
+>  drivers/pci/pcie/edr.c   | 13 +++++++------
+>  include/linux/pci-acpi.h |  1 +
+>  5 files changed, 16 insertions(+), 11 deletions(-)
 >
-> I do not think this is true. If a DMA is misconfigured it can still
-> target crash kernel memory even if it is not mapped AFAICS. But those
-> are theoreticals. Or am I missing something?
+> diff --git a/drivers/acpi/pci_root.c b/drivers/acpi/pci_root.c
+> index 58b89b8d950e..bca2270a93d4 100644
+> --- a/drivers/acpi/pci_root.c
+> +++ b/drivers/acpi/pci_root.c
+> @@ -1055,7 +1055,8 @@ struct pci_bus *acpi_pci_root_create(struct acpi_pci_root *root,
+>          * exists and returns 0, we must preserve any PCI resource
+>          * assignments made by firmware for this host bridge.
+>          */
+> -       obj = acpi_evaluate_dsm_typed(ACPI_HANDLE(bus->bridge), &pci_acpi_dsm_guid, 1,
+> +       obj = acpi_evaluate_dsm_typed(ACPI_HANDLE(bus->bridge),
+> +                                     &pci_acpi_dsm_guid, pci_acpi_dsm_rev,
+>                                       DSM_PCI_PRESERVE_BOOT_CONFIG, NULL, ACPI_TYPE_INTEGER);
+>         if (obj && obj->integer.value == 0)
+>                 host_bridge->preserve_config = 1;
+> diff --git a/drivers/pci/pci-acpi.c b/drivers/pci/pci-acpi.c
+> index 004575091596..bea72e807817 100644
+> --- a/drivers/pci/pci-acpi.c
+> +++ b/drivers/pci/pci-acpi.c
+> @@ -28,6 +28,7 @@
+>  const guid_t pci_acpi_dsm_guid =
+>         GUID_INIT(0xe5c937d0, 0x3553, 0x4d7a,
+>                   0x91, 0x17, 0xea, 0x4d, 0x19, 0xc3, 0x43, 0x4d);
+> +const int pci_acpi_dsm_rev = 5;
+>
+>  #if defined(CONFIG_PCI_QUIRKS) && defined(CONFIG_ARM64)
+>  static int acpi_get_rc_addr(struct acpi_device *adev, struct resource *res)
+> @@ -1215,7 +1216,8 @@ void acpi_pci_add_bus(struct pci_bus *bus)
+>         if (!pci_is_root_bus(bus))
+>                 return;
+>
+> -       obj = acpi_evaluate_dsm_typed(ACPI_HANDLE(bus->bridge), &pci_acpi_dsm_guid, 3,
+> +       obj = acpi_evaluate_dsm_typed(ACPI_HANDLE(bus->bridge),
+> +                                     &pci_acpi_dsm_guid, pci_acpi_dsm_rev,
+>                                       DSM_PCI_POWER_ON_RESET_DELAY, NULL, ACPI_TYPE_INTEGER);
+>         if (!obj)
+>                 return;
+> @@ -1376,7 +1378,7 @@ static void pci_acpi_optimize_delay(struct pci_dev *pdev,
+>         if (bridge->ignore_reset_delay)
+>                 pdev->d3cold_delay = 0;
+>
+> -       obj = acpi_evaluate_dsm_typed(handle, &pci_acpi_dsm_guid, 3,
+> +       obj = acpi_evaluate_dsm_typed(handle, &pci_acpi_dsm_guid, pci_acpi_dsm_rev,
+>                                       DSM_PCI_DEVICE_READINESS_DURATIONS, NULL,
+>                                       ACPI_TYPE_PACKAGE);
+>         if (!obj)
+> diff --git a/drivers/pci/pci-label.c b/drivers/pci/pci-label.c
+> index 0c6446519640..91bdd04029f0 100644
+> --- a/drivers/pci/pci-label.c
+> +++ b/drivers/pci/pci-label.c
+> @@ -41,7 +41,7 @@ static bool device_has_acpi_name(struct device *dev)
+>         if (!handle)
+>                 return false;
+>
+> -       return acpi_check_dsm(handle, &pci_acpi_dsm_guid, 0x2,
+> +       return acpi_check_dsm(handle, &pci_acpi_dsm_guid, pci_acpi_dsm_rev,
+>                               1 << DSM_PCI_DEVICE_NAME);
+>  #else
+>         return false;
+> @@ -162,7 +162,7 @@ static int dsm_get_label(struct device *dev, char *buf,
+>         if (!handle)
+>                 return -1;
+>
+> -       obj = acpi_evaluate_dsm(handle, &pci_acpi_dsm_guid, 0x2,
+> +       obj = acpi_evaluate_dsm(handle, &pci_acpi_dsm_guid, pci_acpi_dsm_rev,
+>                                 DSM_PCI_DEVICE_NAME, NULL);
+>         if (!obj)
+>                 return -1;
+> diff --git a/drivers/pci/pcie/edr.c b/drivers/pci/pcie/edr.c
+> index 5f4914d313a1..ab6a50201124 100644
+> --- a/drivers/pci/pcie/edr.c
+> +++ b/drivers/pci/pcie/edr.c
+> @@ -35,7 +35,7 @@ static int acpi_enable_dpc(struct pci_dev *pdev)
+>          * Behavior when calling unsupported _DSM functions is undefined,
+>          * so check whether EDR_PORT_DPC_ENABLE_DSM is supported.
+>          */
+> -       if (!acpi_check_dsm(adev->handle, &pci_acpi_dsm_guid, 5,
+> +       if (!acpi_check_dsm(adev->handle, &pci_acpi_dsm_guid, pci_acpi_dsm_rev,
+>                             1ULL << EDR_PORT_DPC_ENABLE_DSM))
+>                 return 0;
+>
+> @@ -51,8 +51,9 @@ static int acpi_enable_dpc(struct pci_dev *pdev)
+>          * Firmware Specification r3.2, sec 4.6.12, EDR_PORT_DPC_ENABLE_DSM is
+>          * optional.  Return success if it's not implemented.
+>          */
+> -       obj = acpi_evaluate_dsm(adev->handle, &pci_acpi_dsm_guid, 5,
+> -                               EDR_PORT_DPC_ENABLE_DSM, &argv4);
+> +       obj = acpi_evaluate_dsm(adev->handle, &pci_acpi_dsm_guid,
+> +                               pci_acpi_dsm_rev, EDR_PORT_DPC_ENABLE_DSM,
+> +                               &argv4);
+>         if (!obj)
+>                 return 0;
+>
+> @@ -88,12 +89,12 @@ static struct pci_dev *acpi_dpc_port_get(struct pci_dev *pdev)
+>          * Behavior when calling unsupported _DSM functions is undefined,
+>          * so check whether EDR_PORT_DPC_ENABLE_DSM is supported.
+>          */
+> -       if (!acpi_check_dsm(adev->handle, &pci_acpi_dsm_guid, 5,
+> +       if (!acpi_check_dsm(adev->handle, &pci_acpi_dsm_guid, pci_acpi_dsm_rev,
+>                             1ULL << EDR_PORT_LOCATE_DSM))
+>                 return pci_dev_get(pdev);
+>
+> -       obj = acpi_evaluate_dsm(adev->handle, &pci_acpi_dsm_guid, 5,
+> -                               EDR_PORT_LOCATE_DSM, NULL);
+> +       obj = acpi_evaluate_dsm(adev->handle, &pci_acpi_dsm_guid,
+> +                               pci_acpi_dsm_rev, EDR_PORT_LOCATE_DSM, NULL);
+>         if (!obj)
+>                 return pci_dev_get(pdev);
+>
+> diff --git a/include/linux/pci-acpi.h b/include/linux/pci-acpi.h
+> index 078225b514d4..7966ef8f14b3 100644
+> --- a/include/linux/pci-acpi.h
+> +++ b/include/linux/pci-acpi.h
+> @@ -115,6 +115,7 @@ static inline void acpiphp_check_host_bridge(struct acpi_device *adev) { }
+>  #endif
+>
+>  extern const guid_t pci_acpi_dsm_guid;
+> +extern const int pci_acpi_dsm_rev;
+>
+>  /* _DSM Definitions for PCI */
+>  #define DSM_PCI_PRESERVE_BOOT_CONFIG           0x05
 > --
-> Michal Hocko
-> SUSE Labs
+> 2.34.1
 >
-
+>
