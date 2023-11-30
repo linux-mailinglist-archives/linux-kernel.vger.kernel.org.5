@@ -2,106 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 314167FFAD0
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 20:10:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B7087FFAD2
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 20:11:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230169AbjK3TKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 14:10:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33736 "EHLO
+        id S232153AbjK3TKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 14:10:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230045AbjK3TKQ (ORCPT
+        with ESMTP id S231872AbjK3TKv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 14:10:16 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E0AFD40;
-        Thu, 30 Nov 2023 11:10:22 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-6cdd214bce1so1298198b3a.3;
-        Thu, 30 Nov 2023 11:10:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701371422; x=1701976222; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=QitiP5XoRIz3e5peYWbCOL+stxKLuwju5RuWWjYKtdk=;
-        b=nX5NW2+GyVof7MzsFEsjl47R4qmffZ8jocd8lOJilLUVG2ZG4qyuPXgScJ3fGxZO0E
-         adUtIxyh2aEBnOay0cw1aUh+mKdXWYOIwMtQBgyfLBiomt5MRXJZIUSJhveIZNI8dxn1
-         NAEldlA3DkWWXpcPlw6KF4LPyzNTDWvzeUuvPHxt2oFaBQ7obq0SoHOmtxrWetLN2Dh4
-         obnc8G3d5hCX5wF7NC3PiAaeJpXjOVgaJ13O8aVEzfzrakLbgddVAHzWLGTccqoKapl2
-         DePC8C/PI5QnRvfisZMCq5k7856iNf0LqTqREmTWLIUg2KDScjjMTQTDwKtBWHl7PcZd
-         8j0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701371422; x=1701976222;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QitiP5XoRIz3e5peYWbCOL+stxKLuwju5RuWWjYKtdk=;
-        b=F90Y/7sc6WCwrPY2qHeSD5bZQ4grz2ZRLqGm8iqLEsRZ0mJPD1SSPtLrz6VRDHxcuY
-         EHzB6m/LSkdywP43rApEpxPZl/SMDB+UzxTDjv65WiLbJpiAmuXPSr3mDw5sH2Ryxeyy
-         Bl2biFXCLg06D7RMhOZxpaWjdxnlDxnRRQYQNXmlkusCazZyUwqxA3YCyMRQlYtDyxUm
-         vEzHHTLe8zJDurTvb/pw3Tf5Lxt/mnIhZpn5nC19qrNbJ97kqU+ebC8zrEs++U08sQ9V
-         sLWSkloxKfxWXRLHYeL21ghvKjG4Gz8xIOEPfe2iFO4v/01dhLZ1vXAfuot/zhUvLR3Q
-         ZBYQ==
-X-Gm-Message-State: AOJu0Ywdg2p7MqPkhxc93AzNkxZqqufrcBTFK4FyQFYhzzOcn4YEKz+T
-        NehbEMjAFXuBIsVP6KrbvRE=
-X-Google-Smtp-Source: AGHT+IHxIthsTZ50FfgNUEXYgObdZ0eyLoZ/m4F1pEt0Pn46iewGSeoWvofyMMSEEWAw+V69/bPv9g==
-X-Received: by 2002:a05:6a00:2d0b:b0:6cd:f69f:e3a3 with SMTP id fa11-20020a056a002d0b00b006cdf69fe3a3mr1681746pfb.21.1701371421855;
-        Thu, 30 Nov 2023 11:10:21 -0800 (PST)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id 77-20020a630150000000b005b8ea15c338sm1595622pgb.62.2023.11.30.11.10.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Nov 2023 11:10:21 -0800 (PST)
-Message-ID: <63978ea9-0be6-4698-ba0d-7eba78e986e0@gmail.com>
-Date:   Thu, 30 Nov 2023 11:10:18 -0800
+        Thu, 30 Nov 2023 14:10:51 -0500
+Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0E1F10E3;
+        Thu, 30 Nov 2023 11:10:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
+        ; s=x; h=Subject:Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Cc:To
+        :From:subject:date:message-id:reply-to;
+        bh=UV2kGcH6+Z9wP1X2LMycZ5WrcrpzIA4/73bs01XpTXc=; b=kvA5k2X3IwFPR0P1qwEjDsEXQ8
+        Y1p2OChsIKWnH8b/F0jO72LJDSBgz7bgDuaRdQtXof5LuW0w89Xan6TvtKcBN7zD3Sa8gBxHMi8zm
+        Ubd8Q0Xqa0judaGvubS9LJ7OGWFz0+uMhsx7yezFe3I275bm6NK/MfWr/Mz7IFJXMejM=;
+Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:48272 helo=pettiford.lan)
+        by mail.hugovil.com with esmtpa (Exim 4.92)
+        (envelope-from <hugo@hugovil.com>)
+        id 1r8mR3-0003sb-07; Thu, 30 Nov 2023 14:10:54 -0500
+From:   Hugo Villeneuve <hugo@hugovil.com>
+To:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        hvilleneuve@dimonoff.com
+Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        hugo@hugovil.com
+Date:   Thu, 30 Nov 2023 14:10:42 -0500
+Message-Id: <20231130191050.3165862-1-hugo@hugovil.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6.1 00/82] 6.1.65-rc1 review
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, allen.lkml@gmail.com
-References: <20231130162135.977485944@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20231130162135.977485944@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 70.80.174.168
+X-SA-Exim-Mail-From: hugo@hugovil.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
+Subject: [PATCH 0/7] serial: sc16is7xx and max310x: regmap fixes and improvements
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/30/23 08:21, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.1.65 release.
-> There are 82 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sat, 02 Dec 2023 16:21:18 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.65-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
-BMIPS_GENERIC:
+Hello,
+this patch series brings fixes and improvements related to regmap access
+for sc16is7xx and max310x drivers.
 
-Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
+They are related to commit 3837a0379533 ("serial: sc16is7xx: improve regmap debugfs by using one regmap per port").
+
+Patches 1 and 2 address some comments formulated during review of the
+source patch listed above.
+
+Patch 3 removes a structure member made obsolete.
+
+Patches 4 and 5 are improvements for code readability.
+
+Patches 6 and 7 port improvements from patches 4 and 5 of the sc16is7xx
+driver over to the max310x driver.
+
+I have tested the changes on a custom board with two SC16IS752 DUART over
+a SPI interface using a Variscite IMX8MN NANO SOM. The four UARTs are
+configured in RS-485 mode.
+
+Thank you.
+
+Hugo Villeneuve (7):
+  serial: sc16is7xx: fix snprintf format specifier in
+    sc16is7xx_regmap_name()
+  serial: sc16is7xx: remove global regmap from struct sc16is7xx_port
+  serial: sc16is7xx: remove unused line structure member
+  serial: sc16is7xx: add macro for max number of UART ports
+  serial: sc16is7xx: improve sc16is7xx_regmap_name() buffer size
+    computation
+  serial: max310x: add macro for max number of ports
+  serial: max310x: use separate regmap name for each port
+
+ drivers/tty/serial/max310x.c   | 19 +++++++++++++++++--
+ drivers/tty/serial/sc16is7xx.c | 32 ++++++++++++++++++--------------
+ 2 files changed, 35 insertions(+), 16 deletions(-)
+
+
+base-commit: d804987153e7bedf503f8e4ba649afe52cfd7f6d
 -- 
-Florian
+2.39.2
 
