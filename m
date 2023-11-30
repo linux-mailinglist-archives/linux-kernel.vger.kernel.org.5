@@ -2,187 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D327C7FF792
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 17:58:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE9627FF796
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 17:59:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345851AbjK3Q6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 11:58:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44238 "EHLO
+        id S1345884AbjK3Q71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 11:59:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231856AbjK3Q6f (ORCPT
+        with ESMTP id S231837AbjK3Q70 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 11:58:35 -0500
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEA43D67
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 08:58:40 -0800 (PST)
-Received: by mail-io1-xd2a.google.com with SMTP id ca18e2360f4ac-7b359dad0e7so14296639f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 08:58:40 -0800 (PST)
+        Thu, 30 Nov 2023 11:59:26 -0500
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E2201B3
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 08:59:31 -0800 (PST)
+Received: by mail-yb1-xb2b.google.com with SMTP id 3f1490d57ef6-dafe04717baso1052917276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 08:59:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1701363520; x=1701968320; darn=vger.kernel.org;
-        h=subject:from:cc:to:content-language:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=kjfGUOrzOcR4VCFCR9ZAuqiy4DmfY+gNhzhv4Uomr1U=;
-        b=F8OqNkGUafd5FWrSsioFV9IZrJ1u9pnpNnVr4UWnBECGKZ2jP41b9BIVe55bWrAwGn
-         KMSV3xt9y738n3YnEcf2yp0edMKSD2EpxQXMc7+ftAj7H7H6X+zLSLPSG5ZH5VUrqhVm
-         a/unZ30ed5vOGbSO0IXeGe0Gi0vznQZhMWgrw=
+        d=paul-moore.com; s=google; t=1701363570; x=1701968370; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KC+YVAHwKs2kkAU34IYOVVTovQR04OMhKsJNMkFTFrA=;
+        b=XBD3WWY8IJSAStE1FQ8v8QeGtkTywkRiNNMMP5q9awnNXYeghZAfOB7ojMuBO9spjw
+         m4mLJ6G5vY03eH0VF1kwgEhQw1fQLPpYCs1xBDaCecI+/AcxI5OKCTB5vTjYU8g1yyR+
+         hBk3h3jJnp8kwKY1Yf2n/tF+DJJx88OaR0E2vXRabM/Aa2p7r2nTH2l7j2usbBFcyJYC
+         OuyMoARJPHpPYisjarNftLXrZ+/bSInY0EgbtJnfhv0m/6yAduXEkzksSVCDEUtyrdGA
+         rAy3TQuRs7d+FrTJC873C90ZPCNTlwi3pKycdFCHEK7TGJbG2NieBz2fhijCFRZS0u1y
+         fyMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701363520; x=1701968320;
-        h=subject:from:cc:to:content-language:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=kjfGUOrzOcR4VCFCR9ZAuqiy4DmfY+gNhzhv4Uomr1U=;
-        b=bBDW+dQcOg3K2/Eej3omIm954jykmFfH/X2ZM3WG9hbkRszLsaTpnvvA78CF+PnYIb
-         1RUJV1aNz9AGRC2V7iyH7muL/BNJUqR7apJtlcMkfIw45yWBjMULVJbfPLWUcCmMiyrG
-         hOrB8qQToGivWbqLStoU8XsAndm1He4UFUKiQ1Tvo77Ax0puBAAbnOCyETIBGB1sPh2F
-         bjJga7m97fBAyYZIJbVK1VkOIq6O7cxlkoXHGJA6hJep5ymfVdeOOx2qFlCcpO3ClPGR
-         wEonzcB/Sjs01JN/RZshorZPOYIWYn4tkDK0G4w+jziTai7pkL/cvv+/7kzREAZp49SD
-         8uPQ==
-X-Gm-Message-State: AOJu0Yx3tC2yHODnfflAt0GiqEAL6+RUXAXW+SGmbN8R2BF12MQaOmHX
-        zawZUaJIIi4LLkDQOdEWV+WYP3kYlwXa2Fbb3QE=
-X-Google-Smtp-Source: AGHT+IFSVsGsXT2IkoG9CBP+31+G7sAfiES8qJIDWWX0VAYPQbMR17+QOR56yYT2iZGtf5zDVFwFAw==
-X-Received: by 2002:a05:6e02:b4a:b0:35c:baec:750c with SMTP id f10-20020a056e020b4a00b0035cbaec750cmr2483295ilu.1.1701363520298;
-        Thu, 30 Nov 2023 08:58:40 -0800 (PST)
-Received: from [192.168.1.128] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id d15-20020a056e021c4f00b0035c8c6045cfsm213266ilg.72.2023.11.30.08.58.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Nov 2023 08:58:39 -0800 (PST)
-Content-Type: multipart/mixed; boundary="------------6IEXtfpLNI6JnAsB035VsGjN"
-Message-ID: <c26192e6-df1e-450a-ac2d-e18fc0d77fe9@linuxfoundation.org>
-Date:   Thu, 30 Nov 2023 09:58:39 -0700
+        d=1e100.net; s=20230601; t=1701363570; x=1701968370;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KC+YVAHwKs2kkAU34IYOVVTovQR04OMhKsJNMkFTFrA=;
+        b=uk/hAjmNb9AZYsfOArC56i3VMz6XLGl/WpVsydrM1/ZWulfw9hxzYRjikAbj0+DasG
+         kyqQHkXBqy0oslSuHqxoNSPQPgManKdJ0H3r8au4ZPOtuIRBkAD4OsjPHo60HaZB6JLl
+         QuJcYV9dqaW4XahlHKRWZmczBam0bcS5SG16vbCvBlj+BBS4aK3QguRhTLrQX6NCtzap
+         AsAVSZsLiuQ/gg5Q+yVQytpXKHKoVq29Iss7WJf9A9jy/Heed5AUmETolYLj5ZczlX/D
+         +c/1KRm2XgNaPhG5viDhUoDWk/LJU32LAvTADHvHaizrPF6YI1+TYWcchsiOMi/5B4rB
+         37aA==
+X-Gm-Message-State: AOJu0YzDLdPivL4psGloHN4HqB5VWzoMp56cQjw67o0I1pMs6lX8B9+r
+        uM9+37u2ovtpEWeLEpKs7btB2fe6PPCy9nTALjo1
+X-Google-Smtp-Source: AGHT+IERQwY73BfKyowLaBkWCwON5Z7fm/5peh0ErEUfe9ZiF54XUdUJecnVn1oRjqpirYk/CaQQxBixoUm8GSxjd0s=
+X-Received: by 2002:a25:8d0b:0:b0:da0:cbff:4e20 with SMTP id
+ n11-20020a258d0b000000b00da0cbff4e20mr20156386ybl.56.1701363570522; Thu, 30
+ Nov 2023 08:59:30 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Shuah Khan <skhan@linuxfoundation.org>, shuah <shuah@kernel.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        David Gow <davidgow@google.com>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Subject: [GIT PULL] KUnit fixes update for Linux 6.7-rc4
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20231107134012.682009-24-roberto.sassu@huaweicloud.com>
+ <17befa132379d37977fc854a8af25f6d.paul@paul-moore.com> <2084adba3c27a606cbc5ed7b3214f61427a829dd.camel@huaweicloud.com>
+ <CAHC9VhTTKac1o=RnQadu2xqdeKH8C_F+Wh4sY=HkGbCArwc8JQ@mail.gmail.com>
+ <b6c51351be3913be197492469a13980ab379e412.camel@huaweicloud.com>
+ <CAHC9VhSAryQSeFy0ZMexOiwBG-YdVGRzvh58=heH916DftcmWA@mail.gmail.com>
+ <90eb8e9d-c63e-42d6-b951-f856f31590db@huaweicloud.com> <7cb732ea42a221b4b8bbfad941d9dec41a3a35fa.camel@linux.ibm.com>
+In-Reply-To: <7cb732ea42a221b4b8bbfad941d9dec41a3a35fa.camel@linux.ibm.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Thu, 30 Nov 2023 11:59:19 -0500
+Message-ID: <CAHC9VhS28XuVjNX73H9qWZibObCxKCx_M3omQu9+5EdourUc+w@mail.gmail.com>
+Subject: Re: [PATCH v5 23/23] integrity: Switch from rbtree to LSM-managed
+ blob for integrity_iint_cache
+To:     Mimi Zohar <zohar@linux.ibm.com>
+Cc:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
+        viro@zeniv.linux.org.uk, brauner@kernel.org,
+        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
+        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+        jmorris@namei.org, serge@hallyn.com, dmitry.kasatkin@gmail.com,
+        dhowells@redhat.com, jarkko@kernel.org,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        casey@schaufler-ca.com, mic@digikod.net,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------6IEXtfpLNI6JnAsB035VsGjN
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+On Thu, Nov 30, 2023 at 6:13=E2=80=AFAM Mimi Zohar <zohar@linux.ibm.com> wr=
+ote:
+> On Wed, 2023-11-29 at 19:46 +0100, Roberto Sassu wrote:
+> > On 11/29/2023 6:22 PM, Paul Moore wrote:
+> > > On Wed, Nov 29, 2023 at 7:28=E2=80=AFAM Roberto Sassu wrote:
+> > >> On Mon, 2023-11-20 at 16:06 -0500, Paul Moore wrote:
+> > >>> On Mon, Nov 20, 2023 at 3:16=E2=80=AFAM Roberto Sassu wrote:
+> > >>>> On Fri, 2023-11-17 at 15:57 -0500, Paul Moore wrote:
+> > >>>>> On Nov  7, 2023 Roberto Sassu <roberto.sassu@huaweicloud.com> wro=
+te:
 
-Hi Linus,
+...
 
-Please pull the following KUnit fixes update for Linux 6.7-rc4.
+> First you suggested lumping IMA and EVM together, dropping EVM
+> entirely.  Now you're suggesting making EVM dependent on IMA.  Please
+> stop.
 
-This KUnit fixes update for Linux 6.7-rc4 consists of three fixes to
-warnings and run-time test behavior. With these fixes, test suite
-counter will be reset correctly before running tests, kunit will warn
-if tests are too slow, and eliminate warning when kfree() as an action.
+Welcome to design discussions and brainstorming where changing
+opinions and unexpected suggestions are part of the process.  When we
+are faced with difficult problems I want everyone to think creatively
+and not be afraid to adjust their thinking based on their changing
+understanding and the ongoing discussion.
 
-diff is attached.
+Asking people to stop thinking outside the status quo is not a good
+way to solve challenging problems.
 
-thanks,
--- Shuah
+> EVM and IMA should remain independent of each other.
 
-----------------------------------------------------------------
-The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa86:
+A few posts back that was the goal, then Roberto mentioned EVM
+breakage when IMA was disabled so I simply asked if it was worth
+"revisit the basic idea of if it even makes sense to enable EVM
+without IMA?".  A bad answer to that question is what you provided
+above (and to be fair, we are all guilty of that at times), a good
+answer is to explain why IMA and EVM need to remain independent with
+bonus points awarded for realistic use cases that support the
+assertion of independence.
 
-   Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
+> > >> Regarding the LSM order, I would take Casey's suggestion of introduc=
+ing
+> > >> LSM_ORDER_REALLY_LAST, for EVM.
+> > >
+> > > Please understand that I really dislike that we have imposed ordering
+> > > constraints at the LSM layer, but I do understand the necessity (the
+> > > BPF LSM ordering upsets me the most).  I really don't want to see us
+> > > make things worse by adding yet another ordering bucket, I would
+> > > rather that we document it well and leave it alone ... basically trea=
+t
+> > > it like the BPF LSM (grrrrrr).
+> >
+> > Uhm, that would not be possible right away (the BPF LSM is mutable),
+> > remember that we defined LSM_ORDER_LAST so that an LSM can be always
+> > enable and placed as last (requested by Mimi)?
+>
+> Making EVM a full fledged LSM was contingent on two things - EVM always
+> being enabled if configured and being the last LSM.  Using capability
+> as a precedent for ordering requirement, Micka=C3=ABl suggested defining
+> LSM_ORDER_LAST, which you agreed to.   It sounds like you're
+> backtracking on an agreement.
 
-are available in the Git repository at:
+I not only agreed to LSM_ORDER_LAST, I merged the code and it is
+currently in Linus' tree.  See my last reply to Roberto; I see no
+reason to change that.  I never would have merged that code or sent it
+to Linus if I didn't feel it was necessary.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux_kselftest-kunit-fixes-6.7-rc4
+I'm guessing that you misread my reply above (perhaps you missed the
+"another" in "... I really don't want to see us make things worse by
+adding yet another ordering bucket ..."), but regardless of that, I
+want to deal with your "backtracking" comment.  Similar to my comments
+above about brainstorming, I don't want people to feel that they can't
+change their mind about something.  Call it backtracking if you want
+(although that has a negative connotation for many), but I want people
+to feel free to adjust their opinions as they learn more about
+something or as the conversation evolves.  I believe this is the
+primary (only?) way for us to reach consensus on challenging problems.
 
-for you to fetch changes up to 1bddcf77ce6668692fc15e968fd0870d5524d112:
+If you are uncomfortable with new, different, and changing ideas this
+may not be the right place for you.  I might suggest a career in
+politics as an alternative.
 
-   kunit: test: Avoid cast warning when adding kfree() as an action (2023-11-14 13:01:57 -0700)
-
-----------------------------------------------------------------
-linux_kselftest-kunit-fixes-6.7-rc4
-
-This KUnit fixes update for Linux 6.7-rc4 consists of three fixes to
-warnings and run-time test behavior. With these fixes, test suite
-counter will be reset correctly before running tests, kunit will warn
-if tests are too slow, and eliminate warning when kfree() as an action.
-
-----------------------------------------------------------------
-Maxime Ripard (1):
-       kunit: Warn if tests are slow
-
-Michal Wajdeczko (1):
-       kunit: Reset suite counter right before running tests
-
-Richard Fitzgerald (1):
-       kunit: test: Avoid cast warning when adding kfree() as an action
-
-  lib/kunit/kunit-test.c |  2 +-
-  lib/kunit/test.c       | 42 ++++++++++++++++++++++++++++++++++++++++--
-  2 files changed, 41 insertions(+), 3 deletions(-)
-----------------------------------------------------------------
---------------6IEXtfpLNI6JnAsB035VsGjN
-Content-Type: text/x-patch; charset=UTF-8;
- name="linux_kselftest-kunit-fixes-6.7-rc4.diff"
-Content-Disposition: attachment;
- filename="linux_kselftest-kunit-fixes-6.7-rc4.diff"
-Content-Transfer-Encoding: base64
-
-ZGlmZiAtLWdpdCBhL2xpYi9rdW5pdC9rdW5pdC10ZXN0LmMgYi9saWIva3VuaXQva3VuaXQt
-dGVzdC5jCmluZGV4IDk5ZDJhM2E1MjhlMS4uZGUyMTEzYTU4ZmEwIDEwMDY0NAotLS0gYS9s
-aWIva3VuaXQva3VuaXQtdGVzdC5jCisrKyBiL2xpYi9rdW5pdC9rdW5pdC10ZXN0LmMKQEAg
-LTU2Miw3ICs1NjIsNyBAQCBzdGF0aWMgdm9pZCBrdW5pdF9sb2dfdGVzdChzdHJ1Y3Qga3Vu
-aXQgKnRlc3QpCiAJS1VOSVRfRVhQRUNUX1RSVUUodGVzdCwgdGVzdC0+bG9nLT5hcHBlbmRf
-bmV3bGluZXMpOwogCiAJZnVsbF9sb2cgPSBzdHJpbmdfc3RyZWFtX2dldF9zdHJpbmcodGVz
-dC0+bG9nKTsKLQlrdW5pdF9hZGRfYWN0aW9uKHRlc3QsIChrdW5pdF9hY3Rpb25fdCAqKWtm
-cmVlLCBmdWxsX2xvZyk7CisJa3VuaXRfYWRkX2FjdGlvbih0ZXN0LCBrZnJlZV93cmFwcGVy
-LCBmdWxsX2xvZyk7CiAJS1VOSVRfRVhQRUNUX05PVF9FUlJfT1JfTlVMTCh0ZXN0LAogCQkJ
-CSAgICAgc3Ryc3RyKGZ1bGxfbG9nLCAicHV0IHRoaXMgaW4gbG9nLiIpKTsKIAlLVU5JVF9F
-WFBFQ1RfTk9UX0VSUl9PUl9OVUxMKHRlc3QsCmRpZmYgLS1naXQgYS9saWIva3VuaXQvdGVz
-dC5jIGIvbGliL2t1bml0L3Rlc3QuYwppbmRleCBmMmViNzFmMWE2NmMuLjdhY2ViMDdhMWFm
-OSAxMDA2NDQKLS0tIGEvbGliL2t1bml0L3Rlc3QuYworKysgYi9saWIva3VuaXQvdGVzdC5j
-CkBAIC0zMzgsNiArMzM4LDM2IEBAIHZvaWQga3VuaXRfaW5pdF90ZXN0KHN0cnVjdCBrdW5p
-dCAqdGVzdCwgY29uc3QgY2hhciAqbmFtZSwgc3RydWN0IHN0cmluZ19zdHJlYW0KIH0KIEVY
-UE9SVF9TWU1CT0xfR1BMKGt1bml0X2luaXRfdGVzdCk7CiAKKy8qIE9ubHkgd2FybiB3aGVu
-IGEgdGVzdCB0YWtlcyBtb3JlIHRoYW4gdHdpY2UgdGhlIHRocmVzaG9sZCAqLworI2RlZmlu
-ZSBLVU5JVF9TUEVFRF9XQVJOSU5HX01VTFRJUExJRVIJMgorCisvKiBTbG93IHRlc3RzIGFy
-ZSBkZWZpbmVkIGFzIHRha2luZyBtb3JlIHRoYW4gMXMgKi8KKyNkZWZpbmUgS1VOSVRfU1BF
-RURfU0xPV19USFJFU0hPTERfUwkxCisKKyNkZWZpbmUgS1VOSVRfU1BFRURfU0xPV19XQVJO
-SU5HX1RIUkVTSE9MRF9TCVwKKwkoS1VOSVRfU1BFRURfV0FSTklOR19NVUxUSVBMSUVSICog
-S1VOSVRfU1BFRURfU0xPV19USFJFU0hPTERfUykKKworI2RlZmluZSBzX3RvX3RpbWVzcGVj
-NjQocykgbnNfdG9fdGltZXNwZWM2NCgocykgKiBOU0VDX1BFUl9TRUMpCisKK3N0YXRpYyB2
-b2lkIGt1bml0X3J1bl9jYXNlX2NoZWNrX3NwZWVkKHN0cnVjdCBrdW5pdCAqdGVzdCwKKwkJ
-CQkgICAgICAgc3RydWN0IGt1bml0X2Nhc2UgKnRlc3RfY2FzZSwKKwkJCQkgICAgICAgc3Ry
-dWN0IHRpbWVzcGVjNjQgZHVyYXRpb24pCit7CisJc3RydWN0IHRpbWVzcGVjNjQgc2xvd190
-aHIgPQorCQlzX3RvX3RpbWVzcGVjNjQoS1VOSVRfU1BFRURfU0xPV19XQVJOSU5HX1RIUkVT
-SE9MRF9TKTsKKwllbnVtIGt1bml0X3NwZWVkIHNwZWVkID0gdGVzdF9jYXNlLT5hdHRyLnNw
-ZWVkOworCisJaWYgKHRpbWVzcGVjNjRfY29tcGFyZSgmZHVyYXRpb24sICZzbG93X3Rocikg
-PCAwKQorCQlyZXR1cm47CisKKwlpZiAoc3BlZWQgPT0gS1VOSVRfU1BFRURfVkVSWV9TTE9X
-IHx8IHNwZWVkID09IEtVTklUX1NQRUVEX1NMT1cpCisJCXJldHVybjsKKworCWt1bml0X3dh
-cm4odGVzdCwKKwkJICAgIlRlc3Qgc2hvdWxkIGJlIG1hcmtlZCBzbG93IChydW50aW1lOiAl
-bGxkLiUwOWxkcykiLAorCQkgICBkdXJhdGlvbi50dl9zZWMsIGR1cmF0aW9uLnR2X25zZWMp
-OworfQorCiAvKgogICogSW5pdGlhbGl6ZXMgYW5kIHJ1bnMgdGVzdCBjYXNlLiBEb2VzIG5v
-dCBjbGVhbiB1cCBvciBkbyBwb3N0IHZhbGlkYXRpb25zLgogICovCkBAIC0zNDUsNiArMzc1
-LDggQEAgc3RhdGljIHZvaWQga3VuaXRfcnVuX2Nhc2VfaW50ZXJuYWwoc3RydWN0IGt1bml0
-ICp0ZXN0LAogCQkJCSAgICBzdHJ1Y3Qga3VuaXRfc3VpdGUgKnN1aXRlLAogCQkJCSAgICBz
-dHJ1Y3Qga3VuaXRfY2FzZSAqdGVzdF9jYXNlKQogeworCXN0cnVjdCB0aW1lc3BlYzY0IHN0
-YXJ0LCBlbmQ7CisKIAlpZiAoc3VpdGUtPmluaXQpIHsKIAkJaW50IHJldDsKIApAQCAtMzU2
-LDcgKzM4OCwxMyBAQCBzdGF0aWMgdm9pZCBrdW5pdF9ydW5fY2FzZV9pbnRlcm5hbChzdHJ1
-Y3Qga3VuaXQgKnRlc3QsCiAJCX0KIAl9CiAKKwlrdGltZV9nZXRfdHM2NCgmc3RhcnQpOwor
-CiAJdGVzdF9jYXNlLT5ydW5fY2FzZSh0ZXN0KTsKKworCWt0aW1lX2dldF90czY0KCZlbmQp
-OworCisJa3VuaXRfcnVuX2Nhc2VfY2hlY2tfc3BlZWQodGVzdCwgdGVzdF9jYXNlLCB0aW1l
-c3BlYzY0X3N1YihlbmQsIHN0YXJ0KSk7CiB9CiAKIHN0YXRpYyB2b2lkIGt1bml0X2Nhc2Vf
-aW50ZXJuYWxfY2xlYW51cChzdHJ1Y3Qga3VuaXQgKnRlc3QpCkBAIC02NzAsNiArNzA4LDgg
-QEAgaW50IF9fa3VuaXRfdGVzdF9zdWl0ZXNfaW5pdChzdHJ1Y3Qga3VuaXRfc3VpdGUgKiBj
-b25zdCAqIGNvbnN0IHN1aXRlcywgaW50IG51bV8KIAkJcmV0dXJuIDA7CiAJfQogCisJa3Vu
-aXRfc3VpdGVfY291bnRlciA9IDE7CisKIAlzdGF0aWNfYnJhbmNoX2luYygma3VuaXRfcnVu
-bmluZyk7CiAKIAlmb3IgKGkgPSAwOyBpIDwgbnVtX3N1aXRlczsgaSsrKSB7CkBAIC02OTYs
-OCArNzM2LDYgQEAgdm9pZCBfX2t1bml0X3Rlc3Rfc3VpdGVzX2V4aXQoc3RydWN0IGt1bml0
-X3N1aXRlICoqc3VpdGVzLCBpbnQgbnVtX3N1aXRlcykKIAogCWZvciAoaSA9IDA7IGkgPCBu
-dW1fc3VpdGVzOyBpKyspCiAJCWt1bml0X2V4aXRfc3VpdGUoc3VpdGVzW2ldKTsKLQotCWt1
-bml0X3N1aXRlX2NvdW50ZXIgPSAxOwogfQogRVhQT1JUX1NZTUJPTF9HUEwoX19rdW5pdF90
-ZXN0X3N1aXRlc19leGl0KTsKIAo=
-
---------------6IEXtfpLNI6JnAsB035VsGjN--
+--=20
+paul-moore.com
