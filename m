@@ -2,145 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 591A27FEEE8
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 13:23:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B85B97FEEE2
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 13:23:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345323AbjK3MXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 07:23:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38308 "EHLO
+        id S235172AbjK3MXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 07:23:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345356AbjK3MXa (ORCPT
+        with ESMTP id S231796AbjK3MXP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 07:23:30 -0500
-Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.220])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A91BF10F2;
-        Thu, 30 Nov 2023 04:23:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=rcRLl
-        amB9MT/I4Ai66VgiB8ZFN6GxQyGTKvo6+ftATo=; b=KOjXQNV/dRhkstxh+QNte
-        SWezPXFOICmrP3sWvpM3fYwfB7OnnQwv93OUgXQkX17tZ15nG/dpohuRjLjfDqDn
-        e0ZPXuEwO+a5Eb826I45rEuzaxXDNkTz+SmsCT70Zp/zuALVG5oCo7QxcrJ+GwAM
-        SCQr4fDWN4QlfaOL1jb3XY=
-Received: from ProDesk.. (unknown [58.22.7.114])
-        by zwqz-smtp-mta-g1-0 (Coremail) with SMTP id _____wDnL9+nfmhlDGYWBg--.29367S2;
-        Thu, 30 Nov 2023 20:23:07 +0800 (CST)
-From:   Andy Yan <andyshrk@163.com>
-To:     heiko@sntech.de
-Cc:     hjc@rock-chips.com, dri-devel@lists.freedesktop.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, sebastian.reichel@collabora.com,
-        kever.yang@rock-chips.com, chris.obbard@collabora.com,
-        Andy Yan <andy.yan@rock-chips.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>
-Subject: [PATCH v3 03/14] drm/rockchip: vop2: set half_block_en bit in all mode
-Date:   Thu, 30 Nov 2023 20:23:02 +0800
-Message-Id: <20231130122302.12895-1-andyshrk@163.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231130122001.12474-1-andyshrk@163.com>
-References: <20231130122001.12474-1-andyshrk@163.com>
+        Thu, 30 Nov 2023 07:23:15 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4C6301A8;
+        Thu, 30 Nov 2023 04:23:21 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A91081042;
+        Thu, 30 Nov 2023 04:24:07 -0800 (PST)
+Received: from FVFF77S0Q05N (unknown [10.57.43.250])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 21DB13F5A1;
+        Thu, 30 Nov 2023 04:23:20 -0800 (PST)
+Date:   Thu, 30 Nov 2023 12:23:13 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     "Ashley, William" <wash@amazon.com>
+Cc:     "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
+        will@kernel.org
+Subject: Re: armv8pmu: Pending overflow interrupt is discarded when perf
+ event is disabled
+Message-ID: <ZWh-sbrHJu2b-BU6@FVFF77S0Q05N>
+References: <950001BD-490C-4BAC-8EEA-CDB9F7C4ADFC@amazon.com>
+ <EBAF38AB-2BE5-425F-8A52-DDCB0B390309@amazon.com>
+ <ZWdoNWps4izj5WJy@FVFF77S0Q05N.cambridge.arm.com>
+ <ZWh2pnR_Z5-CKuZb@FVFF77S0Q05N>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wDnL9+nfmhlDGYWBg--.29367S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxXF47Jry8CFWrGw4Utr47urg_yoW5uFW7pr
-        47ArWDKr4Dtr1jgFZ7JrZ8ZF4akws7Ka17XrZ8KwnYqrW3K3yDW3WkKr9rArZ8tryfuFW8
-        XFn3ArW7urWIyF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jSa0PUUUUU=
-X-Originating-IP: [58.22.7.114]
-X-CM-SenderInfo: 5dqg52xkunqiywtou0bp/xtbBnA44XlghltxCMAABs0
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZWh2pnR_Z5-CKuZb@FVFF77S0Q05N>
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Yan <andy.yan@rock-chips.com>
+On Thu, Nov 30, 2023 at 11:48:54AM +0000, Mark Rutland wrote:
+> On Wed, Nov 29, 2023 at 04:35:01PM +0000, Mark Rutland wrote:
+> > Does RR set any of the perf_event_attr::exclude_* bits? If not, does RR
+> > intentionally count events that occur within the kernel?
+> 
+> Looking at the test, I see it sets perf_event_attr::exclude_kernel to 1, but
+> doesn't set perf_event_attr::exclude_host or perf_event_attr::exclude_hv. I
+> think the poorly-defined exclude_* bits are part of the problem here.
+> 
+> Using your test as-is on my ThunderX2, I can reproduce the period being longer
+> than expected by concurrently running the following in a shell:
+> 
+>   while true; do
+>     for C in $(seq 0 63); do
+>       taskset -c -p $C ${TEST_PID_HERE};
+>     done; 
+>   done > /dev/null
+> 
+> ... resulting in:
+> 
+> | [mark@gravadlaks:~]% ./counter-overflow                                     
+> | Pid 20060 running with period 10000 tolerance 1000
+> | Signal #1: last: 0, cur: 10292, max diff: 0
+> | Signal #415330: delta of 19999 is outside 10000 +/- 1000
+> | Signal #415330: last: 4153290187, cur: 4153310186, max diff: 10292
+> | Signal #489879: delta of 19998 is outside 10000 +/- 1000
+> | Signal #511842: delta of 20058 is outside 10000 +/- 1000
+> | Signal #511842: last: 5118430130, cur: 5118450188, max diff: 19999
+> 
+> However, if I modify the test to also set perf_event_attr::exclude_host=1, I do
+> not see any lost overflows after many minutes. On VHE hosts (like the
+> ThunderX2), the host kernel gets counted when perf_event_attr::exclude_host=0,
+> even if perf_event_attr::exclude_kernel=1 (which I agree is surprising), so I
+> think what's happening is the counters are counting in the host kernel, which
+> isn't what RR actually wants regardless.
 
-At first we thought the half_block_en bit in AFBCD_CTRL register
-only work in afbc mode. But the fact is that it control the line
-buffer in all mode(afbc/tile/linear), so we need configure it in
-all case.
+> I'll continue to look at what we can do kernel-side, but I reckon it's worth
+> having RR try the other exclude bits regardless, if that's possible? It would
+> be interesting to know whether that helps you under a hypervisor.
 
-As the cluster windows of rk3568 only supports afbc format
-so is therefore not affected.
+Sorry, the above is wrong, and I do not recommend RR goes and changes its
+exclude_* settings.
 
-Signed-off-by: Andy Yan <andy.yan@rock-chips.com>
-Reviewed-by: Sascha Hauer <s.hauer@pengutronix.de>
----
+I had misread the logic in armv8pmu_set_event_filter(), but looking again
+that's saner than I thought it was, and what was actually happening in my
+testing is that exclude_host also filtered host EL0 (userspace), and so the
+test received *no* overflow signals.
 
-(no changes since v1)
+I'll get back to looking at how we can better capture the overflow when
+removing an event.
 
- drivers/gpu/drm/rockchip/rockchip_drm_vop2.c | 25 ++++++++++++++------
- 1 file changed, 18 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c b/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
-index 57784d0a22a6..639dfebc6bd1 100644
---- a/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
-+++ b/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
-@@ -521,6 +521,18 @@ static bool rockchip_vop2_mod_supported(struct drm_plane *plane, u32 format,
- 	return vop2_convert_afbc_format(format) >= 0;
- }
- 
-+/*
-+ * 0: Full mode, 16 lines for one tail
-+ * 1: half block mode, 8 lines one tail
-+ */
-+static bool vop2_half_block_enable(struct drm_plane_state *pstate)
-+{
-+	if (pstate->rotation & (DRM_MODE_ROTATE_270 | DRM_MODE_ROTATE_90))
-+		return false;
-+	else
-+		return true;
-+}
-+
- static u32 vop2_afbc_transform_offset(struct drm_plane_state *pstate,
- 				      bool afbc_half_block_en)
- {
-@@ -1144,6 +1156,7 @@ static void vop2_plane_atomic_update(struct drm_plane *plane,
- 	bool rotate_90 = pstate->rotation & DRM_MODE_ROTATE_90;
- 	struct rockchip_gem_object *rk_obj;
- 	unsigned long offset;
-+	bool half_block_en;
- 	bool afbc_en;
- 	dma_addr_t yrgb_mst;
- 	dma_addr_t uv_mst;
-@@ -1236,6 +1249,7 @@ static void vop2_plane_atomic_update(struct drm_plane *plane,
- 	dsp_info = (dsp_h - 1) << 16 | ((dsp_w - 1) & 0xffff);
- 
- 	format = vop2_convert_format(fb->format->format);
-+	half_block_en = vop2_half_block_enable(pstate);
- 
- 	drm_dbg(vop2->drm, "vp%d update %s[%dx%d->%dx%d@%dx%d] fmt[%p4cc_%s] addr[%pad]\n",
- 		vp->id, win->data->name, actual_w, actual_h, dsp_w, dsp_h,
-@@ -1243,6 +1257,9 @@ static void vop2_plane_atomic_update(struct drm_plane *plane,
- 		&fb->format->format,
- 		afbc_en ? "AFBC" : "", &yrgb_mst);
- 
-+	if (vop2_cluster_window(win))
-+		vop2_win_write(win, VOP2_WIN_AFBC_HALF_BLOCK_EN, half_block_en);
-+
- 	if (afbc_en) {
- 		u32 stride;
- 
-@@ -1283,13 +1300,7 @@ static void vop2_plane_atomic_update(struct drm_plane *plane,
- 		vop2_win_write(win, VOP2_WIN_AFBC_UV_SWAP, uv_swap);
- 		vop2_win_write(win, VOP2_WIN_AFBC_AUTO_GATING_EN, 0);
- 		vop2_win_write(win, VOP2_WIN_AFBC_BLOCK_SPLIT_EN, 0);
--		if (pstate->rotation & (DRM_MODE_ROTATE_270 | DRM_MODE_ROTATE_90)) {
--			vop2_win_write(win, VOP2_WIN_AFBC_HALF_BLOCK_EN, 0);
--			transform_offset = vop2_afbc_transform_offset(pstate, false);
--		} else {
--			vop2_win_write(win, VOP2_WIN_AFBC_HALF_BLOCK_EN, 1);
--			transform_offset = vop2_afbc_transform_offset(pstate, true);
--		}
-+		transform_offset = vop2_afbc_transform_offset(pstate, half_block_en);
- 		vop2_win_write(win, VOP2_WIN_AFBC_HDR_PTR, yrgb_mst);
- 		vop2_win_write(win, VOP2_WIN_AFBC_PIC_SIZE, act_info);
- 		vop2_win_write(win, VOP2_WIN_AFBC_TRANSFORM_OFFSET, transform_offset);
--- 
-2.34.1
-
+Mark.
