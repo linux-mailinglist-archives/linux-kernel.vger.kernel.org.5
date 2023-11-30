@@ -2,143 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DC6B7FFDF4
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 22:51:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64CF17FFDF7
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 22:51:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377021AbjK3Vuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 16:50:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58580 "EHLO
+        id S1376987AbjK3VvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 16:51:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232317AbjK3Vuw (ORCPT
+        with ESMTP id S232421AbjK3VvJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 16:50:52 -0500
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 933C510F8
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 13:50:58 -0800 (PST)
-Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2c9bbb30c34so18137991fa.1
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 13:50:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1701381057; x=1701985857; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aANyBr2T0t8LeKYSkonqHHH3ddTbNb3vuWdQ0g12q+Q=;
-        b=wPqbnp5qRtfp082LnkkE85atm3ai15hClOrgxH6TPBNETyZNCpcH/qjtLUfN7cQKtI
-         bMTA0rqlEolb32uyNkz1HxvbutaB6wTKhJCOGnzKhRi4UewsaSh/QM/8sAHq38spLDzT
-         KLoSUBpSmdV1eJgKTqeAz1Gzps830CBLFa2rMRRgDk/rjfINktB0nKMr8Gx8uRM72f/4
-         BukNYUQV/kZJRv8+XUYZ/GR3DkLp/+QQZymLbG/bWxIxe/gJSguC/9/mr6WVJO34LClf
-         G8h6xe7nP6ufrCRt3DWIoG52TC7gVCNhPKji9sTmZXB9szz4BnJjER6fF2GPRjdSFCzc
-         ID4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701381057; x=1701985857;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aANyBr2T0t8LeKYSkonqHHH3ddTbNb3vuWdQ0g12q+Q=;
-        b=OnIapn3LcI6OfWa13bspgAqOLwndZamDYaaVGT1i4CCOKrT2bMDABdnode85cXqFZI
-         VoY9VlDj9oszBJeEj0AG9wDwjPxunnIcpXff2DmEZyrs4GgPTAE5AcRZ8iGQFPT2y++n
-         rg7aTCP9f5w+mYp2fYzIkAEDDZR5kYYleUAkqOCBiQt4WdmTUFTy6K+ksd2EILfaUcw+
-         f7BBK5Uw+5/JxaHHb/NtDn9LE+OoXEFzM2YOtroINQm+PPb24Xbc3RsxlN7h1/QEUHoX
-         T86msXdGAtHcn9AP2HHVw2I29kzlgbUY/fL+Q48h2glT5cDiYDp/RQmiJ3k5CSBt685C
-         KFLA==
-X-Gm-Message-State: AOJu0YwSGeoLA6qSRV/SSLk0B1MRGnTgddNonpiW2wzkBdOncuxX2uNT
-        ofWFqk3/OcH0zGwVVzdH71Xt1XlFyWxrq4NhSzhr3A==
-X-Google-Smtp-Source: AGHT+IGTreSyOMteX5Yn0pCJXOJ23n2w1uz7JmQUqmbNcKkrGMdUipIFSV2GkcHhgdqYisB6JJKbOnVn4oDTwdlFnHo=
-X-Received: by 2002:a2e:8503:0:b0:2c9:bacc:1285 with SMTP id
- j3-20020a2e8503000000b002c9bacc1285mr117766lji.47.1701381056908; Thu, 30 Nov
- 2023 13:50:56 -0800 (PST)
+        Thu, 30 Nov 2023 16:51:09 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D9A810DE
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 13:51:15 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20E48C433C8;
+        Thu, 30 Nov 2023 21:51:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701381074;
+        bh=gXHc+SuljVO+wY/m8aVAbwCBVxzxhWKTAHg4DIJiGXk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ao1pC1rUSVjJZYSjZKEv1b/bt2MEqF/SoDkjSD6sUMnxSzEkeTHc4ZQPPJbw0I0F1
+         SSXYPn2JflPnHrBnsGyJdj17pBZuDgLDvfr+xEuUr+erlei0MhOaA6ukRi49OS4tYm
+         sS1Bai60e+/VdUPTKVwNOeK/iY937K740c1WcA/zvoquyPCMNbH62XDwJ4mm9xNFWo
+         I3s/GFoBIouL+8FXPK4D3tnKtm4cp8w3TcHi/APCE384+KDwGl70T74qKOfsYYsrg/
+         ZeMf0tId/9RYUy/bom0hXDuhbyHTbk2K8BAB11GYgMzcM218zNtyJMtiUa/gsjRiC6
+         g+iUAUWvyPjJA==
+Date:   Thu, 30 Nov 2023 21:51:04 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
+        Deepak Gupta <debug@rivosinc.com>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
+        Will Deacon <will@kernel.org>,
+        Kees Cook <keescook@chromium.org>, jannh@google.com,
+        linux-kselftest@vger.kernel.org, linux-api@vger.kernel.org,
+        David Hildenbrand <david@redhat.com>
+Subject: Re: [PATCH RFT v4 0/5] fork: Support shadow stacks in clone3()
+Message-ID: <fce4c169-5d19-40e8-bc32-0abec9bb008e@sirena.org.uk>
+References: <20231128-clone3-shadow-stack-v4-0-8b28ffe4f676@kernel.org>
+ <ZWjb6r0RWPo199pC@arm.com>
 MIME-Version: 1.0
-References: <20231121-dev-iio-backend-v1-0-6a3d542eba35@analog.com> <20231121-dev-iio-backend-v1-6-6a3d542eba35@analog.com>
-In-Reply-To: <20231121-dev-iio-backend-v1-6-6a3d542eba35@analog.com>
-From:   David Lechner <dlechner@baylibre.com>
-Date:   Thu, 30 Nov 2023 15:50:46 -0600
-Message-ID: <CAMknhBHsFS5p-_250WRmkH2za+QPV6WyKNfgD-E1W8=HV3W3fg@mail.gmail.com>
-Subject: Re: [PATCH 06/12] iio: adc: ad9467: add mutex to struct ad9467_state
-To:     nuno.sa@analog.com
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-iio@vger.kernel.org,
-        Olivier MOYSAN <olivier.moysan@foss.st.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="EREZrZaaB+LjPV4s"
+Content-Disposition: inline
+In-Reply-To: <ZWjb6r0RWPo199pC@arm.com>
+X-Cookie: Oh, wow!  Look at the moon!
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023 at 4:17=E2=80=AFAM Nuno Sa via B4 Relay
-<devnull+nuno.sa.analog.com@kernel.org> wrote:
->
-> From: Nuno Sa <nuno.sa@analog.com>
->
-> When calling ad9467_set_scale(), multiple calls to ad9467_spi_write()
-> are done which means we need to properly protect the whole operation so
-> we are sure we will be in a sane state if two concurrent calls occur.
->
-> Fixes: ad6797120238 ("iio: adc: ad9467: add support AD9467 ADC")
-> Signed-off-by: Nuno Sa <nuno.sa@analog.com>
-> ---
->  drivers/iio/adc/ad9467.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/iio/adc/ad9467.c b/drivers/iio/adc/ad9467.c
-> index 04474dbfa631..91821dee03b7 100644
-> --- a/drivers/iio/adc/ad9467.c
-> +++ b/drivers/iio/adc/ad9467.c
-> @@ -4,7 +4,7 @@
->   *
->   * Copyright 2012-2020 Analog Devices Inc.
->   */
-> -
-> +#include <linux/cleanup.h>
->  #include <linux/module.h>
->  #include <linux/mutex.h>
 
-Ah, the case of the misplaced header from the previous patch is solved. :-)
+--EREZrZaaB+LjPV4s
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
->  #include <linux/device.h>
-> @@ -122,6 +122,8 @@ struct ad9467_state {
->         unsigned int                    output_mode;
->
->         struct gpio_desc                *pwrdown_gpio;
-> +       /* protect against concurrent accesses to the device */
-> +       struct mutex                    lock;
->  };
->
->  static int ad9467_spi_read(struct spi_device *spi, unsigned int reg)
-> @@ -162,6 +164,7 @@ static int ad9467_reg_access(struct adi_axi_adc_conv =
-*conv, unsigned int reg,
->         int ret;
->
->         if (!readval) {
-> +               guard(mutex)(&st->lock);
->                 ret =3D ad9467_spi_write(spi, reg, writeval);
->                 if (ret)
->                         return ret;
-> @@ -310,6 +313,7 @@ static int ad9467_set_scale(struct adi_axi_adc_conv *=
-conv, int val, int val2)
->                 if (scale_val[0] !=3D val || scale_val[1] !=3D val2)
->                         continue;
->
-> +               guard(mutex)(&st->lock);
->                 ret =3D ad9467_spi_write(st->spi, AN877_ADC_REG_VREF,
->                                        info->scale_table[i][1]);
->                 if (ret < 0)
->
-> --
-> 2.42.1
->
->
+On Thu, Nov 30, 2023 at 07:00:58PM +0000, Catalin Marinas wrote:
 
-Alternately, this could probably be solved with spi_bus_lock/unlock
-and spi_sync_locked rather than introducing a new mutex.
+> My hope when looking at the arm64 patches was that we can completely
+> avoid the kernel allocation/deallocation of the shadow stack since it
+> doesn't need to do this for the normal stack either. Could someone
+> please summarise why we dropped the shadow stack pointer after v1? IIUC
+> there was a potential security argument but I don't think it was a very
+> strong one. Also what's the threat model for this feature? I thought
+> it's mainly mitigating stack corruption. If some rogue code can do
+> syscalls, we have bigger problems than clone3() taking a shadow stack
+> pointer.
+
+As well as preventing/detecting corruption of the in memory stack shadow
+stacks are also ensuring that any return instructions are unwinding a
+prior call instruction, and that the returns are done in opposite order
+to the calls.  This forces usage of the stack - any value we attempt to
+RET to is going to be checked against the top of the shadow stack which
+makes chaining returns together as a substitute for branches harder.
+
+The concern Rick raised was that allowing user to pick the exact shadow
+stack pointer would allow userspace to corrupt or reuse the stack of an
+existing thread by starting a new thread with the shadow stack pointing
+into the existing shadow stack of that thread.  While in isolation
+that's not too much more than what userspace could just do directly
+anyway it might compose with other issues to something more "interesting"
+(eg, I'd be a bit concerned about overlap with pkeys/POE though I've not
+thought through potential uses in detail).
+
+> I'm not against clone3() getting a shadow_stack_size argument but asking
+> some more questions. If we won't pass a pointer as well, is there any
+> advantage in expanding this syscall vs a specific prctl() option? Do we
+> need a different size per thread or do all threads have the same shadow
+> stack size? A new RLIMIT doesn't seem to map well though, it is more
+> like an upper limit rather than a fixed/default size (glibc I think uses
+> it for thread stacks but bionic or musl don't AFAIK).
+
+I don't know what the userspace patterns are likely to be here, it's
+possible a single value for each process might be fine but I couldn't
+say that confidently.  I agree that a RLIMIT does seem like a poor fit.
+
+As well as the actual configuration of the size the other thing that we
+gain is that as well as relying on heuristics to determine if we need to
+allocate a new shadow stack for the new thread we allow userspace to
+explicitly request a new shadow stack.  There was some corner case with
+IIRC posix_nspawn() mentioned where the heuristics aren't what we want
+for example.
+
+> Another dumb question on arm64 - is GCSPR_EL0 writeable by the user? If
+> yes, can the libc wrapper for threads allocate a shadow stack via
+> map_shadow_stack() and set it up in the thread initialisation handler
+> before invoking the thread function?
+
+No, GCSPR_EL0 can only be changed by EL0 through BL, RET and the
+new GCS instructions (push/pop and stack switch).  Push is optional -
+userspace has to explicitly request that it be enabled and this could be
+prevented through seccomp or some other LSM.  The stack switch
+instructions require a token at the destination address which must
+either be written by a higher EL or will be written in the process of
+switching away from a stack so you can switch back.  Unless I've missed
+one every mechanism for userspace to update GCSPR_EL0 will do a GCS
+memory access so providing guard pages have been allocated wrapping to a
+different stack will be prevented.
+
+We would need a syscall to allow GCSPR_EL0 to be written.
+
+--EREZrZaaB+LjPV4s
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEyBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVpA8cACgkQJNaLcl1U
+h9Ca+wf3QFyzGukhu9LAOptm51dV0RGGmEApy11RuLhFZpMcwhZf72d1VLoTaX94
+2M9lCSisanqBpgOn+QY89X1GfxUDo/WgMDORlBCFqGOHe3nW7L2ACk26m9HjTa9e
++WhaSQq2Q2Ujhq52LMQJel/UNV2KkMR3vza+gBaag3QqsPwKXQXKSqg6krP2UrbP
+O91VoUbpivePKisHXR+hmKnOpuYTYGpUGZzP3GtvrvIUNXyu2Vh8XZ3b8cLHR146
+Lt+IHXjK10CoX3iqTRUlMB1v7uq8peIbt/d9hG9QihIR0utyluwXeMFmPFn6MEcv
+qhw0z1fyt4DQjITRgu6gV86KpbFB
+=v09W
+-----END PGP SIGNATURE-----
+
+--EREZrZaaB+LjPV4s--
