@@ -2,133 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD4D77FE919
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 07:23:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E2497FE91A
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 07:23:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344611AbjK3GX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 01:23:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39046 "EHLO
+        id S1344614AbjK3GXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 01:23:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229596AbjK3GXZ (ORCPT
+        with ESMTP id S234958AbjK3GXg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 01:23:25 -0500
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2044.outbound.protection.outlook.com [40.107.212.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF6C510C6;
-        Wed, 29 Nov 2023 22:23:31 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BIxFkRN44tTMBn+5vnXnzEfc4ntlAOP4/YnJhyCGkpr9UgUTFZ+go0E1tG440oGA5lJXqXWHqji3Hygx0yYLB9AkiXnSoRl5zCnzpYWe47y/rtIK9K4+KY8GYPVJxo9zPs+zVQQnCTSUTwbRW2hg3NJllPIERWYDkvaaocVRuhcv57Gdzk2p/kwjY0OW43zAAWIPLWJ4QCU6TZx9ss+kx/4IyO8kMJ28djNPW2i7lR6QVuc57mvKhC+A/DnRbOjiz8RURuSQw0GNdJAPYmBRvOIqP+phayrl1GWq1wHIsOtbhZUn+X28UtUUSuliYhmBMAWgLhDigjyQU/E/Nt8sUg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=neiPgAnC5Cn+Jbqgsk6HgAn+fPI9D2BIoHx5zTlDrfE=;
- b=VvPT8XzFs91EYk19onlUfUQApwKZ0oCcDBzosaIIDHL5DW44MJTmCsdHmQPZWLntHklAlV0mGmYQ9nlpNrURK3VMp9KPGQfIQkdVCCjxTO05/IJ7vqajlH78uiJNGRVqeTigA/HsTx3Fm9y2/Hci8BRWrsBnaizLrAVy/r+z5K2HOc8dLK4VvuVTziqL8O/YHU/7JXQ15ZUf7B62w7f1s0jSGbpELzOei0EQJrzTIpeZ52ToKzvpBlAZH+G4/5fFJU2OT4h7CqHzyoadcqL4N51pzLLZJMvgP1HPRY1tLVUeDfZhj9t3D+xrZLiqCfd8RFFczYcuFvYaBUF48UyuXQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=infradead.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=neiPgAnC5Cn+Jbqgsk6HgAn+fPI9D2BIoHx5zTlDrfE=;
- b=MfDgRLyu8h7VAdq4RxL4iCu1ZW9TMxgc7U7hXRJ5NDt5NDVr4S85paJGPvVs7ycdwkbiIUXwhOrjlDYWmxLeKsERpiLIcf6iEXtsZ/Lbj1YqV5NfpQjKujQvDofJOmmdyh+zhMIDcA/5d2n2PGGB717qhY/8USrMlb81vuX1RHc=
-Received: from CH0PR03CA0214.namprd03.prod.outlook.com (2603:10b6:610:e7::9)
- by SA1PR12MB8597.namprd12.prod.outlook.com (2603:10b6:806:251::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.29; Thu, 30 Nov
- 2023 06:23:28 +0000
-Received: from DS3PEPF000099E2.namprd04.prod.outlook.com
- (2603:10b6:610:e7:cafe::31) by CH0PR03CA0214.outlook.office365.com
- (2603:10b6:610:e7::9) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.24 via Frontend
- Transport; Thu, 30 Nov 2023 06:23:25 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- DS3PEPF000099E2.mail.protection.outlook.com (10.167.17.201) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7046.17 via Frontend Transport; Thu, 30 Nov 2023 06:23:25 +0000
-Received: from BLR-5CG113396H.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Thu, 30 Nov
- 2023 00:23:08 -0600
-From:   Ravi Bangoria <ravi.bangoria@amd.com>
-To:     <peterz@infradead.org>, <acme@kernel.org>
-CC:     <ravi.bangoria@amd.com>, <mingo@kernel.org>, <jolsa@kernel.org>,
-        <irogers@google.com>, <adrian.hunter@intel.com>,
-        <eranian@google.com>, <linux-perf-users@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <sandipan.das@amd.com>,
-        <ananth.narayan@amd.com>, <santosh.shukla@amd.com>
-Subject: [PATCH v2] perf/x86/amd: Reject branch stack for IBS events
-Date:   Thu, 30 Nov 2023 11:52:46 +0530
-Message-ID: <20231130062246.290-1-ravi.bangoria@amd.com>
-X-Mailer: git-send-email 2.34.1
+        Thu, 30 Nov 2023 01:23:36 -0500
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B7B610C6;
+        Wed, 29 Nov 2023 22:23:41 -0800 (PST)
+Received: by mail-qv1-xf2b.google.com with SMTP id 6a1803df08f44-67a34fbaf12so3516906d6.3;
+        Wed, 29 Nov 2023 22:23:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701325420; x=1701930220; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dnFNpITeBzIeWAB6/djyDlgB+xngZbEudW6ZwqboSBc=;
+        b=Kdb8h9U3zgOhqUkVO0UKU5XITYIl1JWjKJgusWKFxeo3amFzRidVeqxiFGCb/k0MfU
+         5+Dc1HsYCqVR2XmJ8DanRXoTHAgRt7qENItT3P9dFyYFG4Of6Z4aUFPDf4i9vXUJyGDE
+         2fBRGBHsjVEkFiw8r3GkIg1eWbbPZtPSTCTdVNUJU1q6El+ia4dRQW/X09c91o3KCRNP
+         R12z7QViEesfPOymzNoFudYfcfbm64DLx/CrTDK1Rs5W310tM8TzoBUi9/Ic4eYzVUvK
+         WPazwsfqb+TCf5jylLFxb72Jt3jZRsfmIE0sP6JAvTkoZOoPVl+nvGI7e7f8GvyqYTQt
+         D9kQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701325420; x=1701930220;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dnFNpITeBzIeWAB6/djyDlgB+xngZbEudW6ZwqboSBc=;
+        b=bcrujGvBcRsAplosPX04RPhaxXaSQ+P0ZW7JRs/cBY8TpWY8H+gDlHUflhdPSiduBX
+         MdWyxyLMxWmsJdqp5QTLzDQfSGSiO3zdgQjEeZyE7Lf94l2y/78ovYC5pF1EIfkdThkM
+         CUEh2/givZp8uj7s/T+5K31X+uxpprlf64L2/2ib9ci514acigj0fddDglPaotBT9d5v
+         rwcGsc8Zvqa2wNLEf/5AKHhHciM3cuuZsNGR5vAkG0oPmWcGMYsr1JNAk2ET5Bz6vpWH
+         jLOBbz3SqJqKdJyUKG4IngQgybxY684wl/UZTLkL9wH8Wagq3XLg9dfmGc6ZDSNbicc8
+         vH9Q==
+X-Gm-Message-State: AOJu0YzLusRmIj1FIz6O2HBM9JDNMcXYFdxGdCPqOmx4sEUa1GCtrsv/
+        Ert69UVWoeuiE2THdO54wrTlnzG13sIMpFVEyLOvwCAAEVI=
+X-Google-Smtp-Source: AGHT+IH0SyX76kONcdWlvcKAlac9MgRsSZANFwgwnZgOBET2afx9W8YCZCQZK6E4xmMv+OhaN7H7BE0osBZD2D+BqhA=
+X-Received: by 2002:ad4:5f0a:0:b0:67a:3967:4b09 with SMTP id
+ fo10-20020ad45f0a000000b0067a39674b09mr19186344qvb.8.1701325420254; Wed, 29
+ Nov 2023 22:23:40 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS3PEPF000099E2:EE_|SA1PR12MB8597:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6b841a0d-ed68-4f23-ab1b-08dbf16cdc51
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: AXrd8069iNkQ0Nd8t5svt4CEgZblByu0V6grF5BkUpZ2tlC2P0jzRDyT0Fpe8oQpwnuRnWQlJf9czr/iMswi/iksSdgn9iL1ArhCkrIl5UcHEPmK0LLFsAp0uCNXnO/wQB9ZNeKaZPA4mY8EzX4iy5nADytd3BPHaG1vV9J4KxLEmZJ9Re1xmzYWpBhsfKkciRqAFeus8eS2Gjon5mk5M7I3EfDtgPZQ7bIEsjaRjTSoubtOr/32NrhxKxBaVGT7K89XGrf9spN1ppx1ufAebWxlLEI3S6HeFyhsoQEaaZoe8Sr+4y3z4U77lZfhn3yu5p6WO9TC3dWRUfJWpDmaa9Q+9SONQV212oz44k8eyk4ntwPQ8p9QESea2o8u3sK7wMD6f8WlQTCZ117EsiZt0geBzR/Es8rlqvGumI9yB/M2Zzfdhr+jGv8WNqFxa/lkoG4Ni0tUl1aJoKwMu4OXqVvfS3OVc2ZPUmAIi7bhgn/SfiAY5iqcyWHRvF1ulOJihhY8QN6ALQtySHflMqT0WOpK/aE7+e9VLOFoMLz3XDO3zpJ1HxHYMLAa7rpgL67Jp/UwAsZy1wiKgAvczstLQnbikaLNspKI3GRYqfeGl5nk1BVqBxPWheSMdqZ3eUc88wruc6UHI3uXvjehmVlL3VpMyqe5L48uPusJUqPD9l0JZdNi4AvYjfAtqXmHIyRaZ+tLAaD30oXBEu2rpDwka1XF7igIxfChfamaMemTOes3J6c5xS9XkEKxEBknyk4klkSnK0ubMS9+NBdEI57PBOLFfVv4aD9JzGzhSbu4laODRAkZ16vZpgBEeXC5lHCN
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(39860400002)(136003)(376002)(396003)(230922051799003)(64100799003)(451199024)(186009)(1800799012)(82310400011)(36840700001)(40470700004)(46966006)(8936002)(4326008)(6666004)(8676002)(7696005)(40460700003)(316002)(110136005)(54906003)(478600001)(966005)(2616005)(2906002)(36860700001)(81166007)(4744005)(47076005)(356005)(36756003)(41300700001)(1076003)(86362001)(44832011)(26005)(70586007)(202311291699003)(40480700001)(336012)(426003)(16526019)(83380400001)(5660300002)(82740400003)(70206006)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Nov 2023 06:23:25.7377
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6b841a0d-ed68-4f23-ab1b-08dbf16cdc51
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: DS3PEPF000099E2.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB8597
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+References: <20231129-idmap-fscap-refactor-v1-0-da5a26058a5b@kernel.org> <20231129-idmap-fscap-refactor-v1-12-da5a26058a5b@kernel.org>
+In-Reply-To: <20231129-idmap-fscap-refactor-v1-12-da5a26058a5b@kernel.org>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Thu, 30 Nov 2023 08:23:28 +0200
+Message-ID: <CAOQ4uxj=oR+yj19rUm0E6cHTiStniqvebtZSDhV3XZC1qz6n6A@mail.gmail.com>
+Subject: Re: [PATCH 12/16] ovl: use vfs_{get,set}_fscaps() for copy-up
+To:     "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        Serge Hallyn <serge@hallyn.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Eric Paris <eparis@redhat.com>,
+        James Morris <jmorris@namei.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, audit@vger.kernel.org,
+        linux-unionfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Namhyung Kim <namhyung@kernel.org>
+On Wed, Nov 29, 2023 at 11:50=E2=80=AFPM Seth Forshee (DigitalOcean)
+<sforshee@kernel.org> wrote:
+>
+> Using vfs_{get,set}xattr() for fscaps will be blocked in a future
+> commit, so convert ovl to use the new interfaces. Also remove the now
+> unused ovl_getxattr_value().
+>
+> Signed-off-by: Seth Forshee (DigitalOcean) <sforshee@kernel.org>
 
-The AMD IBS PMU doesn't handle branch stacks, so it should not accept
-events with brstack.
+You may add:
 
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-Signed-off-by: Ravi Bangoria <ravi.bangoria@amd.com>
----
-v1: https://lore.kernel.org/r/20230602194513.1589179-1-namhyung@kernel.org
-v1->v2:
- - Rebase on top of peterz/queue/perf/core
+Reviewed-by: Amir Goldstein <amir73il@gmail.com>
 
- arch/x86/events/amd/ibs.c | 3 +++
- 1 file changed, 3 insertions(+)
+I am assuming that this work is destined to be merged via the vfs tree?
+Note that there is already a (non-conflicting) patch to copy_up.c on
+Christian's vfs.rw branch.
 
-diff --git a/arch/x86/events/amd/ibs.c b/arch/x86/events/amd/ibs.c
-index 6911c5399d02..e91970b01d62 100644
---- a/arch/x86/events/amd/ibs.c
-+++ b/arch/x86/events/amd/ibs.c
-@@ -287,6 +287,9 @@ static int perf_ibs_init(struct perf_event *event)
- 	if (config & ~perf_ibs->config_mask)
- 		return -EINVAL;
- 
-+	if (has_branch_stack(event))
-+		return -EOPNOTSUPP;
-+
- 	ret = validate_group(event);
- 	if (ret)
- 		return ret;
--- 
-2.34.1
+I think it is best that all the overlayfs patches are tested together by
+the vfs maintainer in preparation for the 6.8 merge window, so I have
+a feeling that the 6.8 overlayfs PR is going to be merged via the vfs tree =
+;-)
 
+Thanks,
+Amir.
+
+> ---
+>  fs/overlayfs/copy_up.c | 72 ++++++++++++++++++++++++++------------------=
+------
+>  1 file changed, 37 insertions(+), 35 deletions(-)
+>
+> diff --git a/fs/overlayfs/copy_up.c b/fs/overlayfs/copy_up.c
+> index 4382881b0709..b43af5ce4b21 100644
+> --- a/fs/overlayfs/copy_up.c
+> +++ b/fs/overlayfs/copy_up.c
+> @@ -73,6 +73,23 @@ static int ovl_copy_acl(struct ovl_fs *ofs, const stru=
+ct path *path,
+>         return err;
+>  }
+>
+> +static int ovl_copy_fscaps(struct ovl_fs *ofs, const struct path *oldpat=
+h,
+> +                          struct dentry *new)
+> +{
+> +       struct vfs_caps capability;
+> +       int err;
+> +
+> +       err =3D vfs_get_fscaps(mnt_idmap(oldpath->mnt), oldpath->dentry,
+> +                            &capability);
+> +       if (err) {
+> +               if (err =3D=3D -ENODATA || err =3D=3D -EOPNOTSUPP)
+> +                       return 0;
+> +               return err;
+> +       }
+> +
+> +       return vfs_set_fscaps(ovl_upper_mnt_idmap(ofs), new, &capability,=
+ 0);
+> +}
+> +
+>  int ovl_copy_xattr(struct super_block *sb, const struct path *oldpath, s=
+truct dentry *new)
+>  {
+>         struct dentry *old =3D oldpath->dentry;
+> @@ -130,6 +147,14 @@ int ovl_copy_xattr(struct super_block *sb, const str=
+uct path *oldpath, struct de
+>                         break;
+>                 }
+>
+> +               if (!strcmp(name, XATTR_NAME_CAPS)) {
+> +                       error =3D ovl_copy_fscaps(OVL_FS(sb), oldpath, ne=
+w);
+> +                       if (!error)
+> +                               continue;
+> +                       /* fs capabilities must be copied */
+> +                       break;
+> +               }
+> +
+>  retry:
+>                 size =3D ovl_do_getxattr(oldpath, name, value, value_size=
+);
+>                 if (size =3D=3D -ERANGE)
+> @@ -1006,61 +1031,40 @@ static bool ovl_need_meta_copy_up(struct dentry *=
+dentry, umode_t mode,
+>         return true;
+>  }
+>
+> -static ssize_t ovl_getxattr_value(const struct path *path, char *name, c=
+har **value)
+> -{
+> -       ssize_t res;
+> -       char *buf;
+> -
+> -       res =3D ovl_do_getxattr(path, name, NULL, 0);
+> -       if (res =3D=3D -ENODATA || res =3D=3D -EOPNOTSUPP)
+> -               res =3D 0;
+> -
+> -       if (res > 0) {
+> -               buf =3D kzalloc(res, GFP_KERNEL);
+> -               if (!buf)
+> -                       return -ENOMEM;
+> -
+> -               res =3D ovl_do_getxattr(path, name, buf, res);
+> -               if (res < 0)
+> -                       kfree(buf);
+> -               else
+> -                       *value =3D buf;
+> -       }
+> -       return res;
+> -}
+> -
+>  /* Copy up data of an inode which was copied up metadata only in the pas=
+t. */
+>  static int ovl_copy_up_meta_inode_data(struct ovl_copy_up_ctx *c)
+>  {
+>         struct ovl_fs *ofs =3D OVL_FS(c->dentry->d_sb);
+>         struct path upperpath;
+>         int err;
+> -       char *capability =3D NULL;
+> -       ssize_t cap_size;
+> +       struct vfs_caps capability;
+> +       bool has_capability =3D false;
+>
+>         ovl_path_upper(c->dentry, &upperpath);
+>         if (WARN_ON(upperpath.dentry =3D=3D NULL))
+>                 return -EIO;
+>
+>         if (c->stat.size) {
+> -               err =3D cap_size =3D ovl_getxattr_value(&upperpath, XATTR=
+_NAME_CAPS,
+> -                                                   &capability);
+> -               if (cap_size < 0)
+> +               err =3D vfs_get_fscaps(mnt_idmap(upperpath.mnt), upperpat=
+h.dentry,
+> +                                    &capability);
+> +               if (!err)
+> +                       has_capability =3D 1;
+> +               else if (err !=3D -ENODATA && err !=3D EOPNOTSUPP)
+>                         goto out;
+>         }
+>
+>         err =3D ovl_copy_up_data(c, &upperpath);
+>         if (err)
+> -               goto out_free;
+> +               goto out;
+>
+>         /*
+>          * Writing to upper file will clear security.capability xattr. We
+>          * don't want that to happen for normal copy-up operation.
+>          */
+>         ovl_start_write(c->dentry);
+> -       if (capability) {
+> -               err =3D ovl_do_setxattr(ofs, upperpath.dentry, XATTR_NAME=
+_CAPS,
+> -                                     capability, cap_size, 0);
+> +       if (has_capability) {
+> +               err =3D vfs_set_fscaps(mnt_idmap(upperpath.mnt), upperpat=
+h.dentry,
+> +                                    &capability, 0);
+>         }
+>         if (!err) {
+>                 err =3D ovl_removexattr(ofs, upperpath.dentry,
+> @@ -1068,13 +1072,11 @@ static int ovl_copy_up_meta_inode_data(struct ovl=
+_copy_up_ctx *c)
+>         }
+>         ovl_end_write(c->dentry);
+>         if (err)
+> -               goto out_free;
+> +               goto out;
+>
+>         ovl_clear_flag(OVL_HAS_DIGEST, d_inode(c->dentry));
+>         ovl_clear_flag(OVL_VERIFIED_DIGEST, d_inode(c->dentry));
+>         ovl_set_upperdata(d_inode(c->dentry));
+> -out_free:
+> -       kfree(capability);
+>  out:
+>         return err;
+>  }
+>
+> --
+> 2.43.0
+>
