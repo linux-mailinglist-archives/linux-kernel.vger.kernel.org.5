@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AAFF97FFF9B
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 00:41:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C64817FFF9C
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 00:41:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377382AbjK3Xla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 18:41:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59084 "EHLO
+        id S1377355AbjK3Xlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 18:41:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377348AbjK3Xl0 (ORCPT
+        with ESMTP id S1377305AbjK3Xle (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 18:41:26 -0500
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7521010E4
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 15:41:32 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9fa2714e828so214648566b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 15:41:32 -0800 (PST)
+        Thu, 30 Nov 2023 18:41:34 -0500
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2C3710FC
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 15:41:39 -0800 (PST)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-a00ac0101d9so222950266b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 15:41:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf.com; s=google; t=1701387691; x=1701992491; darn=vger.kernel.org;
+        d=semihalf.com; s=google; t=1701387698; x=1701992498; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=uUSou8Y9ftMqf1PK2crHmzfoy35Q5/lR0Dintg0xKiY=;
-        b=Ee9srPmwlV6fdxvXNR5bmxtguX+6J3llt1jRsWEJbiO0cRjkdzIpYcx0Gl2vrkPWGT
-         xQ8L6rVgS/z1r647hniawq3ZIPhYt8Rz4iYyudFBYSG3qVemPr/ejK2hjLVlFX1AvXax
-         y6/IPqTZHeCN1RvZZcdNfGnmzY92PFPIDXhnyHPu8K1AWaEvjD/+vCNSfRsfjZhxMVeN
-         9OWsTReahmWLDufof35Dzr23HYAEwZYb6bNX78DL8yWNRGOTLJqIZ+HE/eivwfNU0IoV
-         shxAJwe6v/Uh63efCHvascVqLUs5fOneJi6EuoG0OAilAdcdfnIIBqTl0SYR2xeIYuJo
-         /07A==
+        bh=vTN+h/QEMYf7Pops99ws82TYphIJnTeV37hKepwC4Tk=;
+        b=jvDShIeY1Nd8NTlM5Eg9KF6YD5ThMjusALez0zU4GsL1V85mf8BTRgCKLvnZw6dR6u
+         LZf2uJnP6/pX5kppjth03GmS3+2xRLvE5XCWFQNvg3F8leGLhysxlirX3RBLFjsDoIAm
+         yiCoOi1vdbHHzL9X93eAczkVhUoIj/gEssP1VcryQFeEAnGhJZr2QVc7BY5b9H95zYFU
+         kzl0G/WuyAO2w1Yl3rIV3UcGxWmmYX9QZyfoa6JN5hr2wN8vnweZnl4/BT3SGrD4ny4+
+         AvOJz1q5QBWjWdIKEJIC/2XsK/vU7GnzXq6E1PKUhvPJsaOdn6kRNJiboQXv9bkRFhVU
+         0SQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701387691; x=1701992491;
+        d=1e100.net; s=20230601; t=1701387698; x=1701992498;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=uUSou8Y9ftMqf1PK2crHmzfoy35Q5/lR0Dintg0xKiY=;
-        b=fzsgoEVEMfgFTIsUB5kGHJAzP34gyGZo6cgauRMFsgO9FFSA3PX6f6BBsH/gpeUAhQ
-         ZXhWUsrnjaace2Ehb1pjHkLHJ0ZxumW4CyGCBfFNTPCZ5qg9SRFOMCSMT5n3QJoCUYpo
-         9hmNpOVjp4ssPaibofnCgKSNt62HhfUlOIPeomUd8VwAMtFcLx+em6VggkPlzmW1JKAH
-         hma72Oewf2KS72Nddps5Upws6eows5WUgms0cD7JGZXwfiP8pz0rxBcITsXS92ILsTNo
-         76lCyx4qiBFSik6tKThSMjuuGgGY3DvBAGnpU+20WBMfkZakBX0J5Vcvxv24Vtv41hFm
-         aQ0w==
-X-Gm-Message-State: AOJu0YwyvzZYxYd+W9qaFxsl2aHPoZ6ToqwWmIMGBsvsE49GdcuXmbL0
-        /xybarUw19ONDFBZtVUDA8zu
-X-Google-Smtp-Source: AGHT+IFkGWramd2t5xJhUKE8Jp9wBXauti88roVFzzLwDBicH9+vwNIMDElnnVZgXyIse1zMLPq3+Q==
-X-Received: by 2002:a17:906:10ca:b0:a19:a19b:55f4 with SMTP id v10-20020a17090610ca00b00a19a19b55f4mr217903ejv.132.1701387691072;
-        Thu, 30 Nov 2023 15:41:31 -0800 (PST)
+        bh=vTN+h/QEMYf7Pops99ws82TYphIJnTeV37hKepwC4Tk=;
+        b=Pb7VStusSE+IvG5Wqcs9tIq+BlFa9pK2akhTmpeum1dy8PDdzD4kHxiLr2jXNqVlhH
+         VRLBMiBToDMveI5SPxHJXe7riwFHqRkMQZcuyGT0ozRoyLWB2dSQiNL1BnjhXs7ibGpi
+         Nl9hrquL6bcQfuRkaOBsBXg/3Gp4DEzEHpatUvngu+B954gqoPBqVxkfQtXIb3XCxtV8
+         4pyJd0sbjql+z2jhbJGgb/RwQPFjk6FEKa++W7BUlzs3KQ2Vcd9dYTxTI2Y5XpJzKUjQ
+         RcuaoEVLSV2pGWa/B1/9lOpwAS0dvtvsPvfthZFLD7/bg54eWWIe+amIb5wZV7CPLbB+
+         y3RQ==
+X-Gm-Message-State: AOJu0YyVinqClX5z2Un5SEETjaRG9JllORwvfBu+4Zul4NOgTJRdbTzy
+        dJ3czBFlplIsSkfoDoZHQo4A
+X-Google-Smtp-Source: AGHT+IFElJDryfSuMNqdgKPWut4MGwpnSAjjEYnzzc+i9phHDQLiFjprnGD0CsWityWbOgbsKwaGlQ==
+X-Received: by 2002:a17:907:9057:b0:a16:9205:c5b0 with SMTP id az23-20020a170907905700b00a169205c5b0mr177421ejc.56.1701387698397;
+        Thu, 30 Nov 2023 15:41:38 -0800 (PST)
 Received: from ukaszb-l.semihalf.net (public-gprs368940.centertel.pl. [37.47.72.109])
-        by smtp.gmail.com with ESMTPSA id 9-20020a170906100900b009ddaf5ebb6fsm1210175ejm.177.2023.11.30.15.41.24
+        by smtp.gmail.com with ESMTPSA id 9-20020a170906100900b009ddaf5ebb6fsm1210175ejm.177.2023.11.30.15.41.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Nov 2023 15:41:30 -0800 (PST)
+        Thu, 30 Nov 2023 15:41:38 -0800 (PST)
 From:   =?UTF-8?q?=C5=81ukasz=20Bartosik?= <lb@semihalf.com>
 To:     Jason Baron <jbaron@akamai.com>, Jim Cromie <jim.cromie@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
@@ -63,12 +63,10 @@ Cc:     Guenter Roeck <groeck@google.com>,
         Pekka Paalanen <ppaalanen@gmail.com>,
         Sean Paul <seanpaul@chromium.org>,
         Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
-        upstream@semihalf.com, pmladek@suse.com,
-        sergey.senozhatsky@gmail.com, john.ogness@linutronix.de,
-        Simon Ser <contact@emersion.fr>
-Subject: [PATCH v2 05/15] tracefs: add __get_str_strip_nl - RFC
-Date:   Fri,  1 Dec 2023 00:40:38 +0100
-Message-ID: <20231130234048.157509-6-lb@semihalf.com>
+        upstream@semihalf.com
+Subject: [PATCH v2 06/15] dyndbg: use __get_str_strip_nl in prdbg and devdbg
+Date:   Fri,  1 Dec 2023 00:40:39 +0100
+Message-ID: <20231130234048.157509-7-lb@semihalf.com>
 X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
 In-Reply-To: <20231130234048.157509-1-lb@semihalf.com>
 References: <20231130234048.157509-1-lb@semihalf.com>
@@ -87,73 +85,112 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jim Cromie <jim.cromie@gmail.com>
 
-This variant of __get_str() removes the trailing newline. It is for
-use by printk/debug-ish events which already have a trailing newline.
-It is here to support:
+Recently added dyndbg events: prdbg, devdbg have code to strip the
+trailing newline, if it's there.  Instead of removing the newline
+in TP_fast_assign use __get_str_strip_nl macro in TP_printk. Advantage
+of such an approach is that the removal is done on the read side (slow
+path). The change removes also passing of debug message length to prdbg
+and devdbg events.
 
-https://lore.kernel.org/lkml/
-20200825153338.17061-1-vincent.whitchurch@axis.com/
-which taught dyndbg to send pr_debug() msgs to tracefs, via -x/T flag.
+This use is slightly premature/overkill, since some pr_debugs do not
+have the expected trailing newline.  While those lacks are arguably
+bugs, this doesn't fix them.
 
-It "reused" the include/trace/events/printk.h console event,
-which does the following:
-
-       TP_fast_assign(
-               /*
-                * Each trace entry is printed in a new line.
-                * If the msg finishes with '\n', cut it off
-                * to avoid blank lines in the trace.
-                */
-               if (len > 0 && (msg[len-1] == '\n'))
-                       len -= 1;
-
-               memcpy(__get_str(s), msg, len);
-               __get_str(s)[len] = 0;
-	),
-
-That trim work could be avoided, *if* all pr_debug() callers are
-known to have no '\n' to strip.  While that's not true for *all*
-callsites, it is 99+% true for DRM.debug callsites, and can be made
-true for some subsets of prdbg/dyndbg callsites.
-
-WANTED: macros to validate that a literal format-str has or doesn't
-have a trailing newline, or to provide or trim trailing newline(s?).
-Should be usable in TP_printk* defns, for use in new event defns.
-
-Cc: <rostedt@goodmis.org>
-Cc: Vincent Whitchurch <vincent.whitchurch@axis.com>
-Cc: <daniel@ffwll.ch>
-Cc: <pmladek@suse.com>
-Cc: <sergey.senozhatsky@gmail.com>
-Cc: <john.ogness@linutronix.de>
-Cc: Simon Ser <contact@emersion.fr>
-Cc: Sean Paul <seanpaul@chromium.org>
 Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
 Signed-off-by: Łukasz Bartosik <lb@semihalf.com>
 ---
- include/trace/stages/stage3_trace_output.h | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ include/trace/events/dyndbg.h | 27 +++++++++------------------
+ lib/dynamic_debug.c           |  7 +++----
+ 2 files changed, 12 insertions(+), 22 deletions(-)
 
-diff --git a/include/trace/stages/stage3_trace_output.h b/include/trace/stages/stage3_trace_output.h
-index c1fb1355d309..92a79bd5c0cd 100644
---- a/include/trace/stages/stage3_trace_output.h
-+++ b/include/trace/stages/stage3_trace_output.h
-@@ -19,6 +19,15 @@
- #undef __get_str
- #define __get_str(field) ((char *)__get_dynamic_array(field))
+diff --git a/include/trace/events/dyndbg.h b/include/trace/events/dyndbg.h
+index 647c30206a7d..ffd21480cd9d 100644
+--- a/include/trace/events/dyndbg.h
++++ b/include/trace/events/dyndbg.h
+@@ -15,46 +15,37 @@
+ DECLARE_EVENT_CLASS(dyndbg_template,
  
-+#undef __get_str_strip_nl
-+#define __get_str_strip_nl(field)					\
-+	({								\
-+		char *s = __get_str(field);				\
-+		size_t len = strlen(s);					\
-+		if (len && s[len-1] == '\n')				\
-+			s[len-1] = '\0'; s;				\
-+	})
-+
- #undef __get_rel_dynamic_array
- #define __get_rel_dynamic_array(field)					\
- 		((void *)__entry + 					\
+ 	TP_PROTO(const struct _ddebug *desc, const struct device *dev,
+-		 const char *msg, size_t len),
++		 const char *msg),
+ 
+-	TP_ARGS(desc, dev, msg, len),
++	TP_ARGS(desc, dev, msg),
+ 
+ 	TP_STRUCT__entry(
+-		__dynamic_array(char, s, len+1)
++		__string(s, msg)
+ 	    ),
+ 
+ 	TP_fast_assign(
+-		/*
+-		 * Each trace entry is printed in a new line.
+-		 * If the msg finishes with '\n', cut it off
+-		 * to avoid blank lines in the trace.
+-		 */
+-		if (len > 0 && (msg[len-1] == '\n'))
+-			len -= 1;
+-
+-		memcpy(__get_str(s), msg, len);
+-		__get_str(s)[len] = 0;
++		__assign_str(s, msg);
+ 	    ),
+ 
+-	TP_printk("%s", __get_str(s))
++	TP_printk("%s", __get_str_strip_nl(s))
+ );
+ 
+ /* captures pr_debug() callsites */
+ DEFINE_EVENT(dyndbg_template, prdbg,
+ 
+ 	TP_PROTO(const struct _ddebug *desc, const struct device *dev,
+-		 const char *msg, size_t len),
++		 const char *msg),
+ 
+-	TP_ARGS(desc, dev, msg, len)
++	TP_ARGS(desc, dev, msg)
+ );
+ 
+ /* captures dev_dbg() callsites */
+ DEFINE_EVENT(dyndbg_template, devdbg,
+ 
+ 	TP_PROTO(const struct _ddebug *desc, const struct device *dev,
+-		 const char *msg, size_t len),
++		 const char *msg),
+ 
+-	TP_ARGS(desc, dev, msg, len)
++	TP_ARGS(desc, dev, msg)
+ );
+ 
+ #endif /* _TRACE_DYNDBG_H */
+diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
+index fcc7c5631b53..9682277f3909 100644
+--- a/lib/dynamic_debug.c
++++ b/lib/dynamic_debug.c
+@@ -886,7 +886,6 @@ static void ddebug_trace(struct _ddebug *desc, const struct device *dev,
+ {
+ 	struct ddebug_trace_buf *buf;
+ 	int bufidx;
+-	int len;
+ 
+ 	preempt_disable_notrace();
+ 
+@@ -900,12 +899,12 @@ static void ddebug_trace(struct _ddebug *desc, const struct device *dev,
+ 
+ 	buf = this_cpu_ptr(ddebug_trace_bufs.bufs) + bufidx;
+ 
+-	len = vscnprintf(buf->buf, sizeof(buf->buf), fmt, args);
++	vscnprintf(buf->buf, sizeof(buf->buf), fmt, args);
+ 
+ 	if (!dev)
+-		trace_prdbg(desc, NULL, buf->buf, len);
++		trace_prdbg(desc, NULL, buf->buf);
+ 	else
+-		trace_devdbg(desc, dev, buf->buf, len);
++		trace_devdbg(desc, dev, buf->buf);
+ 
+ out:
+ 	/* As above. */
 -- 
 2.43.0.rc2.451.g8631bc7472-goog
 
