@@ -2,49 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E847D7FE794
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 04:16:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AE8F7FE78F
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 04:13:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231621AbjK3DQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 22:16:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59068 "EHLO
+        id S231616AbjK3DNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 22:13:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230393AbjK3DQC (ORCPT
+        with ESMTP id S230393AbjK3DNW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 22:16:02 -0500
-Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.219])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 431121A6;
-        Wed, 29 Nov 2023 19:16:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=UfjhIxyGPgUBRRrgHE
-        ZRqAC26KRpErr7rMhG9xIdpcU=; b=ZFFG9NCDo5w5m5kc8Nih7jn82lb8VyQ7c1
-        /b8/AW+icz0K+aVbmvLFOU0UzoFafKs3cQwOuHJRuSowCYMRSPDtE0cQ4d3AhaDd
-        3FOE+UTr31EiBB10Hnmd3BGECauHcIxz4V1tsVWTapYwatC7zpn4CQtOFATqOsJ7
-        tTjhORLiI=
-Received: from localhost.localdomain (unknown [39.144.190.126])
-        by zwqz-smtp-mta-g1-2 (Coremail) with SMTP id _____wDH13_P_WdlBXH7AQ--.52667S2;
-        Thu, 30 Nov 2023 11:13:21 +0800 (CST)
-From:   Haoran Liu <liuhaoran14@163.com>
-To:     davem@davemloft.net
-Cc:     edumazet@google.com, pabeni@redhat.com, heiko@sntech.de,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Haoran Liu <liuhaoran14@163.com>
-Subject: [PATCH] [net/ethernet] arc_emac: Add error handling in emac_rockchip_probe
-Date:   Wed, 29 Nov 2023 19:13:18 -0800
-Message-Id: <20231130031318.35850-1-liuhaoran14@163.com>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: _____wDH13_P_WdlBXH7AQ--.52667S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7WFWfKw13KF1fuw1UKryUWrg_yoW8Gw43pw
-        4DCr9xCw1kWw17Za97GayrAF4Yq3W5KFWjgF9rGa1fua45AFyUXry0qa45ur1UJr42kFya
-        kr4UA34fZan8X37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zieOJ7UUUUU=
-X-Originating-IP: [39.144.190.126]
-X-CM-SenderInfo: xolxxtxrud0iqu6rljoofrz/xtbBcgU4gletj6IPXAAAsJ
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        Wed, 29 Nov 2023 22:13:22 -0500
+Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79E241A6;
+        Wed, 29 Nov 2023 19:13:28 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R401e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0VxPttaU_1701314000;
+Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0VxPttaU_1701314000)
+          by smtp.aliyun-inc.com;
+          Thu, 30 Nov 2023 11:13:26 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     jikos@kernel.org
+Cc:     benjamin.tissoires@redhat.com, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        Abaci Robot <abaci@linux.alibaba.com>
+Subject: [PATCH] HID: core: clean up some inconsistent indenting
+Date:   Thu, 30 Nov 2023 11:13:18 +0800
+Message-Id: <20231130031318.59033-1-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1.7.g153144c
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,39 +41,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch introduces error handling for the of_match_node call within
-the emac_rockchip_probe. Previously, there was no check for the return
-value of of_match_node, which could result in improper behavior if the
-device tree match was unsuccessful.
+No functional modification involved.
 
-Although the error addressed by this patch may not occur in the current
-environment, I still suggest implementing these error handling routines
-if the function is not highly time-sensitive. As the environment evolves
-or the code gets reused in different contexts, there's a possibility that
-these errors might occur. Addressing them now can prevent potential
-debugging efforts in the future, which could be quite resource-intensive.
+drivers/hid/hid-core.c:2781 hid_add_device() warn: inconsistent indenting.
 
-Signed-off-by: Haoran Liu <liuhaoran14@163.com>
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=7664
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 ---
- drivers/net/ethernet/arc/emac_rockchip.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/hid/hid-core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/arc/emac_rockchip.c b/drivers/net/ethernet/arc/emac_rockchip.c
-index 493d6356c8ca..f6f1390b77f6 100644
---- a/drivers/net/ethernet/arc/emac_rockchip.c
-+++ b/drivers/net/ethernet/arc/emac_rockchip.c
-@@ -134,6 +134,11 @@ static int emac_rockchip_probe(struct platform_device *pdev)
- 	}
- 
- 	match = of_match_node(emac_rockchip_dt_ids, dev->of_node);
-+	if (!match) {
-+		dev_err(dev, "No matching device found\n");
-+		return -ENODEV;
+diff --git a/drivers/hid/hid-core.c b/drivers/hid/hid-core.c
+index e0181218ad85..249107b6c863 100644
+--- a/drivers/hid/hid-core.c
++++ b/drivers/hid/hid-core.c
+@@ -2778,10 +2778,10 @@ int hid_add_device(struct hid_device *hdev)
+ 	/*
+ 	 * Check for the mandatory transport channel.
+ 	 */
+-	 if (!hdev->ll_driver->raw_request) {
++	if (!hdev->ll_driver->raw_request) {
+ 		hid_err(hdev, "transport driver missing .raw_request()\n");
+ 		return -EINVAL;
+-	 }
 +	}
-+
- 	priv->soc_data = match->data;
  
- 	priv->emac.clk = devm_clk_get(dev, "hclk");
+ 	/*
+ 	 * Read the device report descriptor once and use as template
 -- 
-2.17.1
+2.20.1.7.g153144c
 
