@@ -2,124 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DFD27FECA0
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 11:16:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A2DE7FECA1
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 11:16:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231833AbjK3KQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 05:16:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48486 "EHLO
+        id S235109AbjK3KQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 05:16:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbjK3KQZ (ORCPT
+        with ESMTP id S229462AbjK3KQf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 05:16:25 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0615910D0
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 02:16:32 -0800 (PST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 5771F1FCEA;
-        Thu, 30 Nov 2023 10:16:30 +0000 (UTC)
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2A81913AB1;
-        Thu, 30 Nov 2023 10:16:30 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-        by imap1.dmz-prg2.suse.org with ESMTPSA
-        id InggBv5gaGXEDAAAD6G6ig
-        (envelope-from <mhocko@suse.com>); Thu, 30 Nov 2023 10:16:30 +0000
-Date:   Thu, 30 Nov 2023 11:16:29 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Baoquan He <bhe@redhat.com>
-Cc:     Donald Dutile <ddutile@redhat.com>, Jiri Bohac <jbohac@suse.cz>,
-        Pingfan Liu <piliu@redhat.com>, Tao Liu <ltao@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        Dave Young <dyoung@redhat.com>, kexec@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/4] kdump: crashkernel reservation from CMA
-Message-ID: <ZWhg_b3O6piZtkQ-@tiehlicka>
-References: <ZWD_fAPqEWkFlEkM@dwarf.suse.cz>
- <CAO7dBbUVQn8xzPZQhhw1XqF+sQT0c6phk4sda+X=MrR6RmPE0A@mail.gmail.com>
- <ZWJllXCN0SDIELrX@dwarf.suse.cz>
- <CAO7dBbVJ=ytRra_77VRZ8ud1wVkP9fub=Vj6cfTkx=CnYg5J2A@mail.gmail.com>
- <ZWVMUxmi66xLZPsr@MiWiFi-R3L-srv>
- <ZWWuBSiZZdF2W12j@tiehlicka>
- <ZWbyDx3TJ7zo3jCw@MiWiFi-R3L-srv>
- <91a31ce5-63d1-7470-18f7-92b039fda8e6@redhat.com>
- <ZWf64BowWrYqA2Rf@MiWiFi-R3L-srv>
+        Thu, 30 Nov 2023 05:16:35 -0500
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 743DE10C2
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 02:16:41 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 2A9AF1C0003;
+        Thu, 30 Nov 2023 10:16:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1701339400;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lPIe8MgFoopxf4QsCc/BpkQti0xvkaZYjK5Tti66Lbc=;
+        b=PcTsnGKj9xD4qwl2AK2ml4mmiZb0t/wDx8QFPg2FfBZjTU+Y11qIoLb1rJK2+AfKDC0LgK
+        qoqi8ihWII60uWhFnD7hYwdBRapqWRbG4tUgCmRdXms0msaybEphU8DtwHvqnPseubsyX5
+        tBHsZw4N64qMYE8z8parVWA8zqDoWtc3PqDhZZC7Yu+T/eDYINxxNxr0YLD/iXFDD+uTgY
+        BITgAJ/XkIxowTXRTV1skLpxFZC7UW/w+8UpXunj+s1jCZajI8kAImS4AClPvAgADjSU2k
+        bf5eaNx2WLwhZq9NwPewvMLTWsQE/KDpqiFDi+nihmqkHtJVdJu5qRaTdJ9jHg==
+Date:   Thu, 30 Nov 2023 11:16:36 +0100
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Frank Li <Frank.Li@nxp.com>
+Cc:     alexandre.belloni@bootlin.com, conor.culhane@silvaco.com,
+        imx@lists.linux.dev, joe@perches.com,
+        linux-i3c@lists.infradead.org, linux-kernel@vger.kernel.org,
+        zbigniew.lukwinski@linux.intel.com
+Subject: Re: [PATCH v4 2/6] i3c: master: svc: add hot join support
+Message-ID: <20231130111636.34432d30@xps-13>
+In-Reply-To: <20231129221225.387952-3-Frank.Li@nxp.com>
+References: <20231129221225.387952-1-Frank.Li@nxp.com>
+        <20231129221225.387952-3-Frank.Li@nxp.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZWf64BowWrYqA2Rf@MiWiFi-R3L-srv>
-X-Spamd-Bar: +++++++++++++++
-Authentication-Results: smtp-out2.suse.de;
-        dkim=none;
-        dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.com (policy=quarantine);
-        spf=fail (smtp-out2.suse.de: domain of mhocko@suse.com does not designate 2a07:de40:b281:104:10:150:64:97 as permitted sender) smtp.mailfrom=mhocko@suse.com
-X-Rspamd-Server: rspamd2
-X-Spamd-Result: default: False [15.00 / 50.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         R_SPF_FAIL(1.00)[-all];
-         ARC_NA(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         NEURAL_HAM_LONG(-1.00)[-1.000];
-         MIME_GOOD(-0.10)[text/plain];
-         MID_RHS_NOT_FQDN(0.50)[];
-         DMARC_POLICY_QUARANTINE(1.50)[suse.com : No valid SPF, No valid DKIM,quarantine];
-         SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-         RCVD_COUNT_THREE(0.00)[3];
-         MX_GOOD(-0.01)[];
-         RCPT_COUNT_SEVEN(0.00)[9];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         R_DKIM_NA(2.20)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_TLS_ALL(0.00)[];
-         BAYES_HAM(-0.00)[12.74%]
-X-Spam-Score: 15.00
-X-Rspamd-Queue-Id: 5771F1FCEA
-X-Spam: Yes
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 30-11-23 11:00:48, Baoquan He wrote:
-[...]
-> Now, we are worried if there's risk if the CMA area is retaken into kdump
-> kernel as system RAM. E.g is it possible that 1st kernel's ongoing RDMA
-> or DMA will interfere with kdump kernel's normal memory accessing?
-> Because kdump kernel usually only reset and initialize the needed
-> device, e.g dump target. Those unneeded devices will be unshutdown and
-> let go. 
+Hi Frank,
 
-I do not really want to discount your concerns but I am bit confused why
-this matters so much. First of all, if there is a buggy RDMA driver
-which doesn't use the proper pinning API (which would migrate away from
-the CMA) then what is the worst case? We will get crash kernel corrupted
-potentially and fail to take a proper kernel crash, right? Is this
-worrisome? Yes. Is it a real roadblock? I do not think so. The problem
-seems theoretical to me and it is not CMA usage at fault here IMHO. It
-is the said theoretical driver that needs fixing anyway.
+Frank.Li@nxp.com wrote on Wed, 29 Nov 2023 17:12:21 -0500:
 
-Now, it is really fair to mention that CMA backed crash kernel memory
-has some limitations
-	- CMA reservation can only be used by the userspace in the
-	  primary kernel. If the size is overshot this might have
-	  negative impact on kernel allocations
-	- userspace memory dumping in the crash kernel is fundamentally
-	  incomplete.
+> Add hot join support for svc master controller. Enable hot join defaultly.
 
-Just my 2c
--- 
-Michal Hocko
-SUSE Labs
+							by default
+
+> User can use sys entry to disable hot join.
+
+Should we do the opposite? Disable hot-join by default and allow
+enabling it?
+
+>=20
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> ---
+>  drivers/i3c/master/svc-i3c-master.c | 58 +++++++++++++++++++++++++++--
+>  1 file changed, 54 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/drivers/i3c/master/svc-i3c-master.c b/drivers/i3c/master/svc=
+-i3c-master.c
+> index 6b6bdd163af4f..880c6ae76c013 100644
+> --- a/drivers/i3c/master/svc-i3c-master.c
+> +++ b/drivers/i3c/master/svc-i3c-master.c
+> @@ -128,6 +128,9 @@
+>  /* This parameter depends on the implementation and may be tuned */
+>  #define SVC_I3C_FIFO_SIZE 16
+> =20
+> +#define SVC_I3C_EVENT_IBI	BIT(0)
+> +#define SVC_I3C_EVENT_HOTJOIN	BIT(1)
+> +
+>  struct svc_i3c_cmd {
+>  	u8 addr;
+>  	bool rnw;
+> @@ -176,6 +179,7 @@ struct svc_i3c_regs_save {
+>   * @ibi.tbq_slot: To be queued IBI slot
+>   * @ibi.lock: IBI lock
+>   * @lock: Transfer lock, protect between IBI work thread and callbacks f=
+rom master
+> + * @enabled_events: Bit masks for enable events (IBI, HotJoin).
+>   */
+>  struct svc_i3c_master {
+>  	struct i3c_master_controller base;
+> @@ -205,6 +209,7 @@ struct svc_i3c_master {
+>  		spinlock_t lock;
+>  	} ibi;
+>  	struct mutex lock;
+> +	int enabled_events;
+>  };
+> =20
+>  /**
+> @@ -428,13 +433,16 @@ static void svc_i3c_master_ibi_work(struct work_str=
+uct *work)
+>  	switch (ibitype) {
+>  	case SVC_I3C_MSTATUS_IBITYPE_IBI:
+>  		dev =3D svc_i3c_master_dev_from_addr(master, ibiaddr);
+> -		if (!dev)
+> +		if (!dev || !(master->enabled_events & SVC_I3C_EVENT_IBI))
+
+If we are going to add new events like that maybe we should have a
+helper. So we can then extend the helper with the list of enabled
+events?
+
+>  			svc_i3c_master_nack_ibi(master);
+>  		else
+>  			svc_i3c_master_handle_ibi(master, dev);
+>  		break;
+>  	case SVC_I3C_MSTATUS_IBITYPE_HOT_JOIN:
+> -		svc_i3c_master_ack_ibi(master, false);
+> +		if (master->enabled_events & SVC_I3C_EVENT_HOTJOIN)
+
+And you could reuse the helper here
+
+> +			svc_i3c_master_ack_ibi(master, false);
+> +		else
+> +			svc_i3c_master_nack_ibi(master);
+>  		break;
+>  	case SVC_I3C_MSTATUS_IBITYPE_MASTER_REQUEST:
+>  		svc_i3c_master_nack_ibi(master);
+> @@ -471,7 +479,9 @@ static void svc_i3c_master_ibi_work(struct work_struc=
+t *work)
+>  		svc_i3c_master_emit_stop(master);
+>  		break;
+>  	case SVC_I3C_MSTATUS_IBITYPE_HOT_JOIN:
+> -		queue_work(master->base.wq, &master->hj_work);
+> +		svc_i3c_master_emit_stop(master);
+> +		if (master->enabled_events & SVC_I3C_EVENT_HOTJOIN)
+
+and here
+
+> +			queue_work(master->base.wq, &master->hj_work);
+>  		break;
+
+Thanks,
+Miqu=C3=A8l
