@@ -2,81 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2E2B7FF933
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 19:17:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D28047FF8CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 18:49:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346199AbjK3SRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 13:17:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59474 "EHLO
+        id S1346590AbjK3Rtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 12:49:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231736AbjK3SR3 (ORCPT
+        with ESMTP id S230045AbjK3Rte (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 13:17:29 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54DD7D6C
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 10:17:36 -0800 (PST)
+        Thu, 30 Nov 2023 12:49:34 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CE2091
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 09:49:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701368255;
+        s=mimecast20190719; t=1701366579;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=CrFEpIsAN5CLxammhD+GAJP9cPsbGGrmnZDHNVsmekk=;
-        b=IRUxCG0hGwUQVZejq7gsGv1XZx/OLIprkTRxKsCmmxhIuFgYGzJKVaOSOb035pRcOivPMA
-        z1ETQjLBCYGRTk/KoOTgwe3BY305ToBwN2hngdla+31UO5oG0w/+6MeQp5hpqJ9wAG9auI
-        1y0aas7erTGZLMWHZxOc4yaVZylByRI=
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
- [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=RZA0GAnzMmQmnt7J4v4F0BWd31On6guabFGK6t1c+KI=;
+        b=Vn+Q4i7zfhrvBwiieMxCZSGfP2EIQYw0g9QatyZ3Lusqwk5iWnrqXaO5oihG6bSESXAlF+
+        P7OL9FHaeJGZoboKpEJ+bLogIZU5b+0Ugq9N6fz+z3ekzqlr0p4ccuTkwIL8W4j3Dik6+u
+        7eoWLaOs6rjR5h8oC8ZBsapTCxOswa0=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-547-sG5CK5UePAilhZfOe9nvHg-1; Thu, 30 Nov 2023 13:17:34 -0500
-X-MC-Unique: sG5CK5UePAilhZfOe9nvHg-1
-Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-50bc7296f75so1415814e87.2
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 10:17:33 -0800 (PST)
+ us-mta-412-JTJahpqPOoaH2Y7nPiF6eg-1; Thu, 30 Nov 2023 12:49:38 -0500
+X-MC-Unique: JTJahpqPOoaH2Y7nPiF6eg-1
+Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-543f45ab457so921249a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 09:49:37 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701368252; x=1701973052;
-        h=content-transfer-encoding:mime-version:user-agent:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=CrFEpIsAN5CLxammhD+GAJP9cPsbGGrmnZDHNVsmekk=;
-        b=Y5/3Lv8z66Hgm6YbvGTZPSjw3BdBKo8o1N2DYxotBR1eemKr6Z6upfEROzD0uWusN1
-         oD2GGSlo0q4XWsVyJE33d0zDZQPO2UQckIXRrKfe7SomqFiUErlaIrK+t3Gg8Zt49iyH
-         yVAQdKr8Rj0Y3t6PppmMHUX7pipb5OM382NiaWKq18VNWGKOJPu55qrr7c6Vpn/ONUYD
-         rBvRXXkDIbLeDycO/CbvAsrhCVcsKcj7EbdiXXevyW6nWSpOihTfi1jaHoU7EFf1qjMF
-         DG1NfHdExrmIhh8HNP20Ejz5tUOw5cK4WgImKbpW3mXm6Wn0SBiO/LYtvSYI5D+7FRZl
-         KrgA==
-X-Gm-Message-State: AOJu0YyjiwxU2JDjkeWIQslLyhclah9LpOgg1udTW1rPyCxzTpchrRt9
-        Uf43Ed5gNSRKEzqY2WJ4/EBOJ/MQmNWIQVUiaW7XstBjwVGG6wcIAzMCr00WWhKbtkfeLxE4BaG
-        fzYvZkroqgvynV4Lrob4/ZVVCyDAWtyXQ
-X-Received: by 2002:a05:6512:39c5:b0:50b:c027:70f with SMTP id k5-20020a05651239c500b0050bc027070fmr286lfu.21.1701368252298;
-        Thu, 30 Nov 2023 10:17:32 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFDeqYIAaVd/veLSsPan4ItHCmZAXYpV0ezMbb4/NCI3nQ4Fjl7Bmf1Eq8wWcU569Tv8r8zRw==
-X-Received: by 2002:a17:906:15c:b0:9e7:8ad0:a471 with SMTP id 28-20020a170906015c00b009e78ad0a471mr171135ejh.12.1701366013091;
-        Thu, 30 Nov 2023 09:40:13 -0800 (PST)
-Received: from starship ([5.28.147.32])
-        by smtp.gmail.com with ESMTPSA id 6-20020ac24846000000b0050bc56dd0acsm213436lfy.184.2023.11.30.09.40.10
+        d=1e100.net; s=20230601; t=1701366576; x=1701971376;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RZA0GAnzMmQmnt7J4v4F0BWd31On6guabFGK6t1c+KI=;
+        b=lIU9zbjn2bQtGgl5Yclm7MqmMgDj+enPFsWiYJd8pRdjDSvZJ50HP/g1gHecxAWIIo
+         254ACDY4exhPrSv6Cw5gYS72xTOmkIWlWZEh+Z29FVZbMNEDWFJlkYkqlo+pUk8Iksp5
+         XFxqa0Xbq0w65B09qf2/AVguxdMBq5OH3t5TcVtRSAZhkF6DrdffnqukBEDAm0LerEvU
+         IXS5BTtbM0r+89XB/NM7X4r3qXM5HMbgylIWVfPJmeS0/VZJaSV1Av4r9iDrSK8hp9JU
+         1lQ91oqldDmJpESB3QC0uJJizXma9A9kaYgmjrbWBcxscqL4Ad8p1L2nREVZpqTpXAoO
+         3r2g==
+X-Gm-Message-State: AOJu0YxDaBhMrwSmlmmOtT36811eX5JceNYcMPzVu/1p8pYRzfiTCdqw
+        u+G2xnqRi15KNKNG2BKvRmt/iZUcOA5mMZ7wv7RzG+NOZBfAaHjH1ntaMSke/69ZsVhV0/PHc3y
+        TODDSLpySUlTnVsaSZ+AwjF4XxvSgl0Xi
+X-Received: by 2002:a50:9ea7:0:b0:54b:e77:5dda with SMTP id a36-20020a509ea7000000b0054b0e775ddamr164247edf.3.1701366576235;
+        Thu, 30 Nov 2023 09:49:36 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFJHdlKzDLGKZRCik8JIeZpJ/scQ9w1/+X1RYF1icQUTtUJPu1cnWdj/y1c9yXcUWnqvcXUQg==
+X-Received: by 2002:a05:600c:4e87:b0:40b:4fd5:2b31 with SMTP id f7-20020a05600c4e8700b0040b4fd52b31mr2100wmq.36.1701366048081;
+        Thu, 30 Nov 2023 09:40:48 -0800 (PST)
+Received: from redhat.com ([2.55.10.128])
+        by smtp.gmail.com with ESMTPSA id n26-20020a05600c3b9a00b0040b34409d43sm2727966wms.11.2023.11.30.09.40.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Nov 2023 09:40:11 -0800 (PST)
-Message-ID: <fe7d8df5b6774a83c38b8a6dc244782c943c84b7.camel@redhat.com>
-Subject: Re: [PATCH v7 17/26] KVM: x86: Report KVM supported CET MSRs as
- to-be-saved
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Yang Weijiang <weijiang.yang@intel.com>, seanjc@google.com,
-        pbonzini@redhat.com, dave.hansen@intel.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     peterz@infradead.org, chao.gao@intel.com,
-        rick.p.edgecombe@intel.com, john.allen@amd.com
-Date:   Thu, 30 Nov 2023 19:40:09 +0200
-In-Reply-To: <20231124055330.138870-18-weijiang.yang@intel.com>
-References: <20231124055330.138870-1-weijiang.yang@intel.com>
-         <20231124055330.138870-18-weijiang.yang@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Thu, 30 Nov 2023 09:40:47 -0800 (PST)
+Date:   Thu, 30 Nov 2023 12:40:43 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Stefano Garzarella <sgarzare@redhat.com>
+Cc:     Arseniy Krasnov <avkrasnov@salutedevices.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@sberdevices.ru, oxffffaa@gmail.com
+Subject: Re: [PATCH net-next v5 2/3] virtio/vsock: send credit update during
+ setting SO_RCVLOWAT
+Message-ID: <20231130123815-mutt-send-email-mst@kernel.org>
+References: <20231130130840.253733-1-avkrasnov@salutedevices.com>
+ <20231130130840.253733-3-avkrasnov@salutedevices.com>
+ <20231130084044-mutt-send-email-mst@kernel.org>
+ <02de8982-ec4a-b3b2-e8e5-1bca28cfc01b@salutedevices.com>
+ <20231130085445-mutt-send-email-mst@kernel.org>
+ <pbkiwezwlf6dmogx7exur6tjrtcfzxyn7eqlehqxivqifbkojv@xlziiuzekon4>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <pbkiwezwlf6dmogx7exur6tjrtcfzxyn7eqlehqxivqifbkojv@xlziiuzekon4>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,96 +93,147 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-11-24 at 00:53 -0500, Yang Weijiang wrote:
-> Add CET MSRs to the list of MSRs reported to userspace if the feature,
-> i.e. IBT or SHSTK, associated with the MSRs is supported by KVM.
+On Thu, Nov 30, 2023 at 03:11:19PM +0100, Stefano Garzarella wrote:
+> On Thu, Nov 30, 2023 at 08:58:58AM -0500, Michael S. Tsirkin wrote:
+> > On Thu, Nov 30, 2023 at 04:43:34PM +0300, Arseniy Krasnov wrote:
+> > > 
+> > > 
+> > > On 30.11.2023 16:42, Michael S. Tsirkin wrote:
+> > > > On Thu, Nov 30, 2023 at 04:08:39PM +0300, Arseniy Krasnov wrote:
+> > > >> Send credit update message when SO_RCVLOWAT is updated and it is bigger
+> > > >> than number of bytes in rx queue. It is needed, because 'poll()' will
+> > > >> wait until number of bytes in rx queue will be not smaller than
+> > > >> SO_RCVLOWAT, so kick sender to send more data. Otherwise mutual hungup
+> > > >> for tx/rx is possible: sender waits for free space and receiver is
+> > > >> waiting data in 'poll()'.
+> > > >>
+> > > >> Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
+> > > >> ---
+> > > >>  Changelog:
+> > > >>  v1 -> v2:
+> > > >>   * Update commit message by removing 'This patch adds XXX' manner.
+> > > >>   * Do not initialize 'send_update' variable - set it directly during
+> > > >>     first usage.
+> > > >>  v3 -> v4:
+> > > >>   * Fit comment in 'virtio_transport_notify_set_rcvlowat()' to 80 chars.
+> > > >>  v4 -> v5:
+> > > >>   * Do not change callbacks order in transport structures.
+> > > >>
+> > > >>  drivers/vhost/vsock.c                   |  1 +
+> > > >>  include/linux/virtio_vsock.h            |  1 +
+> > > >>  net/vmw_vsock/virtio_transport.c        |  1 +
+> > > >>  net/vmw_vsock/virtio_transport_common.c | 27 +++++++++++++++++++++++++
+> > > >>  net/vmw_vsock/vsock_loopback.c          |  1 +
+> > > >>  5 files changed, 31 insertions(+)
+> > > >>
+> > > >> diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
+> > > >> index f75731396b7e..4146f80db8ac 100644
+> > > >> --- a/drivers/vhost/vsock.c
+> > > >> +++ b/drivers/vhost/vsock.c
+> > > >> @@ -451,6 +451,7 @@ static struct virtio_transport vhost_transport = {
+> > > >>  		.notify_buffer_size       = virtio_transport_notify_buffer_size,
+> > > >>
+> > > >>  		.read_skb = virtio_transport_read_skb,
+> > > >> +		.notify_set_rcvlowat      = virtio_transport_notify_set_rcvlowat
+> > > >>  	},
+> > > >>
+> > > >>  	.send_pkt = vhost_transport_send_pkt,
+> > > >> diff --git a/include/linux/virtio_vsock.h b/include/linux/virtio_vsock.h
+> > > >> index ebb3ce63d64d..c82089dee0c8 100644
+> > > >> --- a/include/linux/virtio_vsock.h
+> > > >> +++ b/include/linux/virtio_vsock.h
+> > > >> @@ -256,4 +256,5 @@ void virtio_transport_put_credit(struct virtio_vsock_sock *vvs, u32 credit);
+> > > >>  void virtio_transport_deliver_tap_pkt(struct sk_buff *skb);
+> > > >>  int virtio_transport_purge_skbs(void *vsk, struct sk_buff_head *list);
+> > > >>  int virtio_transport_read_skb(struct vsock_sock *vsk, skb_read_actor_t read_actor);
+> > > >> +int virtio_transport_notify_set_rcvlowat(struct vsock_sock *vsk, int val);
+> > > >>  #endif /* _LINUX_VIRTIO_VSOCK_H */
+> > > >> diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
+> > > >> index af5bab1acee1..8007593a3a93 100644
+> > > >> --- a/net/vmw_vsock/virtio_transport.c
+> > > >> +++ b/net/vmw_vsock/virtio_transport.c
+> > > >> @@ -539,6 +539,7 @@ static struct virtio_transport virtio_transport = {
+> > > >>  		.notify_buffer_size       = virtio_transport_notify_buffer_size,
+> > > >>
+> > > >>  		.read_skb = virtio_transport_read_skb,
+> > > >> +		.notify_set_rcvlowat      = virtio_transport_notify_set_rcvlowat
+> > > >>  	},
+> > > >>
+> > > >>  	.send_pkt = virtio_transport_send_pkt,
+> > > >> diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
+> > > >> index f6dc896bf44c..1cb556ad4597 100644
+> > > >> --- a/net/vmw_vsock/virtio_transport_common.c
+> > > >> +++ b/net/vmw_vsock/virtio_transport_common.c
+> > > >> @@ -1684,6 +1684,33 @@ int virtio_transport_read_skb(struct vsock_sock *vsk, skb_read_actor_t recv_acto
+> > > >>  }
+> > > >>  EXPORT_SYMBOL_GPL(virtio_transport_read_skb);
+> > > >>
+> > > >> +int virtio_transport_notify_set_rcvlowat(struct vsock_sock *vsk,
+> > > >> int val)
+> > > >> +{
+> > > >> +	struct virtio_vsock_sock *vvs = vsk->trans;
+> > > >> +	bool send_update;
+> > > >> +
+> > > >> +	spin_lock_bh(&vvs->rx_lock);
+> > > >> +
+> > > >> +	/* If number of available bytes is less than new SO_RCVLOWAT value,
+> > > >> +	 * kick sender to send more data, because sender may sleep in
+> > > >> its
+> > > >> +	 * 'send()' syscall waiting for enough space at our side.
+> > > >> +	 */
+> > > >> +	send_update = vvs->rx_bytes < val;
+> > > >> +
+> > > >> +	spin_unlock_bh(&vvs->rx_lock);
+> > > >> +
+> > > >> +	if (send_update) {
+> > > >> +		int err;
+> > > >> +
+> > > >> +		err = virtio_transport_send_credit_update(vsk);
+> > > >> +		if (err < 0)
+> > > >> +			return err;
+> > > >> +	}
+> > > >> +
+> > > >> +	return 0;
+> > > >> +}
+> > > >
+> > > >
+> > > > I find it strange that this will send a credit update
+> > > > even if nothing changed since this was called previously.
+> > > > I'm not sure whether this is a problem protocol-wise,
+> > > > but it certainly was not envisioned when the protocol was
+> > > > built. WDYT?
+> > > 
+> > > >From virtio spec I found:
+> > > 
+> > > It is also valid to send a VIRTIO_VSOCK_OP_CREDIT_UPDATE packet without previously receiving a
+> > > VIRTIO_VSOCK_OP_CREDIT_REQUEST packet. This allows communicating updates any time a change
+> > > in buffer space occurs.
+> > > So I guess there is no limitations to send such type of packet, e.g. it is not
+> > > required to be a reply for some another packet. Please, correct me if im wrong.
+> > > 
+> > > Thanks, Arseniy
+> > 
+> > 
+> > Absolutely. My point was different - with this patch it is possible
+> > that you are not adding any credits at all since the previous
+> > VIRTIO_VSOCK_OP_CREDIT_UPDATE.
 > 
-> SSP can only be read via RDSSP. Writing even requires destructive and
-> potentially faulting operations such as SAVEPREVSSP/RSTORSSP or
-> SETSSBSY/CLRSSBSY. Let the host use a pseudo-MSR that is just a wrapper
-> for the GUEST_SSP field of the VMCS.
+> I think the problem we're solving here is that since as an optimization we
+> avoid sending the update for every byte we consume, but we put a threshold,
+> then we make sure we update the peer.
 > 
-> Suggested-by: Chao Gao <chao.gao@intel.com>
-> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
-> ---
->  arch/x86/include/uapi/asm/kvm_para.h |  1 +
->  arch/x86/kvm/vmx/vmx.c               |  2 ++
->  arch/x86/kvm/x86.c                   | 18 ++++++++++++++++++
->  3 files changed, 21 insertions(+)
+> A credit update contains a snapshot and sending it the same as the previous
+> one should not create any problem.
+
+Well it consumes a buffer on the other side.
+
+> My doubt now is that we only do this when we set RCVLOWAT , should we also
+> do something when we consume bytes to avoid the optimization we have?
 > 
-> diff --git a/arch/x86/include/uapi/asm/kvm_para.h b/arch/x86/include/uapi/asm/kvm_para.h
-> index 6e64b27b2c1e..9864bbcf2470 100644
-> --- a/arch/x86/include/uapi/asm/kvm_para.h
-> +++ b/arch/x86/include/uapi/asm/kvm_para.h
-> @@ -58,6 +58,7 @@
->  #define MSR_KVM_ASYNC_PF_INT	0x4b564d06
->  #define MSR_KVM_ASYNC_PF_ACK	0x4b564d07
->  #define MSR_KVM_MIGRATION_CONTROL	0x4b564d08
-> +#define MSR_KVM_SSP	0x4b564d09
->  
->  struct kvm_steal_time {
->  	__u64 steal;
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index be20a60047b1..d3d0d74fef70 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -7009,6 +7009,8 @@ static bool vmx_has_emulated_msr(struct kvm *kvm, u32 index)
->  	case MSR_AMD64_TSC_RATIO:
->  		/* This is AMD only.  */
->  		return false;
-> +	case MSR_KVM_SSP:
-> +		return kvm_cpu_cap_has(X86_FEATURE_SHSTK);
->  	default:
->  		return true;
->  	}
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 44b8cf459dfc..74d2d00a1681 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -1476,6 +1476,9 @@ static const u32 msrs_to_save_base[] = {
->  
->  	MSR_IA32_XFD, MSR_IA32_XFD_ERR,
->  	MSR_IA32_XSS,
-> +	MSR_IA32_U_CET, MSR_IA32_S_CET,
-> +	MSR_IA32_PL0_SSP, MSR_IA32_PL1_SSP, MSR_IA32_PL2_SSP,
-> +	MSR_IA32_PL3_SSP, MSR_IA32_INT_SSP_TAB,
->  };
->  
->  static const u32 msrs_to_save_pmu[] = {
-> @@ -1576,6 +1579,7 @@ static const u32 emulated_msrs_all[] = {
->  
->  	MSR_K7_HWCR,
->  	MSR_KVM_POLL_CONTROL,
-> +	MSR_KVM_SSP,
->  };
->  
->  static u32 emulated_msrs[ARRAY_SIZE(emulated_msrs_all)];
-> @@ -7371,6 +7375,20 @@ static void kvm_probe_msr_to_save(u32 msr_index)
->  		if (!kvm_caps.supported_xss)
->  			return;
->  		break;
-> +	case MSR_IA32_U_CET:
-> +	case MSR_IA32_S_CET:
-> +		if (!kvm_cpu_cap_has(X86_FEATURE_SHSTK) &&
-> +		    !kvm_cpu_cap_has(X86_FEATURE_IBT))
-> +			return;
-> +		break;
-> +	case MSR_IA32_INT_SSP_TAB:
-> +		if (!kvm_cpu_cap_has(X86_FEATURE_LM))
-> +			return;
-> +		fallthrough;
-> +	case MSR_IA32_PL0_SSP ... MSR_IA32_PL3_SSP:
-> +		if (!kvm_cpu_cap_has(X86_FEATURE_SHSTK))
-> +			return;
-> +		break;
->  	default:
->  		break;
->  	}
+> Stefano
 
-I still think that pseudo MSR is a hack that might backfire,
-but I am not going to argue much about this.
+Isn't this why we have credit request?
 
-Best regards,
-	Maxim Levitsky
-
+-- 
+MST
 
