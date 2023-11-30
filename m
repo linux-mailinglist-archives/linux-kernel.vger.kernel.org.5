@@ -2,75 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97FC07FEB55
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 10:04:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A32A07FEB5A
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 10:05:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229643AbjK3JEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 04:04:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32872 "EHLO
+        id S234956AbjK3JE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 04:04:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234988AbjK3JEA (ORCPT
+        with ESMTP id S229971AbjK3JEz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 04:04:00 -0500
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98A6D170A
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 01:04:05 -0800 (PST)
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7ad60469181so36253139f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 01:04:05 -0800 (PST)
+        Thu, 30 Nov 2023 04:04:55 -0500
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1AC2D66
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 01:05:00 -0800 (PST)
+Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-54ba86ae133so613791a12.2
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 01:05:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=9elements.com; s=google; t=1701335099; x=1701939899; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=OOSpfehJAtjXcmrtCVFOpVd435b0i7EUig22DPIw/j0=;
+        b=M9sgkwCpSOHJg0JDkTgxuaLywR7N1s8k0JfIuEX0wzK9dUrwg7YBkIDo4826QvpRBz
+         m/3roaXe16E02Gbd8i+z4eJHnBkKolxN8JXEOfES6hf+SRgOwNEVL6hNtKgpa2nzBUdq
+         ynH6Vd1BSYcyB8Ssgdy+YLQ+i1sOuI2cZBfrYXYbxNWZ7UCvg9KENP31SQfnXhNtOi+I
+         d0Y+w2Gv+x5Pj8ayXFJk2mXUjFltYO7CXYVWnCAaSnLZtl7pMPezEbtQReqX8KZPUgim
+         Pl0EsQ9PGwa+1SMi4vdEgjaZGxYs0khwj78sYuGXUFI6CuIPdyBj1gq6KzaWqKt5hQo/
+         1Gwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701335045; x=1701939845;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=soy1NT2UKGDJlxht+HERBZveQG1Bg/FOkanqtNm/9DY=;
-        b=vHIdHXSE0RnG+XAXQ24uO64X+4EmMUeoHVpLTuQCn9j1Psv2LXkl4d+RHHa3U4luk2
-         QRXbup2EurEF7cR9lYcV/ducmiWX8eq5+9RMCK9V5ZsFK2eh8qxZ/2rgcgPN2/xcb7C6
-         lOQ0fACZ4+0ztRpCy/mvboZzCjBL3gvwlpDv0akiY4gj2cV3KJ6cVm6BOriEhc6zXAj8
-         uW4EPbXU5debLeo1Z63hAgyfWrq9zA8y2ytcBXXgVCXKyQfoyn7EV/8ggt12yssdFdbd
-         E+XsCYq+3Oj5bnlAvYyhoxZB0EXR4E9CZfuGLJwhNUcn1rO6/d9nlHcKPiQdPZA4fLIf
-         gqqg==
-X-Gm-Message-State: AOJu0YznJ6eGPkNfql1MBi2WseTQ1KgkhCgf4YXn8YTBCKgL/DQPjXx3
-        Nkn3ivr0cMDOQ6YM4B3DWrZbXWSeDsODOae/uYyuuqBpD/Ll14k=
-X-Google-Smtp-Source: AGHT+IG5Ait6fMfTQB+UHkqXgOAU4uB3wqkzXDfyRRZGYJew/an96b9QSlQNg9qwIJt8XW0IRl/BgZ9fx3Ig8l+PKfodU0xq5fgS
+        d=1e100.net; s=20230601; t=1701335099; x=1701939899;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=OOSpfehJAtjXcmrtCVFOpVd435b0i7EUig22DPIw/j0=;
+        b=qNXH9XbbIF/4vGu2OFbs3iloHlob8Bt07DbzT2xeRbDtGMdz8h8ghk3OfEJbY4nHJ8
+         ThFYf3WForVmI/w2UT1uLLersfjMuMYD+z2uqoSlGH36XG7rNzinLdAjz3h89/xRjp6j
+         yG2RgxnZYNQ7KheUInQncmOPYh5eLUu9L5TsESs9Qw6QsmkTJ+ZKUYPL5dVtN7NK3RHF
+         t8WFoshmqqxePCj+ua7AVgY9MnALplyIsqrMPIn33uaHAo720Dt44bxWt9e/fjMvrvwr
+         maNXb5YEM8oV5oXoADWDRsdf/GXPYqJxhJmWFUFE6F///H8VS5ruupefLbDoiEu8nOYe
+         Zp/Q==
+X-Gm-Message-State: AOJu0Yyd55beNdXKWK8PROfxrwsy5XGYS3GXYRosej7N+TBSnSKnPwgp
+        NpdhRe8VUibCAmVyNHD+PLvtAw==
+X-Google-Smtp-Source: AGHT+IHZPozvOcPGcqYRKlWe5NehhcGCx0qBGfvZfu9zNrnHos1zKESsl8C4bT/9i+D6muX3zwgtxw==
+X-Received: by 2002:a50:d68b:0:b0:540:346c:7b2f with SMTP id r11-20020a50d68b000000b00540346c7b2fmr14685967edi.40.1701335099379;
+        Thu, 30 Nov 2023 01:04:59 -0800 (PST)
+Received: from fedora.sec.9e.network (ip-095-222-150-251.um34.pools.vodafone-ip.de. [95.222.150.251])
+        by smtp.gmail.com with ESMTPSA id c3-20020aa7df03000000b0054b9a6092d3sm347554edy.12.2023.11.30.01.04.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Nov 2023 01:04:59 -0800 (PST)
+From:   Patrick Rudolph <patrick.rudolph@9elements.com>
+To:     Iwona Winiarska <iwona.winiarska@intel.com>
+Cc:     naresh.solanki@9elements.com,
+        Patrick Rudolph <patrick.rudolph@9elements.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] hwmon: peci: Bump timeout
+Date:   Thu, 30 Nov 2023 10:04:21 +0100
+Message-ID: <20231130090422.2535542-1-patrick.rudolph@9elements.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-X-Received: by 2002:a6b:db1a:0:b0:7b3:8b53:1547 with SMTP id
- t26-20020a6bdb1a000000b007b38b531547mr757606ioc.2.1701335044968; Thu, 30 Nov
- 2023 01:04:04 -0800 (PST)
-Date:   Thu, 30 Nov 2023 01:04:04 -0800
-In-Reply-To: <20231130084311.2983367-1-lizhi.xu@windriver.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ffd6de060b5aee58@google.com>
-Subject: Re: [syzbot] [exfat?] INFO: task hung in exfat_write_inode
-From:   syzbot <syzbot+2f73ed585f115e98aee8@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org, lizhi.xu@windriver.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+The PECI CPU sensors are available as soon as the CPU is powered,
+however the PECI DIMM sensors are available after DRAM has been
+trained and thresholds have been written by host firmware.
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-INFO: rcu detected stall in corrupted
+The default timeout of 30 seconds isn't enough for modern multisocket
+platforms utilizing DDR5 memory to bring up the memory and enable PECI
+sensor data.
+Bump the default timeout to 10 minutes in case the system starts
+without cached DDR5 training data.
 
-rcu: INFO: rcu_preempt detected expedited stalls on CPUs/tasks: { P5342 } 2662 jiffies s: 2933 root: 0x0/T
-rcu: blocking rcu_node structures (internal RCU debug):
+Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
+---
+ drivers/hwmon/peci/dimmtemp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
-Tested on:
-
-commit:         f9ff5644 Merge tag 'hsi-for-6.2' of git://git.kernel.o..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=1292be28e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1bf08f50e8fff9ad
-dashboard link: https://syzkaller.appspot.com/bug?extid=2f73ed585f115e98aee8
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=124a528ce80000
+diff --git a/drivers/hwmon/peci/dimmtemp.c b/drivers/hwmon/peci/dimmtemp.c
+index 5ca4d04e4b14..4a72e9712408 100644
+--- a/drivers/hwmon/peci/dimmtemp.c
++++ b/drivers/hwmon/peci/dimmtemp.c
+@@ -47,7 +47,7 @@
+ #define GET_TEMP_MAX(x)		(((x) & DIMM_TEMP_MAX) >> 8)
+ #define GET_TEMP_CRIT(x)	(((x) & DIMM_TEMP_CRIT) >> 16)
+ 
+-#define NO_DIMM_RETRY_COUNT_MAX	5
++#define NO_DIMM_RETRY_COUNT_MAX	120
+ 
+ struct peci_dimmtemp;
+ 
+-- 
+2.41.0
 
