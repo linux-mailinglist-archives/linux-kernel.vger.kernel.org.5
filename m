@@ -2,113 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4BEA7FFFB0
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 00:46:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6D577FFFB4
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 00:47:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377319AbjK3Xqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 18:46:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38758 "EHLO
+        id S1377311AbjK3XrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 18:47:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377273AbjK3Xqb (ORCPT
+        with ESMTP id S1377273AbjK3XrM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 18:46:31 -0500
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 125FD10E2
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 15:46:37 -0800 (PST)
-Received: by mail-il1-x12e.google.com with SMTP id e9e14a558f8ab-35c683417f1so1382165ab.0
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 15:46:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1701387996; x=1701992796; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zh250x7hPWKm3cEtn7H0ENDaWoHwP+xH2vXQISgMTVI=;
-        b=UtanHwiHwk/u9K+5iJi35mi1S9WgSFOIWaGjJQH9uFkppBKHdAIpfNJiNes6hJa28t
-         Xhe7GAl6IPdW0WTIeaAJi+uOg6rh1nCndzazcB/tRtoofn4Kkxr8fGtNOxTRcbN56IUw
-         bFkubbkM0y6cSzvw2R0KVRVsTcteXnkZSpa6M=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701387996; x=1701992796;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zh250x7hPWKm3cEtn7H0ENDaWoHwP+xH2vXQISgMTVI=;
-        b=rNN0dPs3N1UYxtAB55Hzxo8DaNxoZ+WDdtrov3SVlIbPmtdVx79fkRPdlhGmx8ckBf
-         CV5ndtiGA/dfJNKTOih3IXNpYUaKJW/1qR5VaKU4QF23xxNRlDvOcCewSunHrjAEUrll
-         bUh2zTWrsSbMFoT4t8lRJ6v0MfnktoBzyvpN95GKkf6+JtGYAIYkBd4ezAshNFQctiQZ
-         1/AR7KGjcoNGw0Zc4dE8uCkjMn3JvnGjBfgyDIYDJTITjLWCloXlbJPe9bn6xCcKZFGZ
-         38KSeCHlPnX2E0zIqEbzFpKFrX5C+0phLqUYwQFSLSDgLq/m4ePz24L3bcNzVmDMCHVs
-         Vnqw==
-X-Gm-Message-State: AOJu0Ywj2YIgeYoZqpztG68Wlk/6lGyGXP+fq9rHufJ0rdSi/2vn7Wd6
-        ZOlih8b0hT+IDTd5dBZplzeSww==
-X-Google-Smtp-Source: AGHT+IHZwDGqqHcfAVap/vf6pHAy9YoCKCV0f7Ge3jlcZnLyFIzigfI+bN6GjaopeCQk+k0HXwJOJg==
-X-Received: by 2002:a5d:8b98:0:b0:790:958e:a667 with SMTP id p24-20020a5d8b98000000b00790958ea667mr25499298iol.2.1701387996280;
-        Thu, 30 Nov 2023 15:46:36 -0800 (PST)
-Received: from [192.168.1.128] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id h5-20020a056638062500b004562646b66bsm579254jar.12.2023.11.30.15.46.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Nov 2023 15:46:36 -0800 (PST)
-Message-ID: <e13a07f6-d251-4510-aa3a-3a90583bd404@linuxfoundation.org>
-Date:   Thu, 30 Nov 2023 16:46:35 -0700
+        Thu, 30 Nov 2023 18:47:12 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F9BE129;
+        Thu, 30 Nov 2023 15:47:18 -0800 (PST)
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AUNI8w0021764;
+        Thu, 30 Nov 2023 23:47:11 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=lxW79dI4+P97r0m0FHTUU4gvHh/DLugORShLU26ncss=;
+ b=DQ6SkW9f1jkR/VoZXDdVBqkkaGsj48Y0x4jma1V/VKnoEvpnzSMgaDP7iKcDXA2Zz/1n
+ AA7ByzrgNMo4Sv/dcgS9/RzFXszzaJoUNKvOGGHxRSGIN4HvllxtMDs26mKo/zB7EenP
+ IAbaDAYpD6NCwqarwQazPV3q+l1A/UzHqWQbUl0lWUgI71LjG3dqeFOWqdLOMG1nBSCx
+ bFLdgvAfp7/rSsO/ukJRyJ6fq1VrEopIzXeVlewEPYvEPBhE/DIu9O5Hj1O5uC0QHux6
+ XqmwwT/LFUEO+JplEF91KHokHR4GTRwaTBAimCtQeDK4LlTE7j3hKRfZ+0EypdPJLwpw xA== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3upjsqtu1q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 30 Nov 2023 23:47:10 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AUNlAIJ011085
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 30 Nov 2023 23:47:10 GMT
+Received: from [10.71.109.77] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 30 Nov
+ 2023 15:47:09 -0800
+Message-ID: <5bcbb092-1d29-f795-3be4-5ab1c708cba0@quicinc.com>
+Date:   Thu, 30 Nov 2023 15:47:09 -0800
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] selftests: cgroup: Fixes code style errors
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH 07/16] drm/msm/dpu: add cdm blocks to RM
 Content-Language: en-US
-To:     Atul Kumar Pant <atulpant.linux@gmail.com>, tj@kernel.org,
-        lizefan.x@bytedance.com, hannes@cmpxchg.org, shuah@kernel.org
-Cc:     cgroups@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20231106181144.117188-1-atulpant.linux@gmail.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20231106181144.117188-1-atulpant.linux@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC:     <freedreno@lists.freedesktop.org>, Rob Clark <robdclark@gmail.com>,
+        "Sean Paul" <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        "David Airlie" <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        <dri-devel@lists.freedesktop.org>, <quic_jesszhan@quicinc.com>,
+        <quic_parellan@quicinc.com>, <quic_khsieh@quicinc.com>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20230830224910.8091-1-quic_abhinavk@quicinc.com>
+ <20230830224910.8091-8-quic_abhinavk@quicinc.com>
+ <CAA8EJpoRcdHtyp3mym5HB2A=O6V4qUNTpnMkvm+OiSt7nHuXJw@mail.gmail.com>
+From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
+In-Reply-To: <CAA8EJpoRcdHtyp3mym5HB2A=O6V4qUNTpnMkvm+OiSt7nHuXJw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: p3fqZW7eERaVsTSvkgJn4Bg0019wcEz_
+X-Proofpoint-ORIG-GUID: p3fqZW7eERaVsTSvkgJn4Bg0019wcEz_
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-30_24,2023-11-30_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
+ priorityscore=1501 bulkscore=0 spamscore=0 mlxlogscore=891 malwarescore=0
+ suspectscore=0 adultscore=0 clxscore=1015 lowpriorityscore=0 mlxscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311300176
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/6/23 11:11, Atul Kumar Pant wrote:
-> Fixes following checkpatch.pl issues:
-> ERROR: do not use assignment in if condition
-> ERROR: Macros starting with if should be enclosed by a do - while
-> 
-> Signed-off-by: Atul Kumar Pant <atulpant.linux@gmail.com>
-> ---
->   tools/testing/selftests/cgroup/cgroup_util.c | 14 ++++++++------
->   tools/testing/selftests/cgroup/test_core.c   |  3 ++-
->   2 files changed, 10 insertions(+), 7 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/cgroup/cgroup_util.c b/tools/testing/selftests/cgroup/cgroup_util.c
-> index 0340d4ca8f51..e165c4a703a6 100644
-> --- a/tools/testing/selftests/cgroup/cgroup_util.c
-> +++ b/tools/testing/selftests/cgroup/cgroup_util.c
-> @@ -411,12 +411,14 @@ int dirfd_open_opath(const char *dir)
->   	return open(dir, O_DIRECTORY | O_CLOEXEC | O_NOFOLLOW | O_PATH);
->   }
->   
-> -#define close_prot_errno(fd)                                                   \
-> -	if (fd >= 0) {                                                         \
-> -		int _e_ = errno;                                               \
-> -		close(fd);                                                     \
-> -		errno = _e_;                                                   \
-> -	}
-> +#define close_prot_errno(fd)				\
-> +	do {						\
-> +		if (fd >= 0) {                          \
-> +			int _e_ = errno;                \
-> +			close(fd);                      \
-> +			errno = _e_;                    \
-> +		}					\
-> +	} while (0);
 
-Did you run checkpatch on this patch? You are fixing
-checkpatch errors - :)
 
-thanks,
--- Shuah
+On 8/30/2023 4:48 PM, Dmitry Baryshkov wrote:
+> On Thu, 31 Aug 2023 at 01:50, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
+>>
+>> Add the RM APIs necessary to initialize and allocate CDM
+>> blocks by the rest of the DPU pipeline.
+> 
+> ... to be used by the rest?
+> 
+
+Yes, thanks.
+
+
+>>
+>> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
+>> ---
+>>   drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c | 17 +++++++++++++++++
+>>   drivers/gpu/drm/msm/disp/dpu1/dpu_rm.h |  2 ++
+>>   2 files changed, 19 insertions(+)
+>>
+>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
+>> index f9215643c71a..7b6444a3fcb1 100644
+>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
+>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
+>> @@ -8,6 +8,7 @@
+>>   #include "dpu_kms.h"
+>>   #include "dpu_hw_lm.h"
+>>   #include "dpu_hw_ctl.h"
+>> +#include "dpu_hw_cdm.h"
+>>   #include "dpu_hw_pingpong.h"
+>>   #include "dpu_hw_sspp.h"
+>>   #include "dpu_hw_intf.h"
+>> @@ -90,6 +91,9 @@ int dpu_rm_destroy(struct dpu_rm *rm)
+>>                  }
+>>          }
+>>
+>> +       if (rm->cdm_blk)
+>> +               dpu_hw_cdm_destroy(to_dpu_hw_cdm(rm->cdm_blk));
+>> +
+>>          for (i = 0; i < ARRAY_SIZE(rm->hw_wb); i++)
+>>                  dpu_hw_wb_destroy(rm->hw_wb[i]);
+>>
+>> @@ -240,6 +244,19 @@ int dpu_rm_init(struct dpu_rm *rm,
+>>                  rm->hw_sspp[sspp->id - SSPP_NONE] = hw;
+>>          }
+>>
+>> +       if (cat->cdm) {
+>> +               struct dpu_hw_cdm *hw;
+>> +
+>> +               hw = dpu_hw_cdm_init(cat->cdm, mmio);
+>> +               /* CDM is optional so no need to bail out */
+>> +               if (IS_ERR(hw)) {
+>> +                       rc = PTR_ERR(hw);
+>> +                       DPU_DEBUG("failed cdm object creation: err %d\n", rc);
+> 
+> No. If it is a part of the catalog, we should fail here as we do in other cases.
+> 
+
+I guess, the only reason for not failing here was other hw blocks are 
+needed even for basic display to come up but cdm is only for YUV formats.
+
+Thats the only reason to mark this a failure which is "OK" to ignore.
+
+But I see your point that if someone is listing this in the catalog but 
+still RM fails thats an error.
+
+Hence, ack.
+
+> 
+>> +               } else {
+>> +                       rm->cdm_blk = &hw->base;
+>> +               }
+>> +       }
+>> +
+>>          return 0;
+>>
+>>   fail:
+>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.h
+>> index 2b551566cbf4..29b221491926 100644
+>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.h
+>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.h
+>> @@ -22,6 +22,7 @@ struct dpu_global_state;
+>>    * @hw_wb: array of wb hardware resources
+>>    * @dspp_blks: array of dspp hardware resources
+>>    * @hw_sspp: array of sspp hardware resources
+>> + * @cdm_blk: cdm hardware resource
+>>    */
+>>   struct dpu_rm {
+>>          struct dpu_hw_blk *pingpong_blks[PINGPONG_MAX - PINGPONG_0];
+>> @@ -33,6 +34,7 @@ struct dpu_rm {
+>>          struct dpu_hw_blk *merge_3d_blks[MERGE_3D_MAX - MERGE_3D_0];
+>>          struct dpu_hw_blk *dsc_blks[DSC_MAX - DSC_0];
+>>          struct dpu_hw_sspp *hw_sspp[SSPP_MAX - SSPP_NONE];
+>> +       struct dpu_hw_blk *cdm_blk;
+> 
+> struct dpu_hw_cdm *cdm (or cdm_blk), please.
+
+Ack.
+
+> 
+>>   };
+>>
+>>   /**
+>> --
+>> 2.40.1
+>>
+> 
+> 
+> --
+> With best wishes
+> Dmitry
