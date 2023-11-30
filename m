@@ -2,110 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E15FA7FEC81
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 11:07:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 111F87FEC85
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 11:07:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231733AbjK3KHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 05:07:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49512 "EHLO
+        id S235136AbjK3KHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 05:07:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232143AbjK3KHB (ORCPT
+        with ESMTP id S232143AbjK3KHP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 05:07:01 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7EDB10F3;
-        Thu, 30 Nov 2023 02:07:07 -0800 (PST)
-Received: from localhost (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: sebastianfricke)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 5C360660734A;
-        Thu, 30 Nov 2023 10:07:06 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1701338826;
-        bh=R8T0iC2mQNhpzO/CpE43ZSPOXrTu2c3orumc8cAwUs0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZQlB4cyygtPG0C7qjLvsTRjjmGChjkm2BYFJnkZ5q/UIjDRleC9TU53v5X8ORyYsm
-         j074TLjZfzJHTRRIC4pqJYnKigSKYgxuMpFEqTe5Y4QwniYWQ2NFAmHkVxfDXyk1Q3
-         TtFreScl83x81378oHwEo4fXylLoTxWo48ym77JYFUBVFMUZasSFAB8nfF0TX803ja
-         Hos2WEBEDcGUXBLIGYTJUfbp/dStHZSZzWzUJN9UBQ7WulVmCk5kgNz9MOfB9qub/6
-         3tO8HCrh1pkZHx3zyiUL93TMFyW+5Z7xvdvMzEu0T3X0sdnx4W6dvw74c1T5Thj08s
-         fBIXEXBdURB5w==
-Date:   Thu, 30 Nov 2023 11:07:03 +0100
-From:   Sebastian Fricke <sebastian.fricke@collabora.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Nas Chung <nas.chung@chipsnmedia.com>,
-        Jackson Lee <jackson.lee@chipsnmedia.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Robert Beckett <bob.beckett@collabora.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>, linux-media@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] media: chips-media: VIDEO_WAVE_VPU should depend
- on ARCH_K3
-Message-ID: <20231130100647.pbgk7oqgynx3pzrw@basti-XPS-13-9310>
-References: <eb27184d182811520de31e59f449ea49e7cc6963.1701195705.git.geert+renesas@glider.be>
+        Thu, 30 Nov 2023 05:07:15 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id F01B910DE;
+        Thu, 30 Nov 2023 02:07:20 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2B1691042;
+        Thu, 30 Nov 2023 02:08:06 -0800 (PST)
+Received: from [192.168.1.3] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1CD043F6C4;
+        Thu, 30 Nov 2023 02:07:17 -0800 (PST)
+Message-ID: <07c9b3be-676a-f7f8-d1d2-94ce3abcb61b@arm.com>
+Date:   Thu, 30 Nov 2023 10:07:15 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Disposition: inline
-In-Reply-To: <eb27184d182811520de31e59f449ea49e7cc6963.1701195705.git.geert+renesas@glider.be>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH RFC 2/3] perf/x86/intel/pt: Add support for pause_resume()
+Content-Language: en-US
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Thomas Richter <tmricht@linux.ibm.com>,
+        Hendrik Brueckner <brueckner@linux.ibm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>, coresight@lists.linaro.org,
+        linux-arm-kernel@lists.infradead.org,
+        Yicong Yang <yangyicong@hisilicon.com>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+References: <20231123121851.10826-1-adrian.hunter@intel.com>
+ <20231123121851.10826-3-adrian.hunter@intel.com>
+ <c63808b2-2049-da18-f0af-5dff2bc87cd2@arm.com>
+ <20231129105836.GF30650@noisy.programming.kicks-ass.net>
+ <842ce784-fbd2-4667-a5f7-aaa10a1108dc@intel.com>
+ <20231129122320.GH30650@noisy.programming.kicks-ass.net>
+From:   James Clark <james.clark@arm.com>
+In-Reply-To: <20231129122320.GH30650@noisy.programming.kicks-ass.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Geert,
 
-Thanks for the patch!
 
-Could you please adjust the subject line to:
-media: chips-media: wave5: VIDEO_WAVE_VPU should depend on ARCH_K3
-                     ^^^^^^
+On 29/11/2023 12:23, Peter Zijlstra wrote:
+> On Wed, Nov 29, 2023 at 01:15:43PM +0200, Adrian Hunter wrote:
+>> On 29/11/23 12:58, Peter Zijlstra wrote:
+>>> On Wed, Nov 29, 2023 at 09:53:39AM +0000, James Clark wrote:
+>>>> On 23/11/2023 12:18, Adrian Hunter wrote:
+>>>
+>>>>> +static void pt_event_pause_resume(struct perf_event *event)
+>>>>> +{
+>>>>> +	if (event->aux_paused)
+>>>>> +		pt_config_stop(event);
+>>>>> +	else if (!event->hw.state)
+>>>>> +		pt_config_start(event);
+>>>>> +}
+>>>>
+>>>> It seems like having a single pause/resume callback rather than separate
+>>>> pause and resume ones pushes some of the event state management into the
+>>>> individual drivers and would be prone to code duplication and divergent
+>>>> behavior.
+>>>>
+>>>> Would it be possible to move the conditions from here into the core code
+>>>> and call separate functions instead?
+>>>>
+>>>>> +
+>>>>>  static void pt_event_start(struct perf_event *event, int mode)
+>>>>>  {
+>>>>>  	struct hw_perf_event *hwc = &event->hw;
+>>>>> @@ -1798,6 +1809,7 @@ static __init int pt_init(void)
+>>>>>  	pt_pmu.pmu.del			 = pt_event_del;
+>>>>>  	pt_pmu.pmu.start		 = pt_event_start;
+>>>>>  	pt_pmu.pmu.stop			 = pt_event_stop;
+>>>>> +	pt_pmu.pmu.pause_resume		 = pt_event_pause_resume;
+>>>>
+>>>> The general idea seems ok to me. Is there a reason to not use the
+>>>> existing start() stop() callbacks, rather than adding a new one?
+>>>>
+>>>> I assume it's intended to be something like an optimisation where you
+>>>> can turn it on and off without having to do the full setup, teardown and
+>>>> emit an AUX record because you know the process being traced never gets
+>>>> switched out?
+>>>
+>>> So the actual scheduling uses ->add() / ->del(), the ->start() /
+>>> ->stop() methods are something that can be used after ->add() and before
+>>> ->del() to 'temporarily' pause things.
+>>>
+>>> Pretty much exactly what is required here I think. We currently use this
+>>> for PMI throttling and adaptive frequency stuff, but there is no reason
+>>> it could not also be used for this.
+>>>
+>>> As is, we don't track the paused state across ->del() / ->add(), but
+>>> perhaps that can be fixed. We can easily add more PERF_EF_ / PERF_HES_
+>>> bits to manage things.
+>>>
+>>>
+>>
+>> I am not sure stop / start play nice with NMI's from other events e.g.
+>>
+>> PMC NMI wants to pause or resume AUX but what if AUX event is currently
+>> being processed in ->stop() or ->start()?  Or maybe that can't happen?
+> 
+> I think that can happen, and pt_event_stop() can actually handle some of
+> that, while your pause_resume() thing, which uses pt_config_stop() does
+> not.
+> 
+> But yes, I think that if you add pt_event_{stop,start}() calls from
+> *other* events their PMI, then you get to deal with more 'fun'.
+> 
+> Something like:
+> 
+>   perf_addr_filters_adjust()
+>     __perf_addr_filters_adjust()
+>       perf_event_stop()
+>         __perf_event_stop()
+> 	  event->pmu->stop()
+> 	  <NMI>
+> 	    ...
+> 	    perf_event_overflow()
+> 	      pt_event->pmu->stop()
+> 	  </NMI>
+> 	  event->pmu->start() // whoopsie!
+> 
+> Should now be possible.
+> 
+> I think what you want to do is rename pt->handle_nmi into pt->stop_count
+> and make it a counter, then ->stop() increments it, and ->start()
+> decrements it and everybody ensures the thing doesn't get restart while
+> !0 etc..
+> 
+> I suspect you need to guard the generic part of this feature with a new
+> PERF_PMU_CAP_ flag and then have the coresight/etc. people opt-in once
+> they've audited things.
+> 
+> James, does that work for you?
+> 
 
-On 28.11.2023 19:26, Geert Uytterhoeven wrote:
->The Chips&Media Wave 5 Series multi-standard codec IP is currently only
->supported on Texas Instruments K3 J721S2 SoC.  Hence add a dependency on
+Yep I think that would work.
 
-While it is true that is currently only tested on the K3 architecture ,
-it is not only supported by that exact SoC, as you can see here:
-https://lore.kernel.org/all/20231127223718.2651185-4-b-brnich@ti.com/T/
+If I understand it with the stop_count counter, to be able to support
+the new CAP, every device would basically have to implement a similar
+counter?
 
-So, maybe this commit is worded better with:
-
-is currently only supported on the Texas Instruments K3 architecture.
-
-The change however is obviously correct.
-
-Greetings,
-Sebastian
-
->ARCH_K3, to prevent asking the user about this driver when configuring a
->kernel without Texas Instruments K3 Multicore SoC support.
->
->Fixes: 9707a6254a8a6b97 ("media: chips-media: wave5: Add the v4l2 layer")
->Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
->---
-> drivers/media/platform/chips-media/wave5/Kconfig | 1 +
-> 1 file changed, 1 insertion(+)
->
->diff --git a/drivers/media/platform/chips-media/wave5/Kconfig b/drivers/media/platform/chips-media/wave5/Kconfig
->index 77e7ae5c8f35f454..9ccc1f7e32f3874f 100644
->--- a/drivers/media/platform/chips-media/wave5/Kconfig
->+++ b/drivers/media/platform/chips-media/wave5/Kconfig
->@@ -3,6 +3,7 @@ config VIDEO_WAVE_VPU
-> 	tristate "Chips&Media Wave Codec Driver"
-> 	depends on V4L_MEM2MEM_DRIVERS
-> 	depends on VIDEO_DEV && OF
->+	depends on ARCH_K3 || COMPILE_TEST
-> 	select VIDEOBUF2_DMA_CONTIG
-> 	select VIDEOBUF2_VMALLOC
-> 	select V4L2_MEM2MEM_DEV
+Would it be possible to do that reference counting on the outside of
+start() and stop() in the core code? So that a device only ever sees one
+call to start and one call to stop and doesn't need to do any extra
+tracking?
