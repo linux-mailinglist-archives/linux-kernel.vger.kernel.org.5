@@ -2,159 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16C6C7FEF2E
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 13:36:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 831777FEF30
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 13:36:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345358AbjK3MgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 07:36:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55014 "EHLO
+        id S1345376AbjK3MgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 07:36:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbjK3MgB (ORCPT
+        with ESMTP id S1345369AbjK3MgI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 07:36:01 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C12E8D4A;
-        Thu, 30 Nov 2023 04:36:04 -0800 (PST)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 4223A1FB3F;
-        Thu, 30 Nov 2023 12:36:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1701347762; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/ljrQk3BqbkodSFG46bYr4eazlX6Cxqb5pUHT95C7r8=;
-        b=1N8lw7rU4uUXQy7fe3kxGnnYmL9jqMDEONqJi4/euu9FDvVp5d5BVwGYTs3NGNoPw3QeYQ
-        sEONeEvUeUZglEaIPJt7j2qKxT1W/paPxfGinNzHslBgNLQYl4xjoEsV/7IYUm0rUz4v33
-        D4Tu57GRj/GmtNCkIvp4+aTtjwUjwts=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1701347762;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/ljrQk3BqbkodSFG46bYr4eazlX6Cxqb5pUHT95C7r8=;
-        b=WcwFG53OnS6tXTduO1WdTZq2CZ6bNcbIBD//vZLIBdvx9koi3D5zpu/etzAgsfziyUkkNk
-        IaL6OOFyhNZmKoCw==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 34D9613A5C;
-        Thu, 30 Nov 2023 12:36:02 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-        by imap2.dmz-prg2.suse.org with ESMTPSA
-        id NeTdDLKBaGV2UwAAn2gu4w
-        (envelope-from <jack@suse.cz>); Thu, 30 Nov 2023 12:36:02 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id AB210A07DB; Thu, 30 Nov 2023 13:36:01 +0100 (CET)
-Date:   Thu, 30 Nov 2023 13:36:01 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Gou Hao <gouhao@uniontech.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
-        alex@clusterfs.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, gouhaojake@163.com
-Subject: Re: [PATCH] ext4: improving calculation of 'fe_{len|start}' in
- mb_find_extent()
-Message-ID: <20231130123601.bdzyhsxqegpe5qbe@quack3>
-References: <20231113082617.11258-1-gouhao@uniontech.com>
+        Thu, 30 Nov 2023 07:36:08 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDED310CE
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 04:36:14 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF1C4C433C8;
+        Thu, 30 Nov 2023 12:36:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701347774;
+        bh=EtiRcH4voLF+iaE6Nt64ffXFd88eaIh4a9FFJs3FC8M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=o2QmaEhhoDDSdbFFx2qGmUEuyScr1iGmxSPJtl7f55G3T1z9lN0PdcTPrWuemXoUO
+         IfwzJciOhNTLWL+S71VQnZ7ftEFRkip8GPgjsH0CfyfOjVGmpyg/odMwndGQbGwLZf
+         YYuW1Qu5o2zrpedLP4lYrQQgKlPdFgUv1EeUjfk3Xb3/DFNmMAcmz97JWUNBRlz3qO
+         RZNiwGA8YzLFqk4qRALooT6zm3UdGub8EqrCd73VmL7/HdEAlU2q3r9zTAuUU8vk4O
+         //g4EdtXEG7l8auwNdWNfABGig40Q2jISdg/tYToSdaTbuyjxiY9eZRYWPpJfQUmBt
+         GCmS/ytNEh53A==
+Date:   Thu, 30 Nov 2023 13:36:06 +0100
+From:   Christian Brauner <brauner@kernel.org>
+To:     Alice Ryhl <aliceryhl@google.com>
+Cc:     a.hindborg@samsung.com, alex.gaynor@gmail.com, arve@android.com,
+        benno.lossin@proton.me, bjorn3_gh@protonmail.com,
+        boqun.feng@gmail.com, cmllamas@google.com,
+        dan.j.williams@intel.com, dxu@dxuuu.xyz, gary@garyguo.net,
+        gregkh@linuxfoundation.org, joel@joelfernandes.org,
+        keescook@chromium.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, maco@android.com, ojeda@kernel.org,
+        peterz@infradead.org, rust-for-linux@vger.kernel.org,
+        surenb@google.com, tglx@linutronix.de, tkjos@android.com,
+        viro@zeniv.linux.org.uk, wedsonaf@gmail.com, willy@infradead.org
+Subject: Re: [PATCH 1/7] rust: file: add Rust abstraction for `struct file`
+Message-ID: <20231130-zweig-mitleid-2ba3ef78145e@brauner>
+References: <20231130-sackgasse-abdichtung-62c23edd9a9f@brauner>
+ <20231130121013.140671-1-aliceryhl@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231113082617.11258-1-gouhao@uniontech.com>
-Authentication-Results: smtp-out2.suse.de;
-        none
-X-Spam-Score: 4.50
-X-Spamd-Result: default: False [4.50 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         BAYES_SPAM(5.10)[100.00%];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[163.com];
-         MIME_GOOD(-0.10)[text/plain];
-         NEURAL_HAM_LONG(-1.00)[-1.000];
-         RCVD_COUNT_THREE(0.00)[3];
-         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-         RCPT_COUNT_SEVEN(0.00)[8];
-         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.com:email,uniontech.com:email];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         MID_RHS_NOT_FQDN(0.50)[];
-         FREEMAIL_CC(0.00)[mit.edu,dilger.ca,suse.cz,clusterfs.com,vger.kernel.org,163.com];
-         RCVD_TLS_ALL(0.00)[]
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231130121013.140671-1-aliceryhl@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 13-11-23 16:26:17, Gou Hao wrote:
-> After first execution of mb_find_order_for_block():
+On Thu, Nov 30, 2023 at 12:10:12PM +0000, Alice Ryhl wrote:
+> Christian Brauner <brauner@kernel.org> writes:
+> >> This is the backdoor. You use it when *you* know that the file is okay
+> > 
+> > And a huge one.
+> > 
+> >> to access, but Rust doesn't. It's unsafe because it's not checked by
+> >> Rust.
+> >> 
+> >> For example you could do this:
+> >> 
+> >> 	let ptr = unsafe { bindings::fdget(fd) };
+> >> 
+> >> 	// SAFETY: We just called `fdget`.
+> >> 	let file = unsafe { File::from_ptr(ptr) };
+> >> 	use_file(file);
+> >> 
+> >> 	// SAFETY: We're not using `file` after this call.
+> >> 	unsafe { bindings::fdput(ptr) };
+> >> 
+> >> It's used in Binder here:
+> >> https://github.com/Darksonn/linux/blob/dca45e6c7848e024709b165a306cdbe88e5b086a/drivers/android/rust_binder.rs#L331-L332
+> >> 
+> >> Basically, I use it to say "C code has called fdget for us so it's okay
+> >> to access the file", whenever userspace uses a syscall to call into the
+> >> driver.
+> > 
+> > Yeah, ok, because the fd you're operating on may be coming from fdget(). Iirc,
+> > binder is almost by default used multi-threaded with a shared file descriptor
+> > table? But while that means fdget() will usually bump the reference count you
+> > can't be sure. Hmkay.
 > 
-> 'fe_start' is the value of 'block' passed in mb_find_extent().
+> Even if the syscall used `fget` instead of `fdget`, I would still be
+> using `from_ptr` here. The `ARef` type only really makes sense when *we*
+> have ownership of the ref-count, but in this case we don't own it. We're
+> just given a promise that the caller is keeping it alive for us using
+> some mechanism or another.
 > 
-> 'fe_len' is the difference between the length of order-chunk and
-> remainder of the block divided by order-chunk.
+> >>>> +// SAFETY: It's OK to access `File` through shared references from other threads because we're
+> >>>> +// either accessing properties that don't change or that are properly synchronised by C code.
+> >>> 
+> >>> Uhm, what guarantees are you talking about specifically, please?
+> >>> Examples would help.
+> >>> 
+> >>>> +unsafe impl Sync for File {}
+> >> 
+> >> The Sync trait defines whether a value may be accessed from several
+> >> threads in parallel (using shared/immutable references). In our case,
+> > 
+> > So let me put this into my own words and you correct me, please:
+> > 
+> > So, this really just means that if I have two processes both with their own
+> > fdtable and they happen to hold fds that refer to the same @file:
+> > 
+> > P1				P2
+> > struct fd fd1 = fdget(1234);
+> >                                  struct fd fd2 = fdget(5678);
+> > if (!fd1.file)                   if (!fd2.file)
+> > 	return -EBADF;                 return -EBADF;
+> > 
+> > // fd1.file == fd2.file
+> > 
+> > the only if the Sync trait is implemented both P1 and P2 can in parallel call
+> > file->f_op->poll(@file)?
+> > 
+> > So if the Sync trait isn't implemented then the compiler will prohibit that P1
+> > and P2 at the same time call file->f_op->poll(@file)? And that's all that's
+> > meant by a shared reference? It's really about sharing the pointer.
 > 
-> And 'next' does not require initialization after above modifications.
+> Yeah, what you're saying sounds correct. For a type that is not Sync,
+> you would need a lock around the call to `poll` before the compiler
+> would accept the call.
 > 
-> Signed-off-by: Gou Hao <gouhao@uniontech.com>
+> (Or some other mechanism to convince the compiler that no other thread
+> is looking at the file at the same time. Of course, a lock is just one
+> way to do that.)
+> 
+> > The thing is that "shared reference" gets a bit in our way here:
+> > 
+> > (1) If you have SCM_RIGHTs in the mix then P1 can open fd1 to @file and then
+> >     send that @file to P2 which now has fd2 refering to @file as well. The
+> >     @file->f_count is bumped in that process. So @file->f_count is now 2.
+> > 
+> >     Now both P1 and P2 call fdget(). Since they don't have a shared fdtable
+> >     none of them take an additional reference to @file. IOW, @file->f_count
+> >     may remain 2 all throughout the @file->f_op->*() operation.
+> > 
+> >     So they share a reference to that file and elide both the
+> >     atomic_inc_not_zero() and the atomic_dec_not_zero().
+> > 
+> > (2) io_uring has fixed files whose reference count always stays at 1.
+> >     So all io_uring operations on such fixed files share a single reference.
+> > 
+> > So that's why this is a bit confusing at first to read "shared reference".
+> > 
+> > Please add a comment on top of unsafe impl Sync for File {}
+> > explaining/clarifying this a little that it's about calling methods on the same
+> > file.
+> 
+> Yeah, I agree, the terminology gets a bit mixed up here because we both
+> use the word "reference" for different things.
 
-Ah, nice simplification! Feel free to add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
-> ---
->  fs/ext4/mballoc.c | 13 ++++---------
->  1 file changed, 4 insertions(+), 9 deletions(-)
 > 
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index 454d5612641e..d3f985f7cab8 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -1958,8 +1958,7 @@ static void mb_free_blocks(struct inode *inode, struct ext4_buddy *e4b,
->  static int mb_find_extent(struct ext4_buddy *e4b, int block,
->  				int needed, struct ext4_free_extent *ex)
->  {
-> -	int next = block;
-> -	int max, order;
-> +	int max, order, next;
->  	void *buddy;
->  
->  	assert_spin_locked(ext4_group_lock_ptr(e4b->bd_sb, e4b->bd_group));
-> @@ -1977,16 +1976,12 @@ static int mb_find_extent(struct ext4_buddy *e4b, int block,
->  
->  	/* find actual order */
->  	order = mb_find_order_for_block(e4b, block);
-> -	block = block >> order;
->  
-> -	ex->fe_len = 1 << order;
-> -	ex->fe_start = block << order;
-> +	ex->fe_len = (1 << order) - (block & ((1 << order) - 1));
-> +	ex->fe_start = block;
->  	ex->fe_group = e4b->bd_group;
->  
-> -	/* calc difference from given start */
-> -	next = next - ex->fe_start;
-> -	ex->fe_len -= next;
-> -	ex->fe_start += next;
-> +	block = block >> order;
->  
->  	while (needed > ex->fe_len &&
->  	       mb_find_buddy(e4b, order, &max)) {
-> -- 
-> 2.20.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> How about this comment?
+
+Sounds good.
