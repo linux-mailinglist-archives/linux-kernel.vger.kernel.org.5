@@ -2,88 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D401C7FEB0E
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 09:43:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E9FC7FEB15
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 09:45:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345002AbjK3InM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 03:43:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47936 "EHLO
+        id S231781AbjK3Iph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 03:45:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344989AbjK3InJ (ORCPT
+        with ESMTP id S235005AbjK3Ipe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 03:43:09 -0500
-Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com [209.85.214.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 063D5A2
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 00:43:16 -0800 (PST)
-Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-1cfba9f385aso7778625ad.0
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 00:43:16 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701333795; x=1701938595;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mkxVeHpdPTesg4Gj8MIqsgF3u8iigyFeiw0iWW5TmH0=;
-        b=wlAfHoNVV6a13qCNUztRvCCn67uZvLxJ/zQj+X8Nv021xfa5FDRHM3ouGzBKP5mToy
-         0ridUg0V36z0647cUNiQt7vUuOSde44WKIVEreB3rap6lXPDBszd7CgGnzv9I2plqhP6
-         y0MFBebpQcPQw8BG4mOb55OOnomdZyGy76yyGOmleaUxs2H2AsdJCpdL/mR4D0FNrEfq
-         ZdNGCmSwAZqGOp8wwnX80Sc17JQRwNPu6xBdb9gels9F11Q/BcB8SoqzLemfxEX7RUJs
-         TttHcTedZx8t/SAXlR73/tn+IYFZEQmuBGZys6aPrFppWQVtYd1RxoKfLQ/mL+ZZxDwi
-         QSPA==
-X-Gm-Message-State: AOJu0Yy1/O3EuKrRd1mmIHW36sriKGbQTlX9IiYhW/97DQjofRgk3NQJ
-        6q+B1PuiE/5rNJPGJ7RjqY0lfAETzZau1U1UQvfCzICJdDsXPHQ=
-X-Google-Smtp-Source: AGHT+IHKNX1LFrnC+6j0ZHuGLay0h1R4FKweLM2ug51lIvwd0+CH3655n+jYmFErvfeRdE8Okj/WciD0yfANoaMdDitCYXcO4MdO
+        Thu, 30 Nov 2023 03:45:34 -0500
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EFF3B2
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 00:45:34 -0800 (PST)
+X-UUID: bbf83f5519c64001820e8adab843fb59-20231130
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.33,REQID:1f045da6-0a69-490e-9e7e-fc6b65c2ccdc,IP:15,
+        URL:0,TC:0,Content:-5,EDM:0,RT:1,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACT
+        ION:release,TS:-4
+X-CID-INFO: VERSION:1.1.33,REQID:1f045da6-0a69-490e-9e7e-fc6b65c2ccdc,IP:15,UR
+        L:0,TC:0,Content:-5,EDM:0,RT:1,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+        N:release,TS:-4
+X-CID-META: VersionHash:364b77b,CLOUDID:44b920fd-4a48-46e2-b946-12f04f20af8c,B
+        ulkID:2311301645260GQJUH6C,BulkQuantity:0,Recheck:0,SF:24|17|19|44|64|66|3
+        8|102,TC:nil,Content:0,EDM:-3,IP:-2,URL:1,File:nil,Bulk:nil,QS:nil,BEC:nil
+        ,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_FSI,TF_CID_SPAM_ULS,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,
+        TF_CID_SPAM_FSD
+X-UUID: bbf83f5519c64001820e8adab843fb59-20231130
+X-User: chentao@kylinos.cn
+Received: from [172.20.15.254] [(116.128.244.169)] by mailgw
+        (envelope-from <chentao@kylinos.cn>)
+        (Generic MTA)
+        with ESMTP id 534903993; Thu, 30 Nov 2023 16:45:23 +0800
+Message-ID: <5586e0f0-8e4f-4096-8383-bf3f80fae6f7@kylinos.cn>
+Date:   Thu, 30 Nov 2023 16:45:22 +0800
 MIME-Version: 1.0
-X-Received: by 2002:a17:903:451:b0:1cf:923e:fafc with SMTP id
- iw17-20020a170903045100b001cf923efafcmr4210356plb.7.1701333795618; Thu, 30
- Nov 2023 00:43:15 -0800 (PST)
-Date:   Thu, 30 Nov 2023 00:43:15 -0800
-In-Reply-To: <000000000000db858c05f06f30b0@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000884543060b5aa428@google.com>
-Subject: Re: [syzbot] task hung in exfat_write_inode
-From:   syzbot <syzbot+2f73ed585f115e98aee8@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] powerpc/mm: Fix null-pointer dereference in
+ pgtable_cache_add
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        "npiggin@gmail.com" <npiggin@gmail.com>
+Cc:     "kunwu.chan@hotmail.com" <kunwu.chan@hotmail.com>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20231122090026.11728-1-chentao@kylinos.cn>
+ <32077b74-7335-4f4d-8858-c53c820150d0@csgroup.eu>
+ <9d871364-7baa-4daf-8b0c-3fbfbede6fdb@kylinos.cn>
+ <1701224210300483.328.seg@mailgw>
+Content-Language: en-US
+From:   Kunwu Chan <chentao@kylinos.cn>
+In-Reply-To: <1701224210300483.328.seg@mailgw>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org.
+Thanks for your reply.
 
-***
+Ok, I know what you mean, when name is NULL. The process should be 
+aborted and the specific reason for the error should be printed, not 
+just return.
 
-Subject: task hung in exfat_write_inode
-Author: lizhi.xu@windriver.com
+I will update v2 patch with "panic".
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git f9ff5644bcc0
+Thanks again,
+Kunwu
 
-diff --git a/fs/exfat/file.c b/fs/exfat/file.c
-index bfdfafe00993..4bdcdf126a21 100644
---- a/fs/exfat/file.c
-+++ b/fs/exfat/file.c
-@@ -132,14 +132,18 @@ int __exfat_truncate(struct inode *inode)
- 			clu.dir += num_clusters;
- 			clu.size -= num_clusters;
- 		} else {
-+			mutex_unlock(&sbi->s_lock);
- 			while (num_clusters > 0) {
- 				last_clu = clu.dir;
-+				mutex_lock(&sbi->s_lock);
- 				if (exfat_get_next_cluster(sb, &(clu.dir)))
- 					return -EIO;
-+				mutex_unlock(&sbi->s_lock);
- 
- 				num_clusters--;
- 				clu.size--;
- 			}
-+			mutex_lock(&sbi->s_lock);
- 		}
- 	} else {
- 		ei->flags = ALLOC_NO_FAT_CHAIN;
+On 2023/11/28 19:32, Michael Ellerman wrote:
+> Kunwu Chan <chentao@kylinos.cn> writes:
+>> Hi Christophe,
+>>
+>> Thanks for your reply.
+>> It's my bad. According your reply, i read the code in
+>> sysfs_do_create_link_sd.There is a null pointer check indeed.
+>>
+>> My intention was to check null pointer after memory allocation.
+>> Whether we can add a comment here for someone like me, the null pointer
+>> check is no need here?
+> 
+> I don't mind there being a NULL check for name.
+> 
+> But the code shouldn't silently return if name can't be allocated.
+> Notice that if we can't create the cache we *panic*. A failure to
+> allocate name, which causes us to skip the cache creation, needs to also
+> panic.
+> 
+> cheers
+> 
+>> On 2023/11/24 23:17, Christophe Leroy wrote:
+>>>
+>>>
+>>> Le 22/11/2023 à 10:00, Kunwu Chan a écrit :
+>>>> [Vous ne recevez pas souvent de courriers de chentao@kylinos.cn. Découvrez pourquoi ceci est important à https://aka.ms/LearnAboutSenderIdentification ]
+>>>>
+>>>> kasprintf() returns a pointer to dynamically allocated memory
+>>>> which can be NULL upon failure. Ensure the allocation was successful
+>>>> by checking the pointer validity.
+>>>
+>>> Are you sure this is needed ? Did you check what happens what name is NULL ?
+>>>
+>>> If I followed stuff correctly, I end up in function
+>>> sysfs_do_create_link_sd() which already handles the NULL name case which
+>>> a big hammer warning.
+>>>
+>>>>
+>>>> Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+>>>> ---
+>>>>     arch/powerpc/mm/init-common.c | 2 ++
+>>>>     1 file changed, 2 insertions(+)
+>>>>
+>>>> diff --git a/arch/powerpc/mm/init-common.c b/arch/powerpc/mm/init-common.c
+>>>> index 119ef491f797..0884fc601c46 100644
+>>>> --- a/arch/powerpc/mm/init-common.c
+>>>> +++ b/arch/powerpc/mm/init-common.c
+>>>> @@ -139,6 +139,8 @@ void pgtable_cache_add(unsigned int shift)
+>>>>
+>>>>            align = max_t(unsigned long, align, minalign);
+>>>>            name = kasprintf(GFP_KERNEL, "pgtable-2^%d", shift);
+>>>> +       if (!name)
+>>>> +               return;
+>>>>            new = kmem_cache_create(name, table_size, align, 0, ctor(shift));
+>>>>            if (!new)
+>>>>                    panic("Could not allocate pgtable cache for order %d", shift);
+>>>> --
+>>>> 2.34.1
+>>>>
