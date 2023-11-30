@@ -2,103 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1DF87FEA6C
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 09:24:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D55C7FEA6F
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 09:25:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344855AbjK3IYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 03:24:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60678 "EHLO
+        id S1344856AbjK3IY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 03:24:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344856AbjK3IYW (ORCPT
+        with ESMTP id S235005AbjK3IYq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 03:24:22 -0500
+        Thu, 30 Nov 2023 03:24:46 -0500
 Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF68B1708;
-        Thu, 30 Nov 2023 00:24:28 -0800 (PST)
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-40b4e35ecf1so5369395e9.1;
-        Thu, 30 Nov 2023 00:24:28 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C37461724
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 00:24:51 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-40b51e26a7aso32505e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 00:24:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701332667; x=1701937467; darn=vger.kernel.org;
-        h=in-reply-to:references:cc:to:from:subject:message-id:date
-         :content-transfer-encoding:mime-version:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1701332690; x=1701937490; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=3TQqYuMpS0IutFQA0jTxrDWzedXIaMHOHDdeUN7WQuw=;
-        b=HCXXc4U4qeU5NoMLfrkZLt1igmtQJGFlm7+aosTsiMp7Yj9VOosR/urhQ4VzoIisP5
-         jyilxQ1GMBUGx7VXc53QcSgQy2Fo639vDS0rB2U7vR/vLRncRAfQsBnA9hUMbnEeNQ8G
-         RTVAPkVRYVgGKi5uoXdVVS+k1L3jCEBxkUQBREbLDNzmpfEa6U7nIoF7fF1mvrMkWl2b
-         RZ6oP2KX956eym6uYlYeDUOEtAIgt+bPc3uDnWGPaeysAEgj+X5D9NBbsg+GBOpHE+Xx
-         cH2rCxdpATqQ7PaZuHRo44PnJ9CEw64WFyGJMyGtzINuTt/b0l2NDiTYr2IVUQsKIvm+
-         sEDg==
+        bh=Uh5V0kVBkPz+4QaOTnof6+uROQbf5vDPUGhw4UjAZoU=;
+        b=MU2jxWcXtpmQYeK4YsslrfoIwhF/WJNqrN7DasdSV/75YjpmvRoT0ZrBk2NbdbwjCO
+         h2i0cDSKo2wKVfPlp/tAhKKtWJKMluOD0cDCttKRZ+/VraH/uVsP4O+yne1z+c+BGO9G
+         Vdrtvw03Cj1P7d9vGbra+hltqQQCoD5BiAccbfspaiGCg+7G8qh2xOXcAnCxh5EFv34t
+         NlDA3PiDx23O/eUp8VRyE8vkMSqSzRtcHDkPI/vANw0Q+l00OzCN2szcbuX1OYvBMTWY
+         96Ho40kyhrPRtcKPP3YbzmQWqj3W2JCHF3xREmrHMoYKA7wwRVUCc0lN2VQ3BeJb7s4T
+         Ft6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701332667; x=1701937467;
-        h=in-reply-to:references:cc:to:from:subject:message-id:date
-         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=3TQqYuMpS0IutFQA0jTxrDWzedXIaMHOHDdeUN7WQuw=;
-        b=ikKa+nZ8xhFfB/IURMRape1sSRUUJWNK5DUI3kibSVNPZ1tx9hbox9S+x1xwN/c7en
-         66SbKgRHhCtqJQJeZWydDD5ZwfjgVYJlaMOG/wTV7jqA/2Q1DaWR8hEs3cb0GNZFstJG
-         eQOK+XyhLr6/5lZH0gkC8GeDB3qO/JxpOgYFhgUhKT51B2knY1c19pJvFYtyH79rirhh
-         eZq8990YNwgskCexIX/Ap9SI1KIQnQktPNTHvXQNBYgRRs4D3HZPCiBLwGo9LgQnD5la
-         nh6JyjmAdKAPucMNjoYw0Bxyz7zRir9LXwA1B9sd9wUv/sE2bM3z5cLLG8ZFGoJpFLoh
-         Etdg==
-X-Gm-Message-State: AOJu0Yz5TbmtRJi2lkelob5nJeFs9YLNpFW85sUDtCYPLKifsdnYc5ZC
-        b7mbuY3dHv/24D/1YiZzN1I=
-X-Google-Smtp-Source: AGHT+IHWJgbhZy4z5ajH3SCgvaHk+CQS1O+0oW2p34le3I8bCk5zc+Q4Ge9qW03jVvhxInLNxkWE2A==
-X-Received: by 2002:a05:600c:3b20:b0:40b:3e23:f0a0 with SMTP id m32-20020a05600c3b2000b0040b3e23f0a0mr11358637wms.4.1701332667016;
-        Thu, 30 Nov 2023 00:24:27 -0800 (PST)
-Received: from localhost (freebox.vlq16.iliad.fr. [213.36.7.13])
-        by smtp.gmail.com with ESMTPSA id p23-20020a05600c1d9700b0040b3645a7c2sm4839247wms.40.2023.11.30.00.24.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Nov 2023 00:24:26 -0800 (PST)
-Mime-Version: 1.0
+        d=1e100.net; s=20230601; t=1701332690; x=1701937490;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Uh5V0kVBkPz+4QaOTnof6+uROQbf5vDPUGhw4UjAZoU=;
+        b=qNZkHnPf3E1zFxsYOz5G5vqjOMdMP+pTyA1X+3r1qoWe2htoNM+n3H/zNmFhPgMgwd
+         z+8EbWx6oNSE5JVZrLwX78KusozYRaRVaXbvQm6angLYZuhfxW1rBaGAc1qZaNgHwBX3
+         maFZhDn/xxitI/pAkHrhxewYjMkPBMMUygl8ShGxxxPCexreHgYxjqw3nd0QzsXB+JlV
+         lV4agOsvU5VND6BKSTb6Z7DBg7juPlC2YAekqipyq0WDoJEdyqErraIW9DEEu2WDuBzL
+         7dPxAb7VJkzYer55O0KkLPECqHNxOjM+Ng86pGVFVp9h5Gshy95z+vCehjdLTDASKybv
+         +wYQ==
+X-Gm-Message-State: AOJu0YxtK1xtKAeDbvGw7JPbv/hLm0U2MO0UQgSuBP3nnNd1WlN20q9I
+        MKeyz6dqDUSwXLd8VN+31wpGRCvMrAVJchMYjkyvmQ==
+X-Google-Smtp-Source: AGHT+IHLeanscok3n3he/JnW1OS9MUI7CPFpVKTnO9Iv1/RH2a8zcm+pefxYFYPSW8BrFBt+n6FkfeJnl54biGTWfsw=
+X-Received: by 2002:a05:600c:1c04:b0:40b:43f4:df9e with SMTP id
+ j4-20020a05600c1c0400b0040b43f4df9emr113011wms.2.1701332689974; Thu, 30 Nov
+ 2023 00:24:49 -0800 (PST)
+MIME-Version: 1.0
+References: <CABOYnLwSO7zLH+KVwTUJnV2_Hk+u+5+g8DPanTfLeEg05tFEQQ@mail.gmail.com>
+In-Reply-To: <CABOYnLwSO7zLH+KVwTUJnV2_Hk+u+5+g8DPanTfLeEg05tFEQQ@mail.gmail.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Thu, 30 Nov 2023 09:24:35 +0100
+Message-ID: <CANn89iL8wmUf+G5nafMH1aCyeBDkoZ8micsAdECj6ktS-koG5w@mail.gmail.com>
+Subject: Re: WARNING in cleanup_net
+To:     xingwei lee <xrivendell7@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, santosh.shilimkar@oracle.com,
+        davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        rds-devel@oss.oracle.com, syzkaller@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Thu, 30 Nov 2023 09:24:26 +0100
-Message-Id: <CXC03GYAN4VN.2PQ88Q1S7IL6H@gmail.com>
-Subject: Re: [PATCH] wifi: ath11k: fix layout of scan_flags in struct
- scan_req_params
-From:   "Nicolas Escande" <nico.escande@gmail.com>
-To:     "Jeff Johnson" <quic_jjohnson@quicinc.com>,
-        "Kalle Valo" <kvalo@kernel.org>
-Cc:     <linux-wireless@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <ath11k@lists.infradead.org>
-X-Mailer: aerc 0.15.2
-References: <20231127180559.1696041-1-nico.escande@gmail.com>
- <bdcdbd06-e9bd-4a92-b27b-d94b2d8fb52d@quicinc.com>
- <CX9YPUDTAT1N.23DMRB5O9FEAO@gmail.com>
- <20c7a367-2243-4e13-b023-9999dc6c6790@quicinc.com>
-In-Reply-To: <20c7a367-2243-4e13-b023-9999dc6c6790@quicinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue Nov 28, 2023 at 1:57 AM CET, Jeff Johnson wrote:
-> On 11/27/2023 2:54 PM, Nicolas Escande wrote:
-[...]
-> > So either we should not use WMI_SCAN_XXX with scan_req_params.scan_flag=
-s ever
-> > and only use the bitfield to set scan parameters or if we use WMI_SCAN_=
-XXX with
-> > scan_req_params.scan_flags they need to match the corresponding bitfiel=
-d.
+On Thu, Nov 30, 2023 at 9:19=E2=80=AFAM xingwei lee <xrivendell7@gmail.com>=
+ wrote:
 >
-> IMO the correct thing to do is to remove the unions from that struct and
-> only leave behind the bitfields and not use the WMI_SCAN_XXX masks
-> except when filling the firmware structure.
+> Hi
+> I found a bug with syzkaller titled "WARNING in cleanup_net" in the
+> last upstream.
+> =3D* BUG DETAILS =3D*
+> kernel commit: 3b47bc037bd44f142ac09848e8d3ecccc726be99
+> kernel config: https://syzkaller.appspot.com/text?tag=3DKernelConfig&x=3D=
+f2a9d08825f82ef3
+> repro.c/repro.txt:
+> https://gist.github.com/xrivendell7/44780af4a9dededc5ff7a7c0583ce3f1
+> the crash report=EF=BC=9A
+> [ 8584.181281][T11719] bond0 (unregistering): Released all slaves
+> [ 8585.839049][T11719] ref_tracker: net notrefcnt@ffff888021ba0220 has
+> 1/1 users at
+> [ 8585.839049][T11719]   sk_alloc+0xaf0/0xbf0
+> [ 8585.839049][T11719]   inet6_create+0x39b/0x1300
+> [ 8585.839049][T11719]   __sock_create+0x34f/0x850
+> [ 8585.839049][T11719]   rds_tcp_listen_init+0xda/0x4f0
+> [ 8585.839049][T11719]   rds_tcp_init_net+0x147/0x400
+> [ 8585.839049][T11719]   ops_init+0xc4/0x680
+> [ 8585.839049][T11719]   setup_net+0x431/0xa80
+> [ 8585.839049][T11719]   copy_net_ns+0x313/0x6b0
+> [ 8585.839049][T11719]   create_new_namespaces+0x3fb/0xb60
+> [ 8585.839049][T11719]   unshare_nsproxy_namespaces+0xd0/0x200
+> [ 8585.839049][T11719]   ksys_unshare+0x47c/0xa30
+> [ 8585.839049][T11719]   __x64_sys_unshare+0x36/0x50
+> [ 8585.839049][T11719]   do_syscall_64+0x40/0x110
+> [ 8585.839049][T11719]   entry_SYSCALL_64_after_hwframe+0x63/0x6b
+> [ 8585.839049][T11719]
+> [ 8585.858614][T11719] ------------[ cut here ]------------
+> [ 8585.860037][T11719] WARNING: CPU: 3 PID: 11719 at
+> lib/ref_tracker.c:179 ref_tracker_dir_exit+0x3fa/0x6a0
+> [ 8585.862152][T11719] Modules linked in:
+> [ 8585.863038][T11719] CPU: 3 PID: 11719 Comm: kworker/u8:3 Not
+> tainted 6.7.0-rc1-g7475e51b8796-dirty #2
+> [ 8585.865268][T11719] Hardware name: QEMU Standard PC (i440FX + PIIX,
+> 1996), BIOS 1.16.2-1.fc38 04/01/2014
+> [ 8585.867345][T11719] Workqueue: netns cleanup_net
+> [ 8585.868401][T11719] RIP: 0010:ref_tracker_dir_exit+0x3fa/0x6a0
+> [ 8585.869426][T11719] Code: 00 00 4d 39 f5 49 8b 06 4d 89 f7 0f 85 08
+> ff ff ff 48 8b 2c 24 31 ff e8 c4 09 d6 fc 48 8b 74 24 18 48 89 ef e8
+> 67 13 32 06 90 <0f> 0b 90 48 8d 5d 44 31 ff e8 a8 09 d6 fc be 04 00 00
+> 00 48 89 df
+> [ 8585.872786][T11719] RSP: 0018:ffffc9000386fb78 EFLAGS: 00010286
+> [ 8585.873790][T11719] RAX: 0000000080000000 RBX: dffffc0000000000
+> RCX: 0000000000000000
+> [ 8585.875085][T11719] RDX: 0000000000000001 RSI: ffffffff8b2cb900
+> RDI: 0000000000000001
+> [ 8585.876394][T11719] RBP: ffff888021ba0220 R08: 0000000000000001
+> R09: fffffbfff24a13e9
+> [ 8585.877808][T11719] R10: ffffffff92509f4f R11: 0000000000000003
+> R12: ffff888021ba0270
+> [ 8585.879138][T11719] R13: ffff888021ba0270 R14: ffff888021ba0270
+> R15: ffff888021ba0270
+> [ 8585.880481][T11719] FS: 0000000000000000(0000)
+> GS:ffff88823bd00000(0000) knlGS:0000000000000000
+> [ 8585.881965][T11719] CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [ 8585.882719][T11719] CR2: 00007f00c5cd79f0 CR3: 000000000d377000
+> CR4: 0000000000750ef0
+> [ 8585.883536][T11719] PKRU: 55555554
+> [ 8585.883901][T11719] Call Trace:
+> [ 8585.884247][T11719] <TASK>
+> [ 8585.884561][T11719] ? show_regs+0x9a/0xb0
+> [ 8585.885005][T11719] ? __warn+0xf5/0x3c0
+> [ 8585.885423][T11719] ? report_bug+0x506/0x5f0
+> [ 8585.885900][T11719] ? ref_tracker_dir_exit+0x3fa/0x6a0
+> [ 8585.886466][T11719] ? report_bug+0x41c/0x5f0
+> [ 8585.886939][T11719] ? handle_bug+0x3d/0x70
+> [ 8585.887609][T11719] ? exc_invalid_op+0x17/0x40
+> [ 8585.888104][T11719] ? asm_exc_invalid_op+0x1a/0x20
+> [ 8585.888646][T11719] ? ref_tracker_dir_exit+0x3fa/0x6a0
+> [ 8585.889203][T11719] ? ref_tracker_dir_exit+0x3f9/0x6a0
+> [ 8585.889900][T11719] ? ref_tracker_dir_snprint+0xe0/0xe0
+> [ 8585.890465][T11719] ? __kmem_cache_free+0xc0/0x180
+> [ 8585.890989][T11719] cleanup_net+0x927/0xb70
+> [ 8585.891462][T11719] ? unregister_pernet_device+0x80/0x80
+> [ 8585.892038][T11719] process_one_work+0x8ab/0x1730
+> [ 8585.892564][T11719] ? unregister_pernet_device+0x80/0x80
+> [ 8585.893137][T11719] ? workqueue_congested+0x320/0x320
+> [ 8585.893692][T11719] ? assign_work+0x1b7/0x260
+> [ 8585.894177][T11719] worker_thread+0x931/0x1380
+> [ 8585.894683][T11719] ? process_one_work+0x1730/0x1730
+> [ 8585.895224][T11719] kthread+0x2d3/0x3b0
+> [ 8585.895664][T11719] ? _raw_spin_unlock_irq+0x23/0x50
+> [ 8585.896191][T11719] ? kthread_complete_and_exit+0x40/0x40
+> [ 8585.896779][T11719] ret_from_fork+0x4e/0x80
+> [ 8585.897245][T11719] ? kthread_complete_and_exit+0x40/0x40
+> [ 8585.897863][T11719] ret_from_fork_asm+0x11/0x20
+> [ 8585.898371][T11719] </TASK>
+> [ 8585.898702][T11719] Kernel panic - not syncing: kernel: panic_on_warn =
+set ...
+> [ 8585.899428][T11719] CPU: 3 PID: 11719 Comm: kworker/u8:3 Not
+> tainted 6.7.0-rc1-g7475e51b8796-dirty #2
+> [ 8585.900572][T11719] Hardware name: QEMU Standard PC (i440FX + PIIX,
+> 1996), BIOS 1.16.2-1.fc38 04/01/2014
+> [ 8585.901550][T11719] Workqueue: netns cleanup_net
+> [ 8585.902038][T11719] Call Trace:
+> [ 8585.902377][T11719] <TASK>
+> [ 8585.902693][T11719] dump_stack_lvl+0xee/0x1e0
+> [ 8585.903170][T11719] panic+0x754/0x810
+> [ 8585.903805][T11719] ? panic_smp_self_stop+0xa0/0xa0
+> [ 8585.904377][T11719] ? show_trace_log_lvl+0x394/0x540
+> [ 8585.905159][T11719] ? check_panic_on_warn+0xa4/0xc0
+> [ 8585.905742][T11719] ? ref_tracker_dir_exit+0x3fa/0x6a0
+> [ 8585.906532][T11719] check_panic_on_warn+0xb8/0xc0
+> [ 8585.907108][T11719] __warn+0x101/0x3c0
+> [ 8585.907577][T11719] ? report_bug+0x506/0x5f0
+> [ 8585.908317][T11719] ? ref_tracker_dir_exit+0x3fa/0x6a0
+> [ 8585.909080][T11719] report_bug+0x41c/0x5f0
+> [ 8585.909599][T11719] handle_bug+0x3d/0x70
+> [ 8585.910089][T11719] exc_invalid_op+0x17/0x40
+> [ 8585.910571][T11719] asm_exc_invalid_op+0x1a/0x20
+> [ 8585.911115][T11719] RIP: 0010:ref_tracker_dir_exit+0x3fa/0x6a0
+> [ 8585.911798][T11719] Code: 00 00 4d 39 f5 49 8b 06 4d 89 f7 0f 85 08
+> ff ff ff 48 8b 2c 24 31 ff e8 c4 09 d6 fc 48 8b 74 24 18 48 89 ef e8
+> 67 13 32 06 90 <0f> 0b 90 48 8d 5d 44 31 ff e8 a8 09 d6 fc be 04 00 00
+> 00 48 89 df
+> [ 8585.914135][T11719] RSP: 0018:ffffc9000386fb78 EFLAGS: 00010286
+> [ 8585.914813][T11719] RAX: 0000000080000000 RBX: dffffc0000000000
+> RCX: 0000000000000000
+> [ 8585.915654][T11719] RDX: 0000000000000001 RSI: ffffffff8b2cb900
+> RDI: 0000000000000001
+> [ 8585.916556][T11719] RBP: ffff888021ba0220 R08: 0000000000000001
+> R09: fffffbfff24a13e9
+> [ 8585.917647][T11719] R10: ffffffff92509f4f R11: 0000000000000003
+> R12: ffff888021ba0270
+> [ 8585.918692][T11719] R13: ffff888021ba0270 R14: ffff888021ba0270
+> R15: ffff888021ba0270
+> [ 8585.919598][T11719] ? ref_tracker_dir_exit+0x3f9/0x6a0
+> [ 8585.920188][T11719] ? ref_tracker_dir_snprint+0xe0/0xe0
+> [ 8585.920803][T11719] ? __kmem_cache_free+0xc0/0x180
+> [ 8585.921387][T11719] cleanup_net+0x927/0xb70
+> [ 8585.921891][T11719] ? unregister_pernet_device+0x80/0x80
+> [ 8585.922481][T11719] process_one_work+0x8ab/0x1730
+> [ 8585.923093][T11719] ? unregister_pernet_device+0x80/0x80
+> [ 8585.923781][T11719] ? workqueue_congested+0x320/0x320
+> [ 8585.924385][T11719] ? assign_work+0x1b7/0x260
+> [ 8585.924923][T11719] worker_thread+0x931/0x1380
+> [ 8585.925467][T11719] ? process_one_work+0x1730/0x1730
+> [ 8585.926079][T11719] kthread+0x2d3/0x3b0
+> [ 8585.926538][T11719] ? _raw_spin_unlock_irq+0x23/0x50
+> [ 8585.927138][T11719] ? kthread_complete_and_exit+0x40/0x40
+> [ 8585.927763][T11719] ret_from_fork+0x4e/0x80
+> [ 8585.928256][T11719] ? kthread_complete_and_exit+0x40/0x40
+> [ 8585.928903][T11719] ret_from_fork_asm+0x11/0x20
+> [ 8585.929470][T11719] </TASK>
+> [ 8585.930023][T11719] Kernel Offset: disabled
+> [ 8585.930517][T11719] Rebooting in 86400 seconds..
+> =3D* OTHERS =3D*
+> I noticed syzbot has two similar bugs named WARNING in cleanup_net=EF=BC=
+=9A
+> https://syzkaller.appspot.com/bug?extid=3D7e1e1bdb852961150198
+> https://syzkaller.appspot.com/bug?id=3D14c45b4081250ebeb4a9000f3774da829f=
+7e43b4
 >
-> But don't spin an update to your patches until Kalle has a chance to
-> give his opinion. I'm new to maintaining these drivers and Kalle may
-> have a different opinion on this.
+> However, these two seem fixed and not related to this.
+> Without in-depth analysis, I guess it's maybe a race condition bug and
+> the import part may be the refcnt_tracker in socket$rds not handled
+> properly but I'm not sure.
 >
-> /jeff
+> [ 8585.839049][T11719] ref_tracker: net notrefcnt@ffff888021ba0220 has
+> 1/1 users at
+> [ 8585.839049][T11719]   sk_alloc+0xaf0/0xbf0
+> [ 8585.839049][T11719]   inet6_create+0x39b/0x1300
+> [ 8585.839049][T11719]   __sock_create+0x34f/0x850
+> [ 8585.839049][T11719]   rds_tcp_listen_init+0xda/0x4f0
+> [ 8585.839049][T11719]   rds_tcp_init_net+0x147/0x400
+> [ 8585.839049][T11719]   ops_init+0xc4/0x680
+> [ 8585.839049][T11719]   setup_net+0x431/0xa80
+> [ 8585.839049][T11719]   copy_net_ns+0x313/0x6b0
+> [ 8585.839049][T11719]   create_new_namespaces+0x3fb/0xb60
+> [ 8585.839049][T11719]   unshare_nsproxy_namespaces+0xd0/0x200
+> [ 8585.839049][T11719]   ksys_unshare+0x47c/0xa30
+> [ 8585.839049][T11719]   __x64_sys_unshare+0x36/0x50
+> [ 8585.839049][T11719]   do_syscall_64+0x40/0x110
+> [ 8585.839049][T11719]   entry_SYSCALL_64_after_hwframe+0x63/0x6b
 
-No problem, I'll wait for Kalle's input on this before doing anything.
-As soon as we decide which way is the right way, I'll work on this. I only =
-care
-that this gets resolved.
+I have a similar syzbot  bug in my triage queue I will release right now.
+
+I already worked on a solution.
+
+Thanks.
