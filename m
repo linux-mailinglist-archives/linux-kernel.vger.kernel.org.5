@@ -2,258 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E2497FE91A
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 07:23:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9E1B7FE91C
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 07:25:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344614AbjK3GXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 01:23:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50326 "EHLO
+        id S1344617AbjK3GZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 01:25:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234958AbjK3GXg (ORCPT
+        with ESMTP id S229596AbjK3GZL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 01:23:36 -0500
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B7B610C6;
-        Wed, 29 Nov 2023 22:23:41 -0800 (PST)
-Received: by mail-qv1-xf2b.google.com with SMTP id 6a1803df08f44-67a34fbaf12so3516906d6.3;
-        Wed, 29 Nov 2023 22:23:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701325420; x=1701930220; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dnFNpITeBzIeWAB6/djyDlgB+xngZbEudW6ZwqboSBc=;
-        b=Kdb8h9U3zgOhqUkVO0UKU5XITYIl1JWjKJgusWKFxeo3amFzRidVeqxiFGCb/k0MfU
-         5+Dc1HsYCqVR2XmJ8DanRXoTHAgRt7qENItT3P9dFyYFG4Of6Z4aUFPDf4i9vXUJyGDE
-         2fBRGBHsjVEkFiw8r3GkIg1eWbbPZtPSTCTdVNUJU1q6El+ia4dRQW/X09c91o3KCRNP
-         R12z7QViEesfPOymzNoFudYfcfbm64DLx/CrTDK1Rs5W310tM8TzoBUi9/Ic4eYzVUvK
-         WPazwsfqb+TCf5jylLFxb72Jt3jZRsfmIE0sP6JAvTkoZOoPVl+nvGI7e7f8GvyqYTQt
-         D9kQ==
+        Thu, 30 Nov 2023 01:25:11 -0500
+Received: from mail-oa1-f69.google.com (mail-oa1-f69.google.com [209.85.160.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B34810C6
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 22:25:18 -0800 (PST)
+Received: by mail-oa1-f69.google.com with SMTP id 586e51a60fabf-1fa260d2a26so818761fac.0
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 22:25:18 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701325420; x=1701930220;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dnFNpITeBzIeWAB6/djyDlgB+xngZbEudW6ZwqboSBc=;
-        b=bcrujGvBcRsAplosPX04RPhaxXaSQ+P0ZW7JRs/cBY8TpWY8H+gDlHUflhdPSiduBX
-         MdWyxyLMxWmsJdqp5QTLzDQfSGSiO3zdgQjEeZyE7Lf94l2y/78ovYC5pF1EIfkdThkM
-         CUEh2/givZp8uj7s/T+5K31X+uxpprlf64L2/2ib9ci514acigj0fddDglPaotBT9d5v
-         rwcGsc8Zvqa2wNLEf/5AKHhHciM3cuuZsNGR5vAkG0oPmWcGMYsr1JNAk2ET5Bz6vpWH
-         jLOBbz3SqJqKdJyUKG4IngQgybxY684wl/UZTLkL9wH8Wagq3XLg9dfmGc6ZDSNbicc8
-         vH9Q==
-X-Gm-Message-State: AOJu0YzLusRmIj1FIz6O2HBM9JDNMcXYFdxGdCPqOmx4sEUa1GCtrsv/
-        Ert69UVWoeuiE2THdO54wrTlnzG13sIMpFVEyLOvwCAAEVI=
-X-Google-Smtp-Source: AGHT+IH0SyX76kONcdWlvcKAlac9MgRsSZANFwgwnZgOBET2afx9W8YCZCQZK6E4xmMv+OhaN7H7BE0osBZD2D+BqhA=
-X-Received: by 2002:ad4:5f0a:0:b0:67a:3967:4b09 with SMTP id
- fo10-20020ad45f0a000000b0067a39674b09mr19186344qvb.8.1701325420254; Wed, 29
- Nov 2023 22:23:40 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701325517; x=1701930317;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7dn2PFurWeu95+lMrLv8tNx24GrEjNahyw/IcH2X1Gg=;
+        b=EgQfn9SJsH6C4CxJkuU0LN7Gm5sjyWPbnykkFNYXuranWAmhR45f3Q+bZwm9/5GFC9
+         uN+9tW7nAswKhboajLwPrELYeVZ5EmA3LEbCE/tvYjtaKh32CaCFYAWCbDRtesWWXrx0
+         PQvV92NDs+kVBdxZ9xSjSJskwP5ilu8w/qHTn4dX6ThYbcPoMEAne/EB/FEv2EYkpW6L
+         FgHEvOKN1soIgMTjgIfFmNPZEcDZD19ZSPNN3OZfweIk4k9NobTDkNUBeqxTdC0k/M5y
+         eqKXkqfTsF3cKi6Ym7qXMXu7PVbP3a3XsV2canFfemjZquWg9I1RXffLCzJa01dgfW4Z
+         rhsw==
+X-Gm-Message-State: AOJu0YxpFc4icnpv8QO7SuUtOiYnhqUUXurRN22b+hMmxXivwCd3k8Ay
+        dUcttkpHy7eTN35ilZztj0h6oQMuoxjzyfbNe1r0RKsFiLNDKdE=
+X-Google-Smtp-Source: AGHT+IFqJk/bb7YKO99S7ovwxafWNXXBwD463UzH6j0aCF9KhHClV95FV/h3/KOKKJZfdzVkvUPBiGXCf5NLnxTXJrF1FRExrfyn
 MIME-Version: 1.0
-References: <20231129-idmap-fscap-refactor-v1-0-da5a26058a5b@kernel.org> <20231129-idmap-fscap-refactor-v1-12-da5a26058a5b@kernel.org>
-In-Reply-To: <20231129-idmap-fscap-refactor-v1-12-da5a26058a5b@kernel.org>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Thu, 30 Nov 2023 08:23:28 +0200
-Message-ID: <CAOQ4uxj=oR+yj19rUm0E6cHTiStniqvebtZSDhV3XZC1qz6n6A@mail.gmail.com>
-Subject: Re: [PATCH 12/16] ovl: use vfs_{get,set}_fscaps() for copy-up
-To:     "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        Serge Hallyn <serge@hallyn.com>,
-        Paul Moore <paul@paul-moore.com>,
-        Eric Paris <eparis@redhat.com>,
-        James Morris <jmorris@namei.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, audit@vger.kernel.org,
-        linux-unionfs@vger.kernel.org
+X-Received: by 2002:a05:6870:e0cc:b0:1fa:2607:4cb3 with SMTP id
+ a12-20020a056870e0cc00b001fa26074cb3mr574917oab.3.1701325517683; Wed, 29 Nov
+ 2023 22:25:17 -0800 (PST)
+Date:   Wed, 29 Nov 2023 22:25:17 -0800
+In-Reply-To: <000000000000f2b6b0060b488674@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002101d0060b58b70b@google.com>
+Subject: Re: [syzbot] [ntfs3?] WARNING in indx_insert_into_buffer
+From:   syzbot <syzbot+f9f8efb58a4db2ca98d0@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 11:50=E2=80=AFPM Seth Forshee (DigitalOcean)
-<sforshee@kernel.org> wrote:
->
-> Using vfs_{get,set}xattr() for fscaps will be blocked in a future
-> commit, so convert ovl to use the new interfaces. Also remove the now
-> unused ovl_getxattr_value().
->
-> Signed-off-by: Seth Forshee (DigitalOcean) <sforshee@kernel.org>
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org.
 
-You may add:
+***
 
-Reviewed-by: Amir Goldstein <amir73il@gmail.com>
+Subject: [ntfs3?] WARNING in indx_insert_into_buffer
+Author: lizhi.xu@windriver.com
 
-I am assuming that this work is destined to be merged via the vfs tree?
-Note that there is already a (non-conflicting) patch to copy_up.c on
-Christian's vfs.rw branch.
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git a379972973a8
 
-I think it is best that all the overlayfs patches are tested together by
-the vfs maintainer in preparation for the 6.8 merge window, so I have
-a feeling that the 6.8 overlayfs PR is going to be merged via the vfs tree =
-;-)
-
-Thanks,
-Amir.
-
-> ---
->  fs/overlayfs/copy_up.c | 72 ++++++++++++++++++++++++++------------------=
-------
->  1 file changed, 37 insertions(+), 35 deletions(-)
->
-> diff --git a/fs/overlayfs/copy_up.c b/fs/overlayfs/copy_up.c
-> index 4382881b0709..b43af5ce4b21 100644
-> --- a/fs/overlayfs/copy_up.c
-> +++ b/fs/overlayfs/copy_up.c
-> @@ -73,6 +73,23 @@ static int ovl_copy_acl(struct ovl_fs *ofs, const stru=
-ct path *path,
->         return err;
->  }
->
-> +static int ovl_copy_fscaps(struct ovl_fs *ofs, const struct path *oldpat=
-h,
-> +                          struct dentry *new)
-> +{
-> +       struct vfs_caps capability;
-> +       int err;
-> +
-> +       err =3D vfs_get_fscaps(mnt_idmap(oldpath->mnt), oldpath->dentry,
-> +                            &capability);
-> +       if (err) {
-> +               if (err =3D=3D -ENODATA || err =3D=3D -EOPNOTSUPP)
-> +                       return 0;
-> +               return err;
-> +       }
-> +
-> +       return vfs_set_fscaps(ovl_upper_mnt_idmap(ofs), new, &capability,=
- 0);
-> +}
-> +
->  int ovl_copy_xattr(struct super_block *sb, const struct path *oldpath, s=
-truct dentry *new)
->  {
->         struct dentry *old =3D oldpath->dentry;
-> @@ -130,6 +147,14 @@ int ovl_copy_xattr(struct super_block *sb, const str=
-uct path *oldpath, struct de
->                         break;
->                 }
->
-> +               if (!strcmp(name, XATTR_NAME_CAPS)) {
-> +                       error =3D ovl_copy_fscaps(OVL_FS(sb), oldpath, ne=
-w);
-> +                       if (!error)
-> +                               continue;
-> +                       /* fs capabilities must be copied */
-> +                       break;
-> +               }
-> +
->  retry:
->                 size =3D ovl_do_getxattr(oldpath, name, value, value_size=
-);
->                 if (size =3D=3D -ERANGE)
-> @@ -1006,61 +1031,40 @@ static bool ovl_need_meta_copy_up(struct dentry *=
-dentry, umode_t mode,
->         return true;
->  }
->
-> -static ssize_t ovl_getxattr_value(const struct path *path, char *name, c=
-har **value)
-> -{
-> -       ssize_t res;
-> -       char *buf;
-> -
-> -       res =3D ovl_do_getxattr(path, name, NULL, 0);
-> -       if (res =3D=3D -ENODATA || res =3D=3D -EOPNOTSUPP)
-> -               res =3D 0;
-> -
-> -       if (res > 0) {
-> -               buf =3D kzalloc(res, GFP_KERNEL);
-> -               if (!buf)
-> -                       return -ENOMEM;
-> -
-> -               res =3D ovl_do_getxattr(path, name, buf, res);
-> -               if (res < 0)
-> -                       kfree(buf);
-> -               else
-> -                       *value =3D buf;
-> -       }
-> -       return res;
-> -}
-> -
->  /* Copy up data of an inode which was copied up metadata only in the pas=
-t. */
->  static int ovl_copy_up_meta_inode_data(struct ovl_copy_up_ctx *c)
->  {
->         struct ovl_fs *ofs =3D OVL_FS(c->dentry->d_sb);
->         struct path upperpath;
->         int err;
-> -       char *capability =3D NULL;
-> -       ssize_t cap_size;
-> +       struct vfs_caps capability;
-> +       bool has_capability =3D false;
->
->         ovl_path_upper(c->dentry, &upperpath);
->         if (WARN_ON(upperpath.dentry =3D=3D NULL))
->                 return -EIO;
->
->         if (c->stat.size) {
-> -               err =3D cap_size =3D ovl_getxattr_value(&upperpath, XATTR=
-_NAME_CAPS,
-> -                                                   &capability);
-> -               if (cap_size < 0)
-> +               err =3D vfs_get_fscaps(mnt_idmap(upperpath.mnt), upperpat=
-h.dentry,
-> +                                    &capability);
-> +               if (!err)
-> +                       has_capability =3D 1;
-> +               else if (err !=3D -ENODATA && err !=3D EOPNOTSUPP)
->                         goto out;
->         }
->
->         err =3D ovl_copy_up_data(c, &upperpath);
->         if (err)
-> -               goto out_free;
-> +               goto out;
->
->         /*
->          * Writing to upper file will clear security.capability xattr. We
->          * don't want that to happen for normal copy-up operation.
->          */
->         ovl_start_write(c->dentry);
-> -       if (capability) {
-> -               err =3D ovl_do_setxattr(ofs, upperpath.dentry, XATTR_NAME=
-_CAPS,
-> -                                     capability, cap_size, 0);
-> +       if (has_capability) {
-> +               err =3D vfs_set_fscaps(mnt_idmap(upperpath.mnt), upperpat=
-h.dentry,
-> +                                    &capability, 0);
->         }
->         if (!err) {
->                 err =3D ovl_removexattr(ofs, upperpath.dentry,
-> @@ -1068,13 +1072,11 @@ static int ovl_copy_up_meta_inode_data(struct ovl=
-_copy_up_ctx *c)
->         }
->         ovl_end_write(c->dentry);
->         if (err)
-> -               goto out_free;
-> +               goto out;
->
->         ovl_clear_flag(OVL_HAS_DIGEST, d_inode(c->dentry));
->         ovl_clear_flag(OVL_VERIFIED_DIGEST, d_inode(c->dentry));
->         ovl_set_upperdata(d_inode(c->dentry));
-> -out_free:
-> -       kfree(capability);
->  out:
->         return err;
->  }
->
-> --
-> 2.43.0
->
+diff --git a/net/core/page_pool_user.c b/net/core/page_pool_user.c
+index 1426434a7e15..ca71f4103b3a 100644
+--- a/net/core/page_pool_user.c
++++ b/net/core/page_pool_user.c
+@@ -339,7 +339,8 @@ void page_pool_unlist(struct page_pool *pool)
+ 	mutex_lock(&page_pools_lock);
+ 	netdev_nl_page_pool_event(pool, NETDEV_CMD_PAGE_POOL_DEL_NTF);
+ 	xa_erase(&page_pools, pool->user.id);
+-	hlist_del(&pool->user.list);
++	if (pool->slow.netdev)
++		hlist_del(&pool->user.list);
+ 	mutex_unlock(&page_pools_lock);
+ }
+ 
