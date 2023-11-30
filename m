@@ -2,74 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 43CD97FF34E
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 16:18:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03F9A7FF355
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 16:19:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346176AbjK3PSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 10:18:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44858 "EHLO
+        id S1346185AbjK3PT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 10:19:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232062AbjK3PSO (ORCPT
+        with ESMTP id S1346053AbjK3PT0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 10:18:14 -0500
+        Thu, 30 Nov 2023 10:19:26 -0500
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A0A410D5;
-        Thu, 30 Nov 2023 07:18:20 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D412D1B3;
+        Thu, 30 Nov 2023 07:19:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701357500; x=1732893500;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=10fw+r5XbxUYA5SnJKr/duWs+Vhz0TMSzhkjID0W420=;
-  b=GJXFB4CbgvGFTlp8q1gPOhKjKxDUWPhtI1eIM7Hs6MLWiZ/3vPloI5Bm
-   s5e1gY0nzHcyoLQR0oyhaYXZLzG9lQ875FyIRl+hw84duB9hSxGzULvvT
-   n2QMtPO8NEZJaRIxautD330A0Gt66S3ugv3iH4kCkEMgwb6xE683ieGhY
-   Vb8MC6UX6vTKANq15azrQ9G/HLdCPhWVyYQVDR4uaZfWQqlhVUghb7TOo
-   PU9siSzGH0FeIjP3bAp+m3Jr7dJ3SVo8j/uh5/atgMsG/dfnsjnHYYj3V
-   FwYgKrhOdb6yUkgYaedbn0RdWYrYSHy9I+cGCP04CLKyUFKwX+gozrpX3
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="383734059"
+  t=1701357572; x=1732893572;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=U1czIfNA4D3gx8gU9pJKm9VcLb9EwJu5hgmJqa8H1ug=;
+  b=ndroGyu+sIOLpEGRWvo8ROj4RNdKQ4+OExPojjc0r+PMnezx6w0LAHEq
+   MvfZp9Fi/P1goaDM6RJzDZqIn/ooVh0MtYgakjFpALrjyAWtUKtg3JyCs
+   x5UDPy2ovY6ptlkZYnxzFx+KDa2VujjJz+ZquL0VWyeH+iaDs+j2PFKgs
+   HPBC7ldWx3JbHU+qPqM/dHyC02K1RvUX2/qpIFAMtF0VNCCAPiCkBJFTh
+   hgViKsu0od3wX7QITzf9CMUkFQR2YttkYaCRrFZMXzXSz99m2RI0inYmD
+   u2cOVANFjpHqXJztwEF2ORBLqKsMrQ5de/mjSRndYLJY6VuxfHYhcM47x
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="383734232"
 X-IronPort-AV: E=Sophos;i="6.04,239,1695711600"; 
-   d="scan'208";a="383734059"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 07:18:20 -0800
+   d="scan'208";a="383734232"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 07:19:32 -0800
 X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="860229613"
 X-IronPort-AV: E=Sophos;i="6.04,239,1695711600"; 
-   d="scan'208";a="17434854"
-Received: from rafaelfl-mobl.amr.corp.intel.com ([10.212.26.103])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 07:18:19 -0800
-Message-ID: <29ea34917cbfabf2b98b4957b7770683f5994873.camel@linux.intel.com>
-Subject: Re: [PATCH v10 14/14] dmaengine: idxd: Add support for device/wq
- defaults
-From:   Tom Zanussi <tom.zanussi@linux.intel.com>
-To:     "Yu, Fenghua" <fenghua.yu@intel.com>,
-        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "vkoul@kernel.org" <vkoul@kernel.org>
-Cc:     "Jiang, Dave" <dave.jiang@intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "Feghali, Wajdi K" <wajdi.k.feghali@intel.com>,
-        "Guilford, James" <james.guilford@intel.com>,
-        "Sridhar, Kanchana P" <kanchana.p.sridhar@intel.com>,
-        "Gopal, Vinodh" <vinodh.gopal@intel.com>,
-        "Cabiddu, Giovanni" <giovanni.cabiddu@intel.com>,
-        "pavel@ucw.cz" <pavel@ucw.cz>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>
-Date:   Thu, 30 Nov 2023 09:18:17 -0600
-In-Reply-To: <IA1PR11MB6097D7EE44240E62DEA9AC769B82A@IA1PR11MB6097.namprd11.prod.outlook.com>
-References: <20231127202704.1263376-1-tom.zanussi@linux.intel.com>
-         <20231127202704.1263376-15-tom.zanussi@linux.intel.com>
-         <00aa3b9f-d81e-3dc2-3fb0-bb79e16564d3@intel.com>
-         <e0d1e4441dc7976450efd07322be0fe5a7526efe.camel@linux.intel.com>
-         <IA1PR11MB6097D7EE44240E62DEA9AC769B82A@IA1PR11MB6097.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+   d="scan'208";a="860229613"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by FMSMGA003.fm.intel.com with ESMTP; 30 Nov 2023 07:19:26 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r8ip2-0002AP-2I;
+        Thu, 30 Nov 2023 15:19:24 +0000
+Date:   Thu, 30 Nov 2023 23:18:50 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Kuogee Hsieh <quic_khsieh@quicinc.com>,
+        dri-devel@lists.freedesktop.org, robdclark@gmail.com,
+        sean@poorly.run, swboyd@chromium.org, dianders@chromium.org,
+        vkoul@kernel.org, daniel@ffwll.ch, airlied@gmail.com,
+        agross@kernel.org, dmitry.baryshkov@linaro.org,
+        andersson@kernel.org
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        quic_sbillaka@quicinc.com, linux-arm-msm@vger.kernel.org,
+        quic_abhinavk@quicinc.com, Kuogee Hsieh <quic_khsieh@quicinc.com>,
+        marijn.suijten@somainline.org, quic_jesszhan@quicinc.com,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] drm/msm/dpu: improve DSC allocation
+Message-ID: <202311302309.NPRFDAWm-lkp@intel.com>
+References: <1701289898-12235-1-git-send-email-quic_khsieh@quicinc.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1701289898-12235-1-git-send-email-quic_khsieh@quicinc.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -78,60 +73,138 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Fenghua,
+Hi Kuogee,
 
-On Thu, 2023-11-30 at 00:31 +0000, Yu, Fenghua wrote:
-> Hi, Tom,
->=20
-> > From: Tom Zanussi <tom.zanussi@linux.intel.com>
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/* set name to "iaa_cryp=
-to" */
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0memset(wq->name, 0, WQ_N=
-AME_SIZE + 1);
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0strscpy(wq->name, "iaa_c=
-rypto", WQ_NAME_SIZE + 1);
-> > >=20
-> > > Is strcpy(wq->name, "iaa_crypto") simpler than memset() and
-> > > strscpy()?
-> >=20
-> > That's what I originally had, but checkpatch complained about it,
-> > suggesting
-> > strscpy, so I changed it to make checkpatch happy.
->=20
-> Why is size WQ_NAME_SIZE+1 instead of WQ_NAME_SIZE? Will
-> WQ_NAME_SIZE+1 cause mem corruption because wq->name is defined as a
-> string with WQ_NAME_SIZE?
+kernel test robot noticed the following build errors:
 
-No, wq->name actually is:
+[auto build test ERROR on drm-misc/drm-misc-next]
+[also build test ERROR on drm/drm-next drm-exynos/exynos-drm-next drm-intel/for-linux-next drm-intel/for-linux-next-fixes drm-tip/drm-tip linus/master v6.7-rc3 next-20231130]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-        char name[WQ_NAME_SIZE + 1];
+url:    https://github.com/intel-lab-lkp/linux/commits/Kuogee-Hsieh/drm-msm-dpu-improve-DSC-allocation/20231130-064646
+base:   git://anongit.freedesktop.org/drm/drm-misc drm-misc-next
+patch link:    https://lore.kernel.org/r/1701289898-12235-1-git-send-email-quic_khsieh%40quicinc.com
+patch subject: [PATCH v1] drm/msm/dpu: improve DSC allocation
+config: powerpc-allmodconfig (https://download.01.org/0day-ci/archive/20231130/202311302309.NPRFDAWm-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231130/202311302309.NPRFDAWm-lkp@intel.com/reproduce)
 
-This code is doing the same thing as elsewhere in the idxd driver
-except instead of sprintf() it uses strscpy().
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311302309.NPRFDAWm-lkp@intel.com/
 
-> >=20
-> > >=20
-> > > > +
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/* set driver_name to "c=
-rypto" */
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0memset(wq->driver_name, =
-0, DRIVER_NAME_SIZE + 1);
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0strscpy(wq->driver_name,=
- "crypto", DRIVER_NAME_SIZE +
-> > > > 1);
-> > >=20
-> > > Is strcpy(wq->driver_name, "crypto") simpler?
-> >=20
-> > Same here.
->=20
-> Ditto.
->=20
+All errors (new ones prefixed by >>):
 
-Same.
+>> drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c:537:24: error: incompatible pointer to integer conversion assigning to 'uint32_t' (aka 'unsigned int') from 'void *' [-Wint-conversion]
+     537 |                 pp_to_enc_id[pp_idx] = NULL;
+         |                                      ^ ~~~~
+   1 error generated.
 
-Tom
 
-> Thanks.
->=20
-> -Fenghua
+vim +537 drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
 
+   463	
+   464	static int _dpu_rm_reserve_dsc(struct dpu_rm *rm,
+   465				       struct dpu_global_state *global_state,
+   466				       struct drm_encoder *enc,
+   467				       const struct msm_display_topology *top)
+   468	{
+   469		int num_dsc = 0;
+   470		int i, pp_idx;
+   471		bool pair = false;
+   472		int dsc_idx[DSC_MAX - DSC_0];
+   473		uint32_t pp_to_enc_id[PINGPONG_MAX - PINGPONG_0];
+   474		int pp_max = PINGPONG_MAX - PINGPONG_0;
+   475	
+   476		if (!top->num_dsc || !top->num_intf)
+   477			return 0;
+   478	
+   479		/*
+   480		 * Truth:
+   481		 * 1) every layer mixer only connects to one pingpong
+   482		 * 2) no pingpong split -- two layer mixers shared one pingpong
+   483		 * 3) each DSC engine contains two dsc encoders
+   484		 *    -- index(0,1), index (2,3),... etc
+   485		 * 4) dsc pair can only happens with same DSC engine except 4 dsc
+   486		 *    merge mode application (8k) which need two DSC engines
+   487		 * 5) odd pingpong connect to odd dsc
+   488		 * 6) even pingpong connect even dsc
+   489		 */
+   490	
+   491		/* num_dsc should be either 1, 2 or 4 */
+   492		if (top->num_dsc > top->num_intf)	/* merge mode */
+   493			pair = true;
+   494	
+   495		/* fill working copy with pingpong list */
+   496		memcpy(pp_to_enc_id, global_state->pingpong_to_enc_id, sizeof(pp_to_enc_id));
+   497	
+   498		for (i = 0; i < ARRAY_SIZE(rm->dsc_blks); i++) {
+   499			if (!rm->dsc_blks[i])	/* end of dsc list */
+   500				break;
+   501	
+   502			if (global_state->dsc_to_enc_id[i]) {	/* used */
+   503				/* consective dsc index to be paired */
+   504				if (pair && num_dsc) {	/* already start pairing, re start */
+   505					num_dsc = 0;
+   506					/* fill working copy with pingpong list */
+   507					memcpy(pp_to_enc_id, global_state->pingpong_to_enc_id,
+   508									sizeof(pp_to_enc_id));
+   509				}
+   510				continue;
+   511			}
+   512	
+   513			/* odd index can not become start of pairing */
+   514			if (pair && (i & 0x01) && !num_dsc)
+   515				continue;
+   516	
+   517			/*
+   518			 * find the pingpong index which had been reserved
+   519			 * previously at layer mixer allocation
+   520			 */
+   521			for (pp_idx = 0; pp_idx < pp_max; pp_idx++) {
+   522				if (pp_to_enc_id[pp_idx] == enc->base.id)
+   523					break;
+   524			}
+   525	
+   526			/*
+   527			 * dsc even index must map to pingpong even index
+   528			 * dsc odd index must map to pingpong odd index
+   529			 */
+   530			if ((i & 0x01) != (pp_idx & 0x01))
+   531				continue;
+   532	
+   533			/*
+   534			 * delete pp_idx so that it can not be found at next search
+   535			 * in the case of pairing
+   536			 */
+ > 537			pp_to_enc_id[pp_idx] = NULL;
+   538	
+   539			dsc_idx[num_dsc++] = i;
+   540			if (num_dsc >= top->num_dsc)
+   541				break;
+   542		}
+   543	
+   544		if (num_dsc < top->num_dsc) {
+   545			DPU_ERROR("DSC allocation failed num_dsc=%d required=%d\n",
+   546							num_dsc, top->num_dsc );
+   547			return -ENAVAIL;
+   548		}
+   549	
+   550		/* reserve dsc */
+   551		for (i = 0; i < top->num_dsc; i++) {
+   552			int j;
+   553	
+   554			j = dsc_idx[i];
+   555			global_state->dsc_to_enc_id[j] = enc->base.id;
+   556		}
+   557	
+   558		return 0;
+   559	}
+   560	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
