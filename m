@@ -2,75 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 076BC7FE73D
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 03:42:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AF677FE743
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 03:42:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234967AbjK3CmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 21:42:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36864 "EHLO
+        id S1344223AbjK3Cm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 21:42:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234978AbjK3Clj (ORCPT
+        with ESMTP id S1344387AbjK3CmA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 21:41:39 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4261E10F0;
-        Wed, 29 Nov 2023 18:41:30 -0800 (PST)
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AU2U8Dc028445;
-        Thu, 30 Nov 2023 02:41:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=qcppdkim1;
- bh=j238Yxooc4qTG9PLIHMfDLq47mg7/fDUNDBTLUxSb3g=;
- b=aX+sBUsoWs0X67I/fROjha3iT95FSaQb2p4LWrmKE6lgwUlqNKstlDcZHrXoxbmt/Pow
- z4tBy0BvXfR1fsXb3yhJ2N5jFhIYZy4XOgaR1OHn82oS3a80sTe/czblNByRNmFSDMzO
- nlTPkOdmyXVYJ34kc7SP67rKzW4Ew/sqWjrhO2onh+OKfkskyc8BJzb0hbogTMfobQ2s
- WaMaxwvZ63ZSyRzyby8XmEGtJzmuNsnD95tklT8wY/e8iNQ/J5HKMSwjhjfeZ2J1S7LO
- Vo5HJPg1fbibzkpAq2WzSwxssiSC31FxkpOUyE07s25Vol0QR5GUm+ktkLVvF9DL8xca 2Q== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3upbu58pu1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 30 Nov 2023 02:41:27 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AU2fQTp028779
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 30 Nov 2023 02:41:26 GMT
-Received: from tengfan2-gv.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 29 Nov 2023 18:41:21 -0800
-From:   Tengfei Fan <quic_tengfan@quicinc.com>
-To:     <andersson@kernel.org>, <agross@kernel.org>,
-        <konrad.dybcio@linaro.org>, <linus.walleij@linaro.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>,
-        Tengfei Fan <quic_tengfan@quicinc.com>
-Subject: [PATCH v5 4/4] pinctrl: qcom: sm4450: correct incorrect address offset
-Date:   Thu, 30 Nov 2023 10:40:46 +0800
-Message-ID: <20231130024046.25938-5-quic_tengfan@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20231130024046.25938-1-quic_tengfan@quicinc.com>
-References: <20231130024046.25938-1-quic_tengfan@quicinc.com>
+        Wed, 29 Nov 2023 21:42:00 -0500
+Received: from mail.nfschina.com (unknown [42.101.60.195])
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id 09BF110E3;
+        Wed, 29 Nov 2023 18:42:04 -0800 (PST)
+Received: from localhost.localdomain (unknown [180.167.10.98])
+        by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPSA id 09CE860DF8F3F;
+        Thu, 30 Nov 2023 10:41:48 +0800 (CST)
+X-MD-Sfrom: suhui@nfschina.com
+X-MD-SrcIP: 180.167.10.98
+From:   Su Hui <suhui@nfschina.com>
+To:     hare@suse.com, jejb@linux.ibm.com, martin.petersen@oracle.com
+Cc:     Su Hui <suhui@nfschina.com>, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH] scsi: aic7xxx: fix some problem of return value
+Date:   Thu, 30 Nov 2023 10:41:23 +0800
+Message-Id: <20231130024122.1193324-1-suhui@nfschina.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 3u7teUg1RMyEZPP3yz-L_OuC5EpW8tA9
-X-Proofpoint-GUID: 3u7teUg1RMyEZPP3yz-L_OuC5EpW8tA9
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-29_21,2023-11-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- malwarescore=0 suspectscore=0 spamscore=0 clxscore=1015 impostorscore=0
- mlxscore=0 priorityscore=1501 phishscore=0 adultscore=0 mlxlogscore=889
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311300018
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,RDNS_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,42 +39,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The address offset of 0x100000 is already provided in SM4450 DTSI, so
-subtract 0x100000 from the offset which used by ufs and sdc.
+aic7770_probe() should return negative error code rather than positive.
+However, aic7770_config() only return positive error code,
+ahc_linux_register_host() return both positive and negative error
+code. Make aic7770_probe() return negative if error happened and let
+ahc_linux_register_host() only return positive error code to fix this
+problem.
 
-Suggested-by: Can Guo <quic_cang@quicinc.com>
-Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
+ahc_linux_pci_dev_probe() should return the value of
+ahc_linux_register_host() rather than zero.
+
+Signed-off-by: Su Hui <suhui@nfschina.com>
 ---
- drivers/pinctrl/qcom/pinctrl-sm4450.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ drivers/scsi/aic7xxx/aic7770_osm.c     | 8 ++++----
+ drivers/scsi/aic7xxx/aic7xxx_osm.c     | 2 +-
+ drivers/scsi/aic7xxx/aic7xxx_osm_pci.c | 4 ++--
+ 3 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/pinctrl/qcom/pinctrl-sm4450.c b/drivers/pinctrl/qcom/pinctrl-sm4450.c
-index 49e2e3a7a9cb..5496f955ed2a 100644
---- a/drivers/pinctrl/qcom/pinctrl-sm4450.c
-+++ b/drivers/pinctrl/qcom/pinctrl-sm4450.c
-@@ -936,14 +936,14 @@ static const struct msm_pingroup sm4450_groups[] = {
- 	[133] = PINGROUP(133, _, phase_flag, _, _, _, _, _, _, _),
- 	[134] = PINGROUP(134, tsense_pwm1_out, tsense_pwm2_out, _, _, _, _, _, _, _),
- 	[135] = PINGROUP(135, _, phase_flag, _, _, _, _, _, _, _),
--	[136] = UFS_RESET(ufs_reset, 0x197000),
--	[137] = SDC_QDSD_PINGROUP(sdc1_rclk, 0x18c004, 0, 0),
--	[138] = SDC_QDSD_PINGROUP(sdc1_clk, 0x18c000, 13, 6),
--	[139] = SDC_QDSD_PINGROUP(sdc1_cmd, 0x18c000, 11, 3),
--	[140] = SDC_QDSD_PINGROUP(sdc1_data, 0x18c000, 9, 0),
--	[141] = SDC_QDSD_PINGROUP(sdc2_clk, 0x18f000, 14, 6),
--	[142] = SDC_QDSD_PINGROUP(sdc2_cmd, 0x18f000, 11, 3),
--	[143] = SDC_QDSD_PINGROUP(sdc2_data, 0x18f000, 9, 0),
-+	[136] = UFS_RESET(ufs_reset, 0x97000),
-+	[137] = SDC_QDSD_PINGROUP(sdc1_rclk, 0x8c004, 0, 0),
-+	[138] = SDC_QDSD_PINGROUP(sdc1_clk, 0x8c000, 13, 6),
-+	[139] = SDC_QDSD_PINGROUP(sdc1_cmd, 0x8c000, 11, 3),
-+	[140] = SDC_QDSD_PINGROUP(sdc1_data, 0x8c000, 9, 0),
-+	[141] = SDC_QDSD_PINGROUP(sdc2_clk, 0x8f000, 14, 6),
-+	[142] = SDC_QDSD_PINGROUP(sdc2_cmd, 0x8f000, 11, 3),
-+	[143] = SDC_QDSD_PINGROUP(sdc2_data, 0x8f000, 9, 0),
- };
+diff --git a/drivers/scsi/aic7xxx/aic7770_osm.c b/drivers/scsi/aic7xxx/aic7770_osm.c
+index bdd177e3d762..3c1aca15d956 100644
+--- a/drivers/scsi/aic7xxx/aic7770_osm.c
++++ b/drivers/scsi/aic7xxx/aic7770_osm.c
+@@ -87,23 +87,23 @@ aic7770_probe(struct device *dev)
+ 	sprintf(buf, "ahc_eisa:%d", eisaBase >> 12);
+ 	name = kstrdup(buf, GFP_ATOMIC);
+ 	if (name == NULL)
+-		return (ENOMEM);
++		return -ENOMEM;
+ 	ahc = ahc_alloc(&aic7xxx_driver_template, name);
+ 	if (ahc == NULL)
+-		return (ENOMEM);
++		return -ENOMEM;
+ 	ahc->dev = dev;
+ 	error = aic7770_config(ahc, aic7770_ident_table + edev->id.driver_data,
+ 			       eisaBase);
+ 	if (error != 0) {
+ 		ahc->bsh.ioport = 0;
+ 		ahc_free(ahc);
+-		return (error);
++		return -error;
+ 	}
  
- static const struct msm_gpio_wakeirq_map sm4450_pdc_map[] = {
+  	dev_set_drvdata(dev, ahc);
+ 
+ 	error = ahc_linux_register_host(ahc, &aic7xxx_driver_template);
+-	return (error);
++	return -error;
+ }
+ 
+ static int
+diff --git a/drivers/scsi/aic7xxx/aic7xxx_osm.c b/drivers/scsi/aic7xxx/aic7xxx_osm.c
+index 4ae0a1c4d374..158aaeca8941 100644
+--- a/drivers/scsi/aic7xxx/aic7xxx_osm.c
++++ b/drivers/scsi/aic7xxx/aic7xxx_osm.c
+@@ -1117,7 +1117,7 @@ ahc_linux_register_host(struct ahc_softc *ahc, struct scsi_host_template *templa
+ 	if (retval) {
+ 		printk(KERN_WARNING "aic7xxx: scsi_add_host failed\n");
+ 		scsi_host_put(host);
+-		return retval;
++		return -retval;
+ 	}
+ 
+ 	scsi_scan_host(host);
+diff --git a/drivers/scsi/aic7xxx/aic7xxx_osm_pci.c b/drivers/scsi/aic7xxx/aic7xxx_osm_pci.c
+index a07e94fac673..e17eb8df12c4 100644
+--- a/drivers/scsi/aic7xxx/aic7xxx_osm_pci.c
++++ b/drivers/scsi/aic7xxx/aic7xxx_osm_pci.c
+@@ -241,8 +241,8 @@ ahc_linux_pci_dev_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 		ahc_linux_pci_inherit_flags(ahc);
+ 
+ 	pci_set_drvdata(pdev, ahc);
+-	ahc_linux_register_host(ahc, &aic7xxx_driver_template);
+-	return (0);
++	error = ahc_linux_register_host(ahc, &aic7xxx_driver_template);
++	return -error;
+ }
+ 
+ /******************************* PCI Routines *********************************/
 -- 
-2.17.1
+2.30.2
 
