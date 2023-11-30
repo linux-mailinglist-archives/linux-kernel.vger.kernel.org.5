@@ -2,113 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C39C7FF3B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 16:37:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4F7B7FF3B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 16:37:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346324AbjK3PhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 10:37:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48256 "EHLO
+        id S1346309AbjK3Phk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 10:37:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232180AbjK3PhN (ORCPT
+        with ESMTP id S232180AbjK3Phh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 10:37:13 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D2761B3
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 07:37:19 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CAF54C433C8;
-        Thu, 30 Nov 2023 15:37:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701358638;
-        bh=DEfwEsrfdTaKSTIEFXZCNrvfb8NRUdxB2lcPYr3uym8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XxEaiHVP7qZe4urDwuhAjWNUOqvcNbTmmnjp3zvHvTrcVrOI5a6MkCRnKJe3DisYH
-         49hiAlNp461XtD2aXDu6NUYXMYOivZRTkBebqD1T41eiIvPK7mrKZtiallTL6Z4Xfc
-         FR+HNRnuTLOLA7t78AGwGDJbQNm3TBv2oZme/FZAZ/Z5BZtW/htwkOwvRUUZ8MwcEA
-         TMPalRnHagMa+dqBn9JPB1FAB2NOVBFQrJW8UkYVTnlUUwiiq7uBHuHve3GVR8ioJX
-         24zn1VFmWGgOKdNViGBg+pNnNl1u3mX94wxyk8MxhEUM32OnG4JtpM9LtP73lqacAi
-         mnYfIW71J4F3A==
-Date:   Thu, 30 Nov 2023 15:37:12 +0000
-From:   Conor Dooley <conor@kernel.org>
-To:     Xi Ruoyao <xry111@xry111.site>
-Cc:     Kwanghoon Son <k.son@samsung.com>, p.zabel@pengutronix.de,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, jszhang@kernel.org, guoren@kernel.org,
-        wefu@redhat.com, paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, inki.dae@samsung.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v3 1/3] dt-bindings: reset: Document th1520 reset control
-Message-ID: <20231130-strict-yarn-0b7ec0f47bc1@spud>
-References: <20230918045125.4000083-1-k.son@samsung.com>
- <CGME20230918045134epcas1p1b80b338b66512a976c3783cd0e51da50@epcas1p1.samsung.com>
- <20230918045125.4000083-2-k.son@samsung.com>
- <20230918-4ef7f52da269f3a7e4023bb3@fedora>
- <005301d9eab7$5688c920$039a5b60$@samsung.com>
- <20230919-42333064be342f6ab125dd75@fedora>
- <5f437109d2be2b8843f549a661054a2e3ec0d66e.camel@xry111.site>
+        Thu, 30 Nov 2023 10:37:37 -0500
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95B7E10E4
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 07:37:43 -0800 (PST)
+Received: by mail-io1-xd2c.google.com with SMTP id ca18e2360f4ac-7b37a2e6314so12837639f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 07:37:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1701358663; x=1701963463; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=eRo1oknj4mG3obwA0KmAvZPEjccwf277vmOJQMSbu+o=;
+        b=V5HSyfWxih5vlN9sEwNh4WyJLxo2rNJRaDQed8gzXIOrjHWi07juEfASs39Vl364vr
+         oieI9VpmVVFeMwXkwp6ggdI53xyuUSNHfsu+R4XLpL7E182oLXp1m7K6B3UhRN4TaZ8E
+         nQjdDZgGWR7pe4NmRoBW3HIEoj2RK0vdskfSIz2A9CMWTJTJWDg0EpJRbw0RoKtXL05L
+         mU9NhSuhajtyoObvym8TLDlsPOxUMOBxDAnncYmSOdQvIeUpxlzmNMammDN63SRSMg23
+         vTnF6GpOZpiR7ROey4cnLd3zxwYnrCtDUpJf4fC9ldzgumNEVV0wOJ/xdLtIxLRWbO3u
+         xStg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701358663; x=1701963463;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=eRo1oknj4mG3obwA0KmAvZPEjccwf277vmOJQMSbu+o=;
+        b=DCkqaoMqTGws+UAmNPJl7gNYp5CJxN6WeJWTFcSyAJdgWCvdn4v2jxfg8EmyC6QdN7
+         hTKnm5fdaTdC00MkNCJVWcT2J8HHMes77GsnCPSj/kd9Q+aX3O0vcwVsr3SFiWhzyTqh
+         xlb0UwzOP9frScjRp4R8CAJgb4tDC9947bdKm7i6C7hDv8npBlK607vrDnk1nMY6q67L
+         pD74OMkGvXsLZK4EBtLgJ+FA/Aw2ilvAsIl8q0oVdwknsa+pBFpr66CAFmwIcKx/aW+8
+         Nl60SOvty5Hm97ZcFqCaKICuKYYoji5v/VHfE+/wuuLXu4vUdBAhJ5ULZG9pBImVqbIg
+         DU9A==
+X-Gm-Message-State: AOJu0Yx9ZU18Qb/9auWK6T2iK9cx8LXkG3HXCn6ezdPnTf+ybNr2tVv+
+        31MUVw4j5EmRu0i9N/h86iW6SA==
+X-Google-Smtp-Source: AGHT+IGSYO+9xXxMk+Bn7bqLWNX6OK2f41ov3rtjgV/FWA2seq3P2qUsGUYmTrmQqmmsuPk1XL1ywQ==
+X-Received: by 2002:a05:6602:155:b0:7b3:6d5c:b8e with SMTP id v21-20020a056602015500b007b36d5c0b8emr2615464iot.0.1701358662939;
+        Thu, 30 Nov 2023 07:37:42 -0800 (PST)
+Received: from [192.168.1.116] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id el4-20020a0566384d8400b00468590162f4sm345409jab.178.2023.11.30.07.37.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Nov 2023 07:37:42 -0800 (PST)
+Message-ID: <feb0a163-c1d3-4087-96dc-f64d0dde235b@kernel.dk>
+Date:   Thu, 30 Nov 2023 08:37:40 -0700
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="WAKvEsPGuWM3Yjbn"
-Content-Disposition: inline
-In-Reply-To: <5f437109d2be2b8843f549a661054a2e3ec0d66e.camel@xry111.site>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] zram: Using GFP_ATOMIC instead of GFP_KERNEL to allocate
+ bitmap memory in backing_dev_store
+Content-Language: en-US
+To:     Dongyun Liu <dongyun.liu3@gmail.com>, minchan@kernel.org,
+        senozhatsky@chromium.org
+Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        lincheng.yang@transsion.com, jiajun.ling@transsion.com,
+        ldys2014@foxmail.com, Dongyun Liu <dongyun.liu@transsion.com>
+References: <20231130152047.200169-1-dongyun.liu@transsion.com>
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <20231130152047.200169-1-dongyun.liu@transsion.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11/30/23 8:20 AM, Dongyun Liu wrote:
+> diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
+> index d77d3664ca08..ee6c22c50e09 100644
+> --- a/drivers/block/zram/zram_drv.c
+> +++ b/drivers/block/zram/zram_drv.c
+> @@ -514,7 +514,7 @@ static ssize_t backing_dev_store(struct device *dev,
+>  
+>  	nr_pages = i_size_read(inode) >> PAGE_SHIFT;
+>  	bitmap_sz = BITS_TO_LONGS(nr_pages) * sizeof(long);
+> -	bitmap = kvzalloc(bitmap_sz, GFP_KERNEL);
+> +	bitmap = kmalloc(bitmap_sz, GFP_ATOMIC);
+>  	if (!bitmap) {
+>  		err = -ENOMEM;
+>  		goto out;
 
---WAKvEsPGuWM3Yjbn
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Outside of this moving from a zeroed alloc to one that does not, the
+change looks woefully incomplete. Why does this allocation need to be
+GFP_ATOMIC, and:
 
-On Thu, Nov 30, 2023 at 12:42:09AM +0800, Xi Ruoyao wrote:
-> On Tue, 2023-09-19 at 09:47 +0100, Conor Dooley wrote:
-> > Guo,
-> >=20
-> > On Tue, Sep 19, 2023 at 02:08:32PM +0900, Kwanghoon Son wrote:
-> > > > > > +=A0=A0=A0=A0=A0 - const: thead,th1520-reset
-> > > > > > +=A0=A0=A0=A0=A0 - const: syscon
-> > > > >=20
-> > > > > iDumb question perhaps, but why is this a syscon?
-> > > >=20
-> > > > This is good point.
-> > > > In fact, I took it from the vendor kernel, and I tried to keep it a=
-s same as I could.
-> > > > Vendor also followed drivers/reset/reset-imx7.c
-> > > > As Rob said, if don't need it, I'll change it.
-> >=20
-> > > I have investigated vendor kernels, but it is still not sure reset in=
-formation.
-> > > I thought this is about sys_reg, but without datasheet, can't tell.
-> > > Therefore, should be stopped patch for a while until knows better com=
-es out.
-> >=20
-> > Is there documentation in English you can provide to these people that
-> > are trying to add support for your product?
->=20
-> It can be downloaded from
-> https://dl.sipeed.com/shareURL/LICHEE/licheepi4a/09_Doc now.  Click on
-> "TH1520 User Manual.zip" and enter a captcha.  The doc about resetting
-> is in chapter 5 of "TH1520 System User Manual.pdf".
+1) file_name = kmalloc(PATH_MAX, GFP_KERNEL); does not
+2) filp_open() -> getname_kernel() -> __getname() does not
+3) filp_open() -> getname_kernel() does not
+4) bdev_open_by_dev() does not
 
-Thanks Xi! Pity there was no response from the vendor to this for
-months :(
+IOW, you have a slew of GFP_KERNEL allocations in there, and you
+probably just patched the largest one. But the core issue remains.
 
---WAKvEsPGuWM3Yjbn
-Content-Type: application/pgp-signature; name="signature.asc"
+The whole handling of backing_dev_store() looks pretty broken.
 
------BEGIN PGP SIGNATURE-----
+-- 
+Jens Axboe
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZWisKAAKCRB4tDGHoIJi
-0ne4AQCpH/mzJjeMQBRdjUbmAWLMVpb472UKnn6JbArl6ZbhFgD8CmPgI9f8BrQH
-RGR80riMhYQ+yIOzdEQrWILkVlerWgE=
-=Mv8t
------END PGP SIGNATURE-----
-
---WAKvEsPGuWM3Yjbn--
