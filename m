@@ -2,50 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 918007FF491
+	by mail.lfdr.de (Postfix) with ESMTP id 32CE87FF48F
 	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 17:18:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345220AbjK3QSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 11:18:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38316 "EHLO
+        id S232248AbjK3QSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 11:18:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232191AbjK3QSe (ORCPT
+        with ESMTP id S232238AbjK3QSf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 11:18:34 -0500
+        Thu, 30 Nov 2023 11:18:35 -0500
 Received: from mail.fris.de (unknown [IPv6:2a01:4f8:c2c:390b::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EC3010DB;
-        Thu, 30 Nov 2023 08:18:38 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id B6F63C0279;
-        Thu, 30 Nov 2023 17:18:35 +0100 (CET)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F26D1700;
+        Thu, 30 Nov 2023 08:18:40 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 3402DC01DC;
+        Thu, 30 Nov 2023 17:18:38 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fris.de; s=dkim;
-        t=1701361116; h=from:subject:date:message-id:to:cc:mime-version:
+        t=1701361118; h=from:subject:date:message-id:to:cc:mime-version:
          content-transfer-encoding:in-reply-to:references;
-        bh=cVVAh3S9ca4p87QnkPZb5dIfyL7ZE1t+EZ1mNj7e8O8=;
-        b=PlINqgQVMar90V7YnsTec9YgZEaoaAHhYmMPhijgrqyJsuZo400mI0RizngRaDTijUKJVI
-        UOI9bQPsVwXllrfQiMpybd8RVeaPIslIwRU3rwFjOHzkjQ0tSOWZXozKvKvJ5ogYvlbp64
-        3mBeLCClPTGXM/5/BzS7qhBxmvqY5y4TsSjRJDx5PVc1bi8USfhLd6+MKBK0CsgVNAPjO1
-        kmklbnnM+UdWF4w+BxbIOI7lssmO3lueAT5lQRflr+/obPuNsEzFRX0wUluhBJXXxN6Bn2
-        9phwVdiIG/jY5H39UhbqPvtFETUjCiBH2U0b8m8WQmctaQNmdDqsF6plxDmOdA==
+        bh=4wc5xlMkQVwPcIfy78SOPNz2f9X1LzOiI43PLTGlKIw=;
+        b=HIqDSTpFOvPNcaV3anPh7zEcy3RpJpAPoJ9yc+LRE1KhwmhP2OJhltFzQgAT4/NuyJlQyv
+        8Tzn1nLuxp86boeemiwUqvBVWgNtRpTN8Bzgsn7P37J2YbjL9tzcHu70VRrJ8j1383+RQy
+        zE5vih9Ohd5/tgq/dWuaSKVGGlU2ca8aXlJiHxNSJ8JjesPWw7dgPVTvMU+mR7EowhmBdl
+        wfVUCa09RlgiTKB2XC6eKfncJ2DBXoeWbyQkmRqeWoNQosW/1b8gOG4M6Zjd27n+ITgkDr
+        R0yUiB1HQmn07VSJxQRWlmFMJ04omLFBF9QPJvI1UaCVd2RMC4qk0nuZ+FmVUw==
 From:   Frieder Schrempf <frieder@fris.de>
 To:     Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Rob Herring <robh+dt@kernel.org>,
         Sascha Hauer <s.hauer@pengutronix.de>,
         Shawn Guo <shawnguo@kernel.org>
-Cc:     Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Alexander Stein <alexander.stein@ew.tq-group.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Gregor Herburger <gregor.herburger@ew.tq-group.com>,
-        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
-        Marek Vasut <marex@denx.de>,
+Cc:     Fabio Estevam <festevam@gmail.com>,
         NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Philippe Schenker <philippe.schenker@toradex.com>,
-        Tim Harvey <tharvey@gateworks.com>
-Subject: [PATCH v2 02/14] arm64: dts: imx8mm-kontron: Add DL (Display-Line) overlay with LVDS support
-Date:   Thu, 30 Nov 2023 17:16:02 +0100
-Message-ID: <20231130161657.556483-3-frieder@fris.de>
+        Pengutronix Kernel Team <kernel@pengutronix.de>
+Subject: [PATCH v2 03/14] arm64: dts: imx8mm-kontron: Disable pullups for I2C signals on OSM-S i.MX8MM
+Date:   Thu, 30 Nov 2023 17:16:03 +0100
+Message-ID: <20231130161657.556483-4-frieder@fris.de>
 In-Reply-To: <20231130161657.556483-1-frieder@fris.de>
 References: <20231130161657.556483-1-frieder@fris.de>
 MIME-Version: 1.0
@@ -63,240 +57,50 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Frieder Schrempf <frieder.schrempf@kontron.de>
 
-The Kontron Electronics DL i.MX8MM consists of the BL i.MX8MM board
-and a 7" LVDS panel. Provide an overlay that enables the panel.
+There are external pullup resistors on the board and due to silicon
+errata ERR050080 let's disable the internal ones to prevent any
+unwanted behavior in case they wear out.
 
+Fixes: de9618e84f76 ("arm64: dts: Add support for Kontron SL/BL i.MX8MM OSM-S")
 Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
 ---
 Changes for v2:
-* Rework DSI mux GPIO logic to be compatible with overlay
+* none
 ---
- arch/arm64/boot/dts/freescale/Makefile        |   4 +
- .../boot/dts/freescale/imx8mm-kontron-dl.dtso | 200 ++++++++++++++++++
- 2 files changed, 204 insertions(+)
- create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-kontron-dl.dtso
+ arch/arm64/boot/dts/freescale/imx8mm-kontron-bl-osm-s.dts | 4 ++--
+ arch/arm64/boot/dts/freescale/imx8mm-kontron-osm-s.dtsi   | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
-index 300049037eb0b..e08024797721a 100644
---- a/arch/arm64/boot/dts/freescale/Makefile
-+++ b/arch/arm64/boot/dts/freescale/Makefile
-@@ -166,6 +166,10 @@ dtb-$(CONFIG_ARCH_MXC) += imx8ulp-evk.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx93-11x11-evk.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx93-tqma9352-mba93xxla.dtb
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-kontron-bl-osm-s.dts b/arch/arm64/boot/dts/freescale/imx8mm-kontron-bl-osm-s.dts
+index 8b16bd68576c0..0730c22e5b6b9 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mm-kontron-bl-osm-s.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mm-kontron-bl-osm-s.dts
+@@ -294,8 +294,8 @@ MX8MM_IOMUXC_SAI3_MCLK_GPIO5_IO2		0x19
  
-+imx8mm-kontron-dl-dtbs			:= imx8mm-kontron-bl.dtb imx8mm-kontron-dl.dtbo
-+
-+dtb-$(CONFIG_ARCH_MXC) += imx8mm-kontron-dl.dtb
-+
- imx8mm-venice-gw72xx-0x-imx219-dtbs	:= imx8mm-venice-gw72xx-0x.dtb imx8mm-venice-gw72xx-0x-imx219.dtbo
- imx8mm-venice-gw72xx-0x-rpidsi-dtbs	:= imx8mm-venice-gw72xx-0x.dtb imx8mm-venice-gw72xx-0x-rpidsi.dtbo
- imx8mm-venice-gw72xx-0x-rs232-rts-dtbs	:= imx8mm-venice-gw72xx-0x.dtb imx8mm-venice-gw72xx-0x-rs232-rts.dtbo
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm-kontron-dl.dtso b/arch/arm64/boot/dts/freescale/imx8mm-kontron-dl.dtso
-new file mode 100644
-index 0000000000000..c6369072577e0
---- /dev/null
-+++ b/arch/arm64/boot/dts/freescale/imx8mm-kontron-dl.dtso
-@@ -0,0 +1,200 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2023 Kontron Electronics GmbH
-+ */
-+
-+/dts-v1/;
-+/plugin/;
-+
-+#include <dt-bindings/gpio/gpio.h>
-+#include "imx8mm-pinfunc.h"
-+
-+&{/} {
-+	compatible = "kontron,imx8mm-bl", "kontron,imx8mm-sl", "fsl,imx8mm";
-+
-+	backlight: backlight {
-+		compatible = "pwm-backlight";
-+		pwms = <&pwm1 0 50000 0>;
-+		brightness-levels = <0 100>;
-+		num-interpolated-steps = <100>;
-+		default-brightness-level = <100>;
-+	};
-+
-+	panel {
-+		compatible = "panel-lvds";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_panel>;
-+		backlight = <&backlight>;
-+		data-mapping = "vesa-24";
-+		enable-gpios = <&gpio3 19 GPIO_ACTIVE_HIGH>;
-+		height-mm = <86>;
-+		width-mm = <154>;
-+
-+		panel-timing {
-+			clock-frequency = <51200000>;
-+			hactive = <1024>;
-+			vactive = <600>;
-+			hsync-len = <1>;
-+			hfront-porch = <160>;
-+			hback-porch = <160>;
-+			vsync-len = <1>;
-+			vfront-porch = <12>;
-+			vback-porch = <23>;
-+		};
-+
-+		port {
-+			panel_out_bridge: endpoint {
-+				remote-endpoint = <&bridge_out_panel>;
-+			};
-+		};
-+	};
-+};
-+
-+&dsi_mux_sel_hdmi {
-+	status = "disabled";
-+};
-+
-+&dsi_mux_sel_lvds {
-+	status = "okay";
-+};
-+
-+&dsi_out_bridge {
-+	remote-endpoint = <&bridge_in_dsi_lvds>;
-+};
-+
-+&gpio3 {
-+	panel_rst {
-+		gpio-hog;
-+		gpios = <20 GPIO_ACTIVE_HIGH>;
-+		output-high;
-+		line-name = "panel-reset";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_panel_rst>;
-+	};
-+
-+	panel_stby {
-+		gpio-hog;
-+		gpios = <21 GPIO_ACTIVE_HIGH>;
-+		output-high;
-+		line-name = "panel-standby";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_panel_stby>;
-+	};
-+
-+	panel_hinv {
-+		gpio-hog;
-+		gpios = <24 GPIO_ACTIVE_HIGH>;
-+		output-high;
-+		line-name = "panel-horizontal-invert";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_panel_hinv>;
-+	};
-+
-+	panel_vinv {
-+		gpio-hog;
-+		gpios = <25 GPIO_ACTIVE_HIGH>;
-+		output-low;
-+		line-name = "panel-vertical-invert";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_panel_vinv>;
-+	};
-+};
-+
-+&hdmi {
-+	status = "disabled";
-+};
-+
-+&i2c2 {
-+	clock-frequency = <400000>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_i2c2>;
-+	status = "okay";
-+
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+
-+	gt911@5d {
-+		compatible = "goodix,gt928";
-+		reg = <0x5d>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_touch>;
-+		interrupt-parent = <&gpio3>;
-+		interrupts = <22 8>;
-+		reset-gpios = <&gpio3 23 0>;
-+		irq-gpios = <&gpio3 22 0>;
-+	};
-+};
-+
-+&lvds {
-+	status = "okay";
-+
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		port@2 {
-+			reg = <2>;
-+			bridge_out_panel: endpoint {
-+				remote-endpoint = <&panel_out_bridge>;
-+			};
-+		};
-+	};
-+};
-+
-+&pwm1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_pwm1>;
-+	status = "okay";
-+};
-+
-+&iomuxc {
-+	pinctrl_panel_rst: panelrstgrp {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_SAI5_RXC_GPIO3_IO20		0x19
-+		>;
-+	};
-+
-+	pinctrl_panel_stby: panelstbygrp {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_SAI5_RXD0_GPIO3_IO21		0x19
-+		>;
-+	};
-+
-+	pinctrl_panel_hinv: panelhinvgrp {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_SAI5_RXD3_GPIO3_IO24		0x19
-+		>;
-+	};
-+
-+	pinctrl_panel_vinv: panelvinvgrp {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_SAI5_MCLK_GPIO3_IO25		0x19
-+		>;
-+	};
-+
-+	pinctrl_i2c2: i2c2grp {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_I2C2_SCL_I2C2_SCL			0x40000083
-+			MX8MM_IOMUXC_I2C2_SDA_I2C2_SDA			0x40000083
-+		>;
-+	};
-+
-+	pinctrl_pwm1: pwm1grp {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_SPDIF_EXT_CLK_PWM1_OUT		0x6
-+		>;
-+	};
-+
-+	pinctrl_panel: panelgrp {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_SAI5_RXFS_GPIO3_IO19		0x19
-+		>;
-+	};
-+
-+	pinctrl_touch: touchgrp {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_SAI5_RXD1_GPIO3_IO22		0x19
-+			MX8MM_IOMUXC_SAI5_RXD2_GPIO3_IO23		0x19
-+		>;
-+	};
-+};
+ 	pinctrl_i2c4: i2c4grp {
+ 		fsl,pins = <
+-			MX8MM_IOMUXC_I2C4_SCL_I2C4_SCL			0x400001c3
+-			MX8MM_IOMUXC_I2C4_SDA_I2C4_SDA			0x400001c3
++			MX8MM_IOMUXC_I2C4_SCL_I2C4_SCL			0x40000083
++			MX8MM_IOMUXC_I2C4_SDA_I2C4_SDA			0x40000083
+ 		>;
+ 	};
+ 
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-kontron-osm-s.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-kontron-osm-s.dtsi
+index 6e75ab879bf59..3e7db968f7e64 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mm-kontron-osm-s.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mm-kontron-osm-s.dtsi
+@@ -252,8 +252,8 @@ MX8MM_IOMUXC_ECSPI1_SS0_GPIO5_IO9		0x19
+ 
+ 	pinctrl_i2c1: i2c1grp {
+ 		fsl,pins = <
+-			MX8MM_IOMUXC_I2C1_SCL_I2C1_SCL			0x400001c3
+-			MX8MM_IOMUXC_I2C1_SDA_I2C1_SDA			0x400001c3
++			MX8MM_IOMUXC_I2C1_SCL_I2C1_SCL			0x40000083
++			MX8MM_IOMUXC_I2C1_SDA_I2C1_SDA			0x40000083
+ 		>;
+ 	};
+ 
 -- 
 2.43.0
 
