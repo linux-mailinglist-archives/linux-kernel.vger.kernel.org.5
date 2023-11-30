@@ -2,111 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 457007FFFC2
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 00:57:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3510A7FFFC5
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 00:58:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377329AbjK3X4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 18:56:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36406 "EHLO
+        id S1377332AbjK3X5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 18:57:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377294AbjK3X4v (ORCPT
+        with ESMTP id S1377294AbjK3X5t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 18:56:51 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03A9810DF
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 15:56:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701388616;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=isRSmHfA7wl0UpgP4f3nZ8cWSqDYWRF8DVcNYkEZCpE=;
-        b=DUswoKqRA+fdxyQTBJ/ORhk9v1ExBy374ToOi+b+a9lxmA2omzcUmZ2Ohdp47QcUZuRIL8
-        /qPeMLcXDepsr5ZG8qS6gW0babgVM4QhNhDi1+tgRM2jCO3mu+TWds1MdHHh1ZBoZMcK47
-        9rHTT3yONOyofKtM8yKrdPFqQLySNCg=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-333-y6qr_XQ5O52A4CV1P-MZsQ-1; Thu,
- 30 Nov 2023 18:56:54 -0500
-X-MC-Unique: y6qr_XQ5O52A4CV1P-MZsQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 87785380450D;
-        Thu, 30 Nov 2023 23:56:53 +0000 (UTC)
-Received: from [10.22.9.192] (unknown [10.22.9.192])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 234422026D4C;
-        Thu, 30 Nov 2023 23:56:53 +0000 (UTC)
-Message-ID: <151f2b05-bcb7-4e69-866a-c76286383175@redhat.com>
-Date:   Thu, 30 Nov 2023 18:56:52 -0500
+        Thu, 30 Nov 2023 18:57:49 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 359F710E2
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 15:57:55 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-54b0c368d98so2483a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 15:57:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701388673; x=1701993473; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QS+i37UcwGBx82n3McWzPFFtU6IxiBbMiMBLppZu2kY=;
+        b=Ic6Dz9jZfE6/ShcyS9VI6yS8/XexbAMApKWQvuPLd3vusNRU0uMwg8CmKgXLMiOgif
+         Aqz5y81MVZ+xfNsgUgPneanmnzOpzc8mF3gUm5/wkeU5NKfhKmV3skBZEnrb3SHqlZRd
+         bSnbyXCbfqKbk/o+6+cYrkpoZiiNMyBGmC9SoUFC9hZ0FPzI3YqCaZ0obPUaQ/BknDOa
+         EbeonPvHvQBfdj8ZdnwlLRiWANO6o7a2IR5NChYC6sgK3stGe+OP/J9acbC4e+EtB0ka
+         DhDScowlMZexBAirkg5dQjYkDRzyCoEMTbYRpEIn89QyCXHO0Il6T8wIJHrb+bg5ZL8g
+         M7OA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701388673; x=1701993473;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QS+i37UcwGBx82n3McWzPFFtU6IxiBbMiMBLppZu2kY=;
+        b=YAgeemUI+TFnCvGRL+WXmQwr0OMoTW5jE03L2mjLgPTmaEFwIODjuSXKQX3wW+bT5K
+         9ullyNn/eMORBsikSadwprxFQcr9PbbGyqLNjbngmEJg70z6cou5BZ2387EiQyhWCq0a
+         0XLY1r+iwE0ANeNtI3mAzpS8vVORkpYacjhRno8+ATXv72beNCt2hnA++rVh0hb1RjN4
+         JWUENy7645Qy5O3sH3D09xSZ6+9WpsUJ8Gs2Nk0pWrXXA31J5V647vUsGDceklolS4lJ
+         GCCzuieK36MNqk6QkXf4SNlbpl9qoCrzKp3fDq3W0ui9rPnBzqB24bsWU9GqJ8qaul4J
+         641A==
+X-Gm-Message-State: AOJu0Yy2XAogA7qRv4HD5V3b7PfgSunk9TO7jQRAlsMDlfnbHQIwATRz
+        JR9/UPdHpYrsrQa1De2JGsEWjGjJFGQg+rldxN3gmojrIosEmMqX6I8=
+X-Google-Smtp-Source: AGHT+IFUkxAQaLbevOaGiXUhKdK7+EP/riejmQgJRc5b0rDX5HNmOqxcvx5tGuqsp6Y7XMu+Kkypu6GSGnyboSO2hfw=
+X-Received: by 2002:a50:d083:0:b0:54b:67da:b2f with SMTP id
+ v3-20020a50d083000000b0054b67da0b2fmr6508edd.7.1701388673458; Thu, 30 Nov
+ 2023 15:57:53 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] locking: Document that mutex_unlock() is non-atomic
-Content-Language: en-US
-To:     Jann Horn <jannh@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-References: <20231130204817.2031407-1-jannh@google.com>
- <2f17a9a6-5781-43ef-a09b-f39310843fe6@redhat.com>
- <CAG48ez1oXW=4MfQ0A6tthud-cvDZUTA+VB=jzu-HxvWzbj+X0g@mail.gmail.com>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <CAG48ez1oXW=4MfQ0A6tthud-cvDZUTA+VB=jzu-HxvWzbj+X0g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <c858817d3e3be246a1a2278e3b42d06284e615e5.1700766316.git.maciej.szmigiero@oracle.com>
+ <ZWTQuRpwPkutHY-D@google.com> <9a8e3cb95f3e1a69092746668f9643a25723c522.camel@redhat.com>
+ <b3aec42f-8aa7-4589-b984-a483a80e4a42@maciej.szmigiero.name>
+In-Reply-To: <b3aec42f-8aa7-4589-b984-a483a80e4a42@maciej.szmigiero.name>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Thu, 30 Nov 2023 15:57:38 -0800
+Message-ID: <CALMp9eQvLpYdq=2cYyOBERBh2G+xubo6Mb0crWO=dugpie4BRg@mail.gmail.com>
+Subject: Re: [PATCH] KVM: x86: Allow XSAVES on CPUs where host doesn't use it
+ due to an errata
+To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Cc:     Maxim Levitsky <mlevitsk@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Nov 30, 2023 at 2:00=E2=80=AFPM Maciej S. Szmigiero
+<mail@maciej.szmigiero.name> wrote:
+> I think that if particular guest would work on bare metal it should
+> work on "-cpu host" too - no tinkering should be required for such
+> basic functionality as being able to successfully finish booting.
 
-On 11/30/23 17:24, Jann Horn wrote:
-> On Thu, Nov 30, 2023 at 10:53 PM Waiman Long <longman@redhat.com> wrote:
->> On 11/30/23 15:48, Jann Horn wrote:
->>> I have seen several cases of attempts to use mutex_unlock() to release an
->>> object such that the object can then be freed by another task.
->>> My understanding is that this is not safe because mutex_unlock(), in the
->>> MUTEX_FLAG_WAITERS && !MUTEX_FLAG_HANDOFF case, accesses the mutex
->>> structure after having marked it as unlocked; so mutex_unlock() requires
->>> its caller to ensure that the mutex stays alive until mutex_unlock()
->>> returns.
->>>
->>> If MUTEX_FLAG_WAITERS is set and there are real waiters, those waiters
->>> have to keep the mutex alive, I think; but we could have a spurious
->>> MUTEX_FLAG_WAITERS left if an interruptible/killable waiter bailed
->>> between the points where __mutex_unlock_slowpath() did the cmpxchg
->>> reading the flags and where it acquired the wait_lock.
->> Could you clarify under what condition a concurrent task can decide to
->> free the object holding the mutex? Is it !mutex_is_locked() or after a
->> mutex_lock()/mutex_unlock sequence?
-> I mean a mutex_lock()+mutex_unlock() sequence.
-Because of optimistic spinning, a mutex_lock()/mutex_unlock() can 
-succeed even if there are still waiters waiting for the lock.
->
->> mutex_is_locked() will return true if the mutex has waiter even if it
->> is currently free.
-> I don't understand your point, and maybe I also don't understand what
-> you mean by "free". Isn't mutex_is_locked() defined such that it only
-> looks at whether a mutex has an owner, and doesn't look at the waiter
-> list?
-
-What I mean is that the mutex is in an unlocked state ready to be 
-acquired by another locker. mutex_is_locked() considers the state of the 
-mutex as locked if any of the owner flags is set.
-
-Beside the mutex_lock()/mutex_unlock() sequence, I will suggest adding a 
-mutex_is_locked() check just to be sure.
-
-Cheers,
-Longman
-
+I disagree. Let's not focus on one particular erratum. If, for
+whatever reason, the host kernel is booted with "noxsaves," I don't
+think KVM should allow a guest to bypass that directive.
