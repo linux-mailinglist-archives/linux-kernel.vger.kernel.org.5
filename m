@@ -2,68 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44E487FF7C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 18:11:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D314A7FF7CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 18:12:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232233AbjK3RLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 12:11:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32880 "EHLO
+        id S232211AbjK3RL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 12:11:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231837AbjK3RKx (ORCPT
+        with ESMTP id S232263AbjK3RLY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 12:10:53 -0500
-Received: from mail-oa1-x2a.google.com (mail-oa1-x2a.google.com [IPv6:2001:4860:4864:20::2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 895BA10D4
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 09:10:51 -0800 (PST)
-Received: by mail-oa1-x2a.google.com with SMTP id 586e51a60fabf-1fa20395185so565992fac.3
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 09:10:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701364251; x=1701969051; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=P9iOH6Yd9Atg7CwHEtCTfnbvOXuGr9JGPZU/okAPF2U=;
-        b=DJ1cht0yohO38k++Wkein6keRcpZx3Tmb3KRpcEmMeZaWJjM0BmyxTCV4hNW95ESHo
-         xXrIrB+/Hc00HF5U9iu8lBC+AEZkAkD/Pn3pyMC0KF6XGrYYZgSZWFDid1jw3v66OfRS
-         lnp2r2nd2yRjcfNJ+fnKXMUA2APV45Oci6naycvgyRzUotFc1lA7kl4D5EpaKIrYTfZy
-         UM2tSBe+zWHn3BjgBsVD8QrcDAc/OYu6hGnBK5DEOTRp05RsJUKWM6VrcU/L0ZdZL2J6
-         PWz4K9ZdjVGyfE85B61BHXrLpEek75Ab1+4gX9iJJC2GlZV/x5QrWPx1QV0VifhBEMhP
-         mYSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701364251; x=1701969051;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=P9iOH6Yd9Atg7CwHEtCTfnbvOXuGr9JGPZU/okAPF2U=;
-        b=PHWQLXxvrBke5rOSJNi/J8wRvLIqYhmYylnaLUMMC4vjHKjCxn61/zYnTHcOjnvaNt
-         fctTG7/M345i2u6UAl+b16yjutntjXrqZk3poPGAVlTxx6WGJebtdSvD2ycD3hQJvswV
-         6144Zn6TwkVERKkDEKO5KyWNuRmE5BTroX/FBdzugu9GU4bN+YUfb8XAcs8Fe+tFaGU/
-         eRnYqCEntM5ZWYGQw62OP0GYoGQ2gUP8jEB/Z0zzMKzAEgPsUxyZZ91ErdwZYDipYTBB
-         hGazQsOoyfWJRgYPw7Ab9OF4suRVnaHqCweS6+q9mRAd3ftiEfZ13kX9EQkcYbFobK1s
-         YDCQ==
-X-Gm-Message-State: AOJu0YxDhpiBKBXjjyTvb/qbaXEYWDKyl61QQmJs/q8DnfjfO+tQhqcR
-        bHpm6H/axelCKaYjxipnqPXCQai4gL1yAvX5+Fw=
-X-Google-Smtp-Source: AGHT+IFga0LIgTJHbHwZ6AI3Nebtjpu1/mE6pEvvOWdhSB39jbFHga03BX1yiAShKg5YAMwBtiEtTsJM7ArB+zNs1Mg=
-X-Received: by 2002:a05:6870:219a:b0:1fa:e115:ef6c with SMTP id
- l26-20020a056870219a00b001fae115ef6cmr114192oae.38.1701364250763; Thu, 30 Nov
- 2023 09:10:50 -0800 (PST)
+        Thu, 30 Nov 2023 12:11:24 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60435171C
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 09:11:30 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9765BC433C7;
+        Thu, 30 Nov 2023 17:11:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701364290;
+        bh=z8tPq/OZFdLYzHcBmbFrH1eT9NsxQ9H6d+/+FYkxiZw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nRhBO/OAOyR0zL9RuMc2BZ8dbWhnPyzxFlUAWFe1TAis9hnTHvVV0Zsa1391RCgAF
+         vSH2hGxvMlNxIURDzEw/9XWsM2kth1WkWMZnqdH95j8H9Bkvj41RKzX/5U8OqRWuH2
+         D7Cc6KCrAKtjHyVvisPY9DMDKtCCU6k3B7+RqJbKCQ9HNPooA8w+Elasfm4Vim5zE5
+         BktKtSyphAWZ279FY0LAZJ+sKtwjgyURUX4rtdgYMU0Th8xs6gmHXgXwLldHIVlEHT
+         4Urs1HOcQUL4aI9+67wuhzg26rzX2py5kqFsLtbW0DU2cwNpWc7KH6BDwb8dJt32bp
+         nnCwM8Rcj048A==
+Date:   Thu, 30 Nov 2023 17:11:26 +0000
+From:   Simon Horman <horms@kernel.org>
+To:     Min Li <lnimi@hotmail.com>
+Cc:     richardcochran@gmail.com, lee@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Min Li <min.li.xe@renesas.com>
+Subject: Re: [PATCH net-next v2 2/2] ptp: add FemtoClock3 Wireless as ptp
+ hardware clock
+Message-ID: <20231130171126.GH32077@kernel.org>
+References: <20231129204806.14539-1-lnimi@hotmail.com>
+ <PH7PR03MB7064FC8C284D83E9C34B8C08A083A@PH7PR03MB7064.namprd03.prod.outlook.com>
 MIME-Version: 1.0
-References: <20231129152212.7879-1-n.zhandarovich@fintech.ru>
-In-Reply-To: <20231129152212.7879-1-n.zhandarovich@fintech.ru>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Thu, 30 Nov 2023 12:10:39 -0500
-Message-ID: <CADnq5_MZSG=g9UiYxWd0dAoqrkA7Bj-yVK0ExSMpsrcj8ML00A@mail.gmail.com>
-Subject: Re: [PATCH] drm/radeon/r100: Fix integer overflow issues in r100_cs_track_check()
-To:     Nikita Zhandarovich <n.zhandarovich@fintech.ru>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>, linux-kernel@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <PH7PR03MB7064FC8C284D83E9C34B8C08A083A@PH7PR03MB7064.namprd03.prod.outlook.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,58 +52,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
+On Wed, Nov 29, 2023 at 03:48:06PM -0500, Min Li wrote:
+> From: Min Li <min.li.xe@renesas.com>
+> 
+> The RENESAS FemtoClock3 Wireless is a high-performance jitter attenuator,
+> frequency translator, and clock synthesizer. The device is comprised of 3
+> digital PLLs (DPLL) to track CLKIN inputs and three independent low phase
+> noise fractional output dividers (FOD) that output low phase noise clocks.
+> 
+> FemtoClock3 supports one Time Synchronization (Time Sync) channel to enable
+> an external processor to control the phase and frequency of the Time Sync
+> channel and to take phase measurements using the TDC. Intended applications
+> are synchronization using the precision time protocol (PTP) and
+> synchronization with 0.5 Hz and 1 Hz signals from GNSS.
+> 
+> Signed-off-by: Min Li <min.li.xe@renesas.com>
 
-On Wed, Nov 29, 2023 at 10:28=E2=80=AFAM Nikita Zhandarovich
-<n.zhandarovich@fintech.ru> wrote:
->
-> It may be possible, albeit unlikely, to encounter integer overflow
-> during the multiplication of several unsigned int variables, the
-> result being assigned to a variable 'size' of wider type.
->
-> Prevent this potential behaviour by converting one of the multiples
-> to unsigned long.
->
-> Found by Linux Verification Center (linuxtesting.org) with static
-> analysis tool SVACE.
->
-> Fixes: 0242f74d29df ("drm/radeon: clean up CS functions in r100.c")
-> Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
-> ---
->  drivers/gpu/drm/radeon/r100.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/gpu/drm/radeon/r100.c b/drivers/gpu/drm/radeon/r100.=
-c
-> index affa9e0309b2..cfeca2694d5f 100644
-> --- a/drivers/gpu/drm/radeon/r100.c
-> +++ b/drivers/gpu/drm/radeon/r100.c
-> @@ -2321,7 +2321,7 @@ int r100_cs_track_check(struct radeon_device *rdev,=
- struct r100_cs_track *track)
->         switch (prim_walk) {
->         case 1:
->                 for (i =3D 0; i < track->num_arrays; i++) {
-> -                       size =3D track->arrays[i].esize * track->max_indx=
- * 4;
-> +                       size =3D track->arrays[i].esize * track->max_indx=
- * 4UL;
->                         if (track->arrays[i].robj =3D=3D NULL) {
->                                 DRM_ERROR("(PW %u) Vertex array %u no buf=
-fer "
->                                           "bound\n", prim_walk, i);
-> @@ -2340,7 +2340,7 @@ int r100_cs_track_check(struct radeon_device *rdev,=
- struct r100_cs_track *track)
->                 break;
->         case 2:
->                 for (i =3D 0; i < track->num_arrays; i++) {
-> -                       size =3D track->arrays[i].esize * (nverts - 1) * =
-4;
-> +                       size =3D track->arrays[i].esize * (nverts - 1) * =
-4UL;
->                         if (track->arrays[i].robj =3D=3D NULL) {
->                                 DRM_ERROR("(PW %u) Vertex array %u no buf=
-fer "
->                                           "bound\n", prim_walk, i);
-> --
-> 2.25.1
->
+Hi Min Li,
+
+some minor feedback from my side.
+
+...
+
+> diff --git a/drivers/ptp/Makefile b/drivers/ptp/Makefile
+
+...
+
+> +static inline s64 ns2counters(struct idtfc3 *idtfc3, s64 nsec, u32 *sub_ns)
+> +{
+> +	s64 sync;
+> +	s32 rem;
+> +
+> +	if (likely(nsec > 0)) {
+> +		sync = div_u64_rem(nsec, idtfc3->ns_per_sync, &rem);
+> +		*sub_ns = rem;
+> +	} else if (nsec < 0) {
+> +		sync = -div_u64_rem(-nsec - 1, idtfc3->ns_per_sync, &rem) - 1;
+> +		*sub_ns = idtfc3->ns_per_sync - rem - 1;
+> +	}
+> +
+> +	return sync * idtfc3->ns_per_sync;
+
+Perhaps it cannot occur, but if nsec is exactly 0, then
+sync is uninitialised here.
+
+Flagged by clang-17 W=1 build, and Smatch.
+
+> +}
+
+...
+
+> +static int _idtfc3_settime(struct idtfc3 *idtfc3, const struct timespec64 *ts)
+> +{
+> +	s64 offset_ns, now_ns, sync_ns;
+> +	u32 counter, sub_ns;
+> +	int now;
+> +
+> +	if (timespec64_valid(ts) == false) {
+> +		dev_err(idtfc3->dev, "%s: invalid timespec", __func__);
+> +		return -EINVAL;
+> +	}
+> +
+> +	now = idtfc3_read_subcounter(idtfc3);
+> +	if (now < 0)
+> +		return now;
+> +
+> +	offset_ns = (idtfc3->sub_sync_count - now) * idtfc3->ns_per_counter;
+> +	now_ns = timespec64_to_ns(ts);
+> +	sync_ns = ns2counters(idtfc3, offset_ns + now_ns, &sub_ns);
+
+sync_ns is set here but otherwise unused.
+Perhaps the assignment can be dropped and sync_ns removed from this
+function?
+
+As flagged by gcc-13 W=1 build and Smatch.
+
+> +
+> +	counter = sub_ns / idtfc3->ns_per_counter;
+> +	return idtfc3_timecounter_update(idtfc3, counter, now_ns);
+> +}
+
+...
