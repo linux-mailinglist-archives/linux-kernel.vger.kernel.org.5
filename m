@@ -2,350 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22F5C7FE601
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 02:29:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 676027FE602
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 02:31:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343980AbjK3B3E convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 29 Nov 2023 20:29:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47138 "EHLO
+        id S1343989AbjK3BbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 20:31:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229658AbjK3B3D (ORCPT
+        with ESMTP id S229658AbjK3BbF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 20:29:03 -0500
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8D85198;
-        Wed, 29 Nov 2023 17:29:08 -0800 (PST)
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-5c60026e8dbso378636a12.0;
-        Wed, 29 Nov 2023 17:29:08 -0800 (PST)
+        Wed, 29 Nov 2023 20:31:05 -0500
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83C1510C3
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 17:31:11 -0800 (PST)
+Received: by mail-pj1-x1049.google.com with SMTP id 98e67ed59e1d1-2859ab31b31so495898a91.2
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 17:31:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701307871; x=1701912671; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=gg2L5gsFD+9s4hl0pMtih+KIpxYTNwuOj5uhIeuR3S4=;
+        b=Iago0Nwuy1Oi2ymS5V4ElfPdJgaeDgb7+Qc8dywtnj1izLtsOLE8Jgsh9uAxnPVwK7
+         tWJlDTmBiFrapzhy88JhVdf1JwOji5AqLDxShOPHXIKv9QQlKYH+ZLdqB3N8vgdk5nQ1
+         jRhphMoMCtmTuXzV67dofIHHwQ0HJGc3+JVbLcuJ+5XF/Rvd1oepn8Qg9DA8YjfFlrG1
+         7eR3PinPzVh5JHbtJbQ90xBYCCLbTSeO6TZP3T/cZNoQ68/yVu8Vbpn4GoAWZ/5Oqz7F
+         5XhdrYKH3NTdhbLGXxxfXRCPzfElleou48jA7g50M23igrf24W8FWemJYYZoVZd3H+y7
+         WITw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701307748; x=1701912548;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FOl8DUMCpga09pAsZWl99kTY8aL8HbXXUUGHs0qmH6s=;
-        b=t76zUpJcp+iCVDo7kspGC13uQyKsy7EEs164APKG84uhHnXSHIT5lz1vaMizapkLlt
-         SAOkwcQRfrSWKbBFRC/nRC/sm/PDM9Jyk6lNHNJOCqUoaS/xGxCEyfVXWNReQ/DSchwE
-         PWGVzgbcqhwwII8xhY5BtzvAbZ1V9+weWAqmOJZkXxoyqbN68MPycma8Jb0KzBALHUxD
-         RlkHD6S3DXcUqqjAofzvs/XF6DmmI7NFtcb9argYNmDee48tIenq6en9sEpeOwNxT2We
-         8ioEAbgQtEi5WD+c2w6Z2+hXCQKJvaLiRBW+jMjq1phvL7AKFGSGKUyL9Apb0noloXWf
-         W05Q==
-X-Gm-Message-State: AOJu0YyeCPr4eTNyc+gtFDy0CQq9MnMnEbMchWFkIO2ZRDGWdmkBw0z1
-        EdS7cpooPEpc8iGqm4sYFKF0O62Efhh6JAG40i8=
-X-Google-Smtp-Source: AGHT+IFS+FLpGEP6ZzUePrPZmnTO62GV81uASGemgRr5j+Dtnl+K8yj7yN0oJA95SWO6A1c4xd6QTVg3LtzKWkjjdd8=
-X-Received: by 2002:a17:90b:4b82:b0:286:2e8f:4780 with SMTP id
- lr2-20020a17090b4b8200b002862e8f4780mr2445375pjb.10.1701307748140; Wed, 29
- Nov 2023 17:29:08 -0800 (PST)
-MIME-Version: 1.0
-References: <20231127220902.1315692-1-irogers@google.com> <20231127220902.1315692-4-irogers@google.com>
-In-Reply-To: <20231127220902.1315692-4-irogers@google.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Wed, 29 Nov 2023 17:28:56 -0800
-Message-ID: <CAM9d7cg8TRiBVQCO_zKjb+D==06o5a=CH_gF_wDW7_PJtZfHKw@mail.gmail.com>
-Subject: Re: [PATCH v5 03/50] perf mmap: Lazily initialize zstd streams
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Nick Terrell <terrelln@fb.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        "Steinar H. Gunderson" <sesse@google.com>,
-        Liam Howlett <liam.howlett@oracle.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Colin Ian King <colin.i.king@gmail.com>,
-        Dmitrii Dolgov <9erthalion6@gmail.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Ming Wang <wangming01@loongson.cn>,
-        James Clark <james.clark@arm.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        German Gomez <german.gomez@arm.com>,
-        Changbin Du <changbin.du@huawei.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, Li Dong <lidong@vivo.com>,
-        Sandipan Das <sandipan.das@amd.com>,
-        liuwenyu <liuwenyu7@huawei.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
-        Guilherme Amadio <amadio@gentoo.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1701307871; x=1701912671;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gg2L5gsFD+9s4hl0pMtih+KIpxYTNwuOj5uhIeuR3S4=;
+        b=j9kqI4naTromtjb1gTo01T1q6aaJdKW4t8zNO829lREwg9jLxMDyBUWucrWV6ytmrh
+         AiyvUoSBISI8IbP8KRElvQMUVQUGl1zG8R7M5B45EDAeW9lYHTQI97D25IyaHNFMsCV5
+         7eLoiQzEX+9j3lqsefGMIshBzjFLlR5BsGCTPUO5l3iBPFhHmxaXb5qK8ZjqiWuJmddm
+         N5YKL7UfhBQizaMYan3nUGN3jh6stZ+Ayop18c40e1HXZqN2vBqTWnRMTuSjPHxsFKoC
+         CVhko3HlF8gARaVtYoGh6IVSVhjG1wN3E7D8XRGX95bxmIa54HZ6xotPwU/7uNd/W72U
+         kMSQ==
+X-Gm-Message-State: AOJu0YwG4EYc+KCXZHVg1h6C8mDrmyvXPfUIbvTcnuwNa4sggmuE/qh7
+        VgGZNC3LhSpOtNw/5zg6P7f5gETOxcY=
+X-Google-Smtp-Source: AGHT+IEf54xAukPivH5tpowu00jPP0sWnfu+6RzFTXBIHH8UCfgEVawhe+PWswUWILRcgmfQ8Blksp9Mn7U=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:90a:a40a:b0:26d:2b05:4926 with SMTP id
+ y10-20020a17090aa40a00b0026d2b054926mr4165886pjp.1.1701307871009; Wed, 29 Nov
+ 2023 17:31:11 -0800 (PST)
+Date:   Wed, 29 Nov 2023 17:31:09 -0800
+In-Reply-To: <20231025152406.1879274-11-vkuznets@redhat.com>
+Mime-Version: 1.0
+References: <20231025152406.1879274-1-vkuznets@redhat.com> <20231025152406.1879274-11-vkuznets@redhat.com>
+Message-ID: <ZWfl3ahamXPPoIGB@google.com>
+Subject: Re: [PATCH 10/14] KVM: x86: Make Hyper-V emulation optional
+From:   Sean Christopherson <seanjc@google.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 27, 2023 at 2:09 PM Ian Rogers <irogers@google.com> wrote:
->
-> Zstd streams create dictionaries that can require significant RAM,
-> especially when there is one per-CPU. Tools like perf record won't use
-> the streams without the -z option, and so the creation of the streams
-> is pure overhead. Switch to creating the streams on first use.
-
-I think this one is already in the perf-tools-next.
-
-Thanks,
-Namhyung
-
->
-> Signed-off-by: Ian Rogers <irogers@google.com>
+On Wed, Oct 25, 2023, Vitaly Kuznetsov wrote:
+> Hyper-V emulation in KVM is a fairly big chunk and in some cases it may be
+> desirable to not compile it in to reduce module sizes as well as the attack
+> surface. Introduce CONFIG_KVM_HYPERV option to make it possible.
+> 
+> Note, there's room for further nVMX/nSVM code optimizations when
+> !CONFIG_KVM_HYPERV, this will be done in follow-up patches.
+> 
+> Reorganize Makefile a bit so all CONFIG_HYPERV and CONFIG_KVM_HYPERV files
+> are grouped together.
+> 
+> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
 > ---
->  tools/perf/builtin-record.c | 26 ++++++++++-----
->  tools/perf/util/compress.h  |  6 ++--
->  tools/perf/util/mmap.c      |  5 ++-
->  tools/perf/util/mmap.h      |  1 -
->  tools/perf/util/zstd.c      | 63 +++++++++++++++++++------------------
->  5 files changed, 58 insertions(+), 43 deletions(-)
->
-> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-> index 8ec818568662..9b4f3805ca92 100644
-> --- a/tools/perf/builtin-record.c
-> +++ b/tools/perf/builtin-record.c
-> @@ -270,7 +270,7 @@ static int record__write(struct record *rec, struct mmap *map __maybe_unused,
->
->  static int record__aio_enabled(struct record *rec);
->  static int record__comp_enabled(struct record *rec);
-> -static size_t zstd_compress(struct perf_session *session, struct mmap *map,
-> +static ssize_t zstd_compress(struct perf_session *session, struct mmap *map,
->                             void *dst, size_t dst_size, void *src, size_t src_size);
->
->  #ifdef HAVE_AIO_SUPPORT
-> @@ -405,9 +405,13 @@ static int record__aio_pushfn(struct mmap *map, void *to, void *buf, size_t size
->          */
->
->         if (record__comp_enabled(aio->rec)) {
-> -               size = zstd_compress(aio->rec->session, NULL, aio->data + aio->size,
-> -                                    mmap__mmap_len(map) - aio->size,
-> -                                    buf, size);
-> +               ssize_t compressed = zstd_compress(aio->rec->session, NULL, aio->data + aio->size,
-> +                                                  mmap__mmap_len(map) - aio->size,
-> +                                                  buf, size);
-> +               if (compressed < 0)
-> +                       return (int)compressed;
-> +
-> +               size = compressed;
->         } else {
->                 memcpy(aio->data + aio->size, buf, size);
->         }
-> @@ -633,7 +637,13 @@ static int record__pushfn(struct mmap *map, void *to, void *bf, size_t size)
->         struct record *rec = to;
->
->         if (record__comp_enabled(rec)) {
-> -               size = zstd_compress(rec->session, map, map->data, mmap__mmap_len(map), bf, size);
-> +               ssize_t compressed = zstd_compress(rec->session, map, map->data,
-> +                                                  mmap__mmap_len(map), bf, size);
-> +
-> +               if (compressed < 0)
-> +                       return (int)compressed;
-> +
-> +               size = compressed;
->                 bf   = map->data;
->         }
->
-> @@ -1527,10 +1537,10 @@ static size_t process_comp_header(void *record, size_t increment)
->         return size;
->  }
->
-> -static size_t zstd_compress(struct perf_session *session, struct mmap *map,
-> +static ssize_t zstd_compress(struct perf_session *session, struct mmap *map,
->                             void *dst, size_t dst_size, void *src, size_t src_size)
+
+...
+
+> diff --git a/arch/x86/kvm/Makefile b/arch/x86/kvm/Makefile
+> index 8ea872401cd6..b97b875ad75f 100644
+> --- a/arch/x86/kvm/Makefile
+> +++ b/arch/x86/kvm/Makefile
+> @@ -11,32 +11,33 @@ include $(srctree)/virt/kvm/Makefile.kvm
+>  
+>  kvm-y			+= x86.o emulate.o i8259.o irq.o lapic.o \
+>  			   i8254.o ioapic.o irq_comm.o cpuid.o pmu.o mtrr.o \
+> -			   hyperv.o debugfs.o mmu/mmu.o mmu/page_track.o \
+> +			   debugfs.o mmu/mmu.o mmu/page_track.o \
+>  			   mmu/spte.o
+>  
+> -ifdef CONFIG_HYPERV
+> -kvm-y			+= kvm_onhyperv.o
+> -endif
+> -
+>  kvm-$(CONFIG_X86_64) += mmu/tdp_iter.o mmu/tdp_mmu.o
+> +kvm-$(CONFIG_KVM_HYPERV) += hyperv.o
+>  kvm-$(CONFIG_KVM_XEN)	+= xen.o
+>  kvm-$(CONFIG_KVM_SMM)	+= smm.o
+>  
+>  kvm-intel-y		+= vmx/vmx.o vmx/vmenter.o vmx/pmu_intel.o vmx/vmcs12.o \
+> -			   vmx/hyperv.o vmx/hyperv_evmcs.o vmx/nested.o vmx/posted_intr.o
+> -kvm-intel-$(CONFIG_X86_SGX_KVM)	+= vmx/sgx.o
+> +			   vmx/nested.o vmx/posted_intr.o
+>  
+> -ifdef CONFIG_HYPERV
+> -kvm-intel-y		+= vmx/vmx_onhyperv.o
+> -endif
+> +kvm-intel-$(CONFIG_X86_SGX_KVM)	+= vmx/sgx.o
+>  
+>  kvm-amd-y		+= svm/svm.o svm/vmenter.o svm/pmu.o svm/nested.o svm/avic.o \
+> -			   svm/sev.o svm/hyperv.o
+> +			   svm/sev.o
+>  
+>  ifdef CONFIG_HYPERV
+> +kvm-y			+= kvm_onhyperv.o
+> +kvm-intel-y		+= vmx/vmx_onhyperv.o vmx/hyperv_evmcs.o
+>  kvm-amd-y		+= svm/svm_onhyperv.o
+>  endif
+>  
+> +ifdef CONFIG_KVM_HYPERV
+> +kvm-intel-y		+= vmx/hyperv.o vmx/hyperv_evmcs.o
+> +kvm-amd-y		+= svm/hyperv.o
+> +endif
+
+My strong preference is to avoid the unnecessary ifdef and instead do:
+
+kvm-intel-y             += vmx/vmx.o vmx/vmenter.o vmx/pmu_intel.o vmx/vmcs12.o \
+                           vmx/nested.o vmx/posted_intr.o
+
+kvm-intel-$(CONFIG_X86_SGX_KVM) += vmx/sgx.o
+kvm-intel-$(CONFIG_KVM_HYPERV)  += vmx/hyperv.o vmx/hyperv_evmcs.o
+
+kvm-amd-y               += svm/svm.o svm/vmenter.o svm/pmu.o svm/nested.o svm/avic.o \
+                           svm/sev.o
+kvm-amd-$(CONFIG_KVM_HYPERV)    += svm/hyperv.o
+
+
+CONFIG_HYPERV needs an ifdef because it can be 'y' or 'm', but otherwise ifdefs
+just tend to be noisier.
+
+>  static bool nested_get_vmcs12_pages(struct kvm_vcpu *vcpu)
 >  {
-> -       size_t compressed;
-> +       ssize_t compressed;
->         size_t max_record_size = PERF_SAMPLE_MAX_SIZE - sizeof(struct perf_record_compressed) - 1;
->         struct zstd_data *zstd_data = &session->zstd_data;
->
-> @@ -1539,6 +1549,8 @@ static size_t zstd_compress(struct perf_session *session, struct mmap *map,
->
->         compressed = zstd_compress_stream_to_records(zstd_data, dst, dst_size, src, src_size,
->                                                      max_record_size, process_comp_header);
-> +       if (compressed < 0)
-> +               return compressed;
->
->         if (map && map->file) {
->                 thread->bytes_transferred += src_size;
-> diff --git a/tools/perf/util/compress.h b/tools/perf/util/compress.h
-> index 0cd3369af2a4..9eb6eb5bf038 100644
-> --- a/tools/perf/util/compress.h
-> +++ b/tools/perf/util/compress.h
-> @@ -3,6 +3,7 @@
->  #define PERF_COMPRESS_H
->
->  #include <stdbool.h>
-> +#include <stdlib.h>
->  #ifdef HAVE_ZSTD_SUPPORT
->  #include <zstd.h>
->  #endif
-> @@ -21,6 +22,7 @@ struct zstd_data {
->  #ifdef HAVE_ZSTD_SUPPORT
->         ZSTD_CStream    *cstream;
->         ZSTD_DStream    *dstream;
-> +       int comp_level;
->  #endif
->  };
->
-> @@ -29,7 +31,7 @@ struct zstd_data {
->  int zstd_init(struct zstd_data *data, int level);
->  int zstd_fini(struct zstd_data *data);
->
-> -size_t zstd_compress_stream_to_records(struct zstd_data *data, void *dst, size_t dst_size,
-> +ssize_t zstd_compress_stream_to_records(struct zstd_data *data, void *dst, size_t dst_size,
->                                        void *src, size_t src_size, size_t max_record_size,
->                                        size_t process_header(void *record, size_t increment));
->
-> @@ -48,7 +50,7 @@ static inline int zstd_fini(struct zstd_data *data __maybe_unused)
->  }
->
->  static inline
-> -size_t zstd_compress_stream_to_records(struct zstd_data *data __maybe_unused,
-> +ssize_t zstd_compress_stream_to_records(struct zstd_data *data __maybe_unused,
->                                        void *dst __maybe_unused, size_t dst_size __maybe_unused,
->                                        void *src __maybe_unused, size_t src_size __maybe_unused,
->                                        size_t max_record_size __maybe_unused,
-> diff --git a/tools/perf/util/mmap.c b/tools/perf/util/mmap.c
-> index 49093b21ee2d..122ee198a86e 100644
-> --- a/tools/perf/util/mmap.c
-> +++ b/tools/perf/util/mmap.c
-> @@ -295,15 +295,14 @@ int mmap__mmap(struct mmap *map, struct mmap_params *mp, int fd, struct perf_cpu
->
->         map->core.flush = mp->flush;
->
-> -       map->comp_level = mp->comp_level;
->  #ifndef PYTHON_PERF
-> -       if (zstd_init(&map->zstd_data, map->comp_level)) {
-> +       if (zstd_init(&map->zstd_data, mp->comp_level)) {
->                 pr_debug2("failed to init mmap compressor, error %d\n", errno);
->                 return -1;
->         }
->  #endif
->
-> -       if (map->comp_level && !perf_mmap__aio_enabled(map)) {
-> +       if (mp->comp_level && !perf_mmap__aio_enabled(map)) {
->                 map->data = mmap(NULL, mmap__mmap_len(map), PROT_READ|PROT_WRITE,
->                                  MAP_PRIVATE|MAP_ANONYMOUS, 0, 0);
->                 if (map->data == MAP_FAILED) {
-> diff --git a/tools/perf/util/mmap.h b/tools/perf/util/mmap.h
-> index f944c3cd5efa..0df6e1621c7e 100644
-> --- a/tools/perf/util/mmap.h
-> +++ b/tools/perf/util/mmap.h
-> @@ -39,7 +39,6 @@ struct mmap {
->  #endif
->         struct mmap_cpu_mask    affinity_mask;
->         void            *data;
-> -       int             comp_level;
->         struct perf_data_file *file;
->         struct zstd_data      zstd_data;
->  };
-> diff --git a/tools/perf/util/zstd.c b/tools/perf/util/zstd.c
-> index 48dd2b018c47..57027e0ac7b6 100644
-> --- a/tools/perf/util/zstd.c
-> +++ b/tools/perf/util/zstd.c
-> @@ -7,35 +7,9 @@
->
->  int zstd_init(struct zstd_data *data, int level)
->  {
-> -       size_t ret;
-> -
-> -       data->dstream = ZSTD_createDStream();
-> -       if (data->dstream == NULL) {
-> -               pr_err("Couldn't create decompression stream.\n");
-> -               return -1;
-> -       }
-> -
-> -       ret = ZSTD_initDStream(data->dstream);
-> -       if (ZSTD_isError(ret)) {
-> -               pr_err("Failed to initialize decompression stream: %s\n", ZSTD_getErrorName(ret));
-> -               return -1;
-> -       }
-> -
-> -       if (!level)
-> -               return 0;
-> -
-> -       data->cstream = ZSTD_createCStream();
-> -       if (data->cstream == NULL) {
-> -               pr_err("Couldn't create compression stream.\n");
-> -               return -1;
-> -       }
-> -
-> -       ret = ZSTD_initCStream(data->cstream, level);
-> -       if (ZSTD_isError(ret)) {
-> -               pr_err("Failed to initialize compression stream: %s\n", ZSTD_getErrorName(ret));
-> -               return -1;
-> -       }
-> -
-> +       data->comp_level = level;
-> +       data->dstream = NULL;
-> +       data->cstream = NULL;
->         return 0;
->  }
->
-> @@ -54,7 +28,7 @@ int zstd_fini(struct zstd_data *data)
->         return 0;
->  }
->
-> -size_t zstd_compress_stream_to_records(struct zstd_data *data, void *dst, size_t dst_size,
-> +ssize_t zstd_compress_stream_to_records(struct zstd_data *data, void *dst, size_t dst_size,
->                                        void *src, size_t src_size, size_t max_record_size,
->                                        size_t process_header(void *record, size_t increment))
->  {
-> @@ -63,6 +37,21 @@ size_t zstd_compress_stream_to_records(struct zstd_data *data, void *dst, size_t
->         ZSTD_outBuffer output;
->         void *record;
->
-> +       if (!data->cstream) {
-> +               data->cstream = ZSTD_createCStream();
-> +               if (data->cstream == NULL) {
-> +                       pr_err("Couldn't create compression stream.\n");
-> +                       return -1;
-> +               }
-> +
-> +               ret = ZSTD_initCStream(data->cstream, data->comp_level);
-> +               if (ZSTD_isError(ret)) {
-> +                       pr_err("Failed to initialize compression stream: %s\n",
-> +                               ZSTD_getErrorName(ret));
-> +                       return -1;
-> +               }
-> +       }
-> +
->         while (input.pos < input.size) {
->                 record = dst;
->                 size = process_header(record, 0);
-> @@ -96,6 +85,20 @@ size_t zstd_decompress_stream(struct zstd_data *data, void *src, size_t src_size
->         ZSTD_inBuffer input = { src, src_size, 0 };
->         ZSTD_outBuffer output = { dst, dst_size, 0 };
->
-> +       if (!data->dstream) {
-> +               data->dstream = ZSTD_createDStream();
-> +               if (data->dstream == NULL) {
-> +                       pr_err("Couldn't create decompression stream.\n");
-> +                       return 0;
-> +               }
-> +
-> +               ret = ZSTD_initDStream(data->dstream);
-> +               if (ZSTD_isError(ret)) {
-> +                       pr_err("Failed to initialize decompression stream: %s\n",
-> +                               ZSTD_getErrorName(ret));
-> +                       return 0;
-> +               }
-> +       }
->         while (input.pos < input.size) {
->                 ret = ZSTD_decompressStream(data->dstream, &output, &input);
->                 if (ZSTD_isError(ret)) {
-> --
-> 2.43.0.rc1.413.gea7ed67945-goog
->
+> @@ -3552,11 +3563,13 @@ static int nested_vmx_run(struct kvm_vcpu *vcpu, bool launch)
+>  	if (!nested_vmx_check_permission(vcpu))
+>  		return 1;
+>  
+> +#ifdef CONFIG_KVM_HYPERV
+>  	evmptrld_status = nested_vmx_handle_enlightened_vmptrld(vcpu, launch);
+>  	if (evmptrld_status == EVMPTRLD_ERROR) {
+>  		kvm_queue_exception(vcpu, UD_VECTOR);
+>  		return 1;
+>  	}
+> +#endif
+>  
+>  	kvm_pmu_trigger_event(vcpu, PERF_COUNT_HW_BRANCH_INSTRUCTIONS);
+
+This fails to build with CONFIG_KVM_HYPERV=n && CONFIG_KVM_WERROR=y:
+
+arch/x86/kvm/vmx/nested.c:3577:9: error: variable 'evmptrld_status' is uninitialized when used here [-Werror,-Wuninitialized]
+        if (CC(evmptrld_status == EVMPTRLD_VMFAIL))
+               ^~~~~~~~~~~~~~~
+
+Sadly, simply wrapping with an #ifdef also fails because then evmptrld_status
+becomes unused.  I'd really prefer to avoid having to tag it __maybe_unused, and
+adding more #ifdef would also be ugly.  Any ideas?
