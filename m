@@ -2,77 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C66A7FEB46
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 10:01:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC0D97FEB49
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 10:01:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234985AbjK3JAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 04:00:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35104 "EHLO
+        id S1344880AbjK3JBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 04:01:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231782AbjK3JAu (ORCPT
+        with ESMTP id S231778AbjK3JBl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 04:00:50 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E53A12C;
-        Thu, 30 Nov 2023 01:00:55 -0800 (PST)
-Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Sgqnj1l50zsR46;
-        Thu, 30 Nov 2023 16:57:13 +0800 (CST)
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 30 Nov
- 2023 17:00:52 +0800
-Subject: Re: [PATCH net-next 03/12] mm: Make the page_frag_cache allocator
- alignment param a pow-of-2
-To:     Alexander H Duyck <alexander.duyck@gmail.com>,
-        David Howells <dhowells@redhat.com>, <netdev@vger.kernel.org>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jens Axboe <axboe@kernel.dk>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Catherine Sullivan <csully@google.com>,
-        Shailend Chand <shailend@google.com>,
-        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Chaitanya Kulkarni <kch@nvidia.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-nvme@lists.infradead.org>
-References: <20230524153311.3625329-1-dhowells@redhat.com>
- <20230524153311.3625329-4-dhowells@redhat.com>
- <51161740e832334594960ed43430b868a6f892c3.camel@gmail.com>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <e841d2f4-b221-9099-8312-6b859ccb98de@huawei.com>
-Date:   Thu, 30 Nov 2023 17:00:52 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Thu, 30 Nov 2023 04:01:41 -0500
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA661196
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 01:01:46 -0800 (PST)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-a013d22effcso92394666b.2
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 01:01:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701334905; x=1701939705; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=c/Us8oVneVkSrXYGx1VHyFzAEG/952Zvs6JVIWe0JBw=;
+        b=nwKF69Cci+yuJmVg9Lf8uyUk+jla1VVl5HujhbMisgrE64g2ymKgWgA41lNvFiLtyL
+         qvxe8XFKgPF6yULhAMQkgOwGauCb1V6AjEu5KGe86QbnzAa+OpYOfDqjc4QnW97pWS1x
+         IWWXUU59qqV2SK0CUbdwuGeoKkhki/kJ5i/4Z0aanlIGMQxq206bofeku5luqwxq1aZg
+         v/HbdoSi8ABCU8yZF580sg3vbI+PcnEwteVl5SMzQHFLmQJfZYZvgJ3lttGzOmepwIQW
+         qGdbqmkb57+7yRip9Ip1XBC2MzyYvQQa0EwJ2TZtLzMjnA5y4jh59GR82TJk8h1zMS4R
+         13sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701334905; x=1701939705;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=c/Us8oVneVkSrXYGx1VHyFzAEG/952Zvs6JVIWe0JBw=;
+        b=ViaC4+RBwqMh85FqJhUaYc+3lxoR0BtRFEnjfhbesyc1hOxzjZKEFnzyEPaJH4nB1r
+         4UGkyaFSsytmuGi32hHxkxUS5uaxHYAO6e5tCG12KTrlNFTIMwkUdIRqLqLGOT3nR1ph
+         jmLbytVZPuF966oWwu3hwgdIuXBEkXoYMD7PRA2HYTxB8BFUWc2vrHAYKqvN2QPlYLUw
+         r46PNJamH9BkT/H7g7nL+WdHXY++46L57tz0rtlgu0w41DF9eYy+Av1X6du8CK/nlosS
+         c99eQpHi0YS5V4pUjAdGfpAlz9o6abWXzf9EsbL2OBob/D+DPWOxiBogY6C9K0XPn26R
+         FSNw==
+X-Gm-Message-State: AOJu0Yzh0ki0h5dMyoFbcwvU04vfN/MZtwqoR3K2upCPPq70s5Xxgk6X
+        FaLO8V7MhPskvjq7JotPH+wA9g==
+X-Google-Smtp-Source: AGHT+IFF9/7xby9d5Z1C7wgZ/A59zGyy3WTylTdicKDZbeXWpEjhKrQfSwq3UbfA15wTXmo8wSpaQQ==
+X-Received: by 2002:a17:906:2306:b0:9e4:b664:baa8 with SMTP id l6-20020a170906230600b009e4b664baa8mr14055106eja.7.1701334905432;
+        Thu, 30 Nov 2023 01:01:45 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.223.109])
+        by smtp.gmail.com with ESMTPSA id h14-20020a170906398e00b009d2eb40ff9dsm449444eje.33.2023.11.30.01.01.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Nov 2023 01:01:45 -0800 (PST)
+Message-ID: <299f569f-c3e7-4807-a141-4bbc06435f03@linaro.org>
+Date:   Thu, 30 Nov 2023 10:01:43 +0100
 MIME-Version: 1.0
-In-Reply-To: <51161740e832334594960ed43430b868a6f892c3.camel@gmail.com>
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] arm64: dts: mediatek: mt8183-kukui-jacuzzi: fix dsi
+ unnecessary cells properties
 Content-Language: en-US
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        linux-mediatek@lists.infradead.org,
+        Eugen Hristev <eugen.hristev@collabora.com>
+Cc:     krzysztof.kozlowski+dt@linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, matthias.bgg@gmail.com,
+        kernel@collabora.com, hsinyi@chromium.org
+References: <20230814071053.5459-1-eugen.hristev@collabora.com>
+ <170126437824.153055.10626099314938040381.b4-ty@collabora.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
+ m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
+ HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
+ XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
+ mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
+ v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
+ cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
+ rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
+ qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
+ aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
+ gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
+ dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
+ NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
+ hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
+ oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
+ H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
+ yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
+ 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
+ 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
+ +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
+ FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
+ 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
+ DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
+ oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
+ 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
+ Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
+ qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
+ /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
+ qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
+ EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
+ KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
+ fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <170126437824.153055.10626099314938040381.b4-ty@collabora.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,39 +125,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/5/27 23:54, Alexander H Duyck wrote:
-> On Wed, 2023-05-24 at 16:33 +0100, David Howells wrote:
->> Make the page_frag_cache allocator's alignment parameter a power of 2
->> rather than a mask and give a warning if it isn't.
+On 29/11/2023 14:27, AngeloGioacchino Del Regno wrote:
+> 
+> On Mon, 14 Aug 2023 10:10:53 +0300, Eugen Hristev wrote:
+>> dtbs_check throws a warning at the dsi node:
+>> Warning (avoid_unnecessary_addr_size): /soc/dsi@14014000: unnecessary #address-cells/#size-cells without "ranges" or child "reg" property
 >>
->> This means that it's consistent with {napi,netdec}_alloc_frag_align() and
->> allows __{napi,netdev}_alloc_frag_align() to be removed.
-
-I am trying to rmove the page frag implemetation in
-vhost_net_page_frag_refill() by using page_frag_alloc_align(), and
-I ended up having a simiar patch as this one.
-
+>> Other DTS have a panel child node with a reg, so the parent dtsi
+>> must have the address-cells and size-cells, however this specific DT
+>> has the panel removed, but not the cells, hence the warning above.
 >>
+>> [...]
 > 
-> This goes against the original intention of these functions. One of the
-> reasons why this is being used is because when somebody enables
-> something like 2K jumbo frames they don't necessarily want to have to
-> allocate 4K SLABs. Instead they can just add a bit of overhead and get
-> almost twice the utilization out of an order 3 page.
+> Applied, thanks!
 > 
-> The requirement should only be cache alignment, not power of 2
-> alignment. This isn't meant to be a slab allocator. We are just
-> sectioning up pages to handle mixed workloads. In the case of
-> networking we can end up getting everything from 60B packets, to 1514B
-> in the standard cases. That was why we started sectioning up pages in
-> the first place so putting a power of 2 requirement on it doens't fit
-> our use case at all and is what we were trying to get away from with
-> the SLAB allocators.
+> [1/1] arm64: dts: mediatek: mt8183-kukui-jacuzzi: fix dsi unnecessary cells properties
+>       commit: 4b66a34afe29d991155081b2f1e10482bd00cbaa
+> 
 
-It seems that is_power_of_2() checking in this patch does not excluding
-the non-align case if we are passing 'align' being 1, which means we still
-can support the 'everything from 60B packets, to 1514B' case.
+> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> 
 
-> 
-> .
-> 
+You know, your SoB implies review. Unless you want to say you
+usually apply code without reviewing it...
+
+Best regards,
+Krzysztof
+
