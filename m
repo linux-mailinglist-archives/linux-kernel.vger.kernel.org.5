@@ -2,130 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02CA47FF3C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 16:43:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 744197FF3D3
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 16:44:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346381AbjK3Pmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 10:42:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53414 "EHLO
+        id S1346345AbjK3Po3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 10:44:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232256AbjK3Pmx (ORCPT
+        with ESMTP id S232208AbjK3Po2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 10:42:53 -0500
-Received: from EUR03-AM7-obe.outbound.protection.outlook.com (mail-am7eur03on2114.outbound.protection.outlook.com [40.107.105.114])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A39710D5;
-        Thu, 30 Nov 2023 07:42:59 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iP7KW+nDxT3KDTeqOo/NmmX5MAr2tbMwCKsSvmfKVAj/LrouSECpcq3KWqSz713f2t0CFNLCZ6MIXngyWD0OuM6TwY3gMoJe7wAH3tY8YQaBvUljNJ8b+14GYTqeEGY2GYErx+PBt4NPu+IkUQsABZnNU3xWcv+JVYHWt1ZjoDRc/Iz/n0hByT/0zHI6IawCj402G7RxxiDi7YIT5gfzoGgR4xTewzUyCFC9wBGZg2RC3plj6Gc5hRKIHlVDRi0UVXTL3Tgqk9rWt9Kw2ViIM34O+McrJ913t70AI3z3HMIHL1BodWyEvZBxlQ+0EfMG2JZDOxrIzPmcoDPxuvxb0g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=co+chC5/TUuIsA0L/hFaWmMeMwsvcZDZsrd1SUdr/rw=;
- b=AFLTXFqgttw0rIxVSaUW5bcmOij7qwjPDPYr6HXcgYQHN0pt7A5n2NgR7XlcUKwwNHV+FBvqPhcwvin4UvPw2aD4ZX0ot3n4/DYOHiR2fMQVT/exM90aFGbZAxZZUi/K08yEE8pZ2KIluupfGIsNB7LAtylO42lsZewPSPQeXxd/yab+s2SC1gGuO632k7O3KZPaSouKEI0yagIiq0UGmTTt6rOT1wYZRDhAka8SGLEmU2saNbn50u7QYaccE3ZdQcNg1lO8HfJFWSkzEXFbYfMWaS+keBCFbDHHOo6YpIiHRESRGreWUC7qTJgQs5mCc4a7wY05ZjSps3Nxg50vYw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=kontron.de; dmarc=pass action=none header.from=kontron.de;
- dkim=pass header.d=kontron.de; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mysnt.onmicrosoft.com;
- s=selector2-mysnt-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=co+chC5/TUuIsA0L/hFaWmMeMwsvcZDZsrd1SUdr/rw=;
- b=c7xsAGI101TxoUHmBUIyNzGc1BOd/f8BB/Rk27JeOaligeAMbXNkjcc2NHReK+vjjEcyFg4hX9lU7v77I2s4SMqwC9MGi65erwoNI7DZlXmI4bbqZHBYFetVWZuqhXZPAuIXTyR6/onkyr5v4abdK5LX/F1FmcLKpnym54eLsFk=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=kontron.de;
-Received: from PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:102:263::10)
- by AM9PR10MB4069.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:1ff::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.24; Thu, 30 Nov
- 2023 15:42:57 +0000
-Received: from PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::27ba:9922:8d12:7b3d]) by PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::27ba:9922:8d12:7b3d%5]) with mapi id 15.20.7046.024; Thu, 30 Nov 2023
- 15:42:57 +0000
-Message-ID: <a84b42eb-5543-4fff-ac92-bdf32cad1985@kontron.de>
-Date:   Thu, 30 Nov 2023 16:42:53 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] arm64: dts: imx8mm: Simplify mipi_dsi clocks
-Content-Language: en-US, de-DE
-To:     Adam Ford <aford173@gmail.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     aford@beaconembeded.com, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231128045415.210682-1-aford173@gmail.com>
-From:   Frieder Schrempf <frieder.schrempf@kontron.de>
-In-Reply-To: <20231128045415.210682-1-aford173@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BE1P281CA0086.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:b10:78::10) To PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:102:263::10)
+        Thu, 30 Nov 2023 10:44:28 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C82BF83;
+        Thu, 30 Nov 2023 07:44:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701359074; x=1732895074;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ZzJQww8gCfXPFKpB1djUtfiz73/yfE52SVZo3S21BQ8=;
+  b=Qy93z/MPH0JCgcicBy098e5MLVumQKiFWTcZwudq4iDnHmn8wBlz4oGE
+   lliS2DyWkriEZdqOPS7b7sXIRQy/IdT8uGwCxhNW4QnH+IDVp2y2evNTm
+   /gasdqdxOgEW9bGvmT3bgldVluP3vtfc086LDNmGh4sCtTl45qHWNmXkp
+   i/0/7A0O9bYqhHx1B8wax7RjDYsDTcQgyqnJQRj4eSc6e8z6r2aqU+nme
+   PyVgD+Q+axZRhkIMxRpkT890Xv5quL51aT+1WyRMFWTk9ikDeaBIrakJy
+   3tbLgJfTtCQZw/jliynfZM5ifMtz43mi2wJWDipW71psQIo/s4B2limuL
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="242132"
+X-IronPort-AV: E=Sophos;i="6.04,239,1695711600"; 
+   d="scan'208";a="242132"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 07:44:34 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="769344631"
+X-IronPort-AV: E=Sophos;i="6.04,239,1695711600"; 
+   d="scan'208";a="769344631"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga002.jf.intel.com with ESMTP; 30 Nov 2023 07:44:28 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r8jDG-0002FY-1V;
+        Thu, 30 Nov 2023 15:44:26 +0000
+Date:   Thu, 30 Nov 2023 23:43:51 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Kuogee Hsieh <quic_khsieh@quicinc.com>,
+        dri-devel@lists.freedesktop.org, robdclark@gmail.com,
+        sean@poorly.run, swboyd@chromium.org, dianders@chromium.org,
+        vkoul@kernel.org, daniel@ffwll.ch, airlied@gmail.com,
+        agross@kernel.org, dmitry.baryshkov@linaro.org,
+        andersson@kernel.org
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        quic_sbillaka@quicinc.com, linux-arm-msm@vger.kernel.org,
+        quic_abhinavk@quicinc.com, Kuogee Hsieh <quic_khsieh@quicinc.com>,
+        marijn.suijten@somainline.org, quic_jesszhan@quicinc.com,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] drm/msm/dpu: improve DSC allocation
+Message-ID: <202311302343.3lXKkLxR-lkp@intel.com>
+References: <1701289898-12235-1-git-send-email-quic_khsieh@quicinc.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PA4PR10MB5681:EE_|AM9PR10MB4069:EE_
-X-MS-Office365-Filtering-Correlation-Id: fcfe6370-890d-43f0-2af0-08dbf1bb0634
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: TOSqFIUEz69BhOry7IA+uXgX3uXk8CSgx+YeC4+9r/lkB7cF9kVAECTzHPhaeq269uMrwrlcQBhjh4ejvxfRJMH0Ln6EiSKbX/ZHrRQ5y/Q+I+kqxQALVVTLyfaStyeEczvw9rzoMf8LiN3fv2olshwiEmK8O6jK/+/uP8etpmMtiNUryDo6O/7aqNpvDIrRE9ENcF6yS2v3SlTblYGhuJvFRkYnN3p0lhaLX+nkWpYKN+60KJZ7uVoCRhLVYZEjDA4XC23KrNOjRtSARJURjj4q3FEvRcqOW9d7VI0YydNFhgRML8MSfVO43lAGDRaH8MB782O74+bwA9GdozEScsqsxguxA6K7IpfsDtbkoI2gY36wgJO1Thx9LIfHb+o43XvLbU1OyylkbkU7WE1tTUQmkubtVFCWVkNI8mWkJ4cW/gGoL2M5PL01kJfHSPN+5zujjvzRE0OU4pkl4VQ8LSQEqJr8iX9LjIVkOb4Blzz8eTeyp5XiRnt22kDbjx/Ho9yyoEtoqFnzi7jIoazlwUpvlvd98+hmgRnavcs9gYQgjDPrdG4AC5DCqIKC0FiD8aSYdrb4oE9bNijr7bW+hjNDNx5zXBR38DzD3y+W8eyeygjYEtkClIqls1WyLYYt+noICA3YDxTDTeExBs7hHdIv3zddzz1Qj5qBpjQkr/M=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(366004)(396003)(376002)(39860400002)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(31686004)(86362001)(66946007)(54906003)(66476007)(38100700002)(36756003)(31696002)(26005)(6506007)(83380400001)(2616005)(6512007)(6666004)(53546011)(2906002)(316002)(66556008)(6486002)(8676002)(5660300002)(44832011)(478600001)(41300700001)(4326008)(7416002)(8936002)(32563001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?U1M5UWhaU3BjVDJUMWdGOFIwYW1BRzZ0UzZvM0dEeVdpM1RQdVllaXg0RTc3?=
- =?utf-8?B?V3hVYlpJVXd4c0UxS0VHY3pUNTJpNFNnbllWR1VWZ1VJR2ZrTE00Z3gyMGFw?=
- =?utf-8?B?UHRoOHVKNkpENzhoa1p2OUVMaExEQ2Ixekp0Um5tSnB2WmIzNUxIUU9IRzJI?=
- =?utf-8?B?MHRERUNjb285eG1TWEt6R2FwNEhSa050akZ2bEh3WFlkcURod2VCUnA5UG9K?=
- =?utf-8?B?Q1pnWlFqNlc0cVhpRXNXYm01UHZVRm9DOE96RlhIYkR3bDBNUkF2dFFVMnRz?=
- =?utf-8?B?bnhWNHpNbjFKR1BON0txVnNYVTFZN3RSQ2tldGRBZXJUUFhEWC9ZQklDYVJE?=
- =?utf-8?B?SGVGaDR3QlVGd3ZVMEJ0VGFUTzZQcDIxWkpibEVTMDZjdHdEYkF5K0xEeHhq?=
- =?utf-8?B?amRYUk1YVUNDNjRlL01hdyt2SUtBWnQ2RE5YRnVRMU9Xd2YxR0RNM25LMElu?=
- =?utf-8?B?MWdGNDJxQldURWsvKzhNdWcrbGdsd0U2eWpkV3YzNTNBKzhUMU1Zek5nTzlY?=
- =?utf-8?B?L3kxN0tTTUIrdkpaWjZHWGdNRnNYaUJ5c0piWndmdkI3ZCtoTnNNN0JYeDZk?=
- =?utf-8?B?OG13bm1VVUN5S1oyZ3NDVFZ4emIzVlRQWEw5a0xqeWp0QUJha3crZjFBZVla?=
- =?utf-8?B?aVlpWGpRT2M2cUJZZnJzVjI3ZEJuRDJxM1VQd2FBYXBoY0RicWM3SWFieG8v?=
- =?utf-8?B?WEIxa1lROStGY2wzcTZ0TSsrd2Nqc0N0N2daZ1VOYzEyTldYQjU5SU16ZllZ?=
- =?utf-8?B?YUpaNWFTUGhWVzF2Y3AxOWRIQjlnU0NJY2FzbXQ0NUs3YUU5aUJoNU5Lb1RY?=
- =?utf-8?B?QzZEVVc5K1ZBeHFSRnhtWEl2OWZ1SS9Vc1JubzJWa3BnUldIMjlaN1RIaHhy?=
- =?utf-8?B?K3pDWlVRQ255b2dSTmtvMnp1MllRcitzTTlqdG1oNkl5QkdHQis3UGM5aUpl?=
- =?utf-8?B?dmE2bHJ3OGVLTjhLNTIvRUVQZlpHaTMzc3h1a1J5dEZ5dXZGemZxWCtYTFdr?=
- =?utf-8?B?dWdGZXdHSHJ3UlF2OHY2YitJVEN1a2lyZE5ibjNJVk15Yll4c01SZzdxbXNt?=
- =?utf-8?B?TTBKRDd0UVdSTi9Zb1hMcjkzS2VPMGN1d1dlSVI1TUlra2dCRUg1ektlR3g3?=
- =?utf-8?B?Y0RpUVNER21uMkFHeWphY2VYb0lBOE91TFFwS3NrUVFPNCszTFNnQWhGZG10?=
- =?utf-8?B?TGw4RHl5dVJxOVlVUkFQOVd0V1k2SHBnL3k3UU5Ed3JGazNjZlh6QlRpMG5N?=
- =?utf-8?B?VFF5SWw4TGhXSzloUTFzczFKdE9SVGltTTBtVXRRUzJkbElsMWlKcklpcnRy?=
- =?utf-8?B?dDRMbUtKTVdVTmtqajdTQ1FrMVlCVng0TXpRWVRYYjdEa3U4K2U4ZFBFQ29k?=
- =?utf-8?B?WXU4SXYrK0xDOUEwanhXSzZDQjI5UERIYWFrQUFFck5BWWhRM3pKTGNqcWFI?=
- =?utf-8?B?OW53WkplSTdoNG4wcFM2YnZ5NVM5RnRKaHhUNU9BeXB5UUhXWEZJTjlYam5m?=
- =?utf-8?B?WlhNRW1HSE10MFRPVkZuRHIzTmVLVUlBRjRvdm9jZjdHbm13UkhkSms2cXQ0?=
- =?utf-8?B?blNoay8wQldtN2VweThhQ2UwelB3ZWt5T2REcUVqSnV5VkZ2MVhhVW1nb2pr?=
- =?utf-8?B?MGxPdkk1cExXZ083STJvRS9NTkkzRXUyV3VXZURTQk9FZEdQd1ZsOVBVMVY4?=
- =?utf-8?B?VEVjVnVTaXZIWFpiRWdad1ZzZzNsSDdzRkRycm4xa3djZXlaT3VFbHZIbXZx?=
- =?utf-8?B?Zlo5dGZZL1h1VkFiaFNtQWpwVll3bkNSelFJeGlWZ01CZVl1MUNSYURtSEpR?=
- =?utf-8?B?eHZBV3ZlTkpzT3J5WGgyVEV3NHpPSFZRc1oxeHZiK2kyOXFTRzVFaXprcnlu?=
- =?utf-8?B?c25HTUpsUmxTSW45OWQ1OW1paVRWNVJHbkZ0MGE4Z0JSTVJQa3Y4bm5wMlJZ?=
- =?utf-8?B?UGhYZjdRbWVnV0d2dm5ST1NpelI1UDN0elNSZ0dUUisxY2JuMzQrMEY3YTFO?=
- =?utf-8?B?aFNneWw5MkxSL1BSUUJFbGVMbENmUnFPSGZWTUdCa1VCMFllYkFnSGE2R3RD?=
- =?utf-8?B?Myt4ZGJzNm1UQThnM2YzQkZHQ2pNaW16VlZnbEVoYUFlZEliNnFEdjdBcHhm?=
- =?utf-8?B?Zk94b3M5NFk4dTRLSCtOZzhPVEY2aTlaaGw4REtpYWZBR1FVdWFJb2ZDL1RN?=
- =?utf-8?B?TkE9PQ==?=
-X-OriginatorOrg: kontron.de
-X-MS-Exchange-CrossTenant-Network-Message-Id: fcfe6370-890d-43f0-2af0-08dbf1bb0634
-X-MS-Exchange-CrossTenant-AuthSource: PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Nov 2023 15:42:56.9632
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8c9d3c97-3fd9-41c8-a2b1-646f3942daf1
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hNTlLegtJCdLBmjEG9536tH8RGhTPyHHePGyn7yy/2Lcj4rb5oAFtqvrPiZtMbZNZBKQHj51ofPXNruX0jlbvnZlfcfFdGkbBTBuk37iCvU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR10MB4069
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1701289898-12235-1-git-send-email-quic_khsieh@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -133,46 +73,138 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28.11.23 05:54, Adam Ford wrote:
-> The device tree clock structure for the mipi_dsi is
-> unnecessarily redundant.
-> 
-> The default clock parent of IMX8MM_CLK_DSI_PHY_REF is
-> already IMX8MM_CLK_24M, so there is no need to set the
-> parent-child relationship between them.  The default clock
-> rates for IMX8MM_SYS_PLL1_266M and IMX8MM_CLK_24M are
-> already defined to be 266MHz and 24MHz respectively,
-> so there is no need to define those clock rates.
-> 
-> On i.MX8M[MNP] the  samsung,pll-clock-frequency is not
-> necessary, because the driver will read it from sclk_mipi
-> which is also already set to 24MHz making it also
-> redundant.
-> 
-> Signed-off-by: Adam Ford <aford173@gmail.com>
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mm.dtsi b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-> index 738024baaa57..8d872568231d 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-> @@ -1151,12 +1151,8 @@ mipi_dsi: dsi@32e10000 {
->  				clocks = <&clk IMX8MM_CLK_DSI_CORE>,
->  					 <&clk IMX8MM_CLK_DSI_PHY_REF>;
->  				clock-names = "bus_clk", "sclk_mipi";
-> -				assigned-clocks = <&clk IMX8MM_CLK_DSI_CORE>,
-> -						  <&clk IMX8MM_CLK_DSI_PHY_REF>;
-> -				assigned-clock-parents = <&clk IMX8MM_SYS_PLL1_266M>,
-> -							 <&clk IMX8MM_CLK_24M>;
-> -				assigned-clock-rates = <266000000>, <24000000>;
-> -				samsung,pll-clock-frequency = <24000000>;
-> +				assigned-clocks = <&clk IMX8MM_CLK_DSI_CORE>;
-> +				assigned-clock-parents = <&clk IMX8MM_SYS_PLL1_266M>;
->  				interrupts = <GIC_SPI 18 IRQ_TYPE_LEVEL_HIGH>;
->  				power-domains = <&disp_blk_ctrl IMX8MM_DISPBLK_PD_MIPI_DSI>;
->  				status = "disabled";
+Hi Kuogee,
 
-Thanks for the cleanup!
+kernel test robot noticed the following build warnings:
 
-Reviewed-by: Frieder Schrempf <frieder.schrempf@kontron.de>
-Tested-by: Frieder Schrempf <frieder.schrempf@kontron.de> # Kontron BL
-i.MX8MM
+[auto build test WARNING on drm-misc/drm-misc-next]
+[also build test WARNING on drm/drm-next drm-exynos/exynos-drm-next drm-intel/for-linux-next drm-intel/for-linux-next-fixes drm-tip/drm-tip linus/master v6.7-rc3 next-20231130]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Kuogee-Hsieh/drm-msm-dpu-improve-DSC-allocation/20231130-064646
+base:   git://anongit.freedesktop.org/drm/drm-misc drm-misc-next
+patch link:    https://lore.kernel.org/r/1701289898-12235-1-git-send-email-quic_khsieh%40quicinc.com
+patch subject: [PATCH v1] drm/msm/dpu: improve DSC allocation
+config: arm-defconfig (https://download.01.org/0day-ci/archive/20231130/202311302343.3lXKkLxR-lkp@intel.com/config)
+compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project.git f28c006a5895fc0e329fe15fead81e37457cb1d1)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231130/202311302343.3lXKkLxR-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311302343.3lXKkLxR-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c:537:24: warning: incompatible pointer to integer conversion assigning to 'uint32_t' (aka 'unsigned int') from 'void *' [-Wint-conversion]
+                   pp_to_enc_id[pp_idx] = NULL;
+                                        ^ ~~~~
+   1 warning generated.
+
+
+vim +537 drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
+
+   463	
+   464	static int _dpu_rm_reserve_dsc(struct dpu_rm *rm,
+   465				       struct dpu_global_state *global_state,
+   466				       struct drm_encoder *enc,
+   467				       const struct msm_display_topology *top)
+   468	{
+   469		int num_dsc = 0;
+   470		int i, pp_idx;
+   471		bool pair = false;
+   472		int dsc_idx[DSC_MAX - DSC_0];
+   473		uint32_t pp_to_enc_id[PINGPONG_MAX - PINGPONG_0];
+   474		int pp_max = PINGPONG_MAX - PINGPONG_0;
+   475	
+   476		if (!top->num_dsc || !top->num_intf)
+   477			return 0;
+   478	
+   479		/*
+   480		 * Truth:
+   481		 * 1) every layer mixer only connects to one pingpong
+   482		 * 2) no pingpong split -- two layer mixers shared one pingpong
+   483		 * 3) each DSC engine contains two dsc encoders
+   484		 *    -- index(0,1), index (2,3),... etc
+   485		 * 4) dsc pair can only happens with same DSC engine except 4 dsc
+   486		 *    merge mode application (8k) which need two DSC engines
+   487		 * 5) odd pingpong connect to odd dsc
+   488		 * 6) even pingpong connect even dsc
+   489		 */
+   490	
+   491		/* num_dsc should be either 1, 2 or 4 */
+   492		if (top->num_dsc > top->num_intf)	/* merge mode */
+   493			pair = true;
+   494	
+   495		/* fill working copy with pingpong list */
+   496		memcpy(pp_to_enc_id, global_state->pingpong_to_enc_id, sizeof(pp_to_enc_id));
+   497	
+   498		for (i = 0; i < ARRAY_SIZE(rm->dsc_blks); i++) {
+   499			if (!rm->dsc_blks[i])	/* end of dsc list */
+   500				break;
+   501	
+   502			if (global_state->dsc_to_enc_id[i]) {	/* used */
+   503				/* consective dsc index to be paired */
+   504				if (pair && num_dsc) {	/* already start pairing, re start */
+   505					num_dsc = 0;
+   506					/* fill working copy with pingpong list */
+   507					memcpy(pp_to_enc_id, global_state->pingpong_to_enc_id,
+   508									sizeof(pp_to_enc_id));
+   509				}
+   510				continue;
+   511			}
+   512	
+   513			/* odd index can not become start of pairing */
+   514			if (pair && (i & 0x01) && !num_dsc)
+   515				continue;
+   516	
+   517			/*
+   518			 * find the pingpong index which had been reserved
+   519			 * previously at layer mixer allocation
+   520			 */
+   521			for (pp_idx = 0; pp_idx < pp_max; pp_idx++) {
+   522				if (pp_to_enc_id[pp_idx] == enc->base.id)
+   523					break;
+   524			}
+   525	
+   526			/*
+   527			 * dsc even index must map to pingpong even index
+   528			 * dsc odd index must map to pingpong odd index
+   529			 */
+   530			if ((i & 0x01) != (pp_idx & 0x01))
+   531				continue;
+   532	
+   533			/*
+   534			 * delete pp_idx so that it can not be found at next search
+   535			 * in the case of pairing
+   536			 */
+ > 537			pp_to_enc_id[pp_idx] = NULL;
+   538	
+   539			dsc_idx[num_dsc++] = i;
+   540			if (num_dsc >= top->num_dsc)
+   541				break;
+   542		}
+   543	
+   544		if (num_dsc < top->num_dsc) {
+   545			DPU_ERROR("DSC allocation failed num_dsc=%d required=%d\n",
+   546							num_dsc, top->num_dsc );
+   547			return -ENAVAIL;
+   548		}
+   549	
+   550		/* reserve dsc */
+   551		for (i = 0; i < top->num_dsc; i++) {
+   552			int j;
+   553	
+   554			j = dsc_idx[i];
+   555			global_state->dsc_to_enc_id[j] = enc->base.id;
+   556		}
+   557	
+   558		return 0;
+   559	}
+   560	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
