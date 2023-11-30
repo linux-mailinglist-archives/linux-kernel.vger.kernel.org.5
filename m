@@ -2,303 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97E0D7FF3BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 16:38:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C39C7FF3B3
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 16:37:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346369AbjK3PiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 10:38:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60676 "EHLO
+        id S1346324AbjK3PhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 10:37:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346378AbjK3PiS (ORCPT
+        with ESMTP id S232180AbjK3PhN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 10:38:18 -0500
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF2AB10E0;
-        Thu, 30 Nov 2023 07:38:23 -0800 (PST)
-Received: by mail-ot1-x335.google.com with SMTP id 46e09a7af769-6d852e06b07so651365a34.3;
-        Thu, 30 Nov 2023 07:38:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701358703; x=1701963503; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eD53ftY/yUsvZFmbSQF35aJZQqcYDgG+Hgt2jQSH4fA=;
-        b=Nc/bfKmRSUmZOhunkHH/u279aD038jdaCRvE4XSnKK4JJtclTi/Le7ZqIGu1cZLJhI
-         V4IvpQxazgvdo+liwsDog44i4ftaXX5n4Nn8vDlkP5J5IQV4ejePHmjoOtBOQnpY50wp
-         QzdHcdUObVfv0fLnLsOfEp1nRVC2zoarH8sD98DZWr8prHJsYj1K3taJGPpipC2eKGTl
-         bjkbrNx8V/0ysFsdXXcP0rDpsZ2K62R2gZs7NUi5zwQ4BEYlw0tFadO4UlPQ7xcvZZfe
-         /sPBTa4NdpUU/Nl6EpwjWyXrc1T5E8zyFwDMAVmbms/RjcKXddClos/uagM089HR2ZC6
-         EqBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701358703; x=1701963503;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eD53ftY/yUsvZFmbSQF35aJZQqcYDgG+Hgt2jQSH4fA=;
-        b=rjorptlOtbNi4pfM3sZ8h+y76LpCTHhtAonxm7pKYHJrNaSGPxT/2S+/kJT64OG8Rm
-         4WCrg6cZuoKMCZ/aN+MgezEN5Jm8ST/3dxRqvzx5ncOWnqa1Xx6xpm0gixwoT3a7JuCf
-         lQA/pd8N0LYF8V1l2jsH1g4tbImK2i0Vhdpd8McnNNBfdavIJ1/0PH0HWwhL3/b36/mT
-         sK6kuasvZDH40xPi9hZvvYhlUIWs3mQ69dwEGFOeILyEZ2KQ6ORJGdbg5XLlWRf/sHBj
-         ENmFBxdVQLPubtY1NUPpKW8guTLHlLs6JANZ5HL83HfKkMSa6BzSCFFcbJsG51oMX/k9
-         1fSg==
-X-Gm-Message-State: AOJu0Yy1YQUYLQscT/SVshFfgYW+FeBiNCNoxQWak242uLr6oncEVSug
-        e1geaoAl6H2U2PqBS1zoc28=
-X-Google-Smtp-Source: AGHT+IGr5SX9jWRJyNlzTzhL/+Qe4hyEpSvcjizSBmvGiziK+hPA6OPpzFTVE6mc1PCtxIAryW3BWA==
-X-Received: by 2002:a05:6830:1412:b0:6d7:f8f6:5406 with SMTP id v18-20020a056830141200b006d7f8f65406mr23629246otp.0.1701358703108;
-        Thu, 30 Nov 2023 07:38:23 -0800 (PST)
-Received: from localhost ([2620:10d:c091:500::4:edc5])
-        by smtp.gmail.com with ESMTPSA id r8-20020a0c8d08000000b0067a18167533sm592780qvb.83.2023.11.30.07.38.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Nov 2023 07:38:22 -0800 (PST)
-From:   Dan Schatzberg <schatzberg.dan@gmail.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Yosry Ahmed <yosryahmed@google.com>, Huan Yang <link@vivo.com>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Peter Xu <peterx@redhat.com>,
-        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
-        Yue Zhao <findns94@gmail.com>, Hugh Dickins <hughd@google.com>
-Subject: [PATCH 1/1] mm: add swapiness= arg to memory.reclaim
-Date:   Thu, 30 Nov 2023 07:36:54 -0800
-Message-Id: <20231130153658.527556-2-schatzberg.dan@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231130153658.527556-1-schatzberg.dan@gmail.com>
-References: <20231130153658.527556-1-schatzberg.dan@gmail.com>
+        Thu, 30 Nov 2023 10:37:13 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D2761B3
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 07:37:19 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CAF54C433C8;
+        Thu, 30 Nov 2023 15:37:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701358638;
+        bh=DEfwEsrfdTaKSTIEFXZCNrvfb8NRUdxB2lcPYr3uym8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XxEaiHVP7qZe4urDwuhAjWNUOqvcNbTmmnjp3zvHvTrcVrOI5a6MkCRnKJe3DisYH
+         49hiAlNp461XtD2aXDu6NUYXMYOivZRTkBebqD1T41eiIvPK7mrKZtiallTL6Z4Xfc
+         FR+HNRnuTLOLA7t78AGwGDJbQNm3TBv2oZme/FZAZ/Z5BZtW/htwkOwvRUUZ8MwcEA
+         TMPalRnHagMa+dqBn9JPB1FAB2NOVBFQrJW8UkYVTnlUUwiiq7uBHuHve3GVR8ioJX
+         24zn1VFmWGgOKdNViGBg+pNnNl1u3mX94wxyk8MxhEUM32OnG4JtpM9LtP73lqacAi
+         mnYfIW71J4F3A==
+Date:   Thu, 30 Nov 2023 15:37:12 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Xi Ruoyao <xry111@xry111.site>
+Cc:     Kwanghoon Son <k.son@samsung.com>, p.zabel@pengutronix.de,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, jszhang@kernel.org, guoren@kernel.org,
+        wefu@redhat.com, paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, inki.dae@samsung.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v3 1/3] dt-bindings: reset: Document th1520 reset control
+Message-ID: <20231130-strict-yarn-0b7ec0f47bc1@spud>
+References: <20230918045125.4000083-1-k.son@samsung.com>
+ <CGME20230918045134epcas1p1b80b338b66512a976c3783cd0e51da50@epcas1p1.samsung.com>
+ <20230918045125.4000083-2-k.son@samsung.com>
+ <20230918-4ef7f52da269f3a7e4023bb3@fedora>
+ <005301d9eab7$5688c920$039a5b60$@samsung.com>
+ <20230919-42333064be342f6ab125dd75@fedora>
+ <5f437109d2be2b8843f549a661054a2e3ec0d66e.camel@xry111.site>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="WAKvEsPGuWM3Yjbn"
+Content-Disposition: inline
+In-Reply-To: <5f437109d2be2b8843f549a661054a2e3ec0d66e.camel@xry111.site>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow proactive reclaimers to submit an additional swappiness=<val>
-argument to memory.reclaim. This overrides the global or per-memcg
-swappiness setting for that reclaim attempt.
 
-For example:
+--WAKvEsPGuWM3Yjbn
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-echo "2M swappiness=0" > /sys/fs/cgroup/memory.reclaim
+On Thu, Nov 30, 2023 at 12:42:09AM +0800, Xi Ruoyao wrote:
+> On Tue, 2023-09-19 at 09:47 +0100, Conor Dooley wrote:
+> > Guo,
+> >=20
+> > On Tue, Sep 19, 2023 at 02:08:32PM +0900, Kwanghoon Son wrote:
+> > > > > > +=A0=A0=A0=A0=A0 - const: thead,th1520-reset
+> > > > > > +=A0=A0=A0=A0=A0 - const: syscon
+> > > > >=20
+> > > > > iDumb question perhaps, but why is this a syscon?
+> > > >=20
+> > > > This is good point.
+> > > > In fact, I took it from the vendor kernel, and I tried to keep it a=
+s same as I could.
+> > > > Vendor also followed drivers/reset/reset-imx7.c
+> > > > As Rob said, if don't need it, I'll change it.
+> >=20
+> > > I have investigated vendor kernels, but it is still not sure reset in=
+formation.
+> > > I thought this is about sys_reg, but without datasheet, can't tell.
+> > > Therefore, should be stopped patch for a while until knows better com=
+es out.
+> >=20
+> > Is there documentation in English you can provide to these people that
+> > are trying to add support for your product?
+>=20
+> It can be downloaded from
+> https://dl.sipeed.com/shareURL/LICHEE/licheepi4a/09_Doc now.  Click on
+> "TH1520 User Manual.zip" and enter a captcha.  The doc about resetting
+> is in chapter 5 of "TH1520 System User Manual.pdf".
 
-will perform reclaim on the rootcg with a swappiness setting of 0 (no
-swap) regardless of the vm.swappiness sysctl setting.
+Thanks Xi! Pity there was no response from the vendor to this for
+months :(
 
-Signed-off-by: Dan Schatzberg <schatzberg.dan@gmail.com>
----
- include/linux/swap.h |  3 ++-
- mm/memcontrol.c      | 55 +++++++++++++++++++++++++++++++++++---------
- mm/vmscan.c          | 13 +++++++++--
- 3 files changed, 57 insertions(+), 14 deletions(-)
+--WAKvEsPGuWM3Yjbn
+Content-Type: application/pgp-signature; name="signature.asc"
 
-diff --git a/include/linux/swap.h b/include/linux/swap.h
-index f6dd6575b905..c6e309199f10 100644
---- a/include/linux/swap.h
-+++ b/include/linux/swap.h
-@@ -410,7 +410,8 @@ extern unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
- extern unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
- 						  unsigned long nr_pages,
- 						  gfp_t gfp_mask,
--						  unsigned int reclaim_options);
-+						  unsigned int reclaim_options,
-+						  int *swappiness);
- extern unsigned long mem_cgroup_shrink_node(struct mem_cgroup *mem,
- 						gfp_t gfp_mask, bool noswap,
- 						pg_data_t *pgdat,
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 1c1061df9cd1..ba1c89455ab0 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -63,6 +63,7 @@
- #include <linux/resume_user_mode.h>
- #include <linux/psi.h>
- #include <linux/seq_buf.h>
-+#include <linux/parser.h>
- #include <linux/sched/isolation.h>
- #include "internal.h"
- #include <net/sock.h>
-@@ -2449,7 +2450,7 @@ static unsigned long reclaim_high(struct mem_cgroup *memcg,
- 		psi_memstall_enter(&pflags);
- 		nr_reclaimed += try_to_free_mem_cgroup_pages(memcg, nr_pages,
- 							gfp_mask,
--							MEMCG_RECLAIM_MAY_SWAP);
-+							MEMCG_RECLAIM_MAY_SWAP, NULL);
- 		psi_memstall_leave(&pflags);
- 	} while ((memcg = parent_mem_cgroup(memcg)) &&
- 		 !mem_cgroup_is_root(memcg));
-@@ -2740,7 +2741,7 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
- 
- 	psi_memstall_enter(&pflags);
- 	nr_reclaimed = try_to_free_mem_cgroup_pages(mem_over_limit, nr_pages,
--						    gfp_mask, reclaim_options);
-+						    gfp_mask, reclaim_options, NULL);
- 	psi_memstall_leave(&pflags);
- 
- 	if (mem_cgroup_margin(mem_over_limit) >= nr_pages)
-@@ -3660,7 +3661,7 @@ static int mem_cgroup_resize_max(struct mem_cgroup *memcg,
- 		}
- 
- 		if (!try_to_free_mem_cgroup_pages(memcg, 1, GFP_KERNEL,
--					memsw ? 0 : MEMCG_RECLAIM_MAY_SWAP)) {
-+					memsw ? 0 : MEMCG_RECLAIM_MAY_SWAP, NULL)) {
- 			ret = -EBUSY;
- 			break;
- 		}
-@@ -3774,7 +3775,7 @@ static int mem_cgroup_force_empty(struct mem_cgroup *memcg)
- 			return -EINTR;
- 
- 		if (!try_to_free_mem_cgroup_pages(memcg, 1, GFP_KERNEL,
--						  MEMCG_RECLAIM_MAY_SWAP))
-+						  MEMCG_RECLAIM_MAY_SWAP, NULL))
- 			nr_retries--;
- 	}
- 
-@@ -6720,7 +6721,7 @@ static ssize_t memory_high_write(struct kernfs_open_file *of,
- 		}
- 
- 		reclaimed = try_to_free_mem_cgroup_pages(memcg, nr_pages - high,
--					GFP_KERNEL, MEMCG_RECLAIM_MAY_SWAP);
-+					GFP_KERNEL, MEMCG_RECLAIM_MAY_SWAP, NULL);
- 
- 		if (!reclaimed && !nr_retries--)
- 			break;
-@@ -6769,7 +6770,7 @@ static ssize_t memory_max_write(struct kernfs_open_file *of,
- 
- 		if (nr_reclaims) {
- 			if (!try_to_free_mem_cgroup_pages(memcg, nr_pages - max,
--					GFP_KERNEL, MEMCG_RECLAIM_MAY_SWAP))
-+					GFP_KERNEL, MEMCG_RECLAIM_MAY_SWAP, NULL))
- 				nr_reclaims--;
- 			continue;
- 		}
-@@ -6895,6 +6896,16 @@ static ssize_t memory_oom_group_write(struct kernfs_open_file *of,
- 	return nbytes;
- }
- 
-+enum {
-+	MEMORY_RECLAIM_SWAPPINESS = 0,
-+	MEMORY_RECLAIM_NULL,
-+};
-+
-+static const match_table_t if_tokens = {
-+	{ MEMORY_RECLAIM_SWAPPINESS, "swappiness=%d"},
-+	{ MEMORY_RECLAIM_NULL, NULL },
-+};
-+
- static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
- 			      size_t nbytes, loff_t off)
- {
-@@ -6902,12 +6913,33 @@ static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
- 	unsigned int nr_retries = MAX_RECLAIM_RETRIES;
- 	unsigned long nr_to_reclaim, nr_reclaimed = 0;
- 	unsigned int reclaim_options;
--	int err;
-+	char *old_buf, *start;
-+	substring_t args[MAX_OPT_ARGS];
-+	int swappiness = -1;
- 
- 	buf = strstrip(buf);
--	err = page_counter_memparse(buf, "", &nr_to_reclaim);
--	if (err)
--		return err;
-+
-+	old_buf = buf;
-+	nr_to_reclaim = memparse(buf, &buf) / PAGE_SIZE;
-+	if (buf == old_buf)
-+		return -EINVAL;
-+
-+	buf = strstrip(buf);
-+
-+	while ((start = strsep(&buf, " ")) != NULL) {
-+		if (!strlen(start))
-+			continue;
-+		switch (match_token(start, if_tokens, args)) {
-+		case MEMORY_RECLAIM_SWAPPINESS:
-+			if (match_int(&args[0], &swappiness))
-+				return -EINVAL;
-+			if (swappiness < 0 || swappiness > 200)
-+				return -EINVAL;
-+			break;
-+		default:
-+			return -EINVAL;
-+		}
-+	}
- 
- 	reclaim_options	= MEMCG_RECLAIM_MAY_SWAP | MEMCG_RECLAIM_PROACTIVE;
- 	while (nr_reclaimed < nr_to_reclaim) {
-@@ -6926,7 +6958,8 @@ static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
- 
- 		reclaimed = try_to_free_mem_cgroup_pages(memcg,
- 					min(nr_to_reclaim - nr_reclaimed, SWAP_CLUSTER_MAX),
--					GFP_KERNEL, reclaim_options);
-+					GFP_KERNEL, reclaim_options,
-+					swappiness == -1 ? NULL : &swappiness);
- 
- 		if (!reclaimed && !nr_retries--)
- 			return -EAGAIN;
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 506f8220c5fe..546704ea01e1 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -136,6 +136,9 @@ struct scan_control {
- 	/* Always discard instead of demoting to lower tier memory */
- 	unsigned int no_demotion:1;
- 
-+	/* Swappiness value for reclaim, if NULL use memcg/global value */
-+	int *swappiness;
-+
- 	/* Allocation order */
- 	s8 order;
- 
-@@ -2327,7 +2330,8 @@ static void get_scan_count(struct lruvec *lruvec, struct scan_control *sc,
- 	struct pglist_data *pgdat = lruvec_pgdat(lruvec);
- 	struct mem_cgroup *memcg = lruvec_memcg(lruvec);
- 	unsigned long anon_cost, file_cost, total_cost;
--	int swappiness = mem_cgroup_swappiness(memcg);
-+	int swappiness = sc->swappiness ?
-+		*sc->swappiness : mem_cgroup_swappiness(memcg);
- 	u64 fraction[ANON_AND_FILE];
- 	u64 denominator = 0;	/* gcc */
- 	enum scan_balance scan_balance;
-@@ -2608,6 +2612,9 @@ static int get_swappiness(struct lruvec *lruvec, struct scan_control *sc)
- 	    mem_cgroup_get_nr_swap_pages(memcg) < MIN_LRU_BATCH)
- 		return 0;
- 
-+	if (sc->swappiness)
-+		return *sc->swappiness;
-+
- 	return mem_cgroup_swappiness(memcg);
- }
- 
-@@ -6433,7 +6440,8 @@ unsigned long mem_cgroup_shrink_node(struct mem_cgroup *memcg,
- unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
- 					   unsigned long nr_pages,
- 					   gfp_t gfp_mask,
--					   unsigned int reclaim_options)
-+					   unsigned int reclaim_options,
-+					   int *swappiness)
- {
- 	unsigned long nr_reclaimed;
- 	unsigned int noreclaim_flag;
-@@ -6448,6 +6456,7 @@ unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
- 		.may_unmap = 1,
- 		.may_swap = !!(reclaim_options & MEMCG_RECLAIM_MAY_SWAP),
- 		.proactive = !!(reclaim_options & MEMCG_RECLAIM_PROACTIVE),
-+		.swappiness = swappiness,
- 	};
- 	/*
- 	 * Traverse the ZONELIST_FALLBACK zonelist of the current node to put
--- 
-2.34.1
+-----BEGIN PGP SIGNATURE-----
 
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZWisKAAKCRB4tDGHoIJi
+0ne4AQCpH/mzJjeMQBRdjUbmAWLMVpb472UKnn6JbArl6ZbhFgD8CmPgI9f8BrQH
+RGR80riMhYQ+yIOzdEQrWILkVlerWgE=
+=Mv8t
+-----END PGP SIGNATURE-----
+
+--WAKvEsPGuWM3Yjbn--
