@@ -2,167 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A43F7FEE8D
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 13:05:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A6FD7FEE8E
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 13:05:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345285AbjK3MFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 07:05:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49182 "EHLO
+        id S1345309AbjK3MFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 07:05:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345269AbjK3MFG (ORCPT
+        with ESMTP id S1345278AbjK3MFH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 07:05:06 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A023D40
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 04:05:12 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-54b8a4d64b5so872120a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 04:05:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701345911; x=1701950711; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=BVVWmWantvDjX2mjd5YLmNX+K3BZwqjWdaBKpkdsAuI=;
-        b=ICDJsHfQ0+4sNQmguyBBoomDl9ZRxTb2rC/koOTjbY46vp+Wg1/SkTNXHDg53+abkK
-         ZFzQdgPaaD7IaMbMP6Z5AUsAEywGC4lcMo605txiWjl7pZTDC54PXeZpnDtClvd4Onei
-         OEMnh03nrHZFWxZXdSeAxAdY9HyOuFpKkgbBc50guWTd0lI6ptXR3D4V4lC4pWqWC4do
-         h5mpEUfTt4hZ6pPbsvXbLuqJf8zYRYGjmIxmsauzsGrDnuv1mGZOPiNJtEEtXP3Fn6Xv
-         pvg7CSK2Kp7oszucHzLdGJD4+olgErymIaJj0S8v5TCkEyUn3NYtZ9tzz1s/QlVb98b9
-         dr1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701345911; x=1701950711;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BVVWmWantvDjX2mjd5YLmNX+K3BZwqjWdaBKpkdsAuI=;
-        b=Zj6QEiShHIo8BDSpgMxgaLTVD/+s4wNrzwzM32RYbRwp4bifxIByYaL/0bS94+Ues3
-         od6BuaXKotTaqHk1fajxMv+DmZ7gptNGwu/1u94CGFNAVj09Ip2GO3Fuw/InX3AMCP7K
-         8vfTC+P6WDMb2LxZmWBUdd9CoHa/7QtU8AoiYzW1X4D1WSZGwUvQ14jjMCXFdgF+IPwm
-         LfelzJXGipHgMLW4jNrBUDgsTErExxpnHBNCHqdYLBdZWBa9A8KAdd9Ml5hRU3Nw+ndl
-         FtLkii44AmEWvBcNikZaw3o5RHLoe2pqTUkb6xRmurzgRXyeIGR1uRtCBByfzseG7SX1
-         cGhw==
-X-Gm-Message-State: AOJu0YwVha6uWiHeKJBJ6g82WbntyiAXuYvcgMqXPNnGu9A0IBETxAsq
-        irdrLFY5dLxSj+JSDxTehspHcyJPs/fVmdSqeGSoZw==
-X-Google-Smtp-Source: AGHT+IFu3MWszFDtvdH7QCKIG+uVLRvGsOyg1FE+Ipx6VTJRcTOCbxIdlbc1w8Z5Qlcy/EavnoZd2g==
-X-Received: by 2002:a05:6402:704:b0:548:657c:9110 with SMTP id w4-20020a056402070400b00548657c9110mr15688921edx.38.1701345910655;
-        Thu, 30 Nov 2023 04:05:10 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.223.109])
-        by smtp.gmail.com with ESMTPSA id v9-20020aa7d9c9000000b0054b1fca00c7sm486173eds.74.2023.11.30.04.05.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Nov 2023 04:05:10 -0800 (PST)
-Message-ID: <35dfd382-14ed-43cb-be0a-d042f765ecdc@linaro.org>
-Date:   Thu, 30 Nov 2023 13:05:08 +0100
+        Thu, 30 Nov 2023 07:05:07 -0500
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CB16BD46;
+        Thu, 30 Nov 2023 04:05:12 -0800 (PST)
+Received: by linux.microsoft.com (Postfix, from userid 1099)
+        id 1AF5C20B74C0; Thu, 30 Nov 2023 04:05:12 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 1AF5C20B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1701345912;
+        bh=/rVuqlYYpLzwGHq/EK9NytP0xWQESkkc0TlDS3zxqY4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Bpt7p/4HhHDo6dYClHRLdHCut/FjhKTk6mGeZB+9C5QBTqhDefLDJZszOOxWnf74K
+         khFcWy3czqcJIXDdbr6llkD8Ic6HzwBpTBpnCLFwf3UXFQ2bOstrSz+QR8JwTmoGnO
+         jGgGYdAqsWiKEO2EKytfiLc+FYSb9ihaSt+rwXXc=
+Date:   Thu, 30 Nov 2023 04:05:12 -0800
+From:   Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     Souradeep Chakrabarti <schakrabarti@microsoft.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        Long Li <longli@microsoft.com>,
+        "sharmaajay@microsoft.com" <sharmaajay@microsoft.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "cai.huoqing@linux.dev" <cai.huoqing@linux.dev>,
+        "ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Paul Rosswurm <paulros@microsoft.com>
+Subject: Re: [EXTERNAL] Re: [PATCH V2 net-next] net: mana: Assigning IRQ
+ affinity on HT cores
+Message-ID: <20231130120512.GA15408@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <1700574877-6037-1-git-send-email-schakrabarti@linux.microsoft.com>
+ <20231121154841.7fc019c8@kernel.org>
+ <PUZP153MB0788476CD22D5AA2ECDC11ABCCBDA@PUZP153MB0788.APCP153.PROD.OUTLOOK.COM>
+ <ZWfwcYPLVo+4V8Ps@yury-ThinkPad>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: zynqmp: Add missing destination mailbox compatible
-Content-Language: en-US
-To:     Michal Simek <michal.simek@amd.com>, linux-kernel@vger.kernel.org,
-        monstr@monstr.eu, michal.simek@xilinx.com, git@xilinx.com
-Cc:     Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Michael Grzeschik <m.grzeschik@pengutronix.de>,
-        Parth Gajjar <parth.gajjar@amd.com>,
-        Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>,
-        Varalaxmi Bingi <varalaxmi.bingi@amd.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <96460adbb99ea829a2a95c72a40118f81946a559.1701335951.git.michal.simek@amd.com>
- <79f65b96-9015-41c4-b4ee-a82526c9eefc@linaro.org>
- <656a0186-e06f-4518-adc2-68dfb2970157@amd.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <656a0186-e06f-4518-adc2-68dfb2970157@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZWfwcYPLVo+4V8Ps@yury-ThinkPad>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/11/2023 11:02, Michal Simek wrote:
+On Wed, Nov 29, 2023 at 06:16:17PM -0800, Yury Norov wrote:
+> On Mon, Nov 27, 2023 at 09:36:38AM +0000, Souradeep Chakrabarti wrote:
+> > 
+> > 
+> > >-----Original Message-----
+> > >From: Jakub Kicinski <kuba@kernel.org>
+> > >Sent: Wednesday, November 22, 2023 5:19 AM
+> > >To: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+> > >Cc: KY Srinivasan <kys@microsoft.com>; Haiyang Zhang
+> > ><haiyangz@microsoft.com>; wei.liu@kernel.org; Dexuan Cui
+> > ><decui@microsoft.com>; davem@davemloft.net; edumazet@google.com;
+> > >pabeni@redhat.com; Long Li <longli@microsoft.com>;
+> > >sharmaajay@microsoft.com; leon@kernel.org; cai.huoqing@linux.dev;
+> > >ssengar@linux.microsoft.com; vkuznets@redhat.com; tglx@linutronix.de; linux-
+> > >hyperv@vger.kernel.org; netdev@vger.kernel.org; linux-kernel@vger.kernel.org;
+> > >linux-rdma@vger.kernel.org; Souradeep Chakrabarti
+> > ><schakrabarti@microsoft.com>; Paul Rosswurm <paulros@microsoft.com>
+> > >Subject: [EXTERNAL] Re: [PATCH V2 net-next] net: mana: Assigning IRQ affinity on
+> > >HT cores
+> > >
+> > >On Tue, 21 Nov 2023 05:54:37 -0800 Souradeep Chakrabarti wrote:
+> > >> Existing MANA design assigns IRQ to every CPUs, including sibling
+> > >> hyper-threads in a core. This causes multiple IRQs to work on same CPU
+> > >> and may reduce the network performance with RSS.
+> > >>
+> > >> Improve the performance by adhering the configuration for RSS, which
+> > >> assigns IRQ on HT cores.
+> > >
+> > >Drivers should not have to carry 120 LoC for something as basic as spreading IRQs.
+> > >Please take a look at include/linux/topology.h and if there's nothing that fits your
+> > >needs there - add it. That way other drivers can reuse it.
+> > Because of the current design idea, it is easier to keep things inside
+> > the mana driver code here. As the idea of IRQ distribution here is :
+> > 1)Loop through interrupts to assign CPU
+> > 2)Find non sibling online CPU from local NUMA and assign the IRQs
+> > on them.
+> > 3)If number of IRQs is more than number of non-sibling CPU in that
+> > NUMA node, then assign on sibling CPU of that node.
+> > 4)Keep doing it till all the online CPUs are used or no more IRQs.
+> > 5)If all CPUs in that node are used, goto next NUMA node with CPU.
+> > Keep doing 2 and 3.
+> > 6) If all CPUs in all NUMA nodes are used, but still there are IRQs
+> > then wrap over from first local NUMA node and continue
+> > doing 2, 3 4 till all IRQs are assigned.
 > 
+> Hi Souradeep,
 > 
-> On 11/30/23 10:29, Krzysztof Kozlowski wrote:
->> On 30/11/2023 10:19, Michal Simek wrote:
->>> The commit 81186dc16101 ("dt-bindings: zynqmp: add destination mailbox
->>> compatible") make compatible string for child nodes mandatory that's why
->>> add it.
->>>
->>> Signed-off-by: Michal Simek <michal.simek@amd.com>
->>> ---
->>>
->>>   arch/arm64/boot/dts/xilinx/zynqmp.dtsi | 1 +
->>>   1 file changed, 1 insertion(+)
->>>
->>> diff --git a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
->>> index f5e1eb8cb3b7..eaba466804bc 100644
->>> --- a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
->>> +++ b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
->>> @@ -141,6 +141,7 @@ zynqmp_ipi: zynqmp-ipi {
->>>   
->>>   		ipi_mailbox_pmu1: mailbox@ff9905c0 {
->>>   			bootph-all;
->>> +			compatible = "xlnx,zynqmp-ipi-dest-mailbox";
->>
->> Probably you want it as first property. Although then reg is also placed
->> odd, but it's all because bootph-all was put at the beginning.
+> (Thanks Jakub for sharing this thread with me)
 > 
-> When DTS conding style is approved I will need to resort all that nodes based on 
-> it. I did this change to be aligned with current style which this file has.
-> What do you think?
+> If I understand your intention right, you can leverage the existing
+> cpumask_local_spread().
+> 
+> But I think I've got something better for you. The below series adds
+> a for_each_numa_cpu() iterator, which may help you doing most of the
+> job without messing with nodes internals.
+> 
+> https://lore.kernel.org/netdev/ZD3l6FBnUh9vTIGc@yury-ThinkPad/T/
+>
+Thanks Yur and Jakub. I was trying to find this patch, but unable to find it on that thread.
+Also in net-next I am unable to find it. Can you please tell, if it has been committed?
+If not can you please point me out the correct patch for this macro. It will be
+really helpful.
+> By using it, the pseudocode implementing your algorithm may look
+> like this:
+> 
+>         unsigned int cpu, hop;
+>         unsigned int irq = 0;
+> 
+> again:
+>         cpu = get_cpu();
+>         node = cpu_to_node(cpu);
+>         cpumask_copy(cpus, cpu_online_mask);
+> 
+>         for_each_numa_cpu(cpu, hop, node, cpus) {
+>                 /* All siblings are the same for IRQ spreading purpose */
+>                 irq_set_affinity_and_hint(irq, topology_sibling_cpumask());
+> 
+>                 /* One IRQ per sibling group */
+>                 cpumask_andnot(cpus, cpus, topology_sibling_cpumask());
+> 
+>                 if (++irq == num_irqs)
+>                         break;
+>         }
+> 
+>         if (irq < num_irqs)
+>                 goto again;
+> 
+> (Completely not tested, just an idea.)
+>
+I have done similar kind of change for our driver, but constraint here is that total number of IRQs
+can be equal to the total number of online CPUs, in some setup. It is either equal
+to the number of online CPUs or maximum 64 IRQs if online CPUs are more than that.
+So my proposed change is following:
 
-Hm, indeed. So it is entirely up to you :)
++static int irq_setup(int *irqs, int nvec, int start_numa_node)
++{
++       cpumask_var_t node_cpumask;
++       int i, cpu, err = 0;
++       unsigned int  next_node;
++       cpumask_t visited_cpus;
++       unsigned int start_node = start_numa_node;
++       i = 0;
++       if (!alloc_cpumask_var(&node_cpumask, GFP_KERNEL)) {
++               err = -ENOMEM;
++               goto free_mask;
++       }
++       cpumask_andnot(&visited_cpus, &visited_cpus, &visited_cpus);
++       start_node = 1;
++       for_each_next_node_with_cpus(start_node, next_node) {
++               cpumask_copy(node_cpumask, cpumask_of_node(next_node));
++               for_each_cpu(cpu, node_cpumask) {
++                       cpumask_andnot(node_cpumask, node_cpumask,
++                                      topology_sibling_cpumask(cpu));
++                       irq_set_affinity_and_hint(irqs[i], cpumask_of(cpu));
++                       if(++i == nvec)
++                               goto free_mask;
++                       cpumask_set_cpu(cpu, &visited_cpus);
++                       if (cpumask_empty(node_cpumask) && cpumask_weight(&visited_cpus) <
++                           nr_cpus_node(next_node)) {
++                               cpumask_copy(node_cpumask, cpumask_of_node(next_node));
++                               cpumask_andnot(node_cpumask, node_cpumask, &visited_cpus);
++                               cpu = cpumask_first(node_cpumask);
++                       }
++               }
++               if (next_online_node(next_node) == MAX_NUMNODES)
++                       next_node = first_online_node;
++       }
++free_mask:
++       free_cpumask_var(node_cpumask);
++       return err;
++} 
 
-Best regards,
-Krzysztof
-
+I can definitely use the for_each_numa_cpu() instead of my proposed for_each_next_node_with_cpus()
+macro here and that will make it cleaner.
+Thanks for the suggestion.
+> Thanks,
+> Yury
