@@ -2,130 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A57B7FEC51
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 10:55:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E51D27FEC53
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 10:55:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235110AbjK3JzE convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 30 Nov 2023 04:55:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52090 "EHLO
+        id S235112AbjK3JzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 04:55:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235076AbjK3JzA (ORCPT
+        with ESMTP id S235076AbjK3JzQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 04:55:00 -0500
-Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE90710E2;
-        Thu, 30 Nov 2023 01:55:06 -0800 (PST)
-Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-d9beb865a40so664163276.1;
-        Thu, 30 Nov 2023 01:55:06 -0800 (PST)
+        Thu, 30 Nov 2023 04:55:16 -0500
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EA8D10F1;
+        Thu, 30 Nov 2023 01:55:21 -0800 (PST)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-a0029289b1bso92484566b.1;
+        Thu, 30 Nov 2023 01:55:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701338120; x=1701942920; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dMJA5AfP0P9yxCn+eRvuLh+vUtXzzmDbdcliSqXeJ88=;
+        b=W3KHjea1Zs6fa9m28KdNeZdNzjrrIu+QW896YKa+THlaJ8ZuJFWxv0lqUMEDtP4nH3
+         1SlEzfgn4zfZ9MOOMPeV6nfaB09wAMIvuPQLhQkNr4rA6yQRsFdHmARRTV6awLGSBrAd
+         mN7lTATKEFG2YALqGnslQDi9e9NJlup15l3u6bU0mpC8Qh127wgeXcHc3L+miW+qw7P4
+         RGkLklW1rVobS3Xu5mBY9wjNZPW2tpHW7365xsXs5loyLNkMC4i715pvy1bQ8ve1z4cU
+         BNnwaHYoLMpXZKeguKPJmcsBfl1jMh1vICAoyXY+WjZgcRtzo6uJEGtIKzXbhFUZ2+x6
+         HL2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701338105; x=1701942905;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1701338120; x=1701942920;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/kl3Cyom3VKHlW1GdXvF57049dn4ixhhiJNdSH5QXH4=;
-        b=ThV1zXVjgeL2o6qm/ngXJMTKvjPsXQRDbig3iCmK90rdA7SWVKTPHPIoeqjz+lnmhh
-         LVqgiBMlRJx/yf3glxVYxhTEFSLNW3ocKs56hanJW5SYwu3VXNv+xhSj/wKOq3s/XBMw
-         wRSzlVb19rGENx2nL6rJNEkXlvHWl4IT3/OtVrKP3nqQnO+nF6LhNdChr5toz+gf4yZc
-         /PslSlDz9jktsW2zoAmzHuOi7lA1p+UZKza4+00H+//bS6F1fIJiJKyDozFeNEtjuSHn
-         S9szfSdcAOe4JuLAfAWrDG6qENbbjyQaoc6fkJOsWK697OrZRVSrtmv+Jz4bao8YvmGa
-         lkLA==
-X-Gm-Message-State: AOJu0YycV+K2bQzfXSRn99gHL8gZURUQcqBRGYNjb8+6vz7Il4WZgUC+
-        H9fO7zcq0zYhX3+n/9rVxCEn5ls/T874Vg==
-X-Google-Smtp-Source: AGHT+IGad/xbG4AWM4LSIJNFYbwM6pNaT28G+jf3I/a25gC6jZTk3p0GLY2L+0DYJY9VobqtnG1vCQ==
-X-Received: by 2002:a0d:d146:0:b0:5cb:c143:cd90 with SMTP id t67-20020a0dd146000000b005cbc143cd90mr22789105ywd.35.1701338104996;
-        Thu, 30 Nov 2023 01:55:04 -0800 (PST)
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com. [209.85.128.179])
-        by smtp.gmail.com with ESMTPSA id z2-20020a816502000000b00597e912e67esm257647ywb.131.2023.11.30.01.55.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Nov 2023 01:55:03 -0800 (PST)
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-5d34d85e610so4119657b3.3;
-        Thu, 30 Nov 2023 01:55:03 -0800 (PST)
-X-Received: by 2002:a81:92d7:0:b0:5ca:e49:c98b with SMTP id
- j206-20020a8192d7000000b005ca0e49c98bmr23203204ywg.8.1701338103524; Thu, 30
- Nov 2023 01:55:03 -0800 (PST)
-MIME-Version: 1.0
-References: <20231017104638.201260-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <CA+V-a8t3sGn83vpgjECf5dw=bbz2yPXpnn+v2Dx2q3yJRPsKgA@mail.gmail.com>
- <CAMuHMdXMRj4quvO87LbLHCCLr14EK2AXsvr_muTDrBrA8+BMjg@mail.gmail.com> <CA+V-a8tjy2Ttp_TbZT63PC_UY12J8FLcziCtef-D-jgw_CmKaA@mail.gmail.com>
-In-Reply-To: <CA+V-a8tjy2Ttp_TbZT63PC_UY12J8FLcziCtef-D-jgw_CmKaA@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 30 Nov 2023 10:54:52 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVcUXY+J36X6iG_jtT1mQhXFbEdF57oOT4DFZAridp2_A@mail.gmail.com>
-Message-ID: <CAMuHMdVcUXY+J36X6iG_jtT1mQhXFbEdF57oOT4DFZAridp2_A@mail.gmail.com>
-Subject: Re: [PATCH v2 0/3] Add missing port pins for RZ/Five SoC
-To:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Cc:     Magnus Damm <magnus.damm@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+        bh=dMJA5AfP0P9yxCn+eRvuLh+vUtXzzmDbdcliSqXeJ88=;
+        b=H8jxijvqpKXsZhqhqYddSBh1RMWTtAn9kiAUEAl/mETdgARFcir15z/VGc34ycjhev
+         a+VR1kP4xq/FJyikW97aXlsaE1ugph6fbETcPcw2QQMGlM+2sawtEJym4gCXXYlUJkCG
+         CUGkfU72i6nNICgga43IXrpysFahoyA3UZSo/rcCCaRV9JBTY85dECAIh+XUnHqyNOyB
+         +osPGfIEEXIFRJbTYAJ+7jEBgkpWeEPV7w6kuOEy8zmks2DfSqXZq9Iyh3YVsFtb17Xg
+         JTq5t70XuvvIL6bdiel5n0EMiKf4kW64ptDIc2KWC98uvqhyw9fbFPvSARxai4lkQh+l
+         MNcw==
+X-Gm-Message-State: AOJu0YyrgIR4VFAuh8FiZQ6tk7OeaTkHbveeVzl5baoVoHwLWWJiPpk3
+        kja4t12om7iDXvJ5UO7WltA=
+X-Google-Smtp-Source: AGHT+IEijT5IFhagvVJj2BSYxgKTlTUs0axftnkLk/i64ubFWskQfwihXRFfFN0WF38+KIQ8nTV70A==
+X-Received: by 2002:a17:906:ca14:b0:a07:16e0:e0bc with SMTP id jt20-20020a170906ca1400b00a0716e0e0bcmr13673278ejb.76.1701338119585;
+        Thu, 30 Nov 2023 01:55:19 -0800 (PST)
+Received: from felia.fritz.box ([2a02:810d:7e40:14b0:257f:2c3:4a4d:4a99])
+        by smtp.gmail.com with ESMTPSA id x24-20020a1709064a9800b00a0cd9d89a00sm485050eju.151.2023.11.30.01.55.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Nov 2023 01:55:19 -0800 (PST)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Vlastimil Babka <vbabka@suse.cz>, Jonathan Corbet <corbet@lwn.net>,
+        linux-doc@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] docs: admin-guide: remove obsolete advice related to SLAB allocator
+Date:   Thu, 30 Nov 2023 10:55:15 +0100
+Message-Id: <20231130095515.21586-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prabhakar,
+Commit 1db9d06aaa55 ("mm/slab: remove CONFIG_SLAB from all Kconfig and
+Makefile") removes the config SLAB and makes the SLUB allocator the only
+default allocator in the kernel. Hence, the advice on reducing OS jitter
+due to kworker kernel threads to build with CONFIG_SLUB instead of
+CONFIG_SLAB is obsolete.
 
-On Thu, Nov 30, 2023 at 9:48 AM Lad, Prabhakar
-<prabhakar.csengg@gmail.com> wrote:
-> On Wed, Nov 29, 2023 at 3:32 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > On Wed, Nov 29, 2023 at 3:44 PM Lad, Prabhakar
-> > <prabhakar.csengg@gmail.com> wrote:
-> > > On Tue, Oct 17, 2023 at 11:47 AM Prabhakar <prabhakar.csengg@gmail.com> wrote:
-> > > > This patch series intends to incorporate the absent port pins P19 to P28,
-> > > > which are exclusively available on the RZ/Five SoC.
-> > > >
-> > > > Cheers,
-> > > > Prabhakar
-> > > >
-> > > > RFC -> v2:
-> > > > * Fixed review comments pointed by Geert & Biju
-> > > >
-> > > > RFC: https://lore.kernel.org/lkml/20230630120433.49529-3-prabhakar.mahadev-lad.rj@bp.renesas.com/T/
-> > > >
-> > > > Lad Prabhakar (3):
-> > > >   pinctrl: renesas: rzg2l: Include pinmap in RZG2L_GPIO_PORT_PACK()
-> > > >     macro
-> > > >   pinctrl: renesas: pinctrl-rzg2l: Add the missing port pins P19 to P28
-> > > >   riscv: dts: renesas: r9a07g043f: Update gpio-ranges property
-> > > >
-> > > >  arch/riscv/boot/dts/renesas/r9a07g043f.dtsi |   4 +
-> > > >  drivers/pinctrl/renesas/pinctrl-rzg2l.c     | 263 ++++++++++++++++++--
-> > > >  2 files changed, 242 insertions(+), 25 deletions(-)
-> > > >
-> > > Gentle ping.
-> >
-> > As the kernel test robot reported a build issue for PATCH 1/3, I had
-> > removed this series from my review queue.
-> Strange patchwork status didnt mention it as "rejected".
+Remove the obsolete advice to build with SLUB instead of SLAB.
 
-Actually I do not use patchwork that much...
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+ .../admin-guide/kernel-per-CPU-kthreads.rst      | 16 ++++++----------
+ 1 file changed, 6 insertions(+), 10 deletions(-)
 
-> > Do you still want me to review v2, or do you want to send a v3 first?
-> >
-> No worries, I'll send a v3 and we can go from there.
-
-OK.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/Documentation/admin-guide/kernel-per-CPU-kthreads.rst b/Documentation/admin-guide/kernel-per-CPU-kthreads.rst
+index 993c2a05f5ee..b6aeae3327ce 100644
+--- a/Documentation/admin-guide/kernel-per-CPU-kthreads.rst
++++ b/Documentation/admin-guide/kernel-per-CPU-kthreads.rst
+@@ -243,13 +243,9 @@ To reduce its OS jitter, do any of the following:
+ 3.	Do any of the following needed to avoid jitter that your
+ 	application cannot tolerate:
+ 
+-	a.	Build your kernel with CONFIG_SLUB=y rather than
+-		CONFIG_SLAB=y, thus avoiding the slab allocator's periodic
+-		use of each CPU's workqueues to run its cache_reap()
+-		function.
+-	b.	Avoid using oprofile, thus avoiding OS jitter from
++	a.	Avoid using oprofile, thus avoiding OS jitter from
+ 		wq_sync_buffer().
+-	c.	Limit your CPU frequency so that a CPU-frequency
++	b.	Limit your CPU frequency so that a CPU-frequency
+ 		governor is not required, possibly enlisting the aid of
+ 		special heatsinks or other cooling technologies.  If done
+ 		correctly, and if you CPU architecture permits, you should
+@@ -259,7 +255,7 @@ To reduce its OS jitter, do any of the following:
+ 
+ 		WARNING:  Please check your CPU specifications to
+ 		make sure that this is safe on your particular system.
+-	d.	As of v3.18, Christoph Lameter's on-demand vmstat workers
++	c.	As of v3.18, Christoph Lameter's on-demand vmstat workers
+ 		commit prevents OS jitter due to vmstat_update() on
+ 		CONFIG_SMP=y systems.  Before v3.18, is not possible
+ 		to entirely get rid of the OS jitter, but you can
+@@ -274,7 +270,7 @@ To reduce its OS jitter, do any of the following:
+ 		(based on an earlier one from Gilad Ben-Yossef) that
+ 		reduces or even eliminates vmstat overhead for some
+ 		workloads at https://lore.kernel.org/r/00000140e9dfd6bd-40db3d4f-c1be-434f-8132-7820f81bb586-000000@email.amazonses.com.
+-	e.	If running on high-end powerpc servers, build with
++	d.	If running on high-end powerpc servers, build with
+ 		CONFIG_PPC_RTAS_DAEMON=n.  This prevents the RTAS
+ 		daemon from running on each CPU every second or so.
+ 		(This will require editing Kconfig files and will defeat
+@@ -282,12 +278,12 @@ To reduce its OS jitter, do any of the following:
+ 		due to the rtas_event_scan() function.
+ 		WARNING:  Please check your CPU specifications to
+ 		make sure that this is safe on your particular system.
+-	f.	If running on Cell Processor, build your kernel with
++	e.	If running on Cell Processor, build your kernel with
+ 		CBE_CPUFREQ_SPU_GOVERNOR=n to avoid OS jitter from
+ 		spu_gov_work().
+ 		WARNING:  Please check your CPU specifications to
+ 		make sure that this is safe on your particular system.
+-	g.	If running on PowerMAC, build your kernel with
++	f.	If running on PowerMAC, build your kernel with
+ 		CONFIG_PMAC_RACKMETER=n to disable the CPU-meter,
+ 		avoiding OS jitter from rackmeter_do_timer().
+ 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.17.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
