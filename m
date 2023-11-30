@@ -2,181 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD1247FFFA5
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 00:44:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1FC17FFFAE
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 00:45:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377288AbjK3XoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 18:44:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54966 "EHLO
+        id S1377324AbjK3XpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 18:45:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377273AbjK3XoN (ORCPT
+        with ESMTP id S1377313AbjK3Xo5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 18:44:13 -0500
-Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C7331715;
-        Thu, 30 Nov 2023 15:44:01 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.18.186.51])
-        by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4ShC911BlYz9y8Th;
-        Fri,  1 Dec 2023 07:30:13 +0800 (CST)
-Received: from mail02.huawei.com (unknown [7.182.16.27])
-        by mail.maildlp.com (Postfix) with ESMTP id DA6DC14065C;
-        Fri,  1 Dec 2023 07:43:48 +0800 (CST)
-Received: from [10.81.202.161] (unknown [10.81.202.161])
-        by APP2 (Coremail) with SMTP id GxC2BwCnpV8kHmllcimqAQ--.14981S2;
-        Fri, 01 Dec 2023 00:43:48 +0100 (CET)
-Message-ID: <9c7860ed-b761-417b-a9ad-bd680f2c8d16@huaweicloud.com>
-Date:   Fri, 1 Dec 2023 00:43:28 +0100
+        Thu, 30 Nov 2023 18:44:57 -0500
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 185DB199C
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 15:44:36 -0800 (PST)
+Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-6cde4aeea29so1297034b3a.2
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 15:44:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1701387875; x=1701992675; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=SLd4D6mSQG/joWbwU/b54aJUKA2FESFs2G7TafIy+Is=;
+        b=PcsNdaMkVWR6Sez2xUDyEatVn3eH0riySSyk/DD9rDF23Q7W6qI5ffyiW8WymH4jT9
+         PQc/ZkLmIMVfVfQGs7kih+X5lu61cSD5AHjAtoNZtb/NCOr/MDiOlyNsOEGHkqaNKgqY
+         ZDWL1Tu1+u5pMtKjxk8GKwsJ184TqltUH0CWU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701387875; x=1701992675;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SLd4D6mSQG/joWbwU/b54aJUKA2FESFs2G7TafIy+Is=;
+        b=Xg/WH/LfuIFC2EudArCfG1WVObZRaj1/1BMdkYWMFp9/bl2WU6mtC/OBVySZpDOSm2
+         l6w3HmIkdw0xfgyYIwGEQfxPcUJ11tfaKmD/OQZ7t5RrZjz8NYameoxR+xN08VHgQOUn
+         w4sehq5owNo/TWYCp/LPLvJtJ+Uh4r2N1n9S28L6VYMmH9BuxR1ObrmoGqBPSh1T6FgE
+         uehmeOlk+LrGDH2PpCMQP5zC1HOkJSq2SkH2F9PfrPkKnH00lH7ZSpoWQRBXlQLOTaQE
+         P7PhtOx+0XVH6956booojy4st0BHXxGlcbygkqFJWGQk4XTBWDpfGQkfSRluTN8x3H3U
+         bkuA==
+X-Gm-Message-State: AOJu0Yxfyz8JJijqEuF1KPDTFSHAZkKcPb3HwTKTntTiS5k/kgFmCmXI
+        o82nJDMHG/jS/bX3Xt6Ud9QI+w==
+X-Google-Smtp-Source: AGHT+IF0n3Rck8JGMEe3DIUCNOxgLiieLlqRMlI0w2eWxG/jaCq8ZZLjK2DDCZjkCpsFpWkaJwa0LA==
+X-Received: by 2002:a05:6a20:daaa:b0:187:c662:9b7e with SMTP id iy42-20020a056a20daaa00b00187c6629b7emr24192616pzb.25.1701387875141;
+        Thu, 30 Nov 2023 15:44:35 -0800 (PST)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:9d:2:11eb:92ac:94e:c791])
+        by smtp.gmail.com with ESMTPSA id b24-20020aa78718000000b0068fece22469sm1756401pfo.4.2023.11.30.15.44.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Nov 2023 15:44:34 -0800 (PST)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     linux-usb@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Simon Horman <horms@kernel.org>,
+        Grant Grundler <grundler@chromium.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Hayes Wang <hayeswang@realtek.com>,
+        =?UTF-8?q?Bj=C3=B8rn=20Mork?= <bjorn@mork.no>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        "David S . Miller" <davem@davemloft.net>,
+        Brian Geffon <bgeffon@google.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        Bastien Nocera <hadess@hadess.net>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Flavio Suligoi <f.suligoi@asem.it>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        =?UTF-8?q?Ricardo=20Ca=C3=B1uelo?= <ricardo.canuelo@collabora.com>,
+        Rob Herring <robh@kernel.org>, Roy Luo <royluo@google.com>,
+        Stanley Chang <stanley_chang@realtek.com>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] usb: core: Save the config when a device is deauthorized+authorized
+Date:   Thu, 30 Nov 2023 15:43:47 -0800
+Message-ID: <20231130154337.1.Ie00e07f07f87149c9ce0b27ae4e26991d307e14b@changeid>
+X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 23/23] integrity: Switch from rbtree to LSM-managed
- blob for integrity_iint_cache
-Content-Language: en-US
-To:     Casey Schaufler <casey@schaufler-ca.com>,
-        Petr Tesarik <petrtesarik@huaweicloud.com>,
-        Paul Moore <paul@paul-moore.com>
-Cc:     viro@zeniv.linux.org.uk, brauner@kernel.org,
-        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
-        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
-        jmorris@namei.org, serge@hallyn.com, zohar@linux.ibm.com,
-        dmitry.kasatkin@gmail.com, dhowells@redhat.com, jarkko@kernel.org,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        mic@digikod.net, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
-References: <20231107134012.682009-24-roberto.sassu@huaweicloud.com>
- <17befa132379d37977fc854a8af25f6d.paul@paul-moore.com>
- <2084adba3c27a606cbc5ed7b3214f61427a829dd.camel@huaweicloud.com>
- <CAHC9VhTTKac1o=RnQadu2xqdeKH8C_F+Wh4sY=HkGbCArwc8JQ@mail.gmail.com>
- <b6c51351be3913be197492469a13980ab379e412.camel@huaweicloud.com>
- <CAHC9VhSAryQSeFy0ZMexOiwBG-YdVGRzvh58=heH916DftcmWA@mail.gmail.com>
- <90eb8e9d-c63e-42d6-b951-f856f31590db@huaweicloud.com>
- <366a6e5f-d43d-4266-8421-a8a05938a8fd@schaufler-ca.com>
- <66ec6876-483a-4403-9baa-487ebad053f2@huaweicloud.com>
- <a121c359-03c9-42b1-aa19-1e9e34f6a386@schaufler-ca.com>
- <9297638a-8dab-42ba-8b60-82c03497c9cd@huaweicloud.com>
- <018438d4-44b9-4734-9c0c-8a65f9c605a4@schaufler-ca.com>
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-In-Reply-To: <018438d4-44b9-4734-9c0c-8a65f9c605a4@schaufler-ca.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: GxC2BwCnpV8kHmllcimqAQ--.14981S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxJFWfZrWkGFy5CFy3XF4kXrb_yoW5KFyfpa
-        yxtFW7KFWqyr48Kwn2ya15WFyjyws3Aa45Gr1UJF10k3s8Wr1Ivr4Igr4a9FyDCrsakry0
-        qrWav34avrs8AaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUv014x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-        6F4UM28EF7xvwVC2z280aVAFwI0_Jr0_Gr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r4UJV
-        WxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
-        0xkIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67
-        AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIY
-        rxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14
-        v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWU
-        JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7VUb
-        J73DUUUUU==
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgARBF1jj5MfhQAAsv
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/1/2023 12:31 AM, Casey Schaufler wrote:
-> On 11/30/2023 1:34 PM, Roberto Sassu wrote:
->> On 11/30/2023 5:15 PM, Casey Schaufler wrote:
->>> On 11/30/2023 12:30 AM, Petr Tesarik wrote:
->>>> Hi all,
->>>>
->>>> On 11/30/2023 1:41 AM, Casey Schaufler wrote:
->>>>> ...
->>>>> It would be nice if the solution directly addresses the problem.
->>>>> EVM needs to be after the LSMs that use xattrs, not after all LSMs.
->>>>> I suggested LSM_ORDER_REALLY_LAST in part to identify the notion as
->>>>> unattractive.
->>>> Excuse me to chime in, but do we really need the ordering in code?
->>>
->>> tl;dr - Yes.
->>>
->>>>    FWIW
->>>> the linker guarantees that objects appear in the order they are seen
->>>> during the link (unless --sort-section overrides that default, but this
->>>> option is not used in the kernel). Since *.a archive files are used in
->>>> kbuild, I have also verified that their use does not break the
->>>> assumption; they are always created from scratch.
->>>>
->>>> In short, to enforce an ordering, you can simply list the corresponding
->>>> object files in that order in the Makefile. Of course, add a big fat
->>>> warning comment, so people understand the order is not arbitrary.
->>>
->>> Not everyone builds custom kernels.
->>
->> Sorry, I didn't understand your comment.
-> 
-> Most people run a disto supplied kernel. If the LSM ordering were determined
-> only at compile time you could never run a kernel that omitted an LSM.
+Right now, when a USB device is deauthorized (by writing 0 to the
+"authorized" field in sysfs) and then reauthorized (by writing a 1) it
+loses any configuration it might have had. This is because
+usb_deauthorize_device() calls:
+  usb_set_configuration(usb_dev, -1);
+...and then usb_authorize_device() calls:
+  usb_choose_configuration(udev);
+...to choose the "best" configuration.
 
-Ah, ok. We are talking about the LSMs with order LSM_ORDER_LAST which 
-are always enabled and the last.
+This generally works OK and it looks like the above design was chosen
+on purpose. In commit 93993a0a3e52 ("usb: introduce
+usb_authorize/deauthorize()") we can see some discussion about keeping
+the old config but it was decided not to bother since we can't save it
+for wireless USB anyway. It can be noted that as of commit
+1e4c574225cc ("USB: Remove remnants of Wireless USB and UWB") wireless
+USB is removed anyway, so there's really not a good reason not to keep
+the old config.
 
-This is the code in security.c to handle them:
+Unfortunately, throwing away the old config breaks when something has
+decided to choose a config other than the normal "best" config.
+Specifically, it can be noted that as of commit ec51fbd1b8a2 ("r8152:
+add USB device driver for config selection") that the r8152 driver
+subclasses the generic USB driver and selects a config other than the
+one that would have been selected by usb_choose_configuration(). This
+logic isn't re-run after a deauthorize + authorize and results in the
+r8152 driver not being re-bound.
 
-         /* LSM_ORDER_LAST is always last. */
-         for (lsm = __start_lsm_info; lsm < __end_lsm_info; lsm++) {
-                 if (lsm->order == LSM_ORDER_LAST)
-                         append_ordered_lsm(lsm, "   last");
-         }
+Let's change things to save the old config when we deauthorize and
+then restore it when we re-authorize. We'll disable this logic for
+wireless USB where we re-fetch the descriptor after authorization.
 
-Those LSMs are not affected by lsm= in the kernel command line, or the 
-order in the kernel configuration (those are the mutable LSMs).
+Fixes: ec51fbd1b8a2 ("r8152: add USB device driver for config selection")
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+---
+Although this seems to work for me and doesn't seem too terrible, I
+could certainly imagine that USB folks might want something different
+in terms of style or general approach. If there's some other way we
+should be tackling this problem then please yell. I guess worst case
+we could also revert the r8152 changes to subclass the generic USB
+driver until this problem is solved, though that doesn't seem
+wonderful.
 
-In this case, clearly, what matters is how LSMs are stored in the 
-.lsm_info.init section. See the DEFINE_LSM() macro:
+ drivers/usb/core/hub.c     | 19 ++++++++++++++++---
+ drivers/usb/core/message.c |  2 ++
+ include/linux/usb.h        |  3 +++
+ 3 files changed, 21 insertions(+), 3 deletions(-)
 
-#define DEFINE_LSM(lsm)                                                \
-         static struct lsm_info __lsm_##lsm                             \
-                 __used __section(".lsm_info.init")                     \
-                 __aligned(sizeof(unsigned long))
-
-With Petr, we started to wonder if somehow the order in which LSMs are 
-placed in this section is deterministic. I empirically tried to swap the 
-order in which IMA and EVM are compiled in the Makefile, and that led to 
-'evm' being placed in the LSM list before 'ima'.
-
-The question is if this behavior is deterministic, or there is a case 
-where 'evm' is before 'ima', despite they are in the inverse order in 
-the Makefile.
-
-Petr looked at the kernel linking process, which is relevant for the 
-order of LSMs in the .lsm_info.init section, and he found that the order 
-in the section always corresponds to the order in the Makefile.
-
-Thanks
-
-Roberto
->> Everyone builds the kernel, also Linux distros. What Petr was
->> suggesting was that it does not matter how you build the kernel, the
->> linker will place the LSMs in the order they appear in the Makefile.
->> And for this particular case, we have:
->>
->> obj-$(CONFIG_IMA)                       += ima/
->> obj-$(CONFIG_EVM)                       += evm/
->>
->> In the past, I also verified that swapping these two resulted in the
->> swapped order of LSMs. Petr confirmed that it would always happen.
-> 
-> LSM execution order is not based on compilation order. It is specified
-> by CONFIG_LSM, and may be modified by the LSM_ORDER value. I don't
-> understand why the linker is even being brought into the discussion.
-> 
->>
->> Thanks
->>
->> Roberto
+diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
+index b4584a0cd484..4afbbfa279ae 100644
+--- a/drivers/usb/core/hub.c
++++ b/drivers/usb/core/hub.c
+@@ -2653,12 +2653,20 @@ int usb_new_device(struct usb_device *udev)
+  */
+ int usb_deauthorize_device(struct usb_device *usb_dev)
+ {
++	int old_configuration;
++
+ 	usb_lock_device(usb_dev);
+ 	if (usb_dev->authorized == 0)
+ 		goto out_unauthorized;
+ 
++	/*
++	 * Keep the `saved_configuration` in a local since
++	 * usb_set_configuration() will clobber it.
++	 */
++	old_configuration = usb_dev->saved_configuration;
+ 	usb_dev->authorized = 0;
+ 	usb_set_configuration(usb_dev, -1);
++	usb_dev->saved_configuration = old_configuration;
+ 
+ out_unauthorized:
+ 	usb_unlock_device(usb_dev);
+@@ -2685,7 +2693,10 @@ int usb_authorize_device(struct usb_device *usb_dev)
+ 	/* Choose and set the configuration.  This registers the interfaces
+ 	 * with the driver core and lets interface drivers bind to them.
+ 	 */
+-	c = usb_choose_configuration(usb_dev);
++	if (usb_dev->saved_configuration != -1)
++		c = usb_dev->saved_configuration;
++	else
++		c = usb_choose_configuration(usb_dev);
+ 	if (c >= 0) {
+ 		result = usb_set_configuration(usb_dev, c);
+ 		if (result) {
+@@ -5077,10 +5088,12 @@ hub_port_init(struct usb_hub *hub, struct usb_device *udev, int port1,
+ 					retval);
+ 		goto fail;
+ 	}
+-	if (initial)
++	if (initial) {
+ 		udev->descriptor = *descr;
+-	else
++		udev->saved_configuration = -1;
++	} else {
+ 		*dev_descr = *descr;
++	}
+ 	kfree(descr);
+ 
+ 	/*
+diff --git a/drivers/usb/core/message.c b/drivers/usb/core/message.c
+index 077dfe48d01c..015522068300 100644
+--- a/drivers/usb/core/message.c
++++ b/drivers/usb/core/message.c
+@@ -1998,6 +1998,8 @@ int usb_set_configuration(struct usb_device *dev, int configuration)
+ 	struct usb_hcd *hcd = bus_to_hcd(dev->bus);
+ 	int n, nintf;
+ 
++	dev->saved_configuration = configuration;
++
+ 	if (dev->authorized == 0 || configuration == -1)
+ 		configuration = 0;
+ 	else {
+diff --git a/include/linux/usb.h b/include/linux/usb.h
+index 8c61643acd49..6b989b8b2f01 100644
+--- a/include/linux/usb.h
++++ b/include/linux/usb.h
+@@ -644,6 +644,7 @@ struct usb3_lpm_parameters {
+  *	parent->hub_delay + wHubDelay + tTPTransmissionDelay (40ns)
+  *	Will be used as wValue for SetIsochDelay requests.
+  * @use_generic_driver: ask driver core to reprobe using the generic driver.
++ * @saved_configuration: The last value passed to usb_set_configuration().
+  *
+  * Notes:
+  * Usbcore drivers should not set usbdev->state directly.  Instead use
+@@ -729,6 +730,8 @@ struct usb_device {
+ 
+ 	u16 hub_delay;
+ 	unsigned use_generic_driver:1;
++
++	int saved_configuration;
+ };
+ 
+ #define to_usb_device(__dev)	container_of_const(__dev, struct usb_device, dev)
+-- 
+2.43.0.rc2.451.g8631bc7472-goog
 
