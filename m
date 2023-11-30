@@ -2,120 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2D977FFDA8
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 22:38:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 866527FFDB8
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 22:41:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376966AbjK3ViS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 16:38:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45374 "EHLO
+        id S1376937AbjK3VlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 16:41:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376859AbjK3ViR (ORCPT
+        with ESMTP id S229645AbjK3VlJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 16:38:17 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED8171B4
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 13:38:23 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id 98e67ed59e1d1-285e7c85b30so1342149a91.0
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 13:38:23 -0800 (PST)
+        Thu, 30 Nov 2023 16:41:09 -0500
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ED2A10F8
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 13:41:14 -0800 (PST)
+Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2c9d4afb7dfso9286421fa.1
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 13:41:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1701380303; x=1701985103; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=tv/W2i+Ora8wm4sYpY7PJR8dJg+WnKNNi1TxcxV1QCY=;
-        b=U4zLMavLwXkb/dMXeD8CEJDxk91k0NCqqb+fa+zq0MbpqzNzrjrFMlOJs5DD+Ox9RB
-         59Z3PnrYw2rD1aXaMJ4dfcLZlN295BxGlMoNVzVLYK0o6ZMKGiX1vsZh1/yXAkXz7572
-         vd62bSM/t8zY1s0PMwPQ2cWygrKBXaAs67Akk=
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1701380472; x=1701985272; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fd0YG7g3wby74JcgoZTxtodoh2Ma9koAtjIfAtnBqJI=;
+        b=2iOGjZfCoTX61S0IzTF8HAWGZHbpH0IEYWbQivxvA/ZxP+xHIYwH0+DikksWbd5mzO
+         AcK7xKSkEV8TZrCTG8vTH0Wd7tHM4NPxasAf4ufnqlWHc8vS+ktj5e4GXaAkYQfhY+zt
+         xITrQcSELi2udH6Ynwvm0HZo7hvuWM9GcO4lWKdei+1+NHrgTsT7eQCGF31XOUzbxFdE
+         9xaGtK4JxeWWNxpPDDHEagDv/7RBYlF5TQ/4xGVHRvgufZ1OUEAYjKckeFgg/0oNKyZh
+         Zk3mGJb7etbEBhn8vewD+Kp+g8s5loU58gUO5Bh6oreuQ/On7ERHcvPLkp7HewOpZbci
+         GgCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701380303; x=1701985103;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tv/W2i+Ora8wm4sYpY7PJR8dJg+WnKNNi1TxcxV1QCY=;
-        b=En3tUEw0XVA982Qrbuf/tz/6ijghCPTZ2thpYziqXTLIM98yjV7yOf2u90vvYV8NLO
-         VKbBOmXOyCxTGyt5kyUvXo4JtsoJ/pedPdQKz+GB5cA1pVr4yJ9pC3+uGCqohuGaUHH3
-         EzxV1jjtvl/SaHz6B6J6Ppkdg+uSB0Dwj/xDkTbGYRbWV1gv4/dy7jVo4cp06WM3WuSI
-         KOStU5/pSVgAx/wI81dVe/4gpT8B/uprEXwV9evD2pG2U4g6FIM1M7DcHCFZBMUvUkga
-         HQQyVLHBYaeGy+5iLLvABeSn9tJJ5/x32aCBH968F3kBCBzfPFX/j339GeBid3h5AatP
-         icWQ==
-X-Gm-Message-State: AOJu0YwMGECtMDdjOmnWCuiNG6HBex3qOMvT211SLdn8AYSlV+2PKQzK
-        cYTGMKwXipKxNYX7aFyKskV7Yg==
-X-Google-Smtp-Source: AGHT+IGqsVkpV5wrxMFi2BxZymWRA9gHXWOvj19d8T0m31HmSlaQNiIh70vhYcIrxWpMlhgnhGv2fA==
-X-Received: by 2002:a17:90b:3a8b:b0:285:cc9c:75a6 with SMTP id om11-20020a17090b3a8b00b00285cc9c75a6mr17269552pjb.32.1701380285713;
-        Thu, 30 Nov 2023 13:38:05 -0800 (PST)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id z6-20020a17090abd8600b00285bb022192sm3685767pjr.20.2023.11.30.13.38.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Nov 2023 13:38:05 -0800 (PST)
-Date:   Thu, 30 Nov 2023 13:38:04 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, Bill Wendling <morbo@google.com>,
-        Dmitry Antipov <dmantipov@yandex.ru>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        kernel test robot <lkp@intel.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: [GIT PULL] hardening fixes for v6.7-rc4
-Message-ID: <202311301337.4070D0BEA3@keescook>
+        d=1e100.net; s=20230601; t=1701380472; x=1701985272;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fd0YG7g3wby74JcgoZTxtodoh2Ma9koAtjIfAtnBqJI=;
+        b=Y6BAhJn0KtQrfkprqyKf3GNSGa9wCsx8s2mBIrpXUQqTOoQD/9qyei4YwJMMRse2Mi
+         CxrrblAz5qPf76KDWYRjc7eApXolRqgAJtsi5ptLGKgghB1iYCqfvCgZg4x6Q/rPwK+D
+         3W39Mql9IEjraabdbGG6pKr9xhxvur8yjBqqugvEsEFEh92NziUR5JuKwxFKn6xLTUxA
+         48zTJCXVwHul43fNu2DRemfyZK1JcIPIw3k1THGfY2NX1WgYrypvyEPBXfdpnj628dbr
+         POuy40LH/G08QxoJBGJyJ+RX/+zOpwM47t3y/lJc+nBvMjF5W6gkXH99tDAbgFC3/eKm
+         1rSg==
+X-Gm-Message-State: AOJu0YykHoXI4Dj3G3cbkEd3Zj08NsGlU2MzdGIfOwxWMRCIB2h7s3rx
+        EFYOciwdXkbEjed8w5Y4vU7aHr72DrqOfkjZgd4xmQ==
+X-Google-Smtp-Source: AGHT+IHOqy3zd2l2wLsrbsS+OGAQHC++9ntml8mSoabCouZoB5MU3hbrors/4KLRm6nsBU9nM5qo4UP0iLwzR7fLM1w=
+X-Received: by 2002:a2e:9ec1:0:b0:2c9:d872:abdf with SMTP id
+ h1-20020a2e9ec1000000b002c9d872abdfmr87880ljk.93.1701380472434; Thu, 30 Nov
+ 2023 13:41:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231121-dev-iio-backend-v1-0-6a3d542eba35@analog.com> <20231121-dev-iio-backend-v1-4-6a3d542eba35@analog.com>
+In-Reply-To: <20231121-dev-iio-backend-v1-4-6a3d542eba35@analog.com>
+From:   David Lechner <dlechner@baylibre.com>
+Date:   Thu, 30 Nov 2023 15:41:01 -0600
+Message-ID: <CAMknhBGCqnzCp6vQ+59Z-SybScvbtU7aWdAD6KnP1e6=q60gVQ@mail.gmail.com>
+Subject: Re: [PATCH 04/12] iio: adc: ad9467: fix reset gpio handling
+To:     nuno.sa@analog.com
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-iio@vger.kernel.org,
+        Olivier MOYSAN <olivier.moysan@foss.st.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Tue, Nov 21, 2023 at 4:17=E2=80=AFAM Nuno Sa via B4 Relay
+<devnull+nuno.sa.analog.com@kernel.org> wrote:
+>
+> From: Nuno Sa <nuno.sa@analog.com>
+>
+> The reset gpio was being requested with GPIOD_OUT_LOW which means, not
+> asserted. Then it was being asserted but never de-asserted which means
+> the devices was left in reset. Fix it by de-asserting the gpio.
 
-Please pull these hardening fixes for v6.7-rc4.
+It could be helpful to update the devicetree bindings to state the
+expected active-high or active-low setting for this gpio so it is
+clear which state means asserted.
 
-Thanks!
+>
+> While at it, moved the handling to it's own function and dropped
+> 'reset_gpio' from the 'struct ad9467_state' as we only need it during
+> probe. On top of that, refactored things so that we now request the gpio
+> asserted (i.e in reset) and then de-assert it.
+>
+> Fixes: ad6797120238 ("iio: adc: ad9467: add support AD9467 ADC")
+> Signed-off-by: Nuno Sa <nuno.sa@analog.com>
+> ---
+>  drivers/iio/adc/ad9467.c | 33 ++++++++++++++++++++-------------
+>  1 file changed, 20 insertions(+), 13 deletions(-)
+>
+> diff --git a/drivers/iio/adc/ad9467.c b/drivers/iio/adc/ad9467.c
+> index 39eccc28debe..368ea57be117 100644
+> --- a/drivers/iio/adc/ad9467.c
+> +++ b/drivers/iio/adc/ad9467.c
+> @@ -121,7 +121,6 @@ struct ad9467_state {
+>         unsigned int                    output_mode;
+>
+>         struct gpio_desc                *pwrdown_gpio;
+> -       struct gpio_desc                *reset_gpio;
+>  };
+>
+>  static int ad9467_spi_read(struct spi_device *spi, unsigned int reg)
+> @@ -378,6 +377,23 @@ static int ad9467_preenable_setup(struct adi_axi_adc=
+_conv *conv)
+>         return ad9467_outputmode_set(st->spi, st->output_mode);
+>  }
+>
+> +static int ad9467_reset(struct device *dev)
+> +{
+> +       struct gpio_desc *gpio;
+> +
+> +       gpio =3D devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_HIGH);
+> +       if (IS_ERR(gpio))
+> +               return PTR_ERR(gpio);
+> +       if (!gpio)
+> +               return 0;
 
--Kees
+can be done in one test instead of 2:
 
-The following changes since commit 98b1cc82c4affc16f5598d4fa14b1858671b2263:
+if (IS_ERR_OR_NULL(gpio))
+        return PTR_ERR_OR_ZERO(gpio);
 
-  Linux 6.7-rc2 (2023-11-19 15:02:14 -0800)
+> +
+> +       fsleep(1);
+> +       gpiod_direction_output(gpio, 0);
+> +       fsleep(10);
 
-are available in the Git repository at:
+Previous version was 10 milliseconds instead of 10 microseconds. Was
+this change intentional? If yes, it should be mentioned it in the
+commit message.
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/hardening-v6.7-rc4
-
-for you to fetch changes up to d71f22365a9caca82d424f3a33445de46567e198:
-
-  gcc-plugins: randstruct: Update code comment in relayout_struct() (2023-11-27 16:30:05 -0800)
-
-----------------------------------------------------------------
-hardening fixes for v6.7-rc4
-
-- struct_group: propagate attributes to top-level union (Dmitry Antipov)
-
-- gcc-plugins: randstruct: Update code comment in relayout_struct (Gustavo
-  A. R. Silva)
-
-- MAINTAINERS: refresh LLVM support (Nick Desaulniers)
-
-----------------------------------------------------------------
-Dmitry Antipov (1):
-      uapi: propagate __struct_group() attributes to the container union
-
-Gustavo A. R. Silva (1):
-      gcc-plugins: randstruct: Update code comment in relayout_struct()
-
-ndesaulniers@google.com (1):
-      MAINTAINERS: refresh LLVM support
-
- MAINTAINERS                                   | 8 +++-----
- include/uapi/linux/stddef.h                   | 2 +-
- scripts/gcc-plugins/randomize_layout_plugin.c | 3 +--
- 3 files changed, 5 insertions(+), 8 deletions(-)
-
--- 
-Kees Cook
+> +
+> +       return 0;
+> +}
+> +
+>  static int ad9467_probe(struct spi_device *spi)
+>  {
+>         const struct ad9467_chip_info *info;
+> @@ -408,18 +424,9 @@ static int ad9467_probe(struct spi_device *spi)
+>         if (IS_ERR(st->pwrdown_gpio))
+>                 return PTR_ERR(st->pwrdown_gpio);
+>
+> -       st->reset_gpio =3D devm_gpiod_get_optional(&spi->dev, "reset",
+> -                                                GPIOD_OUT_LOW);
+> -       if (IS_ERR(st->reset_gpio))
+> -               return PTR_ERR(st->reset_gpio);
+> -
+> -       if (st->reset_gpio) {
+> -               udelay(1);
+> -               ret =3D gpiod_direction_output(st->reset_gpio, 1);
+> -               if (ret)
+> -                       return ret;
+> -               mdelay(10);
+> -       }
+> +       ret =3D ad9467_reset(&spi->dev);
+> +       if (ret)
+> +               return ret;
+>
+>         conv->chip_info =3D &info->axi_adc_info;
+>
+>
+> --
+> 2.42.1
+>
+>
