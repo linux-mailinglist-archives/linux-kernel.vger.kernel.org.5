@@ -2,106 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 812707FFA86
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 19:57:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B081B7FFA9B
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 20:00:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346782AbjK3S5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 13:57:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36240 "EHLO
+        id S232280AbjK3TAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 14:00:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229782AbjK3S5K (ORCPT
+        with ESMTP id S229782AbjK3S77 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 13:57:10 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 082CCB9;
-        Thu, 30 Nov 2023 10:57:17 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1d01c45ffebso12527025ad.1;
-        Thu, 30 Nov 2023 10:57:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701370636; x=1701975436; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Exv52TPUf3AOaA6t7+19yZpTBHz2Mm8ZmomI4RQTAVQ=;
-        b=edtolJZUXpNkR/VzR4ErdrKgHlSNR69zPWJ+LeaDYZO1DMeJ37zcPmepFMUbFdGNvQ
-         U7HCd9m+bU02RlImSLMR1nIWVcXSKLEMp9Ki8J8gTI5whRn22cn/XPKBFnjiRMmU9lls
-         LW4ZP7MbMbk/aZlhjZlyORH1pm0IS46U8CNCxFDx2qTBrNzI0OC3uy4XqBnC5DYKh9qk
-         TCS5CIDij0Fzxfw6+hwjjP0JWBKRYpVWe5l7OXy2aOnwMcWBEX+RZHk7de7n5qL5PDqf
-         442cQ08fJmK9+wFDwQp0yiQPCngLKXGN6kwbDtws7l4H9DGE9KnGEQhFlBoSH593q6P3
-         4ByQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701370636; x=1701975436;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Exv52TPUf3AOaA6t7+19yZpTBHz2Mm8ZmomI4RQTAVQ=;
-        b=Yje3yz6tUIJZuOPC4AiGL4sD9bdcco/2if29/yYl7BN3xL7J+LZTy61jM3Exg77QeK
-         jW7RJJh1G0Frmz5F8P3A+osstVxrePsj7XS5C3+3tMt/NQvuLeStfTk/5sEkAAfJUjAe
-         Y93+b93TZmEhRlP8+Ntp+TWhAEDTUE/yS/yvGbToMCYrR/ZLgqAbxZL6rL1YLTqB0ubF
-         DjjG5Xk6rxfqpFTkRptukO13EI5NfHjqlknCa8YkU9BuEHq09WvdVIOirss/UlJNltqK
-         +AGJ3CWhwpXDiaj4MkW/eWxD9WQNfOL0OBXIqZ40az7DcJezoCY1iJg7saTju+K8LNjY
-         wniw==
-X-Gm-Message-State: AOJu0Ywh0T8gNtBO+Ar1hIS6eJL+OINn9ASu2YlzuKuLuldESzQ7eLm+
-        n8BfX78FurexIqxI0nD7B10=
-X-Google-Smtp-Source: AGHT+IH3DiDL+xLbUZQ8OmJ6Q3v/3rNl8ObJgH8sk5z8qRThL6ymywtmzmNIIwFczx569F+2B1xuqw==
-X-Received: by 2002:a17:902:e88f:b0:1cf:cf40:3cef with SMTP id w15-20020a170902e88f00b001cfcf403cefmr14406808plg.64.1701370636097;
-        Thu, 30 Nov 2023 10:57:16 -0800 (PST)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id je20-20020a170903265400b001c739768214sm1748127plb.92.2023.11.30.10.57.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Nov 2023 10:57:15 -0800 (PST)
-Message-ID: <c9c5517e-5df5-4755-b47f-3582d0b19d8f@gmail.com>
-Date:   Thu, 30 Nov 2023 10:57:13 -0800
+        Thu, 30 Nov 2023 13:59:59 -0500
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A996ED48;
+        Thu, 30 Nov 2023 11:00:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+        s=smtpout1; t=1701370803;
+        bh=BObGTsR9eRsXFgPPmYkraabswwf/jPu4KRxicRxkChU=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=Erxk7VjUY2Kbt018z3ZmFmTM9vr57N350YYaSOx5StFL+loZ7obXN/CNymA3OUi8T
+         388Ir8uxLj1GE86rTpqPOEzLpI0x7yuMoEnxKS4yAH7GwMhQCA0mY2ebt+Sz7vkvDr
+         VbMs9YowhH0VKhDjK86puxnrTcLKlkuwtPmoJu+e7LvUmHqeJ0lJAaSP1prXJS9weE
+         TOqzp2Cy7Kxk+mrdbkVgau10xt7CGFw9N3UoPQR7wISQUhbYS9SDr+X6mCxcB/A3+/
+         9mD9SP+BbbEAk72WUbla8U+hnZvb3DOOpbYtO7236++YFJiOvYqZxwbqx1U2OQHkIM
+         ftg5W9IHkxg9w==
+Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4Sh59H21LLz1f02;
+        Thu, 30 Nov 2023 14:00:03 -0500 (EST)
+Message-ID: <a07b7ae6-8e86-4a87-9347-e6e1a0f2ee65@efficios.com>
+Date:   Thu, 30 Nov 2023 14:00:01 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5.15 00/69] 5.15.141-rc1 review
+Subject: Re: [RFC 1/3] pidfd: allow pidfd_open() on non-thread-group leaders
 Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, allen.lkml@gmail.com
-References: <20231130162133.035359406@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20231130162133.035359406@linuxfoundation.org>
+To:     Tycho Andersen <tycho@tycho.pizza>,
+        Florian Weimer <fweimer@redhat.com>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        Tycho Andersen <tandersen@netflix.com>
+References: <20231130163946.277502-1-tycho@tycho.pizza>
+ <874jh3t7e9.fsf@oldenburg.str.redhat.com> <ZWjaSAhG9KI2i9NK@tycho.pizza>
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <ZWjaSAhG9KI2i9NK@tycho.pizza>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/30/23 08:21, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.15.141 release.
-> There are 69 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On 2023-11-30 13:54, Tycho Andersen wrote:
+> On Thu, Nov 30, 2023 at 07:37:02PM +0100, Florian Weimer wrote:
+>> * Tycho Andersen:
+>>
+>>> From: Tycho Andersen <tandersen@netflix.com>
+>>>
+>>> We are using the pidfd family of syscalls with the seccomp userspace
+>>> notifier. When some thread triggers a seccomp notification, we want to do
+>>> some things to its context (munge fd tables via pidfd_getfd(), maybe write
+>>> to its memory, etc.). However, threads created with ~CLONE_FILES or
+>>> ~CLONE_VM mean that we can't use the pidfd family of syscalls for this
+>>> purpose, since their fd table or mm are distinct from the thread group
+>>> leader's. In this patch, we relax this restriction for pidfd_open().
+>>
+>> Does this mean that pidfd_getfd cannot currently be used to get
+>> descriptors for a TID if that TID doesn't happen to share its descriptor
+>> set with the thread group leader?
 > 
-> Responses should be made by Sat, 02 Dec 2023 16:21:18 +0000.
-> Anything received after that time might be too late.
+> Correct, that's what I'm trying to solve.
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.141-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
-> and the diffstat can be found below.
+>> I'd like to offer a userspace API which allows safe stashing of
+>> unreachable file descriptors on a service thread.
 > 
-> thanks,
-> 
-> greg k-h
+> By "safe" here do you mean not accessible via pidfd_getfd()?
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
-BMIPS_GENERIC:
+For the LTTng-UST use-case, we need to be able to create and
+use a file descriptor from an agent thread injected within the target
+process in a way that is safe against patterns where the application
+blindly close all file descriptors (for-loop doing close(2),
+closefrom(2) or closeall(2)).
 
-Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
+The main issue here is that even though we could handle errors
+(-1, errno=EBADF) in the sendmsg/recvmsg calls, re-use of a file
+descriptor by the application can lead to data corruption, which
+is certainly an unwanted consequence.
+
+AFAIU glibc has similar requirements with respect to io_uring
+file descriptors.
+
+Thanks,
+
+Mathieu
+
 -- 
-Florian
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
 
