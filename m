@@ -2,151 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25F0F7FEA2E
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 09:06:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B6AC7FEA31
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 09:08:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344804AbjK3IGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 03:06:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57520 "EHLO
+        id S1344829AbjK3IIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 03:08:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231728AbjK3IGS (ORCPT
+        with ESMTP id S1344771AbjK3IH6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 03:06:18 -0500
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 893FB10CE
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 00:06:23 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-54b89582efeso572008a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 00:06:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701331582; x=1701936382; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=PuMr0nvcohjZX6wIPgNOI2/5doYoXUO9PO0hIz9g7nM=;
-        b=D6GSCDMqP7gIDxUkjZibd8ndDVCj2pCpPnd99HHZWMHcAutpkIZwPJ61urwh+dBTW0
-         Zmj8AkhM0+s+bzi89GK2OF2L5L5u+bYxP47KlbtgWYvaVhWD459JPsJFT1yWqNsRF+Hk
-         IpXTThj2p+vkARUqvzmAt91cEo9bK03O3wnVXbbShLD1Hkh1GSEyLXX5/HuCmsxw3eW2
-         Cmhp6+5YO82rwKxya9Kh7/rT7ZRxp/qDl/7ZpoED3XT99OG37fI9XvY45tga/9vNv5bn
-         T4nosI+ky+YYRHsklOk1Y3zi8UglZRnFo0T9XvdKNncCwZ6fSKmqDLuXeO2M77LmP2nu
-         Osng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701331582; x=1701936382;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PuMr0nvcohjZX6wIPgNOI2/5doYoXUO9PO0hIz9g7nM=;
-        b=Nv8J8lMwpMyhLj7ka/1nIMwCf2fQqT72AytsL4SehcCmIvSF/zzSQDH3I6AtmKHfMv
-         STlPF3HZZPEvpPCUtS93Oau7uMQC4HHpkJj+w/VrCMW8q2OP3eeagdFMqW+l1Fm7Vnha
-         gxNnqJLc9U1pX/ICutvvoTqrKuEcFfdsnk9KwXkFLQtNtRqB3Il+xal4jV58k5N0lWuT
-         MSyyAKoL0YKCl83TIQ29S9VgH+pl7mlV1mprOwlhoRR6AEeCq+yi9ENlsKgcE9YSmyk0
-         KPSqYEuGxoxT0HNpFlRVvRfIj7tl82AB8PVWs4IYfVu+eAurDiUgUCaFBsftcxH5qrwQ
-         w5Wg==
-X-Gm-Message-State: AOJu0YyMvlIfBD3fUxzedPAQWCEJqMUG4uO3hwjVax9eJRpvWSlvl2f/
-        LUToLD/AgqwyLktLJYu8vCsYVg==
-X-Google-Smtp-Source: AGHT+IGj+qm59/BU3dajOgaf0wVDzQvC1zS76PWdIlIx86BX3nwgq8lsilB5Crn8C7DhTvI7qHJBpw==
-X-Received: by 2002:a05:6402:35cd:b0:54b:50bf:afcc with SMTP id z13-20020a05640235cd00b0054b50bfafccmr10137139edc.41.1701331581997;
-        Thu, 30 Nov 2023 00:06:21 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.223.109])
-        by smtp.gmail.com with ESMTPSA id w8-20020a056402070800b0054aeac2c4b9sm295179edx.81.2023.11.30.00.06.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Nov 2023 00:06:21 -0800 (PST)
-Message-ID: <0be610ed-ac95-4de1-9639-d634cf979359@linaro.org>
-Date:   Thu, 30 Nov 2023 09:06:19 +0100
+        Thu, 30 Nov 2023 03:07:58 -0500
+Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43312A3;
+        Thu, 30 Nov 2023 00:08:04 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id 70B323200A6E;
+        Thu, 30 Nov 2023 03:08:00 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Thu, 30 Nov 2023 03:08:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm3; t=
+        1701331679; x=1701418079; bh=VLB9sPty6BA5Y2qKbDnRq6jtN+JfidHBYr5
+        ZaRockn8=; b=hJIf7ZAcZbsPzME+ukFyrAttvBXgz/msRrDSSa6ZSH7cxDOHCcw
+        ZqhSTPSzgqwA+NLyrR572BsH7w2suneQGutEkrAI0VrYY2qCBwL/+fUAAUWVNaOO
+        xTAkV48Am+YBz392u1WRI+xSmmVVd8c8NoHNT/n1CaKtFOpqkStVhNwgUIxCECAy
+        xVc4jaFttzdA5kPhcs8V/BMUPoroUvunBcZMjyI6b6S7Ur6S4yeQ3crtW2Uw5XXt
+        d0/L8dfBAc1O7fMTWj60PbCbnBhVuBtWnmiTpbPwhjOzhwQCIQt0+P3XqK1dTnrR
+        sX9K9CBgYxJl4jU6ZJn51Vahhk0Enod8PNQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+        1701331679; x=1701418079; bh=VLB9sPty6BA5Y2qKbDnRq6jtN+JfidHBYr5
+        ZaRockn8=; b=DvQ8b9zbCS9bYkg6AeyJ56n/708NSO8xwvQK1KR0+t8h0w6YVrC
+        k815wVn1z4Aw+MY4lk1ngMcP/WPM9fxXjJrJ5Tdx7AU/VT7EIWIwid71aohC1sC6
+        0KOkeu9MoeL2vNZlszoKu99htogDzCcssv+0oh/fUjXiFmosaLBtXjZprI5nQo5h
+        ZwBkG9dYc+LUlBYPvDmzopTvpTJuBHG+Bxqmzc2pkpMj78j0Lv6EZ2vPBLL+CU8m
+        leGXp91jU0kKIwvdv7iAJcWwWC4OYazkCAhrmuyVD6UJFhoeWzkupuD5hbIAfyLk
+        JtCecsXKGlm5eVBpOvUKeXiR7C4nWL4HaVA==
+X-ME-Sender: <xms:30JoZa__NZR7rAS7yNEV9tVLlu07nwMm5PkiMu810gyil11WeWG9cw>
+    <xme:30JoZasz_10cKqO6iXgwgfgNACjAG34k3NXt9xSVAvGXCXJoruhcX9KEiyfzNUHNB
+    cFLRRZR8d1PWWyM8C0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeiiedgudduhecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedf
+    tehrnhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrf
+    grthhtvghrnhepgeefjeehvdelvdffieejieejiedvvdfhleeivdelveehjeelteegudek
+    tdfgjeevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    eprghrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:30JoZQD6GDEo2WQLYt0vqB3WgSNf3bYLjokeSfdijvvfyK8GYapM2g>
+    <xmx:30JoZSfeIRXhadZjWghMZgu0TiVnHsHKE3TqX4jP-lHnUJ-1qNcV-g>
+    <xmx:30JoZfNkOkdi6Uw80VA5zRP-aHkXHo68_XkhrgG-dCzyItW6Z3vUxw>
+    <xmx:30JoZa2mGqoSvfvjQjoBsrxInzNx_hIFe7MODJJkII69zo4lLtvNqQ>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id F2B9BB60089; Thu, 30 Nov 2023 03:07:58 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1238-g6cccb1fa34-fm-20231128.002-g6cccb1fa
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] arm64: dts: qcom: sm8550: correct TX Soundwire clock
-Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Neil Armstrong <neil.armstrong@linaro.org>
-References: <20231129140537.161720-1-krzysztof.kozlowski@linaro.org>
- <20231129140537.161720-2-krzysztof.kozlowski@linaro.org>
- <3ec70fd9-11a3-4bd3-bd8c-a73c3d44dcde@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <3ec70fd9-11a3-4bd3-bd8c-a73c3d44dcde@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Message-Id: <4be73872-c1f5-4c31-8201-712c19290a22@app.fastmail.com>
+In-Reply-To: <20231129151030.24b807f1d2b43be301a533b7@linux-foundation.org>
+References: <20231130075838.05e5bc9b@oak>
+ <20231129131003.d2c1078847c3865c1ac2dfd5@linux-foundation.org>
+ <ebb5b1a2-ed27-4a77-b62b-1d3f19bddd85@app.fastmail.com>
+ <20231129151030.24b807f1d2b43be301a533b7@linux-foundation.org>
+Date:   Thu, 30 Nov 2023 09:07:38 +0100
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Andrew Morton" <akpm@linux-foundation.org>
+Cc:     "Stephen Rothwell" <sfr@rothwell.id.au>,
+        linux-next <linux-next@vger.kernel.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        sparclinux@vger.kernel.org, linux-mips@vger.kernel.org
+Subject: Re: linux-next: lots of errors/warnings from the -Werror=missing-prototypes
+ addition
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/11/2023 15:35, Konrad Dybcio wrote:
-> On 29.11.2023 15:05, Krzysztof Kozlowski wrote:
->> The TX Soundwire controller should take clock from TX macro codec, not
->> VA macro codec clock, otherwise the clock stays disabled.  This looks
->> like a copy-paste issue, because the SC8280xp code uses here correctly
->> clock from TX macro.  The VA macro clock is already consumed by TX macro
->> codec, thus it won't be disabled by this change.
->>
->> Fixes: 61b006389bb7 ("arm64: dts: qcom: sm8550: add Soundwire controllers")
->> Reported-by: Neil Armstrong <neil.armstrong@linaro.org>
->> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->> ---
-> Interestingly, downstream 8550 has
-> 
-> qcom,use-clk-id = <VA_CORE_CLK>;
-> 
-> which doesn't seem to be used in techpack
+On Thu, Nov 30, 2023, at 00:10, Andrew Morton wrote:
+> On Wed, 29 Nov 2023 23:51:04 +0100 "Arnd Bergmann" <arnd@arndb.de> wro=
+te:
+>
+>> I did all my testing with CONFIG_WERROR force-enabled, so
+>> the bit I missed here is that at least three architectures
+>> that are missing fixes also set -Werror: mips, sparc and alpha.
+>>=20
+>> How about adding a patch to no longer force -Werror for
+>> these?
+>
+> These architectures are doing it wrong, aren't they?  They should be
+> using the CONFIG_WERROR infrastructure rather than hard-coding it?  If
+> so then sure, a standalone patch to clean that up sounds sounds
+> appropriate.=20
 
-In which node? I see it in the va-macro node, not the tx-macro.
+Yes, I think we should have already removed them when CONFIG_WERROR
+was added in v5.15, the architecture specific logic dates back
+to v2.6 times.
 
-Best regards,
-Krzysztof
+> I guess it should precede "Makefile.extrawarn: turn on
+> missing-prototypes globally".
 
+I already have a collection of patches to fix up known
+-Wmissing-prototype warnings across architectures in the
+asm-generic tree, so I'll add this patch there:
+
+commit bdef96eb0b89dfa80992312a8e3b2613bf178ae5
+Author: Arnd Bergmann <arnd@arndb.de>
+Date:   Thu Nov 30 00:07:07 2023 +0100
+
+    arch: turn off -Werror for architectures with known warnings
+   =20
+    A couple of architectures enable -Werror for their own files regardl=
+ess
+    of CONFIG_WERROR but also have known warnings that fail the build
+    with -Wmissing-prototypes enabled by default:
+   =20
+    arch/alpha/lib/memcpy.c:153:8: error: no previous prototype for 'mem=
+cpy' [-Werror=3Dmissing-prototypes]
+    arch/alpha/kernel/irq.c:96:1: error: no previous prototype for 'hand=
+le_irq' [-Werror=3Dmissing-prototypes]
+    arch/mips/kernel/signal.c:673:17: error: no previous prototype for =E2=
+=80=98sys_rt_sigreturn=E2=80=99 [-Werror=3Dmissing-prototypes]
+    arch/mips/kernel/signal.c:636:17: error: no previous prototype for =E2=
+=80=98sys_sigreturn=E2=80=99 [-Werror=3Dmissing-prototypes]
+    arch/mips/kernel/syscall.c:51:16: error: no previous prototype for =E2=
+=80=98sysm_pipe=E2=80=99 [-Werror=3Dmissing-prototypes]
+    arch/mips/mm/fault.c:323:17: error: no previous prototype for =E2=80=
+=98do_page_fault=E2=80=99 [-Werror=3Dmissing-prototypes]
+    arch/sparc/vdso/vma.c:246:12: warning: no previous prototype for =E2=
+=80=98init_vdso_image=E2=80=99 [-Wmissing-prototypes]v
+    arch/sparc/vdso/vdso32/../vclock_gettime.c:343:1: warning: no previo=
+us prototype for =E2=80=98__vdso_gettimeofday_stick=E2=80=99 [-Wmissing-=
+prototypes]
+    arch/sparc/vdso/vclock_gettime.c:343:1: warning: no previous prototy=
+pe for =E2=80=98__vdso_gettimeofday_stick=E2=80=99 [-Wmissing-prototypes]
+    arch/sparc/prom/p1275.c:52:6: warning: no previous prototype for =E2=
+=80=98prom_cif_init=E2=80=99 [-Wmissing-prototypes]
+    arch/sparc/prom/misc_64.c:165:5: warning: no previous prototype for =
+=E2=80=98prom_get_mmu_ihandle=E2=80=99 [-Wmissing-prototypes]
+   =20
+    This appears to be an artifact from the times when this architecture
+    code was better maintained that most device drivers and before CONFI=
+G_WERROR
+    was added. Now it just gets in the way, so remove all of these.
+   =20
+    Powerpc and x86 both still have their own Kconfig options to enable =
+-Werror
+    for some of their files. These architectures are better maintained t=
+han most
+    and the options are easy to disable, so leave those untouched.
+   =20
+    Reported-by: Stephen Rothwell <sfr@rothwell.id.au>
+    Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+
+diff --git a/arch/alpha/lib/Makefile b/arch/alpha/lib/Makefile
+index 1cc74f7b50ef..6a779b9018fd 100644
+--- a/arch/alpha/lib/Makefile
++++ b/arch/alpha/lib/Makefile
+@@ -4,7 +4,6 @@
+ #
+=20
+ asflags-y :=3D $(KBUILD_CFLAGS)
+-ccflags-y :=3D -Werror
+=20
+ # Many of these routines have implementations tuned for ev6.
+ # Choose them iff we're targeting ev6 specifically.
+diff --git a/arch/alpha/mm/Makefile b/arch/alpha/mm/Makefile
+index bd770302eb82..101dbd06b4ce 100644
+--- a/arch/alpha/mm/Makefile
++++ b/arch/alpha/mm/Makefile
+@@ -3,6 +3,4 @@
+ # Makefile for the linux alpha-specific parts of the memory manager.
+ #
+=20
+-ccflags-y :=3D -Werror
+-
+ obj-y	:=3D init.o fault.o
+diff --git a/arch/mips/Kbuild b/arch/mips/Kbuild
+index af2967bffb73..e2d623621a00 100644
+--- a/arch/mips/Kbuild
++++ b/arch/mips/Kbuild
+@@ -1,10 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0
+-# Fail on warnings - also for files referenced in subdirs
+-# -Werror can be disabled for specific files using:
+-# CFLAGS_<file.o> :=3D -Wno-error
+-ifeq ($(W),)
+-subdir-ccflags-y :=3D -Werror
+-endif
+=20
+ # platform specific definitions
+ include $(srctree)/arch/mips/Kbuild.platforms
+diff --git a/arch/sparc/kernel/Makefile b/arch/sparc/kernel/Makefile
+index 1ce4d5028c86..58ea4ef9b622 100644
+--- a/arch/sparc/kernel/Makefile
++++ b/arch/sparc/kernel/Makefile
+@@ -5,7 +5,6 @@
+ #
+=20
+ asflags-y :=3D -ansi
+-#ccflags-y :=3D -Werror
+=20
+ # Undefine sparc when processing vmlinux.lds - it is used
+ # And teach CPP we are doing $(BITS) builds (for this case)
+diff --git a/arch/sparc/lib/Makefile b/arch/sparc/lib/Makefile
+index 80b07bbe4978..59669ebddd4e 100644
+--- a/arch/sparc/lib/Makefile
++++ b/arch/sparc/lib/Makefile
+@@ -3,7 +3,6 @@
+ #
+=20
+ asflags-y :=3D -ansi -DST_DIV0=3D0x02
+-#ccflags-y :=3D -Werror
+=20
+ lib-$(CONFIG_SPARC32) +=3D ashrdi3.o
+ lib-$(CONFIG_SPARC32) +=3D memcpy.o memset.o
+diff --git a/arch/sparc/mm/Makefile b/arch/sparc/mm/Makefile
+index a199484e131f..809d993f6d88 100644
+--- a/arch/sparc/mm/Makefile
++++ b/arch/sparc/mm/Makefile
+@@ -3,7 +3,6 @@
+ #
+=20
+ asflags-y :=3D -ansi
+-#ccflags-y :=3D -Werror
+=20
+ obj-$(CONFIG_SPARC64)   +=3D ultra.o tlb.o tsb.o
+ obj-y                   +=3D fault_$(BITS).o
+diff --git a/arch/sparc/prom/Makefile b/arch/sparc/prom/Makefile
+index 397b79af77f7..a1adc75d8055 100644
+--- a/arch/sparc/prom/Makefile
++++ b/arch/sparc/prom/Makefile
+@@ -3,7 +3,6 @@
+ # Linux.
+ #
+ asflags :=3D -ansi
+-ccflags :=3D -Werror
+=20
+ lib-y                 :=3D bootstr_$(BITS).o
+ lib-y                 +=3D init_$(BITS).o
