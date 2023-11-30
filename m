@@ -2,140 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F21A87FFBF8
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 21:08:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F7157FFBF3
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 21:07:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376598AbjK3UIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 15:08:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42918 "EHLO
+        id S1376589AbjK3UHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 15:07:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376594AbjK3UH7 (ORCPT
+        with ESMTP id S235171AbjK3UHq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 15:07:59 -0500
-Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D93910FC;
-        Thu, 30 Nov 2023 12:08:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-        s=20170329; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:
-        Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=pyLKFFJL0+QHAkvFUr9epX+zDms0kHGRY+0nNCweE+4=; b=VRCEDbxyM4FF5Dt9ADAKKchvzy
-        K5FxoPzCUxIch4XBRnoCKBVF4kaTMkl00Pi7kuUWTciw8vZwbQr7NOF5IHA9qYSbrkCIANQ/OrjyK
-        pfzIhvTkDb8r72PrdWrTG20n7y9aLnVpk+Zcjf9NT2joLBNPRsg6RrlDomc4WbtGy8Ou1nfIi3LB2
-        h7rIziMyU2ojrcQ5SCnLKZx9dCLZZDTviZK0GIb9h66ltoLbuhBZdDGzsa6h9Qs4B0bf8PX2lFbRj
-        wDoAQgQaBlB4SsYGXAb25JNXN1c8HjPRH6MKkx78LDf6qTbSvx725N6gmUGtzFUext3qMALJTcxsI
-        LFt/SvWg==;
-Received: from [191.193.131.178] (helo=steammachine.lan)
-        by fanzine2.igalia.com with esmtpsa 
-        (Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
-        id 1r8nKC-008wQ8-W1; Thu, 30 Nov 2023 21:07:53 +0100
-From:   =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@igalia.com>
-To:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     kernel-dev@igalia.com, alexander.deucher@amd.com,
-        christian.koenig@amd.com, Simon Ser <contact@emersion.fr>,
-        Rob Clark <robdclark@gmail.com>,
-        Pekka Paalanen <ppaalanen@gmail.com>, daniel@ffwll.ch,
-        Daniel Stone <daniel@fooishbar.org>,
-        =?UTF-8?q?=27Marek=20Ol=C5=A1=C3=A1k=27?= <maraeo@gmail.com>,
-        Dave Airlie <airlied@gmail.com>,
-        =?UTF-8?q?Michel=20D=C3=A4nzer?= <michel.daenzer@mailbox.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Pekka Paalanen <pekka.paalanen@collabora.com>,
-        =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@igalia.com>
-Subject: [PATCH] drm/doc: Define KMS atomic state set
-Date:   Thu, 30 Nov 2023 17:07:40 -0300
-Message-ID: <20231130200740.53454-1-andrealmeid@igalia.com>
-X-Mailer: git-send-email 2.43.0
+        Thu, 30 Nov 2023 15:07:46 -0500
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E91810F8;
+        Thu, 30 Nov 2023 12:07:53 -0800 (PST)
+Received: by mail-io1-xd34.google.com with SMTP id ca18e2360f4ac-7b34ec3e44fso38157139f.3;
+        Thu, 30 Nov 2023 12:07:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701374872; x=1701979672; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=f8JkjsLram/ejernmiCZTwmtwfg8aQ1F8JO+U2W+Xm0=;
+        b=CLAfUB5QSdKWH/Oc/3KQivo4dQmljeCGVFvMlqlgbggvJBCNH2mfvaJFy2hgzf7s0X
+         TXqKPkftGLUjoVbHrpgce85Db8MtQJI4bpB8uE5AYbAGV8DDoeOvJcpDW4n3/A6w1rZ3
+         P+fAb/sn6LjeKFy/u8QXQ5kP55dscZEsaPtRL75Y9LmLFWkH/N2haIK/tZrRGUvddYOL
+         aqgHiRl1b+WFUoGY27aHBSIbJJOQkqzK9nTCZxPWg+EHYiWd/dGb6pvM1uxZ0M0FiDBz
+         ENoEJ8JF+Jo2o6bFhQt+a1ZJX69QeqMiucX7agh/U/z2XiM17F5wBPbCCdsaxPXs/Dtq
+         a7jA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701374872; x=1701979672;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=f8JkjsLram/ejernmiCZTwmtwfg8aQ1F8JO+U2W+Xm0=;
+        b=XGro2ZgtM86hlwFnzXks140OPk1IOgGaOcl9XVd9xwqJneoerOH9NmPOc4BgS/785u
+         HIYg/sMOtLh3EYBYC3kaeBe6etEFVQ4k3T4tWm1ayCUzFPp5AuRPNXuV6MMbvx4e60mP
+         QBCYYIhmBSqGxXHKwF9SIQOaKH4fRTt6hShAJUjS8OuIBV88sCRiBIJMe976MMbKY4gH
+         IXMX5uXpqNVKrEt4J2XxHxVJcx0ipuCeERuLDWxJpN4VwC5Aacmd9+PnoN8DmQl28fDE
+         3Wt6/3uZozHY1q8cCMfJySb/Aqvlnw8KBvBDFZ69vbtoU4Ux3dzhBG4s/F6qQ0mrb/x6
+         XFLg==
+X-Gm-Message-State: AOJu0YxdA0iJBcWHWXeOmKisv+MVT2LxkxT62wE0RxiwNo+1JYM8VIea
+        +h/R3UxLkbwf4fBFRCKcwnNFtbvYj1iuNlxOn+z0/CAbiRc=
+X-Google-Smtp-Source: AGHT+IHXvm1W++vVVPTk19ktbPl5ee74KU9mfyX1arK6KzKt6r5RD2ae1t2pmohDXRTROGj0LXeigfu6GOv6j0VuqSk=
+X-Received: by 2002:a6b:7506:0:b0:7b3:f55c:49a7 with SMTP id
+ l6-20020a6b7506000000b007b3f55c49a7mr5185613ioh.3.1701374872357; Thu, 30 Nov
+ 2023 12:07:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20231130194023.4102148-1-nphamcs@gmail.com> <20231130194023.4102148-2-nphamcs@gmail.com>
+ <ZWjpNr3ZzvU4TDC8@casper.infradead.org>
+In-Reply-To: <ZWjpNr3ZzvU4TDC8@casper.infradead.org>
+From:   Nhat Pham <nphamcs@gmail.com>
+Date:   Thu, 30 Nov 2023 12:07:41 -0800
+Message-ID: <CAKEwX=MV-F50i_=sZ0unfbgjrdxSTio00c4xTM19113BAN3-wA@mail.gmail.com>
+Subject: Re: [PATCH v8 1/6] list_lru: allows explicit memcg and NUMA node selection
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org,
+        cerasuolodomenico@gmail.com, yosryahmed@google.com,
+        sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com,
+        mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, chrisl@kernel.org, linux-mm@kvack.org,
+        kernel-team@meta.com, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, shuah@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pekka Paalanen <pekka.paalanen@collabora.com>
+On Thu, Nov 30, 2023 at 11:57=E2=80=AFAM Matthew Wilcox <willy@infradead.or=
+g> wrote:
+>
+> On Thu, Nov 30, 2023 at 11:40:18AM -0800, Nhat Pham wrote:
+> > This patch changes list_lru interface so that the caller must explicitl=
+y
+> > specify numa node and memcg when adding and removing objects. The old
+> > list_lru_add() and list_lru_del() are renamed to list_lru_add_obj() and
+> > list_lru_del_obj(), respectively.
+>
+> Wouldn't it be better to add list_lru_add_memcg() and
+> list_lru_del_memcg() and have:
+>
+> +bool list_lru_del(struct list_lru *lru, struct list_head *item)
+> +{
+> +       int nid =3D page_to_nid(virt_to_page(item));
+> +       struct mem_cgroup *memcg =3D list_lru_memcg_aware(lru) ?
+> +               mem_cgroup_from_slab_obj(item) : NULL;
+> +
+> +       return list_lru_del_memcg(lru, item, nid, memcg);
+> +}
+>
+> Seems like _most_ callers will want the original versions and only
+> a few will want the explicit memcg/nid versions.  No?
+>
 
-Specify how the atomic state is maintained between userspace and
-kernel, plus the special case for async flips.
+I actually did something along that line in earlier iterations of this
+patch series (albeit with poorer naming - __list_lru_add() instead of
+list_lru_add_memcg()). The consensus after some back and forth was
+that the original list_lru_add() was not a very good design (the
+better one was this new version that allows for explicit numa/memcg
+selection). So I agreed to fix it everywhere as a prep patch.
 
-Signed-off-by: Pekka Paalanen <pekka.paalanen@collabora.com>
-Signed-off-by: André Almeida <andrealmeid@igalia.com>
----
-
-This is a standalone patch from the following serie, the other patches are
-already merged:
-https://lore.kernel.org/lkml/20231122161941.320564-1-andrealmeid@igalia.com/
-
- Documentation/gpu/drm-uapi.rst | 47 ++++++++++++++++++++++++++++++++++
- 1 file changed, 47 insertions(+)
-
-diff --git a/Documentation/gpu/drm-uapi.rst b/Documentation/gpu/drm-uapi.rst
-index 370d820be248..d0693f902a5c 100644
---- a/Documentation/gpu/drm-uapi.rst
-+++ b/Documentation/gpu/drm-uapi.rst
-@@ -570,3 +570,50 @@ dma-buf interoperability
- 
- Please see Documentation/userspace-api/dma-buf-alloc-exchange.rst for
- information on how dma-buf is integrated and exposed within DRM.
-+
-+KMS atomic state
-+================
-+
-+An atomic commit can change multiple KMS properties in an atomic fashion,
-+without ever applying intermediate or partial state changes.  Either the whole
-+commit succeeds or fails, and it will never be applied partially. This is the
-+fundamental improvement of the atomic API over the older non-atomic API which is
-+referred to as the "legacy API".  Applying intermediate state could unexpectedly
-+fail, cause visible glitches, or delay reaching the final state.
-+
-+An atomic commit can be flagged with DRM_MODE_ATOMIC_TEST_ONLY, which means the
-+complete state change is validated but not applied.  Userspace should use this
-+flag to validate any state change before asking to apply it. If validation fails
-+for any reason, userspace should attempt to fall back to another, perhaps
-+simpler, final state.  This allows userspace to probe for various configurations
-+without causing visible glitches on screen and without the need to undo a
-+probing change.
-+
-+The changes recorded in an atomic commit apply on top the current KMS state in
-+the kernel. Hence, the complete new KMS state is the complete old KMS state with
-+the committed property settings done on top. The kernel will try to avoid
-+no-operation changes, so it is safe for userspace to send redundant property
-+settings.  However, not every situation allows for no-op changes, due to the
-+need to acquire locks for some attributes. Userspace needs to be aware that some
-+redundant information might result in oversynchronization issues.  No-operation
-+changes do not count towards actually needed changes, e.g.  setting MODE_ID to a
-+different blob with identical contents as the current KMS state shall not be a
-+modeset on its own. As a special exception for VRR needs, explicitly setting
-+FB_ID to its current value is not a no-op.
-+
-+A "modeset" is a change in KMS state that might enable, disable, or temporarily
-+disrupt the emitted video signal, possibly causing visible glitches on screen. A
-+modeset may also take considerably more time to complete than other kinds of
-+changes, and the video sink might also need time to adapt to the new signal
-+properties. Therefore a modeset must be explicitly allowed with the flag
-+DRM_MODE_ATOMIC_ALLOW_MODESET.  This in combination with
-+DRM_MODE_ATOMIC_TEST_ONLY allows userspace to determine if a state change is
-+likely to cause visible disruption on screen and avoid such changes when end
-+users do not expect them.
-+
-+An atomic commit with the flag DRM_MODE_PAGE_FLIP_ASYNC is allowed to
-+effectively change only the FB_ID property on any planes. No-operation changes
-+are ignored as always. Changing any other property will cause the commit to be
-+rejected. Each driver may relax this restriction if they have guarantees that
-+such property change doesn't cause modesets. Userspace can use TEST_ONLY commits
-+to query the driver about this.
--- 
-2.43.0
-
+I don't have strong opinions here to be completely honest, but I do
+think this new API makes more sense (at the cost of quite a bit of
+elbow grease to fix every callsites and extra reviewing).
