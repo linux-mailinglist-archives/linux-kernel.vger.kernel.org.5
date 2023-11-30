@@ -2,176 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94E817FE4A6
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 01:12:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF5F57FE4A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 01:13:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343743AbjK3AMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 19:12:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50772 "EHLO
+        id S1343749AbjK3ANE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 19:13:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231597AbjK3AMQ (ORCPT
+        with ESMTP id S229575AbjK3ANC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 19:12:16 -0500
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2089.outbound.protection.outlook.com [40.107.223.89])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6425ED7D;
-        Wed, 29 Nov 2023 16:12:22 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lbMPn82YSG4tTtIHLr/VAnwqRvIy5gBS5sGKqmiHcI9iQAfBReE1FjWyGB8nwZcU8p9fUdpKxM8rnxCBtyuLbChRc78VpRjvZPQMGBoQFsGoF0lH2KMobKanu4WR1TSIWLzwbwar0ZaMk6R5DMO5ZRfK6RpLYYvKWQFHl9WBbsFLcuZUq1rNsKuwSh2+jxq126sFPRaXh+K9du+/x8bUByMEDhUEYffC/cGScOwc/LS8/HYwMWsfcNXsTVDb5YtJPdNrRBM/SiLaln7uNEuUEt3DT1JNctxiqr32DZuUnHvovpVfXka8rQlk7IEp1T/62HMGJLFllSf4eiBZHd00cg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=wZA6F60v8VeYeSSoT++ymvdUaAyddru+AIELbMmQzr0=;
- b=nz0p6hANQnDVy4c5876CAakjEpz0hxzMJtnPchsPu3ZMZxnp416CozTF6Dduv51FHdbPmYnuGfo+9koucHPzdMZgiaATZOCZkM18rMNAm4dfbG5rmBYvRVFyRzf+WaVlbAo6kZYPLKjqPYaANpJ7IeDdnueQ/r11DwrHcbOPt2N2HGEG1Eeav4m3A2aIR4Up11QLrj5I4ONbC58hRnFFLzbGiwZMDBf6wIjndqoxu05VG8f41f5FncBk4zDE7Fgw8CawgjTaUf/Vzsvju7gV4SPnbqZ6kD3S56NQ/fNEl/MEC32tWtBMOBAlT0mY++Y7m6lrUooYmGDStWsmGV/jZg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wZA6F60v8VeYeSSoT++ymvdUaAyddru+AIELbMmQzr0=;
- b=gmVKMJvz+9CtxebhAbwK2theMkrPDrZ7DJamXKcfgb7/zr8sii2KeFfn6u6SMQDqsiUt9teuL62j0EQqb4yY3EvQRAtbtRVdGUKjLbFcQOPAFRmDLXMxJhTtrWwo/x/9PsWfpdel6F8Yt2d5tTKvYozmkseeoVBOL07CZQKicJYnRE74nb0SfLrol+WsNxtAG4jAtp9iUeZf+goXsbevknpEr8+E3szj8jTqAvPqRy5W+MlQIvZvU0EWFljOTt7fO6S/NoD1d0uxtxKH0QCNk+rK8IcfL48XWeycJuUV3Ny16/R4w+ApxFMe8v/sor0ENgKVdQFKn6zxUt5n8cD/eQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by CH2PR12MB4247.namprd12.prod.outlook.com (2603:10b6:610:7c::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.24; Thu, 30 Nov
- 2023 00:12:18 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::60d4:c1e3:e1aa:8f93]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::60d4:c1e3:e1aa:8f93%4]) with mapi id 15.20.7046.015; Thu, 30 Nov 2023
- 00:12:18 +0000
-Date:   Wed, 29 Nov 2023 20:12:16 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Alex Williamson <alex.williamson@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: Re: [PATCH] vfio: Drop vfio_file_iommu_group() stub to fudge around
- a KVM wart
-Message-ID: <20231130001216.GC1389974@nvidia.com>
-References: <20231130001000.543240-1-seanjc@google.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231130001000.543240-1-seanjc@google.com>
-X-ClientProxiedBy: SA0PR11CA0082.namprd11.prod.outlook.com
- (2603:10b6:806:d2::27) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+        Wed, 29 Nov 2023 19:13:02 -0500
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBE13F4;
+        Wed, 29 Nov 2023 16:13:08 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1cf7a8ab047so3867925ad.1;
+        Wed, 29 Nov 2023 16:13:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701303188; x=1701907988; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=llp625eBHSklHYRyyFpz3DN5XNqEMa63GZO3UGUzFOc=;
+        b=J8pzU8/Md36jyKJ03/ZnQt1HxtgFeyxm8pC8oTNzsZVOY/jgmQztVSBpne6emmyRBL
+         dMc3ygkyN+7oGi0ZGYVqEsf3Z2ixsihu8fs77HT8Mx/92VZ+YdTl888806PC3F5rDZn5
+         P68Z4Duqy08H1s5v7GxZFcUKWfpolTEoPNuj5Unz/aIJ7kkqB5far2y5UqtKgTYUejXg
+         xvmg4h/UV0CKtWeqxymzs656tR9x/h6kSLMf0Y5ARN+ymqJ09P55b3xIEWpcrB274I6s
+         gYiGm5KOLjDtBIuciptA27p0fNyt+g3oVz+K7cfYHtJKlZOfUgjwfRLoKI6I3ocRpv9n
+         lKuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701303188; x=1701907988;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=llp625eBHSklHYRyyFpz3DN5XNqEMa63GZO3UGUzFOc=;
+        b=wtRgq2OsEevhVUORA7uftSw9bRi9ZFDWKC49NnjBhQhgzmyH/vTp40z+ZohXkE9Fhc
+         h6iWGsEavmpQVDohO9QeScDW+RsXp5rfsE67geDEZsUOG2EI/ePirAzUojR++W58xG1v
+         MAOA7qcVBlmc6f6LzTCYQFshGwLxZLPfXnMLgw1uv1EqGt4iTa8f/YVJdAyU42vOvD0w
+         5X1bUpiAHMk3o9M8T8i9YI73JOk65A0t4bcCR383BsSrAV5CJX5OawsFP+HZxT1UFpbd
+         lIdVt14386cc5d6d2EEGkrMBpY0TMqwM/GcX98Xz60wVVx1/DX2ayjFUcyPK/Xhcr8uH
+         EM8Q==
+X-Gm-Message-State: AOJu0YzI68cgbZZ1+IeyU3Ph3W+FlACulCHF2D8TJsB9VoJVy8fayIXw
+        8p2CCq1iWqBZHv3HzYo/+ls=
+X-Google-Smtp-Source: AGHT+IGV8y3JIQefxKXs91Nva16n7dSGeJRZST1APeuo5h+MlHpWqkDAfo5U2A1DEygfgAKvILIzKw==
+X-Received: by 2002:a17:902:8217:b0:1cc:49e7:ee1b with SMTP id x23-20020a170902821700b001cc49e7ee1bmr17994646pln.58.1701303188222;
+        Wed, 29 Nov 2023 16:13:08 -0800 (PST)
+Received: from archie.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id n6-20020a170902d2c600b001cfcf3dd317sm6456123plc.61.2023.11.29.16.13.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Nov 2023 16:13:07 -0800 (PST)
+Received: by archie.me (Postfix, from userid 1000)
+        id 47C031141356B; Thu, 30 Nov 2023 07:13:03 +0700 (WIB)
+Date:   Thu, 30 Nov 2023 07:13:02 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Matthew Wilcox <willy@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Documentation <linux-doc@vger.kernel.org>,
+        Linux Kernel Livepatching <live-patching@vger.kernel.org>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Attreyee Mukherjee <tintinm2017@gmail.com>,
+        Chandan Babu R <chandanbabu@kernel.org>
+Subject: Re: [PATCH 0/2] Minor grammatical fixup for livepatch docs
+Message-ID: <ZWfTjmL9RCUrqCqj@archie.me>
+References: <20231129132527.8078-1-bagasdotme@gmail.com>
+ <874jh4pr8w.fsf@meer.lwn.net>
+ <ZWdYGrhTYFzG5BZq@casper.infradead.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|CH2PR12MB4247:EE_
-X-MS-Office365-Filtering-Correlation-Id: e0cd5e67-31bf-458a-0bad-08dbf13903ae
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: M14JWNBNpKozj4WH8GIJH/MNJSVHlZ5mXS+OA3euUwzSYKRJRQ1rvndJih4V/0i+463PRo3a9eE3mMLYdx+jRUxeuW+ivpD8BEAw/FWjnEwiOSOiZvxXKrBmxuQdZmKSokITZAJvX0NxHRTkZrRgn6bFJLmhjUnTU0eQyPTTga3hCrtjPbh97HZWeHygsJJu5NQPFDDS6RPMX+OTixJE+vKhhclGM/QQfBHoGCGOChuTJHCWa6vjeWXghPc07niu58sjMTUaviWqebmfsPk1iykhKU1363qsbKVpzYJO3V+a6CwvyAtSK8uA6GlGxtXb/utpXG4bLDA/WZH+ufVOQN3nCk2+HZHYDQRkqicnYBx9sah3cP7valraiLnWuqOPUuyh7j348jFQDhniM9f28J45yTZuCi8JxyCnrq/bPmB4Mu61A+sJbRlRdArjqRArsh21kqgs79gcTBmqYq5LuvxGUeYWrZibxrxJ6Xco7UdPckpL6/lr+7S3xaUW8jc5+4kaqNzZ0nbdPz1bffEWtqG1nF7h50nmtC3NWQSNw6hU6RRU1zgvunzaSd1AT7xLXqyhZej7n3QnBZ4VH+Vl6zUX0T9Pp+uu3IJxV70SJm+t1mkkxAs066B6u3RllJSYMqfGudEcwiRJPupeGsfVLfTzr3xx1TzFwv/fJJW8P1+9QK8Ex0M4xyH5gsN7xG8rM3UGk2QxtFTA2eth/gGCjsJH5W4+uINWuGsP1PFdKX1R8KbcEA84Oie4KQLciP8R
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(376002)(136003)(366004)(396003)(230273577357003)(230173577357003)(230922051799003)(186009)(64100799003)(451199024)(1800799012)(36756003)(83380400001)(26005)(2616005)(1076003)(54906003)(66476007)(66556008)(66946007)(6916009)(2906002)(86362001)(4326008)(8676002)(8936002)(5660300002)(6506007)(6512007)(316002)(33656002)(478600001)(41300700001)(966005)(6486002)(202311291699003)(38100700002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?WsUETZS6XszaGzQ5939qo2MLAoZA3EPsUnKD5OOFrIQVsiCPP5jCvTiJA0d/?=
- =?us-ascii?Q?AEAsDYLnTYa//Zppb4X8xOw8NROptwQ7Ly1+IPbyr4TkdfbLifrsOVWXPx/Z?=
- =?us-ascii?Q?auU3Pq5lveAwATfLTtZPGwWi3TVJJZo3K/BQd7ORrc6jXm2TTkeUfvt/9M62?=
- =?us-ascii?Q?XA+AZY2t6fNMIj6wQLWclCuCcw55IYDp21XwDDtNpsBR2T8F1Mw3Ibpcaeiq?=
- =?us-ascii?Q?FJ7dOZgGqa6nSsAc/v9O4Itm9Mclqk7jZM2/hiWwkqsS4U1ELvVS02tvVDo/?=
- =?us-ascii?Q?AKnSrfjH/yDjanu+qed/irpXOafb/2Zg8jr4t8x0jQoZrGGQSapq97Y69PuK?=
- =?us-ascii?Q?HX9Ht+0QQpazSN5P/GXldmF2wdr/EL6xRyikySW1mnBdpNj+SL2IJQRSTXmA?=
- =?us-ascii?Q?Xpp9Rj+m3o7/+tAabNtj6RrwHh0YZl4d/yzKkwtX0zsLtQT2YGAOj64StFwx?=
- =?us-ascii?Q?gu2OPSwf/veCvTL1dLxCNL8DogU8PPbxDM9jRRVRPjQdr4CnaT5y+pgO/9Pg?=
- =?us-ascii?Q?jsfP4vYnOSvisB0DY1zNntoroVs4XcgJ2Ke0p/3zZbUF7jzhDSm4g9aHONq9?=
- =?us-ascii?Q?ODm1Q5RdYx6Sn6Hy4aZFwQOgzLMKJhQGD1qRl+BYENzlggQ7qI0bWLzONVWe?=
- =?us-ascii?Q?trDQm2ok/HlnCuuOeByCik7SU1p+Xa452XIi6OZPyzzDi3dO99pKc4jcTe38?=
- =?us-ascii?Q?yhR5oWPAxRN2GNh4cmMxOVEIM3TWR3qwcOrToIzDH94y49sYIG/CRMRaSJv7?=
- =?us-ascii?Q?57JLNhvQ19mGVxfU8vQR/uqrFiA68/4AilwVrCW3a4WI2Ycx1Nx6ng/h4w76?=
- =?us-ascii?Q?f5n8uf+dsfe92uXOQrCy+FDV5hCPymhXICYdkqDZcSrCDRK+P6edBkbFQn3j?=
- =?us-ascii?Q?AGSWpCPK/T3q/QivVB57di7uphcWq1FakLFzGA0UuoxbQ+DItiTrR0IZc94I?=
- =?us-ascii?Q?x2CdPUYVG476SHQHq52XKjNEWWfQXbjZP+9+Y3Pw3I5aubg5HyQwp3uV1+d4?=
- =?us-ascii?Q?KQXF5tS+7GeX3dOExwX6zZ3PmfB6EHIIkZ9yNz+wL2AVAg+lYhexJjZKDjNq?=
- =?us-ascii?Q?6yq/oudBOe+RaP8Frfwnc0N4LRF9o/bxFL4xG/AE0wpVLXSQi2ubx28csi0I?=
- =?us-ascii?Q?EA6yUzgMGRIYJZ2UCAoLCWHm3BqAKiVFCWqFfXucNSJpfQWjg0Q0/iMNt3VR?=
- =?us-ascii?Q?opIJp0TsyA9v1UsCZB0gDDStTVgpQJ0SC4Z08fZHUnHJpQJZn8dl+nNjW6gV?=
- =?us-ascii?Q?bA98IHi3PcDqcyfI7YpySE0KZlbspLQHugGwNitj/5M+9Sf1ePD6ZGnLNUQX?=
- =?us-ascii?Q?yHagRFETIlv1LBFooDHmIeihW6V2upWKE/+XeIksZaK3z8nSMcSRA0zD3FDJ?=
- =?us-ascii?Q?LxzLIJDwmRXZDuzlFdShsgXuNgt6fvvrlOann2tuj0pByIYeDS+FIn1uzgfg?=
- =?us-ascii?Q?K2x4GKyZUvUukDYD75SdawM43zd9I0y2Pnh/DrVr2yvulEmIOJgr+WINDwUi?=
- =?us-ascii?Q?teZWU52n/BhPXn9nACcksqur1mPgCUL/B+jZO4ofrbvsRSIbZnvqYc3LdEJ8?=
- =?us-ascii?Q?hVx4Wgnukdq8OSdYc+hNRLlM3ENBHRw8V6yifpq4?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e0cd5e67-31bf-458a-0bad-08dbf13903ae
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Nov 2023 00:12:18.1125
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: QZxcfQ5vj8HU75EMklLS4agG2jCfP/IBxkVQEkFcZAIyNbEKW29gSBSWTDLX+Q6F
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4247
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="79WZgSpXvLpPvpaF"
+Content-Disposition: inline
+In-Reply-To: <ZWdYGrhTYFzG5BZq@casper.infradead.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 04:10:00PM -0800, Sean Christopherson wrote:
-> Drop the vfio_file_iommu_group() stub and instead unconditionally declare
-> the function to fudge around a KVM wart where KVM tries to do symbol_get()
-> on vfio_file_iommu_group() (and other VFIO symbols) even if CONFIG_VFIO=n.
-> 
-> Ensuring the symbol is always declared fixes a PPC build error when
-> modules are also disabled, in which case symbol_get() simply points at the
-> address of the symbol (with some attributes shenanigans).  Because KVM
-> does symbol_get() instead of directly depending on VFIO, the lack of a
-> fully defined symbol is not problematic (ugly, but "fine").
-> 
->    arch/powerpc/kvm/../../../virt/kvm/vfio.c:89:7:
->    error: attribute declaration must precede definition [-Werror,-Wignored-attributes]
->            fn = symbol_get(vfio_file_iommu_group);
->                 ^
->    include/linux/module.h:805:60: note: expanded from macro 'symbol_get'
->    #define symbol_get(x) ({ extern typeof(x) x __attribute__((weak,visibility("hidden"))); &(x); })
->                                                               ^
->    include/linux/vfio.h:294:35: note: previous definition is here
->    static inline struct iommu_group *vfio_file_iommu_group(struct file *file)
->                                      ^
->    arch/powerpc/kvm/../../../virt/kvm/vfio.c:89:7:
->    error: attribute declaration must precede definition [-Werror,-Wignored-attributes]
->            fn = symbol_get(vfio_file_iommu_group);
->                 ^
->    include/linux/module.h:805:65: note: expanded from macro 'symbol_get'
->    #define symbol_get(x) ({ extern typeof(x) x __attribute__((weak,visibility("hidden"))); &(x); })
->                                                                    ^
->    include/linux/vfio.h:294:35: note: previous definition is here
->    static inline struct iommu_group *vfio_file_iommu_group(struct file *file)
->                                      ^
->    2 errors generated.
-> 
-> Although KVM is firmly in the wrong (there is zero reason for KVM to build
-> virt/kvm/vfio.c when VFIO is disabled), fudge around the error in VFIO as
-> the stub is unnecessary and doesn't serve its intended purpose (KVM is the
-> only external user of vfio_file_iommu_group()), and there is an in-flight
-> series to clean up the entire KVM<->VFIO interaction, i.e. fixing this in
-> KVM would result in more churn in the long run, and the stub needs to go
-> away regardless.
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202308251949.5IiaV0sz-lkp@intel.com
-> Closes: https://lore.kernel.org/oe-kbuild-all/202309030741.82aLACDG-lkp@intel.com
-> Closes: https://lore.kernel.org/oe-kbuild-all/202309110914.QLH0LU6L-lkp@intel.com
-> Link: https://lore.kernel.org/all/0-v1-08396538817d+13c5-vfio_kvm_kconfig_jgg@nvidia.com
-> Link: https://lore.kernel.org/all/20230916003118.2540661-1-seanjc@google.com
-> Cc: Nick Desaulniers <ndesaulniers@google.com>
-> Cc: Jason Gunthorpe <jgg@nvidia.com>
-> Tested-by: Michael Ellerman <mpe@ellerman.id.au>
-> Fixes: c1cce6d079b8 ("vfio: Compile vfio_group infrastructure optionally")
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  include/linux/vfio.h | 8 ++------
->  1 file changed, 2 insertions(+), 6 deletions(-)
 
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+--79WZgSpXvLpPvpaF
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Jason
+On Wed, Nov 29, 2023 at 03:26:18PM +0000, Matthew Wilcox wrote:
+> On Wed, Nov 29, 2023 at 07:29:35AM -0700, Jonathan Corbet wrote:
+> > Bagas Sanjaya <bagasdotme@gmail.com> writes:
+> >=20
+> > > I was prompted to write this little grammar fix series when reading
+> > > the fix from Attreyee [1], with review comments requesting changes
+> > > to that fix. So here's my version of the fix, with reviews from [1]
+> > > addressed (and distinct grammar fixes splitted).
+> >=20
+> > How is this helpful?  Why are you trying to push aside somebody who is
+> > working toward a first contribution to the kernel?  This is not the way
+> > to help somebody learn to work with the kernel community.
+>=20
+> This is not the first such "contribution" from Bagas recently.
+>=20
+> https://lore.kernel.org/linux-doc/20231121095658.28254-1-bagasdotme@gmail=
+=2Ecom/
+>=20
+> was as a result of
+> https://lore.kernel.org/linux-xfs/87r0klg8wl.fsf@debian-BULLSEYE-live-bui=
+lder-AMD64/
+>=20
+> I didn't say anything at the time, but clearly I should have squelched
+> this bad behaviour by Bagas before he did it to a newbie.
+>=20
+> Bagas, find your own project to work on.  Don't steal glory from others.
+
+OK, thanks! I was in 'gabut mode' then...
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--79WZgSpXvLpPvpaF
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZWfTigAKCRD2uYlJVVFO
+o1WRAQDjPyXAhXCE7w/Kb8phglapgtD0isoZyQ4PX7KDZuAN4AD/Sbgq4OKBu4e+
+ImjI03e2t4/pu2eUB/rOp2wbO//fxAQ=
+=zVHZ
+-----END PGP SIGNATURE-----
+
+--79WZgSpXvLpPvpaF--
