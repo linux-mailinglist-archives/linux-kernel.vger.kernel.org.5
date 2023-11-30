@@ -2,282 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDE937FFAA8
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 20:01:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71CC47FFAAC
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 20:01:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235222AbjK3TBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 14:01:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45950 "EHLO
+        id S1376286AbjK3TB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 14:01:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231199AbjK3TBS (ORCPT
+        with ESMTP id S1376269AbjK3TB0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 14:01:18 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F065A10E2
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 11:01:23 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D1ACC433C7;
-        Thu, 30 Nov 2023 19:01:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701370883;
-        bh=mrQTm2/X3bNSt7Um/8oj1SlRbeIm1qp56xkDGGk6vZg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LtpRvOLbxzuM9+T7wChsLRxkoWLmlRHSuhamm/cm+uImj8aiTKd1mbpS1L6+hinSF
-         +iNyCj1PClAmM/v1fVCmJGkHI3rli9TB+OtV3+FCVBYYXE9gL4zo/IQ//emX0sij+S
-         K/tTriiGbay61VRch0RwgO9G3tkh6TVGhnvEXTTsaVwrM5JjK+qWj/g/JC4c1L63cb
-         Zd1JifYSTxgm4n5tulghabJ0TMoO7WtOxkpfpT2m+iNx8gGiKtXI0ECmYudI4FmbBC
-         XxUI9xCnBj8d0ZgZTDlpn/OXYXYXhIRUzEwbWDgxVt5IbJh8pBvdTtVtHLeavN51Wp
-         tJNBPStIGf9jg==
-Date:   Thu, 30 Nov 2023 11:01:20 -0800
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Jiachen Zhang <zhangjiachen.jaycee@bytedance.com>
-Cc:     Chandan Babu R <chandan.babu@oracle.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        Allison Henderson <allison.henderson@oracle.com>,
-        Zhang Tianci <zhangtianci.1997@bytedance.com>,
-        Brian Foster <bfoster@redhat.com>, linux-xfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, xieyongji@bytedance.com, me@jcix.top,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v3 1/3] xfs: ensure logflagsp is initialized in
- xfs_bmap_del_extent_real
-Message-ID: <20231130190120.GM361584@frogsfrogsfrogs>
-References: <20231130040516.35677-1-zhangjiachen.jaycee@bytedance.com>
- <20231130040516.35677-2-zhangjiachen.jaycee@bytedance.com>
+        Thu, 30 Nov 2023 14:01:26 -0500
+Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [IPv6:2001:41d0:203:375::bc])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF40510EA
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 11:01:29 -0800 (PST)
+Date:   Thu, 30 Nov 2023 11:01:23 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1701370887;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Wjwn+GK6+t6wHRxnzMCcBASuxxo0/IKSxDYD1mPq7Mk=;
+        b=EKSS4CpU+3PlEbw2J5W6+TxNZqFWLJRQGEd1fVvrHDcrjv4YNRLFuww9WpM5h1n8IHofKu
+        NkcFMFZHQyOyLbYq66cIkwXY4dvDrADd8RrJS/PYfJOavKpGwrSSbzqWaW6TDkQo+16c4S
+        IhcbpUjwnx2jGQ1T9OcIWa7INtfxc7c=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Roman Gushchin <roman.gushchin@linux.dev>
+To:     Kent Overstreet <kent.overstreet@linux.dev>
+Cc:     Qi Zheng <zhengqi.arch@bytedance.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Linux-MM <linux-mm@kvack.org>, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Chinner <david@fromorbit.com>
+Subject: Re: [PATCH 2/7] mm: shrinker: Add a .to_text() method for shrinkers
+Message-ID: <ZWjcA4BA5vZe57Eh@P9FQF9L96D.corp.robot.car>
+References: <4caadff7-1df0-45cc-9d43-e616f9e4ddb3@bytedance.com>
+ <20231125003009.tbaxuquny43uwei3@moria.home.lan>
+ <76A1EE85-B62C-49B3-889C-80F9A2A88040@linux.dev>
+ <20231128035345.5c7yc7jnautjpfoc@moria.home.lan>
+ <abd0ddd6-389c-43dc-b18f-aa5e3a4fcf5a@bytedance.com>
+ <ZWaHG09fY2BYjyGD@P9FQF9L96D.corp.robot.car>
+ <ZWcBDglmDKUJdwMv@tiehlicka>
+ <20231129231147.7msiocerq7phxnyu@moria.home.lan>
+ <04f63966-af72-43ef-a65c-ff927064a3e4@bytedance.com>
+ <20231130032149.ynap4ai47dj62fy3@moria.home.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231130040516.35677-2-zhangjiachen.jaycee@bytedance.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231130032149.ynap4ai47dj62fy3@moria.home.lan>
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 30, 2023 at 12:05:14PM +0800, Jiachen Zhang wrote:
-> In the case of returning -ENOSPC, ensure logflagsp is initialized by 0.
-> Otherwise the caller __xfs_bunmapi will set uninitialized illegal
-> tmp_logflags value into xfs log, which might cause unpredictable error
-> in the log recovery procedure.
+On Wed, Nov 29, 2023 at 10:21:49PM -0500, Kent Overstreet wrote:
+> On Thu, Nov 30, 2023 at 11:09:42AM +0800, Qi Zheng wrote:
+> > 
+> > 
+> > On 2023/11/30 07:11, Kent Overstreet wrote:
+> > > On Wed, Nov 29, 2023 at 10:14:54AM +0100, Michal Hocko wrote:
+> > > > On Tue 28-11-23 16:34:35, Roman Gushchin wrote:
+> > > > > On Tue, Nov 28, 2023 at 02:23:36PM +0800, Qi Zheng wrote:
+> > > > [...]
+> > > > > > Now I think adding this method might not be a good idea. If we allow
+> > > > > > shrinkers to report thier own private information, OOM logs may become
+> > > > > > cluttered. Most people only care about some general information when
+> > > > > > troubleshooting OOM problem, but not the private information of a
+> > > > > > shrinker.
+> > > > > 
+> > > > > I agree with that.
+> > > > > 
+> > > > > It seems that the feature is mostly useful for kernel developers and it's easily
+> > > > > achievable by attaching a bpf program to the oom handler. If it requires a bit
+> > > > > of work on the bpf side, we can do that instead, but probably not. And this
+> > > > > solution can potentially provide way more information in a more flexible way.
+> > > > > 
+> > > > > So I'm not convinced it's a good idea to make the generic oom handling code
+> > > > > more complicated and fragile for everybody, as well as making oom reports differ
+> > > > > more between kernel versions and configurations.
+> > > > 
+> > > > Completely agreed! From my many years of experience of oom reports
+> > > > analysing from production systems I would conclude the following categories
+> > > > 	- clear runaways (and/or memory leaks)
+> > > > 		- userspace consumers - either shmem or anonymous memory
+> > > > 		  predominantly consumes the memory, swap is either depleted
+> > > > 		  or not configured.
+> > > > 		  OOM report is usually useful to pinpoint those as we
+> > > > 		  have required counters available
+> > > > 		- kernel memory consumers - if we are lucky they are
+> > > > 		  using slab allocator and unreclaimable slab is a huge
+> > > > 		  part of the memory consumption. If this is a page
+> > > > 		  allocator user the oom repport only helps to deduce
+> > > > 		  the fact by looking at how much user + slab + page
+> > > > 		  table etc. form. But identifying the root cause is
+> > > > 		  close to impossible without something like page_owner
+> > > > 		  or a crash dump.
+> > > > 	- misbehaving memory reclaim
+> > > > 		- minority of issues and the oom report is usually
+> > > > 		  insufficient to drill down to the root cause. If the
+> > > > 		  problem is reproducible then collecting vmstat data
+> > > > 		  can give a much better clue.
+> > > > 		- high number of slab reclaimable objects or free swap
+> > > > 		  are good indicators. Shrinkers data could be
+> > > > 		  potentially helpful in the slab case but I really have
+> > > > 		  hard time to remember any such situation.
+> > > > On non-production systems the situation is quite different. I can see
+> > > > how it could be very beneficial to add a very specific debugging data
+> > > > for subsystem/shrinker which is developed and could cause the OOM. For
+> > > > that purpose the proposed scheme is rather inflexible AFAICS.
+> > > 
+> > > Considering that you're an MM guy, and that shrinkers are pretty much
+> > > universally used by _filesystem_ people - I'm not sure your experience
+> > > is the most relevant here?
+> > > 
+> > > The general attitude I've been seeing in this thread has been one of
+> > > dismissiveness towards filesystem people. Roman too; back when he was
+> > 
+> > Oh, please don't say that, it seems like you are the only one causing
+> > the fight. We deeply respect the opinions of file system developers, so
+> > I invited Dave to this thread from the beginning. And you didn't CC
+> > linux-fsdevel@vger.kernel.org yourself.
+> > 
+> > > working on his shrinker debug feature I reached out to him, explained
+> > > that I was working on my own, and asked about collaborating - got
+> > > crickets in response...
+> > > 
+> > > Hmm..
+> > > 
+> > > Besides that, I haven't seen anything what-so-ever out of you guys to
+> > > make our lives easier, regarding OOM debugging, nor do you guys even
+> > > seem interested in the needs and perspectives of the filesytem people.
+> > > Roman, your feature didn't help one bit for OOM debuging - didn't even
+> > > come with documentation or hints as to what it's for.
+> > > 
+> > > BPF? Please.
+> > 
+> > (Disclaimer, no intention to start a fight, here are some objective
+> > views.)
+> > 
+> > Why not? In addition to printk, there are many good debugging tools
+> > worth trying, such as BPF related tools, drgn, etc.
+> > 
+> > For non-bcachefs developers, who knows what those statistics mean?
+> > 
+> > You can use BPF or drgn to traverse in advance to get the address of the
+> > bcachefs shrinker structure, and then during OOM, find the bcachefs
+> > private structure through the shrinker->private_data member, and then
+> > dump the bcachefs private data. Is there any problem with this?
 > 
-> Also, remove the flags variable and set the *logflagsp directly, so that
-> the code should be more robust in the long run.
-> 
-> Fixes: 1b24b633aafe ("xfs: move some more code into xfs_bmap_del_extent_real")
-> Signed-off-by: Jiachen Zhang <zhangjiachen.jaycee@bytedance.com>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> No, BPF is not an excuse for improving our OOM/allocation failure
+> reports. BPF/tracing are secondary tools; whenever we're logging
+> information about a problem we should strive to log enough information
+> to debug the issue.
 
-Looks good,
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+Ok, a simple question then:
+why can't you dump /proc/slabinfo after the OOM?
 
---D
+Unlike anon memory, slab memory (fs caches in particular) should not be heavily
+affected by killing some userspace task.
 
-> ---
->  fs/xfs/libxfs/xfs_bmap.c | 73 +++++++++++++++++-----------------------
->  1 file changed, 31 insertions(+), 42 deletions(-)
-> 
-> diff --git a/fs/xfs/libxfs/xfs_bmap.c b/fs/xfs/libxfs/xfs_bmap.c
-> index be62acffad6c..eacd7f43c952 100644
-> --- a/fs/xfs/libxfs/xfs_bmap.c
-> +++ b/fs/xfs/libxfs/xfs_bmap.c
-> @@ -5010,7 +5010,6 @@ xfs_bmap_del_extent_real(
->  	xfs_fileoff_t		del_endoff;	/* first offset past del */
->  	int			do_fx;	/* free extent at end of routine */
->  	int			error;	/* error return value */
-> -	int			flags = 0;/* inode logging flags */
->  	struct xfs_bmbt_irec	got;	/* current extent entry */
->  	xfs_fileoff_t		got_endoff;	/* first offset past got */
->  	int			i;	/* temp state */
-> @@ -5023,6 +5022,8 @@ xfs_bmap_del_extent_real(
->  	uint32_t		state = xfs_bmap_fork_to_state(whichfork);
->  	struct xfs_bmbt_irec	old;
->  
-> +	*logflagsp = 0;
-> +
->  	mp = ip->i_mount;
->  	XFS_STATS_INC(mp, xs_del_exlist);
->  
-> @@ -5035,7 +5036,6 @@ xfs_bmap_del_extent_real(
->  	ASSERT(got_endoff >= del_endoff);
->  	ASSERT(!isnullstartblock(got.br_startblock));
->  	qfield = 0;
-> -	error = 0;
->  
->  	/*
->  	 * If it's the case where the directory code is running with no block
-> @@ -5051,13 +5051,13 @@ xfs_bmap_del_extent_real(
->  	    del->br_startoff > got.br_startoff && del_endoff < got_endoff)
->  		return -ENOSPC;
->  
-> -	flags = XFS_ILOG_CORE;
-> +	*logflagsp = XFS_ILOG_CORE;
->  	if (whichfork == XFS_DATA_FORK && XFS_IS_REALTIME_INODE(ip)) {
->  		if (!(bflags & XFS_BMAPI_REMAP)) {
->  			error = xfs_rtfree_blocks(tp, del->br_startblock,
->  					del->br_blockcount);
->  			if (error)
-> -				goto done;
-> +				return error;
->  		}
->  
->  		do_fx = 0;
-> @@ -5072,11 +5072,9 @@ xfs_bmap_del_extent_real(
->  	if (cur) {
->  		error = xfs_bmbt_lookup_eq(cur, &got, &i);
->  		if (error)
-> -			goto done;
-> -		if (XFS_IS_CORRUPT(mp, i != 1)) {
-> -			error = -EFSCORRUPTED;
-> -			goto done;
-> -		}
-> +			return error;
-> +		if (XFS_IS_CORRUPT(mp, i != 1))
-> +			return -EFSCORRUPTED;
->  	}
->  
->  	if (got.br_startoff == del->br_startoff)
-> @@ -5093,17 +5091,15 @@ xfs_bmap_del_extent_real(
->  		xfs_iext_prev(ifp, icur);
->  		ifp->if_nextents--;
->  
-> -		flags |= XFS_ILOG_CORE;
-> +		*logflagsp |= XFS_ILOG_CORE;
->  		if (!cur) {
-> -			flags |= xfs_ilog_fext(whichfork);
-> +			*logflagsp |= xfs_ilog_fext(whichfork);
->  			break;
->  		}
->  		if ((error = xfs_btree_delete(cur, &i)))
-> -			goto done;
-> -		if (XFS_IS_CORRUPT(mp, i != 1)) {
-> -			error = -EFSCORRUPTED;
-> -			goto done;
-> -		}
-> +			return error;
-> +		if (XFS_IS_CORRUPT(mp, i != 1))
-> +			return -EFSCORRUPTED;
->  		break;
->  	case BMAP_LEFT_FILLING:
->  		/*
-> @@ -5114,12 +5110,12 @@ xfs_bmap_del_extent_real(
->  		got.br_blockcount -= del->br_blockcount;
->  		xfs_iext_update_extent(ip, state, icur, &got);
->  		if (!cur) {
-> -			flags |= xfs_ilog_fext(whichfork);
-> +			*logflagsp |= xfs_ilog_fext(whichfork);
->  			break;
->  		}
->  		error = xfs_bmbt_update(cur, &got);
->  		if (error)
-> -			goto done;
-> +			return error;
->  		break;
->  	case BMAP_RIGHT_FILLING:
->  		/*
-> @@ -5128,12 +5124,12 @@ xfs_bmap_del_extent_real(
->  		got.br_blockcount -= del->br_blockcount;
->  		xfs_iext_update_extent(ip, state, icur, &got);
->  		if (!cur) {
-> -			flags |= xfs_ilog_fext(whichfork);
-> +			*logflagsp |= xfs_ilog_fext(whichfork);
->  			break;
->  		}
->  		error = xfs_bmbt_update(cur, &got);
->  		if (error)
-> -			goto done;
-> +			return error;
->  		break;
->  	case 0:
->  		/*
-> @@ -5150,18 +5146,18 @@ xfs_bmap_del_extent_real(
->  		new.br_state = got.br_state;
->  		new.br_startblock = del_endblock;
->  
-> -		flags |= XFS_ILOG_CORE;
-> +		*logflagsp |= XFS_ILOG_CORE;
->  		if (cur) {
->  			error = xfs_bmbt_update(cur, &got);
->  			if (error)
-> -				goto done;
-> +				return error;
->  			error = xfs_btree_increment(cur, 0, &i);
->  			if (error)
-> -				goto done;
-> +				return error;
->  			cur->bc_rec.b = new;
->  			error = xfs_btree_insert(cur, &i);
->  			if (error && error != -ENOSPC)
-> -				goto done;
-> +				return error;
->  			/*
->  			 * If get no-space back from btree insert, it tried a
->  			 * split, and we have a zero block reservation.  Fix up
-> @@ -5174,33 +5170,28 @@ xfs_bmap_del_extent_real(
->  				 */
->  				error = xfs_bmbt_lookup_eq(cur, &got, &i);
->  				if (error)
-> -					goto done;
-> -				if (XFS_IS_CORRUPT(mp, i != 1)) {
-> -					error = -EFSCORRUPTED;
-> -					goto done;
-> -				}
-> +					return error;
-> +				if (XFS_IS_CORRUPT(mp, i != 1))
-> +					return -EFSCORRUPTED;
->  				/*
->  				 * Update the btree record back
->  				 * to the original value.
->  				 */
->  				error = xfs_bmbt_update(cur, &old);
->  				if (error)
-> -					goto done;
-> +					return error;
->  				/*
->  				 * Reset the extent record back
->  				 * to the original value.
->  				 */
->  				xfs_iext_update_extent(ip, state, icur, &old);
-> -				flags = 0;
-> -				error = -ENOSPC;
-> -				goto done;
-> -			}
-> -			if (XFS_IS_CORRUPT(mp, i != 1)) {
-> -				error = -EFSCORRUPTED;
-> -				goto done;
-> +				*logflagsp = 0;
-> +				return -ENOSPC;
->  			}
-> +			if (XFS_IS_CORRUPT(mp, i != 1))
-> +				return -EFSCORRUPTED;
->  		} else
-> -			flags |= xfs_ilog_fext(whichfork);
-> +			*logflagsp |= xfs_ilog_fext(whichfork);
->  
->  		ifp->if_nextents++;
->  		xfs_iext_next(ifp, icur);
-> @@ -5224,7 +5215,7 @@ xfs_bmap_del_extent_real(
->  					((bflags & XFS_BMAPI_NODISCARD) ||
->  					del->br_state == XFS_EXT_UNWRITTEN));
->  			if (error)
-> -				goto done;
-> +				return error;
->  		}
->  	}
->  
-> @@ -5239,9 +5230,7 @@ xfs_bmap_del_extent_real(
->  	if (qfield && !(bflags & XFS_BMAPI_REMAP))
->  		xfs_trans_mod_dquot_byino(tp, ip, qfield, (long)-nblks);
->  
-> -done:
-> -	*logflagsp = flags;
-> -	return error;
-> +	return 0;
->  }
->  
->  /*
-> -- 
-> 2.20.1
-> 
-> 
+Thanks.
