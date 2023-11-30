@@ -2,104 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 663037FF6DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 17:48:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB1E57FF6E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 17:49:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232182AbjK3Qsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 11:48:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50290 "EHLO
+        id S1345697AbjK3QtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 11:49:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231837AbjK3Qsh (ORCPT
+        with ESMTP id S232370AbjK3QtF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 11:48:37 -0500
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA1C210E2;
-        Thu, 30 Nov 2023 08:48:43 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.18.186.216])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Sh2Cs19tDz6K9Bn;
-        Fri,  1 Dec 2023 00:47:05 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-        by mail.maildlp.com (Postfix) with ESMTPS id C919D140684;
-        Fri,  1 Dec 2023 00:48:41 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 30 Nov
- 2023 16:48:40 +0000
-Date:   Thu, 30 Nov 2023 16:48:40 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
-CC:     <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
-        <linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-riscv@lists.infradead.org>, <kvmarm@lists.linux.dev>,
-        <x86@kernel.org>, <linux-csky@vger.kernel.org>,
-        <linux-doc@vger.kernel.org>, <linux-ia64@vger.kernel.org>,
-        <linux-parisc@vger.kernel.org>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        <jianyong.wu@arm.com>, <justin.he@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>
-Subject: Re: [PATCH 04/21] Loongarch: remove arch_*register_cpu() exports
-Message-ID: <20231130164840.0000465f@Huawei.com>
-In-Reply-To: <E1r5R2w-00Csyn-E2@rmk-PC.armlinux.org.uk>
-References: <ZVyz/Ve5pPu8AWoA@shell.armlinux.org.uk>
-        <E1r5R2w-00Csyn-E2@rmk-PC.armlinux.org.uk>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Thu, 30 Nov 2023 11:49:05 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5563510F3;
+        Thu, 30 Nov 2023 08:49:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701362952; x=1732898952;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=HXAZKQLZl/DnOU4OtJdFiiHQn7NurI3k3IMwWiBmDag=;
+  b=MCHx7RWi9D4AH1qegRmpVfOvEddd6y/CrF3Cl3HyL1LHoAqUrPuyFxVp
+   8EEx0SK+WTUa3TKwOaw8Pqi1VGehwl/+iK4NSOSbUjs2Y/w6ioXE0hepu
+   +4brtw42eS8DNUtPs1qX8rPNvtUp2AnvxaaTody52y5ga6zw1NHhg6itR
+   vLV+gTBjyI+GqHN3a16FHgv+7z35h/8S7H76wSGs6MYyk0mF5WNH9LHVr
+   rKsbFXcLwVkfzanc6nMTde8RptmT0Os6Y7y8Lb6f/XW3sep0lcUsrh0rw
+   E29o7e7AgCOFBFmuaAl478WPcggsTwPt8kjaOLLGZFFLEEfYtVUzuLuKa
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="12064101"
+X-IronPort-AV: E=Sophos;i="6.04,239,1695711600"; 
+   d="scan'208";a="12064101"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 08:49:11 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="745706056"
+X-IronPort-AV: E=Sophos;i="6.04,239,1695711600"; 
+   d="scan'208";a="745706056"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga006.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 08:49:01 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1r8kDh-00000000kYA-2Q4s;
+        Thu, 30 Nov 2023 18:48:57 +0200
+Date:   Thu, 30 Nov 2023 18:48:57 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Fabio Estevam <festevam@gmail.com>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
+        Jianlong Huang <jianlong.huang@starfivetech.com>,
+        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        openbmc@lists.ozlabs.org, linux-mips@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>, Jacky Bai <ping.bai@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Sean Wang <sean.wang@kernel.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Hal Feng <hal.feng@starfivetech.com>
+Subject: Re: [PATCH v4 16/23] pinctrl: imx: Convert to use grp member
+Message-ID: <ZWi8-a_4bdSUBqaV@smile.fi.intel.com>
+References: <20231129161459.1002323-1-andriy.shevchenko@linux.intel.com>
+ <20231129161459.1002323-17-andriy.shevchenko@linux.intel.com>
+ <CAOMZO5CZpQjWKimNReUkwHOc-mF8vWoq2HDhjGKSu6E3g5-aVw@mail.gmail.com>
+ <ZWduPKmBWkaIdLhi@smile.fi.intel.com>
+ <CAOMZO5C_dhvx70nk1HOSZdw8hMMmED69tdsXgydXdpnxHTJ58Q@mail.gmail.com>
+ <ZWdyOc3pCoNihDtD@smile.fi.intel.com>
+ <CACRpkdap2fe-L0v7ttQULGq7d_zVCb2MmD4w=hHxKacKZH8jng@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml100005.china.huawei.com (7.191.160.25) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACRpkdap2fe-L0v7ttQULGq7d_zVCb2MmD4w=hHxKacKZH8jng@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 21 Nov 2023 13:44:10 +0000
-"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk> wrote:
-
-> arch_register_cpu() and arch_unregister_cpu() are not used by anything
-> that can be a module - they are used by drivers/base/cpu.c and
-> drivers/acpi/acpi_processor.c, neither of which can be a module.
+On Wed, Nov 29, 2023 at 10:41:14PM +0100, Linus Walleij wrote:
+> On Wed, Nov 29, 2023 at 6:18 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> > On Wed, Nov 29, 2023 at 02:08:38PM -0300, Fabio Estevam wrote:
+> > > On Wed, Nov 29, 2023 at 2:01 PM Andy Shevchenko
+> > > <andriy.shevchenko@linux.intel.com> wrote:
+> > > >
+> > > > It's explained in the first paragraph in the cover letter. Do you
+> > > > want to copy this into each commit message?
+> > >
+> > > Yes, much better to have the information into each commit message.
+> >
+> > Here it would be like
+> > "Because other members will be removed to avoid duplication and
+> > desynchronisation of the generic pin group description."
+> >
+> > Linus, what do you think about this?
 > 
-> Remove the exports.
-> 
-> Reviewed-by: Gavin Shan <gshan@redhat.com>
-> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+> I can just add that to each commit while applying if it makes everyone happy.
 
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+I'm pretty much fine, but I dunno if you are using `b4 shazam -H ...` I found
+that very cool feature.
 
-> ---
->  arch/loongarch/kernel/topology.c | 2 --
->  1 file changed, 2 deletions(-)
-> 
-> diff --git a/arch/loongarch/kernel/topology.c b/arch/loongarch/kernel/topology.c
-> index 3fd166006698..ae860fe81536 100644
-> --- a/arch/loongarch/kernel/topology.c
-> +++ b/arch/loongarch/kernel/topology.c
-> @@ -25,7 +25,6 @@ int arch_register_cpu(int cpu)
->  
->  	return ret;
->  }
-> -EXPORT_SYMBOL(arch_register_cpu);
->  
->  void arch_unregister_cpu(int cpu)
->  {
-> @@ -34,7 +33,6 @@ void arch_unregister_cpu(int cpu)
->  	c->hotpluggable = 0;
->  	unregister_cpu(c);
->  }
-> -EXPORT_SYMBOL(arch_unregister_cpu);
->  #endif
->  
->  static int __init topology_init(void)
+> No need to resend for that.
+
+Yeah, we may utilise `git msg-filter ...` to fulfill the job (for curious one,
+it can be run even if we are in the middle of `git rebase --interactive ...`).
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
