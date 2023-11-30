@@ -2,104 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EB4A7FE9F4
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 08:55:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80CE87FE9F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 08:56:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231722AbjK3HzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 02:55:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57894 "EHLO
+        id S234991AbjK3Hzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 02:55:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229596AbjK3HzR (ORCPT
+        with ESMTP id S231806AbjK3Hzu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 02:55:17 -0500
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0A4210C9
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 23:55:22 -0800 (PST)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-a04196fc957so80860566b.2
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 23:55:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701330921; x=1701935721; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jmZiZjvpBex4gcI04eLOJyAJ5t5SzkDiFqDMvfOAJ5I=;
-        b=kZ4m63VovDbojZ+NnrIMxEo3p7BysYUDLJRKomKxTXYzBrSS0YginMEckYVdwfDnOz
-         xNbGmYc0bWvFkrsn6vYSVWkVZ/7syKi7SCjSe2nu+OCL2NDTGK5Et5HDpXOXUSVjC89+
-         SXr1rNMpZxT6bEOCyS/orTVfJ/LBwHfa1Ozn1kROHHCi14Ph2vOqORhNhUDJgjTkADvm
-         vX0n75YdUq1XzsRL48CrnETMbdYkmlsP9Doiva6uQg2og3R6ufBRbCDALvrHF6UJ5bY8
-         23ZbM8RYHIXoTzMn5+DU+AEWHdImOORkjMeG7XgcqT+MaNScNmiNq4moCq6XTG6nO0K2
-         g7Dg==
+        Thu, 30 Nov 2023 02:55:50 -0500
+Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com [209.85.214.199])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E61110F9
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 23:55:52 -0800 (PST)
+Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-1cff35371aeso6973385ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 23:55:52 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701330921; x=1701935721;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jmZiZjvpBex4gcI04eLOJyAJ5t5SzkDiFqDMvfOAJ5I=;
-        b=Ql1SZ/faFPxjw07hpEVYrl+Vj1qC7CZLANbVq5OOu7G0CtpieJN2tVgW47TNh/XP3o
-         3OjXg9VBZPj6D3oN2YYcPNe8s+W3dlIR1bpN7pvzfPQxt7xiKlDiBpgHj5RAvHCZux3V
-         McHpTUJU62gfqUjAtjCNMn6sb8QcIR9MHqSkfLGS6P2svZhJcSC4pEPLJBqrPXVdU30j
-         TOvaEsE5WWMd0Lsb8K3wUCenmhEW2hGwRsh/TGccLW+3E8rXlaZu2zEOZFvpUsmh95Cx
-         CyHIjDZqKfhCIhAyXSg9A20GTOgwzKvPcsI+my07PBardvPn+Ix1/UO+gTGLDWxeCY2s
-         xvVA==
-X-Gm-Message-State: AOJu0YyqWkYgt51PowG360zq1ZONx4EtYgEmR8igv4jm47aYH9mrxIlb
-        r/fWp7+R9jRf2rv3oi/WfZRB4g==
-X-Google-Smtp-Source: AGHT+IGEJFJJud5j9Fzl6gQW0ZgJYjI7kTFeop+xGL6tvHR+7fS5T2fIUIfa2sxukjpQQbokfOn1MA==
-X-Received: by 2002:a17:907:9728:b0:9be:7b67:1673 with SMTP id jg40-20020a170907972800b009be7b671673mr18537863ejc.1.1701330921247;
-        Wed, 29 Nov 2023 23:55:21 -0800 (PST)
-Received: from krzk-bin.. ([178.197.223.109])
-        by smtp.gmail.com with ESMTPSA id l14-20020a170906414e00b0099c53c4407dsm386981ejk.78.2023.11.29.23.55.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Nov 2023 23:55:20 -0800 (PST)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     tomasz.figa@gmail.com, s.nawrocki@samsung.com,
-        alim.akhtar@samsung.com, linus.walleij@linaro.org,
-        Youngmin Nam <youngmin.nam@samsung.com>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, semen.protsenko@linaro.org
-Subject: Re: [PATCH v2] pinctrl: samsung: add irq_set_affinity() for non wake up external gpio interrupt
-Date:   Thu, 30 Nov 2023 08:55:17 +0100
-Message-Id: <170133091468.5615.2831369258503569310.b4-ty@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231126094618.2545116-1-youngmin.nam@samsung.com>
-References: <CGME20231126091120epcas2p4a1320e3b0f9be8f8a0f575a322981d38@epcas2p4.samsung.com> <20231126094618.2545116-1-youngmin.nam@samsung.com>
+        d=1e100.net; s=20230601; t=1701330952; x=1701935752;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dA+vPCLU/f6Yj1BbW2YhSxBQTt1cBuwejD5YAdXVdl4=;
+        b=tDkYQFiu2SQTUSnRV8I/K4I2//jivGZ1BeyvSdl34jZbTgz+THK0kEBvrWWfdcSh3k
+         m1CvyNe/UExnHDxbhNl2UyTlJQ6G2N/EF4yeHir7FQw/K07H3uHsAHuHGN5zikUH2h/4
+         x1DQCyUqnOD6iD7oAgh6Qy6VutoO/YpNkkw4Sn2qRZsYY2mO3VMUilFjoQve3mty80Il
+         m9KnMvJBuqjon4IKYYJ4YTdNpuGPwxD7Kl6YpYzb3WXWWsE8PGEKKR6calMkIMhjxAsY
+         HbjwSEWwrc9Rlw+r2Jx7AS11rZkilk1XCKc/jHykjc/1zmgtXLX49DaJU2oefi9ahms5
+         0LxQ==
+X-Gm-Message-State: AOJu0YzFxcWNrttKocn5GHgDd4ALsGH17Prcx3TIX6905kK4bs3pxp06
+        p1N+y/rtf+ZOxP83Qx21zSQqijAQYlgDcuMmzTaKM3ajwkZ4LFA=
+X-Google-Smtp-Source: AGHT+IHTeXSRrm5vroVwTUiTD7Z+TydmhjCjfqVid67MQ1RC5AHJswGV8DDTARuk4tmpB2pQ9LNgZ+Eavj4ddEurex7brZvfPPFU
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a17:902:6944:b0:1cf:6969:598 with SMTP id
+ k4-20020a170902694400b001cf69690598mr4392609plt.7.1701330951829; Wed, 29 Nov
+ 2023 23:55:51 -0800 (PST)
+Date:   Wed, 29 Nov 2023 23:55:51 -0800
+In-Reply-To: <000000000000db858c05f06f30b0@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000078063060b59fb38@google.com>
+Subject: Re: [syzbot] task hung in exfat_write_inode
+From:   syzbot <syzbot+2f73ed585f115e98aee8@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org.
 
-On Sun, 26 Nov 2023 18:46:18 +0900, Youngmin Nam wrote:
-> To support affinity setting for non wake up external gpio interrupt,
-> add irq_set_affinity callback using irq number from pinctrl driver data.
-> 
-> Before this patch, changing the irq affinity of gpio interrupt is not possible:
-> 
->     # cat /proc/irq/418/smp_affinity
->     3ff
->     # echo 00f > /proc/irq/418/smp_affinity
->     # cat /proc/irq/418/smp_affinity
->     3ff
->     # cat /proc/interrupts
->                CPU0       CPU1       CPU2       CPU3    ...
->     418:       3631          0          0          0    ...
-> 
-> [...]
+***
 
-Applied, thanks!
+Subject: task hung in exfat_write_inode
+Author: lizhi.xu@windriver.com
 
-[1/1] pinctrl: samsung: add irq_set_affinity() for non wake up external gpio interrupt
-      https://git.kernel.org/pinctrl/samsung/c/b77f5ef8ebe4d8ee3a712a216415d7f4d4d0acf2
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git f9ff5644bcc0
 
-Best regards,
--- 
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+diff --git a/fs/exfat/file.c b/fs/exfat/file.c
+index bfdfafe00993..a3ace4fc555c 100644
+--- a/fs/exfat/file.c
++++ b/fs/exfat/file.c
+@@ -116,6 +116,7 @@ int __exfat_truncate(struct inode *inode)
+ 
+ 	exfat_chain_set(&clu, ei->start_clu, num_clusters_phys, ei->flags);
+ 
++	mutex_unlock(&sbi->s_lock);
+ 	if (i_size_read(inode) > 0) {
+ 		/*
+ 		 * Truncate FAT chain num_clusters after the first cluster
+@@ -134,8 +135,10 @@ int __exfat_truncate(struct inode *inode)
+ 		} else {
+ 			while (num_clusters > 0) {
+ 				last_clu = clu.dir;
++				mutex_lock(&sbi->s_lock);
+ 				if (exfat_get_next_cluster(sb, &(clu.dir)))
+ 					return -EIO;
++				mutex_unlock(&sbi->s_lock);
+ 
+ 				num_clusters--;
+ 				clu.size--;
+@@ -160,6 +163,7 @@ int __exfat_truncate(struct inode *inode)
+ 	 * __exfat_write_inode() is called for directory entry, bitmap
+ 	 * and FAT to be written in a same writeback.
+ 	 */
++	mutex_lock(&sbi->s_lock);
+ 	if (__exfat_write_inode(inode, inode_needs_sync(inode)))
+ 		return -EIO;
+ 
