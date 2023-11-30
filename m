@@ -2,86 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C6387FFD7C
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 22:26:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C97667FFD7E
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 22:26:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376957AbjK3VZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 16:25:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60936 "EHLO
+        id S1376906AbjK3V0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 16:26:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376920AbjK3VZs (ORCPT
+        with ESMTP id S1376915AbjK3V0g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 16:25:48 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5631A10D9
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 13:25:54 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F729C433C7;
-        Thu, 30 Nov 2023 21:25:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701379554;
-        bh=9bgZgakLuV766x8vJhclEiCgo0lX4jxjBvFiXcY/WAI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dCCQzcNa3LrH9RQYJpe5QMHN8s5MLHlHX2YGjl+QVdaf+2PliPWzsKjtqB2eUe2ho
-         UFEEBqotv7GUXzfk4pUIMopX7xzEKPzNFSSu2r00ns1waRO9jlIE7ymn5Zf/Nqfu8K
-         EjHNo2gFE8e4Fud86XuKoIGhtqYcIdUR4v+UpqN8djwnapnmdlnwljzsvXk6dAcONe
-         laKtyOZymWfdkDt0FIXa06kOCYYigXp0m9EH5s8Zc3RMXkeA1kbZ4xGbmh7Svdr3dY
-         P5JVvir8FAszz53zscQv/czSPkmLqjFONOYO0dSc1CsMC1dEI1ZRmPaiaPRmr2205L
-         LMnSqZxUBuypg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 9C98940094; Thu, 30 Nov 2023 18:25:50 -0300 (-03)
-Date:   Thu, 30 Nov 2023 18:25:50 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Thu, 30 Nov 2023 16:26:36 -0500
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A201D1711
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 13:26:42 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1cfd76c5f03so49435ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 13:26:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701379602; x=1701984402; darn=vger.kernel.org;
+        h=mime-version:user-agent:message-id:date:references:in-reply-to
+         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=9qalC3SiJ6wXULCn53TlUf+ob37V8woQJoeziFX6t7A=;
+        b=TB/P6rB1gdg1BbYMIJqyC61Z0np86GdTBLX1CvsmYr6N5eF/+imasOXt2F0zUinl9j
+         73b0RymhIVqDsgRPP3JIBv//lQDLjyZVJ5yTlv4YA6sAnnUqKhOsuRD31t8W3wCKh9DI
+         WQrPhwItrLzJENKTWX6ZTjVLg5pVqKBOinCI1cATJHD5gvNtoGjSE3LtmxtDlplpBGtA
+         hpZcjDUbxlVh20zveGTED04e3EWDcNqR4o6Fln7+X5NLrmON50LCN6dbfUxfa/Ye91I7
+         AO/z2QQQiBgdV9PI5FSwJDerCtCPbf+M8jdaYvvUgP/dP5AGXam9Y1CEn6JNsj1jTAIL
+         g4iQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701379602; x=1701984402;
+        h=mime-version:user-agent:message-id:date:references:in-reply-to
+         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9qalC3SiJ6wXULCn53TlUf+ob37V8woQJoeziFX6t7A=;
+        b=rzkSw6Qx7biCVSeCykNCXdVeNivQx5DmxJBJ7i/lik6XkBUqxgLScsXK3qIVkDOLET
+         vT/3N+UgKCYtgCeLjXqN5aJGA1YszlzZVRgcXefyTWPIZJuKk/l/nInjWK3Rgbu9U7Pg
+         vgu8V6BjeNWRfjSasSDlhFXqqxRDBmkzJkEIs3iLabeW2Qhpdzet6+6xssEyXmOT4Fon
+         6R5NufW6yU4qva7gypB9ufZgsUtr2zeijhuD1b0Mdg7H1UVG7dVbCiVc3B7duRKRgE/l
+         gkYjEII76xN+9CF3vvRX9mPN0Mc/5xrFt9NOgaFhG3ihZGal9zGarVz+xs+Qqfrnrb/f
+         Dneg==
+X-Gm-Message-State: AOJu0YxUjfr0MaLqpQHVzBv8giO57gIpbh4YTlCCfdUMk4enZIYzWLgI
+        nlZkWuSKUtiUykZBnvGA7yBSuw==
+X-Google-Smtp-Source: AGHT+IEzYGDcS2ZASf2vXDx/HgYuqZXNxGA/l0F8/7Rpu9FZcYP6LvKkqzrzYulFAizD8HBAVkl7BA==
+X-Received: by 2002:a17:902:f681:b0:1cf:dbef:79c9 with SMTP id l1-20020a170902f68100b001cfdbef79c9mr29311plg.2.1701379601916;
+        Thu, 30 Nov 2023 13:26:41 -0800 (PST)
+Received: from bsegall-glaptop.localhost (c-73-158-249-138.hsd1.ca.comcast.net. [73.158.249.138])
+        by smtp.gmail.com with ESMTPSA id b7-20020a170902a9c700b001cfc618d76csm1877863plr.70.2023.11.30.13.26.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Nov 2023 13:26:41 -0800 (PST)
+From:   Benjamin Segall <bsegall@google.com>
+To:     Valentin Schneider <vschneid@redhat.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Nick Terrell <terrelln@fb.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        "Steinar H. Gunderson" <sesse@google.com>,
-        Liam Howlett <liam.howlett@oracle.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Colin Ian King <colin.i.king@gmail.com>,
-        Dmitrii Dolgov <9erthalion6@gmail.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Ming Wang <wangming01@loongson.cn>,
-        James Clark <james.clark@arm.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        German Gomez <german.gomez@arm.com>,
-        Changbin Du <changbin.du@huawei.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, Li Dong <lidong@vivo.com>,
-        Sandipan Das <sandipan.das@amd.com>,
-        liuwenyu <liuwenyu7@huawei.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
-        Guilherme Amadio <amadio@gentoo.org>
-Subject: Re: [PATCH v5 06/50] tools lib api: Add io_dir an allocation free
- readdir alternative
-Message-ID: <ZWj93nq9GBpga7nT@kernel.org>
-References: <20231127220902.1315692-1-irogers@google.com>
- <20231127220902.1315692-7-irogers@google.com>
- <ZWjEqw1cAw/eIpQH@kernel.org>
- <CAP-5=fUj7ZCchuwBW7xLe0UK8eupQUH3n9t0vcXGg=F57g-eMQ@mail.gmail.com>
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Phil Auld <pauld@redhat.com>,
+        Clark Williams <williams@redhat.com>,
+        Tomas Glozar <tglozar@redhat.com>
+Subject: Re: [RFC PATCH 1/2] sched/fair: Only throttle CFS tasks on return
+ to userspace
+In-Reply-To: <20231130161245.3894682-2-vschneid@redhat.com> (Valentin
+        Schneider's message of "Thu, 30 Nov 2023 17:12:43 +0100")
+References: <20231130161245.3894682-1-vschneid@redhat.com>
+        <20231130161245.3894682-2-vschneid@redhat.com>
+Date:   Thu, 30 Nov 2023 13:26:37 -0800
+Message-ID: <xm26sf4n2ar6.fsf@google.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP-5=fUj7ZCchuwBW7xLe0UK8eupQUH3n9t0vcXGg=F57g-eMQ@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+Content-Type: text/plain
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -89,256 +85,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Nov 30, 2023 at 09:56:42AM -0800, Ian Rogers escreveu:
-> On Thu, Nov 30, 2023 at 9:21 AM Arnaldo Carvalho de Melo
-> <acme@kernel.org> wrote:
-> >
-> > Em Mon, Nov 27, 2023 at 02:08:18PM -0800, Ian Rogers escreveu:
-> > > glibc's opendir allocates a minimum of 32kb, when called recursively
-> > > for a directory tree the memory consumption can add up - nearly 300kb
-> > > during perf start-up when processing modules. Add a stack allocated
-> > > variant of readdir sized a little more than 1kb.
-> >
-> > Now, on some systems:
-> >
-> >   CC      /tmp/build/perf/pmu-events/pmu-events.o
-> > In file included from util/machine.c:39:
-> > /tmp/build/perf/libapi/include/api/io_dir.h: In function ‘io_dir__readdir’:
-> > /tmp/build/perf/libapi/include/api/io_dir.h:46:16: error: implicit declaration of function ‘getdents64’; did you mean ‘getentropy’? [-Werror=implicit-function-declaration]
-> >    ssize_t rc = getdents64(iod->dirfd, iod->buff, sizeof(iod->buff));
-> >                 ^~~~~~~~~~
-> >                 getentropy
-> >   CC      /tmp/build/perf/tests/workloads/brstack.o
-> >   CC      /tmp/build/perf/tests/workloads/datasym.o
-> >   CC      /tmp/build/perf/util/maps.o
-> 
-> 
-> Sorry for that. Is it a _GNU_SOURCE issue? I thought we generally had
+Valentin Schneider <vschneid@redhat.com> writes:
 
-Nope, some systems just don't have that function in its libc, for
-instance, a Red Hat derivative with glibc 2.28:
+> As reported in [1], CFS bandwidth throttling is a source of headaches in
+> PREEMPT_RT - generally speaking, a throttled CFS task can hold locks that
+> prevent ksoftirqd from running, which prevents replenishing & unthrottling
+> the cfs_rq of said CFS task.
+>
+> Peter mentioned that there have been discussions on changing /when/ the
+> throttling happens: rather than have it be done immediately upon updating
+> the runtime statistics and realizing the cfs_rq has depleted its quota, we wait
+> for the task to be about to return to userspace.
+>
+> I'm not aware of the arguments in favour of this for !PREEMPT_RT, but given [1]
+> I had a look into it. Using this approach means no task can be throttled while
+> holding a kernel lock, which solves the locking dependency issue.
 
-glibc-2.28-189.5.el8_6.x86_64
+The alternative we've been experimenting with (and still running into
+other issues that have made it hard to tell if they work) is to still
+leave the tasks on their cfs_rqs, but instead have two task_timelines or
+similar per cfs_rq, one of which only has unthrottleable tasks (or
+partially-throttled child cgroups) on it. Then when picking into a
+partially-unthrottled cfs_rq you only look at that alternate task_timeline.
 
-[perfbuilder@56645cef2169 /]$ grep -r getdents64 /usr/include
-/usr/include/bits/syscall.h:#ifdef __NR_getdents64
-/usr/include/bits/syscall.h:# define SYS_getdents64 __NR_getdents64
-/usr/include/asm-generic/unistd.h:#define __NR_getdents64 61
-/usr/include/asm-generic/unistd.h:__SYSCALL(__NR_getdents64, sys_getdents64)
-/usr/include/sanitizer/linux_syscall_hooks.h:#define __sanitizer_syscall_pre_getdents64(fd, dirent, count)         \
-/usr/include/sanitizer/linux_syscall_hooks.h:  __sanitizer_syscall_pre_impl_getdents64((long)(fd), (long)(dirent), \
-/usr/include/sanitizer/linux_syscall_hooks.h:#define __sanitizer_syscall_post_getdents64(res, fd, dirent, count)         \
-/usr/include/sanitizer/linux_syscall_hooks.h:  __sanitizer_syscall_post_impl_getdents64(res, (long)(fd), (long)(dirent), \
-/usr/include/sanitizer/linux_syscall_hooks.h:void __sanitizer_syscall_pre_impl_getdents64(long fd, long dirent, long count);
-/usr/include/sanitizer/linux_syscall_hooks.h:void __sanitizer_syscall_post_impl_getdents64(long res, long fd, long dirent,
-/usr/include/asm/unistd_64.h:#define __NR_getdents64 217
-/usr/include/asm/unistd_x32.h:#define __NR_getdents64 (__X32_SYSCALL_BIT + 217)
-/usr/include/asm/unistd_32.h:#define __NR_getdents64 220
-[perfbuilder@56645cef2169 /]$
+This means that we get to skip this per-actually-throttled-task loop:
 
-Systems with musl libc fail differently:
+> @@ -5548,7 +5548,61 @@ static int tg_unthrottle_up(struct task_group *tg, void *data)
+>  {
+>  	struct rq *rq = data;
+>  	struct cfs_rq *cfs_rq = tg->cfs_rq[cpu_of(rq)];
+> +	struct sched_entity *se = tg->se[cpu_of(rq)];
+> +	struct cfs_rq *pcfs_rq = cfs_rq_of(se);
+> +	long task_delta = 0, idle_task_delta = 0;
+> +	struct task_struct *p, *tmp;
+>  
+> +	/*
+> +	 * Re-enqueue the tasks that have been throttled at this level.
+> +	 *
+> +	 * The task count is up-propagated via ->unthrottled_*h_nr_running,
+> +	 * as we can't purely rely on h_nr_running post-enqueue: the unthrottle
+> +	 * might happen when a cfs_rq still has some tasks enqueued, either still
+> +	 * making their way to userspace, or freshly migrated to it.
+> +	 */
+> +	list_for_each_entry_safe(p, tmp, &cfs_rq->throttled_limbo_list, throttle_node) {
+> +		struct sched_entity *pse = &p->se;
+> +
+> +		list_del_init(&p->throttle_node);
+> +		enqueue_entity(cfs_rq, pse, ENQUEUE_WAKEUP);
+> +		task_delta++;
+> +		idle_task_delta += task_has_idle_policy(p);
+> +	}
 
-   6    19.51 alpine:3.18                   : FAIL gcc version 12.2.1 20220924 (Alpine 12.2.1_git20220924-r10)
-      CC      /tmp/build/perf/util/sample-raw.o
-      CC      /tmp/build/perf/tests/kmod-path.o
-      CC      /tmp/build/perf/tests/thread-map.o
-      CC      /tmp/build/perf/tests/topology.o
-    In file included from util/machine.c:39:
-    /tmp/build/perf/libapi/include/api/io_dir.h: In function 'io_dir__readdir':
-    /tmp/build/perf/libapi/include/api/io_dir.h:46:56: error: passing argument 2 of 'getdents' from incompatible pointer type [-Werror=incompatible-pointer-types]
-       46 |                 ssize_t rc = getdents64(iod->dirfd, iod->buff, sizeof(iod->buff));
-          |                                                     ~~~^~~~~~
-          |                                                        |
-          |                                                        struct io_dirent64 *
-    In file included from util/machine.c:2:
-    /usr/include/dirent.h:52:19: note: expected 'struct dirent *' but argument is of type 'struct io_dirent64 *'
-       52 | int getdents(int, struct dirent *, size_t);
-          |                   ^~~~~~~~~~~~~~~
+The downsides are that you instead have extra operations per
+enqueue/dequeue/pick (but just an extra list/rbtree operation or check),
+and that it doesn't do *any* accounting change for a partially dequeued
+cfs_rq.
 
-Their devel distro also fails like that:
-
-   7    20.49 alpine:edge                   : FAIL gcc version 13.1.1 20230722 (Alpine 13.1.1_git20230722)
-      CC      /tmp/build/perf/tests/sdt.o
-      CC      /tmp/build/perf/util/maps.o
-      CC      /tmp/build/perf/tests/is_printable_array.o
-      CC      /tmp/build/perf/util/intel-pt-decoder/intel-pt-insn-decoder.o
-    In file included from util/machine.c:39:
-    /tmp/build/perf/libapi/include/api/io_dir.h: In function 'io_dir__readdir':
-    /tmp/build/perf/libapi/include/api/io_dir.h:46:56: error: passing argument 2 of 'getdents' from incompatible pointer type [-Werror=incompatible-pointer-types]
-       46 |                 ssize_t rc = getdents64(iod->dirfd, iod->buff, sizeof(iod->buff));
-          |                                                     ~~~^~~~~~
-          |                                                        |
-          |                                                        struct io_dirent64 *
-    In file included from util/machine.c:2:
-    /usr/include/dirent.h:52:19: note: expected 'struct dirent *' but argument is of type 'struct io_dirent64 *'
-       52 | int getdents(int, struct dirent *, size_t);
-          |                   ^~~~~~~~~~~~~~~
-      CC      /tmp/build/perf/tests/bitmap.o
-
-And then we have nolibc:
-
-⬢[acme@toolbox perf-tools-next]$ find tools/ -name nolibc
-tools/include/nolibc
-tools/testing/selftests/nolibc
-⬢[acme@toolbox perf-tools-next]$ grep getdents64 tools/include/nolibc/*
-tools/include/nolibc/sys.h: * int getdents64(int fd, struct linux_dirent64 *dirp, int count);
-tools/include/nolibc/sys.h:int sys_getdents64(int fd, struct linux_dirent64 *dirp, int count)
-tools/include/nolibc/sys.h:	return my_syscall3(__NR_getdents64, fd, dirp, count);
-tools/include/nolibc/sys.h:int getdents64(int fd, struct linux_dirent64 *dirp, int count)
-tools/include/nolibc/sys.h:	return __sysret(sys_getdents64(fd, dirp, count));
-tools/include/nolibc/types.h:/* for getdents64() */
-⬢[acme@toolbox perf-tools-next]$
-
-On musl libc systems:
-
-/ $ grep -A1 -B20 getdents64 /usr/include/*.h
-/usr/include/dirent.h-#define DT_SOCK 12
-/usr/include/dirent.h-#define DT_WHT 14
-/usr/include/dirent.h-#define IFTODT(x) ((x)>>12 & 017)
-/usr/include/dirent.h-#define DTTOIF(x) ((x)<<12)
-/usr/include/dirent.h-int getdents(int, struct dirent *, size_t);
-/usr/include/dirent.h-#endif
-/usr/include/dirent.h-
-/usr/include/dirent.h-#ifdef _GNU_SOURCE
-/usr/include/dirent.h-int versionsort(const struct dirent **, const struct dirent **);
-/usr/include/dirent.h-#endif
-/usr/include/dirent.h-
-/usr/include/dirent.h-#if defined(_LARGEFILE64_SOURCE) || defined(_GNU_SOURCE)
-/usr/include/dirent.h-#define dirent64 dirent
-/usr/include/dirent.h-#define readdir64 readdir
-/usr/include/dirent.h-#define readdir64_r readdir_r
-/usr/include/dirent.h-#define scandir64 scandir
-/usr/include/dirent.h-#define alphasort64 alphasort
-/usr/include/dirent.h-#define versionsort64 versionsort
-/usr/include/dirent.h-#define off64_t off_t
-/usr/include/dirent.h-#define ino64_t ino_t
-/usr/include/dirent.h:#define getdents64 getdents
-/usr/include/dirent.h-#endif
-/ $
-
-> _GNU_SOURCE defined on the command line for reallocarray. Maybe we
-> shouldn't define this on the command line and do it immediately before
-> the relevant include with:
-> 
-> #ifndef _GNU_SOURCE
-> #define _GNU_SOURCE
-> #endif
-> 
-> like in tools/perf/util/intel-pt-decoder/intel-pt-decoder.c
-> 
-> Thanks,
-> Ian
-> 
-> >
-> > > Signed-off-by: Ian Rogers <irogers@google.com>
-> > > ---
-> > >  tools/lib/api/Makefile |  2 +-
-> > >  tools/lib/api/io_dir.h | 75 ++++++++++++++++++++++++++++++++++++++++++
-> > >  2 files changed, 76 insertions(+), 1 deletion(-)
-> > >  create mode 100644 tools/lib/api/io_dir.h
-> > >
-> > > diff --git a/tools/lib/api/Makefile b/tools/lib/api/Makefile
-> > > index 044860ac1ed1..186aa407de8c 100644
-> > > --- a/tools/lib/api/Makefile
-> > > +++ b/tools/lib/api/Makefile
-> > > @@ -99,7 +99,7 @@ install_lib: $(LIBFILE)
-> > >               $(call do_install_mkdir,$(libdir_SQ)); \
-> > >               cp -fpR $(LIBFILE) $(DESTDIR)$(libdir_SQ)
-> > >
-> > > -HDRS := cpu.h debug.h io.h
-> > > +HDRS := cpu.h debug.h io.h io_dir.h
-> > >  FD_HDRS := fd/array.h
-> > >  FS_HDRS := fs/fs.h fs/tracing_path.h
-> > >  INSTALL_HDRS_PFX := $(DESTDIR)$(prefix)/include/api
-> > > diff --git a/tools/lib/api/io_dir.h b/tools/lib/api/io_dir.h
-> > > new file mode 100644
-> > > index 000000000000..f3479006edb6
-> > > --- /dev/null
-> > > +++ b/tools/lib/api/io_dir.h
-> > > @@ -0,0 +1,75 @@
-> > > +/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */
-> > > +/*
-> > > + * Lightweight directory reading library.
-> > > + */
-> > > +#ifndef __API_IO_DIR__
-> > > +#define __API_IO_DIR__
-> > > +
-> > > +#include <dirent.h>
-> > > +#include <fcntl.h>
-> > > +#include <stdlib.h>
-> > > +#include <unistd.h>
-> > > +#include <sys/stat.h>
-> > > +
-> > > +struct io_dirent64 {
-> > > +     ino64_t        d_ino;    /* 64-bit inode number */
-> > > +     off64_t        d_off;    /* 64-bit offset to next structure */
-> > > +     unsigned short d_reclen; /* Size of this dirent */
-> > > +     unsigned char  d_type;   /* File type */
-> > > +     char           d_name[NAME_MAX + 1]; /* Filename (null-terminated) */
-> > > +};
-> > > +
-> > > +struct io_dir {
-> > > +     int dirfd;
-> > > +     ssize_t available_bytes;
-> > > +     struct io_dirent64 *next;
-> > > +     struct io_dirent64 buff[4];
-> > > +};
-> > > +
-> > > +static inline void io_dir__init(struct io_dir *iod, int dirfd)
-> > > +{
-> > > +     iod->dirfd = dirfd;
-> > > +     iod->available_bytes = 0;
-> > > +}
-> > > +
-> > > +static inline void io_dir__rewinddir(struct io_dir *iod)
-> > > +{
-> > > +     lseek(iod->dirfd, 0, SEEK_SET);
-> > > +     iod->available_bytes = 0;
-> > > +}
-> > > +
-> > > +static inline struct io_dirent64 *io_dir__readdir(struct io_dir *iod)
-> > > +{
-> > > +     struct io_dirent64 *entry;
-> > > +
-> > > +     if (iod->available_bytes <= 0) {
-> > > +             ssize_t rc = getdents64(iod->dirfd, iod->buff, sizeof(iod->buff));
-> > > +
-> > > +             if (rc <= 0)
-> > > +                     return NULL;
-> > > +             iod->available_bytes = rc;
-> > > +             iod->next = iod->buff;
-> > > +     }
-> > > +     entry = iod->next;
-> > > +     iod->next = (struct io_dirent64 *)((char *)entry + entry->d_reclen);
-> > > +     iod->available_bytes -= entry->d_reclen;
-> > > +     return entry;
-> > > +}
-> > > +
-> > > +static inline bool io_dir__is_dir(const struct io_dir *iod, struct io_dirent64 *dent)
-> > > +{
-> > > +     if (dent->d_type == DT_UNKNOWN) {
-> > > +             struct stat st;
-> > > +
-> > > +             if (fstatat(iod->dirfd, dent->d_name, &st, /*flags=*/0))
-> > > +                     return false;
-> > > +
-> > > +             if (S_ISDIR(st.st_mode)) {
-> > > +                     dent->d_type = DT_DIR;
-> > > +                     return true;
-> > > +             }
-> > > +     }
-> > > +     return dent->d_type == DT_DIR;
-> > > +}
-> > > +
-> > > +#endif
-> > > --
-> > > 2.43.0.rc1.413.gea7ed67945-goog
-> > >
-> >
-> > --
-> >
-> > - Arnaldo
-
--- 
-
-- Arnaldo
+I'm going to try putting together a cleaner variant of our version that
+works via task_work instead of bracketing every relevant entry point.
+(That design came from when we were trying instead to only do it for
+tasks holding actual locks)
