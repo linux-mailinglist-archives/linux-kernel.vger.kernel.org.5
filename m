@@ -2,185 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A901B7FF951
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 19:28:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E26D7FF954
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 19:28:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231736AbjK3S2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 13:28:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33330 "EHLO
+        id S232103AbjK3S2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 13:28:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230030AbjK3S2E (ORCPT
+        with ESMTP id S230030AbjK3S2s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 13:28:04 -0500
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2D4AD6C
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 10:28:09 -0800 (PST)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-40b51e26a7aso13615e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 10:28:09 -0800 (PST)
+        Thu, 30 Nov 2023 13:28:48 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB89310DE
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 10:28:54 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-db4038d7cfdso1569253276.2
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 10:28:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701368888; x=1701973688; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MQnDDplBo/xl6TSnDTzhQLPLA7PVAh8kIH3hmpt4VIo=;
-        b=KmwuZucqW16iZcPXuZ9CKNpoJ7tTag643kqrHwLMuQbBh6GvfT/Do1AycmiQ/HMhWY
-         DmSBNC9EVe7S4An/XcSR1HYsld1t0p2N2XvhE1y9gAy7E8AUdKwTUvuo4D5GiV+8LbIa
-         BUgq374jE6Oaaw7JHPz7XNPIB0aLe5HbdWCXUHuFfA4o8ajeu/a2/ncL60ju06ejIdrf
-         EScd+gKMz9YnlBSCxX4D8mDssafAjS+cYdnqSNXP7p80UvO6MkiycuX3L7Xlb+w6RVHD
-         a/gwzIxLBh5yNO5ZDg8NcnH/dTwGiAw+rvelIgOSmtNg1BaPhxo7++GZZZNy8bNMluS3
-         dtlQ==
+        d=google.com; s=20230601; t=1701368934; x=1701973734; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=KCojnrKVSnfIdikNRS9eQkGQb5+JqWZFSYvF9pyN2fg=;
+        b=nhtFn9NDaNPt0A1+m+fE56vnx1mbADePWNqZ9blJ/+GV4jGh2fsC2SN+uOGIGv9kE2
+         FG66Nmk2jt2cIwPCVkdaveLgoqscdfsRQRN51I8JYbQErMXxdImFGKtQF8PBc4uTxxkh
+         vHoiYrKDL4zgHPiVUem9dpXEuuaMsOi/sBXZkMcC79B7ql2QdeRHvB3NnS4CPxF5Fa0C
+         omSukJBxBsa1BdsRsxNTZypLIY4BNLnhsdoHRrchEtfVzf1iVipEWKqca/3Ukst0s0rx
+         o+Y3EFmnktINvfemJQpV61jW28/tMD+flPbdJB/tuLUm+aXutvH3MR1POBudsidZVNY6
+         /v1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701368888; x=1701973688;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MQnDDplBo/xl6TSnDTzhQLPLA7PVAh8kIH3hmpt4VIo=;
-        b=tFah87Hqo3uxrQ2n+Qv7qlqURdxVrHxmrP8CfiB3BbC3Pjo5/6e1l7G74FzsOykyWN
-         1soGsLHtHkmo47ODRzM7pf08gPvx4gRbn8eVAoCLstVIY0P2N+7TnZqhZu7fpBfhhkk6
-         qi3XZCNzaI6tUgxCsN7t1ZYCp5gpmW6BoWk42Q6JncbCr7H611vPpnkwxa3vEXd5dfST
-         NmH4frLEXdPLpgN/FyfNyTBAo5pQr890t6adLj5qoU+DlkBnXEJTQRO41avnGS83l3hx
-         FD6CEE79xsv5ab+hZyI2aBdcw+6mUn2LIib8+7JZvibO7VioiotBONTeXGTXPY8vLaF+
-         9vQA==
-X-Gm-Message-State: AOJu0Yy24p/C3W+kw6YRC58U+5vCBOaEDTWEro/cN8WLVy0ATyZG6VF9
-        GCdp377pS0TSoZyOQ7FzDF4qZ87gq81Hn+ygGBuxFg==
-X-Google-Smtp-Source: AGHT+IH0qly/6N+PSKn52LeY7Db2raJh+S9M05YJg7N3XXfn1ABYr8yEwAJWvPy/CS8/VZRIHxvhhPQpFR/o8ze+5CA=
-X-Received: by 2002:a05:600c:a686:b0:40b:4355:a04b with SMTP id
- ip6-20020a05600ca68600b0040b4355a04bmr214963wmb.6.1701368888211; Thu, 30 Nov
- 2023 10:28:08 -0800 (PST)
-MIME-Version: 1.0
-References: <20231127220902.1315692-1-irogers@google.com> <20231127220902.1315692-2-irogers@google.com>
- <CAM9d7cjCO8e7nbrtrcy4rsbexemQ94=XK+b5byMFFTDDgoJ2eg@mail.gmail.com>
-In-Reply-To: <CAM9d7cjCO8e7nbrtrcy4rsbexemQ94=XK+b5byMFFTDDgoJ2eg@mail.gmail.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Thu, 30 Nov 2023 10:27:56 -0800
-Message-ID: <CAP-5=fUBr60o22P4Op-J=TPkdfnby9vLetHQZ4UqjuX+nvbG9w@mail.gmail.com>
-Subject: Re: [PATCH v5 01/50] perf comm: Use regular mutex
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Nick Terrell <terrelln@fb.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        "Steinar H. Gunderson" <sesse@google.com>,
-        Liam Howlett <liam.howlett@oracle.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Colin Ian King <colin.i.king@gmail.com>,
-        Dmitrii Dolgov <9erthalion6@gmail.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Ming Wang <wangming01@loongson.cn>,
-        James Clark <james.clark@arm.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        German Gomez <german.gomez@arm.com>,
-        Changbin Du <changbin.du@huawei.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, Li Dong <lidong@vivo.com>,
-        Sandipan Das <sandipan.das@amd.com>,
-        liuwenyu <liuwenyu7@huawei.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
-        Guilherme Amadio <amadio@gentoo.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        d=1e100.net; s=20230601; t=1701368934; x=1701973734;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KCojnrKVSnfIdikNRS9eQkGQb5+JqWZFSYvF9pyN2fg=;
+        b=hXIqdZ+m3tngwZRLwQh6mGBytIaU+B6JQdzhQjI2YwWidy7P82BpMy189fNc51t6VB
+         2umVh6+Uwzm0Atn07GMnMHl50UsEIumYT93vIm1yMj74q2i30FKZaoK6Vchq+27abS7r
+         Vxc2k5mu08FlRiaIhL/cxblEQrhq8tKHjqmGaAo4nkKqGgdaQqMgON45OIf+3rDEDKEA
+         UN3aPMdT7gwgy72mJrDXoRSPiX6kZ146olTprXciDNRAU/FKWIar+NzxAtY90RO3wqrV
+         c87YAeBmVIqi0NpABS6Yade7Kry92DWo/oMbJiKFlAa8ACqO8+Xm0eS2LMHbTJb5jQjV
+         7qzw==
+X-Gm-Message-State: AOJu0YycwlnAm+TaINPhhcdrLm7SkUzNCrA4alvgNMMzAiHsWlzJ9za2
+        ZB4zMKa9iy9Xel8JNr5PqqLCDMdIDNk=
+X-Google-Smtp-Source: AGHT+IENTQ6puxM9lq8+5c9/fGwa/0WLqvX9/pdkv4tQrl3DVzSCYKkQNeWrlJXE6OVBjygmscKR2M9Z2T4=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:a3e6:0:b0:db4:5d34:fa5 with SMTP id
+ e93-20020a25a3e6000000b00db45d340fa5mr708485ybi.0.1701368934202; Thu, 30 Nov
+ 2023 10:28:54 -0800 (PST)
+Date:   Thu, 30 Nov 2023 10:28:52 -0800
+In-Reply-To: <87y1efmg28.fsf@redhat.com>
+Mime-Version: 1.0
+References: <20231025152406.1879274-1-vkuznets@redhat.com> <20231025152406.1879274-11-vkuznets@redhat.com>
+ <ZWfl3ahamXPPoIGB@google.com> <87y1efmg28.fsf@redhat.com>
+Message-ID: <ZWjUZPXCF2U9azWT@google.com>
+Subject: Re: [PATCH 10/14] KVM: x86: Make Hyper-V emulation optional
+From:   Sean Christopherson <seanjc@google.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 4:56=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> =
-wrote:
->
-> On Mon, Nov 27, 2023 at 2:09=E2=80=AFPM Ian Rogers <irogers@google.com> w=
-rote:
+On Thu, Nov 30, 2023, Vitaly Kuznetsov wrote:
+> Sean Christopherson <seanjc@google.com> writes:
+> 
+> ...
+> 
 > >
-> > The rwsem is only after used for writing so switch to a mutex that has
-> > better error checking.
+> >>  static bool nested_get_vmcs12_pages(struct kvm_vcpu *vcpu)
+> >>  {
+> >> @@ -3552,11 +3563,13 @@ static int nested_vmx_run(struct kvm_vcpu *vcpu, bool launch)
+> >>  	if (!nested_vmx_check_permission(vcpu))
+> >>  		return 1;
+> >>  
+> >> +#ifdef CONFIG_KVM_HYPERV
+> >>  	evmptrld_status = nested_vmx_handle_enlightened_vmptrld(vcpu, launch);
+> >>  	if (evmptrld_status == EVMPTRLD_ERROR) {
+> >>  		kvm_queue_exception(vcpu, UD_VECTOR);
+> >>  		return 1;
+> >>  	}
+> >> +#endif
+> >>  
+> >>  	kvm_pmu_trigger_event(vcpu, PERF_COUNT_HW_BRANCH_INSTRUCTIONS);
 > >
-> > Fixes: 7a8f349e9d14 ("perf rwsem: Add debug mode that uses a mutex")
->
-> I think we talked about fixing this separately, no?
+> > This fails to build with CONFIG_KVM_HYPERV=n && CONFIG_KVM_WERROR=y:
+> >
+> > arch/x86/kvm/vmx/nested.c:3577:9: error: variable 'evmptrld_status' is uninitialized when used here [-Werror,-Wuninitialized]
+> >         if (CC(evmptrld_status == EVMPTRLD_VMFAIL))
+> >                ^~~~~~~~~~~~~~~
+> >
+> > Sadly, simply wrapping with an #ifdef also fails because then evmptrld_status
+> > becomes unused.  I'd really prefer to avoid having to tag it __maybe_unused, and
+> > adding more #ifdef would also be ugly.  Any ideas?
+> 
+> A couple,
+> 
+> - we can try putting all eVMPTR logic under 'if (1)' just to create a
+>   block where we can define evmptrld_status. Not sure this is nicer than
+>   another #ifdef wrapping evmptrld_status and I'm not sure what to do
+>   with kvm_pmu_trigger_event() -- can it just go above
+>   nested_vmx_handle_enlightened_vmptrld()?
+> 
+> - we can add a helper, e.g. 'evmptr_is_vmfail()' and make it just return
+>   'false' when !CONFIG_KVM_HYPERV.
+> 
+> - rewrite this as a switch to avoid the need for having the local
+>   variable, (untested)
+> 
+> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+> index c5ec0ef51ff7..b26ce7d596e9 100644
+> --- a/arch/x86/kvm/vmx/nested.c
+> +++ b/arch/x86/kvm/vmx/nested.c
+> @@ -3553,22 +3553,23 @@ static int nested_vmx_run(struct kvm_vcpu *vcpu, bool launch)
+>         enum nvmx_vmentry_status status;
+>         struct vcpu_vmx *vmx = to_vmx(vcpu);
+>         u32 interrupt_shadow = vmx_get_interrupt_shadow(vcpu);
+> -       enum nested_evmptrld_status evmptrld_status;
+>  
+>         if (!nested_vmx_check_permission(vcpu))
+>                 return 1;
+>  
+> -       evmptrld_status = nested_vmx_handle_enlightened_vmptrld(vcpu, launch);
+> -       if (evmptrld_status == EVMPTRLD_ERROR) {
+> +       switch (nested_vmx_handle_enlightened_vmptrld(vcpu, launch)) {
+> +       case EVMPTRLD_ERROR:
+>                 kvm_queue_exception(vcpu, UD_VECTOR);
+>                 return 1;
+> +       case EVMPTRLD_VMFAIL:
+> +               trace_kvm_nested_vmenter_failed("evmptrld_status", 0);
+> +               return nested_vmx_failInvalid(vcpu);
+> +       default:
+> +               break;
+>         }
+>  
+>         kvm_pmu_trigger_event(vcpu, PERF_COUNT_HW_BRANCH_INSTRUCTIONS);
+>  
+> -       if (CC(evmptrld_status == EVMPTRLD_VMFAIL))
+> -               return nested_vmx_failInvalid(vcpu);
+> -
+>         if (CC(!evmptr_is_valid(vmx->nested.hv_evmcs_vmptr) &&
+>                vmx->nested.current_vmptr == INVALID_GPA))
+>                 return nested_vmx_failInvalid(vcpu);
+> 
+> Unfortunately, I had to open code CC() ;-(
+> 
+> Or maybe just another "#ifdef" is not so ugly after all? :-)
 
-Sorry, I'm unclear on an action to do. Currently changing the
-RWS_ERRORCHECK in tools/perf/util/rwsem.h will break the build without
-this change.
+Ah, just have nested_vmx_handle_enlightened_vmptrld() return EVMPTRLD_DISABLED
+for its "stub", e.g. with some otehr tangentially de-stubbing:
 
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> > ---
-> >  tools/perf/util/comm.c | 10 +++++-----
-> >  1 file changed, 5 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/tools/perf/util/comm.c b/tools/perf/util/comm.c
-> > index afb8d4fd2644..4ae7bc2aa9a6 100644
-> > --- a/tools/perf/util/comm.c
-> > +++ b/tools/perf/util/comm.c
-> > @@ -17,7 +17,7 @@ struct comm_str {
-> >
-> >  /* Should perhaps be moved to struct machine */
-> >  static struct rb_root comm_str_root;
-> > -static struct rw_semaphore comm_str_lock =3D {.lock =3D PTHREAD_RWLOCK=
-_INITIALIZER,};
-> > +static struct mutex comm_str_lock =3D {.lock =3D PTHREAD_ERRORCHECK_MU=
-TEX_INITIALIZER_NP,};
->
-> IIUC it has a problem with musl libc.  Actually I think it's better to
-> hide the field and the pthread initializer under some macro like
-> MUTEX_INITIALIZER or DEFINE_MUTEX() like in the kernel.
-
-Will there be enough use to justify this? I think ideally we'd not be
-having global locks needing global initializers as we run into
-problems like we see in metrics needing to mix counting and sampling.
-
-Thanks,
-Ian
-
-> Thanks,
-> Namhyung
->
-> >
-> >  static struct comm_str *comm_str__get(struct comm_str *cs)
-> >  {
-> > @@ -30,9 +30,9 @@ static struct comm_str *comm_str__get(struct comm_str=
- *cs)
-> >  static void comm_str__put(struct comm_str *cs)
-> >  {
-> >         if (cs && refcount_dec_and_test(&cs->refcnt)) {
-> > -               down_write(&comm_str_lock);
-> > +               mutex_lock(&comm_str_lock);
-> >                 rb_erase(&cs->rb_node, &comm_str_root);
-> > -               up_write(&comm_str_lock);
-> > +               mutex_unlock(&comm_str_lock);
-> >                 zfree(&cs->str);
-> >                 free(cs);
-> >         }
-> > @@ -98,9 +98,9 @@ static struct comm_str *comm_str__findnew(const char =
-*str, struct rb_root *root)
-> >  {
-> >         struct comm_str *cs;
-> >
-> > -       down_write(&comm_str_lock);
-> > +       mutex_lock(&comm_str_lock);
-> >         cs =3D __comm_str__findnew(str, root);
-> > -       up_write(&comm_str_lock);
-> > +       mutex_unlock(&comm_str_lock);
-> >
-> >         return cs;
-> >  }
-> > --
-> > 2.43.0.rc1.413.gea7ed67945-goog
-> >
+diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+index 4777d867419c..5a27a2ebbb32 100644
+--- a/arch/x86/kvm/vmx/nested.c
++++ b/arch/x86/kvm/vmx/nested.c
+@@ -2000,6 +2000,7 @@ static void copy_vmcs12_to_enlightened(struct vcpu_vmx *vmx)
+ static enum nested_evmptrld_status nested_vmx_handle_enlightened_vmptrld(
+        struct kvm_vcpu *vcpu, bool from_launch)
+ {
++#ifdef CONFIG_KVM_HYPERV
+        struct vcpu_vmx *vmx = to_vmx(vcpu);
+        bool evmcs_gpa_changed = false;
+        u64 evmcs_gpa;
+@@ -2081,11 +2082,10 @@ static enum nested_evmptrld_status nested_vmx_handle_enlightened_vmptrld(
+        }
+ 
+        return EVMPTRLD_SUCCEEDED;
++#else
++       return EVMPTRLD_DISABLED;
++#endif
+ }
+-#else /* CONFIG_KVM_HYPERV */
+-static inline void copy_enlightened_to_vmcs12(struct vcpu_vmx *vmx, u32 hv_clean_fields) {}
+-static inline void copy_vmcs12_to_enlightened(struct vcpu_vmx *vmx) {}
+-#endif /* CONFIG_KVM_HYPERV */
+ 
+ void nested_sync_vmcs12_to_shadow(struct kvm_vcpu *vcpu)
+ {
+@@ -3191,8 +3191,6 @@ static bool nested_get_evmcs_page(struct kvm_vcpu *vcpu)
+ 
+        return true;
+ }
+-#else
+-static bool nested_get_evmcs_page(struct kvm_vcpu *vcpu) { return true; }
+ #endif
+ 
+ static bool nested_get_vmcs12_pages(struct kvm_vcpu *vcpu)
+@@ -3285,6 +3283,7 @@ static bool nested_get_vmcs12_pages(struct kvm_vcpu *vcpu)
+ 
+ static bool vmx_get_nested_state_pages(struct kvm_vcpu *vcpu)
+ {
++#ifdef CONFIG_KVM_HYPERV
+        /*
+         * Note: nested_get_evmcs_page() also updates 'vp_assist_page' copy
+         * in 'struct kvm_vcpu_hv' in case eVMCS is in use, this is mandatory
+@@ -3301,7 +3300,7 @@ static bool vmx_get_nested_state_pages(struct kvm_vcpu *vcpu)
+ 
+                return false;
+        }
+-
++#endif
+        if (is_guest_mode(vcpu) && !nested_get_vmcs12_pages(vcpu))
+                return false;
+ 
+@@ -3564,7 +3563,6 @@ static int nested_vmx_run(struct kvm_vcpu *vcpu, bool launch)
+        if (!nested_vmx_check_permission(vcpu))
+                return 1;
+ 
+-#ifdef CONFIG_KVM_HYPERV
+        evmptrld_status = nested_vmx_handle_enlightened_vmptrld(vcpu, launch);
+        if (evmptrld_status == EVMPTRLD_ERROR) {
+                kvm_queue_exception(vcpu, UD_VECTOR);
+@@ -4743,6 +4741,7 @@ void nested_vmx_vmexit(struct kvm_vcpu *vcpu, u32 vm_exit_reason,
+        WARN_ON_ONCE(vmx->nested.nested_run_pending);
+ 
+        if (kvm_check_request(KVM_REQ_GET_NESTED_STATE_PAGES, vcpu)) {
++#ifdef CONFIG_KVM_HYPERV
+                /*
+                 * KVM_REQ_GET_NESTED_STATE_PAGES is also used to map
+                 * Enlightened VMCS after migration and we still need to
+@@ -4750,6 +4749,7 @@ void nested_vmx_vmexit(struct kvm_vcpu *vcpu, u32 vm_exit_reason,
+                 * the first L2 run.
+                 */
+                (void)nested_get_evmcs_page(vcpu);
++#endif
+        }
+ 
+        /* Service pending TLB flush requests for L2 before switching to L1. */
