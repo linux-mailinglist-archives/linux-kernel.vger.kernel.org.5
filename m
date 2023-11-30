@@ -2,164 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C07E7FEF23
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 13:31:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DC667FEF26
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 13:33:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345456AbjK3Mbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 07:31:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39824 "EHLO
+        id S1345334AbjK3Mcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 07:32:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232008AbjK3Mbq (ORCPT
+        with ESMTP id S229503AbjK3Mcw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 07:31:46 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94A97D46
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 04:31:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701347511;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Rb8IOIu/t/qR1ytNoPyJ1c9zi9oIBJiXlmkbGz0coSs=;
-        b=TojzbhA6Vz7/Aj9A7wV6up1SO8j3kokrWHVbw23XBlb16h3WAVJWrPMFndc6i9YxffmmR1
-        XER80jvU4i6LJJciAEUA6OGG3pXwvXHcUN0z8Eq9gM0CGuXL3KKWjsP300pSaFCI8XdNXk
-        Pno1Ae/3MkhUx6DAT0CgmSOk8gu1jO0=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-262-z1SPdZvmN6qOwz4QTIffsA-1; Thu,
- 30 Nov 2023 07:31:48 -0500
-X-MC-Unique: z1SPdZvmN6qOwz4QTIffsA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 254401C07580;
-        Thu, 30 Nov 2023 12:31:48 +0000 (UTC)
-Received: from localhost (unknown [10.72.113.121])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6E58C1C060BB;
-        Thu, 30 Nov 2023 12:31:47 +0000 (UTC)
-Date:   Thu, 30 Nov 2023 20:31:44 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Donald Dutile <ddutile@redhat.com>, Jiri Bohac <jbohac@suse.cz>,
-        Pingfan Liu <piliu@redhat.com>, Tao Liu <ltao@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        Dave Young <dyoung@redhat.com>, kexec@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/4] kdump: crashkernel reservation from CMA
-Message-ID: <ZWiAsJlLookvCI+h@MiWiFi-R3L-srv>
-References: <CAO7dBbUVQn8xzPZQhhw1XqF+sQT0c6phk4sda+X=MrR6RmPE0A@mail.gmail.com>
- <ZWJllXCN0SDIELrX@dwarf.suse.cz>
- <CAO7dBbVJ=ytRra_77VRZ8ud1wVkP9fub=Vj6cfTkx=CnYg5J2A@mail.gmail.com>
- <ZWVMUxmi66xLZPsr@MiWiFi-R3L-srv>
- <ZWWuBSiZZdF2W12j@tiehlicka>
- <ZWbyDx3TJ7zo3jCw@MiWiFi-R3L-srv>
- <91a31ce5-63d1-7470-18f7-92b039fda8e6@redhat.com>
- <ZWf64BowWrYqA2Rf@MiWiFi-R3L-srv>
- <ZWhg_b3O6piZtkQ-@tiehlicka>
- <ZWh6ax8YmkhxAzIf@MiWiFi-R3L-srv>
+        Thu, 30 Nov 2023 07:32:52 -0500
+Received: from mail-m121149.qiye.163.com (mail-m121149.qiye.163.com [115.236.121.149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D3761B3;
+        Thu, 30 Nov 2023 04:32:58 -0800 (PST)
+DKIM-Signature: a=rsa-sha256;
+        b=e8MrUsVWZLiX5MpnY5R6sm2oBohVo8MnMibe6kRCFkSBnIsiD+m4tU4lt7VStHIPMC4O0io+WF1/sEzauJ5bh2lPIace3zvBT4tW5mQtvkpKJ/GFLPUVWFuQxtDGmPgf+xapi684hsW0bHdQoHXsjJOvfyxlA1MMTM0PUBpMbDg=;
+        c=relaxed/relaxed; s=default; d=rock-chips.com; v=1;
+        bh=xw5s3z0kYWPrNZEeAkS1HnYylOFQxmO2lako+w4LWo0=;
+        h=date:mime-version:subject:message-id:from;
+Received: from [172.16.12.141] (unknown [58.22.7.114])
+        by mail-m12779.qiye.163.com (Hmail) with ESMTPA id E8F5E780310;
+        Thu, 30 Nov 2023 20:32:16 +0800 (CST)
+Message-ID: <4d6c5980-e573-4d85-bc9c-6726413a15d3@rock-chips.com>
+Date:   Thu, 30 Nov 2023 20:32:16 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZWh6ax8YmkhxAzIf@MiWiFi-R3L-srv>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 08/12] dt-bindings: display: vop2: Add rk3588 support
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Andy Yan <andyshrk@163.com>, heiko@sntech.de
+Cc:     hjc@rock-chips.com, dri-devel@lists.freedesktop.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
+        devicetree@vger.kernel.org, sebastian.reichel@collabora.com,
+        kever.yang@rock-chips.com, chris.obbard@collabora.com,
+        s.hauer@pengutronix.de
+References: <20231122125316.3454268-1-andyshrk@163.com>
+ <20231122125518.3454796-1-andyshrk@163.com>
+ <e7693e9d-a46a-4dc2-9aee-36a2bbf74ade@linaro.org>
+From:   Andy Yan <andy.yan@rock-chips.com>
+In-Reply-To: <e7693e9d-a46a-4dc2-9aee-36a2bbf74ade@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+        tZV1koWUFDSUNOT01LS0k3V1ktWUFJV1kPCRoVCBIfWUFZGU4eHlZPSEMfSU5LHkxDSE5VEwETFh
+        oSFyQUDg9ZV1kYEgtZQVlOQ1VJSVVMVUpKT1lXWRYaDxIVHRRZQVlPS0hVSk1PSU5JVUpLS1VKQl
+        kG
+X-HM-Tid: 0a8c20373177b24fkuuue8f5e780310
+X-HM-MType: 1
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6ND46Lxw4KDw3TxdDPjUCPyo#
+        GDZPFE5VSlVKTEtKSE9MTkhMQ05LVTMWGhIXVRoVHwJVAhoVOwkUGBBWGBMSCwhVGBQWRVlXWRIL
+        WUFZTkNVSUlVTFVKSk9ZV1kIAVlBTkJOTTcG
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michal,
-
-On 11/30/23 at 08:04pm, Baoquan He wrote:
-> On 11/30/23 at 11:16am, Michal Hocko wrote:
-> > On Thu 30-11-23 11:00:48, Baoquan He wrote:
-> > [...]
-> > > Now, we are worried if there's risk if the CMA area is retaken into kdump
-> > > kernel as system RAM. E.g is it possible that 1st kernel's ongoing RDMA
-> > > or DMA will interfere with kdump kernel's normal memory accessing?
-> > > Because kdump kernel usually only reset and initialize the needed
-> > > device, e.g dump target. Those unneeded devices will be unshutdown and
-> > > let go. 
+Hi Krzysztof:
 
 
-Re-read your mail, we are saying the same thing, Please ignore the
-words at bottom from my last mail.
-
-> > 
-> > I do not really want to discount your concerns but I am bit confused why
-> > this matters so much. First of all, if there is a buggy RDMA driver
-
-Not buggy DMA or RDMA driver. This is decided by kdump mechanism. When
-we do kexec reboot, we shutdown cpu, interrupt, all devicees. When we do
-kdump, we only shutdown cpu, interrupt.
-
-> > which doesn't use the proper pinning API (which would migrate away from
-> > the CMA) then what is the worst case? We will get crash kernel corrupted
-> > potentially and fail to take a proper kernel crash, right? Is this
-> > worrisome? Yes. Is it a real roadblock? I do not think so. The problem
-
-We may fail to take a proper kernel crash, why isn't it a roadblock? We
-have stable way with a little more memory, why would we take risk to
-take another way, just for saving memory? Usually only high end server
-needs the big memory for crashkernel and the big end server usually have
-huge system ram. The big memory will be a very small percentage relative
-to huge system RAM.
-
-> > seems theoretical to me and it is not CMA usage at fault here IMHO. It
-> > is the said theoretical driver that needs fixing anyway.
-
-Now, what we want to make clear is if it's a theoretical possibility, or
-very likely happen. We have met several on-flight DMA stomping into
-kexec kernel's initrd in the past two years because device driver didn't
-provide shutdown() methor properly. For kdump, once it happen, the pain
-is we don't know how to debug. For kexec reboot, customer allows to
-login their system to reproduce and figure out the stomping. For kdump,
-the system corruption rarely happend, and the stomping could rarely
-happen too.
-
-The code change looks simple and the benefit is very attractive. I
-surely like it if finally people confirm there's no risk. As I said, we
-can't afford to take the risk if it possibly happen. But I don't object
-if other people would rather take risk, we can let it land in kernel.
-
-My personal opinion, thanks for sharing your thought.
-
-> > 
-> > Now, it is really fair to mention that CMA backed crash kernel memory
-> > has some limitations
-> > 	- CMA reservation can only be used by the userspace in the
-> > 	  primary kernel. If the size is overshot this might have
-> > 	  negative impact on kernel allocations
-> > 	- userspace memory dumping in the crash kernel is fundamentally
-> > 	  incomplete.
+On 11/23/23 03:07, Krzysztof Kozlowski wrote:
+> On 22/11/2023 13:55, Andy Yan wrote:
+>> From: Andy Yan <andy.yan@rock-chips.com>
+>>
+>> The vop2 on rk3588 is similar to which on rk356x
+>> but with 4 video ports and need to reference
+>> more grf modules.
+>>
+>> Signed-off-by: Andy Yan <andy.yan@rock-chips.com>
+>>
+>> ---
+>>
+>> Changes in v2:
+>> - fix errors when running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+>>
+>>   .../display/rockchip/rockchip-vop2.yaml       | 27 +++++++++++++++++++
+>>   1 file changed, 27 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/display/rockchip/rockchip-vop2.yaml b/Documentation/devicetree/bindings/display/rockchip/rockchip-vop2.yaml
+>> index b60b90472d42..24148d9b3b14 100644
+>> --- a/Documentation/devicetree/bindings/display/rockchip/rockchip-vop2.yaml
+>> +++ b/Documentation/devicetree/bindings/display/rockchip/rockchip-vop2.yaml
+>> @@ -20,6 +20,7 @@ properties:
+>>       enum:
+>>         - rockchip,rk3566-vop
+>>         - rockchip,rk3568-vop
+>> +      - rockchip,rk3588-vop
+>>   
+>>     reg:
+>>       items:
+>> @@ -42,26 +43,47 @@ properties:
+>>         frame start (VSYNC), line flag and other status interrupts.
+>>   
+>>     clocks:
+>> +    minItems: 3
+>>       items:
+>>         - description: Clock for ddr buffer transfer.
+>>         - description: Clock for the ahb bus to R/W the phy regs.
+>>         - description: Pixel clock for video port 0.
+>>         - description: Pixel clock for video port 1.
+>>         - description: Pixel clock for video port 2.
+>> +      - description: Pixel clock for video port 4.
+>> +      - description: Peripheral clock for vop on rk3588.
+>>   
+>>     clock-names:
+>> +    minItems: 3
 > 
-> I am not sure if we are talking about the same thing. My concern is:
-> ====================================================================
-> 1) system corrutption happened, crash dumping is prepared, cpu and
-> interrupt controllers are shutdown;
-> 2) all pci devices are kept alive;
-> 3) kdump kernel boot up, initialization is only done on those devices
-> which drivers are added into kdump kernel's initrd;
-> 4) those on-flight DMA engine could be still working if their kernel
-> module is not loaded;
+> You relax requirements for all existing variants here which is not
+> explained in commit msg. I assume this was not intentional, so you need
+> to re-constrain them in allOf:if:then.
 > 
-> In this case, if the DMA's destination is located in crashkernel=,cma
-> region, the DMA writting could continue even when kdump kernel has put
-> important kernel data into the area. Is this possible or absolutely not
-> possible with DMA, RDMA, or any other stuff which could keep accessing
-> that area?
+> See for example:
+> https://elixir.bootlin.com/linux/v5.19-rc6/source/Documentation/devicetree/bindings/clock/samsung,exynos7-clock.yaml#L57
+> for some ideas.
 > 
-> The existing crashkernel= syntax can gurantee the reserved crashkernel
-> area for kdump kernel is safe.
-> =======================================================================
+>>       items:
+>>         - const: aclk
+>>         - const: hclk
+>>         - const: dclk_vp0
+>>         - const: dclk_vp1
+>>         - const: dclk_vp2
+>> +      - const: dclk_vp3
+>> +      - const: pclk_vop
+>>   
+>>     rockchip,grf:
+>>       $ref: /schemas/types.yaml#/definitions/phandle
+>>       description:
+>>         Phandle to GRF regs used for misc control
+>>   
+>> +  rockchip,vo-grf:
+>> +    $ref: /schemas/types.yaml#/definitions/phandle
+>> +    description:
+>> +      Phandle to VO GRF regs used for misc control, required for rk3588
 > 
-> The 1st kernel's data in the ,cma area is ignored once crashkernel=,cma
-> is taken.
+> Drop last sentence, instead add it to required in allOf:if:then.
+> 
+> Is this valid for other variants? If not, should be disallowed in
+> allOf:if:then: for them.
+
+Only valid for rk3588 now.
+
+> 
+>> +
+>> +  rockchip,vop-grf:
+>> +    $ref: /schemas/types.yaml#/definitions/phandle
+>> +    description:
+>> +      Phandle to VOP GRF regs used for misc control, required for rk3588
+>> +
+>> +  rockchip,pmu:
+>> +    $ref: /schemas/types.yaml#/definitions/phandle
+>> +    description:
+>> +      Phandle to PMU regs used for misc control, required for rk3588
+> 
+> For all these three: what is "misc control"? Way too vague. Everything
+> is a misc and everything can be control. You must be here specific and
+> much more descriptive.
+
+improve in v3
+
+> 
+>> +
+>>     ports:
+>>       $ref: /schemas/graph.yaml#/properties/ports
+>>   
+>> @@ -81,6 +103,11 @@ properties:
+>>           description:
+>>             Output endpoint of VP2
+>>   
+>> +      port@3:
+>> +        $ref: /schemas/graph.yaml#/properties/port
+>> +        description:
+>> +          Output endpoint of VP3
+> 
+> Valid for other variants?
 > 
 
+Only valid for rk3588 now.
+
+Thanks for your review and guidance, I try to fix in v3 [0]
+
+[0]https://patchwork.kernel.org/project/linux-rockchip/patch/20231130122418.13258-1-andyshrk@163.com/
+> Best regards,
+> Krzysztof
+> 
