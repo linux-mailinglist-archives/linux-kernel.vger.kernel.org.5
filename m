@@ -2,109 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDA967FF6CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 17:47:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D02C7FF6D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 17:48:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345541AbjK3QrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 11:47:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38172 "EHLO
+        id S1345514AbjK3QsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 11:48:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231861AbjK3QrY (ORCPT
+        with ESMTP id S231796AbjK3QsS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 11:47:24 -0500
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA4C110DB
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 08:47:30 -0800 (PST)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-50bccc2e3efso1350350e87.0
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 08:47:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701362849; x=1701967649; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=n/82G/0nOOPB91Vse2y9ZbjxwVgoVjZManIXPaj11EM=;
-        b=WqXgrbrrVPdmiJPrd1NVu5MbXFlxBaBbVajmssKdhg8AvIbHISrS6KqZB0gmIS+O/R
-         pl0l5kFlRpNx5ePJhIdUav7Enu/gJ9ACgCP9x0nqRZLyROYMAJt3K/6o/EMperXnuvy2
-         v06rd/mjMXKBse2/+FhgZYH6/IYBcDgzqbSoCE354AfBoQlHEyMFyZpDdKfYEoNjG9ti
-         1IWbz8ywQaSHx2n2gWjqOeF55UR5x2+dXkMI8tz/rohywOoAGmI9hXrYViULrOaXSKzc
-         jaLuRD2aPPw640WmY0SRxpHrKJqbAnWoNdXCH3bz+NXIgNno2InpyhD99fDgVqwkC2Q2
-         1vOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701362849; x=1701967649;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=n/82G/0nOOPB91Vse2y9ZbjxwVgoVjZManIXPaj11EM=;
-        b=d3sdcHeHa4SR2OUHFtXS5+jzsf9dJ0DkRUv6yTPKvNEUqrfLH1aJ1+6EAQte/4U418
-         hGYS6e6gOxRRKaJApprBCpake+luWUamaHgzDW8603rgtQJV1weCWLWbZ/QdklZd3+W7
-         ssElqVQFYVIIZCbJBWIY+lSDMA6tZuPx8nBwhEB1IkhvXdelXeFKKTP2T4SvhqompoO1
-         SXX+KSjGBkrepM2gRuFAYWcATF7HOuYeh22/hitxFxvrDt7K59nWAxD06Tyav95YMG3i
-         sFZ6rzUDeAM08JVwkSyytPiDcQhhyTShVtJnD8/eCdUMZslUN7yojcMWZI6GEN6DuCGB
-         ESDg==
-X-Gm-Message-State: AOJu0YwAUSFUBXZONEVQrBBCZmnA+I14PXDEnoR+xZbZ3eJVXHfGlw4z
-        pvRmOz99+dcPDQo1uKqCqx2/zRxzP+AYteJ7ig==
-X-Google-Smtp-Source: AGHT+IGLPBVZJOS/Jke7bXTISdoyJyrRkafqEyCjKNQvAMm8y1CjQ+2BHczmett0DFBwuMdodEnKYLWP67gfzuggx48=
-X-Received: by 2002:a05:6512:453:b0:50a:9f28:5efe with SMTP id
- y19-20020a056512045300b0050a9f285efemr12837lfk.19.1701362848097; Thu, 30 Nov
- 2023 08:47:28 -0800 (PST)
+        Thu, 30 Nov 2023 11:48:18 -0500
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FA1D10DB;
+        Thu, 30 Nov 2023 08:48:24 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Sh2CS2XSVz6K8vh;
+        Fri,  1 Dec 2023 00:46:44 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+        by mail.maildlp.com (Postfix) with ESMTPS id 045821402CD;
+        Fri,  1 Dec 2023 00:48:21 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 30 Nov
+ 2023 16:48:20 +0000
+Date:   Thu, 30 Nov 2023 16:48:19 +0000
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
+CC:     <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
+        <linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-riscv@lists.infradead.org>, <kvmarm@lists.linux.dev>,
+        <x86@kernel.org>, <linux-csky@vger.kernel.org>,
+        <linux-doc@vger.kernel.org>, <linux-ia64@vger.kernel.org>,
+        <linux-parisc@vger.kernel.org>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        <jianyong.wu@arm.com>, <justin.he@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH 03/21] x86/topology: remove arch_*register_cpu() exports
+Message-ID: <20231130164819.00002f75@Huawei.com>
+In-Reply-To: <E1r5R2r-00Csyh-7B@rmk-PC.armlinux.org.uk>
+References: <ZVyz/Ve5pPu8AWoA@shell.armlinux.org.uk>
+        <E1r5R2r-00Csyh-7B@rmk-PC.armlinux.org.uk>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-References: <20231130155213.1407-1-bp@alien8.de> <20231130160903.GJZWizn+dPaaViFVKN@fat_crate.local>
- <CAMzpN2j5xYq0YCzXxU8srha=1um0JSWMM2YWkUG-qFA891xVHQ@mail.gmail.com>
-In-Reply-To: <CAMzpN2j5xYq0YCzXxU8srha=1um0JSWMM2YWkUG-qFA891xVHQ@mail.gmail.com>
-From:   Brian Gerst <brgerst@gmail.com>
-Date:   Thu, 30 Nov 2023 11:47:16 -0500
-Message-ID: <CAMzpN2hPCwuR9ydEKybJSTvzeATYq1ovaMVM7Z1S8GCXpeyjmA@mail.gmail.com>
-Subject: Re: [PATCH] x86/ia32: State that IA32 emulation is disabled
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Nikolay Borisov <nik.borisov@suse.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml100005.china.huawei.com (7.191.160.25) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 30, 2023 at 11:42=E2=80=AFAM Brian Gerst <brgerst@gmail.com> wr=
-ote:
->
-> On Thu, Nov 30, 2023 at 11:09=E2=80=AFAM Borislav Petkov <bp@alien8.de> w=
-rote:
-> >
-> > On Thu, Nov 30, 2023 at 04:52:13PM +0100, Borislav Petkov wrote:
-> > > +static inline bool ia32_enabled_verbose(void)
-> > > +{
-> > > +#ifdef CONFIG_IA32_EMULATION
-> > > +     pr_notice_once("32-bit emulation disabled. You can reenable wit=
-h ia32_emulation=3Don\n");
-> > > +#endif
-> > > +     return ia32_enabled();
-> > > +}
-> >
-> > As Nik rightfully points out offlist, this should rather be something
-> > like:
-> >
-> > ---
-> >         bool enabled =3D ia32_enabled();
-> >
-> > #ifdef CONFIG_IA32_EMULATION
-> >         if (!enabled)
-> >                 pr_notice_once("32-bit emulation disabled. You can reen=
-able with ia32_emulation=3Don\n");
-> > #endif
-> >
-> >         return enabled;
->
-> The #ifdef isn't necessary, as ia32_enabled() will always return false
-> in that case.
+On Tue, 21 Nov 2023 13:44:05 +0000
+"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk> wrote:
 
-Scratch that, I misread it.  If compat is disabled at build time you
-don't want the message to appear, or at least would want a different
-message.
+> arch_register_cpu() and arch_unregister_cpu() are not used by anything
+> that can be a module - they are used by drivers/base/cpu.c and
+> drivers/acpi/acpi_processor.c, neither of which can be a module.
+> 
+> Remove the exports.
+> 
+> Reviewed-by: Gavin Shan <gshan@redhat.com>
+> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+I somehow ended up replying to the RFC even though you'd posted this.
+On basis this might get picked up directly from this posting.
 
-Brian Gerst
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+
+> ---
+>  arch/x86/kernel/topology.c | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/arch/x86/kernel/topology.c b/arch/x86/kernel/topology.c
+> index 0bab03130033..fcb62cfdf946 100644
+> --- a/arch/x86/kernel/topology.c
+> +++ b/arch/x86/kernel/topology.c
+> @@ -45,13 +45,11 @@ int arch_register_cpu(int cpu)
+>  	xc->cpu.hotpluggable = cpu > 0;
+>  	return register_cpu(&xc->cpu, cpu);
+>  }
+> -EXPORT_SYMBOL(arch_register_cpu);
+>  
+>  void arch_unregister_cpu(int num)
+>  {
+>  	unregister_cpu(&per_cpu(cpu_devices, num).cpu);
+>  }
+> -EXPORT_SYMBOL(arch_unregister_cpu);
+>  #else /* CONFIG_HOTPLUG_CPU */
+>  
+>  int __init arch_register_cpu(int num)
+
