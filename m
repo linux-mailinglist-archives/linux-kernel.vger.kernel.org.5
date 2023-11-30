@@ -2,103 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF0037FFE58
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 23:12:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF1E17FFE5A
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 23:12:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377116AbjK3WLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 17:11:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43436 "EHLO
+        id S1377131AbjK3WMQ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 30 Nov 2023 17:12:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229804AbjK3WLu (ORCPT
+        with ESMTP id S229804AbjK3WMO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 17:11:50 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B24510DC
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 14:11:56 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1cc9b626a96so14093185ad.2
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 14:11:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1701382316; x=1701987116; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2FXLPRPiS6Mdb77R0ffuo1PuZkNG018RX2vgY/WJ7uk=;
-        b=Czp1nVZUn4izanux1WF8hlUDFrLG8GWEzougKdN6CsSMH2ZOWJDLWhpgCcSReeLZwE
-         ax67c7Lcu4+e4GKcwB77m/p82KEECNynK1mgCVpzCvIkZx/ugiwEsxAjxAot0nhWoviq
-         y6xZCkj30bvLXOVbcnguW/fjSkRWC/Vn+WOLI=
+        Thu, 30 Nov 2023 17:12:14 -0500
+Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B892B10DF;
+        Thu, 30 Nov 2023 14:12:20 -0800 (PST)
+Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-5c21e185df5so1162233a12.1;
+        Thu, 30 Nov 2023 14:12:20 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701382316; x=1701987116;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2FXLPRPiS6Mdb77R0ffuo1PuZkNG018RX2vgY/WJ7uk=;
-        b=pSeIAWqOFbDFRAZ0E0dXeMkPaJvp3V4qNYTyouw5oe/YTsxCOQ0ovD6ptJfeZeA5OB
-         Xem7Wgx7ZT9eNHiEfdzCRHBnaPQjdSmiRiet2VWfqsCaz1uI203ekn+AiW+a7HMve4+S
-         MWga/NgWghktXpMe/Q7nWXdoG1z5flXMILBAF5SSrOqP80TBhTuAao0dpC4oEOgdbJnL
-         26ILRp9ivJD8FGqHAZEEVKPH8b6fbYT9OJmk1n8zH4ScQvJVI2eJSvUP0BNMhEUqdis9
-         KczfHWEp/4o44J6h2DQch+lmc5K5tpq+U+ej2LdcM3QQaFNt+fAmH/CTAeUvWl4SGzuc
-         kLww==
-X-Gm-Message-State: AOJu0YzqfdRSXuMeSRMY7mJARSMxlXP+gXsfFfMptAbq8lyjsP6GCw4s
-        vPNWcK+Zi5rilhk2DiMku+lhYNnrZx+knXPYxO8=
-X-Google-Smtp-Source: AGHT+IH4tWRlUmskQclyK5FkszhjF8DT/WshIkLupA/qFqfEahEkWVLTEwfG04uaDmt3JTd8zTHaxA==
-X-Received: by 2002:a17:902:ce84:b0:1cf:c4d3:6db1 with SMTP id f4-20020a170902ce8400b001cfc4d36db1mr18661789plg.8.1701382316117;
-        Thu, 30 Nov 2023 14:11:56 -0800 (PST)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id o5-20020a170902d4c500b001cf66056a1bsm1900106plg.97.2023.11.30.14.11.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Nov 2023 14:11:55 -0800 (PST)
-Date:   Thu, 30 Nov 2023 14:11:54 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     kernel test robot <lkp@intel.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: include/linux/fortify-string.h:52:29: warning:
- '__builtin_strcpy' source argument is the same as destination
-Message-ID: <202311301409.F2AFF5DA1@keescook>
-References: <202311301039.7i51bZCz-lkp@intel.com>
+        d=1e100.net; s=20230601; t=1701382340; x=1701987140;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+Z2BEAePLu01GRPlfECCRaK8cq/hBNpwuCocumn+ug4=;
+        b=VjrD9LBGRx0AT73T4mgniuqfUKmBSH4mqWGmUblO+7mXJJ6OX1F/dLSo7++qotgAau
+         KFoDVwPNDkVPPLiFqdPKcaF21ZPgK+zJDmL0LnvKOPEnbHicz2+/g8WKokZ3Tg+GLPz+
+         9KJ0WJIAJb8MG8eWdi1tXu/iKHh9JyxVDKm4X7bZkKC/GCj4LZgBWZui5TGBzZoZo4Am
+         E+GbwgvqcPZfhD1Q5F1FwksbVueQyEj6aGpESI81BQ6LTWb1/bnyBLlThwgW2zePfwat
+         jiRr4uuitRSu3KWpmDoZw4K/fchPWBVrxNyKsgbKKC9C95JmqFHbgInicRqrbzfbYq48
+         4NlA==
+X-Gm-Message-State: AOJu0Yy7Q0mU1NhRmxBZCcKdCKAAQR3+tipeT9eQeUk8HKU0uFoStifZ
+        EzQ93GKJKP2g+rwlb0BtAf4avqiSxxutbjqaFFY=
+X-Google-Smtp-Source: AGHT+IHUrfUhc1KjoJM0sgOBbQJ/V0+8OJ0d1ll3lqAXcHNTp5BImJQJGhsViHMJJr60vBWw6pSedfARAoFCeE4+AQ8=
+X-Received: by 2002:a17:90a:f3cc:b0:280:25e8:f7b4 with SMTP id
+ ha12-20020a17090af3cc00b0028025e8f7b4mr24694263pjb.15.1701382340064; Thu, 30
+ Nov 2023 14:12:20 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202311301039.7i51bZCz-lkp@intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <ZWkEeqdmCHMLhLr2@kernel.org>
+In-Reply-To: <ZWkEeqdmCHMLhLr2@kernel.org>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Thu, 30 Nov 2023 14:12:08 -0800
+Message-ID: <CAM9d7chi4OQRZRpbNnHFwJ6Esfr+P3b6FQBmHiqU9HXcp8+HLw@mail.gmail.com>
+Subject: Re: [PATCH 1/1] perf beauty: Don't use 'find ... -printf' as it isn't
+ available in busybox
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Jiri Olsa <jolsa@kernel.org>, linux-perf-users@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 30, 2023 at 12:02:50PM +0800, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   3b47bc037bd44f142ac09848e8d3ecccc726be99
-> commit: ba38961a069b0d8d03b53218a6c29d737577d448 um: Enable FORTIFY_SOURCE
-> date:   1 year, 3 months ago
-> config: um-randconfig-r034-20230830 (https://download.01.org/0day-ci/archive/20231130/202311301039.7i51bZCz-lkp@intel.com/config)
-> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231130/202311301039.7i51bZCz-lkp@intel.com/reproduce)
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202311301039.7i51bZCz-lkp@intel.com/
-> 
-> [...]
->    kernel/kallsyms.c: In function '__sprint_symbol.isra.0':
-> >> include/linux/fortify-string.h:52:29: warning: '__builtin_strcpy' source argument is the same as destination [-Wrestrict]
->       52 | #define __underlying_strcpy __builtin_strcpy
->          |                             ^
->    include/linux/fortify-string.h:567:10: note: in expansion of macro '__underlying_strcpy'
->      567 |   return __underlying_strcpy(p, q);
->          |          ^~~~~~~~~~~~~~~~~~~
+Hi Arnaldo,
 
-The only strcpy() in __sprint_symbol() is:
+On Thu, Nov 30, 2023 at 1:54 PM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
+>
+> Namhyung reported:
+>
+>   I'm seeing a build error on my Alpine linux image which uses busybox +
+>   musl libc:
+>
+>     In file included from trace/beauty/arch_errno_names.c:1,
+>                      from builtin-trace.c:899:
+>     /build/trace/beauty/generated/arch_errno_name_array.c: In function 'arch_syscalls__strerrno':
+>     /build/trace/beauty/generated/arch_errno_name_array.c:142:49: error: unused parameter 'arch' [-Werror=unused-parameter]
+>       142 | const char *arch_syscalls__strerrno(const char *arch, int err)
+>
+>   It looks like busybox find command doesn't have -printf option
+>
+>     find: unrecognized: -printf
+>     , Yesterday 9:16 PM
+>     ,
+>     BusyBox v1.36.1 (2023-07-27 17:12:24 UTC) multi-call binary.
+>
+>     Usage: find [-HL] [PATH]... [OPTIONS] [ACTIONS]
+>
+>     Search for files and perform actions on them.
+>     First failed action stops processing of current file.
+>     Defaults: PATH is current directory, action is '-print'
+>
+> So just remove it and pipe find's entry to a basename loop to produce
+> the same result.
+>
+> Fixes: 0337cf74ccf2a434 ("perf util: Introduce architecture specific errno/name mapping")
+> Reported-by: Namhyung Kim <namhyung@kernel.org>
+> Cc: Adrian Hunter <adrian.hunter@intel.com>
+> Cc: Hendrik Brueckner <brueckner@linux.vnet.ibm.com>
+> Cc: Ian Rogers <irogers@google.com>
+> Cc: Jiri Olsa <jolsa@kernel.org>
+> Cc: Michael Petlan <mpetlan@redhat.com>
+> Cc: Thomas Richter <tmricht@linux.vnet.ibm.com>
+> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 
-	if (name != buffer)
-		strcpy(buffer, name);
+Thanks for the fix!
 
-Which is explicitly not the same address...
+Tested-by: Namhyung Kim <namhyung@kernel.org>
 
-This appears to be a GCC 9 false positive, maybe?
+Thanks,
+Namhyung
 
--- 
-Kees Cook
+> ---
+>  tools/perf/trace/beauty/arch_errno_names.sh | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/tools/perf/trace/beauty/arch_errno_names.sh b/tools/perf/trace/beauty/arch_errno_names.sh
+> index cc09dcaa891e04bb..3ec8781344db13ba 100755
+> --- a/tools/perf/trace/beauty/arch_errno_names.sh
+> +++ b/tools/perf/trace/beauty/arch_errno_names.sh
+> @@ -76,7 +76,7 @@ EoHEADER
+>
+>  # Create list of architectures that have a specific errno.h.
+>  archlist=""
+> -for arch in $(find $toolsdir/arch -maxdepth 1 -mindepth 1 -type d -printf "%f\n" | sort -r); do
+> +for arch in $(find $toolsdir/arch -maxdepth 1 -mindepth 1 -type d | while read arch ; do basename $arch ; done | sort -r); do
+>         test -f $toolsdir/arch/$arch/include/uapi/asm/errno.h && archlist="$archlist $arch"
+>  done
+>
+> --
+> 2.41.0
+>
