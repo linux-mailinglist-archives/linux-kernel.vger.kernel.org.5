@@ -2,63 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0C797FE973
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 08:02:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F9E07FE976
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 08:02:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344669AbjK3HBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 02:01:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43656 "EHLO
+        id S1344682AbjK3HCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 02:02:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344592AbjK3HBv (ORCPT
+        with ESMTP id S1344673AbjK3HCD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 02:01:51 -0500
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2086.outbound.protection.outlook.com [40.107.93.86])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84F9412A;
-        Wed, 29 Nov 2023 23:01:55 -0800 (PST)
+        Thu, 30 Nov 2023 02:02:03 -0500
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2070.outbound.protection.outlook.com [40.107.223.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34F6710F1;
+        Wed, 29 Nov 2023 23:02:08 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=J9zu2RE3aXyA0p4qWJp6wn7nLjV+PG5yQvbFEu1pKevkDKixDjjVPRNnnYplzfVGQfYc/uRkThZrn6ZDikSUSut1uXT3BqtRLo5uKiihkwnt3rGSrKJ+yR66uTxFXdbsf4+ZKRjc9GvJS1hJgcreMJrdYh4XXlJd+RmULKfqDn0gGAvDh9p/W8LyMMR0MfPhncz6D/TwTgawfK/3t8czlQZ4njpmB9H1UYFzvm5ReGwQaKUAX5JJ81uJOvbkGvqVD131LoBRPhFJHbVN+EjO6ZH/B1MaFUpRcQ+v2cxWcsvmzkxQVrOr5IEiCBNIpwssfsbL3q3qrzLsACST0TUfwA==
+ b=IR+2x4cgGy9JrHzc7m+qHBg2EW6ed/UjNJpf9BxQ4WFega6ffMTDt5WrNYCsy9+e1KiipG8lk/TVGAX8oG8RahmNDZjWlh3s13NZay041DlcfdnKdLYkYpJCCziPG6aUqm5fY+GHKzjy97WvdZ4DTTme4odiSg7cXAd37JWMBrW+bTzFQCqmAtjP0kfFsffK4qXW4ulZ5ZYxhZSE17H0dCVJSXnw4HsrdZifGE+rlWWoXejGjN2R/TXaabsCtOvZgYWsG/iQXbWP+YKQymYuBhkD91gV3+Xhsgi9ruwVDLa1EBJBCYp0T+JPt48YQCXFOiy4rzxvoa0ncZ+FOcy5fQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=C8xrItMk2BZesTGvpW1RzJ1AAmjeJKijznfxjIl8rMo=;
- b=JxLMG2mlL5EJ3xAan0tWF7VhM7POOkxSCUN1dYKeqy7b/TkjYi1lMz7Ihec6eBsXF0B36mlgBMamxwF9lfkcn2ZtKfh2OrRgp+JaDIpN2LZM7+IFrC4ea8nGvRP5p6v5ou88k6R41MkylST/M7XOvcaAdHiceSSSerlTqVa+YcL6JRhoRV+TkOr/GcnhNIJOUC6tzHi/DxeERPqT10x4/F7blSqQYWs0hMu45Acy2VlzQs1a8EsSEpR9EpfWJOZ5pvp74MpRT/JolYoZvzlH4Nym1symX5whIeqiPn6lFNqZ9YMzGeOXAdykJzgTXfYoN9qf9emM9YVlZS5EwDitZQ==
+ bh=LK3IwY+tYpt0nNR7jQ/wuEds0lfJ9yxkjpomecQ5hIA=;
+ b=l0+0PgRe37SOhkPFngJAcsJajJZoGOwL9YU0mPXcZOCVKYbmsKDmhWEVEsKpjT1u3asBiwvaNPAb+xv65hVzOO50y9JHkiCyebg7UZKJ9MDCpBt5PD+CE2l5hW0pCK/cKPjUW60TXq960yOAYf1goXFQSiwhpIZcgZL2kMR95tIe7St2q6vrPfT1lmiCXU/iLrYwWJxXH4N/ME/j544aHHQHEAnDhnXmUF1yJ7Fpt6JGHYdaV4UgxOBbY64JmLVuglrbObh1BII9SGyI0ivNana8RLFYDbKAtUhyQM0TOkTYASBtzZL0EvLnS3Vu4AgjmHRMrEQgBQnb0cmmPiaEWA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=lists.linux.dev smtp.mailfrom=nvidia.com;
+ 216.228.117.161) smtp.rcpttodomain=lists.linux.dev smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=C8xrItMk2BZesTGvpW1RzJ1AAmjeJKijznfxjIl8rMo=;
- b=JhTfWmnOC9TCdti/duUwAA6bMMVmGIpbihdtKOTkyNqOJZn3XAJlgrV5FiwEXI2qVNDeW+suo6SNUPKY0aPC2XK4ABxYhYhAcvTsVeczc8SB+4M8I0LFaha9aH0xuk8vlK31pa5FyuTEwgCxJFwcLxCU130iaAwCV3PR2uxcFxoO4HK/9xE7F4O0v24QX7tNhVXADFp/B6+1DqlG5gOOmg1lPk+RGft6XDXJda8i1pm8o8NqVDfasMGo7deXI6CTUnZ0UzhOBH1GAsgKjR3RztcUI15zeFz5UF7b+2/NF2zdLpBAkbvjBHxBc2uUHmXhEV2N/HNCxLKsDY/kQlo7Ww==
-Received: from MW3PR05CA0028.namprd05.prod.outlook.com (2603:10b6:303:2b::33)
- by SJ2PR12MB8737.namprd12.prod.outlook.com (2603:10b6:a03:545::21) with
+ bh=LK3IwY+tYpt0nNR7jQ/wuEds0lfJ9yxkjpomecQ5hIA=;
+ b=KCnvIpPhqLxZ6cxoKQnWASadi+dwoBJhHqqubg+fYTqGzENw/JQI2nE3WYaWELm8xWC1CW3waF2Ds9HEBLjEZZPY7soy+LeCNb4yAaWY84cEiS4sGKT0nzKfYCGQKypoOJkuNk2Tr5w6kP7U/fsDCrP6YGROD2wVv6QZUahwpDdacUzHKKqUD4PK536CbYpzAhyBzfmuE547OOPYB4BugRVmSVFf7QvM1l/ytx5PYrbTsayzmy1H7/0xiByUtazDmF8553V8DSXh8GI+8HOkKiOjP87urqYRiXT/x5tj05DHgTFO4qnrrXxKLOg73dVHxQsxym/fqqomqc7L8uMX5Q==
+Received: from BN9PR03CA0229.namprd03.prod.outlook.com (2603:10b6:408:f8::24)
+ by SA1PR12MB8985.namprd12.prod.outlook.com (2603:10b6:806:377::18) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.24; Thu, 30 Nov
- 2023 07:01:52 +0000
-Received: from CO1PEPF000044F1.namprd05.prod.outlook.com
- (2603:10b6:303:2b:cafe::7d) by MW3PR05CA0028.outlook.office365.com
- (2603:10b6:303:2b::33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.8 via Frontend
- Transport; Thu, 30 Nov 2023 07:01:52 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ 2023 07:02:05 +0000
+Received: from SA2PEPF0000150A.namprd04.prod.outlook.com
+ (2603:10b6:408:f8:cafe::7e) by BN9PR03CA0229.outlook.office365.com
+ (2603:10b6:408:f8::24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.23 via Frontend
+ Transport; Thu, 30 Nov 2023 07:02:05 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
 Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- CO1PEPF000044F1.mail.protection.outlook.com (10.167.241.71) with Microsoft
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ SA2PEPF0000150A.mail.protection.outlook.com (10.167.242.42) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7046.17 via Frontend Transport; Thu, 30 Nov 2023 07:01:52 +0000
+ 15.20.7046.17 via Frontend Transport; Thu, 30 Nov 2023 07:02:05 +0000
 Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Wed, 29 Nov
- 2023 23:01:41 -0800
+ 2023 23:01:52 -0800
 Received: from dev.nvidia.com (10.126.231.35) by rnnvmail201.nvidia.com
  (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Wed, 29 Nov
- 2023 23:01:40 -0800
+ 2023 23:01:51 -0800
 From:   Chaitanya Kulkarni <kch@nvidia.com>
 To:     <virtualization@lists.linux.dev>, <linux-block@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
@@ -66,35 +66,37 @@ CC:     <mst@redhat.com>, <hch@lst.de>, <jasowang@redhat.com>,
         <pbonzini@redhat.com>, <stefanha@redhat.com>,
         <xuanzhuo@linux.alibaba.com>, <axboe@kernel.dk>,
         Chaitanya Kulkarni <kch@nvidia.com>
-Subject: [RFC PATCH 0/1] virtio-blk: handle block layer timedout request
-Date:   Wed, 29 Nov 2023 23:01:32 -0800
-Message-ID: <20231130070133.8059-1-kch@nvidia.com>
+Subject: [RFC PATCH 1/1] virtio-blk: process block layer timedout request
+Date:   Wed, 29 Nov 2023 23:01:33 -0800
+Message-ID: <20231130070133.8059-2-kch@nvidia.com>
 X-Mailer: git-send-email 2.40.0
+In-Reply-To: <20231130070133.8059-1-kch@nvidia.com>
+References: <20231130070133.8059-1-kch@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="y"
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 X-Originating-IP: [10.126.231.35]
 X-ClientProxiedBy: rnnvmail202.nvidia.com (10.129.68.7) To
  rnnvmail201.nvidia.com (10.129.68.8)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PEPF000044F1:EE_|SJ2PR12MB8737:EE_
-X-MS-Office365-Filtering-Correlation-Id: 29a94582-39f7-43f4-a1b5-08dbf1723b0a
+X-MS-TrafficTypeDiagnostic: SA2PEPF0000150A:EE_|SA1PR12MB8985:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2acd1a97-1971-4327-17af-08dbf17242d5
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: RNuE0PviXOCdE0ybFuniw7eg6fmbI03DxuJXFK8R2uiyKYnysUyMZqwjUAan5ff29SnDHSACyUb34X8ZpuY2aJ4pZ1qzeZV/XIisHLYSymtKAUAFIu5oI2IIFwrlgN7263mTs/BYkLLUR6xHjQEwN8en+ooO08tGV/21KnxqNabYfC6x+0sUKkGof4xgGJ5rHcDk+yURRsp+HT75FF4Qu8lAiS/aV/zmE1kcNmZZGPM/FIufpI/t1vjNNn7HdnLpkmYmvwZ0t41exPVPyewenXFXaXrXeDgnxlfAOCOZtAuNJn6EfJnC+UY5UK1UZ9W3N/AyoMBKd9zdY8izNZdh5nsA5OltxCYCohJcdtc/yxFhAcoVNw0BStpqV4VOGcyBfltqG2hGc+9X5muxgeKvrmqWf7QahoK22MDFOtAwVIc0GPvfSzxQmfbMNXWcz4Tmdz4mF325ONikmUDQvuhPU/qkEnDYW6sg7Edl9ZmBd13NYkcdlhyKXTmSzkmBaactln4RkYn6dPLDYAm4bOF3XcL3Xcnyq5vBok4Dkxdpm1IxSBuOzv85wCwwyWY9YREtbjAlQCa2TA0Tq+ugoV5NF+Wu41I5NjCaPg8MJK1lYZjVPyhQUqdkxUT184sCMZYQ2ErtX7dpm7rzM1sTZ5IzK1LwePceH3KoazThdSia6Z5CcB/7JD7Ra5KoCT/XbHQ6dZ2fI9L2uV6uwTipaU2OMPopEk+JP6iN2Rc+uYLy7bib7dX+48I+a1ckWOHkMFppz/XZYJ7O/TLtpRxOJkh1POcu5Hl9AqmvvgzHcV4WqP8=
-X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(376002)(136003)(396003)(39860400002)(346002)(230922051799003)(82310400011)(1800799012)(64100799003)(451199024)(186009)(40470700004)(46966006)(36840700001)(16526019)(26005)(30864003)(83380400001)(336012)(426003)(40480700001)(2906002)(202311291699003)(7416002)(1076003)(107886003)(2616005)(47076005)(5660300002)(66899024)(36860700001)(40460700003)(478600001)(7696005)(6666004)(8676002)(316002)(356005)(7636003)(41300700001)(8936002)(4326008)(36756003)(110136005)(70586007)(70206006)(82740400003)(54906003);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: FfffZ2tnn6+xMIDR5l9MVHTzhjt6Vp9ApSO+wvXiR0AcvEUd9Nt8wxMRcmUEaGGOTL+MkDn9P80hbrU9Ay2GKJUF1LKwz8zXsoWb5XrofZeCrg53VLoQ2HIJWCknHvuzK5AHxwUTZpq9vsD/cnqXgtM99iN+aCho64erqpUTI1ze0wvSCc84um8u3UvTpyCqGAsU/wCczGhdLgeR6qzPWe5M6sz5QJIFpu0Q85ZiEjclUrOhdOAMnc6PUafL5iE/0wbV1JMgT6RCJ0FYb4J0PJWJaw3/fRnlXolpa/8HNcXKaI0xKORfGq6rGylEHJkM0cNtJ1vcRMOaEqfp0egldx4SKeo/N7RMTLHBP7GOqT2IHkYPZmyV6RDMKc4RCOd/tB3uzk0fljmc90Uxd1+3mY2VJIQ4tC0v8AzT/7zl8Wr2BEohdyAClnbvMOaJ74rkFBT8/kMg18qLshUIwTFcQWrnxG/HoBLeiY6Y6AAcZHahwWiPf+oNctkWQBBNedpMwJi5rXk5i17nL1e0+iSELtAXd69LpgLBAcN27Z0HR+hxkRfbabE91gzRyY+1FfUUgwX8N5F8JoO8xL4PaqGM64Tvq1qwh6LOrlpBuug2HLmXa/H+vxJrq001+j7+sacOLFMYd0dTccEtTIvq0Wo5O+jFBncQpGDLQbFCo3C+ZM2OXj4umt+WA4UiuIm6JyztjHmCwMTgHZm9Ll93BklFUTyWgSe6avVsDyH28cFJ0My5XFOgqXz+nPxHXBIDeDFRrLuXL2JK8b+ur8FgL6HmRf3i3+zElDursN9N6HRQ+S0=
+X-Forefront-Antispam-Report: CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(396003)(376002)(346002)(136003)(39860400002)(230922051799003)(64100799003)(186009)(82310400011)(451199024)(1800799012)(40470700004)(46966006)(36840700001)(40480700001)(66899024)(40460700003)(202311291699003)(70586007)(70206006)(54906003)(7636003)(356005)(82740400003)(36756003)(36860700001)(47076005)(426003)(83380400001)(107886003)(1076003)(336012)(26005)(2616005)(6666004)(7696005)(2906002)(110136005)(316002)(16526019)(478600001)(5660300002)(8676002)(4326008)(41300700001)(7416002)(8936002);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Nov 2023 07:01:52.1237
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Nov 2023 07:02:05.1478
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 29a94582-39f7-43f4-a1b5-08dbf1723b0a
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2acd1a97-1971-4327-17af-08dbf17242d5
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1PEPF000044F1.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: SA2PEPF0000150A.namprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB8737
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB8985
 X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
@@ -105,426 +107,246 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In current implementation virtio-blk assumes that request will be
-completed by the underlying transport. This assumption has lead to
-problems when virtio-blk driver is used on the real H/W where device
-couldn't complete the request and driver ended up waiting for it
-forever in the production.
+Improve block layer request handling by implementing a timeout handler.
+Current implementation assums that request will never timeout and will
+be completed by underlaying transport. However, this assumption can
+cause issues under heavy load especially when dealing with different
+subsystems and real hardware.
 
-This implements a straightforward block layer request timeout handler.
-It completes the timed-out request in the same context if the virtio
-device has a VIRTIO_CONFIG_S_DRIVER_OK status. For any other status
-indicated by the virtio device, we halt the block layer request queue
-and proceed with the tear-down sequence. This ensures that applications
-waiting for the I/O can exit gracefully, preventing problematic devices
-from receiving additional I/O and potentially causing more issues.
+To solve this, add a block layer request timeout handler that will
+complete timed-out requests in the same context if the virtio device
+has a VIRTIO_CONFIG_S_DRIVER_OK status. If the device has any other
+status, we'll stop the block layer request queue and proceed with the
+teardown sequence, allowing applications waiting for I/O to exit
+gracefully with appropriate error.
 
-Without this patch when a request gets timed out on virtio-blk device it
-leaves the application hanging avoiding graceful termination & cleanup.
+Also, add two new module parameters that allows user to specify the
+I/O timeout for the tagset when allocating the disk and a teardown limit
+for the timed out requeets before we initiate device teardown from the
+timeout handler. These changes will improve the stability and
+reliability of our system under request timeout scenario.
 
-Timeout handlers can be implemented differently and we can apply
-different teardown policies, I'm open if anyone has better suggestion
-for teardown hence marking it as RFC.
-
-* Below is the test output on today's linux-block tree [1] with patch
-  and test script to trigger simple timeout and trigger teardown
-  sequence that follows following sequence :-
-
-- Load virtio-blk module with io_timeout=10 and timeout teardown limit=2.
-- Run fio randwrite with multiple jobs (48=NCPUS).
-- Enable fault injection request timeout.
-- While fio is running it will trigger request timeout handler because of
-  fault injection.
-- First two timed out requests will be completed with the time out error
-  without initiating teardown.
-- For third request it will initiate the teardown by issuing teardown
-  work, that will perform device teardown sequence.
-- Make sure all the fio jobs terminate gracefully and fio will run for
-  the time we set the timeout value i.e. 10s.
-- Lastly remove vitio-blk kernel module to make sure we are not holding
-  any reference or pending resources post teardown.
-
-Any feedback is welcome.
- 
--ck
-
-[1]
-
-commit 20d713ea3192ca6735d669ce583a7d2183bd2f81 (origin/for-next)
-Merge: 2cc14f52aeb7 668bfeeabb5e
-Author: Jens Axboe <axboe@kernel.dk>
-Date:   Mon Nov 27 09:11:54 2023 -0700
-
-    Merge branch 'for-6.8/block' into for-next
-
-    * for-6.8/block:
-      block: move a few definitions out of CONFIG_BLK_DEV_ZONED
-      block/rnbd: use %pe to print errors
-      block/rnbd: add support for REQ_OP_WRITE_ZEROES
-
-Chaitanya Kulkarni (1):
-  virtio-blk: process block layer timedout request
-
+Signed-off-by: Chaitanya Kulkarni <kch@nvidia.com>
+---
  drivers/block/virtio_blk.c      | 122 ++++++++++++++++++++++++++++++++
  include/uapi/linux/virtio_blk.h |   1 +
  2 files changed, 123 insertions(+)
 
-* Test script test-virtio-timeout.sh :-
-----------------------------------------------------------------------------
-
-setup()
-{
-	echo "[RANDWRITE]"		>  /tmp/randwrite.fio
-	echo "direct=1"			>> /tmp/randwrite.fio
-	echo "rw=randwrite"		>> /tmp/randwrite.fio
-	echo "norandommap"		>> /tmp/randwrite.fio
-	echo "randrepeat=0"		>> /tmp/randwrite.fio
-	echo "runtime=1m"		>> /tmp/randwrite.fio
-	echo "time_based"		>> /tmp/randwrite.fio
-	echo "iodepth=2"		>> /tmp/randwrite.fio
-	echo "numjobs=48"		>> /tmp/randwrite.fio
-	echo "bs=4k"			>> /tmp/randwrite.fio
-	echo "overwrite=0"		>> /tmp/randwrite.fio
-	echo "allow_file_create=0"	>> /tmp/randwrite.fio
-	echo "group_reporting"		>> /tmp/randwrite.fio
-	echo ""				>> /tmp/randwrite.fio
-
-
-	./compile_virtioblk.sh
-	modprobe -r virtio_blk
-
-	echo "--------------------------------------------"
-	echo "Loading virtio-blk module with io_timeout=30 timeout_teardown_limit=2"
-	modprobe virtio_blk io_timeout=30 timeout_teardown_limit=2
-	echo "--------------------------------------------"
-	sleep 1
-
-	set -x
-	lsblk
-	ls -lrth /dev/vda
-
-	cat /sys/block/vda/io-timeout-fail
-	echo 1 > /sys/block/vda/io-timeout-fail
-	cat /sys/block/vda/io-timeout-fail
-
-	echo  20 > /sys/kernel/debug/fail_io_timeout/probability
-	echo  10 > /sys/kernel/debug/fail_io_timeout/interval
-	echo  -1 > /sys/kernel/debug/fail_io_timeout/times
-	echo   0 > /sys/kernel/debug/fail_io_timeout/space
-	echo   1 > /sys/kernel/debug/fail_io_timeout/verbose
-
-	set +x
-	dmesg -c
-}
-
-teardown()
-{
-	modprobe -r virtio_blk
-}
-
-main()
-{
-	setup
-
-	set -x 
-	fio /tmp/randwrite.fio --filename=/dev/vda --ioengine=libaio
-	set +x
-	echo "--------------------------------------------"
-	echo "device should be gone from lablk"
-	set -x 
-	ls -lrth /dev/vda
-	lsblk
-
-	teardown
-}
-
-main
-
-* Test result :-
-----------------------------------------------------------------------------
-
-linux-block (for-next) # git am  p/virtio-blk-timeout/0001-virtio-blk-process-block-layer-timedout-request.patch
-Applying: virtio-blk: process block layer timedout request
-linux-block (for-next) # git log -1
-commit 8f4403d78557ea6393948f8d427be0dc98e4e8c1 (HEAD -> for-next)
-Author: Chaitanya Kulkarni <kch@nvidia.com>
-Date:   Mon Oct 9 17:48:50 2023 -0700
-
-    virtio-blk: process block layer timedout request
-
-    Improve block layer request handling by implementing a timeout handler.
-    Current implementation assums that request will never timeout and will
-    be completed by underlaying transport. However, this assumption can
-    cause issues under heavy load especially when dealing with different
-    subsystems and real hardware.
-
-    To solve this, add a block layer request timeout handler that will
-    complete timed-out requests in the same context if the virtio device
-    has a VIRTIO_CONFIG_S_DRIVER_OK status. If the device has any other
-    status, we'll stop the block layer request queue and proceed with the
-    teardown sequence, allowing applications waiting for I/O to exit
-    gracefully with appropriate error.
-
-    Also, add two new module parameters that allows user to specify the
-    I/O timeout for the tagset when allocating the disk and a teardown limit
-    for the timed out requeets before we initiate device teardown from the
-    timeout handler. These changes will improve the stability and
-    reliability of our system under request timeout scenario.
-
-    Signed-off-by: Chaitanya Kulkarni <kch@nvidia.com>
-linux-block (for-next) # ./compile_virtioblk.sh
-+ dmesg -c
-+ modprobe -r virtio_blk
-+ lsmod
-+ grep virtio_blk
-++ nproc
-+ make -j 48 M=drivers/block modules
-  CC [M]  drivers/block/virtio_blk.o
-  MODPOST drivers/block/Module.symvers
-  LD [M]  drivers/block/virtio_blk.ko
-+ HOST=drivers/block/
-++ uname -r
-+ HOST_DEST=/lib/modules/6.7.0-rc3lblk+/kernel/drivers/block/
-+ cp drivers/block//virtio_blk.ko /lib/modules/6.7.0-rc3lblk+/kernel/drivers/block//
-+ ls -lrth /lib/modules/6.7.0-rc3lblk+/kernel/drivers/block//virtio_blk.ko
--rw-r--r--. 1 root root 641K Nov 29 15:19 /lib/modules/6.7.0-rc3lblk+/kernel/drivers/block//virtio_blk.ko
-linux-block (for-next) # ./test-virtio-timeout.sh
-+ dmesg -c
-+ modprobe -r virtio_blk
-+ lsmod
-+ grep virtio_blk
-++ nproc
-+ make -j 48 M=drivers/block modules
-+ HOST=drivers/block/
-++ uname -r
-+ HOST_DEST=/lib/modules/6.7.0-rc3lblk+/kernel/drivers/block/
-+ cp drivers/block//virtio_blk.ko /lib/modules/6.7.0-rc3lblk+/kernel/drivers/block//
-+ ls -lrth /lib/modules/6.7.0-rc3lblk+/kernel/drivers/block//virtio_blk.ko
--rw-r--r--. 1 root root 641K Nov 29 15:20 /lib/modules/6.7.0-rc3lblk+/kernel/drivers/block//virtio_blk.ko
---------------------------------------------
-Loading virtio-blk module with io_timeout=10 timeout_teardown_limit=2
-++ modprobe virtio_blk io_timeout=40 timeout_teardown_limit=2
-++ set +x
---------------------------------------------
-++ lsblk
-NAME    MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
-sda       8:0    0   50G  0 disk
-├─sda1    8:1    0    1G  0 part /boot
-└─sda2    8:2    0   49G  0 part /home
-sdb       8:16   0  100G  0 disk /mnt/data
-sr0      11:0    1 1024M  0 rom
-vda     252:0    0    5G  0 disk
-nvme0n1 259:0    0    1G  0 disk
-++ ls -lrth /dev/vda
-brw-rw----. 1 root disk 252, 0 Nov 29 15:20 /dev/vda
-++ cat /sys/block/vda/io-timeout-fail
-0
-++ echo 1
-++ cat /sys/block/vda/io-timeout-fail
-1
-++ echo 20
-++ echo 10
-++ echo -1
-++ echo 0
-++ echo 1
-++ set +x
-[  464.285445] virtio_blk virtio1: 48/0/0 default/read/poll queues
-[  464.293352] virtio_blk virtio1: [vda] 10485760 512-byte logical blocks (5.37 GB/5.00 GiB)
-++ fio /tmp/randwrite.fio --filename=/dev/vda --ioengine=libaio
-RANDWRITE: (g=0): rw=randwrite, bs=(R) 4096B-4096B, (W) 4096B-4096B, (T) 4096B-4096B, ioengine=libaio, iodepth=2
-...
-fio-3.34
-Starting 48 processes
-fio: io_u error on file /dev/vda: Connection timed out: write offset=2181410816, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=4479356928, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=313679872, buflen=4096
-fio: pid=4045, err=110/file:io_u.c:1889, func=io_u error, error=Connection timed out
-fio: io_u error on file /dev/vda: Connection timed out: write offset=4772716544, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=105332736, buflen=4096
-fio: pid=4000, err=110/file:io_u.c:1889, func=io_u error, error=Connection timed out
-fio: io_u error on file /dev/vda: Connection timed out: write offset=2928922624, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=4838883328, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=4589166592, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=5146509312, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=2520354816, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=3324887040, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=3058372608, buflen=4096
-fio: pid=4001, err=110/file:io_u.c:1889, func=io_u error, error=Connection timed out
-fio: pid=4034, err=110/file:io_u.c:1889, func=io_u error, error=Connection timed out
-fio: io_u error on file /dev/vda: Connection timed out: write offset=3189833728, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=2009739264, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=1963376640, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=4359561216, buflen=4096
-fio: pid=4005, err=110/file:io_u.c:1889, func=io_u error, error=Connection timed out
-fio: io_u error on file /dev/vda: Connection timed out: write offset=298274816, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=1827557376, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=402067456, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=5360013312, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=1807507456, buflen=4096
-fio: pid=4044, err=110/file:io_u.c:1889, func=io_u error, error=Connection timed out
-fio: pid=3999, err=110/file:io_u.c:1889, func=io_u error, error=Connection timed out
-fio: pid=4042, err=110/file:io_u.c:1889, func=io_u error, error=Connection timed out
-fio: io_u error on file /dev/vda: Connection timed out: write offset=3963465728, buflen=4096
-fio: pid=4002, err=110/file:io_u.c:1889, func=io_u error, error=Connection timed out
-fio: io_u error on file /dev/vda: Connection timed out: write offset=2294935552, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=4134977536, buflen=4096
-fio: pid=4007, err=110/file:io_u.c:1889, func=io_u error, error=Connection timed out
-fio: io_u error on file /dev/vda: Connection timed out: write offset=5277339648, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=169168896, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=3403808768, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=2951380992, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=2899501056, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=4529233920, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=1837285376, buflen=4096
-fio: pid=4003, err=110/file:io_u.c:1889, func=io_u error, error=Connection timed out
-fio: pid=4012, err=110/file:io_u.c:1889, func=io_u error, error=Connection timed out
-fio: pid=4009, err=110/file:io_u.c:1889, func=io_u error, error=Connection timed out
-fio: pid=4010, err=110/file:io_u.c:1889, func=io_u error, error=Connection timed out
-fio: pid=4008, err=110/file:io_u.c:1889, func=io_u error, error=Connection timed out
-fio: io_u error on file /dev/vda: Connection timed out: write offset=4564606976, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=212725760, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=1962016768, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=1700605952, buflen=4096
-fio: pid=4017, err=110/file:io_u.c:1889, func=io_u error, error=Connection timed out
-fio: pid=4013, err=110/file:io_u.c:1889, func=io_u error, error=Connection timed out
-fio: io_u error on file /dev/vda: Connection timed out: write offset=4589961216, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=1288470528, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=1131532288, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=3486863360, buflen=4096
-fio: pid=4023, err=110/file:io_u.c:1889, func=io_u error, error=Connection timed out
-fio: io_u error on file /dev/vda: Connection timed out: write offset=3674542080, buflen=4096
-fio: pid=4014, err=110/file:io_u.c:1889, func=io_u error, error=Connection timed out
-fio: io_u error on file /dev/vda: Connection timed out: write offset=2965827584, buflen=4096
-fio: pid=4015, err=110/file:io_u.c:1889, func=io_u error, error=Connection timed out
-fio: io_u error on file /dev/vda: Connection timed out: write offset=4076720128, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=3765477376, buflen=4096
-fio: pid=4016, err=110/file:io_u.c:1889, func=io_u error, error=Connection timed out
-fio: io_u error on file /dev/vda: Connection timed out: write offset=2116341760, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=119099392, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=2960650240, buflen=4096
-fio: pid=4018, err=110/file:io_u.c:1889, func=io_u error, error=Connection timed out
-fio: io_u error on file /dev/vda: Connection timed out: write offset=3803418624, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=1891971072, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=63213568, buflen=4096
-fio: pid=4019, err=110/file:io_u.c:1889, func=io_u error, error=Connection timed out
-fio: io_u error on file /dev/vda: Connection timed out: write offset=1702731776, buflen=4096
-fio: pid=4020, err=110/file:io_u.c:1889, func=io_u error, error=Connection timed out
-fio: io_u error on file /dev/vda: Connection timed out: write offset=1342504960, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=1720606720, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=2498568192, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=2751967232, buflen=4096
-fio: pid=4021, err=110/file:io_u.c:1889, func=io_u error, error=Connection timed out
-fio: io_u error on file /dev/vda: Connection timed out: write offset=150994944, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=2458804224, buflen=4096
-fio: pid=4022, err=110/file:io_u.c:1889, func=io_u error, error=Connection timed out
-fio: pid=4024, err=110/file:io_u.c:1889, func=io_u error, error=Connection timed out
-fio: io_u error on file /dev/vda: Connection timed out: write offset=5106069504, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=3151101952, buflen=4096
-fio: pid=4025, err=110/file:io_u.c:1889, func=io_u error, error=Connection timed out
-fio: io_u error on file /dev/vda: Connection timed out: write offset=2127577088, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=3512651776, buflen=4096
-fio: pid=4026, err=110/file:io_u.c:1889, func=io_u error, error=Connection timed out
-fio: io_u error on file /dev/vda: Connection timed out: write offset=4321529856, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=1877729280, buflen=4096
-fio: pid=4027, err=110/file:io_u.c:1889, func=io_u error, error=Connection timed out
-fio: io_u error on file /dev/vda: Connection timed out: write offset=2883231744, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=1158828032, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=2076794880, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=4819566592, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=1326583808, buflen=4096
-fio: pid=4038, err=110/file:io_u.c:1889, func=io_u error, error=Connection timed out
-fio: pid=4006, err=110/file:io_u.c:1889, func=io_u error, error=Connection timed out
-fio: io_u error on file /dev/vda: Connection timed out: write offset=2812641280, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=3819180032, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=307916800, buflen=4096
-fio: pid=4011, err=110/file:io_u.c:1889, func=io_u error, error=Connection timed out
-fio: io_u error on file /dev/vda: Connection timed out: write offset=3831308288, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=1140715520, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=4298055680, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=398614528, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=1207713792, buflen=4096
-fio: pid=4030, err=110/file:io_u.c:1889, func=io_u error, error=Connection timed out
-fio: pid=4028, err=110/file:io_u.c:1889, func=io_u error, error=Connection timed out
-fio: pid=4043, err=110/file:io_u.c:1889, func=io_u error, error=Connection timed out
-fio: io_u error on file /dev/vda: Connection timed out: write offset=2714513408, buflen=4096
-fio: pid=3998, err=110/file:io_u.c:1889, func=io_u error, error=Connection timed out
-fio: io_u error on file /dev/vda: Connection timed out: write offset=4391649280, buflen=4096
-fio: pid=4031, err=110/file:io_u.c:1889, func=io_u error, error=Connection timed out
-fio: io_u error on file /dev/vda: Connection timed out: write offset=103710720, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=121716736, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=3203006464, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=635932672, buflen=4096
-fio: pid=4032, err=110/file:io_u.c:1889, func=io_u error, error=Connection timed out
-fio: pid=4040, err=110/file:io_u.c:1889, func=io_u error, error=Connection timed out
-fio: io_u error on file /dev/vda: Connection timed out: write offset=2235961344, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=3987615744, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=3183620096, buflen=4096
-fio: pid=4041, err=110/file:io_u.c:1889, func=io_u error, error=Connection timed out
-fio: io_u error on file /dev/vda: Connection timed out: write offset=706084864, buflen=4096
-fio: pid=4035, err=110/file:io_u.c:1889, func=io_u error, error=Connection timed out
-fio: io_u error on file /dev/vda: Connection timed out: write offset=732864512, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=3141156864, buflen=4096
-fio: pid=4036, err=110/file:io_u.c:1889, func=io_u error, error=Connection timed out
-fio: io_u error on file /dev/vda: Connection timed out: write offset=1853272064, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=3174068224, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=4283023360, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=1962606592, buflen=4096
-fio: pid=4039, err=110/file:io_u.c:1889, func=io_u error, error=Connection timed out
-fio: io_u error on file /dev/vda: Connection timed out: write offset=180465664, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=3477286912, buflen=4096
-fio: pid=4037, err=110/file:io_u.c:1889, func=io_u error, error=Connection timed out
-fio: pid=4033, err=110/file:io_u.c:1889, func=io_u error, error=Connection timed out
-fio: io_u error on file /dev/vda: Connection timed out: write offset=4288196608, buflen=4096
-fio: io_u error on file /dev/vda: Connection timed out: write offset=3106217984, buflen=4096
-fio: pid=4029, err=110/file:io_u.c:1889, func=io_u error, error=Connection timed out
-fio: io_u error on file /dev/vda: Connection timed out: write offset=3785584640, buflen=4096
-fio: pid=4004, err=110/file:io_u.c:1889, func=io_u error, error=Connection timed out
-
-RANDWRITE: (groupid=0, jobs=48): err=110 (file:io_u.c:1889, func=io_u error, error=Connection timed out): pid=3998: Wed Nov 29 15:20:50 2023
-  write: IOPS=111, BW=438KiB/s (449kB/s)(18.8MiB/43930msec); 0 zone resets
-    slat (nsec): min=2585, max=85232, avg=11030.13, stdev=6110.05
-    clat (usec): min=24, max=1759, avg=437.53, stdev=332.56
-     lat (usec): min=29, max=1776, avg=448.56, stdev=333.61
-    clat percentiles (usec):
-     |  1.00th=[   38],  5.00th=[   46], 10.00th=[   61], 20.00th=[  139],
-     | 30.00th=[  196], 40.00th=[  326], 50.00th=[  412], 60.00th=[  453],
-     | 70.00th=[  537], 80.00th=[  676], 90.00th=[  906], 95.00th=[ 1020],
-     | 99.00th=[ 1565], 99.50th=[ 1680], 99.90th=[ 1713], 99.95th=[ 1729],
-     | 99.99th=[ 1762]
-   bw (  KiB/s): min=38539, max=38539, per=100.00%, avg=38539.00, stdev= 0.00, samples=48
-   iops        : min= 9627, max= 9627, avg=9627.00, stdev= 0.00, samples=48
-  lat (usec)   : 50=6.44%, 100=7.46%, 250=21.25%, 500=29.12%, 750=19.62%
-  lat (usec)   : 1000=8.70%
-  lat (msec)   : 2=5.46%
-  cpu          : usr=0.00%, sys=0.01%, ctx=4094, majf=0, minf=1004
-  IO depths    : 1=1.0%, 2=99.0%, 4=0.0%, 8=0.0%, 16=0.0%, 32=0.0%, >=64=0.0%
-     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
-     complete  : 0=0.1%, 4=99.9%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
-     issued rwts: total=0,4908,0,0 short=0,0,0,0 dropped=0,0,0,0
-     latency   : target=0, window=0, percentile=100.00%, depth=2
-
-Run status group 0 (all jobs):
-  WRITE: bw=438KiB/s (449kB/s), 438KiB/s-438KiB/s (449kB/s-449kB/s), io=18.8MiB (19.7MB), run=43930-43930msec
-
-Disk stats (read/write):
-  vda: ios=7/4812, merge=0/0, ticks=1/2030, in_queue=2031, util=99.76%
-++ set +x
---------------------------------------------
-device should be gone from lablk
-++ ls -lrth /dev/vda
-ls: cannot access '/dev/vda': No such file or directory
-++ lsblk
-NAME    MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
-sda       8:0    0   50G  0 disk
-├─sda1    8:1    0    1G  0 part /boot
-└─sda2    8:2    0   49G  0 part /home
-sdb       8:16   0  100G  0 disk /mnt/data
-sr0      11:0    1 1024M  0 rom
-nvme0n1 259:0    0    1G  0 disk
-++ teardown
-++ modprobe -r virtio_blk
-linux-block (for-next) # lsmod | grep virtio_blk
-
+diff --git a/drivers/block/virtio_blk.c b/drivers/block/virtio_blk.c
+index 4689ac2e0c0e..da26c2bf933b 100644
+--- a/drivers/block/virtio_blk.c
++++ b/drivers/block/virtio_blk.c
+@@ -16,6 +16,7 @@
+ #include <linux/blk-mq-virtio.h>
+ #include <linux/numa.h>
+ #include <linux/vmalloc.h>
++#include <linux/xarray.h>
+ #include <uapi/linux/virtio_ring.h>
+ 
+ #define PART_BITS 4
+@@ -31,6 +32,15 @@
+ #define VIRTIO_BLK_INLINE_SG_CNT	2
+ #endif
+ 
++static unsigned int io_timeout = 20;
++module_param(io_timeout, uint, 0644);
++MODULE_PARM_DESC(io_timeout, "timeout in seconds for I/O requests. Default:20");
++
++static unsigned int timeout_teardown_limit = 2;
++module_param(timeout_teardown_limit, uint, 0644);
++MODULE_PARM_DESC(timeout_teardown_limit,
++		"request timeout teardown limit for stable dev. Default:2");
++
+ static unsigned int num_request_queues;
+ module_param(num_request_queues, uint, 0644);
+ MODULE_PARM_DESC(num_request_queues,
+@@ -84,6 +94,20 @@ struct virtio_blk {
+ 
+ 	/* For zoned device */
+ 	unsigned int zone_sectors;
++
++	/*
++	 * Block layer Request timeout teardown limit when device is in the
++	 * stable state, i.e. it has VIRTIO_CONFIG_S_DRIVER_OK value for its
++	 * config status. Once this limit is reached issue
++	 * virtblk_teardown_work to teardown the device in the block lyaer
++	 * request timeout callback.
++	 */
++	atomic_t rq_timeout_count;
++	/* avoid tear down race between remove and teardown work */
++	struct mutex teardown_mutex;
++	/* tear down work to be scheduled from block layer request handler */
++	struct work_struct teardown_work;
++
+ };
+ 
+ struct virtblk_req {
+@@ -117,6 +141,8 @@ static inline blk_status_t virtblk_result(u8 status)
+ 	case VIRTIO_BLK_S_OK:
+ 		return BLK_STS_OK;
+ 	case VIRTIO_BLK_S_UNSUPP:
++	case VIRTIO_BLK_S_TIMEOUT:
++		return BLK_STS_TIMEOUT;
+ 		return BLK_STS_NOTSUPP;
+ 	case VIRTIO_BLK_S_ZONE_OPEN_RESOURCE:
+ 		return BLK_STS_ZONE_OPEN_RESOURCE;
+@@ -926,6 +952,7 @@ static void virtblk_free_disk(struct gendisk *disk)
+ 	struct virtio_blk *vblk = disk->private_data;
+ 
+ 	ida_free(&vd_index_ida, vblk->index);
++	mutex_destroy(&vblk->teardown_mutex);
+ 	mutex_destroy(&vblk->vdev_mutex);
+ 	kfree(vblk);
+ }
+@@ -1287,6 +1314,86 @@ static int virtblk_poll(struct blk_mq_hw_ctx *hctx, struct io_comp_batch *iob)
+ 	return found;
+ }
+ 
++static bool virtblk_cancel_request(struct request *rq, void *data)
++{
++	struct virtblk_req *vbr = blk_mq_rq_to_pdu(rq);
++
++	vbr->in_hdr.status = VIRTIO_BLK_S_TIMEOUT;
++	if (blk_mq_request_started(rq) && !blk_mq_request_completed(rq))
++		blk_mq_complete_request(rq);
++
++	return true;
++}
++
++static void virtblk_teardown_work(struct work_struct *w)
++{
++	struct virtio_blk *vblk =
++		container_of(w, struct virtio_blk, teardown_work);
++	struct request_queue *q = vblk->disk->queue;
++	struct virtio_device *vdev = vblk->vdev;
++	struct blk_mq_hw_ctx *hctx;
++	unsigned long idx;
++
++	mutex_lock(&vblk->teardown_mutex);
++	if (!vblk->vdev)
++		goto unlock;
++
++	blk_mq_quiesce_queue(q);
++
++	/* Process any outstanding request from device. */
++	xa_for_each(&q->hctx_table, idx, hctx)
++		virtblk_poll(hctx, NULL);
++
++	blk_sync_queue(q);
++	blk_mq_tagset_busy_iter(&vblk->tag_set, virtblk_cancel_request, vblk);
++	blk_mq_tagset_wait_completed_request(&vblk->tag_set);
++
++	/*
++	 * Unblock any pending dispatch I/Os before we destroy device. From
++	 * del_gendisk() -> __blk_mark_disk_dead(disk) will set GD_DEAD flag,
++	 * that will make sure any new I/O from bio_queue_enter() to fail.
++	 */
++	blk_mq_unquiesce_queue(q);
++	del_gendisk(vblk->disk);
++	blk_mq_free_tag_set(&vblk->tag_set);
++
++	mutex_lock(&vblk->vdev_mutex);
++	flush_work(&vblk->config_work);
++
++	virtio_reset_device(vdev);
++
++	vblk->vdev = NULL;
++
++	vdev->config->del_vqs(vdev);
++	kfree(vblk->vqs);
++
++	mutex_unlock(&vblk->vdev_mutex);
++
++	put_disk(vblk->disk);
++
++unlock:
++	mutex_unlock(&vblk->teardown_mutex);
++}
++
++static enum blk_eh_timer_return virtblk_timeout(struct request *req)
++{
++	struct virtio_blk *vblk = req->mq_hctx->queue->queuedata;
++	struct virtio_device *vdev = vblk->vdev;
++	bool ok = vdev->config->get_status(vdev) & VIRTIO_CONFIG_S_DRIVER_OK;
++
++	if ((atomic_dec_return(&vblk->rq_timeout_count) != 0) && ok) {
++		virtblk_cancel_request(req, NULL);
++		return BLK_EH_DONE;
++	}
++
++	dev_err(&vdev->dev, "%s:%s initiating teardown\n", __func__,
++		vblk->disk->disk_name);
++
++	queue_work(virtblk_wq, &vblk->teardown_work);
++
++	return BLK_EH_RESET_TIMER;
++}
++
+ static const struct blk_mq_ops virtio_mq_ops = {
+ 	.queue_rq	= virtio_queue_rq,
+ 	.queue_rqs	= virtio_queue_rqs,
+@@ -1294,6 +1401,7 @@ static const struct blk_mq_ops virtio_mq_ops = {
+ 	.complete	= virtblk_request_done,
+ 	.map_queues	= virtblk_map_queues,
+ 	.poll		= virtblk_poll,
++	.timeout	= virtblk_timeout,
+ };
+ 
+ static unsigned int virtblk_queue_depth;
+@@ -1365,6 +1473,7 @@ static int virtblk_probe(struct virtio_device *vdev)
+ 	memset(&vblk->tag_set, 0, sizeof(vblk->tag_set));
+ 	vblk->tag_set.ops = &virtio_mq_ops;
+ 	vblk->tag_set.queue_depth = queue_depth;
++	vblk->tag_set.timeout = io_timeout * HZ;
+ 	vblk->tag_set.numa_node = NUMA_NO_NODE;
+ 	vblk->tag_set.flags = BLK_MQ_F_SHOULD_MERGE;
+ 	vblk->tag_set.cmd_size =
+@@ -1387,6 +1496,10 @@ static int virtblk_probe(struct virtio_device *vdev)
+ 	}
+ 	q = vblk->disk->queue;
+ 
++	mutex_init(&vblk->teardown_mutex);
++	INIT_WORK(&vblk->teardown_work, virtblk_teardown_work);
++	atomic_set(&vblk->rq_timeout_count, timeout_teardown_limit);
++
+ 	virtblk_name_format("vd", index, vblk->disk->disk_name, DISK_NAME_LEN);
+ 
+ 	vblk->disk->major = major;
+@@ -1598,6 +1711,12 @@ static void virtblk_remove(struct virtio_device *vdev)
+ {
+ 	struct virtio_blk *vblk = vdev->priv;
+ 
++	mutex_lock(&vblk->teardown_mutex);
++
++	/* we did the cleanup in the timeout handler */
++	if (!vblk->vdev)
++		goto unlock;
++
+ 	/* Make sure no work handler is accessing the device. */
+ 	flush_work(&vblk->config_work);
+ 
+@@ -1618,6 +1737,9 @@ static void virtblk_remove(struct virtio_device *vdev)
+ 	mutex_unlock(&vblk->vdev_mutex);
+ 
+ 	put_disk(vblk->disk);
++
++unlock:
++	mutex_unlock(&vblk->teardown_mutex);
+ }
+ 
+ #ifdef CONFIG_PM_SLEEP
+diff --git a/include/uapi/linux/virtio_blk.h b/include/uapi/linux/virtio_blk.h
+index 3744e4da1b2a..ed864195ab26 100644
+--- a/include/uapi/linux/virtio_blk.h
++++ b/include/uapi/linux/virtio_blk.h
+@@ -317,6 +317,7 @@ struct virtio_scsi_inhdr {
+ #define VIRTIO_BLK_S_OK		0
+ #define VIRTIO_BLK_S_IOERR	1
+ #define VIRTIO_BLK_S_UNSUPP	2
++#define VIRTIO_BLK_S_TIMEOUT	3
+ 
+ /* Error codes that are specific to zoned block devices */
+ #define VIRTIO_BLK_S_ZONE_INVALID_CMD     3
 -- 
 2.40.0
 
