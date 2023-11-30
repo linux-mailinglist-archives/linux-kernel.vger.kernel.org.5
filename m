@@ -2,179 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9761A7FFD77
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 22:25:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0B3E7FFD7B
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 22:25:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376888AbjK3VZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 16:25:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55488 "EHLO
+        id S1376945AbjK3VZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 16:25:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376849AbjK3VZ3 (ORCPT
+        with ESMTP id S1376920AbjK3VZp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 16:25:29 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2DCB10FA
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 13:25:34 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1d048d38881so5068505ad.2
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 13:25:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1701379534; x=1701984334; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=a85qT15pDzdpel5gAuB/Pf8iqGvsBNG0rw6z7GTZ+18=;
-        b=kTJ5AfD1oyJZ5xgrDlZ1wWqUF4X2MHy59XeBZO1G+MQvTgxp690SglGE2GDstdGNxg
-         adSryWlfdXZXmcA+Xq4n6e72AH60lYqYhvQ9M2Yrk0L/l+j5hLVRCooCVPsv2Haepeix
-         HcwReOShiQW2KJEaYHs7ojwRUXVahzvGbIRz4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701379534; x=1701984334;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=a85qT15pDzdpel5gAuB/Pf8iqGvsBNG0rw6z7GTZ+18=;
-        b=D9PDbQOJUpqMceQFm/Y8TYDOAEXvfMNll7xVnHRluvRQMNi7thZCA8ZuDAZW9+k5q2
-         xRYkDamZ0Q9wvdM9PU4eGnhjgPthoHOVtb9jBzQju0JUg1ocnun04ENdqPsezUSHf43r
-         yFNta8MPzWqVuca/Iu82+ByMbzJkQvxB0KVopSprM+xbqkZlrqQwq88lGbVT4yETKLOs
-         7BPDKSvrD4BINmxfu5ct486kMaxC3DEY6objlsWycVePlo4/7jR/wNh0mMPYb3SvnG+s
-         2tGMl/v8zIJS6tNF4w+P8fJCpBVS0c8LlgzBoiXBihqxkPgy/x66/PxRhxYTc0AFjhxT
-         QSqw==
-X-Gm-Message-State: AOJu0YxkwGlfzbW4Rd0Ge/U0lUkShWLDHxteXmCNJnNaxunk/jmEayj4
-        ZvFzgkZRZAfUohtAqSaqdQwxuw==
-X-Google-Smtp-Source: AGHT+IGiYA7iwc3ReI+OQGlKYslymufSwvsJah4H2gMq04CzpdkKFgR/kZAc5Za9Ltu7ai3/MUS0Yw==
-X-Received: by 2002:a17:902:e88b:b0:1cf:d404:5e7c with SMTP id w11-20020a170902e88b00b001cfd4045e7cmr18459112plg.42.1701379534271;
-        Thu, 30 Nov 2023 13:25:34 -0800 (PST)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id ja17-20020a170902efd100b001cf7c07be50sm1869304plb.58.2023.11.30.13.25.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Nov 2023 13:25:33 -0800 (PST)
+        Thu, 30 Nov 2023 16:25:45 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D83391B4;
+        Thu, 30 Nov 2023 13:25:51 -0800 (PST)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AUFUed9007773;
+        Thu, 30 Nov 2023 21:25:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=SinarTaG18/Jxu/GEfEglXJrj97OXep1bjFax2ms69M=;
+ b=l9RZCdSkQo3UYNI4StfM59m9Q1kcyHtypVaQ/9nb5VhyblEu763e5lN7VQxZSGtZtPwG
+ VlnUOi5QfgtPdaAR26w9Vt3nws24fCCnJ6y4cuWpAmwHw2siQdIK6pgTqeAZy4OVMkv6
+ GLcREX5xVd9+WPwlJql+Idz5qaAi1Iz2k1l9Ej6Wp6vmc0ocYRlRHL1vhK31xZjlc6q9
+ maoQWgHThruV0rKs2j3MvYuQ5scqKepdyn8cxTMPmnLTZ2s6lQoHpUmKgEjKplrhsKU6
+ wove9IjatiZsef1BGfRI6dyipy0wNrzd/v9DeYDnCYK4nNMQv9g6MXuEbz6jwBsYciAq 1g== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3upbxskey7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 30 Nov 2023 21:25:35 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AULPYBQ021634
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 30 Nov 2023 21:25:34 GMT
+Received: from [10.71.109.77] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 30 Nov
+ 2023 13:25:33 -0800
+Message-ID: <7569f43e-4446-2565-57d5-d8b43e1b4a8d@quicinc.com>
 Date:   Thu, 30 Nov 2023 13:25:33 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     Michael Cyr <mikecyr@linux.ibm.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] scsi: ibmvscsi_tgt: replace deprecated strncpy with
- strscpy
-Message-ID: <202311301315.BAB096926@keescook>
-References: <20231030-strncpy-drivers-scsi-ibmvscsi_tgt-ibmvscsi_tgt-c-v1-1-859b5ce257fd@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231030-strncpy-drivers-scsi-ibmvscsi_tgt-ibmvscsi_tgt-c-v1-1-859b5ce257fd@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [Freedreno] [PATCH] drm/msm/dpu: Correct UBWC settings for
+ sc8280xp
+Content-Language: en-US
+To:     Rob Clark <robdclark@gmail.com>, <dri-devel@lists.freedesktop.org>
+CC:     Rob Clark <robdclark@chromium.org>,
+        <linux-arm-msm@vger.kernel.org>,
+        Steev Klimaszewski <steev@kali.org>,
+        Danylo Piliaiev <dpiliaiev@igalia.com>,
+        Sean Paul <sean@poorly.run>, Daniel Vetter <daniel@ffwll.ch>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        <freedreno@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20231130192119.32538-1-robdclark@gmail.com>
+From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
+In-Reply-To: <20231130192119.32538-1-robdclark@gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: HvwV4zuC6SWa-MIPsXEKpTOBFEiUaqzP
+X-Proofpoint-GUID: HvwV4zuC6SWa-MIPsXEKpTOBFEiUaqzP
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-30_21,2023-11-30_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 adultscore=0
+ suspectscore=0 mlxlogscore=788 lowpriorityscore=0 mlxscore=0 bulkscore=0
+ priorityscore=1501 malwarescore=0 impostorscore=0 clxscore=1011
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311300156
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 30, 2023 at 09:43:20PM +0000, Justin Stitt wrote:
-> strncpy() is deprecated for use on NUL-terminated destination strings
-> [1] and as such we should prefer more robust and less ambiguous string
-> interfaces.
-> 
-> We don't need the NUL-padding behavior that strncpy() provides as vscsi
-> is NUL-allocated in ibmvscsis_probe() which proceeds to call
-> ibmvscsis_adapter_info():
-> |       vscsi = kzalloc(sizeof(*vscsi), GFP_KERNEL);
-> 
-> ibmvscsis_probe() -> ibmvscsis_handle_crq() -> ibmvscsis_parse_command()
-> -> ibmvscsis_mad() -> ibmvscsis_process_mad() -> ibmvscsis_adapter_info()
-> 
-> Following the same idea, `partition_name` is defiend as:
-> |       static char partition_name[PARTITION_NAMELEN] = "UNKNOWN";
-> 
-> ... which is NUL-padded already, meaning strscpy() is the best option.
-> 
-> Considering the above, a suitable replacement is `strscpy` [2] due to
-> the fact that it guarantees NUL-termination on the destination buffer
-> without unnecessarily NUL-padding.
 
-My only worry here is that I don't see if %NUL termination is _required_
-for these variables. (i.e. do we run the risk of truncating these by 1
-byte if they're right at the limit?) Are they __nonstring?
 
-I *think* they're %NUL terminated since they follow the same sizing as
-the global "partition_name", but I'm not sure.
-
-Can any of the SCSI authors comment on this?
-
+On 11/30/2023 11:21 AM, Rob Clark wrote:
+> From: Rob Clark <robdclark@chromium.org>
 > 
-> However, for cap->name let's use strscpy_pad as cap is allocated via
-> dma_alloc_coherent():
-> |       cap = dma_alloc_coherent(&vscsi->dma_dev->dev, olen, &token,
-> |                                GFP_ATOMIC);
-
-This is also true for the "info" allocation (it comes out of DMA).
-
+> The UBWC settings need to match between the display and GPU.  When we
+> updated the GPU settings, we forgot to make the corresponding update on
+> the display side.
 > 
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> Reported-by: Steev Klimaszewski <steev@kali.org>
+> Fixes: 07e6de738aa6 ("drm/msm/a690: Fix reg values for a690")
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
 > ---
-> Note: build-tested only.
-> 
-> Found with: $ rg "strncpy\("
-> ---
->  drivers/scsi/ibmvscsi_tgt/ibmvscsi_tgt.c | 14 +++++++-------
->  1 file changed, 7 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/scsi/ibmvscsi_tgt/ibmvscsi_tgt.c b/drivers/scsi/ibmvscsi_tgt/ibmvscsi_tgt.c
-> index 385f812b8793..cd223ef696e5 100644
-> --- a/drivers/scsi/ibmvscsi_tgt/ibmvscsi_tgt.c
-> +++ b/drivers/scsi/ibmvscsi_tgt/ibmvscsi_tgt.c
-> @@ -1551,17 +1551,17 @@ static long ibmvscsis_adapter_info(struct scsi_info *vscsi,
->  	if (vscsi->client_data.partition_number == 0)
->  		vscsi->client_data.partition_number =
->  			be32_to_cpu(info->partition_number);
-> -	strncpy(vscsi->client_data.srp_version, info->srp_version,
-> +	strscpy(vscsi->client_data.srp_version, info->srp_version,
->  		sizeof(vscsi->client_data.srp_version));
-> -	strncpy(vscsi->client_data.partition_name, info->partition_name,
-> +	strscpy(vscsi->client_data.partition_name, info->partition_name,
->  		sizeof(vscsi->client_data.partition_name));
->  	vscsi->client_data.mad_version = be32_to_cpu(info->mad_version);
->  	vscsi->client_data.os_type = be32_to_cpu(info->os_type);
->  
->  	/* Copy our info */
-> -	strncpy(info->srp_version, SRP_VERSION,
-> +	strscpy(info->srp_version, SRP_VERSION,
->  		sizeof(info->srp_version));
-> -	strncpy(info->partition_name, vscsi->dds.partition_name,
-> +	strscpy(info->partition_name, vscsi->dds.partition_name,
->  		sizeof(info->partition_name));
 
-Since "info" is from DMA, let's use the _pad variant here just to be
-safe.
-
->  	info->partition_number = cpu_to_be32(vscsi->dds.partition_num);
->  	info->mad_version = cpu_to_be32(MAD_VERSION_1);
-> @@ -1645,8 +1645,8 @@ static int ibmvscsis_cap_mad(struct scsi_info *vscsi, struct iu_entry *iue)
->  			 be64_to_cpu(mad->buffer),
->  			 vscsi->dds.window[LOCAL].liobn, token);
->  	if (rc == H_SUCCESS) {
-> -		strncpy(cap->name, dev_name(&vscsi->dma_dev->dev),
-> -			SRP_MAX_LOC_LEN);
-> +		strscpy_pad(cap->name, dev_name(&vscsi->dma_dev->dev),
-> +			sizeof(cap->name));
-
-And this is a safe conversion to sizeof():
-
-struct capabilities {
-	...
-        char name[SRP_MAX_LOC_LEN];
-
-
-If we can convince ourselves that non of these are __nonstring types,
-then I think with the "info" change above, this should be good.
-
--Kees
-
--- 
-Kees Cook
+Reviewed-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
