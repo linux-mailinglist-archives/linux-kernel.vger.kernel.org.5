@@ -2,103 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09F887FEDDC
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 12:30:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 707117FEDE0
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 12:30:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345149AbjK3L37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 06:29:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45886 "EHLO
+        id S1345235AbjK3LaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 06:30:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345312AbjK3L3m (ORCPT
+        with ESMTP id S1345228AbjK3LaB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 06:29:42 -0500
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C07381736
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 03:29:31 -0800 (PST)
-Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2c9cb021d5bso6284481fa.0
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 03:29:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701343770; x=1701948570; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=7b0ctZB3CE38lmBqwtgKLVcx66/DGir1aEMPMaEabH0=;
-        b=xrqFx3vg3Ibx4bpkv7/4/C1d1Dt0mS7SqaOnUHzLukJ2OzMaxnyARUQInMuncrHi0K
-         bw/8tSG2M7dnbay1ZXEWWD9jrYFH07aFyMxb0iyai8XN8gHbkisDQm4CSaFMgA+NF/hp
-         JG04UEpy92iabPWXEE29rGH0crCv2eZ4WeAhNVloEjAvVTMjv3+eh/s3wmInwlc1lmUq
-         C8Q1rPsal2DemFMDE9R5J4tjnBLfntvML/nRfrFZPw7lV0W9ujyY/M3+5c+jQgjtPwS1
-         REvrWSt7Aw/5q8Zdk5xQYHDV6QUMJxDYCPJuwpjRwtYlwzj15DgYq9Y3OLCQkHddTwRb
-         XxqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701343770; x=1701948570;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7b0ctZB3CE38lmBqwtgKLVcx66/DGir1aEMPMaEabH0=;
-        b=JPUVPAZluvSX6YtOOkeU00F2yuRPRKvXFbW7d37jh7K0I6HBuOArU8Yk+Vjnnx+pu/
-         DVf+NmxuVkwhnZwwWhxWgJkMlx9Rw39cQ0FtVKDMkZVv7qgkj+S/yWj7RJqZy0hyNqBv
-         cUuVU2xtxNuADiaqAlC2Uf3x5PwaF0D78qE9cM4IHUnT2p1tVWvdn3RtANjEkHOAAgEK
-         x5DvEmQHr7gIUy03/iZyC8+eLklGflMz5sYC/+Oxq/6EtMKSJXbFs/IM3Lo0825h95mf
-         4jPea13C6yoE0iB9TjrKf1L3IbBk6Z1azZISukp04EydC0nMYAwETNWgKoUwIlOk1BTm
-         RLIA==
-X-Gm-Message-State: AOJu0YyLJ0xwh+aDDFrIcOvNQ4bgQJpl9Ri6P3c/mYc87D7wuF4LDdQW
-        1PKaSa6O7KyIoqpz0xqxoXNDcQ==
-X-Google-Smtp-Source: AGHT+IH6IbA/kyxQtBUcbHuHxAbxWUMG9Zg32mPrWbotuU2rIkBPL9Lmpdf737cOWxT8yoLNLJ/fEA==
-X-Received: by 2002:a2e:9e55:0:b0:2c9:cf5d:af56 with SMTP id g21-20020a2e9e55000000b002c9cf5daf56mr714828ljk.31.1701343769906;
-        Thu, 30 Nov 2023 03:29:29 -0800 (PST)
-Received: from uffe-tuxpro14.. (h-178-174-189-39.A498.priv.bahnhof.se. [178.174.189.39])
-        by smtp.gmail.com with ESMTPSA id f15-20020a2e6a0f000000b002c871393f61sm118960ljc.72.2023.11.30.03.29.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Nov 2023 03:29:29 -0800 (PST)
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-To:     Linus <torvalds@linux-foundation.org>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: [GIT PULL] pmdomain fixes for v6.7-rc4
-Date:   Thu, 30 Nov 2023 12:29:28 +0100
-Message-Id: <20231130112928.64992-1-ulf.hansson@linaro.org>
-X-Mailer: git-send-email 2.34.1
+        Thu, 30 Nov 2023 06:30:01 -0500
+Received: from hi1smtp01.de.adit-jv.com (smtp1.de.adit-jv.com [93.241.18.167])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D17F01715;
+        Thu, 30 Nov 2023 03:29:59 -0800 (PST)
+Received: from hi2exch02.adit-jv.com (hi2exch02.adit-jv.com [10.72.92.28])
+        by hi1smtp01.de.adit-jv.com (Postfix) with ESMTP id 78457520115;
+        Thu, 30 Nov 2023 12:29:58 +0100 (CET)
+Received: from vmlxhi-118.adit-jv.com (10.72.93.77) by hi2exch02.adit-jv.com
+ (10.72.92.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.34; Thu, 30 Nov
+ 2023 12:29:58 +0100
+Date:   Thu, 30 Nov 2023 12:29:53 +0100
+From:   Hardik Gajjar <hgajjar@de.adit-jv.com>
+To:     John Keeping <john@keeping.me.uk>
+CC:     Hardik Gajjar <hgajjar@de.adit-jv.com>,
+        <gregkh@linuxfoundation.org>, <quic_ugoswami@quicinc.com>,
+        <brauner@kernel.org>, <jlayton@kernel.org>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <erosca@de.adit-jv.com>
+Subject: Re: [PATCH] usb: gadget: f_fs: Add the missing get_alt callback
+Message-ID: <20231130112953.GA120825@vmlxhi-118.adit-jv.com>
+References: <20231124164435.74727-1-hgajjar@de.adit-jv.com>
+ <ZWM864zH3M8W9B2f@keeping.me.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <ZWM864zH3M8W9B2f@keeping.me.uk>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [10.72.93.77]
+X-ClientProxiedBy: hi2exch02.adit-jv.com (10.72.92.28) To
+ hi2exch02.adit-jv.com (10.72.92.28)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Sun, Nov 26, 2023 at 12:41:15PM +0000, John Keeping wrote:
+> On Fri, Nov 24, 2023 at 05:44:35PM +0100, Hardik Gajjar wrote:
+> > Some USB OTG hubs have multiple alternate configurations to offer,
+> > such as one for Carplay and another for Carlife.
+> > 
+> > This patch implements and sets the get_alt callback to retrieve the
+> > currently used alternate setting. The new function allows dynamic
+> > retrieval of the current alternate setting for a specific interface. The
+> > current alternate setting values are stored in the 'cur_alt' array
+> > within the 'ffs_function' structure.
+> 
+> Doesn't the alt setting need to be forwarded to userspace?
+> 
+> What happens if the available endpoints change - doesn't that mean the
+> available endpoint files change?
+> 
+> It's not sufficient to just blindly accept any alt setting and assume it
+> will work, that may be the case in one specific constrained scenario,
+> but it's not true in general.  At the very least we must not accept an
+> alt setting that is not defined in the descriptors.
 
-Here's a PR with a pmdomain fix intended for v6.7-rc4. Details about the
-highlights are as usual found in the signed tag.
+The commit message appears a bit confusing.
+The user space creates an FFS/iAP (Apple) gadget and writes an ep0 descriptor
+with multiple alt settings. The host then sends the set_alt request to configure
+alt_setting 0 or 1, verified by the subsequent get_alt request. Without this
+patch, the Host/Phone consistently sets alt 0 and retrieves alt 0, even when
+the request is for alt 1.
 
-Please pull this in!
+Given that f_fs is a user space-controlled gadget, creating a descriptor seems
+quite flexible for this type of gadget.
 
-Kind regards
-Ulf Hansson
+I intend to submit an upstream patch v2 with a clearer commit message.
 
+> 
+> > Signed-off-by: Hardik Gajjar <hgajjar@de.adit-jv.com>
+> > ---
+> >  drivers/usb/gadget/function/f_fs.c | 16 +++++++++++++++-
+> >  1 file changed, 15 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/usb/gadget/function/f_fs.c b/drivers/usb/gadget/function/f_fs.c
+> > index efe3e3b85769..37c47c11f57a 100644
+> > --- a/drivers/usb/gadget/function/f_fs.c
+> > +++ b/drivers/usb/gadget/function/f_fs.c
+> > @@ -75,6 +75,7 @@ struct ffs_function {
+> >  	short				*interfaces_nums;
+> >  
+> >  	struct usb_function		function;
+> > +	int				cur_alt[MAX_CONFIG_INTERFACES];
+> >  };
+> >  
+> >  
+> > @@ -98,6 +99,7 @@ static int __must_check ffs_func_eps_enable(struct ffs_function *func);
+> >  static int ffs_func_bind(struct usb_configuration *,
+> >  			 struct usb_function *);
+> >  static int ffs_func_set_alt(struct usb_function *, unsigned, unsigned);
+> > +static int ffs_func_get_alt(struct usb_function *f, unsigned int intf);
+> >  static void ffs_func_disable(struct usb_function *);
+> >  static int ffs_func_setup(struct usb_function *,
+> >  			  const struct usb_ctrlrequest *);
+> > @@ -3232,6 +3234,15 @@ static void ffs_reset_work(struct work_struct *work)
+> >  	ffs_data_reset(ffs);
+> >  }
+> >  
+> > +static int ffs_func_get_alt(struct usb_function *f,
+> > +			    unsigned int interface)
+> > +{
+> > +	struct ffs_function *func = ffs_func_from_usb(f);
+> > +	int intf = ffs_func_revmap_intf(func, interface);
+> > +
+> > +	return (intf < 0) ? intf : func->cur_alt[interface];
+> > +}
+> > +
+> >  static int ffs_func_set_alt(struct usb_function *f,
+> >  			    unsigned interface, unsigned alt)
+> >  {
+> > @@ -3266,8 +3277,10 @@ static int ffs_func_set_alt(struct usb_function *f,
+> >  
+> >  	ffs->func = func;
+> >  	ret = ffs_func_eps_enable(func);
+> > -	if (ret >= 0)
+> > +	if (ret >= 0) {
+> >  		ffs_event_add(ffs, FUNCTIONFS_ENABLE);
+> > +		func->cur_alt[interface] = alt;
+> > +	}
+> >  	return ret;
+> >  }
+> >  
+> > @@ -3574,6 +3587,7 @@ static struct usb_function *ffs_alloc(struct usb_function_instance *fi)
+> >  	func->function.bind    = ffs_func_bind;
+> >  	func->function.unbind  = ffs_func_unbind;
+> >  	func->function.set_alt = ffs_func_set_alt;
+> > +	func->function.get_alt = ffs_func_get_alt;
+> >  	func->function.disable = ffs_func_disable;
+> >  	func->function.setup   = ffs_func_setup;
+> >  	func->function.req_match = ffs_func_req_match;
+> > -- 
+> > 2.17.1
+> > 
 
-The following changes since commit 98b1cc82c4affc16f5598d4fa14b1858671b2263:
-
-  Linux 6.7-rc2 (2023-11-19 15:02:14 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/linux-pm.git tags/pmdomain-v6.7-rc2
-
-for you to fetch changes up to 0cb19e50a911aaadf49eed120392e429d6e1fa0c:
-
-  pmdomain: arm: Avoid polling for scmi_perf_domain (2023-11-27 16:28:20 +0100)
-
-----------------------------------------------------------------
- - arm: Avoid polling for the scmi_perf_domain
-
-----------------------------------------------------------------
-Ulf Hansson (1):
-      pmdomain: arm: Avoid polling for scmi_perf_domain
-
- drivers/pmdomain/arm/scmi_perf_domain.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks,
+Hardik
