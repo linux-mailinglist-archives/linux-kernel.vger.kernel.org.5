@@ -2,83 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20B207FF6A2
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 17:46:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9D847FF6AB
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 17:46:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232137AbjK3Qpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 11:45:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40834 "EHLO
+        id S1345658AbjK3QqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 11:46:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbjK3Qps (ORCPT
+        with ESMTP id S1345536AbjK3QqI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 11:45:48 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D3CF1A4;
-        Thu, 30 Nov 2023 08:45:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-        t=1701362749; x=1701967549; i=rwarsow@gmx.de;
-        bh=B9k2q+vbaQ5LJUoIraLCmsvQD6achnJuAYo6Jr1VKxY=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject;
-        b=g0IqENEdV2M3ePFWqk9OmZMwK66je4EsG1y+NFxV4Ncxegb4/ldNZ1l1IBitRHSp
-         6zZpHAhxSMKbtCZxXdG/Ez3rhSarHiMhVuwdehdaSSCK6ONAVRqNVtI0KCkRUP9yi
-         jD8oI20mXrPO/4F+36FDZeMsWdfS6xkSR+LpmwS9Y8RELsIBg8GsPzfIXjT20mt5k
-         bLy/q0cJnTxveU6jAfJJ3U+mrIkC3Cbs0PaaYhBYzjTpCGCwy4FiVlM5TV11A8Dol
-         ZC8ZZmTkkLsbYtb1X/mkrAyEWVuvMrw0JfuU8YsFO1CjxV+yqCiZQlHKcu8su3jEy
-         03dkyQxyngmbtE0Vdw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.100.20] ([46.142.32.217]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MMGRA-1qsrTm3V7m-00JG2m; Thu, 30
- Nov 2023 17:45:48 +0100
-Message-ID: <2764073e-73a6-4927-a7e2-163fa71d34e1@gmx.de>
-Date:   Thu, 30 Nov 2023 17:45:48 +0100
+        Thu, 30 Nov 2023 11:46:08 -0500
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D496D10DF;
+        Thu, 30 Nov 2023 08:46:13 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Sh25S5Wz5z6K5lf;
+        Fri,  1 Dec 2023 00:41:32 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+        by mail.maildlp.com (Postfix) with ESMTPS id 8C3F214058E;
+        Fri,  1 Dec 2023 00:46:11 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 30 Nov
+ 2023 16:46:10 +0000
+Date:   Thu, 30 Nov 2023 16:46:09 +0000
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+CC:     James Morse <james.morse@arm.com>, <linux-pm@vger.kernel.org>,
+        <loongarch@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
+        <linux-arch@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-riscv@lists.infradead.org>, <kvmarm@lists.linux.dev>,
+        <x86@kernel.org>, Salil Mehta <salil.mehta@huawei.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        <jianyong.wu@arm.com>, <justin.he@arm.com>,
+        <gregkh@linuxfoundation.org>
+Subject: Re: [RFC PATCH v2 11/35] arch_topology: Make
+ register_cpu_capacity_sysctl() tolerant to late CPUs
+Message-ID: <20231130164609.00000b4a@Huawei.com>
+In-Reply-To: <ZTKEQz0DJuv/tqNH@shell.armlinux.org.uk>
+References: <20230913163823.7880-1-james.morse@arm.com>
+        <20230913163823.7880-12-james.morse@arm.com>
+        <20230914130126.000069db@Huawei.com>
+        <ZTKEQz0DJuv/tqNH@shell.armlinux.org.uk>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   Ronald Warsow <rwarsow@gmx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Content-Language: de-DE, en-US
-Subject: Re: [PATCH 6.6 000/112] 6.6.4-rc1 review
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:eMYynn9vWiVxG6Dx3edEes1nw/MIJPCVgRoj20a30VoBSE7KOZq
- OThumm36kKni/FYJaL6R/FGT7vzBYMuZjxxIFC68LBS3zsHHcGtcvCBE3MEdZ44M3FNPB0G
- J/d4A1hJshcCPiPbqf8I5afXMqdw0jicMBBRFWazC5n/SeucE8sP3jUMf/fSsvWw17kvf6I
- AJk50Y/cQycCtZ+WpcQgQ==
-UI-OutboundReport: notjunk:1;M01:P0:9nYgRrwXc8k=;t+Cha0gMzEz6NTYamw8jaTVUZn3
- Zn96Z7ffCIDagju3Fl0WhFLzt9z9thYTs1Hu51bTgk0QByWAtfIsPLF8DGqVSu2B9C6jMWgtO
- JABbtWwCsQkG8FcJFYFLtLamqm4p7nhlfM7UrKCLlpsOAE/VrKcGCZ5Nh/J51feVYWwsCRH42
- 3SfqsBXYhQYUCHfY2/vyKlrPV8cvGtll3eRMq9UV39b4r+m5eJ1ov4KmRD0TbFRzr5TBMfzkb
- jGnrSlpNolYCLY7mDM5TKp+Ws/tJCn3ib8sR7XWbp4KXo670k64ICfQc/Hdgny4dRbE2sZUd6
- WWz4ytwjhJSf/0GEwNpO1/EjS6wAwm8k/qIGU7viJWgY/9ZGzeg+vMrZwqmLHX0Ly1DvkpJzx
- KkvIvau7FuB3if77imxBospYSZXoFHmj5Piyo/MhmUjwtuB5lB5+iJbR23ex3GW3HjPkPpivX
- b069L255vzq3Lnvy4YimzWdxR9mKqXpensi5SNkdhU8U8fc+TB4IfkNxhghPEoMvDOpXPV/Cz
- 680wkVn2OTiwJigE3ZR3ylZRe4E55HuhvHd71rkEGcrDpSdkNWfc9GeUE6duXnVjjucwwFIAN
- sQAHuT/b1RFbjVOzfaMx2kP8ZduWx43AnFh3zOIsVWI+n0hcFiuCyJ1xUTOVkRDbTcQnxtuir
- IYlJwCqWkdniE1Mh/PS/eyHKJXCGCWLpfjYDNACg0kOooejMHFd7ZiX5wLqoIg8ATzsuurk44
- A3JRD3rE/gocmQhXe4V2UICVUo8gERhAaUHz+IvMvEeBwBB62/X9IFHVNaFLKsrOA/3kcAb1l
- i6kl0JVCpVYE9fp7x8nEyF1OimBYeT3dBcOCrh67dFvX+WjhrEaAjqE7MTyfOaos04Opf4Iit
- FBnqsnSjqE3xn5FlauEdbnJvpBTYxCm+P3A4JIynXU2lmWgbHhvpl9NMRY0SkfG6IxvcftBQJ
- l9RPLw==
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml100005.china.huawei.com (7.191.160.25) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg
+On Fri, 20 Oct 2023 14:44:35 +0100
+"Russell King (Oracle)" <linux@armlinux.org.uk> wrote:
 
-6.6.4-rc1
+> On Thu, Sep 14, 2023 at 01:01:26PM +0100, Jonathan Cameron wrote:
+> > On Wed, 13 Sep 2023 16:37:59 +0000
+> > James Morse <james.morse@arm.com> wrote:
+> >   
+> > > register_cpu_capacity_sysctl() adds a property to sysfs that describes
+> > > the CPUs capacity. This is done from a subsys_initcall() that assumes
+> > > all possible CPUs are registered.
+> > > 
+> > > With CPU hotplug, possible CPUs aren't registered until they become
+> > > present, (or for arm64 enabled). This leads to messages during boot:
+> > > | register_cpu_capacity_sysctl: too early to get CPU1 device!
+> > > and once these CPUs are added to the system, the file is missing.
+> > > 
+> > > Move this to a cpuhp callback, so that the file is created once
+> > > CPUs are brought online. This covers CPUs that are added late by
+> > > mechanisms like hotplug.
+> > > One observable difference is the file is now missing for offline CPUs.
+> > > 
+> > > Signed-off-by: James Morse <james.morse@arm.com>
+> > > ---
+> > > If the offline CPUs thing is a problem for the tools that consume
+> > > this value, we'd need to move cpu_capacity to be part of cpu.c's
+> > > common_cpu_attr_groups.  
+> > 
+> > I think we should do that anyway and then use an is_visible() if we want to
+> > change whether it is visible in offline cpus.
+> > 
+> > Dynamic sysfs file creation is horrible - particularly when done
+> > from an totally different file from where the rest of the attributes
+> > are registered.  I'm curious what the history behind that is.
+> > 
+> > Whilst here, why is there a common_cpu_attr_groups which is
+> > identical to the hotpluggable_cpu_attr_groups in base/cpu.c?  
+> 
+> Looking into doing this, the easy bit is adding the attribute group
+> with an appropriate .is_visible dependent on cpu_present(), but we
+> need to be able to call sysfs_update_groups() when the state of the
+> .is_visible() changes.
+Hi Russell,
 
-compiles, boots and runs here on x86_64
-(Intel Rocket Lake: i5-11400)
+Sorry, somehow I missed this completely until you referred back to it :(
 
-Thanks
+This is pretty much what I was thinking so thanks for doing it.
 
-Tested-by: Ronald Warsow <rwarsow@gmx.de>
+> 
+> Given the comment in sysfs_update_groups() about "if an error occurs",
+> rather than making this part of common_cpu_attr_groups, would it be
+> better that it's part of its own set of groups, thus limiting the
+> damage from a possible error? I suspect, however, that any error at
+> that point means that the system is rather fatally wounded.
+> 
+> This is what I have so far to implement your idea, less the necessary
+> sysfs_update_groups() call when we need to change the visibility of
+> the attributes.
+
+Fwiw (and I think you shouldn't add this to the critical path for your
+main series for obvious reasons), I think you are right that it makes
+sense to do this in a separate group, but that if we were going to see
+an error I'd 'hope' we shouldn't see anything that hasn't occurred
+when groups were originally added. Maybe that's overly optimistic.
+
+Sorry again for lack of reply before now and thanks for pointing this
+out.  I'd love to see this posted after the ARM vCPU HP stuff is in.
+
+Jonathan
+
+
+> 
+> diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
+> index 9ccb7daee78e..06c9fc6620d2 100644
+> --- a/drivers/base/arch_topology.c
+> +++ b/drivers/base/arch_topology.c
+> @@ -215,43 +215,24 @@ static ssize_t cpu_capacity_show(struct device *dev,
+>  	return sysfs_emit(buf, "%lu\n", topology_get_cpu_scale(cpu->dev.id));
+>  }
+>  
+> -static void update_topology_flags_workfn(struct work_struct *work);
+> -static DECLARE_WORK(update_topology_flags_work, update_topology_flags_workfn);
+> -
+>  static DEVICE_ATTR_RO(cpu_capacity);
+>  
+> -static int cpu_capacity_sysctl_add(unsigned int cpu)
+> -{
+> -	struct device *cpu_dev = get_cpu_device(cpu);
+> -
+> -	if (!cpu_dev)
+> -		return -ENOENT;
+> -
+> -	device_create_file(cpu_dev, &dev_attr_cpu_capacity);
+> -
+> -	return 0;
+> -}
+> -
+> -static int cpu_capacity_sysctl_remove(unsigned int cpu)
+> +static umode_t cpu_present_attrs_visible(struct kobject *kobi,
+> +					 struct attribute *attr, int index)
+>  {
+> -	struct device *cpu_dev = get_cpu_device(cpu);
+> -
+> -	if (!cpu_dev)
+> -		return -ENOENT;
+> -
+> -	device_remove_file(cpu_dev, &dev_attr_cpu_capacity);
+> +	struct device *dev = kobj_to_dev(kobj);
+> +	struct cpu *cpu = container_of(dev, struct cpu, dev);
+>  
+> -	return 0;
+> +	return cpu_present(cpu->dev.id) ? attr->mode : 0;
+>  }
+>  
+> -static int register_cpu_capacity_sysctl(void)
+> -{
+> -	cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "topology/cpu-capacity",
+> -			  cpu_capacity_sysctl_add, cpu_capacity_sysctl_remove);
+> +const struct attribute_group cpu_capacity_attr_group = {
+> +	.is_visible = cpu_present_attrs_visible,
+> +	.attrs = cpu_capacity_attrs
+> +};
+>  
+> -	return 0;
+> -}
+> -subsys_initcall(register_cpu_capacity_sysctl);
+> +static void update_topology_flags_workfn(struct work_struct *work);
+> +static DECLARE_WORK(update_topology_flags_work, update_topology_flags_workfn);
+>  
+>  static int update_topology;
+>  
+> diff --git a/drivers/base/cpu.c b/drivers/base/cpu.c
+> index a19a8be93102..954b045705c2 100644
+> --- a/drivers/base/cpu.c
+> +++ b/drivers/base/cpu.c
+> @@ -192,6 +192,9 @@ static const struct attribute_group crash_note_cpu_attr_group = {
+>  static const struct attribute_group *common_cpu_attr_groups[] = {
+>  #ifdef CONFIG_KEXEC
+>  	&crash_note_cpu_attr_group,
+> +#endif
+> +#ifdef CONFIG_GENERIC_ARCH_TOPOLOGY
+> +	&cpu_capacity_attr_group,
+>  #endif
+>  	NULL
+>  };
+> diff --git a/include/linux/cpu.h b/include/linux/cpu.h
+> index e117c06e0c6b..745ad21e3dc8 100644
+> --- a/include/linux/cpu.h
+> +++ b/include/linux/cpu.h
+> @@ -30,6 +30,8 @@ struct cpu {
+>  	struct device dev;
+>  };
+>  
+> +extern const struct attribute_group cpu_capacity_attr_group;
+> +
+>  extern void boot_cpu_init(void);
+>  extern void boot_cpu_hotplug_init(void);
+>  extern void cpu_init(void);
+> 
 
