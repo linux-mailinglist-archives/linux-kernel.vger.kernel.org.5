@@ -2,161 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61A887FF38A
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 16:25:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D02E7FF38C
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 16:25:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346306AbjK3PZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 10:25:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40154 "EHLO
+        id S1346283AbjK3PZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 10:25:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346305AbjK3PZB (ORCPT
+        with ESMTP id S1346234AbjK3PZh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 10:25:01 -0500
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC83410E0;
-        Thu, 30 Nov 2023 07:25:06 -0800 (PST)
-Received: by mail-qv1-xf30.google.com with SMTP id 6a1803df08f44-67a3f1374bdso5931186d6.2;
-        Thu, 30 Nov 2023 07:25:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701357906; x=1701962706; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iYxckIwC9xbehezW7h9apLIAUAGmTaUwXE2pwY1GWQE=;
-        b=lZRhiFQBXHvVsL353F44BE+L3vRTbhaV4okHoj6nsepw8bJMP80C099GqUqsQRa75I
-         af9suGQt+qR/bE5wWeq+Ls5aKt6dCPp6QXFTTNnXZ/sr2ZkQFVEg1dTcSxRrLUbUKUZn
-         aS+RMnw2kjp8PrE190hzh6bip9nBVwUr2tcXFTIYOfR/Q/PB4GcT5On/T9dLHwrah14u
-         hSk+1zB1/r0HTpeBEAV544QP3uFNsztplwDxHVsUFMJkNc0ZR2JjLDjHKi1G5SuA1wvN
-         oVGpowIhxkCskCWZVL3OTU05lstfQMXj6yYS4M1ASnl6gXOB0hQnNfQvXqVSRzRGRZax
-         1HKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701357906; x=1701962706;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=iYxckIwC9xbehezW7h9apLIAUAGmTaUwXE2pwY1GWQE=;
-        b=iL5RSWfPLIOvug3PcR5BUHvGVCCOUXQvepk5z/fCNq/NDbg2W/HrU4uFORrArNj2ME
-         sRuoheIjJ69UfhTOMGxCkwLxCKCAIhFhTVhZTXhNQOHrK8MCxUH3aM8/y5kko3+iTCPw
-         YuxlOBncL3KsbLFJucKf921qqta85hTY9VfmcuwogRYWm9OB6XNj3c44btugCG/DY1xh
-         EYzwk4w26RrL9ubRkfCtyQ+mvKa8xwb0z8/6Drb3xR4RGebdjNgyaPOI7eNTVx/UtIYi
-         K5jsVzhRpjPOB4sjg6MICDD9LFGRACx1HnJrP7D9dq968iPemk9UPt1bc7CwhNhbrP76
-         3+Iw==
-X-Gm-Message-State: AOJu0YxM5ImDLTV5bTS7cm9ql1FonbXnApPkixH7uQSjkTyDczkq5ZFz
-        7cXLHSv74XiUNEJZZ6fyBH4=
-X-Google-Smtp-Source: AGHT+IGYKAB7Rm1Ig/GKPQgPdLfR9ZiX98pKpWHGlLUCA9EIQ7LZNda66HQcT7bQvwSH2nx4TDR1yQ==
-X-Received: by 2002:a05:6214:5581:b0:67a:65d9:6c53 with SMTP id mi1-20020a056214558100b0067a65d96c53mr7128461qvb.1.1701357906005;
-        Thu, 30 Nov 2023 07:25:06 -0800 (PST)
-Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
-        by smtp.gmail.com with ESMTPSA id a13-20020a0ce34d000000b0067a28752199sm584504qvm.10.2023.11.30.07.25.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Nov 2023 07:25:05 -0800 (PST)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailauth.nyi.internal (Postfix) with ESMTP id AC26927C0054;
-        Thu, 30 Nov 2023 10:25:04 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Thu, 30 Nov 2023 10:25:04 -0500
-X-ME-Sender: <xms:T6loZf8Cbq1-7yH_cPzJSa0NAoLqUxoeNCt7xpKFIYjqI41xT7j0ww>
-    <xme:T6loZbt8ktt839eSyjrnW7OJZ9tEshpHbtHlhvEwND-k_X8euXgjpTXKC7NC4JSuQ
-    Vr6NRjPVZMsLtTuWg>
-X-ME-Received: <xmr:T6loZdB1Mzc6h8Df0OQrv45wcrQj3aDYVdyJzUJSeHnrA55d7l4U2EX86A>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeijedgjeeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhu
-    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
-    htthgvrhhnpeelueeiffdugeeliedvjeethfettdeiffffueeiffelhfejgefghedtjedv
-    ffffhfenucffohhmrghinhepghhithhhuhgsrdgtohhmpddttddttddqihhnlhhinhgvqd
-    grshhmrdhmugenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhr
-    ohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvge
-    ehtdeigedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhm
-    sehfihigmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:T6loZbd1Zf0tXvcvRUqz_qvwWrflkmrZx90cRrP1pIBzdKuhPCGA0A>
-    <xmx:T6loZUNN7X49LlG1y1Hmh6ACPa3grQ6ja5BPNvia0bhl1ZoOgLB-cA>
-    <xmx:T6loZdmzHhO-zUP0mrsFVFc_qMmBup_EAgyj070eofPLAH3gkVCROw>
-    <xmx:UKloZXiOE3anisBEA2h_yZkN0uamiSK1sjwWvq3VOqPkD_KZSyhy2g>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 30 Nov 2023 10:25:03 -0500 (EST)
-Date:   Thu, 30 Nov 2023 07:25:01 -0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Gary Guo <gary@garyguo.net>,
-        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Carlos Llamas <cmllamas@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Josh Triplett <josh@joshtriplett.org>
-Subject: Re: [PATCH 1/7] rust: file: add Rust abstraction for `struct file`
-Message-ID: <ZWipTZysC2YL7qsq@Boquns-Mac-mini.home>
-References: <20231129-alice-file-v1-0-f81afe8c7261@google.com>
- <20231129-alice-file-v1-1-f81afe8c7261@google.com>
- <ZWdVEk4QjbpTfnbn@casper.infradead.org>
- <20231129152305.GB23596@noisy.programming.kicks-ass.net>
- <ZWdv_jsaDFJxZk7G@Boquns-Mac-mini.home>
- <20231130104226.GB20191@noisy.programming.kicks-ass.net>
+        Thu, 30 Nov 2023 10:25:37 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A97710D5;
+        Thu, 30 Nov 2023 07:25:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701357943; x=1732893943;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version:content-id;
+  bh=4NUcRApeHAyahOhS8cxwsZnnTdjEBwRcaIXLlPqZAjY=;
+  b=hViqtfpPQPuQS20LgyMMQa8syK3gxW6obW/fOZDM07jTTc3JxTkcBItv
+   6UK6Zoz435WOZ0isXdglWR7eUeeKiaPy7a9PhCYwLrfUxOyDiuvHlQ6X/
+   GEOgm8VZHrDYHEMW9VNLqnUxcWzBVXRNmp03mQjgMXpA/fF9KcdELAtpn
+   /yV2PgDbQmgIbsA4ALj7jZ6o7FxKcJXVV3mu9udb688WhsJ2jE92Za2D/
+   CRnLLmBAYR77MDH6w5RYlE9XCG3yf7rs7OfD9H3KW0NidVJ+ADiVkfv9o
+   XBQTjUJQza8FUklnkvH7EO3qxVmL8b9ojXkunsGr9FCCDdU1wfYIIqHQC
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="383735190"
+X-IronPort-AV: E=Sophos;i="6.04,239,1695711600"; 
+   d="scan'208";a="383735190"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 07:25:42 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="769341983"
+X-IronPort-AV: E=Sophos;i="6.04,239,1695711600"; 
+   d="scan'208";a="769341983"
+Received: from bergler-mobl.ger.corp.intel.com ([10.249.33.30])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 07:25:40 -0800
+Date:   Thu, 30 Nov 2023 17:25:34 +0200 (EET)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Kunwu Chan <chentao@kylinos.cn>, vadimp@nvidia.com
+cc:     Hans de Goede <hdegoede@redhat.com>, jiri@resnulli.us,
+        shravankr@nvidia.com, kunwu.chan@hotmail.com,
+        platform-driver-x86@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] platform/mellanox: Add a null pointer check in
+ mlxbf_pmc_create_groups
+In-Reply-To: <bf29c39f-8d9f-465a-bbc2-45bdb77711b8@kylinos.cn>
+Message-ID: <55c5987b-c991-aa8-a226-c5b1638b474@linux.intel.com>
+References: <20231127063433.1549064-1-chentao@kylinos.cn> <1701224213463629.329.seg@mailgw> <bf29c39f-8d9f-465a-bbc2-45bdb77711b8@kylinos.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231130104226.GB20191@noisy.programming.kicks-ass.net>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; BOUNDARY="8323329-2122611288-1701354616=:1808"
+Content-ID: <4c35a37-a862-6055-355-8f5ef74463db@linux.intel.com>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 30, 2023 at 11:42:26AM +0100, Peter Zijlstra wrote:
-> On Wed, Nov 29, 2023 at 09:08:14AM -0800, Boqun Feng wrote:
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+
+--8323329-2122611288-1701354616=:1808
+Content-Type: text/plain; CHARSET=UTF-8
+Content-Transfer-Encoding: 8BIT
+Content-ID: <93e0c718-4167-6586-d19-4f43d4bf7421@linux.intel.com>
+
+Hi Vadim,
+
+Could you please take a look at this and give advice to Kunwu so we can 
+get all of them squashed in one go.
+
+On Thu, 30 Nov 2023, Kunwu Chan wrote:
+
+> Thanks for your reply.
 > 
-> > But but but, I then realized we have asm goto in C but Rust doesn't
-> > support them, and I haven't thought through how hard tht would be..
+> Cause i don't know how to deal with in some scenario，such as in
+> 'mlxbf_pmc_init_perftype_counter', when 'attr->dev_attr.attr.name' is null,
+> should return '-ENOMEM' or 'continue' the loop?
+
+I'd have thought returning -ENOMEM would be safe because it just ends up 
+failing probe()? ...And it's not that likely to occur in the first place.
+
+-- 
+ i.
+
 > 
-> You're kidding right?
+> So I'm going to solve it one by one.
 > 
-
-I'm not, but I've found this:
-
-	https://github.com/Amanieu/rfcs/blob/inline-asm/text/0000-inline-asm.md#asm-goto
-
-seems to me, the plan for this is something like below:
-
-	asm!(
-		"cmp {}, 42",
-		"jeq {}",
-		in(reg) val,
-		label { println!("a"); },
-		fallthrough { println!("b"); }
-    	);
-
-But it's not implemented yet. Cc Josh in case that he knows more about
-this.
-
-Regards,
-Boqun
-
-> I thought we *finally* deprecated all compilers that didn't support
-> asm-goto and x86 now mandates asm-goto to build, and then this toy
-> language comes around ?
+> Thanks again,
+> Kunwu
 > 
-> What a load of crap ... 
+> On 2023/11/28 17:51, Ilpo Järvinen wrote:
+> > On Mon, 27 Nov 2023, Kunwu Chan wrote:
+> > 
+> > > devm_kasprintf() returns a pointer to dynamically allocated memory
+> > > which can be NULL upon failure.
+> > > 
+> > > Fixes: 1a218d312e65 ("platform/mellanox: mlxbf-pmc: Add Mellanox BlueField
+> > > PMC driver")
+> > > Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+> > > ---
+> > >   drivers/platform/mellanox/mlxbf-pmc.c | 2 ++
+> > >   1 file changed, 2 insertions(+)
+> > > 
+> > > diff --git a/drivers/platform/mellanox/mlxbf-pmc.c
+> > > b/drivers/platform/mellanox/mlxbf-pmc.c
+> > > index 0b427fc24a96..59bbe5e13f6b 100644
+> > > --- a/drivers/platform/mellanox/mlxbf-pmc.c
+> > > +++ b/drivers/platform/mellanox/mlxbf-pmc.c
+> > > @@ -1882,6 +1882,8 @@ static int mlxbf_pmc_create_groups(struct device
+> > > *dev, int blk_num)
+> > >   	pmc->block[blk_num].block_attr_grp.attrs =
+> > > pmc->block[blk_num].block_attr;
+> > >   	pmc->block[blk_num].block_attr_grp.name = devm_kasprintf(
+> > >   		dev, GFP_KERNEL, pmc->block_name[blk_num]);
+> > > +	if (!pmc->block[blk_num].block_attr_grp.name)
+> > > +		return -ENOMEM;
+> > >   	pmc->groups[pmc->group_num] = &pmc->block[blk_num].block_attr_grp;
+> > >   	pmc->group_num++;
+> > 
+> > I'm totally lost, why did you fix only one devm_kasprintf() location?
+> > Don't all of them need this check?
+> > 
+> 
+--8323329-2122611288-1701354616=:1808--
