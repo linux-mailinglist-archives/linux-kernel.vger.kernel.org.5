@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B7B87FF09F
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 14:47:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C64E7FF09B
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 14:47:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345719AbjK3Nqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 08:46:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58526 "EHLO
+        id S1345742AbjK3Nqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 08:46:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345787AbjK3Nqg (ORCPT
+        with ESMTP id S1345795AbjK3Nqg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 30 Nov 2023 08:46:36 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51B0F1725
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 05:46:39 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-33321a70bd9so391806f8f.2
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 05:46:39 -0800 (PST)
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82550D40
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 05:46:40 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-40b31232bf0so7768965e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 05:46:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1701351998; x=1701956798; darn=vger.kernel.org;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1701351999; x=1701956799; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5Sv99NjQCF32QfqStrxQNV++EDXzWOND44xPhDEPFwA=;
-        b=RzoE4DJWVF3W3nkJlOJRdv4+NmcgoXiLB+gg1BmbJAdSjXdO6QHD0KtdwJ+12Fl3My
-         55WXpqcLmbIhqfB6EXiyC3TOB4t4821ZMjkrX2BgMv+g/RKT0pGNt4btfGBlA661c49i
-         FWG4egQtdxheJcTMecL/3iHGJ2F1A1sf55X5HMWQdtzYxnvUyZNHOhC6YeX1Oq//Y8H5
-         xAEmCuCmY6y/ndwSGq8O4w9WCzjyLssVqySoFOm4Hw/o6elLOYT3mx5hy9+t3+IkLrWJ
-         0jtXDfm3avWCkFD/JE6oXDJz91f74VpKSPmW8XzyKygh1SgtzXazFW4CeZw+rW9VmLlA
-         HcYw==
+        bh=FDkm1mz5JKda1Ie70um5gnCumWIdGzqKbagKhi4Mqgw=;
+        b=zO8d/RkZCozzHJ1jQKXdjSYznCbMIc23SHbSreyOKRFdYVhP+l2K2kxpdx5TeawVYM
+         VObqZNzZkS73Kgy2UHewywsdJy3thgug3aq1ahTKAS2Oi61OSGMT8uHiliaZMkCBqGKH
+         c/EkgFyKTTd878s3uk4QQTsN4e9IODJ/PNeZq24BOYkTKTyQYtJQExNUIUiCGvf+2tSo
+         xdavwY5etTRVDax7kAnqhIAWMcrNnOQWIEyv/JuUXmRpPS6qHavUxpja+hqxJqokGvMP
+         rnkdRhh4xz5psfSzzIlgywWJONcSfUzV2v8aoKx4MrWMERKU0/fYnxP8nCNj2vGPnRzF
+         qJIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701351998; x=1701956798;
+        d=1e100.net; s=20230601; t=1701351999; x=1701956799;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=5Sv99NjQCF32QfqStrxQNV++EDXzWOND44xPhDEPFwA=;
-        b=eN8CmiT5jIO/6xAYq4UrgGCOMH2uS4UECqNQHfBQRLtsM9BUNNcoB+3iXHIkRClyOb
-         SvtFYBa0dr72ElPxC2txRmM4RhAuWk3+Zf+lJv5YTxmgkXWq28IotfPAr1wnV7Q3x9FX
-         WhKng36PlQLlHgDZgeKEGyK3m4EcnEJ/Lc9yhiYRtWf8pORPgKCcgklhGlDyk6u27zZ7
-         ruzuW9gje6BYAm0ZBTD4YVHIUjZzSwBykfZDRig+gd7IOdwkPbzKJJafdX8l/hBsjGe8
-         iPWGD34l6PzKSq69gu0ucvfmPTwJv7JYl3DZ+xfXTGDhwXkq1J7cgglx0Fg8csTfarcC
-         gUpg==
-X-Gm-Message-State: AOJu0YwhMthGcgaQSDJ/we8B3JzKhrj2AKthRbWyIRCRN5RXivQ+tzy3
-        9ZL1lXMPnHBURDlaYAw805i+/g==
-X-Google-Smtp-Source: AGHT+IFFXiw8d4gEC87uJuGJeNe0IjCzYDScTUcvPWnXguWxDUdRf/gDmALnF5depRlp+rrGf1ryhQ==
-X-Received: by 2002:a5d:6dcb:0:b0:332:fcd2:87fa with SMTP id d11-20020a5d6dcb000000b00332fcd287famr8728856wrz.27.1701351997780;
-        Thu, 30 Nov 2023 05:46:37 -0800 (PST)
+        bh=FDkm1mz5JKda1Ie70um5gnCumWIdGzqKbagKhi4Mqgw=;
+        b=E9w89mgLY6Azld3+Rk5WDLfHJuRWLjn0tQBmM6Dlxb+C80pfbFTtnHhkax74bxV70q
+         aB7tuL7PvVU/FMdB0IA3LwcYB50+YIDqvBBam2QcaWIvPiyVFAEVq1mV07vJjXRtiGOV
+         9BQFj7KFss+J4hKa0MDoc3ZHuo/8BAJlTaHqTPjgwZuUaRT0hLfMCrXANUmK2xGl0Dtl
+         8IuHZKV36xPUpAi4jT3jji6zVwGDqYCBLSP9cV61uzebJ2xQI+y7GSsuhXKWvH48g/7H
+         KJ+1uFsJBmnhjs3QlSAPwimB2myPDtxWQvctgNHPAFKV03xuKOg46ya0tUOJam8/VOSc
+         ADZA==
+X-Gm-Message-State: AOJu0YzsYp1l8RFE+Reej2AipEzKmXHMZDpahhZWe+mIrIr8TRG4Kb8m
+        F5DLxjyPdCDMt+oGLIn2cPCdeg==
+X-Google-Smtp-Source: AGHT+IH1lRBcUubHIz93kQOurCo+8m3nu0EZoQalJ3ieURmwlYH3CSTv+IgoVsqKPZPB7xaOjJ2hAQ==
+X-Received: by 2002:a05:600c:290:b0:40b:377a:2ac1 with SMTP id 16-20020a05600c029000b0040b377a2ac1mr15522069wmk.20.1701351998814;
+        Thu, 30 Nov 2023 05:46:38 -0800 (PST)
 Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:ae84:904:6602:ec1e])
-        by smtp.gmail.com with ESMTPSA id n18-20020adffe12000000b0032d2489a399sm1574824wrr.49.2023.11.30.05.46.36
+        by smtp.gmail.com with ESMTPSA id n18-20020adffe12000000b0032d2489a399sm1574824wrr.49.2023.11.30.05.46.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Nov 2023 05:46:36 -0800 (PST)
+        Thu, 30 Nov 2023 05:46:38 -0800 (PST)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
 To:     Linus Walleij <linus.walleij@linaro.org>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
         Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH v2 02/10] gpio: wm831x: use gpiochip_dup_line_label()
-Date:   Thu, 30 Nov 2023 14:46:22 +0100
-Message-Id: <20231130134630.18198-3-brgl@bgdev.pl>
+Subject: [PATCH v2 03/10] gpio: wm8994: use gpiochip_dup_line_label()
+Date:   Thu, 30 Nov 2023 14:46:23 +0100
+Message-Id: <20231130134630.18198-4-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231130134630.18198-1-brgl@bgdev.pl>
 References: <20231130134630.18198-1-brgl@bgdev.pl>
@@ -79,13 +79,13 @@ descriptor label.
 
 Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 ---
- drivers/gpio/gpio-wm831x.c | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+ drivers/gpio/gpio-wm8994.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/gpio/gpio-wm831x.c b/drivers/gpio/gpio-wm831x.c
-index 7eaf8a28638c..f7d5120ff8f1 100644
---- a/drivers/gpio/gpio-wm831x.c
-+++ b/drivers/gpio/gpio-wm831x.c
+diff --git a/drivers/gpio/gpio-wm8994.c b/drivers/gpio/gpio-wm8994.c
+index f4a474cef32d..bf05c9b5882b 100644
+--- a/drivers/gpio/gpio-wm8994.c
++++ b/drivers/gpio/gpio-wm8994.c
 @@ -8,6 +8,7 @@
   *
   */
@@ -94,12 +94,11 @@ index 7eaf8a28638c..f7d5120ff8f1 100644
  #include <linux/kernel.h>
  #include <linux/slab.h>
  #include <linux/module.h>
-@@ -160,18 +161,21 @@ static void wm831x_gpio_dbg_show(struct seq_file *s, struct gpio_chip *chip)
+@@ -193,18 +194,20 @@ static void wm8994_gpio_dbg_show(struct seq_file *s, struct gpio_chip *chip)
  	for (i = 0; i < chip->ngpio; i++) {
  		int gpio = i + chip->base;
  		int reg;
--		const char *label, *pull, *powerdomain;
-+		const char *pull, *powerdomain;
+-		const char *label;
  
  		/* We report the GPIO even if it's not requested since
  		 * we're also reporting things like alternate
@@ -111,15 +110,15 @@ index 7eaf8a28638c..f7d5120ff8f1 100644
 -			label = "Unrequested";
 +		char *label __free(kfree) = gpiochip_dup_line_label(chip, i);
 +		if (IS_ERR(label)) {
-+			dev_err(wm831x->dev, "Failed to duplicate label\n");
++			dev_err(wm8994->dev, "Failed to duplicate label\n");
 +			continue;
 +		}
  
 -		seq_printf(s, " gpio-%-3d (%-20.20s) ", gpio, label);
-+		seq_printf(s, " gpio-%-3d (%-20.20s) ",
-+			   gpio, label ?: "Unrequested");
++		seq_printf(s, " gpio-%-3d (%-20.20s) ", gpio,
++			   label ?: "Unrequested");
  
- 		reg = wm831x_reg_read(wm831x, WM831X_GPIO1_CONTROL + i);
+ 		reg = wm8994_reg_read(wm8994, WM8994_GPIO_1 + i);
  		if (reg < 0) {
 -- 
 2.40.1
