@@ -2,141 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C5A47FF121
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 15:05:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7F8F7FF11E
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 15:04:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345789AbjK3OEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 09:04:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56816 "EHLO
+        id S1345777AbjK3OEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 09:04:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345800AbjK3OEw (ORCPT
+        with ESMTP id S1345566AbjK3OEo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 09:04:52 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FCFE10D0;
-        Thu, 30 Nov 2023 06:04:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701353098; x=1732889098;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=xqtTZvY053veljR4ETMpWFPpHyKU0+OBKnIK2FZ1Hl0=;
-  b=avlGWeL7GR+bfL4sLs8D28WpOgVx3rntBWjjPBJdKGaYjItkV057D1h2
-   KOMi7hYeHo8KWjIxpO48etDu3gzRVLOK+DyZ9xuI1jhqvQ+Nkua7GL0Dn
-   IJlPSXhbEBn7THFH8C90SnkLy7IIrkeaZfnQZgVEGt/pXL291otCBF3jH
-   dxwFI85OuM2xLn/6Fo8uOp2ErW9TnNjE8J/LWkuJfrkHHS7gJFmC8slrK
-   ZPvJk9lgsOEmFdHxjceNmeS67A3UIFaWUEzdM/rkOGjdtNXr4xmj8jCky
-   sZFXw+s3VllVS7etz+dm0bDt4xrcgg+SSMumLp8cPOMra2AqZJgRCYqja
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="226591"
-X-IronPort-AV: E=Sophos;i="6.04,239,1695711600"; 
-   d="scan'208";a="226591"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 06:04:05 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="1016636131"
-X-IronPort-AV: E=Sophos;i="6.04,239,1695711600"; 
-   d="scan'208";a="1016636131"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga006.fm.intel.com with ESMTP; 30 Nov 2023 06:03:57 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r8hdz-00025l-1H;
-        Thu, 30 Nov 2023 14:03:55 +0000
-Date:   Thu, 30 Nov 2023 22:03:41 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Pasha Tatashin <pasha.tatashin@soleen.com>,
-        akpm@linux-foundation.org, alex.williamson@redhat.com,
-        alim.akhtar@samsung.com, alyssa@rosenzweig.io,
-        asahi@lists.linux.dev, baolu.lu@linux.intel.com,
-        bhelgaas@google.com, cgroups@vger.kernel.org, corbet@lwn.net,
-        david@redhat.com, dwmw2@infradead.org, hannes@cmpxchg.org,
-        heiko@sntech.de, iommu@lists.linux.dev, jasowang@redhat.com,
-        jernej.skrabec@gmail.com, jgg@ziepe.ca, jonathanh@nvidia.com,
-        joro@8bytes.org, kevin.tian@intel.com,
-        krzysztof.kozlowski@linaro.org, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-rockchip@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev
-Cc:     oe-kbuild-all@lists.linux.dev
-Subject: Re: [PATCH 13/16] iommu: observability of the IOMMU allocations
-Message-ID: <202311302108.WERv9oSO-lkp@intel.com>
-References: <20231128204938.1453583-14-pasha.tatashin@soleen.com>
+        Thu, 30 Nov 2023 09:04:44 -0500
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CFC81B3
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 06:04:50 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-54c0bca218dso746385a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 06:04:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701353088; x=1701957888; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=pGKbsrS8HFlOmn4rDPKznNWz+NWrUs797K33kLKZj4I=;
+        b=k67bzIRAKeF4Q1Xc0xXT5FUCD2g8OHQtUR4k6qN9sixZdoBKa5/7GsHUw1D26H1ZKy
+         Z2aF8LcyGuk6GJYBA2ZX/zoBvg5LPelKSMiznzfc0srPzJowpNT6F59bPQGTy/JHSxER
+         3JGUaogz2OjJY6jxYUvbjaHS28l0NpPVR5/CTFcj8s6M1jYmO+IQe4DnEz2RFI3BUHTD
+         zUuBcriCwwCbwqE0yDhoJo9u5kYxpA4xykbBUHFfkqEUuJHuSw6+nynw5/+yEd0u4Z+j
+         5OEV1ajr4xaf+WK7LT0g2Z1i3t1N1+0rEbi7Dx405RJAb2ghvhKtCeFBpHA/tGqRMdSw
+         QaJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701353088; x=1701957888;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pGKbsrS8HFlOmn4rDPKznNWz+NWrUs797K33kLKZj4I=;
+        b=sp/kh1b8pb65UYl4cCQsXYZ/ASECaARs4XlUvE9FrjqkQeIa/ErIK0yitWcuOqsAmQ
+         Ev6XIiOPqgAwNy1N/OapKpEnnXdgxJE5zUoQrYv1o7A/kIi4KN2U4XfaioOjhacHeH5d
+         QAld+4m9LWVpHY/bh3v+2hSTsJwnceX/Z5rWv0NfT3/acxRBFMxnJdzxSPzVm4FnUniP
+         ufPiEVZaM1fxsBmiYrIsEc47HFtZRb40HW/aNSgT8GwRT2fYEZHRS5MNJ/obQqMlw0lp
+         ZdUHNX3DW9Z9uDt4q/LvQ7hDv6iwBIorLIboqAYahP4a1JKd0njOe/NWyyu98dCgq3Cx
+         R3+w==
+X-Gm-Message-State: AOJu0Yw8XJr0t1pV9CASlgY4IWQFzADE8OxcGEuKQFRrNE3pw3uQD6zY
+        dFION6j7Eq1WH6etvLWqcIemOg==
+X-Google-Smtp-Source: AGHT+IGngvHRwAbsjuw12JjGFczh5cjo82vLwrx0SzdSAuri3G83AegT+iTn/fzD3P1bdPfCNyaktA==
+X-Received: by 2002:a05:6402:2047:b0:54a:f3df:5814 with SMTP id bc7-20020a056402204700b0054af3df5814mr14049790edb.25.1701353088536;
+        Thu, 30 Nov 2023 06:04:48 -0800 (PST)
+Received: from [10.167.154.1] (178235187166.dynamic-4-waw-k-2-3-0.vectranet.pl. [178.235.187.166])
+        by smtp.gmail.com with ESMTPSA id bo19-20020a0564020b3300b00548a0e8c316sm571184edb.20.2023.11.30.06.04.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Nov 2023 06:04:47 -0800 (PST)
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Date:   Thu, 30 Nov 2023 15:04:45 +0100
+Subject: [PATCH] interconnect: qcom: sm8250: Enable sync_state
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231128204938.1453583-14-pasha.tatashin@soleen.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20231130-topic-8250icc_syncstate-v1-1-7ce78ba6e04c@linaro.org>
+X-B4-Tracking: v=1; b=H4sIAHyWaGUC/x2N0QqDMAwAf0XyvEBbJ7r9yhCpMZsBqdJ0wyH++
+ 8Ie7+C4A5SzsMK9OiDzR1TWZOAvFdAc04tRJmMILtTe1w7LuglhFxonRIN+E2mJhbEN3Li2i9O
+ VbmD1GJVxzDHRbH16L4vJLfNT9v/u0Z/nD5NLJFp+AAAA
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Georgi Djakov <djakov@kernel.org>,
+        Mike Tipton <quic_mdtipton@quicinc.com>
+Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Konrad Dybcio <konrad.dybcio@linaro.org>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1701353086; l=1003;
+ i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
+ bh=VOLasUkRPJfMaQ++a/e0LfA4FM1YxoUkJbWWFQdBDJ0=;
+ b=MYnLohakk1PKPabBjSwyIgFqoYS/wngoxLn9E8TuXTfUjRYj3C20OJDj7bPu94HMlr9bdD4BR
+ BfSViwtJvJNCtl0C5C9GXo6vH8hmH34C2gYZ2rTV4lFhU2nDL5mk/8A
+X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
+ pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pasha,
+Add the generic icc sync_state callback to ensure interconnect votes
+are taken into account, instead of being pegged at maximum values.
 
-kernel test robot noticed the following build errors:
+Fixes: b95b668eaaa2 ("interconnect: qcom: icc-rpmh: Add BCMs to commit list in pre_aggregate")
+Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+---
+ drivers/interconnect/qcom/sm8250.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-[auto build test ERROR on akpm-mm/mm-everything]
-[also build test ERROR on awilliam-vfio/for-linus linus/master v6.7-rc3]
-[cannot apply to joro-iommu/next awilliam-vfio/next next-20231130]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+diff --git a/drivers/interconnect/qcom/sm8250.c b/drivers/interconnect/qcom/sm8250.c
+index 83aeb3eedc19..02d40eea0d69 100644
+--- a/drivers/interconnect/qcom/sm8250.c
++++ b/drivers/interconnect/qcom/sm8250.c
+@@ -1995,6 +1995,7 @@ static struct platform_driver qnoc_driver = {
+ 	.driver = {
+ 		.name = "qnoc-sm8250",
+ 		.of_match_table = qnoc_of_match,
++		.sync_state = icc_sync_state,
+ 	},
+ };
+ module_platform_driver(qnoc_driver);
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Pasha-Tatashin/iommu-vt-d-add-wrapper-functions-for-page-allocations/20231129-054908
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/20231128204938.1453583-14-pasha.tatashin%40soleen.com
-patch subject: [PATCH 13/16] iommu: observability of the IOMMU allocations
-config: sparc64-randconfig-r054-20231130 (https://download.01.org/0day-ci/archive/20231130/202311302108.WERv9oSO-lkp@intel.com/config)
-compiler: sparc64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231130/202311302108.WERv9oSO-lkp@intel.com/reproduce)
+---
+base-commit: 1f5c003694fab4b1ba6cbdcc417488b975c088d0
+change-id: 20231130-topic-8250icc_syncstate-72e5078ad4c9
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311302108.WERv9oSO-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   In file included from drivers/iommu/iommufd/iova_bitmap.c:11:
-   drivers/iommu/iommufd/../iommu-pages.h: In function '__iommu_alloc_account':
->> drivers/iommu/iommufd/../iommu-pages.h:29:48: error: 'NR_IOMMU_PAGES' undeclared (first use in this function)
-      29 |         mod_node_page_state(page_pgdat(pages), NR_IOMMU_PAGES, pgcnt);
-         |                                                ^~~~~~~~~~~~~~
-   drivers/iommu/iommufd/../iommu-pages.h:29:48: note: each undeclared identifier is reported only once for each function it appears in
-   drivers/iommu/iommufd/../iommu-pages.h: In function '__iommu_free_account':
-   drivers/iommu/iommufd/../iommu-pages.h:41:48: error: 'NR_IOMMU_PAGES' undeclared (first use in this function)
-      41 |         mod_node_page_state(page_pgdat(pages), NR_IOMMU_PAGES, -pgcnt);
-         |                                                ^~~~~~~~~~~~~~
-
-
-vim +/NR_IOMMU_PAGES +29 drivers/iommu/iommufd/../iommu-pages.h
-
-    13	
-    14	/*
-    15	 * All page allocation that are performed in the IOMMU subsystem must use one of
-    16	 * the functions below.  This is necessary for the proper accounting as IOMMU
-    17	 * state can be rather large, i.e. multiple gigabytes in size.
-    18	 */
-    19	
-    20	/**
-    21	 * __iommu_alloc_account - account for newly allocated page.
-    22	 * @pages: head struct page of the page.
-    23	 * @order: order of the page
-    24	 */
-    25	static inline void __iommu_alloc_account(struct page *pages, int order)
-    26	{
-    27		const long pgcnt = 1l << order;
-    28	
-  > 29		mod_node_page_state(page_pgdat(pages), NR_IOMMU_PAGES, pgcnt);
-    30	}
-    31	
-
+Best regards,
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Konrad Dybcio <konrad.dybcio@linaro.org>
+
