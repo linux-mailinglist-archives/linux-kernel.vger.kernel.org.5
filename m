@@ -2,111 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CFF67FFD9A
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 22:36:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF9E07FFD9E
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 22:37:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376934AbjK3VgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 16:36:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56864 "EHLO
+        id S1376943AbjK3VhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 16:37:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376859AbjK3VgF (ORCPT
+        with ESMTP id S1376859AbjK3VhJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 16:36:05 -0500
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BB8510D9
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 13:36:11 -0800 (PST)
-Received: by mail-io1-xd2c.google.com with SMTP id ca18e2360f4ac-7b359dad0e7so17287039f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 13:36:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1701380171; x=1701984971; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Fp9VwMviLQPX+3MgbIIB9b/GRHCxnV7F0fIl1aHZ/II=;
-        b=Ojgf22BKf0uNQ8mI1jxosdZFX/3I3k8OAhrRpA61aZ9uxabFApYxdLm9MCbnx/neM5
-         b9WW9+nmijBj+emHoaAmFxo2Ot+HjmtHIhlT18QLPzvqKJcCrfY7RrOzRPIzD2De9mLB
-         gRNIGChrJ3Zn4Evvb9ao8bjfqPGYA3Ta0wRxc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701380171; x=1701984971;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Fp9VwMviLQPX+3MgbIIB9b/GRHCxnV7F0fIl1aHZ/II=;
-        b=SICpIVL86jFgJEIp15sN8Nmkb9cLSc4+dgeUiQhhbJ88kdVAbEBvZLIlGtJ6LfIQ7Z
-         3cvFScAPku/oT/x3YI46NRkIu/v29fJ7lINdNajOuINp6KO3WTqArqZucta/g7xdElIm
-         ajgJNsfM6yjGnYT5r88FeHnR8Tnv1hCfR4BeZtUzr0LVk2E8Ceich2EyTjGUWjQDn1L5
-         XD5UiTqUljiE4X/uhvYsKLcqHUZLXmv8THHhHTZ6izC80fecH2E7NVERN0bpYD+onRyw
-         Ba9XuFhfNjE1ppq1e2qsUNmMX8eDtxnjU7tFGuMSs3gaQq+nCkN4McRYwuHAXWcsRR9F
-         1Ruw==
-X-Gm-Message-State: AOJu0YyZiVoe7ygcGqZLMeUMcrDiCL8oVkd3Sqeg+YcfVg9I1IFPIkoH
-        NnKSnBMfmQfpIDiIcYSXkWw43peHHX148s/iRKo=
-X-Google-Smtp-Source: AGHT+IFAje2WETdYrzqFGUkr/49oxBQQwP5VhDCh8321mO5Pj1w3J8co5z+7nxeYC4a/pt7umT+5aA==
-X-Received: by 2002:a05:6e02:1b05:b0:35d:f2b:4992 with SMTP id i5-20020a056e021b0500b0035d0f2b4992mr3016222ilv.0.1701380171001;
-        Thu, 30 Nov 2023 13:36:11 -0800 (PST)
-Received: from [192.168.1.128] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id i9-20020a056e020ec900b0035aeaed5112sm609123ilk.84.2023.11.30.13.36.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Nov 2023 13:36:10 -0800 (PST)
-Message-ID: <89e0378d-f03d-42ef-9495-ada312dd5139@linuxfoundation.org>
-Date:   Thu, 30 Nov 2023 14:36:10 -0700
+        Thu, 30 Nov 2023 16:37:09 -0500
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1215E194;
+        Thu, 30 Nov 2023 13:37:15 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id 8071A5C01BC;
+        Thu, 30 Nov 2023 16:37:12 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Thu, 30 Nov 2023 16:37:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm3; t=1701380232; x=1701466632; bh=Zz
+        F9h379MrAFj54pXWhL+XcbpUP3DpZlKzF1Dnx5FrY=; b=VUwU1hZ5uvMFqnriFi
+        fZNJ2fUdH7Aa5LbOPjDXL+SMTdE1URP+lXR4UgpTdHT0/25JMTdeoI1foTS7o7HP
+        3v6lsx2tcZwvY0cYSv2A0NVWSyvoaR8S0CW+gtYZb77WwTaP1hdZHZwNmf2HhbF3
+        Njq+2RfP3Umj8yFhfpWDmnwISxlqqgFvEjsJwkVvtiWsJmHMeSvh+8b8fxUQ7+mj
+        HeePWxpvgok5gmZzwKA5hAO3cxAP2+96L5oY3eijzE7Ae7nMBuFG0gX5ilVhViUa
+        3r9opUS+dctQIG5z4VJD3/XgXOfzNNWsG8nJZ/JA74RfVTMW1q0553h7mqJM3WyM
+        1Y+A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1701380232; x=1701466632; bh=ZzF9h379MrAFj
+        54pXWhL+XcbpUP3DpZlKzF1Dnx5FrY=; b=xtu8hJy4NCZgJkhuo6Vdqoe7aPaYs
+        hu2d9SSnQuPMZKo/wqq9EX538D/lSwJIZmSwPr46vcjUc85mGIJRsTxXgnTWA44R
+        vbp6/KqI2bzT5406NtyMrkTL1iBqnc4kuPWfnmiBZru9lXDLfe1FPL2RTilrDMoO
+        SiSBdxV/sycERlIt3JNl4FUyT+c+QeRP2GwzmxpKAC+bqZNGjHGpXP+iutR6qC3c
+        Mo0Sv/xy3sMRtpnC1tylWeubJX9nM2HOcHJBPKmyB1XJ/3N+uotC9Ap/Hu7d/Pyc
+        R8bLTE3kqnwQ6gMOlH/vBgkXxk/UJA/9El8blbBCRZhO2rUtxxjj+ntYQ==
+X-ME-Sender: <xms:hwBpZZHQuTBe7RDle2Un4O4CJuIMyYZTAe9_ya1VLyIE1IpJEEyqFw>
+    <xme:hwBpZeUvIvzOgkdiL9MtbJ7cxxWa0SJfkt_97-yww6DW1sLDQhG26JOwtagUDwFJ6
+    VGUQWZxWMXRhndAvp8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeijedgudehtdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdet
+    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
+    htthgvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedt
+    keetffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:hwBpZbJ6EsZXwFWS7NTv4ZhUNrXLJ_JLpBnHAvigtsNslQylZulc0g>
+    <xmx:hwBpZfGVFa3Po9QgM2Sr11NTtHLRK4QU47H8uZhxH_Pv7r7YKYgvag>
+    <xmx:hwBpZfUhV4s4k09ASokxWzATzECncoE3Gci5bth3tu3R21KlwWRkUQ>
+    <xmx:iABpZVf0RCnCciZ9H2I4w-dz_IdNmXN2Xg26tDd9qtkl3yds-Q_KyA>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id ADD8DB60089; Thu, 30 Nov 2023 16:37:11 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1238-g6cccb1fa34-fm-20231128.002-g6cccb1fa
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] selftests:breakpoints: Fix Format String Warning in
- breakpoint_test
-Content-Language: en-US
-To:     angquan yu <angquan21@gmail.com>
-Cc:     shuah@kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20231129035726.6273-1-angquan21@gmail.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20231129035726.6273-1-angquan21@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Message-Id: <8cef91eb-140c-46a6-b695-70df89bbdb81@app.fastmail.com>
+In-Reply-To: <20231130081929.46a79c33edee8651c63112dc@linux-foundation.org>
+References: <20231130075838.05e5bc9b@oak>
+ <20231129131003.d2c1078847c3865c1ac2dfd5@linux-foundation.org>
+ <ebb5b1a2-ed27-4a77-b62b-1d3f19bddd85@app.fastmail.com>
+ <20231129151030.24b807f1d2b43be301a533b7@linux-foundation.org>
+ <4be73872-c1f5-4c31-8201-712c19290a22@app.fastmail.com>
+ <20231130081929.46a79c33edee8651c63112dc@linux-foundation.org>
+Date:   Thu, 30 Nov 2023 22:36:50 +0100
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Andrew Morton" <akpm@linux-foundation.org>
+Cc:     "Stephen Rothwell" <sfr@rothwell.id.au>,
+        linux-next <linux-next@vger.kernel.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        sparclinux@vger.kernel.org, linux-mips@vger.kernel.org
+Subject: Re: linux-next: lots of errors/warnings from the -Werror=missing-prototypes
+ addition
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/28/23 20:57, angquan yu wrote:
-> From: angquan yu <angquan21@gmail.com>
-> 
-> This commit resolves a compiler warning regardingthe
-> use of non-literal format strings in breakpoint_test.c.
-> 
-> The functions `ksft_test_result_pass` and `ksft_test_result_fail`
-> were previously called with a variable `msg` directly, which could
-> potentially lead to format string vulnerabilities.
-> 
-> Changes made:
-> - Modified the calls to `ksft_test_result_pass` and `ksft_test_result_fail`
-> by adding a "%s" format specifier. This explicitly declares `msg` as a
-> string argument, adhering to safer coding practices and resolving
-> the compiler warning.
-> 
-> This change does not affect the functional behavior of the code but ensures
-> better code safety and compliance with recommended C programming standards.
-> 
-> The previous warning is "breakpoint_test.c:287:17:
-> warning: format not a string literal and no format arguments
-> [-Wformat-security]
->    287 |                 ksft_test_result_pass(msg);
->        |                 ^~~~~~~~~~~~~~~~~~~~~
-> breakpoint_test.c:289:17: warning: format not a string literal
-> and no format arguments [-Wformat-security]
->    289 |                 ksft_test_result_fail(msg);
->        |    "
-> 
-> Signed-off-by: angquan yu <angquan21@gmail.com>
+On Thu, Nov 30, 2023, at 17:19, Andrew Morton wrote:
+> On Thu, 30 Nov 2023 09:07:38 +0100 "Arnd Bergmann" <arnd@arndb.de> wrote:
+>
+>> > I guess it should precede "Makefile.extrawarn: turn on
+>> > missing-prototypes globally".
+>> 
+>> I already have a collection of patches to fix up known
+>> -Wmissing-prototype warnings across architectures in the
+>> asm-generic tree, so I'll add this patch there:
+>> 
+>> commit bdef96eb0b89dfa80992312a8e3b2613bf178ae5
+>> Author: Arnd Bergmann <arnd@arndb.de>
+>> Date:   Thu Nov 30 00:07:07 2023 +0100
+>> 
+>>     arch: turn off -Werror for architectures with known warnings
+>
+> I think this would be better in the mm-nonmm tree, alongside
+> "Makefile.extrawarn: turn on missing-prototypes globally".  Can I steal it?
 
-Thank you foe the fix. Applied to linux-kselftest next Linux 6.8-rc1
+Agreed, that does help with bisection. I had pushed out the
+asm-generic branch with the patch earlier today but now reverted
+back to the previous state.
 
-thanks,
--- Shuah
-
+      Arnd
