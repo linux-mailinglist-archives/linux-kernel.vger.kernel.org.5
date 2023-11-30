@@ -2,148 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7127F7FEB52
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 10:04:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97FC07FEB55
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 10:04:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234973AbjK3JDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 04:03:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32820 "EHLO
+        id S229643AbjK3JEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 04:04:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229758AbjK3JDu (ORCPT
+        with ESMTP id S234988AbjK3JEA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 04:03:50 -0500
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BB61CF
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 01:03:55 -0800 (PST)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-a00d5b0ec44so93578366b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 01:03:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701335034; x=1701939834; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8sa+wp4OC86yAkfIHtqVkVHkrtyRl+ogcDtfESJ8zkA=;
-        b=CUAR3B4ZhGrT0mGFSQh3vrZZU7KtqFDlvaypKI5vU8/0jJj+2lqr8fo8pFIlyJDLSm
-         srs+A+lWPcfAYeyt/XRPyRrMqpcvXD1grD9tYbZWT6/P5iIT7uhY6b856dPqDfd0jYVA
-         sMLF1fhtGQ/RJR/foKQ9BGxLcohZ+DncETFWHyV8bk1jsC/lswlh5G1eiNighsCNIOrV
-         Y6JgKRSOSgrwMNrCbJiNKFBdcd9a86wGINT1J8CB+w+hmYcokoc8bsuMv8nEt+kfL72I
-         2ULx8VQtLq5RHN5EIEQpCb0WZZyk2cIJzlwukMyvPx49jmIH/xClgXfAsh/B/qzazDLU
-         AcXg==
+        Thu, 30 Nov 2023 04:04:00 -0500
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98A6D170A
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 01:04:05 -0800 (PST)
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7ad60469181so36253139f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 01:04:05 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701335034; x=1701939834;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1701335045; x=1701939845;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8sa+wp4OC86yAkfIHtqVkVHkrtyRl+ogcDtfESJ8zkA=;
-        b=fhsvyaIpDb08nP1L3pC1M5tjmpjhSY01K5cwLDjwyKU2aXpDDwz0/zkkvVLgl6p0XG
-         D7T3nKckpVK8lR0+4oHLMLaSf/lqOKuCMEZSz4bQVlT7Wc+lmXuScsHJdK0dtkb5DkLN
-         nCn7Lz+HfS1Kl9EgCXRMt7UTvNU72Jxy8jtpmzPapxtT+qxCI7yGuNF9NUhkGhCQycsE
-         BS2eFo/BBEVvKZH4gV0K+ZlXICjKJV9T66EhwHG996p3wJmFga4ONI6DwMYx23Kk76S/
-         fgWwymEvWvIb9zS3r/8r2HQeWL5TxJxhO5EyQkhyTJnKhLU29gdHPBnfrq2Ic/tqgNdV
-         ut4A==
-X-Gm-Message-State: AOJu0YxPAlYczxWoPd4EGZVmyEqzpryoWi8WSUHRCAvczNKzTGA6GbtK
-        KCHu0mqdEXbOeD0hoEdEDLxB1Q==
-X-Google-Smtp-Source: AGHT+IHyXeFtXqIdzk/B4SHcuV9ciO/XYi0TQIgmdz9CqDEDNnnKKH0swmU5pZrLeUlXBDSfmmGh/g==
-X-Received: by 2002:a17:906:c785:b0:a19:12b6:74a1 with SMTP id cw5-20020a170906c78500b00a1912b674a1mr70032ejb.24.1701335033874;
-        Thu, 30 Nov 2023 01:03:53 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.223.109])
-        by smtp.gmail.com with ESMTPSA id le12-20020a170907170c00b009dd90698893sm421877ejc.38.2023.11.30.01.03.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Nov 2023 01:03:53 -0800 (PST)
-Message-ID: <bce9dffa-25e1-4129-a720-53aff158cf26@linaro.org>
-Date:   Thu, 30 Nov 2023 10:03:52 +0100
+        bh=soy1NT2UKGDJlxht+HERBZveQG1Bg/FOkanqtNm/9DY=;
+        b=vHIdHXSE0RnG+XAXQ24uO64X+4EmMUeoHVpLTuQCn9j1Psv2LXkl4d+RHHa3U4luk2
+         QRXbup2EurEF7cR9lYcV/ducmiWX8eq5+9RMCK9V5ZsFK2eh8qxZ/2rgcgPN2/xcb7C6
+         lOQ0fACZ4+0ztRpCy/mvboZzCjBL3gvwlpDv0akiY4gj2cV3KJ6cVm6BOriEhc6zXAj8
+         uW4EPbXU5debLeo1Z63hAgyfWrq9zA8y2ytcBXXgVCXKyQfoyn7EV/8ggt12yssdFdbd
+         E+XsCYq+3Oj5bnlAvYyhoxZB0EXR4E9CZfuGLJwhNUcn1rO6/d9nlHcKPiQdPZA4fLIf
+         gqqg==
+X-Gm-Message-State: AOJu0YznJ6eGPkNfql1MBi2WseTQ1KgkhCgf4YXn8YTBCKgL/DQPjXx3
+        Nkn3ivr0cMDOQ6YM4B3DWrZbXWSeDsODOae/uYyuuqBpD/Ll14k=
+X-Google-Smtp-Source: AGHT+IG5Ait6fMfTQB+UHkqXgOAU4uB3wqkzXDfyRRZGYJew/an96b9QSlQNg9qwIJt8XW0IRl/BgZ9fx3Ig8l+PKfodU0xq5fgS
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 3/3] arm64: dts: qcom: Fix coresight warnings in
- in-ports and out-ports
-Content-Language: en-US
-To:     Mao Jinlong <quic_jinlmao@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Tingwei Zhang <quic_tingweiz@quicinc.com>,
-        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
-        Tao Zhang <quic_taozha@quicinc.com>
-References: <20231129143815.7892-1-quic_jinlmao@quicinc.com>
- <20231129143815.7892-4-quic_jinlmao@quicinc.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231129143815.7892-4-quic_jinlmao@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a6b:db1a:0:b0:7b3:8b53:1547 with SMTP id
+ t26-20020a6bdb1a000000b007b38b531547mr757606ioc.2.1701335044968; Thu, 30 Nov
+ 2023 01:04:04 -0800 (PST)
+Date:   Thu, 30 Nov 2023 01:04:04 -0800
+In-Reply-To: <20231130084311.2983367-1-lizhi.xu@windriver.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ffd6de060b5aee58@google.com>
+Subject: Re: [syzbot] [exfat?] INFO: task hung in exfat_write_inode
+From:   syzbot <syzbot+2f73ed585f115e98aee8@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, lizhi.xu@windriver.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/11/2023 15:38, Mao Jinlong wrote:
-> When a node is only one in port or one out port, address-cells and
-> size-cells are not required in in-ports and out-ports. And the number
-> and reg of the port need to be removed.
-> 
-> Signed-off-by: Mao Jinlong <quic_jinlmao@quicinc.com>
-> ---
->  arch/arm64/boot/dts/qcom/sdm845.dtsi |  5 +----
->  arch/arm64/boot/dts/qcom/sm8150.dtsi |  5 +----
->  arch/arm64/boot/dts/qcom/sm8250.dtsi | 24 ++++--------------------
->  3 files changed, 6 insertions(+), 28 deletions(-)
-> 
+Hello,
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+INFO: rcu detected stall in corrupted
 
-Best regards,
-Krzysztof
+rcu: INFO: rcu_preempt detected expedited stalls on CPUs/tasks: { P5342 } 2662 jiffies s: 2933 root: 0x0/T
+rcu: blocking rcu_node structures (internal RCU debug):
+
+
+Tested on:
+
+commit:         f9ff5644 Merge tag 'hsi-for-6.2' of git://git.kernel.o..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=1292be28e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1bf08f50e8fff9ad
+dashboard link: https://syzkaller.appspot.com/bug?extid=2f73ed585f115e98aee8
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=124a528ce80000
 
