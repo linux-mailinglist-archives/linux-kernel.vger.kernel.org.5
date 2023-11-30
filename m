@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00F777FE81A
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 05:05:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 730957FE81F
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 05:06:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344392AbjK3EF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 23:05:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39258 "EHLO
+        id S1344429AbjK3EGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 23:06:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234920AbjK3EF1 (ORCPT
+        with ESMTP id S1344424AbjK3EFy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 23:05:27 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38DD9CA
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 20:05:29 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1cfc34b6890so4987165ad.1
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 20:05:29 -0800 (PST)
+        Wed, 29 Nov 2023 23:05:54 -0500
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9832110C6
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 20:05:35 -0800 (PST)
+Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-5c6001ec920so460053a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 20:05:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1701317128; x=1701921928; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=W+yjpAu/Jsru6QG03RfnszV7SN1caXKKF6cUUXYNdao=;
-        b=FwBdeI6nAdH131mq7iPHPrbhy0nqwsVBWssTIqkz02vCctta9ho4kK3F1lZrtuglDY
-         bNYvPIERMIjhgGxYt17P/FOVh2SgQqyBkV2usgrRqOy6JKsbMvXHwYQbQXpww/YVkxtr
-         KhA9ZKTZlv36DNpsvrpypkCZo3mkhDF1P1K/PsvgBbqnEGzdv2Hz+PSXAzEtFiWD4Ryh
-         V+TfkYKcBtLLjol59YeqXe9KR2SWAxzAjLW84ltgRN4usyHfs5qZ3KuaYd/fGyf+G5qV
-         QS/e8G1dVG5av526A6Jt9Pd2ALU20qTfYlztOIxrKzxdHQA0x3Pa4C29hmJkdSm5VdKM
-         cLfg==
+        d=bytedance.com; s=google; t=1701317135; x=1701921935; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HifOguLosmCp1hqOD7nW4Pzhg3FPPc3H1eWRpxejRrY=;
+        b=ACwPBuMIkvHS0zI/LN+NB+3jM4e1sTKu4c2au+Vi5mF75iopDUbsItmrOA90zcllOG
+         5pV5rA9aEwGZSL9VqrupURkA9ixJK6o5z1dHaVzZgI2DoxYSnu3HJqa03pQSl5jAfzrV
+         BiHCKg4+dD3vP1p2e/zaqIuUOJWGO+fMKQTA3K0eSB1E+E80/PbvooMmHuduAhd8PiMV
+         15lP2N77qsDXosPYD3WDTJQIUk8Fuxu1SpbtKIDmFiT5KHTFdJ6VYDiQstHTdSm372Bn
+         P3E+OrQ/CLcjnUPNcvr4tIpvPSL5zhDXgVyLCe+LevjeLVbueRnZ07TAmIDLe245uAuF
+         Ky0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701317128; x=1701921928;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=W+yjpAu/Jsru6QG03RfnszV7SN1caXKKF6cUUXYNdao=;
-        b=JPmb9+gyTEQgcZ2AN9CvdCf4J6JdhIXFely7SVOVOmfN2Cdm3Gt36VtA47treWEJKk
-         x7SL/1wEL9aPXBjEvg3/iaPpS3Tuf4B+FlJ6cTWDniLxpA9xEv9uqPYs3C/fuDHjdfSZ
-         Crh8excFEHnV48UZf+pSJh4aSX8GCNF6MKAACJF0nMjDxryR+i6NqKqWB++qmRbKCYma
-         m84yM4lCMHwrYObO/YUhmbZoafzLOfoyKs580mK/fufIeLh6EBDhyVT+EOzR8ERHK1eN
-         0RLbG6/vgSDVuEnkmiOZerKdFab8RHCJFUVzaA/L62p1w7o/M9hX0EZxw4GKC/bEjDlf
-         F1Pw==
-X-Gm-Message-State: AOJu0YzvoNuQ3mbwxMe9tWmz6eqGJ7MRuP8pyYc0TLOsc3rSkDNxpmh8
-        2aBB/6OKPOZ9Cjx707/t34O96A==
-X-Google-Smtp-Source: AGHT+IF2TPny1kU3pUpbWpuyFpMHloE4EU/UOBulaT2ThGwlIOchgef/BblJ7yPK0aci9EcXP1Nrvg==
-X-Received: by 2002:a17:903:249:b0:1cf:b4bb:9bdc with SMTP id j9-20020a170903024900b001cfb4bb9bdcmr23350613plh.9.1701317128695;
-        Wed, 29 Nov 2023 20:05:28 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701317135; x=1701921935;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HifOguLosmCp1hqOD7nW4Pzhg3FPPc3H1eWRpxejRrY=;
+        b=RwgvZF2Ad0iDJUM2+D/vD0Q+7h6FrQ/OB+8n2QhPRJmFEq/jW6RGzLCtjghHYgGSYN
+         DNlKziC8oXy1i8OpyiHk7zXhgWy2COAKjY8g2ww0HsbUxFwisCUAE7tU0432yFR7q9TI
+         tH514TMOyfcOZKpc6ODDiklYCo4+dtjJLmR/nhAsBuN0N6u5xz7KWHzymWmHhBKZpAE+
+         WMOQYTx4aDjVnezlT46asH8o7Qfw7k0Hj36ez+rXNdv3i61grsa2NJop+Gz9FpUPgXQj
+         2W/gpAIkbDyMNnlHDYpGP07xaPMYQms2mcfTQBj71XK0aJPZa+I5uf8RAZYR4Dh+BpxA
+         XB4w==
+X-Gm-Message-State: AOJu0YzCTKGd5PF4u43OosnXmmrN5yTiOBtAKBWj8AKXnnUSR4bEKVNJ
+        2tCDV92vhoQSdxAB0MP7yrkLeQ==
+X-Google-Smtp-Source: AGHT+IH9PSQT+1rspy2juwmb1zQ+1+xmcZ4tuw74DHRM5bQB/lfp8qpMQb3zzbKumW4BYP3Z9DzDug==
+X-Received: by 2002:a05:6a20:548e:b0:18c:8d0f:a794 with SMTP id i14-20020a056a20548e00b0018c8d0fa794mr14103759pzk.19.1701317134959;
+        Wed, 29 Nov 2023 20:05:34 -0800 (PST)
 Received: from localhost.localdomain ([61.213.176.7])
-        by smtp.gmail.com with ESMTPSA id u6-20020a170903124600b001d01c970119sm174181plh.275.2023.11.29.20.05.24
+        by smtp.gmail.com with ESMTPSA id u6-20020a170903124600b001d01c970119sm174181plh.275.2023.11.29.20.05.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Nov 2023 20:05:28 -0800 (PST)
+        Wed, 29 Nov 2023 20:05:34 -0800 (PST)
 From:   Jiachen Zhang <zhangjiachen.jaycee@bytedance.com>
 To:     Chandan Babu R <chandan.babu@oracle.com>,
         "Darrick J. Wong" <djwong@kernel.org>
@@ -57,16 +58,19 @@ Cc:     Dave Chinner <dchinner@redhat.com>,
         Zhang Tianci <zhangtianci.1997@bytedance.com>,
         Brian Foster <bfoster@redhat.com>, linux-xfs@vger.kernel.org,
         linux-kernel@vger.kernel.org, xieyongji@bytedance.com, me@jcix.top,
-        Jiachen Zhang <zhangjiachen.jaycee@bytedance.com>
-Subject: [PATCH v3 0/3] Fixes for ENOSPC xfs_remove
-Date:   Thu, 30 Nov 2023 12:05:13 +0800
-Message-Id: <20231130040516.35677-1-zhangjiachen.jaycee@bytedance.com>
+        Jiachen Zhang <zhangjiachen.jaycee@bytedance.com>,
+        Christoph Hellwig <hch@lst.de>
+Subject: [PATCH v3 1/3] xfs: ensure logflagsp is initialized in xfs_bmap_del_extent_real
+Date:   Thu, 30 Nov 2023 12:05:14 +0800
+Message-Id: <20231130040516.35677-2-zhangjiachen.jaycee@bytedance.com>
 X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20231130040516.35677-1-zhangjiachen.jaycee@bytedance.com>
+References: <20231130040516.35677-1-zhangjiachen.jaycee@bytedance.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,47 +78,220 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+In the case of returning -ENOSPC, ensure logflagsp is initialized by 0.
+Otherwise the caller __xfs_bunmapi will set uninitialized illegal
+tmp_logflags value into xfs log, which might cause unpredictable error
+in the log recovery procedure.
 
-Recently, our use-case ran into 2 bugs in case doing xfs_remove when the
-disk space is in-pressure, which may cause xfs shutdown and kernel crash
-in the xfs log recovery procedure. Here are 2 patches to fix the
-problem, and a patch adding a helper to optimize the code structure.
+Also, remove the flags variable and set the *logflagsp directly, so that
+the code should be more robust in the long run.
 
-The 1st patch fixes an uninitialized variable issue.
+Fixes: 1b24b633aafe ("xfs: move some more code into xfs_bmap_del_extent_real")
+Signed-off-by: Jiachen Zhang <zhangjiachen.jaycee@bytedance.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+---
+ fs/xfs/libxfs/xfs_bmap.c | 73 +++++++++++++++++-----------------------
+ 1 file changed, 31 insertions(+), 42 deletions(-)
 
-The 2nd patch ensures the blkno in the xfs_buf is updated when doing
-xfs_da3_swap_lastblock().
-
-The 3rd patch adds a xfs_buf copy helper to optimize the code structure.
-
-Changes of v2:
-- directly set the *logflagsp value to make the code more robust in the
-  1st commit,
-- check xfs's crc-feature rather than magic in the 2nd commit, and
-- fixed code style and rebased onto the master branch.
-
-Changes of v3:
-- fix code style, and
-- add a new patch which does xfs_buf memcpy in a helper.
-
-Thanks,
-Jiachen
-
-
-Jiachen Zhang (1):
-  xfs: ensure logflagsp is initialized in xfs_bmap_del_extent_real
-
-Zhang Tianci (2):
-  xfs: update dir3 leaf block metadata after swap
-  xfs: extract xfs_da_buf_copy() helper function
-
- fs/xfs/libxfs/xfs_attr_leaf.c | 12 ++----
- fs/xfs/libxfs/xfs_bmap.c      | 73 +++++++++++++++--------------------
- fs/xfs/libxfs/xfs_da_btree.c  | 70 +++++++++++++++------------------
- fs/xfs/libxfs/xfs_da_btree.h  |  2 +
- 4 files changed, 69 insertions(+), 88 deletions(-)
-
+diff --git a/fs/xfs/libxfs/xfs_bmap.c b/fs/xfs/libxfs/xfs_bmap.c
+index be62acffad6c..eacd7f43c952 100644
+--- a/fs/xfs/libxfs/xfs_bmap.c
++++ b/fs/xfs/libxfs/xfs_bmap.c
+@@ -5010,7 +5010,6 @@ xfs_bmap_del_extent_real(
+ 	xfs_fileoff_t		del_endoff;	/* first offset past del */
+ 	int			do_fx;	/* free extent at end of routine */
+ 	int			error;	/* error return value */
+-	int			flags = 0;/* inode logging flags */
+ 	struct xfs_bmbt_irec	got;	/* current extent entry */
+ 	xfs_fileoff_t		got_endoff;	/* first offset past got */
+ 	int			i;	/* temp state */
+@@ -5023,6 +5022,8 @@ xfs_bmap_del_extent_real(
+ 	uint32_t		state = xfs_bmap_fork_to_state(whichfork);
+ 	struct xfs_bmbt_irec	old;
+ 
++	*logflagsp = 0;
++
+ 	mp = ip->i_mount;
+ 	XFS_STATS_INC(mp, xs_del_exlist);
+ 
+@@ -5035,7 +5036,6 @@ xfs_bmap_del_extent_real(
+ 	ASSERT(got_endoff >= del_endoff);
+ 	ASSERT(!isnullstartblock(got.br_startblock));
+ 	qfield = 0;
+-	error = 0;
+ 
+ 	/*
+ 	 * If it's the case where the directory code is running with no block
+@@ -5051,13 +5051,13 @@ xfs_bmap_del_extent_real(
+ 	    del->br_startoff > got.br_startoff && del_endoff < got_endoff)
+ 		return -ENOSPC;
+ 
+-	flags = XFS_ILOG_CORE;
++	*logflagsp = XFS_ILOG_CORE;
+ 	if (whichfork == XFS_DATA_FORK && XFS_IS_REALTIME_INODE(ip)) {
+ 		if (!(bflags & XFS_BMAPI_REMAP)) {
+ 			error = xfs_rtfree_blocks(tp, del->br_startblock,
+ 					del->br_blockcount);
+ 			if (error)
+-				goto done;
++				return error;
+ 		}
+ 
+ 		do_fx = 0;
+@@ -5072,11 +5072,9 @@ xfs_bmap_del_extent_real(
+ 	if (cur) {
+ 		error = xfs_bmbt_lookup_eq(cur, &got, &i);
+ 		if (error)
+-			goto done;
+-		if (XFS_IS_CORRUPT(mp, i != 1)) {
+-			error = -EFSCORRUPTED;
+-			goto done;
+-		}
++			return error;
++		if (XFS_IS_CORRUPT(mp, i != 1))
++			return -EFSCORRUPTED;
+ 	}
+ 
+ 	if (got.br_startoff == del->br_startoff)
+@@ -5093,17 +5091,15 @@ xfs_bmap_del_extent_real(
+ 		xfs_iext_prev(ifp, icur);
+ 		ifp->if_nextents--;
+ 
+-		flags |= XFS_ILOG_CORE;
++		*logflagsp |= XFS_ILOG_CORE;
+ 		if (!cur) {
+-			flags |= xfs_ilog_fext(whichfork);
++			*logflagsp |= xfs_ilog_fext(whichfork);
+ 			break;
+ 		}
+ 		if ((error = xfs_btree_delete(cur, &i)))
+-			goto done;
+-		if (XFS_IS_CORRUPT(mp, i != 1)) {
+-			error = -EFSCORRUPTED;
+-			goto done;
+-		}
++			return error;
++		if (XFS_IS_CORRUPT(mp, i != 1))
++			return -EFSCORRUPTED;
+ 		break;
+ 	case BMAP_LEFT_FILLING:
+ 		/*
+@@ -5114,12 +5110,12 @@ xfs_bmap_del_extent_real(
+ 		got.br_blockcount -= del->br_blockcount;
+ 		xfs_iext_update_extent(ip, state, icur, &got);
+ 		if (!cur) {
+-			flags |= xfs_ilog_fext(whichfork);
++			*logflagsp |= xfs_ilog_fext(whichfork);
+ 			break;
+ 		}
+ 		error = xfs_bmbt_update(cur, &got);
+ 		if (error)
+-			goto done;
++			return error;
+ 		break;
+ 	case BMAP_RIGHT_FILLING:
+ 		/*
+@@ -5128,12 +5124,12 @@ xfs_bmap_del_extent_real(
+ 		got.br_blockcount -= del->br_blockcount;
+ 		xfs_iext_update_extent(ip, state, icur, &got);
+ 		if (!cur) {
+-			flags |= xfs_ilog_fext(whichfork);
++			*logflagsp |= xfs_ilog_fext(whichfork);
+ 			break;
+ 		}
+ 		error = xfs_bmbt_update(cur, &got);
+ 		if (error)
+-			goto done;
++			return error;
+ 		break;
+ 	case 0:
+ 		/*
+@@ -5150,18 +5146,18 @@ xfs_bmap_del_extent_real(
+ 		new.br_state = got.br_state;
+ 		new.br_startblock = del_endblock;
+ 
+-		flags |= XFS_ILOG_CORE;
++		*logflagsp |= XFS_ILOG_CORE;
+ 		if (cur) {
+ 			error = xfs_bmbt_update(cur, &got);
+ 			if (error)
+-				goto done;
++				return error;
+ 			error = xfs_btree_increment(cur, 0, &i);
+ 			if (error)
+-				goto done;
++				return error;
+ 			cur->bc_rec.b = new;
+ 			error = xfs_btree_insert(cur, &i);
+ 			if (error && error != -ENOSPC)
+-				goto done;
++				return error;
+ 			/*
+ 			 * If get no-space back from btree insert, it tried a
+ 			 * split, and we have a zero block reservation.  Fix up
+@@ -5174,33 +5170,28 @@ xfs_bmap_del_extent_real(
+ 				 */
+ 				error = xfs_bmbt_lookup_eq(cur, &got, &i);
+ 				if (error)
+-					goto done;
+-				if (XFS_IS_CORRUPT(mp, i != 1)) {
+-					error = -EFSCORRUPTED;
+-					goto done;
+-				}
++					return error;
++				if (XFS_IS_CORRUPT(mp, i != 1))
++					return -EFSCORRUPTED;
+ 				/*
+ 				 * Update the btree record back
+ 				 * to the original value.
+ 				 */
+ 				error = xfs_bmbt_update(cur, &old);
+ 				if (error)
+-					goto done;
++					return error;
+ 				/*
+ 				 * Reset the extent record back
+ 				 * to the original value.
+ 				 */
+ 				xfs_iext_update_extent(ip, state, icur, &old);
+-				flags = 0;
+-				error = -ENOSPC;
+-				goto done;
+-			}
+-			if (XFS_IS_CORRUPT(mp, i != 1)) {
+-				error = -EFSCORRUPTED;
+-				goto done;
++				*logflagsp = 0;
++				return -ENOSPC;
+ 			}
++			if (XFS_IS_CORRUPT(mp, i != 1))
++				return -EFSCORRUPTED;
+ 		} else
+-			flags |= xfs_ilog_fext(whichfork);
++			*logflagsp |= xfs_ilog_fext(whichfork);
+ 
+ 		ifp->if_nextents++;
+ 		xfs_iext_next(ifp, icur);
+@@ -5224,7 +5215,7 @@ xfs_bmap_del_extent_real(
+ 					((bflags & XFS_BMAPI_NODISCARD) ||
+ 					del->br_state == XFS_EXT_UNWRITTEN));
+ 			if (error)
+-				goto done;
++				return error;
+ 		}
+ 	}
+ 
+@@ -5239,9 +5230,7 @@ xfs_bmap_del_extent_real(
+ 	if (qfield && !(bflags & XFS_BMAPI_REMAP))
+ 		xfs_trans_mod_dquot_byino(tp, ip, qfield, (long)-nblks);
+ 
+-done:
+-	*logflagsp = flags;
+-	return error;
++	return 0;
+ }
+ 
+ /*
 -- 
 2.20.1
 
