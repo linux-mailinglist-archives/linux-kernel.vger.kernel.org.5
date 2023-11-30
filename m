@@ -2,160 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1C8B7FEC4C
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 10:54:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A57B7FEC51
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 10:55:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235106AbjK3Jys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 04:54:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52016 "EHLO
+        id S235110AbjK3JzE convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 30 Nov 2023 04:55:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235092AbjK3Jyq (ORCPT
+        with ESMTP id S235076AbjK3JzA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 04:54:46 -0500
-Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 676F99A;
-        Thu, 30 Nov 2023 01:54:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1701338089; x=1732874089;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=hnCrBJas0jHQljOR6WgW83uYftpb7okUoxTkkR1KEP0=;
-  b=f4yDez26/NW9ycGezqecZMSzjmRIMYmE/8N9ICAf7hDrfgfXGrv/D+rm
-   RhBb1BdPkaC5Rc6x2Eqw2ecGHeqtFNIXaLsWnp/kPSmsk13DyN+Itc78e
-   30thGbIumx2Mk33w9AokbYBGhGjWfePdrpHwrUTyFMGyl/LJ0u2MXvBFj
-   opM/lo7dEDbthhlWe1sCB5bMkCy/BvNy6C2C/DjtPt934HGheS73wc+Mf
-   2zXMncYR2F8j6XnIhhNtVSkNyg7gJGAgaQxjmbjtH7jNMVTMuGGlRRVZl
-   toKYmeR+2TMsOe0EgxrUGd+1RtqmLY4OVJv+eB+k27m9R21eHx+Vo2hG8
-   A==;
-X-IronPort-AV: E=Sophos;i="6.04,237,1695679200"; 
-   d="scan'208";a="34256271"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 30 Nov 2023 10:54:47 +0100
-Received: from steina-w.localnet (steina-w.tq-net.de [10.123.53.18])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id 84613280075;
-        Thu, 30 Nov 2023 10:54:47 +0100 (CET)
-From:   Alexander Stein <alexander.stein@ew.tq-group.com>
-To:     Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        Paul Elder <paul.elder@ideasonboard.com>
-Cc:     linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        tomi.valkeinen@ideasonboard.com, umang.jain@ideasonboard.com,
-        Dafna Hirschfeld <dafna@fastmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] media: rkisp1: debug: Add register dump for IS
-Date:   Thu, 30 Nov 2023 10:54:46 +0100
-Message-ID: <4881112.31r3eYUQgx@steina-w>
-Organization: TQ-Systems GmbH
-In-Reply-To: <ZWhaFL48cgdHsOPN@pyrite.rasen.tech>
-References: <20231129092956.250129-1-paul.elder@ideasonboard.com> <170128834260.3048548.11979514587961676400@ping.linuxembedded.co.uk> <ZWhaFL48cgdHsOPN@pyrite.rasen.tech>
+        Thu, 30 Nov 2023 04:55:00 -0500
+Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE90710E2;
+        Thu, 30 Nov 2023 01:55:06 -0800 (PST)
+Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-d9beb865a40so664163276.1;
+        Thu, 30 Nov 2023 01:55:06 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701338105; x=1701942905;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/kl3Cyom3VKHlW1GdXvF57049dn4ixhhiJNdSH5QXH4=;
+        b=ThV1zXVjgeL2o6qm/ngXJMTKvjPsXQRDbig3iCmK90rdA7SWVKTPHPIoeqjz+lnmhh
+         LVqgiBMlRJx/yf3glxVYxhTEFSLNW3ocKs56hanJW5SYwu3VXNv+xhSj/wKOq3s/XBMw
+         wRSzlVb19rGENx2nL6rJNEkXlvHWl4IT3/OtVrKP3nqQnO+nF6LhNdChr5toz+gf4yZc
+         /PslSlDz9jktsW2zoAmzHuOi7lA1p+UZKza4+00H+//bS6F1fIJiJKyDozFeNEtjuSHn
+         S9szfSdcAOe4JuLAfAWrDG6qENbbjyQaoc6fkJOsWK697OrZRVSrtmv+Jz4bao8YvmGa
+         lkLA==
+X-Gm-Message-State: AOJu0YycV+K2bQzfXSRn99gHL8gZURUQcqBRGYNjb8+6vz7Il4WZgUC+
+        H9fO7zcq0zYhX3+n/9rVxCEn5ls/T874Vg==
+X-Google-Smtp-Source: AGHT+IGad/xbG4AWM4LSIJNFYbwM6pNaT28G+jf3I/a25gC6jZTk3p0GLY2L+0DYJY9VobqtnG1vCQ==
+X-Received: by 2002:a0d:d146:0:b0:5cb:c143:cd90 with SMTP id t67-20020a0dd146000000b005cbc143cd90mr22789105ywd.35.1701338104996;
+        Thu, 30 Nov 2023 01:55:04 -0800 (PST)
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com. [209.85.128.179])
+        by smtp.gmail.com with ESMTPSA id z2-20020a816502000000b00597e912e67esm257647ywb.131.2023.11.30.01.55.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Nov 2023 01:55:03 -0800 (PST)
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-5d34d85e610so4119657b3.3;
+        Thu, 30 Nov 2023 01:55:03 -0800 (PST)
+X-Received: by 2002:a81:92d7:0:b0:5ca:e49:c98b with SMTP id
+ j206-20020a8192d7000000b005ca0e49c98bmr23203204ywg.8.1701338103524; Thu, 30
+ Nov 2023 01:55:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231017104638.201260-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <CA+V-a8t3sGn83vpgjECf5dw=bbz2yPXpnn+v2Dx2q3yJRPsKgA@mail.gmail.com>
+ <CAMuHMdXMRj4quvO87LbLHCCLr14EK2AXsvr_muTDrBrA8+BMjg@mail.gmail.com> <CA+V-a8tjy2Ttp_TbZT63PC_UY12J8FLcziCtef-D-jgw_CmKaA@mail.gmail.com>
+In-Reply-To: <CA+V-a8tjy2Ttp_TbZT63PC_UY12J8FLcziCtef-D-jgw_CmKaA@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 30 Nov 2023 10:54:52 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdVcUXY+J36X6iG_jtT1mQhXFbEdF57oOT4DFZAridp2_A@mail.gmail.com>
+Message-ID: <CAMuHMdVcUXY+J36X6iG_jtT1mQhXFbEdF57oOT4DFZAridp2_A@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] Add missing port pins for RZ/Five SoC
+To:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Cc:     Magnus Damm <magnus.damm@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
+Hi Prabhakar,
 
-Am Donnerstag, 30. November 2023, 10:47:00 CET schrieb Paul Elder:
-> On Wed, Nov 29, 2023 at 08:05:42PM +0000, Kieran Bingham wrote:
-> > Quoting Paul Elder (2023-11-29 09:29:55)
-> >=20
-> > > Add register dump for the image stabilizer module to debugfs.
-> >=20
-> > Is the Image Stabilizer on all variants of the ISP?
-> >=20
-> > I.e. is it valid register space on the RK3399 implementation?
->=20
-> Yes, it is.
+On Thu, Nov 30, 2023 at 9:48 AM Lad, Prabhakar
+<prabhakar.csengg@gmail.com> wrote:
+> On Wed, Nov 29, 2023 at 3:32 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > On Wed, Nov 29, 2023 at 3:44 PM Lad, Prabhakar
+> > <prabhakar.csengg@gmail.com> wrote:
+> > > On Tue, Oct 17, 2023 at 11:47 AM Prabhakar <prabhakar.csengg@gmail.com> wrote:
+> > > > This patch series intends to incorporate the absent port pins P19 to P28,
+> > > > which are exclusively available on the RZ/Five SoC.
+> > > >
+> > > > Cheers,
+> > > > Prabhakar
+> > > >
+> > > > RFC -> v2:
+> > > > * Fixed review comments pointed by Geert & Biju
+> > > >
+> > > > RFC: https://lore.kernel.org/lkml/20230630120433.49529-3-prabhakar.mahadev-lad.rj@bp.renesas.com/T/
+> > > >
+> > > > Lad Prabhakar (3):
+> > > >   pinctrl: renesas: rzg2l: Include pinmap in RZG2L_GPIO_PORT_PACK()
+> > > >     macro
+> > > >   pinctrl: renesas: pinctrl-rzg2l: Add the missing port pins P19 to P28
+> > > >   riscv: dts: renesas: r9a07g043f: Update gpio-ranges property
+> > > >
+> > > >  arch/riscv/boot/dts/renesas/r9a07g043f.dtsi |   4 +
+> > > >  drivers/pinctrl/renesas/pinctrl-rzg2l.c     | 263 ++++++++++++++++++--
+> > > >  2 files changed, 242 insertions(+), 25 deletions(-)
+> > > >
+> > > Gentle ping.
+> >
+> > As the kernel test robot reported a build issue for PATCH 1/3, I had
+> > removed this series from my review queue.
+> Strange patchwork status didnt mention it as "rejected".
 
-Is there some public documentation available how this ISP works? For RK3399=
- or=20
-i.MX8MP.
+Actually I do not use patchwork that much...
 
-Best regards,
-Alexander
+> > Do you still want me to review v2, or do you want to send a v3 first?
+> >
+> No worries, I'll send a v3 and we can go from there.
 
->=20
-> > If so then:
-> > Reviewed-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
-> >=20
-> > > Signed-off-by: Paul Elder <paul.elder@ideasonboard.com>
-> > > ---
-> > >=20
-> > >  .../platform/rockchip/rkisp1/rkisp1-debug.c    | 18 ++++++++++++++++=
-++
-> > >  1 file changed, 18 insertions(+)
-> > >=20
-> > > diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-debug.c
-> > > b/drivers/media/platform/rockchip/rkisp1/rkisp1-debug.c index
-> > > 71df3dc95e6f..f66b9754472e 100644
-> > > --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-debug.c
-> > > +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-debug.c
-> > > @@ -139,6 +139,21 @@ static int rkisp1_debug_dump_mi_mp_show(struct
-> > > seq_file *m, void *p)> >=20
-> > >  }
-> > >  DEFINE_SHOW_ATTRIBUTE(rkisp1_debug_dump_mi_mp);
-> > >=20
-> > > +static int rkisp1_debug_dump_is_show(struct seq_file *m, void *p)
-> > > +{
-> > > +       static const struct rkisp1_debug_register registers[] =3D {
-> > > +               RKISP1_DEBUG_SHD_REG(ISP_IS_H_OFFS),
-> > > +               RKISP1_DEBUG_SHD_REG(ISP_IS_V_OFFS),
-> > > +               RKISP1_DEBUG_SHD_REG(ISP_IS_H_SIZE),
-> > > +               RKISP1_DEBUG_SHD_REG(ISP_IS_V_SIZE),
-> >=20
-> > I expect so as you haven't added the register macros in this series so
-> > they must already be there ...
->=20
-> Yep :)
->=20
->=20
-> Paul
->=20
-> > > +               { /* Sentinel */ },
-> > > +       };
-> > > +       struct rkisp1_device *rkisp1 =3D m->private;
-> > > +
-> > > +       return rkisp1_debug_dump_regs(rkisp1, m, 0, registers);
-> > > +}
-> > > +DEFINE_SHOW_ATTRIBUTE(rkisp1_debug_dump_is);
-> > > +
-> > >=20
-> > >  #define RKISP1_DEBUG_DATA_COUNT_BINS   32
-> > >  #define RKISP1_DEBUG_DATA_COUNT_STEP   (4096 /
-> > >  RKISP1_DEBUG_DATA_COUNT_BINS)> >=20
-> > > @@ -235,6 +250,9 @@ void rkisp1_debug_init(struct rkisp1_device *rkis=
-p1)
-> > >=20
-> > >         debugfs_create_file("mi_mp", 0444, regs_dir, rkisp1,
-> > >        =20
-> > >                             &rkisp1_debug_dump_mi_mp_fops);
-> > >=20
-> > > +
-> > > +       debugfs_create_file("is", 0444, regs_dir, rkisp1,
-> > > +                           &rkisp1_debug_dump_is_fops);
-> > >=20
-> > >  }
-> > > =20
-> > >  void rkisp1_debug_cleanup(struct rkisp1_device *rkisp1)
+OK.
 
+Gr{oetje,eeting}s,
 
-=2D-=20
-TQ-Systems GmbH | M=FChlstra=DFe 2, Gut Delling | 82229 Seefeld, Germany
-Amtsgericht M=FCnchen, HRB 105018
-Gesch=E4ftsf=FChrer: Detlef Schneider, R=FCdiger Stahl, Stefan Schneider
-http://www.tq-group.com/
+                        Geert
 
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
