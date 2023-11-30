@@ -2,72 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 057517FE9BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 08:30:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D39897FE9C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 08:34:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344742AbjK3H36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 02:29:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50380 "EHLO
+        id S1344738AbjK3Hdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 02:33:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344730AbjK3H35 (ORCPT
+        with ESMTP id S1344694AbjK3Hdy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 02:29:57 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 399DA12C;
-        Wed, 29 Nov 2023 23:30:03 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id 98e67ed59e1d1-2851a2b30a2so590048a91.3;
-        Wed, 29 Nov 2023 23:30:03 -0800 (PST)
+        Thu, 30 Nov 2023 02:33:54 -0500
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB498B9;
+        Wed, 29 Nov 2023 23:34:00 -0800 (PST)
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1cf8e569c35so5927645ad.0;
+        Wed, 29 Nov 2023 23:34:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701329402; x=1701934202; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=gmail.com; s=20230601; t=1701329640; x=1701934440; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=7ZpURYzVj3ww3XlYzCTphJ4gF4DoWItg5eveQZqQLlk=;
-        b=ACVYNT3mn0II4Zj+jkziQcBjlH5dwXCPq1NompnfSYHxsbMdkyvdLrmNYFNc5SNYdE
-         X0tUjZcARYZk3P356T3s/I8r0ZeR4edr2Od1kvE5WjK9nQDVagTPwzr/cKw+0TY8Nz62
-         tlcjXrq+ac50v3vx6CvzZV+X4t5zvNq53FsRX6JfcmY2j1/yLhtGKHxWjdMkK+up00uV
-         5shN/wABCmkTDMKUiS3WPkbqKVuK9IBHkflYbGgalS2M3QnFiZxm3IihZabnZq/QpuZ5
-         soaXYq3hwKetAM2z61KfK04XM/VhbyMvAMhNl8DTkjXDvRUIv5GWuw9ujtF7fKZ60/TR
-         ypMQ==
+        bh=3mnK86zS9kgkKOxmm/9KwAlPUykH+ThgLDfr/k2vMa8=;
+        b=keGMdGID7pcMfKzk3mefpVaDWSUQsqqMEHN1h8EOvxmS3Zqcq4PBkskdzOPr1ybNi7
+         GqoLSA+AMqAYGEMcYE8h0BM3m0xPBiW/hLZfHB6tdK8ktnakLHysHKrFuXRcvySUXCYv
+         s4MjsyV1HKnY/lg+jHjJ3z0jzmMnIun4pPyIaGEcClBoPhQNDBHSBcg+PMztaod8/z8i
+         Cs1m5BgjcQ3/5kyJO29IKOBbQNpauITr+urZH3PyVziog4uYdEUwmoQOGGDAnyh32aij
+         Yc84yghwLO86r3z5cbm+hNxLPIMb3CqFoHdi7lWRAeC50UyPSLELJ980FrwPsGgqNvXw
+         OplQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701329402; x=1701934202;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1701329640; x=1701934440;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7ZpURYzVj3ww3XlYzCTphJ4gF4DoWItg5eveQZqQLlk=;
-        b=CPB0J3/Jr4YFwnbRX+1dknXVYScQhF2G7yXpL7zbulZsGeP5N6TWgbBBU2xqZGNj9I
-         2yy854w9yjALRQuZtJerbeb0wsJJifzVnwqOe3refDmve1AuauHam7/5lX9oprCUJU/j
-         +G0eFyii80swlmIBonkvMLGnjN3QXcRzJnifZOoCJEj4OvXMNsN3ARFvBxfAnORoosP1
-         POkDZCCoM12zeTsKoZarZGL9awaugmq0vLoAs8EPeCrTYU95u67r580GhXiHmKKD88Tk
-         FLWp+w1vrLUkzkQgH+GzL8+sbdZQkXZyxGKucXmrqn0R5neoven4xA3Yz0uvoxBhNZdd
-         y/Ww==
-X-Gm-Message-State: AOJu0Yxcfd2uiY/lcI9USLKmJPsL9RYbl/W0u2ceaU7D+KpRoPFtFgCt
-        IouCnvXUUCDGHi3qS0GM5ujLsP30LahdyA==
-X-Google-Smtp-Source: AGHT+IG4bmYCQZbXEp16+Ucd2ZopZSaw8Prsy37KRXS6uBivHnJqwuO3gRu76VjpEdgRadxrhAB9Sg==
-X-Received: by 2002:a17:90b:314b:b0:285:a163:c25b with SMTP id ip11-20020a17090b314b00b00285a163c25bmr16698188pjb.5.1701329402549;
-        Wed, 29 Nov 2023 23:30:02 -0800 (PST)
-Received: from [192.168.255.10] ([103.7.29.32])
-        by smtp.gmail.com with ESMTPSA id ep8-20020a17090ae64800b00285cee21489sm621272pjb.1.2023.11.29.23.30.00
+        bh=3mnK86zS9kgkKOxmm/9KwAlPUykH+ThgLDfr/k2vMa8=;
+        b=v7oKB37/sDAWpfUYtec057MmUCO7nam6BAx6rTiLySwb3QLY/hdrVirvjTmHbjZO66
+         FSQBML5ryIErZjz4XlIwZFV+c07P91/EZjU5ztdGle9c7+a0lyOb2UEuC/+QlECZyfRh
+         YtRkwycp6enFMfaXAwo/h0av8+4cC0F79RImB4vW2H7uKNIPHt2NIE90N2Q6i7LkllQ2
+         zo6w3BVf9XS3qgjDBBDbT3UE5cCgBErjxUnVvgZ8ETams9P4GNyYaHd4tV3D76PdX+4J
+         cBP+TQ0/L97T410IwbyTRjXZ/k0pmXGNE5kLLFP9Aj3l6997lbfydu/sBpApzmusXHAH
+         C1Ag==
+X-Gm-Message-State: AOJu0YzbQf46BiTajrrNBZEk5qVxoY5xlUjhE2ACoGQrrc2NC6MHmX3Q
+        aAa4BHhOKgPJUIC0douOjKaPxuCA/uk+Mw==
+X-Google-Smtp-Source: AGHT+IHudgUyHU7NAs9q70jlysfskaogusgM3hhNgTORctTs9pQLzQLv8sy/F+dxr8fk7Rg0ZeBhow==
+X-Received: by 2002:a17:902:d4c1:b0:1cf:c329:6204 with SMTP id o1-20020a170902d4c100b001cfc3296204mr15511555plg.14.1701329640291;
+        Wed, 29 Nov 2023 23:34:00 -0800 (PST)
+Received: from [10.0.2.15] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
+        by smtp.gmail.com with ESMTPSA id i16-20020a170902c95000b001c7283d3089sm612789pla.273.2023.11.29.23.33.58
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Nov 2023 23:30:02 -0800 (PST)
-Message-ID: <fd847e77-0510-48db-ad0b-5946458e2fb3@gmail.com>
-Date:   Thu, 30 Nov 2023 15:29:55 +0800
+        Wed, 29 Nov 2023 23:33:59 -0800 (PST)
+Message-ID: <c3accd5b-c8d9-4eb9-86a1-054e89893a8f@gmail.com>
+Date:   Thu, 30 Nov 2023 16:33:56 +0900
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] KVM: x86/pmu: Prevent any host user from enabling PEBS
- for profiling guest
+Subject: Re: [PATCH] docs: Raise the minimum Sphinx requirement to 2.4.4
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Akira Yokosawa <akiyks@gmail.com>
+References: <87sf4qvkmc.fsf@meer.lwn.net> <20231128023015.0e446a06@coco.lan>
+ <877cm2uegr.fsf@meer.lwn.net> <20231128165645.2dbe416c@coco.lan>
 Content-Language: en-US
-To:     "Liang, Kan" <kan.liang@linux.intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sean Christopherson <seanjc@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ian Rogers <irogers@google.com>
-References: <20231129095055.88060-1-likexu@tencent.com>
- <6c4bd247-1f81-4b43-9e21-012f831d26b8@linux.intel.com>
-From:   Like Xu <like.xu.linux@gmail.com>
-In-Reply-To: <6c4bd247-1f81-4b43-9e21-012f831d26b8@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From:   Akira Yokosawa <akiyks@gmail.com>
+In-Reply-To: <20231128165645.2dbe416c@coco.lan>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -79,124 +76,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/11/2023 10:38 pm, Liang, Kan wrote:
+Hi,
+
+On 2023/11/29 0:56, Mauro Carvalho Chehab wrote:
+[snip]
+
+> While I didn't make any benchmarks, I remember people reported
+> poor performance with newer versions, so, without thinking to
+> much, 3.1 or 3.2 seems a good candidate for the recommended
+> version.
+
+Well, I have different impressions on the performance of Sphinx >=3.1
+and have done some quick benchmarks.
+Here are results on a not-so-performant machine.
+
+Benchmark of building htmldocs on Ubuntu 22.04 (after "make cleandocs"):
+
+Sphinx   elapesed   maxresident (k)
+======== ========== ===============
+ 2.4.5     7m44.57     2806152      (parallel slot = 3)
+ 3.1.2    11m25.28     1036264      (parallel slot = 4)
+ 3.4.3    10m22.26     1067100      (ditto.)
+ 4.2.0    10m16.53     1151220
+ 4.3.2    10m06.07     1123432      (distro pkg of Ubuntu 22.04LTS)
+ 5.3.0    10m18.73     1145524
+ 7.2.6     9m53.80     1261736
+
+python3: Python 3.10.12
+
+Sidenotes:
+
+  1: Sphinx 4.3.0 officially added Python 3.10 support.
+     Sphinx 4.2.0 also works with Python 3.10.
+     Sphinx <3.5.0 happen to work with Python 3.10.
+  2: Sphinx 7.2.0 obsoleted Python 3.8.
+  3: Sphinx 6.0.0 obsoleted Python 3.6 and 3.7.
+
+
+And here is a table of distro Sphinx packages:
+
+          As of 2023.11.30
+
+----------------------------------
+Distro              Sphinx Python3
+=================== ====== =======
+Ubuntu 22.04 LTS    4.3.2  3.10.12
+Debian 11           3.4.3  3.9.2
+Debian 12           5.3.0  3.11.2
+Fedora 39           6.2.1  3.12.0
+RHEL 9              3.4.3  3.9.18
+Mageia 9            6.1.3  3.10.11
+openSUSE Leap 15.5  4.2.0  3.6.15  (provided as python3-Sphinx_4_2_0)
+----------------------------------
+
+So, I think Sphinx 3.4.3 would be a reasonable choice for
+recommending.
+
+HTH,
+Akira
+
 > 
-> 
-> On 2023-11-29 4:50 a.m., Like Xu wrote:
->> From: Like Xu <likexu@tencent.com>
->>
->> Stop using PEBS counters on host to profiling guest. Limit the range of
->> enabled PEBS counters to only those counters enabled from the guest PEBS
->> emulation perspective.
->>
->> If there is a perf-record agent on host that uses perf-tools events like
->> "cpu-cycles:GP" (G for attr.exclude_host, P for max precise event counter)
->> to capture guest performance events, then the guest will be hanged. This is
->> because Intel DS-based PEBS buffer is addressed using the 64-bit linear
->> address of the current {p/v}CPU context based on MSR_IA32_DS_AREA.
->>
->> Any perf user using PEBS counters to profile guest on host is, in perf/core
->> implementation details, trying to set bits on cpuc->intel_ctrl_guest_mask
->> and arr[pebs_enable].guest, much like the guest PEBS emulation behaviour.
->> But the subsequent PEBS memory write, regardless of whether guest PEBS is
->> enabled, can overshoot guest entry and corrupt guest memory.
->>
->> Profiling guest via PEBS-DS buffer on host is not supported at this time.
->> Fix this by filtering the real configured value of arr[pebs_enable].guest
->> with the emulated state of guest enabled PEBS counters, under the condition
->> of none cross-mapped PEBS counters.
-> 
-> So the counter will be silently disabled. The user never knows why
-> nothing is sampled.
-> Since we don't support the case, profiling guest via PEBS-DS buffer on
-> host. Maybe we should error out when creating the event. For example
-> (not tested),
-
-Test failed.
-
-> 
-> diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-> index 3871267d3237..24b90c70737f 100644
-> --- a/arch/x86/events/intel/core.c
-> +++ b/arch/x86/events/intel/core.c
-> @@ -3958,6 +3958,10 @@ static int intel_pmu_hw_config(struct perf_event
-> *event)
->   		if ((event->attr.config & INTEL_ARCH_EVENT_MASK) ==
-> INTEL_FIXED_VLBR_EVENT)
->   			return -EINVAL;
-> 
-> +		/* Profiling guest via PEBS-DS buffer on host is not supported. */
-> +		if (event->attr.exclude_host)
-> +			return -EINVAL;
-> +
-
-Guest PEBS emulation also sets this bit, a typical call stack looks like:
-
-     intel_pmu_hw_config+0x441/0x4d0
-     hsw_hw_config+0x12/0xa0
-     x86_pmu_event_init+0x98/0x370
-     perf_try_init_event+0x47/0x130
-     perf_event_alloc+0x446/0xeb0
-     perf_event_create_kernel_counter+0x38/0x190
-     pmc_reprogram_counter.constprop.17+0xd9/0x230 [kvm]
-     kvm_pmu_handle_event+0x1a6/0x310 [kvm]
-     vcpu_enter_guest+0x1388/0x19b0 [kvm]
-     vcpu_run+0x117/0x6c0 [kvm]
-     kvm_arch_vcpu_ioctl_run+0x13d/0x4d0 [kvm]
-     kvm_vcpu_ioctl+0x301/0x6e0 [kvm]
-
-Alternatively, this path is taken when using PEBS-via-PT to profile guests on host.
-
-The status of the guest can only be queried in the NMI handler and the func
-intel_guest_get_msrs() in the perf/core context, where it's easier and more
-centrally to review this part of changes that affects vPMU for corner cases.
-
-Maybe adding print info on the perf-tool side would help.
-
-For perf-tool users, it will get 0 number of sample for "cpu-cycles:GP" events,
-just like other uncounted perf-tool events.
-
->   		if (!(event->attr.freq || (event->attr.wakeup_events &&
-> !event->attr.watermark))) {
->   		    event->hw.flags |= PERF_X86_EVENT_AUTO_RELOAD;
->   			if (!(event->attr.sample_type &
-> 
-> 
-> Thanks,
-> Kan
-> 
->>
->> Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
->> Fixes: c59a1f106f5c ("KVM: x86/pmu: Add IA32_PEBS_ENABLE MSR emulation for extended PEBS")
->> Signed-off-by: Like Xu <likexu@tencent.com>
->> ---
->>   arch/x86/events/intel/core.c | 8 +++++++-
->>   1 file changed, 7 insertions(+), 1 deletion(-)
->>
->> diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
->> index a08f794a0e79..17afd504c35b 100644
->> --- a/arch/x86/events/intel/core.c
->> +++ b/arch/x86/events/intel/core.c
->> @@ -4103,13 +4103,19 @@ static struct perf_guest_switch_msr *intel_guest_get_msrs(int *nr, void *data)
->>   		.guest = pebs_mask & ~cpuc->intel_ctrl_host_mask,
->>   	};
->>   
->> +	/* In any case, clear guest PEBS bits first. */
->> +	arr[global_ctrl].guest &= ~arr[pebs_enable].guest;
->> +
->>   	if (arr[pebs_enable].host) {
->>   		/* Disable guest PEBS if host PEBS is enabled. */
->>   		arr[pebs_enable].guest = 0;
->>   	} else {
->>   		/* Disable guest PEBS thoroughly for cross-mapped PEBS counters. */
->>   		arr[pebs_enable].guest &= ~kvm_pmu->host_cross_mapped_mask;
->> -		arr[global_ctrl].guest &= ~kvm_pmu->host_cross_mapped_mask;
->> +
->> +		/* Prevent any host user from enabling PEBS for profiling guest. */
->> +		arr[pebs_enable].guest &= (kvm_pmu->pebs_enable & kvm_pmu->global_ctrl);
->> +
->>   		/* Set hw GLOBAL_CTRL bits for PEBS counter when it runs for guest */
->>   		arr[global_ctrl].guest |= arr[pebs_enable].guest;
->>   	}
->>
->> base-commit: 6803fb00772cc50cd59a66bd8caaee5c84b13fcf
+> Regards,
+> Mauro
