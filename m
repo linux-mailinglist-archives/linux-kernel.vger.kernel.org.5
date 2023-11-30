@@ -2,112 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F1CD7FE94B
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 07:43:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C2177FE951
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 07:46:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344636AbjK3GnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 01:43:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59302 "EHLO
+        id S1344626AbjK3GqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 01:46:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229615AbjK3GnG (ORCPT
+        with ESMTP id S229596AbjK3Gp7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 01:43:06 -0500
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC4B1A3
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 22:43:12 -0800 (PST)
-Received: by mail-pj1-x102b.google.com with SMTP id 98e67ed59e1d1-286406ae852so61506a91.0
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 22:43:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701326592; x=1701931392; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+Aia1H4GaSF980C1Y4zjWyXbrOYL7Cpo2RsR530hsng=;
-        b=dhMf/ssidhuyKw6IegXIQABd6dF8DMy8s1VTFPOdDKXxNbd8iq3XVfI0aaqJ1jLxww
-         gau/oiLBZUtJVCgaXd1Gp7UKklQhPD7v5Z7WxlLBEu9KwOKzBVF7BSZoK2exHR4TPYTj
-         AgFBofU/683fLa/RK34NrSYBqCQKVuc/YYztrZjiCLBibxDs87MTtPaQKc8xysGvysvd
-         VP/cxdNiIt++QSkL8/W6urWMsk7n2+E9OY22G5DO3maemso0vhBdcbr1BSyyGumlInkO
-         OBRbXoSnrWKGz0+bVGAGCc5/DzhMrjmZn9e/ifqKYZXT9ZwLR1F/9cz2K8uQgt06f8zp
-         1JJA==
+        Thu, 30 Nov 2023 01:45:59 -0500
+Received: from mail-oa1-f70.google.com (mail-oa1-f70.google.com [209.85.160.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4DA71AD
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 22:46:05 -0800 (PST)
+Received: by mail-oa1-f70.google.com with SMTP id 586e51a60fabf-1fa183935d6so954600fac.1
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 22:46:05 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701326592; x=1701931392;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+Aia1H4GaSF980C1Y4zjWyXbrOYL7Cpo2RsR530hsng=;
-        b=BBGUNyH1DGM26efiL1goHhPPi3DTM+E4SMyWhaMgCmLRSG16hiXD1ClsEN1jeZn4z1
-         pc55J2ealfjG2/DimDiR8beslAlKaLmTv4ksujr1gJFjhF/5J9Rg78nnQjHcfmRnuOhy
-         5G2flLytnyJZqx8KYEZafYNoJbrlewFqxhsTlSb4iV9pp0+EL5xbVMOd4iVomswz2d3z
-         NhrroTAHu4z07/maRlKeuJW+OSq/oQJdvbRPiBbcvNV48afaOh6hs2rFMHhBmmt1q4cP
-         0LBlRA+S/1VjoMh1mKsyv57Hpp7WrHzZdCovqxn3ShaQ38Fy7zuLu4M17Yw8E0M3Z6mj
-         32+g==
-X-Gm-Message-State: AOJu0YznWWCNuZ1aRX2GLWIAoMwCA8Ix2sBP1s3nFzxvaQe5yeW7HRAA
-        c5CrlVG6o5AhrY0iFvy5+0XWQzfglDIKYKbeNns=
-X-Google-Smtp-Source: AGHT+IFcL9XOULKlQunh1Dwzx98zjt54BswiakctFApLupEwiI3d0gC0rUABAmCAAP0MCs+Xoy37R+4bMTGypJMXJ9U=
-X-Received: by 2002:a17:90b:17c5:b0:285:9f17:2613 with SMTP id
- me5-20020a17090b17c500b002859f172613mr20287349pjb.27.1701326592119; Wed, 29
- Nov 2023 22:43:12 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701326765; x=1701931565;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=HCN9RDnDnMg6Bb8DWhfV+gBxuJIbFpZtaeHd84DuJPc=;
+        b=MqpNP7DbgbFVgwSrNE1Fj1xI1vc3MeMebiHLKWj4CzjcABV9vOekHmBle5s/qFB3QH
+         SxLhMpxrpsi106r0Qfj5PulZwKxGFl8LikdViU7bQlyPWoCJwLf5F6OdokMPi9SNdm9c
+         c0NMcKpVTeEBhV0cfflXECmssmuz4RwRmvFp4n5H8DkJSGPsi0uKpEKM4YYYiRVtmoHc
+         2dAyLDwEfob9IJUATDHgew5PgERVCtRCHiYMOjEYaQEvn/419r9CYcsoB/Fs/XVl/Ycs
+         0ny5Rsds0p8qKPVD9pemI1Dp/lVZcqGtLFgVO+++8UJSiJgMUdlUKvrr4RIv1eu/kmRx
+         fecw==
+X-Gm-Message-State: AOJu0Yy72bKsAG6XpcIBO8nJ+dE34eHopkWsdZZ2y1vDpmQaF7E2k90g
+        B33SqJZa3sFmRV3ZjnLT2tIKv2wOBwrO9Gvgm8vfAkLAY7mS0pE=
+X-Google-Smtp-Source: AGHT+IFWayGZ52G/f3hqIoEGPX2Uulo+JNK5kq1Y3i1V3Pp/FveHeNvnW0xVP/zycNET0NMhnD3cC+vuvPU2HybJ0VtrySU9hv9E
 MIME-Version: 1.0
-References: <cover.1700548379.git.yu.c.chen@intel.com> <35e612eb2851693a52f7ed1ff9be5bc24011136f.1700548379.git.yu.c.chen@intel.com>
- <3dd5ae53-a914-bfd1-285e-e206ba0c58bd@linux.ibm.com>
-In-Reply-To: <3dd5ae53-a914-bfd1-285e-e206ba0c58bd@linux.ibm.com>
-From:   Chen Yu <yu.chen.surf@gmail.com>
-Date:   Thu, 30 Nov 2023 14:43:00 +0800
-Message-ID: <CADjb_WTFrPAgf5h1af4GuMFJ8UrDjzCPb_K+SZFo5s80xcniVA@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] sched/fair: do not scribble cache-hot CPU in select_idle_cpu()
-To:     Madadi Vineeth Reddy <vineethr@linux.ibm.com>
-Cc:     Chen Yu <yu.c.chen@intel.com>, Tim Chen <tim.c.chen@intel.com>,
-        Aaron Lu <aaron.lu@intel.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mel Gorman <mgorman@suse.de>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
-        linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>
+X-Received: by 2002:a05:6870:1681:b0:1fa:1ee1:17e3 with SMTP id
+ j1-20020a056870168100b001fa1ee117e3mr722778oae.1.1701326765211; Wed, 29 Nov
+ 2023 22:46:05 -0800 (PST)
+Date:   Wed, 29 Nov 2023 22:46:05 -0800
+In-Reply-To: <20231130062513.547394-1-lizhi.xu@windriver.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007cc70b060b5901ee@google.com>
+Subject: Re: [syzbot] [net?] general protection fault in page_pool_unlist
+From:   syzbot <syzbot+f9f8efb58a4db2ca98d0@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, lizhi.xu@windriver.com,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Madadi,
+Hello,
 
-On Thu, Nov 30, 2023 at 1:26=E2=80=AFAM Madadi Vineeth Reddy
-<vineethr@linux.ibm.com> wrote:
->
-> Hi Chen Yu,
->
-[snip...]
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
->
-> As per my understanding, if the task which tagged a particular CPU as cac=
-he hot has woken up before
-> the cache_hot_timeout, we still don't allow that task to run on that part=
-icular CPU. Is this correct?
->
+Reported-and-tested-by: syzbot+f9f8efb58a4db2ca98d0@syzkaller.appspotmail.com
 
-Not exactly. When we reached select_idle_cpu(), we have already
-checked if the wakee's previous CPU
-is idle or not in select_idle_sibling(), if it is idle, we don't check
-the cache-hot tag and return the wakee's
-previous CPU directly in select_idle_sibling().
+Tested on:
 
-thanks,
-Chenyu
+commit:         a3799729 Merge branch 'net-page_pool-add-netlink-based..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=127a08bae80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=abf6d5a82dab01fe
+dashboard link: https://syzkaller.appspot.com/bug?extid=f9f8efb58a4db2ca98d0
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=10c4e3aae80000
 
-> If correct, then why don't we let the task to select the CPU if it's the =
-one that tagged it?
->
-> Thanks and Regards
-> Madadi Vineeth Reddy
+Note: testing is done by a robot and is best-effort only.
