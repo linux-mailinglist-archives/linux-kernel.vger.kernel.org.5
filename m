@@ -2,203 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9099A7FEA45
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 09:14:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1448E7FEA48
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 09:16:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344842AbjK3IOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 03:14:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60604 "EHLO
+        id S231676AbjK3IPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 03:15:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231714AbjK3IOg (ORCPT
+        with ESMTP id S229596AbjK3IPw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 03:14:36 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25E80A3
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 00:14:42 -0800 (PST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id B8D2F21AA3;
-        Thu, 30 Nov 2023 08:14:40 +0000 (UTC)
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9A8E21342E;
-        Thu, 30 Nov 2023 08:14:40 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-        by imap1.dmz-prg2.suse.org with ESMTPSA
-        id yeW3InBEaGUZaQAAD6G6ig
-        (envelope-from <mhocko@suse.com>); Thu, 30 Nov 2023 08:14:40 +0000
-Date:   Thu, 30 Nov 2023 09:14:35 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     Roman Gushchin <roman.gushchin@linux.dev>,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Linux-MM <linux-mm@kvack.org>, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Chinner <david@fromorbit.com>
-Subject: Re: [PATCH 2/7] mm: shrinker: Add a .to_text() method for shrinkers
-Message-ID: <ZWhEawxI1CT8stu9@tiehlicka>
-References: <deed9bb1-02b9-4e89-895b-38a84e5a9408@gmail.com>
- <20231123212411.s6r5ekvkklvhwfra@moria.home.lan>
- <4caadff7-1df0-45cc-9d43-e616f9e4ddb3@bytedance.com>
- <20231125003009.tbaxuquny43uwei3@moria.home.lan>
- <76A1EE85-B62C-49B3-889C-80F9A2A88040@linux.dev>
- <20231128035345.5c7yc7jnautjpfoc@moria.home.lan>
- <abd0ddd6-389c-43dc-b18f-aa5e3a4fcf5a@bytedance.com>
- <ZWaHG09fY2BYjyGD@P9FQF9L96D.corp.robot.car>
- <ZWcBDglmDKUJdwMv@tiehlicka>
- <20231129231147.7msiocerq7phxnyu@moria.home.lan>
+        Thu, 30 Nov 2023 03:15:52 -0500
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C172A3;
+        Thu, 30 Nov 2023 00:15:58 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id ABE3760004;
+        Thu, 30 Nov 2023 08:15:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1701332156;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=s69TJTYmQM2Na6w0MNv4Zxu5ZAZSHQgLCcpXlVWiE5Q=;
+        b=lxUKTMQX8E2vo+LCDvXlICGZucgDDgZYYV9wpbwQn4UHEzCvIDDO7nf/zE79tvnzjwVJSE
+        6F9wnSwCtwUz4rPsCF7/U8PaXIfwRS/nhEbcEmuyIk3C/XXm0x9ckfhLILqMHLxEN59dHG
+        ErWJmVlip+O3niyxS7Lfac43KHct0grhDa58gx+0pWyVqc2TW5Txz9qmB1zacLqMvwTU1A
+        maDt0RCjA8Jpz+LdPH5BS6ti77Q/6bhA2e4F9NsvWTuP6rPtbZUUR7sV8S2CcG0IbZUzfM
+        /Da1FsSyGY4X4nvL/YgEBKbK45nD2qJ2iVcwSXVomZHdgAqXXi8XYXqjPAvNMg==
+From:   Gregory CLEMENT <gregory.clement@bootlin.com>
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Subject: Re: [PATCH 0/2] MIPS: Adjust SPARSEMEM Kconfigs
+In-Reply-To: <20231028-mm-v1-0-45377cd158cf@flygoat.com>
+References: <20231028-mm-v1-0-45377cd158cf@flygoat.com>
+Date:   Thu, 30 Nov 2023 09:15:56 +0100
+Message-ID: <878r6ffygz.fsf@BL-laptop>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231129231147.7msiocerq7phxnyu@moria.home.lan>
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Rspamd-Server: rspamd2
-X-Spamd-Result: default: False [-4.00 / 50.00];
-         REPLY(-4.00)[]
-X-Spam-Score: -4.00
-X-Rspamd-Queue-Id: B8D2F21AA3
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-GND-Sasl: gregory.clement@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 29-11-23 18:11:47, Kent Overstreet wrote:
-> On Wed, Nov 29, 2023 at 10:14:54AM +0100, Michal Hocko wrote:
-> > On Tue 28-11-23 16:34:35, Roman Gushchin wrote:
-> > > On Tue, Nov 28, 2023 at 02:23:36PM +0800, Qi Zheng wrote:
-> > [...]
-> > > > Now I think adding this method might not be a good idea. If we allow
-> > > > shrinkers to report thier own private information, OOM logs may become
-> > > > cluttered. Most people only care about some general information when
-> > > > troubleshooting OOM problem, but not the private information of a
-> > > > shrinker.
-> > > 
-> > > I agree with that.
-> > > 
-> > > It seems that the feature is mostly useful for kernel developers and it's easily
-> > > achievable by attaching a bpf program to the oom handler. If it requires a bit
-> > > of work on the bpf side, we can do that instead, but probably not. And this
-> > > solution can potentially provide way more information in a more flexible way.
-> > > 
-> > > So I'm not convinced it's a good idea to make the generic oom handling code
-> > > more complicated and fragile for everybody, as well as making oom reports differ
-> > > more between kernel versions and configurations.
-> > 
-> > Completely agreed! From my many years of experience of oom reports
-> > analysing from production systems I would conclude the following categories
-> > 	- clear runaways (and/or memory leaks)
-> > 		- userspace consumers - either shmem or anonymous memory
-> > 		  predominantly consumes the memory, swap is either depleted
-> > 		  or not configured.
-> > 		  OOM report is usually useful to pinpoint those as we
-> > 		  have required counters available
-> > 		- kernel memory consumers - if we are lucky they are
-> > 		  using slab allocator and unreclaimable slab is a huge
-> > 		  part of the memory consumption. If this is a page
-> > 		  allocator user the oom repport only helps to deduce
-> > 		  the fact by looking at how much user + slab + page
-> > 		  table etc. form. But identifying the root cause is
-> > 		  close to impossible without something like page_owner
-> > 		  or a crash dump.
-> > 	- misbehaving memory reclaim
-> > 		- minority of issues and the oom report is usually
-> > 		  insufficient to drill down to the root cause. If the
-> > 		  problem is reproducible then collecting vmstat data
-> > 		  can give a much better clue.
-> > 		- high number of slab reclaimable objects or free swap
-> > 		  are good indicators. Shrinkers data could be
-> > 		  potentially helpful in the slab case but I really have
-> > 		  hard time to remember any such situation.
-> > On non-production systems the situation is quite different. I can see
-> > how it could be very beneficial to add a very specific debugging data
-> > for subsystem/shrinker which is developed and could cause the OOM. For
-> > that purpose the proposed scheme is rather inflexible AFAICS.
-> 
-> Considering that you're an MM guy, and that shrinkers are pretty much
-> universally used by _filesystem_ people - I'm not sure your experience
-> is the most relevant here?
+Hello Jiaxun,
 
-I really do not understand where you have concluded that. In those years
-of analysis I was not debugging my _own_ code. I was dealing with
-customer reports and I would not really blame them to specifically
-trigger any class of OOM reports.
- 
-> The general attitude I've been seeing in this thread has been one of
-> dismissiveness towards filesystem people. Roman too; back when he was
-> working on his shrinker debug feature I reached out to him, explained
-> that I was working on my own, and asked about collaborating - got
-> crickets in response...
+> Hi,
+>
+> This series adjusted some mm Kconfigs, mainly sparsemem related.
 
-This is completely off and it makes me _really_ think whether
-discussions like this on is really worth time. You have been presented
-arguments, you seem to be convinced that every disagreement is against
-you. Not the first time this is happening. Stop it please!
+Following your feedback on my series adding support for EyeQ5[1]. I
+tested those 2 patches and as expected it reduces a lot the memory
+consumption, memap consumes 512 pages again while without these patches
+it consumed 8672 pages.
 
-As a matter of fact, you are proposeing a very specific form of
-debugging without showing that this is generally useful thing to do or
-even giving us couple of examples where that was useful in a production
-environment. This is where you should have started at and then we could
-help out to form an acceptable solution. Throwing "this does what we
-need, take it or leave" attitude is usualy not the best way to get your
-work merged.
- 
-> Hmm..
-> 
-> Besides that, I haven't seen anything what-so-ever out of you guys to
-> make our lives easier, regarding OOM debugging, nor do you guys even
-> seem interested in the needs and perspectives of the filesytem people.
-> Roman, your feature didn't help one bit for OOM debuging - didn't even
-> come with documentation or hints as to what it's for.
-> 
-> BPF? Please.
-> 
-> Anyways.
-> 
-> Regarding log spam: that's something this patchset already starts to
-> address. I don't think we needed to be dumping every single slab in the
-> system, for ~2 pages worth of logs; hence this patchset changes that to
-> just print the top 10.
+You can add on both patches my
 
-Increasing the threshold for slabs to be printed is something I wouldn't
-mind at all.
- 
-> The same approach is taken with shrinkers: more targeted, less spammy
-> output.
-> 
-> So now that that concern has been addressed, perhaps some actual meat:
-> 
-> For one, the patchset adds tracking for when a shrinker was last asked
-> to free something, vs. when it was actually freed. So right there, we
-> can finally see at a glance when a shrinker has gotten stuck and which
-> one.
+Tested-by: Gregory CLEMENT <gregory.clement@bootlin.com>
 
-The primary problem I have with this is how to decide whether to dump
-shrinker data and/or which shrinkers to mention. How do you know that it
-is the specific shrinker which has contributed to the OOM state?
-Printing that data unconditionally will very likely be just additional
-balast in most production situations. Sure if you are doing a filesystem
-development and you are tuning your specific shrinker then this might be
-a really important information to have. But then it is a debugging devel
-tool rather than something we want or need to have in a generic oom
-report.
+Thanks,
 
-All that being said, I am with you on the fact that the oom report in
-its current form could see improvements. But please when adding more
-information please always focus on general usefulness. We have a very
-rich tracing capabilities which could be used for ad-hoc or very
-specific purposes as it is much more flexible.
+Gregory
+>
+> Hope it is not too late for 6.7 :-)
+>
+> Thanks
+> - Jiaxun 
+>
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> ---
+> Jiaxun Yang (2):
+>       MIPS: Enable SPARSEMEM option unconditionally on 64BIT
+>       MIPS: generic: Set SPARSEMEM by default for 64BIT kernel
+>
+>  arch/mips/Kconfig             | 14 +++++++++-----
+>  arch/mips/loongson2ef/Kconfig |  4 ++--
+>  2 files changed, 11 insertions(+), 7 deletions(-)
+> ---
+> base-commit: 66f1e1ea3548378ff6387b1ce0b40955d54e86aa
+> change-id: 20231028-mm-82dc717e9e49
+>
+> Best regards,
+> -- 
+> Jiaxun Yang <jiaxun.yang@flygoat.com>
+>
 
 -- 
-Michal Hocko
-SUSE Labs
+Gregory Clement, Bootlin
+Embedded Linux and Kernel engineering
+http://bootlin.com
