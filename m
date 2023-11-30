@@ -2,79 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D26697FE829
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 05:07:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 319327FE826
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 05:07:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344444AbjK3EHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 23:07:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47718 "EHLO
+        id S1344417AbjK3EHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 23:07:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344423AbjK3EHJ (ORCPT
+        with ESMTP id S1344401AbjK3EG5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 23:07:09 -0500
-Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.220])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 18C9A98;
-        Wed, 29 Nov 2023 20:07:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=Osv7Sj7KBzk0d0IQpU
-        d2ITh5un8u4/k8C4CnlTjBGhQ=; b=KPak5qleSNGV4u4TydU3I2oZNb5+zRY66+
-        ffkJ6EGmhd6cOHxe6O2OkFqI8Cx2NrmkrhPjr3K68imZcUiEe9jVDwMmBjHNbJQ2
-        yVy0AuSot26bt5VDxQho400l0x9pgQ8NoBiQWPpQEtUccJ/id+ZinRRvXANh9/ta
-        1/mOLvkKs=
-Received: from localhost.localdomain (unknown [39.144.190.126])
-        by zwqz-smtp-mta-g0-3 (Coremail) with SMTP id _____wD3vh1UCmhl87xBEQ--.48084S2;
-        Thu, 30 Nov 2023 12:06:45 +0800 (CST)
-From:   Haoran Liu <liuhaoran14@163.com>
-To:     tsbogend@alpha.franken.de
-Cc:     fancer.lancer@gmail.com, tglx@linutronix.de,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Haoran Liu <liuhaoran14@163.com>
-Subject: [PATCH] [irqchip] mips-cpu: Add error handling in mips_cpu_register_ipi_domain
-Date:   Wed, 29 Nov 2023 20:06:42 -0800
-Message-Id: <20231130040642.36133-1-liuhaoran14@163.com>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: _____wD3vh1UCmhl87xBEQ--.48084S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW7Jr45uF13KrW5KF13ZF1fJFb_yoWkJFgE9a
-        4FyF93GF18Kr1DtF4xCrsIqr9aqrykWrnYgr92q3WYyrWavw1kG34avr4Sqr1xWFWIyF1x
-        Ja15Cw1SyF17ZjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7sR_GQ6DUUUUU==
-X-Originating-IP: [39.144.190.126]
-X-CM-SenderInfo: xolxxtxrud0iqu6rljoofrz/1tbiwhw4glc662x+5gABsX
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 29 Nov 2023 23:06:57 -0500
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4D5110C3
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 20:07:03 -0800 (PST)
+Received: from cwcc.thunk.org (pool-173-48-111-98.bstnma.fios.verizon.net [173.48.111.98])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 3AU46qlJ020706
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 29 Nov 2023 23:06:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1701317213; bh=Xsps4n/sMTMzmrMyP3g+fp2MnKRVB+UsMMREoNSvnpc=;
+        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+        b=HPx4i/geY+SjpwfkR5NqsHI0kF8HUtDpdfheC/9TOpOhI8pMRPuMg4LZbcSSsjlGD
+         fGjhTQG98O3GZmHjWNTIcmaF1t/qI+vAtkoBNjdEfhDf5yk5ScYHcgkDto8GJmB29k
+         pI2biLKWVw3Z42gd/4Pz0A1uTQdpY1cL91lQeW9TqJUKjV5ImFzxiC9yz3tLFZPaMn
+         /zyqZ8c/yDF6wO9AKUB+xlgh1+e9e8euZXXpFKKjg3muVxF7x/b8k5iIzdOdjeEa6b
+         wr6JQ8oqmGwd65eP5CLWsmwQBuHG2SUv55PuNNQuOzYTl6m8+wJCaGDnOvyYVCjIEJ
+         N8cZAIUQmvqDg==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id C8F8815C027C; Wed, 29 Nov 2023 23:06:51 -0500 (EST)
+Date:   Wed, 29 Nov 2023 23:06:51 -0500
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Daniel Dawson <danielcdawson@gmail.com>
+Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [inline_data] ext4: Stale flags before sync when convert to
+ non-inline
+Message-ID: <20231130040651.GC510020@mit.edu>
+References: <5189fe60-c3e3-4bc6-89d4-1033cf4337c3@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5189fe60-c3e3-4bc6-89d4-1033cf4337c3@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch enhances the mips_cpu_register_ipi_domain function in
-drivers/irqchip/irq-mips-cpu.c by adding error handling for the kzalloc
-call. Previously, the function lacked proper handling for kzalloc
-failures, which could lead to potential null pointer dereference issues
-under low memory conditions.
+On Tue, Nov 28, 2023 at 10:15:09PM -0800, Daniel Dawson wrote:
+> When a file is converted from inline to non-inline, it has stale flags until
+> sync.
+> 
+> If a file with inline data is written to such that it must become
+> non-inline, it temporarily appears to have the inline data flag and not (if
+> applicable) the extent flag. This is corrected on sync, but can cause
+> problems in certain situations.
 
-Signed-off-by: Haoran Liu <liuhaoran14@163.com>
----
- drivers/irqchip/irq-mips-cpu.c | 3 +++
- 1 file changed, 3 insertions(+)
+The issue here is delayed allocation.  When you write to a file with
+delayed allocation enabled, the file system doesn't decide where the
+data will be written on the storage device until the last possible
+minute, when writeback occurs.  This can be triggered by a fsync(2) or
+sync(2) system call,
 
-diff --git a/drivers/irqchip/irq-mips-cpu.c b/drivers/irqchip/irq-mips-cpu.c
-index 0c7ae71a0af0..a8030c2b135c 100644
---- a/drivers/irqchip/irq-mips-cpu.c
-+++ b/drivers/irqchip/irq-mips-cpu.c
-@@ -238,6 +238,9 @@ static void mips_cpu_register_ipi_domain(struct device_node *of_node)
- 	struct cpu_ipi_domain_state *ipi_domain_state;
- 
- 	ipi_domain_state = kzalloc(sizeof(*ipi_domain_state), GFP_KERNEL);
-+	if (!ipi_domain_state)
-+		panic("Failed to allocate MIPS CPU IPI domain state");
-+
- 	ipi_domain = irq_domain_add_hierarchy(irq_domain,
- 					      IRQ_DOMAIN_FLAG_IPI_SINGLE,
- 					      2, of_node,
--- 
-2.17.1
+> Why is this a problem? Because some code will fail under such a condition,
+> for example, lseek(..., SEEK_HOLE) will result in ENOENT. I ran into this
+> with Gentoo's Portage, which uses the call to handle sparse files when
+> copying. Sometimes, an ebuild creates a temporary file that is quickly
+> copied, and apparently the temporary is written in small increments,
+> triggering this.
 
+This is caused by missing logic in ext4_iomap_begin_report().  For the
+non-inline case, this function does this:
+
+	ret = ext4_map_blocks(NULL, inode, &map, 0);
+	if (ret < 0)
+		return ret;
+	if (ret == 0)
+		delalloc = ext4_iomap_is_delalloc(inode, &map);
+
+For a non-inline file, if you write some data blocks that hasn't been
+written back due to delayed allocation, ext4_map_blocks() won't be
+able to map the logical block to a physical block.  This logic is
+missing in the inline_data case:
+
+	if (ext4_has_inline_data(inode)) {
+		ret = ext4_inline_data_iomap(inode, iomap);
+		if (ret != -EAGAIN) {
+			if (ret == 0 && offset >= iomap->length)
+				ret = -ENOENT;
+			return ret;
+		}
+	}
+
+What's missing is a call to ext4_iomap_is_delalloc() in the case where
+ret == 0, and then setting the delayed allocation flag:
+
+	if (delalloc && iomap->type == IOMAP_HOLE)
+		iomap->type = IOMAP_DELALLOC;
+
+This will deal with the combination of inline_data and delayed
+allocation for SEEK_HOLE and for FIEMAP.
+
+I'll need to turn this into an actual patch and then create a test to
+validate the patch but I'm pretty sure this should deal with the
+problem you've come across.
+
+Cheers,
+
+						- Ted
