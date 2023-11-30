@@ -2,88 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9508F7FFBE9
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 21:04:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 508B57FFBEC
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 21:04:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376538AbjK3UEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 15:04:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41356 "EHLO
+        id S1376574AbjK3UEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 15:04:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229623AbjK3UEB (ORCPT
+        with ESMTP id S229623AbjK3UEp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 15:04:01 -0500
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF59010D1;
-        Thu, 30 Nov 2023 12:04:07 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-6cde11fb647so1352389b3a.1;
-        Thu, 30 Nov 2023 12:04:07 -0800 (PST)
+        Thu, 30 Nov 2023 15:04:45 -0500
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E94A10F9
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 12:04:51 -0800 (PST)
+Received: by mail-qt1-x836.google.com with SMTP id d75a77b69052e-4239f5c1ec2so7943921cf.0
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 12:04:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701374647; x=1701979447; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=S1PqvmjbjG7ykJL4JwIFBXR63eHhHL1dA03iPSsFySA=;
-        b=Ahb+yWNSbORuwyorR5XUZh3QuAuYD1NxQQ0HeKzY5zbC5Tc2ljV/6/4bxY7VWCywqf
-         nIc8atCGdNDR7Ph8MqyHorHkEd/5LDJweTNCk7CL/P0by9hrPMaivJOMPua3BQY3n6cf
-         +ryvHz0mcX8Cal1cVORfVWunWvqnvyHPzUgxxJS14+ygD+jIZAxYb4m1YXSJJmzUglRa
-         ECC1w/0092OYRh3o4qu/el1JD0F0c7cxUEltSmlKB9qPmxtTZGq1PZZNf8AIOQwuN9dX
-         F46QIRInvyUTmqfVVBWfzGBSU2aMYgOzcw08uMVbMO/H2mflEw5iWaar9Y5mFQzNaMQb
-         DGDw==
+        d=soleen.com; s=google; t=1701374690; x=1701979490; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=fJ0QwjQQA2sBtrYbspl5aVVUOMzblP9BjaUBDTeLH4Y=;
+        b=JWvcC1pal6xpzSMiXVKZ3LQWZozJh6A68OUbhMc5HRIydkr2zGclYGsoJMJXTZz/xs
+         wBvXNrKMp+st2rF2sSrc4rm64ugrwZ6ftqedxwvgQcvemmg79FRklmKg33ZLoCybcAah
+         DZSHbV3+bEYb0cFvieT7waWSk8+wi90inMdP+q29IYSfY6KgOjSDqdiENr34B2XtYvtm
+         yB2gTK51h0fqJ8z31ZAhb7BcO3laOA0FGB1xwfLTh2Y2aa3hxOjBdgjdTXVGkqcpu7d0
+         hDN/QRI+D7KA543aO91anP+nM0HHk5+pcVBuHKEDF0RgAohC9rYWJHld/+m1ZSoHeDiA
+         bWQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701374647; x=1701979447;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=S1PqvmjbjG7ykJL4JwIFBXR63eHhHL1dA03iPSsFySA=;
-        b=pLETJ2Vvm2/+pXaNEeDC6CmTFX1tpdn5qIbqm2j2glmC1VmBkw5plqK0mqAvmHqJSm
-         9LgC7V5DSUCBYag+YtVsHmr+YRdc5G5oG90K6GRJSIXXv+IrtFbkH4RZ8rD7XY9TmNYt
-         5u00/dM/RWbJNrWK/U/TCUT0/bwTDbcX34dDIpuxxXLGrrsjgQAnh+8F+vDchsvoK4LG
-         XAh3tcRCl269FCPO+7s+flVu0L7hizXn7jrXLRBtPNQVMPznxouRD3tc4zlYcigQlpLl
-         dR2V2ebys5zigy7Agw9TWm0MEpr9FSuRsUCeSF9bdO0FOPXAIgxLphb/6sfx+9Jzit6y
-         sobw==
-X-Gm-Message-State: AOJu0Yx3m0N6UK8eMOkF8zZLt878JQoalIpzdIulMh5FlfiIZ6/HuVRg
-        EtjC5L6E6p8idXh6yyUdVA0=
-X-Google-Smtp-Source: AGHT+IGSU4kyI6HVBJCtFk94/IFEQnVwQTXcvO/ANs4OXKB8r8sIbrouZN5nLd+MrFlIKiykCTmbNw==
-X-Received: by 2002:a05:6a20:3941:b0:18d:d16:e86 with SMTP id r1-20020a056a20394100b0018d0d160e86mr6475867pzg.59.1701374647242;
-        Thu, 30 Nov 2023 12:04:07 -0800 (PST)
-Received: from google.com ([2620:15c:9d:2:aab7:ef34:dd65:27fe])
-        by smtp.gmail.com with ESMTPSA id h17-20020aa79f51000000b006c5da6411b9sm1593213pfr.101.2023.11.30.12.04.06
+        d=1e100.net; s=20230601; t=1701374690; x=1701979490;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fJ0QwjQQA2sBtrYbspl5aVVUOMzblP9BjaUBDTeLH4Y=;
+        b=wQkciDjtulVZ/zYnL7BnIxaCdCR+VKiwfynhDbAaq0CNHlqQPoQi/rXwm044FRnYtC
+         wI8yJO8hkDO6ngd88hmivmD61nk7C8oTJZgAn2c8waiNzakn29kmnr/S/IkkudrZDHDp
+         GwXT2qqI1KYO+MUpfZ+GN96LCmWSRO3zErQ8RPML8oXvN1gmY8D9o7TyVfVKwfPke7Hg
+         iw8xCnEH3TC7isWfx9BDctbFKZSkH3gdzP1eZGYUUpq8pKZgqK7IkX+baphTKeSA5gvz
+         BcxUx01LR+ySLk0quSkDec2xTO5Cc8BkvIbS+xKOKpKf48NWlb57jk6atiIM+rqQqzfJ
+         k6ZA==
+X-Gm-Message-State: AOJu0Yxd/lYdFTvLDJJkeLUCpACoY3ywlqQ/tUeOW7rHZUJviod+m6SF
+        NcwkFt5+JagJHr+AaMuSSp7ChQ==
+X-Google-Smtp-Source: AGHT+IFTod/Py9hcH5oQn6ff5l7Gu58O8B3tXKspAhOROVnCb0qH7k4XfRrSgp2nr3dD/2mySscuWA==
+X-Received: by 2002:ac8:7c46:0:b0:423:8e6a:f7a with SMTP id o6-20020ac87c46000000b004238e6a0f7amr26732427qtv.64.1701374690104;
+        Thu, 30 Nov 2023 12:04:50 -0800 (PST)
+Received: from soleen.c.googlers.com.com (55.87.194.35.bc.googleusercontent.com. [35.194.87.55])
+        by smtp.gmail.com with ESMTPSA id f27-20020ac86edb000000b0041ea59e639bsm787447qtv.70.2023.11.30.12.04.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Nov 2023 12:04:06 -0800 (PST)
-Date:   Thu, 30 Nov 2023 12:04:04 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Esther Shimanovich <eshimanovich@chromium.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-input@vger.kernel.org,
-        Hans de Goede <hdegoede@redhat.com>,
-        Jonathan Denose <jdenose@chromium.org>,
-        Mattijs Korpershoek <mkorpershoek@baylibre.com>,
-        Werner Sembach <wse@tuxedocomputers.com>
-Subject: Re: [PATCH v2] Input: i8042 - add nomux quirk for Acer P459-G2-M
-Message-ID: <ZWjqtFVfpE701W3M@google.com>
-References: <20231130195615.v2.1.Ibe78a9df97ecd18dc227a5cff67d3029631d9c11@changeid>
+        Thu, 30 Nov 2023 12:04:49 -0800 (PST)
+From:   Pasha Tatashin <pasha.tatashin@soleen.com>
+To:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        pasha.tatashin@soleen.com, mst@redhat.com, jasowang@redhat.com,
+        kvm@vger.kernel.org, virtualization@lists.linux.dev,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] vhost-vdpa: account iommu allocations
+Date:   Thu, 30 Nov 2023 20:04:47 +0000
+Message-ID: <20231130200447.2319543-1-pasha.tatashin@soleen.com>
+X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231130195615.v2.1.Ibe78a9df97ecd18dc227a5cff67d3029631d9c11@changeid>
-X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FSL_HELO_FAKE,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 30, 2023 at 07:56:19PM +0000, Esther Shimanovich wrote:
-> After the laptop lid is opened, and the device resumes from S3 deep
-> sleep, if the user presses a keyboard key while the screen is still black,
-> the mouse and keyboard become unusable.
-> 
-> Enabling this quirk prevents this behavior from occurring.
-> 
-> Signed-off-by: Esther Shimanovich <eshimanovich@chromium.org>
+iommu allocations should be accounted in order to allow admins to
+monitor and limit the amount of iommu memory.
 
-Applied, thank you.
+Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
+---
+ drivers/vhost/vdpa.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
+This patch is spinned of from the series:
+https://lore.kernel.org/all/20231128204938.1453583-1-pasha.tatashin@soleen.com
+
+diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+index da7ec77cdaff..a51c69c078d9 100644
+--- a/drivers/vhost/vdpa.c
++++ b/drivers/vhost/vdpa.c
+@@ -968,7 +968,8 @@ static int vhost_vdpa_map(struct vhost_vdpa *v, struct vhost_iotlb *iotlb,
+ 			r = ops->set_map(vdpa, asid, iotlb);
+ 	} else {
+ 		r = iommu_map(v->domain, iova, pa, size,
+-			      perm_to_iommu_flags(perm), GFP_KERNEL);
++			      perm_to_iommu_flags(perm),
++			      GFP_KERNEL_ACCOUNT);
+ 	}
+ 	if (r) {
+ 		vhost_iotlb_del_range(iotlb, iova, iova + size - 1);
 -- 
-Dmitry
+2.43.0.rc2.451.g8631bc7472-goog
+
