@@ -2,147 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B299E7FFB5D
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 20:31:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 314167FFAD0
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 20:10:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376442AbjK3Tav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 14:30:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40120 "EHLO
+        id S230169AbjK3TKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 14:10:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376490AbjK3Tao (ORCPT
+        with ESMTP id S230045AbjK3TKQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 14:30:44 -0500
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5936D40
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 11:30:50 -0800 (PST)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-a132acb67b5so190121866b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 11:30:50 -0800 (PST)
+        Thu, 30 Nov 2023 14:10:16 -0500
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E0AFD40;
+        Thu, 30 Nov 2023 11:10:22 -0800 (PST)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-6cdd214bce1so1298198b3a.3;
+        Thu, 30 Nov 2023 11:10:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701372649; x=1701977449; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=07QYxEgyoqmQ3Q1vq77DMefnw2mMccatpZsNXnEAueU=;
-        b=AMuqyq8Di2KMd1hQ/tuSmaY+EisuXhI9qaqpeIiIjbgEdJ4bkCvH++dVzhssPk8fkK
-         FwgkOtaCGMh8CzJUZ4DeZo8lgcXQn3UfSnF1+QJUw9rwaMU4MxlzZR0zN8gciUAXbqMA
-         UppN7dNuSmggeosKfS2xJqUZzrTNRnUx0u//ojsSuYeCSDejGfLVZwEvd+sZkwkRps7y
-         GgdYIpbXhAZWZijqYuwovVO93Mu5a4gXM74vybrBkQ2oF6HVbbSKJwwPA88hMiInlqOQ
-         ZEDt6oElhzZUugzJDHga3bu1/KcYTInVDkKL/Lvt9IwUq1+50ci/T3kUOQQaxC9JVqns
-         A7dw==
+        d=gmail.com; s=20230601; t=1701371422; x=1701976222; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=QitiP5XoRIz3e5peYWbCOL+stxKLuwju5RuWWjYKtdk=;
+        b=nX5NW2+GyVof7MzsFEsjl47R4qmffZ8jocd8lOJilLUVG2ZG4qyuPXgScJ3fGxZO0E
+         adUtIxyh2aEBnOay0cw1aUh+mKdXWYOIwMtQBgyfLBiomt5MRXJZIUSJhveIZNI8dxn1
+         NAEldlA3DkWWXpcPlw6KF4LPyzNTDWvzeUuvPHxt2oFaBQ7obq0SoHOmtxrWetLN2Dh4
+         obnc8G3d5hCX5wF7NC3PiAaeJpXjOVgaJ13O8aVEzfzrakLbgddVAHzWLGTccqoKapl2
+         DePC8C/PI5QnRvfisZMCq5k7856iNf0LqTqREmTWLIUg2KDScjjMTQTDwKtBWHl7PcZd
+         8j0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701372649; x=1701977449;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=07QYxEgyoqmQ3Q1vq77DMefnw2mMccatpZsNXnEAueU=;
-        b=bgAao4RNMLTQWFi8Zw/SNLUJKQTKIoRegqcld/KZgrjgmZqDyratygIbaj7ql8xXfD
-         ijMrQbPZE3JtqGaK5AXXY3MCuEG6s/C/6KQZ2ru98mcydg2hbBua1T7U8erqCYXKaFsU
-         jrSk8nXue8+NwbS27+ry+Cl7JK1BvOIVYfWRtqTj+d496ZhfbXID4co/DGt6uSNhhwQt
-         HchaTprGY0kLHyT7a93lGclu5cf8qyGZY9NfW8XguMkR3BDUM8QRRyzEvTReXeV7iCU1
-         kwn2UvCOU5NYHks6Kr21ZiMpza8IIgVRN46x/eqpXhdYuGywqgW/pTIDcOk9rIGFs77A
-         Iw7g==
-X-Gm-Message-State: AOJu0YxfQDpLGq6FPoYjVf33SJBsG5t811LxSZsJTMxquXWTVqVIaPwm
-        5nWOA8GHmPmW1A8ZJlJbvFXG5/xAx8VxqaX79U2+DA==
-X-Google-Smtp-Source: AGHT+IH5RLOmJKYkkr8iZOW9SC+fCUJYFeQDas3VL1+GiBFExPCe+HsuOw/Ti2CQ542OzjVBSw5i4g==
-X-Received: by 2002:a17:906:ca2:b0:9fe:3bb6:99fe with SMTP id k2-20020a1709060ca200b009fe3bb699femr80697ejh.2.1701367698155;
-        Thu, 30 Nov 2023 10:08:18 -0800 (PST)
-Received: from krzk-bin.. ([178.197.223.109])
-        by smtp.gmail.com with ESMTPSA id y16-20020a170906559000b009a1dbf55665sm926713ejp.161.2023.11.30.10.08.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Nov 2023 10:08:17 -0800 (PST)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Banajit Goswami <bgoswami@quicinc.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH v2 3/3] ASoC: qcom: audioreach: Add 4 channel support
-Date:   Thu, 30 Nov 2023 19:07:58 +0100
-Message-Id: <20231130180758.212172-3-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231130180758.212172-1-krzysztof.kozlowski@linaro.org>
-References: <20231130180758.212172-1-krzysztof.kozlowski@linaro.org>
+        d=1e100.net; s=20230601; t=1701371422; x=1701976222;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QitiP5XoRIz3e5peYWbCOL+stxKLuwju5RuWWjYKtdk=;
+        b=F90Y/7sc6WCwrPY2qHeSD5bZQ4grz2ZRLqGm8iqLEsRZ0mJPD1SSPtLrz6VRDHxcuY
+         EHzB6m/LSkdywP43rApEpxPZl/SMDB+UzxTDjv65WiLbJpiAmuXPSr3mDw5sH2Ryxeyy
+         Bl2biFXCLg06D7RMhOZxpaWjdxnlDxnRRQYQNXmlkusCazZyUwqxA3YCyMRQlYtDyxUm
+         vEzHHTLe8zJDurTvb/pw3Tf5Lxt/mnIhZpn5nC19qrNbJ97kqU+ebC8zrEs++U08sQ9V
+         sLWSkloxKfxWXRLHYeL21ghvKjG4Gz8xIOEPfe2iFO4v/01dhLZ1vXAfuot/zhUvLR3Q
+         ZBYQ==
+X-Gm-Message-State: AOJu0Ywdg2p7MqPkhxc93AzNkxZqqufrcBTFK4FyQFYhzzOcn4YEKz+T
+        NehbEMjAFXuBIsVP6KrbvRE=
+X-Google-Smtp-Source: AGHT+IHxIthsTZ50FfgNUEXYgObdZ0eyLoZ/m4F1pEt0Pn46iewGSeoWvofyMMSEEWAw+V69/bPv9g==
+X-Received: by 2002:a05:6a00:2d0b:b0:6cd:f69f:e3a3 with SMTP id fa11-20020a056a002d0b00b006cdf69fe3a3mr1681746pfb.21.1701371421855;
+        Thu, 30 Nov 2023 11:10:21 -0800 (PST)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id 77-20020a630150000000b005b8ea15c338sm1595622pgb.62.2023.11.30.11.10.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Nov 2023 11:10:21 -0800 (PST)
+Message-ID: <63978ea9-0be6-4698-ba0d-7eba78e986e0@gmail.com>
+Date:   Thu, 30 Nov 2023 11:10:18 -0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6.1 00/82] 6.1.65-rc1 review
+Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org, allen.lkml@gmail.com
+References: <20231130162135.977485944@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20231130162135.977485944@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support four channel streams.  Map channel 3 and 4 to left/right
-surround ("quad(side)" from ffmpeg standard channel list) to match what
-is in qdsp6/q6dsp-common.c driver.
+On 11/30/23 08:21, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.1.65 release.
+> There are 82 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sat, 02 Dec 2023 16:21:18 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.65-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
+BMIPS_GENERIC:
 
----
-
-Changes in v2:
-1. Rebase to avoid duplicate code.
-
-v1:
-https://lore.kernel.org/alsa-devel/20231020084919.18628-1-krzysztof.kozlowski@linaro.org/
-
-quad(side):
-https://trac.ffmpeg.org/wiki/AudioChannelManipulation#Listchannelnamesandstandardchannellayouts
----
- sound/soc/qcom/qdsp6/audioreach.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/qcom/qdsp6/audioreach.c b/sound/soc/qcom/qdsp6/audioreach.c
-index 5c7113d46b6f..5291deac0a0b 100644
---- a/sound/soc/qcom/qdsp6/audioreach.c
-+++ b/sound/soc/qcom/qdsp6/audioreach.c
-@@ -274,6 +274,11 @@ static void audioreach_set_channel_mapping(u8 *ch_map, int num_channels)
- 	} else if (num_channels == 2) {
- 		ch_map[0] =  PCM_CHANNEL_FL;
- 		ch_map[1] =  PCM_CHANNEL_FR;
-+	} else if (num_channels == 4) {
-+		ch_map[0] =  PCM_CHANNEL_FL;
-+		ch_map[1] =  PCM_CHANNEL_FR;
-+		ch_map[2] =  PCM_CHANNEL_LS;
-+		ch_map[3] =  PCM_CHANNEL_RS;
- 	}
- }
- 
-@@ -843,6 +848,11 @@ static int audioreach_mfc_set_media_format(struct q6apm_graph *graph,
- 	} else if (num_channels == 2) {
- 		media_format->channel_mapping[0] = PCM_CHANNEL_FL;
- 		media_format->channel_mapping[1] = PCM_CHANNEL_FR;
-+	} else if (num_channels == 4) {
-+		media_format->channel_mapping[0] = PCM_CHANNEL_FL;
-+		media_format->channel_mapping[1] = PCM_CHANNEL_FR;
-+		media_format->channel_mapping[2] = PCM_CHANNEL_LS;
-+		media_format->channel_mapping[3] = PCM_CHANNEL_RS;
- 	}
- 
- 	rc = q6apm_send_cmd_sync(graph->apm, pkt, 0);
-@@ -1063,7 +1073,7 @@ static int audioreach_pcm_set_media_format(struct q6apm_graph *graph,
- 	int rc, payload_size;
- 	struct gpr_pkt *pkt;
- 
--	if (num_channels > 2) {
-+	if (num_channels > 4) {
- 		dev_err(graph->dev, "Error: Invalid channels (%d)!\n", num_channels);
- 		return -EINVAL;
- 	}
-@@ -1117,7 +1127,7 @@ static int audioreach_shmem_set_media_format(struct q6apm_graph *graph,
- 	struct gpr_pkt *pkt;
- 	void *p;
- 
--	if (num_channels > 2) {
-+	if (num_channels > 4) {
- 		dev_err(graph->dev, "Error: Invalid channels (%d)!\n", num_channels);
- 		return -EINVAL;
- 	}
+Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
 -- 
-2.34.1
+Florian
 
