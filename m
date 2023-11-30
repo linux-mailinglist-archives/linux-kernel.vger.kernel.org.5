@@ -2,160 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64CF17FFDF7
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 22:51:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 882537FFE0C
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 22:53:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376987AbjK3VvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 16:51:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52042 "EHLO
+        id S1377046AbjK3Vxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 16:53:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232421AbjK3VvJ (ORCPT
+        with ESMTP id S1377029AbjK3Vxr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 16:51:09 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D9A810DE
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 13:51:15 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20E48C433C8;
-        Thu, 30 Nov 2023 21:51:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701381074;
-        bh=gXHc+SuljVO+wY/m8aVAbwCBVxzxhWKTAHg4DIJiGXk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ao1pC1rUSVjJZYSjZKEv1b/bt2MEqF/SoDkjSD6sUMnxSzEkeTHc4ZQPPJbw0I0F1
-         SSXYPn2JflPnHrBnsGyJdj17pBZuDgLDvfr+xEuUr+erlei0MhOaA6ukRi49OS4tYm
-         sS1Bai60e+/VdUPTKVwNOeK/iY937K740c1WcA/zvoquyPCMNbH62XDwJ4mm9xNFWo
-         I3s/GFoBIouL+8FXPK4D3tnKtm4cp8w3TcHi/APCE384+KDwGl70T74qKOfsYYsrg/
-         ZeMf0tId/9RYUy/bom0hXDuhbyHTbk2K8BAB11GYgMzcM218zNtyJMtiUa/gsjRiC6
-         g+iUAUWvyPjJA==
-Date:   Thu, 30 Nov 2023 21:51:04 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
-        Deepak Gupta <debug@rivosinc.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-        Will Deacon <will@kernel.org>,
-        Kees Cook <keescook@chromium.org>, jannh@google.com,
-        linux-kselftest@vger.kernel.org, linux-api@vger.kernel.org,
-        David Hildenbrand <david@redhat.com>
-Subject: Re: [PATCH RFT v4 0/5] fork: Support shadow stacks in clone3()
-Message-ID: <fce4c169-5d19-40e8-bc32-0abec9bb008e@sirena.org.uk>
-References: <20231128-clone3-shadow-stack-v4-0-8b28ffe4f676@kernel.org>
- <ZWjb6r0RWPo199pC@arm.com>
+        Thu, 30 Nov 2023 16:53:47 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8C8D10DF;
+        Thu, 30 Nov 2023 13:53:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701381234; x=1732917234;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=szEhgwh4Idld7dvIWDY2z9wrG2QKjBvPHBigd0PVM6M=;
+  b=XFbvk5rJIBsGranFm9lPqGqPKDgMZMjJH9USjnuAUtLV214BHRBAC5oG
+   ww0uXvtWUK/yUOs/talrmOIO5m1SJtakF2hNUTFi11lTvv1JszDgpalhp
+   MFrJXk/Lt0+35BQzMTUV+n9+PcVA86Hk3rFKQhye2T/3s7vVA17zgYJJ7
+   6RixaXmVQ2hykYn3qrkdz76xAaBW7BfWqpOhyY+grdyh3XkwYl7QlCleK
+   8qQh3yFuTGJMwH4RVTR9y4YJ9qnWurtiUeIaZfY3WNEBFoXKMQQJnresy
+   ktJ2ram43nOOnBrbHml6EtozY5N0/fdMgA/zJkxltUsO/eWOjFh/Ljbor
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="6631891"
+X-IronPort-AV: E=Sophos;i="6.04,240,1695711600"; 
+   d="scan'208";a="6631891"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 13:53:54 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="719263954"
+X-IronPort-AV: E=Sophos;i="6.04,240,1695711600"; 
+   d="scan'208";a="719263954"
+Received: from araj-dh-work.jf.intel.com ([10.165.157.158])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 13:53:53 -0800
+Date:   Thu, 30 Nov 2023 13:51:27 -0800
+From:   Ashok Raj <ashok_raj@linux.intel.com>
+To:     Zhang Rui <rui.zhang@intel.com>
+Cc:     linux@roeck-us.net, jdelvare@suse.com, fenghua.yu@intel.com,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ashok Raj <ashok.raj@intel.com>
+Subject: Re: [PATCH 1/3] hwmon: (coretemp) Introduce enum for attr index
+Message-ID: <ZWkDQ5y3e4oPONni@araj-dh-work.jf.intel.com>
+References: <20231127131651.476795-1-rui.zhang@intel.com>
+ <20231127131651.476795-2-rui.zhang@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="EREZrZaaB+LjPV4s"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZWjb6r0RWPo199pC@arm.com>
-X-Cookie: Oh, wow!  Look at the moon!
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231127131651.476795-2-rui.zhang@intel.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Nov 27, 2023 at 09:16:49PM +0800, Zhang Rui wrote:
+> Introduce enum coretemp_attr_index to better describe the index of each
+> sensor attribute and the maximum number of basic/possible attributes.
+> 
+> No functional change.
+> 
+> Signed-off-by: Zhang Rui <rui.zhang@intel.com>
+> ---
+>  drivers/hwmon/coretemp.c | 12 ++++++++++--
+>  1 file changed, 10 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/hwmon/coretemp.c b/drivers/hwmon/coretemp.c
+> index ba82d1e79c13..6053ed3761c2 100644
+> --- a/drivers/hwmon/coretemp.c
+> +++ b/drivers/hwmon/coretemp.c
+> @@ -43,10 +43,18 @@ MODULE_PARM_DESC(tjmax, "TjMax value in degrees Celsius");
+>  #define BASE_SYSFS_ATTR_NO	2	/* Sysfs Base attr no for coretemp */
+>  #define NUM_REAL_CORES		128	/* Number of Real cores per cpu */
+>  #define CORETEMP_NAME_LENGTH	28	/* String Length of attrs */
+> -#define MAX_CORE_ATTRS		4	/* Maximum no of basic attrs */
+> -#define TOTAL_ATTRS		(MAX_CORE_ATTRS + 1)
+>  #define MAX_CORE_DATA		(NUM_REAL_CORES + BASE_SYSFS_ATTR_NO)
+>  
+> +enum coretemp_attr_index {
+> +	ATTR_LABEL,
+> +	ATTR_CRIT_ALARM,
+> +	ATTR_TEMP,
+> +	ATTR_TJMAX,
+> +	ATTR_TTARGET,
+> +	TOTAL_ATTRS,			/* Maximum no of possible attrs */
+> +	MAX_CORE_ATTRS = ATTR_TJMAX + 1	/* Maximum no of basic attrs */
 
---EREZrZaaB+LjPV4s
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This seems odd. TOTAL_ATTRS being the last entry seems fine, but defining a
+MAX_CORE_ATTR the way above sounds a bit hacky.
 
-On Thu, Nov 30, 2023 at 07:00:58PM +0000, Catalin Marinas wrote:
-
-> My hope when looking at the arm64 patches was that we can completely
-> avoid the kernel allocation/deallocation of the shadow stack since it
-> doesn't need to do this for the normal stack either. Could someone
-> please summarise why we dropped the shadow stack pointer after v1? IIUC
-> there was a potential security argument but I don't think it was a very
-> strong one. Also what's the threat model for this feature? I thought
-> it's mainly mitigating stack corruption. If some rogue code can do
-> syscalls, we have bigger problems than clone3() taking a shadow stack
-> pointer.
-
-As well as preventing/detecting corruption of the in memory stack shadow
-stacks are also ensuring that any return instructions are unwinding a
-prior call instruction, and that the returns are done in opposite order
-to the calls.  This forces usage of the stack - any value we attempt to
-RET to is going to be checked against the top of the shadow stack which
-makes chaining returns together as a substitute for branches harder.
-
-The concern Rick raised was that allowing user to pick the exact shadow
-stack pointer would allow userspace to corrupt or reuse the stack of an
-existing thread by starting a new thread with the shadow stack pointing
-into the existing shadow stack of that thread.  While in isolation
-that's not too much more than what userspace could just do directly
-anyway it might compose with other issues to something more "interesting"
-(eg, I'd be a bit concerned about overlap with pkeys/POE though I've not
-thought through potential uses in detail).
-
-> I'm not against clone3() getting a shadow_stack_size argument but asking
-> some more questions. If we won't pass a pointer as well, is there any
-> advantage in expanding this syscall vs a specific prctl() option? Do we
-> need a different size per thread or do all threads have the same shadow
-> stack size? A new RLIMIT doesn't seem to map well though, it is more
-> like an upper limit rather than a fixed/default size (glibc I think uses
-> it for thread stacks but bionic or musl don't AFAIK).
-
-I don't know what the userspace patterns are likely to be here, it's
-possible a single value for each process might be fine but I couldn't
-say that confidently.  I agree that a RLIMIT does seem like a poor fit.
-
-As well as the actual configuration of the size the other thing that we
-gain is that as well as relying on heuristics to determine if we need to
-allocate a new shadow stack for the new thread we allow userspace to
-explicitly request a new shadow stack.  There was some corner case with
-IIRC posix_nspawn() mentioned where the heuristics aren't what we want
-for example.
-
-> Another dumb question on arm64 - is GCSPR_EL0 writeable by the user? If
-> yes, can the libc wrapper for threads allocate a shadow stack via
-> map_shadow_stack() and set it up in the thread initialisation handler
-> before invoking the thread function?
-
-No, GCSPR_EL0 can only be changed by EL0 through BL, RET and the
-new GCS instructions (push/pop and stack switch).  Push is optional -
-userspace has to explicitly request that it be enabled and this could be
-prevented through seccomp or some other LSM.  The stack switch
-instructions require a token at the destination address which must
-either be written by a higher EL or will be written in the process of
-switching away from a stack so you can switch back.  Unless I've missed
-one every mechanism for userspace to update GCSPR_EL0 will do a GCS
-memory access so providing guard pages have been allocated wrapping to a
-different stack will be prevented.
-
-We would need a syscall to allow GCSPR_EL0 to be written.
-
---EREZrZaaB+LjPV4s
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEyBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVpA8cACgkQJNaLcl1U
-h9Ca+wf3QFyzGukhu9LAOptm51dV0RGGmEApy11RuLhFZpMcwhZf72d1VLoTaX94
-2M9lCSisanqBpgOn+QY89X1GfxUDo/WgMDORlBCFqGOHe3nW7L2ACk26m9HjTa9e
-+WhaSQq2Q2Ujhq52LMQJel/UNV2KkMR3vza+gBaag3QqsPwKXQXKSqg6krP2UrbP
-O91VoUbpivePKisHXR+hmKnOpuYTYGpUGZzP3GtvrvIUNXyu2Vh8XZ3b8cLHR146
-Lt+IHXjK10CoX3iqTRUlMB1v7uq8peIbt/d9hG9QihIR0utyluwXeMFmPFn6MEcv
-qhw0z1fyt4DQjITRgu6gV86KpbFB
-=v09W
------END PGP SIGNATURE-----
-
---EREZrZaaB+LjPV4s--
+> +};
+> +
+>  #ifdef CONFIG_SMP
+>  #define for_each_sibling(i, cpu) \
+>  	for_each_cpu(i, topology_sibling_cpumask(cpu))
+> -- 
+> 2.34.1
+> 
