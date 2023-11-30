@@ -2,93 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 517A87FED65
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 11:55:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0A067FED56
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 11:54:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345113AbjK3Kz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 05:55:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32848 "EHLO
+        id S1345070AbjK3Kyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 05:54:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345109AbjK3KzO (ORCPT
+        with ESMTP id S231784AbjK3Kym (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 05:55:14 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6A7E170B
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 02:55:20 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 218E9C433CB;
-        Thu, 30 Nov 2023 10:55:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701341720;
-        bh=EqaFNvqa3Yaf2e/v2zXcPa+NF9mRVVDkSa+wDJv0Wc8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Lp7SZy0NUGDmnnSAUp1ak9WDeEeL2H3QZaY62S6szF6Uimt0rETKvW06GDU2UMBqQ
-         PFL/Wh7mo6eDkzK+rlw0+VmJVokekplOWxPD1oSyUuIW989CUreK3vlsl+BBCT6UbD
-         uakMX3Sbkyo4F04JXRzAmTVsKSgKDPaRBj0oYqCEFDPXNpNzXUQIwlMcnAtrihM/rM
-         cPdP1c/uDBJHA2H0raR/lSYh01PlIFlAw71455l9Ux6r+GSDsl3wAVCHZ5foajhuvG
-         5aztBRabH35wVkn7sIFZ337MmNW9zM9JmeqqXWEsH2RapDKT9V8RETIbMUvHYZUt2D
-         kkwP4OiYy0/KA==
-From:   Lee Jones <lee@kernel.org>
-To:     lee@kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Dmitry Bogdanov <d.bogdanov@yadro.com>,
-        linux-usb@vger.kernel.org
-Subject: [PATCH 5/5] usb: gadget: f_tcm: Remove snprintf() from sysfs call-backs and replace with sysfs_emit()
-Date:   Thu, 30 Nov 2023 10:54:39 +0000
-Message-ID: <20231130105459.3208986-6-lee@kernel.org>
-X-Mailer: git-send-email 2.43.0.rc1.413.gea7ed67945-goog
-In-Reply-To: <20231130105459.3208986-1-lee@kernel.org>
-References: <20231130105459.3208986-1-lee@kernel.org>
+        Thu, 30 Nov 2023 05:54:42 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13789E6;
+        Thu, 30 Nov 2023 02:54:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701341689; x=1732877689;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=1bA8QdXkqNyYvXu1SfXfNGr8LDOv/Eh71Y2D+1xrOws=;
+  b=gGrFpjIC5gP5BJpEzdvs8DxrzyqSgo18C2R/CJReAxAVnkJ6wkD55OX5
+   9sksjgcZRWDj1QUqh0t+KD8xL8SpXTtL98NLs92jQ4te0RWrvjGK6e/jx
+   6Fldvp43c8eZrdLvYmOS4k8zgd5WiWZYkuEGBhVKsXaBHRJmdcf9KUquP
+   /qB1oSLoHReBI6gdDXUrGrOpWhuLb4lonw6LRaSKt2p5yRI2dh4M/VNuo
+   yAcp2/xjUstaFyryVFbre8ox406Rlw1pRl7gupOZfJJb4yoYUj23ZWmPJ
+   vciUbaA4cMsfn8ZiEGJPPz7tKp3mQrflaUMFDBbUATvXlEKRQNKDPteJq
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="295220"
+X-IronPort-AV: E=Sophos;i="6.04,237,1695711600"; 
+   d="scan'208";a="295220"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 02:54:49 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="773021159"
+X-IronPort-AV: E=Sophos;i="6.04,237,1695711600"; 
+   d="scan'208";a="773021159"
+Received: from kuha.fi.intel.com ([10.237.72.185])
+  by fmsmga007.fm.intel.com with SMTP; 30 Nov 2023 02:54:44 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Thu, 30 Nov 2023 12:54:44 +0200
+Date:   Thu, 30 Nov 2023 12:54:44 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Roger Quadros <rogerq@kernel.org>
+Cc:     Alexandru Ardelean <alex@shruggie.ro>,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        gregkh@linuxfoundation.org, christophe.jaillet@wanadoo.fr,
+        a-govindraju@ti.com, trix@redhat.com, abdelalkuor@geotab.com
+Subject: Re: [PATCH] USB: typec: tps6598x: use device 'type' field to
+ identify devices
+Message-ID: <ZWhp9M8165DiTNTd@kuha.fi.intel.com>
+References: <20231123210021.463122-1-alex@shruggie.ro>
+ <ZWdKI9UOZ6INP0Tu@kuha.fi.intel.com>
+ <47ffbb30-34a7-4f5b-b262-3e068e574c8a@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <47ffbb30-34a7-4f5b-b262-3e068e574c8a@kernel.org>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since snprintf() has the documented, but still rather strange trait of
-returning the length of the data that *would have been* written to the
-array if space were available, rather than the arguably more useful
-length of data *actually* written, it is usually considered wise to use
-something else instead in order to avoid confusion.
+Hi Roger,
 
-In the case of sysfs call-backs, new wrappers exist that do just that.
+> > Why not just match against the structures themselves?
+> > 
+> >         if (tps->data == &tps25750_data)
+> >                 ...
+> 
+> Then you need to declare tps25750_data and friends at the top of the file?
+> 
+> A better approach might be to have type agnostic quirk flags for the special
+> behavior required for different types. This way, multiple devices can share
+> the same quirk if needed.
+> 
+> e.g.
+> NEEDS_POWER_UP instead of TIPD_TYPE_APPLE_CD321X
+> SKIP_VID_READ instead of TIPD_TYPE_TI_TPS25750X
+> INIT_ON_RESUME instead of TIPD_TYPE_TI_TPS25750X
+> 
+> Also rename cd321x_switch_power_state() to tps6598x_switch_power_state().
 
-This patch replaces just one use of snprintf() found in the sysfs
-.show() call-back with the new sysfs_emit() helper.
+No. Functions like that isolate cd321x specific functionality into an
+actual "function" just like they should.
 
-Link: https://lwn.net/Articles/69419/
-Link: https://github.com/KSPP/linux/issues/105
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc: Dmitry Bogdanov <d.bogdanov@yadro.com>
-Cc: linux-usb@vger.kernel.org
-Signed-off-by: Lee Jones <lee@kernel.org>
----
- drivers/usb/gadget/function/f_tcm.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Quirk flags mean that if something breaks, it will almost always break
+for everybody (there is no real isolation with quirk flags), and when
+things are fixed and when features are added, we are forced to always
+"dance" around those quirk flags - you always have to consider them.
 
-diff --git a/drivers/usb/gadget/function/f_tcm.c b/drivers/usb/gadget/function/f_tcm.c
-index ff33f31bcdf64..37befd6db001a 100644
---- a/drivers/usb/gadget/function/f_tcm.c
-+++ b/drivers/usb/gadget/function/f_tcm.c
-@@ -1504,8 +1504,8 @@ static ssize_t tcm_usbg_tpg_nexus_show(struct config_item *item, char *page)
- 		ret = -ENODEV;
- 		goto out;
- 	}
--	ret = snprintf(page, PAGE_SIZE, "%s\n",
--			tv_nexus->tvn_se_sess->se_node_acl->initiatorname);
-+	ret = sysfs_emit(page, "%s\n",
-+			 tv_nexus->tvn_se_sess->se_node_acl->initiatorname);
- out:
- 	mutex_unlock(&tpg->tpg_mutex);
- 	return ret;
+Platform/device type checks are just as bad IMO, but in one way they
+are better than quirk flags. There is no question about what a
+platform check is checking, but quirk flags can so easily become
+incomprehensible (just what exactly does it mean when you say
+NEEDS_POWER_UP, SKIP_VID_READ and so on (you would need to document
+those quirks, which is waste of effort, and in reality nobody will do).
+
+In case of tipd/code.c, it should be converted into a library that
+only has the common/shared functionality. CD321, TPS2579x, TPS6598x
+and what ever there is, then will have a glue driver that handles
+everything that specific for their controller type.
+
+Before this driver is reorganised like that (any volunteers?), we'll
+have the PD controller type checks, but quirk flags we will not have.
+
+In general, you should only use quirk flags if there is no other
+way to move forward - they are the last resort. They are dangerous,
+and even in the best case they reduce the maintenability of the code.
+
+thanks,
+
 -- 
-2.43.0.rc1.413.gea7ed67945-goog
-
+heikki
