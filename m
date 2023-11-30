@@ -2,220 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A822A7FF37E
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 16:22:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D59747FF380
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 16:24:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346259AbjK3PWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 10:22:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54692 "EHLO
+        id S1346246AbjK3PYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 10:24:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346234AbjK3PWq (ORCPT
+        with ESMTP id S1346197AbjK3PYU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 10:22:46 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D28B10E4
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 07:22:52 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F112BC433C7;
-        Thu, 30 Nov 2023 15:22:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701357772;
-        bh=qkL/traqZYRhreQwWlBq0Fih3eZKxWuxg+IAiO0LgOA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tH71F1PZXOL00uhIYMA+WMCwxITIiKNZ1KskmSoUJiUJMWY9VD5QKEueflTsxdnUl
-         ZOhThyCyJ2adRZEs4xRiqwKRnxNwoFrwS+1GPoDJeAfYymcLiY1GXV29krH5jWdd7A
-         /hiPxou8A0xW2GEQ1iSGg71JZBiuUFSdD3oMLA/yeog3qDSF3mSCHFCgFrSVpxIzAS
-         mTuz523ozWSwy7Vuz9ZVNlNdK4MgR+TmbqTxCHf6dG0oeWuLmCdI+64yICbkm1d5gO
-         KfO1YcygcRcO8WznF1NyEDB+XRMUarOT0cFaOFpRs75+bdO7CQ+FHknqgfkHkzYGSy
-         P9P1+kO32rHaQ==
-Date:   Thu, 30 Nov 2023 15:22:47 +0000
-From:   Conor Dooley <conor@kernel.org>
-To:     Anand Moon <linux.amoon@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Icenowy Zheng <uwu@icenowy.me>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        linux-amlogic@lists.infradead.org, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 1/2] dt-bindings: usb: Add the binding example for the
- Genesys Logic GL3523 hub
-Message-ID: <20231130-snub-backshift-2f69754cf58f@spud>
-References: <20231130053130.21966-1-linux.amoon@gmail.com>
- <20231130053130.21966-2-linux.amoon@gmail.com>
- <20231130-twig-stoning-58235b3195c8@spud>
+        Thu, 30 Nov 2023 10:24:20 -0500
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A12B091;
+        Thu, 30 Nov 2023 07:24:25 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPA id 33BF9FF819;
+        Thu, 30 Nov 2023 15:24:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1701357864;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=v+nQkelvQTnzRkwxNq+pa0F2OV4hlU4a1lu/z9jwG/s=;
+        b=nhujXbLLrrHYyrkii78atlpuWy3D4MaZDc/zTxdwqPaaImGYkMaRZDEUdbvKyC9Ft/PyRI
+        69+8sC8yBbcmWctv64fXgCTj+lpZ66wS5PxH29kNB0GTUEUhulBVpHJhhukIAUKy5imN45
+        oeGzoFhhHh+BUYjqI5l3SJ7507YIKzJPEnk5G7AzzPSCmPJQW9pTbgHngpQemjAPQ3LUtS
+        YmtIFiASTaRdubN3zTmpGU1O2Fqro8clgq603HnznVE6Viq95j2L/fPvFAe/783nHUQdLG
+        0RH29lj5GFOfv1lrsmr8ok8Ak0GRVQhStf2j3+kY7Bte1mEDM1MkNot6hhGcSg==
+From:   Herve Codina <herve.codina@bootlin.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lizhi Hou <lizhi.hou@amd.com>, Rob Herring <robh@kernel.org>
+Cc:     Max Zhen <max.zhen@amd.com>, Sonal Santan <sonal.santan@amd.com>,
+        Stefano Stabellini <stefano.stabellini@xilinx.com>,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        Allan Nielsen <allan.nielsen@microchip.com>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        Steen Hegelund <steen.hegelund@microchip.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Herve Codina <herve.codina@bootlin.com>
+Subject: [PATCH 0/2] Attach DT nodes to existing PCI devices
+Date:   Thu, 30 Nov 2023 16:24:02 +0100
+Message-ID: <20231130152418.680966-1-herve.codina@bootlin.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="RlRi2l6ZtvVLk88M"
-Content-Disposition: inline
-In-Reply-To: <20231130-twig-stoning-58235b3195c8@spud>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: herve.codina@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---RlRi2l6ZtvVLk88M
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The commit 407d1a51921e ("PCI: Create device tree node for bridge")
+creates of_node for PCI devices.
+During the insertion handling of these new DT nodes done by of_platform,
+new devices (struct device) are created.
+For each PCI devices a struct device is already present (created and
+handled by the PCI core).
+Creating a new device from a DT node leads to some kind of wrong struct
+device duplication to represent the exact same PCI device.
 
-On Thu, Nov 30, 2023 at 03:16:33PM +0000, Conor Dooley wrote:
-> On Thu, Nov 30, 2023 at 11:01:26AM +0530, Anand Moon wrote:
-> > Add the binding example for the USB3.1 Genesys Logic GL3523
-> > integrates with USB 3.1 Gen 1 Super Speed and USB 2.0 High-Speed
-> > hub.
-> >=20
-> > For onboard hub controllers that support USB 3.x and USB 2.0 hubs
-> > with shared resets and power supplies, this property is used to identify
-> > the hubs with which these are shared.
-> >=20
->=20
-> > [Conor Dooley: upgrade peer-hub description]
->=20
-> This should not be in the commit message. Otherwise,
-> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
->=20
-> Cheers,
-> Conor.
->=20
-> > Signed-off-by: Anand Moon <linux.amoon@gmail.com>
-> > ---
-> > v5: upgrade peer-hub description : Conor Dooley
-> > [0] https://www.genesyslogic.com.tw/en/product_view.php?show=3D67 [Bloc=
-k Diagram]
-> > v4: Fix the description of peer-hub and update the commit message.
-> > Schematics of the Odroid N2+
-> > https://dn.odroid.com/S922X/ODROID-N2/Schematic/odroid-n2_rev0.6_202101=
-21.pdf
-> > V3: fix the dt_binding_check error, added new example for Genesys GL3523
-> > v2: added Genesys GL3523 binding
-> > v1: none
-> > ---
-> >  .../bindings/usb/genesys,gl850g.yaml          | 65 +++++++++++++++++--
-> >  1 file changed, 61 insertions(+), 4 deletions(-)
-> >=20
-> > diff --git a/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml =
-b/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml
-> > index ee08b9c3721f..499192ea4074 100644
-> > --- a/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml
-> > +++ b/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml
-> > @@ -9,9 +9,6 @@ title: Genesys Logic USB hub controller
-> >  maintainers:
-> >    - Icenowy Zheng <uwu@icenowy.me>
-> > =20
-> > -allOf:
-> > -  - $ref: usb-device.yaml#
-> > -
-> >  properties:
-> >    compatible:
-> >      enum:
-> > @@ -27,12 +24,46 @@ properties:
-> > =20
-> >    vdd-supply:
-> >      description:
-> > -      the regulator that provides 3.3V core power to the hub.
-> > +      phandle to the regulator that provides power to the hub.
+This patch series first introduces device_{add,remove}_of_node() in
+order to add or remove a newly created of_node to an already existing
+device.
+Then it fixes the DT node creation for PCI devices to add or remove the
+created node to the existing PCI device without any new device creation.
 
-Wait, why is this text changing? I don't see it mentioned anywhere why
-this is no longer specifically 3.3v
+Best regards,
+Hervé
 
-Thanks,
-Conor.
+Herve Codina (2):
+  driver core: Introduce device_{add,remove}_of_node()
+  PCI: of: Attach created of_node to existing device
 
-> > +
-> > +  peer-hub:
-> > +    $ref: /schemas/types.yaml#/definitions/phandle
-> > +    description:
-> > +      For onboard hub controllers that support USB 3.x and USB 2.0 hubs
-> > +      with shared resets and power supplies, this property is used to =
-identify
-> > +      the hubs with which these are shared.
-> > =20
-> >  required:
-> >    - compatible
-> >    - reg
-> > =20
-> > +allOf:
-> > +  - $ref: usb-device.yaml#
-> > +  - if:
-> > +      properties:
-> > +        compatible:
-> > +          contains:
-> > +            enum:
-> > +              - usb5e3,608
-> > +    then:
-> > +      properties:
-> > +        peer-hub: false
-> > +        vdd-supply: false
-> > +        reset-gpios: true
-> > +
-> > +  - if:
-> > +      properties:
-> > +        compatible:
-> > +          contains:
-> > +            enum:
-> > +              - usb5e3,610
-> > +              - usb5e3,620
-> > +    then:
-> > +      properties:
-> > +        peer-hub: true
-> > +        vdd-supply: true
-> > +        reset-gpios: true
-> > +
-> >  additionalProperties: false
-> > =20
-> >  examples:
-> > @@ -49,3 +80,29 @@ examples:
-> >              reset-gpios =3D <&pio 7 2 GPIO_ACTIVE_LOW>;
-> >          };
-> >      };
-> > +
-> > +  - |
-> > +    #include <dt-bindings/gpio/gpio.h>
-> > +    usb {
-> > +        dr_mode =3D "host";
-> > +        #address-cells =3D <1>;
-> > +        #size-cells =3D <0>;
-> > +
-> > +        /* 2.0 hub on port 1 */
-> > +        hub_2_0: hub@1 {
-> > +            compatible =3D "usb5e3,610";
-> > +            reg =3D <1>;
-> > +            peer-hub =3D <&hub_3_0>;
-> > +            reset-gpios =3D <&gpio 20 GPIO_ACTIVE_LOW>;
-> > +            vdd-supply =3D <&vcc_5v>;
-> > +        };
-> > +
-> > +        /* 3.1 hub on port 4 */
-> > +        hub_3_0: hub@2 {
-> > +            compatible =3D "usb5e3,620";
-> > +            reg =3D <2>;
-> > +            peer-hub =3D <&hub_2_0>;
-> > +            reset-gpios =3D <&gpio 20 GPIO_ACTIVE_LOW>;
-> > +            vdd-supply =3D <&vcc_5v>;
-> > +        };
-> > +    };
-> > --=20
-> > 2.42.0
-> >=20
+ drivers/base/core.c    | 74 ++++++++++++++++++++++++++++++++++++++++++
+ drivers/pci/of.c       | 15 +++++++--
+ include/linux/device.h |  2 ++
+ 3 files changed, 89 insertions(+), 2 deletions(-)
 
+-- 
+2.42.0
 
-
---RlRi2l6ZtvVLk88M
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZWioxwAKCRB4tDGHoIJi
-0kyvAP4mrFsSqjulILny2yGh8/2PbF9zjOgQLnavgZb2aA1pOwEAlbokM8AGRXLE
-vImZQShoC/U9RPHihysDgZlZ1qae1Aw=
-=xGZx
------END PGP SIGNATURE-----
-
---RlRi2l6ZtvVLk88M--
