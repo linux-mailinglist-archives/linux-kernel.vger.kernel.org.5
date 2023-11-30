@@ -2,478 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE66A7FFCB1
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 21:36:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A9817FFCBC
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 21:38:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376409AbjK3Uga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 15:36:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58808 "EHLO
+        id S1346785AbjK3UiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 15:38:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235194AbjK3Ug1 (ORCPT
+        with ESMTP id S229782AbjK3UiL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 15:36:27 -0500
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BEC8171F
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 12:36:32 -0800 (PST)
-Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-50bbf7a6029so422e87.0
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 12:36:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701376590; x=1701981390; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=j8bY3oTO7Qz0RyadKs7ko8nqkJKt+6qCzIYdcSLQsM0=;
-        b=1llZdystjwPLS5iVxCtiLEe3dZ9m6/GXqobNRyCBO37zAep2cQFKexsbZ0eQ4cZf9n
-         RJaJixUz/A1hb5eglg77CPwl+v65niEWHVz88fOcCWjKgR6UWWT/0diZhQUhHCElV+Y0
-         CcH40G7DhN+coIarwuN9vS/dVqwePrg+P28+zB5X9pyvvdvfSttoDV/SGKiguR915GBF
-         3zbCLcjxmW/5rE1fRkUo6151i9KFzSG8FUxGZXJBhSxEinFyfQFRObtP468fH3sAlGTF
-         U4uGXqbBt35CRZsntyTfDbKq0YGFTD5J7lGJ8mb/PU5mu0awcO78MXuvQMESUD+HIFZT
-         NXAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701376590; x=1701981390;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=j8bY3oTO7Qz0RyadKs7ko8nqkJKt+6qCzIYdcSLQsM0=;
-        b=dXJjMuCOL2Bd119PqSoJ26mjc8SkVOPdhuWq85M3eKXJJphMQGNUeg7kco86LiTnD+
-         XB1Fi/GobeConQvQKyWkB0PYJAXc7rGMZBCDc7WIZ2ijk0Nq9xBKQLVhXfD8tI5LyIuq
-         B+nYmxoSKRDjhicdkUv1/N6vwkTTHUb1Gfj0fNGbbHqEohKl1BUJxPwaqUlbAyLsBSV8
-         KE0Ch2rxaa/vK9jfEvXicfkTdy2sHB4CYTzU9Y/mbSYMM+pptBm5kwwiMISZxfICop9A
-         CXY0S50xUmS63r3ap35sXZTgUNOvxcY38PyaJfpL5oEQ5QlJ/Cnb/fz9juD4AVdl4Fv6
-         bUZA==
-X-Gm-Message-State: AOJu0YwCVtwNZ+td34uJaaHrOHi9+ntb/PpP6wqMogxH7f7FGbvkzY4I
-        SI+/VYHqleegPjhGzK08E+b6suiHbav/ntWC6zZ9zA==
-X-Google-Smtp-Source: AGHT+IHtspDoySrYyYgaJz669NoazKcF50K2HGwPpxb6rTfM6COGtHo83jmHJlXwu81al7ODZtZai5sMlZUPhrLSYyg=
-X-Received: by 2002:ac2:4a99:0:b0:4fe:ffbc:ac98 with SMTP id
- l25-20020ac24a99000000b004feffbcac98mr7249lfp.4.1701376589967; Thu, 30 Nov
- 2023 12:36:29 -0800 (PST)
+        Thu, 30 Nov 2023 15:38:11 -0500
+Received: from smtp.smtpout.orange.fr (smtp-20.smtpout.orange.fr [80.12.242.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9BCB10DC
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 12:38:16 -0800 (PST)
+Received: from [192.168.1.18] ([92.140.202.140])
+        by smtp.orange.fr with ESMTPA
+        id 8nnYrCuP2RmBy8nnYrb7ak; Thu, 30 Nov 2023 21:38:14 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1701376694;
+        bh=PxjlyLqGg3ejqMJeqvlJH8ecba7J9j55JY/fAcFBxOY=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=mpx5N8JZgAr8OKYmGqydFOQXanBTNLnUTxMCMkjffdOBjH3960VuM68iMmcV3ckiF
+         uZZikEUKK7/Z2RqDMSL4xubHHbnSnhbP2QGKopG1AU4B06AbisV7xYZo7YmFI05aJb
+         zRQzecFqyZenFSuTG9zd5b+axWXJsTJXJNUTx+a5/03lGS1j9KXuqKjnhbY6jP+2GV
+         lbnIS1UWBPgzKwbU2WulaGV7hOAhzdV6CMeiyFDsN+uBVq3QVWHKACgKdZXr6c2SI3
+         Ykxq1s2rK4IJYcnWGSdD4W+Gvoc0WbIPW3riWIJbGtyoglWFiz85SqJV63vvuzsxF/
+         3R84QqIrZzbPQ==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Thu, 30 Nov 2023 21:38:14 +0100
+X-ME-IP: 92.140.202.140
+Message-ID: <40b65db9-1b37-45b6-8afe-7be2df11cfa9@wanadoo.fr>
+Date:   Thu, 30 Nov 2023 21:38:11 +0100
 MIME-Version: 1.0
-References: <20231128203940.3964287-1-kan.liang@linux.intel.com>
- <CAP-5=fUdEgnwk_FNHb-Ju3wCYE2PLLrPHqwZoyBGyURXQhBeSA@mail.gmail.com>
- <083bfe11-6f6e-487f-ac28-aec22e6b6b06@linux.intel.com> <CAP-5=fXTYX6_QdR4RCBu9yh+k1VwhsTjabKdseVP9Cvi6PE=sA@mail.gmail.com>
- <f5112f5e-c77c-4a9a-ac3b-66772adba471@linux.intel.com>
-In-Reply-To: <f5112f5e-c77c-4a9a-ac3b-66772adba471@linux.intel.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Thu, 30 Nov 2023 12:36:18 -0800
-Message-ID: <CAP-5=fU6EXenN9uU1DZ3X=L+k6Y-4a-XESfY9gL9ZCowhSazWA@mail.gmail.com>
-Subject: Re: [PATCH] perf mem: Fix perf mem error on hybrid
-To:     "Liang, Kan" <kan.liang@linux.intel.com>
-Cc:     acme@kernel.org, mingo@redhat.com, peterz@infradead.org,
-        mark.rutland@arm.com, namhyung@kernel.org, jolsa@kernel.org,
-        adrian.hunter@intel.com, ravi.bangoria@amd.com,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Ammy Yi <ammy.yi@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/3] kernfs: Convert kernfs_path_from_node_locked()
+ from strlcpy() to strscpy()
+Content-Language: fr
+To:     Kees Cook <keescook@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Waiman Long <longman@redhat.com>, cgroups@vger.kernel.org,
+        Azeem Shaikh <azeemshaikh38@gmail.com>,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+References: <20231130200937.it.424-kees@kernel.org>
+ <20231130201222.3613535-3-keescook@chromium.org>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <20231130201222.3613535-3-keescook@chromium.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 1:15=E2=80=AFPM Liang, Kan <kan.liang@linux.intel.c=
-om> wrote:
->
->
->
-> On 2023-11-29 11:17 a.m., Ian Rogers wrote:
-> > On Wed, Nov 29, 2023 at 5:52=E2=80=AFAM Liang, Kan <kan.liang@linux.int=
-el.com> wrote:
-> >>
-> >>
-> >>
-> >> On 2023-11-29 1:24 a.m., Ian Rogers wrote:
-> >>> On Tue, Nov 28, 2023 at 12:39=E2=80=AFPM <kan.liang@linux.intel.com> =
-wrote:
-> >>>>
-> >>>> From: Kan Liang <kan.liang@linux.intel.com>
-> >>>>
-> >>>> The below error can be triggered on a hybrid machine.
-> >>>>
-> >>>>  $ perf mem record -t load sleep 1
-> >>>>  event syntax error: 'breakpoint/mem-loads,ldlat=3D30/P'
-> >>>>                                 \___ Bad event or PMU
-> >>>>
-> >>>>  Unable to find PMU or event on a PMU of 'breakpoint'
-> >>>>
-> >>>> In the perf_mem_events__record_args(), the current perf never checks=
- the
-> >>>> availability of a mem event on a given PMU. All the PMUs will be add=
-ed
-> >>>> to the perf mem event list. Perf errors out for the unsupported PMU.
-> >>>>
-> >>>> Extend perf_mem_event__supported() and take a PMU into account. Chec=
-k
-> >>>> the mem event for each PMU before adding it to the perf mem event li=
-st.
-> >>>>
-> >>>> Optimize the perf_mem_events__init() a little bit. The function is t=
-o
-> >>>> check whether the mem events are supported in the system. It doesn't
-> >>>> need to scan all PMUs. Just return with the first supported PMU is g=
-ood
-> >>>> enough.
-> >>>>
-> >>>> Fixes: 5752c20f3787 ("perf mem: Scan all PMUs instead of just core o=
-nes")
-> >>>> Reported-by: Ammy Yi <ammy.yi@intel.com>
-> >>>> Tested-by: Ammy Yi <ammy.yi@intel.com>
-> >>>> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
-> >>>> ---
-> >>>>  tools/perf/util/mem-events.c | 25 ++++++++++++++-----------
-> >>>>  1 file changed, 14 insertions(+), 11 deletions(-)
-> >>>>
-> >>>> diff --git a/tools/perf/util/mem-events.c b/tools/perf/util/mem-even=
-ts.c
-> >>>> index 954b235e12e5..3a2e3687878c 100644
-> >>>> --- a/tools/perf/util/mem-events.c
-> >>>> +++ b/tools/perf/util/mem-events.c
-> >>>> @@ -100,11 +100,14 @@ int perf_mem_events__parse(const char *str)
-> >>>>         return -1;
-> >>>>  }
-> >>>>
-> >>>> -static bool perf_mem_event__supported(const char *mnt, char *sysfs_=
-name)
-> >>>> +static bool perf_mem_event__supported(const char *mnt, struct perf_=
-pmu *pmu,
-> >>>> +                                     struct perf_mem_event *e)
-> >>>>  {
-> >>>> +       char sysfs_name[100];
-> >>>>         char path[PATH_MAX];
-> >>>>         struct stat st;
-> >>>>
-> >>>> +       scnprintf(sysfs_name, sizeof(sysfs_name), e->sysfs_name, pmu=
-->name);
-> >>>
-> >>> Not sure if this is right. Looking at sysfs_name values:
-> >>> https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.=
-git/tree/tools/perf/util/mem-events.c?h=3Dperf-tools-next#n23
-> >>> "cpu/events/mem-loads" and "cpu/events/mem-stores", so won't pmu->nam=
-e
-> >>> never be used?
-> >>> Is there a missed change to change the cpu to %s?
-> >>
-> >> There is a X86 specific perf_mem_events__ptr(), which uses the
-> >> "%s/mem-loads,ldlat=3D%u/P" and "%s/events/mem-loads" for Intel platfo=
-rms.
-> >> https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.g=
-it/tree/tools/perf/arch/x86/util/mem-events.c?h=3Dperf-tools-next#n20
-> >> The pmu->name is used especially for the hybrid platforms.
-> >
-> > Right, that seems wrong. For one thing we're losing the compiler's
-> > format string argument checking, but hardcoding PMU names just seems
-> > to be something that will keep needing maintenance. This patch set
-> > looks to fix an Intel issue but in general it is increasing tech debt
-> > (or at least churning it) that will need cleaning up to do something
-> > with better error checking and more generic. perf_mem_event looks like
-> > a bad abstraction and then there are the integers whose special values
-> > hold meaning. Could this fix come with some cleanup? It wouldn't seem
-> > wrong to me to add notions of memory events to the PMU abstraction. As
-> > it stands this scnprintf looks wrong in non-Intel cases.
-> >
->
-> The problem is that different ARCHs check different things. Arm and AMD
-> checks the PMU name, while Intel and Power checks the specific events.
-> It's hard to have a unified scnprintf.
->
-> But we can abstract them into two cases, PMU name and event name. We use
-> a different scnprintf to handle them.
-> How about something as below?
->
-> diff --git a/tools/perf/arch/x86/util/mem-events.c
-> b/tools/perf/arch/x86/util/mem-events.c
-> index 191b372f9a2d..4ef70fb9132b 100644
-> --- a/tools/perf/arch/x86/util/mem-events.c
-> +++ b/tools/perf/arch/x86/util/mem-events.c
-> @@ -17,8 +17,8 @@ static char mem_stores_name[100];
->  #define E(t, n, s) { .tag =3D t, .name =3D n, .sysfs_name =3D s }
->
->  static struct perf_mem_event
-> perf_mem_events_intel[PERF_MEM_EVENTS__MAX] =3D {
-> -       E("ldlat-loads",        "%s/mem-loads,ldlat=3D%u/P",      "%s/eve=
-nts/mem-loads"),
-> -       E("ldlat-stores",       "%s/mem-stores/P",              "%s/event=
-s/mem-stores"),
-> +       E("ldlat-loads",        "%s/mem-loads,ldlat=3D%u/P",      "events=
-/mem-loads"),
-> +       E("ldlat-stores",       "%s/mem-stores/P",              "events/m=
-em-stores"),
->         E(NULL,                 NULL,                           NULL),
->  };
->
-> diff --git a/tools/perf/util/mem-events.c b/tools/perf/util/mem-events.c
-> index 3a2e3687878c..ba88cb3d804f 100644
-> --- a/tools/perf/util/mem-events.c
-> +++ b/tools/perf/util/mem-events.c
-> @@ -8,6 +8,7 @@
->  #include <unistd.h>
->  #include <api/fs/fs.h>
->  #include <linux/kernel.h>
-> +#include <linux/string.h>
->  #include "map_symbol.h"
->  #include "mem-events.h"
->  #include "debug.h"
-> @@ -20,8 +21,8 @@ unsigned int perf_mem_events__loads_ldlat =3D 30;
->  #define E(t, n, s) { .tag =3D t, .name =3D n, .sysfs_name =3D s }
->
->  static struct perf_mem_event perf_mem_events[PERF_MEM_EVENTS__MAX] =3D {
-> -       E("ldlat-loads",        "cpu/mem-loads,ldlat=3D%u/P",     "cpu/ev=
-ents/mem-loads"),
-> -       E("ldlat-stores",       "cpu/mem-stores/P",             "cpu/even=
-ts/mem-stores"),
-> +       E("ldlat-loads",        "cpu/mem-loads,ldlat=3D%u/P",     "events=
-/mem-loads"),
-> +       E("ldlat-stores",       "cpu/mem-stores/P",             "events/m=
-em-stores"),
->         E(NULL,                 NULL,                           NULL),
->  };
->  #undef E
-> @@ -103,12 +104,14 @@ int perf_mem_events__parse(const char *str)
->  static bool perf_mem_event__supported(const char *mnt, struct perf_pmu
-> *pmu,
->                                       struct perf_mem_event *e)
->  {
-> -       char sysfs_name[100];
->         char path[PATH_MAX];
->         struct stat st;
->
-> -       scnprintf(sysfs_name, sizeof(sysfs_name), e->sysfs_name, pmu->nam=
-e);
-> -       scnprintf(path, PATH_MAX, "%s/devices/%s", mnt, sysfs_name);
-> +       if (strstarts(e->sysfs_name, "event/"))
-> +               scnprintf(path, PATH_MAX, "%s/devices/%s/%s", mnt, pmu->n=
-ame,
-> e->sysfs_name);
-> +       else
-> +               scnprintf(path, PATH_MAX, "%s/devices/%s", mnt, e->sysfs_=
-name);
+Le 30/11/2023 à 21:12, Kees Cook a écrit :
+> One of the last remaining users of strlcpy() in the kernel is
+> kernfs_path_from_node_locked(), which passes back the problematic "length
+> we _would_ have copied" return value to indicate truncation.  Convert the
+> chain of all callers to use the negative return value (some of which
+> already doing this explicitly). All callers were already also checking
+> for negative return values, so the risk to missed checks looks very low.
+> 
+> In this analysis, it was found that cgroup1_release_agent() actually
+> didn't handle the "too large" condition, so this is technically also a
+> bug fix. :)
+> 
+> Here's the chain of callers, and resolution identifying each one as now
+> handling the correct return value:
+> 
+> kernfs_path_from_node_locked()
+>          kernfs_path_from_node()
+>                  pr_cont_kernfs_path()
+>                          returns void
+>                  kernfs_path()
+>                          sysfs_warn_dup()
+>                                  return value ignored
+>                          cgroup_path()
+>                                  blkg_path()
+>                                          bfq_bic_update_cgroup()
+>                                                  return value ignored
+>                                  TRACE_IOCG_PATH()
+>                                          return value ignored
+>                                  TRACE_CGROUP_PATH()
+>                                          return value ignored
+>                                  perf_event_cgroup()
+>                                          return value ignored
+>                                  task_group_path()
+>                                          return value ignored
+>                                  damon_sysfs_memcg_path_eq()
+>                                          return value ignored
+>                                  get_mm_memcg_path()
+>                                          return value ignored
+>                                  lru_gen_seq_show()
+>                                          return value ignored
+>                          cgroup_path_from_kernfs_id()
+>                                  return value ignored
+>                  cgroup_show_path()
+>                          already converted "too large" error to negative value
+>                  cgroup_path_ns_locked()
+>                          cgroup_path_ns()
+>                                  bpf_iter_cgroup_show_fdinfo()
+>                                          return value ignored
+>                                  cgroup1_release_agent()
+>                                          wasn't checking "too large" error
+>                          proc_cgroup_show()
+>                                  already converted "too large" to negative value
+> 
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Tejun Heo <tj@kernel.org>
+> Cc: Zefan Li <lizefan.x@bytedance.com>
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: Waiman Long <longman@redhat.com>
+> Cc: cgroups@vger.kernel.org
+> Co-developed-by: Azeem Shaikh <azeemshaikh38@gmail.com>
+> Signed-off-by: Azeem Shaikh <azeemshaikh38@gmail.com>
+> Link: https://lore.kernel.org/r/20231116192127.1558276-3-keescook@chromium.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+>   fs/kernfs/dir.c           | 37 ++++++++++++++++++++-----------------
+>   kernel/cgroup/cgroup-v1.c |  2 +-
+>   kernel/cgroup/cgroup.c    |  4 ++--
+>   kernel/cgroup/cpuset.c    |  2 +-
+>   4 files changed, 24 insertions(+), 21 deletions(-)
+> 
+> diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
+> index 8c0e5442597e..183f353b3852 100644
+> --- a/fs/kernfs/dir.c
+> +++ b/fs/kernfs/dir.c
+> @@ -127,7 +127,7 @@ static struct kernfs_node *kernfs_common_ancestor(struct kernfs_node *a,
+>    *
+>    * [3] when @kn_to is %NULL result will be "(null)"
+>    *
+> - * Return: the length of the full path.  If the full length is equal to or
+> + * Return: the length of the constructed path.  If the path would have been
+>    * greater than @buflen, @buf contains the truncated path with the trailing
+>    * '\0'.  On error, -errno is returned.
+>    */
+> @@ -138,16 +138,17 @@ static int kernfs_path_from_node_locked(struct kernfs_node *kn_to,
+>   	struct kernfs_node *kn, *common;
+>   	const char parent_str[] = "/..";
+>   	size_t depth_from, depth_to, len = 0;
+> +	ssize_t copied;
+>   	int i, j;
+>   
+>   	if (!kn_to)
+> -		return strlcpy(buf, "(null)", buflen);
+> +		return strscpy(buf, "(null)", buflen);
+>   
+>   	if (!kn_from)
+>   		kn_from = kernfs_root(kn_to)->kn;
+>   
+>   	if (kn_from == kn_to)
+> -		return strlcpy(buf, "/", buflen);
+> +		return strscpy(buf, "/", buflen);
+>   
+>   	common = kernfs_common_ancestor(kn_from, kn_to);
+>   	if (WARN_ON(!common))
+> @@ -158,18 +159,22 @@ static int kernfs_path_from_node_locked(struct kernfs_node *kn_to,
+>   
+>   	buf[0] = '\0';
+>   
+> -	for (i = 0; i < depth_from; i++)
+> -		len += strlcpy(buf + len, parent_str,
+> -			       len < buflen ? buflen - len : 0);
+> +	for (i = 0; i < depth_from; i++) {
+> +		copied = strscpy(buf + len, parent_str, buflen - len);
+> +		if (copied < 0)
+> +			return copied;
+> +		len += copied;
+> +	}
+>   
+>   	/* Calculate how many bytes we need for the rest */
+>   	for (i = depth_to - 1; i >= 0; i--) {
+>   		for (kn = kn_to, j = 0; j < i; j++)
+>   			kn = kn->parent;
+> -		len += strlcpy(buf + len, "/",
+> -			       len < buflen ? buflen - len : 0);
+> -		len += strlcpy(buf + len, kn->name,
+> -			       len < buflen ? buflen - len : 0);
 > +
->         return !stat(path, &st);
->  }
+> +		copied = scnprintf(buf + len, buflen - len, "/%s", kn->name);
+> +		if (copied < 0)
 
-Thanks Kan, how about we move forward with the patch as is. I'm just
-moaning as I think there is a longer term tech debt issue we should be
-cleaning up. What I'm imagining in some crude hacking for just the
-mem-events list case is:
+Can scnprintf() return <0 ?
 
-```
---- a/tools/perf/util/mem-events.c
-+++ b/tools/perf/util/mem-events.c
-@@ -149,17 +149,19 @@ int perf_mem_events__init(void)
+> +			return copied;
+> +		len += copied;
+>   	}
 
-void perf_mem_events__list(void)
-{
--       int j;
--
--       for (j =3D 0; j < PERF_MEM_EVENTS__MAX; j++) {
--               struct perf_mem_event *e =3D perf_mem_events__ptr(j);
-+       static const char *mem_event_names[PERF_MEM_EVENTS__MAX] =3D {
-+               [PERF_MEM_EVENTS__LOAD] =3D "...load...",
-+               [PERF_MEM_EVENTS__STORE] =3D "...store...",
-+               [PERF_MEM_EVENTS__ACCESS] =3D "...access...",
-+       };
-+       while ((pmu =3D perf_pmus__scan(pmu)) !=3D NULL) {
-+               if (!perf_pmu__mem_events_supported(pmu))
-+                       continue;
+...
 
--               fprintf(stderr, "%-*s%-*s%s",
--                       e->tag ? 13 : 0,
--                       e->tag ? : "",
--                       e->tag && verbose > 0 ? 25 : 0,
--                       e->tag && verbose > 0 ?
-perf_mem_events__name(j, NULL) : "",
--                       e->supported ? ": available\n" : "");
-+               for (int i =3D 0; i < PERF_MEM_EVENTS__MAX; i++) {
-+                       if (perf_pmu__mem_event_supported(pmu, i))
-+                               printf("%s\n", mem_event_names[i]);
-+               }
-       }
-}
-
-diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-index 3c9609944a2f..e7f4f7d3d082 100644
---- a/tools/perf/util/pmu.c
-+++ b/tools/perf/util/pmu.c
-@@ -1578,6 +1578,34 @@ int perf_pmu__find_event(struct perf_pmu *pmu,
-const char *event, void *state, p
-                                       &args, find_event_callback);
-}
-
-+bool perf_pmu__mem_events_supported(const struct perf_pmu *pmu)
-+{
-+       if (pmu->is_core && is_intel()) {
-+               return true;
-+       }
-+       if (strcmp(pmu->name, "ibs_op")) {
-+               return true;
-+       }
-+       if (ARM...) {
-+       }
-+       return false;
-+}
-+
-+bool perf_pmu__mem_event_supported(const struct perf_pmu *pmu, enum
-mem_event_type type)
-+{
-+       if (pmu->is_core && is_intel()) {
-+               switch (type) {
-+               case PERF_MEM_EVENTS__LOAD:
-+                       return perf_pmu__have_event(pmu, "mem-loads");
-+               case PERF_MEM_EVENTS__STORES:
-+                       return perf_pmu__have_event(pmu, "mem-stores");
-+               default:
-+                       return false;
-+               }
-+       }
-+       ...
-+}
-+
-static void perf_pmu__del_formats(struct list_head *formats)
-{
-       struct perf_pmu_format *fmt, *tmp;
-diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
-index 424c3fee0949..414f0fbd77a8 100644
---- a/tools/perf/util/pmu.h
-+++ b/tools/perf/util/pmu.h
-@@ -26,6 +26,13 @@ enum {
-#define PERF_PMU_FORMAT_BITS 64
-#define MAX_PMU_NAME_LEN 128
-
-+enum mem_event_type {
-+       PERF_MEM_EVENTS__LOAD,
-+       PERF_MEM_EVENTS__STORE,
-+       PERF_MEM_EVENTS__ACCESS,
-+       PERF_MEM_EVENTS__MAX,
-+};
-+
-struct perf_event_attr;
-
-struct perf_pmu_caps {
-@@ -204,6 +211,8 @@ int perf_pmu__check_alias(struct perf_pmu *pmu,
-struct parse_events_terms *head_
-                         struct perf_pmu_info *info, bool *rewrote_terms,
-                         struct parse_events_error *err);
-int perf_pmu__find_event(struct perf_pmu *pmu, const char *event, void
-*state, pmu_event_callback cb);
-+bool perf_pmu__mem_events_supported(const struct perf_pmu *pmu);
-+bool perf_pmu__mem_event_supported(const struct perf_pmu *pmu, enum
-mem_event_types type);
-
-int perf_pmu__format_parse(struct perf_pmu *pmu, int dirfd, bool eager_load=
-);
-void perf_pmu_format__set_value(void *format, int config, unsigned long *bi=
-ts);
-```
-
-or maybe we can have some state in struct pmu and have the
-perf_pmu__arch_init set that up. Like a bitmask of supported mem
-events.
-
-I'd kind of like the arch init perf pmu code to be as little as
-possible. So if you did user space emulation of ARM on Intel (Intel
-does this with houdini), then you could still read memory bandwidth
-numbers from the Intel PMU as the logic isn't hidden and is generic.
-Of course "cpu" is something of a special case PMU.
-
-Anyway, if you don't feel like the refactor we can move forward with
-this or a v2, let me know.
-
-Thanks,
-Ian
-
-> Thanks,
-> Kan
->
-> > Thanks,
-> > Ian
-> >
-> >> Thanks,
-> >> Kan
-> >>>
-> >>> Thanks,
-> >>> Ian
-> >>>
-> >>>>         scnprintf(path, PATH_MAX, "%s/devices/%s", mnt, sysfs_name);
-> >>>>         return !stat(path, &st);
-> >>>>  }
-> >>>> @@ -120,7 +123,6 @@ int perf_mem_events__init(void)
-> >>>>
-> >>>>         for (j =3D 0; j < PERF_MEM_EVENTS__MAX; j++) {
-> >>>>                 struct perf_mem_event *e =3D perf_mem_events__ptr(j)=
-;
-> >>>> -               char sysfs_name[100];
-> >>>>                 struct perf_pmu *pmu =3D NULL;
-> >>>>
-> >>>>                 /*
-> >>>> @@ -136,12 +138,12 @@ int perf_mem_events__init(void)
-> >>>>                  * of core PMU.
-> >>>>                  */
-> >>>>                 while ((pmu =3D perf_pmus__scan(pmu)) !=3D NULL) {
-> >>>> -                       scnprintf(sysfs_name, sizeof(sysfs_name), e-=
->sysfs_name, pmu->name);
-> >>>> -                       e->supported |=3D perf_mem_event__supported(=
-mnt, sysfs_name);
-> >>>> +                       e->supported |=3D perf_mem_event__supported(=
-mnt, pmu, e);
-> >>>> +                       if (e->supported) {
-> >>>> +                               found =3D true;
-> >>>> +                               break;
-> >>>> +                       }
-> >>>>                 }
-> >>>> -
-> >>>> -               if (e->supported)
-> >>>> -                       found =3D true;
-> >>>>         }
-> >>>>
-> >>>>         return found ? 0 : -ENOENT;
-> >>>> @@ -167,13 +169,10 @@ static void perf_mem_events__print_unsupport_h=
-ybrid(struct perf_mem_event *e,
-> >>>>                                                     int idx)
-> >>>>  {
-> >>>>         const char *mnt =3D sysfs__mount();
-> >>>> -       char sysfs_name[100];
-> >>>>         struct perf_pmu *pmu =3D NULL;
-> >>>>
-> >>>>         while ((pmu =3D perf_pmus__scan(pmu)) !=3D NULL) {
-> >>>> -               scnprintf(sysfs_name, sizeof(sysfs_name), e->sysfs_n=
-ame,
-> >>>> -                         pmu->name);
-> >>>> -               if (!perf_mem_event__supported(mnt, sysfs_name)) {
-> >>>> +               if (!perf_mem_event__supported(mnt, pmu, e)) {
-> >>>>                         pr_err("failed: event '%s' not supported\n",
-> >>>>                                perf_mem_events__name(idx, pmu->name)=
-);
-> >>>>                 }
-> >>>> @@ -183,6 +182,7 @@ static void perf_mem_events__print_unsupport_hyb=
-rid(struct perf_mem_event *e,
-> >>>>  int perf_mem_events__record_args(const char **rec_argv, int *argv_n=
-r,
-> >>>>                                  char **rec_tmp, int *tmp_nr)
-> >>>>  {
-> >>>> +       const char *mnt =3D sysfs__mount();
-> >>>>         int i =3D *argv_nr, k =3D 0;
-> >>>>         struct perf_mem_event *e;
-> >>>>
-> >>>> @@ -211,6 +211,9 @@ int perf_mem_events__record_args(const char **re=
-c_argv, int *argv_nr,
-> >>>>                         while ((pmu =3D perf_pmus__scan(pmu)) !=3D N=
-ULL) {
-> >>>>                                 const char *s =3D perf_mem_events__n=
-ame(j, pmu->name);
-> >>>>
-> >>>> +                               if (!perf_mem_event__supported(mnt, =
-pmu, e))
-> >>>> +                                       continue;
-> >>>> +
-> >>>>                                 rec_argv[i++] =3D "-e";
-> >>>>                                 if (s) {
-> >>>>                                         char *copy =3D strdup(s);
-> >>>> --
-> >>>> 2.35.1
-> >>>>
-> >
