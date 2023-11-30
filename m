@@ -2,47 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 707117FEDE0
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 12:30:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BB3B7FEDE1
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 12:30:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345235AbjK3LaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 06:30:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35482 "EHLO
+        id S1345163AbjK3La2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 06:30:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345228AbjK3LaB (ORCPT
+        with ESMTP id S1345201AbjK3LaF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 06:30:01 -0500
-Received: from hi1smtp01.de.adit-jv.com (smtp1.de.adit-jv.com [93.241.18.167])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D17F01715;
-        Thu, 30 Nov 2023 03:29:59 -0800 (PST)
-Received: from hi2exch02.adit-jv.com (hi2exch02.adit-jv.com [10.72.92.28])
-        by hi1smtp01.de.adit-jv.com (Postfix) with ESMTP id 78457520115;
-        Thu, 30 Nov 2023 12:29:58 +0100 (CET)
-Received: from vmlxhi-118.adit-jv.com (10.72.93.77) by hi2exch02.adit-jv.com
- (10.72.92.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.34; Thu, 30 Nov
- 2023 12:29:58 +0100
-Date:   Thu, 30 Nov 2023 12:29:53 +0100
-From:   Hardik Gajjar <hgajjar@de.adit-jv.com>
-To:     John Keeping <john@keeping.me.uk>
-CC:     Hardik Gajjar <hgajjar@de.adit-jv.com>,
-        <gregkh@linuxfoundation.org>, <quic_ugoswami@quicinc.com>,
-        <brauner@kernel.org>, <jlayton@kernel.org>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <erosca@de.adit-jv.com>
-Subject: Re: [PATCH] usb: gadget: f_fs: Add the missing get_alt callback
-Message-ID: <20231130112953.GA120825@vmlxhi-118.adit-jv.com>
-References: <20231124164435.74727-1-hgajjar@de.adit-jv.com>
- <ZWM864zH3M8W9B2f@keeping.me.uk>
+        Thu, 30 Nov 2023 06:30:05 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C58A170B
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 03:30:06 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39501C433C9;
+        Thu, 30 Nov 2023 11:30:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701343806;
+        bh=9wqXAJVEw+p80c6qcG/8U08Liv8b+fzMW7FHXTNRBlQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=XtWkDfK5Ujq91qSWGQYSJIxUxo6b+Nhu3g7upiTfRLRpMwsCnnKinL+nHRgO/v8D4
+         xWBCxkaG1WCwGO0e4j60aX1xZYwIofd7TBEleKTENLYLxltQfiJbow5ULOvJZotIG3
+         3kEDRh83ICmFGx2H6tIHyGyRQr7PvpnERUNY9ivCjCP+PTSUyKHyr3qqbFTxkqW64Q
+         MqtfqtZ/VyBHkQTwWy7BGpvG7TaZ14Rrf1nk95YHUk1HncQ3EcJzf5+YdIWn0OBFUi
+         5A0I1muWePw3VfGR3SRO2rmBqW+XoU/fh8gw7pAD2lGBtS6V59IVhWbmY/gZyhfB9g
+         QKJ9PWOvv8N7g==
+From:   "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>, Amit Shah <amit@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        linux-alpha@vger.kernel.org, virtualization@lists.linux.dev
+Subject: [PATCH] tty: virtio: drop virtio_cons_early_init()
+Date:   Thu, 30 Nov 2023 12:30:01 +0100
+Message-ID: <20231130113001.29154-1-jirislaby@kernel.org>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ZWM864zH3M8W9B2f@keeping.me.uk>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [10.72.93.77]
-X-ClientProxiedBy: hi2exch02.adit-jv.com (10.72.92.28) To
- hi2exch02.adit-jv.com (10.72.92.28)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -51,104 +55,194 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 26, 2023 at 12:41:15PM +0000, John Keeping wrote:
-> On Fri, Nov 24, 2023 at 05:44:35PM +0100, Hardik Gajjar wrote:
-> > Some USB OTG hubs have multiple alternate configurations to offer,
-> > such as one for Carplay and another for Carlife.
-> > 
-> > This patch implements and sets the get_alt callback to retrieve the
-> > currently used alternate setting. The new function allows dynamic
-> > retrieval of the current alternate setting for a specific interface. The
-> > current alternate setting values are stored in the 'cur_alt' array
-> > within the 'ffs_function' structure.
-> 
-> Doesn't the alt setting need to be forwarded to userspace?
-> 
-> What happens if the available endpoints change - doesn't that mean the
-> available endpoint files change?
-> 
-> It's not sufficient to just blindly accept any alt setting and assume it
-> will work, that may be the case in one specific constrained scenario,
-> but it's not true in general.  At the very least we must not accept an
-> alt setting that is not defined in the descriptors.
+The last user of virtio_cons_early_init() was dropped in commit
+7fb2b2d51244 ("s390/virtio: remove the old KVM virtio transport").
 
-The commit message appears a bit confusing.
-The user space creates an FFS/iAP (Apple) gadget and writes an ep0 descriptor
-with multiple alt settings. The host then sends the set_alt request to configure
-alt_setting 0 or 1, verified by the subsequent get_alt request. Without this
-patch, the Host/Phone consistently sets alt 0 and retrieves alt 0, even when
-the request is for alt 1.
+So now, drop virtio_cons_early_init() and the logic and headers behind
+too.
 
-Given that f_fs is a user space-controlled gadget, creating a descriptor seems
-quite flexible for this type of gadget.
+Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
+Cc: Richard Henderson <richard.henderson@linaro.org>
+Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
+Cc: Matt Turner <mattst88@gmail.com>
+Cc: Amit Shah <amit@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: Jason Wang <jasowang@redhat.com>
+Cc: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc: linux-alpha@vger.kernel.org
+Cc: virtualization@lists.linux.dev
+---
+ MAINTAINERS                    |  1 -
+ drivers/char/virtio_console.c  | 48 ----------------------------------
+ include/linux/virtio_console.h | 38 ---------------------------
+ 3 files changed, 87 deletions(-)
+ delete mode 100644 include/linux/virtio_console.h
 
-I intend to submit an upstream patch v2 with a clearer commit message.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index b81da7a36a36..345797d89e11 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -23055,7 +23055,6 @@ M:	Amit Shah <amit@kernel.org>
+ L:	virtualization@lists.linux.dev
+ S:	Maintained
+ F:	drivers/char/virtio_console.c
+-F:	include/linux/virtio_console.h
+ F:	include/uapi/linux/virtio_console.h
+ 
+ VIRTIO CORE AND NET DRIVERS
+diff --git a/drivers/char/virtio_console.c b/drivers/char/virtio_console.c
+index 431e9e5bf9c1..8abe599c1c07 100644
+--- a/drivers/char/virtio_console.c
++++ b/drivers/char/virtio_console.c
+@@ -230,9 +230,6 @@ struct port {
+ 	bool guest_connected;
+ };
+ 
+-/* This is the very early arch-specified put chars function. */
+-static int (*early_put_chars)(u32, const char *, int);
+-
+ static struct port *find_port_by_vtermno(u32 vtermno)
+ {
+ 	struct port *port;
+@@ -1114,9 +1111,6 @@ static int put_chars(u32 vtermno, const char *buf, int count)
+ 	void *data;
+ 	int ret;
+ 
+-	if (unlikely(early_put_chars))
+-		return early_put_chars(vtermno, buf, count);
+-
+ 	port = find_port_by_vtermno(vtermno);
+ 	if (!port)
+ 		return -EPIPE;
+@@ -1142,10 +1136,6 @@ static int get_chars(u32 vtermno, char *buf, int count)
+ {
+ 	struct port *port;
+ 
+-	/* If we've not set up the port yet, we have no input to give. */
+-	if (unlikely(early_put_chars))
+-		return 0;
+-
+ 	port = find_port_by_vtermno(vtermno);
+ 	if (!port)
+ 		return -EPIPE;
+@@ -1201,21 +1191,6 @@ static const struct hv_ops hv_ops = {
+ 	.notifier_hangup = notifier_del_vio,
+ };
+ 
+-/*
+- * Console drivers are initialized very early so boot messages can go
+- * out, so we do things slightly differently from the generic virtio
+- * initialization of the net and block drivers.
+- *
+- * At this stage, the console is output-only.  It's too early to set
+- * up a virtqueue, so we let the drivers do some boutique early-output
+- * thing.
+- */
+-int __init virtio_cons_early_init(int (*put_chars)(u32, const char *, int))
+-{
+-	early_put_chars = put_chars;
+-	return hvc_instantiate(0, 0, &hv_ops);
+-}
+-
+ static int init_port_console(struct port *port)
+ {
+ 	int ret;
+@@ -1256,13 +1231,6 @@ static int init_port_console(struct port *port)
+ 	spin_unlock_irq(&pdrvdata_lock);
+ 	port->guest_connected = true;
+ 
+-	/*
+-	 * Start using the new console output if this is the first
+-	 * console to come up.
+-	 */
+-	if (early_put_chars)
+-		early_put_chars = NULL;
+-
+ 	/* Notify host of port being opened */
+ 	send_control_msg(port, VIRTIO_CONSOLE_PORT_OPEN, 1);
+ 
+@@ -1999,7 +1967,6 @@ static int virtcons_probe(struct virtio_device *vdev)
+ 	struct ports_device *portdev;
+ 	int err;
+ 	bool multiport;
+-	bool early = early_put_chars != NULL;
+ 
+ 	/* We only need a config space if features are offered */
+ 	if (!vdev->config->get &&
+@@ -2010,9 +1977,6 @@ static int virtcons_probe(struct virtio_device *vdev)
+ 		return -EINVAL;
+ 	}
+ 
+-	/* Ensure to read early_put_chars now */
+-	barrier();
+-
+ 	portdev = kmalloc(sizeof(*portdev), GFP_KERNEL);
+ 	if (!portdev) {
+ 		err = -ENOMEM;
+@@ -2100,18 +2064,6 @@ static int virtcons_probe(struct virtio_device *vdev)
+ 	__send_control_msg(portdev, VIRTIO_CONSOLE_BAD_ID,
+ 			   VIRTIO_CONSOLE_DEVICE_READY, 1);
+ 
+-	/*
+-	 * If there was an early virtio console, assume that there are no
+-	 * other consoles. We need to wait until the hvc_alloc matches the
+-	 * hvc_instantiate, otherwise tty_open will complain, resulting in
+-	 * a "Warning: unable to open an initial console" boot failure.
+-	 * Without multiport this is done in add_port above. With multiport
+-	 * this might take some host<->guest communication - thus we have to
+-	 * wait.
+-	 */
+-	if (multiport && early)
+-		wait_for_completion(&early_console_added);
+-
+ 	return 0;
+ 
+ free_chrdev:
+diff --git a/include/linux/virtio_console.h b/include/linux/virtio_console.h
+deleted file mode 100644
+index d2e2785af602..000000000000
+--- a/include/linux/virtio_console.h
++++ /dev/null
+@@ -1,38 +0,0 @@
+-/*
+- * This header, excluding the #ifdef __KERNEL__ part, is BSD licensed so
+- * anyone can use the definitions to implement compatible drivers/servers:
+- *
+- *
+- * Redistribution and use in source and binary forms, with or without
+- * modification, are permitted provided that the following conditions
+- * are met:
+- * 1. Redistributions of source code must retain the above copyright
+- *    notice, this list of conditions and the following disclaimer.
+- * 2. Redistributions in binary form must reproduce the above copyright
+- *    notice, this list of conditions and the following disclaimer in the
+- *    documentation and/or other materials provided with the distribution.
+- * 3. Neither the name of IBM nor the names of its contributors
+- *    may be used to endorse or promote products derived from this software
+- *    without specific prior written permission.
+- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ``AS IS'' AND
+- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+- * ARE DISCLAIMED.  IN NO EVENT SHALL IBM OR CONTRIBUTORS BE LIABLE
+- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+- * SUCH DAMAGE.
+- *
+- * Copyright (C) Red Hat, Inc., 2009, 2010, 2011
+- * Copyright (C) Amit Shah <amit.shah@redhat.com>, 2009, 2010, 2011
+- */
+-#ifndef _LINUX_VIRTIO_CONSOLE_H
+-#define _LINUX_VIRTIO_CONSOLE_H
+-
+-#include <uapi/linux/virtio_console.h>
+-
+-int __init virtio_cons_early_init(int (*put_chars)(u32, const char *, int));
+-#endif /* _LINUX_VIRTIO_CONSOLE_H */
+-- 
+2.43.0
 
-> 
-> > Signed-off-by: Hardik Gajjar <hgajjar@de.adit-jv.com>
-> > ---
-> >  drivers/usb/gadget/function/f_fs.c | 16 +++++++++++++++-
-> >  1 file changed, 15 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/usb/gadget/function/f_fs.c b/drivers/usb/gadget/function/f_fs.c
-> > index efe3e3b85769..37c47c11f57a 100644
-> > --- a/drivers/usb/gadget/function/f_fs.c
-> > +++ b/drivers/usb/gadget/function/f_fs.c
-> > @@ -75,6 +75,7 @@ struct ffs_function {
-> >  	short				*interfaces_nums;
-> >  
-> >  	struct usb_function		function;
-> > +	int				cur_alt[MAX_CONFIG_INTERFACES];
-> >  };
-> >  
-> >  
-> > @@ -98,6 +99,7 @@ static int __must_check ffs_func_eps_enable(struct ffs_function *func);
-> >  static int ffs_func_bind(struct usb_configuration *,
-> >  			 struct usb_function *);
-> >  static int ffs_func_set_alt(struct usb_function *, unsigned, unsigned);
-> > +static int ffs_func_get_alt(struct usb_function *f, unsigned int intf);
-> >  static void ffs_func_disable(struct usb_function *);
-> >  static int ffs_func_setup(struct usb_function *,
-> >  			  const struct usb_ctrlrequest *);
-> > @@ -3232,6 +3234,15 @@ static void ffs_reset_work(struct work_struct *work)
-> >  	ffs_data_reset(ffs);
-> >  }
-> >  
-> > +static int ffs_func_get_alt(struct usb_function *f,
-> > +			    unsigned int interface)
-> > +{
-> > +	struct ffs_function *func = ffs_func_from_usb(f);
-> > +	int intf = ffs_func_revmap_intf(func, interface);
-> > +
-> > +	return (intf < 0) ? intf : func->cur_alt[interface];
-> > +}
-> > +
-> >  static int ffs_func_set_alt(struct usb_function *f,
-> >  			    unsigned interface, unsigned alt)
-> >  {
-> > @@ -3266,8 +3277,10 @@ static int ffs_func_set_alt(struct usb_function *f,
-> >  
-> >  	ffs->func = func;
-> >  	ret = ffs_func_eps_enable(func);
-> > -	if (ret >= 0)
-> > +	if (ret >= 0) {
-> >  		ffs_event_add(ffs, FUNCTIONFS_ENABLE);
-> > +		func->cur_alt[interface] = alt;
-> > +	}
-> >  	return ret;
-> >  }
-> >  
-> > @@ -3574,6 +3587,7 @@ static struct usb_function *ffs_alloc(struct usb_function_instance *fi)
-> >  	func->function.bind    = ffs_func_bind;
-> >  	func->function.unbind  = ffs_func_unbind;
-> >  	func->function.set_alt = ffs_func_set_alt;
-> > +	func->function.get_alt = ffs_func_get_alt;
-> >  	func->function.disable = ffs_func_disable;
-> >  	func->function.setup   = ffs_func_setup;
-> >  	func->function.req_match = ffs_func_req_match;
-> > -- 
-> > 2.17.1
-> > 
-
-Thanks,
-Hardik
