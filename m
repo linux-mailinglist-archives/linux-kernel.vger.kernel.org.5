@@ -2,62 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 740467FE6E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 03:36:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A077E7FE6D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 03:35:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344344AbjK3Cgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 21:36:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40776 "EHLO
+        id S1344158AbjK3Cfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 21:35:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234938AbjK3Cga (ORCPT
+        with ESMTP id S231644AbjK3Cfb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 21:36:30 -0500
-Received: from rcdn-iport-9.cisco.com (rcdn-iport-9.cisco.com [173.37.86.80])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF495171A;
-        Wed, 29 Nov 2023 18:36:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=877; q=dns/txt; s=iport;
-  t=1701311782; x=1702521382;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=XEQ4NSFM5Uqzyo57IeSl2o8heX6pLC+We2PwToQ+IVw=;
-  b=hTw7cjqZrYEFHKpQDfnaPBGTQwU/UjlRxy4/DHk1SAKBHVlbGdWXCdIu
-   1SAfmnwARGTo6OFSC4m36MZg0EFNue8AFDWV1/DHX1lmdVsTtoiAyKTE8
-   jkjCD370MFChuGl7X6kmb3ndc0/Pl0Sh+ca1BSsWACEV3SwJJfT0t9m2O
-   4=;
-X-CSE-ConnectionGUID: pNs4Hyj5TUSlq2YEjJWXKA==
-X-CSE-MsgGUID: u90wgHi2TPKyM/+9mDsotA==
-X-IronPort-AV: E=Sophos;i="6.04,237,1695686400"; 
-   d="scan'208";a="148824002"
-Received: from rcdn-core-9.cisco.com ([173.37.93.145])
-  by rcdn-iport-9.cisco.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 02:36:21 +0000
-Received: from localhost.cisco.com ([10.193.101.253])
-        (authenticated bits=0)
-        by rcdn-core-9.cisco.com (8.15.2/8.15.2) with ESMTPSA id 3AU2YA4F007614
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Thu, 30 Nov 2023 02:36:20 GMT
-From:   Karan Tilak Kumar <kartilak@cisco.com>
-To:     sebaddel@cisco.com
-Cc:     arulponn@cisco.com, djhawar@cisco.com, gcboffa@cisco.com,
-        mkai2@cisco.com, satishkh@cisco.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Karan Tilak Kumar <kartilak@cisco.com>
-Subject: [PATCH v4 13/13] scsi: fnic: Increment driver version
-Date:   Wed, 29 Nov 2023 18:34:02 -0800
-Message-Id: <20231130023402.802282-14-kartilak@cisco.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20231130023402.802282-1-kartilak@cisco.com>
-References: <20231130023402.802282-1-kartilak@cisco.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated-User: kartilak@cisco.com
-X-Outbound-SMTP-Client: 10.193.101.253, [10.193.101.253]
-X-Outbound-Node: rcdn-core-9.cisco.com
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIMWL_WL_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        Wed, 29 Nov 2023 21:35:31 -0500
+Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 226ACD7F;
+        Wed, 29 Nov 2023 18:35:36 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0VxPkUUK_1701311734;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VxPkUUK_1701311734)
+          by smtp.aliyun-inc.com;
+          Thu, 30 Nov 2023 10:35:34 +0800
+Message-ID: <1701311694.1163726-1-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH net-next 2/5] virtio_net: Add page_pool support to improve performance
+Date:   Thu, 30 Nov 2023 10:34:54 +0800
+From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To:     Zhu Yanjun <yanjun.zhu@linux.dev>
+Cc:     Liang Chen <liangchen.linux@gmail.com>, jasowang@redhat.com,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kuba@kernel.org, edumazet@google.com,
+        davem@davemloft.net, pabeni@redhat.com, alexander.duyck@gmail.com,
+        "Michael S. Tsirkin" <mst@redhat.com>
+References: <20230526054621.18371-1-liangchen.linux@gmail.com>
+ <20230526054621.18371-2-liangchen.linux@gmail.com>
+ <c745f67e-91e6-4a32-93f2-dc715056eb51@linux.dev>
+ <20231129095825-mutt-send-email-mst@kernel.org>
+ <b699fbc8-260a-48e9-b6cc-8bfecd09afed@linux.dev>
+ <0c2efe49-03db-4616-a4e5-26ff0434e323@linux.dev>
+In-Reply-To: <0c2efe49-03db-4616-a4e5-26ff0434e323@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,31 +48,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changes between v2 and v3:
-    Incorporate the following review comments from Hannes:
-	Create a separate patch to increment driver version.
-	Increment driver version number to 1.7.0.0.
+On Wed, 29 Nov 2023 23:29:10 +0800, Zhu Yanjun <yanjun.zhu@linux.dev> wrote:
+>
+> =E5=9C=A8 2023/11/29 23:22, Zhu Yanjun =E5=86=99=E9=81=93:
+> >
+> > =E5=9C=A8 2023/11/29 22:59, Michael S. Tsirkin =E5=86=99=E9=81=93:
+> >> On Wed, Nov 29, 2023 at 10:50:57PM +0800, Zhu Yanjun wrote:
+> >>> =E5=9C=A8 2023/5/26 13:46, Liang Chen =E5=86=99=E9=81=93:
+> >>
+> >> what made you respond to a patch from May, now?
+> >
+> > I want to apply page_pool to our virtio_net. This virtio_net works on
+> > our device.
+> >
+> > I want to verify whether page_pool on virtio_net with our device can
+> > improve the performance or not.
+> >
+> > And I found that ethtool is wrong.
+> >
+> > I use virtio_net on our device. I found that page member variable in
+> > rq is not used in recv path.
+> >
+> > When virtio_net is modprobe, I checked page member variable in rq with
+> > kprobe or crash tool.=C2=A0 page member variable in rq is always NULL.
+> >
+> > But sg in recv path is used.
+> >
+> > So how to use page member variable in rq? If page member variable in
+> > rq is always NULL, can we remove it?
+> >
+> > BTW, I use ping and iperf tool to make tests with virtio_net. In the
+> > tests, page member variable in rq is always NULL.
+>
+>
+> And I replaced page member variable in rq with page_pool, but the
+> statistics of page_pool are always 0.
+>
+> It is interesting that page_pool member variable in rq is not used in
+> ping and iperf tests.
+>
+> I am not sure what tests can make page member variable not NULL. ^_^
 
-Reviewed-by: Sesidhar Baddela <sebaddel@cisco.com>
-Reviewed-by: Arulprabhu Ponnusamy <arulponn@cisco.com>
-Signed-off-by: Karan Tilak Kumar <kartilak@cisco.com>
----
- drivers/scsi/fnic/fnic.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Do you mean rq->pages?
 
-diff --git a/drivers/scsi/fnic/fnic.h b/drivers/scsi/fnic/fnic.h
-index c4edbd7dfc25..7241aebf79d6 100644
---- a/drivers/scsi/fnic/fnic.h
-+++ b/drivers/scsi/fnic/fnic.h
-@@ -27,7 +27,7 @@
- 
- #define DRV_NAME		"fnic"
- #define DRV_DESCRIPTION		"Cisco FCoE HBA Driver"
--#define DRV_VERSION		"1.6.0.56"
-+#define DRV_VERSION		"1.7.0.0"
- #define PFX			DRV_NAME ": "
- #define DFX                     DRV_NAME "%d: "
- 
--- 
-2.31.1
+That is for big mode.
 
+Thanks.
+
+
+>
+> Best Regards,
+>
+> Zhu Yanjun
+>
+>
+> >
+> > It is interesting.
+> >
+> > Zhu Yanjun
+> >
+> >>
