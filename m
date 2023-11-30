@@ -2,54 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E997F7FF3C8
+	by mail.lfdr.de (Postfix) with ESMTP id 8F2957FF3C6
 	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 16:42:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346365AbjK3Pmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 10:42:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232246AbjK3Pms (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S232244AbjK3Pms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 30 Nov 2023 10:42:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56800 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232047AbjK3Pmq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Nov 2023 10:42:46 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 393BB83
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 07:42:55 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D965EC433C8;
-        Thu, 30 Nov 2023 15:42:54 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 709F783
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 07:42:53 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 521EFC433C7;
+        Thu, 30 Nov 2023 15:42:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701358974;
-        bh=LhpLwZbqacivXxz4RxHyaTQfxJ302f9kFQFwo/zcAaQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=WEyUzI9wv89NSYrocNXfNyKhf9x134F1jZhlWvSy8FXmXBA029/ocyYJ9eZd0axdS
-         mWy0RU+Qlmzt+cVSfmDh4B7NPTe0RbdRorURXGLI0b6wj7w53VuNS1dASz7IcmtPtB
-         qR5DQqj5HFk6gZl1EXzpqF/xJ7G7ZDKXxcovixk56nd88Grxxs4wGSEChtYx5Y+dNu
-         5buBY/Zx4oxsjrFx6S/t4z/zfe9z/Ctl8WQpiEIrORxzOr1JlKcvCEXj5epTtcfIHS
-         TQyL49JAaaTuEZ6cGFp1FrnSpiNUixZd++u09FcwRnI2ouNBONUbK2PltJaXkWdRFm
-         jel0NsMBvc6Uw==
-Received: by mail-oa1-f48.google.com with SMTP id 586e51a60fabf-1fa8dc2a0bfso522367fac.0;
-        Thu, 30 Nov 2023 07:42:54 -0800 (PST)
-X-Gm-Message-State: AOJu0YzEfvzA2am7gDAYhdwSMm/MHucaJQI8jyJTko5EReSh+zMDxEII
-        g3Y4SlB+Nk0PynCpXhuCLS6ffA21Jnm87QmfchM=
-X-Google-Smtp-Source: AGHT+IFjtpj4XRmI0ocet2S05q3ilpcpUA5f2ZQVWiOmactrdPBTCsmdEo5wFea4OF65/ad95IsmlHYUFDQfv5ecgmo=
-X-Received: by 2002:a05:6870:a101:b0:1f9:5ce0:5984 with SMTP id
- m1-20020a056870a10100b001f95ce05984mr25352810oae.55.1701358974289; Thu, 30
- Nov 2023 07:42:54 -0800 (PST)
+        s=k20201202; t=1701358973;
+        bh=WlLJfUiHU4McYxn94NiMcp46fAMc3TUOTPbaqBQLG/s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=teECoiBPqM0U8Ehit9ioXGecjoILrpbNTcS1O2v2z0ZmW1ykgsH7a4/6pqOApmFM0
+         iXoroSoJBwStm48mdd1gqCoLdp7Nk6hOIek2RQgE8wHHgST2c3TGg/smVi6rudWJQs
+         HPnhortTfNkXdF6MXLsRFfj8q3q3tHh4x8lYuZ9h5PScStSDii4kaTjdv3yGvUV1DT
+         E5vlrni/BHqpfhlweGh5vsL1ewX6wVf9S2P84sMFIcXrut/zAznT9cm/87IHbF956N
+         xz+JcqjR/7nqj2w2aUkMzRNz+RkcsojXMc3clL9jGOsWNLZN/hXk3M8HZJ299zaqP5
+         2k+p13+Ph0Klw==
+Date:   Thu, 30 Nov 2023 15:42:48 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Thomas Richard <thomas.richard@bootlin.com>
+Cc:     Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com,
+        gregory.clement@bootlin.com, u-kumar1@ti.com
+Subject: Re: [PATCH 1/5] dt-bindings: arm: keystone: add ti,j7200-sci
+ compatible
+Message-ID: <20231130-repugnant-aghast-0bc35af8de3c@spud>
+References: <20231129-j7200-tisci-s2r-v1-0-c1d5964ed574@bootlin.com>
+ <20231129-j7200-tisci-s2r-v1-1-c1d5964ed574@bootlin.com>
+ <20231129-caress-banister-5b5ccbf183e6@spud>
+ <20231129-crawling-gaming-76077ed03c57@spud>
 MIME-Version: 1.0
-References: <20231122034753.1446513-1-senozhatsky@chromium.org>
- <20231128053443.GA6525@google.com> <CAK7LNAT_Z4TeNzngMskEoNdSTWUH5gGzYm5MfO6C_H8rFcF6ng@mail.gmail.com>
- <20231129041307.GB6525@google.com>
-In-Reply-To: <20231129041307.GB6525@google.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Fri, 1 Dec 2023 00:42:18 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAS8q9eDerwVRbPbqd+AKjNVkEKLOW+NAKaD4duP-gViqw@mail.gmail.com>
-Message-ID: <CAK7LNAS8q9eDerwVRbPbqd+AKjNVkEKLOW+NAKaD4duP-gViqw@mail.gmail.com>
-Subject: Re: [PATCH] kconfig: WERROR unmet symbol dependency
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc:     Patrick Georgi <pgeorgi@google.com>, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Stefan Reinauer <reinauer@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="zEaYWprFLeGvpHlX"
+Content-Disposition: inline
+In-Reply-To: <20231129-crawling-gaming-76077ed03c57@spud>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -60,40 +61,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 1:13=E2=80=AFPM Sergey Senozhatsky
-<senozhatsky@chromium.org> wrote:
->
-> On (23/11/28 23:19), Masahiro Yamada wrote:
->
-> [..]
->
-> > KCONFIG_WERROR is meant to turn all warnings
-> > to errors.
-> > I do not see getenv("KCONFIG_WERROR")
-> > sprinkled everywhere in Kconfig.
-> > One more thing, you cannot directly exit(1)
-> > from sym_calc_value().
->
-> We do exit(1) for KCONFIG_WARN_UNKNOWN_SYMBOLS in conf_read().
->
-> I can introduce two new helpers that will tell if confdata.c and symbol.c
-> triggered any warnings and if KCONFIG_WERROR is set. And then different
-> code paths can call them and handle exit gracefully, depending on the
-> context (ncurses, menu, etc.).
->
-> Something like this
 
+--zEaYWprFLeGvpHlX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I do not want to patch warnings one by one.
+On Wed, Nov 29, 2023 at 03:38:04PM +0000, Conor Dooley wrote:
+> On Wed, Nov 29, 2023 at 03:34:20PM +0000, Conor Dooley wrote:
+> > On Wed, Nov 29, 2023 at 04:31:17PM +0100, Thomas Richard wrote:
+> > > On j7200, during suspend to ram the soc is powered-off.
+> > > At resume requested irqs shall be restored which is a different behav=
+ior
+> > > from other platforms.
+> > >=20
+> > > Signed-off-by: Thomas Richard <thomas.richard@bootlin.com>
+> >=20
+> > Acked-by: Conor Dooley <conor.dooley@microchip.com>
+>=20
+> Un-Acked. Your dts patch contradicts this one.
+>=20
+> Is the programming model compatible with the existing devices? To be
+> compatible, the existing device only need to support a compatible subset
+> of behaviours.
+> If so, this patch is wrong. If not, then the dts one is.
 
+Given Andrew's response, it looks like the dts patch is the correct one
+of the two, and this patch should document the k2g as a fallback for the
+jh7200.
 
-I will take some time to think about it.
+Cheers,
+Conor.
 
+--zEaYWprFLeGvpHlX
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZWitdwAKCRB4tDGHoIJi
+0mkhAP98vayPMHoouzmPwyTjP5SrWcx1W4mXtH9nl8OtgqZpbQEAzHUQkAjTUikM
+Ync+Qp1rElNGrwDq0R1MRMGtTgimSwc=
+=2kcW
+-----END PGP SIGNATURE-----
 
-
-
---=20
-Best Regards
-Masahiro Yamada
+--zEaYWprFLeGvpHlX--
