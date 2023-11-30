@@ -2,91 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D77E67FF0BA
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 14:51:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F7CE7FF07C
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 14:44:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345691AbjK3Nvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 08:51:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44180 "EHLO
+        id S1345680AbjK3Nny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 08:43:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345581AbjK3Nvb (ORCPT
+        with ESMTP id S1345649AbjK3Nns (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 08:51:31 -0500
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3D63137;
-        Thu, 30 Nov 2023 05:51:34 -0800 (PST)
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id 66BAF120008;
-        Thu, 30 Nov 2023 16:51:33 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 66BAF120008
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-        s=mail; t=1701352293;
-        bh=lgDstG8AR2X5fihUSohCw6miMFgwYXoychpQoa6AkGk=;
-        h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
-        b=C1K7xIV45lCyg1A2rsM3Pkar5oj2PIvpUiWMb7hifeyUdUtGCtEt+05hk+m8/M2WS
-         d5phS+D9JlLACnb6Ak+Pbjw9a4FgBJ3HfrWRsHWui+mY7ND0VUfp69H2nE4zJBspZs
-         GryrdWbsuFh0S8cT31VrSaauAuCvzuG1RryXgt98lYIXwD6jb6mX3CUw9DkVhWu4UD
-         vldew2SgqTsMECEw/t63+UbBDCOL9onJoxwuRj/NXFCWTOHjMIcEO2Itr/WLul10IQ
-         u27he/ipy+9sGCbsaz6Ops2CQ/LAdZUQgulgEyBIOTvb2zxiwg19MvPCb8iOdV8BgT
-         TgyAldTFXBbpg==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Thu, 30 Nov 2023 16:51:33 +0300 (MSK)
-Received: from [192.168.0.106] (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 30 Nov 2023 16:51:32 +0300
-Message-ID: <02de8982-ec4a-b3b2-e8e5-1bca28cfc01b@salutedevices.com>
-Date:   Thu, 30 Nov 2023 16:43:34 +0300
+        Thu, 30 Nov 2023 08:43:48 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6A06194
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 05:43:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701351833;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=vXLmPI3YKuWjybHeV+zzmSdSrTMtOftgtk5WyUqCzCo=;
+        b=M3JguiYj/JrTc3QEgd52WCpnSNl3j9jk+C9fDVonEiS46D32sT/Pvnb9Nh1kBF89aXzsbD
+        zSCpuA2KB7lQFlB5d2zohk62oe/azyxTi1oWlS+NPXhIAuQ2so0Rd8BPaVuVMgsH1pcasa
+        7bVpuZEd+Gync+2VqxerpNnq2en0mBo=
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
+ [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-81-KQIydSNpM5G-Sd7Q_kv3qg-1; Thu, 30 Nov 2023 08:43:51 -0500
+X-MC-Unique: KQIydSNpM5G-Sd7Q_kv3qg-1
+Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2c993cf572bso10985251fa.3
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 05:43:51 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701351830; x=1701956630;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vXLmPI3YKuWjybHeV+zzmSdSrTMtOftgtk5WyUqCzCo=;
+        b=wQAvmmsXWE1/GqFoGrO4cTTfYTOQUy4guyigdQPxb3ITqrYZQCtYM2idlK3H7WCDCy
+         lIh6iwSB9JMK7PTR+NFb02HKmlMRtEeAUeLlSGNdDREKFhMtr1hp17XD3xur7tQvk2Gd
+         z3twkqUuMGLHJdsBup3QSFe1kB3qWKkCR/WgodmiLaCaR/uUT5XbC+qfx4E3+raOOdQD
+         srfOIZY6VxiKqzNy4AM21r4jNYuqHYsE0mFQnJkVIO2c/Lu6QEI9bFZfa0RyWpjktduM
+         a3Lo67Yq0s9VccORHe6b5aD3TwyqGhKbhEoVSsCG20CRIGP2TqSj3RpE3ImMy1eCL8to
+         xV0Q==
+X-Gm-Message-State: AOJu0Yy6ufvY7Yi8vZRQt1NUUEHoIMdYDt0HQdSak3FAFO1thuHFbj5I
+        3nlin/7Uq2L0YUsALXVufTvIFH2EaBBLu2rH7P3Ygf9M99Kza0YHwrQ0jRPEJTtmZWj6xfAxhAn
+        7pPqV4mMD1kYMf8qi/QZoRCmz
+X-Received: by 2002:a2e:9b4d:0:b0:2c9:b4c6:a7ff with SMTP id o13-20020a2e9b4d000000b002c9b4c6a7ffmr5098574ljj.40.1701351830305;
+        Thu, 30 Nov 2023 05:43:50 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHNEah9uEWG0d1eEyNvSkC2EScna+/OIpBCKDONcD2fN4xZ88Wfm1ISF4DLZSarzZEBaM0Hyg==
+X-Received: by 2002:a2e:9b4d:0:b0:2c9:b4c6:a7ff with SMTP id o13-20020a2e9b4d000000b002c9b4c6a7ffmr5098553ljj.40.1701351829882;
+        Thu, 30 Nov 2023 05:43:49 -0800 (PST)
+Received: from ?IPV6:2a09:80c0:192:0:5dac:bf3d:c41:c3e7? ([2a09:80c0:192:0:5dac:bf3d:c41:c3e7])
+        by smtp.gmail.com with ESMTPSA id s9-20020a05600c45c900b0040b4fca8620sm5777979wmo.37.2023.11.30.05.43.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Nov 2023 05:43:49 -0800 (PST)
+Message-ID: <d7e0574d-c74d-4e91-bf60-aa6691df78e3@redhat.com>
+Date:   Thu, 30 Nov 2023 14:43:48 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH net-next v5 2/3] virtio/vsock: send credit update during
- setting SO_RCVLOWAT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC v2 19/27] mm: mprotect: Introduce PAGE_FAULT_ON_ACCESS
+ for mprotect(PROT_MTE)
 Content-Language: en-US
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-CC:     Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Bobby Eshleman <bobby.eshleman@bytedance.com>,
-        <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel@sberdevices.ru>, <oxffffaa@gmail.com>
-References: <20231130130840.253733-1-avkrasnov@salutedevices.com>
- <20231130130840.253733-3-avkrasnov@salutedevices.com>
- <20231130084044-mutt-send-email-mst@kernel.org>
-From:   Arseniy Krasnov <avkrasnov@salutedevices.com>
-In-Reply-To: <20231130084044-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+To:     Alexandru Elisei <alexandru.elisei@arm.com>
+Cc:     Hyesoo Yu <hyesoo.yu@samsung.com>, catalin.marinas@arm.com,
+        will@kernel.org, oliver.upton@linux.dev, maz@kernel.org,
+        james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com,
+        arnd@arndb.de, akpm@linux-foundation.org, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com, mhiramat@kernel.org,
+        rppt@kernel.org, hughd@google.com, pcc@google.com,
+        steven.price@arm.com, anshuman.khandual@arm.com,
+        vincenzo.frascino@arm.com, eugenis@google.com, kcc@google.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        linux-trace-kernel@vger.kernel.org
+References: <20231119165721.9849-1-alexandru.elisei@arm.com>
+ <CGME20231119165921epcas2p3dce0532847d59a9c3973b4e41102e27d@epcas2p3.samsung.com>
+ <20231119165721.9849-20-alexandru.elisei@arm.com>
+ <20231129092725.GD2988384@tiffany> <ZWh6vl8DfXQbKo9O@raptor>
+ <4e7a4054-092c-4e34-ae00-0105d7c9343c@redhat.com> <ZWiO4PWfK2gKDLGr@raptor>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ xsFNBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
+ dBrn+lhhOYjjNefFQou6478faXE6o2AhmebqT4KiQoUQFV4R7y1KMEKoSyy8hQaK1umALTdL
+ QZLQMzNE74ap+GDK0wnacPQFpcG1AE9RMq3aeErY5tujekBS32jfC/7AnH7I0v1v1TbbK3Gp
+ XNeiN4QroO+5qaSr0ID2sz5jtBLRb15RMre27E1ImpaIv2Jw8NJgW0k/D1RyKCwaTsgRdwuK
+ Kx/Y91XuSBdz0uOyU/S8kM1+ag0wvsGlpBVxRR/xw/E8M7TEwuCZQArqqTCmkG6HGcXFT0V9
+ PXFNNgV5jXMQRwU0O/ztJIQqsE5LsUomE//bLwzj9IVsaQpKDqW6TAPjcdBDPLHvriq7kGjt
+ WhVhdl0qEYB8lkBEU7V2Yb+SYhmhpDrti9Fq1EsmhiHSkxJcGREoMK/63r9WLZYI3+4W2rAc
+ UucZa4OT27U5ZISjNg3Ev0rxU5UH2/pT4wJCfxwocmqaRr6UYmrtZmND89X0KigoFD/XSeVv
+ jwBRNjPAubK9/k5NoRrYqztM9W6sJqrH8+UWZ1Idd/DdmogJh0gNC0+N42Za9yBRURfIdKSb
+ B3JfpUqcWwE7vUaYrHG1nw54pLUoPG6sAA7Mehl3nd4pZUALHwARAQABzSREYXZpZCBIaWxk
+ ZW5icmFuZCA8ZGF2aWRAcmVkaGF0LmNvbT7CwZgEEwEIAEICGwMGCwkIBwMCBhUIAgkKCwQW
+ AgMBAh4BAheAAhkBFiEEG9nKrXNcTDpGDfzKTd4Q9wD/g1oFAl8Ox4kFCRKpKXgACgkQTd4Q
+ 9wD/g1oHcA//a6Tj7SBNjFNM1iNhWUo1lxAja0lpSodSnB2g4FCZ4R61SBR4l/psBL73xktp
+ rDHrx4aSpwkRP6Epu6mLvhlfjmkRG4OynJ5HG1gfv7RJJfnUdUM1z5kdS8JBrOhMJS2c/gPf
+ wv1TGRq2XdMPnfY2o0CxRqpcLkx4vBODvJGl2mQyJF/gPepdDfcT8/PY9BJ7FL6Hrq1gnAo4
+ 3Iv9qV0JiT2wmZciNyYQhmA1V6dyTRiQ4YAc31zOo2IM+xisPzeSHgw3ONY/XhYvfZ9r7W1l
+ pNQdc2G+o4Di9NPFHQQhDw3YTRR1opJaTlRDzxYxzU6ZnUUBghxt9cwUWTpfCktkMZiPSDGd
+ KgQBjnweV2jw9UOTxjb4LXqDjmSNkjDdQUOU69jGMUXgihvo4zhYcMX8F5gWdRtMR7DzW/YE
+ BgVcyxNkMIXoY1aYj6npHYiNQesQlqjU6azjbH70/SXKM5tNRplgW8TNprMDuntdvV9wNkFs
+ 9TyM02V5aWxFfI42+aivc4KEw69SE9KXwC7FSf5wXzuTot97N9Phj/Z3+jx443jo2NR34XgF
+ 89cct7wJMjOF7bBefo0fPPZQuIma0Zym71cP61OP/i11ahNye6HGKfxGCOcs5wW9kRQEk8P9
+ M/k2wt3mt/fCQnuP/mWutNPt95w9wSsUyATLmtNrwccz63XOwU0EVcufkQEQAOfX3n0g0fZz
+ Bgm/S2zF/kxQKCEKP8ID+Vz8sy2GpDvveBq4H2Y34XWsT1zLJdvqPI4af4ZSMxuerWjXbVWb
+ T6d4odQIG0fKx4F8NccDqbgHeZRNajXeeJ3R7gAzvWvQNLz4piHrO/B4tf8svmRBL0ZB5P5A
+ 2uhdwLU3NZuK22zpNn4is87BPWF8HhY0L5fafgDMOqnf4guJVJPYNPhUFzXUbPqOKOkL8ojk
+ CXxkOFHAbjstSK5Ca3fKquY3rdX3DNo+EL7FvAiw1mUtS+5GeYE+RMnDCsVFm/C7kY8c2d0G
+ NWkB9pJM5+mnIoFNxy7YBcldYATVeOHoY4LyaUWNnAvFYWp08dHWfZo9WCiJMuTfgtH9tc75
+ 7QanMVdPt6fDK8UUXIBLQ2TWr/sQKE9xtFuEmoQGlE1l6bGaDnnMLcYu+Asp3kDT0w4zYGsx
+ 5r6XQVRH4+5N6eHZiaeYtFOujp5n+pjBaQK7wUUjDilPQ5QMzIuCL4YjVoylWiBNknvQWBXS
+ lQCWmavOT9sttGQXdPCC5ynI+1ymZC1ORZKANLnRAb0NH/UCzcsstw2TAkFnMEbo9Zu9w7Kv
+ AxBQXWeXhJI9XQssfrf4Gusdqx8nPEpfOqCtbbwJMATbHyqLt7/oz/5deGuwxgb65pWIzufa
+ N7eop7uh+6bezi+rugUI+w6DABEBAAHCwXwEGAEIACYCGwwWIQQb2cqtc1xMOkYN/MpN3hD3
+ AP+DWgUCXw7HsgUJEqkpoQAKCRBN3hD3AP+DWrrpD/4qS3dyVRxDcDHIlmguXjC1Q5tZTwNB
+ boaBTPHSy/Nksu0eY7x6HfQJ3xajVH32Ms6t1trDQmPx2iP5+7iDsb7OKAb5eOS8h+BEBDeq
+ 3ecsQDv0fFJOA9ag5O3LLNk+3x3q7e0uo06XMaY7UHS341ozXUUI7wC7iKfoUTv03iO9El5f
+ XpNMx/YrIMduZ2+nd9Di7o5+KIwlb2mAB9sTNHdMrXesX8eBL6T9b+MZJk+mZuPxKNVfEQMQ
+ a5SxUEADIPQTPNvBewdeI80yeOCrN+Zzwy/Mrx9EPeu59Y5vSJOx/z6OUImD/GhX7Xvkt3kq
+ Er5KTrJz3++B6SH9pum9PuoE/k+nntJkNMmQpR4MCBaV/J9gIOPGodDKnjdng+mXliF3Ptu6
+ 3oxc2RCyGzTlxyMwuc2U5Q7KtUNTdDe8T0uE+9b8BLMVQDDfJjqY0VVqSUwImzTDLX9S4g/8
+ kC4HRcclk8hpyhY2jKGluZO0awwTIMgVEzmTyBphDg/Gx7dZU1Xf8HFuE+UZ5UDHDTnwgv7E
+ th6RC9+WrhDNspZ9fJjKWRbveQgUFCpe1sa77LAw+XFrKmBHXp9ZVIe90RMe2tRL06BGiRZr
+ jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <ZWiO4PWfK2gKDLGr@raptor>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 181739 [Nov 30 2023]
-X-KSMG-AntiSpam-Version: 6.0.0.2
-X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 5 0.3.5 98d108ddd984cca1d7e65e595eac546a62b0144b, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;100.64.160.123:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;salutedevices.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/11/30 11:05:00 #22583687
-X-KSMG-AntiVirus-Status: Clean, skipped
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -94,141 +145,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 30.11.2023 16:42, Michael S. Tsirkin wrote:
-> On Thu, Nov 30, 2023 at 04:08:39PM +0300, Arseniy Krasnov wrote:
->> Send credit update message when SO_RCVLOWAT is updated and it is bigger
->> than number of bytes in rx queue. It is needed, because 'poll()' will
->> wait until number of bytes in rx queue will be not smaller than
->> SO_RCVLOWAT, so kick sender to send more data. Otherwise mutual hungup
->> for tx/rx is possible: sender waits for free space and receiver is
->> waiting data in 'poll()'.
+On 30.11.23 14:32, Alexandru Elisei wrote:
+> Hi,
+> 
+> On Thu, Nov 30, 2023 at 01:49:34PM +0100, David Hildenbrand wrote:
+>>>>> +
+>>>>> +out_retry:
+>>>>> +	put_page(page);
+>>>>> +	if (vmf->flags & FAULT_FLAG_VMA_LOCK)
+>>>>> +		vma_end_read(vma);
+>>>>> +	if (fault_flag_allow_retry_first(vmf->flags)) {
+>>>>> +		err = VM_FAULT_RETRY;
+>>>>> +	} else {
+>>>>> +		/* Replay the fault. */
+>>>>> +		err = 0;
+>>>>
+>>>> Hello!
+>>>>
+>>>> Unfortunately, if the page continues to be pinned, it seems like fault will continue to occur.
+>>>> I guess it makes system stability issue. (but I'm not familiar with that, so please let me know if I'm mistaken!)
+>>>>
+>>>> How about migrating the page when migration problem repeats.
+>>>
+>>> Yes, I had the same though in the previous iteration of the series, the
+>>> page was migrated out of the VMA if tag storage couldn't be reserved.
+>>>
+>>> Only short term pins are allowed on MIGRATE_CMA pages, so I expect that the
+>>> pin will be released before the fault is replayed. Because of this, and
+>>> because it makes the code simpler, I chose not to migrate the page if tag
+>>> storage couldn't be reserved.
 >>
->> Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
->> ---
->>  Changelog:
->>  v1 -> v2:
->>   * Update commit message by removing 'This patch adds XXX' manner.
->>   * Do not initialize 'send_update' variable - set it directly during
->>     first usage.
->>  v3 -> v4:
->>   * Fit comment in 'virtio_transport_notify_set_rcvlowat()' to 80 chars.
->>  v4 -> v5:
->>   * Do not change callbacks order in transport structures.
+>> There are still some cases that are theoretically problematic: vmsplice()
+>> can pin pages forever and doesn't use FOLL_LONGTERM yet.
 >>
->>  drivers/vhost/vsock.c                   |  1 +
->>  include/linux/virtio_vsock.h            |  1 +
->>  net/vmw_vsock/virtio_transport.c        |  1 +
->>  net/vmw_vsock/virtio_transport_common.c | 27 +++++++++++++++++++++++++
->>  net/vmw_vsock/vsock_loopback.c          |  1 +
->>  5 files changed, 31 insertions(+)
->>
->> diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
->> index f75731396b7e..4146f80db8ac 100644
->> --- a/drivers/vhost/vsock.c
->> +++ b/drivers/vhost/vsock.c
->> @@ -451,6 +451,7 @@ static struct virtio_transport vhost_transport = {
->>  		.notify_buffer_size       = virtio_transport_notify_buffer_size,
->>  
->>  		.read_skb = virtio_transport_read_skb,
->> +		.notify_set_rcvlowat      = virtio_transport_notify_set_rcvlowat
->>  	},
->>  
->>  	.send_pkt = vhost_transport_send_pkt,
->> diff --git a/include/linux/virtio_vsock.h b/include/linux/virtio_vsock.h
->> index ebb3ce63d64d..c82089dee0c8 100644
->> --- a/include/linux/virtio_vsock.h
->> +++ b/include/linux/virtio_vsock.h
->> @@ -256,4 +256,5 @@ void virtio_transport_put_credit(struct virtio_vsock_sock *vvs, u32 credit);
->>  void virtio_transport_deliver_tap_pkt(struct sk_buff *skb);
->>  int virtio_transport_purge_skbs(void *vsk, struct sk_buff_head *list);
->>  int virtio_transport_read_skb(struct vsock_sock *vsk, skb_read_actor_t read_actor);
->> +int virtio_transport_notify_set_rcvlowat(struct vsock_sock *vsk, int val);
->>  #endif /* _LINUX_VIRTIO_VSOCK_H */
->> diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
->> index af5bab1acee1..8007593a3a93 100644
->> --- a/net/vmw_vsock/virtio_transport.c
->> +++ b/net/vmw_vsock/virtio_transport.c
->> @@ -539,6 +539,7 @@ static struct virtio_transport virtio_transport = {
->>  		.notify_buffer_size       = virtio_transport_notify_buffer_size,
->>  
->>  		.read_skb = virtio_transport_read_skb,
->> +		.notify_set_rcvlowat      = virtio_transport_notify_set_rcvlowat
->>  	},
->>  
->>  	.send_pkt = virtio_transport_send_pkt,
->> diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
->> index f6dc896bf44c..1cb556ad4597 100644
->> --- a/net/vmw_vsock/virtio_transport_common.c
->> +++ b/net/vmw_vsock/virtio_transport_common.c
->> @@ -1684,6 +1684,33 @@ int virtio_transport_read_skb(struct vsock_sock *vsk, skb_read_actor_t recv_acto
->>  }
->>  EXPORT_SYMBOL_GPL(virtio_transport_read_skb);
->>  
->> +int virtio_transport_notify_set_rcvlowat(struct vsock_sock *vsk, int val)
->> +{
->> +	struct virtio_vsock_sock *vvs = vsk->trans;
->> +	bool send_update;
->> +
->> +	spin_lock_bh(&vvs->rx_lock);
->> +
->> +	/* If number of available bytes is less than new SO_RCVLOWAT value,
->> +	 * kick sender to send more data, because sender may sleep in its
->> +	 * 'send()' syscall waiting for enough space at our side.
->> +	 */
->> +	send_update = vvs->rx_bytes < val;
->> +
->> +	spin_unlock_bh(&vvs->rx_lock);
->> +
->> +	if (send_update) {
->> +		int err;
->> +
->> +		err = virtio_transport_send_credit_update(vsk);
->> +		if (err < 0)
->> +			return err;
->> +	}
->> +
->> +	return 0;
->> +}
+>> All these things also affect other users that rely on movability (e.g., CMA,
+>> memory hotunplug).
 > 
-> 
-> I find it strange that this will send a credit update
-> even if nothing changed since this was called previously.
-> I'm not sure whether this is a problem protocol-wise,
-> but it certainly was not envisioned when the protocol was
-> built. WDYT?
+> I wasn't aware of that, thank you for the information. Then to ensure that the
+> process doesn't hang by replying the loop indefinitely, I'll migrate the page if
+> tag storage cannot be reserved. Looking over the code again, I think I can reuse
+> the same function that migrates tag storage pages out of the MTE VMA (added in
+> patch #21), so no major changes needed.
 
-From virtio spec I found:
+It's going to be interesting if migrating that page fails because it is 
+pinned :/
 
-It is also valid to send a VIRTIO_VSOCK_OP_CREDIT_UPDATE packet without previously receiving a
-VIRTIO_VSOCK_OP_CREDIT_REQUEST packet. This allows communicating updates any time a change
-in buffer space occurs.
+-- 
+Cheers,
 
-So I guess there is no limitations to send such type of packet, e.g. it is not
-required to be a reply for some another packet. Please, correct me if im wrong.
+David / dhildenb
 
-Thanks, Arseniy
-
-> 
-> 
->> +EXPORT_SYMBOL_GPL(virtio_transport_notify_set_rcvlowat);
->> +
->>  MODULE_LICENSE("GPL v2");
->>  MODULE_AUTHOR("Asias He");
->>  MODULE_DESCRIPTION("common code for virtio vsock");
->> diff --git a/net/vmw_vsock/vsock_loopback.c b/net/vmw_vsock/vsock_loopback.c
->> index 048640167411..9f4b814fbbc7 100644
->> --- a/net/vmw_vsock/vsock_loopback.c
->> +++ b/net/vmw_vsock/vsock_loopback.c
->> @@ -98,6 +98,7 @@ static struct virtio_transport loopback_transport = {
->>  		.notify_buffer_size       = virtio_transport_notify_buffer_size,
->>  
->>  		.read_skb = virtio_transport_read_skb,
->> +		.notify_set_rcvlowat      = virtio_transport_notify_set_rcvlowat
->>  	},
->>  
->>  	.send_pkt = vsock_loopback_send_pkt,
->> -- 
->> 2.25.1
-> 
