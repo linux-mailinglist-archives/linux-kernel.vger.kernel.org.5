@@ -2,48 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE7B97FFBD2
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 20:54:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 508757FFBCF
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 20:53:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376578AbjK3Txw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 14:53:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42162 "EHLO
+        id S1376565AbjK3TxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 14:53:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376470AbjK3Txv (ORCPT
+        with ESMTP id S1376470AbjK3TxA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 14:53:51 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 74DA1DD;
-        Thu, 30 Nov 2023 11:53:57 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CA3CE1042;
-        Thu, 30 Nov 2023 11:54:43 -0800 (PST)
-Received: from bogus (unknown [10.57.42.162])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 69BDF3F73F;
-        Thu, 30 Nov 2023 11:53:55 -0800 (PST)
-Date:   Thu, 30 Nov 2023 19:51:54 +0000
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Cristian Marussi <cristian.marussi@arm.com>
-Cc:     Sibi Sankar <quic_sibis@quicinc.com>,
-        linux-arm-msm@vger.kernel.org, Sudeep Holla <sudeep.holla@arm.com>,
-        linux-kernel@vger.kernel.org, quic_mdtipton@quicinc.com,
-        linux-arm-kernel@lists.infradead.org, quic_asartor@quicinc.com,
-        quic_lingutla@quicinc.com
-Subject: Re: [PATCH 2/3] firmware: arm_scmi: Fix freq/power truncation in the
- perf protocol
-Message-ID: <20231130195154.hid7darksc4skxqp@bogus>
-References: <20231129065748.19871-1-quic_sibis@quicinc.com>
- <20231129065748.19871-3-quic_sibis@quicinc.com>
- <ZWh6cuApg-sRbA2s@bogus>
- <ZWiE5nM83TZd3drT@pluto>
- <ZWiUqGJ8FaA1GBjm@bogus>
- <ZWi3iN3HDc92eMFO@pluto>
+        Thu, 30 Nov 2023 14:53:00 -0500
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34B0110EF;
+        Thu, 30 Nov 2023 11:53:06 -0800 (PST)
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
+ id 9f11c825c878c901; Thu, 30 Nov 2023 20:53:04 +0100
+Received: from kreacher.localnet (unknown [195.136.19.94])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by cloudserver094114.home.pl (Postfix) with ESMTPSA id 3732D668637;
+        Thu, 30 Nov 2023 20:53:04 +0100 (CET)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Lukasz Luba <lukasz.luba@arm.com>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>
+Subject: [PATCH v1.1 2/2] thermal: sysfs: Eliminate unnecessary zone locking
+Date:   Thu, 30 Nov 2023 20:53:04 +0100
+Message-ID: <2732721.mvXUDI8C0e@kreacher>
+In-Reply-To: <5754079.DvuYhMxLoT@kreacher>
+References: <5754079.DvuYhMxLoT@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZWi3iN3HDc92eMFO@pluto>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrudeijedguddvlecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvffeuiedtgfdvtddugeeujedtffetteegfeekffdvfedttddtuefhgeefvdejhfenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeeipdhrtghpthhtohepuggrnhhivghlrdhlvgiitggrnhhosehlihhnrghrohdrohhrghdprhgtphhtthhopehluhhkrghsiidrlhhusggrsegrrhhmrdgtohhmpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepshhr
+ ihhnihhvrghsrdhprghnughruhhvrggurgeslhhinhhugidrihhnthgvlhdrtghomhdprhgtphhtthhopehruhhirdiihhgrnhhgsehinhhtvghlrdgtohhm
+X-DCC--Metrics: v370.home.net.pl 1024; Body=13 Fuz1=13 Fuz2=13
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -51,31 +54,140 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 30, 2023 at 04:25:44PM +0000, Cristian Marussi wrote:
-> On Thu, Nov 30, 2023 at 01:56:56PM +0000, Sudeep Holla wrote:
-> > I started exactly with that, but when I completed the patch, there was no
-> > explicit need for it, so dropped it again. I can bump mult_factor to be
-> > u64 but do you see any other place that would need it apart from having
-> > single statement that does multiplication and assignment ? I am exploiting
-> > the conditional based on level_indexing_mode here but I agree it may help
-> > in backporting if I make mult_factor u64.
-> > 
-> 
-> Ah right
-> 
->    freq *= dom->multi_fact;
-> 
-> does the trick..but cannot this by itself (under unplausibl conds)
-> overflow and does not fit into a u32 mult_factor ?
-> 
->  dom_info->mult_factor =
->  	(dom_info->sustained_freq_khz * 1000UL)
-> 	/ dom_info->sustained_perf_level;
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Agreed. Also thinking about backports, I think making it u64 is simple
-fix. I will also thinking of splitting the changes so that fixes are
-more appropriate. I will try to post something soonish.
+The _show() callback functions of the trip point sysfs attributes,
+temperature, hysteresis and type, need not use thermal zone locking,
+because the layout of the data structures they access does not change
+after the thermal zone registration.
 
---
-Regards,
-Sudeep
+Namely, they all need to access a specific entry in the thermal
+zone's trips[] table that is always present for non-tripless thermal
+zones and its size cannot change after the thermal zone has been
+registered.  Thus it is always safe to access the trips[] table of a
+registered thermal zone from each of the sysfs attributes in question.
+
+Moreover, the type of a trip point does not change after registering its
+thermal zone, and while its temperature and hysteresis can change, for
+example due to a firmware-induced thermal zone update, holding the zone
+lock around reading them is pointless, because it does not prevent stale
+values from being returned to user space.  For example, a trip point
+temperature can always change ater trip_point_temp_show() has read it
+and before the function's return statement is executed, regardless of
+whether or not zone locking is used.
+
+For this reason, drop the zone locking from trip_point_type_show(),
+trip_point_temp_show(), and trip_point_hyst_show().
+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+
+v1 -> v1.1: Use >= instead of > (which was incorrect) in 3 places.
+
+---
+ drivers/thermal/thermal_sysfs.c |   60 ++++++++++++++--------------------------
+ 1 file changed, 21 insertions(+), 39 deletions(-)
+
+Index: linux-pm/drivers/thermal/thermal_sysfs.c
+===================================================================
+--- linux-pm.orig/drivers/thermal/thermal_sysfs.c
++++ linux-pm/drivers/thermal/thermal_sysfs.c
+@@ -83,25 +83,18 @@ trip_point_type_show(struct device *dev,
+ 		     char *buf)
+ {
+ 	struct thermal_zone_device *tz = to_thermal_zone(dev);
+-	struct thermal_trip trip;
+-	int trip_id, result;
++	int trip_id;
++
++	if (!device_is_registered(dev))
++		return -ENODEV;
+ 
+ 	if (sscanf(attr->attr.name, "trip_point_%d_type", &trip_id) != 1)
+ 		return -EINVAL;
+ 
+-	mutex_lock(&tz->lock);
+-
+-	if (device_is_registered(dev))
+-		result = __thermal_zone_get_trip(tz, trip_id, &trip);
+-	else
+-		result = -ENODEV;
+-
+-	mutex_unlock(&tz->lock);
+-
+-	if (result)
+-		return result;
++	if (trip_id < 0 || trip_id >= tz->num_trips)
++		return -EINVAL;
+ 
+-	switch (trip.type) {
++	switch (tz->trips[trip_id].type) {
+ 	case THERMAL_TRIP_CRITICAL:
+ 		return sprintf(buf, "critical\n");
+ 	case THERMAL_TRIP_HOT:
+@@ -164,25 +157,18 @@ trip_point_temp_show(struct device *dev,
+ 		     char *buf)
+ {
+ 	struct thermal_zone_device *tz = to_thermal_zone(dev);
+-	struct thermal_trip trip;
+-	int trip_id, ret;
++	int trip_id;
++
++	if (!device_is_registered(dev))
++		return -ENODEV;
+ 
+ 	if (sscanf(attr->attr.name, "trip_point_%d_temp", &trip_id) != 1)
+ 		return -EINVAL;
+ 
+-	mutex_lock(&tz->lock);
+-
+-	if (device_is_registered(dev))
+-		ret = __thermal_zone_get_trip(tz, trip_id, &trip);
+-	else
+-		ret = -ENODEV;
+-
+-	mutex_unlock(&tz->lock);
+-
+-	if (ret)
+-		return ret;
++	if (trip_id < 0 || trip_id >= tz->num_trips)
++		return -EINVAL;
+ 
+-	return sprintf(buf, "%d\n", trip.temperature);
++	return sprintf(buf, "%d\n", tz->trips[trip_id].temperature);
+ }
+ 
+ static ssize_t
+@@ -234,22 +220,18 @@ trip_point_hyst_show(struct device *dev,
+ 		     char *buf)
+ {
+ 	struct thermal_zone_device *tz = to_thermal_zone(dev);
+-	struct thermal_trip trip;
+-	int trip_id, ret;
++	int trip_id;
++
++	if (!device_is_registered(dev))
++		return -ENODEV;
+ 
+ 	if (sscanf(attr->attr.name, "trip_point_%d_hyst", &trip_id) != 1)
+ 		return -EINVAL;
+ 
+-	mutex_lock(&tz->lock);
+-
+-	if (device_is_registered(dev))
+-		ret = __thermal_zone_get_trip(tz, trip_id, &trip);
+-	else
+-		ret = -ENODEV;
+-
+-	mutex_unlock(&tz->lock);
++	if (trip_id < 0 || trip_id >= tz->num_trips)
++		return -EINVAL;
+ 
+-	return ret ? ret : sprintf(buf, "%d\n", trip.hysteresis);
++	return sprintf(buf, "%d\n", tz->trips[trip_id].hysteresis);
+ }
+ 
+ static ssize_t
+
+
+
