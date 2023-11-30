@@ -2,146 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BEE9A7FEB3C
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 09:55:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC7BF7FEB41
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 09:58:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231728AbjK3Izs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 03:55:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37488 "EHLO
+        id S231752AbjK3I63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 03:58:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231826AbjK3Izm (ORCPT
+        with ESMTP id S229462AbjK3I61 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 03:55:42 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04CDFCF
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 00:55:48 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-5482df11e73so665225a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 00:55:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701334546; x=1701939346; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=SzVNRJ2v77gzcGrwfRhCJj8f2KbnBXLl6wGiwEdVkns=;
-        b=k1x2S9YghgGT5sEV5v5SxeSacyuOzGcNMIP4owk6EkmnUc7g3f6UO+wkKnai85n3qX
-         q12zpQwTORKh6dIQfTjK8f2v8x0ADEvtfGW2J2G83nISu7EwDxNTSnZKtYyjhWF0UkgI
-         H5luUJYzxZjRpn+Kk6UoW9lFNlQTZh9eCqiL09UTSPwB27MJtMa7FIAmR/J71jB2+dbR
-         0BcNd2PFcCk8hEEi4Ah2z7muwg2Myc2fNzvSk0lgNknNGYqZlZIICN9G/50lMkUJcLkw
-         MAfW6Vr9c+43PYESU/E1roI7IE6jG3XFRRLUbHLx/MtCBpTTD6LYJ4uxiYUIZDACctAo
-         sYsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701334546; x=1701939346;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SzVNRJ2v77gzcGrwfRhCJj8f2KbnBXLl6wGiwEdVkns=;
-        b=bQ51bAlUaoClzqzFz9FVGAE0t6qwF2edMW73NrgEDSLdDsbnW8ZGHllWq6yvRi+6Qc
-         elQorNTQBIh9QSl2kdoaQUdEPMi4VqQ4KCVN0EwMS3fUF8shBs9SyTn2AIZAX3SeJDkA
-         6IfV7GoiKSUNJvWyw1n82Kr0EALTsMdyv6KjnsfacAU+jFni3n24m6eYSsEhi+45A73e
-         UHifsK7kH5axNgLNp6eufFbyqVf5WTD81BF6+COGHfdmUsC0Au0DrFgxs/sBNNJ3qyVW
-         9df3YYNcG29xgudscmGu/OZxl3OwAl4IjWmIqIY76rXzS3spxD5wOShop67ozeRh1FEl
-         Ufbw==
-X-Gm-Message-State: AOJu0YzLl37Kg0tMqTTMGr85m219wj3a273MwPoYLK/Isr5UJguiGwyf
-        /OGiO/J0ltHIVcUv524nuga2wA==
-X-Google-Smtp-Source: AGHT+IFq+i7OxDLEEJh36fA2pwodaIg1R1rFBDHM1FmPCSkHH6vZWfKPEWg7gYPUNmON/eEzXI5UrQ==
-X-Received: by 2002:a17:906:7495:b0:a18:891d:4dc3 with SMTP id e21-20020a170906749500b00a18891d4dc3mr819412ejl.34.1701334546190;
-        Thu, 30 Nov 2023 00:55:46 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.223.109])
-        by smtp.gmail.com with ESMTPSA id a10-20020a170906190a00b009fda627abd9sm438365eje.79.2023.11.30.00.55.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Nov 2023 00:55:45 -0800 (PST)
-Message-ID: <3527d540-3e3f-4edb-b5f2-6ac481132c06@linaro.org>
-Date:   Thu, 30 Nov 2023 09:55:43 +0100
+        Thu, 30 Nov 2023 03:58:27 -0500
+Received: from mx0b-0064b401.pphosted.com (mx0b-0064b401.pphosted.com [205.220.178.238])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 655A9B9;
+        Thu, 30 Nov 2023 00:58:33 -0800 (PST)
+Received: from pps.filterd (m0250812.ppops.net [127.0.0.1])
+        by mx0a-0064b401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3AU5fJTW006780;
+        Thu, 30 Nov 2023 08:58:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com;
+         h=from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding:content-type; s=
+        PPS06212021; bh=T035uxmSAtmG1UcOI47F4iJMK+KApAb8YPCQhqjvDrU=; b=
+        SiaA1yC3lLCChByFqUQc3JlJKh8p2ssjY04GEphjq+rUphy13fc/XNu28u55quwT
+        i+HBHv7XLMllWBgcpfrq6zFoMDKw8wiXEs2MjEd5wRbaIfgpFoO5qfrTXsK5vC72
+        iLFBbLEUth22PpW90KIw1Q9AFRszQ9bPJbpjPYahq9nUs1J12fVLpz/polGuWf3S
+        HjnyYEYoRIWwHtJtM7KYoVht0f/G02vek+zN2QRRPJMs3+wWuv3kctT+NA4Fbeuq
+        lROGVkqBvtBmggK30wd3oAJJi0Hkc/+SmJX+rstLsCPs/6f459eXM1H+JkcsYgAw
+        1QSoC6mpfMwkWmnIrMYDOQ==
+Received: from ala-exchng01.corp.ad.wrs.com (ala-exchng01.wrs.com [147.11.82.252])
+        by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 3uph108aht-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 30 Nov 2023 08:58:16 +0000 (GMT)
+Received: from ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) by
+ ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 30 Nov 2023 00:58:22 -0800
+Received: from pek-lpd-ccm6.wrs.com (147.11.136.210) by
+ ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) with Microsoft SMTP Server id
+ 15.1.2507.34 via Frontend Transport; Thu, 30 Nov 2023 00:58:19 -0800
+From:   Lizhi Xu <lizhi.xu@windriver.com>
+To:     <edumazet@google.com>
+CC:     <almasrymina@google.com>, <davem@davemloft.net>, <hawk@kernel.org>,
+        <ilias.apalodimas@linaro.org>, <kuba@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <lizhi.xu@windriver.com>,
+        <netdev@vger.kernel.org>, <pabeni@redhat.com>,
+        <syzbot+f9f8efb58a4db2ca98d0@syzkaller.appspotmail.com>,
+        <syzkaller-bugs@googlegroups.com>
+Subject: Re: [PATCH net-next] net: page_pool: fix null-ptr-deref in page_pool_unlist
+Date:   Thu, 30 Nov 2023 16:58:10 +0800
+Message-ID: <20231130085810.4014847-1-lizhi.xu@windriver.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <CANn89iJxtgkKLQwmi2ZZYQP0VnrWgarJZrSL2KgkSdkO615vcw@mail.gmail.com>
+References: <CANn89iJxtgkKLQwmi2ZZYQP0VnrWgarJZrSL2KgkSdkO615vcw@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 1/3] arm64: dts: qcom: msm8996: Fix 'in-ports' is a
- required property
-Content-Language: en-US
-To:     Mao Jinlong <quic_jinlmao@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Tingwei Zhang <quic_tingweiz@quicinc.com>,
-        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
-        Tao Zhang <quic_taozha@quicinc.com>
-References: <20231129143815.7892-1-quic_jinlmao@quicinc.com>
- <20231129143815.7892-2-quic_jinlmao@quicinc.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231129143815.7892-2-quic_jinlmao@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: mLwwRjEbhOMzzRM3ZGFcnH1vuXT2sNzZ
+X-Proofpoint-GUID: mLwwRjEbhOMzzRM3ZGFcnH1vuXT2sNzZ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-16_25,2023-11-16_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxscore=0
+ mlxlogscore=664 malwarescore=0 priorityscore=1501 clxscore=1015
+ suspectscore=0 spamscore=0 bulkscore=0 lowpriorityscore=0 phishscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311060001 definitions=main-2311300066
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/11/2023 15:38, Mao Jinlong wrote:
-> The inport of funnel@3023000 connects to a source which is not supported
-> in current linux kernel. Remove the device tree node of funnel@3023000
-> to fix the warning. It will be added once the driver support to the
-> source is added to linux kernel.
+On Thu, 30 Nov 2023 09:29:04 +0100, Eric Dumazet <edumazet@google.com> wrote:
+> > [Syz report]
+> > Illegal XDP return value 4294946546 on prog  (id 2) dev N/A, expect packet loss!
+> > general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
+> > KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+> > CPU: 0 PID: 5064 Comm: syz-executor391 Not tainted 6.7.0-rc2-syzkaller-00533-ga379972973a8 #0
+> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
+> > RIP: 0010:__hlist_del include/linux/list.h:988 [inline]
+> > RIP: 0010:hlist_del include/linux/list.h:1002 [inline]
+> > RIP: 0010:page_pool_unlist+0xd1/0x170 net/core/page_pool_user.c:342
+> > Code: df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 90 00 00 00 4c 8b a3 f0 06 00 00 48 b8 00 00 00 00 00 fc ff df 4c 89 e2 48 c1 ea 03 <80> 3c 02 00 75 68 48 85 ed 49 89 2c 24 74 24 e8 1b ca 07 f9 48 8d
+> > RSP: 0018:ffffc900039ff768 EFLAGS: 00010246
+> > RAX: dffffc0000000000 RBX: ffff88814ae02000 RCX: 0000000000000000
+> > RDX: 0000000000000000 RSI: 0000000000000004 RDI: ffff88814ae026f0
+> > RBP: 0000000000000000 R08: 0000000000000000 R09: fffffbfff1d57fdc
+> > R10: ffffffff8eabfee3 R11: ffffffff8aa0008b R12: 0000000000000000
+> > R13: ffff88814ae02000 R14: dffffc0000000000 R15: 0000000000000001
+> > FS:  000055555717a380(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > CR2: 0000000002555398 CR3: 0000000025044000 CR4: 00000000003506f0
+> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > Call Trace:
+> >  <TASK>
+> >  __page_pool_destroy net/core/page_pool.c:851 [inline]
+> >  page_pool_release+0x507/0x6b0 net/core/page_pool.c:891
+> >  page_pool_destroy+0x1ac/0x4c0 net/core/page_pool.c:956
+> >  xdp_test_run_teardown net/bpf/test_run.c:216 [inline]
+> >  bpf_test_run_xdp_live+0x1578/0x1af0 net/bpf/test_run.c:388
+> >  bpf_prog_test_run_xdp+0x827/0x1530 net/bpf/test_run.c:1254
+> >  bpf_prog_test_run kernel/bpf/syscall.c:4041 [inline]
+> >  __sys_bpf+0x11bf/0x4920 kernel/bpf/syscall.c:5402
+> >  __do_sys_bpf kernel/bpf/syscall.c:5488 [inline]
+> >  __se_sys_bpf kernel/bpf/syscall.c:5486 [inline]
+> >  __x64_sys_bpf+0x78/0xc0 kernel/bpf/syscall.c:5486
+> >  do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+> >  do_syscall_64+0x40/0x110 arch/x86/entry/common.c:82
+> >  entry_SYSCALL_64_after_hwframe+0x63/0x6b
+> >
+> > [Analysis]
+> > If "user.list" is initialized, the corresponding slow.netdev device must exist,
+> > so before recycling "user.list", it is necessary to confirm that the "slow.netdev"
+> > device is valid.
+> >
+> > [Fix]
+> > Add slow.netdev != NULL check before delete "user.list".
+> >
+> > Fixes: 083772c9f972 ("net: page_pool: record pools per netdev")
+> > Reported-by: syzbot+f9f8efb58a4db2ca98d0@syzkaller.appspotmail.com
+> > Signed-off-by: Lizhi Xu <lizhi.xu@windriver.com>
+> 
+> 
+> 
+> I sent a fix already ?
+> 
+> https://lore.kernel.org/netdev/CANn89i+6BuZA6AjocG_0zTkD1u=pNgZc_DpZMO=yUN=S1cHS3w@mail.gmail.com/
+> 
+> Please do not attribute to yourself work done by others, let me submit
+> the fix formally, thanks.
+What exists may not necessarily be right, and how do you prove that I saw your 
+fix before fixing it?
 
-Thanks for the changes, but that's not correct reason to remove DTS
-code. What kernel supports or not, should be irrelevant for the DTS. DTS
-for example is used in other projects - did you check if they have the
-same issues? Anyway, DTS describes the hardware, so how current kernel
-support defines what is and what is not in the hardware?
+You have only tested on syzbot, that's all. 
+This does not mean that others should refer to you for repairs, nor does it 
+prove that you have made repairs, and others cannot fix them.
 
-
-Best regards,
-Krzysztof
-
+Thanks
