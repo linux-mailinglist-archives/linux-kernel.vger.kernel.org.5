@@ -2,67 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E751B7FF899
+	by mail.lfdr.de (Postfix) with ESMTP id 8E2FB7FF898
 	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 18:43:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346585AbjK3Rmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 12:42:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55754 "EHLO
+        id S230271AbjK3Rms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 12:42:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235209AbjK3Rme (ORCPT
+        with ESMTP id S1346496AbjK3Rmq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 12:42:34 -0500
-Received: from mail-40134.protonmail.ch (mail-40134.protonmail.ch [185.70.40.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B93A110E5
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 09:42:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-        s=protonmail; t=1701366156; x=1701625356;
-        bh=jHvQDQIsGh7IZyuZ4Z71fkUJ7lN6fsPyLlI85ioCOd4=;
-        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-         Message-ID:BIMI-Selector;
-        b=aoBbVk9ACHHmxS9v/zNi4r1IrszVrrEk+96u5Vbtx6tteI/l/ac1n2/OtSshr4kLK
-         EtjFckFu529Q2h8xsOmq48yhhbDu+Sr3EX4FQVVtgyhDiXj0PXlhm9K+GWiJdS7VCW
-         ESJPd7VJ8D45YK2SLUCaIYtZryFEMHp+heEc/ds6S02yMmUwN+BM4Sz5rZ6AggisTi
-         9Vurh4mtyuMBwd2Qp8bdoizuqGa5xEUuoX0bx68Q//tiWARi7paf3A+CDovtRku+Za
-         uvcHJ7cGTuJdI7J7WbjXkbcg+dXM6rRi49cBqvwyNvF8/QilOGxuOScBWxA3hB/SF6
-         9xqIzvRSaRGiw==
-Date:   Thu, 30 Nov 2023 17:42:06 +0000
-To:     Alice Ryhl <aliceryhl@google.com>
-From:   Benno Lossin <benno.lossin@proton.me>
-Cc:     Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        =?utf-8?Q?Arve_Hj=C3=B8nnev=C3=A5g?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Carlos Llamas <cmllamas@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 7/7] rust: file: add abstraction for `poll_table`
-Message-ID: <bH_zaB8RmZZW2QrGBx1ud7-YfKmh6QvTU0jYKC0ns7jjoDkCWYnW3u1qX_YrN5P0VwsZGd7U5r8p-7DxH7pb4-6UUE0htwTkFNdDIYZb4os=@proton.me>
-In-Reply-To: <20231129-alice-file-v1-7-f81afe8c7261@google.com>
-References: <20231129-alice-file-v1-0-f81afe8c7261@google.com> <20231129-alice-file-v1-7-f81afe8c7261@google.com>
-Feedback-ID: 71780778:user:proton
+        Thu, 30 Nov 2023 12:42:46 -0500
+Received: from mail-vk1-xa30.google.com (mail-vk1-xa30.google.com [IPv6:2607:f8b0:4864:20::a30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34E34197
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 09:42:49 -0800 (PST)
+Received: by mail-vk1-xa30.google.com with SMTP id 71dfb90a1353d-4b28e7a5b41so352209e0c.1
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 09:42:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1701366168; x=1701970968; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HqziEWQ8hcVSIREtlgxXVkhZ6XD2q21JqLi48D18QSE=;
+        b=D7MmWi9WlXiqr2Ohii+aWqE3Czvgx6C2YApyxPHPAjsZQJdSGD0CB5EjfVdeF4qOTr
+         3GkexUjC2xt8l+ZPSRhkYxhQE2/FDbzDZUMR27BH03/Tj1vb4uk7Vxg8blGQaOeeBnxz
+         2vyAQ1YN6vAP0sOrtWVIf/zjHYAIqM8eFlH/Ajovrz/z58VfdL702KvQmnRW9z/xMo2Q
+         U7dW4Mr+7nde011eIHsmaJaJfXbacvESSQo4X7XqHbTDSLMfMDstJeCRhhBCOTbsHW+K
+         awR6G+6NXYUrGQrV1to6q+3loJVGpD2etwo2hfatv7/fx5mxUInPox6NGR/gToUo1z08
+         gZ2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701366168; x=1701970968;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HqziEWQ8hcVSIREtlgxXVkhZ6XD2q21JqLi48D18QSE=;
+        b=WXCeYs/PKm/HXfXIGpz1wci4KogpBbWapVqPkHKrnsPRHJIO+3lQRw4YLmrWMvTxuJ
+         4GRq9HxblQi4dAKjOrq9af8ItqwGfBG+gECQyXSvKHFTlWUrPM4s6mrK9cioDglFxN/3
+         G702hMsnPG1+Arghx0QwIupGrQFmhTW/ooGjxgnGXpndzI75HBAd9KjdHM7sOkIb5TXb
+         zbTHW+92EXWcFmN04q/coWve0OqeqAlhV7+dUwwuLxCnaFdpOCPoXvkBMgeDl31TFbwS
+         sgiGhoQhee5KO+Y9+viIQeAecHjdpl5WklD5vn3pBvxx8+Rlvb9oF6CayNGb+VrNGZ18
+         6Opw==
+X-Gm-Message-State: AOJu0YyA7+39lWXHfWffVFkNJc0UEJtlt8fdWhq12wWlu+TuI5orGFq8
+        0hSEyvgGIp0DNpP8tuRh1/ocfnLmDbbRLPEkRgpzUugnzCofFOfg
+X-Google-Smtp-Source: AGHT+IG76s8PlXysbg/bGFFqcSBsEzLMyndFmxdYHz6VSVcOSJUOzOgaHvsILnhDYlzQt408pJ3KgSNZDoNn761blcg=
+X-Received: by 2002:a1f:c405:0:b0:4ac:b0a6:4c16 with SMTP id
+ u5-20020a1fc405000000b004acb0a64c16mr13397943vkf.10.1701366168281; Thu, 30
+ Nov 2023 09:42:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <20231130134630.18198-1-brgl@bgdev.pl> <20231130134630.18198-10-brgl@bgdev.pl>
+ <ZWi6_WnOQZB0vgPL@smile.fi.intel.com>
+In-Reply-To: <ZWi6_WnOQZB0vgPL@smile.fi.intel.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Thu, 30 Nov 2023 18:42:37 +0100
+Message-ID: <CAMRc=MfC9sxgvaigtP5=MMZwbzaSkUukfH61QBf+r_eTJh5fJA@mail.gmail.com>
+Subject: Re: [PATCH v2 09/10] gpiolib: use gpiochip_dup_line_label() in
+ for_each helpers
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,76 +71,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/29/23 14:12, Alice Ryhl wrote:
-> diff --git a/rust/kernel/file.rs b/rust/kernel/file.rs
-> index 578ee307093f..35576678c993 100644
-> --- a/rust/kernel/file.rs
-> +++ b/rust/kernel/file.rs
-> @@ -14,6 +14,9 @@
->  use alloc::boxed::Box;
->  use core::{alloc::AllocError, marker::PhantomData, mem, ptr};
->=20
-> +mod poll_table;
-> +pub use self::poll_table::{PollCondVar, PollTable};
+On Thu, Nov 30, 2023 at 5:40=E2=80=AFPM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> On Thu, Nov 30, 2023 at 02:46:29PM +0100, Bartosz Golaszewski wrote:
+> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> >
+> > Rework for_each_requested_gpio_in_range() to use the new helper to
+> > retrieve a dynamically allocated copy of the descriptor label and free
+> > it at the end of each iteration. We need to leverage the CLASS()'
+> > destructor to make sure that the label is freed even when breaking out
+> > of the loop.
+>
+> ...
+>
+> >  const char *gpiochip_is_requested(struct gpio_chip *gc, unsigned int o=
+ffset);
+> >  char *gpiochip_dup_line_label(struct gpio_chip *gc, unsigned int offse=
+t);
+> >
+> > +
+>
+> One blank line is enough.
+>
+> > +struct _gpiochip_for_each_data {
+> > +     const char **label;
+> > +     int *i;
+>
+> Why is this a signed?
+>
 
-I think it makes more sense to put it under `rust/kernel/sync/`.
-> +    fn get_qproc(&self) -> bindings::poll_queue_proc {
-> +        let ptr =3D self.0.get();
-> +        // SAFETY: The `ptr` is valid because it originates from a refer=
-ence, and the `_qproc`
-> +        // field is not modified concurrently with this call.
+Some users use signed, others use unsigned. It doesn't matter as we
+can't overflow it with the limit on the lines we have.
 
-What ensures this? Maybe use a type invariant?
+Bart
 
-> +        unsafe { (*ptr)._qproc }
-> +    }
+> > +};
+>
+> ...
+>
+> > +DEFINE_CLASS(_gpiochip_for_each_data,
+> > +          struct _gpiochip_for_each_data,
+> > +          if (*_T.label) kfree(*_T.label),
+> > +          ({ struct _gpiochip_for_each_data _data =3D { label, i };
+> > +             *_data.i =3D 0;
+> > +             _data; }),
+>
+> To me indentation of ({}) is quite weird. Where is this style being used
+> instead of more readable
+>
 
-[...]
+There are no guidelines for this type of C abuse AFAIK. The macro may
+be ugly but at least it hides the details from users which look nice
+instead.
 
-> +impl PollCondVar {
-> +    /// Constructs a new condvar initialiser.
-> +    #[allow(clippy::new_ret_no_self)]
+Bart
 
-This is no longer needed, as Gary fixed this, see [1].
-
-[1]: https://github.com/rust-lang/rust-clippy/issues/7344
-
-> +    pub fn new(name: &'static CStr, key: &'static LockClassKey) -> impl =
-PinInit<Self> {
-> +        pin_init!(Self {
-> +            inner <- CondVar::new(name, key),
-> +        })
-> +    }
-> +}
-> +
-> +// Make the `CondVar` methods callable on `PollCondVar`.
-> +impl Deref for PollCondVar {
-> +    type Target =3D CondVar;
-> +
-> +    fn deref(&self) -> &CondVar {
-> +        &self.inner
-> +    }
-> +}
-> +
-> +#[pinned_drop]
-> +impl PinnedDrop for PollCondVar {
-> +    fn drop(self: Pin<&mut Self>) {
-> +        // Clear anything registered using `register_wait`.
-> +        self.inner.notify(1, bindings::POLLHUP | bindings::POLLFREE);
-
-Isn't notifying only a single thread problematic, since a user could
-misuse the `PollCondVar` (since all functions of `CondVar` are also
-accessible) and also `.wait()` on the condvar? When dropping a
-`PollCondVar` it might notify only the user `.wait()`, but not the
-`PollTable`. Or am I missing something?
-
---=20
-Cheers,
-Benno
-
-> +        // Wait for epoll items to be properly removed.
-> +        //
-> +        // SAFETY: Just an FFI call.
-> +        unsafe { bindings::synchronize_rcu() };
-> +    }
-> +}
+>         ({
+>            ...
+>         })
+>
+> ?
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
+>
+>
