@@ -2,59 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4BE07FEE9C
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 13:08:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 816357FEE9F
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 13:08:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345344AbjK3MIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 07:08:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56184 "EHLO
+        id S1345319AbjK3MIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 07:08:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345310AbjK3MIB (ORCPT
+        with ESMTP id S1345246AbjK3MIb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 07:08:01 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 837ABC1;
-        Thu, 30 Nov 2023 04:08:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701346085; x=1732882085;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=xdWDkwrDB0IYLW/+HFAQKJXubCc58VNH21RSj30e8Os=;
-  b=KIdWC80AG1xuGoEGie/5B/qZqxR+P6DSHISGugRVi0An9oP7HmFjJqIk
-   ZPSkS6HW5e69F3XVz/cd7xK4FQVnJFjUkrcLaF4H7m5poxlT0XGpcchEz
-   O80YoHqVD2KC87pNhomg3OhYml9GbctfHYWKV5fPgZBL6Oz6TvLWsjpgD
-   8wBDMWbrSSvNP6caevmOKwx7qTCBk3NSQY0lXqIcVh3E2rVOfKek6T7oR
-   FyZInnVr2wOS7jebikkQoGfnmSdJfbss2nVvQcGhmXlwffWzNQiuLPwur
-   /nCqQYm5d6HJbtgRVcuQ51OSUqxrlrS8ePsB9VgtZsFObvmqeOBiKfF89
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="479516026"
-X-IronPort-AV: E=Sophos;i="6.04,239,1695711600"; 
-   d="scan'208";a="479516026"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 04:08:05 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="913175906"
-X-IronPort-AV: E=Sophos;i="6.04,239,1695711600"; 
-   d="scan'208";a="913175906"
-Received: from bergler-mobl.ger.corp.intel.com ([10.249.33.30])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 04:08:03 -0800
-Date:   Thu, 30 Nov 2023 14:08:01 +0200 (EET)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-cc:     Hans de Goede <hdegoede@redhat.com>, markgross@kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 3/6] platform/x86/intel/tpmi: Modify external interface
- to get read/write state
-In-Reply-To: <20231128185605.3027653-4-srinivas.pandruvada@linux.intel.com>
-Message-ID: <e81e79a9-48d1-81ce-eb72-24a9baa02ce7@linux.intel.com>
-References: <20231128185605.3027653-1-srinivas.pandruvada@linux.intel.com> <20231128185605.3027653-4-srinivas.pandruvada@linux.intel.com>
+        Thu, 30 Nov 2023 07:08:31 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18525C1
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 04:08:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=fXPMZud/4qMKPZCD7uWLEjX+yvZbhSmy6NLzEdFPQkA=; b=ZSYC1tpYLTtE4qOg8/FfymSkpL
+        e3ngl7iO9PpO5TBjDvQjEfHqq1bQOJSZjmoW7rTKupa7R4vbm3KctCoEbXRCCldsfXih8af2wuvqQ
+        CG2GoVD/PThQRAa/qZao4y2j5zgsrBrkdvJDd4ys06LGpYisCKI4g7D7FDGBVyHNjcQTR80P2IEAp
+        BTX9e6ihNAg6ZAgvcMweGshSjGvpbe97hJQsNOXD3xtOosyLMxWEnTPoWzVVxpMUFFsPmyIsbqUbs
+        5nwNU581/SMHxDHtdkRiojqudN9qyQEZNZ/S96OokGz0puo8MTXN86ZnmSNHein+v/xyBwzvSyp9z
+        bAOmWO5w==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1r8fqK-00EQ0c-EH; Thu, 30 Nov 2023 12:08:32 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C6E3F300293; Thu, 30 Nov 2023 13:08:31 +0100 (CET)
+Date:   Thu, 30 Nov 2023 13:08:31 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH] x86/Kconfig: Disable KASLR on debug builds
+Message-ID: <20231130120831.GB20153@noisy.programming.kicks-ass.net>
+References: <20231130120552.6735-1-bp@alien8.de>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-682876541-1701346084=:1808"
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231130120552.6735-1-bp@alien8.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -63,52 +51,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
---8323329-682876541-1701346084=:1808
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: 8BIT
-
-On Tue, 28 Nov 2023, Srinivas Pandruvada wrote:
-
-> Modify the external interface tpmi_get_feature_status() to get read
-> and write blocked instead of locked and disabled. Since auxiliary device
-> is not created when disabled, no use of returning disabled state. Also
-> locked state is not useful as feature driver can't use locked state
-> in a meaningful way.
+On Thu, Nov 30, 2023 at 01:05:52PM +0100, Borislav Petkov wrote:
+> From: "Borislav Petkov (AMD)" <bp@alien8.de>
 > 
-> Using read and write state, feature driver can decide which operations
-> to restrict for that feature.
+> Having KASLR enabled makes debugging a kernel completely useless because
+> virtual addresses are not stable, leading to people poking at kernel
+> internals to have to go and rebuild with RANDOMIZE_BASE=off.
 > 
-> Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+> Just disable it on debugging builds where it is not needed anyway.
+
+Works for me, but I have "nokaslr no_hash_pointers" on all my machines
+by now. It goes right along with "debug ignore_loglevel
+sysrq_always_enabled earlyprintk=serial,ttyS0,115200" :-)
+
+> Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
 > ---
->  drivers/platform/x86/intel/tpmi.c | 8 ++++----
->  include/linux/intel_tpmi.h        | 5 ++---
->  2 files changed, 6 insertions(+), 7 deletions(-)
+>  arch/x86/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/platform/x86/intel/tpmi.c b/drivers/platform/x86/intel/tpmi.c
-> index 4edaa182db04..44773c210324 100644
-> --- a/drivers/platform/x86/intel/tpmi.c
-> +++ b/drivers/platform/x86/intel/tpmi.c
-> @@ -351,8 +351,8 @@ static int tpmi_read_feature_status(struct intel_tpmi_info *tpmi_info, int featu
->  	return ret;
->  }
+> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> index c456c9b1fc7c..da94354b1b75 100644
+> --- a/arch/x86/Kconfig
+> +++ b/arch/x86/Kconfig
+> @@ -2159,7 +2159,7 @@ config RELOCATABLE
 >  
-> -int tpmi_get_feature_status(struct auxiliary_device *auxdev, int feature_id,
-> -			    int *locked, int *disabled)
-> +int tpmi_get_feature_status(struct auxiliary_device *auxdev,
-> +			    int feature_id, int *read_blocked, int *write_blocked)
-
-Noting down there's logical reversion of the parameters here as to me
-locked sound similar to write_blocked and disabled likewise to 
-read_blocked but since there are no users for this function so far
-I suppose it's fine.
-
-Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-
-
--- 
- i.
-
---8323329-682876541-1701346084=:1808--
+>  config RANDOMIZE_BASE
+>  	bool "Randomize the address of the kernel image (KASLR)"
+> -	depends on RELOCATABLE
+> +	depends on RELOCATABLE && !DEBUG_KERNEL
+>  	default y
+>  	help
+>  	  In support of Kernel Address Space Layout Randomization (KASLR),
+> -- 
+> 2.42.0.rc0.25.ga82fb66fed25
+> 
