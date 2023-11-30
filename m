@@ -2,110 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EA447FF7B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 18:04:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B0057FF7B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 18:05:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345914AbjK3REe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 12:04:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59668 "EHLO
+        id S1345811AbjK3RFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 12:05:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232292AbjK3REc (ORCPT
+        with ESMTP id S231837AbjK3RFE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 12:04:32 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1160CD7D;
-        Thu, 30 Nov 2023 09:04:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=wSqy0hl8ZT3+9h1bJsk1M8ldjSvDnJV7+3F0R1CUdo0=; b=tzIkJcCYDXdMzyT27WbjnR5MkQ
-        5PDWa7mdvzjYOxU6D+j91fZXxGryt7Cq4IWR0CEKj7O06eA15jeZWDwFa/ZfLBGqxtta3zl78B/V4
-        7gukNDmQUVJlhZvsrduWvM+rlGl25rLHzUtWemS6fWXW9fsd5nWF7Q8dPI4Cr74Hvq2Ja8qgzJDXX
-        WoZDAHgxXpEmwgygthk9tVIP7/eFDpnBpfuHch1iw7ef3pOP8vuBBQYgAaX4VT5Fn/AeX0bE3wT3e
-        yaAeh+pNprIJym0ZZQwet/Jkrh9qQdqDLgEv9hq3fLFC5dvgK9+m4cCEGkAHaKbPtnv4nnSNJv+hn
-        ap1JfNRQ==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1r8kSl-00BSYN-0d;
-        Thu, 30 Nov 2023 17:04:31 +0000
-Message-ID: <7372f74b-ad5a-4545-9d48-b5eed9005557@infradead.org>
-Date:   Thu, 30 Nov 2023 09:04:29 -0800
+        Thu, 30 Nov 2023 12:05:04 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED7A610D4
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 09:05:10 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 338B1C433C8;
+        Thu, 30 Nov 2023 17:05:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701363910;
+        bh=RzSKagrT+3ey649/vwouXJ0AF6xcU8DgN3n3RI/4R9Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TlikIAiZ77eoCBeIlQzItIdxQjiV+b12uuExG4flotNXT8cuMmfPWLyx5UUnYklte
+         OGG4bJASBOXmpvtI3tuDqOYUoKwIwbCWQ7b8a6veFVz4ocY/KJmzHYJHQuZozE8+Pb
+         WHogpEHylw1VQ/4NjKJg1RH4eRBddNWor7npy0BZbSds+OOBSbiwPXJoj4u77J40d9
+         ZUjJ94E7/Mx98Diq6OQ4JFRw1CoKCBpPG2VTgzdUtbmjZ4sjZcoWrfYn5oD2rqRqt2
+         Ptac8iz8+ApSJCNJr/kwb8GP5boq/hRrkEDAOzSbY9BPMey3tiJGHpJi9P0G8isjNB
+         8+aLH8h1kuUnQ==
+Date:   Thu, 30 Nov 2023 17:05:06 +0000
+From:   Simon Horman <horms@kernel.org>
+To:     Min Li <lnimi@hotmail.com>
+Cc:     richardcochran@gmail.com, lee@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Min Li <min.li.xe@renesas.com>
+Subject: Re: [PATCH net-next v2 1/2] ptp: introduce PTP_CLOCK_EXTOFF event
+ for the measured external offset
+Message-ID: <20231130170506.GG32077@kernel.org>
+References: <PH7PR03MB7064CC413965BFE5E005B273A083A@PH7PR03MB7064.namprd03.prod.outlook.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: linux-next: Tree for Nov 22 (riscv: DMA_GLOBAL_POOL)
-Content-Language: en-US
-To:     Conor Dooley <conor@kernel.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-References: <20231122145257.6f668afa@canb.auug.org.au>
- <24942b4d-d16a-463f-b39a-f9dfcb89d742@infradead.org>
- <20231130-mothproof-tripod-fe35364591ee@spud>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20231130-mothproof-tripod-fe35364591ee@spud>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <PH7PR03MB7064CC413965BFE5E005B273A083A@PH7PR03MB7064.namprd03.prod.outlook.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Nov 29, 2023 at 03:48:05PM -0500, Min Li wrote:
+> From: Min Li <min.li.xe@renesas.com>
+> 
+> This change is for the PHC devices that can measure the phase offset
+> between PHC signal and the external signal, such as the 1PPS signal of
+> GNSS. Reporting PTP_CLOCK_EXTOFF to user space will be piggy-backed to
+> the existing ptp_extts_event so that application such as ts2phc can
+> poll the external offset the same way as extts. Hence, ts2phc can use
+> the offset to achieve the alignment between PHC and the external signal
+> by the help of either SW or HW filters.
+> 
+> Signed-off-by: Min Li <min.li.xe@renesas.com>
 
+...
 
-On 11/30/23 08:35, Conor Dooley wrote:
-> On Wed, Nov 22, 2023 at 02:37:43PM -0800, Randy Dunlap wrote:
->>
->>
->> On 11/21/23 19:52, Stephen Rothwell wrote:
->>> Hi all,
->>>
->>> Changes since 20231121:
->>>
->>
->> on riscv 32-bit:
->>
->> WARNING: unmet direct dependencies detected for DMA_GLOBAL_POOL
->>   Depends on [n]: !ARCH_HAS_DMA_SET_UNCACHED [=n] && !DMA_DIRECT_REMAP [=y]
->>   Selected by [y]:
->>   - ARCH_R9A07G043 [=y] && SOC_RENESAS [=y] && RISCV [=y] && NONPORTABLE [=y] && RISCV_ALTERNATIVE [=y] && !RISCV_ISA_ZICBOM [=n] && RISCV_SBI [=y]
->>
->> WARNING: unmet direct dependencies detected for DMA_GLOBAL_POOL
->>   Depends on [n]: !ARCH_HAS_DMA_SET_UNCACHED [=n] && !DMA_DIRECT_REMAP [=y]
->>   Selected by [y]:
->>   - ARCH_R9A07G043 [=y] && SOC_RENESAS [=y] && RISCV [=y] && NONPORTABLE [=y] && RISCV_ALTERNATIVE [=y] && !RISCV_ISA_ZICBOM [=n] && RISCV_SBI [=y]
-> 
-> DMA_DIRECT_REMAP is selected by the T-HEAD CMO erratum.
-> DMA_GLOBAL_POOL by the Andes CMO erratum.
-> 
-> We could do
-> 
-> diff --git a/drivers/soc/renesas/Kconfig b/drivers/soc/renesas/Kconfig
-> index 0071864c2111..d8723fdf1e55 100644
-> --- a/drivers/soc/renesas/Kconfig
-> +++ b/drivers/soc/renesas/Kconfig
-> @@ -339,6 +339,7 @@ if RISCV
+> @@ -228,7 +230,10 @@ struct ptp_pin_desc {
+>  #define PTP_MASK_EN_SINGLE  _IOW(PTP_CLK_MAGIC, 20, unsigned int)
 >  
->  config ARCH_R9A07G043
->  	bool "RISC-V Platform support for RZ/Five"
-> +	depends on !DMA_DIRECT_REMAP
->  	depends on NONPORTABLE
->  	depends on RISCV_ALTERNATIVE
->  	depends on !RISCV_ISA_ZICBOM
+>  struct ptp_extts_event {
+> -	struct ptp_clock_time t; /* Time event occured. */
+> +	union {
+> +		struct ptp_clock_time t; /* Time event occured. */
+> +		__s64 offset_ns;         /* Offset event occured */
+> +	};
 
-OK, that works for me.
+Hi Min Li,
 
-Tested-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+if you end up respinning this patch, please consider correcting
+the spelling of occurred.
 
-Thanks.
-
--- 
-~Randy
+>  	unsigned int index;      /* Which channel produced the event. */
+>  	unsigned int flags;      /* Reserved for future use. */
+>  	unsigned int rsv[2];     /* Reserved for future use. */
+> -- 
+> 2.39.2
+> 
