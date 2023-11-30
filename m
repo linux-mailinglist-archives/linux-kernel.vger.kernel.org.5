@@ -2,235 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E26D7FF954
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 19:28:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 268037FF95A
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 19:29:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232103AbjK3S2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 13:28:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47984 "EHLO
+        id S1346424AbjK3S3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 13:29:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230030AbjK3S2s (ORCPT
+        with ESMTP id S230030AbjK3S3h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 13:28:48 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB89310DE
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 10:28:54 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-db4038d7cfdso1569253276.2
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 10:28:54 -0800 (PST)
+        Thu, 30 Nov 2023 13:29:37 -0500
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C67E10D0
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 10:29:43 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-40b51e26a7aso14365e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 10:29:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701368934; x=1701973734; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=KCojnrKVSnfIdikNRS9eQkGQb5+JqWZFSYvF9pyN2fg=;
-        b=nhtFn9NDaNPt0A1+m+fE56vnx1mbADePWNqZ9blJ/+GV4jGh2fsC2SN+uOGIGv9kE2
-         FG66Nmk2jt2cIwPCVkdaveLgoqscdfsRQRN51I8JYbQErMXxdImFGKtQF8PBc4uTxxkh
-         vHoiYrKDL4zgHPiVUem9dpXEuuaMsOi/sBXZkMcC79B7ql2QdeRHvB3NnS4CPxF5Fa0C
-         omSukJBxBsa1BdsRsxNTZypLIY4BNLnhsdoHRrchEtfVzf1iVipEWKqca/3Ukst0s0rx
-         o+Y3EFmnktINvfemJQpV61jW28/tMD+flPbdJB/tuLUm+aXutvH3MR1POBudsidZVNY6
-         /v1A==
+        d=google.com; s=20230601; t=1701368982; x=1701973782; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FBKQZd68edVxF6ECkF2oX9KfXPiYc6EetlvZAUBR47c=;
+        b=ouETubjN1Hdfwdi3lj5ciw9BryOW7yvcfzKQ8Y6c9yMy99sUrEZjdtvK4hgBXQcrHw
+         QOKA/wmdEMYw8XZhz70GYM/rzYolQYCaA/htcob/jmnpV9u06qUnjK/rlDjXJalwiolJ
+         UyBsk8YT8+T8NWijedkchFVYnMhjTsmaZi5AfrsNxxq71qnVGwJccjjm4xWh+/JrxXtn
+         gxBp4vE83nlRW5PewqnFvmVSjDvi6STPDLTpS/2PE/+sJfusmXGrMAyyn8aJ9nq7PZ69
+         B2Gcq76iRn1gs0o3w1id+LxjamdEHE19sbD8RJdXLPJSguWAMHMJLPIIG8QTp4jISYC9
+         +JxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701368934; x=1701973734;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KCojnrKVSnfIdikNRS9eQkGQb5+JqWZFSYvF9pyN2fg=;
-        b=hXIqdZ+m3tngwZRLwQh6mGBytIaU+B6JQdzhQjI2YwWidy7P82BpMy189fNc51t6VB
-         2umVh6+Uwzm0Atn07GMnMHl50UsEIumYT93vIm1yMj74q2i30FKZaoK6Vchq+27abS7r
-         Vxc2k5mu08FlRiaIhL/cxblEQrhq8tKHjqmGaAo4nkKqGgdaQqMgON45OIf+3rDEDKEA
-         UN3aPMdT7gwgy72mJrDXoRSPiX6kZ146olTprXciDNRAU/FKWIar+NzxAtY90RO3wqrV
-         c87YAeBmVIqi0NpABS6Yade7Kry92DWo/oMbJiKFlAa8ACqO8+Xm0eS2LMHbTJb5jQjV
-         7qzw==
-X-Gm-Message-State: AOJu0YycwlnAm+TaINPhhcdrLm7SkUzNCrA4alvgNMMzAiHsWlzJ9za2
-        ZB4zMKa9iy9Xel8JNr5PqqLCDMdIDNk=
-X-Google-Smtp-Source: AGHT+IENTQ6puxM9lq8+5c9/fGwa/0WLqvX9/pdkv4tQrl3DVzSCYKkQNeWrlJXE6OVBjygmscKR2M9Z2T4=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:a3e6:0:b0:db4:5d34:fa5 with SMTP id
- e93-20020a25a3e6000000b00db45d340fa5mr708485ybi.0.1701368934202; Thu, 30 Nov
- 2023 10:28:54 -0800 (PST)
-Date:   Thu, 30 Nov 2023 10:28:52 -0800
-In-Reply-To: <87y1efmg28.fsf@redhat.com>
-Mime-Version: 1.0
-References: <20231025152406.1879274-1-vkuznets@redhat.com> <20231025152406.1879274-11-vkuznets@redhat.com>
- <ZWfl3ahamXPPoIGB@google.com> <87y1efmg28.fsf@redhat.com>
-Message-ID: <ZWjUZPXCF2U9azWT@google.com>
-Subject: Re: [PATCH 10/14] KVM: x86: Make Hyper-V emulation optional
-From:   Sean Christopherson <seanjc@google.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        d=1e100.net; s=20230601; t=1701368982; x=1701973782;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FBKQZd68edVxF6ECkF2oX9KfXPiYc6EetlvZAUBR47c=;
+        b=w6m4eqYXjzkr5sFPnoy/tYHbIpss4u9omigWe6kVW34YZyvc4R/QNLj89QZGkvEQVu
+         EbjIV5z2pyQCVw4o4S9BToMCyRB1m2zFbq+HqQIb9WM6W6l7Z9Gcn0Wu50Qi3pPltSIV
+         mxBlw87ynql1XEvTToYyZFnbwaPfwnD90KHSK8lPH171TL/sFDr3V8EZbU2SSf/MPDvr
+         2NXgqaYZ3+TaRFK20TWJrIK6n45y7snMA5u4BULxnRnWvamXmVtfPDhe1RbW9av8d8v1
+         k/OGptFhdA2yLAr7/HxDX4mU3RR3ARf4JisRrFFT7NAq/8atK5If2XhIvOO1DCzpmP4J
+         wy0g==
+X-Gm-Message-State: AOJu0YyMP3CR099BvlofR7cawTf70NUns72ZAN9pfyvtQG4upKvGHNxH
+        M5GQZ+uBQPoTbKhBo/hcgVaQ0Ru8YHVSj2O5VcXWnQ==
+X-Google-Smtp-Source: AGHT+IGJXurzgm9WUTj0WY4QgYfh64X35gMpEmBv6sX8eZgPY8mokBM6500vWNCCFVYZsaGL0tJ3UdVaHekQSMyAvhA=
+X-Received: by 2002:a05:600c:1c04:b0:40b:43f4:df9e with SMTP id
+ j4-20020a05600c1c0400b0040b43f4df9emr211199wms.2.1701368981847; Thu, 30 Nov
+ 2023 10:29:41 -0800 (PST)
+MIME-Version: 1.0
+References: <20231127220902.1315692-1-irogers@google.com> <20231127220902.1315692-9-irogers@google.com>
+ <CAM9d7cjpYHN_Q63sW70vTCisdW=-SzjsrryUUJjgtZ3+9jdxfA@mail.gmail.com>
+In-Reply-To: <CAM9d7cjpYHN_Q63sW70vTCisdW=-SzjsrryUUJjgtZ3+9jdxfA@mail.gmail.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Thu, 30 Nov 2023 10:29:30 -0800
+Message-ID: <CAP-5=fXjReF38T_GKohtWd7_7fZjYVnKBj-Fwt+agi1vSWAEdQ@mail.gmail.com>
+Subject: Re: [PATCH v5 08/50] perf record: Be lazier in allocating lost
+ samples buffer
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Nick Terrell <terrelln@fb.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        "Steinar H. Gunderson" <sesse@google.com>,
+        Liam Howlett <liam.howlett@oracle.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Colin Ian King <colin.i.king@gmail.com>,
+        Dmitrii Dolgov <9erthalion6@gmail.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Ming Wang <wangming01@loongson.cn>,
+        James Clark <james.clark@arm.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        German Gomez <german.gomez@arm.com>,
+        Changbin Du <changbin.du@huawei.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, Li Dong <lidong@vivo.com>,
+        Sandipan Das <sandipan.das@amd.com>,
+        liuwenyu <liuwenyu7@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org,
+        Guilherme Amadio <amadio@gentoo.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 30, 2023, Vitaly Kuznetsov wrote:
-> Sean Christopherson <seanjc@google.com> writes:
-> 
-> ...
-> 
+On Wed, Nov 29, 2023 at 6:09=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> =
+wrote:
+>
+> On Mon, Nov 27, 2023 at 2:09=E2=80=AFPM Ian Rogers <irogers@google.com> w=
+rote:
 > >
-> >>  static bool nested_get_vmcs12_pages(struct kvm_vcpu *vcpu)
-> >>  {
-> >> @@ -3552,11 +3563,13 @@ static int nested_vmx_run(struct kvm_vcpu *vcpu, bool launch)
-> >>  	if (!nested_vmx_check_permission(vcpu))
-> >>  		return 1;
-> >>  
-> >> +#ifdef CONFIG_KVM_HYPERV
-> >>  	evmptrld_status = nested_vmx_handle_enlightened_vmptrld(vcpu, launch);
-> >>  	if (evmptrld_status == EVMPTRLD_ERROR) {
-> >>  		kvm_queue_exception(vcpu, UD_VECTOR);
-> >>  		return 1;
-> >>  	}
-> >> +#endif
-> >>  
-> >>  	kvm_pmu_trigger_event(vcpu, PERF_COUNT_HW_BRANCH_INSTRUCTIONS);
+> > Wait until a lost sample occurs to allocate the lost samples buffer,
+> > often the buffer isn't necessary. This saves a 64kb allocation and
+> > 5.3kb of peak memory consumption.
 > >
-> > This fails to build with CONFIG_KVM_HYPERV=n && CONFIG_KVM_WERROR=y:
+> > Signed-off-by: Ian Rogers <irogers@google.com>
+> > ---
+> >  tools/perf/builtin-record.c | 29 +++++++++++++++++++----------
+> >  1 file changed, 19 insertions(+), 10 deletions(-)
 > >
-> > arch/x86/kvm/vmx/nested.c:3577:9: error: variable 'evmptrld_status' is uninitialized when used here [-Werror,-Wuninitialized]
-> >         if (CC(evmptrld_status == EVMPTRLD_VMFAIL))
-> >                ^~~~~~~~~~~~~~~
+> > diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+> > index 9b4f3805ca92..b6c8c1371b39 100644
+> > --- a/tools/perf/builtin-record.c
+> > +++ b/tools/perf/builtin-record.c
+> > @@ -1924,21 +1924,13 @@ static void __record__save_lost_samples(struct =
+record *rec, struct evsel *evsel,
+> >  static void record__read_lost_samples(struct record *rec)
+> >  {
+> >         struct perf_session *session =3D rec->session;
+> > -       struct perf_record_lost_samples *lost;
+> > +       struct perf_record_lost_samples *lost =3D NULL;
+> >         struct evsel *evsel;
 > >
-> > Sadly, simply wrapping with an #ifdef also fails because then evmptrld_status
-> > becomes unused.  I'd really prefer to avoid having to tag it __maybe_unused, and
-> > adding more #ifdef would also be ugly.  Any ideas?
-> 
-> A couple,
-> 
-> - we can try putting all eVMPTR logic under 'if (1)' just to create a
->   block where we can define evmptrld_status. Not sure this is nicer than
->   another #ifdef wrapping evmptrld_status and I'm not sure what to do
->   with kvm_pmu_trigger_event() -- can it just go above
->   nested_vmx_handle_enlightened_vmptrld()?
-> 
-> - we can add a helper, e.g. 'evmptr_is_vmfail()' and make it just return
->   'false' when !CONFIG_KVM_HYPERV.
-> 
-> - rewrite this as a switch to avoid the need for having the local
->   variable, (untested)
-> 
-> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-> index c5ec0ef51ff7..b26ce7d596e9 100644
-> --- a/arch/x86/kvm/vmx/nested.c
-> +++ b/arch/x86/kvm/vmx/nested.c
-> @@ -3553,22 +3553,23 @@ static int nested_vmx_run(struct kvm_vcpu *vcpu, bool launch)
->         enum nvmx_vmentry_status status;
->         struct vcpu_vmx *vmx = to_vmx(vcpu);
->         u32 interrupt_shadow = vmx_get_interrupt_shadow(vcpu);
-> -       enum nested_evmptrld_status evmptrld_status;
->  
->         if (!nested_vmx_check_permission(vcpu))
->                 return 1;
->  
-> -       evmptrld_status = nested_vmx_handle_enlightened_vmptrld(vcpu, launch);
-> -       if (evmptrld_status == EVMPTRLD_ERROR) {
-> +       switch (nested_vmx_handle_enlightened_vmptrld(vcpu, launch)) {
-> +       case EVMPTRLD_ERROR:
->                 kvm_queue_exception(vcpu, UD_VECTOR);
->                 return 1;
-> +       case EVMPTRLD_VMFAIL:
-> +               trace_kvm_nested_vmenter_failed("evmptrld_status", 0);
-> +               return nested_vmx_failInvalid(vcpu);
-> +       default:
-> +               break;
->         }
->  
->         kvm_pmu_trigger_event(vcpu, PERF_COUNT_HW_BRANCH_INSTRUCTIONS);
->  
-> -       if (CC(evmptrld_status == EVMPTRLD_VMFAIL))
-> -               return nested_vmx_failInvalid(vcpu);
-> -
->         if (CC(!evmptr_is_valid(vmx->nested.hv_evmcs_vmptr) &&
->                vmx->nested.current_vmptr == INVALID_GPA))
->                 return nested_vmx_failInvalid(vcpu);
-> 
-> Unfortunately, I had to open code CC() ;-(
-> 
-> Or maybe just another "#ifdef" is not so ugly after all? :-)
+> >         /* there was an error during record__open */
+> >         if (session->evlist =3D=3D NULL)
+> >                 return;
+> >
+> > -       lost =3D zalloc(PERF_SAMPLE_MAX_SIZE);
+>
+> To minimize the allocation size, this can be
+> sizeof(*lost) + session->machines.host.id_hdr_size
+> instead of PERF_SAMPLE_MAX_SIZE.
 
-Ah, just have nested_vmx_handle_enlightened_vmptrld() return EVMPTRLD_DISABLED
-for its "stub", e.g. with some otehr tangentially de-stubbing:
+Sounds good, should probably be a follow up. The current size is
+PERF_SAMPLE_MAX_SIZE.
 
-diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-index 4777d867419c..5a27a2ebbb32 100644
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -2000,6 +2000,7 @@ static void copy_vmcs12_to_enlightened(struct vcpu_vmx *vmx)
- static enum nested_evmptrld_status nested_vmx_handle_enlightened_vmptrld(
-        struct kvm_vcpu *vcpu, bool from_launch)
- {
-+#ifdef CONFIG_KVM_HYPERV
-        struct vcpu_vmx *vmx = to_vmx(vcpu);
-        bool evmcs_gpa_changed = false;
-        u64 evmcs_gpa;
-@@ -2081,11 +2082,10 @@ static enum nested_evmptrld_status nested_vmx_handle_enlightened_vmptrld(
-        }
- 
-        return EVMPTRLD_SUCCEEDED;
-+#else
-+       return EVMPTRLD_DISABLED;
-+#endif
- }
--#else /* CONFIG_KVM_HYPERV */
--static inline void copy_enlightened_to_vmcs12(struct vcpu_vmx *vmx, u32 hv_clean_fields) {}
--static inline void copy_vmcs12_to_enlightened(struct vcpu_vmx *vmx) {}
--#endif /* CONFIG_KVM_HYPERV */
- 
- void nested_sync_vmcs12_to_shadow(struct kvm_vcpu *vcpu)
- {
-@@ -3191,8 +3191,6 @@ static bool nested_get_evmcs_page(struct kvm_vcpu *vcpu)
- 
-        return true;
- }
--#else
--static bool nested_get_evmcs_page(struct kvm_vcpu *vcpu) { return true; }
- #endif
- 
- static bool nested_get_vmcs12_pages(struct kvm_vcpu *vcpu)
-@@ -3285,6 +3283,7 @@ static bool nested_get_vmcs12_pages(struct kvm_vcpu *vcpu)
- 
- static bool vmx_get_nested_state_pages(struct kvm_vcpu *vcpu)
- {
-+#ifdef CONFIG_KVM_HYPERV
-        /*
-         * Note: nested_get_evmcs_page() also updates 'vp_assist_page' copy
-         * in 'struct kvm_vcpu_hv' in case eVMCS is in use, this is mandatory
-@@ -3301,7 +3300,7 @@ static bool vmx_get_nested_state_pages(struct kvm_vcpu *vcpu)
- 
-                return false;
-        }
--
-+#endif
-        if (is_guest_mode(vcpu) && !nested_get_vmcs12_pages(vcpu))
-                return false;
- 
-@@ -3564,7 +3563,6 @@ static int nested_vmx_run(struct kvm_vcpu *vcpu, bool launch)
-        if (!nested_vmx_check_permission(vcpu))
-                return 1;
- 
--#ifdef CONFIG_KVM_HYPERV
-        evmptrld_status = nested_vmx_handle_enlightened_vmptrld(vcpu, launch);
-        if (evmptrld_status == EVMPTRLD_ERROR) {
-                kvm_queue_exception(vcpu, UD_VECTOR);
-@@ -4743,6 +4741,7 @@ void nested_vmx_vmexit(struct kvm_vcpu *vcpu, u32 vm_exit_reason,
-        WARN_ON_ONCE(vmx->nested.nested_run_pending);
- 
-        if (kvm_check_request(KVM_REQ_GET_NESTED_STATE_PAGES, vcpu)) {
-+#ifdef CONFIG_KVM_HYPERV
-                /*
-                 * KVM_REQ_GET_NESTED_STATE_PAGES is also used to map
-                 * Enlightened VMCS after migration and we still need to
-@@ -4750,6 +4749,7 @@ void nested_vmx_vmexit(struct kvm_vcpu *vcpu, u32 vm_exit_reason,
-                 * the first L2 run.
-                 */
-                (void)nested_get_evmcs_page(vcpu);
-+#endif
-        }
- 
-        /* Service pending TLB flush requests for L2 before switching to L1. */
+Thanks,
+Ian
+
+> Thanks,
+> Namhyung
+>
+>
+> > -       if (lost =3D=3D NULL) {
+> > -               pr_debug("Memory allocation failed\n");
+> > -               return;
+> > -       }
+> > -
+> > -       lost->header.type =3D PERF_RECORD_LOST_SAMPLES;
+> > -
+> >         evlist__for_each_entry(session->evlist, evsel) {
+> >                 struct xyarray *xy =3D evsel->core.sample_id;
+> >                 u64 lost_count;
+> > @@ -1961,6 +1953,14 @@ static void record__read_lost_samples(struct rec=
+ord *rec)
+> >                                 }
+> >
+> >                                 if (count.lost) {
+> > +                                       if (!lost) {
+> > +                                               lost =3D zalloc(PERF_SA=
+MPLE_MAX_SIZE);
+> > +                                               if (!lost) {
+> > +                                                       pr_debug("Memor=
+y allocation failed\n");
+> > +                                                       return;
+> > +                                               }
+> > +                                               lost->header.type =3D P=
+ERF_RECORD_LOST_SAMPLES;
+> > +                                       }
+> >                                         __record__save_lost_samples(rec=
+, evsel, lost,
+> >                                                                     x, =
+y, count.lost, 0);
+> >                                 }
+> > @@ -1968,9 +1968,18 @@ static void record__read_lost_samples(struct rec=
+ord *rec)
+> >                 }
+> >
+> >                 lost_count =3D perf_bpf_filter__lost_count(evsel);
+> > -               if (lost_count)
+> > +               if (lost_count) {
+> > +                       if (!lost) {
+> > +                               lost =3D zalloc(PERF_SAMPLE_MAX_SIZE);
+> > +                               if (!lost) {
+> > +                                       pr_debug("Memory allocation fai=
+led\n");
+> > +                                       return;
+> > +                               }
+> > +                               lost->header.type =3D PERF_RECORD_LOST_=
+SAMPLES;
+> > +                       }
+> >                         __record__save_lost_samples(rec, evsel, lost, 0=
+, 0, lost_count,
+> >                                                     PERF_RECORD_MISC_LO=
+ST_SAMPLES_BPF);
+> > +               }
+> >         }
+> >  out:
+> >         free(lost);
+> > --
+> > 2.43.0.rc1.413.gea7ed67945-goog
+> >
