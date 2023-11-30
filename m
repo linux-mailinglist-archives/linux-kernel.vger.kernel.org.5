@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC6A87FEB31
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 09:51:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E0667FEB32
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 09:51:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344926AbjK3Ivf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 03:51:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44110 "EHLO
+        id S1344951AbjK3Ivj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 03:51:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231753AbjK3Iva (ORCPT
+        with ESMTP id S231759AbjK3Iva (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 30 Nov 2023 03:51:30 -0500
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B99BB10DF;
-        Thu, 30 Nov 2023 00:51:35 -0800 (PST)
-Date:   Thu, 30 Nov 2023 08:51:33 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53BFF12C;
+        Thu, 30 Nov 2023 00:51:36 -0800 (PST)
+Date:   Thu, 30 Nov 2023 08:51:34 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1701334294;
+        s=2020; t=1701334295;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Ei2mNn8OwqK1Sc4aKtY1O7cZCrtlOZi7TfAXs+UClv8=;
-        b=yYhg46JpQKn421IDN2b2djun1MZvgVpZeLfYXSRBkCdW0YziafKjODizigoRng1MaJA6M4
-        iK0Ti5Bq3kTs/FAzwcGZ18IfeRyO8DzrpXC1rn06/+NnIagMd42GVhLjuIZigBkES9FRI0
-        Cye2e0A24SM0N/6fzr8vzz58F4mVtqMBg06xpPaLgPuObGxrs7u/AcbrK2VrvrT6c+deGo
-        hPXmW3wxRSGqF/p2BEzUjH8vbwH0szXsVswnfA9sKY7Oh3ihoPQoM9Iqx7VaI+v0zE7NPn
-        ZPAvEQahQKu7y9NkMX65ozb061tE9OeD+2YD9wgktPhsNWCKKC9625P4Kks5CQ==
+        bh=O9AjYlYAYx+oR2KXDgTbog5n4T+oR4QcI16HbOuThJQ=;
+        b=zzoZr18aSPmR5kfCWlGeDY4B2FYFk0VQU9u9msMYgexOJWsBmNt+sAQbunwtTlLNQfc7HE
+        lHy57dfNENJ4zcX8s5gHGeGdD95iVpahnBAgmbagKf5aIDXlFFoxwaPYc3TWXmmb/lUtxk
+        jloVKzF5Lkw3GfwlQdJGA0eBB7qf/NGdSDHjFSzgTLvaMg0PsOd0+lZaHM0/gXCrzBCcYU
+        TVPd978b6VklnE5Hp6WRXkFlLxN2s3omhlVFww/iyS8Nr1yrNLPy8XbYZ/criu2i+DyvIv
+        Dnh2kn0JO+56whoT2IG4UccOrGCc1PGIjNwfUHn1MJf4jlrrKam+QzqV3fDa9A==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1701334294;
+        s=2020e; t=1701334295;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Ei2mNn8OwqK1Sc4aKtY1O7cZCrtlOZi7TfAXs+UClv8=;
-        b=jCD5VsuRzWO7FoL/pcZqNbqea+1qgzT9MQOtaAyUEm7zhzIg+vcqLbx1iWBGB5TVCpQOHG
-        oChEKIOxeEeAC4Ag==
+        bh=O9AjYlYAYx+oR2KXDgTbog5n4T+oR4QcI16HbOuThJQ=;
+        b=R2vUcqhyg5AVYswADf+2gdRAhtzHftfFoFzsbOdXAX+dJgGQLzLHGyFVtj0HH9pjVckFff
+        VdhQ//N6+G+GQYDA==
 From:   "tip-bot2 for Samuel Zeter" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/build] x86/tools: objdump_reformat.awk: Allow for spaces
+Subject: [tip: x86/build] x86/tools: objdump_reformat.awk: Ensure regex matches fwait
 Cc:     Samuel Zeter <samuelzeter@gmail.com>,
         Nathan Chancellor <nathan@kernel.org>,
         Ingo Molnar <mingo@kernel.org>,
         Kees Cook <keescook@chromium.org>,
         Masami Hiramatsu <mhiramat@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20231129-objdump-reformat-llvm-v3-2-0d855e79314d@kernel.org>
-References: <20231129-objdump-reformat-llvm-v3-2-0d855e79314d@kernel.org>
+In-Reply-To: <20231129-objdump-reformat-llvm-v3-1-0d855e79314d@kernel.org>
+References: <20231129-objdump-reformat-llvm-v3-1-0d855e79314d@kernel.org>
 MIME-Version: 1.0
-Message-ID: <170133429362.398.4707883263902716130.tip-bot2@tip-bot2>
+Message-ID: <170133429425.398.12209221658096369317.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -70,25 +70,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/build branch of tip:
 
-Commit-ID:     f4570ebd836363dc7722b8eb8d099b311021af13
-Gitweb:        https://git.kernel.org/tip/f4570ebd836363dc7722b8eb8d099b311021af13
+Commit-ID:     60c2ea7c89e375804171552d8ea53d9084ec3269
+Gitweb:        https://git.kernel.org/tip/60c2ea7c89e375804171552d8ea53d9084ec3269
 Author:        Samuel Zeter <samuelzeter@gmail.com>
-AuthorDate:    Wed, 29 Nov 2023 15:17:42 -07:00
+AuthorDate:    Wed, 29 Nov 2023 15:17:41 -07:00
 Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Thu, 30 Nov 2023 09:38:10 +01:00
+CommitterDate: Thu, 30 Nov 2023 09:38:09 +01:00
 
-x86/tools: objdump_reformat.awk: Allow for spaces
+x86/tools: objdump_reformat.awk: Ensure regex matches fwait
 
-GNU objdump and LLVM objdump have differing output formats.
-Specifically, GNU objump will format its output as: address:<tab>hex,
-whereas LLVM objdump displays its output as address:<space>hex.
+If there is "wait" mnemonic in the line being parsed, it is incorrectly
+handled by the script, and an extra line of "fwait" in
+objdump_reformat's output is inserted. As insn_decoder_test relies upon
+the formatted output, the test fails.
 
-objdump_reformat.awk incorrectly handles this discrepancy due to
-the unexpected space and as a result insn_decoder_test fails, as
-its input is garbled.
+This is reproducible when disassembling with llvm-objdump:
 
-The instruction line being tokenized now handles a space and colon,
-or tab delimiter.
+Pre-processed lines:
+
+  ffffffff81033e72: 9b                    wait
+  ffffffff81033e73: 48 c7 c7 89 50 42 82  movq
+
+After objdump_reformat.awk:
+
+  ffffffff81033e72:       9b      fwait
+  ffffffff81033e72:                               wait
+  ffffffff81033e73:       48 c7 c7 89 50 42 82    movq
+
+The regex match now accepts spaces or tabs, along with the "fwait"
+instruction.
 
 Signed-off-by: Samuel Zeter <samuelzeter@gmail.com>
 Signed-off-by: Nathan Chancellor <nathan@kernel.org>
@@ -97,22 +107,22 @@ Tested-by: Nathan Chancellor <nathan@kernel.org>
 Tested-by: Kees Cook <keescook@chromium.org>
 Reviewed-by: Kees Cook <keescook@chromium.org>
 Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-Link: https://lore.kernel.org/r/20231129-objdump-reformat-llvm-v3-2-0d855e79314d@kernel.org
+Link: https://lore.kernel.org/r/20231129-objdump-reformat-llvm-v3-1-0d855e79314d@kernel.org
 Closes: https://github.com/ClangBuiltLinux/linux/issues/1364
 ---
  arch/x86/tools/objdump_reformat.awk | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/x86/tools/objdump_reformat.awk b/arch/x86/tools/objdump_reformat.awk
-index 276e572..a4120d9 100644
+index f418c91..276e572 100644
 --- a/arch/x86/tools/objdump_reformat.awk
 +++ b/arch/x86/tools/objdump_reformat.awk
-@@ -22,7 +22,7 @@ BEGIN {
+@@ -12,7 +12,7 @@ BEGIN {
+ 	prev_hex = ""
+ 	prev_mnemonic = ""
+ 	bad_expr = "(\\(bad\\)|^rex|^.byte|^rep(z|nz)$|^lock$|^es$|^cs$|^ss$|^ds$|^fs$|^gs$|^data(16|32)$|^addr(16|32|64))"
+-	fwait_expr = "^9b "
++	fwait_expr = "^9b[ \t]*fwait"
+ 	fwait_str="9b\tfwait"
  }
  
- /^ *[0-9a-f]+:/ {
--	if (split($0, field, "\t") < 3) {
-+	if (split($0, field, /: |\t/) < 3) {
- 		# This is a continuation of the same insn.
- 		prev_hex = prev_hex field[2]
- 	} else {
