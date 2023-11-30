@@ -2,193 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B5747FF01A
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 14:28:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3B3A7FF01E
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 14:28:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345538AbjK3N2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 08:28:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37174 "EHLO
+        id S1345535AbjK3N2g convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 30 Nov 2023 08:28:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232169AbjK3N2T (ORCPT
+        with ESMTP id S232169AbjK3N2d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 08:28:19 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24A32D6C;
-        Thu, 30 Nov 2023 05:28:25 -0800 (PST)
-Date:   Thu, 30 Nov 2023 13:28:22 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1701350903;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=mOpN8Iak2/OJw05hoCr+GK2iIlc++ht5sIA0P0Wo5cg=;
-        b=f6K4ws7QVU4nznJOytCRVktEIpwL4LNXK9dmPw7I9wNMqPLoRR4b4bCvjScWfz2BbVCzKp
-        nG+NHGAr0ma6g5RRwqcmT59JbD03TZHLUL/Xt9t7BbEHveHRtX2fyryMMmkrl6ucbGOad/
-        7Myhv1BR7dQ1Sq7ncW05PLKU/m4AhXn8FNWzfzStmgDFVWwf2dheqodf12x9D8yVgfsaHC
-        +EOlgt/97wt4KTv9xTMTx40oRaSOpoMlKSNt2O2lN+oWuFtEpkKVlIThtwfvbJkyPeTRtW
-        yVOPyq3zRZqrJV6XJDLEnexL/K032sOBQcvcHiAPJb95IElN5aTmh2VeJk0TAg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1701350903;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=mOpN8Iak2/OJw05hoCr+GK2iIlc++ht5sIA0P0Wo5cg=;
-        b=Y6PpYNDXabZvv6HzS1CME6T/8rs8zDdZnHwfvwt5iQprAaD74fqI4UUlcChCIxnMHN0ZNE
-        NEi/XFktlt3yWJBg==
-From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/urgent] perf: Fix perf_event_validate_size()
-Cc:     Budimir Markovic <markovicbudimir@gmail.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
+        Thu, 30 Nov 2023 08:28:33 -0500
+Received: from mail-oi1-f175.google.com (mail-oi1-f175.google.com [209.85.167.175])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCA3610D9;
+        Thu, 30 Nov 2023 05:28:39 -0800 (PST)
+Received: by mail-oi1-f175.google.com with SMTP id 5614622812f47-3b89d4be037so157501b6e.0;
+        Thu, 30 Nov 2023 05:28:39 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701350919; x=1701955719;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UocFr9z4iBYyzRXWEBLNC0QmTk2pcl3A0aXeddwo3SQ=;
+        b=VbZu3znvnO27Ks+92eHrYRlRgs3zUT7rCqpFp7K/vz0bK1FmUYgmqYqfuff1Q9THfU
+         lXVuzcSaLYC/pQslvSzX9TLUOuVgyzXIhUozwsw65eY8TTqrccwSVgKIVXrhhRl8aBwO
+         7xzZQdg9XKyv9+CAsb6WTAoF4TzDEfwfWDqrxH3vmQdRRMPwh/07UjKEYOzIudCl70fh
+         dGd6GB3rQa+BuUH+LYJbugo8qm0hpHj8cUntTwnEHJkqIWi94WeU3ONliHcgy8n1m5sq
+         x/WmVjbr74iFTnmarwP1za/UwnW2WqFBlDkFVuKKOkFnKm0RfJiqq9Y8dzbtbF3z5C4x
+         tSbg==
+X-Gm-Message-State: AOJu0YyDR4RCadRzgVEsKLn0qcYWdIWiQhxsWKOyVykIUutthvJ5OE2D
+        PifZj0vARmiCCwvKPbbxEVpvB1dLTavDC+GnjW8=
+X-Google-Smtp-Source: AGHT+IHbe+EuMC7tz0BG+NmkODy+LOXAd+jgG74MCtOA93Kp5766n5r0h8pso5WKmDjan7SbkpqpYsbsC5uxq0bs/qg=
+X-Received: by 2002:a05:6808:2016:b0:3ae:5650:c6ae with SMTP id
+ q22-20020a056808201600b003ae5650c6aemr2258178oiw.0.1701350919037; Thu, 30 Nov
+ 2023 05:28:39 -0800 (PST)
 MIME-Version: 1.0
-Message-ID: <170135090300.398.16580844443906542392.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <5745568.DvuYhMxLoT@kreacher> <20231129085600.GQ1074920@black.fi.intel.com>
+In-Reply-To: <20231129085600.GQ1074920@black.fi.intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 30 Nov 2023 14:28:27 +0100
+Message-ID: <CAJZ5v0iRqUXeuKmC_+dAJtDBLWQ3x15n4gRH48y7MEaLoXF+UA@mail.gmail.com>
+Subject: Re: [RFT][PATCH v1] ACPI: OSL: Use a threaded interrupt handler for SCI
+To:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Mario Limonciello <mario.limonciello@amd.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Michal Wilczynski <michal.wilczynski@intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the perf/urgent branch of tip:
+Hi Mika,
+Hi Mario,
 
-Commit-ID:     382c27f4ed28f803b1f1473ac2d8db0afc795a1b
-Gitweb:        https://git.kernel.org/tip/382c27f4ed28f803b1f1473ac2d8db0afc795a1b
-Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Wed, 29 Nov 2023 15:24:52 +01:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Wed, 29 Nov 2023 15:43:50 +01:00
+On Wed, Nov 29, 2023 at 11:39 AM Mika Westerberg
+<mika.westerberg@linux.intel.com> wrote:
+>
+> Hi Rafael,
+>
+> On Mon, Nov 27, 2023 at 08:57:43PM +0100, Rafael J. Wysocki wrote:
+> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> >
+> > In the current arrangement, all of the acpi_ev_sci_xrupt_handler() code
+> > is run as an interrupt handler for the SCI, in interrupt context.  Among
+> > other things, this causes it to run with local interrupts off which
+> > can be problematic if many GPEs are enabled and they are located in the
+> > I/O address space, for example (because in that case local interrupts
+> > will be off for the duration of all of the GPE hardware accesses carried
+> > out while handling an SCI combined and that may be quite a bit of time
+> > in extreme scenarios).
+> >
+> > However, there is no particular reason why the code in question really
+> > needs to run in interrupt context and in particular, it has no specific
+> > reason to run with local interrupts off.  The only real requirement is
+> > to prevent multiple instences of it from running in parallel with each
+> > other, but that can be achieved regardless.
+> >
+> > For this reason, use request_threaded_irq() instead of request_irq() for
+> > the ACPI SCI and pass IRQF_ONESHOT to it in flags to indicate that the
+> > interrupt needs to be masked while its handling thread is running so as
+> > to prevent it from re-triggering while it is being handled (and in
+> > particular until the final handled/not handled outcome is determined).
+> >
+> > While at it, drop a redundant local variable from acpi_irq().
+> >
+> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > ---
+> >
+> > The code inspection and (necessarily limited) testing carried out by me
+> > are good indications that this should just always work, but there may
+> > be still some really odd platform configurations I'm overlooking, so if
+> > you have a way to give it a go, please do so.
+>
+> Tried this on ADL-S and ADL-P systems that I have here and both work
+> just fine with the patch applied. I can see SCI interrupt count
+> increases in /proc/interrupts as expected. Did a couple of s2idle cycles
+> too, all good.
+>
+> Tested-by: Mika Westerberg <mika.westerberg@linux.intel.com>
 
-perf: Fix perf_event_validate_size()
+Thanks for your replies and tags!
 
-Budimir noted that perf_event_validate_size() only checks the size of
-the newly added event, even though the sizes of all existing events
-can also change due to not all events having the same read_format.
+Given the lack of response from anyone else I'm going to move this
+towards linux-next with 6.8 as the target.
 
-When we attach the new event, perf_group_attach(), we do re-compute
-the size for all events.
-
-Fixes: a723968c0ed3 ("perf: Fix u16 overflows")
-Reported-by: Budimir Markovic <markovicbudimir@gmail.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- kernel/events/core.c | 61 ++++++++++++++++++++++++++-----------------
- 1 file changed, 38 insertions(+), 23 deletions(-)
-
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index b704d83..c9d123e 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -1814,31 +1814,34 @@ static inline void perf_event__state_init(struct perf_event *event)
- 					      PERF_EVENT_STATE_INACTIVE;
- }
- 
--static void __perf_event_read_size(struct perf_event *event, int nr_siblings)
-+static int __perf_event_read_size(u64 read_format, int nr_siblings)
- {
- 	int entry = sizeof(u64); /* value */
- 	int size = 0;
- 	int nr = 1;
- 
--	if (event->attr.read_format & PERF_FORMAT_TOTAL_TIME_ENABLED)
-+	if (read_format & PERF_FORMAT_TOTAL_TIME_ENABLED)
- 		size += sizeof(u64);
- 
--	if (event->attr.read_format & PERF_FORMAT_TOTAL_TIME_RUNNING)
-+	if (read_format & PERF_FORMAT_TOTAL_TIME_RUNNING)
- 		size += sizeof(u64);
- 
--	if (event->attr.read_format & PERF_FORMAT_ID)
-+	if (read_format & PERF_FORMAT_ID)
- 		entry += sizeof(u64);
- 
--	if (event->attr.read_format & PERF_FORMAT_LOST)
-+	if (read_format & PERF_FORMAT_LOST)
- 		entry += sizeof(u64);
- 
--	if (event->attr.read_format & PERF_FORMAT_GROUP) {
-+	if (read_format & PERF_FORMAT_GROUP) {
- 		nr += nr_siblings;
- 		size += sizeof(u64);
- 	}
- 
--	size += entry * nr;
--	event->read_size = size;
-+	/*
-+	 * Since perf_event_validate_size() limits this to 16k and inhibits
-+	 * adding more siblings, this will never overflow.
-+	 */
-+	return size + nr * entry;
- }
- 
- static void __perf_event_header_size(struct perf_event *event, u64 sample_type)
-@@ -1888,8 +1891,9 @@ static void __perf_event_header_size(struct perf_event *event, u64 sample_type)
-  */
- static void perf_event__header_size(struct perf_event *event)
- {
--	__perf_event_read_size(event,
--			       event->group_leader->nr_siblings);
-+	event->read_size =
-+		__perf_event_read_size(event->attr.read_format,
-+				       event->group_leader->nr_siblings);
- 	__perf_event_header_size(event, event->attr.sample_type);
- }
- 
-@@ -1920,24 +1924,35 @@ static void perf_event__id_header_size(struct perf_event *event)
- 	event->id_header_size = size;
- }
- 
-+/*
-+ * Check that adding an event to the group does not result in anybody
-+ * overflowing the 64k event limit imposed by the output buffer.
-+ *
-+ * Specifically, check that the read_size for the event does not exceed 16k,
-+ * read_size being the one term that grows with groups size. Since read_size
-+ * depends on per-event read_format, also (re)check the existing events.
-+ *
-+ * This leaves 48k for the constant size fields and things like callchains,
-+ * branch stacks and register sets.
-+ */
- static bool perf_event_validate_size(struct perf_event *event)
- {
--	/*
--	 * The values computed here will be over-written when we actually
--	 * attach the event.
--	 */
--	__perf_event_read_size(event, event->group_leader->nr_siblings + 1);
--	__perf_event_header_size(event, event->attr.sample_type & ~PERF_SAMPLE_READ);
--	perf_event__id_header_size(event);
-+	struct perf_event *sibling, *group_leader = event->group_leader;
- 
--	/*
--	 * Sum the lot; should not exceed the 64k limit we have on records.
--	 * Conservative limit to allow for callchains and other variable fields.
--	 */
--	if (event->read_size + event->header_size +
--	    event->id_header_size + sizeof(struct perf_event_header) >= 16*1024)
-+	if (__perf_event_read_size(event->attr.read_format,
-+				   group_leader->nr_siblings + 1) > 16*1024)
- 		return false;
- 
-+	if (__perf_event_read_size(group_leader->attr.read_format,
-+				   group_leader->nr_siblings + 1) > 16*1024)
-+		return false;
-+
-+	for_each_sibling_event(sibling, group_leader) {
-+		if (__perf_event_read_size(sibling->attr.read_format,
-+					   group_leader->nr_siblings + 1) > 16*1024)
-+			return false;
-+	}
-+
- 	return true;
- }
- 
+Thank you!
