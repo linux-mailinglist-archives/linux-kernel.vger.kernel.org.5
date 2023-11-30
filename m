@@ -2,184 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DFA27FFBB1
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 20:44:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 877BD7FFACA
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 20:07:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235294AbjK3Toi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 14:44:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50820 "EHLO
+        id S1376261AbjK3TGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 14:06:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229746AbjK3Toi (ORCPT
+        with ESMTP id S230045AbjK3TGu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 14:44:38 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29BD4D67
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 11:44:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701373483;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LPhpj/A0n+X4U7+YF4qn5WwPaR+rmzk/ZuOqptCZK6E=;
-        b=MgH4igkdigDBNRxVUFWdb/0VPrixZVZpQ/IfhxPTjtKS/sD74gDC7jhRKUgpF3oUPQsVTa
-        2OL1mt2HROtHH6yCOZNBmiwRaI7SoAejcXoov9+nooESEjGK1a88l/xhDwLsA9AGgY7fUO
-        aquY9F/UiDX0AOK2jt+eJcvcgUEAVAs=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-616-JoRODroSMom2kTYjRo2M4A-1; Thu, 30 Nov 2023 14:44:42 -0500
-X-MC-Unique: JoRODroSMom2kTYjRo2M4A-1
-Received: by mail-ed1-f72.google.com with SMTP id 4fb4d7f45d1cf-543f45ab457so986957a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 11:44:41 -0800 (PST)
+        Thu, 30 Nov 2023 14:06:50 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE6C5194
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 11:06:55 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-3332e351670so273035f8f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 11:06:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701371214; x=1701976014; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=7hWM7V+ZExvAnFj1W1dKLDuXcl2XOV1nsx6wXsgycfE=;
+        b=rqNWdBgdbzf5iJ4AJT928zTbxfEETGW4IyF2uhAZ/Y0OA00FRHNhGRAieqfwZ37+HQ
+         03he86pEpNvSTD+XOFXiCZHXgRcCZaCC4aJcXifJuMxEyN1XwBiiF0SqITP9WHYKllpi
+         45LrLoMKiq07iUd2NKk+CmqL48ufK1bEuQaFtjg0Itd1yjE5Un+PHVIaW1cSoJPnUrks
+         BV6jKrfZJoxM1jzC7Jg2ZV4RmNPix4ko5NdwIej/j5WS3XRX+mii78LdIhWXyv0OchBz
+         u1ldibH+j9CErjc8TINM4wD70BM8O03XOrObahz5JqwmYtLmC8ma76g08GMCIws4+qJY
+         na0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701373480; x=1701978280;
-        h=content-transfer-encoding:mime-version:user-agent:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=LPhpj/A0n+X4U7+YF4qn5WwPaR+rmzk/ZuOqptCZK6E=;
-        b=ocZ/65OIgYd8OZHwv/t4gZ5DbMeyMdaxbugUeBa1lCPkA07YTBAyBZhmMVUD3uAkdA
-         cnyZOYK+/cGlLSrCsDG6flb0HPeUa6G2+CGpqp0CUeGPtHKwrh1ABhOnJh3miIXjNRcd
-         0+r8lsF74Jbm/vXW/lLQuzilmmfjVh8tbdR5kJyntiPicl3WT7FSRYJCTElZ95ll7y8f
-         xyKEUS+pELFYGfXJUuJ8aKfSYKPd6gbU3fEnfYnk2UAdYOn4Szi8Sq0JVTlnKjPxZQEo
-         OEABemXgB89wGtnB4719VjCE0+aLfeuZyudvltVAtJKHfI8Olpil3IYw5NOb1qUEuf+z
-         qvew==
-X-Gm-Message-State: AOJu0YyX4dyHBDFtIJfsMXRMxBCGZSRiykTMIPi58lOMtCa34AbuTxih
-        7TKkUdNosvYCAlGAbvDMoJWu9p9Mgvpao0GqasbQh8qpJMp+H70c/t2dVn5yPX8J0Ghse6IFhXz
-        NCEFq0LRiKL38YFW8F2wdZDhfSXSzUEvx
-X-Received: by 2002:a50:c307:0:b0:544:a153:cd19 with SMTP id a7-20020a50c307000000b00544a153cd19mr19830edb.41.1701373480490;
-        Thu, 30 Nov 2023 11:44:40 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEZelmu7uaSeXSssVnLywvQIGoRpU1YHk/jvrg5YamPvbTcEuIUmu8QD5HyLuAP/iFyPFU75Q==
-X-Received: by 2002:a2e:3207:0:b0:2c9:c5a6:62d8 with SMTP id y7-20020a2e3207000000b002c9c5a662d8mr17958ljy.0.1701366288443;
-        Thu, 30 Nov 2023 09:44:48 -0800 (PST)
-Received: from starship ([5.28.147.32])
-        by smtp.gmail.com with ESMTPSA id h15-20020a2e9ecf000000b002c9c22c52e4sm188158ljk.103.2023.11.30.09.44.46
+        d=1e100.net; s=20230601; t=1701371214; x=1701976014;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7hWM7V+ZExvAnFj1W1dKLDuXcl2XOV1nsx6wXsgycfE=;
+        b=U5CO6H9EnRx75xgfGaVEkX4mahMFDJXlrOrQ4nY63BdFWIf7VH/iYxSFvclaLxE07I
+         t3oD1Ye5dQNfs3TekpxqZUTubz0/dmO7MRFRNOCpAzDTTvvuk80kYIFJ3O5Chon7jwov
+         m3AbqOnMMdlKml9IUScTxVGTEu67BmGBij0GgTRWkEBvLTfYZh90A0AAKXIaQoQ77DLm
+         0P9/4fne15DsbmpNwPqg9fhMpbyP/QZ3AnATNrs0hG9GZeiGQn52Si45e2GXzY+IBGpi
+         Xlz7Tbq/1vw0Q8JvC5xySENWXkBVaiYF3iwwqfl2oH1PCPTUlLBMUGpHR+EIr6JdQ+Tj
+         m2VA==
+X-Gm-Message-State: AOJu0Yz3JDfPR5rC6cCiuNMSI3t7xKiTAJvFxyIc00BMitQYwjcwJbfP
+        1+sLV6cQ3MZ7PpbAiiRq6RRr95ov2+L4UnKLfencXg==
+X-Google-Smtp-Source: AGHT+IGG8SW/XcQazf2iyEQkOuHfNKXEzI1KvqtYFQzrb/U6iIkfOpKTu2rQXzzMQj1IPVHwiHZ0mg==
+X-Received: by 2002:a17:906:b88f:b0:a19:a1ba:bab7 with SMTP id hb15-20020a170906b88f00b00a19a1babab7mr5512ejb.93.1701367681837;
+        Thu, 30 Nov 2023 10:08:01 -0800 (PST)
+Received: from krzk-bin.. ([178.197.223.109])
+        by smtp.gmail.com with ESMTPSA id y16-20020a170906559000b009a1dbf55665sm926713ejp.161.2023.11.30.10.08.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Nov 2023 09:44:48 -0800 (PST)
-Message-ID: <393d82243b7f44731439717be82b20fbeda45c77.camel@redhat.com>
-Subject: Re: [PATCH v7 22/26] KVM: VMX: Set up interception for CET MSRs
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Yang Weijiang <weijiang.yang@intel.com>, seanjc@google.com,
-        pbonzini@redhat.com, dave.hansen@intel.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     peterz@infradead.org, chao.gao@intel.com,
-        rick.p.edgecombe@intel.com, john.allen@amd.com
-Date:   Thu, 30 Nov 2023 19:44:45 +0200
-In-Reply-To: <20231124055330.138870-23-weijiang.yang@intel.com>
-References: <20231124055330.138870-1-weijiang.yang@intel.com>
-         <20231124055330.138870-23-weijiang.yang@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Thu, 30 Nov 2023 10:08:01 -0800 (PST)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Banajit Goswami <bgoswami@quicinc.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v2 1/3] ASoC: qcom: audioreach: Commonize setting channel mappings
+Date:   Thu, 30 Nov 2023 19:07:56 +0100
+Message-Id: <20231130180758.212172-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-11-24 at 00:53 -0500, Yang Weijiang wrote:
-> Enable/disable CET MSRs interception per associated feature configuration.
-> Shadow Stack feature requires all CET MSRs passed through to guest to make
-> it supported in user and supervisor mode while IBT feature only depends on
-> MSR_IA32_{U,S}_CETS_CET to enable user and supervisor IBT.
-> 
-> Note, this MSR design introduced an architectural limitation of SHSTK and
-> IBT control for guest, i.e., when SHSTK is exposed, IBT is also available
-> to guest from architectual perspective since IBT relies on subset of SHSTK
-> relevant MSRs.
-> 
-> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
-> ---
->  arch/x86/kvm/vmx/vmx.c | 42 ++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 42 insertions(+)
-> 
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 554f665e59c3..e484333eddb0 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -699,6 +699,10 @@ static bool is_valid_passthrough_msr(u32 msr)
->  	case MSR_LBR_CORE_TO ... MSR_LBR_CORE_TO + 8:
->  		/* LBR MSRs. These are handled in vmx_update_intercept_for_lbr_msrs() */
->  		return true;
-> +	case MSR_IA32_U_CET:
-> +	case MSR_IA32_S_CET:
-> +	case MSR_IA32_PL0_SSP ... MSR_IA32_INT_SSP_TAB:
-> +		return true;
->  	}
->  
->  	r = possible_passthrough_msr_slot(msr) != -ENOENT;
-> @@ -7766,6 +7770,42 @@ static void update_intel_pt_cfg(struct kvm_vcpu *vcpu)
->  		vmx->pt_desc.ctl_bitmask &= ~(0xfULL << (32 + i * 4));
->  }
->  
-> +static void vmx_update_intercept_for_cet_msr(struct kvm_vcpu *vcpu)
-> +{
-> +	bool incpt;
-> +
-> +	if (kvm_cpu_cap_has(X86_FEATURE_SHSTK)) {
-> +		incpt = !guest_cpuid_has(vcpu, X86_FEATURE_SHSTK);
-> +
-> +		vmx_set_intercept_for_msr(vcpu, MSR_IA32_U_CET,
-> +					  MSR_TYPE_RW, incpt);
-> +		vmx_set_intercept_for_msr(vcpu, MSR_IA32_S_CET,
-> +					  MSR_TYPE_RW, incpt);
-> +		vmx_set_intercept_for_msr(vcpu, MSR_IA32_PL0_SSP,
-> +					  MSR_TYPE_RW, incpt);
-> +		vmx_set_intercept_for_msr(vcpu, MSR_IA32_PL1_SSP,
-> +					  MSR_TYPE_RW, incpt);
-> +		vmx_set_intercept_for_msr(vcpu, MSR_IA32_PL2_SSP,
-> +					  MSR_TYPE_RW, incpt);
-> +		vmx_set_intercept_for_msr(vcpu, MSR_IA32_PL3_SSP,
-> +					  MSR_TYPE_RW, incpt);
-> +		if (guest_cpuid_has(vcpu, X86_FEATURE_LM))
-> +			vmx_set_intercept_for_msr(vcpu, MSR_IA32_INT_SSP_TAB,
-> +						  MSR_TYPE_RW, incpt);
-> +		if (!incpt)
-> +			return;
-> +	}
-> +
-> +	if (kvm_cpu_cap_has(X86_FEATURE_IBT)) {
-> +		incpt = !guest_cpuid_has(vcpu, X86_FEATURE_IBT);
-> +
-> +		vmx_set_intercept_for_msr(vcpu, MSR_IA32_U_CET,
-> +					  MSR_TYPE_RW, incpt);
-> +		vmx_set_intercept_for_msr(vcpu, MSR_IA32_S_CET,
-> +					  MSR_TYPE_RW, incpt);
-> +	}
-> +}
-> +
->  static void vmx_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
->  {
->  	struct vcpu_vmx *vmx = to_vmx(vcpu);
-> @@ -7843,6 +7883,8 @@ static void vmx_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
->  
->  	/* Refresh #PF interception to account for MAXPHYADDR changes. */
->  	vmx_update_exception_bitmap(vcpu);
-> +
-> +	vmx_update_intercept_for_cet_msr(vcpu);
->  }
->  
->  static u64 vmx_get_perf_capabilities(void)
+Move code assigning channel mapping values to a common helper function.
+This simplifies three out of four cases, with the last case using
+incompatible type (uint16_t array instead of uint8_t array).
 
-My review feedback from the previous patch still applies as well,
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-I still think that we should either try a best effort approach to plug
-this virtualization hole, or we at least should fail guest creation
-if the virtualization hole is present as I said:
+---
 
-"Another, much simpler option is to fail the guest creation if the shadow stack + indirect branch tracking
-state differs between host and the guest, unless both are disabled in the guest.
-(in essence don't let the guest be created if (2) or (3) happen)"
+Changes in v2:
+1. New patch
+---
+ sound/soc/qcom/qdsp6/audioreach.c | 35 ++++++++++++++-----------------
+ 1 file changed, 16 insertions(+), 19 deletions(-)
 
-Please at least tell me what do you think about this.
-
-Best regards,
-	Maxim Levitsky
-
+diff --git a/sound/soc/qcom/qdsp6/audioreach.c b/sound/soc/qcom/qdsp6/audioreach.c
+index 5974c7929dd3..3db5ff367a29 100644
+--- a/sound/soc/qcom/qdsp6/audioreach.c
++++ b/sound/soc/qcom/qdsp6/audioreach.c
+@@ -267,6 +267,16 @@ void *audioreach_alloc_apm_cmd_pkt(int pkt_size, uint32_t opcode, uint32_t token
+ }
+ EXPORT_SYMBOL_GPL(audioreach_alloc_apm_cmd_pkt);
+ 
++static void audioreach_set_channel_mapping(u8 *ch_map, int num_channels)
++{
++	if (num_channels == 1) {
++		ch_map[0] =  PCM_CHANNEL_L;
++	} else if (num_channels == 2) {
++		ch_map[0] =  PCM_CHANNEL_L;
++		ch_map[1] =  PCM_CHANNEL_R;
++	}
++}
++
+ static void apm_populate_container_config(struct apm_container_obj *cfg,
+ 					  struct audioreach_container *cont)
+ {
+@@ -864,12 +874,8 @@ static int audioreach_set_compr_media_format(struct media_format *media_fmt_hdr,
+ 		mp3_cfg->endianness = PCM_LITTLE_ENDIAN;
+ 		mp3_cfg->num_channels = mcfg->num_channels;
+ 
+-		if (mcfg->num_channels == 1) {
+-			mp3_cfg->channel_mapping[0] =  PCM_CHANNEL_L;
+-		} else if (mcfg->num_channels == 2) {
+-			mp3_cfg->channel_mapping[0] =  PCM_CHANNEL_L;
+-			mp3_cfg->channel_mapping[1] =  PCM_CHANNEL_R;
+-		}
++		audioreach_set_channel_mapping(mp3_cfg->channel_mapping,
++					       mcfg->num_channels);
+ 		break;
+ 	case SND_AUDIOCODEC_AAC:
+ 		media_fmt_hdr->data_format = DATA_FORMAT_RAW_COMPRESSED;
+@@ -1089,13 +1095,8 @@ static int audioreach_pcm_set_media_format(struct q6apm_graph *graph,
+ 	media_cfg->q_factor = mcfg->bit_width - 1;
+ 	media_cfg->bits_per_sample = mcfg->bit_width;
+ 
+-	if (num_channels == 1) {
+-		media_cfg->channel_mapping[0] = PCM_CHANNEL_L;
+-	} else if (num_channels == 2) {
+-		media_cfg->channel_mapping[0] = PCM_CHANNEL_L;
+-		media_cfg->channel_mapping[1] = PCM_CHANNEL_R;
+-
+-	}
++	audioreach_set_channel_mapping(media_cfg->channel_mapping,
++				       num_channels);
+ 
+ 	rc = q6apm_send_cmd_sync(graph->apm, pkt, 0);
+ 
+@@ -1153,12 +1154,8 @@ static int audioreach_shmem_set_media_format(struct q6apm_graph *graph,
+ 		cfg->endianness = PCM_LITTLE_ENDIAN;
+ 		cfg->num_channels = mcfg->num_channels;
+ 
+-		if (mcfg->num_channels == 1)
+-			cfg->channel_mapping[0] =  PCM_CHANNEL_L;
+-		else if (num_channels == 2) {
+-			cfg->channel_mapping[0] =  PCM_CHANNEL_L;
+-			cfg->channel_mapping[1] =  PCM_CHANNEL_R;
+-		}
++		audioreach_set_channel_mapping(cfg->channel_mapping,
++					       num_channels);
+ 	} else {
+ 		rc = audioreach_set_compr_media_format(header, p, mcfg);
+ 		if (rc) {
+-- 
+2.34.1
 
