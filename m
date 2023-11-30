@@ -2,127 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA7437FE9E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 08:45:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8500B7FE9EB
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 08:49:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344694AbjK3HpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 02:45:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44886 "EHLO
+        id S229980AbjK3Htn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 02:49:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231743AbjK3HpB (ORCPT
+        with ESMTP id S229596AbjK3Htl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 02:45:01 -0500
-Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com [209.85.215.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30CF7D6C
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 23:45:06 -0800 (PST)
-Received: by mail-pg1-f200.google.com with SMTP id 41be03b00d2f7-5c5fe3b00f6so647051a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 23:45:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701330305; x=1701935105;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AvDVdklXpOO28r2h4hM/HbFeKnvYdtyejaI7kcvG/3Y=;
-        b=qZ58e+LTB3hr04BN+vv3XWwnrlqlUyLNBRXIztEidE4+zV/Kt+ujVIW+GzXm9ejlNJ
-         J4xLjSfDe9dSeHTqjXRnALbMu3X4KrmA04Wsj6IDS8ah8Uwid2YyZDpUUzqvGqG4g6vW
-         XyrzUxqWLc6VFLSHPdOXjbJPTswCjd23cDk6Kjld1IV2Rdooz3ESxVA2xYf5wp+28fTu
-         V+wdnHkZF0ZYqLPM16T2ICu0ZeKk3CCdkcTEPpHE7LZPUhdC7gDf3pq0EfJYrD5DOUQl
-         DqZbdCc6tukShdJiAzQXdNjBKweoaGR7W30aohw1obxCe9kw/xuGTTpuKRD92qdtGaA8
-         CIEw==
-X-Gm-Message-State: AOJu0YyEoxoKHZrcRZ9ZTrg7XCpLYEKg0fPVLqxN9Oq9mY0w3e0jXwk6
-        tDT+Rl5RvdQSLRsVnxgO66ipQAGH6/pnJ8t1Zy4qhDM6352fPP4=
-X-Google-Smtp-Source: AGHT+IF0DxaOnUA6efG+zkn0dRYM3rvuXN8AzplCWV2JW76tPQ2PYT/atIzSO3RqgWFDtssFVeB7pcPBYZzlR8LePyiOXP3/lhKi
+        Thu, 30 Nov 2023 02:49:41 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B71851A3;
+        Wed, 29 Nov 2023 23:49:47 -0800 (PST)
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AU5xK0R001015;
+        Thu, 30 Nov 2023 07:49:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=yvqvx5ZXXmbPnljimpZq97cMptAIaEhfTTf8X22A5pg=;
+ b=GEsXeYepRTbmwpkBhMFGn+VgdPZl+wE0EZhkJpBH1AWEuvnOfJhrJj0FyOjV0Pgq33xB
+ A00IVNSOObjV/X16ZN847ePk/Hv73C8f8uHMUCn4C5aCBrX/e4H1+qafzMuyzT4UDa/Y
+ mvQ1cpjMUU4vEFYMCWJPxzlREYWb93ZxBM5pBouOwxqYzcxtHy++f2acEoQSK5lFqkeV
+ TKgnlXO+Miizjdd788q6sNONooejyNhn8TPl+TNovf1ajyDYxAjXTSopaVsYP8M22U8u
+ HbflKwVC7E4O5J5LrTxDMdlxqwJGZc+FgBp05vONXLw7R9BP7TcxgBjUJLXoLCYgJLSw JQ== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3up4cfaqpa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 30 Nov 2023 07:49:10 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AU7n8Fs000544
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 30 Nov 2023 07:49:08 GMT
+Received: from [10.253.11.15] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 29 Nov
+ 2023 23:49:05 -0800
+Message-ID: <22a49deb-001d-4fa2-83e1-0fe6c7fe2a2e@quicinc.com>
+Date:   Thu, 30 Nov 2023 15:49:03 +0800
 MIME-Version: 1.0
-X-Received: by 2002:a63:e310:0:b0:5b9:63f2:e4cc with SMTP id
- f16-20020a63e310000000b005b963f2e4ccmr3477838pgh.2.1701330305575; Wed, 29 Nov
- 2023 23:45:05 -0800 (PST)
-Date:   Wed, 29 Nov 2023 23:45:05 -0800
-In-Reply-To: <20231130072806.1240587-1-lizhi.xu@windriver.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000826f8f060b59d4ea@google.com>
-Subject: Re: [syzbot] [exfat?] INFO: task hung in exfat_write_inode
-From:   syzbot <syzbot+2f73ed585f115e98aee8@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org, lizhi.xu@windriver.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 06/10] scsi: ufs: ufs-qcom: Set initial PHY gear to max
+ HS gear for HW ver 4 and newer
+Content-Language: en-US
+To:     Manivannan Sadhasivam <mani@kernel.org>
+CC:     <bvanassche@acm.org>, <adrian.hunter@intel.com>,
+        <cmd4@qualcomm.com>, <beanhuo@micron.com>, <avri.altman@wdc.com>,
+        <junwoo80.lee@samsung.com>, <martin.petersen@oracle.com>,
+        <linux-scsi@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1701246516-11626-1-git-send-email-quic_cang@quicinc.com>
+ <1701246516-11626-7-git-send-email-quic_cang@quicinc.com>
+ <20231130064757.GF3043@thinkpad>
+From:   Can Guo <quic_cang@quicinc.com>
+In-Reply-To: <20231130064757.GF3043@thinkpad>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: NFwkfCEgPSvr7K-s6BB-UAXSrKYY2Mt9
+X-Proofpoint-ORIG-GUID: NFwkfCEgPSvr7K-s6BB-UAXSrKYY2Mt9
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-30_05,2023-11-29_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
+ malwarescore=0 impostorscore=0 bulkscore=0 suspectscore=0 mlxlogscore=999
+ clxscore=1015 phishscore=0 priorityscore=1501 spamscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
+ definitions=main-2311300056
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-WARNING: bad unlock balance in __exfat_truncate
-
-=====================================
-WARNING: bad unlock balance detected!
-6.1.0-syzkaller-11044-gf9ff5644bcc0-dirty #0 Not tainted
--------------------------------------
-syz-executor.1/5525 is trying to release lock (&sbi->s_lock) at:
-[<ffffffff8247908a>] __exfat_truncate+0x45a/0x7f0 fs/exfat/file.c:163
-but there are no more locks to release!
-
-other info that might help us debug this:
-4 locks held by syz-executor.1/5525:
- #0: ffff88802a1e4460 (sb_writers#14){.+.+}-{0:0}, at: do_renameat2+0x3eb/0xd20 fs/namei.c:4866
- #1: ffff88802a1e4748 (&type->s_vfs_rename_key#2){+.+.}-{3:3}, at: lock_rename+0x58/0x280 fs/namei.c:2994
- #2: ffff88806489b970 (&sb->s_type->i_mutex_key#21/1){+.+.}-{3:3}, at: inode_lock_nested include/linux/fs.h:791 [inline]
- #2: ffff88806489b970 (&sb->s_type->i_mutex_key#21/1){+.+.}-{3:3}, at: lock_rename+0xa4/0x280 fs/namei.c:2998
- #3: ffff88806489d9b0 (&sb->s_type->i_mutex_key#21/2){+.+.}-{3:3}, at: inode_lock_nested include/linux/fs.h:791 [inline]
- #3: ffff88806489d9b0 (&sb->s_type->i_mutex_key#21/2){+.+.}-{3:3}, at: lock_rename+0xd8/0x280 fs/namei.c:2999
-
-stack backtrace:
-CPU: 1 PID: 5525 Comm: syz-executor.1 Not tainted 6.1.0-syzkaller-11044-gf9ff5644bcc0-dirty #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x100/0x178 lib/dump_stack.c:106
- print_unlock_imbalance_bug include/trace/events/lock.h:69 [inline]
- __lock_release kernel/locking/lockdep.c:5345 [inline]
- lock_release.cold+0x49/0x4e kernel/locking/lockdep.c:5688
- __mutex_unlock_slowpath+0xa3/0x640 kernel/locking/mutex.c:907
- __exfat_truncate+0x45a/0x7f0 fs/exfat/file.c:163
- exfat_evict_inode+0x263/0x340 fs/exfat/inode.c:624
- evict+0x2ed/0x6b0 fs/inode.c:664
- iput_final fs/inode.c:1747 [inline]
- iput.part.0+0x5ea/0x8c0 fs/inode.c:1773
- iput+0x5c/0x80 fs/inode.c:1763
- dentry_unlink_inode+0x292/0x430 fs/dcache.c:401
- __dentry_kill+0x3b8/0x640 fs/dcache.c:607
- dentry_kill fs/dcache.c:745 [inline]
- dput+0x6aa/0xf70 fs/dcache.c:913
- do_renameat2+0x46a/0xd20 fs/namei.c:4932
- __do_sys_rename fs/namei.c:4976 [inline]
- __se_sys_rename fs/namei.c:4974 [inline]
- __x64_sys_rename+0x81/0xa0 fs/namei.c:4974
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f464c67cb29
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f464361e0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000052
-RAX: ffffffffffffffda RBX: 00007f464c79c050 RCX: 00007f464c67cb29
-RDX: 0000000000000000 RSI: 0000000020000080 RDI: 0000000020000040
-RBP: 00007f464c6c847a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000006e R14: 00007f464c79c050 R15: 00007ffd9781fcc8
- </TASK>
 
 
-Tested on:
+On 11/30/2023 2:47 PM, Manivannan Sadhasivam wrote:
+> On Wed, Nov 29, 2023 at 12:28:31AM -0800, Can Guo wrote:
+>> Since HW ver 4, max HS gear can be get from UFS host controller's register,
+>> use the max HS gear as the initial PHY gear instead of UFS_HS_G2, so that
+>> we don't need to update the hard code for newer targets in future.
+>>
+>> Signed-off-by: Can Guo <quic_cang@quicinc.com>
+> 
+> One comment below. With that addressed,
+> 
+> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> 
+>> ---
+>>   drivers/ufs/host/ufs-qcom.c | 21 +++++++++++++++------
+>>   1 file changed, 15 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
+>> index aca6199..30f4ca6 100644
+>> --- a/drivers/ufs/host/ufs-qcom.c
+>> +++ b/drivers/ufs/host/ufs-qcom.c
+>> @@ -1060,6 +1060,20 @@ static void ufs_qcom_advertise_quirks(struct ufs_hba *hba)
+>>   		hba->quirks |= UFSHCD_QUIRK_REINIT_AFTER_MAX_GEAR_SWITCH;
+>>   }
+>>   
+>> +static void ufs_qcom_set_phy_gear(struct ufs_qcom_host *host)
+>> +{
+>> +	struct ufs_host_params *host_params = &host->host_params;
+>> +
+>> +	host->phy_gear = host_params->hs_tx_gear;
+>> +
+>> +	/*
+>> +	 * Power up the PHY using the minimum supported gear (UFS_HS_G2).
+>> +	 * Switching to max gear will be performed during reinit if supported.
+> 
+> As I mentioned in v5, you need to reword this comment to make it clear we are
+> setting G2 only for platforms < v4. Something like below:
+> 
+> "For controllers whose major version is < 4, power up the PHY using minimum
+> supported gear (UFS_HS_G2). Switching to max gear will be performed during
+> reinit if supported. For newer controllers (>= 4), PHY will be powered up using
+> max supported gear."
 
-commit:         f9ff5644 Merge tag 'hsi-for-6.2' of git://git.kernel.o..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=1140c364e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1bf08f50e8fff9ad
-dashboard link: https://syzkaller.appspot.com/bug?extid=2f73ed585f115e98aee8
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=12aa5254e80000
+Sorry that I missed this one, will add in next version.
 
+Thanks,
+Can Guo.
+
+> 
+> - Mani
+> 
+>> +	 */
+>> +	if (host->hw_ver.major < 0x4)
+>> +		host->phy_gear = UFS_HS_G2;
+>> +}
+>> +
+>>   static void ufs_qcom_set_host_params(struct ufs_hba *hba)
+>>   {
+>>   	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
+>> @@ -1296,6 +1310,7 @@ static int ufs_qcom_init(struct ufs_hba *hba)
+>>   	ufs_qcom_set_caps(hba);
+>>   	ufs_qcom_advertise_quirks(hba);
+>>   	ufs_qcom_set_host_params(hba);
+>> +	ufs_qcom_set_phy_gear(host);
+>>   
+>>   	err = ufs_qcom_ice_init(host);
+>>   	if (err)
+>> @@ -1313,12 +1328,6 @@ static int ufs_qcom_init(struct ufs_hba *hba)
+>>   		dev_warn(dev, "%s: failed to configure the testbus %d\n",
+>>   				__func__, err);
+>>   
+>> -	/*
+>> -	 * Power up the PHY using the minimum supported gear (UFS_HS_G2).
+>> -	 * Switching to max gear will be performed during reinit if supported.
+>> -	 */
+>> -	host->phy_gear = UFS_HS_G2;
+>> -
+>>   	return 0;
+>>   
+>>   out_variant_clear:
+>> -- 
+>> 2.7.4
+>>
+>>
+> 
