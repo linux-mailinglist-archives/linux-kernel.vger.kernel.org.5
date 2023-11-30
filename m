@@ -2,222 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9D847FF6AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 17:46:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AFBD7FF6B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 17:46:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345658AbjK3QqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 11:46:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45678 "EHLO
+        id S235193AbjK3QqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 11:46:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345536AbjK3QqI (ORCPT
+        with ESMTP id S235186AbjK3QqS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 11:46:08 -0500
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D496D10DF;
-        Thu, 30 Nov 2023 08:46:13 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.18.186.231])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Sh25S5Wz5z6K5lf;
-        Fri,  1 Dec 2023 00:41:32 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-        by mail.maildlp.com (Postfix) with ESMTPS id 8C3F214058E;
-        Fri,  1 Dec 2023 00:46:11 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 30 Nov
- 2023 16:46:10 +0000
-Date:   Thu, 30 Nov 2023 16:46:09 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-CC:     James Morse <james.morse@arm.com>, <linux-pm@vger.kernel.org>,
-        <loongarch@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
-        <linux-arch@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-riscv@lists.infradead.org>, <kvmarm@lists.linux.dev>,
-        <x86@kernel.org>, Salil Mehta <salil.mehta@huawei.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        <jianyong.wu@arm.com>, <justin.he@arm.com>,
-        <gregkh@linuxfoundation.org>
-Subject: Re: [RFC PATCH v2 11/35] arch_topology: Make
- register_cpu_capacity_sysctl() tolerant to late CPUs
-Message-ID: <20231130164609.00000b4a@Huawei.com>
-In-Reply-To: <ZTKEQz0DJuv/tqNH@shell.armlinux.org.uk>
-References: <20230913163823.7880-1-james.morse@arm.com>
-        <20230913163823.7880-12-james.morse@arm.com>
-        <20230914130126.000069db@Huawei.com>
-        <ZTKEQz0DJuv/tqNH@shell.armlinux.org.uk>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Thu, 30 Nov 2023 11:46:18 -0500
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 393F910E4
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 08:46:24 -0800 (PST)
+Received: by mail-qv1-xf2b.google.com with SMTP id 6a1803df08f44-67a3f1374bdso6531466d6.2
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 08:46:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701362783; x=1701967583; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=kjHz7y8FdABfzePSYWvG3C7LR0AsyMP0bJ41uTORMXU=;
+        b=q4CuJY2cIM/u1JfDIjIKi03c4r3KcjRzIjZ8Zgnkf6wPkHSciSG4iludWQAjzmB7Lc
+         ggeZaVPPNJ0Lse0yjBMqv/oMn59kUc7wcS3kZ80kS0+aclPP6lA7ivkY21KAtub87HzZ
+         wTrUhaJPx+XI1Ip0+9SWjMsiITUmMCfCAVKRmizHq6ANLyafDFl/SYUDMK7KasdHXhuw
+         wybWDc8W22CQ7PFqeaoKMDRNetF7W46uFTX8hyBjQoxtfXlb0hA2oieiknW9OVwH62mk
+         Ts2LfQZPk/IYH0fplV23MTXxRx3hTTLMRbG3NGIE+FA0KbVWyQsQs1al0jm4zPNkih8G
+         2p2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701362783; x=1701967583;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=kjHz7y8FdABfzePSYWvG3C7LR0AsyMP0bJ41uTORMXU=;
+        b=aV4Xs8SoOa05QBrANMtKSbsEN4QXf8lTm1O3NH4qifmZx+vQEyXVyjWdIsF/R5E58y
+         Ylv9GNGbIgCkfiRDz8pQhY+xu4Fgli/ND8FrC0lp4I8runhivZmqPMYImJrdAmWcJ1Qp
+         TkAcY5pjh10NIYS4ycQFhIPa3DAQKXS2mswn56tY1667baVRBRo417WQDPpgJj2Q9xQt
+         wNzwnTAh3wybmAkZIWL7SVciPZh0IigVVomosSx/Tn7ylVpXbmhiSi/ZPyHREC6qDXuA
+         AKBIU6Sss0hdA6ZN9Gs+DKrQGJ5KXe2qMqmMVWM4H37pQloYadRMooxnC4UW0NgL+xkU
+         /pGw==
+X-Gm-Message-State: AOJu0YyZCrda3FbUdcaRUopBzZBSuWOjn/3MRMfy4e59UW6b4tAYVoiC
+        Q1yTbaqrjfF4Ee6VJ+LqHwyx
+X-Google-Smtp-Source: AGHT+IGr+FYWyq9x/hJmkOaCYSyPqI1d2GXxR9QhDtHyNIh5/ut2psmnppxw1XpPHzUoptuB8eT7og==
+X-Received: by 2002:a05:6214:cce:b0:67a:1580:d7c3 with SMTP id 14-20020a0562140cce00b0067a1580d7c3mr35231818qvx.58.1701362783244;
+        Thu, 30 Nov 2023 08:46:23 -0800 (PST)
+Received: from thinkpad ([117.213.102.92])
+        by smtp.gmail.com with ESMTPSA id h29-20020a0cab1d000000b0067a2a0b44ddsm650581qvb.44.2023.11.30.08.46.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Nov 2023 08:46:22 -0800 (PST)
+Date:   Thu, 30 Nov 2023 22:16:12 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Frank Li <Frank.Li@nxp.com>
+Cc:     bhelgaas@google.com, imx@lists.linux.dev, kw@linux.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        lpieralisi@kernel.org, minghuan.Lian@nxp.com, mingkai.hu@nxp.com,
+        robh@kernel.org, roy.zang@nxp.com
+Subject: Re: [PATCH v4 3/4] PCI: layerscape: Rename pf_* as pf_lut_*
+Message-ID: <20231130164612.GU3043@thinkpad>
+References: <20231129214412.327633-1-Frank.Li@nxp.com>
+ <20231129214412.327633-4-Frank.Li@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml100005.china.huawei.com (7.191.160.25) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231129214412.327633-4-Frank.Li@nxp.com>
+X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 20 Oct 2023 14:44:35 +0100
-"Russell King (Oracle)" <linux@armlinux.org.uk> wrote:
-
-> On Thu, Sep 14, 2023 at 01:01:26PM +0100, Jonathan Cameron wrote:
-> > On Wed, 13 Sep 2023 16:37:59 +0000
-> > James Morse <james.morse@arm.com> wrote:
-> >   
-> > > register_cpu_capacity_sysctl() adds a property to sysfs that describes
-> > > the CPUs capacity. This is done from a subsys_initcall() that assumes
-> > > all possible CPUs are registered.
-> > > 
-> > > With CPU hotplug, possible CPUs aren't registered until they become
-> > > present, (or for arm64 enabled). This leads to messages during boot:
-> > > | register_cpu_capacity_sysctl: too early to get CPU1 device!
-> > > and once these CPUs are added to the system, the file is missing.
-> > > 
-> > > Move this to a cpuhp callback, so that the file is created once
-> > > CPUs are brought online. This covers CPUs that are added late by
-> > > mechanisms like hotplug.
-> > > One observable difference is the file is now missing for offline CPUs.
-> > > 
-> > > Signed-off-by: James Morse <james.morse@arm.com>
-> > > ---
-> > > If the offline CPUs thing is a problem for the tools that consume
-> > > this value, we'd need to move cpu_capacity to be part of cpu.c's
-> > > common_cpu_attr_groups.  
-> > 
-> > I think we should do that anyway and then use an is_visible() if we want to
-> > change whether it is visible in offline cpus.
-> > 
-> > Dynamic sysfs file creation is horrible - particularly when done
-> > from an totally different file from where the rest of the attributes
-> > are registered.  I'm curious what the history behind that is.
-> > 
-> > Whilst here, why is there a common_cpu_attr_groups which is
-> > identical to the hotpluggable_cpu_attr_groups in base/cpu.c?  
+On Wed, Nov 29, 2023 at 04:44:11PM -0500, Frank Li wrote:
+> 'pf' and 'lut' is just difference name in difference chips, but basic it is
+> a MMIO base address plus an offset.
 > 
-> Looking into doing this, the easy bit is adding the attribute group
-> with an appropriate .is_visible dependent on cpu_present(), but we
-> need to be able to call sysfs_update_groups() when the state of the
-> .is_visible() changes.
-Hi Russell,
-
-Sorry, somehow I missed this completely until you referred back to it :(
-
-This is pretty much what I was thinking so thanks for doing it.
-
+> Rename it to avoid duplicate pf_* and lut_* in driver.
 > 
-> Given the comment in sysfs_update_groups() about "if an error occurs",
-> rather than making this part of common_cpu_attr_groups, would it be
-> better that it's part of its own set of groups, thus limiting the
-> damage from a possible error? I suspect, however, that any error at
-> that point means that the system is rather fatally wounded.
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+
+Can you fix the name in pci-layerscape-ep.c also?
+
+- Mani
+
+> ---
 > 
-> This is what I have so far to implement your idea, less the necessary
-> sysfs_update_groups() call when we need to change the visibility of
-> the attributes.
-
-Fwiw (and I think you shouldn't add this to the critical path for your
-main series for obvious reasons), I think you are right that it makes
-sense to do this in a separate group, but that if we were going to see
-an error I'd 'hope' we shouldn't see anything that hasn't occurred
-when groups were originally added. Maybe that's overly optimistic.
-
-Sorry again for lack of reply before now and thanks for pointing this
-out.  I'd love to see this posted after the ARM vCPU HP stuff is in.
-
-Jonathan
-
-
+> Notes:
+>     pf_lut is better than pf_* or lut* because some chip use 'pf', some chip
+>     use 'lut'.
+>     
+>     change from v1 to v4
+>     - new patch at v3
 > 
-> diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
-> index 9ccb7daee78e..06c9fc6620d2 100644
-> --- a/drivers/base/arch_topology.c
-> +++ b/drivers/base/arch_topology.c
-> @@ -215,43 +215,24 @@ static ssize_t cpu_capacity_show(struct device *dev,
->  	return sysfs_emit(buf, "%lu\n", topology_get_cpu_scale(cpu->dev.id));
+>  drivers/pci/controller/dwc/pci-layerscape.c | 34 ++++++++++-----------
+>  1 file changed, 17 insertions(+), 17 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/pci-layerscape.c b/drivers/pci/controller/dwc/pci-layerscape.c
+> index 42bca2c3b5c3e..590e07bb27002 100644
+> --- a/drivers/pci/controller/dwc/pci-layerscape.c
+> +++ b/drivers/pci/controller/dwc/pci-layerscape.c
+> @@ -44,7 +44,7 @@
+>  #define PCIE_IATU_NUM		6
+>  
+>  struct ls_pcie_drvdata {
+> -	const u32 pf_off;
+> +	const u32 pf_lut_off;
+>  	const struct dw_pcie_host_ops *ops;
+>  	int (*exit_from_l2)(struct dw_pcie_rp *pp);
+>  	bool scfg_support;
+> @@ -54,13 +54,13 @@ struct ls_pcie_drvdata {
+>  struct ls_pcie {
+>  	struct dw_pcie *pci;
+>  	const struct ls_pcie_drvdata *drvdata;
+> -	void __iomem *pf_base;
+> +	void __iomem *pf_lut_base;
+>  	struct regmap *scfg;
+>  	int index;
+>  	bool big_endian;
+>  };
+>  
+> -#define ls_pcie_pf_readl_addr(addr)	ls_pcie_pf_readl(pcie, addr)
+> +#define ls_pcie_pf_lut_readl_addr(addr)	ls_pcie_pf_lut_readl(pcie, addr)
+>  #define to_ls_pcie(x)	dev_get_drvdata((x)->dev)
+>  
+>  static bool ls_pcie_is_bridge(struct ls_pcie *pcie)
+> @@ -101,20 +101,20 @@ static void ls_pcie_fix_error_response(struct ls_pcie *pcie)
+>  	iowrite32(PCIE_ABSERR_SETTING, pci->dbi_base + PCIE_ABSERR);
 >  }
 >  
-> -static void update_topology_flags_workfn(struct work_struct *work);
-> -static DECLARE_WORK(update_topology_flags_work, update_topology_flags_workfn);
-> -
->  static DEVICE_ATTR_RO(cpu_capacity);
->  
-> -static int cpu_capacity_sysctl_add(unsigned int cpu)
-> -{
-> -	struct device *cpu_dev = get_cpu_device(cpu);
-> -
-> -	if (!cpu_dev)
-> -		return -ENOENT;
-> -
-> -	device_create_file(cpu_dev, &dev_attr_cpu_capacity);
-> -
-> -	return 0;
-> -}
-> -
-> -static int cpu_capacity_sysctl_remove(unsigned int cpu)
-> +static umode_t cpu_present_attrs_visible(struct kobject *kobi,
-> +					 struct attribute *attr, int index)
+> -static u32 ls_pcie_pf_readl(struct ls_pcie *pcie, u32 off)
+> +static u32 ls_pcie_pf_lut_readl(struct ls_pcie *pcie, u32 off)
 >  {
-> -	struct device *cpu_dev = get_cpu_device(cpu);
-> -
-> -	if (!cpu_dev)
-> -		return -ENOENT;
-> -
-> -	device_remove_file(cpu_dev, &dev_attr_cpu_capacity);
-> +	struct device *dev = kobj_to_dev(kobj);
-> +	struct cpu *cpu = container_of(dev, struct cpu, dev);
+>  	if (pcie->big_endian)
+> -		return ioread32be(pcie->pf_base + off);
+> +		return ioread32be(pcie->pf_lut_base + off);
 >  
-> -	return 0;
-> +	return cpu_present(cpu->dev.id) ? attr->mode : 0;
+> -	return ioread32(pcie->pf_base + off);
+> +	return ioread32(pcie->pf_lut_base + off);
 >  }
 >  
-> -static int register_cpu_capacity_sysctl(void)
-> -{
-> -	cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "topology/cpu-capacity",
-> -			  cpu_capacity_sysctl_add, cpu_capacity_sysctl_remove);
-> +const struct attribute_group cpu_capacity_attr_group = {
-> +	.is_visible = cpu_present_attrs_visible,
-> +	.attrs = cpu_capacity_attrs
-> +};
+> -static void ls_pcie_pf_writel(struct ls_pcie *pcie, u32 off, u32 val)
+> +static void ls_pcie_pf_lut_writel(struct ls_pcie *pcie, u32 off, u32 val)
+>  {
+>  	if (pcie->big_endian)
+> -		iowrite32be(val, pcie->pf_base + off);
+> +		iowrite32be(val, pcie->pf_lut_base + off);
+>  	else
+> -		iowrite32(val, pcie->pf_base + off);
+> +		iowrite32(val, pcie->pf_lut_base + off);
+>  }
 >  
-> -	return 0;
-> -}
-> -subsys_initcall(register_cpu_capacity_sysctl);
-> +static void update_topology_flags_workfn(struct work_struct *work);
-> +static DECLARE_WORK(update_topology_flags_work, update_topology_flags_workfn);
+>  static void ls_pcie_send_turnoff_msg(struct dw_pcie_rp *pp)
+> @@ -124,11 +124,11 @@ static void ls_pcie_send_turnoff_msg(struct dw_pcie_rp *pp)
+>  	u32 val;
+>  	int ret;
 >  
->  static int update_topology;
+> -	val = ls_pcie_pf_readl(pcie, LS_PCIE_PF_MCR);
+> +	val = ls_pcie_pf_lut_readl(pcie, LS_PCIE_PF_MCR);
+>  	val |= PF_MCR_PTOMR;
+> -	ls_pcie_pf_writel(pcie, LS_PCIE_PF_MCR, val);
+> +	ls_pcie_pf_lut_writel(pcie, LS_PCIE_PF_MCR, val);
 >  
-> diff --git a/drivers/base/cpu.c b/drivers/base/cpu.c
-> index a19a8be93102..954b045705c2 100644
-> --- a/drivers/base/cpu.c
-> +++ b/drivers/base/cpu.c
-> @@ -192,6 +192,9 @@ static const struct attribute_group crash_note_cpu_attr_group = {
->  static const struct attribute_group *common_cpu_attr_groups[] = {
->  #ifdef CONFIG_KEXEC
->  	&crash_note_cpu_attr_group,
-> +#endif
-> +#ifdef CONFIG_GENERIC_ARCH_TOPOLOGY
-> +	&cpu_capacity_attr_group,
->  #endif
->  	NULL
+> -	ret = readx_poll_timeout(ls_pcie_pf_readl_addr, LS_PCIE_PF_MCR,
+> +	ret = readx_poll_timeout(ls_pcie_pf_lut_readl_addr, LS_PCIE_PF_MCR,
+>  				 val, !(val & PF_MCR_PTOMR),
+>  				 PCIE_PME_TO_L2_TIMEOUT_US/10,
+>  				 PCIE_PME_TO_L2_TIMEOUT_US);
+> @@ -147,15 +147,15 @@ static int ls_pcie_exit_from_l2(struct dw_pcie_rp *pp)
+>  	 * Set PF_MCR_EXL2S bit in LS_PCIE_PF_MCR register for the link
+>  	 * to exit L2 state.
+>  	 */
+> -	val = ls_pcie_pf_readl(pcie, LS_PCIE_PF_MCR);
+> +	val = ls_pcie_pf_lut_readl(pcie, LS_PCIE_PF_MCR);
+>  	val |= PF_MCR_EXL2S;
+> -	ls_pcie_pf_writel(pcie, LS_PCIE_PF_MCR, val);
+> +	ls_pcie_pf_lut_writel(pcie, LS_PCIE_PF_MCR, val);
+>  
+>  	/*
+>  	 * L2 exit timeout of 10ms is not defined in the specifications,
+>  	 * it was chosen based on empirical observations.
+>  	 */
+> -	ret = readx_poll_timeout(ls_pcie_pf_readl_addr, LS_PCIE_PF_MCR,
+> +	ret = readx_poll_timeout(ls_pcie_pf_lut_readl_addr, LS_PCIE_PF_MCR,
+>  				 val, !(val & PF_MCR_EXL2S),
+>  				 1000,
+>  				 10000);
+> @@ -243,7 +243,7 @@ static const struct ls_pcie_drvdata ls1021a_drvdata = {
 >  };
-> diff --git a/include/linux/cpu.h b/include/linux/cpu.h
-> index e117c06e0c6b..745ad21e3dc8 100644
-> --- a/include/linux/cpu.h
-> +++ b/include/linux/cpu.h
-> @@ -30,6 +30,8 @@ struct cpu {
->  	struct device dev;
->  };
 >  
-> +extern const struct attribute_group cpu_capacity_attr_group;
-> +
->  extern void boot_cpu_init(void);
->  extern void boot_cpu_hotplug_init(void);
->  extern void cpu_init(void);
+>  static const struct ls_pcie_drvdata layerscape_drvdata = {
+> -	.pf_off = 0xc0000,
+> +	.pf_lut_off = 0xc0000,
+>  	.pm_support = true,
+>  	.exit_from_l2 = ls_pcie_exit_from_l2,
+>  };
+> @@ -293,7 +293,7 @@ static int ls_pcie_probe(struct platform_device *pdev)
+>  
+>  	pcie->big_endian = of_property_read_bool(dev->of_node, "big-endian");
+>  
+> -	pcie->pf_base = pci->dbi_base + pcie->drvdata->pf_off;
+> +	pcie->pf_lut_base = pci->dbi_base + pcie->drvdata->pf_lut_off;
+>  
+>  	if (pcie->drvdata->scfg_support) {
+>  		pcie->scfg = syscon_regmap_lookup_by_phandle(dev->of_node, "fsl,pcie-scfg");
+> -- 
+> 2.34.1
 > 
 
+-- 
+மணிவண்ணன் சதாசிவம்
