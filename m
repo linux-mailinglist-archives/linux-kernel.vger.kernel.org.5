@@ -2,118 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 346E47FE61A
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 02:36:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C9597FE644
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 02:38:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231582AbjK3Bgh convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 29 Nov 2023 20:36:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43628 "EHLO
+        id S1344011AbjK3Bit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 20:38:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229658AbjK3Bgf (ORCPT
+        with ESMTP id S229658AbjK3Bis (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 20:36:35 -0500
-Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D0FA1A3;
-        Wed, 29 Nov 2023 17:36:42 -0800 (PST)
-Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-2855b566683so1308749a91.1;
-        Wed, 29 Nov 2023 17:36:42 -0800 (PST)
+        Wed, 29 Nov 2023 20:38:48 -0500
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D291C198
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 17:38:54 -0800 (PST)
+Received: by mail-pg1-x54a.google.com with SMTP id 41be03b00d2f7-5be154fe98bso1691061a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 17:38:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701308334; x=1701913134; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=91kgiS9Jgc7V4foMf6RxYX634vn5hfsz4EzI3W+cTWo=;
+        b=nuX6GuDgAyIz/iTr6+ZvGbSvO6SMeBtIi1T5FFYoAcLp/y0aULeI+Vo8fyldfZYytn
+         glK2kwcUTvsv/YVyMeJx17/K76zaYKHPP0Aq2R4Lj31IZnC6VUZLzEB+9e20j0wzGuXE
+         uLlyJx1lf3A6khFG40UyfoyPZpMrQnQQJwUpp+oxj3Jx5Ui2wDa1QwTiVqXle6cLLZJX
+         CHIU8LMhumrw0uiB5JcCDItGN/UyOw+BMuG8CP2TCbBnwPXIQ3AkmtzuBaP2T+OmHBzA
+         W5pqY30cyfk5KM8wyu4APKQq6qZ0gEfgG9XdCECN13apSQUHj8Tfk5nsxifq/2g8bAbj
+         iogQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701308202; x=1701913002;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=K8Oujw9Wuea/rLA/FjXFwS/JqnACIhUyo3AE9Vp7Fp0=;
-        b=quep10pAqKXRwAtzIGV8/Y4BZrXi3EnhrJuw4AXSqOYkasFoHH8ajyxBZE/82tGnoq
-         PfOFLXBJl9dtJnMInVqpvfc1sLosEysIWBSX1/Ibw+3oZYTbwNvAt773DE6NA2XkYJkr
-         aHU6inj9rW+GswttrtqGQk4/5oiSmFzMLAA9xiJhnMk23C9Ka0WNGlPqHsto1w5jqsLs
-         Jrz+RNcN1DDTRsHATkRZLjBeJ1B0tjkG1AVXUFSL+H6T+ijdLfw+a7OyIeJcP6ym1wKb
-         fyPkC2NnMuWS7PT5sbWqIuRuCGOsNtlnCHuXxQmSkmnKUYf+V13/1SA9omT80+7ixoXT
-         AaxQ==
-X-Gm-Message-State: AOJu0Yz7BDrsbP+5Dx8sQa/FqrIfhRgCBqN0IdtxZOadFUR8FgSYwjUi
-        mv9oyOgqBRRUwGMavjDdw42ZjaTyQkmW+rFBVoI=
-X-Google-Smtp-Source: AGHT+IGmBilxx7ubLW+U28vwEfq8129RPjWdJyK6scOuINLWU3ZnciHvQAwFWNhhA4mrVdDgkXToefdQuzINYdOQkWY=
-X-Received: by 2002:a17:90b:1d09:b0:281:d84:a97e with SMTP id
- on9-20020a17090b1d0900b002810d84a97emr29201239pjb.2.1701308201546; Wed, 29
- Nov 2023 17:36:41 -0800 (PST)
-MIME-Version: 1.0
-References: <20231127220902.1315692-1-irogers@google.com> <20231127220902.1315692-5-irogers@google.com>
-In-Reply-To: <20231127220902.1315692-5-irogers@google.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Wed, 29 Nov 2023 17:36:30 -0800
-Message-ID: <CAM9d7cgMwBX2F5gVNB0OqNunbGLXniXqgcAve29P7f5C-i+BhQ@mail.gmail.com>
-Subject: Re: [PATCH v5 04/50] tools api fs: Switch filename__read_str to use io.h
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Nick Terrell <terrelln@fb.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        "Steinar H. Gunderson" <sesse@google.com>,
-        Liam Howlett <liam.howlett@oracle.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Colin Ian King <colin.i.king@gmail.com>,
-        Dmitrii Dolgov <9erthalion6@gmail.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Ming Wang <wangming01@loongson.cn>,
-        James Clark <james.clark@arm.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        German Gomez <german.gomez@arm.com>,
-        Changbin Du <changbin.du@huawei.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, Li Dong <lidong@vivo.com>,
-        Sandipan Das <sandipan.das@amd.com>,
-        liuwenyu <liuwenyu7@huawei.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
-        Guilherme Amadio <amadio@gentoo.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1701308334; x=1701913134;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=91kgiS9Jgc7V4foMf6RxYX634vn5hfsz4EzI3W+cTWo=;
+        b=KNvhBT4Za/xJ/Wn4CLlxqqX2wI6l3brXtDdIkppi8JTZ+nLhSCdARCBONnbCJKRh/A
+         Pcge3UtP2dFzgmnjCPzM5vpJvjGuHmAnddHdutkjVXalHaqXrlyLxVH1Ncx4Dcc8T6dI
+         6nniddPbQtcx3hzoY7ATohGeoPxel9xnmh7gFqWMFw8ayNf91mqvS8T9fH2urWFHafsI
+         PYeO92jbtdJBIW87ktxwqNHzJ6JThNvp6eJoMd6g2U2UxQGJ2zWI0t593+YFcaD65PFL
+         HpSlz9nNhccoWxsaTfbs2MoVfnMvq4oKoktPf/s3/qKtU79uRuRITjZhq5LCPopAyPJ4
+         RlwA==
+X-Gm-Message-State: AOJu0YzQzpVtYq1s8VFW6lk0pQdZLGQqZBU678ghdu1+kaQH+PRPbops
+        5yLSzJxG7KVcxx0at3itgAphg9Zx2c0=
+X-Google-Smtp-Source: AGHT+IHqBZdQMIJiW1i3yuviz3YDYA+PL7MJ4JYi8vfwzPkJ3zkNWNdLJVW06CEFNlmCV6zclnL/NgvK92I=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:90b:1a8c:b0:285:b3a1:3943 with SMTP id
+ ng12-20020a17090b1a8c00b00285b3a13943mr3509774pjb.3.1701308334357; Wed, 29
+ Nov 2023 17:38:54 -0800 (PST)
+Date:   Wed, 29 Nov 2023 17:38:52 -0800
+In-Reply-To: <20231025152406.1879274-11-vkuznets@redhat.com>
+Mime-Version: 1.0
+References: <20231025152406.1879274-1-vkuznets@redhat.com> <20231025152406.1879274-11-vkuznets@redhat.com>
+Message-ID: <ZWfnrLyLUS2_viVS@google.com>
+Subject: Re: [PATCH 10/14] KVM: x86: Make Hyper-V emulation optional
+From:   Sean Christopherson <seanjc@google.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 27, 2023 at 2:09 PM Ian Rogers <irogers@google.com> wrote:
->
-> filename__read_str has its own string reading code that allocates
-> memory before reading into it. The memory allocated is sized at BUFSIZ
-> that is 8kb. Most strings are short and so most of this 8kb is
-> wasted.
->
-> Refactor io__getline, as io__getdelim, so that the newline character
-> can be configurable and ignored in the case of filename__read_str.
->
-> Code like build_caches_for_cpu in perf's header.c will read many
-> strings and hold them in a data structure, in this case multiple
-> strings per cache level per CPU. Using io.h's io__getline avoids the
-> wasted memory as strings are temporarily read into a buffer on the
-> stack before being copied to a buffer that grows 128 bytes at a time
-> and is never sized larger than the string.
->
-> For a 16 hyperthread system the memory consumption of "perf record
-> true" is reduced by 180kb, primarily through saving memory when
-> reading the cache information.
->
-> Signed-off-by: Ian Rogers <irogers@google.com>
+On Wed, Oct 25, 2023, Vitaly Kuznetsov wrote:
+> @@ -1570,6 +1572,7 @@ static void copy_vmcs12_to_shadow(struct vcpu_vmx *vmx)
+>  	vmcs_load(vmx->loaded_vmcs->vmcs);
+>  }
+>  
+> +#ifdef CONFIG_KVM_HYPERV
+>  static void copy_enlightened_to_vmcs12(struct vcpu_vmx *vmx, u32 hv_clean_fields)
+>  {
+>  	struct vmcs12 *vmcs12 = vmx->nested.cached_vmcs12;
+> @@ -2077,6 +2080,10 @@ static enum nested_evmptrld_status nested_vmx_handle_enlightened_vmptrld(
+>  
+>  	return EVMPTRLD_SUCCEEDED;
+>  }
+> +#else /* CONFIG_KVM_HYPERV */
+> +static inline void copy_enlightened_to_vmcs12(struct vcpu_vmx *vmx, u32 hv_clean_fields) {}
+> +static inline void copy_vmcs12_to_enlightened(struct vcpu_vmx *vmx) {}
 
-Acked-by: Namhyung Kim <namhyung@kernel.org>
+I'm not sure I love the stubs in .c code.  What if we instead throw the #ifdef
+inside the helper, and then add a KVM_BUG_ON() in the CONFIG_KVM_HYPERV=n path?
 
-Thanks,
-Namhyung
+> +#endif /* CONFIG_KVM_HYPERV */
+>  
+>  void nested_sync_vmcs12_to_shadow(struct kvm_vcpu *vcpu)
+>  {
+> @@ -3155,6 +3162,7 @@ static int nested_vmx_check_vmentry_hw(struct kvm_vcpu *vcpu)
+>  	return 0;
+>  }
+>  
+> +#ifdef CONFIG_KVM_HYPERV
+>  static bool nested_get_evmcs_page(struct kvm_vcpu *vcpu)
+>  {
+>  	struct vcpu_vmx *vmx = to_vmx(vcpu);
+> @@ -3182,6 +3190,9 @@ static bool nested_get_evmcs_page(struct kvm_vcpu *vcpu)
+>  
+>  	return true;
+>  }
+> +#else
+> +static bool nested_get_evmcs_page(struct kvm_vcpu *vcpu) { return true; }
+> +#endif
+
+And this one seems like it could be cleaner to just #ifdef the callers.
