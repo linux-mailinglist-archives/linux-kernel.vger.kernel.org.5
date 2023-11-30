@@ -2,63 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1E6D7FEF7F
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 13:49:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46E347FEF81
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 13:49:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345370AbjK3MtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 07:49:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52276 "EHLO
+        id S1345390AbjK3Mth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 07:49:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231970AbjK3MtP (ORCPT
+        with ESMTP id S232054AbjK3Mte (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 07:49:15 -0500
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12C6810C2
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 04:49:22 -0800 (PST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id C132040E0239;
-        Thu, 30 Nov 2023 12:49:19 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id kGKO4CzjoTx3; Thu, 30 Nov 2023 12:49:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1701348557; bh=0V+gpDULSlHvbaa1wy5kknuoNyhtcWb+gEj8aeU5IjA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Cgw8rmXRswxoehbF+/EBHe7s+ax/h97tIB6Zq7KJIh/3eLQtEpgZwXVPFRwZeBdB4
-         Ta9fqoJ3ZRKZrp7mQCplT0F7ldeVAFVTViWzpWJgUR1hVEQhb+RL0ZTRzYuO+jji0c
-         MAm5oxidwkl/KZ/BYnM4Jx7/lUivZOdEl/JoDa4D10Mm0PLGYIkEl0Ql1Waff/9aQP
-         tN8etuI1mONEoOqWYdNpxFeq/m0lxZV8hRUK481NOTz16OlTd71MnpTlwKEKDfizWR
-         nWsgCeAFdC4hjXwjV3PB52o+2rvjxLD1P7JZtDOy4Eds6cNlAy0Tpgu9gDdglamWvj
-         xeSOPsqFTxi2MRUXJ8jP3nRG8dy3gE1oXeb7S9pFeB6CokLHFzHgMj0ybV2StvZy8r
-         6f9NauOvemLNguJYNdTGPmPqynHWNwq665nbo4f/z1lXGs/nIaEaSMcyUNxhh9FChp
-         dvfimUVDmDEgPs8lQokZQJZi60d4917LCPVn6F4Tq62q4Prb/I2LVYNnb04MQQaPni
-         gbg3eodQuwlv6PK4acei3Kyr7D97GTkIaTNSO3x2+lnI6SGcmF9gBuRwatpwkFG2Vb
-         1GxjhDytx6CknAHdeKpnPkaRwr6pXR0GiSLT7hvT1LL+oxPbTYwqG/oUnXZ+d3phfU
-         ZEfGTnxCiifC1u5DNkf+P+4M=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 856E940E0030;
-        Thu, 30 Nov 2023 12:49:14 +0000 (UTC)
-Date:   Thu, 30 Nov 2023 13:49:09 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH] x86/Kconfig: Disable KASLR on debug builds
-Message-ID: <20231130124909.GEZWiExTP4J1pjNxPq@fat_crate.local>
-References: <20231130120552.6735-1-bp@alien8.de>
- <20231130120831.GB20153@noisy.programming.kicks-ass.net>
+        Thu, 30 Nov 2023 07:49:34 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AC0D10DB
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 04:49:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701348580;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=EnBEPg3GHi1Q+xUTeF0QPxeBJXMhNl/wGhqix5nD240=;
+        b=CkdoPy5tMWP0pnmjtxrXRDCGMhFnXqa77y6W1vnokyWxB4upNAiJLVK0ULzUXu2jOmlr8V
+        tO6ZaRV3+DxOMq05gmmuWVczwVvy0bs0LiBFTPXRhorV5zJ0Ya5SRmpVKsRIG1lusMsJuU
+        /5RsNCtCCVytq9WQ0lM2fKU5XEBCtWU=
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
+ [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-74-7xXarwpUOeik9TGIivarEw-1; Thu, 30 Nov 2023 07:49:39 -0500
+X-MC-Unique: 7xXarwpUOeik9TGIivarEw-1
+Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-50bc433c9ccso1028178e87.0
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 04:49:38 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701348577; x=1701953377;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EnBEPg3GHi1Q+xUTeF0QPxeBJXMhNl/wGhqix5nD240=;
+        b=VZebsKbhUmho1qcgkYanZbZPJ8vrZctLZp27vlAk7QD/MgoDTvNcrRGI9bXtPteRr4
+         Tdmt8StJdRPCAFLCZTWJF2ZRYxbVWM3WOLhYzyHaisfi1fB8YF7YwVgqVv8luGQOteD0
+         C2UAJrKl2f3xOOyzICYL6T9YS5b1EJpRzCFd3E0PufXhYrkfxMKAMoZMn2W+QQCleYa8
+         RRy4Febg3QGgBSnIPEtoae7IWDrSNUGlBvOzmvoXWK2NFWYxRif7NRagCHKER5DFPnLL
+         lnJbnPiOQHFDwHzqj2fghFP5s7R11Yr5sL6DJRo9XuXU82B1L6ggzrwv0UJoNwTBKkPB
+         hKnQ==
+X-Gm-Message-State: AOJu0YwHrXVBG4uA40SDQ1VYMbf+1btUeebynbCEBVVDwVwBKxNDd8iB
+        pHtpjmwb3ZnLa87sC5bvpUS8GBKnOeMiuiQh6WpfuzCD6tjbX5MNgXRMYFYgfJ7uHYQlyU20bwv
+        v6FVw2oDmnhnzztbtem9qru7+
+X-Received: by 2002:ac2:44ba:0:b0:50b:ca71:4129 with SMTP id c26-20020ac244ba000000b0050bca714129mr1389907lfm.58.1701348577355;
+        Thu, 30 Nov 2023 04:49:37 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGz5VuDRF3qSzNNkHYw5OfrBg9j+9t8BoZjOCfVF5tg+RVdeWrUxPX0uBR3Vcs37p9k5XosKw==
+X-Received: by 2002:ac2:44ba:0:b0:50b:ca71:4129 with SMTP id c26-20020ac244ba000000b0050bca714129mr1389861lfm.58.1701348576878;
+        Thu, 30 Nov 2023 04:49:36 -0800 (PST)
+Received: from ?IPV6:2a09:80c0:192:0:5dac:bf3d:c41:c3e7? ([2a09:80c0:192:0:5dac:bf3d:c41:c3e7])
+        by smtp.gmail.com with ESMTPSA id bd22-20020a05600c1f1600b004090798d29csm1977198wmb.15.2023.11.30.04.49.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Nov 2023 04:49:36 -0800 (PST)
+Message-ID: <4e7a4054-092c-4e34-ae00-0105d7c9343c@redhat.com>
+Date:   Thu, 30 Nov 2023 13:49:34 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231130120831.GB20153@noisy.programming.kicks-ass.net>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC v2 19/27] mm: mprotect: Introduce PAGE_FAULT_ON_ACCESS
+ for mprotect(PROT_MTE)
+Content-Language: en-US
+To:     Alexandru Elisei <alexandru.elisei@arm.com>,
+        Hyesoo Yu <hyesoo.yu@samsung.com>
+Cc:     catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev,
+        maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com,
+        yuzenghui@huawei.com, arnd@arndb.de, akpm@linux-foundation.org,
+        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com, mhiramat@kernel.org,
+        rppt@kernel.org, hughd@google.com, pcc@google.com,
+        steven.price@arm.com, anshuman.khandual@arm.com,
+        vincenzo.frascino@arm.com, eugenis@google.com, kcc@google.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        linux-trace-kernel@vger.kernel.org
+References: <20231119165721.9849-1-alexandru.elisei@arm.com>
+ <CGME20231119165921epcas2p3dce0532847d59a9c3973b4e41102e27d@epcas2p3.samsung.com>
+ <20231119165721.9849-20-alexandru.elisei@arm.com>
+ <20231129092725.GD2988384@tiffany> <ZWh6vl8DfXQbKo9O@raptor>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ xsFNBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
+ dBrn+lhhOYjjNefFQou6478faXE6o2AhmebqT4KiQoUQFV4R7y1KMEKoSyy8hQaK1umALTdL
+ QZLQMzNE74ap+GDK0wnacPQFpcG1AE9RMq3aeErY5tujekBS32jfC/7AnH7I0v1v1TbbK3Gp
+ XNeiN4QroO+5qaSr0ID2sz5jtBLRb15RMre27E1ImpaIv2Jw8NJgW0k/D1RyKCwaTsgRdwuK
+ Kx/Y91XuSBdz0uOyU/S8kM1+ag0wvsGlpBVxRR/xw/E8M7TEwuCZQArqqTCmkG6HGcXFT0V9
+ PXFNNgV5jXMQRwU0O/ztJIQqsE5LsUomE//bLwzj9IVsaQpKDqW6TAPjcdBDPLHvriq7kGjt
+ WhVhdl0qEYB8lkBEU7V2Yb+SYhmhpDrti9Fq1EsmhiHSkxJcGREoMK/63r9WLZYI3+4W2rAc
+ UucZa4OT27U5ZISjNg3Ev0rxU5UH2/pT4wJCfxwocmqaRr6UYmrtZmND89X0KigoFD/XSeVv
+ jwBRNjPAubK9/k5NoRrYqztM9W6sJqrH8+UWZ1Idd/DdmogJh0gNC0+N42Za9yBRURfIdKSb
+ B3JfpUqcWwE7vUaYrHG1nw54pLUoPG6sAA7Mehl3nd4pZUALHwARAQABzSREYXZpZCBIaWxk
+ ZW5icmFuZCA8ZGF2aWRAcmVkaGF0LmNvbT7CwZgEEwEIAEICGwMGCwkIBwMCBhUIAgkKCwQW
+ AgMBAh4BAheAAhkBFiEEG9nKrXNcTDpGDfzKTd4Q9wD/g1oFAl8Ox4kFCRKpKXgACgkQTd4Q
+ 9wD/g1oHcA//a6Tj7SBNjFNM1iNhWUo1lxAja0lpSodSnB2g4FCZ4R61SBR4l/psBL73xktp
+ rDHrx4aSpwkRP6Epu6mLvhlfjmkRG4OynJ5HG1gfv7RJJfnUdUM1z5kdS8JBrOhMJS2c/gPf
+ wv1TGRq2XdMPnfY2o0CxRqpcLkx4vBODvJGl2mQyJF/gPepdDfcT8/PY9BJ7FL6Hrq1gnAo4
+ 3Iv9qV0JiT2wmZciNyYQhmA1V6dyTRiQ4YAc31zOo2IM+xisPzeSHgw3ONY/XhYvfZ9r7W1l
+ pNQdc2G+o4Di9NPFHQQhDw3YTRR1opJaTlRDzxYxzU6ZnUUBghxt9cwUWTpfCktkMZiPSDGd
+ KgQBjnweV2jw9UOTxjb4LXqDjmSNkjDdQUOU69jGMUXgihvo4zhYcMX8F5gWdRtMR7DzW/YE
+ BgVcyxNkMIXoY1aYj6npHYiNQesQlqjU6azjbH70/SXKM5tNRplgW8TNprMDuntdvV9wNkFs
+ 9TyM02V5aWxFfI42+aivc4KEw69SE9KXwC7FSf5wXzuTot97N9Phj/Z3+jx443jo2NR34XgF
+ 89cct7wJMjOF7bBefo0fPPZQuIma0Zym71cP61OP/i11ahNye6HGKfxGCOcs5wW9kRQEk8P9
+ M/k2wt3mt/fCQnuP/mWutNPt95w9wSsUyATLmtNrwccz63XOwU0EVcufkQEQAOfX3n0g0fZz
+ Bgm/S2zF/kxQKCEKP8ID+Vz8sy2GpDvveBq4H2Y34XWsT1zLJdvqPI4af4ZSMxuerWjXbVWb
+ T6d4odQIG0fKx4F8NccDqbgHeZRNajXeeJ3R7gAzvWvQNLz4piHrO/B4tf8svmRBL0ZB5P5A
+ 2uhdwLU3NZuK22zpNn4is87BPWF8HhY0L5fafgDMOqnf4guJVJPYNPhUFzXUbPqOKOkL8ojk
+ CXxkOFHAbjstSK5Ca3fKquY3rdX3DNo+EL7FvAiw1mUtS+5GeYE+RMnDCsVFm/C7kY8c2d0G
+ NWkB9pJM5+mnIoFNxy7YBcldYATVeOHoY4LyaUWNnAvFYWp08dHWfZo9WCiJMuTfgtH9tc75
+ 7QanMVdPt6fDK8UUXIBLQ2TWr/sQKE9xtFuEmoQGlE1l6bGaDnnMLcYu+Asp3kDT0w4zYGsx
+ 5r6XQVRH4+5N6eHZiaeYtFOujp5n+pjBaQK7wUUjDilPQ5QMzIuCL4YjVoylWiBNknvQWBXS
+ lQCWmavOT9sttGQXdPCC5ynI+1ymZC1ORZKANLnRAb0NH/UCzcsstw2TAkFnMEbo9Zu9w7Kv
+ AxBQXWeXhJI9XQssfrf4Gusdqx8nPEpfOqCtbbwJMATbHyqLt7/oz/5deGuwxgb65pWIzufa
+ N7eop7uh+6bezi+rugUI+w6DABEBAAHCwXwEGAEIACYCGwwWIQQb2cqtc1xMOkYN/MpN3hD3
+ AP+DWgUCXw7HsgUJEqkpoQAKCRBN3hD3AP+DWrrpD/4qS3dyVRxDcDHIlmguXjC1Q5tZTwNB
+ boaBTPHSy/Nksu0eY7x6HfQJ3xajVH32Ms6t1trDQmPx2iP5+7iDsb7OKAb5eOS8h+BEBDeq
+ 3ecsQDv0fFJOA9ag5O3LLNk+3x3q7e0uo06XMaY7UHS341ozXUUI7wC7iKfoUTv03iO9El5f
+ XpNMx/YrIMduZ2+nd9Di7o5+KIwlb2mAB9sTNHdMrXesX8eBL6T9b+MZJk+mZuPxKNVfEQMQ
+ a5SxUEADIPQTPNvBewdeI80yeOCrN+Zzwy/Mrx9EPeu59Y5vSJOx/z6OUImD/GhX7Xvkt3kq
+ Er5KTrJz3++B6SH9pum9PuoE/k+nntJkNMmQpR4MCBaV/J9gIOPGodDKnjdng+mXliF3Ptu6
+ 3oxc2RCyGzTlxyMwuc2U5Q7KtUNTdDe8T0uE+9b8BLMVQDDfJjqY0VVqSUwImzTDLX9S4g/8
+ kC4HRcclk8hpyhY2jKGluZO0awwTIMgVEzmTyBphDg/Gx7dZU1Xf8HFuE+UZ5UDHDTnwgv7E
+ th6RC9+WrhDNspZ9fJjKWRbveQgUFCpe1sa77LAw+XFrKmBHXp9ZVIe90RMe2tRL06BGiRZr
+ jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <ZWh6vl8DfXQbKo9O@raptor>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,30 +144,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 30, 2023 at 01:08:31PM +0100, Peter Zijlstra wrote:
-> Works for me, but I have "nokaslr no_hash_pointers" on all my machines
-> by now. It goes right along with "debug ignore_loglevel
-> sysrq_always_enabled earlyprintk=serial,ttyS0,115200" :-)
+>>> +
+>>> +out_retry:
+>>> +	put_page(page);
+>>> +	if (vmf->flags & FAULT_FLAG_VMA_LOCK)
+>>> +		vma_end_read(vma);
+>>> +	if (fault_flag_allow_retry_first(vmf->flags)) {
+>>> +		err = VM_FAULT_RETRY;
+>>> +	} else {
+>>> +		/* Replay the fault. */
+>>> +		err = 0;
+>>
+>> Hello!
+>>
+>> Unfortunately, if the page continues to be pinned, it seems like fault will continue to occur.
+>> I guess it makes system stability issue. (but I'm not familiar with that, so please let me know if I'm mistaken!)
+>>
+>> How about migrating the page when migration problem repeats.
+> 
+> Yes, I had the same though in the previous iteration of the series, the
+> page was migrated out of the VMA if tag storage couldn't be reserved.
+> 
+> Only short term pins are allowed on MIGRATE_CMA pages, so I expect that the
+> pin will be released before the fault is replayed. Because of this, and
+> because it makes the code simpler, I chose not to migrate the page if tag
+> storage couldn't be reserved.
 
-Bah, there's cmdline switches. Lemme add them to all my scripts starting
-guests and grub too. Thanks for the hint!
+There are still some cases that are theoretically problematic: 
+vmsplice() can pin pages forever and doesn't use FOLL_LONGTERM yet.
 
-I guess we could still do the Kconfig dependency when we're on new
-machines, without the scripts.
-
-Btw, I'm not the only one who's walked right into this one:
-
-config KCOV
-        bool "Code coverage for fuzzing"
-
-	...
-
-          If RANDOMIZE_BASE is enabled, PC values will not be stable across
-          different machines and across reboots. If you need stable PC values,
-          disable RANDOMIZE_BASE.
+All these things also affect other users that rely on movability (e.g., 
+CMA, memory hotunplug).
 
 -- 
-Regards/Gruss,
-    Boris.
+Cheers,
 
-https://people.kernel.org/tglx/notes-about-netiquette
+David / dhildenb
+
