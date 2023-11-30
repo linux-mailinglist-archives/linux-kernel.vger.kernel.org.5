@@ -2,57 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 620AC7FF401
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 16:53:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD10E7FF402
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 16:54:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346422AbjK3Px3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 10:53:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54372 "EHLO
+        id S1346428AbjK3PyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 10:54:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235209AbjK3Px2 (ORCPT
+        with ESMTP id S1346411AbjK3PyG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 10:53:28 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DE7910D1
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 07:53:33 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FE8DC433C8;
-        Thu, 30 Nov 2023 15:53:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701359612;
-        bh=HrIeUu7V7smPbz53czTMhVOKIhnJX6FObsHMqEgNuww=;
+        Thu, 30 Nov 2023 10:54:06 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8B0B10D0;
+        Thu, 30 Nov 2023 07:54:11 -0800 (PST)
+Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id DEE1489D;
+        Thu, 30 Nov 2023 16:53:31 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1701359612;
+        bh=NmKT9aIjebdgY3EDWpUbTKENWW9j1zh38cDwsp1VpD0=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KWTJmj6guoUZxaxt6RIJl4h1DsBIWv/7g3q4qKBMb15RXr7Fs2wvfEKnOK6rG16nX
-         45OdwoH02duq0uGWs4bJbWEbkn8b8uzmW2JBSlzD6PR7V0Aa0o4BcJfbzkNI78j/FT
-         cdfn/nZ2ARojwYf1WZp4ntPp3BEbjki/RMmFrqLL4em0VcmrE5P+5nvoFZpJr96uay
-         oVrbrQ5PqGT8qFz1JX+VGFNsgks2ojGh9/pZC+cnKGaostTf9zZS5xpMK33ptqx4Vr
-         8Ky45g5pqU2uS6pd5Zjx7EZbgwXCQhdNxJs/77t8TVniEHmU2Bfk0J4hlErV5Ap1sg
-         SugTdBq1JUJ4g==
-Date:   Thu, 30 Nov 2023 15:53:27 +0000
-From:   Conor Dooley <conor@kernel.org>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        marius.cristea@microchip.com, lars@metafoo.de, robh+dt@kernel.org,
-        jdelvare@suse.com, linux@roeck-us.net, linux-hwmon@vger.kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] dt-bindings: iio: adc: adding support for PAC193X
-Message-ID: <20231130-obedient-pointer-6b4470a85c63@spud>
-References: <20231115134453.6656-1-marius.cristea@microchip.com>
- <20231115134453.6656-2-marius.cristea@microchip.com>
- <fedd4bcf-7892-4096-bcca-7ea72d39576f@linaro.org>
- <20231116-channel-variety-cc7c262924ad@squawk>
- <20231125194754.304523e6@jic23-huawei>
- <20231126-nineteen-clumsy-701ac4145ba8@spud>
- <20231126160438.01ff57d7@jic23-huawei>
+        b=H/UyJrHB4E1mb96H7irt2Npff6AWHPyufrZKb5RonThvFux1ZsDx8xyKrD0yIlNMx
+         W1lI6k6tVz4DTmM5eEtKPc9Onwv0vXrkv68G5ksgvhdYaLT0UPeY3DEwyioIaZhruI
+         ohVq+v0Izp+JSozv9TlACD8MfUrbeZPVXhVOLheo=
+Date:   Thu, 30 Nov 2023 17:54:14 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Alexander Stein <alexander.stein@ew.tq-group.com>
+Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        Paul Elder <paul.elder@ideasonboard.com>,
+        kieran.bingham@ideasonboard.com, tomi.valkeinen@ideasonboard.com,
+        umang.jain@ideasonboard.com, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Tim Harvey <tharvey@gateworks.com>,
+        Philippe Schenker <philippe.schenker@toradex.com>,
+        Marek Vasut <marex@denx.de>,
+        Gregor Herburger <gregor.herburger@ew.tq-group.com>,
+        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH 2/2] arm64: dts: imx8mp: Add overlays for ISP instances
+Message-ID: <20231130155414.GT8402@pendragon.ideasonboard.com>
+References: <20231129093113.255161-1-paul.elder@ideasonboard.com>
+ <5734628.DvuYhMxLoT@steina-w>
+ <20231130142048.GR8402@pendragon.ideasonboard.com>
+ <1874751.tdWV9SEqCh@steina-w>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="oP7sV86AVSwt1W+s"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231126160438.01ff57d7@jic23-huawei>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <1874751.tdWV9SEqCh@steina-w>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,133 +67,217 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Nov 30, 2023 at 04:34:11PM +0100, Alexander Stein wrote:
+> Am Donnerstag, 30. November 2023, 15:20:48 CET schrieb Laurent Pinchart:
+> > On Thu, Nov 30, 2023 at 10:51:22AM +0100, Alexander Stein wrote:
+> > > Am Mittwoch, 29. November 2023, 16:16:37 CET schrieb Laurent Pinchart:
+> > > > On Wed, Nov 29, 2023 at 11:20:07AM +0100, Alexander Stein wrote:
+> > > > > Am Mittwoch, 29. November 2023, 10:31:13 CET schrieb Paul Elder:
+> > > > > > From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> > > > > > 
+> > > > > > Add two overlay to enable each ISP instance. The ISP is wired
+> > > > > > directly
+> > > > > > to the CSIS for now, bypassing the ISI completely.
+> > > > > 
+> > > > > I'm not sure if this is worth adding in a separate overlay.
+> > > > 
+> > > > The trouble is that, at this point, selection between the ISP and the
+> > > > ISI can only be performed through DT :-S That's why this is implemented
+> > > > as an overlay.
+> > > 
+> > > I feel a better place would be the overlay which actually adds the sensor.
+> > > This knows best whether ISI or ISP should be used.
+> > 
+> > Any sensor could be used with either the ISI or the ISP, so I don't
+> > think the camera module overlay would be the best place for this. Unless
+> > you want to duplicate all camera module overlays, with an ISI version
+> > and an ISP version :-)
+> 
+> True, that's a really good argument for having these small overlays.
+> But how to deal with dtc warnings?
+> > imx8mp-isp1.dtbo: Warning (graph_port): /fragment@2: graph port node name 
+> should be 'port'
+> > imx8mp-isp1.dtso:34.17-36.3: Warning (graph_endpoint): /fragment@2/
+> __overlay__: graph endpoint node name should be 'endpoint'
+> > imx8mp-isp1.dtso:34.17-36.3: Warning (graph_endpoint): /fragment@2/
+> __overlay__: graph connection to node '/fragment@1/__overlay__/ports/port@1/
+> endpoint' is not bidirectional
 
---oP7sV86AVSwt1W+s
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+See below :-)
 
-On Sun, Nov 26, 2023 at 04:04:38PM +0000, Jonathan Cameron wrote:
-> On Sun, 26 Nov 2023 11:24:56 +0000
-> Conor Dooley <conor@kernel.org> wrote:
-> > On Sat, Nov 25, 2023 at 07:47:54PM +0000, Jonathan Cameron wrote:
-> > > On Thu, 16 Nov 2023 18:21:33 +0000
-> > > Conor Dooley <conor@kernel.org> wrote: =20
-> > > > On Thu, Nov 16, 2023 at 04:01:43PM +0100, Krzysztof Kozlowski wrote=
-: =20
-> > > > > On 15/11/2023 14:44, marius.cristea@microchip.com wrote:   =20
-> > > > > > From: Marius Cristea <marius.cristea@microchip.com> =20
-> > > > > > +patternProperties:
-> > > > > > +  "^channel@[1-4]+$":
-> > > > > > +    type: object
-> > > > > > +    $ref: adc.yaml
-> > > > > > +    description: Represents the external channels which are co=
-nnected to the ADC.
+> But for the small overlay itself:
+> Tested-by: Alexander Stein <alexander.stein@ew.tq-group.com>
+> 
+> > > > > > Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> > > > > > Signed-off-by: Paul Elder <paul.elder@ideasonboard.com>
+> > > > > > ---
+> > > > > > 
+> > > > > >  arch/arm64/boot/dts/freescale/Makefile        |  2 ++
+> > > > > >  .../arm64/boot/dts/freescale/imx8mp-isp1.dtso | 36 +++++++++++++++++++
+> > > > > >  .../arm64/boot/dts/freescale/imx8mp-isp2.dtso | 36 +++++++++++++++++++
+> > > > > >  3 files changed, 74 insertions(+)
+> > > > > >  create mode 100644 arch/arm64/boot/dts/freescale/imx8mp-isp1.dtso
+> > > > > >  create mode 100644 arch/arm64/boot/dts/freescale/imx8mp-isp2.dtso
+> > > > > > 
+> > > > > > diff --git a/arch/arm64/boot/dts/freescale/Makefile
+> > > > > > b/arch/arm64/boot/dts/freescale/Makefile index
+> > > > > > 300049037eb0..f97dfac11189
+> > > > > > 100644
+> > > > > > --- a/arch/arm64/boot/dts/freescale/Makefile
+> > > > > > +++ b/arch/arm64/boot/dts/freescale/Makefile
+> > > > > > @@ -113,6 +113,8 @@ dtb-$(CONFIG_ARCH_MXC) += imx8mp-dhcom-pdk2.dtb
+> > > > > > 
+> > > > > >  dtb-$(CONFIG_ARCH_MXC) += imx8mp-dhcom-pdk3.dtb
+> > > > > >  dtb-$(CONFIG_ARCH_MXC) += imx8mp-evk.dtb
+> > > > > >  dtb-$(CONFIG_ARCH_MXC) += imx8mp-icore-mx8mp-edimm2.2.dtb
+> > > > > > 
+> > > > > > +dtb-$(CONFIG_ARCH_MXC) += imx8mp-isp1.dtbo
+> > > > > > +dtb-$(CONFIG_ARCH_MXC) += imx8mp-isp2.dtbo
+
+Overlays need to be validated in the context of a base DT on which they
+apply. For instance, in the same Makefile, we have
+
+--------
+dtb-$(CONFIG_ARCH_MXC) += imx8mm-tqma8mqml-mba8mx.dtb
+...
+imx8mm-tqma8mqml-mba8mx-lvds-tm070jvhg33-dtbs += imx8mm-tqma8mqml-mba8mx.dtb imx8mm-tqma8mqml-mba8mx-lvds-tm070jvhg33.dtbo
+dtb-$(CONFIG_ARCH_MXC) += imx8mm-tqma8mqml-mba8mx-lvds-tm070jvhg33.dtb
+--------
+
+imx8mm-tqma8mqml-mba8mx.dts is the base board DT, and
+imx8mm-tqma8mqml-mba8mx-lvds-tm070jvhg33.dtso the overlay. As far as I
+understand, when compiling dtbs, the build system will compile
+imx8mm-tqma8mqml-mba8mx.dtb and
+imx8mm-tqma8mqml-mba8mx-lvds-tm070jvhg33-dtb. To create the latter, it
+will compile imx8mm-tqma8mqml-mba8mx-lvds-tm070jvhg33.dtbo and apply it
+to imx8mm-tqma8mqml-mba8mx.dtb. Then, it will validate the DTBs
+specified as part of dtb-$(CONFIG_ARCH_MXC), which are
+imx8mm-tqma8mqml-mba8mx.dtb standlone, and through
+imx8mm-tqma8mqml-mba8mx-lvds-tm070jvhg33-dtbs
+imx8mm-tqma8mqml-mba8mx.dtb with the overlay applied.
+
+TL;DR: a v2 of this patch should fix the Makefile, and be compile-tested
+with make dtbs.
+
+Rob, Conor or Krzysztof can correct me if I'm wrong.
+
+> > > > > > 
+> > > > > >  dtb-$(CONFIG_ARCH_MXC) += imx8mp-msc-sm2s-ep1.dtb
+> > > > > >  dtb-$(CONFIG_ARCH_MXC) += imx8mp-phyboard-pollux-rdk.dtb
+> > > > > >  dtb-$(CONFIG_ARCH_MXC) += imx8mp-tqma8mpql-mba8mpxl.dtb
+> > > > > > 
+> > > > > > diff --git a/arch/arm64/boot/dts/freescale/imx8mp-isp1.dtso
+> > > > > > b/arch/arm64/boot/dts/freescale/imx8mp-isp1.dtso new file mode
+> > > > > > 100644
+> > > > > > index 000000000000..cf394ed224ab
+> > > > > > --- /dev/null
+> > > > > > +++ b/arch/arm64/boot/dts/freescale/imx8mp-isp1.dtso
+> > > > > > @@ -0,0 +1,36 @@
+> > > > > > +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> > > > > > +/*
+> > > > > > + * Copyright 2022 Ideas on Board Oy
+> > > > > > + */
 > > > > > > +
-> > > > > > +    properties:
-> > > > > > +      reg:
-> > > > > > +        items:
-> > > > > > +          minimum: 1
-> > > > > > +          maximum: 4
+> > > > > > +/dts-v1/;
+> > > > > > +/plugin/;
 > > > > > > +
-> > > > > > +      shunt-resistor-micro-ohms:
-> > > > > > +        description: |
-> > > > > > +          Value in micro Ohms of the shunt resistor connected =
-between
-> > > > > > +          the SENSE+ and SENSE- inputs, across which the curre=
-nt is measured. Value
-> > > > > > +          is needed to compute the scaling of the measured cur=
-rent.
+> > > > > > +#include <dt-bindings/media/video-interfaces.h>
 > > > > > > +
-> > > > > > +    required:
-> > > > > > +      - reg
-> > > > > > +      - shunt-resistor-micro-ohms
+> > > > > > +&isi_0 {
+> > > > > > +	status = "disabled";
+> > > > > 
+> > > > > ISI is disabled by default. What is your intention here?
+> > > > 
+> > > > It could be enabled by an overlay for a camera module. Ideally we want
+> > > > to be able to enable both the ISI and ISP at runtime, but that's not
+> > > > possible yet and will require a very large amount of work.
+> > > 
+> > > Again IMHO this is part of sensor setup, in a very specific overlay. To
+> > > put it into different words: I barely see the gain of this small overlay.
+> > > 
+> > > Runtime switching would require a combined media controller including both
+> > > ISI and ISP, no?
+> > 
+> > Correct, that's the hard part.
+> > 
 > > > > > > +
-> > > > > > +    unevaluatedProperties: false
+> > > > > > +	ports {
+> > > > > > +		port@0 {
+> > > > > > +			/delete-node/ endpoint;
+> > > > > 
+> > > > > This doesn't work in overlays. See [1]. Otherwise the OF graph
+> > > > > connections
+> > > > > look fine to me. I'm using the same in my local overlay.
+> > > > 
+> > > > Interesting, I wasn't aware of that. Maybe we should fix it :-)
+> > > > 
+> > > > > [1] https://lore.kernel.org/all/CAMuHMdWu4KZbBkvEofUV2wuA1g2S=XHHM3RUN1cNrcZBkhsPZA@mail.gmail.com/
+> > > > > 
+> > > > > > +		};
+> > > > > > +	};
+> > > > > > +};
 > > > > > > +
-> > > > > > +required:
-> > > > > > +  - compatible
-> > > > > > +  - reg
-> > > > > > +  - "#address-cells"
-> > > > > > +  - "#size-cells"
+> > > > > > +&isp_0 {
+> > > > > > +	status = "okay";
 > > > > > > +
-> > > > > > +allOf:
-> > > > > > +  - if:
-> > > > > > +      properties:
-> > > > > > +        compatible:
-> > > > > > +          contains:
-> > > > > > +            const: interrupts   =20
-> > > > >=20
-> > > > >=20
-> > > > > I don't understand what do you want to say here. I am also 100% s=
-ure you
-> > > > > did not test it on a real case (maybe example passes but nothing =
-more).   =20
-> > > >=20
-> > > > As far as I understand, the same pin on the device is used for both=
- an
-> > > > output or an input depending on the configuration. As an input, it =
-is
-> > > > the "slow-io" control, and as an output it is an interrupt.
-> > > > I think Marius is trying to convey that either this pin can be in
-> > > > exclusively one state or another.
-> > > >=20
-> > > > _However_ I am not sure that that is really the right thing to do -=
- they
-> > > > might well be mutually exclusive modes, but I think the decision ca=
-n be
-> > > > made at runtime, rather than at devicetree creation time. Say for
-> > > > example the GPIO controller this is connected to is capable of acti=
-ng as
-> > > > an interrupt controller. Unless I am misunderstanding the runtime
-> > > > configurability of this hardware, I think it is possible to actually
-> > > > provide a "slow-io-gpios" and an interrupt property & let the opera=
-ting
-> > > > system decide at runtime which mode it wants to work in. =20
-> > >=20
-> > > I'll admit I've long forgotten what was going on here, but based just=
- on
-> > > this bit of text I agree. There is nothing 'stopping' us having a pin
-> > > uses as either / or / both interrupt and gpio.
-> > >=20
-> > > It'll be a bit messy to support in the driver as IIRC there are some =
-sanity
-> > > checks that limit combinations on IRQs and output GPIOS.  Can't remem=
-ber
-> > > how bad the dance to navigate it safely is.
-> > >=20
-> > > First version I'd just say pick one option if both are provided and
-> > > don't support configuring it at runtime. =20
-> >=20
-> > Just to be clear, you are suggesting having the
-> > "microchip,slow-io-gpios" and "interrupts" properties in the binding,
-> > but the driver will just (for example) put that pin into alert mode
-> > always & leave it there?
->=20
-> Yes.
->=20
-> > If that is what you are suggesting, that seems pragmatic to me.
->=20
-> If a use case to do something else comes along later, then we can
-> be smarter, but I'd like to keep it simple initially at least.
+> > > > > > +	ports {
+> > > > > > +		port@1 {
+> > > > > > +			isp0_in: endpoint {
+> > > > > > +				bus-type = <MEDIA_BUS_TYPE_PARALLEL>;
+> > > > > > +				remote-endpoint = <&mipi_csi_0_out>;
+> > > > > > +			};
+> > > > > > +		};
+> > > > > > +	};
+> > > > > > +};
+> > > > > > +
+> > > > > > +&mipi_csi_0_out {
+> > > > > > +	remote-endpoint = <&isp0_in>;
+> > > > > > +};
+> > > > > > diff --git a/arch/arm64/boot/dts/freescale/imx8mp-isp2.dtso
+> > > > > > b/arch/arm64/boot/dts/freescale/imx8mp-isp2.dtso new file mode
+> > > > > > 100644
+> > > > > > index 000000000000..14e2e7b2617f
+> > > > > > --- /dev/null
+> > > > > > +++ b/arch/arm64/boot/dts/freescale/imx8mp-isp2.dtso
+> > > > > > @@ -0,0 +1,36 @@
+> > > > > > +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> > > > > > +/*
+> > > > > > + * Copyright 2022 Ideas on Board Oy
+> > > > > > + */
+> > > > > > +
+> > > > > > +/dts-v1/;
+> > > > > > +/plugin/;
+> > > > > > +
+> > > > > > +#include <dt-bindings/media/video-interfaces.h>
+> > > > > > +
+> > > > > > +&isi_0 {
+> > > > > > +	status = "disabled";
+> > > > > > +
+> > > > > > +	ports {
+> > > > > > +		port@1 {
+> > > > > > +			/delete-node/ endpoint;
+> > > > > > +		};
+> > > > > > +	};
+> > > > > > +};
+> > > > > > +
+> > > > > > +&isp_1 {
+> > > > > > +	status = "okay";
+> > > > > > +
+> > > > > > +	ports {
+> > > > > > +		port@1 {
+> > > > > > +			isp1_in: endpoint {
+> > > > > > +				bus-type = <MEDIA_BUS_TYPE_PARALLEL>;
+> > > > > > +				remote-endpoint = <&mipi_csi_1_out>;
+> > > > > > +			};
+> > > > > > +		};
+> > > > > > +	};
+> > > > > > +};
+> > > > > > +
+> > > > > > +&mipi_csi_1_out {
+> > > > > > +	remote-endpoint = <&isp1_in>;
+> > > > > > +};
 
-Sounds good to me, thanks Jonathan. Seems like a good compromise of
-depicting the hardware accurately and not overcomplicating the driver
-implementation.
+-- 
+Regards,
 
-Marius, I completely forgot to get in touch with you about this - give
-me a shout on teams if there's anything outstanding that I can help you
-with.
-
---oP7sV86AVSwt1W+s
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZWiv9wAKCRB4tDGHoIJi
-0uHzAPwLRSFe3lyznjBdX2nugpHz1wH9XkPMsIfMCDZMgNeUhQD/QIvnrIRYkwXk
-T9Reuc+W3+2ww8eTAHVikTkLYDMDvQ8=
-=fi+Q
------END PGP SIGNATURE-----
-
---oP7sV86AVSwt1W+s--
+Laurent Pinchart
