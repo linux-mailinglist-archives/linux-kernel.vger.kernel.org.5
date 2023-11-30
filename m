@@ -2,76 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 822257FEBDB
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 10:30:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D47D67FEBE0
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 10:31:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235032AbjK3JaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 04:30:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45320 "EHLO
+        id S235044AbjK3Jbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 04:31:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbjK3JaK (ORCPT
+        with ESMTP id S229596AbjK3Jbb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 04:30:10 -0500
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7D428F;
-        Thu, 30 Nov 2023 01:30:16 -0800 (PST)
-Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-3330fd19820so477788f8f.1;
-        Thu, 30 Nov 2023 01:30:16 -0800 (PST)
+        Thu, 30 Nov 2023 04:31:31 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BFE28F
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 01:31:37 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-6cde14ff73bso670735b3a.0
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 01:31:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701336615; x=1701941415; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=YuNTtw2jvQuN4PhWTyrra/q1irsKXH/DVcQCJL0iMU8=;
-        b=A5y2F7Pf1S/HONNiXrAK86jZe3N0SOoE0ONtsedAbsiHvs9L74N5zUq8qQThQmLewt
-         nUIoBcDKPvgnROW8NtM5gKmbngCeCPcgXyy1qsasf1E2K9pbA/pC6+PXD0uLpebDWt71
-         FYVLy+FGUrZ5MaQhmjO6aq8PSUDoHtBSzFmqTjU0LF8VH4yTMXHkQFmRitGcSlq+EgRJ
-         zupk3WddIoIyb/B/XXNhqLbBcEflXJ+UliAWsYnhvsYNBuR3kSKH1rzV1DWPscRuT7oZ
-         QfURIePypK+AKvalyFDh2o695IBC6XLQET3E7z8NsOROZ3/JCmW6qmQZ5c9KSBgTgvQi
-         ZjFw==
+        d=ventanamicro.com; s=google; t=1701336697; x=1701941497; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=j8OBcWs9lPOHMqo4r9Od8zwOOfWlpHAGN+FvmpBlGKI=;
+        b=bhoqoJ2GfXNh/2FZPFM51/Bnfdg12IK7mdKxpoSItOTK1I537Ctn9BG4j+D2X76Y4T
+         CN6FEtFXyVliMu17iY+dRFVQ7hooXL0NZwIvjUXdY2TSuLYMU75pBfNwvPbufgqSB1Mb
+         1YExLfBAlc+qeZHQwVozve7XDlRELYn4obHt7NCAahKlgW/uCxm4ZvFzK473bl7ukyYa
+         HEW4vz4HqTq0BfxuAgYaAe9RhmXHvWHHjO/8PHc8abtkNWKBZ84bBGYrKEIckwqqtoYy
+         7SN3dE6ud32DQOsLpxyURRYALgzFj3PUPFFCL0Z7ZX3Flo/Mze8S7gugPfM6d5VM4EgQ
+         WQEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701336615; x=1701941415;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1701336697; x=1701941497;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=YuNTtw2jvQuN4PhWTyrra/q1irsKXH/DVcQCJL0iMU8=;
-        b=oJLN2pmu9MHiCl4i193svxQOdkLvoXUxF3t0UXQ4aNzLVsjDmIDvfmWm/2TaYdbNab
-         Fw6zO/Dfu/gKAOfXBufySoKZS9vGvy2QM4OInq2eWI/yAxlGeVf0Hr8wiVLnM7MyHPgR
-         mSohZreZik0rvMgfiY2Ca4vWcEm8tSGK1r0r9u0RLPgf7+tE+Geuz1843HOVFDt4OP2Q
-         u32JZkjWsG9YXlSfm9tmnJBDKAy+IVsFw8DD6SlktqtXw+WwIH5AE16kuSf8TmAVPPnd
-         PEL18Tly4XC7jwpAkkyAiz1PP26wSR1MD3y2n9S6f97/s5+b2HBxQQD4Le0nOqt2hGag
-         Jtvg==
-X-Gm-Message-State: AOJu0Yycr885N2g/frdsGR3C0Wbk6NtrWIjZanz1fdcqzXBncWmJUiLf
-        OdiwQFM8PoKojqxTyrd9HG4=
-X-Google-Smtp-Source: AGHT+IFAVSELyNE3gO5IZKHYWynOhknEH6eayw8ijvtfgxPELrwyf3opc19adLXw5KJhk7G47spEdg==
-X-Received: by 2002:adf:f588:0:b0:332:eb19:9530 with SMTP id f8-20020adff588000000b00332eb199530mr14011097wro.32.1701336614960;
-        Thu, 30 Nov 2023 01:30:14 -0800 (PST)
-Received: from gmail.com (1F2EF55A.nat.pool.telekom.hu. [31.46.245.90])
-        by smtp.gmail.com with ESMTPSA id r13-20020adfe68d000000b00333040a4752sm995326wrm.114.2023.11.30.01.30.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Nov 2023 01:30:14 -0800 (PST)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Thu, 30 Nov 2023 10:30:11 +0100
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Ashwin Dayanand Kamat <kashwindayan@vmware.com>
-Cc:     linux-kernel@vger.kernel.org, thomas.lendacky@amd.com,
-        bp@alien8.de, brijesh.singh@amd.com, tglx@linutronix.de,
-        mingo@redhat.com, dave.hansen@linux.intel.com, x86@kernel.org,
-        hpa@zytor.com, jroedel@suse.de, stable@vger.kernel.org,
-        ganb@vmware.com, tkundu@vmware.com, vsirnapalli@vmware.com,
-        akaher@vmware.com, amakhalov@vmware.com, namit@vmware.com
-Subject: [PATCH] x86/sev: Fix kernel crash due to late update to read-only
- ghcb_version
-Message-ID: <ZWhWI2GvfleyGKsa@gmail.com>
-References: <1701254429-18250-1-git-send-email-kashwindayan@vmware.com>
+        bh=j8OBcWs9lPOHMqo4r9Od8zwOOfWlpHAGN+FvmpBlGKI=;
+        b=sjKaaIecOmymLX2gpo9Dettx8V1nb4qnuTs/kgamfDBUqx/zykgVkccAwP1um5aZ0m
+         yquH2lQodBlR/kIyXXrnHLBJOkQxb1SzOX2dIdCB7mMQYgTbzMuoVrjNWCCGtimD3Uhd
+         XLvaxwFo5mFf8Tw61wJ78m3y935L1Eh4kKlozojLD/YqIWlH2efX0iGq7UhI5Daqhz8M
+         P8VIkaD7Jvbg+e9XT0LyLY+7LTPaaxuLwIiwrhkUYhw5LwLERsBzs+I9/jAdl0JwZAIn
+         RATvAkUSnpUG+ZNjbdm5wheOBRam+FYMMvsXrIu518bS0b6wNXO/v39uj2VXQ5QHMVRx
+         xchw==
+X-Gm-Message-State: AOJu0Yz6PLQuKhbNbGdeVRMtPuhJq37UQlkXD2wwR4K79hLXorXFsj0c
+        kYDMmUgwurJkZDt79IyGGyemukvr/98PYOS3n4KAEw==
+X-Google-Smtp-Source: AGHT+IF3oL/DbPdKnDGhckZzmA5c9sL11ngMJCD23pKkyIij1ndLdvEWXMDzGlwxpmNWJO35Sc6QYX9lQMcvnyPWdfk=
+X-Received: by 2002:a05:6a00:2296:b0:6cb:735c:67af with SMTP id
+ f22-20020a056a00229600b006cb735c67afmr31018795pfe.0.1701336696772; Thu, 30
+ Nov 2023 01:31:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1701254429-18250-1-git-send-email-kashwindayan@vmware.com>
-X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        FSL_HELO_FAKE,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+References: <IA1PR20MB4953C82499C5D81D2C6A020BBBB6A@IA1PR20MB4953.namprd20.prod.outlook.com>
+ <IA1PR20MB4953F9D77FFC76A9D236922DBBB6A@IA1PR20MB4953.namprd20.prod.outlook.com>
+In-Reply-To: <IA1PR20MB4953F9D77FFC76A9D236922DBBB6A@IA1PR20MB4953.namprd20.prod.outlook.com>
+From:   Anup Patel <apatel@ventanamicro.com>
+Date:   Thu, 30 Nov 2023 15:01:24 +0530
+Message-ID: <CAK9=C2WAv5jJBt56xBea268DeyUA+YvbU7i+ahVjueafCi-r6A@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] dt-bindings: timer: thead,c900-aclint-mtimer:
+ separate mtime and mtimecmp regs
+To:     Inochi Amaoto <inochiama@outlook.com>
+Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Chen Wang <unicorn_wang@outlook.com>,
+        Anup Patel <anup@brainfault.org>,
+        Samuel Holland <samuel.holland@sifive.com>,
+        Guo Ren <guoren@kernel.org>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,112 +84,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Nov 18, 2023 at 12:39=E2=80=AFPM Inochi Amaoto <inochiama@outlook.c=
+om> wrote:
+>
+> The timer registers of aclint don't follow the clint layout and can
+> be mapped on any different offset. As sg2042 uses separated timer
+> and mswi for its clint, it should follow the aclint spec and have
+> separated registers.
+>
+> The previous patch introduced a new type of T-HEAD aclint timer which
+> has clint timer layout. Although it has the clint timer layout, it
+> should follow the aclint spec and uses the separated mtime and mtimecmp
+> regs. So a ABI change is needed to make the timer fit the aclint spec.
+>
+> To make T-HEAD aclint timer more closer to the aclint spec, use
+> regs-names to represent the mtimecmp register, which can avoid hack
+> for unsupport mtime register of T-HEAD aclint timer.
+>
+> Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
+> Fixes: 4734449f7311 ("dt-bindings: timer: Add Sophgo sg2042 CLINT timer")
+> Link: https://lists.infradead.org/pipermail/opensbi/2023-October/005693.h=
+tml
+> Link: https://github.com/riscv/riscv-aclint/blob/main/riscv-aclint.adoc
 
-* Ashwin Dayanand Kamat <kashwindayan@vmware.com> wrote:
+The ratified Priv v1.12 specification defines platform specific M-mode time=
+r
+registers without defining any layout of mtime and mtimecmp registers.
+(Refer, "3.2.1 Machine Timer Registers (mtime and mtimecmp)")
 
-> From: Ashwin Dayanand Kamat <ashwin.kamat@broadcom.com>
-> 
-> kernel crash was observed because of page fault, while running
-> cpuhotplug ltp testcases on SEV-ES enabled systems. The crash was
-> observed during hotplug after the CPU was offlined and the process
-> was migrated to different cpu. setup_ghcb() is called again which
-> tries to update ghcb_version in sev_es_negotiate_protocol(). Ideally this
-> is a read_only variable which is initialised during booting.
-> This results in pagefault.
+The "thead,c900-aclint-mtimer" can be thought of as is one possible
+implementation of "riscv,mtimer" defined by the Priv v1.12 specificaiton.
 
-Applied to tip:x86/urgent, thanks.
+If it is not too late then I suggest making this binding into generic
+"riscv,mtimer" binding.
 
-Tom: I've added your Suggested-by and Acked-by, which appeared to be the 
-case given the v1 discussion, let me know if that's not accurate.
+Regards,
+Anup
 
-I've also tidied up the changelog - final version attached below.
-
-Thanks,
-
-	Ingo
-
-============>
-From: Ashwin Dayanand Kamat <ashwin.kamat@broadcom.com>
-Date: Wed, 29 Nov 2023 16:10:29 +0530
-Subject: [PATCH] x86/sev: Fix kernel crash due to late update to read-only ghcb_version
-
-A write-access violation page fault kernel crash was observed while running
-cpuhotplug LTP testcases on SEV-ES enabled systems. The crash was
-observed during hotplug, after the CPU was offlined and the process
-was migrated to different CPU. setup_ghcb() is called again which
-tries to update ghcb_version in sev_es_negotiate_protocol(). Ideally this
-is a read_only variable which is initialised during booting.
-
-Trying to write it results in a pagefault:
-
-  BUG: unable to handle page fault for address: ffffffffba556e70
-  #PF: supervisor write access in kernel mode
-  #PF: error_code(0x0003) - permissions violation
-  [ ...]
-  Call Trace:
-   <TASK>
-   ? __die_body.cold+0x1a/0x1f
-   ? __die+0x2a/0x35
-   ? page_fault_oops+0x10c/0x270
-   ? setup_ghcb+0x71/0x100
-   ? __x86_return_thunk+0x5/0x6
-   ? search_exception_tables+0x60/0x70
-   ? __x86_return_thunk+0x5/0x6
-   ? fixup_exception+0x27/0x320
-   ? kernelmode_fixup_or_oops+0xa2/0x120
-   ? __bad_area_nosemaphore+0x16a/0x1b0
-   ? kernel_exc_vmm_communication+0x60/0xb0
-   ? bad_area_nosemaphore+0x16/0x20
-   ? do_kern_addr_fault+0x7a/0x90
-   ? exc_page_fault+0xbd/0x160
-   ? asm_exc_page_fault+0x27/0x30
-   ? setup_ghcb+0x71/0x100
-   ? setup_ghcb+0xe/0x100
-   cpu_init_exception_handling+0x1b9/0x1f0
-
-The fix is to call sev_es_negotiate_protocol() only in the BSP boot phase,
-and it only needs to be done once in any case.
-
-[ mingo: Refined the changelog. ]
-
-Fixes: 95d33bfaa3e1 ("x86/sev: Register GHCB memory when SEV-SNP is active")
-Suggested-by: Tom Lendacky <thomas.lendacky@amd.com>
-Co-developed-by: Bo Gan <bo.gan@broadcom.com>
-Signed-off-by: Bo Gan <bo.gan@broadcom.com>
-Signed-off-by: Ashwin Dayanand Kamat <ashwin.kamat@broadcom.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
-Link: https://lore.kernel.org/r/1701254429-18250-1-git-send-email-kashwindayan@vmware.com
----
- arch/x86/kernel/sev.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
-
-diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
-index 70472eebe719..c67285824e82 100644
---- a/arch/x86/kernel/sev.c
-+++ b/arch/x86/kernel/sev.c
-@@ -1234,10 +1234,6 @@ void setup_ghcb(void)
- 	if (!cc_platform_has(CC_ATTR_GUEST_STATE_ENCRYPT))
- 		return;
- 
--	/* First make sure the hypervisor talks a supported protocol. */
--	if (!sev_es_negotiate_protocol())
--		sev_es_terminate(SEV_TERM_SET_GEN, GHCB_SEV_ES_GEN_REQ);
--
- 	/*
- 	 * Check whether the runtime #VC exception handler is active. It uses
- 	 * the per-CPU GHCB page which is set up by sev_es_init_vc_handling().
-@@ -1254,6 +1250,13 @@ void setup_ghcb(void)
- 		return;
- 	}
- 
-+	/*
-+	 * Make sure the hypervisor talks a supported protocol.
-+	 * This gets called only in the BSP boot phase.
-+	 */
-+	if (!sev_es_negotiate_protocol())
-+		sev_es_terminate(SEV_TERM_SET_GEN, GHCB_SEV_ES_GEN_REQ);
-+
- 	/*
- 	 * Clear the boot_ghcb. The first exception comes in before the bss
- 	 * section is cleared.
+> ---
+>  .../timer/thead,c900-aclint-mtimer.yaml       | 42 ++++++++++++++++++-
+>  1 file changed, 41 insertions(+), 1 deletion(-)
+>
+> diff --git a/Documentation/devicetree/bindings/timer/thead,c900-aclint-mt=
+imer.yaml b/Documentation/devicetree/bindings/timer/thead,c900-aclint-mtime=
+r.yaml
+> index fbd235650e52..053488fb1286 100644
+> --- a/Documentation/devicetree/bindings/timer/thead,c900-aclint-mtimer.ya=
+ml
+> +++ b/Documentation/devicetree/bindings/timer/thead,c900-aclint-mtimer.ya=
+ml
+> @@ -17,7 +17,20 @@ properties:
+>        - const: thead,c900-aclint-mtimer
+>
+>    reg:
+> -    maxItems: 1
+> +    oneOf:
+> +      - items:
+> +          - description: MTIME Registers
+> +          - description: MTIMECMP Registers
+> +      - items:
+> +          - description: MTIMECMP Registers
+> +
+> +  reg-names:
+> +    oneOf:
+> +      - items:
+> +          - const: mtime
+> +          - const: mtimecmp
+> +      - items:
+> +          - const: mtimecmp
+>
+>    interrupts-extended:
+>      minItems: 1
+> @@ -28,8 +41,34 @@ additionalProperties: false
+>  required:
+>    - compatible
+>    - reg
+> +  - reg-names
+>    - interrupts-extended
+>
+> +allOf:
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: thead,c900-aclint-mtimer
+> +    then:
+> +      properties:
+> +        reg:
+> +          items:
+> +            - description: MTIMECMP Registers
+> +        reg-names:
+> +          items:
+> +            - const: mtimecmp
+> +    else:
+> +      properties:
+> +        reg:
+> +          items:
+> +            - description: MTIME Registers
+> +            - description: MTIMECMP Registers
+> +        reg-names:
+> +          items:
+> +            - const: mtime
+> +            - const: mtimecmp
+> +
+>  examples:
+>    - |
+>      timer@ac000000 {
+> @@ -39,5 +78,6 @@ examples:
+>                              <&cpu3intc 7>,
+>                              <&cpu4intc 7>;
+>        reg =3D <0xac000000 0x00010000>;
+> +      reg-names =3D "mtimecmp";
+>      };
+>  ...
+> --
+> 2.42.1
+>
+>
