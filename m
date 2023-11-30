@@ -2,262 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD0597FFD66
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 22:18:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82C5B7FFD6A
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 22:19:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376930AbjK3VRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 16:17:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60848 "EHLO
+        id S1376855AbjK3VTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 16:19:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376964AbjK3VRh (ORCPT
+        with ESMTP id S1376829AbjK3VTE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 16:17:37 -0500
-Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com [209.85.210.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1612A19BD
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 13:17:20 -0800 (PST)
-Received: by mail-pf1-f200.google.com with SMTP id d2e1a72fcca58-6cde5cf72a0so1541636b3a.3
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 13:17:20 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701379039; x=1701983839;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZUZnLWZX4b9hAqkq+tPuwlVJAfesWgOImstiB4jK5SE=;
-        b=DHA0OXpoz3bi9LYGbwh9HXA3iHkbvtA/jfONhLcK6MUhBUSeSeoRO97NbRGHY9Q5ye
-         veufcuhGQFEktE2frzgy2yPOcJ/bPfQ4DyXKfwbb6niE69QI23M+3aXkyrIbcq016g/s
-         Jbfq1B+L0WAe1H1htx9k3cbj8mW8+CiDMPlwLvsl5yzcPLQVaO3+YdumhOBiznXVIuoK
-         DglTiN5+fwbNjlIWofFSNUNR5eNotDa1ICsefKmXc5uqM3yDu93IR9m7C24+Hb7cQpys
-         AWMUbT9m1U49quB/c7yEufRI0hW5soUl3dgpEoCPlzqSbRTVaYuO3BmE/X1v9kLbSfSJ
-         kdzQ==
-X-Gm-Message-State: AOJu0YwlLEunGGaB8ezK4W9xMqbMaKWTVT/uA4lkcduxk/8pb54CCZsc
-        86Zo/JQHutx+4ertUqwV+ri/oyay1FsoXgPkgY7AF0WazzX1
-X-Google-Smtp-Source: AGHT+IFxookyfCUEYxgYtjIZInscR9jMB+jkbe4TD30Pmp3cxfGKyfW2pcX5DK2a7D6i8FZh5iJxfE7qbJdhBtoOXld7Nynoi9f8
+        Thu, 30 Nov 2023 16:19:04 -0500
+Received: from EUR02-VI1-obe.outbound.protection.outlook.com (mail-vi1eur02on2043.outbound.protection.outlook.com [40.107.241.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AD8F133;
+        Thu, 30 Nov 2023 13:19:11 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=D/R/IYZA26oezx1tGjBb9FYZf2LXwTMtG6l7EVBFIv7UYMcapi//fwP9fhEB6LrIn4l1UBFdy90U+YbuRWke0F7n3fq8pVNa+PaUe8r6/k7QH96n1YDSC9JC461HBP0wuZEyXAHD7EQuluD9BkgaHwtQWWdH9MwiBPbab4KGmA+SxNbQfJ57VqbpYUOA9qluA5CADbvWd/i4p6mNUHUhzIciSL1XW7seuUvQJhWfq/wmKSjVZO5/wehOtowcSn4xlYqXpwzaQj8alKgy/RhHIe9AqsWx7LeFah+WK1S/VmsXbDCRIib+SaOmO/kAQ/WB2fxO59kTt30I2RSSc+zvSA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=TRBcPW8bJ1CayGwnGUQ4U0XcoYMoGUUVbnnIBozFQS4=;
+ b=DEQtRvwfhuQ7yWLrBRt7V+nio+guHML6j1sYZwtMWIRguaQVUdhSdo0/LdzzxnykOaa9aiC/b/2xiFV/brICdj1shS0mjMgBs+MV+7lcqQjd7TnrHjzQ9XCW8+movMeMaMUUiN6L/UanfB1/SJ6pK7JObwFYq86AuTZwz5ru44CiUQCVXVWT/yeS7t3ahRPRDboC20lRUht/AdiX682qSul2v9IbOXzeChEklQD9JnDlDWCN6xnIGX0DwJpGa4y8oCS8SXZ1YblOaHjWzJCEi1ObSQubHrpNGUVtzr2JZFdZ1YN+yGAuaTECp4LT9QaEemQxgo6Y1xuJEyelVD396Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TRBcPW8bJ1CayGwnGUQ4U0XcoYMoGUUVbnnIBozFQS4=;
+ b=idejOG2lkbWl9+8iv4SBVuF7gAUhvxuWeh5xasxAAkWA5q5Z+ShAk8SrmJngKKnAZ/KBoQYiBPzYX7vX2ijFBXhij99MidsMunxBJjmHfy52q4hHut8fAmjdCXRD/HD6cWGFey1Shi22VhiauoOfMk9PgyndJodlu2DjtYyKgxQ=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AM0PR04MB6452.eurprd04.prod.outlook.com (2603:10a6:208:16d::21)
+ by PA4PR04MB7822.eurprd04.prod.outlook.com (2603:10a6:102:b8::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.15; Thu, 30 Nov
+ 2023 21:19:07 +0000
+Received: from AM0PR04MB6452.eurprd04.prod.outlook.com
+ ([fe80::dd33:f07:7cfd:afa4]) by AM0PR04MB6452.eurprd04.prod.outlook.com
+ ([fe80::dd33:f07:7cfd:afa4%7]) with mapi id 15.20.7068.012; Thu, 30 Nov 2023
+ 21:19:07 +0000
+Date:   Thu, 30 Nov 2023 23:19:03 +0200
+From:   Vladimir Oltean <vladimir.oltean@nxp.com>
+To:     Roger Quadros <rogerq@kernel.org>
+Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, s-vadapalli@ti.com, r-gunasekaran@ti.com,
+        vigneshr@ti.com, srk@ti.com, horms@kernel.org, p-varis@ti.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 net-next 6/7] net: ethernet: ti: am65-cpsw-qos: Add
+ Frame Preemption MAC Merge support
+Message-ID: <20231130211903.uu5yhfki5gghpplu@skbuf>
+References: <20231120140147.78726-1-rogerq@kernel.org>
+ <20231120140147.78726-7-rogerq@kernel.org>
+ <20231120232620.uciap4bazypzlg3g@skbuf>
+ <eeea995b-a294-4a46-aa3e-93fc2b274504@kernel.org>
+ <20231121115314.deuvdjk64rcwktl4@skbuf>
+ <6def78e7-8264-4745-94f3-b32b854af0c2@kernel.org>
+ <20231130132222.w2irs5c4lxh5jcv7@skbuf>
+ <030c7d65-bead-46d0-8422-8a9ff0548d72@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <030c7d65-bead-46d0-8422-8a9ff0548d72@kernel.org>
+X-ClientProxiedBy: VI1PR02CA0065.eurprd02.prod.outlook.com
+ (2603:10a6:802:14::36) To AM0PR04MB6452.eurprd04.prod.outlook.com
+ (2603:10a6:208:16d::21)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6a00:1483:b0:6bc:de83:2e1b with SMTP id
- v3-20020a056a00148300b006bcde832e1bmr5895135pfu.3.1701379039552; Thu, 30 Nov
- 2023 13:17:19 -0800 (PST)
-Date:   Thu, 30 Nov 2023 13:17:19 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000047eb7e060b652d9a@google.com>
-Subject: [syzbot] [block?] [trace?] INFO: task hung in blk_trace_ioctl (4)
-From:   syzbot <syzbot+ed812ed461471ab17a0c@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, axboe@kernel.dk, dvyukov@google.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, mhiramat@kernel.org,
-        pengfei.xu@intel.com, rostedt@goodmis.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM0PR04MB6452:EE_|PA4PR04MB7822:EE_
+X-MS-Office365-Filtering-Correlation-Id: 136230aa-1681-4695-e93b-08dbf1e9fc95
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: A7Ey3T6vqUyAPqFTiDNnJB9Oc7ro8gdlKxpWfQhR1PpHTymyfsbUWjUzZlHutMup0sWNjKNX8z9N8Usew8QqRm3mvRr+pBAYC4COZNdva/QO2862O4SE85+FLaf09oo8rX3SjCFc/C8yDRMe9BlY53eSnHeFLYWxpMN6Bpb17VAF9NM0OHYJ9evZDZereBWjyhfqlBr8+Qrnj7M1S6YJqdFDB/4xncFA0AmJKBs2HqO38vBUvvFZJhB979Bunjp2VgRBKNGNo4dt63RIvNyYpMvAHzZNuP7ArW4VrYRWAM+flbiJCeDITdJrkUfwe/4lfRQqVoTQSrRTXV1wAB1d/ZHhPgbxhg59uRUxPa8GRvx2Vr9NFPc4rtqAfwhRPR8RnHewN48WGbWsLx8y+dSK01cD2jqyxAulfCRmW89I3LdQ8qM3buv9Ntz4nqBNsBai8QhZ5nPlKmeWeOrndrGzp88SWu054B8+90ruY8cIHsEBWh68uhV4DkL7k69yLQiJxzG4lvlsgq58d5Hy4mddAvw4Y3W5Pa3O2TMQEpObf5XF8sli+Cefv88ILKgUWiJt
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6452.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(376002)(136003)(346002)(39860400002)(396003)(366004)(230922051799003)(451199024)(64100799003)(1800799012)(186009)(33716001)(1076003)(26005)(6506007)(6666004)(6512007)(9686003)(66476007)(66556008)(66946007)(6916009)(316002)(4326008)(8676002)(8936002)(478600001)(6486002)(38100700002)(41300700001)(2906002)(7416002)(5660300002)(558084003)(44832011)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?yjAxL0sH5d8WiPlq4yAmbriA78Efp7J8XGoBP8XunxrCWC0XaE+aTxnBpjwM?=
+ =?us-ascii?Q?pINWT4dnHEM9d4d3DvfmMDgJFDADNMSUHOB3lw0SOZXvZ3sv9UGlN0CgjYff?=
+ =?us-ascii?Q?tNoTe+nOm1Mt7H/xp1D18QydXoghnpsd1AAU5LCXt8jfLHjj9OM8kZJcyRvO?=
+ =?us-ascii?Q?9jA3ZzaZMpq0J2Nev0b5dd25Mz7hs++/rDPrA8WmTB3JDcyieJ6WKOEQZ+eg?=
+ =?us-ascii?Q?93Dvj5LtJcLyDpEEnMO24DOM1rI8YhgvnUudiMvouAgBRdDgMDduY6+JDFck?=
+ =?us-ascii?Q?1jqHNEOFwA07EQXwb0encAF5SEAB+pK0ShWQnUxEPgXoZ+eE5+lzYiwbak/q?=
+ =?us-ascii?Q?yYtehNo00dsVgUWLvQ23VUwCCR1JquuI6xyzPkSM4JEwomErk+rernOM50Pt?=
+ =?us-ascii?Q?GZkL9k6qtsdOhnzYk+mZTQBPo+Xc3Utop32rRepcKmR/1BX1NDHaqg3Z2M8Q?=
+ =?us-ascii?Q?ddaCSUxRWdIHcTJLSFMYUw5QYqfvcwqrg04Jh4IjZxB7a2ffxt3pVzLfJK0Y?=
+ =?us-ascii?Q?jWY1LO8dA8fxNSc92Y0Q034LoI6L/zxWNR4ylGiSTNfvNGipj8s8kVwKjweC?=
+ =?us-ascii?Q?PhaM55zqzOt9ZNBNWMso/bwqANjQf5RHMHE4VqIWUXv7aiFcq+nKbGavNyEi?=
+ =?us-ascii?Q?5cHESrGBX705AeVda33AMzt+MAPkZ/2ra/OnsXrlQ4cHgEyH1ZRm3q4lSvQ0?=
+ =?us-ascii?Q?lRUflqHn1qLi32AURO0+qtnsw6IoHEzsHj2ZHVUChrcEVBQWsOTqxVvTK9An?=
+ =?us-ascii?Q?wfmFdiDv1DqqffOPi/ZE82bzythZxGOY03LjecIQVhhL8tpt8nPAsoSPJst/?=
+ =?us-ascii?Q?vkHdvPgV5swCPq3ruQHB9rkiKn3m9039o0MPBqVRufE2Jn5iKr4Twlojl2St?=
+ =?us-ascii?Q?IzKQr/iyccCCauO5fn5lHduM+4uuHSXTQuTKXIU0qPGFYmjbZAA1I7NLc1Pv?=
+ =?us-ascii?Q?kVmxfWi9FeHHj2pX9flmWnXox6bdKj+9yi2a/fgcLOedaevNhMafHBE20Tm6?=
+ =?us-ascii?Q?zoPhV+oWt/rJ1qdHAKHZQZpQxPvoGlPJv3E/ntxIvz6uzwvFmpSc5udxfC+X?=
+ =?us-ascii?Q?LYvYDv23CEy+bERRlcSJvpV17d4tNpX5wOksFZ02KInuNUMMG/b3vcYH7qeo?=
+ =?us-ascii?Q?8DpIdxQKqnGJUgLJIZo0fMLGytjMBXnS7Wa1/br6oFmridk81TszCI0ZTY7J?=
+ =?us-ascii?Q?/n4ursFxl5TQhDLgWVYkvFI5Nxt4QAvRrJAFDgc/QuVXl8/g3r7W2hUkUY42?=
+ =?us-ascii?Q?hN9zk529uX6ipProjgVSAXV8mvhCa2uGZHzOJbuwPvhKZqJkCguJsKMyvR4X?=
+ =?us-ascii?Q?BjjG8S76QZJ2DRa4puKPCh9ayfoSDvsYHbrN4GAN/rAj1ONe65qFts+h285w?=
+ =?us-ascii?Q?te1y9v/nb81cwN/Xx7WWR47lzs1jmJ/YVek3ZA7fp2O59z+ui+h62RsiZ3Sq?=
+ =?us-ascii?Q?AAi/+iiiaEyFQs/b6a4e/jGas8MOyEP60h7NNEXKUIiW4IA1ql1x8C9fb4ii?=
+ =?us-ascii?Q?sVAK7EtJ1F1BtmxUMZLJ8mN2npmcBqyQPhosNYniw2l9B+EGZNIGuLGhkVHH?=
+ =?us-ascii?Q?UUKaImyBlaXy5W2IsInW3uh1ndZi/fdgjIaWu/HzjkbhKsd1CJ9cIri5pWEk?=
+ =?us-ascii?Q?jA=3D=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 136230aa-1681-4695-e93b-08dbf1e9fc95
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB6452.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Nov 2023 21:19:07.2217
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: UgLMHbprKTSawnOaYupu8w7MF433sXhlNc9h6LFqZzVjVjOmVQUMyCgDqQIT1vG9RIxB7v0cEabCl4MhgLpgdQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR04MB7822
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Thu, Nov 30, 2023 at 04:23:49PM +0200, Roger Quadros wrote:
+> Should I include your patch in the next revision of this series?
 
-syzbot found the following issue on:
-
-HEAD commit:    8c9660f65153 Add linux-next specific files for 20231124
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=1006f178e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ca1e8655505e280
-dashboard link: https://syzkaller.appspot.com/bug?extid=ed812ed461471ab17a0c
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14ec6e62e80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11964f7ce80000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/345ed4af3a0d/disk-8c9660f6.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/191053c69d57/vmlinux-8c9660f6.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/aac7ee5e55e0/bzImage-8c9660f6.xz
-
-The issue was bisected to:
-
-commit 0d345996e4cb573f8cc81d49b3ee9a7fd2035bef
-Author: Pengfei Xu <pengfei.xu@intel.com>
-Date:   Mon Jul 31 03:04:18 2023 +0000
-
-    x86/kernel: increase kcov coverage under arch/x86/kernel folder
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14782eaae80000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=16782eaae80000
-console output: https://syzkaller.appspot.com/x/log.txt?x=12782eaae80000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+ed812ed461471ab17a0c@syzkaller.appspotmail.com
-Fixes: 0d345996e4cb ("x86/kernel: increase kcov coverage under arch/x86/kernel folder")
-
-INFO: task syz-executor216:5234 blocked for more than 143 seconds.
-      Not tainted 6.7.0-rc2-next-20231124-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor216 state:D stack:29104 pid:5234  tgid:5232  ppid:5106   flags:0x00004006
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5399 [inline]
- __schedule+0xf15/0x5c00 kernel/sched/core.c:6726
- __schedule_loop kernel/sched/core.c:6801 [inline]
- schedule+0xe7/0x270 kernel/sched/core.c:6816
- schedule_preempt_disabled+0x13/0x20 kernel/sched/core.c:6873
- __mutex_lock_common kernel/locking/mutex.c:679 [inline]
- __mutex_lock+0x5b4/0x9c0 kernel/locking/mutex.c:747
- blk_trace_ioctl+0xc9/0x290 kernel/trace/blktrace.c:736
- blkdev_common_ioctl+0x1575/0x1ce0 block/ioctl.c:562
- blkdev_ioctl+0x249/0x770 block/ioctl.c:627
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:871 [inline]
- __se_sys_ioctl fs/ioctl.c:857 [inline]
- __x64_sys_ioctl+0x18f/0x210 fs/ioctl.c:857
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x40/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x62/0x6a
-RIP: 0033:0x7f914d80ca89
-RSP: 002b:00007f914cfa3168 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007f914d89c1d8 RCX: 00007f914d80ca89
-RDX: 0000000000000000 RSI: 0000000000001276 RDI: 0000000000000004
-RBP: 00007f914d89c1d0 R08: 00007ffdb3560fd7 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007f914d89c1dc
-R13: 000000000000006e R14: 00007ffdb3560ef0 R15: 00007ffdb3560fd8
- </TASK>
-
-Showing all locks held in the system:
-1 lock held by khungtaskd/29:
- #0: ffffffff8cfacf60 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:301 [inline]
- #0: ffffffff8cfacf60 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:747 [inline]
- #0: ffffffff8cfacf60 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x75/0x340 kernel/locking/lockdep.c:6613
-1 lock held by klogd/4501:
- #0: ffff8880b993c718 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock_nested+0x29/0x130 kernel/sched/core.c:558
-2 locks held by getty/4815:
- #0: ffff8880273ee0a0 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x24/0x80 drivers/tty/tty_ldisc.c:243
- #1: ffffc90002f062f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0xfc4/0x1490 drivers/tty/n_tty.c:2201
-2 locks held by kworker/0:5/5180:
-2 locks held by syz-executor216/5233:
-1 lock held by syz-executor216/5234:
- #0: ffff888142f94490 (&q->debugfs_mutex){+.+.}-{3:3}, at: blk_trace_ioctl+0xc9/0x290 kernel/trace/blktrace.c:736
-1 lock held by syz-executor216/5240:
- #0: ffff888142f94490 (&q->debugfs_mutex){+.+.}-{3:3}, at: blk_trace_ioctl+0xc9/0x290 kernel/trace/blktrace.c:736
-1 lock held by syz-executor216/5241:
- #0: ffff888142f94490 (&q->debugfs_mutex){+.+.}-{3:3}, at: blk_trace_ioctl+0xc9/0x290 kernel/trace/blktrace.c:736
-1 lock held by syz-executor216/5245:
- #0: ffff888142f94490 (&q->debugfs_mutex){+.+.}-{3:3}, at: blk_trace_ioctl+0xc9/0x290 kernel/trace/blktrace.c:736
-1 lock held by syz-executor216/5246:
- #0: ffff888142f94490 (&q->debugfs_mutex){+.+.}-{3:3}, at: blk_trace_ioctl+0xc9/0x290 kernel/trace/blktrace.c:736
-1 lock held by syz-executor216/5248:
- #0: ffff888142f94490 (&q->debugfs_mutex){+.+.}-{3:3}, at: blk_trace_ioctl+0xc9/0x290 kernel/trace/blktrace.c:736
-1 lock held by syz-executor216/5249:
- #0: ffff888142f94490 (&q->debugfs_mutex){+.+.}-{3:3}, at: blk_trace_ioctl+0xc9/0x290 kernel/trace/blktrace.c:736
-1 lock held by syz-executor216/5251:
- #0: ffff888142f94490 (&q->debugfs_mutex){+.+.}-{3:3}, at: blk_trace_ioctl+0xc9/0x290 kernel/trace/blktrace.c:736
-1 lock held by syz-executor216/5252:
- #0: ffff888142f94490 (&q->debugfs_mutex){+.+.}-{3:3}, at: blk_trace_ioctl+0xc9/0x290 kernel/trace/blktrace.c:736
-1 lock held by syz-executor216/5254:
- #0: ffff888142f94490 (&q->debugfs_mutex){+.+.}-{3:3}, at: blk_trace_ioctl+0xc9/0x290 kernel/trace/blktrace.c:736
-1 lock held by syz-executor216/5255:
- #0: ffff888142f94490 (&q->debugfs_mutex){+.+.}-{3:3}, at: blk_trace_ioctl+0xc9/0x290 kernel/trace/blktrace.c:736
-
-=============================================
-
-NMI backtrace for cpu 0
-CPU: 0 PID: 29 Comm: khungtaskd Not tainted 6.7.0-rc2-next-20231124-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
- nmi_cpu_backtrace+0x277/0x390 lib/nmi_backtrace.c:113
- nmi_trigger_cpumask_backtrace+0x299/0x300 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:160 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:222 [inline]
- watchdog+0xf86/0x1210 kernel/hung_task.c:379
- kthread+0x2c1/0x3a0 kernel/kthread.c:389
- ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
- </TASK>
-Sending NMI from CPU 0 to CPUs 1:
-NMI backtrace for cpu 1
-CPU: 1 PID: 5233 Comm: syz-executor216 Not tainted 6.7.0-rc2-next-20231124-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
-RIP: 0010:__sanitizer_cov_trace_switch+0x4f/0x90 kernel/kcov.c:341
-Code: 83 f8 10 75 2f 41 bd 03 00 00 00 4c 8b 75 00 31 db 4d 85 f6 74 1e 48 8b 74 dd 10 4c 89 e2 4c 89 ef 48 83 c3 01 48 8b 4c 24 28 <e8> 2c fe ff ff 49 39 de 75 e2 5b 5d 41 5c 41 5d 41 5e c3 48 83 f8
-RSP: 0018:ffffc90003fdf3a0 EFLAGS: 00000202
-RAX: 0000000000000008 RBX: 0000000000000001 RCX: ffffffff813a44c8
-RDX: 0000000000000001 RSI: 0000000000000000 RDI: 0000000000000001
-RBP: ffffffff8ac9d800 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000001 R11: dffffc0000000000 R12: 0000000000000001
-R13: 0000000000000001 R14: 0000000000000003 R15: 0000000000000001
-FS:  00007f914cfc46c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f914d899f18 CR3: 00000000a0ad4000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <NMI>
- </NMI>
- <TASK>
- unwind_next_frame+0xea8/0x2390 arch/x86/kernel/unwind_orc.c:641
- arch_stack_walk+0xfa/0x170 arch/x86/kernel/stacktrace.c:25
- stack_trace_save+0x95/0xd0 kernel/stacktrace.c:122
- save_stack+0x15e/0x1f0 mm/page_owner.c:130
- __set_page_owner+0x1f/0x60 mm/page_owner.c:196
- set_page_owner include/linux/page_owner.h:31 [inline]
- post_alloc_hook+0x2d0/0x350 mm/page_alloc.c:1533
- prep_new_page mm/page_alloc.c:1540 [inline]
- get_page_from_freelist+0xa16/0x3690 mm/page_alloc.c:3344
- __alloc_pages+0x22d/0x2400 mm/page_alloc.c:4600
- alloc_pages_mpol+0x258/0x5f0 mm/mempolicy.c:2133
- relay_alloc_buf kernel/relay.c:121 [inline]
- relay_create_buf kernel/relay.c:162 [inline]
- relay_open_buf.part.0+0x27d/0xba0 kernel/relay.c:384
- relay_open_buf kernel/relay.c:536 [inline]
- relay_open+0x641/0xab0 kernel/relay.c:517
- do_blk_trace_setup+0x4a9/0xaa0 kernel/trace/blktrace.c:591
- __blk_trace_setup+0xd8/0x180 kernel/trace/blktrace.c:631
- blk_trace_ioctl+0x163/0x290 kernel/trace/blktrace.c:741
- blkdev_ioctl+0x111/0x770 block/ioctl.c:622
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:871 [inline]
- __se_sys_ioctl fs/ioctl.c:857 [inline]
- __x64_sys_ioctl+0x18f/0x210 fs/ioctl.c:857
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x40/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x62/0x6a
-RIP: 0033:0x7f914d80ca89
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 1c 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f914cfc4168 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007f914d89c1c8 RCX: 00007f914d80ca89
-RDX: 0000000020000380 RSI: 00000000c0481273 RDI: 0000000000000004
-RBP: 00007f914d89c1c0 R08: 00007f914cfc46c0 R09: 0000000000000000
-R10: 00007f914cfc46c0 R11: 0000000000000246 R12: 00007f914d89c1cc
-R13: 000000000000000b R14: 00007ffdb3560ef0 R15: 00007ffdb3560fd8
- </TASK>
-INFO: NMI handler (nmi_cpu_backtrace_handler) took too long to run: 2.100 msecs
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+Yeah, please do.
