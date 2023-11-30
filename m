@@ -2,41 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3BD77FF39B
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 16:30:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC1477FF3A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 16:34:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346229AbjK3Pat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 10:30:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46858 "EHLO
+        id S1346310AbjK3PeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 10:34:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232017AbjK3Par (ORCPT
+        with ESMTP id S232151AbjK3PeY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 10:30:47 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7AB9E10C2;
-        Thu, 30 Nov 2023 07:30:53 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C52DD1042;
-        Thu, 30 Nov 2023 07:31:39 -0800 (PST)
-Received: from pluto (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C83943F73F;
-        Thu, 30 Nov 2023 07:30:51 -0800 (PST)
-Date:   Thu, 30 Nov 2023 15:30:49 +0000
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc:     sudeep.holla@arm.com, linux-arm-kernel@lists.infradead.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ranjani.vaidyanathan@nxp.com, glen.wienecke@nxp.com,
-        nitin.garg_3@nxp.com, chuck.cannon@nxp.com,
-        Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH] firmware: arm_scmi: clock: implement get permissions
-Message-ID: <ZWiqqfQ73tezFmSk@pluto>
-References: <20231129082957.1319895-1-peng.fan@oss.nxp.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231129082957.1319895-1-peng.fan@oss.nxp.com>
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        Thu, 30 Nov 2023 10:34:24 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4C0610D5
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 07:34:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701358470; x=1732894470;
+  h=date:from:to:cc:subject:message-id;
+  bh=ZsnwdBv5hQvz7PzRNEkFgnK+Eo7IbocfzgB74xhWpoQ=;
+  b=meHwk815A98JJLqAa1vjcFnb7H0a8oVfNUiVrai0F8VEXZ+w0WA9ghgJ
+   FmzD5gGT+SimmdeO8wUYS3ITnsEa+tIZ5PiiFvcbR52W1pcWdH+BY9paJ
+   pGbqg+98TgHlyBwpYgNBM06KpKJNrGfVCSLxNezGvLXw/sdJxkY38Ow7f
+   Rb84naA7P7z2Z8KhoBUUazZ2AHywSt6CZNLGUThUtTHbA+DxZtlBUCQv4
+   UOM1HsMRxAlBSMqkI0rjhd1eMyqM8Ac0kxDipJl1fTO7vzNxQpfx0bBtm
+   JRU8B2mj9EummjNH1X1L4dSLDW/2C2B1zdtaXc3coCHO0Y4nabapjUMR8
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="397231089"
+X-IronPort-AV: E=Sophos;i="6.04,239,1695711600"; 
+   d="scan'208";a="397231089"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 07:34:30 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="1016666393"
+X-IronPort-AV: E=Sophos;i="6.04,239,1695711600"; 
+   d="scan'208";a="1016666393"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga006.fm.intel.com with ESMTP; 30 Nov 2023 07:34:28 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r8j3Z-0002Eg-2x;
+        Thu, 30 Nov 2023 15:34:25 +0000
+Date:   Thu, 30 Nov 2023 23:33:27 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:sched/urgent] BUILD SUCCESS
+ 23ab79e8e469e2605beec2e3ccb40d19c68dd2e0
+Message-ID: <202311302323.fckecPQy-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -45,185 +60,230 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 04:29:57PM +0800, Peng Fan (OSS) wrote:
-> From: Peng Fan <peng.fan@nxp.com>
-> 
-> ARM SCMI Spec 3.2 introduces Clock Get Permission command. This patch
-> is to add the support. For clock enable/disable, directly return zero
-> if not allow to config. For rate & parent set, directly return -EACCES
-> if not allow to set.
-> 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/urgent
+branch HEAD: 23ab79e8e469e2605beec2e3ccb40d19c68dd2e0  freezer,sched: Do not restore saved_state of a thawed task
 
-Hi Peng,
+elapsed time: 1457m
 
-thanks for this, a few comments below.
+configs tested: 211
+configs skipped: 3
 
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> ---
->  drivers/firmware/arm_scmi/clock.c | 51 +++++++++++++++++++++++++++++++
->  include/linux/scmi_protocol.h     |  2 ++
->  2 files changed, 53 insertions(+)
-> 
-> diff --git a/drivers/firmware/arm_scmi/clock.c b/drivers/firmware/arm_scmi/clock.c
-> index 98511a3aa367..ebc140f2a3c0 100644
-> --- a/drivers/firmware/arm_scmi/clock.c
-> +++ b/drivers/firmware/arm_scmi/clock.c
-> @@ -25,8 +25,13 @@ enum scmi_clock_protocol_cmd {
->  	CLOCK_POSSIBLE_PARENTS_GET = 0xC,
->  	CLOCK_PARENT_SET = 0xD,
->  	CLOCK_PARENT_GET = 0xE,
-> +	CLOCK_GET_PERMISSIONS = 0xF,
->  };
->  
-> +#define CLOCK_STATE_CONTROL_ALLOWED	BIT(31)
-> +#define CLOCK_PARENT_CONTROL_ALLOWED	BIT(30)
-> +#define CLOCK_RATE_CONTROL_ALLOWED	BIT(29)
-> +
->  enum clk_state {
->  	CLK_STATE_DISABLE,
->  	CLK_STATE_ENABLE,
-> @@ -46,6 +51,7 @@ struct scmi_msg_resp_clock_attributes {
->  #define SUPPORTS_RATE_CHANGE_REQUESTED_NOTIF(x)	((x) & BIT(30))
->  #define SUPPORTS_EXTENDED_NAMES(x)		((x) & BIT(29))
->  #define SUPPORTS_PARENT_CLOCK(x)		((x) & BIT(28))
-> +#define SUPPORTS_GET_PERMISSIONS(x)		((x) & BIT(1))
->  	u8 name[SCMI_SHORT_NAME_MAX_SIZE];
->  	__le32 clock_enable_latency;
->  };
-> @@ -281,6 +287,29 @@ static int scmi_clock_possible_parents(const struct scmi_protocol_handle *ph, u3
->  	return ret;
->  }
->  
-> +static int
-> +scmi_clock_get_permissions(const struct scmi_protocol_handle *ph, u32 clk_id,
-> +			   struct scmi_clock_info *clk, u32 *perm)
-> +{
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-mmmm...what's the *clk parameter needed for ?
-(but more on this later...)
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                               defconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                          axs101_defconfig   gcc  
+arc                                 defconfig   gcc  
+arc                         haps_hs_defconfig   gcc  
+arc                        nsim_700_defconfig   gcc  
+arc                     nsimosci_hs_defconfig   gcc  
+arc                 nsimosci_hs_smp_defconfig   gcc  
+arc                   randconfig-001-20231130   gcc  
+arc                   randconfig-002-20231130   gcc  
+arm                               allnoconfig   gcc  
+arm                       aspeed_g5_defconfig   gcc  
+arm                         assabet_defconfig   gcc  
+arm                          exynos_defconfig   gcc  
+arm                          gemini_defconfig   gcc  
+arm                           imxrt_defconfig   gcc  
+arm                        keystone_defconfig   gcc  
+arm                       multi_v4t_defconfig   gcc  
+arm                   randconfig-001-20231130   gcc  
+arm                   randconfig-002-20231130   gcc  
+arm                   randconfig-003-20231130   gcc  
+arm                   randconfig-004-20231130   gcc  
+arm                        realview_defconfig   gcc  
+arm                           stm32_defconfig   gcc  
+arm                           sunxi_defconfig   gcc  
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20231130   gcc  
+arm64                 randconfig-002-20231130   gcc  
+arm64                 randconfig-003-20231130   gcc  
+arm64                 randconfig-004-20231130   gcc  
+csky                              allnoconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20231130   gcc  
+csky                  randconfig-002-20231130   gcc  
+hexagon                          allmodconfig   clang
+hexagon                          allyesconfig   clang
+i386                             allmodconfig   clang
+i386                              allnoconfig   clang
+i386                             allyesconfig   clang
+i386         buildonly-randconfig-001-20231130   gcc  
+i386         buildonly-randconfig-002-20231130   gcc  
+i386         buildonly-randconfig-003-20231130   gcc  
+i386         buildonly-randconfig-004-20231130   gcc  
+i386         buildonly-randconfig-005-20231130   gcc  
+i386         buildonly-randconfig-006-20231130   gcc  
+i386                                defconfig   gcc  
+i386                  randconfig-001-20231130   gcc  
+i386                  randconfig-002-20231130   gcc  
+i386                  randconfig-003-20231130   gcc  
+i386                  randconfig-004-20231130   gcc  
+i386                  randconfig-005-20231130   gcc  
+i386                  randconfig-006-20231130   gcc  
+i386                  randconfig-011-20231130   clang
+i386                  randconfig-012-20231130   clang
+i386                  randconfig-013-20231130   clang
+i386                  randconfig-014-20231130   clang
+i386                  randconfig-015-20231130   clang
+i386                  randconfig-016-20231130   clang
+loongarch                        alldefconfig   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                        allyesconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20231130   gcc  
+loongarch             randconfig-002-20231130   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                         amcore_defconfig   gcc  
+m68k                       bvme6000_defconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                          hp300_defconfig   gcc  
+m68k                       m5208evb_defconfig   gcc  
+m68k                       m5249evb_defconfig   gcc  
+m68k                        m5272c3_defconfig   gcc  
+m68k                        m5407c3_defconfig   gcc  
+m68k                        mvme16x_defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                         bigsur_defconfig   gcc  
+mips                       bmips_be_defconfig   gcc  
+mips                         db1xxx_defconfig   gcc  
+mips                     decstation_defconfig   gcc  
+mips                      loongson3_defconfig   gcc  
+mips                          rb532_defconfig   gcc  
+nios2                         3c120_defconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20231130   gcc  
+nios2                 randconfig-002-20231130   gcc  
+openrisc                         allmodconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+openrisc                    or1ksim_defconfig   gcc  
+openrisc                       virt_defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                generic-32bit_defconfig   gcc  
+parisc                randconfig-001-20231130   gcc  
+parisc                randconfig-002-20231130   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   clang
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc                     asp8347_defconfig   gcc  
+powerpc                      bamboo_defconfig   gcc  
+powerpc                     ep8248e_defconfig   gcc  
+powerpc                       holly_defconfig   gcc  
+powerpc                    klondike_defconfig   gcc  
+powerpc                       maple_defconfig   gcc  
+powerpc                   motionpro_defconfig   gcc  
+powerpc                 mpc837x_rdb_defconfig   gcc  
+powerpc                     mpc83xx_defconfig   gcc  
+powerpc                      ppc6xx_defconfig   gcc  
+powerpc               randconfig-001-20231130   gcc  
+powerpc               randconfig-002-20231130   gcc  
+powerpc               randconfig-003-20231130   gcc  
+powerpc                    sam440ep_defconfig   gcc  
+powerpc                     tqm8548_defconfig   gcc  
+powerpc                        warp_defconfig   gcc  
+powerpc64             randconfig-001-20231130   gcc  
+powerpc64             randconfig-002-20231130   gcc  
+powerpc64             randconfig-003-20231130   gcc  
+riscv                            allmodconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                    nommu_k210_defconfig   gcc  
+riscv                 randconfig-001-20231130   gcc  
+riscv                 randconfig-002-20231130   gcc  
+riscv                          rv32_defconfig   clang
+s390                             allmodconfig   gcc  
+s390                              allnoconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                         ap325rxa_defconfig   gcc  
+sh                        apsh4ad0a_defconfig   gcc  
+sh                                  defconfig   gcc  
+sh                         ecovec24_defconfig   gcc  
+sh                        edosk7705_defconfig   gcc  
+sh                          polaris_defconfig   gcc  
+sh                          r7780mp_defconfig   gcc  
+sh                    randconfig-001-20231130   gcc  
+sh                    randconfig-002-20231130   gcc  
+sh                          rsk7269_defconfig   gcc  
+sh                      rts7751r2d1_defconfig   gcc  
+sh                           se7751_defconfig   gcc  
+sh                   secureedge5410_defconfig   gcc  
+sh                     sh7710voipgw_defconfig   gcc  
+sh                   sh7724_generic_defconfig   gcc  
+sh                        sh7757lcr_defconfig   gcc  
+sh                  sh7785lcr_32bit_defconfig   gcc  
+sh                              ul2_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+sparc64               randconfig-001-20231130   gcc  
+sparc64               randconfig-002-20231130   gcc  
+um                               allmodconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                    randconfig-001-20231130   gcc  
+um                    randconfig-002-20231130   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-001-20231130   gcc  
+x86_64       buildonly-randconfig-002-20231130   gcc  
+x86_64       buildonly-randconfig-003-20231130   gcc  
+x86_64       buildonly-randconfig-004-20231130   gcc  
+x86_64       buildonly-randconfig-005-20231130   gcc  
+x86_64       buildonly-randconfig-006-20231130   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64                randconfig-011-20231130   gcc  
+x86_64                randconfig-012-20231130   gcc  
+x86_64                randconfig-013-20231130   gcc  
+x86_64                randconfig-014-20231130   gcc  
+x86_64                randconfig-015-20231130   gcc  
+x86_64                randconfig-016-20231130   gcc  
+x86_64                randconfig-071-20231130   gcc  
+x86_64                randconfig-072-20231130   gcc  
+x86_64                randconfig-073-20231130   gcc  
+x86_64                randconfig-074-20231130   gcc  
+x86_64                randconfig-075-20231130   gcc  
+x86_64                randconfig-076-20231130   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                            allnoconfig   gcc  
+xtensa                           allyesconfig   gcc  
+xtensa                  cadence_csp_defconfig   gcc  
+xtensa                randconfig-001-20231130   gcc  
+xtensa                randconfig-002-20231130   gcc  
+xtensa                    smp_lx200_defconfig   gcc  
 
-> +	struct scmi_xfer *t;
-> +	int ret;
-> +
-> +	ret = ph->xops->xfer_get_init(ph, CLOCK_GET_PERMISSIONS,
-> +				      sizeof(clk_id), sizeof(*perm), &t);
-> +	if (ret)
-> +		return ret;
-> +
-> +	put_unaligned_le32(clk_id, t->tx.buf);
-> +
-> +	ret = ph->xops->do_xfer(ph, t);
-> +	if (!ret)
-> +		*perm = get_unaligned_le32(t->rx.buf);
-> +
-> +	ph->xops->xfer_put(ph, t);
-> +
-> +	return ret;
-> +}
-> +
->  static int scmi_clock_attributes_get(const struct scmi_protocol_handle *ph,
->  				     u32 clk_id, struct scmi_clock_info *clk,
->  				     u32 version)
-> @@ -307,6 +336,7 @@ static int scmi_clock_attributes_get(const struct scmi_protocol_handle *ph,
->  		if (PROTOCOL_REV_MAJOR(version) >= 0x2)
->  			latency = le32_to_cpu(attr->clock_enable_latency);
->  		clk->enable_latency = latency ? : U32_MAX;
-> +		clk->attributes = attributes;
->  	}
->  
->  	ph->xops->xfer_put(ph, t);
-> @@ -327,6 +357,8 @@ static int scmi_clock_attributes_get(const struct scmi_protocol_handle *ph,
->  			clk->rate_change_requested_notifications = true;
->  		if (SUPPORTS_PARENT_CLOCK(attributes))
->  			scmi_clock_possible_parents(ph, clk_id, clk);
-> +		if (SUPPORTS_GET_PERMISSIONS(attributes))
-> +			scmi_clock_get_permissions(ph, clk_id, clk, &clk->perm);
->  	}
->  
->  	return ret;
-> @@ -499,6 +531,11 @@ static int scmi_clock_rate_set(const struct scmi_protocol_handle *ph,
->  	struct scmi_xfer *t;
->  	struct scmi_clock_set_rate *cfg;
->  	struct clock_info *ci = ph->get_priv(ph);
-> +	struct scmi_clock_info *clk = ci->clk + clk_id;
-> +
-> +	if (SUPPORTS_GET_PERMISSIONS(clk->attributes) &&
-> +	    !(clk->perm & CLOCK_RATE_CONTROL_ALLOWED))
-> +		return -EACCES;
->  
->  	ret = ph->xops->xfer_get_init(ph, CLOCK_RATE_SET, sizeof(*cfg), 0, &t);
->  	if (ret)
-> @@ -585,6 +622,10 @@ scmi_clock_set_parent(const struct scmi_protocol_handle *ph, u32 clk_id,
->  	if (parent_id >= clk->num_parents)
->  		return -EINVAL;
->  
-> +	if (SUPPORTS_GET_PERMISSIONS(clk->attributes) &&
-> +	    !(clk->perm & CLOCK_PARENT_CONTROL_ALLOWED))
-> +		return -EACCES;
-> +
->  	ret = ph->xops->xfer_get_init(ph, CLOCK_PARENT_SET,
->  				      sizeof(*cfg), 0, &t);
->  	if (ret)
-> @@ -668,6 +709,11 @@ static int scmi_clock_enable(const struct scmi_protocol_handle *ph, u32 clk_id,
->  			     bool atomic)
->  {
->  	struct clock_info *ci = ph->get_priv(ph);
-> +	struct scmi_clock_info *clk = ci->clk + clk_id;
-> +
-> +	if (SUPPORTS_GET_PERMISSIONS(clk->attributes) &&
-> +	    !(clk->perm & CLOCK_STATE_CONTROL_ALLOWED))
-> +		return 0;
-
-So this returning success when not allowed to change could be controversial,
-as said, but anyway I would not hide this here at the protocol layer:
-IOW, it is good that we now have the perm bits to check to avoid sending an
-un-needed message that will be denied, but you should report -EACCESS from
-the protocol operation here up to the caller (like you did with the other
-parent/rate ops) and let instead the clk-scmi driver to deal with the -EACCESS
-retcode deciding (maybe) to return success when the clock is marked as NOT
-allowing control of the state.
-
-Moreover I would not expose all the attributes and perm flag mask in
-clk_info...maybe you could just perform all these perms checks in
-get_permission and set per-clock individual flags that can be then checked
-here AND in the clk-scmi driver just by looking up clk_info (instead of
-having to export all the macros to dissect the bitfields)
-
-IOW you could check all the perms once for all in clock_get_permission
-and setting something like
-
-	ret = ph->xops->do_xfer(ph, t);
-	if (!ret) {
-		perm = get_unaligned_le32(t->rx.buf);
-
-		clk->state_ctrl_forbidden = !(perm & CLOCK_PARENT_CONTROL_ALLOWED);
-		clk->rate_ctrl_forbidden = !(perm & CLOCK_RATE_CONTROL_ALLOWED);
-		clk->parent_ctrl_forbidden = !(perm & CLOCK_PARENT_CONTROL_ALLOWED);
-	}
-
-for each clock and then here in the clock operations just:
-
-	if (clk->state_ctrl_forbidden)
-		return -EACCESS;
-
-etc etc
-
-(with all the clocks NOT supporting the new commands so defaulting to
-forbidden=false....)
-
-while in the clk-scmi driver you could similarly filter out the DENY with
-
-	if (ret == -EACCESS && clk->state_control_forbidden)
-		return 0;
-
-(if accepted and not too much controversial ...)
-
-This way we avoid exposing all the attributes and all the related macros
-while keeping all the strictly protocol related stuff in the protocol
-layer...so that in case of further changes the above boolean wont have
-to be touched again. (even though is a bit wasteful in terms of space....)
-
-Does this make any sense ? :P
-
-Thanks,
-Cristian
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
