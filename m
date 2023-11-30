@@ -2,170 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB2917FFC35
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 21:15:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1EB37FFC5A
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 21:18:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376860AbjK3UPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 15:15:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50202 "EHLO
+        id S232332AbjK3URv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 15:17:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376678AbjK3UPM (ORCPT
+        with ESMTP id S229493AbjK3URp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 15:15:12 -0500
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 070C71708
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 12:15:18 -0800 (PST)
-Received: by mail-qk1-x735.google.com with SMTP id af79cd13be357-77d6b28aa9aso70182585a.3
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 12:15:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google; t=1701375317; x=1701980117; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Nk58INbxx30xLOHUnMGn9OdPuZubp6H+G9gT2CVk01Q=;
-        b=DG3KIdcPWSPhvrI24R2yPywnWd22F+iBx3WlRdOltvRY0Sii72Lc1kKHEDP6+GWAzC
-         a1YyCvr851G96f6nsxNcxKrEv2IojfTTwq4F9oyqTuWkCMSCU4BXK0rJUeDjrR1Cmbgx
-         Ftlrexb+4koXwddoNm8+26IdW25lYphdEMRwtYEOPE+EN/DZ0hR7fzyrXZG1oHrVQjpz
-         9U96cwYZuZZ6zW+Nfi20znE5cxiKfH0nimxd+1QGK/3Rt/QwiycSA/v94nME74OWxfsk
-         lVV3xtnzoRur7J8d3eLocUUi6tciH5+UWjYGLQKbDe9ovY8/kDfRdhGH82VaDQq03vVN
-         B9nw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701375317; x=1701980117;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Nk58INbxx30xLOHUnMGn9OdPuZubp6H+G9gT2CVk01Q=;
-        b=m5TeQ/VAJwefhM3IR0GvBrWd51/0WdUVCJRyFDcRiEqCtx2XayU7VXV5DjO6qBmETN
-         g/Bl96yzwfbhTAALZPz6WsSyHWohnWiJc5Tj+NjNePZRdL54E0VXfuvjM3bjvt10bw58
-         9wpEPnuHINWfqbY3RUgKIakeaDK398cKNXUIaTJWLL5mQcqFuoxYiB/0digMwEPCfwZy
-         s20RWFxyV+FZi2skkdqzEYfxQMC5iwcLVhcjpstd9ZDxcgiL2R+T6+p0gLzcj4ErNdR+
-         u2BldRBuW/s/5JLULm0KrcK+gZOlThrdZNAnisbNB5Qrzh2maWfhB8vbFtsrbuAIrgY0
-         RcQQ==
-X-Gm-Message-State: AOJu0YymhNDpNOsrUEo3ZqesTMPjcdrqIuZrLxfhvoODSUw/gKdmpYWJ
-        vLfoP48plh5V81mpPfNaauWUDA==
-X-Google-Smtp-Source: AGHT+IGvd2g71GGje9dR/iX9F2NrVDVxx6CHTrqO1K3GZh4lvqRPIVhnZdc8oub8jQLvnHQLKAhyCg==
-X-Received: by 2002:a05:6214:16d:b0:67a:2942:988 with SMTP id y13-20020a056214016d00b0067a29420988mr18670319qvs.21.1701375317117;
-        Thu, 30 Nov 2023 12:15:17 -0800 (PST)
-Received: from soleen.c.googlers.com.com (55.87.194.35.bc.googleusercontent.com. [35.194.87.55])
-        by smtp.gmail.com with ESMTPSA id e1-20020a0cb441000000b0067a35608186sm795252qvf.28.2023.11.30.12.15.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Nov 2023 12:15:16 -0800 (PST)
-From:   Pasha Tatashin <pasha.tatashin@soleen.com>
-To:     akpm@linux-foundation.org, alim.akhtar@samsung.com,
-        alyssa@rosenzweig.io, asahi@lists.linux.dev,
-        baolu.lu@linux.intel.com, bhelgaas@google.com,
-        cgroups@vger.kernel.org, corbet@lwn.net, david@redhat.com,
-        dwmw2@infradead.org, hannes@cmpxchg.org, heiko@sntech.de,
-        iommu@lists.linux.dev, jernej.skrabec@gmail.com,
-        jonathanh@nvidia.com, joro@8bytes.org,
-        krzysztof.kozlowski@linaro.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-rockchip@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev,
-        linux-tegra@vger.kernel.org, lizefan.x@bytedance.com,
-        marcan@marcan.st, mhiramat@kernel.org, m.szyprowski@samsung.com,
-        pasha.tatashin@soleen.com, paulmck@kernel.org,
-        rdunlap@infradead.org, robin.murphy@arm.com, samuel@sholland.org,
-        suravee.suthikulpanit@amd.com, sven@svenpeter.dev,
-        thierry.reding@gmail.com, tj@kernel.org, tomas.mudrunka@gmail.com,
-        vdumpa@nvidia.com, wens@csie.org, will@kernel.org,
-        yu-cheng.yu@intel.com
-Subject: [PATCH v2 10/10] iommu: account IOMMU allocated memory
-Date:   Thu, 30 Nov 2023 20:15:04 +0000
-Message-ID: <20231130201504.2322355-11-pasha.tatashin@soleen.com>
-X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
-In-Reply-To: <20231130201504.2322355-1-pasha.tatashin@soleen.com>
-References: <20231130201504.2322355-1-pasha.tatashin@soleen.com>
-MIME-Version: 1.0
+        Thu, 30 Nov 2023 15:17:45 -0500
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2048.outbound.protection.outlook.com [40.107.22.48])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CB3A1712;
+        Thu, 30 Nov 2023 12:17:50 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PcyPuhDGJuQ0h2cVAmsoWJQ4OLsWRctkl/TlZS+0S2D8E79G8Ao+q5dspgvSEupDXT1mLP6gt6qtOsOP/J+UcbLxNyzVlQMMF09nSI5/q4SjSOuVokeTgsbt0fNd901/d4gWUhJ8an9V9kv0yInFEy1t5B54tRNg7+HoYdffeHcYrIZUPjCqziKO+D9SxaS0kb4/sZqYgfbDwyWlWy5iGwlpmJnGTCu4Jstsj3N27Ai05dFYcs/Yr0wdDdnru3aCMgrICCdfZjTHiqcmpClWsDsBD8dqLvwJD89YSUOTE4M2jyQBB+KukWqG13T3kqFNymbOPhu6KzexYfNZZhAykQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=B6d2dxoOPTVQLUSqU3ggt4ZWS29MC9i2Alq0HpoNNsw=;
+ b=UTriP18QkYAPQP560AkIDijaxqU4/5shIbiLsJDihY80jCKUmo5gCxdrQY3vdaYEeD+4IDclWwEejPcsyIYnLAo26YsksEG3Sbza8xaHYVDRj1D3Qix3i7QyuWhZoZ6S+6pU3V9kcW+ENF9ueHQblbSzvLjRjbUKkqx1gdUPgalSeO0QQ0amSZZ/duPe5isYgrYjE2ceOJSkAGQxt/1YfIeNNqm8H3vCxZHpC9FevvJrQEPgVbHBfn/VC9X8fiZIfY00HV6HrH4P7L64dkRaNv7R7/ZQ6KyJO2c0M0gA03wwB7gRpoPIjWC+41dnUeB7ZuwTryzPGeIYUn+fZc7w8g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=B6d2dxoOPTVQLUSqU3ggt4ZWS29MC9i2Alq0HpoNNsw=;
+ b=V9ij63/BqDb6iZqaIvQI/uzpySBigOU6ipMbk5aR1Ldjqecjc8TXEqRx4zmvSn1EqjOiJZH4ppE9F8NM3JBpEaexZO1tV3b1jqoVxdZzAJ7HRiWSo8WfkmcaisJgcrFjB1jdlF141WmaZDJJcyrjcc8N4fhm0iKgq3vFmDQb9eA=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
+ by AM7PR04MB6838.eurprd04.prod.outlook.com (2603:10a6:20b:10a::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.13; Thu, 30 Nov
+ 2023 20:17:47 +0000
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::95f5:5118:258f:ee40]) by AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::95f5:5118:258f:ee40%6]) with mapi id 15.20.7046.015; Thu, 30 Nov 2023
+ 20:17:47 +0000
+Date:   Thu, 30 Nov 2023 15:17:39 -0500
+From:   Frank Li <Frank.li@nxp.com>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     bhelgaas@google.com, imx@lists.linux.dev, kw@linux.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        lpieralisi@kernel.org, minghuan.Lian@nxp.com, mingkai.hu@nxp.com,
+        robh@kernel.org, roy.zang@nxp.com
+Subject: Re: [PATCH v4 4/4] PCI: layerscape: Add suspend/resume for ls1043a
+Message-ID: <ZWjt412xtyZWVjdL@lizhi-Precision-Tower-5810>
+References: <20231129214412.327633-1-Frank.Li@nxp.com>
+ <20231129214412.327633-5-Frank.Li@nxp.com>
+ <20231130165100.GV3043@thinkpad>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231130165100.GV3043@thinkpad>
+X-ClientProxiedBy: BY5PR20CA0003.namprd20.prod.outlook.com
+ (2603:10b6:a03:1f4::16) To AM6PR04MB4838.eurprd04.prod.outlook.com
+ (2603:10a6:20b:4::16)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|AM7PR04MB6838:EE_
+X-MS-Office365-Filtering-Correlation-Id: b23661c9-8a0d-4b5a-8fb4-08dbf1e16b10
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: UpIrmstMw2HNIrIflCXkcCwQQLTbks4pEUqLE8HE9i6dwnnMoRrBgBS4E3tqFt5DR7y9BCHzIe+AP2deNqHDlvpCRDRVOk9tQhWPtr5Kf/5M0OIv7Q/AnGpPQpkpu0CN1D1DJSHLE+9llr3sURIdK9VjoJi5W9BUPqgKToxFfknzL7Jz9UksCEgyIgMEf6OcK34DhI0ZsyXo1nYE0rIhB+BEQU8bMK0bcYsRwkFvobUd2CbUO8x+BiliEvgTWBk+2JE8kvgh+sAPHtwruiKvtiQfPIqnKsynKsia9k7FF/Zj59lzW9MNTnSzIINPZ42v58sl4TPw+gRkcND5MCoPkIWtS49d5iOtbGUPl6or4L0Na13HR4qFsJMiHtGNPuD4MosIBl7q3Xa0k+c3Ca9RtoJV5GyrYwgSTnTsCY5OhXrZND3Tl+aTYpH4I7wKez3v5T93+nbrHLaenPulh8ORNm+9pvwwKA+cnPhoQ6DLkHP8AZcGGJ5++BKERvVZ9P3NSIvdVM8JLqHEEaQ4BRUoH+raQB0PqGQ4sEKwz1RoZmnG+HGMDd+FjTvDGvZB46yN/NBBj7T25Y5Nxsm1zYp2Wmswd3MqSEljua5zfkEKW2lfZPUsgUgk6eYIQURG5BdCiGfBWvIPnmBEEJr3ih/++OkqvpNJkdmBv6YRjMMsJnw=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(396003)(376002)(346002)(39860400002)(366004)(136003)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(38350700005)(86362001)(66946007)(66476007)(6916009)(38100700002)(83380400001)(26005)(6506007)(6512007)(52116002)(9686003)(6666004)(2906002)(316002)(33716001)(66556008)(15650500001)(6486002)(8676002)(5660300002)(478600001)(4326008)(7416002)(8936002)(41300700001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Wk92cmJTeGxqNjBZTUIvMlprUjdQQjVocTR0UEpCOU9MWjZaQkFOeFhxaDN4?=
+ =?utf-8?B?OTE0aEVTbTNBZ0FUQ1FYN21mR3Zuem1lZElZakhJMkc4dWdkSjhYYzc4T2cy?=
+ =?utf-8?B?djhheVVZZDY5NTkwMGlySE9hSHlzckc4OUU5bzBWNmhuK3c5a3F3VDg4WnNs?=
+ =?utf-8?B?dFFhYytOSnJOTERvZHE5SmdETHVTRzdMU2lKWHJ2dThFTlZURGxGamROY0Q2?=
+ =?utf-8?B?OVVlN1FHdlJLeHN1Q1ZlUy84VnlKemhGOEh1QmNrVjB4SzU1b1RiWG1zY0JI?=
+ =?utf-8?B?czNLMlZjNVRRNThpNlNBQVN4c2pqMjhBY2h5Slo3bTVnNHpUN202dmloOU8z?=
+ =?utf-8?B?dmhEaS9uZTFqRnhDdzdXVTJWQWZRdGJEUkIray9GQnZ2dytsa3c2dDhmMW42?=
+ =?utf-8?B?S2NyV05OU2lEMUZFM2dlbGZpVnBrK0dBeUJZTStscEdkb01mVkpqcWFhZ2k3?=
+ =?utf-8?B?cUNsWU1GSFY5bXphaUVrYzhscXZibTJNYzJsQW9qVFovU2tFL3lKbUp4VThR?=
+ =?utf-8?B?TzVJV1Z5Z0dOUks0eEpoRVVZb2lGem1sZTdHQUZKVkl3cHUvem92S0J1RlN4?=
+ =?utf-8?B?UDI2bVcxK29pcHNDWGk0QjlSTDgzTWhFV1JlRmluS2hGQ0diYlZZZkJVc0Ux?=
+ =?utf-8?B?RXBTSmNLYjI4TW5ReXlFUlFxT1dUNGhEZEZoQWYrWExMODdFamNnSHNOTnpG?=
+ =?utf-8?B?OFNURFZNUm9xdVA4N3RCQTNDVnNxbVVKcUNvWjh6OTgxUS9QdURtTDdaZ0hP?=
+ =?utf-8?B?WjM3ZzFrSHc2Zjc2ZE5BcnlVL2tBenM3Nzc3ZVA4SExrSDBqV29kTXJXaGYx?=
+ =?utf-8?B?dGJVaFNNcDIzZk9MK1FFODdrRnlzU1J5RCtjdnJldlhlNU8yajVlZ3JGUEZk?=
+ =?utf-8?B?bm12MldsdzJKM2wvR3R3V0pXWU45TTMrQUlyS3Y4bDk5MnBUaDhuZjdQcFln?=
+ =?utf-8?B?QUViVnl4ZTh2aVN3Zk9DWXo2emNBRTB2WWQ5SkdBSm5YaXhBVkZmUkpVMkhj?=
+ =?utf-8?B?eFV0bk9xYmJSY2tqMy82b29sVzMva1JpSiswSFA2Wjc4NjVLU2RNOE5uTE5R?=
+ =?utf-8?B?UGUra2krcldRWFRJNVZqTktyVlYyVWlNMFo0Zng0dGE0aDFVQndkMmhDQWRP?=
+ =?utf-8?B?bG5rbHo2QzkrZ1RvODQvL0FoQjZCci90NXIwZ25URjVibzVGbGRIeWkvZFdn?=
+ =?utf-8?B?UkU3SXF3bXVXVWQ1UThpdEZDL2JueHJmQ2hNT1RBZ1F4czhWUUU1N1ZXQ3Zk?=
+ =?utf-8?B?dDc3ekxWTWtuREtzRTVselI0a2JIYnhINU9IY3J5a2h0OGVGdkZET2hOVHQ3?=
+ =?utf-8?B?SzFNSTF6d3ppN0NDV2V0Z3NjZ3B0MjJhWFYvSEkvM2E4ZlRUOHlsQktENmd1?=
+ =?utf-8?B?Yk00bUFWYUR2NlNKNUYxM285UUhLem9RSWQ2OU9Hd05xSUZvbGtzdTJnd0Ja?=
+ =?utf-8?B?dTdOZmdMb01jcmpBaFBkSWxIZCt5MzNxUHNLTUVUQUZreUpHenVFdmxwSmc1?=
+ =?utf-8?B?RURUWWRCQzRsSlZjcHY5dCtFSFk0Mjk3bzZSSnVoWmdwN0NWRnJpWU8xTXBU?=
+ =?utf-8?B?UVVVaHNYOGpjR3hTWEZoOEJvVEpicjFxcUpqZlYzMyszMFFobTYwZ3Faa1hI?=
+ =?utf-8?B?Uy9mR1AvTzQ4ZUVQdm00T1JhQUFUSEJkNnVMTytGWEtTODVzemcweklYRnFw?=
+ =?utf-8?B?T0dHTjQrQmJjY21Kcm0xUWdGN0JVZExiTHdhQmpqbjBtN1AxcmFjREFybCsr?=
+ =?utf-8?B?YmJEbktwQUN1SUM3WFY3VHR6eHI0R1NWTVhLaFJFNEN3VXkySTVlaTZTdDVq?=
+ =?utf-8?B?ZlZveDVKSWNXWW1MdW96MEt0dHRvQUdyOE1lcWZ0SmxHU2d6OVIwUW11QlJU?=
+ =?utf-8?B?aTdFYjFuM2NVcko4cWErbmV5Rm1qc2FSVmIvSFNRMzRvQkVNYUlLeTFwWnZX?=
+ =?utf-8?B?WHQ3Q3pGcllUTGhhR2E0aDl4alBDSVB3R055N0JPdkRKWVI5R1lqclBDemZx?=
+ =?utf-8?B?Mk1PeGJrYTczNTdjWFVhQ3lkQUhZRUxaV1lFWjdoNTF3Z09OMGwwQWwwUS92?=
+ =?utf-8?B?ZkJtK09yUGE5bDNIU3RwTlVieHdIT0RWUHQ2Vm5qVlRhOEZnYnVRWlpoQzNX?=
+ =?utf-8?Q?JOa4=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b23661c9-8a0d-4b5a-8fb4-08dbf1e16b10
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Nov 2023 20:17:47.3036
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: a94QdLmhZOBqXBW/9g/vIBLeicBcFf3kDqS0L29EGPIV7OXhEiU8u6lI09qFHQq3bb7zDKps/bCsckqCHVVFIg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR04MB6838
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to be able to limit the amount of memory that is allocated
-by IOMMU subsystem, the memory must be accounted.
+On Thu, Nov 30, 2023 at 10:21:00PM +0530, Manivannan Sadhasivam wrote:
+> On Wed, Nov 29, 2023 at 04:44:12PM -0500, Frank Li wrote:
+> > In the suspend path, PME_Turn_Off message is sent to the endpoint to
+> > transition the link to L2/L3_Ready state. In this SoC, there is no way to
+> > check if the controller has received the PME_To_Ack from the endpoint or
+> > not. So to be on the safer side, the driver just waits for
+> > PCIE_PME_TO_L2_TIMEOUT_US before asserting the SoC specific PMXMTTURNOFF
+> > bit to complete the PME_Turn_Off handshake. This link would then enter
+> > L2/L3 state depending on the VAUX supply.
+> > 
+> > In the resume path, the link is brought back from L2 to L0 by doing a
+> > software reset.
+> > 
+> 
+> Same comment on the patch description as on patch 2/4.
+> 
+> > Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> > ---
+> > 
+> > Notes:
+> >     Change from v3 to v4
+> >     - Call scfg_pcie_send_turnoff_msg() shared with ls1021a
+> >     - update commit message
+> >     
+> >     Change from v2 to v3
+> >     - Remove ls_pcie_lut_readl(writel) function
+> >     
+> >     Change from v1 to v2
+> >     - Update subject 'a' to 'A'
+> > 
+> >  drivers/pci/controller/dwc/pci-layerscape.c | 63 ++++++++++++++++++++-
+> >  1 file changed, 62 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/pci/controller/dwc/pci-layerscape.c b/drivers/pci/controller/dwc/pci-layerscape.c
+> > index 590e07bb27002..d39700b3afaaa 100644
+> > --- a/drivers/pci/controller/dwc/pci-layerscape.c
+> > +++ b/drivers/pci/controller/dwc/pci-layerscape.c
+> > @@ -41,6 +41,15 @@
+> >  #define SCFG_PEXSFTRSTCR	0x190
+> >  #define PEXSR(idx)		BIT(idx)
+> >  
+> > +/* LS1043A PEX PME control register */
+> > +#define SCFG_PEXPMECR		0x144
+> > +#define PEXPME(idx)		BIT(31 - (idx) * 4)
+> > +
+> > +/* LS1043A PEX LUT debug register */
+> > +#define LS_PCIE_LDBG	0x7fc
+> > +#define LDBG_SR		BIT(30)
+> > +#define LDBG_WE		BIT(31)
+> > +
+> >  #define PCIE_IATU_NUM		6
+> >  
+> >  struct ls_pcie_drvdata {
+> > @@ -225,6 +234,45 @@ static int ls1021a_pcie_exit_from_l2(struct dw_pcie_rp *pp)
+> >  	return scfg_pcie_exit_from_l2(pcie->scfg, SCFG_PEXSFTRSTCR, PEXSR(pcie->index));
+> >  }
+> >  
+> > +static void ls1043a_pcie_send_turnoff_msg(struct dw_pcie_rp *pp)
+> > +{
+> > +	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+> > +	struct ls_pcie *pcie = to_ls_pcie(pci);
+> > +
+> > +	scfg_pcie_send_turnoff_msg(pcie->scfg, SCFG_PEXPMECR, PEXPME(pcie->index));
+> > +}
+> > +
+> > +static int ls1043a_pcie_exit_from_l2(struct dw_pcie_rp *pp)
+> > +{
+> > +	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+> > +	struct ls_pcie *pcie = to_ls_pcie(pci);
+> > +	u32 val;
+> > +
+> > +	/*
+> > +	 * Only way let PEX module exit L2 is do a software reset.
+> 
+> Can you expand PEX? What is it used for?
+> 
+> Also if the reset is only for the PEX module, please use the same comment in
+> both patches 2 and 4. Patch 2 doesn't mention PEX in the comment.
 
-Account IOMMU as part of the secondary pagetables as it was discussed
-at LPC.
+After read spec again, I think PEX is pci express. So it should software
+reset controller. I don't know what exactly did in the chip. But without
+below code, PCIe can't exit L2/L3.
 
-The value of SecPageTables now contains mmeory allocation by IOMMU
-and KVM.
+Any harmful if dwc controller reset? Anyway these code works well with
+intel network card.
 
-Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
----
- Documentation/admin-guide/cgroup-v2.rst | 2 +-
- Documentation/filesystems/proc.rst      | 4 ++--
- drivers/iommu/iommu-pages.h             | 2 ++
- include/linux/mmzone.h                  | 2 +-
- 4 files changed, 6 insertions(+), 4 deletions(-)
+Frank
 
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 3f85254f3cef..e004e05a7cde 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -1418,7 +1418,7 @@ PAGE_SIZE multiple when read back.
- 	  sec_pagetables
- 		Amount of memory allocated for secondary page tables,
- 		this currently includes KVM mmu allocations on x86
--		and arm64.
-+		and arm64 and IOMMU page tables.
- 
- 	  percpu (npn)
- 		Amount of memory used for storing per-cpu kernel
-diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
-index 49ef12df631b..86f137a9b66b 100644
---- a/Documentation/filesystems/proc.rst
-+++ b/Documentation/filesystems/proc.rst
-@@ -1110,8 +1110,8 @@ KernelStack
- PageTables
-               Memory consumed by userspace page tables
- SecPageTables
--              Memory consumed by secondary page tables, this currently
--              currently includes KVM mmu allocations on x86 and arm64.
-+              Memory consumed by secondary page tables, this currently includes
-+              KVM mmu and IOMMU allocations on x86 and arm64.
- NFS_Unstable
-               Always zero. Previous counted pages which had been written to
-               the server, but has not been committed to stable storage.
-diff --git a/drivers/iommu/iommu-pages.h b/drivers/iommu/iommu-pages.h
-index 69895a355c0c..cdd257585284 100644
---- a/drivers/iommu/iommu-pages.h
-+++ b/drivers/iommu/iommu-pages.h
-@@ -27,6 +27,7 @@ static inline void __iommu_alloc_account(struct page *pages, int order)
- 	const long pgcnt = 1l << order;
- 
- 	mod_node_page_state(page_pgdat(pages), NR_IOMMU_PAGES, pgcnt);
-+	mod_lruvec_page_state(pages, NR_SECONDARY_PAGETABLE, pgcnt);
- }
- 
- /**
-@@ -39,6 +40,7 @@ static inline void __iommu_free_account(struct page *pages, int order)
- 	const long pgcnt = 1l << order;
- 
- 	mod_node_page_state(page_pgdat(pages), NR_IOMMU_PAGES, -pgcnt);
-+	mod_lruvec_page_state(pages, NR_SECONDARY_PAGETABLE, -pgcnt);
- }
- 
- /**
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index 1a4d0bba3e8b..aaabb385663c 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -199,7 +199,7 @@ enum node_stat_item {
- 	NR_KERNEL_SCS_KB,	/* measured in KiB */
- #endif
- 	NR_PAGETABLE,		/* used for pagetables */
--	NR_SECONDARY_PAGETABLE, /* secondary pagetables, e.g. KVM pagetables */
-+	NR_SECONDARY_PAGETABLE, /* secondary pagetables, KVM & IOMMU */
- #ifdef CONFIG_IOMMU_SUPPORT
- 	NR_IOMMU_PAGES,		/* # of pages allocated by IOMMU */
- #endif
--- 
-2.43.0.rc2.451.g8631bc7472-goog
-
+> 
+> - Mani
+> 
+> > +	 * LDBG_WE: allows the user to have write access to the PEXDBG[SR] for both setting and
+> > +	 *	    clearing the soft reset on the PEX module.
+> > +	 * LDBG_SR: When SR is set to 1, the PEX module enters soft reset.
+> > +	 */
+> > +	val = ls_pcie_pf_lut_readl(pcie, LS_PCIE_LDBG);
+> > +	val |= LDBG_WE;
+> > +	ls_pcie_pf_lut_writel(pcie, LS_PCIE_LDBG, val);
+> > +
+> > +	val = ls_pcie_pf_lut_readl(pcie, LS_PCIE_LDBG);
+> > +	val |= LDBG_SR;
+> > +	ls_pcie_pf_lut_writel(pcie, LS_PCIE_LDBG, val);
+> > +
+> > +	val = ls_pcie_pf_lut_readl(pcie, LS_PCIE_LDBG);
+> > +	val &= ~LDBG_SR;
+> > +	ls_pcie_pf_lut_writel(pcie, LS_PCIE_LDBG, val);
+> > +
+> > +	val = ls_pcie_pf_lut_readl(pcie, LS_PCIE_LDBG);
+> > +	val &= ~LDBG_WE;
+> > +	ls_pcie_pf_lut_writel(pcie, LS_PCIE_LDBG, val);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> >  static const struct dw_pcie_host_ops ls_pcie_host_ops = {
+> >  	.host_init = ls_pcie_host_init,
+> >  	.pme_turn_off = ls_pcie_send_turnoff_msg,
+> > @@ -242,6 +290,19 @@ static const struct ls_pcie_drvdata ls1021a_drvdata = {
+> >  	.exit_from_l2 = ls1021a_pcie_exit_from_l2,
+> >  };
+> >  
+> > +static const struct dw_pcie_host_ops ls1043a_pcie_host_ops = {
+> > +	.host_init = ls_pcie_host_init,
+> > +	.pme_turn_off = ls1043a_pcie_send_turnoff_msg,
+> > +};
+> > +
+> > +static const struct ls_pcie_drvdata ls1043a_drvdata = {
+> > +	.pf_lut_off = 0x10000,
+> > +	.pm_support = true,
+> > +	.scfg_support = true,
+> > +	.ops = &ls1043a_pcie_host_ops,
+> > +	.exit_from_l2 = ls1043a_pcie_exit_from_l2,
+> > +};
+> > +
+> >  static const struct ls_pcie_drvdata layerscape_drvdata = {
+> >  	.pf_lut_off = 0xc0000,
+> >  	.pm_support = true,
+> > @@ -252,7 +313,7 @@ static const struct of_device_id ls_pcie_of_match[] = {
+> >  	{ .compatible = "fsl,ls1012a-pcie", .data = &layerscape_drvdata },
+> >  	{ .compatible = "fsl,ls1021a-pcie", .data = &ls1021a_drvdata },
+> >  	{ .compatible = "fsl,ls1028a-pcie", .data = &layerscape_drvdata },
+> > -	{ .compatible = "fsl,ls1043a-pcie", .data = &ls1021a_drvdata },
+> > +	{ .compatible = "fsl,ls1043a-pcie", .data = &ls1043a_drvdata },
+> >  	{ .compatible = "fsl,ls1046a-pcie", .data = &layerscape_drvdata },
+> >  	{ .compatible = "fsl,ls2080a-pcie", .data = &layerscape_drvdata },
+> >  	{ .compatible = "fsl,ls2085a-pcie", .data = &layerscape_drvdata },
+> > -- 
+> > 2.34.1
+> > 
+> 
+> -- 
+> மணிவண்ணன் சதாசிவம்
