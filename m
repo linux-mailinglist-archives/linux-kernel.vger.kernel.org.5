@@ -2,62 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60BF97FF045
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 14:36:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF24F7FF04E
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 14:38:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345608AbjK3Ngi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 08:36:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42178 "EHLO
+        id S1345620AbjK3Nhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 08:37:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345581AbjK3Ngf (ORCPT
+        with ESMTP id S1345606AbjK3Nhw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 08:36:35 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1232790;
-        Thu, 30 Nov 2023 05:36:41 -0800 (PST)
-Date:   Thu, 30 Nov 2023 13:36:39 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1701351400;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6K7kd2z3kKnUokpb+0NcJO6tvamF5TDjcjebi3KIdqc=;
-        b=iEQD2jW+DhKq7megFOrR7h4hOkpEvBpmbGC4TLamh8x5nyKYRvh4T0wM5VceYBMg/LDKqc
-        lVr/GAgVLbYsIQGKHzYmLcK5gDtBtkrt80HNC0o80Q3MjpYYkgl9KuO0CoICQNAe1laa1I
-        K1VYV47Shsa5O+3BNYT2R4NG8VsBpQ+bx0yd2p6g/azqQ4MPwY1R3nVC9AO3ZUDvdmnGyl
-        vPCf5QXUUkq51rTAoASi9qqoxZdb4kCCmFEqMBMJq0gzbSV/E57KQecxzG9MM0I0Fngu/B
-        g12XFIng4bbAeSr8HdXTVVd4QJzhvtwq3BW4FIccGf4YR2rYmxEozW0c9RsDIw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1701351400;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6K7kd2z3kKnUokpb+0NcJO6tvamF5TDjcjebi3KIdqc=;
-        b=fuXRn3EiFJ+BulRBIxVFbwLX6fGXfv737gRrWs7PLVCO8qv1biZrWZq2HR66EWOarAYe6u
-        L/GZwf8dKpZButDQ==
-From:   "tip-bot2 for Alexander Antonov" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] perf/x86/intel/uncore: Fix NULL pointer dereference
- issue in upi_fill_topology()
-Cc:     Kyle Meyer <kyle.meyer@hpe.com>,
-        Alexander Antonov <alexander.antonov@linux.intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Kan Liang <kan.liang@linux.intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20231127185246.2371939-2-alexander.antonov@linux.intel.com>
-References: <20231127185246.2371939-2-alexander.antonov@linux.intel.com>
+        Thu, 30 Nov 2023 08:37:52 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF4ADC4;
+        Thu, 30 Nov 2023 05:37:58 -0800 (PST)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AUBt4CI032596;
+        Thu, 30 Nov 2023 13:37:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=D4urVbhmcVHg+zDN+1uI7L+DvfPy0F3NUE4iAdZuAMU=;
+ b=iAg/YnWET+uB+v8h2hMrfuDlzbImm0aglXwfYSLmR8CkvKREDyetOhfXG2AY9NC9FMAG
+ 0GWHV2RYIIO69gI8K6cMRwZrYcLdbq5fhxzY2pycAADYSitv0d4ap7h3D93bKC5Jwrqc
+ W5PHs+oB+E6B4NxUw4GrpJ1iGLXX2NJMJj7Z8L8yXABlIXYlFRYMOgxqkzYSwty4HzC7
+ NMu4zkYHADQUOYAv8X0jjnpD481/i74WkipnDty0k0pIf69eNA1EsUTJbvBk0JH3PbY4
+ e/45cYC3B7WMeSVNZiGzourt5f8PHxHrxjjEoViYdNbBBhWDTF8PJsdaQdjOpH778KdC wg== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3up2byuwcr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 30 Nov 2023 13:37:53 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AUDbqp6011305
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 30 Nov 2023 13:37:52 GMT
+Received: from [10.239.133.49] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 30 Nov
+ 2023 05:37:49 -0800
+Message-ID: <22ddb4aa-a908-49c3-8eb4-2399c7c5bc37@quicinc.com>
+Date:   Thu, 30 Nov 2023 21:37:47 +0800
 MIME-Version: 1.0
-Message-ID: <170135139956.398.13686814243901771133.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 1/3] arm64: dts: qcom: msm8996: Fix 'in-ports' is a
+ required property
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Tingwei Zhang <quic_tingweiz@quicinc.com>,
+        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
+        Tao Zhang <quic_taozha@quicinc.com>
+References: <20231129143815.7892-1-quic_jinlmao@quicinc.com>
+ <20231129143815.7892-2-quic_jinlmao@quicinc.com>
+ <3527d540-3e3f-4edb-b5f2-6ac481132c06@linaro.org>
+ <591e1aca-20ca-4d42-809d-12cd12ddadb3@quicinc.com>
+ <35916812-af55-4b2a-99e5-8566e945cb6e@linaro.org>
+ <5ef0372a-2b9d-4a19-bbb4-2c6ce29dbe79@quicinc.com>
+ <5bc8b7e3-7a4f-48d4-a1fa-9e3cb0b39a3a@linaro.org>
+Content-Language: en-US
+From:   Jinlong Mao <quic_jinlmao@quicinc.com>
+In-Reply-To: <5bc8b7e3-7a4f-48d4-a1fa-9e3cb0b39a3a@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: S0Mg-Hzo3MbnhYpjJn879lFcmTDDG2rT
+X-Proofpoint-ORIG-GUID: S0Mg-Hzo3MbnhYpjJn879lFcmTDDG2rT
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-30_11,2023-11-30_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
+ phishscore=0 clxscore=1015 lowpriorityscore=0 malwarescore=0
+ priorityscore=1501 adultscore=0 impostorscore=0 bulkscore=0
+ mlxlogscore=617 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2311060000 definitions=main-2311300101
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -68,65 +94,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the perf/core branch of tip:
 
-Commit-ID:     1692cf434ba13ee212495b5af795b6a07e986ce4
-Gitweb:        https://git.kernel.org/tip/1692cf434ba13ee212495b5af795b6a07e986ce4
-Author:        Alexander Antonov <alexander.antonov@linux.intel.com>
-AuthorDate:    Mon, 27 Nov 2023 10:52:45 -08:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Thu, 30 Nov 2023 14:29:52 +01:00
 
-perf/x86/intel/uncore: Fix NULL pointer dereference issue in upi_fill_topology()
+On 11/30/2023 9:35 PM, Krzysztof Kozlowski wrote:
+> On 30/11/2023 14:12, Jinlong Mao wrote:
+>>
+>>
+>> On 11/30/2023 8:06 PM, Krzysztof Kozlowski wrote:
+>>> On 30/11/2023 12:15, Jinlong Mao wrote:
+>>>>
+>>>>
+>>>> On 11/30/2023 4:55 PM, Krzysztof Kozlowski wrote:
+>>>>> On 29/11/2023 15:38, Mao Jinlong wrote:
+>>>>>> The inport of funnel@3023000 connects to a source which is not supported
+>>>>>> in current linux kernel. Remove the device tree node of funnel@3023000
+>>>>>> to fix the warning. It will be added once the driver support to the
+>>>>>> source is added to linux kernel.
+>>>>>
+>>>>> Thanks for the changes, but that's not correct reason to remove DTS
+>>>>> code. What kernel supports or not, should be irrelevant for the DTS. DTS
+>>>>> for example is used in other projects - did you check if they have the
+>>>>> same issues? Anyway, DTS describes the hardware, so how current kernel
+>>>>> support defines what is and what is not in the hardware?
+>>>>>
+>>>>>
+>>>>> Best regards,
+>>>>> Krzysztof
+>>>>
+>>>> Hi Krzysztof,
+>>>>
+>>>> The funnel dt node must have in-ports node. It is to describe the input
+>>>> connection of funnel HW. But there is no dt_binding doc to describe the
+>>>> DT node of the HW connected to funnel@3023000. So remove the funnel to
+>>>> solve the warning as of now. The funnel will be added back once driver
+>>>> and dt_binding are added for the HW.
+>>>>
+>>>> Documentation/devicetree/bindings/arm/arm,coresight-dynamic-funnel.yaml
+>>>
+>>> Why we cannot add now the binding for the connected hardware? It's not
+>>> really related to the driver.
+>>>
+>>> Best regards,
+>>> Krzysztof
+>>
+>> Do you mean yaml file can be added before the driver code is merged ?
+> 
+> Yes, the binding. YAML is only the language. We don't write YAMLs, we
+> write bindings.
+> 
+> Best regards,
+> Krzysztof
 
-Get logical socket id instead of physical id in discover_upi_topology()
-to avoid out-of-bound access on 'upi = &type->topology[nid][idx];' line
-that leads to NULL pointer dereference in upi_fill_topology()
+ok, Thanks. I will prepare the binding file.
 
-Fixes: f680b6e6062e ("perf/x86/intel/uncore: Enable UPI topology discovery for Icelake Server")
-Reported-by: Kyle Meyer <kyle.meyer@hpe.com>
-Signed-off-by: Alexander Antonov <alexander.antonov@linux.intel.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
-Tested-by: Kyle Meyer <kyle.meyer@hpe.com>
-Link: https://lore.kernel.org/r/20231127185246.2371939-2-alexander.antonov@linux.intel.com
----
- arch/x86/events/intel/uncore_snbep.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+Thanks
+Jinlong Mao
 
-diff --git a/arch/x86/events/intel/uncore_snbep.c b/arch/x86/events/intel/uncore_snbep.c
-index aeaa8ef..1efbacf 100644
---- a/arch/x86/events/intel/uncore_snbep.c
-+++ b/arch/x86/events/intel/uncore_snbep.c
-@@ -5596,7 +5596,7 @@ static int discover_upi_topology(struct intel_uncore_type *type, int ubox_did, i
- 	struct pci_dev *ubox = NULL;
- 	struct pci_dev *dev = NULL;
- 	u32 nid, gid;
--	int i, idx, ret = -EPERM;
-+	int i, idx, lgc_pkg, ret = -EPERM;
- 	struct intel_uncore_topology *upi;
- 	unsigned int devfn;
- 
-@@ -5614,8 +5614,13 @@ static int discover_upi_topology(struct intel_uncore_type *type, int ubox_did, i
- 		for (i = 0; i < 8; i++) {
- 			if (nid != GIDNIDMAP(gid, i))
- 				continue;
-+			lgc_pkg = topology_phys_to_logical_pkg(i);
-+			if (lgc_pkg < 0) {
-+				ret = -EPERM;
-+				goto err;
-+			}
- 			for (idx = 0; idx < type->num_boxes; idx++) {
--				upi = &type->topology[nid][idx];
-+				upi = &type->topology[lgc_pkg][idx];
- 				devfn = PCI_DEVFN(dev_link0 + idx, ICX_UPI_REGS_ADDR_FUNCTION);
- 				dev = pci_get_domain_bus_and_slot(pci_domain_nr(ubox->bus),
- 								  ubox->bus->number,
-@@ -5626,6 +5631,7 @@ static int discover_upi_topology(struct intel_uncore_type *type, int ubox_did, i
- 						goto err;
- 				}
- 			}
-+			break;
- 		}
- 	}
- err:
+> 
+
