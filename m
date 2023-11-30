@@ -2,56 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BCF87FF310
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 15:58:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F7E37FF312
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 15:59:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346213AbjK3O6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 09:58:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39976 "EHLO
+        id S235210AbjK3O6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 09:58:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346244AbjK3O6j (ORCPT
+        with ESMTP id S1346158AbjK3O6m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 09:58:39 -0500
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A516A10F3;
-        Thu, 30 Nov 2023 06:58:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=DupwdXKpFNNO1IYb/Kwpndtw685CzVAkyF0rfB3hn3A=; b=InpbtX+Tz/Pi2xwtXz/ZuWpvAT
-        xKjQzZX7NFyTyTbAbaQ5vCZlpqPFxCvTaNsGGRPFREwiQ5tmYX32QDt+Elv+YAHfdutK4vugv251Q
-        y0hRrc7O8c+36z2CDNZIn9ZWBnHWfqnUO57z4//fcTH7UJXjk+ZCvRlcUUS0O4zNlP2s=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1r8iUu-001ft8-Fz; Thu, 30 Nov 2023 15:58:36 +0100
-Date:   Thu, 30 Nov 2023 15:58:36 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Christian Marangi <ansuelsmth@gmail.com>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [net-next PATCH 02/14] net: phy: at803x: move disable WOL for
- 8031 from probe to config
-Message-ID: <e7557dc5-0c96-451a-919d-124847a0dfe8@lunn.ch>
-References: <20231129021219.20914-1-ansuelsmth@gmail.com>
- <20231129021219.20914-3-ansuelsmth@gmail.com>
+        Thu, 30 Nov 2023 09:58:42 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FF39170E
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 06:58:47 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C164C433C7;
+        Thu, 30 Nov 2023 14:58:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701356326;
+        bh=8Js8Hy2kLo1L6YkFwnzWN4hkYezVwJRoYHViVMUicgs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jpNt6hKjXd68EwOlbz1pBTdNJaj7J+27Hno3vGBqWlu+gZizrLjcv7HizbZ2UACJ7
+         ASITdqOtS3LB7mfmk4ik5b0U4OJkQNaTEw5/X/w11xwGLogCN+SdkqBOvGMQ1xwm9D
+         CvJV3niMs7u1kSvjFKbpJZiuQEpCM+I+h7FVBDT8nsoe+7CNZCo481jqPbUGuohsFg
+         BpEhp8JVi9wbZjpUjwq+9GhD0bHyo815nC4O7BBTKhW5tfZaO6F01LXNVnhp7bddkP
+         fqOM5l0H9HSKegNN9HxdDUOPlEnk2vkUzsyf7YxjbI7rES86ZxFx+Ng9oqJJnYpeMG
+         EEAJ1+mSaNQ+A==
+Date:   Thu, 30 Nov 2023 14:58:41 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Michal Simek <michal.simek@amd.com>
+Cc:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
+        michal.simek@xilinx.com, git@xilinx.com,
+        Conor Dooley <conor+dt@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jean Delvare <jdelvare@suse.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-hwmon@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: hwmon: Increase max number of io-channels
+Message-ID: <20231130-power-rubbed-fbf64a8c6978@spud>
+References: <441d9babc7042892350a58ba4300df4761876ae3.1701334008.git.michal.simek@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="BPoyXFuPPPfwP3S7"
 Content-Disposition: inline
-In-Reply-To: <20231129021219.20914-3-ansuelsmth@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <441d9babc7042892350a58ba4300df4761876ae3.1701334008.git.michal.simek@amd.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,25 +57,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->  	if (phydev->drv->phy_id == ATH8031_PHY_ID) {
-> +		/* Disable WoL in 1588 register which is enabled
-> +		 * by default
-> +		 */
-> +		ret = phy_modify_mmd(phydev, MDIO_MMD_PCS,
-> +				     AT803X_PHY_MMD3_WOL_CTRL,
-> +				     AT803X_WOL_EN, 0);
-> +		if (ret)
-> +			return ret;
-> +
 
-Maybe it comes later in the patch series, but i would actually add a
-at8031_probe() which calls the common at803x_probe() and then does
-this WoL stuff.
+--BPoyXFuPPPfwP3S7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I don't see any reason to have just one probe, with
+On Thu, Nov 30, 2023 at 09:46:54AM +0100, Michal Simek wrote:
+> arch/arm64/boot/dts/xilinx/zynqmp-sm-k26-revA.dts is defining 30 channels
+> that's why increase it.
+> But AMS binding defines 51 channels
+> Documentation/devicetree/bindings/iio/adc/xlnx,zynqmp-ams.yaml
+> that's why increase number to 51.
 
-	if (phydev->drv->phy_id == ATH8031_PHY_ID) {
+Please write commit messages for bindings in terms of how they relate to
+some hardware. In this case I think it would be sufficient to say that
+the Analog Monitoring system has 51 channels, the opening sentence about
+the dts as justification provides no actionable information.
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
-in it.
+Cheers,
+Conor.
 
-   Andrew
+> Signed-off-by: Michal Simek <michal.simek@amd.com>
+> ---
+>=20
+>  Documentation/devicetree/bindings/hwmon/iio-hwmon.yaml | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/hwmon/iio-hwmon.yaml b/Doc=
+umentation/devicetree/bindings/hwmon/iio-hwmon.yaml
+> index e5b24782f448..be5c7d4579bb 100644
+> --- a/Documentation/devicetree/bindings/hwmon/iio-hwmon.yaml
+> +++ b/Documentation/devicetree/bindings/hwmon/iio-hwmon.yaml
+> @@ -19,7 +19,7 @@ properties:
+> =20
+>    io-channels:
+>      minItems: 1
+> -    maxItems: 8 # Should be enough
+> +    maxItems: 51 # Should be enough
+>      description: >
+>        List of phandles to ADC channels to read the monitoring values
+> =20
+> --=20
+> 2.36.1
+>=20
+
+--BPoyXFuPPPfwP3S7
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZWijIQAKCRB4tDGHoIJi
+0lICAQC1KW3GVEI4tqQWELA4CLCh/wITQ8ofp4IPCooF4IJVWQD+NKt3+qwCkPnx
+L96KirOZwabT/HBwdu4dRpfvte7q4Ak=
+=DlYh
+-----END PGP SIGNATURE-----
+
+--BPoyXFuPPPfwP3S7--
