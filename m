@@ -2,315 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1DE97FF08B
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 14:46:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C44E7FF085
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 14:45:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345700AbjK3Np5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 08:45:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34392 "EHLO
+        id S1345659AbjK3Npl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 08:45:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345695AbjK3Npv (ORCPT
+        with ESMTP id S1345533AbjK3Npk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 08:45:51 -0500
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91B0CD40
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 05:45:56 -0800 (PST)
-Received: from kwepemm000004.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Sgy9x0LpxzWj1C;
-        Thu, 30 Nov 2023 21:45:09 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- kwepemm000004.china.huawei.com (7.193.23.18) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 30 Nov 2023 21:45:54 +0800
-From:   Huisong Li <lihuisong@huawei.com>
-To:     <xuwei5@hisilicon.com>
-CC:     <linux-kernel@vger.kernel.org>, <soc@kernel.org>,
+        Thu, 30 Nov 2023 08:45:40 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17C00C4;
+        Thu, 30 Nov 2023 05:45:46 -0800 (PST)
+Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 8C80155;
+        Thu, 30 Nov 2023 14:45:07 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1701351907;
+        bh=XHpARKgcvdjeAqbtIxtvOde4zZgRWl+NFysb0Gz1TpI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ox4zOnnGPuQWmJwVUbeyvRZWzI2YNcP8mXjBQ9GlN7B45LOxdmpB75fncpTJzv6X4
+         bUnOrXo9MY1a/MkSyXx2fijg8PJv1AEHuNurpX+O9OyUP5kVscyupg3kUkZg+ZH2Vr
+         /n+g0BvDG8wle0BfT+1NOcUcdBfw/HkJg85dFsNM=
+Date:   Thu, 30 Nov 2023 15:45:50 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Paul Elder <paul.elder@ideasonboard.com>
+Cc:     linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        kieran.bingham@ideasonboard.com, tomi.valkeinen@ideasonboard.com,
+        umang.jain@ideasonboard.com, Dafna Hirschfeld <dafna@fastmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        "moderated list:ARM/Rockchip SoC support" 
         <linux-arm-kernel@lists.infradead.org>,
-        <Jonathan.Cameron@Huawei.com>, <arnd@arndb.de>, <krzk@kernel.org>,
-        <sudeep.holla@arm.com>, <liuyonglong@huawei.com>,
-        <lihuisong@huawei.com>
-Subject: [PATCH v2 4/4] soc: hisilicon: kunpeng_hccs: Support the platform with PCC type3 and interrupt ack
-Date:   Thu, 30 Nov 2023 21:45:50 +0800
-Message-ID: <20231130134550.33398-5-lihuisong@huawei.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20231130134550.33398-1-lihuisong@huawei.com>
-References: <20231109054526.27270-1-lihuisong@huawei.com>
- <20231130134550.33398-1-lihuisong@huawei.com>
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/3] media: rkisp1: regs: Consolidate MI interrupt wrap
+ fields
+Message-ID: <20231130134550.GN8402@pendragon.ideasonboard.com>
+References: <20231129092956.250129-1-paul.elder@ideasonboard.com>
+ <20231129092956.250129-2-paul.elder@ideasonboard.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemm000004.china.huawei.com (7.193.23.18)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231129092956.250129-2-paul.elder@ideasonboard.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support the platform with PCC type3 and interrupt ack. And a version
-specific structure is introduced to handle the difference between the
-device in the code.
+Hi Paul,
 
-Signed-off-by: Huisong Li <lihuisong@huawei.com>
----
- drivers/soc/hisilicon/kunpeng_hccs.c | 136 ++++++++++++++++++++++-----
- drivers/soc/hisilicon/kunpeng_hccs.h |  15 +++
- 2 files changed, 126 insertions(+), 25 deletions(-)
+Thank you for the patch.
 
-diff --git a/drivers/soc/hisilicon/kunpeng_hccs.c b/drivers/soc/hisilicon/kunpeng_hccs.c
-index 15125f1e0f3e..d2302ff8c0e9 100644
---- a/drivers/soc/hisilicon/kunpeng_hccs.c
-+++ b/drivers/soc/hisilicon/kunpeng_hccs.c
-@@ -110,6 +110,14 @@ static void hccs_chan_tx_done(struct mbox_client *cl, void *msg, int ret)
- 			 *(u8 *)msg, ret);
- }
- 
-+static void hccs_pcc_rx_callback(struct mbox_client *cl, void *mssg)
-+{
-+	struct hccs_mbox_client_info *cl_info =
-+			container_of(cl, struct hccs_mbox_client_info, client);
-+
-+	complete(&cl_info->done);
-+}
-+
- static void hccs_unregister_pcc_channel(struct hccs_dev *hdev)
- {
- 	struct hccs_mbox_client_info *cl_info = &hdev->cl_info;
-@@ -131,6 +139,9 @@ static int hccs_register_pcc_channel(struct hccs_dev *hdev)
- 	cl->tx_block = false;
- 	cl->knows_txdone = true;
- 	cl->tx_done = hccs_chan_tx_done;
-+	cl->rx_callback = hdev->verspec_data->rx_callback;
-+	init_completion(&cl_info->done);
-+
- 	pcc_chan = pcc_mbox_request_channel(cl, hdev->chan_id);
- 	if (IS_ERR(pcc_chan)) {
- 		dev_err(dev, "PPC channel request failed.\n");
-@@ -147,10 +158,16 @@ static int hccs_register_pcc_channel(struct hccs_dev *hdev)
- 	 */
- 	cl_info->deadline_us =
- 			HCCS_PCC_CMD_WAIT_RETRIES_NUM * pcc_chan->latency;
--	if (cl_info->mbox_chan->mbox->txdone_irq) {
-+	if (!hdev->verspec_data->has_txdone_irq &&
-+	    cl_info->mbox_chan->mbox->txdone_irq) {
- 		dev_err(dev, "PCC IRQ in PCCT is enabled.\n");
- 		rc = -EINVAL;
- 		goto err_mbx_channel_free;
-+	} else if (hdev->verspec_data->has_txdone_irq &&
-+		   !cl_info->mbox_chan->mbox->txdone_irq) {
-+		dev_err(dev, "PCC IRQ in PCCT isn't supported.\n");
-+		rc = -EINVAL;
-+		goto err_mbx_channel_free;
- 	}
- 
- 	if (pcc_chan->shmem_base_addr) {
-@@ -172,7 +189,7 @@ static int hccs_register_pcc_channel(struct hccs_dev *hdev)
- 	return rc;
- }
- 
--static int hccs_check_chan_cmd_complete(struct hccs_dev *hdev)
-+static inline int hccs_wait_cmd_complete_by_poll(struct hccs_dev *hdev)
- {
- 	struct hccs_mbox_client_info *cl_info = &hdev->cl_info;
- 	struct acpi_pcct_shared_memory __iomem *comm_base =
-@@ -194,30 +211,75 @@ static int hccs_check_chan_cmd_complete(struct hccs_dev *hdev)
- 	return ret;
- }
- 
-+static inline int hccs_wait_cmd_complete_by_irq(struct hccs_dev *hdev)
-+{
-+	struct hccs_mbox_client_info *cl_info = &hdev->cl_info;
-+	int ret = 0;
-+
-+	if (!wait_for_completion_timeout(&cl_info->done,
-+			usecs_to_jiffies(cl_info->deadline_us))) {
-+		dev_err(hdev->dev, "PCC command executed timeout!\n");
-+		ret = -ETIMEDOUT;
-+	}
-+
-+	return ret;
-+}
-+
-+static inline void hccs_fill_pcc_shared_mem_region(struct hccs_dev *hdev,
-+						   u8 cmd,
-+						   struct hccs_desc *desc,
-+						   void __iomem *comm_space,
-+						   u16 space_size)
-+{
-+	struct acpi_pcct_shared_memory tmp = {
-+		.signature = PCC_SIGNATURE | hdev->chan_id,
-+		.command = cmd,
-+		.status = 0,
-+	};
-+
-+	memcpy_toio(hdev->cl_info.pcc_comm_addr, (void *)&tmp,
-+		    sizeof(struct acpi_pcct_shared_memory));
-+
-+	/* Copy the message to the PCC comm space */
-+	memcpy_toio(comm_space, (void *)desc, space_size);
-+}
-+
-+static inline void hccs_fill_ext_pcc_shared_mem_region(struct hccs_dev *hdev,
-+						       u8 cmd,
-+						       struct hccs_desc *desc,
-+						       void __iomem *comm_space,
-+						       u16 space_size)
-+{
-+	struct acpi_pcct_ext_pcc_shared_memory tmp = {
-+		.signature = PCC_SIGNATURE | hdev->chan_id,
-+		.flags = PCC_CMD_COMPLETION_NOTIFY,
-+		.length = HCCS_PCC_SHARE_MEM_BYTES,
-+		.command = cmd,
-+	};
-+
-+	memcpy_toio(hdev->cl_info.pcc_comm_addr, (void *)&tmp,
-+		    sizeof(struct acpi_pcct_ext_pcc_shared_memory));
-+
-+	/* Copy the message to the PCC comm space */
-+	memcpy_toio(comm_space, (void *)desc, space_size);
-+}
-+
- static int hccs_pcc_cmd_send(struct hccs_dev *hdev, u8 cmd,
- 			     struct hccs_desc *desc)
- {
-+	const struct hccs_verspecific_data *verspec_data = hdev->verspec_data;
- 	struct hccs_mbox_client_info *cl_info = &hdev->cl_info;
--	void __iomem *comm_space = cl_info->pcc_comm_addr +
--					sizeof(struct acpi_pcct_shared_memory);
- 	struct hccs_fw_inner_head *fw_inner_head;
--	struct acpi_pcct_shared_memory tmp = {0};
--	u16 comm_space_size;
-+	void __iomem *comm_space;
-+	u16 space_size;
- 	int ret;
- 
--	/* Write signature for this subspace */
--	tmp.signature = PCC_SIGNATURE | hdev->chan_id;
--	/* Write to the shared command region */
--	tmp.command = cmd;
--	/* Clear cmd complete bit */
--	tmp.status = 0;
--	memcpy_toio(cl_info->pcc_comm_addr, (void *)&tmp,
--			sizeof(struct acpi_pcct_shared_memory));
--
--	/* Copy the message to the PCC comm space */
--	comm_space_size = HCCS_PCC_SHARE_MEM_BYTES -
--				sizeof(struct acpi_pcct_shared_memory);
--	memcpy_toio(comm_space, (void *)desc, comm_space_size);
-+	comm_space = cl_info->pcc_comm_addr + verspec_data->shared_mem_size;
-+	space_size = HCCS_PCC_SHARE_MEM_BYTES - verspec_data->shared_mem_size;
-+	verspec_data->fill_pcc_shared_mem(hdev, cmd, desc,
-+					  comm_space, space_size);
-+	if (verspec_data->has_txdone_irq)
-+		reinit_completion(&cl_info->done);
- 
- 	/* Ring doorbell */
- 	ret = mbox_send_message(cl_info->mbox_chan, &cmd);
-@@ -227,13 +289,12 @@ static int hccs_pcc_cmd_send(struct hccs_dev *hdev, u8 cmd,
- 		goto end;
- 	}
- 
--	/* Wait for completion */
--	ret = hccs_check_chan_cmd_complete(hdev);
-+	ret = verspec_data->wait_cmd_complete(hdev);
- 	if (ret)
- 		goto end;
- 
- 	/* Copy response data */
--	memcpy_fromio((void *)desc, comm_space, comm_space_size);
-+	memcpy_fromio((void *)desc, comm_space, space_size);
- 	fw_inner_head = &desc->rsp.fw_inner_head;
- 	if (fw_inner_head->retStatus) {
- 		dev_err(hdev->dev, "Execute PCC command failed, error code = %u.\n",
-@@ -242,7 +303,10 @@ static int hccs_pcc_cmd_send(struct hccs_dev *hdev, u8 cmd,
- 	}
- 
- end:
--	mbox_client_txdone(cl_info->mbox_chan, ret);
-+	if (verspec_data->has_txdone_irq)
-+		mbox_chan_txdone(cl_info->mbox_chan, ret);
-+	else
-+		mbox_client_txdone(cl_info->mbox_chan, ret);
- 	return ret;
- }
- 
-@@ -1213,6 +1277,11 @@ static int hccs_probe(struct platform_device *pdev)
- 	hdev->dev = &pdev->dev;
- 	platform_set_drvdata(pdev, hdev);
- 
-+	/*
-+	 * Here would never be failure as the driver and device has been matched.
-+	 */
-+	hdev->verspec_data = acpi_device_get_match_data(hdev->dev);
-+
- 	mutex_init(&hdev->lock);
- 	rc = hccs_get_pcc_chan_id(hdev);
- 	if (rc)
-@@ -1249,9 +1318,26 @@ static void hccs_remove(struct platform_device *pdev)
- 	hccs_unregister_pcc_channel(hdev);
- }
- 
-+static const struct hccs_verspecific_data hisi04b1_verspec_data = {
-+	.rx_callback = NULL,
-+	.wait_cmd_complete = hccs_wait_cmd_complete_by_poll,
-+	.fill_pcc_shared_mem = hccs_fill_pcc_shared_mem_region,
-+	.shared_mem_size = sizeof(struct acpi_pcct_shared_memory),
-+	.has_txdone_irq = false,
-+};
-+
-+static const struct hccs_verspecific_data hisi04b2_verspec_data = {
-+	.rx_callback = hccs_pcc_rx_callback,
-+	.wait_cmd_complete = hccs_wait_cmd_complete_by_irq,
-+	.fill_pcc_shared_mem = hccs_fill_ext_pcc_shared_mem_region,
-+	.shared_mem_size = sizeof(struct acpi_pcct_ext_pcc_shared_memory),
-+	.has_txdone_irq = true,
-+};
-+
- static const struct acpi_device_id hccs_acpi_match[] = {
--	{ "HISI04B1"},
--	{ ""},
-+	{ "HISI04B1", (unsigned long)&hisi04b1_verspec_data},
-+	{ "HISI04B2", (unsigned long)&hisi04b2_verspec_data},
-+	{ }
- };
- MODULE_DEVICE_TABLE(acpi, hccs_acpi_match);
- 
-diff --git a/drivers/soc/hisilicon/kunpeng_hccs.h b/drivers/soc/hisilicon/kunpeng_hccs.h
-index 6012d2776028..c3adbc01b471 100644
---- a/drivers/soc/hisilicon/kunpeng_hccs.h
-+++ b/drivers/soc/hisilicon/kunpeng_hccs.h
-@@ -51,11 +51,26 @@ struct hccs_mbox_client_info {
- 	struct pcc_mbox_chan *pcc_chan;
- 	u64 deadline_us;
- 	void __iomem *pcc_comm_addr;
-+	struct completion done;
-+};
-+
-+struct hccs_desc;
-+
-+struct hccs_verspecific_data {
-+	void (*rx_callback)(struct mbox_client *cl, void *mssg);
-+	int (*wait_cmd_complete)(struct hccs_dev *hdev);
-+	void (*fill_pcc_shared_mem)(struct hccs_dev *hdev,
-+				    u8 cmd, struct hccs_desc *desc,
-+				    void __iomem *comm_space,
-+				    u16 space_size);
-+	u16 shared_mem_size;
-+	bool has_txdone_irq;
- };
- 
- struct hccs_dev {
- 	struct device *dev;
- 	struct acpi_device *acpi_dev;
-+	const struct hccs_verspecific_data *verspec_data;
- 	u64 caps;
- 	u8 chip_num;
- 	struct hccs_chip_info *chips;
+On Wed, Nov 29, 2023 at 06:29:54PM +0900, Paul Elder wrote:
+> Consolidate the wraparound fields in the memory interface interrupt
+> status registers, so that it can be more succinctly expressed by taking
+> the stream ID (main or self) as a parameter.
+> 
+> Signed-off-by: Paul Elder <paul.elder@ideasonboard.com>
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+> ---
+>  drivers/media/platform/rockchip/rkisp1/rkisp1-regs.h | 9 +++------
+>  1 file changed, 3 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-regs.h b/drivers/media/platform/rockchip/rkisp1/rkisp1-regs.h
+> index 350f452e676f..bea69a0d766a 100644
+> --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-regs.h
+> +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-regs.h
+> @@ -172,12 +172,9 @@
+>  #define RKISP1_CIF_MI_FRAME(stream)			BIT((stream)->id)
+>  #define RKISP1_CIF_MI_MBLK_LINE				BIT(2)
+>  #define RKISP1_CIF_MI_FILL_MP_Y				BIT(3)
+> -#define RKISP1_CIF_MI_WRAP_MP_Y				BIT(4)
+> -#define RKISP1_CIF_MI_WRAP_MP_CB			BIT(5)
+> -#define RKISP1_CIF_MI_WRAP_MP_CR			BIT(6)
+> -#define RKISP1_CIF_MI_WRAP_SP_Y				BIT(7)
+> -#define RKISP1_CIF_MI_WRAP_SP_CB			BIT(8)
+> -#define RKISP1_CIF_MI_WRAP_SP_CR			BIT(9)
+> +#define RKISP1_CIF_MI_WRAP_Y(stream)			BIT(4 + (stream)->id * 3)
+> +#define RKISP1_CIF_MI_WRAP_CB(stream)			BIT(5 + (stream)->id * 3)
+> +#define RKISP1_CIF_MI_WRAP_CR(stream)			BIT(6 + (stream)->id * 3)
+>  #define RKISP1_CIF_MI_DMA_READY				BIT(11)
+>  
+>  /* MI_STATUS */
+
 -- 
-2.33.0
+Regards,
 
+Laurent Pinchart
