@@ -2,110 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 862C27FF7C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 18:11:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF02E7FF93C
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 19:23:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232192AbjK3QZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 11:25:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59616 "EHLO
+        id S231444AbjK3SWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 13:22:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232005AbjK3QZf (ORCPT
+        with ESMTP id S230030AbjK3SWy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 11:25:35 -0500
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1E99198
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 08:25:40 -0800 (PST)
-Received: by mail-pf1-x44a.google.com with SMTP id d2e1a72fcca58-6cb9dd2ab9cso1291590b3a.3
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 08:25:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701361540; x=1701966340; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Frsrx8QxJTCbf8WmA7nSYv8M2eurLvDkjduXU5Q/zds=;
-        b=IuMVeDtU7LvGDFGw3IOZID4Rka7Bvx233updt39BqroyROkdlwpDUGraDOTY8+l4zi
-         QN6XKyZxFs2MEKrBl5x8g7hBbaz4tyI+cYY3Y4JqrfgUMo+p6/U55f4noY2Sdt2VHCdN
-         AcBPqgz+DdZNJB8oXwJM0Xk37PXAKGo6uGTj5g70QatRa9X1NKODW76/iekVgmUgyxDs
-         zqHDOoOb37cd9+LkNM06CB1Jn38j8k02HeFq3qwu6Oov/AZYrbm2UPccFcVOS1EIANvk
-         P88oE0it0w1QGrK0MZEPdklZRXu6k7ujcng97yi8BprN6FOnf+h3nBx0Z39ozkqwCgQY
-         VBaA==
+        Thu, 30 Nov 2023 13:22:54 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DA51D6C
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 10:23:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701368579;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wI81TszQ+HavXeXDYPqPnC9zC5eJQkah0vJVVXbWL9Q=;
+        b=bn+g4EAx7hmH3RceJnv2Xbdaa6z6UVKwodSxCG09Xxie6ukP4dNLX0CkvAxgvkmH+llC8I
+        DohLtueI8YRscEN7UKPDBFtorxOfBqC5b/kUjozDYOismAHdvXynNFkfIoKhqpCHKRWV4U
+        hk7imtBTd8AIHOY7RLFd/cP+gH0Y+N8=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-507-qoBo23_oN2SYZDkGdXi8GA-1; Thu, 30 Nov 2023 13:22:58 -0500
+X-MC-Unique: qoBo23_oN2SYZDkGdXi8GA-1
+Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2c9b97a391bso14824441fa.0
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 10:22:57 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701361540; x=1701966340;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Frsrx8QxJTCbf8WmA7nSYv8M2eurLvDkjduXU5Q/zds=;
-        b=aSHmz9h0RAhbZe1JyuxlXmTVuFhCHDP78v3Fs9586V9azCKz14XQsSH4o8piXbpCrW
-         EoSv5GvYjOqQwLypMPyTL33NZFXrl5welU6/zaG7uEBWAbZcW4/ghYBzOie8VQ6WTFAt
-         4nJsGEiNzsUKHS14C0MH9Dr8umdxDdrC+LXn6WNh1FJI+4GBn+I11u2eYA+Ax29j9HXN
-         mTtgPTIjhxMEJ/NP3x4oKevgF7SRKEK6o0h5EfayFrnXrOj+y5aXTuMpe83jWlUsz+yZ
-         ielpSXnx9+b+GhcQSkZN/y9geG5azBpb6f67Bng0YYjTe4skC5C0Y0fjLGHKPVlnzdqO
-         B0iQ==
-X-Gm-Message-State: AOJu0YwQ0rhLc2h/lDtQXHr4rhqsyffgRqljy7/h6We+8AhZyyC5pEcN
-        7sBOy7c6H4UQfwMC9sWoLTnjlhBxgUk=
-X-Google-Smtp-Source: AGHT+IGu+c68aXbfWv0Zq9ytnR9R1vz5ds4Tk7HWe8PM6XpfqZSJA6l/qnKx9Z7p0qZCIRdP8IQrTYrKQ8A=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6a00:399c:b0:6c0:ec5b:bb2d with SMTP id
- fi28-20020a056a00399c00b006c0ec5bbb2dmr5386707pfb.2.1701361540551; Thu, 30
- Nov 2023 08:25:40 -0800 (PST)
-Date:   Thu, 30 Nov 2023 08:25:39 -0800
-In-Reply-To: <049e4892-fae8-4a1d-a069-70b0bf5ee755@gmail.com>
-Mime-Version: 1.0
-References: <20231007064019.17472-1-likexu@tencent.com> <e4d6c6a5030f49f44febf99ba4c7040938c3c483.camel@redhat.com>
- <53d7caba-8b00-42ab-849a-d8c8d94aea37@gmail.com> <ZTklnN2I3gYjGxVv@google.com>
- <ZTm8dH1GQ3vQtQua@google.com> <049e4892-fae8-4a1d-a069-70b0bf5ee755@gmail.com>
-Message-ID: <ZWi3g6Mh9L8Lglxj@google.com>
-Subject: Re: [PATCH] KVM: x86/xsave: Remove 'return void' expression for 'void function'
-From:   Sean Christopherson <seanjc@google.com>
-To:     Like Xu <like.xu.linux@gmail.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Maxim Levitsky <mlevitsk@redhat.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        d=1e100.net; s=20230601; t=1701368576; x=1701973376;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wI81TszQ+HavXeXDYPqPnC9zC5eJQkah0vJVVXbWL9Q=;
+        b=eM5lVLZcgF0w0TCCW4TyuvXev0xRHGQWZM+i6oh5Pb6ePUTo2h8E9YLqXPj55raUc9
+         BZXWTo1JR64gwJj/xv50ZjIs36842gSmICv+8swlM3uipf3+l2E97KV13Qpma63+z3ld
+         IWD6VhbVBtjlwJQRix5rbQu+jmzN4eKxOb3HykoFOA2HIjeh7rCspi1MTMkhREIeqqG1
+         0oRBqLFwjOJ1dpz2Yu+AAtZRcJhvj36CEijZt+qKlWwgAnc8odBzYdRmKlt4BAz1JXTy
+         eu2Rgg/hV30jLGDWnK7MVYtP8iKWuemAzDquokAVbYSpDzpR2tj86r5X6ZUwdAJoFryO
+         +3dA==
+X-Gm-Message-State: AOJu0YzKxzb1CIBVDv5+THssrWPT80f0S9O+VRbUW4KAkbg8VwbDJ5oL
+        yrU9+y2r0IJCG71Rug8XJLXV8gYcEQn9znLTWNCbYsJUuPNYh2M5gq18N299Cd4dmZ6BFllWnXa
+        oz4mSC9UHiHuZ+Y9G5y+01KJpQHoxy3Xw
+X-Received: by 2002:adf:fc4a:0:b0:333:145b:dbe4 with SMTP id e10-20020adffc4a000000b00333145bdbe4mr5824wrs.42.1701364094859;
+        Thu, 30 Nov 2023 09:08:14 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFt5VLzdRHMWwfoz78n79Jjv1J/ksnTUOcY2uHEfV5/oooNR24dio4f81xNIhQQUnzfLiBQEg==
+X-Received: by 2002:a2e:9784:0:b0:2c9:c192:43a9 with SMTP id y4-20020a2e9784000000b002c9c19243a9mr3511lji.28.1701362235390;
+        Thu, 30 Nov 2023 08:37:15 -0800 (PST)
+Received: from fedora (g2.ign.cz. [91.219.240.8])
+        by smtp.gmail.com with ESMTPSA id j11-20020a05600c190b00b0040b4c26d2dasm2536292wmq.32.2023.11.30.08.37.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Nov 2023 08:37:14 -0800 (PST)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     kernel test robot <lkp@intel.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>, kvm@vger.kernel.org
+Subject: Re: arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates
+ bits from constant value (1b009b becomes 9b)
+In-Reply-To: <202311302231.sinLrAig-lkp@intel.com>
+References: <202311302231.sinLrAig-lkp@intel.com>
+Date:   Thu, 30 Nov 2023 17:37:13 +0100
+Message-ID: <87v89jmc3q.fsf@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 30, 2023, Like Xu wrote:
-> On 26/10/2023 9:10 am, Sean Christopherson wrote:
-> > On Wed, Oct 25, 2023, Sean Christopherson wrote:
-> > > On Wed, Oct 25, 2023, Like Xu wrote:
-> > > > Emm, did we miss this little fix ?
-> > > 
-> > > No, I have it earmarked, it's just not a priority because it doesn't truly fix
-> > > anything.  Though I suppose it probably makes to apply it for 6.8, waiting one
-> > > more day to send PULL requests to Paolo isn't a problem.
-> > 
-> > Heh, when I tried to apply this I got reminded of why I held it for later.  I
-> > want to apply it to kvm-x86/misc, but that's based on ~6.6-rc2 (plus a few KVM
-> > patches), i.e. doesn't have the "buggy" commit.  I don't want to rebase "misc",
-> > nor do I want to create a branch and PULL request for a single trivial commit.
-> > 
-> > So for logistical reasons, I'm not going apply this right away, but I will make
-> > sure it gets into v6.7.
-> 
-> Thanks, and a similar pattern occurs with these functions:
-> 
->  'write_register_operand'
->  'account_shadowed'
->  'unaccount_shadowed'
->  'mtrr_lookup_fixed_next'
->  'pre_svm_run'
->  'svm_vcpu_deliver_sipi_vector'
-> 
-> Although the compiler will do the right thing, use 'return void' expression
-> deliberately without grounds for exemption may annoy some CI pipelines.
-> 
-> If you need more cleanup or a new version to cover all these cases above,
-> just let me know.
+kernel test robot <lkp@intel.com> writes:
 
-I'd rather update the CI pipelines to turn off -Wpedantic.  There is zero chance
-that -Wpedantic will ever get enabled for kernel builds, the kernel is deliberately
-not ISO C compliant.  I have no objection to cleaning up kvm_vcpu_ioctl_x86_get_xsave()
-because it's an obvious goof and a recent change, but like checkpatch warnings,
-I don't want to go around "fixing" warnings unless they are actively problematic
-for humans.
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   3b47bc037bd44f142ac09848e8d3ecccc726be99
+> commit: a789aeba419647c44d7e7320de20fea037c211d0 KVM: VMX: Rename "vmx/evmcs.{ch}" to "vmx/hyperv.{ch}"
+> date:   1 year ago
+> config: x86_64-randconfig-123-20231130 (https://download.01.org/0day-ci/archive/20231130/202311302231.sinLrAig-lkp@intel.com/config)
+> compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231130/202311302231.sinLrAig-lkp@intel.com/reproduce)
+>
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202311302231.sinLrAig-lkp@intel.com/
+>
+> sparse warnings: (new ones prefixed by >>)
+>    arch/x86/kvm/vmx/hyperv.h:79:30: sparse: sparse: cast truncates bits from constant value (a000a becomes a)
+
+This is what ROL16() macro does but the thing is: we actually want to
+truncate bits by doing an explicit (u16) cast. We can probably replace
+this with '& 0xffff':
+
+#define ROL16(val, n) ((((u16)(val) << (n)) | ((u16)(val) >> (16 - (n)))) & 0xffff)
+
+but honestly I don't see much point...
+
+-- 
+Vitaly
+
