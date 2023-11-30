@@ -2,119 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3127E7FF7C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 18:11:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44E487FF7C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 18:11:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232212AbjK3RLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 12:11:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40512 "EHLO
+        id S232233AbjK3RLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 12:11:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232176AbjK3RLA (ORCPT
+        with ESMTP id S231837AbjK3RKx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 12:11:00 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56B0ED7F
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 09:11:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701364266; x=1732900266;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=M69x9RIUTe9+LZrrbX3iaxtwDRPEr868pnZuRCa9kIA=;
-  b=gPvvaBUO3DvqbKaTFbOfjsUuyLZVfa3mk0ywGLi1KllXUVtqj+3HWuJ3
-   UVHo8Ckggvc0aHDMoGexdvpo8EUJ1a1oPX+iAY5VNcAVwzMPwq1m5yvQ9
-   QkA+WDQ4+F6cVgYdK+lwxPlYjzZbyvcdB649q02IL6NXsU5dCqQaKaGxE
-   4QIbdV7gBpn1urV2VcuxZVSghiG7wXBX/J+pfDmDrkMPD/Q9fZBYShWq3
-   sBVp54Myrny020Z3hU/y8yYOSpqmSejs6CuRahhhzEsOgzWrO6bj2QcXR
-   IDfVbZkpXk22ywPD3uEwrMopjPtL8/0Mi88qy8671uo7xiv0lDMUhHZwH
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="14905768"
-X-IronPort-AV: E=Sophos;i="6.04,239,1695711600"; 
-   d="scan'208";a="14905768"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 09:11:06 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="773115022"
-X-IronPort-AV: E=Sophos;i="6.04,239,1695711600"; 
-   d="scan'208";a="773115022"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga007.fm.intel.com with ESMTP; 30 Nov 2023 09:11:04 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r8kZ3-0002R6-20;
-        Thu, 30 Nov 2023 17:11:01 +0000
-Date:   Fri, 1 Dec 2023 01:10:11 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     James Smart <jsmart2021@gmail.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Hannes Reinecke <hare@suse.de>,
-        Daniel Wagner <dwagner@suse.de>,
-        Ram Vegesna <ram.vegesna@broadcom.com>
-Subject: drivers/scsi/elx/libefc/efc_node.c:254:65: warning: 'snprintf'
- output may be truncated before the last format character
-Message-ID: <202312010138.o5on1HtR-lkp@intel.com>
+        Thu, 30 Nov 2023 12:10:53 -0500
+Received: from mail-oa1-x2a.google.com (mail-oa1-x2a.google.com [IPv6:2001:4860:4864:20::2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 895BA10D4
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 09:10:51 -0800 (PST)
+Received: by mail-oa1-x2a.google.com with SMTP id 586e51a60fabf-1fa20395185so565992fac.3
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 09:10:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701364251; x=1701969051; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=P9iOH6Yd9Atg7CwHEtCTfnbvOXuGr9JGPZU/okAPF2U=;
+        b=DJ1cht0yohO38k++Wkein6keRcpZx3Tmb3KRpcEmMeZaWJjM0BmyxTCV4hNW95ESHo
+         xXrIrB+/Hc00HF5U9iu8lBC+AEZkAkD/Pn3pyMC0KF6XGrYYZgSZWFDid1jw3v66OfRS
+         lnp2r2nd2yRjcfNJ+fnKXMUA2APV45Oci6naycvgyRzUotFc1lA7kl4D5EpaKIrYTfZy
+         UM2tSBe+zWHn3BjgBsVD8QrcDAc/OYu6hGnBK5DEOTRp05RsJUKWM6VrcU/L0ZdZL2J6
+         PWz4K9ZdjVGyfE85B61BHXrLpEek75Ab1+4gX9iJJC2GlZV/x5QrWPx1QV0VifhBEMhP
+         mYSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701364251; x=1701969051;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=P9iOH6Yd9Atg7CwHEtCTfnbvOXuGr9JGPZU/okAPF2U=;
+        b=PHWQLXxvrBke5rOSJNi/J8wRvLIqYhmYylnaLUMMC4vjHKjCxn61/zYnTHcOjnvaNt
+         fctTG7/M345i2u6UAl+b16yjutntjXrqZk3poPGAVlTxx6WGJebtdSvD2ycD3hQJvswV
+         6144Zn6TwkVERKkDEKO5KyWNuRmE5BTroX/FBdzugu9GU4bN+YUfb8XAcs8Fe+tFaGU/
+         eRnYqCEntM5ZWYGQw62OP0GYoGQ2gUP8jEB/Z0zzMKzAEgPsUxyZZ91ErdwZYDipYTBB
+         hGazQsOoyfWJRgYPw7Ab9OF4suRVnaHqCweS6+q9mRAd3ftiEfZ13kX9EQkcYbFobK1s
+         YDCQ==
+X-Gm-Message-State: AOJu0YxDhpiBKBXjjyTvb/qbaXEYWDKyl61QQmJs/q8DnfjfO+tQhqcR
+        bHpm6H/axelCKaYjxipnqPXCQai4gL1yAvX5+Fw=
+X-Google-Smtp-Source: AGHT+IFga0LIgTJHbHwZ6AI3Nebtjpu1/mE6pEvvOWdhSB39jbFHga03BX1yiAShKg5YAMwBtiEtTsJM7ArB+zNs1Mg=
+X-Received: by 2002:a05:6870:219a:b0:1fa:e115:ef6c with SMTP id
+ l26-20020a056870219a00b001fae115ef6cmr114192oae.38.1701364250763; Thu, 30 Nov
+ 2023 09:10:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20231129152212.7879-1-n.zhandarovich@fintech.ru>
+In-Reply-To: <20231129152212.7879-1-n.zhandarovich@fintech.ru>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Thu, 30 Nov 2023 12:10:39 -0500
+Message-ID: <CADnq5_MZSG=g9UiYxWd0dAoqrkA7Bj-yVK0ExSMpsrcj8ML00A@mail.gmail.com>
+Subject: Re: [PATCH] drm/radeon/r100: Fix integer overflow issues in r100_cs_track_check()
+To:     Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>, linux-kernel@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   3b47bc037bd44f142ac09848e8d3ecccc726be99
-commit: ebc076b3eddc807729bd81f7bc48e798a3ddc477 scsi: elx: efct: Tie into kernel Kconfig and build process
-date:   2 years, 6 months ago
-config: x86_64-randconfig-014-20230906 (https://download.01.org/0day-ci/archive/20231201/202312010138.o5on1HtR-lkp@intel.com/config)
-compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231201/202312010138.o5on1HtR-lkp@intel.com/reproduce)
+Applied.  Thanks!
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312010138.o5on1HtR-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   drivers/scsi/elx/libefc/efc_node.c: In function 'efc_node_update_display_name':
->> drivers/scsi/elx/libefc/efc_node.c:254:65: warning: 'snprintf' output may be truncated before the last format character [-Wformat-truncation=]
-     snprintf(node->display_name, sizeof(node->display_name), "%s.%s",
-                                                                    ^
-   drivers/scsi/elx/libefc/efc_node.c:254:2: note: 'snprintf' output 2 or more bytes (assuming 33) into a destination of size 32
-     snprintf(node->display_name, sizeof(node->display_name), "%s.%s",
-     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-       nport->display_name, portid_display);
-       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-vim +/snprintf +254 drivers/scsi/elx/libefc/efc_node.c
-
-6bc6180d7b5c97 James Smart 2021-06-01  244  
-6bc6180d7b5c97 James Smart 2021-06-01  245  void
-6bc6180d7b5c97 James Smart 2021-06-01  246  efc_node_update_display_name(struct efc_node *node)
-6bc6180d7b5c97 James Smart 2021-06-01  247  {
-6bc6180d7b5c97 James Smart 2021-06-01  248  	u32 port_id = node->rnode.fc_id;
-6bc6180d7b5c97 James Smart 2021-06-01  249  	struct efc_nport *nport = node->nport;
-6bc6180d7b5c97 James Smart 2021-06-01  250  	char portid_display[16];
-6bc6180d7b5c97 James Smart 2021-06-01  251  
-6bc6180d7b5c97 James Smart 2021-06-01  252  	efc_node_fcid_display(port_id, portid_display, sizeof(portid_display));
-6bc6180d7b5c97 James Smart 2021-06-01  253  
-6bc6180d7b5c97 James Smart 2021-06-01 @254  	snprintf(node->display_name, sizeof(node->display_name), "%s.%s",
-6bc6180d7b5c97 James Smart 2021-06-01  255  		 nport->display_name, portid_display);
-6bc6180d7b5c97 James Smart 2021-06-01  256  }
-6bc6180d7b5c97 James Smart 2021-06-01  257  
-
-:::::: The code at line 254 was first introduced by commit
-:::::: 6bc6180d7b5c972c10a2f5392621921de32ce5bc scsi: elx: libefc: Remote node state machine interfaces
-
-:::::: TO: James Smart <jsmart2021@gmail.com>
-:::::: CC: Martin K. Petersen <martin.petersen@oracle.com>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+On Wed, Nov 29, 2023 at 10:28=E2=80=AFAM Nikita Zhandarovich
+<n.zhandarovich@fintech.ru> wrote:
+>
+> It may be possible, albeit unlikely, to encounter integer overflow
+> during the multiplication of several unsigned int variables, the
+> result being assigned to a variable 'size' of wider type.
+>
+> Prevent this potential behaviour by converting one of the multiples
+> to unsigned long.
+>
+> Found by Linux Verification Center (linuxtesting.org) with static
+> analysis tool SVACE.
+>
+> Fixes: 0242f74d29df ("drm/radeon: clean up CS functions in r100.c")
+> Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+> ---
+>  drivers/gpu/drm/radeon/r100.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/radeon/r100.c b/drivers/gpu/drm/radeon/r100.=
+c
+> index affa9e0309b2..cfeca2694d5f 100644
+> --- a/drivers/gpu/drm/radeon/r100.c
+> +++ b/drivers/gpu/drm/radeon/r100.c
+> @@ -2321,7 +2321,7 @@ int r100_cs_track_check(struct radeon_device *rdev,=
+ struct r100_cs_track *track)
+>         switch (prim_walk) {
+>         case 1:
+>                 for (i =3D 0; i < track->num_arrays; i++) {
+> -                       size =3D track->arrays[i].esize * track->max_indx=
+ * 4;
+> +                       size =3D track->arrays[i].esize * track->max_indx=
+ * 4UL;
+>                         if (track->arrays[i].robj =3D=3D NULL) {
+>                                 DRM_ERROR("(PW %u) Vertex array %u no buf=
+fer "
+>                                           "bound\n", prim_walk, i);
+> @@ -2340,7 +2340,7 @@ int r100_cs_track_check(struct radeon_device *rdev,=
+ struct r100_cs_track *track)
+>                 break;
+>         case 2:
+>                 for (i =3D 0; i < track->num_arrays; i++) {
+> -                       size =3D track->arrays[i].esize * (nverts - 1) * =
+4;
+> +                       size =3D track->arrays[i].esize * (nverts - 1) * =
+4UL;
+>                         if (track->arrays[i].robj =3D=3D NULL) {
+>                                 DRM_ERROR("(PW %u) Vertex array %u no buf=
+fer "
+>                                           "bound\n", prim_walk, i);
+> --
+> 2.25.1
+>
