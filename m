@@ -2,129 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F12157FE7D5
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 04:52:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11BA67FE7D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 04:53:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344352AbjK3DwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 22:52:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37952 "EHLO
+        id S1344360AbjK3DxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 22:53:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231447AbjK3DwA (ORCPT
+        with ESMTP id S230393AbjK3DxA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 22:52:00 -0500
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5FDFD67;
-        Wed, 29 Nov 2023 19:52:06 -0800 (PST)
-Received: by mail-ot1-x32c.google.com with SMTP id 46e09a7af769-6d7e6df999fso318412a34.1;
-        Wed, 29 Nov 2023 19:52:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701316326; x=1701921126; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=aZ7N9YtES1a0DlRuZSgil/lx/WENnW1vYXJvjd/eox4=;
-        b=V4W0xKW3JubweiYTxAW19gX4PehpQMcwk/exiru+ZKlKvHkXFUtIXUqOBSyG4eEydm
-         ND0iYDOtM/yERpsXF1Lb8YRsply1HxgwI4Fbwk00uTY3YSJzOwJOtBI62TqBW3C+pxrs
-         7aYh+x8L1zP616QXk5R4jOQfR0TanUs+JFDNFJlVcyVNlZHRjwkyv/tqBe8Z6e+iQALE
-         yGvLCaKgOCS5g36CpnX/rLUNYKEqR47tMTrRxuyxrr+9G04LbAmZbrC8ZaRIANAE+A+4
-         CsVO/oeaCgY1umXBEDXt4OPYFQ5FBurHRNLLsm9DZGzRQ3eFW69hJQyjpRjNYre19pqu
-         00EQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701316326; x=1701921126;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aZ7N9YtES1a0DlRuZSgil/lx/WENnW1vYXJvjd/eox4=;
-        b=L0lPvSIVIO9ZW+MX87XUVqXkPz2MV/SE0o6addUa5Rqucqfq2BmtXnh+VO6ww0ZceK
-         JvHib5QBHGyyNP9oAm4veQvr8GduxH+n1cop0nyuJK1O6XufoEYumNMUZnBcyInSTf0S
-         NfCQNaQwuWcQRFLZ1/BUSbSAir4/JrNh3CQDuJwW9SQpV1Gb5wLWZvIF1ONSlaobvof3
-         GQmjGYirSg3BDZhabu4eOFhk3cDhyObMCHgBIVrqSG02auCFnmK5l0lIyaKCsKMu7CKf
-         DXvF8phgrEHAERa+atUvuCpaTmxO0nlJhfvjDz0OE8K+fmoWKLGyMrseoIrLJOjgE1or
-         Fejg==
-X-Gm-Message-State: AOJu0Yzjd8rYjEATZlxl9+illFi96PYq0m7nQKYXtoYTDuLYFv0unyjN
-        t2QeM4KMGeSe7hhIjOBDiYkC+CvO/c6oeQ==
-X-Google-Smtp-Source: AGHT+IHbHvpjIEjrCitzC7tr5ZCNCJ6mcLNgd03Agutg6T8XrYdJeQAzDJL77sXh7LMNpxIKOJEwBw==
-X-Received: by 2002:a05:6830:1450:b0:6d8:53a5:7033 with SMTP id w16-20020a056830145000b006d853a57033mr3186774otp.0.1701316326204;
-        Wed, 29 Nov 2023 19:52:06 -0800 (PST)
-Received: from archie.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id c11-20020a65674b000000b005c259cef481sm171441pgu.59.2023.11.29.19.52.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Nov 2023 19:52:05 -0800 (PST)
-Received: by archie.me (Postfix, from userid 1000)
-        id A2CBD10205C43; Thu, 30 Nov 2023 10:52:03 +0700 (WIB)
-Date:   Thu, 30 Nov 2023 10:52:03 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Genes Lists <lists@sapience.com>, tglx@linutronix.de,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        gregory.greenman@intel.com, kvalo@kernel.org,
-        Linux Wireless <linux-wireless@vger.kernel.org>
-Cc:     Linux Regressions <regressions@lists.linux.dev>
-Subject: Re: crash with 6.7 rc2 and rc3
-Message-ID: <ZWgG48xjHEgG3u9w@archie.me>
-References: <c46a6462-8263-455c-a6ea-1860020f5fab@sapience.com>
- <ZWV7JworMrjHJHsO@archie.me>
- <cf2dcc97-845d-4860-be4d-5822d2ebbfca@sapience.com>
- <022c67aa-b90a-4756-8725-5f7fba7dc780@sapience.com>
- <2ce6a24f-fc9b-45d2-8a11-73a3e69ffa13@sapience.com>
+        Wed, 29 Nov 2023 22:53:00 -0500
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 078A6D66;
+        Wed, 29 Nov 2023 19:53:06 -0800 (PST)
+Received: from dggpemd100001.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Sgj1t5QzSzWhqd;
+        Thu, 30 Nov 2023 11:52:18 +0800 (CST)
+Received: from [10.67.120.108] (10.67.120.108) by
+ dggpemd100001.china.huawei.com (7.185.36.94) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.1258.28; Thu, 30 Nov 2023 11:53:03 +0800
+Message-ID: <d6b20d8f-7653-6806-d7c8-0adc54f1333b@huawei.com>
+Date:   Thu, 30 Nov 2023 11:53:03 +0800
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="KxZoA7PtHbqu5DUy"
-Content-Disposition: inline
-In-Reply-To: <2ce6a24f-fc9b-45d2-8a11-73a3e69ffa13@sapience.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.1
+Subject: Re: [PATCH v4] scsi: libsas: Fix the failure of adding phy with
+ zero-address to port
+Content-Language: en-CA
+To:     John Garry <john.g.garry@oracle.com>, <yanaijie@huawei.com>,
+        <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
+        <damien.lemoal@opensource.wdc.com>
+CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@huawei.com>, <prime.zeng@hisilicon.com>,
+        <kangfenglong@huawei.com>, <chenxiang66@hisilicon.com>
+References: <20231117090001.35840-1-yangxingui@huawei.com>
+ <32c42e1e-0399-4af4-a5ed-6a257e300fe8@oracle.com>
+ <307d251f-ff49-5d8f-1f8e-aed314256732@huawei.com>
+ <a13f0419-c4ef-4b8b-9757-7cf7cea32458@oracle.com>
+ <baacad33-f568-6151-75a2-dfc09caf2a81@huawei.com>
+ <cf98eb9f-ac42-4d9b-9cf3-3085f6fc0cda@oracle.com>
+From:   yangxingui <yangxingui@huawei.com>
+In-Reply-To: <cf98eb9f-ac42-4d9b-9cf3-3085f6fc0cda@oracle.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.120.108]
+X-ClientProxiedBy: dggpemm500017.china.huawei.com (7.185.36.178) To
+ dggpemd100001.china.huawei.com (7.185.36.94)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi, John
 
---KxZoA7PtHbqu5DUy
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 2023/11/29 20:54, John Garry wrote:
+> On 28/11/2023 03:45, yangxingui wrote:
+>>
+>> On 2023/11/28 3:28, John Garry wrote:
+>>> On 24/11/2023 02:27, yangxingui wrote:
+>>>>> We already do this in sas_ex_join_wide_port(), right?
+>>>> No, If the addr of ex_phy matches dev->parent, 
+>>>> sas_ex_join_wide_port() will not be called, but 
+>>>> sas_add_parent_port() will be called  as follows:
+>>>> static int sas_ex_discover_dev(struct domain_device *dev, int phy_id)
+>>>> {
+>>>>          struct expander_device *ex = &dev->ex_dev;
+>>>>          struct ex_phy *ex_phy = &ex->ex_phy[phy_id];
+>>>>          struct domain_device *child = NULL;
+>>>>          int res = 0;
+>>>>
+>>>>      <...>
+>>>>          /* Parent and domain coherency */
+>>>>          if (!dev->parent && sas_phy_match_port_addr(dev->port, 
+>>>> ex_phy)) {
+>>>>                  sas_add_parent_port(dev, phy_id);
+>>>>                  return 0;
+>>>>          }
+>>>>          if (dev->parent && sas_phy_match_dev_addr(dev->parent, 
+>>>> ex_phy)) {
+>>>>                  sas_add_parent_port(dev, phy_id);
+>>>>                  if (ex_phy->routing_attr == TABLE_ROUTING)
+>>>>                          sas_configure_phy(dev, phy_id, 
+>>>> dev->port->sas_addr, 1);
+>>>>                  return 0;
+>>>>          }
+>>>>      <...>
+>>>> }
+>>>>
+>>>>>
+>>>>> I am not saying that what we do now does not have a problem - I am 
+>>>>> just trying to understand what currently happens
+>>>>
+>>>> ok, because ex_phy->port is not set when calling 
+>>>> sas_add_parent_port(), when deleting phy from the parent wide port, 
+>>>> it is not removed from the phy_list of the parent wide port as follows:
+>>>> static void sas_unregister_devs_sas_addr(struct domain_device *parent,
+>>>>                                           int phy_id, bool last)
+>>>> {
+>>>>      <...>
+>>>>      // Since ex_phy->port is not set, this branch will not be enter
+>>>
+>>> But then how does this ever work? It is because we follow path 
+>>> sas_rediscover_dev() -> sas_discover_new() -> 
+>>> sas_ex_discover_devices() -> sas_ex_discover_dev() -> 
+>>> sas_add_parent_port(), and not sas_rediscover_dev() -> 
+>>> sas_discover_new() -> sas_ex_join_wide_port()? If so, is that because 
+>>> ephy->sas_attached_phy == 0 in sas_discover_new() -> 
+>>> sas_ex_join_wide_port() and it fails?
+>>>
+>>> BTW, about something mentioned earlier - adding the phy19 with SAS_ADDR 
+>>
+>> Yes,
+>> For phy19, when the phy is attached and added to the parent wide port, 
+>> the path is:
+>> sas_rediscover()
+>>      ->sas_discover_new()
+>>          ->sas_ex_discover_devices()
+>>              ->sas_ex_discover_dev()
+>>                  -> sas_add_parent_port().
+> 
+> ok, so then the change to set ex_phy->port = ex->parent_port looks ok. 
+> Maybe we can put this in a helper with the sas_port_add_phy() call, as 
+> it is duplicated in sas_ex_join_wide_port()
+> 
+> Do we also need to set ex_phy->phy_state (like sas_ex_join_wide_port())?
 
-On Wed, Nov 29, 2023 at 12:53:28PM -0500, Genes Lists wrote:
-> On 11/28/23 14:56, Genes Lists wrote:
-> > On 11/28/23 05:39, Genes Lists wrote:
-> > > On 11/28/23 00:31, Bagas Sanjaya wrote:
-> > > > On Mon, Nov 27, 2023 at 03:55:37PM -0500, Genes Lists wrote:
-> > > > >=20
-> > > > > lenovo laptop boots fine under 6.7rc1 and older including 6.6.2 s=
-table.
-> > > > > but not for 6.7 rc2 or rc3.
-> > > > >=20
-> > > > > ...
-> >=20
-> >=20
->=20
-> This appears to be build related. Starting from scratch with builds and t=
-hey
-> are now working fine.
->=20
-> My sincere apologies - please ignore/close this as (silly) user error.
->=20
+Well, okay, as follows?
++++ b/drivers/scsi/libsas/sas_expander.c
+@@ -856,9 +856,7 @@ static bool sas_ex_join_wide_port(struct 
+domain_device *parent, int phy_id)
 
-Telling regzbot:
+                 if (!memcmp(phy->attached_sas_addr, 
+ephy->attached_sas_addr,
+                             SAS_ADDR_SIZE) && ephy->port) {
+-                       sas_port_add_phy(ephy->port, phy->phy);
+-                       phy->port = ephy->port;
+-                       phy->phy_state = PHY_DEVICE_DISCOVERED;
++                       sas_port_add_ex_phy(ephy->port, phy);
+                         return true;
+                 }
+         }
+diff --git a/drivers/scsi/libsas/sas_internal.h 
+b/drivers/scsi/libsas/sas_internal.h
+index e860d5b19880..39ffa60a9a01 100644
+--- a/drivers/scsi/libsas/sas_internal.h
++++ b/drivers/scsi/libsas/sas_internal.h
+@@ -189,6 +189,13 @@ static inline void sas_phy_set_target(struct 
+asd_sas_phy *p, struct domain_devic
+         }
+  }
 
-#regzbot resolve: fixed by clean build
++static inline void sas_port_add_ex_phy(struct sas_port *port, struct 
+ex_phy *ex_phy)
++{
++       sas_port_add_phy(port, ex_phy->phy);
++       ex_phy->port = port;
++       ex_phy->phy_state = PHY_DEVICE_DISCOVERED;
++}
++
+  static inline void sas_add_parent_port(struct domain_device *dev, int 
+phy_id)
+  {
+         struct expander_device *ex = &dev->ex_dev;
+@@ -201,8 +208,7 @@ static inline void sas_add_parent_port(struct 
+domain_device *dev, int phy_id)
+                 BUG_ON(sas_port_add(ex->parent_port));
+                 sas_port_mark_backlink(ex->parent_port);
+         }
+-       sas_port_add_phy(ex->parent_port, ex_phy->phy);
++       sas_port_add_ex_phy(ex->parent_port, ex_phy);
+  }
 
-Thanks.
+> 
+>> And the path called when it is removed from parent wide port is:
+>> sas_rediscover()
+>>      ->sas_unregister_devs_sas_addr() // The sas address of phy19 
+>> becomes 0. Since ex_phy->port is NULL, phy19 is not removed from the 
+>> parent wide port's phy_list.
+>>
+>> For phy0, it is connected to a new sata device.
+>> sas_rediscover()
+>>      ->sas_discover_new()->sas_ex_phy_discover()
+>>                              ->sas_ex_phy_discover_helper()
+>>                                  ->sas_set_ex_phy() // The device type 
+>> is stp. Since the linkrate is 5 and less than 1.5G, sas_address is set 
+>> to 0.
+> 
+> Then when we get the proper linkrate later, will we then rediscover and 
+> set the proper SAS address? I am just wondering if this change is really 
+> required?
+Yes, but in fact it has not reached that stage yet. After setting the 
+address to 0, it will continue to create a new port and try to add other 
+phys with the same address as it to this new port.
 
---=20
-An old man doll... just what I always wanted! - Clara
+> 
+> BTW, Even with the change to set ex_phy->port = ex->parent_port, are we 
+> still joining the host-attached expander phy (19) to a port with SAS 
+> address == 0?
+Yes, in order to avoid this situation, in the current patch, we will not 
+force the SAS address to be set to 0 when the device type is not NULL, 
+but will still use the address obtained after requesting the expander.
 
---KxZoA7PtHbqu5DUy
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZWgG3wAKCRD2uYlJVVFO
-o5kHAP4uvok9RabEEM91N9uXtEExho0ks8Br/ecWYC+dAMAingEAurtRwwGCaZI5
-/OMmCilhJPR5UnBxrnD6Mkc7OgBfHgY=
-=4mkp
------END PGP SIGNATURE-----
-
---KxZoA7PtHbqu5DUy--
+Thanks,
+Xingui
