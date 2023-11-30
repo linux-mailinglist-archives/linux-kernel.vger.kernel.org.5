@@ -2,55 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 127507FEC0E
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 10:42:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BD847FEC0F
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 10:43:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231907AbjK3JmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 04:42:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60302 "EHLO
+        id S231865AbjK3Jni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 04:43:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231755AbjK3JmA (ORCPT
+        with ESMTP id S229462AbjK3Jnh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 04:42:00 -0500
-Received: from mx9.didiglobal.com (mx9.didiglobal.com [111.202.70.124])
-        by lindbergh.monkeyblade.net (Postfix) with SMTP id 03E1BD4A
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 01:42:05 -0800 (PST)
-Received: from mail.didiglobal.com (unknown [10.79.65.12])
-        by mx9.didiglobal.com (MailData Gateway V2.8.8) with ESMTPS id D6D701898505CF;
-        Thu, 30 Nov 2023 17:41:59 +0800 (CST)
-Received: from didi-ThinkCentre-M930t-N000 (10.79.64.101) by
- ZJY02-ACTMBX-02.didichuxing.com (10.79.65.12) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Thu, 30 Nov 2023 17:41:59 +0800
-Date:   Thu, 30 Nov 2023 17:41:47 +0800
-X-MD-Sfrom: tiozhang@didiglobal.com
-X-MD-SrcIP: 10.79.65.12
-From:   tiozhang <tiozhang@didiglobal.com>
-To:     <rostedt@goodmis.org>, <bigeasy@linutronix.de>,
-        <tglx@linutronix.de>, <mingo@redhat.com>, <peterz@infradead.org>,
-        <juri.lelli@redhat.com>, <vincent.guittot@linaro.org>
-CC:     <linux-kernel@vger.kernel.org>, <dietmar.eggemann@arm.com>,
-        <rostedt@goodmis.org>, <bsegall@google.com>, <mgorman@suse.de>,
-        <bristot@redhat.com>, <vschneid@redhat.com>,
-        <zyhtheonly@gmail.com>, <tiozhang@didiglobal.com>,
-        <zyhtheonly@yeah.net>
-Subject: [PATCH v2] sched/cputime: exclude ktimers threads in
- irqtime_account_irq
-Message-ID: <20231130094130.GA12116@didi-ThinkCentre-M930t-N000>
-Mail-Followup-To: rostedt@goodmis.org, bigeasy@linutronix.de,
-        tglx@linutronix.de, mingo@redhat.com, peterz@infradead.org,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        linux-kernel@vger.kernel.org, dietmar.eggemann@arm.com,
-        bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
-        vschneid@redhat.com, zyhtheonly@gmail.com, zyhtheonly@yeah.net
+        Thu, 30 Nov 2023 04:43:37 -0500
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB5E4D50;
+        Thu, 30 Nov 2023 01:43:41 -0800 (PST)
+X-UUID: 1cc704b282c9470082eced3a0ef062cb-20231130
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.33,REQID:4cb8bf6d-cb19-43c2-acda-67eaa471d2a2,IP:5,U
+        RL:0,TC:0,Content:0,EDM:0,RT:1,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+        N:release,TS:-9
+X-CID-INFO: VERSION:1.1.33,REQID:4cb8bf6d-cb19-43c2-acda-67eaa471d2a2,IP:5,URL
+        :0,TC:0,Content:0,EDM:0,RT:1,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+        release,TS:-9
+X-CID-META: VersionHash:364b77b,CLOUDID:ec6321fd-4a48-46e2-b946-12f04f20af8c,B
+        ulkID:231130174330NINYOUVY,BulkQuantity:0,Recheck:0,SF:64|66|24|17|19|44|1
+        02,TC:nil,Content:0,EDM:-3,IP:-2,URL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil
+        ,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_FSI,TF_CID_SPAM_ULN,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,
+        TF_CID_SPAM_FSD
+X-UUID: 1cc704b282c9470082eced3a0ef062cb-20231130
+X-User: chentao@kylinos.cn
+Received: from [172.20.15.254] [(116.128.244.169)] by mailgw
+        (envelope-from <chentao@kylinos.cn>)
+        (Generic MTA)
+        with ESMTP id 632642991; Thu, 30 Nov 2023 17:43:27 +0800
+Message-ID: <bf29c39f-8d9f-465a-bbc2-45bdb77711b8@kylinos.cn>
+Date:   Thu, 30 Nov 2023 17:43:27 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20231127130754.3affb908@gandalf.local.home>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [10.79.64.101]
-X-ClientProxiedBy: ZJY01-PUBMBX-01.didichuxing.com (10.79.64.32) To
- ZJY02-ACTMBX-02.didichuxing.com (10.79.65.12)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] platform/mellanox: Add a null pointer check in
+ mlxbf_pmc_create_groups
+Content-Language: en-US
+To:     =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>, vadimp@nvidia.com,
+        jiri@resnulli.us, shravankr@nvidia.com, kunwu.chan@hotmail.com,
+        platform-driver-x86@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20231127063433.1549064-1-chentao@kylinos.cn>
+ <1701224213463629.329.seg@mailgw>
+From:   Kunwu Chan <chentao@kylinos.cn>
+In-Reply-To: <1701224213463629.329.seg@mailgw>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
@@ -60,47 +64,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In CONFIG_PREEMPT_RT kernel, ktimers also calls __do_softirq,
-so when accounting CPUTIME_SOFTIRQ, ktimers need to be excluded
-as well as ksoftirqd.
-Also add this_cpu_ktimers to keep consistency with this_cpu_ksoftirqd.
+Thanks for your reply.
 
-Signed-off-by: tiozhang <tiozhang@didiglobal.com>
----
- include/linux/interrupt.h | 5 +++++
- kernel/sched/cputime.c    | 3 ++-
- 2 files changed, 7 insertions(+), 1 deletion(-)
+Cause i don't know how to deal with in some scenario，such as in 
+'mlxbf_pmc_init_perftype_counter', when 'attr->dev_attr.attr.name' is 
+null, should return '-ENOMEM' or 'continue' the loop?
 
-diff --git a/include/linux/interrupt.h b/include/linux/interrupt.h
-index a5091ac97fc6..a88646acaf3f 100644
---- a/include/linux/interrupt.h
-+++ b/include/linux/interrupt.h
-@@ -621,6 +621,11 @@ static inline unsigned int local_pending_timers(void)
-         return __this_cpu_read(pending_timer_softirq);
- }
- 
-+static inline struct task_struct *this_cpu_ktimers(void)
-+{
-+	return this_cpu_read(timersd);
-+}
-+
- #else
- static inline void raise_timer_softirq(void)
- {
-diff --git a/kernel/sched/cputime.c b/kernel/sched/cputime.c
-index af7952f12e6c..fd3610353e12 100644
---- a/kernel/sched/cputime.c
-+++ b/kernel/sched/cputime.c
-@@ -73,7 +73,8 @@ void irqtime_account_irq(struct task_struct *curr, unsigned int offset)
- 	 */
- 	if (pc & HARDIRQ_MASK)
- 		irqtime_account_delta(irqtime, delta, CPUTIME_IRQ);
--	else if ((pc & SOFTIRQ_OFFSET) && curr != this_cpu_ksoftirqd())
-+	else if (((pc & SOFTIRQ_OFFSET) && curr != this_cpu_ksoftirqd() &&
-+		  (!IS_ENABLED(CONFIG_PREEMPT_RT) || curr != this_cpu_ktimers()))
- 		irqtime_account_delta(irqtime, delta, CPUTIME_SOFTIRQ);
- }
- 
--- 
-2.17.1
+So I'm going to solve it one by one.
 
+Thanks again,
+Kunwu
+
+On 2023/11/28 17:51, Ilpo Järvinen wrote:
+> On Mon, 27 Nov 2023, Kunwu Chan wrote:
+> 
+>> devm_kasprintf() returns a pointer to dynamically allocated memory
+>> which can be NULL upon failure.
+>>
+>> Fixes: 1a218d312e65 ("platform/mellanox: mlxbf-pmc: Add Mellanox BlueField PMC driver")
+>> Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+>> ---
+>>   drivers/platform/mellanox/mlxbf-pmc.c | 2 ++
+>>   1 file changed, 2 insertions(+)
+>>
+>> diff --git a/drivers/platform/mellanox/mlxbf-pmc.c b/drivers/platform/mellanox/mlxbf-pmc.c
+>> index 0b427fc24a96..59bbe5e13f6b 100644
+>> --- a/drivers/platform/mellanox/mlxbf-pmc.c
+>> +++ b/drivers/platform/mellanox/mlxbf-pmc.c
+>> @@ -1882,6 +1882,8 @@ static int mlxbf_pmc_create_groups(struct device *dev, int blk_num)
+>>   	pmc->block[blk_num].block_attr_grp.attrs = pmc->block[blk_num].block_attr;
+>>   	pmc->block[blk_num].block_attr_grp.name = devm_kasprintf(
+>>   		dev, GFP_KERNEL, pmc->block_name[blk_num]);
+>> +	if (!pmc->block[blk_num].block_attr_grp.name)
+>> +		return -ENOMEM;
+>>   	pmc->groups[pmc->group_num] = &pmc->block[blk_num].block_attr_grp;
+>>   	pmc->group_num++;
+> 
+> I'm totally lost, why did you fix only one devm_kasprintf() location?
+> Don't all of them need this check?
+> 
