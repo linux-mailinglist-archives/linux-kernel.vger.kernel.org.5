@@ -2,79 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F9C37FEC8E
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 11:10:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FE3F7FEC94
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 11:11:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235127AbjK3KKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 05:10:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34526 "EHLO
+        id S231939AbjK3KLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 05:11:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235116AbjK3KKB (ORCPT
+        with ESMTP id S229462AbjK3KLR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 05:10:01 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB93C10E6
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 02:10:05 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-54b89582efeso738016a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 02:10:05 -0800 (PST)
+        Thu, 30 Nov 2023 05:11:17 -0500
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1313F10C9
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 02:11:24 -0800 (PST)
+Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-54af4f2838dso693845a12.2
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 02:11:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701339004; x=1701943804; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=E1qjU5JXu1SHQD4xQGaPaJAhFMnpcUVxymDQSxAyOzQ=;
-        b=ijqEs8zAxhdFfTdawN2jKrK8GLI781pRySgTvoSLBVLTg6jZHc+9DfB1oDBBO0aDKU
-         Wm9TUbSEqBONj7+AaW84roR0XUXu93yf+YqsHlohY8gTomUC7OgVzZeTXaBaAnoSDSwn
-         vBG1FjE9Srt7g7tBJGUfeiokyeAvWGb+ZoFpBLVa4acSlbFFR0LMQOgSl1WdiRrHJivA
-         cla/4eYW3uizS/TT7R+ERbJ2rY9iCZXS1lVYvHC3tp4+rUEGygQBR64tf+LklGjirXGy
-         brhz3qjQLPqI0pRmt2FhpEIfHjoWqW+346erYLLMYbIjdo/M9MQXJXmbPoBasSUfmCeH
-         OeeA==
+        d=linaro.org; s=google; t=1701339082; x=1701943882; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=BQKXf1q2OEZnZ3kEZQU0tyP5ahd6SKR/Xu20SNGKyvI=;
+        b=q0m9yJqtu2DQf/EE1EwzftGf3pDLx3OYr3s10XvOXPS10UzyY8L+o6cnbyHBy0PsNd
+         pTbRkUPYlkzJ0uKboXQcbRYzQ+7NwHaJ9k+3UbXaEK5tl6e6/5kOyau5TIfa4TLOO/Te
+         4CF4dXl14h/0TLvAhPgqtlJJXNA+rejXHhePeS5SxDvVjq9N3ZhqsqXEzxNh7e1tAD3R
+         NIeG1as7ZFCN56gnlXZ0jG2GZ3EOUFS6+Gp8Jd5n9UiT+5dAq0gW1xY+0T/w21qxKfAL
+         rPfqIRTqr6VC8aKhmXo7IHzfAlYtwTaaca0CXJ2gZWz9ZYxb5A7TfQ2E0AIrCBTd16dP
+         zgTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701339004; x=1701943804;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=E1qjU5JXu1SHQD4xQGaPaJAhFMnpcUVxymDQSxAyOzQ=;
-        b=oDqRpYlQ9FpcASUQ0/r7wZXepF+B//+wNWTWnmzUmAglaK4WkId78VK2ZH1O6790uW
-         glkqsHZixb2JFt/ZXCjydxuQM3Ye08+j66fh/oZ6vdBPOKvCKLMxjdr1IdkZpTHVtKmY
-         zsgXBIQvBklE2x7cCBZ3TFKUrNvtWDpNUCFHshVT7Ek99YxJ6TjV2inVY5EpUnmfvBxH
-         nf9uD/L5UOKiuBKK6r3z565XXjS3TY/EGOtPvinINxXZpGM3b7qDMWvZiCOK2D/BB/AR
-         MueGlYa2jxtmY0pbwTf+UcqRhj2DtfgpLH+mPt6ZXCu36AGbNPKlg8eFIYqOsJgV+GAz
-         hQHw==
-X-Gm-Message-State: AOJu0Yzmn+2mV2SC/gEc60fyo3tQ4mMIBbU+a83TsXUXf5ka5GxVoNp3
-        3YGpSFzfLo62w99n1pF3e80QSg==
-X-Google-Smtp-Source: AGHT+IF/jgdSK4dsxLW+CHiaLQG7uE1vQq6/j3ab/pmaLpRz4Scp96/aZfQSgXqDVz21yXWypQxVVw==
-X-Received: by 2002:a17:906:73c7:b0:a17:d319:df11 with SMTP id n7-20020a17090673c700b00a17d319df11mr2272934ejl.59.1701339004233;
-        Thu, 30 Nov 2023 02:10:04 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701339082; x=1701943882;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BQKXf1q2OEZnZ3kEZQU0tyP5ahd6SKR/Xu20SNGKyvI=;
+        b=lGjoahD+a3qviM0AchV+EFJrd8AzeDTMYLBsa6PjwFW0Cu5RaGtYJX91WvMuXjq4Ap
+         vVXf7EbfnsyNgFhjNH3n9WWZpjZxgH5/aTo+MOZlmMP511PsMEeS600bcwgFRsRAuUQX
+         q9vER3t5Bz+8Iw3EzER6pzmpPIfdWnYnkVY9JxHVqBaKa7WDcNX+L38uZ13wkWMJtfOq
+         1ll2u+59vOEn51J/Hwo2iwCOO6255N88g16oph0+Z3gy1wGBs+HB6rHYu/KCktvauf5+
+         U6zjYWZ8RMq49fIAUjcxMEpW9pON//fz0rRPxY42z/8NylHSnfTYFuNHx+C+ne5F7UC5
+         k/tg==
+X-Gm-Message-State: AOJu0YxOAtmJ+wCScPjQwwxkNcn228d1KkAiBXqtA2C0mXaoY8Ov8CdA
+        0WQ7Pd7ktPk3IkMm9w6LiQ2m5I/TfM0rlr8dWbg=
+X-Google-Smtp-Source: AGHT+IG3ruccL35j76zEEvNRMlePh8SiM5AZ0WyM0wpJQBtIO9fxbhSqjZBvKqiH0QLtO6/n8eTOJw==
+X-Received: by 2002:a17:906:2756:b0:9bd:9bfe:e40b with SMTP id a22-20020a170906275600b009bd9bfee40bmr13385846ejd.75.1701339082444;
+        Thu, 30 Nov 2023 02:11:22 -0800 (PST)
 Received: from [192.168.209.83] (178235187166.dynamic-4-waw-k-2-3-0.vectranet.pl. [178.235.187.166])
-        by smtp.gmail.com with ESMTPSA id r21-20020a170906281500b009fca9f39e98sm504965ejc.26.2023.11.30.02.10.00
+        by smtp.gmail.com with ESMTPSA id r21-20020a170906281500b009fca9f39e98sm504965ejc.26.2023.11.30.02.11.20
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Nov 2023 02:10:03 -0800 (PST)
-Message-ID: <a9c2532a-eaa6-4019-8ce9-5a58b1b720b2@linaro.org>
-Date:   Thu, 30 Nov 2023 11:09:59 +0100
+        Thu, 30 Nov 2023 02:11:22 -0800 (PST)
+Message-ID: <1e014d8c-9a46-4a99-bca2-9f84598bd614@linaro.org>
+Date:   Thu, 30 Nov 2023 11:11:20 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/3] PCI: qcom: Enable cache coherency for SA8775P RC
-To:     Manivannan Sadhasivam <mani@kernel.org>,
-        Mrinmay Sarkar <quic_msarkar@quicinc.com>
-Cc:     agross@kernel.org, andersson@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        robh+dt@kernel.org, quic_shazhuss@quicinc.com,
-        quic_nitegupt@quicinc.com, quic_ramkri@quicinc.com,
-        quic_nayiluri@quicinc.com, dmitry.baryshkov@linaro.org,
-        robh@kernel.org, quic_krichai@quicinc.com,
-        quic_vbadigan@quicinc.com, quic_parass@quicinc.com,
-        quic_schintav@quicinc.com, quic_shijjose@quicinc.com,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-References: <1700577493-18538-1-git-send-email-quic_msarkar@quicinc.com>
- <1700577493-18538-2-git-send-email-quic_msarkar@quicinc.com>
- <20231130052116.GA3043@thinkpad>
+Subject: Re: [PATCH 2/2] arm64: dts: qcom: sm8550: correct TX Soundwire clock
 Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Neil Armstrong <neil.armstrong@linaro.org>
+References: <20231129140537.161720-1-krzysztof.kozlowski@linaro.org>
+ <20231129140537.161720-2-krzysztof.kozlowski@linaro.org>
+ <3ec70fd9-11a3-4bd3-bd8c-a73c3d44dcde@linaro.org>
+ <0be610ed-ac95-4de1-9639-d634cf979359@linaro.org>
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
@@ -111,12 +106,12 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <20231130052116.GA3043@thinkpad>
+In-Reply-To: <0be610ed-ac95-4de1-9639-d634cf979359@linaro.org>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -124,29 +119,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30.11.2023 06:21, Manivannan Sadhasivam wrote:
-> On Tue, Nov 21, 2023 at 08:08:11PM +0530, Mrinmay Sarkar wrote:
->> In a multiprocessor system cache snooping maintains the consistency
->> of caches. Snooping logic is disabled from HW on this platform.
->> Cache coherency doesn’t work without enabling this logic.
+On 30.11.2023 09:06, Krzysztof Kozlowski wrote:
+> On 29/11/2023 15:35, Konrad Dybcio wrote:
+>> On 29.11.2023 15:05, Krzysztof Kozlowski wrote:
+>>> The TX Soundwire controller should take clock from TX macro codec, not
+>>> VA macro codec clock, otherwise the clock stays disabled.  This looks
+>>> like a copy-paste issue, because the SC8280xp code uses here correctly
+>>> clock from TX macro.  The VA macro clock is already consumed by TX macro
+>>> codec, thus it won't be disabled by this change.
+>>>
+>>> Fixes: 61b006389bb7 ("arm64: dts: qcom: sm8550: add Soundwire controllers")
+>>> Reported-by: Neil Armstrong <neil.armstrong@linaro.org>
+>>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>>> ---
+>> Interestingly, downstream 8550 has
 >>
->> 8775 has IP version 1.34.0 so intruduce a new cfg(cfg_1_34_0) for this
->> platform. Assign no_snoop_override flag into struct qcom_pcie_cfg and
->> set it true in cfg_1_34_0 and enable cache snooping if this particular
->> flag is true.
+>> qcom,use-clk-id = <VA_CORE_CLK>;
 >>
+>> which doesn't seem to be used in techpack
 > 
-> I just happen to check the internal register details of other platforms and I
-> see this PCIE_PARF_NO_SNOOP_OVERIDE register with the reset value of 0x0. So
-> going by the logic of this patch, this register needs to be configured for other
-> platforms as well to enable cache coherency, but it seems like not the case as
-> we never did and all are working fine (so far no issues reported).
-
-Guess we know that already [1]
-
-The question is whether this override is necessary, or the default
-internal state is OK on other platforms
+> In which node? I see it in the va-macro node, not the tx-macro.
+You're right, I misread this.
 
 Konrad
-
-[1] https://lore.kernel.org/linux-arm-msm/cb4324aa-8035-ce6e-94ef-a31ed070225c@quicinc.com/
