@@ -2,235 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 179637FFEB3
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 23:47:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9A197FFEBE
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 23:51:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377188AbjK3WrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 17:47:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37934 "EHLO
+        id S1377149AbjK3Wu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 17:50:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230261AbjK3WrE (ORCPT
+        with ESMTP id S235194AbjK3Wuw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 17:47:04 -0500
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4074410FC;
-        Thu, 30 Nov 2023 14:47:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1701384428;
-        bh=8dLRpQZRJvy3YV8A/Ir3qriNVtOM2tI73+ACdhrr2rQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=lTSJ9oqeFzhFT3UE4ncKxNBoPrnAkqRQ29/P6OKM5MMD+PWU/8iK2IkAZT6ZaBbtN
-         RwE0ImCLsnrNOaiWrjLebU74Gi4JoF4X4zTYE3UBgU5ODRiiclwVyozQhzqyLTJoj/
-         q37lEhASL3BGtk9QwshjU+k9N4ukFGVnZDKBHR6GsdDJZ3F0Yks8mS9hjkqLMaABJD
-         GmoOg6f4oT9JKjP0EvkXqw6oUHEO1DDh8oF4ksVtrlpZkhw3zY/8LWJwJk0URcQYJS
-         pVQ1UDJh/7J6YUb0Lqk1b7O7NoJh+gUQZKJeKO25l7OjlbvSmdqIvNvsff7Pi/5xU/
-         6OhwYAKEF73KA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4ShBCH3Jthz4xjd;
-        Fri,  1 Dec 2023 09:47:07 +1100 (AEDT)
-Date:   Fri, 1 Dec 2023 09:47:05 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Stanislav Fomichev <sdf@google.com>
-Subject: linux-next: manual merge of the bpf-next tree with the net-next
- tree
-Message-ID: <20231201094705.1ee3cab8@canb.auug.org.au>
+        Thu, 30 Nov 2023 17:50:52 -0500
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31D0C91;
+        Thu, 30 Nov 2023 14:50:59 -0800 (PST)
+Received: by mail-oi1-x22c.google.com with SMTP id 5614622812f47-3b8903f7192so897810b6e.0;
+        Thu, 30 Nov 2023 14:50:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701384658; x=1701989458; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+9WwWZklN0+vDMUHEvugiN9GLGkxGRM9Mi/9Ul82cU0=;
+        b=G9xF+sDw8cfPlKP2o/y36pPN8MexE9lZ1ImbVHHxM+fo24+69BPT5QSTSyuMBCbY25
+         JasR5cjJYm8X/z7rMoER1yhdU6VHTL93LdKDDb5ga2SHfJ0XqX9tnOs0DWYXYuBhAp5N
+         KL/p+fm/zxejDn9m1NsOKASyNSTJmnl6n9atQDb09qxI0Qfck0swtqpiHNwO0iPxZYwJ
+         k/MqVvAW6fRWmOKvpR9YEXlaNldOaDi+DsnBprkJXSwFE90t0SbJYit7cvw6nRdGqdWq
+         WKxLMveK2Lr2WeTAARSfGKJ9pOWpL1FzE9HHntN+AiMaTSchpNGhjH8yK9449omknZ78
+         ar1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701384658; x=1701989458;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+9WwWZklN0+vDMUHEvugiN9GLGkxGRM9Mi/9Ul82cU0=;
+        b=Fbmm8aW5bMWPw0QTMmIq+LGPYosyqW7oF7hW0qY+DfPKr1PSAHcwKtEkAu3foEu4Q9
+         maNMmwAABD/Ls0zQE019CjAaLWeVCOMnOYjo9yjpG69YAnYjDKVDTXyaiGQ48h68g/Nm
+         88Bgie0my+ysmXjSQpM+ikfEA7OKQWHm7DOx0J82x8wkozdvT7jzU585gI6868vE7ZjB
+         hpKRzlfhZtim3IUrKjxrM4HkT3UY3YadtenvCGWlAss10cYjrebRPLxbs1xpy4HCuZz8
+         oNjBF1+ZSikcNTS3eO9vRLsIsbZcFMuAnIPsuIW0JLWPJHiTpcVwTlxo0iRK7NdtsVBZ
+         3s/g==
+X-Gm-Message-State: AOJu0Yx8pKlJgpl+TFMyzQSoCD6mlzYyQvM/SkLq5NHkxaOs6rx+rgHt
+        cZ+VdfOtVUaF02zdvnm9jfk=
+X-Google-Smtp-Source: AGHT+IHHqa2BAvp52jry9MyArbZJZ++S2L7AL8Wt6kw+X6HYLK+spG+Ab62C3S9/lvV8GA9icyKAYQ==
+X-Received: by 2002:a05:6871:e499:b0:1fa:d6e7:afe0 with SMTP id pz25-20020a056871e49900b001fad6e7afe0mr2341151oac.56.1701384658387;
+        Thu, 30 Nov 2023 14:50:58 -0800 (PST)
+Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
+        by smtp.gmail.com with ESMTPSA id o16-20020ac841d0000000b00423829b6d91sm904566qtm.8.2023.11.30.14.50.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Nov 2023 14:50:58 -0800 (PST)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 6448C27C0054;
+        Thu, 30 Nov 2023 17:50:57 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Thu, 30 Nov 2023 17:50:57 -0500
+X-ME-Sender: <xms:0BFpZTmjNyO3oF6v_Lt59lTff--CU9ho_EPPua_jbZ8PUD5rQgoIlw>
+    <xme:0BFpZW3R1ykypLK5g6XhdSIObLGAQHbEHpnzcm-xTbZeH_E134ccZLm5wRw2XKKJe
+    Ja1KwNJf9v4dOWrRg>
+X-ME-Received: <xmr:0BFpZZpx6ERcuYNBUswBJgUXf-WI9yybjBzeWRBg2VA_o6igZWGYiRLYr4Q>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeikedgtdefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhu
+    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
+    htthgvrhhnpeehudfgudffffetuedtvdehueevledvhfelleeivedtgeeuhfegueeviedu
+    ffeivdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    gsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdei
+    gedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfih
+    igmhgvrdhnrghmvg
+X-ME-Proxy: <xmx:0BFpZbkm5LdzT3vE41N4hjSPpmUEyTVlRF0JMmLPygPvoLHUf-vhXA>
+    <xmx:0BFpZR13vqMb7FyZz3LX_IPIEm6g8U-ShYhGp5iJSKvXTVjHPRU1-Q>
+    <xmx:0BFpZathv0zmEcHegDNZ_apjEwnuNEVC6IauIylCmnVXsjdeYX7xxQ>
+    <xmx:0RFpZSd9on4wAc6osvZHqUVsZHeisouzSjDj0cgW3iL8KDJLsSm7Sw>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 30 Nov 2023 17:50:56 -0500 (EST)
+Date:   Thu, 30 Nov 2023 14:50:07 -0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Alice Ryhl <aliceryhl@google.com>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Gary Guo <gary@garyguo.net>,
+        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Carlos Llamas <cmllamas@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 7/7] rust: file: add abstraction for `poll_table`
+Message-ID: <ZWkRnxT4ymjn0tYM@boqun-archlinux>
+References: <20231129-alice-file-v1-0-f81afe8c7261@google.com>
+ <20231129-alice-file-v1-7-f81afe8c7261@google.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/g7K.f..gJSgW3O55nsC/Hs7";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231129-alice-file-v1-7-f81afe8c7261@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/g7K.f..gJSgW3O55nsC/Hs7
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, Nov 29, 2023 at 01:12:51PM +0000, Alice Ryhl wrote:
+[...]
+> +// Make the `CondVar` methods callable on `PollCondVar`.
+> +impl Deref for PollCondVar {
+> +    type Target = CondVar;
+> +
+> +    fn deref(&self) -> &CondVar {
+> +        &self.inner
+> +    }
+> +}
 
-Hi all,
+I generally think we should avoid using Deref for "subclass pattern" due
+to the potential confusion for the code readers (of the deref() usage).
+Would it be possible we start with `impl AsRef<CondVar>`?
 
-Today's linux-next merge of the bpf-next tree got a conflict in:
+Thanks!
 
-  Documentation/netlink/specs/netdev.yaml
-
-between commit:
-
-  839ff60df3ab ("net: page_pool: add nlspec for basic access to page pools")
-(and a few following)
-
-from the net-next tree and commit:
-
-  48eb03dd2630 ("xsk: Add TX timestamp and TX checksum offload support")
-
-from the bpf-next tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc Documentation/netlink/specs/netdev.yaml
-index 20f75b7d3240,00439bcbd2e3..000000000000
---- a/Documentation/netlink/specs/netdev.yaml
-+++ b/Documentation/netlink/specs/netdev.yaml
-@@@ -86,112 -97,11 +97,117 @@@ attribute-sets
-               See Documentation/networking/xdp-rx-metadata.rst for more de=
-tails.
-          type: u64
-          enum: xdp-rx-metadata
-+       -
-+         name: xsk-features
-+         doc: Bitmask of enabled AF_XDP features.
-+         type: u64
-+         enum: xsk-flags
- +  -
- +    name: page-pool
- +    attributes:
- +      -
- +        name: id
- +        doc: Unique ID of a Page Pool instance.
- +        type: uint
- +        checks:
- +          min: 1
- +          max: u32-max
- +      -
- +        name: ifindex
- +        doc: |
- +          ifindex of the netdev to which the pool belongs.
- +          May be reported as 0 if the page pool was allocated for a netdev
- +          which got destroyed already (page pools may outlast their netde=
-vs
- +          because they wait for all memory to be returned).
- +        type: u32
- +        checks:
- +          min: 1
- +          max: s32-max
- +      -
- +        name: napi-id
- +        doc: Id of NAPI using this Page Pool instance.
- +        type: uint
- +        checks:
- +          min: 1
- +          max: u32-max
- +      -
- +        name: inflight
- +        type: uint
- +        doc: |
- +          Number of outstanding references to this page pool (allocated
- +          but yet to be freed pages). Allocated pages may be held in
- +          socket receive queues, driver receive ring, page pool recycling
- +          ring, the page pool cache, etc.
- +      -
- +        name: inflight-mem
- +        type: uint
- +        doc: |
- +          Amount of memory held by inflight pages.
- +      -
- +        name: detach-time
- +        type: uint
- +        doc: |
- +          Seconds in CLOCK_BOOTTIME of when Page Pool was detached by
- +          the driver. Once detached Page Pool can no longer be used to
- +          allocate memory.
- +          Page Pools wait for all the memory allocated from them to be fr=
-eed
- +          before truly disappearing. "Detached" Page Pools cannot be
- +          "re-attached", they are just waiting to disappear.
- +          Attribute is absent if Page Pool has not been detached, and
- +          can still be used to allocate new memory.
- +  -
- +    name: page-pool-info
- +    subset-of: page-pool
- +    attributes:
- +      -
- +        name: id
- +      -
- +        name: ifindex
- +  -
- +    name: page-pool-stats
- +    doc: |
- +      Page pool statistics, see docs for struct page_pool_stats
- +      for information about individual statistics.
- +    attributes:
- +      -
- +        name: info
- +        doc: Page pool identifying information.
- +        type: nest
- +        nested-attributes: page-pool-info
- +      -
- +        name: alloc-fast
- +        type: uint
- +        value: 8 # reserve some attr ids in case we need more metadata la=
-ter
- +      -
- +        name: alloc-slow
- +        type: uint
- +      -
- +        name: alloc-slow-high-order
- +        type: uint
- +      -
- +        name: alloc-empty
- +        type: uint
- +      -
- +        name: alloc-refill
- +        type: uint
- +      -
- +        name: alloc-waive
- +        type: uint
- +      -
- +        name: recycle-cached
- +        type: uint
- +      -
- +        name: recycle-cache-full
- +        type: uint
- +      -
- +        name: recycle-ring
- +        type: uint
- +      -
- +        name: recycle-ring-full
- +        type: uint
- +      -
- +        name: recycle-released-refcnt
- +        type: uint
- =20
-  operations:
-    list:
-
---Sig_/g7K.f..gJSgW3O55nsC/Hs7
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVpEOkACgkQAVBC80lX
-0GwfMgf/Y1kROolstfCuDvnjO6ADIeEc3IKBtmKNgjjIf0T3bTeb/ZLxhDym70hg
-Lfs7Y5AajYBZHPmkt147kNgi+99LvhhL1Ggx2AINKJe6m4rSagoU6RLxg5ywgFO6
-VBPU5V614OYM3w6U4cHzeC3mqBpU1CuJcKvm2hzi0IC1V2QXqK65LOgaQltmhfsC
-T5KLuJCSWv+5jmFhijMfFrH4Pxv1XHbLHLID3Ko8kls+cvfcWPQLl9NToswXwfVA
-AY6cbrWtGOhPAaYgDTP+uCsjc5G+02wlViKPgUfWYIg+7PGouL11pMkPWgfLToY/
-LqxId7JLp6rU2KMdDhWVS/v1ija0Zw==
-=oTgY
------END PGP SIGNATURE-----
-
---Sig_/g7K.f..gJSgW3O55nsC/Hs7--
+Regards,
+Boqun
