@@ -2,106 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5635C7FED9B
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 12:13:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 169637FED93
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 12:13:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231847AbjK3LN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 06:13:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56362 "EHLO
+        id S235150AbjK3LNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 06:13:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235155AbjK3LNZ (ORCPT
+        with ESMTP id S231784AbjK3LNL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 06:13:25 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D61BFD7F;
-        Thu, 30 Nov 2023 03:13:30 -0800 (PST)
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AUB7Gb3032264;
-        Thu, 30 Nov 2023 11:12:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=Ef6HC5NvzFqBlHTAWd4J/zuJBCADIu2dLz+sXG5InPg=;
- b=PTP7bEU733/WjUffCuUFmyUAg4KFGDESPP7T5aW5wjx6Rfox7sA8IgJZzF6hhaDzKiTp
- GPZAu+Ef3Jt/2CYVMRRBBncVsmSHr7garPnh3QajGybqYxtw573dJPohY/PJWMB1PKJx
- T7Qp4xVQH1vMw7sVxZO3p0MR1nRC0neV4Bol9DAseeNdBlZtwGLo48nP9D5tV++F6dbx
- um8A8qVmysnHGgqp0Gt39vNcvt8gfUEP8kgktXH4/d5xso24bvej3BPsfab15xNE7EoF
- wSz/XgswOb4Yt6BV7ItczXSIclKxXflWbilNUQcFYspPCwqpY7p60BWQr43yV4r/84Yp 8Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ups85895u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 30 Nov 2023 11:12:54 +0000
-Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3AUB7Ch2032122;
-        Thu, 30 Nov 2023 11:12:53 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ups85894r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 30 Nov 2023 11:12:53 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3AUB435i002068;
-        Thu, 30 Nov 2023 11:12:51 GMT
-Received: from smtprelay06.wdc07v.mail.ibm.com ([172.16.1.73])
-        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3ukv8nwnkt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 30 Nov 2023 11:12:51 +0000
-Received: from smtpav06.dal12v.mail.ibm.com (smtpav06.dal12v.mail.ibm.com [10.241.53.105])
-        by smtprelay06.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3AUBCpiD10814034
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 30 Nov 2023 11:12:51 GMT
-Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0B71A58043;
-        Thu, 30 Nov 2023 11:12:51 +0000 (GMT)
-Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8AD1A5805E;
-        Thu, 30 Nov 2023 11:12:49 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.61.17.185])
-        by smtpav06.dal12v.mail.ibm.com (Postfix) with ESMTP;
-        Thu, 30 Nov 2023 11:12:49 +0000 (GMT)
-Message-ID: <7cb732ea42a221b4b8bbfad941d9dec41a3a35fa.camel@linux.ibm.com>
-Subject: Re: [PATCH v5 23/23] integrity: Switch from rbtree to LSM-managed
- blob for integrity_iint_cache
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
-        Paul Moore <paul@paul-moore.com>
-Cc:     viro@zeniv.linux.org.uk, brauner@kernel.org,
-        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
-        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
-        jmorris@namei.org, serge@hallyn.com, dmitry.kasatkin@gmail.com,
-        dhowells@redhat.com, jarkko@kernel.org,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        casey@schaufler-ca.com, mic@digikod.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
-Date:   Thu, 30 Nov 2023 06:12:49 -0500
-In-Reply-To: <90eb8e9d-c63e-42d6-b951-f856f31590db@huaweicloud.com>
-References: <20231107134012.682009-24-roberto.sassu@huaweicloud.com>
-         <17befa132379d37977fc854a8af25f6d.paul@paul-moore.com>
-         <2084adba3c27a606cbc5ed7b3214f61427a829dd.camel@huaweicloud.com>
-         <CAHC9VhTTKac1o=RnQadu2xqdeKH8C_F+Wh4sY=HkGbCArwc8JQ@mail.gmail.com>
-         <b6c51351be3913be197492469a13980ab379e412.camel@huaweicloud.com>
-         <CAHC9VhSAryQSeFy0ZMexOiwBG-YdVGRzvh58=heH916DftcmWA@mail.gmail.com>
-         <90eb8e9d-c63e-42d6-b951-f856f31590db@huaweicloud.com>
+        Thu, 30 Nov 2023 06:13:11 -0500
+Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBC1810D0;
+        Thu, 30 Nov 2023 03:13:12 -0800 (PST)
+Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
+        by ex01.ufhost.com (Postfix) with ESMTP id 45F9524E052;
+        Thu, 30 Nov 2023 19:13:05 +0800 (CST)
+Received: from EXMBX172.cuchost.com (172.16.6.92) by EXMBX165.cuchost.com
+ (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 30 Nov
+ 2023 19:13:05 +0800
+Received: from [192.168.125.136] (113.72.145.176) by EXMBX172.cuchost.com
+ (172.16.6.92) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 30 Nov
+ 2023 19:13:04 +0800
+Message-ID: <78255041-47a3-4f52-97cd-83347c5813bd@starfivetech.com>
+Date:   Thu, 30 Nov 2023 19:13:05 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1] PCI: Add PCIE_CONFIG_REQUEST_WAIT_MS waiting time
+ value
+Content-Language: en-US
+To:     Bjorn Helgaas <helgaas@kernel.org>
+CC:     Bjorn Helgaas <bhelgaas@google.com>, <linux-pci@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <mason.huo@starfivetech.com>,
+        <leyfoon.tan@starfivetech.com>, <minda.chen@starfivetech.com>
+References: <20231129232219.GA444277@bhelgaas>
+From:   Kevin Xie <kevin.xie@starfivetech.com>
+In-Reply-To: <20231129232219.GA444277@bhelgaas>
 Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: sGlpADXpdEzfRPTTb11QNq5AVfyA7kb_
-X-Proofpoint-ORIG-GUID: vXheKywDcBelVZCXMm0lWvPo-OP3VVP8
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-30_09,2023-11-30_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
- lowpriorityscore=0 spamscore=0 mlxlogscore=999 priorityscore=1501
- suspectscore=0 impostorscore=0 phishscore=0 mlxscore=0 adultscore=0
- bulkscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311300083
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [113.72.145.176]
+X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX172.cuchost.com
+ (172.16.6.92)
+X-YovoleRuleAgent: yovoleflag
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -109,174 +55,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-11-29 at 19:46 +0100, Roberto Sassu wrote:
-> On 11/29/2023 6:22 PM, Paul Moore wrote:
-> > On Wed, Nov 29, 2023 at 7:28 AM Roberto Sassu
-> > <roberto.sassu@huaweicloud.com> wrote:
-> >>
-> >> On Mon, 2023-11-20 at 16:06 -0500, Paul Moore wrote:
-> >>> On Mon, Nov 20, 2023 at 3:16 AM Roberto Sassu
-> >>> <roberto.sassu@huaweicloud.com> wrote:
-> >>>> On Fri, 2023-11-17 at 15:57 -0500, Paul Moore wrote:
-> >>>>> On Nov  7, 2023 Roberto Sassu <roberto.sassu@huaweicloud.com> wrote:
-> >>>>>>
-> >>>>>> Before the security field of kernel objects could be shared among LSMs with
-> >>>>>> the LSM stacking feature, IMA and EVM had to rely on an alternative storage
-> >>>>>> of inode metadata. The association between inode metadata and inode is
-> >>>>>> maintained through an rbtree.
-> >>>>>>
-> >>>>>> Because of this alternative storage mechanism, there was no need to use
-> >>>>>> disjoint inode metadata, so IMA and EVM today still share them.
-> >>>>>>
-> >>>>>> With the reservation mechanism offered by the LSM infrastructure, the
-> >>>>>> rbtree is no longer necessary, as each LSM could reserve a space in the
-> >>>>>> security blob for each inode. However, since IMA and EVM share the
-> >>>>>> inode metadata, they cannot directly reserve the space for them.
-> >>>>>>
-> >>>>>> Instead, request from the 'integrity' LSM a space in the security blob for
-> >>>>>> the pointer of inode metadata (integrity_iint_cache structure). The other
-> >>>>>> reason for keeping the 'integrity' LSM is to preserve the original ordering
-> >>>>>> of IMA and EVM functions as when they were hardcoded.
-> >>>>>>
-> >>>>>> Prefer reserving space for a pointer to allocating the integrity_iint_cache
-> >>>>>> structure directly, as IMA would require it only for a subset of inodes.
-> >>>>>> Always allocating it would cause a waste of memory.
-> >>>>>>
-> >>>>>> Introduce two primitives for getting and setting the pointer of
-> >>>>>> integrity_iint_cache in the security blob, respectively
-> >>>>>> integrity_inode_get_iint() and integrity_inode_set_iint(). This would make
-> >>>>>> the code more understandable, as they directly replace rbtree operations.
-> >>>>>>
-> >>>>>> Locking is not needed, as access to inode metadata is not shared, it is per
-> >>>>>> inode.
-> >>>>>>
-> >>>>>> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> >>>>>> Reviewed-by: Casey Schaufler <casey@schaufler-ca.com>
-> >>>>>> Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
-> >>>>>> ---
-> >>>>>>   security/integrity/iint.c      | 71 +++++-----------------------------
-> >>>>>>   security/integrity/integrity.h | 20 +++++++++-
-> >>>>>>   2 files changed, 29 insertions(+), 62 deletions(-)
-> >>>>>>
-> >>>>>> diff --git a/security/integrity/iint.c b/security/integrity/iint.c
-> >>>>>> index 882fde2a2607..a5edd3c70784 100644
-> >>>>>> --- a/security/integrity/iint.c
-> >>>>>> +++ b/security/integrity/iint.c
-> >>>>>> @@ -231,6 +175,10 @@ static int __init integrity_lsm_init(void)
-> >>>>>>      return 0;
-> >>>>>>   }
-> >>>>>>
-> >>>>>> +struct lsm_blob_sizes integrity_blob_sizes __ro_after_init = {
-> >>>>>> +   .lbs_inode = sizeof(struct integrity_iint_cache *),
-> >>>>>> +};
-> >>>>>
-> >>>>> I'll admit that I'm likely missing an important detail, but is there
-> >>>>> a reason why you couldn't stash the integrity_iint_cache struct
-> >>>>> directly in the inode's security blob instead of the pointer?  For
-> >>>>> example:
-> >>>>>
-> >>>>>    struct lsm_blob_sizes ... = {
-> >>>>>      .lbs_inode = sizeof(struct integrity_iint_cache),
-> >>>>>    };
-> >>>>>
-> >>>>>    struct integrity_iint_cache *integrity_inode_get(inode)
-> >>>>>    {
-> >>>>>      if (unlikely(!inode->isecurity))
-> >>>>>        return NULL;
-> >>>>>      return inode->i_security + integrity_blob_sizes.lbs_inode;
-> >>>>>    }
-> >>>>
-> >>>> It would increase memory occupation. Sometimes the IMA policy
-> >>>> encompasses a small subset of the inodes. Allocating the full
-> >>>> integrity_iint_cache would be a waste of memory, I guess?
-> >>>
-> >>> Perhaps, but if it allows us to remove another layer of dynamic memory
-> >>> I would argue that it may be worth the cost.  It's also worth
-> >>> considering the size of integrity_iint_cache, while it isn't small, it
-> >>> isn't exactly huge either.
-> >>>
-> >>>> On the other hand... (did not think fully about that) if we embed the
-> >>>> full structure in the security blob, we already have a mutex available
-> >>>> to use, and we don't need to take the inode lock (?).
-> >>>
-> >>> That would be excellent, getting rid of a layer of locking would be significant.
-> >>>
-> >>>> I'm fully convinced that we can improve the implementation
-> >>>> significantly. I just was really hoping to go step by step and not
-> >>>> accumulating improvements as dependency for moving IMA and EVM to the
-> >>>> LSM infrastructure.
-> >>>
-> >>> I understand, and I agree that an iterative approach is a good idea, I
-> >>> just want to make sure we keep things tidy from a user perspective,
-> >>> i.e. not exposing the "integrity" LSM when it isn't required.
-> >>
-> >> Ok, I went back to it again.
-> >>
-> >> I think trying to separate integrity metadata is premature now, too
-> >> many things at the same time.
-> > 
-> > I'm not bothered by the size of the patchset, it is more important
-> > that we do The Right Thing.  I would like to hear in more detail why
-> > you don't think this will work, I'm not interested in hearing about
-> > difficult it may be, I'm interested in hearing about what challenges
-> > we need to solve to do this properly.
-> 
-> The right thing in my opinion is to achieve the goal with the minimal 
-> set of changes, in the most intuitive way.
-> 
-> Until now, there was no solution that could achieve the primary goal of 
-> this patch set (moving IMA and EVM to the LSM infrastructure) and, at 
-> the same time, achieve the additional goal you set of removing the 
-> 'integrity' LSM.
-> 
-> If you see the diff, the changes compared to v5 that was already 
-> accepted by Mimi are very straightforward. If the assumption I made that 
-> in the end the 'ima' LSM could take over the role of the 'integrity' 
-> LSM, that for me is the preferable option.
-> 
-> Given that the patch set is not doing any design change, but merely 
-> moving calls and storing pointers elsewhere, that leaves us with the 
-> option of thinking better what to do next, including like you suggested 
-> to make IMA and EVM use disjoint metadata.
-> 
-> >> I started to think, does EVM really need integrity metadata or it can
-> >> work without?
-> >>
-> >> The fact is that CONFIG_IMA=n and CONFIG_EVM=y is allowed, so we have
-> >> the same problem now. What if we make IMA the one that manages
-> >> integrity metadata, so that we can remove the 'integrity' LSM?
-> > 
-> > I guess we should probably revisit the basic idea of if it even makes
-> > sense to enable EVM without IMA?  Should we update the Kconfig to
-> > require IMA when EVM is enabled?
-> 
-> That would be up to Mimi. Also this does not seem the main focus of the 
-> patch set.
 
-First you suggested lumping IMA and EVM together, dropping EVM
-entirely.  Now you're suggesting making EVM dependent on IMA.  Please
-stop.  EVM and IMA should remain independent of each other.   The first
-user of EVM is IMA.
 
-> >> Regarding the LSM order, I would take Casey's suggestion of introducing
-> >> LSM_ORDER_REALLY_LAST, for EVM.
-> > 
-> > Please understand that I really dislike that we have imposed ordering
-> > constraints at the LSM layer, but I do understand the necessity (the
-> > BPF LSM ordering upsets me the most).  I really don't want to see us
-> > make things worse by adding yet another ordering bucket, I would
-> > rather that we document it well and leave it alone ... basically treat
-> > it like the BPF LSM (grrrrrr).
+On 2023/11/30 7:22, Bjorn Helgaas wrote:
+> On Fri, Nov 24, 2023 at 09:45:08AM +0800, Kevin Xie wrote:
+>> Add the PCIE_CONFIG_REQUEST_WAIT_MS marco to define the minimum waiting
+>> time between sending the first configuration request to the device and
+>> exit from a conventional reset (or after link training completes).
+>> 
+>> As described in the conventional reset rules of PCI specifications,
+>> there are two different use cases of the value:
+>> 
+>>    - With a downstream port that supports link speeds <= 5.0 GT/s,
+>>      the waiting is following exit from a conventional reset.
+>> 
+>>    - With a downstream port that supports link speeds > 5.0 GT/s,
+>>      the waiting is after link training completes.
+>> 
+>> Signed-off-by: Kevin Xie <kevin.xie@starfivetech.com>
+>> Reviewed-by: Mason Huo <mason.huo@starfivetech.com>
+>> ---
+>>  drivers/pci/pci.h | 7 +++++++
+>>  1 file changed, 7 insertions(+)
+>> 
+>> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+>> index 5ecbcf041179..4ca8766e546e 100644
+>> --- a/drivers/pci/pci.h
+>> +++ b/drivers/pci/pci.h
+>> @@ -22,6 +22,13 @@
+>>   */
+>>  #define PCIE_PME_TO_L2_TIMEOUT_US	10000
+>>  
+>> +/*
+>> + * PCIe r6.0, sec 6.6.1, <Conventional Reset>
+>> + * Requires a minimum waiting of 100ms before sending a configuration
+>> + * request to the device.
+>> + */
+>> +#define PCIE_CONFIG_REQUEST_WAIT_MS	100
 > 
-> Uhm, that would not be possible right away (the BPF LSM is mutable), 
-> remember that we defined LSM_ORDER_LAST so that an LSM can be always 
-> enable and placed as last (requested by Mimi)?
+> Oh, and I think this name should include something about "reset"
+> because that's the common scenario and that's the spec section where
+> the value is mentioned.
 
-Making EVM a full fledged LSM was contingent on two things - EVM always
-being enabled if configured and being the last LSM.  Using capability
-as a precedent for ordering requirement, Mickaël suggested defining
-LSM_ORDER_LAST, which you agreed to.   It sounds like you're
-backtracking on an agreement.
-
-Mimi
-
+Agree, how about PCIE_RESET_CONFIG_DEVICE_WAIT_MS?
