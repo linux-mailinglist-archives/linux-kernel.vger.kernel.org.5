@@ -2,41 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4CEC7FEFA4
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 14:00:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 485AD7FEFA9
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 14:00:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232076AbjK3NAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 08:00:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41342 "EHLO
+        id S232127AbjK3NAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 08:00:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjK3NAA (ORCPT
+        with ESMTP id S232088AbjK3NAk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 08:00:00 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8EFAB10C9;
-        Thu, 30 Nov 2023 05:00:06 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E9C931042;
-        Thu, 30 Nov 2023 05:00:52 -0800 (PST)
-Received: from pluto (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E56963F5A1;
-        Thu, 30 Nov 2023 05:00:04 -0800 (PST)
-Date:   Thu, 30 Nov 2023 13:00:02 +0000
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     Sibi Sankar <quic_sibis@quicinc.com>
-Cc:     sudeep.holla@arm.com, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_mdtipton@quicinc.com,
-        linux-arm-kernel@lists.infradead.org, quic_asartor@quicinc.com,
-        quic_lingutla@quicinc.com
-Subject: Re: [PATCH 3/3] firmware: arm_scmi: Increase the maximum opp count
-Message-ID: <ZWiHUt-N8GvG5z_O@pluto>
-References: <20231129065748.19871-1-quic_sibis@quicinc.com>
- <20231129065748.19871-4-quic_sibis@quicinc.com>
+        Thu, 30 Nov 2023 08:00:40 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 809AC10C9;
+        Thu, 30 Nov 2023 05:00:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701349247; x=1732885247;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=lhdDwb899riHRg+OdMRgGaym7NkwiQLIQiSMtL17HzE=;
+  b=Z34cHqZPDj+aPJhmCKqnemHVfgTv5UfQbWraIqugZ1jdxhdKXHBMNS4/
+   S+cBp1efEkXizf7CVo95fV+zCUpyzCRsCVMeA7XThvwelkm7UGYV9/0sE
+   p6Pi93xUVrC2M+Hygci/BuwfwCpbam6VwPRJ+jZ/dl81QH7gNEe5M1uFv
+   75xQdU+asmmwuugTY3UybSt0IiJw0GJsEsBNJAtjJttznlps0DQBjOmtL
+   hFAwVDKNW3ebv6czuIGiimjhQy1v9Nxji7QKu27P5VOXJ7cxYBgQOpvH8
+   ArIBTpxoUNSTxjML5bqbATPvff+kJhqYxgYIcrPmEcHLwXibXB7WKbQTg
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="179574"
+X-IronPort-AV: E=Sophos;i="6.04,239,1695711600"; 
+   d="scan'208";a="179574"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 05:00:46 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="745623060"
+X-IronPort-AV: E=Sophos;i="6.04,239,1695711600"; 
+   d="scan'208";a="745623060"
+Received: from bergler-mobl.ger.corp.intel.com ([10.249.33.30])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 05:00:44 -0800
+Date:   Thu, 30 Nov 2023 15:00:41 +0200 (EET)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     SungHwan Jung <onenowy@gmail.com>
+cc:     Hans de Goede <hdegoede@redhat.com>,
+        platform-driver-x86@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] platform/x86: acer-wmi: select ACPI_PLATFORM_PROFILE
+In-Reply-To: <20231130124452.3460-1-onenowy@gmail.com>
+Message-ID: <c13f1666-33a1-2df2-649-c7d32e64c70@linux.intel.com>
+References: <20231130124452.3460-1-onenowy@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231129065748.19871-4-quic_sibis@quicinc.com>
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+Content-Type: multipart/mixed; boundary="8323329-1571141058-1701349245=:1808"
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -45,40 +61,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 12:27:48PM +0530, Sibi Sankar wrote:
-> The number of opps on certain variants of the X1E80100 SoC are greater
-> than current maximum, so increase the MAX_OPP count to the next log level
-> to accommodate that.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+
+--8323329-1571141058-1701349245=:1808
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: 8BIT
+
+On Thu, 30 Nov 2023, SungHwan Jung wrote:
+
+> select ACPI_PLATFORM_PROFILE to fix the dependency problem for acer-wmi
+> to support platform profile.
 > 
-
-Hi,
-
-
-> Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202311301842.ppdT4zWK-lkp@intel.com/
+> 
+> Signed-off-by: SungHwan Jung <onenowy@gmail.com>
+> 
 > ---
->  drivers/firmware/arm_scmi/perf.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> I apologize that I missed dependency in kconfig.
+> I have submitted a single patch because the series of patches were alreay
+> merged to linux-next.
+> Is this enough or should I re-submit the patch-series including this patch?
+> (or modify this to apply before "platform/x86: acer-wmi: Add platform
+> profile and modekey support for Predator PHN16-71" commit?)
+> ---
+>  drivers/platform/x86/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> diff --git a/drivers/firmware/arm_scmi/perf.c b/drivers/firmware/arm_scmi/perf.c
-> index 3344ce3a2026..edf34a3c4d6a 100644
-> --- a/drivers/firmware/arm_scmi/perf.c
-> +++ b/drivers/firmware/arm_scmi/perf.c
-> @@ -24,7 +24,7 @@
->  #include "protocols.h"
->  #include "notify.h"
->  
-> -#define MAX_OPPS		16
-> +#define MAX_OPPS		24
->
+> diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
+> index 8e99a2f10147..81e6cd62a533 100644
+> --- a/drivers/platform/x86/Kconfig
+> +++ b/drivers/platform/x86/Kconfig
+> @@ -182,6 +182,7 @@ config ACER_WMI
+>  	select INPUT_SPARSEKMAP
+>  	select LEDS_CLASS
+>  	select NEW_LEDS
+> +	select ACPI_PLATFORM_PROFILE
+>  	help
+>  	  This is a driver for newer Acer (and Wistron) laptops. It adds
+>  	  wireless radio and bluetooth control, and on some laptops,
+> 
 
-There is an hashtable, opps_by_freq, sized by an ilog2()....
+Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 
-....so, can we stick to a power-of-2 like 32 instead ?
-(and be more future proof too...)
+I suspect Hans will just included that into the original patch so this 
+patch will not appear in the history at all.
 
-Other than this, LGTM
+-- 
+ i.
 
-Reviewed-by: Cristian Marussi <cristian.marussi@arm.com>
-
-Thanks,
-Cristian
+--8323329-1571141058-1701349245=:1808--
