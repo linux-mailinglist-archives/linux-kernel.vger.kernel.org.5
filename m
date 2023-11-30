@@ -2,151 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C7917FE797
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 04:17:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 426FA7FE78A
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 04:07:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231644AbjK3DQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 22:16:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55770 "EHLO
+        id S1344261AbjK3DHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 22:07:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230393AbjK3DQy (ORCPT
+        with ESMTP id S230393AbjK3DHc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 22:16:54 -0500
-X-Greylist: delayed 605 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 29 Nov 2023 19:16:59 PST
-Received: from mail-m49209.qiye.163.com (mail-m49209.qiye.163.com [45.254.49.209])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02AA21B4;
-        Wed, 29 Nov 2023 19:16:58 -0800 (PST)
-Received: from ubuntu.localdomain (unknown [111.222.250.119])
-        by mail-m12750.qiye.163.com (Hmail) with ESMTPA id 21132F204BA;
-        Thu, 30 Nov 2023 11:06:24 +0800 (CST)
-From:   Shifeng Li <lishifeng@sangfor.com.cn>
-To:     saeedm@nvidia.com, leon@kernel.org, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        eranbe@mellanox.com, moshe@mellanox.com
-Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dinghui@sangfor.com.cn,
-        lishifeng1992@126.com, Shifeng Li <lishifeng@sangfor.com.cn>,
-        Moshe Shemesh <moshe@nvidia.com>
-Subject: [PATCH v3] net/mlx5e: Fix a race in command alloc flow
-Date:   Wed, 29 Nov 2023 19:05:59 -0800
-Message-Id: <20231130030559.622165-1-lishifeng@sangfor.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Wed, 29 Nov 2023 22:07:32 -0500
+Received: from smtp-fw-9105.amazon.com (smtp-fw-9105.amazon.com [207.171.188.204])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 181DA1A6;
+        Wed, 29 Nov 2023 19:07:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1701313659; x=1732849659;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=F6MENshfkaH8bmU45se60CAkvuaOjjKOiHZKlEZ6xHA=;
+  b=TiebifzNmzCNm81Um+msamPug8i5DyN9+i+W/0Dn7BMgrFu9imAX4XpY
+   BE+KmhVSBn8KZ+qMLA8dhW2zf9EJNGlgM3Ll/D4KF/jOK9a6ly/o9GVvZ
+   UNuGkly2tqMTx6/dMNpPAeF4SFyvXUgfcO9WpyuOofDvj4TIfqXH8ZNkf
+   0=;
+X-IronPort-AV: E=Sophos;i="6.04,237,1695686400"; 
+   d="scan'208";a="687984968"
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-iad-1e-m6i4x-245b69b1.us-east-1.amazon.com) ([10.25.36.210])
+  by smtp-border-fw-9105.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 03:07:38 +0000
+Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (iad7-ws-svc-p70-lb3-vlan3.iad.amazon.com [10.32.235.38])
+        by email-inbound-relay-iad-1e-m6i4x-245b69b1.us-east-1.amazon.com (Postfix) with ESMTPS id 1B2C6340019;
+        Thu, 30 Nov 2023 03:07:35 +0000 (UTC)
+Received: from EX19MTAUWB001.ant.amazon.com [10.0.7.35:3462]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.36.6:2525] with esmtp (Farcaster)
+ id 8beb2ad2-7780-40d5-9629-ec295a44c9fe; Thu, 30 Nov 2023 03:07:34 +0000 (UTC)
+X-Farcaster-Flow-ID: 8beb2ad2-7780-40d5-9629-ec295a44c9fe
+Received: from EX19D010UWA004.ant.amazon.com (10.13.138.204) by
+ EX19MTAUWB001.ant.amazon.com (10.250.64.248) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Thu, 30 Nov 2023 03:07:34 +0000
+Received: from u0acfa43c8cad58.ant.amazon.com (10.106.101.41) by
+ EX19D010UWA004.ant.amazon.com (10.13.138.204) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Thu, 30 Nov 2023 03:07:34 +0000
+From:   Munehisa Kamata <kamatam@amazon.com>
+To:     <casey@schaufler-ca.com>
+CC:     <akpm@linux-foundation.org>, <kamatam@amazon.com>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-security-module@vger.kernel.org>
+Subject: Re: [PATCH] proc: Update inode upon changing task security attribute
+Date:   Wed, 29 Nov 2023 19:07:21 -0800
+Message-ID: <20231130030721.780557-1-kamatam@amazon.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <6f02ce82-3697-4e76-aae6-13440e1bfbad@schaufler-ca.com>
+References: <6f02ce82-3697-4e76-aae6-13440e1bfbad@schaufler-ca.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-        tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVlCGBkfVhhCTRpPHksfSEhNSVUTARMWGhIXJBQOD1
-        lXWRgSC1lBWUpKSlVJSUlVSU5LVUpKQllXWRYaDxIVHRRZQVlPS0hVSk1PSUxOVUpLS1VKQktLWQ
-        Y+
-X-HM-Tid: 0a8c1e311e73b21dkuuu21132f204ba
-X-HM-MType: 1
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PU06Qio*GTw4DhEiFU4dTU89
-        Aw0wCQtVSlVKTEtKSEpITkNOT0lOVTMWGhIXVRcSCBMSHR4VHDsIGhUcHRQJVRgUFlUYFUVZV1kS
-        C1lBWUpKSlVJSUlVSU5LVUpKQllXWQgBWUFOSk5NNwY+
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+Content-Type: text/plain
+X-Originating-IP: [10.106.101.41]
+X-ClientProxiedBy: EX19D038UWC004.ant.amazon.com (10.13.139.229) To
+ EX19D010UWA004.ant.amazon.com (10.13.138.204)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix a cmd->ent use after free due to a race on command entry.
-Such race occurs when one of the commands releases its last refcount and
-frees its index and entry while another process running command flush
-flow takes refcount to this command entry. The process which handles
-commands flush may see this command as needed to be flushed if the other
-process allocated a ent->idx but didn't set ent to cmd->ent_arr in
-cmd_work_handler(). Fix it by moving the assignment of cmd->ent_arr into
-the spin lock.
+Hi Casey,
 
-[70013.081955] BUG: KASAN: use-after-free in mlx5_cmd_trigger_completions+0x1e2/0x4c0 [mlx5_core]
-[70013.081967] Write of size 4 at addr ffff88880b1510b4 by task kworker/26:1/1433361
-[70013.081968]
-[70013.082028] Workqueue: events aer_isr
-[70013.082053] Call Trace:
-[70013.082067]  dump_stack+0x8b/0xbb
-[70013.082086]  print_address_description+0x6a/0x270
-[70013.082102]  kasan_report+0x179/0x2c0
-[70013.082173]  mlx5_cmd_trigger_completions+0x1e2/0x4c0 [mlx5_core]
-[70013.082267]  mlx5_cmd_flush+0x80/0x180 [mlx5_core]
-[70013.082304]  mlx5_enter_error_state+0x106/0x1d0 [mlx5_core]
-[70013.082338]  mlx5_try_fast_unload+0x2ea/0x4d0 [mlx5_core]
-[70013.082377]  remove_one+0x200/0x2b0 [mlx5_core]
-[70013.082409]  pci_device_remove+0xf3/0x280
-[70013.082439]  device_release_driver_internal+0x1c3/0x470
-[70013.082453]  pci_stop_bus_device+0x109/0x160
-[70013.082468]  pci_stop_and_remove_bus_device+0xe/0x20
-[70013.082485]  pcie_do_fatal_recovery+0x167/0x550
-[70013.082493]  aer_isr+0x7d2/0x960
-[70013.082543]  process_one_work+0x65f/0x12d0
-[70013.082556]  worker_thread+0x87/0xb50
-[70013.082571]  kthread+0x2e9/0x3a0
-[70013.082592]  ret_from_fork+0x1f/0x40
+On Wed, 2023-11-29 18:28:55 -0800, Casey Schaufler wrote:
+>
+> On 11/29/2023 4:37 PM, Munehisa Kamata wrote:
+> > I'm not clear whether VFS is a better (or worse) place[1] to fix the
+> > problem described below and would like to hear opinion.
+> 
+> Please To: or at least Cc: me on all Smack related issues.
 
-Fixes: 50b2412b7e78 ("net/mlx5: Avoid possible free of command entry while timeout comp handler")
-Reviewed-by: Moshe Shemesh <moshe@nvidia.com>
-Signed-off-by: Shifeng Li <lishifeng@sangfor.com.cn>
----
- drivers/net/ethernet/mellanox/mlx5/core/cmd.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+Will do that next.
 
----
-v1->v2: fix code conflicts.
-v2->v3: modify Fixes line and massage git log.
+> >
+> > If the /proc/[pid] directory is bind-mounted on a system with Smack
+> > enabled, and if the task updates its current security attribute, the task
+> > may lose access to files in its own /proc/[pid] through the mountpoint.
+> >
+> >  $ sudo capsh --drop=cap_mac_override --
+> >  # mkdir -p dir
+> >  # mount --bind /proc/$$ dir
+> >  # echo AAA > /proc/$$/task/current		# assuming built-in echo
+> 
+> I don't see "current" in /proc/$$/task. Did you mean /proc/$$/attr?
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
-index f8f0a712c943..a7b1f9686c09 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
-@@ -156,15 +156,18 @@ static u8 alloc_token(struct mlx5_cmd *cmd)
- 	return token;
- }
- 
--static int cmd_alloc_index(struct mlx5_cmd *cmd)
-+static int cmd_alloc_index(struct mlx5_cmd *cmd, struct mlx5_cmd_work_ent *ent)
- {
- 	unsigned long flags;
- 	int ret;
- 
- 	spin_lock_irqsave(&cmd->alloc_lock, flags);
- 	ret = find_first_bit(&cmd->vars.bitmask, cmd->vars.max_reg_cmds);
--	if (ret < cmd->vars.max_reg_cmds)
-+	if (ret < cmd->vars.max_reg_cmds) {
- 		clear_bit(ret, &cmd->vars.bitmask);
-+		ent->idx = ret;
-+		cmd->ent_arr[ent->idx] = ent;
-+	}
- 	spin_unlock_irqrestore(&cmd->alloc_lock, flags);
- 
- 	return ret < cmd->vars.max_reg_cmds ? ret : -ENOMEM;
-@@ -979,7 +982,7 @@ static void cmd_work_handler(struct work_struct *work)
- 	sem = ent->page_queue ? &cmd->vars.pages_sem : &cmd->vars.sem;
- 	down(sem);
- 	if (!ent->page_queue) {
--		alloc_ret = cmd_alloc_index(cmd);
-+		alloc_ret = cmd_alloc_index(cmd, ent);
- 		if (alloc_ret < 0) {
- 			mlx5_core_err_rl(dev, "failed to allocate command entry\n");
- 			if (ent->callback) {
-@@ -994,15 +997,14 @@ static void cmd_work_handler(struct work_struct *work)
- 			up(sem);
- 			return;
- 		}
--		ent->idx = alloc_ret;
- 	} else {
- 		ent->idx = cmd->vars.max_reg_cmds;
- 		spin_lock_irqsave(&cmd->alloc_lock, flags);
- 		clear_bit(ent->idx, &cmd->vars.bitmask);
-+		cmd->ent_arr[ent->idx] = ent;
- 		spin_unlock_irqrestore(&cmd->alloc_lock, flags);
- 	}
- 
--	cmd->ent_arr[ent->idx] = ent;
- 	lay = get_inst(cmd, ent->idx);
- 	ent->lay = lay;
- 	memset(lay, 0, sizeof(*lay));
--- 
-2.25.1
+Ahh, yes, I meant /proc/$$/attr/current. Sorry about that...
 
+> >  # cat /proc/$$/task/current			# revalidate
+> >  AAA
+> >  # echo BBB > dir/attr/current
+> >  # cat dir/attr/current
+> >  cat: dir/attr/current: Permission denied
+> >  # ls dir/
+> >  ls: cannot access dir/: Permission denied
+> >  # cat /proc/$$/attr/current			# revalidate
+> >  BBB
+> >  # cat dir/attr/current
+> >  BBB
+> >  # echo CCC > /proc/$$/attr/current
+> >  # cat dir/attr/current
+> >  cat: dir/attr/current: Permission denied
+> >
+> > This happens because path lookup doesn't revalidate the dentry of the
+> > /proc/[pid] when traversing the filesystem boundary, so the inode security
+> > blob of the /proc/[pid] doesn't get updated with the new task security
+> > attribute. Then, this may lead security modules to deny an access to the
+> > directory. Looking at the code[2] and the /proc/pid/attr/current entry in
+> > proc man page, seems like the same could happen with SELinux. Though, I
+> > didn't find relevant reports.
+> >
+> > The steps above are quite artificial. I actually encountered such an
+> > unexpected denial of access with an in-house application sandbox
+> > framework; each app has its own dedicated filesystem tree where the
+> > process's /proc/[pid] is bind-mounted to and the app enters into via
+> > chroot.
+> >
+> > With this patch, writing to /proc/[pid]/attr/current (and its per-security
+> > module variant) updates the inode security blob of /proc/[pid] or
+> > /proc/[pid]/task/[tid] (when pid != tid) with the new attribute.
+> >
+> > [1] https://lkml.kernel.org/linux-fsdevel/4A2D15AF.8090000@sun.com/
+> > [2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/security/selinux/hooks.c#n4220
+> >
+> > Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> > Signed-off-by: Munehisa Kamata <kamatam@amazon.com>
+> > ---
+> >  fs/proc/base.c | 23 ++++++++++++++++++++---
+> >  1 file changed, 20 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/fs/proc/base.c b/fs/proc/base.c
+> > index dd31e3b6bf77..bdb7bea53475 100644
+> > --- a/fs/proc/base.c
+> > +++ b/fs/proc/base.c
+> > @@ -2741,6 +2741,7 @@ static ssize_t proc_pid_attr_write(struct file * file, const char __user * buf,
+> >  {
+> >  	struct inode * inode = file_inode(file);
+> >  	struct task_struct *task;
+> > +	const char *name = file->f_path.dentry->d_name.name;
+> >  	void *page;
+> >  	int rv;
+> >  
+> > @@ -2784,10 +2785,26 @@ static ssize_t proc_pid_attr_write(struct file * file, const char __user * buf,
+> >  	if (rv < 0)
+> >  		goto out_free;
+> >  
+> > -	rv = security_setprocattr(PROC_I(inode)->op.lsm,
+> > -				  file->f_path.dentry->d_name.name, page,
+> > -				  count);
+> > +	rv = security_setprocattr(PROC_I(inode)->op.lsm, name, page, count);
+> >  	mutex_unlock(&current->signal->cred_guard_mutex);
+> > +
+> > +	/*
+> > +	 *  Update the inode security blob in advance if the task's security
+> > +	 *  attribute was updated
+> > +	 */
+> > +	if (rv > 0 && !strcmp(name, "current")) {
+> > +		struct pid *pid;
+> > +		struct proc_inode *cur, *ei;
+> > +
+> > +		rcu_read_lock();
+> > +		pid = get_task_pid(current, PIDTYPE_PID);
+> > +		hlist_for_each_entry(cur, &pid->inodes, sibling_inodes)
+> > +			ei = cur;
+> > +		put_pid(pid);
+> > +		pid_update_inode(current, &ei->vfs_inode);
+> > +		rcu_read_unlock();
+> > +	}
+> > +
+> >  out_free:
+> >  	kfree(page);
+> >  out:
+> 
