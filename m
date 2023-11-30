@@ -2,113 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A4077FED7F
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 12:07:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AB647FED85
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 12:09:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345084AbjK3LGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 06:06:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45152 "EHLO
+        id S1345025AbjK3LJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 06:09:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231784AbjK3LGx (ORCPT
+        with ESMTP id S231784AbjK3LJQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 06:06:53 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63FBB10CE
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 03:06:59 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-2839b418f7fso832402a91.2
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 03:06:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=anyfinetworks-com.20230601.gappssmtp.com; s=20230601; t=1701342419; x=1701947219; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+VK0p3Vrg4Gg8051ZETfeUKQ1X0pr423KlXMEXlRIo0=;
-        b=Yy5Caf9yYmWIl0m8QuLvT9qJchaIADVeNjZCHGcdU7ctBUJyPL5IZZWy8ko9QHSsDl
-         EqTCvEdCJdXV7JVsoIXslpFBugY7ObhtVqaZIiI5+ZzPDAcPGsXiIaKmNepQNRfZc9qX
-         STFuDQPRXGIbcT4XR7zUoSE1fEmAvItjpuWbErKCPxwLQXC3aEO3kH5NYA3KKf5Gav2D
-         pH3i5C6yfxMULIyAob54BWCAAu3OFRTLr1NH1Umxx2W50vOuvWd2T519eN3W+LC0nGkG
-         GkH9c7+5xI9HdFgwuc8IWtjb/bRvvc1BbysI/o32uK0XGkA7xBPpMs5qaTm3YIMMPUXt
-         XJ/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701342419; x=1701947219;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+VK0p3Vrg4Gg8051ZETfeUKQ1X0pr423KlXMEXlRIo0=;
-        b=r2LzWitxniqN4xNcwo1fIaypnyYOEsdbELk+jXH3ASrogjHTN7DtopJISgEomC92/a
-         PzPaffJqDPDYCptwaOYUMwG60TseeYqzW+ndhK4qLPZfO38HeMlzkj8TqjfogCBxmFA9
-         gakA0EOA8oBTE0xabHEJOwxQ0aXfDj6NC+i/GkvkHmjBZHCXwaaNvUH7SLf1To2Qb1+Z
-         7vzgLZtTsQrW4uMsCyx108JC2PkwQhbDekxqc33zkIkSrXfGsOgTSuZ5AtlT/Px1nNQ6
-         VAySR96LMdqBnJlXhImOn/3KDtjxZpR5vFASvmcJlK9kK/cwK6Yc6+18VHvXEQuH6gtX
-         pWbQ==
-X-Gm-Message-State: AOJu0YztQ7T8WCNNwaaAAOadeIIs/8zVQ/TXyONLm2z6s3fub43Pfr10
-        /EezGDScVlHvYHj5w2aoLJ9Ro58WnN2CJ1u69UjV6A==
-X-Google-Smtp-Source: AGHT+IGRG2Kj3feKGEFU/XQUFejAMZBBDZm96Wb9G5ijegmK6KOjleBmGWbmZIs+ys/Nrx4T+FyGQgH52OMPGySu6Jg=
-X-Received: by 2002:a17:90b:38c7:b0:286:49bf:b215 with SMTP id
- nn7-20020a17090b38c700b0028649bfb215mr172414pjb.25.1701342418824; Thu, 30 Nov
- 2023 03:06:58 -0800 (PST)
+        Thu, 30 Nov 2023 06:09:16 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEAA8D50
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 03:09:22 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2070EC433C7;
+        Thu, 30 Nov 2023 11:09:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701342562;
+        bh=Ru4WQmcJUKrycn4IJ/0atltkGnWEKud46x+afC3D4ys=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OYzBZDxDRw0pSYCLScCWeeGgqgDTVIqDbXAuhJIvEfYo0ielkyz2KFHq3b9qfxKGV
+         rV9EPS9Bifaidvw4JJetCCRXy7L3tfoUEDe7W5l4bdOzqiSt3YIOKJGd4TBORIZrMv
+         7lbdAYMv01VGCOIk2CgfYHVjCQnw9Wz4E170T+mnh+XQF/qD8SNfovvG8Wlh7RBaGP
+         Ee0dKV0IBoFoJ7+s7pqsBsGaxTtRqf5APKKKIvdGa2F0yPbmq6x0J9rKTD0SrZ2SlK
+         Uel90TkuVj2/IuJt8JyX3gMtk5FbTG3A75j1M/KJpdF9omBE8DrWp1QjPrU1+JDbyC
+         mb1DSAQS9rPDw==
+Date:   Thu, 30 Nov 2023 16:39:09 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc:     Manivannan Sadhasivam <mani@kernel.org>,
+        Mrinmay Sarkar <quic_msarkar@quicinc.com>, agross@kernel.org,
+        andersson@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, robh+dt@kernel.org, quic_shazhuss@quicinc.com,
+        quic_nitegupt@quicinc.com, quic_ramkri@quicinc.com,
+        quic_nayiluri@quicinc.com, dmitry.baryshkov@linaro.org,
+        robh@kernel.org, quic_krichai@quicinc.com,
+        quic_vbadigan@quicinc.com, quic_parass@quicinc.com,
+        quic_schintav@quicinc.com, quic_shijjose@quicinc.com,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH v4 1/3] PCI: qcom: Enable cache coherency for SA8775P RC
+Message-ID: <20231130110909.GQ3043@thinkpad>
+References: <1700577493-18538-1-git-send-email-quic_msarkar@quicinc.com>
+ <1700577493-18538-2-git-send-email-quic_msarkar@quicinc.com>
+ <20231130052116.GA3043@thinkpad>
+ <a9c2532a-eaa6-4019-8ce9-5a58b1b720b2@linaro.org>
 MIME-Version: 1.0
-References: <20231130034018.2144963-1-yujie.liu@intel.com>
-In-Reply-To: <20231130034018.2144963-1-yujie.liu@intel.com>
-From:   Johan Almbladh <johan.almbladh@anyfinetworks.com>
-Date:   Thu, 30 Nov 2023 12:06:47 +0100
-Message-ID: <CAM1=_QQJxwt7sYVWOpE93xv9R79WUJ3aocLKP3ZE+MZzHS7tpQ@mail.gmail.com>
-Subject: Re: [PATCH] bpf/tests: Remove duplicate JSGT tests
-To:     Yujie Liu <yujie.liu@intel.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <a9c2532a-eaa6-4019-8ce9-5a58b1b720b2@linaro.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 30, 2023 at 4:44=E2=80=AFAM Yujie Liu <yujie.liu@intel.com> wro=
-te:
->
-> It seems unnecessary that JSGT is tested twice (one before JSGE and one
-> after JSGE) since others are tested only once. Remove the duplicate JSGT
-> tests.
+On Thu, Nov 30, 2023 at 11:09:59AM +0100, Konrad Dybcio wrote:
+> On 30.11.2023 06:21, Manivannan Sadhasivam wrote:
+> > On Tue, Nov 21, 2023 at 08:08:11PM +0530, Mrinmay Sarkar wrote:
+> >> In a multiprocessor system cache snooping maintains the consistency
+> >> of caches. Snooping logic is disabled from HW on this platform.
+> >> Cache coherency doesn’t work without enabling this logic.
+> >>
+> >> 8775 has IP version 1.34.0 so intruduce a new cfg(cfg_1_34_0) for this
+> >> platform. Assign no_snoop_override flag into struct qcom_pcie_cfg and
+> >> set it true in cfg_1_34_0 and enable cache snooping if this particular
+> >> flag is true.
+> >>
+> > 
+> > I just happen to check the internal register details of other platforms and I
+> > see this PCIE_PARF_NO_SNOOP_OVERIDE register with the reset value of 0x0. So
+> > going by the logic of this patch, this register needs to be configured for other
+> > platforms as well to enable cache coherency, but it seems like not the case as
+> > we never did and all are working fine (so far no issues reported).
+> 
+> Guess we know that already [1]
+> 
 
-Looks like a copy-paste typo on my side. Thanks!
+Bummer! I didn't look close into that reply :/
 
-Acked-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
+> The question is whether this override is necessary, or the default
+> internal state is OK on other platforms
+> 
 
->
-> Fixes: 0bbaa02b4816 ("bpf/tests: Add tests to check source register zero-=
-extension")
-> Signed-off-by: Yujie Liu <yujie.liu@intel.com>
-> ---
->  lib/test_bpf.c | 2 --
->  1 file changed, 2 deletions(-)
->
-> diff --git a/lib/test_bpf.c b/lib/test_bpf.c
-> index 7916503e6a6a..87a4ebcc65be 100644
-> --- a/lib/test_bpf.c
-> +++ b/lib/test_bpf.c
-> @@ -12215,7 +12215,6 @@ static struct bpf_test tests[] =3D {
->         BPF_JMP32_IMM_ZEXT(JLE),
->         BPF_JMP32_IMM_ZEXT(JSGT),
->         BPF_JMP32_IMM_ZEXT(JSGE),
-> -       BPF_JMP32_IMM_ZEXT(JSGT),
->         BPF_JMP32_IMM_ZEXT(JSLT),
->         BPF_JMP32_IMM_ZEXT(JSLE),
->  #undef BPF_JMP2_IMM_ZEXT
-> @@ -12251,7 +12250,6 @@ static struct bpf_test tests[] =3D {
->         BPF_JMP32_REG_ZEXT(JLE),
->         BPF_JMP32_REG_ZEXT(JSGT),
->         BPF_JMP32_REG_ZEXT(JSGE),
-> -       BPF_JMP32_REG_ZEXT(JSGT),
->         BPF_JMP32_REG_ZEXT(JSLT),
->         BPF_JMP32_REG_ZEXT(JSLE),
->  #undef BPF_JMP2_REG_ZEXT
-> --
-> 2.34.1
->
+I digged into it further...
+
+The register description says "Enable this bit x to override no_snoop". So
+NO_SNOOP is the default behavior unless bit x is set in this register.
+
+This means if bit x is set, MRd and MWd TLPs originating from the desired PCIe
+controller (Requester) will have the NO_SNOOP bit set in the header. So the
+completer will not do any cache management for the transaction. But this also
+requires that the address referenced by the TLP is not cacheable.
+
+My guess here is that, hw designers have enabled the NO_SNOOP logic by default
+and running into coherency issues on the completer side. Maybe due to the
+addresses are cacheable always (?).
+
+And the default value of this register has no impact on the NO_SNOOP attribute
+unless specific bits are set.
+
+But I need to confirm my above observations with HW team. Until then, I will
+hold on to my Nack.
+
+- Mani
+
+> Konrad
+> 
+> [1] https://lore.kernel.org/linux-arm-msm/cb4324aa-8035-ce6e-94ef-a31ed070225c@quicinc.com/
+
+-- 
+மணிவண்ணன் சதாசிவம்
