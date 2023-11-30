@@ -2,80 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6590D7FFB39
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 20:25:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94B2A7FFB40
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 20:27:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376385AbjK3TZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 14:25:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37574 "EHLO
+        id S1376399AbjK3T1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 14:27:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376372AbjK3TZo (ORCPT
+        with ESMTP id S1376367AbjK3T1H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 14:25:44 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D38BD48;
-        Thu, 30 Nov 2023 11:25:50 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-33318b866a0so1148419f8f.3;
-        Thu, 30 Nov 2023 11:25:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701372348; x=1701977148; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=10qZWkdRxInBxqMWCHUd/fv2xFmke4NCj5l1NxkbtEs=;
-        b=WW+AHOq6o2PegiMI/kmyoE1H2fgfnFeIkVv5lnDqVHw3NYo5rGpK+uvS014J0FTdsp
-         BHIvDV43Pag+V2L3FkPD7oVEajp7LjJgk3D3LDgXh1LV09xCdRTOUWC17nK+a+cKit8n
-         I9RGeXPHUmzRIQhYyJyS9J+u5jPgM8FJaig5j5Sp1scIpSfRhyoUp0zvmLwV8B37KaSN
-         gKczwLcN/BeWs/RktuyHR6quYc8ltXJ3bQdSBQdDtW3Trmh1vUDWiYx31jo1ol9ElIxE
-         OK8o2XE8t7i2t6NlrLkjk4L4cmzLGbAzhsFDGi/Aa0QEPnOwxFnDZgGwej4kjHddaG72
-         V5Rw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701372348; x=1701977148;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=10qZWkdRxInBxqMWCHUd/fv2xFmke4NCj5l1NxkbtEs=;
-        b=qqQ4sMWTxrVwGinsbX14pyZ4BpaCwFMfAbgpBrZZV6A6fa2OyUGqI/paffqda6pnRS
-         5NWHKTbjmc/rLVQjEvwbqY8+ma9QUZwWzztB8BVWWybH2UVQp/3KU44hwQjYluEVFuBM
-         XQTA1ooUeoi/Jjs2GqT38gPRU8eagzIiBVLf26z4CEDe3yznkbL67/jrklkhKzJymWCs
-         U4CRciqe3u2PB+2l5M8/SjmaefJhD/NrCom2RDvI2docfHixtVotNsFzpRzkufDsvQMJ
-         95wwLVhcOnudO7qeeR2yrMTOIW3l72cSMPIjG0DWy1SsSnU9kgWUfYccoKM0nJOdmIj0
-         kNBA==
-X-Gm-Message-State: AOJu0YyF2dSQ8ZuADkqccqg96IPYCzwcc+7xyVCymWU4sLGrh3fdQBnm
-        C9YgVtQvu2lRX2LOzs4Vamc=
-X-Google-Smtp-Source: AGHT+IEH/ASMOK9ojYkCxLJwyFhlciYNcpI0mOvc0B8iSEhUCqo8N/OtyviEdQtKY/v5ofK5Et/XGg==
-X-Received: by 2002:a05:6000:b82:b0:333:2fd2:4afd with SMTP id dl2-20020a0560000b8200b003332fd24afdmr13204wrb.121.1701372347885;
-        Thu, 30 Nov 2023 11:25:47 -0800 (PST)
-Received: from gmail.com (1F2EF126.nat.pool.telekom.hu. [31.46.241.38])
-        by smtp.gmail.com with ESMTPSA id i15-20020a5d584f000000b003331c7b409asm2301846wrf.78.2023.11.30.11.25.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Nov 2023 11:25:47 -0800 (PST)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Thu, 30 Nov 2023 20:25:45 +0100
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Dimitri John Ledkov <dimitri.ledkov@canonical.com>
-Cc:     Richard Henderson <richard.henderson@linaro.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/5] x86: stop shipping a.out.h uapi headers
-Message-ID: <ZWjhuePji8CpFDbv@gmail.com>
-References: <20231123180246.750674-1-dimitri.ledkov@canonical.com>
- <20231123180246.750674-5-dimitri.ledkov@canonical.com>
+        Thu, 30 Nov 2023 14:27:07 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17FEED4A;
+        Thu, 30 Nov 2023 11:27:14 -0800 (PST)
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AU5ah9n025717;
+        Thu, 30 Nov 2023 19:26:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=vymjs2lKAUW5Ra3MxunJrHpL3Hru72sFEFND52j2ixs=;
+ b=L/fZaGCl4aJmMeSxVD9RDy8HL8c4ifS5N6B+ZmzNOPX6GdwhaDaZOvh5Ddg6e+9qDCyw
+ EaXkwr6B+5r6ag1/XAsjqamGNrqCBinEXBU0CQDFGESmsGUNH54HJfEN12HaKICpBgTV
+ 3ceN8eLAcKoeyG0C1Jke5yhOoIORh8Jj+GkFscJj8kEDUoFbxciEmSRZfHs4dofbMAW7
+ 4gSu0fe3ird1vvEkQglCQ0pQ9jG/VbJoeEvOirCPVJgd7briG42AcLhHe47g40kCbIDz
+ LwMGIhA5MB9DxtGdFlCkuLmobMLB1h/tf7QqBojP27p71/ng7xhvi3GqjhC55hrEd+vT DQ== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3up4cfcjvy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 30 Nov 2023 19:26:52 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AUJQp3x030686
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 30 Nov 2023 19:26:51 GMT
+Received: from blr-ubuntu-253.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Thu, 30 Nov 2023 11:26:44 -0800
+From:   Sibi Sankar <quic_sibis@quicinc.com>
+To:     <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <catalin.marinas@arm.com>, <ulf.hansson@linaro.org>
+CC:     <agross@kernel.org>, <conor+dt@kernel.org>,
+        <ayan.kumar.halder@amd.com>, <j@jannau.net>,
+        <dmitry.baryshkov@linaro.org>, <nfraprado@collabora.com>,
+        <m.szyprowski@samsung.com>, <u-kumar1@ti.com>, <peng.fan@nxp.com>,
+        <lpieralisi@kernel.org>, <quic_rjendra@quicinc.com>,
+        <abel.vesa@linaro.org>, <linux-arm-msm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <quic_tsoni@quicinc.com>,
+        <neil.armstrong@linaro.org>, Sibi Sankar <quic_sibis@quicinc.com>
+Subject: [PATCH V4 0/5] dts: qcom: Introduce X1E80100 platforms device tree
+Date:   Fri, 1 Dec 2023 00:56:14 +0530
+Message-ID: <20231130192619.29702-1-quic_sibis@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231123180246.750674-5-dimitri.ledkov@canonical.com>
-X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        FSL_HELO_FAKE,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: NYpuFkNYv-_DZdX6sqzvH3dLOe28st3b
+X-Proofpoint-ORIG-GUID: NYpuFkNYv-_DZdX6sqzvH3dLOe28st3b
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-30_19,2023-11-30_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
+ malwarescore=0 impostorscore=0 bulkscore=0 suspectscore=0 mlxlogscore=999
+ clxscore=1015 phishscore=0 priorityscore=1501 spamscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
+ definitions=main-2311300143
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,47 +82,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This series adds the initial (clocks, pinctrl, rpmhpd, regulator, interconnect,
+CPU, SoC and board compatibles) device tree support to boot to shell on the
+Qualcomm X1E80100 platform, aka Snapdragon X Elite.
 
-* Dimitri John Ledkov <dimitri.ledkov@canonical.com> wrote:
+Our v1 post of the patchsets adding support for Snapdragon X Elite SoC had
+the part number sc8380xp which is now updated to the new part number x1e80100
+based on the new branding scheme and refers to the exact same SoC.
 
-> Stop shipping a.out.h uapi headers, unused.
-> 
-> Signed-off-by: Dimitri John Ledkov <dimitri.ledkov@canonical.com>
-> ---
->  arch/x86/include/uapi/asm/a.out.h | 21 ---------------------
->  1 file changed, 21 deletions(-)
->  delete mode 100644 arch/x86/include/uapi/asm/a.out.h
-> 
-> diff --git a/arch/x86/include/uapi/asm/a.out.h b/arch/x86/include/uapi/asm/a.out.h
-> deleted file mode 100644
-> index 094c49d8ea..0000000000
-> --- a/arch/x86/include/uapi/asm/a.out.h
-> +++ /dev/null
-> @@ -1,21 +0,0 @@
-> -/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> -#ifndef _ASM_X86_A_OUT_H
-> -#define _ASM_X86_A_OUT_H
-> -
-> -struct exec
-> -{
-> -	unsigned int a_info;	/* Use macros N_MAGIC, etc for access */
-> -	unsigned a_text;	/* length of text, in bytes */
-> -	unsigned a_data;	/* length of data, in bytes */
-> -	unsigned a_bss;		/* length of uninitialized data area for file, in bytes */
-> -	unsigned a_syms;	/* length of symbol table data in file, in bytes */
-> -	unsigned a_entry;	/* start address */
-> -	unsigned a_trsize;	/* length of relocation info for text, in bytes */
-> -	unsigned a_drsize;	/* length of relocation info for data, in bytes */
-> -};
-> -
-> -#define N_TRSIZE(a)	((a).a_trsize)
-> -#define N_DRSIZE(a)	((a).a_drsize)
-> -#define N_SYMSIZE(a)	((a).a_syms)
-> -
-> -#endif /* _ASM_X86_A_OUT_H */
+V4:
+* Have separate cluster_pd for each cluster. [Konrad]
 
-Acked-by: Ingo Molnar <mingo@kernel.org>
+V3:
+* Add more detail to the commit msg describing Oryon. [Rob]
+* Add smem compatible and tcsr_hw nodes. [Abel]
+* Re-name l2-cache, remove hyphen in reserved region. [Konrad]
+* Describe certain secure gpios as unused. [Konrad]
+* Pickup Rbs.
 
-Thanks,
+v2:
+* Update the part number from sc8380xp to x1e80100.
+* Fixup ordering in the SoC/board bindings. [Krzysztof]
+* Add pdc node and add wakeup tlmm parent. [Rajendra]
+* Add cpu/cluster idle states. [Bjorn]
+* Document reserved gpios. [Konrad]
+* Remove L1 and add missing props to L2. [Konrad]
+* Remove region suffix. [Konrad]
+* Append digits to gcc node. [Konrad]
+* Add ICC_TAGS instead of leaving it unspecified. [Konrad]
+* Remove double space. [Konrad]
+* Leave the size index of memory node untouched. [Konrad]
+* Override the serial uart with "qcom,geni-debug-uart" in the board files. [Rajendra]
+* Add additional details to patch 5 commit message. [Konrad/Krzysztof]
 
-	Ingo
+Dependencies:
+clks: https://lore.kernel.org/lkml/20231117092737.28362-1-quic_sibis@quicinc.com/
+llcc: https://lore.kernel.org/lkml/20231117095315.2087-1-quic_sibis@quicinc.com/
+misc-bindings: https://lore.kernel.org/lkml/20231117105635.343-1-quic_sibis@quicinc.com/
+
+Release Link: https://www.qualcomm.com/news/releases/2023/10/qualcomm-unleashes-snapdragon-x-elite--the-ai-super-charged-plat
+
+
+Abel Vesa (1):
+  arm64: dts: qcom: x1e80100: Add Compute Reference Device
+
+Rajendra Nayak (4):
+  dt-bindings: arm: cpus: Add qcom,oryon compatible
+  dt-bindings: arm: qcom: Document X1E80100 SoC and boards
+  arm64: dts: qcom: Add base X1E80100 dtsi and the QCP dts
+  arm64: defconfig: Enable X1E80100 SoC base configs
+
+ .../devicetree/bindings/arm/cpus.yaml         |    1 +
+ .../devicetree/bindings/arm/qcom.yaml         |    8 +
+ arch/arm64/boot/dts/qcom/Makefile             |    2 +
+ arch/arm64/boot/dts/qcom/x1e80100-crd.dts     |  426 ++
+ arch/arm64/boot/dts/qcom/x1e80100-qcp.dts     |  401 ++
+ arch/arm64/boot/dts/qcom/x1e80100.dtsi        | 3527 +++++++++++++++++
+ arch/arm64/configs/defconfig                  |    3 +
+ 7 files changed, 4368 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/qcom/x1e80100-crd.dts
+ create mode 100644 arch/arm64/boot/dts/qcom/x1e80100-qcp.dts
+ create mode 100644 arch/arm64/boot/dts/qcom/x1e80100.dtsi
+
+-- 
+2.17.1
+
