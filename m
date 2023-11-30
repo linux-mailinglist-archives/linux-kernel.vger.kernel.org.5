@@ -2,68 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 850B97FEECD
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 13:20:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68ABF7FEED2
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 13:21:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235158AbjK3MUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 07:20:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47520 "EHLO
+        id S231897AbjK3MVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 07:21:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231966AbjK3MUm (ORCPT
+        with ESMTP id S1345191AbjK3MU5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 07:20:42 -0500
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D54610DE;
-        Thu, 30 Nov 2023 04:20:47 -0800 (PST)
-Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4SgwDK5kSSz1P91Y;
-        Thu, 30 Nov 2023 20:17:05 +0800 (CST)
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 30 Nov
- 2023 20:20:44 +0800
-Subject: Re: [Intel-wired-lan] [PATCH net-next v5 03/14] page_pool: avoid
- calling no-op externals when possible
-To:     Alexander Lobakin <aleksander.lobakin@intel.com>
-CC:     Christoph Hellwig <hch@lst.de>,
-        Paul Menzel <pmenzel@molgen.mpg.de>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Larysa Zaremba <larysa.zaremba@intel.com>,
-        <netdev@vger.kernel.org>, Alexander Duyck <alexanderduyck@fb.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        <linux-kernel@vger.kernel.org>, Eric Dumazet <edumazet@google.com>,
-        Michal Kubiak <michal.kubiak@intel.com>,
-        <intel-wired-lan@lists.osuosl.org>,
-        David Christensen <drc@linux.vnet.ibm.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>
-References: <20231124154732.1623518-1-aleksander.lobakin@intel.com>
- <20231124154732.1623518-4-aleksander.lobakin@intel.com>
- <6bd14aa9-fa65-e4f6-579c-3a1064b2a382@huawei.com>
- <a1a0c27f-f367-40e7-9dc2-9421b4b6379a@intel.com>
- <534e7752-38a9-3e7e-cb04-65789712fb66@huawei.com>
- <8c6d09be-78d0-436e-a5a6-b94fb094b0b3@intel.com>
- <4814a337-454b-d476-dabe-5035dd6dc51f@huawei.com>
- <d8631d76-4bb3-41a4-a2b2-86725867d2a9@intel.com>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <6c234df1-d20a-812e-3c58-7e3941d8309b@huawei.com>
-Date:   Thu, 30 Nov 2023 20:20:44 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Thu, 30 Nov 2023 07:20:57 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8FD69A
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 04:21:03 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5EDAAC433C9;
+        Thu, 30 Nov 2023 12:21:02 +0000 (UTC)
+Date:   Thu, 30 Nov 2023 12:21:00 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm/kmemleak: Add cond_resched() to kmemleak_free_percpu()
+Message-ID: <ZWh-LLuTeAGzY3lM@arm.com>
+References: <20231127194153.289626-1-longman@redhat.com>
+ <ZWYPmCLi9XyUdCNT@arm.com>
+ <c0419245-42c8-4df1-9939-a98dd013699a@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <d8631d76-4bb3-41a4-a2b2-86725867d2a9@intel.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-6.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c0419245-42c8-4df1-9939-a98dd013699a@redhat.com>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,43 +41,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/11/30 19:58, Alexander Lobakin wrote:
-> From: Yunsheng Lin <linyunsheng@huawei.com>
-> Date: Thu, 30 Nov 2023 16:46:11 +0800
-> 
->> On 2023/11/29 21:17, Alexander Lobakin wrote:
->>> From: Yunsheng Lin <linyunsheng@huawei.com>
->>> Date: Wed, 29 Nov 2023 11:17:50 +0800
->>>
->>>> On 2023/11/27 22:32, Alexander Lobakin wrote:
->>>>>
->>>>> Chris, any thoughts on a global flag for skipping DMA syncs ladder?
->>>>
->>>> It seems there was one already in the past:
->>>>
->>>> https://lore.kernel.org/netdev/7c55a4d7-b4aa-25d4-1917-f6f355bd722e@arm.com/T/
->>>
->>> It addresses a different problem, meaningless indirect calls, while this
->>> one addresses meaningless direct calls :>
->>> When the above gets merged, we could combine these two into one global,
->>> but Eric wasn't active with his patch and I remember there were some
->>> problems, so I wouldn't count on that it will arrive soon.
->>
->> I went through the above patch, It seems to me that there was no
->> fundamental problem that stopping us from implementing it in the dma
->> layer basing on Eric' patch if Eric is no longer interested in working
->> on a newer version?
-> 
-> I'm somewhat interested in continuing working on Eric's patch, but not
-> now. Have some urgent projects to work on, I could take this in January
-> I guess...
-> This PP-specific shortcut was done earlier and gives good boosts. It
-> would be trivial to remove it together with the XSk shortcut once a
-> generic both indirect and direct call DMA shortcut lands.
-> Does this sounds good / justified enough? Or you and other
-> reviewers/maintainers would prefer to wait for the generic one without
-> taking this patch?
-> 
+On Wed, Nov 29, 2023 at 05:57:11PM -0500, Waiman Long wrote:
+> On 11/28/23 11:04, Catalin Marinas wrote:
+> > The problem is looking up the object tree for each per-cpu offset. We
+> > can make the percpu pointer handling O(1) since freeing is only done by
+> > the main __percpu pointer, so that's the only one needing a look-up. So
+> > far the per-cpu pointers are not tracked for leaking, only scanned.
+> > 
+> > We could just add the per_cpu_ptr(ptr, 0) to the kmemleak
+> > object_tree_root but when scanning we don't have an inverse function to
+> > get the __percpu pointer back and calculate the pointers for the other
+> > CPUs (well, we could with some hacks but they are probably fragile).
+> > 
+> > What I came up with is a separate object_percpu_tree_root similar to the
+> > object_phys_tree_root. The only reason for these additional trees is to
+> > look up the kmemleak metadata when needed (usually freeing). They don't
+> > contain objects that are tracked for actual leaking, only scanned. A
+> > briefly tested patch below. I need to go through it again, update some
+> > comments and write a commit log:
+[...]
+> The patch looks reasonable to me. It also has a side effect of reducing the
+> # of kmemleak objects to track especially for system with large number of
+> CPUs. Of course, we still need more testing to make sure that it won't break
+> anything.
 
-I would prefer we could wait for the generic one as there is only about one
-month between now and january:)
+Thanks for having a look. I'll tidy it up and post today or tomorrow. It
+can stay in next for a bit before upstreaming to get some exposure
+(though not sure many test -next with kmemleak enabled).
+
+-- 
+Catalin
