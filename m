@@ -2,119 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48A997FFCFD
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 21:44:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E21D7FFD14
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 21:48:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235255AbjK3UoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 15:44:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48008 "EHLO
+        id S1376391AbjK3Usa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 15:48:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235246AbjK3UoA (ORCPT
+        with ESMTP id S229989AbjK3Usa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 15:44:00 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B3438199B;
-        Thu, 30 Nov 2023 12:43:59 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 28F9A143D;
-        Thu, 30 Nov 2023 12:44:46 -0800 (PST)
-Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 2F0E83F73F;
-        Thu, 30 Nov 2023 12:43:58 -0800 (PST)
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     Sudeep Holla <sudeep.holla@arm.com>, quic_mdtipton@quicinc.com,
-        quic_asartor@quicinc.com, quic_lingutla@quicinc.com,
-        Sibi Sankar <quic_sibis@quicinc.com>,
-        linux-arm-msm@vger.kernel.org,
-        Cristian Marussi <cristian.marussi@arm.com>
-Subject: [PATCH 2/2] firmware: arm_scmi: Fix possible frequency truncation when using level indexing mode
-Date:   Thu, 30 Nov 2023 20:43:43 +0000
-Message-ID: <20231130204343.503076-2-sudeep.holla@arm.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231130204343.503076-1-sudeep.holla@arm.com>
-References: <20231130204343.503076-1-sudeep.holla@arm.com>
+        Thu, 30 Nov 2023 15:48:30 -0500
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 005C2D40
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 12:48:34 -0800 (PST)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-40b51e26a7aso1295e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 12:48:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701377313; x=1701982113; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=lDbR5wn/ymhzANEbstkor6jRTtY0ksRtmkAGEgVn3ME=;
+        b=c68nmUyn7+GdxK0l9ja1a0VcOWtqcXOOGjajdIyD6+8k0y0R4Au3jI6lvPrQzmZyJN
+         2PkvNbIRZCddExGR53DD36OXokzDkVXErQ+FBTKB6RY1Fx8Sciw85Wov/ssJbyDlPUQX
+         wvmK+GYxpc343e/HeTKnQqlPslSAXrZYxxvG3E7rFxjMo5dOWh4emMvPXVOF9VSgeafJ
+         55TT8smWaxH/e3bg8/oNBF9e2z13IgauuQR73DiNJe8SzrHLah5EbKWBO1GqDA0g9OB9
+         RBE4syT1eo9KbhesACFq1vBiXm1AX7PhChy8PYKzKeoW8xTfMiv14wgpncY4V0wmNU0K
+         0Qdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701377313; x=1701982113;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lDbR5wn/ymhzANEbstkor6jRTtY0ksRtmkAGEgVn3ME=;
+        b=HXtqozH+peffivRgJzstD/rwYpUpAQUuKpUkylOCtEdjZWE+jBDf4iYNb22pmWJx1C
+         ohshcxqryrvMunUzXNI7LRmFqS0mxkrRaSbd0OqVb+PQXrVFzIAV/KnjKwyj5PIuMhus
+         rDW9YmRIcfYoOWM2vhpVKBEq3Tsiw5TwsEJ8kXjV+ANlJHvdTZ78mgKsDMJIJz7P0lbV
+         9uOrFgGWoQJhd19yu4GaS4Cxnk7BnpMMhySo24arYxbEUwGGKVDD+iytij6YCq7+zaFD
+         uZGykxtWIbT26Gu0nUldcGSWZY1VGNHJu6EjLRA3YkSPvcVvs+x5eWn87pwgqKSV1v8U
+         vrKQ==
+X-Gm-Message-State: AOJu0YxF+w7jHLf8j9ImyaotiXpqzSmwD8vOGL9vkOW+TeqbfdvaChIJ
+        lDyipfuNfM6EHHs97K+GWIi+vQ==
+X-Google-Smtp-Source: AGHT+IEWEtiVFKWOO64KC6IV7yjdz4Ob7/rD3TYHW6b0lUwhNd8FJc+db/wlIt7p6MnnQ9/yGFkmqA==
+X-Received: by 2002:a1c:7202:0:b0:40b:4355:a04b with SMTP id n2-20020a1c7202000000b0040b4355a04bmr15152wmc.6.1701377313270;
+        Thu, 30 Nov 2023 12:48:33 -0800 (PST)
+Received: from localhost ([2a00:79e0:9d:4:9869:5af3:4653:dd50])
+        by smtp.gmail.com with ESMTPSA id h19-20020a05600c351300b0040b347d90d0sm6680258wmq.12.2023.11.30.12.48.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Nov 2023 12:48:32 -0800 (PST)
+From:   Jann Horn <jannh@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
+Cc:     Waiman Long <longman@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: [PATCH] locking: Document that mutex_unlock() is non-atomic
+Date:   Thu, 30 Nov 2023 21:48:17 +0100
+Message-ID: <20231130204817.2031407-1-jannh@google.com>
+X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The multiplier is already promoted to u64, however the frequency
-calculations done when using level indexing mode doesn't use the
-multiplier computed. It instead hardcodes the multiplier value of 1000
-at all the usage sites.
+I have seen several cases of attempts to use mutex_unlock() to release an
+object such that the object can then be freed by another task.
+My understanding is that this is not safe because mutex_unlock(), in the
+MUTEX_FLAG_WAITERS && !MUTEX_FLAG_HANDOFF case, accesses the mutex
+structure after having marked it as unlocked; so mutex_unlock() requires
+its caller to ensure that the mutex stays alive until mutex_unlock()
+returns.
 
-Clean that up by assigning the multiplier value of 1000 when using
-the perf level indexing mode and upadte the frequency calculations to
-use the multiplier instead. It should fix the possible frequency
-truncation for all the values greater than or equal to 4GHz.
+If MUTEX_FLAG_WAITERS is set and there are real waiters, those waiters
+have to keep the mutex alive, I think; but we could have a spurious
+MUTEX_FLAG_WAITERS left if an interruptible/killable waiter bailed
+between the points where __mutex_unlock_slowpath() did the cmpxchg
+reading the flags and where it acquired the wait_lock.
 
-Fixes: 31c7c1397a33 ("firmware: arm_scmi: Add v3.2 perf level indexing mode support")
-Reported-by: Sibi Sankar <quic_sibis@quicinc.com>
-Closes: https://lore.kernel.org/all/20231129065748.19871-3-quic_sibis@quicinc.com/
-Cc: Cristian Marussi <cristian.marussi@arm.com>
-Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+(With spinlocks, that kind of code pattern is allowed and, from what I
+remember, used in several places in the kernel.)
+
+If my understanding of this is correct, we should probably document this -
+I think such a semantic difference between mutexes and spinlocks is fairly
+unintuitive.
+
+Signed-off-by: Jann Horn <jannh@google.com>
 ---
- drivers/firmware/arm_scmi/perf.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+I hope for some thorough review on this patch to make sure the comments
+I'm adding are actually true, and to confirm that mutexes intentionally
+do not support this usage pattern.
 
-diff --git a/drivers/firmware/arm_scmi/perf.c b/drivers/firmware/arm_scmi/perf.c
-index 8ce449922e55..875dcb71bb65 100644
---- a/drivers/firmware/arm_scmi/perf.c
-+++ b/drivers/firmware/arm_scmi/perf.c
-@@ -268,7 +268,8 @@ scmi_perf_domain_attributes_get(const struct scmi_protocol_handle *ph,
- 		dom_info->sustained_perf_level =
- 					le32_to_cpu(attr->sustained_perf_level);
- 		if (!dom_info->sustained_freq_khz ||
--		    !dom_info->sustained_perf_level)
-+		    !dom_info->sustained_perf_level ||
-+		    dom_info->level_indexing_mode)
- 			/* CPUFreq converts to kHz, hence default 1000 */
- 			dom_info->mult_factor =	1000;
- 		else
-@@ -806,7 +807,7 @@ static int scmi_dvfs_device_opps_add(const struct scmi_protocol_handle *ph,
- 		if (!dom->level_indexing_mode)
- 			freq = dom->opp[idx].perf * dom->mult_factor;
- 		else
--			freq = dom->opp[idx].indicative_freq * 1000;
-+			freq = dom->opp[idx].indicative_freq * dom->mult_factor;
+ Documentation/locking/mutex-design.rst | 6 ++++++
+ kernel/locking/mutex.c                 | 5 +++++
+ 2 files changed, 11 insertions(+)
 
- 		data.level = dom->opp[idx].perf;
- 		data.freq = freq;
-@@ -853,7 +854,8 @@ static int scmi_dvfs_freq_set(const struct scmi_protocol_handle *ph, u32 domain,
- 	} else {
- 		struct scmi_opp *opp;
+diff --git a/Documentation/locking/mutex-design.rst b/Documentation/locking/mutex-design.rst
+index 78540cd7f54b..087716bfa7b2 100644
+--- a/Documentation/locking/mutex-design.rst
++++ b/Documentation/locking/mutex-design.rst
+@@ -101,6 +101,12 @@ features that make lock debugging easier and faster:
+     - Detects multi-task circular deadlocks and prints out all affected
+       locks and tasks (and only those tasks).
+ 
++Releasing a mutex is not an atomic operation: Once a mutex release operation
++has begun, another context may be able to acquire the mutex before the release
++operation has completed. The mutex user must ensure that the mutex is not
++destroyed while a release operation is still in progress - in other words,
++callers of 'mutex_unlock' must ensure that the mutex stays alive until
++'mutex_unlock' has returned.
+ 
+ Interfaces
+ ----------
+diff --git a/kernel/locking/mutex.c b/kernel/locking/mutex.c
+index 2deeeca3e71b..4c6b83bab643 100644
+--- a/kernel/locking/mutex.c
++++ b/kernel/locking/mutex.c
+@@ -532,6 +532,11 @@ static noinline void __sched __mutex_unlock_slowpath(struct mutex *lock, unsigne
+  * This function must not be used in interrupt context. Unlocking
+  * of a not locked mutex is not allowed.
+  *
++ * The caller must ensure that the mutex stays alive until this function has
++ * returned - mutex_unlock() can NOT directly be used to release an object such
++ * that another concurrent task can free it.
++ * Mutexes are different from spinlocks in this aspect.
++ *
+  * This function is similar to (but not equivalent to) up().
+  */
+ void __sched mutex_unlock(struct mutex *lock)
 
--		opp = LOOKUP_BY_FREQ(dom->opps_by_freq, freq / 1000);
-+		opp = LOOKUP_BY_FREQ(dom->opps_by_freq,
-+				     freq / dom->mult_factor);
- 		if (!opp)
- 			return -EIO;
-
-@@ -887,7 +889,7 @@ static int scmi_dvfs_freq_get(const struct scmi_protocol_handle *ph, u32 domain,
- 		if (!opp)
- 			return -EIO;
-
--		*freq = opp->indicative_freq * 1000;
-+		*freq = opp->indicative_freq * dom->mult_factor;
- 	}
-
- 	return ret;
-@@ -910,7 +912,7 @@ static int scmi_dvfs_est_power_get(const struct scmi_protocol_handle *ph,
- 		if (!dom->level_indexing_mode)
- 			opp_freq = opp->perf * dom->mult_factor;
- 		else
--			opp_freq = opp->indicative_freq * 1000;
-+			opp_freq = opp->indicative_freq * dom->mult_factor;
-
- 		if (opp_freq < *freq)
- 			continue;
---
-2.43.0
+base-commit: 3b47bc037bd44f142ac09848e8d3ecccc726be99
+-- 
+2.43.0.rc2.451.g8631bc7472-goog
 
