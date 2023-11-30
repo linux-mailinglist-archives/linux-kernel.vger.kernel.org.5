@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B67B7FF744
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 17:55:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A859D7FF756
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 17:55:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345830AbjK3QzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 11:55:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36610 "EHLO
+        id S1345863AbjK3Qzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 11:55:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232657AbjK3QzM (ORCPT
+        with ESMTP id S235209AbjK3Qzc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 11:55:12 -0500
+        Thu, 30 Nov 2023 11:55:32 -0500
 Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8188B10E0;
-        Thu, 30 Nov 2023 08:55:18 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.18.186.231])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Sh2MR6jh3z688p7;
-        Fri,  1 Dec 2023 00:53:39 +0800 (CST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F14D170C;
+        Thu, 30 Nov 2023 08:55:39 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Sh2JL47zHz6K5xc;
+        Fri,  1 Dec 2023 00:50:58 +0800 (CST)
 Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-        by mail.maildlp.com (Postfix) with ESMTPS id 8C65514058E;
-        Fri,  1 Dec 2023 00:55:16 +0800 (CST)
+        by mail.maildlp.com (Postfix) with ESMTPS id 615D01402CD;
+        Fri,  1 Dec 2023 00:55:37 +0800 (CST)
 Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
  (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 30 Nov
- 2023 16:55:15 +0000
-Date:   Thu, 30 Nov 2023 16:55:15 +0000
+ 2023 16:55:36 +0000
+Date:   Thu, 30 Nov 2023 16:55:36 +0000
 From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
 To:     "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
 CC:     <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
@@ -40,16 +40,14 @@ CC:     <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
         Jean-Philippe Brucker <jean-philippe@linaro.org>,
         <jianyong.wu@arm.com>, <justin.he@arm.com>,
         James Morse <james.morse@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH 16/21] x86/topology: convert to use
+        Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>
+Subject: Re: [PATCH 19/21] LoongArch: convert to use
  arch_cpu_is_hotpluggable()
-Message-ID: <20231130165515.00000a25@Huawei.com>
-In-Reply-To: <E1r5R3w-00Cszy-6k@rmk-PC.armlinux.org.uk>
+Message-ID: <20231130165536.000025eb@Huawei.com>
+In-Reply-To: <E1r5R4B-00Ct0G-Kk@rmk-PC.armlinux.org.uk>
 References: <ZVyz/Ve5pPu8AWoA@shell.armlinux.org.uk>
-        <E1r5R3w-00Cszy-6k@rmk-PC.armlinux.org.uk>
+        <E1r5R4B-00Ct0G-Kk@rmk-PC.armlinux.org.uk>
 Organization: Huawei Technologies Research and Development (UK) Ltd.
 X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
@@ -67,11 +65,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 21 Nov 2023 13:45:12 +0000
+On Tue, 21 Nov 2023 13:45:27 +0000
 "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk> wrote:
 
-> Convert x86 to use the arch_cpu_is_hotpluggable() helper rather than
-> arch_register_cpu().
+> Convert loongarch to use the arch_cpu_is_hotpluggable() helper rather
+> than arch_register_cpu(). Also remove the export as nothing should be
+> using arch_register_cpu() outside of the core kernel/acpi code.
 > 
 > Reviewed-by: Gavin Shan <gshan@redhat.com>
 > Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
