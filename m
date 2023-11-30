@@ -2,186 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 640CD7FE9CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 08:37:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8C487FE9D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 08:38:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344753AbjK3HhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 02:37:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45812 "EHLO
+        id S1344759AbjK3HiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 02:38:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344694AbjK3HhA (ORCPT
+        with ESMTP id S1344694AbjK3HiG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 02:37:00 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E413CB9;
-        Wed, 29 Nov 2023 23:37:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701329826; x=1732865826;
-  h=date:from:to:cc:subject:message-id:references:
-   content-transfer-encoding:in-reply-to:mime-version;
-  bh=ZLRD2g4+hhO5Ac6CGajAiZWddf/aBATh8jUVmV0Ys5M=;
-  b=W0tYby8MFWZitCW5NGuuF3dhHGh5/3+JfNBZ3SHue4M85cXlSLZHrjoN
-   Fn0MhCmRB57ADV1NmEljRlNLCp0nTx1MbhSFvXpLelxMihy/gnfb7tqdD
-   5rp4q+PtkrbayADBQKNBIxGRXLpLUjHV+cbQlS/npj5cnz/14weJIgmCD
-   1Y3iTYtLvgjRJtfOwQzGFfETQp2CRGttAGnrm207iviLjsG2OM3djL4qo
-   13W6cEhw7o3SnWSNlnPT2TPilUkoY72JkweApbt7MIjb1XqvOM/aNGhzt
-   4KHsmYcyJfaw+fP8uAj63K0OoxvNj9/9/97/T67h+XNUC5DMPojsdl8g2
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="393027169"
-X-IronPort-AV: E=Sophos;i="6.04,237,1695711600"; 
-   d="scan'208";a="393027169"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 23:37:06 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="892726966"
-X-IronPort-AV: E=Sophos;i="6.04,237,1695711600"; 
-   d="scan'208";a="892726966"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by orsmga004.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 29 Nov 2023 23:37:05 -0800
-Received: from orsmsx603.amr.corp.intel.com (10.22.229.16) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+        Thu, 30 Nov 2023 02:38:06 -0500
+Received: from mx0a-0064b401.pphosted.com (mx0a-0064b401.pphosted.com [205.220.166.238])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CDD3B9;
+        Wed, 29 Nov 2023 23:38:12 -0800 (PST)
+Received: from pps.filterd (m0250809.ppops.net [127.0.0.1])
+        by mx0a-0064b401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3AU7Qk4t003588;
+        Wed, 29 Nov 2023 23:37:53 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com;
+         h=from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding:content-type; s=
+        PPS06212021; bh=xNOmDHuoSUU7Aid89oI4ZzLqX4AFkBasjG/xx78Lk30=; b=
+        UEE3ixx1nKaO4Mgr7bJfdO4IS437C9hie3Evf9Hjxti2xZ3On+8DWOtJ+GZBhQ5d
+        u0868wX6GAkl+01NYO4cOVA2cRWhrgtOwvNEIvJl3nV5BKmoR5vA+NWy9DecIrzq
+        Omph0njhuAWZmE8q42uPvCgXq86tjK2NXdzhocr5F3B3SipcCCjhhi8tYlP3Uhgt
+        iUeo68DMf4uXmLoA+MzxxjIQEHwj3krpDgBM8hmqxjfqZRedKQ2ItvTyJZRCXEie
+        euE9+9SXrnZMknsEeSn4ir7fAnuFLVhgys0yk/WeBScpF+JjFWdv8bdEzWK5Uv05
+        tR6Otf5O5Z/HIJqL8BdeIQ==
+Received: from ala-exchng01.corp.ad.wrs.com (ala-exchng01.wrs.com [147.11.82.252])
+        by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 3upgxtg8d2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 29 Nov 2023 23:37:53 -0800 (PST)
+Received: from ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) by
+ ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Wed, 29 Nov 2023 23:37:05 -0800
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Wed, 29 Nov 2023 23:37:05 -0800
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.168)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Wed, 29 Nov 2023 23:37:04 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hjZCFdIqwrCkx2RgwaP+IvfgrSbFMrwoSMtMGJ4cr8UggqLdlL+amp7JmcD6xsTyi7TZ4IysaKpkg+pobh3s1gcTNleeDDzj5RNRwLpH2nLfpOXqneKHr0ncGZkUJVtpFDlt4pSa3OgnKDVBpovnVBmIem+BBrR0nKG4+fEgsMkrJCUolfY1G1jeISB5wuC/SQmX5Xx3pp6rRnXDb/388tK5PVXqA0Kn+CaUTRMktWiccbqspvi5zFNjvHbiFzR0y/Ohkfn7A7zk0PRr6mYat7ZafslN/r13JNPeoz/ysJv9msY5qOMJ7Y+YP1Ga9mcbeCl3TMK7NqxGUKgMxWEThQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Q7W/bf00DYhasKWPvMA8NGNNmRVQ+RTD4jJ4dZYLB40=;
- b=Zg6AsVlBwbh67thJFCf9qbyvgp3QQPm0gfe7AIv95QOYJS165wxRzQgKRKA4HjvaXKpNBFMW1U1huj8e4apagDLG70spT/SodgMAK4tjAHB23vZj8uPs6L4ZudNL4YX2TCkW2zA/h4pHeawygnX+gYxFslPt0/p0THU85GPqfRjDJ1s4T6Z6Zf0EnueZD/x5szl3HcFmSiz4GdNi+mukShg6A17M9axO7IZYembAVS9dQ+Nl/aIomfkmrr3sUdSrqI78WH4lR+Ro2TWlfMeYPxALoDWZ3NzLlfl0nJSgfy1wWzmnof0eDqh/7DGfE9eksHRe39KX7R9f3SgCVfcWFg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from MN0PR11MB6231.namprd11.prod.outlook.com (2603:10b6:208:3c4::15)
- by SA3PR11MB7612.namprd11.prod.outlook.com (2603:10b6:806:31b::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.22; Thu, 30 Nov
- 2023 07:36:57 +0000
-Received: from MN0PR11MB6231.namprd11.prod.outlook.com
- ([fe80::f4b7:72ae:86f6:450a]) by MN0PR11MB6231.namprd11.prod.outlook.com
- ([fe80::f4b7:72ae:86f6:450a%4]) with mapi id 15.20.7025.022; Thu, 30 Nov 2023
- 07:36:57 +0000
-Date:   Thu, 30 Nov 2023 08:36:52 +0100
-From:   Maciej =?utf-8?Q?Wiecz=C3=B3r-Retman?= 
-        <maciej.wieczor-retman@intel.com>
-To:     Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>
-CC:     Reinette Chatre <reinette.chatre@intel.com>,
-        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
-        "Shaopeng Tan" <tan.shaopeng@jp.fujitsu.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 26/26] selftests/resctrl: Add test groups and name L3
- CAT test L3_CAT
-Message-ID: <cgp77jx2dpijdmdroqh3g2ykgrupny4wpjmkkustzd23anzodx@ejdkjduafxos>
-References: <20231120111340.7805-1-ilpo.jarvinen@linux.intel.com>
- <20231120111340.7805-27-ilpo.jarvinen@linux.intel.com>
- <2787018d-9661-4169-9571-a4016691cfa6@intel.com>
- <ca49fc8f-f9f7-138f-ff2f-60f754525df7@linux.intel.com>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ca49fc8f-f9f7-138f-ff2f-60f754525df7@linux.intel.com>
-X-ClientProxiedBy: WA1P291CA0023.POLP291.PROD.OUTLOOK.COM
- (2603:10a6:1d0:19::7) To MN0PR11MB6231.namprd11.prod.outlook.com
- (2603:10b6:208:3c4::15)
+ 15.1.2507.35; Wed, 29 Nov 2023 23:38:00 -0800
+Received: from pek-lpd-ccm6.wrs.com (147.11.136.210) by
+ ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) with Microsoft SMTP Server id
+ 15.1.2507.34 via Frontend Transport; Wed, 29 Nov 2023 23:37:57 -0800
+From:   Lizhi Xu <lizhi.xu@windriver.com>
+To:     <syzbot+f9f8efb58a4db2ca98d0@syzkaller.appspotmail.com>
+CC:     <almasrymina@google.com>, <davem@davemloft.net>,
+        <edumazet@google.com>, <hawk@kernel.org>,
+        <ilias.apalodimas@linaro.org>, <kuba@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <pabeni@redhat.com>, <syzkaller-bugs@googlegroups.com>
+Subject: [PATCH net-next] net: page_pool: fix null-ptr-deref in page_pool_unlist
+Date:   Thu, 30 Nov 2023 15:37:49 +0800
+Message-ID: <20231130073749.1329999-1-lizhi.xu@windriver.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <000000000000f2b6b0060b488674@google.com>
+References: <000000000000f2b6b0060b488674@google.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR11MB6231:EE_|SA3PR11MB7612:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9e90e6f7-6562-4e01-31b2-08dbf1772155
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: d+Z6mPJX8jONmXlKSRcHbDqdKHEZcn8WoD1cU5V1hpUNGVGfBJj1vRZTOSpe32HD+PwOeltvzDE8fl0JL3nJk1fVJ3G9sITZ3/EHi1A2VFN4LM8weWteTuB9YYW02xwt8r7etCuM+EEOr6UVqGUJqJRrQP7NyfomiMxWsssiDJLjqbLwExHaVQ1EePds14z/EmfYtMlwf9CQUWPNIVceHS23vGPhyr5g0ry+XG5u8XpeoeM7rOhsPrJ9hWkZgO15gw1E1vYQqSuodlRC15S2kJfAwZjwXbqtNh4EYbL10q7ahzL++x7kO93Z3LvZ5hwyiU4AXWTDn20wuQkiSN8Mcu6kB7eq341qf7fLyC6be6HA6I7dfLMQvrGAjMnk8V6xZAYV9QSU3W0WWNWt31JEYWmsgSLTipeI0z/0r4i/LI7W1arC+U0KU4mdg9CTdMmSIGMguuR36vtYYLzco+ueA5g6UY6DZ0jBFkPk1YiNW9Y2GXQGmU9UVU4UnJHMCFcBGc11fY55dJRE5lkITuCHkTFsTJE1vy98RwFLVDxAORritq0BmsVsFA7ssygrRCh3mmEOWvlsuWNzG92vMc8H8SCc1zHI0ncLta0DkElHfUOI+1IshfF9AqRnZrlPItCmNBPor64Neyy9hLeoYc7fiWGVqL3Upasudu78m+J68oc=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB6231.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(396003)(376002)(136003)(39860400002)(366004)(346002)(230922051799003)(451199024)(186009)(64100799003)(1800799012)(66946007)(66556008)(316002)(66574015)(6486002)(53546011)(66476007)(54906003)(6916009)(6506007)(478600001)(9686003)(6512007)(82960400001)(83380400001)(86362001)(38100700002)(33716001)(5660300002)(4326008)(8676002)(8936002)(41300700001)(4001150100001)(202311291699003)(6666004)(26005)(2906002)(27256005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?2tIfEU1t2sYwHZ6j2ZEepXOWcIyodwKAnfmZoJCABIN96AQdPadi3qEf4K?=
- =?iso-8859-1?Q?vZVpK9r4vN39w7OLvfOGB2jkL8tTQoJ4n3qEkKNZclKpVmw5l25YpTlSw4?=
- =?iso-8859-1?Q?i3EL1BlfYcRAoiTEZqQ2dms7rFI5uQvbBBKTMdFzrpqeKCDaHMM278gHEm?=
- =?iso-8859-1?Q?v/pMJwd8lpafdILTQXOUHyX74aW1IgIPPx1L807Ldvcl1j6bRuy/5AfPR6?=
- =?iso-8859-1?Q?Cy+nLSJ2Mn7xHqE7TptoPlI5o8jPpdhPRM2+uSoGFfOAfZU+htQTRoyz8j?=
- =?iso-8859-1?Q?u/pif7RF3j+FNDPst9VkM+LidNyk6R4YjzL+Yg1rO/hWKzKGJ2g4G7arLP?=
- =?iso-8859-1?Q?lXWTFqQD0KDWNtJJ0VAFKnEGdsdT+WnNZqXyXPjjfVWpaIf2JN8rZCE8ug?=
- =?iso-8859-1?Q?JvXNWp1AgKeUCTtFB9d78QD1NeYXmZu7vHKYV1Rqd0N6nawiB8wjr9KmHz?=
- =?iso-8859-1?Q?1qQka00MeoPAGS45UgXK84Kko5vgniVm5phEZo7wB7irT7NoffiC+ffOwk?=
- =?iso-8859-1?Q?t5dhTIBUDdn2r8G9SJm8sm9V5tbVv6N2fSnKHu4kbOzTPJ2SRnCijS3GoA?=
- =?iso-8859-1?Q?3rupRdaVoRbufQnNFsn2/ZJI77dT0Q+O/iYTCxNa0+5BzwIUoR6R9/tcbP?=
- =?iso-8859-1?Q?tzZNZsqFXYnvG1rd3kOMuucRqQyr6aOdTzZ5ITz+oHf76PvobQts5Gxc5j?=
- =?iso-8859-1?Q?HShXGOJt0owObNJEgWqDMQtHqilsth+EF3zF3vWZzAuWBeO6CEWgZWFn36?=
- =?iso-8859-1?Q?RAvLPMvMLAN954Npe95kVgScJbjCHUSB2sGx0HqmGFB5vYjUtN0HQuwfQr?=
- =?iso-8859-1?Q?G6ZTrJftyiDeDFiAFrK4jfWRv3Px9eO5ekqZisGZtV8QRswR+IBUwti7bv?=
- =?iso-8859-1?Q?FnbSuGWVL64DwiLGHZAmL4ZhIFtgeIuaxNw+z8RmppM2yGZno3ufCKxHre?=
- =?iso-8859-1?Q?9OBu4P6vY9vNkz1kiU2tbHf6O5wyptbms+uq0JgNLfYwyrnTCJuPR8zMzy?=
- =?iso-8859-1?Q?13aRrMZ7RV5Af9OgvIncy+zpWftIhMP3KIHQHASw+Lr50TONUj+Ngi/NMS?=
- =?iso-8859-1?Q?QHsaKmeDrtEDf3iRUodrLqPYN+wVvg7Yfop1N8mWE3HEf1epwdFzv3tKoq?=
- =?iso-8859-1?Q?asE/OXGLD0s0YE22WUWId3kOVZGGgFqDUBme5NlCYqvc3amihQ6XrRJG/V?=
- =?iso-8859-1?Q?rEgFONalekFkLYi1x78ty5k6FNeZPgJWjrOBVF5rlOoYRx+sbECKXuA96N?=
- =?iso-8859-1?Q?+RdA/rD2twQkn0psvOJO3NKupkDjDenZdg7ZEifzbI11ARxStjxzGU+TEd?=
- =?iso-8859-1?Q?wgLmwqmuWWLrJkEgVaSz/74DlRaPLf9qDd0MLr+qXm+w6UsvKIBkfB+0Ef?=
- =?iso-8859-1?Q?dghzXBoEm5kG5VhVysGHyEvbZU93Wj3OabcaddKgPFHr3RlohKu266Tm8T?=
- =?iso-8859-1?Q?eDAQFtuMNvjaCdHm3lWFbMT2ys1DcnY8LlvSePlbgivMOC7RkyCphsM5+R?=
- =?iso-8859-1?Q?oxDxTCZhsWcCBRVIe9ZbNcYIyJaMfpp6+zsnX4IGf7kMzAJiy7ClZskerm?=
- =?iso-8859-1?Q?j1mUQfvkSbEx6LOLOtxtwPukqbZrg10bXL36aNbKLnuyiqpBjzWV6YsvL7?=
- =?iso-8859-1?Q?cWP9yERZwx4qK+mokt6Gz61jMtFxI8SkHU0P+n2Dt+3TVLsqJpUG3pGzyJ?=
- =?iso-8859-1?Q?mPzmGFPBntzG9+3PJ84=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9e90e6f7-6562-4e01-31b2-08dbf1772155
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB6231.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Nov 2023 07:36:56.6684
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 4we3n8m3Ji23ixoRpXtkQhMpFoy0kpoJd3Hgi6UyoMkDXJS01mvS4VpXfPeJHrk50E+CBum8wFop22zqMiFFfHJmhyE1zPxcGy0iaglIjpM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR11MB7612
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: RYNMjJmSHk4VKJqogjDBGZ2nbWPmJG76
+X-Proofpoint-ORIG-GUID: RYNMjJmSHk4VKJqogjDBGZ2nbWPmJG76
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-16_25,2023-11-16_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ priorityscore=1501 clxscore=1011 spamscore=0 phishscore=0
+ lowpriorityscore=0 mlxlogscore=792 mlxscore=0 impostorscore=0 adultscore=0
+ bulkscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311060001 definitions=main-2311300056
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-11-29 at 13:11:44 +0200, Ilpo Järvinen wrote:
->On Tue, 28 Nov 2023, Reinette Chatre wrote:
->> On 11/20/2023 3:13 AM, Ilpo Järvinen wrote:
->> > To select test to run -t parameter can be used. However, -t cat
->> > currently maps to L3 CAT test which is confusing after more CAT related
->> > tests are added.
->> > 
->> > Allow selecting tests as groups and call L3 CAT test "L3_CAT", "CAT"
->> > group will enable all CAT related tests.
->> > 
->> > Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
->> > ---
->> 
->> Could you please defer this patch to accompany the series that
->> introduces other CAT related tests?
->
->Can be done but it implies Maciej non-continuous CAT test series would 
->still be blocked by the lack of this feature which is why I included it 
->here.
->
->But perhaps Maciej wants to take this patch and submit it as a part of his 
->series. Maciej, are you okay with that change of patch ownership?
->
+[Syz report]
+Illegal XDP return value 4294946546 on prog  (id 2) dev N/A, expect packet loss!
+general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+CPU: 0 PID: 5064 Comm: syz-executor391 Not tainted 6.7.0-rc2-syzkaller-00533-ga379972973a8 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
+RIP: 0010:__hlist_del include/linux/list.h:988 [inline]
+RIP: 0010:hlist_del include/linux/list.h:1002 [inline]
+RIP: 0010:page_pool_unlist+0xd1/0x170 net/core/page_pool_user.c:342
+Code: df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 90 00 00 00 4c 8b a3 f0 06 00 00 48 b8 00 00 00 00 00 fc ff df 4c 89 e2 48 c1 ea 03 <80> 3c 02 00 75 68 48 85 ed 49 89 2c 24 74 24 e8 1b ca 07 f9 48 8d
+RSP: 0018:ffffc900039ff768 EFLAGS: 00010246
+RAX: dffffc0000000000 RBX: ffff88814ae02000 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: 0000000000000004 RDI: ffff88814ae026f0
+RBP: 0000000000000000 R08: 0000000000000000 R09: fffffbfff1d57fdc
+R10: ffffffff8eabfee3 R11: ffffffff8aa0008b R12: 0000000000000000
+R13: ffff88814ae02000 R14: dffffc0000000000 R15: 0000000000000001
+FS:  000055555717a380(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000002555398 CR3: 0000000025044000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ __page_pool_destroy net/core/page_pool.c:851 [inline]
+ page_pool_release+0x507/0x6b0 net/core/page_pool.c:891
+ page_pool_destroy+0x1ac/0x4c0 net/core/page_pool.c:956
+ xdp_test_run_teardown net/bpf/test_run.c:216 [inline]
+ bpf_test_run_xdp_live+0x1578/0x1af0 net/bpf/test_run.c:388
+ bpf_prog_test_run_xdp+0x827/0x1530 net/bpf/test_run.c:1254
+ bpf_prog_test_run kernel/bpf/syscall.c:4041 [inline]
+ __sys_bpf+0x11bf/0x4920 kernel/bpf/syscall.c:5402
+ __do_sys_bpf kernel/bpf/syscall.c:5488 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:5486 [inline]
+ __x64_sys_bpf+0x78/0xc0 kernel/bpf/syscall.c:5486
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x40/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
 
-Sure, I'll try to send a new version of my series on monday and I'll add this
-patch there.
+[Analysis]
+If "user.list" is initialized, the corresponding slow.netdev device must exist, 
+so before recycling "user.list", it is necessary to confirm that the "slow.netdev"
+device is valid.
 
+[Fix]
+Add slow.netdev != NULL check before delete "user.list".
+
+Fixes: 083772c9f972 ("net: page_pool: record pools per netdev")
+Reported-by: syzbot+f9f8efb58a4db2ca98d0@syzkaller.appspotmail.com
+Signed-off-by: Lizhi Xu <lizhi.xu@windriver.com>
+---
+ net/core/page_pool_user.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/net/core/page_pool_user.c b/net/core/page_pool_user.c
+index 1426434a7e15..ca71f4103b3a 100644
+--- a/net/core/page_pool_user.c
++++ b/net/core/page_pool_user.c
+@@ -339,7 +339,8 @@ void page_pool_unlist(struct page_pool *pool)
+ 	mutex_lock(&page_pools_lock);
+ 	netdev_nl_page_pool_event(pool, NETDEV_CMD_PAGE_POOL_DEL_NTF);
+ 	xa_erase(&page_pools, pool->user.id);
+-	hlist_del(&pool->user.list);
++	if (pool->slow.netdev)
++		hlist_del(&pool->user.list);
+ 	mutex_unlock(&page_pools_lock);
+ }
+ 
 -- 
-Kind regards
-Maciej Wieczór-Retman
+2.26.1
+
