@@ -2,68 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 967F97FE46D
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 01:02:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 546A07FE46E
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 01:03:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234904AbjK3ACD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 19:02:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34302 "EHLO
+        id S231915AbjK3AC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 19:02:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229611AbjK3AB6 (ORCPT
+        with ESMTP id S229611AbjK3ACz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 19:01:58 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 940C0137
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 16:02:04 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3FA3CC433C8;
-        Thu, 30 Nov 2023 00:02:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701302524;
-        bh=JUfy9PkTGB3gNUUcDpux3gYV9KYIjfLf4mmkshe8UG0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Ktl/m0o3zGXWl4dRs8Uljd2uSDXRAKuRKGS5gjDqHVy63kq81zh+MAE7mcVDqDvyN
-         ql5WfEsMjGTodqmelTMlwpRovOMGK4HL4xNysCvPXN3Rto8Rmjm4zV30i2I0FMm//A
-         JVfo6LrJKKsNId8yEJvvp1Vndr6C6HkyN6k+ZcnuRL/7AjZ4hH4JwV3ZtlL/FP0jLt
-         rY3PxRlSvGCxPsAW1/xLoXZpjSpT/gaUslTRpMajetq+sXz4btfjc8zDjf0t+C3yNC
-         QFgnNanyBxeOyxjviG6bXU9pokZVgnQiewuRe9g/H0BAQIPtcTMqaL/gB/niItqVYh
-         f+AJW9ODCZgxA==
-Date:   Wed, 29 Nov 2023 16:02:02 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-Cc:     Souradeep Chakrabarti <schakrabarti@microsoft.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        Long Li <longli@microsoft.com>,
-        "sharmaajay@microsoft.com" <sharmaajay@microsoft.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "cai.huoqing@linux.dev" <cai.huoqing@linux.dev>,
-        "ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Yury Norov <yury.norov@gmail.com>
-Subject: Re: [EXTERNAL] Re: [PATCH V2 net-next] net: mana: Assigning IRQ
- affinity on HT cores
-Message-ID: <20231129160202.6d66459f@kernel.org>
-In-Reply-To: <20231129221739.GA20858@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1700574877-6037-1-git-send-email-schakrabarti@linux.microsoft.com>
-        <20231121154841.7fc019c8@kernel.org>
-        <PUZP153MB0788476CD22D5AA2ECDC11ABCCBDA@PUZP153MB0788.APCP153.PROD.OUTLOOK.COM>
-        <20231127100639.5f2f3d3e@kernel.org>
-        <20231129221739.GA20858@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+        Wed, 29 Nov 2023 19:02:55 -0500
+Received: from mail-oa1-x35.google.com (mail-oa1-x35.google.com [IPv6:2001:4860:4864:20::35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD2B4137
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 16:03:01 -0800 (PST)
+Received: by mail-oa1-x35.google.com with SMTP id 586e51a60fabf-1fa4e47f6c0so697739fac.0
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 16:03:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1701302581; x=1701907381; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=iqaBGyfV5ntKwlfmxQAMawFx8i861c6WUBXKE0OU9B4=;
+        b=iOzGNPohtJhV5ZKZto6OPi9ScC3+3i49b+LcVuxDq9mtzkWFxOvciaUfeoR4sw7MAj
+         QkroWu54eoGEksnarJc5KLNbJjo2b9/mRbC+ARswRHSJSyHf6r8cA77yjWE15tnQlLyz
+         LBW/x9VdJrPUIKxS84g8k0Qs9ndFvOUUMlXB7Nqmt7sEcoM/fPyFN2BUh3cbS5mvHdg0
+         VdkVOj4Kg/Qxda/ukbmSUzOpmMJI+XXCavYOg10/lBhhL0UvytuwbmpE/8guWJYyiZ+X
+         V6X2LIvossUNdgs1k1Z5XJ0azlmaKkohR5dD+1WWKcXd1aFqIkEqAhpHzDOqblxLktkC
+         OKmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701302581; x=1701907381;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=iqaBGyfV5ntKwlfmxQAMawFx8i861c6WUBXKE0OU9B4=;
+        b=qPW0I82RXwY86jYEvxDigNZPW00DgS8CByVWHYOvEMtKK4lBSl0NjhxBHNopekLUsx
+         9uyXwJA3ybCFWN9tfKU8jNjseYIww1EckhahQle5LitIGnji1+a3iCm7SF6VbTwvH1M2
+         EuqVjSp96WacBflMcs7uLTCGhz1c7Ucj6hFZ5CSATJYBP2VZ2KTkUXTSyY7C5nJPqbUe
+         RP5TULHBJA5GObjz1j4oqPzu68+Bn59Z1WhY/0T24RK8LPFMrAcH146I6L/23Sq3FDUE
+         BY2FOAqXjy5q3ogsyq8F/dIBMD2iDFmqiFPEv+lYa8Zg5bXlESNFChtMANSmNt8zSg+0
+         GB8A==
+X-Gm-Message-State: AOJu0YwCiMYHvBkrOeuPNJzTSsFEF/iopVLvKp8anMTXTCCg5EsqJm5l
+        F01PVnnTvFy5pakXB71uvUefwQ==
+X-Google-Smtp-Source: AGHT+IH9mJrgeBca3QDmdqlZSO64E6UWuuZZMjhMVoz9rZsKA5pWXiF1aXxzzo/4HFbYhkfRvbso7A==
+X-Received: by 2002:a05:6870:1603:b0:1f9:eb7e:6621 with SMTP id b3-20020a056870160300b001f9eb7e6621mr10166623oae.18.1701302580971;
+        Wed, 29 Nov 2023 16:03:00 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-134-23-187.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.134.23.187])
+        by smtp.gmail.com with ESMTPSA id ry4-20020a056871208400b001efa3446d4esm3609159oab.43.2023.11.29.16.03.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Nov 2023 16:03:00 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1r8UWB-005qQQ-Hz;
+        Wed, 29 Nov 2023 20:02:59 -0400
+Date:   Wed, 29 Nov 2023 20:02:59 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Pasha Tatashin <pasha.tatashin@soleen.com>
+Cc:     akpm@linux-foundation.org, alex.williamson@redhat.com,
+        alim.akhtar@samsung.com, alyssa@rosenzweig.io,
+        asahi@lists.linux.dev, baolu.lu@linux.intel.com,
+        bhelgaas@google.com, cgroups@vger.kernel.org, corbet@lwn.net,
+        david@redhat.com, dwmw2@infradead.org, hannes@cmpxchg.org,
+        heiko@sntech.de, iommu@lists.linux.dev, jasowang@redhat.com,
+        jernej.skrabec@gmail.com, jonathanh@nvidia.com, joro@8bytes.org,
+        kevin.tian@intel.com, krzysztof.kozlowski@linaro.org,
+        kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-rockchip@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev,
+        linux-tegra@vger.kernel.org, lizefan.x@bytedance.com,
+        marcan@marcan.st, mhiramat@kernel.org, mst@redhat.com,
+        m.szyprowski@samsung.com, netdev@vger.kernel.org,
+        paulmck@kernel.org, rdunlap@infradead.org, robin.murphy@arm.com,
+        samuel@sholland.org, suravee.suthikulpanit@amd.com,
+        sven@svenpeter.dev, thierry.reding@gmail.com, tj@kernel.org,
+        tomas.mudrunka@gmail.com, vdumpa@nvidia.com,
+        virtualization@lists.linux.dev, wens@csie.org, will@kernel.org,
+        yu-cheng.yu@intel.com
+Subject: Re: [PATCH 09/16] iommu/iommufd: use page allocation function
+ provided by iommu-pages.h
+Message-ID: <20231130000259.GS1312390@ziepe.ca>
+References: <20231128204938.1453583-1-pasha.tatashin@soleen.com>
+ <20231128204938.1453583-10-pasha.tatashin@soleen.com>
+ <20231128235254.GE1312390@ziepe.ca>
+ <CA+CK2bC=vMU54wXz1GSzpOcLFCuX5vuE6tD49JF8cMbz4tis-g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CA+CK2bC=vMU54wXz1GSzpOcLFCuX5vuE6tD49JF8cMbz4tis-g@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -72,85 +101,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 29 Nov 2023 14:17:39 -0800 Souradeep Chakrabarti wrote:
-> On Mon, Nov 27, 2023 at 10:06:39AM -0800, Jakub Kicinski wrote:
-> > On Mon, 27 Nov 2023 09:36:38 +0000 Souradeep Chakrabarti wrote:  
-> > > easier to keep things inside the mana driver code here  
-> > 
-> > Easier for who? Upstream we care about consistency and maintainability
-> > across all drivers.  
-> I am refactoring the code and putting some of the changes in topology.h
-> and in nodemask.h. I am sharing the proposed change here for those two
-> files. Please let me know if they are acceptable.
+On Wed, Nov 29, 2023 at 04:59:43PM -0500, Pasha Tatashin wrote:
+> On Tue, Nov 28, 2023 at 6:52 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> >
+> > On Tue, Nov 28, 2023 at 08:49:31PM +0000, Pasha Tatashin wrote:
+> > > Convert iommu/iommufd/* files to use the new page allocation functions
+> > > provided in iommu-pages.h.
+> > >
+> > > Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
+> > > ---
+> > >  drivers/iommu/iommufd/iova_bitmap.c | 4 ++--
+> > >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > This is a short term allocation, it should not be counted, that is why
+> > it is already not using GFP_KERNEL_ACCOUNT.
+> 
+> I made this change for completeness. I changed all calls to
+> get_free_page/alloc_page etc under driver/iommu to use the
+> iommu_alloc_* variants, this also helps future developers in this area
+> to use the right allocation functions.
+> The accounting is implemented using cheap per-cpu counters, so should
+> not affect the performance, I think it is OK to keep them here.
 
-Thanks, adding Yury <yury.norov@gmail.com> who's the best person 
-to comment on the details...
+Except it is a mis use of an API that should only be used for page
+table memory :(
 
-> Added a new helper to iterate on numa nodes with cpu and start from a 
-> particular node, instead of first node. This helps when we want to
-> iterate from the local numa node.
-> 
-> diff --git a/include/linux/nodemask.h b/include/linux/nodemask.h
-> index 8d07116caaf1..6e4528376164 100644
-> --- a/include/linux/nodemask.h
-> +++ b/include/linux/nodemask.h
-> @@ -392,6 +392,15 @@ static inline void __nodes_fold(nodemask_t *dstp, const nodemask_t *origp,
->         for ((node) = 0; (node) < 1 && !nodes_empty(mask); (node)++)
->  #endif /* MAX_NUMNODES */
-> 
-> +#if MAX_NUMNODES > 1
-> +#define for_each_node_next_mask(node_start, node_next, mask)           \
-> +       for ((node_next) = (node_start);                                \
-> +            (node_next) < MAX_NUMNODES;                                \
-> +            (node_next) = next_node((node_next), (mask)))
-> +#else
-> +#define for_each_node_next_mask(node_start, node_next, mask)   \
-> +       for_each_node_mask(node_next, mask)
-> +#endif
->  /*
->   * Bitmasks that are kept for all the nodes.
->   */
-> @@ -440,6 +449,8 @@ static inline int num_node_state(enum node_states state)
-> 
->  #define for_each_node_state(__node, __state) \
->         for_each_node_mask((__node), node_states[__state])
-> +#define for_each_node_next_state(__node_start, __node_next, __state) \
-> +       for_each_node_next_mask((__node_start), (__node_next), node_states[__state])
-> 
->  #define first_online_node      first_node(node_states[N_ONLINE])
->  #define first_memory_node      first_node(node_states[N_MEMORY])
-> @@ -489,7 +500,8 @@ static inline int num_node_state(enum node_states state)
-> 
->  #define for_each_node_state(node, __state) \
->         for ( (node) = 0; (node) == 0; (node) = 1)
-> -
-> +#define for_each_node_next_state(node, next_node, _state) \
-> +       for_each_node_state(node, __state)
->  #define first_online_node      0
->  #define first_memory_node      0
->  #define next_online_node(nid)  (MAX_NUMNODES)
-> @@ -535,6 +547,8 @@ static inline int node_random(const nodemask_t *maskp)
-> 
->  #define for_each_node(node)       for_each_node_state(node, N_POSSIBLE)
->  #define for_each_online_node(node) for_each_node_state(node, N_ONLINE)
-> +#define for_each_online_node_next(node, next_node)  \
-> +                                 for_each_node_next_state(node, next_node, N_ONLINE)
-> 
->  /*
->   * For nodemask scratch area.
-> diff --git a/include/linux/topology.h b/include/linux/topology.h
-> index 52f5850730b3..a06b16e5a955 100644
-> --- a/include/linux/topology.h
-> +++ b/include/linux/topology.h
-> @@ -43,6 +43,9 @@
->         for_each_online_node(node)                      \
->                 if (nr_cpus_node(node))
-> 
-> +#define for_each_next_node_with_cpus(node, next_node)  \
-> +               for_each_online_node_next(node, next_node)      \
-> +               if (nr_cpus_node(next_node))
->  int arch_update_cpu_topology(void);
-> 
->  /* Conform to ACPI 2.0 SLIT distance definitions */
-> 
-
+Jason
