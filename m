@@ -2,57 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82A5D7FF665
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 17:41:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B70907FF782
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 17:57:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345494AbjK3QlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 11:41:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51440 "EHLO
+        id S1346271AbjK3Q5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 11:57:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235176AbjK3Qkw (ORCPT
+        with ESMTP id S1346241AbjK3Q50 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 11:40:52 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B89CA1A3
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 08:40:58 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30BAFC433C8;
-        Thu, 30 Nov 2023 16:40:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701362458;
-        bh=eMauWcpoHiWGcXeCJ6n8laJEDioZTrZnYDww6VNDcD4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sbewMVwKMEOHbYOQLQybblEflNdQip+Ra5frYeqsZTWZAms2Jc3Y7vZ7VASj5Aur8
-         2zcpnKl6VXvVqF/kauQ4Iiz6DQt73jk1dO6H+GoLx3lC2Yt97HLA9T/vmzzP3B+03Q
-         kPTyK/7HFP2KvQ4SKG0MDkNX4gmfFGIAyQE7Dz22TIRefJZJ/gc0YSFucBeOaMT/67
-         f5ls+Y0y+ImdrcDVR/MACxVOCl3kZppNqPy264LpK0ESvaBOEFvkoIHFv8e7NkdBGk
-         ZAAtIELOtR5UTdVF1PVhKL5Y6tVrJ43gmuW9DJ9HJXCC6/5leR2WXKhnvL4nNFn4y2
-         C3+wHN3tZckhg==
-Date:   Thu, 30 Nov 2023 10:40:57 -0600
-From:   "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        Serge Hallyn <serge@hallyn.com>,
-        Paul Moore <paul@paul-moore.com>,
-        Eric Paris <eparis@redhat.com>,
-        James Morris <jmorris@namei.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, audit@vger.kernel.org,
-        linux-unionfs@vger.kernel.org
-Subject: Re: [PATCH 16/16] vfs: return -EOPNOTSUPP for fscaps from
- vfs_*xattr()
-Message-ID: <ZWi7GZoSId2EA1mR@do-x1extreme>
-References: <20231129-idmap-fscap-refactor-v1-0-da5a26058a5b@kernel.org>
- <20231129-idmap-fscap-refactor-v1-16-da5a26058a5b@kernel.org>
- <CAOQ4uxhtJ89LknKjE=tiTgvZXbufmOaqHnhnrz348Ktq2H+yHA@mail.gmail.com>
+        Thu, 30 Nov 2023 11:57:26 -0500
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57EE51996;
+        Thu, 30 Nov 2023 08:57:28 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-33318b866a0so1003527f8f.3;
+        Thu, 30 Nov 2023 08:57:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701363447; x=1701968247; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
+         :content-language:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=xRmOmaiD2kpaM1pa5qvtyElKbVBnZY9abn/OkZ1NttY=;
+        b=gPUx47cyyFgzqfTZK0pxbvbmvI2RqEcVelVxA2d1wYIpUoxcM/SIZ2ePnUwtoEEntw
+         e91K+20Q/VYn+o0cqCTrBDBSD7+QxA61YmLzXNnk8o1jUV7euZaylHdqPWSkFIu8TZq9
+         Uz/cqnU4UFmkcztdwOM/pB5CwIdi/0EDtyG7+6Lbkbd4ROFTGA3FWMwey65Z/8yMOKC8
+         0TjwZZh8h2mWbCP2nSYu8Yc0UiCRNQeQTRcEZtC81pfR4aQERNIjHwVVPWvvOkUEs7nq
+         jV/QVc/TmUWvi/jMZh0bdRmeQ2CEQPUaR86nYNPk34pVSN6IibP8+hS8+Fm/BYuKgzOo
+         xP5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701363447; x=1701968247;
+        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
+         :content-language:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xRmOmaiD2kpaM1pa5qvtyElKbVBnZY9abn/OkZ1NttY=;
+        b=PxAV7we4pytoKC44u+6Q7XMo3mo5XhWJkJ6mDdLGU3HOa5CEKnk6psFzJe1GZjZUW4
+         zsvDZU6Vx30Rllly8MTcghUvJpEPyuDDoo9eBAqn8NsKLrrCioC1C/65mjrcSyGc5/3T
+         9ivm/oKDi4hslXrakRXyE1nUENDg1PnZWfQuMfx3NFMwORDg4Y+/kHJzE0zRvFgu3qKi
+         N1kW3VDAY5R+va4lg68DNyuEt1IimHUzzSHiI9tN6GzHwQTzOvclp4qDSjAUZGuU17qr
+         b8z7x8wwoNjS+NtSGFrZxhgUs3BhfXOBzNPA6auLWQknaAa2BlPfLkGovrSyLaBrrxwz
+         S++A==
+X-Gm-Message-State: AOJu0YwtTooMAFspjjIkb7QMIstaQ8jywMFsH39EkPYviqxXbuVtAFUc
+        /ieV5tO2TtHOtV3cPMT1CVIGKLf1GxQIu/xn
+X-Google-Smtp-Source: AGHT+IHxRFDhegyK9nazEh5RxKiRxdnhlrcxRsSp2mSrUEUtgsc6LwW2nk+jUUK+UjWbLhAxNBXUzg==
+X-Received: by 2002:a05:6000:118b:b0:333:1b4f:186a with SMTP id g11-20020a056000118b00b003331b4f186amr24383wrx.2.1701362508138;
+        Thu, 30 Nov 2023 08:41:48 -0800 (PST)
+Received: from [192.168.17.228] (54-240-197-239.amazon.com. [54.240.197.239])
+        by smtp.gmail.com with ESMTPSA id f9-20020a056000036900b00332e073f12bsm1948553wrf.19.2023.11.30.08.41.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Nov 2023 08:41:47 -0800 (PST)
+From:   Paul Durrant <xadimgnik@gmail.com>
+X-Google-Original-From: Paul Durrant <paul@xen.org>
+Message-ID: <504ca757-c5b9-4d3b-900c-c5f401a02027@xen.org>
+Date:   Thu, 30 Nov 2023 16:41:43 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAOQ4uxhtJ89LknKjE=tiTgvZXbufmOaqHnhnrz348Ktq2H+yHA@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+User-Agent: Mozilla Thunderbird
+Reply-To: paul@xen.org
+Subject: Re: [PATCH v5] KVM x86/xen: add an override for
+ PVCLOCK_TSC_STABLE_BIT
+Content-Language: en-US
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        David Woodhouse <dwmw2@infradead.org>, kvm@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andrew Cooper <andrew.cooper3@citrix.com>
+References: <20231102162128.2353459-1-paul@xen.org>
+ <ZWi6IKGFtQGpu6oR@google.com>
+Organization: Xen Project
+In-Reply-To: <ZWi6IKGFtQGpu6oR@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -61,56 +87,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 30, 2023 at 08:10:15AM +0200, Amir Goldstein wrote:
-> On Wed, Nov 29, 2023 at 11:51 PM Seth Forshee (DigitalOcean)
-> <sforshee@kernel.org> wrote:
-> >
-> > Now that the new vfs-level interfaces are fully supported and all code
-> > has been converted to use them, stop permitting use of the top-level vfs
-> > xattr interfaces for capabilities xattrs. Unlike with ACLs we still need
-> > to be able to work with fscaps xattrs using lower-level interfaces in a
-> > handful of places, so only use of the top-level xattr interfaces is
-> > restricted.
+On 30/11/2023 16:36, Sean Christopherson wrote:
+> +Andrew
 > 
-> Can you explain why?
-> Is there an inherent difference between ACLs and fscaps in that respect
-> or is it just a matter of more work that needs to be done?
-
-There are a number of differences. ACLs have caching, require additional
-permission checks, and require a lot of filesystem-specific handling.
-fscaps are simpler by comparison, and most filesystems can rely on a
-common implementation that just converts to/from raw disk xattrs.
-
-So at minimum I think the lowest level interfaces,
-__vfs_{get,set,remove}xattr(), need to continue to allow fscaps, and
-that's where ACL xattrs are blocked. Allowing some of the others to
-still work with them is a matter of convenience (e.g. using
-vfs_getxattr_alloc()) and trying to reduce code duplication. But as you
-pointed out I did miss at least duplicating fsnotify_xattr(), so I'm
-going to have another look at how I implemented these.
-
+> On Thu, Nov 02, 2023, Paul Durrant wrote:
+>> From: Paul Durrant <pdurrant@amazon.com>
+>>
+>> Unless explicitly told to do so (by passing 'clocksource=tsc' and
+>> 'tsc=stable:socket', and then jumping through some hoops concerning
+>> potential CPU hotplug) Xen will never use TSC as its clocksource.
+>> Hence, by default, a Xen guest will not see PVCLOCK_TSC_STABLE_BIT set
+>> in either the primary or secondary pvclock memory areas. This has
+>> led to bugs in some guest kernels which only become evident if
+>> PVCLOCK_TSC_STABLE_BIT *is* set in the pvclocks. Hence, to support
+>> such guests, give the VMM a new Xen HVM config flag to tell KVM to
+>> forcibly clear the bit in the Xen pvclocks.
 > 
-> >
-> > Signed-off-by: Seth Forshee (DigitalOcean) <sforshee@kernel.org>
-> > ---
-> >  fs/xattr.c | 9 +++++++++
-> >  1 file changed, 9 insertions(+)
-> >
-> > diff --git a/fs/xattr.c b/fs/xattr.c
-> > index 372644b15457..4b779779ad8c 100644
-> > --- a/fs/xattr.c
-> > +++ b/fs/xattr.c
-> > @@ -540,6 +540,9 @@ vfs_setxattr(struct mnt_idmap *idmap, struct dentry *dentry,
-> >         const void  *orig_value = value;
-> >         int error;
-> >
-> > +       if (!strcmp(name, XATTR_NAME_CAPS))
-> > +               return -EOPNOTSUPP;
-> > +
+> ...
 > 
-> It this is really not expected, then it should be an assert and
-> please use an inline helper like is_posix_acl_xattr():
+>> diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
+>> index 7025b3751027..a9bdd25826d1 100644
+>> --- a/Documentation/virt/kvm/api.rst
+>> +++ b/Documentation/virt/kvm/api.rst
+>> @@ -8374,6 +8374,7 @@ PVHVM guests. Valid flags are::
+>>     #define KVM_XEN_HVM_CONFIG_EVTCHN_2LEVEL		(1 << 4)
+>>     #define KVM_XEN_HVM_CONFIG_EVTCHN_SEND		(1 << 5)
+>>     #define KVM_XEN_HVM_CONFIG_RUNSTATE_UPDATE_FLAG	(1 << 6)
+>> +  #define KVM_XEN_HVM_CONFIG_PVCLOCK_TSC_UNSTABLE	(1 << 7)
 > 
-> if (WARN_ON_ONCE(is_fscaps_xattr(name)))
+> Does Xen actually support PVCLOCK_TSC_STABLE_BIT?  I.e. do we need new uAPI to
+> fix this, or can/should KVM simply _never_ set PVCLOCK_TSC_STABLE_BIT for Xen
+> clocks?  At a glance, PVCLOCK_TSC_STABLE_BIT looks like it was added as a purely
+> Linux/KVM-only thing.
 
-Ack, makes sense.
+It's certainly tested in arch/x86/xen/time.c, in 
+xen_setup_vsyscall_time_info() and xen_time_init(), so I'd guess it is 
+considered to be supported.
+
+   Paul
+
