@@ -2,83 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 391E87FFE98
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 23:41:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05AEE7FFE9C
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 23:43:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230410AbjK3Wle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 17:41:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60944 "EHLO
+        id S232281AbjK3WnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 17:43:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229823AbjK3Wld (ORCPT
+        with ESMTP id S229823AbjK3WnP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 17:41:33 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 684F0133;
-        Thu, 30 Nov 2023 14:41:39 -0800 (PST)
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AUMRq33024023;
-        Thu, 30 Nov 2023 22:41:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=Vexax5Lwygt2DRmCytzPYqLZ+7assqLIoKPkyKRQ7aM=;
- b=Z9eIZFd2WMiD98YStG9Nf9TvaTl+y/KTHpI3re6kt6/rkLbALcbw4C/NcDxHKCWDQwZ5
- GXaCa2G3RTIfcckNqEOiBu4EyV4Cdg7ijN+w5FxxGLYTtGhQ5DJeVzSmrDSePJYrViw9
- JKxtmZDOQVCY62BeINGvsjtbXQmdqITzMnqh2K6wbe7lDkkDHIq57RhTMF5ZnY3gtscU
- 1REs90aLxt+3GTXPPgsDwzoiH83I/RbZG4spCNRreEVK/GzU/acne136s1TL8br8kM4s
- JRpCpH68wZHI9TmoZVOHkd+2hYC57wGU7vQuvQ3AXLtF+/CcEkUoimWtCDHpCW3NpHdQ Wg== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3upv4818t0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 30 Nov 2023 22:41:33 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AUMfHVw016661
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 30 Nov 2023 22:41:17 GMT
-Received: from [10.71.109.77] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 30 Nov
- 2023 14:41:17 -0800
-Message-ID: <f990043a-eb17-dc5d-3257-ed95efcee8e3@quicinc.com>
-Date:   Thu, 30 Nov 2023 14:41:16 -0800
+        Thu, 30 Nov 2023 17:43:15 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88E15133;
+        Thu, 30 Nov 2023 14:43:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701384201; x=1732920201;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ul6wDHt3NtaWD+zCoELgS9GAvRpyrDS6easDGhJqmco=;
+  b=boGAoV3cmGpgzUFfrBKozh46zGrw4qN6Mfwka0TGGCg4c40p8vQb2696
+   K09919cJy9yvodQhrXlRrxTn0AmsSXgiZAJCMPHH4h+4uaZ0q/tCOW1Lm
+   2xruReaKNsWRnsVtMH5UdorJjc4a09oWrkRmnbQGzM+HsM0dYF7/y2K/1
+   cZnWAiaKSi0dzYrFjYHq1ZPg1MgbsVCZlTMKb0hs6EcYiyJHmy16oM6Fb
+   B1uws/ifkieEywnoa0O7T3V7MpwY+UPgYi4XkIqb7qRrx4ZZxKfWq2W3N
+   /3FgO9BINSCh2j/G/0wH2WC+FuSaVMxHLuMtMf315zKNrdDUrd8otJ3Dn
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="378432541"
+X-IronPort-AV: E=Sophos;i="6.04,240,1695711600"; 
+   d="scan'208";a="378432541"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 14:43:20 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="835555500"
+X-IronPort-AV: E=Sophos;i="6.04,240,1695711600"; 
+   d="scan'208";a="835555500"
+Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.222.74])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 14:43:20 -0800
+Date:   Thu, 30 Nov 2023 14:43:19 -0800
+From:   Tony Luck <tony.luck@intel.com>
+To:     Reinette Chatre <reinette.chatre@intel.com>
+Cc:     Fam Zheng <fam@euphon.net>, Fenghua Yu <fenghua.yu@intel.com>,
+        Peter Newman <peternewman@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <skhan@linuxfoundation.org>, x86@kernel.org,
+        Shaopeng Tan <tan.shaopeng@fujitsu.com>,
+        James Morse <james.morse@arm.com>,
+        Jamie Iles <quic_jiles@quicinc.com>,
+        Babu Moger <babu.moger@amd.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        patches@lists.linux.dev, Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>
+Subject: Re: [PATCH v12 7/8] x86/resctrl: Sub NUMA Cluster detection and
+ enable
+Message-ID: <ZWkQBwwtSae4nGgH@agluck-desk3>
+References: <20231109230915.73600-1-tony.luck@intel.com>
+ <20231130003418.89964-1-tony.luck@intel.com>
+ <20231130003418.89964-8-tony.luck@intel.com>
+ <ZWjOBw0Ygyw226Cc@dell>
+ <ZWj3NdI/qLNOgyg0@agluck-desk3>
+ <1c1a16a5-f235-4179-9d0f-1556e11d9c11@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH 04/16] drm/msm/dpu: add cdm blocks to sc7280
- dpu_hw_catalog
-Content-Language: en-US
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC:     <freedreno@lists.freedesktop.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <quic_khsieh@quicinc.com>, <quic_parellan@quicinc.com>,
-        <quic_jesszhan@quicinc.com>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Sean Paul <sean@poorly.run>
-References: <20230830224910.8091-1-quic_abhinavk@quicinc.com>
- <20230830224910.8091-5-quic_abhinavk@quicinc.com>
- <CAA8EJpoQ0L_b=KDQxuXEL4KbaP1DACq1Qpw6m_ot6m+UYsHZWg@mail.gmail.com>
-From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
-In-Reply-To: <CAA8EJpoQ0L_b=KDQxuXEL4KbaP1DACq1Qpw6m_ot6m+UYsHZWg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: dbBQUbkUqIScm6kbF2VdY5kc44p9WIKO
-X-Proofpoint-ORIG-GUID: dbBQUbkUqIScm6kbF2VdY5kc44p9WIKO
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-30_22,2023-11-30_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 malwarescore=0
- spamscore=0 clxscore=1015 impostorscore=0 lowpriorityscore=0 mlxscore=0
- phishscore=0 suspectscore=0 bulkscore=0 priorityscore=1501 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
- definitions=main-2311300167
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1c1a16a5-f235-4179-9d0f-1556e11d9c11@intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,107 +76,142 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/30/2023 3:57 PM, Dmitry Baryshkov wrote:
-> On Thu, 31 Aug 2023 at 01:49, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
->>
->> Add CDM blocks to the sc7280 dpu_hw_catalog to support
->> YUV format output from writeback block.
->>
->> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
->> ---
->>   .../gpu/drm/msm/disp/dpu1/catalog/dpu_7_2_sc7280.h  |  9 +++++++++
->>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h      | 13 +++++++++++++
->>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h         |  5 +++++
->>   3 files changed, 27 insertions(+)
->>
->> diff --git a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_7_2_sc7280.h b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_7_2_sc7280.h
->> index 3b5061c4402a..5252170f216d 100644
->> --- a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_7_2_sc7280.h
->> +++ b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_7_2_sc7280.h
->> @@ -251,10 +251,19 @@ static const struct dpu_mdss_version sc7280_mdss_ver = {
->>          .core_minor_ver = 2,
->>   };
->>
->> +static const struct dpu_cdm_cfg sc7280_cdm = {
->> +       .name = "cdm_0",
->> +       .id = CDM_0,
->> +       .len = 0x228,
->> +       .base = 0x79200,
->> +       .features = 0,
+On Thu, Nov 30, 2023 at 01:47:10PM -0800, Reinette Chatre wrote:
+> Hi Tony,
+> > diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
+> > index 3293ab4c58b0..85f8a1b3feaf 100644
+> > --- a/arch/x86/kernel/cpu/resctrl/core.c
+> > +++ b/arch/x86/kernel/cpu/resctrl/core.c
+> > @@ -1056,12 +1056,13 @@ static __init int snc_get_config(void)
+> >  	unsigned long *node_caches;
+> >  	int mem_only_nodes = 0;
+> >  	int cpu, node, ret;
+> > +	int cache_id;
+> >  	int num_l3_caches;
 > 
-> No need to.
-> Also, as the CDM block seems to be common to all existing platforms,
-> what about moving this definition to dpu_hw_catalog.c next to VBIF
-> settings?
-> 
+> Please do maintain reverse fir order.
 
-Thanks for the feedback and sorry for the delay in getting back to this 
-feature.
+Fixed.
 
-Ack. Yes lets move it to dpu_hw_catalog.c and remove explicit 0 
-assignment for features.
+> 
+> >  
+> >  	if (!x86_match_cpu(snc_cpu_ids))
+> >  		return 1;
+> 
+> I understand and welcome this change as motivated by robustness. Apart
+> from that, with this being a model specific feature for this particular
+> group of systems, it it not clear to me in which scenarios this could
+> run on a system where a present CPU does not have access to L3 cache.
 
->> +};
->> +
->>   const struct dpu_mdss_cfg dpu_sc7280_cfg = {
->>          .mdss_ver = &sc7280_mdss_ver,
->>          .caps = &sc7280_dpu_caps,
->>          .mdp = &sc7280_mdp,
->> +       .cdm = &sc7280_cdm,
->>          .ctl_count = ARRAY_SIZE(sc7280_ctl),
->>          .ctl = sc7280_ctl,
->>          .sspp_count = ARRAY_SIZE(sc7280_sspp),
->> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h
->> index 6c9634209e9f..4ea7c3f85a95 100644
->> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h
->> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h
->> @@ -693,6 +693,17 @@ struct dpu_vbif_cfg {
->>          u32 memtype[MAX_XIN_COUNT];
->>   };
->>
->> +/**
->> + * struct dpu_cdm_cfg - information of chroma down blocks
->> + * @name               string name for debug purposes
->> + * @id                 enum identifying this block
->> + * @base               register offset of this block
->> + * @features           bit mask identifying sub-blocks/features
->> + */
->> +struct dpu_cdm_cfg {
->> +       DPU_HW_BLK_INFO;
->> +};
->> +
->>   /**
->>    * Define CDP use cases
->>    * @DPU_PERF_CDP_UDAGE_RT: real-time use cases
->> @@ -816,6 +827,8 @@ struct dpu_mdss_cfg {
->>          u32 wb_count;
->>          const struct dpu_wb_cfg *wb;
->>
->> +       const struct dpu_cdm_cfg *cdm;
->> +
->>          u32 ad_count;
->>
->>          u32 dspp_count;
->> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h
->> index d85157acfbf8..4d6dba18caf0 100644
->> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h
->> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h
->> @@ -185,6 +185,11 @@ enum dpu_dsc {
->>          DSC_MAX
->>   };
->>
->> +enum dpu_cdm {
->> +       CDM_0 = 1,
->> +       CDM_MAX
->> +};
->> +
->>   enum dpu_pingpong {
->>          PINGPONG_NONE,
->>          PINGPONG_0,
->> --
->> 2.40.1
->>
+Agreed that on these systems there should always be an L3 cache. Should
+I drop the check for "-1"?
+
+> >  
+> > -	node_caches = bitmap_zalloc(nr_node_ids, GFP_KERNEL);
+> > +	node_caches = bitmap_zalloc(num_online_cpus(), GFP_KERNEL);
 > 
+> Please do take care to take new bitmap size into account in all
+> places. From what I can tell there is a later bitmap_weight() call that
+> still uses nr_node_ids as size.
+
+Oops. I was also using num_online_cpus() before cpus_read_lock(), so
+things could theoretically change before the bitmap_weight() call.
+I switched to using num_present_cpus() in both places.
+
+> >  	if (!node_caches)
+> >  		return 1;
+> >  
+> > @@ -1072,10 +1073,13 @@ static __init int snc_get_config(void)
+> >  
+> >  	for_each_node(node) {
+> >  		cpu = cpumask_first(cpumask_of_node(node));
+> > -		if (cpu < nr_cpu_ids)
+> > -			set_bit(get_cpu_cacheinfo_id(cpu, 3), node_caches);
+> > -		else
+> > +		if (cpu < nr_cpu_ids) {
+> > +			cache_id = get_cpu_cacheinfo_id(cpu, 3);
+> > +			if (cache_id != -1)
+> > +				set_bit(cache_id, node_caches);
+> > +		} else {
+> >  			mem_only_nodes++;
+> > +		}
+> >  	}
+> >  	cpus_read_unlock();
+> >  
 > 
+> Could this code be made even more robust by checking the computed
+> snc_nodes_per_l3_cache against the limited actually possible values?
+> Forcing it to 1 if something went wrong?
+
+Added a couple of extra sanity checks. See updated incremental patch
+below.
+
+-Tony
+
+
+diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
+index 3293ab4c58b0..3684c6bf8224 100644
+--- a/arch/x86/kernel/cpu/resctrl/core.c
++++ b/arch/x86/kernel/cpu/resctrl/core.c
+@@ -1057,11 +1057,12 @@ static __init int snc_get_config(void)
+ 	int mem_only_nodes = 0;
+ 	int cpu, node, ret;
+ 	int num_l3_caches;
++	int cache_id;
+ 
+ 	if (!x86_match_cpu(snc_cpu_ids))
+ 		return 1;
+ 
+-	node_caches = bitmap_zalloc(nr_node_ids, GFP_KERNEL);
++	node_caches = bitmap_zalloc(num_present_cpus(), GFP_KERNEL);
+ 	if (!node_caches)
+ 		return 1;
+ 
+@@ -1072,23 +1073,39 @@ static __init int snc_get_config(void)
+ 
+ 	for_each_node(node) {
+ 		cpu = cpumask_first(cpumask_of_node(node));
+-		if (cpu < nr_cpu_ids)
+-			set_bit(get_cpu_cacheinfo_id(cpu, 3), node_caches);
+-		else
++		if (cpu < nr_cpu_ids) {
++			cache_id = get_cpu_cacheinfo_id(cpu, 3);
++			if (cache_id != -1)
++				set_bit(cache_id, node_caches);
++		} else {
+ 			mem_only_nodes++;
++		}
+ 	}
+ 	cpus_read_unlock();
+ 
+-	num_l3_caches = bitmap_weight(node_caches, nr_node_ids);
++	num_l3_caches = bitmap_weight(node_caches, num_present_cpus());
+ 	kfree(node_caches);
+ 
+ 	if (!num_l3_caches)
+ 		return 1;
+ 
++	/* sanity check #1: Number of CPU nodes must be multiple of num_l3_caches */
++	if ((nr_node_ids - mem_only_nodes) % num_l3_caches)
++		return 1;
++
+ 	ret = (nr_node_ids - mem_only_nodes) / num_l3_caches;
+ 
+-	if (ret > 1)
++	/* sanity check #2: Only valid results are 1, 2, 4 */
++	switch (ret) {
++	case 1:
++		break;
++	case 2:
++	case 4:
+ 		rdt_resources_all[RDT_RESOURCE_L3].r_resctrl.mon_scope = RESCTRL_NODE;
++		break;
++	default:
++		return 1;
++	}
+ 
+ 	return ret;
+ }
+-- 
+2.41.0
+
