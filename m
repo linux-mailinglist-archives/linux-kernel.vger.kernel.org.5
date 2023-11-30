@@ -2,110 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 265BC7FF648
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 17:38:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C8057FF664
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 17:41:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345452AbjK3Qin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 11:38:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46910 "EHLO
+        id S229483AbjK3QlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 11:41:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjK3Qim (ORCPT
+        with ESMTP id S235171AbjK3Qkw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 11:38:42 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 928A01A4
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 08:38:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701362330; x=1732898330;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=fxLcR/0VMv5PTaWF/7ElDNpBhEkFu+7Qx5G8sSx4p10=;
-  b=nHLiomuQh5Wqm6V/pmtvpXrNlIY2iqceGGJDA6It8P6rb+IVTmQlTdH3
-   olALp7LP9oE8o8LY15S51FwdbAulTtJq5nV6nE3HMnCohum5Kjej5a07B
-   qQ5G8jrt9NWHzWhUTWSbca4D9RewpjlLYQlJrcPIw1I7N+6SxlMw7Cy7/
-   HSORco/H7jPQloa8xBv1KyKrvzXqGsZk0fceeosH6IfAOPu6px3g4C+GO
-   Wia+DqmVEUutc8XisvuHCET5Ss+adLmyX4PBRGNatueaqLO3SizCsrj6q
-   myw6aiXOH8yOMksPRMKrK7ERjMMvSNun44y4kkB/OV/v8SMM9IabSy7h5
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="14898469"
-X-IronPort-AV: E=Sophos;i="6.04,239,1695711600"; 
-   d="scan'208";a="14898469"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 08:38:49 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="719184487"
-X-IronPort-AV: E=Sophos;i="6.04,239,1695711600"; 
-   d="scan'208";a="719184487"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 30 Nov 2023 08:38:47 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r8k3p-0002OK-1F;
-        Thu, 30 Nov 2023 16:38:45 +0000
-Date:   Fri, 1 Dec 2023 00:38:44 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Ondrej Zary <linux@zary.sk>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Damien Le Moal <damien.lemoal@opensource.wdc.com>
-Subject: drivers/ata/pata_parport/frpw.c:210 frpw_test_pnp() warn:
- inconsistent indenting
-Message-ID: <202312010051.rLl9vRpp-lkp@intel.com>
+        Thu, 30 Nov 2023 11:40:52 -0500
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51DB41A4;
+        Thu, 30 Nov 2023 08:40:57 -0800 (PST)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id EA2735C006B;
+        Thu, 30 Nov 2023 11:40:53 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Thu, 30 Nov 2023 11:40:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
+        cc:cc:content-transfer-encoding:content-type:date:date:from:from
+        :in-reply-to:message-id:mime-version:reply-to:sender:subject
+        :subject:to:to; s=fm3; t=1701362453; x=1701448853; bh=GcRUTefwOD
+        feWsEEU+T7P5vkTMTkxQIp7mTUU9VqXL8=; b=xGCt99ogNyz5PF4Lg0iAzjC7qp
+        FTlBXswcvclsYpRpetMTOZeHvn0VKjXlt5IxOKdgHGAdqFfr7wACfU37IXpvx/6t
+        P8GYFuhEuY1+1HU/lQU4KGELsKb+Shoqwh6YBsDfec4s8aGLKT6QUYU26PSui/6I
+        /4gT+bDjkIJGkOJp6Gbxa7FpsfUJjyWrNHakgInrdTcGADekAP8zHs0ntdDyfBnF
+        qcu93zQEGRxPbQRSSR5Sh/2L5PmeQW/DnL/8cjpFNAWqGjyRdzu0y0eBBV8VyEuo
+        nw4aOFHD4fteUzqZZFz14NyYmX9BKhwRd9BnVu3tyScO7/ArxN7XfBz0rPPg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:date:date:feedback-id:feedback-id:from:from
+        :in-reply-to:message-id:mime-version:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1701362453; x=1701448853; bh=GcRUTefwODfeW
+        sEEU+T7P5vkTMTkxQIp7mTUU9VqXL8=; b=MRoPsenNPeU3+ceAOVhtiJAXfV/uR
+        GTn22jjH2BZ5z93PfBkF7NgpW7yARoJtGwnZ+pew+zZqqULn+2GKr02BLwdjYVg8
+        7VbnJ0yYaeLbvBy9Db+9x21UY4Lpk3ozF8v80qwwkvLX5G05+7gFGAE1Yb6R6xLD
+        thYnzYkEMKNVz1cyfUx7xzcK+Cu84vVl1kxlXt0cZ4AVHTqcGF+nVl2XdG5yqcLP
+        RxjinEvBgtwLrUbq6zpGD7XC5bLhk5BjrUrWxbLm3NrSk0ArDsLkPksVv5J4XINd
+        XIAv97dzF9BE10dgkLytjqllQj8UE+NC3FTwCNdFFrxPzlN9noMKkwr0A==
+X-ME-Sender: <xms:FbtoZbKWnQl9swwhF8d-cfzIQYsWVfddnN2c-BAD0eV9J4oY65wgXw>
+    <xme:FbtoZfIxiz3L1siGUM_UngRKelJoyxSHY7M9gkhGuHLGwx9e6qM-c80jFmZtLMyfT
+    nfHkSj3WYTS65MkFYo>
+X-ME-Received: <xmr:FbtoZTsInCHdFqc4s2hBM_B6_DMTGmgdsayeC2IyuId94Z9migP3UkwJCSFHGLIufG6J7Q>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeijedgleduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvvefufffkofgggfestdekredtredttdenucfhrhhomhepvfihtghhohcu
+    tehnuggvrhhsvghnuceothihtghhohesthihtghhohdrphhiiiiirgeqnecuggftrfgrth
+    htvghrnhepheeffeehleeftdfgjeegheelieefvdfghfeuudeuheehuefhhffhtefhiedv
+    geegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepth
+    ihtghhohesthihtghhohdrphhiiiiirg
+X-ME-Proxy: <xmx:FbtoZUbvG4ShnYrcRkxZ93RRhU0Fb2PHZpTDdZfbiq1pKNTMOjRaCQ>
+    <xmx:FbtoZSaJqd2StH1olzM6QrkKFhb5agn88EuXXs4pVKGOqF4WS0V9WA>
+    <xmx:FbtoZYAlVpZucUuefDFRhFSpY9SFdUEqv6zM9RGwA7dktX2mQwH-ZA>
+    <xmx:FbtoZZwdqZz87YMNN4LKK5f2fPACkWh_pwkndUjK2LDjOkX1yiOJ2w>
+Feedback-ID: i21f147d5:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 30 Nov 2023 11:40:52 -0500 (EST)
+From:   Tycho Andersen <tycho@tycho.pizza>
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     Oleg Nesterov <oleg@redhat.com>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Tycho Andersen <tandersen@netflix.com>
+Subject: [RFC 1/3] pidfd: allow pidfd_open() on non-thread-group leaders
+Date:   Thu, 30 Nov 2023 09:39:44 -0700
+Message-Id: <20231130163946.277502-1-tycho@tycho.pizza>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   3b47bc037bd44f142ac09848e8d3ecccc726be99
-commit: 72f2b0b2185099dce354c805009f591dda3ab73d drivers/block: Move PARIDE protocol modules to drivers/ata/pata_parport
-date:   10 months ago
-config: arm-randconfig-r071-20231130 (https://download.01.org/0day-ci/archive/20231201/202312010051.rLl9vRpp-lkp@intel.com/config)
-compiler: arm-linux-gnueabi-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231201/202312010051.rLl9vRpp-lkp@intel.com/reproduce)
+From: Tycho Andersen <tandersen@netflix.com>
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312010051.rLl9vRpp-lkp@intel.com/
+We are using the pidfd family of syscalls with the seccomp userspace
+notifier. When some thread triggers a seccomp notification, we want to do
+some things to its context (munge fd tables via pidfd_getfd(), maybe write
+to its memory, etc.). However, threads created with ~CLONE_FILES or
+~CLONE_VM mean that we can't use the pidfd family of syscalls for this
+purpose, since their fd table or mm are distinct from the thread group
+leader's. In this patch, we relax this restriction for pidfd_open().
 
-smatch warnings:
-drivers/ata/pata_parport/frpw.c:210 frpw_test_pnp() warn: inconsistent indenting
+In order to avoid dangling poll() users we need to notify pidfd waiters
+when individual threads die, but once we do that all the other machinery
+seems to work ok viz. the tests. But I suppose there are more cases than
+just this one.
 
-vim +210 drivers/ata/pata_parport/frpw.c
+Another weirdness is the open-coding of this vs. exporting using
+do_notify_pidfd(). This particular location is after __exit_signal() is
+called, which does __unhash_process() which kills ->thread_pid, so we need
+to use the copy we have locally, vs do_notify_pid() which accesses it via
+task_pid(). Maybe this suggests that the notification should live somewhere
+in __exit_signals()? I just put it here because I saw we were already
+testing if this task was the leader.
 
-^1da177e4c3f41 drivers/block/paride/frpw.c Linus Torvalds 2005-04-16  201  
-^1da177e4c3f41 drivers/block/paride/frpw.c Linus Torvalds 2005-04-16  202  	olddelay = pi->delay;
-^1da177e4c3f41 drivers/block/paride/frpw.c Linus Torvalds 2005-04-16  203  	pi->delay = 10;
-^1da177e4c3f41 drivers/block/paride/frpw.c Linus Torvalds 2005-04-16  204  
-^1da177e4c3f41 drivers/block/paride/frpw.c Linus Torvalds 2005-04-16  205  	pi->saved_r0 = r0();
-^1da177e4c3f41 drivers/block/paride/frpw.c Linus Torvalds 2005-04-16  206          pi->saved_r2 = r2();
-^1da177e4c3f41 drivers/block/paride/frpw.c Linus Torvalds 2005-04-16  207  	
-^1da177e4c3f41 drivers/block/paride/frpw.c Linus Torvalds 2005-04-16  208  	w2(4); w0(4); w2(6); w2(7);
-^1da177e4c3f41 drivers/block/paride/frpw.c Linus Torvalds 2005-04-16  209  	a = r1() & 0xff; w2(4); b = r1() & 0xff;
-^1da177e4c3f41 drivers/block/paride/frpw.c Linus Torvalds 2005-04-16 @210  	w2(0xc); w2(0xe); w2(4);
-^1da177e4c3f41 drivers/block/paride/frpw.c Linus Torvalds 2005-04-16  211  
-^1da177e4c3f41 drivers/block/paride/frpw.c Linus Torvalds 2005-04-16  212  	pi->delay = olddelay;
-^1da177e4c3f41 drivers/block/paride/frpw.c Linus Torvalds 2005-04-16  213          w0(pi->saved_r0);
-^1da177e4c3f41 drivers/block/paride/frpw.c Linus Torvalds 2005-04-16  214          w2(pi->saved_r2);
-^1da177e4c3f41 drivers/block/paride/frpw.c Linus Torvalds 2005-04-16  215  
-^1da177e4c3f41 drivers/block/paride/frpw.c Linus Torvalds 2005-04-16  216  	return ((~a&0x40) && (b&0x40));
-^1da177e4c3f41 drivers/block/paride/frpw.c Linus Torvalds 2005-04-16  217  } 
-^1da177e4c3f41 drivers/block/paride/frpw.c Linus Torvalds 2005-04-16  218  
+Signed-off-by: Tycho Andersen <tandersen@netflix.com>
+---
+ kernel/exit.c | 29 +++++++++++++++++++----------
+ kernel/fork.c |  4 +---
+ kernel/pid.c  | 11 +----------
+ 3 files changed, 21 insertions(+), 23 deletions(-)
 
-:::::: The code at line 210 was first introduced by commit
-:::::: 1da177e4c3f41524e886b7f1b8a0c1fc7321cac2 Linux-2.6.12-rc2
+diff --git a/kernel/exit.c b/kernel/exit.c
+index ee9f43bed49a..34eeefc7ee21 100644
+--- a/kernel/exit.c
++++ b/kernel/exit.c
+@@ -263,16 +263,25 @@ void release_task(struct task_struct *p)
+ 	 */
+ 	zap_leader = 0;
+ 	leader = p->group_leader;
+-	if (leader != p && thread_group_empty(leader)
+-			&& leader->exit_state == EXIT_ZOMBIE) {
+-		/*
+-		 * If we were the last child thread and the leader has
+-		 * exited already, and the leader's parent ignores SIGCHLD,
+-		 * then we are the one who should release the leader.
+-		 */
+-		zap_leader = do_notify_parent(leader, leader->exit_signal);
+-		if (zap_leader)
+-			leader->exit_state = EXIT_DEAD;
++	if (leader != p) {
++		if (thread_group_empty(leader)
++				&& leader->exit_state == EXIT_ZOMBIE) {
++			/*
++			 * If we were the last child thread and the leader has
++			 * exited already, and the leader's parent ignores SIGCHLD,
++			 * then we are the one who should release the leader.
++			 */
++			zap_leader = do_notify_parent(leader,
++						      leader->exit_signal);
++			if (zap_leader)
++				leader->exit_state = EXIT_DEAD;
++		} else {
++			/*
++			 * wake up pidfd pollers anyway, they want to know this
++			 * thread is dying.
++			 */
++			wake_up_all(&thread_pid->wait_pidfd);
++		}
+ 	}
+ 
+ 	write_unlock_irq(&tasklist_lock);
+diff --git a/kernel/fork.c b/kernel/fork.c
+index 10917c3e1f03..eef15c93f6cf 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -2163,8 +2163,6 @@ static int __pidfd_prepare(struct pid *pid, unsigned int flags, struct file **re
+  * Allocate a new file that stashes @pid and reserve a new pidfd number in the
+  * caller's file descriptor table. The pidfd is reserved but not installed yet.
+  *
+- * The helper verifies that @pid is used as a thread group leader.
+- *
+  * If this function returns successfully the caller is responsible to either
+  * call fd_install() passing the returned pidfd and pidfd file as arguments in
+  * order to install the pidfd into its file descriptor table or they must use
+@@ -2182,7 +2180,7 @@ static int __pidfd_prepare(struct pid *pid, unsigned int flags, struct file **re
+  */
+ int pidfd_prepare(struct pid *pid, unsigned int flags, struct file **ret)
+ {
+-	if (!pid || !pid_has_task(pid, PIDTYPE_TGID))
++	if (!pid)
+ 		return -EINVAL;
+ 
+ 	return __pidfd_prepare(pid, flags, ret);
+diff --git a/kernel/pid.c b/kernel/pid.c
+index 6500ef956f2f..4806798022d9 100644
+--- a/kernel/pid.c
++++ b/kernel/pid.c
+@@ -552,11 +552,6 @@ struct pid *pidfd_get_pid(unsigned int fd, unsigned int *flags)
+  * Return the task associated with @pidfd. The function takes a reference on
+  * the returned task. The caller is responsible for releasing that reference.
+  *
+- * Currently, the process identified by @pidfd is always a thread-group leader.
+- * This restriction currently exists for all aspects of pidfds including pidfd
+- * creation (CLONE_PIDFD cannot be used with CLONE_THREAD) and pidfd polling
+- * (only supports thread group leaders).
+- *
+  * Return: On success, the task_struct associated with the pidfd.
+  *	   On error, a negative errno number will be returned.
+  */
+@@ -615,11 +610,7 @@ int pidfd_create(struct pid *pid, unsigned int flags)
+  * @flags: flags to pass
+  *
+  * This creates a new pid file descriptor with the O_CLOEXEC flag set for
+- * the process identified by @pid. Currently, the process identified by
+- * @pid must be a thread-group leader. This restriction currently exists
+- * for all aspects of pidfds including pidfd creation (CLONE_PIDFD cannot
+- * be used with CLONE_THREAD) and pidfd polling (only supports thread group
+- * leaders).
++ * the process identified by @pid.
+  *
+  * Return: On success, a cloexec pidfd is returned.
+  *         On error, a negative errno number will be returned.
 
-:::::: TO: Linus Torvalds <torvalds@ppc970.osdl.org>
-:::::: CC: Linus Torvalds <torvalds@ppc970.osdl.org>
-
+base-commit: 2cc14f52aeb78ce3f29677c2de1f06c0e91471ab
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.34.1
+
