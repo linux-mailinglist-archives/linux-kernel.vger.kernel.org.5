@@ -2,52 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4E237FEC75
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 11:04:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D88B7FEC78
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 11:05:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235094AbjK3KD5 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 30 Nov 2023 05:03:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48382 "EHLO
+        id S235124AbjK3KFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 05:05:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231755AbjK3KDz (ORCPT
+        with ESMTP id S231755AbjK3KFa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 05:03:55 -0500
-Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3077A10DB;
-        Thu, 30 Nov 2023 02:03:59 -0800 (PST)
-Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
-        by fd01.gateway.ufhost.com (Postfix) with ESMTP id D8A9F7F8A;
-        Thu, 30 Nov 2023 18:03:55 +0800 (CST)
-Received: from EXMBX172.cuchost.com (172.16.6.92) by EXMBX165.cuchost.com
- (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 30 Nov
- 2023 18:03:55 +0800
-Received: from [192.168.125.136] (113.72.145.176) by EXMBX172.cuchost.com
- (172.16.6.92) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 30 Nov
- 2023 18:03:55 +0800
-Message-ID: <f0844a59-7534-4195-b656-eb51586cbff6@starfivetech.com>
-Date:   Thu, 30 Nov 2023 18:03:55 +0800
+        Thu, 30 Nov 2023 05:05:30 -0500
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8D871B4;
+        Thu, 30 Nov 2023 02:05:36 -0800 (PST)
+X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3AUA52Pz83445011, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
+        by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3AUA52Pz83445011
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 30 Nov 2023 18:05:02 +0800
+Received: from RTEXMBS05.realtek.com.tw (172.21.6.98) by
+ RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.32; Thu, 30 Nov 2023 18:05:02 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXMBS05.realtek.com.tw (172.21.6.98) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.34; Thu, 30 Nov 2023 18:05:02 +0800
+Received: from RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7]) by
+ RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7%5]) with mapi id
+ 15.01.2375.007; Thu, 30 Nov 2023 18:05:02 +0800
+From:   =?utf-8?B?Q1lfSHVhbmdb6buD6Ymm5pmPXQ==?= <cy.huang@realtek.com>
+To:     =?utf-8?B?Q1lfSHVhbmdb6buD6Ymm5pmPXQ==?= <cy.huang@realtek.com>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        =?utf-8?B?SmFtZXMgVGFpIFvmiLTlv5fls7Bd?= <james.tai@realtek.com>,
+        =?utf-8?B?QW5kcmVhcyBGw6RyYmVy?= <afaerber@suse.de>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-realtek-soc@lists.infradead.org" 
+        <linux-realtek-soc@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v2 0/3] Initial RTD1319 SoC and Realtek PymParticle EVB support
+Thread-Topic: [PATCH v2 0/3] Initial RTD1319 SoC and Realtek PymParticle EVB
+ support
+Thread-Index: AQHaI3McTWButhzRkEaF+Ca/sqlVU7CSokNg
+Date:   Thu, 30 Nov 2023 10:05:02 +0000
+Message-ID: <ba0bac228116491dba714d6b3cc434d4@realtek.com>
+References: <20231130095345.24524-1-cy.huang@realtek.com>
+ <20231130095345.24524-3-cy.huang@realtek.com>
+In-Reply-To: <20231130095345.24524-3-cy.huang@realtek.com>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+x-originating-ip: [172.21.190.137]
+x-kse-serverinfo: RTEXMBS05.realtek.com.tw, 9
+x-kse-antispam-interceptor-info: fallback
+x-kse-antivirus-interceptor-info: fallback
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] PCI: Add PCIE_CONFIG_REQUEST_WAIT_MS waiting time
- value
-To:     Bjorn Helgaas <helgaas@kernel.org>
-CC:     Bjorn Helgaas <bhelgaas@google.com>, <linux-pci@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <mason.huo@starfivetech.com>,
-        <leyfoon.tan@starfivetech.com>, <minda.chen@starfivetech.com>
-References: <20231129232108.GA444155@bhelgaas>
-Content-Language: en-US
-From:   Kevin Xie <kevin.xie@starfivetech.com>
-In-Reply-To: <20231129232108.GA444155@bhelgaas>
-Content-Type: text/plain; charset="UTF-8"
-X-Originating-IP: [113.72.145.176]
-X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX172.cuchost.com
- (172.16.6.92)
-X-YovoleRuleAgent: yovoleflag
-Content-Transfer-Encoding: 8BIT
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,73 +75,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2023/11/30 7:21, Bjorn Helgaas wrote:
-> On Fri, Nov 24, 2023 at 09:45:08AM +0800, Kevin Xie wrote:
->> Add the PCIE_CONFIG_REQUEST_WAIT_MS marco to define the minimum waiting
->> time between sending the first configuration request to the device and
->> exit from a conventional reset (or after link training completes).
-> 
-> s/marco/macro/
-> 
-> List the first event before the second one, i.e., the delay is from
-> exit from reset to the config request.
-> 
-
-OK，I will use "from A to B" instead of "between A and B".
-
->> As described in the conventional reset rules of PCI specifications,
->> there are two different use cases of the value:
->> 
->>    - With a downstream port that supports link speeds <= 5.0 GT/s,
->>      the waiting is following exit from a conventional reset.
->> 
->>    - With a downstream port that supports link speeds > 5.0 GT/s,
->>      the waiting is after link training completes.
-> 
-> Include the spec citation here as well as in the comment below.
-> 
-
-OK, I will include the spec citation here.
-
-> I assume there are follow-on patches that actually use this?  Can we
-> make this the first patch in a series so we know we don't have an
-> unused macro lying around?
-> 
-
-Yes, we will use the marco in the next version of our PCIe controller patches.
-Here is the link of current version patch series:
-https://lore.kernel.org/lkml/20231115114912.71448-20-minda.chen@starfivetech.com/T/#u 
-
-Do you mean that I should put this patch back to the above series as one of the separate patches?
-
-Thanks for your review.
-
->> Signed-off-by: Kevin Xie <kevin.xie@starfivetech.com>
->> Reviewed-by: Mason Huo <mason.huo@starfivetech.com>
->> ---
->>  drivers/pci/pci.h | 7 +++++++
->>  1 file changed, 7 insertions(+)
->> 
->> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
->> index 5ecbcf041179..4ca8766e546e 100644
->> --- a/drivers/pci/pci.h
->> +++ b/drivers/pci/pci.h
->> @@ -22,6 +22,13 @@
->>   */
->>  #define PCIE_PME_TO_L2_TIMEOUT_US	10000
->>  
->> +/*
->> + * PCIe r6.0, sec 6.6.1, <Conventional Reset>
->> + * Requires a minimum waiting of 100ms before sending a configuration
->> + * request to the device.
->> + */
->> +#define PCIE_CONFIG_REQUEST_WAIT_MS	100
->> +
->>  extern const unsigned char pcie_link_speed[];
->>  extern bool pci_early_dump;
->>  
->> -- 
->> 2.25.1
->> 
+U29ycnksIHRoZSBlbWFpbCB3YXMgbWlzdHJhbnNtaXR0ZWQNCg0KQ3kNCg0KPi0tLS0tT3JpZ2lu
+YWwgTWVzc2FnZS0tLS0tDQo+RnJvbTogY3kuaHVhbmcgPGN5Lmh1YW5nQHJlYWx0ZWsuY29tPg0K
+PlNlbnQ6IFRodXJzZGF5LCBOb3ZlbWJlciAzMCwgMjAyMyA1OjU0IFBNDQo+VG86IENZX0h1YW5n
+W+m7g+mJpuaZj10gPGN5Lmh1YW5nQHJlYWx0ZWsuY29tPg0KPkNjOiBSb2IgSGVycmluZyA8cm9i
+aCtkdEBrZXJuZWwub3JnPjsgSmFtZXMgVGFpIFvmiLTlv5fls7BdDQo+PGphbWVzLnRhaUByZWFs
+dGVrLmNvbT47IEFuZHJlYXMgRsOkcmJlciA8YWZhZXJiZXJAc3VzZS5kZT47IEtyenlzenRvZg0K
+Pktvemxvd3NraSA8a3J6eXN6dG9mLmtvemxvd3NraStkdEBsaW5hcm8ub3JnPjsNCj5saW51eC1h
+cm0ta2VybmVsQGxpc3RzLmluZnJhZGVhZC5vcmc7IGRldmljZXRyZWVAdmdlci5rZXJuZWwub3Jn
+Ow0KPmxpbnV4LXJlYWx0ZWstc29jQGxpc3RzLmluZnJhZGVhZC5vcmc7IGxpbnV4LWtlcm5lbEB2
+Z2VyLmtlcm5lbC5vcmcNCj5TdWJqZWN0OiBbUEFUQ0ggdjIgMC8zXSBJbml0aWFsIFJURDEzMTkg
+U29DIGFuZCBSZWFsdGVrIFB5bVBhcnRpY2xlIEVWQiBzdXBwb3J0DQo+DQo+SGkgQW5kcmVhcywN
+Cj4NCj5UaGlzIHNlcmllcyBhZGRzIERldmljZSBUcmVlcyBmb3IgdGhlIFJlYWx0ZWsgUlREMTMx
+OSBTb0MgYW5kIFJlYWx0ZWsncw0KPlB5bVBhcnRpY2xlIEVWQi4NCj4NCj52MjoNCj4qIFJURDEz
+MTkgU29DIGFuZCBSZWFsdGVrIFB5bVBhcnRpY2xlIEVWQg0KPg0KPkNjOiBSb2IgSGVycmluZyA8
+cm9iaCtkdEBrZXJuZWwub3JnPg0KPkNjOiBKYW1lcyBUYWkgPGphbWVzLnRhaUByZWFsdGVrLmNv
+bT4NCj5DYzogQW5kcmVhcyBGw6RyYmVyIDxhZmFlcmJlckBzdXNlLmRlPg0KPkNjOiBLcnp5c3p0
+b2YgS296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpK2R0QGxpbmFyby5vcmc+DQo+Q2M6IGxp
+bnV4LWFybS1rZXJuZWxAbGlzdHMuaW5mcmFkZWFkLm9yZw0KPkNjOiBkZXZpY2V0cmVlQHZnZXIu
+a2VybmVsLm9yZw0KPkNjOiBsaW51eC1yZWFsdGVrLXNvY0BsaXN0cy5pbmZyYWRlYWQub3JnDQo+
+Q2M6IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcNCj4NCj5XZWkgQ2hlbiAoMSk6DQo+ICBp
+MmM6IHhnZW5lLXNsaW1wcm86IEZpeCBvdXQtb2YtYm91bmRzIGJ1ZyBpbiB4Z2VuZV9zbGltcHJv
+X2kyY194ZmVyKCkNCj4NCj5jeS5odWFuZyAoMik6DQo+ICBkdC1iaW5kaW5nczogYXJtOiByZWFs
+dGVrOiBBZGQgUmVhbHRlayBQeW0gUGFydGljbGVzIEVWQg0KPiAgYXJtNjQ6IGR0czogcmVhbHRl
+azogQWRkIFJURDEzMTkgU29DIGFuZCBSZWFsdGVrIFB5bSBQYXJ0aWNsZXMgRVZCDQo+DQo+LS0N
+Cj4yLjM5LjANCg0K
