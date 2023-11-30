@@ -2,51 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DBFE7FEB95
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 10:13:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF5B97FEB9A
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 10:13:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231790AbjK3JNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 04:13:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49786 "EHLO
+        id S231848AbjK3JNM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 04:13:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231755AbjK3JNB (ORCPT
+        with ESMTP id S231805AbjK3JNK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 04:13:01 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DA9CCF
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 01:13:07 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19138C433C8;
-        Thu, 30 Nov 2023 09:13:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701335587;
-        bh=1b5n1u0HCJUEMU91f4bqm1fCxOvlLW0lTOnXR/X8puM=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=ohAjosXsG160KYRwo2lKfZlJUAku1zb2a0wMVGHa9Z+i69aKzYuMK8RMRilJb9x2L
-         2ySPgaXWLL84rqqTC8/lNMcoKdO8CUQTDji/ZBLRhp3Y/rMyDf7AtyKXp49dHWXmMa
-         B3tsCF70NVgb6m51WeXEs6vurx6QsXP0kjSS4QpgcB3DCJ3tExfkw4LSwape6GCJRq
-         aaRc28CMOSJcYK4bGAkbjyBpLPxJSrQ8v96lP/7ANCZM4/c7+2A6aOLsX/f9j2+BcD
-         WC6Qq8b9jq5cbNTYPlGNjQCaQ2+WcwXzyUYqiaVpsqUkTR1w7BIX6g3OR9xFLtvCRw
-         ccAOpy68l5HQw==
-Message-ID: <47ffbb30-34a7-4f5b-b262-3e068e574c8a@kernel.org>
-Date:   Thu, 30 Nov 2023 11:13:01 +0200
+        Thu, 30 Nov 2023 04:13:10 -0500
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6EFA10D0
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 01:13:15 -0800 (PST)
+Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-32fdc5be26dso483461f8f.2
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 01:13:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701335594; x=1701940394; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=JucOyRuowajl55FaVJkCJ+iCL38xKPC8u2xNBw30DGI=;
+        b=c0i4MU6QzP0MJUj2ZYWRVGa+OwtTAapjrUJ3aqOremBwnYUgGKl3w4D7oTK201OXOi
+         KJ/xiQ8z2nfkDTqwWOhdFpuyEY/mf6WkLSS+tcwgQ3gYZY5PU3FLAgO5JWfkNnNltrlq
+         KFyAVuJ8edVots+IV5UTbsABqgZ3nq8wabj0pXYE2MwT5h925xta4ouZNNGQmLEMOW3q
+         lsCC0UKWHtRqGjYOWuZ1vmugFUfpRTC3Q0h6GbVR0Crx4ij5ILzMnFb2Alm6KSUH8GEp
+         Zmq9M0+3EJ00hDqKsRlhW+KD9QgweOzWErIlk/x25nizaEQcpgVflDqpfvYIzL5l6ZUs
+         kMPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701335594; x=1701940394;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=JucOyRuowajl55FaVJkCJ+iCL38xKPC8u2xNBw30DGI=;
+        b=TQuJsXqolG0kAIghXTB6v9eCmOqX2WMBiChBsZZRVw0llz+TsOsQw49/DcPetbZOb2
+         KaIxU7oOG0Tz172Ril5+mO+LTIMM5JSZYj4/sZJQw3GldltRoYibxngfdpxat1+X4o6n
+         4oIW7mMFN15/jAn6JYDd2eF/3/gW/LVdZl8/ijGt/A0rX/fHwVyxyDCXKW/v7d12pUVP
+         DtOTQioB+C7t2Y1AljW8YDuBG48ygHH1ilymvT2pIoGAIy9gP6Wq32Gmm6i0WeUWdt3k
+         udMyjgJtUe108gqY10y7+BpzgxaPG1dXp/8WcT8G3Xh+X0EEw5niyiDBdHV7NSZKabYI
+         qthg==
+X-Gm-Message-State: AOJu0YwNOBWlgV63u36LcjRrrp8WvIdc5fD8q30adDzfILBNqxQIUGsw
+        QrMqXBdZKTODTCLnLlCKFChOMQ==
+X-Google-Smtp-Source: AGHT+IEwXMs51EeZF9IX22o6sl11L9KxmNjzlGnL8883eDT+U1ZjMdU5LdOCDfssHg7g38EHbxJtHg==
+X-Received: by 2002:adf:ea84:0:b0:332:eb80:874a with SMTP id s4-20020adfea84000000b00332eb80874amr16055939wrm.1.1701335594169;
+        Thu, 30 Nov 2023 01:13:14 -0800 (PST)
+Received: from ?IPV6:2a01:e0a:982:cbb0:41c9:3acd:a6e2:5242? ([2a01:e0a:982:cbb0:41c9:3acd:a6e2:5242])
+        by smtp.gmail.com with ESMTPSA id r13-20020adfe68d000000b00333040a4752sm954872wrm.114.2023.11.30.01.13.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Nov 2023 01:13:13 -0800 (PST)
+Message-ID: <f572c729-d007-46b4-b7ac-442f96b23969@linaro.org>
+Date:   Thu, 30 Nov 2023 10:13:11 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] USB: typec: tps6598x: use device 'type' field to identify
- devices
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Alexandru Ardelean <alex@shruggie.ro>
-Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        gregkh@linuxfoundation.org, christophe.jaillet@wanadoo.fr,
-        a-govindraju@ti.com, trix@redhat.com, abdelalkuor@geotab.com
-References: <20231123210021.463122-1-alex@shruggie.ro>
- <ZWdKI9UOZ6INP0Tu@kuha.fi.intel.com>
-Content-Language: en-US
-From:   Roger Quadros <rogerq@kernel.org>
-In-Reply-To: <ZWdKI9UOZ6INP0Tu@kuha.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8
+From:   neil.armstrong@linaro.org
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH v3 2/4] dt-bindings: pwm: amlogic: add new compatible for
+ meson8 pwm type
+Content-Language: en-US, fr
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Jerome Brunet <jbrunet@baylibre.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-amlogic@lists.infradead.org, linux-pwm@vger.kernel.org,
+        JunYi Zhao <junyi.zhao@amlogic.com>,
+        =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+References: <20231129134004.3642121-1-jbrunet@baylibre.com>
+ <20231129134004.3642121-3-jbrunet@baylibre.com>
+ <8e78be99-3d4d-4f79-9791-404e60bcb67c@linaro.org>
+ <1jfs0ojz1a.fsf@starbuckisacylon.baylibre.com>
+ <11f8d986-3e97-4191-b46c-ad3166ee6dc7@linaro.org>
+ <e127dcef-3149-443a-9a8c-d24ef4054f09@linaro.org>
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro Developer Services
+In-Reply-To: <e127dcef-3149-443a-9a8c-d24ef4054f09@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -55,166 +116,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 29/11/2023 16:26, Heikki Krogerus wrote:
-> Hi,
-> 
-> Sorry to keep you waiting.
-> 
-> On Thu, Nov 23, 2023 at 11:00:21PM +0200, Alexandru Ardelean wrote:
->> Using the {of_}device_is_compatible function(s) is not too expensive.
->> But since the driver already needs to match for the 'struct tipd_data'
->> device parameters (via device_get_match_data()), we can add a simple 'type'
->> field.
+On 30/11/2023 09:36, Krzysztof Kozlowski wrote:
+> On 29/11/2023 17:41, neil.armstrong@linaro.org wrote:
+>>>>>     .../devicetree/bindings/pwm/pwm-amlogic.yaml  | 52 ++++++++++++++++---
+>>>>>     1 file changed, 46 insertions(+), 6 deletions(-)
+>>>>> diff --git a/Documentation/devicetree/bindings/pwm/pwm-amlogic.yaml
+>>>>> b/Documentation/devicetree/bindings/pwm/pwm-amlogic.yaml
+>>>>> index 387976ed36d5..eece390114a3 100644
+>>>>> --- a/Documentation/devicetree/bindings/pwm/pwm-amlogic.yaml
+>>>>> +++ b/Documentation/devicetree/bindings/pwm/pwm-amlogic.yaml
+>>>>> @@ -21,23 +21,35 @@ properties:
+>>>>>               - amlogic,meson-g12a-ee-pwm
+>>>>>               - amlogic,meson-g12a-ao-pwm-ab
+>>>>>               - amlogic,meson-g12a-ao-pwm-cd
+>>>>> -          - amlogic,meson-s4-pwm
+>>>>> +        deprecated: true
+>>>>>           - items:
+>>>>>               - const: amlogic,meson-gx-pwm
+>>>>>               - const: amlogic,meson-gxbb-pwm
+>>>>> +        deprecated: true
+>>>>>           - items:
+>>>>>               - const: amlogic,meson-gx-ao-pwm
+>>>>>               - const: amlogic,meson-gxbb-ao-pwm
+>>>>> +        deprecated: true
+>>>>>           - items:
+>>>>>               - const: amlogic,meson8-pwm
+>>>>>               - const: amlogic,meson8b-pwm
+>>>>> +        deprecated: true
+>>>>
+>>>> I think deprecated should be moved in a third patch
+>>>
+>>> The complain on v2 was that it was not clear the new binding was making
+>>> the old one obsolete. It looked to me that the deprecation old bindings
+>>> needed to go together with the introduction of the new.
+>>>
+>>> I don't mind one way or the other
+>>>
+>>> Is there a rule somewhere about this ?
 >>
->> This adds a minor optimization in certain operations, where we the check
->> for TPS25750 (or Apple CD321X) is a bit faster.
->>
->> Signed-off-by: Alexandru Ardelean <alex@shruggie.ro>
->> ---
->>  drivers/usb/typec/tipd/core.c | 34 ++++++++++++++++++++++------------
->>  1 file changed, 22 insertions(+), 12 deletions(-)
->>
->> diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
->> index fbd23de5c5cb..69d3e11bb30c 100644
->> --- a/drivers/usb/typec/tipd/core.c
->> +++ b/drivers/usb/typec/tipd/core.c
->> @@ -105,7 +105,14 @@ static const char *const modes[] = {
->>  
->>  struct tps6598x;
->>  
->> +enum tipd_type {
->> +	TIPD_TYPE_TI_TPS6598X,
->> +	TIPD_TYPE_APPLE_CD321X,
->> +	TIPD_TYPE_TI_TPS25750X,
->> +};
->> +
->>  struct tipd_data {
->> +	enum tipd_type type;
->>  	irq_handler_t irq_handler;
->>  	int (*register_port)(struct tps6598x *tps, struct fwnode_handle *node);
->>  	void (*trace_power_status)(u16 status);
+>> Not sure about that, I don't think it's a problem to have both valid
+>> at the same time, setting them deprecated afterwards looks cleaner
+>> to avoid mixing too much changes at the same time.
 > 
-> Why not just match against the structures themselves?
-> 
->         if (tps->data == &tps25750_data)
->                 ...
+> For me current order is correct and intuitive: you add new binding,
+> because old binding was wrong, so the old binding should be deprecated.
+> Otherwise you have a state with both new and old binding and one could
+> question - why did we need new binding? For dtschema it does not matter,
+> but it matters how we read the code.
 
-Then you need to declare tps25750_data and friends at the top of the file?
-
-A better approach might be to have type agnostic quirk flags for the special
-behavior required for different types. This way, multiple devices can share
-the same quirk if needed.
-
-e.g.
-NEEDS_POWER_UP instead of TIPD_TYPE_APPLE_CD321X
-SKIP_VID_READ instead of TIPD_TYPE_TI_TPS25750X
-INIT_ON_RESUME instead of TIPD_TYPE_TI_TPS25750X
-
-Also rename cd321x_switch_power_state() to tps6598x_switch_power_state().
+Ack thx for the clarification
 
 > 
->> @@ -1195,7 +1202,6 @@ tps25750_register_port(struct tps6598x *tps, struct fwnode_handle *fwnode)
->>  
->>  static int tps6598x_probe(struct i2c_client *client)
->>  {
->> -	struct device_node *np = client->dev.of_node;
->>  	struct tps6598x *tps;
->>  	struct fwnode_handle *fwnode;
->>  	u32 status;
->> @@ -1211,11 +1217,19 @@ static int tps6598x_probe(struct i2c_client *client)
->>  	mutex_init(&tps->lock);
->>  	tps->dev = &client->dev;
->>  
->> +	if (dev_fwnode(tps->dev))
->> +		tps->data = device_get_match_data(tps->dev);
->> +	else
->> +		tps->data = i2c_get_match_data(client);
->> +
->> +	if (!tps->data)
->> +		return -EINVAL;
->> +
->>  	tps->regmap = devm_regmap_init_i2c(client, &tps6598x_regmap_config);
->>  	if (IS_ERR(tps->regmap))
->>  		return PTR_ERR(tps->regmap);
->>  
->> -	is_tps25750 = device_is_compatible(tps->dev, "ti,tps25750");
->> +	is_tps25750 = (tps->data->type == TIPD_TYPE_TI_TPS25750X);
->>  	if (!is_tps25750) {
->>  		ret = tps6598x_read32(tps, TPS_REG_VID, &vid);
->>  		if (ret < 0 || !vid)
->> @@ -1229,7 +1243,7 @@ static int tps6598x_probe(struct i2c_client *client)
->>  	if (i2c_check_functionality(client->adapter, I2C_FUNC_I2C))
->>  		tps->i2c_protocol = true;
->>  
->> -	if (np && of_device_is_compatible(np, "apple,cd321x")) {
->> +	if (tps->data->type == TIPD_TYPE_APPLE_CD321X) {
->>  		/* Switch CD321X chips to the correct system power state */
->>  		ret = cd321x_switch_power_state(tps, TPS_SYSTEM_POWER_STATE_S0);
->>  		if (ret)
->> @@ -1247,13 +1261,6 @@ static int tps6598x_probe(struct i2c_client *client)
->>  			TPS_REG_INT_PLUG_EVENT;
->>  	}
->>  
->> -	if (dev_fwnode(tps->dev))
->> -		tps->data = device_get_match_data(tps->dev);
->> -	else
->> -		tps->data = i2c_get_match_data(client);
->> -	if (!tps->data)
->> -		return -EINVAL;
->> -
->>  	/* Make sure the controller has application firmware running */
->>  	ret = tps6598x_check_mode(tps);
->>  	if (ret < 0)
->> @@ -1366,7 +1373,7 @@ static void tps6598x_remove(struct i2c_client *client)
->>  	usb_role_switch_put(tps->role_sw);
->>  
->>  	/* Reset PD controller to remove any applied patch */
->> -	if (device_is_compatible(tps->dev, "ti,tps25750"))
->> +	if (tps->data->type == TIPD_TYPE_TI_TPS25750X)
->>  		tps6598x_exec_cmd_tmo(tps, "GAID", 0, NULL, 0, NULL, 2000, 0);
->>  }
->>  
->> @@ -1396,7 +1403,7 @@ static int __maybe_unused tps6598x_resume(struct device *dev)
->>  	if (ret < 0)
->>  		return ret;
->>  
->> -	if (device_is_compatible(tps->dev, "ti,tps25750") && ret == TPS_MODE_PTCH) {
->> +	if (tps->data->type == TIPD_TYPE_TI_TPS25750X && ret == TPS_MODE_PTCH) {
->>  		ret = tps25750_init(tps);
->>  		if (ret)
->>  			return ret;
->> @@ -1419,6 +1426,7 @@ static const struct dev_pm_ops tps6598x_pm_ops = {
->>  };
->>  
->>  static const struct tipd_data cd321x_data = {
->> +	.type = TIPD_TYPE_APPLE_CD321X,
->>  	.irq_handler = cd321x_interrupt,
->>  	.register_port = tps6598x_register_port,
->>  	.trace_power_status = trace_tps6598x_power_status,
->> @@ -1426,6 +1434,7 @@ static const struct tipd_data cd321x_data = {
->>  };
->>  
->>  static const struct tipd_data tps6598x_data = {
->> +	.type = TIPD_TYPE_TI_TPS6598X,
->>  	.irq_handler = tps6598x_interrupt,
->>  	.register_port = tps6598x_register_port,
->>  	.trace_power_status = trace_tps6598x_power_status,
->> @@ -1433,6 +1442,7 @@ static const struct tipd_data tps6598x_data = {
->>  };
->>  
->>  static const struct tipd_data tps25750_data = {
->> +	.type = TIPD_TYPE_TI_TPS25750X,
->>  	.irq_handler = tps25750_interrupt,
->>  	.register_port = tps25750_register_port,
->>  	.trace_power_status = trace_tps25750_power_status,
->> -- 
->> 2.42.1
-> 
-> thanks,
+> Best regards,
+> Krzysztof
 > 
 
--- 
-cheers,
--roger
+Thanks,
+Neil
+
