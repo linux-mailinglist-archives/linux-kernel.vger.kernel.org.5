@@ -2,71 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45C1E7FF000
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 14:22:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F0EB7FF009
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 14:24:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345505AbjK3NWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 08:22:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56562 "EHLO
+        id S1345510AbjK3NY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 08:24:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231990AbjK3NWY (ORCPT
+        with ESMTP id S1345484AbjK3NY2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 08:22:24 -0500
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61CEB10D9
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 05:22:29 -0800 (PST)
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-40b4e35ecf1so7822785e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 05:22:29 -0800 (PST)
+        Thu, 30 Nov 2023 08:24:28 -0500
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F73199
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 05:24:34 -0800 (PST)
+Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2c9c18e7990so12184221fa.2
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 05:24:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701350548; x=1701955348; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=b4u7VCdFIs72013OKeFY0fqK/9EGR+LhEmp/Sst4Z+g=;
-        b=V2SqlS354UgKlca1RfvftgU/37xTZv+vXwOIyrfGTT1mHeaEM5Ilk58DfNgL3zJ64d
-         CjI7jJFkeTwYxWsJgFvuV4qtGlL7ZiRj0u82uehRxH2MxSvwnqBc8liuVkfj92nnZv/4
-         1CASelJ2NdRCSqZYNo0gy6MDyvS4UmA5JGxagUQK2EuD1rpW5NsLD1KPxSU3oebJ94Q3
-         vWpgbg8Q+lzWvG9vPAndma+6RewiSoFFhxXcQ5sVsHbzxE+Lqd6EjFY2Cnoag3HTsJiK
-         u6YNCTYfHheVdqZW4d+Y//Wq15v5v//ni1Liyd1ZmFxDTwYv31mPltPYzgCkwTsBiH+C
-         s9vQ==
+        d=foundries.io; s=google; t=1701350672; x=1701955472; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=rl1Zr3xVKLAcSLgsM15CyRFnl8qKQTSqrb43H8OFNJM=;
+        b=P+NL4o6Ue+2rjNluwEcw+aJ1lWZMZ2GXAVxS3T0fx3CLjgYxtNgnHjeebjJzxI4LIA
+         TmUYxAlluSpKvgpaOUppvYC0zWs0ni+NsiEciE3Nq/R1eDFzWBBqiURo6ozk4L1N5v++
+         xfC7Wlk1ExeWhlWZFAAjP3v/Hr1BHu2YwUgu2e1N5N4WSA5QFt9lAFZmz39q0uodwvlQ
+         2OyNwdeV/joofY9qsOvtUrlziETpHYZfhdqgz1qcGoWqOxMEzS1X978I5lBNzX5Ahcg9
+         WECCYRgm4VYdPIAjPt5ZPRG4PpPe+LGWaO15/mFbj9/ZV62UL5xekEYYjcGjTiaj7y/S
+         EsSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701350548; x=1701955348;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=b4u7VCdFIs72013OKeFY0fqK/9EGR+LhEmp/Sst4Z+g=;
-        b=Dw0DG9Je4sBqhVE4IXe/dknrD/D7gVT5AN3swUsq4egWruP6aCUmjU9/JxrEZGWPjS
-         zw1wfCetNXNbvMYWXhXD8QEegdE9/PJMMyzmtVPHsGRGYjEtwFYjGsImriwlDUGQy0Rh
-         S6Fd3W70KzvN8IvRCLyM6cp7snMMr9D7fk/CcZ9KKZfmYmEW//OlmIxXhh7XKIlUQ1Tx
-         UbpSMOBbfbf/fUZ+P4OSRI7VrkslWlAktxGIO3rzIUBnTd7v7qdo32TXYZTARfsdy7Z3
-         XH6ne/IqPZJKjM7OCeWf2YkJtCEeK3ZQN18EX9xFpdBcT7ep4gvnwH6F/yrqze6GsqgL
-         jMxQ==
-X-Gm-Message-State: AOJu0YwQ2vg6W5DrwSsH2hpMzDbV/WC4FG1XxsClYNKOayMpmkkgk83I
-        Ci+XqKL08QR0MEyw43V+cvwpUw==
-X-Google-Smtp-Source: AGHT+IGrxqe8Q3EsAkZmX0rGbaVy053Wxcf2f11HNsi9FOXV1sgeRwkepP7AHhoWTwIJNTUrkTUm9w==
-X-Received: by 2002:adf:e351:0:b0:332:fd68:6657 with SMTP id n17-20020adfe351000000b00332fd686657mr9524866wrj.56.1701350547734;
-        Thu, 30 Nov 2023 05:22:27 -0800 (PST)
-Received: from ?IPV6:2a05:6e02:1041:c10:3992:5718:8297:bc86? ([2a05:6e02:1041:c10:3992:5718:8297:bc86])
-        by smtp.googlemail.com with ESMTPSA id j6-20020a5d6046000000b0033326e90496sm821800wrt.18.2023.11.30.05.22.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Nov 2023 05:22:27 -0800 (PST)
-Message-ID: <09de3b1b-b725-46b8-97a6-55776fd5ca45@linaro.org>
-Date:   Thu, 30 Nov 2023 14:22:26 +0100
+        d=1e100.net; s=20230601; t=1701350672; x=1701955472;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rl1Zr3xVKLAcSLgsM15CyRFnl8qKQTSqrb43H8OFNJM=;
+        b=OFmaLz6JDHER83kWxDHnnYds9ibOJt2eWOghoTy088A8J2twWFHEHyzPd37GlAKMz7
+         1bphnMkFfSB9hZMRB2IMYErap2CBC+vOdLx2T6Q2NbsD3Qgq6xN443V2WPPvk1teWRKs
+         V/1Ll9EhrD/76jgAnUARaP3Ws08X8nApMpiuMUxoor9YC/ZXhCNz/8J+qx5o0+tJmXpX
+         U3ouLBxhmaem9ZVGR/EtWZPSmtb/E2jhIeslVq9uo+JFemDKmrKG+zIWn7z1wr7d8ja9
+         OZZu9QpSiTkABGTjNZdDfTGI/1CpdVrNiOoo6bJ7Vfk6txRzT5hrO/OpBIzgWXqHc84d
+         UWrw==
+X-Gm-Message-State: AOJu0YxYBt8bcc6dLO6Iy09qhTf9rAfbDSptdqt052b+tE1isJnuBjZG
+        WX3JKKdbiKsAjhFO7GSYhJ/zfg==
+X-Google-Smtp-Source: AGHT+IFUdS0yevdMvat7JYL0oTGRcPHCkJOYSRpJSzMd3CfvSVDHUrv2frYyBgVJcQioN/5JVeLlVQ==
+X-Received: by 2002:a2e:88c2:0:b0:2c9:c1f8:fa29 with SMTP id a2-20020a2e88c2000000b002c9c1f8fa29mr3192590ljk.33.1701350672122;
+        Thu, 30 Nov 2023 05:24:32 -0800 (PST)
+Received: from trax (139.red-79-144-198.dynamicip.rima-tde.net. [79.144.198.139])
+        by smtp.gmail.com with ESMTPSA id h9-20020a05600c314900b0040b3d8907fesm1990114wmo.29.2023.11.30.05.24.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Nov 2023 05:24:31 -0800 (PST)
+From:   "Jorge Ramirez-Ortiz, Foundries" <jorge@foundries.io>
+X-Google-Original-From: "Jorge Ramirez-Ortiz, Foundries" <JorgeRamirez-Ortiz>
+Date:   Thu, 30 Nov 2023 14:24:30 +0100
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Jorge Ramirez-Ortiz <jorge@foundries.io>, CLoehle@hyperstone.com,
+        adrian.hunter@intel.com, jinpu.wang@ionos.com, hare@suse.de,
+        beanhuo@micron.com, yangyingliang@huawei.com, asuk4.q@gmail.com,
+        yibin.ding@unisoc.com, victor.shih@genesyslogic.com.tw,
+        marex@denx.de, rafael.beims@toradex.com, robimarko@gmail.com,
+        ricardo@foundries.io, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv2] mmc: rpmb: add quirk MMC_QUIRK_BROKEN_RPMB_RETUNE
+Message-ID: <ZWiNDgUFF8ug7gZf@trax>
+References: <20231129160533.2827458-1-jorge@foundries.io>
+ <CAPDyKFpg+7W1ODGHw5oXy_wzWA1Qqzg9w_12rhQ8qW4o--6dWg@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] thermal: Add support for device tree thermal zones
- consumers
-Content-Language: en-US
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>, rafael@kernel.org
-Cc:     rui.zhang@intel.com, lukasz.luba@arm.com, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel@collabora.com,
-        wenst@chromium.org
-References: <20231115144857.424005-1-angelogioacchino.delregno@collabora.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <20231115144857.424005-1-angelogioacchino.delregno@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPDyKFpg+7W1ODGHw5oXy_wzWA1Qqzg9w_12rhQ8qW4o--6dWg@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -77,238 +78,198 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 30/11/23 11:34:18, Ulf Hansson wrote:
+> On Wed, 29 Nov 2023 at 17:05, Jorge Ramirez-Ortiz <jorge@foundries.io> wrote:
+> >
+> > On the eMMC SanDisk iNAND 7250 configured with HS200, requesting a
+> > re-tune before switching to the RPMB partition would randomly cause
+> > subsequent RPMB requests to fail with EILSEQ:
+> > * data error -84, tigggered in __mmc_blk_ioctl_cmd()
+> >
+> > This commit skips the retune when switching to RPMB.
+> > Tested over several days with per minute RPMB reads.
+>
+> This sounds weird to me and needs more testing/debugging in my
+> opinion, especially at the host driver level. Perhaps add some new
+> tests in mmc_test, that does a partition switch to/from any partition
+> and then run regular I/O again to see if the problem is easier to
+> reproduce?
 
-Hi Angelo,
+hi Uffe
 
-thanks for your proposal
+ok I'll have a look - I have never used this driver before, so if you
+have anything in the works I'll be glad to integrated and adapt.
 
-On 15/11/2023 15:48, AngeloGioacchino Del Regno wrote:
-> Add helpers to support retrieving thermal zones from device tree nodes:
-> this will allow a device tree consumer to specify phandles to specific
-> thermal zone(s), including support for specifying thermal-zone-names.
-> This is useful, for example, for smart voltage scaling drivers that
-> need to adjust CPU/GPU/other voltages based on temperature, and for
-> battery charging drivers that need to scale current based on various
-> aggregated temperature sensor readings which are board-dependant.
+>
+> The point is, I wonder what is so special with RPMB here? Note that,
+> it has been quite common that host drivers/controllers have had issues
+> with their tuning support, so I would not be surprised if that is the
+> case here too.
 
-IMO these changes are trying to solve something from the DT perspective 
-adding more confusion between phandle, names, types etc ... and it does 
-not really help AFAICT.
+Right, it is just that the tuning function for of-arasan is the generic
+__sdhci_execute_tuning() - only wrapped around arasan DLL reset
+calls. Hence why I aimed for the card: __sdhci_execute_tuning and ZynqMP
+are not recent functions or architectures.
 
-Overall I'm a bit reluctant to add more API in the thermal.h. From my 
-POV, we should try to remove as much as possible functions from there.
 
-That said, the name of a thermal zone does not really exists and there 
-is confusion in the code between a name and a type. (type being assumed 
-to be a name).
+> Certainly I would be surprised if the problem is at
+> the eMMC card side, but I may be wrong.
 
-There could be several thermal zones with the same types for non-DT 
-description. However, the documentation says we should create an unique 
-type in the DT and that is what is happening when registering a thermal 
-zone from the DT [1] as we use the node name.
+How do maintainers test the tuning methods? is there anything else for
+me to do other than forcing a retune with different partitions?
 
- From an external driver, it possible to get the np->name from the 
-phandles and call thermal_zone_get_by_name(np->name).
+>
+> Kind regards
+> Uffe
 
-The hardening change which may make sense is to check a thermal zone 
-with the same name is not already registered in thermal_of.c by checking 
-thermal_zone_get_by_name() fails before registering it.
+For completeness this is the error message - notice that we have a
+trusted application (fiovb) going through OP-TEE and back to the TEE
+supplicant issuing an rpmb read of a variable (pretty normal these days,
+we use it on many different platforms - ST, NXP, AMD/Xilinx, TI..).
 
-   -- Daniel
+The issue on this Zynqmp platform is scarily simple to reproduce; you
+can ignore the OP-TEE trace, it is just the TEE way of reporting that
+the RPMB read failed.
 
-[1] 
-https://git.kernel.org/pub/scm/linux/kernel/git/thermal/linux.git/tree/drivers/thermal/thermal_of.c?h=thermal%2Fbleeding-edge#n514
+root@uz3cg-dwg-sec:/var/rootdirs/home/fio# fiovb_printenv m4hash
+[  461.775084] sdhci-arasan ff160000.mmc: __mmc_blk_ioctl_cmd: data error -84
+E/TC:? 0
+E/TC:? 0 TA panicked with code 0xffff0000
+E/LD:  Status of TA 22250a54-0bf1-48fe-8002-7b20f1c9c9b1
+E/LD:   arch: aarch64
+E/LD:  region  0: va 0xc0004000 pa 0x7e200000 size 0x002000 flags rw-s (ldelf)
+E/LD:  region  1: va 0xc0006000 pa 0x7e202000 size 0x008000 flags r-xs (ldelf)
+E/LD:  region  2: va 0xc000e000 pa 0x7e20a000 size 0x001000 flags rw-s (ldelf)
+E/LD:  region  3: va 0xc000f000 pa 0x7e20b000 size 0x004000 flags rw-s (ldelf)
+E/LD:  region  4: va 0xc0013000 pa 0x7e20f000 size 0x001000 flags r--s
+E/LD:  region  5: va 0xc0014000 pa 0x7e22c000 size 0x005000 flags rw-s (stack)
+E/LD:  region  6: va 0xc0019000 pa 0x816b31fc8 size 0x001000 flags rw-- (param)
+E/LD:  region  7: va 0xc001a000 pa 0x816aa1fc8 size 0x002000 flags rw-- (param)
+E/LD:  region  8: va 0xc006b000 pa 0x00001000 size 0x014000 flags r-xs [0]
+E/LD:  region  9: va 0xc007f000 pa 0x00015000 size 0x008000 flags rw-s [0]
+E/LD:   [0] 22250a54-0bf1-48fe-8002-7b20f1c9c9b1 @ 0xc006b000
+E/LD:  Call stack:
+E/LD:   0xc006de58
+E/LD:   0xc006b388
+E/LD:   0xc006ed40
+E/LD:   0xc006b624
+Read persistent value for m4hash failed: Exec format error
 
-> Example:
-> smart-scaling-driver@10000000 {
-> 	[...]
-> 
-> 	thermal-zones = <&cluster_big_tz>, <&gpu_tz>, <&vpu_tz>;
-> 	thermal-zone-names = "cpu", "gpu", "vpu";
-> 
-> 	[...]
-> }
-> 
-> battery-charger@20000000 {
-> 	[...]
-> 
-> 	thermal-zones = <&battery_temp>, <&device_skin_temp>;
-> 	thermal-zone-names = "batt-ext-sensor", "skin";
-> 
-> 	[...]
-> }
-> 
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-> ---
-> 
-> Changes in v2:
->   - Added missing static inline for !CONFIG_OF fallback functions
-> 
-> Background story: while I was cleaning up the MediaTek Smart Voltage Scaling
-> (SVS) driver, I've found out that there's a lot of commonization to be done.
-> After a rewrite of "this and that" in that driver, I came across a barrier
-> that didn't allow me to remove another ~100 lines of code, and that was also
-> anyway breaking the driver, because the thermal zone names are different
-> from what was originally intended.
-> 
-> I've been looking for thermal zone handle retrieval around the kernel and
-> found that there currently are at least four other drivers that could make
-> use this as a cleanup: charger-manager, which is retrieving a thermal zone
-> to look for with a "cm-thermal-zone" string property, gpu/drm/tiny/repaper.c
-> that does the same by checking a "pervasive,thermal-zone" string property,
-> and ab8500_temp and sdhci-omap which are simply hardcoding a "cpu_thermal"
-> and "battery-thermal" thermal zone names respectively.
-> 
-> There are a number of other devices (mostly embedded, mostly smartphones)
-> that don't have an upstream driver and that could make use of this as well.
-> 
-> Cheers!
-> 
-> 
->   drivers/thermal/thermal_of.c | 91 ++++++++++++++++++++++++++++++++++++
->   include/linux/thermal.h      | 15 ++++++
->   2 files changed, 106 insertions(+)
-> 
-> diff --git a/drivers/thermal/thermal_of.c b/drivers/thermal/thermal_of.c
-> index 1e0655b63259..d8ead456993e 100644
-> --- a/drivers/thermal/thermal_of.c
-> +++ b/drivers/thermal/thermal_of.c
-> @@ -538,6 +538,97 @@ static struct thermal_zone_device *thermal_of_zone_register(struct device_node *
->   	return ERR_PTR(ret);
->   }
->   
-> +/**
-> + * __thermal_of_get_zone_by_index() - Get thermal zone handle from the DT
-> + *				      thermal-zones index
-> + * @dev:   Pointer to the consumer device
-> + * @index: Index of thermal-zones
-> + *
-> + * This function will search for a thermal zone in the thermal-zones phandle
-> + * array corresponding to the specified index, then will search for its name
-> + * into the registered thermal zones through thermal_zone_get_zone_by_name()
-> + *
-> + * Please note that this function is for internal use only and expects that
-> + * all of the sanity checks are performed by its caller.
-> + *
-> + * Return: thermal_zone_device pointer on success, ERR_PTR() on error or NULL
-> + * when the API is disabled or the "thermal-zones" DT property is missing.
-> + */
-> +static struct thermal_zone_device
-> +*__thermal_of_get_zone_by_index(struct device *dev, int index)
-> +{
-> +	struct thermal_zone_device *tzd;
-> +	struct device_node *np;
-> +
-> +	np = of_parse_phandle(dev->of_node, "thermal-zones", index);
-> +	if (!np)
-> +		return NULL;
-> +
-> +	tzd = thermal_zone_get_zone_by_name(np->name);
-> +	of_node_put(np);
-> +
-> +	return tzd;
-> +}
-> +
-> +/**
-> + * thermal_of_get_zone_by_index() - Get thermal zone handle from a DT node
-> + *				    based on index
-> + * @dev:   Pointer to the consumer device
-> + * @index: Index of thermal-zones
-> + *
-> + * Return: thermal_zone_device pointer on success, ERR_PTR() on error or NULL
-> + * when the API is disabled or the "thermal-zones" DT property is missing.
-> + */
-> +struct thermal_zone_device *thermal_of_get_zone_by_index(struct device *dev, int index)
-> +{
-> +	if (!dev || !dev->of_node)
-> +		return ERR_PTR(-ENODEV);
-> +
-> +	if (!of_property_present(dev->of_node, "thermal-zones"))
-> +		return NULL;
-> +
-> +	return __thermal_of_get_zone_by_index(dev, index);
-> +}
-> +
-> +/**
-> + * thermal_of_get_zone() - Get thermal zone handle from a DT node based
-> + *			   on name, or the first handle in list
-> + * @dev:   Pointer to the consumer device
-> + * @name:  Name as found in thermal-zone-names or NULL
-> + *
-> + * This function will search for a thermal zone in the thermal-zones phandle
-> + * array corresponding to the index of that in the thermal-zone-names array.
-> + * If the name is not specified (NULL), it will return the first thermal zone
-> + * in the thermal-zones phandle array.
-> + *
-> + * Return: thermal_zone_device pointer on success, ERR_PTR() on error or NULL
-> + * when the API is disabled or the "thermal-zones" DT property is missing.
-> + */
-> +struct thermal_zone_device *thermal_of_get_zone(struct device *dev, const char *name)
-> +{
-> +	int index;
-> +
-> +	if (!dev || !dev->of_node)
-> +		return ERR_PTR(-ENODEV);
-> +
-> +	if (!of_property_present(dev->of_node, "thermal-zones")) {
-> +		pr_err("thermal zones property not present\n");
-> +		return NULL;
-> +	}
-> +
-> +	if (name) {
-> +		index = of_property_match_string(dev->of_node, "thermal-zone-names", name);
-> +		if (index < 0) {
-> +			pr_err("thermal zone names property not present\n");
-> +			return ERR_PTR(index);
-> +		}
-> +	} else {
-> +		index = 0;
-> +	}
-> +
-> +	return __thermal_of_get_zone_by_index(dev, index);
-> +}
-> +
->   static void devm_thermal_of_zone_release(struct device *dev, void *res)
->   {
->   	thermal_of_zone_unregister(*(struct thermal_zone_device **)res);
-> diff --git a/include/linux/thermal.h b/include/linux/thermal.h
-> index cee814d5d1ac..0fceeb7ed08a 100644
-> --- a/include/linux/thermal.h
-> +++ b/include/linux/thermal.h
-> @@ -261,6 +261,9 @@ struct thermal_zone_device *devm_thermal_of_zone_register(struct device *dev, in
->   
->   void devm_thermal_of_zone_unregister(struct device *dev, struct thermal_zone_device *tz);
->   
-> +struct thermal_zone_device *thermal_of_get_zone_by_index(struct device *dev, int index);
-> +struct thermal_zone_device *thermal_of_get_zone(struct device *dev, const char *name);
-> +
->   #else
->   
->   static inline
-> @@ -274,6 +277,18 @@ static inline void devm_thermal_of_zone_unregister(struct device *dev,
->   						   struct thermal_zone_device *tz)
->   {
->   }
-> +
-> +static inline
-> +struct thermal_zone_device *thermal_of_get_zone_by_index(struct device *dev, int index)
-> +{
-> +	return ERR_PTR(-ENOTSUPP);
-> +}
-> +
-> +static inline
-> +struct thermal_zone_device *thermal_of_get_zone(struct device *dev, const char *name)
-> +{
-> +	return ERR_PTR(-ENOTSUPP);
-> +}
->   #endif
->   
->   int __thermal_zone_get_trip(struct thermal_zone_device *tz, int trip_id,
+Also I instrumented sdhci-of-arasan.c to confirm that tuning wasn't failing.
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+diff --git a/drivers/mmc/host/sdhci-of-arasan.c b/drivers/mmc/host/sdhci-of-arasan.c
+index 681ac4cab8ab..54cde79d2719 100644
+--- a/drivers/mmc/host/sdhci-of-arasan.c
++++ b/drivers/mmc/host/sdhci-of-arasan.c
+@@ -1123,7 +1123,10 @@ static int arasan_zynqmp_execute_tuning(struct mmc_host *mmc, u32 opcode)
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+        err = sdhci_execute_tuning(mmc, opcode);
+        if (err)
+-           return err;
++         WARN_ON(1);
++
++ if (host->tuning_err)
++         WARN_ON(1);
 
+        arasan_zynqmp_dll_reset(host, device_id);
+
+
+Incidentally - not sure if it is intentional or not - I noticed that the
+function arasan_zynqmp_execute_tuning(..) can not fail which seems wrong
+(IMO it should also check host->tuning_err and not only err which will
+always be 0).
+
+Do you think this needs fixing even though not related to this problem?
+
+TIA
+Jorge
+
+>
+> >
+> > Signed-off-by: Jorge Ramirez-Ortiz <jorge@foundries.io>
+> > ---
+> >  Fixes v1: kernel test robot identified typo causing build failure
+> >            CIF_MANFID_SANDISK_SD --> CID_MANFID_SANDISK_SD
+> >
+> >  drivers/mmc/core/block.c  | 6 +++++-
+> >  drivers/mmc/core/card.h   | 7 +++++++
+> >  drivers/mmc/core/quirks.h | 7 +++++++
+> >  include/linux/mmc/card.h  | 1 +
+> >  4 files changed, 20 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
+> > index 152dfe593c43..9b7ba6562a3b 100644
+> > --- a/drivers/mmc/core/block.c
+> > +++ b/drivers/mmc/core/block.c
+> > @@ -860,6 +860,11 @@ static int mmc_blk_part_switch_pre(struct mmc_card *card,
+> >                                 return ret;
+> >                 }
+> >                 mmc_retune_pause(card->host);
+> > +
+> > +               /* Do not force retune before RPMB switch */
+> > +               if (mmc_can_retune(card->host) &&
+> > +                   mmc_card_broken_rpmb_retune(card))
+> > +                       card->host->need_retune = 0;
+> >         }
+> >
+> >         return ret;
+> > @@ -3143,4 +3148,3 @@ module_exit(mmc_blk_exit);
+> >
+> >  MODULE_LICENSE("GPL");
+> >  MODULE_DESCRIPTION("Multimedia Card (MMC) block device driver");
+> > -
+> > diff --git a/drivers/mmc/core/card.h b/drivers/mmc/core/card.h
+> > index b7754a1b8d97..1e1555a15de9 100644
+> > --- a/drivers/mmc/core/card.h
+> > +++ b/drivers/mmc/core/card.h
+> > @@ -85,6 +85,7 @@ struct mmc_fixup {
+> >  #define CID_MANFID_MICRON       0x13
+> >  #define CID_MANFID_SAMSUNG      0x15
+> >  #define CID_MANFID_APACER       0x27
+> > +#define CID_MANFID_SANDISK2     0x45
+> >  #define CID_MANFID_KINGSTON     0x70
+> >  #define CID_MANFID_HYNIX       0x90
+> >  #define CID_MANFID_KINGSTON_SD 0x9F
+> > @@ -284,4 +285,10 @@ static inline int mmc_card_broken_cache_flush(const struct mmc_card *c)
+> >  {
+> >         return c->quirks & MMC_QUIRK_BROKEN_CACHE_FLUSH;
+> >  }
+> > +
+> > +static inline int mmc_card_broken_rpmb_retune(const struct mmc_card *c)
+> > +{
+> > +       return c->quirks & MMC_QUIRK_BROKEN_RPMB_RETUNE;
+> > +}
+> > +
+> >  #endif
+> > diff --git a/drivers/mmc/core/quirks.h b/drivers/mmc/core/quirks.h
+> > index cca71867bc4a..56c79b6b3537 100644
+> > --- a/drivers/mmc/core/quirks.h
+> > +++ b/drivers/mmc/core/quirks.h
+> > @@ -130,6 +130,13 @@ static const struct mmc_fixup __maybe_unused mmc_blk_fixups[] = {
+> >         MMC_FIXUP(CID_NAME_ANY, CID_MANFID_SANDISK_SD, 0x5344, add_quirk_sd,
+> >                   MMC_QUIRK_BROKEN_SD_DISCARD),
+> >
+> > +       /*
+> > +        * SanDisk iNAND 7250 DG4064, this quirk shall disable the retune
+> > +        * operation enforced by default when switching to RPMB.
+> > +        */
+> > +       MMC_FIXUP("DG4064", CID_MANFID_SANDISK2, 0x100, add_quirk_mmc,
+> > +                 MMC_QUIRK_BROKEN_RPMB_RETUNE),
+> > +
+> >         END_FIXUP
+> >  };
+> >
+> > diff --git a/include/linux/mmc/card.h b/include/linux/mmc/card.h
+> > index 7b12eebc5586..bd6986189e8b 100644
+> > --- a/include/linux/mmc/card.h
+> > +++ b/include/linux/mmc/card.h
+> > @@ -296,6 +296,7 @@ struct mmc_card {
+> >  #define MMC_QUIRK_BROKEN_SD_DISCARD    (1<<14) /* Disable broken SD discard support */
+> >  #define MMC_QUIRK_BROKEN_SD_CACHE      (1<<15) /* Disable broken SD cache support */
+> >  #define MMC_QUIRK_BROKEN_CACHE_FLUSH   (1<<16) /* Don't flush cache until the write has occurred */
+> > +#define MMC_QUIRK_BROKEN_RPMB_RETUNE   (1<<17) /* Don't force a retune before switching to RPMB */
+> >
+> >         bool                    written_flag;   /* Indicates eMMC has been written since power on */
+> >         bool                    reenable_cmdq;  /* Re-enable Command Queue */
+> > --
+> > 2.34.1
