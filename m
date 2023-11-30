@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E90CC7FF70F
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 17:51:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEEF07FF71A
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 17:52:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345746AbjK3Qvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 11:51:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56106 "EHLO
+        id S1345721AbjK3Qwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 11:52:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232402AbjK3Qv2 (ORCPT
+        with ESMTP id S231856AbjK3Qwc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 11:51:28 -0500
+        Thu, 30 Nov 2023 11:52:32 -0500
 Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC99510DB;
-        Thu, 30 Nov 2023 08:51:34 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.18.186.231])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Sh2H82C8lz6K8sJ;
-        Fri,  1 Dec 2023 00:49:56 +0800 (CST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E012C1A4;
+        Thu, 30 Nov 2023 08:52:38 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.18.186.31])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Sh2Kp25qvz6JB0F;
+        Fri,  1 Dec 2023 00:52:14 +0800 (CST)
 Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-        by mail.maildlp.com (Postfix) with ESMTPS id ECE9014058E;
-        Fri,  1 Dec 2023 00:51:32 +0800 (CST)
+        by mail.maildlp.com (Postfix) with ESMTPS id 2B67C1402CD;
+        Fri,  1 Dec 2023 00:52:37 +0800 (CST)
 Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
  (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 30 Nov
- 2023 16:51:32 +0000
-Date:   Thu, 30 Nov 2023 16:51:31 +0000
+ 2023 16:52:36 +0000
+Date:   Thu, 30 Nov 2023 16:52:35 +0000
 From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
+To:     Russell King <rmk+kernel@armlinux.org.uk>
 CC:     <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
         <linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>,
@@ -41,14 +41,13 @@ CC:     <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
         <jianyong.wu@arm.com>, <justin.he@arm.com>,
         James Morse <james.morse@arm.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH 09/21] drivers: base: add arch_cpu_is_hotpluggable()
-Message-ID: <20231130165131.00001abe@Huawei.com>
-In-Reply-To: <E1r5R3M-00CszH-6r@rmk-PC.armlinux.org.uk>
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: [PATCH 10/21] drivers: base: Move cpu_dev_init() after
+ node_dev_init()
+Message-ID: <20231130165235.00003eb4@Huawei.com>
+In-Reply-To: <E1r5R3R-00CszO-C0@rmk-PC.armlinux.org.uk>
 References: <ZVyz/Ve5pPu8AWoA@shell.armlinux.org.uk>
-        <E1r5R3M-00CszH-6r@rmk-PC.armlinux.org.uk>
+        <E1r5R3R-00CszO-C0@rmk-PC.armlinux.org.uk>
 Organization: Huawei Technologies Research and Development (UK) Ltd.
 X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
@@ -66,15 +65,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 21 Nov 2023 13:44:36 +0000
-"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk> wrote:
+On Tue, 21 Nov 2023 13:44:41 +0000
+Russell King <rmk+kernel@armlinux.org.uk> wrote:
 
-> The differences between architecture specific implementations of
-> arch_register_cpu() are down to whether the CPU is hotpluggable or not.
-> Rather than overriding the weak version of arch_register_cpu(), provide
-> a function that can be used to provide this detail instead.
+> From: James Morse <james.morse@arm.com>
 > 
-> Reviewed-by: Shaoqin Huang <shahuang@redhat.com>
+> NUMA systems require the node descriptions to be ready before CPUs are
+> registered. This is so that the node symlinks can be created in sysfs.
+> 
+> Currently no NUMA platform uses GENERIC_CPU_DEVICES, meaning that CPUs
+> are registered by arch code, instead of cpu_dev_init().
+> 
+> Move cpu_dev_init() after node_dev_init() so that NUMA architectures
+> can use GENERIC_CPU_DEVICES.
+> 
+> Signed-off-by: James Morse <james.morse@arm.com>
 > Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+Another one where I gave RB late on the RFC.
 Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-
