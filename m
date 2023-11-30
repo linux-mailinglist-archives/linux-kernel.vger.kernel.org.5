@@ -2,144 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 300197FF38F
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 16:26:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69A117FF393
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 16:29:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346234AbjK3P0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 10:26:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49392 "EHLO
+        id S1346262AbjK3P3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 10:29:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232017AbjK3P0R (ORCPT
+        with ESMTP id S232017AbjK3P3U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 10:26:17 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBBD810E5;
-        Thu, 30 Nov 2023 07:26:18 -0800 (PST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 2F54721B21;
-        Thu, 30 Nov 2023 15:26:15 +0000 (UTC)
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id F24E713AB1;
-        Thu, 30 Nov 2023 15:26:14 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-        by imap1.dmz-prg2.suse.org with ESMTPSA
-        id cXTBOpapaGXbYQAAD6G6ig
-        (envelope-from <vbabka@suse.cz>); Thu, 30 Nov 2023 15:26:14 +0000
-Message-ID: <414847ea-b7e7-aa05-5e2d-de50788d9b4d@suse.cz>
-Date:   Thu, 30 Nov 2023 16:26:14 +0100
+        Thu, 30 Nov 2023 10:29:20 -0500
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50C6A1B3;
+        Thu, 30 Nov 2023 07:29:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=LTcsoVSlVI6L5YY64Xnv4PC7wnWqf8HFbk8TxQgTwwc=; b=yA+IAQa3Q1yz4WWgwbUigU8sKA
+        xadiHtvwN1twCeGo4wegaWCMA5KCSrTGQnvM9IymZtcTnoV08vEA9eUB2L7BxhiTyxSqbIsCN4NMd
+        iZxkrfFVK4rrW06K5pRDj0a5Z2MBDLfWiAmB5dEBUHpsNGfWx93ykb6sgz+mZ3tX7+SI=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1r8iyc-001g1R-OK; Thu, 30 Nov 2023 16:29:18 +0100
+Date:   Thu, 30 Nov 2023 16:29:18 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Christian Marangi <ansuelsmth@gmail.com>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [net-next PATCH 07/14] net: phy: at803x: move at8035 specific DT
+ parse to dedicated probe
+Message-ID: <c5dc1e13-4ab8-4447-8ad3-2fdc2f506dbb@lunn.ch>
+References: <20231129021219.20914-1-ansuelsmth@gmail.com>
+ <20231129021219.20914-8-ansuelsmth@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v2 16/33] mm: slub: Let KMSAN access metadata
-Content-Language: en-US
-To:     Ilya Leoshkevich <iii@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Marco Elver <elver@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Pekka Enberg <penberg@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Cc:     Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-s390@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Sven Schnelle <svens@linux.ibm.com>
-References: <20231121220155.1217090-1-iii@linux.ibm.com>
- <20231121220155.1217090-17-iii@linux.ibm.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20231121220155.1217090-17-iii@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spamd-Bar: ++++++++++++
-X-Spam-Score: 12.69
-X-Rspamd-Server: rspamd1
-Authentication-Results: smtp-out1.suse.de;
-        dkim=none;
-        spf=softfail (smtp-out1.suse.de: 2a07:de40:b281:104:10:150:64:97 is neither permitted nor denied by domain of vbabka@suse.cz) smtp.mailfrom=vbabka@suse.cz;
-        dmarc=none
-X-Rspamd-Queue-Id: 2F54721B21
-X-Spamd-Result: default: False [12.69 / 50.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-         TO_DN_SOME(0.00)[];
-         R_SPF_SOFTFAIL(4.60)[~all];
-         RCVD_COUNT_THREE(0.00)[3];
-         MX_GOOD(-0.01)[];
-         NEURAL_HAM_SHORT(-0.20)[-1.000];
-         FROM_EQ_ENVFROM(0.00)[];
-         R_DKIM_NA(2.20)[];
-         MIME_TRACE(0.00)[0:+];
-         MID_RHS_MATCH_FROM(0.00)[];
-         BAYES_HAM(-0.00)[20.85%];
-         ARC_NA(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         DMARC_NA(1.20)[suse.cz];
-         NEURAL_SPAM_LONG(3.50)[1.000];
-         RCPT_COUNT_TWELVE(0.00)[24];
-         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FREEMAIL_CC(0.00)[linux.ibm.com,google.com,gmail.com,googlegroups.com,vger.kernel.org,kvack.org,arm.com,linux.dev];
-         RCVD_TLS_ALL(0.00)[];
-         SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231129021219.20914-8-ansuelsmth@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/21/23 23:01, Ilya Leoshkevich wrote:
-> Building the kernel with CONFIG_SLUB_DEBUG and CONFIG_KMSAN causes
-> KMSAN to complain about touching redzones in kfree().
-> 
-> Fix by extending the existing KASAN-related metadata_access_enable()
-> and metadata_access_disable() functions to KMSAN.
-> 
-> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> +static int at8035_parse_dt(struct phy_device *phydev)
+> +{
+> +	struct device_node *node = phydev->mdio.dev.of_node;
+> +	struct at803x_priv *priv = phydev->priv;
+> +	u32 freq;
+> +	int ret;
+> +
+> +	if (!IS_ENABLED(CONFIG_OF_MDIO))
+> +		return 0;
+> +
+> +	ret = of_property_read_u32(node, "qca,clk-out-frequency", &freq);
+> +	if (!ret) {
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+I don't think you need this. priv->clk_25m_reg and priv->clk_25m_mask
+will default to 0. If qca,clk-out-frequency does not exist, they will
+still be zero....
 
-> ---
->  mm/slub.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/mm/slub.c b/mm/slub.c
-> index 169e5f645ea8..6e61c27951a4 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -700,10 +700,12 @@ static int disable_higher_order_debug;
->  static inline void metadata_access_enable(void)
->  {
->  	kasan_disable_current();
-> +	kmsan_disable_current();
->  }
->  
->  static inline void metadata_access_disable(void)
->  {
-> +	kmsan_enable_current();
->  	kasan_enable_current();
->  }
->  
+> +		/* Fixup for the AR8030/AR8035. This chip has another mask and
+> +		 * doesn't support the DSP reference. Eg. the lowest bit of the
+> +		 * mask. The upper two bits select the same frequencies. Mask
+> +		 * the lowest bit here.
+> +		 *
+> +		 * Warning:
+> +		 *   There was no datasheet for the AR8030 available so this is
+> +		 *   just a guess. But the AR8035 is listed as pin compatible
+> +		 *   to the AR8030 so there might be a good chance it works on
+> +		 *   the AR8030 too.
+> +		 */
+> +		priv->clk_25m_reg &= AT8035_CLK_OUT_MASK;
+> +		priv->clk_25m_mask &= AT8035_CLK_OUT_MASK;
 
+... so applying a mask to 0 does nothing.
+
+It does change the code a little, but you can add a justification in
+the commit message.
+
+    Andrew
