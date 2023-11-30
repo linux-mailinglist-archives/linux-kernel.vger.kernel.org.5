@@ -2,53 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6D657FF12A
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 15:05:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C0457FF12E
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 15:06:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345797AbjK3OFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 09:05:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33068 "EHLO
+        id S1345810AbjK3OFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 09:05:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345699AbjK3OFm (ORCPT
+        with ESMTP id S1345800AbjK3OFr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 09:05:42 -0500
+        Thu, 30 Nov 2023 09:05:47 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43E701A3
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 06:05:49 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A523BC433C7;
-        Thu, 30 Nov 2023 14:05:46 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A04B71B4
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 06:05:53 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDFACC433C8;
+        Thu, 30 Nov 2023 14:05:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701353148;
-        bh=0bBErjRDq1tShxa+ZQUxMiiFY8Sr+lLm/nr9F9U95/k=;
+        s=k20201202; t=1701353153;
+        bh=zvxGJDY8FCc6wODfCKIaIRyB/6ybh+E3orrkZkhrxnw=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IQmWMW3nBQO9dm1t/E18YFK0AnC/mglah74K64IGkrwM+j4yLwR6VQVurr1fw3ijq
-         k4D9jrismUB8XR0M1yk1ExdoDewlZr3JnimtmuoqgdkxLAHJKb9kuVZ3PmQ6e3BXGr
-         sNK9Xhhbt83YR8B+qjw3DEbwsJ6Ft4wodKo0abZ4K4CpJ4qz0d3PtuYB67jf0MY/ND
-         ca1X5w4rtUvOmJ5QudqujjGyT6e2I/0rnqsqoaj94ylZWqPUFsfbr4wFmUeUoNjfcx
-         N7QA8QdrliZQqaNsZD/m2Aya2rHJtwhYPDFFofPs9G0rQwPgMjFrB6+fK6LpfxIT5x
-         8szHutp8RX+rA==
-Date:   Thu, 30 Nov 2023 14:05:44 +0000
-From:   Conor Dooley <conor@kernel.org>
-To:     Emil Renner Berthing <emil.renner.berthing@canonical.com>
-Cc:     linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-Subject: Re: [PATCH v1 2/8] riscv: dts: starfive: Group tuples in interrupt
- properties
-Message-ID: <20231130-droop-reggae-3f1ec3809a77@spud>
-References: <20231126232746.264302-1-emil.renner.berthing@canonical.com>
- <20231126232746.264302-3-emil.renner.berthing@canonical.com>
+        b=jSBJceYPB59omKA3n5QjQzqrPZNUgVCHxzp5A3/bSBWrPoxkr4+DhXk2G31qLw5OK
+         Op4prX027Qi26OkpeMBbTt9Q55dSFuiw+Uut1ScNa9fSyrGQK443sxPBcR9QkWQiS1
+         yghMT2eiiKU+MbV8tGiH/jtGaZLjwkfC9UhNj1kQAAUG54oep0QTIV6fhG8C18J9dQ
+         JyuTEuZ/VX2RJfmRPAyYbJPjNTGfunnj7/124YXkvBTgTibrqmgnfaDhNA0lh9VhuX
+         wmsr84L1MGtbviIEWT/bTEmQ0qPGKxQVXCL1raNBv3EsPsxcV68JBzy7yxwzmTT14l
+         /JbCJjr9Gk8/A==
+Date:   Thu, 30 Nov 2023 14:05:48 +0000
+From:   Lee Jones <lee@kernel.org>
+To:     =?iso-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@gmail.com>
+Cc:     tony@atomide.com, robh@kernel.org, wens@csie.org,
+        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mfd: twl6030-irq: Revert to use of_match_device()
+Message-ID: <20231130140548.GL1470173@google.com>
+References: <20231029114843.15553-1-peter.ujfalusi@gmail.com>
+ <20231123103756.GD1184245@google.com>
+ <20231123104108.GF1184245@google.com>
+ <74b0b808-7b97-4e53-a1a4-6e2e1274ecff@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="GDqc2Ost9zQQcBe6"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231126232746.264302-3-emil.renner.berthing@canonical.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <74b0b808-7b97-4e53-a1a4-6e2e1274ecff@gmail.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -59,36 +53,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 23 Nov 2023, Péter Ujfalusi wrote:
 
---GDqc2Ost9zQQcBe6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> 
+> 
+> On 23/11/2023 12:41, Lee Jones wrote:
+> >>> @@ -368,10 +368,10 @@ int twl6030_init_irq(struct device *dev, int irq_num)
+> >>>  	int			nr_irqs;
+> >>>  	int			status;
+> >>>  	u8			mask[3];
+> >>> -	const int		*irq_tbl;
+> >>> +	const struct of_device_id *of_id;
+> >>>  
+> >>> -	irq_tbl = device_get_match_data(dev);
+> >>> -	if (!irq_tbl) {
+> >>> +	of_id = of_match_device(twl6030_of_match, dev);
+> >>
+> >> I think you just dropped support for ACPI.
+> > 
+> > Ah, scrap that.  I was looking at the wrong part of 1e0c866887f4.
+> > 
+> > So what about the other drivers changed in the aforementioned commit?
+> 
+> Looking back at it again, I think only this patch is needed.
+> This is not a real driver, it is using the twl core's device.
+> The twl6030 is for sure broken, let me reply to the twl4030-power in a sec.
+> 
+> > Ideally we'd have a call that covers all of the various probing APIs.
+> > 
+> >> Rob, care to follow-up?
 
-On Mon, Nov 27, 2023 at 12:27:40AM +0100, Emil Renner Berthing wrote:
-> From: Geert Uytterhoeven <geert@linux-m68k.org>
->=20
-> To improve human readability and enable automatic validation, the tuples
-> in the various properties containing interrupt specifiers should be
-> grouped.
->=20
-> Fix this by grouping the tuples of "interrupts-extended" properties
-> using angle brackets.
->=20
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Rob, last chance to state your case before I apply it.
 
-This one is missing your signoff Emil.
-
-
---GDqc2Ost9zQQcBe6
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZWiWuAAKCRB4tDGHoIJi
-0kjFAP98CAuQRyqCQFxRXAWKKidu4wFen/Zt8TMkwHgIbaZloQEA5D/IV6QDjol+
-X0TG+1sqJS12THdiw2HGwLlcbBYKngk=
-=mWd2
------END PGP SIGNATURE-----
-
---GDqc2Ost9zQQcBe6--
+-- 
+Lee Jones [李琼斯]
