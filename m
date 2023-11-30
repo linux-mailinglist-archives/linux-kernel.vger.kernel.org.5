@@ -2,168 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 752AE7FEF33
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 13:36:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 213117FEF78
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 13:46:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345327AbjK3Mgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 07:36:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43942 "EHLO
+        id S232025AbjK3Mo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 07:44:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345388AbjK3Mgg (ORCPT
+        with ESMTP id S231970AbjK3Mo4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 07:36:36 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8587C10DE;
-        Thu, 30 Nov 2023 04:36:41 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6B0CD1042;
-        Thu, 30 Nov 2023 04:37:27 -0800 (PST)
-Received: from pluto (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6AA393F5A1;
-        Thu, 30 Nov 2023 04:36:39 -0800 (PST)
-Date:   Thu, 30 Nov 2023 12:36:36 +0000
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     Sibi Sankar <quic_sibis@quicinc.com>
-Cc:     sudeep.holla@arm.com, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_mdtipton@quicinc.com,
-        linux-arm-kernel@lists.infradead.org, quic_asartor@quicinc.com,
-        quic_lingutla@quicinc.com
-Subject: Re: [PATCH 1/3] firmware: arm_scmi: Fix null pointer dereference
- during fastchannel init
-Message-ID: <ZWiB1ATQF4dAxUHj@pluto>
-References: <20231129065748.19871-1-quic_sibis@quicinc.com>
- <20231129065748.19871-2-quic_sibis@quicinc.com>
+        Thu, 30 Nov 2023 07:44:56 -0500
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BA85D54;
+        Thu, 30 Nov 2023 04:45:01 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1cfc34b6890so7849025ad.1;
+        Thu, 30 Nov 2023 04:45:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701348301; x=1701953101; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=tcWBigwAEQLxd/2D/xlr472XrZ5RLKDBlKnV9K8Ge0E=;
+        b=KP6r0mO8Rbdw/ArnlAwRqSFkoRWDAPn2r4Md1fldtcA7hZK6iA0u+zC09ccrMJ3ePe
+         UQmGf8Ah8tPQt93fdGO70HkH/Wi4jzDh0W7Vibj8fHuYIE/NSEOCk0hDdr+L222hnKHs
+         r3K/XOCp88TDAzjWV1Tdlj1Ohi6iLLB1ST1lroZW8xNAGIceRTaFJNfNIp1zyZ15fi3d
+         8Dn/zdmXHcDX69WrqqxUJbg2rgdRBWOPFxv90vX1fFiTkTkhz/GycmkP4fva9hyom2Vv
+         sNNRwsBY/nYSWEnXk+g+AXf6AJVfVv+l3hMTfVvRzQfyOn506F8+llQgnAHZkJ3PZkjz
+         BCSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701348301; x=1701953101;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tcWBigwAEQLxd/2D/xlr472XrZ5RLKDBlKnV9K8Ge0E=;
+        b=Q35Ta8n3ZOegGybLUdS5hOMisBN+DwshPgvRkqq0Hg+NROJti6EqLLD6ZhEBDJEQYh
+         nAlNT+N98cQKGPOGadRCGaMBp3rlGNBd81qnzVZqb8QycMVvR6qkmvXslNs4fOSF2tJU
+         mFYCDQB5uP54fGr9NBTVVBiwSDWjV/C7Od/5bKVaybgaE13+IB7ID03CSv0HHIwcC058
+         3DbjbBsH/Nvd3D4JM16y72+ZUfkmylrqPMqXm1tgCqG+jXwt9jVbj/WY8kpfWnHlMNl4
+         Ietqo3KcNbXmG66EsfA5/tXAr+LOA1Ba/UWLy1SdPEFsrrMi+N/eQ0x75QqpZWlPh/SC
+         ZS2w==
+X-Gm-Message-State: AOJu0Yy86PdMPgIABO2tWvQIGGlpT3cpcU7pSc43l+ZFwIzsXqKArB3j
+        lnLvIwd++TA5gnRtabvmGVe9lGOGXRuCzg==
+X-Google-Smtp-Source: AGHT+IFhQ2WGTyc6UagJwSmCP8MJECePq0BT6Xx3EiE1x8lneakyNthndXYW3FytXYLExoQ7yOHDHw==
+X-Received: by 2002:a17:902:c60b:b0:1cf:5746:7ad0 with SMTP id r11-20020a170902c60b00b001cf57467ad0mr28483189plr.14.1701348300722;
+        Thu, 30 Nov 2023 04:45:00 -0800 (PST)
+Received: from localhost.localdomain ([110.46.146.116])
+        by smtp.gmail.com with ESMTPSA id h2-20020a170902f7c200b001c407fac227sm1274742plw.41.2023.11.30.04.44.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Nov 2023 04:45:00 -0800 (PST)
+From:   SungHwan Jung <onenowy@gmail.com>
+To:     Hans de Goede <hdegoede@redhat.com>,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc:     SungHwan Jung <onenowy@gmail.com>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] platform/x86: acer-wmi: select ACPI_PLATFORM_PROFILE
+Date:   Thu, 30 Nov 2023 21:44:52 +0900
+Message-ID: <20231130124452.3460-1-onenowy@gmail.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231129065748.19871-2-quic_sibis@quicinc.com>
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 12:27:46PM +0530, Sibi Sankar wrote:
-> The scmi_perf_domain_lookup requires the protocol handle to have the
-> private data set, which is yet to happen during the fastchannel init
-> scenario. This results in a null pointer dereference. Fix this by using
-> the pre-populated perf_dom_info to pass on the required information
-> instead.
-> 
-> Call trace:
-> scmi_perf_protocol_init+0x434/0x678
-> scmi_get_protocol_instance+0x168/0x29c
-> scmi_devres_protocol_instance_get+0x50/0xa0
-> scmi_devm_protocol_get+0x20/0x50
-> scmi_cpufreq_probe+0x34/0xd4
-> scmi_dev_probe+0x28/0x3c
-> really_probe+0x148/0x2ac
-> __driver_probe_device+0x78/0x12c
-> driver_probe_device+0x40/0x160
-> __device_attach_driver+0xb8/0x134
-> bus_for_each_drv+0x80/0xdc
-> __device_attach+0xa8/0x1b0
-> device_initial_probe+0x14/0x20
-> bus_probe_device+0xa8/0xac
-> device_add+0x5cc/0x778
-> device_register+0x20/0x30
-> __scmi_device_create.part.0+0xec/0x1cc
-> scmi_device_create+0x180/0x1c4
-> scmi_create_protocol_devices+0x4c/0xb0
-> scmi_probe+0x660/0x738
-> platform_probe+0x68/0xdc
-> really_probe+0x148/0x2ac
-> __driver_probe_device+0x78/0x12c
-> driver_probe_device+0x40/0x160
-> __device_attach_driver+0xb8/0x134
-> bus_for_each_drv+0x80/0xdc
-> __device_attach+0xa8/0x1b0
-> device_initial_probe+0x14/0x20
-> bus_probe_device+0xa8/0xac
-> deferred_probe_work_func+0x88/0xc0
-> process_one_work+0x13c/0x264
-> worker_thread+0x32c/0x438
-> kthread+0x118/0x11c
-> ret_from_fork+0x10/0x20
-> 
-> Fixes: 619bc6e034f3 ("firmware: arm_scmi: Populate fastchannel info only if set operations are allowed")
-> Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
-> ---
+select ACPI_PLATFORM_PROFILE to fix the dependency problem for acer-wmi
+to support platform profile.
 
-Yes indeed, I made this same error in the past and then I missed it when
-reviewing the offending patch :< ...
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311301842.ppdT4zWK-lkp@intel.com/
 
-Reviewed-by: Cristian Marussi <cristian.marussi@arm.com>
+Signed-off-by: SungHwan Jung <onenowy@gmail.com>
 
-Thanks,
-Cristian
+---
+I apologize that I missed dependency in kconfig.
+I have submitted a single patch because the series of patches were alreay
+merged to linux-next.
+Is this enough or should I re-submit the patch-series including this patch?
+(or modify this to apply before "platform/x86: acer-wmi: Add platform
+profile and modekey support for Predator PHN16-71" commit?)
+---
+ drivers/platform/x86/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
->  drivers/firmware/arm_scmi/perf.c | 19 +++++++------------
->  1 file changed, 7 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/firmware/arm_scmi/perf.c b/drivers/firmware/arm_scmi/perf.c
-> index d1323c5d9c27..a648521e04a3 100644
-> --- a/drivers/firmware/arm_scmi/perf.c
-> +++ b/drivers/firmware/arm_scmi/perf.c
-> @@ -759,40 +759,35 @@ static int scmi_perf_level_limits_notify(const struct scmi_protocol_handle *ph,
->  }
->  
->  static void scmi_perf_domain_init_fc(const struct scmi_protocol_handle *ph,
-> -				     u32 domain, struct scmi_fc_info **p_fc)
-> +				     struct perf_dom_info *dom)
->  {
->  	struct scmi_fc_info *fc;
-> -	struct perf_dom_info *dom;
-> -
-> -	dom = scmi_perf_domain_lookup(ph, domain);
-> -	if (IS_ERR(dom))
-> -		return;
->  
->  	fc = devm_kcalloc(ph->dev, PERF_FC_MAX, sizeof(*fc), GFP_KERNEL);
->  	if (!fc)
->  		return;
->  
->  	ph->hops->fastchannel_init(ph, PERF_DESCRIBE_FASTCHANNEL,
-> -				   PERF_LEVEL_GET, 4, domain,
-> +				   PERF_LEVEL_GET, 4, dom->id,
->  				   &fc[PERF_FC_LEVEL].get_addr, NULL);
->  
->  	ph->hops->fastchannel_init(ph, PERF_DESCRIBE_FASTCHANNEL,
-> -				   PERF_LIMITS_GET, 8, domain,
-> +				   PERF_LIMITS_GET, 8, dom->id,
->  				   &fc[PERF_FC_LIMIT].get_addr, NULL);
->  
->  	if (dom->info.set_perf)
->  		ph->hops->fastchannel_init(ph, PERF_DESCRIBE_FASTCHANNEL,
-> -					   PERF_LEVEL_SET, 4, domain,
-> +					   PERF_LEVEL_SET, 4, dom->id,
->  					   &fc[PERF_FC_LEVEL].set_addr,
->  					   &fc[PERF_FC_LEVEL].set_db);
->  
->  	if (dom->set_limits)
->  		ph->hops->fastchannel_init(ph, PERF_DESCRIBE_FASTCHANNEL,
-> -					   PERF_LIMITS_SET, 8, domain,
-> +					   PERF_LIMITS_SET, 8, dom->id,
->  					   &fc[PERF_FC_LIMIT].set_addr,
->  					   &fc[PERF_FC_LIMIT].set_db);
->  
-> -	*p_fc = fc;
-> +	dom->fc_info = fc;
->  }
->  
->  static int scmi_dvfs_device_opps_add(const struct scmi_protocol_handle *ph,
-> @@ -1102,7 +1097,7 @@ static int scmi_perf_protocol_init(const struct scmi_protocol_handle *ph)
->  		scmi_perf_describe_levels_get(ph, dom, version);
->  
->  		if (dom->perf_fastchannels)
-> -			scmi_perf_domain_init_fc(ph, dom->id, &dom->fc_info);
-> +			scmi_perf_domain_init_fc(ph, dom);
->  	}
->  
->  	ret = devm_add_action_or_reset(ph->dev, scmi_perf_xa_destroy, pinfo);
-> -- 
-> 2.17.1
-> 
+diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
+index 8e99a2f10147..81e6cd62a533 100644
+--- a/drivers/platform/x86/Kconfig
++++ b/drivers/platform/x86/Kconfig
+@@ -182,6 +182,7 @@ config ACER_WMI
+ 	select INPUT_SPARSEKMAP
+ 	select LEDS_CLASS
+ 	select NEW_LEDS
++	select ACPI_PLATFORM_PROFILE
+ 	help
+ 	  This is a driver for newer Acer (and Wistron) laptops. It adds
+ 	  wireless radio and bluetooth control, and on some laptops,
+-- 
+2.43.0
+
