@@ -2,69 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5335A7FFD1B
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 21:51:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F06557FFD1D
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 21:52:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376801AbjK3Uvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 15:51:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38390 "EHLO
+        id S1376782AbjK3UwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 15:52:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376736AbjK3Uvo (ORCPT
+        with ESMTP id S1376386AbjK3UwI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 15:51:44 -0500
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1BDC170E
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 12:51:49 -0800 (PST)
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-40b35199f94so43075e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 12:51:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701377508; x=1701982308; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=N0w0LWsaVhx7toijCRasOWOsbuYywvP2QO/AJh+x5nA=;
-        b=bSwEsTQnp+crTLTYct7mku2qJuzj8DUAMNj6KRQfs2JpPRtbh4c1kwhok0CW257zo3
-         eL4lIO2XcRVBqZl2eYYbFoKMP8DglA/2FAP/o2pNpUocE8oR9OEz1c8/hrwARmVCqV7T
-         H2QEKGd0mOI39A9DtYVAUj1TMY55o+rqyOb7KkIIBhTxYYCGT86AbZ6XEafP4gnrATdK
-         Qw2C6glat3peIhbLicbfNvWJzz6d6V3Ztl6RF+ohxSEFeAfeCbaL3z195HJG+EhSHz4N
-         XATr59VwSpe/DZTnPDRRSwEdlHakXs42TJK7giDX57erDHdKv6GxgdP7DeYI+Vw2jfCU
-         g0Wg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701377508; x=1701982308;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=N0w0LWsaVhx7toijCRasOWOsbuYywvP2QO/AJh+x5nA=;
-        b=hPZ/HTolM8b65E91G3pQg37moPGcER+/OSL7PT4tffwFZRe3seVt5wYZhUK9hdzmqM
-         si+rz1/+WQPRqIfrPZ0bEALJm8eSgItsAFIHm4YlBPJM+wRdy7pCYBjq96jHsYJTOd9D
-         HAosKJlqgB4B0PQ2zNBJgoMyG/OewgZSw7nVNU9J2zAfZl7aowDR7HWhSjuQB1Gwgykx
-         k/deDgOyYy4FXHhNr99m4uDvBTdFjiEBE7kN/Eq2nFsXiLAfSkkiBF+gPE/Rqy3DAqFV
-         le5i44M+5/PiEAApd+atT4SzGyu8Fnejk19CR6dBeHU1joIJLX3J/sVxc21/ikR6WcG5
-         rerw==
-X-Gm-Message-State: AOJu0YwMgRuFHdIsWhY3QbuiUTctmpOWcwIjUqzYBLbNtbaiJmBZrxDM
-        g2y8EB3ZhA6uhKF5G9jJIBSYuceTZPowCQjLoQ+nCQ==
-X-Google-Smtp-Source: AGHT+IEWmm4zsK7trudVYwAf/DSQ/1DbDzKa3t2Na71SAO1Fo9gW6aO96foQVVUNCaJicwhtrG1KXyXxqnrGD7i/HQo=
-X-Received: by 2002:a05:600c:3089:b0:40b:2979:9cc2 with SMTP id
- g9-20020a05600c308900b0040b29799cc2mr15935wmn.1.1701377508071; Thu, 30 Nov
- 2023 12:51:48 -0800 (PST)
+        Thu, 30 Nov 2023 15:52:08 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06526D54
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 12:52:14 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64B17C433C7;
+        Thu, 30 Nov 2023 20:52:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701377534;
+        bh=R7LNuLwRzlt/17e18V7R1EEOuUFGqpcWy3MHGj0x6iM=;
+        h=Date:From:To:Cc:Subject:From;
+        b=PH9L32LDTUo5YBVfdO+i974H6l5nZItyapR+AsLpeoGzf/+dGCu1c+X+ivz0qgAhv
+         +ubaCZfQPmAeHFtWPvxjrYsyh8V0OvLWxCfqKemE0TiBLk02sCZqL65asc3cPEz/9t
+         KAT/mFR7jEEK8re5RUp3wiVeqEIDk9V9LU9zz17+5drCadHLfMdB18Q9ndgkdF+uku
+         ImJYlkGfUNJvFioVreeYdyiVIcczEMuV+ZhFF6y1+hSwDx5p+IrMUcF8X7vDRt51M5
+         6JB4ng2ylWAtNJxDcQGXioxeERJhmYABsjgkx2EecpJs0NnW2DCHpRgTUUN5u38X3l
+         IpQI2NCEwvZlA==
+Date:   Thu, 30 Nov 2023 14:52:10 -0600
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Kees Cook <keescook@chromium.org>
+Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH][next] init: Kconfig: Disable -Wstringop-overflow for GCC-11
+Message-ID: <ZWj1+jkweEDWbmAR@work>
 MIME-Version: 1.0
-References: <20231030104746.241414-1-rf@opensource.cirrus.com>
-In-Reply-To: <20231030104746.241414-1-rf@opensource.cirrus.com>
-From:   Rae Moar <rmoar@google.com>
-Date:   Thu, 30 Nov 2023 15:51:36 -0500
-Message-ID: <CA+GJov7r9AiQSfFrWZLCL5SDtM2J6RND+zy_ieHGq8H1pJO5Mg@mail.gmail.com>
-Subject: Re: [PATCH RESEND] kunit: string-stream: Allow ERR_PTR to be passed
- to string_stream_destroy()
-To:     Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc:     brendan.higgins@linux.dev, davidgow@google.com,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,49 +52,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 30, 2023 at 6:47=E2=80=AFAM Richard Fitzgerald
-<rf@opensource.cirrus.com> wrote:
->
-> Check the stream pointer passed to string_stream_destroy() for
-> IS_ERR_OR_NULL() instead of only NULL.
->
-> Whatever alloc_string_stream() returns should be safe to pass
-> to string_stream_destroy(), and that will be an ERR_PTR.
->
-> It's obviously good practise and generally helpful to also check
-> for NULL pointers so that client cleanup code can call
-> string_stream_destroy() unconditionally - which could include
-> pointers that have never been set to anything and so are NULL.
->
-> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+-Wstringop-overflow is buggy in GCC-11. Therefore, we should disable
+this option specifically for that compiler version. To achieve this,
+we introduce a new configuration option: GCC11_NO_STRINGOP_OVERFLOW.
 
-Hello!
+The compiler option related to string operation overflow is now managed
+under configuration CC_STRINGOP_OVERFLOW. This option is enabled by
+default for all other versions of GCC that support it.
 
-Sorry for the delay in reviewing this patch but this looks good to me!
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ Makefile     |  4 +++-
+ init/Kconfig | 12 ++++++++++++
+ 2 files changed, 15 insertions(+), 1 deletion(-)
 
-Reviewed-by: Rae Moar <rmoar@google.com>
+diff --git a/Makefile b/Makefile
+index 2cfd71ae3a86..8adc611fb611 100644
+--- a/Makefile
++++ b/Makefile
+@@ -982,7 +982,9 @@ NOSTDINC_FLAGS += -nostdinc
+ # perform bounds checking.
+ KBUILD_CFLAGS += $(call cc-option, -fstrict-flex-arrays=3)
+ 
+-KBUILD_CFLAGS += $(call cc-option, -Wstringop-overflow)
++#Currently, disable -Wstringop-overflow for GCC 11, globally.
++KBUILD_CFLAGS-$(CONFIG_CC_NO_STRINGOP_OVERFLOW) += $(call cc-option, -Wno-stringop-overflow)
++KBUILD_CFLAGS-$(CONFIG_CC_STRINGOP_OVERFLOW) += $(call cc-option, -Wstringop-overflow)
+ 
+ # disable invalid "can't wrap" optimizations for signed / pointers
+ KBUILD_CFLAGS	+= -fno-strict-overflow
+diff --git a/init/Kconfig b/init/Kconfig
+index 9ffb103fc927..aaaa99a5d2a9 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -876,6 +876,18 @@ config CC_NO_ARRAY_BOUNDS
+ 	bool
+ 	default y if CC_IS_GCC && GCC_VERSION >= 110000 && GCC11_NO_ARRAY_BOUNDS
+ 
++# Currently, disable -Wstringop-overflow for GCC 11, globally.
++config GCC11_NO_STRINGOP_OVERFLOW
++	def_bool y
++
++config CC_NO_STRINGOP_OVERFLOW
++	bool
++	default y if CC_IS_GCC && GCC_VERSION >= 110000 && GCC_VERSION < 120000 && GCC11_NO_STRINGOP_OVERFLOW
++
++config CC_STRINGOP_OVERFLOW
++	bool
++	default y if CC_IS_GCC && !CC_NO_STRINGOP_OVERFLOW
++
+ #
+ # For architectures that know their GCC __int128 support is sound
+ #
+-- 
+2.34.1
 
-Thanks!
--Rae
-
-> ---
->  lib/kunit/string-stream.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/lib/kunit/string-stream.c b/lib/kunit/string-stream.c
-> index a6f3616c2048..54f4fdcbfac8 100644
-> --- a/lib/kunit/string-stream.c
-> +++ b/lib/kunit/string-stream.c
-> @@ -173,7 +173,7 @@ void string_stream_destroy(struct string_stream *stre=
-am)
->  {
->         KUNIT_STATIC_STUB_REDIRECT(string_stream_destroy, stream);
->
-> -       if (!stream)
-> +       if (IS_ERR_OR_NULL(stream))
->                 return;
->
->         string_stream_clear(stream);
-> --
-> 2.30.2
->
