@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61F477FF92C
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 19:16:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1E607FF913
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 19:09:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231958AbjK3SP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 13:15:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49740 "EHLO
+        id S1346737AbjK3SIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 13:08:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230106AbjK3SP5 (ORCPT
+        with ESMTP id S1346731AbjK3SIJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 13:15:57 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6E4810E5
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 10:16:00 -0800 (PST)
+        Thu, 30 Nov 2023 13:08:09 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56E8210E5
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 10:08:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701368160;
+        s=mimecast20190719; t=1701367694;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
         bh=2jFx75F08lvUnGClRbcPA/+lk5WtIKWp7dBnqR8MnnQ=;
-        b=Mi0upb529XmXIS58df9xdwFMPUzz9oFCDsAfrfHLsa3yTjFFox2NZePw14+UoTOvLkCXC3
-        rOz2Fe+GYrHVgBBfA7C70JGmbOCiGM/wFWdZsCtZGg7JOVMGvdd/PiHI3/VFv0D0Htgmgn
-        Hu9KhZ69EKzN4t5fT53QpkgFIf5RzNY=
-Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
- [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
+        b=aMyjcWBwQfFXlPWlQaqfAqtAssHVkplFM1+IiLCSRB5XIe/0vvZYwfSpOsZ5/KcJfz6CuE
+        VC/JMGheZ4zgCoQw+Q3MZrtwR+cnckFgBY90EbuOcw1960973Ew+ZQMg4WsT0JHB/Gj90p
+        ZCzMdpdVs4VMJ6efscj5LJeehSbw80I=
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
+ [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-426-Rw88x9jpOJeQzCvkLtPwUg-1; Thu, 30 Nov 2023 13:15:58 -0500
-X-MC-Unique: Rw88x9jpOJeQzCvkLtPwUg-1
-Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2c9b585b0d3so15707621fa.0
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 10:15:58 -0800 (PST)
+ us-mta-235-lQX9AhICOIiZe5MP3NGn4w-1; Thu, 30 Nov 2023 13:08:12 -0500
+X-MC-Unique: lQX9AhICOIiZe5MP3NGn4w-1
+Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-50bc961b435so1261737e87.2
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 10:08:11 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701368157; x=1701972957;
+        d=1e100.net; s=20230601; t=1701367689; x=1701972489;
         h=content-transfer-encoding:mime-version:user-agent:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
         bh=2jFx75F08lvUnGClRbcPA/+lk5WtIKWp7dBnqR8MnnQ=;
-        b=vkuTVjFWxz4xO1Z+A2CbLFu/Q/IoYnXHUEq0PegXErgeVOeOJ7/k0AGLBdRksu+POA
-         6Rwcy99a3Q461Ftvq5mHfpvMXH/jGgYBCZC8+ncNAxCU2r++zYN5OuaO1dMtoyeCB7ww
-         1hBT/BBSIAKpnl6Y5sehjmErQEnO47obNM3ArZJNwrYAgZeEM+/obyVBNn2ekf7tmyq9
-         5t+hHAPvpJ99yaqu1Y4eH4FST/kU/jVskyaQQQB6If0PtP1dYU70SMxwl8/YN6HE76hW
-         /a4e4WLu4dIFK4phwkfGhAriU9/iewi5qnxxMVzHVvUI/BoENokSc4VAIdluMJuWZKRW
-         E6bQ==
-X-Gm-Message-State: AOJu0YwQBYNATRlzO/i3gqYAVkRvJp0Hl8PV1/8+GaUxSEprkc3wNbne
-        lkSBhX8hI/WD+iY3YPo2ZcrkA12mInmfVDTfm7V7TK2dvlXg1G/oZNVoSetA3jtdmjMBo0vklJg
-        IYgisjnr9KjE3HhPsfZ2NQAyBKzI7TIVm
+        b=aKKEagl1zyZ4FxkODaTO7AaWyAugZbzAmVHdssf/8mdsxDWvbC1e1zZ1DQ6XXS0ySH
+         vlFR0o9VrPdv3vhji5l3nBM1yPu3Xjw3Xt9TpnwBISXtH8xyeXTV3WJY23qy2f0VaNUs
+         2ETbs6AvzjEYjzzmyMZkBegx+zh2VvjX6ZD34g2vJ0IiYXsOUbuAELS7k5CdPqb2pwR9
+         Ee3U7NxFAVou8UrnrB9E2gc6tosMoporx9V7YqfSDHzrD0QWD7wY1zOmkuCcSJWDa9qz
+         kLC+LS5DOewwRYkbEX41AmTq2roDWY10NmdEYVH27AZhAySyXifK44ivY5JLRvVQjuQC
+         VT6Q==
+X-Gm-Message-State: AOJu0YwVwmeph30E8CoOMLUpfo/QICDKUbchQU2PnthVvs0EF/swLPU0
+        RXZA68E5ZFNd5vXBxL+VG9xm/o47c5u9zPU/epVkS+b6JpR4dno8SzFmUKxh5BK7zd5RyyayBcm
+        6o6ZgKQbZs3/7N2bznd5ZeGdkmhE1dpuo
 X-Received: by 2002:a05:600c:1d24:b0:40b:4aed:ef31 with SMTP id l36-20020a05600c1d2400b0040b4aedef31mr7149wms.21.1701366870198;
         Thu, 30 Nov 2023 09:54:30 -0800 (PST)
 X-Google-Smtp-Source: AGHT+IGIeoJSxrAFHS2BdxOmhAs4+IKcHnEZVUlP+iPVqe3O8hZGeJaWPBNF5flVfGqhI0Ukgwcunw==
@@ -74,8 +74,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
