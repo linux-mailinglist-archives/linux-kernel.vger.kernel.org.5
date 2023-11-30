@@ -2,152 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B550E7FE9A2
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 08:23:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3356B7FE9A7
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 08:25:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344701AbjK3HX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 02:23:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40512 "EHLO
+        id S1344698AbjK3HZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 02:25:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229694AbjK3HXZ (ORCPT
+        with ESMTP id S229694AbjK3HZd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 02:23:25 -0500
-Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CD8BB9;
-        Wed, 29 Nov 2023 23:23:30 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0VxQXcqY_1701329003;
-Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VxQXcqY_1701329003)
-          by smtp.aliyun-inc.com;
-          Thu, 30 Nov 2023 15:23:28 +0800
-From:   "D. Wythe" <alibuda@linux.alibaba.com>
-To:     pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de,
-        dxu@dxuuu.xyz
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, coreteam@netfilter.org,
-        netfilter-devel@vger.kernel.org, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        ast@kernel.org
-Subject: [PATCH net] net/netfilter: bpf: fix bad registration on nf_defrag
-Date:   Thu, 30 Nov 2023 15:23:23 +0800
-Message-Id: <1701329003-14564-1-git-send-email-alibuda@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 30 Nov 2023 02:25:33 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0AE512C
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 23:25:39 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A39BC433C7;
+        Thu, 30 Nov 2023 07:25:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701329139;
+        bh=3YX4RL0/1V4O8MWlDUyKMhHKGcnFeVIea0/CNFViUCk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=f1sVFBfc0P4R779c5VQ1VtL0BojnbpMZLeHp+EMcbfSo/5axvWqP9OchECsJevnWf
+         dC2+VxCffos5IEZydk6/Y1WWSV4ej8uksP8dK1ZCqMnApDUS98ooeFu6KRh5klJXiL
+         SuKhEC6BCMRtbrfqNxeSl97TmkPaQhPtBCBHOA4QFJLsyORdx4wi3ouV2iKh6y4TPi
+         v+BCQuXZrA5DGjsFAl2jf+qdoA0cY/j5Ii+S7+zF6xY+DZUXhvxUwbVzhdmxCula/r
+         lfis4EGaQ7ud0acwtauCW9iQL2ZV8SD/eJvn9oVQ5biWmzL/F24r8OPio9f9lc+nxt
+         zdONEVv9XcfjQ==
+Date:   Thu, 30 Nov 2023 12:55:29 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Can Guo <quic_cang@quicinc.com>
+Cc:     bvanassche@acm.org, adrian.hunter@intel.com, cmd4@qualcomm.com,
+        beanhuo@micron.com, avri.altman@wdc.com, junwoo80.lee@samsung.com,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        "Bao D. Nguyen" <quic_nguyenb@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6 10/10] scsi: ufs: ufs-qcom: Add support for UFS device
+ version detection
+Message-ID: <20231130072529.GI3043@thinkpad>
+References: <1701246516-11626-1-git-send-email-quic_cang@quicinc.com>
+ <1701246516-11626-11-git-send-email-quic_cang@quicinc.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1701246516-11626-11-git-send-email-quic_cang@quicinc.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "D. Wythe" <alibuda@linux.alibaba.com>
+On Wed, Nov 29, 2023 at 12:28:35AM -0800, Can Guo wrote:
+> From: "Bao D. Nguyen" <quic_nguyenb@quicinc.com>
+> 
+> A spare register in UFS host controller is used to indicate the UFS device
+> version. The spare register is populated by bootloader for now, but in
+> future it will be populated by HW automatically during link startup with
+> its best efforts in any boot stages prior to Linux.
+> 
+> During host driver init, read the spare register, if it is not populated
+> with a UFS device version, go ahead with the dual init mechanism. If a UFS
+> device version is in there, use the UFS device version together with host
+> controller's HW version to decide the proper PHY gear which should be used
+> to configure the UFS PHY without going through the second init.
+> 
+> Signed-off-by: Bao D. Nguyen <quic_nguyenb@quicinc.com>
+> Signed-off-by: Can Guo <quic_cang@quicinc.com>
+> ---
+>  drivers/ufs/host/ufs-qcom.c | 23 ++++++++++++++++++-----
+>  drivers/ufs/host/ufs-qcom.h |  2 ++
+>  2 files changed, 20 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
+> index 9c0ebbc..e94dea2 100644
+> --- a/drivers/ufs/host/ufs-qcom.c
+> +++ b/drivers/ufs/host/ufs-qcom.c
+> @@ -1068,15 +1068,28 @@ static void ufs_qcom_advertise_quirks(struct ufs_hba *hba)
+>  static void ufs_qcom_set_phy_gear(struct ufs_qcom_host *host)
+>  {
+>  	struct ufs_host_params *host_params = &host->host_params;
+> +	u32 val, dev_major = 0;
 
-We should pass a pointer to global_hook to the get_proto_defrag_hook()
-instead of its value, since the passed value won't be updated even if
-the request module was loaded successfully.
+No need to initialize dev_major.
 
-Log:
+>  
+>  	host->phy_gear = host_params->hs_tx_gear;
+>  
+> -	/*
+> -	 * Power up the PHY using the minimum supported gear (UFS_HS_G2).
+> -	 * Switching to max gear will be performed during reinit if supported.
+> -	 */
+> -	if (host->hw_ver.major < 0x4)
+> +	if (host->hw_ver.major < 0x4) {
+> +		/*
+> +		 * Power up the PHY using the minimum supported gear (UFS_HS_G2).
+> +		 * Switching to max gear will be performed during reinit if supported.
+> +		 */
+>  		host->phy_gear = UFS_HS_G2;
+> +	} else {
 
-[   54.915713] nf_defrag_ipv4 has bad registration
-[   54.915779] WARNING: CPU: 3 PID: 6323 at net/netfilter/nf_bpf_link.c:62 get_proto_defrag_hook+0x137/0x160
-[   54.915835] CPU: 3 PID: 6323 Comm: fentry Kdump: loaded Tainted: G            E      6.7.0-rc2+ #35
-[   54.915839] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.15.0-0-g2dd4b9b3f840-prebuilt.qemu.org 04/01/2014
-[   54.915841] RIP: 0010:get_proto_defrag_hook+0x137/0x160
-[   54.915844] Code: 4f 8c e8 2c cf 68 ff 80 3d db 83 9a 01 00 0f 85 74 ff ff ff 48 89 ee 48 c7 c7 8f 12 4f 8c c6 05 c4 83 9a 01 01 e8 09 ee 5f ff <0f> 0b e9 57 ff ff ff 49 8b 3c 24 4c 63 e5 e8 36 28 6c ff 4c 89 e0
-[   54.915849] RSP: 0018:ffffb676003fbdb0 EFLAGS: 00010286
-[   54.915852] RAX: 0000000000000023 RBX: ffff9596503d5600 RCX: ffff95996fce08c8
-[   54.915854] RDX: 00000000ffffffd8 RSI: 0000000000000027 RDI: ffff95996fce08c0
-[   54.915855] RBP: ffffffff8c4f12de R08: 0000000000000000 R09: 00000000fffeffff
-[   54.915859] R10: ffffb676003fbc70 R11: ffffffff8d363ae8 R12: 0000000000000000
-[   54.915861] R13: ffffffff8e1f75c0 R14: ffffb676003c9000 R15: 00007ffd15e78ef0
-[   54.915864] FS:  00007fb6e9cab740(0000) GS:ffff95996fcc0000(0000) knlGS:0000000000000000
-[   54.915867] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   54.915868] CR2: 00007ffd15e75c40 CR3: 0000000101e62006 CR4: 0000000000360ef0
-[   54.915870] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[   54.915871] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[   54.915873] Call Trace:
-[   54.915891]  <TASK>
-[   54.915894]  ? __warn+0x84/0x140
-[   54.915905]  ? get_proto_defrag_hook+0x137/0x160
-[   54.915908]  ? __report_bug+0xea/0x100
-[   54.915925]  ? report_bug+0x2b/0x80
-[   54.915928]  ? handle_bug+0x3c/0x70
-[   54.915939]  ? exc_invalid_op+0x18/0x70
-[   54.915942]  ? asm_exc_invalid_op+0x1a/0x20
-[   54.915948]  ? get_proto_defrag_hook+0x137/0x160
-[   54.915950]  bpf_nf_link_attach+0x1eb/0x240
-[   54.915953]  link_create+0x173/0x290
-[   54.915969]  __sys_bpf+0x588/0x8f0
-[   54.915974]  __x64_sys_bpf+0x20/0x30
-[   54.915977]  do_syscall_64+0x45/0xf0
-[   54.915989]  entry_SYSCALL_64_after_hwframe+0x6e/0x76
-[   54.915998] RIP: 0033:0x7fb6e9daa51d
-[   54.916001] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 2b 89 0c 00 f7 d8 64 89 01 48
-[   54.916003] RSP: 002b:00007ffd15e78ed8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-[   54.916006] RAX: ffffffffffffffda RBX: 00007ffd15e78fc0 RCX: 00007fb6e9daa51d
-[   54.916007] RDX: 0000000000000040 RSI: 00007ffd15e78ef0 RDI: 000000000000001c
-[   54.916009] RBP: 000000000000002d R08: 00007fb6e9e73a60 R09: 0000000000000001
-[   54.916010] R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000006
-[   54.916012] R13: 0000000000000006 R14: 0000000000000000 R15: 0000000000000000
-[   54.916014]  </TASK>
-[   54.916015] ---[ end trace 0000000000000000 ]---
+Can you please add a comment here to describe what is happening?
 
-Fixes: 91721c2d02d3 ("netfilter: bpf: Support BPF_F_NETFILTER_IP_DEFRAG in netfilter link")
-Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
----
- net/netfilter/nf_bpf_link.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+> +		val = ufshcd_readl(host->hba, REG_UFS_DEBUG_SPARE_CFG);
+> +		dev_major = FIELD_GET(GENMASK(7, 4), val);
 
-diff --git a/net/netfilter/nf_bpf_link.c b/net/netfilter/nf_bpf_link.c
-index e502ec0..0e4beae 100644
---- a/net/netfilter/nf_bpf_link.c
-+++ b/net/netfilter/nf_bpf_link.c
-@@ -31,7 +31,7 @@ struct bpf_nf_link {
- #if IS_ENABLED(CONFIG_NF_DEFRAG_IPV4) || IS_ENABLED(CONFIG_NF_DEFRAG_IPV6)
- static const struct nf_defrag_hook *
- get_proto_defrag_hook(struct bpf_nf_link *link,
--		      const struct nf_defrag_hook __rcu *global_hook,
-+		      const struct nf_defrag_hook __rcu **ptr_global_hook,
- 		      const char *mod)
- {
- 	const struct nf_defrag_hook *hook;
-@@ -39,7 +39,7 @@ struct bpf_nf_link {
- 
- 	/* RCU protects us from races against module unloading */
- 	rcu_read_lock();
--	hook = rcu_dereference(global_hook);
-+	hook = rcu_dereference(*ptr_global_hook);
- 	if (!hook) {
- 		rcu_read_unlock();
- 		err = request_module(mod);
-@@ -47,7 +47,7 @@ struct bpf_nf_link {
- 			return ERR_PTR(err < 0 ? err : -EINVAL);
- 
- 		rcu_read_lock();
--		hook = rcu_dereference(global_hook);
-+		hook = rcu_dereference(*ptr_global_hook);
- 	}
- 
- 	if (hook && try_module_get(hook->owner)) {
-@@ -78,7 +78,7 @@ static int bpf_nf_enable_defrag(struct bpf_nf_link *link)
- 	switch (link->hook_ops.pf) {
- #if IS_ENABLED(CONFIG_NF_DEFRAG_IPV4)
- 	case NFPROTO_IPV4:
--		hook = get_proto_defrag_hook(link, nf_defrag_v4_hook, "nf_defrag_ipv4");
-+		hook = get_proto_defrag_hook(link, &nf_defrag_v4_hook, "nf_defrag_ipv4");
- 		if (IS_ERR(hook))
- 			return PTR_ERR(hook);
- 
-@@ -87,7 +87,7 @@ static int bpf_nf_enable_defrag(struct bpf_nf_link *link)
- #endif
- #if IS_ENABLED(CONFIG_NF_DEFRAG_IPV6)
- 	case NFPROTO_IPV6:
--		hook = get_proto_defrag_hook(link, nf_defrag_v6_hook, "nf_defrag_ipv6");
-+		hook = get_proto_defrag_hook(link, &nf_defrag_v6_hook, "nf_defrag_ipv6");
- 		if (IS_ERR(hook))
- 			return PTR_ERR(hook);
- 
+It'd be good to add a macro for GENMASK().
+
+> +
+> +		/* UFS device version populated, no need to do init twice */
+
+"Since the UFS device version is populated, let's remove the REINIT quirk as the
+negotiated gear won't change during boot. So there is no need to do reinit."
+
+> +		if (dev_major != 0)
+
+0x0
+
+> +			host->hba->quirks &= ~UFSHCD_QUIRK_REINIT_AFTER_MAX_GEAR_SWITCH;
+> +
+> +		/* For UFS 3.1 and older, apply HS-G4 PHY gear to save power */
+> +		if (dev_major < 0x4 && dev_major > 0)
+
+if (dev_major > 0x0 && dev_major < 0x4)
+
+- Mani
+
+> +			host->phy_gear = UFS_HS_G4;
+> +	}
+>  }
+>  
+>  static void ufs_qcom_set_host_params(struct ufs_hba *hba)
+> diff --git a/drivers/ufs/host/ufs-qcom.h b/drivers/ufs/host/ufs-qcom.h
+> index 11419eb..d12fc5a 100644
+> --- a/drivers/ufs/host/ufs-qcom.h
+> +++ b/drivers/ufs/host/ufs-qcom.h
+> @@ -54,6 +54,8 @@ enum {
+>  	UFS_AH8_CFG				= 0xFC,
+>  
+>  	REG_UFS_CFG3				= 0x271C,
+> +
+> +	REG_UFS_DEBUG_SPARE_CFG			= 0x284C,
+>  };
+>  
+>  /* QCOM UFS host controller vendor specific debug registers */
+> -- 
+> 2.7.4
+> 
+> 
+
 -- 
-1.8.3.1
-
+மணிவண்ணன் சதாசிவம்
