@@ -2,134 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC1397FEA9D
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 09:30:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE20D7FEAA0
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 09:31:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344889AbjK3IaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 03:30:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59912 "EHLO
+        id S1344921AbjK3Ia5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 03:30:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344881AbjK3IaO (ORCPT
+        with ESMTP id S1344885AbjK3Iax (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 03:30:14 -0500
-Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com [209.85.210.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9008510E2
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 00:30:18 -0800 (PST)
-Received: by mail-pf1-f198.google.com with SMTP id d2e1a72fcca58-6cdd6206017so822028b3a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 00:30:18 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701333018; x=1701937818;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=pIw1JWWT8TnVD6HbKTVvuR/5VtUWqfCmmFWn9LBakHY=;
-        b=KN9nt1QqgGjT4H87zt2GddkkT22ukOC4g/rJpI17DglS8X7Meg2mbxaafI27k6an0b
-         07x7fIEFV096jJV4nTKYFlXGDcpNrD8mOG90rHwi3M+D2IcdE+MnJo7fTpOtwdyzhVg1
-         aDWR0k/o+G9/uk9wEvk4raEAI9PgblhhqOwMDx1a2cy5xBp2ervrjceqD49ZE6zCJLDO
-         vGQaaN8OQPPGRgYDHv4jdJVw9Eyg3lz6pN7r45PFubsurFDhSyKUOSV+IzWz9fxyUhyg
-         37kHebtcDmu9X8Twyaho6xJjhps4uFjq1eaJSWGbKbxucyLXGMt2HaUh3p2SLZ2TywkP
-         Of4Q==
-X-Gm-Message-State: AOJu0YyVrQb2EOUIvvo8Z7G5E0RL2tTsju9AB/jznQsOf5oR5asAo1Bg
-        z7ZbqJms876qomfnWQJYvRZ3p8kWN+4AIZctXQ/z2i/8u7q0
-X-Google-Smtp-Source: AGHT+IFbutBmUZfwpexHXYZG5aEDMpJIxfd0+ggfyPZdji7eh9GhZt1t2/yrc8QSkSBVy3CwHfwsiFsCEl+LIBCdACB+oFRh/Ter
+        Thu, 30 Nov 2023 03:30:53 -0500
+Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D55710C2;
+        Thu, 30 Nov 2023 00:30:58 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.18.186.51])
+        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4Sgpqr0DKFz9yskM;
+        Thu, 30 Nov 2023 16:14:00 +0800 (CST)
+Received: from mail02.huawei.com (unknown [7.182.16.47])
+        by mail.maildlp.com (Postfix) with ESMTP id 181D11407B1;
+        Thu, 30 Nov 2023 16:30:55 +0800 (CST)
+Received: from [10.48.145.201] (unknown [10.48.145.201])
+        by APP1 (Coremail) with SMTP id LxC2BwBno3MtSGhlf0OkAQ--.62330S2;
+        Thu, 30 Nov 2023 09:30:54 +0100 (CET)
+Message-ID: <66ec6876-483a-4403-9baa-487ebad053f2@huaweicloud.com>
+Date:   Thu, 30 Nov 2023 09:30:34 +0100
 MIME-Version: 1.0
-X-Received: by 2002:a05:6a00:1249:b0:6cd:f18e:175 with SMTP id
- u9-20020a056a00124900b006cdf18e0175mr15597pfi.0.1701333017837; Thu, 30 Nov
- 2023 00:30:17 -0800 (PST)
-Date:   Thu, 30 Nov 2023 00:30:17 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000002ca935060b5a7682@google.com>
-Subject: [syzbot] [net?] WARNING in cleanup_net (3)
-From:   syzbot <syzbot+9ada62e1dc03fdc41982@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        pabeni@redhat.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 23/23] integrity: Switch from rbtree to LSM-managed
+ blob for integrity_iint_cache
+Content-Language: en-US
+To:     Casey Schaufler <casey@schaufler-ca.com>,
+        Roberto Sassu <roberto.sassu@huaweicloud.com>,
+        Paul Moore <paul@paul-moore.com>
+Cc:     viro@zeniv.linux.org.uk, brauner@kernel.org,
+        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
+        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+        jmorris@namei.org, serge@hallyn.com, zohar@linux.ibm.com,
+        dmitry.kasatkin@gmail.com, dhowells@redhat.com, jarkko@kernel.org,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        mic@digikod.net, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
+References: <20231107134012.682009-24-roberto.sassu@huaweicloud.com>
+ <17befa132379d37977fc854a8af25f6d.paul@paul-moore.com>
+ <2084adba3c27a606cbc5ed7b3214f61427a829dd.camel@huaweicloud.com>
+ <CAHC9VhTTKac1o=RnQadu2xqdeKH8C_F+Wh4sY=HkGbCArwc8JQ@mail.gmail.com>
+ <b6c51351be3913be197492469a13980ab379e412.camel@huaweicloud.com>
+ <CAHC9VhSAryQSeFy0ZMexOiwBG-YdVGRzvh58=heH916DftcmWA@mail.gmail.com>
+ <90eb8e9d-c63e-42d6-b951-f856f31590db@huaweicloud.com>
+ <366a6e5f-d43d-4266-8421-a8a05938a8fd@schaufler-ca.com>
+From:   Petr Tesarik <petrtesarik@huaweicloud.com>
+In-Reply-To: <366a6e5f-d43d-4266-8421-a8a05938a8fd@schaufler-ca.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: LxC2BwBno3MtSGhlf0OkAQ--.62330S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxKrWDZF43ur18Aw4rXr45GFg_yoWfAr4fpF
+        W7Kay7Kr4kAry2kr1IvF45ZFyfKry8XF1UXrn8Jr18A3s0vr1Sqr4UArWUuFyUGrs5Gw1j
+        qr1j9ry7Zr1DAw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkK14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r4j6r
+        4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
+        c2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
+        v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkG
+        c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_
+        Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbJ73D
+        UUUUU==
+X-CM-SenderInfo: hshw23xhvd2x3n6k3tpzhluzxrxghudrp/
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi all,
 
-syzbot found the following issue on:
+On 11/30/2023 1:41 AM, Casey Schaufler wrote:
+> On 11/29/2023 10:46 AM, Roberto Sassu wrote:
+>> On 11/29/2023 6:22 PM, Paul Moore wrote:
+>>> On Wed, Nov 29, 2023 at 7:28 AM Roberto Sassu
+>>> <roberto.sassu@huaweicloud.com> wrote:
+>>>>
+>>>> On Mon, 2023-11-20 at 16:06 -0500, Paul Moore wrote:
+>>>>> On Mon, Nov 20, 2023 at 3:16 AM Roberto Sassu
+>>>>> <roberto.sassu@huaweicloud.com> wrote:
+>>>>>> On Fri, 2023-11-17 at 15:57 -0500, Paul Moore wrote:
+>>>>>>> On Nov  7, 2023 Roberto Sassu <roberto.sassu@huaweicloud.com> wrote:
+>>>>>>>>
+>>>>>>>> Before the security field of kernel objects could be shared
+>>>>>>>> among LSMs with
+>>>>>>>> the LSM stacking feature, IMA and EVM had to rely on an
+>>>>>>>> alternative storage
+>>>>>>>> of inode metadata. The association between inode metadata and
+>>>>>>>> inode is
+>>>>>>>> maintained through an rbtree.
+>>>>>>>>
+>>>>>>>> Because of this alternative storage mechanism, there was no need
+>>>>>>>> to use
+>>>>>>>> disjoint inode metadata, so IMA and EVM today still share them.
+>>>>>>>>
+>>>>>>>> With the reservation mechanism offered by the LSM
+>>>>>>>> infrastructure, the
+>>>>>>>> rbtree is no longer necessary, as each LSM could reserve a space
+>>>>>>>> in the
+>>>>>>>> security blob for each inode. However, since IMA and EVM share the
+>>>>>>>> inode metadata, they cannot directly reserve the space for them.
+>>>>>>>>
+>>>>>>>> Instead, request from the 'integrity' LSM a space in the
+>>>>>>>> security blob for
+>>>>>>>> the pointer of inode metadata (integrity_iint_cache structure).
+>>>>>>>> The other
+>>>>>>>> reason for keeping the 'integrity' LSM is to preserve the
+>>>>>>>> original ordering
+>>>>>>>> of IMA and EVM functions as when they were hardcoded.
+>>>>>>>>
+>>>>>>>> Prefer reserving space for a pointer to allocating the
+>>>>>>>> integrity_iint_cache
+>>>>>>>> structure directly, as IMA would require it only for a subset of
+>>>>>>>> inodes.
+>>>>>>>> Always allocating it would cause a waste of memory.
+>>>>>>>>
+>>>>>>>> Introduce two primitives for getting and setting the pointer of
+>>>>>>>> integrity_iint_cache in the security blob, respectively
+>>>>>>>> integrity_inode_get_iint() and integrity_inode_set_iint(). This
+>>>>>>>> would make
+>>>>>>>> the code more understandable, as they directly replace rbtree
+>>>>>>>> operations.
+>>>>>>>>
+>>>>>>>> Locking is not needed, as access to inode metadata is not
+>>>>>>>> shared, it is per
+>>>>>>>> inode.
+>>>>>>>>
+>>>>>>>> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+>>>>>>>> Reviewed-by: Casey Schaufler <casey@schaufler-ca.com>
+>>>>>>>> Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
+>>>>>>>> ---
+>>>>>>>>   security/integrity/iint.c      | 71
+>>>>>>>> +++++-----------------------------
+>>>>>>>>   security/integrity/integrity.h | 20 +++++++++-
+>>>>>>>>   2 files changed, 29 insertions(+), 62 deletions(-)
+>>>>>>>>
+>>>>>>>> diff --git a/security/integrity/iint.c b/security/integrity/iint.c
+>>>>>>>> index 882fde2a2607..a5edd3c70784 100644
+>>>>>>>> --- a/security/integrity/iint.c
+>>>>>>>> +++ b/security/integrity/iint.c
+>>>>>>>> @@ -231,6 +175,10 @@ static int __init integrity_lsm_init(void)
+>>>>>>>>      return 0;
+>>>>>>>>   }
+>>>>>>>>
+>>>>>>>> +struct lsm_blob_sizes integrity_blob_sizes __ro_after_init = {
+>>>>>>>> +   .lbs_inode = sizeof(struct integrity_iint_cache *),
+>>>>>>>> +};
+>>>>>>>
+>>>>>>> I'll admit that I'm likely missing an important detail, but is there
+>>>>>>> a reason why you couldn't stash the integrity_iint_cache struct
+>>>>>>> directly in the inode's security blob instead of the pointer?  For
+>>>>>>> example:
+>>>>>>>
+>>>>>>>    struct lsm_blob_sizes ... = {
+>>>>>>>      .lbs_inode = sizeof(struct integrity_iint_cache),
+>>>>>>>    };
+>>>>>>>
+>>>>>>>    struct integrity_iint_cache *integrity_inode_get(inode)
+>>>>>>>    {
+>>>>>>>      if (unlikely(!inode->isecurity))
+>>>>>>>        return NULL;
+>>>>>>>      return inode->i_security + integrity_blob_sizes.lbs_inode;
+>>>>>>>    }
+>>>>>>
+>>>>>> It would increase memory occupation. Sometimes the IMA policy
+>>>>>> encompasses a small subset of the inodes. Allocating the full
+>>>>>> integrity_iint_cache would be a waste of memory, I guess?
+>>>>>
+>>>>> Perhaps, but if it allows us to remove another layer of dynamic memory
+>>>>> I would argue that it may be worth the cost.  It's also worth
+>>>>> considering the size of integrity_iint_cache, while it isn't small, it
+>>>>> isn't exactly huge either.
+>>>>>
+>>>>>> On the other hand... (did not think fully about that) if we embed the
+>>>>>> full structure in the security blob, we already have a mutex
+>>>>>> available
+>>>>>> to use, and we don't need to take the inode lock (?).
+>>>>>
+>>>>> That would be excellent, getting rid of a layer of locking would be
+>>>>> significant.
+>>>>>
+>>>>>> I'm fully convinced that we can improve the implementation
+>>>>>> significantly. I just was really hoping to go step by step and not
+>>>>>> accumulating improvements as dependency for moving IMA and EVM to the
+>>>>>> LSM infrastructure.
+>>>>>
+>>>>> I understand, and I agree that an iterative approach is a good idea, I
+>>>>> just want to make sure we keep things tidy from a user perspective,
+>>>>> i.e. not exposing the "integrity" LSM when it isn't required.
+>>>>
+>>>> Ok, I went back to it again.
+>>>>
+>>>> I think trying to separate integrity metadata is premature now, too
+>>>> many things at the same time.
+>>>
+>>> I'm not bothered by the size of the patchset, it is more important
+>>> that we do The Right Thing.  I would like to hear in more detail why
+>>> you don't think this will work, I'm not interested in hearing about
+>>> difficult it may be, I'm interested in hearing about what challenges
+>>> we need to solve to do this properly.
+>>
+>> The right thing in my opinion is to achieve the goal with the minimal
+>> set of changes, in the most intuitive way.
+>>
+>> Until now, there was no solution that could achieve the primary goal
+>> of this patch set (moving IMA and EVM to the LSM infrastructure) and,
+>> at the same time, achieve the additional goal you set of removing the
+>> 'integrity' LSM.
+>>
+>> If you see the diff, the changes compared to v5 that was already
+>> accepted by Mimi are very straightforward. If the assumption I made
+>> that in the end the 'ima' LSM could take over the role of the
+>> 'integrity' LSM, that for me is the preferable option.
+>>
+>> Given that the patch set is not doing any design change, but merely
+>> moving calls and storing pointers elsewhere, that leaves us with the
+>> option of thinking better what to do next, including like you
+>> suggested to make IMA and EVM use disjoint metadata.
+>>
+>>>> I started to think, does EVM really need integrity metadata or it can
+>>>> work without?
+>>>>
+>>>> The fact is that CONFIG_IMA=n and CONFIG_EVM=y is allowed, so we have
+>>>> the same problem now. What if we make IMA the one that manages
+>>>> integrity metadata, so that we can remove the 'integrity' LSM?
+>>>
+>>> I guess we should probably revisit the basic idea of if it even makes
+>>> sense to enable EVM without IMA?  Should we update the Kconfig to
+>>> require IMA when EVM is enabled?
+>>
+>> That would be up to Mimi. Also this does not seem the main focus of
+>> the patch set.
+>>
+>>>> Regarding the LSM order, I would take Casey's suggestion of introducing
+>>>> LSM_ORDER_REALLY_LAST, for EVM.
+>>>
+>>> Please understand that I really dislike that we have imposed ordering
+>>> constraints at the LSM layer, but I do understand the necessity (the
+>>> BPF LSM ordering upsets me the most).  I really don't want to see us
+>>> make things worse by adding yet another ordering bucket, I would
+>>> rather that we document it well and leave it alone ... basically treat
+>>> it like the BPF LSM (grrrrrr).
+>>
+>> Uhm, that would not be possible right away (the BPF LSM is mutable),
+>> remember that we defined LSM_ORDER_LAST so that an LSM can be always
+>> enable and placed as last (requested by Mimi)?
+> 
+> It would be nice if the solution directly addresses the problem.
+> EVM needs to be after the LSMs that use xattrs, not after all LSMs.
+> I suggested LSM_ORDER_REALLY_LAST in part to identify the notion as
+> unattractive.
 
-HEAD commit:    d90b0276af8f Merge tag 'hardening-v6.6-rc3' of git://git.k..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=12c4675c680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d594086f139d167
-dashboard link: https://syzkaller.appspot.com/bug?extid=9ada62e1dc03fdc41982
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: i386
+Excuse me to chime in, but do we really need the ordering in code? FWIW
+the linker guarantees that objects appear in the order they are seen
+during the link (unless --sort-section overrides that default, but this
+option is not used in the kernel). Since *.a archive files are used in
+kbuild, I have also verified that their use does not break the
+assumption; they are always created from scratch.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+In short, to enforce an ordering, you can simply list the corresponding
+object files in that order in the Makefile. Of course, add a big fat
+warning comment, so people understand the order is not arbitrary.
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-d90b0276.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/c6997ebf3cf3/vmlinux-d90b0276.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/d893c5c3f98f/bzImage-d90b0276.xz
+Just my two eurocents,
+Petr T
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+9ada62e1dc03fdc41982@syzkaller.appspotmail.com
-
-     do_fast_syscall_32+0x33/0x70 arch/x86/entry/common.c:203
-     entry_SYSENTER_compat_after_hwframe+0x70/0x82
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 1093 at lib/ref_tracker.c:179 spin_unlock_irqrestore include/linux/spinlock.h:406 [inline]
-WARNING: CPU: 1 PID: 1093 at lib/ref_tracker.c:179 ref_tracker_dir_exit+0x3e2/0x680 lib/ref_tracker.c:178
-Modules linked in:
-CPU: 1 PID: 1093 Comm: kworker/u16:7 Not tainted 6.6.0-rc2-syzkaller-00337-gd90b0276af8f #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-Workqueue: netns cleanup_net
-RIP: 0010:ref_tracker_dir_exit+0x3e2/0x680 lib/ref_tracker.c:179
-Code: 85 07 02 00 00 4d 39 f5 49 8b 06 4d 89 f7 0f 85 0e ff ff ff 48 8b 2c 24 e8 4b 7b 32 fd 48 8b 74 24 18 48 89 ef e8 ce d8 ec 05 <0f> 0b e8 37 7b 32 fd 48 8d 5d 44 be 04 00 00 00 48 89 df e8 b6 34
-RSP: 0018:ffffc90006ee7b78 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: dffffc0000000000 RCX: 0000000000000000
-RDX: 0000000000000001 RSI: ffffffff8a8cab20 RDI: 0000000000000001
-RBP: ffff8880591981e0 R08: 0000000000000001 R09: fffffbfff233dff7
-R10: ffffffff919effbf R11: 0000000000000114 R12: ffff888059198230
-R13: ffff888059198230 R14: ffff888059198230 R15: ffff888059198230
-FS:  0000000000000000(0000) GS:ffff88802c700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000057ab404c CR3: 0000000070f05000 CR4: 0000000000350ee0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 00000000ffff00f1 DR6: 00000000ffff0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- net_free net/core/net_namespace.c:448 [inline]
- net_free net/core/net_namespace.c:442 [inline]
- cleanup_net+0x8d4/0xb20 net/core/net_namespace.c:635
- process_one_work+0x884/0x15c0 kernel/workqueue.c:2630
- process_scheduled_works kernel/workqueue.c:2703 [inline]
- worker_thread+0x8b9/0x1290 kernel/workqueue.c:2784
- kthread+0x33c/0x440 kernel/kthread.c:388
- ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
