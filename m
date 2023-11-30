@@ -2,102 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B85B97FEEE2
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 13:23:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 777967FEF3E
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 13:39:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235172AbjK3MXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 07:23:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47638 "EHLO
+        id S1345387AbjK3Mi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 07:38:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231796AbjK3MXP (ORCPT
+        with ESMTP id S1345191AbjK3Mi5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 07:23:15 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4C6301A8;
-        Thu, 30 Nov 2023 04:23:21 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A91081042;
-        Thu, 30 Nov 2023 04:24:07 -0800 (PST)
-Received: from FVFF77S0Q05N (unknown [10.57.43.250])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 21DB13F5A1;
-        Thu, 30 Nov 2023 04:23:20 -0800 (PST)
-Date:   Thu, 30 Nov 2023 12:23:13 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     "Ashley, William" <wash@amazon.com>
-Cc:     "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
-        will@kernel.org
-Subject: Re: armv8pmu: Pending overflow interrupt is discarded when perf
- event is disabled
-Message-ID: <ZWh-sbrHJu2b-BU6@FVFF77S0Q05N>
-References: <950001BD-490C-4BAC-8EEA-CDB9F7C4ADFC@amazon.com>
- <EBAF38AB-2BE5-425F-8A52-DDCB0B390309@amazon.com>
- <ZWdoNWps4izj5WJy@FVFF77S0Q05N.cambridge.arm.com>
- <ZWh2pnR_Z5-CKuZb@FVFF77S0Q05N>
+        Thu, 30 Nov 2023 07:38:57 -0500
+Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.215])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 84695D4A;
+        Thu, 30 Nov 2023 04:39:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=c7kjH
+        jIQ4/nlmiPUxBorZmmivgfaJAOI5Gw9Jj5OowE=; b=RiSeGZ6inEhAZK1tNi/S7
+        EOhH5l6KUvbRJ+K1axbtXAhb+AELEbP/J/WfNEHxqbyc9GMnFPOl1J/o61dSi8ns
+        ClndHaNkwHwqljU/cj/Q7CoAexqhPYD0q0/VLKcHSU8Bc8Wvf1EXl6cmvJ1yjdER
+        ITdB8WVNXffCpG446dw9TE=
+Received: from ProDesk.. (unknown [58.22.7.114])
+        by zwqz-smtp-mta-g5-0 (Coremail) with SMTP id _____wDHXlS0fmhl4hTXAQ--.47878S2;
+        Thu, 30 Nov 2023 20:23:20 +0800 (CST)
+From:   Andy Yan <andyshrk@163.com>
+To:     heiko@sntech.de
+Cc:     hjc@rock-chips.com, dri-devel@lists.freedesktop.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
+        devicetree@vger.kernel.org, sebastian.reichel@collabora.com,
+        kever.yang@rock-chips.com, chris.obbard@collabora.com,
+        Andy Yan <andy.yan@rock-chips.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>
+Subject: [PATCH v3 04/14] drm/rockchip: vop2: clear afbc en and transform bit for cluster window at linear mode
+Date:   Thu, 30 Nov 2023 20:23:15 +0800
+Message-Id: <20231130122315.12954-1-andyshrk@163.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231130122001.12474-1-andyshrk@163.com>
+References: <20231130122001.12474-1-andyshrk@163.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZWh2pnR_Z5-CKuZb@FVFF77S0Q05N>
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: _____wDHXlS0fmhl4hTXAQ--.47878S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7ZrW3WF1DuFyrWryfXrWkZwb_yoW8Gr1kpr
+        W5AFWqqr4xK3yqqa1DJF9xZFZYk3ZFkayxWrZ7JwnFgFWUKa4kG3Z0kryDJrWUJ3WagF48
+        trn3JrW7ZFWYvr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jSwZ7UUUUU=
+X-Originating-IP: [58.22.7.114]
+X-CM-SenderInfo: 5dqg52xkunqiywtou0bp/1tbiqBs4XmVOAquRqAAAsu
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_BL,RCVD_IN_MSPIKE_L4,
+        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 30, 2023 at 11:48:54AM +0000, Mark Rutland wrote:
-> On Wed, Nov 29, 2023 at 04:35:01PM +0000, Mark Rutland wrote:
-> > Does RR set any of the perf_event_attr::exclude_* bits? If not, does RR
-> > intentionally count events that occur within the kernel?
-> 
-> Looking at the test, I see it sets perf_event_attr::exclude_kernel to 1, but
-> doesn't set perf_event_attr::exclude_host or perf_event_attr::exclude_hv. I
-> think the poorly-defined exclude_* bits are part of the problem here.
-> 
-> Using your test as-is on my ThunderX2, I can reproduce the period being longer
-> than expected by concurrently running the following in a shell:
-> 
->   while true; do
->     for C in $(seq 0 63); do
->       taskset -c -p $C ${TEST_PID_HERE};
->     done; 
->   done > /dev/null
-> 
-> ... resulting in:
-> 
-> | [mark@gravadlaks:~]% ./counter-overflow                                     
-> | Pid 20060 running with period 10000 tolerance 1000
-> | Signal #1: last: 0, cur: 10292, max diff: 0
-> | Signal #415330: delta of 19999 is outside 10000 +/- 1000
-> | Signal #415330: last: 4153290187, cur: 4153310186, max diff: 10292
-> | Signal #489879: delta of 19998 is outside 10000 +/- 1000
-> | Signal #511842: delta of 20058 is outside 10000 +/- 1000
-> | Signal #511842: last: 5118430130, cur: 5118450188, max diff: 19999
-> 
-> However, if I modify the test to also set perf_event_attr::exclude_host=1, I do
-> not see any lost overflows after many minutes. On VHE hosts (like the
-> ThunderX2), the host kernel gets counted when perf_event_attr::exclude_host=0,
-> even if perf_event_attr::exclude_kernel=1 (which I agree is surprising), so I
-> think what's happening is the counters are counting in the host kernel, which
-> isn't what RR actually wants regardless.
+From: Andy Yan <andy.yan@rock-chips.com>
 
-> I'll continue to look at what we can do kernel-side, but I reckon it's worth
-> having RR try the other exclude bits regardless, if that's possible? It would
-> be interesting to know whether that helps you under a hypervisor.
+The enable bit and transform offset of cluster windows should be
+cleared when it work at linear mode, or we may have a iommu fault
+issue on rk3588 which cluster windows switch between afbc and linear
+mode.
 
-Sorry, the above is wrong, and I do not recommend RR goes and changes its
-exclude_* settings.
+As the cluster windows of rk3568 only supports afbc format
+so is therefore not affected.
 
-I had misread the logic in armv8pmu_set_event_filter(), but looking again
-that's saner than I thought it was, and what was actually happening in my
-testing is that exclude_host also filtered host EL0 (userspace), and so the
-test received *no* overflow signals.
+Signed-off-by: Andy Yan <andy.yan@rock-chips.com>
+Reviewed-by: Sascha Hauer <s.hauer@pengutronix.de>
+---
 
-I'll get back to looking at how we can better capture the overflow when
-removing an event.
+(no changes since v1)
 
-Mark.
+ drivers/gpu/drm/rockchip/rockchip_drm_vop2.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c b/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
+index 639dfebc6bd1..a019cc9bbd54 100644
+--- a/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
++++ b/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
+@@ -1312,6 +1312,11 @@ static void vop2_plane_atomic_update(struct drm_plane *plane,
+ 		vop2_win_write(win, VOP2_WIN_AFBC_ROTATE_270, rotate_270);
+ 		vop2_win_write(win, VOP2_WIN_AFBC_ROTATE_90, rotate_90);
+ 	} else {
++		if (vop2_cluster_window(win)) {
++			vop2_win_write(win, VOP2_WIN_AFBC_ENABLE, 0);
++			vop2_win_write(win, VOP2_WIN_AFBC_TRANSFORM_OFFSET, 0);
++		}
++
+ 		vop2_win_write(win, VOP2_WIN_YRGB_VIR, DIV_ROUND_UP(fb->pitches[0], 4));
+ 	}
+ 
+-- 
+2.34.1
+
