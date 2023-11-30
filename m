@@ -2,65 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA4E47FEE6E
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 13:00:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 861C07FEE72
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 13:00:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345228AbjK3MAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 07:00:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35474 "EHLO
+        id S1345252AbjK3MAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 07:00:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231974AbjK3MAX (ORCPT
+        with ESMTP id S1345221AbjK3MA0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 07:00:23 -0500
-Received: from mail-vk1-xa2e.google.com (mail-vk1-xa2e.google.com [IPv6:2607:f8b0:4864:20::a2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 752F8B5
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 04:00:29 -0800 (PST)
-Received: by mail-vk1-xa2e.google.com with SMTP id 71dfb90a1353d-4b295eddb9fso291809e0c.3
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 04:00:29 -0800 (PST)
+        Thu, 30 Nov 2023 07:00:26 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1419D48
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 04:00:32 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-54bb9024378so831211a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 04:00:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701345628; x=1701950428; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=+XL3jjKCKA9pB9RwbZGrfMbiUOzQufCSGgTYGQMj21Q=;
-        b=ahkYR8o01pk0cGqglN6iPEwRg6+VpxeNXGTfPc6OrmcSovbrFHoCAzwFvXKOjiYvHy
-         hyO3C/eDtm5YDNGFWmm9G3GIpyz1igM//xsxL62slprdSiEOsHqU/AZGIzZW/QSvaqtk
-         X+oJd7Yz3SeCdo3dUBsvUSfU/oxJVt6bdzO+IfhAHpTYZRsbPuyZWQ05oc5X2XJL3gUh
-         6k4wUw68QwHlgf57MRJykS6lfDYVo26/Q/bOxLtiWsovh6UJjjpIOIb9jB0mMVYCCGua
-         b3Xe/s8gIIPrsEPog/igY9xx9ERDj13rWLX1mdhvoyvZ2KnRtD/tOvqWOIA+q0SeIPIz
-         qslA==
+        d=linaro.org; s=google; t=1701345631; x=1701950431; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=npI0PNPPCArBwwRVVZ0pXSN33m5+EJoBDMzm63BCi3A=;
+        b=kgp9MapSPlPL1NOkocsa5E21TBQWwzbEkfyHvqUVZJ92ypQcn36U0fLFb+r+idSRK5
+         YYop/nXi1oalRMEQByaEPoCsHhPl0Ocfy6Jkfslib1ldzBCh/Edows3/wBn/Fu/npMhN
+         sBjtzD75A3yigaUy78BMIzuvUOo+ZpqE9caHZpFoHj+95UkXHjasvif20j7Fh4KzOyte
+         tDmLS/q9ELjaNrJvHw+8UB4EqjFFTYtyL/WDxBjavtcr24mAaiC3Jw5FF1r8QU3fMSih
+         78mbQ2+WUdGKWNdZKJlzJhcz/KK/8nXEO1D6p3203IhkVmH8L3mdWsQdPpe3LYTjPBg4
+         TFCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701345628; x=1701950428;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+XL3jjKCKA9pB9RwbZGrfMbiUOzQufCSGgTYGQMj21Q=;
-        b=AkO38qAJiCjoIZlArnmT0B3W1WZJ1p3Qm9iJ//Fwsrrkqc/jb69WRt9YuwI5ITvbM6
-         jbHx+3bzIv0923Kkls7ZMdqypWn/bWPwyDdatmq0fJ5icdkCsllhcSTv4T9Sa0qo/bCu
-         xiHBYVjC7g3+l+zcsLS/Lwxt2qy0V7HeFZi1XgD/ObOkOfbK+RuaANZtgcfPULRstrDs
-         20m3Pm5urP6vyFvS5ku/Uqk/05Qu6Air+knUWwLbftXC8Jiw9h8GcUTDideT9sVROTQN
-         3BXPab34IKaUEzsdVzky2pEv9M1+ImJdL8Y22xf20WHnkyEFrGzvR7F8OdUeUMq6AOl0
-         LU4A==
-X-Gm-Message-State: AOJu0YzuU2QxzkRYHlvdWhwq7lUEqThmVMeS1sDE/OxiwaTGFoA8TiwS
-        eJkfx9Kr1bAPZBfnu4xmY7I95F2nJWKxWt3C8L6Y6M0OeFIAI2lejB4=
-X-Google-Smtp-Source: AGHT+IEnbq5g4BJBG/HVzBCwmLePOXnCb51y48O75HnycZYnIM4B7vf1PNdZmvv94X6AzXC5XjOXhogWf3FG47SWVbo=
-X-Received: by 2002:a05:6122:222a:b0:4ab:f1f8:3171 with SMTP id
- bb42-20020a056122222a00b004abf1f83171mr22032425vkb.6.1701345628434; Thu, 30
- Nov 2023 04:00:28 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701345631; x=1701950431;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=npI0PNPPCArBwwRVVZ0pXSN33m5+EJoBDMzm63BCi3A=;
+        b=DNAqny7hGZ1l/BOzPgX77KFBF3iv1sfmqYAQ8jIMm29UR0QWMcm5z6P0Z4fIytNTXx
+         4RhDztmuFy//Mq4TkHYnbKRHebvxjCM5a3iF1bNWVD2uoYmXSHIrIhuZDNEg+aTCuyt3
+         xcBRctZXF16hJoXCC2WYe3D9Kb/6/driQV9+lotTdRzXUOvIOR0+gn/f+izX2t0ioPuq
+         YJU19JyRZIadUh1yr2s+69twLVk7cL4uJu+dITv4BvdhLuVBm3d9FdPdSWTgr3t8udmr
+         eAB1u9n+L1yWNw+mk6iV3G8xytuzI99UpgFB6JXNXNpiWMMQCteZNMzf5ypc7ctun1m6
+         UHGQ==
+X-Gm-Message-State: AOJu0Yz/ExDHuLEnrqUVeh30WNMeKgJqO6/HhEsEduZjX7S6UnKMPtJv
+        TjL+Spqpmy3dh1IVA8UgV8veAA==
+X-Google-Smtp-Source: AGHT+IEqX3nSINaCt+TF92BYcgECHcc0CffqpPXooXdphQZmLs6k7OT9rcvi/b7KdQ+26IgSxWLhYg==
+X-Received: by 2002:a05:6402:160e:b0:54b:9881:41b2 with SMTP id f14-20020a056402160e00b0054b988141b2mr7185236edv.12.1701345631190;
+        Thu, 30 Nov 2023 04:00:31 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.223.109])
+        by smtp.gmail.com with ESMTPSA id r24-20020aa7c158000000b0054ae75dcd6bsm479338edp.95.2023.11.30.04.00.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Nov 2023 04:00:30 -0800 (PST)
+Message-ID: <85b7ab43-4d39-4eb3-b021-1c18a58e99b9@linaro.org>
+Date:   Thu, 30 Nov 2023 13:00:28 +0100
 MIME-Version: 1.0
-References: <20231129164439.1130903-1-arnaud.pouliquen@foss.st.com>
- <CAFA6WYP=_BPt_x1FxeVdAdB_mMjdz8QzvkfFXx-5msy8PZG6nA@mail.gmail.com> <60b67bd5-36c3-4318-9a2b-bcf172681d45@foss.st.com>
-In-Reply-To: <60b67bd5-36c3-4318-9a2b-bcf172681d45@foss.st.com>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Thu, 30 Nov 2023 17:30:17 +0530
-Message-ID: <CAFA6WYN9eJ1vGTKfGXy7M709=aGkg1oF3odK7iGRUBokbKtqzw@mail.gmail.com>
-Subject: Re: [PATCH v4] tee: Use iov_iter to better support shared buffer registration
-To:     Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Cc:     Jens Wiklander <jens.wiklander@linaro.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        op-tee@lists.trustedfirmware.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 15/21] dt-bindings: mips: cpu: Add I-Class I6500
+ Multiprocessor Core
+Content-Language: en-US
+To:     Gregory CLEMENT <gregory.clement@bootlin.com>,
+        Paul Burton <paulburton@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
+        Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        =?UTF-8?Q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        =?UTF-8?Q?Philippe_Mathieu-Daud=C3=A9?= <philmd@linaro.org>
+References: <20231123152639.561231-1-gregory.clement@bootlin.com>
+ <20231123152639.561231-16-gregory.clement@bootlin.com>
+ <f443830a-ba16-4c5e-9260-6fb38a09cc10@linaro.org> <874jh3fra6.fsf@BL-laptop>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <874jh3fra6.fsf@BL-laptop>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -69,257 +132,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 30 Nov 2023 at 14:38, Arnaud POULIQUEN
-<arnaud.pouliquen@foss.st.com> wrote:
->
->
->
-> On 11/30/23 08:54, Sumit Garg wrote:
-> > On Wed, 29 Nov 2023 at 22:15, Arnaud Pouliquen
-> > <arnaud.pouliquen@foss.st.com> wrote:
-> >>
-> >> Currently it's not possible to register kernel buffers with TEE
-> >> which are allocated via vmalloc.
-> >>
-> >> Use iov_iter and associated helper functions to manage the page
-> >> registration for all type of memories.
-> >>
-> >> Suggested-by: Christoph Hellwig <hch@infradead.org>
-> >> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-> >> ---
-> >> Update from V3 to V4:
-> >> - improve commit message,
-> >> - use import_ubuf() instead of iov_iter_init(),
-> >> - move shm_get_kernel_pages in register_shm_helper,
-> >> - put back untagged_addr in register_shm_helper(),
-> >> - move the comment related to pin pages from shm_get_kernel_pages()
-> >>   to register_shm_helper().
-> >>
-> >> Update from V2 to V3:
-> >> - break lines longer than 80 columns.
-> >>
-> >> Update from V1 to V2:
-> >> - replace ITER_SOURCE by ITER_DEST flag in tee_shm_register_user_buf(),
-> >> - replace IS_ERR_OR NULL(shm) by IS_ERR(shm) in tee_shm_register_user_buf().
-> >>
-> >> V1:
-> >> The support of buffer registration allocated with vmalloc is no more
-> >> available since c83900393aa1 ("tee: Remove vmalloc page support").
-> >>
-> >> This patch is an alternative to a revert and resulted from a discussion
-> >> with Christopher Hellwig [1].
-> >>
-> >> This patch has been tested using xtest tool in optee qemu environment [2]
-> >> and using the series related to the remoteproc tee that should be
-> >> proposed soon [3].
-> >>
-> >> References:
-> >> [1] https://lore.kernel.org/linux-arm-kernel/18a8528d-7d9d-6ed0-0045-5ee47dd39fb2@foss.st.com/T/#m8ec683c44fcd9b69c2aee42eaed0793afac9dd18in
-> >> [2] https://optee.readthedocs.io/en/latest/building/devices/qemu.html#build-instructions
-> >> [3] https://lore.kernel.org/linux-arm-kernel/18a8528d-7d9d-6ed0-0045-5ee47dd39fb2@foss.st.com/T/#maca0a1fc897aadd54c7deac432e11473fe970d1d
-> >> ---
-> >>  drivers/tee/tee_shm.c | 83 ++++++++++++++++++++++++-------------------
-> >>  1 file changed, 46 insertions(+), 37 deletions(-)
-> >>
-> >> diff --git a/drivers/tee/tee_shm.c b/drivers/tee/tee_shm.c
-> >> index 673cf0359494..ac73e8143233 100644
-> >> --- a/drivers/tee/tee_shm.c
-> >> +++ b/drivers/tee/tee_shm.c
-> >> @@ -22,23 +22,12 @@ static void shm_put_kernel_pages(struct page **pages, size_t page_count)
-> >>                 put_page(pages[n]);
-> >>  }
-> >>
-> >> -static int shm_get_kernel_pages(unsigned long start, size_t page_count,
-> >> -                               struct page **pages)
-> >> +static void shm_get_kernel_pages(struct page **pages, size_t page_count)
-> >>  {
-> >> -       struct page *page;
-> >>         size_t n;
-> >>
-> >> -       if (WARN_ON_ONCE(is_vmalloc_addr((void *)start) ||
-> >> -                        is_kmap_addr((void *)start)))
-> >> -               return -EINVAL;
-> >> -
-> >> -       page = virt_to_page((void *)start);
-> >> -       for (n = 0; n < page_count; n++) {
-> >> -               pages[n] = page + n;
-> >> +       for (n = 0; n < page_count; n++)
-> >>                 get_page(pages[n]);
-> >> -       }
-> >> -
-> >> -       return page_count;
-> >>  }
-> >>
-> >>  static void release_registered_pages(struct tee_shm *shm)
-> >> @@ -214,13 +203,14 @@ struct tee_shm *tee_shm_alloc_priv_buf(struct tee_context *ctx, size_t size)
-> >>  EXPORT_SYMBOL_GPL(tee_shm_alloc_priv_buf);
-> >>
-> >>  static struct tee_shm *
-> >> -register_shm_helper(struct tee_context *ctx, unsigned long addr,
-> >> -                   size_t length, u32 flags, int id)
-> >> +register_shm_helper(struct tee_context *ctx, struct iov_iter *iter, u32 flags,
-> >> +                   int id)
-> >>  {
-> >>         struct tee_device *teedev = ctx->teedev;
-> >>         struct tee_shm *shm;
-> >> -       unsigned long start;
-> >> -       size_t num_pages;
-> >> +       unsigned long start, addr;
-> >> +       size_t num_pages, off;
-> >> +       ssize_t len;
-> >>         void *ret;
-> >>         int rc;
-> >>
-> >> @@ -245,31 +235,38 @@ register_shm_helper(struct tee_context *ctx, unsigned long addr,
-> >>         shm->flags = flags;
-> >>         shm->ctx = ctx;
-> >>         shm->id = id;
-> >> -       addr = untagged_addr(addr);
-> >> +       addr = untagged_addr((unsigned long)iter_iov_addr(iter));
-> >>         start = rounddown(addr, PAGE_SIZE);
-> >> -       shm->offset = addr - start;
-> >> -       shm->size = length;
-> >> -       num_pages = (roundup(addr + length, PAGE_SIZE) - start) / PAGE_SIZE;
-> >> +       num_pages = iov_iter_npages(iter, INT_MAX);
-> >> +       if (!num_pages) {
-> >> +               ret = ERR_PTR(-ENOMEM);
-> >> +               goto err_ctx_put;
-> >> +       }
-> >> +
-> >>         shm->pages = kcalloc(num_pages, sizeof(*shm->pages), GFP_KERNEL);
-> >>         if (!shm->pages) {
-> >>                 ret = ERR_PTR(-ENOMEM);
-> >>                 goto err_free_shm;
-> >>         }
-> >>
-> >> -       if (flags & TEE_SHM_USER_MAPPED)
-> >> -               rc = pin_user_pages_fast(start, num_pages, FOLL_WRITE,
-> >> -                                        shm->pages);
-> >> -       else
-> >> -               rc = shm_get_kernel_pages(start, num_pages, shm->pages);
-> >> -       if (rc > 0)
-> >> -               shm->num_pages = rc;
-> >> -       if (rc != num_pages) {
-> >> -               if (rc >= 0)
-> >> -                       rc = -ENOMEM;
-> >> -               ret = ERR_PTR(rc);
-> >> -               goto err_put_shm_pages;
-> >> +       len = iov_iter_extract_pages(iter, &shm->pages, LONG_MAX, num_pages, 0,
-> >> +                                    &off);
-> >> +       if (unlikely(len <= 0)) {
-> >> +               ret = len ? ERR_PTR(len) : ERR_PTR(-ENOMEM);
-> >> +               goto err_free_shm_pages;
-> >>         }
-> >>
-> >> +       /*
-> >> +        * iov_iter_extract_kvec_pages does not get reference on the pages,
-> >> +        * get a pin on them.
-> >
-> > I think you meant: "get a reference on them". But I don't see the
-> > value of this comment since iov_iter_extract_kvec_pages() already has
-> > been commented properly as follows:
-> >
-> > /*
-> >  * Extract a list of virtually contiguous pages from an ITER_KVEC iterator.
-> >  * This does not get references on the pages, nor does it get a pin on them.
-> >  */
-> >
->
-> I spent some time debugging this part. Since we use the same API for both user
-> and kernel buffers, we wouldn't expect to have any specific actions to take.
-> Therefore, I thought it would be helpful to add a comment explaining the reason
-> for this specific code, rather than go deeper into iov_iter to understand it.
->
+On 30/11/2023 11:51, Gregory CLEMENT wrote:
+> Hello Krzysztof,
+> 
+>> On 23/11/2023 16:26, Gregory CLEMENT wrote:
+>>> The MIPS Warrior I-class I6500 was announced by Imagination
+>>> Technologies in 2016 and is used in the Mobileye SoC EyeQ5.
+>>>
+>>> Acked-by: Arnd Bergmann <arnd@arndb.de>
+>>> Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
+>>> Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+>>> ---
+>>>  Documentation/devicetree/bindings/mips/cpus.yaml | 1 +
+>>>  1 file changed, 1 insertion(+)
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/mips/cpus.yaml b/Documentation/devicetree/bindings/mips/cpus.yaml
+>>> index cf382dea3922c..b5165cf103e94 100644
+>>> --- a/Documentation/devicetree/bindings/mips/cpus.yaml
+>>> +++ b/Documentation/devicetree/bindings/mips/cpus.yaml
+>>> @@ -39,6 +39,7 @@ properties:
+>>>        - mti,mips24KEc
+>>>        - mti,mips14KEc
+>>>        - mti,mips14Kc
+>>> +      - img,i6500
+>>
+>> Don't break the order of entries.
+> 
+> Do you mean alphabetic order ?
 
-Fair enough, let's keep it with s/pin/reference/.
+I guess they are not fully ordered, but adding items to the end of the
+list is for sure not improving the order.
 
-> But if you don't see the value, I can remove the comment.
->
-> >> +        */
-> >> +       if (iov_iter_is_kvec(iter))
-> >> +               shm_get_kernel_pages(shm->pages, num_pages);
-> >> +
-> >> +       shm->offset = off;
-> >> +       shm->size = len;
-> >> +       shm->num_pages = num_pages;
-> >> +
-> >>         rc = teedev->desc->ops->shm_register(ctx, shm, shm->pages,
-> >>                                              shm->num_pages, start);
-> >>         if (rc) {
-> >> @@ -279,10 +276,11 @@ register_shm_helper(struct tee_context *ctx, unsigned long addr,
-> >>
-> >>         return shm;
-> >>  err_put_shm_pages:
-> >> -       if (flags & TEE_SHM_USER_MAPPED)
-> >> +       if (!iov_iter_is_kvec(iter))
-> >>                 unpin_user_pages(shm->pages, shm->num_pages);
-> >>         else
-> >>                 shm_put_kernel_pages(shm->pages, shm->num_pages);
-> >> +err_free_shm_pages:
-> >>         kfree(shm->pages);
-> >>  err_free_shm:
-> >>         kfree(shm);
-> >> @@ -307,8 +305,9 @@ struct tee_shm *tee_shm_register_user_buf(struct tee_context *ctx,
-> >>         u32 flags = TEE_SHM_USER_MAPPED | TEE_SHM_DYNAMIC;
-> >>         struct tee_device *teedev = ctx->teedev;
-> >>         struct tee_shm *shm;
-> >> +       struct iov_iter iter;
-> >>         void *ret;
-> >> -       int id;
-> >> +       int id, err;
-> >>
-> >>         if (!access_ok((void __user *)addr, length))
-> >>                 return ERR_PTR(-EFAULT);
-> >> @@ -319,7 +318,11 @@ struct tee_shm *tee_shm_register_user_buf(struct tee_context *ctx,
-> >>         if (id < 0)
-> >>                 return ERR_PTR(id);
-> >>
-> >> -       shm = register_shm_helper(ctx, addr, length, flags, id);
-> >> +       err = import_ubuf(ITER_DEST, (void __user *)addr, length, &iter);
-> >
-> > As I mentioned in a previous review, import_ubuf() already does the
-> > access_ok() check, so we don't need the extra access_ok() check above.
-> > Also, you should move import_ubuf() to be the first invocation within
-> > this API.
->
-> My apologies, I re-added import_ubuf() during testing to debug an issue and
+> 
+> because actually the entries are not really in alphabetic order.
+> 
+> Should I send first, a patch like the following one ?
 
-I suppose you intended to mention access_ok() here, BTW, no worries :).
+I wouldn't care about fixing existing order, so just the entry could be
+around the ones 'i' because that part is ordered. All entries are
+ordered by vendor prefix, so adding 'img' after 'mti' for sure breaks
+that order.
+> 
 
--Sumit
+Best regards,
+Krzysztof
 
-> forgot to
-> remove it afterwards.
->
-> Thanks and regards,
-> Arnaud
->
-> >
-> > -Sumit
-> >
-> >> +       if (err)
-> >> +               return ERR_PTR(err);
-> >> +
-> >> +       shm = register_shm_helper(ctx, &iter, flags, id);
-> >>         if (IS_ERR(shm)) {
-> >>                 mutex_lock(&teedev->mutex);
-> >>                 idr_remove(&teedev->idr, id);
-> >> @@ -352,8 +355,14 @@ struct tee_shm *tee_shm_register_kernel_buf(struct tee_context *ctx,
-> >>                                             void *addr, size_t length)
-> >>  {
-> >>         u32 flags = TEE_SHM_DYNAMIC;
-> >> +       struct kvec kvec;
-> >> +       struct iov_iter iter;
-> >> +
-> >> +       kvec.iov_base = addr;
-> >> +       kvec.iov_len = length;
-> >> +       iov_iter_kvec(&iter, ITER_DEST, &kvec, 1, length);
-> >>
-> >> -       return register_shm_helper(ctx, (unsigned long)addr, length, flags, -1);
-> >> +       return register_shm_helper(ctx, &iter, flags, -1);
-> >>  }
-> >>  EXPORT_SYMBOL_GPL(tee_shm_register_kernel_buf);
-> >>
-> >> --
-> >> 2.25.1
-> >>
