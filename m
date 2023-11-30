@@ -2,119 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FBDE7FF659
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 17:40:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82A5D7FF665
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 17:41:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345533AbjK3Qkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 11:40:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49096 "EHLO
+        id S1345494AbjK3QlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 11:41:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232145AbjK3Qk2 (ORCPT
+        with ESMTP id S235176AbjK3Qkw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 11:40:28 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A581510F1;
-        Thu, 30 Nov 2023 08:40:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701362434; x=1732898434;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=xs55vRQmulcqUyGyX4R2MZh0xpaZmiwWD8Qq17sNE+0=;
-  b=VGekmoV8BCKzpntOHOMSXys/vXLF46HfjWAe1FQIaaaRjgNv2AnEfe1Y
-   pcjLHRTgGFzTL79OLUiC/Bt8yZJgRtao5GINcDmEnH4UksnNR3xoU3zqF
-   RL4NYR+P0Fe2LxlpY+OKMbYYLO+Sy5AMX9bsh847FIywOtnMOhdz7Sju/
-   iKG097ZICzc/fzHSVmaSoOVYSl0a8c/bal0RqLlqhj/gyeFun84Q8FaZO
-   nsno7+8+KneXKvTXRXybbarbMI2pYJWV32Smf0VTPvawf9/eDCbwktNi1
-   DA0T0lSG7fmIN9XDhi6Gz4h2ifF9Rm8K8D1vkS1WrCJxRRGamraHZv+zS
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="392217598"
-X-IronPort-AV: E=Sophos;i="6.04,239,1695711600"; 
-   d="scan'208";a="392217598"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 08:40:34 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="1100992449"
-X-IronPort-AV: E=Sophos;i="6.04,239,1695711600"; 
-   d="scan'208";a="1100992449"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga005.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 08:40:32 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1r8k5W-00000000kQi-0Viy;
-        Thu, 30 Nov 2023 18:40:30 +0200
-Date:   Thu, 30 Nov 2023 18:40:29 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH v2 09/10] gpiolib: use gpiochip_dup_line_label() in
- for_each helpers
-Message-ID: <ZWi6_WnOQZB0vgPL@smile.fi.intel.com>
-References: <20231130134630.18198-1-brgl@bgdev.pl>
- <20231130134630.18198-10-brgl@bgdev.pl>
+        Thu, 30 Nov 2023 11:40:52 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B89CA1A3
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 08:40:58 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30BAFC433C8;
+        Thu, 30 Nov 2023 16:40:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701362458;
+        bh=eMauWcpoHiWGcXeCJ6n8laJEDioZTrZnYDww6VNDcD4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sbewMVwKMEOHbYOQLQybblEflNdQip+Ra5frYeqsZTWZAms2Jc3Y7vZ7VASj5Aur8
+         2zcpnKl6VXvVqF/kauQ4Iiz6DQt73jk1dO6H+GoLx3lC2Yt97HLA9T/vmzzP3B+03Q
+         kPTyK/7HFP2KvQ4SKG0MDkNX4gmfFGIAyQE7Dz22TIRefJZJ/gc0YSFucBeOaMT/67
+         f5ls+Y0y+ImdrcDVR/MACxVOCl3kZppNqPy264LpK0ESvaBOEFvkoIHFv8e7NkdBGk
+         ZAAtIELOtR5UTdVF1PVhKL5Y6tVrJ43gmuW9DJ9HJXCC6/5leR2WXKhnvL4nNFn4y2
+         C3+wHN3tZckhg==
+Date:   Thu, 30 Nov 2023 10:40:57 -0600
+From:   "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        Serge Hallyn <serge@hallyn.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Eric Paris <eparis@redhat.com>,
+        James Morris <jmorris@namei.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, audit@vger.kernel.org,
+        linux-unionfs@vger.kernel.org
+Subject: Re: [PATCH 16/16] vfs: return -EOPNOTSUPP for fscaps from
+ vfs_*xattr()
+Message-ID: <ZWi7GZoSId2EA1mR@do-x1extreme>
+References: <20231129-idmap-fscap-refactor-v1-0-da5a26058a5b@kernel.org>
+ <20231129-idmap-fscap-refactor-v1-16-da5a26058a5b@kernel.org>
+ <CAOQ4uxhtJ89LknKjE=tiTgvZXbufmOaqHnhnrz348Ktq2H+yHA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231130134630.18198-10-brgl@bgdev.pl>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOQ4uxhtJ89LknKjE=tiTgvZXbufmOaqHnhnrz348Ktq2H+yHA@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 30, 2023 at 02:46:29PM +0100, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+On Thu, Nov 30, 2023 at 08:10:15AM +0200, Amir Goldstein wrote:
+> On Wed, Nov 29, 2023 at 11:51 PM Seth Forshee (DigitalOcean)
+> <sforshee@kernel.org> wrote:
+> >
+> > Now that the new vfs-level interfaces are fully supported and all code
+> > has been converted to use them, stop permitting use of the top-level vfs
+> > xattr interfaces for capabilities xattrs. Unlike with ACLs we still need
+> > to be able to work with fscaps xattrs using lower-level interfaces in a
+> > handful of places, so only use of the top-level xattr interfaces is
+> > restricted.
 > 
-> Rework for_each_requested_gpio_in_range() to use the new helper to
-> retrieve a dynamically allocated copy of the descriptor label and free
-> it at the end of each iteration. We need to leverage the CLASS()'
-> destructor to make sure that the label is freed even when breaking out
-> of the loop.
+> Can you explain why?
+> Is there an inherent difference between ACLs and fscaps in that respect
+> or is it just a matter of more work that needs to be done?
 
-...
+There are a number of differences. ACLs have caching, require additional
+permission checks, and require a lot of filesystem-specific handling.
+fscaps are simpler by comparison, and most filesystems can rely on a
+common implementation that just converts to/from raw disk xattrs.
 
->  const char *gpiochip_is_requested(struct gpio_chip *gc, unsigned int offset);
->  char *gpiochip_dup_line_label(struct gpio_chip *gc, unsigned int offset);
->  
-> +
+So at minimum I think the lowest level interfaces,
+__vfs_{get,set,remove}xattr(), need to continue to allow fscaps, and
+that's where ACL xattrs are blocked. Allowing some of the others to
+still work with them is a matter of convenience (e.g. using
+vfs_getxattr_alloc()) and trying to reduce code duplication. But as you
+pointed out I did miss at least duplicating fsnotify_xattr(), so I'm
+going to have another look at how I implemented these.
 
-One blank line is enough.
+> 
+> >
+> > Signed-off-by: Seth Forshee (DigitalOcean) <sforshee@kernel.org>
+> > ---
+> >  fs/xattr.c | 9 +++++++++
+> >  1 file changed, 9 insertions(+)
+> >
+> > diff --git a/fs/xattr.c b/fs/xattr.c
+> > index 372644b15457..4b779779ad8c 100644
+> > --- a/fs/xattr.c
+> > +++ b/fs/xattr.c
+> > @@ -540,6 +540,9 @@ vfs_setxattr(struct mnt_idmap *idmap, struct dentry *dentry,
+> >         const void  *orig_value = value;
+> >         int error;
+> >
+> > +       if (!strcmp(name, XATTR_NAME_CAPS))
+> > +               return -EOPNOTSUPP;
+> > +
+> 
+> It this is really not expected, then it should be an assert and
+> please use an inline helper like is_posix_acl_xattr():
+> 
+> if (WARN_ON_ONCE(is_fscaps_xattr(name)))
 
-> +struct _gpiochip_for_each_data {
-> +	const char **label;
-> +	int *i;
-
-Why is this a signed?
-
-> +};
-
-...
-
-> +DEFINE_CLASS(_gpiochip_for_each_data,
-> +	     struct _gpiochip_for_each_data,
-> +	     if (*_T.label) kfree(*_T.label),
-> +	     ({ struct _gpiochip_for_each_data _data = { label, i };
-> +	        *_data.i = 0;
-> +		_data; }),
-
-To me indentation of ({}) is quite weird. Where is this style being used
-instead of more readable
-
-	({
-	   ...
-	})
-
-?
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Ack, makes sense.
