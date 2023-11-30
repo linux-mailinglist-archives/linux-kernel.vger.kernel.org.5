@@ -2,125 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B49E7FF876
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 18:39:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C40ED7FF895
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 18:42:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346351AbjK3RjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 12:39:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60122 "EHLO
+        id S1346598AbjK3Rkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 12:40:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230045AbjK3RjL (ORCPT
+        with ESMTP id S230460AbjK3Rkq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 12:39:11 -0500
-Received: from mail-ua1-x935.google.com (mail-ua1-x935.google.com [IPv6:2607:f8b0:4864:20::935])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC9A710D9
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 09:39:16 -0800 (PST)
-Received: by mail-ua1-x935.google.com with SMTP id a1e0cc1a2514c-7c44b09f9f9so673090241.0
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 09:39:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1701365956; x=1701970756; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BNguKtwIvnyO2Gj9lJbmb0T+V4gmh2R9drIGOrDbnbI=;
-        b=L5/BopSsLhX7lwIzm1g8i14mn3tSN6qeGnNVAVX8VV6dzxAwJ6M0gqWDDBZIj0w+l9
-         cLWUaAYUqF/Yi33yahVsLvvvRPpdERVSOrMotkPOWb6znmoUEMWHbY+IzdfekDiH4MJh
-         TXdpGdwDXyJoBkw2ytexZcqHbsKCC4DCxhyPdL84lZ4GaKB5ZR12GfgFTGK2WKZCfemv
-         s+aOPor5BZpxlYHbbnwtWqLsO5seARIAXpZ94axgqch2bOzdQ36RVfOk7Kz2pwdVUJpt
-         PJfKdOtlGE1XZcsRbrGcNzV5EhgWOf905mNMiqyocuDwgqylv0LaODY2Qz1qr6AkoL/8
-         Tohg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701365956; x=1701970756;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BNguKtwIvnyO2Gj9lJbmb0T+V4gmh2R9drIGOrDbnbI=;
-        b=r8amZCk1HXO15CuTqfVYyAf8eKcQPNAJDGxVWLanmzNkuTavUsDPpMLOWceH+VANki
-         x/MXi7gN1TWp4axDEm9jWDyCGYXAPSMHKcPtjil9xw250KGfPQ7DZGo91RYl5iXCozr7
-         k5Qkq2tYnDVI6z1yW+wLU/gzNMq/DErjwcYTjIjI6SPxSiTZJAhaNA4yKvgRAd19zZbP
-         wCnBPHD5QCA7RAQgmNmfHotfpfvxcaI3KVVi/aOQyt7iX1BTkKFKkkboipy030slD1Oi
-         bCybzie68iFEO8VrkTHJD8/s0b8qLMJEfCJEOiE1KIGxqLE50/2YVryew8nPUG9YU4ie
-         c0cw==
-X-Gm-Message-State: AOJu0Yw/Zzq871d/R76JRkor7d62exoqRJZfQZAPT+a9DQP/i68LxXFh
-        nqAsly+dvJDUIrl/13J8e+kLsq67kmUWPROEIRkrCg==
-X-Google-Smtp-Source: AGHT+IHlEzVbLFXtUVKvNXK5OPlaLnHH9WMmD+cMOElsPuiPjPJbokxrcbzXeAaCqBx4JFdaaGRtna1fzpG7H//KYvA=
-X-Received: by 2002:a05:6102:1627:b0:462:7e73:c11f with SMTP id
- cu39-20020a056102162700b004627e73c11fmr27567494vsb.6.1701365955833; Thu, 30
- Nov 2023 09:39:15 -0800 (PST)
+        Thu, 30 Nov 2023 12:40:46 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F107C131
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 09:40:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701366052;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6Foztye0H5OMwSOdTOC/HcbTeXr+DTPVH4rsYB2c+xo=;
+        b=J7jo1DfsmKx1iMzK7xITdFwZa29FkmeCxZJu00FsAhnWkGURIGICv/nuLEC9hFSBPCziXp
+        3TEZxT6NqA1PgeqclDpEld9xbpxPyxaeikDwzEVCUunDec9DAYdK5lTX5O9PoPq49usesB
+        87arOSmeH/WsaHlhGEcTjsDmDwcp2fg=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-80-INjEAH18OGWI7NXMeaPLkw-1; Thu,
+ 30 Nov 2023 12:40:48 -0500
+X-MC-Unique: INjEAH18OGWI7NXMeaPLkw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 99FC73814E99;
+        Thu, 30 Nov 2023 17:40:47 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.226.2])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 0373840C6EBA;
+        Thu, 30 Nov 2023 17:40:45 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Thu, 30 Nov 2023 18:39:41 +0100 (CET)
+Date:   Thu, 30 Nov 2023 18:39:39 +0100
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Tycho Andersen <tycho@tycho.pizza>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        Tycho Andersen <tandersen@netflix.com>
+Subject: Re: [RFC 1/3] pidfd: allow pidfd_open() on non-thread-group leaders
+Message-ID: <20231130173938.GA21808@redhat.com>
+References: <20231130163946.277502-1-tycho@tycho.pizza>
 MIME-Version: 1.0
-References: <20231130134630.18198-1-brgl@bgdev.pl> <20231130134630.18198-8-brgl@bgdev.pl>
- <ZWi5_VHlUSmgpLiB@smile.fi.intel.com>
-In-Reply-To: <ZWi5_VHlUSmgpLiB@smile.fi.intel.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Thu, 30 Nov 2023 18:39:04 +0100
-Message-ID: <CAMRc=Mfuuri-67KBNWXeHApd-qHYQ0wJeU-6A5eb=B9NeQT8hg@mail.gmail.com>
-Subject: Re: [PATCH v2 07/10] pinctrl: baytrail: use gpiochip_dup_line_label()
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231130163946.277502-1-tycho@tycho.pizza>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 30, 2023 at 5:36=E2=80=AFPM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Thu, Nov 30, 2023 at 02:46:27PM +0100, Bartosz Golaszewski wrote:
-> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> >
-> > Use the new gpiochip_dup_line_label() helper to safely retrieve the
-> > descriptor label.
->
-> ...
->
-> >               seq_printf(s,
-> >                          " gpio-%-3d (%-20.20s) %s %s %s pad-%-3d offse=
-t:0x%03x mux:%d %s%s%s",
-> >                          pin,
-> > -                        label,
-> > +                        label ?: "Unrequested",
->
-> This already fourth (?) duplication among drivers.
-> Perhaps you want a helper:
-> gpiochip_dup_line_label_fallback() // naming is up to you
-> which will return the same for everybody and we don't need to hunt for
-> the different meaning of "Unrequested".
->
+Hi Tycho,
 
-IMO the overhead here is very small in return for better readability
-(IOW: `label ?: "Unrequested"` is more readable than some function
-named `gpiochip_dup_line_label_fallback()`). Given the string is in
-.rodata anyway, I wouldn't be surprised if adding a helper resulted in
-bigger code.
+I can't really read this patch now, possibly I am wrong, but...
 
-> Also the word "Unrequested" is a bit doubtful as it can be a label, right=
-?
-> Something with special characters / spaces / etc would suit better?
-> In any case it might require to add a warning (?) to the GPIO lib core
-> when label gets assigned if it clashes with the "reserved" word.
+On 11/30, Tycho Andersen wrote:
 >
+> @@ -263,16 +263,25 @@ void release_task(struct task_struct *p)
+>  	 */
+>  	zap_leader = 0;
+>  	leader = p->group_leader;
+> -	if (leader != p && thread_group_empty(leader)
+> -			&& leader->exit_state == EXIT_ZOMBIE) {
+> -		/*
+> -		 * If we were the last child thread and the leader has
+> -		 * exited already, and the leader's parent ignores SIGCHLD,
+> -		 * then we are the one who should release the leader.
+> -		 */
+> -		zap_leader = do_notify_parent(leader, leader->exit_signal);
+> -		if (zap_leader)
+> -			leader->exit_state = EXIT_DEAD;
+> +	if (leader != p) {
+> +		if (thread_group_empty(leader)
+> +				&& leader->exit_state == EXIT_ZOMBIE) {
+> +			/*
+> +			 * If we were the last child thread and the leader has
+> +			 * exited already, and the leader's parent ignores SIGCHLD,
+> +			 * then we are the one who should release the leader.
+> +			 */
+> +			zap_leader = do_notify_parent(leader,
+> +						      leader->exit_signal);
+> +			if (zap_leader)
+> +				leader->exit_state = EXIT_DEAD;
+> +		} else {
+> +			/*
+> +			 * wake up pidfd pollers anyway, they want to know this
+> +			 * thread is dying.
+> +			 */
+> +			wake_up_all(&thread_pid->wait_pidfd);
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Agreed but this is a functional change in debugfs output. I know
-debugfs is not considered stable but I didn't write it, I don't know
-who's using it and I prefer to leave it be.
+somehow I can't believe this is a good change after a quick glance ;)
 
-Bart
+I think that wake_up_all(wait_pidfd) should have a single caller,
+do_notify_pidfd(). This probably means it should be shiftef from
+do_notify_parent() to exit_notify(), I am not sure...
 
-> >                          val & BYT_INPUT_EN ? "  " : "in",
-> >                          val & BYT_OUTPUT_EN ? "   " : "out",
-> >                          str_hi_lo(val & BYT_LEVEL),
->
-> --
-> With Best Regards,
-> Andy Shevchenko
->
->
+No?
+
+Oleg.
+
