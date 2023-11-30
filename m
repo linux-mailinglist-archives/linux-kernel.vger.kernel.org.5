@@ -2,95 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 835D97FEA6B
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 09:24:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1DF87FEA6C
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 09:24:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344886AbjK3IY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 03:24:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33990 "EHLO
+        id S1344855AbjK3IYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 03:24:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234980AbjK3IYR (ORCPT
+        with ESMTP id S1344856AbjK3IYW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 03:24:17 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A3BA10FD;
-        Thu, 30 Nov 2023 00:24:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701332664; x=1732868664;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=YfW6il/Qm5tA+b+HtgoPr45j9dfu7F6OdxtpEIAdKRg=;
-  b=Dra6CPBSvAlHivSeJSrt5POiac/YFPVFT6upY1j3+6D81X7CI1O+MybV
-   yFdEAg/h6h9tBvEgLIbC8CnaO67q1QRaeyZDmaqPR6J/ITToHXc7K9nr6
-   z/gsedbymgJL5/7L97yxsPsDVi+mzafw1xXWY/Dpf08CHuSqQUeJPxpzU
-   L2et2N1xLtkOaIPdOswo0Fk79zYHF6awY6K8YpdwXHX1BOB+DhjLzmpMQ
-   Fj6BIXGDDcwZWppf1n+5hIz0SR2xvufkc1Tl7SP8RP7txTSCStvdOq6LQ
-   kYkC31Lm4nuezjAiERH8lPkOV4YFY0USGChY8j+JKsSzFZuTwRNBDoYrg
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="6510140"
-X-IronPort-AV: E=Sophos;i="6.04,237,1695711600"; 
-   d="scan'208";a="6510140"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 00:24:23 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="798201928"
-X-IronPort-AV: E=Sophos;i="6.04,237,1695711600"; 
-   d="scan'208";a="798201928"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga008.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 00:24:23 -0800
-Received: from abityuts-desk1.ger.corp.intel.com (abityuts-desk1.fi.intel.com [10.237.68.150])
-        by linux.intel.com (Postfix) with ESMTP id AD3BA580109;
-        Thu, 30 Nov 2023 00:24:20 -0800 (PST)
-Message-ID: <a9db1de5ab4d2c8fc289654053615a53b9ffc20d.camel@linux.intel.com>
-Subject: Re: [PATCH] intel_idle: add Cometlake support
-From:   Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-To:     Doug Smythies <dsmythies@telus.net>,
-        "'Rafael J. Wysocki'" <rafael@kernel.org>,
-        'Jiang Yihe' <jiangyihe042@gmail.com>
-Cc:     'Jacob Pan' <jacob.jun.pan@linux.intel.com>,
-        'Len Brown' <lenb@kernel.org>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, "'Zhang, Rui'" <rui.zhang@intel.com>
-Date:   Thu, 30 Nov 2023 10:24:19 +0200
-In-Reply-To: <001701da22db$180872c0$48195840$@telus.net>
-References: <20231129143132.32155-1-jiangyihe042@gmail.com>
-         <CAJZ5v0jfEsNVu=fg+Xa118F=hCGGB33U5SbiqWeCMaVMqNpUEA@mail.gmail.com>
-         <001701da22db$180872c0$48195840$@telus.net>
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 30 Nov 2023 03:24:22 -0500
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF68B1708;
+        Thu, 30 Nov 2023 00:24:28 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-40b4e35ecf1so5369395e9.1;
+        Thu, 30 Nov 2023 00:24:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701332667; x=1701937467; darn=vger.kernel.org;
+        h=in-reply-to:references:cc:to:from:subject:message-id:date
+         :content-transfer-encoding:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3TQqYuMpS0IutFQA0jTxrDWzedXIaMHOHDdeUN7WQuw=;
+        b=HCXXc4U4qeU5NoMLfrkZLt1igmtQJGFlm7+aosTsiMp7Yj9VOosR/urhQ4VzoIisP5
+         jyilxQ1GMBUGx7VXc53QcSgQy2Fo639vDS0rB2U7vR/vLRncRAfQsBnA9hUMbnEeNQ8G
+         RTVAPkVRYVgGKi5uoXdVVS+k1L3jCEBxkUQBREbLDNzmpfEa6U7nIoF7fF1mvrMkWl2b
+         RZ6oP2KX956eym6uYlYeDUOEtAIgt+bPc3uDnWGPaeysAEgj+X5D9NBbsg+GBOpHE+Xx
+         cH2rCxdpATqQ7PaZuHRo44PnJ9CEw64WFyGJMyGtzINuTt/b0l2NDiTYr2IVUQsKIvm+
+         sEDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701332667; x=1701937467;
+        h=in-reply-to:references:cc:to:from:subject:message-id:date
+         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=3TQqYuMpS0IutFQA0jTxrDWzedXIaMHOHDdeUN7WQuw=;
+        b=ikKa+nZ8xhFfB/IURMRape1sSRUUJWNK5DUI3kibSVNPZ1tx9hbox9S+x1xwN/c7en
+         66SbKgRHhCtqJQJeZWydDD5ZwfjgVYJlaMOG/wTV7jqA/2Q1DaWR8hEs3cb0GNZFstJG
+         eQOK+XyhLr6/5lZH0gkC8GeDB3qO/JxpOgYFhgUhKT51B2knY1c19pJvFYtyH79rirhh
+         eZq8990YNwgskCexIX/Ap9SI1KIQnQktPNTHvXQNBYgRRs4D3HZPCiBLwGo9LgQnD5la
+         nh6JyjmAdKAPucMNjoYw0Bxyz7zRir9LXwA1B9sd9wUv/sE2bM3z5cLLG8ZFGoJpFLoh
+         Etdg==
+X-Gm-Message-State: AOJu0Yz5TbmtRJi2lkelob5nJeFs9YLNpFW85sUDtCYPLKifsdnYc5ZC
+        b7mbuY3dHv/24D/1YiZzN1I=
+X-Google-Smtp-Source: AGHT+IHWJgbhZy4z5ajH3SCgvaHk+CQS1O+0oW2p34le3I8bCk5zc+Q4Ge9qW03jVvhxInLNxkWE2A==
+X-Received: by 2002:a05:600c:3b20:b0:40b:3e23:f0a0 with SMTP id m32-20020a05600c3b2000b0040b3e23f0a0mr11358637wms.4.1701332667016;
+        Thu, 30 Nov 2023 00:24:27 -0800 (PST)
+Received: from localhost (freebox.vlq16.iliad.fr. [213.36.7.13])
+        by smtp.gmail.com with ESMTPSA id p23-20020a05600c1d9700b0040b3645a7c2sm4839247wms.40.2023.11.30.00.24.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Nov 2023 00:24:26 -0800 (PST)
+Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
-MIME-Version: 1.0
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Date:   Thu, 30 Nov 2023 09:24:26 +0100
+Message-Id: <CXC03GYAN4VN.2PQ88Q1S7IL6H@gmail.com>
+Subject: Re: [PATCH] wifi: ath11k: fix layout of scan_flags in struct
+ scan_req_params
+From:   "Nicolas Escande" <nico.escande@gmail.com>
+To:     "Jeff Johnson" <quic_jjohnson@quicinc.com>,
+        "Kalle Valo" <kvalo@kernel.org>
+Cc:     <linux-wireless@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <ath11k@lists.infradead.org>
+X-Mailer: aerc 0.15.2
+References: <20231127180559.1696041-1-nico.escande@gmail.com>
+ <bdcdbd06-e9bd-4a92-b27b-d94b2d8fb52d@quicinc.com>
+ <CX9YPUDTAT1N.23DMRB5O9FEAO@gmail.com>
+ <20c7a367-2243-4e13-b023-9999dc6c6790@quicinc.com>
+In-Reply-To: <20c7a367-2243-4e13-b023-9999dc6c6790@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-11-29 at 07:45 -0800, Doug Smythies wrote:
-> Hi All,
->=20
-> This proposed patch has been submitted at least once before.
-> (I think more than once, but only found 1)
-> Reference:
-> https://lore.kernel.org/linux-pm/20200227013411.1.Ica3bb9fa898499d94e0b0a=
-2bfa08ec46c89d84fa@changeid/
->=20
-> I have a Cometlake processor and am not in favor of this patch.
-> Reference at to why not:
-> https://bugzilla.kernel.org/show_bug.cgi?id=3D210741
+On Tue Nov 28, 2023 at 1:57 AM CET, Jeff Johnson wrote:
+> On 11/27/2023 2:54 PM, Nicolas Escande wrote:
+[...]
+> > So either we should not use WMI_SCAN_XXX with scan_req_params.scan_flag=
+s ever
+> > and only use the bitfield to set scan parameters or if we use WMI_SCAN_=
+XXX with
+> > scan_req_params.scan_flags they need to match the corresponding bitfiel=
+d.
+>
+> IMO the correct thing to do is to remove the unions from that struct and
+> only leave behind the bitfields and not use the WMI_SCAN_XXX masks
+> except when filling the firmware structure.
+>
+> But don't spin an update to your patches until Kalle has a chance to
+> give his opinion. I'm new to maintaining these drivers and Kalle may
+> have a different opinion on this.
+>
+> /jeff
 
-CometLake is a platform from 2020, so I'd classified it as "legacy" and wou=
-ld
-not apply this patch without a plausible justification in form of measureme=
-nt
-data.
-
-Comet lake has been used with ACPI C-states for quite a long time, and swit=
-ching
-it to intel_idle now may cause unwelcome changes in user workloads.
-
-Artem.=20
+No problem, I'll wait for Kalle's input on this before doing anything.
+As soon as we decide which way is the right way, I'll work on this. I only =
+care
+that this gets resolved.
