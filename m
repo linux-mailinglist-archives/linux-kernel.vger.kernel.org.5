@@ -2,191 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A42C7FF371
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 16:21:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44A267FF36F
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 16:20:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346330AbjK3PUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 10:20:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60532 "EHLO
+        id S1346276AbjK3PUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 10:20:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346292AbjK3PUm (ORCPT
+        with ESMTP id S1346240AbjK3PUd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 10:20:42 -0500
-Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56CF510EA
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 07:20:48 -0800 (PST)
-Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com [209.85.167.197])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 8D29340C50
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 15:20:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1701357644;
-        bh=Hegf0srFkbsTjzBuIfrKZwGyBpbOFAxXtDxYBC/BJOY=;
-        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-         MIME-Version;
-        b=Kaul0nEDY9wrTIMaTztWeKgS+89ygJVSiRsmrefksU8nUguLXzpAflqdpvyRMecG1
-         YV99372DkzAIlSdLdWjh9PzdkKGoWZDRXRpLKsvr47/91Rqo7jKxANPbAv2xoY5nS5
-         MxkOe86Gpii47WcidrHZWIDvZh7jdvCiTP/DteirxJ8nYkl3cH0+m9Rjxad3wHGnX7
-         TPCpSUogy/YjMyPwZQ948iUv3Zx06CDxwiWAIphbp7opfiqEx0KYuhP0Tzfx+lU6nM
-         0/GQskSVT954vDYw1rnr/dqZZU3YIIotRfd1YUuNh5o4zg74X8H6ATnoio7bPLLWJR
-         s6eAqwxFPEohg==
-Received: by mail-oi1-f197.google.com with SMTP id 5614622812f47-3b85fd1bdecso1280007b6e.1
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 07:20:44 -0800 (PST)
+        Thu, 30 Nov 2023 10:20:33 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C471410EF
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 07:20:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701357639;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dEqkJxwjlfqEUZLoeifhFNRmLYsQ9sgPgHYM3n7xUho=;
+        b=fGiyAnq0vl7oPNCFFGqTJIpR6TEKT7xXS3Ou0fYpmkBnnVnR/R9l32THF1zTalnpUy8pX+
+        16KIDFli/8X9fm6AsICFCz6SutVX4MFR+2rDuNDtW1KlGU5OvkIdL0fZ4PcLAPgR32ZBt3
+        OUc1Mds5GjMrDtUy+UiJsTrqTHo2Sc4=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-464-qRh3R-P0Pjuj9jbFMitXOQ-1; Thu, 30 Nov 2023 10:20:37 -0500
+X-MC-Unique: qRh3R-P0Pjuj9jbFMitXOQ-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-40a3d918dc1so1519575e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 07:20:37 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701357643; x=1701962443;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Hegf0srFkbsTjzBuIfrKZwGyBpbOFAxXtDxYBC/BJOY=;
-        b=Qs/sVEQm4oTLyKRvsD5p7wb0DEKPM121z4SFJzLjAHbzFt01jzGiT9Zplwzqai4nUh
-         fx3WOJGgGkhy6OmvHhosh60tPPqYjwZZ8f+UpFDG/fa3kfbzKLj7k6jQ4C98OD/BGBcr
-         1n8G7+6+S8NwUNzZTMqGd6nohvcWUn4es7mw57Ie0XOv4BNcyI6T0YMMK5SWEplfOB/D
-         udKtoEFhdhkGpInZAYDLQApYCLTENmaCM7ydPZIGU94pwcfXJvqXG5ljwast/15kavSB
-         lKDBMklt/vvMKrVEmMfIRjeS2uV9SnVEQxNTzyMAgG/aZtv0p2p/ME6iVp+GJ+bN2Dyx
-         oCCw==
-X-Gm-Message-State: AOJu0YweCBPhZEsllHg2jn+z0dzmywlCJjQmpYmkj44lS2+Xs0j+XwiG
-        WvZKQiYhv9muv3kXzUBuAKwpCjQqxEgvOVZwG5tph4XAcG5yuwJQyyYuFBio/FqI7KipdEDkOfS
-        Lxx4dFuMnsDRdD8Lnrk2/hWTyMe99q+QdixqCtDtQuw==
-X-Received: by 2002:a05:6808:20a0:b0:3b2:ee79:c0fd with SMTP id s32-20020a05680820a000b003b2ee79c0fdmr31848207oiw.1.1701357643557;
-        Thu, 30 Nov 2023 07:20:43 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEDv33VjZX5rToz283+PZ9me+zUyLCvtTvnVucpd5Vw8rGLY3r7NPHXqlLul8V0jCsywTS1sQ==
-X-Received: by 2002:a05:6808:20a0:b0:3b2:ee79:c0fd with SMTP id s32-20020a05680820a000b003b2ee79c0fdmr31848188oiw.1.1701357643362;
-        Thu, 30 Nov 2023 07:20:43 -0800 (PST)
-Received: from stitch.. ([80.71.140.73])
-        by smtp.gmail.com with ESMTPSA id y125-20020a636483000000b005bd3d6e270dsm1356002pgb.68.2023.11.30.07.20.36
+        d=1e100.net; s=20230601; t=1701357636; x=1701962436;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dEqkJxwjlfqEUZLoeifhFNRmLYsQ9sgPgHYM3n7xUho=;
+        b=NGkNHt27LxQ1zgLentFISvIiX/IqLnDZ3fSZ3bH0Zrxr0B5o9BDjz4Z1gUvcoMzlyr
+         hHa+irmiFrcHxfmBmVfoziXVYnmnuwS/i5QM233DyiaylNfNMU0rNnwmdJ0RadnFh+Kj
+         zpeljk3dsEZNtGY+1aoWGvnYuXrLq21WQo1ndtqAnQgGKml2y1U05ZGBQ1ac/rJ1BzV4
+         HEGP/xB5isShoYY6XE3wpWNgeV1iS9Cew1Yh402zs61z8yqyK79zn1uZr4u0JwqHV2L9
+         z94XfDEi88mL1YQ8yfQw5elM3wQGahZp6tnrUaWNC0MkFchCCVMNcPR/M9zswCmTIRLL
+         eGIw==
+X-Gm-Message-State: AOJu0YyjiF+KDry7ow6TroNz8OsVui2+niruOBK7ojBQlVXg0UMDkhee
+        JG5qyrEmgRWwfp80nN0mrZq6yTnN50daVIgaXVzVgA67M4ORszE1usgkWKIfpnEt3eF1va0vBPB
+        zjBK+ygK4mn+aPO73pmFIsIWe
+X-Received: by 2002:a05:600c:8512:b0:405:358c:ba75 with SMTP id gw18-20020a05600c851200b00405358cba75mr15223896wmb.0.1701357636290;
+        Thu, 30 Nov 2023 07:20:36 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGmWmZDOiZtkqddOsdMjnFnx0anMvXkNnD8AcLel/BSwwmSEX8SLaio0xywMh1dMKaV6S35xQ==
+X-Received: by 2002:a05:600c:8512:b0:405:358c:ba75 with SMTP id gw18-20020a05600c851200b00405358cba75mr15223881wmb.0.1701357635879;
+        Thu, 30 Nov 2023 07:20:35 -0800 (PST)
+Received: from gerbillo.redhat.com (146-241-118-234.dyn.eolo.it. [146.241.118.234])
+        by smtp.gmail.com with ESMTPSA id u2-20020a05600c138200b00405d9a950a2sm6036725wmf.28.2023.11.30.07.20.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Nov 2023 07:20:43 -0800 (PST)
-From:   Emil Renner Berthing <emil.renner.berthing@canonical.com>
-To:     linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+        Thu, 30 Nov 2023 07:20:35 -0800 (PST)
+Message-ID: <182382de40ab8f129829ceb3fa3f71608bfa65fb.camel@redhat.com>
+Subject: Re: [GIT PULL] Networking for v6.7-rc4
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     torvalds@linux-foundation.org
+Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Conor Dooley <conor@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v2 8/8] riscv: dts: starfive: Enable SDIO wifi on JH7100 boards
-Date:   Thu, 30 Nov 2023 16:19:32 +0100
-Message-Id: <20231130151932.729708-9-emil.renner.berthing@canonical.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231130151932.729708-1-emil.renner.berthing@canonical.com>
-References: <20231130151932.729708-1-emil.renner.berthing@canonical.com>
+Date:   Thu, 30 Nov 2023 16:20:34 +0100
+In-Reply-To: <20231130125638.726279-1-pabeni@redhat.com>
+References: <20231130125638.726279-1-pabeni@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add pinctrl and MMC controller nodes for the Broadcom wifi controller
-on the BeagleV Starlight and StarFive VisionFive V1 boards.
+On Thu, 2023-11-30 at 13:56 +0100, Paolo Abeni wrote:
+> We just received a report regarding the WiFi/debugfs fixes below possibly
+> causing some dmesg noise - trying to register multiple times the same ent=
+ry.
 
-Signed-off-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
----
- .../boot/dts/starfive/jh7100-common.dtsi      | 60 +++++++++++++++++++
- 1 file changed, 60 insertions(+)
+Jakub noted that such report is on a kernel that predates the changes
+in this PR, so you can ignore the above.
 
-diff --git a/arch/riscv/boot/dts/starfive/jh7100-common.dtsi b/arch/riscv/boot/dts/starfive/jh7100-common.dtsi
-index adcdbbc4f57f..42fb61c36068 100644
---- a/arch/riscv/boot/dts/starfive/jh7100-common.dtsi
-+++ b/arch/riscv/boot/dts/starfive/jh7100-common.dtsi
-@@ -13,6 +13,7 @@
- / {
- 	aliases {
- 		mmc0 = &sdio0;
-+		mmc1 = &sdio1;
- 		serial0 = &uart3;
- 	};
- 
-@@ -64,6 +65,11 @@ soc {
- 			     <0x00 0xfa000000 0x10 0x7a000000 0x00 0x01000000>,
- 			     <0x00 0xfb000000 0x00 0xfb000000 0x07 0x85000000>;
- 	};
-+
-+	wifi_pwrseq: wifi-pwrseq {
-+		compatible = "mmc-pwrseq-simple";
-+		reset-gpios = <&gpio 37 GPIO_ACTIVE_LOW>;
-+	};
- };
- 
- &gpio {
-@@ -146,6 +152,41 @@ GPO_SDIO0_PAD_CDATA_OEN_BIT3,
- 		};
- 	};
- 
-+	sdio1_pins: sdio1-0 {
-+		clk-pins {
-+			pinmux = <GPIOMUX(33, GPO_SDIO1_PAD_CCLK_OUT,
-+				  GPO_ENABLE, GPI_NONE)>;
-+			bias-disable;
-+			input-disable;
-+			input-schmitt-disable;
-+		};
-+		sdio-pins {
-+			pinmux = <GPIOMUX(29,
-+				  GPO_SDIO1_PAD_CCMD_OUT,
-+				  GPO_SDIO1_PAD_CCMD_OEN,
-+				  GPI_SDIO1_PAD_CCMD_IN)>,
-+				 <GPIOMUX(36,
-+				  GPO_SDIO1_PAD_CDATA_OUT_BIT0,
-+				  GPO_SDIO1_PAD_CDATA_OEN_BIT0,
-+				  GPI_SDIO1_PAD_CDATA_IN_BIT0)>,
-+				 <GPIOMUX(30,
-+				  GPO_SDIO1_PAD_CDATA_OUT_BIT1,
-+				  GPO_SDIO1_PAD_CDATA_OEN_BIT1,
-+				  GPI_SDIO1_PAD_CDATA_IN_BIT1)>,
-+				 <GPIOMUX(34,
-+				  GPO_SDIO1_PAD_CDATA_OUT_BIT2,
-+				  GPO_SDIO1_PAD_CDATA_OEN_BIT2,
-+				  GPI_SDIO1_PAD_CDATA_IN_BIT2)>,
-+				 <GPIOMUX(31,
-+				  GPO_SDIO1_PAD_CDATA_OUT_BIT3,
-+				  GPO_SDIO1_PAD_CDATA_OEN_BIT3,
-+				  GPI_SDIO1_PAD_CDATA_IN_BIT3)>;
-+			bias-pull-up;
-+			input-enable;
-+			input-schmitt-enable;
-+		};
-+	};
-+
- 	uart3_pins: uart3-0 {
- 		rx-pins {
- 			pinmux = <GPIOMUX(13, GPO_LOW, GPO_DISABLE,
-@@ -225,6 +266,25 @@ &sdio0 {
- 	status = "okay";
- };
- 
-+&sdio1 {
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+	bus-width = <4>;
-+	cap-sd-highspeed;
-+	cap-sdio-irq;
-+	cap-power-off-card;
-+	mmc-pwrseq = <&wifi_pwrseq>;
-+	non-removable;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&sdio1_pins>;
-+	status = "okay";
-+
-+	wifi@1 {
-+		compatible = "brcm,bcm4329-fmac";
-+		reg = <1>;
-+	};
-+};
-+
- &uart3 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&uart3_pins>;
--- 
-2.40.1
+Sorry for the noise,
+
+Paolo
 
