@@ -2,103 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFE667FEC19
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 10:45:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB0417FEC11
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 10:44:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231962AbjK3Jpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 04:45:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46306 "EHLO
+        id S231906AbjK3JoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 04:44:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231784AbjK3Jpq (ORCPT
+        with ESMTP id S231784AbjK3JoQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 04:45:46 -0500
-Received: from zg8tmtyylji0my4xnjqumte4.icoremail.net (zg8tmtyylji0my4xnjqumte4.icoremail.net [162.243.164.118])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8F9EBD50;
-        Thu, 30 Nov 2023 01:45:49 -0800 (PST)
-Received: from hust.edu.cn (unknown [172.16.0.50])
-        by app2 (Coremail) with SMTP id HwEQrABHp8SdWWhlDIwaAA--.25716S2;
-        Thu, 30 Nov 2023 17:45:01 +0800 (CST)
-Received: from susu-virtual-machine.localdomain (unknown [10.12.173.52])
-        by gateway (Coremail) with SMTP id _____wBnUT+NWWhlIfEuAA--.57589S2;
-        Thu, 30 Nov 2023 17:45:00 +0800 (CST)
-From:   Yu Sun <u202112062@hust.edu.cn>
-To:     Hans de Goede <hdegoede@redhat.com>,
-        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        Mark Gross <markgross@kernel.org>,
-        Vadim Pasternak <vadimp@nvidia.com>
-Cc:     hust-os-kernel-patches@googlegroups.com,
-        Yu Sun <u202112062@hust.edu.cn>,
-        Dongliang Mu <dzm91@hust.edu.cn>,
-        Dan Carpenter <error27@gmail.com>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] platform/mellanox: mlxreg-lc: Check before variable dereferenced
-Date:   Thu, 30 Nov 2023 17:44:07 +0800
-Message-ID: <20231130094409.3963-1-u202112062@hust.edu.cn>
-X-Mailer: git-send-email 2.42.0
+        Thu, 30 Nov 2023 04:44:16 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9178FD54
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 01:44:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701337461;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CxCSv1JU9Ny4rjT7OLghWcyP96ZpHESLwySqeBe1CEg=;
+        b=L58apKv/uj40b/NoXlKs3SED9X0B6lK90xhX01gPEoQ9mY/oJC4455Z6/XKDxPymgo53Gd
+        skbU3WtMYb0llVVeAKMLUSUVYPatR1m5dDxwY5d9BO5DJbRNS8KU60ZIi/L36UoC4zA/9t
+        /7MRszVmOkmCl5b/140rdhGCQaDAPgo=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-198-383Hf1O1NSS80QdVXbkaOQ-1; Thu, 30 Nov 2023 04:44:20 -0500
+X-MC-Unique: 383Hf1O1NSS80QdVXbkaOQ-1
+Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2c9b97a391bso8166941fa.0
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 01:44:19 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701337459; x=1701942259;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CxCSv1JU9Ny4rjT7OLghWcyP96ZpHESLwySqeBe1CEg=;
+        b=THq7pCkYOnLrQwb+TjenCwGDiM9Yf3ducMYWa4+JBrZfQQ26l/OFv/Wynr7QLQMNtl
+         st3jIVjJZ1RYwlX+egF45EswKD3TGfYEa6psyOAu1key7fWvut3/GnJL4r8wAhIqoV4+
+         UqGVR8pGNMYoSOLBJ6OQMM6UU9kEOlyP/jdTuq5nGsxyNSETdkjO5i9GSpd+4n3y4i4h
+         pf5h79ZqNUfs9G3Qa1/iYabhA0Xw40yrMF1SQQBT2DqtBtpD/J2SZocHxj/ovPyrJB2p
+         AKU3h/2tqsLPhGWU7nfWuCKxmU8RQ8PwaGWeDO22IF7oQ8qNXFClGSv3W9u09jmYaxbe
+         NJvA==
+X-Gm-Message-State: AOJu0YweDxG2rawdxzqi4ud+GWxtlJSgDyjxD3dHwgPr0x1Wi9F0dvcz
+        83aSYaTwdCBqUNBsLsv1C2zKoGwTblDa6aCQWbqhM4L6U4Tm2vuQX6VuIaYhZxoXwg4Dr6/gmGV
+        UfGUI12hLyTC5gYtwn49i0Z63
+X-Received: by 2002:a2e:80d6:0:b0:2c9:b1ff:f951 with SMTP id r22-20020a2e80d6000000b002c9b1fff951mr5651669ljg.25.1701337458758;
+        Thu, 30 Nov 2023 01:44:18 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGQ3ETQ8qMwSfAMQqyRN2zbxUusE+Cde6ncuv72WYiZ/hQyYq4rhX69dbPlKoUxjc6/4LtSUA==
+X-Received: by 2002:a2e:80d6:0:b0:2c9:b1ff:f951 with SMTP id r22-20020a2e80d6000000b002c9b1fff951mr5651646ljg.25.1701337458370;
+        Thu, 30 Nov 2023 01:44:18 -0800 (PST)
+Received: from redhat.com ([2.55.10.128])
+        by smtp.gmail.com with ESMTPSA id i2-20020adffc02000000b003330aede2aesm1023337wrr.112.2023.11.30.01.44.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Nov 2023 01:44:17 -0800 (PST)
+Date:   Thu, 30 Nov 2023 04:44:13 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     "Ning, Hongyu" <hongyu.ning@linux.intel.com>,
+        xuanzhuo@linux.alibaba.com,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        eperezma@redhat.com, shannon.nelson@amd.com,
+        yuanyaogoog@chromium.org, yuehaibing@huawei.com,
+        kirill.shutemov@linux.intel.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com,
+        alexander.shishkin@linux.intel.com
+Subject: Re: [GIT PULL] virtio: features
+Message-ID: <20231130044045-mutt-send-email-mst@kernel.org>
+References: <20230903181338-mutt-send-email-mst@kernel.org>
+ <647701d8-c99b-4ca8-9817-137eaefda237@linux.intel.com>
+ <CACGkMEvoGOO0jtq5T7arAjRoB_0_fHB2+hPJe1JsPqcAuvr98w@mail.gmail.com>
+ <6f84bbad-62f9-43df-8134-a6836cc3b66c@linux.intel.com>
+ <CACGkMEvtus2BseZec8at6YORO=As1v9r9p=xtZjE1e2i=uhwhA@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: HwEQrABHp8SdWWhlDIwaAA--.25716S2
-Authentication-Results: app2; spf=neutral smtp.mail=u202112062@hust.ed
-        u.cn;
-X-Coremail-Antispam: 1UD129KBjvJXoW7Jw4kJw13KryxtrWUtr1kZrb_yoW8Jr4kpF
-        W3Cw4S9FWYkF109w4Ut34Y9F48CayfXrWjyryFy39xAFnIqa9rZrZ8Jw1ktFZFkrWDZ3Wj
-        kw48ta4Fv345X3JanT9S1TB71UUUUjDqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUQIb7Iv0xC_Cr1lb4IE77IF4wAFc2x0x2IEx4CE42xK8VAvwI8I
-        cIk0rVWrJVCq3wA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjx
-        v20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK
-        6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1ln4kS14v26r
-        126r1DM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI
-        12xvs2x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj64x0Y40En7xvr7AKxV
-        W8Jr0_Cr1UMcIj6x8ErcxFaVAv8VW8uFyUJr1UMcIj6xkF7I0En7xvr7AKxVWxJVW8Jr1l
-        Ox8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkF7I0En4kS14v26r126r1DMx
-        AIw28IcxkI7VAKI48JMxAIw28IcVCjz48v1sIEY20_GFW3Jr1UJwCFx2IqxVCFs4IE7xkE
-        bVWUJVW8JwCFI7km07C267AKxVWUAVWUtwC20s026c02F40E14v26r1j6r18MI8I3I0E74
-        80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0
-        I7IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04
-        k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7Cj
-        xVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU0_uctUUUUU==
-X-CM-SenderInfo: rxsqjiarsqljo6kx23oohg3hdfq/
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <CACGkMEvtus2BseZec8at6YORO=As1v9r9p=xtZjE1e2i=uhwhA@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-there is a warning saying variable dereferenced before
-check 'data->notifier' in line 828.
-add "for(data->notifier)" before variable deferenced.
+On Wed, Nov 29, 2023 at 06:20:31PM +0800, Jason Wang wrote:
+> On Wed, Nov 29, 2023 at 6:12 PM Ning, Hongyu
+> <hongyu.ning@linux.intel.com> wrote:
+> >
+> >
+> > On 2023/11/29 17:16, Jason Wang wrote:
+> > > On Wed, Nov 29, 2023 at 5:05 PM Ning, Hongyu
+> > > <hongyu.ning@linux.intel.com> wrote:
+> > >>
+> > >>
+> > >>
+> > >> On 2023/9/4 6:13, Michael S. Tsirkin wrote:
+> > >>> The following changes since commit 2dde18cd1d8fac735875f2e4987f11817cc0bc2c:
+> > >>>
+> > >>>     Linux 6.5 (2023-08-27 14:49:51 -0700)
+> > >>>
+> > >>> are available in the Git repository at:
+> > >>>
+> > >>>     https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
+> > >>>
+> > >>> for you to fetch changes up to 1acfe2c1225899eab5ab724c91b7e1eb2881b9ab:
+> > >>>
+> > >>>     virtio_ring: fix avail_wrap_counter in virtqueue_add_packed (2023-09-03 18:10:24 -0400)
+> > >>>
+> > >>> ----------------------------------------------------------------
+> > >>> virtio: features
+> > >>>
+> > >>> a small pull request this time around, mostly because the
+> > >>> vduse network got postponed to next relase so we can be sure
+> > >>> we got the security store right.
+> > >>>
+> > >>> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+> > >>>
+> > >>> ----------------------------------------------------------------
+> > >>> Eugenio Pérez (4):
+> > >>>         vdpa: add VHOST_BACKEND_F_ENABLE_AFTER_DRIVER_OK flag
+> > >>>         vdpa: accept VHOST_BACKEND_F_ENABLE_AFTER_DRIVER_OK backend feature
+> > >>>         vdpa: add get_backend_features vdpa operation
+> > >>>         vdpa_sim: offer VHOST_BACKEND_F_ENABLE_AFTER_DRIVER_OK
+> > >>>
+> > >>> Jason Wang (1):
+> > >>>         virtio_vdpa: build affinity masks conditionally
+> > >>>
+> > >>> Xuan Zhuo (12):
+> > >>>         virtio_ring: check use_dma_api before unmap desc for indirect
+> > >>>         virtio_ring: put mapping error check in vring_map_one_sg
+> > >>>         virtio_ring: introduce virtqueue_set_dma_premapped()
+> > >>>         virtio_ring: support add premapped buf
+> > >>>         virtio_ring: introduce virtqueue_dma_dev()
+> > >>>         virtio_ring: skip unmap for premapped
+> > >>>         virtio_ring: correct the expression of the description of virtqueue_resize()
+> > >>>         virtio_ring: separate the logic of reset/enable from virtqueue_resize
+> > >>>         virtio_ring: introduce virtqueue_reset()
+> > >>>         virtio_ring: introduce dma map api for virtqueue
+> > >>>         virtio_ring: introduce dma sync api for virtqueue
+> > >>>         virtio_net: merge dma operations when filling mergeable buffers
+> > >>
+> > >> Hi,
+> > >> above patch (upstream commit 295525e29a5b) seems causing a virtnet
+> > >> related Call Trace after WARNING from kernel/dma/debug.c.
+> > >>
+> > >> details (log and test setup) tracked in
+> > >> https://bugzilla.kernel.org/show_bug.cgi?id=218204
+> > >>
+> > >> it's recently noticed in a TDX guest testing since v6.6.0 release cycle
+> > >> and can still be reproduced in latest v6.7.0-rc3.
+> > >>
+> > >> as local bisects results show, above WARNING and Call Trace is linked
+> > >> with this patch, do you mind to take a look?
+> > >
+> > > Looks like virtqueue_dma_sync_single_range_for_cpu() use
+> > > DMA_BIDIRECTIONAL unconditionally.
+> > >
+> > > We should use dir here.
+> > >
+> > > Mind to try?
+> > >
+> > > Thanks
+> > >
+> >
+> > sure, but what I see in the code
+> > virtqueue_dma_sync_single_range_for_cpu() is using DMA_FROM_DEVICE,
+> > probably I misunderstood your point?
+> >
+> > Please let me know any patch/setting to try here.
+> 
+> Something like attached.  (Not even compiling test).
+> 
+> Thanks
 
-Signed-off-by: Yu Sun <u202112062@hust.edu.cn>
-Reviewed-by: Dongliang Mu <dzm91@hust.edu.cn>
-Reviewed-by: Dan Carpenter <error27@gmail.com>
+Forwarding it inline for the record - I am not sure all the
+0 day machinery handles attachments. Jason given it's reported to work
+can you please repost properly with a full commit log etc?
+I think we also need to fix virtqueue_dma_sync_single_range_for_device -
+please include that too.
+ 
+
+From: Jason Wang <jasowang@redhat.com>
+Date: Wed, 29 Nov 2023 17:14:15 +0800
+Subject: [PATCH] virtio_ring: fix DMA dir during sync
+Content-type: text/plain
+
+Signed-off-by: Jason Wang <jasowang@redhat.com>
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+
 ---
- drivers/platform/mellanox/mlxreg-lc.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ drivers/virtio/virtio_ring.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/platform/mellanox/mlxreg-lc.c b/drivers/platform/mellanox/mlxreg-lc.c
-index 43d119e3a473..e92add40750b 100644
---- a/drivers/platform/mellanox/mlxreg-lc.c
-+++ b/drivers/platform/mellanox/mlxreg-lc.c
-@@ -824,9 +824,12 @@ static int mlxreg_lc_probe(struct platform_device *pdev)
- 		return -ENOMEM;
+diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+index 81ecb29c88f1..91d869814373 100644
+--- a/drivers/virtio/virtio_ring.c
++++ b/drivers/virtio/virtio_ring.c
+@@ -3220,7 +3220,7 @@ void virtqueue_dma_sync_single_range_for_cpu(struct virtqueue *_vq,
+ 		return;
  
- 	mutex_init(&mlxreg_lc->lock);
--	/* Set event notification callback. */
--	data->notifier->user_handler = mlxreg_lc_event_handler;
--	data->notifier->handle = mlxreg_lc;
-+
-+	if (data->notifier) {
-+		/* Set event notification callback. */
-+		data->notifier->user_handler = mlxreg_lc_event_handler;
-+		data->notifier->handle = mlxreg_lc;
-+	}
+ 	dma_sync_single_range_for_cpu(dev, addr, offset, size,
+-				      DMA_BIDIRECTIONAL);
++				      dir);
+ }
+ EXPORT_SYMBOL_GPL(virtqueue_dma_sync_single_range_for_cpu);
  
- 	data->hpdev.adapter = i2c_get_adapter(data->hpdev.nr);
- 	if (!data->hpdev.adapter) {
 -- 
 2.42.0
 
