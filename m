@@ -2,126 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D4B37FE9B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 08:27:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E0467FE9B6
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 08:28:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344693AbjK3H1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 02:27:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33640 "EHLO
+        id S1344727AbjK3H2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 02:28:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231713AbjK3H1P (ORCPT
+        with ESMTP id S231706AbjK3H2E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 02:27:15 -0500
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1337510EF
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 23:27:21 -0800 (PST)
-Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2c8879a1570so8466871fa.1
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 23:27:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701329239; x=1701934039; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=7WLNcsSt42LaGfjZQ98cMh59wBp+UL1asBOR9zkijns=;
-        b=pxJZU+83KLExIo4EmVxqCv8wdgHTuKTa7225bk6VrXC9IIu0WKgfUQ3gvAeWL1jqdj
-         rFWYWksY/yTgjUTaoYhuwDosGUv1IgJQR8/+FxzDHdpDpWr3uDEVmX/7xjUSeUe0jBIG
-         WPzq/STIBN81BIX6ERFOJXLFz4iIbm7NG/8kG9N2fzWNAG/jUyudqO1p9Q064ve0UJQs
-         VUUODqPWM0V9kqERyQswuNGkDOHG310OLZ2kusrCQJKlmDMjCNM/U1NJBn6R+rdytAZ3
-         5te/KyV4rbbgfhBAveiw+hBaBNa1fL2Faffj990MNBh8nDlocer0ikj1XG8haVdd/3GL
-         Lkvg==
+        Thu, 30 Nov 2023 02:28:04 -0500
+Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com [209.85.216.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96C21B9
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 23:28:10 -0800 (PST)
+Received: by mail-pj1-f70.google.com with SMTP id 98e67ed59e1d1-28568b43a46so765011a91.0
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 23:28:10 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701329239; x=1701934039;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+        d=1e100.net; s=20230601; t=1701329290; x=1701934090;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7WLNcsSt42LaGfjZQ98cMh59wBp+UL1asBOR9zkijns=;
-        b=h5dSIY9AQ+tewh8iam9o6+sh0ryjewQSWJhF18xOanvDokYleqFCSWBwxMPrjelIqL
-         qyUz+iUCIzOGrT1smnd7dvKnNOWRIjOPo9N51NBvk6KGX0qzhZWa/WaWgl0XNiXSwUHP
-         j8B/aOOmS7ZVEsgbtXbv6Aw2km/ljQXy7euDU32LiJht3xHKygd/rv4SmmLQn3+xO59D
-         J5r0NaLUA1J9exaXjyTOptrRMRFzqYpWQRZvQwhjmS4uvXjNZ79zoy5O77Rr7GWebdNM
-         wMyZN2d3PxWAGdCOtUUyS3PaR+Uu3dM99zVDCkr2livOV6gbHgof05SxrZ7zTPClZNb5
-         AFXQ==
-X-Gm-Message-State: AOJu0YzeBIHdifiR3m1fA+CU/L/YVzhjABUCoc/GblK416q6jXTAMu6R
-        D/YLBeRMyaqIl6W/swr1UNo3AQ==
-X-Google-Smtp-Source: AGHT+IHAz8JwF2cwklTl4K6IgQx7ErykCE5QzPE31FEM/rixp/mIlIv5wVKVj+dAewFSOm0L2zbr/g==
-X-Received: by 2002:a2e:8606:0:b0:2c9:af18:2e8c with SMTP id a6-20020a2e8606000000b002c9af182e8cmr5027808lji.10.1701329239279;
-        Wed, 29 Nov 2023 23:27:19 -0800 (PST)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id n10-20020a05600c4f8a00b004053e9276easm4564118wmq.32.2023.11.29.23.27.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Nov 2023 23:27:19 -0800 (PST)
-Date:   Thu, 30 Nov 2023 10:27:15 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Sarah Walker <sarah.walker@imgtec.com>
-Cc:     Frank Binns <frank.binns@imgtec.com>,
-        Donald Robson <donald.robson@imgtec.com>,
-        Matt Coster <matt.coster@imgtec.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH] drm/imagination: fix off by one in pvr_vm_mips_init() error
- handling
-Message-ID: <a2d3210b-290f-4397-9c3e-efdcca94d8ac@moroto.mountain>
+        bh=ixYvf/J8abI64uMWMZeI/HJ7Oi+NPdZy2LXBXb3PpQE=;
+        b=N044Ix3iRNzzOOBA3w9G+XjavCNjaM14RVkPvdqaCkji04A7p2YxY54OgTszMkEYRr
+         5QtW/Pa8vBB49bHruhMV99Ijcg0NUd/i88lk9LS04JKbKUUMc+GkO/4jjzM1TBS48jY0
+         ap1yhibG/UeWaJZu5khCi8FK3ga+XbmK461niAXZSyNgKNVAQjuOu/anT1rUtFb2BL5j
+         GWLCLcfUDhgQgtzAUsV/9InWDhZ/yvqk6j/PKlv+5o9gs/KzUpE9JlXDywXOkkV046jv
+         aqM4C9ZI81PINpCGy0HQjQaGlI9ZJ7JQPQH0th0bhgBMxJOVZcafiOv7w6haJG+2IIfj
+         3KbA==
+X-Gm-Message-State: AOJu0Yw28ri1O+OW8uJcXSZjUPGxd8lfkgZQyv9Uod4+JTtRoSeC4kKU
+        gSZg3hjlqfFkwJb46jvJEHR5KvMbEaopRGqD2jryOOtTxscF1S0=
+X-Google-Smtp-Source: AGHT+IFQH8VR6O1jPWhQd7fk4IZdLJk8GzrYzS8MBhw467AZy5fl4Yh1BK+XOYNGM35QqVJy2A2npqJORHaow49PsyXEAQ290lTb
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a17:903:182:b0:1d0:758:488e with SMTP id
+ z2-20020a170903018200b001d00758488emr1555907plg.13.1701329290211; Wed, 29 Nov
+ 2023 23:28:10 -0800 (PST)
+Date:   Wed, 29 Nov 2023 23:28:10 -0800
+In-Reply-To: <000000000000db858c05f06f30b0@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000fd370a060b59978b@google.com>
+Subject: Re: [syzbot] task hung in exfat_write_inode
+From:   syzbot <syzbot+2f73ed585f115e98aee8@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the call to vmap() fails the "page_nr" is one element beyond the end
-of the mips_data->pt_dma_addr[] and mips_data->pt_pages[] arrays.
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org.
 
-The way that this is traditionally written is that we clean up the
-partial loop iteration before the goto and then we can say
-while (--i >= 0).  At that point we know that all the elements thus
-far are initialized so we don't need to have NULL checks.
+***
 
-Fixes: 927f3e0253c1 ("drm/imagination: Implement MIPS firmware processor and MMU support")
-Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
----
- drivers/gpu/drm/imagination/pvr_vm_mips.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+Subject: task hung in exfat_write_inode
+Author: lizhi.xu@windriver.com
 
-diff --git a/drivers/gpu/drm/imagination/pvr_vm_mips.c b/drivers/gpu/drm/imagination/pvr_vm_mips.c
-index 7268cf6e630b..2bc7181a4c3e 100644
---- a/drivers/gpu/drm/imagination/pvr_vm_mips.c
-+++ b/drivers/gpu/drm/imagination/pvr_vm_mips.c
-@@ -57,6 +57,7 @@ pvr_vm_mips_init(struct pvr_device *pvr_dev)
- 							       PAGE_SIZE, DMA_TO_DEVICE);
- 		if (dma_mapping_error(dev, mips_data->pt_dma_addr[page_nr])) {
- 			err = -ENOMEM;
-+			__free_page(mips_data->pt_pages[page_nr]);
- 			goto err_free_pages;
- 		}
- 	}
-@@ -79,13 +80,11 @@ pvr_vm_mips_init(struct pvr_device *pvr_dev)
- 	return 0;
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git f9ff5644bcc0
+
+diff --git a/fs/exfat/file.c b/fs/exfat/file.c
+index bfdfafe00993..a3ace4fc555c 100644
+--- a/fs/exfat/file.c
++++ b/fs/exfat/file.c
+@@ -116,6 +116,7 @@ int __exfat_truncate(struct inode *inode)
  
- err_free_pages:
--	for (; page_nr >= 0; page_nr--) {
--		if (mips_data->pt_dma_addr[page_nr])
--			dma_unmap_page(from_pvr_device(pvr_dev)->dev,
--				       mips_data->pt_dma_addr[page_nr], PAGE_SIZE, DMA_TO_DEVICE);
-+	while (--page_nr >= 0) {
-+		dma_unmap_page(from_pvr_device(pvr_dev)->dev,
-+			       mips_data->pt_dma_addr[page_nr], PAGE_SIZE, DMA_TO_DEVICE);
+ 	exfat_chain_set(&clu, ei->start_clu, num_clusters_phys, ei->flags);
  
--		if (mips_data->pt_pages[page_nr])
--			__free_page(mips_data->pt_pages[page_nr]);
-+		__free_page(mips_data->pt_pages[page_nr]);
- 	}
++	mutex_unlock(&sbi->s_lock);
+ 	if (i_size_read(inode) > 0) {
+ 		/*
+ 		 * Truncate FAT chain num_clusters after the first cluster
+@@ -134,8 +135,10 @@ int __exfat_truncate(struct inode *inode)
+ 		} else {
+ 			while (num_clusters > 0) {
+ 				last_clu = clu.dir;
++				mutex_lock(&sbi->s_lock);
+ 				if (exfat_get_next_cluster(sb, &(clu.dir)))
+ 					return -EIO;
++				mutex_unlock(&sbi->s_lock);
  
- 	return err;
--- 
-2.42.0
-
+ 				num_clusters--;
+ 				clu.size--;
+@@ -160,6 +163,7 @@ int __exfat_truncate(struct inode *inode)
+ 	 * __exfat_write_inode() is called for directory entry, bitmap
+ 	 * and FAT to be written in a same writeback.
+ 	 */
++	mutex_unlock(&sbi->s_lock);
+ 	if (__exfat_write_inode(inode, inode_needs_sync(inode)))
+ 		return -EIO;
+ 
