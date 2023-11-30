@@ -2,97 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FED17FE64E
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 02:42:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 364517FE652
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 02:43:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231614AbjK3BmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 20:42:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34088 "EHLO
+        id S1344046AbjK3Bmx convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 29 Nov 2023 20:42:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231536AbjK3BmA (ORCPT
+        with ESMTP id S231477AbjK3Bmv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 20:42:00 -0500
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7120595
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 17:42:06 -0800 (PST)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5d1ed4b268dso8183767b3.0
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 17:42:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701308525; x=1701913325; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=UJiTexEo/V1fShNskSxIf2XvNn8+cQRjMRJWxCEEnB0=;
-        b=Xuow30fC4+Knlna+BI56y8gbSenRSlpZVD6YUtEJ0Bcy5gYa4m3X59VO9eXe+/hE4M
-         JhzppL9O8gqLmm0sW4OmozLA3zhQUYHkvew7tPSNJ2J5t8nG6vy6w6NG4hha1OrcNnSz
-         F5D/NlAyMR+1fDbgOMsM4iuUub6VxDC614Uhc5LwE7g31SBMh1ib76PjdY4K1yu1PKPk
-         l30H6z1knSNwGa8RnJkBSGZMsNuRWn2chYE7SAc0Cy3AyspIg+ruEYiV1xGcKATYKiyE
-         MZ1lYwdbITG7aeAcZYW3PYSL35rBsAsBEugFSsrtsbr67YCYRUvkwSCDE3Eqtr8Pa+3K
-         2kMw==
+        Wed, 29 Nov 2023 20:42:51 -0500
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BF3395;
+        Wed, 29 Nov 2023 17:42:58 -0800 (PST)
+Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-2856254bd74so456968a91.2;
+        Wed, 29 Nov 2023 17:42:58 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701308525; x=1701913325;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UJiTexEo/V1fShNskSxIf2XvNn8+cQRjMRJWxCEEnB0=;
-        b=XbA5XW2/cMHFqv7UjGcbfZ7HeUSq3tVXyeNEs0EtJEdDOrPG5MHjuAwnr3DA9Gzsnp
-         IvjPzsRJFdWDoIdc28FIFIjBZyn9B7wc5CztHkoXgXkuek1b1iuLjdY0QAFq2lTBEu6/
-         G62shACrXGWPnAyXMZPNHXQKyqiYXa1ol3n8Q7QL0/w+75u2Tm/KcVPCoBOndL47GMZp
-         LXWLb+M5zj0yISQ0LoLIXYRFvPytfiSxYaJY6q3ktZBKtdf3ymqehi1hx7pmY7zwZOhe
-         iQRxx7FNpGaE7B5gzsXui1ccIGKcq07qnoENDbe1yvjJpKjk9SiLQbSMuTNB6GXZNZLF
-         gF/w==
-X-Gm-Message-State: AOJu0Yy1+heJYA0fl7+J96FUlhY732p0bGYx5jG34PubswWaU0VCiMge
-        Pq+spBvqbBvqA/3/iGL5tEJtUSOTm+k=
-X-Google-Smtp-Source: AGHT+IG8Xv0X2KGQHPvRQOHcUbtzsQsthfYCxiRlfbVLaRRLFYnmSFC8z2XlvUktMdkOuzt9IB2Q97PT6sg=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:690c:98d:b0:5cd:c47d:d8a0 with SMTP id
- ce13-20020a05690c098d00b005cdc47dd8a0mr650442ywb.7.1701308525670; Wed, 29 Nov
- 2023 17:42:05 -0800 (PST)
-Date:   Wed, 29 Nov 2023 17:42:04 -0800
-In-Reply-To: <20231025152406.1879274-1-vkuznets@redhat.com>
-Mime-Version: 1.0
-References: <20231025152406.1879274-1-vkuznets@redhat.com>
-Message-ID: <ZWfobPuhnXZYaAVj@google.com>
-Subject: Re: [PATCH 00/14] KVM: x86: Make Hyper-V emulation optional
-From:   Sean Christopherson <seanjc@google.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1701308578; x=1701913378;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ivoJxkCdzt3z1KRXcXZxqZP8Xkb6cmsg3m3L6Nbeo2w=;
+        b=QTglPJA3ByKUKhnDH3eWl5l1kKBfj3Xv1XhDXQUyhK3Fua3BS5BryUg+7RAFPUCPpn
+         /IZY3VbJHUR5qfIJqAdtMMqIsLj03h9Hav2Yu0uH50AJjLCBdDu5AXkHi3bviejepPai
+         iQwWIWG7pQZKuQDyK0n0dVWb3ewo3y1enif/7x28tHReWUUqm3TuhzZpzuXjquCFkCyG
+         FSnWb13WCyfdCF1MVpShcD5tG4SP1WfsyQiUyuk6KB455nuyBxXXExdmjTuUZEhHD4IM
+         p+bTIefiz5mHjY7FJsXG3jW6UUpWd718luz54PLLcmT611am57ZCpdTZPHMxo52g8b/P
+         qu/A==
+X-Gm-Message-State: AOJu0Yxpv4+et9z31x7foeS1H8cS7fYyZNPXAdtv26/lqHVYooLByI+I
+        FVTSCGQhJr3s7Oxl2R4O0H9hIC6x5ja3/Tqiqms=
+X-Google-Smtp-Source: AGHT+IF1rO1VkZ51jkR3hbMtb53x10XLTbSAz/OODkgWbTstVWu31Cgg87bOxSAYY24ZZ6D54ByCuy5rp5ek8BgaOpQ=
+X-Received: by 2002:a17:90b:17cf:b0:285:a18e:7565 with SMTP id
+ me15-20020a17090b17cf00b00285a18e7565mr15721075pjb.5.1701308577748; Wed, 29
+ Nov 2023 17:42:57 -0800 (PST)
+MIME-Version: 1.0
+References: <20231127220902.1315692-1-irogers@google.com> <20231127220902.1315692-6-irogers@google.com>
+In-Reply-To: <20231127220902.1315692-6-irogers@google.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Wed, 29 Nov 2023 17:42:46 -0800
+Message-ID: <CAM9d7cgFJ4i05-ow07VXoCGxEHTbmuetM5C_8bvMC43JGOmwpw@mail.gmail.com>
+Subject: Re: [PATCH v5 05/50] tools api fs: Avoid reading whole file for a 1
+ byte bool
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Nick Terrell <terrelln@fb.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        "Steinar H. Gunderson" <sesse@google.com>,
+        Liam Howlett <liam.howlett@oracle.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Colin Ian King <colin.i.king@gmail.com>,
+        Dmitrii Dolgov <9erthalion6@gmail.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Ming Wang <wangming01@loongson.cn>,
+        James Clark <james.clark@arm.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        German Gomez <german.gomez@arm.com>,
+        Changbin Du <changbin.du@huawei.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, Li Dong <lidong@vivo.com>,
+        Sandipan Das <sandipan.das@amd.com>,
+        liuwenyu <liuwenyu7@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org,
+        Guilherme Amadio <amadio@gentoo.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023, Vitaly Kuznetsov wrote:
-> Vitaly Kuznetsov (14):
->   KVM: x86: xen: Remove unneeded xen context from struct kvm_arch when
->     !CONFIG_KVM_XEN
->   KVM: x86: hyper-v: Move Hyper-V partition assist page out of Hyper-V
->     emulation context
->   KVM: VMX: Split off vmx_onhyperv.{ch} from hyperv.{ch}
->   KVM: x86: hyper-v: Introduce kvm_hv_synic_auto_eoi_set()
->   KVM: x86: hyper-v: Introduce kvm_hv_synic_has_vector()
->   KVM: VMX: Split off hyperv_evmcs.{ch}
->   KVM: x86: hyper-v: Introduce kvm_hv_nested_transtion_tlb_flush()
->     helper
->   KVM: selftests: Make all Hyper-V tests explicitly dependent on Hyper-V
->     emulation support in KVM
->   KVM: selftests: Fix vmxon_pa == vmcs12_pa == -1ull
->     vmx_set_nested_state_test for !eVMCS case
->   KVM: x86: Make Hyper-V emulation optional
->   KVM: nVMX: hyper-v: Introduce nested_vmx_evmptr12() and
->     nested_vmx_is_evmptr12_valid() helpers
->   KVM: nVMX: hyper-v: Introduce nested_vmx_evmcs() accessor
->   KVM: nVMX: hyper-v: Hide more stuff under CONFIG_KVM_HYPERV
->   KVM: nSVM: hyper-v: Hide more stuff under
->     CONFIG_KVM_HYPERV/CONFIG_HYPERV
+On Mon, Nov 27, 2023 at 2:09 PM Ian Rogers <irogers@google.com> wrote:
+>
+> sysfs__read_bool used the first byte from a fully read file into a
+> string. It then looked at the first byte's value. Avoid doing this and
+> just read the first byte.
+>
+> Signed-off-by: Ian Rogers <irogers@google.com>
 
-No major complaints.  If it hadn't been for the build failure, I likely wouldn't
-have even bothered with most of my nits ;-)
+Acked-by: Namhyung Kim <namhyung@kernel.org>
 
-I'll wait for v2 though, trying to fixup as I go will be a bit risky.
+Thanks,
+Namhyung
+
+> ---
+>  tools/lib/api/fs/fs.c | 24 +++++++++++++++---------
+>  1 file changed, 15 insertions(+), 9 deletions(-)
+>
+> diff --git a/tools/lib/api/fs/fs.c b/tools/lib/api/fs/fs.c
+> index 004f2af5504b..337fde770e45 100644
+> --- a/tools/lib/api/fs/fs.c
+> +++ b/tools/lib/api/fs/fs.c
+> @@ -447,15 +447,22 @@ int sysfs__read_str(const char *entry, char **buf, size_t *sizep)
+>
+>  int sysfs__read_bool(const char *entry, bool *value)
+>  {
+> -       char *buf;
+> -       size_t size;
+> -       int ret;
+> +       struct io io;
+> +       char bf[16];
+> +       int ret = 0;
+> +       char path[PATH_MAX];
+> +       const char *sysfs = sysfs__mountpoint();
+> +
+> +       if (!sysfs)
+> +               return -1;
+>
+> -       ret = sysfs__read_str(entry, &buf, &size);
+> -       if (ret < 0)
+> -               return ret;
+> +       snprintf(path, sizeof(path), "%s/%s", sysfs, entry);
+> +       io.fd = open(path, O_RDONLY);
+> +       if (io.fd < 0)
+> +               return -errno;
+>
+> -       switch (buf[0]) {
+> +       io__init(&io, io.fd, bf, sizeof(bf));
+> +       switch (io__get_char(&io)) {
+>         case '1':
+>         case 'y':
+>         case 'Y':
+> @@ -469,8 +476,7 @@ int sysfs__read_bool(const char *entry, bool *value)
+>         default:
+>                 ret = -1;
+>         }
+> -
+> -       free(buf);
+> +       close(io.fd);
+>
+>         return ret;
+>  }
+> --
+> 2.43.0.rc1.413.gea7ed67945-goog
+>
