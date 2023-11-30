@@ -2,136 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 529717FF77B
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 17:57:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D9CD7FF76E
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 17:57:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345966AbjK3Q5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 11:57:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46744 "EHLO
+        id S1345948AbjK3Q5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 11:57:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346080AbjK3Q5J (ORCPT
+        with ESMTP id S1345884AbjK3Q5E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 11:57:09 -0500
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::228])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0460910D0;
-        Thu, 30 Nov 2023 08:57:13 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPA id BB2681BF203;
-        Thu, 30 Nov 2023 16:57:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1701363432;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XjanQLiV96Fread002ZWRWE0O5XHgSgVvDb1R2qXIW8=;
-        b=R2xXMZckGm13RP0RGLzamc4Vgb6v7iI8z4vIwQ/qs0jNoSNLHzqHx3vBAFWijCIKXGoCkR
-        L6jLjdFc4H6Ypp8lt0HC2umsPm0Wtp/2Dg6BX51kdMlpF7uwLCXm1tTJceX9HXlOFdwslW
-        SSTu2wlzabNte5XhMNvUumhiEkxKoxVxq5vbS87LrpgMM/BBWUboYAfkiC2t3dZzr5VR2N
-        uhTN4z5TIGNF1F+ruh4VjIQkmBtVJiE9yt1oVGQgWo63uHXekz3R9hFZ/3zTzAVW5zCXLa
-        hltDZrB5FZRCau61Gfr4AZkomtvzn+FetxJhKnEtAO95BL7grV5qp7Qc+q6MXA==
-From:   Herve Codina <herve.codina@bootlin.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lizhi Hou <lizhi.hou@amd.com>, Rob Herring <robh@kernel.org>
-Cc:     Max Zhen <max.zhen@amd.com>, Sonal Santan <sonal.santan@amd.com>,
-        Stefano Stabellini <stefano.stabellini@xilinx.com>,
-        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        Allan Nielsen <allan.nielsen@microchip.com>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        Steen Hegelund <steen.hegelund@microchip.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Herve Codina <herve.codina@bootlin.com>, stable@vger.kernel.org
-Subject: [PATCH v2 2/2] PCI: of: Attach created of_node to existing device
-Date:   Thu, 30 Nov 2023 17:56:59 +0100
-Message-ID: <20231130165700.685764-3-herve.codina@bootlin.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231130165700.685764-1-herve.codina@bootlin.com>
-References: <20231130165700.685764-1-herve.codina@bootlin.com>
+        Thu, 30 Nov 2023 11:57:04 -0500
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA12ED67;
+        Thu, 30 Nov 2023 08:57:09 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Sh2L50m6Dz6K61V;
+        Fri,  1 Dec 2023 00:52:29 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+        by mail.maildlp.com (Postfix) with ESMTPS id E2BCD1402CD;
+        Fri,  1 Dec 2023 00:57:07 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 30 Nov
+ 2023 16:57:07 +0000
+Date:   Thu, 30 Nov 2023 16:57:06 +0000
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Russell King <rmk+kernel@armlinux.org.uk>
+CC:     <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
+        <linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-riscv@lists.infradead.org>, <kvmarm@lists.linux.dev>,
+        <x86@kernel.org>, <linux-csky@vger.kernel.org>,
+        <linux-doc@vger.kernel.org>, <linux-ia64@vger.kernel.org>,
+        <linux-parisc@vger.kernel.org>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        <jianyong.wu@arm.com>, <justin.he@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>
+Subject: Re: [PATCH 17/21] LoongArch: Switch over to GENERIC_CPU_DEVICES
+Message-ID: <20231130165706.000060fa@Huawei.com>
+In-Reply-To: <E1r5R41-00Ct04-Bg@rmk-PC.armlinux.org.uk>
+References: <ZVyz/Ve5pPu8AWoA@shell.armlinux.org.uk>
+        <E1r5R41-00Ct04-Bg@rmk-PC.armlinux.org.uk>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml100005.china.huawei.com (7.191.160.25) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The commit 407d1a51921e ("PCI: Create device tree node for bridge")
-creates of_node for PCI devices.
-During the insertion handling of these new DT nodes done by of_platform,
-new devices (struct device) are created.
-For each PCI devices a struct device is already present (created and
-handled by the PCI core).
-Having a second struct device to represent the exact same PCI device is
-not correct.
+On Tue, 21 Nov 2023 13:45:17 +0000
+Russell King <rmk+kernel@armlinux.org.uk> wrote:
 
-On the of_node creation, tell the of_platform that there is no need to
-create a device for this node (OF_POPULATED flag), link this newly
-created of_node to the already present device and tell fwnode that the
-device attached to this of_node is ready (fwnode_dev_initialized()).
-
-With this fix, the of_node are available in the sysfs device tree:
-/sys/devices/platform/soc/d0070000.pcie/
-+ of_node -> .../devicetree/base/soc/pcie@d0070000
-+ pci0000:00
-  + 0000:00:00.0
-    + of_node -> .../devicetree/base/soc/pcie@d0070000/pci@0,0
-    + 0000:01:00.0
-      + of_node -> .../devicetree/base/soc/pcie@d0070000/pci@0,0/dev@0,0
-
-On the of_node removal, revert the operations.
-
-Fixes: 407d1a51921e ("PCI: Create device tree node for bridge")
-Cc: stable@vger.kernel.org
-Signed-off-by: Herve Codina <herve.codina@bootlin.com>
----
- drivers/pci/of.c | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/pci/of.c b/drivers/pci/of.c
-index 51e3dd0ea5ab..5afd2731e876 100644
---- a/drivers/pci/of.c
-+++ b/drivers/pci/of.c
-@@ -615,7 +615,8 @@ void of_pci_remove_node(struct pci_dev *pdev)
- 	np = pci_device_to_OF_node(pdev);
- 	if (!np || !of_node_check_flag(np, OF_DYNAMIC))
- 		return;
--	pdev->dev.of_node = NULL;
-+
-+	device_remove_of_node(&pdev->dev);
- 
- 	of_changeset_revert(np->data);
- 	of_changeset_destroy(np->data);
-@@ -668,12 +669,22 @@ void of_pci_make_dev_node(struct pci_dev *pdev)
- 	if (ret)
- 		goto out_free_node;
- 
-+	/*
-+	 * This of_node will be added to an existing device.
-+	 * Avoid any device creation and use the existing device
-+	 */
-+	of_node_set_flag(np, OF_POPULATED);
-+	np->fwnode.dev = &pdev->dev;
-+	fwnode_dev_initialized(&np->fwnode, true);
-+
- 	ret = of_changeset_apply(cset);
- 	if (ret)
- 		goto out_free_node;
- 
- 	np->data = cset;
--	pdev->dev.of_node = np;
-+
-+	/* Add the of_node to the existing device */
-+	device_add_of_node(&pdev->dev, np);
- 	kfree(name);
- 
- 	return;
--- 
-2.42.0
-
+> From: James Morse <james.morse@arm.com>
+> 
+> Now that GENERIC_CPU_DEVICES calls arch_register_cpu(), which can be
+> overridden by the arch code, switch over to this to allow common code
+> to choose when the register_cpu() call is made.
+> 
+> This allows topology_init() to be removed.
+> 
+> This is an intermediate step to the logic being moved to drivers/acpi,
+> where GENERIC_CPU_DEVICES will do the work when booting with acpi=off.
+> 
+> This is a subtle change. Originally:
+> - on boot, topology_init() would have marked present CPUs that
+>   io_master() is true for as hotplug-incapable.
+> - if a CPU is hotplugged that is an io_master(), it can later be
+>   hot-unplugged.
+> 
+> The new behaviour is that any CPU that io_master() is true for will
+> now always be marked as hotplug-incapable, thus even if it was
+> hotplugged, it can no longer be hot-unplugged.
+> 
+> This patch also has the effect of moving the registration of CPUs from
+> subsys to driver core initialisation, prior to any initcalls running.
+> 
+> Signed-off-by: James Morse <james.morse@arm.com>
+> Reviewed-by: Gavin Shan <gshan@redhat.com>
+> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
