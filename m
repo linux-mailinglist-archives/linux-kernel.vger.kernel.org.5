@@ -2,80 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 410DB7FE637
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 02:37:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 346E47FE61A
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 02:36:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344058AbjK3Bg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 20:36:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44732 "EHLO
+        id S231582AbjK3Bgh convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 29 Nov 2023 20:36:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343936AbjK3Bgs (ORCPT
+        with ESMTP id S229658AbjK3Bgf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 20:36:48 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B34410D1;
-        Wed, 29 Nov 2023 17:36:54 -0800 (PST)
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AU1EGr1002437;
-        Thu, 30 Nov 2023 01:36:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=qcppdkim1;
- bh=SevpiuSF70TWO4X4hMl+0/RD6Mh8GGRRC2tdgazz2Rg=;
- b=msLkyLrgWpjpSPhih4IPfdwxdtTPqigH3ZfNi/LgVewW7mIsm5nf84KPv6qobVHaChE/
- 3+jyBfDWQpzW8Wi6jWevlenVO7A0R2HtbTFklC+S0GfNkN28QoU0zhgrq0TsVKa3rsOi
- /IDADPDxVKL8bZlnYsRWSFMQf8JAUQmGTPbfQq5TGw7Lo7kQhTR2MinnSe0YyLlGUtUE
- VS4pKAaW+ecOUvQQ6aYmkbd8RrfnkMWhRAvd5WDXWC4amj2qlCaPRO9RXHaxwZMDSEKJ
- sGWeAY4JGiqTYnm4AEkUA2BaKz5rImCTzhngq+zBuu6MM0gtDY1pqdJ4nlcobZ+G+3jg uA== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3up02xtqk8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 30 Nov 2023 01:36:46 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AU1aj9O024516
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 30 Nov 2023 01:36:45 GMT
-Received: from hu-amelende-lv.qualcomm.com (10.49.16.6) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 29 Nov 2023 17:36:45 -0800
-From:   Anjelique Melendez <quic_amelende@quicinc.com>
-To:     <pavel@ucw.cz>, <lee@kernel.org>, <thierry.reding@gmail.com>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <agross@kernel.org>, <andersson@kernel.org>
-CC:     <luca.weiss@fairphone.com>, <konrad.dybcio@linaro.org>,
-        <u.kleine-koenig@pengutronix.de>, <quic_subbaram@quicinc.com>,
-        <quic_gurus@quicinc.com>, <linux-leds@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-pwm@vger.kernel.org>,
-        "Anjelique Melendez" <quic_amelende@quicinc.com>
-Subject: [PATCH v7 7/7] leds: rgb: Update PM8350C lpg_data to support two-nvmem PPG Scheme
-Date:   Wed, 29 Nov 2023 17:36:15 -0800
-Message-ID: <20231130013615.14287-8-quic_amelende@quicinc.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231130013615.14287-1-quic_amelende@quicinc.com>
-References: <20231130013615.14287-1-quic_amelende@quicinc.com>
+        Wed, 29 Nov 2023 20:36:35 -0500
+Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D0FA1A3;
+        Wed, 29 Nov 2023 17:36:42 -0800 (PST)
+Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-2855b566683so1308749a91.1;
+        Wed, 29 Nov 2023 17:36:42 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701308202; x=1701913002;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=K8Oujw9Wuea/rLA/FjXFwS/JqnACIhUyo3AE9Vp7Fp0=;
+        b=quep10pAqKXRwAtzIGV8/Y4BZrXi3EnhrJuw4AXSqOYkasFoHH8ajyxBZE/82tGnoq
+         PfOFLXBJl9dtJnMInVqpvfc1sLosEysIWBSX1/Ibw+3oZYTbwNvAt773DE6NA2XkYJkr
+         aHU6inj9rW+GswttrtqGQk4/5oiSmFzMLAA9xiJhnMk23C9Ka0WNGlPqHsto1w5jqsLs
+         Jrz+RNcN1DDTRsHATkRZLjBeJ1B0tjkG1AVXUFSL+H6T+ijdLfw+a7OyIeJcP6ym1wKb
+         fyPkC2NnMuWS7PT5sbWqIuRuCGOsNtlnCHuXxQmSkmnKUYf+V13/1SA9omT80+7ixoXT
+         AaxQ==
+X-Gm-Message-State: AOJu0Yz7BDrsbP+5Dx8sQa/FqrIfhRgCBqN0IdtxZOadFUR8FgSYwjUi
+        mv9oyOgqBRRUwGMavjDdw42ZjaTyQkmW+rFBVoI=
+X-Google-Smtp-Source: AGHT+IGmBilxx7ubLW+U28vwEfq8129RPjWdJyK6scOuINLWU3ZnciHvQAwFWNhhA4mrVdDgkXToefdQuzINYdOQkWY=
+X-Received: by 2002:a17:90b:1d09:b0:281:d84:a97e with SMTP id
+ on9-20020a17090b1d0900b002810d84a97emr29201239pjb.2.1701308201546; Wed, 29
+ Nov 2023 17:36:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: ElR_iT1N9NMhah9v9NfABHqfkX-gGcPr
-X-Proofpoint-GUID: ElR_iT1N9NMhah9v9NfABHqfkX-gGcPr
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-29_21,2023-11-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
- suspectscore=0 phishscore=0 adultscore=0 lowpriorityscore=0 spamscore=0
- priorityscore=1501 impostorscore=0 mlxlogscore=976 clxscore=1015
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311300010
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+References: <20231127220902.1315692-1-irogers@google.com> <20231127220902.1315692-5-irogers@google.com>
+In-Reply-To: <20231127220902.1315692-5-irogers@google.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Wed, 29 Nov 2023 17:36:30 -0800
+Message-ID: <CAM9d7cgMwBX2F5gVNB0OqNunbGLXniXqgcAve29P7f5C-i+BhQ@mail.gmail.com>
+Subject: Re: [PATCH v5 04/50] tools api fs: Switch filename__read_str to use io.h
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Nick Terrell <terrelln@fb.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        "Steinar H. Gunderson" <sesse@google.com>,
+        Liam Howlett <liam.howlett@oracle.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Colin Ian King <colin.i.king@gmail.com>,
+        Dmitrii Dolgov <9erthalion6@gmail.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Ming Wang <wangming01@loongson.cn>,
+        James Clark <james.clark@arm.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        German Gomez <german.gomez@arm.com>,
+        Changbin Du <changbin.du@huawei.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, Li Dong <lidong@vivo.com>,
+        Sandipan Das <sandipan.das@amd.com>,
+        liuwenyu <liuwenyu7@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org,
+        Guilherme Amadio <amadio@gentoo.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,36 +90,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update the pm8350c lpg_data struct so that pm8350c devices are treated as
-PWM devices that support two-nvmem PPG scheme.
+On Mon, Nov 27, 2023 at 2:09 PM Ian Rogers <irogers@google.com> wrote:
+>
+> filename__read_str has its own string reading code that allocates
+> memory before reading into it. The memory allocated is sized at BUFSIZ
+> that is 8kb. Most strings are short and so most of this 8kb is
+> wasted.
+>
+> Refactor io__getline, as io__getdelim, so that the newline character
+> can be configurable and ignored in the case of filename__read_str.
+>
+> Code like build_caches_for_cpu in perf's header.c will read many
+> strings and hold them in a data structure, in this case multiple
+> strings per cache level per CPU. Using io.h's io__getline avoids the
+> wasted memory as strings are temporarily read into a buffer on the
+> stack before being copied to a buffer that grows 128 bytes at a time
+> and is never sized larger than the string.
+>
+> For a 16 hyperthread system the memory consumption of "perf record
+> true" is reduced by 180kb, primarily through saving memory when
+> reading the cache information.
+>
+> Signed-off-by: Ian Rogers <irogers@google.com>
 
-Signed-off-by: Anjelique Melendez <quic_amelende@quicinc.com>
-Reviewed-by: Lee Jones <lee@kernel.org>
----
- drivers/leds/rgb/leds-qcom-lpg.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+Acked-by: Namhyung Kim <namhyung@kernel.org>
 
-diff --git a/drivers/leds/rgb/leds-qcom-lpg.c b/drivers/leds/rgb/leds-qcom-lpg.c
-index 471b5b3e22ea..0cb079e6e2e6 100644
---- a/drivers/leds/rgb/leds-qcom-lpg.c
-+++ b/drivers/leds/rgb/leds-qcom-lpg.c
-@@ -1780,11 +1780,13 @@ static const struct lpg_data pm8150l_lpg_data = {
- static const struct lpg_data pm8350c_pwm_data = {
- 	.triled_base = 0xef00,
- 
-+	.lut_size = 122,
-+
- 	.num_channels = 4,
- 	.channels = (const struct lpg_channel_data[]) {
--		{ .base = 0xe800, .triled_mask = BIT(7) },
--		{ .base = 0xe900, .triled_mask = BIT(6) },
--		{ .base = 0xea00, .triled_mask = BIT(5) },
-+		{ .base = 0xe800, .triled_mask = BIT(7), .sdam_offset = 0x48 },
-+		{ .base = 0xe900, .triled_mask = BIT(6), .sdam_offset = 0x56 },
-+		{ .base = 0xea00, .triled_mask = BIT(5), .sdam_offset = 0x64 },
- 		{ .base = 0xeb00 },
- 	},
- };
--- 
-2.41.0
-
+Thanks,
+Namhyung
