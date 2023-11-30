@@ -2,233 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 063157FEA77
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 09:26:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A54C07FEA76
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 09:26:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344865AbjK3I0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 03:26:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40162 "EHLO
+        id S1344882AbjK3I0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 03:26:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231787AbjK3IZ7 (ORCPT
+        with ESMTP id S1344841AbjK3I0C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 03:25:59 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE0F510D0
+        Thu, 30 Nov 2023 03:26:02 -0500
+Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com [209.85.214.199])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87EF510C9
         for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 00:26:05 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E3A1C433CA;
-        Thu, 30 Nov 2023 08:26:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701332765;
-        bh=BtRz+Y7hxsLxGACiC7aE/ah8oZo1Gqyj9qu8yNDvozU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GVr8PfBuWFgNaIixJBFfiDt1JmwDrd90RMDz8Z9oy5C/4UiaXE74/Hj1YHdxKMV3j
-         zah6HNxIGGlf7pJFb14kJA8WRCGtqUTANDvVoIN8rmkQV4NXfDZ4zCBvz8hO9KTuoI
-         cPDxT2l+6k9pS3UL9T/CrrHYeBYH1ztk6yx8V2LEnsqfA3nhXDaI2h4b0BTq1Lnwvw
-         fy3MifJSQFp1u3Hg1EzI//fqCu+mpN6MCvQFfc/Whk/yUrgWbj9JfIiokNjYkeRsz8
-         b+K9GqKdjnKYrFzJmCxLmcfLglaNf9PCS/EQAunop3a53ykIL2oJuXXKb4oH3vGc9W
-         KgaqHfVYiwVgw==
-From:   Oded Gabbay <ogabbay@kernel.org>
-To:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     Moti Haimovski <mhaimovski@habana.ai>
-Subject: [PATCH 2/2] accel/habanalabs/gaudi2: add signed dev info uAPI
-Date:   Thu, 30 Nov 2023 10:25:57 +0200
-Message-Id: <20231130082557.1783532-2-ogabbay@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231130082557.1783532-1-ogabbay@kernel.org>
-References: <20231130082557.1783532-1-ogabbay@kernel.org>
+Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-1cfccc9d6bcso9863405ad.2
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 00:26:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701332765; x=1701937565;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LcJ0EHeXNiOEWmhQ58W0Ffokl7+PlrrsO8NOzNfrkzI=;
+        b=DzBbVAGlMxh/nnQ2cp/SAv0hfPhmO9/P3H6GzGx7DuFczN9BteQxQ8XNhKZ0KB2C10
+         bYraqdex4TqBRerofeCPyu8+06+fwcHMxvw5RMghKZmz6dSTnFTpaqeLGP904+y1+9Jk
+         akLj/bIYwId7NJ3dAX/WCufllFw6HbrNAxtdS0UhiWa2z7VnJQiaE3S3esvT61zRyrp6
+         ZA2AsM9sWnmD13axztjgr4R4xsyT3WNglX+YPz39kxiVROWuNE7C9RVx4ngbdZUJntny
+         tXQoZm2k4isAhpMn2ZR5ECeDPYVUWDVHkNajFNHaPvyGDB7Qt7xBmXj9jKvFhasaT0mE
+         CK1Q==
+X-Gm-Message-State: AOJu0YyHr4zyTTB2j6yR62UB4NyzCRndTXfh33j/kdyqs3sGOSuuOz2Q
+        osZWc4ZmYV3ffR6np/aTd5GRETUVXCu1QEcLLSCgtg9tQgkLxvM=
+X-Google-Smtp-Source: AGHT+IH9rcaAOFQByc3Ak1bLmZlNxMI+3295ZLVxvbEWZPTTgGPTs+3+0h6Gp773dmrE8FtA1AnzrDTyR+YovLt/m6+Y2pGWoEuv
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a17:902:7447:b0:1cf:6b9d:edc7 with SMTP id
+ e7-20020a170902744700b001cf6b9dedc7mr4325292plt.1.1701332765160; Thu, 30 Nov
+ 2023 00:26:05 -0800 (PST)
+Date:   Thu, 30 Nov 2023 00:26:05 -0800
+In-Reply-To: <20231130075546.1506719-1-lizhi.xu@windriver.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000001cbda6060b5a675b@google.com>
+Subject: Re: [syzbot] [exfat?] INFO: task hung in exfat_write_inode
+From:   syzbot <syzbot+2f73ed585f115e98aee8@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, lizhi.xu@windriver.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Moti Haimovski <mhaimovski@habana.ai>
+Hello,
 
-User will provide a nonce via the INFO ioctl, and will retrieve
-the signed device info generated using given nonce.
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+INFO: rcu detected stall in corrupted
 
-Signed-off-by: Moti Haimovski <mhaimovski@habana.ai>
-Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
-Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
----
- drivers/accel/habanalabs/common/firmware_if.c |  8 ++++
- drivers/accel/habanalabs/common/habanalabs.h  |  2 +
- .../habanalabs/common/habanalabs_ioctl.c      | 48 +++++++++++++++++++
- include/linux/habanalabs/cpucp_if.h           |  8 +++-
- include/uapi/drm/habanalabs_accel.h           | 23 +++++++++
- 5 files changed, 88 insertions(+), 1 deletion(-)
+rcu: INFO: rcu_preempt detected expedited stalls on CPUs/tasks: { P5347 } 2683 jiffies s: 2905 root: 0x0/T
+rcu: blocking rcu_node structures (internal RCU debug):
 
-diff --git a/drivers/accel/habanalabs/common/firmware_if.c b/drivers/accel/habanalabs/common/firmware_if.c
-index 9e9dfe013659..3558a6a8e192 100644
---- a/drivers/accel/habanalabs/common/firmware_if.c
-+++ b/drivers/accel/habanalabs/common/firmware_if.c
-@@ -3244,6 +3244,14 @@ int hl_fw_get_sec_attest_info(struct hl_device *hdev, struct cpucp_sec_attest_in
- 					HL_CPUCP_SEC_ATTEST_INFO_TINEOUT_USEC);
- }
- 
-+int hl_fw_get_dev_info_signed(struct hl_device *hdev,
-+			      struct cpucp_dev_info_signed *dev_info_signed, u32 nonce)
-+{
-+	return hl_fw_get_sec_attest_data(hdev, CPUCP_PACKET_INFO_SIGNED_GET, dev_info_signed,
-+					 sizeof(struct cpucp_dev_info_signed), nonce,
-+					 HL_CPUCP_SEC_ATTEST_INFO_TINEOUT_USEC);
-+}
-+
- int hl_fw_send_generic_request(struct hl_device *hdev, enum hl_passthrough_type sub_opcode,
- 						dma_addr_t buff, u32 *size)
- {
-diff --git a/drivers/accel/habanalabs/common/habanalabs.h b/drivers/accel/habanalabs/common/habanalabs.h
-index 7b0209e5bad6..dd3fe3ddc00a 100644
---- a/drivers/accel/habanalabs/common/habanalabs.h
-+++ b/drivers/accel/habanalabs/common/habanalabs.h
-@@ -3964,6 +3964,8 @@ long hl_fw_get_max_power(struct hl_device *hdev);
- void hl_fw_set_max_power(struct hl_device *hdev);
- int hl_fw_get_sec_attest_info(struct hl_device *hdev, struct cpucp_sec_attest_info *sec_attest_info,
- 				u32 nonce);
-+int hl_fw_get_dev_info_signed(struct hl_device *hdev,
-+			      struct cpucp_dev_info_signed *dev_info_signed, u32 nonce);
- int hl_set_voltage(struct hl_device *hdev, int sensor_index, u32 attr, long value);
- int hl_set_current(struct hl_device *hdev, int sensor_index, u32 attr, long value);
- int hl_set_power(struct hl_device *hdev, int sensor_index, u32 attr, long value);
-diff --git a/drivers/accel/habanalabs/common/habanalabs_ioctl.c b/drivers/accel/habanalabs/common/habanalabs_ioctl.c
-index 8ef36effb95b..a43d21c5136a 100644
---- a/drivers/accel/habanalabs/common/habanalabs_ioctl.c
-+++ b/drivers/accel/habanalabs/common/habanalabs_ioctl.c
-@@ -719,6 +719,51 @@ static int sec_attest_info(struct hl_fpriv *hpriv, struct hl_info_args *args)
- 	return rc;
- }
- 
-+static int dev_info_signed(struct hl_fpriv *hpriv, struct hl_info_args *args)
-+{
-+	void __user *out = (void __user *) (uintptr_t) args->return_pointer;
-+	struct cpucp_dev_info_signed *dev_info_signed;
-+	struct hl_info_signed *info;
-+	u32 max_size = args->return_size;
-+	int rc;
-+
-+	if ((!max_size) || (!out))
-+		return -EINVAL;
-+
-+	dev_info_signed = kzalloc(sizeof(*dev_info_signed), GFP_KERNEL);
-+	if (!dev_info_signed)
-+		return -ENOMEM;
-+
-+	info = kzalloc(sizeof(*info), GFP_KERNEL);
-+	if (!info) {
-+		rc = -ENOMEM;
-+		goto free_dev_info_signed;
-+	}
-+
-+	rc = hl_fw_get_dev_info_signed(hpriv->hdev,
-+					dev_info_signed, args->sec_attest_nonce);
-+	if (rc)
-+		goto free_info;
-+
-+	info->nonce = le32_to_cpu(dev_info_signed->nonce);
-+	info->info_sig_len = dev_info_signed->info_sig_len;
-+	info->pub_data_len = le16_to_cpu(dev_info_signed->pub_data_len);
-+	info->certificate_len = le16_to_cpu(dev_info_signed->certificate_len);
-+	memcpy(&info->info_sig, &dev_info_signed->info_sig, sizeof(info->info_sig));
-+	memcpy(&info->public_data, &dev_info_signed->public_data, sizeof(info->public_data));
-+	memcpy(&info->certificate, &dev_info_signed->certificate, sizeof(info->certificate));
-+
-+	rc = copy_to_user(out, info, min_t(size_t, max_size, sizeof(*info))) ? -EFAULT : 0;
-+
-+free_info:
-+	kfree(info);
-+free_dev_info_signed:
-+	kfree(dev_info_signed);
-+
-+	return rc;
-+}
-+
-+
- static int eventfd_register(struct hl_fpriv *hpriv, struct hl_info_args *args)
- {
- 	int rc;
-@@ -1089,6 +1134,9 @@ static int _hl_info_ioctl(struct hl_fpriv *hpriv, void *data,
- 	case HL_INFO_FW_GENERIC_REQ:
- 		return send_fw_generic_request(hdev, args);
- 
-+	case HL_INFO_DEV_SIGNED:
-+		return dev_info_signed(hpriv, args);
-+
- 	default:
- 		dev_err(dev, "Invalid request %d\n", args->op);
- 		rc = -EINVAL;
-diff --git a/include/linux/habanalabs/cpucp_if.h b/include/linux/habanalabs/cpucp_if.h
-index 86ea7c63a0d2..f316c8d0f3fc 100644
---- a/include/linux/habanalabs/cpucp_if.h
-+++ b/include/linux/habanalabs/cpucp_if.h
-@@ -659,6 +659,12 @@ enum pq_init_status {
-  *       number (nonce) provided by the host to prevent replay attacks.
-  *       public key and certificate also provided as part of the FW response.
-  *
-+ * CPUCP_PACKET_INFO_SIGNED_GET -
-+ *       Get the device information signed by the Trusted Platform device.
-+ *       device info data is also hashed with some unique number (nonce) provided
-+ *       by the host to prevent replay attacks. public key and certificate also
-+ *       provided as part of the FW response.
-+ *
-  * CPUCP_PACKET_MONITOR_DUMP_GET -
-  *       Get monitors registers dump from the CpuCP kernel.
-  *       The CPU will put the registers dump in the a buffer allocated by the driver
-@@ -733,7 +739,7 @@ enum cpucp_packet_id {
- 	CPUCP_PACKET_ENGINE_CORE_ASID_SET,	/* internal */
- 	CPUCP_PACKET_RESERVED2,			/* not used */
- 	CPUCP_PACKET_SEC_ATTEST_GET,		/* internal */
--	CPUCP_PACKET_RESERVED3,			/* not used */
-+	CPUCP_PACKET_INFO_SIGNED_GET,		/* internal */
- 	CPUCP_PACKET_RESERVED4,			/* not used */
- 	CPUCP_PACKET_MONITOR_DUMP_GET,		/* debugfs */
- 	CPUCP_PACKET_RESERVED5,			/* not used */
-diff --git a/include/uapi/drm/habanalabs_accel.h b/include/uapi/drm/habanalabs_accel.h
-index 347c7b62e60e..3da0d3ac6056 100644
---- a/include/uapi/drm/habanalabs_accel.h
-+++ b/include/uapi/drm/habanalabs_accel.h
-@@ -846,6 +846,7 @@ enum hl_server_type {
- #define HL_INFO_HW_ERR_EVENT			36
- #define HL_INFO_FW_ERR_EVENT			37
- #define HL_INFO_USER_ENGINE_ERR_EVENT		38
-+#define HL_INFO_DEV_SIGNED			40
- 
- #define HL_INFO_VERSION_MAX_LEN			128
- #define HL_INFO_CARD_NAME_MAX_LEN		16
-@@ -1290,6 +1291,28 @@ struct hl_info_sec_attest {
- 	__u8 pad0[2];
- };
- 
-+/*
-+ * struct hl_info_signed - device information signed by a secured device.
-+ * @nonce: number only used once. random number provided by host. this also passed to the quote
-+ *         command as a qualifying data.
-+ * @pub_data_len: length of the public data (bytes)
-+ * @certificate_len: length of the certificate (bytes)
-+ * @info_sig_len: length of the attestation signature (bytes)
-+ * @public_data: public key info signed info data (outPublic + name + qualifiedName)
-+ * @certificate: certificate for the signing key
-+ * @info_sig: signature of the info + nonce data.
-+ */
-+struct hl_info_signed {
-+	__u32 nonce;
-+	__u16 pub_data_len;
-+	__u16 certificate_len;
-+	__u8 info_sig_len;
-+	__u8 public_data[SEC_PUB_DATA_BUF_SZ];
-+	__u8 certificate[SEC_CERTIFICATE_BUF_SZ];
-+	__u8 info_sig[SEC_SIGNATURE_BUF_SZ];
-+	__u8 pad[4];
-+};
-+
- /**
-  * struct hl_page_fault_info - page fault information.
-  * @timestamp: timestamp of page fault.
--- 
-2.34.1
+
+Tested on:
+
+commit:         f9ff5644 Merge tag 'hsi-for-6.2' of git://git.kernel.o..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=14c0c364e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1bf08f50e8fff9ad
+dashboard link: https://syzkaller.appspot.com/bug?extid=2f73ed585f115e98aee8
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=12485f62e80000
 
