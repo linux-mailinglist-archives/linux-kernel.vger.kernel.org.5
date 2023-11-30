@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 648CE7FF831
+	by mail.lfdr.de (Postfix) with ESMTP id 0FBD77FF830
 	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 18:27:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232168AbjK3RZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 12:25:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56794 "EHLO
+        id S1346231AbjK3RZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 12:25:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232231AbjK3RZU (ORCPT
+        with ESMTP id S232220AbjK3RZU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 30 Nov 2023 12:25:20 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38C6B10F2
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C72F10D4
         for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 09:25:26 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BDBA3C433CB;
-        Thu, 30 Nov 2023 17:25:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0731CC07615;
+        Thu, 30 Nov 2023 17:25:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701365125;
-        bh=eXZVsFTRtF1cEp4KE4ZARne3vtKXRQE84t2o88qivCo=;
+        s=k20201202; t=1701365126;
+        bh=hSnEWQ5BFd65oW3upSVnQ42R/owuCp6Usl1kLC5b1FA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cMUGskGILIEcFKpnujuqZLn5Je1ChO5CiWMII5CkUTw/K1j4P3qrfCaQrxWMxm4lO
-         YhDox+X5fggdQcLqi/UO+Yy3B5OFwI1XAqDgZbF4RcswidKFgesX41aI/BneiCwRP6
-         no5SF+qdslN0yKV744ap9kblpydIElDro4rsV624sZ5XTcoklyzFJwUxDtOb/I0hVa
-         3tm2ZAdEne9gSZ9BXuJSVqFIkBI53FE8aP+oZ0Pd0vUi2D/qQJu3RA3qCqLs4hy1t0
-         sMTKSctEWPU6gtlDeLoBiYwB3MJsie8UXjhh61avG4YAwGeicXRR4q8G9QIgwUVsnE
-         uRXjN5oCLB82w==
+        b=geoC9/gWAv6GcCrKW2qGzId615qUlwWxVb1ElZClUBeFckIAtvXkxTszffYp2we0P
+         LZvDG/pGS9thgKwWHFuRzGBlnTUD//23Y0E/7YEzE1O4jQcmOX8rIiBu/KhTgLnXd5
+         q7oktWMzroeb+ay/Q7MgZv8ciwm6g60cu3+C2PJ3wdKliW2LjIDvtxaE+ZDbuifSu3
+         S9iKTcKNJH+6PWb4pjfzyQx+srdgZjnJkTi0LNloxr8u2QDILbgszAUkXrUSeHFLhV
+         vf+6v0p+Fs9QrjsED2O0nKERxwNX6J4UhVaFof94wAKpoG4UVBa/BuTg91CojLJDn0
+         +ebrEI1FaseAg==
 Received: from johan by xi.lan with local (Exim 4.96.2)
         (envelope-from <johan+linaro@kernel.org>)
-        id 1r8knX-0003Gz-1S;
+        id 1r8knX-0003H2-1m;
         Thu, 30 Nov 2023 18:25:59 +0100
 From:   Johan Hovold <johan+linaro@kernel.org>
 To:     Lee Jones <lee@kernel.org>
@@ -43,9 +43,9 @@ Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
         linux-arm-msm@vger.kernel.org,
         Johan Hovold <johan+linaro@kernel.org>
-Subject: [PATCH 3/4] dt-bindings: mfd: hisilicon,hi6421-spmi-pmic: clean up example
-Date:   Thu, 30 Nov 2023 18:25:46 +0100
-Message-ID: <20231130172547.12555-4-johan+linaro@kernel.org>
+Subject: [PATCH 4/4] dt-bindings: mfd: pm8008: fix example node names
+Date:   Thu, 30 Nov 2023 18:25:47 +0100
+Message-ID: <20231130172547.12555-5-johan+linaro@kernel.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231130172547.12555-1-johan+linaro@kernel.org>
 References: <20231130172547.12555-1-johan+linaro@kernel.org>
@@ -61,163 +61,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The SPMI PMIC sits on an SPMI bus which and has two address cells with
-no size.
+Devicetree node names should be generic; fix up the pm8008 binding
+example accordingly.
 
-Clean up the example by adding a parent SPMI bus node with proper
-'#address-cells' and '#size-cells' properties, using a define for the
-second register value, dropping the unnecessary label and increasing the
-indentation to four spaces.
-
+Fixes: b0572a9b2397 ("dt-bindings: mfd: pm8008: Add bindings")
 Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
 ---
- .../mfd/hisilicon,hi6421-spmi-pmic.yaml       | 134 +++++++++---------
- 1 file changed, 70 insertions(+), 64 deletions(-)
+ Documentation/devicetree/bindings/mfd/qcom,pm8008.yaml | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml b/Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml
-index 60d5e6b3de33..560ec3367045 100644
---- a/Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml
-+++ b/Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml
-@@ -66,69 +66,75 @@ additionalProperties: false
- 
- examples:
+diff --git a/Documentation/devicetree/bindings/mfd/qcom,pm8008.yaml b/Documentation/devicetree/bindings/mfd/qcom,pm8008.yaml
+index 24c6158f73ae..32ea898e3ca9 100644
+--- a/Documentation/devicetree/bindings/mfd/qcom,pm8008.yaml
++++ b/Documentation/devicetree/bindings/mfd/qcom,pm8008.yaml
+@@ -88,10 +88,11 @@ examples:
    - |
--
--    pmic: pmic@0 {
--      compatible = "hisilicon,hi6421v600-spmi";
--      reg = <0 0>;
--
--      #interrupt-cells = <2>;
--      interrupt-controller;
--      interrupt-parent = <&gpio28>;
--      interrupts = <0 0>;
--
--      regulators {
--        ldo3: ldo3 {
--          regulator-name = "ldo3";
--          regulator-min-microvolt = <1500000>;
--          regulator-max-microvolt = <2000000>;
--          regulator-boot-on;
--        };
--
--        ldo4: ldo4 {
--          regulator-name = "ldo4";
--          regulator-min-microvolt = <1725000>;
--          regulator-max-microvolt = <1900000>;
--          regulator-boot-on;
--        };
--
--        ldo9: ldo9 {
--          regulator-name = "ldo9";
--          regulator-min-microvolt = <1750000>;
--          regulator-max-microvolt = <3300000>;
--          regulator-boot-on;
--        };
--
--        ldo15: ldo15 {
--          regulator-name = "ldo15";
--          regulator-min-microvolt = <1800000>;
--          regulator-max-microvolt = <3000000>;
--          regulator-always-on;
--        };
--
--        ldo16: ldo16 {
--          regulator-name = "ldo16";
--          regulator-min-microvolt = <1800000>;
--          regulator-max-microvolt = <3000000>;
--          regulator-boot-on;
--        };
--
--        ldo17: ldo17 {
--          regulator-name = "ldo17";
--          regulator-min-microvolt = <2500000>;
--          regulator-max-microvolt = <3300000>;
--        };
--
--        ldo33: ldo33 {
--          regulator-name = "ldo33";
--          regulator-min-microvolt = <2500000>;
--          regulator-max-microvolt = <3300000>;
--          regulator-boot-on;
--        };
--
--        ldo34: ldo34 {
--          regulator-name = "ldo34";
--          regulator-min-microvolt = <2600000>;
--          regulator-max-microvolt = <3300000>;
-+    #include <dt-bindings/spmi/spmi.h>
+     #include <dt-bindings/interrupt-controller/irq.h>
+     #include <dt-bindings/gpio/gpio.h>
+-    qupv3_se13_i2c {
++    i2c {
+       #address-cells = <1>;
+       #size-cells = <0>;
+-      pm8008i@8 {
 +
-+    spmi {
-+        #address-cells = <2>;
-+        #size-cells = <0>;
-+
-+        pmic@0 {
-+            compatible = "hisilicon,hi6421v600-spmi";
-+            reg = <0 SPMI_USID>;
-+
-+            #interrupt-cells = <2>;
-+            interrupt-controller;
-+            interrupt-parent = <&gpio28>;
-+            interrupts = <0 0>;
-+
-+            regulators {
-+                ldo3 {
-+                    regulator-name = "ldo3";
-+                    regulator-min-microvolt = <1500000>;
-+                    regulator-max-microvolt = <2000000>;
-+                    regulator-boot-on;
-+                };
-+
-+                ldo4 {
-+                    regulator-name = "ldo4";
-+                    regulator-min-microvolt = <1725000>;
-+                    regulator-max-microvolt = <1900000>;
-+                    regulator-boot-on;
-+                };
-+
-+                ldo9 {
-+                    regulator-name = "ldo9";
-+                    regulator-min-microvolt = <1750000>;
-+                    regulator-max-microvolt = <3300000>;
-+                    regulator-boot-on;
-+                };
-+
-+                ldo15 {
-+                    regulator-name = "ldo15";
-+                    regulator-min-microvolt = <1800000>;
-+                    regulator-max-microvolt = <3000000>;
-+                    regulator-always-on;
-+                };
-+
-+                ldo16 {
-+                    regulator-name = "ldo16";
-+                    regulator-min-microvolt = <1800000>;
-+                    regulator-max-microvolt = <3000000>;
-+                    regulator-boot-on;
-+                };
-+
-+                ldo17 {
-+                    regulator-name = "ldo17";
-+                    regulator-min-microvolt = <2500000>;
-+                    regulator-max-microvolt = <3300000>;
-+                };
-+
-+                ldo33 {
-+                    regulator-name = "ldo33";
-+                    regulator-min-microvolt = <2500000>;
-+                    regulator-max-microvolt = <3300000>;
-+                    regulator-boot-on;
-+                };
-+
-+                ldo34 {
-+                    regulator-name = "ldo34";
-+                    regulator-min-microvolt = <2600000>;
-+                    regulator-max-microvolt = <3300000>;
-+                };
-+            };
-         };
--      };
-     };
++      pmic@8 {
+         compatible = "qcom,pm8008";
+         reg = <0x8>;
+ 
 -- 
 2.41.0
 
