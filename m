@@ -2,177 +2,294 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DD917FF8D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 18:50:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61F477FF92C
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 19:16:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346575AbjK3RuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 12:50:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51056 "EHLO
+        id S231958AbjK3SP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 13:15:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232087AbjK3RuK (ORCPT
+        with ESMTP id S230106AbjK3SP5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 12:50:10 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 559A510DE
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 09:50:16 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40497C433C7;
-        Thu, 30 Nov 2023 17:50:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701366616;
-        bh=k2xu/AFCVYNd82jmlhXyCXssmQpyJnshGT7Qg/1LpKk=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=m5uyhFHHg6LWMqfxLfxZmF/CM6MFDQNT6gndFI+5KU2bL59X3uoZMjzJcFkJRQJ7O
-         AF+FipoXB+nQf6D5/1qZXWrKPoWbPQD+R/Gq9ukMbhkfTDfuR0hEEC2nSCqq9bJUBs
-         KRv09H+yJJUVjSbB7dxo91/SJ5IGorHvoBGASI+8PTXx6qJ0ybHzbzQpaevkzLGpzL
-         fRm/BFh4i9CFmOgD66LJ/0mfgXZCz/UVO8KpRMxohZ/qJBTr4encQp6NcSpU0vRIlh
-         2XkfCAb6wBnI+nKC5pLCtXazOPDaqVvlvKz+f7sGlXcMIoxCJSuQSO+EPctRTrTu2N
-         o6tQw2wI6O/Nw==
-Message-ID: <68b6743f8c095177f5c99876627861f0fbf48edc.camel@kernel.org>
-Subject: Re: [PATCH/RFC] core/nfsd: allow kernel threads to use task_work.
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Chuck Lever <chuck.lever@oracle.com>, NeilBrown <neilb@suse.de>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org
-Date:   Thu, 30 Nov 2023 12:50:14 -0500
-In-Reply-To: <ZWYIj7K0KPQFCCdf@tissot.1015granger.net>
-References: <170112272125.7109.6245462722883333440@noble.neil.brown.name>
-         <ZWUfNyO6OG/+aFuo@tissot.1015granger.net>
-         <170113056683.7109.13851405274459689039@noble.neil.brown.name>
-         <ZWVEcasahyVQ4QqV@tissot.1015granger.net>
-         <170114025065.7109.15330780753462853254@noble.neil.brown.name>
-         <ZWYIj7K0KPQFCCdf@tissot.1015granger.net>
-Autocrypt: addr=jlayton@kernel.org; prefer-encrypt=mutual;
- keydata=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
-        kZWuOsJdJQdmwlWC5L5ln9xgfr/4mOY38B0U=
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.1 (3.50.1-1.fc39) 
+        Thu, 30 Nov 2023 13:15:57 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6E4810E5
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 10:16:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701368160;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2jFx75F08lvUnGClRbcPA/+lk5WtIKWp7dBnqR8MnnQ=;
+        b=Mi0upb529XmXIS58df9xdwFMPUzz9oFCDsAfrfHLsa3yTjFFox2NZePw14+UoTOvLkCXC3
+        rOz2Fe+GYrHVgBBfA7C70JGmbOCiGM/wFWdZsCtZGg7JOVMGvdd/PiHI3/VFv0D0Htgmgn
+        Hu9KhZ69EKzN4t5fT53QpkgFIf5RzNY=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-426-Rw88x9jpOJeQzCvkLtPwUg-1; Thu, 30 Nov 2023 13:15:58 -0500
+X-MC-Unique: Rw88x9jpOJeQzCvkLtPwUg-1
+Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2c9b585b0d3so15707621fa.0
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 10:15:58 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701368157; x=1701972957;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2jFx75F08lvUnGClRbcPA/+lk5WtIKWp7dBnqR8MnnQ=;
+        b=vkuTVjFWxz4xO1Z+A2CbLFu/Q/IoYnXHUEq0PegXErgeVOeOJ7/k0AGLBdRksu+POA
+         6Rwcy99a3Q461Ftvq5mHfpvMXH/jGgYBCZC8+ncNAxCU2r++zYN5OuaO1dMtoyeCB7ww
+         1hBT/BBSIAKpnl6Y5sehjmErQEnO47obNM3ArZJNwrYAgZeEM+/obyVBNn2ekf7tmyq9
+         5t+hHAPvpJ99yaqu1Y4eH4FST/kU/jVskyaQQQB6If0PtP1dYU70SMxwl8/YN6HE76hW
+         /a4e4WLu4dIFK4phwkfGhAriU9/iewi5qnxxMVzHVvUI/BoENokSc4VAIdluMJuWZKRW
+         E6bQ==
+X-Gm-Message-State: AOJu0YwQBYNATRlzO/i3gqYAVkRvJp0Hl8PV1/8+GaUxSEprkc3wNbne
+        lkSBhX8hI/WD+iY3YPo2ZcrkA12mInmfVDTfm7V7TK2dvlXg1G/oZNVoSetA3jtdmjMBo0vklJg
+        IYgisjnr9KjE3HhPsfZ2NQAyBKzI7TIVm
+X-Received: by 2002:a05:600c:1d24:b0:40b:4aed:ef31 with SMTP id l36-20020a05600c1d2400b0040b4aedef31mr7149wms.21.1701366870198;
+        Thu, 30 Nov 2023 09:54:30 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGIeoJSxrAFHS2BdxOmhAs4+IKcHnEZVUlP+iPVqe3O8hZGeJaWPBNF5flVfGqhI0Ukgwcunw==
+X-Received: by 2002:a17:906:739c:b0:a10:7811:f421 with SMTP id f28-20020a170906739c00b00a107811f421mr5439ejl.5.1701366800047;
+        Thu, 30 Nov 2023 09:53:20 -0800 (PST)
+Received: from starship ([5.28.147.32])
+        by smtp.gmail.com with ESMTPSA id g22-20020a2ea4b6000000b002c9ba689a94sm201953ljm.137.2023.11.30.09.53.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Nov 2023 09:53:19 -0800 (PST)
+Message-ID: <2e280f545e8b15500fc4a2a77f6000a51f6f8bbd.camel@redhat.com>
+Subject: Re: [PATCH v7 26/26] KVM: nVMX: Enable CET support for nested guest
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Yang Weijiang <weijiang.yang@intel.com>, seanjc@google.com,
+        pbonzini@redhat.com, dave.hansen@intel.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     peterz@infradead.org, chao.gao@intel.com,
+        rick.p.edgecombe@intel.com, john.allen@amd.com
+Date:   Thu, 30 Nov 2023 19:53:16 +0200
+In-Reply-To: <20231124055330.138870-27-weijiang.yang@intel.com>
+References: <20231124055330.138870-1-weijiang.yang@intel.com>
+         <20231124055330.138870-27-weijiang.yang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-11-28 at 10:34 -0500, Chuck Lever wrote:
-> On Tue, Nov 28, 2023 at 01:57:30PM +1100, NeilBrown wrote:
-> >=20
-> > (trimmed cc...)
-> >=20
-> > On Tue, 28 Nov 2023, Chuck Lever wrote:
-> > > On Tue, Nov 28, 2023 at 11:16:06AM +1100, NeilBrown wrote:
-> > > > On Tue, 28 Nov 2023, Chuck Lever wrote:
-> > > > > On Tue, Nov 28, 2023 at 09:05:21AM +1100, NeilBrown wrote:
-> > > > > >=20
-> > > > > > I have evidence from a customer site of 256 nfsd threads adding=
- files to
-> > > > > > delayed_fput_lists nearly twice as fast they are retired by a s=
-ingle
-> > > > > > work-queue thread running delayed_fput().  As you might imagine=
- this
-> > > > > > does not end well (20 million files in the queue at the time a =
-snapshot
-> > > > > > was taken for analysis).
-> > > > > >=20
-> > > > > > While this might point to a problem with the filesystem not han=
-dling the
-> > > > > > final close efficiently, such problems should only hurt through=
-put, not
-> > > > > > lead to memory exhaustion.
-> > > > >=20
-> > > > > I have this patch queued for v6.8:
-> > > > >=20
-> > > > > https://git.kernel.org/pub/scm/linux/kernel/git/cel/linux.git/com=
-mit/?h=3Dnfsd-next&id=3Dc42661ffa58acfeaf73b932dec1e6f04ce8a98c0
-> > > > >=20
-> > > >=20
-> > > > Thanks....
-> > > > I think that change is good, but I don't think it addresses the pro=
-blem
-> > > > mentioned in the description, and it is not directly relevant to th=
-e
-> > > > problem I saw ... though it is complicated.
-> > > >=20
-> > > > The problem "workqueue ...  hogged cpu..." probably means that
-> > > > nfsd_file_dispose_list() needs a cond_resched() call in the loop.
-> > > > That will stop it from hogging the CPU whether it is tied to one CP=
-U or
-> > > > free to roam.
-> > > >=20
-> > > > Also that work is calling filp_close() which primarily calls
-> > > > filp_flush().
-> > > > It also calls fput() but that does minimal work.  If there is much =
-work
-> > > > to do then that is offloaded to another work-item.  *That* is the
-> > > > workitem that I had problems with.
-> > > >=20
-> > > > The problem I saw was with an older kernel which didn't have the nf=
-sd
-> > > > file cache and so probably is calling filp_close more often.
-> > >=20
-> > > Without the file cache, the filp_close() should be handled directly
-> > > by the nfsd thread handling the RPC, IIRC.
-> >=20
-> > Yes - but __fput() is handled by a workqueue.
-> >=20
-> > >=20
-> > >=20
-> > > > So maybe
-> > > > my patch isn't so important now.  Particularly as nfsd now isn't cl=
-osing
-> > > > most files in-task but instead offloads that to another task.  So t=
-he
-> > > > final fput will not be handled by the nfsd task either.
-> > > >=20
-> > > > But I think there is room for improvement.  Gathering lots of files
-> > > > together into a list and closing them sequentially is not going to =
-be as
-> > > > efficient as closing them in parallel.
-> > >=20
-> > > I believe the file cache passes the filps to the work queue one at
-> >=20
-> > nfsd_file_close_inode() does.  nfsd_file_gc() and nfsd_file_lru_scan()
-> > can pass multiple.
-> >=20
-> > > a time, but I don't think there's anything that forces the work
-> > > queue to handle each flush/close completely before proceeding to the
-> > > next.
-> >=20
-> > Parallelism with workqueues is controlled by the work items (struct
-> > work_struct).  Two different work items can run in parallel.  But any
-> > given work item can never run parallel to itself.
-> >=20
-> > The only work items queued on nfsd_filecache_wq are from
-> >   nn->fcache_disposal->work.
-> > There is one of these for each network namespace.  So in any given
-> > network namespace, all work on nfsd_filecache_wq is fully serialised.
->=20
-> OIC, it's that specific case you are concerned with. The per-
-> namespace laundrette was added by:
->=20
->   9542e6a643fc ("nfsd: Containerise filecache laundrette")
->=20
-> It's purpose was to confine the close backlog to each container.
->=20
-> Seems like it would be better if there was a struct work_struct
-> in each struct nfsd_file. That wouldn't add real backpressure to
-> nfsd threads, but it would enable file closes to run in parallel.
->=20
+On Fri, 2023-11-24 at 00:53 -0500, Yang Weijiang wrote:
+> Set up CET MSRs, related VM_ENTRY/EXIT control bits and fixed CR4 setting
+> to enable CET for nested VM.
+> 
+> Note, generally L1 VMM only touches CET VMCS fields when live migration or
+> vmcs_{read,write}() to the fields happens, so the fields only need to be
+> synced in these "rare" cases.
+To be honest we can't assume anything about L1, but what we can assume
 
-I like this idea. That seems a lot simpler than all of this weirdo
-queueing of delayed closes that we do.
+is that if vmcs12 field is not shadowed, then L1 vmwrite/vmread will
+be always intercepted and during the interception the fields can be synced,
+however I studied this area long ago and I might be mistaken.
 
---=20
-Jeff Layton <jlayton@kernel.org>
+
+>  And here only considers the case that L1 VMM
+> has set VM_ENTRY_LOAD_CET_STATE in its VMCS vm_entry_controls as it's the
+> common usage.
+> 
+> Suggested-by: Chao Gao <chao.gao@intel.com>
+> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
+> ---
+>  arch/x86/kvm/vmx/nested.c | 48 +++++++++++++++++++++++++++++++++++++--
+>  arch/x86/kvm/vmx/vmcs12.c |  6 +++++
+>  arch/x86/kvm/vmx/vmcs12.h | 14 +++++++++++-
+>  arch/x86/kvm/vmx/vmx.c    |  2 ++
+>  4 files changed, 67 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+> index d8c32682ca76..965173650542 100644
+> --- a/arch/x86/kvm/vmx/nested.c
+> +++ b/arch/x86/kvm/vmx/nested.c
+> @@ -660,6 +660,28 @@ static inline bool nested_vmx_prepare_msr_bitmap(struct kvm_vcpu *vcpu,
+>  	nested_vmx_set_intercept_for_msr(vmx, msr_bitmap_l1, msr_bitmap_l0,
+>  					 MSR_IA32_FLUSH_CMD, MSR_TYPE_W);
+>  
+> +	/* Pass CET MSRs to nested VM if L0 and L1 are set to pass-through. */
+> +	nested_vmx_set_intercept_for_msr(vmx, msr_bitmap_l1, msr_bitmap_l0,
+> +					 MSR_IA32_U_CET, MSR_TYPE_RW);
+> +
+> +	nested_vmx_set_intercept_for_msr(vmx, msr_bitmap_l1, msr_bitmap_l0,
+> +					 MSR_IA32_S_CET, MSR_TYPE_RW);
+> +
+> +	nested_vmx_set_intercept_for_msr(vmx, msr_bitmap_l1, msr_bitmap_l0,
+> +					 MSR_IA32_PL0_SSP, MSR_TYPE_RW);
+> +
+> +	nested_vmx_set_intercept_for_msr(vmx, msr_bitmap_l1, msr_bitmap_l0,
+> +					 MSR_IA32_PL1_SSP, MSR_TYPE_RW);
+> +
+> +	nested_vmx_set_intercept_for_msr(vmx, msr_bitmap_l1, msr_bitmap_l0,
+> +					 MSR_IA32_PL2_SSP, MSR_TYPE_RW);
+> +
+> +	nested_vmx_set_intercept_for_msr(vmx, msr_bitmap_l1, msr_bitmap_l0,
+> +					 MSR_IA32_PL3_SSP, MSR_TYPE_RW);
+> +
+> +	nested_vmx_set_intercept_for_msr(vmx, msr_bitmap_l1, msr_bitmap_l0,
+> +					 MSR_IA32_INT_SSP_TAB, MSR_TYPE_RW);
+> +
+>  	kvm_vcpu_unmap(vcpu, &vmx->nested.msr_bitmap_map, false);
+>  
+>  	vmx->nested.force_msr_bitmap_recalc = false;
+> @@ -2469,6 +2491,18 @@ static void prepare_vmcs02_rare(struct vcpu_vmx *vmx, struct vmcs12 *vmcs12)
+>  		if (kvm_mpx_supported() && vmx->nested.nested_run_pending &&
+>  		    (vmcs12->vm_entry_controls & VM_ENTRY_LOAD_BNDCFGS))
+>  			vmcs_write64(GUEST_BNDCFGS, vmcs12->guest_bndcfgs);
+> +
+> +		if (vmx->nested.nested_run_pending &&
+
+I don't think that nested.nested_run_pending check is needed. 
+prepare_vmcs02_rare is not going to be called unless the nested run is pending.
+
+> +		    (vmcs12->vm_entry_controls & VM_ENTRY_LOAD_CET_STATE)) {
+> +			if (guest_can_use(&vmx->vcpu, X86_FEATURE_SHSTK)) {
+> +				vmcs_writel(GUEST_SSP, vmcs12->guest_ssp);
+> +				vmcs_writel(GUEST_INTR_SSP_TABLE,
+> +					    vmcs12->guest_ssp_tbl);
+> +			}
+> +			if (guest_can_use(&vmx->vcpu, X86_FEATURE_SHSTK) ||
+> +			    guest_can_use(&vmx->vcpu, X86_FEATURE_IBT))
+> +				vmcs_writel(GUEST_S_CET, vmcs12->guest_s_cet);
+> +		}
+>  	}
+>  
+>  	if (nested_cpu_has_xsaves(vmcs12))
+> @@ -4300,6 +4334,15 @@ static void sync_vmcs02_to_vmcs12_rare(struct kvm_vcpu *vcpu,
+>  	vmcs12->guest_pending_dbg_exceptions =
+>  		vmcs_readl(GUEST_PENDING_DBG_EXCEPTIONS);
+>  
+> +	if (guest_can_use(&vmx->vcpu, X86_FEATURE_SHSTK)) {
+> +		vmcs12->guest_ssp = vmcs_readl(GUEST_SSP);
+> +		vmcs12->guest_ssp_tbl = vmcs_readl(GUEST_INTR_SSP_TABLE);
+> +	}
+> +	if (guest_can_use(&vmx->vcpu, X86_FEATURE_SHSTK) ||
+> +	    guest_can_use(&vmx->vcpu, X86_FEATURE_IBT)) {
+> +		vmcs12->guest_s_cet = vmcs_readl(GUEST_S_CET);
+> +	}
+
+The above code should be conditional on VM_ENTRY_LOAD_CET_STATE - if the guest (L2) state
+was loaded, then it must be updated on exit - this is usually how VMX works.
+
+
+Also I don't see any mention of usage of VM_EXIT_LOAD_CET_STATE, which if set,
+should reset the L1 CET state to values in 'host_s_cet/host_ssp/host_ssp_tbl'
+(This is also a common theme in VMX - host state is reset to values that the hypervisor
+sets in VMCS, and the hypervisor must care to update these fields itself).
+
+
+As a rule of thumb, if you add a field to vmcs12, you should use it somewhere,
+and you should never use it unconditionally, as almost always its use
+depends on entry or exit controls.
+
+Same is true for entry/exit/execution controls - if you add one, you almost
+always have to use it somewhere.
+
+
+Best regards,
+	Maxim Levitsky
+
+> +
+>  	vmx->nested.need_sync_vmcs02_to_vmcs12_rare = false;
+>  }
+>  
+> @@ -6798,7 +6841,7 @@ static void nested_vmx_setup_exit_ctls(struct vmcs_config *vmcs_conf,
+>  		VM_EXIT_HOST_ADDR_SPACE_SIZE |
+>  #endif
+>  		VM_EXIT_LOAD_IA32_PAT | VM_EXIT_SAVE_IA32_PAT |
+> -		VM_EXIT_CLEAR_BNDCFGS;
+> +		VM_EXIT_CLEAR_BNDCFGS | VM_EXIT_LOAD_CET_STATE;
+>  	msrs->exit_ctls_high |=
+>  		VM_EXIT_ALWAYSON_WITHOUT_TRUE_MSR |
+>  		VM_EXIT_LOAD_IA32_EFER | VM_EXIT_SAVE_IA32_EFER |
+> @@ -6820,7 +6863,8 @@ static void nested_vmx_setup_entry_ctls(struct vmcs_config *vmcs_conf,
+>  #ifdef CONFIG_X86_64
+>  		VM_ENTRY_IA32E_MODE |
+>  #endif
+> -		VM_ENTRY_LOAD_IA32_PAT | VM_ENTRY_LOAD_BNDCFGS;
+> +		VM_ENTRY_LOAD_IA32_PAT | VM_ENTRY_LOAD_BNDCFGS |
+> +		VM_ENTRY_LOAD_CET_STATE;
+>  	msrs->entry_ctls_high |=
+>  		(VM_ENTRY_ALWAYSON_WITHOUT_TRUE_MSR | VM_ENTRY_LOAD_IA32_EFER |
+>  		 VM_ENTRY_LOAD_IA32_PERF_GLOBAL_CTRL);
+> diff --git a/arch/x86/kvm/vmx/vmcs12.c b/arch/x86/kvm/vmx/vmcs12.c
+> index 106a72c923ca..4233b5ca9461 100644
+> --- a/arch/x86/kvm/vmx/vmcs12.c
+> +++ b/arch/x86/kvm/vmx/vmcs12.c
+> @@ -139,6 +139,9 @@ const unsigned short vmcs12_field_offsets[] = {
+>  	FIELD(GUEST_PENDING_DBG_EXCEPTIONS, guest_pending_dbg_exceptions),
+>  	FIELD(GUEST_SYSENTER_ESP, guest_sysenter_esp),
+>  	FIELD(GUEST_SYSENTER_EIP, guest_sysenter_eip),
+> +	FIELD(GUEST_S_CET, guest_s_cet),
+> +	FIELD(GUEST_SSP, guest_ssp),
+> +	FIELD(GUEST_INTR_SSP_TABLE, guest_ssp_tbl),
+>  	FIELD(HOST_CR0, host_cr0),
+>  	FIELD(HOST_CR3, host_cr3),
+>  	FIELD(HOST_CR4, host_cr4),
+> @@ -151,5 +154,8 @@ const unsigned short vmcs12_field_offsets[] = {
+>  	FIELD(HOST_IA32_SYSENTER_EIP, host_ia32_sysenter_eip),
+>  	FIELD(HOST_RSP, host_rsp),
+>  	FIELD(HOST_RIP, host_rip),
+> +	FIELD(HOST_S_CET, host_s_cet),
+> +	FIELD(HOST_SSP, host_ssp),
+> +	FIELD(HOST_INTR_SSP_TABLE, host_ssp_tbl),
+>  };
+>  const unsigned int nr_vmcs12_fields = ARRAY_SIZE(vmcs12_field_offsets);
+> diff --git a/arch/x86/kvm/vmx/vmcs12.h b/arch/x86/kvm/vmx/vmcs12.h
+> index 01936013428b..3884489e7f7e 100644
+> --- a/arch/x86/kvm/vmx/vmcs12.h
+> +++ b/arch/x86/kvm/vmx/vmcs12.h
+> @@ -117,7 +117,13 @@ struct __packed vmcs12 {
+>  	natural_width host_ia32_sysenter_eip;
+>  	natural_width host_rsp;
+>  	natural_width host_rip;
+> -	natural_width paddingl[8]; /* room for future expansion */
+> +	natural_width host_s_cet;
+> +	natural_width host_ssp;
+> +	natural_width host_ssp_tbl;
+> +	natural_width guest_s_cet;
+> +	natural_width guest_ssp;
+> +	natural_width guest_ssp_tbl;
+> +	natural_width paddingl[2]; /* room for future expansion */
+>  	u32 pin_based_vm_exec_control;
+>  	u32 cpu_based_vm_exec_control;
+>  	u32 exception_bitmap;
+> @@ -292,6 +298,12 @@ static inline void vmx_check_vmcs12_offsets(void)
+>  	CHECK_OFFSET(host_ia32_sysenter_eip, 656);
+>  	CHECK_OFFSET(host_rsp, 664);
+>  	CHECK_OFFSET(host_rip, 672);
+> +	CHECK_OFFSET(host_s_cet, 680);
+> +	CHECK_OFFSET(host_ssp, 688);
+> +	CHECK_OFFSET(host_ssp_tbl, 696);
+> +	CHECK_OFFSET(guest_s_cet, 704);
+> +	CHECK_OFFSET(guest_ssp, 712);
+> +	CHECK_OFFSET(guest_ssp_tbl, 720);
+>  	CHECK_OFFSET(pin_based_vm_exec_control, 744);
+>  	CHECK_OFFSET(cpu_based_vm_exec_control, 748);
+>  	CHECK_OFFSET(exception_bitmap, 752);
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index a1aae8709939..947028ff2e25 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -7734,6 +7734,8 @@ static void nested_vmx_cr_fixed1_bits_update(struct kvm_vcpu *vcpu)
+>  	cr4_fixed1_update(X86_CR4_PKE,        ecx, feature_bit(PKU));
+>  	cr4_fixed1_update(X86_CR4_UMIP,       ecx, feature_bit(UMIP));
+>  	cr4_fixed1_update(X86_CR4_LA57,       ecx, feature_bit(LA57));
+> +	cr4_fixed1_update(X86_CR4_CET,	      ecx, feature_bit(SHSTK));
+> +	cr4_fixed1_update(X86_CR4_CET,	      edx, feature_bit(IBT));
+>  
+>  #undef cr4_fixed1_update
+>  }
+
+
