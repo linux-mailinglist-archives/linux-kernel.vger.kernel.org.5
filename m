@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE9F37FE706
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 03:38:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 628A77FE6F7
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 03:37:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344328AbjK3CiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 21:38:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37592 "EHLO
+        id S234942AbjK3Chh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 21:37:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234995AbjK3CiC (ORCPT
+        with ESMTP id S230074AbjK3Ch3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 21:38:02 -0500
+        Wed, 29 Nov 2023 21:37:29 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0F4119A1
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CE381BC1
         for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 18:37:01 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5BD35C433CD;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1D64C433D9;
         Thu, 30 Nov 2023 02:37:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701311820;
-        bh=Zui/g7KxP982XBB/gWdJuIQ1teaLDQkwAJtBsHfxVTg=;
+        s=k20201202; t=1701311821;
+        bh=FMojcAP5QPRX+4T1uzEuLlR/gen6p9qPd+B5RLedtWg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lRgRzxNDNbm7lr2q7Y53CCXTaCb86uIcOob1lUwGtAF+twP1nzW6iYAepQ1c4Onj9
-         IS893QvCkslgxKA29cJnnoDFseUyk6dq8zTOFttcFjff9ootD9pK5R6Yl4pNUluDTK
-         T2EpO72ELMrqrEgXJHAuaN5peRey2z3VXHOOhl6LNi0XqzV9RcQ5SHjxcopPexngIB
-         KTHq1eQ9BuXqK7CqmbuDzYmPW97jbwMhc0hoQiHkEVwL5OxIaHKBsaKv8vb2qQh+yx
-         xIoLY5MyFIkGdP8MEgLBpHIfYlTV8Py37fUUhPnX0ahYWFLEgVYsKmxTjn13jga9Td
-         IfYb2F89T94gA==
+        b=TcLL9P8+Oy7ltVM5DiR3gFU7QyJ4fcHcQUswFA5l9LkcNpPDLaI9QY14RyNitoWB1
+         AteHwdn9YvdZ3w6aJFgIy5DjiYi/B2H31eUsy/Gx1qdvsRKrF9qTYj/yLx5IUHKFjz
+         ajMFnvqGe1TlsBdByvYwU2OHu8YSc0XRyCV0IoDpkGiY8KEdMRVVMzf+65jIALOfcJ
+         XeHnYD6l5pqPhPA1It6KvoYEilCMZ9ixhpVE2VS+POXVvhPTdYGBTWkDQgdVkXk4w8
+         ZkJuTZNLXXSx7dJyny7Jrr0324rZWw/DA1/74PZpGrXp85Et4yYCRJLm3rIBo/pSOs
+         G3u542rHiHFWg==
 From:   SeongJae Park <sj@kernel.org>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     SeongJae Park <sj@kernel.org>, damon@lists.linux.dev,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/9] mm/damon/sysfs-schemes: implement files for scheme quota goals setup
-Date:   Thu, 30 Nov 2023 02:36:45 +0000
-Message-Id: <20231130023652.50284-3-sj@kernel.org>
+Subject: [PATCH 3/9] mm/damon/sysfs-schemes: commit damos quota goals user input to DAMOS
+Date:   Thu, 30 Nov 2023 02:36:46 +0000
+Message-Id: <20231130023652.50284-4-sj@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231130023652.50284-1-sj@kernel.org>
 References: <20231130023652.50284-1-sj@kernel.org>
@@ -49,284 +49,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Implement DAMON sysfs directories and files for the goals of DAMOS
-quota.  Those allow users set multiple goals for their aim, with target
-values.  Users can further enter the current score value for each goal
-as feedback for DAMOS.
+Make DAMON sysfs interface to read the user inputs for DAMOS quota goals
+and pass those to DAMOS, so that the users can use the quota auto-tuning
+feature.  It uses the DAMON sysfs interface's user input commit
+mechanism, which applies all user inputs for initial starting of DAMON
+and online input updates, which can be done by writing 'on' and 'commit'
+to the kdamond's 'state' file, respectively.  In other words, the user
+should periodically write appropriate value to 'current_value' files and
+'commit' command to the 'state' file.  'target_value' files could also
+be similarly updated at any time.
 
-Note that this commit is implementing only the basic file operations,
-and not connecting the files with the DAMOS core logic.  Hence writing
-something to the files makes no real effect.  The following commit will
-connect the file operations and the core logic.
+Note that the interface is supporting multiple goals while the core
+logic supports only one goal.  DAMON sysfs interface passes only best
+feedback among the given inputs, to avoid making DAMOS too aggressive.
 
 Signed-off-by: SeongJae Park <sj@kernel.org>
 ---
- mm/damon/sysfs-schemes.c | 224 ++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 221 insertions(+), 3 deletions(-)
+ mm/damon/sysfs-schemes.c | 32 ++++++++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
 
 diff --git a/mm/damon/sysfs-schemes.c b/mm/damon/sysfs-schemes.c
-index fe0fe2562000..e5531dbd4cf1 100644
+index e5531dbd4cf1..a7917534ca19 100644
 --- a/mm/damon/sysfs-schemes.c
 +++ b/mm/damon/sysfs-schemes.c
-@@ -820,6 +820,203 @@ static const struct kobj_type damon_sysfs_watermarks_ktype = {
- 	.default_groups = damon_sysfs_watermarks_groups,
- };
+@@ -1868,6 +1868,34 @@ static int damon_sysfs_set_scheme_filters(struct damos *scheme,
+ 	return 0;
+ }
  
-+/*
-+ * quota goal directory
-+ */
-+
-+struct damos_sysfs_quota_goal {
-+	struct kobject kobj;
-+	unsigned long target_value;
-+	unsigned long current_value;
-+};
-+
-+static struct damos_sysfs_quota_goal *damos_sysfs_quota_goal_alloc(void)
++static unsigned long damos_sysfs_get_quota_score(void *arg)
 +{
-+	return kzalloc(sizeof(struct damos_sysfs_quota_goal), GFP_KERNEL);
++	return (unsigned long)arg;
 +}
 +
-+static ssize_t target_value_show(struct kobject *kobj,
-+		struct kobj_attribute *attr, char *buf)
++static void damos_sysfs_set_quota_score(
++		struct damos_sysfs_quota_goals *sysfs_goals,
++		struct damos_quota *quota)
 +{
-+	struct damos_sysfs_quota_goal *goal = container_of(kobj, struct
-+			damos_sysfs_quota_goal, kobj);
-+
-+	return sysfs_emit(buf, "%lu\n", goal->target_value);
-+}
-+
-+static ssize_t target_value_store(struct kobject *kobj,
-+		struct kobj_attribute *attr, const char *buf, size_t count)
-+{
-+	struct damos_sysfs_quota_goal *goal = container_of(kobj, struct
-+			damos_sysfs_quota_goal, kobj);
-+	int err = kstrtoul(buf, 0, &goal->target_value);
-+
-+	return err ? err : count;
-+}
-+
-+static ssize_t current_value_show(struct kobject *kobj,
-+		struct kobj_attribute *attr, char *buf)
-+{
-+	struct damos_sysfs_quota_goal *goal = container_of(kobj, struct
-+			damos_sysfs_quota_goal, kobj);
-+
-+	return sysfs_emit(buf, "%lu\n", goal->current_value);
-+}
-+
-+static ssize_t current_value_store(struct kobject *kobj,
-+		struct kobj_attribute *attr, const char *buf, size_t count)
-+{
-+	struct damos_sysfs_quota_goal *goal = container_of(kobj, struct
-+			damos_sysfs_quota_goal, kobj);
-+	int err = kstrtoul(buf, 0, &goal->current_value);
-+
-+	/* feed callback should check existence of this file and read value */
-+	return err ? err : count;
-+}
-+
-+static void damos_sysfs_quota_goal_release(struct kobject *kobj)
-+{
-+	/* or, notify this release to the feed callback */
-+	kfree(container_of(kobj, struct damos_sysfs_quota_goal, kobj));
-+}
-+
-+static struct kobj_attribute damos_sysfs_quota_goal_target_value_attr =
-+		__ATTR_RW_MODE(target_value, 0600);
-+
-+static struct kobj_attribute damos_sysfs_quota_goal_current_value_attr =
-+		__ATTR_RW_MODE(current_value, 0600);
-+
-+static struct attribute *damos_sysfs_quota_goal_attrs[] = {
-+	&damos_sysfs_quota_goal_target_value_attr.attr,
-+	&damos_sysfs_quota_goal_current_value_attr.attr,
-+	NULL,
-+};
-+ATTRIBUTE_GROUPS(damos_sysfs_quota_goal);
-+
-+static const struct kobj_type damos_sysfs_quota_goal_ktype = {
-+	.release = damos_sysfs_quota_goal_release,
-+	.sysfs_ops = &kobj_sysfs_ops,
-+	.default_groups = damos_sysfs_quota_goal_groups,
-+};
-+
-+/*
-+ * quota goals directory
-+ */
-+
-+struct damos_sysfs_quota_goals {
-+	struct kobject kobj;
-+	struct damos_sysfs_quota_goal **goals_arr;	/* counted by nr */
-+	int nr;
-+};
-+
-+static struct damos_sysfs_quota_goals *damos_sysfs_quota_goals_alloc(void)
-+{
-+	return kzalloc(sizeof(struct damos_sysfs_quota_goals), GFP_KERNEL);
-+}
-+
-+static void damos_sysfs_quota_goals_rm_dirs(
-+		struct damos_sysfs_quota_goals *goals)
-+{
-+	struct damos_sysfs_quota_goal **goals_arr = goals->goals_arr;
++	struct damos_sysfs_quota_goal *sysfs_goal;
 +	int i;
 +
-+	for (i = 0; i < goals->nr; i++)
-+		kobject_put(&goals_arr[i]->kobj);
-+	goals->nr = 0;
-+	kfree(goals_arr);
-+	goals->goals_arr = NULL;
-+}
++	quota->get_score = NULL;
++	quota->get_score_arg = (void *)0;
++	for (i = 0; i < sysfs_goals->nr; i++) {
++		sysfs_goal = sysfs_goals->goals_arr[i];
++		if (!sysfs_goal->target_value)
++			continue;
 +
-+static int damos_sysfs_quota_goals_add_dirs(
-+		struct damos_sysfs_quota_goals *goals, int nr_goals)
-+{
-+	struct damos_sysfs_quota_goal **goals_arr, *goal;
-+	int err, i;
-+
-+	damos_sysfs_quota_goals_rm_dirs(goals);
-+	if (!nr_goals)
-+		return 0;
-+
-+	goals_arr = kmalloc_array(nr_goals, sizeof(*goals_arr),
-+			GFP_KERNEL | __GFP_NOWARN);
-+	if (!goals_arr)
-+		return -ENOMEM;
-+	goals->goals_arr = goals_arr;
-+
-+	for (i = 0; i < nr_goals; i++) {
-+		goal = damos_sysfs_quota_goal_alloc();
-+		if (!goal) {
-+			damos_sysfs_quota_goals_rm_dirs(goals);
-+			return -ENOMEM;
-+		}
-+
-+		err = kobject_init_and_add(&goal->kobj,
-+				&damos_sysfs_quota_goal_ktype, &goals->kobj,
-+				"%d", i);
-+		if (err) {
-+			kobject_put(&goal->kobj);
-+			damos_sysfs_quota_goals_rm_dirs(goals);
-+			return err;
-+		}
-+
-+		goals_arr[i] = goal;
-+		goals->nr++;
++		/* Higher score makes scheme less aggressive */
++		quota->get_score_arg = (void *)max(
++				(unsigned long)quota->get_score_arg,
++				sysfs_goal->current_value * 10000 /
++				sysfs_goal->target_value);
++		quota->get_score = damos_sysfs_get_quota_score;
 +	}
-+	return 0;
 +}
 +
-+static ssize_t nr_goals_show(struct kobject *kobj,
-+		struct kobj_attribute *attr, char *buf)
-+{
-+	struct damos_sysfs_quota_goals *goals = container_of(kobj,
-+			struct damos_sysfs_quota_goals, kobj);
-+
-+	return sysfs_emit(buf, "%d\n", goals->nr);
-+}
-+
-+static ssize_t nr_goals_store(struct kobject *kobj,
-+		struct kobj_attribute *attr, const char *buf, size_t count)
-+{
-+	struct damos_sysfs_quota_goals *goals;
-+	int nr, err = kstrtoint(buf, 0, &nr);
-+
-+	if (err)
-+		return err;
-+	if (nr < 0)
-+		return -EINVAL;
-+
-+	goals = container_of(kobj, struct damos_sysfs_quota_goals, kobj);
-+
-+	if (!mutex_trylock(&damon_sysfs_lock))
-+		return -EBUSY;
-+	err = damos_sysfs_quota_goals_add_dirs(goals, nr);
-+	mutex_unlock(&damon_sysfs_lock);
-+	if (err)
-+		return err;
-+
-+	return count;
-+}
-+
-+static void damos_sysfs_quota_goals_release(struct kobject *kobj)
-+{
-+	kfree(container_of(kobj, struct damos_sysfs_quota_goals, kobj));
-+}
-+
-+static struct kobj_attribute damos_sysfs_quota_goals_nr_attr =
-+		__ATTR_RW_MODE(nr_goals, 0600);
-+
-+static struct attribute *damos_sysfs_quota_goals_attrs[] = {
-+	&damos_sysfs_quota_goals_nr_attr.attr,
-+	NULL,
-+};
-+ATTRIBUTE_GROUPS(damos_sysfs_quota_goals);
-+
-+static const struct kobj_type damos_sysfs_quota_goals_ktype = {
-+	.release = damos_sysfs_quota_goals_release,
-+	.sysfs_ops = &kobj_sysfs_ops,
-+	.default_groups = damos_sysfs_quota_goals_groups,
-+};
-+
- /*
-  * scheme/weights directory
-  */
-@@ -938,6 +1135,7 @@ static const struct kobj_type damon_sysfs_weights_ktype = {
- struct damon_sysfs_quotas {
- 	struct kobject kobj;
- 	struct damon_sysfs_weights *weights;
-+	struct damos_sysfs_quota_goals *goals;
- 	unsigned long ms;
- 	unsigned long sz;
- 	unsigned long reset_interval_ms;
-@@ -951,6 +1149,7 @@ static struct damon_sysfs_quotas *damon_sysfs_quotas_alloc(void)
- static int damon_sysfs_quotas_add_dirs(struct damon_sysfs_quotas *quotas)
+ static struct damos *damon_sysfs_mk_scheme(
+ 		struct damon_sysfs_scheme *sysfs_scheme)
  {
- 	struct damon_sysfs_weights *weights;
-+	struct damos_sysfs_quota_goals *goals;
- 	int err;
+@@ -1905,6 +1933,8 @@ static struct damos *damon_sysfs_mk_scheme(
+ 		.low = sysfs_wmarks->low,
+ 	};
  
- 	weights = damon_sysfs_weights_alloc(0, 0, 0);
-@@ -959,16 +1158,35 @@ static int damon_sysfs_quotas_add_dirs(struct damon_sysfs_quotas *quotas)
- 
- 	err = kobject_init_and_add(&weights->kobj, &damon_sysfs_weights_ktype,
- 			&quotas->kobj, "weights");
--	if (err)
-+	if (err) {
- 		kobject_put(&weights->kobj);
--	else
--		quotas->weights = weights;
-+		return err;
-+	}
-+	quotas->weights = weights;
++	damos_sysfs_set_quota_score(sysfs_quotas->goals, &quota);
 +
-+	goals = damos_sysfs_quota_goals_alloc();
-+	if (!goals) {
-+		kobject_put(&weights->kobj);
-+		return -ENOMEM;
-+	}
-+	err = kobject_init_and_add(&goals->kobj,
-+			&damos_sysfs_quota_goals_ktype, &quotas->kobj,
-+			"goals");
-+	if (err) {
-+		kobject_put(&weights->kobj);
-+		kobject_put(&goals->kobj);
-+	} else {
-+		quotas->goals = goals;
-+	}
+ 	scheme = damon_new_scheme(&pattern, sysfs_scheme->action,
+ 			sysfs_scheme->apply_interval_us, &quota, &wmarks);
+ 	if (!scheme)
+@@ -1945,6 +1975,8 @@ static void damon_sysfs_update_scheme(struct damos *scheme,
+ 	scheme->quota.weight_nr_accesses = sysfs_weights->nr_accesses;
+ 	scheme->quota.weight_age = sysfs_weights->age;
+ 
++	damos_sysfs_set_quota_score(sysfs_quotas->goals, &scheme->quota);
 +
- 	return err;
- }
- 
- static void damon_sysfs_quotas_rm_dirs(struct damon_sysfs_quotas *quotas)
- {
- 	kobject_put(&quotas->weights->kobj);
-+	damos_sysfs_quota_goals_rm_dirs(quotas->goals);
-+	kobject_put(&quotas->goals->kobj);
- }
- 
- static ssize_t ms_show(struct kobject *kobj, struct kobj_attribute *attr,
+ 	scheme->wmarks.metric = sysfs_wmarks->metric;
+ 	scheme->wmarks.interval = sysfs_wmarks->interval_us;
+ 	scheme->wmarks.high = sysfs_wmarks->high;
 -- 
 2.34.1
 
