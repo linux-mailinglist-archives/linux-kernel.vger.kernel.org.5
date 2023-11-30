@@ -2,328 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53C6F7FF9E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 19:47:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0896D7FF9FE
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 19:49:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376271AbjK3SrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 13:47:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51884 "EHLO
+        id S1346708AbjK3Stp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 13:49:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235256AbjK3SrC (ORCPT
+        with ESMTP id S230045AbjK3Sto (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 13:47:02 -0500
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04olkn2077.outbound.protection.outlook.com [40.92.47.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E1C51712;
-        Thu, 30 Nov 2023 10:47:05 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Wb7QG06PlEdMAVBDos4rJ5UXzJ0ctyfJSl2bOxdYANtPv1IOpuoavSJl2XtXYD7m5P8jSl5t0SHNB948QFq5ix5BgLPMdDoui+3wf0OwphTZpsev4VFh81RFTLjYZ1adZCO9VG2bnq557bIIZXVA8OCkYsXvj2c5QXq+2Td3re5vJjaQCBzo8FJ/9hYdmTAx46QRzTUw9DPji3RkUNxu2Vdhbf88r+SqAxpCQrwMyMkFJ33l8H11H/bDO5mG6zNkHCDy97eJ36nXdNZWF9pqGUhKb5Zrsz+k6TOPWew4h8O2QH6+IKl+LjeEZmZb2+XppZ3wTBxS2iTZsUoeA0saUA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Jg7b6p+xqD2UoF2S3eJvncZGfTYlOgCJeL446xehAFE=;
- b=R6AcLACjem01c8GayrNkA9GV0zxKWXos1kqrjnC7KewaXRLqW+xg+RuzQbt+rmEC8DC63MGp3t5fDmPnehqk4luzwpCv5UD7jVt/Qnc34UNkWMjmjFN8sFmfAVOPpvrHtY2qv1DsKIMX8DL5MuiXu1HoLNOriWKV0H0QZjqhjoXE+UQDGCgACOSHfodwkWe2iobG8J8qzedAa2DrkSYobbBPjYsr5L25E2YuRRQUo1npRzbQMaoidhg8Q/MbPNKoO5S/xziLxU3hQmb5CxnyMeQ9DSRrsUFzuJevZ3kG5jBjWTZL+C5JVkVqFudjNtk3rYKU4X2FkdDvjjc40bdfPQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Jg7b6p+xqD2UoF2S3eJvncZGfTYlOgCJeL446xehAFE=;
- b=Mc9Sk6CxooYjJTBA6EkFX0IY5v6HBtAoGyMpMZrn8fb1nHFcxHkwRRq1rEFWIiIe1qXjvGDo3hmRKKSqEVJo0FPgvRltgNkzObL1iSqkQFYaKur8GJYRiTmiEqKDq5JgZ3o7b51S8xbnrN3cdazQGWw9eV9zGcr+Gf9vadTZ5Gf81mzQNbOAmaNF4fuLnmPGoq1Hyh3Tj2Ibng+aLlrneQPGtSuC/f/GLufw9y7yEpi7VXDpGhza0wbboDd66xxVgLMw2HbihSDMQi2ZtU5lgKeJHX8WG/rV5/Lr0ECjeuUeiO+0w0uu9HnPYHrt1h/0c/T6QOy+scBgzrZw8DUt5g==
-Received: from PH7PR03MB7064.namprd03.prod.outlook.com (2603:10b6:510:2a5::8)
- by CO1PR03MB5905.namprd03.prod.outlook.com (2603:10b6:303:9b::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.8; Thu, 30 Nov
- 2023 18:47:03 +0000
-Received: from PH7PR03MB7064.namprd03.prod.outlook.com
- ([fe80::9ca4:4c22:a89:9a8]) by PH7PR03MB7064.namprd03.prod.outlook.com
- ([fe80::9ca4:4c22:a89:9a8%7]) with mapi id 15.20.7068.012; Thu, 30 Nov 2023
- 18:47:03 +0000
-From:   Min Li <lnimi@hotmail.com>
-To:     richardcochran@gmail.com, lee@kernel.org
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Min Li <min.li.xe@renesas.com>
-Subject: [PATCH net-next v6 6/6] ptp: clockmatrix: move register and firmware related definition to idt8a340_reg.h
-Date:   Thu, 30 Nov 2023 13:46:34 -0500
-Message-ID: <PH7PR03MB70645A63EA0D578001954977A082A@PH7PR03MB7064.namprd03.prod.outlook.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231130184634.22577-1-lnimi@hotmail.com>
-References: <20231130184634.22577-1-lnimi@hotmail.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN:  [/xfBx6/lF9F5BG0uspKjusiwXRPJbJVs]
-X-ClientProxiedBy: YQBPR0101CA0262.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:c01:68::24) To PH7PR03MB7064.namprd03.prod.outlook.com
- (2603:10b6:510:2a5::8)
-X-Microsoft-Original-Message-ID: <20231130184634.22577-6-lnimi@hotmail.com>
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR03MB7064:EE_|CO1PR03MB5905:EE_
-X-MS-Office365-Filtering-Correlation-Id: 94a40415-6742-4d4b-5756-08dbf1d4be08
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Ertx5e2YY3IeAl7ZVpkaxXlkO+TCn9L0YMVhRSQFOuZ04A5bf/0hWdS9zuiFxZ7r5OdMQofBYX6Zy/+1ylJKAlXaaYzYGGvB5Y7A+zqwHpXRNwcIXfBRnKTN3jFeeBmzax0Jj8zPDauHxVSjlTl9Cs0BwDCGK58J+cjt+lXQz3reiaKyv2X7HxYLjR0nQAH0AathgHD68jnTeH44ocQnEkNzDE8b9NHjJMoKvFIz8vgs/CQ1ehet3MFVO94SjLphL5oUXPiRD+Pk/wHLK6SgUp3iI++8ZVzaU2G5nbVxSsBZHrFs/xciP7sw33QXXyyhQJKt2x1EwZA4jYyX5vGgMHsQwibViITle4Cb3GTCC9OrxSA17yGjIuWgqpn1o6l7bCv0cHxvJeWkGT+AviFyUeLU4WATV7PVlnn+qqDcIxbU4y8FEy78WOGeA9qLCWqn8cLaAW6MK1Ik5tiDHhbSx/YuqbvXZibFha/dqUPBXDp0J/BskM3KBTS7Sz4gcktP5weNS3BxcF6rGRZtB2OqFx55K616VHDd5fCayaTwokl7XvSL+9y38eXqUVtzc10Z
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?yAjErtFPdV9uDRqLayzsRn7A7aC/1CFTRmMpZat5m8QBsHMVrZBteZa5VC/G?=
- =?us-ascii?Q?dwRDrf+1ZiH/3Ru3fLWiGGaTpkCRU7a9dgt+J4nDpngTB1Zc6unJi0wdIgSK?=
- =?us-ascii?Q?MYvOJG3lOOxTF0etRKFRw71LoJRj5+5coUV/eZV4NUJBqlyaAfh9IfBQww0N?=
- =?us-ascii?Q?u0MHuYa3wOZLTzhwCWM/oOkDqok6vRBWHcwahpfOPXEmKCDaRVI0YYv8rz/J?=
- =?us-ascii?Q?c4dsk0jMP8BJ8dA9931SNE6ZPMF/697iUro+CJ2Hcepq7EqdgU1m7gOziRI/?=
- =?us-ascii?Q?+d7julXHjb1NpBm9AqHJhbl4YmH/ynZ3X1iomb3LXKUQDl/OLPWC7MOZWIfB?=
- =?us-ascii?Q?3rjCyuUh1epnvOYcn6LEv0ra5UwtWcOgpyLOm8Y5J2Rp5bIfovQDJzf8pTbD?=
- =?us-ascii?Q?y7v2WLVeeLB5CVXdfN8BTaoSphVpebU3IGbyycIZPGv/mY0+eUsnndNhckXQ?=
- =?us-ascii?Q?IkWdJ90ila2oWcgp8x8B7WgBwWnqijmBatwYvW92G2JTlyi5kRq2rXjqakTz?=
- =?us-ascii?Q?1HIdMEf4QPVJYESOLFq95h+guaLHsCiSDei4Kgvn+zH48u5s7vPgLJjbYOxD?=
- =?us-ascii?Q?muEm9ANjQrKF2WXleHPnx0BOA8cJB2e7+p4xIll237JQMNvjDSluIQclnZZ8?=
- =?us-ascii?Q?e5ayhaPgOIFsYi6dqomyG3qvf7FhYEZnF/oTtWkJ+97YXnFAxfVVrm5nj1mS?=
- =?us-ascii?Q?QgFWxz5bYIvy9Lsndj9fBaxVZ8OJttmnt/ZVsJyRv0k3+G7hgo6RirY6dqYs?=
- =?us-ascii?Q?LnK86h9WWRkZT9mHc+kRdm4vP1sejTFJRl+7oLO7qgcPk5U5PDN6UpcuLlc3?=
- =?us-ascii?Q?HtM8sa5ouu3Y1SWxprWNrce1y0UcWsFaRGKmZ/dBXIYHgcCbUuvy4VRbr9dX?=
- =?us-ascii?Q?E0450ODLcYKanWoOLXoGyCgDDTvTjHABHMdC9pAAniWZ7Ob0cENrPuUDCmiU?=
- =?us-ascii?Q?Lvm4pILp804cmkhD2Gf2nEz75tWoHL89db1jcaG6N4I9wInh4dtnuzSmB9pq?=
- =?us-ascii?Q?wgDM+nu+P5nAoKMKMhu0l3N6zNTm/ely3EqNbIeyhdJvZCQCjZuibL9scblI?=
- =?us-ascii?Q?gpgYzOmTXBAS0ZJx2ixsWbrb1w71abcgzBnDUXaLxceEVIRNZbCux/qNDKmE?=
- =?us-ascii?Q?ItZm6KP4TWvwwue+rUosZpY8GWta88k4WPbh77h45ATBHVCwij8y7LSqofXJ?=
- =?us-ascii?Q?wvkCkhKtvYKbIWJ0PrRhj6tc+37PNeSiTTpJEQ=3D=3D?=
-X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-685f7.templateTenant
-X-MS-Exchange-CrossTenant-Network-Message-Id: 94a40415-6742-4d4b-5756-08dbf1d4be08
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR03MB7064.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Nov 2023 18:47:03.2474
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR03MB5905
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 30 Nov 2023 13:49:44 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DC1F10D1
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 10:49:50 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-da03c5ae220so2122361276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 10:49:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701370190; x=1701974990; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=4SzgB02v3pm2Y/9qEgT9NgIXu3bggWU3e+JewN/6J2M=;
+        b=PrQa1CG/o3MZMOToKVbE6k98VF93pYFTlizp3c20C8pA/gCUy8gYqzxOkN+uc8c9SJ
+         ViS/PTYi16v//k6HxnQOhEvtqSOf8YLbCN5ePK4Qzz4UuGs7uSib0nX9pYjEIxB5byS0
+         EwlK/NlyM6lgzxvwrJhbTAG4A8iSZeYbNACbOz/zlqOxeQUQKJPgquSD1HuKhdRUeCpz
+         4KqUvmsrie0Z4idjQCUTvG6vGCAAXE86vmt65fvCjoN7Wrydd7zNtOBshWkj3WKWuuSh
+         tpovmuQVovVDV6zalqfEpSL/tbwPkBLcq2MSnDdh/vRw2Aivv4Ww5qOJUPcA8UVsjcJa
+         Le8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701370190; x=1701974990;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4SzgB02v3pm2Y/9qEgT9NgIXu3bggWU3e+JewN/6J2M=;
+        b=LilMTkiArDIOjRplp7wN+bi/9vBFXTGy1CH6gBnkONariusLJ79tL4LftVV0RN0QIt
+         4TBw3F7hlJZ/N0bfPFiWmwewAKY+8X6LCEouHPZ57JBrqS1csay+vwQblYDcLp+a0q2b
+         DaMgW/BtbEMt/n/fZAmpUqsJT4ow6LVHb5kUqtkXLfU+VHTU6SPfE+PIePV4hQN3Vs+m
+         KHV6s4mPFzoOut+WU4sGjf5kh+L01wiLdnPPg/20XNX8eFpH9nlgl8/kkKWMUGwQ/h4P
+         SjG/KnKtzC3vTV8PxS0WILX0+llIBaI3SRU/LegNV4RS2fHTxPpo272+mUSREp0MVhFc
+         E2vQ==
+X-Gm-Message-State: AOJu0YzOCBeeTe6QQt5SSKBsNFtIS2nE4e9W2avoMUeQzkMY2BZDbf+y
+        i4Qk4yYNgJArZM5lErrOV5owZSbqh1mNng==
+X-Google-Smtp-Source: AGHT+IFua5sJxKKwzjF614J8ZWN1/fmR30z+ohOLNRCyqzdzcqilwqXd9hF/oOB4O6XstIxY1N+wNq1MagdZjQ==
+X-Received: from shakeelb.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:262e])
+ (user=shakeelb job=sendgmr) by 2002:a25:a4ea:0:b0:db5:378f:1824 with SMTP id
+ g97-20020a25a4ea000000b00db5378f1824mr135734ybi.1.1701370189834; Thu, 30 Nov
+ 2023 10:49:49 -0800 (PST)
+Date:   Thu, 30 Nov 2023 18:49:47 +0000
+In-Reply-To: <20231130165642.GA386439@cmpxchg.org>
+Mime-Version: 1.0
+References: <20231130153658.527556-1-schatzberg.dan@gmail.com>
+ <ZWiw9cEsDap1Qm5h@tiehlicka> <20231130165642.GA386439@cmpxchg.org>
+Message-ID: <20231130184947.ina5qjymijrphibq@google.com>
+Subject: Re: [PATCH 0/1] Add swappiness argument to memory.reclaim
+From:   Shakeel Butt <shakeelb@google.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Dan Schatzberg <schatzberg.dan@gmail.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Yosry Ahmed <yosryahmed@google.com>, Huan Yang <link@vivo.com>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Huang Ying <ying.huang@intel.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Peter Xu <peterx@redhat.com>,
+        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
+        Yue Zhao <findns94@gmail.com>, Hugh Dickins <hughd@google.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Min Li <min.li.xe@renesas.com>
+On Thu, Nov 30, 2023 at 11:56:42AM -0500, Johannes Weiner wrote:
+> On Thu, Nov 30, 2023 at 04:57:41PM +0100, Michal Hocko wrote:
+> > On Thu 30-11-23 07:36:53, Dan Schatzberg wrote:
+> > [...]
+> > > In contrast, I argue in favor of a swappiness setting not as a way to implement
+> > > custom reclaim algorithms but rather to bias the balance of anon vs file due to
+> > > differences of proactive vs reactive reclaim. In this context, swappiness is the
+> > > existing interface for controlling this balance and this patch simply allows for
+> > > it to be configured differently for proactive vs reactive reclaim.
+> > 
+> > I do agree that swappiness is a better interface than explicit anon/file
+> > but the problem with swappiness is that it is more of a hint for the reclaim
+> > rather than a real control. Just look at get_scan_count and its history.
+> > Not only its range has been extended also the extent when it is actually
+> > used has been changing all the time and I think it is not a stretch to
+> > assume that trend to continue.
+> 
+> Right, we did tweak the edge behavior of e.g. swappiness=0. And we
+> extended the range to express "anon is cheaper than file", which
+> wasn't possible before, to support the compressed memory case.
+> 
+> However, its meaning and impact has been remarkably stable over the
+> years: it allows userspace to specify the relative cost of paging IO
+> between file and anon pages. This comment is from 2.6.28:
+> 
+>         /*
+>          * With swappiness at 100, anonymous and file have the same priority.
+>          * This scanning priority is essentially the inverse of IO cost.
+>          */
+>         anon_prio = sc->swappiness;
+>         file_prio = 200 - sc->swappiness;
+> 
+> And this is it today:
+> 
+> 	/*
+> 	 * Calculate the pressure balance between anon and file pages.
+> 	 *
+> 	 * The amount of pressure we put on each LRU is inversely
+> 	 * proportional to the cost of reclaiming each list, as
+> 	 * determined by the share of pages that are refaulting, times
+> 	 * the relative IO cost of bringing back a swapped out
+> 	 * anonymous page vs reloading a filesystem page (swappiness).
+> 	 *
+> 	 * Although we limit that influence to ensure no list gets
+> 	 * left behind completely: at least a third of the pressure is
+> 	 * applied, before swappiness.
+> 	 *
+> 	 * With swappiness at 100, anon and file have equal IO cost.
+> 	 */
+> 	total_cost = sc->anon_cost + sc->file_cost;
+> 	anon_cost = total_cost + sc->anon_cost;
+> 	file_cost = total_cost + sc->file_cost;
+> 	total_cost = anon_cost + file_cost;
+> 
+> 	ap = swappiness * (total_cost + 1);
+> 	ap /= anon_cost + 1;
+> 
+> 	fp = (200 - swappiness) * (total_cost + 1);
+> 	fp /= file_cost + 1;
+> 
+> So swappiness still means the same it did 15 years ago. We haven't
+> changed the default swappiness setting, and we haven't broken any
+> existing swappiness configurations through VM changes in that time.
+> 
+> There are a few scenarios where swappiness doesn't apply:
+> 
+> - No swap. Oh well, that seems reasonable.
+> 
+> - Priority=0. This applies to near-OOM situations where the MM system
+>   tries to save itself. This isn't a range in which proactive
+>   reclaimers (should) operate.
+> 
+> - sc->file_is_tiny. This doesn't apply to cgroup reclaim and thus
+>   proactive reclaim.
+> 
+> - sc->cache_trim_mode. This implements clean cache dropbehind, and
+>   applies in the presence of large, non-refaulting inactive cache. The
+>   assumption there is that this data is reclaimable without involving
+>   IO to evict, and without the expectation of refault IO in the
+>   future. Without IO involvement, the relative IO cost isn't a
+>   factor. This will back off when refaults are observed, and the IO
+>   cost setting is then taken into account again as expected.
+> 
+>   If you consider swappiness to mean "reclaim what I ask you to", then
+>   this would override that, yes. But in the definition of relative IO
+>   cost, this decision making is permissible.
+> 
+>   Note that this applies to the global swappiness setting as well, and
+>   nobody has complained about it.
+> 
+> So I wouldn't say it's merely a reclaim hint. It controls a very
+> concrete and influential factor in VM decision making. And since the
+> global swappiness is long-established ABI, I don't expect its meaning
+> to change significantly any time soon.
 
-This change is needed by rsmu driver, which will be submitted separately
-from mfd tree.
-
-Signed-off-by: Min Li <min.li.xe@renesas.com>
----
- drivers/ptp/ptp_clockmatrix.h    |  33 ---------
- include/linux/mfd/idt8a340_reg.h | 121 +++++++++++++++++++++++++++++--
- 2 files changed, 113 insertions(+), 41 deletions(-)
-
-diff --git a/drivers/ptp/ptp_clockmatrix.h b/drivers/ptp/ptp_clockmatrix.h
-index 31d90b1bf025..f041c7999ddc 100644
---- a/drivers/ptp/ptp_clockmatrix.h
-+++ b/drivers/ptp/ptp_clockmatrix.h
-@@ -21,32 +21,6 @@
- #define MAX_ABS_WRITE_PHASE_NANOSECONDS (107374182L)
- #define MAX_FFO_PPB (244000)
- 
--#define TOD_MASK_ADDR		(0xFFA5)
--#define DEFAULT_TOD_MASK	(0x04)
--
--#define SET_U16_LSB(orig, val8) (orig = (0xff00 & (orig)) | (val8))
--#define SET_U16_MSB(orig, val8) (orig = (0x00ff & (orig)) | (val8 << 8))
--
--#define TOD0_PTP_PLL_ADDR		(0xFFA8)
--#define TOD1_PTP_PLL_ADDR		(0xFFA9)
--#define TOD2_PTP_PLL_ADDR		(0xFFAA)
--#define TOD3_PTP_PLL_ADDR		(0xFFAB)
--
--#define TOD0_OUT_ALIGN_MASK_ADDR	(0xFFB0)
--#define TOD1_OUT_ALIGN_MASK_ADDR	(0xFFB2)
--#define TOD2_OUT_ALIGN_MASK_ADDR	(0xFFB4)
--#define TOD3_OUT_ALIGN_MASK_ADDR	(0xFFB6)
--
--#define DEFAULT_OUTPUT_MASK_PLL0	(0x003)
--#define DEFAULT_OUTPUT_MASK_PLL1	(0x00c)
--#define DEFAULT_OUTPUT_MASK_PLL2	(0x030)
--#define DEFAULT_OUTPUT_MASK_PLL3	(0x0c0)
--
--#define DEFAULT_TOD0_PTP_PLL		(0)
--#define DEFAULT_TOD1_PTP_PLL		(1)
--#define DEFAULT_TOD2_PTP_PLL		(2)
--#define DEFAULT_TOD3_PTP_PLL		(3)
--
- #define PHASE_PULL_IN_THRESHOLD_NS_DEPRECATED	(150000)
- #define PHASE_PULL_IN_THRESHOLD_NS		(15000)
- #define TOD_WRITE_OVERHEAD_COUNT_MAX		(2)
-@@ -121,11 +95,4 @@ struct idtcm {
- 	ktime_t			start_time;
- };
- 
--struct idtcm_fwrc {
--	u8 hiaddr;
--	u8 loaddr;
--	u8 value;
--	u8 reserved;
--} __packed;
--
- #endif /* PTP_IDTCLOCKMATRIX_H */
-diff --git a/include/linux/mfd/idt8a340_reg.h b/include/linux/mfd/idt8a340_reg.h
-index 13b36f4858b3..5aeb0820f876 100644
---- a/include/linux/mfd/idt8a340_reg.h
-+++ b/include/linux/mfd/idt8a340_reg.h
-@@ -116,16 +116,41 @@
- #define OTP_SCSR_CONFIG_SELECT            0x0022
- 
- #define STATUS                            0x2010c03c
--#define DPLL0_STATUS			  0x0018
--#define DPLL1_STATUS			  0x0019
--#define DPLL2_STATUS			  0x001a
--#define DPLL3_STATUS			  0x001b
--#define DPLL4_STATUS			  0x001c
--#define DPLL5_STATUS			  0x001d
--#define DPLL6_STATUS			  0x001e
--#define DPLL7_STATUS			  0x001f
-+#define IN0_MON_STATUS                    0x0008
-+#define IN1_MON_STATUS                    0x0009
-+#define IN2_MON_STATUS                    0x000a
-+#define IN3_MON_STATUS                    0x000b
-+#define IN4_MON_STATUS                    0x000c
-+#define IN5_MON_STATUS                    0x000d
-+#define IN6_MON_STATUS                    0x000e
-+#define IN7_MON_STATUS                    0x000f
-+#define IN8_MON_STATUS                    0x0010
-+#define IN9_MON_STATUS                    0x0011
-+#define IN10_MON_STATUS                   0x0012
-+#define IN11_MON_STATUS                   0x0013
-+#define IN12_MON_STATUS                   0x0014
-+#define IN13_MON_STATUS                   0x0015
-+#define IN14_MON_STATUS                   0x0016
-+#define IN15_MON_STATUS                   0x0017
-+#define DPLL0_STATUS                      0x0018
-+#define DPLL1_STATUS                      0x0019
-+#define DPLL2_STATUS                      0x001a
-+#define DPLL3_STATUS                      0x001b
-+#define DPLL4_STATUS                      0x001c
-+#define DPLL5_STATUS                      0x001d
-+#define DPLL6_STATUS                      0x001e
-+#define DPLL7_STATUS                      0x001f
- #define DPLL_SYS_STATUS                   0x0020
- #define DPLL_SYS_APLL_STATUS              0x0021
-+#define DPLL0_REF_STATUS                  0x0022
-+#define DPLL1_REF_STATUS                  0x0023
-+#define DPLL2_REF_STATUS                  0x0024
-+#define DPLL3_REF_STATUS                  0x0025
-+#define DPLL4_REF_STATUS                  0x0026
-+#define DPLL5_REF_STATUS                  0x0027
-+#define DPLL6_REF_STATUS                  0x0028
-+#define DPLL7_REF_STATUS                  0x0029
-+#define DPLL_SYS_REF_STATUS               0x002a
- #define DPLL0_FILTER_STATUS               0x0044
- #define DPLL1_FILTER_STATUS               0x004c
- #define DPLL2_FILTER_STATUS               0x0054
-@@ -192,6 +217,25 @@
- #define DPLL_CTRL_REG_0                   0x0002
- #define DPLL_CTRL_REG_1                   0x0003
- #define DPLL_CTRL_REG_2                   0x0004
-+#define DPLL_REF_PRIORITY_0               0x000f
-+#define DPLL_REF_PRIORITY_1               0x0010
-+#define DPLL_REF_PRIORITY_2               0x0011
-+#define DPLL_REF_PRIORITY_3               0x0012
-+#define DPLL_REF_PRIORITY_4               0x0013
-+#define DPLL_REF_PRIORITY_5               0x0014
-+#define DPLL_REF_PRIORITY_6               0x0015
-+#define DPLL_REF_PRIORITY_7               0x0016
-+#define DPLL_REF_PRIORITY_8               0x0017
-+#define DPLL_REF_PRIORITY_9               0x0018
-+#define DPLL_REF_PRIORITY_10              0x0019
-+#define DPLL_REF_PRIORITY_11              0x001a
-+#define DPLL_REF_PRIORITY_12              0x001b
-+#define DPLL_REF_PRIORITY_13              0x001c
-+#define DPLL_REF_PRIORITY_14              0x001d
-+#define DPLL_REF_PRIORITY_15              0x001e
-+#define DPLL_REF_PRIORITY_16              0x001f
-+#define DPLL_REF_PRIORITY_17              0x0020
-+#define DPLL_REF_PRIORITY_18              0x0021
- #define DPLL_MAX_FREQ_OFFSET              0x0025
- #define DPLL_WF_TIMER                     0x002c
- #define DPLL_WP_TIMER                     0x002e
-@@ -450,6 +494,10 @@
- #define OUTPUT_TDC_1                      0x2010cd08
- #define OUTPUT_TDC_2                      0x2010cd10
- #define OUTPUT_TDC_3                      0x2010cd18
-+
-+#define OUTPUT_TDC_CTRL_4                 0x0006
-+#define OUTPUT_TDC_CTRL_4_V520            0x0007
-+
- #define INPUT_TDC                         0x2010cd20
- 
- #define SCRATCH                           0x2010cf50
-@@ -668,6 +716,28 @@
- #define DPLL_STATE_MASK                   (0xf)
- #define DPLL_STATE_SHIFT                  (0x0)
- 
-+/* Bit definitions for the DPLL0_REF_STAT register */
-+#define DPLL_REF_STATUS_MASK              (0x1f)
-+
-+/* Bit definitions for the DPLL register */
-+#define DPLL_REF_PRIORITY_ENABLE_SHIFT       (0)
-+#define DPLL_REF_PRIORITY_REF_SHIFT          (1)
-+#define DPLL_REF_PRIORITY_GROUP_NUMBER_SHIFT (6)
-+
-+/* Bit definitions for the IN0_MON_STATUS register */
-+#define IN_MON_STATUS_LOS_SHIFT       (0)
-+#define IN_MON_STATUS_NO_ACT_SHIFT    (1)
-+#define IN_MON_STATUS_FFO_LIMIT_SHIFT (2)
-+
-+#define DEFAULT_PRIORITY_GROUP (0)
-+#define MAX_PRIORITY_GROUP     (3)
-+
-+#define MAX_REF_PRIORITIES (19)
-+
-+#define MAX_ELECTRICAL_REFERENCES (16)
-+
-+#define NO_REFERENCE (0x1f)
-+
- /*
-  * Return register address based on passed in firmware version
-  */
-@@ -778,4 +848,39 @@ enum scsr_tod_write_type_sel {
- 	SCSR_TOD_WR_TYPE_SEL_DELTA_MINUS = 2,
- 	SCSR_TOD_WR_TYPE_SEL_MAX = SCSR_TOD_WR_TYPE_SEL_DELTA_MINUS,
- };
-+
-+/* firmware interface */
-+struct idtcm_fwrc {
-+	u8 hiaddr;
-+	u8 loaddr;
-+	u8 value;
-+	u8 reserved;
-+} __packed;
-+
-+#define SET_U16_LSB(orig, val8) (orig = (0xff00 & (orig)) | (val8))
-+#define SET_U16_MSB(orig, val8) (orig = (0x00ff & (orig)) | (val8 << 8))
-+
-+#define TOD_MASK_ADDR		(0xFFA5)
-+#define DEFAULT_TOD_MASK	(0x04)
-+
-+#define TOD0_PTP_PLL_ADDR		(0xFFA8)
-+#define TOD1_PTP_PLL_ADDR		(0xFFA9)
-+#define TOD2_PTP_PLL_ADDR		(0xFFAA)
-+#define TOD3_PTP_PLL_ADDR		(0xFFAB)
-+
-+#define TOD0_OUT_ALIGN_MASK_ADDR	(0xFFB0)
-+#define TOD1_OUT_ALIGN_MASK_ADDR	(0xFFB2)
-+#define TOD2_OUT_ALIGN_MASK_ADDR	(0xFFB4)
-+#define TOD3_OUT_ALIGN_MASK_ADDR	(0xFFB6)
-+
-+#define DEFAULT_OUTPUT_MASK_PLL0	(0x003)
-+#define DEFAULT_OUTPUT_MASK_PLL1	(0x00c)
-+#define DEFAULT_OUTPUT_MASK_PLL2	(0x030)
-+#define DEFAULT_OUTPUT_MASK_PLL3	(0x0c0)
-+
-+#define DEFAULT_TOD0_PTP_PLL		(0)
-+#define DEFAULT_TOD1_PTP_PLL		(1)
-+#define DEFAULT_TOD2_PTP_PLL		(2)
-+#define DEFAULT_TOD3_PTP_PLL		(3)
-+
- #endif
--- 
-2.39.2
-
+Are you saying the edge case behavior of global swappiness and the user
+provided swappiness through memory.reclaim should remain same?
