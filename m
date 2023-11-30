@@ -2,63 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3301B7FEC35
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 10:53:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 387937FEC38
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 10:53:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235066AbjK3Jwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 04:52:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43672 "EHLO
+        id S235075AbjK3Jw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 04:52:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbjK3Jwt (ORCPT
+        with ESMTP id S235074AbjK3Jw4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 04:52:49 -0500
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 127D010C9
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 01:52:55 -0800 (PST)
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-40b472f98b1so5679805e9.3
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 01:52:55 -0800 (PST)
+        Thu, 30 Nov 2023 04:52:56 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1E4810E5
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 01:53:01 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-40b397793aaso4025475e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 01:53:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701337973; x=1701942773; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1701337980; x=1701942780; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:organization:autocrypt
          :references:to:content-language:subject:reply-to:from:user-agent
          :mime-version:date:message-id:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=ZWwZC/V0wDXbj7+U19+s2XYbHOD77Anr4368lm9EqGo=;
-        b=gdMKiOF90oV5EJriqTzsgxOH7xnnBwxwp09O3sGs+6hLXGg1A93tI93RswImuVweEU
-         UUjOWSrFnSaDKgWhlZoYLcM6vZxg3uEJ5CaahasW8So5REiOJUKiWE25omHyvtChrXzQ
-         UQoqPPIn8dMgLfDNIm3fSCpqiwYQYjmwIqPxn5b9vR1fWZWcBmPkmmGwJ/HQ3jinAW7x
-         0ZAN4HDgGhDYnWl8Td5IgyHlR+PZUzLo20LfCzBN6WSFAznmisIRBK4tnk+5JVXtcqca
-         WL+bNqV9Z3kUDGLaRWwM6BGLci+BR8k+bOSxuxu0N6a9jUUbRGLu6X2WMlFtKDvnpNV0
-         oRJw==
+        bh=VX9OtQcXfdg8VOb659Uu3GVae5kVEXsq6e2PqcBRuP8=;
+        b=OSDbyNPuxEbjuamGdmsxp/Nd9pNRqVtKBmnbsVRQ7Gk7EC9lAIeCp3rGTXyqX+wYGK
+         1bkM4ZBRg6bIvB8WNh0P2fccAnxaek6Tae6ICUOAG3cNwhSBtTSrS8vl4gyohEOF4umR
+         7GO3J7FZjlmga4qAMPjgCen4pWHEv/fKiq2dU02G+F5tBsha+qa1sQBdBPUTjwnobAVB
+         GEKT/0O1ogu0xowPI6YK4voU2HtqXdEaJYeketugQx7GFhEmKmWsC/1bxU0un+nZSQsZ
+         uSdtAsDMoIbyn9XfrDCiIRJZSOGmK4owU6YjTgUnYJmEaBMJ3xNouZkAuX9dOt9NwTHd
+         oJYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701337973; x=1701942773;
+        d=1e100.net; s=20230601; t=1701337980; x=1701942780;
         h=content-transfer-encoding:in-reply-to:organization:autocrypt
          :references:to:content-language:subject:reply-to:from:user-agent
          :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=ZWwZC/V0wDXbj7+U19+s2XYbHOD77Anr4368lm9EqGo=;
-        b=KVHN7LZFytnC9gyix6tdzyRMNfe3+E2cLMFKLzOo9TPLfwsPQ1hI8MgrE6n2XQSwGI
-         3kG4/9O3BKa/EHgZ4mSFS4ZPkEtrGFJKL1+ECNhrWuCz2YQSVi3KRf6LbN4YKsncqcX6
-         rrZ2+fJHNh5MQ07i+PXexYtenWRdiIYqa/mYT8CA/2EKf4KnRYDuC/2wjSyEXTx3dnIg
-         6opNmPq9EULaL0zRkWc4zmeuubzryYPWEFdJv7dkUDHIYIDh03+waFvP2iiaRN+HgY+c
-         ZQf5e7NcwhWNAkDaDTCSEKNuXTBqc4WVPQYFPJz9H1uIWEVMNF67UrLTetkAVRI5BCJy
-         fNJQ==
-X-Gm-Message-State: AOJu0YydgRdFP3oZTLcLAKwcBPWgRlhMV9EZxmdEWIv40o+FWtNN+jrr
-        b2Uch/PEA52BYGpVshnC1JBxZQ==
-X-Google-Smtp-Source: AGHT+IGTrAg/hwtnFBOTX6GiHM/FZmceDuyWR5BDRUvcKgMuHNpNkw29tTNc3TZ/F4WBbh95Bq14Ow==
-X-Received: by 2002:a05:600c:4447:b0:40b:3728:badb with SMTP id v7-20020a05600c444700b0040b3728badbmr14766919wmn.33.1701337973529;
-        Thu, 30 Nov 2023 01:52:53 -0800 (PST)
+        bh=VX9OtQcXfdg8VOb659Uu3GVae5kVEXsq6e2PqcBRuP8=;
+        b=SXtA7xBBt6TjlnVgrCdKsjj/BcJAPOKGsqyExBwrsqiWZRVQeNBKPMUxOnESw7tnr6
+         +1+8RRJHwRBRK2SJj55PRkL73AQkUmCWpfVglR4U47QWozhDVf31TW25CZorUKfgLCw8
+         +oXQHNIo2oodETDCKJuMo6AkL/nLkgRxIhHcQFJ07OG1F774Y9Ueu4yqG6Oui6o4guY1
+         XDDl1uayF6llBD2l0NIexpS0TamMwbyDNRn5woyDaBQdRI5ZorkQkWYwrKX35zvpUiQt
+         PCqpn0PQCuAJ3aDWogitdQpNLVVwmmG65M+TqxsomPmx6Y4VBgs8V2XQ6+ar1Zn5geQM
+         tU5Q==
+X-Gm-Message-State: AOJu0YyhhZoV6Egdy3IZXklv3TapiCjEG43sIMc6Rn4NkANQ4eGDKe6a
+        AVhE39O2QLG9dHfc5m8yyTTpcg==
+X-Google-Smtp-Source: AGHT+IHHl2mg78BXo5WweteQ1vmiNkQtS/uB8Mw5r+/FfhpNISnN4kbE+gb6c/yEJdDyK5K6Rat8hg==
+X-Received: by 2002:a05:600c:3550:b0:40b:4072:54de with SMTP id i16-20020a05600c355000b0040b407254demr12497610wmq.13.1701337980309;
+        Thu, 30 Nov 2023 01:53:00 -0800 (PST)
 Received: from ?IPV6:2a01:e0a:982:cbb0:41c9:3acd:a6e2:5242? ([2a01:e0a:982:cbb0:41c9:3acd:a6e2:5242])
-        by smtp.gmail.com with ESMTPSA id p36-20020a05600c1da400b0040b478da760sm1358964wms.48.2023.11.30.01.52.52
+        by smtp.gmail.com with ESMTPSA id p36-20020a05600c1da400b0040b478da760sm1358964wms.48.2023.11.30.01.52.59
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Nov 2023 01:52:53 -0800 (PST)
-Message-ID: <151b8a7b-062e-464e-8d8e-2dc9e1ff9dfd@linaro.org>
-Date:   Thu, 30 Nov 2023 10:52:52 +0100
+        Thu, 30 Nov 2023 01:52:59 -0800 (PST)
+Message-ID: <995fae78-0fe7-4fe3-a42b-2b9397f0d555@linaro.org>
+Date:   Thu, 30 Nov 2023 10:52:59 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 From:   Neil Armstrong <neil.armstrong@linaro.org>
 Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH 1/2] arm64: dts: qcom: sm8450: correct TX Soundwire clock
+Subject: Re: [PATCH 2/2] arm64: dts: qcom: sm8550: correct TX Soundwire clock
 Content-Language: en-US, fr
 To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
         Andy Gross <agross@kernel.org>,
@@ -71,6 +71,7 @@ To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
         linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
 References: <20231129140537.161720-1-krzysztof.kozlowski@linaro.org>
+ <20231129140537.161720-2-krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=neil.armstrong@linaro.org; keydata=
  xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
  GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
@@ -96,12 +97,12 @@ Autocrypt: addr=neil.armstrong@linaro.org; keydata=
  4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
  QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
 Organization: Linaro Developer Services
-In-Reply-To: <20231129140537.161720-1-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20231129140537.161720-2-krzysztof.kozlowski@linaro.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -116,29 +117,23 @@ On 29/11/2023 15:05, Krzysztof Kozlowski wrote:
 > clock from TX macro.  The VA macro clock is already consumed by TX macro
 > codec, thus it won't be disabled by this change.
 > 
-> Fixes: 14341e76dbc7 ("arm64: dts: qcom: sm8450: add Soundwire and LPASS")
+> Fixes: 61b006389bb7 ("arm64: dts: qcom: sm8550: add Soundwire controllers")
 > Reported-by: Neil Armstrong <neil.armstrong@linaro.org>
 > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> 
 > ---
-> 
-> Considering that in Downstream, the TX Soundwire is part of VA macro,
-> there is no clear reference code explaining this. Let's just go with
-> SC8280xp approach because it seems reasonable, but don't ask me "why".
-> ---
->   arch/arm64/boot/dts/qcom/sm8450.dtsi | 2 +-
+>   arch/arm64/boot/dts/qcom/sm8550.dtsi | 2 +-
 >   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/arch/arm64/boot/dts/qcom/sm8450.dtsi b/arch/arm64/boot/dts/qcom/sm8450.dtsi
-> index a305f8c03f9e..28207c7423f0 100644
-> --- a/arch/arm64/boot/dts/qcom/sm8450.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sm8450.dtsi
-> @@ -2314,7 +2314,7 @@ swr2: soundwire@33b0000 {
+> diff --git a/arch/arm64/boot/dts/qcom/sm8550.dtsi b/arch/arm64/boot/dts/qcom/sm8550.dtsi
+> index 52e8f4c52426..2fd3faacf554 100644
+> --- a/arch/arm64/boot/dts/qcom/sm8550.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sm8550.dtsi
+> @@ -2199,7 +2199,7 @@ swr2: soundwire@6d30000 {
+>   			interrupts = <GIC_SPI 496 IRQ_TYPE_LEVEL_HIGH>,
 >   				     <GIC_SPI 520 IRQ_TYPE_LEVEL_HIGH>;
 >   			interrupt-names = "core", "wakeup";
->   
-> -			clocks = <&vamacro>;
-> +			clocks = <&txmacro>;
+> -			clocks = <&lpass_vamacro>;
+> +			clocks = <&lpass_txmacro>;
 >   			clock-names = "iface";
 >   			label = "TX";
 >   
