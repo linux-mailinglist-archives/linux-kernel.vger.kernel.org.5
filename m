@@ -2,44 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 369B27FE6FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 03:37:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B3F17FE6F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 03:37:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344196AbjK3Chr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 21:37:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53966 "EHLO
+        id S1344153AbjK3Che (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 21:37:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344165AbjK3Chd (ORCPT
+        with ESMTP id S234979AbjK3Ch1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 21:37:33 -0500
+        Wed, 29 Nov 2023 21:37:27 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77D6E19A5
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A89619AE
         for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 18:37:00 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6135C433C8;
-        Thu, 30 Nov 2023 02:36:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B97F4C433C7;
+        Thu, 30 Nov 2023 02:36:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701311819;
-        bh=kmVvWSOSNg0jZKTITQFOc3w/RhYn3gjC0FKbwo8Ddmw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=C4We1hTaQoMBxNMxK+etK/eU9uiVFvyaqY0ailoCmXBqYoLq3x4VxXTHvAzruRkPl
-         GIfBThPTbvy6LHqAHLHlOrsBBxRuBE6DuF7vtxpZDwEmtcgV8WMHBUtepnIaqfVuSN
-         FciTuVYgZ9LBeE1nHPlrxgC0uKdeh7QZ5mxu2/bk0Fi/HPJsp3q0XmIBjcKpd4Vlhm
-         cdYR/7tvoHLGkfqfNbu4SDN2igO9d8jsqBr04crSPyTzw8/c4T+n3J9jqkb8uCMtE8
-         cfyyCOGp9t9gMQdUHJhVCFBb+/gQP9959TZq8VuPOMySRAqLrykJzUXojEIkvRckWx
-         tJ6nkSdw3KixQ==
+        s=k20201202; t=1701311820;
+        bh=jwBIjpGZD3rM6rB5XeAwkaAzirgaxde9QsDx+o7twAk=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=lydNSbh/PCoA8/EI4ar2Ec+gdsQ/sP8wLwSz7QdbaVARbRFmcMt8GRGPi/IP/KKVJ
+         jgEkE4yB4hZMmj74cPK9catW2EE5pihwR0ajHW6VG4oQM6RTKDLnssb6Cp6sM0JDX4
+         9hi7WxvY9TJyOCa3tpN4mLR+KATBlBpWQyW6yYm+m01i7SbgfkVi86kuYRAP8y2zi4
+         4l28vUQEjqnORCskD00MmdIHGPUEhUTInZkSQDht7SE5qp+2E0vLb5114Vt2IGJL3+
+         bGhmN7UA4j0SgjgVWK9WoBAhPdJOL4XuBBy9eQ2EZc2ahFIUIsQsOtFTFhRKlvy1Es
+         EeZW9IhKznzYw==
 From:   SeongJae Park <sj@kernel.org>
 To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     SeongJae Park <sj@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        David Gow <davidgow@google.com>, damon@lists.linux.dev,
-        linux-mm@kvack.org, linux-doc@vger.kernel.org,
-        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 0/9] mm/damon: let users feed and tame/auto-tune DAMOS
-Date:   Thu, 30 Nov 2023 02:36:43 +0000
-Message-Id: <20231130023652.50284-1-sj@kernel.org>
+Cc:     SeongJae Park <sj@kernel.org>, damon@lists.linux.dev,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/9] mm/damon/core: implement goal-oriented feedback-driven quota auto-tuning
+Date:   Thu, 30 Nov 2023 02:36:44 +0000
+Message-Id: <20231130023652.50284-2-sj@kernel.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231130023652.50284-1-sj@kernel.org>
+References: <20231130023652.50284-1-sj@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -52,239 +49,180 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce Aim-oriented Feedback-driven DAMOS Aggressiveness Auto-tuning.
-It makes DAMOS self-tuned with periodic simple user feedback.
+Users can effectively control the upper-limit aggressiveness of DAMOS
+schemes using the quota feature.  The quota provides best result under
+the limit by prioritizing regions based on the access pattern.  That
+said, finding the best value, which could depend on dynamic
+characteristics of the system and the workloads, is still challenging.
 
-Patchset Changelog
-==================
+Implement a simple feedback-driven tuning mechanism and use it for
+automatic tuning of DAMOS quota.  The implementation allows users to
+provide the feedback by setting a feedback score returning callback
+function.  Then DAMOS periodically calls the function back and adjusts
+the quota based on the return value of the callback and current quota
+value.
 
-From RFC
-(https://lore.kernel.org/damon/20231112194607.61399-1-sj@kernel.org/)
-- Wordsmith commit messages and cover letter
+Note that the absolute-value based time/size quotas still work as the
+maximum hard limits of the scheme's aggressiveness.  The feedback-driven
+auto-tuned quota is applied only if it is not exceeding the manually set
+maximum limits.  Same for the scheme-target access pattern and filters
+like other features.
 
-Background: DAMOS Control Difficulty
-====================================
+Signed-off-by: SeongJae Park <sj@kernel.org>
+---
+ include/linux/damon.h | 19 ++++++++++++
+ mm/damon/core.c       | 68 +++++++++++++++++++++++++++++++++++++------
+ 2 files changed, 78 insertions(+), 9 deletions(-)
 
-DAMOS helps users easily implement access pattern aware system
-operations.  However, controlling DAMOS in the wild is not that easy.
-
-The basic way for DAMOS control is specifying the target access pattern.
-In this approach, the user is assumed to well understand the access
-pattern and the characteristics of the system and the workloads.  Though
-there are useful tools for that, it takes time and effort depending on
-the complexity and the dynamicity of the system and the workloads.
-After all, the access pattern consists of three ranges, namely the size,
-the access rate, and the age of the regions.  It means users need to
-tune six parameters, which is anyway not a simple task.
-
-One of the worst cases would be DAMOS being too aggressive like a
-berserker, and therefore consuming too much system resource and making
-unwanted radical system operations.  To let users avoid such cases,
-DAMOS allows users to set the upper-limit of the schemes'
-aggressiveness, namely DAMOS quota.  DAMOS further provides its
-best-effort under the limit by prioritizing regions based on the access
-pattern of the regions.  For example, users can ask DAMOS to page out up
-to 100 MiB of memory regions per second.  Then DAMOS pages out regions
-that are not accessed for a longer time (colder) first under the limit.
-This allows users to set the target access pattern a bit naive with
-wider ranges, and focus on tuning only one parameter, the quota.  In
-other words, the number of parameters to tune can be reduced from six to
-one.
-
-Still, however, the optimum value for the quota depends on the system
-and the workloads' characteristics, so not that simple.  The number of
-parameters to tune can also increase again if the user needs to run
-multiple schemes.
-
-Aim-oriented Feedback-driven DAMOS Aggressiveness Auto Tuning
-=============================================================
-
-Users would use DAMOS since they want to achieve something with it.
-They will likely have measurable metrics representing the achievement
-and the target number of the metric like SLO, and continuously measure
-that anyway.  While the additional cost of getting the information is
-nearly zero, it could be useful for DAMOS to understand how appropriate
-its current aggressiveness is set, and adjust it on its own to make the
-metric value more close to the target.
-
-Based on this idea, we introduce a new way of tuning DAMOS with nearly
-zero additional effort, namely Aim-oriented Feedback-driven DAMOS
-Aggressiveness Auto Tuning.  It asks users to provide feedback
-representing how well DAMOS is doing relative to the users' aim.  Then
-DAMOS adjusts its aggressiveness, specifically the quota that provides
-the best effort result under the limit, based on the current level of
-the aggressiveness and the users' feedback.
-
-Implementation
---------------
-
-The implementation asks users to represent the feedback with score
-numbers.  The scores could be anything including user-space specific
-metrics including latency and throughput of special user-space
-workloads, and system metrics including free memory ratio, memory
-pressure stall time (PSI), and active to inactive LRU lists size ratio.
-The feedback scores and the aggressiveness of the given DAMOS scheme are
-assumed to be positively proportional, though.  Selecting metrics of the
-assumption is the users' responsibility.
-
-The core logic uses the below simple feedback loop algorithm to
-calculate the next aggressiveness level of the scheme from the current
-aggressiveness level and the current feedback (target_score and
-current_score).  It calculates the compensation for next aggressiveness
-as a proportion of current aggressiveness and distance to the target
-score.  As a result, it arrives at the near-goal state in a short time
-using big steps when it's far from the goal, but avoids making
-unnecessarily radical changes that could turn out to be a bad decision
-using small steps when its near to the goal.
-
-    f(n) = max(1, f(n - 1) * ((target_score - current_score) / target_score + 1))
-
-Note that the compensation value becomes negative when it's over
-achieving the goal.  That's why the feedback metric and the
-aggressiveness of the scheme should be positively proportional.  The
-distance-adaptive speed manipulation is simply applied.
-
-Example Use Cases
------------------
-
-If users want to reduce the memory footprint of the system as much as
-possible as long as the time spent for handling the resulting memory
-pressure is within a threshold, they could use DAMOS scheme that
-reclaims cold memory regions aiming for a little level of memory
-pressure stall time.
-
-If users want the active/inactive LRU lists well balanced to reduce the
-performance impact due to possible future memory pressure, they could
-use two schemes.  The first one would be set to locate hot pages in the
-active LRU list, aiming for a specific active-to-inactive LRU list size
-ratio, say, 70%.  The second one would be to locate cold pages in the
-inactive LRU list, aiming for a specific inactive-to-active LRU list
-size ratio, say, 30%.  Then, DAMOS will balance the two schemes based on
-the goal and feedback.
-
-This aim-oriented auto tuning could also be useful for general
-balancing-required access aware system operations such as system memory
-auto scaling[3] and tiered memory management[4].  These two example
-usages are not what current DAMOS implementation is already supporting,
-but require additional DAMOS action developments, though.
-
-Evaluation: subtle memory pressure aiming proactive reclamation
----------------------------------------------------------------
-
-To show if the implementation works as expected, we prepare four
-different system configurations on AWS i3.metal instances.  The first
-setup (original) runs the workload without any DAMOS scheme.  The second
-setup (not-tuned) runs the workload with a virtual address space-based
-proactive reclamation scheme that pages out memory regions that are not
-accessed for five seconds or more.  The third setup (offline-tuned) runs
-the same proactive reclamation DAMOS scheme, but after making it tuned
-for each workload offline, using our previous user-space driven
-automatic tuning approach, namely DAMOOS[1].  The fourth and final setup
-(AFDAA) runs the scheme that is the same as that of 'not-tuned' setup,
-but aims to keep 0.5% of 'some' memory pressure stall time (PSI) for the
-last 10 seconds using the aiming-oriented auto tuning.
-
-For each setup, we run realistic workloads from PARSEC3 and SPLASH-2X
-benchmark suites.  For each run, we measure RSS and runtime of the
-workload, and 'some' memory pressure stall time (PSI) of the system.  We
-repeat the runs five times and use averaged measurements.
-
-For simple comparison of the results, we normalize the measurements to
-those of 'original'.  In the case of the PSI, though, the measurement
-for 'original' was zero, so we normalize the value to that of
-'not-tuned' scheme's result.  The normalized results are shown below.
-
-            Not-tuned         Offline-tuned     AFDAA
-    RSS     0.622688178226118 0.787950678944904 0.740093483278979
-    runtime 1.11767826657912  1.0564674983585   1.0910833880499
-    PSI     1                 0.727521443794069 0.308498846350299
-
-The 'not-tuned' scheme achieves about 38.7% memory saving but incur
-about 11.7% runtime slowdown.  The 'offline-tuned' scheme achieves about
-22.2% memory saving with about 5.5% runtime slowdown.  It also achieves
-about 28.2% memory pressure stall time saving.  AFDAA achieves about 26%
-memory saving with about 9.1% runtime slowdown.  It also achieves about
-69.1% memory pressure stall time saving.  We repeat this test multiple
-times, and get consistent results.  AFDAA is now integrated in our daily
-DAMON performance test setup.
-
-Apparently the aggressiveness of 'AFDAA' setup is somewhere between
-those of 'not-tuned' and 'offline-tuned' setup, since its memory saving
-and runtime overhead are between those of the other two setups.
-Actually we set the memory pressure stall time goal aiming for this
-middle aggressiveness.  The difference in the two metrics are not
-significant, though.  However, it shows significant saving of the memory
-pressure stall time, which was the goal of the auto-tuning, over the two
-variants.  Hence, we conclude the automatic tuning is working as
-expected.
-
-Please note that the AFDAA setup is only for the evaluation, and
-therefore intentionally set a bit aggressive.  It might not be
-appropriate for production environments.
-
-The test code is also available[2], so you could reproduce it on your
-system and workloads.
-
-Patches Sequence
-================
-
-The first four patches implement the core logic and user interfaces for
-the auto tuning.  The first patch implements the core logic for the auto
-tuning, and the API for DAMOS users in the kernel space.  The second
-patch implements basic file operations of DAMON sysfs directories and
-files that will be used for setting the goals and providing the
-feedback.  The third patch connects the quota goals files inputs to the
-DAMOS core logic.  Finally the fourth patch implements a dedicated DAMOS
-sysfs command for efficiently committing the quota goals feedback.
-
-Two patches for simple tests of the logic and interfaces follow.  The
-fifth patch implements the core logic unit test.  The sixth patch
-implements a selftest for the DAMON Sysfs interface for the goals.
-
-Finally, three patches for documentation follows.  The seventh patch
-documents the design of the feature.  The eighth patch updates the API
-doc for the new sysfs files.  The final eighth patch updates the usage
-document for the features.
-
-References
-==========
-
-[1] DAOS paper:
-    https://www.amazon.science/publications/daos-data-access-aware-operating-system
-[2] Evaluation code:
-    https://github.com/damonitor/damon-tests/commit/3f884e61193f0166b8724554b6d06b0c449a712d
-[3] Memory auto scaling RFC idea:
-    https://lore.kernel.org/damon/20231112195114.61474-1-sj@kernel.org/
-[4] DAMON-based tiered memory management RFC idea:
-    https://lore.kernel.org/damon/20231112195602.61525-1-sj@kernel.org/
-
-SeongJae Park (9):
-  mm/damon/core: implement goal-oriented feedback-driven quota
-    auto-tuning
-  mm/damon/sysfs-schemes: implement files for scheme quota goals setup
-  mm/damon/sysfs-schemes: commit damos quota goals user input to DAMOS
-  mm/damon/sysfs-schemes: implement a command for scheme quota goals
-    only commit
-  mm/damon/core-test: add a unit test for the feedback loop algorithm
-  selftests/damon: test quota goals directory
-  Docs/mm/damon/design: document DAMOS quota auto tuning
-  Docs/ABI/damon: document DAMOS quota goals
-  Docs/admin-guide/mm/damon/usage: document for quota goals
-
- .../ABI/testing/sysfs-kernel-mm-damon         |  33 ++-
- Documentation/admin-guide/mm/damon/usage.rst  |  48 +++-
- Documentation/mm/damon/design.rst             |  13 +
- include/linux/damon.h                         |  19 ++
- mm/damon/core-test.h                          |  32 +++
- mm/damon/core.c                               |  68 ++++-
- mm/damon/sysfs-common.h                       |   3 +
- mm/damon/sysfs-schemes.c                      | 272 +++++++++++++++++-
- mm/damon/sysfs.c                              |  27 ++
- tools/testing/selftests/damon/sysfs.sh        |  27 ++
- 10 files changed, 517 insertions(+), 25 deletions(-)
-
-
-base-commit: b4e0245a831a402cae8634a4dc277a04830ff07a
+diff --git a/include/linux/damon.h b/include/linux/damon.h
+index ab2f17d9926b..508a262418a2 100644
+--- a/include/linux/damon.h
++++ b/include/linux/damon.h
+@@ -136,6 +136,8 @@ enum damos_action {
+  * @weight_nr_accesses:	Weight of the region's nr_accesses for prioritization.
+  * @weight_age:		Weight of the region's age for prioritization.
+  *
++ * @get_score:		Feedback function for self-tuning quota.
++ *
+  * To avoid consuming too much CPU time or IO resources for applying the
+  * &struct damos->action to large memory, DAMON allows users to set time and/or
+  * size quotas.  The quotas can be set by writing non-zero values to &ms and
+@@ -153,6 +155,17 @@ enum damos_action {
+  * You could customize the prioritization logic by setting &weight_sz,
+  * &weight_nr_accesses, and &weight_age, because monitoring operations are
+  * encouraged to respect those.
++ *
++ * If @get_score function pointer is set, DAMON calls it back and get the
++ * return value of it for every @reset_interval.  Then, DAMON adjusts the
++ * effective quota using the return value as a feedback score to the current
++ * quota, using its internal feedback loop algorithm.
++ *
++ * The feedback loop algorithem assumes the quota input and the feedback score
++ * output are in a positive proportional relationship, and the goal of the
++ * tuning is getting the feedback screo value of 10,000.  If @ms and/or @sz are
++ * set together, those work as a hard limit quota.  If neither @ms nor @sz are
++ * set, the mechanism starts from the quota of one byte.
+  */
+ struct damos_quota {
+ 	unsigned long ms;
+@@ -163,6 +176,9 @@ struct damos_quota {
+ 	unsigned int weight_nr_accesses;
+ 	unsigned int weight_age;
+ 
++	unsigned long (*get_score)(void *arg);
++	void *get_score_arg;
++
+ /* private: */
+ 	/* For throughput estimation */
+ 	unsigned long total_charged_sz;
+@@ -179,6 +195,9 @@ struct damos_quota {
+ 	/* For prioritization */
+ 	unsigned long histogram[DAMOS_MAX_SCORE + 1];
+ 	unsigned int min_score;
++
++	/* For feedback loop */
++	unsigned long esz_bp;
+ };
+ 
+ /**
+diff --git a/mm/damon/core.c b/mm/damon/core.c
+index ce1562783e7e..f91715a58dc7 100644
+--- a/mm/damon/core.c
++++ b/mm/damon/core.c
+@@ -1038,26 +1038,76 @@ static void damon_do_apply_schemes(struct damon_ctx *c,
+ 	}
+ }
+ 
+-/* Shouldn't be called if quota->ms and quota->sz are zero */
++/*
++ * damon_feed_loop_next_input() - get next input to achieve a target score.
++ * @last_input	The last input.
++ * @score	Current score that made with @last_input.
++ *
++ * Calculate next input to achieve the target score, based on the last input
++ * and current score.  Assuming the input and the score are positively
++ * proportional, calculate how much compensation should be added to or
++ * subtracted from the last input as a proportion of the last input.  Avoid
++ * next input always being zero by setting it non-zero always.  In short form
++ * (assuming support of float and signed calculations), the algorithm is as
++ * below.
++ *
++ * next_input = max(last_input * ((goal - current) / goal + 1), 1)
++ *
++ * For simple implementation, we assume the target score is always 10,000.  The
++ * caller should adjust @score for this.
++ *
++ * Returns next input that assumed to achieve the target score.
++ */
++static unsigned long damon_feed_loop_next_input(unsigned long last_input,
++		unsigned long score)
++{
++	const unsigned long goal = 10000;
++	unsigned long score_goal_diff = max(goal, score) - min(goal, score);
++	unsigned long score_goal_diff_bp = score_goal_diff * 10000 / goal;
++	unsigned long compensation = last_input * score_goal_diff_bp / 10000;
++	/* Set minimum input as 10000 to avoid compensation be zero */
++	const unsigned long min_input = 10000;
++
++	if (goal > score)
++		return last_input + compensation;
++	if (last_input > compensation + min_input)
++		return last_input - compensation;
++	return min_input;
++}
++
++/* Shouldn't be called if quota->ms, quota->sz, and quota->get_score unset */
+ static void damos_set_effective_quota(struct damos_quota *quota)
+ {
+ 	unsigned long throughput;
+ 	unsigned long esz;
+ 
+-	if (!quota->ms) {
++	if (!quota->ms && !quota->get_score) {
+ 		quota->esz = quota->sz;
+ 		return;
+ 	}
+ 
+-	if (quota->total_charged_ns)
+-		throughput = quota->total_charged_sz * 1000000 /
+-			quota->total_charged_ns;
+-	else
+-		throughput = PAGE_SIZE * 1024;
+-	esz = throughput * quota->ms;
++	if (quota->get_score) {
++		quota->esz_bp = damon_feed_loop_next_input(
++				max(quota->esz_bp, 10000UL),
++				quota->get_score(quota->get_score_arg));
++		esz = quota->esz_bp / 10000;
++	}
++
++	if (quota->ms) {
++		if (quota->total_charged_ns)
++			throughput = quota->total_charged_sz * 1000000 /
++				quota->total_charged_ns;
++		else
++			throughput = PAGE_SIZE * 1024;
++		if (quota->get_score)
++			esz = min(throughput * quota->ms, esz);
++		else
++			esz = throughput * quota->ms;
++	}
+ 
+ 	if (quota->sz && quota->sz < esz)
+ 		esz = quota->sz;
++
+ 	quota->esz = esz;
+ }
+ 
+@@ -1069,7 +1119,7 @@ static void damos_adjust_quota(struct damon_ctx *c, struct damos *s)
+ 	unsigned long cumulated_sz;
+ 	unsigned int score, max_score = 0;
+ 
+-	if (!quota->ms && !quota->sz)
++	if (!quota->ms && !quota->sz && !quota->get_score)
+ 		return;
+ 
+ 	/* New charge window starts */
 -- 
 2.34.1
 
