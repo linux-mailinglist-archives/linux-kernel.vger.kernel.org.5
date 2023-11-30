@@ -2,209 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 027B27FF349
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 16:16:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43CD97FF34E
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 16:18:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346154AbjK3PQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 10:16:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49836 "EHLO
+        id S1346176AbjK3PSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 10:18:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232062AbjK3PQb (ORCPT
+        with ESMTP id S232062AbjK3PSO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 10:16:31 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37E571B4
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 07:16:38 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DAAAC433C7;
-        Thu, 30 Nov 2023 15:16:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701357397;
-        bh=cg7d/rMg3I2RsFPBbUzQIS4hsFzEfYLgoptbAfC9TqA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jC6E0aAcM/h8zOAIvwpIVcj1iDnJtDO73UOMNtVkX+lVIb5h3XHTDFoYsvhwIz7dF
-         eOjkHqXsNH19eIAuC22YjkHD7QZ9hgtXqA1MylD8Le9wvQ+t/8KRsPQ1ejoQaLe7Ag
-         CSfRst5jB3YOMrZvG9kslP6I+rob9EuVvXNJuhTAm3wWRYrhTXPfVowVyN6RCwfqSB
-         muHrWl3/RZUJU5L8BfnJXTIR6AvYRfu0QDrMC2eXK7VTMO++DpmrzPkxjs+dJipOwQ
-         ydM8mq4Zgaf2/I9JHwXB8BUvwH/Ezry8DGpScCQaXaOOfVKgSn6ZR5VT8L8T/6623M
-         zMYxiSr5rFqEA==
-Date:   Thu, 30 Nov 2023 15:16:33 +0000
-From:   Conor Dooley <conor@kernel.org>
-To:     Anand Moon <linux.amoon@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Icenowy Zheng <uwu@icenowy.me>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        linux-amlogic@lists.infradead.org, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 1/2] dt-bindings: usb: Add the binding example for the
- Genesys Logic GL3523 hub
-Message-ID: <20231130-twig-stoning-58235b3195c8@spud>
-References: <20231130053130.21966-1-linux.amoon@gmail.com>
- <20231130053130.21966-2-linux.amoon@gmail.com>
+        Thu, 30 Nov 2023 10:18:14 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A0A410D5;
+        Thu, 30 Nov 2023 07:18:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701357500; x=1732893500;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=10fw+r5XbxUYA5SnJKr/duWs+Vhz0TMSzhkjID0W420=;
+  b=GJXFB4CbgvGFTlp8q1gPOhKjKxDUWPhtI1eIM7Hs6MLWiZ/3vPloI5Bm
+   s5e1gY0nzHcyoLQR0oyhaYXZLzG9lQ875FyIRl+hw84duB9hSxGzULvvT
+   n2QMtPO8NEZJaRIxautD330A0Gt66S3ugv3iH4kCkEMgwb6xE683ieGhY
+   Vb8MC6UX6vTKANq15azrQ9G/HLdCPhWVyYQVDR4uaZfWQqlhVUghb7TOo
+   PU9siSzGH0FeIjP3bAp+m3Jr7dJ3SVo8j/uh5/atgMsG/dfnsjnHYYj3V
+   FwYgKrhOdb6yUkgYaedbn0RdWYrYSHy9I+cGCP04CLKyUFKwX+gozrpX3
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="383734059"
+X-IronPort-AV: E=Sophos;i="6.04,239,1695711600"; 
+   d="scan'208";a="383734059"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 07:18:20 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,239,1695711600"; 
+   d="scan'208";a="17434854"
+Received: from rafaelfl-mobl.amr.corp.intel.com ([10.212.26.103])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 07:18:19 -0800
+Message-ID: <29ea34917cbfabf2b98b4957b7770683f5994873.camel@linux.intel.com>
+Subject: Re: [PATCH v10 14/14] dmaengine: idxd: Add support for device/wq
+ defaults
+From:   Tom Zanussi <tom.zanussi@linux.intel.com>
+To:     "Yu, Fenghua" <fenghua.yu@intel.com>,
+        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "vkoul@kernel.org" <vkoul@kernel.org>
+Cc:     "Jiang, Dave" <dave.jiang@intel.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        "Feghali, Wajdi K" <wajdi.k.feghali@intel.com>,
+        "Guilford, James" <james.guilford@intel.com>,
+        "Sridhar, Kanchana P" <kanchana.p.sridhar@intel.com>,
+        "Gopal, Vinodh" <vinodh.gopal@intel.com>,
+        "Cabiddu, Giovanni" <giovanni.cabiddu@intel.com>,
+        "pavel@ucw.cz" <pavel@ucw.cz>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>
+Date:   Thu, 30 Nov 2023 09:18:17 -0600
+In-Reply-To: <IA1PR11MB6097D7EE44240E62DEA9AC769B82A@IA1PR11MB6097.namprd11.prod.outlook.com>
+References: <20231127202704.1263376-1-tom.zanussi@linux.intel.com>
+         <20231127202704.1263376-15-tom.zanussi@linux.intel.com>
+         <00aa3b9f-d81e-3dc2-3fb0-bb79e16564d3@intel.com>
+         <e0d1e4441dc7976450efd07322be0fe5a7526efe.camel@linux.intel.com>
+         <IA1PR11MB6097D7EE44240E62DEA9AC769B82A@IA1PR11MB6097.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="lTL/T6EYqFtp7uZi"
-Content-Disposition: inline
-In-Reply-To: <20231130053130.21966-2-linux.amoon@gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Fenghua,
 
---lTL/T6EYqFtp7uZi
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Nov 30, 2023 at 11:01:26AM +0530, Anand Moon wrote:
-> Add the binding example for the USB3.1 Genesys Logic GL3523
-> integrates with USB 3.1 Gen 1 Super Speed and USB 2.0 High-Speed
-> hub.
+On Thu, 2023-11-30 at 00:31 +0000, Yu, Fenghua wrote:
+> Hi, Tom,
 >=20
-> For onboard hub controllers that support USB 3.x and USB 2.0 hubs
-> with shared resets and power supplies, this property is used to identify
-> the hubs with which these are shared.
+> > From: Tom Zanussi <tom.zanussi@linux.intel.com>
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/* set name to "iaa_cryp=
+to" */
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0memset(wq->name, 0, WQ_N=
+AME_SIZE + 1);
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0strscpy(wq->name, "iaa_c=
+rypto", WQ_NAME_SIZE + 1);
+> > >=20
+> > > Is strcpy(wq->name, "iaa_crypto") simpler than memset() and
+> > > strscpy()?
+> >=20
+> > That's what I originally had, but checkpatch complained about it,
+> > suggesting
+> > strscpy, so I changed it to make checkpatch happy.
 >=20
+> Why is size WQ_NAME_SIZE+1 instead of WQ_NAME_SIZE? Will
+> WQ_NAME_SIZE+1 cause mem corruption because wq->name is defined as a
+> string with WQ_NAME_SIZE?
 
-> [Conor Dooley: upgrade peer-hub description]
+No, wq->name actually is:
 
-This should not be in the commit message. Otherwise,
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+        char name[WQ_NAME_SIZE + 1];
 
-Cheers,
-Conor.
+This code is doing the same thing as elsewhere in the idxd driver
+except instead of sprintf() it uses strscpy().
 
-> Signed-off-by: Anand Moon <linux.amoon@gmail.com>
-> ---
-> v5: upgrade peer-hub description : Conor Dooley
-> [0] https://www.genesyslogic.com.tw/en/product_view.php?show=3D67 [Block =
-Diagram]
-> v4: Fix the description of peer-hub and update the commit message.
-> Schematics of the Odroid N2+
-> https://dn.odroid.com/S922X/ODROID-N2/Schematic/odroid-n2_rev0.6_20210121=
-=2Epdf
-> V3: fix the dt_binding_check error, added new example for Genesys GL3523
-> v2: added Genesys GL3523 binding
-> v1: none
-> ---
->  .../bindings/usb/genesys,gl850g.yaml          | 65 +++++++++++++++++--
->  1 file changed, 61 insertions(+), 4 deletions(-)
+> >=20
+> > >=20
+> > > > +
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/* set driver_name to "c=
+rypto" */
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0memset(wq->driver_name, =
+0, DRIVER_NAME_SIZE + 1);
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0strscpy(wq->driver_name,=
+ "crypto", DRIVER_NAME_SIZE +
+> > > > 1);
+> > >=20
+> > > Is strcpy(wq->driver_name, "crypto") simpler?
+> >=20
+> > Same here.
 >=20
-> diff --git a/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml b/=
-Documentation/devicetree/bindings/usb/genesys,gl850g.yaml
-> index ee08b9c3721f..499192ea4074 100644
-> --- a/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml
-> +++ b/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml
-> @@ -9,9 +9,6 @@ title: Genesys Logic USB hub controller
->  maintainers:
->    - Icenowy Zheng <uwu@icenowy.me>
-> =20
-> -allOf:
-> -  - $ref: usb-device.yaml#
-> -
->  properties:
->    compatible:
->      enum:
-> @@ -27,12 +24,46 @@ properties:
-> =20
->    vdd-supply:
->      description:
-> -      the regulator that provides 3.3V core power to the hub.
-> +      phandle to the regulator that provides power to the hub.
-> +
-> +  peer-hub:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description:
-> +      For onboard hub controllers that support USB 3.x and USB 2.0 hubs
-> +      with shared resets and power supplies, this property is used to id=
-entify
-> +      the hubs with which these are shared.
-> =20
->  required:
->    - compatible
->    - reg
-> =20
-> +allOf:
-> +  - $ref: usb-device.yaml#
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            enum:
-> +              - usb5e3,608
-> +    then:
-> +      properties:
-> +        peer-hub: false
-> +        vdd-supply: false
-> +        reset-gpios: true
-> +
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            enum:
-> +              - usb5e3,610
-> +              - usb5e3,620
-> +    then:
-> +      properties:
-> +        peer-hub: true
-> +        vdd-supply: true
-> +        reset-gpios: true
-> +
->  additionalProperties: false
-> =20
->  examples:
-> @@ -49,3 +80,29 @@ examples:
->              reset-gpios =3D <&pio 7 2 GPIO_ACTIVE_LOW>;
->          };
->      };
-> +
-> +  - |
-> +    #include <dt-bindings/gpio/gpio.h>
-> +    usb {
-> +        dr_mode =3D "host";
-> +        #address-cells =3D <1>;
-> +        #size-cells =3D <0>;
-> +
-> +        /* 2.0 hub on port 1 */
-> +        hub_2_0: hub@1 {
-> +            compatible =3D "usb5e3,610";
-> +            reg =3D <1>;
-> +            peer-hub =3D <&hub_3_0>;
-> +            reset-gpios =3D <&gpio 20 GPIO_ACTIVE_LOW>;
-> +            vdd-supply =3D <&vcc_5v>;
-> +        };
-> +
-> +        /* 3.1 hub on port 4 */
-> +        hub_3_0: hub@2 {
-> +            compatible =3D "usb5e3,620";
-> +            reg =3D <2>;
-> +            peer-hub =3D <&hub_2_0>;
-> +            reset-gpios =3D <&gpio 20 GPIO_ACTIVE_LOW>;
-> +            vdd-supply =3D <&vcc_5v>;
-> +        };
-> +    };
-> --=20
-> 2.42.0
+> Ditto.
 >=20
 
---lTL/T6EYqFtp7uZi
-Content-Type: application/pgp-signature; name="signature.asc"
+Same.
 
------BEGIN PGP SIGNATURE-----
+Tom
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZWinUQAKCRB4tDGHoIJi
-0oBYAP9EyD0nfaT0/sje8xRsy43bcV3tjUrZMC7tQBdSN1URWwEAj3HN3gY9KtkI
-O/bdedDkZGY3dMMNQVG2guKxWaU4+wo=
-=yrvD
------END PGP SIGNATURE-----
+> Thanks.
+>=20
+> -Fenghua
 
---lTL/T6EYqFtp7uZi--
