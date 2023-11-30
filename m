@@ -2,86 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4F907FEAF6
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 09:39:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 191D37FEAFE
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 09:40:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345013AbjK3IjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 03:39:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48954 "EHLO
+        id S1344978AbjK3Ijz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 03:39:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345007AbjK3Ii6 (ORCPT
+        with ESMTP id S1344954AbjK3Ijx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 03:38:58 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CDAF10D1
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 00:39:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701333543;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AuNrzCx4xahsS/7j/jwf4UTh/OtxU2ehfXj/9UH3fEA=;
-        b=DLjkV28tpkpl9aK8LMmiTMlbzqGfcv0yU+zLSpe2H9TCyzD7iiw2vpZQAPyiXF6kGkZrZi
-        xr3XY8UYswOuSvsCsWtumdehDW+RR4e8SXpcLeZWAKOGZbJ4brzcOxcPc4SORX+G/o9+0/
-        zsbdVv+MgXWYDxEJbUt2iPdTbbI+X1Y=
-Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
- [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-313-y74GAt-mOmOQvrKXNc6fcQ-1; Thu, 30 Nov 2023 03:39:01 -0500
-X-MC-Unique: y74GAt-mOmOQvrKXNc6fcQ-1
-Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2c8749e1c2dso7226741fa.0
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 00:39:01 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701333540; x=1701938340;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AuNrzCx4xahsS/7j/jwf4UTh/OtxU2ehfXj/9UH3fEA=;
-        b=DnH/JLE03SI1OuDaPGUrs6IxmpAptFBcp9yghpQo3l4FhPkfrcLtSA++vkHsq5Wist
-         qVsuJnADCPIwGUCXfn9y10nGAzs0jK4ARvEe01rSy9/cyOc7qTWC8tbn7nOhpVFB34au
-         tXrrO511jS6/89qxd695C5PuaS+OLvNJ4q+C2rseO+Si/Gjd3iY3/lvrtz9tp325n266
-         AbgaEKAYzYHU84rjMwVqlUkg0x3Vg4LNmjWXGPlhjGt6wDuSswpIRh1awJ61IXOKyl00
-         XJIAv8itoG5BNUQFIyEPSJeRMYbf8oOoZdQ6r8dFimNJKOb7uVesMBSrpRZwXBCSfRro
-         hztg==
-X-Gm-Message-State: AOJu0Yy/XcrVI1/sjg3yYKqu3pqlIemUoBnDKanDsZq1Jn6d+3BOD5IY
-        ldUEtx+qMhol5leFd5mlh7Sjw0gVvXkYRES5wi/KRU+C2LkB9gJ8HKXctH5rDmDSX0nuoA5cBE2
-        OrvSdmfqcqgwjdS3RFZRHxuO7
-X-Received: by 2002:a2e:9954:0:b0:2c9:ba2f:ac73 with SMTP id r20-20020a2e9954000000b002c9ba2fac73mr3934579ljj.16.1701333540460;
-        Thu, 30 Nov 2023 00:39:00 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGqjjOHOs1PQiUSVLZnqTmub+NdORBII7kxiTreMC5zM9NYNdp4AleI9xrrM5E0kPgB2RzjPA==
-X-Received: by 2002:a2e:9954:0:b0:2c9:ba2f:ac73 with SMTP id r20-20020a2e9954000000b002c9ba2fac73mr3934567ljj.16.1701333540119;
-        Thu, 30 Nov 2023 00:39:00 -0800 (PST)
-Received: from sgarzare-redhat (host-79-46-200-199.retail.telecomitalia.it. [79.46.200.199])
-        by smtp.gmail.com with ESMTPSA id v13-20020adfedcd000000b003331bd6f58esm869261wro.69.2023.11.30.00.38.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Nov 2023 00:38:59 -0800 (PST)
-Date:   Thu, 30 Nov 2023 09:38:54 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseniy Krasnov <avkrasnov@salutedevices.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        Thu, 30 Nov 2023 03:39:53 -0500
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2100.outbound.protection.outlook.com [40.107.94.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFD779A;
+        Thu, 30 Nov 2023 00:39:59 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mkouRmxDG7nDv6VJZM5IP3OhX9EgBSHEnjxIjH15ng6JxRsdsiLxgX5qVvhSiX7nGQchd9i7bB4qyzsXoc5RmtAccT0O/O1ArCgFlb+88pa4bk5dMuDylVfg/9xLy07xQE+7iVwp1k36IHbO3HV454bYmNt61C9ufSXtggWTDhkfl/mvSM/Mwe4Xkrpf/Lk4/NjiJWPU9M42dNRkA4rMKCx8tcvwaHPBOdDFOj10tN9eYxBlT8ZSCyCsAwoebXjTAktmdgq0ivsK2sGJwX/7e+Q1JHsOdxiDCYK03Ok7UXIOuLVU/Crc93K1C/Ht4x+vLg8R0RX2ZIRu5BT5kyIHow==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=yV/F29IfBt/gtR2BrPHsqcXTL1lajfnG9dJh+c70JEY=;
+ b=BmbmFvA4WUAleonWLrv9ZDM0mhvx3texp3AgvyjYdaIqbEkffnRMDSizlryB6uxft+Gzgs3NjPlwN3l1ud7AtCCBaXznOB/14OL5k0v4dwJL3R3F7jX+sY+5SPWlivRTl2aY7uiAdXQHK1//jRoLsl8ZNKaoXAvXUfmKFdzg60bpN5uep9H4Is1MWm+gpoV067txItxq1W66uGyAD5tL+BwbHn3ZnbX620DjD1D3KAzPoZ+skR9yepCVLxZUN5hP8SfpoU1gt/Ex2RQkpQwBZikMsbFmuu1JqaX4bqmiaUcWaPZoImBSiSP8s1ThOaIshU5wXpsm27Ies3hALzR6Zw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=os.amperecomputing.com; dkim=pass
+ header.d=os.amperecomputing.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=os.amperecomputing.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yV/F29IfBt/gtR2BrPHsqcXTL1lajfnG9dJh+c70JEY=;
+ b=LSsjtRFin/HjufzxrKUA4bOEhzQ8qa5r89fiIHUkb82DiozA6kTPej+0gatnr7zI0ZPfMG49cVascfp4GHHshegEvBO/9cbBFRHStx5DlOqNABSNAaqZcnD8yZ7IWQMns2LRrX5iG1ESrUFgAn8nxXQD0bSqdfxc29ZHVm0Qrho=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
+Received: from SN4PR01MB7455.prod.exchangelabs.com (2603:10b6:806:202::11) by
+ SA1PR01MB6560.prod.exchangelabs.com (2603:10b6:806:1aa::14) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7046.24; Thu, 30 Nov 2023 08:39:56 +0000
+Received: from SN4PR01MB7455.prod.exchangelabs.com
+ ([fe80::5682:1d84:171a:1d68]) by SN4PR01MB7455.prod.exchangelabs.com
+ ([fe80::5682:1d84:171a:1d68%3]) with mapi id 15.20.7025.022; Thu, 30 Nov 2023
+ 08:39:56 +0000
+Message-ID: <706506b7-a89c-4dfc-b233-be7822eb056e@os.amperecomputing.com>
+Date:   Thu, 30 Nov 2023 15:39:45 +0700
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mctp i2c: Requeue the packet when arbitration is lost
+Content-Language: en-CA
+To:     Jeremy Kerr <jk@codeconstruct.com.au>,
+        Matt Johnston <matt@codeconstruct.com.au>,
+        "David S . Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Bobby Eshleman <bobby.eshleman@bytedance.com>,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@sberdevices.ru, oxffffaa@gmail.com
-Subject: Re: [RFC PATCH v4 2/3] virtio/vsock: send credit update during
- setting SO_RCVLOWAT
-Message-ID: <cdgg4rtr6t3ez7l7vbgngmeitsmrplwg7vgpebodrxkpouh4yn@yb4aug7zergh>
-References: <20231129212519.2938875-1-avkrasnov@salutedevices.com>
- <20231129212519.2938875-3-avkrasnov@salutedevices.com>
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org,
+        Open Source Submission <patches@amperecomputing.com>
+Cc:     Phong Vo <phong@os.amperecomputing.com>,
+        Thang Nguyen <thang@os.amperecomputing.com>,
+        Dung Cao <dung@os.amperecomputing.com>
+References: <20231130075247.3078931-1-quan@os.amperecomputing.com>
+ <473048522551f1cae5273eb4cd31b732d6e33e53.camel@codeconstruct.com.au>
+From:   Quan Nguyen <quan@os.amperecomputing.com>
+In-Reply-To: <473048522551f1cae5273eb4cd31b732d6e33e53.camel@codeconstruct.com.au>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SG2P153CA0018.APCP153.PROD.OUTLOOK.COM (2603:1096::28) To
+ SN4PR01MB7455.prod.exchangelabs.com (2603:10b6:806:202::11)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20231129212519.2938875-3-avkrasnov@salutedevices.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN4PR01MB7455:EE_|SA1PR01MB6560:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1ba9933a-9f55-4a36-d22b-08dbf17fee39
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: YZF71IwKkXVJfZW1t3qAnEyI0rYCVaCICKrjyfCYfpyAMo1Q7UCjOvQjwl7yYH7FXN+KZg7umrrf28sRkW2Om4cs81Jo6+dw8dabBVaVs3pkSlyAggoe2GZZqHgY2bSdwUJNOI3Cs/WPYtPEwBsNEBYPBeGS9gpSzjweh+p4+VxocTTd3xU8rHwTPzV+JLq+AQb4fXUY0FjVezRT9RV+L5c2emkY8uyzwmsK4E5I++T6DenslMtli3Psvc+FSdFPoKpCp51x3imZZnr7A3ppVLmfDvnjUziOSNhupaUwnYIDANogNm8hnnJpCdHyDlGM4b7971Aabn3oW9Q9W+LmafI1CLoTaGHu8UxiaGDG4JyTS1r/eoYa0v4bvFw504kJ5QJJ1Jl1RMX3++UWcPh0m7rDY01tFXHG9VVlCzuzUdbDpqzLuPxmwipelsb773v6xiSNmvNEXsHqRccWxbiKrX/KdncH2o1g/3XvWSiJMFeckgNuvL4SlJ0zgypcHzQq8WeWK5MP/9IQMQgi9yJdiIVTtdHN/04j9Re9hoGFbeOOpNj4S+/LFao/UdhPylqnLnwogRopbzLj0Km++hVEEMlhvTVoMrQoDg+VRBe50qOGIEG5pNVdHJxmiH8mCGyWnC+NyeqrN2MNn3ygxeO2Gmg/vf8mPtdMBQjK/LRP/V8=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR01MB7455.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(136003)(396003)(39850400004)(346002)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(5660300002)(2906002)(6506007)(6666004)(966005)(6486002)(478600001)(4326008)(8676002)(8936002)(86362001)(31696002)(316002)(54906003)(110136005)(66476007)(66556008)(66946007)(26005)(107886003)(921008)(31686004)(83380400001)(2616005)(6512007)(202311291699003)(53546011)(38100700002)(41300700001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?clArZ2hvOUlmNXl4bEhVYkk3RjhweDVYWHZzMnNzYi92UGROb2c3R2hTNFlN?=
+ =?utf-8?B?L1VieWtFMDNtWk9WZm1sT3M3OGo5U1BNK2hoOUhueUNUSE8za1hZWXhVZ08z?=
+ =?utf-8?B?S1ZSUDdpV1hyc0w1ZFUwNDhoamhhTkZweDJWcjIyemJ1NE9hZ0ZJVnFUOThv?=
+ =?utf-8?B?Zk9LY2NMS1d6ZnVMaEtFU0x3WW9TRUIrMDRrVWFxOXR4U3AxeXpNUWRPY2NW?=
+ =?utf-8?B?RTVsdGNmMHllbVYyVWFUWFRQSWhtRXpWNkErYzJrQ0FnZVBBSXV0Q1ZZTXRK?=
+ =?utf-8?B?M1hCMnBQcythS0ZpN2hMU0VtRDJoN2dRcmJzT3lNZ1J0VDM4NjBjTWowUEtY?=
+ =?utf-8?B?Mkh4MC9WdlIxMnN4YlVUUW41YmY5bkxQekdpbExEbGdhMFJkUFA3cFVSMjAx?=
+ =?utf-8?B?OFZTS2dtRm5LWThQeUFtNWRGaTdoZGpDaExZQmczS2M1YXE0R3lXTlFPcWZN?=
+ =?utf-8?B?VGFkN0puMlVOQlZ5T1RqaDNmTzR6OGh3WVFjMTRSQnBvZ2dtNFRkRXRDMDlG?=
+ =?utf-8?B?QVR1dEZSc0dtYktMSThBYnFxeGRRQXFCTnRVT0U0V2JqMjlLcmNGb1pCTGJs?=
+ =?utf-8?B?Tlc3ZFpHUGFpWmhlSTJDdXhHeHdNZ2w4SGp6S0hMTE1zYUs1TWlZeGVxcDA0?=
+ =?utf-8?B?Yk9Jb2lORTBLME81dDl4MmFLcnYxVXRSbGFPSkxEQ2U2OGpKZTkvSVJKQ1I5?=
+ =?utf-8?B?eVBWdmNvaGRic1B6alF3NFV4bmR6QXNJVklROGZZc0J1RS9JcXVadjFicUlp?=
+ =?utf-8?B?WXBOUm5NbEhraHNRUmFiNVJENVF6NjFyY2YvMFUzcnJIaWduWDdqTkpsbDZa?=
+ =?utf-8?B?WWEvd1VNaytPL3VSU3ZCN2N2UnpqNnNQWDNKVlNYak5hc25TeGJhTnViZEhG?=
+ =?utf-8?B?dVZya0tDSVhwcFFDTDJmN2RrQ056dm1vY3F5cUx2c0dHQ201d3Y5Q092YUUx?=
+ =?utf-8?B?NjFobDFwWCsxa0lOVWtSem5Eekt0Qk1GdXJxMTNDSzhkekJZZk94dE1GNlVR?=
+ =?utf-8?B?ZVJld1dTYWJMN0trNnd0bGJZOXFOSnZrOE1OSnNiZUlkdjlrNGJocUhkdXBt?=
+ =?utf-8?B?VFdOdDhJSVpMeG43clVyRFc2Qi9zMmJCcWRhUE4wRHJ3c1ppYktCblpna2dz?=
+ =?utf-8?B?L0M5OE5BbWtXbmhmbHlpT3VHbFF4cThpdzU2MWVidVl3NE9CRU1RNWRtM0lp?=
+ =?utf-8?B?NnN5M3BTcU5kb3U2aTRKa0drdjdERW9xTVFTdE1valordUZvaU1JKzA5aFpt?=
+ =?utf-8?B?aGdWZFo5UXJMTlk3Tkp5LzdMY1RuVFgwbEhVOGpTMTYyM0NwRW1xRG5jeDdp?=
+ =?utf-8?B?Y2VVeXdsR0pQdkg4UkI0MjNVSFZnNGtueC9DMUNLZFZNT1dycXdDZlNOenZT?=
+ =?utf-8?B?dlVjMVE3SUw1REI0UXVCMVAyTHRIaERTOW9aVC94SUhyMVk1b1MrazNSRUlV?=
+ =?utf-8?B?bTFHbE5ibCtqd3QrenIrUytBQ243dE9MWGhpZjNlY2tOT0JmS1hXdWVDTEFq?=
+ =?utf-8?B?dFNxRGxsU2hmbE1BTko2Qzl5S2tPSjZtMkZzbFVkem5EM1Fhd3BoTUVzV1Nq?=
+ =?utf-8?B?UU93TlgzSW1YSmhpVURyWHJHcTdmbXhEWW84eFdyWnVsc2g2dERhUGhXVWs2?=
+ =?utf-8?B?SHZzS2N3c0hhdHord3h0Q1dsbnhPT3JMNEZmb2xyTEt3MFNFYlVWNEcyY0hp?=
+ =?utf-8?B?dGJ1RjVEVlFZNG9ybnJUVHpUaTFLRldkWE1TTjdSeDVOa3ZhdXg1NHpTNnFW?=
+ =?utf-8?B?Q1YyUGVzTTBNMkhyTkNEZVlBZEJJNStFcUI2YzhQVlBndDlmcEVPZzNZTDJx?=
+ =?utf-8?B?WWtlRnRBNHhxMkYvaVdKMUJXcDBIR29aY3E1ekFIZ3RtUWpSMzVGTFlNcHR3?=
+ =?utf-8?B?ZU1DZWxjQjFxNENJeWNPMThVRWVWQ3o4dFE0WDc2UytJdm9xejhIUWVpMEtG?=
+ =?utf-8?B?UzhOMGFVKzJWc29PU09qQXBwV3dUNldsZUFBU2pQUHFVblRiM1hUU090NU1G?=
+ =?utf-8?B?b1hJVVUrQVpaUElmMmlvK0lEdE93bFpNRmtYNkxGWCsvTm9sdDkrODZjTDZU?=
+ =?utf-8?B?L3Y4ZW1UdnBGWWVlSmU0Ry9OeXFvY0J4bHJuOVBoaEp0YkhRTkJxTmVrWnV1?=
+ =?utf-8?B?V3lZS2RMVkY2NUVVQXd5MjUvU3Qyci84Vm4rUXpQMTFmYUM3eGR0SUxBWGtH?=
+ =?utf-8?Q?7/2spUU9rCg9a4vnEONCFJs=3D?=
+X-OriginatorOrg: os.amperecomputing.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1ba9933a-9f55-4a36-d22b-08dbf17fee39
+X-MS-Exchange-CrossTenant-AuthSource: SN4PR01MB7455.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Nov 2023 08:39:56.8262
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: yS0FznNfA++d7BvfiXnhfp0xhbnZx4MwDb2837VqOiM+LdJXu1pphfZ4o/hr92kzBwK64huNxtqNvx4JZyvUcDNdhJ3/pwCQ91xppJ6/rt8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR01MB6560
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -89,138 +133,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 30, 2023 at 12:25:18AM +0300, Arseniy Krasnov wrote:
->Send credit update message when SO_RCVLOWAT is updated and it is bigger
->than number of bytes in rx queue. It is needed, because 'poll()' will
->wait until number of bytes in rx queue will be not smaller than
->SO_RCVLOWAT, so kick sender to send more data. Otherwise mutual hungup
->for tx/rx is possible: sender waits for free space and receiver is
->waiting data in 'poll()'.
->
->Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
->---
-> Changelog:
-> v1 -> v2:
->  * Update commit message by removing 'This patch adds XXX' manner.
->  * Do not initialize 'send_update' variable - set it directly during
->    first usage.
-> v3 -> v4:
->  * Fit comment in 'virtio_transport_notify_set_rcvlowat()' to 80 chars.
->
-> drivers/vhost/vsock.c                   |  3 ++-
-> include/linux/virtio_vsock.h            |  1 +
-> net/vmw_vsock/virtio_transport.c        |  3 ++-
-> net/vmw_vsock/virtio_transport_common.c | 27 +++++++++++++++++++++++++
-> net/vmw_vsock/vsock_loopback.c          |  3 ++-
-> 5 files changed, 34 insertions(+), 3 deletions(-)
->
->diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
->index f75731396b7e..c5e58a60a546 100644
->--- a/drivers/vhost/vsock.c
->+++ b/drivers/vhost/vsock.c
->@@ -449,8 +449,9 @@ static struct virtio_transport vhost_transport = {
-> 		.notify_send_pre_enqueue  = virtio_transport_notify_send_pre_enqueue,
-> 		.notify_send_post_enqueue = virtio_transport_notify_send_post_enqueue,
-> 		.notify_buffer_size       = virtio_transport_notify_buffer_size,
->+		.notify_set_rcvlowat      = virtio_transport_notify_set_rcvlowat,
->
->-		.read_skb = virtio_transport_read_skb,
->+		.read_skb = virtio_transport_read_skb
 
-I think it is better to avoid this change, so when we will need to add
-new callbacks, we don't need to edit this line again.
 
-Please avoid it also in the other place in this patch.
+On 30/11/2023 15:03, Jeremy Kerr wrote:
+> Hi Quan,
+> 
+>> If arbitration is lost, __i2c_transfer() returns -EAGAIN and the
+>> packet should be resent.
+>>
+>> Requeue the packet and increase collisions count on this case.
+> 
+> Are you sure you want to re-queue the packet here? The i2c core would
+> have already retried on arbitration loss:
+> 
+>    https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/i2c/i2c-core-base.c#n2223
+> 
+> With this change, we would be disregarding the limits in adap->retries
+> and/or adap->timeout.
+> 
 
-The rest LGTM.
+Yes, the __i2c_transfer() does try its best to send the packet but if it 
+still fail with -EAGAIN, that means it still unable to win the arbitration.
+
+Without this patch we usually see the error below. The consequence is it 
+stop and need the PLDM layer to retry when timed out, which takes time.
+
+"[   61.616210] i2c i2c-3: __i2c_transfer failed -11"
+
+With this commit, we all see the packets go through peacefully just by 
+requeueing the packets at MCTP layer and eliminated the need to retry in 
+PLDM layer which would need more time.
+
+The result in our test is as below (Note: would needs some addition 
+debug print code). I also think it is worth noting that in our setup 
+there are multiple Masters.
+
+[73183.511487] i2c i2c-3: Arbitration loss, re-queue the packet
+[73192.550519] i2c i2c-3: __i2c_transfer failed -11
+[73192.555734] i2c i2c-3: Arbitration loss, re-queue the packet
+[73207.250036] i2c i2c-3: __i2c_transfer failed -11
+[73207.255247] i2c i2c-3: Arbitration loss, re-queue the packet
+[73429.499875] i2c i2c-3: __i2c_transfer failed -11
+[73429.505116] i2c i2c-3: Arbitration loss, re-queue the packet
+[73504.672065] i2c i2c-3: __i2c_transfer failed -11
+[73504.677317] i2c i2c-3: Arbitration loss, re-queue the packet
+[73540.762984] i2c i2c-3: __i2c_transfer failed -11
+[73540.768242] i2c i2c-3: Arbitration loss, re-queue the packet
+[73631.040049] i2c i2c-3: __i2c_transfer failed -11
+[73631.045333] i2c i2c-3: Arbitration loss, re-queue the packet
+[73648.538967] i2c i2c-3: __i2c_transfer failed -11
 
 Thanks,
-Stefano
-
-> 	},
->
-> 	.send_pkt = vhost_transport_send_pkt,
->diff --git a/include/linux/virtio_vsock.h b/include/linux/virtio_vsock.h
->index ebb3ce63d64d..c82089dee0c8 100644
->--- a/include/linux/virtio_vsock.h
->+++ b/include/linux/virtio_vsock.h
->@@ -256,4 +256,5 @@ void virtio_transport_put_credit(struct 
->virtio_vsock_sock *vvs, u32 credit);
-> void virtio_transport_deliver_tap_pkt(struct sk_buff *skb);
-> int virtio_transport_purge_skbs(void *vsk, struct sk_buff_head *list);
-> int virtio_transport_read_skb(struct vsock_sock *vsk, skb_read_actor_t read_actor);
->+int virtio_transport_notify_set_rcvlowat(struct vsock_sock *vsk, int val);
-> #endif /* _LINUX_VIRTIO_VSOCK_H */
->diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
->index af5bab1acee1..8b7bb7ca8ea5 100644
->--- a/net/vmw_vsock/virtio_transport.c
->+++ b/net/vmw_vsock/virtio_transport.c
->@@ -537,8 +537,9 @@ static struct virtio_transport virtio_transport = {
-> 		.notify_send_pre_enqueue  = virtio_transport_notify_send_pre_enqueue,
-> 		.notify_send_post_enqueue = virtio_transport_notify_send_post_enqueue,
-> 		.notify_buffer_size       = virtio_transport_notify_buffer_size,
->+		.notify_set_rcvlowat      = virtio_transport_notify_set_rcvlowat,
->
->-		.read_skb = virtio_transport_read_skb,
->+		.read_skb = virtio_transport_read_skb
-> 	},
->
-> 	.send_pkt = virtio_transport_send_pkt,
->diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
->index f6dc896bf44c..1cb556ad4597 100644
->--- a/net/vmw_vsock/virtio_transport_common.c
->+++ b/net/vmw_vsock/virtio_transport_common.c
->@@ -1684,6 +1684,33 @@ int virtio_transport_read_skb(struct vsock_sock 
->*vsk, skb_read_actor_t recv_acto
-> }
-> EXPORT_SYMBOL_GPL(virtio_transport_read_skb);
->
->+int virtio_transport_notify_set_rcvlowat(struct vsock_sock *vsk, int val)
->+{
->+	struct virtio_vsock_sock *vvs = vsk->trans;
->+	bool send_update;
->+
->+	spin_lock_bh(&vvs->rx_lock);
->+
->+	/* If number of available bytes is less than new SO_RCVLOWAT value,
->+	 * kick sender to send more data, because sender may sleep in its
->+	 * 'send()' syscall waiting for enough space at our side.
->+	 */
->+	send_update = vvs->rx_bytes < val;
->+
->+	spin_unlock_bh(&vvs->rx_lock);
->+
->+	if (send_update) {
->+		int err;
->+
->+		err = virtio_transport_send_credit_update(vsk);
->+		if (err < 0)
->+			return err;
->+	}
->+
->+	return 0;
->+}
->+EXPORT_SYMBOL_GPL(virtio_transport_notify_set_rcvlowat);
->+
-> MODULE_LICENSE("GPL v2");
-> MODULE_AUTHOR("Asias He");
-> MODULE_DESCRIPTION("common code for virtio vsock");
->diff --git a/net/vmw_vsock/vsock_loopback.c b/net/vmw_vsock/vsock_loopback.c
->index 048640167411..454f69838c2a 100644
->--- a/net/vmw_vsock/vsock_loopback.c
->+++ b/net/vmw_vsock/vsock_loopback.c
->@@ -96,8 +96,9 @@ static struct virtio_transport loopback_transport = {
-> 		.notify_send_pre_enqueue  = virtio_transport_notify_send_pre_enqueue,
-> 		.notify_send_post_enqueue = virtio_transport_notify_send_post_enqueue,
-> 		.notify_buffer_size       = virtio_transport_notify_buffer_size,
->+		.notify_set_rcvlowat      = virtio_transport_notify_set_rcvlowat,
->
->-		.read_skb = virtio_transport_read_skb,
->+		.read_skb = virtio_transport_read_skb
-> 	},
->
-> 	.send_pkt = vsock_loopback_send_pkt,
->-- 
->2.25.1
->
-
+- Quan
