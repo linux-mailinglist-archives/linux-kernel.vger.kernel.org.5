@@ -2,122 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1EDB7FF331
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 16:08:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16C7D7FF334
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 16:08:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346120AbjK3PIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 10:08:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46046 "EHLO
+        id S1346149AbjK3PIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 10:08:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346053AbjK3PIJ (ORCPT
+        with ESMTP id S1346053AbjK3PIS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 10:08:09 -0500
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70709194;
-        Thu, 30 Nov 2023 07:08:15 -0800 (PST)
-Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-50bc053a9a7so1583591e87.1;
-        Thu, 30 Nov 2023 07:08:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701356894; x=1701961694; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ij6He2n7VfO2PU5CQDDnpNgiB61sX85VSjvJ1Sw1Bmk=;
-        b=hdPUlOJiI/Ff2s7sQMMrhjFnfQbj5BZ+RruxmYyMpECMP6pggVNjA4g3xtBjkMMfI5
-         H97EJmHixZFVuQjiuEOqrovzqxOCQ2M0fcirnOV1m/7G0CUSdCSQp8/byR5JqTn5KF+t
-         Bom9sygTG5UmY5y9NgsaKLqUhvAOZJDh+HPj8vBKZXdWBcoxq3sQFe0vS/5XOr3xkNm+
-         UztkkLbvEFtcDciFNC2Nk4LLn7iBEQnl4t/9kiN7G4KZXYdZ/6eazjVm0KYEz7CdquBa
-         7uJpj/Ur/vMTLlFwLgiUdQtT27WdE8TqQKiDRRBSthQmopvpitIYExtlaQQqEx1FZ0PY
-         XkAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701356894; x=1701961694;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Ij6He2n7VfO2PU5CQDDnpNgiB61sX85VSjvJ1Sw1Bmk=;
-        b=gvDI1WOLwJIAaULjAefnsovE6NUpIevOGZT435pC48JBHmzfsAKlkUl84fm5K+3Zfk
-         p2uM72xAJDjem/Y789ht8ErkQ0lPIYgwW9Hnt5zXi6puiSun9MKdBIEFGQaZpcqMFPR7
-         NdVnVEOl5QVVJBfTd9SWZXtWMZjl9GjIVE/6FBbP28HK/bidEy2iTJF3gALzZd0K//HF
-         sB/f8suMBfcBXOPZtC89fkly81y4TDJkeeiEgbN7/79yjEbjh8B7lphgQtLR/8Hde/B2
-         d9TbY+VV0xDSYK+gS6BpoKYxPXxkPt3/0w6SJfKkyXfaAyoA6f/kHgSykBgn3+/A+nZ0
-         bi4w==
-X-Gm-Message-State: AOJu0YzKAfwBqqlWR1G1X1Exfxbs24c+rhstLSTA6mDPSgTaTrjr5kvB
-        RQzaG19vay+iFm9tAbYPf/w=
-X-Google-Smtp-Source: AGHT+IFplBfPeB/2YfUE7slWK1oJxGIpl9P3JdyoKk2opcJrfaDpOQAztlmWLQTGZeiURAfWGrLRpA==
-X-Received: by 2002:a05:6512:1386:b0:50b:c96b:5e8 with SMTP id fc6-20020a056512138600b0050bc96b05e8mr3051182lfb.25.1701356893308;
-        Thu, 30 Nov 2023 07:08:13 -0800 (PST)
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id o18-20020a05600c4fd200b0040b45282f88sm5865713wmq.36.2023.11.30.07.08.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Nov 2023 07:08:12 -0800 (PST)
-From:   Colin Ian King <colin.i.king@gmail.com>
-To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] btrfs: remove shadowed declaration of variable i in for-loops
-Date:   Thu, 30 Nov 2023 15:08:11 +0000
-Message-Id: <20231130150811.2208562-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.39.2
+        Thu, 30 Nov 2023 10:08:18 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20F5C10E2
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 07:08:25 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7266C433C9;
+        Thu, 30 Nov 2023 15:08:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701356904;
+        bh=4wdwU/K0jATvkk/atcXZBxJh/WUP8EwtMGcCyE3gUeM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tlHuYFHTFVwq14ftdT6EnINBJeymXG/v3mOua2ezi5Xn/8MOP4eKlziMM0025U0YI
+         ra36o/EOTsrXsl8qcps/T5RVOwYVRMyza/+yoaqHCwulQLvtj8dtfItbvbGz2esLai
+         fa7POSmXASjbbjoANg+BhDbI0y4tDdbinq4LWgosoNxTeY9+34QySmeX9nvnAwtStF
+         ZGrJM8vMgJ5R7mOk69Sr4eldKQ53rk89r6RtuB1G6Xujb1UPPtMoLzQT2dvnQSJEkO
+         A8//ahSoj8QrVQAqRhl5o9O+oV8qY6oQK+tIEsyhYK12enynYWXwK47t9X4FuDsJjy
+         e8I/Yki3ksb+Q==
+Date:   Thu, 30 Nov 2023 15:08:18 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     JeeHeng Sia <jeeheng.sia@starfivetech.com>
+Cc:     "kernel@esmil.dk" <kernel@esmil.dk>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "krzk@kernel.org" <krzk@kernel.org>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
+        "palmer@dabbelt.com" <palmer@dabbelt.com>,
+        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+        "daniel.lezcano@linaro.org" <daniel.lezcano@linaro.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "anup@brainfault.org" <anup@brainfault.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "jirislaby@kernel.org" <jirislaby@kernel.org>,
+        "michal.simek@amd.com" <michal.simek@amd.com>,
+        Michael Zhu <michael.zhu@starfivetech.com>,
+        "drew@beagleboard.org" <drew@beagleboard.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Leyfoon Tan <leyfoon.tan@starfivetech.com>
+Subject: Re: [PATCH v2 1/6] dt-bindings: riscv: Add StarFive Dubhe compatibles
+Message-ID: <20231130-maturely-avert-e1dc87b36bbd@spud>
+References: <20231129060043.368874-1-jeeheng.sia@starfivetech.com>
+ <20231129060043.368874-2-jeeheng.sia@starfivetech.com>
+ <20231129-revisit-prefix-5327168e91f3@spud>
+ <08daada77b3e40049ef83f4eb762240c@EXMBX066.cuchost.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,TVD_SUBJ_WIPE_DEBT,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="RhPgo4Il/hPk7nxW"
+Content-Disposition: inline
+In-Reply-To: <08daada77b3e40049ef83f4eb762240c@EXMBX066.cuchost.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The variable i is declared at the start of function btrfs_qgroup_inherit
-however there are two for-loops that redeclare the variable using a C99
-declaration, causes name shadowing. I believe there is no need for this
-local scoping of i in the loop, so replace the declaration in the loops
-with assignments.
 
-Cleans up clang scan build warnings:
+--RhPgo4Il/hPk7nxW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-fs/btrfs/qgroup.c:3194:12: warning: declaration shadows a local variable [-Wshadow]
- 3194 |                 for (int i = 0; i < inherit->num_qgroups; i++) {
-      |                          ^
-fs/btrfs/qgroup.c:3089:6: note: previous declaration is here
- 3089 |         int i;
-      |             ^
-fs/btrfs/qgroup.c:3321:12: warning: declaration shadows a local variable [-Wshadow]
- 3321 |                 for (int i = 0; i < inherit->num_qgroups; i++)
-      |                          ^
-fs/btrfs/qgroup.c:3089:6: note: previous declaration is here
- 3089 |         int i;
-      |             ^
+On Thu, Nov 30, 2023 at 06:04:51AM +0000, JeeHeng Sia wrote:
+>=20
+>=20
+> > -----Original Message-----
+> > From: Conor Dooley <conor@kernel.org>
+> > Sent: Wednesday, November 29, 2023 10:46 PM
+> > To: JeeHeng Sia <jeeheng.sia@starfivetech.com>
+> > Cc: kernel@esmil.dk; robh+dt@kernel.org; krzysztof.kozlowski+dt@linaro.=
+org; krzk@kernel.org; conor+dt@kernel.org;
+> > paul.walmsley@sifive.com; palmer@dabbelt.com; aou@eecs.berkeley.edu; da=
+niel.lezcano@linaro.org; tglx@linutronix.de;
+> > anup@brainfault.org; gregkh@linuxfoundation.org; jirislaby@kernel.org; =
+michal.simek@amd.com; Michael Zhu
+> > <michael.zhu@starfivetech.com>; drew@beagleboard.org; devicetree@vger.k=
+ernel.org; linux-riscv@lists.infradead.org; linux-
+> > kernel@vger.kernel.org; Leyfoon Tan <leyfoon.tan@starfivetech.com>
+> > Subject: Re: [PATCH v2 1/6] dt-bindings: riscv: Add StarFive Dubhe comp=
+atibles
+> >=20
+> > On Wed, Nov 29, 2023 at 02:00:38PM +0800, Sia Jee Heng wrote:
+> > > Add new compatible strings for Dubhe-80 and Dubhe-90. These are
+> > > RISC-V cpu core from StarFive Technology and are used in StarFive
+> > > JH8100 SoC.
+> > >
+> > > Signed-off-by: Sia Jee Heng <jeeheng.sia@starfivetech.com>
+> > > Reviewed-by: Ley Foon Tan <leyfoon.tan@starfivetech.com>
+> > > ---
+> > >  Documentation/devicetree/bindings/riscv/cpus.yaml | 2 ++
+> > >  1 file changed, 2 insertions(+)
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/riscv/cpus.yaml b/Docu=
+mentation/devicetree/bindings/riscv/cpus.yaml
+> > > index f392e367d673..493972b29a22 100644
+> > > --- a/Documentation/devicetree/bindings/riscv/cpus.yaml
+> > > +++ b/Documentation/devicetree/bindings/riscv/cpus.yaml
+> > > @@ -48,6 +48,8 @@ properties:
+> > >                - thead,c906
+> > >                - thead,c910
+> > >                - thead,c920
+> > > +              - starfive,dubhe-80
+> > > +              - starfive,dubhe-90
+> >=20
+> > s goes before t.
+> Noted. Will fix it.
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- fs/btrfs/qgroup.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+With the re-order,
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
-diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index ce446d9d7f23..b1f93dbf468c 100644
---- a/fs/btrfs/qgroup.c
-+++ b/fs/btrfs/qgroup.c
-@@ -3191,7 +3191,7 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
- 			ret = -ENOMEM;
- 			goto out;
- 		}
--		for (int i = 0; i < inherit->num_qgroups; i++) {
-+		for (i = 0; i < inherit->num_qgroups; i++) {
- 			qlist_prealloc[i] = kzalloc(sizeof(struct btrfs_qgroup_list),
- 						    GFP_NOFS);
- 			if (!qlist_prealloc[i]) {
-@@ -3318,7 +3318,7 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
- 	if (need_rescan)
- 		qgroup_mark_inconsistent(fs_info);
- 	if (qlist_prealloc) {
--		for (int i = 0; i < inherit->num_qgroups; i++)
-+		for (i = 0; i < inherit->num_qgroups; i++)
- 			kfree(qlist_prealloc[i]);
- 		kfree(qlist_prealloc);
- 	}
--- 
-2.39.2
+Cheers,
+Conor.
 
+--RhPgo4Il/hPk7nxW
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZWilYgAKCRB4tDGHoIJi
+0iCtAP4nKPPe89Aie1cg6UtOVOK8OT9ZB+Xb/O+6Am1DPsGhWwEA5igg7/ujUZcP
+J8H/nEGTpT7wdjwt5SqaGwLxKfGUNwA=
+=R4A9
+-----END PGP SIGNATURE-----
+
+--RhPgo4Il/hPk7nxW--
