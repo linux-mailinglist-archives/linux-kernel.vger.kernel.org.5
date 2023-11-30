@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F6087FE666
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 02:49:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B43F7FE669
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 02:49:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344114AbjK3BtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 20:49:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54900 "EHLO
+        id S234929AbjK3BtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 20:49:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344040AbjK3BtI (ORCPT
+        with ESMTP id S229658AbjK3BtK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 20:49:08 -0500
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF9E510C3
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 17:49:14 -0800 (PST)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1cf89e31773so4562355ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 17:49:14 -0800 (PST)
+        Wed, 29 Nov 2023 20:49:10 -0500
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A1661A3
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 17:49:16 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1cfbda041f3so4485145ad.2
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 17:49:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1701308954; x=1701913754; darn=vger.kernel.org;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1701308956; x=1701913756; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=9z+ndca3Z6Eic7YQC0/xH8FsGWWOuYgGvNFQBkZMdF4=;
-        b=V8mUGUo8CR512jlrrhTm/DGhlocoGQ63/iu/7Xt2+y9mq0k/dPI1dGmsuk4QtbfUn7
-         5FIFfdmlm/+1h8sdKEWoGv1P4+RA+Lwh6cB+f8X2JQAptGYCeNUg19w1mdePvQCJecjl
-         OPa0paqFzA5FFojBtcuVP5BYDyBOAXQ3/4o4nibuTCse0AEpNnJu5wdPcR6H5thJVjf/
-         t95SGVLsFfCBLm420ouzFWsDZxhAXklkSv8fmRF5NHZcVeBWfVwkOUEMtnOt1HeTp15K
-         e2ZrlL5hj7t6OKoSYV4Ms1QAlYUQ4L/Sj8wgwTrko7lfEbt0TQ+TVL+PI2J0bHyXjmOo
-         10LA==
+        bh=7Jr7JkNTCoyAHbuKHVkD5XQJ6tzPUzNpAQ8g+iKdWxE=;
+        b=YpPDzzfglEuXfTgqsAREQ/UmOmzlttalzqR38FsnqnLz3f6LOaFQ5gAzk5sB324vN5
+         QzDaDxpbj1YEgJi+cOV7zyYYX2Kk1WtLf2QjuEONPY7QVQriMl5iEVSXciCM9sjuVmY8
+         TBstW97607j/i6hdGUK+hMR6Tf7aEBBQB5FxBqY/AUfKjWALA6nXmx6vJjY7XC/vTjqf
+         +Q4S+0HW1MyB3JSrehINz80CduAFhIApCg95gN1OhD4iNpqAPiF4OCwekZUEyU4l2HLm
+         noWLhuM7BXjPV91ql0p5KMdvj+HYRxglm0R0pka+Z71FAGRFpiKvSrrtK80NuGxSiYr4
+         R+gQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701308954; x=1701913754;
+        d=1e100.net; s=20230601; t=1701308956; x=1701913756;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=9z+ndca3Z6Eic7YQC0/xH8FsGWWOuYgGvNFQBkZMdF4=;
-        b=eFHEirBq1Zmek0HcQCjBlk+hTBD/zI+9YlNpLMeAecOnjDNuoDOIOyjieIv0ytjDkn
-         MZVxoIqt9Vg5HpXPjFDaSITyA9WeH+Q20H1ltFBQ6JloaALX2AnYaN3UK9yR1LLuWbJd
-         d032geoOUKk9T4t1BMl4X7shE86E4HSbrWRk2rzfNZDuQyMHKdgPNxBP6/p3Ai3WT8Hg
-         9GEj3qgZ/L5UWmfY4dbgL87oGKvMIrf4sah3LQH1zRjH160j/uvguYwB/z3MgvQ+uOVS
-         XRbX5Jvx0ISqxijeegBaREeSoo+Ub1B9Utegw0JaH5bxS5r6ltjVR4qSKdH4iJnAkxHj
-         S+vA==
-X-Gm-Message-State: AOJu0YyNIyuU94L8TSJvnrkrEYNS9uhWfB9c2CUkQFWJVzvUSygsm9IQ
-        AfVAj/HYZ31+q1JgSm1p+hsWHA==
-X-Google-Smtp-Source: AGHT+IFBN4GbO5IVrH3STjeo4NgwmKPtI5V+pg4yKuZ08Albi8y5dApuT1MLd7SBUshAcww+J5QhPw==
-X-Received: by 2002:a05:6a20:e68c:b0:18b:d344:6acd with SMTP id mz12-20020a056a20e68c00b0018bd3446acdmr20940688pzb.10.1701308954337;
-        Wed, 29 Nov 2023 17:49:14 -0800 (PST)
+        bh=7Jr7JkNTCoyAHbuKHVkD5XQJ6tzPUzNpAQ8g+iKdWxE=;
+        b=kO66z/oLqAVnDG3cgSWNSBV6cqPXVfkvHsr261dAQ2aXfLlcDdbCg4+ORWCyWgGSqZ
+         JlQ7jYoxtJG40+qh8c7OQ6hPCghoWGE+UQ3Kf9ZFbsDmfH0dfSJwbrXu1tAEEVZkjwxO
+         F+FvakyhkCLiYzH2s0yktwQlgzjhZC4d4FZyPsgFobh5lf3XZ6CAhYJCDky+LAqtCJFu
+         gIwMNwSUh2sUueMmN6Q07QX0tcM+0QlSDcxUP3Bp0LYbKVrJ32Z5gE2avAfJtN+WoJhm
+         4I3NLy4CQZmTK2Qv+Wb/v/gw6Td8P7AlRuLztwH3Fphl6bjTvpC0KwiFBLGAeMpOiEwt
+         XK0A==
+X-Gm-Message-State: AOJu0YzRVYkBtqrfeYOBrP8WVvwPx46Z8vrZeYynnji1abD5ZWh6gn4Y
+        HDgq7HMpHb0AE+/AEnLsZbRT9w==
+X-Google-Smtp-Source: AGHT+IHQc/jfjKv11FHDAZ6SssqWcsxklBpB0+uT5dFsDWyCXUV6EYlxkHDsqbFW3Z2rHO8iX8TjLw==
+X-Received: by 2002:a17:902:e74f:b0:1cf:e4d2:bdf with SMTP id p15-20020a170902e74f00b001cfe4d20bdfmr9817512plf.51.1701308955904;
+        Wed, 29 Nov 2023 17:49:15 -0800 (PST)
 Received: from [127.0.1.1] ([2601:1c2:1800:f680:9707:1e8c:3166:6a23])
-        by smtp.gmail.com with ESMTPSA id bc3-20020a170902930300b001d00b0bd306sm24455plb.251.2023.11.29.17.49.12
+        by smtp.gmail.com with ESMTPSA id bc3-20020a170902930300b001d00b0bd306sm24455plb.251.2023.11.29.17.49.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Nov 2023 17:49:14 -0800 (PST)
+        Wed, 29 Nov 2023 17:49:15 -0800 (PST)
 From:   Drew Fustini <dfustini@baylibre.com>
-Date:   Wed, 29 Nov 2023 17:48:48 -0800
-Subject: [PATCH v7 2/4] riscv: dts: thead: Add TH1520 mmc controllers and
- sdhci clock
+Date:   Wed, 29 Nov 2023 17:48:49 -0800
+Subject: [PATCH v7 3/4] riscv: dts: thead: Enable BeagleV Ahead eMMC and
+ microSD
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231129-th1520_mmc_dts-v7-2-c77fc19caa6f@baylibre.com>
+Message-Id: <20231129-th1520_mmc_dts-v7-3-c77fc19caa6f@baylibre.com>
 References: <20231129-th1520_mmc_dts-v7-0-c77fc19caa6f@baylibre.com>
 In-Reply-To: <20231129-th1520_mmc_dts-v7-0-c77fc19caa6f@baylibre.com>
 To:     Paul Walmsley <paul.walmsley@sifive.com>,
@@ -73,11 +73,11 @@ Cc:     Jason Kridner <jkridner@beagleboard.org>,
         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org, Drew Fustini <dfustini@baylibre.com>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1701308949; l=1662;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1701308949; l=1108;
  i=dfustini@baylibre.com; s=20230430; h=from:subject:message-id;
- bh=DQ96Tg/13kE5gI7pfVf4VVYmBoxlIyPSePCjjoqiwMQ=;
- b=lhspIc86lmUso+ZOw52u80IWEJIRiUBb3EeGUsj7g6D4elrcuxNiXt5OSkhbg/64cyN4LLewT
- ewwEkRNha6EBMg1QDE3n3HSu4WVX5oLoLE+/6/jvvss58AO4TPhEjJx
+ bh=x4GrcOzQSHp6HC4WBUnYJkDmvdf8pnCHmIBijw3/K20=;
+ b=22ATaiedZ7qoXu7rErPn74nYsPkB3Xum86xjFWOL/OdPNZV6jrsAtQx7tUW/pYkpE0TebmKFx
+ QJ3R6ApWzRtC9w/W/38Qwc+tU4oYlO2rQu8Cnr0Ga7klX1hTo7W2d4y
 X-Developer-Key: i=dfustini@baylibre.com; a=ed25519;
  pk=p3GKE9XFmjhwAayAHG4U108yag7V8xQVd4zJLdW0g7g=
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -89,59 +89,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add node for the SDHCI fixed clock. Add mmc0 node for the first mmc
-controller instance which is typically connected to the eMMC device.
-Add mmc1 node for the second mmc controller instance which is typically
-connected to microSD slot.
+Add mmc0 properties for the eMMC device and add mmc1 properties for
+the microSD slot. Set the frequency for the sdhci clock.
 
 Signed-off-by: Drew Fustini <dfustini@baylibre.com>
 ---
- arch/riscv/boot/dts/thead/th1520.dtsi | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
+ arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-diff --git a/arch/riscv/boot/dts/thead/th1520.dtsi b/arch/riscv/boot/dts/thead/th1520.dtsi
-index ba4d2c673ac8..af4fdcd82e0b 100644
---- a/arch/riscv/boot/dts/thead/th1520.dtsi
-+++ b/arch/riscv/boot/dts/thead/th1520.dtsi
-@@ -146,6 +146,13 @@ uart_sclk: uart-sclk-clock {
- 		#clock-cells = <0>;
- 	};
+diff --git a/arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts b/arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts
+index 70e8042c8304..b767d3f078d7 100644
+--- a/arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts
++++ b/arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts
+@@ -48,6 +48,10 @@ &apb_clk {
+ 	clock-frequency = <62500000>;
+ };
  
-+	sdhci_clk: sdhci-clock {
-+		compatible = "fixed-clock";
-+		clock-frequency = <198000000>;
-+		clock-output-names = "sdhci_clk";
-+		#clock-cells = <0>;
-+	};
++&sdhci_clk {
++	clock-frequency = <198000000>;
++};
 +
- 	soc {
- 		compatible = "simple-bus";
- 		interrupt-parent = <&plic>;
-@@ -304,6 +311,24 @@ dmac0: dma-controller@ffefc00000 {
- 			status = "disabled";
- 		};
+ &uart_sclk {
+ 	clock-frequency = <100000000>;
+ };
+@@ -56,6 +60,22 @@ &dmac0 {
+ 	status = "okay";
+ };
  
-+		mmc0: mmc@ffe7080000 {
-+			compatible = "thead,th1520-dwcmshc";
-+			reg = <0xff 0xe7080000 0x0 0x10000>;
-+			interrupts = <62 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&sdhci_clk>;
-+			clock-names = "core";
-+			status = "disabled";
-+		};
++&mmc0 {
++	bus-width = <8>;
++	max-frequency = <198000000>;
++	mmc-hs400-1_8v;
++	non-removable;
++	no-sdio;
++	no-sd;
++	status = "okay";
++};
 +
-+		mmc1: mmc@ffe7090000 {
-+			compatible = "thead,th1520-dwcmshc";
-+			reg = <0xff 0xe7090000 0x0 0x10000>;
-+			interrupts = <64 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&sdhci_clk>;
-+			clock-names = "core";
-+			status = "disabled";
-+		};
++&mmc1 {
++	bus-width = <4>;
++	max-frequency = <198000000>;
++	status = "okay";
++};
 +
- 		timer0: timer@ffefc32000 {
- 			compatible = "snps,dw-apb-timer";
- 			reg = <0xff 0xefc32000 0x0 0x14>;
+ &uart0 {
+ 	status = "okay";
+ };
 
 -- 
 2.34.1
