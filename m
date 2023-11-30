@@ -2,111 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6B657FF474
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 17:13:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E0997FF475
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 17:13:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232160AbjK3QNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 11:13:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43326 "EHLO
+        id S232098AbjK3QN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 11:13:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232228AbjK3QNR (ORCPT
+        with ESMTP id S232206AbjK3QN0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 11:13:17 -0500
-Received: from mail-4316.protonmail.ch (mail-4316.protonmail.ch [185.70.43.16])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 785C8E0;
-        Thu, 30 Nov 2023 08:13:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-        s=wb54kawzqrdgfcottrby6ge5au.protonmail; t=1701360799; x=1701619999;
-        bh=sHSho2UpIOsMXx/tNC0gKMiBZVwFgRqI0HuIM+NLNeU=;
-        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-         Message-ID:BIMI-Selector;
-        b=FHTSlkLEEUoJOyvs0Dd1pevPUNZob0se01kjNg9TYbJpNtO5B8VkDE6unM5VSEpTB
-         56zb7dVbQIMJRiyJSnKEEKEcjlUDwuBD28Vw4lx49R5NEcjYdsEUcTFXwxru1YSnd3
-         +taMKqNFYQGIjFOg2jdc7Bej7MYzVvvUwQvFQoE0DV0Sr4eMfvwLyWQk83PVEqtlSM
-         NO6xYVaf0KKuepA77A6wiLMA87EjTEkb7OYRtE15vQn6KuMXzo0VjcfkuKfhRLk68s
-         kd21+x1l0vGuQFkQgQ0jhb8qFHEiuKoobMnxxrcVIGokS+rlAK99tfZAoN5PalkmCL
-         jiGZEYQlhkbzQ==
-Date:   Thu, 30 Nov 2023 16:12:14 +0000
-To:     Theodore Ts'o <tytso@mit.edu>
-From:   Benno Lossin <benno.lossin@proton.me>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
+        Thu, 30 Nov 2023 11:13:26 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF9F410F4
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 08:13:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701360808;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=FpCx+tElFli3PJ+oneU0SXM88BJcbodDK/a7dugXEk8=;
+        b=baIVJP13w67MIpmugDykzvWlMhEjmGG+s+PctseevpeMy18ZTpuAH3FM3UFJRippnXblTw
+        viom+Qkl6N5LKp776MmreEI8UZjOfJf+evoyEZJr4KvDkT/fEjO6jLiMktnp4siVHBzq+P
+        161Hh3O84pYsZHF4+0ahzX2NHWUIUdQ=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-350-c9GEYIV5M9i-br_w5rxLiA-1; Thu,
+ 30 Nov 2023 11:13:16 -0500
+X-MC-Unique: c9GEYIV5M9i-br_w5rxLiA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C29B2280142B;
+        Thu, 30 Nov 2023 16:12:59 +0000 (UTC)
+Received: from vschneid-thinkpadt14sgen2i.remote.csb (unknown [10.39.195.45])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 08FCEC15881;
+        Thu, 30 Nov 2023 16:12:56 +0000 (UTC)
+From:   Valentin Schneider <vschneid@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Ingo Molnar <mingo@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        =?utf-8?Q?Arve_Hj=C3=B8nnev=C3=A5g?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Carlos Llamas <cmllamas@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 1/7] rust: file: add Rust abstraction for `struct file`
-Message-ID: <25TYokAJ6urAw9GygDDgCcp2mDZT42AF6l8v_u5y-0XZONnHa9kr4Tz_zh30URNuaT-8Q0JnTXgZqeAiinxPEZqzS8StBKyjizZ9e5mysS8=@proton.me>
-In-Reply-To: <20231130155846.GA534667@mit.edu>
-References: <20231129-alice-file-v1-0-f81afe8c7261@google.com> <20231129-alice-file-v1-1-f81afe8c7261@google.com> <ksVe7fwt0AVWlCOtxIOb-g34okhYeBQUiXvpWLvqfxcyWXXuUuwWEIhUHigcAXJDFRCDr8drPYD1O1VTrDhaeZQ5mVxjCJqT32-2gHozHIo=@proton.me> <2023113041-bring-vagrancy-a417@gregkh> <2gTL0hxPpSCcVa7uvDLOLcjqd_sgtacZ_6XWaEANBH9Gnz72M1JDmjcWNO9Z7UbIeWNoNqx8y-lb3MAq75pEXL6EQEIED0XLxuHvqaQ9K-g=@proton.me> <20231130155846.GA534667@mit.edu>
-Feedback-ID: 71780778:user:proton
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Phil Auld <pauld@redhat.com>,
+        Clark Williams <williams@redhat.com>,
+        Tomas Glozar <tglozar@redhat.com>
+Subject: [RFC PATCH 0/2] sched/fair: Delay throttling to kernel exit
+Date:   Thu, 30 Nov 2023 17:12:42 +0100
+Message-ID: <20231130161245.3894682-1-vschneid@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/30/23 16:58, Theodore Ts'o wrote:
-> On Thu, Nov 30, 2023 at 03:46:55PM +0000, Benno Lossin wrote:
->>>>> +    pub const O_APPEND: u32 =3D bindings::O_APPEND;
->>>>
->>>> Why do all of these constants begin with `O_`?
->>>
->>> Because that is how they are defined in the kernel in the C code.  Why
->>> would they not be the same here?
->>
->> Then why does the C side name them that way? Is it because `O_*` is
->> supposed to mean something, or is it done due to namespacing?
->=20
-> It's because these sets of constants were flags passed to the open(2)
-> system call, and so they are dictated by the POSIX specification.  So
-> O_ means that they are a set of integer values which are used by
-> open(2), and they are defined when userspace #include's the fcntl.h
-> header file.  One could consider it be namespacing --- we need to
-> distinguish these from other constants: MAY_APPEND, RWF_APPEND,
-> ESCAPE_APPEND, STATX_ATTR_APPEND, BTRFS_INODE_APPEND.
->=20
-> But it's also a convention that dates back for ***decades*** and if we
-> want code to be understandable by kernel programmers, we need to obey
-> standard kernel naming conventions.
+Hi folks
 
-I see, that makes a lot of sense. Thanks for the explanation.
+I apologize for the one-big-patch-to-rule-them-all, I tried splitting but I
+couldn't get to anything that made sense, so it's one big patch and a small
+follow-up.
 
->> In Rust we have namespacing, so we generally drop common prefixes.
->=20
-> I don't know about Rust namespacing, but in other languages, how you
-> have to especify namespaces tend to be ***far*** more verbose than
-> just adding an O_ prefix.
+TL;DR of what I'd like to hear about:
+o Is there interest in getting this in for !PREEMPT_RT reasons?
+o Any ideas on how to make cgroup migration less horrible so we can fully pop
+  out the throttled cfs_rq se's?
 
-In this case we already have the `flags` namespace, so I thought about
-just dropping the `O_` prefix altogether.
+Survives a good hour of my testing below on a 4-CPU QEMU system, but I expect
+the throttled clocks & PELT to be busted. 
+  
+Testing
+=======
 
---=20
-Cheers,
-Benno
+setup
++++++
+mount -t cgroup -o cpu none /root/cpu
+
+mkdir /root/cpu/cg0
+echo 10000 >  /root/cpu/cg0/cpu.cfs_period_us
+echo 1000 > /root/cpu/cg0/cpu.cfs_quota_us
+
+mkdir /root/cpu/cg0/cg00
+mkdir /root/cpu/cg0/cg01
+
+mkdir /root/cpu/cg0/cg00/cg000
+mkdir /root/cpu/cg0/cg00/cg001
+
+read.sh
++++++++
+while true; do cat /sys/devices/system/cpu/smt/active &>/dev/null; done
+
+repro.sh
+++++++++
+spawn() {
+    ./read.sh &
+    PID=$!
+    echo "Tracing PID${PID}"
+    echo $PID > $1
+}
+
+spawn cpu/cg0/tasks
+spawn cpu/cg0/tasks
+spawn cpu/cg0/tasks
+spawn cpu/cg0/tasks
+
+spawn cpu/cg0/cg01/tasks
+
+spawn cpu/cg0/cg00/cg000/tasks
+spawn cpu/cg0/cg00/cg001/tasks
+
+sleep 1
+
+kill $(jobs -p)
+
+Valentin Schneider (2):
+  sched/fair: Only throttle CFS tasks on return to userspace
+  sched/fair: Repurpose cfs_rq_throttled()
+
+ include/linux/sched.h |   2 +
+ kernel/sched/core.c   |   6 +-
+ kernel/sched/debug.c  |   4 +-
+ kernel/sched/fair.c   | 296 +++++++++++++++++++++++++++---------------
+ kernel/sched/sched.h  |   8 +-
+ 5 files changed, 204 insertions(+), 112 deletions(-)
+
+--
+2.41.0
+
