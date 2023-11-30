@@ -2,97 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C7DC7FEC3B
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 10:53:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27F9F7FEC4B
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 10:54:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235073AbjK3JxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 04:53:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53904 "EHLO
+        id S235081AbjK3Jyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 04:54:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbjK3JxO (ORCPT
+        with ESMTP id S235109AbjK3Jy3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 04:53:14 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02CD010E3;
-        Thu, 30 Nov 2023 01:53:21 -0800 (PST)
-Received: from localhost (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: sebastianfricke)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 0E525660734A;
-        Thu, 30 Nov 2023 09:53:19 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1701337999;
-        bh=JsvgpBm+jN736PjJX3c1tvCgfoG0+lhKgsKFQCA5mw0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ot1ulRvQCpjwK/uj8QKL57IJsxS0S+kocRXYM9NYNHPSMJs75/0FZDVnA8wMZDYmx
-         AdkvZ2p1hEVYOfeyKgIbr8GF/22+5IhRiwsXJ2QSPkSc8hFS4SnfPfBM3YJuBNZwIn
-         bgkephfNyTbI+kbl1iqrTRjHbZ4jyzN1xRZXb1mukHpymmA3uGUJ4Fvrq4+BqHe0XR
-         RsBl4SMzgV/20wEO+OSrIZ6PZQDOrgZcYrDwa38T/FcKJ1WAx0orqijVkfEtwgajYf
-         fs7/VHK8R/BRADuBtMeXmPxpp9ItmavZ8qReklR0eoLdkDeLQSltXKf+0uC4231C/L
-         6L50Hd9jnS76A==
-Date:   Thu, 30 Nov 2023 10:53:16 +0100
-From:   Sebastian Fricke <sebastian.fricke@collabora.com>
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     nas.chung@chipsnmedia.com, jackson.lee@chipsnmedia.com,
-        mchehab@kernel.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>
-Subject: Re: [PATCH -next 1/2] media: chips-media: wave5: Remove unneeded
- semicolon
-Message-ID: <20231130095316.ckchdgnblkmsdmci@basti-XPS-13-9310>
-References: <20231127005959.108764-1-yang.lee@linux.alibaba.com>
+        Thu, 30 Nov 2023 04:54:29 -0500
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B10D10EA;
+        Thu, 30 Nov 2023 01:54:34 -0800 (PST)
+X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3AU9rk7lB3442301, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
+        by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3AU9rk7lB3442301
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 30 Nov 2023 17:53:46 +0800
+Received: from RTEXDAG01.realtek.com.tw (172.21.6.100) by
+ RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.17; Thu, 30 Nov 2023 17:53:47 +0800
+Received: from RTEXH36505.realtek.com.tw (172.21.6.25) by
+ RTEXDAG01.realtek.com.tw (172.21.6.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.7; Thu, 30 Nov 2023 17:53:45 +0800
+Received: from localhost.localdomain (172.21.252.101) by
+ RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server id
+ 15.1.2375.32 via Frontend Transport; Thu, 30 Nov 2023 17:53:45 +0800
+From:   "cy.huang" <cy.huang@realtek.com>
+To:     <cy.huang@realtek.com>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        James Tai <james.tai@realtek.com>,
+        =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-realtek-soc@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2 0/3] Initial RTD1319 SoC and Realtek PymParticle EVB support
+Date:   Thu, 30 Nov 2023 17:53:34 +0800
+Message-ID: <20231130095345.24524-3-cy.huang@realtek.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20231130095345.24524-1-cy.huang@realtek.com>
+References: <20231130095345.24524-1-cy.huang@realtek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20231127005959.108764-1-yang.lee@linux.alibaba.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-KSE-ServerInfo: RTEXDAG01.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Yang,
+Hi Andreas,
 
-On 27.11.2023 08:59, Yang Li wrote:
->./drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c:95:2-3: Unneeded semicolon
+This series adds Device Trees for the Realtek RTD1319 SoC and Realtek's
+PymParticle EVB.
 
-Just pasting this line here makes the commit look a bit confusing.
-It would be enough to simply write:
+v2:
+* RTD1319 SoC and Realtek PymParticle EVB
 
-A switch statement does not require a semicolon after the closing curly
-bracket, remove it.
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: James Tai <james.tai@realtek.com>
+Cc: Andreas Färber <afaerber@suse.de>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: devicetree@vger.kernel.org
+Cc: linux-realtek-soc@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
 
-The same applies for the second patch.
+Wei Chen (1):
+  i2c: xgene-slimpro: Fix out-of-bounds bug in xgene_slimpro_i2c_xfer()
 
-Greetings,
-Sebastian
->
->Reported-by: Abaci Robot <abaci@linux.alibaba.com>
->Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=7633
->Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
->---
-> drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
->
->diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c b/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
->index f29cfa3af94a..8bbf9d10b467 100644
->--- a/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
->+++ b/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
->@@ -92,7 +92,7 @@ static int switch_state(struct vpu_instance *inst, enum vpu_instance_state state
-> 		break;
-> 	case VPU_INST_STATE_STOP:
-> 		break;
->-	};
->+	}
->
-> 	dev_dbg(inst->dev->dev, "Switch state from %s to %s.\n",
-> 		state_to_str(inst->state), state_to_str(state));
->-- 
->2.20.1.7.g153144c
->
->
+cy.huang (2):
+  dt-bindings: arm: realtek: Add Realtek Pym Particles EVB
+  arm64: dts: realtek: Add RTD1319 SoC and Realtek Pym Particles EVB
+
+-- 
+2.39.0
+
