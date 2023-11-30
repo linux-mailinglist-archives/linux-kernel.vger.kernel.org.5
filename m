@@ -2,85 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08CB47FEE04
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 12:34:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C46E7FEE00
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 12:34:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345167AbjK3LeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 06:34:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45528 "EHLO
+        id S1345158AbjK3LeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 06:34:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345156AbjK3LeU (ORCPT
+        with ESMTP id S1345156AbjK3LeB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 06:34:20 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84C4B10E3;
-        Thu, 30 Nov 2023 03:34:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=LyNe9cq/euZtRPSb3aioeZtMybHFVA3zxzbs+Z/bjGA=; b=kvYIC9LL0g1DtJPaX0R6PB3Hzs
-        WJoc77vbRw4by7nd4F36TBnJ3T4MI9wdD7aXSPOehJlXlC/pWK+8n2z0lyxmIeom49Fq14fiWDLPi
-        aeXJavXkXYJ5TXk3JFMiuM5yCmh3Z1fNGfwOqorYOzov6OJHhvEfGC6J2W+k21Mb2d45DW/SJjG55
-        hXNSu7aJ+ccY2N3V7hGH5qNtY48YsH1Ay2pRTRGIIC7nAr6OzIV4MUebHtOW2bJ8WohvfYFEEkA36
-        B5JdK+v24H1zWokWmH+erLMEiMEIgHVmGKZCY7RaZV+99vWq5oBYrsMdSM9TFbIUPH+2WK6BZszLl
-        ZhGhcUHQ==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1r8fIC-00EON3-R9; Thu, 30 Nov 2023 11:33:17 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id EE982300293; Thu, 30 Nov 2023 12:33:15 +0100 (CET)
-Date:   Thu, 30 Nov 2023 12:33:15 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Cc:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Alexander Graf <graf@amazon.com>,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        Forrest Yuan Yu <yuanyu@google.com>,
-        James Gowans <jgowans@amazon.com>,
-        James Morris <jamorris@linux.microsoft.com>,
-        John Andersen <john.s.andersen@intel.com>,
-        Marian Rotariu <marian.c.rotariu@gmail.com>,
-        Mihai =?utf-8?B?RG9uyJt1?= <mdontu@bitdefender.com>,
-        =?utf-8?B?TmljdciZb3IgQ8OuyJt1?= <nicu.citu@icloud.com>,
-        Thara Gopinath <tgopinath@microsoft.com>,
-        Trilok Soni <quic_tsoni@quicinc.com>,
-        Wei Liu <wei.liu@kernel.org>, Will Deacon <will@kernel.org>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Zahra Tarkhani <ztarkhani@microsoft.com>,
-        =?utf-8?Q?=C8=98tefan_=C8=98icleru?= <ssicleru@bitdefender.com>,
-        dev@lists.cloudhypervisor.org, kvm@vger.kernel.org,
-        linux-hardening@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, qemu-devel@nongnu.org,
-        virtualization@lists.linux-foundation.org, x86@kernel.org,
-        xen-devel@lists.xenproject.org
-Subject: Re: [RFC PATCH v2 17/19] heki: x86: Update permissions counters
- during text patching
-Message-ID: <20231130113315.GE20191@noisy.programming.kicks-ass.net>
-References: <20231113022326.24388-1-mic@digikod.net>
- <20231113022326.24388-18-mic@digikod.net>
- <20231113081929.GA16138@noisy.programming.kicks-ass.net>
- <a52d8885-43cc-4a4e-bb47-9a800070779e@linux.microsoft.com>
- <20231127200841.GZ3818@noisy.programming.kicks-ass.net>
- <ea63ae4e-e8ea-4fbf-9383-499e14de2f5e@linux.microsoft.com>
+        Thu, 30 Nov 2023 06:34:01 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21D4210CE;
+        Thu, 30 Nov 2023 03:34:06 -0800 (PST)
+Received: from pyrite.rasen.tech (h175-177-049-156.catv02.itscom.jp [175.177.49.156])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 16425276;
+        Thu, 30 Nov 2023 12:33:22 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1701344007;
+        bh=dUdQo/NnsNM0ahRbgo/sOvGeBK2fSa+ow0mpMw2kxiM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ufA17wQ07OWsddNEeEKk0rpmFotp+SrjId4NeAj9f0nM69ANSnBI6AEOrAtqDsNEq
+         NKXuDyvRnP7mJhrclRVYpchhgfyc8qhev4w3uA8yvJjWKEfRWvCj0VDewkdz8SeWBk
+         BtLIO5D62xclXqLIGt9Mv8CGzVkIii01BMPsn2eA=
+Date:   Thu, 30 Nov 2023 20:33:53 +0900
+From:   Paul Elder <paul.elder@ideasonboard.com>
+To:     Alexander Stein <alexander.stein@ew.tq-group.com>
+Cc:     Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        tomi.valkeinen@ideasonboard.com, umang.jain@ideasonboard.com,
+        Dafna Hirschfeld <dafna@fastmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] media: rkisp1: debug: Add register dump for IS
+Message-ID: <ZWhzIeW0VlDRztmS@pyrite.rasen.tech>
+References: <20231129092956.250129-1-paul.elder@ideasonboard.com>
+ <170128834260.3048548.11979514587961676400@ping.linuxembedded.co.uk>
+ <ZWhaFL48cgdHsOPN@pyrite.rasen.tech>
+ <4881112.31r3eYUQgx@steina-w>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <ea63ae4e-e8ea-4fbf-9383-499e14de2f5e@linux.microsoft.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4881112.31r3eYUQgx@steina-w>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,58 +57,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 03:07:15PM -0600, Madhavan T. Venkataraman wrote:
-
-> Kernel Lockdown
-> ---------------
+On Thu, Nov 30, 2023 at 10:54:46AM +0100, Alexander Stein wrote:
+> Hi Paul,
 > 
-> But, we must provide at least some security in V2. Otherwise, it is useless.
+> Am Donnerstag, 30. November 2023, 10:47:00 CET schrieb Paul Elder:
+> > On Wed, Nov 29, 2023 at 08:05:42PM +0000, Kieran Bingham wrote:
+> > > Quoting Paul Elder (2023-11-29 09:29:55)
+> > > 
+> > > > Add register dump for the image stabilizer module to debugfs.
+> > > 
+> > > Is the Image Stabilizer on all variants of the ISP?
+> > > 
+> > > I.e. is it valid register space on the RK3399 implementation?
+> > 
+> > Yes, it is.
 > 
-> So, we have implemented what we call a kernel lockdown. At the end of kernel
-> boot, Heki establishes permissions in the extended page table as mentioned
-> before. Also, it adds an immutable attribute for kernel text and kernel RO data.
-> Beyond that point, guest requests that attempt to modify permissions on any of
-> the immutable pages will be denied.
+> Is there some public documentation available how this ISP works? For RK3399 or 
+> i.MX8MP.
+
+Not that I'm aware of. I've been told there's some leaked documentation
+in the RK3288 (without registers), and another one for the RK3399 (with
+registers)?
+
+
+Paul
+
 > 
-> This means that features like FTrace and KProbes will not work on kernel text
-> in V2. This is a temporary limitation. Once authentication is in place, the
-> limitation will go away.
-
-So either you're saying your patch 17 / text_poke is broken (so why
-include it ?!?) or your statement above is incorrect. Pick one.
-
-
-> __text_poke()
-> 	This function is called by various features to patch text.
-> 	This calls heki_text_poke_start() and heki_text_poke_end().
+> > 
+> > > If so then:
+> > > Reviewed-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
+> > > 
+> > > > Signed-off-by: Paul Elder <paul.elder@ideasonboard.com>
+> > > > ---
+> > > > 
+> > > >  .../platform/rockchip/rkisp1/rkisp1-debug.c    | 18 ++++++++++++++++++
+> > > >  1 file changed, 18 insertions(+)
+> > > > 
+> > > > diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-debug.c
+> > > > b/drivers/media/platform/rockchip/rkisp1/rkisp1-debug.c index
+> > > > 71df3dc95e6f..f66b9754472e 100644
+> > > > --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-debug.c
+> > > > +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-debug.c
+> > > > @@ -139,6 +139,21 @@ static int rkisp1_debug_dump_mi_mp_show(struct
+> > > > seq_file *m, void *p)> > 
+> > > >  }
+> > > >  DEFINE_SHOW_ATTRIBUTE(rkisp1_debug_dump_mi_mp);
+> > > > 
+> > > > +static int rkisp1_debug_dump_is_show(struct seq_file *m, void *p)
+> > > > +{
+> > > > +       static const struct rkisp1_debug_register registers[] = {
+> > > > +               RKISP1_DEBUG_SHD_REG(ISP_IS_H_OFFS),
+> > > > +               RKISP1_DEBUG_SHD_REG(ISP_IS_V_OFFS),
+> > > > +               RKISP1_DEBUG_SHD_REG(ISP_IS_H_SIZE),
+> > > > +               RKISP1_DEBUG_SHD_REG(ISP_IS_V_SIZE),
+> > > 
+> > > I expect so as you haven't added the register macros in this series so
+> > > they must already be there ...
+> > 
+> > Yep :)
+> > 
+> > 
+> > Paul
+> > 
+> > > > +               { /* Sentinel */ },
+> > > > +       };
+> > > > +       struct rkisp1_device *rkisp1 = m->private;
+> > > > +
+> > > > +       return rkisp1_debug_dump_regs(rkisp1, m, 0, registers);
+> > > > +}
+> > > > +DEFINE_SHOW_ATTRIBUTE(rkisp1_debug_dump_is);
+> > > > +
+> > > > 
+> > > >  #define RKISP1_DEBUG_DATA_COUNT_BINS   32
+> > > >  #define RKISP1_DEBUG_DATA_COUNT_STEP   (4096 /
+> > > >  RKISP1_DEBUG_DATA_COUNT_BINS)> > 
+> > > > @@ -235,6 +250,9 @@ void rkisp1_debug_init(struct rkisp1_device *rkisp1)
+> > > > 
+> > > >         debugfs_create_file("mi_mp", 0444, regs_dir, rkisp1,
+> > > >         
+> > > >                             &rkisp1_debug_dump_mi_mp_fops);
+> > > > 
+> > > > +
+> > > > +       debugfs_create_file("is", 0444, regs_dir, rkisp1,
+> > > > +                           &rkisp1_debug_dump_is_fops);
+> > > > 
+> > > >  }
+> > > >  
+> > > >  void rkisp1_debug_cleanup(struct rkisp1_device *rkisp1)
 > 
-> 	heki_text_poke_start() is called to add write permissions to the
-> 	extended page table so that text can be patched. heki_text_poke_end()
-> 	is called to revert write permissions in the extended page table.
-
-This, if text_poke works, then static_call / jump_label / ftrace and
-everything else should work, they all rely on this.
-
-
-> Peter mentioned the following:
 > 
-> "if you want to mirror the native PTEs why don't you hook into the
-> paravirt page-table muck and get all that for free?"
+> -- 
+> TQ-Systems GmbH | Mühlstraße 2, Gut Delling | 82229 Seefeld, Germany
+> Amtsgericht München, HRB 105018
+> Geschäftsführer: Detlef Schneider, Rüdiger Stahl, Stefan Schneider
+> http://www.tq-group.com/
 > 
-> We did consider using a shadow page table kind of approach so that guest page table
-> modifications can be intercepted and reflected in the page table entry. We did not
-> do this for two reasons:
 > 
-> - there are bits in the page table entry that are not permission bits. We would like
->   the guest kernel to be able to modify them directly.
-
-This statement makes no sense.
-
-> - we cannot tell a genuine request from an attack.
-
-Why not? How is an explicit call different from an explicit call in a
-paravirt hook?
-
-From a maintenance pov we already hate paravirt with a passion, but it
-is ever so much better than sprinkling yet another pile of crap
-(heki_*) around.
