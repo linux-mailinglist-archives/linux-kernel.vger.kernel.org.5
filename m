@@ -2,69 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D84B7FE4EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 01:34:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89E847FE4DD
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 01:34:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343824AbjK3Aen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 19:34:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55944 "EHLO
+        id S1343809AbjK3AeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 19:34:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234919AbjK3Ae0 (ORCPT
+        with ESMTP id S229575AbjK3AeU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 19:34:26 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C71CD1A8;
-        Wed, 29 Nov 2023 16:34:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701304470; x=1732840470;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=Fvq6rQnvjbHJepOFAIF10O4J2wQlNccZxG6BOrZOO28=;
-  b=RP4zAgWh5pK/uXZSOlI+rPBGkulfdUupFtJ9k4znHb6DB97hBi/UVoEI
-   cDaYIsG2mFtA1j0V7Hrdyw5joiDFPMPUJT4PqUXZSHCVifMqL2JG0HjSp
-   1ZzmAvIyfuUTM1QBrZMFNd1SCp1gXdevie0viy0Cgcpj8iXFYa0vFUeAK
-   9Hk748sgbgwTDSIoz8HBAZpMyHG53gFwM3NZLWfm8L7GBgazwweML5VUb
-   NdBcFe6LhuF5vWBmoQu7M5C7sV2QoboclUKkNoUv6HM5hMac3/NUVlq7K
-   +16up7wcAGn2FNgZbvDua573F9gIT3HxDQvSRVmtAEC1Ydc5zB+qysUUt
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="392990629"
-X-IronPort-AV: E=Sophos;i="6.04,237,1695711600"; 
-   d="scan'208";a="392990629"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 16:34:27 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="762499575"
-X-IronPort-AV: E=Sophos;i="6.04,237,1695711600"; 
-   d="scan'208";a="762499575"
-Received: from agluck-desk3.sc.intel.com ([172.25.222.74])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 16:34:26 -0800
-From:   Tony Luck <tony.luck@intel.com>
-To:     Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Peter Newman <peternewman@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <skhan@linuxfoundation.org>, x86@kernel.org
-Cc:     Shaopeng Tan <tan.shaopeng@fujitsu.com>,
-        James Morse <james.morse@arm.com>,
-        Jamie Iles <quic_jiles@quicinc.com>,
-        Babu Moger <babu.moger@amd.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        patches@lists.linux.dev, Tony Luck <tony.luck@intel.com>,
-        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>
-Subject: [PATCH v12 3/8] x86/resctrl: Prepare for different scope for control/monitor operations
-Date:   Wed, 29 Nov 2023 16:34:13 -0800
-Message-ID: <20231130003418.89964-4-tony.luck@intel.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231130003418.89964-1-tony.luck@intel.com>
-References: <20231109230915.73600-1-tony.luck@intel.com>
- <20231130003418.89964-1-tony.luck@intel.com>
+        Wed, 29 Nov 2023 19:34:20 -0500
+Received: from mail-ua1-x936.google.com (mail-ua1-x936.google.com [IPv6:2607:f8b0:4864:20::936])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5DF1BC
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 16:34:25 -0800 (PST)
+Received: by mail-ua1-x936.google.com with SMTP id a1e0cc1a2514c-7c461a8684fso105592241.2
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 16:34:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701304465; x=1701909265; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4iE0EOVY/boKVVt75az+2H2IylfQ/rY8ywinKA1Q3dE=;
+        b=JXasDpFpFiLlrs8xDemj+k+wjAiydnMAiz3o6X5tH9SyI82kmVyUCyvHa+R9saIfqV
+         bwhvd1Zd/qXv+p2rmtbxYnoYkopKV8crhnXHEcHAx9NMPxGis7AD4G4IIGU71gclYrSa
+         7AhIqrl29EsDmmdlJkae1DJaHA8br7MZoQV7OvP6c3gPciFSMC2ImkQ+BwvnY5nZwQS7
+         wVF0dRmSv3djUEGVF8JU+U+Ufumlcfjn4bD3aGV9uWWbOj2TSSJrYz4liRxzI/pqV4BG
+         3W46+Vyl3FP6IwhOIbAD3yC9x+UACh43qceOB3zBiqTiaWWj7Ec3RHlUNk8r92Ja5NL3
+         YLGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701304465; x=1701909265;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4iE0EOVY/boKVVt75az+2H2IylfQ/rY8ywinKA1Q3dE=;
+        b=iFnXXaxnqc3wJnnzzxzsWaQ0Z4+PF4Qa0l3H7zCcx5sEMf1Ob8hM07adbSI06ZbMNX
+         YCXfg1ZBM6e+oDfrRHmv1BKU0B+WnHPIitqele+eP8zgWZ+qnN3Xj8ca7Nx3nbtUTylH
+         GNt0G8wktqTcB9uM1aCKGyY/2ZNxP40M3/k3u2zXMgnhYCdlHqOZKBJVPsdenn4LEt/D
+         fxHQeGkNsOdtsom/R2X7kI5/gVBWKaz2w9tAbBmb8P8MGOiCyI4lwbN93jpw1HI3uNL4
+         HU0YdWwqc8fzuPGHtCWgDy2uJUsIUJJJ6xCPZGwf0tbSEKAq2BzXNOWCHMchjYDRV0NG
+         hPIg==
+X-Gm-Message-State: AOJu0YxmAOPb+v2YZsqH096cDr3CHhWOfLG5Yp2xfbm3dDfMAoj4aC31
+        mfnJY/SImZOkM5fcijotgPpx/w8Gxabptv2sHJk=
+X-Google-Smtp-Source: AGHT+IH/7TiXtW+dJCvD+hegyntTLRvMUl/FFmAv+2SlmPHJ0VgdYi2kHtEuesXQ3+WWHl2KBOhCT+zweurmoUcAGEM=
+X-Received: by 2002:ac5:c386:0:b0:4ab:f099:17ad with SMTP id
+ s6-20020ac5c386000000b004abf09917admr19420175vkk.9.1701304464688; Wed, 29 Nov
+ 2023 16:34:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+References: <20231115163018.1303287-2-ryan.roberts@arm.com>
+ <20231127055414.9015-1-v-songbaohua@oppo.com> <755343a1-ce94-4d38-8317-0925e2dae3bc@arm.com>
+ <CAGsJ_4z_ftxvG-EcTe=X+Te8fNSShhVHHPvbEgAa1rQXgO5XCA@mail.gmail.com>
+ <a43d8da8-d902-440c-aa64-df78fa4e185d@arm.com> <CAGsJ_4w9E_90Bs9kWP1HWmKsknszw2i=Vtarj0UGD80yNpt5mw@mail.gmail.com>
+ <02d85331-eaa0-4d76-a3d6-ea5eb18b683c@arm.com> <CAGsJ_4zDZb93bKMmhRn_V3a_PR11xKkaYkdxZW2ZsO6zNNj0Kw@mail.gmail.com>
+ <b485e908-770b-4cd9-8e45-b9107a581ae8@arm.com>
+In-Reply-To: <b485e908-770b-4cd9-8e45-b9107a581ae8@arm.com>
+From:   Barry Song <21cnbao@gmail.com>
+Date:   Thu, 30 Nov 2023 13:34:13 +1300
+Message-ID: <CAGsJ_4wXawhY5OsjjZUkgaBwXeFeBbcZa5NcsWETgXty=iogJg@mail.gmail.com>
+Subject: Re: [PATCH v2 01/14] mm: Batch-copy PTE ranges during fork()
+To:     Ryan Roberts <ryan.roberts@arm.com>
+Cc:     akpm@linux-foundation.org, andreyknvl@gmail.com,
+        anshuman.khandual@arm.com, ardb@kernel.org,
+        catalin.marinas@arm.com, david@redhat.com, dvyukov@google.com,
+        glider@google.com, james.morse@arm.com, jhubbard@nvidia.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, mark.rutland@arm.com, maz@kernel.org,
+        oliver.upton@linux.dev, ryabinin.a.a@gmail.com,
+        suzuki.poulose@arm.com, vincenzo.frascino@arm.com,
+        wangkefeng.wang@huawei.com, will@kernel.org, willy@infradead.org,
+        yuzenghui@huawei.com, yuzhao@google.com, ziy@nvidia.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,770 +82,351 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Resctrl assumes that control and monitor operations on a resource are
-performed at the same scope.
+On Thu, Nov 30, 2023 at 3:07=E2=80=AFAM Ryan Roberts <ryan.roberts@arm.com>=
+ wrote:
+>
+> On 29/11/2023 13:09, Barry Song wrote:
+> > On Thu, Nov 30, 2023 at 1:29=E2=80=AFAM Ryan Roberts <ryan.roberts@arm.=
+com> wrote:
+> >>
+> >> On 28/11/2023 19:00, Barry Song wrote:
+> >>> On Wed, Nov 29, 2023 at 12:00=E2=80=AFAM Ryan Roberts <ryan.roberts@a=
+rm.com> wrote:
+> >>>>
+> >>>> On 28/11/2023 00:11, Barry Song wrote:
+> >>>>> On Mon, Nov 27, 2023 at 10:24=E2=80=AFPM Ryan Roberts <ryan.roberts=
+@arm.com> wrote:
+> >>>>>>
+> >>>>>> On 27/11/2023 05:54, Barry Song wrote:
+> >>>>>>>> +copy_present_ptes(struct vm_area_struct *dst_vma, struct vm_are=
+a_struct *src_vma,
+> >>>>>>>> +              pte_t *dst_pte, pte_t *src_pte,
+> >>>>>>>> +              unsigned long addr, unsigned long end,
+> >>>>>>>> +              int *rss, struct folio **prealloc)
+> >>>>>>>>  {
+> >>>>>>>>      struct mm_struct *src_mm =3D src_vma->vm_mm;
+> >>>>>>>>      unsigned long vm_flags =3D src_vma->vm_flags;
+> >>>>>>>>      pte_t pte =3D ptep_get(src_pte);
+> >>>>>>>>      struct page *page;
+> >>>>>>>>      struct folio *folio;
+> >>>>>>>> +    int nr =3D 1;
+> >>>>>>>> +    bool anon;
+> >>>>>>>> +    bool any_dirty =3D pte_dirty(pte);
+> >>>>>>>> +    int i;
+> >>>>>>>>
+> >>>>>>>>      page =3D vm_normal_page(src_vma, addr, pte);
+> >>>>>>>> -    if (page)
+> >>>>>>>> +    if (page) {
+> >>>>>>>>              folio =3D page_folio(page);
+> >>>>>>>> -    if (page && folio_test_anon(folio)) {
+> >>>>>>>> -            /*
+> >>>>>>>> -             * If this page may have been pinned by the parent =
+process,
+> >>>>>>>> -             * copy the page immediately for the child so that =
+we'll always
+> >>>>>>>> -             * guarantee the pinned page won't be randomly repl=
+aced in the
+> >>>>>>>> -             * future.
+> >>>>>>>> -             */
+> >>>>>>>> -            folio_get(folio);
+> >>>>>>>> -            if (unlikely(page_try_dup_anon_rmap(page, false, sr=
+c_vma))) {
+> >>>>>>>> -                    /* Page may be pinned, we have to copy. */
+> >>>>>>>> -                    folio_put(folio);
+> >>>>>>>> -                    return copy_present_page(dst_vma, src_vma, =
+dst_pte, src_pte,
+> >>>>>>>> -                                             addr, rss, preallo=
+c, page);
+> >>>>>>>> +            anon =3D folio_test_anon(folio);
+> >>>>>>>> +            nr =3D folio_nr_pages_cont_mapped(folio, page, src_=
+pte, addr,
+> >>>>>>>> +                                            end, pte, &any_dirt=
+y);
+> >>>>>>>
+> >>>>>>> in case we have a large folio with 16 CONTPTE basepages, and user=
+space
+> >>>>>>> do madvise(addr + 4KB * 5, DONTNEED);
+> >>>>>>
+> >>>>>> nit: if you are offsetting by 5 pages from addr, then below I thin=
+k you mean
+> >>>>>> page0~page4 and page6~15?
+> >>>>>>
+> >>>>>>>
+> >>>>>>> thus, the 4th basepage of PTE becomes PTE_NONE and folio_nr_pages=
+_cont_mapped()
+> >>>>>>> will return 15. in this case, we should copy page0~page3 and page=
+5~page15.
+> >>>>>>
+> >>>>>> No I don't think folio_nr_pages_cont_mapped() will return 15; that=
+'s certainly
+> >>>>>> not how its intended to work. The function is scanning forwards fr=
+om the current
+> >>>>>> pte until it finds the first pte that does not fit in the batch - =
+either because
+> >>>>>> it maps a PFN that is not contiguous, or because the permissions a=
+re different
+> >>>>>> (although this is being relaxed a bit; see conversation with David=
+H against this
+> >>>>>> same patch).
+> >>>>>>
+> >>>>>> So the first time through this loop, folio_nr_pages_cont_mapped() =
+will return 5,
+> >>>>>> (page0~page4) then the next time through the loop we will go throu=
+gh the
+> >>>>>> !present path and process the single swap marker. Then the 3rd tim=
+e through the
+> >>>>>> loop folio_nr_pages_cont_mapped() will return 10.
+> >>>>>
+> >>>>> one case we have met by running hundreds of real phones is as below=
+,
+> >>>>>
+> >>>>>
+> >>>>> static int
+> >>>>> copy_pte_range(struct vm_area_struct *dst_vma, struct vm_area_struc=
+t *src_vma,
+> >>>>>                pmd_t *dst_pmd, pmd_t *src_pmd, unsigned long addr,
+> >>>>>                unsigned long end)
+> >>>>> {
+> >>>>>         ...
+> >>>>>         dst_pte =3D pte_alloc_map_lock(dst_mm, dst_pmd, addr, &dst_=
+ptl);
+> >>>>>         if (!dst_pte) {
+> >>>>>                 ret =3D -ENOMEM;
+> >>>>>                 goto out;
+> >>>>>         }
+> >>>>>         src_pte =3D pte_offset_map_nolock(src_mm, src_pmd, addr, &s=
+rc_ptl);
+> >>>>>         if (!src_pte) {
+> >>>>>                 pte_unmap_unlock(dst_pte, dst_ptl);
+> >>>>>                 /* ret =3D=3D 0 */
+> >>>>>                 goto out;
+> >>>>>         }
+> >>>>>         spin_lock_nested(src_ptl, SINGLE_DEPTH_NESTING);
+> >>>>>         orig_src_pte =3D src_pte;
+> >>>>>         orig_dst_pte =3D dst_pte;
+> >>>>>         arch_enter_lazy_mmu_mode();
+> >>>>>
+> >>>>>         do {
+> >>>>>                 /*
+> >>>>>                  * We are holding two locks at this point - either =
+of them
+> >>>>>                  * could generate latencies in another task on anot=
+her CPU.
+> >>>>>                  */
+> >>>>>                 if (progress >=3D 32) {
+> >>>>>                         progress =3D 0;
+> >>>>>                         if (need_resched() ||
+> >>>>>                             spin_needbreak(src_ptl) || spin_needbre=
+ak(dst_ptl))
+> >>>>>                                 break;
+> >>>>>                 }
+> >>>>>                 ptent =3D ptep_get(src_pte);
+> >>>>>                 if (pte_none(ptent)) {
+> >>>>>                         progress++;
+> >>>>>                         continue;
+> >>>>>                 }
+> >>>>>
+> >>>>> the above iteration can break when progress > =3D32. for example, a=
+t the
+> >>>>> beginning,
+> >>>>> if all PTEs are none, we break when progress >=3D32, and we break w=
+hen we
+> >>>>> are in the 8th pte of 16PTEs which might become CONTPTE after we re=
+lease
+> >>>>> PTL.
+> >>>>>
+> >>>>> since we are releasing PTLs, next time when we get PTL, those pte_n=
+one() might
+> >>>>> become pte_cont(), then are you going to copy CONTPTE from 8th pte,
+> >>>>> thus, immediately
+> >>>>> break the consistent CONPTEs rule of hardware?
+> >>>>>
+> >>>>> pte0 - pte_none
+> >>>>> pte1 - pte_none
+> >>>>> ...
+> >>>>> pte7 - pte_none
+> >>>>>
+> >>>>> pte8 - pte_cont
+> >>>>> ...
+> >>>>> pte15 - pte_cont
+> >>>>>
+> >>>>> so we did some modification to avoid a break in the middle of PTEs
+> >>>>> which can potentially
+> >>>>> become CONTPE.
+> >>>>> do {
+> >>>>>                 /*
+> >>>>>                 * We are holding two locks at this point - either o=
+f them
+> >>>>>                 * could generate latencies in another task on anoth=
+er CPU.
+> >>>>>                 */
+> >>>>>                 if (progress >=3D 32) {
+> >>>>>                                 progress =3D 0;
+> >>>>> #ifdef CONFIG_CONT_PTE_HUGEPAGE
+> >>>>>                 /*
+> >>>>>                 * XXX: don't release ptl at an unligned address as
+> >>>>> cont_pte might form while
+> >>>>>                 * ptl is released, this causes double-map
+> >>>>>                 */
+> >>>>>                 if (!vma_is_chp_anonymous(src_vma) ||
+> >>>>>                    (vma_is_chp_anonymous(src_vma) && IS_ALIGNED(add=
+r,
+> >>>>> HPAGE_CONT_PTE_SIZE)))
+> >>>>> #endif
+> >>>>>                 if (need_resched() ||
+> >>>>>                    spin_needbreak(src_ptl) || spin_needbreak(dst_pt=
+l))
+> >>>>>                                 break;
+> >>>>> }
+> >>>>>
+> >>>>> We could only reproduce the above issue by running thousands of pho=
+nes.
+> >>>>>
+> >>>>> Does your code survive from this problem?
+> >>>>
+> >>>> Yes I'm confident my code is safe against this; as I said before, th=
+e CONT_PTE
+> >>>> bit is not blindly "copied" from parent to child pte. As far as the =
+core-mm is
+> >>>> concerned, there is no CONT_PTE bit; they are just regular PTEs. So =
+the code
+> >>>> will see some pte_none() entries followed by some pte_present() entr=
+ies. And
+> >>>> when calling set_ptes() on the child, the arch code will evaluate th=
+e current
+> >>>> state of the pgtable along with the new set_ptes() request and deter=
+mine where
+> >>>> it should insert the CONT_PTE bit.
+> >>>
+> >>> yep, i have read very carefully and think your code is safe here. The
+> >>> only problem
+> >>> is that the code can randomly unfold parent processes' CONPTE while s=
+etting
+> >>> wrprotect in the middle of a large folio while it actually should kee=
+p CONT
+> >>> bit as all PTEs can be still consistent if we set protect from the 1s=
+t PTE.
+> >>>
+> >>> while A forks B,  progress >=3D 32 might interrupt in the middle of a
+> >>> new CONTPTE folio which is forming, as we have to set wrprotect to pa=
+rent A,
+> >>> this parent immediately loses CONT bit. this is  sad. but i can't fin=
+d a
+> >>> good way to resolve it unless CONT is exposed to mm-core. any idea on
+> >>> this?
+> >>
+> >> No this is not the case; copy_present_ptes() will copy as many ptes as=
+ are
+> >> physcially contiguous and belong to the same folio (which usually mean=
+s "the
+> >> whole folio" - the only time it doesn't is when we hit the end of the =
+vma). We
+> >> will then return to the main loop and move forwards by the number of p=
+tes that
+> >> were serviced, including:
+> >
+> > I probably have failed to describe my question. i'd like to give a
+> > concrete example
+> >
+> > 1. process A forks B
+> > 2. At the beginning, address~address +64KB has pte_none PTEs
+> > 3. we scan the 5th pte of address + 5 * 4KB, progress becomes 32, we
+> > break and release PTLs
+> > 4. another page fault in process A gets PTL and set
+> > address~address+64KB to pte_cont
+> > 5. we get the PTL again and arrive 5th pte
+> > 6. we set wrprotects on 5,6,7....15 ptes, in this case, we have to
+> > unfold parent A
+> > and child B also gets unfolded PTEs unless our loop can go back the 0th=
+ pte.
+> >
+> > technically, A should be able to keep CONTPTE, but because of the imple=
+mentation
+> > of the code, it can't. That is the sadness. but it is obviously not you=
+r fault.
+> >
+> > no worries. This is not happening quite often. but i just want to make =
+a note
+> > here, maybe someday we can get back to address it.
+>
+> Ahh, I understand the situation now, sorry for being slow!
+>
+> I expect this to be a very rare situation anyway since (4) suggests proce=
+ss A
+> has another thread, and forking is not encouraged for multithreaded progr=
+ams. In
+> fact the fork man page says:
+>
+>   After a fork() in a multithreaded program, the child can safely call on=
+ly
+>   async-signal-safe functions (see signal-safety(7)) until such time as i=
+t calls
+>   execve(2).
+>
+> So in this case, we are about to completely repaint the child's address s=
+pace
+> with execve() anyway.
+>
+> So its just the racing parent that loses the CONT_PTE bit. I expect this =
+to be
+> extremely rare. I'm not sure there is much we can do to solve it though, =
+because
+> unlike with your solution, we have to cater for multiple sizes so there i=
+s no
+> obvious boarder until we get to PMD size and I'm guessing that's going to=
+ be a
+> problem for latency spikes.
 
-Prepare for systems that use different scope (specifically Intel needs
-to split the RDT_RESOURCE_L3 resource to use L3 scope for cache control
-and NODE scope for cache occupancy and memory bandwidth monitoring).
+right. i don't think this can be a big problem. the background is that
+we have some
+way to constantly detect and report unexpected unfold/events, so we run hun=
+dreds
+of phones in lab, and collect data to find out if we have any
+potential problems. we
+record unexpected unfold and reasons in a proc file, we monitor those data =
+to
+look for potential bugs we might have. this ">=3D32" break and unfold was f=
+ound in
+this way, thus we simply addressed it by disallowing the break at an unalig=
+ned
+address.
 
-Create separate domain lists for control and monitor operations.
+This is never an issue which can stop your patchset. but I was still
+glad to share
+our observations with you and would like to hear if you had any idea :-)
 
-Note that errors during initialization of either control or monitor
-functions on a domain would previously result in that domain being
-excluded from both control and monitor operations. Now the domains are
-allocated independently it is no longer required to disable both control
-and monitor operations if either fail.
+>
+>
+> >
+> >>
+> >> progress +=3D 8 * ret;
+> >>
+> >> That might go above 32, so we will flash the lock. But we haven't done=
+ that in
+> >> the middle of a large folio. So the contpte-ness should be preserved.
+> >>
+> >>>
+> >>> Our code[1] resolves this by only breaking at the aligned address
+> >>>
+> >>> if (progress >=3D 32) {
+> >>>      progress =3D 0;
+> >>>      #ifdef CONFIG_CONT_PTE_HUGEPAGE
+> >>>      /*
+> >>>       * XXX: don't release ptl at an unligned address as cont_pte
+> >>> might form while
+> >>>       * ptl is released, this causes double-map
+> >>>      */
+> >>>     if (!vma_is_chp_anonymous(src_vma) ||
+> >>>         (vma_is_chp_anonymous(src_vma) && IS_ALIGNED(addr,
+> >>> HPAGE_CONT_PTE_SIZE)))
+> >>>     #endif
+> >>>         if (need_resched() ||
+> >>>            spin_needbreak(src_ptl) || spin_needbreak(dst_ptl))
+> >>>              break;
+> >>> }
+> >>>
+> >>> [1] https://github.com/OnePlusOSS/android_kernel_oneplus_sm8550/blob/=
+oneplus/sm8550_u_14.0.0_oneplus11/mm/memory.c#L1180
 
-Signed-off-by: Tony Luck <tony.luck@intel.com>
-Reviewed-by: Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>
-Tested-by: Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>
----
- include/linux/resctrl.h                   |  25 ++-
- arch/x86/kernel/cpu/resctrl/internal.h    |   6 +-
- arch/x86/kernel/cpu/resctrl/core.c        | 211 ++++++++++++++++------
- arch/x86/kernel/cpu/resctrl/ctrlmondata.c |  12 +-
- arch/x86/kernel/cpu/resctrl/monitor.c     |   4 +-
- arch/x86/kernel/cpu/resctrl/pseudo_lock.c |   4 +-
- arch/x86/kernel/cpu/resctrl/rdtgroup.c    |  55 +++---
- 7 files changed, 220 insertions(+), 97 deletions(-)
-
-diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h
-index c4067150a6b7..35e700edc6e6 100644
---- a/include/linux/resctrl.h
-+++ b/include/linux/resctrl.h
-@@ -52,15 +52,22 @@ struct resctrl_staged_config {
- 	bool			have_new_ctrl;
- };
- 
-+enum resctrl_domain_type {
-+	RESCTRL_CTRL_DOMAIN,
-+	RESCTRL_MON_DOMAIN,
-+};
-+
- /**
-  * struct rdt_domain_hdr - common header for different domain types
-  * @list:		all instances of this resource
-  * @id:			unique id for this instance
-+ * @type:		type of this instance
-  * @cpu_mask:		which CPUs share this resource
-  */
- struct rdt_domain_hdr {
- 	struct list_head		list;
- 	int				id;
-+	enum resctrl_domain_type	type;
- 	struct cpumask			cpu_mask;
- };
- 
-@@ -163,10 +170,12 @@ enum resctrl_scope {
-  * @alloc_capable:	Is allocation available on this machine
-  * @mon_capable:	Is monitor feature available on this machine
-  * @num_rmid:		Number of RMIDs available
-- * @scope:		Scope of this resource
-+ * @ctrl_scope:		Scope of this resource for control functions
-+ * @mon_scope:		Scope of this resource for monitor functions
-  * @cache:		Cache allocation related data
-  * @membw:		If the component has bandwidth controls, their properties.
-- * @domains:		All domains for this resource
-+ * @ctrl_domains:	Control domains for this resource
-+ * @mon_domains:	Monitor domains for this resource
-  * @name:		Name to use in "schemata" file.
-  * @data_width:		Character width of data when displaying
-  * @default_ctrl:	Specifies default cache cbm or memory B/W percent.
-@@ -181,10 +190,12 @@ struct rdt_resource {
- 	bool			alloc_capable;
- 	bool			mon_capable;
- 	int			num_rmid;
--	enum resctrl_scope	scope;
-+	enum resctrl_scope	ctrl_scope;
-+	enum resctrl_scope	mon_scope;
- 	struct resctrl_cache	cache;
- 	struct resctrl_membw	membw;
--	struct list_head	domains;
-+	struct list_head	ctrl_domains;
-+	struct list_head	mon_domains;
- 	char			*name;
- 	int			data_width;
- 	u32			default_ctrl;
-@@ -230,8 +241,10 @@ int resctrl_arch_update_one(struct rdt_resource *r, struct rdt_domain *d,
- 
- u32 resctrl_arch_get_config(struct rdt_resource *r, struct rdt_domain *d,
- 			    u32 closid, enum resctrl_conf_type type);
--int resctrl_online_domain(struct rdt_resource *r, struct rdt_domain *d);
--void resctrl_offline_domain(struct rdt_resource *r, struct rdt_domain *d);
-+int resctrl_online_ctrl_domain(struct rdt_resource *r, struct rdt_domain *d);
-+int resctrl_online_mon_domain(struct rdt_resource *r, struct rdt_domain *d);
-+void resctrl_offline_ctrl_domain(struct rdt_resource *r, struct rdt_domain *d);
-+void resctrl_offline_mon_domain(struct rdt_resource *r, struct rdt_domain *d);
- 
- /**
-  * resctrl_arch_rmid_read() - Read the eventid counter corresponding to rmid
-diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
-index a4f1aa15f0a2..24bf9d7989a9 100644
---- a/arch/x86/kernel/cpu/resctrl/internal.h
-+++ b/arch/x86/kernel/cpu/resctrl/internal.h
-@@ -520,8 +520,8 @@ void rdtgroup_kn_unlock(struct kernfs_node *kn);
- int rdtgroup_kn_mode_restrict(struct rdtgroup *r, const char *name);
- int rdtgroup_kn_mode_restore(struct rdtgroup *r, const char *name,
- 			     umode_t mask);
--struct rdt_domain *rdt_find_domain(struct rdt_resource *r, int id,
--				   struct list_head **pos);
-+struct rdt_domain_hdr *rdt_find_domain(struct list_head *h, int id,
-+				       struct list_head **pos);
- ssize_t rdtgroup_schemata_write(struct kernfs_open_file *of,
- 				char *buf, size_t nbytes, loff_t off);
- int rdtgroup_schemata_show(struct kernfs_open_file *of,
-@@ -540,7 +540,7 @@ int rdt_pseudo_lock_init(void);
- void rdt_pseudo_lock_release(void);
- int rdtgroup_pseudo_lock_create(struct rdtgroup *rdtgrp);
- void rdtgroup_pseudo_lock_remove(struct rdtgroup *rdtgrp);
--struct rdt_domain *get_domain_from_cpu(int cpu, struct rdt_resource *r);
-+struct rdt_domain *get_ctrl_domain_from_cpu(int cpu, struct rdt_resource *r);
- int closids_supported(void);
- void closid_free(int closid);
- int alloc_rmid(void);
-diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
-index 62a989fd950d..1fd85533b4ca 100644
---- a/arch/x86/kernel/cpu/resctrl/core.c
-+++ b/arch/x86/kernel/cpu/resctrl/core.c
-@@ -57,7 +57,8 @@ static void
- mba_wrmsr_amd(struct rdt_domain *d, struct msr_param *m,
- 	      struct rdt_resource *r);
- 
--#define domain_init(id) LIST_HEAD_INIT(rdt_resources_all[id].r_resctrl.domains)
-+#define ctrl_domain_init(id) LIST_HEAD_INIT(rdt_resources_all[id].r_resctrl.ctrl_domains)
-+#define mon_domain_init(id) LIST_HEAD_INIT(rdt_resources_all[id].r_resctrl.mon_domains)
- 
- struct rdt_hw_resource rdt_resources_all[] = {
- 	[RDT_RESOURCE_L3] =
-@@ -65,8 +66,10 @@ struct rdt_hw_resource rdt_resources_all[] = {
- 		.r_resctrl = {
- 			.rid			= RDT_RESOURCE_L3,
- 			.name			= "L3",
--			.scope			= RESCTRL_L3_CACHE,
--			.domains		= domain_init(RDT_RESOURCE_L3),
-+			.ctrl_scope		= RESCTRL_L3_CACHE,
-+			.mon_scope		= RESCTRL_L3_CACHE,
-+			.ctrl_domains		= ctrl_domain_init(RDT_RESOURCE_L3),
-+			.mon_domains		= mon_domain_init(RDT_RESOURCE_L3),
- 			.parse_ctrlval		= parse_cbm,
- 			.format_str		= "%d=%0*x",
- 			.fflags			= RFTYPE_RES_CACHE,
-@@ -79,8 +82,8 @@ struct rdt_hw_resource rdt_resources_all[] = {
- 		.r_resctrl = {
- 			.rid			= RDT_RESOURCE_L2,
- 			.name			= "L2",
--			.scope			= RESCTRL_L2_CACHE,
--			.domains		= domain_init(RDT_RESOURCE_L2),
-+			.ctrl_scope		= RESCTRL_L2_CACHE,
-+			.ctrl_domains		= ctrl_domain_init(RDT_RESOURCE_L2),
- 			.parse_ctrlval		= parse_cbm,
- 			.format_str		= "%d=%0*x",
- 			.fflags			= RFTYPE_RES_CACHE,
-@@ -93,8 +96,8 @@ struct rdt_hw_resource rdt_resources_all[] = {
- 		.r_resctrl = {
- 			.rid			= RDT_RESOURCE_MBA,
- 			.name			= "MB",
--			.scope			= RESCTRL_L3_CACHE,
--			.domains		= domain_init(RDT_RESOURCE_MBA),
-+			.ctrl_scope		= RESCTRL_L3_CACHE,
-+			.ctrl_domains		= ctrl_domain_init(RDT_RESOURCE_MBA),
- 			.parse_ctrlval		= parse_bw,
- 			.format_str		= "%d=%*u",
- 			.fflags			= RFTYPE_RES_MB,
-@@ -105,8 +108,8 @@ struct rdt_hw_resource rdt_resources_all[] = {
- 		.r_resctrl = {
- 			.rid			= RDT_RESOURCE_SMBA,
- 			.name			= "SMBA",
--			.scope			= RESCTRL_L3_CACHE,
--			.domains		= domain_init(RDT_RESOURCE_SMBA),
-+			.ctrl_scope		= RESCTRL_L3_CACHE,
-+			.ctrl_domains		= ctrl_domain_init(RDT_RESOURCE_SMBA),
- 			.parse_ctrlval		= parse_bw,
- 			.format_str		= "%d=%*u",
- 			.fflags			= RFTYPE_RES_MB,
-@@ -352,11 +355,11 @@ cat_wrmsr(struct rdt_domain *d, struct msr_param *m, struct rdt_resource *r)
- 		wrmsrl(hw_res->msr_base + i, hw_dom->ctrl_val[i]);
- }
- 
--struct rdt_domain *get_domain_from_cpu(int cpu, struct rdt_resource *r)
-+struct rdt_domain *get_ctrl_domain_from_cpu(int cpu, struct rdt_resource *r)
- {
- 	struct rdt_domain *d;
- 
--	list_for_each_entry(d, &r->domains, hdr.list) {
-+	list_for_each_entry(d, &r->ctrl_domains, hdr.list) {
- 		/* Find the domain that contains this CPU */
- 		if (cpumask_test_cpu(cpu, &d->hdr.cpu_mask))
- 			return d;
-@@ -378,7 +381,7 @@ void rdt_ctrl_update(void *arg)
- 	int cpu = smp_processor_id();
- 	struct rdt_domain *d;
- 
--	d = get_domain_from_cpu(cpu, r);
-+	d = get_ctrl_domain_from_cpu(cpu, r);
- 	if (d) {
- 		hw_res->msr_update(d, m, r);
- 		return;
-@@ -388,26 +391,26 @@ void rdt_ctrl_update(void *arg)
- }
- 
- /*
-- * rdt_find_domain - Find a domain in a resource that matches input resource id
-+ * rdt_find_domain - Search for a domain id in a resource domain list.
-  *
-- * Search resource r's domain list to find the resource id. If the resource
-- * id is found in a domain, return the domain. Otherwise, if requested by
-- * caller, return the first domain whose id is bigger than the input id.
-- * The domain list is sorted by id in ascending order.
-+ * Search the domain list to find the domain id. If the domain id is
-+ * found, return the domain. NULL otherwise.  If the domain id is not
-+ * found (and NULL returned) then the first domain with id bigger than
-+ * the input id can be returned to the caller via @pos.
-  */
--struct rdt_domain *rdt_find_domain(struct rdt_resource *r, int id,
--				   struct list_head **pos)
-+struct rdt_domain_hdr *rdt_find_domain(struct list_head *h, int id,
-+				       struct list_head **pos)
- {
--	struct rdt_domain *d;
-+	struct rdt_domain_hdr *d;
- 	struct list_head *l;
- 
--	list_for_each(l, &r->domains) {
--		d = list_entry(l, struct rdt_domain, hdr.list);
-+	list_for_each(l, h) {
-+		d = list_entry(l, struct rdt_domain_hdr, list);
- 		/* When id is found, return its domain. */
--		if (id == d->hdr.id)
-+		if (id == d->id)
- 			return d;
- 		/* Stop searching when finding id's position in sorted list. */
--		if (id < d->hdr.id)
-+		if (id < d->id)
- 			break;
- 	}
- 
-@@ -501,35 +504,28 @@ static int get_domain_id_from_scope(int cpu, enum resctrl_scope scope)
- 	return -EINVAL;
- }
- 
--/*
-- * domain_add_cpu - Add a cpu to a resource's domain list.
-- *
-- * If an existing domain in the resource r's domain list matches the cpu's
-- * resource id, add the cpu in the domain.
-- *
-- * Otherwise, a new domain is allocated and inserted into the right position
-- * in the domain list sorted by id in ascending order.
-- *
-- * The order in the domain list is visible to users when we print entries
-- * in the schemata file and schemata input is validated to have the same order
-- * as this list.
-- */
--static void domain_add_cpu(int cpu, struct rdt_resource *r)
-+static void domain_add_cpu_ctrl(int cpu, struct rdt_resource *r)
- {
--	int id = get_domain_id_from_scope(cpu, r->scope);
-+	int id = get_domain_id_from_scope(cpu, r->ctrl_scope);
- 	struct list_head *add_pos = NULL;
- 	struct rdt_hw_domain *hw_dom;
-+	struct rdt_domain_hdr *hdr;
- 	struct rdt_domain *d;
- 	int err;
- 
- 	if (id < 0) {
--		pr_warn_once("Can't find domain id for CPU:%d scope:%d for resource %s\n",
--			     cpu, r->scope, r->name);
-+		pr_warn_once("Can't find control domain id for CPU:%d scope:%d for resource %s\n",
-+			     cpu, r->ctrl_scope, r->name);
- 		return;
- 	}
- 
--	d = rdt_find_domain(r, id, &add_pos);
--	if (d) {
-+	hdr = rdt_find_domain(&r->ctrl_domains, id, &add_pos);
-+	if (hdr) {
-+		if (WARN_ON_ONCE(hdr->type != RESCTRL_CTRL_DOMAIN))
-+			return;
-+
-+		d = container_of(hdr, struct rdt_domain, hdr);
-+
- 		cpumask_set_cpu(cpu, &d->hdr.cpu_mask);
- 		if (r->cache.arch_has_per_cpu_cfg)
- 			rdt_domain_reconfigure_cdp(r);
-@@ -542,51 +538,114 @@ static void domain_add_cpu(int cpu, struct rdt_resource *r)
- 
- 	d = &hw_dom->d_resctrl;
- 	d->hdr.id = id;
-+	d->hdr.type = RESCTRL_CTRL_DOMAIN;
- 	cpumask_set_cpu(cpu, &d->hdr.cpu_mask);
- 
- 	rdt_domain_reconfigure_cdp(r);
- 
--	if (r->alloc_capable && domain_setup_ctrlval(r, d)) {
-+	if (domain_setup_ctrlval(r, d)) {
- 		domain_free(hw_dom);
- 		return;
- 	}
- 
--	if (r->mon_capable && arch_domain_mbm_alloc(r->num_rmid, hw_dom)) {
-+	list_add_tail(&d->hdr.list, add_pos);
-+
-+	err = resctrl_online_ctrl_domain(r, d);
-+	if (err) {
-+		list_del(&d->hdr.list);
-+		domain_free(hw_dom);
-+	}
-+}
-+
-+static void domain_add_cpu_mon(int cpu, struct rdt_resource *r)
-+{
-+	int id = get_domain_id_from_scope(cpu, r->mon_scope);
-+	struct list_head *add_pos = NULL;
-+	struct rdt_hw_domain *hw_dom;
-+	struct rdt_domain_hdr *hdr;
-+	struct rdt_domain *d;
-+	int err;
-+
-+	if (id < 0) {
-+		pr_warn_once("Can't find monitor domain id for CPU:%d scope:%d for resource %s\n",
-+			     cpu, r->mon_scope, r->name);
-+		return;
-+	}
-+
-+	hdr = rdt_find_domain(&r->mon_domains, id, &add_pos);
-+	if (hdr) {
-+		if (WARN_ON_ONCE(hdr->type != RESCTRL_MON_DOMAIN))
-+			return;
-+
-+		d = container_of(hdr, struct rdt_domain, hdr);
-+
-+		cpumask_set_cpu(cpu, &d->hdr.cpu_mask);
-+		return;
-+	}
-+
-+	hw_dom = kzalloc_node(sizeof(*hw_dom), GFP_KERNEL, cpu_to_node(cpu));
-+	if (!hw_dom)
-+		return;
-+
-+	d = &hw_dom->d_resctrl;
-+	d->hdr.id = id;
-+	d->hdr.type = RESCTRL_MON_DOMAIN;
-+	cpumask_set_cpu(cpu, &d->hdr.cpu_mask);
-+
-+	if (arch_domain_mbm_alloc(r->num_rmid, hw_dom)) {
- 		domain_free(hw_dom);
- 		return;
- 	}
- 
- 	list_add_tail(&d->hdr.list, add_pos);
- 
--	err = resctrl_online_domain(r, d);
-+	err = resctrl_online_mon_domain(r, d);
- 	if (err) {
- 		list_del(&d->hdr.list);
- 		domain_free(hw_dom);
- 	}
- }
- 
--static void domain_remove_cpu(int cpu, struct rdt_resource *r)
-+/*
-+ * domain_add_cpu - Add a CPU to either/both resource's domain lists.
-+ */
-+static void domain_add_cpu(int cpu, struct rdt_resource *r)
- {
--	int id = get_domain_id_from_scope(cpu, r->scope);
-+	if (r->alloc_capable)
-+		domain_add_cpu_ctrl(cpu, r);
-+	if (r->mon_capable)
-+		domain_add_cpu_mon(cpu, r);
-+}
-+
-+static void domain_remove_cpu_ctrl(int cpu, struct rdt_resource *r)
-+{
-+	int id = get_domain_id_from_scope(cpu, r->ctrl_scope);
- 	struct rdt_hw_domain *hw_dom;
-+	struct rdt_domain_hdr *hdr;
- 	struct rdt_domain *d;
- 
- 	if (id < 0) {
--		pr_warn_once("Can't find domain id for CPU:%d scope:%d for resource %s\n",
--			     cpu, r->scope, r->name);
-+		pr_warn_once("Can't find control domain id for CPU:%d scope:%d for resource %s\n",
-+			     cpu, r->ctrl_scope, r->name);
- 		return;
- 	}
- 
--	d = rdt_find_domain(r, id, NULL);
--	if (!d) {
--		pr_warn("Couldn't find domain with id=%d for CPU %d\n", id, cpu);
-+	hdr = rdt_find_domain(&r->ctrl_domains, id, NULL);
-+	if (!hdr) {
-+		pr_warn("Can't find control domain for id=%d for CPU %d for resource %s\n",
-+			id, cpu, r->name);
- 		return;
- 	}
-+
-+	if (WARN_ON_ONCE(hdr->type != RESCTRL_CTRL_DOMAIN))
-+		return;
-+
-+	d = container_of(hdr, struct rdt_domain, hdr);
- 	hw_dom = resctrl_to_arch_dom(d);
- 
- 	cpumask_clear_cpu(cpu, &d->hdr.cpu_mask);
- 	if (cpumask_empty(&d->hdr.cpu_mask)) {
--		resctrl_offline_domain(r, d);
-+		resctrl_offline_ctrl_domain(r, d);
- 		list_del(&d->hdr.list);
- 
- 		/*
-@@ -599,6 +658,42 @@ static void domain_remove_cpu(int cpu, struct rdt_resource *r)
- 
- 		return;
- 	}
-+}
-+
-+static void domain_remove_cpu_mon(int cpu, struct rdt_resource *r)
-+{
-+	int id = get_domain_id_from_scope(cpu, r->mon_scope);
-+	struct rdt_hw_domain *hw_dom;
-+	struct rdt_domain_hdr *hdr;
-+	struct rdt_domain *d;
-+
-+	if (id < 0) {
-+		pr_warn_once("Can't find monitor domain id for CPU:%d scope:%d for resource %s\n",
-+			     cpu, r->mon_scope, r->name);
-+		return;
-+	}
-+
-+	hdr = rdt_find_domain(&r->mon_domains, id, NULL);
-+	if (!hdr) {
-+		pr_warn("Can't find monitor domain for id=%d for CPU %d for resource %s\n",
-+			id, cpu, r->name);
-+		return;
-+	}
-+
-+	if (WARN_ON_ONCE(hdr->type != RESCTRL_MON_DOMAIN))
-+		return;
-+
-+	d = container_of(hdr, struct rdt_domain, hdr);
-+	hw_dom = resctrl_to_arch_dom(d);
-+
-+	cpumask_clear_cpu(cpu, &d->hdr.cpu_mask);
-+	if (cpumask_empty(&d->hdr.cpu_mask)) {
-+		resctrl_offline_mon_domain(r, d);
-+		list_del(&d->hdr.list);
-+		domain_free(hw_dom);
-+
-+		return;
-+	}
- 
- 	if (r == &rdt_resources_all[RDT_RESOURCE_L3].r_resctrl) {
- 		if (is_mbm_enabled() && cpu == d->mbm_work_cpu) {
-@@ -613,6 +708,14 @@ static void domain_remove_cpu(int cpu, struct rdt_resource *r)
- 	}
- }
- 
-+static void domain_remove_cpu(int cpu, struct rdt_resource *r)
-+{
-+	if (r->alloc_capable)
-+		domain_remove_cpu_ctrl(cpu, r);
-+	if (r->mon_capable)
-+		domain_remove_cpu_mon(cpu, r);
-+}
-+
- static void clear_closid_rmid(int cpu)
- {
- 	struct resctrl_pqr_state *state = this_cpu_ptr(&pqr_state);
-diff --git a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
-index 23f8258d36a8..0b4136c42762 100644
---- a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
-+++ b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
-@@ -226,7 +226,7 @@ static int parse_line(char *line, struct resctrl_schema *s,
- 		return -EINVAL;
- 	}
- 	dom = strim(dom);
--	list_for_each_entry(d, &r->domains, hdr.list) {
-+	list_for_each_entry(d, &r->ctrl_domains, hdr.list) {
- 		if (d->hdr.id == dom_id) {
- 			data.buf = dom;
- 			data.rdtgrp = rdtgrp;
-@@ -318,7 +318,7 @@ int resctrl_arch_update_domains(struct rdt_resource *r, u32 closid)
- 		return -ENOMEM;
- 
- 	msr_param.res = NULL;
--	list_for_each_entry(d, &r->domains, hdr.list) {
-+	list_for_each_entry(d, &r->ctrl_domains, hdr.list) {
- 		hw_dom = resctrl_to_arch_dom(d);
- 		for (t = 0; t < CDP_NUM_TYPES; t++) {
- 			cfg = &hw_dom->d_resctrl.staged_config[t];
-@@ -466,7 +466,7 @@ static void show_doms(struct seq_file *s, struct resctrl_schema *schema, int clo
- 	u32 ctrl_val;
- 
- 	seq_printf(s, "%*s:", max_name_width, schema->name);
--	list_for_each_entry(dom, &r->domains, hdr.list) {
-+	list_for_each_entry(dom, &r->ctrl_domains, hdr.list) {
- 		if (sep)
- 			seq_puts(s, ";");
- 
-@@ -542,6 +542,7 @@ void mon_event_read(struct rmid_read *rr, struct rdt_resource *r,
- int rdtgroup_mondata_show(struct seq_file *m, void *arg)
- {
- 	struct kernfs_open_file *of = m->private;
-+	struct rdt_domain_hdr *hdr;
- 	u32 resid, evtid, domid;
- 	struct rdtgroup *rdtgrp;
- 	struct rdt_resource *r;
-@@ -562,11 +563,12 @@ int rdtgroup_mondata_show(struct seq_file *m, void *arg)
- 	evtid = md.u.evtid;
- 
- 	r = &rdt_resources_all[resid].r_resctrl;
--	d = rdt_find_domain(r, domid, NULL);
--	if (!d) {
-+	hdr = rdt_find_domain(&r->mon_domains, domid, NULL);
-+	if (!hdr || WARN_ON_ONCE(hdr->type != RESCTRL_MON_DOMAIN)) {
- 		ret = -ENOENT;
- 		goto out;
- 	}
-+	d = container_of(hdr, struct rdt_domain, hdr);
- 
- 	mon_event_read(&rr, r, d, rdtgrp, evtid, false);
- 
-diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
-index dd0ea1bc0092..ec5ad926c5dc 100644
---- a/arch/x86/kernel/cpu/resctrl/monitor.c
-+++ b/arch/x86/kernel/cpu/resctrl/monitor.c
-@@ -340,7 +340,7 @@ static void add_rmid_to_limbo(struct rmid_entry *entry)
- 
- 	entry->busy = 0;
- 	cpu = get_cpu();
--	list_for_each_entry(d, &r->domains, hdr.list) {
-+	list_for_each_entry(d, &r->mon_domains, hdr.list) {
- 		if (cpumask_test_cpu(cpu, &d->hdr.cpu_mask)) {
- 			err = resctrl_arch_rmid_read(r, d, entry->rmid,
- 						     QOS_L3_OCCUP_EVENT_ID,
-@@ -535,7 +535,7 @@ static void update_mba_bw(struct rdtgroup *rgrp, struct rdt_domain *dom_mbm)
- 	rmid = rgrp->mon.rmid;
- 	pmbm_data = &dom_mbm->mbm_local[rmid];
- 
--	dom_mba = get_domain_from_cpu(smp_processor_id(), r_mba);
-+	dom_mba = get_ctrl_domain_from_cpu(smp_processor_id(), r_mba);
- 	if (!dom_mba) {
- 		pr_warn_once("Failure to get domain for MBA update\n");
- 		return;
-diff --git a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
-index fcbd99e2eb66..ed6d59af1cef 100644
---- a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
-+++ b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
-@@ -292,7 +292,7 @@ static void pseudo_lock_region_clear(struct pseudo_lock_region *plr)
-  */
- static int pseudo_lock_region_init(struct pseudo_lock_region *plr)
- {
--	enum resctrl_scope scope = plr->s->res->scope;
-+	enum resctrl_scope scope = plr->s->res->ctrl_scope;
- 	struct cpu_cacheinfo *ci;
- 	int ret;
- 	int i;
-@@ -856,7 +856,7 @@ bool rdtgroup_pseudo_locked_in_hierarchy(struct rdt_domain *d)
- 	 * associated with them.
- 	 */
- 	for_each_alloc_capable_rdt_resource(r) {
--		list_for_each_entry(d_i, &r->domains, hdr.list) {
-+		list_for_each_entry(d_i, &r->ctrl_domains, hdr.list) {
- 			if (d_i->plr)
- 				cpumask_or(cpu_with_psl, cpu_with_psl,
- 					   &d_i->hdr.cpu_mask);
-diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-index 04d32602ac33..760013ed1bff 100644
---- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-+++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-@@ -91,7 +91,7 @@ void rdt_staged_configs_clear(void)
- 	lockdep_assert_held(&rdtgroup_mutex);
- 
- 	for_each_alloc_capable_rdt_resource(r) {
--		list_for_each_entry(dom, &r->domains, hdr.list)
-+		list_for_each_entry(dom, &r->ctrl_domains, hdr.list)
- 			memset(dom->staged_config, 0, sizeof(dom->staged_config));
- 	}
- }
-@@ -984,7 +984,7 @@ static int rdt_bit_usage_show(struct kernfs_open_file *of,
- 
- 	mutex_lock(&rdtgroup_mutex);
- 	hw_shareable = r->cache.shareable_bits;
--	list_for_each_entry(dom, &r->domains, hdr.list) {
-+	list_for_each_entry(dom, &r->ctrl_domains, hdr.list) {
- 		if (sep)
- 			seq_putc(seq, ';');
- 		sw_shareable = 0;
-@@ -1302,7 +1302,7 @@ static bool rdtgroup_mode_test_exclusive(struct rdtgroup *rdtgrp)
- 		if (r->rid == RDT_RESOURCE_MBA || r->rid == RDT_RESOURCE_SMBA)
- 			continue;
- 		has_cache = true;
--		list_for_each_entry(d, &r->domains, hdr.list) {
-+		list_for_each_entry(d, &r->ctrl_domains, hdr.list) {
- 			ctrl = resctrl_arch_get_config(r, d, closid,
- 						       s->conf_type);
- 			if (rdtgroup_cbm_overlaps(s, d, ctrl, closid, false)) {
-@@ -1413,13 +1413,13 @@ unsigned int rdtgroup_cbm_to_size(struct rdt_resource *r,
- 	unsigned int size = 0;
- 	int num_b, i;
- 
--	if (WARN_ON_ONCE(r->scope != RESCTRL_L2_CACHE && r->scope != RESCTRL_L3_CACHE))
-+	if (WARN_ON_ONCE(r->ctrl_scope != RESCTRL_L2_CACHE && r->ctrl_scope != RESCTRL_L3_CACHE))
- 		return size;
- 
- 	num_b = bitmap_weight(&cbm, r->cache.cbm_len);
- 	ci = get_cpu_cacheinfo(cpumask_any(&d->hdr.cpu_mask));
- 	for (i = 0; i < ci->num_leaves; i++) {
--		if (ci->info_list[i].level == r->scope) {
-+		if (ci->info_list[i].level == r->ctrl_scope) {
- 			size = ci->info_list[i].size / r->cache.cbm_len * num_b;
- 			break;
- 		}
-@@ -1477,7 +1477,7 @@ static int rdtgroup_size_show(struct kernfs_open_file *of,
- 		type = schema->conf_type;
- 		sep = false;
- 		seq_printf(s, "%*s:", max_name_width, schema->name);
--		list_for_each_entry(d, &r->domains, hdr.list) {
-+		list_for_each_entry(d, &r->ctrl_domains, hdr.list) {
- 			if (sep)
- 				seq_putc(s, ';');
- 			if (rdtgrp->mode == RDT_MODE_PSEUDO_LOCKSETUP) {
-@@ -1566,7 +1566,7 @@ static int mbm_config_show(struct seq_file *s, struct rdt_resource *r, u32 evtid
- 
- 	mutex_lock(&rdtgroup_mutex);
- 
--	list_for_each_entry(dom, &r->domains, hdr.list) {
-+	list_for_each_entry(dom, &r->mon_domains, hdr.list) {
- 		if (sep)
- 			seq_puts(s, ";");
- 
-@@ -1689,7 +1689,7 @@ static int mon_config_write(struct rdt_resource *r, char *tok, u32 evtid)
- 		return -EINVAL;
- 	}
- 
--	list_for_each_entry(d, &r->domains, hdr.list) {
-+	list_for_each_entry(d, &r->mon_domains, hdr.list) {
- 		if (d->hdr.id == dom_id) {
- 			ret = mbm_config_write_domain(r, d, evtid, val);
- 			if (ret)
-@@ -2232,7 +2232,7 @@ static int set_cache_qos_cfg(int level, bool enable)
- 		return -ENOMEM;
- 
- 	r_l = &rdt_resources_all[level].r_resctrl;
--	list_for_each_entry(d, &r_l->domains, hdr.list) {
-+	list_for_each_entry(d, &r_l->ctrl_domains, hdr.list) {
- 		if (r_l->cache.arch_has_per_cpu_cfg)
- 			/* Pick all the CPUs in the domain instance */
- 			for_each_cpu(cpu, &d->hdr.cpu_mask)
-@@ -2317,7 +2317,7 @@ static int set_mba_sc(bool mba_sc)
- 
- 	r->membw.mba_sc = mba_sc;
- 
--	list_for_each_entry(d, &r->domains, hdr.list) {
-+	list_for_each_entry(d, &r->ctrl_domains, hdr.list) {
- 		for (i = 0; i < num_closid; i++)
- 			d->mbps_val[i] = MBA_MAX_MBPS;
- 	}
-@@ -2653,7 +2653,7 @@ static int rdt_get_tree(struct fs_context *fc)
- 
- 	if (is_mbm_enabled()) {
- 		r = &rdt_resources_all[RDT_RESOURCE_L3].r_resctrl;
--		list_for_each_entry(dom, &r->domains, hdr.list)
-+		list_for_each_entry(dom, &r->mon_domains, hdr.list)
- 			mbm_setup_overflow_handler(dom, MBM_OVERFLOW_INTERVAL);
- 	}
- 
-@@ -2777,10 +2777,10 @@ static int reset_all_ctrls(struct rdt_resource *r)
- 
- 	/*
- 	 * Disable resource control for this resource by setting all
--	 * CBMs in all domains to the maximum mask value. Pick one CPU
-+	 * CBMs in all ctrl_domains to the maximum mask value. Pick one CPU
- 	 * from each domain to update the MSRs below.
- 	 */
--	list_for_each_entry(d, &r->domains, hdr.list) {
-+	list_for_each_entry(d, &r->ctrl_domains, hdr.list) {
- 		hw_dom = resctrl_to_arch_dom(d);
- 		cpumask_set_cpu(cpumask_any(&d->hdr.cpu_mask), cpu_mask);
- 
-@@ -3050,7 +3050,7 @@ static int mkdir_mondata_subdir_alldom(struct kernfs_node *parent_kn,
- 	struct rdt_domain *dom;
- 	int ret;
- 
--	list_for_each_entry(dom, &r->domains, hdr.list) {
-+	list_for_each_entry(dom, &r->mon_domains, hdr.list) {
- 		ret = mkdir_mondata_subdir(parent_kn, dom, r, prgrp);
- 		if (ret)
- 			return ret;
-@@ -3232,7 +3232,7 @@ static int rdtgroup_init_cat(struct resctrl_schema *s, u32 closid)
- 	struct rdt_domain *d;
- 	int ret;
- 
--	list_for_each_entry(d, &s->res->domains, hdr.list) {
-+	list_for_each_entry(d, &s->res->ctrl_domains, hdr.list) {
- 		ret = __init_one_rdt_domain(d, s, closid);
- 		if (ret < 0)
- 			return ret;
-@@ -3247,7 +3247,7 @@ static void rdtgroup_init_mba(struct rdt_resource *r, u32 closid)
- 	struct resctrl_staged_config *cfg;
- 	struct rdt_domain *d;
- 
--	list_for_each_entry(d, &r->domains, hdr.list) {
-+	list_for_each_entry(d, &r->ctrl_domains, hdr.list) {
- 		if (is_mba_sc(r)) {
- 			d->mbps_val[closid] = MBA_MAX_MBPS;
- 			continue;
-@@ -3849,15 +3849,17 @@ static void domain_destroy_mon_state(struct rdt_domain *d)
- 	kfree(d->mbm_local);
- }
- 
--void resctrl_offline_domain(struct rdt_resource *r, struct rdt_domain *d)
-+void resctrl_offline_ctrl_domain(struct rdt_resource *r, struct rdt_domain *d)
- {
- 	lockdep_assert_held(&rdtgroup_mutex);
- 
- 	if (supports_mba_mbps() && r->rid == RDT_RESOURCE_MBA)
- 		mba_sc_domain_destroy(r, d);
-+}
- 
--	if (!r->mon_capable)
--		return;
-+void resctrl_offline_mon_domain(struct rdt_resource *r, struct rdt_domain *d)
-+{
-+	lockdep_assert_held(&rdtgroup_mutex);
- 
- 	/*
- 	 * If resctrl is mounted, remove all the
-@@ -3914,18 +3916,21 @@ static int domain_setup_mon_state(struct rdt_resource *r, struct rdt_domain *d)
- 	return 0;
- }
- 
--int resctrl_online_domain(struct rdt_resource *r, struct rdt_domain *d)
-+int resctrl_online_ctrl_domain(struct rdt_resource *r, struct rdt_domain *d)
- {
--	int err;
--
- 	lockdep_assert_held(&rdtgroup_mutex);
- 
- 	if (supports_mba_mbps() && r->rid == RDT_RESOURCE_MBA)
--		/* RDT_RESOURCE_MBA is never mon_capable */
- 		return mba_sc_domain_allocate(r, d);
- 
--	if (!r->mon_capable)
--		return 0;
-+	return 0;
-+}
-+
-+int resctrl_online_mon_domain(struct rdt_resource *r, struct rdt_domain *d)
-+{
-+	int err;
-+
-+	lockdep_assert_held(&rdtgroup_mutex);
- 
- 	err = domain_setup_mon_state(r, d);
- 	if (err)
--- 
-2.41.0
-
+Thanks
+Barry
