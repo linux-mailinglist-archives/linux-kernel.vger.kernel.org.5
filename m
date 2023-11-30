@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B952E7FF832
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 18:27:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88C207FF82E
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 18:27:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345964AbjK3RZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 12:25:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56744 "EHLO
+        id S1346334AbjK3RZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 12:25:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345867AbjK3RZT (ORCPT
+        with ESMTP id S232230AbjK3RZU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 12:25:19 -0500
+        Thu, 30 Nov 2023 12:25:20 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2240910E4
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 371F410F1
         for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 09:25:26 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8D76C433C9;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB183C433C7;
         Thu, 30 Nov 2023 17:25:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1701365125;
-        bh=tJgxRz4gUs6W6Faa+Cg1vkflopdC7A4P4ALBdtcXLMY=;
+        bh=vdx1NNQgu58UERU8Tsdj0HzBKD91c4adGn6nypp5e88=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HQsN2Qi7iv0U/cVxFkcbXn63O2jSqdXm0fg5DVFkJmjiowP6RImhn2etpYiltW+G1
-         Wbu7eFZ1eYSHxGgye6gXf3sVDFrcUwY1tD9vhxlkwtYeaO/eqE6g2duOWY5o0KAjzQ
-         IGWEwo/S+vreGsBoOffXVIHea0W//Ds1AcFCiyM44WW499OO5VIuwHfrekGAXb8DKG
-         j2L2o9HBWsA2cW9nJSRpL1+JpxBLCgbtv3180ALMg83DNrxIEtbGYE63tmRepSh9Tj
-         K3E1q/8A5FfDuyIL2fKn8sGvoZQ/VQclWq9IcP+0Un4AXGTLHX92ilYuCOsYUAY6kA
-         sbOIIM8Lpq+eg==
+        b=lTc8+qpxWuK0rdqA1+FARRSbdXot+DtmzyNeuQTpipNrqm/LK97DmvRs5r9Abfpht
+         NCjnrPHsxNQaZQXNe/j1wP/uqsZJlV+eO5DNmmoUMXTQhI9pmeARwhmrIhdnCyKFH0
+         O/NHlaDHr4Y+VY4AyMuXyq9vp8F6/Esay5ORqGIAbQS7dKaYuxS1H2NDyXK+21cdY4
+         LyTm9FF5vYDAcuioI+KQNsxAE/xDzQ515SirNAcAi43Tgdl80kIir95dBFCl6ZRUBU
+         ZJhpI8uPE0IiZa4yFwwaOOA3diEJ9fukpQZDgu8yxZYGGIWxBMSq76ldqoq470jj3/
+         UWUu3Tx7yfXrw==
 Received: from johan by xi.lan with local (Exim 4.96.2)
         (envelope-from <johan+linaro@kernel.org>)
-        id 1r8knX-0003Gv-0x;
+        id 1r8knX-0003Gx-1B;
         Thu, 30 Nov 2023 18:25:59 +0100
 From:   Johan Hovold <johan+linaro@kernel.org>
 To:     Lee Jones <lee@kernel.org>
@@ -43,9 +43,9 @@ Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
         linux-arm-msm@vger.kernel.org,
         Johan Hovold <johan+linaro@kernel.org>
-Subject: [PATCH 1/4] dt-bindings: mfd: hisilicon,hi6421-spmi-pmic: fix up binding reference
-Date:   Thu, 30 Nov 2023 18:25:44 +0100
-Message-ID: <20231130172547.12555-2-johan+linaro@kernel.org>
+Subject: [PATCH 2/4] dt-bindings: mfd: hisilicon,hi6421-spmi-pmic: fix example regulator node
+Date:   Thu, 30 Nov 2023 18:25:45 +0100
+Message-ID: <20231130172547.12555-3-johan+linaro@kernel.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231130172547.12555-1-johan+linaro@kernel.org>
 References: <20231130172547.12555-1-johan+linaro@kernel.org>
@@ -61,29 +61,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix up the SPMI PMIC binding document free text reference which
-erroneously referred to itself rather than the parent SPMI controller
-binding as intended.
+The example regulator child nodes do not have unit addresses so drop the
+incorrect '#address-cells' and '#size-cells' properties from the parent
+node.
 
-Fixes: 9e5917288545 ("dt: document HiSilicon SPMI controller and mfd/regulator properties")
 Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
 ---
- .../devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml     | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml    | 3 ---
+ 1 file changed, 3 deletions(-)
 
 diff --git a/Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml b/Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml
-index bdff5b653453..e36e5ce58136 100644
+index e36e5ce58136..60d5e6b3de33 100644
 --- a/Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml
 +++ b/Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml
-@@ -17,7 +17,7 @@ description: |
-   node.
+@@ -77,9 +77,6 @@ examples:
+       interrupts = <0 0>;
  
-   The SPMI controller part is provided by
--  Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml
-+  Documentation/devicetree/bindings/spmi/hisilicon,hisi-spmi-controller.yaml
- 
- properties:
-   $nodename:
+       regulators {
+-        #address-cells = <1>;
+-        #size-cells = <0>;
+-
+         ldo3: ldo3 {
+           regulator-name = "ldo3";
+           regulator-min-microvolt = <1500000>;
 -- 
 2.41.0
 
