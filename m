@@ -2,67 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D9667FF737
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 17:54:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B45FC7FF741
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 17:55:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345784AbjK3Qyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 11:54:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52430 "EHLO
+        id S1345817AbjK3Qy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 11:54:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232327AbjK3Qyn (ORCPT
+        with ESMTP id S232292AbjK3Qyw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 11:54:43 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54D9ED7D
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 08:54:50 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 499A9C433C8;
-        Thu, 30 Nov 2023 16:54:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701363290;
-        bh=49qhqgGAf1il4MSpBynBgZFH+miXfZEwpG76uLbPmaU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Np6BJ4vxXm6HT8i2fZ9urPkjpE7U+PZf1nbMqbgnst4FDTsNisnm6s8tLoje2SPQJ
-         qMgzClrZSmMcq99U6JT0NDlzBr9Sb+wPbjaZwcPVLKoLEPLxKQfWate2/Uj51/wp0O
-         q3u+kP0EwP+JVZqi0L/q1ake8Nl7g4Nor5E+QjjlCX6yAmEcdsOiGtyxomt2Nhr9JE
-         lcC+AldJJLiMdMWt+pIcimlgAyOPfX5FkopqSC6Ykntf0ih4rAt7PmTKqjd5/mEZmo
-         aybKPIfqCQbttV/SHLkdAHFsER7sfu31yRAwnKGUMrvlfqIHdozZGZY15fqPlP5pl6
-         kAy+zh7PIKeAA==
-Date:   Thu, 30 Nov 2023 16:54:44 +0000
-From:   Simon Horman <horms@kernel.org>
-To:     Suman Ghosh <sumang@marvell.com>
-Cc:     sgoutham@marvell.com, gakula@marvell.com, sbhatta@marvell.com,
-        hkelam@marvell.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lcherian@marvell.com,
-        jerinj@marvell.com, wojciech.drewek@intel.com
-Subject: Re: [net-next PATCH v5 2/2] octeontx2-pf: TC flower offload support
- for mirror
-Message-ID: <20231130165444.GF32077@kernel.org>
-References: <20231130034324.3900445-1-sumang@marvell.com>
- <20231130034324.3900445-3-sumang@marvell.com>
+        Thu, 30 Nov 2023 11:54:52 -0500
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33349D7D;
+        Thu, 30 Nov 2023 08:54:59 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.18.186.31])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Sh2NV46mBz6JB3v;
+        Fri,  1 Dec 2023 00:54:34 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+        by mail.maildlp.com (Postfix) with ESMTPS id 733951404F4;
+        Fri,  1 Dec 2023 00:54:57 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 30 Nov
+ 2023 16:54:56 +0000
+Date:   Thu, 30 Nov 2023 16:54:55 +0000
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
+CC:     <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
+        <linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-riscv@lists.infradead.org>, <kvmarm@lists.linux.dev>,
+        <x86@kernel.org>, <linux-csky@vger.kernel.org>,
+        <linux-doc@vger.kernel.org>, <linux-ia64@vger.kernel.org>,
+        <linux-parisc@vger.kernel.org>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        <jianyong.wu@arm.com>, <justin.he@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [PATCH 13/21] arm64: convert to arch_cpu_is_hotpluggable()
+Message-ID: <20231130165455.0000166c@Huawei.com>
+In-Reply-To: <E1r5R3g-00Cszg-PP@rmk-PC.armlinux.org.uk>
+References: <ZVyz/Ve5pPu8AWoA@shell.armlinux.org.uk>
+        <E1r5R3g-00Cszg-PP@rmk-PC.armlinux.org.uk>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231130034324.3900445-3-sumang@marvell.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml100005.china.huawei.com (7.191.160.25) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 30, 2023 at 09:13:24AM +0530, Suman Ghosh wrote:
-> This patch extends TC flower offload support for mirroring ingress
-> traffic to a different PF/VF. Below is an example command,
-> 
-> 'tc filter add dev eth1 ingress protocol ip flower src_ip <ip-addr>
-> skip_sw action mirred ingress mirror dev eth2'
-> 
-> Signed-off-by: Suman Ghosh <sumang@marvell.com>
-> Reviewed-by: Wojciech Drewek <wojciech.drewek@intel.com>
+On Tue, 21 Nov 2023 13:44:56 +0000
+"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk> wrote:
 
-Reviewed-by: Simon Horman <horms@kernel.org>
-
+> Convert arm64 to use the arch_cpu_is_hotpluggable() helper rather than
+> arch_register_cpu().
+> 
+> Reviewed-by: Shaoqin Huang <shahuang@redhat.com>
+> Reviewed-by: Gavin Shan <gshan@redhat.com>
+> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
