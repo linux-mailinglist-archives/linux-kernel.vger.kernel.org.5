@@ -2,97 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F3E97FEC5A
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 10:57:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 217177FEC23
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 10:47:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235100AbjK3J5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 04:57:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56914 "EHLO
+        id S232001AbjK3JrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 04:47:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229550AbjK3J47 (ORCPT
+        with ESMTP id S231755AbjK3JrG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 04:56:59 -0500
-X-Greylist: delayed 573 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 30 Nov 2023 01:57:03 PST
-Received: from mail-m25476.xmail.ntesmail.com (mail-m25476.xmail.ntesmail.com [103.129.254.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1E859A;
-        Thu, 30 Nov 2023 01:57:03 -0800 (PST)
-Received: from ubuntu.localdomain (unknown [111.222.250.119])
-        by mail-m12750.qiye.163.com (Hmail) with ESMTPA id 5D1DAF20542;
-        Thu, 30 Nov 2023 17:46:59 +0800 (CST)
-From:   Shifeng Li <lishifeng@sangfor.com.cn>
-To:     saeedm@nvidia.com, leon@kernel.org, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        ogerlitz@mellanox.com
-Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dinghui@sangfor.com.cn,
-        lishifeng1992@126.com, Shifeng Li <lishifeng@sangfor.com.cn>
-Subject: [PATCH] net/mlx5e: Fix slab-out-of-bounds in mlx5_query_nic_vport_mac_list()
-Date:   Thu, 30 Nov 2023 01:46:56 -0800
-Message-Id: <20231130094656.894412-1-lishifeng@sangfor.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Thu, 30 Nov 2023 04:47:06 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22271D50;
+        Thu, 30 Nov 2023 01:47:12 -0800 (PST)
+Received: from pyrite.rasen.tech (h175-177-049-156.catv02.itscom.jp [175.177.49.156])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 38D768C1;
+        Thu, 30 Nov 2023 10:46:29 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1701337593;
+        bh=A+ZecSE4hjPnaI3Hh8yXuuX/lFO1rYZCXT1nhjdZtw8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SwfEEZ7SpVU/OdE+/rfMspmM71hg225W3lQ8u4HuQL39vM0NYE9zqAUquXppYJ1be
+         NY+hif7gIyqf+RhFCLYNnztvFeWmifdDfk4e/FH1t+ghvgkntskwB56Ce1ahGV9PxW
+         heNlfR1N9ctz0WpO6qAZoYifdZJgc1k87IxCr3QI=
+Date:   Thu, 30 Nov 2023 18:47:00 +0900
+From:   Paul Elder <paul.elder@ideasonboard.com>
+To:     Kieran Bingham <kieran.bingham@ideasonboard.com>
+Cc:     linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        tomi.valkeinen@ideasonboard.com, umang.jain@ideasonboard.com,
+        Dafna Hirschfeld <dafna@fastmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] media: rkisp1: debug: Add register dump for IS
+Message-ID: <ZWhaFL48cgdHsOPN@pyrite.rasen.tech>
+References: <20231129092956.250129-1-paul.elder@ideasonboard.com>
+ <20231129092956.250129-3-paul.elder@ideasonboard.com>
+ <170128834260.3048548.11979514587961676400@ping.linuxembedded.co.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-        tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVlCSBhOVkkdQ0pPTEhNTRlISlUTARMWGhIXJBQOD1
-        lXWRgSC1lBWUpKSlVJSUlVSU5LVUpKQllXWRYaDxIVHRRZQVlPS0hVSk1PSUxOVUpLS1VKQktLWQ
-        Y+
-X-HM-Tid: 0a8c1f9fddd3b21dkuuu5d1daf20542
-X-HM-MType: 1
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6OjI6Sjo4Sjw#HhA3HgsVIS5L
-        OTowCzFVSlVKTEtKSEhMTUlLT0NMVTMWGhIXVRcSCBMSHR4VHDsIGhUcHRQJVRgUFlUYFUVZV1kS
-        C1lBWUpKSlVJSUlVSU5LVUpKQllXWQgBWUFISEpNNwY+
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <170128834260.3048548.11979514587961676400@ping.linuxembedded.co.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Out_sz that the size of out buffer is calculated using query_nic_vport
-_context_in structure when driver query the MAC list. However query_nic
-_vport_context_in structure is smaller than query_nic_vport_context_out.
-When allowed_list_size is greater than 96, calling ether_addr_copy() will
-trigger an slab-out-of-bounds.
+On Wed, Nov 29, 2023 at 08:05:42PM +0000, Kieran Bingham wrote:
+> Quoting Paul Elder (2023-11-29 09:29:55)
+> > Add register dump for the image stabilizer module to debugfs.
+> > 
+> 
+> Is the Image Stabilizer on all variants of the ISP?
+> 
+> I.e. is it valid register space on the RK3399 implementation?
 
-[ 1170.055866] BUG: KASAN: slab-out-of-bounds in mlx5_query_nic_vport_mac_list+0x481/0x4d0 [mlx5_core]
-[ 1170.055869] Read of size 4 at addr ffff88bdbc57d912 by task kworker/u128:1/461
-[ 1170.055870]
-[ 1170.055932] Workqueue: mlx5_esw_wq esw_vport_change_handler [mlx5_core]
-[ 1170.055936] Call Trace:
-[ 1170.055949]  dump_stack+0x8b/0xbb
-[ 1170.055958]  print_address_description+0x6a/0x270
-[ 1170.055961]  kasan_report+0x179/0x2c0
-[ 1170.056061]  mlx5_query_nic_vport_mac_list+0x481/0x4d0 [mlx5_core]
-[ 1170.056162]  esw_update_vport_addr_list+0x2c5/0xcd0 [mlx5_core]
-[ 1170.056257]  esw_vport_change_handle_locked+0xd08/0x1a20 [mlx5_core]
-[ 1170.056377]  esw_vport_change_handler+0x6b/0x90 [mlx5_core]
-[ 1170.056381]  process_one_work+0x65f/0x12d0
-[ 1170.056383]  worker_thread+0x87/0xb50
-[ 1170.056390]  kthread+0x2e9/0x3a0
-[ 1170.056394]  ret_from_fork+0x1f/0x40
+Yes, it is.
 
-Fixes: e16aea2744ab ("net/mlx5: Introduce access functions to modify/query vport mac lists")
-Cc: Ding Hui <dinghui@sangfor.com.cn>
-Signed-off-by: Shifeng Li <lishifeng@sangfor.com.cn>
----
- drivers/net/ethernet/mellanox/mlx5/core/vport.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> If so then:
+> Reviewed-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
+> 
+> > Signed-off-by: Paul Elder <paul.elder@ideasonboard.com>
+> > ---
+> >  .../platform/rockchip/rkisp1/rkisp1-debug.c    | 18 ++++++++++++++++++
+> >  1 file changed, 18 insertions(+)
+> > 
+> > diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-debug.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-debug.c
+> > index 71df3dc95e6f..f66b9754472e 100644
+> > --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-debug.c
+> > +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-debug.c
+> > @@ -139,6 +139,21 @@ static int rkisp1_debug_dump_mi_mp_show(struct seq_file *m, void *p)
+> >  }
+> >  DEFINE_SHOW_ATTRIBUTE(rkisp1_debug_dump_mi_mp);
+> >  
+> > +static int rkisp1_debug_dump_is_show(struct seq_file *m, void *p)
+> > +{
+> > +       static const struct rkisp1_debug_register registers[] = {
+> > +               RKISP1_DEBUG_SHD_REG(ISP_IS_H_OFFS),
+> > +               RKISP1_DEBUG_SHD_REG(ISP_IS_V_OFFS),
+> > +               RKISP1_DEBUG_SHD_REG(ISP_IS_H_SIZE),
+> > +               RKISP1_DEBUG_SHD_REG(ISP_IS_V_SIZE),
+> 
+> I expect so as you haven't added the register macros in this series so
+> they must already be there ...
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/vport.c b/drivers/net/ethernet/mellanox/mlx5/core/vport.c
-index 5a31fb47ffa5..21753f327868 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/vport.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/vport.c
-@@ -277,7 +277,7 @@ int mlx5_query_nic_vport_mac_list(struct mlx5_core_dev *dev,
- 		req_list_size = max_list_size;
- 	}
- 
--	out_sz = MLX5_ST_SZ_BYTES(query_nic_vport_context_in) +
-+	out_sz = MLX5_ST_SZ_BYTES(query_nic_vport_context_out) +
- 			req_list_size * MLX5_ST_SZ_BYTES(mac_address_layout);
- 
- 	out = kvzalloc(out_sz, GFP_KERNEL);
--- 
-2.25.1
+Yep :)
 
+
+Paul
+
+> 
+> 
+> > +               { /* Sentinel */ },
+> > +       };
+> > +       struct rkisp1_device *rkisp1 = m->private;
+> > +
+> > +       return rkisp1_debug_dump_regs(rkisp1, m, 0, registers);
+> > +}
+> > +DEFINE_SHOW_ATTRIBUTE(rkisp1_debug_dump_is);
+> > +
+> >  #define RKISP1_DEBUG_DATA_COUNT_BINS   32
+> >  #define RKISP1_DEBUG_DATA_COUNT_STEP   (4096 / RKISP1_DEBUG_DATA_COUNT_BINS)
+> >  
+> > @@ -235,6 +250,9 @@ void rkisp1_debug_init(struct rkisp1_device *rkisp1)
+> >  
+> >         debugfs_create_file("mi_mp", 0444, regs_dir, rkisp1,
+> >                             &rkisp1_debug_dump_mi_mp_fops);
+> > +
+> > +       debugfs_create_file("is", 0444, regs_dir, rkisp1,
+> > +                           &rkisp1_debug_dump_is_fops);
+> >  }
+> >  
+> >  void rkisp1_debug_cleanup(struct rkisp1_device *rkisp1)
+> > -- 
+> > 2.39.2
+> >
