@@ -2,51 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C9AE7FF323
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 16:02:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B54007FF325
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 16:03:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346078AbjK3PCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 10:02:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33788 "EHLO
+        id S1346043AbjK3PDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 10:03:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346028AbjK3PCa (ORCPT
+        with ESMTP id S235200AbjK3PDJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 10:02:30 -0500
-Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com [209.85.216.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B7B5D50
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 07:02:34 -0800 (PST)
-Received: by mail-pj1-f71.google.com with SMTP id 98e67ed59e1d1-2856433d5e6so1337905a91.2
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 07:02:34 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701356554; x=1701961354;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=uJHMFIyYjAL7AEL+dr1tttga0DRsMqWEt4uvthy3kgc=;
-        b=EDYBYfx3Pwrz37R9Ai1UwZUiijM/5gXH3m53fHx3dMwY8729d0hCWrZVNFNEi3m1tn
-         /Rve9Ew4KHIttuve4DAWrjyIdO6+t4vd+YukcE7h0V9sD1TqJau3ppGuH7oi7/OiioK6
-         z/XgfbYpuqA3prwuYAQLwyMckDY60GDMBmkY3sO/0hRfbdVNJO7PWVrEpE+ziIQAg+6r
-         uVsb8Jwug9urTSPgfPNlGLK4RvXRtTw7CqB+Wrva2cDeiebzFU8WYwVdXBlIf7htJht7
-         Y/343sb+UrWo/Wajfc13Fumaka3qFuBJKjeBSyEBryhCkFTpppwR/ra3wZZWsoOo47Go
-         2Hww==
-X-Gm-Message-State: AOJu0YyJH5tr8qaoM3Bq/KvjWhq6o4/PpKfuToHImiOWj1tQv4JUKb0g
-        QiMZ46VQgWuvMtu8uunT1VpZfApXI/hzeE2uimOq6hgY88/M
-X-Google-Smtp-Source: AGHT+IGvw7xZCq6NXj7DK4v8/J1xvB8xotxdNkMEnzouXzBGfsF6dRAHfnRP0foE7R3X+joDwGlTt1gf01QygVP5Agqxu93AVO3u
+        Thu, 30 Nov 2023 10:03:09 -0500
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2076.outbound.protection.outlook.com [40.107.243.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F6CED48;
+        Thu, 30 Nov 2023 07:03:13 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WuXxCCq93TEs+cYSdr60I22HQfUnnoKryJ3HAmvy+lkYS7KRa7bvT9HUaHIHk3R7LmhrFF4RIr2QpOzw9kKY06u2/88wLiYmxnyNkUv4BOCXY/DCxmZDVdTi/m42vEEeSnqcpSjL+Q3n/UzSzzUxFK03J3y/I/GE/SFbVrJNK2h3J3YyzfJuijvlz1XavrUuD2xL8TlFH/zBg51zc6Cu8seSYB4TrKreiNejvmctPqfglrQZ7K9jW93liagvMLqtWHX1r8NvVYtLH/9/xbK9h34AvtwKdtyA9uJYJCCRX/8UG2Mi1u0ZF7/emZBEpbcp+93qVcIGyID4/xwB9sxIqw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=eBFIVtiQXa0sNx/4VzJnx+rOix4DIGI+pZcFJLf3UZw=;
+ b=ZuaUS0uxj68MnNbglX1WG9af5nVMtnfzFVYl9HGNf0LIHCDMbbR2fLgJtWSrtCGSdE+q3qYn81IAddJX7ptJad9MpYrXIbvWlrQiDYrv5f/DjYsLL0LB2n+5Ey0hIGjTqD4xDEv4T7R1m3+V3Wtzn7vEqz0mxDcMW9CjBvGW5xlCjciNGVEaNUUl711YlDM1kf4pUgwivaE8OZpZck2uQjqn1hIuMeieV1dZ+/6Dj9OS1Gl+FVBUHhKfp/qDSY4C5R/tKiY2rdXZ8voZmpAtErZR2xgW9uHW0L+BoF03OSoEgIkPehVbofQxrJk4IlcMcmlqM0bIknr5cXmRYTtZYA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=eBFIVtiQXa0sNx/4VzJnx+rOix4DIGI+pZcFJLf3UZw=;
+ b=r0Ras1tkhSDJVNk+S8BIv8KY1eqp9ZB61akeaVyeDaQWKJYUb3wGiIU8WSWtexrhex3RKznrjJb7lCX5sbxoAiFAnPIhc3aS+aTUh8QUOPPIfcwV7Wd0SrOY5ygboUIC2cRveJ3OfYeX/HSrHR10Ug8GcqYS/URiqpG29G010s4=
+Received: from CH0PR03CA0085.namprd03.prod.outlook.com (2603:10b6:610:cc::30)
+ by SN7PR12MB8103.namprd12.prod.outlook.com (2603:10b6:806:355::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.23; Thu, 30 Nov
+ 2023 15:03:11 +0000
+Received: from DS2PEPF00003447.namprd04.prod.outlook.com
+ (2603:10b6:610:cc:cafe::a7) by CH0PR03CA0085.outlook.office365.com
+ (2603:10b6:610:cc::30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.24 via Frontend
+ Transport; Thu, 30 Nov 2023 15:03:11 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
+Received: from SATLEXMB03.amd.com (165.204.84.17) by
+ DS2PEPF00003447.mail.protection.outlook.com (10.167.17.74) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7046.17 via Frontend Transport; Thu, 30 Nov 2023 15:03:10 +0000
+Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Thu, 30 Nov
+ 2023 09:03:07 -0600
+Received: from [172.27.137.28] (10.180.168.240) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.34 via Frontend
+ Transport; Thu, 30 Nov 2023 09:03:04 -0600
+Message-ID: <f78395f3-6588-4bc9-8612-3450a8f44be7@amd.com>
+Date:   Thu, 30 Nov 2023 10:03:02 -0500
 MIME-Version: 1.0
-X-Received: by 2002:a17:90a:d710:b0:285:db18:2400 with SMTP id
- y16-20020a17090ad71000b00285db182400mr2301448pju.2.1701356553994; Thu, 30 Nov
- 2023 07:02:33 -0800 (PST)
-Date:   Thu, 30 Nov 2023 07:02:33 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000098af2060b5ff161@google.com>
-Subject: [syzbot] [block?] INFO: task hung in bdev_release
-From:   syzbot <syzbot+4da851837827326a7cd4@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC KERNEL PATCH v2 1/3] xen/pci: Add xen_reset_device_state
+ function
+Content-Language: en-US
+To:     "Chen, Jiqian" <Jiqian.Chen@amd.com>,
+        Stefano Stabellini <sstabellini@kernel.org>
+CC:     Juergen Gross <jgross@suse.com>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Boris Ostrovsky" <boris.ostrovsky@oracle.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        =?UTF-8?Q?Roger_Pau_Monn=C3=A9?= <roger.pau@citrix.com>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "Stabellini, Stefano" <stefano.stabellini@amd.com>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "Koenig, Christian" <Christian.Koenig@amd.com>,
+        "Ragiadakou, Xenia" <Xenia.Ragiadakou@amd.com>,
+        "Huang, Honglei1" <Honglei1.Huang@amd.com>,
+        "Zhang, Julia" <Julia.Zhang@amd.com>,
+        "Huang, Ray" <Ray.Huang@amd.com>
+References: <20231124103123.3263471-1-Jiqian.Chen@amd.com>
+ <20231124103123.3263471-2-Jiqian.Chen@amd.com>
+ <alpine.DEB.2.22.394.2311291943260.3533093@ubuntu-linux-20-04-desktop>
+ <BL1PR12MB58490EB260D226500141557EE782A@BL1PR12MB5849.namprd12.prod.outlook.com>
+From:   Stewart Hildebrand <stewart.hildebrand@amd.com>
+In-Reply-To: <BL1PR12MB58490EB260D226500141557EE782A@BL1PR12MB5849.namprd12.prod.outlook.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_DIGITS,
-        FROM_LOCAL_HEX,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+Content-Transfer-Encoding: 7bit
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS2PEPF00003447:EE_|SN7PR12MB8103:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0c753df2-6631-4fdb-5150-08dbf1b57823
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: vqNgQS6+MyAmGysQyzTvULI2XB9tcAY7ALXeSWoFkM+jhBkNSccCU6PvqCnnKB51BcVkpiBqrwGwi8T0NVI51dDQHZOBHHWI8SOHMrw9ffY8AoOe6I21mvDRaovgrSnKgMRUaU4pPUulyB6Nh6cxSZ07QiJleHlMCsFr3Yj6Bv020ouNNLCIh4oLh732ZlWl2Sxx4WfF3Eb07wwwkwJC6GrIqNfyh2qQcr4wzzRZWucQK6YB0xwUYyVzcFrwxwHgIRpWRvxuKIiMR46jD+1GeHdRDJeux6U0YxlUGfQ2pjtDL+5+92Hj7VuGZISnDnyjHYb9cz9cYHA8P04yQkOnGa7NkckVGuVixHPcogly74Vp/87Pv5IuhyNC2+KyNt2vC4JY0rflMghsHLaGHGUakBXv6SLOZVub4nAFkDiPnA4+VXhalzfEkKNZdITnKVU15YeLHXRQN2fdOTZ+dcD+Lb5PB2zeRkJEKom+k/vXX3gWghwCY9IDmD4BJZB71oLuy8xvTCpHreJNxNXamY5YX1OT8+HYbwDe6sOfgQUa9pACrhgDd2ZkC/ffoO06EE8jHu1XIImIxNfaD1lQ9XMGl8Nl030V/wANPLojhqOoGoW6iDqwt0PoncQZRbJrMy/6/pCajd2dVVL+jEO1Xof9/iK6ikkZR6NwZ920lPi/YgPxIwyY+Jx/YDHuZH/PyaQlhM7boQzbR/QSRIyiNmpKJis8EXzGuhHLh0KF3KaSC6eXRQE7EVChoE0GbjmP3Xu5w7UcIqtYap0iSbC/wKFPeirW+1b2GDxS5YQUQ/deHDiUieAFrNgR8faYvwQRyA+lHhmfkpxBYCCD+dnyi+Bx17Slu8o4NZkSkGprRZqJz50=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(376002)(396003)(39860400002)(136003)(230922051799003)(186009)(451199024)(64100799003)(82310400011)(1800799012)(46966006)(36840700001)(40470700004)(31686004)(40460700003)(40480700001)(2616005)(478600001)(53546011)(336012)(47076005)(26005)(36860700001)(356005)(81166007)(86362001)(36756003)(82740400003)(31696002)(70586007)(5660300002)(70206006)(44832011)(54906003)(41300700001)(426003)(7416002)(2906002)(83380400001)(4326008)(8676002)(316002)(8936002)(110136005)(16576012)(43740500002)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Nov 2023 15:03:10.9230
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0c753df2-6631-4fdb-5150-08dbf1b57823
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: DS2PEPF00003447.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB8103
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,168 +121,129 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 11/30/23 02:03, Chen, Jiqian wrote:
+> 
+> On 2023/11/30 11:46, Stefano Stabellini wrote:
+>> On Fri, 24 Nov 2023, Jiqian Chen wrote:
+>>> When device on dom0 side has been reset, the vpci on Xen side
+>>> won't get notification, so that the cached state in vpci is
+>>> all out of date with the real device state.
+>>> To solve that problem, this patch add a function to clear all
+>>> vpci device state when device is reset on dom0 side.
+>>>
+>>> And call that function in pcistub_init_device. Because when
+>>> we use "pci-assignable-add" to assign a passthrough device in
+>>> Xen, it will reset passthrough device and the vpci state will
+>>> out of date, and then device will fail to restore bar state.
+>>>
+>>> Signed-off-by: Jiqian Chen <Jiqian.Chen@amd.com>
+>>> Signed-off-by: Huang Rui <ray.huang@amd.com>
+>>> ---
+>>>  drivers/xen/pci.c                  | 12 ++++++++++++
+>>>  drivers/xen/xen-pciback/pci_stub.c |  3 +++
+>>>  include/xen/interface/physdev.h    |  2 ++
+>>>  include/xen/pci.h                  |  6 ++++++
+>>>  4 files changed, 23 insertions(+)
+>>>
+>>> diff --git a/drivers/xen/pci.c b/drivers/xen/pci.c
+>>> index 72d4e3f193af..e9b30bc09139 100644
+>>> --- a/drivers/xen/pci.c
+>>> +++ b/drivers/xen/pci.c
+>>> @@ -177,6 +177,18 @@ static int xen_remove_device(struct device *dev)
+>>>  	return r;
+>>>  }
+>>>  
+>>> +int xen_reset_device_state(const struct pci_dev *dev)
+>>> +{
+>>> +	struct physdev_pci_device device = {
+>>> +		.seg = pci_domain_nr(dev->bus),
+>>> +		.bus = dev->bus->number,
+>>> +		.devfn = dev->devfn
+>>> +	};
+>>> +
+>>> +	return HYPERVISOR_physdev_op(PHYSDEVOP_pci_device_state_reset, &device);
+>>> +}
+>>> +EXPORT_SYMBOL_GPL(xen_reset_device_state);
+>>> +
+>>>  static int xen_pci_notifier(struct notifier_block *nb,
+>>>  			    unsigned long action, void *data)
+>>>  {
+>>> diff --git a/drivers/xen/xen-pciback/pci_stub.c b/drivers/xen/xen-pciback/pci_stub.c
+>>> index e34b623e4b41..5a96b6c66c07 100644
+>>> --- a/drivers/xen/xen-pciback/pci_stub.c
+>>> +++ b/drivers/xen/xen-pciback/pci_stub.c
+>>> @@ -421,6 +421,9 @@ static int pcistub_init_device(struct pci_dev *dev)
+>>>  	else {
+>>>  		dev_dbg(&dev->dev, "resetting (FLR, D3, etc) the device\n");
+>>>  		__pci_reset_function_locked(dev);
+>>> +		err = xen_reset_device_state(dev);
+>>> +		if (err)
+>>> +			goto config_release;
+>>
+>> Older versions of Xen won't have the hypercall
+>> PHYSDEVOP_pci_device_state_reset implemented. I think we should do
+>> something like:
+>>
+>> if (err && xen_pvh_domain())
+>>     goto config_release;
+>>
+>>
+>> Or even:
+>>
+>> if (xen_pvh_domain()) {
+>>     err = xen_reset_device_state(dev);
+>>     if (err)
+>>         goto config_release;
+>> }
+>>
+>> depending on whether we want to call xen_reset_device_state also for PV
+>> guests or not. I am assuming we don't want to error out on failure such
+>> as -ENOENT for PV guests.
+> Yes, only for PVH dom0, I will add the condition in next version. Thank you!
 
-syzbot found the following issue on:
+We will want to call xen_reset_device_state() for Arm dom0, too, so checking xen_pvh_domain() alone is not sufficient. I suggest instead to check !xen_pv_domain().
 
-HEAD commit:    8c9660f65153 Add linux-next specific files for 20231124
-git tree:       linux-next
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=14c8a334e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ca1e8655505e280
-dashboard link: https://syzkaller.appspot.com/bug?extid=4da851837827326a7cd4
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=119809d0e80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13930542e80000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/345ed4af3a0d/disk-8c9660f6.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/191053c69d57/vmlinux-8c9660f6.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/aac7ee5e55e0/bzImage-8c9660f6.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+4da851837827326a7cd4@syzkaller.appspotmail.com
-
-INFO: task syz-executor136:5067 blocked for more than 143 seconds.
-      Not tainted 6.7.0-rc2-next-20231124-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor136 state:D stack:26736 pid:5067  tgid:5066  ppid:5064   flags:0x00004006
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5399 [inline]
- __schedule+0xf15/0x5c00 kernel/sched/core.c:6726
- __schedule_loop kernel/sched/core.c:6801 [inline]
- schedule+0xe7/0x270 kernel/sched/core.c:6816
- schedule_preempt_disabled+0x13/0x20 kernel/sched/core.c:6873
- __mutex_lock_common kernel/locking/mutex.c:679 [inline]
- __mutex_lock+0x5b4/0x9c0 kernel/locking/mutex.c:747
- bdev_release+0xcd/0xa90 block/bdev.c:967
- blkdev_release+0x37/0x50 block/fops.c:616
- __fput+0x270/0xbb0 fs/file_table.c:394
- task_work_run+0x14c/0x240 kernel/task_work.c:180
- ptrace_notify+0x10a/0x130 kernel/signal.c:2390
- ptrace_report_syscall include/linux/ptrace.h:411 [inline]
- ptrace_report_syscall_exit include/linux/ptrace.h:473 [inline]
- syscall_exit_work kernel/entry/common.c:251 [inline]
- syscall_exit_to_user_mode_prepare+0x122/0x230 kernel/entry/common.c:278
- __syscall_exit_to_user_mode_work kernel/entry/common.c:283 [inline]
- syscall_exit_to_user_mode+0xe/0x60 kernel/entry/common.c:296
- do_syscall_64+0x4d/0x110 arch/x86/entry/common.c:88
- entry_SYSCALL_64_after_hwframe+0x62/0x6a
-RIP: 0033:0x7f7015ea8479
-RSP: 002b:00007f7015e66218 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: 0000000000000000 RBX: 00007f7015f2f328 RCX: 00007f7015ea8479
-RDX: 0000000000000000 RSI: 000000000000ab03 RDI: 0000000000000005
-RBP: 00007f7015f2f320 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007f7015f2f32c
-R13: 00007f7015efc18c R14: 64626e2f7665642f R15: 00000000ffffff43
- </TASK>
-
-Showing all locks held in the system:
-1 lock held by khungtaskd/29:
- #0: ffffffff8cfacf60 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:301 [inline]
- #0: ffffffff8cfacf60 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:747 [inline]
- #0: ffffffff8cfacf60 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x75/0x340 kernel/locking/lockdep.c:6613
-2 locks held by getty/4817:
- #0: ffff88802ae300a0 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x24/0x80 drivers/tty/tty_ldisc.c:243
- #1: ffffc90002f062f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0xfc4/0x1490 drivers/tty/n_tty.c:2201
-1 lock held by udevd/5057:
- #0: ffff888143bbf4c8 (&disk->open_mutex){+.+.}-{3:3}, at: bdev_open_by_dev+0x27c/0xed0 block/bdev.c:857
-1 lock held by syz-executor136/5067:
- #0: ffff888143bbf4c8 (&disk->open_mutex){+.+.}-{3:3}, at: bdev_release+0xcd/0xa90 block/bdev.c:967
-
-=============================================
-
-NMI backtrace for cpu 1
-CPU: 1 PID: 29 Comm: khungtaskd Not tainted 6.7.0-rc2-next-20231124-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
- nmi_cpu_backtrace+0x277/0x390 lib/nmi_backtrace.c:113
- nmi_trigger_cpumask_backtrace+0x299/0x300 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:160 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:222 [inline]
- watchdog+0xf86/0x1210 kernel/hung_task.c:379
- kthread+0x2c1/0x3a0 kernel/kthread.c:389
- ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
- </TASK>
-Sending NMI from CPU 1 to CPUs 0:
-NMI backtrace for cpu 0
-CPU: 0 PID: 59 Comm: kworker/u4:4 Not tainted 6.7.0-rc2-next-20231124-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
-Workqueue: events_unbound toggle_allocation_gate
-RIP: 0010:arch_static_branch arch/x86/include/asm/jump_label.h:27 [inline]
-RIP: 0010:static_key_false include/linux/jump_label.h:207 [inline]
-RIP: 0010:native_write_msr arch/x86/include/asm/msr.h:147 [inline]
-RIP: 0010:wrmsrl arch/x86/include/asm/msr.h:262 [inline]
-RIP: 0010:native_x2apic_icr_write arch/x86/include/asm/apic.h:216 [inline]
-RIP: 0010:__x2apic_send_IPI_dest arch/x86/kernel/apic/x2apic_phys.c:113 [inline]
-RIP: 0010:x2apic_send_IPI+0x96/0xe0 arch/x86/kernel/apic/x2apic_phys.c:50
-Code: 8b 13 0f ae f0 0f ae e8 b9 00 04 00 00 41 83 fc 02 44 89 e0 48 0f 44 c1 48 c1 e2 20 b9 30 08 00 00 48 09 d0 48 c1 ea 20 0f 30 <66> 90 5b 5d 41 5c c3 5b 31 d2 48 89 c6 bf 30 08 00 00 5d 41 5c e9
-RSP: 0018:ffffc900015a7900 EFLAGS: 00000202
-RAX: 00000001000000fb RBX: ffff8880b9921a2c RCX: 0000000000000830
-RDX: 0000000000000001 RSI: 00000000000000fb RDI: ffffffff8ca75a68
-RBP: 0000000000000001 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000001 R11: 0000000000000006 R12: 00000000000000fb
-R13: 000000000003bccc R14: 0000000000000001 R15: ffff8880b983d8c0
-FS:  0000000000000000(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055750a5bb680 CR3: 000000000cd78000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <NMI>
- </NMI>
- <TASK>
- arch_send_call_function_single_ipi arch/x86/include/asm/smp.h:101 [inline]
- send_call_function_single_ipi kernel/smp.c:117 [inline]
- smp_call_function_many_cond+0x12ef/0x1570 kernel/smp.c:837
- on_each_cpu_cond_mask+0x40/0x90 kernel/smp.c:1023
- on_each_cpu include/linux/smp.h:71 [inline]
- text_poke_sync arch/x86/kernel/alternative.c:2008 [inline]
- text_poke_bp_batch+0x655/0x750 arch/x86/kernel/alternative.c:2218
- text_poke_flush arch/x86/kernel/alternative.c:2409 [inline]
- text_poke_flush arch/x86/kernel/alternative.c:2406 [inline]
- text_poke_finish+0x30/0x40 arch/x86/kernel/alternative.c:2416
- arch_jump_label_transform_apply+0x1c/0x30 arch/x86/kernel/jump_label.c:146
- jump_label_update+0x1d7/0x400 kernel/jump_label.c:829
- static_key_enable_cpuslocked+0x1b7/0x270 kernel/jump_label.c:205
- static_key_enable+0x1a/0x20 kernel/jump_label.c:218
- toggle_allocation_gate mm/kfence/core.c:830 [inline]
- toggle_allocation_gate+0xf4/0x250 mm/kfence/core.c:822
- process_one_work+0x8a4/0x15f0 kernel/workqueue.c:2633
- process_scheduled_works kernel/workqueue.c:2706 [inline]
- worker_thread+0x8b6/0x1290 kernel/workqueue.c:2787
- kthread+0x2c1/0x3a0 kernel/kthread.c:389
- ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
- </TASK>
-INFO: NMI handler (nmi_cpu_backtrace_handler) took too long to run: 1.905 msecs
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+> 
+>>
+>>
+>>>  		pci_restore_state(dev);
+>>>  	}
+>>>  	/* Now disable the device (this also ensures some private device
+>>> diff --git a/include/xen/interface/physdev.h b/include/xen/interface/physdev.h
+>>> index a237af867873..231526f80f6c 100644
+>>> --- a/include/xen/interface/physdev.h
+>>> +++ b/include/xen/interface/physdev.h
+>>> @@ -263,6 +263,8 @@ struct physdev_pci_device {
+>>>      uint8_t devfn;
+>>>  };
+>>>  
+>>> +#define PHYSDEVOP_pci_device_state_reset     32
+>>> +
+>>>  #define PHYSDEVOP_DBGP_RESET_PREPARE    1
+>>>  #define PHYSDEVOP_DBGP_RESET_DONE       2
+>>>  
+>>> diff --git a/include/xen/pci.h b/include/xen/pci.h
+>>> index b8337cf85fd1..b2e2e856efd6 100644
+>>> --- a/include/xen/pci.h
+>>> +++ b/include/xen/pci.h
+>>> @@ -4,10 +4,16 @@
+>>>  #define __XEN_PCI_H__
+>>>  
+>>>  #if defined(CONFIG_XEN_DOM0)
+>>> +int xen_reset_device_state(const struct pci_dev *dev);
+>>>  int xen_find_device_domain_owner(struct pci_dev *dev);
+>>>  int xen_register_device_domain_owner(struct pci_dev *dev, uint16_t domain);
+>>>  int xen_unregister_device_domain_owner(struct pci_dev *dev);
+>>>  #else
+>>> +static inline int xen_reset_device_state(const struct pci_dev *dev)
+>>> +{
+>>> +	return -1;
+>>> +}
+>>> +
+>>>  static inline int xen_find_device_domain_owner(struct pci_dev *dev)
+>>>  {
+>>>  	return -1;
+>>> -- 
+>>> 2.34.1
+>>>
+> 
