@@ -2,99 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A1BC7FFCEE
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 21:43:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E71C7FFCFC
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 21:44:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232288AbjK3Unj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 15:43:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56340 "EHLO
+        id S1376786AbjK3UoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 15:44:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbjK3Uni (ORCPT
+        with ESMTP id S1376770AbjK3Un7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 15:43:38 -0500
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6C1ED48
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 12:43:44 -0800 (PST)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1cfc35090b0so13017425ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 12:43:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1701377024; x=1701981824; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BONc/gsZ484W+RnDrWM813jLHbQPmNxKnBVSe2Sio/M=;
-        b=W2TrdZpZuktlYQSHQXZ/bmBgwXJBThNuJS6+WYjD+vetDG9z4hRssMaB24MbXhLXn4
-         1zeG6jRfQE5LN75o+1f+fx+FIZTgx9ZM2/qf67+Zaao8ZV49ljCFzRt4PQjxxzXEqv2g
-         1cg5g/VtYmPBlcr3cFllf2nBu0E8UXFQnyBj4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701377024; x=1701981824;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BONc/gsZ484W+RnDrWM813jLHbQPmNxKnBVSe2Sio/M=;
-        b=jln+51i4cz2l2pPTgeAvLNO9lunygMsVMu0rQCv/iyOZiBMCOQTds1MfU/WYckq9x2
-         9K91yT1iwWdiFX4n5A8RUc+SAz20gfQlXdYo6QnXWOGQeIqx5cqMaksv8IUJda+hovSQ
-         52P6ocAUXfWCYeOSe/1DkfwCLSv9VtfPvGyegGE+U48Bh+nXPXjhoTOMjRuFOJBkpatr
-         ruIokeuWHK9ejBQ+LXm9uY68ij7Qffeqxrvu0R7ivQiqiEtthumVz1puFceOt11gH6Vv
-         VoWjGEv0e+JN2GmbxD+MiBkv6XFDGnSSxyPpWeKbo/d1Mpn8vHm2CGj0LfQWz3Vefde1
-         95Yg==
-X-Gm-Message-State: AOJu0YxkVVyfWAt5LlCFoMVu58EU/HwpOoOGi3YHNHAbb/PW3wfsOPrf
-        PAwid1D4cDPLRFMn0Njbv3Lb9g==
-X-Google-Smtp-Source: AGHT+IHfA9hvAZq8YS/f582nNVUYbicmMy65rHGUVvYZ5n1msLrmQAe6nxVBosEvd4AG2O0JZhCilQ==
-X-Received: by 2002:a17:902:d2c2:b0:1d0:4510:133b with SMTP id n2-20020a170902d2c200b001d04510133bmr1831307plc.22.1701377024347;
-        Thu, 30 Nov 2023 12:43:44 -0800 (PST)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id j20-20020a170902759400b001c74df14e6fsm1812526pll.284.2023.11.30.12.43.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Nov 2023 12:43:44 -0800 (PST)
-From:   Kees Cook <keescook@chromium.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Kees Cook <keescook@chromium.org>
-Cc:     Valentin Schneider <vschneid@redhat.com>,
-        "Steven Rostedt (Google)" <rostedt@goodmis.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Geliang Tang <geliang.tang@suse.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] samples: Replace strlcpy() with strscpy()
-Date:   Thu, 30 Nov 2023 12:43:41 -0800
-Message-Id: <170137701899.3640290.1090297958877884765.b4-ty@chromium.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231116191510.work.550-kees@kernel.org>
-References: <20231116191510.work.550-kees@kernel.org>
+        Thu, 30 Nov 2023 15:43:59 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 15D711731;
+        Thu, 30 Nov 2023 12:43:57 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5ED9F1042;
+        Thu, 30 Nov 2023 12:44:43 -0800 (PST)
+Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 617BF3F73F;
+        Thu, 30 Nov 2023 12:43:55 -0800 (PST)
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     Sudeep Holla <sudeep.holla@arm.com>, quic_mdtipton@quicinc.com,
+        quic_asartor@quicinc.com, quic_lingutla@quicinc.com,
+        Sibi Sankar <quic_sibis@quicinc.com>,
+        linux-arm-msm@vger.kernel.org,
+        Cristian Marussi <cristian.marussi@arm.com>
+Subject: [PATCH 1/2] firmware: arm_scmi: Fix frequency truncation by promoting multiplier to u64
+Date:   Thu, 30 Nov 2023 20:43:42 +0000
+Message-ID: <20231130204343.503076-1-sudeep.holla@arm.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Nov 2023 11:15:10 -0800, Kees Cook wrote:
-> strlcpy() reads the entire source buffer first. This read may exceed
-> the destination size limit. This is both inefficient and can lead
-> to linear read overflows if a source string is not NUL-terminated[1].
-> Additionally, it returns the size of the source string, not the
-> resulting size of the destination string. In an effort to remove strlcpy()
-> completely[2], replace strlcpy() here with strscpy().
-> 
-> [...]
+Fix the frequency truncation for all values equal to or greater 4GHz by
+updating the multiplier 'mult_factor' to u64 type. It is also possible
+that the multiplier itself can be greater than or equal to 2^32. So we need
+to also fix the equation computing the value of the multiplier.
 
-Applied to for-next/hardening, thanks!
+Fixes: a9e3fbfaa0ff ("firmware: arm_scmi: add initial support for performance protocol")
+Reported-by: Sibi Sankar <quic_sibis@quicinc.com>
+Closes: https://lore.kernel.org/all/20231129065748.19871-3-quic_sibis@quicinc.com/
+Cc: Cristian Marussi <cristian.marussi@arm.com>
+Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+---
+ drivers/firmware/arm_scmi/perf.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-[1/1] samples: Replace strlcpy() with strscpy()
-      https://git.kernel.org/kees/c/40b2519d7566
-
-Take care,
-
--- 
-Kees Cook
+diff --git a/drivers/firmware/arm_scmi/perf.c b/drivers/firmware/arm_scmi/perf.c
+index 81dd5c5e5533..8ce449922e55 100644
+--- a/drivers/firmware/arm_scmi/perf.c
++++ b/drivers/firmware/arm_scmi/perf.c
+@@ -152,7 +152,7 @@ struct perf_dom_info {
+ 	u32 opp_count;
+ 	u32 sustained_freq_khz;
+ 	u32 sustained_perf_level;
+-	u32 mult_factor;
++	u64 mult_factor;
+ 	struct scmi_perf_domain_info info;
+ 	struct scmi_opp opp[MAX_OPPS];
+ 	struct scmi_fc_info *fc_info;
+@@ -273,8 +273,8 @@ scmi_perf_domain_attributes_get(const struct scmi_protocol_handle *ph,
+ 			dom_info->mult_factor =	1000;
+ 		else
+ 			dom_info->mult_factor =
+-					(dom_info->sustained_freq_khz * 1000) /
+-					dom_info->sustained_perf_level;
++					(dom_info->sustained_freq_khz * 1000UL)
++					/ dom_info->sustained_perf_level;
+ 		strscpy(dom_info->info.name, attr->name,
+ 			SCMI_SHORT_NAME_MAX_SIZE);
+ 	}
+--
+2.43.0
 
