@@ -2,140 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9A197FFEBE
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 23:51:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03B167FFEC6
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 23:57:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377149AbjK3Wu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 17:50:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34310 "EHLO
+        id S1377208AbjK3W5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 17:57:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235194AbjK3Wuw (ORCPT
+        with ESMTP id S1377192AbjK3W5q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 17:50:52 -0500
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31D0C91;
-        Thu, 30 Nov 2023 14:50:59 -0800 (PST)
-Received: by mail-oi1-x22c.google.com with SMTP id 5614622812f47-3b8903f7192so897810b6e.0;
-        Thu, 30 Nov 2023 14:50:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701384658; x=1701989458; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+9WwWZklN0+vDMUHEvugiN9GLGkxGRM9Mi/9Ul82cU0=;
-        b=G9xF+sDw8cfPlKP2o/y36pPN8MexE9lZ1ImbVHHxM+fo24+69BPT5QSTSyuMBCbY25
-         JasR5cjJYm8X/z7rMoER1yhdU6VHTL93LdKDDb5ga2SHfJ0XqX9tnOs0DWYXYuBhAp5N
-         KL/p+fm/zxejDn9m1NsOKASyNSTJmnl6n9atQDb09qxI0Qfck0swtqpiHNwO0iPxZYwJ
-         k/MqVvAW6fRWmOKvpR9YEXlaNldOaDi+DsnBprkJXSwFE90t0SbJYit7cvw6nRdGqdWq
-         WKxLMveK2Lr2WeTAARSfGKJ9pOWpL1FzE9HHntN+AiMaTSchpNGhjH8yK9449omknZ78
-         ar1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701384658; x=1701989458;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+9WwWZklN0+vDMUHEvugiN9GLGkxGRM9Mi/9Ul82cU0=;
-        b=Fbmm8aW5bMWPw0QTMmIq+LGPYosyqW7oF7hW0qY+DfPKr1PSAHcwKtEkAu3foEu4Q9
-         maNMmwAABD/Ls0zQE019CjAaLWeVCOMnOYjo9yjpG69YAnYjDKVDTXyaiGQ48h68g/Nm
-         88Bgie0my+ysmXjSQpM+ikfEA7OKQWHm7DOx0J82x8wkozdvT7jzU585gI6868vE7ZjB
-         hpKRzlfhZtim3IUrKjxrM4HkT3UY3YadtenvCGWlAss10cYjrebRPLxbs1xpy4HCuZz8
-         oNjBF1+ZSikcNTS3eO9vRLsIsbZcFMuAnIPsuIW0JLWPJHiTpcVwTlxo0iRK7NdtsVBZ
-         3s/g==
-X-Gm-Message-State: AOJu0Yx8pKlJgpl+TFMyzQSoCD6mlzYyQvM/SkLq5NHkxaOs6rx+rgHt
-        cZ+VdfOtVUaF02zdvnm9jfk=
-X-Google-Smtp-Source: AGHT+IHHqa2BAvp52jry9MyArbZJZ++S2L7AL8Wt6kw+X6HYLK+spG+Ab62C3S9/lvV8GA9icyKAYQ==
-X-Received: by 2002:a05:6871:e499:b0:1fa:d6e7:afe0 with SMTP id pz25-20020a056871e49900b001fad6e7afe0mr2341151oac.56.1701384658387;
-        Thu, 30 Nov 2023 14:50:58 -0800 (PST)
-Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
-        by smtp.gmail.com with ESMTPSA id o16-20020ac841d0000000b00423829b6d91sm904566qtm.8.2023.11.30.14.50.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Nov 2023 14:50:58 -0800 (PST)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 6448C27C0054;
-        Thu, 30 Nov 2023 17:50:57 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Thu, 30 Nov 2023 17:50:57 -0500
-X-ME-Sender: <xms:0BFpZTmjNyO3oF6v_Lt59lTff--CU9ho_EPPua_jbZ8PUD5rQgoIlw>
-    <xme:0BFpZW3R1ykypLK5g6XhdSIObLGAQHbEHpnzcm-xTbZeH_E134ccZLm5wRw2XKKJe
-    Ja1KwNJf9v4dOWrRg>
-X-ME-Received: <xmr:0BFpZZpx6ERcuYNBUswBJgUXf-WI9yybjBzeWRBg2VA_o6igZWGYiRLYr4Q>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeikedgtdefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhu
-    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
-    htthgvrhhnpeehudfgudffffetuedtvdehueevledvhfelleeivedtgeeuhfegueeviedu
-    ffeivdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    gsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdei
-    gedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfih
-    igmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:0BFpZbkm5LdzT3vE41N4hjSPpmUEyTVlRF0JMmLPygPvoLHUf-vhXA>
-    <xmx:0BFpZR13vqMb7FyZz3LX_IPIEm6g8U-ShYhGp5iJSKvXTVjHPRU1-Q>
-    <xmx:0BFpZathv0zmEcHegDNZ_apjEwnuNEVC6IauIylCmnVXsjdeYX7xxQ>
-    <xmx:0RFpZSd9on4wAc6osvZHqUVsZHeisouzSjDj0cgW3iL8KDJLsSm7Sw>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 30 Nov 2023 17:50:56 -0500 (EST)
-Date:   Thu, 30 Nov 2023 14:50:07 -0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Alice Ryhl <aliceryhl@google.com>
-Cc:     Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Gary Guo <gary@garyguo.net>,
-        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Carlos Llamas <cmllamas@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 7/7] rust: file: add abstraction for `poll_table`
-Message-ID: <ZWkRnxT4ymjn0tYM@boqun-archlinux>
-References: <20231129-alice-file-v1-0-f81afe8c7261@google.com>
- <20231129-alice-file-v1-7-f81afe8c7261@google.com>
+        Thu, 30 Nov 2023 17:57:46 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01C4E194;
+        Thu, 30 Nov 2023 14:57:52 -0800 (PST)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 767661FD11;
+        Thu, 30 Nov 2023 22:57:51 +0000 (UTC)
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 4FDDE138E5;
+        Thu, 30 Nov 2023 22:57:51 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+        by imap2.dmz-prg2.suse.org with ESMTPSA
+        id O5H+Em8TaWXDYAAAn2gu4w
+        (envelope-from <dsterba@suse.cz>); Thu, 30 Nov 2023 22:57:51 +0000
+Date:   Thu, 30 Nov 2023 23:50:33 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Colin Ian King <colin.i.king@gmail.com>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] btrfs: remove shadowed declaration of variable i
+ in for-loops
+Message-ID: <20231130225033.GV18929@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20231130150811.2208562-1-colin.i.king@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231129-alice-file-v1-7-f81afe8c7261@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231130150811.2208562-1-colin.i.king@gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spamd-Bar: +++++++++++++
+X-Spam-Score: 13.01
+X-Rspamd-Server: rspamd1
+Authentication-Results: smtp-out2.suse.de;
+        dkim=none;
+        spf=softfail (smtp-out2.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither permitted nor denied by domain of dsterba@suse.cz) smtp.mailfrom=dsterba@suse.cz;
+        dmarc=none
+X-Rspamd-Queue-Id: 767661FD11
+X-Spamd-Result: default: False [13.01 / 50.00];
+         HAS_REPLYTO(0.30)[dsterba@suse.cz];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         ARC_NA(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         REPLYTO_ADDR_EQ_FROM(0.00)[];
+         R_SPF_SOFTFAIL(4.60)[~all];
+         DMARC_NA(1.20)[suse.cz];
+         RCVD_COUNT_THREE(0.00)[3];
+         MX_GOOD(-0.01)[];
+         NEURAL_HAM_SHORT(-0.18)[-0.920];
+         RCPT_COUNT_SEVEN(0.00)[7];
+         NEURAL_SPAM_LONG(3.50)[1.000];
+         FREEMAIL_TO(0.00)[gmail.com];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         R_DKIM_NA(2.20)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_TLS_ALL(0.00)[];
+         SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,TVD_SUBJ_WIPE_DEBT,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 01:12:51PM +0000, Alice Ryhl wrote:
-[...]
-> +// Make the `CondVar` methods callable on `PollCondVar`.
-> +impl Deref for PollCondVar {
-> +    type Target = CondVar;
-> +
-> +    fn deref(&self) -> &CondVar {
-> +        &self.inner
-> +    }
-> +}
+On Thu, Nov 30, 2023 at 03:08:11PM +0000, Colin Ian King wrote:
+> The variable i is declared at the start of function btrfs_qgroup_inherit
+> however there are two for-loops that redeclare the variable using a C99
+> declaration, causes name shadowing. I believe there is no need for this
+> local scoping of i in the loop, so replace the declaration in the loops
+> with assignments.
+> 
+> Cleans up clang scan build warnings:
+> 
+> fs/btrfs/qgroup.c:3194:12: warning: declaration shadows a local variable [-Wshadow]
+>  3194 |                 for (int i = 0; i < inherit->num_qgroups; i++) {
+>       |                          ^
+> fs/btrfs/qgroup.c:3089:6: note: previous declaration is here
+>  3089 |         int i;
+>       |             ^
+> fs/btrfs/qgroup.c:3321:12: warning: declaration shadows a local variable [-Wshadow]
+>  3321 |                 for (int i = 0; i < inherit->num_qgroups; i++)
+>       |                          ^
+> fs/btrfs/qgroup.c:3089:6: note: previous declaration is here
+>  3089 |         int i;
+>       |             ^
+> 
+> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+> ---
+>  fs/btrfs/qgroup.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+> index ce446d9d7f23..b1f93dbf468c 100644
+> --- a/fs/btrfs/qgroup.c
+> +++ b/fs/btrfs/qgroup.c
+> @@ -3191,7 +3191,7 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
+>  			ret = -ENOMEM;
+>  			goto out;
+>  		}
+> -		for (int i = 0; i < inherit->num_qgroups; i++) {
+> +		for (i = 0; i < inherit->num_qgroups; i++) {
 
-I generally think we should avoid using Deref for "subclass pattern" due
-to the potential confusion for the code readers (of the deref() usage).
-Would it be possible we start with `impl AsRef<CondVar>`?
-
-Thanks!
-
-Regards,
-Boqun
+We want to use the for(...) local definitions, so this should change the
+function scope 'i'.
