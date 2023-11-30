@@ -2,106 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C7307FFBCB
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 20:51:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61C237FFBCD
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 20:51:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376545AbjK3Tux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 14:50:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49260 "EHLO
+        id S1376563AbjK3TvU convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 30 Nov 2023 14:51:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229697AbjK3Tuv (ORCPT
+        with ESMTP id S229697AbjK3TvR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 14:50:51 -0500
-Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1035D5C;
-        Thu, 30 Nov 2023 11:50:57 -0800 (PST)
-Received: by mail-qv1-xf2f.google.com with SMTP id 6a1803df08f44-677fba00a49so11248246d6.1;
-        Thu, 30 Nov 2023 11:50:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701373857; x=1701978657; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=cWW8Aq31tJ4AFADeDZ3NfoI4ZhRoXFCiCERKyyo7JHU=;
-        b=XcOFj6sydu0OPBXqGycQGZ+Dj292poIQTlTprORAW1dhkdRV1uOdzo262w5+RK1lJz
-         nw66dLgc4FUBNLsfMLIWG4vswROtA06h/7U+lB7bW8A3HfC+X4tOf5kwhzuHXWebcpwc
-         In9mBmipAoqBG4/azcTjvqFX/5Dptr7KuTFAhuFUiokEvqyS7VJ9skhtqyFU1+4WyJf3
-         a+nbMzCGKe7UNXn/L52m8Z9PeW8zEK9caXL1mG2l1oNTNlGKE2uDcB9nVXqbuRiqD0pF
-         WEPsKr/pGy4VZVt/IuKGxUnNFp2AO/1H4ugy27fcVEgf7rEyhCiVQyMf/ijQ4XBs3OfZ
-         gVJg==
+        Thu, 30 Nov 2023 14:51:17 -0500
+Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA5EE10D9;
+        Thu, 30 Nov 2023 11:51:20 -0800 (PST)
+Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-5a0dc313058so136471a12.0;
+        Thu, 30 Nov 2023 11:51:20 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701373857; x=1701978657;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cWW8Aq31tJ4AFADeDZ3NfoI4ZhRoXFCiCERKyyo7JHU=;
-        b=deMFESsoAB8IjKAdhU+QV8+70sXu9kXhK0KKwtwJUJnUvpq4U11zOP6givxnkZ0zn6
-         qpO+7DcDFbU8RK/ppLATeY/gwyqZ5HE7oy8azyKV4gd7HEnmbqAra3VimJisEuR7sllB
-         BvYySJDs9IN0fx0+goiw739yqiFr4wnrunIyt1Md5OsBGC92ESKL1f4B5fpy3qxmiwjV
-         HPHTMeVxzEZxRNtHE/v8oMiyi/jTwO7riXjwZztnKiG2C5RwZAfpMqZyGEx7YjU5lFZ3
-         WLBRLDF1xSor84DgDmANkufDk52zwBL4NPC7EYeVqSzBtg05aYnDSXZCZ/sfIa4Kv5cJ
-         2a4g==
-X-Gm-Message-State: AOJu0YzB58cjtyZA6ALhDvaFMqpYqG3KMQ2CqZ1RMR3JWIxHjtN7qxGO
-        Uzscoyhvhg6gWYLVoP/TOL0=
-X-Google-Smtp-Source: AGHT+IHgNPVt6A4aptxpmjsABzyQ4w6Nf/RDCpjyLP3UpHU7FSfuppdsfxSo+Ffo5KMRZPHgU5ehSQ==
-X-Received: by 2002:a05:6214:1c0b:b0:67a:4546:9895 with SMTP id u11-20020a0562141c0b00b0067a45469895mr25511391qvc.12.1701373856929;
-        Thu, 30 Nov 2023 11:50:56 -0800 (PST)
-Received: from dschatzberg-fedora-PF3DHTBV ([2620:10d:c091:500::6:43ad])
-        by smtp.gmail.com with ESMTPSA id e24-20020a0caa58000000b0067a1e5ef6b1sm772545qvb.106.2023.11.30.11.50.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Nov 2023 11:50:56 -0800 (PST)
-Date:   Thu, 30 Nov 2023 14:50:54 -0500
-From:   Dan Schatzberg <schatzberg.dan@gmail.com>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Yosry Ahmed <yosryahmed@google.com>, Huan Yang <link@vivo.com>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Michal Hocko <mhocko@kernel.org>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Peter Xu <peterx@redhat.com>,
-        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
-        Yue Zhao <findns94@gmail.com>, Hugh Dickins <hughd@google.com>
-Subject: Re: [PATCH 0/1] Add swappiness argument to memory.reclaim
-Message-ID: <ZWjnnjX6Cg9ywXK2@dschatzberg-fedora-PF3DHTBV>
-References: <20231130153658.527556-1-schatzberg.dan@gmail.com>
- <20231130184424.7sbez2ukaylerhy6@google.com>
+        d=1e100.net; s=20230601; t=1701373880; x=1701978680;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mJU5RuE0x+xF9mko7R10DFPHzyAQ5KB1GOFj2cnT57k=;
+        b=rwtPNW3zhV8z9RabPkiekD+P4kifiy4FHJUC4v+8gGp8bev10lRyFr/HOcDWeYund/
+         8TJQMNPgC4UOL9fQpj4PFfv8rU6SMQ7ym3v6vHv1JGjtF2y8ACPuF7qC2Qn5TQnq11Zh
+         0qr0XqyfSz4+GjpALilSDEEGNNvHQ/JpDOj9Wpp/uyPTp3z41Cd1ZLvt+wRHnX54+3FO
+         QKAJtlpBZDRVs1CAKqyvd8loDE0x/Sy9sPMYYMHb0iXRd86b2MOf2H+I/OECkfxUOeBq
+         2xz+XUPNeyhXgwN9NSDVK4LA+BCH4IuRPDWHzIuiQfavCuaOMhuYNP3FfEH5QlhrrJFe
+         B1Yw==
+X-Gm-Message-State: AOJu0Yzk6TTRODk83id9uUwjMy6OswjLdKHtYZpn9bcQUlCPYHB6HSmM
+        SpXL1kBiMS0zuGNTi6uQzr9I6VGB1raPFKZdcuI=
+X-Google-Smtp-Source: AGHT+IEFEK0LHZXePrtLzsfQf6R9c7+Ca+68z5ZzBNw0EzmjpUDqlWBqijb28fQCsMkPW9EnYkvf/ceIGlmP9n4sFkU=
+X-Received: by 2002:a05:6a20:da91:b0:187:df59:5c43 with SMTP id
+ iy17-20020a056a20da9100b00187df595c43mr29063050pzb.2.1701373880126; Thu, 30
+ Nov 2023 11:51:20 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231130184424.7sbez2ukaylerhy6@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <5754079.DvuYhMxLoT@kreacher> <12355894.O9o76ZdvQC@kreacher>
+In-Reply-To: <12355894.O9o76ZdvQC@kreacher>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 30 Nov 2023 20:51:08 +0100
+Message-ID: <CAJZ5v0jKOarHuhVgS_Q8Rtamt6uP8LKdbVC=moYNO=WT+Kueog@mail.gmail.com>
+Subject: Re: [PATCH v1.1 2/2] thermal: sysfs: Simplifications of trip point
+ attribute callbacks
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 30, 2023 at 06:44:24PM +0000, Shakeel Butt wrote:
-> [...]
-> > * Swapout should be limited to manage SSD write endurance. In near-OOM
-> 
-> Is this about swapout to SSD only?
+Wrong subject, sorry for the noise.  Will resend.
 
-Correct
-
-> >   situations we are fine with lots of swap-out to avoid OOMs. As these are
-> >   typically rare events, they have relatively little impact on write endurance.
-> >   However, proactive reclaim runs continuously and so its impact on SSD write
-> >   endurance is more significant. Therefore it is desireable to control swap-out
-> >   for proactive reclaim separately from reactive reclaim
-> 
-> This is understandable but swapout to zswap should be fine, right?
-> (Sorry I am not following the discussion on zswap patches from Nhat. Is
-> the answer there?)
-
-You're correct here as well - we're not concerned about swapout to
-zswap as that does not impact SSD write endurance. This is not related
-to Nhat's patches.
+On Thu, Nov 30, 2023 at 8:42 PM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
+>
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+>
+> The _show() callback functions of the trip point sysfs attributes,
+> temperature, hysteresis and type, need not use thermal zone locking,
+> because the layout of the data structures they access does not change
+> after the thermal zone registration.
+>
+> Namely, they all need to access a specific entry in the thermal
+> zone's trips[] table that is always present for non-tripless thermal
+> zones and its size cannot change after the thermal zone has been
+> registered.  Thus it is always safe to access the trips[] table of a
+> registered thermal zone from each of the sysfs attributes in question.
+>
+> Moreover, the type of a trip point does not change after registering its
+> thermal zone, and while its temperature and hysteresis can change, for
+> example due to a firmware-induced thermal zone update, holding the zone
+> lock around reading them is pointless, because it does not prevent stale
+> values from being returned to user space.  For example, a trip point
+> temperature can always change ater trip_point_temp_show() has read it
+> and before the function's return statement is executed, regardless of
+> whether or not zone locking is used.
+>
+> For this reason, drop the zone locking from trip_point_type_show(),
+> trip_point_temp_show(), and trip_point_hyst_show().
