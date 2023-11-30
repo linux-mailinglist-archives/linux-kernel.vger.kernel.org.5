@@ -2,209 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A6FD7FEE8E
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 13:05:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23DFB7FEE91
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 13:06:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345309AbjK3MFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 07:05:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49198 "EHLO
+        id S1345342AbjK3MGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 07:06:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345278AbjK3MFH (ORCPT
+        with ESMTP id S1345513AbjK3MFt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 07:05:07 -0500
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CB16BD46;
-        Thu, 30 Nov 2023 04:05:12 -0800 (PST)
-Received: by linux.microsoft.com (Postfix, from userid 1099)
-        id 1AF5C20B74C0; Thu, 30 Nov 2023 04:05:12 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 1AF5C20B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1701345912;
-        bh=/rVuqlYYpLzwGHq/EK9NytP0xWQESkkc0TlDS3zxqY4=;
+        Thu, 30 Nov 2023 07:05:49 -0500
+Received: from mail5.25mail.st (mail5.25mail.st [74.50.62.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A86D10FF;
+        Thu, 30 Nov 2023 04:05:55 -0800 (PST)
+Received: from localhost (91-158-86-216.elisa-laajakaista.fi [91.158.86.216])
+        by mail5.25mail.st (Postfix) with ESMTPSA id C0C3B60513;
+        Thu, 30 Nov 2023 12:05:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=atomide.com;
+        s=25mailst; t=1701345954;
+        bh=64j2ievVtQY927UUjwWzElwnhla7pdOyy4BEKWcOMUk=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Bpt7p/4HhHDo6dYClHRLdHCut/FjhKTk6mGeZB+9C5QBTqhDefLDJZszOOxWnf74K
-         khFcWy3czqcJIXDdbr6llkD8Ic6HzwBpTBpnCLFwf3UXFQ2bOstrSz+QR8JwTmoGnO
-         jGgGYdAqsWiKEO2EKytfiLc+FYSb9ihaSt+rwXXc=
-Date:   Thu, 30 Nov 2023 04:05:12 -0800
-From:   Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     Souradeep Chakrabarti <schakrabarti@microsoft.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        Long Li <longli@microsoft.com>,
-        "sharmaajay@microsoft.com" <sharmaajay@microsoft.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "cai.huoqing@linux.dev" <cai.huoqing@linux.dev>,
-        "ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Paul Rosswurm <paulros@microsoft.com>
-Subject: Re: [EXTERNAL] Re: [PATCH V2 net-next] net: mana: Assigning IRQ
- affinity on HT cores
-Message-ID: <20231130120512.GA15408@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1700574877-6037-1-git-send-email-schakrabarti@linux.microsoft.com>
- <20231121154841.7fc019c8@kernel.org>
- <PUZP153MB0788476CD22D5AA2ECDC11ABCCBDA@PUZP153MB0788.APCP153.PROD.OUTLOOK.COM>
- <ZWfwcYPLVo+4V8Ps@yury-ThinkPad>
+        b=pjUVaZQwu5nwPYHMTyThDrx+JB04YB91pHg6wpWf/HpaIoOSUdRFjGmci4jYiWlTC
+         eoIeXAMBN8HZvXqUNDqIORpTwmAUXqSXenV70SdCRRqCV1Lxpr6chRqctiH+nH7kY6
+         fcdCZoSeELD/Rd9LfnZgzD+WcS0cjLBYpeDVUu+/uvCUvcx+qj75Fdr6ADE1xB/PVz
+         bkWBGNXkoVS678+PUZG0rmeQjtYfsYaHRdn1olC0671fw5TfJar+imqWTOaZSyBw6E
+         0zHN5zEDFxSPU30QzjyhK8g+Xires0UTQ2fPE/2aauStsdhwYdZDfM0+pgGaxfaKFD
+         FYiZrtkoXSIEw==
+Date:   Thu, 30 Nov 2023 14:05:33 +0200
+From:   Tony Lindgren <tony@atomide.com>
+To:     Adam Ford <aford173@gmail.com>
+Cc:     Andreas Kemnade <andreas@kemnade.info>, bcousson@baylibre.com,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, linux-omap@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ARM: dts: omap: logicpd-torpedo: do not disguise GNSS
+ device
+Message-ID: <20231130120533.GD5169@atomide.com>
+References: <20231127200430.143231-1-andreas@kemnade.info>
+ <CAHCN7xLpERbs1MPMXTAPCqoPgAN5ts+Ubr=MiO6urW-wuuxp=w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZWfwcYPLVo+4V8Ps@yury-ThinkPad>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHCN7xLpERbs1MPMXTAPCqoPgAN5ts+Ubr=MiO6urW-wuuxp=w@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,T_SPF_PERMERROR autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 06:16:17PM -0800, Yury Norov wrote:
-> On Mon, Nov 27, 2023 at 09:36:38AM +0000, Souradeep Chakrabarti wrote:
-> > 
-> > 
-> > >-----Original Message-----
-> > >From: Jakub Kicinski <kuba@kernel.org>
-> > >Sent: Wednesday, November 22, 2023 5:19 AM
-> > >To: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-> > >Cc: KY Srinivasan <kys@microsoft.com>; Haiyang Zhang
-> > ><haiyangz@microsoft.com>; wei.liu@kernel.org; Dexuan Cui
-> > ><decui@microsoft.com>; davem@davemloft.net; edumazet@google.com;
-> > >pabeni@redhat.com; Long Li <longli@microsoft.com>;
-> > >sharmaajay@microsoft.com; leon@kernel.org; cai.huoqing@linux.dev;
-> > >ssengar@linux.microsoft.com; vkuznets@redhat.com; tglx@linutronix.de; linux-
-> > >hyperv@vger.kernel.org; netdev@vger.kernel.org; linux-kernel@vger.kernel.org;
-> > >linux-rdma@vger.kernel.org; Souradeep Chakrabarti
-> > ><schakrabarti@microsoft.com>; Paul Rosswurm <paulros@microsoft.com>
-> > >Subject: [EXTERNAL] Re: [PATCH V2 net-next] net: mana: Assigning IRQ affinity on
-> > >HT cores
-> > >
-> > >On Tue, 21 Nov 2023 05:54:37 -0800 Souradeep Chakrabarti wrote:
-> > >> Existing MANA design assigns IRQ to every CPUs, including sibling
-> > >> hyper-threads in a core. This causes multiple IRQs to work on same CPU
-> > >> and may reduce the network performance with RSS.
-> > >>
-> > >> Improve the performance by adhering the configuration for RSS, which
-> > >> assigns IRQ on HT cores.
-> > >
-> > >Drivers should not have to carry 120 LoC for something as basic as spreading IRQs.
-> > >Please take a look at include/linux/topology.h and if there's nothing that fits your
-> > >needs there - add it. That way other drivers can reuse it.
-> > Because of the current design idea, it is easier to keep things inside
-> > the mana driver code here. As the idea of IRQ distribution here is :
-> > 1)Loop through interrupts to assign CPU
-> > 2)Find non sibling online CPU from local NUMA and assign the IRQs
-> > on them.
-> > 3)If number of IRQs is more than number of non-sibling CPU in that
-> > NUMA node, then assign on sibling CPU of that node.
-> > 4)Keep doing it till all the online CPUs are used or no more IRQs.
-> > 5)If all CPUs in that node are used, goto next NUMA node with CPU.
-> > Keep doing 2 and 3.
-> > 6) If all CPUs in all NUMA nodes are used, but still there are IRQs
-> > then wrap over from first local NUMA node and continue
-> > doing 2, 3 4 till all IRQs are assigned.
+* Adam Ford <aford173@gmail.com> [231127 20:40]:
+> On Mon, Nov 27, 2023 at 2:04 PM Andreas Kemnade <andreas@kemnade.info> wrote:
+> >
+> > https://support.logicpd.com/DesktopModules/Bring2mind/DMX/Download.aspx?portalid=0&EntryId=649
+> > clearly specifies the availability of GPS, so let's not disguise it
+> > and name the node accordingly.
 > 
-> Hi Souradeep,
-> 
-> (Thanks Jakub for sharing this thread with me)
-> 
-> If I understand your intention right, you can leverage the existing
-> cpumask_local_spread().
-> 
-> But I think I've got something better for you. The below series adds
-> a for_each_numa_cpu() iterator, which may help you doing most of the
-> job without messing with nodes internals.
-> 
-> https://lore.kernel.org/netdev/ZD3l6FBnUh9vTIGc@yury-ThinkPad/T/
->
-Thanks Yur and Jakub. I was trying to find this patch, but unable to find it on that thread.
-Also in net-next I am unable to find it. Can you please tell, if it has been committed?
-If not can you please point me out the correct patch for this macro. It will be
-really helpful.
-> By using it, the pseudocode implementing your algorithm may look
-> like this:
-> 
->         unsigned int cpu, hop;
->         unsigned int irq = 0;
-> 
-> again:
->         cpu = get_cpu();
->         node = cpu_to_node(cpu);
->         cpumask_copy(cpus, cpu_online_mask);
-> 
->         for_each_numa_cpu(cpu, hop, node, cpus) {
->                 /* All siblings are the same for IRQ spreading purpose */
->                 irq_set_affinity_and_hint(irq, topology_sibling_cpumask());
-> 
->                 /* One IRQ per sibling group */
->                 cpumask_andnot(cpus, cpus, topology_sibling_cpumask());
-> 
->                 if (++irq == num_irqs)
->                         break;
->         }
-> 
->         if (irq < num_irqs)
->                 goto again;
-> 
-> (Completely not tested, just an idea.)
->
-I have done similar kind of change for our driver, but constraint here is that total number of IRQs
-can be equal to the total number of online CPUs, in some setup. It is either equal
-to the number of online CPUs or maximum 64 IRQs if online CPUs are more than that.
-So my proposed change is following:
+> Thanks for doing this.
 
-+static int irq_setup(int *irqs, int nvec, int start_numa_node)
-+{
-+       cpumask_var_t node_cpumask;
-+       int i, cpu, err = 0;
-+       unsigned int  next_node;
-+       cpumask_t visited_cpus;
-+       unsigned int start_node = start_numa_node;
-+       i = 0;
-+       if (!alloc_cpumask_var(&node_cpumask, GFP_KERNEL)) {
-+               err = -ENOMEM;
-+               goto free_mask;
-+       }
-+       cpumask_andnot(&visited_cpus, &visited_cpus, &visited_cpus);
-+       start_node = 1;
-+       for_each_next_node_with_cpus(start_node, next_node) {
-+               cpumask_copy(node_cpumask, cpumask_of_node(next_node));
-+               for_each_cpu(cpu, node_cpumask) {
-+                       cpumask_andnot(node_cpumask, node_cpumask,
-+                                      topology_sibling_cpumask(cpu));
-+                       irq_set_affinity_and_hint(irqs[i], cpumask_of(cpu));
-+                       if(++i == nvec)
-+                               goto free_mask;
-+                       cpumask_set_cpu(cpu, &visited_cpus);
-+                       if (cpumask_empty(node_cpumask) && cpumask_weight(&visited_cpus) <
-+                           nr_cpus_node(next_node)) {
-+                               cpumask_copy(node_cpumask, cpumask_of_node(next_node));
-+                               cpumask_andnot(node_cpumask, node_cpumask, &visited_cpus);
-+                               cpu = cpumask_first(node_cpumask);
-+                       }
-+               }
-+               if (next_online_node(next_node) == MAX_NUMNODES)
-+                       next_node = first_online_node;
-+       }
-+free_mask:
-+       free_cpumask_var(node_cpumask);
-+       return err;
-+} 
+Applying into omap-for-v6.8/dt thanks.
 
-I can definitely use the for_each_numa_cpu() instead of my proposed for_each_next_node_with_cpus()
-macro here and that will make it cleaner.
-Thanks for the suggestion.
-> Thanks,
-> Yury
+Tony
