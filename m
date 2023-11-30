@@ -2,206 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E33A7FFF2A
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 00:03:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF06C7FFF3F
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 00:20:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377211AbjK3XC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 18:02:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47082 "EHLO
+        id S1377223AbjK3XRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 18:17:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230224AbjK3XC6 (ORCPT
+        with ESMTP id S1377216AbjK3XRM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 18:02:58 -0500
-Received: from raptorengineering.com (mail.raptorengineering.com [23.155.224.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47F49194;
-        Thu, 30 Nov 2023 15:03:04 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.rptsys.com (Postfix) with ESMTP id 539748285642;
-        Thu, 30 Nov 2023 17:03:03 -0600 (CST)
-Received: from mail.rptsys.com ([127.0.0.1])
-        by localhost (vali.starlink.edu [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id 0FjJotF92GqE; Thu, 30 Nov 2023 17:03:01 -0600 (CST)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.rptsys.com (Postfix) with ESMTP id C66B582856D3;
-        Thu, 30 Nov 2023 17:03:01 -0600 (CST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.rptsys.com C66B582856D3
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=raptorengineering.com; s=B8E824E6-0BE2-11E6-931D-288C65937AAD;
-        t=1701385381; bh=ZpJbgFQ3mdlbdMzmJojwLkrCW5phxu5raWPOTJk0NC8=;
-        h=Message-ID:Date:MIME-Version:To:From;
-        b=dzBfxqOp+tlY2NNmNLtywU3a1jrqlalYFaKM21/kouB+Lb2SHR9qfsGX1T1fBrLAZ
-         XL4qJbVQSIEJ9J86VrGsqqkpQCXrRAmr3e/Ze/9zzwJ5DPYK8lGLUxykABgOEjvlT4
-         icbL+lnY8iHkccQkgk47sH0jrpjNnOEMNc5VwF7I=
-X-Virus-Scanned: amavisd-new at rptsys.com
-Received: from mail.rptsys.com ([127.0.0.1])
-        by localhost (vali.starlink.edu [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id IpaV0MV63khI; Thu, 30 Nov 2023 17:03:01 -0600 (CST)
-Received: from [10.11.0.3] (5.edge.rptsys.com [23.155.224.38])
-        by mail.rptsys.com (Postfix) with ESMTPSA id 1A5188285642;
-        Thu, 30 Nov 2023 17:03:01 -0600 (CST)
-Message-ID: <eb29a877-8c71-498c-b5a1-320315b84cc7@raptorengineering.com>
-Date:   Thu, 30 Nov 2023 17:03:00 -0600
+        Thu, 30 Nov 2023 18:17:12 -0500
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3157CD5C;
+        Thu, 30 Nov 2023 15:17:16 -0800 (PST)
+Received: from localhost ([80.209.221.177]) by mrelayeu.kundenserver.de
+ (mreue010 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1MKsWr-1qpwLs0uE9-00LHtd; Fri, 01 Dec 2023 00:17:05 +0100
+From:   Simon Holesch <simon@holesch.de>
+To:     Valentina Manea <valentina.manea.m@gmail.com>,
+        Shuah Khan <shuah@kernel.org>, Hongren Zheng <i@zenithal.me>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Simon Holesch <simon@holesch.de>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3] usbip: Don't submit special requests twice
+Date:   Fri,  1 Dec 2023 00:10:13 +0100
+Message-ID: <20231130231650.22410-1-simon@holesch.de>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] dt-bindings: mfd: Add sony,cronos-cpld
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Lee Jones <lee@kernel.org>,
-        Georgy Yakovlev <Georgy.Yakovlev@sony.com>
-Cc:     Timothy Pearson <tpearson@raptorengineering.com>
-References: <cover.1701203916.git.sanastasio@raptorengineering.com>
- <27ac3bf6e5fecd62918eb096a88503a13a1f0b9c.1701203916.git.sanastasio@raptorengineering.com>
- <c50e5224-7acd-4470-b18e-f223f150ba5b@linaro.org>
-From:   Shawn Anastasio <sanastasio@raptorengineering.com>
-In-Reply-To: <c50e5224-7acd-4470-b18e-f223f150ba5b@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:JSWYadvl06BY/GP/X48YbWWR8oe7ky/mMR7iCfES6xabSW7p4uX
+ Ysu1/4quPMTyT/Hf2vaXRoHv2tJLXwqSpaSo7wnkaVbpefNa3YO0YmCz4RWndmR35+0egRS
+ xYI/RmhbBul3gu8EP4tT5tJ9l30UgkyImITjfYH+2+3dDTAmJbz+96QGMb8c7mDuH//5WhJ
+ CIzGRumnU98q/9p2eH3XA==
+UI-OutboundReport: notjunk:1;M01:P0:uQqYBdCFXmg=;jOFLonkHGXSl33/h14ZjSomW1mh
+ 9UWwnIQBCrppk7rruyVzSwR6N+/v2t71hnbJ5XmbgsIOyFO77rg/TTjcv8KM0jR6ND2CEUfev
+ Fe7qb7UMX/CLfTd0xIkCQ9RDIDMs69npmggec9x9Goo0reYuHSpZQCO1y4WOfuKLug+FASBOt
+ l7z7CCXQDbU1tKWBoUcOhANTp6x6dH653KVVWfmLkGGIcKgq6LRg9D7wobMDjnDT4BTD0z97J
+ aZt/k5BjMdNqILzKzrkab+dJ3Dwym+6q6b0MM+pxnWoRi2xyDGRxqfeU3pUvYK4cXEQJ+gCM+
+ u6d4LI/mXalQuYptxKRKP0aqKFOna3lzpAnXr30Wvowotcr1H8+/qV8RabzJZclLxBvmTwlHP
+ jSyMvHjxSJac+vzwTDOPs3ehragt8RqA2uVbxKXWn9NMIjuPSG6gZxGWwteRb+WivXxiphATM
+ WiA5uATTNaz0iuLlJprQu5WwM3R3T8pDGIWpQ/za8QcUe7S/QRieH3tJXa8sWgTbkQm9gIHCD
+ APY4yogeZVCAyCyi5kEE3Oi+w4OOUfEEZ2tTl1jIwSqP7AyHhTphk3BaQhIuwqBCXIc0yvFYH
+ O/84wHOfu2kPmClUTk223GzuuPjvSMupRO9RFSCzVn6KIF4SAFVvw5f624FTUOD7E6Pd2Jx1R
+ wDHqH0+r22ogBJYCYEyPxtESCbpFB9iS5M2B4L6xyNrDMwetY56yIqL/EHsxD97BDxazioYvz
+ KYI+lw+G9r7eKB5F4UCxKfThe5GkWqvvGymAz5vmN+Bx4vSUP9RIoY9cdfVXavaTa4dxC33pt
+ 3JuaE+g/ZiUcPh3Y0WpbMwBAFYMsREWn/PpqVpiWfDcFQ8VjBpHwmiAwHl2K6iQTor+CmU/b6
+ rwn0O80H5N9SZ9w==
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/29/23 3:23 AM, Krzysztof Kozlowski wrote:
-> On 28/11/2023 22:00, Shawn Anastasio wrote:
->> The Sony Cronos Platform Controller CPLD is a multi-purpose platform
->> controller that provides both a watchdog timer and an LED controller for
->> the Sony Interactive Entertainment Cronos x86 server platform. As both
->> functions are provided by the same CPLD, a multi-function device is
->> exposed as the parent of both functions.
->>
->> Add a DT binding for this device.
->>
->> Signed-off-by: Shawn Anastasio <sanastasio@raptorengineering.com>
->> ---
->> Changes in v2:
->>   - Change SIE to Sony to use the already-established prefix.
->>   - Clarify that Cronos is an x86 server platform in description
->>   - Drop #address-cells/#size-cells
->>   - Add missing additionalProperties to leds/watchdog objects
->>   - Add sony,led-mask property to leds object
->>   - Add sony,default-timeout property to watchdog object
->>   - Update example
->>
->>  .../bindings/mfd/sony,cronos-cpld.yaml        | 92 +++++++++++++++++++
->>  1 file changed, 92 insertions(+)
->>  create mode 100644 Documentation/devicetree/bindings/mfd/sony,cronos-cpld.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/mfd/sony,cronos-cpld.yaml b/Documentation/devicetree/bindings/mfd/sony,cronos-cpld.yaml
->> new file mode 100644
->> index 000000000000..df2c2e83ccb4
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/mfd/sony,cronos-cpld.yaml
->> @@ -0,0 +1,92 @@
->> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
->> +# Copyright 2023 Raptor Engineering, LLC
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/mfd/sony,cronos-cpld.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Sony Cronos Platform Controller CPLD multi-function device
->> +
->> +maintainers:
->> +  - Timothy Pearson <tpearson@raptorengineering.com>
->> +
->> +description: |
->> +  The Sony Cronos Platform Controller CPLD is a multi-purpose platform
->> +  controller that provides both a watchdog timer and an LED controller for the
->> +  Sony Interactive Entertainment Cronos x86 server platform. As both functions
->> +  are provided by the same CPLD, a multi-function device is exposed as the
->> +  parent of both functions.
->> +
->> +properties:
->> +  compatible:
->> +    const: sony,cronos-cpld
->> +
->> +  reg:
->> +    maxItems: 1
->> +
->> +  leds:
->> +    type: object
->> +    description: Cronos Platform Status LEDs
-> 
-> Missing ref to LEDs common bindings.
->
+Skip submitting URBs, when identical requests were already sent in
+tweak_special_requests(). Instead call the completion handler directly
+to return the result of the URB.
 
-Will fix.
+Even though submitting those requests twice should be harmless, there
+are USB devices that react poorly to some duplicated requests.
 
->> +
->> +    properties:
->> +      compatible:
->> +        const: sony,cronos-leds
->> +
->> +      sony,led-mask:
->> +        $ref: /schemas/types.yaml#/definitions/uint32
-> 
-> Why aren't you using LEDs bindings? A node for one property is otherwise
-> quite useless. I already commented on this last time.
->
+One example is the ChipIdea controller implementation in U-Boot: The
+second SET_CONFIURATION request makes U-Boot disable and re-enable all
+endpoints. Re-enabling an endpoint in the ChipIdea controller, however,
+was broken until U-Boot commit b272c8792502 ("usb: ci: Fix gadget
+reinit").
 
-Our driver as-is doesn't support any of the properties in the LEDs
-common bindings, but it doesn't seem like there's anything that would
-preclude support in hardware, so this can be fixed.
+Signed-off-by: Simon Holesch <simon@holesch.de>
+---
 
-Will use the LED bindings in v3.
+Changes in v3:
+- handle errors in tweak_* routines: send URB if tweaking fails
 
->> +        minimum: 0x0
->> +        maximum: 0x7fff
->> +        description: |
->> +          A bitmask that specifies which LEDs are present and can be controlled
->> +          by the Cronos CPLD. Bits 0-5 correspond to platform Status LEDs, bits
->> +          6-10 correspond to Link LEDs, and bits 11-14 correspond to the Power
->> +          State LEDs. All other bits are unused. The default value is 0x7fff
->> +          (all possible LEDs enabled).
->> +
->> +    additionalProperties: false
->> +
->> +  watchdog:
->> +    type: object
->> +    description: Cronos Platform Watchdog Timer
-> 
-> 
->> +
->> +    properties:
->> +      compatible:
->> +        const: sony,cronos-watchdog
->> +
->> +      sony,default-timeout:
-> 
-> No, you must use existing bindings. Missing ref to watchdog and drop all
-> duplicated properties like this one.
->
+Changes in v2:
+- explain change in commit message
 
-In this case the existing watchdog binding allows for arbitrary timeout
-values to be set, but the hardware only tolerates one of a few fixed
-values, enumerated below, which is why I felt it was appropriate to use
-a vendor-specific binding that documents the supported values.
+Thanks again for the feedback!
 
-Would you still prefer we ref to watchdog and just handle unsupported
-values in the driver by e.g. rounding or rejecting unsupported values?
+ drivers/usb/usbip/stub_rx.c | 73 +++++++++++++++++++++++--------------
+ 1 file changed, 46 insertions(+), 27 deletions(-)
 
->> +        $ref: /schemas/types.yaml#/definitions/uint32
->> +        description: |
->> +          The default timeout with which the watchdog timer is initialized, in
->> +          seconds. Supported values are: 10, 20, 30, 40, 50, 60, 70, 80. All
->> +          other values will be rounded down to the nearest supported value.  The
->> +          default value is 80.
->> +
-> 
-> 
-> 
-> Best regards,
-> Krzysztof
-> 
+diff --git a/drivers/usb/usbip/stub_rx.c b/drivers/usb/usbip/stub_rx.c
+index fc01b31bbb87..76a6f46b8676 100644
+--- a/drivers/usb/usbip/stub_rx.c
++++ b/drivers/usb/usbip/stub_rx.c
+@@ -144,53 +144,62 @@ static int tweak_set_configuration_cmd(struct urb *urb)
+ 	if (err && err != -ENODEV)
+ 		dev_err(&sdev->udev->dev, "can't set config #%d, error %d\n",
+ 			config, err);
+-	return 0;
++	return err;
+ }
+ 
+ static int tweak_reset_device_cmd(struct urb *urb)
+ {
+ 	struct stub_priv *priv = (struct stub_priv *) urb->context;
+ 	struct stub_device *sdev = priv->sdev;
++	int err;
+ 
+ 	dev_info(&urb->dev->dev, "usb_queue_reset_device\n");
+ 
+-	if (usb_lock_device_for_reset(sdev->udev, NULL) < 0) {
++	err = usb_lock_device_for_reset(sdev->udev, NULL)
++	if (err < 0) {
+ 		dev_err(&urb->dev->dev, "could not obtain lock to reset device\n");
+-		return 0;
++		return err;
+ 	}
+-	usb_reset_device(sdev->udev);
++	err = usb_reset_device(sdev->udev);
+ 	usb_unlock_device(sdev->udev);
+ 
+-	return 0;
++	return err;
+ }
+ 
+ /*
+  * clear_halt, set_interface, and set_configuration require special tricks.
++ * Returns 1 if request was tweaked, 0 otherwise.
+  */
+-static void tweak_special_requests(struct urb *urb)
++static int tweak_special_requests(struct urb *urb)
+ {
++	int err;
++
+ 	if (!urb || !urb->setup_packet)
+-		return;
++		return 0;
+ 
+ 	if (usb_pipetype(urb->pipe) != PIPE_CONTROL)
+-		return;
++		return 0;
+ 
+ 	if (is_clear_halt_cmd(urb))
+ 		/* tweak clear_halt */
+-		 tweak_clear_halt_cmd(urb);
++		err = tweak_clear_halt_cmd(urb);
+ 
+ 	else if (is_set_interface_cmd(urb))
+ 		/* tweak set_interface */
+-		tweak_set_interface_cmd(urb);
++		err = tweak_set_interface_cmd(urb);
+ 
+ 	else if (is_set_configuration_cmd(urb))
+ 		/* tweak set_configuration */
+-		tweak_set_configuration_cmd(urb);
++		err = tweak_set_configuration_cmd(urb);
+ 
+ 	else if (is_reset_device_cmd(urb))
+-		tweak_reset_device_cmd(urb);
+-	else
++		err = tweak_reset_device_cmd(urb);
++	else {
+ 		usbip_dbg_stub_rx("no need to tweak\n");
++		return 0;
++	}
++
++	return !err;
+ }
+ 
+ /*
+@@ -468,6 +477,7 @@ static void stub_recv_cmd_submit(struct stub_device *sdev,
+ 	int support_sg = 1;
+ 	int np = 0;
+ 	int ret, i;
++	int is_tweaked;
+ 
+ 	if (pipe == -1)
+ 		return;
+@@ -580,8 +590,7 @@ static void stub_recv_cmd_submit(struct stub_device *sdev,
+ 		priv->urbs[i]->pipe = pipe;
+ 		priv->urbs[i]->complete = stub_complete;
+ 
+-		/* no need to submit an intercepted request, but harmless? */
+-		tweak_special_requests(priv->urbs[i]);
++		is_tweaked = tweak_special_requests(priv->urbs[i]);
+ 
+ 		masking_bogus_flags(priv->urbs[i]);
+ 	}
+@@ -594,22 +603,32 @@ static void stub_recv_cmd_submit(struct stub_device *sdev,
+ 
+ 	/* urb is now ready to submit */
+ 	for (i = 0; i < priv->num_urbs; i++) {
+-		ret = usb_submit_urb(priv->urbs[i], GFP_KERNEL);
++		if (!is_tweaked) {
++			ret = usb_submit_urb(priv->urbs[i], GFP_KERNEL);
+ 
+-		if (ret == 0)
+-			usbip_dbg_stub_rx("submit urb ok, seqnum %u\n",
+-					pdu->base.seqnum);
+-		else {
+-			dev_err(&udev->dev, "submit_urb error, %d\n", ret);
+-			usbip_dump_header(pdu);
+-			usbip_dump_urb(priv->urbs[i]);
++			if (ret == 0)
++				usbip_dbg_stub_rx("submit urb ok, seqnum %u\n",
++						pdu->base.seqnum);
++			else {
++				dev_err(&udev->dev, "submit_urb error, %d\n", ret);
++				usbip_dump_header(pdu);
++				usbip_dump_urb(priv->urbs[i]);
+ 
++				/*
++				 * Pessimistic.
++				 * This connection will be discarded.
++				 */
++				usbip_event_add(ud, SDEV_EVENT_ERROR_SUBMIT);
++				break;
++			}
++		} else {
+ 			/*
+-			 * Pessimistic.
+-			 * This connection will be discarded.
++			 * An identical URB was already submitted in
++			 * tweak_special_requests(). Skip submitting this URB to not
++			 * duplicate the request.
+ 			 */
+-			usbip_event_add(ud, SDEV_EVENT_ERROR_SUBMIT);
+-			break;
++			priv->urbs[i]->status = 0;
++			stub_complete(priv->urbs[i]);
+ 		}
+ 	}
+ 
+-- 
+2.43.0
 
-Thanks,
-Shawn
