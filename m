@@ -2,89 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B6967FEFB0
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 14:03:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EECE7FF0B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 14:51:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345439AbjK3NDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 08:03:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54364 "EHLO
+        id S1345704AbjK3NvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 08:51:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231990AbjK3NC7 (ORCPT
+        with ESMTP id S1345581AbjK3NvE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 08:02:59 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 774BC10D4
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 05:03:06 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5B48C433C8;
-        Thu, 30 Nov 2023 13:03:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701349386;
-        bh=1FPM5w/i6S0Q04oL+gVfGh38uu2R4D28EHz8Ggy4Wl4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ubtcrQo6k8dELTQ98qmB2vQggVeYtiqRc8OHhoKKnywxytrmhiiGqlEaNHfEOIcge
-         eqKJLK8JJPoImMIlBld0IrJHTntVoljaMo+aHHU7ve6xc7ib3Mdsu+5v5PfS2tofDn
-         WdBwpCrSPIs5w2B5mxQv9RClpsdsOXTH4HGP3z4vwb3+sDjYRTq7W7qydlAeIj1as6
-         TbWP7JTiYtB0ppgb8cyI9X+XoiQCJ/hpd91hC1x7JnmL32QftHJF0OO8spMu/F+OZk
-         B71IUsQ3iXVrBTfXM4VMhowNhTAHb+t7dH60N7a0Pn4RLq37WX+9JtQa9ZPgTQWjPf
-         ciqgw/z/yXlsA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id BB17E40094; Thu, 30 Nov 2023 10:03:03 -0300 (-03)
-Date:   Thu, 30 Nov 2023 10:03:03 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ravi Bangoria <ravi.bangoria@amd.com>
-Cc:     Namhyung Kim <namhyung@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH] perf/x86/amd: Reject branch stack for IBS events
-Message-ID: <ZWiIB0AURxL7qb5e@kernel.org>
-References: <20230602194513.1589179-1-namhyung@kernel.org>
- <c5a40920-0b14-b9b5-19ee-48c965bd12e3@amd.com>
- <ZV9lfJyyC7xawHBC@kernel.org>
- <3d70b52f-2042-328c-6dc7-37fcbb3510a2@amd.com>
- <ZWSombzfCkxHc7lC@kernel.org>
- <fc2390cf-bdf9-590e-d078-4bb616d5feb6@amd.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fc2390cf-bdf9-590e-d078-4bb616d5feb6@amd.com>
-X-Url:  http://acmel.wordpress.com
+        Thu, 30 Nov 2023 08:51:04 -0500
+Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 374F8131
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 05:51:07 -0800 (PST)
+Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20231130135103epoutp02888478e6a7e5fd9840f463e171b98497~cat6igOrS1306813068epoutp02w
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 13:51:03 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20231130135103epoutp02888478e6a7e5fd9840f463e171b98497~cat6igOrS1306813068epoutp02w
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1701352263;
+        bh=AXEPALESso3IHEGnjNE8OOJAITFOwUrOekyzSLBnaRU=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=ioZJ/VfI4RzjktxFoBirM9FR0O23p3Z6nsNjWeoxbkLb61c7VwiRASRf/p+2+PD0M
+         ZDaCGkSqvT5Rxj3yZIYeCz04LbtmRxDVNwMjeOUWqJSXGt3fjs75GsvJ3N8JKoI23r
+         mZNVu6MRwp+lCKf2aUUKCqLX+Fy3PquGOGU3TUAc=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas5p3.samsung.com (KnoxPortal) with ESMTP id
+        20231130135102epcas5p3dc90e298d61549c962fd73a108e01383~cat5y5sGU0205102051epcas5p33;
+        Thu, 30 Nov 2023 13:51:02 +0000 (GMT)
+Received: from epsmges5p1new.samsung.com (unknown [182.195.38.179]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4SgyJj5v3qz4x9Pv; Thu, 30 Nov
+        2023 13:51:01 +0000 (GMT)
+Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
+        epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        2A.E7.09634.54398656; Thu, 30 Nov 2023 22:51:01 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
+        20231130115055epcas5p4e29befa80877be45dbee308846edc0ba~cZFBa0JFd0967209672epcas5p4Y;
+        Thu, 30 Nov 2023 11:50:55 +0000 (GMT)
+Received: from epsmgms1p2new.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20231130115055epsmtrp13238ef79585fb52257838b0a311c40f2~cZFBaDxs41720317203epsmtrp1q;
+        Thu, 30 Nov 2023 11:50:55 +0000 (GMT)
+X-AuditID: b6c32a49-159fd700000025a2-fc-65689345da6c
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        2A.BE.08817.F1778656; Thu, 30 Nov 2023 20:50:55 +0900 (KST)
+Received: from cheetah.sa.corp.samsungelectronics.net (unknown
+        [107.109.115.53]) by epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20231130115053epsmtip1ddf7dc43938900250ee67d35bc227628~cZE-UPiZ81499114991epsmtip1R;
+        Thu, 30 Nov 2023 11:50:53 +0000 (GMT)
+From:   Shradha Todi <shradha.t@samsung.com>
+To:     manivannan.sadhasivam@linaro.org, lpieralisi@kernel.org,
+        kw@linux.com, robh@kernel.org, bhelgaas@google.com,
+        jingoohan1@gmail.com, gustavo.pimentel@synopsys.com,
+        josh@joshtriplett.org, lukas.bulwahn@gmail.com,
+        hongxing.zhu@nxp.com, pankaj.dubey@samsung.com
+Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        Shradha Todi <shradha.t@samsung.com>
+Subject: [PATCH v2 0/3] Add support for RAS DES feature in PCIe DW
+ controller
+Date:   Thu, 30 Nov 2023 17:20:41 +0530
+Message-Id: <20231130115044.53512-1-shradha.t@samsung.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupik+LIzCtJLcpLzFFi42LZdlhTU9d1ckaqwb5V2hZLmjIsdt3tYLeY
+        tW0uo8WKLzPZLf4vyLdo6PnNanF51xw2i7PzjrNZtPxpYbFoOdrOYnG3pZPVYtHWL0Ble3aw
+        W/QernXg89g56y67x4JNpR63Xtt6bFrVyeZx59oeNo8nV6YzeWx8t4PJo2/LKkaPLfs/M3p8
+        3iQXwBWVbZORmpiSWqSQmpecn5KZl26r5B0c7xxvamZgqGtoaWGupJCXmJtqq+TiE6DrlpkD
+        dL2SQlliTilQKCCxuFhJ386mKL+0JFUhI7+4xFYptSAlp8CkQK84Mbe4NC9dLy+1xMrQwMDI
+        FKgwITvj2Z9TTAWLBSv2v1zF0sDYz9fFyMkhIWAiMXf7bdYuRi4OIYHdjBKv7nUxgSSEBD4x
+        Snz8Ug2R+MYo8eJXAxtMx6p7nYwQib2MEg8737JBOK1MEttftbOAVLEJaEk0fu1iBkmICHQx
+        STxacZIdJMEskCwxr/8O2A5hAX+Ja03PwMayCKhKTOvvYwWxeQWsJJ6+mcEEsU5eYvWGA8wQ
+        9l92iYsPeCFsF4mJHfdYIWxhiVfHt7BD2FISL/vboOx0iZWbZ0D15kh827wEaqa9xIErc4AO
+        5QC6R1Ni/S59iLCsxNRT65ggzuST6P39BKqcV2LHPBhbWeLL3z0sELakxLxjl6FO8JBYue4T
+        CyToYiVeHl3FOIFRdhbChgWMjKsYJVMLinPTU4tNCwzzUsvhEZWcn7uJEZwotTx3MN598EHv
+        ECMTB+MhRgkOZiUR3utP01OFeFMSK6tSi/Lji0pzUosPMZoCg2wis5Rocj4wVeeVxBuaWBqY
+        mJmZmVgamxkqifO+bp2bIiSQnliSmp2aWpBaBNPHxMEp1cDk1Hb5fVsP+7Un9Z1iPwP/z6y+
+        asBx/uW1ZW6i10R0/3xtVf/eaNXTu9v1oNaigDy/EN3Ed4WiTuePV1r/WdhZ8NVsjcpayfkH
+        U1XeRa7y1z/I9IH3f/Orx2unnU7Qu/vlMaP5tMyzS6/cWHAl+nqsknIOR3nA7xju+9OM4/gZ
+        Nt5PV/yvqjPXv7WpUjjo3pfu7cbc5lsuPev302vtjbXKlhVex5rKK9j6sdjuyArbXUuft0wW
+        aT3lp/nq/M7ggJgCS/336syrmC8dmjVzY/GcC7XnWOrkrFIS3x0Qk8+0y5tR2XwtPmHq9duP
+        qhTdQhvfZcw7VMR0ctfH0px/S9XsH/K3OEoGJa2uOl7+d7kSS3FGoqEWc1FxIgD0xun0HQQA
+        AA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrOLMWRmVeSWpSXmKPExsWy7bCSnK58eUaqwfGpkhZLmjIsdt3tYLeY
+        tW0uo8WKLzPZLf4vyLdo6PnNanF51xw2i7PzjrNZtPxpYbFoOdrOYnG3pZPVYtHWL0Ble3aw
+        W/QernXg89g56y67x4JNpR63Xtt6bFrVyeZx59oeNo8nV6YzeWx8t4PJo2/LKkaPLfs/M3p8
+        3iQXwBXFZZOSmpNZllqkb5fAlfHszymmgsWCFftfrmJpYOzn62Lk5JAQMJFYda+TsYuRi0NI
+        YDejxPnPK1khEpISny+uY4KwhSVW/nvODlHUzCTx7MYeNpAEm4CWROPXLmaQhIjADCaJlu77
+        LCAJZoFUiduH54AVCQv4SjxdcQ7MZhFQlZjW3we2gVfASuLpmxlQG+QlVm84wDyBkWcBI8Mq
+        RsnUguLc9NxiwwKjvNRyveLE3OLSvHS95PzcTYzgsNXS2sG4Z9UHvUOMTByMhxglOJiVRHiv
+        P01PFeJNSaysSi3Kjy8qzUktPsQozcGiJM777XVvipBAemJJanZqakFqEUyWiYNTqoHp9EqP
+        +VcX/pdPVtiy7upsr/akUoMzU49qb66+Y8zgtXK55Ebb8rmL3Q2idzAtL7u97DmvUmLT14Ku
+        1w6Oz3xrf4jM1X7zsJmn96ydbMyeeYEfPt7q76vlXqa8hyWiRbbh5/nuhl+W5xV2bOw2UbV/
+        afg7a+ty+0/ek8JCJT7mz135OaM1PLdzR/3n2XU8qxfrvgxv9GkLnGTysXm+ponok4hHBfwN
+        HJ27T4tzX1wssVm2eNnzSMHnvzzb/H2jlpXnhrTOFF1fl/pF7uEKpT9xNhcFWmN0K1ef2uiQ
+        Et2yKKnSVsrm+/3SKZsmpy1T1I4u+rfjjHHvqlenpr9sUpx3rUzmZONBd52zNczsl94qsRRn
+        JBpqMRcVJwIA4+CEqsoCAAA=
+X-CMS-MailID: 20231130115055epcas5p4e29befa80877be45dbee308846edc0ba
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20231130115055epcas5p4e29befa80877be45dbee308846edc0ba
+References: <CGME20231130115055epcas5p4e29befa80877be45dbee308846edc0ba@epcas5p4.samsung.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Nov 30, 2023 at 11:58:15AM +0530, Ravi Bangoria escreveu:
-> On 27-Nov-23 8:02 PM, Arnaldo Carvalho de Melo wrote:
-> > Em Fri, Nov 24, 2023 at 09:30:37AM +0530, Ravi Bangoria escreveu:
-> >> On 23-Nov-23 8:15 PM, Arnaldo Carvalho de Melo wrote:
-> >>> Em Tue, Jun 06, 2023 at 10:08:43AM +0530, Ravi Bangoria escreveu:
-> >>>> On 03-Jun-23 1:15 AM, Namhyung Kim wrote:
-> >>>>> The AMD IBS PMU doesn't handle branch stacks, so it should not accept
-> >>>>> events with brstack.
+DesignWare controller provides a vendor specific extended capability
+called RASDES as an IP feature. This extended capability  provides
+hardware information like:
+ - Debug registers to know the state of the link or controller. 
+ - Error injection mechanisms to inject various PCIe errors including
+   sequence number, CRC
+ - Statistical counters to know how many times a particular event
+   occurred
 
-> >>>>> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> >>>> Reviewed-by: Ravi Bangoria <ravi.bangoria@amd.com>
+However, in Linux we do not have any generic or custom support to be
+able to use this feature in an efficient manner. This is the reason we
+are proposing this framework. Debug and bring up time of high-speed IPs
+are highly dependent on costlier hardware analyzers and this solution
+will in some ways help to reduce the HW analyzer usage.
 
-> >>> It seems this patch was not merged, can you please check?
+The debugfs entries can be used to get information about underlying
+hardware and can be shared with user space. Separate debugfs entries has
+been created to cater to all the DES hooks provided by the controller.
+The debugfs entries interacts with the RASDES registers in the required
+sequence and provides the meaningful data to the user. This eases the
+effort to understand and use the register information for debugging.
 
-> >> Right. And it does not apply cleanly on peterz/queue.git/perf/core, since
-> >> surrounding code has changed.
+v1 version was posted long back and for some reasons I couldn't work on
+it. I apologize for the long break. I'm restarting this activity and
+have taken care of all previous review comments shared.
+v1: https://lore.kernel.org/all/20210518174618.42089-1-shradha.t@samsung.com/T/
 
-> > Can you please refresh it if PeterZ has nothing against?
+Shradha Todi (3):
+  PCI: dwc: Add support for vendor specific capability search
+  PCI: debugfs: Add support for RASDES framework in DWC
+  PCI: dwc: Create debugfs files in DWC driver
 
-> Posted v2: https://lore.kernel.org/r/20231130062246.290-1-ravi.bangoria@amd.com 
+ drivers/pci/controller/dwc/Kconfig            |   8 +
+ drivers/pci/controller/dwc/Makefile           |   1 +
+ .../controller/dwc/pcie-designware-debugfs.c  | 476 ++++++++++++++++++
+ .../controller/dwc/pcie-designware-debugfs.h  |   0
+ drivers/pci/controller/dwc/pcie-designware.c  |  20 +
+ drivers/pci/controller/dwc/pcie-designware.h  |  18 +
+ 6 files changed, 523 insertions(+)
+ create mode 100644 drivers/pci/controller/dwc/pcie-designware-debugfs.c
+ create mode 100644 drivers/pci/controller/dwc/pcie-designware-debugfs.h
 
-Peter, can you please consider this one?
+-- 
+2.17.1
 
-Thanks a lot!
-
-- Arnaldo
