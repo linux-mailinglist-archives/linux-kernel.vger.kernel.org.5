@@ -2,127 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C6607FE519
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 01:46:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95C317FE51B
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 01:48:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343802AbjK3AqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 19:46:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50254 "EHLO
+        id S1343882AbjK3Ary (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 19:47:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229677AbjK3AqA (ORCPT
+        with ESMTP id S229677AbjK3Arw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 19:46:00 -0500
-Received: from mail-oa1-x2e.google.com (mail-oa1-x2e.google.com [IPv6:2001:4860:4864:20::2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AECFDD54
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 16:46:05 -0800 (PST)
-Received: by mail-oa1-x2e.google.com with SMTP id 586e51a60fabf-1f9e0e44fecso168272fac.3
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 16:46:05 -0800 (PST)
+        Wed, 29 Nov 2023 19:47:52 -0500
+Received: from mail-oa1-x2c.google.com (mail-oa1-x2c.google.com [IPv6:2001:4860:4864:20::2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33AF1C9;
+        Wed, 29 Nov 2023 16:47:59 -0800 (PST)
+Received: by mail-oa1-x2c.google.com with SMTP id 586e51a60fabf-1f9e0e44fecso169052fac.3;
+        Wed, 29 Nov 2023 16:47:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1701305165; x=1701909965; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=DGfesKWk6hIGgQDOksuxdOXdV/4i0gK7DjvWJInD9Kc=;
-        b=TGmOsoongOJ3mRPh4D7y7BkjcC+Ovj+n8PtFRQ5xqzhbN6VxHK1FYnmCON6QSr1KrS
-         YHDqY7Ux1uRrcyuQF8GIbPifdXJriHEkq0awWaZJvwFPB2KJc1hgqhB9i3dretRTqaK+
-         fv8XVoDFy7vPm1MQRjreU2JAQbgzEhfWbhfoAYIF4prP1euOnnbZ1i43DkEhaiseCCid
-         pGk+EP4XiHzMfE6K8D4Nfv44zVAHM+2NEea5duFO59VyeKGP9yucR71saRuDwllsa5Fx
-         Dxhe+GOb2B3Hhk5jytTjcAaHg9/b+vqs0AcwJR2sOnaPvhKAVBTfQH0PhZMDYnPd2uc8
-         j6HA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701305165; x=1701909965;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1701305278; x=1701910078; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=DGfesKWk6hIGgQDOksuxdOXdV/4i0gK7DjvWJInD9Kc=;
-        b=KZjZ6CfdV7RSevXJ46kRApAMdGbSVvACap1YNNeEwPa+C+kAWkfD9/WQrCt6z1hw/v
-         t8LlnsIZx6SZ+V1gHYLYIa5dJaXXvKu2F2ntpQFCLoOvYW3Mz9FrPUgBj13o/SjhkgRe
-         z2trJwuH8wGvMV62kEA+vxkS4yTRO2has57Qwhd4Hb0zEh10VYzQqPh7HvQJEoX2WG2H
-         PQ0lckzXxcABenAFRCTHECRH6bNTKISY/x1nngDM5LNyvBMEXcm/GkeE3OXI9/LliFnA
-         KHsprcCvB7RCaFbejbqyJ63Ua+CQrAZLO3FlajU3HhVz75pK5rgnjAf8Z07/vaYZYnMJ
-         U/rg==
-X-Gm-Message-State: AOJu0Yzly2RULr+Nzh7chaDuC3/QcGrKkVnoBmhtxAh/hVg9KqRJS+OI
-        /IMFeLf4Ds2LBiOX5GfS7kb+9A==
-X-Google-Smtp-Source: AGHT+IH0QnaZj4Srt21JiVw/aqbEQCLMM8IUp7yXueL4iz88oaZRnRpsZVc5esr77Xqw2FDtMOcfOA==
-X-Received: by 2002:a05:6870:3326:b0:1fa:2b51:cc8b with SMTP id x38-20020a056870332600b001fa2b51cc8bmr18739526oae.32.1701305164620;
-        Wed, 29 Nov 2023 16:46:04 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-134-23-187.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.134.23.187])
-        by smtp.gmail.com with ESMTPSA id mn13-20020a0568700c8d00b001fa3ab0a3bdsm2224484oab.31.2023.11.29.16.46.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Nov 2023 16:46:04 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1r8VBr-005r2g-CG;
-        Wed, 29 Nov 2023 20:46:03 -0400
-Date:   Wed, 29 Nov 2023 20:46:03 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Joerg Roedel <joro@8bytes.org>, Christoph Hellwig <hch@lst.de>,
-        Vineet Gupta <vgupta@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-acpi@vger.kernel.org, iommu@lists.linux.dev,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH 2/7] OF: Simplify DMA range calculations
-Message-ID: <20231130004603.GB1394392@ziepe.ca>
-References: <cover.1701268753.git.robin.murphy@arm.com>
- <73becf4a75f15662b2dda5fba7cfeacdf3d866f8.1701268753.git.robin.murphy@arm.com>
+        bh=px7lu5nOqajxdLEanLNBtXA+0BLm4pP2tpUPChWnjUo=;
+        b=Q3gDyxegKcTCM22dYyiIS3FhVJKlB3JlX5pEtwKlifYACjCod8X2Nzp7Shbm1wUjqZ
+         3VQUTWS3p44xgvuKDB+Q5PQ0btMjf62LpnI0+xEi7TMx8oDXolmqF3GzRrPzwhaEQ/EZ
+         ELGYT7s/ptGFZMyqO6LiXbECKOe2pp+xrTC4q+17k+tz43kt5payZXz1H76bbzNHtsro
+         nCLOrtuAIm3SmWHmBqbBmO/vwAlhPcBLLKWhbiWZWRNGGURUNwfiGP59gnejquWjjFcV
+         7aXEJ0C8UMJNTkBtV0NqhlSdZBi3z8WIoh73nJOJzPCdGbG8nePM3naVI+zMK301IyhW
+         4veg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701305278; x=1701910078;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=px7lu5nOqajxdLEanLNBtXA+0BLm4pP2tpUPChWnjUo=;
+        b=tJfANXCNtGck1rwWNvT7R4p8sYSNBnu2q0vATepHof9pn1lxNkeK+U7UFL7TuzIDAe
+         +PV+XtmL8I/y4RDqP0fM9ws1t+1O/wyVK5E8egpFFt7H0CdVqFFv3on0Yov5dKa49V0Q
+         umcDORQYk/FMlo2XHDK1AZ8MoNKzka2R/ihAxeqm0Tpdk3wKKvTLcT8mHknBD9o+ecxW
+         WAMF8Cf6+u5AxhI80t9nuBJNrtYSz5yIjCFjkx8UmCMdzW+JYHKCBNpA5GS58ae7/5wC
+         V6tW/iTAkSKM+DSm0y3pYSoWP6lArul5rM8meYPHU2URrWd9K4/5UPTjuaDFH6rbr7Yi
+         A/2A==
+X-Gm-Message-State: AOJu0YwHfCb7qQwHQzcg3pjb3/aDcQcDVUi11MXoPluctd4NXFchffut
+        JqpMCnx+pRWgDMumLt5c9qz9GpCot8y3CywG0Po=
+X-Google-Smtp-Source: AGHT+IHNybKJyRL115STmke+mJBBLpb72k/nusUuGsqlLJZZnSa/+eziMVVFWzCKHCT3Qez7vepBVUhLO2cGnfNCpUg=
+X-Received: by 2002:a05:6870:eca2:b0:1f9:5081:f287 with SMTP id
+ eo34-20020a056870eca200b001f95081f287mr26311523oab.27.1701305278396; Wed, 29
+ Nov 2023 16:47:58 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <73becf4a75f15662b2dda5fba7cfeacdf3d866f8.1701268753.git.robin.murphy@arm.com>
+References: <20231127193703.1980089-1-nphamcs@gmail.com> <20231127193703.1980089-3-nphamcs@gmail.com>
+ <ZWW1IG0Mv3r0m4mp@tiehlicka> <CAKEwX=OGtkqWys9VM9EBScoCdAjSdfPjEkvoY7_u9udDZBFFpw@mail.gmail.com>
+ <ZWcB_r8ywytCFR8B@tiehlicka>
+In-Reply-To: <ZWcB_r8ywytCFR8B@tiehlicka>
+From:   Nhat Pham <nphamcs@gmail.com>
+Date:   Wed, 29 Nov 2023 16:47:47 -0800
+Message-ID: <CAKEwX=PgubfJeCVYUzCCqgGzn=KsjOcUbFJ+Y-Jd5pfk7Wrv-A@mail.gmail.com>
+Subject: Re: [PATCH v6 2/6] memcontrol: allows mem_cgroup_iter() to check for onlineness
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org,
+        cerasuolodomenico@gmail.com, yosryahmed@google.com,
+        sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com,
+        roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, chrisl@kernel.org, linux-mm@kvack.org,
+        kernel-team@meta.com, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, shuah@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 05:42:59PM +0000, Robin Murphy wrote:
-> Juggling start, end, and size values for a range is somewhat redundant
-> and a little hard to follow. Consolidate down to just using inclusive
-> start and end, which saves us worrying about size overflows for full
-> 64-bit ranges (note that passing a potentially-overflowed value through
-> to arch_setup_dma_ops() is benign for all current implementations, and
-> this is working towards removing that anyway).
+On Wed, Nov 29, 2023 at 1:18=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrot=
+e:
+>
+> On Tue 28-11-23 08:53:56, Nhat Pham wrote:
+> > On Tue, Nov 28, 2023 at 1:38=E2=80=AFAM Michal Hocko <mhocko@suse.com> =
+wrote:
+> > >
+> > > On Mon 27-11-23 11:36:59, Nhat Pham wrote:
+> > > > The new zswap writeback scheme requires an online-only memcg hierar=
+chy
+> > > > traversal. Add a new parameter to mem_cgroup_iter() to check for
+> > > > onlineness before returning.
+> > >
+> > > Why is this needed?
+> >
+> > For context, in patch 3 of this series, Domenico and I are adding
+> > cgroup-aware LRU to zswap, so that we can perform workload-specific
+> > zswap writeback. When the reclaim happens due to the global zswap
+> > limit being hit, a cgroup is selected by the mem_cgroup_iter(), and
+> > the last one selected is saved in the zswap pool (so that the
+> > iteration can follow from there next time the limit is hit).
+> >
+> > However, one problem with this scheme is we will be pinning the
+> > reference to that saved memcg until the next global reclaim attempt,
+> > which could prevent it from being killed for quite some time after it
+> > has been offlined. Johannes, Yosry, and I discussed a couple of
+> > approaches for a while, and decided to add a callback that would
+> > release the reference held by the zswap pool when the memcg is
+> > offlined, and the zswap pool will obtain the reference to the next
+> > online memcg in the traversal (or at least one that has not had the
+> > zswap-memcg-release-callback run on it yet).
+>
+> This should be a part of the changelog along with an explanation why
+> this cannot be handled on the caller level? You have a pin on the memcg,
+> you can check it is online and scratch it if not, right? Why do we need
+> to make a rather convoluted iterator interface more complex when most
+> users simply do not require that?
 
-In iommu code I've been trying to use consistent language with other
-parts of the kernel like interval tree and maple tree:
+Ah that's a good point. Hmm then I'll just do an extra online check in
+the zswap reclaim callsite - cleaner and less invasive.
 
- * In this file the term 'last' indicates an inclusive and closed interval, eg
- * [0,0] refers to a single PFN. 'end' means an open range, eg [0,0) refers to
- * no PFNs.
-
-Here I think you've swapped end to mean last?
-
-Regardless the change looks correct
-
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-
-Jason
+Thanks for the suggestion!
+>
+> --
+> Michal Hocko
+> SUSE Labs
