@@ -2,115 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 668047FF29D
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 15:40:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E23657FF2A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 15:41:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346071AbjK3Okj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 09:40:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39022 "EHLO
+        id S1346038AbjK3OlE convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 30 Nov 2023 09:41:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346038AbjK3Oki (ORCPT
+        with ESMTP id S235195AbjK3OlC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 09:40:38 -0500
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B46BE93;
-        Thu, 30 Nov 2023 06:40:44 -0800 (PST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 308F540E0030;
-        Thu, 30 Nov 2023 14:40:42 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id zijeYWMRN7vv; Thu, 30 Nov 2023 14:40:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1701355240; bh=h0qwow19NdKO2+/XrBUXodPBR9R3/3gl99cArdMrp3w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GWzzjqgrfLnSQPKE0qba0s7RZ54I13eojfslwg0fAcYdiA12TK8XDBQkvoWks8ifV
-         I/yj7qWWWt/1cAXrL47wvl7R8T+q92wFeUxThqrGyBhZR/nOY+C4kOdocjFX8QDPW9
-         5pMzCLDVv0Eo4mV2tmNgKzmW4FS3wVIJY/N9UFnqGkBC+jGDUr4zOdTcIjf3gdkvY6
-         jwwLd9C8220jj6W2G2Or6BPmSgHfieZDFr3c1ty9L5wT8DQGy7Zx3QzMrGG4L2AXTq
-         nhPgnFKeBSmw07LAqri0Nb1tVmz61+BFWIzv7cJdR+hMneNc0P4mLwnpa4UHUCt/Iw
-         MuyOazyjjadjifxvdSTZh8eoneG99HjiXzyKutoeeJbx3QAGmbmwhpN3vIXekbloO6
-         BlgMN+uq7i5R/MspJgGDqd3kiZef3NPj+AsB3belkSCDi9JCWZDFjsPf2V3sibVtsL
-         GZ7VzV0khKEj8Hv9onSX8M/mxE5V5JBLDG2bmVsrftboqiwmJ4Poz8G6nHCRFwGHhe
-         IRhefBSFLNt0Gi07+wz3ZUdQZGbPzhi7AMQSBrstDjHh6AL+qdkQAKzBBAST3zvqSb
-         F/9pY96ebjtRJNzPjBLqh+C8bNUgF03g7PFxxytDL6OYAEc6gaiU7pq/ubtpmHMs4D
-         1ueM1ZNR66s0O69R14YftBV4=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9862640E0239;
-        Thu, 30 Nov 2023 14:40:05 +0000 (UTC)
-Date:   Thu, 30 Nov 2023 15:40:01 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Shuai Xue <xueshuai@linux.alibaba.com>
-Cc:     james.morse@arm.com, rafael@kernel.org, wangkefeng.wang@huawei.com,
-        tanxiaofei@huawei.com, mawupeng1@huawei.com, tony.luck@intel.com,
-        linmiaohe@huawei.com, naoya.horiguchi@nec.com,
-        gregkh@linuxfoundation.org, will@kernel.org, jarkko@kernel.org,
-        linux-acpi@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        linux-edac@vger.kernel.org, acpica-devel@lists.linuxfoundation.org,
-        stable@vger.kernel.org, x86@kernel.org, justin.he@arm.com,
-        ardb@kernel.org, ying.huang@intel.com, ashish.kalra@amd.com,
-        baolin.wang@linux.alibaba.com, tglx@linutronix.de,
-        mingo@redhat.com, dave.hansen@linux.intel.com, lenb@kernel.org,
-        hpa@zytor.com, robert.moore@intel.com, lvying6@huawei.com,
-        xiexiuqi@huawei.com, zhuo.song@linux.alibaba.com
-Subject: Re: [PATCH v9 0/2] ACPI: APEI: handle synchronous errors in task
- work with proper si_code
-Message-ID: <20231130144001.GGZWiewYtvMSJir62f@fat_crate.local>
-References: <20221027042445.60108-1-xueshuai@linux.alibaba.com>
- <20231007072818.58951-1-xueshuai@linux.alibaba.com>
- <20231123150710.GEZV9qnkWMBWrggGc1@fat_crate.local>
- <9e92e600-86a4-4456-9de4-b597854b107c@linux.alibaba.com>
- <20231125121059.GAZWHkU27odMLns7TZ@fat_crate.local>
- <1048123e-b608-4db1-8d5f-456dd113d06f@linux.alibaba.com>
- <20231129185406.GBZWeIzqwgRQe7XDo/@fat_crate.local>
- <a3cd9b79-4be5-4f77-b32a-51a624a65ec0@linux.alibaba.com>
+        Thu, 30 Nov 2023 09:41:02 -0500
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F5A0BD
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 06:41:07 -0800 (PST)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-48-t3ILSSs2OZqhiSRZq3Dljg-2; Thu, 30 Nov 2023 14:40:57 +0000
+X-MC-Unique: t3ILSSs2OZqhiSRZq3Dljg-2
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 30 Nov
+ 2023 14:40:12 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Thu, 30 Nov 2023 14:40:12 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Lee Jones' <lee@kernel.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Linus Walleij" <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Yuan-Hsin Chen <yhchen@faraday-tech.com>,
+        Feng-Hsin Chiang <john453@faraday-tech.com>,
+        Po-Yu Chuang <ratbert.chuang@gmail.com>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
+Subject: RE: [PATCH 3/5] usb: fotg210-hcd: Replace snprintf() with the safer
+ scnprintf() variant
+Thread-Topic: [PATCH 3/5] usb: fotg210-hcd: Replace snprintf() with the safer
+ scnprintf() variant
+Thread-Index: AQHaI3u56JraFtMggUKBqY7WM/KeMLCS64WA
+Date:   Thu, 30 Nov 2023 14:40:12 +0000
+Message-ID: <f79f570f12cf424b992a7bc87664588a@AcuMS.aculab.com>
+References: <20231130105459.3208986-1-lee@kernel.org>
+ <20231130105459.3208986-4-lee@kernel.org>
+In-Reply-To: <20231130105459.3208986-4-lee@kernel.org>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <a3cd9b79-4be5-4f77-b32a-51a624a65ec0@linux.alibaba.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,PDS_BAD_THREAD_QP_64,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-FTR, this is starting to make sense, thanks for explaining.
-
-Replying only to this one for now:
-
-On Thu, Nov 30, 2023 at 10:58:53AM +0800, Shuai Xue wrote:
-> To reproduce this problem:
+From: Lee Jones
+> Sent: 30 November 2023 10:55
 > 
-> 	# STEP1: enable early kill mode
-> 	#sysctl -w vm.memory_failure_early_kill=1
-> 	vm.memory_failure_early_kill = 1
+> There is a general misunderstanding amongst engineers that {v}snprintf()
+> returns the length of the data *actually* encoded into the destination
+> array.  However, as per the C99 standard {v}snprintf() really returns
+> the length of the data that *would have been* written if there were
+> enough space for it.  This misunderstanding has led to buffer-overruns
+> in the past.  It's generally considered safer to use the {v}scnprintf()
+> variants in their place (or even sprintf() in simple cases).  So let's
+> do that.
 > 
-> 	# STEP2: inject an UCE error and consume it to trigger a synchronous error
+> The uses in this file both seem to assume that data *has been* written!
+...
+> -		temp = snprintf(next, size,
+> -				"\n\t%p%c%s len=%d %08x urb %p",
+> -				td, mark, ({ char *tmp;
+...
+> -		if (size < temp)
+> -			temp = size;
 
-So this is for ARM folks to deal with, BUT:
+That is actually a bug - even though it is trying to be correct.
+The trailing '\0' that snprintf() adds (unless you are using the
+M$ one) will end up in the buffer.
 
-A consumed uncorrectable error on x86 means panic. On some hw like on
-AMD, that error doesn't even get seen by the OS but the hw does
-something called syncflood to prevent further error propagation. So
-there's no any action required - the hw does that.
+	David
 
-But I'd like to hear from ARM folks whether consuming an uncorrectable
-error even lets software run. Dunno.
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
