@@ -2,144 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F4097FE782
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 04:04:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCCCE7FE784
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 04:04:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344258AbjK3DEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 22:04:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33320 "EHLO
+        id S1344265AbjK3DEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 22:04:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230393AbjK3DEJ (ORCPT
+        with ESMTP id S230393AbjK3DEr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 22:04:09 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1589D6C;
-        Wed, 29 Nov 2023 19:04:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701313455; x=1732849455;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=GCiIaCw+VRboLufR/lMo0OoCNHsxCHgA0wMyBlShb1o=;
-  b=SQwNECuH1JCgOtntM9c3ytdKWjE+PxAzqLVvOaBfUVlssD49d2hUo8+3
-   EiEKnIDIB8yfL8nx2Lnk+u2z2jBBeyrpmm6eS0877gHDK0bbf099XlGYK
-   VFwMpRrJpWxtfH/UtbBFL5whKl2GwDWASiIOWNt0+OiEOayWh67q6yN1u
-   6tofHGzJYqsjMUqDJDm7l2NAacxlRRZOTa1R6ezPzumX+rVmOweDcUeoc
-   ve8pFGecz4wGHHgGoOsYytJHV6TPKDBQmiypgTuY0M7G8Zo6e3SmKBvZX
-   UM06DYaa4MJhzk9LfxK7PQ1fOKiDWEZxEfPfmTTVEWkItgi6lEKfmSBMT
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="245356"
-X-IronPort-AV: E=Sophos;i="6.04,237,1695711600"; 
-   d="scan'208";a="245356"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 19:04:13 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="1100767184"
-X-IronPort-AV: E=Sophos;i="6.04,237,1695711600"; 
-   d="scan'208";a="1100767184"
-Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.93.29.154]) ([10.93.29.154])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 19:04:10 -0800
-Message-ID: <ebacaa61-4156-4948-a9f7-8ea7c0a49e4a@intel.com>
-Date:   Thu, 30 Nov 2023 11:04:08 +0800
+        Wed, 29 Nov 2023 22:04:47 -0500
+Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A981D5E;
+        Wed, 29 Nov 2023 19:04:53 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R511e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0VxQ.kvS_1701313489;
+Received: from 30.240.112.131(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0VxQ.kvS_1701313489)
+          by smtp.aliyun-inc.com;
+          Thu, 30 Nov 2023 11:04:50 +0800
+Message-ID: <50c44afb-f1ea-4136-9d85-4916a4f3d109@linux.alibaba.com>
+Date:   Thu, 30 Nov 2023 11:04:48 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] KVM: selftests: Add logic to detect if ioctl()
- failed because VM was killed
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Michal Luczaj <mhal@rbox.co>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Colton Lewis <coltonlewis@google.com>
-References: <20231108010953.560824-1-seanjc@google.com>
- <20231108010953.560824-3-seanjc@google.com>
- <0ee32216-e285-406f-b20d-dd193b791d2b@intel.com>
- <ZUuyVfdKZG44T1ba@google.com>
- <22c602c9-4943-4a16-a12e-ffc5db29daa1@intel.com>
- <ZWePYnuK65GCOGYU@google.com>
+Subject: Re: [PATCH v11 4/5] drivers/perf: add DesignWare PCIe PMU driver
 Content-Language: en-US
-From:   Xiaoyao Li <xiaoyao.li@intel.com>
-In-Reply-To: <ZWePYnuK65GCOGYU@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+To:     Ilkka Koskinen <ilkka@os.amperecomputing.com>
+Cc:     kaishen@linux.alibaba.com, helgaas@kernel.org,
+        yangyicong@huawei.com, will@kernel.org,
+        Jonathan.Cameron@huawei.com, baolin.wang@linux.alibaba.com,
+        robin.murphy@arm.com, chengyou@linux.alibaba.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pci@vger.kernel.org, rdunlap@infradead.org,
+        mark.rutland@arm.com, zhuo.song@linux.alibaba.com,
+        renyu.zj@linux.alibaba.com
+References: <20231121013400.18367-1-xueshuai@linux.alibaba.com>
+ <20231121013400.18367-5-xueshuai@linux.alibaba.com>
+ <aaf365bf-ada5-a52-c35-d7dd2d598b49@os.amperecomputing.com>
+From:   Shuai Xue <xueshuai@linux.alibaba.com>
+In-Reply-To: <aaf365bf-ada5-a52-c35-d7dd2d598b49@os.amperecomputing.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/30/2023 3:22 AM, Sean Christopherson wrote:
-> On Mon, Nov 13, 2023, Xiaoyao Li wrote:
->> On 11/9/2023 12:07 AM, Sean Christopherson wrote:
->>> On Wed, Nov 08, 2023, Xiaoyao Li wrote:
->>>> On 11/8/2023 9:09 AM, Sean Christopherson wrote:
->>>>> Add yet another macro to the VM/vCPU ioctl() framework to detect when an
->>>>> ioctl() failed because KVM killed/bugged the VM, i.e. when there was
->>>>> nothing wrong with the ioctl() itself.  If KVM kills a VM, e.g. by way of
->>>>> a failed KVM_BUG_ON(), all subsequent VM and vCPU ioctl()s will fail with
->>>>> -EIO, which can be quite misleading and ultimately waste user/developer
->>>>> time.
->>>>>
->>>>> Use KVM_CHECK_EXTENSION on KVM_CAP_USER_MEMORY to detect if the VM is
->>>>> dead and/or bug, as KVM doesn't provide a dedicated ioctl().  Using a
->>>>> heuristic is obviously less than ideal, but practically speaking the logic
->>>>> is bulletproof barring a KVM change, and any such change would arguably
->>>>> break userspace, e.g. if KVM returns something other than -EIO.
->>>>
->>>> We hit similar issue when testing TDX VMs. Most failure of SEMCALL is
->>>> handled with a KVM_BUG_ON(), which leads to vm dead. Then the following
->>>> IOCTL from userspace (QEMU) and gets -EIO.
->>>>
->>>> Can we return a new KVM_EXIT_VM_DEAD on KVM_REQ_VM_DEAD?
->>>
->>> Why?  Even if KVM_EXIT_VM_DEAD somehow provided enough information to be useful
->>> from an automation perspective, the VM is obviously dead.  I don't see how the
->>> VMM can do anything but log the error and tear down the VM.  KVM_BUG_ON() comes
->>> with a WARN, which will be far more helpful for a human debugger, e.g. because
->>> all vCPUs would exit with KVM_EXIT_VM_DEAD, it wouldn't even identify which vCPU
->>> initially triggered the issue.
+
+
+On 2023/11/30 09:43, Ilkka Koskinen wrote:
+> 
+> On Tue, 21 Nov 2023, Shuai Xue wrote:
+>> This commit adds the PCIe Performance Monitoring Unit (PMU) driver support
+>> for T-Head Yitian SoC chip. Yitian is based on the Synopsys PCI Express
+>> Core controller IP which provides statistics feature. The PMU is a PCIe
+>> configuration space register block provided by each PCIe Root Port in a
+>> Vendor-Specific Extended Capability named RAS D.E.S (Debug, Error
+>> injection, and Statistics).
 >>
->> It's not about providing more helpful debugging info, but to provide a
->> dedicated notification for VMM that "the VM is dead, all the following
->> command may not response". With it, VMM can get rid of the tricky detection
->> like this patch.
-> 
-> But a VMM doesn't need this tricky detection, because this tricky detections isn't
-> about detecting that the VM is dead, it's all about helping a human debug why a
-> test failed.
-> 
-> -EIO already effectively says "the VM is dead", e.g. QEMU isn't going to keep trying
-> to run vCPUs.  
-
-If -EIO for KVM ioctl denotes "the VM is dead" is to be the officially 
-announced API, I'm fine.
-
-
-> Similarly, selftests assert either way, the goal is purely to print
-> out a unique error message to minimize the chances of confusing the human running
-> the test (or looking at results).
-> 
->>> Definitely a "no" on this one.  As has been established by the guest_memfd series,
->>> it's ok to return -1/errno with a valid exit_reason.
->>>
->>>> But I'm wondering if any userspace relies on -EIO behavior for VM DEAD case.
->>>
->>> I doubt userspace relies on -EIO, but userpsace definitely relies on -1/errno being
->>> returned when a fatal error.
+>> To facilitate collection of statistics the controller provides the
+>> following two features for each Root Port:
 >>
->> what about KVM_EXIT_SHUTDOWN? Or KVM_EXIT_INTERNAL_ERROR?
+>> - one 64-bit counter for Time Based Analysis (RX/TX data throughput and
+>>  time spent in each low-power LTSSM state) and
+>> - one 32-bit counter for Event Counting (error and non-error events for
+>>  a specified lane)
+>>
+>> Note: There is no interrupt for counter overflow.
+>>
+>> This driver adds PMU devices for each PCIe Root Port. And the PMU device is
+>> named based the BDF of Root Port. For example,
+>>
+>>    30:03.0 PCI bridge: Device 1ded:8000 (rev 01)
+>>
+>> the PMU device name for this Root Port is dwc_rootport_3018.
+>>
+>> Example usage of counting PCIe RX TLP data payload (Units of bytes)::
+>>
+>>    $# perf stat -a -e dwc_rootport_3018/Rx_PCIe_TLP_Data_Payload/
+>>
+>> average RX bandwidth can be calculated like this:
+>>
+>>    PCIe TX Bandwidth = Rx_PCIe_TLP_Data_Payload / Measure_Time_Window
+>>
+>> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
+>> Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+>> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+>> Reviewed-by: Yicong Yang <yangyicong@hisilicon.com>
+>> Tested-by: Ilkka Koskinen <ilkka@os.amperecomputing.com>
 > 
-> I don't follow,
+> Looks good to me and seems to work fine. Thus,
+> 
+>   Reviewed-and-tested-by: Ilkka Koskinen <ilkka@os.amperecomputing.com>
+> 
+> 
+> You can keep my "Tested-by: ..." in the other patches.
+> 
+> Cheers, Ilkka
 
-I was trying to ask if KVM_EXIT_SHUTDOWN and KVM_EXIT_INTERNAL_ERROR are 
-treated as fatal error by userspace.
+Thank you very much :)
 
-> those are vcpu_run.exit_reason values, not errno values.  Returning
-> any flavor of KVM_EXIT_*, which are positive values, would break userspace, e.g.
-> QEMU explicitly looks for "ret < 0", and glibc only treats small-ish negative
-> values as errors, i.e. a postive return value will be propagated verbatim up to
-> QEMU.
+Cheers
+Shuai
 
