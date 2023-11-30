@@ -2,170 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 144217FEEC3
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 13:17:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E731F7FEED1
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 13:21:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235184AbjK3MR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 07:17:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35730 "EHLO
+        id S1345218AbjK3MUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 07:20:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231837AbjK3MRY (ORCPT
+        with ESMTP id S235172AbjK3MUs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 07:17:24 -0500
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3AC210F8
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 04:17:21 -0800 (PST)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-a1882023bbfso84446566b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 04:17:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701346640; x=1701951440; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Hw5uQbIO10axpdOltgfD3OxasAymktrQYH5AQmGKhHQ=;
-        b=BPCQQ2TzG6g/dSdlygICkKeBT5F+Djo8Rvs6w5Zs7/YUrFFdsNtrDHb0EFqmt4w0Sf
-         bpPqBewng6ufc04+Ap1WwjEJ6IKPPZUbsUlwjKDhctbq8AeetSE4vO7uyNXWQvlM/94s
-         eRYESqcBEjKntCDc01YyTgAUj4h7cT7Y3AJ+RMFkb/KdqeYzpfOUmCd9kONN9W3WAuem
-         XSZO92kwNWUcU1PkkdwruK5auTtCYDFxnSp+y+kzuUgXc9r20de3tNr8/HdcRGdBbift
-         0P2RsFVT08BR5QKcY4T2r7pcAwx6UWOrhbFoaIcY40PAR2qHBzGEOqF7ZuRK0ocIIPx/
-         by0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701346640; x=1701951440;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Hw5uQbIO10axpdOltgfD3OxasAymktrQYH5AQmGKhHQ=;
-        b=PDtfP8swUfzcJX1z78Ja0k0TY3eQgGn1V86VrcBoOWEX7YoDQXIO5Djg6h2L556Kii
-         Gkg9EJnGh5KcSxHY/y4Cd68sB3+W/RdKAFIoxqb+jxroEbE1qXEyt8Fu/F6WTYOX4fgl
-         FE6vV9tXccfQyvQkUfcy5RSvR6FVt4C4NM7PMRI4Iu8yLV+78I9GF8IeZMPMQ/aJ2GAB
-         QLMtjsZ+B+3NQ534kX8Bm3BBXHIc17XH7tKidPFgIPPTU07OhV90rviE2aD6YTcLVe6w
-         hC2m4kjm3pJzk3dtPuJVMO9MT+CMGAm0YhvE0Ygu8OSVXAtLoG/hJNh3oBP+t3IPdUCg
-         m9Dg==
-X-Gm-Message-State: AOJu0YwuP67y/4iBkQEaEPwhgmQFChLNnzb1SDEf1iWIcHLDIo00qif1
-        oku/TWxmMi3e2lB0e9CF1EytLQ==
-X-Google-Smtp-Source: AGHT+IEHebN19PeSjrmB1Hyrs9O4oOMIaAIyx6sLXk2bHRtMdNCRxnBvqmlcENwH+OvKA4/vgwwrZw==
-X-Received: by 2002:a17:906:5191:b0:a18:6693:97e6 with SMTP id y17-20020a170906519100b00a18669397e6mr1240626ejk.24.1701346640210;
-        Thu, 30 Nov 2023 04:17:20 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.223.109])
-        by smtp.gmail.com with ESMTPSA id d15-20020a170906344f00b009eff65e6942sm606452ejb.197.2023.11.30.04.17.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Nov 2023 04:17:19 -0800 (PST)
-Message-ID: <81b23ae7-bb01-4c23-80df-df171fbc2d08@linaro.org>
-Date:   Thu, 30 Nov 2023 13:17:18 +0100
+        Thu, 30 Nov 2023 07:20:48 -0500
+Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.220])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1B4FCD46;
+        Thu, 30 Nov 2023 04:20:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=62A33
+        cf5Af2cRWDLxsHpxRpMh1AsaOXYK73nIWVv3Jc=; b=jN2Msd0ypXsyxZfwnIQ78
+        BVr1StiSjinLOGpr16iu0Cwe84MmB2B5n07nCO1GDV3RovIf+LYgXuD0vwVMYbX5
+        p/zg3UH/TEiISMo8hcE/XhTpysK0kHaDDpw7Aq2BVt+EtHP6BW021Vn07q8h3GxG
+        8eO/J63j79rLZj8qrSAq2Q=
+Received: from ProDesk.. (unknown [58.22.7.114])
+        by zwqz-smtp-mta-g1-0 (Coremail) with SMTP id _____wDXn9LyfWhl2DkWBg--.29823S2;
+        Thu, 30 Nov 2023 20:20:07 +0800 (CST)
+From:   Andy Yan <andyshrk@163.com>
+To:     heiko@sntech.de
+Cc:     hjc@rock-chips.com, dri-devel@lists.freedesktop.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
+        devicetree@vger.kernel.org, sebastian.reichel@collabora.com,
+        kever.yang@rock-chips.com, chris.obbard@collabora.com,
+        Andy Yan <andy.yan@rock-chips.com>
+Subject: [PATCH v3 00/14] Add VOP2 support on rk3588
+Date:   Thu, 30 Nov 2023 20:20:01 +0800
+Message-Id: <20231130122001.12474-1-andyshrk@163.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ASoC: qcom: audioreach: Add 4 channel support
-Content-Language: en-US
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Banajit Goswami <bgoswami@quicinc.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-References: <20231020084919.18628-1-krzysztof.kozlowski@linaro.org>
- <f882b666-8a68-4341-a143-cb226ab7d22b@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <f882b666-8a68-4341-a143-cb226ab7d22b@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: _____wDXn9LyfWhl2DkWBg--.29823S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxCrW7tr4UAr4UXF48Wr4fuFg_yoWrGF4fp3
+        95CryYqrWxCFW2qrs3tw1rCrWftan7Aay3K393JanIv3W3KFyUKwnIg3Z5Zr9xWr1xZFy2
+        kF45J347Wr42vr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jrcTPUUUUU=
+X-Originating-IP: [58.22.7.114]
+X-CM-SenderInfo: 5dqg52xkunqiywtou0bp/xtbBEBQ4XmVOAqtRyAABs4
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/10/2023 10:42, Srinivas Kandagatla wrote:
-> Thanks for the patch,
-> 
-> On 20/10/2023 09:49, Krzysztof Kozlowski wrote:
->> Add support four channel streams.  Map channel 3 and 4 to left/right
->> surround ("quad(side)" from ffmpeg standard channel list) to match what
->> is in qdsp6/q6dsp-common.c driver.
->>
->> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->>
-> 
->> ---
->>
->> quad(side):
->> https://trac.ffmpeg.org/wiki/AudioChannelManipulation#Listchannelnamesandstandardchannellayouts
->> ---
->>   sound/soc/qcom/qdsp6/audioreach.c | 25 ++++++++++++++++++++++---
->>   1 file changed, 22 insertions(+), 3 deletions(-)
->>
->> diff --git a/sound/soc/qcom/qdsp6/audioreach.c b/sound/soc/qcom/qdsp6/audioreach.c
->> index 5974c7929dd3..4dd2a2e261c9 100644
->> --- a/sound/soc/qcom/qdsp6/audioreach.c
->> +++ b/sound/soc/qcom/qdsp6/audioreach.c
->> @@ -833,6 +833,11 @@ static int audioreach_mfc_set_media_format(struct q6apm_graph *graph,
->>   	} else if (num_channels == 2) {
->>   		media_format->channel_mapping[0] = PCM_CHANNEL_L;
->>   		media_format->channel_mapping[1] = PCM_CHANNEL_R;
->> +	} else if (num_channels == 4) {
->> +		media_format->channel_mapping[0] = PCM_CHANNEL_FL;
->> +		media_format->channel_mapping[1] = PCM_CHANNEL_FR;
->> +		media_format->channel_mapping[2] = PCM_CHANNEL_LS;
->> +		media_format->channel_mapping[3] = PCM_CHANNEL_RS;
-> 
-> 
-> These are fine, but duplicated from q6dsp_map_channels(), Please 
-> consider using q6dsp_map_channels().
-> 
-> Also when you do that pl get rid of PCM_CHANNEL_L and PCM_CHANNEL_R 
-> defines in audioreach.h
+From: Andy Yan <andy.yan@rock-chips.com>
 
-The code is not exactly equivalent, e.g. for one channel L (=1) -> FC
-(=3). I assume that's okay for you.
+This patch sets aims at enable the VOP2 support on rk3588.
 
-Best regards,
-Krzysztof
+Main feature of VOP2 on rk3588:
+Four video ports:
+VP0 Max 4096x2160
+VP1 Max 4096x2160
+VP2 Max 4096x2160
+VP3 Max 2048x1080
+
+4 4K Cluster windows with AFBC/line RGB and AFBC-only YUV support
+4 4K Esmart windows with line RGB/YUV support
+
+The current version support all the 8 windows with all the suppported
+plane format.
+
+And we don't have a upstreamed encoder/connector(HDMI/DP) for rk3588
+yet, Cristian from collabora is working on adding upstream support for
+HDMI on rk3588.
+
+My current test(1080P/4KP60) is runing with a HDMI driver pick from
+downstream bsp kernel.
+
+A branch based on linux-6.7 rc3 containing all the series and
+HDMI driver(not compatible with mainline rk3568 hdmi) picked
+from downstream bsp kernel is available [0].
+
+[0]https://github.com/andyshrk/linux/tree/rk3588-vop2-hdmi-upstream-linux-6.7-rc3-2023-11-30
+
+Changes in v3:
+- split confg one patch from the vop2 driver patch
+- put bool variable yuv_overlay next to other bool variable
+- define macro for RK3568_OVL_CTRL__YUV_MODE
+- just write RK3568_OVL_CTRL register once in function
+  vop2_setup_layer_mixer
+- constrain properties in allOf:if:then
+- some description updates
+- change the subject as Krzysztof suggested, and add his ACK
+- add braces for x in macro vop2_output_if_is_yyy(x)
+- clear the bits of a mask before setting it in rk3588_set_intf_mux
+- add more comments.
+- put regs dump info in vop2_data
+
+Changes in v2:
+- fix errors when running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+- split form vop driver patch
+- add rk3588_ prefix for functions which are rk3588 only
+- make some calculation as fixed value and keep calculation formula as
+  comment
+- check return value for some cru calculation functions.
+- check return value for syscon_regmap_lookup_by_phandle
+- add NV20/NV30 for esmart plane
+
+Andy Yan (14):
+  drm/rockchip: move output interface related definition to
+    rockchip_drm_drv.h
+  Revert "drm/rockchip: vop2: Use regcache_sync() to fix suspend/resume"
+  drm/rockchip: vop2: set half_block_en bit in all mode
+  drm/rockchip: vop2: clear afbc en and transform bit for cluster window
+    at linear mode
+  drm/rockchip: vop2: Add write mask for VP config done
+  drm/rockchip: vop2: Set YUV/RGB overlay mode
+  drm/rockchip: vop2: rename grf to sys_grf
+  dt-bindings: soc: rockchip: add rk3588 vop/vo syscon
+  dt-bindings: display: vop2: Add rk3588 support
+  dt-bindings: rockchip,vop2: Add more endpoint definition
+  drm/rockchip: vop2: Add support for rk3588
+  drm/rockchip: vop2: Add debugfs support
+  dt-bindings: iommu: rockchip: Add Rockchip RK3588
+  arm64: dts: rockchip: Add vop on rk3588
+
+ .../display/rockchip/rockchip-vop2.yaml       | 118 ++-
+ .../bindings/iommu/rockchip,iommu.yaml        |   1 +
+ .../devicetree/bindings/soc/rockchip/grf.yaml |   2 +
+ arch/arm64/boot/dts/rockchip/rk3588s.dtsi     |  96 +++
+ .../gpu/drm/rockchip/analogix_dp-rockchip.c   |   1 -
+ drivers/gpu/drm/rockchip/cdn-dp-core.c        |   1 -
+ .../gpu/drm/rockchip/dw-mipi-dsi-rockchip.c   |   1 -
+ drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c   |   1 -
+ drivers/gpu/drm/rockchip/inno_hdmi.c          |   1 -
+ drivers/gpu/drm/rockchip/rk3066_hdmi.c        |   1 -
+ drivers/gpu/drm/rockchip/rockchip_drm_drv.h   |  18 +
+ drivers/gpu/drm/rockchip/rockchip_drm_vop.h   |  12 +-
+ drivers/gpu/drm/rockchip/rockchip_drm_vop2.c  | 749 +++++++++++++++++-
+ drivers/gpu/drm/rockchip/rockchip_drm_vop2.h  | 109 ++-
+ drivers/gpu/drm/rockchip/rockchip_lvds.c      |   1 -
+ drivers/gpu/drm/rockchip/rockchip_rgb.c       |   1 -
+ drivers/gpu/drm/rockchip/rockchip_vop2_reg.c  | 412 ++++++++++
+ include/dt-bindings/soc/rockchip,vop2.h       |   4 +
+ 18 files changed, 1452 insertions(+), 77 deletions(-)
+
+-- 
+2.34.1
 
