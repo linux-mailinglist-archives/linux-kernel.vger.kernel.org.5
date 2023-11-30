@@ -2,267 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D58697FEAC9
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 09:34:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7FEB7FEABA
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 09:33:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344897AbjK3IeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 03:34:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43662 "EHLO
+        id S1344884AbjK3Idf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 03:33:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235028AbjK3IeI (ORCPT
+        with ESMTP id S231750AbjK3Ide (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 03:34:08 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E2F110F0
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 00:34:13 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-54bfa9b4142so7825a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 00:34:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701333251; x=1701938051; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qXo48++PN4J59kZEwmuXxhgLqro/JnSA9tOip05A0qQ=;
-        b=k0biSUnCR5D85d+2eDg6LAIQrS5drIxEEoIDpFMy6TWS8xEwux6ZImjS0cUb9mZGSc
-         XAora9qRc2XbJxPYFierVjRLmP4yv++XjZU9DiaBepiyelO0M30z67IAEmpJpVNJPmaf
-         P4fHUhBQUTLvhFwv6a38Ds83p7YFwkOzG1d/b4GvNGECywEydNm2yBUdicvpL3LE1aNn
-         u9mUis6L0bRasZH138u7l4OFYAVoLEWDipUloK9whcoK7t98u/weQf1nN88tbJDv6IN8
-         Smk0FbmtA1SYF57Jc198WkabzX5omWAOo25tCZkJTOyYrSfbzyQ4RRop8qUybg1/BJth
-         coGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701333251; x=1701938051;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qXo48++PN4J59kZEwmuXxhgLqro/JnSA9tOip05A0qQ=;
-        b=aRrSHxDkr4QYV3/Hhd+fkLNt1z5IDL6emHI2R0gSF6u2yiO5yp0FFcuU4vkPYtj0FZ
-         RZQ5I4Vd1pE9/fHfiyNnXJU0uFY6TRvrm5J8zaKmg2BNUklBk86hJ6oJukN2xCyswdhZ
-         O+KdmcjGlBWDuElwbXPg49KSI+T1OkZv1CRQ3G+RXtB15+27FZd9ZPYearBZBvGgOdEB
-         p4tuVTfEYf4q1375YjWIjTohB7Zvn5gH7UenKhjp+w1AtzPkx0hKD1gBVQ3Wd26eUEjd
-         Gij9hw2/eUYm564CRYqFucUNQfBVq6s/8bkuKvlfP7n2gIIQIBf/Y74deoE9Gd0k5t21
-         wUaQ==
-X-Gm-Message-State: AOJu0Yxd1XY0IX0jkn/ao5BBPbrdyyqUNtEFuxDsuQnlJinL/5x+cP94
-        Y6XIYvJ40mGFL+Imv0kkJKLyQ/rcADd1Y9QOTPxGXQ==
-X-Google-Smtp-Source: AGHT+IECQzIfXr6OtTMX8MsFCuGNv7SQ2HOnhHMKdAxvpMo5DrLlhbNHWwNXL+iPnSmW+RqEspz3TrOglZ4jk+YeSBc=
-X-Received: by 2002:a05:6402:1cae:b0:54b:81ba:93b2 with SMTP id
- cz14-20020a0564021cae00b0054b81ba93b2mr113958edb.2.1701333251299; Thu, 30 Nov
- 2023 00:34:11 -0800 (PST)
+        Thu, 30 Nov 2023 03:33:34 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDC7D9A
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 00:33:40 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63B39C433C8;
+        Thu, 30 Nov 2023 08:33:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701333220;
+        bh=tRGvouhLQr1KpWUDyBmlCJiZ9WRoYoSqiQEHNkqWpbM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Gv5ZR8S2wi4mCPXgnySrTlzpfn8Ix+u0SnoSorF+TU+YWGFoKQITboqfE2qa4B13k
+         AQmoENYxBt1UZoxBdkhKodzZHHNf3IojFoFob0jYKZV5mEm++fpV7iX0CB/FUt+hR+
+         MwLAS+X41xv4WfWmruPOAhpu4yGZUXGzblbi2K2aNKw/GwwptHCOKlD2XF3fySsEQO
+         BrkutL9jYwzpDJUlI2jXJaIQoa6xeg93HWgG3oo2rEHdSvzLhVH8JCTBs7gExvSYen
+         K3Ue0JhAm73hoJuk6mDKs/FosOv1xbB95a+LvzPnHYWus6oBhUR6HIRDa/U2oTD9kL
+         yso7IkSVapc6A==
+Received: from johan by xi.lan with local (Exim 4.96.2)
+        (envelope-from <johan@kernel.org>)
+        id 1r8cUt-0006Z9-2R;
+        Thu, 30 Nov 2023 09:34:12 +0100
+Date:   Thu, 30 Nov 2023 09:34:11 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, quic_wcheng@quicinc.com,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_ppratap@quicinc.com, quic_jackp@quicinc.com
+Subject: Re: [PATCH 1/6] dt-bindings: usb: dwc3: Clean up hs_phy_irq in
+ bindings
+Message-ID: <ZWhJA6m7IQk00rk-@hovoldconsulting.com>
+References: <1192d91f-11bf-44af-953a-14e08e2b6ca8@quicinc.com>
+ <ZWCpGdJRexnk98IN@hovoldconsulting.com>
+ <004ddc69-1566-4de4-b260-0fca96a9395f@quicinc.com>
+ <ZWW_FOAKp95Cf9vN@hovoldconsulting.com>
+ <18965bb9-7afa-4892-8b71-981ba29d2cd4@quicinc.com>
+ <ZWXHrvUDnF2dMk6r@hovoldconsulting.com>
+ <6d7527bf-8c1a-49b5-a0cf-99a92098c971@quicinc.com>
+ <c8a28c72-5c0a-4a67-a4c9-e46a5716cda4@linaro.org>
+ <ZWcPZPX-eT-xHAOv@hovoldconsulting.com>
+ <85527699-f549-4728-b263-7d10c669b889@linaro.org>
 MIME-Version: 1.0
-References: <CABOYnLwSO7zLH+KVwTUJnV2_Hk+u+5+g8DPanTfLeEg05tFEQQ@mail.gmail.com>
- <CANn89iL8wmUf+G5nafMH1aCyeBDkoZ8micsAdECj6ktS-koG5w@mail.gmail.com>
-In-Reply-To: <CANn89iL8wmUf+G5nafMH1aCyeBDkoZ8micsAdECj6ktS-koG5w@mail.gmail.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Thu, 30 Nov 2023 09:34:00 +0100
-Message-ID: <CANn89iLNH3NgZr=5eZ22_wL2xOf179UnHU2YVL91L5QgzRmEeQ@mail.gmail.com>
-Subject: Re: WARNING in cleanup_net
-To:     xingwei lee <xrivendell7@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, santosh.shilimkar@oracle.com,
-        davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        rds-devel@oss.oracle.com, syzkaller@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <85527699-f549-4728-b263-7d10c669b889@linaro.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 30, 2023 at 9:24=E2=80=AFAM Eric Dumazet <edumazet@google.com> =
-wrote:
->
-> On Thu, Nov 30, 2023 at 9:19=E2=80=AFAM xingwei lee <xrivendell7@gmail.co=
-m> wrote:
-> >
-> > Hi
-> > I found a bug with syzkaller titled "WARNING in cleanup_net" in the
-> > last upstream.
-> > =3D* BUG DETAILS =3D*
-> > kernel commit: 3b47bc037bd44f142ac09848e8d3ecccc726be99
-> > kernel config: https://syzkaller.appspot.com/text?tag=3DKernelConfig&x=
-=3Df2a9d08825f82ef3
-> > repro.c/repro.txt:
-> > https://gist.github.com/xrivendell7/44780af4a9dededc5ff7a7c0583ce3f1
-> > the crash report=EF=BC=9A
-> > [ 8584.181281][T11719] bond0 (unregistering): Released all slaves
-> > [ 8585.839049][T11719] ref_tracker: net notrefcnt@ffff888021ba0220 has
-> > 1/1 users at
-> > [ 8585.839049][T11719]   sk_alloc+0xaf0/0xbf0
-> > [ 8585.839049][T11719]   inet6_create+0x39b/0x1300
-> > [ 8585.839049][T11719]   __sock_create+0x34f/0x850
-> > [ 8585.839049][T11719]   rds_tcp_listen_init+0xda/0x4f0
-> > [ 8585.839049][T11719]   rds_tcp_init_net+0x147/0x400
-> > [ 8585.839049][T11719]   ops_init+0xc4/0x680
-> > [ 8585.839049][T11719]   setup_net+0x431/0xa80
-> > [ 8585.839049][T11719]   copy_net_ns+0x313/0x6b0
-> > [ 8585.839049][T11719]   create_new_namespaces+0x3fb/0xb60
-> > [ 8585.839049][T11719]   unshare_nsproxy_namespaces+0xd0/0x200
-> > [ 8585.839049][T11719]   ksys_unshare+0x47c/0xa30
-> > [ 8585.839049][T11719]   __x64_sys_unshare+0x36/0x50
-> > [ 8585.839049][T11719]   do_syscall_64+0x40/0x110
-> > [ 8585.839049][T11719]   entry_SYSCALL_64_after_hwframe+0x63/0x6b
-> > [ 8585.839049][T11719]
-> > [ 8585.858614][T11719] ------------[ cut here ]------------
-> > [ 8585.860037][T11719] WARNING: CPU: 3 PID: 11719 at
-> > lib/ref_tracker.c:179 ref_tracker_dir_exit+0x3fa/0x6a0
-> > [ 8585.862152][T11719] Modules linked in:
-> > [ 8585.863038][T11719] CPU: 3 PID: 11719 Comm: kworker/u8:3 Not
-> > tainted 6.7.0-rc1-g7475e51b8796-dirty #2
-> > [ 8585.865268][T11719] Hardware name: QEMU Standard PC (i440FX + PIIX,
-> > 1996), BIOS 1.16.2-1.fc38 04/01/2014
-> > [ 8585.867345][T11719] Workqueue: netns cleanup_net
-> > [ 8585.868401][T11719] RIP: 0010:ref_tracker_dir_exit+0x3fa/0x6a0
-> > [ 8585.869426][T11719] Code: 00 00 4d 39 f5 49 8b 06 4d 89 f7 0f 85 08
-> > ff ff ff 48 8b 2c 24 31 ff e8 c4 09 d6 fc 48 8b 74 24 18 48 89 ef e8
-> > 67 13 32 06 90 <0f> 0b 90 48 8d 5d 44 31 ff e8 a8 09 d6 fc be 04 00 00
-> > 00 48 89 df
-> > [ 8585.872786][T11719] RSP: 0018:ffffc9000386fb78 EFLAGS: 00010286
-> > [ 8585.873790][T11719] RAX: 0000000080000000 RBX: dffffc0000000000
-> > RCX: 0000000000000000
-> > [ 8585.875085][T11719] RDX: 0000000000000001 RSI: ffffffff8b2cb900
-> > RDI: 0000000000000001
-> > [ 8585.876394][T11719] RBP: ffff888021ba0220 R08: 0000000000000001
-> > R09: fffffbfff24a13e9
-> > [ 8585.877808][T11719] R10: ffffffff92509f4f R11: 0000000000000003
-> > R12: ffff888021ba0270
-> > [ 8585.879138][T11719] R13: ffff888021ba0270 R14: ffff888021ba0270
-> > R15: ffff888021ba0270
-> > [ 8585.880481][T11719] FS: 0000000000000000(0000)
-> > GS:ffff88823bd00000(0000) knlGS:0000000000000000
-> > [ 8585.881965][T11719] CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [ 8585.882719][T11719] CR2: 00007f00c5cd79f0 CR3: 000000000d377000
-> > CR4: 0000000000750ef0
-> > [ 8585.883536][T11719] PKRU: 55555554
-> > [ 8585.883901][T11719] Call Trace:
-> > [ 8585.884247][T11719] <TASK>
-> > [ 8585.884561][T11719] ? show_regs+0x9a/0xb0
-> > [ 8585.885005][T11719] ? __warn+0xf5/0x3c0
-> > [ 8585.885423][T11719] ? report_bug+0x506/0x5f0
-> > [ 8585.885900][T11719] ? ref_tracker_dir_exit+0x3fa/0x6a0
-> > [ 8585.886466][T11719] ? report_bug+0x41c/0x5f0
-> > [ 8585.886939][T11719] ? handle_bug+0x3d/0x70
-> > [ 8585.887609][T11719] ? exc_invalid_op+0x17/0x40
-> > [ 8585.888104][T11719] ? asm_exc_invalid_op+0x1a/0x20
-> > [ 8585.888646][T11719] ? ref_tracker_dir_exit+0x3fa/0x6a0
-> > [ 8585.889203][T11719] ? ref_tracker_dir_exit+0x3f9/0x6a0
-> > [ 8585.889900][T11719] ? ref_tracker_dir_snprint+0xe0/0xe0
-> > [ 8585.890465][T11719] ? __kmem_cache_free+0xc0/0x180
-> > [ 8585.890989][T11719] cleanup_net+0x927/0xb70
-> > [ 8585.891462][T11719] ? unregister_pernet_device+0x80/0x80
-> > [ 8585.892038][T11719] process_one_work+0x8ab/0x1730
-> > [ 8585.892564][T11719] ? unregister_pernet_device+0x80/0x80
-> > [ 8585.893137][T11719] ? workqueue_congested+0x320/0x320
-> > [ 8585.893692][T11719] ? assign_work+0x1b7/0x260
-> > [ 8585.894177][T11719] worker_thread+0x931/0x1380
-> > [ 8585.894683][T11719] ? process_one_work+0x1730/0x1730
-> > [ 8585.895224][T11719] kthread+0x2d3/0x3b0
-> > [ 8585.895664][T11719] ? _raw_spin_unlock_irq+0x23/0x50
-> > [ 8585.896191][T11719] ? kthread_complete_and_exit+0x40/0x40
-> > [ 8585.896779][T11719] ret_from_fork+0x4e/0x80
-> > [ 8585.897245][T11719] ? kthread_complete_and_exit+0x40/0x40
-> > [ 8585.897863][T11719] ret_from_fork_asm+0x11/0x20
-> > [ 8585.898371][T11719] </TASK>
-> > [ 8585.898702][T11719] Kernel panic - not syncing: kernel: panic_on_war=
-n set ...
-> > [ 8585.899428][T11719] CPU: 3 PID: 11719 Comm: kworker/u8:3 Not
-> > tainted 6.7.0-rc1-g7475e51b8796-dirty #2
-> > [ 8585.900572][T11719] Hardware name: QEMU Standard PC (i440FX + PIIX,
-> > 1996), BIOS 1.16.2-1.fc38 04/01/2014
-> > [ 8585.901550][T11719] Workqueue: netns cleanup_net
-> > [ 8585.902038][T11719] Call Trace:
-> > [ 8585.902377][T11719] <TASK>
-> > [ 8585.902693][T11719] dump_stack_lvl+0xee/0x1e0
-> > [ 8585.903170][T11719] panic+0x754/0x810
-> > [ 8585.903805][T11719] ? panic_smp_self_stop+0xa0/0xa0
-> > [ 8585.904377][T11719] ? show_trace_log_lvl+0x394/0x540
-> > [ 8585.905159][T11719] ? check_panic_on_warn+0xa4/0xc0
-> > [ 8585.905742][T11719] ? ref_tracker_dir_exit+0x3fa/0x6a0
-> > [ 8585.906532][T11719] check_panic_on_warn+0xb8/0xc0
-> > [ 8585.907108][T11719] __warn+0x101/0x3c0
-> > [ 8585.907577][T11719] ? report_bug+0x506/0x5f0
-> > [ 8585.908317][T11719] ? ref_tracker_dir_exit+0x3fa/0x6a0
-> > [ 8585.909080][T11719] report_bug+0x41c/0x5f0
-> > [ 8585.909599][T11719] handle_bug+0x3d/0x70
-> > [ 8585.910089][T11719] exc_invalid_op+0x17/0x40
-> > [ 8585.910571][T11719] asm_exc_invalid_op+0x1a/0x20
-> > [ 8585.911115][T11719] RIP: 0010:ref_tracker_dir_exit+0x3fa/0x6a0
-> > [ 8585.911798][T11719] Code: 00 00 4d 39 f5 49 8b 06 4d 89 f7 0f 85 08
-> > ff ff ff 48 8b 2c 24 31 ff e8 c4 09 d6 fc 48 8b 74 24 18 48 89 ef e8
-> > 67 13 32 06 90 <0f> 0b 90 48 8d 5d 44 31 ff e8 a8 09 d6 fc be 04 00 00
-> > 00 48 89 df
-> > [ 8585.914135][T11719] RSP: 0018:ffffc9000386fb78 EFLAGS: 00010286
-> > [ 8585.914813][T11719] RAX: 0000000080000000 RBX: dffffc0000000000
-> > RCX: 0000000000000000
-> > [ 8585.915654][T11719] RDX: 0000000000000001 RSI: ffffffff8b2cb900
-> > RDI: 0000000000000001
-> > [ 8585.916556][T11719] RBP: ffff888021ba0220 R08: 0000000000000001
-> > R09: fffffbfff24a13e9
-> > [ 8585.917647][T11719] R10: ffffffff92509f4f R11: 0000000000000003
-> > R12: ffff888021ba0270
-> > [ 8585.918692][T11719] R13: ffff888021ba0270 R14: ffff888021ba0270
-> > R15: ffff888021ba0270
-> > [ 8585.919598][T11719] ? ref_tracker_dir_exit+0x3f9/0x6a0
-> > [ 8585.920188][T11719] ? ref_tracker_dir_snprint+0xe0/0xe0
-> > [ 8585.920803][T11719] ? __kmem_cache_free+0xc0/0x180
-> > [ 8585.921387][T11719] cleanup_net+0x927/0xb70
-> > [ 8585.921891][T11719] ? unregister_pernet_device+0x80/0x80
-> > [ 8585.922481][T11719] process_one_work+0x8ab/0x1730
-> > [ 8585.923093][T11719] ? unregister_pernet_device+0x80/0x80
-> > [ 8585.923781][T11719] ? workqueue_congested+0x320/0x320
-> > [ 8585.924385][T11719] ? assign_work+0x1b7/0x260
-> > [ 8585.924923][T11719] worker_thread+0x931/0x1380
-> > [ 8585.925467][T11719] ? process_one_work+0x1730/0x1730
-> > [ 8585.926079][T11719] kthread+0x2d3/0x3b0
-> > [ 8585.926538][T11719] ? _raw_spin_unlock_irq+0x23/0x50
-> > [ 8585.927138][T11719] ? kthread_complete_and_exit+0x40/0x40
-> > [ 8585.927763][T11719] ret_from_fork+0x4e/0x80
-> > [ 8585.928256][T11719] ? kthread_complete_and_exit+0x40/0x40
-> > [ 8585.928903][T11719] ret_from_fork_asm+0x11/0x20
-> > [ 8585.929470][T11719] </TASK>
-> > [ 8585.930023][T11719] Kernel Offset: disabled
-> > [ 8585.930517][T11719] Rebooting in 86400 seconds..
-> > =3D* OTHERS =3D*
-> > I noticed syzbot has two similar bugs named WARNING in cleanup_net=EF=
-=BC=9A
-> > https://syzkaller.appspot.com/bug?extid=3D7e1e1bdb852961150198
-> > https://syzkaller.appspot.com/bug?id=3D14c45b4081250ebeb4a9000f3774da82=
-9f7e43b4
-> >
-> > However, these two seem fixed and not related to this.
-> > Without in-depth analysis, I guess it's maybe a race condition bug and
-> > the import part may be the refcnt_tracker in socket$rds not handled
-> > properly but I'm not sure.
-> >
-> > [ 8585.839049][T11719] ref_tracker: net notrefcnt@ffff888021ba0220 has
-> > 1/1 users at
-> > [ 8585.839049][T11719]   sk_alloc+0xaf0/0xbf0
-> > [ 8585.839049][T11719]   inet6_create+0x39b/0x1300
-> > [ 8585.839049][T11719]   __sock_create+0x34f/0x850
-> > [ 8585.839049][T11719]   rds_tcp_listen_init+0xda/0x4f0
-> > [ 8585.839049][T11719]   rds_tcp_init_net+0x147/0x400
-> > [ 8585.839049][T11719]   ops_init+0xc4/0x680
-> > [ 8585.839049][T11719]   setup_net+0x431/0xa80
-> > [ 8585.839049][T11719]   copy_net_ns+0x313/0x6b0
-> > [ 8585.839049][T11719]   create_new_namespaces+0x3fb/0xb60
-> > [ 8585.839049][T11719]   unshare_nsproxy_namespaces+0xd0/0x200
-> > [ 8585.839049][T11719]   ksys_unshare+0x47c/0xa30
-> > [ 8585.839049][T11719]   __x64_sys_unshare+0x36/0x50
-> > [ 8585.839049][T11719]   do_syscall_64+0x40/0x110
-> > [ 8585.839049][T11719]   entry_SYSCALL_64_after_hwframe+0x63/0x6b
->
-> I have a similar syzbot  bug in my triage queue I will release right now.
->
+On Thu, Nov 30, 2023 at 09:16:41AM +0100, Krzysztof Kozlowski wrote:
+> On 29/11/2023 11:16, Johan Hovold wrote:
+> > On Wed, Nov 29, 2023 at 10:28:25AM +0100, Krzysztof Kozlowski wrote:
+> >> On 28/11/2023 12:32, Krishna Kurapati PSSNV wrote:
+> >>>
+> >>>>
+> >>>> So back to my initial proposal, with a slight modification moving
+> >>>> pwr_event first (e.g. as it is not a wakeup interrupt):
+> >>>>
+> >>>> qusb2-:
+> >>>>
+> >>>> 	- const: pwr_event
+> >>>> 	- const: qusb2_phy
+> >>>> 	- const: ss_phy_irq	(optional)
+> >>>>
+> >>>> qusb2:
+> >>>>
+> >>>> 	- const: pwr_event
+> >>>> 	- const: hs_phy_irq
+> >>>> 	- const: qusb2_phy
+> >>>> 	- const: ss_phy_irq	(optional)
+> >>>>
+> >>>> femto-:
+> >>>> 	- const: pwr_event
+> >>>> 	- const: dp_hs_phy_irq
+> >>>> 	- const: dm_hs_phy_irq
+> >>>> 	- const: ss_phy_irq	(optional)
+> >>>>
+> >>>> femto:
+> >>>> 	- const: pwr_event
+> >>>> 	- const: hs_phy_irq
+> >>>> 	- const: dp_hs_phy_irq
+> >>>> 	- const: dm_hs_phy_irq
+> >>>> 	- const: ss_phy_irq	(optional)
+> >>
+> >> I did not follow entire thread and I do not know whether you change the
+> >> order in existing bindings, but just in case: the entries in existing
+> >> bindings cannot change the order. That's a strict ABI requirement
+> >> recently also discussed with Bjorn, because we want to have stable DTB
+> >> for laptop platforms. If my comment is not relevant, then please ignore.
+> > 
+> > Your comment is relevant, but I'm not sure I agree.
+> > 
+> > The Qualcomm bindings are a complete mess of DT snippets copied from
+> > vendor trees and which have not been sanitised properly before being
+> > merged upstream (partly due to there not being any public documentation
+> > available).
+> 
+> True.
+> 
+> > This amounts to an unmaintainable mess which is reflected in the
+> > binding schemas which similarly needs to encode every random order which
+> > the SoC happened to use when being upstreamed. That makes the binding
+> > documentation unreadable too, and the next time a new SoC is upstreamed
+> > there is no clear hints of what the binding should look like, and we end
+> > up with yet another permutation.
+> 
+> While in general I agree for the bindings, but here, for order of the
+> interrupts, I am not really sure if this contributes to unreadable or
+> unmaintainable binding.
 
-This is the "[syzbot] [net?] WARNING in cleanup_net (3)"  thread.
+The more if-then clauses you have, the harder it gets for a human to
+make sense of the binding documents.
 
-> I already worked on a solution.
+By cleaning up the current clauses in four groups which reflect actual
+classes of hardware and not just arbitrary reordering and omission, it
+will make it much easier next time a new SoC is added. Most likely it
+belongs in the latest category, and a reviewer can more easily spot new
+mistakes if someone tries to add yet another permutation.
 
-But was waiting for a repro...
+> > As part of this exercise, we've also determined that some of the
+> > devicetrees that are already upstream are incorrect as well as
+> > incomplete.
+> 
+> Sure, good explanation for an ABI break.
+> 
+> > I really see no alternative to ripping of the plaster and cleaning this
+> > up once and for all even if it "breaks" some imaginary OS which (unlike
+> > Linux) relies on the current random order of these interrupts.
+> > 
+> > [ If there were any real OSes actually relying on the order, then that
+> > would be a different thing of course. ]
+> 
+> The commit breaking the ABI can justify the reasons, including expected
+> impact (e.g. none for Linux).
+> 
+> While the second part probably you can justify (interrupts are taken by
+> name), the reason for ABI break like "I think it is poor code, so I will
+> ignore ABI" is not enough.
 
->
-> Thanks.
+So it's not so much about the code as the messy binding schema this
+results in and that that makes it harder to spot mistakes next time an
+SoC is upstreamed.
+
+Johan
