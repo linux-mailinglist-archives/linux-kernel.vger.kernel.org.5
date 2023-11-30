@@ -2,357 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 062387FEDFC
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 12:33:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44C347FEDFD
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 12:33:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345253AbjK3LdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 06:33:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47210 "EHLO
+        id S1345181AbjK3LdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 06:33:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345242AbjK3Lcr (ORCPT
+        with ESMTP id S1345195AbjK3LdA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 06:32:47 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9AEA1BD1;
-        Thu, 30 Nov 2023 03:32:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701343936; x=1732879936;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=UO+bXR6o+6cAWqwvpcVd9uh3omCgQJUjpZg+pITqvvY=;
-  b=AdaDDN4kdArYpHXkwoeKPdPgnw3yMjPlbv9VQoBTcWI4C39KrYSM5Rhw
-   VZrsw6vt+HJOu77ki/niWdoDx3/IJFgolHxGsou849tlrtw/dGWTjUWTy
-   28MqmQUw9vcvFSsCtN575YnxjlgwI+8atiCv74tiwScjBaHZToAh2cFEJ
-   Czg2svngpA7I3CwI7mjZl/4zZ7+6elLoppo+NhTsT6aB7fnUkWPxEKYul
-   E+JsZeoFL7TvfxcM2g4mMz2Ym0Rq6L555vm/axy9tFnR5eZfi/oc804pk
-   uXi0L9ld8QuO4zTwgEG+eWmg197FwEBhbbeABdgcHabhZB2La6cJXk2Yg
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="190765"
-X-IronPort-AV: E=Sophos;i="6.04,237,1695711600"; 
-   d="scan'208";a="190765"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 03:31:58 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="769274010"
-X-IronPort-AV: E=Sophos;i="6.04,237,1695711600"; 
-   d="scan'208";a="769274010"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 30 Nov 2023 03:31:55 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r8fGq-0001nW-1m;
-        Thu, 30 Nov 2023 11:31:52 +0000
-Date:   Thu, 30 Nov 2023 19:31:26 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Tengfei Fan <quic_tengfan@quicinc.com>, andersson@kernel.org,
-        agross@kernel.org, konrad.dybcio@linaro.org,
-        linus.walleij@linaro.org
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel@quicinc.com,
-        Tengfei Fan <quic_tengfan@quicinc.com>
-Subject: Re: [PATCH v5 2/4] pinctrl: qcom: Add SM4450 pinctrl driver
-Message-ID: <202311301909.pcIvnNks-lkp@intel.com>
-References: <20231130024046.25938-3-quic_tengfan@quicinc.com>
+        Thu, 30 Nov 2023 06:33:00 -0500
+Received: from IND01-MAX-obe.outbound.protection.outlook.com (mail-maxind01olkn2065.outbound.protection.outlook.com [40.92.102.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0404910E2;
+        Thu, 30 Nov 2023 03:32:56 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VS2aIsRQ0Tf/6FaQzgU2ZrronB3p5puhrTLnVf40wxnl9am/2UmnHF+fjpCZQVnWq9eiYOUlYTcdB179QF7lyraMISDjNgX+aR4qWIZ50LuhqcAWhte5x2tOhmeY6U3SH8xz6e9IFpgbnELHvMrv90xDv+mH9U7Q6xdyINcuWfJwm1l3guTnzp+GzmoBRxB/FAFIeP8rJnPg1HBRcyzzSQdy9O5QEZaL7p8DZN5+oeo5hQjn8nwsbFEjyt9ukcQ4Bn60LWQWicJY9XiRBaTkmJXLgGqR5+f2dhzQEVBTk5i1ZAHB9CaP8stgDS0afei8WubN6RShDTmHIIh1tQvP6g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=0ySqHa3to6LVZ5DNI4EE3X0iC915mESko3uK92pW0Og=;
+ b=R96V7Z2rwFKHbWYFPSuuvbQrM0NustjIBfE4a4V8Z0EMbJ58CYPnRrAyWrIH/c8upvoQQDUq2C1SfsAUL7afFEcGQOELShOs8dXzOQp3Fp0oCocIgLszzYo2H+Hym0isyTmkLdrqtC6X/B/jv8XnmR165C98eYnRRUYZ71JhwYdSkFC71uR/6R3pkZ/waFZSZJMl8jq+1Qu0pajUgDhggC8XY2UXKwrUjU7m1AuU8EmBHloCT0gEWgHuoVz+waH0GcbGKHab7YO20JmT+K2DVDWOJqarTxZoqHB/ZUQwBYn5vgbiNZDdvtDUKJ15OUf9g9hOvPHLK8+nea3jcYP9iQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0ySqHa3to6LVZ5DNI4EE3X0iC915mESko3uK92pW0Og=;
+ b=c8dA60KQsxYF+kFNlI++SJrDNXTp2w4QerUzZgTS/Zg+uyhAxBR0jItBt8FeFD1jHVcAdY/0kxX9rGqdPNG58T54NIg3JE+H2SDRBaaz+7TLjI5oLDaiiCc6PxXMYjrUnfB0yEmcsNFd9GuitC3JXq5htqzjA6MevdT+bRKhAMheE/XrQiFGW/XOWywkQBfaA4QXy3S1WoolhkbmBd6gwVaP78Waf+0IVz05+3l+vZlEP9v5bGElXRKUufOFi45x2c30WPOu8Zaa5mJ7hZVSwgm0HX4poGwddDoJI0Ms+JB+M/Zhu/egsrFWHXO64uf9/iEt36dwKLRMjyHR954U3w==
+Received: from MA0P287MB0332.INDP287.PROD.OUTLOOK.COM (2603:1096:a01:ab::5) by
+ MA0P287MB0419.INDP287.PROD.OUTLOOK.COM (2603:1096:a01:bf::9) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7046.24; Thu, 30 Nov 2023 11:32:47 +0000
+Received: from MA0P287MB0332.INDP287.PROD.OUTLOOK.COM
+ ([fe80::b1a7:eee7:e903:9ef3]) by MA0P287MB0332.INDP287.PROD.OUTLOOK.COM
+ ([fe80::b1a7:eee7:e903:9ef3%7]) with mapi id 15.20.7046.024; Thu, 30 Nov 2023
+ 11:32:47 +0000
+Message-ID: <MA0P287MB033285E834F030852F5526A0FE82A@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM>
+Date:   Thu, 30 Nov 2023 19:32:36 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/4] clk: sophgo: Add SG2042 clock generator driver
+To:     Conor Dooley <conor@kernel.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Chen Wang <unicornxw@gmail.com>, aou@eecs.berkeley.edu,
+        chao.wei@sophgo.com, krzysztof.kozlowski+dt@linaro.org,
+        mturquette@baylibre.com, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, richardcochran@gmail.com,
+        robh+dt@kernel.org, sboyd@kernel.org, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, haijiao.liu@sophgo.com,
+        xiaoguang.xing@sophgo.com, guoren@kernel.org, jszhang@kernel.org,
+        inochiama@outlook.com, samuel.holland@sifive.com
+References: <cover.1701044106.git.unicorn_wang@outlook.com>
+ <c06130afb4bdc1890b4e8d29388fa6feef1f1826.1701044106.git.unicorn_wang@outlook.com>
+ <81d421c8-bfd6-42b5-9da1-f067792f8f48@linaro.org>
+ <MA0P287MB03329CFBA3BB6A4E4F322F99FEBDA@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM>
+ <2a268c8c-ce55-4321-b390-092b8df61407@linaro.org>
+ <MA0P287MB03320824AB953465E00394FEFE82A@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM>
+ <20231130-enlarging-decode-31dc66f4490b@spud>
+From:   Chen Wang <unicorn_wang@outlook.com>
+In-Reply-To: <20231130-enlarging-decode-31dc66f4490b@spud>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TMN:  [5MZuf4iJYQIzVY2VCTPvPhC10L8E/9ac]
+X-ClientProxiedBy: SE2P216CA0013.KORP216.PROD.OUTLOOK.COM
+ (2603:1096:101:117::8) To MA0P287MB0332.INDP287.PROD.OUTLOOK.COM
+ (2603:1096:a01:ab::5)
+X-Microsoft-Original-Message-ID: <42d7a4e1-ddcf-4014-af1c-96be444d7804@outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231130024046.25938-3-quic_tengfan@quicinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MA0P287MB0332:EE_|MA0P287MB0419:EE_
+X-MS-Office365-Filtering-Correlation-Id: fc79f6c0-0790-46a3-9348-08dbf1981337
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: BuYe8gi/QGOjbyUk7jrOdK4rQvnOXlkMJ1+Lv7j336Z8cNAGicswQSfnelo+/lSNHmih8yQe47gxBDq7BHCr1L4z4QHluLJWX/LL2hGIxCXdxFaOEkoPF2nPm+hGvmAETIO5dpGe3rQr63SDOxdgo/FLKAl2Ed5lQhd3MMDbWMR7i5x2DG+Es4puxG/LD7TfggUhXD9Wbrw4/E52WLWAwehh9HkXxr1hsJ/u2EmFCHWt51L1e6v5KxmIV8Y8M/J0U+rSl9yhgpyKI+CYk5Oz+wNmi2cUnnA1zGuEtKEpNDDq8VBL6ZP8ebuxlFduO+/oyxP79TH7EJAxCZoyMo1AqT0aRTXenO3TghiYN4sG9WeCdXJ79paAmJjL9mQ3S5lYB4fk1q9MTSUiJTsrhs6pVtERtgde8R8uaoSQE5RjXFSPhuL4ciq/GUO9UP0sVAjMneTnJKQHM8iZzEPGjPbhZgJ6Z1/mpk5WrpUOhL1nVVsvHFVlQJhX+JhHHeSJohOTzvnbrL2bxv/5criDb1eXBMapDiorhJj7GtAlJpMQMMCdXflJUfFhgkAUjB1OSu6xzYjRhsQxvB29WIrH/l9uNp8TtpHYAdikbKviserBTGU=
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZndlN0tUVEY4OE1uN2F3S2ZjZGt5Z1Avc0hTS0lKbU1MNjlQekNNdVFhS28r?=
+ =?utf-8?B?cWRMVkdMRkFTT0djbGNoaHRSQmwrT3lLVXhXcGU3N2ZjL1dvU2hMRkVtOEZl?=
+ =?utf-8?B?YkptL2dkVkRDNnMxV3ZkMHB2S09Tb1RxM3J6cmtjZVBqVFk2cklJaklOd290?=
+ =?utf-8?B?WWhRakNFZmVwN1dWeUtBK3NuWkdvVFpBOGpPTDZ4VnEwVjV0OTR3aVVoKzhk?=
+ =?utf-8?B?eEN1eW1IUUJ2S0cydXlSdGIzSHpPeldyRkN0N3g1Y0NYOU9lREk2Y2poeXMw?=
+ =?utf-8?B?NkNjUWw4Z040TDRuNzFrUEdOYnF0ZlplZ2N1Szl5RitPNVpSWVp1S3NTbVEw?=
+ =?utf-8?B?S2p2bTdaa0ZxWFJGc0FBNUpiOS9xd3NjMzFyc2lZM2lsanh1Q2ZMRkh5b09v?=
+ =?utf-8?B?WlJNYnc3aUM0VVZVRm94enFPdU90VjR5MCt2c2pjTnU5bWxlNTduZVNPY3FB?=
+ =?utf-8?B?cVhSYUdncHE2YVJUOFZmQ0pwMS9JZWtYNk9QOWZpaThhN3FUWEdXZFB2Mjhr?=
+ =?utf-8?B?Tnd3VXVieGRicEpCWlZUWWZ6YTEvNGFuTGQ4SjlRblB0NktyLzh1Q1NvRVZF?=
+ =?utf-8?B?ZEhjN29kc0gxaVN4dnNkeHhCY0hEcWtudTN0aytNZDNyejRacGJpZlg0ZHpL?=
+ =?utf-8?B?cTh6UFE5d1VKbU1uVHhPR2JXcXBGNDAvOFdsdlZHa1J1d3YrVDBVMDJMOU5B?=
+ =?utf-8?B?b3hWMUh6YUhkTld3WkRqMVhLcDJiSis0VmFEb1VPQjVjeWRGYjE2eDA3K2Fu?=
+ =?utf-8?B?S0tQN3R6Tyt5WjVuaGY1eXBkWGR3WDVUYWkydjlnQklnSC9OMXFpYjlYZlFE?=
+ =?utf-8?B?VjVyeHZSZjhjY1NxQ0I1aFYrbEhGNDlIdy9iaHBRR2hSZFc2TFQ0bFR2c3gz?=
+ =?utf-8?B?clhwY1pzOWtGdlV4QXJsTEFjeTB1dWYyc1Q0ZWtMVmtoZ0RLcU1wYU5TSFg5?=
+ =?utf-8?B?ZWd1dTVnQjVZWEc3djY2bUlHZ1RLTStDNUxvM2FNWXhBYWxlU2d6YjNSSmVq?=
+ =?utf-8?B?SnBRZTlxa3IyTmdaNHBIalllQkxrSEYvUGQ2VU1kSXRoTjd5UGdYZU95OGds?=
+ =?utf-8?B?cm1KeVRLbGZ4QXhka2tjTldxZHJOeVl3czZjUS96Mm9XeVhXSEVLRFd4TzZj?=
+ =?utf-8?B?dThVTXZzUVdldGNySGhIQTRPRGV6Y1BsL1MvTXJFZzZCS1NGQ3BpdXBYcFRS?=
+ =?utf-8?B?U3ViZ3l2blFCelZKZHFqTjlXZ0ljU2wzOHY2MzlUSWFyMFZpZ2lnb3Z3dGdR?=
+ =?utf-8?B?aXBsT2tRNWkxbndjRE1uNlpKMldESkozcHJxYitJSFNlOGpoNy8zMjcrL2V1?=
+ =?utf-8?B?UlVRcjRvekFuZEEweVZqVXZta1JucE1KNDJpUWJRU2JNR1RLQ3N0TCtsYXhS?=
+ =?utf-8?B?eW05TVJUNzN3Z3hDbnhUMWZiNTF6MUpZZTUwWUl3KzRCQnJOdWhVRk8vZFVz?=
+ =?utf-8?B?VFJiTlRpa2dRcjJ3WDdhOStFM3RJSjNjUTJoM2ltekNHam9OaUNDajVHWDRm?=
+ =?utf-8?B?dEtxY3llQU9oNUhVMnpKZ0p5OW9ycHMxU3JBQTJucCtrNFIrbGllT29vSHVx?=
+ =?utf-8?B?L1ZYSGVyL040U25KUUQ3RWl3UEc0cFF4c25OSk9uSmxHUkpKMFphbCt0ZjNW?=
+ =?utf-8?Q?mgmY3Y0P331CeBCJZCPQWd4JwxL2+jj0nASHOIPqbWPs=3D?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fc79f6c0-0790-46a3-9348-08dbf1981337
+X-MS-Exchange-CrossTenant-AuthSource: MA0P287MB0332.INDP287.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Nov 2023 11:32:46.8663
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MA0P287MB0419
+X-Spam-Status: No, score=0.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_MUA_MOZILLA,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tengfei,
 
-kernel test robot noticed the following build warnings:
+On 2023/11/30 16:12, Conor Dooley wrote:
+> On Thu, Nov 30, 2023 at 02:37:53PM +0800, Chen Wang wrote:
+>> On 2023/11/27 17:16, Krzysztof Kozlowski wrote:
+>>> On 27/11/2023 09:07, Chen Wang wrote:
+>>>> On 2023/11/27 15:12, Krzysztof Kozlowski wrote:
+>>>>> On 27/11/2023 02:15, Chen Wang wrote:
+>>>>>> From: Chen Wang <unicorn_wang@outlook.com>
+>>>>>>
+>>>>>> Add a driver for the SOPHGO SG2042 clock generator.
+>>>>>>
+>>>>>> Signed-off-by: Chen Wang <unicorn_wang@outlook.com>
+>>>>> ...
+>>>>>
+>>>>> +}
+>>>>> +
+>>>>> +CLK_OF_DECLARE(sg2042_clk, "sophgo,sg2042-clkgen", sg2042_clk_init);
+>>>>> No, this should be platform device. It's a child of another device, so
+>>>>> you cannot use other way of init ordering.
+>>>> hi, Krzysztof,
+>>>>
+>>>> Thanks for your review.
+>>>>
+>>>> I don't quite understand your opinion. Do you mean CLK_OF_DECLARE is
+>>>> only used for platform device so it can not be use here? But I think
+>>> No, I meant you mix init ordering: you depend now on syscon earlier
+>>> initcall than CLK_OF_DECLARE. Do you remember which one is first? If
+>>> anything changes here, your driver is broken. There is no dependency, no
+>>> probe deferral.
+>> hi, Krzysztof,
+>>
+>> I found that the initcall method cannot be used for the clock controller of
+>> sg2042. We need to initialize the clock earlier because there are two
+>> dw-apb-timers in sg2042 (Sorry, I have not added them in the current DTS of
+>> sg2042, will be submitted later). The initialization of these timers
+>> (timer_probe()) depends on the initialization of the clock controller. If we
+>> use the initcall mechanism, it will be too late for the timer. So it seems
+>> better to use CLK_OF_DECLARE provided by CCF.
+>>
+>> I have a question here that I would like to discuss. The design of sg2042 is
+>> like this, according to the design of memorymap in its TRM:
+>>
+>> 070:3001:0000 ~ 070:3001:0FFF SYS_CTRL 4K
+>> 070:3001:1000 ~ 070:3001:1FFF PINMUX 4K
+>> 070:3001:2000 ~ 070:3001:2FFF CLOCK 4K
+>> 070:3001:3000 ~ 070:3001:3FFF RESET 4K
+>>
+>> But also as per hw design (I don't know why and I don't like it also :( ),
+>> some of the PLL/GATE CLOCK control registers are defined in the scope of
+>> SYS_CTRL, and others are defined in the scope of CLOCK. That's why in the
+>> current code, I define the syscon node corresponding to SYS_CTRL. The
+>> purpose is just to get the regmap of syscon for the clock controller through
+>> the device tree (through device_node_to_regmap()), so that the syscon
+>> defined in SYS_CTRL can be accessed through the regmap from clock. The clock
+>> controller driver itself does not rely on other operations of syscon.
+>>
+>> So based on the above analysis, is it still necessary for us to define the
+>> clock controller as a child node of syscon? In the version v1 of this patch,
+>> I actually did not define the clock controller as a child node of syscon,
+>> but only accessed syscon through the phandle method. [1]
+> In that version of the code, clkgen, your DTS, looked like:
+> +	clkgen: clock-controller {
+> +		compatible = "sophgo,sg2042-clkgen";
+> +		#clock-cells = <1>;
+> +		system-ctrl = <&sys_ctrl>;
+> +		clocks = <&cgi>;
+> +		assigned-clocks = \
+>
+> +		assigned-clock-rates = \
+>
+> +	};
+>
+> It had no register regions of its own, just what it got from the sys
+> ctrl block, which is why I said that. The syscon block looked like:
+>
+> +		sys_ctrl: syscon@7030010000 {
+> +			compatible = "sophgo,sg2042-syscon", "syscon";
+> +			reg = <0x70 0x30010000 0x0 0x8000>;
+> +		};
+>
+> which given the register map does not seem like an accurate reflection
+> of the size of this region. The "0x8000" should be "0x1000".
 
-[auto build test WARNING on linusw-pinctrl/devel]
-[also build test WARNING on linusw-pinctrl/for-next linus/master v6.7-rc3 next-20231130]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Thanks for your carefully checking.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Tengfei-Fan/pinctrl-qcom-Add-SM4450-pinctrl-driver/20231130-114914
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git devel
-patch link:    https://lore.kernel.org/r/20231130024046.25938-3-quic_tengfan%40quicinc.com
-patch subject: [PATCH v5 2/4] pinctrl: qcom: Add SM4450 pinctrl driver
-config: i386-allmodconfig (https://download.01.org/0day-ci/archive/20231130/202311301909.pcIvnNks-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231130/202311301909.pcIvnNks-lkp@intel.com/reproduce)
+The history is when I was working on v1, the description in TRM was:
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311301909.pcIvnNks-lkp@intel.com/
+070:3001:0000 ~ 070:3001:7FFF SYS_CTRL 32K
 
-All warnings (new ones prefixed by >>):
+Now the TRM is updated and the SYS_CTRL is divided into 4 parts.
 
->> drivers/pinctrl/qcom/pinctrl-sm4450.c:618:31: warning: suspicious concatenation of string literals in an array initialization; did you mean to separate the elements with a comma? [-Wstring-concatenation]
-           "gpio44", "gpio45", "gpio46" "gpio47", "gpio49",  "gpio59", "gpio62", "gpio118",
-                                        ^
-                                       ,
-   drivers/pinctrl/qcom/pinctrl-sm4450.c:618:22: note: place parentheses around the string literal to silence warning
-           "gpio44", "gpio45", "gpio46" "gpio47", "gpio49",  "gpio59", "gpio62", "gpio118",
-                               ^
-   drivers/pinctrl/qcom/pinctrl-sm4450.c:996:12: error: incompatible function pointer types initializing 'int (*)(struct platform_device *)' with an expression of type 'void (struct platform_device *)' [-Wincompatible-function-pointer-types]
-           .remove = msm_pinctrl_remove,
-                     ^~~~~~~~~~~~~~~~~~
-   1 warning and 1 error generated.
+>> After more read of the TRM, I believe this situation only exists for clock.
+>> That is to say, there will be only one child node of clook under syscon.
+>>  From a hardware design perspective, CLOCK and SYS_CTRL are two different
+>> blocks. So I think it is better to restore the original method, that is,
+>> restore clock and syscon to nodes of the same level, and let clock use
+>> phandle to access syscon.
+> This sounds two me like there are two different devices. One the "CLOCK"
+> region at 070:3001:2000 that should be documented as being
+> "sophgo,sg2042-clkgen" or similar and the second being the "SYS_CTRL" at
+> 070:3001:0000 that is called something like "sophgo,sg2042-sysctrl".
+> Having more than one clock controller is not a problem and sounds like a
+> more accurate description of the hardware.
 
+Yes, I agree a new "sg2042-sysctrl" is better and "syscon" should not be 
+used as per input from Krzysztof.
 
-vim +618 drivers/pinctrl/qcom/pinctrl-sm4450.c
+Actually in the TRM, the "SYS_CTRL" is described as a block composed of 
+many registers for different misc functions, and controlling of clocks 
+are just part of it. The hw designer scatter clock registers into 
+differnet area of registers and make people confused.
 
-   480	
-   481	static const char * const gpio_groups[] = {
-   482		"gpio0", "gpio1", "gpio2", "gpio3", "gpio4", "gpio5", "gpio6", "gpio7",
-   483		"gpio8", "gpio9", "gpio10", "gpio11", "gpio12", "gpio13", "gpio14",
-   484		"gpio15", "gpio16", "gpio17", "gpio18", "gpio19", "gpio20", "gpio21",
-   485		"gpio22", "gpio23", "gpio24", "gpio25", "gpio26", "gpio27", "gpio28",
-   486		"gpio29", "gpio30", "gpio31", "gpio32", "gpio33", "gpio34", "gpio35",
-   487		"gpio36", "gpio37", "gpio38", "gpio39", "gpio40", "gpio41", "gpio42",
-   488		"gpio43", "gpio44", "gpio45", "gpio46", "gpio47", "gpio48", "gpio49",
-   489		"gpio50", "gpio51", "gpio52", "gpio53", "gpio54", "gpio55", "gpio56",
-   490		"gpio57", "gpio58", "gpio59", "gpio60", "gpio61", "gpio62", "gpio63",
-   491		"gpio64", "gpio65", "gpio66", "gpio67", "gpio68", "gpio69", "gpio70",
-   492		"gpio71", "gpio72", "gpio73", "gpio74", "gpio75", "gpio76", "gpio77",
-   493		"gpio78", "gpio79", "gpio80", "gpio81", "gpio82", "gpio83", "gpio84",
-   494		"gpio85", "gpio86", "gpio87", "gpio88", "gpio89", "gpio90", "gpio91",
-   495		"gpio92", "gpio93", "gpio94", "gpio95", "gpio96", "gpio97", "gpio98",
-   496		"gpio99", "gpio100", "gpio101", "gpio102", "gpio103", "gpio104",
-   497		"gpio105", "gpio106", "gpio107", "gpio108", "gpio109", "gpio110",
-   498		"gpio111", "gpio112", "gpio113", "gpio114", "gpio115", "gpio116",
-   499		"gpio117", "gpio118", "gpio119", "gpio120", "gpio121", "gpio122",
-   500		"gpio123", "gpio124", "gpio125", "gpio126", "gpio127", "gpio128",
-   501		"gpio129", "gpio130", "gpio131", "gpio132", "gpio133", "gpio134",
-   502		"gpio135",
-   503	};
-   504	static const char * const atest_char_groups[] = {
-   505		"gpio95", "gpio97", "gpio98", "gpio99", "gpio100",
-   506	};
-   507	static const char * const atest_usb0_groups[] = {
-   508		"gpio75", "gpio10", "gpio78", "gpio79", "gpio80",
-   509	};
-   510	static const char * const audio_ref_clk_groups[] = {
-   511		"gpio71",
-   512	};
-   513	static const char * const cam_mclk_groups[] = {
-   514		"gpio36", "gpio37", "gpio38", "gpio39",
-   515	};
-   516	static const char * const cci_async_in0_groups[] = {
-   517		"gpio40",
-   518	};
-   519	static const char * const cci_i2c_groups[] = {
-   520		"gpio45", "gpio47", "gpio49", "gpio44",
-   521		"gpio46", "gpio48",
-   522	};
-   523	static const char * const cci_groups[] = {
-   524		"gpio40", "gpio41", "gpio42", "gpio43",
-   525	};
-   526	static const char * const cmu_rng_groups[] = {
-   527		"gpio28", "gpio3", "gpio1", "gpio0",
-   528	};
-   529	static const char * const coex_uart1_rx_groups[] = {
-   530		"gpio54",
-   531	};
-   532	static const char * const coex_uart1_tx_groups[] = {
-   533		"gpio55",
-   534	};
-   535	static const char * const cri_trng_groups[] = {
-   536		"gpio42", "gpio40", "gpio41",
-   537	};
-   538	static const char * const dbg_out_clk_groups[] = {
-   539		"gpio80",
-   540	};
-   541	static const char * const ddr_bist_groups[] = {
-   542		"gpio32", "gpio29", "gpio30", "gpio31",
-   543	};
-   544	static const char * const ddr_pxi0_test_groups[] = {
-   545		"gpio90", "gpio127",
-   546	};
-   547	static const char * const ddr_pxi1_test_groups[] = {
-   548		"gpio118", "gpio122",
-   549	};
-   550	static const char * const gcc_gp1_clk_groups[] = {
-   551		"gpio37", "gpio48",
-   552	};
-   553	static const char * const gcc_gp2_clk_groups[] = {
-   554		"gpio30", "gpio49",
-   555	};
-   556	static const char * const gcc_gp3_clk_groups[] = {
-   557		"gpio3", "gpio50",
-   558	};
-   559	static const char * const host2wlan_sol_groups[] = {
-   560		"gpio106",
-   561	};
-   562	static const char * const ibi_i3c_qup0_groups[] = {
-   563		"gpio4", "gpio5",
-   564	};
-   565	static const char * const ibi_i3c_qup1_groups[] = {
-   566		"gpio0", "gpio1",
-   567	};
-   568	static const char * const jitter_bist_ref_groups[] = {
-   569		"gpio90",
-   570	};
-   571	static const char * const mdp_vsync0_out_groups[] = {
-   572		"gpio93",
-   573	};
-   574	static const char * const mdp_vsync1_out_groups[] = {
-   575		"gpio93",
-   576	};
-   577	static const char * const mdp_vsync2_out_groups[] = {
-   578		"gpio22",
-   579	};
-   580	static const char * const mdp_vsync3_out_groups[] = {
-   581		"gpio22",
-   582	};
-   583	static const char * const mdp_vsync_groups[] = {
-   584		"gpio26", "gpio22", "gpio30", "gpio34", "gpio93", "gpio97",
-   585	};
-   586	static const char * const nav_groups[] = {
-   587		"gpio81", "gpio83", "gpio84",
-   588	};
-   589	static const char * const pcie0_clk_req_groups[] = {
-   590		"gpio107",
-   591	};
-   592	static const char * const phase_flag_groups[] = {
-   593		"gpio7", "gpio8", "gpio9", "gpio11", "gpio13", "gpio14", "gpio15",
-   594		"gpio17", "gpio18", "gpio19", "gpio21", "gpio24", "gpio25", "gpio31",
-   595		"gpio32", "gpio33", "gpio35", "gpio61", "gpio72", "gpio82", "gpio91",
-   596		"gpio95", "gpio97", "gpio98", "gpio99", "gpio100", "gpio105", "gpio115",
-   597		"gpio116", "gpio117", "gpio133", "gpio135",
-   598	};
-   599	static const char * const pll_bist_sync_groups[] = {
-   600		"gpio73",
-   601	};
-   602	static const char * const pll_clk_aux_groups[] = {
-   603		"gpio108",
-   604	};
-   605	static const char * const prng_rosc_groups[] = {
-   606		"gpio36", "gpio37", "gpio38", "gpio39",
-   607	};
-   608	static const char * const qdss_cti_trig0_groups[] = {
-   609		"gpio26", "gpio60", "gpio113", "gpio114",
-   610	};
-   611	static const char * const qdss_cti_trig1_groups[] = {
-   612		"gpio6", "gpio27", "gpio57", "gpio58",
-   613	};
-   614	static const char * const qdss_gpio_groups[] = {
-   615		"gpio0", "gpio1", "gpio3", "gpio4", "gpio5", "gpio7", "gpio8", "gpio9",
-   616		"gpio14", "gpio15", "gpio17", "gpio23", "gpio31", "gpio32", "gpio33", "gpio35",
-   617		"gpio36", "gpio37", "gpio38", "gpio39", "gpio40", "gpio41", "gpio42", "gpio43",
- > 618		"gpio44", "gpio45", "gpio46" "gpio47", "gpio49",  "gpio59", "gpio62", "gpio118",
-   619		"gpio121", "gpio122", "gpio126", "gpio127",
-   620	};
-   621	static const char * const qlink0_enable_groups[] = {
-   622		"gpio88",
-   623	};
-   624	static const char * const qlink0_request_groups[] = {
-   625		"gpio87",
-   626	};
-   627	static const char * const qlink0_wmss_reset_groups[] = {
-   628		"gpio89",
-   629	};
-   630	static const char * const qup0_se0_groups[] = {
-   631		"gpio4", "gpio5", "gpio34", "gpio35",
-   632	};
-   633	static const char * const qup0_se1_groups[] = {
-   634		"gpio10", "gpio11", "gpio12", "gpio13",
-   635	};
-   636	static const char * const qup0_se2_groups[] = {
-   637		"gpio14", "gpio15", "gpio16", "gpio17",
-   638	};
-   639	static const char * const qup0_se3_groups[] = {
-   640		"gpio18", "gpio19", "gpio20", "gpio21",
-   641	};
-   642	static const char * const qup0_se4_groups[] = {
-   643		"gpio6", "gpio7", "gpio8", "gpio9",
-   644		"gpio26", "gpio27", "gpio34",
-   645	};
-   646	static const char * const qup1_se0_groups[] = {
-   647		"gpio0", "gpio1", "gpio2", "gpio3",
-   648	};
-   649	static const char * const qup1_se1_groups[] = {
-   650		"gpio26", "gpio27", "gpio50", "gpio51",
-   651	};
-   652	static const char * const qup1_se2_groups[] = {
-   653		"gpio22", "gpio23", "gpio31", "gpio32",
-   654	};
-   655	static const char * const qup1_se3_groups[] = {
-   656		"gpio24", "gpio25", "gpio51", "gpio50",
-   657	};
-   658	static const char * const qup1_se4_groups[] = {
-   659		"gpio43", "gpio48", "gpio49", "gpio90",
-   660		"gpio91",
-   661	};
-   662	static const char * const sd_write_protect_groups[] = {
-   663		"gpio102",
-   664	};
-   665	static const char * const tb_trig_sdc1_groups[] = {
-   666		"gpio128",
-   667	};
-   668	static const char * const tb_trig_sdc2_groups[] = {
-   669		"gpio51",
-   670	};
-   671	static const char * const tgu_ch0_trigout_groups[] = {
-   672		"gpio20",
-   673	};
-   674	static const char * const tgu_ch1_trigout_groups[] = {
-   675		"gpio21",
-   676	};
-   677	static const char * const tgu_ch2_trigout_groups[] = {
-   678		"gpio22",
-   679	};
-   680	static const char * const tgu_ch3_trigout_groups[] = {
-   681		"gpio23",
-   682	};
-   683	static const char * const tmess_prng_groups[] = {
-   684		"gpio57", "gpio58", "gpio59", "gpio60",
-   685	};
-   686	static const char * const tsense_pwm1_out_groups[] = {
-   687		"gpio134",
-   688	};
-   689	static const char * const tsense_pwm2_out_groups[] = {
-   690		"gpio134",
-   691	};
-   692	static const char * const uim0_groups[] = {
-   693		"gpio64", "gpio63", "gpio66", "gpio65",
-   694	};
-   695	static const char * const uim1_groups[] = {
-   696		"gpio68", "gpio67", "gpio69", "gpio70",
-   697	};
-   698	static const char * const usb0_hs_ac_groups[] = {
-   699		"gpio99",
-   700	};
-   701	static const char * const usb0_phy_ps_groups[] = {
-   702		"gpio94",
-   703	};
-   704	static const char * const vfr_0_mira_groups[] = {
-   705		"gpio19",
-   706	};
-   707	static const char * const vfr_0_mirb_groups[] = {
-   708		"gpio100",
-   709	};
-   710	static const char * const vfr_1_groups[] = {
-   711		"gpio84",
-   712	};
-   713	static const char * const vsense_trigger_mirnat_groups[] = {
-   714		"gpio75",
-   715	};
-   716	static const char * const wlan1_adc_dtest0_groups[] = {
-   717		"gpio79",
-   718	};
-   719	static const char * const wlan1_adc_dtest1_groups[] = {
-   720		"gpio80",
-   721	};
-   722	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+>
+>> What do you think or do you have any good suggestions?
+>>
+>> Link: https://lore.kernel.org/linux-riscv/20231114-timid-habitat-a06e52e59c9c@squawk/#t
+>> [1]
+>>
+>> Thanks
+>>
+>> Chen
+>>
+>>>> this driver is still for platform device though I move the clock
+>>>> controller node as a child of the system contoller node. System
+>>>> controller node is just a block of registers which are used to control
+>>>> some other platform devices ,such as clock controller, reset controller
+>>>> and pin controller for this SoC.
+>>>>
+>>>> And I also see other similar code in kernel, for example:
+>>>> drivers/clk/clk-k210.c.
+>>>>
+>>>> And I'm confused by your input "so you cannot use other way of init
+>>>> ordering." Do you mean "so you CAN use other way of init ordering"?
+>>> No, I meant you cannot. If you want to use syscon, then your driver
+>>> should be a proper driver. Therefore add a driver.
+>>>
+>>>> What's the other way of init ordering do you mean?
+>>> The one coming not from initcalls but driver model.
+>>>
+>>> Best regards,
+>>> Krzysztof
+>>>
