@@ -2,177 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD19B7FE5BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 02:13:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C33977FE5C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 02:13:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343896AbjK3BNf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 20:13:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34348 "EHLO
+        id S1343908AbjK3BNn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 20:13:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229658AbjK3BNd (ORCPT
+        with ESMTP id S229658AbjK3BNm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 20:13:33 -0500
-Received: from m15.mail.126.com (m15.mail.126.com [45.254.50.224])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A0AA810A;
-        Wed, 29 Nov 2023 17:13:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=Message-ID:Date:MIME-Version:Subject:From:
-        Content-Type; bh=u9Le+jOuXA6v4R7BRPNWx0ZMrTQNtXqeTj018RVIHlI=;
-        b=WW/gWSUtLcA9xBbrgEzdx9EH88Rk14DqLADr/X5GzHF4aFrhQYot9ejFYxe/r5
-        bVAYePsUFu97Sy9mmPmhSxc/M/37Yz/IV4vo5KWCKM3SjcIPrkHi3vJWwirW2X1s
-        MCDadMIIgX+Ufynd9xQbC+p3BvK81kbATfgnuqpeo7l3w=
-Received: from [172.23.69.7] (unknown [121.32.254.146])
-        by zwqz-smtp-mta-g2-1 (Coremail) with SMTP id _____wD3vI2j4WdlIEvdCQ--.58273S2;
-        Thu, 30 Nov 2023 09:13:07 +0800 (CST)
-Message-ID: <419d2a43-7700-4205-919a-fce4e221ae9a@126.com>
-Date:   Thu, 30 Nov 2023 09:13:04 +0800
+        Wed, 29 Nov 2023 20:13:42 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B701010D3;
+        Wed, 29 Nov 2023 17:13:48 -0800 (PST)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ATNrP9J024967;
+        Thu, 30 Nov 2023 01:13:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=6yv3opTbdqEOXIiRaS97Y2/3abioYf/e0ETT1lb93OU=;
+ b=XjR+/m6Cgdnkk+B5VDF7sk6crf/opjdl7mlih7FRo6M8CPXdFwWQVgRiZGCmKOwJKAGM
+ mvuKeAcHsvY+WZav28pQqC6+eiIY1xupVkoshl0A2ecTcUvCnoC+f2BR1RndoGxLpQxv
+ 25J9fScR2zMCI7BphOjClk577h8uLtQ3lAbrADaDgvJ4FLGhyeNinx97gypepXgrVP/N
+ Z1z7DFtJzr8jEOtbt723dbiBN/Sr7rb/QgLiisRBKl/OxRrMVShZvxpgighpX9NvksDG
+ DSnN6CrCLW3f2DknDN2Qvy1GewjtJ3ZdmKu77wA5oYhNoTsG5nP6rBwtoKINXUdopuPi DQ== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3up1gtac49-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 30 Nov 2023 01:13:45 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AU1Djcp018443
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 30 Nov 2023 01:13:45 GMT
+Received: from [10.239.132.204] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 29 Nov
+ 2023 17:13:41 -0800
+Message-ID: <5918c20b-233a-4a2a-bb22-5c153e72c6b1@quicinc.com>
+Date:   Thu, 30 Nov 2023 09:13:40 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] RDMA/irdma: Avoid free the non-cqp_request scratch
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     "Ismail, Mustafa" <mustafa.ismail@intel.com>,
-        "Saleem, Shiraz" <shiraz.saleem@intel.com>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Ding, Hui" <dinghui@sangfor.com.cn>
-References: <20231120083122.78532-1-lishifeng1992@126.com>
- <PH7PR11MB6403F06E4A2984375BF121758BBBA@PH7PR11MB6403.namprd11.prod.outlook.com>
- <15f80347-e9e9-49f9-bcab-784974856332@126.com> <20231129101433.GC6535@unreal>
-From:   Shifeng Li <lishifeng1992@126.com>
-In-Reply-To: <20231129101433.GC6535@unreal>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: _____wD3vI2j4WdlIEvdCQ--.58273S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW3XF1xJF4kWF1DCw4rtFW8WFg_yoW7CF4Upr
-        48JF12kr4Fvry5Gw17K3s8JFy8tw4jyas7XF42y34ayw1j93WUXF1UJr4UurnxAr1xJF4x
-        Jr1DXFsIvr12kaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07j5GYdUUUUU=
-X-Originating-IP: [121.32.254.146]
-X-CM-SenderInfo: xolvxx5ihqwiqzzsqiyswou0bp/1S2mtgY4r1pD4Xr3gwAAsR
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH 2/2] pinctrl: qcom: correct incorrect address offset
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>, <andersson@kernel.org>,
+        <agross@kernel.org>, <linus.walleij@linaro.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>
+References: <20231129100422.16659-1-quic_tengfan@quicinc.com>
+ <20231129100422.16659-3-quic_tengfan@quicinc.com>
+ <09f46b92-edb0-4edd-aaf0-c6e685e2acae@linaro.org>
+From:   Tengfei Fan <quic_tengfan@quicinc.com>
+In-Reply-To: <09f46b92-edb0-4edd-aaf0-c6e685e2acae@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 9jGP1ndHlcZOKyJ_UeKJQ4RPZlXrjA-_
+X-Proofpoint-ORIG-GUID: 9jGP1ndHlcZOKyJ_UeKJQ4RPZlXrjA-_
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-29_21,2023-11-29_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
+ malwarescore=0 adultscore=0 spamscore=0 mlxscore=0 lowpriorityscore=0
+ clxscore=1015 phishscore=0 priorityscore=1501 impostorscore=0
+ mlxlogscore=386 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311300007
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/11/29 18:14, Leon Romanovsky wrote:
-> On Fri, Nov 24, 2023 at 10:28:58PM +0800, Shifeng Li wrote:
->> On 2023/11/22 1:25, Ismail, Mustafa wrote:
->>>> -----Original Message-----
->>>> From: Shifeng Li <lishifeng1992@126.com>
->>>> Sent: Monday, November 20, 2023 2:31 AM
->>>> To: Ismail, Mustafa <mustafa.ismail@intel.com>
->>>> Cc: Saleem, Shiraz <shiraz.saleem@intel.com>; jgg@ziepe.ca;
->>>> leon@kernel.org; linux-rdma@vger.kernel.org; linux-kernel@vger.kernel.org;
->>>> Ding, Hui <dinghui@sangfor.com.cn>; Shifeng Li <lishifeng1992@126.com>
->>>> Subject: [PATCH] RDMA/irdma: Avoid free the non-cqp_request scratch
->>>>
->>>> When creating ceq_0 during probing irdma, cqp.sc_cqp will be sent as a
->>>> cqp_request to cqp->sc_cqp.sq_ring. If the request is pending when removing
->>>> the irdma driver or unplugging its aux device, cqp.sc_cqp will be dereferenced
->>>> as wrong struct in irdma_free_pending_cqp_request().
->>>>
->>>> crash> bt 3669
->>>> PID: 3669   TASK: ffff88aef892c000  CPU: 28  COMMAND: "kworker/28:0"
->>>>    #0 [fffffe0000549e38] crash_nmi_callback at ffffffff810e3a34
->>>>    #1 [fffffe0000549e40] nmi_handle at ffffffff810788b2
->>>>    #2 [fffffe0000549ea0] default_do_nmi at ffffffff8107938f
->>>>    #3 [fffffe0000549eb8] do_nmi at ffffffff81079582
->>>>    #4 [fffffe0000549ef0] end_repeat_nmi at ffffffff82e016b4
->>>>       [exception RIP: native_queued_spin_lock_slowpath+1291]
->>>>       RIP: ffffffff8127e72b  RSP: ffff88aa841ef778  RFLAGS: 00000046
->>>>       RAX: 0000000000000000  RBX: ffff88b01f849700  RCX: ffffffff8127e47e
->>>>       RDX: 0000000000000000  RSI: 0000000000000004  RDI: ffffffff83857ec0
->>>>       RBP: ffff88afe3e4efc8   R8: ffffed15fc7c9dfa   R9: ffffed15fc7c9dfa
->>>>       R10: 0000000000000001  R11: ffffed15fc7c9df9  R12: 0000000000740000
->>>>       R13: ffff88b01f849708  R14: 0000000000000003  R15: ffffed1603f092e1
->>>>       ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0000
->>>> --- <NMI exception stack> ---
->>>>    #5 [ffff88aa841ef778] native_queued_spin_lock_slowpath at ffffffff8127e72b
->>>>    #6 [ffff88aa841ef7b0] _raw_spin_lock_irqsave at ffffffff82c22aa4
->>>>    #7 [ffff88aa841ef7c8] __wake_up_common_lock at ffffffff81257363
->>>>    #8 [ffff88aa841ef888] irdma_free_pending_cqp_request at ffffffffa0ba12cc
->>>> [irdma]
->>>>    #9 [ffff88aa841ef958] irdma_cleanup_pending_cqp_op at ffffffffa0ba1469
->>>> [irdma]
->>>>    #10 [ffff88aa841ef9c0] irdma_ctrl_deinit_hw at ffffffffa0b2989f [irdma]
->>>>    #11 [ffff88aa841efa28] irdma_remove at ffffffffa0b252df [irdma]
->>>>    #12 [ffff88aa841efae8] auxiliary_bus_remove at ffffffff8219afdb
->>>>    #13 [ffff88aa841efb00] device_release_driver_internal at ffffffff821882e6
->>>>    #14 [ffff88aa841efb38] bus_remove_device at ffffffff82184278
->>>>    #15 [ffff88aa841efb88] device_del at ffffffff82179d23
->>>>    #16 [ffff88aa841efc48] ice_unplug_aux_dev at ffffffffa0eb1c14 [ice]
->>>>    #17 [ffff88aa841efc68] ice_service_task at ffffffffa0d88201 [ice]
->>>>    #18 [ffff88aa841efde8] process_one_work at ffffffff811c589a
->>>>    #19 [ffff88aa841efe60] worker_thread at ffffffff811c71ff
->>>>    #20 [ffff88aa841eff10] kthread at ffffffff811d87a0
->>>>    #21 [ffff88aa841eff50] ret_from_fork at ffffffff82e0022f
->>>>
->>>> Fixes: 44d9e52977a1 ("RDMA/irdma: Implement device initialization
->>>> definitions")
->>>> Signed-off-by: Shifeng Li <lishifeng1992@126.com>
->>>> ---
->>>>    drivers/infiniband/hw/irdma/utils.c | 2 +-
->>>>    1 file changed, 1 insertion(+), 1 deletion(-)
->>>>
->>>> diff --git a/drivers/infiniband/hw/irdma/utils.c
->>>> b/drivers/infiniband/hw/irdma/utils.c
->>>> index 445e69e86409..222ec1f761a1 100644
->>>> --- a/drivers/infiniband/hw/irdma/utils.c
->>>> +++ b/drivers/infiniband/hw/irdma/utils.c
->>>> @@ -541,7 +541,7 @@ void irdma_cleanup_pending_cqp_op(struct
->>>> irdma_pci_f *rf)
->>>>    	for (i = 0; i < pending_work; i++) {
->>>>    		cqp_request = (struct irdma_cqp_request *)(unsigned long)
->>>>    				      cqp->scratch_array[wqe_idx];
->>>> -		if (cqp_request)
->>>> +		if (cqp_request && cqp_request != (struct irdma_cqp_request
->>>> +*)&cqp->sc_cqp)
->>>>    			irdma_free_pending_cqp_request(cqp, cqp_request);
->>>>    		wqe_idx = (wqe_idx + 1) % IRDMA_RING_SIZE(cqp-
->>>>> sc_cqp.sq_ring);
->>>>    	}
->>>> --
->>>> 2.25.1
->>>
->>> Hi Li,
->>>
->>> Could you describe how you hit this issue? It seems like the probe would not have completed successfully if the create cceq request was still pending.
->>>
->>> A better fix might be to set the scratch to 0 in this case: In irdma_create_ceq(), pass 0 for scratch in call to irdma_sc_cceq_create(&iwceq->sc_ceq, 0), since it doesn't appear to be used in this case. Is it possible to test this fix? Thanks!
->>
->> 1. The firmware of net card or the hardware may enter into some kind of error state. And I observed
->> that the sq_ring of sc_cqp is full through crash. This means that all the 2048 cqp_requests were pending.
->>
->> crash> struct irdma_cqp.sc_cqp ffff88afe3e4eee8
->>    sc_cqp = {
->>      ...
->>      sq_ring = {
->>        head = 91,  (The queue head caught up with the queue tail.)
->>        tail = 92,
->>        size = 2048
->>      },
->>      ...
->>    }
->>
->> 2. The issue is not reproducible. But I have tested the solution that pass 0 for scratch in
->> call to irdma_sc_cceq_create(&iwceq->sc_ceq, 0) in irdma_create_ceq(). It works well.
-> 
-> Will you submit v2?
-> 
-I'll send v2 later.
 
-Thanks
 
-> Thanks
+在 11/29/2023 9:32 PM, Konrad Dybcio 写道:
+> On 29.11.2023 11:04, Tengfei Fan wrote:
+>> The address offset of 0x100000 is already provided in SM4450 DTSI, so
+>> subtract 0x100000 from the offset which used by ufs and sdc.
+>>
+>> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
+>> ---
+> The change seems correct.
 > 
->>
->> Thanks!
->>
->>
+> Looks like the pinctrl has not been merged, so these patches should
+> be merged into the "Add SM4450 pinctrl driver" series and resent
+> as another revision
+> 
+> Konrad
+> 
+> 
+Sure, I will merge these pacthes into the "Add SM4450 pinctrl driver" 
+series and resent new version patch series.
 
+-- 
+Thx and BRs,
+Tengfei Fan
