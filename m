@@ -2,154 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBEA07FFF78
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 00:31:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C7977FFF7D
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 00:31:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377270AbjK3XbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 18:31:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55712 "EHLO
+        id S1377254AbjK3Xb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 18:31:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377259AbjK3XbG (ORCPT
+        with ESMTP id S1377275AbjK3XbY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 18:31:06 -0500
-Received: from sonic306-28.consmr.mail.ne1.yahoo.com (sonic306-28.consmr.mail.ne1.yahoo.com [66.163.189.90])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99EA310F3
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 15:31:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1701387069; bh=KKWxRGo/AX4QeEd47QnRsF18S9N8KhU2b2kKz79X0vI=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=cAYiTDaGs/kbdlVsXQ3ZuZVFA5TRYHo2+eObt78zh4Sa23pTNIXCb/lNwfjGhZBRE3yRDmtIX7ekIJPpwWEIOPPY/UaKk1sSPFJQ14e0f/0z4OETF936AMsR5Py5CsCkP9lgWuoBA1FD0m8YyDCXpN0IbgR0FVNGsaQDR/zLSCjHbJKZlWGblz+piMqqMGDGX7F75nObo2xfDYJCNWoeYETeUOkMOD0rPg6oJpthTviKibT5+69+TZGpCI6jeBo22c6QbrLjbFTSylFNzn2ZhJoOyRQxdd1kkqF6TofdTqCVgU01rkWlgc8FPnFmesSRu0SY4b7YHDNAFrOEK9zqNw==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1701387069; bh=rlV0Ex3CXOdWAchqeNEt2KMDS+yjt068Dx8Y7mNlP0H=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=F0tqQYfSlXR4YHDbnzWKlMxzGKOqi/su9mCSbDwgEAtnFN8aZA551z+edpGH8RIBhrU9hiF7Pl+7ha3w/6gCwm8esgiP3WIckyBeEf1oSBnH5ooSU6fmVbjDA9HUzADBNMiJ06j7AWDYbP+my52iF0aqYypFewN7p0zfWSuBgh+u6RRyCa8vFxVz39iSP1iHPqDIoF90GVzDYOaDoiUSPATBIsSKlBfc06uuehmfN6TyJZ+vIv+aAAsYiLMkyDh624Pe+9+0VPYch2vdO28ufKxjetDg+cLvaumm8nt94e9uVs8ijabUjBbDvPf+nMkBXs6ztQwytL4MeJW+1SJO8g==
-X-YMail-OSG: RmbhXsgVM1lLhcaU1ne7mR6zpkzpbo7bxmuwrCU.Q2Jz597RECpRfmbO46DOQRX
- U0xQ5xBsTHuxbwW_TtCdMT2eNLcqB.9MNEIycPBCvxEIMauu4wwWKuCNsriWG17YzxZZSU5mRqMT
- nD2EjYEowKyCkwCd1Te9jq5klHYvLtxbd4bFcCFL2P1w8RMBLElSfcjca4Z8tSv0mGlkUiuzaWwG
- RBl1UsJIZ5mMgUmfLV5UijO4mDS6IGYD9xt0Ka4LyErovbxYQNiSnLkPVFektkl4NsrfOmngA95N
- kkBMRRM69yRal17E5bEl.GEetKRGjxFXrkeFBPBnvUB39vRXM1uJr9lofNBLfPsBFlSRztA01Tb1
- 2.Ko5WaSMvaFu9MtaEtE8do0rdNJt710nw7v4t951twzPFAuFYKdfw3g6c3dDKSk32l.YGN7bxxE
- iJ.JRQQCbY2fVGo1dbzVUND6NRrYIQQx_mvHV_T77J0EKmoB5PjOdBf8h3yto2zOuIw_4K1oqMnB
- lpX7Mviw3TRipQFQS.QYCDE0eCrAnoXTzzpMDP9ypX_zjfS1v60CersA1yjK9TZayQa1yj27zYCe
- MqYpm4V95Z_gsdrtiyAUPvbihlhUN_RJxGrK_Gf7hMtPu3r94bBvxh7bkXd_8nCtKEtlSLmD47FF
- rL47IUcSP1slx3.T45INLMwoMSBAiBt8hZjKCp7v.tuhuOFWTq83ZX3Bgm4YIJx5fzbP2zmEoE0V
- n1LFMQTdBQksBp0SXQqDx5iGuZbQ4LT9sghGEct1VVnED8JCl2Q3eoXI.pGSoorwhte1qgKTgB_Y
- xuaouXmoDT.pBkhmN9HyNa6U0Sm69lEVSV7MWzTkWql9x5iU_JFiGZ6p1NBE6s_iQp.lA6QAwhzv
- l7pBzDvxyID3ETrwqjWvJ9.N6uLcX5usJoNfYoNZdWLEaczXKlQpCi2qL7sH9JJ8dD4sshLILMF4
- QMrLaD3CLaY1swMQoVUdBU2lVc2D9.bsMFz2bGIVsj3Agb_IkaYkjxIEdPSVSDpBpGgTUUPw4NiI
- Ao05t..Gn2zuzLJfUL009ZMhDF4WfKZKBYTRnYgcjk3mn4KMX8U7jd_9GUG88mGLAjM1mLgP5T0U
- l3ThDS8_119wMrFkYqawFpQWOXjUZwEfgOQG5Kn1mbNoTj5nmKB3xYWfcd38qV7rG2wkR_lh9ycY
- whKVcjiTWBN5oiWwxSoVp_kqeBKKpx4XHDzeg881QDlQu3me_cv1ca_fNGAB99dOfyaXmQTkbUWX
- NJC8kNTy0LDvsElYl9Lmhrj5AjcN2Ri0YkP2q4xFd4y8a7fpzpgLjhHO0eS9BJiE6TdSiwpl3emt
- m0A.hvUkcnwaYyGVzRQzDxOkSPpGHBeR.4DWH5YTHt_RDKH4BuKHZ7c9LTOiZaRcuZ.k4f.4tkEQ
- Uiv_EUfa.VV4Hz7bjE09A.6Gv6o_jhTzwt81RjilE.3Ws3mQcEVTF3ukpaJ8mqn6mP.awZ8KDNNl
- c4UZwqxoCu_QiO3p9xrMPy7QT6pgKk5NYYh2waRQ4m.kFmActr1jtPHLJqlOWJ.lozojt9n_iOTn
- FO8xYwqitXkjIyaGYjkPmQz1y4CL4XcVfOZtYyg8zVYvt9_gz.2FVxfLyx_va6B2DA49sQn_93rK
- rQZNJx9uSXy3CFcNCVYg1kjBy1w4QY5wUFHRZGYWsRb8tZS5L0TK1T2nESfRDavmjKYLisghlkj7
- QNaBx6K.HzYUPfhwXbfw__R9b4WYTEanMfFbzlUq6ybAO3uyGIkBuLxX3wgyowoV81LjD6.NLO_8
- Tr6qwmL2AbRU1yUYwz0NvLO7oRfcZKTbTyNhfFDcEa3Ita4cJaCOJHIHz.C.BtPZGz9py3l2F7px
- qS9ntBjFItpwyIUQpTPVTOqAiUrPEPCu1vpDogaG10Ly6jwQgX8ORMLQrTjxa7GTdDUcLAIe4XKE
- nW0i27YVQWZ_adsvQMLe9r.GPfyE4j1frSwX6yX6oeFmhTn9LlGIalDQxI_0o8bgkXsGa1EmQVA_
- RiYxlCnPZCXI8CHTSqZnmZZV_VYrYTtWvVrbEwin5pQwPjFwuRO3LIu0gblUo89NKTFmd1lcO4Uq
- E4myoOch9OkxyCzxMlGldOuEwJVh3bsESE2by.o8attKx1pqXAA2bgsWIe0PizFVqkhPGZgZzKmE
- LHQofP7vj1d2bnbsYYOa_eTnTKkZ9riIwU1ZpMfp7Sfvq5ElUqDevvvjbb7D_ZCPKwCd1L0GRpnU
- 7gjcZZv9chYJT1qs_._JbUfhRbjnWUQMCk.NIUdYOkvfvi1zd1H8_u5XZrnz_GC.vNA--
-X-Sonic-MF: <casey@schaufler-ca.com>
-X-Sonic-ID: 765f1964-0fb7-4d81-8316-507c573fc21a
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic306.consmr.mail.ne1.yahoo.com with HTTP; Thu, 30 Nov 2023 23:31:09 +0000
-Received: by hermes--production-gq1-5cf8f76c44-fz47x (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 19b1fe304cad48eecfc9a1ec502551f6;
-          Thu, 30 Nov 2023 23:31:04 +0000 (UTC)
-Message-ID: <018438d4-44b9-4734-9c0c-8a65f9c605a4@schaufler-ca.com>
-Date:   Thu, 30 Nov 2023 15:31:01 -0800
+        Thu, 30 Nov 2023 18:31:24 -0500
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8175C170E
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 15:31:30 -0800 (PST)
+Received: by mail-il1-x130.google.com with SMTP id e9e14a558f8ab-35c683417f1so1367915ab.0
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 15:31:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1701387090; x=1701991890; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=llYyWfCb69pBxaG0WYSOBLQY/Xppf6lTA3DcehbW2Ek=;
+        b=cp7vN+uxGjdaN9eEqeW4neVl5T93MuiYyWqOSZkYd7ECxcNyvPMxis6Aj8NfCElH5T
+         VkgLVFMxuCNytV1Ns4a/zn4llQjNBE8AXK3TJz1NANBRDndl5+ZWRIai082N07PX8KZM
+         E9XtepPpwgJk/2FsC2SbI/dSoPj3dTaYPw1TU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701387090; x=1701991890;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=llYyWfCb69pBxaG0WYSOBLQY/Xppf6lTA3DcehbW2Ek=;
+        b=dsiAtI47BRjSd0LeZlR7Hc9Br+hrTuLSayL0h5kQmbOo7aidKzPfTUgvc68oatwSiW
+         sC5LYuc02t4FxbiJoGq57Ylr3TNRP8J+bcLsCS8ytGHepp8U84vJJVztbWjYE2+iQ/83
+         rFgofvrnhTdpBSUXQ7c7zcwnL7xlZ4wwlgocQPeYfYq24Xuifq4DyaqQP0eMDO+uR5fL
+         ABfmTJGyz0bePkYc76mO5VTl0TW6Gvf8T1wu/OTqzf5+DiIFXrpVdoZBB3o9D77I7wEG
+         mBVd9u73OaPBB2oGurk8B8Tw7ysO961pQWFDNu0KmkesV+avgTm/kVSN5CujUa3l8dbD
+         ddXQ==
+X-Gm-Message-State: AOJu0Yz8zl/3ENmuePdXkE0SBCJnA8RaoMEOCiMNsWKPvALEhJvG7mnq
+        xCqm5c8P4WQOTeHtXWFgszbKr2p2sgLxpjaKS5c=
+X-Google-Smtp-Source: AGHT+IGh97ToGT1ForYO7+r88gaJE7pfGJ29v4Y23IUCdSGN+XdLo3r8+IlSeCQXDwW4Twd8aNF6Gg==
+X-Received: by 2002:a6b:660f:0:b0:7b3:58c4:b894 with SMTP id a15-20020a6b660f000000b007b358c4b894mr20766432ioc.1.1701387089857;
+        Thu, 30 Nov 2023 15:31:29 -0800 (PST)
+Received: from [192.168.1.128] ([38.175.170.29])
+        by smtp.gmail.com with ESMTPSA id h13-20020a02cd2d000000b0046856360a07sm563841jaq.13.2023.11.30.15.31.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Nov 2023 15:31:29 -0800 (PST)
+Message-ID: <d77d88cb-2a7e-45ce-8289-55d7b1c2826c@linuxfoundation.org>
+Date:   Thu, 30 Nov 2023 16:31:28 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 23/23] integrity: Switch from rbtree to LSM-managed
- blob for integrity_iint_cache
-To:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
-        Petr Tesarik <petrtesarik@huaweicloud.com>,
-        Paul Moore <paul@paul-moore.com>
-Cc:     viro@zeniv.linux.org.uk, brauner@kernel.org,
-        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
-        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
-        jmorris@namei.org, serge@hallyn.com, zohar@linux.ibm.com,
-        dmitry.kasatkin@gmail.com, dhowells@redhat.com, jarkko@kernel.org,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        mic@digikod.net, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
-        Casey Schaufler <casey@schaufler-ca.com>
-References: <20231107134012.682009-24-roberto.sassu@huaweicloud.com>
- <17befa132379d37977fc854a8af25f6d.paul@paul-moore.com>
- <2084adba3c27a606cbc5ed7b3214f61427a829dd.camel@huaweicloud.com>
- <CAHC9VhTTKac1o=RnQadu2xqdeKH8C_F+Wh4sY=HkGbCArwc8JQ@mail.gmail.com>
- <b6c51351be3913be197492469a13980ab379e412.camel@huaweicloud.com>
- <CAHC9VhSAryQSeFy0ZMexOiwBG-YdVGRzvh58=heH916DftcmWA@mail.gmail.com>
- <90eb8e9d-c63e-42d6-b951-f856f31590db@huaweicloud.com>
- <366a6e5f-d43d-4266-8421-a8a05938a8fd@schaufler-ca.com>
- <66ec6876-483a-4403-9baa-487ebad053f2@huaweicloud.com>
- <a121c359-03c9-42b1-aa19-1e9e34f6a386@schaufler-ca.com>
- <9297638a-8dab-42ba-8b60-82c03497c9cd@huaweicloud.com>
+Subject: Re: [PATCH v2] selftests: prctl: Add prctl test for PR_GET_NAME
 Content-Language: en-US
-From:   Casey Schaufler <casey@schaufler-ca.com>
-In-Reply-To: <9297638a-8dab-42ba-8b60-82c03497c9cd@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Mailer: WebService/1.1.21896 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+To:     Osama Muhammad <osmtendev@gmail.com>, shuah@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20230820141354.29687-1-osmtendev@gmail.com>
+ <CAK6rUAO2hyt0tcXif=kbZj=vd4+O9h3o1quWSF2R6FMm70u_hA@mail.gmail.com>
+ <CAK6rUANdzA9JNP-Aah+1LbPAdJwBn9Z2_ogDi5i1jE6q6vmWSg@mail.gmail.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <CAK6rUANdzA9JNP-Aah+1LbPAdJwBn9Z2_ogDi5i1jE6q6vmWSg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/30/2023 1:34 PM, Roberto Sassu wrote:
-> On 11/30/2023 5:15 PM, Casey Schaufler wrote:
->> On 11/30/2023 12:30 AM, Petr Tesarik wrote:
->>> Hi all,
+On 11/11/23 12:23, Osama Muhammad wrote:
+
 >>>
->>> On 11/30/2023 1:41 AM, Casey Schaufler wrote:
->>>> ...
->>>> It would be nice if the solution directly addresses the problem.
->>>> EVM needs to be after the LSMs that use xattrs, not after all LSMs.
->>>> I suggested LSM_ORDER_REALLY_LAST in part to identify the notion as
->>>> unattractive.
->>> Excuse me to chime in, but do we really need the ordering in code?
->>
->> tl;dr - Yes.
->>
->>>   FWIW
->>> the linker guarantees that objects appear in the order they are seen
->>> during the link (unless --sort-section overrides that default, but this
->>> option is not used in the kernel). Since *.a archive files are used in
->>> kbuild, I have also verified that their use does not break the
->>> assumption; they are always created from scratch.
+>>> Signed-off-by: Osama Muhammad <osmtendev@gmail.com>
+>>> ---
+>>>   .../selftests/prctl/set-process-name.c        | 32 +++++++++++++++++++
+>>>   1 file changed, 32 insertions(+)
 >>>
->>> In short, to enforce an ordering, you can simply list the corresponding
->>> object files in that order in the Makefile. Of course, add a big fat
->>> warning comment, so people understand the order is not arbitrary.
->>
->> Not everyone builds custom kernels.
->
-> Sorry, I didn't understand your comment.
 
-Most people run a disto supplied kernel. If the LSM ordering were determined
-only at compile time you could never run a kernel that omitted an LSM.
+Applied to linux-kselftest next for Linux 6.8-rc1.
 
-> Everyone builds the kernel, also Linux distros. What Petr was
-> suggesting was that it does not matter how you build the kernel, the
-> linker will place the LSMs in the order they appear in the Makefile.
-> And for this particular case, we have:
->
-> obj-$(CONFIG_IMA)                       += ima/
-> obj-$(CONFIG_EVM)                       += evm/
->
-> In the past, I also verified that swapping these two resulted in the
-> swapped order of LSMs. Petr confirmed that it would always happen.
+thanks,
+-- Shuah
 
-LSM execution order is not based on compilation order. It is specified
-by CONFIG_LSM, and may be modified by the LSM_ORDER value. I don't
-understand why the linker is even being brought into the discussion.
-
->
-> Thanks
->
-> Roberto
