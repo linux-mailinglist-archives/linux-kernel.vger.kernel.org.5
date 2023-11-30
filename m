@@ -2,50 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0D9F7FE9DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 08:40:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71DF27FE9DD
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 08:41:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344767AbjK3Hkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 02:40:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35496 "EHLO
+        id S231706AbjK3Hku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 02:40:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344694AbjK3Hkh (ORCPT
+        with ESMTP id S1344773AbjK3Hkk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 02:40:37 -0500
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9CC9D66
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 23:40:43 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-6cdd9c53270so565607b3a.1
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 23:40:43 -0800 (PST)
+        Thu, 30 Nov 2023 02:40:40 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75179D5E
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 23:40:46 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1cfabcbda7bso14511395ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 23:40:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1701330043; x=1701934843; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=xzMcm/4giFrxMClkYwrYltTytmsL0thmxiAZbeFwHOg=;
-        b=fZ9efIe7fP13ZrygS8ejUl+76g6aLDUIABVn9B1Xp1VQE2NQAXVdAxZcw82RbHKvBY
-         b3SiWqUlCofl89yB6puRuvsTwCOOtbKaQzIppKGakD9SDLR+Kg50hc7mzkCkWXnqdWxi
-         3eeHjPG7jHbmvZJPk1/7ZpLpcnfMFm1Lrqn2Q=
+        d=chromium.org; s=google; t=1701330046; x=1701934846; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iKnc2RZBbgrdaniJjhXC1yNhidddngTlWoTj4fSfTDs=;
+        b=Z+diMEv8ONuY6Fqp0+HMXG7vSxslfRRrIVJfpyzRj35ybU/GcA5YlJdEe/ih3SlY+p
+         CMBBPF0HM/fONvn0dQFe/d34R1VUqTkOilpr3IaXsTzeSnnxjx9lSD0ZFsZHzdQtycqD
+         X9g6++GCVPf8xL2vtU85zDWEXskE1LWbhGC7w=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701330043; x=1701934843;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xzMcm/4giFrxMClkYwrYltTytmsL0thmxiAZbeFwHOg=;
-        b=aL2KZrxQ6qRgNA0tNnX4C1pAMVKIHjrYbq6MJpqwOAnC/DdgBhSGnUuJ6JIGX4T/I6
-         kXcRki7vyyFX5BRdH8Ktd3KyuvEm75Xz+4ZkWPRzVHsjw7pgeVZzcbVvRzjoTYDomOeq
-         0qj55cp5Wj82aCRFVWsxvd8bsvMEgkacIz1dB6NDjFQHGOf3TeSCooGDIz+Er2D8QUL7
-         Jq9KQGZnR49oLBMHYNqBVgjLyARPHzT8AhR/o0NfauvGwoEJGZC/VAFqJJaslOdA41EG
-         AUdv09ToMSVvt2r0i0v96IzlCuaBlSqLTjqX7gCiEfZ3mCKyRSXrJzeqPtXQur7cWrKd
-         5mJg==
-X-Gm-Message-State: AOJu0Yz/l8WeOF0q863FmFJNCsS8RnvedGyoVlq8SzC76pn1n9Z0pKLG
-        j8MPitQxdWP8ZkqVryYddt5ykw==
-X-Google-Smtp-Source: AGHT+IH4Vyiy69Wx5dpcW6tYy2rej0U+Buxiro8U+QktBGOAg6tGBdr4/KhwXWHc9RHdnAT00fhu9A==
-X-Received: by 2002:a05:6a00:3a09:b0:6be:acc:8973 with SMTP id fj9-20020a056a003a0900b006be0acc8973mr20577904pfb.20.1701330043351;
-        Wed, 29 Nov 2023 23:40:43 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701330046; x=1701934846;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iKnc2RZBbgrdaniJjhXC1yNhidddngTlWoTj4fSfTDs=;
+        b=WkMJWrHr6v4ifs0JGAVT6807NopKdduhH9ipKvs7JOH2rCQ4FZss8S0ENyGgzDgg1Z
+         hXZc5lgA0GPVEVIHReiNkEJkSUE5O/TVegFbNLxXk/60BTIiainlH9oLA/HmrQVM2acS
+         sWFSD4j06w1WmAo2Fv4OlxnMCAV80ZEGtkYZlkopbWIWw+YZS9Md5pQesm60WlCawHna
+         tH6BYAIiWfD8+BU+deaOD9hL0Zl2SBx0LrGth95LJQ+bqOj432tpI5/GIHOHodhnfP/w
+         2SVZRI2R4nahXQRcjBfOqDu0829VovOc/EEiOTG6TxatgxU4p3T3pwG7789Lm1YKdVvS
+         yh2A==
+X-Gm-Message-State: AOJu0YxyrLZe2NU3Nn3PLhr+B42DwQ6Cx69zd7XRhDTxorKP9UPAg+EM
+        dBdfxmLqa9cqgeTR/ej/Q/RVPA==
+X-Google-Smtp-Source: AGHT+IGAr9LwKDNK6mCFGvRbs1763uve1b/upQrl2GE7plYDdI0iQfPRY6A2F/64FTmn8nJQgl95Tw==
+X-Received: by 2002:a17:902:ac86:b0:1cf:c3fb:a75f with SMTP id h6-20020a170902ac8600b001cfc3fba75fmr19045596plr.17.1701330045865;
+        Wed, 29 Nov 2023 23:40:45 -0800 (PST)
 Received: from wenstp920.tpe.corp.google.com ([2401:fa00:1:10:7c8f:dafd:65c3:2bcf])
-        by smtp.gmail.com with ESMTPSA id p35-20020a634f63000000b005bd3f34b10dsm612870pgl.24.2023.11.29.23.40.41
+        by smtp.gmail.com with ESMTPSA id p35-20020a634f63000000b005bd3f34b10dsm612870pgl.24.2023.11.29.23.40.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Nov 2023 23:40:42 -0800 (PST)
+        Wed, 29 Nov 2023 23:40:45 -0800 (PST)
 From:   Chen-Yu Tsai <wenst@chromium.org>
 To:     Matthias Brugger <matthias.bgg@gmail.com>,
         AngeloGioacchino Del Regno 
@@ -56,43 +57,51 @@ Cc:     Chen-Yu Tsai <wenst@chromium.org>,
         Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-mediatek@lists.infradead.org
-Subject: [PATCH 0/3] arm64: dts: mediatek: Random DT cleanups
-Date:   Thu, 30 Nov 2023 15:40:28 +0800
-Message-ID: <20231130074032.913511-1-wenst@chromium.org>
+Subject: [PATCH 1/3] arm64: dts: mt8183: kukui-jacuzzi: Drop bogus anx7625 panel_flag property
+Date:   Thu, 30 Nov 2023 15:40:29 +0800
+Message-ID: <20231130074032.913511-2-wenst@chromium.org>
 X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
+In-Reply-To: <20231130074032.913511-1-wenst@chromium.org>
+References: <20231130074032.913511-1-wenst@chromium.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+The panel_flag property was used in ChromeOS's downstream kernel. It was
+used to signal whether the downstream device was a fixed panel or
+a connector for an external display.
 
-Here are some random DT cleanups that I've accumulated. This should get
-rid of some warnings.
+This property was dropped in favor of standard OF graph descrptions of
+downstream display panels and bridges.
 
-Please have a look.
+Drop the property from the device tree file.
 
+Fixes: cabc71b08eb5 ("arm64: dts: mt8183: Add kukui-jacuzzi-damu board")
+Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
+---
+ arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi.dtsi | 1 -
+ 1 file changed, 1 deletion(-)
 
-ChenYu
-
-Chen-Yu Tsai (3):
-  arm64: dts: mt8183: kukui-jacuzzi: Drop bogus anx7625 panel_flag
-    property
-  arm64: dts: mt6358: Drop bogus "regulator-fixed" compatible properties
-  arm64: dts: mediatek: mt8186: Fix alias prefix for ovl_2l0
-
- arch/arm64/boot/dts/mediatek/mt6358.dtsi            | 13 -------------
- .../boot/dts/mediatek/mt8183-kukui-jacuzzi.dtsi     |  1 -
- arch/arm64/boot/dts/mediatek/mt8186.dtsi            |  2 +-
- 3 files changed, 1 insertion(+), 15 deletions(-)
-
+diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi.dtsi
+index bf97b60ae4d1..09e658bc30e6 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi.dtsi
+@@ -147,7 +147,6 @@ anx_bridge: anx7625@58 {
+ 		reg = <0x58>;
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&anx7625_pins>;
+-		panel_flags = <1>;
+ 		enable-gpios = <&pio 45 GPIO_ACTIVE_HIGH>;
+ 		reset-gpios = <&pio 73 GPIO_ACTIVE_HIGH>;
+ 		vdd10-supply = <&pp1200_mipibrdg>;
 -- 
 2.43.0.rc2.451.g8631bc7472-goog
 
