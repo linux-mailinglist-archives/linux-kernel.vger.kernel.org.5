@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D60C77FFD42
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 22:08:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47A9B7FFD4A
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 22:11:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376821AbjK3VH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 16:07:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47234 "EHLO
+        id S1376820AbjK3VKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 16:10:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376386AbjK3VH4 (ORCPT
+        with ESMTP id S232255AbjK3VKv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 16:07:56 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BB5D10F0
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 13:08:02 -0800 (PST)
+        Thu, 30 Nov 2023 16:10:51 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 976811713
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 13:10:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701378483; x=1732914483;
+  t=1701378657; x=1732914657;
   h=date:from:to:cc:subject:message-id;
-  bh=E/7mAA5l2r8tmWxleQaA0F0k4CMG8KQ4rGdz5bdO8QY=;
-  b=DtHkx4lpELcjeEfX1oV77BXdHAs7XG4q44YZn5Tua8tzLkXlC3MfaUmi
-   web4vq4bA5r9KtAUQFDCnByEsnL5f3Ie5MSxi5vGiFFkydPucIGnxAhzO
-   9M29VuHw/CWAbDngmL3gleq6pOeCcjKRSxVV9c3bIBY8p1tCvnuYXRU2A
-   BnGwHqq3wobJZs/8F2YpGVwLlx9YR3qLEAeNoojqSLCJf9IF45kREfnnV
-   crgCjTCUwtZy21jz9YnVIOI/o9Fv6DVHuRXCi8IsCdsm5KyQqaKg86z0s
-   JGCjUDxA8Bhfd+2iuDqObnSZovj/IacoyZJYo12VPugxLSNqz/nG4agSy
+  bh=eUMWzfinugN1ftiVntS1zSL6g8RLciSwU15iCkNZZpM=;
+  b=avf9Jkx6qBc7UuL6jjme5vv4QLkF88S27gWzmEEWTE9wIWqorr6nHvU7
+   54tyMcgWsSEDxLsE0WUSzQZiXDGAjy0Iiojbelke1r6ecqd0RHfXXFBJk
+   2CliWFqouXQTA29cyVSYTud8H9lTF+SOWZtEMjfo6UjYXH6Dc/1tD4xx8
+   K7gUiSqQ1ukIJh7Bq3qpb4cozX1NU/3j7vN5FXr4Cy+fJ1+Yp4CkRk9ug
+   mA3ARtlzeqfixgo2285cHrWFWiw33BYeRVaZwtcb4JzjnYCoAEqJIBcKG
+   fwdqaB02QM4NrunOQ2YbyQciFrqmCZsmkS/Wf28JlelkMyBVNRDT1ramV
    g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="389815"
-X-IronPort-AV: E=Sophos;i="6.04,239,1695711600"; 
-   d="scan'208";a="389815"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 13:08:02 -0800
+X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="479592699"
+X-IronPort-AV: E=Sophos;i="6.04,240,1695711600"; 
+   d="scan'208";a="479592699"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 13:10:57 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="773186582"
-X-IronPort-AV: E=Sophos;i="6.04,239,1695711600"; 
-   d="scan'208";a="773186582"
+X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="762878504"
+X-IronPort-AV: E=Sophos;i="6.04,240,1695711600"; 
+   d="scan'208";a="762878504"
 Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga007.fm.intel.com with ESMTP; 30 Nov 2023 13:08:00 -0800
+  by orsmga007.jf.intel.com with ESMTP; 30 Nov 2023 13:10:55 -0800
 Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1r8oGL-0002eZ-1N;
-        Thu, 30 Nov 2023 21:07:57 +0000
-Date:   Fri, 01 Dec 2023 05:07:48 +0800
+        id 1r8oJA-0002ew-2d;
+        Thu, 30 Nov 2023 21:10:52 +0000
+Date:   Fri, 01 Dec 2023 05:10:10 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/build] BUILD SUCCESS
- 5225952d74d43e4c054731c74b8afd700b23a94a
-Message-ID: <202312010545.vbEK9qVt-lkp@intel.com>
+Subject: [tip:x86/boot] BUILD SUCCESS
+ 78a509fba9c9b1fcb77f95b7c6be30da3d24823a
+Message-ID: <202312010508.y0RJJECY-lkp@intel.com>
 User-Agent: s-nail v14.9.24
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
@@ -60,12 +60,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/build
-branch HEAD: 5225952d74d43e4c054731c74b8afd700b23a94a  x86/tools: Remove chkobjdump.awk
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/boot
+branch HEAD: 78a509fba9c9b1fcb77f95b7c6be30da3d24823a  x86/boot: Ignore NMIs during very early boot
 
-elapsed time: 721m
+elapsed time: 723m
 
-configs tested: 199
+configs tested: 205
 configs skipped: 135
 
 The following configs have been built successfully.
@@ -249,6 +249,12 @@ x86_64       buildonly-randconfig-005-20231130   gcc
 x86_64       buildonly-randconfig-006-20231130   gcc  
 x86_64                              defconfig   gcc  
 x86_64                                  kexec   gcc  
+x86_64                randconfig-001-20231130   clang
+x86_64                randconfig-002-20231130   clang
+x86_64                randconfig-003-20231130   clang
+x86_64                randconfig-004-20231130   clang
+x86_64                randconfig-005-20231130   clang
+x86_64                randconfig-006-20231130   clang
 x86_64                randconfig-011-20231130   gcc  
 x86_64                randconfig-012-20231130   gcc  
 x86_64                randconfig-013-20231130   gcc  
