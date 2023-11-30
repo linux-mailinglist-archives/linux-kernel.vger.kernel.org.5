@@ -2,166 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 051007FF06F
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 14:43:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D77E67FF0BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 14:51:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345633AbjK3NnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 08:43:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47448 "EHLO
+        id S1345691AbjK3Nvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 08:51:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345622AbjK3NnF (ORCPT
+        with ESMTP id S1345581AbjK3Nvb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 08:43:05 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37A84194
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 05:43:11 -0800 (PST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Thu, 30 Nov 2023 08:51:31 -0500
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3D63137;
+        Thu, 30 Nov 2023 05:51:34 -0800 (PST)
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id 66BAF120008;
+        Thu, 30 Nov 2023 16:51:33 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 66BAF120008
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+        s=mail; t=1701352293;
+        bh=lgDstG8AR2X5fihUSohCw6miMFgwYXoychpQoa6AkGk=;
+        h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
+        b=C1K7xIV45lCyg1A2rsM3Pkar5oj2PIvpUiWMb7hifeyUdUtGCtEt+05hk+m8/M2WS
+         d5phS+D9JlLACnb6Ak+Pbjw9a4FgBJ3HfrWRsHWui+mY7ND0VUfp69H2nE4zJBspZs
+         GryrdWbsuFh0S8cT31VrSaauAuCvzuG1RryXgt98lYIXwD6jb6mX3CUw9DkVhWu4UD
+         vldew2SgqTsMECEw/t63+UbBDCOL9onJoxwuRj/NXFCWTOHjMIcEO2Itr/WLul10IQ
+         u27he/ipy+9sGCbsaz6Ops2CQ/LAdZUQgulgEyBIOTvb2zxiwg19MvPCb8iOdV8BgT
+         TgyAldTFXBbpg==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id CF6D021A3C;
-        Thu, 30 Nov 2023 13:43:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1701351789; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=E0xXRK+aUL8cLCXEAdHHc8BYb0q+10UFV8/xhlNkfxo=;
-        b=UqaGXeICW1+gaCJDa6EZhJWtlB4LY7R/CiHmE7gP5NDtbyhtrd5Q+id0DpmQy3PSdQXx3F
-        YmKFs6lmIf1ejZKglsIKpWaF9FPWZ+VoI60WHgMFsIUDiTkTgPCdVjHECXhi50gel2Va4A
-        8dRFvP2nKJJRJQPukyjxCPgNnS7KyJY=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AB59113AB1;
-        Thu, 30 Nov 2023 13:43:09 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-        by imap1.dmz-prg2.suse.org with ESMTPSA
-        id q5nTJm2RaGUKRAAAD6G6ig
-        (envelope-from <mhocko@suse.com>); Thu, 30 Nov 2023 13:43:09 +0000
-Date:   Thu, 30 Nov 2023 14:43:08 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Pingfan Liu <piliu@redhat.com>
-Cc:     Baoquan He <bhe@redhat.com>, Donald Dutile <ddutile@redhat.com>,
-        Jiri Bohac <jbohac@suse.cz>, Tao Liu <ltao@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        Dave Young <dyoung@redhat.com>, kexec@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/4] kdump: crashkernel reservation from CMA
-Message-ID: <ZWiRbLGdBMO2jFGs@tiehlicka>
-References: <CAO7dBbVJ=ytRra_77VRZ8ud1wVkP9fub=Vj6cfTkx=CnYg5J2A@mail.gmail.com>
- <ZWVMUxmi66xLZPsr@MiWiFi-R3L-srv>
- <ZWWuBSiZZdF2W12j@tiehlicka>
- <ZWbyDx3TJ7zo3jCw@MiWiFi-R3L-srv>
- <91a31ce5-63d1-7470-18f7-92b039fda8e6@redhat.com>
- <ZWf64BowWrYqA2Rf@MiWiFi-R3L-srv>
- <ZWhg_b3O6piZtkQ-@tiehlicka>
- <ZWh6ax8YmkhxAzIf@MiWiFi-R3L-srv>
- <ZWiOO-KNJ82f6Gxu@tiehlicka>
- <CAF+s44QSJL5e6BVTAyyHR9Kzx7RJqZSkR=uXEypaouK_XuBbEw@mail.gmail.com>
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Thu, 30 Nov 2023 16:51:33 +0300 (MSK)
+Received: from [192.168.0.106] (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Thu, 30 Nov 2023 16:51:32 +0300
+Message-ID: <02de8982-ec4a-b3b2-e8e5-1bca28cfc01b@salutedevices.com>
+Date:   Thu, 30 Nov 2023 16:43:34 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAF+s44QSJL5e6BVTAyyHR9Kzx7RJqZSkR=uXEypaouK_XuBbEw@mail.gmail.com>
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -3.60
-X-Spamd-Result: default: False [-3.60 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         NEURAL_HAM_LONG(-1.00)[-1.000];
-         MIME_GOOD(-0.10)[text/plain];
-         RCVD_COUNT_THREE(0.00)[3];
-         DKIM_SIGNED(0.00)[suse.com:s=susede1];
-         RCPT_COUNT_SEVEN(0.00)[9];
-         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         MID_RHS_NOT_FQDN(0.50)[];
-         RCVD_TLS_ALL(0.00)[];
-         BAYES_HAM(-3.00)[100.00%]
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH net-next v5 2/3] virtio/vsock: send credit update during
+ setting SO_RCVLOWAT
+Content-Language: en-US
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+CC:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>,
+        <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kernel@sberdevices.ru>, <oxffffaa@gmail.com>
+References: <20231130130840.253733-1-avkrasnov@salutedevices.com>
+ <20231130130840.253733-3-avkrasnov@salutedevices.com>
+ <20231130084044-mutt-send-email-mst@kernel.org>
+From:   Arseniy Krasnov <avkrasnov@salutedevices.com>
+In-Reply-To: <20231130084044-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 181739 [Nov 30 2023]
+X-KSMG-AntiSpam-Version: 6.0.0.2
+X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 5 0.3.5 98d108ddd984cca1d7e65e595eac546a62b0144b, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;100.64.160.123:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;salutedevices.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/11/30 11:05:00 #22583687
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 30-11-23 21:33:04, Pingfan Liu wrote:
-> On Thu, Nov 30, 2023 at 9:29 PM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Thu 30-11-23 20:04:59, Baoquan He wrote:
-> > > On 11/30/23 at 11:16am, Michal Hocko wrote:
-> > > > On Thu 30-11-23 11:00:48, Baoquan He wrote:
-> > > > [...]
-> > > > > Now, we are worried if there's risk if the CMA area is retaken into kdump
-> > > > > kernel as system RAM. E.g is it possible that 1st kernel's ongoing RDMA
-> > > > > or DMA will interfere with kdump kernel's normal memory accessing?
-> > > > > Because kdump kernel usually only reset and initialize the needed
-> > > > > device, e.g dump target. Those unneeded devices will be unshutdown and
-> > > > > let go.
-> > > >
-> > > > I do not really want to discount your concerns but I am bit confused why
-> > > > this matters so much. First of all, if there is a buggy RDMA driver
-> > > > which doesn't use the proper pinning API (which would migrate away from
-> > > > the CMA) then what is the worst case? We will get crash kernel corrupted
-> > > > potentially and fail to take a proper kernel crash, right? Is this
-> > > > worrisome? Yes. Is it a real roadblock? I do not think so. The problem
-> > > > seems theoretical to me and it is not CMA usage at fault here IMHO. It
-> > > > is the said theoretical driver that needs fixing anyway.
-> > > >
-> > > > Now, it is really fair to mention that CMA backed crash kernel memory
-> > > > has some limitations
-> > > >     - CMA reservation can only be used by the userspace in the
-> > > >       primary kernel. If the size is overshot this might have
-> > > >       negative impact on kernel allocations
-> > > >     - userspace memory dumping in the crash kernel is fundamentally
-> > > >       incomplete.
-> > >
-> > > I am not sure if we are talking about the same thing. My concern is:
-> > > ====================================================================
-> > > 1) system corrutption happened, crash dumping is prepared, cpu and
-> > > interrupt controllers are shutdown;
-> > > 2) all pci devices are kept alive;
-> > > 3) kdump kernel boot up, initialization is only done on those devices
-> > > which drivers are added into kdump kernel's initrd;
-> > > 4) those on-flight DMA engine could be still working if their kernel
-> > > module is not loaded;
-> > >
-> > > In this case, if the DMA's destination is located in crashkernel=,cma
-> > > region, the DMA writting could continue even when kdump kernel has put
-> > > important kernel data into the area. Is this possible or absolutely not
-> > > possible with DMA, RDMA, or any other stuff which could keep accessing
-> > > that area?
-> >
-> > I do nuderstand your concern. But as already stated if anybody uses
-> > movable memory (CMA including) as a target of {R}DMA then that memory
-> > should be properly pinned. That would mean that the memory will be
-> > migrated to somewhere outside of movable (CMA) memory before the
-> > transfer is configured. So modulo bugs this shouldn't really happen.
-> > Are there {R}DMA drivers that do not pin memory correctly? Possibly. Is
-> > that a road bloack to not using CMA to back crash kernel memory, I do
-> > not think so. Those drivers should be fixed instead.
-> >
-> I think that is our concern. Is there any method to guarantee that
-> will not happen instead of 'should be' ?
-> Any static analysis during compiling time or dynamic checking method?
 
-I am not aware of any method to detect a driver is going to configure a
-RDMA.
- 
-> If this can be resolved, I think this method is promising.
 
-Are you indicating this is a mandatory prerequisite?
--- 
-Michal Hocko
-SUSE Labs
+On 30.11.2023 16:42, Michael S. Tsirkin wrote:
+> On Thu, Nov 30, 2023 at 04:08:39PM +0300, Arseniy Krasnov wrote:
+>> Send credit update message when SO_RCVLOWAT is updated and it is bigger
+>> than number of bytes in rx queue. It is needed, because 'poll()' will
+>> wait until number of bytes in rx queue will be not smaller than
+>> SO_RCVLOWAT, so kick sender to send more data. Otherwise mutual hungup
+>> for tx/rx is possible: sender waits for free space and receiver is
+>> waiting data in 'poll()'.
+>>
+>> Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
+>> ---
+>>  Changelog:
+>>  v1 -> v2:
+>>   * Update commit message by removing 'This patch adds XXX' manner.
+>>   * Do not initialize 'send_update' variable - set it directly during
+>>     first usage.
+>>  v3 -> v4:
+>>   * Fit comment in 'virtio_transport_notify_set_rcvlowat()' to 80 chars.
+>>  v4 -> v5:
+>>   * Do not change callbacks order in transport structures.
+>>
+>>  drivers/vhost/vsock.c                   |  1 +
+>>  include/linux/virtio_vsock.h            |  1 +
+>>  net/vmw_vsock/virtio_transport.c        |  1 +
+>>  net/vmw_vsock/virtio_transport_common.c | 27 +++++++++++++++++++++++++
+>>  net/vmw_vsock/vsock_loopback.c          |  1 +
+>>  5 files changed, 31 insertions(+)
+>>
+>> diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
+>> index f75731396b7e..4146f80db8ac 100644
+>> --- a/drivers/vhost/vsock.c
+>> +++ b/drivers/vhost/vsock.c
+>> @@ -451,6 +451,7 @@ static struct virtio_transport vhost_transport = {
+>>  		.notify_buffer_size       = virtio_transport_notify_buffer_size,
+>>  
+>>  		.read_skb = virtio_transport_read_skb,
+>> +		.notify_set_rcvlowat      = virtio_transport_notify_set_rcvlowat
+>>  	},
+>>  
+>>  	.send_pkt = vhost_transport_send_pkt,
+>> diff --git a/include/linux/virtio_vsock.h b/include/linux/virtio_vsock.h
+>> index ebb3ce63d64d..c82089dee0c8 100644
+>> --- a/include/linux/virtio_vsock.h
+>> +++ b/include/linux/virtio_vsock.h
+>> @@ -256,4 +256,5 @@ void virtio_transport_put_credit(struct virtio_vsock_sock *vvs, u32 credit);
+>>  void virtio_transport_deliver_tap_pkt(struct sk_buff *skb);
+>>  int virtio_transport_purge_skbs(void *vsk, struct sk_buff_head *list);
+>>  int virtio_transport_read_skb(struct vsock_sock *vsk, skb_read_actor_t read_actor);
+>> +int virtio_transport_notify_set_rcvlowat(struct vsock_sock *vsk, int val);
+>>  #endif /* _LINUX_VIRTIO_VSOCK_H */
+>> diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
+>> index af5bab1acee1..8007593a3a93 100644
+>> --- a/net/vmw_vsock/virtio_transport.c
+>> +++ b/net/vmw_vsock/virtio_transport.c
+>> @@ -539,6 +539,7 @@ static struct virtio_transport virtio_transport = {
+>>  		.notify_buffer_size       = virtio_transport_notify_buffer_size,
+>>  
+>>  		.read_skb = virtio_transport_read_skb,
+>> +		.notify_set_rcvlowat      = virtio_transport_notify_set_rcvlowat
+>>  	},
+>>  
+>>  	.send_pkt = virtio_transport_send_pkt,
+>> diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
+>> index f6dc896bf44c..1cb556ad4597 100644
+>> --- a/net/vmw_vsock/virtio_transport_common.c
+>> +++ b/net/vmw_vsock/virtio_transport_common.c
+>> @@ -1684,6 +1684,33 @@ int virtio_transport_read_skb(struct vsock_sock *vsk, skb_read_actor_t recv_acto
+>>  }
+>>  EXPORT_SYMBOL_GPL(virtio_transport_read_skb);
+>>  
+>> +int virtio_transport_notify_set_rcvlowat(struct vsock_sock *vsk, int val)
+>> +{
+>> +	struct virtio_vsock_sock *vvs = vsk->trans;
+>> +	bool send_update;
+>> +
+>> +	spin_lock_bh(&vvs->rx_lock);
+>> +
+>> +	/* If number of available bytes is less than new SO_RCVLOWAT value,
+>> +	 * kick sender to send more data, because sender may sleep in its
+>> +	 * 'send()' syscall waiting for enough space at our side.
+>> +	 */
+>> +	send_update = vvs->rx_bytes < val;
+>> +
+>> +	spin_unlock_bh(&vvs->rx_lock);
+>> +
+>> +	if (send_update) {
+>> +		int err;
+>> +
+>> +		err = virtio_transport_send_credit_update(vsk);
+>> +		if (err < 0)
+>> +			return err;
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+> 
+> 
+> I find it strange that this will send a credit update
+> even if nothing changed since this was called previously.
+> I'm not sure whether this is a problem protocol-wise,
+> but it certainly was not envisioned when the protocol was
+> built. WDYT?
+
+From virtio spec I found:
+
+It is also valid to send a VIRTIO_VSOCK_OP_CREDIT_UPDATE packet without previously receiving a
+VIRTIO_VSOCK_OP_CREDIT_REQUEST packet. This allows communicating updates any time a change
+in buffer space occurs.
+
+So I guess there is no limitations to send such type of packet, e.g. it is not
+required to be a reply for some another packet. Please, correct me if im wrong.
+
+Thanks, Arseniy
+
+> 
+> 
+>> +EXPORT_SYMBOL_GPL(virtio_transport_notify_set_rcvlowat);
+>> +
+>>  MODULE_LICENSE("GPL v2");
+>>  MODULE_AUTHOR("Asias He");
+>>  MODULE_DESCRIPTION("common code for virtio vsock");
+>> diff --git a/net/vmw_vsock/vsock_loopback.c b/net/vmw_vsock/vsock_loopback.c
+>> index 048640167411..9f4b814fbbc7 100644
+>> --- a/net/vmw_vsock/vsock_loopback.c
+>> +++ b/net/vmw_vsock/vsock_loopback.c
+>> @@ -98,6 +98,7 @@ static struct virtio_transport loopback_transport = {
+>>  		.notify_buffer_size       = virtio_transport_notify_buffer_size,
+>>  
+>>  		.read_skb = virtio_transport_read_skb,
+>> +		.notify_set_rcvlowat      = virtio_transport_notify_set_rcvlowat
+>>  	},
+>>  
+>>  	.send_pkt = vsock_loopback_send_pkt,
+>> -- 
+>> 2.25.1
+> 
