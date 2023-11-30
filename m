@@ -2,81 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACBA77FF8AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 18:46:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 237BC7FF85D
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 18:35:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346634AbjK3RqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 12:46:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34596 "EHLO
+        id S232242AbjK3RfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 12:35:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230030AbjK3RqL (ORCPT
+        with ESMTP id S230045AbjK3RfI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 12:46:11 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85A57197
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 09:46:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701366376;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vg7FQUhH1bp/4aBDJKaF0HS+7XR0RmUcrDXUDZg2Qqw=;
-        b=TwHpQCHfigVsEpZBu7ktwJwvZ/PxC/onCpNkMoy8h/PzTzLNx5ZknT6EYmtzWDaWHP9FQL
-        liqaMux2L6ee6hUl9wmSWDktuD69feRUjh46gqpowtLVG5q+HKVNMZJ/f5YjRbz2PgUcNy
-        qJ1WelGyvnDophtpHlXnloKk6sgdLRk=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-617-krVGNWgZO3Wa5q_ZShgR_g-1; Thu, 30 Nov 2023 12:46:14 -0500
-X-MC-Unique: krVGNWgZO3Wa5q_ZShgR_g-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-40b546fd830so9738735e9.3
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 09:46:14 -0800 (PST)
+        Thu, 30 Nov 2023 12:35:08 -0500
+Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 064E4197
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 09:35:14 -0800 (PST)
+Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-5d3eb2d465cso457b3.3
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 09:35:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701365693; x=1701970493; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=JdYGimUU6VCO987XoyzXKLf7pYPiXDG4sSKXnicjavY=;
+        b=SXvXaPRM4EBRHX9Xs6HHqQKqM2s3LbXXI1+xZgzaW1yUG5aDd/rdB2UGvsllKLRieb
+         uKIOgUprftw0xA7bm16GfPVHKMVeg8HMPfVbxQ/SepXiYF8uqxCOGEVozA8/JpH6RurH
+         BGgXsKjsjM4e4fKy2FjCAujyEPdz3ohalg7Z54SK7wECGQSFRS6U8YMcGydvGfM17wOW
+         M/La7EYkrUNmmTaFYgb2YDsFiW5xYJq4cueiY5dhnTY7ONWl6tAAg1L8NMGABnxRPfhB
+         FYaE6yIirHOSS1F4wPuvxRo6zfbZIOO0BD1BgMRC9z8q0cYhgGaS/AkE3hC7DxoOVKfp
+         DSuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701366373; x=1701971173;
-        h=content-transfer-encoding:mime-version:user-agent:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=vg7FQUhH1bp/4aBDJKaF0HS+7XR0RmUcrDXUDZg2Qqw=;
-        b=dyGnUWTWRDSupkOcKpzyzRtvZPDD9jZRyt5pLZq06xRmneQJPWQ2bB7q6+ikE8+Kq+
-         ZprQkA8iSL6nTEkt3xQSzeDBq30ZoE4JrMungSg18TfhIEvS8jBuKlw0L0GeSId1kO8m
-         uz8mDwt/LP+LZSutUiC53UwuUcqWaXA9vZDOJSKYRHjJnd2iINgl/Plp9Iuu/tOcg+6X
-         S5bw9RUGM3avFHvhaFkfBOTIq3DDQ0dIpq9d+PGhqM19GV9jc7uo7ybN73cjK6qXqLPp
-         jzhRvZ0U7UFxH9282rylxgejw2rwobKSrYvXs/SSvYant9k3aHluSoMXMOc4P52jNqoM
-         CoKw==
-X-Gm-Message-State: AOJu0Yy98g/j1W5BCkBYIqtHojT5m1TwfiB0XOrv7oKdef4QgHiJKlr9
-        DZ17rdi1TYBtf+HT9gFo3txgrO1sSdYM93os38+vG6CHtSiLk4JECnhu9SklexoUDP1KVJFE6bS
-        A5xd2/tyrlGvHw9lPKtGaNENeSsMcRyMk
-X-Received: by 2002:a50:f60f:0:b0:54b:fea4:c57f with SMTP id c15-20020a50f60f000000b0054bfea4c57fmr5344edn.25.1701365906752;
-        Thu, 30 Nov 2023 09:38:26 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEpDjeF/sufV646oy68VsCAXZtRSgpL2qetDDSjPs2/Nq5Eagnb89phtm84qwH2mKTnZJMOUQ==
-X-Received: by 2002:a19:f805:0:b0:50b:c6c7:a777 with SMTP id a5-20020a19f805000000b0050bc6c7a777mr21212lff.41.1701365586343;
-        Thu, 30 Nov 2023 09:33:06 -0800 (PST)
-Received: from starship ([5.28.147.32])
-        by smtp.gmail.com with ESMTPSA id cf31-20020a056512281f00b0050bc6bd5231sm212171lfb.253.2023.11.30.09.33.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Nov 2023 09:33:05 -0800 (PST)
-Message-ID: <3c16bb90532fbd2ec95b5a3d42a93bbbf77c4d37.camel@redhat.com>
-Subject: Re: [PATCH v7 04/26] x86/fpu/xstate: Introduce
- XFEATURE_MASK_KERNEL_DYNAMIC xfeature set
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Yang Weijiang <weijiang.yang@intel.com>, seanjc@google.com,
-        pbonzini@redhat.com, dave.hansen@intel.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     peterz@infradead.org, chao.gao@intel.com,
-        rick.p.edgecombe@intel.com, john.allen@amd.com
-Date:   Thu, 30 Nov 2023 19:33:03 +0200
-In-Reply-To: <20231124055330.138870-5-weijiang.yang@intel.com>
-References: <20231124055330.138870-1-weijiang.yang@intel.com>
-         <20231124055330.138870-5-weijiang.yang@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        d=1e100.net; s=20230601; t=1701365693; x=1701970493;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=JdYGimUU6VCO987XoyzXKLf7pYPiXDG4sSKXnicjavY=;
+        b=Wb8FyYJ3Rc40i5JPv2iWTN3GR77rLQ6v8t1bwafmfD1qkHY4C2K9342SuWcHIMD434
+         VLunQRqUSDdpMW5VOEzmceF6dPS8L9b2wqKiixju3OT+1fPZC6DV8M+oFLd8HlHo/GR+
+         m5xuXeRYSZLTXSJiel8G9SKSHDwbwqhjaKI+kLL4RlSn8qb9tJSJNMUuWHmHlmeXYbGO
+         0J18Kq4c79zH+PlF/aVP21/vit+GgIwaC0XwfD4JsbYamgYWM6HeJ13P9RBYE0uMWi9M
+         mLcaxS0MdrlAPSnscM12J5ecn05CCiY1pvngr3RNJO7HUeKpbGuWtWStYD/tklMUInnk
+         dGXg==
+X-Gm-Message-State: AOJu0Yxz7aw/3ZbKw9fzWpbGK+ecG4NGE4bbEjGtQweFSmFq8SL6CQoY
+        aJRGfsdGHepaBU4zylNkEI4q0SOjDnn7Gt4fL9b8/A==
+X-Google-Smtp-Source: AGHT+IEjVoWifL8WXALWoNygf0QQKGdngRfMCZCvHest+QyknhNF0y0KUJMi0Fl2KjGJ48467oMRYebHuj7y9k6pWDk=
+X-Received: by 2002:a81:52cb:0:b0:5c9:12ec:5203 with SMTP id
+ g194-20020a8152cb000000b005c912ec5203mr692214ywb.32.1701365693578; Thu, 30
+ Nov 2023 09:34:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+References: <20231129160533.2827458-1-jorge@foundries.io> <CAPDyKFpg+7W1ODGHw5oXy_wzWA1Qqzg9w_12rhQ8qW4o--6dWg@mail.gmail.com>
+ <ZWiNDgUFF8ug7gZf@trax>
+In-Reply-To: <ZWiNDgUFF8ug7gZf@trax>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 30 Nov 2023 18:34:17 +0100
+Message-ID: <CAPDyKFqBAyF4bzjQR5JnKB3DOvmN58zUuNv0hKw6fXh17CEJnw@mail.gmail.com>
+Subject: Re: [PATCHv2] mmc: rpmb: add quirk MMC_QUIRK_BROKEN_RPMB_RETUNE
+To:     "Jorge Ramirez-Ortiz, Foundries" <jorge@foundries.io>
+Cc:     CLoehle@hyperstone.com, adrian.hunter@intel.com,
+        jinpu.wang@ionos.com, hare@suse.de, beanhuo@micron.com,
+        yangyingliang@huawei.com, asuk4.q@gmail.com, yibin.ding@unisoc.com,
+        victor.shih@genesyslogic.com.tw, marex@denx.de,
+        rafael.beims@toradex.com, robimarko@gmail.com,
+        ricardo@foundries.io, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,88 +73,127 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-11-24 at 00:53 -0500, Yang Weijiang wrote:
-> Define new XFEATURE_MASK_KERNEL_DYNAMIC set including the features can be
+On Thu, 30 Nov 2023 at 14:24, Jorge Ramirez-Ortiz, Foundries
+<jorge@foundries.io> wrote:
+>
+> On 30/11/23 11:34:18, Ulf Hansson wrote:
+> > On Wed, 29 Nov 2023 at 17:05, Jorge Ramirez-Ortiz <jorge@foundries.io> wrote:
+> > >
+> > > On the eMMC SanDisk iNAND 7250 configured with HS200, requesting a
+> > > re-tune before switching to the RPMB partition would randomly cause
+> > > subsequent RPMB requests to fail with EILSEQ:
+> > > * data error -84, tigggered in __mmc_blk_ioctl_cmd()
+> > >
+> > > This commit skips the retune when switching to RPMB.
+> > > Tested over several days with per minute RPMB reads.
+> >
+> > This sounds weird to me and needs more testing/debugging in my
+> > opinion, especially at the host driver level. Perhaps add some new
+> > tests in mmc_test, that does a partition switch to/from any partition
+> > and then run regular I/O again to see if the problem is easier to
+> > reproduce?
+>
+> hi Uffe
+>
+> ok I'll have a look - I have never used this driver before, so if you
+> have anything in the works I'll be glad to integrated and adapt.
+>
+> >
+> > The point is, I wonder what is so special with RPMB here? Note that,
+> > it has been quite common that host drivers/controllers have had issues
+> > with their tuning support, so I would not be surprised if that is the
+> > case here too.
+>
+> Right, it is just that the tuning function for of-arasan is the generic
+> __sdhci_execute_tuning() - only wrapped around arasan DLL reset
+> calls. Hence why I aimed for the card: __sdhci_execute_tuning and ZynqMP
+> are not recent functions or architectures.
 
-I am not sure though that this name is correct, but I don't know if I can
-suggest a better name.
+Well, I suggest we try to get some help from the driver authors then.
 
-> optionally enabled by kernel components, i.e., the features are required by
-> specific kernel components. Currently it's used by KVM to configure guest
-> dedicated fpstate for calculating the xfeature and fpstate storage size etc.
-> 
-> The kernel dynamic xfeatures now only contain XFEATURE_CET_KERNEL, which is
-> supported by host as they're enabled in xsaves/xrstors operating xfeature set
-> (XCR0 | XSS), but the relevant CPU feature, i.e., supervisor shadow stack, is
-> not enabled in host kernel so it can be omitted for normal fpstate by default.
-> 
-> Remove the kernel dynamic feature from fpu_kernel_cfg.default_features so that
-> the bits in xstate_bv and xcomp_bv are cleared and xsaves/xrstors can be
-> optimized by HW for normal fpstate.
-> 
-> Suggested-by: Dave Hansen <dave.hansen@intel.com>
-> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
-> ---
->  arch/x86/include/asm/fpu/xstate.h | 5 ++++-
->  arch/x86/kernel/fpu/xstate.c      | 1 +
->  2 files changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/include/asm/fpu/xstate.h b/arch/x86/include/asm/fpu/xstate.h
-> index 3b4a038d3c57..a212d3851429 100644
-> --- a/arch/x86/include/asm/fpu/xstate.h
-> +++ b/arch/x86/include/asm/fpu/xstate.h
-> @@ -46,9 +46,12 @@
->  #define XFEATURE_MASK_USER_RESTORE	\
->  	(XFEATURE_MASK_USER_SUPPORTED & ~XFEATURE_MASK_PKRU)
->  
-> -/* Features which are dynamically enabled for a process on request */
-> +/* Features which are dynamically enabled per userspace request */
->  #define XFEATURE_MASK_USER_DYNAMIC	XFEATURE_MASK_XTILE_DATA
->  
-> +/* Features which are dynamically enabled per kernel side request */
+>
+>
+> > Certainly I would be surprised if the problem is at
+> > the eMMC card side, but I may be wrong.
+>
+> How do maintainers test the tuning methods? is there anything else for
+> me to do other than forcing a retune with different partitions?
 
-I suggest to explain this a bit better. How about something like that:
+Good question. I think we should have an mmc_test for that, but I
+don't think we have.
 
-"Kernel features that are not enabled by default for all processes, but can
-be still used by some processes, for example to support guest virtualization"
+Unfortunately, I don't have the bandwidth to help with this currently,
+so unless some other can step in and help you are on your own.
 
-But feel free to keep it as is or propose something else. IMHO this will
-be confusing this way or another.
-
-
-Another question: kernel already has a notion of 'independent features'
-which are currently kernel features that are enabled in IA32_XSS but not present in 'fpu_kernel_cfg.max_features'
-
-Currently only 'XFEATURE_LBR' is in this set. These features are saved/restored manually
-from independent buffer (in case of LBRs, perf code cares for this).
-
-Does it make sense to add CET_S to there as well instead of having XFEATURE_MASK_KERNEL_DYNAMIC, and maybe rename the
-'XFEATURE_MASK_INDEPENDENT' to something like 'XFEATURES_THE_KERNEL_DOESNT_CARE_ABOUT'
-(terrible name, but you might think of a better name)
-
-
-> +#define XFEATURE_MASK_KERNEL_DYNAMIC	XFEATURE_MASK_CET_KERNEL
+>
+> >
+> > Kind regards
+> > Uffe
+>
+> For completeness this is the error message - notice that we have a
+> trusted application (fiovb) going through OP-TEE and back to the TEE
+> supplicant issuing an rpmb read of a variable (pretty normal these days,
+> we use it on many different platforms - ST, NXP, AMD/Xilinx, TI..).
+>
+> The issue on this Zynqmp platform is scarily simple to reproduce; you
+> can ignore the OP-TEE trace, it is just the TEE way of reporting that
+> the RPMB read failed.
+>
+> root@uz3cg-dwg-sec:/var/rootdirs/home/fio# fiovb_printenv m4hash
+> [  461.775084] sdhci-arasan ff160000.mmc: __mmc_blk_ioctl_cmd: data error -84
+> E/TC:? 0
+> E/TC:? 0 TA panicked with code 0xffff0000
+> E/LD:  Status of TA 22250a54-0bf1-48fe-8002-7b20f1c9c9b1
+> E/LD:   arch: aarch64
+> E/LD:  region  0: va 0xc0004000 pa 0x7e200000 size 0x002000 flags rw-s (ldelf)
+> E/LD:  region  1: va 0xc0006000 pa 0x7e202000 size 0x008000 flags r-xs (ldelf)
+> E/LD:  region  2: va 0xc000e000 pa 0x7e20a000 size 0x001000 flags rw-s (ldelf)
+> E/LD:  region  3: va 0xc000f000 pa 0x7e20b000 size 0x004000 flags rw-s (ldelf)
+> E/LD:  region  4: va 0xc0013000 pa 0x7e20f000 size 0x001000 flags r--s
+> E/LD:  region  5: va 0xc0014000 pa 0x7e22c000 size 0x005000 flags rw-s (stack)
+> E/LD:  region  6: va 0xc0019000 pa 0x816b31fc8 size 0x001000 flags rw-- (param)
+> E/LD:  region  7: va 0xc001a000 pa 0x816aa1fc8 size 0x002000 flags rw-- (param)
+> E/LD:  region  8: va 0xc006b000 pa 0x00001000 size 0x014000 flags r-xs [0]
+> E/LD:  region  9: va 0xc007f000 pa 0x00015000 size 0x008000 flags rw-s [0]
+> E/LD:   [0] 22250a54-0bf1-48fe-8002-7b20f1c9c9b1 @ 0xc006b000
+> E/LD:  Call stack:
+> E/LD:   0xc006de58
+> E/LD:   0xc006b388
+> E/LD:   0xc006ed40
+> E/LD:   0xc006b624
+> Read persistent value for m4hash failed: Exec format error
+>
+> Also I instrumented sdhci-of-arasan.c to confirm that tuning wasn't failing.
+>
+> diff --git a/drivers/mmc/host/sdhci-of-arasan.c b/drivers/mmc/host/sdhci-of-arasan.c
+> index 681ac4cab8ab..54cde79d2719 100644
+> --- a/drivers/mmc/host/sdhci-of-arasan.c
+> +++ b/drivers/mmc/host/sdhci-of-arasan.c
+> @@ -1123,7 +1123,10 @@ static int arasan_zynqmp_execute_tuning(struct mmc_host *mmc, u32 opcode)
+>
+>         err = sdhci_execute_tuning(mmc, opcode);
+>         if (err)
+> -           return err;
+> +         WARN_ON(1);
 > +
->  /* All currently supported supervisor features */
->  #define XFEATURE_MASK_SUPERVISOR_SUPPORTED (XFEATURE_MASK_PASID | \
->  					    XFEATURE_MASK_CET_USER | \
-> diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
-> index b57d909facca..ba4172172afd 100644
-> --- a/arch/x86/kernel/fpu/xstate.c
-> +++ b/arch/x86/kernel/fpu/xstate.c
-> @@ -824,6 +824,7 @@ void __init fpu__init_system_xstate(unsigned int legacy_size)
->  	/* Clean out dynamic features from default */
->  	fpu_kernel_cfg.default_features = fpu_kernel_cfg.max_features;
->  	fpu_kernel_cfg.default_features &= ~XFEATURE_MASK_USER_DYNAMIC;
-> +	fpu_kernel_cfg.default_features &= ~XFEATURE_MASK_KERNEL_DYNAMIC;
->  
->  	fpu_user_cfg.default_features = fpu_user_cfg.max_features;
->  	fpu_user_cfg.default_features &= ~XFEATURE_MASK_USER_DYNAMIC;
+> + if (host->tuning_err)
+> +         WARN_ON(1);
+>
+>         arasan_zynqmp_dll_reset(host, device_id);
+>
+>
+> Incidentally - not sure if it is intentional or not - I noticed that the
+> function arasan_zynqmp_execute_tuning(..) can not fail which seems wrong
+> (IMO it should also check host->tuning_err and not only err which will
+> always be 0).
+>
+> Do you think this needs fixing even though not related to this problem?
 
+I usually defer to driver authors and Adrian as the SDHCI maintainer
+for questions like these, so again, sorry for not being able to help
+more than this.
 
+[...]
 
-Best regards,
-	Maxim Levitsky
-
-
-
+Kind regards
+Uffe
