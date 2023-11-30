@@ -2,135 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7761E7FE4EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 01:35:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40C5A7FE4F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 01:37:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343994AbjK3Aeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 19:34:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57956 "EHLO
+        id S231597AbjK3AhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 19:37:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343848AbjK3Aej (ORCPT
+        with ESMTP id S229658AbjK3AhO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 19:34:39 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4937A10E3;
-        Wed, 29 Nov 2023 16:34:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701304474; x=1732840474;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=6s4aliN2TmDzt5CeaX+F72a2OR8tCz3kRRQsDMwH6Bo=;
-  b=TsawVPidHAASCFy/97WO9se52Y9abW5/FgpDWTIU1X8JFZaGED38PdTP
-   pcR2yY7ufi+JC5gjyJ2AILsN0NUjgTvkQWYm8hUR+JeZVX8SgLloV15bu
-   yRgAq2h2xBDMaUWtfu4t6cCsqv7ca4zt8nItOKQYD1dYPWhDM/o5m0+PO
-   4qSy5YvLobvqH1AOqEVX4jEj4iZ4Gy5g2iIsGNWuhTqIIsf2kgSun8j7l
-   Z1jl6G4tloI0mZ/Dd0dBu2UX3Yc+4wY4PGqzR+93RXjy0MaQhOddDbf3T
-   tkeADCIKs4DNFnmPTrr/UiED7L6YwQvY+VZPYEUgmtu6QWAFrTUjQrY51
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="392990697"
-X-IronPort-AV: E=Sophos;i="6.04,237,1695711600"; 
-   d="scan'208";a="392990697"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 16:34:29 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="762499593"
-X-IronPort-AV: E=Sophos;i="6.04,237,1695711600"; 
-   d="scan'208";a="762499593"
-Received: from agluck-desk3.sc.intel.com ([172.25.222.74])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 16:34:28 -0800
-From:   Tony Luck <tony.luck@intel.com>
-To:     Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Peter Newman <peternewman@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <skhan@linuxfoundation.org>, x86@kernel.org
-Cc:     Shaopeng Tan <tan.shaopeng@fujitsu.com>,
-        James Morse <james.morse@arm.com>,
-        Jamie Iles <quic_jiles@quicinc.com>,
-        Babu Moger <babu.moger@amd.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        patches@lists.linux.dev, Tony Luck <tony.luck@intel.com>,
-        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>
-Subject: [PATCH v12 8/8] x86/resctrl: Update documentation with Sub-NUMA cluster changes
-Date:   Wed, 29 Nov 2023 16:34:18 -0800
-Message-ID: <20231130003418.89964-9-tony.luck@intel.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231130003418.89964-1-tony.luck@intel.com>
-References: <20231109230915.73600-1-tony.luck@intel.com>
- <20231130003418.89964-1-tony.luck@intel.com>
+        Wed, 29 Nov 2023 19:37:14 -0500
+Received: from smtp-fw-2101.amazon.com (smtp-fw-2101.amazon.com [72.21.196.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37A81BC;
+        Wed, 29 Nov 2023 16:37:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1701304640; x=1732840640;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=gZHtxMLuq2rTH5TQ4Whbm6hr8hi2bU/215bnbJKdOTo=;
+  b=SNlQhdaRCh9tMWNatxvpPK6iyuIXqVlqYtTwrW4gmC/10NXaWYghZtcc
+   2aJcTh0c4dQox6s/5yp/mZlNnnUorsEvCC4shbqUhZShrpFgANiBrPT08
+   xSC1JNER7CAihcYvf0pvkyYpx2GIQXE93f/MSqOmSoNtJHc4ImG4CZtBd
+   M=;
+X-IronPort-AV: E=Sophos;i="6.04,237,1695686400"; 
+   d="scan'208";a="365700991"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-iad-1a-m6i4x-9fe6ad2f.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-2101.iad2.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 00:37:19 +0000
+Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (iad7-ws-svc-p70-lb3-vlan3.iad.amazon.com [10.32.235.38])
+        by email-inbound-relay-iad-1a-m6i4x-9fe6ad2f.us-east-1.amazon.com (Postfix) with ESMTPS id 72524803F3;
+        Thu, 30 Nov 2023 00:37:18 +0000 (UTC)
+Received: from EX19MTAUWB002.ant.amazon.com [10.0.38.20:44372]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.54.99:2525] with esmtp (Farcaster)
+ id 28d82deb-a504-4c09-95be-bbb50a6ee114; Thu, 30 Nov 2023 00:37:17 +0000 (UTC)
+X-Farcaster-Flow-ID: 28d82deb-a504-4c09-95be-bbb50a6ee114
+Received: from EX19D010UWA004.ant.amazon.com (10.13.138.204) by
+ EX19MTAUWB002.ant.amazon.com (10.250.64.231) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Thu, 30 Nov 2023 00:37:17 +0000
+Received: from dev-dsk-kamatam-2b-b66a5860.us-west-2.amazon.com (10.169.6.191)
+ by EX19D010UWA004.ant.amazon.com (10.13.138.204) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Thu, 30 Nov 2023 00:37:17 +0000
+From:   Munehisa Kamata <kamatam@amazon.com>
+To:     <linux-fsdevel@vger.kernel.org>,
+        <linux-security-module@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <akpm@linux-foundation.org>,
+        "Munehisa Kamata" <kamatam@amazon.com>
+Subject: [PATCH] proc: Update inode upon changing task security attribute
+Date:   Thu, 30 Nov 2023 00:37:04 +0000
+Message-ID: <20231130003704.31928-1-kamatam@amazon.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.169.6.191]
+X-ClientProxiedBy: EX19D044UWB003.ant.amazon.com (10.13.139.168) To
+ EX19D010UWA004.ant.amazon.com (10.13.138.204)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With Sub-NUMA Cluster mode enabled the scope of monitoring resources is
-per-NODE instead of per-L3 cache. Suffixes of directories with "L3" in
-their name refer to Sub-NUMA nodes instead of L3 cache ids.
+I'm not clear whether VFS is a better (or worse) place[1] to fix the
+problem described below and would like to hear opinion.
 
-Users should be aware that SNC mode also affects the amount of L3 cache
-available for allocation within each SNC node.
+If the /proc/[pid] directory is bind-mounted on a system with Smack
+enabled, and if the task updates its current security attribute, the task
+may lose access to files in its own /proc/[pid] through the mountpoint.
 
-Signed-off-by: Tony Luck <tony.luck@intel.com>
-Reviewed-by: Peter Newman <peternewman@google.com>
-Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
-Reviewed-by: Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>
-Tested-by: Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>
+ $ sudo capsh --drop=cap_mac_override --
+ # mkdir -p dir
+ # mount --bind /proc/$$ dir
+ # echo AAA > /proc/$$/task/current		# assuming built-in echo
+ # cat /proc/$$/task/current			# revalidate
+ AAA
+ # echo BBB > dir/attr/current
+ # cat dir/attr/current
+ cat: dir/attr/current: Permission denied
+ # ls dir/
+ ls: cannot access dir/: Permission denied
+ # cat /proc/$$/attr/current			# revalidate
+ BBB
+ # cat dir/attr/current
+ BBB
+ # echo CCC > /proc/$$/attr/current
+ # cat dir/attr/current
+ cat: dir/attr/current: Permission denied
+
+This happens because path lookup doesn't revalidate the dentry of the
+/proc/[pid] when traversing the filesystem boundary, so the inode security
+blob of the /proc/[pid] doesn't get updated with the new task security
+attribute. Then, this may lead security modules to deny an access to the
+directory. Looking at the code[2] and the /proc/pid/attr/current entry in
+proc man page, seems like the same could happen with SELinux. Though, I
+didn't find relevant reports.
+
+The steps above are quite artificial. I actually encountered such an
+unexpected denial of access with an in-house application sandbox
+framework; each app has its own dedicated filesystem tree where the
+process's /proc/[pid] is bind-mounted to and the app enters into via
+chroot.
+
+With this patch, writing to /proc/[pid]/attr/current (and its per-security
+module variant) updates the inode security blob of /proc/[pid] or
+/proc/[pid]/task/[tid] (when pid != tid) with the new attribute.
+
+[1] https://lkml.kernel.org/linux-fsdevel/4A2D15AF.8090000@sun.com/
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/security/selinux/hooks.c#n4220
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Munehisa Kamata <kamatam@amazon.com>
 ---
- Documentation/arch/x86/resctrl.rst | 25 +++++++++++++++++++++----
- 1 file changed, 21 insertions(+), 4 deletions(-)
+ fs/proc/base.c | 23 ++++++++++++++++++++---
+ 1 file changed, 20 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/arch/x86/resctrl.rst b/Documentation/arch/x86/resctrl.rst
-index a6279df64a9d..49ff789db1d8 100644
---- a/Documentation/arch/x86/resctrl.rst
-+++ b/Documentation/arch/x86/resctrl.rst
-@@ -366,10 +366,10 @@ When control is enabled all CTRL_MON groups will also contain:
- When monitoring is enabled all MON groups will also contain:
+diff --git a/fs/proc/base.c b/fs/proc/base.c
+index dd31e3b6bf77..bdb7bea53475 100644
+--- a/fs/proc/base.c
++++ b/fs/proc/base.c
+@@ -2741,6 +2741,7 @@ static ssize_t proc_pid_attr_write(struct file * file, const char __user * buf,
+ {
+ 	struct inode * inode = file_inode(file);
+ 	struct task_struct *task;
++	const char *name = file->f_path.dentry->d_name.name;
+ 	void *page;
+ 	int rv;
  
- "mon_data":
--	This contains a set of files organized by L3 domain and by
--	RDT event. E.g. on a system with two L3 domains there will
--	be subdirectories "mon_L3_00" and "mon_L3_01".	Each of these
--	directories have one file per event (e.g. "llc_occupancy",
-+	This contains a set of files organized by L3 domain or by NUMA
-+	node (depending on whether Sub-NUMA Cluster (SNC) mode is disabled
-+	or enabled respectively) and by RDT event.  Each of these
-+	directories has one file per event (e.g. "llc_occupancy",
- 	"mbm_total_bytes", and "mbm_local_bytes"). In a MON group these
- 	files provide a read out of the current value of the event for
- 	all tasks in the group. In CTRL_MON groups these files provide
-@@ -478,6 +478,23 @@ if non-contiguous 1s value is supported. On a system with a 20-bit mask
- each bit represents 5% of the capacity of the cache. You could partition
- the cache into four equal parts with masks: 0x1f, 0x3e0, 0x7c00, 0xf8000.
+@@ -2784,10 +2785,26 @@ static ssize_t proc_pid_attr_write(struct file * file, const char __user * buf,
+ 	if (rv < 0)
+ 		goto out_free;
  
-+Notes on Sub-NUMA Cluster mode
-+==============================
-+When SNC mode is enabled Linux may load balance tasks between Sub-NUMA
-+nodes much more readily than between regular NUMA nodes since the CPUs
-+on Sub-NUMA nodes share the same L3 cache and the system may report
-+the NUMA distance between Sub-NUMA nodes with a lower value than used
-+for regular NUMA nodes.  Users who do not bind tasks to the CPUs of a
-+specific Sub-NUMA node must read the "llc_occupancy", "mbm_total_bytes",
-+and "mbm_local_bytes" for all Sub-NUMA nodes where the tasks may execute
-+to get the full view of traffic for which the tasks were the source.
+-	rv = security_setprocattr(PROC_I(inode)->op.lsm,
+-				  file->f_path.dentry->d_name.name, page,
+-				  count);
++	rv = security_setprocattr(PROC_I(inode)->op.lsm, name, page, count);
+ 	mutex_unlock(&current->signal->cred_guard_mutex);
 +
-+The cache allocation feature still provides the same number of
-+bits in a mask to control allocation into the L3 cache, but each
-+of those ways has its capacity reduced because the cache is divided
-+between the SNC nodes. The values reported in the resctrl
-+"size" files are adjusted accordingly.
++	/*
++	 *  Update the inode security blob in advance if the task's security
++	 *  attribute was updated
++	 */
++	if (rv > 0 && !strcmp(name, "current")) {
++		struct pid *pid;
++		struct proc_inode *cur, *ei;
 +
- Memory bandwidth Allocation and monitoring
- ==========================================
- 
++		rcu_read_lock();
++		pid = get_task_pid(current, PIDTYPE_PID);
++		hlist_for_each_entry(cur, &pid->inodes, sibling_inodes)
++			ei = cur;
++		put_pid(pid);
++		pid_update_inode(current, &ei->vfs_inode);
++		rcu_read_unlock();
++	}
++
+ out_free:
+ 	kfree(page);
+ out:
 -- 
-2.41.0
+2.40.1
 
