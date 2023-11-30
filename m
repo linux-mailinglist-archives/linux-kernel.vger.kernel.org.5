@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA2D07FE6A1
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 03:19:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 762B87FE6A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 03:19:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344133AbjK3CS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 21:18:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38182 "EHLO
+        id S1343936AbjK3CTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 21:19:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229658AbjK3CSz (ORCPT
+        with ESMTP id S1344146AbjK3CS6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 21:18:55 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98880D5C
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 18:19:01 -0800 (PST)
+        Wed, 29 Nov 2023 21:18:58 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AC93D5C
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 18:19:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701310741; x=1732846741;
+  t=1701310744; x=1732846744;
   h=date:from:to:cc:subject:message-id:mime-version;
-  bh=byRkLg7cLRaRvq6OSMZrA87/Agu7TXJbj07YZC1yHzI=;
-  b=T3NC5RWCQHP6vg13gxyPyGyGyCXGfmKSXhUJPrab0CWlNMxOqaHq4qoa
-   whDtXgwgqltLpNw+c+pflz2fDnZjliVSf3v9mKVGNGfumuOcuNll9Z2gG
-   MhxuAJYnxmhB1XWNG+6vmeY/l92uIi/8q1Fd++gDXRm8pO2WG491IEZry
-   vpjJy/5MvXWd/6nKegzvOyY/JtNeO0b//WEeTFzPIXg7jILwTyxAaYPqB
-   aKZiMafe7rAU7K1EDC6PjBgOXvozf/dN0BpTECPBmDx+E/juJ7zisCxOz
-   13Z/rY84i1U5OgkLpQu8NaRWgc8Igu4FUb71e+VhXHBhAp5/ebfrBGY8O
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="378281155"
+  bh=Pl0zM653ZYuAq9oghChWbz41v4bjQe3jljVDgnRIUU8=;
+  b=awlwEwq6S1QHPZ91rZDMIaLRcSnYAS9MRwUpVxIlm33P/z/2PgvS8Gfp
+   c5Rz6SuWExE/jTDU6wRiGhw9SnECjAvE0nQT8S8/5v3WpI+W+eOF7elrY
+   du1eM1iJqdJbmG0x/98y2S3SxjcF0n6z03dtlCl14QlpIAUnUEOX53NpR
+   4X/1TVSPGNrE0TS0UluzvJC4IwN1mD1NBfyRWGJbkP7k74VkQfWzp1N7g
+   Kfbg0SVPzXjTfT3cLxXrAeaj1R6wuOMoonBQ6t9tY/KhyoYaj6qxiyJ+o
+   t/CxPC9SMRYPhTluUjQHh++C3GzqEZpPG0O/8AYkIolbZMUJpWCpXzeNa
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="392121459"
 X-IronPort-AV: E=Sophos;i="6.04,237,1695711600"; 
-   d="scan'208";a="378281155"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 18:19:01 -0800
+   d="scan'208";a="392121459"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 18:19:03 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="887069379"
 X-IronPort-AV: E=Sophos;i="6.04,237,1695711600"; 
-   d="scan'208";a="887069379"
+   d="scan'208";a="10591917"
 Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga002.fm.intel.com with ESMTP; 29 Nov 2023 18:18:59 -0800
+  by orviesa002.jf.intel.com with ESMTP; 29 Nov 2023 18:19:02 -0800
 Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1r8Wdl-0001Ez-0i;
-        Thu, 30 Nov 2023 02:18:57 +0000
-Date:   Thu, 30 Nov 2023 10:18:50 +0800
+        id 1r8Wdn-0001F8-1t;
+        Thu, 30 Nov 2023 02:18:59 +0000
+Date:   Thu, 30 Nov 2023 10:18:52 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Harry Wentland <harry.wentland@amd.com>
 Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Huacai Chen <chenhuacai@kernel.org>
-Subject: kernel/kprobes.c:145: warning: Function parameter or member 'c' not
- described in '__get_insn_slot'
-Message-ID: <202311300504.zYicjFKi-lkp@intel.com>
+        Alex Deucher <alexander.deucher@amd.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
+Subject: drivers/gpu/drm/amd/amdgpu/../display/dc/dc_dmub_srv.c:721:64:
+ sparse: sparse: cast truncates bits from constant value (44 becomes 4)
+Message-ID: <202311300627.JIslfWKU-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -65,95 +65,115 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 head:   3b47bc037bd44f142ac09848e8d3ecccc726be99
-commit: 6d4cc40fb5f58147defc6c0e9d86e6232fe31616 LoongArch: Add kprobes support
+commit: c186c13e65286a46b61f5c295f9f9c65c75c926e drm/amd/display: Drop unnecessary DCN guards
 date:   9 months ago
-config: loongarch-randconfig-r034-20230511 (https://download.01.org/0day-ci/archive/20231130/202311300504.zYicjFKi-lkp@intel.com/config)
-compiler: loongarch64-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20231130/202311300504.zYicjFKi-lkp@intel.com/reproduce)
+config: sparc64-randconfig-r036-20230708 (https://download.01.org/0day-ci/archive/20231130/202311300627.JIslfWKU-lkp@intel.com/config)
+compiler: sparc64-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20231130/202311300627.JIslfWKU-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311300504.zYicjFKi-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311300627.JIslfWKU-lkp@intel.com/
 
-All warnings (new ones prefixed by >>):
+sparse warnings: (new ones prefixed by >>)
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dc_dmub_srv.c: note: in included file (through include/linux/mmzone.h, include/linux/gfp.h, include/linux/slab.h, ...):
+   include/linux/page-flags.h:246:46: sparse: sparse: self-comparison always evaluates to false
+>> drivers/gpu/drm/amd/amdgpu/../display/dc/dc_dmub_srv.c:721:64: sparse: sparse: cast truncates bits from constant value (44 becomes 4)
 
->> kernel/kprobes.c:145: warning: Function parameter or member 'c' not described in '__get_insn_slot'
+vim +721 drivers/gpu/drm/amd/amdgpu/../display/dc/dc_dmub_srv.c
 
+85f4bc0c333cee Alvin Lee        2022-05-02  694  
+85f4bc0c333cee Alvin Lee        2022-05-02  695  /**
+6be153dc8c8840 Rodrigo Siqueira 2022-10-20  696   * dc_dmub_setup_subvp_dmub_command - Populate the DMCUB SubVP command
+85f4bc0c333cee Alvin Lee        2022-05-02  697   *
+6be153dc8c8840 Rodrigo Siqueira 2022-10-20  698   * @dc: [in] current dc state
+6be153dc8c8840 Rodrigo Siqueira 2022-10-20  699   * @context: [in] new dc state
+01543dcf99bdab Arthur Grillo    2023-02-13  700   * @enable: [in] if true enables the pipes population
+85f4bc0c333cee Alvin Lee        2022-05-02  701   *
+6be153dc8c8840 Rodrigo Siqueira 2022-10-20  702   * This function loops through each pipe and populates the DMUB SubVP CMD info
+6be153dc8c8840 Rodrigo Siqueira 2022-10-20  703   * based on the pipe (e.g. SubVP, VBLANK).
+85f4bc0c333cee Alvin Lee        2022-05-02  704   */
+85f4bc0c333cee Alvin Lee        2022-05-02  705  void dc_dmub_setup_subvp_dmub_command(struct dc *dc,
+85f4bc0c333cee Alvin Lee        2022-05-02  706  		struct dc_state *context,
+85f4bc0c333cee Alvin Lee        2022-05-02  707  		bool enable)
+85f4bc0c333cee Alvin Lee        2022-05-02  708  {
+85f4bc0c333cee Alvin Lee        2022-05-02  709  	uint8_t cmd_pipe_index = 0;
+85f4bc0c333cee Alvin Lee        2022-05-02  710  	uint32_t i, pipe_idx;
+85f4bc0c333cee Alvin Lee        2022-05-02  711  	uint8_t subvp_count = 0;
+85f4bc0c333cee Alvin Lee        2022-05-02  712  	union dmub_rb_cmd cmd;
+85f4bc0c333cee Alvin Lee        2022-05-02  713  	struct pipe_ctx *subvp_pipes[2];
+85f4bc0c333cee Alvin Lee        2022-05-02  714  	uint32_t wm_val_refclk = 0;
+85f4bc0c333cee Alvin Lee        2022-05-02  715  
+85f4bc0c333cee Alvin Lee        2022-05-02  716  	memset(&cmd, 0, sizeof(cmd));
+85f4bc0c333cee Alvin Lee        2022-05-02  717  	// FW command for SUBVP
+85f4bc0c333cee Alvin Lee        2022-05-02  718  	cmd.fw_assisted_mclk_switch_v2.header.type = DMUB_CMD__FW_ASSISTED_MCLK_SWITCH;
+85f4bc0c333cee Alvin Lee        2022-05-02  719  	cmd.fw_assisted_mclk_switch_v2.header.sub_type = DMUB_CMD__HANDLE_SUBVP_CMD;
+85f4bc0c333cee Alvin Lee        2022-05-02  720  	cmd.fw_assisted_mclk_switch_v2.header.payload_bytes =
+85f4bc0c333cee Alvin Lee        2022-05-02 @721  			sizeof(cmd.fw_assisted_mclk_switch_v2) - sizeof(cmd.fw_assisted_mclk_switch_v2.header);
+85f4bc0c333cee Alvin Lee        2022-05-02  722  
+85f4bc0c333cee Alvin Lee        2022-05-02  723  	for (i = 0; i < dc->res_pool->pipe_count; i++) {
+85f4bc0c333cee Alvin Lee        2022-05-02  724  		struct pipe_ctx *pipe = &context->res_ctx.pipe_ctx[i];
+85f4bc0c333cee Alvin Lee        2022-05-02  725  
+85f4bc0c333cee Alvin Lee        2022-05-02  726  		if (!pipe->stream)
+85f4bc0c333cee Alvin Lee        2022-05-02  727  			continue;
+85f4bc0c333cee Alvin Lee        2022-05-02  728  
+b0d6de32e30c63 Alvin Lee        2022-09-01  729  		/* For SubVP pipe count, only count the top most (ODM / MPC) pipe
+b0d6de32e30c63 Alvin Lee        2022-09-01  730  		 */
+b0d6de32e30c63 Alvin Lee        2022-09-01  731  		if (pipe->plane_state && !pipe->top_pipe && !pipe->prev_odm_pipe &&
+85f4bc0c333cee Alvin Lee        2022-05-02  732  				pipe->stream->mall_stream_config.type == SUBVP_MAIN)
+85f4bc0c333cee Alvin Lee        2022-05-02  733  			subvp_pipes[subvp_count++] = pipe;
+85f4bc0c333cee Alvin Lee        2022-05-02  734  	}
+85f4bc0c333cee Alvin Lee        2022-05-02  735  
+85f4bc0c333cee Alvin Lee        2022-05-02  736  	if (enable) {
+85f4bc0c333cee Alvin Lee        2022-05-02  737  		// For each pipe that is a "main" SUBVP pipe, fill in pipe data for DMUB SUBVP cmd
+85f4bc0c333cee Alvin Lee        2022-05-02  738  		for (i = 0, pipe_idx = 0; i < dc->res_pool->pipe_count; i++) {
+85f4bc0c333cee Alvin Lee        2022-05-02  739  			struct pipe_ctx *pipe = &context->res_ctx.pipe_ctx[i];
+85f4bc0c333cee Alvin Lee        2022-05-02  740  
+85f4bc0c333cee Alvin Lee        2022-05-02  741  			if (!pipe->stream)
+85f4bc0c333cee Alvin Lee        2022-05-02  742  				continue;
+85f4bc0c333cee Alvin Lee        2022-05-02  743  
+b0d6de32e30c63 Alvin Lee        2022-09-01  744  			/* When populating subvp cmd info, only pass in the top most (ODM / MPC) pipe.
+b0d6de32e30c63 Alvin Lee        2022-09-01  745  			 * Any ODM or MPC splits being used in SubVP will be handled internally in
+b0d6de32e30c63 Alvin Lee        2022-09-01  746  			 * populate_subvp_cmd_pipe_info
+b0d6de32e30c63 Alvin Lee        2022-09-01  747  			 */
+85f4bc0c333cee Alvin Lee        2022-05-02  748  			if (pipe->plane_state && pipe->stream->mall_stream_config.paired_stream &&
+b0d6de32e30c63 Alvin Lee        2022-09-01  749  					!pipe->top_pipe && !pipe->prev_odm_pipe &&
+85f4bc0c333cee Alvin Lee        2022-05-02  750  					pipe->stream->mall_stream_config.type == SUBVP_MAIN) {
+85f4bc0c333cee Alvin Lee        2022-05-02  751  				populate_subvp_cmd_pipe_info(dc, context, &cmd, pipe, cmd_pipe_index++);
+9bb10b7aaec3b6 Ayush Gupta      2023-02-10  752  			} else if (pipe->plane_state && pipe->stream->mall_stream_config.type == SUBVP_NONE &&
+9bb10b7aaec3b6 Ayush Gupta      2023-02-10  753  				    !pipe->top_pipe && !pipe->prev_odm_pipe) {
+85f4bc0c333cee Alvin Lee        2022-05-02  754  				// Don't need to check for ActiveDRAMClockChangeMargin < 0, not valid in cases where
+85f4bc0c333cee Alvin Lee        2022-05-02  755  				// we run through DML without calculating "natural" P-state support
+85f4bc0c333cee Alvin Lee        2022-05-02  756  				populate_subvp_cmd_vblank_pipe_info(dc, context, &cmd, pipe, cmd_pipe_index++);
+85f4bc0c333cee Alvin Lee        2022-05-02  757  
+85f4bc0c333cee Alvin Lee        2022-05-02  758  			}
+85f4bc0c333cee Alvin Lee        2022-05-02  759  			pipe_idx++;
+85f4bc0c333cee Alvin Lee        2022-05-02  760  		}
+85f4bc0c333cee Alvin Lee        2022-05-02  761  		if (subvp_count == 2) {
+85f4bc0c333cee Alvin Lee        2022-05-02  762  			update_subvp_prefetch_end_to_mall_start(dc, context, &cmd, subvp_pipes);
+85f4bc0c333cee Alvin Lee        2022-05-02  763  		}
+85f4bc0c333cee Alvin Lee        2022-05-02  764  		cmd.fw_assisted_mclk_switch_v2.config_data.pstate_allow_width_us = dc->caps.subvp_pstate_allow_width_us;
+85f4bc0c333cee Alvin Lee        2022-05-02  765  		cmd.fw_assisted_mclk_switch_v2.config_data.vertical_int_margin_us = dc->caps.subvp_vertical_int_margin_us;
+85f4bc0c333cee Alvin Lee        2022-05-02  766  
+85f4bc0c333cee Alvin Lee        2022-05-02  767  		// Store the original watermark value for this SubVP config so we can lower it when the
+85f4bc0c333cee Alvin Lee        2022-05-02  768  		// MCLK switch starts
+85f4bc0c333cee Alvin Lee        2022-05-02  769  		wm_val_refclk = context->bw_ctx.bw.dcn.watermarks.a.cstate_pstate.pstate_change_ns *
+9799702360d51a Alvin Lee        2022-06-29  770  				(dc->res_pool->ref_clocks.dchub_ref_clock_inKhz / 1000) / 1000;
+85f4bc0c333cee Alvin Lee        2022-05-02  771  
+85f4bc0c333cee Alvin Lee        2022-05-02  772  		cmd.fw_assisted_mclk_switch_v2.config_data.watermark_a_cache = wm_val_refclk < 0xFFFF ? wm_val_refclk : 0xFFFF;
+85f4bc0c333cee Alvin Lee        2022-05-02  773  	}
+85f4bc0c333cee Alvin Lee        2022-05-02  774  	dc_dmub_srv_cmd_queue(dc->ctx->dmub_srv, &cmd);
+85f4bc0c333cee Alvin Lee        2022-05-02  775  	dc_dmub_srv_cmd_execute(dc->ctx->dmub_srv);
+85f4bc0c333cee Alvin Lee        2022-05-02  776  	dc_dmub_srv_wait_idle(dc->ctx->dmub_srv);
+85f4bc0c333cee Alvin Lee        2022-05-02  777  }
+85f4bc0c333cee Alvin Lee        2022-05-02  778  
 
-vim +145 kernel/kprobes.c
+:::::: The code at line 721 was first introduced by commit
+:::::: 85f4bc0c333ceed24cbc9f69a2a77fab1ae3d4d1 drm/amd/display: Add SubVP required code
 
-b4c6c34a530b4d1 Masami Hiramatsu           2006-12-06  139  
-9ec4b1f356b3bad Ananth N Mavinakayanahalli 2005-06-27  140  /**
-129415607845d4d Masami Hiramatsu           2009-01-06  141   * __get_insn_slot() - Find a slot on an executable page for an instruction.
-9ec4b1f356b3bad Ananth N Mavinakayanahalli 2005-06-27  142   * We allocate an executable page if there's no room on existing ones.
-9ec4b1f356b3bad Ananth N Mavinakayanahalli 2005-06-27  143   */
-55479f64756fc50 Masami Hiramatsu           2014-04-17  144  kprobe_opcode_t *__get_insn_slot(struct kprobe_insn_cache *c)
-9ec4b1f356b3bad Ananth N Mavinakayanahalli 2005-06-27 @145  {
-9ec4b1f356b3bad Ananth N Mavinakayanahalli 2005-06-27  146  	struct kprobe_insn_page *kip;
-c802d64a356b5cf Heiko Carstens             2013-09-11  147  	kprobe_opcode_t *slot = NULL;
-9ec4b1f356b3bad Ananth N Mavinakayanahalli 2005-06-27  148  
-5b485629ba0d5d0 Masami Hiramatsu           2017-01-08  149  	/* Since the slot array is not protected by rcu, we need a mutex */
-c802d64a356b5cf Heiko Carstens             2013-09-11  150  	mutex_lock(&c->mutex);
-b4c6c34a530b4d1 Masami Hiramatsu           2006-12-06  151   retry:
-5b485629ba0d5d0 Masami Hiramatsu           2017-01-08  152  	rcu_read_lock();
-5b485629ba0d5d0 Masami Hiramatsu           2017-01-08  153  	list_for_each_entry_rcu(kip, &c->pages, list) {
-4610ee1d3638fa0 Masami Hiramatsu           2010-02-25  154  		if (kip->nused < slots_per_page(c)) {
-9ec4b1f356b3bad Ananth N Mavinakayanahalli 2005-06-27  155  			int i;
-223a76b268c9cfa Masami Hiramatsu           2021-09-14  156  
-4610ee1d3638fa0 Masami Hiramatsu           2010-02-25  157  			for (i = 0; i < slots_per_page(c); i++) {
-ab40c5c6b6861ee Masami Hiramatsu           2007-01-30  158  				if (kip->slot_used[i] == SLOT_CLEAN) {
-ab40c5c6b6861ee Masami Hiramatsu           2007-01-30  159  					kip->slot_used[i] = SLOT_USED;
-9ec4b1f356b3bad Ananth N Mavinakayanahalli 2005-06-27  160  					kip->nused++;
-c802d64a356b5cf Heiko Carstens             2013-09-11  161  					slot = kip->insns + (i * c->insn_size);
-5b485629ba0d5d0 Masami Hiramatsu           2017-01-08  162  					rcu_read_unlock();
-c802d64a356b5cf Heiko Carstens             2013-09-11  163  					goto out;
-9ec4b1f356b3bad Ananth N Mavinakayanahalli 2005-06-27  164  				}
-9ec4b1f356b3bad Ananth N Mavinakayanahalli 2005-06-27  165  			}
-4610ee1d3638fa0 Masami Hiramatsu           2010-02-25  166  			/* kip->nused is broken. Fix it. */
-4610ee1d3638fa0 Masami Hiramatsu           2010-02-25  167  			kip->nused = slots_per_page(c);
-4610ee1d3638fa0 Masami Hiramatsu           2010-02-25  168  			WARN_ON(1);
-9ec4b1f356b3bad Ananth N Mavinakayanahalli 2005-06-27  169  		}
-9ec4b1f356b3bad Ananth N Mavinakayanahalli 2005-06-27  170  	}
-5b485629ba0d5d0 Masami Hiramatsu           2017-01-08  171  	rcu_read_unlock();
-9ec4b1f356b3bad Ananth N Mavinakayanahalli 2005-06-27  172  
-b4c6c34a530b4d1 Masami Hiramatsu           2006-12-06  173  	/* If there are any garbage slots, collect it and try again. */
-4610ee1d3638fa0 Masami Hiramatsu           2010-02-25  174  	if (c->nr_garbage && collect_garbage_slots(c) == 0)
-b4c6c34a530b4d1 Masami Hiramatsu           2006-12-06  175  		goto retry;
-4610ee1d3638fa0 Masami Hiramatsu           2010-02-25  176  
-4610ee1d3638fa0 Masami Hiramatsu           2010-02-25  177  	/* All out of space.  Need to allocate a new page. */
-4610ee1d3638fa0 Masami Hiramatsu           2010-02-25  178  	kip = kmalloc(KPROBE_INSN_PAGE_SIZE(slots_per_page(c)), GFP_KERNEL);
-6f716acd5fa20ae Christoph Hellwig          2007-05-08  179  	if (!kip)
-c802d64a356b5cf Heiko Carstens             2013-09-11  180  		goto out;
-9ec4b1f356b3bad Ananth N Mavinakayanahalli 2005-06-27  181  
-af96397de860023 Heiko Carstens             2013-09-11  182  	kip->insns = c->alloc();
-9ec4b1f356b3bad Ananth N Mavinakayanahalli 2005-06-27  183  	if (!kip->insns) {
-9ec4b1f356b3bad Ananth N Mavinakayanahalli 2005-06-27  184  		kfree(kip);
-c802d64a356b5cf Heiko Carstens             2013-09-11  185  		goto out;
-9ec4b1f356b3bad Ananth N Mavinakayanahalli 2005-06-27  186  	}
-c5cb5a2d8d7dc87 Masami Hiramatsu           2009-06-30  187  	INIT_LIST_HEAD(&kip->list);
-4610ee1d3638fa0 Masami Hiramatsu           2010-02-25  188  	memset(kip->slot_used, SLOT_CLEAN, slots_per_page(c));
-ab40c5c6b6861ee Masami Hiramatsu           2007-01-30  189  	kip->slot_used[0] = SLOT_USED;
-9ec4b1f356b3bad Ananth N Mavinakayanahalli 2005-06-27  190  	kip->nused = 1;
-b4c6c34a530b4d1 Masami Hiramatsu           2006-12-06  191  	kip->ngarbage = 0;
-af96397de860023 Heiko Carstens             2013-09-11  192  	kip->cache = c;
-5b485629ba0d5d0 Masami Hiramatsu           2017-01-08  193  	list_add_rcu(&kip->list, &c->pages);
-c802d64a356b5cf Heiko Carstens             2013-09-11  194  	slot = kip->insns;
-69e49088692899d Adrian Hunter              2020-05-12  195  
-69e49088692899d Adrian Hunter              2020-05-12  196  	/* Record the perf ksymbol register event after adding the page */
-69e49088692899d Adrian Hunter              2020-05-12  197  	perf_event_ksymbol(PERF_RECORD_KSYMBOL_TYPE_OOL, (unsigned long)kip->insns,
-69e49088692899d Adrian Hunter              2020-05-12  198  			   PAGE_SIZE, false, c->sym);
-c802d64a356b5cf Heiko Carstens             2013-09-11  199  out:
-c802d64a356b5cf Heiko Carstens             2013-09-11  200  	mutex_unlock(&c->mutex);
-c802d64a356b5cf Heiko Carstens             2013-09-11  201  	return slot;
-129415607845d4d Masami Hiramatsu           2009-01-06  202  }
-129415607845d4d Masami Hiramatsu           2009-01-06  203  
-
-:::::: The code at line 145 was first introduced by commit
-:::::: 9ec4b1f356b3bad928ae8e2aa9caebfa737d52df [PATCH] kprobes: fix single-step out of line - take2
-
-:::::: TO: Ananth N Mavinakayanahalli <ananth@in.ibm.com>
-:::::: CC: Linus Torvalds <torvalds@ppc970.osdl.org>
+:::::: TO: Alvin Lee <Alvin.Lee2@amd.com>
+:::::: CC: Alex Deucher <alexander.deucher@amd.com>
 
 -- 
 0-DAY CI Kernel Test Service
