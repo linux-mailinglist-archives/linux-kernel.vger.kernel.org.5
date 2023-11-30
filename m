@@ -2,224 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7263A7FEA41
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 09:12:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C12977FEAB1
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 09:32:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344826AbjK3IMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 03:12:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47122 "EHLO
+        id S235012AbjK3IcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 03:32:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231714AbjK3IMh (ORCPT
+        with ESMTP id S235071AbjK3IcA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 03:12:37 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F00FA3
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 00:12:41 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5BBEC433C7;
-        Thu, 30 Nov 2023 08:12:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701331961;
-        bh=4TV1m4EuLOh648gIpJtq8IGZ08wvqJekfJH88iGr6Ng=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=u3RxQ9UQczk91u/zi7K1KU9msV/n8hdbHHsRonDyGX71dymI6SBvMBf5TQUP0Yp6w
-         CjrghI0NJ86OoUv74pQV/ER3FPXhlDURbjUK0y0kW6xzI+kJ9IdhagQ/zGlanb7vk/
-         HHeFpj3mfbx2245AqDkOFYRqgZ5YGeHrftl8+ye24EHnTGhyxe7EhXHpiAfb3+8whI
-         YjEA4CEr6cRuoHzktMtVlzFb8vPLua46NdgY5z0NrYtTzZpjJeiKrsFRcVyPPTwmSI
-         h0Me+8qveOYTB/4JgRsbnxHrv/PtbyW7jx4jm0AkywFvGDiNtmVAD+CnyNVZJrNuJ4
-         4JqKWnbvZqRYQ==
-Date:   Thu, 30 Nov 2023 08:12:34 +0000
-From:   Conor Dooley <conor@kernel.org>
-To:     Chen Wang <unicorn_wang@outlook.com>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Chen Wang <unicornxw@gmail.com>, aou@eecs.berkeley.edu,
-        chao.wei@sophgo.com, krzysztof.kozlowski+dt@linaro.org,
-        mturquette@baylibre.com, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, richardcochran@gmail.com,
-        robh+dt@kernel.org, sboyd@kernel.org, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, haijiao.liu@sophgo.com,
-        xiaoguang.xing@sophgo.com, guoren@kernel.org, jszhang@kernel.org,
-        inochiama@outlook.com, samuel.holland@sifive.com
-Subject: Re: [PATCH v2 3/4] clk: sophgo: Add SG2042 clock generator driver
-Message-ID: <20231130-enlarging-decode-31dc66f4490b@spud>
-References: <cover.1701044106.git.unicorn_wang@outlook.com>
- <c06130afb4bdc1890b4e8d29388fa6feef1f1826.1701044106.git.unicorn_wang@outlook.com>
- <81d421c8-bfd6-42b5-9da1-f067792f8f48@linaro.org>
- <MA0P287MB03329CFBA3BB6A4E4F322F99FEBDA@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM>
- <2a268c8c-ce55-4321-b390-092b8df61407@linaro.org>
- <MA0P287MB03320824AB953465E00394FEFE82A@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM>
+        Thu, 30 Nov 2023 03:32:00 -0500
+X-Greylist: delayed 598 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 30 Nov 2023 00:31:55 PST
+Received: from mail-m17209.xmail.ntesmail.com (mail-m17209.xmail.ntesmail.com [45.195.17.209])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C1F7198E;
+        Thu, 30 Nov 2023 00:31:55 -0800 (PST)
+Received: from ubuntu.localdomain (unknown [111.222.250.119])
+        by mail-m12750.qiye.163.com (Hmail) with ESMTPA id C1E3FF2061A;
+        Thu, 30 Nov 2023 16:14:19 +0800 (CST)
+From:   Shifeng Li <lishifeng@sangfor.com.cn>
+To:     mustafa.ismail@intel.com, shiraz.saleem@intel.com, jgg@ziepe.ca,
+        leon@kernel.org, gustavoars@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        dinghui@sangfor.com.cn, lishifeng1992@126.com,
+        Shifeng Li <lishifeng@sangfor.com.cn>
+Subject: [PATCH v2] RDMA/irdma: Avoid free the non-cqp_request scratch
+Date:   Thu, 30 Nov 2023 00:14:15 -0800
+Message-Id: <20231130081415.891006-1-lishifeng@sangfor.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="5QzKJcKXThA97D7v"
-Content-Disposition: inline
-In-Reply-To: <MA0P287MB03320824AB953465E00394FEFE82A@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+        tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVkZQ09JVkwfSkpCTUNIGEkfS1UTARMWGhIXJBQOD1
+        lXWRgSC1lBWUpKSlVJSUlVSU5LVUpKQllXWRYaDxIVHRRZQVlPS0hVSk1PSUxOVUpLS1VKQktLWQ
+        Y+
+X-HM-Tid: 0a8c1f4b0834b21dkuuuc1e3ff2061a
+X-HM-MType: 1
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NQw6DQw4DjwrKBA5Mh0aKjNI
+        SgxPCk5VSlVKTEtKSEhJS01KSk9PVTMWGhIXVRcSCBMSHR4VHDsIGhUcHRQJVRgUFlUYFUVZV1kS
+        C1lBWUpKSlVJSUlVSU5LVUpKQllXWQgBWUFPTEJINwY+
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When creating ceq_0 during probing irdma, cqp.sc_cqp will be sent as
+a cqp_request to cqp->sc_cqp.sq_ring. If the request is pending when
+removing the irdma driver or unplugging its aux device, cqp.sc_cqp
+will be dereferenced as wrong struct in irdma_free_pending_cqp_request().
 
---5QzKJcKXThA97D7v
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+crash> bt 3669
+PID: 3669   TASK: ffff88aef892c000  CPU: 28  COMMAND: "kworker/28:0"
+ #0 [fffffe0000549e38] crash_nmi_callback at ffffffff810e3a34
+ #1 [fffffe0000549e40] nmi_handle at ffffffff810788b2
+ #2 [fffffe0000549ea0] default_do_nmi at ffffffff8107938f
+ #3 [fffffe0000549eb8] do_nmi at ffffffff81079582
+ #4 [fffffe0000549ef0] end_repeat_nmi at ffffffff82e016b4
+    [exception RIP: native_queued_spin_lock_slowpath+1291]
+    RIP: ffffffff8127e72b  RSP: ffff88aa841ef778  RFLAGS: 00000046
+    RAX: 0000000000000000  RBX: ffff88b01f849700  RCX: ffffffff8127e47e
+    RDX: 0000000000000000  RSI: 0000000000000004  RDI: ffffffff83857ec0
+    RBP: ffff88afe3e4efc8   R8: ffffed15fc7c9dfa   R9: ffffed15fc7c9dfa
+    R10: 0000000000000001  R11: ffffed15fc7c9df9  R12: 0000000000740000
+    R13: ffff88b01f849708  R14: 0000000000000003  R15: ffffed1603f092e1
+    ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0000
+--- <NMI exception stack> ---
+ #5 [ffff88aa841ef778] native_queued_spin_lock_slowpath at ffffffff8127e72b
+ #6 [ffff88aa841ef7b0] _raw_spin_lock_irqsave at ffffffff82c22aa4
+ #7 [ffff88aa841ef7c8] __wake_up_common_lock at ffffffff81257363
+ #8 [ffff88aa841ef888] irdma_free_pending_cqp_request at ffffffffa0ba12cc [irdma]
+ #9 [ffff88aa841ef958] irdma_cleanup_pending_cqp_op at ffffffffa0ba1469 [irdma]
+ #10 [ffff88aa841ef9c0] irdma_ctrl_deinit_hw at ffffffffa0b2989f [irdma]
+ #11 [ffff88aa841efa28] irdma_remove at ffffffffa0b252df [irdma]
+ #12 [ffff88aa841efae8] auxiliary_bus_remove at ffffffff8219afdb
+ #13 [ffff88aa841efb00] device_release_driver_internal at ffffffff821882e6
+ #14 [ffff88aa841efb38] bus_remove_device at ffffffff82184278
+ #15 [ffff88aa841efb88] device_del at ffffffff82179d23
+ #16 [ffff88aa841efc48] ice_unplug_aux_dev at ffffffffa0eb1c14 [ice]
+ #17 [ffff88aa841efc68] ice_service_task at ffffffffa0d88201 [ice]
+ #18 [ffff88aa841efde8] process_one_work at ffffffff811c589a
+ #19 [ffff88aa841efe60] worker_thread at ffffffff811c71ff
+ #20 [ffff88aa841eff10] kthread at ffffffff811d87a0
+ #21 [ffff88aa841eff50] ret_from_fork at ffffffff82e0022f
 
-On Thu, Nov 30, 2023 at 02:37:53PM +0800, Chen Wang wrote:
->=20
-> On 2023/11/27 17:16, Krzysztof Kozlowski wrote:
-> > On 27/11/2023 09:07, Chen Wang wrote:
-> > > On 2023/11/27 15:12, Krzysztof Kozlowski wrote:
-> > > > On 27/11/2023 02:15, Chen Wang wrote:
-> > > > > From: Chen Wang <unicorn_wang@outlook.com>
-> > > > >=20
-> > > > > Add a driver for the SOPHGO SG2042 clock generator.
-> > > > >=20
-> > > > > Signed-off-by: Chen Wang <unicorn_wang@outlook.com>
-> > > > ...
-> > > >=20
-> > > > +}
-> > > > +
-> > > > +CLK_OF_DECLARE(sg2042_clk, "sophgo,sg2042-clkgen", sg2042_clk_init=
-);
-> > > > No, this should be platform device. It's a child of another device,=
- so
-> > > > you cannot use other way of init ordering.
-> > > hi, Krzysztof,
-> > >=20
-> > > Thanks for your review.
-> > >=20
-> > > I don't quite understand your opinion. Do you mean CLK_OF_DECLARE is
-> > > only used for platform device so it can not be use here? But I think
-> > No, I meant you mix init ordering: you depend now on syscon earlier
-> > initcall than CLK_OF_DECLARE. Do you remember which one is first? If
-> > anything changes here, your driver is broken. There is no dependency, no
-> > probe deferral.
->=20
-> hi, Krzysztof,
->=20
-> I found that the initcall method cannot be used for the clock controller =
-of
-> sg2042. We need to initialize the clock earlier because there are two
-> dw-apb-timers in sg2042 (Sorry, I have not added them in the current DTS =
-of
-> sg2042, will be submitted later). The initialization of these timers
-> (timer_probe()) depends on the initialization of the clock controller. If=
- we
-> use the initcall mechanism, it will be too late for the timer. So it seems
-> better to use CLK_OF_DECLARE provided by CCF.
->=20
-> I have a question here that I would like to discuss. The design of sg2042=
- is
-> like this, according to the design of memorymap in its TRM:
->=20
-> 070:3001:0000 ~ 070:3001:0FFF SYS_CTRL 4K
-> 070:3001:1000 ~ 070:3001:1FFF PINMUX 4K
-> 070:3001:2000 ~ 070:3001:2FFF CLOCK 4K
-> 070:3001:3000 ~ 070:3001:3FFF RESET 4K
->=20
-> But also as per hw design (I don't know why and I don't like it also :( ),
-> some of the PLL/GATE CLOCK control registers are defined in the scope of
-> SYS_CTRL, and others are defined in the scope of CLOCK. That's why in the
-> current code, I define the syscon node corresponding to SYS_CTRL. The
-> purpose is just to get the regmap of syscon for the clock controller thro=
-ugh
-> the device tree (through device_node_to_regmap()), so that the syscon
-> defined in SYS_CTRL can be accessed through the regmap from clock. The cl=
-ock
-> controller driver itself does not rely on other operations of syscon.
->=20
-> So based on the above analysis, is it still necessary for us to define the
-> clock controller as a child node of syscon? In the version v1 of this pat=
-ch,
-> I actually did not define the clock controller as a child node of syscon,
-> but only accessed syscon through the phandle method. [1]
+Fixes: 44d9e52977a1 ("RDMA/irdma: Implement device initialization definitions")
+Suggested-by: Leon Romanovsky <leon@kernel.org>
+Signed-off-by: Shifeng Li <lishifeng@sangfor.com.cn>
+---
+ drivers/infiniband/hw/irdma/hw.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-In that version of the code, clkgen, your DTS, looked like:
-+	clkgen: clock-controller {
-+		compatible =3D "sophgo,sg2042-clkgen";
-+		#clock-cells =3D <1>;
-+		system-ctrl =3D <&sys_ctrl>;
-+		clocks =3D <&cgi>;
-+		assigned-clocks =3D \
+---
+v1->v2: replace fix solution and massage the git log.
 
-+		assigned-clock-rates =3D \
+diff --git a/drivers/infiniband/hw/irdma/hw.c b/drivers/infiniband/hw/irdma/hw.c
+index 8fa7e4a18e73..df6259c73d28 100644
+--- a/drivers/infiniband/hw/irdma/hw.c
++++ b/drivers/infiniband/hw/irdma/hw.c
+@@ -1180,7 +1180,6 @@ static int irdma_create_ceq(struct irdma_pci_f *rf, struct irdma_ceq *iwceq,
+ 	int status;
+ 	struct irdma_ceq_init_info info = {};
+ 	struct irdma_sc_dev *dev = &rf->sc_dev;
+-	u64 scratch;
+ 	u32 ceq_size;
+ 
+ 	info.ceq_id = ceq_id;
+@@ -1201,14 +1200,13 @@ static int irdma_create_ceq(struct irdma_pci_f *rf, struct irdma_ceq *iwceq,
+ 	iwceq->sc_ceq.ceq_id = ceq_id;
+ 	info.dev = dev;
+ 	info.vsi = vsi;
+-	scratch = (uintptr_t)&rf->cqp.sc_cqp;
+ 	status = irdma_sc_ceq_init(&iwceq->sc_ceq, &info);
+ 	if (!status) {
+ 		if (dev->ceq_valid)
+ 			status = irdma_cqp_ceq_cmd(&rf->sc_dev, &iwceq->sc_ceq,
+ 						   IRDMA_OP_CEQ_CREATE);
+ 		else
+-			status = irdma_sc_cceq_create(&iwceq->sc_ceq, scratch);
++			status = irdma_sc_cceq_create(&iwceq->sc_ceq, 0);
+ 	}
+ 
+ 	if (status) {
+-- 
+2.25.1
 
-+	};
-
-It had no register regions of its own, just what it got from the sys
-ctrl block, which is why I said that. The syscon block looked like:
-
-+		sys_ctrl: syscon@7030010000 {
-+			compatible =3D "sophgo,sg2042-syscon", "syscon";
-+			reg =3D <0x70 0x30010000 0x0 0x8000>;
-+		};
-
-which given the register map does not seem like an accurate reflection
-of the size of this region. The "0x8000" should be "0x1000".
->=20
-> After more read of the TRM, I believe this situation only exists for cloc=
-k.
-> That is to say, there will be only one child node of clook under syscon.
-> From a hardware design perspective, CLOCK and SYS_CTRL are two different
-> blocks. So I think it is better to restore the original method, that is,
-> restore clock and syscon to nodes of the same level, and let clock use
-> phandle to access syscon.
-
-This sounds two me like there are two different devices. One the "CLOCK"
-region at 070:3001:2000 that should be documented as being
-"sophgo,sg2042-clkgen" or similar and the second being the "SYS_CTRL" at
-070:3001:0000 that is called something like "sophgo,sg2042-sysctrl".
-Having more than one clock controller is not a problem and sounds like a
-more accurate description of the hardware.
-
->=20
-> What do you think or do you have any good suggestions?
->=20
-> Link: https://lore.kernel.org/linux-riscv/20231114-timid-habitat-a06e52e5=
-9c9c@squawk/#t
-> [1]
->=20
-> Thanks
->=20
-> Chen
->=20
-> >=20
-> > > this driver is still for platform device though I move the clock
-> > > controller node as a child of the system contoller node. System
-> > > controller node is just a block of registers which are used to control
-> > > some other platform devices ,such as clock controller, reset controll=
-er
-> > > and pin controller for this SoC.
-> > >=20
-> > > And I also see other similar code in kernel, for example:
-> > > drivers/clk/clk-k210.c.
-> > >=20
-> > > And I'm confused by your input "so you cannot use other way of init
-> > > ordering." Do you mean "so you CAN use other way of init ordering"?
-> > No, I meant you cannot. If you want to use syscon, then your driver
-> > should be a proper driver. Therefore add a driver.
-> >=20
-> > > What's the other way of init ordering do you mean?
-> > The one coming not from initcalls but driver model.
-> >=20
-> > Best regards,
-> > Krzysztof
-> >=20
-
---5QzKJcKXThA97D7v
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZWhD8gAKCRB4tDGHoIJi
-0qD3APwKST0oQkyhMEP3YAoVteewNlDifbk9w0pWbLzVPSiZfwD/YwK56a15vfNL
-ZWr3VDx87CBcnDI47LgIMV4g2g/uSQs=
-=otoo
------END PGP SIGNATURE-----
-
---5QzKJcKXThA97D7v--
