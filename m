@@ -2,224 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09EF27FF50F
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 17:25:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BC227FF51D
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 17:26:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232023AbjK3QZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 11:25:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57882 "EHLO
+        id S232142AbjK3QZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 11:25:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231951AbjK3QZ2 (ORCPT
+        with ESMTP id S1345452AbjK3QZn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 11:25:28 -0500
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D34C210DB;
-        Thu, 30 Nov 2023 08:25:34 -0800 (PST)
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AUGJouc029983;
-        Thu, 30 Nov 2023 08:25:29 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=pfpt0220; bh=Y9ZGGutZF1LKL6hXrt3Hb8FV4Vcd4Mv1oLkRcfF6oYo=;
- b=KRSn0HGqSXrleSEQAM5DK7PSmvnijYyzlH0L5T48Wso3p9RnY83ujVbdGpkNOAEJ4oEr
- FfHQhWxe78yB28P+n77LMF5x+8elH7LnuqVZkbGfWEbnf66Bpkqdcei9j/4muRa5LiO8
- YortAjMm1arn0N+beNvLmShGSL1gg8O9fvmJtXZ/JHKo6fmn1iV79QZw8iAKETfN5nPZ
- o/qXeIAaPDWvU78G/09UkX0nRWnyloy8vcu6KRRP/bmYreF3uAUS2LEalHJnRDUWS92T
- OJnHkVw6syt4CCvIDEwIrSVSVbFQdH/td+yj7kMi4EjPCml1Jqtu/EJiAVCWB1DX5oyk PQ== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3updt6c56f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Thu, 30 Nov 2023 08:25:29 -0800
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 30 Nov
- 2023 08:25:27 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Thu, 30 Nov 2023 08:25:26 -0800
-Received: from dc3lp-swdev041.marvell.com (dc3lp-swdev041.marvell.com [10.6.60.191])
-        by maili.marvell.com (Postfix) with ESMTP id 237725C68E1;
-        Thu, 30 Nov 2023 08:25:24 -0800 (PST)
-From:   Elad Nachman <enachman@marvell.com>
-To:     <gregory.clement@bootlin.com>, <andi.shyti@kernel.org>,
-        <linux-i2c@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <enachman@marvell.com>, <cyuval@marvell.com>
-Subject: [PATCH] i2c: busses: i2c-mv64xxx: fix arb-loss i2c lock
-Date:   Thu, 30 Nov 2023 18:25:22 +0200
-Message-ID: <20231130162522.3306136-1-enachman@marvell.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 30 Nov 2023 11:25:43 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7C8EE198;
+        Thu, 30 Nov 2023 08:25:49 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EACC81042;
+        Thu, 30 Nov 2023 08:26:35 -0800 (PST)
+Received: from pluto (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 11E1B3F6C4;
+        Thu, 30 Nov 2023 08:25:46 -0800 (PST)
+Date:   Thu, 30 Nov 2023 16:25:44 +0000
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     Sibi Sankar <quic_sibis@quicinc.com>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_mdtipton@quicinc.com, linux-arm-kernel@lists.infradead.org,
+        quic_asartor@quicinc.com, quic_lingutla@quicinc.com
+Subject: Re: [PATCH 2/3] firmware: arm_scmi: Fix freq/power truncation in the
+ perf protocol
+Message-ID: <ZWi3iN3HDc92eMFO@pluto>
+References: <20231129065748.19871-1-quic_sibis@quicinc.com>
+ <20231129065748.19871-3-quic_sibis@quicinc.com>
+ <ZWh6cuApg-sRbA2s@bogus>
+ <ZWiE5nM83TZd3drT@pluto>
+ <ZWiUqGJ8FaA1GBjm@bogus>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: xn3xKQzE7k0usXjjbT04nSTza3-QiLdp
-X-Proofpoint-ORIG-GUID: xn3xKQzE7k0usXjjbT04nSTza3-QiLdp
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-30_16,2023-11-30_01,2023-05-22_02
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZWiUqGJ8FaA1GBjm@bogus>
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Elad Nachman <enachman@marvell.com>
+On Thu, Nov 30, 2023 at 01:56:56PM +0000, Sudeep Holla wrote:
+> On Thu, Nov 30, 2023 at 12:49:42PM +0000, Cristian Marussi wrote:
+> > On Thu, Nov 30, 2023 at 12:05:06PM +0000, Sudeep Holla wrote:
+> > > On Wed, Nov 29, 2023 at 12:27:47PM +0530, Sibi Sankar wrote:
+> > > > Fix frequency and power truncation seen in the performance protocol by
+> > > > casting it with the correct type.
+> > > >
+> > > 
+> > > While I always remembered to handle this when reviewing the spec, seem to
+> > > have forgotten when it came to handling in the implementation :(. Thanks
+> > > for spotting this.
+> > > 
+> > > However I don't like the ugly type casting. I think we can do better. Also
+> > > looking at the code around the recently added level index mode, I think we
+> > > can simplify things like below patch.
+> > > 
+> > > Cristian,
+> > > What do you think ?
+> > > 
+> > 
+> > Hi
+> > 
+> > the cleanup seems nice in general to compact the mult_factor multipliers
+> > in one place, and regarding addressing the problem of truncation without
+> > the need of the explicit casting, should not be enough to change to
+> > additionally also change mult_factor to be an u64 ?
+> >
+> 
+> I started exactly with that, but when I completed the patch, there was no
+> explicit need for it, so dropped it again. I can bump mult_factor to be
+> u64 but do you see any other place that would need it apart from having
+> single statement that does multiplication and assignment ? I am exploiting
+> the conditional based on level_indexing_mode here but I agree it may help
+> in backporting if I make mult_factor u64.
+> 
 
-Some i2c slaves, mainly SFPs, might cause the bus to lose arbitration
-while slave is in the middle of responding.
+Ah right
 
-The solution is to change the I2C mode from mpps to gpios, and toggle
-the i2c_scl gpio to emulate bus clock toggling, so slave will finish
-its transmission, driven by the manual clock toggling, and will release
-the i2c bus.
+   freq *= dom->multi_fact;
 
-Signed-off-by: Elad Nachman <enachman@marvell.com>
----
- drivers/i2c/busses/i2c-mv64xxx.c | 81 ++++++++++++++++++++++++++++++++
- 1 file changed, 81 insertions(+)
+does the trick..but cannot this by itself (under unplausibl conds)
+overflow and does not fit into a u32 mult_factor ?
 
-diff --git a/drivers/i2c/busses/i2c-mv64xxx.c b/drivers/i2c/busses/i2c-mv64xxx.c
-index dc160cbc3155..21715f31dc29 100644
---- a/drivers/i2c/busses/i2c-mv64xxx.c
-+++ b/drivers/i2c/busses/i2c-mv64xxx.c
-@@ -26,6 +26,7 @@
- #include <linux/clk.h>
- #include <linux/err.h>
- #include <linux/delay.h>
-+#include <linux/of_gpio.h>
- 
- #define MV64XXX_I2C_ADDR_ADDR(val)			((val & 0x7f) << 1)
- #define MV64XXX_I2C_BAUD_DIV_N(val)			(val & 0x7)
-@@ -104,6 +105,7 @@ enum {
- 	MV64XXX_I2C_ACTION_RCV_DATA,
- 	MV64XXX_I2C_ACTION_RCV_DATA_STOP,
- 	MV64XXX_I2C_ACTION_SEND_STOP,
-+	MV64XXX_I2C_ACTION_UNLOCK_BUS
- };
- 
- struct mv64xxx_i2c_regs {
-@@ -150,6 +152,11 @@ struct mv64xxx_i2c_data {
- 	bool			clk_n_base_0;
- 	struct i2c_bus_recovery_info	rinfo;
- 	bool			atomic;
-+	/* I2C mpp states & gpios needed for arbitration lost recovery */
-+	int			scl_gpio, sda_gpio;
-+	bool			arb_lost_recovery_ena;
-+	struct pinctrl_state *i2c_mpp_state;
-+	struct pinctrl_state *i2c_gpio_state;
- };
- 
- static struct mv64xxx_i2c_regs mv64xxx_i2c_regs_mv64xxx = {
-@@ -318,6 +325,11 @@ mv64xxx_i2c_fsm(struct mv64xxx_i2c_data *drv_data, u32 status)
- 		drv_data->state = MV64XXX_I2C_STATE_IDLE;
- 		break;
- 
-+	case MV64XXX_I2C_STATUS_MAST_LOST_ARB: /*0x38*/
-+		drv_data->action = MV64XXX_I2C_ACTION_UNLOCK_BUS;
-+		drv_data->state = MV64XXX_I2C_STATE_IDLE;
-+		break;
-+
- 	case MV64XXX_I2C_STATUS_MAST_WR_ADDR_NO_ACK: /* 0x20 */
- 	case MV64XXX_I2C_STATUS_MAST_WR_NO_ACK: /* 30 */
- 	case MV64XXX_I2C_STATUS_MAST_RD_ADDR_NO_ACK: /* 48 */
-@@ -356,6 +368,9 @@ static void mv64xxx_i2c_send_start(struct mv64xxx_i2c_data *drv_data)
- static void
- mv64xxx_i2c_do_action(struct mv64xxx_i2c_data *drv_data)
- {
-+	struct pinctrl *pc;
-+	int i, ret;
-+
- 	switch(drv_data->action) {
- 	case MV64XXX_I2C_ACTION_SEND_RESTART:
- 		/* We should only get here if we have further messages */
-@@ -409,6 +424,48 @@ mv64xxx_i2c_do_action(struct mv64xxx_i2c_data *drv_data)
- 			drv_data->reg_base + drv_data->reg_offsets.control);
- 		break;
- 
-+	case MV64XXX_I2C_ACTION_UNLOCK_BUS:
-+
-+		if (!drv_data->arb_lost_recovery_ena)
-+			break;
-+
-+		pc = devm_pinctrl_get(drv_data->adapter.dev.parent);
-+		if (IS_ERR(pc))
-+			break;
-+
-+		/* Change i2c MPPs state to act as GPIOs: */
-+		if (pinctrl_select_state(pc, drv_data->i2c_gpio_state) >= 0) {
-+			ret = devm_gpio_request_one(drv_data->adapter.dev.parent,
-+					 drv_data->scl_gpio, GPIOF_DIR_OUT, NULL);
-+			ret |= devm_gpio_request_one(drv_data->adapter.dev.parent,
-+					 drv_data->sda_gpio, GPIOF_DIR_OUT, NULL);
-+			if (!ret) {
-+				/* Toggle i2c scl (serial clock) 10 times.
-+				 * This allows the slave that occupies
-+				 * the bus to transmit its remaining data,
-+				 * so it can release the i2c bus:
-+				 */
-+				for (i = 0; i < 10; i++) {
-+					gpio_set_value(drv_data->scl_gpio, 1);
-+					mdelay(1);
-+					gpio_set_value(drv_data->scl_gpio, 0);
-+				};
-+
-+				devm_gpiod_put(drv_data->adapter.dev.parent,
-+					gpio_to_desc(drv_data->scl_gpio));
-+				devm_gpiod_put(drv_data->adapter.dev.parent,
-+					gpio_to_desc(drv_data->sda_gpio));
-+			}
-+
-+			/* restore i2c pin state to MPPs: */
-+			pinctrl_select_state(pc, drv_data->i2c_mpp_state);
-+		}
-+
-+		/* Trigger controller soft reset: */
-+		writel(0x1, drv_data->reg_base + drv_data->reg_offsets.soft_reset);
-+		mdelay(1);
-+		fallthrough;
-+
- 	case MV64XXX_I2C_ACTION_RCV_DATA_STOP:
- 		drv_data->msg->buf[drv_data->byte_posn++] =
- 			readl(drv_data->reg_base + drv_data->reg_offsets.data);
-@@ -985,6 +1042,7 @@ mv64xxx_i2c_probe(struct platform_device *pd)
- {
- 	struct mv64xxx_i2c_data		*drv_data;
- 	struct mv64xxx_i2c_pdata	*pdata = dev_get_platdata(&pd->dev);
-+	struct pinctrl *pc;
- 	int	rc;
- 
- 	if ((!pdata && !pd->dev.of_node))
-@@ -1040,6 +1098,29 @@ mv64xxx_i2c_probe(struct platform_device *pd)
- 	if (rc == -EPROBE_DEFER)
- 		return rc;
- 
-+	drv_data->arb_lost_recovery_ena = false;
-+	pc = devm_pinctrl_get(&pd->dev);
-+	if (!IS_ERR(pc)) {
-+		drv_data->i2c_mpp_state =
-+			pinctrl_lookup_state(pc, "default");
-+		drv_data->i2c_gpio_state =
-+			pinctrl_lookup_state(pc, "gpio");
-+		drv_data->scl_gpio =
-+			of_get_named_gpio(pd->dev.of_node, "scl-gpios", 0);
-+		drv_data->sda_gpio =
-+			of_get_named_gpio(pd->dev.of_node, "sda-gpios", 0);
-+
-+		if (!IS_ERR(drv_data->i2c_gpio_state) &&
-+			!IS_ERR(drv_data->i2c_mpp_state) &&
-+			gpio_is_valid(drv_data->scl_gpio) &&
-+			gpio_is_valid(drv_data->sda_gpio))
-+			drv_data->arb_lost_recovery_ena = true;
-+	}
-+
-+	if (!drv_data->arb_lost_recovery_ena)
-+		dev_info(&pd->dev,
-+			"mv64xxx: missing arbitration-lost recovery definitions in dts file\n");
-+
- 	drv_data->adapter.dev.parent = &pd->dev;
- 	drv_data->adapter.algo = &mv64xxx_i2c_algo;
- 	drv_data->adapter.owner = THIS_MODULE;
--- 
-2.25.1
+ dom_info->mult_factor =
+ 	(dom_info->sustained_freq_khz * 1000UL)
+	/ dom_info->sustained_perf_level;
+
+
+Thanks,
+Cristian
 
