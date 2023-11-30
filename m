@@ -2,131 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB8277FF015
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 14:26:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D52177FF011
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 14:26:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345530AbjK3N0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 08:26:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47324 "EHLO
+        id S1345503AbjK3N0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 08:26:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232169AbjK3N0U (ORCPT
+        with ESMTP id S231992AbjK3N0P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 08:26:20 -0500
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8570FD6C
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 05:26:26 -0800 (PST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id BFFBD40E01AD;
-        Thu, 30 Nov 2023 13:26:24 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id zEjcqjdd30NV; Thu, 30 Nov 2023 13:26:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1701350779; bh=00uVXfqqn+YrBcGvtEVE8xhk3/iP9v80Y1vQ6wiIiB8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=NlsdJBbrCDTERx0h/P/9ERaCMRYcQdFv26qoWWGNjozAolwkvpxf1a5EprP/Ib3nu
-         G+jRpYxs3PT3vqEC0TCUh4hEAZ6xRpUTzlcnvY9WgjMlQ6dLzXwTPpaLQkAD1ilqbs
-         FNiwb6w1whzljtN6ToLmEFXAXjaXayFo4nPzp6c0mZRPKJTmUSV8wHC/hFFYtVEhb+
-         rcIQjDkWPulJ2pCJldM4KIt7j+UG3lBtGMdkL1h3XLaIUbTDQkK2Y5n9mVDq+4ZvLO
-         enytIKsVG4wgJZF82n5uqoD9tMjPeNyaTgvastwVfamjj17PjDzFUn9b0VHiGeCeXP
-         vLJsT5EDdcQrR+eVsUJDdD7UMc93aWMdm/DK0r0GVX8whP0K2wyYpnTUta7uBGbeZN
-         1gv1f8uigACDed/fLCEZ9Ysi6Es85TPCIUzvjLkVQdJKJBLM6VuenUjUGqrOtpfUqR
-         qlqtIn6nRA/lCyPKgtHa5RvUhxVchzctsOR0ENZnw2Gaof1Bz7wY2i1MwjF5kDcHK5
-         6j/zcyVDX7K+q0qAuZ5zmHydjB4X0SZNSdOmzbo8PmwnhvtOjM3vXspB4oxh2Q44LL
-         bmLBZtMTmkOQkLSa12AsdPatf8yJU3jIiNdkLuXJ5EvqN0NwkSCC3VIHvLK6YAxzzV
-         rvfTYo716sqHu5+YAtx9I1PQ=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1166440E0173;
-        Thu, 30 Nov 2023 13:26:15 +0000 (UTC)
-From:   Borislav Petkov <bp@alien8.de>
-To:     X86 ML <x86@kernel.org>
-Cc:     Joerg Roedel <joro@8bytes.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH] x86/sev: Do the C-bit verification only on the BSP
-Date:   Thu, 30 Nov 2023 14:26:01 +0100
-Message-ID: <20231130132601.10317-1-bp@alien8.de>
-X-Mailer: git-send-email 2.42.0.rc0.25.ga82fb66fed25
+        Thu, 30 Nov 2023 08:26:15 -0500
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A9F910DF;
+        Thu, 30 Nov 2023 05:26:22 -0800 (PST)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-40b4d9e81deso7919995e9.0;
+        Thu, 30 Nov 2023 05:26:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701350780; x=1701955580; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=kMjMwDQeJ7U3HaJX4ZxhNthwT8vrdAeuzz7BaoFMnjY=;
+        b=Wzi6oycK8AbGYZApwENpA4V2KBfFsz2IPvnI5RF+k4pqws5qm75nZN4VYtjPW2gWGh
+         12iN5Vly27BfBBNMUGPxJQ9et8qeok8Npo9vFQkuT5Ioms9AKOyeVyk2bFxG1dyz6XPT
+         QGbKWaXRKqrMNlMjPltxJJZfbOT0GKK2j2CTgxCNJQgrnWSpV1TlBG/5JHZ8xITabsPX
+         ZPEmEmKOdaDCGSbtr99SPKuG+x45De+Eo9rHHByllicn7Te9Xm/TsbOYT+tLFIQP/9xU
+         Ioh8MfJ6zmLuh+kpQPUb8f/5dKFQ89R3pg3/txw2KdZU0Ria27hWo/qvXsF3lLam9lqd
+         Pzyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701350780; x=1701955580;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=kMjMwDQeJ7U3HaJX4ZxhNthwT8vrdAeuzz7BaoFMnjY=;
+        b=wVmcu5imVzF8BBd4U6CciTZqDv3P7vVcmtR6H+nKU7LXcXVlGnq5d9qvvWJmN/+QnW
+         ks3vWgIB1I6R/3Rayv9Y4FhxbrGxhMQe9QC2jrbZSuwIwGKPXe/HCcr8On/xQu3APvyJ
+         d2PVcbPhh8BecYu/bNygQv2kmxhCElDNKyCCKc0Mucub3p73B0eVXkSgzzSqGpof0q8Y
+         gIIMFtrQj00JxoMcEbnqXx4jxyvYi/LZNsBUYS6eNxNOU51MryeGEF80bBVZoH1khy2l
+         MQUhjJHu8GRb5T7Pamt+JrGODq5DhowwKcU6Eo4Lf0cct1CpFW8U98a2z1pj22XP4sn+
+         pVxg==
+X-Gm-Message-State: AOJu0YzRERyI2oXP2MyZuCkqRIrk+JEPI3daMIhB3eCbzsFA6+ZvRjga
+        xC65p+boGRBS7tssqWDvEn8=
+X-Google-Smtp-Source: AGHT+IF4VK2RMM99vHoNOTjMS8JYwZng9oa3EJPG40jI+yusE7jKXL9SAsLKU4Q7PP0rLS8URV59NA==
+X-Received: by 2002:a05:600c:a04:b0:40b:47f0:66b5 with SMTP id z4-20020a05600c0a0400b0040b47f066b5mr8748485wmp.26.1701350780275;
+        Thu, 30 Nov 2023 05:26:20 -0800 (PST)
+Received: from [10.254.108.81] (munvpn.amd.com. [165.204.72.6])
+        by smtp.gmail.com with ESMTPSA id v9-20020a05600c470900b004063cd8105csm5706905wmo.22.2023.11.30.05.26.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Nov 2023 05:26:19 -0800 (PST)
+Message-ID: <1e10c821-1981-4c9c-8243-dc4592bf9102@gmail.com>
+Date:   Thu, 30 Nov 2023 14:26:18 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [Linaro-mm-sig] Re: [PATCH] dma-buf: Correct the documentation of
+ name and exp_name symbols
+Content-Language: en-US
+To:     Alex Deucher <alexdeucher@gmail.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org,
+        Ramesh Errabolu <Ramesh.Errabolu@amd.com>,
+        amd-gfx@lists.freedesktop.org, sumit.semwal@linaro.org,
+        linux-media@vger.kernel.org
+References: <20231122160556.24948-1-Ramesh.Errabolu@amd.com>
+ <c5ae3f32-0779-4583-8fe6-92f5dea5ede6@amd.com>
+ <CADnq5_OJbURbVzXVypohp7gCjE+ckHkEnDD67H7KTDJZt_e3HA@mail.gmail.com>
+From:   =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>
+In-Reply-To: <CADnq5_OJbURbVzXVypohp7gCjE+ckHkEnDD67H7KTDJZt_e3HA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Borislav Petkov (AMD)" <bp@alien8.de>
+Am 29.11.23 um 22:18 schrieb Alex Deucher:
+> On Wed, Nov 22, 2023 at 1:58 PM Christian König
+> <christian.koenig@amd.com> wrote:
+>> Am 22.11.23 um 17:05 schrieb Ramesh Errabolu:
+>>> Fix the documentation of struct dma_buf members name and exp_name
+>>> as to how these members are to be used and accessed.
+>>>
+>>> Signed-off-by: Ramesh Errabolu <Ramesh.Errabolu@amd.com>
+>> Reviewed-by: Christian König <christian.koenig@amd.com>
+> Please apply this to drm-misc.
 
-There's no need to do it on every AP.
+Done, thanks for the reminder.
 
-The C-bit value read on the BSP and also verified there, is used
-everywhere from now on.
+Christian.
 
-There should be no functional changes resulting from this patch - just
-a bit faster booting APs.
-
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
----
- arch/x86/kernel/head_64.S | 31 ++++++++++++++++++++++---------
- 1 file changed, 22 insertions(+), 9 deletions(-)
-
-diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
-index 3dcabbc49149..af40d8eb4dca 100644
---- a/arch/x86/kernel/head_64.S
-+++ b/arch/x86/kernel/head_64.S
-@@ -114,6 +114,28 @@ SYM_CODE_START_NOALIGN(startup_64)
-=20
- 	/* Form the CR3 value being sure to include the CR3 modifier */
- 	addq	$(early_top_pgt - __START_KERNEL_map), %rax
-+
-+#ifdef CONFIG_AMD_MEM_ENCRYPT
-+	mov	%rax, %rdi
-+	mov	%rax, %r14
-+
-+	addq	phys_base(%rip), %rdi
-+
-+	/*
-+	 * For SEV guests: Verify that the C-bit is correct. A malicious
-+	 * hypervisor could lie about the C-bit position to perform a ROP
-+	 * attack on the guest by writing to the unencrypted stack and wait for
-+	 * the next RET instruction.
-+	 */
-+	call	sev_verify_cbit
-+
-+	/*
-+	 * Restore CR3 value without the phys_base which will be added
-+	 * below, before writing %cr3.
-+	 */
-+	 mov	%r14, %rax
-+#endif
-+
- 	jmp 1f
- SYM_CODE_END(startup_64)
-=20
-@@ -192,15 +214,6 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_=
-L_GLOBAL)
- 	/* Setup early boot stage 4-/5-level pagetables. */
- 	addq	phys_base(%rip), %rax
-=20
--	/*
--	 * For SEV guests: Verify that the C-bit is correct. A malicious
--	 * hypervisor could lie about the C-bit position to perform a ROP
--	 * attack on the guest by writing to the unencrypted stack and wait for
--	 * the next RET instruction.
--	 */
--	movq	%rax, %rdi
--	call	sev_verify_cbit
--
- 	/*
- 	 * Switch to new page-table
- 	 *
---=20
-2.42.0.rc0.25.ga82fb66fed25
+>
+> Alex
+>
+>>> ---
+>>>    include/linux/dma-buf.h | 11 +++++++----
+>>>    1 file changed, 7 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
+>>> index 3f31baa3293f..8ff4add71f88 100644
+>>> --- a/include/linux/dma-buf.h
+>>> +++ b/include/linux/dma-buf.h
+>>> @@ -343,16 +343,19 @@ struct dma_buf {
+>>>        /**
+>>>         * @exp_name:
+>>>         *
+>>> -      * Name of the exporter; useful for debugging. See the
+>>> -      * DMA_BUF_SET_NAME IOCTL.
+>>> +      * Name of the exporter; useful for debugging. Must not be NULL
+>>>         */
+>>>        const char *exp_name;
+>>>
+>>>        /**
+>>>         * @name:
+>>>         *
+>>> -      * Userspace-provided name; useful for accounting and debugging,
+>>> -      * protected by dma_resv_lock() on @resv and @name_lock for read access.
+>>> +      * Userspace-provided name. Default value is NULL. If not NULL,
+>>> +      * length cannot be longer than DMA_BUF_NAME_LEN, including NIL
+>>> +      * char. Useful for accounting and debugging. Read/Write accesses
+>>> +      * are protected by @name_lock
+>>> +      *
+>>> +      * See the IOCTLs DMA_BUF_SET_NAME or DMA_BUF_SET_NAME_A/B
+>>>         */
+>>>        const char *name;
+>>>
+>> _______________________________________________
+>> Linaro-mm-sig mailing list -- linaro-mm-sig@lists.linaro.org
+>> To unsubscribe send an email to linaro-mm-sig-leave@lists.linaro.org
 
