@@ -2,218 +2,600 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BACE57FE981
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 08:08:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 302B77FE988
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 08:13:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344697AbjK3HIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 02:08:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51246 "EHLO
+        id S1344649AbjK3HMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 02:12:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344592AbjK3HH7 (ORCPT
+        with ESMTP id S229596AbjK3HMt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 02:07:59 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBCBD1A6;
-        Wed, 29 Nov 2023 23:08:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701328086; x=1732864086;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=o1enX59d2AWlwlOAROjj2y6A2sof298XE0btxKV5gF8=;
-  b=bEWZ/9riLhCT8YgL7rUaJC5EXvT3zilInXHUr75lfFlhsi+YhKyJB+li
-   GlZ4O5wz5tPKUnGNCc3ZsSU8wFieEbFbC05u7JJKu+h6xz3EhbBTL19HK
-   RBnOBGNpAHzPoH/2urqIH9nx9VuvqY9UNl3KfW1Z5RwtvXa+GoHM6wY3R
-   3HcVk1bfN2NhmcDnVYtqydo+EN6Fc5u9hefSPc/gq4btOk/0maV+wzRCa
-   IJDW7ZSWXKjB0JjgrSKcxLztzjQ8uy2pepYCWDABvPXgMIk/xVSpOo4Bj
-   qEOuQ6jr1VQLXGUuw/S3TE+NHyZvDRvgxBVCm2H/I2jz9xpt7nv4nNmPA
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="178733"
-X-IronPort-AV: E=Sophos;i="6.04,237,1695711600"; 
-   d="scan'208";a="178733"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 23:08:05 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="772958815"
-X-IronPort-AV: E=Sophos;i="6.04,237,1695711600"; 
-   d="scan'208";a="772958815"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by fmsmga007.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 29 Nov 2023 23:08:05 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Wed, 29 Nov 2023 23:08:04 -0800
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Wed, 29 Nov 2023 23:08:04 -0800
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (104.47.56.41) by
- edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Wed, 29 Nov 2023 23:08:04 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OZ15FoAfksk8IiMEKN6GmxeYSpZ0+j/2YfgBddFvwcEyEu83FkfJp1m1v7meSsuJfdm2mBZpQKlpH0I2EtfrwLmMFL55SfKcwGXeRoagCexJbglnxQiUxH4/XJWQxcUCvwMdCbfPeP33iNQF4V2b9n696xzQ4kYQtQAmkdigUUEUs0hWAcyDbXtR900Dyr5J6J3JqsDfIZhDCBXRlH0dHxG3Kt1K0Q8SXBEDHlz8jlHW6nO3dhHQs06ulOQIA7W16pI/Se40KOULevdrSR4AY+1v5PEIBL+9KKE/ZpHdymNgV1jybBvQqkvbpBDi+5yfpB2FboK/jhmC9KTNPYQ9pA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=o1enX59d2AWlwlOAROjj2y6A2sof298XE0btxKV5gF8=;
- b=n28r5E59EnSRtAvdQNiQgCGIWEYzQX9fKH6CqR+HPnxQ3yk9j3YRjSZscK66RmUpCVh7Z2AhAllEsMhllPuraYKXQ3WfAQfOlGwqo86goa0Qj1SSEuUJgIAEPiaPKWf6ALx/XnK2yNHIAV5pRWI+GuqivYbo+m0rwNh9cZ+RlzZML5KIibCejGscwwEA2ggN/PtMMu4UjT/cYP3PpIsqg1iwVR+Su+0K1V5YuIK3sPg3Ntt1Hl6nGvNWizkTep97Bdpq1DSnW1bDwtsJ3eNBL4eXG8Nltvx/G4eLxTgAPZo98e9MlsFKk7Q6LVoIZueCuDOF6Zqhorqn9kBNBAvmhQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from DM8PR11MB5750.namprd11.prod.outlook.com (2603:10b6:8:11::17) by
- MW4PR11MB6763.namprd11.prod.outlook.com (2603:10b6:303:20b::7) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7046.24; Thu, 30 Nov 2023 07:08:02 +0000
-Received: from DM8PR11MB5750.namprd11.prod.outlook.com
- ([fe80::f1b2:bfb1:b1b:66ed]) by DM8PR11MB5750.namprd11.prod.outlook.com
- ([fe80::f1b2:bfb1:b1b:66ed%3]) with mapi id 15.20.7046.024; Thu, 30 Nov 2023
- 07:08:01 +0000
-From:   "Reshetova, Elena" <elena.reshetova@intel.com>
-To:     Borislav Petkov <bp@alien8.de>,
-        Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
-CC:     "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "stefan.bader@canonical.com" <stefan.bader@canonical.com>,
-        "tim.gardner@canonical.com" <tim.gardner@canonical.com>,
-        "roxana.nicolescu@canonical.com" <roxana.nicolescu@canonical.com>,
-        "cascardo@canonical.com" <cascardo@canonical.com>,
-        "kys@microsoft.com" <kys@microsoft.com>,
-        "haiyangz@microsoft.com" <haiyangz@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "sashal@kernel.org" <sashal@kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "Ingo Molnar" <mingo@redhat.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Michael Kelley <mhkelley58@gmail.com>,
-        Nikolay Borisov <nik.borisov@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "Cui, Dexuan" <decui@microsoft.com>
-Subject: RE: [PATCH v1 1/3] x86/tdx: Check for TDX partitioning during early
- TDX init
-Thread-Topic: [PATCH v1 1/3] x86/tdx: Check for TDX partitioning during early
- TDX init
-Thread-Index: AQHaHWWtJXruLfiu906BueKp3+5D87CGlUMAgAr1j4CAAOyO0A==
-Date:   Thu, 30 Nov 2023 07:08:00 +0000
-Message-ID: <DM8PR11MB575085570AF48AF4690986EDE782A@DM8PR11MB5750.namprd11.prod.outlook.com>
-References: <20231122170106.270266-1-jpiotrowski@linux.microsoft.com>
- <0799b692-4b26-4e00-9cec-fdc4c929ea58@linux.microsoft.com>
- <20231129164049.GVZWdpkVlc8nUvl/jx@fat_crate.local>
-In-Reply-To: <20231129164049.GVZWdpkVlc8nUvl/jx@fat_crate.local>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DM8PR11MB5750:EE_|MW4PR11MB6763:EE_
-x-ms-office365-filtering-correlation-id: edd7f8e1-b131-48be-3b84-08dbf17316de
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 8U7Q7fgCD586wXjLcu8CW5GCExZ76avG+W3XcN46udg6TQHumMmUlSGKbApbv2sW6KkoQBNE431n5TaNrgNwOx1NgiCwpD6KyRlyQuBMM6OhNZSyj1XZUbRViyhe1DOzylVZ5qW5KRr/PdbSTggWVtifD0dbTTqoEmZVu171jPBRF34nbGNt23GL/77hflDfg3uXXYuPI075gbRzWphwCW2g/6Fdki5ogMEFfKhixbqt3rL9cye+N5g9ZyxrvkASN8RUSj0AdvpeJO2YNl3CB2ae2FGGXCoeUmN0S05L0qbOO7Gr6y/JXkuy3lExxhe8swO98aBXDnxbMKbAiPXjkj+AApzOPQAdrGiLZ122Eummd5LpedYi97BjQSATXQmqk2C1C+9q3WhV8mXgd8DDFCY1A9TmTjyqIUUPavdaOdwSa1I1MIFMaoBx2QMUtFe7akm68Bed2Ne3JH9Y/750zOViiSj4ew2SHafMyYQzcLLE99sr+e8+BYau1OgoEtput+bq/5URvjIIzQrBXGtFWzfh+EwRQV0Rkm2knS/0gFF54eB/T9GUXUZ8VRK3ZNr9EDiQHM3JgCATwFP4rGA+eksBK1DZuT81/4F2b1ZsXCwvMKwVOq3216PB70nE4tGIt145gPXoWKNwSW9gBqCYH4duGbSO0W8/66Fr8G6rREg=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR11MB5750.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(346002)(136003)(39860400002)(366004)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(55016003)(38070700009)(202311291699003)(76116006)(66946007)(66556008)(66476007)(66446008)(64756008)(54906003)(71200400001)(38100700002)(82960400001)(33656002)(86362001)(122000001)(26005)(6506007)(9686003)(7696005)(2906002)(110136005)(316002)(478600001)(5660300002)(8676002)(4326008)(41300700001)(7416002)(52536014)(8936002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?bmhsWHEzRURWVDh1b1FWRUd1SitJRUd2ZUwvRHM1ckQrSHRnRXA0YmdtZGty?=
- =?utf-8?B?LzRuY3MzZUE2RzlsYys5VzBmOXJtaUVYbEk2b0RFU1JYSTNsS2c1YWFLTitY?=
- =?utf-8?B?NXJQdDhQazZGSXZzeUFnbkJGYzBHUS9CTTRvMTlHWlM3amZRNEo4MEQ5c3lN?=
- =?utf-8?B?TE1WVi8vNENaRVdKN3JXWXJXd0IzNEgwUFl3aGZFQ1BkRGs3UWErL1dPYk9D?=
- =?utf-8?B?VlZzL0RCV283WmNBMnpBUGhTMlp1TkxzSFlRall5UjVrK09LTjJFNnV5bE82?=
- =?utf-8?B?cjhlVXB0WG4wL0lIeDVLNmRCYjMrN2MvNDYxdVFXaWF2aVZEZzZwRXMyTlln?=
- =?utf-8?B?RUhPMHpLRHBvdzB5MUlGaUU3QVRSSGdqWnIzREJKamdXNzZocGprbzRML2Vh?=
- =?utf-8?B?Nnl0ZW5CVDdsblg4OFhXamE3cGNGbHhXMEdOV2FYTE5QWFFQb2Y4d0ZndWw3?=
- =?utf-8?B?N1JtR3YxazVvNC9EeG1CSzZDWmJyMEtZT1BXOXMrYytMQUkvZVE4L3FRZ3NG?=
- =?utf-8?B?MkN0ZmJmNUVwNkE2UGYzcjQ1ZEo1c0QxUFovbXNDbjl6S1c0N2FkUnB2eVM2?=
- =?utf-8?B?dnlOOEQzalZqUEJFaE5TUFpFajdiNUlCMTFObnl1SkkrQXQyRmQ1aGZvY08v?=
- =?utf-8?B?N2VScXJ1dHlyeTJMN2Q2UEVCRWdhVVJRMkpsT0dvMElMRGRUU3dpSXhDRGpk?=
- =?utf-8?B?U3NzQmFzaTdpMEVJL2JGaW5UNHA3SEczMnBRY1doYUg2Z01pbDlNdTJ0Yi9u?=
- =?utf-8?B?NFBPclhxSGRCQktQSklZWXNBTWVDMk1BQk9ERE56cHBFZVZTWSswSTRvUmFw?=
- =?utf-8?B?ZG4rNGFrR0NBRGVtTVU0WTFaT1V5TExiSFdUcE5jaFNpVUQ1em9JNjI1UjJR?=
- =?utf-8?B?K0xnQ1oxZzJKMGd0Sk9XVEpDQUJaWVpBL3FScGViWXVqSnYzQUYvVmZIWmNM?=
- =?utf-8?B?bzJUNlgyUUwwSDE5NlBaV1lwT2t1V1FBSURydU5PZWFTZmJnaXJ5MXdHQmN2?=
- =?utf-8?B?bTdlOHZ0cGVYWVA1bzRUcFNvdTR5MFVuOVRaV2dNbmtqRVZhOXV6WnZsS2lQ?=
- =?utf-8?B?SVNuVXNnazZZVmJJNmRBTHNrWkNvMEt6Y2JiSHRhZmtac1pDRll5SDhZY1dL?=
- =?utf-8?B?UG1vaVlDNFc5dzBmakVrYlc5TEN4M0hoVzhqTGJEaVVqTUtvdEhyMzFRM095?=
- =?utf-8?B?ODlhUDZKdmdoTU1DOWhCVG5EZUgwSHhBb3lCMlJnYXJ3WEZMZTgvZmdVcVRU?=
- =?utf-8?B?QlFPMDkrdWZLQ3FLVW5kZ09zYml0cHhKRXgxL1RhSWw3b1BTNFVrcmpaRU5H?=
- =?utf-8?B?dytCeWp5SWFnRGFVQ2NwYkJmTFBXYVlwTFN4ZEdGUWhybUx5dEU3OGc0NW1x?=
- =?utf-8?B?U0dITyt1cHAvSCtKRy9XRGtyb3oyQ29zais5dTkvYkdiL3J6d0ZLTzV6TjJ1?=
- =?utf-8?B?V0NOcXlCWGhsQk5PQ1ZxZWNKNkVlQm5zb1lNZnBURnVVbUZkbW5wb25aaFpG?=
- =?utf-8?B?SVRLblBrTzRZNUpzTE9RcEhsTDErb3FmUmpLWTB5SmRoVXN1ZXRmSGVLMVhS?=
- =?utf-8?B?bklEQng4L202RVB0bWx3R1dxd0RidXB0bG1RNFBtZHpJWVhEN3hLNEVYNnJt?=
- =?utf-8?B?RUNadVo5ME1DTEc2MU9tNVB2OHg2eDZPRzMrZ29nM3dpVDV5STVyMGd3SGdt?=
- =?utf-8?B?WHZEKzREVTJUMXJpcVI3QXBqZW9pU1EraHNVRi9UclFHbURpZG9odEdmZXRG?=
- =?utf-8?B?ZktoUThvRjdQd1hIS0NGbXpPSEI2VjRQSjFmNTg4VkRIK2gwc3BMWEw1Nllr?=
- =?utf-8?B?enRkLy9zTUtpSENWdlB5YVl0YUtreUxZOXcrdys2MUlZS2lhWnROenFGbHBW?=
- =?utf-8?B?c1d0bU03Z0RzZU5JWUhIRldzVENIYjVRR2Rac3pMbEFzTHFSSmVxdWNiTHNO?=
- =?utf-8?B?ZTZKK0lhOHBxVis2cXBHbW1zMnZjMnlGdEgrTVhJZDFGSUdPUGdDbUkremF4?=
- =?utf-8?B?YVFSK2xlSEViNDNvTDk5VEhieFBUeDJjSVVYV3REK1RWcVZWS0cvcWxSaWd1?=
- =?utf-8?B?SWVlVDBCNy91UHByMWJBUTRHeDJscytUc0h3OHVxSFlNTDJwVEJrOUZvTEVv?=
- =?utf-8?Q?y8vxCr/jMfRk2ijFfo4nX8D7s?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Thu, 30 Nov 2023 02:12:49 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E8561B3
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 23:12:51 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21673C433C7;
+        Thu, 30 Nov 2023 07:12:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701328370;
+        bh=Nvr3s9a9nquft77vyd+DXYqvI9sRAvSV7ZSd+qVY2cA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=khhBIH+Y1UgeplrVX6OYu0+sC6c56AZrE6aVM7rhmO5pncLa92oxUP+Gsh/CAAR+j
+         zeG/UCMQJLyCzJN/f+QJ+PeyPTrpFRQv7QXn3lRjXxCgxiyP05Mx2pHpi7vAoR7JLb
+         pm6XMlQUGIEerBuG3SkG4bSgVb606gWu5IoK4+vwC5C17TEbsuJWr3LriHzzH2emYc
+         6kstRiMwGH1P6W4S88z+ZyskLBMGaikEhL1+W2+HYpDj3Onz+qtPr0lX8XWVzepvaV
+         j3XOpiC/l2zey/fo6W/i1QmwUd3uqR/04FbcTALnIOKz1KhXar21AWMMtsWuL+FJl1
+         NonrRMnNcy1cQ==
+Date:   Thu, 30 Nov 2023 12:42:40 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Can Guo <quic_cang@quicinc.com>
+Cc:     bvanassche@acm.org, adrian.hunter@intel.com, cmd4@qualcomm.com,
+        beanhuo@micron.com, avri.altman@wdc.com, junwoo80.lee@samsung.com,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        "open list:GENERIC PHY FRAMEWORK" <linux-phy@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6 08/10] phy: qualcomm: phy-qcom-qmp-ufs: Add High Speed
+ Gear 5 support for SM8550
+Message-ID: <20231130071240.GG3043@thinkpad>
+References: <1701246516-11626-1-git-send-email-quic_cang@quicinc.com>
+ <1701246516-11626-9-git-send-email-quic_cang@quicinc.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM8PR11MB5750.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: edd7f8e1-b131-48be-3b84-08dbf17316de
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Nov 2023 07:08:00.9821
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: lvU4LZ2ubo+EXlTIyyWyPI16f9VEo2F5YsY3L/fxKEqZWx+X1Zy8gWPfNk8DRDRyHgUTrkeH6/6UjxyyFcyogCWqOV4ucqDdbZdmmeEHQa0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR11MB6763
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1701246516-11626-9-git-send-email-quic_cang@quicinc.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQo+IE9uIFdlZCwgTm92IDIyLCAyMDIzIGF0IDA2OjE5OjIwUE0gKzAxMDAsIEplcmVtaSBQaW90
-cm93c2tpIHdyb3RlOg0KPiA+IFdoaWNoIGFwcHJvYWNoIGRvIHlvdSBwcmVmZXI/DQo+IA0KPiBJ
-J20gdHJ5aW5nIHRvIGZpZ3VyZSBvdXQgZnJvbSB0aGUgd2hvbGUgdGhyZWFkLCB3aGF0IHRoaXMg
-Z3Vlc3QgaXMuDQo+IA0KPiAqIEEgSHlwZXJWIHNlY29uZC1sZXZlbCBndWVzdA0KPiANCj4gKiBv
-ZiB0eXBlIFREWA0KPiANCj4gKiBOZWVkcyB0byBkZWZlciBjY19tYXNrIGFuZCBwYWdlIHZpc2li
-aWxpdHkgYmxhLi4uDQo+IA0KPiAqIG5lZWRzIHRvIGRpc2FibGUgVERYIG1vZHVsZSBjYWxscw0K
-PiANCj4gKiBzdHViIG91dCB0ZHhfYWNjZXB0X21lbW9yeQ0KPiANCj4gQW55dGhpbmcgZWxzZT8N
-Cj4gDQoNCkFjdHVhbGx5IEkgd2FudCB0byBjaGFsbGVuZ2UgdGhlIHdob2xlIG5vdGlvbiB0aGF0
-IGEgVERYIHBhcnRpdGlvbmluZyBMMg0KZ3Vlc3QgaXMgYSBURFggZ3Vlc3QuIEJ5IHRoZSBkZWZp
-bml0aW9uIG9mIHRoZSBURFggcGFydGl0aW9uaW5nIHNwZWMsIA0KTDIgZ3Vlc3QgY2FuIGJlIGFu
-eXRoaW5nIGFuZCBMMSBWTU0gY2FuIGVtdWxhdGUgYW55IGVudmlyb25tZW50DQpmb3IgaXRzIEwy
-IGd1ZXN0cywgaW5jbHVkaW5nIHJ1bm5pbmcgYSBmdWxseSB1bm1vZGlmaWVkIFREWCAxLjAgZ3Vl
-c3QNCihhbmQgdmlydHVhbGl6aW5nIFRERyBjYWxscyBmb3IgaXQgYW5kIHdoYXRldmVyIGVsc2Ug
-aXMgbmVlZGVkKS4NClNvIHdlIGFyZSByZWFsbHkgdGFsa2luZyBhYm91dCBhIGJpZyBzcGVjdHJ1
-bSBvZiBwb3NzaWJsZSBMMiBndWVzdHM6DQoNCjEuIE5vcm1hbCBsZWdhY3kgZ3Vlc3Qgd2l0aG91
-dCAqYW55KiBURFgga25vd2xlZGdlDQoyLiBOb3JtYWwgbGVnYWN5IGd1ZXN0IHdpdGggc29tZSBh
-d2FyZW5lc3Mgb2YgVERYIHBhcnRpdGlvbmluZyAobm90ZSwgbm90IFREWCAxLjAgYXdhcmUhKSAN
-CihiZWluZyBhYmxlIHRvIGRvIHRkdm1jYWxscyB0byBMMCwgYmVpbmcgYWJsZSB0byB1c2Ugc2hh
-cmVkIG1lbW9yeSwgDQpiZWluZyBhYmxlIHRvIHVzZSB0ZHggcGFydGl0aW9uaW5nIHNwZWNpZmlj
-IHBhcmF2aXJ0IGludGVyZmFjZSB0byBMMSBpZiBkZWZpbmVkLCBldGMpIA0KLi4uIA0KMy4gTm9y
-bWFsIFREWCAxLjAgZ3Vlc3QgdGhhdCBpcyB1bmF3YXJlIHRoYXQgaXQgcnVucyBpbiBwYXJ0aXRp
-b25lZCBlbnZpcm9ubWVudA0KNC4gYW5kIHNvIG9uDQoNCkkgZG9u4oCZdCBrbm93IGlmIEFNRCBh
-cmNoaXRlY3R1cmUgd291bGQgc3VwcG9ydCBhbGwgdGhpcyBzcGVjdHJ1bSBvZiB0aGUgZ3Vlc3Rz
-IHRocm91Z2guDQpJZiBpdCBkb2VzLCB0aGVuIHdlIGNhbiBkaXNjdXNzIHRoaXMgdmVuZG9yIGFn
-bm9zdGljLCB3aGljaCBpcyBtdWNoIGJldHRlci4NCg0KR2l2ZW4gdGhhdCB0aGUgbWFueSBwb3Nz
-aWJsZSBjb21iaW5hdGlvbnMgb2YgdGhlIEwyIGd1ZXN0cyAoYW5kIGFzIEthaSByaWdodGZ1bGx5
-DQpwb2ludGVkIG91dCwgZWFjaCBvcHRpb24gd2lsbCBiZSBmdXJ0aGVyIGJyb2tlbiBkb3duIGJ5
-IHdoYXQgZXhhY3RseSBpbnRlcmZhY2UgDQpMMSBWTU0gZGVjaWRlcyB0byBleHBvc2UgdG8gdGhl
-IGd1ZXN0KSwgSSB0aGluayB3ZSBjYW5ub3QgaGFyZGNvZGUgYW55IGxvZ2ljDQphYm91dCB3aGF0
-IHRoaXMgcGFydGl0aW9uZWQgZ3Vlc3QgaXMgaW4gdGhlIGd1ZXN0IGl0c2VsZi4gDQpJbnN0ZWFk
-IHdlIHNob3VsZCBoYXZlIGEgZmxleGlibGUgd2F5IGZvciB0aGUgTDIgZ3Vlc3QgdG8gZGlzY292
-ZXIgdGhlIHZpcnQgZW52aXJvbm1lbnQNCml0IHJ1bnMgaW4gKGFzIG1vZGVsbGVkIGJ5IEwxIFZN
-TSkgYW5kIHRoZSBiYXNlbGluZSBzaG91bGQgbm90IHRvIGFzc3VtZQ0KaXQgaXMgYSBURFggb3Ig
-U0VWIGd1ZXN0LCBidXQgYXNzdW1lIHRoaXMgaXMgc29tZSBzcGVjaWFsIHZpcnQgZ3Vlc3QgKG9y
-IGxlZ2FjeSBndWVzdCwNCndoYXRldmVyIGFwcHJvYWNoIGlzIGNsZWFuZXIpIGFuZCBleHBvc2Ug
-YWRkaXRpb25hbCBpbnRlcmZhY2VzIHRvIGl0LiANCg0KQmVzdCBSZWdhcmRzLA0KRWxlbmEuDQo=
+On Wed, Nov 29, 2023 at 12:28:33AM -0800, Can Guo wrote:
+> On SM8550, two sets of UFS PHY settings are provided, one set is to support
+> HS-G5, another set is to support HS-G4 and lower gears. The two sets of PHY
+> settings are programming different values to different registers, mixing
+> the two sets and/or overwriting one set with another set is definitely not
+> blessed by UFS PHY designers.
+> 
+> To add HS-G5 support for SM8550, split the two sets of PHY settings into
+> their dedicated overlay tables, only the common parts of the two sets of
+> PHY settings are left in the .tbls.
+> 
+> Consider we are going to add even higher gear support in future, to avoid
+> adding more tables with different names, rename the .tbls_hs_g4 and make it
+> an array, a size of 2 is enough as of now.
+> 
+> In this case, .tbls alone is not a complete set of PHY settings, so either
+> tbls_hs_overlay[0] or tbls_hs_overlay[1] must be applied on top of the
+> .tbls to become a complete set of PHY settings.
+> 
+> Signed-off-by: Can Guo <quic_cang@quicinc.com>
+> ---
+>  drivers/phy/qualcomm/phy-qcom-qmp-pcs-ufs-v6.h     |   2 +
+>  drivers/phy/qualcomm/phy-qcom-qmp-qserdes-com-v6.h |   2 +
+>  .../qualcomm/phy-qcom-qmp-qserdes-txrx-ufs-v6.h    |   9 ++
+>  drivers/phy/qualcomm/phy-qcom-qmp-ufs.c            | 170 ++++++++++++++++++---
+>  4 files changed, 163 insertions(+), 20 deletions(-)
+> 
+> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-pcs-ufs-v6.h b/drivers/phy/qualcomm/phy-qcom-qmp-pcs-ufs-v6.h
+> index c23d5e4..e563af5 100644
+> --- a/drivers/phy/qualcomm/phy-qcom-qmp-pcs-ufs-v6.h
+> +++ b/drivers/phy/qualcomm/phy-qcom-qmp-pcs-ufs-v6.h
+> @@ -18,6 +18,7 @@
+>  #define QPHY_V6_PCS_UFS_BIST_FIXED_PAT_CTRL		0x060
+>  #define QPHY_V6_PCS_UFS_TX_HSGEAR_CAPABILITY		0x074
+>  #define QPHY_V6_PCS_UFS_RX_HSGEAR_CAPABILITY		0x0bc
+> +#define QPHY_V6_PCS_UFS_RX_HS_G5_SYNC_LENGTH_CAPABILITY	0x12c
+>  #define QPHY_V6_PCS_UFS_DEBUG_BUS_CLKSEL		0x158
+>  #define QPHY_V6_PCS_UFS_LINECFG_DISABLE			0x17c
+>  #define QPHY_V6_PCS_UFS_RX_MIN_HIBERN8_TIME		0x184
+> @@ -27,5 +28,6 @@
+>  #define QPHY_V6_PCS_UFS_READY_STATUS			0x1a8
+>  #define QPHY_V6_PCS_UFS_TX_MID_TERM_CTRL1		0x1f4
+>  #define QPHY_V6_PCS_UFS_MULTI_LANE_CTRL1		0x1fc
+> +#define QPHY_V6_PCS_UFS_RX_HSG5_SYNC_WAIT_TIME		0x220
+>  
+>  #endif
+> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-qserdes-com-v6.h b/drivers/phy/qualcomm/phy-qcom-qmp-qserdes-com-v6.h
+> index f420f8f..ef392ce 100644
+> --- a/drivers/phy/qualcomm/phy-qcom-qmp-qserdes-com-v6.h
+> +++ b/drivers/phy/qualcomm/phy-qcom-qmp-qserdes-com-v6.h
+> @@ -56,6 +56,8 @@
+>  #define QSERDES_V6_COM_SYS_CLK_CTRL				0xe4
+>  #define QSERDES_V6_COM_SYSCLK_BUF_ENABLE			0xe8
+>  #define QSERDES_V6_COM_PLL_IVCO					0xf4
+> +#define QSERDES_V6_COM_CMN_IETRIM				0xfc
+> +#define QSERDES_V6_COM_CMN_IPTRIM				0x100
+>  #define QSERDES_V6_COM_SYSCLK_EN_SEL				0x110
+>  #define QSERDES_V6_COM_RESETSM_CNTRL				0x118
+>  #define QSERDES_V6_COM_LOCK_CMP_EN				0x120
+> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-qserdes-txrx-ufs-v6.h b/drivers/phy/qualcomm/phy-qcom-qmp-qserdes-txrx-ufs-v6.h
+> index 674f158..48f31c8 100644
+> --- a/drivers/phy/qualcomm/phy-qcom-qmp-qserdes-txrx-ufs-v6.h
+> +++ b/drivers/phy/qualcomm/phy-qcom-qmp-qserdes-txrx-ufs-v6.h
+> @@ -15,8 +15,15 @@
+>  
+>  #define QSERDES_UFS_V6_RX_UCDR_FASTLOCK_FO_GAIN_RATE2		0x08
+>  #define QSERDES_UFS_V6_RX_UCDR_FASTLOCK_FO_GAIN_RATE4		0x10
+> +#define QSERDES_UFS_V6_RX_UCDR_FASTLOCK_SO_GAIN_RATE4		0x24
+> +#define QSERDES_UFS_V6_RX_UCDR_FASTLOCK_COUNT_HIGH_RATE4	0x54
+>  #define QSERDES_UFS_V6_RX_UCDR_FO_GAIN_RATE2			0xd4
+> +#define QSERDES_UFS_V6_RX_UCDR_FO_GAIN_RATE4			0xdc
+> +#define QSERDES_UFS_V6_RX_UCDR_SO_GAIN_RATE4			0xf0
+> +#define QSERDES_UFS_V6_RX_UCDR_PI_CONTROLS			0xf4
+>  #define QSERDES_UFS_V6_RX_VGA_CAL_MAN_VAL			0x178
+> +#define QSERDES_UFS_V6_RX_EQ_OFFSET_ADAPTOR_CNTRL1		0x1bc
+> +#define QSERDES_UFS_V6_RX_OFFSET_ADAPTOR_CNTRL3			0x1c4
+>  #define QSERDES_UFS_V6_RX_MODE_RATE_0_1_B0			0x208
+>  #define QSERDES_UFS_V6_RX_MODE_RATE_0_1_B1			0x20c
+>  #define QSERDES_UFS_V6_RX_MODE_RATE_0_1_B3			0x214
+> @@ -28,6 +35,8 @@
+>  #define QSERDES_UFS_V6_RX_MODE_RATE3_B5				0x264
+>  #define QSERDES_UFS_V6_RX_MODE_RATE3_B8				0x270
+>  #define QSERDES_UFS_V6_RX_MODE_RATE4_B3				0x280
+> +#define QSERDES_UFS_V6_RX_MODE_RATE4_B4				0x284
+>  #define QSERDES_UFS_V6_RX_MODE_RATE4_B6				0x28c
+> +#define QSERDES_UFS_V6_RX_DLL0_FTUNE_CTRL			0x2f8
+>  
+>  #endif
+> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-ufs.c b/drivers/phy/qualcomm/phy-qcom-qmp-ufs.c
+> index 2173418..7e5f1154 100644
+> --- a/drivers/phy/qualcomm/phy-qcom-qmp-ufs.c
+> +++ b/drivers/phy/qualcomm/phy-qcom-qmp-ufs.c
+> @@ -41,6 +41,8 @@
+>  
+>  #define PHY_INIT_COMPLETE_TIMEOUT		10000
+>  
+> +#define NUM_OVERLAY				2
+> +
+>  struct qmp_phy_init_tbl {
+>  	unsigned int offset;
+>  	unsigned int val;
+> @@ -754,15 +756,22 @@ static const struct qmp_phy_init_tbl sm8550_ufsphy_serdes[] = {
+>  	QMP_PHY_INIT_CFG(QSERDES_V6_COM_HSCLK_SEL_1, 0x11),
+>  	QMP_PHY_INIT_CFG(QSERDES_V6_COM_HSCLK_HS_SWITCH_SEL_1, 0x00),
+>  	QMP_PHY_INIT_CFG(QSERDES_V6_COM_LOCK_CMP_EN, 0x01),
+> -	QMP_PHY_INIT_CFG(QSERDES_V6_COM_VCO_TUNE_MAP, 0x04),
+> -	QMP_PHY_INIT_CFG(QSERDES_V6_COM_PLL_IVCO, 0x0f),
+>  	QMP_PHY_INIT_CFG(QSERDES_V6_COM_VCO_TUNE_INITVAL2, 0x00),
+>  	QMP_PHY_INIT_CFG(QSERDES_V6_COM_DEC_START_MODE0, 0x41),
+> -	QMP_PHY_INIT_CFG(QSERDES_V6_COM_CP_CTRL_MODE0, 0x0a),
+>  	QMP_PHY_INIT_CFG(QSERDES_V6_COM_PLL_RCTRL_MODE0, 0x18),
+>  	QMP_PHY_INIT_CFG(QSERDES_V6_COM_PLL_CCTRL_MODE0, 0x14),
+>  	QMP_PHY_INIT_CFG(QSERDES_V6_COM_LOCK_CMP1_MODE0, 0x7f),
+>  	QMP_PHY_INIT_CFG(QSERDES_V6_COM_LOCK_CMP2_MODE0, 0x06),
+> +};
+> +
+> +static const struct qmp_phy_init_tbl sm8550_ufsphy_hs_b_serdes[] = {
+> +	QMP_PHY_INIT_CFG(QSERDES_V6_COM_VCO_TUNE_MAP, 0x44),
+> +};
+> +
+> +static const struct qmp_phy_init_tbl sm8550_ufsphy_g4_serdes[] = {
+> +	QMP_PHY_INIT_CFG(QSERDES_V6_COM_VCO_TUNE_MAP, 0x04),
+> +	QMP_PHY_INIT_CFG(QSERDES_V6_COM_PLL_IVCO, 0x0f),
+> +	QMP_PHY_INIT_CFG(QSERDES_V6_COM_CP_CTRL_MODE0, 0x0a),
+>  	QMP_PHY_INIT_CFG(QSERDES_V6_COM_DEC_START_MODE1, 0x4c),
+>  	QMP_PHY_INIT_CFG(QSERDES_V6_COM_CP_CTRL_MODE1, 0x0a),
+>  	QMP_PHY_INIT_CFG(QSERDES_V6_COM_PLL_RCTRL_MODE1, 0x18),
+> @@ -771,19 +780,24 @@ static const struct qmp_phy_init_tbl sm8550_ufsphy_serdes[] = {
+>  	QMP_PHY_INIT_CFG(QSERDES_V6_COM_LOCK_CMP2_MODE1, 0x07),
+>  };
+>  
+> -static const struct qmp_phy_init_tbl sm8550_ufsphy_hs_b_serdes[] = {
+> -	QMP_PHY_INIT_CFG(QSERDES_V6_COM_VCO_TUNE_MAP, 0x44),
+> +static const struct qmp_phy_init_tbl sm8550_ufsphy_g5_serdes[] = {
+> +	QMP_PHY_INIT_CFG(QSERDES_V6_COM_PLL_IVCO, 0x1f),
+> +	QMP_PHY_INIT_CFG(QSERDES_V6_COM_CMN_IETRIM, 0x1b),
+> +	QMP_PHY_INIT_CFG(QSERDES_V6_COM_CMN_IPTRIM, 0x1c),
+> +	QMP_PHY_INIT_CFG(QSERDES_V6_COM_CP_CTRL_MODE0, 0x06),
+>  };
+>  
+>  static const struct qmp_phy_init_tbl sm8550_ufsphy_tx[] = {
+>  	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_TX_LANE_MODE_1, 0x05),
+>  	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_TX_RES_CODE_LANE_OFFSET_TX, 0x07),
+> +};
+> +
+> +static const struct qmp_phy_init_tbl sm8550_ufsphy_g4_tx[] = {
+>  	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_TX_FR_DCC_CTRL, 0x4c),
+>  };
+>  
+>  static const struct qmp_phy_init_tbl sm8550_ufsphy_rx[] = {
+>  	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_UCDR_FO_GAIN_RATE2, 0x0c),
+> -	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_VGA_CAL_MAN_VAL, 0x0e),
+>  
+>  	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_MODE_RATE_0_1_B0, 0xc2),
+>  	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_MODE_RATE_0_1_B1, 0xc2),
+> @@ -799,16 +813,45 @@ static const struct qmp_phy_init_tbl sm8550_ufsphy_rx[] = {
+>  	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_MODE_RATE3_B8, 0x02),
+>  };
+>  
+> +static const struct qmp_phy_init_tbl sm8550_ufsphy_g4_rx[] = {
+> +	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_VGA_CAL_MAN_VAL, 0x0e),
+> +};
+> +
+> +static const struct qmp_phy_init_tbl sm8550_ufsphy_g5_rx[] = {
+> +	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_UCDR_FO_GAIN_RATE4, 0x0c),
+> +	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_UCDR_SO_GAIN_RATE4, 0x04),
+> +	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_EQ_OFFSET_ADAPTOR_CNTRL1, 0x14),
+> +	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_UCDR_PI_CONTROLS, 0x07),
+> +	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_OFFSET_ADAPTOR_CNTRL3, 0x0e),
+> +	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_UCDR_FASTLOCK_COUNT_HIGH_RATE4, 0x02),
+> +	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_UCDR_FASTLOCK_FO_GAIN_RATE4, 0x1c),
+> +	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_UCDR_FASTLOCK_SO_GAIN_RATE4, 0x06),
+> +	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_VGA_CAL_MAN_VAL, 0x08),
+> +	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_MODE_RATE4_B3, 0xb9),
+> +	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_MODE_RATE4_B4, 0x4f),
+> +	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_MODE_RATE4_B6, 0xff),
+> +	QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_DLL0_FTUNE_CTRL, 0x30),
+> +};
+> +
+>  static const struct qmp_phy_init_tbl sm8550_ufsphy_pcs[] = {
+>  	QMP_PHY_INIT_CFG(QPHY_V6_PCS_UFS_RX_SIGDET_CTRL2, 0x69),
+>  	QMP_PHY_INIT_CFG(QPHY_V6_PCS_UFS_TX_LARGE_AMP_DRV_LVL, 0x0f),
+>  	QMP_PHY_INIT_CFG(QPHY_V6_PCS_UFS_TX_MID_TERM_CTRL1, 0x43),
+> -	QMP_PHY_INIT_CFG(QPHY_V6_PCS_UFS_PLL_CNTL, 0x2b),
+>  	QMP_PHY_INIT_CFG(QPHY_V6_PCS_UFS_MULTI_LANE_CTRL1, 0x02),
+> +};
+> +
+> +static const struct qmp_phy_init_tbl sm8550_ufsphy_g4_pcs[] = {
+> +	QMP_PHY_INIT_CFG(QPHY_V6_PCS_UFS_PLL_CNTL, 0x2b),
+>  	QMP_PHY_INIT_CFG(QPHY_V6_PCS_UFS_TX_HSGEAR_CAPABILITY, 0x04),
+>  	QMP_PHY_INIT_CFG(QPHY_V6_PCS_UFS_RX_HSGEAR_CAPABILITY, 0x04),
+>  };
+>  
+> +static const struct qmp_phy_init_tbl sm8550_ufsphy_g5_pcs[] = {
+> +	QMP_PHY_INIT_CFG(QPHY_V6_PCS_UFS_PLL_CNTL, 0x33),
+> +	QMP_PHY_INIT_CFG(QPHY_V6_PCS_UFS_RX_HS_G5_SYNC_LENGTH_CAPABILITY, 0x4f),
+> +	QMP_PHY_INIT_CFG(QPHY_V6_PCS_UFS_RX_HSG5_SYNC_WAIT_TIME, 0x9e),
+> +};
+> +
+>  struct qmp_ufs_offsets {
+>  	u16 serdes;
+>  	u16 pcs;
+> @@ -828,6 +871,8 @@ struct qmp_phy_cfg_tbls {
+>  	int rx_num;
+>  	const struct qmp_phy_init_tbl *pcs;
+>  	int pcs_num;
+> +	/* Maximum supported Gear of this tbls */
+> +	u32 max_gear;
+>  };
+>  
+>  /* struct qmp_phy_cfg - per-PHY initialization config */
+> @@ -835,13 +880,15 @@ struct qmp_phy_cfg {
+>  	int lanes;
+>  
+>  	const struct qmp_ufs_offsets *offsets;
+> +	/* Maximum supported Gear of this config */
+> +	u32 max_supported_gear;
+>  
+>  	/* Main init sequence for PHY blocks - serdes, tx, rx, pcs */
+>  	const struct qmp_phy_cfg_tbls tbls;
+>  	/* Additional sequence for HS Series B */
+>  	const struct qmp_phy_cfg_tbls tbls_hs_b;
+> -	/* Additional sequence for HS G4 */
+> -	const struct qmp_phy_cfg_tbls tbls_hs_g4;
+> +	/* Additional sequence for different HS Gears */
+> +	const struct qmp_phy_cfg_tbls tbls_hs_overlay[NUM_OVERLAY];
+>  
+>  	/* clock ids to be requested */
+>  	const char * const *clk_list;
+> @@ -944,6 +991,7 @@ static const struct qmp_phy_cfg msm8996_ufsphy_cfg = {
+>  	.lanes			= 1,
+>  
+>  	.offsets		= &qmp_ufs_offsets,
+> +	.max_supported_gear	= UFS_HS_G3,
+>  
+>  	.tbls = {
+>  		.serdes		= msm8996_ufsphy_serdes,
+> @@ -969,6 +1017,7 @@ static const struct qmp_phy_cfg sa8775p_ufsphy_cfg = {
+>  	.lanes			= 2,
+>  
+>  	.offsets		= &qmp_ufs_offsets,
+> +	.max_supported_gear	= UFS_HS_G4,
+>  
+>  	.tbls = {
+>  		.serdes		= sm8350_ufsphy_serdes,
+> @@ -984,13 +1033,14 @@ static const struct qmp_phy_cfg sa8775p_ufsphy_cfg = {
+>  		.serdes		= sm8350_ufsphy_hs_b_serdes,
+>  		.serdes_num	= ARRAY_SIZE(sm8350_ufsphy_hs_b_serdes),
+>  	},
+> -	.tbls_hs_g4 = {
+> +	.tbls_hs_overlay[0] = {
+>  		.tx		= sm8350_ufsphy_g4_tx,
+>  		.tx_num		= ARRAY_SIZE(sm8350_ufsphy_g4_tx),
+>  		.rx		= sm8350_ufsphy_g4_rx,
+>  		.rx_num		= ARRAY_SIZE(sm8350_ufsphy_g4_rx),
+>  		.pcs		= sm8350_ufsphy_g4_pcs,
+>  		.pcs_num	= ARRAY_SIZE(sm8350_ufsphy_g4_pcs),
+> +		.max_gear	= UFS_HS_G4,
+>  	},
+>  	.clk_list		= sm8450_ufs_phy_clk_l,
+>  	.num_clks		= ARRAY_SIZE(sm8450_ufs_phy_clk_l),
+> @@ -1003,6 +1053,7 @@ static const struct qmp_phy_cfg sc7280_ufsphy_cfg = {
+>  	.lanes                  = 2,
+>  
+>  	.offsets                = &qmp_ufs_offsets,
+> +	.max_supported_gear	= UFS_HS_G4,
+>  
+>  	.tbls = {
+>  		.serdes         = sm8150_ufsphy_serdes,
+> @@ -1018,13 +1069,14 @@ static const struct qmp_phy_cfg sc7280_ufsphy_cfg = {
+>  		.serdes         = sm8150_ufsphy_hs_b_serdes,
+>  		.serdes_num     = ARRAY_SIZE(sm8150_ufsphy_hs_b_serdes),
+>  	},
+> -	.tbls_hs_g4 = {
+> +	.tbls_hs_overlay[0] = {
+>  		.tx             = sm8250_ufsphy_hs_g4_tx,
+>  		.tx_num         = ARRAY_SIZE(sm8250_ufsphy_hs_g4_tx),
+>  		.rx             = sc7280_ufsphy_hs_g4_rx,
+>  		.rx_num         = ARRAY_SIZE(sc7280_ufsphy_hs_g4_rx),
+>  		.pcs            = sm8150_ufsphy_hs_g4_pcs,
+>  		.pcs_num        = ARRAY_SIZE(sm8150_ufsphy_hs_g4_pcs),
+> +		.max_gear	= UFS_HS_G4,
+>  	},
+>  	.clk_list               = sm8450_ufs_phy_clk_l,
+>  	.num_clks               = ARRAY_SIZE(sm8450_ufs_phy_clk_l),
+> @@ -1037,6 +1089,7 @@ static const struct qmp_phy_cfg sc8280xp_ufsphy_cfg = {
+>  	.lanes			= 2,
+>  
+>  	.offsets		= &qmp_ufs_offsets,
+> +	.max_supported_gear	= UFS_HS_G4,
+>  
+>  	.tbls = {
+>  		.serdes		= sm8350_ufsphy_serdes,
+> @@ -1052,13 +1105,14 @@ static const struct qmp_phy_cfg sc8280xp_ufsphy_cfg = {
+>  		.serdes		= sm8350_ufsphy_hs_b_serdes,
+>  		.serdes_num	= ARRAY_SIZE(sm8350_ufsphy_hs_b_serdes),
+>  	},
+> -	.tbls_hs_g4 = {
+> +	.tbls_hs_overlay[0] = {
+>  		.tx		= sm8350_ufsphy_g4_tx,
+>  		.tx_num		= ARRAY_SIZE(sm8350_ufsphy_g4_tx),
+>  		.rx		= sm8350_ufsphy_g4_rx,
+>  		.rx_num		= ARRAY_SIZE(sm8350_ufsphy_g4_rx),
+>  		.pcs		= sm8350_ufsphy_g4_pcs,
+>  		.pcs_num	= ARRAY_SIZE(sm8350_ufsphy_g4_pcs),
+> +		.max_gear	= UFS_HS_G4,
+>  	},
+>  	.clk_list		= sdm845_ufs_phy_clk_l,
+>  	.num_clks		= ARRAY_SIZE(sdm845_ufs_phy_clk_l),
+> @@ -1071,6 +1125,7 @@ static const struct qmp_phy_cfg sdm845_ufsphy_cfg = {
+>  	.lanes			= 2,
+>  
+>  	.offsets		= &qmp_ufs_offsets,
+> +	.max_supported_gear	= UFS_HS_G3,
+>  
+>  	.tbls = {
+>  		.serdes		= sdm845_ufsphy_serdes,
+> @@ -1099,6 +1154,7 @@ static const struct qmp_phy_cfg sm6115_ufsphy_cfg = {
+>  	.lanes			= 1,
+>  
+>  	.offsets		= &qmp_ufs_offsets,
+> +	.max_supported_gear	= UFS_HS_G3,
+>  
+>  	.tbls = {
+>  		.serdes		= sm6115_ufsphy_serdes,
+> @@ -1127,6 +1183,7 @@ static const struct qmp_phy_cfg sm7150_ufsphy_cfg = {
+>  	.lanes			= 1,
+>  
+>  	.offsets		= &qmp_ufs_offsets,
+> +	.max_supported_gear	= UFS_HS_G3,
+>  
+>  	.tbls = {
+>  		.serdes		= sdm845_ufsphy_serdes,
+> @@ -1155,6 +1212,7 @@ static const struct qmp_phy_cfg sm8150_ufsphy_cfg = {
+>  	.lanes			= 2,
+>  
+>  	.offsets		= &qmp_ufs_offsets,
+> +	.max_supported_gear	= UFS_HS_G4,
+>  
+>  	.tbls = {
+>  		.serdes		= sm8150_ufsphy_serdes,
+> @@ -1170,13 +1228,14 @@ static const struct qmp_phy_cfg sm8150_ufsphy_cfg = {
+>  		.serdes		= sm8150_ufsphy_hs_b_serdes,
+>  		.serdes_num	= ARRAY_SIZE(sm8150_ufsphy_hs_b_serdes),
+>  	},
+> -	.tbls_hs_g4 = {
+> +	.tbls_hs_overlay[0] = {
+>  		.tx		= sm8150_ufsphy_hs_g4_tx,
+>  		.tx_num		= ARRAY_SIZE(sm8150_ufsphy_hs_g4_tx),
+>  		.rx		= sm8150_ufsphy_hs_g4_rx,
+>  		.rx_num		= ARRAY_SIZE(sm8150_ufsphy_hs_g4_rx),
+>  		.pcs		= sm8150_ufsphy_hs_g4_pcs,
+>  		.pcs_num	= ARRAY_SIZE(sm8150_ufsphy_hs_g4_pcs),
+> +		.max_gear	= UFS_HS_G4,
+>  	},
+>  	.clk_list		= sdm845_ufs_phy_clk_l,
+>  	.num_clks		= ARRAY_SIZE(sdm845_ufs_phy_clk_l),
+> @@ -1189,6 +1248,7 @@ static const struct qmp_phy_cfg sm8250_ufsphy_cfg = {
+>  	.lanes			= 2,
+>  
+>  	.offsets		= &qmp_ufs_offsets,
+> +	.max_supported_gear	= UFS_HS_G4,
+>  
+>  	.tbls = {
+>  		.serdes		= sm8150_ufsphy_serdes,
+> @@ -1204,13 +1264,14 @@ static const struct qmp_phy_cfg sm8250_ufsphy_cfg = {
+>  		.serdes		= sm8150_ufsphy_hs_b_serdes,
+>  		.serdes_num	= ARRAY_SIZE(sm8150_ufsphy_hs_b_serdes),
+>  	},
+> -	.tbls_hs_g4 = {
+> +	.tbls_hs_overlay[0] = {
+>  		.tx		= sm8250_ufsphy_hs_g4_tx,
+>  		.tx_num		= ARRAY_SIZE(sm8250_ufsphy_hs_g4_tx),
+>  		.rx		= sm8250_ufsphy_hs_g4_rx,
+>  		.rx_num		= ARRAY_SIZE(sm8250_ufsphy_hs_g4_rx),
+>  		.pcs		= sm8150_ufsphy_hs_g4_pcs,
+>  		.pcs_num	= ARRAY_SIZE(sm8150_ufsphy_hs_g4_pcs),
+> +		.max_gear	= UFS_HS_G4,
+>  	},
+>  	.clk_list		= sdm845_ufs_phy_clk_l,
+>  	.num_clks		= ARRAY_SIZE(sdm845_ufs_phy_clk_l),
+> @@ -1223,6 +1284,7 @@ static const struct qmp_phy_cfg sm8350_ufsphy_cfg = {
+>  	.lanes			= 2,
+>  
+>  	.offsets		= &qmp_ufs_offsets,
+> +	.max_supported_gear	= UFS_HS_G4,
+>  
+>  	.tbls = {
+>  		.serdes		= sm8350_ufsphy_serdes,
+> @@ -1238,13 +1300,14 @@ static const struct qmp_phy_cfg sm8350_ufsphy_cfg = {
+>  		.serdes		= sm8350_ufsphy_hs_b_serdes,
+>  		.serdes_num	= ARRAY_SIZE(sm8350_ufsphy_hs_b_serdes),
+>  	},
+> -	.tbls_hs_g4 = {
+> +	.tbls_hs_overlay[0] = {
+>  		.tx		= sm8350_ufsphy_g4_tx,
+>  		.tx_num		= ARRAY_SIZE(sm8350_ufsphy_g4_tx),
+>  		.rx		= sm8350_ufsphy_g4_rx,
+>  		.rx_num		= ARRAY_SIZE(sm8350_ufsphy_g4_rx),
+>  		.pcs		= sm8350_ufsphy_g4_pcs,
+>  		.pcs_num	= ARRAY_SIZE(sm8350_ufsphy_g4_pcs),
+> +		.max_gear	= UFS_HS_G4,
+>  	},
+>  	.clk_list		= sdm845_ufs_phy_clk_l,
+>  	.num_clks		= ARRAY_SIZE(sdm845_ufs_phy_clk_l),
+> @@ -1257,6 +1320,7 @@ static const struct qmp_phy_cfg sm8450_ufsphy_cfg = {
+>  	.lanes			= 2,
+>  
+>  	.offsets		= &qmp_ufs_offsets,
+> +	.max_supported_gear	= UFS_HS_G4,
+>  
+>  	.tbls = {
+>  		.serdes		= sm8350_ufsphy_serdes,
+> @@ -1272,13 +1336,14 @@ static const struct qmp_phy_cfg sm8450_ufsphy_cfg = {
+>  		.serdes		= sm8350_ufsphy_hs_b_serdes,
+>  		.serdes_num	= ARRAY_SIZE(sm8350_ufsphy_hs_b_serdes),
+>  	},
+> -	.tbls_hs_g4 = {
+> +	.tbls_hs_overlay[0] = {
+>  		.tx		= sm8350_ufsphy_g4_tx,
+>  		.tx_num		= ARRAY_SIZE(sm8350_ufsphy_g4_tx),
+>  		.rx		= sm8350_ufsphy_g4_rx,
+>  		.rx_num		= ARRAY_SIZE(sm8350_ufsphy_g4_rx),
+>  		.pcs		= sm8350_ufsphy_g4_pcs,
+>  		.pcs_num	= ARRAY_SIZE(sm8350_ufsphy_g4_pcs),
+> +		.max_gear	= UFS_HS_G4,
+>  	},
+>  	.clk_list		= sm8450_ufs_phy_clk_l,
+>  	.num_clks		= ARRAY_SIZE(sm8450_ufs_phy_clk_l),
+> @@ -1291,6 +1356,7 @@ static const struct qmp_phy_cfg sm8550_ufsphy_cfg = {
+>  	.lanes			= 2,
+>  
+>  	.offsets		= &qmp_ufs_offsets_v6,
+> +	.max_supported_gear	= UFS_HS_G5,
+>  
+>  	.tbls = {
+>  		.serdes		= sm8550_ufsphy_serdes,
+> @@ -1306,6 +1372,26 @@ static const struct qmp_phy_cfg sm8550_ufsphy_cfg = {
+>  		.serdes		= sm8550_ufsphy_hs_b_serdes,
+>  		.serdes_num	= ARRAY_SIZE(sm8550_ufsphy_hs_b_serdes),
+>  	},
+> +	.tbls_hs_overlay[0] = {
+> +		.serdes		= sm8550_ufsphy_g4_serdes,
+> +		.serdes_num	= ARRAY_SIZE(sm8550_ufsphy_g4_serdes),
+> +		.tx		= sm8550_ufsphy_g4_tx,
+> +		.tx_num		= ARRAY_SIZE(sm8550_ufsphy_g4_tx),
+> +		.rx		= sm8550_ufsphy_g4_rx,
+> +		.rx_num		= ARRAY_SIZE(sm8550_ufsphy_g4_rx),
+> +		.pcs		= sm8550_ufsphy_g4_pcs,
+> +		.pcs_num	= ARRAY_SIZE(sm8550_ufsphy_g4_pcs),
+> +		.max_gear	= UFS_HS_G4,
+> +	},
+> +	.tbls_hs_overlay[1] = {
+> +		.serdes		= sm8550_ufsphy_g5_serdes,
+> +		.serdes_num	= ARRAY_SIZE(sm8550_ufsphy_g5_serdes),
+> +		.rx		= sm8550_ufsphy_g5_rx,
+> +		.rx_num		= ARRAY_SIZE(sm8550_ufsphy_g5_rx),
+> +		.pcs		= sm8550_ufsphy_g5_pcs,
+> +		.pcs_num	= ARRAY_SIZE(sm8550_ufsphy_g5_pcs),
+> +		.max_gear	= UFS_HS_G5,
+> +	},
+>  	.clk_list		= sdm845_ufs_phy_clk_l,
+>  	.num_clks		= ARRAY_SIZE(sdm845_ufs_phy_clk_l),
+>  	.vreg_list		= qmp_phy_vreg_l,
+> @@ -1368,17 +1454,55 @@ static void qmp_ufs_pcs_init(struct qmp_ufs *qmp, const struct qmp_phy_cfg_tbls
+>  	qmp_ufs_configure(pcs, tbls->pcs, tbls->pcs_num);
+>  }
+>  
+> +static int qmp_ufs_get_gear_overlay(struct qmp_ufs *qmp, const struct qmp_phy_cfg *cfg)
+> +{
+> +	u32 max_gear, floor_max_gear = cfg->max_supported_gear;
+> +	int i = NUM_OVERLAY - 1;
+
+Just use i directly in the for loop. Also, please rename "i" with "idx" to make
+it clear.
+
+> +	int ret = -EINVAL;
+> +
+> +	for (; i >= 0; i --) {
+
+i--
+
+> +		max_gear = cfg->tbls_hs_overlay[i].max_gear;
+> +
+> +		if (max_gear == 0)
+> +			continue;
+
+You are setting max_gear even for targets with a single overlay. How can this
+become 0?
+
+> +
+> +		/* Direct matching, bail */
+> +		if (qmp->submode == max_gear)
+> +			return i;
+> +
+> +		/* If no direct matching, the lowest gear is the best matching */
+> +		if (max_gear < floor_max_gear) {
+> +			ret = i;
+> +			floor_max_gear = max_gear;
+> +		}
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+>  static void qmp_ufs_init_registers(struct qmp_ufs *qmp, const struct qmp_phy_cfg *cfg)
+>  {
+> +	int i;
+> +	bool apply_overlay = false;
+> +
+> +	i = qmp_ufs_get_gear_overlay(qmp, cfg);
+> +	if (i >= 0)
+> +		apply_overlay = true;
+
+How about?
+
+```
+	int idx;
+
+	idx = qmp_ufs_get_gear_overlay(qmp, cfg);
+
+	qmp_ufs_serdes_init(qmp, &cfg->tbls);
+	qmp_ufs_lanes_init(qmp, &cfg->tbls);
+	...
+
+	if (idx >= 0) {
+		qmp_ufs_serdes_init(qmp, &cfg->tbls_hs_overlay[idx]);
+		qmp_ufs_lanes_init(qmp, &cfg->tbls_hs_overlay[idx]);
+		...
+	}
+```
+
+Since the ordering doesn't matter for init sequence, you can program the overlay
+tables under a single condition.
+
+- Mani
+
+-- 
+மணிவண்ணன் சதாசிவம்
