@@ -2,151 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C2717FFE47
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 23:04:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B31597FFE51
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 23:05:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377102AbjK3WEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 17:04:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46322 "EHLO
+        id S1377117AbjK3WFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 17:05:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377044AbjK3WEf (ORCPT
+        with ESMTP id S1377157AbjK3WFm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 17:04:35 -0500
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87067D40;
-        Thu, 30 Nov 2023 14:04:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1701381880;
-        bh=ZihOGHfcGL6IPblR8lpNHXKjLfhDSV+YMLeb5Lb4EXU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=jEncOMNKVJSLImHusypGjPZzbfg5EmNUruYT8vz/AqndZ0vEsf+aL7RFsRQtP7kcV
-         0ulLgfKITqepuGJhI1dxVuVOfSc6lkoOErzjqdz4WGOJmaPyX2+e33uhBDsTR2y7JG
-         8/HaXZD3m4lyiYJGnTvk2pG7v+pQxIV8/OuSd7Hx23k818U/zEZ4pyZYu+YUYqpLd1
-         XPexA34WHfA2Yv6Be0BMkXiqrE2whR5nVG7yMmCcMyRhiyHd0mlW5zp0OM1T7w+deR
-         0eFdoJ1Wd7pauSqcI3vqxlcfAmjHoRqsHYibX89iX7VznsCRa86U2lI6Q6JkJX3ELj
-         hwY+ALStXeijQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Sh9GH5tcSz4wx7;
-        Fri,  1 Dec 2023 09:04:39 +1100 (AEDT)
-Date:   Fri, 1 Dec 2023 09:04:39 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>
-Subject: Re: linux-next: build failure after merge of the mm tree
-Message-ID: <20231201090439.7ae92c13@canb.auug.org.au>
-In-Reply-To: <20231127144852.069b2e7e@canb.auug.org.au>
-References: <20231127132809.45c2b398@canb.auug.org.au>
-        <20231127144852.069b2e7e@canb.auug.org.au>
+        Thu, 30 Nov 2023 17:05:42 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC1D310DF
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 14:05:48 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1cfc35090b0so13662205ad.1
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 14:05:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1701381948; x=1701986748; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=E+z84/9szAuZC+Uij5uL4JYHHRg/gwkkJLqAhisbf48=;
+        b=Yrc6Mvh0BBgy8D53nOvgWWwLFYZgf2/P+bDfmofx0bS++LPM0Ab3JrPGAOu97YQJAI
+         hEtnfu+Y1jTdVUBYAGLpNYVAp211n9FfdhmypK9iWFKw5vKtRN4E3T0C7Amh2Xcq/uh7
+         GC7Nh+md2HmbOfZxOWA+Tm1BGd8WRNTf5m4LA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701381948; x=1701986748;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=E+z84/9szAuZC+Uij5uL4JYHHRg/gwkkJLqAhisbf48=;
+        b=ZAVpD+YkpejnRjJL2HuTCD0OsA3Mly6c6ESQqOSrt5C28nwBrJDm+NA+lNOzIxoBx8
+         g14qNDQR7YNIaqbCeIotKTldQnLVEXf+WKmE78PhVQucrhR0YN/foIwfILKZJL1P2ocl
+         Tb88/8LzN8PyZeQxBKk+T2000UB0Zv26281i0jJd7yd4BF0/psVI7eemIaY7/Hw8lUAM
+         KHocLV0B43rZfTB1AZBLFMQ9g6+n7D8LrHjzqDORDmVsDADIw3FH2xFTix3lzu7hZ5Vj
+         KZAh274GMTwp2BnaNUAFYC32Yv/E/Xyzd39PztXARB2Nzvm9SiP0gJQ7R9kJIaBvaiSM
+         I2ng==
+X-Gm-Message-State: AOJu0Yx102tqtoFz/M8C4yvhUML9Mtks/0rusIBJuxVuyCwGAJ4rpMFU
+        W4sNsy5aF5wkipQrcaRHe8c8UA==
+X-Google-Smtp-Source: AGHT+IEjHZgHLIabxybJ+AkRENmwF9P4IgVmEVrP/H1KdcfCDs57RRkP3D5fO0kqDd00TZ7Ep+gIgw==
+X-Received: by 2002:a17:903:2345:b0:1cf:d8c5:2288 with SMTP id c5-20020a170903234500b001cfd8c52288mr15051983plh.41.1701381948433;
+        Thu, 30 Nov 2023 14:05:48 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id n7-20020a170902d2c700b001cf65d03cedsm1890895plc.32.2023.11.30.14.05.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Nov 2023 14:05:47 -0800 (PST)
+From:   Kees Cook <keescook@chromium.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
+        patches@lists.linux.dev, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev@googlegroups.com
+Subject: Re: [PATCH v2] lkdtm: Add kfence read after free crash type
+Date:   Thu, 30 Nov 2023 14:05:45 -0800
+Message-Id: <170138194305.3650163.16392122923355361827.b4-ty@chromium.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231129214413.3156334-1-swboyd@chromium.org>
+References: <20231129214413.3156334-1-swboyd@chromium.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/mftAfNUiKPZGOFgp0y=in45";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/mftAfNUiKPZGOFgp0y=in45
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, 29 Nov 2023 13:44:04 -0800, Stephen Boyd wrote:
+> Add the ability to allocate memory from kfence and trigger a read after
+> free on that memory to validate that kfence is working properly. This is
+> used by ChromeOS integration tests to validate that kfence errors can be
+> collected on user devices and parsed properly.
+> 
+> 
 
-Hi all,
+Applied to for-next/hardening, thanks!
 
-On Mon, 27 Nov 2023 14:48:52 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->=20
-> Just cc'ing the PowerPC guys to see if my fix is sensible.
->=20
-> On Mon, 27 Nov 2023 13:28:09 +1100 Stephen Rothwell <sfr@canb.auug.org.au=
-> wrote:
-> >
-> > After merging the mm tree, today's linux-next build (powerpc64
-> > allnoconfig) failed like this:
-> >=20
-> > arch/powerpc/mm/book3s64/pgtable.c:557:5: error: no previous prototype =
-for 'pmd_move_must_withdraw' [-Werror=3Dmissing-prototypes]
-> >   557 | int pmd_move_must_withdraw(struct spinlock *new_pmd_ptl,
-> >       |     ^~~~~~~~~~~~~~~~~~~~~~
-> > cc1: all warnings being treated as errors
-> >=20
-> > Caused by commit
-> >=20
-> >   c6345dfa6e3e ("Makefile.extrawarn: turn on missing-prototypes globall=
-y")
-> >=20
-> > I have added the following patch for today (which could be applied to
-> > the mm or powerpc trees):
-> >=20
-> > From 194805b44c11b4c0aa28bdcdc0bb0d82acef394c Mon Sep 17 00:00:00 2001
-> > From: Stephen Rothwell <sfr@canb.auug.org.au>
-> > Date: Mon, 27 Nov 2023 13:08:57 +1100
-> > Subject: [PATCH] powerpc: pmd_move_must_withdraw() is only needed for
-> >  CONFIG_TRANSPARENT_HUGEPAGE
-> >=20
-> > Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> > ---
-> >  arch/powerpc/mm/book3s64/pgtable.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >=20
-> > diff --git a/arch/powerpc/mm/book3s64/pgtable.c b/arch/powerpc/mm/book3=
-s64/pgtable.c
-> > index be229290a6a7..3438ab72c346 100644
-> > --- a/arch/powerpc/mm/book3s64/pgtable.c
-> > +++ b/arch/powerpc/mm/book3s64/pgtable.c
-> > @@ -542,6 +542,7 @@ void ptep_modify_prot_commit(struct vm_area_struct =
-*vma, unsigned long addr,
-> >  	set_pte_at(vma->vm_mm, addr, ptep, pte);
-> >  }
-> > =20
-> > +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> >  /*
-> >   * For hash translation mode, we use the deposited table to store hash=
- slot
-> >   * information and they are stored at PTRS_PER_PMD offset from related=
- pmd
-> > @@ -563,6 +564,7 @@ int pmd_move_must_withdraw(struct spinlock *new_pmd=
-_ptl,
-> > =20
-> >  	return true;
-> >  }
-> > +#endif
-> > =20
-> >  /*
-> >   * Does the CPU support tlbie?
-> > --=20
-> > 2.40.1 =20
+[1/1] lkdtm: Add kfence read after free crash type
+      https://git.kernel.org/kees/c/0e689e666214
 
-I am still carrying this patch (it should probably go into the mm
-tree).  Is someone going to pick it up (assuming it is correct)?
+Take care,
 
---=20
-Cheers,
-Stephen Rothwell
+-- 
+Kees Cook
 
---Sig_/mftAfNUiKPZGOFgp0y=in45
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVpBvcACgkQAVBC80lX
-0GydrAf9GN954MjHMtmQr8oDfEmXP34v1XDb6cN03i1NEMNhX1K0QIBor+LlMZKx
-OZg9WsMzA5OqCViRJHFD3vi6ZTmy8Z4bQPsXuUqz5/l+v4XC9nGP7x8GcPvdhktG
-j3y9FFpY5EyPTTEUYoApw9WdXjaFIMYwZGyzfYXnVS0rj3BY47YmTx757ndCXhgc
-GnlOMV6eQXgV+mxwo5lg96O8GVeBYVShREmDOiVbOgOiRm1Moe8CL9JLFDn5tDW2
-tfqsFl4X/S+y5iYdTdrPqjJuVkDGnLqPSRNogDHW2K6ZacV0shaFVhHd2pTfJqTN
-KmZ1QNG1L7moZcoA8XIAJcIUC8TQIg==
-=JUuX
------END PGP SIGNATURE-----
-
---Sig_/mftAfNUiKPZGOFgp0y=in45--
