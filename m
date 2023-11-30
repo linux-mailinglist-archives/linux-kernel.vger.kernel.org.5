@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23F4C7FE700
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 03:38:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 891257FE703
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 03:38:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344224AbjK3CiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 21:38:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40848 "EHLO
+        id S235027AbjK3CiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 21:38:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234985AbjK3Ch7 (ORCPT
+        with ESMTP id S234938AbjK3CiB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 21:37:59 -0500
+        Wed, 29 Nov 2023 21:38:01 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C42E1171D
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 18:37:34 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E14DAC433C9;
-        Thu, 30 Nov 2023 02:37:02 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 526DC171F
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 18:37:37 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95400C433CB;
+        Thu, 30 Nov 2023 02:37:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701311823;
-        bh=tm53i8GhYDRGpRCnZgtLIn7P8jIf3OMjFqv6O/swkJU=;
+        s=k20201202; t=1701311824;
+        bh=aVQYYR7Wa2j5FcEbEqZY4GpoX0ij3ZW/t2YkLOpkPDs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mF2NM7qEDR2eJeiTCxOHD0A+5NunTLYKc63iE0l9/ywqjnaj6xo8D0yGnT6Gmvw/A
-         xD91IpuQUYOBVVCxDiJe4H16CJesJnVJ21lgmggfbUD5S3QxJiJkLZszoLmYDHMXxz
-         PEj1zqFucaACRUuOXA3oPuDzdJy8kYEUBSv5OE8pBMbxrZHe2uJjsTidqJEOFmS8eR
-         0AGIKl4PgJVr/z5eQ3zv6EABddpoQCRpnRrDVKwL/lnsjlaZ0+Ma9teMxzaf/ccZz7
-         fo0/hMTsCfM4rXGNO0cNf6rXSkHmTF7AkE30ORjDwm4TF23bo0hVD688vrMHNQ/Vku
-         s9Kd4TI4Fn6xQ==
+        b=ab3KL1CA/Q1LdHqbROyoGrBYbAzm+vS90RXg2E8BXqXKEg5WEjZojHnxDn9nYqvD3
+         F1f4Im4M6vU9+o7l3V1SvkvjkldXXrKbk03T1no8M0JuRDCfSx/Iy8YOPKdDINT6FS
+         ISWn3NNg2kx3/5L0ud8yO5DiDbbsFVb4sZYKvK+PPVjRqXcqDYrl9PDurGehZAeban
+         sPc/85by17P4PosFwLVgg3428nwiR3rQRMv29Ggy/BIrzH3ZwJinZk99qOHsE3XUAg
+         eXbFr3YYNbMNjrS+iX50I9+vg6aZId9yd3e0qppFUtYx8tISAFwq9gnrCu7zl70r82
+         fbwlXVVYwoYjg==
 From:   SeongJae Park <sj@kernel.org>
 To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     SeongJae Park <sj@kernel.org>, Shuah Khan <shuah@kernel.org>,
+Cc:     SeongJae Park <sj@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
         damon@lists.linux.dev, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 6/9] selftests/damon: test quota goals directory
-Date:   Thu, 30 Nov 2023 02:36:49 +0000
-Message-Id: <20231130023652.50284-7-sj@kernel.org>
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 7/9] Docs/mm/damon/design: document DAMOS quota auto tuning
+Date:   Thu, 30 Nov 2023 02:36:50 +0000
+Message-Id: <20231130023652.50284-8-sj@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231130023652.50284-1-sj@kernel.org>
 References: <20231130023652.50284-1-sj@kernel.org>
@@ -50,59 +50,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add DAMON selftests for testing creation/existence of quota goals
-directories and files, and simple valid input writes.
+Document the DAMOS quota auto tuning feature on the design document.
 
 Signed-off-by: SeongJae Park <sj@kernel.org>
 ---
- tools/testing/selftests/damon/sysfs.sh | 27 ++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
+ Documentation/mm/damon/design.rst | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/tools/testing/selftests/damon/sysfs.sh b/tools/testing/selftests/damon/sysfs.sh
-index 56f0230a8b92..e9a976d296e2 100755
---- a/tools/testing/selftests/damon/sysfs.sh
-+++ b/tools/testing/selftests/damon/sysfs.sh
-@@ -150,6 +150,32 @@ test_weights()
- 	ensure_file "$weights_dir/age_permil" "exist" "600"
- }
+diff --git a/Documentation/mm/damon/design.rst b/Documentation/mm/damon/design.rst
+index 1f7e0586b5fa..947c9df6cd33 100644
+--- a/Documentation/mm/damon/design.rst
++++ b/Documentation/mm/damon/design.rst
+@@ -346,6 +346,17 @@ the weight will be respected are up to the underlying prioritization mechanism
+ implementation.
  
-+test_goal()
-+{
-+	goal_dir=$1
-+	ensure_dir "$goal_dir" "exist"
-+	ensure_file "$goal_dir/target_value" "exist" "600"
-+	ensure_file "$goal_dir/current_value" "exist" "600"
-+}
-+
-+test_goals()
-+{
-+	goals_dir=$1
-+	ensure_dir "$goals_dir" "exist"
-+	ensure_file "$goals_dir/nr_goals" "exist" "600"
-+
-+	ensure_write_succ  "$goals_dir/nr_goals" "1" "valid input"
-+	test_goal "$goals_dir/0"
-+
-+	ensure_write_succ  "$goals_dir/nr_goals" "2" "valid input"
-+	test_goal "$goals_dir/0"
-+	test_goal "$goals_dir/1"
-+
-+	ensure_write_succ  "$goals_dir/nr_goals" "0" "valid input"
-+	ensure_dir "$goals_dir/0" "not_exist"
-+	ensure_dir "$goals_dir/1" "not_exist"
-+}
-+
- test_quotas()
- {
- 	quotas_dir=$1
-@@ -158,6 +184,7 @@ test_quotas()
- 	ensure_file "$quotas_dir/bytes" "exist" 600
- 	ensure_file "$quotas_dir/reset_interval_ms" "exist" 600
- 	test_weights "$quotas_dir/weights"
-+	test_goals "$quotas_dir/goals"
- }
  
- test_access_pattern()
++Aim-oriented Feedback-driven Auto-tuning
++^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++
++Automatic feedback-driven quota tuning.  Instead of setting the absolute quota
++value, users can repeatedly provide numbers representing how much of their goal
++for the scheme is achieved as feedback.  DAMOS then automatically tunes the
++aggressiveness (the quota) of the corresponding scheme.  For example, if DAMOS
++is under achieving the goal, DAMOS automatically increases the quota.  If DAMOS
++is over achieving the goal, it decreases the quota.
++
++
+ .. _damon_design_damos_watermarks:
+ 
+ Watermarks
 -- 
 2.34.1
 
