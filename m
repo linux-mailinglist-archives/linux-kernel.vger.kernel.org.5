@@ -2,244 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B8307FF4CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 17:23:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86A687FF4F0
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 17:24:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231971AbjK3QXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 11:23:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49208 "EHLO
+        id S232008AbjK3QY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 11:24:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjK3QXS (ORCPT
+        with ESMTP id S229503AbjK3QYZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 11:23:18 -0500
-Received: from mail-ua1-x92f.google.com (mail-ua1-x92f.google.com [IPv6:2607:f8b0:4864:20::92f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 401C2196;
-        Thu, 30 Nov 2023 08:23:24 -0800 (PST)
-Received: by mail-ua1-x92f.google.com with SMTP id a1e0cc1a2514c-7c461a8cb0dso338560241.0;
-        Thu, 30 Nov 2023 08:23:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701361403; x=1701966203; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/Rz1SfkoBLt1wzKfSCUoXy9avUjy1X29wSOetvydD2A=;
-        b=MEqvCscYI2CGaNvi8Xyyb2spUF1pXVrX4EGdYlHdPj/e7LR10qcYjk80dCoyr/+JbL
-         9339rXgjV+APtV1JqJOp7G2iEFjMw4CwR5lk/GZ4eFnN3v+l8H9GZq3zl11mhyFaEdra
-         iEneBl0lM4geKJFhfJDNnNdF24gnwkOynXy8l9mFuuNPZAvHevziblM0Ercxi7oeIzRE
-         zR+6ghLdPxil05su9CVkYcZlGRt670E2mVXsij7g2RoST+Tu1qttN8VEgkZa7ElUxur5
-         UEb9F6jseTgbAUx8w+Ps99qumms6lTYsmaQ9frNeQRiZqXwhcQVQY5rOjVhKlUJbmSC0
-         dMkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701361403; x=1701966203;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/Rz1SfkoBLt1wzKfSCUoXy9avUjy1X29wSOetvydD2A=;
-        b=KGLBRnn/z8gzoEmeZfsOqGdKU/K+2ab4kALBA1T48dz/AHNeR8vMheMO2WUy05FwjC
-         HAlq9dplf7YHkKc2bpuG99heJcXMlceEdwo+LSKW6pvxVCynFvKVcjWmVxtKVv6+ZV7i
-         0/RQ7W6ARKAvsTb78KhE0PwOpvOiSvAwAIdN3rs6blwceLSaTmcOGlb3GsyLR4Hq8Egl
-         WK4Leq/ChQq2yn7BUayiN/E8DqqWLNA2BOeQtEveHEnJ8Y1YjHLosZTuhuk+lOZW5h08
-         bjtd+V7IaBQhfXiiZPQl+yNcQ7FLIwT9lvzvtG7bynu2Yj3Nzc1cSoF9fgQz3S+Ip+NX
-         eW3Q==
-X-Gm-Message-State: AOJu0Yxq3XP/pp6kmy6ldGg2GOVv2qTKc4FdfJz1CXL8nrW+owbnRa6C
-        g5tZhIvpb1ONh9LDw86kqmGAL8udMjxiv8XQtRM=
-X-Google-Smtp-Source: AGHT+IEeLnCxqQ7A3j/755SDmM5BlKzV7pAi/QkjP/SQBY+0Bp1bz64n5BIgfrQ4BicLBjnC7HYNorOLEhX1IY8dU4M=
-X-Received: by 2002:a05:6122:2528:b0:49b:289a:cc44 with SMTP id
- cl40-20020a056122252800b0049b289acc44mr20528331vkb.6.1701361403215; Thu, 30
- Nov 2023 08:23:23 -0800 (PST)
+        Thu, 30 Nov 2023 11:24:25 -0500
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2061.outbound.protection.outlook.com [40.107.93.61])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D347196;
+        Thu, 30 Nov 2023 08:24:30 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CHg1Pq53hxGEoFy6JsKH+TI6VX7hKWkvO64pDxwhw1FJkfgfTy3HNnHzak7sz4fhV9lSnMBORXEtOWO7AciHMSd6ZRQDOWnQ4Yp3xBnVsPN2+4hwx8kbqoUqI+9ErtKqDd4OK6Z84o24qzGdNEyCDb/BJOz3KhQYGOxik2PKl0DWBhBS7YE6/3UmsqD13MP5U02oniK8GRel/W/WS2Al0QgEnLbvOyf3LnimYM0dVbZC5Oc8FodhD9tPNrIUNl1bMOAqFcDEiCow1sykw3rmx6JHdNkWEBAdLGKwfA3r9DJMV+1RFtAQSGBQzDkDDeAsbh/SXUJ/e5Ek6PR8+Po26w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=MOMhi43pDGeHyx/gNPb4L0elIN9+vRL8EiLUknPi9qA=;
+ b=MV6zFcjQY4PTxGqVCKxWgsrCrM60uv2FiNdB060QV8HPS2HdAd7Dd3iN+MvLyTpRaOYILT5NzJvk7Gnu+daSvLvnQ92NWLl5Ncd0R08QtNimzkXKRwNXaFhcJDwMyxSVmiP8GQzIwM50jOMwniTCsm9+RjKjcy6ymH3SYeYgdmWFRrlK9qhddMnQGxYx1DvX6vOQY03fewFfNQuRJ06aH5V3N0DzbmnyMrPnxf1J7kuzbuhu2lsTFiJE2QLvLMah3ZHeoiBgyPqhmLUciye4MXV3E1QH32pdbMGP1F59wqd0lyVXlHCh31HGlrURT2EZhkfloGKaX9XJDSiT0WXbng==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MOMhi43pDGeHyx/gNPb4L0elIN9+vRL8EiLUknPi9qA=;
+ b=uebhcLpBCmF6Dp2XGg8PG+H79OFRUkW1RpuphqDf75v7Qprfomo/9khyQVaTm+H9cANMAY3at3IqEBx631wq3fsf6N6l1iXr1CO0GmENA1UesCLORN/K7YjL/KSD5WADt54Wrecxzb7ZSPmHR30kUs0I2wNcBTTMbHcVXmlIHTcA42awvU9UI2JNlHxdHkGRMuPDH9E/vg+7gAtVtt5NnA6LU8lb+DQ8WqHV62PLWhMnjE2FER002WynYGEP6xjoh+3VuhtPLi1ALRqUVYCzeTinRR5lKjuR17Na9FOIqrTy0Cpmg5Y0v0BVwjHM9aq8eSq80x+Nr5ewujYscG2QhQ==
+Received: from BN9PR12MB5381.namprd12.prod.outlook.com (2603:10b6:408:102::24)
+ by BL1PR12MB5079.namprd12.prod.outlook.com (2603:10b6:208:31a::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.23; Thu, 30 Nov
+ 2023 16:24:27 +0000
+Received: from BN9PR12MB5381.namprd12.prod.outlook.com
+ ([fe80::a02:fa08:8729:c1bb]) by BN9PR12MB5381.namprd12.prod.outlook.com
+ ([fe80::a02:fa08:8729:c1bb%4]) with mapi id 15.20.7046.024; Thu, 30 Nov 2023
+ 16:24:27 +0000
+From:   Vadim Pasternak <vadimp@nvidia.com>
+To:     Dan Carpenter <dan.carpenter@linaro.org>,
+        Yu Sun <u202112062@hust.edu.cn>
+CC:     Hans de Goede <hdegoede@redhat.com>,
+        =?utf-8?B?SWxwbyBKw6RydmluZW4=?= <ilpo.jarvinen@linux.intel.com>,
+        Mark Gross <markgross@kernel.org>,
+        "hust-os-kernel-patches@googlegroups.com" 
+        <hust-os-kernel-patches@googlegroups.com>,
+        Dongliang Mu <dzm91@hust.edu.cn>,
+        Dan Carpenter <error27@gmail.com>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] platform/mellanox: mlxreg-lc: Check before variable
+ dereferenced
+Thread-Topic: [PATCH] platform/mellanox: mlxreg-lc: Check before variable
+ dereferenced
+Thread-Index: AQHaI3IAXNMSfTcbw0m69hFV3lr+TLCSvxgAgABMu6A=
+Date:   Thu, 30 Nov 2023 16:24:27 +0000
+Message-ID: <BN9PR12MB5381385579AF6DC7C9E63640AF82A@BN9PR12MB5381.namprd12.prod.outlook.com>
+References: <20231130094409.3963-1-u202112062@hust.edu.cn>
+ <4109f017-f07c-4755-bc1b-ec4cb30b0760@suswa.mountain>
+In-Reply-To: <4109f017-f07c-4755-bc1b-ec4cb30b0760@suswa.mountain>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BN9PR12MB5381:EE_|BL1PR12MB5079:EE_
+x-ms-office365-filtering-correlation-id: 01c6ad2f-f725-4eb8-dd50-08dbf1c0d2f8
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 3gaUaSMJiDO1Jz+8HfVL2Z6nFst+5bAh0ixervOyBAmdLTGG3k+A/Y6N/k4tAbh61t77PjGY+ZN1nANPkUmTRufTKLvpSQ29BfgR6NYNIK4XWXesXVDgxeWxMjbYX0lAVkrnMZlpMtQISiQQi3IRp04Lw7OhctYeoDSk818z5tQ2PoGXNuGukwKs6gbrrhRiQn806pY/oe+YsT859RiB5o5I5ffA42f30vbQ2rM1l3neszNWaiZOSicGc1N1rXpomTjiAPsa1njf+AL/82ukUbHIFEycwwUYLOIAteysg4wZ83NTUDBLGnBn/kZJW+PgCtVM0lVuj2oErppd3IwZV6nwCe2g5rAZssCV7GdNv9W8u8ZwGd2IRKVbjO59aNEU51My7o3rwhGCcpNYCIrrfiAt+9tz20kl9VL5yhY9QcqUljtZh2+XTYYyCmxyo4L8H0OrkgydcSMrE7KSnofocUMKezW99ZRJ95yWLfbecxLcLqmvIbthH9iUIYCV9SB1USHD0IALRnKuta3vEzAi5iSLSpKn7mexxebca/L7pPavc5Kig7lU+6NInUJLeZXf4RiO2wX7Tni1pnBarj4w/F6i7YRkcf74SG2xAXi0oUYcg7EJjjGLU65eByINAhFh1wpQHNvi/wGn2cu1g29yTyHBqBT3rxiCWlBtjLqdg5PmZJEEAKMe7m5GN9JQVbIb
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5381.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(346002)(39860400002)(366004)(376002)(230922051799003)(230273577357003)(230173577357003)(186009)(451199024)(1800799012)(64100799003)(66574015)(55016003)(122000001)(38100700002)(7416002)(83380400001)(316002)(2906002)(5660300002)(4326008)(86362001)(110136005)(52536014)(8676002)(8936002)(66476007)(66446008)(66556008)(64756008)(66946007)(54906003)(966005)(7696005)(71200400001)(9686003)(6506007)(478600001)(41300700001)(19627235002)(76116006)(53546011)(33656002)(38070700009)(26005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?ZWp2SEJ6OEdGQ2cyL3gzM2NNS2F1TS9iT1kwNVJmMGRPa2FVUFNXMHg3V1l4?=
+ =?utf-8?B?dHdralpFaCsyMG55dXpGZWF0N2djUXFwTkwzNzNLekxZcmx4ZU8rWTFMcWJN?=
+ =?utf-8?B?cXZnT0p2WWZLV2hTNGxuckJCQ3FXNTdrd0F1UzVLV2RidlljNjBNczI4a1NR?=
+ =?utf-8?B?Umlxak5RRDByTEIyOHBmcVJRVHl6V2RtcDVRZkdzU2hwNlZCRjVOejdpOEdM?=
+ =?utf-8?B?SGt0dGhUZnNCVEZQMndHRmRaQ012dEJhbzFxUyttc2xEaC9kUXA0cmpodmtx?=
+ =?utf-8?B?c0luK3ltdjR5UzZLZllVcXZaUlNCUDNmVGcveXZTSGZLTGJTTnpndlBWQWdk?=
+ =?utf-8?B?ZlVNd3VXWUhTZ0tVdjFYUjYzbmRxRWZPR1lTWnpMbXp0Zm00cFJCWHJLQ1F0?=
+ =?utf-8?B?ODBDREZNa0hOamJkSllweUZlbk1PSWpuVnY3QjZLeVE5RllFNldXOUxGZmti?=
+ =?utf-8?B?eWNlVUZKdWlGVlYvazFZd3d5dG92bFgwaE1ZZlZSYTNSY2dnZnBVWXJaZkdP?=
+ =?utf-8?B?K2J6ZFpNQjZFc1VXVjR3WFZ5aEgrL1dkemc2RXZuSnplelQ2WWZzMlRSYTJm?=
+ =?utf-8?B?WmRXcjdyNWVQU1FxbmEwV1lQYURGNWNRMHA1WTFoU1RSNFgzdlV1RVE4SmJh?=
+ =?utf-8?B?MGxlU1pzZ2UvS0YvSmY0dzNmVWJaN01nU1I2ajdjTlV1L0xQeG56eHR6S0hp?=
+ =?utf-8?B?eHFXUVI2T2IvVyt1VzhPb0FXMHNXZWpoUWhuQVRwNUVsV0Z6VExoQzdncHV6?=
+ =?utf-8?B?c2dSYzhtby8wNzBlaTNtVFFsak9sZHkxS1hSRkdSN0RIcWhrRWhBbFNnTXBF?=
+ =?utf-8?B?dVVqL3R2ZStyblRFNUdjNjFtRkI2NDNxWDV4NGNxQzNRUkZHaVluaXpkZnYv?=
+ =?utf-8?B?V2JqTjFBZnorOVBrcXVDaS91blBGVFFhM3ZhdXkzQU1aVzF0ZHVmNW9zb3lG?=
+ =?utf-8?B?ejVROHFaNzFnRWwyWjlPZjdjVXNJSVpvK1ZWMkx4M0ZyaVFHNmdRa3JvcStR?=
+ =?utf-8?B?bmlSSms2a3FkMk5LY2lNVjBEZGhBNGVNOTh2bHFPSTE4RXd0aGNxNVZQMlRy?=
+ =?utf-8?B?QzY4R2ZyOW8yK0J5aENlTHZxZE9uckhyMjRLRzlFNTl2b05WTWcwcDFGS3Ev?=
+ =?utf-8?B?QzNLOTV0WmU2YlpDUUN1dkpydisxemlYNmVXTW5zS2I3aDdXdmJWM1FraTQ0?=
+ =?utf-8?B?WlZPYndrMk5Lekd2Y0pBbzl6NmNkanU5alp5WDcxQU5yQ3dsanpZY3JnTS8w?=
+ =?utf-8?B?Q0VKNUpheHA1THQvUDlZcTFuanVPclEvL21HNnUyTzJ5M0pWclpCYmxVQ05Y?=
+ =?utf-8?B?SFo2UG9uc05Ud3R6dDNkOU1vRDRza09odmJYVmorNVhYUXFieHpxN3BaZnIv?=
+ =?utf-8?B?d1IzSTR4RTFnZDhrczdMOGVRNjgzYlY3RGhPWTF2UWJWMHhBdVBnVG0wL2VQ?=
+ =?utf-8?B?TmJxakJwa0ZMZHAwSWFiUmlkMmFlb3RhSGF5WTc5Z0Q5b0g5SUM1VzlDMjVx?=
+ =?utf-8?B?K05OaUZySEMwRVppWHdzQ0xQNEtnV2o2K2owQ1IwV3hNcy9SQXlpS1Rpd1BM?=
+ =?utf-8?B?dStRY1RIV3pLM1lYVXl4UUpycFVEL3dBSFhoR3ZXRXhPa2NZVlkrdjI3U0JU?=
+ =?utf-8?B?NlVPc1dnQVp1S3ZGWmpPNTZLTml5UjlCS2V4cEsrMXNQY2FSRGxrSlZVWXps?=
+ =?utf-8?B?Y1h0UGdIWmVPUWlUQ2JrMHNkMmhkeFREV1pDUnY0WVBua3daRDIyaWxiQnlo?=
+ =?utf-8?B?S1k2ZFJ6V0xiVFM5dmZzbERWWGZpT1VVZnhObGZtUjdhNFpLdkl6M21xMVhx?=
+ =?utf-8?B?ekdGYUs3SmJ6eGtTV2xreExTRzRpcEhsN0twSkFxMmxSL1pCSm1OREt1VjRh?=
+ =?utf-8?B?OE11QkJSeUpmdEJsVlhxbWc4R0R5c0pRaTR2Wi9YS2tSRjVGNEx6LzdDSHR1?=
+ =?utf-8?B?Z091YnlQeXZxMDFhZEVTV3Y5Q2RkSlZqengwak8zQ3VYWWRtcGl1ajBROEVx?=
+ =?utf-8?B?N2labVZCc2xhYzl2cmhaWERhZDNmSFBEUUtrMXExNEw2S1V4MENUTjRlb3Jt?=
+ =?utf-8?B?aEd3aTdRNkJyY2h0dFNtQ0o1bER3QWU4UGRnQThCK3hGYU9Rc3RFVnV3b3R4?=
+ =?utf-8?Q?e010=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20231130125606.64931-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdWd3XY8r-Db_JgazCin_xgSmTGttKzAaHGRKAXsM5xJOQ@mail.gmail.com>
-In-Reply-To: <CAMuHMdWd3XY8r-Db_JgazCin_xgSmTGttKzAaHGRKAXsM5xJOQ@mail.gmail.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Thu, 30 Nov 2023 16:22:56 +0000
-Message-ID: <CA+V-a8uKCfdOXVQ6cEPQfXFdrJQT_NDztt=++o95AQEAeM9GGg@mail.gmail.com>
-Subject: Re: [PATCH v2] riscv: errata: andes: Probe for IOCP only once in boot stage
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Yu Chien Peter Lin <peterlin@andestech.com>,
-        Samuel Holland <samuel.holland@sifive.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR12MB5381.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 01c6ad2f-f725-4eb8-dd50-08dbf1c0d2f8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Nov 2023 16:24:27.8051
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: V6663JEE9e0pQWNg6cXSDEApLDdyWmMqpWvNfn8yuZ7L5LExDHUtuS+cMJKpwZd7axGFF/dt+1spDWiMFwVB0g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5079
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
-
-Thank you for the review.
-
-On Thu, Nov 30, 2023 at 2:34=E2=80=AFPM Geert Uytterhoeven <geert@linux-m68=
-k.org> wrote:
->
-> Hi Prabhakar,
->
-> On Thu, Nov 30, 2023 at 1:56=E2=80=AFPM Prabhakar <prabhakar.csengg@gmail=
-.com> wrote:
-> > From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> >
-> > We need to probe for IOCP only once during boot stage, as we were probi=
-ng
-> > for IOCP for all the stages this caused the below issue during module-i=
-nit
-> > stage,
-> >
-> > [9.019104] Unable to handle kernel paging request at virtual address ff=
-ffffff8100d3a0
-> > [9.027153] Oops [#1]
-> > [9.029421] Modules linked in: rcar_canfd renesas_usbhs i2c_riic can_dev=
- spi_rspi i2c_core
-> > [9.037686] CPU: 0 PID: 90 Comm: udevd Not tainted 6.7.0-rc1+ #57
-> > [9.043756] Hardware name: Renesas SMARC EVK based on r9a07g043f01 (DT)
-> > [9.050339] epc : riscv_noncoherent_supported+0x10/0x3e
-> > [9.055558]  ra : andes_errata_patch_func+0x4a/0x52
-> > [9.060418] epc : ffffffff8000d8c2 ra : ffffffff8000d95c sp : ffffffc800=
-3abb00
-> > [9.067607]  gp : ffffffff814e25a0 tp : ffffffd80361e540 t0 : 0000000000=
-000000
-> > [9.074795]  t1 : 000000000900031e t2 : 0000000000000001 s0 : ffffffc800=
-3abb20
-> > [9.081984]  s1 : ffffffff015b57c7 a0 : 0000000000000000 a1 : 0000000000=
-000001
-> > [9.089172]  a2 : 0000000000000000 a3 : 0000000000000000 a4 : ffffffff81=
-00d8be
-> > [9.096360]  a5 : 0000000000000001 a6 : 0000000000000001 a7 : 0000000009=
-00031e
-> > [9.103548]  s2 : ffffffff015b57d7 s3 : 0000000000000001 s4 : 0000000000=
-00031e
-> > [9.110736]  s5 : 8000000000008a45 s6 : 0000000000000500 s7 : 0000000000=
-00003f
-> > [9.117924]  s8 : ffffffc8003abd48 s9 : ffffffff015b1140 s10: ffffffff81=
-51a1b0
-> > [9.125113]  s11: ffffffff015b1000 t3 : 0000000000000001 t4 : fefefefefe=
-fefeff
-> > [9.132301]  t5 : ffffffff015b57c7 t6 : ffffffd8b63a6000
-> > [9.137587] status: 0000000200000120 badaddr: ffffffff8100d3a0 cause: 00=
-0000000000000f
-> > [9.145468] [<ffffffff8000d8c2>] riscv_noncoherent_supported+0x10/0x3e
-> > [9.151972] [<ffffffff800027e8>] _apply_alternatives+0x84/0x86
-> > [9.157784] [<ffffffff800029be>] apply_module_alternatives+0x10/0x1a
-> > [9.164113] [<ffffffff80008fcc>] module_finalize+0x5e/0x7a
-> > [9.169583] [<ffffffff80085cd6>] load_module+0xfd8/0x179c
-> > [9.174965] [<ffffffff80086630>] init_module_from_file+0x76/0xaa
-> > [9.180948] [<ffffffff800867f6>] __riscv_sys_finit_module+0x176/0x2a8
-> > [9.187365] [<ffffffff80889862>] do_trap_ecall_u+0xbe/0x130
-> > [9.192922] [<ffffffff808920bc>] ret_from_exception+0x0/0x64
-> > [9.198573] Code: 0009 b7e9 6797 014d a783 85a7 c799 4785 0717 0100 (012=
-3) aef7
-> > [9.205994] ---[ end trace 0000000000000000 ]---
-> >
-> > This is because we called riscv_noncoherent_supported() for all the sta=
-ges
-> > during IOCP probe. riscv_noncoherent_supported() function sets
-> > noncoherent_supported variable to true which has an annotation set to
-> > "__ro_after_init" due to which we were seeing the above splat. Fix this=
- by
-> > probing for IOCP only once in boot stage by having a boolean variable
-> > is_iocp_probe_done which will be set to true upon IOCP probe in
-> > errata_probe_iocp() and we bail out early if is_iocp_probe_done is set.
-> >
-> > While at it make return type of errata_probe_iocp() to void as we were
-> > not checking the return value in andes_errata_patch_func().
-> >
-> > Fixes: e021ae7f5145 ("riscv: errata: Add Andes alternative ports")
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > ---
-> > v1->v2
-> > * As RISCV_ALTERNATIVES_BOOT stage can happen twice add a is_iocp_probe=
-_done
-> >   variable to probe for IOCP only once.
-> > * Updated commit message
-> > * Make return value of errata_probe_iocp() to void
->
-> Thanks for the update!
->
-> > --- a/arch/riscv/errata/andes/errata.c
-> > +++ b/arch/riscv/errata/andes/errata.c
-> > @@ -38,29 +38,36 @@ static long ax45mp_iocp_sw_workaround(void)
-> >         return ret.error ? 0 : ret.value;
-> >  }
-> >
-> > -static bool errata_probe_iocp(unsigned int stage, unsigned long arch_i=
-d, unsigned long impid)
-> > +static void errata_probe_iocp(unsigned int stage, unsigned long arch_i=
-d, unsigned long impid)
-> >  {
-> > +       static bool is_iocp_probe_done;
->
-> done?
->
-OK I'll rename it to "done".
-
-> > +
-> >         if (!IS_ENABLED(CONFIG_ERRATA_ANDES_CMO))
-> > -               return false;
-> > +               return;
-> > +
-> > +       if (is_iocp_probe_done)
-> > +               return;
-> >
->
-> Why not keep it simple, and just do
->
->     done =3D true;
->
-OK.
-
-> here?
-> Can arch_id or impid suddenly change, so you have to recheck?
-I only check arch_id and impid here. Are you suggesting I drop it?
-
-> If the SBI call in ax45mp_iocp_sw_workaround() fails, is there really
-> a need to try it again later?
->
-No if it fails we just continue with a broken system.
-
-Cheers,
-Prabhakar
-> >         if (arch_id !=3D ANDESTECH_AX45MP_MARCHID || impid !=3D ANDESTE=
-CH_AX45MP_MIMPID)
-> > -               return false;
-> > +               return;
-> >
-> > -       if (!ax45mp_iocp_sw_workaround())
-> > -               return false;
-> > +       if (!ax45mp_iocp_sw_workaround()) {
-> > +               is_iocp_probe_done =3D true;
-> > +               return;
-> > +       }
-> >
-> >         /* Set this just to make core cbo code happy */
-> >         riscv_cbom_block_size =3D 1;
-> >         riscv_noncoherent_supported();
-> > -
-> > -       return true;
-> > +       is_iocp_probe_done =3D true;
-> >  }
->
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m6=
-8k.org
->
-> In personal conversations with technical people, I call myself a hacker. =
-But
-> when I'm talking to journalists I just say "programmer" or something like=
- that.
->                                 -- Linus Torvalds
+SGkgRGFuLA0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IERhbiBDYXJw
+ZW50ZXIgPGRhbi5jYXJwZW50ZXJAbGluYXJvLm9yZz4NCj4gU2VudDogVGh1cnNkYXksIDMwIE5v
+dmVtYmVyIDIwMjMgMTM6NDcNCj4gVG86IFl1IFN1biA8dTIwMjExMjA2MkBodXN0LmVkdS5jbj4N
+Cj4gQ2M6IEhhbnMgZGUgR29lZGUgPGhkZWdvZWRlQHJlZGhhdC5jb20+OyBJbHBvIErDpHJ2aW5l
+bg0KPiA8aWxwby5qYXJ2aW5lbkBsaW51eC5pbnRlbC5jb20+OyBNYXJrIEdyb3NzIDxtYXJrZ3Jv
+c3NAa2VybmVsLm9yZz47IFZhZGltDQo+IFBhc3Rlcm5hayA8dmFkaW1wQG52aWRpYS5jb20+OyBo
+dXN0LW9zLWtlcm5lbC0NCj4gcGF0Y2hlc0Bnb29nbGVncm91cHMuY29tOyBEb25nbGlhbmcgTXUg
+PGR6bTkxQGh1c3QuZWR1LmNuPjsgRGFuDQo+IENhcnBlbnRlciA8ZXJyb3IyN0BnbWFpbC5jb20+
+OyBwbGF0Zm9ybS1kcml2ZXIteDg2QHZnZXIua2VybmVsLm9yZzsgbGludXgtDQo+IGtlcm5lbEB2
+Z2VyLmtlcm5lbC5vcmcNCj4gU3ViamVjdDogUmU6IFtQQVRDSF0gcGxhdGZvcm0vbWVsbGFub3g6
+IG1seHJlZy1sYzogQ2hlY2sgYmVmb3JlIHZhcmlhYmxlDQo+IGRlcmVmZXJlbmNlZA0KPiANCj4g
+T24gVGh1LCBOb3YgMzAsIDIwMjMgYXQgMDU6NDQ6MDdQTSArMDgwMCwgWXUgU3VuIHdyb3RlOg0K
+PiA+IHRoZXJlIGlzIGEgd2FybmluZyBzYXlpbmcgdmFyaWFibGUgZGVyZWZlcmVuY2VkIGJlZm9y
+ZSBjaGVjaw0KPiA+ICdkYXRhLT5ub3RpZmllcicgaW4gbGluZSA4MjguDQo+ID4gYWRkICJmb3Io
+ZGF0YS0+bm90aWZpZXIpIiBiZWZvcmUgdmFyaWFibGUgZGVmZXJlbmNlZC4NCj4gICAgICAgIF5e
+Xg0KPiBTaG91bGQgaGF2ZSBiZWVuICJpZiAoZGF0YS0+bm90aWZpZXIpIi4NCj4gDQo+ID4NCj4g
+PiBTaWduZWQtb2ZmLWJ5OiBZdSBTdW4gPHUyMDIxMTIwNjJAaHVzdC5lZHUuY24+DQo+ID4gUmV2
+aWV3ZWQtYnk6IERvbmdsaWFuZyBNdSA8ZHptOTFAaHVzdC5lZHUuY24+DQo+ID4gUmV2aWV3ZWQt
+Ynk6IERhbiBDYXJwZW50ZXIgPGVycm9yMjdAZ21haWwuY29tPg0KPiANCj4gSSBkaWRuJ3QgcmVh
+bGx5IGV4cGxpY2l0bHkgZ2l2ZSBhIFJldmlld2VkLWJ5IHRhZyBmb3IgdGhpcyBwYXRjaC4NCj4g
+aHR0cHM6Ly9ncm91cHMuZ29vZ2xlLmNvbS9nL2h1c3Qtb3Mta2VybmVsLQ0KPiBwYXRjaGVzL2Mv
+YzVoVWFZSURjSUkvbS9oNGFGUzdQa0NRQUoNCj4gSSBhbHNvIHNhaWQgdGhhdCBJIHRob3VnaHQg
+aXQgbG9va2VkIGNvcnJlY3QgYnV0IHRoYXQgaXQgbmVlZGVkIGEgRml4ZXM6DQo+IHRhZyBob3dl
+dmVyIHRoZSBGaXhlcyB0YWcgSSBzdWdnZXN0ZWQgd2FzIHdyb25nLg0KPiANCj4gTG9va2luZyBh
+dCBpdCBub3csIHRoZSBjb3JyZWN0IEZpeGVzIHRhZyB3b3VsZCBiZToNCj4gRml4ZXM6IDFjOGVl
+MDZiNjM3ZiAoInBsYXRmb3JtL21lbGxhbm94OiBSZW1vdmUgdW5uZWNlc3NhcnkgY29kZSIpDQo+
+IA0KPiBUaGF0IGNvbW1pdCBzYXlzIHRoYXQgdGhlIE5VTEwgY2hlY2sgaXMgbm90IHJlcXVpcmVk
+LiAgU28gbm93IEknbSBjb25mdXNlZC4NCj4gT24gdGhlIG9uZSBoYW5kLCB0aGUgaW1wdWxzZSBp
+cyB0byB0cnVzdCB0aGUgbWFpbnRhaW5lciwgYnV0IG9uIHRoZSBvdGhlciBoYW5kDQo+IG15IHJl
+dmlldyBzdWdnZXN0ZWQgdGhhdCB0aGUgTlVMTCBjaGVjayBtaWdodCBiZSByZXF1aXJlZC4NCg0K
+WWVzLCBpdCBpbmRlZWQgcmVxdWlyZWQuDQpNeSBtaXN0YWtlLg0KDQpUaGFuayB5b3UgZm9yIHlv
+dXIgY29tbWVudHMuDQoNCj4gDQo+IHJlZ2FyZHMsDQo+IGRhbiBjYXJwZW50ZXINCj4gDQoNCg==
