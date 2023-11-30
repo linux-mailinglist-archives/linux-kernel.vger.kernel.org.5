@@ -2,169 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD05B7FF3D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 16:45:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9386D7FF3DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 16:46:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346384AbjK3PpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 10:45:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56586 "EHLO
+        id S1346387AbjK3PqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 10:46:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232208AbjK3PpO (ORCPT
+        with ESMTP id S232208AbjK3Pp7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 10:45:14 -0500
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1436710D5;
-        Thu, 30 Nov 2023 07:45:20 -0800 (PST)
-Received: by mail-yb1-xb2d.google.com with SMTP id 3f1490d57ef6-daf4f0e3a0fso981344276.1;
-        Thu, 30 Nov 2023 07:45:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701359119; x=1701963919; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7LfUJvZcECV2OLIK51x1URKvRT3tty1HIzScZdH3myE=;
-        b=gr+oTEZJT1Sl8CPBfCJgiQdG8I/oMxIjRfpJHUdsYkeslEkYYroCURsZJBJLWLkL6P
-         bOc6o1ANK+Gj4dGbpky1wbIQmKcK2+VF/nqyTwe/lFc7Gqh9WGPAPWh5bkNkLtqQI477
-         0v84rFB6iV4qEJ31pgiO4Exh3kTfc/BYqlGyEGprILIIaPdxyuTjgqmYoof0Vit+eXHO
-         C0WOvHByISRyj/hCrCl0gC5ImAKU/fHrwW29BnN8lfOnXunQcBOqq6dPeQUn6E4iqcEr
-         IYTpWNYrK3Ye82226F5sQKzGCLFmzrQa+QrhLcXM2xu6h8I3WSpvH9Vr/enACbJkY1o3
-         mKDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701359119; x=1701963919;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7LfUJvZcECV2OLIK51x1URKvRT3tty1HIzScZdH3myE=;
-        b=FVHou9lLQ0VL2qUYEtjP6/Qd41ayFK23Hiq77vfPvgzpEiNssXx3EwFYfz9reXmJxx
-         18ZdvEFn87wYDdTZFYwF4Wak3KWUGVBqJ+p2mJZxYYAa8hO9v8DmGeiYCdwSLCSksiB9
-         Y+R4yzy8z6jXJ1DWzHkD1pGdAXTbMS81RLVPWGBUuM24sMp2beEFxTk12EDEnb3n4O75
-         WLMcH+cPiUYPiHsi39Kvv1WIruWYv5CY52DHm/UcPNwKefOEfiu9frO/ljGdQqpmeSOT
-         1PodSasUNm5oLniSUIAXisinp+KT1EpXanbPF+WhgU3gCrvwSZptnzAv/84GF1x80W15
-         /vfw==
-X-Gm-Message-State: AOJu0YxILXPz8ulKfybvqjB3quQqYIcp6EV86jmO0Vj6x6XhAL6xHOmm
-        vUUnMKl9rWhm0hMSvJPgxthSyTNegsmSd5OImeA=
-X-Google-Smtp-Source: AGHT+IEGwQ0wkgJ/HJHi+WTOwH4YC53KjLeCK/BXJqoZi8k8UErMGuY3MqGPX0IX0aq2FEmoS60rqPUGLOTCH1JHnKo=
-X-Received: by 2002:a25:3d46:0:b0:d91:b6e5:54dd with SMTP id
- k67-20020a253d46000000b00d91b6e554ddmr21470653yba.3.1701359119126; Thu, 30
- Nov 2023 07:45:19 -0800 (PST)
+        Thu, 30 Nov 2023 10:45:59 -0500
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2099.outbound.protection.outlook.com [40.107.8.99])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75700D4A;
+        Thu, 30 Nov 2023 07:46:05 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=T2Cc8GshqSEEgBxBYKeMYcbxC0OsIK2g0XIqvoqAVA2mnL7vsuILZYrkuwi3IXjt2GpXqwv3Qai8cZZYLt0JtfXhxqR0OnDGb8BpN85EW60OSKlHG4nITB8jCBjcn0hV9Ov5ZyQ3treSz7xKyq0Ygm2AGM0jEQIvc/qUiVekr0D1oxm4tbEHDjhKaQ0iymZoIbaF3qFqIjLS1n1zSWhKvB90rZu6CxlxCr9vUjtdgQGJzpZRF3GjSo5D6j7BC4nqBm73kYZiCvnFSqa/xzPtYe6czlLtQbidx4S6sahNn0fvnjPSiW9vnVlcb0W6//VkLID1JSmKWfApvuB5e/Vtkw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=bejoF+odiz5kaCavdANsMLxA2wn4/sTlyvDEWFpAt1E=;
+ b=Egyw+S5ItdiBzEA4cTe6uWEv7Vi980aOVQAveHvwM5ZLyP6XZVxjzbstuQCLGbPqY7jVdSG62/bYkWKmCGpyr1b84yldnBFtr/URIYCWho0jqmrr0Ae3ua6EGKUv0+ywe491XWQV8SBVWdUEcW2sss2VrOWcqFTpoejKJPKOvORUr9PEhSR/E4/eA/DZZ6xIy0vwwiaHucuGyVwB5fuVIDNnLRTnIKVOKF0aMMB7NMmNjKIDjzuWy7Hf+LbWF8bodnmsn2CwMpo5v6PktO5MgbncLrQ2zP0/7Ra/xPIQckoVTmntgKeQyeHKLzvlkIUHZKVX6GRp/O1auhJrvjNiFg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=kontron.de; dmarc=pass action=none header.from=kontron.de;
+ dkim=pass header.d=kontron.de; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mysnt.onmicrosoft.com;
+ s=selector2-mysnt-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bejoF+odiz5kaCavdANsMLxA2wn4/sTlyvDEWFpAt1E=;
+ b=Q7fC0okX84cXnH7wI2YdBmQePo8dyOVk8iMDYpiYjzvKqWXM7JMhkmw6VFoDu269ZlFS5cT6eNd/vhVZ5fZV4elbXgbdlpiqvKPoyjJgsSZYYVybbR6JPvpWa9v5xSRHujVvqJqy0dMMZrSXUCEyCiJ8A+G8wuE7u8oi0vifoXc=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=kontron.de;
+Received: from PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:102:263::10)
+ by AM9PR10MB4069.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:1ff::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.24; Thu, 30 Nov
+ 2023 15:46:02 +0000
+Received: from PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::27ba:9922:8d12:7b3d]) by PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::27ba:9922:8d12:7b3d%5]) with mapi id 15.20.7046.024; Thu, 30 Nov 2023
+ 15:46:02 +0000
+Message-ID: <30a76402-894a-4fe3-82ae-491b0890aa8c@kontron.de>
+Date:   Thu, 30 Nov 2023 16:46:00 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] arm64: dts: imx8mm: Remove video_pll1 clock rate from
+ clk node
+Content-Language: en-US, de-DE
+To:     Adam Ford <aford173@gmail.com>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     aford@beaconembeded.com, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231128045415.210682-1-aford173@gmail.com>
+ <20231128045415.210682-2-aford173@gmail.com>
+From:   Frieder Schrempf <frieder.schrempf@kontron.de>
+In-Reply-To: <20231128045415.210682-2-aford173@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BE1P281CA0248.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:b10:8b::10) To PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:102:263::10)
 MIME-Version: 1.0
-References: <20231127153901.6399-1-maimon.sagi@gmail.com> <ZWUwTnWEHipJqHnk@hoboy.vegasvil.org>
- <CANDhNCq=iV2_1bzaP=BYuUwJtNsQBdjuYqUUtsiLc-MCNURJ6w@mail.gmail.com>
-In-Reply-To: <CANDhNCq=iV2_1bzaP=BYuUwJtNsQBdjuYqUUtsiLc-MCNURJ6w@mail.gmail.com>
-From:   Sagi Maimon <maimon.sagi@gmail.com>
-Date:   Thu, 30 Nov 2023 17:45:08 +0200
-Message-ID: <CAMuE1bG1ShKVakUH5f41_NNixBZRTUgXW8-=BWZxfNde6ohbVw@mail.gmail.com>
-Subject: Re: [PATCH v2] posix-timers: add multi_clock_gettime system call
-To:     John Stultz <jstultz@google.com>
-Cc:     Richard Cochran <richardcochran@gmail.com>, reibax@gmail.com,
-        davem@davemloft.net, rrameshbabu@nvidia.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        maheshb@google.com, Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PA4PR10MB5681:EE_|AM9PR10MB4069:EE_
+X-MS-Office365-Filtering-Correlation-Id: fc47ad48-5898-4155-a06f-08dbf1bb74f7
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 6VnFwuZUohs+wko7g4+Nk9Dk0I3bsdPR1zt9uurFr/Vn482ik9rL1qsY8u3Sz15t98i5aepJHnqtbcON3eD8diAX0mM6tiMqM9I6e3CdZ9BwRMvusCc7kvuFcfJOxDt69FTDhZRX1QgvW/y39KjwX4GPUtWTVgfUVfGMz8pDML4aOhndARuX2YMsehtXRa2aW5rozMkEM7ysYbXEUIi5IgiP7UeGzqThvGIvBhw6TxF+5BQS92OlopnO8C3UbGttlPFG2w7xyjAVWflICxvDBLQnvSoXVthOUqDAP5+qfNYo/SKE+nEpelMo/EEOqsedW97Aqa0YANoPBD77dsvTRRi81tp2s14T0jblmTEnJ1v5OG+MAkOsdkLPBHUGaCBHqwsoEwch8d9LrRNDlGQi6u4VBKeBFLOmksYhckVJEMy+nay7WfHyfX9/+fflPJFja+thQZFW0mVIorpV8WZhGZqEiwti2WWutj7Y+bj4S+ngYnsMjqJ8DvavwATo3HRhmJBdXLCGn2K8ThmSiupiw5JuUrEMwqvL6WUngaqyao0N7O7lh3+l9ZiuvP/Uhxx0p2U6c64+pteysaIlPbzkShonMOga2N7mDZs72ZVHShNbdjM9yfxUQPPr/hwuFcYL+sBThiSl3VxI1vI1NLCOmOLUbg8jpm3ydPwWMhsvWQk=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(366004)(396003)(376002)(39860400002)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(31686004)(86362001)(66946007)(54906003)(66476007)(38100700002)(36756003)(31696002)(26005)(6506007)(83380400001)(2616005)(6512007)(53546011)(2906002)(316002)(66556008)(6486002)(8676002)(5660300002)(44832011)(478600001)(41300700001)(4326008)(7416002)(8936002)(32563001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?L3RqSDZrUUIwRExBaFdVNmxXOVZmcVNDb09CakdKVlNzMkVVR3dOVldyUXd4?=
+ =?utf-8?B?U3VlL29aYnFPdS9mbElybzVQSnVjcEFCQnJ4S3UvM2lvUTlRTmNmRjBNT3dG?=
+ =?utf-8?B?VnFmVnNCZ2NWQWJJVlR1eXhGOGR0ckQvR2IzRW1IWGFaS3d5V3RUc25BZSt5?=
+ =?utf-8?B?aVF2N0p4RDhqZURiMWtFSFRYdS9jL1d2NWVKRzVlbVBYMFlvK1ZXK204OFpE?=
+ =?utf-8?B?cjE2M2xhRVZBTnBtSDY3TWRuSW9lUWpUWENqSnNEaFB0bFJCc0FWS1BEa1Y2?=
+ =?utf-8?B?ZEthT2wycE51a2l1YWFsWE05N21sOXlTdEZ6NlZacTMraWR4QlZ3U1FSM1dS?=
+ =?utf-8?B?bG8yekhyK0xsd3N3ZTk4NENTWThhb0RSNDJxUDdVM3BBK0kzL25pY0xWNzRi?=
+ =?utf-8?B?U0R4WnZyd0tFYkRWYUo3b2s1QXoyclZXbHkrSm9VS0Z1NXFVcVBEM2tyVVJO?=
+ =?utf-8?B?cDBLdUtIVWxFMkRqN1Y4R1liemk3NkhpZ2ZhQ2FQUHBCZEorT0JJdXE5R1dM?=
+ =?utf-8?B?V3VGRTZ2Q0N4c0l0V0xvckNPUDMzU3hxeE9ZUW8xZHBnS1Zhcm13V3BrL0tN?=
+ =?utf-8?B?ZDV5L3kvWndVQjI2Y0s1SC9PWmpKK2UxVmQ3cElzWEFuNjJRcmhldzh2QWk4?=
+ =?utf-8?B?MlZxTUtYVTI4TEllWHNpZGRENU5PbDJwdTFCcVBxOWJpVXpXZXkycFFOV1ow?=
+ =?utf-8?B?WVZqbENMaFJnWkxKNDlzazBNcXBFT1RGSXZmV0NmTEZ3ODdQS0w0RDF5WlR6?=
+ =?utf-8?B?dStISzJvZ2RTdThZb0g0ZDNmZ2JOOG1XTFQ0aGpwWm9ILzdreDM5ZFIyV0FZ?=
+ =?utf-8?B?V1hGcm5FSkIva1JieHdwelY5Myt0VndLZS84OGszRm5hYm14WVN6a0dXYmFh?=
+ =?utf-8?B?cGdOWTgyc0dXbHBYYjljekZqSGRkNFI4RnMyZ1NsY1N4N0h2TGxPN0NQRm9x?=
+ =?utf-8?B?dytRS2Z2OGFEbEJpcGRDckp0dUN5RFl1aUsycDJ4QXQwNW1SRVpZdGc2ZWtt?=
+ =?utf-8?B?STZzOEQ2OHNtUThwWENiRkdoeEJtYWZvTXZOZmExN21CZms1VUxTdDBHU3R4?=
+ =?utf-8?B?c3kxOXRTZ2hZbkpPTEhGZHFvdUZTdHV4Q2RYcFplMy9OYTdQaHBQZ1lrL2tI?=
+ =?utf-8?B?aWRlWWltUHBMQXIzVnBmL2kvMEJqVFFxT3RKM0dUOExaSlJOTUczeTV1OGNw?=
+ =?utf-8?B?ZVVmU1VUcjdpWE5DMXVudmlOZU11NlFkY3hEdkFMZjRyVmRvZWViL2FpTEw1?=
+ =?utf-8?B?Q3ZDY0pobjhMNnRVNldGcFZTSU5ENzlGb2ozMlJGdnFNUWZza1NZek04aytk?=
+ =?utf-8?B?QzRVVGpVUDhkaWlzQUM0Tjl5dzBHdnZtajdDM1RXMHladDk3UDJFMVRsRTlh?=
+ =?utf-8?B?T3pEdDM1dlpnN0w2bWk3SzUvcGk4Mk13OWYwTmNoNUJtWkUxcGRGbzd5Yml3?=
+ =?utf-8?B?MldSSEtrWnRPYlROeUJVK1p0WVhmVmVmUlB6eEYrb052M3M0SlJBUHg0M0Z5?=
+ =?utf-8?B?d01EZnpVMkF6N3Y2dEp6TEUwNi9SOFp4S09uSTdEb0hkLzVVajl5V0ZOdTVP?=
+ =?utf-8?B?RHcxNitxcERzbDJnTDUwdW5PcUtRK1hmRkpwZUNheTdVK3NiZ3ZtWWM3cXMr?=
+ =?utf-8?B?REVSMnh4OWVkalVpdnY1WHlNY3B6ODY3VWlMY2lMeE5oY1BnQWpTTmliK0J2?=
+ =?utf-8?B?ZW1aV1dJV09XdFhXZ1JTRlQyVUwyUEk3NmdCSnpvT1gzY0h2SlBSTnlhZlNQ?=
+ =?utf-8?B?NlJINENaa3FzTkdBL2ZQc1d6S29GSEJqSGVVajJST0dHczRuODZZR2lTVDVo?=
+ =?utf-8?B?aVRuNjZZazA5UmpRNGp0dVBINHQwai9nTVRoYTN4SGkxUWJGL29PVEZoQ1dz?=
+ =?utf-8?B?cG4xeTIzczg4VGlhNUVUY0hsRjVmRFdma0NWRGlGUHRKckRyM0g2WFNwWXdF?=
+ =?utf-8?B?YVA5UHNZdUQ4Q2hiOXlPa0JxWHEzNXhMaUZ1aGdzNWhVTzJUeVBJSW9vRmJ0?=
+ =?utf-8?B?dlpKU2JzaEVzc1hPb2NkR3p0V0ZQZDdQNkVKSnRIbXVQQld3dlRTWlA5bVJZ?=
+ =?utf-8?B?WHpWOXdGS09KM1daallhbFBGRDU2WDl0NUNWQ2xmQktUQmNaUVhTcVE4TGhE?=
+ =?utf-8?B?cCtoaGFmTUNCbVBXekl6WmJvWnlCSTNPMWF5WWZkdHNicExEQ1FTZWY2T2Y1?=
+ =?utf-8?B?N1E9PQ==?=
+X-OriginatorOrg: kontron.de
+X-MS-Exchange-CrossTenant-Network-Message-Id: fc47ad48-5898-4155-a06f-08dbf1bb74f7
+X-MS-Exchange-CrossTenant-AuthSource: PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Nov 2023 15:46:02.7822
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8c9d3c97-3fd9-41c8-a2b1-646f3942daf1
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: BWprLXhMuB3BZ9r2h2pAyJv55I9vUpeAhFEMG8JJpbgbFCX99h5QdB5WPqSnPoI6oi3bvn2Bn2z7sRQvTGI5nUs7voY8p1N2ZDXe6GFT0wI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR10MB4069
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi John,
-Thanks for your notes.
+On 28.11.23 05:54, Adam Ford wrote:
+> There are two clock-rate assignments for video_pll1, and the
+> only one it should really have belongs inside the lcdif node,
+> since it's the only consumer of this clock.  Remove it from
+> the clk node.
+> 
+> Signed-off-by: Adam Ford <aford173@gmail.com>
+> 
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mm.dtsi b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+> index 8d872568231d..a3dae114c20e 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+> @@ -647,7 +647,6 @@ clk: clock-controller@30380000 {
+>  						<&clk IMX8MM_CLK_AUDIO_AHB>,
+>  						<&clk IMX8MM_CLK_IPG_AUDIO_ROOT>,
+>  						<&clk IMX8MM_SYS_PLL3>,
+> -						<&clk IMX8MM_VIDEO_PLL1>,
+>  						<&clk IMX8MM_AUDIO_PLL1>;
+>  				assigned-clock-parents = <&clk IMX8MM_SYS_PLL1_800M>,
+>  							 <&clk IMX8MM_ARM_PLL_OUT>,
+> @@ -657,7 +656,6 @@ clk: clock-controller@30380000 {
+>  							<400000000>,
+>  							<400000000>,
+>  							<750000000>,
+> -							<594000000>,
+>  							<393216000>;
+>  			};
+>  
 
-On Tue, Nov 28, 2023 at 2:46=E2=80=AFAM John Stultz <jstultz@google.com> wr=
-ote:
->
-> On Mon, Nov 27, 2023 at 4:12=E2=80=AFPM Richard Cochran
-> <richardcochran@gmail.com> wrote:
-> >
-> > On Mon, Nov 27, 2023 at 05:39:01PM +0200, Sagi Maimon wrote:
-> > >  Some user space applications need to read some clocks.
-> > >  Each read requires moving from user space to kernel space.
-> > >  This asymmetry causes the measured offset to have a significant erro=
-r.
-> >
-> > Adding time/clock gurus (jstultz, tglx) on CC for visibility...
-> >
->
-> Thanks for the heads up! (though, "guru" is just the noise I make
-> standing up these days)
->
-> > >  Introduce a new system call multi_clock_gettime, which can be used t=
-o measure
-> > >  the offset between multiple clocks, from variety of types: PHC, virt=
-ual PHC
-> > >  and various system clocks (CLOCK_REALTIME, CLOCK_MONOTONIC, etc).
-> > >  The offset includes the total time that the driver needs to read the=
- clock
-> > >  timestamp.
->
-> This last bit about "offset includes the total time that the driver
-> needs to read the clock" is a bit confusing. It seems to suggest there
-> would be start/stop bookend timestamps so you could bound how long it
-> took to read all the clocks, but I don't see that in the patch.
->
-You are right it is a little confusing, I will remove it from the commit .
+Thanks for the cleanup!
 
-> > >  New system call allows the reading of a list of clocks - up to PTP_M=
-AX_CLOCKS.
-> > >  Supported clocks IDs: PHC, virtual PHC and various system clocks.
-> > >  Up to PTP_MAX_SAMPLES times (per clock) in a single system call read=
-.
-> > >  The system call returns n_clocks timestamps for each measurement:
-> > >  - clock 0 timestamp
-> > >  - ...
-> > >  - clock n timestamp
-> > >
-> > > Signed-off-by: Sagi Maimon <maimon.sagi@gmail.com>
->
-> Overally, while I understand the intent, I'm pretty hesitant on it
-> (and "__ptp_multi_clock_get multi_clk_get" has me squinting to find
-> the actual space amongst all the underscores :).
->
-struct __ptp_multi_clock_get __user * ptp_multi_clk_get has many
-underscores indeed :-)
-I will rename it, if you have any naming suggestions, I will be glad to hea=
-r it.
-
-> If the overhead of reading clockids individually is too much, it seems
-> like the next thing will be folks wanting to export multiple raw
-> hardware counter values so the counter->ns transformation doesn't get
-> inbetween each hw clock read, which this interface wouldn't solve, so
-> we'd have to add yet another interface.
->
-future raw HW counter read interface:
-=E2=80=A2 For PHC - reading raw HW counter is driver dependent, and will
-require changes in many existing PTP drivers.
-=E2=80=A2 For System clock it is possible but with much more code changes a=
-nd
-the improvements seems to be small.
-=E2=80=A2 The issue you introduced can be reduced (but not completely
-overcome) by user space usage of the interface.
-For example, to minimize the difference between clock X and clock Y,
-users can call  multi_clock_gettime  with 3 clock reads : X, Y, and X
-again.
-Considering gain (thin extra accuracy) vs pain (a lot of code changes,
-also for system clocks) and needs =E2=80=93 we chose to settle with the
-current suggested interface.
-
-> Also, I wonder if trying to get multiple clocks in one read seems
-> similar to something uio_ring might help with? Though I can't say I'm
-> very savvy with uio_ring. Have folks looked into that?
->
-I am also not an expert with the uio_ring/liburing, but I researched a
-little and it seems it is mainly used for IO operations and support
-only few of them (IORING_OP_READV, IORING_OP_SENDMSG, etc.)
-I am not sure how to implement it for consecutive clock_gettime system
-calls and if it can be done at all.
-Even if it can be done, it adds a lot of complexity to the user space
-code and the use in one generic system call is more elegant in my
-opinion.
-For example: Looking at the existing ioctl PTP_SYS_OFFSET,
-theoretically it can also be implemented by uio_ring, but it is still
-a more elegant solution.
-> thanks
-> -john
+Reviewed-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+Tested-by: Frieder Schrempf <frieder.schrempf@kontron.de> # Kontron BL
+i.MX8MM
