@@ -2,181 +2,314 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34D777FF114
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 15:02:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAD937FF116
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 15:02:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345580AbjK3OCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 09:02:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56560 "EHLO
+        id S1345617AbjK3OCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 09:02:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232021AbjK3OCG (ORCPT
+        with ESMTP id S232108AbjK3OCg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 09:02:06 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE8E9B9
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 06:02:12 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-548ae9a5eeaso9965a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 06:02:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701352931; x=1701957731; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wxBMiGcAEd4doX2T6kUaaKToconnxbKJJPNo5nm1fd4=;
-        b=OCP2R1RqAZDCq6wXGz74eZL+wxQIbqkSreG/uMzQADiOjLifhVwbq9Rtu79e/RTiUT
-         g+BjpyARHtw2DSG1Yk/IJDtRNu9ckZvENcYrhc/oJFf28XTUK2WA4GDxX+zCSdyxKBoJ
-         GMjCKG3L6V9K+DCtYmKgpWVf0nQpMuLDMbfg8h1Bj271OnpMx3TU/PA/jQZglZILAM7G
-         aasOYD2bm254PNgOEmuM1U7o4QnbufgjrClkPhAwRUuTQkVcWBL7dxV3BXrtSZV4mk74
-         v0C1EzdsMLIoo/u2+HKtB1x3Ts/KlvnFWHfD1xOM4LwT+J2nbaXd8JYkoq8eJyniQ3GC
-         t6Rw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701352931; x=1701957731;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wxBMiGcAEd4doX2T6kUaaKToconnxbKJJPNo5nm1fd4=;
-        b=uM+rsdtpJsvp9+qCSKIGxNXP8YD8wPiodSe8a0jk4FCZPsCBs5IZIzku4TpDhyADoi
-         +dph8Mw7juBe1t3GxZdXDtzV6eHjuz7uAz713iIoEZCUk/FepNkck3njHam//1dCUmKX
-         RDrFe5sD+RloPpqGrxT3uZFYVkTuUG9I6IX3KwqqW+Gfk6jrUfO+kglyWTCsMbdexuMP
-         izKEVQAvjPXcvE2Gmo9HmICFzv7eUEVhnx2Mr4aIjUlca6sFdpQkydw8lMDAkmxNcoHs
-         X4zrWFFwW8jInVbZpuCb5tKmu/sXx3nqBPpPLsCstlBdpDeze5QdGMng34ftkNZqnK94
-         EADA==
-X-Gm-Message-State: AOJu0Ywpfh3XpWqYmdauvgE5L2jqnO0kRnNNL++tkMbe6sBxdIrGW1Fu
-        U1gVqg3QLvWtj3yff8GeMuxMdgt6Yo86/+aEZ8K2+g==
-X-Google-Smtp-Source: AGHT+IEVq5eaRqCUGxQslevokHcou3lYVimBUmZu/Cymvq6zNuxmXKwBkEpc68x5OOLtst4kFtL6VTT+EwfFF1xjZC8=
-X-Received: by 2002:a50:8a8e:0:b0:54b:bf08:a95f with SMTP id
- j14-20020a508a8e000000b0054bbf08a95fmr167000edj.6.1701352931041; Thu, 30 Nov
- 2023 06:02:11 -0800 (PST)
+        Thu, 30 Nov 2023 09:02:36 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C010B9;
+        Thu, 30 Nov 2023 06:02:42 -0800 (PST)
+Received: from pendragon.ideasonboard.com (aztw-30-b2-v4wan-166917-cust845.vm26.cable.virginm.net [82.37.23.78])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id CA81E18A2;
+        Thu, 30 Nov 2023 15:02:02 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1701352922;
+        bh=CtTu5UlEw7HFL0wA3z3VZT/N2P992044Xt0sef2aT5s=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=q6Na1bLCHK7NN/iJAw52sd23cUcXmlIJ6JxhVKU6L31aB5asJ0rU5FILazpYpzoCu
+         ogyBO4wEWkbaqcehcqot/8wLUEumFkfjGb/M9ccLPJ3rvJjWuCzGuFKz9q8FeTSvIV
+         2GGuDOcF/VfBPoAo3S2+1+UQQVf4GVkNej1PolQA=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <MN2PR12MB44863139E562A59329E89DBEB982A@MN2PR12MB4486.namprd12.prod.outlook.com>
-In-Reply-To: <MN2PR12MB44863139E562A59329E89DBEB982A@MN2PR12MB4486.namprd12.prod.outlook.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Thu, 30 Nov 2023 15:01:56 +0100
-Message-ID: <CANn89iKvG5cTNROyBF32958BzATfXysh4zLk5nRR6fgi08vumA@mail.gmail.com>
-Subject: Re: Bug report connect to VM with Vagrant
-To:     Shachar Kagan <skagan@nvidia.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Yishai Hadas <yishaih@nvidia.com>, Ido Kalir <idok@nvidia.com>,
-        Topaz Uliel <topazu@nvidia.com>,
-        Shirly Ohnona <shirlyo@nvidia.com>,
-        Ziyad Atiyyeh <ziyadat@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAHCN7x+hBGmnJ2z8B9awpS1KU7rgVjseMw-uTE2Sc7DZ5+oTKA@mail.gmail.com>
+References: <20231129093113.255161-1-paul.elder@ideasonboard.com> <7122934.GXAFRqVoOG@steina-w> <20231129151637.GG24293@pendragon.ideasonboard.com> <5734628.DvuYhMxLoT@steina-w> <CAHCN7x+hBGmnJ2z8B9awpS1KU7rgVjseMw-uTE2Sc7DZ5+oTKA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] arm64: dts: imx8mp: Add overlays for ISP instances
+From:   Kieran Bingham <kieran.bingham@ideasonboard.com>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        Paul Elder <paul.elder@ideasonboard.com>,
+        tomi.valkeinen@ideasonboard.com, umang.jain@ideasonboard.com,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Tim Harvey <tharvey@gateworks.com>,
+        Philippe Schenker <philippe.schenker@toradex.com>,
+        Marek Vasut <marex@denx.de>,
+        Gregor Herburger <gregor.herburger@ew.tq-group.com>,
+        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+        open list <linux-kernel@vger.kernel.org>, moderated list:
+        ARM/FREESCALE IMX / MXC ARM ARCHITECTURE 
+        <linux-arm-kernel@lists.infradead.org>, ;
+Illegal-Object: Syntax error in Cc: address found on vger.kernel.org:
+        Cc:     ;
+                        ^-missing semicolon to end mail group, extraneous tokens in mailbox, missing end of mailbox
+To:     Adam Ford <aford173@gmail.com>,
+        Alexander Stein <alexander.stein@ew.tq-group.com>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>
+Date:   Thu, 30 Nov 2023 14:02:36 +0000
+Message-ID: <170135295658.1400840.15195708825865805741@ping.linuxembedded.co.uk>
+User-Agent: alot/0.10
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 30, 2023 at 2:55=E2=80=AFPM Shachar Kagan <skagan@nvidia.com> w=
-rote:
->
-> Hi Eric,
->
-> I have an issue that bisection pointed at this patch:
-> commit 0a8de364ff7a14558e9676f424283148110384d6
-> tcp: no longer abort SYN_SENT when receiving some ICMP
->
++ Pantellis
 
-Please provide tcpdump/pcap captures.
+Quoting Adam Ford (2023-11-30 13:48:58)
+> On Thu, Nov 30, 2023 at 3:51=E2=80=AFAM Alexander Stein
+> <alexander.stein@ew.tq-group.com> wrote:
+> >
+> > Hi Laurent,
+> >
+> > Am Mittwoch, 29. November 2023, 16:16:37 CET schrieb Laurent Pinchart:
+> > > Hi Alexander,
+> > >
+> > > On Wed, Nov 29, 2023 at 11:20:07AM +0100, Alexander Stein wrote:
+> > > > Am Mittwoch, 29. November 2023, 10:31:13 CET schrieb Paul Elder:
+> > > > > From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> > > > >
+> > > > > Add two overlay to enable each ISP instance. The ISP is wired dir=
+ectly
+> > > > > to the CSIS for now, bypassing the ISI completely.
+> > > >
+> > > > I'm not sure if this is worth adding in a separate overlay.
+> > >
+> > > The trouble is that, at this point, selection between the ISP and the
+> > > ISI can only be performed through DT :-S That's why this is implement=
+ed
+> > > as an overlay.
+> >
+> > I feel a better place would be the overlay which actually adds the sens=
+or.
+> > This knows best whether ISI or ISP should be used.
+> >
+> > > > > Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.co=
+m>
+> > > > > Signed-off-by: Paul Elder <paul.elder@ideasonboard.com>
+> > > > > ---
+> > > > >
+> > > > >  arch/arm64/boot/dts/freescale/Makefile        |  2 ++
+> > > > >  .../arm64/boot/dts/freescale/imx8mp-isp1.dtso | 36 +++++++++++++=
+++++++
+> > > > >  .../arm64/boot/dts/freescale/imx8mp-isp2.dtso | 36 +++++++++++++=
+++++++
+> > > > >  3 files changed, 74 insertions(+)
+> > > > >  create mode 100644 arch/arm64/boot/dts/freescale/imx8mp-isp1.dtso
+> > > > >  create mode 100644 arch/arm64/boot/dts/freescale/imx8mp-isp2.dtso
+> > > > >
+> > > > > diff --git a/arch/arm64/boot/dts/freescale/Makefile
+> > > > > b/arch/arm64/boot/dts/freescale/Makefile index
+> > > > > 300049037eb0..f97dfac11189
+> > > > > 100644
+> > > > > --- a/arch/arm64/boot/dts/freescale/Makefile
+> > > > > +++ b/arch/arm64/boot/dts/freescale/Makefile
+> > > > > @@ -113,6 +113,8 @@ dtb-$(CONFIG_ARCH_MXC) +=3D imx8mp-dhcom-pdk2=
+.dtb
+> > > > >
+> > > > >  dtb-$(CONFIG_ARCH_MXC) +=3D imx8mp-dhcom-pdk3.dtb
+> > > > >  dtb-$(CONFIG_ARCH_MXC) +=3D imx8mp-evk.dtb
+> > > > >  dtb-$(CONFIG_ARCH_MXC) +=3D imx8mp-icore-mx8mp-edimm2.2.dtb
+> > > > >
+> > > > > +dtb-$(CONFIG_ARCH_MXC) +=3D imx8mp-isp1.dtbo
+> > > > > +dtb-$(CONFIG_ARCH_MXC) +=3D imx8mp-isp2.dtbo
+> > > > >
+> > > > >  dtb-$(CONFIG_ARCH_MXC) +=3D imx8mp-msc-sm2s-ep1.dtb
+> > > > >  dtb-$(CONFIG_ARCH_MXC) +=3D imx8mp-phyboard-pollux-rdk.dtb
+> > > > >  dtb-$(CONFIG_ARCH_MXC) +=3D imx8mp-tqma8mpql-mba8mpxl.dtb
+> > > > >
+> > > > > diff --git a/arch/arm64/boot/dts/freescale/imx8mp-isp1.dtso
+> > > > > b/arch/arm64/boot/dts/freescale/imx8mp-isp1.dtso new file mode 10=
+0644
+> > > > > index 000000000000..cf394ed224ab
+> > > > > --- /dev/null
+> > > > > +++ b/arch/arm64/boot/dts/freescale/imx8mp-isp1.dtso
+> > > > > @@ -0,0 +1,36 @@
+> > > > > +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> > > > > +/*
+> > > > > + * Copyright 2022 Ideas on Board Oy
+> > > > > + */
+> > > > > +
+> > > > > +/dts-v1/;
+> > > > > +/plugin/;
+> > > > > +
+> > > > > +#include <dt-bindings/media/video-interfaces.h>
+> > > > > +
+> > > > > +&isi_0 {
+> > > > > + status =3D "disabled";
+> > > >
+> > > > ISI is disabled by default. What is your intention here?
+> > >
+> > > It could be enabled by an overlay for a camera module. Ideally we want
+> > > to be able to enable both the ISI and ISP at runtime, but that's not
+> > > possible yet and will require a very large amount of work.
+> >
+> > Again IMHO this is part of sensor setup, in a very specific overlay. To=
+ put it
+> > into different words: I barely see the gain of this small overlay.
+> >
+> > Runtime switching would require a combined media controller including b=
+oth ISI
+> > and ISP, no?
+> >
+> > Best regards,
+> > Alexander
+> >
+> > > > > +
+> > > > > + ports {
+> > > > > +         port@0 {
+> > > > > +                 /delete-node/ endpoint;
+> > > >
+> > > > This doesn't work in overlays. See [1]. Otherwise the OF graph conn=
+ections
+> > > > look fine to me. I'm using the same in my local overlay.
+> > >
+> > > Interesting, I wasn't aware of that. Maybe we should fix it :-)
+>=20
+> When I did my camera implementation, I thought it was simpler to:
+>=20
+> /delete-node/ &isi_in_0;
+>=20
+> it's a one-line change.
+>=20
+> I would suggest we just drop the overlay and make users who have the
+> cameras integrate the cameras and the isp routing into their
+> respective overlays.
+>=20
 
- It is hard to say what is going on just by looking at some application log=
-s.
+I use these to factor out common parts between multiple cameras that can
+be connected to multiple ports.
+
+I can connect any of (Physically available to me right now)
+ IMX219, IMX477, IMX708, GC2145, OV5640(7?) IMX335, IMX283, IMX519, Arducam=
+64MP
+
+to either of:
+
+Debix-SOM-A Port CSI-1
+Debix-SOM-A Port CSI-2
+
+And I can connect those same cameras to two ports of a Pi5. So now
+that's 27 overlays to manage the 9 cameras I have /on my desk/ to
+connect to this board.
+
+Uh Oh - sorry I can also connect them to a Debix Model A ... oh no ... I
+need to stop thinking about what I can connect them to. I have rockchip
+boards they'll work on too!
+
+This explosion of overlays could be ... hard to manage. With /a lot/ of
+repetition of the same data.
 
 
-> Full commit message at [1].
->
-> The issue appears while using Vagrant to manage nested VMs.
-> The steps are:
-> * create vagrant file
-> * vagrant up
-> * vagrant halt (VM is created but shut down)
-> * vagrant up - fail
->
-> Turn on a VM with =E2=80=98Vagrant up=E2=80=99 fails when the VM is in ha=
-lt state. When the VM hasn't been created yet, 'Vagrant up' passes.
-> The failure occurs in the Net-SSH connection to the VM step.
-> Vagrant error is =E2=80=98Guest communication could not be established! T=
-his is usually because SSH is not running, the authentication information w=
-as changed, or some other networking issue.'
-> We use a new version of vagrant-libvirt.
-> Turn on the VM with virsh instead of vagrant works.
->
-> Stdout[2] bellow.
->
-> Any idea what may cause the error with your patch?
->
-> Thanks,
-> Shachar Kagan
->
-> [1]
-> commit 0a8de364ff7a14558e9676f424283148110384d6
-> Author: Eric Dumazet <edumazet@google.com>
-> Date:   Tue Nov 14 17:23:41 2023 +0000
->
->     tcp: no longer abort SYN_SENT when receiving some ICMP
->
->     Currently, non fatal ICMP messages received on behalf
->     of SYN_SENT sockets do call tcp_ld_RTO_revert()
->     to implement RFC 6069, but immediately call tcp_done(),
->     thus aborting the connect() attempt.
->
->     This violates RFC 1122 following requirement:
->
->     4.2.3.9  ICMP Messages
->     ...
->               o    Destination Unreachable -- codes 0, 1, 5
->
->                      Since these Unreachable messages indicate soft error
->                      conditions, TCP MUST NOT abort the connection, and i=
-t
->                      SHOULD make the information available to the
->                      application.
->
->     This patch makes sure non 'fatal' ICMP[v6] messages do not
->     abort the connection attempt.
->
->     It enables RFC 6069 for SYN_SENT sockets as a result.
->
->     Signed-off-by: Eric Dumazet <edumazet@google.com>
->     Cc: David Morley <morleyd@google.com>
->     Cc: Neal Cardwell <ncardwell@google.com>
->     Cc: Yuchung Cheng <ycheng@google.com>
->     Signed-off-by: David S. Miller <davem@davemloft.net>
->
-> [2]
-> Vagrant up stdout:
-> Bringing machine 'player1' up with 'libvirt' provider...
-> =3D=3D> player1: Creating shared folders metadata...
-> =3D=3D> player1: Starting domain.
-> =3D=3D> player1: Domain launching with graphics connection settings...
-> =3D=3D> player1:  -- Graphics Port:      5900
-> =3D=3D> player1:  -- Graphics IP:        127.0.0.1
-> =3D=3D> player1:  -- Graphics Password:  Not defined
-> =3D=3D> player1:  -- Graphics Websocket: 5700
-> =3D=3D> player1: Waiting for domain to get an IP address...
-> =3D=3D> player1: Waiting for machine to boot. This may take a few minutes=
-...
->     player1: SSH address: 192.168.123.61:22
->     player1: SSH username: vagrant
->     player1: SSH auth method: private key
-> =3D=3D> player1: Attempting graceful shutdown of VM...
-> =3D=3D> player1: Attempting graceful shutdown of VM...
-> =3D=3D> player1: Attempting graceful shutdown of VM...
->     player1: Guest communication could not be established! This is usuall=
-y because
->     player1: SSH is not running, the authentication information was chang=
-ed,
->     player1: or some other networking issue. Vagrant will force halt, if
->     player1: capable.
-> =3D=3D> player1: Attempting direct shutdown of domain...
->
->
+I'm not opposed to dropping these intermediate helper overlays, but I'd
+be interested to know if anyone has ideas on how we could define
+'connectors' and then abstract the cameras / overlays that can be moved
+between different compatible ports.
+
+The [RFC 0/3] Portable Device Tree Connector [0] might be interesting to
+resurrect. Did that go anywhere?
+
+[0] https://lore.kernel.org/all/1464986273-12039-1-git-send-email-pantelis.=
+antoniou@konsulko.com/
+
+--
+Kieran
+
+> adam
+> > >
+> > > > [1]
+> > > > https://lore.kernel.org/all/CAMuHMdWu4KZbBkvEofUV2wuA1g2S=3DXHHM3RU=
+N1cNrcZB
+> > > > khsPZA@mail.gmail.com/>
+> > > > > +         };
+> > > > > + };
+> > > > > +};
+> > > > > +
+> > > > > +&isp_0 {
+> > > > > + status =3D "okay";
+> > > > > +
+> > > > > + ports {
+> > > > > +         port@1 {
+> > > > > +                 isp0_in: endpoint {
+> > > > > +                         bus-type =3D <MEDIA_BUS_TYPE_PARALLEL>;
+> > > > > +                         remote-endpoint =3D <&mipi_csi_0_out>;
+> > > > > +                 };
+> > > > > +         };
+> > > > > + };
+> > > > > +};
+> > > > > +
+> > > > > +&mipi_csi_0_out {
+> > > > > + remote-endpoint =3D <&isp0_in>;
+> > > > > +};
+> > > > > diff --git a/arch/arm64/boot/dts/freescale/imx8mp-isp2.dtso
+> > > > > b/arch/arm64/boot/dts/freescale/imx8mp-isp2.dtso new file mode 10=
+0644
+> > > > > index 000000000000..14e2e7b2617f
+> > > > > --- /dev/null
+> > > > > +++ b/arch/arm64/boot/dts/freescale/imx8mp-isp2.dtso
+> > > > > @@ -0,0 +1,36 @@
+> > > > > +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> > > > > +/*
+> > > > > + * Copyright 2022 Ideas on Board Oy
+> > > > > + */
+> > > > > +
+> > > > > +/dts-v1/;
+> > > > > +/plugin/;
+> > > > > +
+> > > > > +#include <dt-bindings/media/video-interfaces.h>
+> > > > > +
+> > > > > +&isi_0 {
+> > > > > + status =3D "disabled";
+> > > > > +
+> > > > > + ports {
+> > > > > +         port@1 {
+> > > > > +                 /delete-node/ endpoint;
+> > > > > +         };
+> > > > > + };
+> > > > > +};
+> > > > > +
+> > > > > +&isp_1 {
+> > > > > + status =3D "okay";
+> > > > > +
+> > > > > + ports {
+> > > > > +         port@1 {
+> > > > > +                 isp1_in: endpoint {
+> > > > > +                         bus-type =3D <MEDIA_BUS_TYPE_PARALLEL>;
+> > > > > +                         remote-endpoint =3D <&mipi_csi_1_out>;
+> > > > > +                 };
+> > > > > +         };
+> > > > > + };
+> > > > > +};
+> > > > > +
+> > > > > +&mipi_csi_1_out {
+> > > > > + remote-endpoint =3D <&isp1_in>;
+> > > > > +};
+> >
+> >
+> > --
+> > TQ-Systems GmbH | M=C3=BChlstra=C3=9Fe 2, Gut Delling | 82229 Seefeld, =
+Germany
+> > Amtsgericht M=C3=BCnchen, HRB 105018
+> > Gesch=C3=A4ftsf=C3=BChrer: Detlef Schneider, R=C3=BCdiger Stahl, Stefan=
+ Schneider
+> > http://www.tq-group.com/
+> >
+> >
+> >
