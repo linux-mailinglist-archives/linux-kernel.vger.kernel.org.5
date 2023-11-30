@@ -2,122 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D9E17FEC02
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 10:39:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FB777FEC05
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 10:39:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235085AbjK3JjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 04:39:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36984 "EHLO
+        id S235102AbjK3Jj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 04:39:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbjK3JjE (ORCPT
+        with ESMTP id S235090AbjK3JjY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 04:39:04 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B845D4A
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 01:39:10 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-54bfa9b4142so8480a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 01:39:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701337149; x=1701941949; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+w0Xsdxg1xmtFzBpIVytZrwRsCdJaB2rhHg1ObCl0ac=;
-        b=EboWee2QIgu+TNRwGRV1uzm7x8ddpkdlWN3dnuIxKzJynRdVoMtJdpUKZrqBGcXGoB
-         ioSfR8vs5rG2yyVyTVjdzkQFLxyd/bx8Hm9IxBgqMf6cfsfJH2u88lDL8lt7WHqPqlyl
-         z6fWuDTTrWDwl9AFimk6oHaiuSj3m7uQcx5u6bm2KDcnhMBnwzwCyBe6XnTsNGvfaiu3
-         wrTwyBbsDBqsglVlQDp7stGGcaSkP4on3UqZOnfsydoHs4oz0eyjmvbNZuoP+awyFpyo
-         5GSCPLPyyohrjmB9dG3WRzKRqbZkaVuYdq7R7IJq3VywG048YF/i0AC37i3K289sp1As
-         MtUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701337149; x=1701941949;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+w0Xsdxg1xmtFzBpIVytZrwRsCdJaB2rhHg1ObCl0ac=;
-        b=AE0bTPC2SIZW+HEbwkgflBQ06Dtek8P11fTvBeBYOsD96pbNiGSbGNIyyNzPGqPzXj
-         AMWFwYcFeyYQbBlFqKerHlo9BcsPO4wKqLoKf26gkZJ1y986NWlzjXPzg9lgJnB5jkil
-         Hu2z/uw0HIZZ/mTxahV15Ius0VhfjMBBumiwoTzfjOIeb/5ypobYm8jYnuP/ovXXvsgr
-         U83sd7KawqJZwIzey8DlrQ+r9RcMCsfPHTfWqIDaCsGYdSyBOyHhkW0fZAt6ydY+G1kG
-         Sfmjo++RBI5jLR+P0q7oL4qlnBCmIOI2ThJe8/SRj4kQ+M0PNSnT5uKWKT6KEiloxfhg
-         FGnQ==
-X-Gm-Message-State: AOJu0Yx1qASrfy/Z8pQM9abys8IvC0/xDJs/MFsgWRxyhvtyVrL6WXbs
-        0K+Z0eZONGcnOEH0KFKUK87hsYD0QxEXL8M26YcuXQ==
-X-Google-Smtp-Source: AGHT+IH01CaFUo5z6hh/wFpSzJm4ZGqsz0fZRtVHaFB0ZsdcL1YwoDq/BZCXrmXYJW7dz2uCJh9PfLM0rycp3Xm/4k4=
-X-Received: by 2002:a05:6402:1cae:b0:54b:81ba:93b2 with SMTP id
- cz14-20020a0564021cae00b0054b81ba93b2mr122702edb.2.1701337148606; Thu, 30 Nov
- 2023 01:39:08 -0800 (PST)
+        Thu, 30 Nov 2023 04:39:24 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10255D40;
+        Thu, 30 Nov 2023 01:39:31 -0800 (PST)
+Date:   Thu, 30 Nov 2023 09:39:28 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1701337169;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ncQYNJ4GBwdM1wndJD2ZUZuSLFmYqkvecrHz/qccbIw=;
+        b=BCaNQ5C58z8iTkTvRYakAnu/LZz0SLOCLDpBI+oKhATyGp2oWyQmRI/SI7JtNlrzmUWYkE
+        Zrh8NvKRnSjYXXJKwrcqT9xPzK+HiuMHTp4KqLprZlyMzul7XWDX+m8ndudboaYHB774CP
+        403Zap3yuDiHXtG0PG6ycHTlAx0tcOPXlj35kKkLhfPABQd5K3+tH/IrIH5eqtjDU6NkGf
+        0Kj1Kz8JsdWfVcjs6RDcl94mpbNvT9pCRoMhpf/bJpP59CRVj1B6APjWon7W8pC1BjBIli
+        4U0/l+YoK5w44E0SgRWv7t7OCQCHLDvT3qjpqrMtS0RDjIP8Pj+qovCEP2ewJg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1701337169;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ncQYNJ4GBwdM1wndJD2ZUZuSLFmYqkvecrHz/qccbIw=;
+        b=lw7uxh9lW6lm5i0CJcL4tB2ETcJ6olfFsuWg+p9gyyr2wUwLk3Y9gSUfGRtHzzr40Gc7YH
+        e8O1M0yenSQQ32Cw==
+From:   "tip-bot2 for Ashwin Dayanand Kamat" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/sev: Fix kernel crash due to late update to
+ read-only ghcb_version
+Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
+        Bo Gan <bo.gan@broadcom.com>,
+        Ashwin Dayanand Kamat <ashwin.kamat@broadcom.com>,
+        Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <1701254429-18250-1-git-send-email-kashwindayan@vmware.com>
+References: <1701254429-18250-1-git-send-email-kashwindayan@vmware.com>
 MIME-Version: 1.0
-References: <CABOYnLy_ufLD=BWDJct2chXMDYdZK=dNb4cnPYD5xo3WW1YCrw@mail.gmail.com>
- <CANn89iKpO35x-mFNgGA1axhn1hrq2HZBOFXo+wkTRPKxCQyQKA@mail.gmail.com>
-In-Reply-To: <CANn89iKpO35x-mFNgGA1axhn1hrq2HZBOFXo+wkTRPKxCQyQKA@mail.gmail.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Thu, 30 Nov 2023 10:38:57 +0100
-Message-ID: <CANn89iJ7h_LFSV6n_9WmbTMwTMsZ0UgdBj_oGrnzcrZu7oCxFw@mail.gmail.com>
-Subject: Re: [syzbot] [net?] WARNING in cleanup_net (3)
-To:     xingwei lee <xrivendell7@gmail.com>
-Cc:     syzbot+9ada62e1dc03fdc41982@syzkaller.appspotmail.com,
-        davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, pabeni@redhat.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Message-ID: <170133716855.398.4806769836355142687.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 30, 2023 at 9:46=E2=80=AFAM Eric Dumazet <edumazet@google.com> =
-wrote:
->
-> On Thu, Nov 30, 2023 at 9:42=E2=80=AFAM xingwei lee <xrivendell7@gmail.co=
-m> wrote:
-> >
-> > Hello
-> > I reproduced this bug with repro.txt and repro.c
-> >
-> >
->
->
-> Is your syzbot instance ready to accept patches for testing ?
->
-> Otherwise, a repro which happens to  work 'by luck' might not work for me=
-.
->
-> The bug here is a race condition with rds subsystem being dismantled
-> at netns dismantle, the 'repro' could be anything really.
+The following commit has been merged into the x86/urgent branch of tip:
 
-Can you test the following patch ?
-Thanks.
+Commit-ID:     27d25348d42161837be08fc63b04a2559d2e781c
+Gitweb:        https://git.kernel.org/tip/27d25348d42161837be08fc63b04a2559d2e781c
+Author:        Ashwin Dayanand Kamat <ashwin.kamat@broadcom.com>
+AuthorDate:    Wed, 29 Nov 2023 16:10:29 +05:30
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Thu, 30 Nov 2023 10:23:12 +01:00
 
-diff --git a/net/core/sock.c b/net/core/sock.c
-index fef349dd72fa735b5915fc03e29cbb155b2aff2c..36d2871ac24f383e4e5d1af1168=
-000f076011aae
-100644
---- a/net/core/sock.c
-+++ b/net/core/sock.c
-@@ -2197,8 +2197,6 @@ static void __sk_destruct(struct rcu_head *head)
+x86/sev: Fix kernel crash due to late update to read-only ghcb_version
 
-        if (likely(sk->sk_net_refcnt))
-                put_net_track(sock_net(sk), &sk->ns_tracker);
--       else
--               __netns_tracker_free(sock_net(sk), &sk->ns_tracker, false);
+A write-access violation page fault kernel crash was observed while running
+cpuhotplug LTP testcases on SEV-ES enabled systems. The crash was
+observed during hotplug, after the CPU was offlined and the process
+was migrated to different CPU. setup_ghcb() is called again which
+tries to update ghcb_version in sev_es_negotiate_protocol(). Ideally this
+is a read_only variable which is initialised during booting.
 
-        sk_prot_free(sk->sk_prot_creator, sk);
- }
-@@ -2212,6 +2210,9 @@ void sk_destruct(struct sock *sk)
-                use_call_rcu =3D true;
-        }
+Trying to write it results in a pagefault:
 
-+       if (unlikely(!sk->sk_net_refcnt))
-+               __netns_tracker_free(sock_net(sk), &sk->ns_tracker, false);
+  BUG: unable to handle page fault for address: ffffffffba556e70
+  #PF: supervisor write access in kernel mode
+  #PF: error_code(0x0003) - permissions violation
+  [ ...]
+  Call Trace:
+   <TASK>
+   ? __die_body.cold+0x1a/0x1f
+   ? __die+0x2a/0x35
+   ? page_fault_oops+0x10c/0x270
+   ? setup_ghcb+0x71/0x100
+   ? __x86_return_thunk+0x5/0x6
+   ? search_exception_tables+0x60/0x70
+   ? __x86_return_thunk+0x5/0x6
+   ? fixup_exception+0x27/0x320
+   ? kernelmode_fixup_or_oops+0xa2/0x120
+   ? __bad_area_nosemaphore+0x16a/0x1b0
+   ? kernel_exc_vmm_communication+0x60/0xb0
+   ? bad_area_nosemaphore+0x16/0x20
+   ? do_kern_addr_fault+0x7a/0x90
+   ? exc_page_fault+0xbd/0x160
+   ? asm_exc_page_fault+0x27/0x30
+   ? setup_ghcb+0x71/0x100
+   ? setup_ghcb+0xe/0x100
+   cpu_init_exception_handling+0x1b9/0x1f0
+
+The fix is to call sev_es_negotiate_protocol() only in the BSP boot phase,
+and it only needs to be done once in any case.
+
+[ mingo: Refined the changelog. ]
+
+Fixes: 95d33bfaa3e1 ("x86/sev: Register GHCB memory when SEV-SNP is active")
+Suggested-by: Tom Lendacky <thomas.lendacky@amd.com>
+Co-developed-by: Bo Gan <bo.gan@broadcom.com>
+Signed-off-by: Bo Gan <bo.gan@broadcom.com>
+Signed-off-by: Ashwin Dayanand Kamat <ashwin.kamat@broadcom.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
+Link: https://lore.kernel.org/r/1701254429-18250-1-git-send-email-kashwindayan@vmware.com
+---
+ arch/x86/kernel/sev.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
+
+diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
+index 70472ee..c672858 100644
+--- a/arch/x86/kernel/sev.c
++++ b/arch/x86/kernel/sev.c
+@@ -1234,10 +1234,6 @@ void setup_ghcb(void)
+ 	if (!cc_platform_has(CC_ATTR_GUEST_STATE_ENCRYPT))
+ 		return;
+ 
+-	/* First make sure the hypervisor talks a supported protocol. */
+-	if (!sev_es_negotiate_protocol())
+-		sev_es_terminate(SEV_TERM_SET_GEN, GHCB_SEV_ES_GEN_REQ);
+-
+ 	/*
+ 	 * Check whether the runtime #VC exception handler is active. It uses
+ 	 * the per-CPU GHCB page which is set up by sev_es_init_vc_handling().
+@@ -1255,6 +1251,13 @@ void setup_ghcb(void)
+ 	}
+ 
+ 	/*
++	 * Make sure the hypervisor talks a supported protocol.
++	 * This gets called only in the BSP boot phase.
++	 */
++	if (!sev_es_negotiate_protocol())
++		sev_es_terminate(SEV_TERM_SET_GEN, GHCB_SEV_ES_GEN_REQ);
 +
-        if (use_call_rcu)
-                call_rcu(&sk->sk_rcu, __sk_destruct);
-        else
++	/*
+ 	 * Clear the boot_ghcb. The first exception comes in before the bss
+ 	 * section is cleared.
+ 	 */
