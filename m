@@ -2,145 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CAE607FF46D
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 17:12:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6B657FF474
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 17:13:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232088AbjK3QLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 11:11:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34988 "EHLO
+        id S232160AbjK3QNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 11:13:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231837AbjK3QLv (ORCPT
+        with ESMTP id S232228AbjK3QNR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 11:11:51 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D61B9197
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 08:11:57 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6BF3C433C9;
-        Thu, 30 Nov 2023 16:11:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701360717;
-        bh=vgls5aAlR31WZeeFitudv2gLn3KRn15unDZWj9i/v9g=;
-        h=From:To:Cc:Subject:Date:From;
-        b=qpFBB3YyXinuwQ+7fxRfXLLxKE0ptbNJCoa58UsrfVolYTGrIN1Pq9t4kjnmzbAHV
-         bWQPN7icrc7LX8RweUK5aEZ8opCL1tGDyvFbhxkAGA8ZSpb8SzCCkGb4HBuk6znZmO
-         2adWWVogvmoQGNt2U0+c8jk98xkl87kJ8b44LsD0o8aAPdFeNkFUqB555ynQ+jWdhG
-         cy5dVleeSgOvGWrVqSgZDEP/ueHS7LEWExLonaqssLT8PTbm5GMMG6zRIzFKN2hIrW
-         DAmLMyyC+/qA1VrgqwObv6RHEa3mRsYY8PpvpeysPkQcRzyDBrNUZjICwA7onqEwQh
-         WPofq+wUXfGwA==
-From:   Conor Dooley <conor@kernel.org>
-To:     linux-riscv@lists.infradead.org
-Cc:     conor@kernel.org, Conor Dooley <conor.dooley@microchip.com>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Walker Chen <walker.chen@starfivetech.com>,
-        JeeHeng Sia <jeeheng.sia@starfivetech.com>,
-        Leyfoon Tan <leyfoon.tan@starfivetech.com>
-Subject: [PATCH v1] riscv: dts: starfive: move timebase-frequency to .dtsi
-Date:   Thu, 30 Nov 2023 16:11:28 +0000
-Message-Id: <20231130-bobbing-valid-b97f26fe8edc@spud>
-X-Mailer: git-send-email 2.39.2
+        Thu, 30 Nov 2023 11:13:17 -0500
+Received: from mail-4316.protonmail.ch (mail-4316.protonmail.ch [185.70.43.16])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 785C8E0;
+        Thu, 30 Nov 2023 08:13:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+        s=wb54kawzqrdgfcottrby6ge5au.protonmail; t=1701360799; x=1701619999;
+        bh=sHSho2UpIOsMXx/tNC0gKMiBZVwFgRqI0HuIM+NLNeU=;
+        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+         Message-ID:BIMI-Selector;
+        b=FHTSlkLEEUoJOyvs0Dd1pevPUNZob0se01kjNg9TYbJpNtO5B8VkDE6unM5VSEpTB
+         56zb7dVbQIMJRiyJSnKEEKEcjlUDwuBD28Vw4lx49R5NEcjYdsEUcTFXwxru1YSnd3
+         +taMKqNFYQGIjFOg2jdc7Bej7MYzVvvUwQvFQoE0DV0Sr4eMfvwLyWQk83PVEqtlSM
+         NO6xYVaf0KKuepA77A6wiLMA87EjTEkb7OYRtE15vQn6KuMXzo0VjcfkuKfhRLk68s
+         kd21+x1l0vGuQFkQgQ0jhb8qFHEiuKoobMnxxrcVIGokS+rlAK99tfZAoN5PalkmCL
+         jiGZEYQlhkbzQ==
+Date:   Thu, 30 Nov 2023 16:12:14 +0000
+To:     Theodore Ts'o <tytso@mit.edu>
+From:   Benno Lossin <benno.lossin@proton.me>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        =?utf-8?Q?Arve_Hj=C3=B8nnev=C3=A5g?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Carlos Llamas <cmllamas@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 1/7] rust: file: add Rust abstraction for `struct file`
+Message-ID: <25TYokAJ6urAw9GygDDgCcp2mDZT42AF6l8v_u5y-0XZONnHa9kr4Tz_zh30URNuaT-8Q0JnTXgZqeAiinxPEZqzS8StBKyjizZ9e5mysS8=@proton.me>
+In-Reply-To: <20231130155846.GA534667@mit.edu>
+References: <20231129-alice-file-v1-0-f81afe8c7261@google.com> <20231129-alice-file-v1-1-f81afe8c7261@google.com> <ksVe7fwt0AVWlCOtxIOb-g34okhYeBQUiXvpWLvqfxcyWXXuUuwWEIhUHigcAXJDFRCDr8drPYD1O1VTrDhaeZQ5mVxjCJqT32-2gHozHIo=@proton.me> <2023113041-bring-vagrancy-a417@gregkh> <2gTL0hxPpSCcVa7uvDLOLcjqd_sgtacZ_6XWaEANBH9Gnz72M1JDmjcWNO9Z7UbIeWNoNqx8y-lb3MAq75pEXL6EQEIED0XLxuHvqaQ9K-g=@proton.me> <20231130155846.GA534667@mit.edu>
+Feedback-ID: 71780778:user:proton
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3135; i=conor.dooley@microchip.com; h=from:subject:message-id; bh=UAAVjF121WPRFea5qRuZ2irQEO1X8uw6HeaKklYIqBU=; b=owGbwMvMwCFWscWwfUFT0iXG02pJDKkZW3TOhG9ZnWv8re2Ju/KbiwqCtQG/lmyyaJXdO/3bn xOCvjP9OkpZGMQ4GGTFFFkSb/e1SK3/47LDuectzBxWJpAhDFycAjCRjAcMf/iuWffPjtxU3cd9 N3zyZtWHfUpdCbK2Fs/frk9RPli32Zfhf4r2nG9fpHmOTkrxrO1xYTKdyat5KOTL291Oja2JahF 1PAA=
-X-Developer-Key: i=conor.dooley@microchip.com; a=openpgp; fpr=F9ECA03CF54F12CD01F1655722E2C55B37CF380C
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Conor Dooley <conor.dooley@microchip.com>
+On 11/30/23 16:58, Theodore Ts'o wrote:
+> On Thu, Nov 30, 2023 at 03:46:55PM +0000, Benno Lossin wrote:
+>>>>> +    pub const O_APPEND: u32 =3D bindings::O_APPEND;
+>>>>
+>>>> Why do all of these constants begin with `O_`?
+>>>
+>>> Because that is how they are defined in the kernel in the C code.  Why
+>>> would they not be the same here?
+>>
+>> Then why does the C side name them that way? Is it because `O_*` is
+>> supposed to mean something, or is it done due to namespacing?
+>=20
+> It's because these sets of constants were flags passed to the open(2)
+> system call, and so they are dictated by the POSIX specification.  So
+> O_ means that they are a set of integer values which are used by
+> open(2), and they are defined when userspace #include's the fcntl.h
+> header file.  One could consider it be namespacing --- we need to
+> distinguish these from other constants: MAY_APPEND, RWF_APPEND,
+> ESCAPE_APPEND, STATX_ATTR_APPEND, BTRFS_INODE_APPEND.
+>=20
+> But it's also a convention that dates back for ***decades*** and if we
+> want code to be understandable by kernel programmers, we need to obey
+> standard kernel naming conventions.
 
-Properties fixed by the SoC should be defined in the $soc.dtsi, and the
-timebase-frequency is not sourced directly from an off-chip oscillator.
+I see, that makes a lot of sense. Thanks for the explanation.
 
-Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
----
-I actually have no idea whether this is true or not, I asked on the
-jh8100 series but only got an answer for that SoC and not the existing
-ones. I'm hoping that a patch envokes more of a reaction!
+>> In Rust we have namespacing, so we generally drop common prefixes.
+>=20
+> I don't know about Rust namespacing, but in other languages, how you
+> have to especify namespaces tend to be ***far*** more verbose than
+> just adding an O_ prefix.
 
-CC: Emil Renner Berthing <kernel@esmil.dk>
-CC: Conor Dooley <conor@kernel.org>
-CC: Rob Herring <robh+dt@kernel.org>
-CC: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-CC: Paul Walmsley <paul.walmsley@sifive.com>
-CC: Palmer Dabbelt <palmer@dabbelt.com>
-CC: linux-riscv@lists.infradead.org
-CC: devicetree@vger.kernel.org
-CC: linux-kernel@vger.kernel.org
-CC: Walker Chen <walker.chen@starfivetech.com>
-CC: JeeHeng Sia <jeeheng.sia@starfivetech.com>
-CC: Leyfoon Tan <leyfoon.tan@starfivetech.com>
----
- arch/riscv/boot/dts/starfive/jh7100-common.dtsi               | 4 ----
- arch/riscv/boot/dts/starfive/jh7100.dtsi                      | 1 +
- .../riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi | 4 ----
- arch/riscv/boot/dts/starfive/jh7110.dtsi                      | 1 +
- 4 files changed, 2 insertions(+), 8 deletions(-)
+In this case we already have the `flags` namespace, so I thought about
+just dropping the `O_` prefix altogether.
 
-diff --git a/arch/riscv/boot/dts/starfive/jh7100-common.dtsi b/arch/riscv/boot/dts/starfive/jh7100-common.dtsi
-index b93ce351a90f..214f27083d7b 100644
---- a/arch/riscv/boot/dts/starfive/jh7100-common.dtsi
-+++ b/arch/riscv/boot/dts/starfive/jh7100-common.dtsi
-@@ -19,10 +19,6 @@ chosen {
- 		stdout-path = "serial0:115200n8";
- 	};
- 
--	cpus {
--		timebase-frequency = <6250000>;
--	};
--
- 	memory@80000000 {
- 		device_type = "memory";
- 		reg = <0x0 0x80000000 0x2 0x0>;
-diff --git a/arch/riscv/boot/dts/starfive/jh7100.dtsi b/arch/riscv/boot/dts/starfive/jh7100.dtsi
-index e68cafe7545f..c50b32424721 100644
---- a/arch/riscv/boot/dts/starfive/jh7100.dtsi
-+++ b/arch/riscv/boot/dts/starfive/jh7100.dtsi
-@@ -16,6 +16,7 @@ / {
- 	cpus {
- 		#address-cells = <1>;
- 		#size-cells = <0>;
-+		timebase-frequency = <6250000>;
- 
- 		U74_0: cpu@0 {
- 			compatible = "sifive,u74-mc", "riscv";
-diff --git a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-index b89e9791efa7..7873c7ffde4d 100644
---- a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-+++ b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-@@ -26,10 +26,6 @@ chosen {
- 		stdout-path = "serial0:115200n8";
- 	};
- 
--	cpus {
--		timebase-frequency = <4000000>;
--	};
--
- 	memory@40000000 {
- 		device_type = "memory";
- 		reg = <0x0 0x40000000 0x1 0x0>;
-diff --git a/arch/riscv/boot/dts/starfive/jh7110.dtsi b/arch/riscv/boot/dts/starfive/jh7110.dtsi
-index 45213cdf50dc..ee7d4bb1f537 100644
---- a/arch/riscv/boot/dts/starfive/jh7110.dtsi
-+++ b/arch/riscv/boot/dts/starfive/jh7110.dtsi
-@@ -18,6 +18,7 @@ / {
- 	cpus {
- 		#address-cells = <1>;
- 		#size-cells = <0>;
-+		timebase-frequency = <4000000>;
- 
- 		S7_0: cpu@0 {
- 			compatible = "sifive,s7", "riscv";
--- 
-2.39.2
-
+--=20
+Cheers,
+Benno
