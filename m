@@ -2,134 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D314A7FF7CC
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 18:12:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4729F7FF7CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 18:12:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232211AbjK3RL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 12:11:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47774 "EHLO
+        id S1345182AbjK3RMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 12:12:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232263AbjK3RLY (ORCPT
+        with ESMTP id S231837AbjK3RMO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 12:11:24 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60435171C
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 09:11:30 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9765BC433C7;
-        Thu, 30 Nov 2023 17:11:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701364290;
-        bh=z8tPq/OZFdLYzHcBmbFrH1eT9NsxQ9H6d+/+FYkxiZw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nRhBO/OAOyR0zL9RuMc2BZ8dbWhnPyzxFlUAWFe1TAis9hnTHvVV0Zsa1391RCgAF
-         vSH2hGxvMlNxIURDzEw/9XWsM2kth1WkWMZnqdH95j8H9Bkvj41RKzX/5U8OqRWuH2
-         D7Cc6KCrAKtjHyVvisPY9DMDKtCCU6k3B7+RqJbKCQ9HNPooA8w+Elasfm4Vim5zE5
-         BktKtSyphAWZ279FY0LAZJ+sKtwjgyURUX4rtdgYMU0Th8xs6gmHXgXwLldHIVlEHT
-         4Urs1HOcQUL4aI9+67wuhzg26rzX2py5kqFsLtbW0DU2cwNpWc7KH6BDwb8dJt32bp
-         nnCwM8Rcj048A==
-Date:   Thu, 30 Nov 2023 17:11:26 +0000
-From:   Simon Horman <horms@kernel.org>
-To:     Min Li <lnimi@hotmail.com>
-Cc:     richardcochran@gmail.com, lee@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Min Li <min.li.xe@renesas.com>
-Subject: Re: [PATCH net-next v2 2/2] ptp: add FemtoClock3 Wireless as ptp
- hardware clock
-Message-ID: <20231130171126.GH32077@kernel.org>
-References: <20231129204806.14539-1-lnimi@hotmail.com>
- <PH7PR03MB7064FC8C284D83E9C34B8C08A083A@PH7PR03MB7064.namprd03.prod.outlook.com>
+        Thu, 30 Nov 2023 12:12:14 -0500
+Received: from mail-4316.protonmail.ch (mail-4316.protonmail.ch [185.70.43.16])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ACE210DB;
+        Thu, 30 Nov 2023 09:12:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+        s=protonmail; t=1701364338; x=1701623538;
+        bh=5XDJY6qrdLzFeHm8Cj9m7uNxrkuBz8SBGfRnamorYn0=;
+        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+         Message-ID:BIMI-Selector;
+        b=F/rnyW1t+fVNykiiDP/o43MmFV6iXVkSn5siXpxdhZwP2zLlFfoQdeV3eiBt7wVz1
+         K8f8K8aXaWHZ63asa/Zeqt5qcpLqF4o41niAbLYz3se4efNEvNHa9GRhkeEHoyHp0x
+         RRmBKrVpsYBDDKZtRZCpWp0UvA6NQjZLLADR//Lc6/vtyWL/SgyoCPjgBogKbBqyey
+         7J+GU42Gb9LyVRGiJvORDLGoo0W6z5nezm4/72/0O57X6+BnRGdKFXCo3jk0PRDKfO
+         vvAxaqi7fq+xtIOA/V5lIdN/A5HFtMea3PG+0MLPevN3Z3d3h6Ky7dXvTQUWrOIGuG
+         rUd6YTBcUjJgw==
+Date:   Thu, 30 Nov 2023 17:12:01 +0000
+To:     Alice Ryhl <aliceryhl@google.com>
+From:   Benno Lossin <benno.lossin@proton.me>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?utf-8?Q?Arve_Hj=C3=B8nnev=C3=A5g?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Carlos Llamas <cmllamas@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 6/7] rust: file: add `DeferredFdCloser`
+Message-ID: <LNSA8EeuwLGDBzY1W8GaP1L6gucAPE_34myHWuyg3ziYuheiFLk3WfVBPppzwDZwoGVTCqL8EBjAaxsNshTY6AQq_sNtK9hmea7FeaNJuCo=@proton.me>
+In-Reply-To: <20231129-alice-file-v1-6-f81afe8c7261@google.com>
+References: <20231129-alice-file-v1-0-f81afe8c7261@google.com> <20231129-alice-file-v1-6-f81afe8c7261@google.com>
+Feedback-ID: 71780778:user:proton
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <PH7PR03MB7064FC8C284D83E9C34B8C08A083A@PH7PR03MB7064.namprd03.prod.outlook.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 03:48:06PM -0500, Min Li wrote:
-> From: Min Li <min.li.xe@renesas.com>
-> 
-> The RENESAS FemtoClock3 Wireless is a high-performance jitter attenuator,
-> frequency translator, and clock synthesizer. The device is comprised of 3
-> digital PLLs (DPLL) to track CLKIN inputs and three independent low phase
-> noise fractional output dividers (FOD) that output low phase noise clocks.
-> 
-> FemtoClock3 supports one Time Synchronization (Time Sync) channel to enable
-> an external processor to control the phase and frequency of the Time Sync
-> channel and to take phase measurements using the TDC. Intended applications
-> are synchronization using the precision time protocol (PTP) and
-> synchronization with 0.5 Hz and 1 Hz signals from GNSS.
-> 
-> Signed-off-by: Min Li <min.li.xe@renesas.com>
-
-Hi Min Li,
-
-some minor feedback from my side.
-
-...
-
-> diff --git a/drivers/ptp/Makefile b/drivers/ptp/Makefile
-
-...
-
-> +static inline s64 ns2counters(struct idtfc3 *idtfc3, s64 nsec, u32 *sub_ns)
-> +{
-> +	s64 sync;
-> +	s32 rem;
+On 11/29/23 14:12, Alice Ryhl wrote:
+> +    /// Schedule a task work that closes the file descriptor when this t=
+ask returns to userspace.
+> +    pub fn close_fd(mut self, fd: u32) {
+> +        use bindings::task_work_notify_mode_TWA_RESUME as TWA_RESUME;
 > +
-> +	if (likely(nsec > 0)) {
-> +		sync = div_u64_rem(nsec, idtfc3->ns_per_sync, &rem);
-> +		*sub_ns = rem;
-> +	} else if (nsec < 0) {
-> +		sync = -div_u64_rem(-nsec - 1, idtfc3->ns_per_sync, &rem) - 1;
-> +		*sub_ns = idtfc3->ns_per_sync - rem - 1;
-> +	}
+> +        let file =3D unsafe { bindings::close_fd_get_file(fd) };
+> +        if file.is_null() {
+> +            // Nothing further to do. The allocation is freed by the des=
+tructor of `self.inner`.
+> +            return;
+> +        }
 > +
-> +	return sync * idtfc3->ns_per_sync;
+> +        self.inner.file =3D file;
+> +
+> +        // SAFETY: Since `DeferredFdCloserInner` is `#[repr(C)]`, castin=
+g the pointers gives a
+> +        // pointer to the `twork` field.
+> +        let inner =3D Box::into_raw(self.inner) as *mut bindings::callba=
+ck_head;
 
-Perhaps it cannot occur, but if nsec is exactly 0, then
-sync is uninitialised here.
+Here you can just use `.cast::<...>()`.
 
-Flagged by clang-17 W=1 build, and Smatch.
+> +        // SAFETY: Getting a pointer to current is always safe.
+> +        let current =3D unsafe { bindings::get_current() };
+> +        // SAFETY: The `file` pointer points at a valid file.
+> +        unsafe { bindings::get_file(file) };
+> +        // SAFETY: Due to the above `get_file`, even if the current task=
+ holds an `fdget` to
+> +        // this file right now, the refcount will not drop to zero until=
+ after it is released
+> +        // with `fdput`. This is because when using `fdget`, you must al=
+ways use `fdput` before
+> +        // returning to userspace, and our task work runs after any `fdg=
+et` users have returned
+> +        // to userspace.
+> +        //
+> +        // Note: fl_owner_t is currently a void pointer.
+> +        unsafe { bindings::filp_close(file, (*current).files as bindings=
+::fl_owner_t) };
+> +        // SAFETY: The `inner` pointer is compatible with the `do_close_=
+fd` method.
+> +        unsafe { bindings::init_task_work(inner, Some(Self::do_close_fd)=
+) };
+> +        // SAFETY: The `inner` pointer points at a valid and fully initi=
+alized task work that is
+> +        // ready to be scheduled.
+> +        unsafe { bindings::task_work_add(current, inner, TWA_RESUME) };
 
+I am a bit confused, when does `do_close_fd` actually run? Does
+`TWA_RESUME` mean that `inner` is scheduled to run after the current
+task has been completed?
+
+> +    }
+> +
+> +    // SAFETY: This function is an implementation detail of `close_fd`, =
+so its safety comments
+> +    // should be read in extension of that method.
+> +    unsafe extern "C" fn do_close_fd(inner: *mut bindings::callback_head=
+) {
+> +        // SAFETY: In `close_fd` we use this method together with a poin=
+ter that originates from a
+> +        // `Box<DeferredFdCloserInner>`, and we have just been given own=
+ership of that allocation.
+> +        let inner =3D unsafe { Box::from_raw(inner as *mut DeferredFdClo=
+serInner) };
+
+In order for this call to be sound, `inner` must be an exclusive
+pointer (including any possible references into the `callback_head`).
+Is this the case?
+
+--=20
+Cheers,
+Benno
+
+> +        // SAFETY: This drops a refcount we acquired in `close_fd`. Sinc=
+e this callback runs in a
+> +        // task work after we return to userspace, it is guaranteed that=
+ the current thread doesn't
+> +        // hold this file with `fdget`, as `fdget` must be released befo=
+re returning to userspace.
+> +        unsafe { bindings::fput(inner.file) };
+> +        // Free the allocation.
+> +        drop(inner);
+> +    }
 > +}
-
-...
-
-> +static int _idtfc3_settime(struct idtfc3 *idtfc3, const struct timespec64 *ts)
-> +{
-> +	s64 offset_ns, now_ns, sync_ns;
-> +	u32 counter, sub_ns;
-> +	int now;
 > +
-> +	if (timespec64_valid(ts) == false) {
-> +		dev_err(idtfc3->dev, "%s: invalid timespec", __func__);
-> +		return -EINVAL;
-> +	}
-> +
-> +	now = idtfc3_read_subcounter(idtfc3);
-> +	if (now < 0)
-> +		return now;
-> +
-> +	offset_ns = (idtfc3->sub_sync_count - now) * idtfc3->ns_per_counter;
-> +	now_ns = timespec64_to_ns(ts);
-> +	sync_ns = ns2counters(idtfc3, offset_ns + now_ns, &sub_ns);
-
-sync_ns is set here but otherwise unused.
-Perhaps the assignment can be dropped and sync_ns removed from this
-function?
-
-As flagged by gcc-13 W=1 build and Smatch.
-
-> +
-> +	counter = sub_ns / idtfc3->ns_per_counter;
-> +	return idtfc3_timecounter_update(idtfc3, counter, now_ns);
-> +}
-
-...
+>  /// Represents the `EBADF` error code.
+>  ///
+>  /// Used for methods that can only fail with `EBADF`.
+>=20
+> --
+> 2.43.0.rc1.413.gea7ed67945-goog
+> 
