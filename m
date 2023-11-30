@@ -2,654 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 412997FEE42
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 12:49:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FDF77FEE45
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 12:53:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345193AbjK3LtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 06:49:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38284 "EHLO
+        id S1345168AbjK3Lwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 06:52:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345175AbjK3LtH (ORCPT
+        with ESMTP id S231837AbjK3Lww (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 06:49:07 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A205B10CE
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 03:49:09 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 091EAC433C8;
-        Thu, 30 Nov 2023 11:49:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701344949;
-        bh=SDuxsjNsfCb28aE/m4f1ywlUx4T7oeJtWKHQzMJTHd0=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=R9E6RdTOG9mchODYv0jZtwonSjwnO2RfHhnZ2GJPmka1dPj48iIYcF0/OANzQHTOL
-         SFha1Fgs9+P0tCfpHuww5fMyWCZVVdn3HrMKdlZkMR+lvVVSvwLD7+OWqUWnpFOVRn
-         lOqpPvsHxTQlsyjbJ3c1BkvKg4HL73pCn+Tzryaccbmd3lFdzB6nIkdNQcuzHtfiDX
-         8eKReq4+QtggfaJHUgSJO2G+4zxQdTrbgACfIR6K5CDUE+R326RVjhivm/qs+2oET8
-         hC7aK+z5I3OM50PsespcUtX0s3kQgj3tNgfkN832ueRP3ub6LcofEaJLHLh3IY/YKa
-         h9wgEb+QETKeg==
-Message-ID: <6def78e7-8264-4745-94f3-b32b854af0c2@kernel.org>
-Date:   Thu, 30 Nov 2023 13:49:03 +0200
+        Thu, 30 Nov 2023 06:52:52 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11EDF93
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 03:52:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701345179; x=1732881179;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=erHcKxKvKNGdLbjJN5W+zkSgSAEKrnaZ+KztAnWkLB4=;
+  b=cM37oxZNY4hH3GfzlzoI/RnqdQ3OimiCdkumLHk3YNt/HbRC9M1kDuKm
+   xtzL6qhnvbVa/fPA4vFAYLaXhTTF5vbr/cnT0zrMDDVrrZ3xXAdmMkWnM
+   5BUmXjyZWUgGw7CqNwghK2BFFseQWxqMGBKkAZiU+Zs3rROXzbO1TP/Bd
+   ZSTgrHY6DkC0oesCGQQwEZ7ynupes5EIvVekQLEm6AGObbc1RCFzSfYwN
+   04G53e8IOYAekTRB6oBGjDamHb6FWYhoSkDGJjdlh41CM/2Ql8/gI7tfy
+   P+I+hVpVIenkYQJEtK4HAabqVl6G1mrCwioTw80vyD3Xmahta3Bw4V2Mk
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="372691973"
+X-IronPort-AV: E=Sophos;i="6.04,237,1695711600"; 
+   d="scan'208";a="372691973"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 03:52:58 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="1100918756"
+X-IronPort-AV: E=Sophos;i="6.04,237,1695711600"; 
+   d="scan'208";a="1100918756"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga005.fm.intel.com with ESMTP; 30 Nov 2023 03:52:57 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r8fbB-0001o2-2q;
+        Thu, 30 Nov 2023 11:52:54 +0000
+Date:   Thu, 30 Nov 2023 19:51:58 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Subject: kernel/trace/fgraph.c:253: warning: Function parameter or member
+ 'retp' not described in 'ftrace_graph_ret_addr'
+Message-ID: <202311301937.UkV28E7f-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 net-next 6/7] net: ethernet: ti: am65-cpsw-qos: Add
- Frame Preemption MAC Merge support
-Content-Language: en-US
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, s-vadapalli@ti.com, r-gunasekaran@ti.com,
-        vigneshr@ti.com, srk@ti.com, horms@kernel.org, p-varis@ti.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231120140147.78726-1-rogerq@kernel.org>
- <20231120140147.78726-7-rogerq@kernel.org>
- <20231120232620.uciap4bazypzlg3g@skbuf>
- <eeea995b-a294-4a46-aa3e-93fc2b274504@kernel.org>
- <20231121115314.deuvdjk64rcwktl4@skbuf>
-From:   Roger Quadros <rogerq@kernel.org>
-In-Reply-To: <20231121115314.deuvdjk64rcwktl4@skbuf>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vladimir,
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   3b47bc037bd44f142ac09848e8d3ecccc726be99
+commit: 76b42b63ed0d004961097d3a3cd979129d4afd26 function_graph: Move ftrace_graph_ret_addr() to fgraph.c
+date:   5 years ago
+config: i386-buildonly-randconfig-006-20231101 (https://download.01.org/0day-ci/archive/20231130/202311301937.UkV28E7f-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231130/202311301937.UkV28E7f-lkp@intel.com/reproduce)
 
-On 21/11/2023 13:53, Vladimir Oltean wrote:
-> On Tue, Nov 21, 2023 at 01:02:50PM +0200, Roger Quadros wrote:
->> Yes I'm using openlldp master.
->>
->> So I just dumped the "ethtool --show-mm" right before the "lldptool -i $h1 -t -n -V addEthCaps"
->> and this is what I see
->>
->> # MAC Merge layer state for eth0:
->> # pMAC enabled: on
->> # TX enabled: off
->> # TX active: off
->> # TX minimum fragment size: 252
->> # RX minimum fragment size: 124
->> # Verify enabled: off
->> # Verify time: 10
->> # Max verify time: 134
->> # Verification status: DISABLED
->> # 
->> # MAC Merge layer state for eth1:
->> # pMAC enabled: on
->> # TX enabled: off
->> # TX active: off
->> # TX minimum fragment size: 124
->> # RX minimum fragment size: 124
->> # Verify enabled: off
->> # Verify time: 10
->> # Max verify time: 134
->> # Verification status: DISABLED
->> # 
->> # Additional Ethernet Capabilities TLV
->> #       Preemption capability supported
->> #       Preemption capability not enabled
->> #       Preemption capability not active
->> #       Additional fragment size: 3 (252 octets)
->> # Additional Ethernet Capabilities TLV
->> #       Preemption capability supported
->> #       Preemption capability not enabled
->> #       Preemption capability not active
->> #       Additional fragment size: 1 (124 octets)
->> # Warning: Stopping lldpad.service, but it can still be activated by:
->> #   lldpad.socket
->> # TEST: LLDP                                                          [FAIL]
->>
->>
->> If I add the following lines at the beginning of lldp() routine,
->> then it works.
->>
->> lldp()
->> {
->>         RET=0
->>
->> +        ethtool --set-mm $h1 tx-enabled on verify-enabled on
->> +        ethtool --set-mm $h2 tx-enabled on verify-enabled on
->> ...
->> }
->>
->> Is lldp supposed to turn on tx-enabled and verify-enabled for us
->> or it is test scritps responsibility?
-> 
-> lldpad should absolutely do that.
-> https://github.com/intel/openlldp/blob/master/lldp_8023.c#L701
-> 
-> Try to see what goes on and if there isn't, in fact, an error during the
-> netlink communication with the kernel.
-> 
-> Edit /usr/local/lib/systemd/system/lldpad.service:
-> ExecStart=/usr/local/sbin/lldpad -t -V 7
->                                    ~~~~~
->                                    increases log level
-> Then run:
-> 
-> $ systemctl daemon-reload
-> $ journalctl -u lldpad.service -f &
-> $ ./ethtool_mm.sh eno0 swp0
-> 
-> During the test you should see:
-> 
-> lldpad[4764]: eno0: Link partner preemption capability supported
-> lldpad[4764]: eno0: Link partner preemption capability not enabled
-> lldpad[4764]: eno0: Link partner preemption capability not active
-> lldpad[4764]: eno0: Link partner minimum fragment size: 252 octets
-> lldpad[4764]: eno0: initiating MM verification with a retry interval of 127 ms...
-> lldpad[4764]: rxProcessFrame: allocated TLV 0 was not stored! 0xaaaafd7cfbe0
-> lldpad[4764]: swp0: Link partner preemption capability supported
-> lldpad[4764]: swp0: Link partner preemption capability not enabled
-> lldpad[4764]: swp0: Link partner preemption capability not active
-> lldpad[4764]: swp0: Link partner minimum fragment size: 60 octets
-> lldpad[4764]: swp0: initiating MM verification with a retry interval of 128 ms...
-> lldpad[4764]: rxProcessFrame: allocated TLV 0 was not stored! 0xaaaafd7cfd30
-> 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311301937.UkV28E7f-lkp@intel.com/
 
-Thanks for the debug instructions. Indeed lldpad tries to enable MM TX and the
-network drivers set_mm() hook gets called and returns success but still
-lldpad sees some error.
+All warnings (new ones prefixed by >>):
 
-I've also confirmed that ethnl_set_mm() runs successfully and returns 1.
-I suppose something is going wrong in user-space with libnl?
-
-Nov 21 11:50:02 am62xx lldpad[708]: eth0: Link partner preemption capability supported
-Nov 21 11:50:02 am62xx lldpad[708]: eth0: Link partner preemption capability not enabled
-Nov 21 11:50:02 am62xx lldpad[708]: eth0: Link partner preemption capability not active
-Nov 21 11:50:02 am62xx lldpad[708]: eth0: Link partner minimum fragment size: 124 octets
-Nov 21 11:50:02 am62xx lldpad[708]: eth0: initiating MM verification with a retry interval of 134 ms...
-Nov 21 11:50:02 am62xx lldpad[708]: ethtool: kernel reports: integer out of range
+   kernel/trace/fgraph.c:209:15: warning: no previous prototype for 'ftrace_return_to_handler' [-Wmissing-prototypes]
+     209 | unsigned long ftrace_return_to_handler(unsigned long frame_pointer)
+         |               ^~~~~~~~~~~~~~~~~~~~~~~~
+   kernel/trace/fgraph.c:303:6: warning: no previous prototype for 'ftrace_graph_sleep_time_control' [-Wmissing-prototypes]
+     303 | void ftrace_graph_sleep_time_control(bool enable)
+         |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   kernel/trace/fgraph.c:308:5: warning: no previous prototype for 'ftrace_graph_entry_stub' [-Wmissing-prototypes]
+     308 | int ftrace_graph_entry_stub(struct ftrace_graph_ent *trace)
+         |     ^~~~~~~~~~~~~~~~~~~~~~~
+   kernel/trace/fgraph.c:315:25: warning: cast between incompatible function types from 'void (*)(long unsigned int,  long unsigned int,  struct ftrace_ops *, struct pt_regs *)' to 'void (*)(struct ftrace_graph_ret *)' [-Wcast-function-type]
+     315 |                         (trace_func_graph_ret_t)ftrace_stub;
+         |                         ^
+   kernel/trace/fgraph.c: In function 'unregister_ftrace_graph':
+   kernel/trace/fgraph.c:595:31: warning: cast between incompatible function types from 'void (*)(long unsigned int,  long unsigned int,  struct ftrace_ops *, struct pt_regs *)' to 'void (*)(struct ftrace_graph_ret *)' [-Wcast-function-type]
+     595 |         ftrace_graph_return = (trace_func_graph_ret_t)ftrace_stub;
+         |                               ^
+   kernel/trace/fgraph.c:253: warning: Function parameter or member 'task' not described in 'ftrace_graph_ret_addr'
+   kernel/trace/fgraph.c:253: warning: Function parameter or member 'idx' not described in 'ftrace_graph_ret_addr'
+   kernel/trace/fgraph.c:253: warning: Function parameter or member 'ret' not described in 'ftrace_graph_ret_addr'
+>> kernel/trace/fgraph.c:253: warning: Function parameter or member 'retp' not described in 'ftrace_graph_ret_addr'
 
 
-full debug log is below.
+vim +253 kernel/trace/fgraph.c
+
+   234	
+   235	/**
+   236	 * ftrace_graph_ret_addr - convert a potentially modified stack return address
+   237	 *			   to its original value
+   238	 *
+   239	 * This function can be called by stack unwinding code to convert a found stack
+   240	 * return address ('ret') to its original value, in case the function graph
+   241	 * tracer has modified it to be 'return_to_handler'.  If the address hasn't
+   242	 * been modified, the unchanged value of 'ret' is returned.
+   243	 *
+   244	 * 'idx' is a state variable which should be initialized by the caller to zero
+   245	 * before the first call.
+   246	 *
+   247	 * 'retp' is a pointer to the return address on the stack.  It's ignored if
+   248	 * the arch doesn't have HAVE_FUNCTION_GRAPH_RET_ADDR_PTR defined.
+   249	 */
+   250	#ifdef HAVE_FUNCTION_GRAPH_RET_ADDR_PTR
+   251	unsigned long ftrace_graph_ret_addr(struct task_struct *task, int *idx,
+   252					    unsigned long ret, unsigned long *retp)
+ > 253	{
+   254		int index = task->curr_ret_stack;
+   255		int i;
+   256	
+   257		if (ret != (unsigned long)return_to_handler)
+   258			return ret;
+   259	
+   260		if (index < 0)
+   261			return ret;
+   262	
+   263		for (i = 0; i <= index; i++)
+   264			if (task->ret_stack[i].retp == retp)
+   265				return task->ret_stack[i].ret;
+   266	
+   267		return ret;
+   268	}
+   269	#else /* !HAVE_FUNCTION_GRAPH_RET_ADDR_PTR */
+   270	unsigned long ftrace_graph_ret_addr(struct task_struct *task, int *idx,
+   271					    unsigned long ret, unsigned long *retp)
+   272	{
+   273		int task_idx;
+   274	
+   275		if (ret != (unsigned long)return_to_handler)
+   276			return ret;
+   277	
+   278		task_idx = task->curr_ret_stack;
+   279	
+   280		if (!task->ret_stack || task_idx < *idx)
+   281			return ret;
+   282	
+   283		task_idx -= *idx;
+   284		(*idx)++;
+   285	
+   286		return task->ret_stack[task_idx].ret;
+   287	}
+   288	#endif /* HAVE_FUNCTION_GRAPH_RET_ADDR_PTR */
+   289	
 
 -- 
-cheers,
--roger
-
-
-root@am62xx:~/kselftest# ./run_kselftest.sh -t net/forwarding:ethtool_mm.sh
-[  207.146038] kselftest: Running tests in net/forwarding
-TAP version 13
-1..1
-# timeout set to 0
-# selftests: net/forwarding: ethtool_mm.sh
-# Error: Exclusivity flag on, cannot modify.
-Nov 21 11:49:54 am62xx systemd[1]: Started lldpad.service - Link Layer Discovery Protocol Agent Daemon..
-Nov 21 11:49:54 am62xx lldpad[708]: setsockopt nearest_bridge: Invalid argument
-Nov 21 11:49:54 am62xx lldpad[708]: setsockopt nearest_bridge: Invalid argument
-Nov 21 11:49:54 am62xx lldpad[708]: setsockopt nearest_bridge: Invalid argument
-Nov 21 11:49:54 am62xx lldpad[708]: setsockopt nearest_bridge: Invalid argument
-Nov 21 11:49:54 am62xx lldpad[708]: using fd 3 from systemd
-Nov 21 11:49:54 am62xx lldpad[708]: event_iface_init_user_space(484): socket 4.
-Nov 21 11:49:54 am62xx lldpad[708]: mand_register:done
-Nov 21 11:49:54 am62xx lldpad[708]: basman_register:done
-Nov 21 11:49:54 am62xx lldpad[708]: dcbx_register: dcbx register done
-Nov 21 11:49:54 am62xx lldpad[708]: med_register:done
-Nov 21 11:49:54 am62xx lldpad[708]: ieee8023_register:done
-Nov 21 11:49:54 am62xx lldpad[708]: evb_register:done
-Nov 21 11:49:54 am62xx lldpad[708]: evb22_register:done
-Nov 21 11:49:54 am62xx lldpad[708]: vdp_register: done
-Nov 21 11:49:54 am62xx lldpad[708]: vdp22_register:done
-Nov 21 11:49:54 am62xx lldpad[708]: ecp22_register: done
-Nov 21 11:49:54 am62xx lldpad[708]: ieee8021qaz_register: ieee8021qaz_register SUCCESS
-Nov 21 11:49:54 am62xx lldpad[708]: can0 mac:00:00:00:00:00:00 perm:00:00:00:00:00:00 san:ff:ff:ff:ff:ff:ff
-Nov 21 11:49:54 am62xx lldpad[708]: Failed to open register layer 2 access to ETH_P_LLDP
-Nov 21 11:49:54 am62xx lldpad[708]: init_ports: Error adding device can0
-Nov 21 11:49:54 am62xx lldpad[708]: can1 mac:00:00:00:00:00:00 perm:00:00:00:00:00:00 san:ff:ff:ff:ff:ff:ff
-Nov 21 11:49:54 am62xx lldpad[708]: Failed to open register layer 2 access to ETH_P_LLDP
-Nov 21 11:49:54 am62xx lldpad[708]: init_ports: Error adding device can1
-Nov 21 11:49:54 am62xx lldpad[708]: can2 mac:00:00:00:00:00:00 perm:00:00:00:00:00:00 san:ff:ff:ff:ff:ff:ff
-Nov 21 11:49:54 am62xx lldpad[708]: Failed to open register layer 2 access to ETH_P_LLDP
-Nov 21 11:49:54 am62xx lldpad[708]: init_ports: Error adding device can2
-Nov 21 11:49:54 am62xx lldpad[708]: can3 mac:00:00:00:00:00:00 perm:00:00:00:00:00:00 san:ff:ff:ff:ff:ff:ff
-Nov 21 11:49:54 am62xx lldpad[708]: Failed to open register layer 2 access to ETH_P_LLDP
-Nov 21 11:49:54 am62xx lldpad[708]: init_ports: Error adding device can3
-Nov 21 11:49:54 am62xx lldpad[708]: eth0 mac:78:db:2f:e5:74:d3 perm:78:db:2f:e5:74:d3 san:ff:ff:ff:ff:ff:ff
-Nov 21 11:49:54 am62xx lldpad[708]: eth0 MAC address is 78:db:2f:e5:74:d3
-Nov 21 11:49:54 am62xx lldpad[708]: lldp_add_agent: creating new agent for port eth0.
-Nov 21 11:49:54 am62xx lldpad[708]: lldp_init_agent: creating new agent for eth0 (01:80:C2:00:00:0E).
-Nov 21 11:49:54 am62xx lldpad[708]: lldp_add_agent: 0 agents on if eth0.
-Nov 21 11:49:54 am62xx lldpad[708]: lldp_add_agent: creating new agent for port eth0.
-Nov 21 11:49:54 am62xx lldpad[708]: lldp_init_agent: creating new agent for eth0 (01:80:C2:00:00:03).
-Nov 21 11:49:54 am62xx lldpad[708]: lldp_init_agent: agent->adminStatus = disabled.
-Nov 21 11:49:54 am62xx lldpad[708]: lldp_add_agent: 1 agents on if eth0.
-Nov 21 11:49:54 am62xx lldpad[708]: lldp_add_agent: creating new agent for port eth0.
-Nov 21 11:49:54 am62xx lldpad[708]: lldp_init_agent: creating new agent for eth0 (01:80:C2:00:00:00).
-Nov 21 11:49:54 am62xx lldpad[708]: lldp_init_agent: agent->adminStatus = disabled.
-Nov 21 11:49:54 am62xx lldpad[708]: lldp_add_agent: 2 agents on if eth0.
-Nov 21 11:49:54 am62xx lldpad[708]: init_ports: calling ifup for agent 0xaaaade68e3f0.
-Nov 21 11:49:54 am62xx lldpad[708]: set_config_setting(577):
-Nov 21 11:49:54 am62xx lldpad[708]: set_config_setting(577):
-Nov 21 11:49:54 am62xx lldpad[708]: mand_bld_ttl_tlv:eth0:done:type=3 length=2 ttl=120
-Nov 21 11:49:54 am62xx lldpad[708]: mand_ifup:port eth0 added
-Nov 21 11:49:54 am62xx lldpad[708]: basman_bld_portdesc_tlv:eth0:Port Description disabled
-Nov 21 11:49:54 am62xx lldpad[708]: basman_bld_sysname_tlv:eth0:System Name disabled
-Nov 21 11:49:54 am62xx lldpad[708]: basman_bld_sysdesc_tlv:eth0:System Description disabled
-Nov 21 11:49:54 am62xx lldpad[708]: basman_bld_syscaps_tlv:eth0:System Capabilities disabled
-Nov 21 11:49:54 am62xx lldpad[708]: basman_bld_manaddr_tlv:eth0:Management Address disabled
-Nov 21 11:49:54 am62xx lldpad[708]: basman_ifup:port eth0 added
-Nov 21 11:49:54 am62xx lldpad[708]: med_bld_tlv:eth0:LLDP-MED is not enabled
-Nov 21 11:49:54 am62xx lldpad[708]: med_ifup:port eth0 added
-Nov 21 11:49:54 am62xx lldpad[708]: ieee8023_ifup:port eth0 added
-Nov 21 11:49:54 am62xx lldpad[708]: evb_ifup:eth0 agent 2 called
-Nov 21 11:49:54 am62xx lldpad[708]: evb_init_tlv:eth0 agent 2 EVB tx is currently disabled
-Nov 21 11:49:54 am62xx lldpad[708]: evb_conf_string:eth0 agent 2 loading EVB policy for fmode failed, using default (128)
-Nov 21 11:49:54 am62xx lldpad[708]: evb_conf_string:eth0 agent 2 loading EVB policy for capabilities failed, using default (0)
-Nov 21 11:49:54 am62xx lldpad[708]: evb_conf_string:eth0 agent 2 loading EVB policy for rte failed, using default (15)
-Nov 21 11:49:54 am62xx lldpad[708]: evb_conf_string:eth0 agent 2 loading EVB policy for vsis failed, using default (3295)
-Nov 21 11:49:54 am62xx lldpad[708]: evb_ifup:eth0 agent 2 added
-Nov 21 11:49:54 am62xx lldpad[708]: evb22_ifup:eth0 agent 2 called
-Nov 21 11:49:54 am62xx lldpad[708]: evb22_init_tlv:eth0 agent 2 EVB tx is currently disabled
-Nov 21 11:49:54 am62xx lldpad[708]: evb22_conf_string:eth0 agent 2 loading EVB policy for evbmode failed, using default (2)
-Nov 21 11:49:54 am62xx lldpad[708]: evb22_conf_evbmode:eth0 agent 2 policy evbmode station(0x2)
-Nov 21 11:49:54 am62xx lldpad[708]: evb22_conf_int:eth0 agent 2 loading EVB policy for vdprwd failed, using default (20)
-Nov 21 11:49:54 am62xx lldpad[708]: exponent:eth0 agent 2 policy vdprwd 20
-Nov 21 11:49:54 am62xx lldpad[708]: evb22_conf_int:eth0 agent 2 loading EVB policy for evbrrreq failed, using default (0)
-Nov 21 11:49:54 am62xx lldpad[708]: evb22_conf_rrreq:eth0 agent 2 policy evbrrreq false
-Nov 21 11:49:54 am62xx lldpad[708]: evb22_conf_int:eth0 agent 2 loading EVB policy for evbgpid failed, using default (0)
-Nov 21 11:49:54 am62xx lldpad[708]: evb22_conf_gid:eth0 agent 2 policy evbgpid false
-Nov 21 11:49:54 am62xx lldpad[708]: evb22_conf_int:eth0 agent 2 loading EVB policy for ecpretries failed, using default (3)
-Nov 21 11:49:54 am62xx lldpad[708]: evb22_conf_retries:eth0 agent 2 policy ecpretries 3
-Nov 21 11:49:54 am62xx lldpad[708]: evb22_conf_int:eth0 agent 2 loading EVB policy for ecprte failed, using default (8)
-Nov 21 11:49:54 am62xx lldpad[708]: exponent:eth0 agent 2 policy ecprte 8
-Nov 21 11:49:54 am62xx lldpad[708]: evb22_conf_int:eth0 agent 2 loading EVB policy for vdprka failed, using default (20)
-Nov 21 11:49:54 am62xx lldpad[708]: exponent:eth0 agent 2 policy vdprka 20
-Nov 21 11:49:54 am62xx lldpad[708]: evb22_ifup:eth0 agent 2 added
-Nov 21 11:49:54 am62xx lldpad[708]: init_ports: calling ifup for agent 0xaaaade68e320.
-Nov 21 11:49:54 am62xx lldpad[708]: set_config_setting(577):
-Nov 21 11:49:54 am62xx lldpad[708]: set_config_setting(577):
-Nov 21 11:49:54 am62xx lldpad[708]: mand_bld_ttl_tlv:eth0:done:type=3 length=2 ttl=120
-Nov 21 11:49:54 am62xx lldpad[708]: mand_ifup:port eth0 added
-Nov 21 11:49:54 am62xx lldpad[708]: basman_bld_portdesc_tlv:eth0:Port Description disabled
-Nov 21 11:49:54 am62xx lldpad[708]: basman_bld_sysname_tlv:eth0:System Name disabled
-Nov 21 11:49:54 am62xx lldpad[708]: basman_bld_sysdesc_tlv:eth0:System Description disabled
-Nov 21 11:49:54 am62xx lldpad[708]: basman_bld_syscaps_tlv:eth0:System Capabilities disabled
-Nov 21 11:49:54 am62xx lldpad[708]: basman_bld_manaddr_tlv:eth0:Management Address disabled
-Nov 21 11:49:54 am62xx lldpad[708]: basman_ifup:port eth0 added
-Nov 21 11:49:54 am62xx lldpad[708]: med_bld_tlv:eth0:LLDP-MED is not enabled
-Nov 21 11:49:54 am62xx lldpad[708]: med_ifup:port eth0 added
-Nov 21 11:49:54 am62xx lldpad[708]: ieee8023_ifup:port eth0 added
-Nov 21 11:49:54 am62xx lldpad[708]: init_ports: calling ifup for agent 0xaaaade68e250.
-Nov 21 11:49:54 am62xx lldpad[708]: set_config_setting(577):
-Nov 21 11:49:54 am62xx lldpad[708]: set_config_setting(577):
-Nov 21 11:49:54 am62xx lldpad[708]: mand_bld_ttl_tlv:eth0:done:type=3 length=2 ttl=120
-Nov 21 11:49:54 am62xx lldpad[708]: mand_ifup:port eth0 added
-Nov 21 11:49:54 am62xx lldpad[708]: basman_bld_portdesc_tlv:eth0:Port Description disabled
-Nov 21 11:49:54 am62xx lldpad[708]: basman_bld_sysname_tlv:eth0:System Name disabled
-Nov 21 11:49:54 am62xx lldpad[708]: basman_bld_sysdesc_tlv:eth0:System Description disabled
-Nov 21 11:49:54 am62xx lldpad[708]: basman_bld_syscaps_tlv:eth0:System Capabilities disabled
-Nov 21 11:49:54 am62xx lldpad[708]: basman_bld_manaddr_tlv:eth0:Management Address disabled
-Nov 21 11:49:54 am62xx lldpad[708]: basman_ifup:port eth0 added
-Nov 21 11:49:54 am62xx lldpad[708]: send_msg: sendto = 32
-Nov 21 11:49:54 am62xx lldpad[708]: Adapter eth0 does not support DCB.
-Nov 21 11:49:54 am62xx lldpad[708]: med_bld_tlv:eth0:LLDP-MED is not enabled
-Nov 21 11:49:54 am62xx lldpad[708]: med_ifup:port eth0 added
-Nov 21 11:49:54 am62xx lldpad[708]: ieee8023_ifup:port eth0 added
-Nov 21 11:49:54 am62xx lldpad[708]: get_dcbx_hw: eth0: nlmsg_find_attr failed, no GDCBX support
-Nov 21 11:49:54 am62xx lldpad[708]: eth1 mac:70:ff:76:1d:8d:c4 perm:70:ff:76:1d:8d:c4 san:ff:ff:ff:ff:ff:ff
-Nov 21 11:49:54 am62xx lldpad[708]: eth1 MAC address is 70:ff:76:1d:8d:c4
-Nov 21 11:49:54 am62xx lldpad[708]: lldp_add_agent: creating new agent for port eth1.
-Nov 21 11:49:54 am62xx lldpad[708]: lldp_init_agent: creating new agent for eth1 (01:80:C2:00:00:0E).
-Nov 21 11:49:54 am62xx lldpad[708]: lldp_add_agent: 0 agents on if eth1.
-Nov 21 11:49:54 am62xx lldpad[708]: lldp_add_agent: creating new agent for port eth1.
-Nov 21 11:49:54 am62xx lldpad[708]: lldp_init_agent: creating new agent for eth1 (01:80:C2:00:00:03).
-Nov 21 11:49:54 am62xx lldpad[708]: lldp_init_agent: agent->adminStatus = disabled.
-Nov 21 11:49:54 am62xx lldpad[708]: lldp_add_agent: 1 agents on if eth1.
-Nov 21 11:49:54 am62xx lldpad[708]: lldp_add_agent: creating new agent for port eth1.
-Nov 21 11:49:54 am62xx lldpad[708]: lldp_init_agent: creating new agent for eth1 (01:80:C2:00:00:00).
-Nov 21 11:49:54 am62xx lldpad[708]: lldp_init_agent: agent->adminStatus = disabled.
-Nov 21 11:49:54 am62xx lldpad[708]: lldp_add_agent: 2 agents on if eth1.
-Nov 21 11:49:54 am62xx lldpad[708]: init_ports: calling ifup for agent 0xaaaade6943b0.
-Nov 21 11:49:54 am62xx lldpad[708]: set_config_setting(577):
-Nov 21 11:49:54 am62xx lldpad[708]: set_config_setting(577):
-Nov 21 11:49:54 am62xx lldpad[708]: mand_bld_ttl_tlv:eth1:done:type=3 length=2 ttl=120
-Nov 21 11:49:54 am62xx lldpad[708]: mand_ifup:port eth1 added
-Nov 21 11:49:54 am62xx lldpad[708]: basman_bld_portdesc_tlv:eth1:Port Description disabled
-Nov 21 11:49:54 am62xx lldpad[708]: basman_bld_sysname_tlv:eth1:System Name disabled
-Nov 21 11:49:54 am62xx lldpad[708]: basman_bld_sysdesc_tlv:eth1:System Description disabled
-Nov 21 11:49:54 am62xx lldpad[708]: basman_bld_syscaps_tlv:eth1:System Capabilities disabled
-Nov 21 11:49:54 am62xx lldpad[708]: basman_bld_manaddr_tlv:eth1:Management Address disabled
-Nov 21 11:49:54 am62xx lldpad[708]: basman_ifup:port eth1 added
-Nov 21 11:49:54 am62xx lldpad[708]: med_bld_tlv:eth1:LLDP-MED is not enabled
-Nov 21 11:49:54 am62xx lldpad[708]: med_ifup:port eth1 added
-Nov 21 11:49:54 am62xx lldpad[708]: ieee8023_ifup:port eth1 added
-Nov 21 11:49:54 am62xx lldpad[708]: evb_ifup:eth1 agent 2 called
-Nov 21 11:49:54 am62xx lldpad[708]: evb_init_tlv:eth1 agent 2 EVB tx is currently disabled
-Nov 21 11:49:54 am62xx lldpad[708]: evb_conf_string:eth1 agent 2 loading EVB policy for fmode failed, using default (128)
-Nov 21 11:49:54 am62xx lldpad[708]: evb_conf_string:eth1 agent 2 loading EVB policy for capabilities failed, using default (0)
-Nov 21 11:49:54 am62xx lldpad[708]: evb_conf_string:eth1 agent 2 loading EVB policy for rte failed, using default (15)
-Nov 21 11:49:54 am62xx lldpad[708]: evb_conf_string:eth1 agent 2 loading EVB policy for vsis failed, using default (3295)
-Nov 21 11:49:54 am62xx lldpad[708]: evb_ifup:eth1 agent 2 added
-Nov 21 11:49:54 am62xx lldpad[708]: evb22_ifup:eth1 agent 2 called
-Nov 21 11:49:54 am62xx lldpad[708]: evb22_init_tlv:eth1 agent 2 EVB tx is currently disabled
-Nov 21 11:49:54 am62xx lldpad[708]: evb22_conf_string:eth1 agent 2 loading EVB policy for evbmode failed, using default (2)
-Nov 21 11:49:54 am62xx lldpad[708]: evb22_conf_evbmode:eth1 agent 2 policy evbmode station(0x2)
-Nov 21 11:49:54 am62xx lldpad[708]: evb22_conf_int:eth1 agent 2 loading EVB policy for vdprwd failed, using default (20)
-Nov 21 11:49:54 am62xx lldpad[708]: exponent:eth1 agent 2 policy vdprwd 20
-Nov 21 11:49:54 am62xx lldpad[708]: evb22_conf_int:eth1 agent 2 loading EVB policy for evbrrreq failed, using default (0)
-Nov 21 11:49:54 am62xx lldpad[708]: evb22_conf_rrreq:eth1 agent 2 policy evbrrreq false
-Nov 21 11:49:54 am62xx lldpad[708]: evb22_conf_int:eth1 agent 2 loading EVB policy for evbgpid failed, using default (0)
-Nov 21 11:49:54 am62xx lldpad[708]: evb22_conf_gid:eth1 agent 2 policy evbgpid false
-Nov 21 11:49:54 am62xx lldpad[708]: evb22_conf_int:eth1 agent 2 loading EVB policy for ecpretries failed, using default (3)
-Nov 21 11:49:54 am62xx lldpad[708]: evb22_conf_retries:eth1 agent 2 policy ecpretries 3
-Nov 21 11:49:54 am62xx lldpad[708]: evb22_conf_int:eth1 agent 2 loading EVB policy for ecprte failed, using default (8)
-Nov 21 11:49:54 am62xx lldpad[708]: exponent:eth1 agent 2 policy ecprte 8
-Nov 21 11:49:54 am62xx lldpad[708]: evb22_conf_int:eth1 agent 2 loading EVB policy for vdprka failed, using default (20)
-Nov 21 11:49:54 am62xx lldpad[708]: exponent:eth1 agent 2 policy vdprka 20
-Nov 21 11:49:54 am62xx lldpad[708]: evb22_ifup:eth1 agent 2 added
-Nov 21 11:49:54 am62xx lldpad[708]: init_ports: calling ifup for agent 0xaaaade6942e0.
-Nov 21 11:49:54 am62xx lldpad[708]: set_config_setting(577):
-Nov 21 11:49:54 am62xx lldpad[708]: set_config_setting(577):
-Nov 21 11:49:54 am62xx lldpad[708]: mand_bld_ttl_tlv:eth1:done:type=3 length=2 ttl=120
-Nov 21 11:49:54 am62xx lldpad[708]: mand_ifup:port eth1 added
-Nov 21 11:49:54 am62xx lldpad[708]: basman_bld_portdesc_tlv:eth1:Port Description disabled
-Nov 21 11:49:54 am62xx lldpad[708]: basman_bld_sysname_tlv:eth1:System Name disabled
-Nov 21 11:49:54 am62xx lldpad[708]: basman_bld_sysdesc_tlv:eth1:System Description disabled
-Nov 21 11:49:54 am62xx lldpad[708]: basman_bld_syscaps_tlv:eth1:System Capabilities disabled
-Nov 21 11:49:55 am62xx lldpad[708]: basman_bld_manaddr_tlv:eth1:Management Address disabled
-Nov 21 11:49:55 am62xx lldpad[708]: basman_ifup:port eth1 added
-Nov 21 11:49:55 am62xx lldpad[708]: med_bld_tlv:eth1:LLDP-MED is not enabled
-Nov 21 11:49:55 am62xx lldpad[708]: med_ifup:port eth1 added
-Nov 21 11:49:55 am62xx lldpad[708]: ieee8023_ifup:port eth1 added
-Nov 21 11:49:55 am62xx lldpad[708]: init_ports: calling ifup for agent 0xaaaade694210.
-Nov 21 11:49:55 am62xx lldpad[708]: set_config_setting(577):
-Nov 21 11:49:55 am62xx lldpad[708]: set_config_setting(577):
-Nov 21 11:49:55 am62xx lldpad[708]: mand_bld_ttl_tlv:eth1:done:type=3 length=2 ttl=120
-Nov 21 11:49:55 am62xx lldpad[708]: mand_ifup:port eth1 added
-Nov 21 11:49:55 am62xx lldpad[708]: basman_bld_portdesc_tlv:eth1:Port Description disabled
-Nov 21 11:49:55 am62xx lldpad[708]: basman_bld_sysname_tlv:eth1:System Name disabled
-Nov 21 11:49:55 am62xx lldpad[708]: basman_bld_sysdesc_tlv:eth1:System Description disabled
-Nov 21 11:49:55 am62xx lldpad[708]: basman_bld_syscaps_tlv:eth1:System Capabilities disabled
-Nov 21 11:49:55 am62xx lldpad[708]: basman_bld_manaddr_tlv:eth1:Management Address disabled
-Nov 21 11:49:55 am62xx lldpad[708]: basman_ifup:port eth1 added
-Nov 21 11:49:55 am62xx lldpad[708]: send_msg: sendto = 32
-Nov 21 11:49:55 am62xx lldpad[708]: Adapter eth1 does not support DCB.
-Nov 21 11:49:55 am62xx lldpad[708]: med_bld_tlv:eth1:LLDP-MED is not enabled
-Nov 21 11:49:55 am62xx lldpad[708]: med_ifup:port eth1 added
-Nov 21 11:49:55 am62xx lldpad[708]: ieee8023_ifup:port eth1 added
-Nov 21 11:49:55 am62xx lldpad[708]: get_dcbx_hw: eth1: nlmsg_find_attr failed, no GDCBX support
-Nov 21 11:49:55 am62xx lldpad[708]: eth2 mac:70:ff:76:1d:8d:c5 perm:70:ff:76:1d:8d:c5 san:ff:ff:ff:ff:ff:ff
-Nov 21 11:49:55 am62xx lldpad[708]: eth2 MAC address is 70:ff:76:1d:8d:c5
-Nov 21 11:49:55 am62xx lldpad[708]: eth3 mac:70:ff:76:1d:8d:c6 perm:70:ff:76:1d:8d:c6 san:ff:ff:ff:ff:ff:ff
-Nov 21 11:49:55 am62xx lldpad[708]: eth3 MAC address is 70:ff:76:1d:8d:c6
-Nov 21 11:49:55 am62xx lldpad[708]: eth4 mac:70:ff:76:1d:8d:c7 perm:70:ff:76:1d:8d:c7 san:ff:ff:ff:ff:ff:ff
-Nov 21 11:49:55 am62xx lldpad[708]: eth4 MAC address is 70:ff:76:1d:8d:c7
-Nov 21 11:49:55 am62xx lldpad[708]: set_config_setting(577):
-Nov 21 11:49:55 am62xx lldpad[708]: set_config_setting(577):
-Nov 21 11:49:55 am62xx lldpad[708]: set_config_setting(577):
-Nov 21 11:49:55 am62xx lldpad[708]: set_config_setting(577):
-Nov 21 11:49:55 am62xx lldpad[708]: evb22_start_modules:eth1 START role:2
-Nov 21 11:49:55 am62xx lldpad[708]: ecp22_start:eth1 start ecp
-Nov 21 11:49:55 am62xx lldpad[708]: eth1 mac:70:ff:76:1d:8d:c4 perm:70:ff:76:1d:8d:c4 san:ff:ff:ff:ff:ff:ff
-Nov 21 11:49:55 am62xx lldpad[708]: eth1 MAC address is 70:ff:76:1d:8d:c4
-Nov 21 11:49:55 am62xx lldpad[708]: ecp22_create:eth1 create ecp data
-Nov 21 11:49:55 am62xx lldpad[708]: ecp22_set_rx_state:eth1 state ECP22_RX_BEGIN
-Nov 21 11:49:55 am62xx lldpad[708]: ecp22_rx_change_state:eth1 state change ECP22_RX_BEGIN -> ECP22_RX_WAIT
-Nov 21 11:49:55 am62xx lldpad[708]: ecp22_es_wait:eth1 state ECP22_RX_WAIT
-Nov 21 11:49:55 am62xx lldpad[708]: ecp22_set_rx_state:eth1 state ECP22_RX_WAIT
-Nov 21 11:49:55 am62xx lldpad[708]: ecp22_tx_change_state:eth1 state change ECP22_TX_BEGIN -> ECP22_TX_INIT
-Nov 21 11:49:55 am62xx lldpad[708]: ecp22_tx_run_sm:eth1 state ECP22_TX_INIT
-Nov 21 11:49:55 am62xx lldpad[708]: ecp22_tx_change_state:eth1 state change ECP22_TX_INIT -> ECP22_TX_WAIT_FORREQ
-Nov 21 11:49:55 am62xx lldpad[708]: ecp22_tx_run_sm:eth1 state ECP22_TX_WAIT_FORREQ
-Nov 21 11:49:55 am62xx lldpad[708]: ecp22_es_waitforreq:eth1 seqno 0x1
-Nov 21 11:49:55 am62xx lldpad[708]: ecp22_tx_change_state:eth1 state change ECP22_TX_WAIT_FORREQ -> ECP22_TX_WAIT_ONDATA
-Nov 21 11:49:55 am62xx lldpad[708]: ecp22_tx_run_sm:eth1 state ECP22_TX_WAIT_ONDATA
-Nov 21 11:49:55 am62xx lldpad[708]: vdp22_start:eth1 start vdp
-Nov 21 11:49:55 am62xx lldpad[708]: vdp22_create:eth1 role:2
-Nov 21 11:49:55 am62xx lldpad[708]: mibConstrInfoLLDPDU: port eth1 mac 01:80:C2:00:00:0E type 0.
-Nov 21 11:49:55 am62xx lldpad[708]: mand_bld_ttl_tlv:eth1:done:type=3 length=2 ttl=120
-Nov 21 11:49:55 am62xx lldpad[708]: basman_bld_portdesc_tlv:eth1:Port Description disabled
-Nov 21 11:49:55 am62xx lldpad[708]: basman_bld_sysname_tlv:eth1:System Name disabled
-Nov 21 11:49:55 am62xx lldpad[708]: basman_bld_sysdesc_tlv:eth1:System Description disabled
-Nov 21 11:49:55 am62xx lldpad[708]: basman_bld_syscaps_tlv:eth1:System Capabilities disabled
-Nov 21 11:49:55 am62xx lldpad[708]: basman_bld_manaddr_tlv:eth1:Management Address disabled
-Nov 21 11:49:55 am62xx lldpad[708]: basman_gettlv:eth1: failed
-Nov 21 11:49:55 am62xx lldpad[708]: send_msg: sendto = 32
-Nov 21 11:49:55 am62xx lldpad[708]: Adapter eth1 does not support DCB.
-Nov 21 11:49:55 am62xx lldpad[708]: config.c: eth1 dcb mode is OFF.
-Nov 21 11:49:55 am62xx lldpad[708]: med_bld_tlv:eth1:LLDP-MED is not enabled
-Nov 21 11:49:55 am62xx lldpad[708]: med_gettlv:eth1: failed
-Nov 21 11:49:55 am62xx lldpad[708]: evb22_start_modules:eth0 START role:2
-Nov 21 11:49:55 am62xx lldpad[708]: ecp22_start:eth0 start ecp
-Nov 21 11:49:55 am62xx lldpad[708]: eth0 mac:78:db:2f:e5:74:d3 perm:78:db:2f:e5:74:d3 san:ff:ff:ff:ff:ff:ff
-Nov 21 11:49:55 am62xx lldpad[708]: eth0 MAC address is 78:db:2f:e5:74:d3
-Nov 21 11:49:55 am62xx lldpad[708]: ecp22_create:eth0 create ecp data
-Nov 21 11:49:55 am62xx lldpad[708]: ecp22_set_rx_state:eth0 state ECP22_RX_BEGIN
-Nov 21 11:49:55 am62xx lldpad[708]: ecp22_rx_change_state:eth0 state change ECP22_RX_BEGIN -> ECP22_RX_WAIT
-Nov 21 11:49:55 am62xx lldpad[708]: ecp22_es_wait:eth0 state ECP22_RX_WAIT
-Nov 21 11:49:55 am62xx lldpad[708]: ecp22_set_rx_state:eth0 state ECP22_RX_WAIT
-Nov 21 11:49:55 am62xx lldpad[708]: ecp22_tx_change_state:eth0 state change ECP22_TX_BEGIN -> ECP22_TX_INIT
-Nov 21 11:49:55 am62xx lldpad[708]: ecp22_tx_run_sm:eth0 state ECP22_TX_INIT
-Nov 21 11:49:55 am62xx lldpad[708]: ecp22_tx_change_state:eth0 state change ECP22_TX_INIT -> ECP22_TX_WAIT_FORREQ
-Nov 21 11:49:55 am62xx lldpad[708]: ecp22_tx_run_sm:eth0 state ECP22_TX_WAIT_FORREQ
-Nov 21 11:49:55 am62xx lldpad[708]: ecp22_es_waitforreq:eth0 seqno 0x1
-Nov 21 11:49:55 am62xx lldpad[708]: ecp22_tx_change_state:eth0 state change ECP22_TX_WAIT_FORREQ -> ECP22_TX_WAIT_ONDATA
-Nov 21 11:49:55 am62xx lldpad[708]: ecp22_tx_run_sm:eth0 state ECP22_TX_WAIT_ONDATA
-Nov 21 11:49:55 am62xx lldpad[708]: vdp22_start:eth0 start vdp
-Nov 21 11:49:55 am62xx lldpad[708]: vdp22_create:eth0 role:2
-Nov 21 11:49:55 am62xx lldpad[708]: mibConstrInfoLLDPDU: port eth0 mac 01:80:C2:00:00:0E type 0.
-Nov 21 11:49:55 am62xx lldpad[708]: mand_bld_ttl_tlv:eth0:done:type=3 length=2 ttl=120
-Nov 21 11:49:55 am62xx lldpad[708]: basman_bld_portdesc_tlv:eth0:Port Description disabled
-Nov 21 11:49:55 am62xx lldpad[708]: basman_bld_sysname_tlv:eth0:System Name disabled
-Nov 21 11:49:55 am62xx lldpad[708]: basman_bld_sysdesc_tlv:eth0:System Description disabled
-Nov 21 11:49:55 am62xx lldpad[708]: basman_bld_syscaps_tlv:eth0:System Capabilities disabled
-Nov 21 11:49:55 am62xx lldpad[708]: basman_bld_manaddr_tlv:eth0:Management Address disabled
-Nov 21 11:49:55 am62xx lldpad[708]: basman_gettlv:eth0: failed
-Nov 21 11:49:55 am62xx lldpad[708]: send_msg: sendto = 32
-Nov 21 11:49:55 am62xx lldpad[708]: Adapter eth0 does not support DCB.
-Nov 21 11:49:55 am62xx lldpad[708]: config.c: eth0 dcb mode is OFF.
-Nov 21 11:50:02 am62xx lldpad[708]: med_bld_tlv:eth0:LLDP-MED is not enabled
-Nov 21 11:50:02 am62xx lldpad[708]: med_gettlv:eth0: failed
-Nov 21 11:50:02 am62xx lldpad[708]: eth0: Link partner preemption capability supported
-Nov 21 11:50:02 am62xx lldpad[708]: eth0: Link partner preemption capability not enabled
-Nov 21 11:50:02 am62xx lldpad[708]: eth0: Link partner preemption capability not active
-Nov 21 11:50:02 am62xx lldpad[708]: eth0: Link partner minimum fragment size: 124 octets
-Nov 21 11:50:02 am62xx lldpad[708]: eth0: initiating MM verification with a retry interval of 134 ms...
-Nov 21 11:50:02 am62xx lldpad[708]: ethtool: kernel reports: integer out of range
-Nov 21 11:50:02 am62xx lldpad[708]: rxProcessFrame: allocated TLV 0 was not stored! 0xaaaade698510
-Nov 21 11:50:02 am62xx lldpad[708]: mibConstrInfoLLDPDU: port eth0 mac 01:80:C2:00:00:0E type 0.
-Nov 21 11:50:02 am62xx lldpad[708]: mand_bld_ttl_tlv:eth0:done:type=3 length=2 ttl=120
-Nov 21 11:50:02 am62xx lldpad[708]: basman_bld_portdesc_tlv:eth0:Port Description disabled
-Nov 21 11:50:02 am62xx lldpad[708]: basman_bld_sysname_tlv:eth0:System Name disabled
-Nov 21 11:50:02 am62xx lldpad[708]: basman_bld_sysdesc_tlv:eth0:System Description disabled
-Nov 21 11:50:02 am62xx lldpad[708]: basman_bld_syscaps_tlv:eth0:System Capabilities disabled
-Nov 21 11:50:02 am62xx lldpad[708]: basman_bld_manaddr_tlv:eth0:Management Address disabled
-Nov 21 11:50:02 am62xx lldpad[708]: basman_gettlv:eth0: failed
-Nov 21 11:50:02 am62xx lldpad[708]: send_msg: sendto = 32
-Nov 21 11:50:02 am62xx lldpad[708]: Adapter eth0 does not support DCB.
-Nov 21 11:50:02 am62xx lldpad[708]: config.c: eth0 dcb mode is OFF.
-Nov 21 11:50:02 am62xx lldpad[708]: med_bld_tlv:eth0:LLDP-MED is not enabled
-Nov 21 11:50:02 am62xx lldpad[708]: med_gettlv:eth0: failed
-Nov 21 11:50:02 am62xx lldpad[708]: set_config_setting(577):
-Nov 21 11:50:02 am62xx lldpad[708]: arg_path "tlvid00120f07.addFragSize"
-Nov 21 11:50:02 am62xx lldpad[708]: mibConstrInfoLLDPDU: port eth0 mac 01:80:C2:00:00:0E type 0.
-Nov 21 11:50:02 am62xx lldpad[708]: mand_bld_ttl_tlv:eth0:done:type=3 length=2 ttl=120
-Nov 21 11:50:02 am62xx lldpad[708]: basman_bld_portdesc_tlv:eth0:Port Description disabled
-Nov 21 11:50:02 am62xx lldpad[708]: basman_bld_sysname_tlv:eth0:System Name disabled
-Nov 21 11:50:02 am62xx lldpad[708]: basman_bld_sysdesc_tlv:eth0:System Description disabled
-Nov 21 11:50:02 am62xx lldpad[708]: basman_bld_syscaps_tlv:eth0:System Capabilities disabled
-Nov 21 11:50:02 am62xx lldpad[708]: basman_bld_manaddr_tlv:eth0:Management Address disabled
-Nov 21 11:50:02 am62xx lldpad[708]: basman_gettlv:eth0: failed
-Nov 21 11:50:02 am62xx lldpad[708]: send_msg: sendto = 32
-Nov 21 11:50:02 am62xx lldpad[708]: Adapter eth0 does not support DCB.
-Nov 21 11:50:02 am62xx lldpad[708]: config.c: eth0 dcb mode is OFF.
-Nov 21 11:50:02 am62xx lldpad[708]: med_bld_tlv:eth0:LLDP-MED is not enabled
-Nov 21 11:50:02 am62xx lldpad[708]: med_gettlv:eth0: failed
-Nov 21 11:50:02 am62xx lldpad[708]: mibConstrInfoLLDPDU: port eth0 mac 01:80:C2:00:00:0E type 0.
-Nov 21 11:50:02 am62xx lldpad[708]: mand_bld_ttl_tlv:eth0:done:type=3 length=2 ttl=120
-Nov 21 11:50:02 am62xx lldpad[708]: basman_bld_portdesc_tlv:eth0:Port Description disabled
-Nov 21 11:50:02 am62xx lldpad[708]: basman_bld_sysname_tlv:eth0:System Name disabled
-Nov 21 11:50:02 am62xx lldpad[708]: basman_bld_sysdesc_tlv:eth0:System Description disabled
-Nov 21 11:50:02 am62xx lldpad[708]: basman_bld_syscaps_tlv:eth0:System Capabilities disabled
-Nov 21 11:50:02 am62xx lldpad[708]: basman_bld_manaddr_tlv:eth0:Management Address disabled
-Nov 21 11:50:02 am62xx lldpad[708]: basman_gettlv:eth0: failed
-Nov 21 11:50:02 am62xx lldpad[708]: send_msg: sendto = 32
-Nov 21 11:50:02 am62xx lldpad[708]: Adapter eth0 does not support DCB.
-Nov 21 11:50:02 am62xx lldpad[708]: config.c: eth0 dcb mode is OFF.
-Nov 21 11:50:02 am62xx lldpad[708]: med_bld_tlv:eth0:LLDP-MED is not enabled
-Nov 21 11:50:02 am62xx lldpad[708]: med_gettlv:eth0: failed
-Nov 21 11:50:02 am62xx lldpad[708]: set_config_setting(577):
-Nov 21 11:50:02 am62xx lldpad[708]: arg_path "tlvid00120f07.addFragSize"
-Nov 21 11:50:02 am62xx lldpad[708]: mibConstrInfoLLDPDU: port eth0 mac 01:80:C2:00:00:0E type 0.
-Nov 21 11:50:02 am62xx lldpad[708]: mand_bld_ttl_tlv:eth0:done:type=3 length=2 ttl=120
-Nov 21 11:50:02 am62xx lldpad[708]: basman_bld_portdesc_tlv:eth0:Port Description disabled
-Nov 21 11:50:02 am62xx lldpad[708]: basman_bld_sysname_tlv:eth0:System Name disabled
-Nov 21 11:50:02 am62xx lldpad[708]: basman_bld_sysdesc_tlv:eth0:System Description disabled
-Nov 21 11:50:02 am62xx lldpad[708]: basman_bld_syscaps_tlv:eth0:System Capabilities disabled
-Nov 21 11:50:02 am62xx lldpad[708]: basman_bld_manaddr_tlv:eth0:Management Address disabled
-Nov 21 11:50:02 am62xx lldpad[708]: basman_gettlv:eth0: failed
-Nov 21 11:50:02 am62xx lldpad[708]: send_msg: sendto = 32
-Nov 21 11:50:02 am62xx lldpad[708]: Adapter eth0 does not support DCB.
-Nov 21 11:50:02 am62xx lldpad[708]: config.c: eth0 dcb mode is OFF.
-Nov 21 11:50:02 am62xx lldpad[708]: med_bld_tlv:eth0:LLDP-MED is not enabled
-Nov 21 11:50:02 am62xx lldpad[708]: med_gettlv:eth0: failed
-Nov 21 11:50:02 am62xx lldpad[708]: mibConstrInfoLLDPDU: port eth0 mac 01:80:C2:00:00:0E type 0.
-Nov 21 11:50:02 am62xx lldpad[708]: mand_bld_ttl_tlv:eth0:done:type=3 length=2 ttl=120
-Nov 21 11:50:02 am62xx lldpad[708]: basman_bld_portdesc_tlv:eth0:Port Description disabled
-Nov 21 11:50:02 am62xx lldpad[708]: basman_bld_sysname_tlv:eth0:System Name disabled
-Nov 21 11:50:02 am62xx lldpad[708]: basman_bld_sysdesc_tlv:eth0:System Description disabled
-Nov 21 11:50:02 am62xx lldpad[708]: basman_bld_syscaps_tlv:eth0:System Capabilities disabled
-Nov 21 11:50:02 am62xx lldpad[708]: basman_bld_manaddr_tlv:eth0:Management Address disabled
-Nov 21 11:50:02 am62xx lldpad[708]: basman_gettlv:eth0: failed
-Nov 21 11:50:02 am62xx lldpad[708]: send_msg: sendto = 32
-Nov 21 11:50:02 am62xx lldpad[708]: Adapter eth0 does not support DCB.
-Nov 21 11:50:02 am62xx lldpad[708]: config.c: eth0 dcb mode is OFF.
-Nov 21 11:50:02 am62xx lldpad[708]: med_bld_tlv:eth0:LLDP-MED is not enabled
-Nov 21 11:50:02 am62xx lldpad[708]: med_gettlv:eth0: failed
-Nov 21 11:50:02 am62xx lldpad[708]: set_config_setting(577):
-Nov 21 11:50:02 am62xx lldpad[708]: arg_path "tlvid00120f07.addFragSize"
-Nov 21 11:50:02 am62xx lldpad[708]: mibConstrInfoLLDPDU: port eth0 mac 01:80:C2:00:00:0E type 0.
-Nov 21 11:50:02 am62xx lldpad[708]: mand_bld_ttl_tlv:eth0:done:type=3 length=2 ttl=120
-Nov 21 11:50:02 am62xx lldpad[708]: basman_bld_portdesc_tlv:eth0:Port Description disabled
-Nov 21 11:50:02 am62xx lldpad[708]: basman_bld_sysname_tlv:eth0:System Name disabled
-Nov 21 11:50:02 am62xx lldpad[708]: basman_bld_sysdesc_tlv:eth0:System Description disabled
-Nov 21 11:50:02 am62xx lldpad[708]: basman_bld_syscaps_tlv:eth0:System Capabilities disabled
-Nov 21 11:50:02 am62xx lldpad[708]: basman_bld_manaddr_tlv:eth0:Management Address disabled
-Nov 21 11:50:02 am62xx lldpad[708]: basman_gettlv:eth0: failed
-Nov 21 11:50:02 am62xx lldpad[708]: send_msg: sendto = 32
-Nov 21 11:50:02 am62xx lldpad[708]: Adapter eth0 does not support DCB.
-Nov 21 11:50:02 am62xx lldpad[708]: config.c: eth0 dcb mode is OFF.
-Nov 21 11:50:02 am62xx lldpad[708]: med_bld_tlv:eth0:LLDP-MED is not enabled
-Nov 21 11:50:02 am62xx lldpad[708]: med_gettlv:eth0: failed
-Nov 21 11:50:02 am62xx lldpad[708]: mibConstrInfoLLDPDU: port eth0 mac 01:80:C2:00:00:0E type 0.
-# Warning: Stopping lldpad.service, but it can still be activated by:
-#   lldpad.socket
-# TEST: LLDP                                                          [FAIL]
-#       eth0 pMAC TX is not active
-[  223.838009] am65-cpsw-nuss 46000000.ethernet eth0: Link is Down
-# Error: Cannot delete qdisc with handle of zero.
-not ok 1 selftests: net/forwarding: ethtool_mm.sh # exit=1
-root@am62xx:~/kselftest# Nov 21 11:50:05 am62xx systemd[1]: Stopping lldpad.service - Link Layer Discovery Protocol Agent Daemon....
-Nov 21 11:50:05 am62xx lldpad[708]: mand_bld_ttl_tlv:eth0:done:type=3 length=2 ttl=120
-Nov 21 11:50:05 am62xx lldpad[708]: basman_bld_portdesc_tlv:eth0:Port Description disabled
-Nov 21 11:50:05 am62xx lldpad[708]: basman_bld_sysname_tlv:eth0:System Name disabled
-Nov 21 11:50:05 am62xx lldpad[708]: basman_bld_sysdesc_tlv:eth0:System Description disabled
-Nov 21 11:50:05 am62xx lldpad[708]: basman_bld_syscaps_tlv:eth0:System Capabilities disabled
-Nov 21 11:50:05 am62xx lldpad[708]: basman_bld_manaddr_tlv:eth0:Management Address disabled
-Nov 21 11:50:05 am62xx lldpad[708]: basman_gettlv:eth0: failed
-Nov 21 11:50:05 am62xx lldpad[708]: send_msg: sendto = 32
-Nov 21 11:50:05 am62xx lldpad[708]: Adapter eth0 does not support DCB.
-Nov 21 11:50:05 am62xx lldpad[708]: config.c: eth0 dcb mode is OFF.
-Nov 21 11:50:05 am62xx lldpad[708]: med_bld_tlv:eth0:LLDP-MED is not enabled
-Nov 21 11:50:05 am62xx lldpad[708]: med_gettlv:eth0: failed
-Nov 21 11:50:05 am62xx lldpad[708]: set_config_setting(577):
-Nov 21 11:50:05 am62xx lldpad[708]: arg_path "tlvid00120f07.addFragSize"
-Nov 21 11:50:05 am62xx lldpad[708]: mibConstrInfoLLDPDU: port eth0 mac 01:80:C2:00:00:0E type 0.
-Nov 21 11:50:05 am62xx lldpad[708]: mand_bld_ttl_tlv:eth0:done:type=3 length=2 ttl=120
-Nov 21 11:50:05 am62xx lldpad[708]: basman_bld_portdesc_tlv:eth0:Port Description disabled
-Nov 21 11:50:05 am62xx lldpad[708]: basman_bld_sysname_tlv:eth0:System Name disabled
-Nov 21 11:50:05 am62xx lldpad[708]: basman_bld_sysdesc_tlv:eth0:System Description disabled
-Nov 21 11:50:05 am62xx lldpad[708]: basman_bld_syscaps_tlv:eth0:System Capabilities disabled
-Nov 21 11:50:05 am62xx lldpad[708]: basman_bld_manaddr_tlv:eth0:Management Address disabled
-Nov 21 11:50:05 am62xx lldpad[708]: basman_gettlv:eth0: failed
-Nov 21 11:50:05 am62xx lldpad[708]: send_msg: sendto = 32
-Nov 21 11:50:05 am62xx lldpad[708]: Adapter eth0 does not support DCB.
-Nov 21 11:50:05 am62xx lldpad[708]: config.c: eth0 dcb mode is OFF.
-Nov 21 11:50:05 am62xx lldpad[708]: med_bld_tlv:eth0:LLDP-MED is not enabled
-Nov 21 11:50:05 am62xx lldpad[708]: med_gettlv:eth0: failed
-Nov 21 11:50:05 am62xx lldpad[708]: eth0: Configured addFragSize (0) smaller than the minimum value requested by kernel (1). Using the latter
-Nov 21 11:50:05 am62xx lldpad[708]: mibConstrInfoLLDPDU: port eth0 mac 01:80:C2:00:00:0E type 0.
-Nov 21 11:50:05 am62xx lldpad[708]: mand_bld_ttl_tlv:eth0:done:type=3 length=2 ttl=120
-Nov 21 11:50:05 am62xx lldpad[708]: basman_bld_portdesc_tlv:eth0:Port Description disabled
-Nov 21 11:50:05 am62xx lldpad[708]: basman_bld_sysname_tlv:eth0:System Name disabled
-Nov 21 11:50:05 am62xx lldpad[708]: basman_bld_sysdesc_tlv:eth0:System Description disabled
-Nov 21 11:50:05 am62xx lldpad[708]: basman_bld_syscaps_tlv:eth0:System Capabilities disabled
-Nov 21 11:50:05 am62xx lldpad[708]: basman_bld_manaddr_tlv:eth0:Management Address disabled
-Nov 21 11:50:05 am62xx lldpad[708]: basman_gettlv:eth0: failed
-Nov 21 11:50:05 am62xx lldpad[708]: send_msg: sendto = 32
-Nov 21 11:50:05 am62xx lldpad[708]: Adapter eth0 does not support DCB.
-Nov 21 11:50:05 am62xx lldpad[708]: config.c: eth0 dcb mode is OFF.
-Nov 21 11:50:05 am62xx lldpad[708]: med_bld_tlv:eth0:LLDP-MED is not enabled
-Nov 21 11:50:05 am62xx lldpad[708]: med_gettlv:eth0: failed
-Nov 21 11:50:05 am62xx lldpad[708]: eth0: Configured addFragSize (0) smaller than the minimum value requested by kernel (1). Using the latter
-Nov 21 11:50:05 am62xx lldpad[708]: mibConstrInfoLLDPDU: port eth0 mac 01:80:C2:00:00:0E type 0.
-Nov 21 11:50:05 am62xx lldpad[708]: mand_bld_ttl_tlv:eth0:done:type=3 length=2 ttl=120
-Nov 21 11:50:05 am62xx lldpad[708]: basman_bld_portdesc_tlv:eth0:Port Description disabled
-Nov 21 11:50:05 am62xx lldpad[708]: basman_bld_sysname_tlv:eth0:System Name disabled
-Nov 21 11:50:05 am62xx lldpad[708]: basman_bld_sysdesc_tlv:eth0:System Description disabled
-Nov 21 11:50:05 am62xx lldpad[708]: basman_bld_syscaps_tlv:eth0:System Capabilities disabled
-Nov 21 11:50:05 am62xx lldpad[708]: basman_bld_manaddr_tlv:eth0:Management Address disabled
-Nov 21 11:50:05 am62xx lldpad[708]: basman_gettlv:eth0: failed
-Nov 21 11:50:05 am62xx lldpad[708]: send_msg: sendto = 32
-Nov 21 11:50:05 am62xx lldpad[708]: Adapter eth0 does not support DCB.
-Nov 21 11:50:05 am62xx lldpad[708]: config.c: eth0 dcb mode is OFF.
-Nov 21 11:50:05 am62xx lldpad[708]: med_bld_tlv:eth0:LLDP-MED is not enabled
-Nov 21 11:50:05 am62xx lldpad[708]: med_gettlv:eth0: failed
-Nov 21 11:50:05 am62xx lldpad[708]: eth0: Configured addFragSize (0) smaller than the minimum value requested by kernel (1). Using the latter
-Nov 21 11:50:05 am62xx lldpad[708]: Signal 15 received - terminating
-Nov 21 11:50:05 am62xx lldpad[708]: send_msg: sendto = 32
-Nov 21 11:50:05 am62xx lldpad[708]: Adapter eth4 does not support DCB.
-Nov 21 11:50:05 am62xx lldpad[708]: config.c: eth4 dcb mode is OFF.
-Nov 21 11:50:05 am62xx lldpad[708]: Send shutdown frame on port eth4
-Nov 21 11:50:05 am62xx lldpad[708]: send_msg: sendto = 32
-Nov 21 11:50:05 am62xx lldpad[708]: Adapter eth3 does not support DCB.
-Nov 21 11:50:05 am62xx lldpad[708]: config.c: eth3 dcb mode is OFF.
-Nov 21 11:50:05 am62xx lldpad[708]: Send shutdown frame on port eth3
-Nov 21 11:50:05 am62xx lldpad[708]: send_msg: sendto = 32
-Nov 21 11:50:05 am62xx lldpad[708]: Adapter eth2 does not support DCB.
-Nov 21 11:50:05 am62xx lldpad[708]: config.c: eth2 dcb mode is OFF.
-Nov 21 11:50:05 am62xx lldpad[708]: Send shutdown frame on port eth2
-Nov 21 11:50:05 am62xx lldpad[708]: send_msg: sendto = 32
-Nov 21 11:50:05 am62xx lldpad[708]: Adapter eth1 does not support DCB.
-Nov 21 11:50:05 am62xx lldpad[708]: config.c: eth1 dcb mode is OFF.
-Nov 21 11:50:05 am62xx lldpad[708]: Send shutdown frame on port eth1
-Nov 21 11:50:05 am62xx lldpad[708]: mibConstrShutdownLLDPDU: mac 01:80:C2:00:00:0E.
-Nov 21 11:50:05 am62xx lldpad[708]: mand_bld_ttl_tlv:eth1:done:type=3 length=2 ttl=120
-Nov 21 11:50:05 am62xx lldpad[708]: send_msg: sendto = 32
-Nov 21 11:50:05 am62xx lldpad[708]: Adapter eth0 does not support DCB.
-Nov 21 11:50:05 am62xx lldpad[708]: config.c: eth0 dcb mode is OFF.
-Nov 21 11:50:05 am62xx lldpad[708]: Send shutdown frame on port eth0
-Nov 21 11:50:05 am62xx lldpad[708]: mibConstrShutdownLLDPDU: mac 01:80:C2:00:00:0E.
-Nov 21 11:50:05 am62xx lldpad[708]: mand_bld_ttl_tlv:eth0:done:type=3 length=2 ttl=120
-Nov 21 11:50:05 am62xx lldpad[708]: mand_unregister:done
-Nov 21 11:50:05 am62xx lldpad[708]: basman_unregister:done
-Nov 21 1[  224.608232] am65-cpsw-nuss c000000.ethernet eth1: Link is Down
-1:50:05 am62xx lldpad[708]: dcbx_unregister: unregister dcbx complete.
-Nov 21 11:50:05 am62xx lldpad[708]: med_unregister:done
-Nov 21 11:50:05 am62xx lldpad[708]: ieee8023_unregister:done
-Nov 21 11:50:05 am62xx lldpad[708]: evb_unregister:done
-Nov 21 11:50:05 am62xx lldpad[708]: evb22_unregister:done
-Nov 21 11:50:05 am62xx lldpad[708]: vdp_unregister: done
-Nov 21 11:50:05 am62xx lldpad[708]: vdp22_unregister:done
-Nov 21 11:50:05 am62xx lldpad[708]: ecp22_remove:eth0 remove ecp
-Nov 21 11:50:05 am62xx lldpad[708]: ecp22_remove:eth1 remove ecp
-Nov 21 11:50:05 am62xx lldpad[708]: ecp22_unregister: done
-Nov 21 11:50:05 am62xx lldpad[708]: In remove_port: Found port eth4
-Nov 21 11:50:05 am62xx lldpad[708]: In remove_port: Found port eth4
-Nov 21 11:50:05 am62xx lldpad[708]: In remove_port: Found port eth3
-Nov 21 11:50:05 am62xx lldpad[708]: In remove_port: Found port eth3
-Nov 21 11:50:05 am62xx lldpad[708]: In remove_port: Found port eth2
-Nov 21 11:50:05 am62xx lldpad[708]: In remove_port: Found port eth2
-Nov 21 11:50:05 am62xx lldpad[708]: In remove_port: Found port eth1
-Nov 21 11:50:05 am62xx lldpad[708]: In remove_port: Found port eth1
-Nov 21 11:50:05 am62xx lldpad[708]: In remove_port: Found port eth0
-Nov 21 11:50:05 am62xx lldpad[708]: In remove_port: Found port eth0
-Nov 21 11:50:05 am62xx systemd[1]: lldpad.service: Deactivated successfully.
-Nov 21 11:50:05 am62xx systemd[1]: Stopped lldpad.service - Link Layer Discovery Protocol Agent Daemon..
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
