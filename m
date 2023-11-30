@@ -2,145 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92C387FFAFF
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 20:16:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57E457FFB03
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 20:17:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376324AbjK3TQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 14:16:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55934 "EHLO
+        id S1376325AbjK3TRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 14:17:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376269AbjK3TQq (ORCPT
+        with ESMTP id S232657AbjK3TRT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 14:16:46 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12A8210DF;
-        Thu, 30 Nov 2023 11:16:51 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-50bc4fe8158so1879608e87.0;
-        Thu, 30 Nov 2023 11:16:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701371809; x=1701976609; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=beTU95GN50GYTXIaXw8asjQyUJ5kn1rsDTKmhhbRSLc=;
-        b=NHOUtUQsIXFhNr31aeuq9abXTOYWWMyrKoQppF6zi9wR5FugZ9WwOw63v8gBx/NSrt
-         1p3wsarcTpXJ8UA2KIYMLjnoznHusXVrcSXbbhjXv9btn02QWplp/d+OKjfL3W53xmmX
-         wBk/SsPBUjO4Jn7E/478jr1IcQgtCy0A8McJ6TGbSslKmR77EnAylHmMO+ZQidzTF76c
-         yo29kuFJadjifDxP8qQa58pwoNrjVQLjMy2T+Lx4YMoYiInXoGXadO2GGatMpngMqkD4
-         a8N9+Oo6dqaIrUJP47j/72NV7HDcFnMM33Y0AMJon/5mbws02FTYQJo7xJ2tTC8MN8qF
-         Cpcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701371809; x=1701976609;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=beTU95GN50GYTXIaXw8asjQyUJ5kn1rsDTKmhhbRSLc=;
-        b=mONZymjPAcWH9auLmLvvBL06BB3f4VQPpiY6NdKbjsyNtOTbifWOhRgm07LPNBwXXG
-         UXTxCeS2xawqvRwQLUkrnQwS7pbXk/0CJWV1wYggEXJzp3vfC1OiJeEKt6/32sP58JKH
-         CpWYgVT1nYa7KV0ZpmX51MPwxGLxFUGF9jL8RaENm0GSkqLIpxa4fbx4I+QNsTsECO4U
-         Au8nOuXbTbpTFLJn4RpjcPYpz97NLiEknUMyJzXq5J0Ooo+e4iG+uoV0GmCeXuO385VO
-         JglbeoPkiCmxYaDWNEXiAd6WEDQI5/Qh0gBsIvfECfWfCSpFYrGL+GPh7tnMgt+ZhE/2
-         AueQ==
-X-Gm-Message-State: AOJu0YycETzd5StejUBFiGmBwGYUEb5sBovnk5nsfeCOaw6+W3qtTYEv
-        mfX3XrAAOPI7wvh/YOxnM8Q=
-X-Google-Smtp-Source: AGHT+IEjI7GCoxUOOVd+G0oM4OekkSNj6mkZDuZl+LhOwppbLSARI3DeRgkKK7Ms62A8NDUSE8hsMg==
-X-Received: by 2002:a05:6512:36cb:b0:507:9ef2:fb1c with SMTP id e11-20020a05651236cb00b005079ef2fb1cmr10846lfs.2.1701371808553;
-        Thu, 30 Nov 2023 11:16:48 -0800 (PST)
-Received: from mobilestation ([95.79.203.166])
-        by smtp.gmail.com with ESMTPSA id dx14-20020a0565122c0e00b00507a089caf6sm230827lfb.219.2023.11.30.11.16.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Nov 2023 11:16:47 -0800 (PST)
-Date:   Thu, 30 Nov 2023 22:16:45 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Yinglu Yang <yangyinglu@loongson.cn>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Aleksandar Rikalo <aleksandar.rikalo@syrmia.com>,
-        Aleksandar Rikalo <arikalo@gmail.com>,
-        Dragan Mladjenovic <dragan.mladjenovic@syrmia.com>,
-        Chao-ying Fu <cfu@wavecomp.com>, Marc Zyngier <maz@kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/7] mips: dmi: Fix early remap on MIPS32
-Message-ID: <xbkplqgv4ipnofk7hp6ws2rkqk4fsjl3y72blcdephoiocolh7@7l5p5efe7yda>
-References: <ZV9Fq1ihUm1Rn6yO@alpha.franken.de>
- <d6d7e27a-b1a1-48af-be6c-aa9097c48992@app.fastmail.com>
- <ZV94rifAIF2p9Nej@alpha.franken.de>
- <245d3985-9085-4be0-8c74-d95d06334584@app.fastmail.com>
- <3iksuovvsln3cw3xpmjd7f7xixfvwaneu4ok56fnookvyolpco@wrxxew3thgnq>
- <dfda70b6-3291-462f-bc87-06dcc87bd068@app.fastmail.com>
- <ysij22pivneyg7tk3bv3hti3tsgbzglb6pin3my7r3bokzxjj6@jrjmu45gbupr>
- <c73d9dbf-b637-47ff-ae2d-6f8987345410@app.fastmail.com>
- <3pgnihbrp5orh4tmj45fipbfoxdwzjh6uefitdpcea2vgkarcm@d56gv3areswl>
- <2148a67f-bd4f-432e-aa0d-c914a4bd5e0d@app.fastmail.com>
+        Thu, 30 Nov 2023 14:17:19 -0500
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18E711704;
+        Thu, 30 Nov 2023 11:17:25 -0800 (PST)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id B50C65C00DB;
+        Thu, 30 Nov 2023 14:17:22 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Thu, 30 Nov 2023 14:17:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
+        cc:cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm3; t=1701371842; x=1701458242; bh=iQ
+        ZWO0/diNEJkkg7lAgOL9yfv4aOzoXSzlS73uZBPds=; b=XkIPJIeqbBdVpFJqgr
+        O5fippdUxsE4FcOTUGIBEiNqIdyZMnHSp4Bla1GEtxVuoLANGMjOiIu4jNuRDANH
+        uVv8siM8MYxbiSnOfGAIj5o2LUcs/h2ZLsaI8ueHJQT/TDj/HwPSi8JmfygyQgjq
+        tBUdW0pg5qh6c3cYPA15LMll+2pSLFTE6l2zfu6ppwnD4nLDG8KWbaiLNVa/rL/6
+        tVx33Ld9rGKLAN8hJgHuGM0zEj1bLRg4saDlt3XtAC29DBPTzn/IwzeFV/vKS2bn
+        pJXFbtWgaY4Nt7RFMO22LJ5y3hqKIYn9Iejw5MbGpLufDaAqNleDhXbW8CGHA1bs
+        2Sdg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1701371842; x=1701458242; bh=iQZWO0/diNEJk
+        kg7lAgOL9yfv4aOzoXSzlS73uZBPds=; b=TPFatEdJK8CIsFYFX91uL8rjEHKnH
+        mUoOA4CvktpHgmndqfGm4/tsDRGIlZ9bZb0On6SJNIiuTvDLi1vbAs+2YrLnzmd7
+        EdyOgxPJIMoVmsfUr4/P/5o2hGB9cTLmcl46HgEKjUIvkjccX8oRLzvMBOOGblMx
+        MHz5GeZR0hUsMIz0N3ndsXGgZLIFcXsDZ0d3C8iymCqSyAk3ar8q6WOd3N2nQh2x
+        ysMFjRbg+sa9oUbYJmS8siRzg4wDGTj3FtPF/TS+DMuBRUryFQSOhb6wDBYN8zNN
+        tT/ufTjrZMeaoaJ8QQ/b5j5r/zR7e6kKCuSYH5sO+osj6UGIFp6bNEV1g==
+X-ME-Sender: <xms:wt9oZdvhF0UJT88aSoJsEBC72vkauLWCkj17QGJ7b1de7hOvqaMC7A>
+    <xme:wt9oZWcI8Ec6WkayszUm_FzTs-33ffod5l714D5VQZxgJDUTqnFkOpYE3-mOSO0Cx
+    x9dx7cZy-4DoSx_yeI>
+X-ME-Received: <xmr:wt9oZQx2FFEgc4G7GXIIRsRJ9tWC-mInBITqpo_kVgDKVuGm_lHb4uFRGi8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeijedguddvvdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefvhigt
+    hhhoucetnhguvghrshgvnhcuoehthigthhhosehthigthhhordhpihiiiigrqeenucggtf
+    frrghtthgvrhhnpeeutedttefgjeefffehffffkeejueevieefudelgeejuddtfeffteek
+    lefhleelteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
+    hmpehthigthhhosehthigthhhordhpihiiiigr
+X-ME-Proxy: <xmx:wt9oZUN3uGdisEfaexEp9Lks3p_BWRNG6AVeCtwXXHa_pl1XlFOvvA>
+    <xmx:wt9oZd-9uCxsNDp9zbJ47T56lqfpOltDbeK8WPHK5xJKubKFk4h8BQ>
+    <xmx:wt9oZUXOufGumPZQjAmO3brK0bHg4_6W7Fp3ayfJ8XAPk_f3IpRurQ>
+    <xmx:wt9oZWN6GIUYaqk3hjWhT7s1y8ykSt9gGQcFMcoyYkUCZwO2JcQDNg>
+Feedback-ID: i21f147d5:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 30 Nov 2023 14:17:20 -0500 (EST)
+Date:   Thu, 30 Nov 2023 12:17:19 -0700
+From:   Tycho Andersen <tycho@tycho.pizza>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Florian Weimer <fweimer@redhat.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        Tycho Andersen <tandersen@netflix.com>,
+        Kees Cook <keescook@chromium.org>
+Subject: Re: [RFC 1/3] pidfd: allow pidfd_open() on non-thread-group leaders
+Message-ID: <ZWjfv7ZB4M1E+GVE@tycho.pizza>
+References: <20231130163946.277502-1-tycho@tycho.pizza>
+ <874jh3t7e9.fsf@oldenburg.str.redhat.com>
+ <ZWjaSAhG9KI2i9NK@tycho.pizza>
+ <a07b7ae6-8e86-4a87-9347-e6e1a0f2ee65@efficios.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2148a67f-bd4f-432e-aa0d-c914a4bd5e0d@app.fastmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <a07b7ae6-8e86-4a87-9347-e6e1a0f2ee65@efficios.com>
+X-Spam-Status: No, score=-0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLACK autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 03:46:37PM +0000, Jiaxun Yang wrote:
+On Thu, Nov 30, 2023 at 02:00:01PM -0500, Mathieu Desnoyers wrote:
+> On 2023-11-30 13:54, Tycho Andersen wrote:
+> > On Thu, Nov 30, 2023 at 07:37:02PM +0100, Florian Weimer wrote:
+> > > * Tycho Andersen:
+> > > 
+> > > > From: Tycho Andersen <tandersen@netflix.com>
+> > > > 
+> > > > We are using the pidfd family of syscalls with the seccomp userspace
+> > > > notifier. When some thread triggers a seccomp notification, we want to do
+> > > > some things to its context (munge fd tables via pidfd_getfd(), maybe write
+> > > > to its memory, etc.). However, threads created with ~CLONE_FILES or
+> > > > ~CLONE_VM mean that we can't use the pidfd family of syscalls for this
+> > > > purpose, since their fd table or mm are distinct from the thread group
+> > > > leader's. In this patch, we relax this restriction for pidfd_open().
+> > > 
+> > > Does this mean that pidfd_getfd cannot currently be used to get
+> > > descriptors for a TID if that TID doesn't happen to share its descriptor
+> > > set with the thread group leader?
+> > 
+> > Correct, that's what I'm trying to solve.
+> > 
+> > > I'd like to offer a userspace API which allows safe stashing of
+> > > unreachable file descriptors on a service thread.
+> > 
+> > By "safe" here do you mean not accessible via pidfd_getfd()?
 > 
+> For the LTTng-UST use-case, we need to be able to create and
+> use a file descriptor from an agent thread injected within the target
+> process in a way that is safe against patterns where the application
+> blindly close all file descriptors (for-loop doing close(2),
+> closefrom(2) or closeall(2)).
 > 
-> 在2023年11月28日十一月 上午11:34，Serge Semin写道：
-> > On Mon, Nov 27, 2023 at 09:08:11PM +0000, Jiaxun Yang wrote:
-> [...]
-> >
-> > Indeed. Thanks for pointing that out. In the last days several times I
-> > was looking at that line and for some reason UNCAC_BASE seemed as
-> > CAC_BASE to me.) Based on what both IO_BASE and UNCAC_BASE are defined
-> > as of the uncached region anyway, then it should be safe for any
-> > currently supported MIPS64 (including the Loongson's) to use ioremap()
-> > in place of dmi_early_remap(). So basically my current patch in the
-> > subject won't change the method semantics. Let's not to try to fix a
-> > problem which doesn't exist then, and keep the patch as is especially
-> > seeing that the alternatives might still cause some troubles. Will you
-> > be ok with that?
+> The main issue here is that even though we could handle errors
+> (-1, errno=EBADF) in the sendmsg/recvmsg calls, re-use of a file
+> descriptor by the application can lead to data corruption, which
+> is certainly an unwanted consequence.
 > 
+> AFAIU glibc has similar requirements with respect to io_uring
+> file descriptors.
 
-> I'd say the safest option is to use CKSEG0 or TO_CAC here, 
+I see, thanks. And this introduces another problem: what if one of
+these things is a memfd, then that memory needs to be invisible to the
+process as well presumably?
 
-I would have agreed with you if MIPS didn't have that special
-_page_cachable_default variable which is undefined for some platforms
-and which might be re-defined during the boot-up process, and if
-MIPS64 didn't have ioremap_prot() always mapping to the uncached
-region.  But IMO updating ioremap_prot() currently seems more risky
-than just converting dmi_early_remap() to the uncached version
-especially seeing it won't change anything. MIPS64 always have IO
-remapped to the uncached region. MIPS32 won't be able to have cached
-mapping until VM is available, and paging and slabs are initialized.
-So on the early MIPS32 bootup stages ioremap_cache() wouldn't have
-worked anyway.
+This "invisible to the process" mapping would solve another
+longstanding problem with seccomp: handlers could copy syscall
+arguments to this safe memory area and then _CONTINUE things safely...
 
-> but I'm fine
-> with ioremap as long as the semantic remains uncached on Loongson.
-
-Ok. Thanks.
-
--Serge(y)
-
-> 
-> Thanks.
-> >
-> > -Serge(y)
-> >
-> >> 
-> [...]
-> -- 
-> - Jiaxun
+Tycho
