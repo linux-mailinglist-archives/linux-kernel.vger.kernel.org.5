@@ -2,121 +2,302 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA9367FE508
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 01:39:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67A037FE50C
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 01:41:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343841AbjK3Ajt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 19:39:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44072 "EHLO
+        id S1343833AbjK3Al1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 19:41:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231417AbjK3Ajr (ORCPT
+        with ESMTP id S229677AbjK3AlZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 19:39:47 -0500
-Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70B051A6
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 16:39:53 -0800 (PST)
-Received: by mail-oo1-xc35.google.com with SMTP id 006d021491bc7-58d439e3e15so179402eaf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 16:39:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1701304792; x=1701909592; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=dqKTf6r/9DX5X0G9N0YPszfAss74aB4UlJwKc4ipXlY=;
-        b=gJeX5uHA1xRqlJ/NiA8klcilclFAkpTYoxKBf2ye+8qryZEh2tC6Ns0dAY8FdjXziV
-         ZUDnlI8kYjSxCj9nAOh37pJd+ErExStgh7MgF5jPSpwIg0JcOyZ/+wKLRKoWBSCMbT1F
-         PxL0Jom0KbNcioSagO/WECnaxufHktzDqUznGVUXUlp7hXviyKPQPc7F9p7kwjQRN9zl
-         XKd1RWv6bCXpJ+fHMPYZLSUnKVtgMsPyq5ypXQvxsU7o7Q/0gqU2Oex6U1sjV1jpOPFs
-         AvdabnAch/SxZjfHaDOZXkcy4ooJrMuH/piV/3/s5PI3fB5FQnZc4oN/Uwuh/k/7GBQz
-         EU2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701304792; x=1701909592;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dqKTf6r/9DX5X0G9N0YPszfAss74aB4UlJwKc4ipXlY=;
-        b=PKDXWaAlCVHRK7ngM+Ix3P40IcO8ub8b0XcPCj0nuDz4dLCnFkBbB9CZdthFEmxSU7
-         H49EFxsBn4kP4nbKxFANhDh6iwZrnkmiAnerXKwA8h0lgkk6nsc4p2uB+BAtePc7bK6/
-         2oglZ9Te+cdxqT7Ns8zN7CxkGPPFhgOxRbpecMlZYNrRqGJsM0ojbH+euvdvetP0ivxu
-         SiJsIcfYo5COkylzFAZhMcCLzfGKz3tIInOE8wNcEKd0nHWOO1kCEMAO0xokCmBN8SDj
-         qacR5mGkwXGg9rkEP2mX84KxyGMg7GjEIWpuknrS0LQlT3ItqqeD2rqXU3rYG/H+ji8k
-         81gw==
-X-Gm-Message-State: AOJu0YyRpSep+OJmpqf2My0gHD04UY5s5ixflKjzbs2dsNS8k8VFQraa
-        zkFDaMHG6WbcYzKgg/JT+FUmDg==
-X-Google-Smtp-Source: AGHT+IG4kpqJkp5MuGe0QWOyJQ+HDuDWisfSFN2LiYZ3lNwDJg400B3FZHlbHx5WpKar2Jc43DZwNA==
-X-Received: by 2002:a4a:a645:0:b0:58d:6bf6:4daf with SMTP id j5-20020a4aa645000000b0058d6bf64dafmr7941560oom.2.1701304792652;
-        Wed, 29 Nov 2023 16:39:52 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-134-23-187.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.134.23.187])
-        by smtp.gmail.com with ESMTPSA id i14-20020a4aab0e000000b0057327cecdd8sm2410792oon.10.2023.11.29.16.39.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Nov 2023 16:39:52 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1r8V5r-005qzk-3H;
-        Wed, 29 Nov 2023 20:39:51 -0400
-Date:   Wed, 29 Nov 2023 20:39:51 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Joerg Roedel <joro@8bytes.org>, Christoph Hellwig <hch@lst.de>,
-        Vineet Gupta <vgupta@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-acpi@vger.kernel.org, iommu@lists.linux.dev,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH 3/7] ACPI/IORT: Handle memory address size limits as
- limits
-Message-ID: <20231130003951.GA1394392@ziepe.ca>
-References: <cover.1701268753.git.robin.murphy@arm.com>
- <2ae6199a9cf035c1defd42e48675b827f41cdc95.1701268753.git.robin.murphy@arm.com>
+        Wed, 29 Nov 2023 19:41:25 -0500
+Received: from sonic306-28.consmr.mail.ne1.yahoo.com (sonic306-28.consmr.mail.ne1.yahoo.com [66.163.189.90])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4E8FD50
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 16:41:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1701304889; bh=7PLvtj/expN3SSJOj9oZcxu2Xnd68UimqPC1esqe2P0=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=CsRcpzLWaEsNWwDxkAyGKJrnfna1N5pSnUif3rxe1mykuFIrvupFHfdoRlaVxQEjfxj27FiXSpPNKoD+q27k81+Dt3QTSi08jh1E9cB9yaiAL5ky51HH1nDryRLIhaY+yYoXDG6PJW49k0Wfj10TbtmzR+aKlJRsyCm+NvGgONUsQ/ugCdbZjXL/YbM4rr5uNmRY+/SDWqsIcU7BeKSSEd6HBsiFuNRdKf0jjGgisMMz4UgsrdAGE8feWdIjYAmx7M4DtjuXyMp8E7Js/6xRSytjPLrdp/T6He7MnxILIq3hNmdpZvaKWZsEkMNI9hElAN1f6/XCmLvAxFhZv2XWQA==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1701304889; bh=D5XgQV6+zk2gKx2BK7L1452wzoGVlK2WqfctkwXeAfi=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=lAt8+6aCouyDheEOEmOSBOdaLC84X5nEmCLYI8DgvCIPYQ6JeOUlroJ0DhBWoLK2R+fAPbBDB2UIjE14avnr/IvWgMEx1TTSMCi4/xHmC2KR95y10z+Okrxcy15+PD7Bl98G2dMmiFCIImiGaWBJrIq7MU+fdmA5D6SCVOfbGIpaJdWUzhcFlkx8sB/b0PVr6LFeGqqWF83e/uTJoYvz2zOq2sj6D37wwHgbdKerIYeC4s89IGLarjYcVYu66BY1WqxC5XoKS83f2tDqVraIaUHzyIP2U1/d9yvLXgtxNiu/Y43SF8+GTGGDKP+YOGjXcNHbUMHbbAOou+i0YoUxYg==
+X-YMail-OSG: tOKDMEEVM1mDu2RlWNcEkfYAgHtbMlN9VjNnR3JzFEBV6rn6XJcvE0CKTtEC7rT
+ jtoJ0JLkaCQjYPHHv.c.yBsNzFIEFCYyOZ1DJm6DOt_u2rY9Bdt4bw18rjyPLzcaGG_Mf9A75wZI
+ C3gOW5SE7_5cBtv3U2661pj.yrWVCx6Vvaxglcf.7D.e8uIvTCE89WL8FAP62Qz01HLcjhGwXdMX
+ HlkzDIqkpheDcmEM0co1gn0cbWLNzZBSbwUkYcAisSf1lpXrtHQ.4zEbIGBg1P2.qkozibnT4WY7
+ .GFXibh7yl0ttVpIQLipKkisyTtWnINbXtRx4CltHGVSzpq8UzxMkV83KMn4qKiABCVaXkH.mczu
+ 7YSP_HlejV5ryFCLa_BaALK5ZFgKCIHX2CPlKDEExjTQigHr_nSpRI.FsHYFXjmIA0WXY4WAHvnr
+ tCELDdoLWr7yue12D9eHHYBoEtFGtMNyzoWIWlRWMb8lefXxWvu8il4Ft0XHJp_uagBIUWfGeaj2
+ y9ihtKrvmUk7oQe7UqstRVEqo3sD1HyE0trA7CTqf4mNs3DU9_k5G1wBQbU_6E6wVvbCw.Mkzlgc
+ wphf00IK_SRekyRSRDSfqkkP4cj4vf_hLCFYkNtYvY0vD2Zz6WxvlqqCdHzxHFi_AUUtRjuw8XvZ
+ bNN4jh_0511epBOipQRBMck27lgChX4SgmYSw6NYyf9UttHoUBvdAhcz.sq7YfAn07NSTH4Rs9bJ
+ PyBo7NdTN.5PmC.lBAjKXIpYVnQQi00KZtTJy988peHAlzOo1KmMMyfMQYj5nqBEDLhc2ESpnRKg
+ I3EWST9FWlubc83RYgHYuLX_WVPDXpYlGTJ0KduSJQow6nGkZHYCNTwZ3DotFa_LEwBZZvM_oigt
+ LvvRbEmuGnpf96E1Kll2l30A16IT4CsE59ivlFkKXSTYEKkwBrgUr7mTZZPf.US0MmZGtp3JCtd4
+ 85IIETE0udFMDXXB8OyRLYarxG8YKVqEwuW2PM_qQsrrjU0LyGxGo4tdudnV1Sg0CBXhGou.XwQn
+ cuYNa0ngFaTVY6RgJR7GAJKdpW4FeQpsdIgKu9pf81Vzgt33uWVXWpJxrjfNHG3AFXfi2nJ0Zovt
+ x.nSvGmrUzlmwmKvS4WNvYTuV6UGgnxjGC1fqENRDIp8_pJZtV8JXD6vc3ey2yPhanwjjFZ2oDEN
+ 2W4UI3Kx6k00hmngzXjoCS5lGbH_iyC7CDCqKanJvgI27ksmbfYNjlsEbEqSjTtGRG7uaEdLHGnH
+ K_T9GZWHQz8StG7CKfIk.2Ed7HxXI8h5LiJklLBrrS_z0MzDK5g.6U92JXc4j6tBzm_JSbJ6qaVm
+ MAYfjspn409CTmtbfhzIDXWV7K9RSyrpEwLD5KiexSn3JYdXT3ttmvrMZe.NmeQRegHHutftm8qR
+ E3pahbb0mhqSeKHfZjbqfAU1dbhOPX245NYRVpN1tRaLb3jgtYIyP5Hl80izt1QuIJKfgj.u3FZs
+ ZUyd5CAYug_Osbabb0AuVSxu7GkygJLIDYGeSiIP8HXY3Oh0i5ZVXHMGF6ek4LSldjL9Y4K9N6Gw
+ Y9F_prvGglzV2xxWucQmS48UEJSfLmMZ5gLrIu8ZlCJ6MmtM9fIwBjRJ.Jq7GOZzBx34saW0JyQT
+ 5UoFb7KsAkMUYdS_.ysL4.7DUn3aCSGA3VMnnFgj8J0KS4iRCE7k32jKdN_9O6Voylf42j.s0flG
+ wv.Vt1x.TVKh0qT_1VQ58.6IlT5GMEHdVA5Z6c_dSMB.y9cCbz2JzJ3HYJ1WtSnynZy8Dq.kFzQT
+ zi_QF5MRqJl8SMzQYhltFmtzMg2Ij8Hl0Cp5R0DztCdz1LCBjSWtzAZmQGNcuyV1o22z9TOs_N4t
+ TnQ2mCQkNNDQQO79lsfuWlgMFFZT3Bup_eSs4sAt7RKjcW02MOuF06gY.b6diVSfSbibAP3RjVBD
+ 6j4RYybQsad1kuiPRer6d0OmOF.RBCfIX4_V6cKZNlGRxI..fpaQB4x8gaiE5xswqvO66T9ukOiB
+ hqWwKjG45pOr_riyuFxiExMYfPo7_eH0cqI3cuqo2xKVKqYm4K3r5.XSrON3D7GfzQhLjXJxqaSK
+ hwGR.RdF0pzFX3caC.HWdz9.6ekoYP4KL7GMo3qiV6N1O1onL_9vpRg7dD9SuevCfreuJQlSXk45
+ Yjn77GilgOt3oLMK_JQWyR.HY1ieCuL87xrGoxZu0pKKubg.iERAAOKsmHWMgmPwyQiqMw6Ewq1o
+ lfd6uBGpSe6aA7I5JhPIyJjoZQ4GLJccACkrPFiptOvFe9HD75Z23csqE
+X-Sonic-MF: <casey@schaufler-ca.com>
+X-Sonic-ID: f6981e06-aa01-43d8-bf3e-e42b9737a592
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic306.consmr.mail.ne1.yahoo.com with HTTP; Thu, 30 Nov 2023 00:41:29 +0000
+Received: by hermes--production-gq1-5cf8f76c44-gkdjg (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 60b9cc94d738a195be44ede07002c82f;
+          Thu, 30 Nov 2023 00:41:28 +0000 (UTC)
+Message-ID: <366a6e5f-d43d-4266-8421-a8a05938a8fd@schaufler-ca.com>
+Date:   Wed, 29 Nov 2023 16:41:26 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2ae6199a9cf035c1defd42e48675b827f41cdc95.1701268753.git.robin.murphy@arm.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 23/23] integrity: Switch from rbtree to LSM-managed
+ blob for integrity_iint_cache
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
+        Paul Moore <paul@paul-moore.com>
+Cc:     viro@zeniv.linux.org.uk, brauner@kernel.org,
+        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
+        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+        jmorris@namei.org, serge@hallyn.com, zohar@linux.ibm.com,
+        dmitry.kasatkin@gmail.com, dhowells@redhat.com, jarkko@kernel.org,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        mic@digikod.net, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
+        Casey Schaufler <casey@schaufler-ca.com>
+References: <20231107134012.682009-24-roberto.sassu@huaweicloud.com>
+ <17befa132379d37977fc854a8af25f6d.paul@paul-moore.com>
+ <2084adba3c27a606cbc5ed7b3214f61427a829dd.camel@huaweicloud.com>
+ <CAHC9VhTTKac1o=RnQadu2xqdeKH8C_F+Wh4sY=HkGbCArwc8JQ@mail.gmail.com>
+ <b6c51351be3913be197492469a13980ab379e412.camel@huaweicloud.com>
+ <CAHC9VhSAryQSeFy0ZMexOiwBG-YdVGRzvh58=heH916DftcmWA@mail.gmail.com>
+ <90eb8e9d-c63e-42d6-b951-f856f31590db@huaweicloud.com>
+Content-Language: en-US
+From:   Casey Schaufler <casey@schaufler-ca.com>
+In-Reply-To: <90eb8e9d-c63e-42d6-b951-f856f31590db@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Mailer: WebService/1.1.21896 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 05:43:00PM +0000, Robin Murphy wrote:
-> Return the Root Complex/Named Component memory address size limit as an
-> inclusive limit value, rather than an exclusive size.  This saves us
-> having to special-case 64-bit overflow, and simplifies our caller too.
-> 
-> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
-> ---
->  drivers/acpi/arm64/dma.c  |  9 +++------
->  drivers/acpi/arm64/iort.c | 18 ++++++++----------
->  include/linux/acpi_iort.h |  4 ++--
->  3 files changed, 13 insertions(+), 18 deletions(-)
+On 11/29/2023 10:46 AM, Roberto Sassu wrote:
+> On 11/29/2023 6:22 PM, Paul Moore wrote:
+>> On Wed, Nov 29, 2023 at 7:28 AM Roberto Sassu
+>> <roberto.sassu@huaweicloud.com> wrote:
+>>>
+>>> On Mon, 2023-11-20 at 16:06 -0500, Paul Moore wrote:
+>>>> On Mon, Nov 20, 2023 at 3:16 AM Roberto Sassu
+>>>> <roberto.sassu@huaweicloud.com> wrote:
+>>>>> On Fri, 2023-11-17 at 15:57 -0500, Paul Moore wrote:
+>>>>>> On Nov  7, 2023 Roberto Sassu <roberto.sassu@huaweicloud.com> wrote:
+>>>>>>>
+>>>>>>> Before the security field of kernel objects could be shared
+>>>>>>> among LSMs with
+>>>>>>> the LSM stacking feature, IMA and EVM had to rely on an
+>>>>>>> alternative storage
+>>>>>>> of inode metadata. The association between inode metadata and
+>>>>>>> inode is
+>>>>>>> maintained through an rbtree.
+>>>>>>>
+>>>>>>> Because of this alternative storage mechanism, there was no need
+>>>>>>> to use
+>>>>>>> disjoint inode metadata, so IMA and EVM today still share them.
+>>>>>>>
+>>>>>>> With the reservation mechanism offered by the LSM
+>>>>>>> infrastructure, the
+>>>>>>> rbtree is no longer necessary, as each LSM could reserve a space
+>>>>>>> in the
+>>>>>>> security blob for each inode. However, since IMA and EVM share the
+>>>>>>> inode metadata, they cannot directly reserve the space for them.
+>>>>>>>
+>>>>>>> Instead, request from the 'integrity' LSM a space in the
+>>>>>>> security blob for
+>>>>>>> the pointer of inode metadata (integrity_iint_cache structure).
+>>>>>>> The other
+>>>>>>> reason for keeping the 'integrity' LSM is to preserve the
+>>>>>>> original ordering
+>>>>>>> of IMA and EVM functions as when they were hardcoded.
+>>>>>>>
+>>>>>>> Prefer reserving space for a pointer to allocating the
+>>>>>>> integrity_iint_cache
+>>>>>>> structure directly, as IMA would require it only for a subset of
+>>>>>>> inodes.
+>>>>>>> Always allocating it would cause a waste of memory.
+>>>>>>>
+>>>>>>> Introduce two primitives for getting and setting the pointer of
+>>>>>>> integrity_iint_cache in the security blob, respectively
+>>>>>>> integrity_inode_get_iint() and integrity_inode_set_iint(). This
+>>>>>>> would make
+>>>>>>> the code more understandable, as they directly replace rbtree
+>>>>>>> operations.
+>>>>>>>
+>>>>>>> Locking is not needed, as access to inode metadata is not
+>>>>>>> shared, it is per
+>>>>>>> inode.
+>>>>>>>
+>>>>>>> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+>>>>>>> Reviewed-by: Casey Schaufler <casey@schaufler-ca.com>
+>>>>>>> Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
+>>>>>>> ---
+>>>>>>>   security/integrity/iint.c      | 71
+>>>>>>> +++++-----------------------------
+>>>>>>>   security/integrity/integrity.h | 20 +++++++++-
+>>>>>>>   2 files changed, 29 insertions(+), 62 deletions(-)
+>>>>>>>
+>>>>>>> diff --git a/security/integrity/iint.c b/security/integrity/iint.c
+>>>>>>> index 882fde2a2607..a5edd3c70784 100644
+>>>>>>> --- a/security/integrity/iint.c
+>>>>>>> +++ b/security/integrity/iint.c
+>>>>>>> @@ -231,6 +175,10 @@ static int __init integrity_lsm_init(void)
+>>>>>>>      return 0;
+>>>>>>>   }
+>>>>>>>
+>>>>>>> +struct lsm_blob_sizes integrity_blob_sizes __ro_after_init = {
+>>>>>>> +   .lbs_inode = sizeof(struct integrity_iint_cache *),
+>>>>>>> +};
+>>>>>>
+>>>>>> I'll admit that I'm likely missing an important detail, but is there
+>>>>>> a reason why you couldn't stash the integrity_iint_cache struct
+>>>>>> directly in the inode's security blob instead of the pointer?  For
+>>>>>> example:
+>>>>>>
+>>>>>>    struct lsm_blob_sizes ... = {
+>>>>>>      .lbs_inode = sizeof(struct integrity_iint_cache),
+>>>>>>    };
+>>>>>>
+>>>>>>    struct integrity_iint_cache *integrity_inode_get(inode)
+>>>>>>    {
+>>>>>>      if (unlikely(!inode->isecurity))
+>>>>>>        return NULL;
+>>>>>>      return inode->i_security + integrity_blob_sizes.lbs_inode;
+>>>>>>    }
+>>>>>
+>>>>> It would increase memory occupation. Sometimes the IMA policy
+>>>>> encompasses a small subset of the inodes. Allocating the full
+>>>>> integrity_iint_cache would be a waste of memory, I guess?
+>>>>
+>>>> Perhaps, but if it allows us to remove another layer of dynamic memory
+>>>> I would argue that it may be worth the cost.  It's also worth
+>>>> considering the size of integrity_iint_cache, while it isn't small, it
+>>>> isn't exactly huge either.
+>>>>
+>>>>> On the other hand... (did not think fully about that) if we embed the
+>>>>> full structure in the security blob, we already have a mutex
+>>>>> available
+>>>>> to use, and we don't need to take the inode lock (?).
+>>>>
+>>>> That would be excellent, getting rid of a layer of locking would be
+>>>> significant.
+>>>>
+>>>>> I'm fully convinced that we can improve the implementation
+>>>>> significantly. I just was really hoping to go step by step and not
+>>>>> accumulating improvements as dependency for moving IMA and EVM to the
+>>>>> LSM infrastructure.
+>>>>
+>>>> I understand, and I agree that an iterative approach is a good idea, I
+>>>> just want to make sure we keep things tidy from a user perspective,
+>>>> i.e. not exposing the "integrity" LSM when it isn't required.
+>>>
+>>> Ok, I went back to it again.
+>>>
+>>> I think trying to separate integrity metadata is premature now, too
+>>> many things at the same time.
+>>
+>> I'm not bothered by the size of the patchset, it is more important
+>> that we do The Right Thing.  I would like to hear in more detail why
+>> you don't think this will work, I'm not interested in hearing about
+>> difficult it may be, I'm interested in hearing about what challenges
+>> we need to solve to do this properly.
+>
+> The right thing in my opinion is to achieve the goal with the minimal
+> set of changes, in the most intuitive way.
+>
+> Until now, there was no solution that could achieve the primary goal
+> of this patch set (moving IMA and EVM to the LSM infrastructure) and,
+> at the same time, achieve the additional goal you set of removing the
+> 'integrity' LSM.
+>
+> If you see the diff, the changes compared to v5 that was already
+> accepted by Mimi are very straightforward. If the assumption I made
+> that in the end the 'ima' LSM could take over the role of the
+> 'integrity' LSM, that for me is the preferable option.
+>
+> Given that the patch set is not doing any design change, but merely
+> moving calls and storing pointers elsewhere, that leaves us with the
+> option of thinking better what to do next, including like you
+> suggested to make IMA and EVM use disjoint metadata.
+>
+>>> I started to think, does EVM really need integrity metadata or it can
+>>> work without?
+>>>
+>>> The fact is that CONFIG_IMA=n and CONFIG_EVM=y is allowed, so we have
+>>> the same problem now. What if we make IMA the one that manages
+>>> integrity metadata, so that we can remove the 'integrity' LSM?
+>>
+>> I guess we should probably revisit the basic idea of if it even makes
+>> sense to enable EVM without IMA?  Should we update the Kconfig to
+>> require IMA when EVM is enabled?
+>
+> That would be up to Mimi. Also this does not seem the main focus of
+> the patch set.
+>
+>>> Regarding the LSM order, I would take Casey's suggestion of introducing
+>>> LSM_ORDER_REALLY_LAST, for EVM.
+>>
+>> Please understand that I really dislike that we have imposed ordering
+>> constraints at the LSM layer, but I do understand the necessity (the
+>> BPF LSM ordering upsets me the most).  I really don't want to see us
+>> make things worse by adding yet another ordering bucket, I would
+>> rather that we document it well and leave it alone ... basically treat
+>> it like the BPF LSM (grrrrrr).
+>
+> Uhm, that would not be possible right away (the BPF LSM is mutable),
+> remember that we defined LSM_ORDER_LAST so that an LSM can be always
+> enable and placed as last (requested by Mimi)?
 
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+It would be nice if the solution directly addresses the problem.
+EVM needs to be after the LSMs that use xattrs, not after all LSMs.
+I suggested LSM_ORDER_REALLY_LAST in part to identify the notion as
+unattractive.
 
-Jason
+You could add an element to lsm_info:
+
+	u64 *follows;
+
+which can be initialized to a list of LSM_ID values that this LSM
+cannot precede. LSM_ID_CAPABILITY would be included by all other
+LSMs, either implicitly or explicitly. EVM would include all the
+LSMs that use xattrs in the list.
+
+	static u64 evm_follow_list[] = {
+		LSM_ID_CAPABILITY,
+		LSM_ID_SELINUX,
+		LSM_ID_SMACK,
+		...
+	};
+
+		...
+		.follows = evm_follow_list;
+		...
+
+>
+> Thanks
+>
+> Roberto
+>
