@@ -2,59 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA5057FEE78
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 13:01:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E39037FEE7C
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 13:03:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345339AbjK3MBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 07:01:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36442 "EHLO
+        id S1345224AbjK3MDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 07:03:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345305AbjK3MBC (ORCPT
+        with ESMTP id S1345206AbjK3MDq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 07:01:02 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E394E10E6;
-        Thu, 30 Nov 2023 04:01:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701345666; x=1732881666;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=ZixJZq2C5Em0LPUyj1YLbf7Mo+UhBMXQq3SSosCyiFE=;
-  b=iGtsfSwcOzds0x6FVM+gPzE/Q2EeBn5p9cSbwXlNiio3doKekaJ8zdG8
-   7wNGa6EstXW4abpHwJ4hgyClYJb0CMRPCPIQz0rYM8Dv94ontmFZAP4a5
-   dbhOMBKwiy2JuPiK+jqs+JfKXXQRwEGHFf4Fs9ErEqUfXHaCSYnqbOvcb
-   EyfbNXXunBPSuVbtwXSK0JOeiAO5mLRbxbCkNfAUP0A81V3Hvph5amAC7
-   LPMxg8uSyGcmamOsamb9ApYr0PyQ2NL7l/qhzTcQrMm24mAhQPIcYG3Ql
-   3peeV/1bu9k/IrNu2LM1DM+SYvjYrjYw3HmfVA/ntvaCrg+igiDXpatRJ
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="302983"
-X-IronPort-AV: E=Sophos;i="6.04,237,1695711600"; 
-   d="scan'208";a="302983"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 04:01:06 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="839779672"
-X-IronPort-AV: E=Sophos;i="6.04,237,1695711600"; 
-   d="scan'208";a="839779672"
-Received: from bergler-mobl.ger.corp.intel.com ([10.249.33.30])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 04:01:03 -0800
-Date:   Thu, 30 Nov 2023 14:01:00 +0200 (EET)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-cc:     Hans de Goede <hdegoede@redhat.com>, markgross@kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 4/6] platform/x86/intel/tpmi: Move TPMI ID definitions
-In-Reply-To: <20231128185605.3027653-5-srinivas.pandruvada@linux.intel.com>
-Message-ID: <35f3ae1d-d714-69c2-6447-eba312c712c1@linux.intel.com>
-References: <20231128185605.3027653-1-srinivas.pandruvada@linux.intel.com> <20231128185605.3027653-5-srinivas.pandruvada@linux.intel.com>
+        Thu, 30 Nov 2023 07:03:46 -0500
+Received: from mail5.25mail.st (mail5.25mail.st [74.50.62.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 181F8D40;
+        Thu, 30 Nov 2023 04:03:53 -0800 (PST)
+Received: from localhost (91-158-86-216.elisa-laajakaista.fi [91.158.86.216])
+        by mail5.25mail.st (Postfix) with ESMTPSA id 9265660513;
+        Thu, 30 Nov 2023 12:03:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=atomide.com;
+        s=25mailst; t=1701345832;
+        bh=ZB+5YYefmO6mtWWWUgT4TJQgoKAu1WOumvl/X7BvrBE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uWAXf+L0fZHwcUkdeXJ6TRA8x43D22SAkOSHBWlh89dXu1bUme9JHQl9PzlKynOSP
+         jgi0KRketGm1OXD8U2e5Q/bkjBgQ4lYicWaJ+6an3FPbY/uXBaHKepdfxqTgbi48w8
+         Gr6I2xBkyRDOKOvt4BbKDh8sGMioP0ApjlJLNQKXblGD+UNZtlSWJ4jQb62Jvk92bD
+         9OLjFQA5oZUtjtbOmAXyJ1Ziqo+INeoFm+ET0w8I770+O+0GJ9rKUG8RrWKcq5Jm74
+         sE4KmR1NA3PMrInIOuLEvx851tSthWF6VjG9C9wgkehqeOXHkTGUpDb2PoJvwcoAHM
+         6cT5uwfm1gl7w==
+Date:   Thu, 30 Nov 2023 14:03:22 +0200
+From:   Tony Lindgren <tony@atomide.com>
+To:     Andreas Kemnade <andreas@kemnade.info>
+Cc:     dmitry.torokhov@gmail.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        lee@kernel.org, bcousson@baylibre.com, mturquette@baylibre.com,
+        sboyd@kernel.org, linux-input@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-clk@vger.kernel.org
+Subject: Re: [PATCH v4 5/5] ARM: dts: omap4-embt2ws: enable 32K clock on WLAN
+Message-ID: <20231130120322.GC5169@atomide.com>
+References: <20230916100515.1650336-1-andreas@kemnade.info>
+ <20230916100515.1650336-6-andreas@kemnade.info>
+ <20231007065330.GP34982@atomide.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-904996486-1701345664=:1808"
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231007065330.GP34982@atomide.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,T_SPF_PERMERROR autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,75 +56,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
---8323329-904996486-1701345664=:1808
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: 8BIT
-
-On Tue, 28 Nov 2023, Srinivas Pandruvada wrote:
-
-> Move TPMI ID definitions to common include file. In this way other
-> feature drivers don't have to redefine.
+* Tony Lindgren <tony@atomide.com> [231007 06:53]:
+> * Andreas Kemnade <andreas@kemnade.info> [230916 13:05]:
+> > WLAN did only work if clock was left enabled by the original system,
+> > so make it fully enable the needed resources itself.
 > 
-> Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-> ---
->  drivers/platform/x86/intel/tpmi.c | 13 -------------
->  include/linux/intel_tpmi.h        | 13 +++++++++++++
->  2 files changed, 13 insertions(+), 13 deletions(-)
-> 
-> diff --git a/drivers/platform/x86/intel/tpmi.c b/drivers/platform/x86/intel/tpmi.c
-> index 44773c210324..14575da91d2c 100644
-> --- a/drivers/platform/x86/intel/tpmi.c
-> +++ b/drivers/platform/x86/intel/tpmi.c
-> @@ -176,19 +176,6 @@ struct tpmi_feature_state {
->  	u32 locked:1;
->  } __packed;
->  
-> -/*
-> - * List of supported TMPI IDs.
-> - * Some TMPI IDs are not used by Linux, so the numbers are not consecutive.
-> - */
-> -enum intel_tpmi_id {
-> -	TPMI_ID_RAPL = 0, /* Running Average Power Limit */
-> -	TPMI_ID_PEM = 1, /* Power and Perf excursion Monitor */
-> -	TPMI_ID_UNCORE = 2, /* Uncore Frequency Scaling */
-> -	TPMI_ID_SST = 5, /* Speed Select Technology */
-> -	TPMI_CONTROL_ID = 0x80, /* Special ID for getting feature status */
-> -	TPMI_INFO_ID = 0x81, /* Special ID for PCI BDF and Package ID information */
-> -};
-> -
->  /*
->   * The size from hardware is in u32 units. This size is from a trusted hardware,
->   * but better to verify for pre silicon platforms. Set size to 0, when invalid.
-> diff --git a/include/linux/intel_tpmi.h b/include/linux/intel_tpmi.h
-> index a240e15ef77f..6c31768cdb83 100644
-> --- a/include/linux/intel_tpmi.h
-> +++ b/include/linux/intel_tpmi.h
-> @@ -12,6 +12,19 @@
->  #define TPMI_MINOR_VERSION(val)	FIELD_GET(GENMASK(4, 0), val)
->  #define TPMI_MAJOR_VERSION(val)	FIELD_GET(GENMASK(7, 5), val)
->  
-> +/*
-> + * List of supported TMPI IDs.
-> + * Some TMPI IDs are not used by Linux, so the numbers are not consecutive.
-> + */
-> +enum intel_tpmi_id {
-> +	TPMI_ID_RAPL = 0, /* Running Average Power Limit */
-> +	TPMI_ID_PEM = 1, /* Power and Perf excursion Monitor */
-> +	TPMI_ID_UNCORE = 2, /* Uncore Frequency Scaling */
-> +	TPMI_ID_SST = 5, /* Speed Select Technology */
-> +	TPMI_CONTROL_ID = 0x80, /* Special ID for getting feature status */
-> +	TPMI_INFO_ID = 0x81, /* Special ID for PCI BDF and Package ID information */
-> +};
+> Seems applying this dts change before the clock patch is applied
+> would break wlan so please let me know when this is safe to apply.
 
-While at it, could you align the comments to start at the same column so 
-it would slightly less messy to read.
+Applying into omap-for-v6.8/dt thanks.
 
-Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-
--- 
- i.
-
---8323329-904996486-1701345664=:1808--
+Tony
