@@ -2,63 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E51A27FEC46
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 10:54:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00FC87FEC49
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 10:54:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235107AbjK3JyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 04:54:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58450 "EHLO
+        id S235167AbjK3JyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 04:54:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235103AbjK3JyB (ORCPT
+        with ESMTP id S229462AbjK3JyP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 04:54:01 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DABC1735
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 01:54:01 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-50bce40bc4aso497150e87.2
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 01:54:01 -0800 (PST)
+        Thu, 30 Nov 2023 04:54:15 -0500
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9ACB19AE
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 01:54:08 -0800 (PST)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-40b474c925bso4505285e9.3
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 01:54:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701338040; x=1701942840; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1701338047; x=1701942847; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:organization:autocrypt
          :references:cc:to:content-language:subject:reply-to:from:user-agent
          :mime-version:date:message-id:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=ypfBE2mUwRlOk1/UJSC/vFHOZBQNyijLp08IOFnj5HA=;
-        b=SBDZlCezLaDGrABDmgoAYMrQ5Sp0fC18n1xz8DYlUoRZ1Qv/BfVbRpzYVlLTs/OyaI
-         Myi8KMFzERrmLYt3vDjzjxU4k5F2WigL7SP8kQJQhQJKd9evJ11wO4PgBBfGV37zX9sI
-         9eKj0/VAg48tnD6SjC+cN8vBgLra0A5phSReQHVs2VQrg2tjwVzn+W+olSD3sDXPsKTr
-         p2QIILBY+s4nrFlGqZQA0vcZqRAGEtZN7NNE4gAVtJ0zWBjrp3MX455cW0A+vqIdMDgy
-         NysCHS5x+FatvWNt6ly7vVjJ6mAnGRlRdD8dokcGmwFcc2pV3jLJ9kXFpOE8RBhCJtds
-         0Jjg==
+        bh=oFnK2W1R2fhcw00BqzFHQ4o1k7qynf7VtO0VZ35BT6I=;
+        b=JeH+rs34eKDJrK4HSjaCddAyYFF0L/cQpDuNv+AO0an3MwfJ2nPgxin4Zs7YWpnheN
+         bEIZKA5siKq/yI0Xpbee3g9DEkkE6/xk41fKa72VwhpxW4qxxONM8F9GoOHI4TKeLzxb
+         ZYWHRzDm3BqrZmd88r3AGmhbG2bAMRvBhwSq4MYWggDDjivyE+ICrrI6mgnNO2HQ0joc
+         dlamnsN2MIiQ4TGWoqYRJwEfry+m61UUs1ryC6WkpCBZcVrHcWJqDerf1/GGtDrvYTKW
+         Vd5+TupBjhctDYl+/9K2TksZVo4oJqM5Unx1T2NXnK3UupyWcW+rVkZUXZBvvJQxMchq
+         z3Ew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701338040; x=1701942840;
+        d=1e100.net; s=20230601; t=1701338047; x=1701942847;
         h=content-transfer-encoding:in-reply-to:organization:autocrypt
          :references:cc:to:content-language:subject:reply-to:from:user-agent
          :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=ypfBE2mUwRlOk1/UJSC/vFHOZBQNyijLp08IOFnj5HA=;
-        b=O28e/hu9Dkt0pWo8P3XAZs/+gg952YkcBebtHSCoXIU7TxioE7QJSmGANXcBYE7IoB
-         evf/kbeKYPdbcJqUUj1fRjoY0Jzt3MzQIxBzLaSKSXJJVdDY8lkeO/rjznllsYIwSp5y
-         Tkg4inqdi3OCNXPvUB88DlD7vWftdBXQqRaSA6qTKmDwOyW1FzoJEoZnRJ06EHFVKCZ1
-         ggN3ZAo0Gt5gfCUiaZutC8Zq7pBB/CvCsfFCpjcF+pZt9LSVI86Ui1xJqXWo4BB7fkSm
-         TlETDJnP/SmOdZ5H+lhLwHZeS91vtBA+s2JPGQrXAJAoNBxLMpDTG/hcqDMPMfom91yj
-         eDcQ==
-X-Gm-Message-State: AOJu0YxhHqmNZ2yn+LdZ0CIf8tCYxQlxd955avboYg88L1P5+442TL5/
-        jgb5Ei7BVBBI8fRzuUAj51SOcA==
-X-Google-Smtp-Source: AGHT+IFQF0CXVcTmNFy629odrwl/+5IqbhhxIfzAGd022vGwwKFmQ/6DCgniBrfFH0RwMSsmADJpjQ==
-X-Received: by 2002:ac2:52ba:0:b0:50b:bd23:75e0 with SMTP id r26-20020ac252ba000000b0050bbd2375e0mr4614022lfm.35.1701338039886;
-        Thu, 30 Nov 2023 01:53:59 -0800 (PST)
+        bh=oFnK2W1R2fhcw00BqzFHQ4o1k7qynf7VtO0VZ35BT6I=;
+        b=TQSal0A7shY69y+3e3h1qtK+ZjnoHjJUaI7+VG8OJ47xTVkdIb5lw/UxSU+Ot91njv
+         P8FAhOsxhGJJwQi7dFQ6In+wbbx1IZ050ZsZLfxt4tTE7zWxlkzb/97WdUwE2vc3Wj/U
+         hIKn/HXYblqQ1tIx/CZNYaquEiZ66jUnRdbmaNP9oIyiW88Q2aKzUJ74Txi3H5vg7CfV
+         KpmUDqYTEjHJ20hnWUfXJR6MpHMda5q8EPGmAmhJBhLiRV5YZke8WlBnW1tf8D5RX78U
+         nh4rRQBerMvVx2YNDv4kke8N+lFyGzzGbzqZs6itJd3W9+Dz2K2BpckdA2IQwOh8gvo3
+         266A==
+X-Gm-Message-State: AOJu0YxeVDz1EoayAgNwKtcKaZuear31yPmIV61QZO97ncimwxmCZVlT
+        uyKWuDPy2NDrY3Qt+pjEw6YQAA==
+X-Google-Smtp-Source: AGHT+IERbAR5kCEXoFWKv930fgPayDnjMttXIi85mFVhsgzWECqO8UigNd0v3U/lwOMValdiRaGRQA==
+X-Received: by 2002:a05:600c:1c1c:b0:40b:37eb:900c with SMTP id j28-20020a05600c1c1c00b0040b37eb900cmr13788686wms.6.1701338046906;
+        Thu, 30 Nov 2023 01:54:06 -0800 (PST)
 Received: from ?IPV6:2a01:e0a:982:cbb0:41c9:3acd:a6e2:5242? ([2a01:e0a:982:cbb0:41c9:3acd:a6e2:5242])
-        by smtp.gmail.com with ESMTPSA id p36-20020a05600c1da400b0040b478da760sm1358964wms.48.2023.11.30.01.53.58
+        by smtp.gmail.com with ESMTPSA id p36-20020a05600c1da400b0040b478da760sm1358964wms.48.2023.11.30.01.54.05
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Nov 2023 01:53:59 -0800 (PST)
-Message-ID: <45fcc388-d0d8-49fe-bb51-d5f8f33236ad@linaro.org>
-Date:   Thu, 30 Nov 2023 10:53:58 +0100
+        Thu, 30 Nov 2023 01:54:06 -0800 (PST)
+Message-ID: <690b7dbd-3165-4aa5-af85-1a1eaa12d176@linaro.org>
+Date:   Thu, 30 Nov 2023 10:54:05 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 From:   Neil Armstrong <neil.armstrong@linaro.org>
 Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH 5/6] arm64: dts: qcom: sm8550-mtp: Enable the A740 GPU
+Subject: Re: [PATCH 6/6] arm64: dts: qcom: sm8450-hdk: Enable the A730 GPU
 Content-Language: en-US, fr
 To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
         Will Deacon <will@kernel.org>,
@@ -75,7 +75,7 @@ Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-msm@vger.kernel.org
 References: <20231127-topic-a7xx_dt-v1-0-a228b8122ebf@linaro.org>
- <20231127-topic-a7xx_dt-v1-5-a228b8122ebf@linaro.org>
+ <20231127-topic-a7xx_dt-v1-6-a228b8122ebf@linaro.org>
 Autocrypt: addr=neil.armstrong@linaro.org; keydata=
  xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
  GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
@@ -101,7 +101,7 @@ Autocrypt: addr=neil.armstrong@linaro.org; keydata=
  4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
  QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
 Organization: Linaro Developer Services
-In-Reply-To: <20231127-topic-a7xx_dt-v1-5-a228b8122ebf@linaro.org>
+In-Reply-To: <20231127-topic-a7xx_dt-v1-6-a228b8122ebf@linaro.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -119,28 +119,28 @@ On 27/11/2023 17:20, Konrad Dybcio wrote:
 > 
 > Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 > ---
->   arch/arm64/boot/dts/qcom/sm8550-mtp.dts | 8 ++++++++
+>   arch/arm64/boot/dts/qcom/sm8450-hdk.dts | 8 ++++++++
 >   1 file changed, 8 insertions(+)
 > 
-> diff --git a/arch/arm64/boot/dts/qcom/sm8550-mtp.dts b/arch/arm64/boot/dts/qcom/sm8550-mtp.dts
-> index 9a70875028b7..52244e9bfdee 100644
-> --- a/arch/arm64/boot/dts/qcom/sm8550-mtp.dts
-> +++ b/arch/arm64/boot/dts/qcom/sm8550-mtp.dts
-> @@ -512,6 +512,14 @@ vreg_l3g_1p2: ldo3 {
->   	};
+> diff --git a/arch/arm64/boot/dts/qcom/sm8450-hdk.dts b/arch/arm64/boot/dts/qcom/sm8450-hdk.dts
+> index 20153d08edde..a20d5d76af35 100644
+> --- a/arch/arm64/boot/dts/qcom/sm8450-hdk.dts
+> +++ b/arch/arm64/boot/dts/qcom/sm8450-hdk.dts
+> @@ -580,6 +580,14 @@ &dispcc {
+>   	status = "okay";
 >   };
 >   
 > +&gpu {
 > +	status = "okay";
 > +
 > +	zap-shader {
-> +		firmware-name = "qcom/sm8550/a740_zap.mbn";
+> +		firmware-name = "qcom/sm8450/a730_zap.mbn";
 > +	};
 > +};
 > +
->   &i2c_master_hub_0 {
+>   &i2c9 {
+>   	clock-frequency = <400000>;
 >   	status = "okay";
->   };
 > 
 
 Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
