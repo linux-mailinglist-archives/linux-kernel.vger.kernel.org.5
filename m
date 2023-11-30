@@ -2,127 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B70907FF782
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 17:57:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 593207FF66D
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 17:42:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346271AbjK3Q5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 11:57:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50640 "EHLO
+        id S232183AbjK3QmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 11:42:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346241AbjK3Q50 (ORCPT
+        with ESMTP id S231919AbjK3QmD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 11:57:26 -0500
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57EE51996;
-        Thu, 30 Nov 2023 08:57:28 -0800 (PST)
-Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-33318b866a0so1003527f8f.3;
-        Thu, 30 Nov 2023 08:57:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701363447; x=1701968247; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :content-language:subject:reply-to:user-agent:mime-version:date
-         :message-id:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=xRmOmaiD2kpaM1pa5qvtyElKbVBnZY9abn/OkZ1NttY=;
-        b=gPUx47cyyFgzqfTZK0pxbvbmvI2RqEcVelVxA2d1wYIpUoxcM/SIZ2ePnUwtoEEntw
-         e91K+20Q/VYn+o0cqCTrBDBSD7+QxA61YmLzXNnk8o1jUV7euZaylHdqPWSkFIu8TZq9
-         Uz/cqnU4UFmkcztdwOM/pB5CwIdi/0EDtyG7+6Lbkbd4ROFTGA3FWMwey65Z/8yMOKC8
-         0TjwZZh8h2mWbCP2nSYu8Yc0UiCRNQeQTRcEZtC81pfR4aQERNIjHwVVPWvvOkUEs7nq
-         jV/QVc/TmUWvi/jMZh0bdRmeQ2CEQPUaR86nYNPk34pVSN6IibP8+hS8+Fm/BYuKgzOo
-         xP5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701363447; x=1701968247;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :content-language:subject:reply-to:user-agent:mime-version:date
-         :message-id:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xRmOmaiD2kpaM1pa5qvtyElKbVBnZY9abn/OkZ1NttY=;
-        b=PxAV7we4pytoKC44u+6Q7XMo3mo5XhWJkJ6mDdLGU3HOa5CEKnk6psFzJe1GZjZUW4
-         zsvDZU6Vx30Rllly8MTcghUvJpEPyuDDoo9eBAqn8NsKLrrCioC1C/65mjrcSyGc5/3T
-         9ivm/oKDi4hslXrakRXyE1nUENDg1PnZWfQuMfx3NFMwORDg4Y+/kHJzE0zRvFgu3qKi
-         N1kW3VDAY5R+va4lg68DNyuEt1IimHUzzSHiI9tN6GzHwQTzOvclp4qDSjAUZGuU17qr
-         b8z7x8wwoNjS+NtSGFrZxhgUs3BhfXOBzNPA6auLWQknaAa2BlPfLkGovrSyLaBrrxwz
-         S++A==
-X-Gm-Message-State: AOJu0YwtTooMAFspjjIkb7QMIstaQ8jywMFsH39EkPYviqxXbuVtAFUc
-        /ieV5tO2TtHOtV3cPMT1CVIGKLf1GxQIu/xn
-X-Google-Smtp-Source: AGHT+IHxRFDhegyK9nazEh5RxKiRxdnhlrcxRsSp2mSrUEUtgsc6LwW2nk+jUUK+UjWbLhAxNBXUzg==
-X-Received: by 2002:a05:6000:118b:b0:333:1b4f:186a with SMTP id g11-20020a056000118b00b003331b4f186amr24383wrx.2.1701362508138;
-        Thu, 30 Nov 2023 08:41:48 -0800 (PST)
-Received: from [192.168.17.228] (54-240-197-239.amazon.com. [54.240.197.239])
-        by smtp.gmail.com with ESMTPSA id f9-20020a056000036900b00332e073f12bsm1948553wrf.19.2023.11.30.08.41.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Nov 2023 08:41:47 -0800 (PST)
-From:   Paul Durrant <xadimgnik@gmail.com>
-X-Google-Original-From: Paul Durrant <paul@xen.org>
-Message-ID: <504ca757-c5b9-4d3b-900c-c5f401a02027@xen.org>
-Date:   Thu, 30 Nov 2023 16:41:43 +0000
+        Thu, 30 Nov 2023 11:42:03 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA8C6D50;
+        Thu, 30 Nov 2023 08:42:09 -0800 (PST)
+Date:   Thu, 30 Nov 2023 17:42:06 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1701362527;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=S9xj0ZAADKx7hu7QbhqW7wDQCSHjf9qrcUMkO9n1IJI=;
+        b=Z2qk16R5XhEOi87nU1gPUyUSwrCoMXB9G/DE3XTxfykFRS0/qBJr9D6cWrYRAdyYFTBVz7
+        HWYgKOnRpj+yzwtDfQUoCOBAdI1nBRIHNRXLjup5YHlT17by9aFT1RBLjTwZtg5f+YOTRz
+        prQ7TiWQHZREWQISbQSlgLbgNcQWUlLkcJTZEFVWRYUWlimTJaBEIbRCgq5EiYGhN5TIvb
+        4Fzj6jFrYOJ/F2/pKaldFNpj3mMwN+jaAfbAePBgUAgYaC5YmgcZ3llj5z9El+GpolREvx
+        HiXSrIrWTYM/qF4TINGHGZVkkhE+E3JvKbF5UWoSnwVJWW/+0cCUXtjye0I9Rw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1701362527;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=S9xj0ZAADKx7hu7QbhqW7wDQCSHjf9qrcUMkO9n1IJI=;
+        b=oI/W4FTas45tKWNnuWBVlFkS9IRdoBvVebb2alZO5ZeFsX2t39PI8Ivil+b8paxzpoPzM9
+        f+odN237NEkbd7Cg==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: [ANNOUNCE] v6.7-rc3-rt3
+Message-ID: <20231130164206.veSGRRd_@linutronix.de>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Reply-To: paul@xen.org
-Subject: Re: [PATCH v5] KVM x86/xen: add an override for
- PVCLOCK_TSC_STABLE_BIT
-Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        David Woodhouse <dwmw2@infradead.org>, kvm@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andrew Cooper <andrew.cooper3@citrix.com>
-References: <20231102162128.2353459-1-paul@xen.org>
- <ZWi6IKGFtQGpu6oR@google.com>
-Organization: Xen Project
-In-Reply-To: <ZWi6IKGFtQGpu6oR@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/11/2023 16:36, Sean Christopherson wrote:
-> +Andrew
-> 
-> On Thu, Nov 02, 2023, Paul Durrant wrote:
->> From: Paul Durrant <pdurrant@amazon.com>
->>
->> Unless explicitly told to do so (by passing 'clocksource=tsc' and
->> 'tsc=stable:socket', and then jumping through some hoops concerning
->> potential CPU hotplug) Xen will never use TSC as its clocksource.
->> Hence, by default, a Xen guest will not see PVCLOCK_TSC_STABLE_BIT set
->> in either the primary or secondary pvclock memory areas. This has
->> led to bugs in some guest kernels which only become evident if
->> PVCLOCK_TSC_STABLE_BIT *is* set in the pvclocks. Hence, to support
->> such guests, give the VMM a new Xen HVM config flag to tell KVM to
->> forcibly clear the bit in the Xen pvclocks.
-> 
-> ...
-> 
->> diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
->> index 7025b3751027..a9bdd25826d1 100644
->> --- a/Documentation/virt/kvm/api.rst
->> +++ b/Documentation/virt/kvm/api.rst
->> @@ -8374,6 +8374,7 @@ PVHVM guests. Valid flags are::
->>     #define KVM_XEN_HVM_CONFIG_EVTCHN_2LEVEL		(1 << 4)
->>     #define KVM_XEN_HVM_CONFIG_EVTCHN_SEND		(1 << 5)
->>     #define KVM_XEN_HVM_CONFIG_RUNSTATE_UPDATE_FLAG	(1 << 6)
->> +  #define KVM_XEN_HVM_CONFIG_PVCLOCK_TSC_UNSTABLE	(1 << 7)
-> 
-> Does Xen actually support PVCLOCK_TSC_STABLE_BIT?  I.e. do we need new uAPI to
-> fix this, or can/should KVM simply _never_ set PVCLOCK_TSC_STABLE_BIT for Xen
-> clocks?  At a glance, PVCLOCK_TSC_STABLE_BIT looks like it was added as a purely
-> Linux/KVM-only thing.
+Dear RT folks!
 
-It's certainly tested in arch/x86/xen/time.c, in 
-xen_setup_vsyscall_time_info() and xen_time_init(), so I'd guess it is 
-considered to be supported.
+I'm pleased to announce the v6.7-rc3-rt3 patch set. 
 
-   Paul
+Changes since v6.7-rc3-rt2:
 
+  - Since the printk rework in v6.6-rt13, the thread for the printing
+    console fails to go idle if there is nothing to print. This has been
+    resolved.
+
+Known issues
+     Pierre Gondois reported crashes on ARM64 together with "rtla timerlat
+     hist" as trigger. It is not yet understood. The report is at
+	https://lore.kernel.org/70c08728-3d4f-47a6-8a3e-114e4877d120@arm.com
+
+The delta patch against v6.7-rc3-rt2 is appended below and can be found here:
+ 
+     https://cdn.kernel.org/pub/linux/kernel/projects/rt/6.7/incr/patch-6.7-rc3-rt2-rt3.patch.xz
+
+You can get this release via the git tree at:
+
+    https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git v6.7-rc3-rt3
+
+The RT patch against v6.7-rc3 can be found here:
+
+    https://cdn.kernel.org/pub/linux/kernel/projects/rt/6.7/older/patch-6.7-rc3-rt3.patch.xz
+
+The split quilt queue is available at:
+
+    https://cdn.kernel.org/pub/linux/kernel/projects/rt/6.7/older/patches-6.7-rc3-rt3.tar.xz
+
+Sebastian
+
+diff --git a/kernel/printk/nbcon.c b/kernel/printk/nbcon.c
+index a9be219673dbf..0bd5ee1b5b282 100644
+--- a/kernel/printk/nbcon.c
++++ b/kernel/printk/nbcon.c
+@@ -1032,13 +1032,6 @@ static bool nbcon_kthread_should_wakeup(struct console *con, struct nbcon_contex
+ 
+ 		nbcon_state_read(con, &cur);
+ 
+-		/*
+-		 * Some other CPU is using the console. Patiently poll
+-		 * to see if it becomes available. This is more efficient
+-		 * than having every release trigger an irq_work to wake
+-		 * the kthread.
+-		 */
+-		msleep(1);
+ 	} while (cur.prio != NBCON_PRIO_NONE);
+ 
+ 	/* Bring the sequence in @ctxt up to date */
+diff --git a/localversion-rt b/localversion-rt
+index c3054d08a1129..1445cd65885cd 100644
+--- a/localversion-rt
++++ b/localversion-rt
+@@ -1 +1 @@
+--rt2
++-rt3
