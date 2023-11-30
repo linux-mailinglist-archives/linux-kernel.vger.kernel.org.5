@@ -2,185 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA8547FFB05
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 20:17:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92C387FFAFF
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 20:16:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376321AbjK3TR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 14:17:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36896 "EHLO
+        id S1376324AbjK3TQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 14:16:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235220AbjK3TR1 (ORCPT
+        with ESMTP id S1376269AbjK3TQq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 14:17:27 -0500
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE553D40;
-        Thu, 30 Nov 2023 11:17:33 -0800 (PST)
-Received: by mail-qv1-xf32.google.com with SMTP id 6a1803df08f44-67a16594723so7858916d6.3;
-        Thu, 30 Nov 2023 11:17:33 -0800 (PST)
+        Thu, 30 Nov 2023 14:16:46 -0500
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12A8210DF;
+        Thu, 30 Nov 2023 11:16:51 -0800 (PST)
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-50bc4fe8158so1879608e87.0;
+        Thu, 30 Nov 2023 11:16:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701371853; x=1701976653; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=etUM6pU7GXADCSsGQkpd5054784+nonMf6sWSZzwGYM=;
-        b=WqL993bSPJ3P0krJh3GMyD+48RvzR0P39KMN4cHA9SnuwLhC+5ptSwOyRkw4Pu3Jb1
-         nr/RicHqZaGsUJvKz4rwoWvTQA1B5EY/QZqJc0ke4KWbfSy6+sDNa0L64vsjvcDgn8l+
-         LFCPvaLYOtFuRUZ47O203OrkVn1f8ZGnLMfQfMQHpOSUA6Ul46JR7tGUfH5bgrFCLfaU
-         AwLGOwf7xLDT3Di8P2cM+XCtyryVfHRaSUolZ9lBfWgvvwkiCcncvmcEhN91Jx3LGH7Z
-         +OQWChjcEVQg8LX3wyDBOGKbbt1Hp1W6fY2nWauE09e5OrheT28FK1Eprp7KkyxS8NLS
-         h+vw==
+        d=gmail.com; s=20230601; t=1701371809; x=1701976609; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=beTU95GN50GYTXIaXw8asjQyUJ5kn1rsDTKmhhbRSLc=;
+        b=NHOUtUQsIXFhNr31aeuq9abXTOYWWMyrKoQppF6zi9wR5FugZ9WwOw63v8gBx/NSrt
+         1p3wsarcTpXJ8UA2KIYMLjnoznHusXVrcSXbbhjXv9btn02QWplp/d+OKjfL3W53xmmX
+         wBk/SsPBUjO4Jn7E/478jr1IcQgtCy0A8McJ6TGbSslKmR77EnAylHmMO+ZQidzTF76c
+         yo29kuFJadjifDxP8qQa58pwoNrjVQLjMy2T+Lx4YMoYiInXoGXadO2GGatMpngMqkD4
+         a8N9+Oo6dqaIrUJP47j/72NV7HDcFnMM33Y0AMJon/5mbws02FTYQJo7xJ2tTC8MN8qF
+         Cpcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701371853; x=1701976653;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=etUM6pU7GXADCSsGQkpd5054784+nonMf6sWSZzwGYM=;
-        b=mu5R4sTFWiSu8kbLoItycy261eP56B9ArBunS+GeynV6WgjnTnBBgDl8k2GgJcpKJC
-         jBr7KT84gxpkksdy8wjGCHNtsUjXMN63bDjmKBX79r55WXuHHF8Za/PTG3KcgewN2fca
-         kDpJ6YbGfD2h1/ON6jMZgIMr5p6gd4TaPjBMfOmjsUzyijin3GSdnzuCeXXILpFsb0si
-         PPQSwKtsjI6bXDRt+QY/y55/T4pW874AjARD2Oo4B1NBXSaKh36ALIHaGnbU+D39G1P/
-         2dqlXdoCTFE8KSLfsloKwzbRbNUYTfroywQTPdk/dhk/lQe3d2F1AShZHC7ZvytQBuZL
-         JXyw==
-X-Gm-Message-State: AOJu0YyEmufByx4vKOfN354cOl6roU5Ti9RWu90yUkzx90AgYBu9rqD3
-        0LWCFjx8zYjAj3UTrae8zFU=
-X-Google-Smtp-Source: AGHT+IFAWhUr/yE2JZT6y5PJ/CEuhIyHZFjS0A1ebEQ0q3gRm/MJ4sdkECbsHKEhmpJ3ZcxO9niMZA==
-X-Received: by 2002:a05:6214:1d02:b0:67a:150e:45fd with SMTP id e2-20020a0562141d0200b0067a150e45fdmr32703340qvd.49.1701371852962;
-        Thu, 30 Nov 2023 11:17:32 -0800 (PST)
-Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id k12-20020a05621414ec00b0067a8fe21448sm282885qvw.2.2023.11.30.11.17.32
+        d=1e100.net; s=20230601; t=1701371809; x=1701976609;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=beTU95GN50GYTXIaXw8asjQyUJ5kn1rsDTKmhhbRSLc=;
+        b=mONZymjPAcWH9auLmLvvBL06BB3f4VQPpiY6NdKbjsyNtOTbifWOhRgm07LPNBwXXG
+         UXTxCeS2xawqvRwQLUkrnQwS7pbXk/0CJWV1wYggEXJzp3vfC1OiJeEKt6/32sP58JKH
+         CpWYgVT1nYa7KV0ZpmX51MPwxGLxFUGF9jL8RaENm0GSkqLIpxa4fbx4I+QNsTsECO4U
+         Au8nOuXbTbpTFLJn4RpjcPYpz97NLiEknUMyJzXq5J0Ooo+e4iG+uoV0GmCeXuO385VO
+         JglbeoPkiCmxYaDWNEXiAd6WEDQI5/Qh0gBsIvfECfWfCSpFYrGL+GPh7tnMgt+ZhE/2
+         AueQ==
+X-Gm-Message-State: AOJu0YycETzd5StejUBFiGmBwGYUEb5sBovnk5nsfeCOaw6+W3qtTYEv
+        mfX3XrAAOPI7wvh/YOxnM8Q=
+X-Google-Smtp-Source: AGHT+IEjI7GCoxUOOVd+G0oM4OekkSNj6mkZDuZl+LhOwppbLSARI3DeRgkKK7Ms62A8NDUSE8hsMg==
+X-Received: by 2002:a05:6512:36cb:b0:507:9ef2:fb1c with SMTP id e11-20020a05651236cb00b005079ef2fb1cmr10846lfs.2.1701371808553;
+        Thu, 30 Nov 2023 11:16:48 -0800 (PST)
+Received: from mobilestation ([95.79.203.166])
+        by smtp.gmail.com with ESMTPSA id dx14-20020a0565122c0e00b00507a089caf6sm230827lfb.219.2023.11.30.11.16.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Nov 2023 11:17:32 -0800 (PST)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 1C26927C005B;
-        Thu, 30 Nov 2023 14:17:32 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Thu, 30 Nov 2023 14:17:32 -0500
-X-ME-Sender: <xms:y99oZZyvD2IR7XICgTNkjNHZGCoteeLV6tMARdTPCp7RJSO3SpDRvA>
-    <xme:y99oZZQJOkyfoErwRlSJP6KbOB1A2tA9uEbCel5uQrqUH9if7IUBckyDfUithYA-G
-    irRQ_trPo1I4-6HVA>
-X-ME-Received: <xmr:y99oZTVkIb1seBYeptOw18fVW1a2VSbbcwtOkXl7tPSwS92yFZ9bMyoY5LI>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeijedguddvvdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhq
-    uhhnucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrf
-    grthhtvghrnhephedugfduffffteeutddvheeuveelvdfhleelieevtdeguefhgeeuveei
-    udffiedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    epsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedt
-    ieegqddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfh
-    higihmvgdrnhgrmhgv
-X-ME-Proxy: <xmx:y99oZbi0_iJWExJ-Ph0TKNP_qnWpepzYHVJ06hhgZL3_jYrcandH6w>
-    <xmx:y99oZbAGtCJB-5Z_DiBlxuyJH9kIENsMMsAA-7t15jQmkC8rpcF9dQ>
-    <xmx:y99oZUKVz8-kW8YJOQ4EBJGGtQ-rTDYle2n6IfNDTb_45k3WjiD-bA>
-    <xmx:zN9oZd0zeMMeiibri4n-ZQnFT1GdGrJAM4TPH7v6N0UNIB00RfLO0Q>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 30 Nov 2023 14:17:31 -0500 (EST)
-Date:   Thu, 30 Nov 2023 11:16:43 -0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     pmartincic@linux.microsoft.com
-Cc:     "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] hv_utils: Allow implicit ICTIMESYNCFLAG_SYNC
-Message-ID: <ZWjfm25xAqvbQYSf@boqun-archlinux>
-References: <20231127213524.52783-1-pmartincic@linux.microsoft.com>
+        Thu, 30 Nov 2023 11:16:47 -0800 (PST)
+Date:   Thu, 30 Nov 2023 22:16:45 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Yinglu Yang <yangyinglu@loongson.cn>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Aleksandar Rikalo <aleksandar.rikalo@syrmia.com>,
+        Aleksandar Rikalo <arikalo@gmail.com>,
+        Dragan Mladjenovic <dragan.mladjenovic@syrmia.com>,
+        Chao-ying Fu <cfu@wavecomp.com>, Marc Zyngier <maz@kernel.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/7] mips: dmi: Fix early remap on MIPS32
+Message-ID: <xbkplqgv4ipnofk7hp6ws2rkqk4fsjl3y72blcdephoiocolh7@7l5p5efe7yda>
+References: <ZV9Fq1ihUm1Rn6yO@alpha.franken.de>
+ <d6d7e27a-b1a1-48af-be6c-aa9097c48992@app.fastmail.com>
+ <ZV94rifAIF2p9Nej@alpha.franken.de>
+ <245d3985-9085-4be0-8c74-d95d06334584@app.fastmail.com>
+ <3iksuovvsln3cw3xpmjd7f7xixfvwaneu4ok56fnookvyolpco@wrxxew3thgnq>
+ <dfda70b6-3291-462f-bc87-06dcc87bd068@app.fastmail.com>
+ <ysij22pivneyg7tk3bv3hti3tsgbzglb6pin3my7r3bokzxjj6@jrjmu45gbupr>
+ <c73d9dbf-b637-47ff-ae2d-6f8987345410@app.fastmail.com>
+ <3pgnihbrp5orh4tmj45fipbfoxdwzjh6uefitdpcea2vgkarcm@d56gv3areswl>
+ <2148a67f-bd4f-432e-aa0d-c914a4bd5e0d@app.fastmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231127213524.52783-1-pmartincic@linux.microsoft.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2148a67f-bd4f-432e-aa0d-c914a4bd5e0d@app.fastmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,TVD_PH_BODY_ACCOUNTS_PRE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 27, 2023 at 01:35:24PM -0800, pmartincic@linux.microsoft.com wrote:
-> From: Peter Martincic <pmartincic@microsoft.com>
+On Tue, Nov 28, 2023 at 03:46:37PM +0000, Jiaxun Yang wrote:
 > 
-> Hyper-V hosts can omit the _SYNC flag to due a bug on resume from modern
-> suspend. In such a case, the guest may fail to update its time-of-day to
-> account for the period when it was suspended, and could proceed with a
-> significantly wrong time-of-day. In such a case when the guest is
-> significantly behind, fix it by treating a _SAMPLE the same as if _SYNC
-> was received so that the guest time-of-day is updated.
 > 
-> This is hidden behind param hv_utils.timesync_implicit.
+> 在2023年11月28日十一月 上午11:34，Serge Semin写道：
+> > On Mon, Nov 27, 2023 at 09:08:11PM +0000, Jiaxun Yang wrote:
+> [...]
+> >
+> > Indeed. Thanks for pointing that out. In the last days several times I
+> > was looking at that line and for some reason UNCAC_BASE seemed as
+> > CAC_BASE to me.) Based on what both IO_BASE and UNCAC_BASE are defined
+> > as of the uncached region anyway, then it should be safe for any
+> > currently supported MIPS64 (including the Loongson's) to use ioremap()
+> > in place of dmi_early_remap(). So basically my current patch in the
+> > subject won't change the method semantics. Let's not to try to fix a
+> > problem which doesn't exist then, and keep the patch as is especially
+> > seeing that the alternatives might still cause some troubles. Will you
+> > be ok with that?
 > 
-> Signed-off-by: Peter Martincic <pmartincic@microsoft.com>
 
-Looks good to me.
+> I'd say the safest option is to use CKSEG0 or TO_CAC here, 
 
-Acked-by: Boqun Feng <boqun.feng@gmail.com>
+I would have agreed with you if MIPS didn't have that special
+_page_cachable_default variable which is undefined for some platforms
+and which might be re-defined during the boot-up process, and if
+MIPS64 didn't have ioremap_prot() always mapping to the uncached
+region.  But IMO updating ioremap_prot() currently seems more risky
+than just converting dmi_early_remap() to the uncached version
+especially seeing it won't change anything. MIPS64 always have IO
+remapped to the uncached region. MIPS32 won't be able to have cached
+mapping until VM is available, and paging and slabs are initialized.
+So on the early MIPS32 bootup stages ioremap_cache() wouldn't have
+worked anyway.
 
-Regards,
-Boqun
+> but I'm fine
+> with ioremap as long as the semantic remains uncached on Loongson.
 
-> ---
->  drivers/hv/hv_util.c | 31 ++++++++++++++++++++++++++++++-
->  1 file changed, 30 insertions(+), 1 deletion(-)
+Ok. Thanks.
+
+-Serge(y)
+
 > 
-> diff --git a/drivers/hv/hv_util.c b/drivers/hv/hv_util.c
-> index 42aec2c5606a..9c97c4065fe7 100644
-> --- a/drivers/hv/hv_util.c
-> +++ b/drivers/hv/hv_util.c
-> @@ -296,6 +296,11 @@ static struct {
->  	spinlock_t			lock;
->  } host_ts;
->  
-> +static bool timesync_implicit;
-> +
-> +module_param(timesync_implicit, bool, 0644);
-> +MODULE_PARM_DESC(timesync_implicit, "If set treat SAMPLE as SYNC when clock is behind");
-> +
->  static inline u64 reftime_to_ns(u64 reftime)
->  {
->  	return (reftime - WLTIMEDELTA) * 100;
-> @@ -344,6 +349,29 @@ static void hv_set_host_time(struct work_struct *work)
->  		do_settimeofday64(&ts);
->  }
->  
-> +/*
-> + * Due to a bug on Hyper-V hosts, the sync flag may not always be sent on resume.
-> + * Force a sync if the guest is behind.
-> + */
-> +static inline bool hv_implicit_sync(u64 host_time)
-> +{
-> +	struct timespec64 new_ts;
-> +	struct timespec64 threshold_ts;
-> +
-> +	new_ts = ns_to_timespec64(reftime_to_ns(host_time));
-> +	ktime_get_real_ts64(&threshold_ts);
-> +
-> +	threshold_ts.tv_sec += 5;
-> +
-> +	/*
-> +	 * If guest behind the host by 5 or more seconds.
-> +	 */
-> +	if (timespec64_compare(&new_ts, &threshold_ts) >= 0)
-> +		return true;
-> +
-> +	return false;
-> +}
-> +
->  /*
->   * Synchronize time with host after reboot, restore, etc.
->   *
-> @@ -384,7 +412,8 @@ static inline void adj_guesttime(u64 hosttime, u64 reftime, u8 adj_flags)
->  	spin_unlock_irqrestore(&host_ts.lock, flags);
->  
->  	/* Schedule work to do do_settimeofday64() */
-> -	if (adj_flags & ICTIMESYNCFLAG_SYNC)
-> +	if ((adj_flags & ICTIMESYNCFLAG_SYNC) ||
-> +	    (timesync_implicit && hv_implicit_sync(host_ts.host_time)))
->  		schedule_work(&adj_time_work);
->  }
->  
+> Thanks.
+> >
+> > -Serge(y)
+> >
+> >> 
+> [...]
 > -- 
-> 2.34.1
-> 
+> - Jiaxun
