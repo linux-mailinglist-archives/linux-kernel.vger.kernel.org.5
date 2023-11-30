@@ -2,56 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01ADD7FF02A
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 14:31:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B6067FF031
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 14:32:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345583AbjK3Na5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 08:30:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37938 "EHLO
+        id S1345556AbjK3NcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 08:32:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345610AbjK3Nax (ORCPT
+        with ESMTP id S232100AbjK3NcS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 08:30:53 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31C8610F0
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 05:31:00 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69D8AC433C7;
-        Thu, 30 Nov 2023 13:30:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701351059;
-        bh=GGplx6KpuPLw09bMktqftv7giakn9VmpBAD9cWeP0fc=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=jtW0lJYRSL7dznQ7fezXH+buD8jYnkyUoT+HbKbWKbxCAi3sst+qXhzIVNiL6c7Uz
-         lvZJyolOYkJz35OkUIAzCVzb+nCibFIrfj2qpe8l1oKuF6ruc+GGttu89pSFf/I0xo
-         873vChbi5Uqk3YqnGmk3U6S4/0OCgexyUbV7JstzO8o5MxJbeTBFksjnP7hCQL+LMY
-         a18ka/HuHx1xp6MAKwZPzTOJFOQwRE9eFA9pfX0yRIAt9fdOlrI4DwQFuSyq19Hsc5
-         oLulGoS2LS3QzpMc+0/3ao8X1THpu5N3FpwUZgcthjb+NgNU6yH82WaGEHj5b9+fmq
-         XuWTLEuS2gSVA==
-Message-ID: <292f5d48-8567-4b60-ad03-6cf70f71bacc@kernel.org>
-Date:   Thu, 30 Nov 2023 15:30:54 +0200
+        Thu, 30 Nov 2023 08:32:18 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8537BD48;
+        Thu, 30 Nov 2023 05:32:24 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CA30DC15;
+        Thu, 30 Nov 2023 05:33:10 -0800 (PST)
+Received: from raptor (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 415D63F5A1;
+        Thu, 30 Nov 2023 05:32:19 -0800 (PST)
+Date:   Thu, 30 Nov 2023 13:32:16 +0000
+From:   Alexandru Elisei <alexandru.elisei@arm.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Hyesoo Yu <hyesoo.yu@samsung.com>, catalin.marinas@arm.com,
+        will@kernel.org, oliver.upton@linux.dev, maz@kernel.org,
+        james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com,
+        arnd@arndb.de, akpm@linux-foundation.org, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com, mhiramat@kernel.org,
+        rppt@kernel.org, hughd@google.com, pcc@google.com,
+        steven.price@arm.com, anshuman.khandual@arm.com,
+        vincenzo.frascino@arm.com, eugenis@google.com, kcc@google.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC v2 19/27] mm: mprotect: Introduce
+ PAGE_FAULT_ON_ACCESS for mprotect(PROT_MTE)
+Message-ID: <ZWiO4PWfK2gKDLGr@raptor>
+References: <20231119165721.9849-1-alexandru.elisei@arm.com>
+ <CGME20231119165921epcas2p3dce0532847d59a9c3973b4e41102e27d@epcas2p3.samsung.com>
+ <20231119165721.9849-20-alexandru.elisei@arm.com>
+ <20231129092725.GD2988384@tiffany>
+ <ZWh6vl8DfXQbKo9O@raptor>
+ <4e7a4054-092c-4e34-ae00-0105d7c9343c@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] USB: typec: tps6598x: use device 'type' field to identify
- devices
-Content-Language: en-US
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     Alexandru Ardelean <alex@shruggie.ro>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        gregkh@linuxfoundation.org, christophe.jaillet@wanadoo.fr,
-        a-govindraju@ti.com, trix@redhat.com, abdelalkuor@geotab.com,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-References: <20231123210021.463122-1-alex@shruggie.ro>
- <ZWdKI9UOZ6INP0Tu@kuha.fi.intel.com>
- <47ffbb30-34a7-4f5b-b262-3e068e574c8a@kernel.org>
- <ZWhp9M8165DiTNTd@kuha.fi.intel.com>
-From:   Roger Quadros <rogerq@kernel.org>
-In-Reply-To: <ZWhp9M8165DiTNTd@kuha.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4e7a4054-092c-4e34-ae00-0105d7c9343c@redhat.com>
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,64 +61,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Heikki,
+Hi,
 
-On 30/11/2023 12:54, Heikki Krogerus wrote:
-> Hi Roger,
+On Thu, Nov 30, 2023 at 01:49:34PM +0100, David Hildenbrand wrote:
+> > > > +
+> > > > +out_retry:
+> > > > +	put_page(page);
+> > > > +	if (vmf->flags & FAULT_FLAG_VMA_LOCK)
+> > > > +		vma_end_read(vma);
+> > > > +	if (fault_flag_allow_retry_first(vmf->flags)) {
+> > > > +		err = VM_FAULT_RETRY;
+> > > > +	} else {
+> > > > +		/* Replay the fault. */
+> > > > +		err = 0;
+> > > 
+> > > Hello!
+> > > 
+> > > Unfortunately, if the page continues to be pinned, it seems like fault will continue to occur.
+> > > I guess it makes system stability issue. (but I'm not familiar with that, so please let me know if I'm mistaken!)
+> > > 
+> > > How about migrating the page when migration problem repeats.
+> > 
+> > Yes, I had the same though in the previous iteration of the series, the
+> > page was migrated out of the VMA if tag storage couldn't be reserved.
+> > 
+> > Only short term pins are allowed on MIGRATE_CMA pages, so I expect that the
+> > pin will be released before the fault is replayed. Because of this, and
+> > because it makes the code simpler, I chose not to migrate the page if tag
+> > storage couldn't be reserved.
 > 
->>> Why not just match against the structures themselves?
->>>
->>>         if (tps->data == &tps25750_data)
->>>                 ...
->>
->> Then you need to declare tps25750_data and friends at the top of the file?
->>
->> A better approach might be to have type agnostic quirk flags for the special
->> behavior required for different types. This way, multiple devices can share
->> the same quirk if needed.
->>
->> e.g.
->> NEEDS_POWER_UP instead of TIPD_TYPE_APPLE_CD321X
->> SKIP_VID_READ instead of TIPD_TYPE_TI_TPS25750X
->> INIT_ON_RESUME instead of TIPD_TYPE_TI_TPS25750X
->>
->> Also rename cd321x_switch_power_state() to tps6598x_switch_power_state().
+> There are still some cases that are theoretically problematic: vmsplice()
+> can pin pages forever and doesn't use FOLL_LONGTERM yet.
 > 
-> No. Functions like that isolate cd321x specific functionality into an
-> actual "function" just like they should.
-> 
-> Quirk flags mean that if something breaks, it will almost always break
-> for everybody (there is no real isolation with quirk flags), and when
-> things are fixed and when features are added, we are forced to always
-> "dance" around those quirk flags - you always have to consider them.
-> 
-> Platform/device type checks are just as bad IMO, but in one way they
-> are better than quirk flags. There is no question about what a
-> platform check is checking, but quirk flags can so easily become
-> incomprehensible (just what exactly does it mean when you say
-> NEEDS_POWER_UP, SKIP_VID_READ and so on (you would need to document
-> those quirks, which is waste of effort, and in reality nobody will do).
-> 
-> In case of tipd/code.c, it should be converted into a library that
-> only has the common/shared functionality. CD321, TPS2579x, TPS6598x
-> and what ever there is, then will have a glue driver that handles
-> everything that specific for their controller type.
+> All these things also affect other users that rely on movability (e.g., CMA,
+> memory hotunplug).
 
-Do you mean that you want to treat the 3 devices as different incompatible devices
-so each one has a separate driver which warrants for a different DT binding
-for each and also Kconfig symbol?
+I wasn't aware of that, thank you for the information. Then to ensure that the
+process doesn't hang by replying the loop indefinitely, I'll migrate the page if
+tag storage cannot be reserved. Looking over the code again, I think I can reuse
+the same function that migrates tag storage pages out of the MTE VMA (added in
+patch #21), so no major changes needed.
+
+Thanks,
+Alex
 
 > 
-> Before this driver is reorganised like that (any volunteers?), we'll
-> have the PD controller type checks, but quirk flags we will not have.
+> -- 
+> Cheers,
 > 
-> In general, you should only use quirk flags if there is no other
-> way to move forward - they are the last resort. They are dangerous,
-> and even in the best case they reduce the maintenability of the code.
+> David / dhildenb
 > 
-> thanks,
 > 
-
--- 
-cheers,
--roger
