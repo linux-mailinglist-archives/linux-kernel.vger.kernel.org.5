@@ -2,120 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E39967FF1B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 15:24:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F6BF7FF1B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 15:25:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345995AbjK3OXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 09:23:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49364 "EHLO
+        id S1346000AbjK3OZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 09:25:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345940AbjK3OXt (ORCPT
+        with ESMTP id S1345940AbjK3OZA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 09:23:49 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 026DD85
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 06:23:56 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE68BC433C9;
-        Thu, 30 Nov 2023 14:23:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701354235;
-        bh=wZi0hGsQ3XSwYWlqArpLeqdlNCo/znhk/QdMHk4tYUk=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=dG68xzPyU20XZ30fUI7KF112zmAlPo7LLNpOLogfgPUVOG25PZTzaCKISCVXCNQH5
-         vAmfvzQ5wSTCLD9v/km1KtpC8tGC+PdmSrNUMWkuuNSyENbR/kQxnw/Csu946O2Q7j
-         PvA96I/ZxY8C1IG5aVog//9/ItsnjXqQITnhoefE7fjIzgocOUKlyCXK6XZQf3hJfG
-         MeIbwy62yYT0qjuibndhPLU6qiYktfioL6Uk5V3bOui/Yd3M1a1M6CUmTRA51OYHEY
-         05pvA00Q58cb/ODMJdQhpBnjPTFDABXbwwD05sLHM5CYIop9dlu7lXPgKJYVH8k9D7
-         TGeqggUxTBODA==
-Message-ID: <030c7d65-bead-46d0-8422-8a9ff0548d72@kernel.org>
-Date:   Thu, 30 Nov 2023 16:23:49 +0200
+        Thu, 30 Nov 2023 09:25:00 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FFA185;
+        Thu, 30 Nov 2023 06:25:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701354306; x=1732890306;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=IbtxtPQSaw1rbwoM+xVDv5JrPCQ3Y9QHpjjvR9eEpmU=;
+  b=Sb67twGM1X3ykDke0pRRWqbDMhuMr6WYnwli7m0sAeU1oRh/5K6q3Juo
+   ZMChCW2qPA/bJLz65+nEPB0Ycf0kWz2EZRktJ2qembgx10BKQCzpxVeeY
+   dAAsqFCne45XKfmw9qa+WP9Mr+4inZ6AoHJbonbVBWec0qfN5fE2lX3di
+   dM0B9H/s0Ne3LVpbi3ylDDs0SaLINYLfI8yGHNJGkwC3A2EKipbKpX8tC
+   wsfaIwKaD4TLmohY1fDu/UtAOnnT/Bvjda+rV/1tmD7tn0XbML1jiSg+n
+   OYXj2xfR6Rmexe/X9g37h68kynQ7GJ5mCcfL2oAP3drAQFQSAATYJqPbJ
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="209448"
+X-IronPort-AV: E=Sophos;i="6.04,239,1695711600"; 
+   d="scan'208";a="209448"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 06:25:05 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="803711816"
+X-IronPort-AV: E=Sophos;i="6.04,239,1695711600"; 
+   d="scan'208";a="803711816"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga001.jf.intel.com with ESMTP; 30 Nov 2023 06:24:59 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r8hyL-00027A-0z;
+        Thu, 30 Nov 2023 14:24:57 +0000
+Date:   Thu, 30 Nov 2023 22:24:25 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Kuogee Hsieh <quic_khsieh@quicinc.com>,
+        dri-devel@lists.freedesktop.org, robdclark@gmail.com,
+        sean@poorly.run, swboyd@chromium.org, dianders@chromium.org,
+        vkoul@kernel.org, daniel@ffwll.ch, airlied@gmail.com,
+        agross@kernel.org, dmitry.baryshkov@linaro.org,
+        andersson@kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, quic_sbillaka@quicinc.com,
+        linux-arm-msm@vger.kernel.org, quic_abhinavk@quicinc.com,
+        Kuogee Hsieh <quic_khsieh@quicinc.com>,
+        marijn.suijten@somainline.org, quic_jesszhan@quicinc.com,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] drm/msm/dpu: improve DSC allocation
+Message-ID: <202311302230.t6X5rroJ-lkp@intel.com>
+References: <1701289898-12235-1-git-send-email-quic_khsieh@quicinc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 net-next 6/7] net: ethernet: ti: am65-cpsw-qos: Add
- Frame Preemption MAC Merge support
-Content-Language: en-US
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, s-vadapalli@ti.com, r-gunasekaran@ti.com,
-        vigneshr@ti.com, srk@ti.com, horms@kernel.org, p-varis@ti.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231120140147.78726-1-rogerq@kernel.org>
- <20231120140147.78726-7-rogerq@kernel.org>
- <20231120232620.uciap4bazypzlg3g@skbuf>
- <eeea995b-a294-4a46-aa3e-93fc2b274504@kernel.org>
- <20231121115314.deuvdjk64rcwktl4@skbuf>
- <6def78e7-8264-4745-94f3-b32b854af0c2@kernel.org>
- <20231130132222.w2irs5c4lxh5jcv7@skbuf>
-From:   Roger Quadros <rogerq@kernel.org>
-In-Reply-To: <20231130132222.w2irs5c4lxh5jcv7@skbuf>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1701289898-12235-1-git-send-email-quic_khsieh@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Kuogee,
+
+kernel test robot noticed the following build warnings:
+
+[auto build test WARNING on drm-misc/drm-misc-next]
+[also build test WARNING on drm/drm-next drm-exynos/exynos-drm-next drm-intel/for-linux-next drm-intel/for-linux-next-fixes drm-tip/drm-tip linus/master v6.7-rc3 next-20231130]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Kuogee-Hsieh/drm-msm-dpu-improve-DSC-allocation/20231130-064646
+base:   git://anongit.freedesktop.org/drm/drm-misc drm-misc-next
+patch link:    https://lore.kernel.org/r/1701289898-12235-1-git-send-email-quic_khsieh%40quicinc.com
+patch subject: [PATCH v1] drm/msm/dpu: improve DSC allocation
+config: arm64-defconfig (https://download.01.org/0day-ci/archive/20231130/202311302230.t6X5rroJ-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231130/202311302230.t6X5rroJ-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311302230.t6X5rroJ-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c: In function '_dpu_rm_reserve_dsc':
+>> drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c:537:38: warning: assignment to 'uint32_t' {aka 'unsigned int'} from 'void *' makes integer from pointer without a cast [-Wint-conversion]
+     537 |                 pp_to_enc_id[pp_idx] = NULL;
+         |                                      ^
 
 
-On 30/11/2023 15:22, Vladimir Oltean wrote:
-> On Thu, Nov 30, 2023 at 01:49:03PM +0200, Roger Quadros wrote:
->> Thanks for the debug instructions. Indeed lldpad tries to enable MM TX and the
->> network drivers set_mm() hook gets called and returns success but still
->> lldpad sees some error.
->>
->> I've also confirmed that ethnl_set_mm() runs successfully and returns 1.
->> I suppose something is going wrong in user-space with libnl?
->>
->> Nov 21 11:50:02 am62xx lldpad[708]: eth0: Link partner preemption capability supported
->> Nov 21 11:50:02 am62xx lldpad[708]: eth0: Link partner preemption capability not enabled
->> Nov 21 11:50:02 am62xx lldpad[708]: eth0: Link partner preemption capability not active
->> Nov 21 11:50:02 am62xx lldpad[708]: eth0: Link partner minimum fragment size: 124 octets
->> Nov 21 11:50:02 am62xx lldpad[708]: eth0: initiating MM verification with a retry interval of 134 ms...
->> Nov 21 11:50:02 am62xx lldpad[708]: ethtool: kernel reports: integer out of range
->>
->>
->> full debug log is below.
-> 
-> Ah, you got confused. Openlldp issues multiple ETHTOOL_MSG_MM_SET
-> netlink messages. What you observe is that one of them succeeds, and
-> then another one returns -ERANGE before even calling the driver's
-> set_mm() method.
-> 
-> And that comes from here in net/ethtool/mm.c:
-> 
-> 149 const struct nla_policy ethnl_mm_set_policy[ETHTOOL_A_MM_MAX + 1] = {
-> 150 »       [ETHTOOL_A_MM_HEADER]»  »       = NLA_POLICY_NESTED(ethnl_header_policy),
-> 151 »       [ETHTOOL_A_MM_VERIFY_ENABLED]»  = NLA_POLICY_MAX(NLA_U8, 1),
-> 152 »       [ETHTOOL_A_MM_VERIFY_TIME]»     = NLA_POLICY_RANGE(NLA_U32, 1, 128), // <---- here
-> 153 »       [ETHTOOL_A_MM_TX_ENABLED]»      = NLA_POLICY_MAX(NLA_U8, 1),
-> 154 »       [ETHTOOL_A_MM_PMAC_ENABLED]»    = NLA_POLICY_MAX(NLA_U8, 1),
-> 155 »       [ETHTOOL_A_MM_TX_MIN_FRAG_SIZE]»= NLA_POLICY_RANGE(NLA_U32, 60, 252),
-> 156 };
-> 
-> You are reporting in .get_mm() a maximum verify time which is larger
-> than the core ethtool is willing to accept in a further .set_mm() call.
-> And openlldp will try to max out on the verify time. Hence the -ERANGE.
+vim +537 drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
 
-You are spot on on this. Thanks. :)
-
-> 
-> The range I chose for the policy comes from 802.3-2018 clause 30.14.1.6,
-> which says that the aMACMergeVerifyTime variable has a range between 1
-> and 128 ms inclusive.
-
-I forced driver state->max_verify_time = 128; and now that -ERANGE
-error is gone and the lldp test case passes.
-
-I also applied your patch to ethtool_mm.sh and don't see the error with 
-'addFragSize 0' anymore
-
-Should I include your patch in the next revision of this series?
+   463	
+   464	static int _dpu_rm_reserve_dsc(struct dpu_rm *rm,
+   465				       struct dpu_global_state *global_state,
+   466				       struct drm_encoder *enc,
+   467				       const struct msm_display_topology *top)
+   468	{
+   469		int num_dsc = 0;
+   470		int i, pp_idx;
+   471		bool pair = false;
+   472		int dsc_idx[DSC_MAX - DSC_0];
+   473		uint32_t pp_to_enc_id[PINGPONG_MAX - PINGPONG_0];
+   474		int pp_max = PINGPONG_MAX - PINGPONG_0;
+   475	
+   476		if (!top->num_dsc || !top->num_intf)
+   477			return 0;
+   478	
+   479		/*
+   480		 * Truth:
+   481		 * 1) every layer mixer only connects to one pingpong
+   482		 * 2) no pingpong split -- two layer mixers shared one pingpong
+   483		 * 3) each DSC engine contains two dsc encoders
+   484		 *    -- index(0,1), index (2,3),... etc
+   485		 * 4) dsc pair can only happens with same DSC engine except 4 dsc
+   486		 *    merge mode application (8k) which need two DSC engines
+   487		 * 5) odd pingpong connect to odd dsc
+   488		 * 6) even pingpong connect even dsc
+   489		 */
+   490	
+   491		/* num_dsc should be either 1, 2 or 4 */
+   492		if (top->num_dsc > top->num_intf)	/* merge mode */
+   493			pair = true;
+   494	
+   495		/* fill working copy with pingpong list */
+   496		memcpy(pp_to_enc_id, global_state->pingpong_to_enc_id, sizeof(pp_to_enc_id));
+   497	
+   498		for (i = 0; i < ARRAY_SIZE(rm->dsc_blks); i++) {
+   499			if (!rm->dsc_blks[i])	/* end of dsc list */
+   500				break;
+   501	
+   502			if (global_state->dsc_to_enc_id[i]) {	/* used */
+   503				/* consective dsc index to be paired */
+   504				if (pair && num_dsc) {	/* already start pairing, re start */
+   505					num_dsc = 0;
+   506					/* fill working copy with pingpong list */
+   507					memcpy(pp_to_enc_id, global_state->pingpong_to_enc_id,
+   508									sizeof(pp_to_enc_id));
+   509				}
+   510				continue;
+   511			}
+   512	
+   513			/* odd index can not become start of pairing */
+   514			if (pair && (i & 0x01) && !num_dsc)
+   515				continue;
+   516	
+   517			/*
+   518			 * find the pingpong index which had been reserved
+   519			 * previously at layer mixer allocation
+   520			 */
+   521			for (pp_idx = 0; pp_idx < pp_max; pp_idx++) {
+   522				if (pp_to_enc_id[pp_idx] == enc->base.id)
+   523					break;
+   524			}
+   525	
+   526			/*
+   527			 * dsc even index must map to pingpong even index
+   528			 * dsc odd index must map to pingpong odd index
+   529			 */
+   530			if ((i & 0x01) != (pp_idx & 0x01))
+   531				continue;
+   532	
+   533			/*
+   534			 * delete pp_idx so that it can not be found at next search
+   535			 * in the case of pairing
+   536			 */
+ > 537			pp_to_enc_id[pp_idx] = NULL;
+   538	
+   539			dsc_idx[num_dsc++] = i;
+   540			if (num_dsc >= top->num_dsc)
+   541				break;
+   542		}
+   543	
+   544		if (num_dsc < top->num_dsc) {
+   545			DPU_ERROR("DSC allocation failed num_dsc=%d required=%d\n",
+   546							num_dsc, top->num_dsc );
+   547			return -ENAVAIL;
+   548		}
+   549	
+   550		/* reserve dsc */
+   551		for (i = 0; i < top->num_dsc; i++) {
+   552			int j;
+   553	
+   554			j = dsc_idx[i];
+   555			global_state->dsc_to_enc_id[j] = enc->base.id;
+   556		}
+   557	
+   558		return 0;
+   559	}
+   560	
 
 -- 
-cheers,
--roger
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
