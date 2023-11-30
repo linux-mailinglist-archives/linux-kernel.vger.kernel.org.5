@@ -2,114 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 603127FFD4F
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 22:13:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF9D17FFD52
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 22:16:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376833AbjK3VN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 16:13:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50848 "EHLO
+        id S1376838AbjK3VPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 16:15:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376827AbjK3VN2 (ORCPT
+        with ESMTP id S1376818AbjK3VPy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 16:13:28 -0500
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 843E3133
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 13:13:34 -0800 (PST)
-Received: by mail-pj1-x1035.google.com with SMTP id 98e67ed59e1d1-2856437b584so1261275a91.3
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 13:13:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1701378814; x=1701983614; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=fidcjtTW722GJ2IM4Au/VykloMhm7RTaqk1o/atYAEw=;
-        b=DDVdCf9NdUIkcLpOb1uCiufbtpeh1yATfi7M2x5fsKQ3TpKUMymd9+UK7MZsvW2PMt
-         SmbZiB2YwKmbYSMt4ybSAE6aCvTj6SaK2/P1iFmPc4BdvZVajNqUqK8AD+UjsaJdRMt8
-         j1s2GuYw2ebHozsoahOJfdRiG7VgPikxAZ/4Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701378814; x=1701983614;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fidcjtTW722GJ2IM4Au/VykloMhm7RTaqk1o/atYAEw=;
-        b=luauQkl1jXonJcRQ98LV+Zb5DHhGx08ihyw1iE56OhxW9/I9BS7PfjgM55+f0BByjY
-         ywHFreZbLb9y9CsOHt0CnJJ028S14vuVRIw/2dK4pMslNUNJ8mfoYyDD82RkMEOtusSE
-         xXiXceb4bi6WLGYjdMkyR835WB6Z/gcqieh/WipsgKqwmtghH3VVYUzNWLD96CjFvmif
-         iZiALE5/xgcmqMh8m19VyVjW8HnlbuzsR2FnlUTLdFPgwj4yJhtvaa/R1vZlnwU/y0OA
-         aDcqIDTuss2R3HP5zL1efo1KDmow2oFQlgG2Eed4L9mz0QwwbzxUTj4ya/8C9l83fQ6j
-         nOXQ==
-X-Gm-Message-State: AOJu0Yy225O+dtSidXut9GRZVt9RU8zMMjtOS4I1W/73x/JAn9N4ycJS
-        jC8XI5ccadQ4OKmQkduydkgWnA==
-X-Google-Smtp-Source: AGHT+IEKJ/wr7SUlbtYwADUSjvGI7oq2tySAREjzqV7MWT2FI9gP4yoKXMynlqfV5uTQNeEytkLvBg==
-X-Received: by 2002:a17:90b:4acf:b0:285:a160:df1b with SMTP id mh15-20020a17090b4acf00b00285a160df1bmr19079170pjb.7.1701378814029;
-        Thu, 30 Nov 2023 13:13:34 -0800 (PST)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id gf18-20020a17090ac7d200b0028098225450sm3743947pjb.1.2023.11.30.13.13.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Nov 2023 13:13:33 -0800 (PST)
-Date:   Thu, 30 Nov 2023 13:13:32 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     Tyrel Datwyler <tyreld@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] scsi: ibmvscsi: replace deprecated strncpy with strscpy
-Message-ID: <202311301313.6248EF5E@keescook>
-References: <20231030-strncpy-drivers-scsi-ibmvscsi-ibmvscsi-c-v1-1-f8b06ae9e3d5@google.com>
+        Thu, 30 Nov 2023 16:15:54 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9E09C4;
+        Thu, 30 Nov 2023 13:16:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701378960; x=1732914960;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=KlbfcOErqRwf01qlZ8573Egc0BMQKulLdYLjiwyGZgc=;
+  b=KxM7h4a/2ZBLdyO1ZQYZmeKe/Vd7MLQSvJAM/eySLxwesb4lc1B97c09
+   EoaSdJiTetz5DbahHOr2yXfMCKr7wTaiGDFJFEfnQ9ILBcUwPri35hbYq
+   45iZsrQ6dhuU4wVkdWINCdRgW8bh1WdONzWKqMu0W7lvhNLRU45T/wOtW
+   BJUzKVnBEOsTP4m1mqnJ18geZa9Uhn3WbrIhdhXpLvTOuXmo0+Z7pcBQI
+   3TDAal7JtcckxQg++8NdXLqZ3RGkzAL40ZkrpYNuTLUghzMR0N0z4kJ7x
+   VSIQ+jhNFnDVk1bTmui9F2oRsvF36Cd+V3IcivTnU6m+au4rvSfGfdY3m
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="373577153"
+X-IronPort-AV: E=Sophos;i="6.04,240,1695711600"; 
+   d="scan'208";a="373577153"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 13:15:59 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="719257143"
+X-IronPort-AV: E=Sophos;i="6.04,240,1695711600"; 
+   d="scan'208";a="719257143"
+Received: from rwwalter-mobl.amr.corp.intel.com (HELO [10.212.92.184]) ([10.212.92.184])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 13:15:58 -0800
+Message-ID: <77585d9d2eacf025408330d55a27e7e359c75e4d.camel@linux.intel.com>
+Subject: Re: [PATCH 2/6] platform/x86/intel/tpmi: Don't create devices for
+ disabled features
+From:   srinivas pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Ilpo =?ISO-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>, markgross@kernel.org,
+        platform-driver-x86@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Date:   Thu, 30 Nov 2023 16:15:57 -0500
+In-Reply-To: <73dac17ee9019c77c3258218ff6bf6d434959ece.camel@linux.intel.com>
+References: <20231128185605.3027653-1-srinivas.pandruvada@linux.intel.com>
+         <20231128185605.3027653-3-srinivas.pandruvada@linux.intel.com>
+         <9603f75-3adb-8eba-9322-cbd9551668c8@linux.intel.com>
+         <29cf2ab24e5d63e2b1268516ad7ab2b1beb44c91.camel@linux.intel.com>
+         <84eafa2c-27e3-1a55-39df-edb4a87f5eb1@linux.intel.com>
+         <ZWieZa7huhCbrq7L@smile.fi.intel.com>
+         <73dac17ee9019c77c3258218ff6bf6d434959ece.camel@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231030-strncpy-drivers-scsi-ibmvscsi-ibmvscsi-c-v1-1-f8b06ae9e3d5@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 30, 2023 at 08:40:48PM +0000, Justin Stitt wrote:
-> strncpy() is deprecated for use on NUL-terminated destination strings
-> [1] and as such we should prefer more robust and less ambiguous string
-> interfaces.
-> 
-> We expect partition_name to be NUL-terminated based on its usage with
-> format strings:
-> |       dev_info(hostdata->dev, "host srp version: %s, "
-> |                "host partition %s (%d), OS %d, max io %u\n",
-> |                hostdata->madapter_info.srp_version,
-> |                hostdata->madapter_info.partition_name,
-> |                be32_to_cpu(hostdata->madapter_info.partition_number),
-> |                be32_to_cpu(hostdata->madapter_info.os_type),
-> |                be32_to_cpu(hostdata->madapter_info.port_max_txu[0]));
-> ...
-> |       len = snprintf(buf, PAGE_SIZE, "%s\n",
-> |                hostdata->madapter_info.partition_name);
-> 
-> Moreover, NUL-padding is not required as madapter_info is explicitly
-> memset to 0:
-> |       memset(&hostdata->madapter_info, 0x00,
-> |                       sizeof(hostdata->madapter_info));
-> 
-> Considering the above, a suitable replacement is `strscpy` [2] due to
-> the fact that it guarantees NUL-termination on the destination buffer
-> without unnecessarily NUL-padding.
-> 
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
+On Thu, 2023-11-30 at 10:00 -0500, srinivas pandruvada wrote:
+> On Thu, 2023-11-30 at 16:38 +0200, Andy Shevchenko wrote:
+> > On Thu, Nov 30, 2023 at 04:33:00PM +0200, Ilpo J=C3=A4rvinen wrote:
+> > > On Thu, 30 Nov 2023, srinivas pandruvada wrote:
+> > > > On Thu, 2023-11-30 at 14:26 +0200, Ilpo J=C3=A4rvinen wrote:
+> > > > > On Tue, 28 Nov 2023, Srinivas Pandruvada wrote:
+> >=20
+> > ...
+> >=20
+> > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (!feature_state.e=
+nabled)
+> > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return -EOPNOTSUPP;
+> > > > >=20
+> > > > > -ENODEV sounds more appropriate.=C2=A0=20
+> > > >=20
+> > > > The -EOPNOTSUPP is returned matching the next return statement,
+> > > > which
+> > > > causes to continue to create devices which are supported and
+> > > > not
+> > > > disabled. Any other error is real device creation will causes
+> > > > driver
+> > > > modprobe to fail.
+> > >=20
+> > > Oh, I see... I didn't look that deep into the code during my
+> > > review
+> > > (perhaps note that down into the commit message?).
+> >=20
+> > Maybe we should even use -ENOTSUPP (Linux internal error code), so
+> > it will be clear that it's _not_ going to user space?
+>=20
+> That will be better. I will change and resubmit.
+The checkpatch gives error with this.
 
-Agreed; this conversion looks correct to me too.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+WARNING: ENOTSUPP is not a SUSV4 error code, prefer EOPNOTSUPP
+#25: FILE: drivers/platform/x86/intel/tpmi.c:613:
++		return -ENOTSUPP;
 
--- 
-Kees Cook
+Thanks,
+Srinivas
+>=20
+> Thanks,
+> Srinivas
+>=20
+> >=20
+>=20
+
