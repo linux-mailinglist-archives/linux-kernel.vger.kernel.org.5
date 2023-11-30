@@ -2,124 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60D5E7FFBE0
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 20:59:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 983B47FFBE4
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 21:01:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232297AbjK3T7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 14:59:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39940 "EHLO
+        id S232319AbjK3UBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 15:01:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229623AbjK3T7b (ORCPT
+        with ESMTP id S229623AbjK3UA6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 14:59:31 -0500
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50B47198;
-        Thu, 30 Nov 2023 11:59:37 -0800 (PST)
-Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2c9b9191722so18234391fa.1;
-        Thu, 30 Nov 2023 11:59:37 -0800 (PST)
+        Thu, 30 Nov 2023 15:00:58 -0500
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7536110F8
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 12:01:04 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-286406ae852so725703a91.0
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 12:01:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701374375; x=1701979175; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=VOrjiusb1CkTjaA85Fcf3elk7qFz3xbmkdXxylcNE28=;
-        b=FsJXTuxYuuvLREcp0aIXgWKf0+Ouodce80CE99kdywIl/OB+7Mj6XoMov/9ZRzuXLn
-         jIvJ+EWaZuQN4jdId3OKESYiS7n2E6rko1aYDI3rpX1/SRBdlpA45vYRUDptmjBxg0ud
-         44D3NBEc/ETLlBMmgH218BBwbd/hMwuKB5tDS7zut+ja2QjsckHcyoqyswhb9S1mKrxp
-         Oui7az2xcUZC+G6iqZHXquGDpQf6J8yKlQX2W3I/ciVggaI2uFWD4ErH9y20cmu9GKAe
-         WPyH5vTpOB9vVDl/GZJ6oRYcqhKt6/Q2t4wCytut66FU9NpEdSYzFRqs0+11RJQJpKUh
-         f0fw==
+        d=chromium.org; s=google; t=1701374464; x=1701979264; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=DjLamxZyQfbyptpIvpzFIM9HoGVb6+OmTO9thE+0l0A=;
+        b=GGyJ41GinrkCDijL/CNfx8rZzdU+bWwf+Sretpgifqmsok/ABKqMO18zKMQK1XPOLv
+         GkFrv6Eq7jtCBnl6+iPQCJQNQCbeRV7WwdarFUCZV3qBmHrrO5Stq5YMAk0DeDMnv3AA
+         tV+ja7xTeosbnInimbMe/Rfe4j/CPfl07T2H0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701374375; x=1701979175;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VOrjiusb1CkTjaA85Fcf3elk7qFz3xbmkdXxylcNE28=;
-        b=v7opJqnPBuXQj3cvG7VVvSASGc4VgbOv0WqD31OMphJUXnbNKfgcalQWE6pl+EE+yr
-         DterJz5Umd8thcECJ0/se3nhGH3icuCwEDuuSJ92ahJD4yTMnFdSr6pWeyScLuEJeqmS
-         R6+v6iC8H3sNacXdtMDhjDobKg/GLV3zITA8lcqR1iFcsSvon0UfgDX6mxksV1Bm3hVk
-         qEskZ7qKirkTEnVBuInrcECGvD5cUDlU/sglauZzBBitXOK3hL/W4KH7DOA0EyTXyf6k
-         291Veu4tKFpdbOGw/bEMIvhf2su26N9XNFx0us7DmCQVLxr1PwN3tCmJfXWkSj5jl3YN
-         L1Kg==
-X-Gm-Message-State: AOJu0YwnU3ZsWu4kMHH5giv6gX71ff5uwM7+kYb0S/R1huvah+aB23G7
-        5oz0FaZm9R54wJDaobRgj/Y=
-X-Google-Smtp-Source: AGHT+IHUjij89dN7TIrQl0G91Pfh+h20hbyKUIOT6zGRwQNGTZnnP7/pfZPelhLBC+F8nHc0nEECjw==
-X-Received: by 2002:a2e:9219:0:b0:2c9:d874:20c4 with SMTP id k25-20020a2e9219000000b002c9d87420c4mr62616ljg.78.1701374375270;
-        Thu, 30 Nov 2023 11:59:35 -0800 (PST)
-Received: from mobilestation ([95.79.203.166])
-        by smtp.gmail.com with ESMTPSA id i17-20020a2e8091000000b002b9e5fe86dasm227571ljg.81.2023.11.30.11.59.33
+        d=1e100.net; s=20230601; t=1701374464; x=1701979264;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DjLamxZyQfbyptpIvpzFIM9HoGVb6+OmTO9thE+0l0A=;
+        b=Qy4TDk0y0+UDN7lMz2RoTrL4PvUCYZvYSQE1V6s+BFA0p1RDZIkbDxrG90QD/yjjox
+         z+H1Zf8o2lAFtXHFdHJ4MVrVJ27h7zE8KR/Ks/ajDcD3u0PXWXqV34/YrTBs5W7KNrVR
+         /4sqids0rPCj6f17DaqWh+B7e4Njwp2n7yfrCM4zKyl0uus86/dFoe08MoDBlo7gyaVy
+         HO4CclOZmSyIlpcFnniCehvHWLx9/lo7qfEvaNr+9SngY/QKZixFT54dXJRxuG2m3+ql
+         anEIZ3Y3S6up3nxNY9rmhHoBdDEw2edMz6VXKiw7z+mk8/Es6r/XsSjDf23ml+hXBLFW
+         /yRQ==
+X-Gm-Message-State: AOJu0Yz4Xy3P0dTLW0quiTX0n57voGTxvLfHvS1pe+u9XlqYXFowM3yT
+        UzEM3xZBIsYQuBF3N0ggMsMVD9AbEXWO2LZaljg=
+X-Google-Smtp-Source: AGHT+IGgDbuduO0TRl7R7gO2PBc8v+3LqmhG3IlJd7Is7C7ylYuOHkDxFPlQnCSCFhMp0VOLmpjRUQ==
+X-Received: by 2002:a17:90b:3b86:b0:285:a179:7174 with SMTP id pc6-20020a17090b3b8600b00285a1797174mr22305244pjb.29.1701374463664;
+        Thu, 30 Nov 2023 12:01:03 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id gg16-20020a17090b0a1000b002858ac5e401sm3687765pjb.45.2023.11.30.12.01.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Nov 2023 11:59:34 -0800 (PST)
-Date:   Thu, 30 Nov 2023 22:59:32 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Tomer Maimon <tmaimon77@gmail.com>, alexandre.torgue@foss.st.com,
-        tali.perry1@gmail.com, edumazet@google.com,
-        krzysztof.kozlowski+dt@linaro.org,
-        linux-stm32@st-md-mailman.stormreply.com, benjaminfair@google.com,
-        openbmc@lists.ozlabs.org, joabreu@synopsys.com, joel@jms.id.au,
-        devicetree@vger.kernel.org, j.neuschaefer@gmx.net,
-        robh+dt@kernel.org, peppe.cavallaro@st.com,
-        linux-arm-kernel@lists.infradead.org, avifishman70@gmail.com,
-        venture@google.com, linux-kernel@vger.kernel.org,
-        mcoquelin.stm32@gmail.com, netdev@vger.kernel.org,
-        davem@davemloft.net
-Subject: Re: [PATCH v1 2/2] net: stmmac: Add NPCM support
-Message-ID: <xvy2coamb6cl3wcbkl32f6w7kksoxfocyd63t7k7bz4pne2gyx@lktivhqovy7p>
-References: <20231121151733.2015384-1-tmaimon77@gmail.com>
- <20231121151733.2015384-3-tmaimon77@gmail.com>
- <6aeb28f5-04c2-4723-9da2-d168025c307c@lunn.ch>
- <CAP6Zq1j0kyrg+uxkXH-HYqHz0Z4NwWRUGzprius=BPC9+WfKFQ@mail.gmail.com>
- <9ad42fef-b210-496a-aafc-eb2a7416c4df@lunn.ch>
- <CAP6Zq1jw9uLP_FQGR8=p3Y2NTP6XcNtzkJQ0dm3+xVNE1SpsVg@mail.gmail.com>
- <CAP6Zq1ijfMSPjk1vPwDM2B+r_vAH3DShhSu_jr8xJyUkTQY89w@mail.gmail.com>
- <a551aefa-777d-4fd3-b1a5-086dc3e62646@lunn.ch>
- <CAP6Zq1jVO5y3ySeGNE5-=XWV6Djay5MhGxXCZb9y91q=EA71Vg@mail.gmail.com>
- <25d0c091-3dce-4d62-a112-c82106809c65@lunn.ch>
+        Thu, 30 Nov 2023 12:01:03 -0800 (PST)
+From:   Kees Cook <keescook@chromium.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        kernel test robot <lkp@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Jeff Johnson <quic_jjohnson@quicinc.com>,
+        Michael Walle <mwalle@kernel.org>,
+        Max Schulze <max.schulze@online.de>, netdev@vger.kernel.org,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH] netlink: Return unsigned value for nla_len()
+Date:   Thu, 30 Nov 2023 12:01:01 -0800
+Message-Id: <20231130200058.work.520-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <25d0c091-3dce-4d62-a112-c82106809c65@lunn.ch>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2452; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=penjs9WkGWzsqXkZBizH1HvU0T+dKnNfeIaWwvPQsRs=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlaOn9cgfbrAAjas3hx+hd183f+KUlnaqvvTcKU
+ c2eIz0CGr+JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZWjp/QAKCRCJcvTf3G3A
+ JmIKD/9fiJNBEEe9sj4peZsNPvhzqGeV+ixJOnS3btR7fRWXAR9QBI7p3472rOKKDSEWZRdQTRA
+ B5AlP8Marc+gBPUBdlUI2yQuf7iLVJ01rwNk7MwwIm0p8877bB9Ge135CpOadBdbi6N52wYlslO
+ fbY82GwnMjEL9QLeGY+bnVljthqsh0u4kzcj5lvIekba/DjxD02UIl6gDiGOjBKEdXYXH0W5+7B
+ uW1xm50ZqStiyMkZZNdBsN/x+4w0StkgnevqMlHan+qTAGKPSQjfgBwnfOT3z/FVMnCGQyCtxYn
+ 9KfatOF3VjZl46DHRNfQge4XVW5DOmOROeWhrNkQO37hOF0WQxOkonKxggOmynztvZXky5GdJJk
+ tiLIaHyOqJWjxqwHX3USmrjr8WoFXqUGLZUkIj/opc+VpAHdsRN4ZwFLeXcPBLTiC+NWdxXKBo8
+ O520MI1VJ1DXdtevqUR5SSfNbJcdcPnvAYoi6HLgonCzGcTextAdQBvRSp21GJ/2V3HMZVkKlUw
+ ljYYLzEDitegFiqrm8+9uwtU+sELR7aZ5uaeM0Yi8Co6ml4VYGgxOHKANC8kTvqTGL03DbLrCfV
+ dh6a2w5v9R7rWMFPujOVF3bg8C82w7O6z1FrfxDu3Z/+4EnrtLPo0zdTUkrQe6/6HW1xnnx89m3
+ N9xuByR CH8DD7Tw==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 30, 2023 at 06:26:13PM +0100, Andrew Lunn wrote:
-> > I will check with the xpcs maintainer how can we add indirect access
-> > to the xpcs module.
-> 
-> https://elixir.bootlin.com/linux/latest/source/drivers/net/ethernet/stmicro/stmmac/dwmac-socfpga.c#L449
-> 
-> It creates a regmap for the memory range. On top of that it creates an
-> MDIO bus. You can then access the PCS in the normal way.
+The return value from nla_len() is never expected to be negative, and can
+never be more than struct nlattr::nla_len (a u16). Adjust the prototype
+on the function, and explicitly bounds check the subtraction. This will
+let GCC's value range optimization passes know that the return can never
+be negative, and can never be larger than u16. As recently discussed[1],
+this silences the following warning in GCC 12+:
 
-Actually Synopsys DW XPCS can be synthesized with two types of the CSR
-interfaces:
-1. MDIO: device looks as a normal MDIO device. This option is currently
-   supported by the STMMAC MDIO driver.
-2. MCI/APB3: device MMD CSRs are directly (all CSRs are visible) or
-   indirectly (paged-base access) accessible over the system memory bus.
+net/wireless/nl80211.c: In function 'nl80211_set_cqm_rssi.isra':
+net/wireless/nl80211.c:12892:17: warning: 'memcpy' specified bound 18446744073709551615 exceeds maximum object size 9223372036854775807 [-Wstringop-overflow=]
+12892 |                 memcpy(cqm_config->rssi_thresholds, thresholds,
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+12893 |                        flex_array_size(cqm_config, rssi_thresholds,
+      |                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+12894 |                                        n_thresholds));
+      |                                        ~~~~~~~~~~~~~~
 
-In addition to the above XPCS device can be equipped with separate
-clock sources (at least to feed the MCI or APB3 interface) and may
-have dedicated IRQ line to signal various events like link
-establishing, failures, etc. From that perspective XPCS in both cases
-looks as a normal platform device for which would be better to have a
-special DT-node defined with all those resources supplied. Then the
-XPCS DT-node could be passed to the DW MAC DT-node via the already
-standardized "pcs-handle" DT-property.
+This has the additional benefit of being defensive in the face of nlattr
+corruption or logic errors (i.e. nla_len being set smaller than
+NLA_HDRLEN).
 
-I have such approach implemented in my local repo. If you consider
-this as a proper solution, after a small modification I'll be able to
-submit a patchset for review tomorrow.
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202311090752.hWcJWAHL-lkp@intel.com/ [1]
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Paolo Abeni <pabeni@redhat.com>
+Cc: Johannes Berg <johannes@sipsolutions.net>
+Cc: Jeff Johnson <quic_jjohnson@quicinc.com>
+Cc: Michael Walle <mwalle@kernel.org>
+Cc: Max Schulze <max.schulze@online.de>
+Cc: netdev@vger.kernel.org
+Cc: linux-wireless@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ include/net/netlink.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
--Serge(y)
+diff --git a/include/net/netlink.h b/include/net/netlink.h
+index 167b91348e57..c59679524705 100644
+--- a/include/net/netlink.h
++++ b/include/net/netlink.h
+@@ -1214,9 +1214,9 @@ static inline void *nla_data(const struct nlattr *nla)
+  * nla_len - length of payload
+  * @nla: netlink attribute
+  */
+-static inline int nla_len(const struct nlattr *nla)
++static inline u16 nla_len(const struct nlattr *nla)
+ {
+-	return nla->nla_len - NLA_HDRLEN;
++	return nla->nla_len > NLA_HDRLEN ? nla->nla_len - NLA_HDRLEN : 0;
+ }
+ 
+ /**
+-- 
+2.34.1
 
-> 
-> 	Andrew
-> 
