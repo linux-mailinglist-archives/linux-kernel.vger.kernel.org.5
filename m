@@ -2,316 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 301D77FF61D
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 17:34:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39A7B7FF627
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 17:35:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345249AbjK3QeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 11:34:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50470 "EHLO
+        id S232120AbjK3QfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 11:35:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231796AbjK3QeX (ORCPT
+        with ESMTP id S229503AbjK3QfG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 11:34:23 -0500
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA41710DF
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 08:34:27 -0800 (PST)
-Received: by mail-yb1-xb34.google.com with SMTP id 3f1490d57ef6-dae0ab8ac3eso1038313276.0
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 08:34:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1701362067; x=1701966867; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UtFno+LwQ2GzDnhBeUDiSKJsjmjd4ts8+ULAaW82MMY=;
-        b=PZ5jLWuTODNkPYXVwRoLdgCgs1RiXX0CB+ozc2Zis6xwGi6Avw+oKhPD/zvoxOU5CT
-         InOMJrWqPHMWGf9AyKnk822BxpH77SdKVepUZQilsxzmIKeKLKusqgZRBHlB9pwdahCc
-         FcwGgvoVMSl172uYRwCmkufUZl1E4tzH2rQbVzH9gHcv3+pNlSczMmFsY+2JnCyZHwkR
-         3VK14HibDOdwrVgkvSQ9cytJ+mmOziLMMT5tm/recPgdqTWot++t6Qocds1dstZA0I9F
-         0XVm+tV13w6Uq87Lx6N0Prfq85+SVpBM38edUKIdMlPsNxJGTCxR2kUbvqPjL7Iixn46
-         2RZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701362067; x=1701966867;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UtFno+LwQ2GzDnhBeUDiSKJsjmjd4ts8+ULAaW82MMY=;
-        b=U00bnrUjaLShfDBpfDE2iSzbja/h0HV9gbI+0Py1FzozeAcY3Gr3CbUj368Z8JL2ak
-         Dib6Qo2sTNR/8OhsV7D6pR8Ao943j7A2AuMV/zv6i8CS8Aph5dgI1zvgLUCeZ78vmAc5
-         jCFhugA0o1SmIavzXUo6547XU2tMmXaF40NqXb6I6gk8CKesw9D/Jc38X63rdMXDW9bp
-         SEIYZkn3h6/+6Bz9Z90/DPvqPLLbjYEwS3aaH0XTVo2DV3hcOXODsCjpcEYGiQ5ybx2L
-         Vx7YMORsA3+STznny5M9U+IQhN/aY3oIlAfYHtIQS0KEqc1Aey1avPZG4rNDvrtwooR4
-         VXhQ==
-X-Gm-Message-State: AOJu0Ywkx06iM/QLOhhWuBDDLjpPwVP8Hp/FjmWmyY2wEeJMFviuIbyL
-        bNh9dfME/kqD7acCCaKxHDSfkDt9f9ZBpdBRFLrv
-X-Google-Smtp-Source: AGHT+IHeHdpK2ZUS6oWXFVUCJZ09doGArKmA7HaDqW1eGm3Lnoqt9TFrtxWh2usWvQXHN2dvVLQzpflDEM/jaG+E5BI=
-X-Received: by 2002:a25:8d0b:0:b0:da0:cbff:4e20 with SMTP id
- n11-20020a258d0b000000b00da0cbff4e20mr20087394ybl.56.1701362066812; Thu, 30
- Nov 2023 08:34:26 -0800 (PST)
+        Thu, 30 Nov 2023 11:35:06 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CD3E1A4
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 08:35:13 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2514DC433C7;
+        Thu, 30 Nov 2023 16:35:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701362112;
+        bh=4F84RwjlB9iRgUGGooUK/h51rT4q/jQ9DxBI0GL7X3o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=e1Xe6LdBbc/vXQBJiz1UVPS09eoRnptp4TGoJNsQDsa8FQyHYOVuViYLPfaODNDGT
+         Nsf95+FLT6aCOHk59YMHn+B64fpc5ofQ8Xzm7kcDI0YSe06j8GT+Et7RE0OOpa3sY7
+         d/34yAiYl+XhbNNZm9IlZCIhtYe5kCOBrWRPhE8V005CUiIv8kNuby5r8UPR/r5hfh
+         FsKQAKTLp2JSfoHcqDy0hqCqGIyBVUS5VVRJeoM6pIkZZXhWBs3d/NP2ZhWU1P0tGL
+         2wH9Gg301TjqjQDtVsPKOsoJtjvGGffqw5ugqQkFV/O47w9Bbm3f5wEe6k5UDRtW1x
+         SaqFLAxM3pDqw==
+Date:   Thu, 30 Nov 2023 16:35:08 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Subject: Re: linux-next: Tree for Nov 22 (riscv: DMA_GLOBAL_POOL)
+Message-ID: <20231130-mothproof-tripod-fe35364591ee@spud>
+References: <20231122145257.6f668afa@canb.auug.org.au>
+ <24942b4d-d16a-463f-b39a-f9dfcb89d742@infradead.org>
 MIME-Version: 1.0
-References: <20231107134012.682009-24-roberto.sassu@huaweicloud.com>
- <17befa132379d37977fc854a8af25f6d.paul@paul-moore.com> <2084adba3c27a606cbc5ed7b3214f61427a829dd.camel@huaweicloud.com>
- <CAHC9VhTTKac1o=RnQadu2xqdeKH8C_F+Wh4sY=HkGbCArwc8JQ@mail.gmail.com>
- <b6c51351be3913be197492469a13980ab379e412.camel@huaweicloud.com>
- <CAHC9VhSAryQSeFy0ZMexOiwBG-YdVGRzvh58=heH916DftcmWA@mail.gmail.com> <90eb8e9d-c63e-42d6-b951-f856f31590db@huaweicloud.com>
-In-Reply-To: <90eb8e9d-c63e-42d6-b951-f856f31590db@huaweicloud.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Thu, 30 Nov 2023 11:34:16 -0500
-Message-ID: <CAHC9VhROnfBoaOy2MurdSpcE_poo_6Qy9d2U3g6m2NRRHaqz4Q@mail.gmail.com>
-Subject: Re: [PATCH v5 23/23] integrity: Switch from rbtree to LSM-managed
- blob for integrity_iint_cache
-To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
-Cc:     viro@zeniv.linux.org.uk, brauner@kernel.org,
-        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
-        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
-        jmorris@namei.org, serge@hallyn.com, zohar@linux.ibm.com,
-        dmitry.kasatkin@gmail.com, dhowells@redhat.com, jarkko@kernel.org,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        casey@schaufler-ca.com, mic@digikod.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="9Ll85g90yOGMJeXA"
+Content-Disposition: inline
+In-Reply-To: <24942b4d-d16a-463f-b39a-f9dfcb89d742@infradead.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 1:47=E2=80=AFPM Roberto Sassu
-<roberto.sassu@huaweicloud.com> wrote:
-> On 11/29/2023 6:22 PM, Paul Moore wrote:
-> > On Wed, Nov 29, 2023 at 7:28=E2=80=AFAM Roberto Sassu
-> > <roberto.sassu@huaweicloud.com> wrote:
-> >>
-> >> On Mon, 2023-11-20 at 16:06 -0500, Paul Moore wrote:
-> >>> On Mon, Nov 20, 2023 at 3:16=E2=80=AFAM Roberto Sassu
-> >>> <roberto.sassu@huaweicloud.com> wrote:
-> >>>> On Fri, 2023-11-17 at 15:57 -0500, Paul Moore wrote:
-> >>>>> On Nov  7, 2023 Roberto Sassu <roberto.sassu@huaweicloud.com> wrote=
-:
-> >>>>>>
-> >>>>>> Before the security field of kernel objects could be shared among =
-LSMs with
-> >>>>>> the LSM stacking feature, IMA and EVM had to rely on an alternativ=
-e storage
-> >>>>>> of inode metadata. The association between inode metadata and inod=
-e is
-> >>>>>> maintained through an rbtree.
-> >>>>>>
-> >>>>>> Because of this alternative storage mechanism, there was no need t=
-o use
-> >>>>>> disjoint inode metadata, so IMA and EVM today still share them.
-> >>>>>>
-> >>>>>> With the reservation mechanism offered by the LSM infrastructure, =
-the
-> >>>>>> rbtree is no longer necessary, as each LSM could reserve a space i=
-n the
-> >>>>>> security blob for each inode. However, since IMA and EVM share the
-> >>>>>> inode metadata, they cannot directly reserve the space for them.
-> >>>>>>
-> >>>>>> Instead, request from the 'integrity' LSM a space in the security =
-blob for
-> >>>>>> the pointer of inode metadata (integrity_iint_cache structure). Th=
-e other
-> >>>>>> reason for keeping the 'integrity' LSM is to preserve the original=
- ordering
-> >>>>>> of IMA and EVM functions as when they were hardcoded.
-> >>>>>>
-> >>>>>> Prefer reserving space for a pointer to allocating the integrity_i=
-int_cache
-> >>>>>> structure directly, as IMA would require it only for a subset of i=
-nodes.
-> >>>>>> Always allocating it would cause a waste of memory.
-> >>>>>>
-> >>>>>> Introduce two primitives for getting and setting the pointer of
-> >>>>>> integrity_iint_cache in the security blob, respectively
-> >>>>>> integrity_inode_get_iint() and integrity_inode_set_iint(). This wo=
-uld make
-> >>>>>> the code more understandable, as they directly replace rbtree oper=
-ations.
-> >>>>>>
-> >>>>>> Locking is not needed, as access to inode metadata is not shared, =
-it is per
-> >>>>>> inode.
-> >>>>>>
-> >>>>>> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> >>>>>> Reviewed-by: Casey Schaufler <casey@schaufler-ca.com>
-> >>>>>> Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
-> >>>>>> ---
-> >>>>>>   security/integrity/iint.c      | 71 +++++-----------------------=
-------
-> >>>>>>   security/integrity/integrity.h | 20 +++++++++-
-> >>>>>>   2 files changed, 29 insertions(+), 62 deletions(-)
-> >>>>>>
-> >>>>>> diff --git a/security/integrity/iint.c b/security/integrity/iint.c
-> >>>>>> index 882fde2a2607..a5edd3c70784 100644
-> >>>>>> --- a/security/integrity/iint.c
-> >>>>>> +++ b/security/integrity/iint.c
-> >>>>>> @@ -231,6 +175,10 @@ static int __init integrity_lsm_init(void)
-> >>>>>>      return 0;
-> >>>>>>   }
-> >>>>>>
-> >>>>>> +struct lsm_blob_sizes integrity_blob_sizes __ro_after_init =3D {
-> >>>>>> +   .lbs_inode =3D sizeof(struct integrity_iint_cache *),
-> >>>>>> +};
-> >>>>>
-> >>>>> I'll admit that I'm likely missing an important detail, but is ther=
-e
-> >>>>> a reason why you couldn't stash the integrity_iint_cache struct
-> >>>>> directly in the inode's security blob instead of the pointer?  For
-> >>>>> example:
-> >>>>>
-> >>>>>    struct lsm_blob_sizes ... =3D {
-> >>>>>      .lbs_inode =3D sizeof(struct integrity_iint_cache),
-> >>>>>    };
-> >>>>>
-> >>>>>    struct integrity_iint_cache *integrity_inode_get(inode)
-> >>>>>    {
-> >>>>>      if (unlikely(!inode->isecurity))
-> >>>>>        return NULL;
-> >>>>>      return inode->i_security + integrity_blob_sizes.lbs_inode;
-> >>>>>    }
-> >>>>
-> >>>> It would increase memory occupation. Sometimes the IMA policy
-> >>>> encompasses a small subset of the inodes. Allocating the full
-> >>>> integrity_iint_cache would be a waste of memory, I guess?
-> >>>
-> >>> Perhaps, but if it allows us to remove another layer of dynamic memor=
-y
-> >>> I would argue that it may be worth the cost.  It's also worth
-> >>> considering the size of integrity_iint_cache, while it isn't small, i=
-t
-> >>> isn't exactly huge either.
-> >>>
-> >>>> On the other hand... (did not think fully about that) if we embed th=
-e
-> >>>> full structure in the security blob, we already have a mutex availab=
-le
-> >>>> to use, and we don't need to take the inode lock (?).
-> >>>
-> >>> That would be excellent, getting rid of a layer of locking would be s=
-ignificant.
-> >>>
-> >>>> I'm fully convinced that we can improve the implementation
-> >>>> significantly. I just was really hoping to go step by step and not
-> >>>> accumulating improvements as dependency for moving IMA and EVM to th=
-e
-> >>>> LSM infrastructure.
-> >>>
-> >>> I understand, and I agree that an iterative approach is a good idea, =
-I
-> >>> just want to make sure we keep things tidy from a user perspective,
-> >>> i.e. not exposing the "integrity" LSM when it isn't required.
-> >>
-> >> Ok, I went back to it again.
-> >>
-> >> I think trying to separate integrity metadata is premature now, too
-> >> many things at the same time.
-> >
-> > I'm not bothered by the size of the patchset, it is more important
-> > that we do The Right Thing.  I would like to hear in more detail why
-> > you don't think this will work, I'm not interested in hearing about
-> > difficult it may be, I'm interested in hearing about what challenges
-> > we need to solve to do this properly.
->
-> The right thing in my opinion is to achieve the goal with the minimal
-> set of changes, in the most intuitive way.
 
-Once again, I want to stress that I don't care about the size of the
-change, the number of patches in a patchset, etc.  While it's always
-nice to be able to minimize the number of changes in a patch/patchset,
-that is secondary to making sure we are doing the right thing over the
-long term.  This is especially important when we are talking about
-things that are user visible.
+--9Ll85g90yOGMJeXA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Until now, there was no solution that could achieve the primary goal of
-> this patch set (moving IMA and EVM to the LSM infrastructure) and, at
-> the same time, achieve the additional goal you set of removing the
-> 'integrity' LSM.
+On Wed, Nov 22, 2023 at 02:37:43PM -0800, Randy Dunlap wrote:
+>=20
+>=20
+> On 11/21/23 19:52, Stephen Rothwell wrote:
+> > Hi all,
+> >=20
+> > Changes since 20231121:
+> >=20
+>=20
+> on riscv 32-bit:
+>=20
+> WARNING: unmet direct dependencies detected for DMA_GLOBAL_POOL
+>   Depends on [n]: !ARCH_HAS_DMA_SET_UNCACHED [=3Dn] && !DMA_DIRECT_REMAP =
+[=3Dy]
+>   Selected by [y]:
+>   - ARCH_R9A07G043 [=3Dy] && SOC_RENESAS [=3Dy] && RISCV [=3Dy] && NONPOR=
+TABLE [=3Dy] && RISCV_ALTERNATIVE [=3Dy] && !RISCV_ISA_ZICBOM [=3Dn] && RIS=
+CV_SBI [=3Dy]
+>=20
+> WARNING: unmet direct dependencies detected for DMA_GLOBAL_POOL
+>   Depends on [n]: !ARCH_HAS_DMA_SET_UNCACHED [=3Dn] && !DMA_DIRECT_REMAP =
+[=3Dy]
+>   Selected by [y]:
+>   - ARCH_R9A07G043 [=3Dy] && SOC_RENESAS [=3Dy] && RISCV [=3Dy] && NONPOR=
+TABLE [=3Dy] && RISCV_ALTERNATIVE [=3Dy] && !RISCV_ISA_ZICBOM [=3Dn] && RIS=
+CV_SBI [=3Dy]
 
-We need to stop thinking about the "integrity" code as a LSM, it isn't
-a LSM.  It's a vestigial implementation detail that was necessary back
-when there could only be one LSM active at a time and there was a
-desire to have IMA/EVM active in conjunction with one of the LSMs,
-i.e. Smack, SELinux, etc.
+DMA_DIRECT_REMAP is selected by the T-HEAD CMO erratum.
+DMA_GLOBAL_POOL by the Andes CMO erratum.
 
-IMA and EVM are (or will be) LSMs, "integrity" is not.  I recognize
-that eliminating the need for the "integrity" code is a relatively new
-addition to this effort, but that is only because I didn't properly
-understand the relationship between IMA, EVM, and the "integrity" code
-until recently.  The elimination of the shared "integrity" code is
-consistent with promoting IMA and EVM as full LSMs, if there is core
-functionality that cannot be split up into the IMA and/or EVM LSMs
-then we need to look at how to support that without exposing that
-implementation detail/hack to userspace.  Maybe that means direct
-calls between IMA and EVM, maybe that means preserving some of the
-common integrity code hidden from userspace, maybe that means adding
-functionality to the LSM layer, maybe that means something else?
-Let's think on this to come up with something that we can all accept
-as a long term solution instead of just doing the quick and easy
-option.
+We could do
 
-> If you see the diff, the changes compared to v5 that was already
-> accepted by Mimi are very straightforward. If the assumption I made that
-> in the end the 'ima' LSM could take over the role of the 'integrity'
-> LSM, that for me is the preferable option.
+diff --git a/drivers/soc/renesas/Kconfig b/drivers/soc/renesas/Kconfig
+index 0071864c2111..d8723fdf1e55 100644
+--- a/drivers/soc/renesas/Kconfig
++++ b/drivers/soc/renesas/Kconfig
+@@ -339,6 +339,7 @@ if RISCV
+=20
+ config ARCH_R9A07G043
+ 	bool "RISC-V Platform support for RZ/Five"
++	depends on !DMA_DIRECT_REMAP
+ 	depends on NONPORTABLE
+ 	depends on RISCV_ALTERNATIVE
+ 	depends on !RISCV_ISA_ZICBOM
 
-I looked at it quickly, but my workflow isn't well suited for patches
-as attachments; inline patches (the kernel standard) is preferable.
 
-> Given that the patch set is not doing any design change, but merely
-> moving calls and storing pointers elsewhere, that leaves us with the
-> option of thinking better what to do next, including like you suggested
-> to make IMA and EVM use disjoint metadata.
->
-> >> I started to think, does EVM really need integrity metadata or it can
-> >> work without?
-> >>
-> >> The fact is that CONFIG_IMA=3Dn and CONFIG_EVM=3Dy is allowed, so we h=
-ave
-> >> the same problem now. What if we make IMA the one that manages
-> >> integrity metadata, so that we can remove the 'integrity' LSM?
-> >
-> > I guess we should probably revisit the basic idea of if it even makes
-> > sense to enable EVM without IMA?  Should we update the Kconfig to
-> > require IMA when EVM is enabled?
->
-> That would be up to Mimi. Also this does not seem the main focus of the
-> patch set.
+--9Ll85g90yOGMJeXA
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Yes, it is not part of the original main focus, but it is definitely
-relevant to the discussion we are having now.  Once again, the most
-important thing to me is that we do The Right Thing for the long term
-maintenance of the code base; if that means scope creep, I've got no
-problem with that.
+-----BEGIN PGP SIGNATURE-----
 
-> >> Regarding the LSM order, I would take Casey's suggestion of introducin=
-g
-> >> LSM_ORDER_REALLY_LAST, for EVM.
-> >
-> > Please understand that I really dislike that we have imposed ordering
-> > constraints at the LSM layer, but I do understand the necessity (the
-> > BPF LSM ordering upsets me the most).  I really don't want to see us
-> > make things worse by adding yet another ordering bucket, I would
-> > rather that we document it well and leave it alone ... basically treat
-> > it like the BPF LSM (grrrrrr).
->
-> Uhm, that would not be possible right away (the BPF LSM is mutable),
-> remember that we defined LSM_ORDER_LAST so that an LSM can be always
-> enable and placed as last (requested by Mimi)?
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZWi5vAAKCRB4tDGHoIJi
+0hKkAP4yMmlUllauDrHAD3p5t5OnJr8sCXiBdoS+jS+mf2gItQD9G/aFILUv61m/
+9xJePo/tRRfXb4+RUXbYpR2KFHHq+A4=
+=leVc
+-----END PGP SIGNATURE-----
 
-To be clear, I can both dislike the bpf-always-last and LSM_ORDER_LAST
-concepts while accepting them as necessary evils.  I'm willing to
-tolerate LSM_ORDER_LAST, but I'm not currently willing to tolerate
-LSM_ORDER_REALLY_LAST; that is one step too far right now.  I brought
-up the BPF LSM simply as an example of ordering that is not enforced
-by code, but rather by documentation and convention.
-
---=20
-paul-moore.com
+--9Ll85g90yOGMJeXA--
