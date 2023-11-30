@@ -2,135 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C227F7FF749
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 17:55:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B67B7FF744
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 17:55:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345850AbjK3QzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 11:55:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47336 "EHLO
+        id S1345830AbjK3QzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 11:55:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345840AbjK3QzS (ORCPT
+        with ESMTP id S232657AbjK3QzM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 11:55:18 -0500
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B49610DB
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 08:55:24 -0800 (PST)
-Received: by mail-oi1-x230.google.com with SMTP id 5614622812f47-3b5714439b3so652337b6e.3
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 08:55:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701363323; x=1701968123; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=rmxSAO3fdyrKwaTqGd3YSx6BBvFQHSOmyrJHBt/Yn5A=;
-        b=U85gaENisn4eFT7aw9gz+s14lGbhRLN6aXvcAZloi7KdDsfEskyaGEnTN+ahxna+Z6
-         8xbqcJrIhGQNi2cpSmfPm9y9ywjE0hIsoG3gMUazzaYgsbKt1FG1RJOlplF//SUXCoQA
-         UNqFja6IPPmvxMu9LOAX3ql1Ftks7Ugw8NfvJxvlz508kL750tdPZzHPzaw5BGI9pDV4
-         AfbQ3bETbM+zDK399sAhU71C9eqBCFJYzgy+NogHa7vTbAYpY1JcAJ2WbVD8T7U1IZMu
-         mrqL5ePuX2Xwq+lofT6H31Ip8QvVi3WX36MTjGKJtloaqsHSMP97w24aC+ZUDatHNaPM
-         H40Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701363323; x=1701968123;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rmxSAO3fdyrKwaTqGd3YSx6BBvFQHSOmyrJHBt/Yn5A=;
-        b=dlt1VJHAbht2PUk8Uyxkog5vh+A79n1ap8EIO3UmzudN1ixDuxoSluE8P0SB/1h0a0
-         UXwhqbDg+qSjhHlFIEy8ZrcDm1IFPqXMsrPOvgs489duU16RQkVce5RSDT3a1c+NXsp6
-         vfR/ieHY6DjP6XfPxrLsj9hQt6lNC6STIMcaLk1h3EXHHYenoPvxtaqgA+vlcDOuYa3m
-         B3xuGXu3c1ZLUi3UDTi50PF1aNsPsQ4RnzuZEpSHBn9iMUuWMgcZfb3ma9LjUSUnTga7
-         47ekREbYxqRvT1ONBJ+ktFErHLzUKHXCmjxm7DSdhy2oVufiJHvfiL4ix3fAsOJ7U3Ds
-         0hWg==
-X-Gm-Message-State: AOJu0YwhiZIzHtpQBXSmisFACW7cHHXRj7zou3kJqQD6j2NbKmWLpxPZ
-        68Z2Ov9Pi4xTGhiiaaF67t5n
-X-Google-Smtp-Source: AGHT+IEz7XuDUqXYdI4J/jG28y1tc/o5oyAeuhg85Lkt1tkDT7TzfRm7sgOObpymwMghWxY+ERa48Q==
-X-Received: by 2002:a54:4389:0:b0:3b8:9bf6:66e8 with SMTP id u9-20020a544389000000b003b89bf666e8mr114366oiv.21.1701363323569;
-        Thu, 30 Nov 2023 08:55:23 -0800 (PST)
-Received: from thinkpad ([117.213.102.92])
-        by smtp.gmail.com with ESMTPSA id bq42-20020a05620a46aa00b0077d6443ae82sm643960qkb.83.2023.11.30.08.55.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Nov 2023 08:55:23 -0800 (PST)
-Date:   Thu, 30 Nov 2023 22:25:14 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Shradha Todi <shradha.t@samsung.com>
-Cc:     lpieralisi@kernel.org, kw@linux.com, robh@kernel.org,
-        bhelgaas@google.com, jingoohan1@gmail.com,
-        gustavo.pimentel@synopsys.com, josh@joshtriplett.org,
-        lukas.bulwahn@gmail.com, hongxing.zhu@nxp.com,
-        pankaj.dubey@samsung.com, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org
-Subject: Re: [PATCH v2 0/3] Add support for RAS DES feature in PCIe DW
- controller
-Message-ID: <20231130165514.GW3043@thinkpad>
-References: <CGME20231130115055epcas5p4e29befa80877be45dbee308846edc0ba@epcas5p4.samsung.com>
- <20231130115044.53512-1-shradha.t@samsung.com>
+        Thu, 30 Nov 2023 11:55:12 -0500
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8188B10E0;
+        Thu, 30 Nov 2023 08:55:18 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Sh2MR6jh3z688p7;
+        Fri,  1 Dec 2023 00:53:39 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+        by mail.maildlp.com (Postfix) with ESMTPS id 8C65514058E;
+        Fri,  1 Dec 2023 00:55:16 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 30 Nov
+ 2023 16:55:15 +0000
+Date:   Thu, 30 Nov 2023 16:55:15 +0000
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
+CC:     <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
+        <linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-riscv@lists.infradead.org>, <kvmarm@lists.linux.dev>,
+        <x86@kernel.org>, <linux-csky@vger.kernel.org>,
+        <linux-doc@vger.kernel.org>, <linux-ia64@vger.kernel.org>,
+        <linux-parisc@vger.kernel.org>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        <jianyong.wu@arm.com>, <justin.he@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH 16/21] x86/topology: convert to use
+ arch_cpu_is_hotpluggable()
+Message-ID: <20231130165515.00000a25@Huawei.com>
+In-Reply-To: <E1r5R3w-00Cszy-6k@rmk-PC.armlinux.org.uk>
+References: <ZVyz/Ve5pPu8AWoA@shell.armlinux.org.uk>
+        <E1r5R3w-00Cszy-6k@rmk-PC.armlinux.org.uk>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231130115044.53512-1-shradha.t@samsung.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml100005.china.huawei.com (7.191.160.25) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 30, 2023 at 05:20:41PM +0530, Shradha Todi wrote:
-> DesignWare controller provides a vendor specific extended capability
-> called RASDES as an IP feature. This extended capability  provides
-> hardware information like:
->  - Debug registers to know the state of the link or controller. 
->  - Error injection mechanisms to inject various PCIe errors including
->    sequence number, CRC
->  - Statistical counters to know how many times a particular event
->    occurred
-> 
-> However, in Linux we do not have any generic or custom support to be
-> able to use this feature in an efficient manner. This is the reason we
-> are proposing this framework. Debug and bring up time of high-speed IPs
-> are highly dependent on costlier hardware analyzers and this solution
-> will in some ways help to reduce the HW analyzer usage.
-> 
-> The debugfs entries can be used to get information about underlying
-> hardware and can be shared with user space. Separate debugfs entries has
-> been created to cater to all the DES hooks provided by the controller.
-> The debugfs entries interacts with the RASDES registers in the required
-> sequence and provides the meaningful data to the user. This eases the
-> effort to understand and use the register information for debugging.
-> 
-> v1 version was posted long back and for some reasons I couldn't work on
-> it. I apologize for the long break. I'm restarting this activity and
-> have taken care of all previous review comments shared.
-> v1: https://lore.kernel.org/all/20210518174618.42089-1-shradha.t@samsung.com/T/
-> 
+On Tue, 21 Nov 2023 13:45:12 +0000
+"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk> wrote:
 
-There is already a series floating to add similar functionality via perf
-subsystem: https://lore.kernel.org/linux-pci/20231121013400.18367-1-xueshuai@linux.alibaba.com/
-
-- Mani
-
-> Shradha Todi (3):
->   PCI: dwc: Add support for vendor specific capability search
->   PCI: debugfs: Add support for RASDES framework in DWC
->   PCI: dwc: Create debugfs files in DWC driver
+> Convert x86 to use the arch_cpu_is_hotpluggable() helper rather than
+> arch_register_cpu().
 > 
->  drivers/pci/controller/dwc/Kconfig            |   8 +
->  drivers/pci/controller/dwc/Makefile           |   1 +
->  .../controller/dwc/pcie-designware-debugfs.c  | 476 ++++++++++++++++++
->  .../controller/dwc/pcie-designware-debugfs.h  |   0
->  drivers/pci/controller/dwc/pcie-designware.c  |  20 +
->  drivers/pci/controller/dwc/pcie-designware.h  |  18 +
->  6 files changed, 523 insertions(+)
->  create mode 100644 drivers/pci/controller/dwc/pcie-designware-debugfs.c
->  create mode 100644 drivers/pci/controller/dwc/pcie-designware-debugfs.h
-> 
-> -- 
-> 2.17.1
-> 
-
--- 
-மணிவண்ணன் சதாசிவம்
+> Reviewed-by: Gavin Shan <gshan@redhat.com>
+> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
