@@ -2,282 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBFAA7FEFAC
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 14:01:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2BF37FEFAD
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 14:02:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232111AbjK3NBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 08:01:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38940 "EHLO
+        id S1345395AbjK3NCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 08:02:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232026AbjK3NBN (ORCPT
+        with ESMTP id S231990AbjK3NCg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 08:01:13 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94C5110DB
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 05:01:18 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB402C433C9;
-        Thu, 30 Nov 2023 13:01:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701349278;
-        bh=Y6P2f2Sf3w01PljjdEzwHVXoK16hWzbz2lMqn3qVGR0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HWXQ3joRfXeJrQZePqk4Sy4pwHvenhlhyEYU//laRJSh9jGcSImZvKCGXH5VfJTk+
-         RIK8uUK00872ap5RvtTxV2fWYMB+mlRV4HcMA/2lMTtwtjH8fuUouzhPULLTt25o/f
-         SWGTedbcMK2Q+CkMvI9PLZOY1J04gfbxsEPt+CHU9Ur6GFQBoJ6z7AzrJx4VprIJYw
-         pB6D+VP6Te6oVffUDdmFNUJvj4BDANnztdD9VGYS4trzylmXVPHOulJFfwOEBBonP+
-         r5q0wxqJXXiyPnJE0I6+rDdB/XYdxc3Ovl32ZfHmhGAwM1Sfc+t7VXzef184lQwUsz
-         35bqh3iSq+NcQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 79EE940094; Thu, 30 Nov 2023 10:01:15 -0300 (-03)
-Date:   Thu, 30 Nov 2023 10:01:15 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Marco Elver <elver@google.com>
-Cc:     Namhyung Kim <namhyung@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Clark Williams <williams@redhat.com>,
-        Kate Carcia <kcarcia@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Mike Galbraith <efault@gmx.de>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH 2/2] perf tests sigtrap: Skip if running on a kernel with
- sleepable spinlocks
-Message-ID: <ZWiHm/RmtmOfQwVI@kernel.org>
-References: <20231129154718.326330-1-acme@kernel.org>
- <20231129154718.326330-3-acme@kernel.org>
- <CANpmjNMftTuqPwmujNx5e+ajgdYtik9uL6dt62Ucotc7oz-uUw@mail.gmail.com>
- <ZWeiNj7B+5dJosE9@kernel.org>
+        Thu, 30 Nov 2023 08:02:36 -0500
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4F3A10C9;
+        Thu, 30 Nov 2023 05:02:42 -0800 (PST)
+Received: by mail-yb1-xb30.google.com with SMTP id 3f1490d57ef6-db498e1132bso781843276.2;
+        Thu, 30 Nov 2023 05:02:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701349362; x=1701954162; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=t+XQrviBlIMoJrwg4MwMEzdsSIALeidvNSbX1jKDmG8=;
+        b=MjUaSoX989H8lActhZ9VtW/HseRPca2vYMfIPACvXZWNhWy39waB2cOwN876XBXb8O
+         0BIzk6FkGrbsFl63DRrIKItScP+IQUj/X0EZ6XEWHBXNpUC+k9SFurSlP35/67DZMKDA
+         d+1DJLACC+XNWAcH61TYerZEk5hgLC3Ad9rMs/rt2hYG8tkzEuKcdJKw2Fi5bBfbL5CG
+         ZjOsxTZzOtZ9aRAMRi2ex8fgwjXVQGv4sFhAHnr5CEuBV0qlR0R4/cB+aZsL2+xXnDpO
+         OS4gNjTnF0DOvXMlAiHyZOANL1g7U5ag4h7aqTE7jP14QT/Gwnf9rqPmizupn8b0YpEs
+         HzzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701349362; x=1701954162;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=t+XQrviBlIMoJrwg4MwMEzdsSIALeidvNSbX1jKDmG8=;
+        b=JqSAdsaZNG2hXI6zGIT58wfjHKIK2+JLnyWl2xgVYrzm31NSdz6x1PPOli/FBIS8wD
+         qTY8H25Ds1ER3U9IEXeyB9djtKqbrJVbZ7gJqIPmP2dfiWnmmjHXLA+U23Gz9GL0UFPl
+         Qd13J9fvqh+zAollmuDK8aPJCZdnS4cTV0/HO/sNNgk/BHRmbH9wEAYCiuQSftuZu28P
+         tUG/yywCOgmEE0u/32OGULaj0sYWBoamGTqVzCipMQbDLEXgZKB1skKQhVSJqzqcQYXS
+         p+hHCQoR+3WtMSNRIsYTBuJtPnElAsE4HHV9g8XcpLQYZ/XLOdnH/VwJ3xzymi2EfYHK
+         U5Ag==
+X-Gm-Message-State: AOJu0Yx9kIzkmKLNs1oHwkUkJ5G9C+oOvJM3f+e5mm59rsCgORlGATCY
+        MhBZluM0Ix4MNVlBVDL1+nPaGHUoewe3Ay7ZV/w=
+X-Google-Smtp-Source: AGHT+IHIwoQzWS4BMQgwFN+MZ738g0TwywAROWyKKdIPTEdVaVrBaTq/gSSsO5ifNGwIKJT7r35V4rLO/ylbgNI4JiA=
+X-Received: by 2002:a25:6853:0:b0:db5:3c1d:76a5 with SMTP id
+ d80-20020a256853000000b00db53c1d76a5mr1385840ybc.44.1701349361458; Thu, 30
+ Nov 2023 05:02:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZWeiNj7B+5dJosE9@kernel.org>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=0.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,MANY_SUBDOM,
+References: <cover.1700449792.git.zhoubinbin@loongson.cn> <cae772aa897f6b10c3f5c4c93a256b50c5de4b21.1700449792.git.zhoubinbin@loongson.cn>
+ <20231127182836.GA2150516-robh@kernel.org>
+In-Reply-To: <20231127182836.GA2150516-robh@kernel.org>
+From:   Binbin Zhou <zhoubb.aaron@gmail.com>
+Date:   Thu, 30 Nov 2023 19:02:29 +0600
+Message-ID: <CAMpQs4LSTV6PgZSuyQx2Nq+87OHxSa=-Wz5nbhFVsmmvHubQFQ@mail.gmail.com>
+Subject: Re: [PATCH v5 1/5] dt-bindings: interrupt-controller:
+ loongson,liointc: Standardize the naming of 'loongson,parent-int-map'
+To:     Rob Herring <robh@kernel.org>
+Cc:     Binbin Zhou <zhoubinbin@loongson.cn>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        loongson-kernel@lists.loongnix.cn, devicetree@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-mips@vger.kernel.org, lvjianmin@loongson.cn,
+        WANG Xuerui <git@xen0n.name>, loongarch@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Nov 29, 2023 at 05:42:30PM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Wed, Nov 29, 2023 at 04:57:47PM +0100, Marco Elver escreveu:
-> > > @@ -175,7 +208,16 @@ static int run_stress_test(int fd, pthread_t *threads, pthread_barrier_t *barrie
-> > >         ret = run_test_threads(threads, barrier);
-> > >         TEST_ASSERT_EQUAL("disable failed", ioctl(fd, PERF_EVENT_IOC_DISABLE, 0), 0);
+On Tue, Nov 28, 2023 at 12:28=E2=80=AFAM Rob Herring <robh@kernel.org> wrot=
+e:
+>
+> On Mon, Nov 20, 2023 at 05:06:23PM +0800, Binbin Zhou wrote:
+> > Since the 'loongson,parent_int_map' attribute naming is non-standard, w=
+e
+> > should use 'loongson,parent-int-map' instead.
+> >
+> > Signed-off-by: Binbin Zhou <zhoubinbin@loongson.cn>
+> > Acked-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> > ---
+> >  .../bindings/interrupt-controller/loongson,liointc.yaml   | 8 +++-----
+> >  1 file changed, 3 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/Documentation/devicetree/bindings/interrupt-controller/loo=
+ngson,liointc.yaml b/Documentation/devicetree/bindings/interrupt-controller=
+/loongson,liointc.yaml
+> > index 00b570c82903..70c125bf8095 100644
+> > --- a/Documentation/devicetree/bindings/interrupt-controller/loongson,l=
+iointc.yaml
+> > +++ b/Documentation/devicetree/bindings/interrupt-controller/loongson,l=
+iointc.yaml
+> > @@ -54,7 +54,7 @@ properties:
+> >    '#interrupt-cells':
+> >      const: 2
+> >
+> > -  loongson,parent_int_map:
+> > +  loongson,parent-int-map:
+>
+> Not what I said to do. Now you just break the ABI instead of maintaining
+> both names.
+>
+> Just use loongson,parent_int_map *forever*. Drop this patch.
 
-> > > -       TEST_ASSERT_EQUAL("unexpected sigtraps", ctx.signal_count, NUM_THREADS * ctx.iterate_on);
-> > > +       expected_sigtraps = NUM_THREADS * ctx.iterate_on;
+Hi Rob:
 
-> > > +       if (ctx.signal_count < expected_sigtraps && kernel_with_sleepable_spinlocks()) {
-> > > +               pr_debug("Expected %d sigtraps, got %d, running on a kernel with sleepable spinlocks.\n",
-> > > +                        expected_sigtraps, ctx.signal_count);
-> > > +               pr_debug("See https://lore.kernel.org/all/e368f2c848d77fbc8d259f44e2055fe469c219cf.camel@gmx.de/\n");
+Thanks for your reply, and I am very sorry that I may have missed your
+previous thought, but at the same time I'm confused about how to
+handle the 'parent_int_map' attribute.
 
-> > No changes from the RT side since? A fix exists, but apparently not
-> > good enough... Sigh.
+During the V2 patchset, krzysztof noticed the non-standard naming of
+this property and suggested that we rename 'parent_int_map' in the
+binding and label it as "deprecated". But you don't think it's worth
+doing that.
+My understanding is that it doesn't make sense to keep
+'parent_int_map' for the new binding, so I'm just going to rename the
+property in this version.
+It's true that this will result in an ABI break, but at the same time
+corresponding changes have been made to the driver as well as in the
+existing DTS{i}:
+Patch 4: Handles attribute names in both naming styles;
+Patch 5: Replace all 'parent_int_map' in the MIPS DTS{i}.
 
-> Yeah, my impression, and first attempt at writing that patch wast that
-> no sigtraps were being sent, but then when I tried with a random, more
-> recent machine in the Red Hat labs, I got some signals, way less than
-> the expected ones, but some, maybe this is an interesting data point?
- 
-> I'll try again to reproduce in the local machine, old i7 lenovo notebook
-> and at the newer machine, a Xeon(R) Silver 4216, 32 cpu and report here.
+Do you think this is a suitable way to handle this? Or just keep the "_" na=
+ming?
 
-So, on the i7 lenovo:
-
-[root@nine ~]# uname -a
-Linux nine 5.14.0-284.30.1.rt14.315.el9_2.x86_64 #1 SMP PREEMPT_RT Fri Aug 25 10:53:59 EDT 2023 x86_64 x86_64 x86_64 GNU/Linux
-[root@nine ~]# grep "model name" /proc/cpuinfo
-model name	: Intel(R) Core(TM) i7-2920XM CPU @ 2.50GHz
-model name	: Intel(R) Core(TM) i7-2920XM CPU @ 2.50GHz
-model name	: Intel(R) Core(TM) i7-2920XM CPU @ 2.50GHz
-model name	: Intel(R) Core(TM) i7-2920XM CPU @ 2.50GHz
-model name	: Intel(R) Core(TM) i7-2920XM CPU @ 2.50GHz
-model name	: Intel(R) Core(TM) i7-2920XM CPU @ 2.50GHz
-model name	: Intel(R) Core(TM) i7-2920XM CPU @ 2.50GHz
-model name	: Intel(R) Core(TM) i7-2920XM CPU @ 2.50GHz
-[root@nine ~]# grep "model name" /proc/cpuinfo  | wc -l
-8
-[root@nine ~]#
-[root@nine ~]# perf test -v sigtrap
- 68: Sigtrap                                                         :
---- start ---
-test child forked, pid 77679
-Expected 15000 sigtraps, got 0, running on a kernel with sleepable spinlocks.
-See https://lore.kernel.org/all/e368f2c848d77fbc8d259f44e2055fe469c219cf.camel@gmx.de/
-test child finished with -2
----- end ----
-Sigtrap: Skip
-[root@nine ~]# perf test -v sigtrap |& grep Expected
-Expected 15000 sigtraps, got 0, running on a kernel with sleepable spinlocks.
-[root@nine ~]# perf test -v sigtrap |& grep Expected
-Expected 15000 sigtraps, got 0, running on a kernel with sleepable spinlocks.
-[root@nine ~]# perf test -v sigtrap |& grep Expected
-Expected 15000 sigtraps, got 0, running on a kernel with sleepable spinlocks.
-[root@nine ~]# perf test -v sigtrap |& grep Expected
-Expected 15000 sigtraps, got 0, running on a kernel with sleepable spinlocks.
-[root@nine ~]# perf test -v sigtrap |& grep Expected
-Expected 15000 sigtraps, got 0, running on a kernel with sleepable spinlocks.
-[root@nine ~]# perf test -v sigtrap |& grep Expected
-Expected 15000 sigtraps, got 0, running on a kernel with sleepable spinlocks.
-[root@nine ~]# perf test -v sigtrap |& grep Expected
-Expected 15000 sigtraps, got 0, running on a kernel with sleepable spinlocks.
-[root@nine ~]# perf test -v sigtrap |& grep Expected
-Expected 15000 sigtraps, got 0, running on a kernel with sleepable spinlocks.
-[root@nine ~]# perf test -v sigtrap |& grep Expected
-Expected 15000 sigtraps, got 0, running on a kernel with sleepable spinlocks.
-[root@nine ~]# perf test -v sigtrap |& grep Expected
-Expected 15000 sigtraps, got 0, running on a kernel with sleepable spinlocks.
-[root@nine ~]# uname -a
-
-Consistently 0 sigtraps delivered:
-
-[root@nine ~]# for a in $(seq 100) ; do perf test -v sigtrap |& grep Expected ; done | sort | uniq -c
-    100 Expected 15000 sigtraps, got 0, running on a kernel with sleepable spinlocks.
-[root@nine ~]# for a in $(seq 1000) ; do perf test -v sigtrap |& grep Expected ; done | sort | uniq -c
-   1000 Expected 15000 sigtraps, got 0, running on a kernel with sleepable spinlocks.
-[root@nine ~]#
-
-While on the bigger machine:
-
-[root@perf160 ~]# uname -a
-Linux perf160.perf.lab.eng.bos.redhat.com 5.14.0-362.8.1.el9_3.x86_64+rt #1 SMP PREEMPT_RT Tue Oct 3 10:26:54 EDT 2023 x86_64 x86_64 x86_64 GNU/Linux
-[root@perf160 ~]#
-
-[acme@perf160 ~]$ grep "model name" /proc/cpuinfo  | wc -l
-32
-[acme@perf160 ~]$ grep "model name" /proc/cpuinfo | head -1
-model name	: Intel(R) Xeon(R) Silver 4216 CPU @ 2.10GHz
-[acme@perf160 ~]$
-[acme@perf160 ~]$ perf test -v sigtrap
- 68: Sigtrap                                                         :
---- start ---
-test child forked, pid 72084
-Expected 15000 sigtraps, got 1845, running on a kernel with sleepable spinlocks.
-See https://lore.kernel.org/all/e368f2c848d77fbc8d259f44e2055fe469c219cf.camel@gmx.de/
-test child finished with -2
----- end ----
-Sigtrap: Skip
-[acme@perf160 ~]$ perf test -v sigtrap
- 68: Sigtrap                                                         :
---- start ---
-test child forked, pid 72091
-Expected 15000 sigtraps, got 2060, running on a kernel with sleepable spinlocks.
-See https://lore.kernel.org/all/e368f2c848d77fbc8d259f44e2055fe469c219cf.camel@gmx.de/
-test child finished with -2
----- end ----
-Sigtrap: Skip
-[acme@perf160 ~]$
-
-[root@perf160 ~]# for a in $(seq 100) ; do perf test -v sigtrap |& grep Expected ; done | sort | uniq -c | sort -n
-      1 Expected 15000 sigtraps, got 1010, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 1064, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 1139, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 1165, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 1166, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 1177, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 1206, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 1279, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 1321, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 1359, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 1368, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 1400, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 1432, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 1490, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 1520, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 1527, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 1532, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 1566, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 1597, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 1600, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 1630, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 1652, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 1689, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 1706, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 1709, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 1753, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 1765, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 1778, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 1830, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 1896, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 1901, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 1903, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 1908, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 1909, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 1930, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 1951, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 1976, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 1980, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 2010, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 2012, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 2071, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 2075, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 2166, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 2169, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 2185, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 2189, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 2229, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 2241, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 2249, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 2297, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 2303, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 2313, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 2325, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 2326, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 2350, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 2359, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 2378, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 2448, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 2479, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 2480, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 2489, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 2501, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 2569, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 2573, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 2597, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 2605, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 2639, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 2647, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 2719, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 2754, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 2804, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 2805, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 2860, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 2882, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 3152, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 3177, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 3179, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 3249, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 3261, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 3332, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 3388, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 3395, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 3465, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 3487, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 3622, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 3677, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 3782, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 3901, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 4087, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 4235, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 4372, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 4570, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 571, running on a kernel with sleepable spinlocks.
-      1 Expected 15000 sigtraps, got 622, running on a kernel with sleepable spinlocks.
-      2 Expected 15000 sigtraps, got 1929, running on a kernel with sleepable spinlocks.
-      2 Expected 15000 sigtraps, got 1967, running on a kernel with sleepable spinlocks.
-      2 Expected 15000 sigtraps, got 2072, running on a kernel with sleepable spinlocks.
-[root@perf160 ~]# 
-
-I guess I'll try to get hold of the older kernel with 0 sigtraps to see
-if I get the same behaviour (consistent 0 sigtraps) on that kernel on
-the bigger machine :-\
-
-- Arnaldo
+Thanks.
+Binbin
+>
+> Rob
