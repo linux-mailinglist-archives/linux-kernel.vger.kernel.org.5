@@ -2,58 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A8DB7FF92A
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 19:15:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D2457FF82C
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 18:27:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231796AbjK3SOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 13:14:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42722 "EHLO
+        id S1346148AbjK3RZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 12:25:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346092AbjK3R0J (ORCPT
+        with ESMTP id S1345639AbjK3RZT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 12:26:09 -0500
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C90C1729
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 09:26:15 -0800 (PST)
-Received: by mail-yb1-xb31.google.com with SMTP id 3f1490d57ef6-da3b4b7c6bdso1095657276.2
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 09:26:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701365174; x=1701969974; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=4ZkkWHMYcFVuZYJuBjFNLyS0R8D8QJNJTax65ZVU/Fc=;
-        b=i3/PsF2Sxeh+SJt5YTDbD72Ue0eZXA1xJLbQ5c5MEMjf6VMjdzkaWrnFwUBdrOcobh
-         ehLaT6GcZdLhymW6bNBrMIeNgYGsFoZ0omVIprjMU3WggSzoJ5grJEQ9ZbJY8fyo65jW
-         z6Giq7PINDytX61t4v6VSS6lkHn/bTmJ2TmaNwA1YZxHzJNrcAv42s5mscUnL4TGQt9O
-         En1chH3cS3JRuLJOYHs78zIim94MDARgh/ivSAOqJaVPH73A4DfIbYTw7zZ5M+uNtrv1
-         UxiWTh3rudXsOx13kJFgdlsR6k8NnLf6tiF5dbqbJpz/czdLDQ3BC/FvveGIisoXHLwY
-         X8Bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701365174; x=1701969974;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4ZkkWHMYcFVuZYJuBjFNLyS0R8D8QJNJTax65ZVU/Fc=;
-        b=VPkYpvetS3URExfyLry4R+GD1cJLkUXPFJMECR1i0t88RfJwL4kS2BBdiYuFwzlQd6
-         l6+EdKmocdGHhCgA1oZEQl9lVQy/q5WAX5ip3dwQATjH0NNAmuX9TTMAgolJEyHbm6jD
-         OXgTzael857MAcn/40qDC4sXz5+I3+Lb4b1ZtNSR/+oQYgU3CG7fULDlXslMkp7Ps2g0
-         1Tid1euygMiwsjxeF/gAo/zq3qVQYlGb/f7axKlKX6YPlSTch9JbOIuY5dCpVkDZBvhf
-         DiSDlOHMMJac45ngWhRsDew5ORz/hsPihg3DX85kI48QwCgnxYzeuObdL+WqLe04JLlt
-         OLNQ==
-X-Gm-Message-State: AOJu0YwS3i2dj8E9dAQr2POHRHX7L98Gw1W4zj7xl4ZsC+KbqKLvlHi+
-        YRhB9Z277w2BrAbZAd0IGKA0jIeBvEQ3wShPlW5U3cmFyiMGSPct
-X-Google-Smtp-Source: AGHT+IEgflwddcckdtau1Jwz4SF50QqOh4QZyUPjXWBL6v4jPNlgytgNY7T1mCYNLwmxEXQwIuOvgBy1qsVUiRjObrQ=
-X-Received: by 2002:a81:9a4e:0:b0:5d3:a274:c77b with SMTP id
- r75-20020a819a4e000000b005d3a274c77bmr1246625ywg.5.1701365174560; Thu, 30 Nov
- 2023 09:26:14 -0800 (PST)
+        Thu, 30 Nov 2023 12:25:19 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22A6B10E5
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 09:25:26 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B656AC433C8;
+        Thu, 30 Nov 2023 17:25:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701365125;
+        bh=lrJZDSmPE6sJggjsC2wQcjtU9RHwzSAEI63jRK7gA5E=;
+        h=From:To:Cc:Subject:Date:From;
+        b=hXqezqqAWgqa+SAGfd+k3U5sSfEuSFTpO7wBs/cDK+vzPy8EegEV4rLyIOn/+QrTm
+         hhuw9Fz4Zya+VsmbwtHK0i6U6r5UDCiP+UJhmHPvqUb6KfjRWw7Zel9oprNYvQG+JA
+         C84REje0b6WrPPHI+DiN5XKPNijVaSr1Mojz7adROq4Y6zdJSgG1BX3Hab3AfNso+6
+         BHvbPbvZ0kZRzrwiiX0OGNljJOWk7nyRBkyUlN3nLMJC7BCQrfa6UkaRhziekZM3n4
+         4p6dzY36iSIj7W6FCyUhz6UZoyy1OPKwQ/fphvzytDOjPULIVZWKIj2tRfDGZJJgAB
+         t8bEeXbbunHwA==
+Received: from johan by xi.lan with local (Exim 4.96.2)
+        (envelope-from <johan+linaro@kernel.org>)
+        id 1r8knX-0003Gt-0Y;
+        Thu, 30 Nov 2023 18:25:59 +0100
+From:   Johan Hovold <johan+linaro@kernel.org>
+To:     Lee Jones <lee@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Johan Hovold <johan+linaro@kernel.org>
+Subject: [PATCH 0/4] dt-bindings: mfd: fix up PMIC examples
+Date:   Thu, 30 Nov 2023 18:25:43 +0100
+Message-ID: <20231130172547.12555-1-johan+linaro@kernel.org>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-From:   Alexandru Goia <goia.i.alexandru@gmail.com>
-Date:   Thu, 30 Nov 2023 19:25:35 +0200
-Message-ID: <CADmgqai5Ohnnq9G3Sm87pujtD3iMcUwGEqpLds2nDQroXgNxeg@mail.gmail.com>
-Subject: Linux 4 block device driver infrastructure
-To:     linux-kernel@vger.kernel.org, linux-kernel@lore.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -62,31 +59,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greetings !
+When reviewing the various SPMI PMIC bindings, I noticed that several
+examples were incorrect and misleading and could also use some cleanup.
 
-I am a Unix/Linux hobbyist from Romania, interested in kernel stuff.
-I need some clarifications, related to block device subsystem in Linux 4,
-so I will ask them here, if you can answer me, please...
+This series addresses the mfd ones.
 
-1) Why (in Linux 4) in struct block_device_operations, the
-(*open)(struct block_device *, fmode_t)
-has a different signature than the (*release)(struct gendisk *,
-fmode_t) ? Why open()
-uses block_device, while release() uses gendisk ? They are both in a struct
-block_device_operations. Why they not refer to the same thing ?
+[ The PM8008 actually sits on an i2c bus but it is related to the other
+  Qualcomm SPMI PMICs. ]
 
-I understand that gendisk refer to a real disk, and block_device (s)
-to logical disk (s)
-and partitions. But why the kernel developers have chosen to use
-different signatures ?
+Johan
 
-2) Release() is also synonim to close() ?
-3) Why is not explicitely present a close() function ?
-4) Why struct gendisk does not have inside it pointers to struct block_device ?
 
-Thank you very much,
-Alexander,
-Computer hobbyist,
-Romania
+Johan Hovold (4):
+  dt-bindings: mfd: hisilicon,hi6421-spmi-pmic: fix up binding reference
+  dt-bindings: mfd: hisilicon,hi6421-spmi-pmic: fix example regulator
+    node
+  dt-bindings: mfd: hisilicon,hi6421-spmi-pmic: clean up example
+  dt-bindings: mfd: pm8008: fix example node names
 
-Please answer also to my personal address : <goia.i.alexandru@gmail.com>
+ .../mfd/hisilicon,hi6421-spmi-pmic.yaml       | 133 +++++++++---------
+ .../devicetree/bindings/mfd/qcom,pm8008.yaml  |   5 +-
+ 2 files changed, 71 insertions(+), 67 deletions(-)
+
+-- 
+2.41.0
+
