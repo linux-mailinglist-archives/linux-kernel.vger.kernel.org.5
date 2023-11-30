@@ -2,154 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 791517FE490
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 01:10:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FE777FE493
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 01:10:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343727AbjK3AJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 19:09:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38758 "EHLO
+        id S1343739AbjK3AKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 19:10:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229575AbjK3AJ5 (ORCPT
+        with ESMTP id S231597AbjK3AKX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 19:09:57 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ADFFF4
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 16:10:03 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-da0ccfc4fc8so391115276.2
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 16:10:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701303002; x=1701907802; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gmjQgaxxDn5r7HkZPUYCJ27qew3aSHzjX5AlpzkdkoY=;
-        b=KCOIPM7jBghjlaNvqZNIMzRxk+NyDgmjBQ89cFR2w0ohLu6aBrZjaYfEEiYwvuhv6v
-         6E8TuDuiCaH4aEZxU4K3bnKhrEIRIkJHQ1CXY5ZUeSuwIeAeDRSM2pDnNEi8WQrR7zMA
-         NMijg9ahLR8QEuRc7DP2Cr9XZl91t8aXq796sJKXQUTzxuuczXk3dmHQlN/UXLmZKsbX
-         kZhpkIGaQxkjYxjLGSaTdVOzPwMdNDLpauzMwVA+ihKnmCv7l18SDT4IKVU45amBwftL
-         4izK2uTpqlzYAOATDdVCYDLsIur9uhBGes3kpOPUSMS4sXt3diDBx5zeIeCbrEGPKCv3
-         1s3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701303002; x=1701907802;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gmjQgaxxDn5r7HkZPUYCJ27qew3aSHzjX5AlpzkdkoY=;
-        b=cfJ8tzZgfiqh/k7n3ix4rkvhIoOPRIdQzbHJRljMI13TBtsVppvh2eueVho0MGmGWE
-         7w5jw+UdIUF1MMHH//xw8GIx8mnfaXJnwx2R9lUUSEeJ9YZDwcGlr/Xle6nahpngT0Kg
-         tb6dMYQtucSC/MM+6ct+AqEh4bBwDK55dAB+yCQp2/3D1VsmpKz/rfx3L2yBfyJfgDsK
-         IyceReofj4h/y7TsjdRWuZzwyAnsY7cmalvbzeAqSJzVH3mzqRJG0zfQ6hobGR7bKptv
-         AOeyYK+mUoqklvMqsm7Ad+9l9MH7M9Tj91pmV3xI9BVKXaiWea9Jv9HZSe0fCpSedblN
-         tovw==
-X-Gm-Message-State: AOJu0YwqGUXpozt5HDbmPp2aKvuQebc/iH9itG/p59I6GUcmfvCBG2OA
-        Q+OgSigTMt3KsmYPfXkF0ONaN9QSyw8=
-X-Google-Smtp-Source: AGHT+IGkmKVAkhUhDCuNHCF6qsZZjcgx0kXiwfuTem15ifyWvEMkuHM1uhjC+KfnOKjPGQulGYD2XibZdq8=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:bac6:0:b0:db3:fd6a:7bdb with SMTP id
- a6-20020a25bac6000000b00db3fd6a7bdbmr395765ybk.2.1701303002773; Wed, 29 Nov
- 2023 16:10:02 -0800 (PST)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Wed, 29 Nov 2023 16:10:00 -0800
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.43.0.rc1.413.gea7ed67945-goog
-Message-ID: <20231130001000.543240-1-seanjc@google.com>
-Subject: [PATCH] vfio: Drop vfio_file_iommu_group() stub to fudge around a KVM wart
-From:   Sean Christopherson <seanjc@google.com>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Sean Christopherson <seanjc@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 29 Nov 2023 19:10:23 -0500
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1FD3CA;
+        Wed, 29 Nov 2023 16:10:28 -0800 (PST)
+Received: from localhost (unknown [IPv6:2601:280:5e00:7e19::646])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 89BDE377;
+        Thu, 30 Nov 2023 00:10:26 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 89BDE377
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1701303026; bh=zIo8SV1c0ZhX3/iH2vn+LkvdDT3uPdZkOQTMoWU6W2U=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=ofNolQR8+2oE/pQInZdXqgK4Carg+5nVO8bylGqIbjVQkPjSjqUv9Qo7HLIWgQVhU
+         XUqTrYucnZt4OaltEVa/rNRI5CNQ4ZPGUEqmn3V+0fg+eI3NJAqIph8REEa3xO9CJ9
+         2XwclVX04py+M3rxTkJPLJAhkHBy2TOs18NtZeoEMKdFNnaecjQfctoCuSCNssrNam
+         I/doTjl3KlTd5eGDoNP3FwZmGWpYFaicXQItdAcgiA8dutZ/R8Mq2xIve+HVLsA5Hi
+         gPTAg0TnBWjoG/ESX9XQJBptGIrYXlisMABKf/lA0dvoGP5LCcU3yHR63l5xhgBtOC
+         1W/PIIuiE9maQ==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Bagas Sanjaya <bagasdotme@gmail.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Documentation <linux-doc@vger.kernel.org>,
+        Linux Kernel Livepatching <live-patching@vger.kernel.org>
+Cc:     Josh Poimboeuf <jpoimboe@kernel.org>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>,
+        Attreyee Mukherjee <tintinm2017@gmail.com>
+Subject: Re: [PATCH 0/2] Minor grammatical fixup for livepatch docs
+In-Reply-To: <a4da77c2-7a23-4988-b65a-a58c105d89a4@gmail.com>
+References: <20231129132527.8078-1-bagasdotme@gmail.com>
+ <ac7a90a7-4d29-059b-fbff-6b67e6f5c2d3@redhat.com>
+ <a4da77c2-7a23-4988-b65a-a58c105d89a4@gmail.com>
+Date:   Wed, 29 Nov 2023 17:10:25 -0700
+Message-ID: <87h6l4ksni.fsf@meer.lwn.net>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drop the vfio_file_iommu_group() stub and instead unconditionally declare
-the function to fudge around a KVM wart where KVM tries to do symbol_get()
-on vfio_file_iommu_group() (and other VFIO symbols) even if CONFIG_VFIO=n.
+Bagas Sanjaya <bagasdotme@gmail.com> writes:
 
-Ensuring the symbol is always declared fixes a PPC build error when
-modules are also disabled, in which case symbol_get() simply points at the
-address of the symbol (with some attributes shenanigans).  Because KVM
-does symbol_get() instead of directly depending on VFIO, the lack of a
-fully defined symbol is not problematic (ugly, but "fine").
+> On 11/29/23 20:53, Joe Lawrence wrote:
+>> On 11/29/23 08:25, Bagas Sanjaya wrote:
+>>> I was prompted to write this little grammar fix series when reading
+>>> the fix from Attreyee [1], with review comments requesting changes
+>>> to that fix. So here's my version of the fix, with reviews from [1]
+>>> addressed (and distinct grammar fixes splitted).
+>>>
+>> 
+>> Typical kernel workflow would be for Attreyee to incorporate feedback
+>> and post their v2 after a day or two.  From the format they posted, it
+>> appears to be a first(ish) kernel contribution post.  Let's be kind and
+>> patient so they we all may benefit from the practice of iterating on
+>> their patch.
+>> 
+>
+> I do this posting because I thought the OP (Attreyee) didn't respond in
+> timely manner (just like random Chinese contributors like @cdjrlc.com
+> and @208suo.com people).
 
-   arch/powerpc/kvm/../../../virt/kvm/vfio.c:89:7:
-   error: attribute declaration must precede definition [-Werror,-Wignored-attributes]
-           fn = symbol_get(vfio_file_iommu_group);
-                ^
-   include/linux/module.h:805:60: note: expanded from macro 'symbol_get'
-   #define symbol_get(x) ({ extern typeof(x) x __attribute__((weak,visibility("hidden"))); &(x); })
-                                                              ^
-   include/linux/vfio.h:294:35: note: previous definition is here
-   static inline struct iommu_group *vfio_file_iommu_group(struct file *file)
-                                     ^
-   arch/powerpc/kvm/../../../virt/kvm/vfio.c:89:7:
-   error: attribute declaration must precede definition [-Werror,-Wignored-attributes]
-           fn = symbol_get(vfio_file_iommu_group);
-                ^
-   include/linux/module.h:805:65: note: expanded from macro 'symbol_get'
-   #define symbol_get(x) ({ extern typeof(x) x __attribute__((weak,visibility("hidden"))); &(x); })
-                                                                   ^
-   include/linux/vfio.h:294:35: note: previous definition is here
-   static inline struct iommu_group *vfio_file_iommu_group(struct file *file)
-                                     ^
-   2 errors generated.
+Seriously?  The original post was on Monday, yours came less than 48
+hours later.  Not only can we not expect that kind of rapid turnaround
+from anybody, but we actively discourage rapid resending of patches.
+Rather than dig yourself in deeper, I suggest you simply apologize to
+the original poster and find something more useful to do.
 
-Although KVM is firmly in the wrong (there is zero reason for KVM to build
-virt/kvm/vfio.c when VFIO is disabled), fudge around the error in VFIO as
-the stub is unnecessary and doesn't serve its intended purpose (KVM is the
-only external user of vfio_file_iommu_group()), and there is an in-flight
-series to clean up the entire KVM<->VFIO interaction, i.e. fixing this in
-KVM would result in more churn in the long run, and the stub needs to go
-away regardless.
+Thanks,
 
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202308251949.5IiaV0sz-lkp@intel.com
-Closes: https://lore.kernel.org/oe-kbuild-all/202309030741.82aLACDG-lkp@intel.com
-Closes: https://lore.kernel.org/oe-kbuild-all/202309110914.QLH0LU6L-lkp@intel.com
-Link: https://lore.kernel.org/all/0-v1-08396538817d+13c5-vfio_kvm_kconfig_jgg@nvidia.com
-Link: https://lore.kernel.org/all/20230916003118.2540661-1-seanjc@google.com
-Cc: Nick Desaulniers <ndesaulniers@google.com>
-Cc: Jason Gunthorpe <jgg@nvidia.com>
-Tested-by: Michael Ellerman <mpe@ellerman.id.au>
-Fixes: c1cce6d079b8 ("vfio: Compile vfio_group infrastructure optionally")
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- include/linux/vfio.h | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
-
-diff --git a/include/linux/vfio.h b/include/linux/vfio.h
-index 454e9295970c..a65b2513f8cd 100644
---- a/include/linux/vfio.h
-+++ b/include/linux/vfio.h
-@@ -289,16 +289,12 @@ void vfio_combine_iova_ranges(struct rb_root_cached *root, u32 cur_nodes,
- /*
-  * External user API
-  */
--#if IS_ENABLED(CONFIG_VFIO_GROUP)
- struct iommu_group *vfio_file_iommu_group(struct file *file);
-+
-+#if IS_ENABLED(CONFIG_VFIO_GROUP)
- bool vfio_file_is_group(struct file *file);
- bool vfio_file_has_dev(struct file *file, struct vfio_device *device);
- #else
--static inline struct iommu_group *vfio_file_iommu_group(struct file *file)
--{
--	return NULL;
--}
--
- static inline bool vfio_file_is_group(struct file *file)
- {
- 	return false;
-
-base-commit: ae2667cd8a479bb5abd6e24c12fcc9ef5bc06d75
--- 
-2.43.0.rc1.413.gea7ed67945-goog
-
+jon
