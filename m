@@ -2,230 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62B1D7FEFC1
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 14:09:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 076907FEFC6
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 14:13:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345488AbjK3NJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 08:09:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40444 "EHLO
+        id S232119AbjK3NNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 08:13:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231990AbjK3NJi (ORCPT
+        with ESMTP id S231990AbjK3NNA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 08:09:38 -0500
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 405CDD6C;
-        Thu, 30 Nov 2023 05:09:44 -0800 (PST)
-Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2c9bd3557cfso11929841fa.3;
-        Thu, 30 Nov 2023 05:09:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701349782; x=1701954582; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=da5ufd57tWXpSlzE4MME0kb6SHbAqME3sLaJIDhv8Ic=;
-        b=Im/ArFDmlashnh2nGY5Pas2Jh2A+H02BvSG1THKpQ6YPT5lGkhe0u1QwA8kId/KdnT
-         QwGsM+Le4By0z2U/CYkcvss52d/1nhScJYsa9WO4MuNT84qdRY6rBZKu1rJOQc69pfmb
-         8ZsZfiho8J9SMGk5DGrxxR6vJIzaUBBnZkao6HQSMm58X6e7c6PeEoGU8DU9ILOjFnPb
-         lkdvwzZsd7cPBh37amTLRsLGO9vw/4/W7SX5+MyUw4nbVmboXBmpaYH9qwo2tAw7NnwX
-         mAEnU1229VqxOcV30rzAfDbZqckdUuGy9e4z0b0tqzKZHt5FpDbQcfgWssofgxtfqhZf
-         e1cg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701349782; x=1701954582;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=da5ufd57tWXpSlzE4MME0kb6SHbAqME3sLaJIDhv8Ic=;
-        b=l0mvxam3MwkSlMHaaRdjPQtHp+K5w9iUdfiHJGAVtyuLlPkziV2xKS8vv5IH+4lVOB
-         wfII4C0hNxFydHKX534KMtdbVKSSQvwlu1mY1dGgc65UiO3Ha8qHXG2I+AtZq8A8Ivko
-         1bVprhfP8Zqy0jv2M55CqjE6BbjfaX8y7MgUkJbvl4np2VZN4fWTadQmyiwMzaVIwiOo
-         iBjl/MnwjWrJoRB3w0w9qPKpgWmQiU/lhIL597z/+KbvFoayoJO47L+zvUzbxdN4DrbC
-         QYfPZA3ZJImddcxkaiRX/B73SD8Uhk1ha13EACJn5s/GzRE+DX8Ecy7K3EPvh9QGl9bh
-         m2Hw==
-X-Gm-Message-State: AOJu0YyUriVqbNaWOPemfLVlHCHSEXdzeldK3kW98Dy1dinjmtfMdAB7
-        uVMJO6f1n+BpZPpF8i6mwzQ=
-X-Google-Smtp-Source: AGHT+IHZZq+mpon//KVX/ODG35QK/HioZ5belNK2yEIWQkeaf4mxbX52keAl41xu2O210pOw2AjMwQ==
-X-Received: by 2002:a05:6512:284:b0:50b:bf57:7d6 with SMTP id j4-20020a056512028400b0050bbf5707d6mr4813341lfp.6.1701349782003;
-        Thu, 30 Nov 2023 05:09:42 -0800 (PST)
-Received: from mobilestation ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id g15-20020a19e04f000000b0050bbd1feb5bsm165331lfj.199.2023.11.30.05.09.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Nov 2023 05:09:41 -0800 (PST)
-Date:   Thu, 30 Nov 2023 16:09:37 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Paolo Abeni <pabeni@redhat.com>
-Cc:     Jianheng Zhang <Jianheng.Zhang@synopsys.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <Jose.Abreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Simon Horman <horms@kernel.org>,
-        Andrew Halaney <ahalaney@redhat.com>,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Shenwei Wang <shenwei.wang@nxp.com>,
-        Johannes Zink <j.zink@pengutronix.de>,
-        "Russell King (Oracle" <rmk+kernel@armlinux.org.uk>,
-        Jochen Henneberg <jh@henneberg-systemdesign.com>,
-        Voon Weifeng <weifeng.voon@intel.com>,
-        Mohammad Athari Bin Ismail <mohammad.athari.ismail@intel.com>,
-        Ong Boon Leong <boon.leong.ong@intel.com>,
-        Tan Tee Min <tee.min.tan@intel.com>,
-        "open list:STMMAC ETHERNET DRIVER" <netdev@vger.kernel.org>,
-        "moderated list:ARM/STM32 ARCHITECTURE" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "moderated list:ARM/STM32 ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        James Li <James.Li1@synopsys.com>,
-        Martin McKenny <Martin.McKenny@synopsys.com>
-Subject: Re: [PATCH v3] net: stmmac: fix FPE events losing
-Message-ID: <5djt72m664jtskz4i7vu63cqpb67o4qeu2roqb6322slsypwos@vmf4n2emdazd>
-References: <CY5PR12MB6372BF02C49FC9E628D0EC02BFBCA@CY5PR12MB6372.namprd12.prod.outlook.com>
- <1716792a3881338b1a416b1f4dd85a9437746ec2.camel@redhat.com>
+        Thu, 30 Nov 2023 08:13:00 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6F86D6C;
+        Thu, 30 Nov 2023 05:13:06 -0800 (PST)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AUAX9tP018655;
+        Thu, 30 Nov 2023 13:13:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=+80nq5HKyboBab0Chv7EqFCq9FYjhjhHHD23iXvweeA=;
+ b=XGIOLx8Zq6kqx1UgB5f8454KUbuDyN+0SsY9ZN8rfarD9aPBCpoWzW/ChmF+dKIeSCV7
+ WHBxfzXxXcnapo0GieUfp4nvlBvtlBsZ/YptbrCguw8FEg4D4HgoNkxagEB1tN2S0owJ
+ 0uCEfJYu1ouRv5DuOcnZ+L9useHXQXwYIqpX7an44r3AL7B3dUE0me1UjcvZ76fVf+ju
+ jQwWzt8vCxJF6TQPNIQNGMOMvBvtBJIjbacGuly9u2oqcwYU+i7meDJor0/oxCRcPsoz
+ aX9Fh/tL64js2m2eMPPKc2sW1otJdGGpiTMb/coMuKzUUaVL8Y+fFJhfTqa/xClGehUw gw== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uprhdrbph-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 30 Nov 2023 13:13:03 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AUDD1hS015654
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 30 Nov 2023 13:13:02 GMT
+Received: from [10.239.133.49] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 30 Nov
+ 2023 05:12:58 -0800
+Message-ID: <5ef0372a-2b9d-4a19-bbb4-2c6ce29dbe79@quicinc.com>
+Date:   Thu, 30 Nov 2023 21:12:56 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1716792a3881338b1a416b1f4dd85a9437746ec2.camel@redhat.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 1/3] arm64: dts: qcom: msm8996: Fix 'in-ports' is a
+ required property
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Tingwei Zhang <quic_tingweiz@quicinc.com>,
+        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
+        Tao Zhang <quic_taozha@quicinc.com>
+References: <20231129143815.7892-1-quic_jinlmao@quicinc.com>
+ <20231129143815.7892-2-quic_jinlmao@quicinc.com>
+ <3527d540-3e3f-4edb-b5f2-6ac481132c06@linaro.org>
+ <591e1aca-20ca-4d42-809d-12cd12ddadb3@quicinc.com>
+ <35916812-af55-4b2a-99e5-8566e945cb6e@linaro.org>
+From:   Jinlong Mao <quic_jinlmao@quicinc.com>
+In-Reply-To: <35916812-af55-4b2a-99e5-8566e945cb6e@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: yPFr3G_-Q2RtahagzOpdrtj6hWIS8xjj
+X-Proofpoint-GUID: yPFr3G_-Q2RtahagzOpdrtj6hWIS8xjj
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-30_11,2023-11-30_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ phishscore=0 spamscore=0 suspectscore=0 impostorscore=0 mlxlogscore=643
+ clxscore=1015 mlxscore=0 priorityscore=1501 adultscore=0 bulkscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311300099
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paolo
 
-On Thu, Nov 30, 2023 at 10:55:34AM +0100, Paolo Abeni wrote:
-> On Tue, 2023-11-28 at 05:56 +0000, Jianheng Zhang wrote:
-> > The status bits of register MAC_FPE_CTRL_STS are clear on read. Using
-> > 32-bit read for MAC_FPE_CTRL_STS in dwmac5_fpe_configure() and
-> > dwmac5_fpe_send_mpacket() clear the status bits. Then the stmmac interrupt
-> > handler missing FPE event status and leads to FPE handshaking failure and
-> > retries.
-> > To avoid clear status bits of MAC_FPE_CTRL_STS in dwmac5_fpe_configure()
-> > and dwmac5_fpe_send_mpacket(), add fpe_csr to stmmac_fpe_cfg structure to
-> > cache the control bits of MAC_FPE_CTRL_STS and to avoid reading
-> > MAC_FPE_CTRL_STS in those methods.
-> > 
-> > Fixes: 5a5586112b92 ("net: stmmac: support FPE link partner hand-shaking procedure")
-> > Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
-> > Signed-off-by: Jianheng Zhang <jianheng@synopsys.com>
-> > ---
-> >  drivers/net/ethernet/stmicro/stmmac/dwmac5.c       | 45 +++++++++-------------
-> >  drivers/net/ethernet/stmicro/stmmac/dwmac5.h       |  4 +-
-> >  .../net/ethernet/stmicro/stmmac/dwxgmac2_core.c    |  3 +-
-> >  drivers/net/ethernet/stmicro/stmmac/hwif.h         |  4 +-
-> >  drivers/net/ethernet/stmicro/stmmac/stmmac_main.c  |  8 +++-
-> >  drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c    |  1 +
-> >  include/linux/stmmac.h                             |  1 +
-> >  7 files changed, 36 insertions(+), 30 deletions(-)
-> > 
-> > diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac5.c b/drivers/net/ethernet/stmicro/stmmac/dwmac5.c
-> > index e95d35f..8fd1675 100644
-> > --- a/drivers/net/ethernet/stmicro/stmmac/dwmac5.c
-> > +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac5.c
-> > @@ -710,28 +710,22 @@ void dwmac5_est_irq_status(void __iomem *ioaddr, struct net_device *dev,
-> >  	}
-> >  }
-> >  
-> > -void dwmac5_fpe_configure(void __iomem *ioaddr, u32 num_txq, u32 num_rxq,
-> > +void dwmac5_fpe_configure(void __iomem *ioaddr, struct stmmac_fpe_cfg *cfg,
-> > +			  u32 num_txq, u32 num_rxq,
-> >  			  bool enable)
-> >  {
-> >  	u32 value;
-> >  
-> > -	if (!enable) {
-> > -		value = readl(ioaddr + MAC_FPE_CTRL_STS);
-> > -
-> > -		value &= ~EFPE;
-> > -
-> > -		writel(value, ioaddr + MAC_FPE_CTRL_STS);
-> > -		return;
-> > +	if (enable) {
-> > +		cfg->fpe_csr = EFPE;
-> > +		value = readl(ioaddr + GMAC_RXQ_CTRL1);
-> > +		value &= ~GMAC_RXQCTRL_FPRQ;
-> > +		value |= (num_rxq - 1) << GMAC_RXQCTRL_FPRQ_SHIFT;
-> > +		writel(value, ioaddr + GMAC_RXQ_CTRL1);
-> > +	} else {
-> > +		cfg->fpe_csr = 0;
-> >  	}
-> > -
-> > -	value = readl(ioaddr + GMAC_RXQ_CTRL1);
-> > -	value &= ~GMAC_RXQCTRL_FPRQ;
-> > -	value |= (num_rxq - 1) << GMAC_RXQCTRL_FPRQ_SHIFT;
-> > -	writel(value, ioaddr + GMAC_RXQ_CTRL1);
-> > -
-> > -	value = readl(ioaddr + MAC_FPE_CTRL_STS);
-> > -	value |= EFPE;
-> > -	writel(value, ioaddr + MAC_FPE_CTRL_STS);
-> > +	writel(cfg->fpe_csr, ioaddr + MAC_FPE_CTRL_STS);
-> >  }
-> >  
-> >  int dwmac5_fpe_irq_status(void __iomem *ioaddr, struct net_device *dev)
-> > @@ -741,6 +735,9 @@ int dwmac5_fpe_irq_status(void __iomem *ioaddr, struct net_device *dev)
-> >  
-> >  	status = FPE_EVENT_UNKNOWN;
-> >  
-> > +	/* Reads from the MAC_FPE_CTRL_STS register should only be performed
-> > +	 * here, since the status flags of MAC_FPE_CTRL_STS are "clear on read"
-> > +	 */
-> >  	value = readl(ioaddr + MAC_FPE_CTRL_STS);
-> >  
-> >  	if (value & TRSP) {
-> > @@ -766,19 +763,15 @@ int dwmac5_fpe_irq_status(void __iomem *ioaddr, struct net_device *dev)
-> >  	return status;
-> >  }
-> >  
-> > -void dwmac5_fpe_send_mpacket(void __iomem *ioaddr, enum stmmac_mpacket_type type)
-> > +void dwmac5_fpe_send_mpacket(void __iomem *ioaddr, struct stmmac_fpe_cfg *cfg,
-> > +			     enum stmmac_mpacket_type type)
-> >  {
-> > -	u32 value;
-> > +	u32 value = cfg->fpe_csr;
-> >  
-> > -	value = readl(ioaddr + MAC_FPE_CTRL_STS);
-> > -
-> > -	if (type == MPACKET_VERIFY) {
-> > -		value &= ~SRSP;
-> > +	if (type == MPACKET_VERIFY)
-> >  		value |= SVER;
-> > -	} else {
-> > -		value &= ~SVER;
-> > +	else if (type == MPACKET_RESPONSE)
-> >  		value |= SRSP;
-> > -	}
-> >  
-> >  	writel(value, ioaddr + MAC_FPE_CTRL_STS);
-> >  }
+
+On 11/30/2023 8:06 PM, Krzysztof Kozlowski wrote:
+> On 30/11/2023 12:15, Jinlong Mao wrote:
+>>
+>>
+>> On 11/30/2023 4:55 PM, Krzysztof Kozlowski wrote:
+>>> On 29/11/2023 15:38, Mao Jinlong wrote:
+>>>> The inport of funnel@3023000 connects to a source which is not supported
+>>>> in current linux kernel. Remove the device tree node of funnel@3023000
+>>>> to fix the warning. It will be added once the driver support to the
+>>>> source is added to linux kernel.
+>>>
+>>> Thanks for the changes, but that's not correct reason to remove DTS
+>>> code. What kernel supports or not, should be irrelevant for the DTS. DTS
+>>> for example is used in other projects - did you check if they have the
+>>> same issues? Anyway, DTS describes the hardware, so how current kernel
+>>> support defines what is and what is not in the hardware?
+>>>
+>>>
+>>> Best regards,
+>>> Krzysztof
+>>
+>> Hi Krzysztof,
+>>
+>> The funnel dt node must have in-ports node. It is to describe the input
+>> connection of funnel HW. But there is no dt_binding doc to describe the
+>> DT node of the HW connected to funnel@3023000. So remove the funnel to
+>> solve the warning as of now. The funnel will be added back once driver
+>> and dt_binding are added for the HW.
+>>
+>> Documentation/devicetree/bindings/arm/arm,coresight-dynamic-funnel.yaml
 > 
-
-> It's unclear to me why it's not necessary to preserve the SVER/SRSP
-> bits across MAC_FPE_CTRL_STS writes. I guess they are not part of the
-> status bits? perhaps an explicit comment somewhere will help?
-
-The SRSP and SVER are self-cleared flags with no effect on zero
-writing. Their responsibility is to emit the Respond and Verify
-mPackets respectively. As soon as the packets are sent, the flags will
-be reset by hardware automatically. So no, they aren't a part of the
-status bits.
-
-Note since 'value' now isn't read from the MAC_FPE_CTRL_STS register,
-there is no point in clearing up these flags in the local variable
-because 'value' has now them cleared by default.
-
-Not sure whether a comment about that is required, since the described
-behavior is well documented in the Synopsys HW-manual.
-
--Serge(y)
-
+> Why we cannot add now the binding for the connected hardware? It's not
+> really related to the driver.
 > 
-> Thanks
-> 
-> Paolo
-> 
+> Best regards,
+> Krzysztof
+
+Do you mean yaml file can be added before the driver code is merged ?
+
+Thanks
+Jinlong Mao
 > 
