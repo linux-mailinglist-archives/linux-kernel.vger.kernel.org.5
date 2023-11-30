@@ -2,283 +2,344 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56BA97FE8CD
+	by mail.lfdr.de (Postfix) with ESMTP id CEA397FE8CE
 	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 06:50:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344536AbjK3Ftt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 00:49:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50522 "EHLO
+        id S1344522AbjK3FtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 00:49:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231493AbjK3Ftp (ORCPT
+        with ESMTP id S229596AbjK3FtM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 00:49:45 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C12210E2;
-        Wed, 29 Nov 2023 21:49:51 -0800 (PST)
-Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AU5l8Fx029717;
-        Thu, 30 Nov 2023 05:47:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to; s=pp1;
- bh=rjhledwOpu2aQOHu9480M6FyN/1m3Xc34o9DFzj/QQc=;
- b=a+bBpvINdEiVYanC286klCBpFkbM08h+Ko9dYvc74v5gtCzo/XuVHt3F8e/hDu07dGaw
- o9j7AAnAKNXHQsV6woBKl8JKQ+sjZwCx9e3quMIJxVfH6UC9bDAldJPKRUxGMKGu/zPW
- i30g/Wz0sX3pSmxHn2sSD973sbgxShgzbead6TrdeuV9KQ/9GWcvEvG73LhnY/VgTYbi
- u6mvae656p6EUiAu5/oQHr3xBruJAGidb1MXZES2YKqkil2eaLBrgrjlMYO88d+DIAWx
- Oa+TF2slBQxysUCWjr//tJuEXO5oiAh2HdDHK+Wp8hzI+uTkUrwJ46lnlxere4GEBL2a WA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3upmj180c2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 30 Nov 2023 05:47:28 +0000
-Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3AU5lSCH030345;
-        Thu, 30 Nov 2023 05:47:28 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3upmj180b6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 30 Nov 2023 05:47:27 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3AU3tBeR009659;
-        Thu, 30 Nov 2023 05:47:26 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3ukumyvdmr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 30 Nov 2023 05:47:26 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3AU5lOEb12321438
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 30 Nov 2023 05:47:24 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4ABE820043;
-        Thu, 30 Nov 2023 05:47:24 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E067D20040;
-        Thu, 30 Nov 2023 05:47:21 +0000 (GMT)
-Received: from smtpclient.apple (unknown [9.109.214.114])
-        by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-        Thu, 30 Nov 2023 05:47:21 +0000 (GMT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.200.91.1.1\))
-Subject: Re: [PATCH v2 1/4] perf build: Shellcheck support for OUTPUT
- directory
-From:   Athira Rajeev <atrajeev@linux.vnet.ibm.com>
-In-Reply-To: <20231129213428.2227448-1-irogers@google.com>
-Date:   Thu, 30 Nov 2023 11:17:09 +0530
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        James Clark <james.clark@arm.com>
+        Thu, 30 Nov 2023 00:49:12 -0500
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2047.outbound.protection.outlook.com [40.107.100.47])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86B9ED5C;
+        Wed, 29 Nov 2023 21:49:17 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EGMCLW+LrpC2HtACN+joMO1tWySEfYxAKvjI/98ix/HBAL2LC1ZDpHHHkrYl9KvKIJUiOmvONEP5WY6i6peAoxK9Or/mAoEekNdDADtJicbblNa41bcrz0wT1K1UkzJCsg1XCDWRyjOOhqpLwN2VrvWYQ0C2IuXdDfJkLmGi8LWtiNW5dVMIYSGaEp5cBUm/S2QIRKWmhzRKda4G5bSrRXh71NFvNqn+54B3epfkDJo2ZLGDNvBkCp5KVmqpFgABeop/OxW0CEPsiEfLvKKtpIh72xX3ajTZFqZ5GnfWqE1fqiJeFJeHBut7kVjl7gXBavechsd7NxTLiwGAEOaSQA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=6iZS0KQDvqoWZGtkGKaqQrfOAW5QkAvIo4BIR0FXjDQ=;
+ b=HvJb/MFKFXCpto7UQNmV5c30sffzZh+k6gFagnOHHZxXEFiQinPlR8CS3PN9+E5X+/1xOu/VV8tNyAJmwSy3eY5OiXuR0xuxqRpIRxK2pQhRrmQ12xEiPeXJ6cJeD6FSIjtje7Hz+AICezdAfw2seQPbgXsQGYmWw9QT0jHZwKfnJd6isvCEOCa2eQxt41vhraJUsMrB12JKrbc4oGlByIbecE8+1VaMqE/dnAp5xsVSFKQm+Ml1SHWZYrGOKBDbEppf/a753RvzF2CfN/blib22iTxpnrLZTCtdIIDsim3D+lNfMC9Viqv+dlvMmLDNL645d8rhNQpVRpywX+GXrA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6iZS0KQDvqoWZGtkGKaqQrfOAW5QkAvIo4BIR0FXjDQ=;
+ b=RIJg4P/+KwdKXTbXfynxXuU7HSugR2o8f17bI5MfPUs6eELq759JqZaUHcyAwY3H0KCxlrAurCMPcIXw8pLaWiCruSHdQzxJjqLUkT1Ni6yyrosEcPR1Ip86Ej8rXpIX+RlhD4+SNLa5mjojdBsf+LXzoXqFta37bK5OoUkoEYQ=
+Received: from CH3PR12MB8657.namprd12.prod.outlook.com (2603:10b6:610:172::6)
+ by SA1PR12MB6799.namprd12.prod.outlook.com (2603:10b6:806:25b::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.22; Thu, 30 Nov
+ 2023 05:49:12 +0000
+Received: from CH3PR12MB8657.namprd12.prod.outlook.com
+ ([fe80::466c:b6a0:f281:1e99]) by CH3PR12MB8657.namprd12.prod.outlook.com
+ ([fe80::466c:b6a0:f281:1e99%7]) with mapi id 15.20.7046.024; Thu, 30 Nov 2023
+ 05:49:12 +0000
+From:   "Yuan, Perry" <Perry.Yuan@amd.com>
+To:     "Meng, Li (Jassmine)" <Li.Meng@amd.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        "Huang, Ray" <Ray.Huang@amd.com>
+CC:     "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "Fontenot, Nathan" <Nathan.Fontenot@amd.com>,
+        "Sharma, Deepak" <Deepak.Sharma@amd.com>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "Limonciello, Mario" <Mario.Limonciello@amd.com>,
+        "Huang, Shimmer" <Shimmer.Huang@amd.com>,
+        "Du, Xiaojian" <Xiaojian.Du@amd.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Oleksandr Natalenko <oleksandr@natalenko.name>,
+        "Karny, Wyes" <Wyes.Karny@amd.com>
+Subject: RE: [PATCH V11 5/7] cpufreq: amd-pstate: Update amd-pstate preferred
+ core ranking dynamically
+Thread-Topic: [PATCH V11 5/7] cpufreq: amd-pstate: Update amd-pstate preferred
+ core ranking dynamically
+Thread-Index: AQHaIpEKjvWtP+SoH0ina49wOQKAGLCSXF8g
+Date:   Thu, 30 Nov 2023 05:49:11 +0000
+Message-ID: <CH3PR12MB865722889AB91EF5CFDC11F29C82A@CH3PR12MB8657.namprd12.prod.outlook.com>
+References: <20231129065437.290183-1-li.meng@amd.com>
+ <20231129065437.290183-6-li.meng@amd.com>
+In-Reply-To: <20231129065437.290183-6-li.meng@amd.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_ActionId=154f5ba1-2df4-40ec-bacc-07b461fede1d;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_ContentBits=0;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Enabled=true;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Method=Standard;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Name=General;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_SetDate=2023-11-30T05:47:49Z;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: CH3PR12MB8657:EE_|SA1PR12MB6799:EE_
+x-ms-office365-filtering-correlation-id: 27108e2b-d567-4dd2-ae70-08dbf1681417
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Wsiml3HUDsDvck93QZx+MhvE70AlbJgUBz+SG4m2olIm8aeFSqnv2YoAJ7GAlILvtMLRhqmJGEArSkzCALUqV7yHF8zhTajEBpeTRVnU3YX8P9j1RepyZzQTf06U37G3ZwNOXIVdKBO0owczrGeqPEjepFlvTscPTscm5zrlxhzAvmjT+xmywevJJ2gpfXfJzFdbM+9i9o4UdYrCIt5ybfsOVAuj+lDelw45mVu0VZqLKeus/3sFG/htciH7/ZRGAZkH0Xj90OjlVzofWs63WDxr4N/g21Iz6717fIgEPMHMYQ3rRTU8LhLy/myWK8L7UUglupyMoC6rGnJ9+RAhOfAlP+a2PWfJkXEC2BDw8SppqCHqq66KAMYF2UWkXdoz0XTQS0GmGvmBbb4MNEq365UHk61QveaQE5/rtTUkhB1gVSalEbQyPsF3NQNEMleUkI2p8yXJSEfkes2ehAc345uhYAPgAAlAvVYY/QuahTsuCv0otnbvUu2R08TDrSsl9qzwaLoO2yi9zY/W+X6O6oX1/jpwnWytbT8UV+pF3sVhkdwrqhZUJ+T5MOSOt8fAw53Do89xz0tzYyq9E6umQwlWO1IKIGlGAM14Q642Lzp+zPW6kyZ4wNJju8uGf2qXSLmRR2mE4r2px9jvYi7BP990LN4Ypix7DCPWJPt4z4o=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB8657.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39860400002)(376002)(396003)(136003)(366004)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(9686003)(122000001)(64756008)(8936002)(38100700002)(478600001)(8676002)(7696005)(4326008)(41300700001)(110136005)(66556008)(66946007)(76116006)(6636002)(54906003)(316002)(66446008)(26005)(66476007)(86362001)(6506007)(53546011)(71200400001)(38070700009)(52536014)(202311291699003)(83380400001)(33656002)(2906002)(55016003)(15650500001)(5660300002)(66899024)(7416002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?bOLPGq1V6qJCcgX0fubkRW0F5RbGcVrhwRpRmEagDH7F188FryHI2MCNluFP?=
+ =?us-ascii?Q?VCbeVxMI6KfH+sg9v4UUcZaMQWlvCO1zYINpOZmoBFgVn/j9d8JlriiHTD5y?=
+ =?us-ascii?Q?m0DKc9N2mwjapmgYhk6asOtpvQ+pDaBTdkmU5wln96La3ckYWuhnAU97IcOu?=
+ =?us-ascii?Q?aXlx9NtJZlHtlMKfyfUeryaj21PL3NXMtn1tJNpfCvwcAdSBNtTR69/XWt6k?=
+ =?us-ascii?Q?SWoj1kvr3V1KCJ3EUkD1PTpFuZ1TCGtJp3X2gcaAa1nHWyCDPFagM7LBKam4?=
+ =?us-ascii?Q?ZmFyMppfVIaNgl3YSQfzIK3HCxhuIEDUhsmFUN2/TZlFqYpwLj9rkuoGinxc?=
+ =?us-ascii?Q?PqUg06wuSP27dqjlrPJFChUxwODIkb64eeQMC/i2mzCWdcMPDjatDgMdUbKf?=
+ =?us-ascii?Q?TRc7/QDtdrK74OiOHjTO1lulMNEoqxGRdIRpbM+D2ykxUkdR7kQiI3T/IAny?=
+ =?us-ascii?Q?kHLJ6wLbmvld/RwW0eHAButCtmth0/36gbyIdf+5RzvXMsYiQbUZpRpq+sOk?=
+ =?us-ascii?Q?TBjKEok3cO7PY7lzxnbIMY57HL+5uzSGN7qF8hFEpvXrtqSPzkGQ83OBZE87?=
+ =?us-ascii?Q?mWpczFq3S0CSKsslvltVoI5b08z+DjCnQttpY4pbb7RMjDl6Odcgbt9Y+Lb5?=
+ =?us-ascii?Q?QsyuQ8trlF5+BIqUbJbfjxVZrEXyH0GfFCUhHuRryG9y6+WrV9oLjrG5tlqq?=
+ =?us-ascii?Q?csuDQFXFPA2237UBNp5na61QdWrVmx4iqXsr08neBHRLzk8J3Wq75Smn36sp?=
+ =?us-ascii?Q?Pbu3I2NwQdYVFsuNXmF7YFMz7ElcwPQnFDrTvNdKvIyq8U5QoVgnJwzEFs9A?=
+ =?us-ascii?Q?Q8FSGc6YbHyH0m5mbGoHzrisJXMsWj7zl9BtwHI2XgppFyYzAIPu5qqmNiah?=
+ =?us-ascii?Q?/hYKXZHiDy451CdlFL7yyJa1XW71ywCljUioeX9aOCETkOcwx1z8F1+hGKCM?=
+ =?us-ascii?Q?oOYVo2OpeGJVEVW+8Er4r8pWkR0tXAnkrRywjwtffGThA4UjEzrHjckhZgDc?=
+ =?us-ascii?Q?14QZay1JSOSpMALjSEjeLht+nf8wjEykekVlDLzOm5t5qh01tMybyiD+Lygu?=
+ =?us-ascii?Q?WbeInyA6AAYumOrxpfiMbiTTVzU/7ZQ7otXmq11J9UCQA5eY7YMS9iYrNV3K?=
+ =?us-ascii?Q?5IfLv6G2NhkS4HOXkIdqFXg+2R17byfCUAg13HHx15i5Nd8bj2OdEVgiatOR?=
+ =?us-ascii?Q?oMh0AZ9E8HK+GAmbs87KKWmo1krVaQG5+RgdQi+XdP1pkYkUI/GerQU11ff1?=
+ =?us-ascii?Q?ho3Y/tIbFMYJ91bvEHwM26wJx9Pjg+Edfx6Eu6Ts4TMSwo2if3i+CBpSdW0s?=
+ =?us-ascii?Q?yV1NDyAN1dZiI5V6bjdbdLFK5CjNY60Fu46nja5/5UuuL86ZpgqfJM5x+Rec?=
+ =?us-ascii?Q?bSFr1m0dCQevbz93IUae6QzgT6RICXw11U9eMDO5I43IC+1vdPhv/Wu2Kw6V?=
+ =?us-ascii?Q?pICCU1VHxPrulj3VaDU6Dy6ocdzukD19INMnbAzJkj7WmbzOHUYMhUGJ/ILZ?=
+ =?us-ascii?Q?u4BN0DEMiqRfSluT2eUzblcoXY8buAfdYfyYYlu/ChrSZ2jjoXGuu5Uw4a6V?=
+ =?us-ascii?Q?8Ju7o2+yZ0UNMez3rFo=3D?=
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <2C0DB713-80C3-483B-AA88-EE3EE9BEA631@linux.vnet.ibm.com>
-References: <20231129213428.2227448-1-irogers@google.com>
-To:     Ian Rogers <irogers@google.com>
-X-Mailer: Apple Mail (2.3774.200.91.1.1)
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: cioANA8EPmAof0td3yxTWceH-3N6R2tw
-X-Proofpoint-ORIG-GUID: XO0k_rcjfCltV98wInr6MkEy8pxp9XvR
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-30_03,2023-11-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 clxscore=1011
- lowpriorityscore=0 suspectscore=0 mlxscore=0 bulkscore=0 phishscore=0
- priorityscore=1501 adultscore=0 spamscore=0 mlxlogscore=999
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311300043
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB8657.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 27108e2b-d567-4dd2-ae70-08dbf1681417
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Nov 2023 05:49:11.8641
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: H216s7jp6TWmw6XSri+/OwF1tdpnx3+nWpU6xCZAETyfbxPpev9Shzv4faODAiALhRgN8JDpTcxHzpBc7ml69Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB6799
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+[AMD Official Use Only - General]
 
-
-> On 30-Nov-2023, at 3:04=E2=80=AFAM, Ian Rogers <irogers@google.com> =
-wrote:
->=20
-> Migrate Makefile.tests to Build so that variables like rule_mkdir are
-> defined via Makefile.build (needed so the output directory can be
-> created). This requires SHELLCHECK being exported and the clean rule
-> tweaking to remove the files in find.
->=20
-> Change find "-perm -o=3Dx" as it was failing on my Debian based Linux
-> kernel tree, switch to using "-executable".
->=20
-> Adding a filename prefix of "." to the shellcheck log files is a pain
-> and error prone in make, remove this prefix and just add the
-> shellcheck log files to .gitignore.
->=20
-> Fix the command echo so that running the test is displayed.
-
-Thanks for checking this Ian.
-I will do testing in my environment and report back on the results
-
-Thanks
-Athira
->=20
-> Fixes: 1638b11ef815 ("perf tools: Add perf binary dependent rule for =
-shellcheck log in Makefile.perf")
-> Signed-off-by: Ian Rogers <irogers@google.com>
+> -----Original Message-----
+> From: Meng, Li (Jassmine) <Li.Meng@amd.com>
+> Sent: Wednesday, November 29, 2023 2:55 PM
+> To: Rafael J . Wysocki <rafael.j.wysocki@intel.com>; Huang, Ray
+> <Ray.Huang@amd.com>
+> Cc: linux-pm@vger.kernel.org; linux-kernel@vger.kernel.org; x86@kernel.or=
+g;
+> linux-acpi@vger.kernel.org; Shuah Khan <skhan@linuxfoundation.org>; linux=
+-
+> kselftest@vger.kernel.org; Fontenot, Nathan <Nathan.Fontenot@amd.com>;
+> Sharma, Deepak <Deepak.Sharma@amd.com>; Deucher, Alexander
+> <Alexander.Deucher@amd.com>; Limonciello, Mario
+> <Mario.Limonciello@amd.com>; Huang, Shimmer
+> <Shimmer.Huang@amd.com>; Yuan, Perry <Perry.Yuan@amd.com>; Du,
+> Xiaojian <Xiaojian.Du@amd.com>; Viresh Kumar <viresh.kumar@linaro.org>;
+> Borislav Petkov <bp@alien8.de>; Oleksandr Natalenko
+> <oleksandr@natalenko.name>; Meng, Li (Jassmine) <Li.Meng@amd.com>;
+> Karny, Wyes <Wyes.Karny@amd.com>
+> Subject: [PATCH V11 5/7] cpufreq: amd-pstate: Update amd-pstate preferred
+> core ranking dynamically
+>
+> Preferred core rankings can be changed dynamically by the platform based =
+on
+> the workload and platform conditions and accounting for thermals and agin=
+g.
+> When this occurs, cpu priority need to be set.
+>
+> Tested-by: Oleksandr Natalenko <oleksandr@natalenko.name>
+> Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
+> Reviewed-by: Wyes Karny <wyes.karny@amd.com>
+> Reviewed-by: Huang Rui <ray.huang@amd.com>
+> Signed-off-by: Meng Li <li.meng@amd.com>
 > ---
-> tools/perf/.gitignore           |  3 +++
-> tools/perf/Makefile.perf        | 30 ++++++++++--------------------
-> tools/perf/tests/Build          | 14 ++++++++++++++
-> tools/perf/tests/Makefile.tests | 22 ----------------------
-> 4 files changed, 27 insertions(+), 42 deletions(-)
-> delete mode 100644 tools/perf/tests/Makefile.tests
->=20
-> diff --git a/tools/perf/.gitignore b/tools/perf/.gitignore
-> index ee5c14f3b8b1..f5b81d439387 100644
-> --- a/tools/perf/.gitignore
-> +++ b/tools/perf/.gitignore
-> @@ -39,6 +39,9 @@ trace/beauty/generated/
-> pmu-events/pmu-events.c
-> pmu-events/jevents
-> pmu-events/metric_test.log
-> +tests/shell/*.shellcheck_log
-> +tests/shell/coresight/*.shellcheck_log
-> +tests/shell/lib/*.shellcheck_log
-> feature/
-> libapi/
-> libbpf/
-> diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-> index 824cbc0af7d7..1ab2a908f240 100644
-> --- a/tools/perf/Makefile.perf
-> +++ b/tools/perf/Makefile.perf
-> @@ -229,8 +229,15 @@ else
->   force_fixdep :=3D $(config)
-> endif
->=20
-> +# Runs shellcheck on perf test shell scripts
-> +ifeq ($(NO_SHELLCHECK),1)
-> +  SHELLCHECK :=3D
-> +else
-> +  SHELLCHECK :=3D $(shell which shellcheck 2> /dev/null)
-> +endif
+>  drivers/cpufreq/amd-pstate.c | 46
+> ++++++++++++++++++++++++++++++++++++
+>  include/linux/amd-pstate.h   |  6 +++++
+>  2 files changed, 52 insertions(+)
+>
+> diff --git a/drivers/cpufreq/amd-pstate.c b/drivers/cpufreq/amd-pstate.c
+> index 74dcf63d75f9..88df6510dcc0 100644
+> --- a/drivers/cpufreq/amd-pstate.c
+> +++ b/drivers/cpufreq/amd-pstate.c
+> @@ -312,6 +312,7 @@ static int pstate_init_perf(struct amd_cpudata
+> *cpudata)
+>       WRITE_ONCE(cpudata->nominal_perf,
+> AMD_CPPC_NOMINAL_PERF(cap1));
+>       WRITE_ONCE(cpudata->lowest_nonlinear_perf,
+> AMD_CPPC_LOWNONLIN_PERF(cap1));
+>       WRITE_ONCE(cpudata->lowest_perf,
+> AMD_CPPC_LOWEST_PERF(cap1));
+> +     WRITE_ONCE(cpudata->prefcore_ranking,
+> AMD_CPPC_HIGHEST_PERF(cap1));
+>
+>       return 0;
+>  }
+> @@ -333,6 +334,7 @@ static int cppc_init_perf(struct amd_cpudata
+> *cpudata)
+>       WRITE_ONCE(cpudata->lowest_nonlinear_perf,
+>                  cppc_perf.lowest_nonlinear_perf);
+>       WRITE_ONCE(cpudata->lowest_perf, cppc_perf.lowest_perf);
+> +     WRITE_ONCE(cpudata->prefcore_ranking, cppc_perf.highest_perf);
+>
+>       if (cppc_state =3D=3D AMD_PSTATE_ACTIVE)
+>               return 0;
+> @@ -749,6 +751,34 @@ static void amd_pstate_init_prefcore(struct
+> amd_cpudata *cpudata)
+>       schedule_work(&sched_prefcore_work);
+>  }
+>
+> +static void amd_pstate_update_highest_perf(unsigned int cpu) {
+> +     struct cpufreq_policy *policy;
+> +     struct amd_cpudata *cpudata;
+> +     u32 prev_high =3D 0, cur_high =3D 0;
+> +     int ret;
 > +
-> export srctree OUTPUT RM CC CXX LD AR CFLAGS CXXFLAGS V BISON FLEX AWK
-> -export HOSTCC HOSTLD HOSTAR HOSTCFLAGS
-> +export HOSTCC HOSTLD HOSTAR HOSTCFLAGS SHELLCHECK
->=20
-> include $(srctree)/tools/build/Makefile.include
->=20
-> @@ -673,23 +680,7 @@ $(PERF_IN): prepare FORCE
-> $(PMU_EVENTS_IN): FORCE prepare
-> $(Q)$(MAKE) -f $(srctree)/tools/build/Makefile.build dir=3Dpmu-events =
-obj=3Dpmu-events
->=20
-> -# Runs shellcheck on perf test shell scripts
-> -
-> -SHELLCHECK :=3D $(shell which shellcheck 2> /dev/null)
-> -
-> -ifeq ($(NO_SHELLCHECK),1)
-> -SHELLCHECK :=3D
-> -endif
-> -
-> -ifneq ($(SHELLCHECK),)
-> -SHELLCHECK_TEST: FORCE prepare
-> - $(Q)$(MAKE) -f $(srctree)/tools/perf/tests/Makefile.tests
-> -else
-> -SHELLCHECK_TEST:
-> - @:
-> -endif
-> -
-> -$(OUTPUT)perf: $(PERFLIBS) $(PERF_IN) $(PMU_EVENTS_IN) =
-SHELLCHECK_TEST
-> +$(OUTPUT)perf: $(PERFLIBS) $(PERF_IN) $(PMU_EVENTS_IN)
-> $(QUIET_LINK)$(CC) $(CFLAGS) $(LDFLAGS) \
-> $(PERF_IN) $(PMU_EVENTS_IN) $(LIBS) -o $@
->=20
-> @@ -1152,9 +1143,8 @@ bpf-skel-clean:
-> $(call QUIET_CLEAN, bpf-skel) $(RM) -r $(SKEL_TMP_OUT) $(SKELETONS)
->=20
-> clean:: $(LIBAPI)-clean $(LIBBPF)-clean $(LIBSUBCMD)-clean =
-$(LIBSYMBOL)-clean $(LIBPERF)-clean fixdep-clean python-clean =
-bpf-skel-clean tests-coresight-targets-clean
-> - $(Q)$(MAKE) -f $(srctree)/tools/perf/tests/Makefile.tests clean
-> $(call QUIET_CLEAN, core-objs)  $(RM) $(LIBPERF_A) =
-$(OUTPUT)perf-archive $(OUTPUT)perf-iostat $(LANG_BINDINGS)
-> - $(Q)find $(or $(OUTPUT),.) -name '*.o' -delete -o -name '\.*.cmd' =
--delete -o -name '\.*.d' -delete
-> + $(Q)find $(or $(OUTPUT),.) -name '*.o' -delete -o -name '\.*.cmd' =
--delete -o -name '\.*.d' -delete -o -name '*.shellcheck_log' -delete
-> $(Q)$(RM) $(OUTPUT).config-detected
-> $(call QUIET_CLEAN, core-progs) $(RM) $(ALL_PROGRAMS) perf =
-perf-read-vdso32 perf-read-vdsox32 $(OUTPUT)$(LIBJVMTI).so
-> $(call QUIET_CLEAN, core-gen)   $(RM)  *.spec *.pyc *.pyo */*.pyc =
-*/*.pyo $(OUTPUT)common-cmds.h TAGS tags cscope* =
-$(OUTPUT)PERF-VERSION-FILE $(OUTPUT)FEATURE-DUMP $(OUTPUT)util/*-bison* =
-$(OUTPUT)util/*-flex* \
-> diff --git a/tools/perf/tests/Build b/tools/perf/tests/Build
-> index 2b45ffa462a6..53ba9c3e20e0 100644
-> --- a/tools/perf/tests/Build
-> +++ b/tools/perf/tests/Build
-> @@ -77,3 +77,17 @@ CFLAGS_python-use.o   +=3D =
--DPYTHONPATH=3D"BUILD_STR($(OUTPUT)python)" -DPYTHON=3D"BUI
-> CFLAGS_dwarf-unwind.o +=3D -fno-optimize-sibling-calls
->=20
-> perf-y +=3D workloads/
+> +     if ((!amd_pstate_prefcore) || (!cpudata->hw_prefcore))
+> +             return;
 > +
-> +ifdef SHELLCHECK
-> +  SHELL_TESTS :=3D $(shell find tests/shell -executable -type f -name =
-'*.sh')
-> +  TEST_LOGS :=3D $(SHELL_TESTS:tests/shell/%=3Dshell/%.shellcheck_log)
-> +else
-> +  SHELL_TESTS :=3D
-> +  TEST_LOGS :=3D
-> +endif
+> +     ret =3D amd_pstate_get_highest_perf(cpu, &cur_high);
+> +     if (ret)
+> +             return;
 > +
-> +$(OUTPUT)%.shellcheck_log: %
-> + $(call rule_mkdir)
-> + $(Q)$(call echo-cmd,test)shellcheck -a -S warning "$<" > $@ || (cat =
-$@ && rm $@ && false)
+> +     policy =3D cpufreq_cpu_get(cpu);
+> +     cpudata =3D policy->driver_data;
+> +     prev_high =3D READ_ONCE(cpudata->prefcore_ranking);
 > +
-> +perf-y +=3D $(TEST_LOGS)
-> diff --git a/tools/perf/tests/Makefile.tests =
-b/tools/perf/tests/Makefile.tests
-> deleted file mode 100644
-> index fdaca5f7a946..000000000000
-> --- a/tools/perf/tests/Makefile.tests
-> +++ /dev/null
-> @@ -1,22 +0,0 @@
-> -# SPDX-License-Identifier: GPL-2.0
-> -# Athira Rajeev <atrajeev@linux.vnet.ibm.com>, 2023
-> -
-> -PROGS :=3D $(shell find tests/shell -perm -o=3Dx -type f -name =
-'*.sh')
-> -FILE_NAME :=3D $(notdir $(PROGS))
-> -FILE_NAME :=3D $(FILE_NAME:%=3D.%)
-> -LOGS :=3D $(join $(dir $(PROGS)),$(FILE_NAME))
-> -LOGS :=3D $(LOGS:%=3D%.shellcheck_log)
-> -
-> -.PHONY: all
-> -all: SHELLCHECK_RUN
-> - @:
-> -
-> -SHELLCHECK_RUN: $(LOGS)
-> -
-> -.%.shellcheck_log: %
-> - $(call rule_mkdir)
-> - $(Q)$(call frecho-cmd,test)@shellcheck -S warning "$<" > $@ || (cat =
-$@ && rm $@ && false)
-> -
-> -clean:
-> - $(eval log_files :=3D $(shell find . -name '.*.shellcheck_log'))
-> - @rm -rf $(log_files)
-> --=20
-> 2.43.0.rc1.413.gea7ed67945-goog
->=20
+> +     if (prev_high !=3D cur_high) {
+> +             WRITE_ONCE(cpudata->prefcore_ranking, cur_high);
+> +
+> +             if (cur_high < CPPC_MAX_PERF)
+> +                     sched_set_itmt_core_prio((int)cur_high, cpu);
+> +     }
+> +
+> +     cpufreq_cpu_put(policy);
+> +}
+> +
+>  static int amd_pstate_cpu_init(struct cpufreq_policy *policy)  {
+>       int min_freq, max_freq, nominal_freq, lowest_nonlinear_freq, ret;
+> @@ -920,6 +950,17 @@ static ssize_t show_amd_pstate_highest_perf(struct
+> cpufreq_policy *policy,
+>       return sysfs_emit(buf, "%u\n", perf);
+>  }
+>
+> +static ssize_t show_amd_pstate_prefcore_ranking(struct cpufreq_policy
+> *policy,
+> +                                             char *buf)
+> +{
+> +     u32 perf;
+> +     struct amd_cpudata *cpudata =3D policy->driver_data;
+> +
+> +     perf =3D READ_ONCE(cpudata->prefcore_ranking);
+> +
+> +     return sysfs_emit(buf, "%u\n", perf);
+> +}
+> +
+>  static ssize_t show_amd_pstate_hw_prefcore(struct cpufreq_policy *policy=
+,
+>                                          char *buf)
+>  {
+> @@ -1133,6 +1174,7 @@ cpufreq_freq_attr_ro(amd_pstate_max_freq);
+>  cpufreq_freq_attr_ro(amd_pstate_lowest_nonlinear_freq);
+>
+>  cpufreq_freq_attr_ro(amd_pstate_highest_perf);
+> +cpufreq_freq_attr_ro(amd_pstate_prefcore_ranking);
+>  cpufreq_freq_attr_ro(amd_pstate_hw_prefcore);
+>  cpufreq_freq_attr_rw(energy_performance_preference);
+>  cpufreq_freq_attr_ro(energy_performance_available_preferences);
+> @@ -1143,6 +1185,7 @@ static struct freq_attr *amd_pstate_attr[] =3D {
+>       &amd_pstate_max_freq,
+>       &amd_pstate_lowest_nonlinear_freq,
+>       &amd_pstate_highest_perf,
+> +     &amd_pstate_prefcore_ranking,
+>       &amd_pstate_hw_prefcore,
+>       NULL,
+>  };
+> @@ -1151,6 +1194,7 @@ static struct freq_attr *amd_pstate_epp_attr[] =3D =
+{
+>       &amd_pstate_max_freq,
+>       &amd_pstate_lowest_nonlinear_freq,
+>       &amd_pstate_highest_perf,
+> +     &amd_pstate_prefcore_ranking,
+>       &amd_pstate_hw_prefcore,
+>       &energy_performance_preference,
+>       &energy_performance_available_preferences,
+> @@ -1491,6 +1535,7 @@ static struct cpufreq_driver amd_pstate_driver =3D =
+{
+>       .suspend        =3D amd_pstate_cpu_suspend,
+>       .resume         =3D amd_pstate_cpu_resume,
+>       .set_boost      =3D amd_pstate_set_boost,
+> +     .update_highest_perf    =3D amd_pstate_update_highest_perf,
+>       .name           =3D "amd-pstate",
+>       .attr           =3D amd_pstate_attr,
+>  };
+> @@ -1505,6 +1550,7 @@ static struct cpufreq_driver
+> amd_pstate_epp_driver =3D {
+>       .online         =3D amd_pstate_epp_cpu_online,
+>       .suspend        =3D amd_pstate_epp_suspend,
+>       .resume         =3D amd_pstate_epp_resume,
+> +     .update_highest_perf    =3D amd_pstate_update_highest_perf,
+>       .name           =3D "amd-pstate-epp",
+>       .attr           =3D amd_pstate_epp_attr,
+>  };
+> diff --git a/include/linux/amd-pstate.h b/include/linux/amd-pstate.h inde=
+x
+> 87e140e9e6db..426822612373 100644
+> --- a/include/linux/amd-pstate.h
+> +++ b/include/linux/amd-pstate.h
+> @@ -39,11 +39,16 @@ struct amd_aperf_mperf {
+>   * @cppc_req_cached: cached performance request hints
+>   * @highest_perf: the maximum performance an individual processor may
+> reach,
+>   *             assuming ideal conditions
+> + *             For platforms that do not support the preferred core feat=
+ure,
+> the
+> + *             highest_pef may be configured with 166 or 255, to avoid
+> max frequency
+> + *             calculated wrongly. we take the fixed value as the
+> highest_perf.
+>   * @nominal_perf: the maximum sustained performance level of the
+> processor,
+>   *             assuming ideal operating conditions
+>   * @lowest_nonlinear_perf: the lowest performance level at which nonline=
+ar
+> power
+>   *                      savings are achieved
+>   * @lowest_perf: the absolute lowest performance level of the processor
+> + * @prefcore_ranking: the preferred core ranking, the higher value indic=
+ates a
+> higher
+> + *             priority.
+>   * @max_freq: the frequency that mapped to highest_perf
+>   * @min_freq: the frequency that mapped to lowest_perf
+>   * @nominal_freq: the frequency that mapped to nominal_perf @@ -73,6
+> +78,7 @@ struct amd_cpudata {
+>       u32     nominal_perf;
+>       u32     lowest_nonlinear_perf;
+>       u32     lowest_perf;
+> +     u32     prefcore_ranking;
+>
+>       u32     max_freq;
+>       u32     min_freq;
+> --
+> 2.34.1
 
+Reviewed-by: Perry Yuan <perry.yuan@amd.com>
