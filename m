@@ -2,98 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D35B47FF6B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 17:46:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A12CD7FF6C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 17:47:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232499AbjK3QqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 11:46:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41930 "EHLO
+        id S1345648AbjK3Qqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 11:46:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232540AbjK3QqW (ORCPT
+        with ESMTP id S235227AbjK3Qqn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 11:46:22 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4475B1A3;
-        Thu, 30 Nov 2023 08:46:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701362788; x=1732898788;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=j5Z3BZaa2KzJMDfJc7votNXQvTdpf9ABYw6btdhHDko=;
-  b=Fr0cjvmf3JjxHDict5dQdrfhkDN0XYcnCjmVPzJRNd0QnnwTDlPDjIrT
-   cARQatiC/EyhP1hxB4HSNHjKSpsTrHdgUQ6dvxjKjtZ3KvppvOkASDzej
-   NbAdzgMmMiKPn1sWK+iBFN6gDx2DnjiA1+XAyDS1CscM79zA20a42Ypz3
-   T2pMUYVi9AXdlnpbgBmS1dGBTuO/TRGc1HPPJ13dLy5dSwZ7u4+46P5ua
-   cl/44TRcDLY1/IBKaocvKMh+aYL/NKVnQ6dGOdWpJe2dHhxxEEyq1HDAE
-   VU7HTDsyYLrATQU+ZbNuKz7F99aEPMAXBxSUM+3BJeCJy0jFwtmT2oWRr
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="12063772"
-X-IronPort-AV: E=Sophos;i="6.04,239,1695711600"; 
-   d="scan'208";a="12063772"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 08:46:28 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="745705348"
-X-IronPort-AV: E=Sophos;i="6.04,239,1695711600"; 
-   d="scan'208";a="745705348"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga006.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 08:46:26 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1r8kBD-00000000kVt-24gm;
-        Thu, 30 Nov 2023 18:46:23 +0200
-Date:   Thu, 30 Nov 2023 18:46:23 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH v2 10/10] gpiolib: remove gpiochip_is_requested()
-Message-ID: <ZWi8X7pQpUm-nIpN@smile.fi.intel.com>
-References: <20231130134630.18198-1-brgl@bgdev.pl>
- <20231130134630.18198-11-brgl@bgdev.pl>
+        Thu, 30 Nov 2023 11:46:43 -0500
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D96810D0;
+        Thu, 30 Nov 2023 08:46:49 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Sh2685pFkz6K5lJ;
+        Fri,  1 Dec 2023 00:42:08 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+        by mail.maildlp.com (Postfix) with ESMTPS id 96EBF14058E;
+        Fri,  1 Dec 2023 00:46:47 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 30 Nov
+ 2023 16:46:46 +0000
+Date:   Thu, 30 Nov 2023 16:46:46 +0000
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Russell King <rmk+kernel@armlinux.org.uk>
+CC:     <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
+        <linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-riscv@lists.infradead.org>, <kvmarm@lists.linux.dev>,
+        <x86@kernel.org>, <linux-csky@vger.kernel.org>,
+        <linux-doc@vger.kernel.org>, <linux-ia64@vger.kernel.org>,
+        <linux-parisc@vger.kernel.org>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        <jianyong.wu@arm.com>, <justin.he@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: [PATCH 01/21] arch_topology: Make
+ register_cpu_capacity_sysctl() tolerant to late CPUs
+Message-ID: <20231130164646.00006770@Huawei.com>
+In-Reply-To: <E1r5R2g-00CsyV-Ss@rmk-PC.armlinux.org.uk>
+References: <ZVyz/Ve5pPu8AWoA@shell.armlinux.org.uk>
+        <E1r5R2g-00CsyV-Ss@rmk-PC.armlinux.org.uk>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231130134630.18198-11-brgl@bgdev.pl>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml100005.china.huawei.com (7.191.160.25) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 30, 2023 at 02:46:30PM +0100, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+On Tue, 21 Nov 2023 13:43:54 +0000
+Russell King <rmk+kernel@armlinux.org.uk> wrote:
+
+> From: James Morse <james.morse@arm.com>
 > 
-> We have no external users of gpiochip_is_requested(). Let's remove it
-> and replace its internal calls with direct testing of the REQUESTED flag.
+> register_cpu_capacity_sysctl() adds a property to sysfs that describes
+> the CPUs capacity. This is done from a subsys_initcall() that assumes
+> all possible CPUs are registered.
+> 
+> With CPU hotplug, possible CPUs aren't registered until they become
+> present, (or for arm64 enabled). This leads to messages during boot:
+> | register_cpu_capacity_sysctl: too early to get CPU1 device!
+> and once these CPUs are added to the system, the file is missing.
+> 
+> Move this to a cpuhp callback, so that the file is created once
+> CPUs are brought online. This covers CPUs that are added late by
+> mechanisms like hotplug.
+> One observable difference is the file is now missing for offline CPUs.
+> 
+> Signed-off-by: James Morse <james.morse@arm.com>
+> Reviewed-by: Gavin Shan <gshan@redhat.com>
+> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 
-...
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-> -	cpy = kstrdup(label, GFP_KERNEL);
-> -	if (!cpy)
-> -		return ERR_PTR(-ENOMEM);
-> +	scoped_guard(spinlock_irqsave, &gpio_lock) {
-> +		if (!test_bit(FLAG_REQUESTED, &desc->flags))
-> +			return NULL;
-
-> +		cpy = kstrdup(desc->label, GFP_KERNEL);
-> +		if (!cpy)
-> +			return ERR_PTR(-ENOMEM);
-
-You just introduced these lines earlier in the series, and here you moved
-them again. With guard() instead it may be kept in a better shape.
-
-> +	}
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+> ---
+> If the offline CPUs thing is a problem for the tools that consume
+> this value, we'd need to move cpu_capacity to be part of cpu.c's
+> common_cpu_attr_groups. However, attempts to discuss this just end
+> up in a black hole, so this is a non-starter. Thus, if this needs
+> to be done, it can be done as a separate patch.
+> ---
+>  drivers/base/arch_topology.c | 38 ++++++++++++++++++++++++------------
+>  1 file changed, 26 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
+> index b741b5ba82bd..9ccb7daee78e 100644
+> --- a/drivers/base/arch_topology.c
+> +++ b/drivers/base/arch_topology.c
+> @@ -220,20 +220,34 @@ static DECLARE_WORK(update_topology_flags_work, update_topology_flags_workfn);
+>  
+>  static DEVICE_ATTR_RO(cpu_capacity);
+>  
+> -static int register_cpu_capacity_sysctl(void)
+> +static int cpu_capacity_sysctl_add(unsigned int cpu)
+>  {
+> -	int i;
+> -	struct device *cpu;
+> +	struct device *cpu_dev = get_cpu_device(cpu);
+>  
+> -	for_each_possible_cpu(i) {
+> -		cpu = get_cpu_device(i);
+> -		if (!cpu) {
+> -			pr_err("%s: too early to get CPU%d device!\n",
+> -			       __func__, i);
+> -			continue;
+> -		}
+> -		device_create_file(cpu, &dev_attr_cpu_capacity);
+> -	}
+> +	if (!cpu_dev)
+> +		return -ENOENT;
+> +
+> +	device_create_file(cpu_dev, &dev_attr_cpu_capacity);
+> +
+> +	return 0;
+> +}
+> +
+> +static int cpu_capacity_sysctl_remove(unsigned int cpu)
+> +{
+> +	struct device *cpu_dev = get_cpu_device(cpu);
+> +
+> +	if (!cpu_dev)
+> +		return -ENOENT;
+> +
+> +	device_remove_file(cpu_dev, &dev_attr_cpu_capacity);
+> +
+> +	return 0;
+> +}
+> +
+> +static int register_cpu_capacity_sysctl(void)
+> +{
+> +	cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "topology/cpu-capacity",
+> +			  cpu_capacity_sysctl_add, cpu_capacity_sysctl_remove);
+>  
+>  	return 0;
+>  }
 
