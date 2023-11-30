@@ -2,129 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CF187FFAE5
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 20:11:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F5EB7FFAE7
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 20:11:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346839AbjK3TLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 14:11:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41588 "EHLO
+        id S232292AbjK3TLf convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 30 Nov 2023 14:11:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346816AbjK3TK4 (ORCPT
+        with ESMTP id S231697AbjK3TLe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 14:10:56 -0500
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 492EF10DE;
-        Thu, 30 Nov 2023 11:11:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-        ; s=x; h=Subject:Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Cc:To
-        :From:subject:date:message-id:reply-to;
-        bh=Cfw2qQFHxR7Ac5K0XfN6TaUdPVSzYZ0pF9vaoSYN+c0=; b=OSgonvXY6ptb+8x3AvPn2XyfCw
-        /SAEZzT+wMAWMXKdfeJwMX1G0369OV23NMBvcP2pPx9EeW2r7/O1TgcFZ1FGBurQKpunn/AMAlz4J
-        /EW2QUVzkjYHkPGI5OjAY50/tcknJUAXSCoFmwtf/UnY6fquvtiAIZWCwJ01hc+gAubk=;
-Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:48272 helo=pettiford.lan)
-        by mail.hugovil.com with esmtpa (Exim 4.92)
-        (envelope-from <hugo@hugovil.com>)
-        id 1r8mRA-0003sb-Jn; Thu, 30 Nov 2023 14:11:01 -0500
-From:   Hugo Villeneuve <hugo@hugovil.com>
-To:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        hvilleneuve@dimonoff.com
-Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        hugo@hugovil.com
-Date:   Thu, 30 Nov 2023 14:10:49 -0500
-Message-Id: <20231130191050.3165862-8-hugo@hugovil.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231130191050.3165862-1-hugo@hugovil.com>
-References: <20231130191050.3165862-1-hugo@hugovil.com>
+        Thu, 30 Nov 2023 14:11:34 -0500
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D83A610F1
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 11:11:40 -0800 (PST)
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-dafe04717baso1198457276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 11:11:40 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701371500; x=1701976300;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qqnEbO79cZleai9aSzE143zTjq1kKLockn089TKU0g4=;
+        b=R/Xccoolv67qh2mLbX6DkrReOYCtnRcxv8WEiV4jS605s9+fQX6LVcijyhguwJxvUA
+         qQO8culS+r2IPNzWg9txOjQYeCW99TxrClbMAlt+gq1rjgpmoDDTN7lNIMYzoi+Wgf9y
+         fOm4KkUNCwdTOCv2+dDv3VsPCHAodmWL4bsJLjay7oo2FSbdC8DxlMlrYrPEC9SQvF9F
+         8NAhE7TdrnLPna3pwf0EHmlyI0LJDmhrQNFFn7a4oB6F9TvEOO+5hfJHnR5xoPAHxkKv
+         wsH9TExXDAQtIdJ2e41Vm1tgihVkx+uimOLaUGb0XAL4ylZasUV8zllYvBgitjF0p2Dl
+         +yQA==
+X-Gm-Message-State: AOJu0YwypaX+7OKG+Gub/yKOCPfEnz5fL69RObnJsO/fncNyc0L+I7Qw
+        XxEuqJpshKM/1N4lfWV3W5v9FXpiCAONRw==
+X-Google-Smtp-Source: AGHT+IFYIwhI8Tji7oh5xuJBcSet6MfCU1grocxi9SaodL5wOuQ3nQe73qMu5zGV5kCNtvTJmxbQnA==
+X-Received: by 2002:a25:be87:0:b0:d9b:3ed:41a5 with SMTP id i7-20020a25be87000000b00d9b03ed41a5mr20230553ybk.21.1701371499896;
+        Thu, 30 Nov 2023 11:11:39 -0800 (PST)
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com. [209.85.128.169])
+        by smtp.gmail.com with ESMTPSA id a1-20020a258701000000b00d9ace05037csm381559ybl.13.2023.11.30.11.11.39
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Nov 2023 11:11:39 -0800 (PST)
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-5cece20f006so14721767b3.3
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 11:11:39 -0800 (PST)
+X-Received: by 2002:a0d:f281:0:b0:5d1:1bab:5902 with SMTP id
+ b123-20020a0df281000000b005d11bab5902mr12533193ywf.15.1701371499118; Thu, 30
+ Nov 2023 11:11:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 70.80.174.168
-X-SA-Exim-Mail-From: hugo@hugovil.com
+References: <20231115210245.3744589-1-robh@kernel.org> <CANiq72=VGJDcK=tVkOFCnTumxDNE9YfiyAVocmD534mnAd_1CA@mail.gmail.com>
+In-Reply-To: <CANiq72=VGJDcK=tVkOFCnTumxDNE9YfiyAVocmD534mnAd_1CA@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 30 Nov 2023 20:11:27 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdXd4ai5bDN4OktKDA_zS6+viDT=x2yFG=_ZbVpfLvGGgA@mail.gmail.com>
+Message-ID: <CAMuHMdXd4ai5bDN4OktKDA_zS6+viDT=x2yFG=_ZbVpfLvGGgA@mail.gmail.com>
+Subject: Re: [RESEND PATCH] auxdisplay: img-ascii-lcd: Use device_get_match_data()
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     Rob Herring <robh@kernel.org>, Paul Burton <paulburton@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
-Subject: [PATCH 7/7] serial: max310x: use separate regmap name for each port
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+Hi Miguel,
 
-Use a separate regmap name for each port so that each port can have its own
-debugfs entry, allowing to access each port registers independently.
+On Thu, Nov 30, 2023 at 7:55 PM Miguel Ojeda
+<miguel.ojeda.sandonis@gmail.com> wrote:
+> On Wed, Nov 15, 2023 at 10:02 PM Rob Herring <robh@kernel.org> wrote:
+> > +       cfg = device_get_match_data(&pdev->dev);
+>
+> This sounds good to me, but a couple notes:
+>
+>   - This could be `dev` since we have it, no?
 
-For example, a four channels/ports device like the MAX14830 will have four
-entries in its regmap debugfs:
+Indeed.
 
-$ find /sys/kernel/debug/regmap -type d | grep spi0.0
-/sys/kernel/debug/regmap/spi0.0-port0
-/sys/kernel/debug/regmap/spi0.0-port1
-/sys/kernel/debug/regmap/spi0.0-port2
-/sys/kernel/debug/regmap/spi0.0-port3
+>   - Orthogonally, should we just directly initialize `cfg` since now we can?
 
-Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
----
- drivers/tty/serial/max310x.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+Yes we can, it would still fit on an 80-column punched card ;-)
 
-diff --git a/drivers/tty/serial/max310x.c b/drivers/tty/serial/max310x.c
-index 58dd5cc62014..d2eca05a6966 100644
---- a/drivers/tty/serial/max310x.c
-+++ b/drivers/tty/serial/max310x.c
-@@ -27,6 +27,7 @@
- #include <linux/uaccess.h>
- 
- #define MAX310X_NAME			"max310x"
-+#define MAX310X_PORT_NAME_SUFFIX	"port"
- #define MAX310X_MAJOR			204
- #define MAX310X_MINOR			209
- #define MAX310X_UART_NRMAX		16
-@@ -1486,6 +1487,15 @@ static struct regmap_config regcfg = {
- 	.max_raw_write = MAX310X_FIFO_SIZE,
- };
- 
-+static const char *max310x_regmap_name(unsigned int port_id)
-+{
-+	static char buf[sizeof(MAX310X_PORT_NAME_SUFFIX __stringify(MAX310X_MAX_PORTS))];
-+
-+	snprintf(buf, sizeof(buf), MAX310X_PORT_NAME_SUFFIX "%u", port_id);
-+
-+	return buf;
-+}
-+
- #ifdef CONFIG_SPI_MASTER
- static int max310x_spi_extended_reg_enable(struct device *dev, bool enable)
- {
-@@ -1521,6 +1531,8 @@ static int max310x_spi_probe(struct spi_device *spi)
- 
- 	for (i = 0; i < devtype->nr; i++) {
- 		u8 port_mask = i * 0x20;
-+
-+		regcfg.name = max310x_regmap_name(i);
- 		regcfg.read_flag_mask = port_mask;
- 		regcfg.write_flag_mask = port_mask | MAX310X_WRITE_BIT;
- 		regmaps[i] = devm_regmap_init_spi(spi, &regcfg);
-@@ -1617,6 +1629,7 @@ static int max310x_i2c_probe(struct i2c_client *client)
- 				     client->addr, devtype->slave_addr.min,
- 				     devtype->slave_addr.max);
- 
-+	regcfg_i2c.name = max310x_regmap_name(0);
- 	regmaps[0] = devm_regmap_init_i2c(client, &regcfg_i2c);
- 
- 	for (i = 1; i < devtype->nr; i++) {
-@@ -1625,6 +1638,7 @@ static int max310x_i2c_probe(struct i2c_client *client)
- 							client->adapter,
- 							port_addr);
- 
-+		regcfg_i2c.name = max310x_regmap_name(i);
- 		regmaps[i] = devm_regmap_init_i2c(port_client, &regcfg_i2c);
- 	}
- 
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.39.2
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
