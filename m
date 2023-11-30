@@ -2,103 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2845F7FF33A
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 16:11:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E65B67FF33D
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 16:11:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346156AbjK3PKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 10:10:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38906 "EHLO
+        id S1346164AbjK3PLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 10:11:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346053AbjK3PKs (ORCPT
+        with ESMTP id S1346053AbjK3PLn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 10:10:48 -0500
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0F3F194
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 07:10:54 -0800 (PST)
-Received: by mail-qv1-xf32.google.com with SMTP id 6a1803df08f44-67a51d80a02so4928966d6.2
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 07:10:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701357054; x=1701961854; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=65x8xs7/Ug+eGRF3Q+RLiswQEr4hdxkkx4yPgUFKNFs=;
-        b=Adoyg17DzTPrgrP9gEdn5Nis5Nm4Qd9wjk7tRQylZX2hSFIMb4NWZnMfqmV5eelkgh
-         Iqoqw+khqUx+uMxd7BBCHBfOlJwc4QPDNhcvBmoKNiZd0iSoABcG0LlioOcgrLbn7L9N
-         5hDbmeKekE5PyBJbz5faSRblKD0zcV4zDvyrNITcbU5wVlSRjMxqxhIT2JFnuHmznrpp
-         hspxQJh2lSySzONINeLrREU89s9eFOGu6efmToV3s3haKHv+RSJVlOafMF9rGEjYDGZI
-         yehSfSJUGnLDmVvHTsa+rXY8CYbKkGV4zT1iFkfrX7hRwWCLYXZhcGuVUv9abm3rZ+b4
-         zYcg==
+        Thu, 30 Nov 2023 10:11:43 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA2C2194
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 07:11:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701357107;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tTb7/Brcw9eH7ls4rESUEPjpWAXCIT3tROznUXci3eY=;
+        b=GuuVtE9U6Ojpe2mkS/g0KD8Yeq+r/+C8oFpmvZfJ5U1HamCP/KOLIPQnXMiFHqk+eGO2bN
+        L2ySHZqRLT5jdE9R6nDKLoCzQGzBFJRrJNHeHLTwEADl2JK9Ngb0yE9iR45Aqg05CM3xA0
+        yoEwLuwKPEb6KAk7IhUkCFcTDr8cP0g=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-385--jp7GhegNvePqCKhIm8Xfw-1; Thu, 30 Nov 2023 10:11:46 -0500
+X-MC-Unique: -jp7GhegNvePqCKhIm8Xfw-1
+Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-5444a9232a9so859463a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 07:11:46 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701357054; x=1701961854;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=65x8xs7/Ug+eGRF3Q+RLiswQEr4hdxkkx4yPgUFKNFs=;
-        b=P6rx2sc2tx6uXPgLSWFN+Rj+0USWtzIY3WrtTJFTDNS+3s6Dtw0apK1/2XPWxmyw5O
-         YIcV8B4v8PJd6HPCQgejOrbpqmMtovAkoXFUzeB/JNMjwi7ztK8Uog8UN9qm05TNVTXS
-         zAgXxTTzLZS+hWZ1TJD/pBZZsUtc1Fn4gOdyTDs7MSpxW8ENME0EagcLZ4slgg2oabv3
-         PE9Lw9cp1YNR36jINeio98KReUz/mGhX3dSHic8NIEeJoJtiXntvc/hNdT+S1rL2q6m0
-         lvS+VQ2TuLbCrdm51Rb3cFkCd2CwMV+rcWVIhv8VupwJdmljuDu1UUG9oJAzy9zAFFBw
-         Couw==
-X-Gm-Message-State: AOJu0YyZLF2urgsWbkOCuIc/OcRiuj9s7B9RSWLbaj6IW9d9ZEgQgy7M
-        xEGCgwnPyP/0ouCktbw9H4285PoYqxe36doWBRk=
-X-Google-Smtp-Source: AGHT+IF6r6Hqut2xxDnLLGZ0zV3Mm7WbcEszTpidDJPRE7gu9zzpLCsMhh1T3nEibhhCyDEeOEfRFx/4XoUPmDHnnUU=
-X-Received: by 2002:ad4:5f8d:0:b0:67a:2e8f:90cd with SMTP id
- jp13-20020ad45f8d000000b0067a2e8f90cdmr21597719qvb.37.1701357054019; Thu, 30
- Nov 2023 07:10:54 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701357105; x=1701961905;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=tTb7/Brcw9eH7ls4rESUEPjpWAXCIT3tROznUXci3eY=;
+        b=cVXnTOXDvfe5Eo+rQzcwDxo8F2VRdrRGL65JPv0sPxPcDsRPP+nMUn7f+N2V6HMfzz
+         oa1dLHAXqvn4bxC5nTnePUNKgf5Ea5p9Ff3hbgOHCKlabfrjXsSYj3MyEz/AmdO2QLR1
+         k71is2WlTvhqnzEfqnOuk8tODYVOZVJF2iwV1sdd705mm+38cjajyi8m2VtQHBSqmrKn
+         3o8wscytNC6ON46xT440qGlseHfVYA54nheLOdKV7Wyb3nA+pbB8JbUTJuyIamh07u+D
+         qXfnEwUzTCcBtEQddFD4DS0a097mRKujPzFkG1s7RjhMQ6NpBuM9wrkHnpsdY+nJ4ldi
+         J+KA==
+X-Gm-Message-State: AOJu0YzEGv/rBujg1fVsyp3fkfjU45OJbORsANeqhqRPmd443e6nPxQR
+        9QXqL0bFZQ1TP5krkrMwoGtMmubeQhrAEumFbnMN2PaDgNYNxUgBMGHZ0PGxVKIfRHsDQHsfri8
+        jvtbevFYOapH1l4FED71yCLGCj5X2Sx1YjRvrhXS3hivJvUt5ERiHUS4BTPMOawjoKxNZQm0OD3
+        UpV6aFKi+5
+X-Received: by 2002:a05:6402:b44:b0:54b:eae2:31f0 with SMTP id bx4-20020a0564020b4400b0054beae231f0mr2801934edb.38.1701357105128;
+        Thu, 30 Nov 2023 07:11:45 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHcoQRjN9FDyRmd09UWPdOXNcjtgFl05hyoI4ljPOGLTZWlnuhzIwOGMzLfhGUcYX69PhiQWQ==
+X-Received: by 2002:a05:6402:b44:b0:54b:eae2:31f0 with SMTP id bx4-20020a0564020b4400b0054beae231f0mr2801912edb.38.1701357104769;
+        Thu, 30 Nov 2023 07:11:44 -0800 (PST)
+Received: from fedora (g2.ign.cz. [91.219.240.8])
+        by smtp.gmail.com with ESMTPSA id a7-20020aa7d907000000b0054b37719896sm637773edr.48.2023.11.30.07.11.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Nov 2023 07:11:44 -0800 (PST)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 10/14] KVM: x86: Make Hyper-V emulation optional
+In-Reply-To: <ZWfl3ahamXPPoIGB@google.com>
+References: <20231025152406.1879274-1-vkuznets@redhat.com>
+ <20231025152406.1879274-11-vkuznets@redhat.com>
+ <ZWfl3ahamXPPoIGB@google.com>
+Date:   Thu, 30 Nov 2023 16:11:43 +0100
+Message-ID: <87y1efmg28.fsf@redhat.com>
 MIME-Version: 1.0
-References: <20231130135232.191320-1-marc.ferland@sonatest.com>
- <20231130135232.191320-5-marc.ferland@sonatest.com> <d123196b2c5d486cbf3b2e7e4b1fc774@AcuMS.aculab.com>
-In-Reply-To: <d123196b2c5d486cbf3b2e7e4b1fc774@AcuMS.aculab.com>
-From:   Marc Ferland <marc.ferland@gmail.com>
-Date:   Thu, 30 Nov 2023 10:10:41 -0500
-Message-ID: <CAMRMzCCW9dsCLL0karbWOsbunCO=JGaiDEcT4ZD50O7wRqCfsw@mail.gmail.com>
-Subject: Re: [PATCH v3 4/5] w1: ds2433: use the kernel bitmap implementation
-To:     David Laight <David.Laight@aculab.com>
-Cc:     "krzysztof.kozlowski@linaro.org" <krzysztof.kozlowski@linaro.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "marc.ferland@sonatest.com" <marc.ferland@sonatest.com>,
-        "jeff.dagenais@gmail.com" <jeff.dagenais@gmail.com>,
-        "rdunlap@infradead.org" <rdunlap@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 30, 2023 at 9:52=E2=80=AFAM David Laight <David.Laight@aculab.c=
-om> wrote:
+Sean Christopherson <seanjc@google.com> writes:
+
+...
+
 >
-> From: marc.ferland@gmail.com
-> > Sent: 30 November 2023 13:53
-> >
-> > The ds2433 driver uses the 'validcrc' variable to mark out which pages
-> > have been successfully (crc is valid) retrieved from the eeprom and
-> > placed in the internal 'memory' buffer (see CONFIG_W1_SLAVE_DS2433_CRC)=
-.
-> >
-> > The current implementation assumes that the number of pages will never
-> > go beyond 32 pages (bit field is a u32). This is fine for the ds2433
-> > since it only has 16 pages.
-> >
-> > Use a dynamically allocated bitmap so that we can support eeproms with
-> > more than 32 pages which is the case for the ds28ec20 (80 pages).
+>>  static bool nested_get_vmcs12_pages(struct kvm_vcpu *vcpu)
+>>  {
+>> @@ -3552,11 +3563,13 @@ static int nested_vmx_run(struct kvm_vcpu *vcpu, bool launch)
+>>  	if (!nested_vmx_check_permission(vcpu))
+>>  		return 1;
+>>  
+>> +#ifdef CONFIG_KVM_HYPERV
+>>  	evmptrld_status = nested_vmx_handle_enlightened_vmptrld(vcpu, launch);
+>>  	if (evmptrld_status == EVMPTRLD_ERROR) {
+>>  		kvm_queue_exception(vcpu, UD_VECTOR);
+>>  		return 1;
+>>  	}
+>> +#endif
+>>  
+>>  	kvm_pmu_trigger_event(vcpu, PERF_COUNT_HW_BRANCH_INSTRUCTIONS);
 >
-> Dynamically allocating seems excessive.
-> Why not just make the maximum a compile-time constant (say 96 or 128)
-> and just check that the actual size isn't too big.
+> This fails to build with CONFIG_KVM_HYPERV=n && CONFIG_KVM_WERROR=y:
 >
-> > As an added bonus, the code also gets easier on the eye.
+> arch/x86/kvm/vmx/nested.c:3577:9: error: variable 'evmptrld_status' is uninitialized when used here [-Werror,-Wuninitialized]
+>         if (CC(evmptrld_status == EVMPTRLD_VMFAIL))
+>                ^~~~~~~~~~~~~~~
 >
-> and slower :-)
->
-Sounds reasonable to me. Thanks for the tip!
-Marc
+> Sadly, simply wrapping with an #ifdef also fails because then evmptrld_status
+> becomes unused.  I'd really prefer to avoid having to tag it __maybe_unused, and
+> adding more #ifdef would also be ugly.  Any ideas?
+
+A couple,
+
+- we can try putting all eVMPTR logic under 'if (1)' just to create a
+  block where we can define evmptrld_status. Not sure this is nicer than
+  another #ifdef wrapping evmptrld_status and I'm not sure what to do
+  with kvm_pmu_trigger_event() -- can it just go above
+  nested_vmx_handle_enlightened_vmptrld()?
+
+- we can add a helper, e.g. 'evmptr_is_vmfail()' and make it just return
+  'false' when !CONFIG_KVM_HYPERV.
+
+- rewrite this as a switch to avoid the need for having the local
+  variable, (untested)
+
+diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+index c5ec0ef51ff7..b26ce7d596e9 100644
+--- a/arch/x86/kvm/vmx/nested.c
++++ b/arch/x86/kvm/vmx/nested.c
+@@ -3553,22 +3553,23 @@ static int nested_vmx_run(struct kvm_vcpu *vcpu, bool launch)
+        enum nvmx_vmentry_status status;
+        struct vcpu_vmx *vmx = to_vmx(vcpu);
+        u32 interrupt_shadow = vmx_get_interrupt_shadow(vcpu);
+-       enum nested_evmptrld_status evmptrld_status;
+ 
+        if (!nested_vmx_check_permission(vcpu))
+                return 1;
+ 
+-       evmptrld_status = nested_vmx_handle_enlightened_vmptrld(vcpu, launch);
+-       if (evmptrld_status == EVMPTRLD_ERROR) {
++       switch (nested_vmx_handle_enlightened_vmptrld(vcpu, launch)) {
++       case EVMPTRLD_ERROR:
+                kvm_queue_exception(vcpu, UD_VECTOR);
+                return 1;
++       case EVMPTRLD_VMFAIL:
++               trace_kvm_nested_vmenter_failed("evmptrld_status", 0);
++               return nested_vmx_failInvalid(vcpu);
++       default:
++               break;
+        }
+ 
+        kvm_pmu_trigger_event(vcpu, PERF_COUNT_HW_BRANCH_INSTRUCTIONS);
+ 
+-       if (CC(evmptrld_status == EVMPTRLD_VMFAIL))
+-               return nested_vmx_failInvalid(vcpu);
+-
+        if (CC(!evmptr_is_valid(vmx->nested.hv_evmcs_vmptr) &&
+               vmx->nested.current_vmptr == INVALID_GPA))
+                return nested_vmx_failInvalid(vcpu);
+
+Unfortunately, I had to open code CC() ;-(
+
+Or maybe just another "#ifdef" is not so ugly after all? :-)
+
+-- 
+Vitaly
+
