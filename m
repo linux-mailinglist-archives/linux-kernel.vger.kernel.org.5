@@ -2,121 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F2367FED67
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 11:57:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F5FA7FED6A
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 11:59:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345051AbjK3K5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 05:57:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45648 "EHLO
+        id S231908AbjK3K7Q convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 30 Nov 2023 05:59:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231796AbjK3K5L (ORCPT
+        with ESMTP id S231784AbjK3K7P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 05:57:11 -0500
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EDA510D1;
-        Thu, 30 Nov 2023 02:57:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=mc1OLpee3TWcqUe5AdRmVwPMQcYF7vxiCpediutrrUY=; b=SpNsCB7z0+7EO8aKboPMHjpTQU
-        PXgj3eo95QbN0OLDseUhZdxx44PVLDrlobFy++Achn9m5E24RjwE56fgKA1OhAvJuXGEvCKKe49PI
-        b6WLX6TNfayJAK54fhQEJ08Bjkkmal/R0wJ3cobHS5Yowxf079VoQMeg8e1028vWOYmLaVuo9JpuN
-        mjN48PUjDcmJDK9UWJ3B7o7bNl+u3SccMd3MWzQNoS9i5IH0eOqdPcUMmGyLoKujnbc3fQGTQQ8LA
-        RT8QgmUahb91whlkHdQNTHXc8UFEl6yqxH9bvk/jAoC4LF98X0mUw4TP5qG9wG4929MeUMh9yw7+9
-        1KxJzXwQ==;
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1r8ej4-000JxI-LG; Thu, 30 Nov 2023 11:56:58 +0100
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1r8ej4-0005mZ-1V; Thu, 30 Nov 2023 11:56:58 +0100
-Subject: Re: [External] Re: [PATCH bpf-next] netkit: Add some ethtool ops to
- provide information to user
-To:     Feng Zhou <zhoufeng.zf@bytedance.com>,
-        Nikolay Aleksandrov <razor@blackwall.org>, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yangzhenze@bytedance.com,
-        wangdongdong.6@bytedance.com, tangchen.1@bytedance.com
-References: <20231130075844.52932-1-zhoufeng.zf@bytedance.com>
- <51dd35c9-ff5b-5b11-04d1-9a5ae9466780@blackwall.org>
- <16b4d42d-2d62-460e-912f-6e3b86f3004d@bytedance.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <94e335d4-ec90-ba78-b2b4-8419b25bfa88@iogearbox.net>
-Date:   Thu, 30 Nov 2023 11:56:57 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Thu, 30 Nov 2023 05:59:15 -0500
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 956A0D50;
+        Thu, 30 Nov 2023 02:59:17 -0800 (PST)
+Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-db49aa82c89so745665276.1;
+        Thu, 30 Nov 2023 02:59:17 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701341956; x=1701946756;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5e5pButv/GNRKf0pwfcJuwzofE23cLgi792/N6uJGVc=;
+        b=KfTvSujtHuvwapBq1CsAs+NsuUR0xhXwtbuvKuSuyaFi+4Ia/dVSSsDnB/3rGslC7U
+         CXFg0ip1XJUji1i4pjj5lavZRNo7hh1SoMxW2nfCibt4ly9i7uWUIE3eaUpuWcKCP9TS
+         rPoQFtZ+xPaeoxtXz8iEm1bLMbAccRs3pDxflO1yllxK+bSsSbY64wzirlhuCxH2YXuV
+         g0a7hwmlD4n9RHgpqahf5l8pzWLMQI0AcCq3dFstmXQMdsTwij2rqZPHvlN6nusGvqkG
+         88Sy0JiBUmMUGbE1B2C4ePsB+cfIJKRoiAu6EqlAIZ/3fq+0pvcVwhVeOVeAQERsoF6g
+         HVFA==
+X-Gm-Message-State: AOJu0YyxBfT1TAgcVL6UVYUachs9h5IMmQfG8yu8rcCBwBSXk+1Rau4d
+        qnRFwQefEnj0eYEMFuQ6GtQZfpP3HkrzqQ==
+X-Google-Smtp-Source: AGHT+IHR3Ch5z8xAL+LXg63IVW8V5/Hqx59ag3oRrc/vH6beKdJe+oNErxFp7SOH9SHiL4ADH4Qklw==
+X-Received: by 2002:a25:d28f:0:b0:db5:44b4:ee65 with SMTP id j137-20020a25d28f000000b00db544b4ee65mr168606ybg.45.1701341956585;
+        Thu, 30 Nov 2023 02:59:16 -0800 (PST)
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com. [209.85.219.171])
+        by smtp.gmail.com with ESMTPSA id n71-20020a25d64a000000b00dafa5f86dc2sm179705ybg.16.2023.11.30.02.59.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Nov 2023 02:59:15 -0800 (PST)
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-db538b07865so518957276.2;
+        Thu, 30 Nov 2023 02:59:15 -0800 (PST)
+X-Received: by 2002:a25:6f46:0:b0:da0:cb88:b890 with SMTP id
+ k67-20020a256f46000000b00da0cb88b890mr20914448ybc.60.1701341955554; Thu, 30
+ Nov 2023 02:59:15 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <16b4d42d-2d62-460e-912f-6e3b86f3004d@bytedance.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27109/Thu Nov 30 09:44:04 2023)
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231129143431.34459-1-liuhaoran14@163.com>
+In-Reply-To: <20231129143431.34459-1-liuhaoran14@163.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 30 Nov 2023 11:59:04 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdUrd+LT3FnR255OWKQP-U2EXSpZ=7Q4k+pUZdy4es_vRQ@mail.gmail.com>
+Message-ID: <CAMuHMdUrd+LT3FnR255OWKQP-U2EXSpZ=7Q4k+pUZdy4es_vRQ@mail.gmail.com>
+Subject: Re: [PATCH] [soc/renesas] renesas-soc: Add error handling in renesas_soc_init
+To:     Haoran Liu <liuhaoran14@163.com>
+Cc:     magnus.damm@gmail.com, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/30/23 10:24 AM, Feng Zhou wrote:
-> 在 2023/11/30 17:06, Nikolay Aleksandrov 写道:
->> On 11/30/23 09:58, Feng zhou wrote:
->>> From: Feng Zhou <zhoufeng.zf@bytedance.com>
->>>
->>> Add get_strings, get_sset_count, get_ethtool_stats to get peer
->>> ifindex.
->>> ethtool -S nk1
->>> NIC statistics:
->>>       peer_ifindex: 36
->>>
->>> Add get_link, get_link_ksettings to get link stat.
->>> ethtool nk1
->>> Settings for nk1:
->>>     ...
->>>     Link detected: yes
->>>
->>> Add get_ts_info.
->>> ethtool -T nk1
->>> Time stamping parameters for nk1:
->>> ...
->>>
->>> Signed-off-by: Feng Zhou <zhoufeng.zf@bytedance.com>
->>> ---
->>>   drivers/net/netkit.c | 53 ++++++++++++++++++++++++++++++++++++++++++++
->>>   1 file changed, 53 insertions(+)
->>>
->>
->> Hi,
->> I don't see any point in sending peer_ifindex through ethtool, even
->> worse through ethtool stats. That is definitely the wrong place for it.
->> You can already retrieve that through netlink. About the speed/duplex
->> this one makes more sense, but this is the wrong way to do it.
->> See how we did it for virtio_net (you are free to set speed/duplex
->> to anything to please bonding for example). Although I doubt anyone will use netkit with bonding, so even that is questionable. :)
->>
->> Nacked-by: Nikolay Aleksandrov <razor@blackwall.org>
-> 
-> We use netkit to replace veth to improve performance, veth can be used ethtool -S veth to get peer_ifindex, so this part is added, as long as it is to keep the netkit part and veth unified, to ensure the same usage habits, and to replace it without perception.
+Hi Haoran,
 
-Could you elaborate some more on the use case why you need to retrieve it
-via ethtool, what alternatives were tried and don't work?
+Thanks for your patch!
 
-Please also elaborate on the case for netkit_get_link_ksettings() and which
-concrete problem you are trying to address with this extension?
+On Wed, Nov 29, 2023 at 3:34 PM Haoran Liu <liuhaoran14@163.com> wrote:
+> This patch enhances the renesas_soc_init function in
+> drivers/soc/renesas/renesas-soc.c by adding error handling for the
+> of_property_read_string call. Previously, the function did not check
+> for failure cases of of_property_read_string, which could lead to
+> improper behavior if the required device tree properties were missing
 
-The commit message only explains what is done but does not go into the detail
-of _why_ you need it.
+Which improper behavior did you encounter? All of the
+soc_device_attribute fields are optional, and drivers/base/soc.c
+considers that when handling the machine field (sysfs_emit() handles
+NULL pointer strings fine).
 
-Thanks,
-Daniel
+> or incorrect.
+
+FTR, "model" is a required property of the root node.
+
+> Although the error addressed by this patch may not occur in the current
+> environment, I still suggest implementing these error handling routines
+> if the function is not highly time-sensitive. As the environment evolves
+> or the code gets reused in different contexts, there's a possibility that
+> these errors might occur. Addressing them now can prevent potential
+> debugging efforts in the future, which could be quite resource-intensive.
+>
+> Signed-off-by: Haoran Liu <liuhaoran14@163.com>
+
+> --- a/drivers/soc/renesas/renesas-soc.c
+> +++ b/drivers/soc/renesas/renesas-soc.c
+> @@ -487,7 +487,13 @@ static int __init renesas_soc_init(void)
+>         }
+>
+>         np = of_find_node_by_path("/");
+> -       of_property_read_string(np, "model", &soc_dev_attr->machine);
+> +       ret = of_property_read_string(np, "model", &soc_dev_attr->machine);
+> +       if (ret) {
+> +               dev_err(dev, "Failed to read model property: %d\n", ret);
+
+As reported by the kernel test robot:
+
+    error: use of undeclared identifier 'dev'
+
+Please do not submit completely untested patches.
+
+> +               kfree(soc_dev_attr);
+> +               return ret;
+
+As the machine field is optional, there is no need for this check,
+let alone to make this a fatal error condition.
+
+> +       }
+> +
+>         of_node_put(np);
+>
+>         soc_dev_attr->family = kstrdup_const(family->name, GFP_KERNEL);
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
