@@ -2,118 +2,448 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 739BD7FEA7E
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 09:27:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD4307FEA84
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 09:27:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231835AbjK3I1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 03:27:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51844 "EHLO
+        id S1344841AbjK3I1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 03:27:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231852AbjK3I1b (ORCPT
+        with ESMTP id S231862AbjK3I1q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 03:27:31 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E8D610EF
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 00:27:38 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9E76C433C8;
-        Thu, 30 Nov 2023 08:27:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701332858;
-        bh=LdjNKOLHbMhRShAwFebAAZRIVcHBzVh9Y/dtmWC97qA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=T8Qm7sIY6gw2R8rh3tADIiIBNUsRxau6g0HY+bBy27PL1WMKFxbi/9i8Rcd4OgTm8
-         aU7zulW30HDJbeXOWbAiQeH2iSvXZBzYxzMhM5vn7IeJGz8lXaqU7cOJa6ELd32qbf
-         aYgKvCkuEA/NduZ42Rtd+1HQahVNtg0NvgJfFkA6IZMxOrYEqI91lGdGGKUmw5O4+d
-         TBbZM+LRf/DChu/dAn9hfATiiYRkTXEz9tcw6lVBHydfCgHtCQttrovv8ZfAH0h1kS
-         F3xK8SFlrHWmr0WHzMZTOo1R+U4NkAnOVAMWI9O5+rimzUNQVgzKLtopl2TtdwMLqe
-         Ac0hp0iRYE/5A==
-Date:   Thu, 30 Nov 2023 09:27:33 +0100
-From:   Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     Akira Yokosawa <akiyks@gmail.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] docs: Raise the minimum Sphinx requirement to 2.4.4
-Message-ID: <20231130092733.26f0b7c4@coco.lan>
-In-Reply-To: <c3accd5b-c8d9-4eb9-86a1-054e89893a8f@gmail.com>
-References: <87sf4qvkmc.fsf@meer.lwn.net>
-        <20231128023015.0e446a06@coco.lan>
-        <877cm2uegr.fsf@meer.lwn.net>
-        <20231128165645.2dbe416c@coco.lan>
-        <c3accd5b-c8d9-4eb9-86a1-054e89893a8f@gmail.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Thu, 30 Nov 2023 03:27:46 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FDBB10EF
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 00:27:51 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-50bc743c7f7so931919e87.3
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 00:27:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701332869; x=1701937669; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+J7Dw0xS7njLls6LRLf0GFFRCC6R0nx+ESlm94JNcIs=;
+        b=hAqTqV6FR670qHUsbWTHMS9Kgk9PTd6zC99OaG4s3LTMAq8itpVgfVubQG4JmnBxeZ
+         p3eLpz6Wrey7gK2K85KayHSebMTyzXFBPrlt6CguShr0pqjZ5PfPorFjH01dFWeTHK13
+         bMAxWHMYzsk2zufjh0tVjpbo4TNZV1lpXLoNQ10/SasmFxobEsdjdUEwVHssK3jTo02d
+         FM2M1Mr/PEDYqGDASb+mCk0cRu/ZF4X/2uLXDEBAeL7IZRRBE1wzOi/xlOV/XX8puqjG
+         YqyAItm11CaDb/uMLFCKQMzOW9/i6Gtls6s65gNYQR+izjBYwWy6KlXD8Xoy/s5d5vQ7
+         eItg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701332869; x=1701937669;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+J7Dw0xS7njLls6LRLf0GFFRCC6R0nx+ESlm94JNcIs=;
+        b=MZvgnmBDn6iAzVQlIhLcc40cNdRrFiveVsOKQzD8IXlBt8Fp6yVKtzbkTXGoDiWKzb
+         ACdmN8zcNvi3wzqQhapgZw6EzgyP1CfBnKtz70yY0LLJfV3aX70CYm4N6YgZ0Vw5SRo6
+         +KTeCEBj8DFg2riyqEN6V1cBes96Nacq2mSyDKGu9iX+iv4h8i1dIIK4Ofz4xCZ/WolC
+         WQ7QBPi11UnR9pAl4rK7m+GXZuv6JnvSfNp0VZBxlCeKfSxxab7xjahA0tcAqSBcfFI4
+         IAs84i/CnTFJTA7X6PYvpSb9oXgWScusIY2odYahRaRoZ2Q8Ca0LTFQJPgMjuzVShQp/
+         CPJg==
+X-Gm-Message-State: AOJu0YxKC83u9t9AKeMWXH51Ec+aptrau92ze3SnrrbuE+GiGzTJkPFi
+        WxVXK8F29kL8QQw2ILS0Wd0=
+X-Google-Smtp-Source: AGHT+IF03WzohOCAOFDPfOmLeaFp7RZCFKxQ+YxMwrkoP0QP4/RXaRhf+B5nuuPq8R1GGPEyqyl7tw==
+X-Received: by 2002:a05:6512:e84:b0:50b:c975:8b30 with SMTP id bi4-20020a0565120e8400b0050bc9758b30mr2145792lfb.66.1701332869075;
+        Thu, 30 Nov 2023 00:27:49 -0800 (PST)
+Received: from [10.254.108.81] (munvpn.amd.com. [165.204.72.6])
+        by smtp.gmail.com with ESMTPSA id d13-20020a05600c34cd00b0040b540ff0a5sm1115323wmq.19.2023.11.30.00.27.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Nov 2023 00:27:48 -0800 (PST)
+Message-ID: <65c01257-b96d-4365-a86a-4d0758a8ec65@gmail.com>
+Date:   Thu, 30 Nov 2023 09:27:46 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 0/6] Supporting GMEM (generalized memory management)
+ for external memory devices
+Content-Language: en-US
+To:     "Zeng, Oak" <oak.zeng@intel.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Weixi Zhu <weixi.zhu@huawei.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        Danilo Krummrich <dakr@redhat.com>,
+        Dave Airlie <airlied@redhat.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     "intel-gvt-dev@lists.freedesktop.org" 
+        <intel-gvt-dev@lists.freedesktop.org>,
+        "rcampbell@nvidia.com" <rcampbell@nvidia.com>,
+        "mhairgrove@nvidia.com" <mhairgrove@nvidia.com>,
+        "jgg@nvidia.com" <jgg@nvidia.com>,
+        "weixi.zhu@openeuler.sh" <weixi.zhu@openeuler.sh>,
+        "jhubbard@nvidia.com" <jhubbard@nvidia.com>,
+        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
+        "apopple@nvidia.com" <apopple@nvidia.com>,
+        "Xinhui.Pan@amd.com" <Xinhui.Pan@amd.com>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        "tvrtko.ursulin@linux.intel.com" <tvrtko.ursulin@linux.intel.com>,
+        "ogabbay@kernel.org" <ogabbay@kernel.org>,
+        "jglisse@redhat.com" <jglisse@redhat.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "ziy@nvidia.com" <ziy@nvidia.com>,
+        "Vivi, Rodrigo" <rodrigo.vivi@intel.com>,
+        "alexander.deucher@amd.com" <alexander.deucher@amd.com>,
+        "leonro@nvidia.com" <leonro@nvidia.com>,
+        "Felix.Kuehling@amd.com" <Felix.Kuehling@amd.com>,
+        "Wang, Zhi A" <zhi.a.wang@intel.com>,
+        "mgorman@suse.de" <mgorman@suse.de>
+References: <20231128125025.4449-1-weixi.zhu@huawei.com>
+ <56ec69e0-fee1-4edf-8839-62ba6a2f0183@amd.com>
+ <SA1PR11MB69918A97B03BC578CFD15EBA9283A@SA1PR11MB6991.namprd11.prod.outlook.com>
+From:   =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>
+In-Reply-To: <SA1PR11MB69918A97B03BC578CFD15EBA9283A@SA1PR11MB6991.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, 30 Nov 2023 16:33:56 +0900
-Akira Yokosawa <akiyks@gmail.com> escreveu:
+Hi Oak,
 
-> Hi,
-> 
-> On 2023/11/29 0:56, Mauro Carvalho Chehab wrote:
-> [snip]
-> 
-> > While I didn't make any benchmarks, I remember people reported
-> > poor performance with newer versions, so, without thinking to
-> > much, 3.1 or 3.2 seems a good candidate for the recommended
-> > version.  
-> 
-> Well, I have different impressions on the performance of Sphinx >=3.1
-> and have done some quick benchmarks.
-> Here are results on a not-so-performant machine.
-> 
-> Benchmark of building htmldocs on Ubuntu 22.04 (after "make cleandocs"):
-> 
-> Sphinx   elapesed   maxresident (k)
-> ======== ========== ===============
->  2.4.5     7m44.57     2806152      (parallel slot = 3)
->  3.1.2    11m25.28     1036264      (parallel slot = 4)
->  3.4.3    10m22.26     1067100      (ditto.)
->  4.2.0    10m16.53     1151220
->  4.3.2    10m06.07     1123432      (distro pkg of Ubuntu 22.04LTS)
->  5.3.0    10m18.73     1145524
->  7.2.6     9m53.80     1261736
-> 
-> python3: Python 3.10.12
-> 
-> Sidenotes:
-> 
->   1: Sphinx 4.3.0 officially added Python 3.10 support.
->      Sphinx 4.2.0 also works with Python 3.10.
->      Sphinx <3.5.0 happen to work with Python 3.10.
->   2: Sphinx 7.2.0 obsoleted Python 3.8.
->   3: Sphinx 6.0.0 obsoleted Python 3.6 and 3.7.
-> 
-> 
-> And here is a table of distro Sphinx packages:
-> 
->           As of 2023.11.30
-> 
-> ----------------------------------
-> Distro              Sphinx Python3
-> =================== ====== =======
-> Ubuntu 22.04 LTS    4.3.2  3.10.12
-> Debian 11           3.4.3  3.9.2
-> Debian 12           5.3.0  3.11.2
-> Fedora 39           6.2.1  3.12.0
-> RHEL 9              3.4.3  3.9.18
-> Mageia 9            6.1.3  3.10.11
-> openSUSE Leap 15.5  4.2.0  3.6.15  (provided as python3-Sphinx_4_2_0)
-> ----------------------------------
-> 
-> So, I think Sphinx 3.4.3 would be a reasonable choice for
-> recommending.
+yeah, #4 is indeed a really good point and I think Felix will agree to 
+that as well.
 
-Works for me.
+HMM is basically still missing a way to advise device attributes for the 
+CPU address space. Both migration strategy as well as device specific 
+information (like cache preferences) fall into this category.
+
+Since there is a device specific component in those attributes as well I 
+think device specific IOCTLs still make sense to update them, but HMM 
+should offer the functionality to manage and store those information.
+
+Split and merge of VMAs only become a problem if you attach those 
+information to VMAs, if you keep them completely separate than that 
+doesn't become an issue either. The down side of this approach is that 
+you don't get automatically extending attribute ranges for growing VMAs 
+for example.
 
 Regards,
-Mauro
+Christian.
+
+Am 29.11.23 um 23:23 schrieb Zeng, Oak:
+> Hi Weixi,
+>
+> Even though Christian has listed reasons rejecting this proposal (yes they are very reasonable to me), I would open my mind and further explore the possibility here. Since the current GPU driver uses a hmm based implementation (AMD and NV has done this; At Intel we are catching up), I want to explore how much we can benefit from the proposed approach and how your approach can solve some pain points of our development. So basically what I am questioning here is: what is the advantage of your approach against hmm.
+>
+> To implement a UVM (unified virtual address space b/t cpu and gpu device), with hmm, driver essentially need to implement below functions:
+>
+> 1. device page table update. Your approach requires the same because this is device specific codes
+>
+> 2. Some migration functions to migrate memory b/t system memory and GPU local memory. My understanding is, even though you generalized this a bit, such as modified cpu page fault path, provided "general" gm_dev_fault handler... but device driver still need to provide migration functions because migration functions have to be device specific (i.e., using device dma/copy engine for performance purpose). Right?
+>
+> 3. GPU physical memory management, this part is now in drm/buddy, shared by all drivers. I think with your approach, driver still need to provide callback functions to allocate/free physical pages. Right? Or do you let linux core mm buddy manage device memory directly?
+>
+> 4. madvise/hints/virtual address range management. This has been pain point for us. Right now device driver has to maintain certain virtual address range data structure to maintain hints and other virtual address range based memory attributes. Driver need to sync with linux vma. Driver need to explicitly deal with range split/merging... HMM doesn't provide support in this area. Your approach seems cleaner/simpler to me...
+>
+>
+> So in above, I have examined the some key factors of a gpu UVM memory manager. I think for #1 and #2, hmm has provide pretty good abstraction/tools for address space mirroring and migration helpers. For #3, since we have a common drm/buddy layer, I don't think it is a big problem for driver writer now.
+>
+> I do see #4 is something you solved more beautifully, requires new system call though.
+>
+> Oak
+>
+>
+>> -----Original Message-----
+>> From: dri-devel <dri-devel-bounces@lists.freedesktop.org> On Behalf Of
+>> Christian König
+>> Sent: Tuesday, November 28, 2023 8:09 AM
+>> To: Weixi Zhu <weixi.zhu@huawei.com>; linux-mm@kvack.org; linux-
+>> kernel@vger.kernel.org; akpm@linux-foundation.org; Danilo Krummrich
+>> <dakr@redhat.com>; Dave Airlie <airlied@redhat.com>; Daniel Vetter
+>> <daniel@ffwll.ch>
+>> Cc: dri-devel@lists.freedesktop.org; leonro@nvidia.com; apopple@nvidia.com;
+>> amd-gfx@lists.freedesktop.org; mgorman@suse.de; ziy@nvidia.com; Wang, Zhi
+>> A <zhi.a.wang@intel.com>; rcampbell@nvidia.com; jgg@nvidia.com;
+>> weixi.zhu@openeuler.sh; jhubbard@nvidia.com; intel-gfx@lists.freedesktop.org;
+>> mhairgrove@nvidia.com; jglisse@redhat.com; Vivi, Rodrigo
+>> <rodrigo.vivi@intel.com>; intel-gvt-dev@lists.freedesktop.org;
+>> tvrtko.ursulin@linux.intel.com; Felix.Kuehling@amd.com; Xinhui.Pan@amd.com;
+>> alexander.deucher@amd.com; ogabbay@kernel.org
+>> Subject: Re: [RFC PATCH 0/6] Supporting GMEM (generalized memory
+>> management) for external memory devices
+>>
+>> Adding a few missing important people to the explicit to list.
+>>
+>> Am 28.11.23 um 13:50 schrieb Weixi Zhu:
+>>> The problem:
+>>>
+>>> Accelerator driver developers are forced to reinvent external MM subsystems
+>>> case by case, because Linux core MM only considers host memory resources.
+>>> These reinvented MM subsystems have similar orders of magnitude of LoC as
+>>> Linux MM (80K), e.g. Nvidia-UVM has 70K, AMD GPU has 14K and Huawei NPU
+>> has
+>>> 30K. Meanwhile, more and more vendors are implementing their own
+>>> accelerators, e.g. Microsoft's Maia 100. At the same time,
+>>> application-level developers suffer from poor programmability -- they must
+>>> consider parallel address spaces and be careful about the limited device
+>>> DRAM capacity. This can be alleviated if a malloc()-ed virtual address can
+>>> be shared by the accelerator, or the abundant host DRAM can further
+>>> transparently backup the device local memory.
+>>>
+>>> These external MM systems share similar mechanisms except for the
+>>> hardware-dependent part, so reinventing them is effectively introducing
+>>> redundant code (14K~70K for each case). Such developing/maintaining is not
+>>> cheap. Furthermore, to share a malloc()-ed virtual address, device drivers
+>>> need to deeply interact with Linux MM via low-level MM APIs, e.g. MMU
+>>> notifiers/HMM. This raises the bar for driver development, since developers
+>>> must understand how Linux MM works. Further, it creates code maintenance
+>>> problems -- any changes to Linux MM potentially require coordinated changes
+>>> to accelerator drivers using low-level MM APIs.
+>>>
+>>> Putting a cache-coherent bus between host and device will not make these
+>>> external MM subsystems disappear. For example, a throughput-oriented
+>>> accelerator will not tolerate executing heavy memory access workload with
+>>> a host MMU/IOMMU via a remote bus. Therefore, devices will still have
+>>> their own MMU and pick a simpler page table format for lower address
+>>> translation overhead, requiring external MM subsystems.
+>>>
+>>> --------------------
+>>>
+>>> What GMEM (Generalized Memory Management [1]) does:
+>>>
+>>> GMEM extends Linux MM to share its machine-independent MM code. Only
+>>> high-level interface is provided for device drivers. This prevents
+>>> accelerator drivers from reinventing the wheel, but relies on drivers to
+>>> implement their hardware-dependent functions declared by GMEM. GMEM's
+>> key
+>>> interface include gm_dev_create(), gm_as_create(), gm_as_attach() and
+>>> gm_dev_register_physmem(). Here briefly describe how a device driver
+>>> utilizes them:
+>>> 1. At boot time, call gm_dev_create() and registers the implementation of
+>>>      hardware-dependent functions as declared in struct gm_mmu.
+>>>        - If the device has local DRAM, call gm_dev_register_physmem() to
+>>>          register available physical addresses.
+>>> 2. When a device context is initialized (e.g. triggered by ioctl), check if
+>>>      the current CPU process has been attached to a gmem address space
+>>>      (struct gm_as). If not, call gm_as_create() and point current->mm->gm_as
+>>>      to it.
+>>> 3. Call gm_as_attach() to attach the device context to a gmem address space.
+>>> 4. Invoke gm_dev_fault() to resolve a page fault or prepare data before
+>>>      device computation happens.
+>>>
+>>> GMEM has changed the following assumptions in Linux MM:
+>>>     1. An mm_struct not only handle a single CPU context, but may also handle
+>>>        external memory contexts encapsulated as gm_context listed in
+>>>        mm->gm_as. An external memory context can include a few or all of the
+>>>        following parts: an external MMU (that requires TLB invalidation), an
+>>>        external page table (that requires PTE manipulation) and external DRAM
+>>>        (that requires physical memory management).
+>>>     2. Faulting a MAP_PRIVATE VMA with no CPU PTE found does not necessarily
+>>>        mean that a zero-filled physical page should be mapped. The virtual
+>>>        page may have been mapped to an external memory device.
+>>>     3. Unmapping a page may include sending device TLB invalidation (even if
+>>>        its MMU shares CPU page table) and manipulating device PTEs.
+>>>
+>>> --------------------
+>>>
+>>> Semantics of new syscalls:
+>>>
+>>> 1. mmap(..., MAP_PRIVATE | MAP_PEER_SHARED)
+>>>       Allocate virtual address that is shared between the CPU and all
+>>>       attached devices. Data is guaranteed to be coherent whenever the
+>>>       address is accessed by either CPU or any attached device. If the device
+>>>       does not support page fault, then device driver is responsible for
+>>>       faulting memory before data gets accessed. By default, the CPU DRAM is
+>>>       can be used as a swap backup for the device local memory.
+>>> 2. hmadvise(NUMA_id, va_start, size, memory_hint)
+>>>       Issuing memory hint for a given VMA. This extends traditional madvise()
+>>>       syscall with an extra argument so that programmers have better control
+>>>       with heterogeneous devices registered as NUMA nodes. One useful
+>> memory
+>>>       hint could be MADV_PREFETCH, which guarantees that the physical data of
+>>>       the given VMA [VA, VA+size) is migrated to NUMA node #id. Another
+>>>       useful memory hint is MADV_DONTNEED. This is helpful to increase device
+>>>       memory utilization. It is worth considering extending the existing
+>>>       madvise() syscall with one additional argument.
+>>>
+>>> --------------------
+>>>
+>>> Implementation details
+>>>
+>>> 1. New VMA flag: MAP_PEER_SHARED
+>>>
+>>> This new flag helps isolate GMEM feature, so that common processes with
+>>> no device attached does not need to maintain any logical page table. It
+>>> can be deleted if the extra overhead from GMEM is acceptable.
+>>>
+>>> 2. MMU functions
+>>> The device driver must implement the MMU functions declared in struct
+>>> gm_mmu.
+>>>
+>>> VA functions: peer_va_alloc_fixed(), peer_va_free()
+>>>
+>>> They are used to negotiate a common available VMA between a host
+>>> process and a device process at the mmap() time. This is because some
+>>> accelerators like Intel Xeon Phi or Huawei's Ascend NPU have their
+>>> acceleration tasks executed within a device CPU process context. Some
+>>> accelerators may also choose a different format of virtual address
+>>> space.
+>>>
+>>> PA functions: alloc_page(), free_page(), prepare_page()
+>>>
+>>> Alloc_page() and free_page() are used to allocate and free device physical
+>>> pages. Prepare_page() is used to zero-fill or DMA the data of a physical
+>>> page. These functions were removed from the submitted patch, since GMEM
+>>> does not need to invoke them when testing Huawei's NPU accelerator. The
+>> NPU
+>>> accelerator has an OS running in the device that manages the device
+>>> physical memory. However, even for such a device it is better for the host
+>>> to directly manage device physical memory, which saves device HBM and
+>>> avoids synchronizing management status between the host and device.
+>>>
+>>> Page-table functions: pmap_create()/destroy()/enter()/release()/protect()
+>>>
+>>> They are used to create and destroy device page tables, install and
+>>> uninstall page table entries and to change the protection of page table
+>>> entries.
+>>>
+>>> TLB-invalidation functions: tlb_invl(), tlb_invl_coalesced()
+>>>
+>>> They are used to invalidate the TLB entries of a given range of VA or
+>>> invalidate a given list of VMAs.
+>>>
+>>> Wrapper functions: peer_map() and peer_unmap()
+>>>
+>>> These two functions are used to create or destroy a device mapping which
+>>> could include allocating physical memory and copying data. They effectively
+>>> wraps the PA functions, Page-table functions and TLB-invalidation
+>>> functions. Implementing these steps together allows devices to optimize the
+>>> communication cost between host and device. However, it requires the device
+>>> driver to correctly order these steps.
+>>>
+>>> 3. Tracking logical mappings:
+>>>
+>>> Each process starts maintaining an xarray in mm->vm_obj->logical_page_table
+>>> at the first time a host process calls mmap(MAP_PRIVATE |
+>> MAP_PEER_SHARED).
+>>> When a virtual page gets touched, its mapping status is created and stored
+>>> in struct gm_mapping. The logical page table is utilized to query the
+>>> struct gm_mapping given a virtual address. GMEM extends Linux MM to
+>> update
+>>> and lookup these logical mappings. For example, in the patch set we modify
+>>> the page fault path of to additionally check the logical mapping of
+>>> MAP_PEER_SHARED VMAs and identify if a device page should be migrated.
+>>> Similarly, if the device driver wants to resolve a device page fault or
+>>> prefetch data, the driver should call gm_dev_fault(). This function
+>>> examines the mapping status and determines whether the device driver should
+>>> migrate a CPU page to device or install a zero-filled device page.
+>>>
+>>> The logical mapping abstraction enhances the extensibility of Linux core MM
+>>> (a virtual page may be mapped to a device physical page without any CPU PTE
+>>> installed). The current implementation is not complete, since it only
+>>> focused on anonymous VMAs with MAP_PEER_SHARED flag. The future plan of
+>>> logical page table is to provide a generic abstraction layer that support
+>>> common anonymous memory (I am looking at you, transparent huge pages)
+>> and
+>>> file-backed memory.
+>>>
+>>> --------------------
+>>>
+>>> Use cases
+>>>
+>>> GMEM has been tested over Huawei's NPU (neural process unit) device driver.
+>>> The original NPU device driver has approximately 30,000 lines of code for
+>>> memory management. On the contrary, the GMEM-based one has less than 30
+>>> lines of code calling GMEM API, with approximately 3,700 lines of code
+>>> implementing the MMU functions. This effectively saves over 26,200 lines
+>>> of MM code for one driver. Therefore, developers from accelerator vendors,
+>>> including Nvidia, AMD, Intel and other companies are welcome to discuss if
+>>> GMEM could be helpful.
+>>>
+>>> Using GMEM-based driver, it is possible to write a C-style accelerator code
+>>> with malloc(), whose underlying mmap() syscall should include
+>>> MAP_PEER_SHARED according to current GMEM implementation. Importantly,
+>> GMEM
+>>> guarantees a coherent view of memory between the host and all attached
+>>> devices. This means that any data written by the CPU or any attached
+>>> accelerator can be seen by the next memory load instruction issued by any
+>>> attached accelerator or the CPU. Furthermore, the NPU device was able to
+>>> oversubscribe memory by swapping memory to host DDR. Note that this
+>> memory
+>>> oversubscription mechanism can be universal if the physical memory
+>>> management is provided by GMEM. Other potential use cases of GMEM could
+>>> include the IOMMU driver, KVM and RDMA drivers, as long as the device needs
+>>> to manage external memory resources like VMAs, MMUs or local DRAMs.
+>>>
+>>> --------------------
+>>>
+>>> Discussion
+>>>
+>>> Physical memory management
+>>> Most accelerators require the host OS to manage device DRAM. Even
+>>> accelerators capable of running an OS inside the driver can benefit from
+>>> it, since it helps avoid synchronizing management status between the host
+>>> and device. In Linux OSS EU summit 2023, Hannes Reinecke from SUSE Labs
+>>> suggested that people are concerned with the memory consumption of struct
+>>> page (which considers all generic scenarios for the kernel). This leads to
+>>> a possible solution that, instead of reusing Linux struct page and
+>>> ZONE_DEVICE mechanism, GMEM can implement an isolated buddy allocator
+>> for
+>>> the device to instantiate and register. The isolation is useful because
+>>> device DRAM physical address space is independent. Furthermore, the
+>>> isolated buddy allocator can utilize a customized struct page that consumes
+>>> less memory. It is worth discussing if accelerator vendors desire this
+>>> solution.
+>>>
+>>> MMU functions
+>>> The MMU functions peer_map() and peer_unmap() overlap other functions,
+>>> leaving a question if the MMU functions should be decoupled as more basic
+>>> operations. Decoupling them could potentially prevent device drivers
+>>> coalescing these basic steps within a single host-device communication
+>>> operation, while coupling them makes it more difficult for device drivers
+>>> to utilize GMEM interface.
+>>>
+>>> The idea of GMEM was originated from Weixi's PhD study with
+>>> Prof. Scott Rixner and Prof. Alan L. Cox at Rice University.
+>>>
+>>> [1] https://arxiv.org/abs/2310.12554.
+>>>
+>>> Weixi Zhu (6):
+>>>     mm/gmem: add heterogeneous NUMA node
+>>>     mm/gmem: add arch-independent abstraction to track address mapping
+>>>       status
+>>>     mm/gmem: add GMEM (Generalized Memory Management) interface for
+>>>       external accelerators
+>>>     mm/gmem: add new syscall hmadvise() to issue memory hints for
+>>>       heterogeneous NUMA nodes
+>>>     mm/gmem: resolve VMA conflicts for attached peer devices
+>>>     mm/gmem: extending Linux core MM to support unified virtual address
+>>>       space
+>>>
+>>>    arch/arm64/include/asm/unistd.h         |   2 +-
+>>>    arch/arm64/include/asm/unistd32.h       |   2 +
+>>>    drivers/base/node.c                     |   6 +
+>>>    fs/proc/task_mmu.c                      |   3 +
+>>>    include/linux/gmem.h                    | 368 ++++++++++++
+>>>    include/linux/mm.h                      |   8 +
+>>>    include/linux/mm_types.h                |   5 +
+>>>    include/linux/nodemask.h                |  10 +
+>>>    include/uapi/asm-generic/mman-common.h  |   4 +
+>>>    include/uapi/asm-generic/unistd.h       |   5 +-
+>>>    init/main.c                             |   2 +
+>>>    kernel/fork.c                           |   5 +
+>>>    kernel/sys_ni.c                         |   2 +
+>>>    mm/Kconfig                              |  14 +
+>>>    mm/Makefile                             |   1 +
+>>>    mm/gmem.c                               | 746 ++++++++++++++++++++++++
+>>>    mm/huge_memory.c                        |  85 ++-
+>>>    mm/memory.c                             |  42 +-
+>>>    mm/mempolicy.c                          |   4 +
+>>>    mm/mmap.c                               |  40 +-
+>>>    mm/oom_kill.c                           |   2 +
+>>>    mm/page_alloc.c                         |   3 +
+>>>    mm/vm_object.c                          | 309 ++++++++++
+>>>    tools/include/uapi/asm-generic/unistd.h |   5 +-
+>>>    24 files changed, 1654 insertions(+), 19 deletions(-)
+>>>    create mode 100644 include/linux/gmem.h
+>>>    create mode 100644 mm/gmem.c
+>>>    create mode 100644 mm/vm_object.c
+>>>
+
