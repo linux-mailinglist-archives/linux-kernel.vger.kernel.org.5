@@ -2,84 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A99F77FF802
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 18:18:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 137517FF803
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 18:18:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345870AbjK3RRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 12:17:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42506 "EHLO
+        id S1345576AbjK3RS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 12:18:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232266AbjK3RRi (ORCPT
+        with ESMTP id S231837AbjK3RS1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 12:17:38 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C19BE1993
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 09:17:34 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2BE85C433C7;
-        Thu, 30 Nov 2023 17:17:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701364654;
-        bh=ov/IfYsQplFcmSodemtHJLL3XrICMOvduLqoUc5oKMw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=k1Tdc1Co+ALyIJcaK0n5iLj9dtr3U4+7LMseLqWxHJrzFLYBMZdyFto7Hmh8fxgBf
-         tp1m9x0GX4CjL6ffboSceynAn25RSEbvYf+E1B0WPQ0OF8keoKmr0sRd289lmcEfac
-         xQEwrD/gzhS6xTs4+VAek+JXsA6lWku3It8r/p0J73d8mLzCmJX6KKFpZTx34EkfvB
-         on+SkCGKBudNboM42YQj74+9OZE4CukTQO5BIg5I2Kf6D+JKGM5UY9mPbDZdiSoV0Z
-         iT7nXMDoK9K+JMELInXtjfk7227phdAeaBPvXGagjljcFXldgpHErKMDqrocd42Fdb
-         eDiLXQgb5zPlw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 9DC2840094; Thu, 30 Nov 2023 14:17:31 -0300 (-03)
-Date:   Thu, 30 Nov 2023 14:17:31 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Nick Terrell <terrelln@fb.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        "Steinar H. Gunderson" <sesse@google.com>,
-        Liam Howlett <liam.howlett@oracle.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Colin Ian King <colin.i.king@gmail.com>,
-        Dmitrii Dolgov <9erthalion6@gmail.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Ming Wang <wangming01@loongson.cn>,
-        James Clark <james.clark@arm.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        German Gomez <german.gomez@arm.com>,
-        Changbin Du <changbin.du@huawei.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, Li Dong <lidong@vivo.com>,
-        Sandipan Das <sandipan.das@amd.com>,
-        liuwenyu <liuwenyu7@huawei.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
-        Guilherme Amadio <amadio@gentoo.org>
-Subject: Re: [PATCH v5 02/50] libperf: Lazily allocate/size mmap event copy
-Message-ID: <ZWjDq/CayuP6XtvW@kernel.org>
-References: <20231127220902.1315692-1-irogers@google.com>
- <20231127220902.1315692-3-irogers@google.com>
- <ZWiK/9JJjOElTTq7@kernel.org>
- <ZWiaB+ygpN+46JAm@kernel.org>
+        Thu, 30 Nov 2023 12:18:27 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51B1DE6;
+        Thu, 30 Nov 2023 09:18:33 -0800 (PST)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 98BF41FCFC;
+        Thu, 30 Nov 2023 17:18:31 +0000 (UTC)
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 7C19C138E5;
+        Thu, 30 Nov 2023 17:18:31 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+        by imap2.dmz-prg2.suse.org with ESMTPSA
+        id XF0JHufDaGW4HwAAn2gu4w
+        (envelope-from <jack@suse.cz>); Thu, 30 Nov 2023 17:18:31 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 50FF1A07E0; Thu, 30 Nov 2023 18:18:30 +0100 (CET)
+Date:   Thu, 30 Nov 2023 18:18:30 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Baokun Li <libaokun1@huawei.com>
+Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, jack@suse.cz, ritesh.list@gmail.com,
+        linux-kernel@vger.kernel.org, djwong@kernel.org,
+        yi.zhang@huawei.com, yangerkun@huawei.com, yukuai3@huawei.com,
+        stable@kernel.org
+Subject: Re: [PATCH] ext4: prevent the normalized size from exceeding
+ EXT_MAX_BLOCKS
+Message-ID: <20231130171830.2s2bl3p34conwoln@quack3>
+References: <20231127063313.3734294-1-libaokun1@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZWiaB+ygpN+46JAm@kernel.org>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NUMERIC_HTTP_ADDR,
+In-Reply-To: <20231127063313.3734294-1-libaokun1@huawei.com>
+X-Spamd-Bar: ++++++++++++
+X-Spam-Score: 12.23
+X-Rspamd-Server: rspamd1
+Authentication-Results: smtp-out2.suse.de;
+        dkim=none;
+        spf=softfail (smtp-out2.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither permitted nor denied by domain of jack@suse.cz) smtp.mailfrom=jack@suse.cz;
+        dmarc=none
+X-Rspamd-Queue-Id: 98BF41FCFC
+X-Spamd-Result: default: False [12.23 / 50.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         TO_DN_SOME(0.00)[];
+         R_SPF_SOFTFAIL(4.60)[~all];
+         RCVD_COUNT_THREE(0.00)[3];
+         MX_GOOD(-0.01)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         R_DKIM_NA(2.20)[];
+         MIME_TRACE(0.00)[0:+];
+         BAYES_HAM(-3.00)[100.00%];
+         ARC_NA(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         DMARC_NA(1.20)[suse.cz];
+         NEURAL_SPAM_SHORT(1.84)[0.613];
+         NEURAL_SPAM_LONG(3.50)[1.000];
+         RCPT_COUNT_TWELVE(0.00)[12];
+         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:email];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         MID_RHS_NOT_FQDN(0.50)[];
+         FREEMAIL_CC(0.00)[vger.kernel.org,mit.edu,dilger.ca,suse.cz,gmail.com,kernel.org,huawei.com];
+         RCVD_TLS_ALL(0.00)[];
+         SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -88,46 +92,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Nov 30, 2023 at 11:19:51AM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Thu, Nov 30, 2023 at 10:15:43AM -0300, Arnaldo Carvalho de Melo escreveu:
-> > Em Mon, Nov 27, 2023 at 02:08:14PM -0800, Ian Rogers escreveu:
-> > >  void perf_mmap__munmap(struct perf_mmap *map)
-> > >  {
-> > > -	if (map && map->base != NULL) {
-> > > +	if (!map)
-> > > +		return;
-> > > +
-> > > +	free(map->event_copy);
-> > > +	map->event_copy = NULL;
-> > 
-> > I´m converting this to:
-> > 
-> > 	zfree(&map->event_copy);
-> > 
-> > Hopefully we'll find some tool to flag these before submitting patches,
-> > does clang-tidy do these kinds of things?
-> > 
-> > Also, applied:
-> > 
-> >  b4 am -P2,4-7 -ctsl --cc-trailers 20231127220902.1315692-1-irogers@google.com
-> > 
-> > The ones that Namhyung acked and that applied cleanly in order.
-> > 
-> > The first one, as Namhyung noted, is already merged.
+On Mon 27-11-23 14:33:13, Baokun Li wrote:
+> For files with logical blocks close to EXT_MAX_BLOCKS, the file size
+> predicted in ext4_mb_normalize_request() may exceed EXT_MAX_BLOCKS.
+> This can cause some blocks to be preallocated that will not be used.
+> And after [Fixes], the following issue may be triggered:
 > 
-> I'll fix this later:
+> =========================================================
+>  kernel BUG at fs/ext4/mballoc.c:4653!
+>  Internal error: Oops - BUG: 00000000f2000800 [#1] SMP
+>  CPU: 1 PID: 2357 Comm: xfs_io 6.7.0-rc2-00195-g0f5cc96c367f
+>  Hardware name: linux,dummy-virt (DT)
+>  pc : ext4_mb_use_inode_pa+0x148/0x208
+>  lr : ext4_mb_use_inode_pa+0x98/0x208
+>  Call trace:
+>   ext4_mb_use_inode_pa+0x148/0x208
+>   ext4_mb_new_inode_pa+0x240/0x4a8
+>   ext4_mb_use_best_found+0x1d4/0x208
+>   ext4_mb_try_best_found+0xc8/0x110
+>   ext4_mb_regular_allocator+0x11c/0xf48
+>   ext4_mb_new_blocks+0x790/0xaa8
+>   ext4_ext_map_blocks+0x7cc/0xd20
+>   ext4_map_blocks+0x170/0x600
+>   ext4_iomap_begin+0x1c0/0x348
+> =========================================================
 > 
-> [perfbuilder@five ~]$ export BUILD_TARBALL=http://192.168.86.5/perf/perf-6.6.0-rc1.tar.xz
-> [perfbuilder@five ~]$ time dm
->    1    16.97 almalinux:8                   : FAIL gcc version 8.5.0 20210514 (Red Hat 8.5.0-20) (GCC)
->     In file included from fs/fs.c:19:
->     fs/../io.h:94:46: error: unknown type name '__u64'
->      static inline int io__get_hex(struct io *io, __u64 *hex)
+> Here is a calculation when adjusting ac_b_ex in ext4_mb_new_inode_pa():
+> 
+> 	ex.fe_logical = orig_goal_end - EXT4_C2B(sbi, ex.fe_len);
+> 	if (ac->ac_o_ex.fe_logical >= ex.fe_logical)
+> 		goto adjust_bex;
+> 
+> The problem is that when orig_goal_end is subtracted from ac_b_ex.fe_len
+> it is still greater than EXT_MAX_BLOCKS, which causes ex.fe_logical to
+> overflow to a very small value, which ultimately triggers a BUG_ON in
+> ext4_mb_new_inode_pa() because pa->pa_free < len.
+> 
+> The last logical block of an actual write request does not exceed
+> EXT_MAX_BLOCKS, so in ext4_mb_normalize_request() also avoids normalizing
+> the last logical block to exceed EXT_MAX_BLOCKS to avoid the above issue.
+> 
+> The test case in [Link] can reproduce the above issue with 64k block size.
+> 
+> Link: https://patchwork.kernel.org/project/fstests/list/?series=804003
+> Cc: stable@kernel.org # 6.4
+> Fixes: 93cdf49f6eca ("ext4: Fix best extent lstart adjustment logic in ext4_mb_new_inode_pa()")
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
 
-Added the following patch to just before your patches.
+Yeah, good catch. Feel free to add:
 
-https://lore.kernel.org/all/ZWjDPL+IzPPsuC3X@kernel.org/T/#u
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-tldr; missing linux/types.h for __u64 in api/io.h.
+								Honza
 
-- Arnaldo
+> ---
+>  fs/ext4/mballoc.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index 454d5612641e..d72b5e3c92ec 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -4478,6 +4478,10 @@ ext4_mb_normalize_request(struct ext4_allocation_context *ac,
+>  	start = max(start, rounddown(ac->ac_o_ex.fe_logical,
+>  			(ext4_lblk_t)EXT4_BLOCKS_PER_GROUP(ac->ac_sb)));
+>  
+> +	/* avoid unnecessary preallocation that may trigger assertions */
+> +	if (start + size > EXT_MAX_BLOCKS)
+> +		size = EXT_MAX_BLOCKS - start;
+> +
+>  	/* don't cover already allocated blocks in selected range */
+>  	if (ar->pleft && start <= ar->lleft) {
+>  		size -= ar->lleft + 1 - start;
+> -- 
+> 2.31.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
