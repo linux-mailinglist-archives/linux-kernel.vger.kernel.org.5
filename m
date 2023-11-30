@@ -2,224 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A25D97FFC8A
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 21:32:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 586277FFC8D
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 21:33:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376697AbjK3Uc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 15:32:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50438 "EHLO
+        id S1376716AbjK3UdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 15:33:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbjK3UcY (ORCPT
+        with ESMTP id S229493AbjK3UdP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 15:32:24 -0500
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8F0710F9
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 12:32:30 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-a00a9c6f1e9so200425366b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 12:32:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1701376349; x=1701981149; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eyV2gGCTHlRr6FFC1cUH0SLaifrXymYajx2/Ty5GB1w=;
-        b=VAgxEePj53u5EM//Qi/HrAclM1gseJ6DJ9FsYCnbBB4v9BLaidfAAhnzc809l7Qudq
-         JYWJ77C/pssWrK13CNxq1FUGoZWTwCzS6OtBRRgMmp/3qwFZCRUd2LNkmhVysbrpM6Nm
-         BVEKIsB++DDuOz7040X4eIEX7q3fcyZapA/AQ=
+        Thu, 30 Nov 2023 15:33:15 -0500
+Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com [209.85.214.198])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C38AD50
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 12:33:22 -0800 (PST)
+Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-1d052155463so280415ad.3
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 12:33:22 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701376349; x=1701981149;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eyV2gGCTHlRr6FFC1cUH0SLaifrXymYajx2/Ty5GB1w=;
-        b=l0B0YuL+BqKR82PWW1RcRF9O9eRrxu59dU4f2ieQSaugwyeeTmxvQVgYbRgSvtiitW
-         g3xtzyZmIqyKCDgJvjd3/Xt1uYfSzzm0KUWEkjZc3pjhq2O1GGfPn7gMj5aRglP5yX8o
-         eLQYzt3CimHl/wBDlqTCFJDI0albDe0bjhABQPflbHF22OXQE9yMm6eSQ7RzTmRC7/l0
-         Jp1G1SsxFFfisGaSg+YEQK6xxkCShSOATpMWYcX/Iw8LlIp3ep17xTBBMNCskuF5ParF
-         vy1JTUfkQnjpJF7Is9I0C8h30961dC4Km6mL13SznQ70oPUD2t+1egkO+v7LQVJHH+sK
-         UsIA==
-X-Gm-Message-State: AOJu0YxraM3cRabgAWYhI6JymX3p32bg/1+4zKLNR2XQ2k3h/aGkGnRW
-        ZZm2EXs3ca//fJNZVGMRDLbhnk1a5eu9Cx2KSf9Jkw==
-X-Google-Smtp-Source: AGHT+IHch7YUz9AbRflkh8eyE87tR9bbxlt1KhgjFd/Th7L8HVFlQINXZUmMZzuBhflV8YKfOIRD582CZAmHBaA7wGo=
-X-Received: by 2002:a17:907:9148:b0:a19:a19b:7890 with SMTP id
- l8-20020a170907914800b00a19a19b7890mr79310ejs.83.1701376348966; Thu, 30 Nov
- 2023 12:32:28 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701376402; x=1701981202;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=L258qVuIGHgWoHiECHCMmxMTI0Hx+i1Rf1bCGRcL74E=;
+        b=LGzuP1xuKtC84zwfzFCycGvxsn716yvjlyuB1rWkl9WjLfSy/FI4y800G8o2fvemnc
+         /5f9D68oHx6u+J6JmkC5a5h0TPjzXMtvAcccgh/E9txtJlvb4VVRQlqqo0v/2Us0vT8W
+         gFEUqKOjG+FNZ0n0SVWBIhpVW6UV3AkWwB6y7hdu4/8FVz0ihmh0W3fr+SAsPOCwHsMl
+         qoOdg0yh+vsUTdu+ZbZRSZBNFZkbliVWolgEh/u9AsL0RrysaScJrIWsw9o3+KxbPtxH
+         aDDhkflBa7wmZR7dEwchhMJ7b5LAk05ooHunC4Mzfl1idOCL8NFXunAiT9vjC7znx+7w
+         017w==
+X-Gm-Message-State: AOJu0Ywc7M0KfLi+lnTJRfSAY0LBbfI/7uX2GUCAXBA5YUEU2/S5cIe9
+        8gD9TaDHm50BAlBZP0QSA0EY+tI3+cvP0VkAO5muOb1NE1Hc
+X-Google-Smtp-Source: AGHT+IH8sO+9FZLxYxiE+GpmmsIFqHx7Il0WOqcM+68SaX3qaI3ttL74mtfTcRtyrwrAdF+V6TrNkxwwGnmjaR1azijuIFxetvkB
 MIME-Version: 1.0
-References: <20231129172200.430674-1-sjg@chromium.org> <20231129172200.430674-3-sjg@chromium.org>
- <CAK7LNARRYWhFyTXRXPC_z6RL=KUW6pO-Lsz1mgGd1jxPiHxe+w@mail.gmail.com>
-In-Reply-To: <CAK7LNARRYWhFyTXRXPC_z6RL=KUW6pO-Lsz1mgGd1jxPiHxe+w@mail.gmail.com>
-From:   Simon Glass <sjg@chromium.org>
-Date:   Thu, 30 Nov 2023 13:32:17 -0700
-Message-ID: <CAPnjgZ2y=EONroCbCA7AqVaaax1Sdujy1A3NwFugwxiug490tA@mail.gmail.com>
-Subject: Re: [PATCH v7 2/2] arm64: boot: Support Flat Image Tree
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Tom Rini <trini@konsulko.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        U-Boot Mailing List <u-boot@lists.denx.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Terrell <terrelln@fb.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Will Deacon <will@kernel.org>, linux-kbuild@vger.kernel.org
+X-Received: by 2002:a17:902:e743:b0:1cf:9dcf:e53a with SMTP id
+ p3-20020a170902e74300b001cf9dcfe53amr5158726plf.2.1701376401923; Thu, 30 Nov
+ 2023 12:33:21 -0800 (PST)
+Date:   Thu, 30 Nov 2023 12:33:21 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000010e52f060b649095@google.com>
+Subject: [syzbot] Monthly dri report (Nov 2023)
+From:   syzbot <syzbot+list56bd6e58d9eedc56d72d@syzkaller.appspotmail.com>
+To:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_PDS_OTHER_BAD_TLD,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_SPF_WL autolearn=no
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Masahiro,
+Hello dri maintainers/developers,
 
-On Thu, 30 Nov 2023 at 08:39, Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> On Thu, Nov 30, 2023 at 2:22=E2=80=AFAM Simon Glass <sjg@chromium.org> wr=
-ote:
-> >
-> > Add a script which produces a Flat Image Tree (FIT), a single file
-> > containing the built kernel and associated devicetree files.
-> > Compression defaults to gzip which gives a good balance of size and
-> > performance.
-> >
-> > The files compress from about 86MB to 24MB using this approach.
-> >
-> > The FIT can be used by bootloaders which support it, such as U-Boot
-> > and Linuxboot. It permits automatic selection of the correct
-> > devicetree, matching the compatible string of the running board with
-> > the closest compatible string in the FIT. There is no need for
-> > filenames or other workarounds.
-> >
-> > Add a 'make image.fit' build target for arm64, as well.
-> >
-> > The FIT can be examined using 'dumpimage -l'.
-> >
-> > This features requires pylibfdt (use 'pip install libfdt'). It also
-> > requires compression utilities for the algorithm being used. Supported
-> > compression options are the same as the Image.xxx files. For now there
-> > is no way to change the compression other than by editing the rule for
-> > $(obj)/image.fit
-> >
-> > While FIT supports a ramdisk / initrd, no attempt is made to support
-> > this here, since it must be built separately from the Linux build.
-> >
-> > Signed-off-by: Simon Glass <sjg@chromium.org>
-> > ---
-> >
-> > Changes in v7:
-> > - Add Image as a dependency of image.fit
-> > - Drop kbuild tag
-> > - Add dependency on dtbs
-> > - Drop unnecessary path separator for dtbs
-> > - Rebase to -next
-> >
-> > Changes in v5:
-> > - Drop patch previously applied
-> > - Correct compression rule which was broken in v4
-> >
-> > Changes in v4:
-> > - Use single quotes for UIMAGE_NAME
-> >
-> > Changes in v3:
-> > - Drop temporary file image.itk
-> > - Drop patch 'Use double quotes for image name'
-> > - Drop double quotes in use of UIMAGE_NAME
-> > - Drop unnecessary CONFIG_EFI_ZBOOT condition for help
-> > - Avoid hard-coding "arm64" for the DT architecture
-> >
-> > Changes in v2:
-> > - Drop patch previously applied
-> > - Add .gitignore file
-> > - Move fit rule to Makefile.lib using an intermediate file
-> > - Drop dependency on CONFIG_EFI_ZBOOT
-> > - Pick up .dtb files separately from the kernel
-> > - Correct pylint too-many-args warning for write_kernel()
-> > - Include the kernel image in the file count
-> > - Add a pointer to the FIT spec and mention of its wide industry usage
-> > - Mention the kernel version in the FIT description
-> >
-> >  MAINTAINERS                |   7 +
-> >  arch/arm64/Makefile        |   9 +-
-> >  arch/arm64/boot/.gitignore |   1 +
-> >  arch/arm64/boot/Makefile   |   6 +-
-> >  scripts/Makefile.lib       |  13 ++
-> >  scripts/make_fit.py        | 289 +++++++++++++++++++++++++++++++++++++
-> >  6 files changed, 322 insertions(+), 3 deletions(-)
-> >  create mode 100755 scripts/make_fit.py
-> >
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index 14587be87a33..d609f0e8deb3 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -1585,6 +1585,13 @@ F:       Documentation/process/maintainer-soc*.r=
-st
-> >  F:     arch/arm/boot/dts/Makefile
-> >  F:     arch/arm64/boot/dts/Makefile
-> >
-> > +ARM64 FIT SUPPORT
-> > +M:     Simon Glass <sjg@chromium.org>
-> > +L:     linux-arm-kernel@lists.infradead.org (moderated for non-subscri=
-bers)
-> > +S:     Maintained
-> > +F:     arch/arm64/boot/Makefile
-> > +F:     scripts/make_fit.py
-> > +
-> >  ARM ARCHITECTED TIMER DRIVER
-> >  M:     Mark Rutland <mark.rutland@arm.com>
-> >  M:     Marc Zyngier <maz@kernel.org>
-> > diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
-> > index 1bd4fae6e806..18e092de7cdb 100644
-> > --- a/arch/arm64/Makefile
-> > +++ b/arch/arm64/Makefile
-> > @@ -36,6 +36,8 @@ ifeq ($(CONFIG_BROKEN_GAS_INST),y)
-> >  $(warning Detected assembler with broken .inst; disassembly will be un=
-reliable)
-> >  endif
-> >
-> > +KBUILD_DTBS      :=3D dtbs
->
->
-> Please remove this, and hard-code
->
->  image.fit: dtbs
+This is a 31-day syzbot report for the dri subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/dri
 
-OK
+During the period, 1 new issues were detected and 0 were fixed.
+In total, 15 issues are still open and 30 have been fixed so far.
 
->
->
->
-> >
-> >  $(obj)/Image: vmlinux FORCE
-> >         $(call if_changed,objcopy)
-> > @@ -39,6 +40,9 @@ $(obj)/Image.lzo: $(obj)/Image FORCE
-> >  $(obj)/Image.zst: $(obj)/Image FORCE
-> >         $(call if_changed,zstd)
-> >
-> > +$(obj)/image.fit: $(obj)/Image FORCE
-> > +       $(call cmd,fit,gzip)
->
->
-> The gzip parameter is not used.
-> Please do
->
->      $(call cmd,fit)
+Some of the still happening issues:
 
-I do want to be able to control the compression algo. I added a
-FIT_COMPRESS for that, so that this arg is used.
->
-> In the python script, functions are separated with two blank lines,
-> but there is only one blank line between parse_args() and setup_fit().
->
->
-> I do not mind either way because it does not contain any class,
-> but please keep consistency.
+Ref Crashes Repro Title
+<1> 375     Yes   WARNING in drm_wait_one_vblank
+                  https://syzkaller.appspot.com/bug?extid=6f7fe2dbc479dca0ed17
+<2> 129     Yes   WARNING in vkms_get_vblank_timestamp (2)
+                  https://syzkaller.appspot.com/bug?extid=93bd128a383695391534
+<3> 116     Yes   WARNING in drm_syncobj_array_find
+                  https://syzkaller.appspot.com/bug?extid=95416f957d84e858b377
+<4> 72      Yes   inconsistent lock state in sync_timeline_debug_remove
+                  https://syzkaller.appspot.com/bug?extid=7dcd254b8987a29f6450
+<5> 40      Yes   KMSAN: uninit-value in drm_mode_setcrtc
+                  https://syzkaller.appspot.com/bug?extid=4fad2e57beb6397ab2fc
+<6> 36      Yes   inconsistent lock state in sync_info_debugfs_show
+                  https://syzkaller.appspot.com/bug?extid=007bfe0f3330f6e1e7d1
+<7> 9       Yes   kernel BUG in vmf_insert_pfn_prot (2)
+                  https://syzkaller.appspot.com/bug?extid=398e17b61dab22cc56bc
+<8> 5       Yes   divide error in drm_mode_vrefresh
+                  https://syzkaller.appspot.com/bug?extid=622bba18029bcde672e1
 
-OK
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Regards,
-Simon
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
+
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
