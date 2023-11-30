@@ -2,713 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 833807FEAB3
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 09:32:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA9C97FEAAD
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 09:32:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344912AbjK3Ic1 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 30 Nov 2023 03:32:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45794 "EHLO
+        id S235010AbjK3Ibu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 03:31:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235026AbjK3IcG (ORCPT
+        with ESMTP id S235013AbjK3Ibn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 03:32:06 -0500
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49E2C199E;
-        Thu, 30 Nov 2023 00:32:00 -0800 (PST)
-Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
-        by ex01.ufhost.com (Postfix) with ESMTP id 9590824E207;
-        Thu, 30 Nov 2023 16:31:58 +0800 (CST)
-Received: from EXMBX172.cuchost.com (172.16.6.92) by EXMBX165.cuchost.com
- (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 30 Nov
- 2023 16:31:58 +0800
-Received: from localhost.localdomain (202.188.176.82) by EXMBX172.cuchost.com
- (172.16.6.92) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 30 Nov
- 2023 16:31:53 +0800
-From:   Ji Sheng Teoh <jisheng.teoh@starfivetech.com>
-To:     <jonathan.cameron@huawei.com>
-CC:     <conor+dt@kernel.org>, <devicetree@vger.kernel.org>,
-        <jisheng.teoh@starfivetech.com>,
-        <krzysztof.kozlowski+dt@linaro.org>,
-        <leyfoon.tan@starfivetech.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <mark.rutland@arm.com>,
-        <peterz@infradead.org>, <robh+dt@kernel.org>, <tglx@linutronix.de>,
-        <will@kernel.org>
-Subject: Re: [PATCH v4 1/2] perf: starfive: Add StarLink PMU support
-Date:   Thu, 30 Nov 2023 16:31:42 +0800
-Message-ID: <20231130083142.3013022-1-jisheng.teoh@starfivetech.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231129110238.000060f7@Huawei.com>
-References: <20231129110238.000060f7@Huawei.com>
+        Thu, 30 Nov 2023 03:31:43 -0500
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEE69170E
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 00:31:48 -0800 (PST)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-a00f67f120aso85243066b.2
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 00:31:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701333107; x=1701937907; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=SzOPVagtQK7DZIMxQ+Oq1Fd/HmUkAatjip60L9CINco=;
+        b=mpkqMuwMSLRpW55/gcvlzmBWAKtTNFDbA32IJuiK9uRlwUqMl+/wtrC+WK7rZSelyr
+         D5NmH761PIbF1f+NbV5cs4i95zEwDeQUnuf58g6VDHgsy81hynOVqTnSoDw2VUrR1N/R
+         AfDMA3qHlYv9Een+Kmn7fxJfCWg4XVx7y4RvQBlHfRQUMmJqEPE5UeWvGUfcg3bs7fSu
+         8Rxn04QzlB23fObICyywoVvl+9TLC2ZMn69OMOIbS7mHeOgntegJf4KLdtt9htVDI+Cf
+         rLPR6Vc9T7AYQP1jbStJXBGV4ZhYv0bXZ2mWqI7isfZDhw26E4Irgv89wKAjYqiBWMWR
+         6sGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701333107; x=1701937907;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SzOPVagtQK7DZIMxQ+Oq1Fd/HmUkAatjip60L9CINco=;
+        b=EvfNtBQsXLBGxauEauY4v9BT2kOVfkBxZhPME/WGjnYPZP76Z06qoE9+EtGi3GrO58
+         9IcoG2ci/sz8t8LNC5bTgftehkZxxMbjbomvBLm5C9W/G+tQaShbmddV5EjFYsk1a7El
+         jissQGAtq2ffhj/1KDK7zpPlSorpRci3qw5ohWl0zdcMOCcGhz9NzDRAr+E1nYfcih9X
+         CtMB4oufK2jk8V7wYgkSr7jCFvelnOv20yJma2zEEpAGafslbNAruveaqQyPOWerfohx
+         vWQFCJQLAayALWX4jR5dbKPdcujCSoUn3LE/BLjOHrNoWop6cB19LT/6ke72/Q36u3/b
+         yRSg==
+X-Gm-Message-State: AOJu0Yz60xDV+uUn5qvFGDvAGZAKNfg5tTNbyJSc8HcCi+o7ML+rMSNA
+        Ln/+X0y2oEIHJPL98f5LdTJqXQ==
+X-Google-Smtp-Source: AGHT+IEPlNeRyU555rRyMkq1p9mRB/5dHV71+XzOImQRE6BOl+XJDgmCY1xyZxCbvz1gXo3Fv1ZJ1Q==
+X-Received: by 2002:a17:906:4557:b0:9e6:38f2:8439 with SMTP id s23-20020a170906455700b009e638f28439mr15546730ejq.60.1701333107272;
+        Thu, 30 Nov 2023 00:31:47 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.223.109])
+        by smtp.gmail.com with ESMTPSA id n23-20020a170906089700b0099297782aa9sm416962eje.49.2023.11.30.00.31.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Nov 2023 00:31:46 -0800 (PST)
+Message-ID: <1bda0a63-6fc9-4fc0-953b-7d618f77b268@linaro.org>
+Date:   Thu, 30 Nov 2023 09:31:45 +0100
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [202.188.176.82]
-X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX172.cuchost.com
- (172.16.6.92)
-X-YovoleRuleAgent: yovoleflag
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 1/2] dt-bindings: iio: pressure: add honeywell,hsc030
+Content-Language: en-US
+To:     Petre Rodan <petre.rodan@subdimension.ro>,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org
+Cc:     Conor Dooley <conor+dt@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Jonathan Cameron <jic23@kernel.org>
+References: <20231129170425.3562-1-petre.rodan@subdimension.ro>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231129170425.3562-1-petre.rodan@subdimension.ro>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 29 Nov 2023 11:02:38 +0000
-Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
+On 29/11/2023 18:04, Petre Rodan wrote:
+> Adds binding for digital Honeywell TruStability HSC and SSC series
+> pressure and temperature sensors.
+> Communication is one way. The sensor only requires 4 bytes worth of
+> clock pulses on both i2c and spi in order to push the data out.
+> The i2c address is hardcoded and depends on the part number.
+> There is no additional GPIO control.
+> 
+> Datasheet:
+> https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/trustability-hsc-series/documents/sps-siot-trustability-hsc-series-high-accuracy-board-mount-pressure-sensors-50099148-a-en-ciid-151133.pdf [HSC]
+> Datasheet:
+> https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/trustability-ssc-series/documents/sps-siot-trustability-ssc-series-standard-accuracy-board-mount-pressure-sensors-50099533-a-en-ciid-151134.pdf [SSC]
+> Signed-off-by: Petre Rodan <petre.rodan@subdimension.ro>
 
-> On Fri, 17 Nov 2023 00:23:29 +0800
-> Ji Sheng Teoh <jisheng.teoh@starfivetech.com> wrote:
-> 
-> > This patch adds support for StarFive's StarLink PMU (Performance
-> > Monitor Unit). StarLink PMU integrates one or more CPU cores with
-> > a shared L3 memory system. The PMU supports overflow interrupt,
-> > up to 16 programmable 64bit event counters, and an independent
-> > 64bit cycle counter. StarLink PMU is accessed via MMIO.
-> > 
-> > Example Perf stat output:
-> > [root@user]# perf stat -a -e /starfive_starlink_pmu/cycles/ \
-> > 	-e /starfive_starlink_pmu/read_miss/ \
-> > 	-e /starfive_starlink_pmu/read_hit/ \
-> > 	-e /starfive_starlink_pmu/release_request/  \
-> > 	-e /starfive_starlink_pmu/write_hit/ \
-> > 	-e /starfive_starlink_pmu/write_miss/ \
-> > 	-e /starfive_starlink_pmu/write_request/ \
-> > 	-e /starfive_starlink_pmu/writeback/ \
-> > 	-e /starfive_starlink_pmu/read_request/ \
-> > 	-- openssl speed rsa2048
-> > Doing 2048 bits private rsa's for 10s: 5 2048 bits private RSA's in
-> > 2.84s
-> > Doing 2048 bits public rsa's for 10s: 169 2048 bits public RSA's in
-> > 2.42s
-> > version: 3.0.11
-> > built on: Tue Sep 19 13:02:31 2023 UTC
-> > options: bn(64,64)
-> > CPUINFO: N/A
-> >                   sign    verify    sign/s verify/s
-> > rsa 2048 bits 0.568000s 0.014320s      1.8     69.8
-> > /////////
-> >  Performance counter stats for 'system wide':
-> > 
-> >          649991998      starfive_starlink_pmu/cycles/
-> >            1009690      starfive_starlink_pmu/read_miss/
-> >            1079750      starfive_starlink_pmu/read_hit/
-> >            2089405      starfive_starlink_pmu/release_request/
-> >                129      starfive_starlink_pmu/write_hit/
-> >                 70      starfive_starlink_pmu/write_miss/
-> >                194      starfive_starlink_pmu/write_request/
-> >             150080      starfive_starlink_pmu/writeback/
-> >            2089423      starfive_starlink_pmu/read_request/
-> > 
-> >       27.062755678 seconds time elapsed
-> > 
-> > Signed-off-by: Ji Sheng Teoh <jisheng.teoh@starfivetech.com>  
-> Hi. Some drive by comments inline.
-> 
-> Mostly concern being consistent with error handling.
-> 
-> Documentation needed.
-> Documentation/admin-guide/perf
+This is a friendly reminder during the review process.
 
-Sure, will include it.
-> 
-> Note I've not looked at perf state machine as would need to remind
-> myself how that stuff works.  So this is all generic driver handling
-> stuff rather than perf specific.
-> 
-> Thanks,
-> 
-> Jonathan
-> 
-> > ---
-> > diff --git a/drivers/perf/starfive_starlink_pmu.c
-> > b/drivers/perf/starfive_starlink_pmu.c new file mode 100644
-> > index 000000000000..272896ab1ade
-> > --- /dev/null
-> > +++ b/drivers/perf/starfive_starlink_pmu.c
-> > @@ -0,0 +1,654 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +/*
-> > + * StarFive's StarLink PMU driver
-> > + *
-> > + * Copyright (C) 2023 StarFive Technology Co., Ltd.
-> > + *
-> > + * Author: Ji Sheng Teoh <jisheng.teoh@starfivetech.com>
-> > + *
-> > + */
-> > +
-> > +#define STARLINK_PMU_PDEV_NAME	"starfive_starlink_pmu"
-> > +#define pr_fmt(fmt)	STARLINK_PMU_PDEV_NAME ": " fmt
-> > +
-> > +#include <linux/bitmap.h>
-> > +#include <linux/cpu_pm.h>
-> > +#include <linux/io.h>
-> > +#include <linux/irq.h>
-> > +#include <linux/kernel.h>
-> > +#include <linux/module.h>
-> > +#include <linux/of_device.h>  
-> 
-> Why?  Probably want mod_devicetable.h
+It looks like you received a tag and forgot to add it.
 
-Ok, that is a better option. Thanks
-> 
-> > +#include <linux/perf_event.h>
-> > +#include <linux/platform_device.h>
-> > +#include <linux/sysfs.h>
-> > +
-> > +#define STARLINK_PMU_MAX_COUNTERS			64
-> > +#define STARLINK_PMU_NUM_COUNTERS			16
-> > +#define STARLINK_PMU_IDX_CYCLE_COUNTER			63
-> > +
-> > +#define STARLINK_PMU_EVENT_SELECT			0x060
-> > +#define STARLINK_PMU_EVENT_COUNTER			0x160
-> > +#define STARLINK_PMU_COUNTER_MASK
-> > GENMASK_ULL(63, 0) +#define STARLINK_PMU_CYCLE_COUNTER
-> > 		0x058 +
-> > +#define STARLINK_PMU_CONTROL				0x040
-> > +#define STARLINK_PMU_GLOBAL_ENABLE			BIT(0)
-> > +
-> > +#define STARLINK_PMU_INTERRUPT_ENABLE			0x050
-> > +#define STARLINK_PMU_COUNTER_OVERFLOW_STATUS		0x048
-> > +#define STARLINK_PMU_CYCLE_OVERFLOW_MASK		BIT(63)
-> > +
-> > +#define CYCLES					0x058  
-> 
-> Prefix these.  Highly likely to have namespace clashes.
-> 	STARLINK_CYCLES etc
+If you do not know the process, here is a short explanation:
+Please add Acked-by/Reviewed-by/Tested-by tags when posting new
+versions, under or above your Signed-off-by tag. Tag is "received", when
+provided in a message replied to you on the mailing list. Tools like b4
+can help here. However, there's no need to repost patches *only* to add
+the tags. The upstream maintainer will do that for tags received on the
+version they apply.
 
-Ok, that makes sense. Will make the change.
-> 
-> > +#define CACHE_READ_REQUEST			0x04000701
-> > +#define CACHE_WRITE_REQUEST			0x03000001
-> > +#define CACHE_RELEASE_REQUEST			0x0003e001
-> > +#define CACHE_READ_HIT				0x00901202
-> > +#define CACHE_READ_MISS				0x04008002
-> > +#define CACHE_WRITE_HIT				0x006c0002
-> > +#define CACHE_WRITE_MISS			0x03000002
-> > +#define CACHE_WRITEBACK				0x00000403
-> > +
-> > +#define to_starlink_pmu(p) (container_of(p, struct starlink_pmu,
-> > pmu)) +
-> > +#define STARLINK_FORMAT_ATTR(_name, _config)
-> > 		      \
-> > +	(&((struct dev_ext_attribute[]) {
-> > 	      \
-> > +		{ .attr = __ATTR(_name, 0444,
-> > starlink_pmu_sysfs_format_show, NULL), \
-> > +		  .var = (void *)_config, }
-> > 	      \
-> > +	})[0].attr.attr)
-> > +
-> > +#define STARLINK_EVENT_ATTR(_name, _id)
-> > 		     \
-> > +	PMU_EVENT_ATTR_ID(_name, starlink_pmu_sysfs_event_show,
-> > _id) +
-> > +#define BIT_IS_SET(nr, bit) (((nr) >> (bit)) & 0x1)  
-> 
-> Not sure this macro is worth having.  Mostly used as boolean, so
-> nr & BIT(bit) inline would do the job.
-> 
-Ok, will revise it based on your suggestion.
+https://elixir.bootlin.com/linux/v6.5-rc3/source/Documentation/process/submitting-patches.rst#L577
 
-> > +
-> > +struct starlink_hw_events {
-> > +	struct perf_event
-> > *events[STARLINK_PMU_MAX_COUNTERS];
-> > +	DECLARE_BITMAP(used_mask, STARLINK_PMU_MAX_COUNTERS);
-> > +};
-> > +
-> > +struct starlink_pmu {
-> > +	struct pmu					pmu;
-> > +	struct starlink_hw_events			__percpu
-> > *hw_events;
-> > +	struct hlist_node				node;
-> > +	struct notifier_block
-> > starlink_pmu_pm_nb;
-> > +	void __iomem
-> > *pmu_base;
-> > +	cpumask_t					cpumask;
-> > +	int						irq;
-> > +};
-> > +
-> > +/* Formats Attr */
-> > +static ssize_t
-> > +starlink_pmu_sysfs_format_show(struct device *dev,
-> > +			       struct device_attribute *attr,
-> > +			       char *buf)
-> > +{
-> > +	struct dev_ext_attribute *eattr = container_of(attr,
-> > +						       struct
-> > dev_ext_attribute, attr); +
-> > +	return sysfs_emit(buf, "%s\n", (char *)eattr->var);
-> > +}
-> > +
-> > +static struct attribute *starlink_pmu_format_attrs[] = {
-> > +	STARLINK_FORMAT_ATTR(event, "config:0-31"),
-> > +	NULL,  
-> As below.
-> 
-> > +};
-> > +
-> > +static const struct attribute_group starlink_pmu_format_attr_group
-> > = {
-> > +	.name = "format",
-> > +	.attrs = starlink_pmu_format_attrs,
-> > +};
-> > +
-> > +/* Events Attr */  
-> 
-> These comments don't really add much given that's easy to see from
-> code. It's rare that 'structure' comments describing where things are
-> in code are actually useful in kernel drivers.  They tend to be there
-> in example code to indicate what is needed, but don't keep them!
-> 
-Ok, will drop them.
-> 
-> > +static ssize_t
-> > +starlink_pmu_sysfs_event_show(struct device *dev,
-> > +			      struct device_attribute *attr,
-> > +			      char *buf)
-> > +{
-> > +	struct perf_pmu_events_attr *eattr = container_of(attr,
-> > +							  struct
-> > perf_pmu_events_attr, attr); +
-> > +	return sysfs_emit(buf, "event=0x%02llx\n", eattr->id);
-> > +}
-> > +
-> > +static struct attribute *starlink_pmu_event_attrs[] = {
-> > +	STARLINK_EVENT_ATTR(cycles, CYCLES),
-> > +	STARLINK_EVENT_ATTR(read_request, CACHE_READ_REQUEST),
-> > +	STARLINK_EVENT_ATTR(write_request, CACHE_WRITE_REQUEST),
-> > +	STARLINK_EVENT_ATTR(release_request,
-> > CACHE_RELEASE_REQUEST),
-> > +	STARLINK_EVENT_ATTR(read_hit, CACHE_READ_HIT),
-> > +	STARLINK_EVENT_ATTR(read_miss, CACHE_READ_MISS),
-> > +	STARLINK_EVENT_ATTR(write_hit, CACHE_WRITE_HIT),
-> > +	STARLINK_EVENT_ATTR(write_miss, CACHE_WRITE_MISS),
-> > +	STARLINK_EVENT_ATTR(writeback, CACHE_WRITEBACK),
-> > +	NULL,  
-> 
-> As below.
-> 
-> > +};
-> > +
-> > +static const struct attribute_group starlink_pmu_events_attr_group
-> > = {
-> > +	.name = "events",
-> > +	.attrs = starlink_pmu_event_attrs,
-> > +};
-> > +
-> > +/* Cpumask Attr */
-> > +static ssize_t
-> > +cpumask_show(struct device *dev, struct device_attribute *attr,
-> > char *buf) +{
-> > +	struct starlink_pmu *starlink_pmu =
-> > to_starlink_pmu(dev_get_drvdata(dev)); +
-> > +	return cpumap_print_to_pagebuf(true, buf,
-> > &starlink_pmu->cpumask); +}
-> > +
-> > +static DEVICE_ATTR_RO(cpumask);
-> > +
-> > +static struct attribute *starlink_pmu_cpumask_attrs[] = {
-> > +	&dev_attr_cpumask.attr,
-> > +	NULL,  
-> 
-> As below.
-> 
-> > +};
-> > +
-> > +static const struct attribute_group
-> > starlink_pmu_cpumask_attr_group = {
-> > +	.attrs = starlink_pmu_cpumask_attrs,
-> > +};
-> > +
-> > +static const struct attribute_group *starlink_pmu_attr_groups[] = {
-> > +	&starlink_pmu_format_attr_group,
-> > +	&starlink_pmu_events_attr_group,
-> > +	&starlink_pmu_cpumask_attr_group,
-> > +	NULL,  
-> 
-> No comma after NULL terminator as we can't add anything there anyway.
-> 
-Ok, will drop them.
+If a tag was not added on purpose, please state why and what changed.
 
-> > +};  
-> 
-> 
-> > +
-> > +static void starlink_pmu_counter_stop(struct perf_event *event,
-> > +				      struct starlink_pmu
-> > *starlink_pmu) +{
-> > +	struct hw_perf_event *hwc = &event->hw;
-> > +	int idx = event->hw.idx;
-> > +	u64 val;
-> > +
-> > +	/* Stop counter */  
-> 
-> Pretty obvious that clearing global enable stops the counter.
-> Perhaps review comments and remove any that are obvious from the code.
-> Such comments add little value and can be a maintenance problem.
-> 
-Ok, will review again and drop those comments that are obvious.
-
-> > +	val = readq(starlink_pmu->pmu_base + STARLINK_PMU_CONTROL);
-> > +	val &= ~STARLINK_PMU_GLOBAL_ENABLE;
-> > +	writeq(val, starlink_pmu->pmu_base + STARLINK_PMU_CONTROL);
-> > +
-> > +	/* Disable counter overflow interrupt */
-> > +	val = readq(starlink_pmu->pmu_base +
-> > STARLINK_PMU_INTERRUPT_ENABLE);
-> > +	if (hwc->config == CYCLES)
-> > +		val &= ~STARLINK_PMU_CYCLE_OVERFLOW_MASK;
-> > +	else
-> > +		val &= ~(1 << idx);
-> > +
-> > +	writeq(val, starlink_pmu->pmu_base +
-> > STARLINK_PMU_INTERRUPT_ENABLE); +}  
-> 
-> 
-> 
-> > +static bool starlink_pmu_validate_event_group(struct perf_event
-> > *event) +{
-> > +	struct perf_event *leader = event->group_leader;
-> > +	struct perf_event *sibling;
-> > +	int counter = 1;
-> > +
-> > +	/*
-> > +	 * Ensure hardware events in the group are on the same PMU,
-> > +	 * software events are acceptable.
-> > +	 */
-> > +	if (event->group_leader->pmu != event->pmu &&
-> > +	    !is_software_event(event->group_leader))
-> > +		return false;
-> > +
-> > +	for_each_sibling_event(sibling, leader) {
-> > +		if (sibling->pmu != event->pmu &&
-> > !is_software_event(sibling))
-> > +			return false;
-> > +
-> > +		counter += 1;  
-> 
-> counter++;
-
-Ok, will amend.
-> 
-> > +	}
-> > +	/*
-> > +	 * Limit the number of requested counter to
-> > +	 * counter available on the HW.
-> > +	 */
-> > +	return counter <= STARLINK_PMU_NUM_COUNTERS;
-> > +}
-> > +  
-> 
-> ...
-> 
-> > +
-> > +static irqreturn_t starlink_pmu_handle_irq(int irq_num, void *data)
-> > +{
-> > +	struct starlink_pmu *starlink_pmu = data;
-> > +	struct starlink_hw_events *hw_events =
-> > +
-> > this_cpu_ptr(starlink_pmu->hw_events);  
-> 
-> Odd alignment.  I'd put it one tab more than struct.
-
-Ok, will realign them.
-> 
-> > +	bool handled = false;
-> > +	int idx;
-> > +	u64 overflow_status;
-> > +
-> > +	for (idx = 0; idx < STARLINK_PMU_MAX_COUNTERS; idx++) {
-> > +		struct perf_event *event = hw_events->events[idx];
-> > +
-> > +		overflow_status = readq(starlink_pmu->pmu_base +
-> > +
-> > STARLINK_PMU_COUNTER_OVERFLOW_STATUS);
-> > +		if (!BIT_IS_SET(overflow_status, idx))
-> > +			continue;
-> > +
-> > +		/* Clear event counter overflow interrupt */
-> > +		writeq(1 << idx, starlink_pmu->pmu_base +
-> > +		       STARLINK_PMU_COUNTER_OVERFLOW_STATUS);
-> > +
-> > +		if (!event)
-> > +			continue;  
-> If you get here and !event. Is it a bug, or something valid?
-> Maybe a comment if it's valid.  Otherwise an error print might make
-> sense.
-> 
-They should have appear earlier right before reading the overflow
-status, and continue next bit in the case where event is not valid.
-Will fix it.
-
-> > +
-> > +		starlink_pmu_update(event);
-> > +		starlink_pmu_set_event_period(event);
-> > +		handled = true;
-> > +	}
-> > +	return IRQ_RETVAL(handled);
-> > +}
-> > +
-> > +static int starlink_setup_irqs(struct starlink_pmu *starlink_pmu,
-> > +			       struct platform_device *pdev)
-> > +{
-> > +	int ret, irq;
-> > +
-> > +	irq = platform_get_irq(pdev, 0);
-> > +	if (irq < 0)
-> > +		return -EINVAL;
-> > +
-> > +	ret = devm_request_irq(&pdev->dev, irq,
-> > starlink_pmu_handle_irq,
-> > +			       0, STARLINK_PMU_PDEV_NAME,
-> > starlink_pmu);
-> > +	if (ret) {
-> > +		dev_warn(&pdev->dev, "Failed to request IRQ %d\n",
-> > irq);
-> > +		return ret;  
-> 
-> 		return dev_err_probe(...)
-
-Will pass this ret back to probe() to handle instead.
-> 
-> > +	}
-> > +
-> > +	starlink_pmu->irq = irq;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +#ifdef CONFIG_CPU_PM
-> > +static int starlink_pmu_pm_notify(struct notifier_block *b,
-> > +				  unsigned long cmd, void *v)
-> > +{
-> > +	struct starlink_pmu *starlink_pmu = container_of(b, struct
-> > starlink_pmu,
-> > +
-> > starlink_pmu_pm_nb);  
-> 
-> Compiler can probably figure out this isn't used. But if not
-> if (!IS_ENABLED(CONFIG_CPU_PM))
-> 	return 0;
-> 
-> will allow the compiler to definitely remove the code.
-
-Good info, thanks for the suggestion. Will use 
-'if (IS_ENABLED(CONFIG_CPU_PM))' in place of '#ifdef CONFIG_CPU_PM'.
-
-> 
-> > +	struct starlink_hw_events *hw_events =
-> > +
-> > this_cpu_ptr(starlink_pmu->hw_events);
-> > +	int enabled = bitmap_weight(hw_events->used_mask,
-> > +				    STARLINK_PMU_MAX_COUNTERS);
-> > +	struct perf_event *event;
-> > +	int idx;
-> > +
-> > +	if (!enabled)
-> > +		return NOTIFY_OK;
-> > +
-> > +	for (idx = 0; idx < STARLINK_PMU_MAX_COUNTERS; idx++) {
-> > +		event = hw_events->events[idx];
-> > +		if (!event)
-> > +			continue;
-> > +
-> > +		switch (cmd) {
-> > +		case CPU_PM_ENTER:
-> > +			/* Stop and update the counter */
-> > +			starlink_pmu_stop(event, PERF_EF_UPDATE);
-> > +			break;
-> > +		case CPU_PM_EXIT:
-> > +		case CPU_PM_ENTER_FAILED:
-> > +			/* Restore and enable the counter */
-> > +			starlink_pmu_start(event, PERF_EF_RELOAD);
-> > +			break;
-> > +		default:
-> > +			break;
-> > +		}
-> > +	}
-> > +
-> > +	return NOTIFY_OK;
-> > +}
-> > +
-> > +static int starlink_pmu_pm_register(struct starlink_pmu
-> > *starlink_pmu) +{
-> > +	starlink_pmu->starlink_pmu_pm_nb.notifier_call =
-> > starlink_pmu_pm_notify;
-> > +	return
-> > cpu_pm_register_notifier(&starlink_pmu->starlink_pmu_pm_nb);  
-> Stubbed out as below.
-> 
-> > +}
-> > +
-> > +static void starlink_pmu_pm_unregister(struct starlink_pmu
-> > *starlink_pmu) +{
-> > +
-> > cpu_pm_unregister_notifier(&starlink_pmu->starlink_pmu_pm_nb);  
-> 
-> stubbed out in header so no need to protect with ifdef.
-> Compiler will probably remove it anyway.
-> 
-Ok, will fix.
-
-> > +}
-> > +#else
-> > +static inline int
-> > +starlink_pmu_pm_register(struct starlink_pmu *starlink_pmu) {
-> > return 0; } +static inline void
-> > +starlink_pmu_pm_unregister(struct starlink_pmu *starlink_pmu) { }
-> > +#endif
-> > +
-> > +static void starlink_pmu_destroy(struct starlink_pmu *starlink_pmu)
-> > +{
-> > +	starlink_pmu_pm_unregister(starlink_pmu);
-> > +
-> > cpuhp_state_remove_instance(CPUHP_AP_PERF_RISCV_STARFIVE_STARLINK_ONLINE,
-> > +				    &starlink_pmu->node);
-> > +}
-> > +
-> > +static int starlink_pmu_probe(struct platform_device *pdev)
-> > +{
-> > +	struct starlink_pmu *starlink_pmu;
-> > +	struct starlink_hw_events *hw_events;
-> > +	struct resource *res;
-> > +	int cpuid, i, ret;
-> > +
-> > +	starlink_pmu = devm_kzalloc(&pdev->dev,
-> > sizeof(*starlink_pmu), GFP_KERNEL);
-> > +	if (!starlink_pmu)
-> > +		return -ENOMEM;
-> > +
-> > +	starlink_pmu->pmu_base =
-> > +
-> > devm_platform_get_and_ioremap_resource(pdev, 0, &res);
-> > +	if (IS_ERR(starlink_pmu->pmu_base))
-> > +		return PTR_ERR(starlink_pmu->pmu_base);
-> > +
-> > +	ret = starlink_setup_irqs(starlink_pmu, pdev);  
-> 
-> Handle ret  You are printing a warning so I'd assume it's a failure
-> to probe case, not something ignored.
-> 
-Missed that, will fix it.
-
-> 
-> > +
-> > +	ret =
-> > cpuhp_state_add_instance(CPUHP_AP_PERF_RISCV_STARFIVE_STARLINK_ONLINE,
-> > +				       &starlink_pmu->node);
-> > +	if (ret)  
-> 
-> Not dropped in error paths.
-
-Ok, will fix it.
-> 
-> > +		return ret;
-> > +
-> > +	ret = starlink_pmu_pm_register(starlink_pmu);
-> > +	if (ret)
-> > +		starlink_pmu_destroy(starlink_pmu);  
-> 
-> This calls starlink_pmu_pm_unregister()
-> That should not be necessary as every function should be designed to
-> have no side effects on error return.
-> 
-Ok, will fix it.
-
-> > +
-> > +	starlink_pmu->hw_events = alloc_percpu_gfp(struct
-> > starlink_hw_events,
-> > +						   GFP_KERNEL);
-> > +	if (!starlink_pmu->hw_events) {
-> > +		pr_info("Failed to allocate per-cpu PMU data.\n");
-> > +		kfree(starlink_pmu);  
-> 
-> Inconsistent error handling.  Before and aftre this you call
-> starlink_pmu_destroy() but not here.
-> 
-Ok, will rectify it.
-
-> > +		return -ENOMEM;
-> > +	}
-> > +
-> > +	for_each_possible_cpu(cpuid) {
-> > +		hw_events = per_cpu_ptr(starlink_pmu->hw_events,
-> > cpuid);
-> > +		for (i = 0; i < STARLINK_PMU_MAX_COUNTERS; i++)
-> > +			hw_events->events[i] = NULL;
-> > +	}
-> > +
-> > +	starlink_pmu->pmu = (struct pmu) {
-> > +		.task_ctx_nr	= perf_invalid_context,
-> > +		.event_init	= starlink_pmu_event_init,
-> > +		.add		= starlink_pmu_add,
-> > +		.del		= starlink_pmu_del,
-> > +		.start		= starlink_pmu_start,
-> > +		.stop		= starlink_pmu_stop,
-> > +		.read		= starlink_pmu_update,
-> > +		.attr_groups	= starlink_pmu_attr_groups,
-> > +	};
-> > +
-> > +	ret = perf_pmu_register(&starlink_pmu->pmu,
-> > STARLINK_PMU_PDEV_NAME, -1);
-> > +	if (ret)
-> > +		starlink_pmu_destroy(starlink_pmu);
-> > +
-> > +	dev_info(&pdev->dev, "Registered StarFive's StarLink
-> > PMU\n");  
-> 
-> Noise.  Don't print to the log when there are many other ways to find
-> this out.
-> 
-Ok, will drop it.
-
-> > +
-> > +	return ret;
-> > +}
-> > +
-> > +static const struct of_device_id starlink_pmu_of_match[] = {
-> > +	{ .compatible = "starfive,jh8100-starlink-pmu", },
-> > +	{},  
-> 
-> No need for comma after a 'terminator' as nothing can come after it.
-> 
-Ok, will drop it.
-
-> > +};
-> > +MODULE_DEVICE_TABLE(of, starlink_pmu_of_match);  
-> 
-> > +device_initcall(starlink_pmu_init);
-> > diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
-> > index d305db70674b..6d9eb70c13d4 100644
-> > --- a/include/linux/cpuhotplug.h
-> > +++ b/include/linux/cpuhotplug.h
-> > @@ -219,6 +219,7 @@ enum cpuhp_state {
-> >  	CPUHP_AP_PERF_X86_CQM_ONLINE,
-> >  	CPUHP_AP_PERF_X86_CSTATE_ONLINE,
-> >  	CPUHP_AP_PERF_X86_IDXD_ONLINE,
-> > +	CPUHP_AP_PERF_RISCV_STARFIVE_STARLINK_ONLINE,  
-> Can you use CPUHP_AP_ONLINE_DYN?
-> 
-> Moves it a bit later in the sequence but it often works for perf
-> drivers.
-> 
-Yup, that should work as well. Will use CPUHP_AP_ONLINE_DYN instead.
-
-> >  	CPUHP_AP_PERF_S390_CF_ONLINE,
-> >  	CPUHP_AP_PERF_S390_SF_ONLINE,
-> >  	CPUHP_AP_PERF_ARM_CCI_ONLINE,  
-> 
-
-Thanks for reviewing Jonathan.
-
-Thanks,
-
-Ji Sheng
+Best regards,
+Krzysztof
 
