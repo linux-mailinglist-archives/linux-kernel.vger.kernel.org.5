@@ -2,97 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF29A7FF776
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 17:57:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BD447FF76D
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 17:57:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346025AbjK3Q5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 11:57:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46634 "EHLO
+        id S1345843AbjK3Q4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 11:56:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345884AbjK3Q5G (ORCPT
+        with ESMTP id S1345897AbjK3Q4w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 11:57:06 -0500
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3650710F3;
-        Thu, 30 Nov 2023 08:57:12 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPA id 92DB61BF212;
-        Thu, 30 Nov 2023 16:57:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1701363430;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=03BrarHheQTm2ykoOQK9Gavt52h0IRg+LP2b9wAKWEI=;
-        b=LkBoNsPO/NLskV7htM0BtXTYvsIr1YwKc7YidAZmSHGGnE+7fWKR94HrejLqgdm7qWiSML
-        16FNvIu8vRzphRZF8c7E99Vk1wl+BHoGwUAU01gRqVbAm8V7G924FRXwRR9+i79oImKiCP
-        Gf7Ff/DRQpOHTLJ2Pm9iE/wy8NPKI772SQTR34CDeBn/fjqlJ4kc48VNNLvPV9S5jTxfP/
-        7Szd9nqw7vPINBajJpFXn5hC7XaxmxS5J7wue6serYuyIx73iT2bp90I7OrQ1qvkrhPQQ1
-        MNO4/PpE+q5Od4T2oXNYOGVZcsUAWPhmYSkBVO4pguxV6LX6Yi+U0gf3CI/nKQ==
-From:   Herve Codina <herve.codina@bootlin.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lizhi Hou <lizhi.hou@amd.com>, Rob Herring <robh@kernel.org>
-Cc:     Max Zhen <max.zhen@amd.com>, Sonal Santan <sonal.santan@amd.com>,
-        Stefano Stabellini <stefano.stabellini@xilinx.com>,
-        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        Allan Nielsen <allan.nielsen@microchip.com>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        Steen Hegelund <steen.hegelund@microchip.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Herve Codina <herve.codina@bootlin.com>
-Subject: [PATCH v2 0/2] Attach DT nodes to existing PCI devices
-Date:   Thu, 30 Nov 2023 17:56:57 +0100
-Message-ID: <20231130165700.685764-1-herve.codina@bootlin.com>
-X-Mailer: git-send-email 2.42.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 30 Nov 2023 11:56:52 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A02610F2
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 08:56:59 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59C48C433C9;
+        Thu, 30 Nov 2023 16:56:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1701363418;
+        bh=jNTamNThZ0rAs2o+KORaTzGsMmcQ2kdIW/zV+pisW9M=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Ep5mfn6/d/046KNhMrPxYSVs2b/H1SbZQJJM57P3hzC8hmlHC+aL7jEbzQHe/bzLV
+         ZDl9UEr14ekcpfCJk6RDza5apPq9i/1g5VSUREK4wQ/5Ib8LBFZY5NsHmgDKwcsJd5
+         raSV/4nqny+fZeQRHQXL35saZ9wB+AO2cAuRD2YA=
+Date:   Thu, 30 Nov 2023 08:56:57 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Baoquan He <bhe@redhat.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Vivek Goyal <vgoyal@redhat.com>,
+        linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
+        x86@kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-crypto@vger.kernel.org, eric_devolder@yahoo.com
+Subject: Re: [PATCH 1/2] kexec: fix KEXEC_FILE dependencies
+Message-Id: <20231130085657.6f7f500cc17b663747e4ee76@linux-foundation.org>
+In-Reply-To: <ZUNXxp9AIkjQkP9s@MiWiFi-R3L-srv>
+References: <20231023110308.1202042-1-arnd@kernel.org>
+        <ZTe8NOgAjvKDA6z0@MiWiFi-R3L-srv>
+        <b71034f4-5cdc-44e0-b72f-1a8ffae0593e@app.fastmail.com>
+        <ZUNXxp9AIkjQkP9s@MiWiFi-R3L-srv>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, 2 Nov 2023 16:03:18 +0800 Baoquan He <bhe@redhat.com> wrote:
 
-The commit 407d1a51921e ("PCI: Create device tree node for bridge")
-creates of_node for PCI devices.
-During the insertion handling of these new DT nodes done by of_platform,
-new devices (struct device) are created.
-For each PCI devices a struct device is already present (created and
-handled by the PCI core).
-Creating a new device from a DT node leads to some kind of wrong struct
-device duplication to represent the exact same PCI device.
+> > > CONFIG_KEXEC_FILE, but still get purgatory code built in which is
+> > > totally useless.
+> > >
+> > > Not sure if I think too much over this.
+> > 
+> > I see your point here, and I would suggest changing the
+> > CONFIG_ARCH_SUPPORTS_KEXEC_PURGATORY symbol to just indicate
+> > the availability of the purgatory code for the arch, rather
+> > than actually controlling the code itself. I already mentioned
+> > this for s390, but riscv would need the same thing on top.
+> > 
+> > I think the change below should address your concern.
+> 
+> Since no new comment, do you mind spinning v2 to wrap all these up?
 
-This patch series first introduces device_{add,remove}_of_node() in
-order to add or remove a newly created of_node to an already existing
-device.
-Then it fixes the DT node creation for PCI devices to add or remove the
-created node to the existing PCI device without any new device creation.
-
-Best regards,
-Hervé
-
-Changes v1 -> v2
-  - Patch 1
-    Add 'Cc: stable@vger.kernel.org'
-
-Herve Codina (2):
-  driver core: Introduce device_{add,remove}_of_node()
-  PCI: of: Attach created of_node to existing device
-
- drivers/base/core.c    | 74 ++++++++++++++++++++++++++++++++++++++++++
- drivers/pci/of.c       | 15 +++++++--
- include/linux/device.h |  2 ++
- 3 files changed, 89 insertions(+), 2 deletions(-)
-
--- 
-2.42.0
-
+This patchset remains in mm-hotfixes-unstable from the previous -rc
+cycle.  Eric, do you have any comments?  Arnd, do you plan on a v2?  If
+not, should I merge v1?  If so, should I now add cc:stable?
