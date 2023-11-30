@@ -2,156 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 795357FEB68
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 10:07:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7F5A7FEB5D
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 10:06:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231867AbjK3JHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 04:07:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35910 "EHLO
+        id S231788AbjK3JG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 04:06:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229758AbjK3JG7 (ORCPT
+        with ESMTP id S229462AbjK3JGY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 04:06:59 -0500
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 920D310F9
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 01:07:01 -0800 (PST)
-Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-dae7cc31151so591538276.3
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 01:07:01 -0800 (PST)
+        Thu, 30 Nov 2023 04:06:24 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5054B9
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 01:06:30 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-3330d64958aso463359f8f.2
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 01:06:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701335221; x=1701940021; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=qzc3U7sFDdtHUadGGzprUKVhVLAwC/gLPx8U/sb5Ft4=;
-        b=N9gY6RXDkWumRhx9vouBV3yMPGyw5jXA5XNERq4YTreF8GmSxntyHyj3hPmREWT/hl
-         nu2C0hSaOUHSpifnj7szzpFC/3+jXfFN4qG/K4h+wm/iRWXOqqqnjRmXiO5XNQegRHma
-         03UWSvFUFOO6wNcBmeUub42q46ldRWwDyWYWwQ1Z1tWSbwvbiUS5KlHH7spR64ikt8ne
-         iPGoEuMg6Xke9wL5Znb5tr9BXxMFjUUa8/l5UKSkXxwWNQwMrpQDzcTnhT+oOEZ5gyVc
-         cHx/uoccDvP+WzPldhqcvw3Bxj6VJj5o008JBTqD2+iw+Qm7/fVYJJGX/fnkAYPm8vKQ
-         nRWw==
+        d=blackwall-org.20230601.gappssmtp.com; s=20230601; t=1701335189; x=1701939989; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=eJ5LmNpN5QcwNvER/5g/ZnTRjIBCAtvU7kmUUks1hNI=;
+        b=K0r+XOF3C1iQrXytK+rIxZgSSQ4W3ZrViMomJ53pkTXvfed3TxRzJnkSfx2jQqDvbf
+         Q/adUp9UM8LyR07bO56ApOj0+oeH0PlHHQd09Pd+a6h+eBhiVO0Gpbfj9g/FQpurGSuK
+         WA6kidV2RCAUeQ/d0NRPf6XbVA5p0bQehtcXy2CYNaJbTlo2DxpfIS4pcc+9/C0iZZWQ
+         4ns/84AB9yOGtlsjkgrEhFFg9kw3DEx6dO9b3IniK3gjeT0TI8V5CRb0H9f1sfzbauh+
+         yep7L5cZ4S+brErHelCDZx/92yTt0OLcm+91FFnCb1b0RnP+xczjF+CnHR6yE6BMBWLv
+         DQfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701335221; x=1701940021;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qzc3U7sFDdtHUadGGzprUKVhVLAwC/gLPx8U/sb5Ft4=;
-        b=i72PkH8EJZ/RwcDlEHbJYHVy55wixe+eNon11ohJOeBpxfb8jO+HYa7glULVKIVU0n
-         cPOlnw84e5EGqR0YlUt0kQ+EQFaTWh5GxVruP+bq1FFdqy6Y9WmnuJd0f3Rste6BhrFm
-         lMebnSGCWYGOqJHB+gEVSUXZBS7hBF9e+QwO1qZzs3hyGq0MG+TCZ9JAdDhoNfDR/C//
-         +fb4KDOkZaR8iEFW1maD5YKkgt8J+Bt5CSIfqy14VTgVV304ZukWI5neO+dzeoSTGHkc
-         +y5+A/qheVO5iv3AAAOY238sELiMGFq4kcyHqfHGmlTwSk4gP+XW5aHq7I6VPM3bhh0i
-         VuQw==
-X-Gm-Message-State: AOJu0YwFnaHPtoxcB4Km8Fz4VOoMngRPsxzx7TRaXH3XL1DWZtKJFiGN
-        yE4ARxHr8fWHWImlEq6AlbSzQejwrPWvGu0HQSrt6A==
-X-Google-Smtp-Source: AGHT+IE2wHsXYey5GhKupzNswCMwI47ajmC1v7kGHta1ytzdpied8STHZJJIrUpWGsQJNpPuJQDIl8OPjlw4XfG8Ydk=
-X-Received: by 2002:a25:ce0e:0:b0:db5:4196:8125 with SMTP id
- x14-20020a25ce0e000000b00db541968125mr311366ybe.17.1701335220510; Thu, 30 Nov
- 2023 01:07:00 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701335189; x=1701939989;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=eJ5LmNpN5QcwNvER/5g/ZnTRjIBCAtvU7kmUUks1hNI=;
+        b=V+k9wiW2lfdR6k0nbnj3+A2gu9JlhZtctkjr+k13N/bmzYarw8+AR+++05/NJz/+td
+         ItNLuhh9a4rzQbFOa9jjxsBU+a1ACbx5FATTJCgkQzvpQB4tcKoEbCK+7HONjSAEL6zj
+         DMwXsYv4LXjiV8taMHN4pEf6PH2Gc2yRA8CRzJ64SjBryAQriw6sUDDEoePfICbA2JT5
+         1RcOiKK6MG1K4aBF7llqYt2N83ex29vR+61iZPjAV8xRgicTUhtGFlkNc7BknfCVIg4J
+         fBcXq9WlsTyL34d6PT+/9BsgJtmFJrCv6IuYCxmSK3Yi4mJEJ/Ii31i6Ycl3uwZ3RaQj
+         XBiQ==
+X-Gm-Message-State: AOJu0YxspvSYFguaUa2Yz1cduOom2zHoN3sql/xGwNd4JkwHXFzefz/N
+        Rj+n0qTJFlRiELQ01FUHeu+mWw==
+X-Google-Smtp-Source: AGHT+IG3qiBMyklUjHLUA0JpQRxzV/uVj6ZdX1vKxXoWyydiAQzpr8xbbllWv+CAuQ+aC0bky0EhcA==
+X-Received: by 2002:adf:f1c6:0:b0:333:75c:362f with SMTP id z6-20020adff1c6000000b00333075c362fmr7589388wro.45.1701335189038;
+        Thu, 30 Nov 2023 01:06:29 -0800 (PST)
+Received: from [192.168.0.106] (starletless.turnabout.volia.net. [93.73.214.90])
+        by smtp.gmail.com with ESMTPSA id e9-20020adffc49000000b00332cfd83b8dsm929523wrs.96.2023.11.30.01.06.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Nov 2023 01:06:28 -0800 (PST)
+Message-ID: <51dd35c9-ff5b-5b11-04d1-9a5ae9466780@blackwall.org>
+Date:   Thu, 30 Nov 2023 11:06:27 +0200
 MIME-Version: 1.0
-References: <20230929130028.GB2825985@pengutronix.de> <CAPDyKFqUtNEbK2tzD+qOK+dFcDyBxvcNwOHWPJDLhTWGGkoHQw@mail.gmail.com>
- <20231122112212.GA783262@pengutronix.de>
-In-Reply-To: <20231122112212.GA783262@pengutronix.de>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 30 Nov 2023 10:06:24 +0100
-Message-ID: <CAPDyKFpWL0aVH0pfUbDiSmu=dr1NjO+wVHcTyxbQqfb52mMq2g@mail.gmail.com>
-Subject: Re: mmc: handling of Under-Voltage Events in eMMC
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        linux-mmc@vger.kernel.org, kernel@pengutronix.de,
-        Ye Bin <yebin10@huawei.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Naresh Solanki <naresh.solanki@9elements.com>,
-        zev@bewilderbeest.net, Sebastian Reichel <sre@kernel.org>,
-        linux-pm@vger.kernel.org,
-        =?UTF-8?Q?S=C3=B8ren_Andersen?= <san@skov.dk>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.0
+Subject: Re: [PATCH bpf-next] netkit: Add some ethtool ops to provide
+ information to user
+Content-Language: en-US
+To:     Feng zhou <zhoufeng.zf@bytedance.com>, daniel@iogearbox.net,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yangzhenze@bytedance.com,
+        wangdongdong.6@bytedance.com, tangchen.1@bytedance.com
+References: <20231130075844.52932-1-zhoufeng.zf@bytedance.com>
+From:   Nikolay Aleksandrov <razor@blackwall.org>
+In-Reply-To: <20231130075844.52932-1-zhoufeng.zf@bytedance.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 22 Nov 2023 at 12:22, Oleksij Rempel <o.rempel@pengutronix.de> wrote:
->
-> Hi Ulf, Hi Mark,
->
-> On Tue, Oct 10, 2023 at 04:48:24PM +0200, Ulf Hansson wrote:
-> > On Fri, 29 Sept 2023 at 15:00, Oleksij Rempel <o.rempel@pengutronix.de> wrote:
-> > >
-> > > Hi,
-> > >
-> > > I'm working on a project aiming to protect eMMC during power loss. Our
-> > > hardware setup includes an under-voltage detector, circuits to disable
-> > > non-critical components, and enough capacitance to allow the CPU to run
-> > > for 100ms.
-> > >
-> > > I've added an interrupt handler to the fixed regulator to emit
-> > > REGULATOR_EVENT_UNDER_VOLTAGE events, and modified
-> > > drivers/mmc/host/sdhci.c to receive these events. Currently, the handler
-> > > only produces debug output.
-> > >
-> > > What is the recommended approach for handling under-voltage situations?
-> > > Should the driver finish ongoing write commands, block new ones, and
-> > > shut down the eMMC? I'm looking for direction here.
-> >
-> > That's indeed a very good question. From a general point of view, I
-> > think the best we can do is to stop any new I/O requests from being
-> > managed - and try to complete only the last ongoing one, if any.
-> > Exactly how to do that can be a bit tricky though.
-> >
-> > Beyond that, we should probably try to send the eMMC specific commands
-> > that allow us to inform the eMMC that it's about to be powered-off.
-> > Although, I am not sure that we actually will be able to complete
-> > these operations within 100ms, so maybe it's not really worth trying?
-> > See mmc_poweroff_notify(), for example.
->
-> Some puzzle parts are now mainline, for example regulator framework
-> can be configured to detect under-voltage events and execute
-> hw_protection_shutdown(). So far it worked good enough to complete
-> mmc_poweroff_notify() withing 100ms window. The problem is, the chance to
-> execute mmc_poweroff_notify() depends on kernel configuration. If there are too
-> many drivers and devices, mmc_poweroff_notify() will be not executed in time.
+On 11/30/23 09:58, Feng zhou wrote:
+> From: Feng Zhou <zhoufeng.zf@bytedance.com>
+> 
+> Add get_strings, get_sset_count, get_ethtool_stats to get peer
+> ifindex.
+> ethtool -S nk1
+> NIC statistics:
+>       peer_ifindex: 36
+> 
+> Add get_link, get_link_ksettings to get link stat.
+> ethtool nk1
+> Settings for nk1:
+> 	...
+> 	Link detected: yes
+> 
+> Add get_ts_info.
+> ethtool -T nk1
+> Time stamping parameters for nk1:
+> ...
+> 
+> Signed-off-by: Feng Zhou <zhoufeng.zf@bytedance.com>
+> ---
+>   drivers/net/netkit.c | 53 ++++++++++++++++++++++++++++++++++++++++++++
+>   1 file changed, 53 insertions(+)
+> 
 
-Right. I have been monitoring the discussions around the series
-"[PATCH v1 0/3] introduce priority-based shutdown support", but wanted
-to give a reply to $subject patch first.
+Hi,
+I don't see any point in sending peer_ifindex through ethtool, even
+worse through ethtool stats. That is definitely the wrong place for it.
+You can already retrieve that through netlink. About the speed/duplex
+this one makes more sense, but this is the wrong way to do it.
+See how we did it for virtio_net (you are free to set speed/duplex
+to anything to please bonding for example). Although I doubt anyone will 
+use netkit with bonding, so even that is questionable. :)
 
-I think the point here is not to *always make it*, but rather try our
-best to improve the situation.
+Nacked-by: Nikolay Aleksandrov <razor@blackwall.org>
 
->
-> For now, I workaround it by registering a reboot notifier for mmc shutdown.
-> It works, because kernel_power_off() is executing all registered reboot
-> notifiers at first place and there are no other slow reboot notifiers.
-> But, it seems to be not reliable enough. Probably notifier prioritization
-> is needed to make it more predictable.
+Cheers,
+  Nik
 
-I think I need to have a closer look at the code for such an approach,
-to tell if that would work.
-
-My main concern with this, is that we need to make sure the block
-device queue needs to be flushed or made quiescent
-(mmc_blk_shutdown()) first, so we don't end up processing I/O requests
-beyond calling mmc_poweroff_notify().
-
->
-> So far, I have two variants to implement it in more predictable way:
-> variant 1 - forward the under-voltage notification to the mmc framework and
->   execute mmc_poweroff_notify() or bus shutdown.
-> variant 2 - use reboot notifier and introduce reboot notifier prioritization.
->
-> Are there other options? What are your preferences?
-
-Something along the variant2 seems to make most sense to me, but I
-will continue to look at your other series in this regard.
-
-Kind regards
-Uffe
