@@ -2,74 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEFA77FFD7F
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 22:27:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C1917FFD87
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 22:30:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376890AbjK3V1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 16:27:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50236 "EHLO
+        id S1376895AbjK3VaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 16:30:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376859AbjK3V1M (ORCPT
+        with ESMTP id S229645AbjK3VaF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 16:27:12 -0500
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDFD0133;
-        Thu, 30 Nov 2023 13:27:18 -0800 (PST)
-Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-3333074512bso40468f8f.1;
-        Thu, 30 Nov 2023 13:27:18 -0800 (PST)
+        Thu, 30 Nov 2023 16:30:05 -0500
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7C3910FA
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 13:30:11 -0800 (PST)
+Received: by mail-ot1-x32c.google.com with SMTP id 46e09a7af769-6d7eb7ff384so941953a34.0
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 13:30:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701379637; x=1701984437; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=KqgjcL24ZMnKLsXbYwH0Kk7Ypb9AJnVc4DeykxITi3c=;
-        b=isu3R+PyHMfWu5eH8kC5q5DDANjZdpYGp6bHfr62a4B5D3LfAezAlyuqg4Lj2MqmSk
-         8cpYeXxUW4UzmQE3WY0YRQcRKKHOgjpeoifjiccIqKPBFsgx2S5JURZKkRNT3AaWY4rd
-         E3JH+Oq3irY1U8CS7VEqr2srRGUNPdC/iLQBGIQXDY8D7zogZuX4rgtYCCd7KHAn7c8z
-         Lhxt3uPVHBj79yVJm0kONaYQwQ8mpw0aYbLU1PygR2YKgTvqhqD+MiSwjBexYaVE+Z8I
-         L3+LtbrGy7gOmC+i4EPz3p/3FuAK2sx1W5Gn5Iy8dUd96aZKyYhYI+wM9MMcDhKIeKqm
-         HysQ==
+        d=gmail.com; s=20230601; t=1701379811; x=1701984611; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2AdLM7lBVKO5z85JUEsbZhnOFnXHXkAG5gRF28PcXpY=;
+        b=XeNn+om+JJyC6sb1NwmshbhnEbDwb8K28Uv9pUwy4gV+hXdnszsYKZ2g/pmT47fyur
+         dpt2eghQa+QuzDndc97sObnlxf2OONZsHxev6JqxuJA6+K7dC0dd1Q5h3qquMGisgFSx
+         m4YnQlRy+9fDSVD7nw91hsTKU31qNwzc/GWS17jQPfIMyQNN4/RO8HTeNEEhB+T/uWSr
+         V/AFAB8slqU7bD87nueGmUyzFvfBKtAlYjFMaDXIPBBiPgqlsYU/BQcPep10q50Wqmts
+         7mhwV1n7BgquEjwHZSE9YfbwuSXx1mFA/MB6V/oogoA+NcBFdWXzl8DUe7vZGQZqYA94
+         li1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701379637; x=1701984437;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KqgjcL24ZMnKLsXbYwH0Kk7Ypb9AJnVc4DeykxITi3c=;
-        b=sFzJgfPmM/RBywqCZq+ltJTcWz6QiWSTSfALjiP8D6VbbtzYaa0kFAptGPcucxjCvN
-         wpeOuserHg5KuMTKlQMdr2Kw2uUmIBV96Qucj43IUTAb+ChOZcmrGIbBvjWc5rOAvyxn
-         8rjY3wwoPh8mCgG5rnnckHQNHN4lNLP2GXUtzXq4OpgivHFHIHb7tgB9hRdVjapzujkh
-         47b+63qwZ4Eez21BRQ5zUM2rzqeoXlcrosJ1SLg6ZUNZoeV4kNUR3eB5HG3XJnys+CUh
-         UIFURoBwzspQvEYQv6UCQqw4DMjfgsAuaIQEV+ft8oUUy6cmkTQZ3mD2LDYA/but9rNI
-         yErQ==
-X-Gm-Message-State: AOJu0YzNUXcqjRoveZuSkD11CFPu41pC5XZqIn2uDdqXKiLLbmVrYDss
-        yAY3eqiBasEr2Pm41ezigK0=
-X-Google-Smtp-Source: AGHT+IHKBeHl7stvLYTFaI4jG/zWMybVzNEIz41y+IHoeV42m4AZDHT+xqfJgF2OkZwBJforvNzzyA==
-X-Received: by 2002:a05:600c:4da4:b0:40b:5e26:238c with SMTP id v36-20020a05600c4da400b0040b5e26238cmr95459wmp.61.1701379637105;
-        Thu, 30 Nov 2023 13:27:17 -0800 (PST)
-Received: from prasmi.home ([2a00:23c8:2500:a01:3c2e:cd45:f50f:f083])
-        by smtp.gmail.com with ESMTPSA id az27-20020a05600c601b00b003fc0505be19sm3271440wmb.37.2023.11.30.13.27.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Nov 2023 13:27:16 -0800 (PST)
-From:   Prabhakar <prabhakar.csengg@gmail.com>
-X-Google-Original-From: Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Yu Chien Peter Lin <peterlin@andestech.com>,
-        Samuel Holland <samuel.holland@sifive.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH v3] riscv: errata: andes: Probe for IOCP only once in boot stage
-Date:   Thu, 30 Nov 2023 21:26:47 +0000
-Message-Id: <20231130212647.108746-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1701379811; x=1701984611;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2AdLM7lBVKO5z85JUEsbZhnOFnXHXkAG5gRF28PcXpY=;
+        b=odmE1J5sl6REK8Nd2WswfkjgPJwlFzwFw/DonRC0rkEGrRookJ3G+E2cx3rFNwZcZc
+         xKLunQSXaHVOhAp/TJjgDlTW/vIF5WxVAFU9jO2zi8QaM+2Fn2dzHcKCgTGTUbRAt+aW
+         jsWcYc7HZxflqa2gyOPO0x4MBhR4TPR4jmv7agnZoe54KE9FVuU1dnwbcznxN3jEbg3A
+         UWafkqMsTi9TXMY3YfBaLiOmBb6mAZU2YZ6EzskJc+Y6PYcMQ6hP9m29YgM7n7rur86n
+         laWpXTQpyzPNQAYI04UwzM35a8IWSex0YYtMV93dIQVAm6w3x5MMNKPu1FuS0UDKRPYz
+         psew==
+X-Gm-Message-State: AOJu0YyIYziQQgwDUh7CK9mOIOqQEjzuwyVJpPB2VznHp1eTYgOaXaov
+        H6R+qJ1SrbXdsMRjltH4sy1OfErQvzuAtWt/VATKNNKI
+X-Google-Smtp-Source: AGHT+IHRTBmBvngzFuhZ/hAvU/HjEpkJ6562bbm429mg+ZXfGWU9OhuYmYnadn/s6OrB7cxyCnXK4nnGzGZfGpj5Sms=
+X-Received: by 2002:a05:6870:9a90:b0:1fa:82:3d69 with SMTP id
+ hp16-20020a0568709a9000b001fa00823d69mr28555314oab.46.1701379811130; Thu, 30
+ Nov 2023 13:30:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <87edgv4x3i.fsf@vps.thesusis.net> <559d0fa5-953a-4a97-b03b-5eb1287c83d8@leemhuis.info>
+ <CAPM=9tw-8pQWFso0zuLqpsqd5BSHWtc4As9ttdjY-DDr70EMqQ@mail.gmail.com>
+ <bdb238b6-60c7-4f26-81d0-9e62cd5dd326@gmail.com> <CADnq5_NVGS1XykxGxpcu_bpPbzboCUJQkcCF3r+0N9a23KUgiQ@mail.gmail.com>
+ <96e2e13c-f01c-4baf-a9a3-cbaa48fb10c7@amd.com> <CADnq5_NBfeAXEyQw0gnSd67=tR-bUKg8w=10+4z9pGGuRnP9uw@mail.gmail.com>
+ <87jzq2ixtm.fsf@vps.thesusis.net> <CADnq5_Ou-MVVm0rdWDmDnJNLkWUayXzO26uCEtz3ucNa4Ghy2w@mail.gmail.com>
+ <95fe9b5b-05ce-4462-9973-9aca306bc44f@gmail.com> <CADnq5_MYEWx=e1LBLeVs0UbR5_xEScjDyw_-75mLe8RAMnqh6g@mail.gmail.com>
+ <CADnq5_OC=JFpGcN0oGbTF5xYEt4X3r0=jEY6hJ12W8CzYq1+cA@mail.gmail.com>
+ <9595b8bf-e64d-4926-9263-97e18bcd7d05@gmail.com> <CADnq5_N6DF-huOzgaVygvS5N_j_oNUEC1aa4zRsZTzx8GOD_aw@mail.gmail.com>
+ <CADnq5_PgMxoW=4iabtgeHydwye-6DvwvCyETdfBToEpuYWocmA@mail.gmail.com>
+ <CADnq5_P0S7Jem0e4K6mG2+bboG8P56nELaGC1p4Pfx-8eV-BjQ@mail.gmail.com> <05a4dec0-1c07-4a64-9439-e2c306807ded@gmail.com>
+In-Reply-To: <05a4dec0-1c07-4a64-9439-e2c306807ded@gmail.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Thu, 30 Nov 2023 16:29:59 -0500
+Message-ID: <CADnq5_M6PtLPHxd7kaS6Rtkun5G2wNMs6aZ84pj58wniZ8Smsg@mail.gmail.com>
+Subject: Re: Radeon regression in 6.6 kernel
+To:     Luben Tuikov <ltuikov89@gmail.com>
+Cc:     Phillip Susi <phill@thesusis.net>,
+        Linux regressions mailing list <regressions@lists.linux.dev>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        dri-devel@lists.freedesktop.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Danilo Krummrich <dakr@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -80,107 +85,200 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+On Wed, Nov 29, 2023 at 10:36=E2=80=AFPM Luben Tuikov <ltuikov89@gmail.com>=
+ wrote:
+>
+> On 2023-11-29 15:49, Alex Deucher wrote:
+> > On Wed, Nov 29, 2023 at 3:10=E2=80=AFPM Alex Deucher <alexdeucher@gmail=
+.com> wrote:
+> >>
+> >> Actually I think I see the problem.  I'll try and send out a patch
+> >> later today to test.
+> >
+> > Does the attached patch fix it?
+>
+> Thanks for the patch, Alex.
+>
+> Is it possible for AMD to also reproduce this issue and test this patch o=
+n a Navi23 system?
 
-We need to probe for IOCP only once during boot stage, as we were probing
-for IOCP for all the stages this caused the below issue during module-init
-stage,
+I haven't had a chance to dig into it much due to LPC and thanksgiving
+and other end of year stuff.
 
-[9.019104] Unable to handle kernel paging request at virtual address ffffffff8100d3a0
-[9.027153] Oops [#1]
-[9.029421] Modules linked in: rcar_canfd renesas_usbhs i2c_riic can_dev spi_rspi i2c_core
-[9.037686] CPU: 0 PID: 90 Comm: udevd Not tainted 6.7.0-rc1+ #57
-[9.043756] Hardware name: Renesas SMARC EVK based on r9a07g043f01 (DT)
-[9.050339] epc : riscv_noncoherent_supported+0x10/0x3e
-[9.055558]  ra : andes_errata_patch_func+0x4a/0x52
-[9.060418] epc : ffffffff8000d8c2 ra : ffffffff8000d95c sp : ffffffc8003abb00
-[9.067607]  gp : ffffffff814e25a0 tp : ffffffd80361e540 t0 : 0000000000000000
-[9.074795]  t1 : 000000000900031e t2 : 0000000000000001 s0 : ffffffc8003abb20
-[9.081984]  s1 : ffffffff015b57c7 a0 : 0000000000000000 a1 : 0000000000000001
-[9.089172]  a2 : 0000000000000000 a3 : 0000000000000000 a4 : ffffffff8100d8be
-[9.096360]  a5 : 0000000000000001 a6 : 0000000000000001 a7 : 000000000900031e
-[9.103548]  s2 : ffffffff015b57d7 s3 : 0000000000000001 s4 : 000000000000031e
-[9.110736]  s5 : 8000000000008a45 s6 : 0000000000000500 s7 : 000000000000003f
-[9.117924]  s8 : ffffffc8003abd48 s9 : ffffffff015b1140 s10: ffffffff8151a1b0
-[9.125113]  s11: ffffffff015b1000 t3 : 0000000000000001 t4 : fefefefefefefeff
-[9.132301]  t5 : ffffffff015b57c7 t6 : ffffffd8b63a6000
-[9.137587] status: 0000000200000120 badaddr: ffffffff8100d3a0 cause: 000000000000000f
-[9.145468] [<ffffffff8000d8c2>] riscv_noncoherent_supported+0x10/0x3e
-[9.151972] [<ffffffff800027e8>] _apply_alternatives+0x84/0x86
-[9.157784] [<ffffffff800029be>] apply_module_alternatives+0x10/0x1a
-[9.164113] [<ffffffff80008fcc>] module_finalize+0x5e/0x7a
-[9.169583] [<ffffffff80085cd6>] load_module+0xfd8/0x179c
-[9.174965] [<ffffffff80086630>] init_module_from_file+0x76/0xaa
-[9.180948] [<ffffffff800867f6>] __riscv_sys_finit_module+0x176/0x2a8
-[9.187365] [<ffffffff80889862>] do_trap_ecall_u+0xbe/0x130
-[9.192922] [<ffffffff808920bc>] ret_from_exception+0x0/0x64
-[9.198573] Code: 0009 b7e9 6797 014d a783 85a7 c799 4785 0717 0100 (0123) aef7
-[9.205994] ---[ end trace 0000000000000000 ]---
+>
+> > From 96e75b5218f7a124eafa53853681eef8fe567ab8 Mon Sep 17 00:00:00 2001
+> > From: Alex Deucher <alexander.deucher@amd.com>
+> > Date: Wed, 29 Nov 2023 15:44:25 -0500
+> > Subject: [PATCH] drm/amdgpu: fix buffer funcs setting order on suspend
+> >
+> > We need to make disable this after the last eviction
+>
+> "make disable" --> "disable"
+>
+> > call, but before we disable the SDMA IP.
+> >
+> > Fixes: b70438004a14 ("drm/amdgpu: move buffer funcs setting up a level"=
+)
+> > Link: https://lists.freedesktop.org/archives/amd-gfx/2023-November/1011=
+97.html
+>
+> Link: https://lore.kernel.org/r/87edgv4x3i.fsf@vps.thesusis.net
+>
+> Let's link the start of the thread.
 
-This is because we called riscv_noncoherent_supported() for all the stages
-during IOCP probe. riscv_noncoherent_supported() function sets
-noncoherent_supported variable to true which has an annotation set to
-"__ro_after_init" due to which we were seeing the above splat. Fix this by
-probing for IOCP only once in boot stage by having a boolean variable
-"done" which will be set to true upon IOCP probe in errata_probe_iocp()
-and we bail out early if "done" is set to true.
+Thanks, I will update the patch.
 
-While at it make return type of errata_probe_iocp() to void as we were
-not checking the return value in andes_errata_patch_func().
+Alex
 
-Fixes: e021ae7f5145 ("riscv: errata: Add Andes alternative ports")
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
----
- arch/riscv/errata/andes/errata.c | 20 +++++++++++++-------
- 1 file changed, 13 insertions(+), 7 deletions(-)
-
-diff --git a/arch/riscv/errata/andes/errata.c b/arch/riscv/errata/andes/errata.c
-index 197db68cc8da..17a904869724 100644
---- a/arch/riscv/errata/andes/errata.c
-+++ b/arch/riscv/errata/andes/errata.c
-@@ -38,29 +38,35 @@ static long ax45mp_iocp_sw_workaround(void)
- 	return ret.error ? 0 : ret.value;
- }
- 
--static bool errata_probe_iocp(unsigned int stage, unsigned long arch_id, unsigned long impid)
-+static void errata_probe_iocp(unsigned int stage, unsigned long arch_id, unsigned long impid)
- {
-+	static bool done;
-+
- 	if (!IS_ENABLED(CONFIG_ERRATA_ANDES_CMO))
--		return false;
-+		return;
-+
-+	if (done)
-+		return;
-+
-+	done = true;
- 
- 	if (arch_id != ANDESTECH_AX45MP_MARCHID || impid != ANDESTECH_AX45MP_MIMPID)
--		return false;
-+		return;
- 
- 	if (!ax45mp_iocp_sw_workaround())
--		return false;
-+		return;
- 
- 	/* Set this just to make core cbo code happy */
- 	riscv_cbom_block_size = 1;
- 	riscv_noncoherent_supported();
--
--	return true;
- }
- 
- void __init_or_module andes_errata_patch_func(struct alt_entry *begin, struct alt_entry *end,
- 					      unsigned long archid, unsigned long impid,
- 					      unsigned int stage)
- {
--	errata_probe_iocp(stage, archid, impid);
-+	if (stage == RISCV_ALTERNATIVES_BOOT)
-+		errata_probe_iocp(stage, archid, impid);
- 
- 	/* we have nothing to patch here ATM so just return back */
- }
--- 
-2.34.1
-
+>
+> Regards,
+> Luben
+>
+> > Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+> > Cc: Phillip Susi <phill@thesusis.net>
+> > Cc: Luben Tuikov <ltuikov89@gmail.com>
+> > ---
+> >  drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/d=
+rm/amd/amdgpu/amdgpu_device.c
+> > index b5edf40b5d03..78553e027db4 100644
+> > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+> > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+> > @@ -4531,8 +4531,6 @@ int amdgpu_device_suspend(struct drm_device *dev,=
+ bool fbcon)
+> >
+> >       amdgpu_ras_suspend(adev);
+> >
+> > -     amdgpu_ttm_set_buffer_funcs_status(adev, false);
+> > -
+> >       amdgpu_device_ip_suspend_phase1(adev);
+> >
+> >       if (!adev->in_s0ix)
+> > @@ -4542,6 +4540,8 @@ int amdgpu_device_suspend(struct drm_device *dev,=
+ bool fbcon)
+> >       if (r)
+> >               return r;
+> >
+> > +     amdgpu_ttm_set_buffer_funcs_status(adev, false);
+> > +
+> >       amdgpu_fence_driver_hw_fini(adev);
+> >
+> >       amdgpu_device_ip_suspend_phase2(adev);
+>
+> >
+> > Alex
+> >
+> >>
+> >> Alex
+> >>
+> >> On Wed, Nov 29, 2023 at 1:52=E2=80=AFPM Alex Deucher <alexdeucher@gmai=
+l.com> wrote:
+> >>>
+> >>> On Wed, Nov 29, 2023 at 11:41=E2=80=AFAM Luben Tuikov <ltuikov89@gmai=
+l.com> wrote:
+> >>>>
+> >>>> On 2023-11-29 10:22, Alex Deucher wrote:
+> >>>>> On Wed, Nov 29, 2023 at 8:50=E2=80=AFAM Alex Deucher <alexdeucher@g=
+mail.com> wrote:
+> >>>>>>
+> >>>>>> On Tue, Nov 28, 2023 at 11:45=E2=80=AFPM Luben Tuikov <ltuikov89@g=
+mail.com> wrote:
+> >>>>>>>
+> >>>>>>> On 2023-11-28 17:13, Alex Deucher wrote:
+> >>>>>>>> On Mon, Nov 27, 2023 at 6:24=E2=80=AFPM Phillip Susi <phill@thes=
+usis.net> wrote:
+> >>>>>>>>>
+> >>>>>>>>> Alex Deucher <alexdeucher@gmail.com> writes:
+> >>>>>>>>>
+> >>>>>>>>>>> In that case those are the already known problems with the sc=
+heduler
+> >>>>>>>>>>> changes, aren't they?
+> >>>>>>>>>>
+> >>>>>>>>>> Yes.  Those changes went into 6.7 though, not 6.6 AFAIK.  Mayb=
+e I'm
+> >>>>>>>>>> misunderstanding what the original report was actually testing=
+.  If it
+> >>>>>>>>>> was 6.7, then try reverting:
+> >>>>>>>>>> 56e449603f0ac580700621a356d35d5716a62ce5
+> >>>>>>>>>> b70438004a14f4d0f9890b3297cd66248728546c
+> >>>>>>>>>
+> >>>>>>>>> At some point it was suggested that I file a gitlab issue, but =
+I took
+> >>>>>>>>> this to mean it was already known and being worked on.  -rc3 ca=
+me out
+> >>>>>>>>> today and still has the problem.  Is there a known issue I coul=
+d track?
+> >>>>>>>>>
+> >>>>>>>>
+> >>>>>>>> At this point, unless there are any objections, I think we shoul=
+d just
+> >>>>>>>> revert the two patches
+> >>>>>>> Uhm, no.
+> >>>>>>>
+> >>>>>>> Why "the two" patches?
+> >>>>>>>
+> >>>>>>> This email, part of this thread,
+> >>>>>>>
+> >>>>>>> https://lore.kernel.org/all/87r0kircdo.fsf@vps.thesusis.net/
+> >>>>>>>
+> >>>>>>> clearly states that reverting *only* this commit,
+> >>>>>>> 56e449603f0ac5 drm/sched: Convert the GPU scheduler to variable n=
+umber of run-queues
+> >>>>>>> *does not* mitigate the failed suspend. (Furthermore, this commit=
+ doesn't really change
+> >>>>>>> anything operational, other than using an allocated array, instea=
+d of a static one, in DRM,
+> >>>>>>> while the 2nd patch is solely contained within the amdgpu driver =
+code.)
+> >>>>>>>
+> >>>>>>> Leaving us with only this change,
+> >>>>>>> b70438004a14f4 drm/amdgpu: move buffer funcs setting up a level
+> >>>>>>> to be at fault, as the kernel log attached in the linked email ab=
+ove shows.
+> >>>>>>>
+> >>>>>>> The conclusion is that only b70438004a14f4 needs reverting.
+> >>>>>>
+> >>>>>> b70438004a14f4 was a fix for 56e449603f0ac5.  Without b70438004a14=
+f4,
+> >>>>>> 56e449603f0ac5 breaks amdgpu.
+> >>>>>
+> >>>>> We can try and re-enable it in the next kernel.  I'm just not sure
+> >>>>> we'll be able to fix this in time for 6.7 with the holidays and all
+> >>>>> and I don't want to cause a lot of scheduler churn at the end of th=
+e
+> >>>>> 6.7 cycle if we hold off and try and fix it.  Reverting seems like =
+the
+> >>>>> best short term solution.
+> >>>>
+> >>>> A lot of subsequent code has come in since commit 56e449603f0ac5, as=
+ it opened
+> >>>> the opportunity for a 1-to-1 relationship between an entity and a sc=
+heduler.
+> >>>> (Should've always been the case, from the outset. Not sure why it wa=
+s coded as
+> >>>> a fixed-size array.)
+> >>>>
+> >>>> Given that commit 56e449603f0ac5 has nothing to do with amdgpu, and =
+the problem
+> >>>> is wholly contained in amdgpu, and no other driver has this problem,=
+ there is
+> >>>> no reason to have to "churn", i.e. go back and forth in DRM, only to=
+ cover up
+> >>>> an init bug in amdgpu. See the response I just sent in @this thread:
+> >>>> https://lore.kernel.org/r/05007cb0-871e-4dc7-af58-1351f4ba43e2@gmail=
+.com
+> >>>>
+> >>>> And it's not like this issue is unknown. I first posted about it on =
+2023-10-16.
+> >>>>
+> >>>> Ideally, amdgpu would just fix their init code.
+> >>>
+> >>> You can't make changes to core code that break other drivers.
+> >>> Arguably 56e449603f0ac5 should not have gone in in the first place if
+> >>> it broke amdgpu.  b70438004a14f4 was the code to fix amdgpu's init
+> >>> code, but as a side effect it seems to have broken suspend for some
+> >>> users.
+> >>>
+> >>> Alex
