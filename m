@@ -2,168 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7FEB7FEABA
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 09:33:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF3DF7FEACE
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 09:35:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344884AbjK3Idf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 03:33:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34558 "EHLO
+        id S1344896AbjK3Ieu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 03:34:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231750AbjK3Ide (ORCPT
+        with ESMTP id S234988AbjK3Ies (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 03:33:34 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDC7D9A
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 00:33:40 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63B39C433C8;
-        Thu, 30 Nov 2023 08:33:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701333220;
-        bh=tRGvouhLQr1KpWUDyBmlCJiZ9WRoYoSqiQEHNkqWpbM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Gv5ZR8S2wi4mCPXgnySrTlzpfn8Ix+u0SnoSorF+TU+YWGFoKQITboqfE2qa4B13k
-         AQmoENYxBt1UZoxBdkhKodzZHHNf3IojFoFob0jYKZV5mEm++fpV7iX0CB/FUt+hR+
-         MwLAS+X41xv4WfWmruPOAhpu4yGZUXGzblbi2K2aNKw/GwwptHCOKlD2XF3fySsEQO
-         BrkutL9jYwzpDJUlI2jXJaIQoa6xeg93HWgG3oo2rEHdSvzLhVH8JCTBs7gExvSYen
-         K3Ue0JhAm73hoJuk6mDKs/FosOv1xbB95a+LvzPnHYWus6oBhUR6HIRDa/U2oTD9kL
-         yso7IkSVapc6A==
-Received: from johan by xi.lan with local (Exim 4.96.2)
-        (envelope-from <johan@kernel.org>)
-        id 1r8cUt-0006Z9-2R;
-        Thu, 30 Nov 2023 09:34:12 +0100
-Date:   Thu, 30 Nov 2023 09:34:11 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, quic_wcheng@quicinc.com,
-        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        quic_ppratap@quicinc.com, quic_jackp@quicinc.com
-Subject: Re: [PATCH 1/6] dt-bindings: usb: dwc3: Clean up hs_phy_irq in
- bindings
-Message-ID: <ZWhJA6m7IQk00rk-@hovoldconsulting.com>
-References: <1192d91f-11bf-44af-953a-14e08e2b6ca8@quicinc.com>
- <ZWCpGdJRexnk98IN@hovoldconsulting.com>
- <004ddc69-1566-4de4-b260-0fca96a9395f@quicinc.com>
- <ZWW_FOAKp95Cf9vN@hovoldconsulting.com>
- <18965bb9-7afa-4892-8b71-981ba29d2cd4@quicinc.com>
- <ZWXHrvUDnF2dMk6r@hovoldconsulting.com>
- <6d7527bf-8c1a-49b5-a0cf-99a92098c971@quicinc.com>
- <c8a28c72-5c0a-4a67-a4c9-e46a5716cda4@linaro.org>
- <ZWcPZPX-eT-xHAOv@hovoldconsulting.com>
- <85527699-f549-4728-b263-7d10c669b889@linaro.org>
+        Thu, 30 Nov 2023 03:34:48 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93DA010E4
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 00:34:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701333293; x=1732869293;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=0SboqQn8ZcUo9uKZvfvCfyG81ezCN6T/zrFvF7NSEBw=;
+  b=O3xe3Oxj3U1zJx1dJ61Y4PzuEHzvWSYYXjXzrVhU90qLawvwTvag/97D
+   urAJ7f+qBVKqesdHTVAeIlctnKFOSpN0o/aXwcSvFfxZFPoJnmDghoC0C
+   gHMKmPuBjeZRCI8DIWvJDrjX4hiOac86MAIwLgx6SeOCpI7cF99mmhH6Q
+   6QoHKifPF6KvlYYbUsh1PxnjWHSZgcAfO3aPQox5yqEir6v+hUgExDNcM
+   PArgKh2fNlz5rJE5ztiBK9nU9bGaGiVCj3PcTt8KgX0lKcMG//rMIFZ1/
+   4Td4F/KnPgRb0Zr3Z35L/pbQqo4BBcHRtyM/9V2ENCvLPONAGp/Ja5WQz
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="6562132"
+X-IronPort-AV: E=Sophos;i="6.04,237,1695711600"; 
+   d="scan'208";a="6562132"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 00:34:53 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="803601465"
+X-IronPort-AV: E=Sophos;i="6.04,237,1695711600"; 
+   d="scan'208";a="803601465"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga001.jf.intel.com with ESMTP; 30 Nov 2023 00:34:52 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r8cVW-0001a8-0V;
+        Thu, 30 Nov 2023 08:34:50 +0000
+Date:   Thu, 30 Nov 2023 16:34:17 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Beniamin Sandu <beniaminsandu@gmail.com>, dinguyen@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Beniamin Sandu <beniaminsandu@gmail.com>
+Subject: Re: [PATCH] firmware: stratix10-rsu: correctly report unsupported
+ DCMF commands
+Message-ID: <202311301536.gQXR41jR-lkp@intel.com>
+References: <20231129190336.247674-1-beniaminsandu@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <85527699-f549-4728-b263-7d10c669b889@linaro.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231129190336.247674-1-beniaminsandu@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 30, 2023 at 09:16:41AM +0100, Krzysztof Kozlowski wrote:
-> On 29/11/2023 11:16, Johan Hovold wrote:
-> > On Wed, Nov 29, 2023 at 10:28:25AM +0100, Krzysztof Kozlowski wrote:
-> >> On 28/11/2023 12:32, Krishna Kurapati PSSNV wrote:
-> >>>
-> >>>>
-> >>>> So back to my initial proposal, with a slight modification moving
-> >>>> pwr_event first (e.g. as it is not a wakeup interrupt):
-> >>>>
-> >>>> qusb2-:
-> >>>>
-> >>>> 	- const: pwr_event
-> >>>> 	- const: qusb2_phy
-> >>>> 	- const: ss_phy_irq	(optional)
-> >>>>
-> >>>> qusb2:
-> >>>>
-> >>>> 	- const: pwr_event
-> >>>> 	- const: hs_phy_irq
-> >>>> 	- const: qusb2_phy
-> >>>> 	- const: ss_phy_irq	(optional)
-> >>>>
-> >>>> femto-:
-> >>>> 	- const: pwr_event
-> >>>> 	- const: dp_hs_phy_irq
-> >>>> 	- const: dm_hs_phy_irq
-> >>>> 	- const: ss_phy_irq	(optional)
-> >>>>
-> >>>> femto:
-> >>>> 	- const: pwr_event
-> >>>> 	- const: hs_phy_irq
-> >>>> 	- const: dp_hs_phy_irq
-> >>>> 	- const: dm_hs_phy_irq
-> >>>> 	- const: ss_phy_irq	(optional)
-> >>
-> >> I did not follow entire thread and I do not know whether you change the
-> >> order in existing bindings, but just in case: the entries in existing
-> >> bindings cannot change the order. That's a strict ABI requirement
-> >> recently also discussed with Bjorn, because we want to have stable DTB
-> >> for laptop platforms. If my comment is not relevant, then please ignore.
-> > 
-> > Your comment is relevant, but I'm not sure I agree.
-> > 
-> > The Qualcomm bindings are a complete mess of DT snippets copied from
-> > vendor trees and which have not been sanitised properly before being
-> > merged upstream (partly due to there not being any public documentation
-> > available).
-> 
-> True.
-> 
-> > This amounts to an unmaintainable mess which is reflected in the
-> > binding schemas which similarly needs to encode every random order which
-> > the SoC happened to use when being upstreamed. That makes the binding
-> > documentation unreadable too, and the next time a new SoC is upstreamed
-> > there is no clear hints of what the binding should look like, and we end
-> > up with yet another permutation.
-> 
-> While in general I agree for the bindings, but here, for order of the
-> interrupts, I am not really sure if this contributes to unreadable or
-> unmaintainable binding.
+Hi Beniamin,
 
-The more if-then clauses you have, the harder it gets for a human to
-make sense of the binding documents.
+kernel test robot noticed the following build errors:
 
-By cleaning up the current clauses in four groups which reflect actual
-classes of hardware and not just arbitrary reordering and omission, it
-will make it much easier next time a new SoC is added. Most likely it
-belongs in the latest category, and a reviewer can more easily spot new
-mistakes if someone tries to add yet another permutation.
+[auto build test ERROR on linus/master]
+[also build test ERROR on v6.7-rc3 next-20231130]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-> > As part of this exercise, we've also determined that some of the
-> > devicetrees that are already upstream are incorrect as well as
-> > incomplete.
-> 
-> Sure, good explanation for an ABI break.
-> 
-> > I really see no alternative to ripping of the plaster and cleaning this
-> > up once and for all even if it "breaks" some imaginary OS which (unlike
-> > Linux) relies on the current random order of these interrupts.
-> > 
-> > [ If there were any real OSes actually relying on the order, then that
-> > would be a different thing of course. ]
-> 
-> The commit breaking the ABI can justify the reasons, including expected
-> impact (e.g. none for Linux).
-> 
-> While the second part probably you can justify (interrupts are taken by
-> name), the reason for ABI break like "I think it is poor code, so I will
-> ignore ABI" is not enough.
+url:    https://github.com/intel-lab-lkp/linux/commits/Beniamin-Sandu/firmware-stratix10-rsu-correctly-report-unsupported-DCMF-commands/20231130-055016
+base:   linus/master
+patch link:    https://lore.kernel.org/r/20231129190336.247674-1-beniaminsandu%40gmail.com
+patch subject: [PATCH] firmware: stratix10-rsu: correctly report unsupported DCMF commands
+config: arm64-defconfig (https://download.01.org/0day-ci/archive/20231130/202311301536.gQXR41jR-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231130/202311301536.gQXR41jR-lkp@intel.com/reproduce)
 
-So it's not so much about the code as the messy binding schema this
-results in and that that makes it harder to spot mistakes next time an
-SoC is upstreamed.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311301536.gQXR41jR-lkp@intel.com/
 
-Johan
+All errors (new ones prefixed by >>):
+
+   drivers/firmware/stratix10-rsu.c: In function 'rsu_dcmf_version_callback':
+>> drivers/firmware/stratix10-rsu.c:240:9: error: expected ';' before 'else'
+     240 |         else
+         |         ^~~~
+   drivers/firmware/stratix10-rsu.c: In function 'rsu_dcmf_status_callback':
+   drivers/firmware/stratix10-rsu.c:271:9: error: expected ';' before 'else'
+     271 |         else
+         |         ^~~~
+
+
+vim +240 drivers/firmware/stratix10-rsu.c
+
+   217	
+   218	/**
+   219	 * rsu_dcmf_version_callback() - Callback from Intel service layer for getting
+   220	 * the DCMF version
+   221	 * @client: pointer to client
+   222	 * @data: pointer to callback data structure
+   223	 *
+   224	 * Callback from Intel service layer for DCMF version number
+   225	 */
+   226	static void rsu_dcmf_version_callback(struct stratix10_svc_client *client,
+   227					      struct stratix10_svc_cb_data *data)
+   228	{
+   229		struct stratix10_rsu_priv *priv = client->priv;
+   230		unsigned long long *value1 = (unsigned long long *)data->kaddr1;
+   231		unsigned long long *value2 = (unsigned long long *)data->kaddr2;
+   232	
+   233		if (data->status == BIT(SVC_STATUS_OK)) {
+   234			priv->dcmf_version.dcmf0 = FIELD_GET(RSU_DCMF0_MASK, *value1);
+   235			priv->dcmf_version.dcmf1 = FIELD_GET(RSU_DCMF1_MASK, *value1);
+   236			priv->dcmf_version.dcmf2 = FIELD_GET(RSU_DCMF2_MASK, *value2);
+   237			priv->dcmf_version.dcmf3 = FIELD_GET(RSU_DCMF3_MASK, *value2);
+   238		} else if (data->status == BIT(SVC_STATUS_NO_SUPPORT))
+   239			dev_warn(client->dev, "Secure FW doesn't support DCMF version.")
+ > 240		else
+   241			dev_err(client->dev, "failed to get DCMF version\n");
+   242	
+   243		complete(&priv->completion);
+   244	}
+   245	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
