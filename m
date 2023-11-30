@@ -2,173 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E150A7FFC84
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 21:31:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DF2A7FFC86
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 21:31:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232468AbjK3UbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 15:31:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34954 "EHLO
+        id S232456AbjK3Ubf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 15:31:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232427AbjK3UbF (ORCPT
+        with ESMTP id S235171AbjK3UbY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 15:31:05 -0500
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2072.outbound.protection.outlook.com [40.107.223.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6003A19B1;
-        Thu, 30 Nov 2023 12:31:09 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mmNKDZCsEcQBeS3524ga/ujrKA8Xx2uYw/aTzsHrBocmzyTec00c/go0VNaxvbiDeFPzjMTzf3pwjQu4J2Y62KwDQi+lNiSWNidwK5wDeExynToqqYokdCVwlOsao9qSJEh5R4KZh7IXmkZJbwV+I174Zxv2NQWOQYcgw+ILaRtwoocf2fnZtqu/CVzIV7+WEsJpDrxDD113zwun0L8wqUdGfmA2a4ITTH07gz4ncZbLe7LTiEgJf0rM53AofLqbSB31NcMmaO+qYOo9YuZk4WelFfbLBk51BjXUxUjXX+kONAWwiTGtLnN9AuvvahslBumAP+4d6H7M3Qeh6r4cJg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ITSOlfXBUuXR+GLnLv8rwy4XV7dMyDT/OtN/ZBtYGG8=;
- b=G/sMcywjeitxwa96LF8RYOV9LUx518WWugjW3peCCzKpWZ8BikxQlk/4L1Q1POMSRhlY2lHbUkp13ZRNBi9ZZQ3dmppRe8ToLdWcsMh9l6HeSKr03UI5Rd39L7SpM0sx07yv8+pb28yG7TWnrkhq+K+8E1DkVisA9ZRcxc9c9rxmoTndn1PWGZbbYjucy1KMJxrG1IqpAuHueFO9ZU4PKhqXIAvPq9E8F+NV4ZGAYi+LmQAyFrLViUaZRkroBkn5KSskIQlKwDnERm5Juyr3nM6TeQVLLFBmdeobDLx95XyYQfQxNXbM32mjpdUvBQtvAwIHNCEtQ49zH5p17T1esQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ITSOlfXBUuXR+GLnLv8rwy4XV7dMyDT/OtN/ZBtYGG8=;
- b=EqGrsYhUIYAd0bqmj6YFJSfse7xZfnqKVTg7BKxeyxeHWkDyma46SXEmfnUYE6wK5ahN4eceV7S0CVjMvZvXhVUa31j2dSb3yRbn490Wp0aSpfbY0tpXaycPnHvqohvXvg9tgR01WtcRcYq4H5Vvlo2vZqY/GQAmSm0BKbyECQU=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from CH3PR12MB8403.namprd12.prod.outlook.com (2603:10b6:610:133::14)
- by CY8PR12MB7218.namprd12.prod.outlook.com (2603:10b6:930:5a::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.24; Thu, 30 Nov
- 2023 20:31:05 +0000
-Received: from CH3PR12MB8403.namprd12.prod.outlook.com
- ([fe80::e2:9f06:b82e:9a0f]) by CH3PR12MB8403.namprd12.prod.outlook.com
- ([fe80::e2:9f06:b82e:9a0f%3]) with mapi id 15.20.7046.024; Thu, 30 Nov 2023
- 20:31:05 +0000
-Message-ID: <b58c799c-8d3f-4fd8-9ddb-ebb06ef005d5@amd.com>
-Date:   Thu, 30 Nov 2023 14:31:02 -0600
-User-Agent: Mozilla Thunderbird
-Subject: [RESEND v2] ACPI: APEI: Skip initialization of GHES_ASSIST structures
- for Machine Check Architecture
-Content-Language: en-US
-To:     "Luck, Tony" <tony.luck@intel.com>
-Cc:     "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "lenb@kernel.org" <lenb@kernel.org>,
-        "james.morse@arm.com" <james.morse@arm.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "yazen.ghannam@amd.com" <yazen.ghannam@amd.com>,
-        Avadhut Naik <avadhut.naik@amd.com>
-References: <20231106201340.434878-1-avadhut.naik@amd.com>
- <c09243d9-b725-49b0-a6ac-163d015ff441@amd.com>
- <ZWeId332wmrdLycH@agluck-desk3>
- <fbfe27c0-1635-434f-a1ab-71a10c9d6f38@amd.com>
- <SJ1PR11MB60839D04A329087D11933B6CFC82A@SJ1PR11MB6083.namprd11.prod.outlook.com>
-From:   Avadhut Naik <avadnaik@amd.com>
-In-Reply-To: <SJ1PR11MB60839D04A329087D11933B6CFC82A@SJ1PR11MB6083.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SA1P222CA0164.NAMP222.PROD.OUTLOOK.COM
- (2603:10b6:806:3c3::29) To CH3PR12MB8403.namprd12.prod.outlook.com
- (2603:10b6:610:133::14)
+        Thu, 30 Nov 2023 15:31:24 -0500
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CC43170D;
+        Thu, 30 Nov 2023 12:31:30 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1cfd78f8a12so13332255ad.2;
+        Thu, 30 Nov 2023 12:31:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701376290; x=1701981090; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=lT0qrYRiDsoV72KTkVoQoxtzRhRHGxESaqbx7R1F6QI=;
+        b=LdM7Q6hAcp15xEH1rfR+GbqvsNlXhLE+gIJ/oINoOTRXgGiOBE5f64jDTilhoOvlHI
+         FTY3+uW6NZcsiLtRMUERioA+k/KSayE1n12BC92GRvvYaDcljhq8NCNX/QPWeQRphaIX
+         bkWjGAdj4+qYVqe2qwE5SRntQYOzh7ZdtIRUK71PuxSfB2e0Y0rPEqkCBjGJTd69MyGP
+         DcBurbkVIGea2iQApqp3mt4exPbVF0IAF46Rrr96CPzCjNaWmrRBzgrVGZoAvF5u55mR
+         JZ4YmclYH0iiqDZ0o+oVHQN9SaOUmYZs8z4ajJcLfMGONiTDdBZI7FtsXnMo0aFU/8p/
+         QTXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701376290; x=1701981090;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lT0qrYRiDsoV72KTkVoQoxtzRhRHGxESaqbx7R1F6QI=;
+        b=n96OvYiA9GXX38g0X6zIfxo7BLuwxoBSzVgkRLevG8d2gIIP//H7qvzZv6Yp7h67WV
+         eiSEuiecvEx6+dAj2ITYz4ybBimeqkV6qJt3kwINpTfaYRvLpciX8e3TbFCrxVY1x1cV
+         7jL2fJ63EH08LQr2AnwJMi5hM9xwPgqqfkfz1EJnY4/f2W3Rljr6nt5Tod+oPodWUvJ+
+         ngFeCCIONxC9ZL23b6EaR+/Z/ypIqg03/yEOdmqEYUzfOjYgVyuAR85A9FLAvsbiEtHc
+         2H3PPaNvzBs4Hkt6Gg4zZH6JqF9Bu1y12e5atRdgW3Zrthe1/FvTkB8+fAeQrWmo+KTl
+         f9Tw==
+X-Gm-Message-State: AOJu0Yzn9QuZzZBuBA9MUeRnyaj/mqQTx+3L2T6BU+p5yDu6RvTlhb2y
+        fpI4gRCjUeY+03WnmDsbWYon0OEYJRI=
+X-Google-Smtp-Source: AGHT+IH+fM8rY+srhKUulbpuwzzszQvrLQtPs1KYVPFZ6Cif94ZGQ+xD00dT7a2F8WpaOPp5r2tCfA==
+X-Received: by 2002:a17:902:d303:b0:1cc:5691:5113 with SMTP id b3-20020a170902d30300b001cc56915113mr24799769plc.26.1701376289637;
+        Thu, 30 Nov 2023 12:31:29 -0800 (PST)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id d13-20020a170903230d00b001cf68d103easm1824937plh.46.2023.11.30.12.31.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Nov 2023 12:31:28 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <43effb57-abbd-46bb-ac7d-cab9616a4532@roeck-us.net>
+Date:   Thu, 30 Nov 2023 12:31:26 -0800
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PR12MB8403:EE_|CY8PR12MB7218:EE_
-X-MS-Office365-Filtering-Correlation-Id: b5dc89f4-b38b-4a0c-ecf0-08dbf1e346e1
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: mleUalBCdUiDIel7be/SJxDqjQ/NJz7FVOIbMGF6KVThOUMXwl5w7dE//FGyuApJGWzIPV68Tiq7Lpr/dtjJiR6g6Ug5Yt4ooDZYfakPgdn/8dui/pT6zMrqRqrieX+2YShoEYQ0rizDv4wL0FGWv5om2/BhiMcznAJZqXavDKZzY9lJMr7GXpx0F5OPNxruj9a0WPhKTWWc1xxU4VekBZtSU1Nols9skanwmkqKroN5tP5c85tRnP6FGehr6JuhfXcd1jHynaUYQrLGnBIUaqd0GQRsxMXu1BTUwS03AFQiehueToa/3mb2BS6Q7WxvGtoP+ja0mwU1/1uSYsAge2KILRQG0HMuuFYmdrSTlhQ2wv+FKZv+QFS/hrPQy1kcRcwI2vRIl864M63WzCkhvXYNRvtOgzI3TsqCGHQB+b82Iyxtgo7IyZ2rVAQfwvfRWfjTgCK48gtnFt7tDWWGUg4V4aH7ShVpkghTT2/zBC7QOmuru2c/tJE2iiXoBYal+hMQaZJoHN4ocxPZywFoTQcsFy+Q3aqJthEVW4FXweGEargBENnrKn1DXTCjGieViIT+zBv771wZpxSVFFSzmCx2sl+VIzmER8assIh8fLkvg5vd55Ih1ElIAYOiy6s64e6YrEsQPqHVpAjTfGnuJA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB8403.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(366004)(396003)(136003)(346002)(376002)(230922051799003)(1800799012)(186009)(64100799003)(451199024)(6506007)(26005)(53546011)(6666004)(2616005)(6512007)(83380400001)(5660300002)(4326008)(8936002)(41300700001)(2906002)(8676002)(6486002)(66556008)(478600001)(316002)(66476007)(54906003)(6916009)(66946007)(31696002)(36756003)(38100700002)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OU1IeUJUeHRYUWdzdjhCWGlXYTFJZEdDWlFnQWFBNGxjMTVkZXBaNUptRERw?=
- =?utf-8?B?QUtUOTRTNkVtV3BIUEZYTXM3NTlkN0xZYkpHTmhMcVEwd0orbXR4TEFJN1h3?=
- =?utf-8?B?NE5wQVpNY1JMMTFmVWJReUwzOFVLZGxKK2xEcVdwVitmWkRUNjh4U2hYampy?=
- =?utf-8?B?b2wxQlF4clI4RlJvV3dGM1NJcGN5TDBhUzFBM3RrK21LZ2Y5cmtsd3JEcTJF?=
- =?utf-8?B?c29FNlIzaHRCMjlSVU4waXk1ZWc5eHNZYlJscDhocUVmblc2U1pDaVpCRTBI?=
- =?utf-8?B?MHBsNjNlQkNpTWx3VXRuTVFrbWVIWlZEdGFRcHFDR1Z2Z3ZHQ2hKYS9UYnR4?=
- =?utf-8?B?ektWTUozbHlDTVhzeUNWTitFamt1L2hWQnRzeVFSR2ZPc1dHOS8vSk9HWlov?=
- =?utf-8?B?N25Vb3RrcDdnWTFveGdEUmhmdHZHR3N3YjVRYytVVVVCWjZob0NoZkNaVC93?=
- =?utf-8?B?dVVNc2VjZGx0L2hnZWdPZFNoangzRlRuSGJwaHRFRkYzNENjSTIzTW1jd1V2?=
- =?utf-8?B?ekZOTWJ0L1hwTDhIZDZWTUpFclhEWHFaeEJyWG5yMUFiMmZ3d09tc09sUVJp?=
- =?utf-8?B?SGRqb3FSY0ppMDBUYlFkNFVuVEZmZTYzdnhpL0FsaWo4cFExdFpTZHhwZ2FU?=
- =?utf-8?B?NnhNTFJqWC8rSFZUblRJYlJXa285TkFxUmx1SXBkbDhLUHlyaEpZclF3bVd2?=
- =?utf-8?B?empJOGV1RFozbyt5emVENGlJcTB2ZlFwZ21LU05TUUtMZkJXMW42Smw2cGto?=
- =?utf-8?B?anpjTjhhOEtWaGI2VkhMbVNTRlNoYko2QU5BR0ZnUFVJWDJXMlZLRmFUU1Fz?=
- =?utf-8?B?QjJUUnNUa2FvdmJUdjZ5SXhram9UdEVMQk5pTkpJY2pnajFiYlZHVXRoVFF0?=
- =?utf-8?B?NlhBWFVLeFU3bVVFU0ZiVjB2VnNqaXczV2Y3bFZPQy9WTXQ5Ly9PTmptQlN3?=
- =?utf-8?B?ODZKc3k5aUptK29CSFBRSzQvYi9yWEV2RGVyOTRNaDRUWHFFeGhmbzJPV0Vp?=
- =?utf-8?B?ZkNLTkpHSXJsaVV2YXo2bk13QmdLeVNFU1pTL1ZlTmhvdzR3WC8rdCtwMDc3?=
- =?utf-8?B?UVhnSmVFaFM0aG16Nks4eGpNdkdNVFlNSjc4czNqdHowK2JtOG8yYWRZZjUx?=
- =?utf-8?B?RVc2WEF0N1JOWmRNVmd5b1hmV3RDSWJqRU12Z0ZSRzJRQ2FRUjM2VUNPc0Rq?=
- =?utf-8?B?VUE2UmhvTTJKNnJ0b1RjQVNMQy9HTllLZWpSOTQ1Wk5tQnR6aFhkRExZbmxE?=
- =?utf-8?B?YkN0anBLSlA5M3hDRzVrQ0c3cjNrNHd1d0YxTm9BeEd2L1N4cnFERHh3SERz?=
- =?utf-8?B?WTJGd1QxeXk3R1NNb1FDc2F6ekpNK2Y3WEtqME5GRnFhb0p6VFZYazE4YWlh?=
- =?utf-8?B?R0U5S0xpeFVMa0VwQVo1YkdjUjV1djQ1M0tpYzFBNkN5ci8vTVBrT2M3OVdh?=
- =?utf-8?B?TEJqSDZObCtiYy9qUkpHWlJnZ3FqOVN2b1d0U3FmS2d4UWNUbEFXS0dyV2xN?=
- =?utf-8?B?Rm5TMkxBSFNsdldYMmhFemZGeEp3dXdIQ0pZZnBsZ3FRa1FCU1R4OVBMWURP?=
- =?utf-8?B?RmtBWXExSEcreU9adkI5Q2E1THJLbHJUTkNTSXc2U1MwdUdCbDNHaXJnaFhq?=
- =?utf-8?B?T0dmWEY4QXRpQldtS096VGQ0N2hPM0RaUFBGbTRMVVB4YVlLSEs0T0M4NDRM?=
- =?utf-8?B?NmQ1YUhPOUh1bDNTTE10dVNwT1BvSkRwSUtNNTl1cTFOUjA3cXFqNkthOVZP?=
- =?utf-8?B?Z0EzMmtRdUNSVjYzdW9sS1Riai9iVlRld245RTFyQ0JTNi9qNG9CSWw5YXNx?=
- =?utf-8?B?L3p3ZnpJbVJrZkRQNnZjZmdLZ2dyMW9UWUhyS0VNakhJOVB4L0JITVY1ZTQz?=
- =?utf-8?B?dm9rSXdmWVJlQUszZllQUWphc0Q2dms2d2NQR21XbGZLR0NtVTJmMzB6K2Zx?=
- =?utf-8?B?RnY2bHhMYzYvYXJKTjJHNmpSUDhSQTFLOS9uajNFZmVkM2VFd29hTis5VEhF?=
- =?utf-8?B?Umk4WithZFptbGtvaHFtK0NkN3h2KzkvM3Y1UUdaZEtXRDlkK3d3ZGxuT0Nj?=
- =?utf-8?B?azcybFE3UXBkTE05azVhbXp2SjdBTU5kemNZNFQ5WXQweWFZMzI2V05MaGFx?=
- =?utf-8?Q?26Z+jwRjBYWhg1uTyZTrh/ELW?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b5dc89f4-b38b-4a0c-ecf0-08dbf1e346e1
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB8403.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Nov 2023 20:31:05.4508
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: eT9QfhCaobOD8oaSVnCew5sKZ1nzVUSBD/OiWCYqHfNF2h9Oo6hkybk6RDQOcJ4n/UpbIZThjp9P7qu4B26+oA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB7218
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] hwmon: (pc87360) Bounds check data->innr usage
+Content-Language: en-US
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Kees Cook <keescook@chromium.org>,
+        Jim Cromie <jim.cromie@gmail.com>
+Cc:     Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20231130200207.work.679-kees@kernel.org>
+ <cdc00899-cf44-44dd-b708-6cf7dc4b8375@embeddedor.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <cdc00899-cf44-44dd-b708-6cf7dc4b8375@embeddedor.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 11/30/2023 14:03, Luck, Tony wrote:
->> Actually, caching of values from an earlier structure to be compared against values
->> in a later structure is what we intend to do here i.e. comparing cached source_id
->> from an earlier structure with related_source_id in a later structure. To hint
->> towards the same, I had added the below comment on top of the static structure's
->> declaration:
+On 11/30/23 12:11, Gustavo A. R. Silva wrote:
+> 
+> 
+> On 11/30/23 14:02, Kees Cook wrote:
+>> Without visibility into the initializers for data->innr, GCC suspects
+>> using it as an index could walk off the end of the various 14-element
+>> arrays in data. Perform an explicit clamp to the array size. Silences
+>> the following warning with GCC 12+:
 >>
->>>>> + * Since GHES_ASSIST is not supported, skip initialization
->>>>> + * of GHES_ASSIST structures for MCA.
->>>>> + * During HEST parsing, detected MCA error sources are cached.
->>>>> + * Flags and Source Id fields from these cached values are
->>>>> + * then referred to determine if the encountered GHES_ASSIST
->>>>> + * structure should be initialized.
->>>>> + */
+>> ../drivers/hwmon/pc87360.c: In function 'pc87360_update_device':
+>> ../drivers/hwmon/pc87360.c:341:49: warning: writing 1 byte into a region of size 0 [-Wstringop-overflow=]
+>>    341 |                                 data->in_max[i] = pc87360_read_value(data,
+>>        |                                 ~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
+>>    342 |                                                   LD_IN, i,
+>>        |                                                   ~~~~~~~~~
+>>    343 |                                                   PC87365_REG_IN_MAX);
+>>        |                                                   ~~~~~~~~~~~~~~~~~~~
+>> ../drivers/hwmon/pc87360.c:209:12: note: at offset 255 into destination object 'in_max' of size 14
+>>    209 |         u8 in_max[14];          /* Register value */
+>>        |            ^~~~~~
 >>
->> Is this not good enough? Should I make it more explicit?
+>> Cc: Jim Cromie <jim.cromie@gmail.com>
+>> Cc: Jean Delvare <jdelvare@suse.com>
+>> Cc: Guenter Roeck <linux@roeck-us.net>
+>> Cc: linux-hwmon@vger.kernel.org
+>> Signed-off-by: Kees Cook <keescook@chromium.org>
 > 
-> I understand now, but missed that the caching and use are across
-> different entries in the HEST table.
+> Looks good to me.
 > 
-> Maybe something like this:
+> Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 > 
->  * Since GHES_ASSIST is not supported, skip initialization of GHES_ASSIST
->  * structures for MCA.  During HEST parsing, detected MCA error sources
->  * are cached from early table entries so that Flags and Source Id
->  * fields from these cached values are then referred to in later table
->  * entries to determine if the encountered GHES_ASSIST structure should
->  * be initialized.
-> 
-Sounds good! Thank you for this. Will update accordingly and resubmit.
 
-> -Tony
+Guess I'll apply it, even though it is quite pointless. But arguing against
+such changes seems like shouting into the wind, so whatever.
 
--- 
-Thanks,
-Avadhut Naik
+There are several other similar "unchecked" loops, including loops for
+fannr and tempnr. The driver would misbehave badly if any of those would
+ever be outside the valid range, both when accessing the hardware and
+writing into various arrays.
+
+Guenter
+
