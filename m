@@ -2,58 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7FD17FEA7D
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 09:27:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 739BD7FEA7E
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 09:27:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231794AbjK3I1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 03:27:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48362 "EHLO
+        id S231835AbjK3I1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 03:27:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231742AbjK3I1B (ORCPT
+        with ESMTP id S231852AbjK3I1b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 03:27:01 -0500
+        Thu, 30 Nov 2023 03:27:31 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DA7910C9
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 00:27:08 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 496A1C433C7;
-        Thu, 30 Nov 2023 08:27:04 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E8D610EF
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 00:27:38 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9E76C433C8;
+        Thu, 30 Nov 2023 08:27:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701332827;
-        bh=AVPr5QEXIbplSm1/AOQkNsZ7+EYuGbAVBfNp5Jit/NU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aqeemkyzYxzUb4DFNt2IWN1M7NTo6NHpsb6fmEMKF5RNEs0zSQcWF0XuIsKeh8rBN
-         uX2c9fmeIj8te8eqWuWR87eu1mui3sw39O8gOFlPJjRNSfEbJE3ySBHYB9CoYRgwtj
-         dDe8W3JSB/jjeceJ3IrgsKqG3zEwdcgM+7T1bGSr+5Jz5BZh9AvqS7p5P8PmK2dYIF
-         kOK8KVyqmFHSfHN8AmqlLEWbTCZQHBKNgVT/FMwbRut6xPw2cvS3M3chktTgBgGII+
-         nBte7sYXta9WJo/pI8UpDWysdPpiMiTXDN5wuVdbp/YAzJFH55HzFwYAq0bYThrUDW
-         GS9CbVx35kW+w==
-Date:   Thu, 30 Nov 2023 08:27:01 +0000
-From:   Conor Dooley <conor@kernel.org>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Conor Dooley <conor.dooley@microchip.com>,
-        Samuel Holland <samuel.holland@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, David Airlie <airlied@gmail.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Pan Xinhui <Xinhui.Pan@amd.com>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        llvm@lists.linux.dev, arnd@arndb.de
-Subject: Re: [PATCH 3/3] drm/amd/display: Support DRM_AMD_DC_FP on RISC-V
-Message-ID: <20231130-pellet-parted-4c3854bda573@spud>
-References: <20231122030621.3759313-1-samuel.holland@sifive.com>
- <20231122030621.3759313-4-samuel.holland@sifive.com>
- <20231123-headdress-mold-0dd7a74477f7@wendy>
- <20231130004224.GE2513828@dev-arch.thelio-3990X>
+        s=k20201202; t=1701332858;
+        bh=LdjNKOLHbMhRShAwFebAAZRIVcHBzVh9Y/dtmWC97qA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=T8Qm7sIY6gw2R8rh3tADIiIBNUsRxau6g0HY+bBy27PL1WMKFxbi/9i8Rcd4OgTm8
+         aU7zulW30HDJbeXOWbAiQeH2iSvXZBzYxzMhM5vn7IeJGz8lXaqU7cOJa6ELd32qbf
+         aYgKvCkuEA/NduZ42Rtd+1HQahVNtg0NvgJfFkA6IZMxOrYEqI91lGdGGKUmw5O4+d
+         TBbZM+LRf/DChu/dAn9hfATiiYRkTXEz9tcw6lVBHydfCgHtCQttrovv8ZfAH0h1kS
+         F3xK8SFlrHWmr0WHzMZTOo1R+U4NkAnOVAMWI9O5+rimzUNQVgzKLtopl2TtdwMLqe
+         Ac0hp0iRYE/5A==
+Date:   Thu, 30 Nov 2023 09:27:33 +0100
+From:   Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     Akira Yokosawa <akiyks@gmail.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] docs: Raise the minimum Sphinx requirement to 2.4.4
+Message-ID: <20231130092733.26f0b7c4@coco.lan>
+In-Reply-To: <c3accd5b-c8d9-4eb9-86a1-054e89893a8f@gmail.com>
+References: <87sf4qvkmc.fsf@meer.lwn.net>
+        <20231128023015.0e446a06@coco.lan>
+        <877cm2uegr.fsf@meer.lwn.net>
+        <20231128165645.2dbe416c@coco.lan>
+        <c3accd5b-c8d9-4eb9-86a1-054e89893a8f@gmail.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="skPAiwM3XKXsb30B"
-Content-Disposition: inline
-In-Reply-To: <20231130004224.GE2513828@dev-arch.thelio-3990X>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -64,46 +54,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Em Thu, 30 Nov 2023 16:33:56 +0900
+Akira Yokosawa <akiyks@gmail.com> escreveu:
 
---skPAiwM3XKXsb30B
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> Hi,
+> 
+> On 2023/11/29 0:56, Mauro Carvalho Chehab wrote:
+> [snip]
+> 
+> > While I didn't make any benchmarks, I remember people reported
+> > poor performance with newer versions, so, without thinking to
+> > much, 3.1 or 3.2 seems a good candidate for the recommended
+> > version.  
+> 
+> Well, I have different impressions on the performance of Sphinx >=3.1
+> and have done some quick benchmarks.
+> Here are results on a not-so-performant machine.
+> 
+> Benchmark of building htmldocs on Ubuntu 22.04 (after "make cleandocs"):
+> 
+> Sphinx   elapesed   maxresident (k)
+> ======== ========== ===============
+>  2.4.5     7m44.57     2806152      (parallel slot = 3)
+>  3.1.2    11m25.28     1036264      (parallel slot = 4)
+>  3.4.3    10m22.26     1067100      (ditto.)
+>  4.2.0    10m16.53     1151220
+>  4.3.2    10m06.07     1123432      (distro pkg of Ubuntu 22.04LTS)
+>  5.3.0    10m18.73     1145524
+>  7.2.6     9m53.80     1261736
+> 
+> python3: Python 3.10.12
+> 
+> Sidenotes:
+> 
+>   1: Sphinx 4.3.0 officially added Python 3.10 support.
+>      Sphinx 4.2.0 also works with Python 3.10.
+>      Sphinx <3.5.0 happen to work with Python 3.10.
+>   2: Sphinx 7.2.0 obsoleted Python 3.8.
+>   3: Sphinx 6.0.0 obsoleted Python 3.6 and 3.7.
+> 
+> 
+> And here is a table of distro Sphinx packages:
+> 
+>           As of 2023.11.30
+> 
+> ----------------------------------
+> Distro              Sphinx Python3
+> =================== ====== =======
+> Ubuntu 22.04 LTS    4.3.2  3.10.12
+> Debian 11           3.4.3  3.9.2
+> Debian 12           5.3.0  3.11.2
+> Fedora 39           6.2.1  3.12.0
+> RHEL 9              3.4.3  3.9.18
+> Mageia 9            6.1.3  3.10.11
+> openSUSE Leap 15.5  4.2.0  3.6.15  (provided as python3-Sphinx_4_2_0)
+> ----------------------------------
+> 
+> So, I think Sphinx 3.4.3 would be a reasonable choice for
+> recommending.
 
-On Wed, Nov 29, 2023 at 05:42:24PM -0700, Nathan Chancellor wrote:
-> On Thu, Nov 23, 2023 at 02:23:01PM +0000, Conor Dooley wrote:
-> > On Tue, Nov 21, 2023 at 07:05:15PM -0800, Samuel Holland wrote:
-> > > RISC-V uses kernel_fpu_begin()/kernel_fpu_end() like several other
-> > > architectures. Enabling hardware FP requires overriding the ISA string
-> > > for the relevant compilation units.
-> >=20
-> > Ah yes, bringing the joy of frame-larger-than warnings to RISC-V:
-> > ../drivers/gpu/drm/amd/amdgpu/../display/dc/dml/dcn32/display_mode_vba_=
-32.c:58:13: warning: stack frame size (2416) exceeds limit (2048) in 'DISPC=
-LKDPPCLKDCFCLKDeepSleepPrefetchParametersWatermarksAndPerformanceCalculatio=
-n' [-Wframe-larger-than]
->=20
-> :(
->=20
-> > Nathan, have you given up on these being sorted out?
->=20
-> Does your configuration have KASAN (I don't think RISC-V supports
-> KCSAN)? It is possible that dml/dcn32 needs something similar to commit
-> 6740ec97bcdb ("drm/amd/display: Increase frame warning limit with KASAN
-> or KCSAN in dml2")?
+Works for me.
 
-It's from allmodconfig, so yes, I think so.
-
-
---skPAiwM3XKXsb30B
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZWhHVQAKCRB4tDGHoIJi
-0ktTAP4zJtbMBMKEDeq0u/9g0c5SQ8z5cOnNzWWYN7sZHhwFyAEA8RLHzYprTbaE
-YZSEx6U8yszQOIViwBKWPBZ/OyRTWAo=
-=98lz
------END PGP SIGNATURE-----
-
---skPAiwM3XKXsb30B--
+Regards,
+Mauro
