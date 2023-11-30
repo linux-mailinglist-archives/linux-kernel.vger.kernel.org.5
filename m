@@ -2,104 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BD847FEC0F
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 10:43:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFE667FEC19
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 10:45:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231865AbjK3Jni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 04:43:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51638 "EHLO
+        id S231962AbjK3Jpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 04:45:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbjK3Jnh (ORCPT
+        with ESMTP id S231784AbjK3Jpq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 04:43:37 -0500
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB5E4D50;
-        Thu, 30 Nov 2023 01:43:41 -0800 (PST)
-X-UUID: 1cc704b282c9470082eced3a0ef062cb-20231130
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.33,REQID:4cb8bf6d-cb19-43c2-acda-67eaa471d2a2,IP:5,U
-        RL:0,TC:0,Content:0,EDM:0,RT:1,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-        N:release,TS:-9
-X-CID-INFO: VERSION:1.1.33,REQID:4cb8bf6d-cb19-43c2-acda-67eaa471d2a2,IP:5,URL
-        :0,TC:0,Content:0,EDM:0,RT:1,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-        release,TS:-9
-X-CID-META: VersionHash:364b77b,CLOUDID:ec6321fd-4a48-46e2-b946-12f04f20af8c,B
-        ulkID:231130174330NINYOUVY,BulkQuantity:0,Recheck:0,SF:64|66|24|17|19|44|1
-        02,TC:nil,Content:0,EDM:-3,IP:-2,URL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil
-        ,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_FSI,TF_CID_SPAM_ULN,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,
-        TF_CID_SPAM_FSD
-X-UUID: 1cc704b282c9470082eced3a0ef062cb-20231130
-X-User: chentao@kylinos.cn
-Received: from [172.20.15.254] [(116.128.244.169)] by mailgw
-        (envelope-from <chentao@kylinos.cn>)
-        (Generic MTA)
-        with ESMTP id 632642991; Thu, 30 Nov 2023 17:43:27 +0800
-Message-ID: <bf29c39f-8d9f-465a-bbc2-45bdb77711b8@kylinos.cn>
-Date:   Thu, 30 Nov 2023 17:43:27 +0800
+        Thu, 30 Nov 2023 04:45:46 -0500
+Received: from zg8tmtyylji0my4xnjqumte4.icoremail.net (zg8tmtyylji0my4xnjqumte4.icoremail.net [162.243.164.118])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8F9EBD50;
+        Thu, 30 Nov 2023 01:45:49 -0800 (PST)
+Received: from hust.edu.cn (unknown [172.16.0.50])
+        by app2 (Coremail) with SMTP id HwEQrABHp8SdWWhlDIwaAA--.25716S2;
+        Thu, 30 Nov 2023 17:45:01 +0800 (CST)
+Received: from susu-virtual-machine.localdomain (unknown [10.12.173.52])
+        by gateway (Coremail) with SMTP id _____wBnUT+NWWhlIfEuAA--.57589S2;
+        Thu, 30 Nov 2023 17:45:00 +0800 (CST)
+From:   Yu Sun <u202112062@hust.edu.cn>
+To:     Hans de Goede <hdegoede@redhat.com>,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Mark Gross <markgross@kernel.org>,
+        Vadim Pasternak <vadimp@nvidia.com>
+Cc:     hust-os-kernel-patches@googlegroups.com,
+        Yu Sun <u202112062@hust.edu.cn>,
+        Dongliang Mu <dzm91@hust.edu.cn>,
+        Dan Carpenter <error27@gmail.com>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] platform/mellanox: mlxreg-lc: Check before variable dereferenced
+Date:   Thu, 30 Nov 2023 17:44:07 +0800
+Message-ID: <20231130094409.3963-1-u202112062@hust.edu.cn>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] platform/mellanox: Add a null pointer check in
- mlxbf_pmc_create_groups
-Content-Language: en-US
-To:     =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>, vadimp@nvidia.com,
-        jiri@resnulli.us, shravankr@nvidia.com, kunwu.chan@hotmail.com,
-        platform-driver-x86@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20231127063433.1549064-1-chentao@kylinos.cn>
- <1701224213463629.329.seg@mailgw>
-From:   Kunwu Chan <chentao@kylinos.cn>
-In-Reply-To: <1701224213463629.329.seg@mailgw>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: HwEQrABHp8SdWWhlDIwaAA--.25716S2
+Authentication-Results: app2; spf=neutral smtp.mail=u202112062@hust.ed
+        u.cn;
+X-Coremail-Antispam: 1UD129KBjvJXoW7Jw4kJw13KryxtrWUtr1kZrb_yoW8Jr4kpF
+        W3Cw4S9FWYkF109w4Ut34Y9F48CayfXrWjyryFy39xAFnIqa9rZrZ8Jw1ktFZFkrWDZ3Wj
+        kw48ta4Fv345X3JanT9S1TB71UUUUjDqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUQIb7Iv0xC_Cr1lb4IE77IF4wAFc2x0x2IEx4CE42xK8VAvwI8I
+        cIk0rVWrJVCq3wA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjx
+        v20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK
+        6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1ln4kS14v26r
+        126r1DM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI
+        12xvs2x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj64x0Y40En7xvr7AKxV
+        W8Jr0_Cr1UMcIj6x8ErcxFaVAv8VW8uFyUJr1UMcIj6xkF7I0En7xvr7AKxVWxJVW8Jr1l
+        Ox8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkF7I0En4kS14v26r126r1DMx
+        AIw28IcxkI7VAKI48JMxAIw28IcVCjz48v1sIEY20_GFW3Jr1UJwCFx2IqxVCFs4IE7xkE
+        bVWUJVW8JwCFI7km07C267AKxVWUAVWUtwC20s026c02F40E14v26r1j6r18MI8I3I0E74
+        80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0
+        I7IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04
+        k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7Cj
+        xVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU0_uctUUUUU==
+X-CM-SenderInfo: rxsqjiarsqljo6kx23oohg3hdfq/
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for your reply.
+there is a warning saying variable dereferenced before
+check 'data->notifier' in line 828.
+add "for(data->notifier)" before variable deferenced.
 
-Cause i don't know how to deal with in some scenario，such as in 
-'mlxbf_pmc_init_perftype_counter', when 'attr->dev_attr.attr.name' is 
-null, should return '-ENOMEM' or 'continue' the loop?
+Signed-off-by: Yu Sun <u202112062@hust.edu.cn>
+Reviewed-by: Dongliang Mu <dzm91@hust.edu.cn>
+Reviewed-by: Dan Carpenter <error27@gmail.com>
+---
+ drivers/platform/mellanox/mlxreg-lc.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-So I'm going to solve it one by one.
+diff --git a/drivers/platform/mellanox/mlxreg-lc.c b/drivers/platform/mellanox/mlxreg-lc.c
+index 43d119e3a473..e92add40750b 100644
+--- a/drivers/platform/mellanox/mlxreg-lc.c
++++ b/drivers/platform/mellanox/mlxreg-lc.c
+@@ -824,9 +824,12 @@ static int mlxreg_lc_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 
+ 	mutex_init(&mlxreg_lc->lock);
+-	/* Set event notification callback. */
+-	data->notifier->user_handler = mlxreg_lc_event_handler;
+-	data->notifier->handle = mlxreg_lc;
++
++	if (data->notifier) {
++		/* Set event notification callback. */
++		data->notifier->user_handler = mlxreg_lc_event_handler;
++		data->notifier->handle = mlxreg_lc;
++	}
+ 
+ 	data->hpdev.adapter = i2c_get_adapter(data->hpdev.nr);
+ 	if (!data->hpdev.adapter) {
+-- 
+2.42.0
 
-Thanks again,
-Kunwu
-
-On 2023/11/28 17:51, Ilpo Järvinen wrote:
-> On Mon, 27 Nov 2023, Kunwu Chan wrote:
-> 
->> devm_kasprintf() returns a pointer to dynamically allocated memory
->> which can be NULL upon failure.
->>
->> Fixes: 1a218d312e65 ("platform/mellanox: mlxbf-pmc: Add Mellanox BlueField PMC driver")
->> Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
->> ---
->>   drivers/platform/mellanox/mlxbf-pmc.c | 2 ++
->>   1 file changed, 2 insertions(+)
->>
->> diff --git a/drivers/platform/mellanox/mlxbf-pmc.c b/drivers/platform/mellanox/mlxbf-pmc.c
->> index 0b427fc24a96..59bbe5e13f6b 100644
->> --- a/drivers/platform/mellanox/mlxbf-pmc.c
->> +++ b/drivers/platform/mellanox/mlxbf-pmc.c
->> @@ -1882,6 +1882,8 @@ static int mlxbf_pmc_create_groups(struct device *dev, int blk_num)
->>   	pmc->block[blk_num].block_attr_grp.attrs = pmc->block[blk_num].block_attr;
->>   	pmc->block[blk_num].block_attr_grp.name = devm_kasprintf(
->>   		dev, GFP_KERNEL, pmc->block_name[blk_num]);
->> +	if (!pmc->block[blk_num].block_attr_grp.name)
->> +		return -ENOMEM;
->>   	pmc->groups[pmc->group_num] = &pmc->block[blk_num].block_attr_grp;
->>   	pmc->group_num++;
-> 
-> I'm totally lost, why did you fix only one devm_kasprintf() location?
-> Don't all of them need this check?
-> 
