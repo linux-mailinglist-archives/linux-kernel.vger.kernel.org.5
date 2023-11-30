@@ -2,238 +2,293 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB2AA7FFF6C
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 00:25:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEC217FFF70
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 00:28:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377267AbjK3XZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 18:25:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43546 "EHLO
+        id S1377245AbjK3X2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 18:28:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377270AbjK3XZG (ORCPT
+        with ESMTP id S1377216AbjK3X2W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 18:25:06 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D63891710;
-        Thu, 30 Nov 2023 15:25:12 -0800 (PST)
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AUMv1ds007817;
-        Thu, 30 Nov 2023 23:24:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=dzdwa52RQD+dDIN5fCjoN/RBg7vTB76JT4geO1rWUWs=;
- b=JUlpujqbfV3FJWXKWzbm+qCutDkbwjRAVycUZZ4U6h0HDb9nxyj7Md3e139Io7p/T0G2
- KNTh4CPupPHbDPAWM5cKxMgi72BYb0aV+Iw+2aRYA6feshcd/EuWcZfOI4F1PT7t3I/f
- H0NXVn1BVkVPJCOx6W7N/325jS73Ado/ASQ/NM8tdAr4iPHE96aVAzifePuVHZN+3rJ1
- 2G/HG6PkhIR57BywSnIpUQgs2KZ3T03neyZaowpY88nG8aRgYXnDKybCxOriA+6lzO1p
- 0Cu4Gb9lU7p3BQJv1j7UcWejJqeYxVd/O7/O6r++iqo0R5e6+KGYFCL2Nf9ZmXsaq/DK 8w== 
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3upv481b03-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 30 Nov 2023 23:24:56 +0000
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AUNOtCO030237
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 30 Nov 2023 23:24:55 GMT
-Received: from [10.251.45.12] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 30 Nov
- 2023 15:24:51 -0800
-Message-ID: <cc2eb772-ae0f-4861-a36e-304a5f45b1bf@quicinc.com>
-Date:   Fri, 1 Dec 2023 01:24:48 +0200
+        Thu, 30 Nov 2023 18:28:22 -0500
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C4DC10C2
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 15:28:28 -0800 (PST)
+Received: by mail-ot1-x32d.google.com with SMTP id 46e09a7af769-6d84ddd642fso912812a34.0
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 15:28:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701386908; x=1701991708; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=smrNDXAc/syQyWE6VYvQDM0BmSBPKcPsC5CPtRv9e1k=;
+        b=TEV0z8HBLCxwQANPEtxv8twY2mpsg3jOC+36y3ZWCIqHLTOlDKzKmHR5FsYKjHNzoX
+         NzXnfNVVT02j7QU+rsbsHMo41YA1Z2j45rD4MYWIowLbKsmwuey3NRSZesTNnAK/yzbb
+         mwUO/5a0PAHPw71gCU1G8+07T0k+X/NtyiWWpt44emmd5QhUzXvqUBP4uKie2wOHs/WY
+         bKEPW+ghiq6W7cd2ADzz6+79k4vudpiBzSjvyhmwvttpBUMP+9L3dwZ+9+Lx74iGwGp3
+         dEV6P2PO6KMIaRcpUERD499Os9EMpyi/fFHVUimzbUyD/1ahJ94xafEo4pl9zOcTfW4e
+         Pnhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701386908; x=1701991708;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=smrNDXAc/syQyWE6VYvQDM0BmSBPKcPsC5CPtRv9e1k=;
+        b=JcAKnXqS67OJhmkvDXs7oo5wkVLTbkTgydiSQsbn2CDeeJbvNNg+MGYezpFVwGT0EP
+         iK3oV29dCg5/LTyWak3UqRDsmoieAf33zRAgLXGmPmoVk9h+5NKHJn5oLEdA/YxCg4oP
+         kE8yEDMqJteRMk5c8TX93fzQeo7B/M6HqUXbNUOVnMcE/y1opRcJye7WKmqxhnIrgIms
+         pqOksCIOCPNaBVmxlABsXwGuxbaH6Te1oPQ+ZYv8fnpQjRHkehUes7gbHV0xNqy8vuWO
+         TCktF9DlyHkJ2gzhJWVaRFvQsJkqlAfUsY4L1iWufrVimMg8UPCX+7+g+TKtDI4pD8Bb
+         pfjA==
+X-Gm-Message-State: AOJu0YwuHhwKTHqWOwdNBfcwVkzC9pUzT+4plhcl5P+Ld48re6aS8Gxw
+        PKYImR7DXT38W+m6NmE74N7YneQ4F9tz6mDHwV4=
+X-Google-Smtp-Source: AGHT+IE3O3B7I2zbKJ/VUqaQhLXEIkrbY+q7iFWC1NNsg2niTotxroSLh9InklkFQ8sLsM2Do3Uacq0M+MDTY1Q4ujM=
+X-Received: by 2002:a05:6871:550:b0:1fa:2095:e1f with SMTP id
+ t16-20020a056871055000b001fa20950e1fmr22746411oal.35.1701386907675; Thu, 30
+ Nov 2023 15:28:27 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/6] dt-bindings: iommu: Add Translation Buffer Unit
- bindings
-Content-Language: en-US
-To:     Rob Herring <robh@kernel.org>
-CC:     <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <will@kernel.org>, <robin.murphy@arm.com>, <joro@8bytes.org>,
-        <devicetree@vger.kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <linux-arm-kernel@lists.infradead.org>,
-        <iommu@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <quic_cgoldswo@quicinc.com>,
-        <quic_sukadev@quicinc.com>, <quic_pdaly@quicinc.com>,
-        <quic_sudaraja@quicinc.com>, <djakov@kernel.org>
-References: <20231118042730.2799-1-quic_c_gdjako@quicinc.com>
- <20231118042730.2799-2-quic_c_gdjako@quicinc.com>
- <20231127181347.GA1953740-robh@kernel.org>
-From:   Georgi Djakov <quic_c_gdjako@quicinc.com>
-In-Reply-To: <20231127181347.GA1953740-robh@kernel.org>
+References: <87edgv4x3i.fsf@vps.thesusis.net> <559d0fa5-953a-4a97-b03b-5eb1287c83d8@leemhuis.info>
+ <CAPM=9tw-8pQWFso0zuLqpsqd5BSHWtc4As9ttdjY-DDr70EMqQ@mail.gmail.com>
+ <bdb238b6-60c7-4f26-81d0-9e62cd5dd326@gmail.com> <CADnq5_NVGS1XykxGxpcu_bpPbzboCUJQkcCF3r+0N9a23KUgiQ@mail.gmail.com>
+ <96e2e13c-f01c-4baf-a9a3-cbaa48fb10c7@amd.com> <CADnq5_NBfeAXEyQw0gnSd67=tR-bUKg8w=10+4z9pGGuRnP9uw@mail.gmail.com>
+ <87jzq2ixtm.fsf@vps.thesusis.net> <CADnq5_Ou-MVVm0rdWDmDnJNLkWUayXzO26uCEtz3ucNa4Ghy2w@mail.gmail.com>
+ <95fe9b5b-05ce-4462-9973-9aca306bc44f@gmail.com> <CADnq5_MYEWx=e1LBLeVs0UbR5_xEScjDyw_-75mLe8RAMnqh6g@mail.gmail.com>
+ <CADnq5_OC=JFpGcN0oGbTF5xYEt4X3r0=jEY6hJ12W8CzYq1+cA@mail.gmail.com>
+ <9595b8bf-e64d-4926-9263-97e18bcd7d05@gmail.com> <CADnq5_N6DF-huOzgaVygvS5N_j_oNUEC1aa4zRsZTzx8GOD_aw@mail.gmail.com>
+ <CADnq5_PgMxoW=4iabtgeHydwye-6DvwvCyETdfBToEpuYWocmA@mail.gmail.com>
+ <CADnq5_P0S7Jem0e4K6mG2+bboG8P56nELaGC1p4Pfx-8eV-BjQ@mail.gmail.com>
+ <05a4dec0-1c07-4a64-9439-e2c306807ded@gmail.com> <db75bcf5-13a7-4176-a2fb-94cd198a1a7b@gmail.com>
+In-Reply-To: <db75bcf5-13a7-4176-a2fb-94cd198a1a7b@gmail.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Thu, 30 Nov 2023 18:28:16 -0500
+Message-ID: <CADnq5_PuUxmG7dxfCYkY7-qx91XDgG+eXBgdBer_cKss8WmvXA@mail.gmail.com>
+Subject: Re: Radeon regression in 6.6 kernel
+To:     Luben Tuikov <ltuikov89@gmail.com>
+Cc:     Phillip Susi <phill@thesusis.net>,
+        Linux regressions mailing list <regressions@lists.linux.dev>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        dri-devel@lists.freedesktop.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Danilo Krummrich <dakr@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: r9Ny_bSdGNAkhGlvkpVOItl5sxEyNfkt
-X-Proofpoint-ORIG-GUID: r9Ny_bSdGNAkhGlvkpVOItl5sxEyNfkt
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-30_23,2023-11-30_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 malwarescore=0
- spamscore=0 clxscore=1015 impostorscore=0 lowpriorityscore=0 mlxscore=0
- phishscore=0 suspectscore=0 bulkscore=0 priorityscore=1501 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
- definitions=main-2311300173
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+On Wed, Nov 29, 2023 at 10:47=E2=80=AFPM Luben Tuikov <ltuikov89@gmail.com>=
+ wrote:
+>
+> On 2023-11-29 22:36, Luben Tuikov wrote:
+> > On 2023-11-29 15:49, Alex Deucher wrote:
+> >> On Wed, Nov 29, 2023 at 3:10=E2=80=AFPM Alex Deucher <alexdeucher@gmai=
+l.com> wrote:
+> >>>
+> >>> Actually I think I see the problem.  I'll try and send out a patch
+> >>> later today to test.
+> >>
+> >> Does the attached patch fix it?
+> >
+> > Thanks for the patch, Alex.
+> >
+> > Is it possible for AMD to also reproduce this issue and test this patch=
+ on a Navi23 system?
+> >
+> >> From 96e75b5218f7a124eafa53853681eef8fe567ab8 Mon Sep 17 00:00:00 2001
+> >> From: Alex Deucher <alexander.deucher@amd.com>
+> >> Date: Wed, 29 Nov 2023 15:44:25 -0500
+> >> Subject: [PATCH] drm/amdgpu: fix buffer funcs setting order on suspend
+> >>
+> >> We need to make disable this after the last eviction
+> >
+> > "make disable" --> "disable"
+> >
+> >> call, but before we disable the SDMA IP.
+> >>
+> >> Fixes: b70438004a14 ("drm/amdgpu: move buffer funcs setting up a level=
+")
+> >> Link: https://lists.freedesktop.org/archives/amd-gfx/2023-November/101=
+197.html
+> >
+> > Link: https://lore.kernel.org/r/87edgv4x3i.fsf@vps.thesusis.net
+> >
+> > Let's link the start of the thread.
+> >
+> > Regards,
+> > Luben
+> >
+> >> Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+> >> Cc: Phillip Susi <phill@thesusis.net>
+> >> Cc: Luben Tuikov <ltuikov89@gmail.com>
+> >> ---
+> >>  drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 4 ++--
+> >>  1 file changed, 2 insertions(+), 2 deletions(-)
+> >>
+> >> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/=
+drm/amd/amdgpu/amdgpu_device.c
+> >> index b5edf40b5d03..78553e027db4 100644
+> >> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+> >> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+> >> @@ -4531,8 +4531,6 @@ int amdgpu_device_suspend(struct drm_device *dev=
+, bool fbcon)
+> >>
+> >>      amdgpu_ras_suspend(adev);
+> >>
+> >> -    amdgpu_ttm_set_buffer_funcs_status(adev, false);
+> >> -
+> >>      amdgpu_device_ip_suspend_phase1(adev);
+> >>
+> >>      if (!adev->in_s0ix)
+> >> @@ -4542,6 +4540,8 @@ int amdgpu_device_suspend(struct drm_device *dev=
+, bool fbcon)
+> >>      if (r)
+> >>              return r;
+> >>
+> >> +    amdgpu_ttm_set_buffer_funcs_status(adev, false);
+> >> +
+>
+> If you're moving this past phase 1, there's another instance in amdgpu_de=
+vice_ip_suspend(),
+> which may need to be moved down.
 
-Thanks for the feedback!
+I think that one should be ok since we don't do any evictions in
+amdgpu_device_ip_suspend().
 
-On 11/27/2023 8:13 PM, Rob Herring wrote:
-> On Fri, Nov 17, 2023 at 08:27:25PM -0800, Georgi Djakov wrote:
->> The "apps_smmu" on the Qualcomm sdm845 platform is an implementation
->> of the SMMU-500, that consists of a single TCU (Translation Control
->> Unit) and multiple TBUs (Translation Buffer Units). The TCU is already
->> being described in the generic SMMU DT schema. Add also bindings for
->> the TBUs to describe their properties and resources that needs to be
->> managed in order to operate them.
->>
->> In this DT schema, the TBUs are modelled as child devices of the TCU
->> and each of them is described with it's register space, clocks, power
->> domains, interconnects etc.
->>
->> Signed-off-by: Georgi Djakov <quic_c_gdjako@quicinc.com>
->> ---
->>  .../devicetree/bindings/iommu/arm,smmu.yaml   | 25 ++++++
->>  .../bindings/iommu/qcom,qsmmuv500-tbu.yaml    | 89 +++++++++++++++++++
->>  2 files changed, 114 insertions(+)
->>  create mode 100644 Documentation/devicetree/bindings/iommu/qcom,qsmmuv500-tbu.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/iommu/arm,smmu.yaml b/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
->> index aa9e1c0895a5..f7f89be5f7a3 100644
->> --- a/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
->> +++ b/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
->> @@ -231,6 +231,18 @@ properties:
->>        enabled for any given device.
->>      $ref: /schemas/types.yaml#/definitions/phandle
->>  
->> +  '#address-cells':
->> +    enum: [ 1, 2 ]
->> +
->> +  '#size-cells':
->> +    enum: [ 1, 2 ]
->> +
->> +  ranges: true
->> +
->> +patternProperties:
->> +  "^tbu@[0-9a-f]*":
->> +    type: object
->> +
->>  required:
->>    - compatible
->>    - reg
->> @@ -453,6 +465,19 @@ allOf:
->>              - description: Voter clock required for HLOS SMMU access
->>              - description: Interface clock required for register access
->>  
->> +  - if:
->> +      properties:
->> +        compatible:
->> +          contains:
->> +            const: qcom,smmu-500
-> 
-> Doesn't match your example. No failure either, so there's some problem 
-> with your schema. The issue is the tbu@ entry above has no constraint on 
-> child properties. Dropping it would solve the issue. However, having a 
-> TBU is not QCom specific, so that doesn't feel right.
+Alex
 
-Having a TBU is not Qcom specific. The ARM MMU-500 implementation for example has TBUs, but the registers are within the SMMU address space, there are no clocks, no power-domains or other resources. Not sure about other implementations. So should we just allow empty tbu child nodes with no properties?
-
->> +    then:
->> +      patternProperties:
->> +        "^tbu@[0-9a-f]*":
-> 
-> '+' rather than '*' as 1 is the minimum, not 0.
-
-Ok.
-
->> +          $ref: qcom,qsmmuv500-tbu.yaml
->> +          unevaluatedProperties: false
->> +      properties:
->> +        ranges: true
->> +
->>    # Disallow clocks for all other platforms with specific compatibles
->>    - if:
->>        properties:
->> diff --git a/Documentation/devicetree/bindings/iommu/qcom,qsmmuv500-tbu.yaml b/Documentation/devicetree/bindings/iommu/qcom,qsmmuv500-tbu.yaml
->> new file mode 100644
->> index 000000000000..4dc9d0ca33c9
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/iommu/qcom,qsmmuv500-tbu.yaml
->> @@ -0,0 +1,89 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/iommu/qcom,qsmmuv500-tbu.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Qualcomm TBU (Translation Buffer Unit)
->> +
->> +maintainers:
->> +  - Georgi Djakov <quic_c_gdjako@quicinc.com>
->> +
->> +description:
->> +  The Qualcomm SMMU500 implementation consists of TCU and TBU. The TBU contains
->> +  a Translation Lookaside Buffer (TLB) that caches page tables. TBUs provides
->> +  debug features to trace and trigger debug transactions. There are multiple TBU
->> +  instances distributes with each client core.
->> +
->> +properties:
->> +  $nodename:
->> +    pattern: "^tbu@[0-9a-f]+$"
-> 
-> Drop. You defined this in the parent already.
-
-Ok.
-
->> +
->> +  compatible:
->> +    const: qcom,qsmmuv500-tbu
->> +
->> +  reg:
->> +    items:
->> +      - description: Address and size of the TBU's register space.
->> +
->> +  reg-names:
->> +    items:
->> +      - const: base
-> 
-> Not a useful name. Drop.
-
-Agree.
-
->> +
->> +  clocks:
->> +    maxItems: 1
->> +
->> +  interconnects:
->> +    maxItems: 1
->> +
->> +  power-domains:
->> +    maxItems: 1
->> +
->> +  qcom,stream-id-range:
->> +    $ref: /schemas/types.yaml#/definitions/uint32-array
->> +    description: Stream ID range (address and size) that is assigned by the TBU
->> +    items:
->> +      minItems: 2
->> +      maxItems: 2
-> 
-> Perhaps implementations other than QCom's needs this?
-
-Yes, maybe. A TBU can service a fixed amount of stream IDs and this looks like something common for all TBUs. I'll drop the vendor prefix.
-
-Thanks,
-Georgi
+>
+> Regards,
+> Luben
+>
+> >>      amdgpu_fence_driver_hw_fini(adev);
+> >>
+> >>      amdgpu_device_ip_suspend_phase2(adev);
+> >
+> >>
+> >> Alex
+> >>
+> >>>
+> >>> Alex
+> >>>
+> >>> On Wed, Nov 29, 2023 at 1:52=E2=80=AFPM Alex Deucher <alexdeucher@gma=
+il.com> wrote:
+> >>>>
+> >>>> On Wed, Nov 29, 2023 at 11:41=E2=80=AFAM Luben Tuikov <ltuikov89@gma=
+il.com> wrote:
+> >>>>>
+> >>>>> On 2023-11-29 10:22, Alex Deucher wrote:
+> >>>>>> On Wed, Nov 29, 2023 at 8:50=E2=80=AFAM Alex Deucher <alexdeucher@=
+gmail.com> wrote:
+> >>>>>>>
+> >>>>>>> On Tue, Nov 28, 2023 at 11:45=E2=80=AFPM Luben Tuikov <ltuikov89@=
+gmail.com> wrote:
+> >>>>>>>>
+> >>>>>>>> On 2023-11-28 17:13, Alex Deucher wrote:
+> >>>>>>>>> On Mon, Nov 27, 2023 at 6:24=E2=80=AFPM Phillip Susi <phill@the=
+susis.net> wrote:
+> >>>>>>>>>>
+> >>>>>>>>>> Alex Deucher <alexdeucher@gmail.com> writes:
+> >>>>>>>>>>
+> >>>>>>>>>>>> In that case those are the already known problems with the s=
+cheduler
+> >>>>>>>>>>>> changes, aren't they?
+> >>>>>>>>>>>
+> >>>>>>>>>>> Yes.  Those changes went into 6.7 though, not 6.6 AFAIK.  May=
+be I'm
+> >>>>>>>>>>> misunderstanding what the original report was actually testin=
+g.  If it
+> >>>>>>>>>>> was 6.7, then try reverting:
+> >>>>>>>>>>> 56e449603f0ac580700621a356d35d5716a62ce5
+> >>>>>>>>>>> b70438004a14f4d0f9890b3297cd66248728546c
+> >>>>>>>>>>
+> >>>>>>>>>> At some point it was suggested that I file a gitlab issue, but=
+ I took
+> >>>>>>>>>> this to mean it was already known and being worked on.  -rc3 c=
+ame out
+> >>>>>>>>>> today and still has the problem.  Is there a known issue I cou=
+ld track?
+> >>>>>>>>>>
+> >>>>>>>>>
+> >>>>>>>>> At this point, unless there are any objections, I think we shou=
+ld just
+> >>>>>>>>> revert the two patches
+> >>>>>>>> Uhm, no.
+> >>>>>>>>
+> >>>>>>>> Why "the two" patches?
+> >>>>>>>>
+> >>>>>>>> This email, part of this thread,
+> >>>>>>>>
+> >>>>>>>> https://lore.kernel.org/all/87r0kircdo.fsf@vps.thesusis.net/
+> >>>>>>>>
+> >>>>>>>> clearly states that reverting *only* this commit,
+> >>>>>>>> 56e449603f0ac5 drm/sched: Convert the GPU scheduler to variable =
+number of run-queues
+> >>>>>>>> *does not* mitigate the failed suspend. (Furthermore, this commi=
+t doesn't really change
+> >>>>>>>> anything operational, other than using an allocated array, inste=
+ad of a static one, in DRM,
+> >>>>>>>> while the 2nd patch is solely contained within the amdgpu driver=
+ code.)
+> >>>>>>>>
+> >>>>>>>> Leaving us with only this change,
+> >>>>>>>> b70438004a14f4 drm/amdgpu: move buffer funcs setting up a level
+> >>>>>>>> to be at fault, as the kernel log attached in the linked email a=
+bove shows.
+> >>>>>>>>
+> >>>>>>>> The conclusion is that only b70438004a14f4 needs reverting.
+> >>>>>>>
+> >>>>>>> b70438004a14f4 was a fix for 56e449603f0ac5.  Without b70438004a1=
+4f4,
+> >>>>>>> 56e449603f0ac5 breaks amdgpu.
+> >>>>>>
+> >>>>>> We can try and re-enable it in the next kernel.  I'm just not sure
+> >>>>>> we'll be able to fix this in time for 6.7 with the holidays and al=
+l
+> >>>>>> and I don't want to cause a lot of scheduler churn at the end of t=
+he
+> >>>>>> 6.7 cycle if we hold off and try and fix it.  Reverting seems like=
+ the
+> >>>>>> best short term solution.
+> >>>>>
+> >>>>> A lot of subsequent code has come in since commit 56e449603f0ac5, a=
+s it opened
+> >>>>> the opportunity for a 1-to-1 relationship between an entity and a s=
+cheduler.
+> >>>>> (Should've always been the case, from the outset. Not sure why it w=
+as coded as
+> >>>>> a fixed-size array.)
+> >>>>>
+> >>>>> Given that commit 56e449603f0ac5 has nothing to do with amdgpu, and=
+ the problem
+> >>>>> is wholly contained in amdgpu, and no other driver has this problem=
+, there is
+> >>>>> no reason to have to "churn", i.e. go back and forth in DRM, only t=
+o cover up
+> >>>>> an init bug in amdgpu. See the response I just sent in @this thread=
+:
+> >>>>> https://lore.kernel.org/r/05007cb0-871e-4dc7-af58-1351f4ba43e2@gmai=
+l.com
+> >>>>>
+> >>>>> And it's not like this issue is unknown. I first posted about it on=
+ 2023-10-16.
+> >>>>>
+> >>>>> Ideally, amdgpu would just fix their init code.
+> >>>>
+> >>>> You can't make changes to core code that break other drivers.
+> >>>> Arguably 56e449603f0ac5 should not have gone in in the first place i=
+f
+> >>>> it broke amdgpu.  b70438004a14f4 was the code to fix amdgpu's init
+> >>>> code, but as a side effect it seems to have broken suspend for some
+> >>>> users.
+> >>>>
+> >>>> Alex
