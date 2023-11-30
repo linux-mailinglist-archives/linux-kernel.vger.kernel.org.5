@@ -2,126 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52E517FFD2C
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 21:58:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CC387FFD34
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 22:02:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376783AbjK3U5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 15:57:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34646 "EHLO
+        id S1376759AbjK3VC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 16:02:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232255AbjK3U5x (ORCPT
+        with ESMTP id S229645AbjK3VC1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 15:57:53 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DC48170B
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 12:57:59 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-40b367a0a12so2375e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 12:57:59 -0800 (PST)
+        Thu, 30 Nov 2023 16:02:27 -0500
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03D2810C2
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 13:02:34 -0800 (PST)
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-6cddc59e731so1296536b3a.1
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 13:02:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701377877; x=1701982677; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=P/l1oyYMER9bdmRSJxabnKYiLsJ8DbCjdBG67yg2+OI=;
-        b=KIuBcQmpMAwF6/NlKMg5+8untx+4dxgBlGbP8Swo4mvsBiq7u/UBr11UwtBjWnOSUN
-         RtaG6xG08+50lgGTP9E66UWywRqVgsyWLruDCD/lr85WcX7rDWBNaIO7ytRKk4x9AFB1
-         HB4+GG3Fp8ZI5ZFgL0SbzscrF1245E5VNtb61ZWd5sDsBZNDx/1tMGK+2oiFwxrJFEvG
-         Vni+n8uBxsO/XSovpEj5H9NCfFRrrDe07nTIUh0T99wvFExEo0jj5fp+fSekscbedVbM
-         X88u4nCpkNUUPDlVJpFJPJu6CYngZJ6lHQTHnpmWmMdiEafGHyosKa4btQrRGP5zxOj2
-         Hwxw==
+        d=chromium.org; s=google; t=1701378153; x=1701982953; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=NyeHJWiLdFo7I9JRqXuJBHQL2k3baSzOcxFT8tS/iws=;
+        b=c4iP/X4yHnygKgxRG6y3Jq0EuNnH+e/MjnLJkY+x+XbFSZ4uinvEAgkP9QmN32wXVI
+         kcW19abkTTdXK8RsFxkg/YZVWv3Y2f9gnyIAxFnhcGD3SwtfhOlbLK6HnqVsG+yCA+A6
+         Rs4452K4JBcfAAaIarZCQHHxUTADGZDAlq2U4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701377877; x=1701982677;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=P/l1oyYMER9bdmRSJxabnKYiLsJ8DbCjdBG67yg2+OI=;
-        b=RyPNPXfNu6WTy6EsDxn0gGjNVwloC3gFpMEN7wOL/WeJnxnfDKHa4hPi0M65AhpJcI
-         NLfUiAcrRUm4yqgGWO/UcjkuYpHnuLbiLeL5thYSIAPiYUVdeRJ5TEogwwYO8vHFilaQ
-         xTTjKWK8ccWoqWEpCvkp/GPlJCVN4OxMN88craKKq1bUv6ghkDtoWNF4mB4q2UI8b1dm
-         Og0gXueumON/jH2VrjQ7vLMlkIUxnWFNdvEtmJig/VI2DyQC+if5SnlnHZaudI/dcBfa
-         Wm5DmflsU3mp+2bKM12/SdjFmbXO+59u+BGTy7ojARyFag9XJEi7mC8aPJ50WeVzMb1A
-         SpYg==
-X-Gm-Message-State: AOJu0YzX11zzEkEfiW40Opvh8O1QNWywkPwPRGwmR7My/VmW5AKWYYFl
-        DHUVaWdbU5CqkDRK6oV+Sh7+E95Mgf2tRloJW1qEfQ==
-X-Google-Smtp-Source: AGHT+IEFkzzG69JgX8+EtDgoeVk1m/IAKAaqysFjAuWz3CoPTFFan6cx+EoVlMfrFDIG2IOXd2z4OM+JIXhlwEapMlQ=
-X-Received: by 2002:a05:600c:4507:b0:40a:483f:f828 with SMTP id
- t7-20020a05600c450700b0040a483ff828mr22184wmo.4.1701377877459; Thu, 30 Nov
- 2023 12:57:57 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701378153; x=1701982953;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=NyeHJWiLdFo7I9JRqXuJBHQL2k3baSzOcxFT8tS/iws=;
+        b=xHwKc0GtyxGAjWQLA+KKNfPAvWCCQ7s/AuRzYOQwhbDG/YVWZimLBytVj+0wXi7D8E
+         AMFvNzrODdeirJ1ACejDVt+a9kzRIAA20m+ZbbaVNrQS5Acj2TAy6oDxDM2YLhV57Vm0
+         7sWF8ILiC+tk2wyNNdgcYa4havuHsJsmgMAhsJTxhxz+tEpwWG8fUuWxeeyxjgioBGVa
+         4EgPyKi7s5stbedPIG9jgtaWiytfEEHEStXqaOARLLeqVQO6aXBF0SBDoTJFCb4dz6n7
+         c7N8a3XzSIvSXlheVveHNaTdDxuslAhpm8vMfFHTAzwpb0DvnRJl7477+2Dbq/AzXSks
+         JGLQ==
+X-Gm-Message-State: AOJu0YxPf7U0POWSI7WhWDjjlvs+Ykr542ZMlGv0OcXCY97p+9piS8bb
+        05+joHi5IAyDiAqoEjA9Uz+Lyg==
+X-Google-Smtp-Source: AGHT+IFPqOtCQKaiIkfNERoPXQRP8a11ba8grcvFLj1169pKYiYb6nm2g+juLHikzSkTaUhFgcumtw==
+X-Received: by 2002:a05:6a20:daa8:b0:18b:914a:a81 with SMTP id iy40-20020a056a20daa800b0018b914a0a81mr28046510pzb.52.1701378153297;
+        Thu, 30 Nov 2023 13:02:33 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id k187-20020a6324c4000000b005b7e803e672sm1726803pgk.5.2023.11.30.13.02.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Nov 2023 13:02:32 -0800 (PST)
+Date:   Thu, 30 Nov 2023 13:02:32 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Waiman Long <longman@redhat.com>, cgroups@vger.kernel.org,
+        Azeem Shaikh <azeemshaikh38@gmail.com>,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] kernfs: Convert kernfs_path_from_node_locked()
+ from strlcpy() to strscpy()
+Message-ID: <202311301300.6BAB981@keescook>
+References: <20231130200937.it.424-kees@kernel.org>
+ <20231130201222.3613535-3-keescook@chromium.org>
+ <40b65db9-1b37-45b6-8afe-7be2df11cfa9@wanadoo.fr>
 MIME-Version: 1.0
-References: <20231030104758.241472-1-rf@opensource.cirrus.com>
-In-Reply-To: <20231030104758.241472-1-rf@opensource.cirrus.com>
-From:   Rae Moar <rmoar@google.com>
-Date:   Thu, 30 Nov 2023 15:57:45 -0500
-Message-ID: <CA+GJov73iw=Z=KibZ6QtAHRZQ4aaoodx=dan1gBSYnsP2vf9Hw@mail.gmail.com>
-Subject: Re: [PATCH RESEND] kunit: debugfs: Fix unchecked dereference in debugfs_print_results()
-To:     Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc:     brendan.higgins@linux.dev, davidgow@google.com,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org, patches@opensource.cirrus.com,
-        Dan Carpenter <dan.carpenter@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <40b65db9-1b37-45b6-8afe-7be2df11cfa9@wanadoo.fr>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 30, 2023 at 6:48=E2=80=AFAM Richard Fitzgerald
-<rf@opensource.cirrus.com> wrote:
->
-> Move the call to kunit_suite_has_succeeded() after the check that
-> the kunit_suite pointer is valid.
->
-> This was found by smatch:
->
->  lib/kunit/debugfs.c:66 debugfs_print_results() warn: variable
->  dereferenced before check 'suite' (see line 63)
->
-> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-> Fixes: 38289a26e1b8 ("kunit: fix debugfs code to use enum kunit_status, n=
-ot bool")
+On Thu, Nov 30, 2023 at 09:38:11PM +0100, Christophe JAILLET wrote:
+> Le 30/11/2023 à 21:12, Kees Cook a écrit :
+> [...]
+> > diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
+> > index 8c0e5442597e..183f353b3852 100644
+> > --- a/fs/kernfs/dir.c
+> > +++ b/fs/kernfs/dir.c
+> [...]
+> > @@ -158,18 +159,22 @@ static int kernfs_path_from_node_locked(struct kernfs_node *kn_to,
+> >   	buf[0] = '\0';
+> > -	for (i = 0; i < depth_from; i++)
+> > -		len += strlcpy(buf + len, parent_str,
+> > -			       len < buflen ? buflen - len : 0);
+> > +	for (i = 0; i < depth_from; i++) {
+> > +		copied = strscpy(buf + len, parent_str, buflen - len);
+> > +		if (copied < 0)
+> > +			return copied;
+> > +		len += copied;
+> > +	}
+> >   	/* Calculate how many bytes we need for the rest */
+> >   	for (i = depth_to - 1; i >= 0; i--) {
+> >   		for (kn = kn_to, j = 0; j < i; j++)
+> >   			kn = kn->parent;
+> > -		len += strlcpy(buf + len, "/",
+> > -			       len < buflen ? buflen - len : 0);
+> > -		len += strlcpy(buf + len, kn->name,
+> > -			       len < buflen ? buflen - len : 0);
+> > +
+> > +		copied = scnprintf(buf + len, buflen - len, "/%s", kn->name);
+> > +		if (copied < 0)
+> 
+> Can scnprintf() return <0 ?
 
-Hello!
+Ah, yeah, it's can't at all[1]. I forgot! :) Honestly, that function
+should return size_t, not int...
 
-This patch looks good to me! Thanks for fixing this!
+I will send a v3 with this adjusted, but I'll wait for more review...
 
-Reviewed-by: Rae Moar <rmoar@google.com>
+Thanks!
 
--Rae
+-Kees
 
-> ---
->  lib/kunit/debugfs.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/lib/kunit/debugfs.c b/lib/kunit/debugfs.c
-> index 9d167adfa746..382706dfb47d 100644
-> --- a/lib/kunit/debugfs.c
-> +++ b/lib/kunit/debugfs.c
-> @@ -60,12 +60,14 @@ static void debugfs_print_result(struct seq_file *seq=
-, struct string_stream *log
->  static int debugfs_print_results(struct seq_file *seq, void *v)
->  {
->         struct kunit_suite *suite =3D (struct kunit_suite *)seq->private;
-> -       enum kunit_status success =3D kunit_suite_has_succeeded(suite);
-> +       enum kunit_status success;
->         struct kunit_case *test_case;
->
->         if (!suite)
->                 return 0;
->
-> +       success =3D kunit_suite_has_succeeded(suite);
-> +
->         /* Print KTAP header so the debugfs log can be parsed as valid KT=
-AP. */
->         seq_puts(seq, "KTAP version 1\n");
->         seq_puts(seq, "1..1\n");
-> --
-> 2.30.2
->
+[1] https://docs.kernel.org/core-api/kernel-api.html#c.scnprintf
+
+-- 
+Kees Cook
