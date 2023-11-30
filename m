@@ -2,48 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A30227FFE7D
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 23:32:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C34567FFE82
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 23:33:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377137AbjK3Wb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 17:31:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39410 "EHLO
+        id S1377127AbjK3Wd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 17:33:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229823AbjK3Wb4 (ORCPT
+        with ESMTP id S229823AbjK3Wd1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 17:31:56 -0500
+        Thu, 30 Nov 2023 17:33:27 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4873F10FA
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 14:32:03 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7115C433C8;
-        Thu, 30 Nov 2023 22:32:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1701383522;
-        bh=15PK2iNoEdJqQGu4Y59xZHRAisUs8d1YcFlFM7D9rm4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=C+OuN7+yM+sxavjVw4ZrcIBrT0DvHOfPbhPXXrX/U19VBrV2Ee89qctdK6Xk3Mc76
-         64IbiuxS/dQSrMry0JwhugX5ynF6MKtviT1+UEppQDdD+p6YalkV2n1DjzlZFnmRB6
-         R0qK8DvoAPQld9ht5Mg/WLLCleifoU+Gb2lBMmt4=
-Date:   Thu, 30 Nov 2023 14:32:02 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>
-Subject: Re: linux-next: build failure after merge of the mm tree
-Message-Id: <20231130143202.70d56b3818ee48b0e4edd213@linux-foundation.org>
-In-Reply-To: <20231201090439.7ae92c13@canb.auug.org.au>
-References: <20231127132809.45c2b398@canb.auug.org.au>
-        <20231127144852.069b2e7e@canb.auug.org.au>
-        <20231201090439.7ae92c13@canb.auug.org.au>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FB3D10F3
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 14:33:34 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E7C8C433CC;
+        Thu, 30 Nov 2023 22:33:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701383614;
+        bh=Mzz7UyD/BBxVfdWVs++u5WlKznlkI21DI2rHNivCDeU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=AB5VgJBE2QS88NdhPNTsYAkRHY0G8gRTfNO/yWyHJe7jPduuhMHRsrcJObNSPiiMY
+         qe/OXpu1fy9/QmqNq0YMygnJHi2oCa/9gPZg22PcMMGnf2G6tQDy5OTqPgbFUjKDyz
+         DZbLNNMHpYLUrLw++ohz+jlVVP4/cSOsGxX/BjfsEb36MXLythMGvVS+vlMIjDRLxG
+         PEkb2tVkOo2PxY3f9Ni8jOmOtw76avrbvARn9vhqc6byXUFhKH9Fo6Ig0sdU7Lhj5I
+         iBumhX+B1rmxUnst7GTLGMTu5zEIxU4J4e0BCRjBGaE6wXEpOzv4j9nneEfbgMW8Jd
+         KmrXiKIxliaHA==
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-50bbb79f97cso1504000e87.0;
+        Thu, 30 Nov 2023 14:33:34 -0800 (PST)
+X-Gm-Message-State: AOJu0YwjbDYAwt/nwDpxsc7aXsTpD3LzPentFTExwWnDjIR72u8Y2iXl
+        VBe/f/kefZdzcYlxUT3PqNa6duHcE/8Xln46bA==
+X-Google-Smtp-Source: AGHT+IGmccipeHU8snglPx6DimdrhUBaMNhdl3J4x9yrxb6krnN2M2Zo+SxNeWob4S5jWhHdbyb3Fh5KQATASB7DWsc=
+X-Received: by 2002:a05:6512:3e22:b0:50b:c7bd:2352 with SMTP id
+ i34-20020a0565123e2200b0050bc7bd2352mr163638lfv.14.1701383612257; Thu, 30 Nov
+ 2023 14:33:32 -0800 (PST)
+MIME-Version: 1.0
+References: <20231130191815.2421978-1-robh@kernel.org> <CAOMZO5AZNz1cRg+aYQjDmpZ75ATJQUTWmC5mx+vgaYcBL6M+2w@mail.gmail.com>
+In-Reply-To: <CAOMZO5AZNz1cRg+aYQjDmpZ75ATJQUTWmC5mx+vgaYcBL6M+2w@mail.gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Thu, 30 Nov 2023 16:33:19 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKLFpPo8xTh_vgWvDXSY5J8tQJZh9SrkW2EiK5V_ZNeeA@mail.gmail.com>
+Message-ID: <CAL_JsqKLFpPo8xTh_vgWvDXSY5J8tQJZh9SrkW2EiK5V_ZNeeA@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: imx8mm-venice: Fix PCI bus nodes
+To:     Fabio Estevam <festevam@gmail.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Tim Harvey <tharvey@gateworks.com>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -52,36 +64,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 1 Dec 2023 09:04:39 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+On Thu, Nov 30, 2023 at 1:28=E2=80=AFPM Fabio Estevam <festevam@gmail.com> =
+wrote:
+>
+> Hi Rob,
+>
+> On Thu, Nov 30, 2023 at 4:18=E2=80=AFPM Rob Herring <robh@kernel.org> wro=
+te:
+> >
+> > The imx8mm-venice boards PCI bus nodes are a complete mess. The
+> > unit-addresses are wrong. The PCI bridge nodes are incomplete missing
+> > "device_type" and "ranges" and just wrong for "#address-cells" and
+> > "#size-cells" values.
+> >
+> > All of these issues are reported warnings if anyone bothered to pay
+> > attention. Sigh.
+>
+> The warnings are gone in linux-next:
+>
+> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commi=
+t/arch/arm64/boot/dts/freescale?h=3Dnext-20231130&id=3Dd61c5068729a76a6183a=
+897bcad4bf26e8d3d674
 
-> Hi all,
-> 
-> > > diff --git a/arch/powerpc/mm/book3s64/pgtable.c b/arch/powerpc/mm/book3s64/pgtable.c
-> > > index be229290a6a7..3438ab72c346 100644
-> > > --- a/arch/powerpc/mm/book3s64/pgtable.c
-> > > +++ b/arch/powerpc/mm/book3s64/pgtable.c
-> > > @@ -542,6 +542,7 @@ void ptep_modify_prot_commit(struct vm_area_struct *vma, unsigned long addr,
-> > >  	set_pte_at(vma->vm_mm, addr, ptep, pte);
-> > >  }
-> > >  
-> > > +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> > >  /*
-> > >   * For hash translation mode, we use the deposited table to store hash slot
-> > >   * information and they are stored at PTRS_PER_PMD offset from related pmd
-> > > @@ -563,6 +564,7 @@ int pmd_move_must_withdraw(struct spinlock *new_pmd_ptl,
-> > >  
-> > >  	return true;
-> > >  }
-> > > +#endif
-> > >  
-> > >  /*
-> > >   * Does the CPU support tlbie?
-> > > -- 
-> > > 2.40.1  
-> 
-> I am still carrying this patch (it should probably go into the mm
-> tree).  Is someone going to pick it up (assuming it is correct)?
+Linux-next is wrong. The ethernet device should have a node name of
+'ethernet'. The 'pcie' node name and 'device_type =3D "pci"' is for PCI
+buses/bridges only.
 
-AFAIK we're still awaiting input from the ppc team.
-
-I'll grab it.  If it breaks things then we-told-you-so!
+Rob
