@@ -2,259 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 497607FF8E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 18:57:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57E767FF8EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 18:58:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230460AbjK3R4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 12:56:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47256 "EHLO
+        id S1346628AbjK3R5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 12:57:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232085AbjK3R4v (ORCPT
+        with ESMTP id S235239AbjK3R5A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 12:56:51 -0500
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B91110F1
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 09:56:56 -0800 (PST)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-50bc4eeeadaso50e87.1
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 09:56:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701367014; x=1701971814; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XSbGF5t6T+9UlC48SI7S6PeC5mxJiIPR6wB9iBHA1fQ=;
-        b=wmlleAvw2aLYGVOMkvpQBOqUhtgYLqtTvJPGpDqpglBHXuAEkA7iCd7RwtczQyEXc6
-         5+fSR+uJft1CMDWqBlUNV+LZmvHUqJ9uMEJxi+P3Hls42BtVItRqowbNQsNqsaGMzX8P
-         EBj+kKQdSW7wX96+N7FSlG0Efx+ESf2sc799YSeQlf0nuVqMLYcMD+c+C91g6nc6ADk0
-         Wm3V6JxawawidbnMkJpFMtVCaaK3PmdWSIUF1kymKkvKW0qNE4gJ58VcpFlaUftXbu88
-         vQaWAowcTDvkerNAbKqmHdQLuFNCd7ugAEs+P3+igeYJKmhqhfG3wBTydy184mkihwQf
-         pm1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701367014; x=1701971814;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XSbGF5t6T+9UlC48SI7S6PeC5mxJiIPR6wB9iBHA1fQ=;
-        b=utxtySX6eLCKFrZvwPFHuGe4HtMXzmLYcbKmJheOht8SuN9DGG/bCtBabkqGH6kbfd
-         W5KvgtpluIb3Ub9kjdQFM3oaXLWLmlzOOxKuZQsDnWaFkN5CeD3WS4chcTtQCNlEfUWS
-         NwBICyzAqt4Ui+0BwPrmmdgBm4KED4ziaw1YNsfDAPPe2/J0rg/GTMVM/Rm94coAGnbr
-         +EtoiD6OcWnnfIt450vukg/ruZ1DtLrzpSFYh9o98X5A9DYNKaD9YTURqdKVdarIZ1+/
-         ZAJEaDWJTZ7dlNN0eTAdkCKa2E5vqnE1rbuY0ACygpE6nXJM/J/lJgHCBSM0GG3N3OPj
-         GVwQ==
-X-Gm-Message-State: AOJu0YzYahSaFcWYER9YjI8lxjH4iQqUHmLTAue72c/PZ1u3VPPpqBuD
-        63bJFjqsROEoy+yy79GTmAlzQ1tsPkzfkMbGHGervw==
-X-Google-Smtp-Source: AGHT+IFmf00GZEF0WkytTlhiJpWOU0N28CHWo0KQFKLeG/+tsP7UTFr+oZ+N6ohgKjjF0maheTscfXTHgvwITI9CXQ0=
-X-Received: by 2002:a19:5f57:0:b0:505:7c88:9e45 with SMTP id
- a23-20020a195f57000000b005057c889e45mr127635lfj.0.1701367013906; Thu, 30 Nov
- 2023 09:56:53 -0800 (PST)
+        Thu, 30 Nov 2023 12:57:00 -0500
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFC6510F4;
+        Thu, 30 Nov 2023 09:57:04 -0800 (PST)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id 8798A5C02E6;
+        Thu, 30 Nov 2023 12:57:01 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Thu, 30 Nov 2023 12:57:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
+        cc:cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm3; t=1701367021; x=1701453421; bh=5D
+        inRe2Ja+E6Yl6fvgP5dTyogaDC1dFejinC1nN/SsY=; b=oEZgAwZ9WRw0EqIhAP
+        uyMMCuO/T84vdiNjP6/l9KP8gUO9upcLSlIYc3E6VEhUh2NmIewXXmYR3GIsZy8T
+        TWJYrn4iACpf2SwJWAYx8mDdvEXrChVpsb9XpJtBmw29i0z7vvZWNe7O13zoEYOD
+        GGUEmr1zMICpv/Y+BR70OCnTEFGVrjQi8NfZ4JbIf9be6MWU3zwSEshzIYkiAYQV
+        m8Oq3P7wSNgt3e4+GAqxJ3vC3RTiWXYDfcpyxhUQrH7Rd12JYwVwFqbOHdoKlqmz
+        aW0CuI/iqTJrmYQio9aX7K6KWmNCDptb1o2MotlH7sNtrDQzJKv6v+Meg8wA7FaG
+        1y9g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1701367021; x=1701453421; bh=5DinRe2Ja+E6Y
+        l6fvgP5dTyogaDC1dFejinC1nN/SsY=; b=yBO7hsXuBEm3JxgYZ5HPuNJ/xO4J5
+        9dqkV1sJtmbgeMtYafJ3A057AM819bf7N2TEfTE1fnr3FlKU7dSv76m7tZHsJ2nF
+        QpbJ2YvTinQHEkslg1fDD3MX1iC5lrcqyLgKkkXktoPKlTMCbbNgrziOj4Z06u9h
+        sSFhj9981nDzmLXH7mfPS9762YArlkQcfnqtvWMnGwxVGAXLrSw0nKEhpN7psHqA
+        HUCsiwDwlsOFI8hzelbzKrlKmh7hNYLH6x/3pRzXMjviax/b7590IEPr+bz7Yz8v
+        WPUNlqZgnkw7vyNcXVluubv/rwKgW2MPBUhs8DqnaGxOoykV5Khc+7cWA==
+X-ME-Sender: <xms:7MxoZVpOfAx7qfsP93LoYsQN1_BRBuc1PjNXjheSHs_-DU_CTH4j4w>
+    <xme:7MxoZXpUQI70Rhgl_FnEf89lCZ-cZB-AOKdwhcBR_qnahyhj6xw_gIbZmL_PiXGMx
+    oGcgXcuJpA-_wlQsCc>
+X-ME-Received: <xmr:7MxoZSPsIQEBNJn7T63OWWEjaxLq01UAbFXbmXdlP4ha7Bf8OKITJP03_lc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeijedguddthecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefvhigt
+    hhhoucetnhguvghrshgvnhcuoehthigthhhosehthigthhhordhpihiiiigrqeenucggtf
+    frrghtthgvrhhnpeeutedttefgjeefffehffffkeejueevieefudelgeejuddtfeffteek
+    lefhleelteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
+    hmpehthigthhhosehthigthhhordhpihiiiigr
+X-ME-Proxy: <xmx:7cxoZQ5pwEScjoo3AckBkcdRZhq1jLnG3_MVuBlFYpofV94s68T83Q>
+    <xmx:7cxoZU4Te13dn7yARTzaD6FovQE5uhGZFIl75RQkyXaNdJiGRvo_XA>
+    <xmx:7cxoZYjojVE1o8Z-Jim2v5vufCNP_hPMdnqmcOUgjFs9uAULLVgo3Q>
+    <xmx:7cxoZf0RBe_Fl3UR5u26L_cJWEhZ231zaiTOhMD2l7VCwmWH6rwIkg>
+Feedback-ID: i21f147d5:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 30 Nov 2023 12:56:59 -0500 (EST)
+Date:   Thu, 30 Nov 2023 10:56:58 -0700
+From:   Tycho Andersen <tycho@tycho.pizza>
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        Tycho Andersen <tandersen@netflix.com>
+Subject: Re: [RFC 1/3] pidfd: allow pidfd_open() on non-thread-group leaders
+Message-ID: <ZWjM6trZ6uw6yBza@tycho.pizza>
+References: <20231130163946.277502-1-tycho@tycho.pizza>
+ <20231130173938.GA21808@redhat.com>
 MIME-Version: 1.0
-References: <20231127220902.1315692-1-irogers@google.com> <20231127220902.1315692-7-irogers@google.com>
- <ZWjEqw1cAw/eIpQH@kernel.org>
-In-Reply-To: <ZWjEqw1cAw/eIpQH@kernel.org>
-From:   Ian Rogers <irogers@google.com>
-Date:   Thu, 30 Nov 2023 09:56:42 -0800
-Message-ID: <CAP-5=fUj7ZCchuwBW7xLe0UK8eupQUH3n9t0vcXGg=F57g-eMQ@mail.gmail.com>
-Subject: Re: [PATCH v5 06/50] tools lib api: Add io_dir an allocation free
- readdir alternative
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Nick Terrell <terrelln@fb.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        "Steinar H. Gunderson" <sesse@google.com>,
-        Liam Howlett <liam.howlett@oracle.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Colin Ian King <colin.i.king@gmail.com>,
-        Dmitrii Dolgov <9erthalion6@gmail.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Ming Wang <wangming01@loongson.cn>,
-        James Clark <james.clark@arm.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        German Gomez <german.gomez@arm.com>,
-        Changbin Du <changbin.du@huawei.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, Li Dong <lidong@vivo.com>,
-        Sandipan Das <sandipan.das@amd.com>,
-        liuwenyu <liuwenyu7@huawei.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
-        Guilherme Amadio <amadio@gentoo.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231130173938.GA21808@redhat.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 30, 2023 at 9:21=E2=80=AFAM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
->
-> Em Mon, Nov 27, 2023 at 02:08:18PM -0800, Ian Rogers escreveu:
-> > glibc's opendir allocates a minimum of 32kb, when called recursively
-> > for a directory tree the memory consumption can add up - nearly 300kb
-> > during perf start-up when processing modules. Add a stack allocated
-> > variant of readdir sized a little more than 1kb.
->
-> Now, on some systems:
->
->   CC      /tmp/build/perf/pmu-events/pmu-events.o
-> In file included from util/machine.c:39:
-> /tmp/build/perf/libapi/include/api/io_dir.h: In function =E2=80=98io_dir_=
-_readdir=E2=80=99:
-> /tmp/build/perf/libapi/include/api/io_dir.h:46:16: error: implicit declar=
-ation of function =E2=80=98getdents64=E2=80=99; did you mean =E2=80=98geten=
-tropy=E2=80=99? [-Werror=3Dimplicit-function-declaration]
->    ssize_t rc =3D getdents64(iod->dirfd, iod->buff, sizeof(iod->buff));
->                 ^~~~~~~~~~
->                 getentropy
->   CC      /tmp/build/perf/tests/workloads/brstack.o
->   CC      /tmp/build/perf/tests/workloads/datasym.o
->   CC      /tmp/build/perf/util/maps.o
+On Thu, Nov 30, 2023 at 06:39:39PM +0100, Oleg Nesterov wrote:
+> Hi Tycho,
+> 
+> I can't really read this patch now, possibly I am wrong, but...
 
+No worries, no rush here.
 
-Sorry for that. Is it a _GNU_SOURCE issue? I thought we generally had
-_GNU_SOURCE defined on the command line for reallocarray. Maybe we
-shouldn't define this on the command line and do it immediately before
-the relevant include with:
-
-#ifndef _GNU_SOURCE
-#define _GNU_SOURCE
-#endif
-
-like in tools/perf/util/intel-pt-decoder/intel-pt-decoder.c
-
-Thanks,
-Ian
-
->
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> > ---
-> >  tools/lib/api/Makefile |  2 +-
-> >  tools/lib/api/io_dir.h | 75 ++++++++++++++++++++++++++++++++++++++++++
-> >  2 files changed, 76 insertions(+), 1 deletion(-)
-> >  create mode 100644 tools/lib/api/io_dir.h
+> On 11/30, Tycho Andersen wrote:
 > >
-> > diff --git a/tools/lib/api/Makefile b/tools/lib/api/Makefile
-> > index 044860ac1ed1..186aa407de8c 100644
-> > --- a/tools/lib/api/Makefile
-> > +++ b/tools/lib/api/Makefile
-> > @@ -99,7 +99,7 @@ install_lib: $(LIBFILE)
-> >               $(call do_install_mkdir,$(libdir_SQ)); \
-> >               cp -fpR $(LIBFILE) $(DESTDIR)$(libdir_SQ)
-> >
-> > -HDRS :=3D cpu.h debug.h io.h
-> > +HDRS :=3D cpu.h debug.h io.h io_dir.h
-> >  FD_HDRS :=3D fd/array.h
-> >  FS_HDRS :=3D fs/fs.h fs/tracing_path.h
-> >  INSTALL_HDRS_PFX :=3D $(DESTDIR)$(prefix)/include/api
-> > diff --git a/tools/lib/api/io_dir.h b/tools/lib/api/io_dir.h
-> > new file mode 100644
-> > index 000000000000..f3479006edb6
-> > --- /dev/null
-> > +++ b/tools/lib/api/io_dir.h
-> > @@ -0,0 +1,75 @@
-> > +/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */
-> > +/*
-> > + * Lightweight directory reading library.
-> > + */
-> > +#ifndef __API_IO_DIR__
-> > +#define __API_IO_DIR__
-> > +
-> > +#include <dirent.h>
-> > +#include <fcntl.h>
-> > +#include <stdlib.h>
-> > +#include <unistd.h>
-> > +#include <sys/stat.h>
-> > +
-> > +struct io_dirent64 {
-> > +     ino64_t        d_ino;    /* 64-bit inode number */
-> > +     off64_t        d_off;    /* 64-bit offset to next structure */
-> > +     unsigned short d_reclen; /* Size of this dirent */
-> > +     unsigned char  d_type;   /* File type */
-> > +     char           d_name[NAME_MAX + 1]; /* Filename (null-terminated=
-) */
-> > +};
-> > +
-> > +struct io_dir {
-> > +     int dirfd;
-> > +     ssize_t available_bytes;
-> > +     struct io_dirent64 *next;
-> > +     struct io_dirent64 buff[4];
-> > +};
-> > +
-> > +static inline void io_dir__init(struct io_dir *iod, int dirfd)
-> > +{
-> > +     iod->dirfd =3D dirfd;
-> > +     iod->available_bytes =3D 0;
-> > +}
-> > +
-> > +static inline void io_dir__rewinddir(struct io_dir *iod)
-> > +{
-> > +     lseek(iod->dirfd, 0, SEEK_SET);
-> > +     iod->available_bytes =3D 0;
-> > +}
-> > +
-> > +static inline struct io_dirent64 *io_dir__readdir(struct io_dir *iod)
-> > +{
-> > +     struct io_dirent64 *entry;
-> > +
-> > +     if (iod->available_bytes <=3D 0) {
-> > +             ssize_t rc =3D getdents64(iod->dirfd, iod->buff, sizeof(i=
-od->buff));
-> > +
-> > +             if (rc <=3D 0)
-> > +                     return NULL;
-> > +             iod->available_bytes =3D rc;
-> > +             iod->next =3D iod->buff;
-> > +     }
-> > +     entry =3D iod->next;
-> > +     iod->next =3D (struct io_dirent64 *)((char *)entry + entry->d_rec=
-len);
-> > +     iod->available_bytes -=3D entry->d_reclen;
-> > +     return entry;
-> > +}
-> > +
-> > +static inline bool io_dir__is_dir(const struct io_dir *iod, struct io_=
-dirent64 *dent)
-> > +{
-> > +     if (dent->d_type =3D=3D DT_UNKNOWN) {
-> > +             struct stat st;
-> > +
-> > +             if (fstatat(iod->dirfd, dent->d_name, &st, /*flags=3D*/0)=
-)
-> > +                     return false;
-> > +
-> > +             if (S_ISDIR(st.st_mode)) {
-> > +                     dent->d_type =3D DT_DIR;
-> > +                     return true;
-> > +             }
-> > +     }
-> > +     return dent->d_type =3D=3D DT_DIR;
-> > +}
-> > +
-> > +#endif
-> > --
-> > 2.43.0.rc1.413.gea7ed67945-goog
-> >
->
-> --
->
-> - Arnaldo
+> > @@ -263,16 +263,25 @@ void release_task(struct task_struct *p)
+> >  	 */
+> >  	zap_leader = 0;
+> >  	leader = p->group_leader;
+> > -	if (leader != p && thread_group_empty(leader)
+> > -			&& leader->exit_state == EXIT_ZOMBIE) {
+> > -		/*
+> > -		 * If we were the last child thread and the leader has
+> > -		 * exited already, and the leader's parent ignores SIGCHLD,
+> > -		 * then we are the one who should release the leader.
+> > -		 */
+> > -		zap_leader = do_notify_parent(leader, leader->exit_signal);
+> > -		if (zap_leader)
+> > -			leader->exit_state = EXIT_DEAD;
+> > +	if (leader != p) {
+> > +		if (thread_group_empty(leader)
+> > +				&& leader->exit_state == EXIT_ZOMBIE) {
+> > +			/*
+> > +			 * If we were the last child thread and the leader has
+> > +			 * exited already, and the leader's parent ignores SIGCHLD,
+> > +			 * then we are the one who should release the leader.
+> > +			 */
+> > +			zap_leader = do_notify_parent(leader,
+> > +						      leader->exit_signal);
+> > +			if (zap_leader)
+> > +				leader->exit_state = EXIT_DEAD;
+> > +		} else {
+> > +			/*
+> > +			 * wake up pidfd pollers anyway, they want to know this
+> > +			 * thread is dying.
+> > +			 */
+> > +			wake_up_all(&thread_pid->wait_pidfd);
+>                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+> somehow I can't believe this is a good change after a quick glance ;)
+
+Yeah, I figured it would raise some eyebrows :)
+
+> I think that wake_up_all(wait_pidfd) should have a single caller,
+> do_notify_pidfd(). This probably means it should be shiftef from
+> do_notify_parent() to exit_notify(), I am not sure...
+
+__exit_signals() is what I was thinking in the patch description, but
+I'll look at exit_notify() too.
+
+Tycho
