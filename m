@@ -2,216 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DA7F7FF78E
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 17:58:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D327C7FF792
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 17:58:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345675AbjK3Q6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 11:58:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46894 "EHLO
+        id S1345851AbjK3Q6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 11:58:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235242AbjK3Q6R (ORCPT
+        with ESMTP id S231856AbjK3Q6f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 11:58:17 -0500
-Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com [209.85.214.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E4F110F8
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 08:58:23 -0800 (PST)
-Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-1d04ce0214dso337805ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 08:58:23 -0800 (PST)
+        Thu, 30 Nov 2023 11:58:35 -0500
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEA43D67
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 08:58:40 -0800 (PST)
+Received: by mail-io1-xd2a.google.com with SMTP id ca18e2360f4ac-7b359dad0e7so14296639f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 08:58:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1701363520; x=1701968320; darn=vger.kernel.org;
+        h=subject:from:cc:to:content-language:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=kjfGUOrzOcR4VCFCR9ZAuqiy4DmfY+gNhzhv4Uomr1U=;
+        b=F8OqNkGUafd5FWrSsioFV9IZrJ1u9pnpNnVr4UWnBECGKZ2jP41b9BIVe55bWrAwGn
+         KMSV3xt9y738n3YnEcf2yp0edMKSD2EpxQXMc7+ftAj7H7H6X+zLSLPSG5ZH5VUrqhVm
+         a/unZ30ed5vOGbSO0IXeGe0Gi0vznQZhMWgrw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701363502; x=1701968302;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=f3LgIEz551m5QS19kYMv8+Qv6JiftTimJRxKuDcn7DA=;
-        b=VdQyM1HpDxXsvldR2NewGlpxYoBZQzer01n0Z17IMAylTw8NLA7laYbxRNul+FG5qV
-         Weh07iAsqscVmk+YkXxvqG3KmG46sgJ+gYKix89pXis8wMV0oi7W3YJz2wW71LJVqymd
-         X3SMd+YkNVqS7RJYfCdk9a57OADfwmbLO4QP0sPJ0igC5Ota0bjjbyAaFokyidIwF2WG
-         jLIT0ZHdpAKajEzQIcfR6s7TEmEYO2g4Ntdun5eXMBnhubRb6rxX2HLPNfg0qjrvUbPa
-         NAxeYLc9l+uCQ5/hGcDrGfpPHM232oh7hPYwDPA4CbcxCJsf+RhGtrIovd1PjgxPUoj1
-         3LcA==
-X-Gm-Message-State: AOJu0Yww1xdJM5iAvnI4SSNpHsLG3l5sXmiyxd2fgO6FbWDg3lNpLFXi
-        0OVYwpS/BqDrhNUn5706NWN01ZrUWseqxNpb7mIApJY+jkvO
-X-Google-Smtp-Source: AGHT+IFVIP1QNI42yejmrgo+Sg7pC3ZOMrJUCDPNnb4bfv2evIE+5Rp6jx8LiLoY4qymhuuj0W9/CpdyfJInl8/fAcVXbA4sU+2p
+        d=1e100.net; s=20230601; t=1701363520; x=1701968320;
+        h=subject:from:cc:to:content-language:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kjfGUOrzOcR4VCFCR9ZAuqiy4DmfY+gNhzhv4Uomr1U=;
+        b=bBDW+dQcOg3K2/Eej3omIm954jykmFfH/X2ZM3WG9hbkRszLsaTpnvvA78CF+PnYIb
+         1RUJV1aNz9AGRC2V7iyH7muL/BNJUqR7apJtlcMkfIw45yWBjMULVJbfPLWUcCmMiyrG
+         hOrB8qQToGivWbqLStoU8XsAndm1He4UFUKiQ1Tvo77Ax0puBAAbnOCyETIBGB1sPh2F
+         bjJga7m97fBAyYZIJbVK1VkOIq6O7cxlkoXHGJA6hJep5ymfVdeOOx2qFlCcpO3ClPGR
+         wEonzcB/Sjs01JN/RZshorZPOYIWYn4tkDK0G4w+jziTai7pkL/cvv+/7kzREAZp49SD
+         8uPQ==
+X-Gm-Message-State: AOJu0Yx3tC2yHODnfflAt0GiqEAL6+RUXAXW+SGmbN8R2BF12MQaOmHX
+        zawZUaJIIi4LLkDQOdEWV+WYP3kYlwXa2Fbb3QE=
+X-Google-Smtp-Source: AGHT+IFSVsGsXT2IkoG9CBP+31+G7sAfiES8qJIDWWX0VAYPQbMR17+QOR56yYT2iZGtf5zDVFwFAw==
+X-Received: by 2002:a05:6e02:b4a:b0:35c:baec:750c with SMTP id f10-20020a056e020b4a00b0035cbaec750cmr2483295ilu.1.1701363520298;
+        Thu, 30 Nov 2023 08:58:40 -0800 (PST)
+Received: from [192.168.1.128] ([38.175.170.29])
+        by smtp.gmail.com with ESMTPSA id d15-20020a056e021c4f00b0035c8c6045cfsm213266ilg.72.2023.11.30.08.58.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Nov 2023 08:58:39 -0800 (PST)
+Content-Type: multipart/mixed; boundary="------------6IEXtfpLNI6JnAsB035VsGjN"
+Message-ID: <c26192e6-df1e-450a-ac2d-e18fc0d77fe9@linuxfoundation.org>
+Date:   Thu, 30 Nov 2023 09:58:39 -0700
 MIME-Version: 1.0
-X-Received: by 2002:a17:902:ce8a:b0:1cc:29fb:f398 with SMTP id
- f10-20020a170902ce8a00b001cc29fbf398mr5447890plg.10.1701363502571; Thu, 30
- Nov 2023 08:58:22 -0800 (PST)
-Date:   Thu, 30 Nov 2023 08:58:22 -0800
-In-Reply-To: <000000000000e6432a06046c96a5@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000349d05060b618f2a@google.com>
-Subject: Re: [syzbot] [fs] INFO: task hung in __fdget_pos (4)
-From:   syzbot <syzbot+e245f0516ee625aaa412@syzkaller.appspotmail.com>
-To:     brauner@kernel.org, david@fromorbit.com, djwong@kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, llvm@lists.linux.dev, mjguzik@gmail.com,
-        nathan@kernel.org, ndesaulniers@google.com, nogikh@google.com,
-        syzkaller-bugs@googlegroups.com, trix@redhat.com, tytso@mit.edu,
-        viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Shuah Khan <skhan@linuxfoundation.org>, shuah <shuah@kernel.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        David Gow <davidgow@google.com>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Subject: [GIT PULL] KUnit fixes update for Linux 6.7-rc4
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+This is a multi-part message in MIME format.
+--------------6IEXtfpLNI6JnAsB035VsGjN
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-HEAD commit:    3b47bc037bd4 Merge tag 'pinctrl-v6.7-2' of git://git.kerne..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14e6bdaae80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c2c74446ab4f0028
-dashboard link: https://syzkaller.appspot.com/bug?extid=e245f0516ee625aaa412
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11026e54e80000
+Hi Linus,
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/43de6cde1436/disk-3b47bc03.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/24a2ba210bcf/vmlinux-3b47bc03.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/a5d414ced6d5/bzImage-3b47bc03.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/c28d17ae0132/mount_4.gz
+Please pull the following KUnit fixes update for Linux 6.7-rc4.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+e245f0516ee625aaa412@syzkaller.appspotmail.com
+This KUnit fixes update for Linux 6.7-rc4 consists of three fixes to
+warnings and run-time test behavior. With these fixes, test suite
+counter will be reset correctly before running tests, kunit will warn
+if tests are too slow, and eliminate warning when kfree() as an action.
 
-INFO: task syz-executor.0:24270 blocked for more than 143 seconds.
-      Not tainted 6.7.0-rc3-syzkaller-00033-g3b47bc037bd4 #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor.0  state:D stack:28784 pid:24270 tgid:24259 ppid:5149   flags:0x00004006
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5376 [inline]
- __schedule+0x1961/0x4ab0 kernel/sched/core.c:6688
- __schedule_loop kernel/sched/core.c:6763 [inline]
- schedule+0x149/0x260 kernel/sched/core.c:6778
- schedule_preempt_disabled+0x13/0x20 kernel/sched/core.c:6835
- __mutex_lock_common kernel/locking/mutex.c:679 [inline]
- __mutex_lock+0x6a3/0xd60 kernel/locking/mutex.c:747
- __fdget_pos+0x2b0/0x340 fs/file.c:1177
- fdget_pos include/linux/file.h:74 [inline]
- __do_sys_getdents64 fs/readdir.c:401 [inline]
- __se_sys_getdents64+0x1dc/0x4f0 fs/readdir.c:390
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x45/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7fd0cec7cae9
-RSP: 002b:00007fd0cfa610c8 EFLAGS: 00000246 ORIG_RAX: 00000000000000d9
-RAX: ffffffffffffffda RBX: 00007fd0ced9c050 RCX: 00007fd0cec7cae9
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000005
-RBP: 00007fd0cecc847a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000006e R14: 00007fd0ced9c050 R15: 00007ffeeda72018
- </TASK>
+diff is attached.
 
-Showing all locks held in the system:
-1 lock held by khungtaskd/29:
- #0: ffffffff8d92cf60 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:301 [inline]
- #0: ffffffff8d92cf60 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:747 [inline]
- #0: ffffffff8d92cf60 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x55/0x2a0 kernel/locking/lockdep.c:6614
-2 locks held by getty/4818:
- #0: ffff88814afe20a0 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x25/0x70 drivers/tty/tty_ldisc.c:243
- #1: ffffc900031332f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x6b4/0x1e10 drivers/tty/n_tty.c:2201
-1 lock held by syz-executor.5/5143:
-3 locks held by syz-executor.0/24262:
-1 lock held by syz-executor.0/24270:
- #0: ffff88807c5574c8 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0x2b0/0x340 fs/file.c:1177
-1 lock held by syz-executor.0/24319:
-2 locks held by syz-executor.1/32017:
- #0: ffff8880b983c358 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock_nested+0x2a/0x140 kernel/sched/core.c:558
- #1: ffff8880b9828808 (&per_cpu_ptr(group->pcpu, cpu)->seq){-.-.}-{0:0}, at: psi_task_switch+0x441/0x770 kernel/sched/psi.c:988
-1 lock held by syz-executor.1/32030:
- #0: ffff8880b983c358 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock_nested+0x2a/0x140 kernel/sched/core.c:558
-2 locks held by syz-executor.4/32028:
- #0: ffff8880b983c358 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock_nested+0x2a/0x140 kernel/sched/core.c:558
- #1: ffff8880b9828808 (&per_cpu_ptr(group->pcpu, cpu)->seq){-.-.}-{0:0}, at: psi_task_switch+0x441/0x770 kernel/sched/psi.c:988
-2 locks held by syz-executor.3/32042:
- #0: ffff88801cfea360 (&lo->lo_mutex){+.+.}-{3:3}, at: loop_global_lock_killable drivers/block/loop.c:120 [inline]
- #0: ffff88801cfea360 (&lo->lo_mutex){+.+.}-{3:3}, at: loop_configure+0x1f9/0x1250 drivers/block/loop.c:1023
- #1: ffffe8ffffd6a108 (&per_cpu_ptr(group->pcpu, cpu)->seq){-.-.}-{0:0}, at: psi_task_switch+0x3a7/0x770 kernel/sched/psi.c:976
-4 locks held by syz-executor.0/32045:
+thanks,
+-- Shuah
 
-=============================================
+----------------------------------------------------------------
+The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa86:
 
-NMI backtrace for cpu 1
-CPU: 1 PID: 29 Comm: khungtaskd Not tainted 6.7.0-rc3-syzkaller-00033-g3b47bc037bd4 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
- nmi_cpu_backtrace+0x498/0x4d0 lib/nmi_backtrace.c:113
- nmi_trigger_cpumask_backtrace+0x198/0x310 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:160 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:222 [inline]
- watchdog+0xfaf/0xff0 kernel/hung_task.c:379
- kthread+0x2d3/0x370 kernel/kthread.c:388
- ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
- </TASK>
-Sending NMI from CPU 1 to CPUs 0:
-NMI backtrace for cpu 0
-CPU: 0 PID: 5138 Comm: syz-executor.1 Not tainted 6.7.0-rc3-syzkaller-00033-g3b47bc037bd4 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
-RIP: 0010:orc_find arch/x86/kernel/unwind_orc.c:217 [inline]
-RIP: 0010:unwind_next_frame+0x271/0x29e0 arch/x86/kernel/unwind_orc.c:494
-Code: 50 00 39 eb 0f 86 f7 1d 00 00 89 e8 48 8d 1c 85 08 26 20 90 48 89 d8 48 c1 e8 03 49 be 00 00 00 00 00 fc ff df 42 0f b6 04 30 <84> c0 0f 85 89 20 00 00 44 8b 3b 89 e8 ff c0 48 8d 1c 85 08 26 20
-RSP: 0018:ffffc90003f3f700 EFLAGS: 00000a06
-RAX: 0000000000000000 RBX: ffffffff90211d88 RCX: 00000000000a6001
-RDX: ffff88801eaa3b80 RSI: 0000000000003de0 RDI: 00000000000a6000
-RBP: 0000000000003de0 R08: ffffffff813db069 R09: 0000000000000000
-R10: ffffc90003f3f840 R11: fffff520007e7f14 R12: ffffc90003f3f840
-R13: 00000000000a6001 R14: dffffc0000000000 R15: ffffffff813de03c
-FS:  0000555556748480(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f84b6775198 CR3: 00000000200ef000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <NMI>
- </NMI>
- <TASK>
- __unwind_start+0x641/0x7a0 arch/x86/kernel/unwind_orc.c:760
- unwind_start arch/x86/include/asm/unwind.h:64 [inline]
- arch_stack_walk+0xfd/0x1a0 arch/x86/kernel/stacktrace.c:24
- stack_trace_save+0x117/0x1c0 kernel/stacktrace.c:122
- kasan_save_stack mm/kasan/common.c:45 [inline]
- kasan_set_track+0x4f/0x70 mm/kasan/common.c:52
- __kasan_slab_alloc+0x66/0x70 mm/kasan/common.c:328
- kasan_slab_alloc include/linux/kasan.h:188 [inline]
- slab_post_alloc_hook+0x6c/0x3c0 mm/slab.h:763
- slab_alloc_node mm/slub.c:3478 [inline]
- slab_alloc mm/slub.c:3486 [inline]
- __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
- kmem_cache_alloc+0x19e/0x2b0 mm/slub.c:3502
- sk_prot_alloc+0x58/0x210 net/core/sock.c:2069
- sk_alloc+0x38/0x370 net/core/sock.c:2128
- inet_create+0x652/0xe20 net/ipv4/af_inet.c:325
- __sock_create+0x48c/0x910 net/socket.c:1569
- sock_create net/socket.c:1620 [inline]
- __sys_socket_create net/socket.c:1657 [inline]
- __sys_socket+0x14f/0x3b0 net/socket.c:1704
- __do_sys_socket net/socket.c:1718 [inline]
- __se_sys_socket net/socket.c:1716 [inline]
- __x64_sys_socket+0x7a/0x90 net/socket.c:1716
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x45/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7f84b667e867
-Code: f0 ff ff 77 06 c3 0f 1f 44 00 00 48 c7 c2 b0 ff ff ff f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 b8 29 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffed1a3ed28 EFLAGS: 00000206 ORIG_RAX: 0000000000000029
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007f84b667e867
-RDX: 0000000000000006 RSI: 0000000000000001 RDI: 0000000000000002
-RBP: 00007ffed1a3f43c R08: 00007ffed1a3ed1c R09: 00007ffed1a3f127
-R10: 00007ffed1a3eda0 R11: 0000000000000206 R12: 0000000000000032
-R13: 0000000000165078 R14: 0000000000165035 R15: 0000000000000008
- </TASK>
+   Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
 
+are available in the Git repository at:
 
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+   git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux_kselftest-kunit-fixes-6.7-rc4
+
+for you to fetch changes up to 1bddcf77ce6668692fc15e968fd0870d5524d112:
+
+   kunit: test: Avoid cast warning when adding kfree() as an action (2023-11-14 13:01:57 -0700)
+
+----------------------------------------------------------------
+linux_kselftest-kunit-fixes-6.7-rc4
+
+This KUnit fixes update for Linux 6.7-rc4 consists of three fixes to
+warnings and run-time test behavior. With these fixes, test suite
+counter will be reset correctly before running tests, kunit will warn
+if tests are too slow, and eliminate warning when kfree() as an action.
+
+----------------------------------------------------------------
+Maxime Ripard (1):
+       kunit: Warn if tests are slow
+
+Michal Wajdeczko (1):
+       kunit: Reset suite counter right before running tests
+
+Richard Fitzgerald (1):
+       kunit: test: Avoid cast warning when adding kfree() as an action
+
+  lib/kunit/kunit-test.c |  2 +-
+  lib/kunit/test.c       | 42 ++++++++++++++++++++++++++++++++++++++++--
+  2 files changed, 41 insertions(+), 3 deletions(-)
+----------------------------------------------------------------
+--------------6IEXtfpLNI6JnAsB035VsGjN
+Content-Type: text/x-patch; charset=UTF-8;
+ name="linux_kselftest-kunit-fixes-6.7-rc4.diff"
+Content-Disposition: attachment;
+ filename="linux_kselftest-kunit-fixes-6.7-rc4.diff"
+Content-Transfer-Encoding: base64
+
+ZGlmZiAtLWdpdCBhL2xpYi9rdW5pdC9rdW5pdC10ZXN0LmMgYi9saWIva3VuaXQva3VuaXQt
+dGVzdC5jCmluZGV4IDk5ZDJhM2E1MjhlMS4uZGUyMTEzYTU4ZmEwIDEwMDY0NAotLS0gYS9s
+aWIva3VuaXQva3VuaXQtdGVzdC5jCisrKyBiL2xpYi9rdW5pdC9rdW5pdC10ZXN0LmMKQEAg
+LTU2Miw3ICs1NjIsNyBAQCBzdGF0aWMgdm9pZCBrdW5pdF9sb2dfdGVzdChzdHJ1Y3Qga3Vu
+aXQgKnRlc3QpCiAJS1VOSVRfRVhQRUNUX1RSVUUodGVzdCwgdGVzdC0+bG9nLT5hcHBlbmRf
+bmV3bGluZXMpOwogCiAJZnVsbF9sb2cgPSBzdHJpbmdfc3RyZWFtX2dldF9zdHJpbmcodGVz
+dC0+bG9nKTsKLQlrdW5pdF9hZGRfYWN0aW9uKHRlc3QsIChrdW5pdF9hY3Rpb25fdCAqKWtm
+cmVlLCBmdWxsX2xvZyk7CisJa3VuaXRfYWRkX2FjdGlvbih0ZXN0LCBrZnJlZV93cmFwcGVy
+LCBmdWxsX2xvZyk7CiAJS1VOSVRfRVhQRUNUX05PVF9FUlJfT1JfTlVMTCh0ZXN0LAogCQkJ
+CSAgICAgc3Ryc3RyKGZ1bGxfbG9nLCAicHV0IHRoaXMgaW4gbG9nLiIpKTsKIAlLVU5JVF9F
+WFBFQ1RfTk9UX0VSUl9PUl9OVUxMKHRlc3QsCmRpZmYgLS1naXQgYS9saWIva3VuaXQvdGVz
+dC5jIGIvbGliL2t1bml0L3Rlc3QuYwppbmRleCBmMmViNzFmMWE2NmMuLjdhY2ViMDdhMWFm
+OSAxMDA2NDQKLS0tIGEvbGliL2t1bml0L3Rlc3QuYworKysgYi9saWIva3VuaXQvdGVzdC5j
+CkBAIC0zMzgsNiArMzM4LDM2IEBAIHZvaWQga3VuaXRfaW5pdF90ZXN0KHN0cnVjdCBrdW5p
+dCAqdGVzdCwgY29uc3QgY2hhciAqbmFtZSwgc3RydWN0IHN0cmluZ19zdHJlYW0KIH0KIEVY
+UE9SVF9TWU1CT0xfR1BMKGt1bml0X2luaXRfdGVzdCk7CiAKKy8qIE9ubHkgd2FybiB3aGVu
+IGEgdGVzdCB0YWtlcyBtb3JlIHRoYW4gdHdpY2UgdGhlIHRocmVzaG9sZCAqLworI2RlZmlu
+ZSBLVU5JVF9TUEVFRF9XQVJOSU5HX01VTFRJUExJRVIJMgorCisvKiBTbG93IHRlc3RzIGFy
+ZSBkZWZpbmVkIGFzIHRha2luZyBtb3JlIHRoYW4gMXMgKi8KKyNkZWZpbmUgS1VOSVRfU1BF
+RURfU0xPV19USFJFU0hPTERfUwkxCisKKyNkZWZpbmUgS1VOSVRfU1BFRURfU0xPV19XQVJO
+SU5HX1RIUkVTSE9MRF9TCVwKKwkoS1VOSVRfU1BFRURfV0FSTklOR19NVUxUSVBMSUVSICog
+S1VOSVRfU1BFRURfU0xPV19USFJFU0hPTERfUykKKworI2RlZmluZSBzX3RvX3RpbWVzcGVj
+NjQocykgbnNfdG9fdGltZXNwZWM2NCgocykgKiBOU0VDX1BFUl9TRUMpCisKK3N0YXRpYyB2
+b2lkIGt1bml0X3J1bl9jYXNlX2NoZWNrX3NwZWVkKHN0cnVjdCBrdW5pdCAqdGVzdCwKKwkJ
+CQkgICAgICAgc3RydWN0IGt1bml0X2Nhc2UgKnRlc3RfY2FzZSwKKwkJCQkgICAgICAgc3Ry
+dWN0IHRpbWVzcGVjNjQgZHVyYXRpb24pCit7CisJc3RydWN0IHRpbWVzcGVjNjQgc2xvd190
+aHIgPQorCQlzX3RvX3RpbWVzcGVjNjQoS1VOSVRfU1BFRURfU0xPV19XQVJOSU5HX1RIUkVT
+SE9MRF9TKTsKKwllbnVtIGt1bml0X3NwZWVkIHNwZWVkID0gdGVzdF9jYXNlLT5hdHRyLnNw
+ZWVkOworCisJaWYgKHRpbWVzcGVjNjRfY29tcGFyZSgmZHVyYXRpb24sICZzbG93X3Rocikg
+PCAwKQorCQlyZXR1cm47CisKKwlpZiAoc3BlZWQgPT0gS1VOSVRfU1BFRURfVkVSWV9TTE9X
+IHx8IHNwZWVkID09IEtVTklUX1NQRUVEX1NMT1cpCisJCXJldHVybjsKKworCWt1bml0X3dh
+cm4odGVzdCwKKwkJICAgIlRlc3Qgc2hvdWxkIGJlIG1hcmtlZCBzbG93IChydW50aW1lOiAl
+bGxkLiUwOWxkcykiLAorCQkgICBkdXJhdGlvbi50dl9zZWMsIGR1cmF0aW9uLnR2X25zZWMp
+OworfQorCiAvKgogICogSW5pdGlhbGl6ZXMgYW5kIHJ1bnMgdGVzdCBjYXNlLiBEb2VzIG5v
+dCBjbGVhbiB1cCBvciBkbyBwb3N0IHZhbGlkYXRpb25zLgogICovCkBAIC0zNDUsNiArMzc1
+LDggQEAgc3RhdGljIHZvaWQga3VuaXRfcnVuX2Nhc2VfaW50ZXJuYWwoc3RydWN0IGt1bml0
+ICp0ZXN0LAogCQkJCSAgICBzdHJ1Y3Qga3VuaXRfc3VpdGUgKnN1aXRlLAogCQkJCSAgICBz
+dHJ1Y3Qga3VuaXRfY2FzZSAqdGVzdF9jYXNlKQogeworCXN0cnVjdCB0aW1lc3BlYzY0IHN0
+YXJ0LCBlbmQ7CisKIAlpZiAoc3VpdGUtPmluaXQpIHsKIAkJaW50IHJldDsKIApAQCAtMzU2
+LDcgKzM4OCwxMyBAQCBzdGF0aWMgdm9pZCBrdW5pdF9ydW5fY2FzZV9pbnRlcm5hbChzdHJ1
+Y3Qga3VuaXQgKnRlc3QsCiAJCX0KIAl9CiAKKwlrdGltZV9nZXRfdHM2NCgmc3RhcnQpOwor
+CiAJdGVzdF9jYXNlLT5ydW5fY2FzZSh0ZXN0KTsKKworCWt0aW1lX2dldF90czY0KCZlbmQp
+OworCisJa3VuaXRfcnVuX2Nhc2VfY2hlY2tfc3BlZWQodGVzdCwgdGVzdF9jYXNlLCB0aW1l
+c3BlYzY0X3N1YihlbmQsIHN0YXJ0KSk7CiB9CiAKIHN0YXRpYyB2b2lkIGt1bml0X2Nhc2Vf
+aW50ZXJuYWxfY2xlYW51cChzdHJ1Y3Qga3VuaXQgKnRlc3QpCkBAIC02NzAsNiArNzA4LDgg
+QEAgaW50IF9fa3VuaXRfdGVzdF9zdWl0ZXNfaW5pdChzdHJ1Y3Qga3VuaXRfc3VpdGUgKiBj
+b25zdCAqIGNvbnN0IHN1aXRlcywgaW50IG51bV8KIAkJcmV0dXJuIDA7CiAJfQogCisJa3Vu
+aXRfc3VpdGVfY291bnRlciA9IDE7CisKIAlzdGF0aWNfYnJhbmNoX2luYygma3VuaXRfcnVu
+bmluZyk7CiAKIAlmb3IgKGkgPSAwOyBpIDwgbnVtX3N1aXRlczsgaSsrKSB7CkBAIC02OTYs
+OCArNzM2LDYgQEAgdm9pZCBfX2t1bml0X3Rlc3Rfc3VpdGVzX2V4aXQoc3RydWN0IGt1bml0
+X3N1aXRlICoqc3VpdGVzLCBpbnQgbnVtX3N1aXRlcykKIAogCWZvciAoaSA9IDA7IGkgPCBu
+dW1fc3VpdGVzOyBpKyspCiAJCWt1bml0X2V4aXRfc3VpdGUoc3VpdGVzW2ldKTsKLQotCWt1
+bml0X3N1aXRlX2NvdW50ZXIgPSAxOwogfQogRVhQT1JUX1NZTUJPTF9HUEwoX19rdW5pdF90
+ZXN0X3N1aXRlc19leGl0KTsKIAo=
+
+--------------6IEXtfpLNI6JnAsB035VsGjN--
