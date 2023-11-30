@@ -2,249 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1E1B7FFF75
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 00:31:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBEA07FFF78
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 00:31:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377256AbjK3Xax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 18:30:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47866 "EHLO
+        id S1377270AbjK3XbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 18:31:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377216AbjK3Xav (ORCPT
+        with ESMTP id S1377259AbjK3XbG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 18:30:51 -0500
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85ADE10E4
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 15:30:53 -0800 (PST)
-Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2c9c5d30b32so19896061fa.2
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 15:30:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1701387052; x=1701991852; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OlkZfLy7XjVfeJnSAyVxLt4mO60J3JeK1Ayu4OTnn6g=;
-        b=Rgrl6LR8zpZCooUNieWI3jD+Rfv1Qqm1fKKdaI+Q65R5bv8wc/EGFsuqmC5XorZokG
-         er3Z1FJotq5XRS7Se/Gp/lgN+5yeZBHsMDLMiv4BL+n+3d9EYeLgsoq9aVytJ99v10QX
-         COPyEAl0XrA1eLOSXWGlg//9n7FWb04XrQRxNfAENxOsrlX6de6I4mHFLBGmeM7Ye8BR
-         7hsRPTGCwbmtbaxV+NpETD+76G8MxJojeIg+zx2uFqYEiGOOK+HI5u2115y/33nNMRec
-         gOBhu5QNuCrR40bHEjqQA7G5yUN24QI958vVcfBH0H07gpIstst4Ky0fNbSjRtr0u+Sc
-         KNhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701387052; x=1701991852;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OlkZfLy7XjVfeJnSAyVxLt4mO60J3JeK1Ayu4OTnn6g=;
-        b=Fw39N3EYd4gwyuPx7hImqu4djDFU7OyJk5/QsbalkhLqwh+ZLiIbuuHPUn/1UpptDG
-         S75ZD4aBya9lDys12XaUCbRSwyJ/9CtV+7jJi5cP8yoRRU2r21a8usjZlEpd6kNRqsgB
-         a/lus+RVWKJHDrWuj73Gj+kq0S3zmqcesUREcydSyOZ+yklmuR7btfY6PXtRdy16Um+c
-         fI3V7DJz4nf4afqLd56Xdp5TxuiIS+rLCseIhuudtwNXdKX+z2FaSlt+wt7Xl7cuZTaS
-         JAqEpnstGssAoRi+feqMzDEl/ChVoQnhkIbXxonO84Pc0SlnBdXnrG0lOM6nUnV7fpp4
-         NAUg==
-X-Gm-Message-State: AOJu0YxSkSLp/rN+2KWrUAyTk07SIwTOEl8DGDI2bSzKibyOHGku8Wku
-        +cMgk0naeXBWCXtgE6+qiVskdwOiKyvw5wwHgsV8FA==
-X-Google-Smtp-Source: AGHT+IEXF8b8i2d8gUX/7XGbKeBhO5y4FoKURpNKXdVwOiELp1ycsJ9gIbh2TFOn8p7a8iYvPuGv0h95Jl3CjKO9auA=
-X-Received: by 2002:a2e:6e14:0:b0:2c9:d862:c66b with SMTP id
- j20-20020a2e6e14000000b002c9d862c66bmr192908ljc.88.1701387051792; Thu, 30 Nov
- 2023 15:30:51 -0800 (PST)
+        Thu, 30 Nov 2023 18:31:06 -0500
+Received: from sonic306-28.consmr.mail.ne1.yahoo.com (sonic306-28.consmr.mail.ne1.yahoo.com [66.163.189.90])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99EA310F3
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 15:31:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1701387069; bh=KKWxRGo/AX4QeEd47QnRsF18S9N8KhU2b2kKz79X0vI=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=cAYiTDaGs/kbdlVsXQ3ZuZVFA5TRYHo2+eObt78zh4Sa23pTNIXCb/lNwfjGhZBRE3yRDmtIX7ekIJPpwWEIOPPY/UaKk1sSPFJQ14e0f/0z4OETF936AMsR5Py5CsCkP9lgWuoBA1FD0m8YyDCXpN0IbgR0FVNGsaQDR/zLSCjHbJKZlWGblz+piMqqMGDGX7F75nObo2xfDYJCNWoeYETeUOkMOD0rPg6oJpthTviKibT5+69+TZGpCI6jeBo22c6QbrLjbFTSylFNzn2ZhJoOyRQxdd1kkqF6TofdTqCVgU01rkWlgc8FPnFmesSRu0SY4b7YHDNAFrOEK9zqNw==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1701387069; bh=rlV0Ex3CXOdWAchqeNEt2KMDS+yjt068Dx8Y7mNlP0H=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=F0tqQYfSlXR4YHDbnzWKlMxzGKOqi/su9mCSbDwgEAtnFN8aZA551z+edpGH8RIBhrU9hiF7Pl+7ha3w/6gCwm8esgiP3WIckyBeEf1oSBnH5ooSU6fmVbjDA9HUzADBNMiJ06j7AWDYbP+my52iF0aqYypFewN7p0zfWSuBgh+u6RRyCa8vFxVz39iSP1iHPqDIoF90GVzDYOaDoiUSPATBIsSKlBfc06uuehmfN6TyJZ+vIv+aAAsYiLMkyDh624Pe+9+0VPYch2vdO28ufKxjetDg+cLvaumm8nt94e9uVs8ijabUjBbDvPf+nMkBXs6ztQwytL4MeJW+1SJO8g==
+X-YMail-OSG: RmbhXsgVM1lLhcaU1ne7mR6zpkzpbo7bxmuwrCU.Q2Jz597RECpRfmbO46DOQRX
+ U0xQ5xBsTHuxbwW_TtCdMT2eNLcqB.9MNEIycPBCvxEIMauu4wwWKuCNsriWG17YzxZZSU5mRqMT
+ nD2EjYEowKyCkwCd1Te9jq5klHYvLtxbd4bFcCFL2P1w8RMBLElSfcjca4Z8tSv0mGlkUiuzaWwG
+ RBl1UsJIZ5mMgUmfLV5UijO4mDS6IGYD9xt0Ka4LyErovbxYQNiSnLkPVFektkl4NsrfOmngA95N
+ kkBMRRM69yRal17E5bEl.GEetKRGjxFXrkeFBPBnvUB39vRXM1uJr9lofNBLfPsBFlSRztA01Tb1
+ 2.Ko5WaSMvaFu9MtaEtE8do0rdNJt710nw7v4t951twzPFAuFYKdfw3g6c3dDKSk32l.YGN7bxxE
+ iJ.JRQQCbY2fVGo1dbzVUND6NRrYIQQx_mvHV_T77J0EKmoB5PjOdBf8h3yto2zOuIw_4K1oqMnB
+ lpX7Mviw3TRipQFQS.QYCDE0eCrAnoXTzzpMDP9ypX_zjfS1v60CersA1yjK9TZayQa1yj27zYCe
+ MqYpm4V95Z_gsdrtiyAUPvbihlhUN_RJxGrK_Gf7hMtPu3r94bBvxh7bkXd_8nCtKEtlSLmD47FF
+ rL47IUcSP1slx3.T45INLMwoMSBAiBt8hZjKCp7v.tuhuOFWTq83ZX3Bgm4YIJx5fzbP2zmEoE0V
+ n1LFMQTdBQksBp0SXQqDx5iGuZbQ4LT9sghGEct1VVnED8JCl2Q3eoXI.pGSoorwhte1qgKTgB_Y
+ xuaouXmoDT.pBkhmN9HyNa6U0Sm69lEVSV7MWzTkWql9x5iU_JFiGZ6p1NBE6s_iQp.lA6QAwhzv
+ l7pBzDvxyID3ETrwqjWvJ9.N6uLcX5usJoNfYoNZdWLEaczXKlQpCi2qL7sH9JJ8dD4sshLILMF4
+ QMrLaD3CLaY1swMQoVUdBU2lVc2D9.bsMFz2bGIVsj3Agb_IkaYkjxIEdPSVSDpBpGgTUUPw4NiI
+ Ao05t..Gn2zuzLJfUL009ZMhDF4WfKZKBYTRnYgcjk3mn4KMX8U7jd_9GUG88mGLAjM1mLgP5T0U
+ l3ThDS8_119wMrFkYqawFpQWOXjUZwEfgOQG5Kn1mbNoTj5nmKB3xYWfcd38qV7rG2wkR_lh9ycY
+ whKVcjiTWBN5oiWwxSoVp_kqeBKKpx4XHDzeg881QDlQu3me_cv1ca_fNGAB99dOfyaXmQTkbUWX
+ NJC8kNTy0LDvsElYl9Lmhrj5AjcN2Ri0YkP2q4xFd4y8a7fpzpgLjhHO0eS9BJiE6TdSiwpl3emt
+ m0A.hvUkcnwaYyGVzRQzDxOkSPpGHBeR.4DWH5YTHt_RDKH4BuKHZ7c9LTOiZaRcuZ.k4f.4tkEQ
+ Uiv_EUfa.VV4Hz7bjE09A.6Gv6o_jhTzwt81RjilE.3Ws3mQcEVTF3ukpaJ8mqn6mP.awZ8KDNNl
+ c4UZwqxoCu_QiO3p9xrMPy7QT6pgKk5NYYh2waRQ4m.kFmActr1jtPHLJqlOWJ.lozojt9n_iOTn
+ FO8xYwqitXkjIyaGYjkPmQz1y4CL4XcVfOZtYyg8zVYvt9_gz.2FVxfLyx_va6B2DA49sQn_93rK
+ rQZNJx9uSXy3CFcNCVYg1kjBy1w4QY5wUFHRZGYWsRb8tZS5L0TK1T2nESfRDavmjKYLisghlkj7
+ QNaBx6K.HzYUPfhwXbfw__R9b4WYTEanMfFbzlUq6ybAO3uyGIkBuLxX3wgyowoV81LjD6.NLO_8
+ Tr6qwmL2AbRU1yUYwz0NvLO7oRfcZKTbTyNhfFDcEa3Ita4cJaCOJHIHz.C.BtPZGz9py3l2F7px
+ qS9ntBjFItpwyIUQpTPVTOqAiUrPEPCu1vpDogaG10Ly6jwQgX8ORMLQrTjxa7GTdDUcLAIe4XKE
+ nW0i27YVQWZ_adsvQMLe9r.GPfyE4j1frSwX6yX6oeFmhTn9LlGIalDQxI_0o8bgkXsGa1EmQVA_
+ RiYxlCnPZCXI8CHTSqZnmZZV_VYrYTtWvVrbEwin5pQwPjFwuRO3LIu0gblUo89NKTFmd1lcO4Uq
+ E4myoOch9OkxyCzxMlGldOuEwJVh3bsESE2by.o8attKx1pqXAA2bgsWIe0PizFVqkhPGZgZzKmE
+ LHQofP7vj1d2bnbsYYOa_eTnTKkZ9riIwU1ZpMfp7Sfvq5ElUqDevvvjbb7D_ZCPKwCd1L0GRpnU
+ 7gjcZZv9chYJT1qs_._JbUfhRbjnWUQMCk.NIUdYOkvfvi1zd1H8_u5XZrnz_GC.vNA--
+X-Sonic-MF: <casey@schaufler-ca.com>
+X-Sonic-ID: 765f1964-0fb7-4d81-8316-507c573fc21a
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic306.consmr.mail.ne1.yahoo.com with HTTP; Thu, 30 Nov 2023 23:31:09 +0000
+Received: by hermes--production-gq1-5cf8f76c44-fz47x (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 19b1fe304cad48eecfc9a1ec502551f6;
+          Thu, 30 Nov 2023 23:31:04 +0000 (UTC)
+Message-ID: <018438d4-44b9-4734-9c0c-8a65f9c605a4@schaufler-ca.com>
+Date:   Thu, 30 Nov 2023 15:31:01 -0800
 MIME-Version: 1.0
-References: <20231121-dev-iio-backend-v1-0-6a3d542eba35@analog.com> <20231121-dev-iio-backend-v1-10-6a3d542eba35@analog.com>
-In-Reply-To: <20231121-dev-iio-backend-v1-10-6a3d542eba35@analog.com>
-From:   David Lechner <dlechner@baylibre.com>
-Date:   Thu, 30 Nov 2023 17:30:40 -0600
-Message-ID: <CAMknhBFbLju8UQJ7Uz85kHKrbK4mzt=wTRdnp40+PwWCJa5dsA@mail.gmail.com>
-Subject: Re: [PATCH 10/12] iio: adc: ad9467: convert to backend framework
-To:     nuno.sa@analog.com
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-iio@vger.kernel.org,
-        Olivier MOYSAN <olivier.moysan@foss.st.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 23/23] integrity: Switch from rbtree to LSM-managed
+ blob for integrity_iint_cache
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
+        Petr Tesarik <petrtesarik@huaweicloud.com>,
+        Paul Moore <paul@paul-moore.com>
+Cc:     viro@zeniv.linux.org.uk, brauner@kernel.org,
+        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
+        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+        jmorris@namei.org, serge@hallyn.com, zohar@linux.ibm.com,
+        dmitry.kasatkin@gmail.com, dhowells@redhat.com, jarkko@kernel.org,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        mic@digikod.net, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
+        Casey Schaufler <casey@schaufler-ca.com>
+References: <20231107134012.682009-24-roberto.sassu@huaweicloud.com>
+ <17befa132379d37977fc854a8af25f6d.paul@paul-moore.com>
+ <2084adba3c27a606cbc5ed7b3214f61427a829dd.camel@huaweicloud.com>
+ <CAHC9VhTTKac1o=RnQadu2xqdeKH8C_F+Wh4sY=HkGbCArwc8JQ@mail.gmail.com>
+ <b6c51351be3913be197492469a13980ab379e412.camel@huaweicloud.com>
+ <CAHC9VhSAryQSeFy0ZMexOiwBG-YdVGRzvh58=heH916DftcmWA@mail.gmail.com>
+ <90eb8e9d-c63e-42d6-b951-f856f31590db@huaweicloud.com>
+ <366a6e5f-d43d-4266-8421-a8a05938a8fd@schaufler-ca.com>
+ <66ec6876-483a-4403-9baa-487ebad053f2@huaweicloud.com>
+ <a121c359-03c9-42b1-aa19-1e9e34f6a386@schaufler-ca.com>
+ <9297638a-8dab-42ba-8b60-82c03497c9cd@huaweicloud.com>
+Content-Language: en-US
+From:   Casey Schaufler <casey@schaufler-ca.com>
+In-Reply-To: <9297638a-8dab-42ba-8b60-82c03497c9cd@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Mailer: WebService/1.1.21896 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023 at 4:17=E2=80=AFAM Nuno Sa via B4 Relay
-<devnull+nuno.sa.analog.com@kernel.org> wrote:
+On 11/30/2023 1:34 PM, Roberto Sassu wrote:
+> On 11/30/2023 5:15 PM, Casey Schaufler wrote:
+>> On 11/30/2023 12:30 AM, Petr Tesarik wrote:
+>>> Hi all,
+>>>
+>>> On 11/30/2023 1:41 AM, Casey Schaufler wrote:
+>>>> ...
+>>>> It would be nice if the solution directly addresses the problem.
+>>>> EVM needs to be after the LSMs that use xattrs, not after all LSMs.
+>>>> I suggested LSM_ORDER_REALLY_LAST in part to identify the notion as
+>>>> unattractive.
+>>> Excuse me to chime in, but do we really need the ordering in code?
+>>
+>> tl;dr - Yes.
+>>
+>>>   FWIW
+>>> the linker guarantees that objects appear in the order they are seen
+>>> during the link (unless --sort-section overrides that default, but this
+>>> option is not used in the kernel). Since *.a archive files are used in
+>>> kbuild, I have also verified that their use does not break the
+>>> assumption; they are always created from scratch.
+>>>
+>>> In short, to enforce an ordering, you can simply list the corresponding
+>>> object files in that order in the Makefile. Of course, add a big fat
+>>> warning comment, so people understand the order is not arbitrary.
+>>
+>> Not everyone builds custom kernels.
 >
-> From: Nuno Sa <nuno.sa@analog.com>
->
-> Convert the driver to use the new IIO backend framework. The device
-> functionality is expected to be the same (meaning no added or removed
-> features).
+> Sorry, I didn't understand your comment.
 
-Missing a devicetree bindings patch before this one?
+Most people run a disto supplied kernel. If the LSM ordering were determined
+only at compile time you could never run a kernel that omitted an LSM.
+
+> Everyone builds the kernel, also Linux distros. What Petr was
+> suggesting was that it does not matter how you build the kernel, the
+> linker will place the LSMs in the order they appear in the Makefile.
+> And for this particular case, we have:
+>
+> obj-$(CONFIG_IMA)                       += ima/
+> obj-$(CONFIG_EVM)                       += evm/
+>
+> In the past, I also verified that swapping these two resulted in the
+> swapped order of LSMs. Petr confirmed that it would always happen.
+
+LSM execution order is not based on compilation order. It is specified
+by CONFIG_LSM, and may be modified by the LSM_ORDER value. I don't
+understand why the linker is even being brought into the discussion.
 
 >
-> Also note this patch effectively breaks ABI and that's needed so we can
-> properly support this device and add needed features making use of the
-> new IIO framework.
-
-Can you be more specific about what is actually breaking?
-
+> Thanks
 >
-> Signed-off-by: Nuno Sa <nuno.sa@analog.com>
-> ---
->  drivers/iio/adc/Kconfig  |   2 +-
->  drivers/iio/adc/ad9467.c | 256 +++++++++++++++++++++++++++++------------=
-------
->  2 files changed, 157 insertions(+), 101 deletions(-)
->
-> diff --git a/drivers/iio/adc/Kconfig b/drivers/iio/adc/Kconfig
-> index 1e2b7a2c67c6..af56df63beff 100644
-> --- a/drivers/iio/adc/Kconfig
-> +++ b/drivers/iio/adc/Kconfig
-> @@ -275,7 +275,7 @@ config AD799X
->  config AD9467
->         tristate "Analog Devices AD9467 High Speed ADC driver"
->         depends on SPI
-> -       depends on ADI_AXI_ADC
-> +       select IIO_BACKEND
->         help
->           Say yes here to build support for Analog Devices:
->           * AD9467 16-Bit, 200 MSPS/250 MSPS Analog-to-Digital Converter
-> diff --git a/drivers/iio/adc/ad9467.c b/drivers/iio/adc/ad9467.c
-> index 5db5690ccee8..8b0402e73ace 100644
-> --- a/drivers/iio/adc/ad9467.c
-> +++ b/drivers/iio/adc/ad9467.c
-
-<snip>
-
-> +static int ad9467_buffer_get(struct iio_dev *indio_dev)
-
-perhaps a more descriptive name: ad9467_buffer_setup_optional?
-
-> +{
-> +       struct device *dev =3D indio_dev->dev.parent;
-> +       const char *dma_name;
-> +
-> +       if (!device_property_present(dev, "dmas"))
-> +               return 0;
-> +
-> +       if (device_property_read_string(dev, "dma-names", &dma_name))
-> +               dma_name =3D "rx";
-> +
-> +       return devm_iio_dmaengine_buffer_setup(dev, indio_dev, dma_name);
-
-The device tree bindings for "adi,ad9467" don't include dma properties
-(nor should they). Perhaps the DMA lookup should be a callback to the
-backend? Or something similar to the SPI Engine offload that we are
-working on?
-
-> +}
-> +
->  static int ad9467_probe(struct spi_device *spi)
->  {
-> -       const struct ad9467_chip_info *info;
-> -       struct adi_axi_adc_conv *conv;
-> +       struct iio_dev *indio_dev;
->         struct ad9467_state *st;
->         unsigned int id;
->         int ret;
->
-> -       info =3D spi_get_device_match_data(spi);
-> -       if (!info)
-> -               return -ENODEV;
-> -
-> -       conv =3D devm_adi_axi_adc_conv_register(&spi->dev, sizeof(*st));
-> -       if (IS_ERR(conv))
-> -               return PTR_ERR(conv);
-> +       indio_dev =3D devm_iio_device_alloc(&spi->dev, sizeof(*st));
-> +       if (!indio_dev)
-> +               return -ENOMEM;
->
-> -       st =3D adi_axi_adc_conv_priv(conv);
-> +       st =3D iio_priv(indio_dev);
->         st->spi =3D spi;
->
-> +       st->info =3D spi_get_device_match_data(spi);
-> +       if (!st->info)
-> +               return -ENODEV;
-> +
->         st->clk =3D devm_clk_get_enabled(&spi->dev, "adc-clk");
->         if (IS_ERR(st->clk))
->                 return PTR_ERR(st->clk);
-> @@ -476,29 +522,39 @@ static int ad9467_probe(struct spi_device *spi)
->         if (ret)
->                 return ret;
->
-> -       conv->chip_info =3D &info->axi_adc_info;
-> -
-> -       ret =3D ad9467_scale_fill(conv);
-> +       ret =3D ad9467_scale_fill(st);
->         if (ret)
->                 return ret;
->
->         id =3D ad9467_spi_read(spi, AN877_ADC_REG_CHIP_ID);
-> -       if (id !=3D conv->chip_info->id) {
-> +       if (id !=3D st->info->id) {
->                 dev_err(&spi->dev, "Mismatch CHIP_ID, got 0x%X, expected =
-0x%X\n",
-> -                       id, conv->chip_info->id);
-> +                       id, st->info->id);
->                 return -ENODEV;
->         }
->
-> -       conv->reg_access =3D ad9467_reg_access;
-> -       conv->write_raw =3D ad9467_write_raw;
-> -       conv->read_raw =3D ad9467_read_raw;
-> -       conv->read_avail =3D ad9467_read_avail;
-> -       conv->preenable_setup =3D ad9467_preenable_setup;
-> +       indio_dev->name =3D st->info->name;
-> +       indio_dev->channels =3D st->info->channels;
-> +       indio_dev->num_channels =3D st->info->num_channels;
-> +       indio_dev->info =3D &ad9467_info;
-> +
-> +       ret =3D ad9467_buffer_get(indio_dev);
-> +       if (ret)
-> +               return ret;
->
-> -       st->output_mode =3D info->default_output_mode |
-> -                         AN877_ADC_OUTPUT_MODE_TWOS_COMPLEMENT;
-> +       st->back =3D devm_iio_backend_get(&spi->dev, NULL);
-
-Based on the descriptions given of IIO frontend and backend, I was
-expecting this driver to be the backend since SPI is only used to
-configure the chip while the adi-axi-adc driver is the one determining
-the scan data format, providing the DMA (INDIO_BUFFER_HARDWARE), etc.
-
-Also, from a devicetree "describe the hardware" mindset, it doesn't
-seem like this chip (AD9467) should dictate a specific backend. I know
-it doesn't make sense practlically for this chip to not use DMA given
-the high sample rate, but why should the devicetree for this chip
-require it when there is nothing intrensic about this chip itself
-related to DMA?
-
-> +       if (IS_ERR(st->back))
-> +               return PTR_ERR(st->back);
->
-> -       return 0;
-> +       ret =3D iio_backend_enable(st->back);
-> +       if (ret)
-> +               return ret;
-> +
-> +       ret =3D ad9467_setup(st);
-> +       if (ret)
-> +               return ret;
-> +
-> +       return devm_iio_device_register(&spi->dev, indio_dev);
->  }
->
->  static const struct of_device_id ad9467_of_match[] =3D {
->
-> --
-> 2.42.1
->
->
+> Roberto
