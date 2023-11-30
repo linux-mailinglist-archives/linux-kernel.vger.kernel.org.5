@@ -2,54 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E4347FEB7B
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 10:09:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD2787FEB86
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 10:10:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234998AbjK3JJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 04:09:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60500 "EHLO
+        id S235024AbjK3JJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 04:09:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbjK3JJM (ORCPT
+        with ESMTP id S229971AbjK3JJn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 04:09:12 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FF96CF
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 01:09:18 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B788C433C7;
-        Thu, 30 Nov 2023 09:09:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701335358;
-        bh=xb51lgH3hhmGdIHdSPjYm+sLbGYQfwWqFrsqt0dVLWs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YYOeoaJfkiDkKn0akU65fRx50iLnBadwLtcjp4awkfUOdAXFhvd65HUyXPoA7965H
-         2649TBwBK5gBj3p0xM7DQ04pZdL4bfYWQWP0rDZrUY05CRFfxpkUXX/OBpxCfKFP51
-         RZ11qlMzruEcZC7e+wyJNFv7LmSO3ePrdwIVHZRjK+/qYJ1PphncIVkAwha6ZU57cF
-         fjanawuEejTGuho1/h/lw5rnmV/Rv0Dq7EaTMIfHB99TCLD+medEHQvcRlKNI8PFeq
-         A2GaALvjHsyxl8mjMgUYI2n7vYXGHlL2YhjQQKSbFbnRSsLe1pZSpNms/MzraXuoQa
-         /A9EkP7Chvu1g==
-Date:   Thu, 30 Nov 2023 10:09:09 +0100
-From:   Christian Brauner <brauner@kernel.org>
-To:     Alice Ryhl <aliceryhl@google.com>
-Cc:     a.hindborg@samsung.com, alex.gaynor@gmail.com, arve@android.com,
-        benno.lossin@proton.me, bjorn3_gh@protonmail.com,
-        boqun.feng@gmail.com, cmllamas@google.com,
-        dan.j.williams@intel.com, dxu@dxuuu.xyz, gary@garyguo.net,
-        gregkh@linuxfoundation.org, joel@joelfernandes.org,
-        keescook@chromium.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, maco@android.com, ojeda@kernel.org,
-        peterz@infradead.org, rust-for-linux@vger.kernel.org,
-        surenb@google.com, tglx@linutronix.de, tkjos@android.com,
-        viro@zeniv.linux.org.uk, wedsonaf@gmail.com, willy@infradead.org
-Subject: Re: [PATCH 4/7] rust: file: add `FileDescriptorReservation`
-Message-ID: <20231130-lernziel-rennen-0a5450188276@brauner>
-References: <20231129-zwiespalt-exakt-f1446d88a62a@brauner>
- <20231129165551.3476910-1-aliceryhl@google.com>
+        Thu, 30 Nov 2023 04:09:43 -0500
+Received: from mx08-00376f01.pphosted.com (mx08-00376f01.pphosted.com [91.207.212.86])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF5221A8;
+        Thu, 30 Nov 2023 01:09:48 -0800 (PST)
+Received: from pps.filterd (m0168888.ppops.net [127.0.0.1])
+        by mx08-00376f01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3AU7A2FA018574;
+        Thu, 30 Nov 2023 09:09:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=imgtec.com; h=
+        from:to:cc:subject:date:message-id:references:in-reply-to
+        :content-type:content-id:content-transfer-encoding:mime-version;
+         s=dk201812; bh=rQM8guy+DWzVn3u3Dk87hQP5YUJLO/Zl0ER8DpMMiNg=; b=
+        pkd3Jo4Qgor49yUwp1lBzV3FFtQlTF4GUyGFYF5iWGAkE7bqRHeUiss+uBQKtdLc
+        TS6Zd+TX5erWgf2wn+lwdN4VCAdT5eM3FLJFSS3rwCG304j0gXMpt80a4d28jx08
+        sy5LlXZOfUD6wGdy0onS3NYh+IGyxzMj83Gu8V6+WTBNug0cOxj/EzA4jCqk38/7
+        n+gQPxrCnmbUIJqUqqJidJlQTOX0ZTg6BvcYbTUgFDook88bfBs+9QG1coldw0lx
+        A+dRyyOGJa8fTrynQ2yE9JzGVRYMKTaTwV3nPU05HfHXW8ClkX7O2FUNszOc1+6Z
+        H0Q8zP6vx+NETYd8da8AkA==
+Received: from hhmail05.hh.imgtec.org ([217.156.249.195])
+        by mx08-00376f01.pphosted.com (PPS) with ESMTPS id 3upgv6r98s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 30 Nov 2023 09:09:28 +0000 (GMT)
+Received: from HHMAIL05.hh.imgtec.org (10.100.10.120) by
+ HHMAIL05.hh.imgtec.org (10.100.10.120) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 30 Nov 2023 09:09:27 +0000
+Received: from GBR01-LO4-obe.outbound.protection.outlook.com (104.47.85.105)
+ by email.imgtec.com (10.100.10.121) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Thu, 30 Nov 2023 09:09:27 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ut68BGIiXCiHvp6iY8VYklRBFPZevQBdLIQmWnQbVs3xek8U0ZL5UnqahA3b/3ZJqe2lQuQDLM7M/zjWUGyq6HjvRfqKis36JGdw2YJ/TdC8SZZQ0JWB05t9nPVDJPsTtzkRp/9cAjKbwKIpDccwNqTHvESUce93RPxkGPU+B/W7226vqcF4V8f3LxPYXggCYItUKfydk/Wi6Cyi9Dy4nDySphxYk5a+GqzCAAKHya3UO2Xmo+3cG2cn43W6slXEtxUeDTczCxGXwvZlorR0yx3azCAO4+pd5sQoLZ4adt28XWsAoxuS1WgR71dT49PErbPdt2Bl5IY7Ot+zZuDGbQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=rQM8guy+DWzVn3u3Dk87hQP5YUJLO/Zl0ER8DpMMiNg=;
+ b=HSM9lUMiMDj7UvITjf0Vrym/bRIs60+IsJw0bi2RyT59cEa9zChNXN3QEwHo0Gf+FjsHEdvlwtjW/U7l2o5pfk1DaySWvtJmPoKzDAreyI/oqZPoi+nyxn5EtN/PIX0pmr6JeXoCziSfiEFzlX8EZMByrENeIBy9hcBBdOS4SAyd8h2un6zCl5O4eSuNhWkrCNwoyf5IHjrinUNPwFGzhkEwcZ1tNyhVyzFKhMfGi7Ko9hWpDXG3v9nT9owQuICHD5/t8esFV1XZdbGPaY7g0n5jUEde2wd9IhkJKVjed7AKyLPR/W6H89CALtGwNow79jAuDG3SVO6191xHe+QaCQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=imgtec.com; dmarc=pass action=none header.from=imgtec.com;
+ dkim=pass header.d=imgtec.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=IMGTecCRM.onmicrosoft.com; s=selector2-IMGTecCRM-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rQM8guy+DWzVn3u3Dk87hQP5YUJLO/Zl0ER8DpMMiNg=;
+ b=UjMZFqBsBlW53mx1awCjIgkgov30VScoPwGhpWMBJDaitjrBK3eo0gWEzDMqZvGTZb+Y6CmC57u0pUyS6aQe2ZAuXDLlI/k6k5JYdR8Yxfd5bvbFlpF5+8AwuObWiyXwBJ+5Av7bsQzhOdLd4EV1impfmbJ8aFTCGeL5KJ3fvDA=
+Received: from LO6P265MB6032.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:2a5::14)
+ by LO0P265MB5925.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:290::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.29; Thu, 30 Nov
+ 2023 09:09:26 +0000
+Received: from LO6P265MB6032.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::3ca3:d6ce:efeb:31ba]) by LO6P265MB6032.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::3ca3:d6ce:efeb:31ba%3]) with mapi id 15.20.7046.024; Thu, 30 Nov 2023
+ 09:09:26 +0000
+From:   Frank Binns <Frank.Binns@imgtec.com>
+To:     "dan.carpenter@linaro.org" <dan.carpenter@linaro.org>,
+        Sarah Walker <Sarah.Walker@imgtec.com>
+CC:     "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+        "tzimmermann@suse.de" <tzimmermann@suse.de>,
+        Donald Robson <Donald.Robson@imgtec.com>,
+        Matt Coster <Matt.Coster@imgtec.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "airlied@gmail.com" <airlied@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "maarten.lankhorst@linux.intel.com" 
+        <maarten.lankhorst@linux.intel.com>,
+        "daniel@ffwll.ch" <daniel@ffwll.ch>,
+        "mripard@kernel.org" <mripard@kernel.org>
+Subject: Re: [PATCH 1/2] drm/imagination: Fix error codes in
+ pvr_device_clk_init()
+Thread-Topic: [PATCH 1/2] drm/imagination: Fix error codes in
+ pvr_device_clk_init()
+Thread-Index: AQHaI2zqoImbWWFnPU+NZSsKn8hssw==
+Date:   Thu, 30 Nov 2023 09:09:26 +0000
+Message-ID: <f5a1e07ee366a547b389650bc7bb21ec81e00219.camel@imgtec.com>
+References: <1649c66b-3eea-40d2-9687-592124f968cf@moroto.mountain>
+In-Reply-To: <1649c66b-3eea-40d2-9687-592124f968cf@moroto.mountain>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.36.5-0ubuntu1 
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: LO6P265MB6032:EE_|LO0P265MB5925:EE_
+x-ms-office365-filtering-correlation-id: ff48d030-a6c2-4d7e-4d5f-08dbf1840d1f
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: w6rCnCEnRf0WP4IiQ97q/q8YfQWEY4XKFoG8vaBN1+H8+/FYFzDf0Bml6PLYSpQYwALfZ54jPNkdhEIn+9W3IknqsIIKHh+ImkyenDK/xCStYkm5wsBsCKL6bmzpR+aBhO8y6qrAR6B6yq4neYyyzZbWw0dN+SBqHX1S/8YPTOOq+IQ8xLtTWlHrTuYBJF+Whlf0kwkURAS6iuDTP12kKqJTTOUVlVLxeE8xHEoMGI/hJLTwG/DDLBNJy3DpaXsRVvpgbaJqDmi2iOgNHMT/0SCYEW+cEs5Y4Ev5mk2RZz9n6epoyYFUHScm5yiCAKepPXw9ux3n+qaLy5VULtV7iyqV8BFQljaGiiBw/pzBzx4AU2sVRbjPK627Lb11xqbpGmQ6ERU/yMoc+eGf5k/TfGVWQHOYAapqxmIhjHco7tT/uPy+WEyCYW+70CEbH8YOn6a2LrECfCkgYmPpcy4+1NrKty+QmmcK+9jfdItyUIeZaTJEmWc352+ZPMyWBlVFmVsahpq/jTWJqwkzKjkMbfQA/Sfv19gyI7qQyABioK0QwYMspJnySc6owH0Ts5ryCsLPTJg4u31YyfbbYjzR0WtfR3yn0kcvAW6Ln1yWfNkinslV2VyDCNVYglSsez0AaJR0dIlx21ND2JowODVj3g1m+8dtZnBGq7+31f9oOIs=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LO6P265MB6032.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(396003)(39850400004)(376002)(136003)(346002)(366004)(230922051799003)(451199024)(64100799003)(186009)(1800799012)(38100700002)(38070700009)(36756003)(86362001)(122000001)(202311291699003)(41300700001)(66446008)(316002)(54906003)(66476007)(6512007)(6636002)(110136005)(8936002)(76116006)(66946007)(6486002)(64756008)(71200400001)(6506007)(8676002)(478600001)(5660300002)(2906002)(4001150100001)(4326008)(66556008)(2616005)(26005)(83380400001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?dTJxU2dnSEtNL1ZiVHRYWUxYYWtPaFFVc1Y1dDUvNG5MMEtyL0lQa1ZORWww?=
+ =?utf-8?B?Mktxcnh5cnNBVEdIR1B4Nml4enVsMFhVRk56KzFWZ0Z6WWtGeGFsbW1XcjFo?=
+ =?utf-8?B?bEF4TGZ1SHpLajh6c09NTStrTG1WSkFDMVVtN2NnTGY5RDJSRnBxRzlHQjFB?=
+ =?utf-8?B?Q1QySmNjSGZ4M0V2VFNmc0tVSURPWmRCSWw1eWR1SFpNWk1RV3VQN1FOZFJQ?=
+ =?utf-8?B?WkVzNWtndDR1MjJ4R3lQWEo4Zi8wS3FDZ3hNRUQrbFlsZkc3Qzdja2pjNm9V?=
+ =?utf-8?B?ZXl3TTFiWmVFeVAwb0dHR01sbWxMTE5HUHJaTWcrY3kxQkZuUk1LQ2YyWHBi?=
+ =?utf-8?B?QW1yUndFbGU2V2J1MnFYNTEzNURWbDZJRkxDNUpXOFoxNXJFQTdQdERqOGRE?=
+ =?utf-8?B?MVB6MmQ5TG5pWEZiMGZDYmJCV1FvbzBrRTU1RjdkclJEVEtxN0dtbzlwOHBJ?=
+ =?utf-8?B?aDQ1cEV1cXJaVnhoTUU3M08vcnh3Ny9yWGFLcksrbWUrZGM2OFRMZ0FWZ2p2?=
+ =?utf-8?B?cDI0Vk9oRitsV2NPRmtUQ3NiVTluNS91SkZWWGtHQTJjYWdaem05SDlHMzND?=
+ =?utf-8?B?akpickVCNGNJTVhNU3NQSWhPSmN6STRUWk9Gd0pQd1Fpc3lNQUp2WUZhMmRw?=
+ =?utf-8?B?ZUdiWkxiWWNDVUd6enYxKzRidFJOKzdXazk2Wm8yNEQ5MVFUdzIydTlwdTR5?=
+ =?utf-8?B?RkpQbWZRRmJDaWZIbE1KVTZJTUNDdFd0ZjFKV3FhWTJHMjZhZktQNUEwRmRv?=
+ =?utf-8?B?dnRsZkFXTDZvNHBXYjdOVXd5MFkvWC9pdkRYQURqTFZiVjR3aUw2eEZsVmNQ?=
+ =?utf-8?B?SDloL1RKRXRTZzQzNlp1RmJ0OUVYRGRwMjB5Ky8yTnUvSkVDQzZXUUYrVXlz?=
+ =?utf-8?B?U1pqZDJId3FaNTVNc3hwUjFOSkhscWk3L05VckU5a3p1WWk5bGhaR0RMV3Fq?=
+ =?utf-8?B?MWU0dDIyZ2VkbDBRWGVUOEFpbE9TL2pERzd1dGRyeVpidU9qSXg0TC9JR3Fa?=
+ =?utf-8?B?WERSK09OWlpyNmN2dW5HSlB5eWNHSDJ4UWRmUGdUOEd2a09aQmJ5ZkdxS3Bu?=
+ =?utf-8?B?bmxpcWFNZTJMY1RYeW5oSm42QTRGOWdrcWZDUGhaNFZubjM1WVdsWkdXTWRi?=
+ =?utf-8?B?dWRZWm1KUHJOTmxjaVBRUnRYd3pPOWdpci9ZUWZ2SVhGMEZsRkNvQmRteStv?=
+ =?utf-8?B?enFhMGgwL2l1R2pSbXR3WjBzbjEvWC8rRWFGaVpqWEtlUTNrakQ4T2plRW1o?=
+ =?utf-8?B?ZGhMUUZycVhncnNaRDZoMnNucTdEbXJ2SCtrenZTdTRqdFF3d0JpZEpyTVl2?=
+ =?utf-8?B?Wi9KaEY2TEg2aU1md0daTWJMdFEyT0tKSFVWRGovSEpwcXRRajJGaXdnZ3dX?=
+ =?utf-8?B?L1VLY3ZISDFnTXdkcFBxbFNSUW1Bbk42M3QxOFh4TXRDWlYraEVEUGRvVjlO?=
+ =?utf-8?B?OTJzcHhZdUZkZFNnT1JBMGdDaEJDelBKL0V2dEpCSSs2OGtwYWhrZDZ5anh3?=
+ =?utf-8?B?T0xZOXoxK3BUR3NMM05Gclg4aWVSWkdCNmoxSE1mUGpsTVJ5TGZDU2RycVdz?=
+ =?utf-8?B?b0IvYndxaW9sSUVLbkVMWWR3YkhHMzJZb3orSjhTMitjbU42VkNlV0V5a2NO?=
+ =?utf-8?B?MVFRVjRBejMwSlozbGJZU2wya0lGRTV1cm9UN3Eva0lhUnZqMjlhSVVkTDc4?=
+ =?utf-8?B?b3FkWDQrb1JxZnM2aFVaRjBsVWxMQ2EzK29xNG10NVlmOUwvbUg2S0RjUEt4?=
+ =?utf-8?B?WTFLNktXbmFsbjhMTW1rWTRhNXRKV0c4dHltcVBESUl4Vm1yYmtOV2s5aWZa?=
+ =?utf-8?B?cU1aYnByODAzMzE0eXVFK2RxZElHNmt3aUEvTlhPeW16K2JNaktLSE5scmlU?=
+ =?utf-8?B?TERXY1J6OWZZUjZISEZ5ZjZ6K0ZtL0pOd3orVzZ0bVlDREsvbTFkNS9USzhZ?=
+ =?utf-8?B?SFdiRWpWMHc0U2JjeTRpU0FoQjhrMUphNHp3SmxpQWFwVnBIb2tRd3lBUFRP?=
+ =?utf-8?B?aWwxUkltT0hkMlhDcnYxbjI1UDQwZ0lFVmlqSzZkaUFKK2IwcS9EVTBuczIw?=
+ =?utf-8?B?U2tMSmxYQzEvMGFYTkhQMFhZN1hQMVFReU5VVHRJWm9yVzRXN3JNWk5hTHRE?=
+ =?utf-8?B?VUdYNzVKc0ZJSkl5d1Z1TjFXYlpVc2grZzZ1UVVxNkhRZ29jRzNoMVMzUGRo?=
+ =?utf-8?B?ZkE9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <7E0A2C60EEFD474F9D1591EA61ECFC82@GBRP265.PROD.OUTLOOK.COM>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231129165551.3476910-1-aliceryhl@google.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: LO6P265MB6032.GBRP265.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: ff48d030-a6c2-4d7e-4d5f-08dbf1840d1f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Nov 2023 09:09:26.0914
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 0d5fd8bb-e8c2-4e0a-8dd5-2c264f7140fe
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: k/4PQlt2EfeCQgtMkYVKgQcTliSo0DBs71mux9byZmet2iqvDBd6sPm6XYBMs7a81RPV9nzrMY4HdZc2g6dgTw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LO0P265MB5925
+X-OriginatorOrg: imgtec.com
+X-EXCLAIMER-MD-CONFIG: 15a78312-3e47-46eb-9010-2e54d84a9631
+X-Proofpoint-GUID: 7dpARdFr756rdv1wvBvw-SYLsLGgi9pW
+X-Proofpoint-ORIG-GUID: 7dpARdFr756rdv1wvBvw-SYLsLGgi9pW
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -58,86 +166,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 04:55:51PM +0000, Alice Ryhl wrote:
-> Christian Brauner <brauner@kernel.org> writes:
-> > Can we follow the traditional file terminology, i.e.,
-> > get_unused_fd_flags() and fd_install()? At least at the beginning this
-> > might be quite helpful instead of having to mentally map new() and
-> > commit() onto the C functions.
-> 
-> Sure, I'll do that in the next version.
-> 
-> >> +    /// Prevent values of this type from being moved to a different task.
-> >> +    ///
-> >> +    /// This is necessary because the C FFI calls assume that `current` is set to the task that
-> >> +    /// owns the fd in question.
-> >> +    _not_send_sync: PhantomData<*mut ()>,
-> > 
-> > I don't fully understand this. Can you explain in a little more detail
-> > what you mean by this and how this works?
-> 
-> Yeah, so, this has to do with the Rust trait `Send` that controls
-> whether it's okay for a value to get moved from one thread to another.
-> In this case, we don't want it to be `Send` so that it can't be moved to
-> another thread, since current might be different there.
-> 
-> The `Send` trait is automatically applied to structs whenever *all*
-> fields of the struct are `Send`. So to ensure that a struct is not
-> `Send`, you add a field that is not `Send`.
-> 
-> The `PhantomData` type used here is a special zero-sized type.
-> Basically, it says "pretend this struct has a field of type `*mut ()`,
-> but don't actually add the field". So for the purposes of `Send`, it has
-> a non-Send field, but since its wrapped in `PhantomData`, the field is
-> not there at runtime.
-
-This probably a stupid suggestion, question. But while PhantomData gives
-the right hint of what is happening I wouldn't mind if that was very
-explicitly called NoSendTrait or just add the explanatory comment. Yes,
-that's a lot of verbiage but you'd help us a lot.
-
-> 
-> >> +        Ok(Self {
-> >> +            fd: fd as _,
-> > 
-> > This is a cast to a u32?
-> 
-> Yes.
-> 
-> > Can you please draft a quick example how that return value would be
-> > expected to be used by a caller? It's really not clear
-> 
-> The most basic usage would look like this:
-> 
-> 	// First, reserve the fd.
-> 	let reservation = FileDescriptorReservation::new(O_CLOEXEC)?;
-> 
-> 	// Then, somehow get a file to put in it.
-> 	let file = get_file_using_fallible_operation()?;
-> 
-> 	// Finally, commit it to the fd.
-> 	reservation.commit(file);
-
-Ok, the reason I asked was that I was confused about the PhantomData and
-how that would figure into using the return value as I hadn't seen that
-Ok(Self { }) syntax before. Thanks.
-  
-> 
-> In Rust Binder, reservations are used here:
-> https://github.com/Darksonn/linux/blob/dca45e6c7848e024709b165a306cdbe88e5b086a/drivers/android/allocation.rs#L199-L210
-> https://github.com/Darksonn/linux/blob/dca45e6c7848e024709b165a306cdbe88e5b086a/drivers/android/allocation.rs#L512-L541
-> 
-> >> +    pub fn commit(self, file: ARef<File>) {
-> >> +        // SAFETY: `self.fd` was previously returned by `get_unused_fd_flags`, and `file.ptr` is
-> >> +        // guaranteed to have an owned ref count by its type invariants.
-> >> +        unsafe { bindings::fd_install(self.fd, file.0.get()) };
-> > 
-> > Why file.0.get()? Where did that come from?
-> 
-> This gets a raw pointer to the C type.
-> 
-> The `.0` part is a field access. `ARef` struct is a tuple struct, so its
-
-Ah, there we go. It's a bit ugly tbh.
-
-> fields are unnamed. However, the fields can still be accessed by index.
+SGksDQoNClRoYW5rIHlvdSBmb3IgdGhlIHBhdGNoZXMuDQoNCk9uIFRodSwgMjAyMy0xMS0zMCBh
+dCAxMDoyNiArMDMwMCwgRGFuIENhcnBlbnRlciB3cm90ZToNCj4gVGhlcmUgaXMgYSBjdXQgYW5k
+IHBhc3RlIGVycm9yIHNvIHRoaXMgY29kZSByZXR1cm5zIHRoZSB3cm9uZyB2YXJpYWJsZS4NCj4g
+DQo+IEZpeGVzOiAxZjg4ZjAxN2U2NDkgKCJkcm0vaW1hZ2luYXRpb246IEdldCBHUFUgcmVzb3Vy
+Y2VzIikNCj4gU2lnbmVkLW9mZi1ieTogRGFuIENhcnBlbnRlciA8ZGFuLmNhcnBlbnRlckBsaW5h
+cm8ub3JnPg0KDQpSZXZpZXdlZC1ieTogRnJhbmsgQmlubnMgPGZyYW5rLmJpbm5zQGltZ3RlYy5j
+b20+DQoNCj4gLS0tDQo+ICBkcml2ZXJzL2dwdS9kcm0vaW1hZ2luYXRpb24vcHZyX2RldmljZS5j
+IHwgNCArKy0tDQo+ICAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9u
+cygtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9pbWFnaW5hdGlvbi9wdnJf
+ZGV2aWNlLmMgYi9kcml2ZXJzL2dwdS9kcm0vaW1hZ2luYXRpb24vcHZyX2RldmljZS5jDQo+IGlu
+ZGV4IDg0OTliZWNmNGZiYi4uZTFkY2M0ZTQyMDg3IDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL2dw
+dS9kcm0vaW1hZ2luYXRpb24vcHZyX2RldmljZS5jDQo+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9p
+bWFnaW5hdGlvbi9wdnJfZGV2aWNlLmMNCj4gQEAgLTEwNSwxMiArMTA1LDEyIEBAIHN0YXRpYyBp
+bnQgcHZyX2RldmljZV9jbGtfaW5pdChzdHJ1Y3QgcHZyX2RldmljZSAqcHZyX2RldikNCj4gIA0K
+PiAgCXN5c19jbGsgPSBkZXZtX2Nsa19nZXRfb3B0aW9uYWwoZHJtX2Rldi0+ZGV2LCAic3lzIik7
+DQo+ICAJaWYgKElTX0VSUihzeXNfY2xrKSkNCj4gLQkJcmV0dXJuIGRldl9lcnJfcHJvYmUoZHJt
+X2Rldi0+ZGV2LCBQVFJfRVJSKGNvcmVfY2xrKSwNCj4gKwkJcmV0dXJuIGRldl9lcnJfcHJvYmUo
+ZHJtX2Rldi0+ZGV2LCBQVFJfRVJSKHN5c19jbGspLA0KPiAgCQkJCSAgICAgImZhaWxlZCB0byBn
+ZXQgc3lzIGNsb2NrXG4iKTsNCj4gIA0KPiAgCW1lbV9jbGsgPSBkZXZtX2Nsa19nZXRfb3B0aW9u
+YWwoZHJtX2Rldi0+ZGV2LCAibWVtIik7DQo+ICAJaWYgKElTX0VSUihtZW1fY2xrKSkNCj4gLQkJ
+cmV0dXJuIGRldl9lcnJfcHJvYmUoZHJtX2Rldi0+ZGV2LCBQVFJfRVJSKGNvcmVfY2xrKSwNCj4g
+KwkJcmV0dXJuIGRldl9lcnJfcHJvYmUoZHJtX2Rldi0+ZGV2LCBQVFJfRVJSKG1lbV9jbGspLA0K
+PiAgCQkJCSAgICAgImZhaWxlZCB0byBnZXQgbWVtIGNsb2NrXG4iKTsNCj4gIA0KPiAgCXB2cl9k
+ZXYtPmNvcmVfY2xrID0gY29yZV9jbGs7DQo=
