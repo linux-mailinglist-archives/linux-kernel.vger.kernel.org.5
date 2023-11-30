@@ -2,219 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B69F67FFC6F
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 21:28:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 316E07FFC70
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 21:28:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376711AbjK3U2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 15:28:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41082 "EHLO
+        id S1376721AbjK3U2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 15:28:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbjK3U2a (ORCPT
+        with ESMTP id S231901AbjK3U2b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 15:28:30 -0500
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88F7B10FF;
+        Thu, 30 Nov 2023 15:28:31 -0500
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3195106;
+        Thu, 30 Nov 2023 12:28:37 -0800 (PST)
+Received: by mail-yb1-xb33.google.com with SMTP id 3f1490d57ef6-db4364ecd6aso1449445276.2;
+        Thu, 30 Nov 2023 12:28:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701376117; x=1701980917; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YYgokxpdXnom83isGSeLIiEWyDvQWuc8uahFIcEFCiU=;
+        b=lT+0NxUgwEKXHXQwHxoAPu8UiUMQRKxIr/R2Wo/G87IfsGfZLZqqMfT/MAgw1agiY5
+         NbYzaAuSQXMqkwA/ZGRj9AAHLyI9HhXDxpk56CUrSFUurGa3Mm5YqPsJhZLW+rKGSEag
+         8d9ooJHB83tjWRd4eV85vB1r1g7G/K8N1aBTbz/TxYAu0aWmcoqUgdK4jN1gsrxcND79
+         CD1x9LP7qJYwP/5VAZMK6zqSClv7W/L78hfQe2yrEXO9XnR2qvL2pUz44VFG5Spb9gmj
+         leELW/F/dPzivqrVV+8ptS2aqMX4G1ccDrVXkzfB/7ixMa2dii/gsUzy237VCuZktGrN
+         o7Sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701376117; x=1701980917;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=YYgokxpdXnom83isGSeLIiEWyDvQWuc8uahFIcEFCiU=;
+        b=jAriABDXGTvtxfziSgX8WzTBROg+F99vUmLUVwpjs9FDFIVRtlI70okz3Nd6HygIRG
+         gKQa2z0lmNGDaiZhhHum8Os8sln/kXSq8Yxwer5AsNcksrUgEaZ3v8SEpsyOF+jyrYfy
+         xcTFv73bCZQYf7c1wiursiLS0pYgzAC556iRfbdBXft2c0xAqnpmdmZH0Ps8WBhe8AxX
+         2b2h/V+Eyfz1wnXkUfumLaQYVet2lNSC5p4zBLFi5pxfYG6l9Eb5D1VoFj2SRGI23KwA
+         XCl9DjxgjIoocyT90eUvkjewsYA+RvIhg6WVbGSBTfemJje+Rk1P4ZlEXIAn4rwADHXu
+         ZMQw==
+X-Gm-Message-State: AOJu0YzG/k8xhQpOWbgfLgU3ni+kYhrO4IWcrfBER35PPr0b/jgP5bn2
+        RJaNN5C8ZMm3Zy0adOsw9mk=
+X-Google-Smtp-Source: AGHT+IHYZiQbkBLJ008rJXlLXZbrmVVGfJZyhDvQvrE7IAhJuIYy3iC3ruuDLfNDxv8+R4e1qKgz3Q==
+X-Received: by 2002:a25:268f:0:b0:db5:4938:483 with SMTP id m137-20020a25268f000000b00db549380483mr975627ybm.32.1701376116773;
         Thu, 30 Nov 2023 12:28:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1701376114;
-        bh=h309xXu2AysR4RABR++0kkIEHwY0IMWt9+lOUwuKroc=;
-        h=Message-ID:Subject:From:To:Date:From;
-        b=HjCDzUdQ1jMBM43jHrwZ/FPzrWSrpPDBMdFksXPsqLgcCEgZHujsLLfxNzAJpNLdo
-         2JD865HkLPAUjeMsiMqin375X2EC3UOJhJaNGZHb/Qj71Z5yZxOGkhJUHy11uXn3ZW
-         EmhTpDjOJZkQHAVqk7Y3EjFd9u8HzxM6080b2X6s=
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 18A23128711F;
-        Thu, 30 Nov 2023 15:28:34 -0500 (EST)
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
- by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
- with ESMTP id 16WYGNpV01Ju; Thu, 30 Nov 2023 15:28:34 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1701376113;
-        bh=h309xXu2AysR4RABR++0kkIEHwY0IMWt9+lOUwuKroc=;
-        h=Message-ID:Subject:From:To:Date:From;
-        b=Qv7AdGnkNBVIGgpdGPP/B6pGx6knSkqjZ0o7IRPA4Fh5yzka4cBPPak4R6YrtEezO
-         kq1tUQQSinOZKWYzNKra4cEuO8DLKJAQgQQ9M736bSp62ccAtqVFQtgsDCkL44DJJ2
-         RArdEYUY8IKHwO0bWQVQJBGLFFRbkFNUSuh+s3t8=
-Received: from lingrow.int.hansenpartnership.com (unknown [IPv6:2601:5c4:4302:c21::a774])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 145741286906;
-        Thu, 30 Nov 2023 15:28:33 -0500 (EST)
-Message-ID: <ba9a6adb96ce110b1a74c6161fa58415049d5ef6.camel@HansenPartnership.com>
-Subject: [GIT PULL] SCSI fixes for 6.7-rc3
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Thu, 30 Nov 2023 15:28:27 -0500
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 
-MIME-Version: 1.0
+Received: from localhost (114.66.194.35.bc.googleusercontent.com. [35.194.66.114])
+        by smtp.gmail.com with ESMTPSA id q2-20020a0c9a42000000b00679d7e76b64sm800622qvd.126.2023.11.30.12.28.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Nov 2023 12:28:36 -0800 (PST)
+Date:   Thu, 30 Nov 2023 15:28:36 -0500
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To:     Song Yoong Siang <yoong.siang.song@intel.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Bjorn Topel <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, bpf@vger.kernel.org,
+        xdp-hints@xdp-project.net,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-kselftest@vger.kernel.org,
+        Song Yoong Siang <yoong.siang.song@intel.com>
+Message-ID: <6568f07418508_fbb8229478@willemb.c.googlers.com.notmuch>
+In-Reply-To: <20231130162028.852006-2-yoong.siang.song@intel.com>
+References: <20231130162028.852006-1-yoong.siang.song@intel.com>
+ <20231130162028.852006-2-yoong.siang.song@intel.com>
+Subject: Re: [PATCH bpf-next 1/3] xsk: add launch time support to XDP Tx
+ metadata
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-3 small fixes, one in drivers.  The core changes are to the internal
-representation of flags in scsi_devices which removes space wasting
-bools in favour of single bit flags and to add a flag to force a
-runtime resume which is used by ATA devices.
+Song Yoong Siang wrote:
+> This patch extends the XDP Tx metadata framework to include Time-Based
+> Scheduling (TBS) support where the NIC will schedule a packet for
+> transmission at a pre-determined time called launch time. The value of
+> launch time is communicated from user space to Ethernet driver via
+> launch_time field of struct xsk_tx_metadata.
+> 
+> Suggested-by: Stanislav Fomichev <sdf@google.com>
+> Signed-off-by: Song Yoong Siang <yoong.siang.song@intel.com>
+> ---
+>  Documentation/netlink/specs/netdev.yaml      |  4 ++++
+>  Documentation/networking/xsk-tx-metadata.rst |  5 +++++
+>  include/net/xdp_sock.h                       | 10 ++++++++++
+>  include/net/xdp_sock_drv.h                   |  1 +
+>  include/uapi/linux/if_xdp.h                  |  9 +++++++++
+>  include/uapi/linux/netdev.h                  |  3 +++
+>  net/core/netdev-genl.c                       |  2 ++
+>  net/xdp/xsk.c                                |  3 +++
+>  tools/include/uapi/linux/if_xdp.h            |  9 +++++++++
+>  tools/include/uapi/linux/netdev.h            |  3 +++
+>  tools/net/ynl/generated/netdev-user.c        |  1 +
+>  11 files changed, 50 insertions(+)
+> 
+> diff --git a/Documentation/netlink/specs/netdev.yaml b/Documentation/netlink/specs/netdev.yaml
+> index 00439bcbd2e3..a602776bbfb4 100644
+> --- a/Documentation/netlink/specs/netdev.yaml
+> +++ b/Documentation/netlink/specs/netdev.yaml
+> @@ -66,6 +66,10 @@ definitions:
+>          name: tx-checksum
+>          doc:
+>            L3 checksum HW offload is supported by the driver.
+> +      -
+> +        name: launch-time
+> +        doc:
+> +          HW Time-Based Scheduling (TBS) is supported by the driver.
 
-The patch is available here:
+Can we avoid introducing another term? We already have too many:
+launchtime, earliest delivery time (EDT), SO_TXTIME,
+pacing offload, earliest txtime first (ETF).  
 
-git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
-
-The short changelog is:
-
-Damien Le Moal (2):
-      scsi: sd: Fix system start for ATA devices
-      scsi: Change SCSI device boolean fields to single bit flags
-
-Peter Wang (1):
-      scsi: ufs: core: Clear cmd if abort succeeds in MCQ mode
-
-And the diffstat:
-
- drivers/ata/libata-scsi.c  |  9 +++++++--
- drivers/firewire/sbp2.c    |  6 +++---
- drivers/scsi/sd.c          |  9 ++++++++-
- drivers/ufs/core/ufshcd.c  | 13 +++++++++++++
- include/scsi/scsi_device.h | 12 +++++++++---
- 5 files changed, 40 insertions(+), 9 deletions(-)
-
-With full diff below
-
-James
-
----
-
-diff --git a/drivers/ata/libata-scsi.c b/drivers/ata/libata-scsi.c
-index c10ff8985203..0a0f483124c3 100644
---- a/drivers/ata/libata-scsi.c
-+++ b/drivers/ata/libata-scsi.c
-@@ -1055,9 +1055,14 @@ int ata_scsi_dev_config(struct scsi_device *sdev, struct ata_device *dev)
- 		 * Ask the sd driver to issue START STOP UNIT on runtime suspend
- 		 * and resume and shutdown only. For system level suspend/resume,
- 		 * devices power state is handled directly by libata EH.
-+		 * Given that disks are always spun up on system resume, also
-+		 * make sure that the sd driver forces runtime suspended disks
-+		 * to be resumed to correctly reflect the power state of the
-+		 * device.
- 		 */
--		sdev->manage_runtime_start_stop = true;
--		sdev->manage_shutdown = true;
-+		sdev->manage_runtime_start_stop = 1;
-+		sdev->manage_shutdown = 1;
-+		sdev->force_runtime_start_on_system_start = 1;
- 	}
- 
- 	/*
-diff --git a/drivers/firewire/sbp2.c b/drivers/firewire/sbp2.c
-index 7edf2c95282f..e779d866022b 100644
---- a/drivers/firewire/sbp2.c
-+++ b/drivers/firewire/sbp2.c
-@@ -1519,9 +1519,9 @@ static int sbp2_scsi_slave_configure(struct scsi_device *sdev)
- 	sdev->use_10_for_rw = 1;
- 
- 	if (sbp2_param_exclusive_login) {
--		sdev->manage_system_start_stop = true;
--		sdev->manage_runtime_start_stop = true;
--		sdev->manage_shutdown = true;
-+		sdev->manage_system_start_stop = 1;
-+		sdev->manage_runtime_start_stop = 1;
-+		sdev->manage_shutdown = 1;
- 	}
- 
- 	if (sdev->type == TYPE_ROM)
-diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
-index fa00dd503cbf..542a4bbb21bc 100644
---- a/drivers/scsi/sd.c
-+++ b/drivers/scsi/sd.c
-@@ -3949,8 +3949,15 @@ static int sd_resume(struct device *dev, bool runtime)
- 
- static int sd_resume_system(struct device *dev)
- {
--	if (pm_runtime_suspended(dev))
-+	if (pm_runtime_suspended(dev)) {
-+		struct scsi_disk *sdkp = dev_get_drvdata(dev);
-+		struct scsi_device *sdp = sdkp ? sdkp->device : NULL;
-+
-+		if (sdp && sdp->force_runtime_start_on_system_start)
-+			pm_request_resume(dev);
-+
- 		return 0;
-+	}
- 
- 	return sd_resume(dev, false);
- }
-diff --git a/drivers/ufs/core/ufshcd.c b/drivers/ufs/core/ufshcd.c
-index 8b1031fb0a44..bce0d2a9a7f3 100644
---- a/drivers/ufs/core/ufshcd.c
-+++ b/drivers/ufs/core/ufshcd.c
-@@ -6444,11 +6444,24 @@ static bool ufshcd_abort_one(struct request *rq, void *priv)
- 	struct scsi_device *sdev = cmd->device;
- 	struct Scsi_Host *shost = sdev->host;
- 	struct ufs_hba *hba = shost_priv(shost);
-+	struct ufshcd_lrb *lrbp = &hba->lrb[tag];
-+	struct ufs_hw_queue *hwq;
-+	unsigned long flags;
- 
- 	*ret = ufshcd_try_to_abort_task(hba, tag);
- 	dev_err(hba->dev, "Aborting tag %d / CDB %#02x %s\n", tag,
- 		hba->lrb[tag].cmd ? hba->lrb[tag].cmd->cmnd[0] : -1,
- 		*ret ? "failed" : "succeeded");
-+
-+	/* Release cmd in MCQ mode if abort succeeds */
-+	if (is_mcq_enabled(hba) && (*ret == 0)) {
-+		hwq = ufshcd_mcq_req_to_hwq(hba, scsi_cmd_to_rq(lrbp->cmd));
-+		spin_lock_irqsave(&hwq->cq_lock, flags);
-+		if (ufshcd_cmd_inflight(lrbp->cmd))
-+			ufshcd_release_scsi_cmd(hba, lrbp);
-+		spin_unlock_irqrestore(&hwq->cq_lock, flags);
-+	}
-+
- 	return *ret == 0;
- }
- 
-diff --git a/include/scsi/scsi_device.h b/include/scsi/scsi_device.h
-index 10480eb582b2..5ec1e71a09de 100644
---- a/include/scsi/scsi_device.h
-+++ b/include/scsi/scsi_device.h
-@@ -167,19 +167,25 @@ struct scsi_device {
- 	 * power state for system suspend/resume (suspend to RAM and
- 	 * hibernation) operations.
- 	 */
--	bool manage_system_start_stop;
-+	unsigned manage_system_start_stop:1;
- 
- 	/*
- 	 * If true, let the high-level device driver (sd) manage the device
- 	 * power state for runtime device suspand and resume operations.
- 	 */
--	bool manage_runtime_start_stop;
-+	unsigned manage_runtime_start_stop:1;
- 
- 	/*
- 	 * If true, let the high-level device driver (sd) manage the device
- 	 * power state for system shutdown (power off) operations.
- 	 */
--	bool manage_shutdown;
-+	unsigned manage_shutdown:1;
-+
-+	/*
-+	 * If set and if the device is runtime suspended, ask the high-level
-+	 * device driver (sd) to force a runtime resume of the device.
-+	 */
-+	unsigned force_runtime_start_on_system_start:1;
- 
- 	unsigned removable:1;
- 	unsigned changed:1;	/* Data invalid due to media change */
 
