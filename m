@@ -2,74 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA0307FF7C7
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 18:11:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 862C27FF7C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 18:11:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231976AbjK3RK7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 12:10:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59760 "EHLO
+        id S232192AbjK3QZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 11:25:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232211AbjK3QZl (ORCPT
+        with ESMTP id S232005AbjK3QZf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 11:25:41 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0AC1196
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 08:25:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701361547; x=1732897547;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=x5pgsWdGiD6G7Jv0D2O1jlpnGGKqT8tM3G7Vdqr2uac=;
-  b=YzrScC9OZitQGn+1Z9O23wZxEFlD1iC9I9NFLS1dCcnzQ4kmzILrDseT
-   HA43fAZhcB/CMJeN84azTGbG7JPUDbm9UtZIHpj1cviGZhGSi7XnborWz
-   zbqTj6xnd0uQSJ0v32lfDZJ4mg4y8Ww7JhknSy8x19cpWCEyfNXKy2tnQ
-   gUj0UHRfXpF0xz4aV+EWRW02YujM/uv1rz7PBXXi6apYRvLZJtuKo50m9
-   /+rMP9furAiquW4v4tG5+hJuwb3RBjWwSzapoONMbAHMho6arpOf2Jvzd
-   HXanBWsdMuvuc3y7PlHdr0ugjSlAcqqD0Cjz/lvifNI32LDwBIcIQ9et/
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="378377028"
-X-IronPort-AV: E=Sophos;i="6.04,239,1695711600"; 
-   d="scan'208";a="378377028"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 08:25:47 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="745692557"
-X-IronPort-AV: E=Sophos;i="6.04,239,1695711600"; 
-   d="scan'208";a="745692557"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga006.jf.intel.com with ESMTP; 30 Nov 2023 08:25:43 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r8jrA-0002LX-2V;
-        Thu, 30 Nov 2023 16:25:40 +0000
-Date:   Fri, 1 Dec 2023 00:25:10 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Yury Norov <yury.norov@gmail.com>
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        Kees Cook <keescook@chromium.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Marco Elver <elver@google.com>
-Subject: Re: [PATCH v2] lib: test_bitops: add compile-time
- optimization/evaluations assertions
-Message-ID: <202312010058.JJKeeqvE-lkp@intel.com>
-References: <20231130102717.1297492-1-mailhol.vincent@wanadoo.fr>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231130102717.1297492-1-mailhol.vincent@wanadoo.fr>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        Thu, 30 Nov 2023 11:25:35 -0500
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1E99198
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 08:25:40 -0800 (PST)
+Received: by mail-pf1-x44a.google.com with SMTP id d2e1a72fcca58-6cb9dd2ab9cso1291590b3a.3
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 08:25:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701361540; x=1701966340; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Frsrx8QxJTCbf8WmA7nSYv8M2eurLvDkjduXU5Q/zds=;
+        b=IuMVeDtU7LvGDFGw3IOZID4Rka7Bvx233updt39BqroyROkdlwpDUGraDOTY8+l4zi
+         QN6XKyZxFs2MEKrBl5x8g7hBbaz4tyI+cYY3Y4JqrfgUMo+p6/U55f4noY2Sdt2VHCdN
+         AcBPqgz+DdZNJB8oXwJM0Xk37PXAKGo6uGTj5g70QatRa9X1NKODW76/iekVgmUgyxDs
+         zqHDOoOb37cd9+LkNM06CB1Jn38j8k02HeFq3qwu6Oov/AZYrbm2UPccFcVOS1EIANvk
+         P88oE0it0w1QGrK0MZEPdklZRXu6k7ujcng97yi8BprN6FOnf+h3nBx0Z39ozkqwCgQY
+         VBaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701361540; x=1701966340;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Frsrx8QxJTCbf8WmA7nSYv8M2eurLvDkjduXU5Q/zds=;
+        b=aSHmz9h0RAhbZe1JyuxlXmTVuFhCHDP78v3Fs9586V9azCKz14XQsSH4o8piXbpCrW
+         EoSv5GvYjOqQwLypMPyTL33NZFXrl5welU6/zaG7uEBWAbZcW4/ghYBzOie8VQ6WTFAt
+         4nJsGEiNzsUKHS14C0MH9Dr8umdxDdrC+LXn6WNh1FJI+4GBn+I11u2eYA+Ax29j9HXN
+         mTtgPTIjhxMEJ/NP3x4oKevgF7SRKEK6o0h5EfayFrnXrOj+y5aXTuMpe83jWlUsz+yZ
+         ielpSXnx9+b+GhcQSkZN/y9geG5azBpb6f67Bng0YYjTe4skC5C0Y0fjLGHKPVlnzdqO
+         B0iQ==
+X-Gm-Message-State: AOJu0YwQ0rhLc2h/lDtQXHr4rhqsyffgRqljy7/h6We+8AhZyyC5pEcN
+        7sBOy7c6H4UQfwMC9sWoLTnjlhBxgUk=
+X-Google-Smtp-Source: AGHT+IGu+c68aXbfWv0Zq9ytnR9R1vz5ds4Tk7HWe8PM6XpfqZSJA6l/qnKx9Z7p0qZCIRdP8IQrTYrKQ8A=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:399c:b0:6c0:ec5b:bb2d with SMTP id
+ fi28-20020a056a00399c00b006c0ec5bbb2dmr5386707pfb.2.1701361540551; Thu, 30
+ Nov 2023 08:25:40 -0800 (PST)
+Date:   Thu, 30 Nov 2023 08:25:39 -0800
+In-Reply-To: <049e4892-fae8-4a1d-a069-70b0bf5ee755@gmail.com>
+Mime-Version: 1.0
+References: <20231007064019.17472-1-likexu@tencent.com> <e4d6c6a5030f49f44febf99ba4c7040938c3c483.camel@redhat.com>
+ <53d7caba-8b00-42ab-849a-d8c8d94aea37@gmail.com> <ZTklnN2I3gYjGxVv@google.com>
+ <ZTm8dH1GQ3vQtQua@google.com> <049e4892-fae8-4a1d-a069-70b0bf5ee755@gmail.com>
+Message-ID: <ZWi3g6Mh9L8Lglxj@google.com>
+Subject: Re: [PATCH] KVM: x86/xsave: Remove 'return void' expression for 'void function'
+From:   Sean Christopherson <seanjc@google.com>
+To:     Like Xu <like.xu.linux@gmail.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Maxim Levitsky <mlevitsk@redhat.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,76 +70,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vincent,
+On Thu, Nov 30, 2023, Like Xu wrote:
+> On 26/10/2023 9:10 am, Sean Christopherson wrote:
+> > On Wed, Oct 25, 2023, Sean Christopherson wrote:
+> > > On Wed, Oct 25, 2023, Like Xu wrote:
+> > > > Emm, did we miss this little fix ?
+> > > 
+> > > No, I have it earmarked, it's just not a priority because it doesn't truly fix
+> > > anything.  Though I suppose it probably makes to apply it for 6.8, waiting one
+> > > more day to send PULL requests to Paolo isn't a problem.
+> > 
+> > Heh, when I tried to apply this I got reminded of why I held it for later.  I
+> > want to apply it to kvm-x86/misc, but that's based on ~6.6-rc2 (plus a few KVM
+> > patches), i.e. doesn't have the "buggy" commit.  I don't want to rebase "misc",
+> > nor do I want to create a branch and PULL request for a single trivial commit.
+> > 
+> > So for logistical reasons, I'm not going apply this right away, but I will make
+> > sure it gets into v6.7.
+> 
+> Thanks, and a similar pattern occurs with these functions:
+> 
+>  'write_register_operand'
+>  'account_shadowed'
+>  'unaccount_shadowed'
+>  'mtrr_lookup_fixed_next'
+>  'pre_svm_run'
+>  'svm_vcpu_deliver_sipi_vector'
+> 
+> Although the compiler will do the right thing, use 'return void' expression
+> deliberately without grounds for exemption may annoy some CI pipelines.
+> 
+> If you need more cleanup or a new version to cover all these cases above,
+> just let me know.
 
-kernel test robot noticed the following build errors:
-
-[auto build test ERROR on akpm-mm/mm-everything]
-[also build test ERROR on linus/master v6.7-rc3 next-20231130]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Vincent-Mailhol/lib-test_bitops-add-compile-time-optimization-evaluations-assertions/20231130-182837
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/20231130102717.1297492-1-mailhol.vincent%40wanadoo.fr
-patch subject: [PATCH v2] lib: test_bitops: add compile-time optimization/evaluations assertions
-config: m68k-allmodconfig (https://download.01.org/0day-ci/archive/20231201/202312010058.JJKeeqvE-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231201/202312010058.JJKeeqvE-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312010058.JJKeeqvE-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   In file included from <command-line>:
-   In function 'test_bitops_const_eval',
-       inlined from 'test_bitops_startup' at lib/test_bitops.c:126:2:
->> include/linux/compiler_types.h:435:45: error: call to '__compiletime_assert_183' declared with attribute error: BUILD_BUG_ON failed: !__builtin_constant_p(__test_expr)
-     435 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-         |                                             ^
-   include/linux/compiler_types.h:416:25: note: in definition of macro '__compiletime_assert'
-     416 |                         prefix ## suffix();                             \
-         |                         ^~~~~~
-   include/linux/compiler_types.h:435:9: note: in expansion of macro '_compiletime_assert'
-     435 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-         |         ^~~~~~~~~~~~~~~~~~~
-   include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
-      39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
-         |                                     ^~~~~~~~~~~~~~~~~~
-   include/linux/build_bug.h:50:9: note: in expansion of macro 'BUILD_BUG_ON_MSG'
-      50 |         BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
-         |         ^~~~~~~~~~~~~~~~
-   lib/test_bitops.c:59:9: note: in expansion of macro 'BUILD_BUG_ON'
-      59 |         BUILD_BUG_ON(!__builtin_constant_p(__test_expr));       \
-         |         ^~~~~~~~~~~~
-   lib/test_bitops.c:74:9: note: in expansion of macro 'test_const_eval'
-      74 |         test_const_eval(__ffs(BIT(n)) == n);
-         |         ^~~~~~~~~~~~~~~
-
-
-vim +/__compiletime_assert_183 +435 include/linux/compiler_types.h
-
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  421  
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  422  #define _compiletime_assert(condition, msg, prefix, suffix) \
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  423  	__compiletime_assert(condition, msg, prefix, suffix)
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  424  
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  425  /**
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  426   * compiletime_assert - break build and emit msg if condition is false
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  427   * @condition: a compile-time constant condition to check
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  428   * @msg:       a message to emit if condition is false
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  429   *
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  430   * In tradition of POSIX assert, this macro will break the build if the
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  431   * supplied condition is *false*, emitting the supplied error message if the
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  432   * compiler has support to do so.
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  433   */
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  434  #define compiletime_assert(condition, msg) \
-eb5c2d4b45e3d2 Will Deacon 2020-07-21 @435  	_compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  436  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+I'd rather update the CI pipelines to turn off -Wpedantic.  There is zero chance
+that -Wpedantic will ever get enabled for kernel builds, the kernel is deliberately
+not ISO C compliant.  I have no objection to cleaning up kvm_vcpu_ioctl_x86_get_xsave()
+because it's an obvious goof and a recent change, but like checkpatch warnings,
+I don't want to go around "fixing" warnings unless they are actively problematic
+for humans.
