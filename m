@@ -2,112 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 593207FF66D
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 17:42:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60F4D7FF670
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 17:42:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232183AbjK3QmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 11:42:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51440 "EHLO
+        id S232299AbjK3Qmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 11:42:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231919AbjK3QmD (ORCPT
+        with ESMTP id S231919AbjK3Qme (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 11:42:03 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA8C6D50;
-        Thu, 30 Nov 2023 08:42:09 -0800 (PST)
-Date:   Thu, 30 Nov 2023 17:42:06 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1701362527;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=S9xj0ZAADKx7hu7QbhqW7wDQCSHjf9qrcUMkO9n1IJI=;
-        b=Z2qk16R5XhEOi87nU1gPUyUSwrCoMXB9G/DE3XTxfykFRS0/qBJr9D6cWrYRAdyYFTBVz7
-        HWYgKOnRpj+yzwtDfQUoCOBAdI1nBRIHNRXLjup5YHlT17by9aFT1RBLjTwZtg5f+YOTRz
-        prQ7TiWQHZREWQISbQSlgLbgNcQWUlLkcJTZEFVWRYUWlimTJaBEIbRCgq5EiYGhN5TIvb
-        4Fzj6jFrYOJ/F2/pKaldFNpj3mMwN+jaAfbAePBgUAgYaC5YmgcZ3llj5z9El+GpolREvx
-        HiXSrIrWTYM/qF4TINGHGZVkkhE+E3JvKbF5UWoSnwVJWW/+0cCUXtjye0I9Rw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1701362527;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=S9xj0ZAADKx7hu7QbhqW7wDQCSHjf9qrcUMkO9n1IJI=;
-        b=oI/W4FTas45tKWNnuWBVlFkS9IRdoBvVebb2alZO5ZeFsX2t39PI8Ivil+b8paxzpoPzM9
-        f+odN237NEkbd7Cg==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: [ANNOUNCE] v6.7-rc3-rt3
-Message-ID: <20231130164206.veSGRRd_@linutronix.de>
+        Thu, 30 Nov 2023 11:42:34 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 028BB1A3
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 08:42:41 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-50bbc36f767so1705296e87.1
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 08:42:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701362559; x=1701967359; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=05Mpj4MHmTw58ZLIMAy0nBU+jdjD9L9+bDSyBxDCGGw=;
+        b=KZl8bJoQLl9H8RqDs35Wmu3tWeZGK1cY4zTkxvE67jMd4cYj95T+HLYPzkwLt24cwJ
+         dZ900XRXVXJBoxWRuZZTGo4MBms6P/gAZ2CdMcTgnxTHBHFnOnwsGL13PkKnQ5jVepwp
+         sBRXTi2VRjzmOTthvsnOM2citTqjl0/UrHCO2PT3c/vC15Ot5MOL0er8wHkWbyrSbeNI
+         ndR+gU95M+FWE2dzds5wAF8OtVnNxdHubpexVKoa1B4TXmj5gZ/R7/5g6Qid25EpnVX3
+         d2OchEusDaij4m3VrBgux3IAMT5+sle7tcaBL89t+XFIeUuy29mgHCHn88pTs4DbhpwT
+         kZ5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701362559; x=1701967359;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=05Mpj4MHmTw58ZLIMAy0nBU+jdjD9L9+bDSyBxDCGGw=;
+        b=BmzF3vV58f2zTUxhf2s7LlkLWoMq1GEhM3GGLi5SHgtNRfLnxx8yeyuRm4bYVtC2Ni
+         djwZmxCXJuatf9q2MTntEgsL+gQ/JHmL29OBtvLvMvYsg578DU6sjfMXKhlb8N3cBPsT
+         ADOycDzIz9tYMDcBvVWXnpDrVAMTOfPKb+uq7BcsohlF5HFPnjI53uWQmsVBtKeylqUJ
+         rjCGo0tEQWBx6pmt55Kx8zX73Km5tQ8oyd7+TWeIDWAVNSdMUNk05SO0U+76OlLvahQb
+         Q/tRqJcVOw4YYMPTSJ1+1mc5E68nI3LZfYRpapCwoKM1J/ic5AR+QFeayfqbJXM2a2se
+         3gkw==
+X-Gm-Message-State: AOJu0YxstSHddOmI4JhcTMmCdfQZzMls82Hdun46E16NJo+T6dqpJkrP
+        GLkqePFt7i+77HBdOuFxpBehRt1mwNAv0a4y1RD6Wqc=
+X-Google-Smtp-Source: AGHT+IGmQC7kZKB5kMqbJJVCJWEbmvAIRLSHC0kMNiACig+8dLqeOIKlR2Hysww7WY5KQw165aCL/smz31ILUOpNCvc=
+X-Received: by 2002:a05:6512:15a4:b0:507:ab58:7f7a with SMTP id
+ bp36-20020a05651215a400b00507ab587f7amr2258lfb.10.1701362558781; Thu, 30 Nov
+ 2023 08:42:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20231130155213.1407-1-bp@alien8.de> <20231130160903.GJZWizn+dPaaViFVKN@fat_crate.local>
+In-Reply-To: <20231130160903.GJZWizn+dPaaViFVKN@fat_crate.local>
+From:   Brian Gerst <brgerst@gmail.com>
+Date:   Thu, 30 Nov 2023 11:42:27 -0500
+Message-ID: <CAMzpN2j5xYq0YCzXxU8srha=1um0JSWMM2YWkUG-qFA891xVHQ@mail.gmail.com>
+Subject: Re: [PATCH] x86/ia32: State that IA32 emulation is disabled
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Nikolay Borisov <nik.borisov@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear RT folks!
+On Thu, Nov 30, 2023 at 11:09=E2=80=AFAM Borislav Petkov <bp@alien8.de> wro=
+te:
+>
+> On Thu, Nov 30, 2023 at 04:52:13PM +0100, Borislav Petkov wrote:
+> > +static inline bool ia32_enabled_verbose(void)
+> > +{
+> > +#ifdef CONFIG_IA32_EMULATION
+> > +     pr_notice_once("32-bit emulation disabled. You can reenable with =
+ia32_emulation=3Don\n");
+> > +#endif
+> > +     return ia32_enabled();
+> > +}
+>
+> As Nik rightfully points out offlist, this should rather be something
+> like:
+>
+> ---
+>         bool enabled =3D ia32_enabled();
+>
+> #ifdef CONFIG_IA32_EMULATION
+>         if (!enabled)
+>                 pr_notice_once("32-bit emulation disabled. You can reenab=
+le with ia32_emulation=3Don\n");
+> #endif
+>
+>         return enabled;
 
-I'm pleased to announce the v6.7-rc3-rt3 patch set. 
+The #ifdef isn't necessary, as ia32_enabled() will always return false
+in that case.
 
-Changes since v6.7-rc3-rt2:
-
-  - Since the printk rework in v6.6-rt13, the thread for the printing
-    console fails to go idle if there is nothing to print. This has been
-    resolved.
-
-Known issues
-     Pierre Gondois reported crashes on ARM64 together with "rtla timerlat
-     hist" as trigger. It is not yet understood. The report is at
-	https://lore.kernel.org/70c08728-3d4f-47a6-8a3e-114e4877d120@arm.com
-
-The delta patch against v6.7-rc3-rt2 is appended below and can be found here:
- 
-     https://cdn.kernel.org/pub/linux/kernel/projects/rt/6.7/incr/patch-6.7-rc3-rt2-rt3.patch.xz
-
-You can get this release via the git tree at:
-
-    https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git v6.7-rc3-rt3
-
-The RT patch against v6.7-rc3 can be found here:
-
-    https://cdn.kernel.org/pub/linux/kernel/projects/rt/6.7/older/patch-6.7-rc3-rt3.patch.xz
-
-The split quilt queue is available at:
-
-    https://cdn.kernel.org/pub/linux/kernel/projects/rt/6.7/older/patches-6.7-rc3-rt3.tar.xz
-
-Sebastian
-
-diff --git a/kernel/printk/nbcon.c b/kernel/printk/nbcon.c
-index a9be219673dbf..0bd5ee1b5b282 100644
---- a/kernel/printk/nbcon.c
-+++ b/kernel/printk/nbcon.c
-@@ -1032,13 +1032,6 @@ static bool nbcon_kthread_should_wakeup(struct console *con, struct nbcon_contex
- 
- 		nbcon_state_read(con, &cur);
- 
--		/*
--		 * Some other CPU is using the console. Patiently poll
--		 * to see if it becomes available. This is more efficient
--		 * than having every release trigger an irq_work to wake
--		 * the kthread.
--		 */
--		msleep(1);
- 	} while (cur.prio != NBCON_PRIO_NONE);
- 
- 	/* Bring the sequence in @ctxt up to date */
-diff --git a/localversion-rt b/localversion-rt
-index c3054d08a1129..1445cd65885cd 100644
---- a/localversion-rt
-+++ b/localversion-rt
-@@ -1 +1 @@
---rt2
-+-rt3
+Brian Gerst
