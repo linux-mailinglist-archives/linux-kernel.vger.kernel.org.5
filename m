@@ -2,401 +2,339 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06FE57FE5DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 02:16:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0E117FE5E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 02:16:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343889AbjK3BQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 20:16:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46714 "EHLO
+        id S1343909AbjK3BQZ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 29 Nov 2023 20:16:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229658AbjK3BQS (ORCPT
+        with ESMTP id S229658AbjK3BQX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 20:16:18 -0500
-X-Greylist: delayed 148303 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 29 Nov 2023 17:16:23 PST
-Received: from mail-m49196.qiye.163.com (mail-m49196.qiye.163.com [45.254.49.196])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 305228E;
-        Wed, 29 Nov 2023 17:16:22 -0800 (PST)
-DKIM-Signature: a=rsa-sha256;
-        b=Ddeg5LJeS0phqWIWA8ac8OOhpg9ohiNBIkrIN8hf3/vPSe461U8JltYdz2kW6b6PJY5kByYLqF95OwQj0T7IucW+QYMuK8w6MLhv2NGbFS2zV9i3m0fjpCxLKKl6TWIgkkdn0yrG+t0BJEw72UyS/p8Qx11+Xc7wCuaF7DphVSg=;
-        c=relaxed/relaxed; s=default; d=rock-chips.com; v=1;
-        bh=AeY7fk+9XNZsdcdHTvO2mlCsGOWJj1HjrFhx+lG+YOY=;
-        h=date:mime-version:subject:message-id:from;
-Received: from [172.16.12.141] (unknown [58.22.7.114])
-        by mail-m12779.qiye.163.com (Hmail) with ESMTPA id 3F5C47803DF;
-        Thu, 30 Nov 2023 09:15:47 +0800 (CST)
-Message-ID: <526c14a3-ab44-403c-ad36-2334cc5036a1@rock-chips.com>
-Date:   Thu, 30 Nov 2023 09:15:46 +0800
+        Wed, 29 Nov 2023 20:16:23 -0500
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69324D6C;
+        Wed, 29 Nov 2023 17:16:28 -0800 (PST)
+Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-285a64dcf3eso449732a91.1;
+        Wed, 29 Nov 2023 17:16:28 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701306988; x=1701911788;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AADdL8GMm04lsgkg52eJIhzZN8O2OMoPtzpBU/xKlHM=;
+        b=bRghdlbnFDkkbK504Z6YFX0w8w+cwIVpymSz3lLtiL7U3BXnrwc/r/uIsXK0CMAaaN
+         3D9xGPHN2/ZPE21jQtnX3SXiSoW0XH/6oVi8+AXx1lhZvIVpqsXd3nHLfbnL6I7Hdgzq
+         n0Qy35vJDbmxeX0xoTw4Nh46chOnGnZLty9q2uaSUo9ZToEr7anjrWeA9uRjSYkTRZdi
+         stLNnsRONVJnZ9Xth7Bosp4zzKqV7LAei3fAD6vCEa+t28+a6spp0m71w337NikdW7iI
+         n0PclYH0CLBuFcMI+A0alwfFKKOzUkvRJuRvCoBe4p97cewPmNouoKof/FOOS3S6FZZz
+         FNiQ==
+X-Gm-Message-State: AOJu0Yy4OSciYgzDVBpY0gc4mUBn9p2InqMKGwDs5C517AUiu4M2rD5V
+        ie+XPNbjJW7bPfoIiZV9FIm0Pdq5MLcMLej3M/0=
+X-Google-Smtp-Source: AGHT+IFeD8YkmXUQvQ2+qyEuCbZrBD+M+x4PPE+ScjIGM9Wj9+LdGlqo8yxZQXL6h/GexGeJT/Ttpd+1kjowCfSailQ=
+X-Received: by 2002:a17:90b:1c05:b0:285:a0aa:a73e with SMTP id
+ oc5-20020a17090b1c0500b00285a0aaa73emr15748734pjb.44.1701306987702; Wed, 29
+ Nov 2023 17:16:27 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 11/12] drm/rockchip: vop2: Add debugfs support
-Content-Language: en-US
-To:     Sascha Hauer <s.hauer@pengutronix.de>
-Cc:     Andy Yan <andyshrk@163.com>, heiko@sntech.de, hjc@rock-chips.com,
-        dri-devel@lists.freedesktop.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, sebastian.reichel@collabora.com,
-        kever.yang@rock-chips.com, chris.obbard@collabora.com
-References: <20231122125316.3454268-1-andyshrk@163.com>
- <20231122125601.3455031-1-andyshrk@163.com>
- <20231127101337.GU3359458@pengutronix.de>
- <ea24a638-d10f-4f58-9992-1c80bafdd6d4@rock-chips.com>
- <20231129085229.GC963049@pengutronix.de>
- <13a58162-6708-498c-84bd-68a1e814f30b@rock-chips.com>
- <20231129125910.GA1057032@pengutronix.de>
-From:   Andy Yan <andy.yan@rock-chips.com>
-In-Reply-To: <20231129125910.GA1057032@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-        tZV1koWUFDSUNOT01LS0k3V1ktWUFJV1kPCRoVCBIfWUFZGkkaH1ZJHx1LT0xKTENPTE9VEwETFh
-        oSFyQUDg9ZV1kYEgtZQVlOQ1VJSVVMVUpKT1lXWRYaDxIVHRRZQVlPS0hVSk5MSUpJVUpLS1VKQl
-        kG
-X-HM-Tid: 0a8c1dcbd7f3b24fkuuu3f5c47803df
-X-HM-MType: 1
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Ojo6Lxw6GDw8DhJOQk8fMwM9
-        TzowCxRVSlVKTEtKSEtNQk9DSU1LVTMWGhIXVRoVHwJVAhoVOwkUGBBWGBMSCwhVGBQWRVlXWRIL
-        WUFZTkNVSUlVTFVKSk9ZV1kIAVlBSk1JSEI3Bg++
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+References: <20231127220902.1315692-1-irogers@google.com>
+In-Reply-To: <20231127220902.1315692-1-irogers@google.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Wed, 29 Nov 2023 17:16:16 -0800
+Message-ID: <CAM9d7cj=ojxxdbT095UiwaP+WCRCHMGCU_JYQCWBD-vGiKScjA@mail.gmail.com>
+Subject: Re: [PATCH v5 00/50] Improvements to memory use
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Nick Terrell <terrelln@fb.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        "Steinar H. Gunderson" <sesse@google.com>,
+        Liam Howlett <liam.howlett@oracle.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Colin Ian King <colin.i.king@gmail.com>,
+        Dmitrii Dolgov <9erthalion6@gmail.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Ming Wang <wangming01@loongson.cn>,
+        James Clark <james.clark@arm.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        German Gomez <german.gomez@arm.com>,
+        Changbin Du <changbin.du@huawei.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, Li Dong <lidong@vivo.com>,
+        Sandipan Das <sandipan.das@amd.com>,
+        liuwenyu <liuwenyu7@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org,
+        Guilherme Amadio <amadio@gentoo.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sascha:
+On Mon, Nov 27, 2023 at 2:09 PM Ian Rogers <irogers@google.com> wrote:
+>
+> Fix memory leaks detected by address/leak sanitizer affecting LBR
+> call-graphs, perf mem and BPF offcpu.
+>
+> Make branch_type_stat in callchain_list optional as it is large and
+> not always necessary - in particular it isn't used by perf top.
+>
+> Make the allocations of zstd streams, kernel symbols and event copies
+> lazier in order to save memory in cases like perf record.
+>
+> Handle the thread exit event and have it remove the thread from the
+> threads set in machine. Don't do this for perf report as it causes a
+> regression for task lists, which assume threads are never removed from
+> the machine's set, and offcpu events, that may sythensize samples for
+> threads that have exited.
+>
+> Avoid using 8kb buffers for filename__read_str which is excessive for
+> reading CPU maps. Add io_dir as an allocation free readdir
+> replacement, opendir allocating 32kb by default and the code uses it
+> recursively.
+>
+> Shrink perf map using a two value byte to replace two function
+> pointers. Modify the implementation of maps to not use an rbtree as
+> the container for maps, instead use a sorted array. Improve locking
+> and reference counting issues.
+>
+> Similar to maps separate out and reimplement threads to use a hashmap
+> for lower memory consumption and faster look up. The fixes a
+> regression in memory usage where reference count checking switched to
+> using non-invasive tree nodes.  Reduce its default size by 32 times
+> and improve locking discipline. Also, fix regressions where tids had
+> become unordered to make `perf report --tasks` and
+> `perf trace --summary` output easier to read.
+>
+> Better encapsulate the dsos abstraction. Remove the linked list and
+> rbtree used for faster iteration and log(n) lookup to a sorted array
+> for similar performance but half the memory usage per dso. Improve
+> reference counting and locking discipline, adding reference count
+> checking to dso. Experimented with, but abandoned, a hashmap
+> implementation due to the need for extra storage and the keys not
+> being stable.
+>
+> The overall effect is to reduce memory consumption significantly for
+> perf top - with call graphs enabled running longer before 1GB of
+> memory is consumed. For a perf record of 'true', the memory
+> consumption goes from 39912kb max resident to 20096kb max resident -
+> nearly halved. perf inject with -b of a system wide perf record of
+> 'true' reduces the max resident by roughly 4.5% (3.4% in v4 due to
+> branch_type_stat changes being merged). This is while improving
+> correctness with locking discipline and reference count checking.
+>
+> Patch organization (v5):
+>  - 50 patches is a lot, the patches aren't divided as they merge conflict and
+>    later patches, for example in dsos, rely on the changes and fixes to maps.
 
-On 11/29/23 20:59, Sascha Hauer wrote:
-> On Wed, Nov 29, 2023 at 07:01:37PM +0800, Andy Yan wrote:
->> Hi Sascha:
->>
->>
->>
->> On 11/29/23 16:52, Sascha Hauer wrote:
->>> On Mon, Nov 27, 2023 at 06:56:34PM +0800, Andy Yan wrote:
->>>>      Hi Sascha:
->>>>
->>>>      thanks for you review.
->>>>
->>>>      On 11/27/23 18:13, Sascha Hauer wrote:
->>>>
->>>>    On Wed, Nov 22, 2023 at 08:56:01PM +0800, Andy Yan wrote:
->>>>
->>>>    From: Andy Yan [1]<andy.yan@rock-chips.com>
->>>>
->>>>    /sys/kernel/debug/dri/vop2/summary:  dump vop display state
->>>>    /sys/kernel/debug/dri/vop2/regs: dump whole vop registers
->>>>    /sys/kernel/debug/dri/vop2/active_regs: only dump the registers of
->>>>    activated modules
->>>>
->>>>    Signed-off-by: Andy Yan [2]<andy.yan@rock-chips.com>
->>>>    ---
->>>>
->>>>    (no changes since v1)
->>>>
->>>>     drivers/gpu/drm/rockchip/rockchip_drm_vop2.c | 399 +++++++++++++++++++
->>>>     1 file changed, 399 insertions(+)
->>>>
->>>>    diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c b/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
->>>>    index 9eecbe1f71f9..4a2342209c15 100644
->>>>    --- a/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
->>>>    +++ b/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
->>>>    @@ -27,6 +27,7 @@
->>>>     #include <drm/drm_debugfs.h>
->>>>     #include <drm/drm_flip_work.h>
->>>>     #include <drm/drm_framebuffer.h>
->>>>    +#include <drm/drm_gem_framebuffer_helper.h>
->>>>     #include <drm/drm_probe_helper.h>
->>>>     #include <drm/drm_vblank.h>
->>>>
->>>>    @@ -187,6 +188,7 @@ struct vop2 {
->>>>             */
->>>>            u32 registered_num_wins;
->>>>
->>>>    +       struct resource *res;
->>>>            void __iomem *regs;
->>>>            struct regmap *map;
->>>>
->>>>    @@ -228,6 +230,44 @@ struct vop2 {
->>>>     #define vop2_output_if_is_lvds(x)      (x == ROCKCHIP_VOP2_EP_LVDS0 || x == ROCKCHIP_VOP2_EP_LVDS1)
->>>>     #define vop2_output_if_is_dpi(x)       (x == ROCKCHIP_VOP2_EP_RGB0)
->>>>
->>>>    +struct vop2_regs_dump {
->>>>    +       const char *name;
->>>>    +       u32 base;
->>>>    +       u32 en_reg;
->>>>    +       u32 en_val;
->>>>    +       u32 en_mask;
->>>>    +};
->>>>    +
->>>>    +/*
->>>>    + * bus-format types.
->>>>    + */
->>>>    +struct drm_bus_format_enum_list {
->>>>    +       int type;
->>>>    +       const char *name;
->>>>    +};
->>>>    +
->>>>    +static const struct drm_bus_format_enum_list drm_bus_format_enum_list[] = {
->>>>    +       { DRM_MODE_CONNECTOR_Unknown, "Unknown" },
->>>>    +       { MEDIA_BUS_FMT_RGB565_1X16, "RGB565_1X16" },
->>>>    +       { MEDIA_BUS_FMT_RGB666_1X18, "RGB666_1X18" },
->>>>    +       { MEDIA_BUS_FMT_RGB666_1X24_CPADHI, "RGB666_1X24_CPADHI" },
->>>>    +       { MEDIA_BUS_FMT_RGB666_1X7X3_SPWG, "RGB666_1X7X3_SPWG" },
->>>>    +       { MEDIA_BUS_FMT_YUV8_1X24, "YUV8_1X24" },
->>>>    +       { MEDIA_BUS_FMT_UYYVYY8_0_5X24, "UYYVYY8_0_5X24" },
->>>>    +       { MEDIA_BUS_FMT_YUV10_1X30, "YUV10_1X30" },
->>>>    +       { MEDIA_BUS_FMT_UYYVYY10_0_5X30, "UYYVYY10_0_5X30" },
->>>>    +       { MEDIA_BUS_FMT_RGB888_3X8, "RGB888_3X8" },
->>>>    +       { MEDIA_BUS_FMT_RGB888_1X24, "RGB888_1X24" },
->>>>    +       { MEDIA_BUS_FMT_RGB888_1X7X4_SPWG, "RGB888_1X7X4_SPWG" },
->>>>    +       { MEDIA_BUS_FMT_RGB888_1X7X4_JEIDA, "RGB888_1X7X4_JEIDA" },
->>>>    +       { MEDIA_BUS_FMT_UYVY8_2X8, "UYVY8_2X8" },
->>>>    +       { MEDIA_BUS_FMT_YUYV8_1X16, "YUYV8_1X16" },
->>>>    +       { MEDIA_BUS_FMT_UYVY8_1X16, "UYVY8_1X16" },
->>>>    +       { MEDIA_BUS_FMT_RGB101010_1X30, "RGB101010_1X30" },
->>>>    +       { MEDIA_BUS_FMT_YUYV10_1X20, "YUYV10_1X20" },
->>>>    +};
->>>>    +static DRM_ENUM_NAME_FN(drm_get_bus_format_name, drm_bus_format_enum_list)
->>>>    +
->>>>     static const struct regmap_config vop2_regmap_config;
->>>>
->>>>     static struct vop2_video_port *to_vop2_video_port(struct drm_crtc *crtc)
->>>>    @@ -2487,6 +2527,363 @@ static const struct drm_crtc_helper_funcs vop2_crtc_helper_funcs = {
->>>>            .atomic_disable = vop2_crtc_atomic_disable,
->>>>     };
->>>>
->>>>    +static void vop2_dump_connector_on_crtc(struct drm_crtc *crtc, struct seq_file *s)
->>>>    +{
->>>>    +       struct drm_connector_list_iter conn_iter;
->>>>    +       struct drm_connector *connector;
->>>>    +
->>>>    +       drm_connector_list_iter_begin(crtc->dev, &conn_iter);
->>>>    +       drm_for_each_connector_iter(connector, &conn_iter) {
->>>>    +               if (crtc->state->connector_mask & drm_connector_mask(connector))
->>>>    +                       seq_printf(s, "    Connector: %s\n", connector->name);
->>>>    +
->>>>    +       }
->>>>    +       drm_connector_list_iter_end(&conn_iter);
->>>>    +}
->>>>    +
->>>>    +static int vop2_plane_state_dump(struct seq_file *s, struct drm_plane *plane)
->>>>    +{
->>>>    +       struct vop2_win *win = to_vop2_win(plane);
->>>>    +       struct drm_plane_state *pstate = plane->state;
->>>>    +       struct drm_rect *src, *dst;
->>>>    +       struct drm_framebuffer *fb;
->>>>    +       struct drm_gem_object *obj;
->>>>    +       struct rockchip_gem_object *rk_obj;
->>>>    +       bool xmirror;
->>>>    +       bool ymirror;
->>>>    +       bool rotate_270;
->>>>    +       bool rotate_90;
->>>>    +       dma_addr_t fb_addr;
->>>>    +       int i;
->>>>    +
->>>>    +       seq_printf(s, "    %s: %s\n", win->data->name, pstate->crtc ? "ACTIVE" : "DISABLED");
->>>>    +       if (!pstate || !pstate->fb)
->>>>    +               return 0;
->>>>    +
->>>>    +       fb = pstate->fb;
->>>>    +       src = &pstate->src;
->>>>    +       dst = &pstate->dst;
->>>>    +       xmirror = pstate->rotation & DRM_MODE_REFLECT_X ? true : false;
->>>>    +       ymirror = pstate->rotation & DRM_MODE_REFLECT_Y ? true : false;
->>>>    +       rotate_270 = pstate->rotation & DRM_MODE_ROTATE_270;
->>>>    +       rotate_90 = pstate->rotation & DRM_MODE_ROTATE_90;
->>>>    +
->>>>    +       seq_printf(s, "\twin_id: %d\n", win->win_id);
->>>>    +
->>>>    +       seq_printf(s, "\tformat: %p4cc%s glb_alpha[0x%x]\n",
->>>>    +                  &fb->format->format,
->>>>    +                  drm_is_afbc(fb->modifier) ? "[AFBC]" : "",
->>>>    +                  pstate->alpha >> 8);
->>>>    +       seq_printf(s, "\trotate: xmirror: %d ymirror: %d rotate_90: %d rotate_270: %d\n",
->>>>    +                  xmirror, ymirror, rotate_90, rotate_270);
->>>>    +       seq_printf(s, "\tzpos: %d\n", pstate->normalized_zpos);
->>>>    +       seq_printf(s, "\tsrc: pos[%d, %d] rect[%d x %d]\n", src->x1 >> 16,
->>>>    +                  src->y1 >> 16, drm_rect_width(src) >> 16,
->>>>    +                  drm_rect_height(src) >> 16);
->>>>    +       seq_printf(s, "\tdst: pos[%d, %d] rect[%d x %d]\n", dst->x1, dst->y1,
->>>>    +                  drm_rect_width(dst), drm_rect_height(dst));
->>>>    +
->>>>    +       for (i = 0; i < fb->format->num_planes; i++) {
->>>>    +               obj = fb->obj[0];
->>>>    +               rk_obj = to_rockchip_obj(obj);
->>>>    +               fb_addr = rk_obj->dma_addr + fb->offsets[0];
->>>>    +
->>>>    +               seq_printf(s, "\tbuf[%d]: addr: %pad pitch: %d offset: %d\n",
->>>>    +                          i, &fb_addr, fb->pitches[i], fb->offsets[i]);
->>>>    +       }
->>>>    +
->>>>    +       return 0;
->>>>    +}
->>>>    +
->>>>    +static int vop2_crtc_state_dump(struct drm_crtc *crtc, struct seq_file *s)
->>>>    +{
->>>>    +       struct vop2_video_port *vp = to_vop2_video_port(crtc);
->>>>    +       struct drm_crtc_state *cstate = crtc->state;
->>>>    +       struct rockchip_crtc_state *vcstate;
->>>>    +       struct drm_display_mode *mode;
->>>>    +       struct drm_plane *plane;
->>>>    +       bool interlaced;
->>>>    +
->>>>    +       seq_printf(s, "Video Port%d: %s\n", vp->id, !cstate ?
->>>>    +                  "DISABLED" : cstate->active ? "ACTIVE" : "DISABLED");
->>>>    +
->>>>    +       if (!cstate || !cstate->active)
->>>>    +               return 0;
->>>>    +
->>>>    +       mode = &crtc->state->adjusted_mode;
->>>>    +       vcstate = to_rockchip_crtc_state(cstate);
->>>>    +       interlaced = !!(mode->flags & DRM_MODE_FLAG_INTERLACE);
->>>>    +
->>>>    +       vop2_dump_connector_on_crtc(crtc, s);
->>>>    +       seq_printf(s, "\tbus_format[%x]: %s\n", vcstate->bus_format,
->>>>    +                   drm_get_bus_format_name(vcstate->bus_format));
->>>>    +       seq_printf(s, "\toutput_mode[%x]", vcstate->output_mode);
->>>>    +       seq_printf(s, " color_space[%d]\n", vcstate->color_space);
->>>>    +       seq_printf(s, "    Display mode: %dx%d%s%d\n",
->>>>    +                   mode->hdisplay, mode->vdisplay, interlaced ? "i" : "p",
->>>>    +                   drm_mode_vrefresh(mode));
->>>>    +       seq_printf(s, "\tclk[%d] real_clk[%d] type[%x] flag[%x]\n",
->>>>    +                   mode->clock, mode->crtc_clock, mode->type, mode->flags);
->>>>    +       seq_printf(s, "\tH: %d %d %d %d\n", mode->hdisplay, mode->hsync_start,
->>>>    +                   mode->hsync_end, mode->htotal);
->>>>    +       seq_printf(s, "\tV: %d %d %d %d\n", mode->vdisplay, mode->vsync_start,
->>>>    +                   mode->vsync_end, mode->vtotal);
->>>>    +
->>>>    +       drm_atomic_crtc_for_each_plane(plane, crtc) {
->>>>    +               vop2_plane_state_dump(s, plane);
->>>>    +       }
->>>>    +
->>>>    +       return 0;
->>>>    +}
->>>>    +
->>>>    +static int vop2_summary_show(struct seq_file *s, void *data)
->>>>    +{
->>>>    +       struct drm_info_node *node = s->private;
->>>>    +       struct drm_minor *minor = node->minor;
->>>>    +       struct drm_device *drm_dev = minor->dev;
->>>>    +       struct drm_crtc *crtc;
->>>>    +
->>>>    +       drm_modeset_lock_all(drm_dev);
->>>>    +       drm_for_each_crtc(crtc, drm_dev) {
->>>>    +               vop2_crtc_state_dump(crtc, s);
->>>>    +       }
->>>>    +       drm_modeset_unlock_all(drm_dev);
->>>>    +
->>>>    +       return 0;
->>>>    +}
->>>>    +
->>>>    +static void vop2_regs_print(struct vop2 *vop2, struct seq_file *s, struct vop2_regs_dump *dump)
->>>>    +{
->>>>    +       resource_size_t start;
->>>>    +       const int reg_num = 0x110 / 4;
->>>>
->>>>    If I'm not mistaken this prints a register space of 0x110 bytes.
->>>>    Shouldn't it be 0x100 bytes instead?
->>>>
->>>>    Also, are all these register spaces really have the same size? Does it
->>>>    make sense to add the size to struct vop2_regs_dump?
->>>>
->>>>      In fact, most used registers of the most blocks are not more than 100, but
->>>>      for Cluster windows,
->>>>
->>>>      there is a CLUSTER_CTRL register sting at 0x100.
->>>>
->>>>      I think i should add the size to struct vop2_regs_dump.
->>>>
->>>>
->>>>    +       u32 val;
->>>>    +       int i;
->>>>    +
->>>>    +       if (dump->en_mask) {
->>>>    +               val = vop2_readl(vop2, dump->base + dump->en_reg);
->>>>    +               if ((val & dump->en_mask) != dump->en_val)
->>>>    +                       return;
->>>>    +       }
->>>>    +       seq_printf(s, "\n%s:\n", dump->name);
->>>>    +
->>>>    +       start = vop2->res->start + dump->base;
->>>>    +       for (i = 0; i < reg_num;) {
->>>>    +               seq_printf(s, "%08x:  %08x %08x %08x %08x\n", (u32)start + i * 4,
->>>>    +                          vop2_readl(vop2, dump->base + (4 * i)),
->>>>    +                          vop2_readl(vop2, dump->base + (4 * (i + 1))),
->>>>    +                          vop2_readl(vop2, dump->base + (4 * (i + 2))),
->>>>    +                          vop2_readl(vop2, dump->base + (4 * (i + 3))));
->>>>    +               i += 4;
->>>>    +       }
->>>>    +
->>>>    +}
->>>>    +
->>>>    +static int vop2_regs_show(struct seq_file *s, void *arg)
->>>>    +{
->>>>    +       struct drm_info_node *node = s->private;
->>>>    +       struct vop2 *vop2 = (struct vop2 *)node->info_ent->data;
->>>>    +       struct drm_minor *minor = node->minor;
->>>>    +       struct drm_device *drm_dev = minor->dev;
->>>>    +
->>>>    +       struct vop2_regs_dump dump;
->>>>    +
->>>>    +       drm_modeset_lock_all(drm_dev);
->>>>    +
->>>>    +       if (vop2->enable_count) {
->>>>    +               dump.en_mask = 0;
->>>>    +
->>>>    +               dump.name = "SYS";
->>>>    +               dump.base = RK3568_REG_CFG_DONE;
->>>>    +               vop2_regs_print(vop2, s, &dump);
->>>>
->>>>    Can you create a statically initialized array of struct vop2_regs_dump
->>>>    and iterate over it?
->>>>    You would need an additional present_in_soc_xy flag in struct
->>>>    vop2_regs_dump, but other than that I don't see a problem and the result
->>>>    might look better.
->>>>
->>>>    For the windows it might also be an option to iterate over
->>>>    vop2->data->win instead. This array already contains the register base
->>>>    addresses and window names.
->>>>
->>>>      In fact, we have a dump_regs  arrar in vop2_data per soc in our bsp
->>>>      kernel[0],
->>>>
->>>>      do you like something like that?
->>>>
->>>>      [0]
->>>>      [3]https://github.com/armbian/linux-rockchip/blob/rk-5.10-rkr6/drivers/gpu/drm/rockchip/rockchip_vop2_reg.c#L3684
->>>
->>> This looks good from a first glance. I would suggest using C99
->>> initializers though.
->>
->>
->> Thanks for your reply, but am not quiet claer about the C99 initializers, would you plase make it more specific,
->> or give some example ?
-> 
-> Instead of:
-> 
-> static const struct vop_dump_regs rk3588_dump_regs[] = {
-> 	{ RK3568_REG_CFG_DONE, "SYS", {0}, 0 },
-> 
-> do:
-> 
-> static const struct vop_dump_regs rk3588_dump_regs[] = {
-> 	{
-> 		.offset = RK3568_REG_CFG_DONE.
-> 		.name = "SYS"
-> 	},
-> 	...
-> 
-> It's a bit more verbose but better readable for people who don't know
-> the order of the struct members.
+You don't need to do it all at once.  AFAIK the io_dir changes are independent
+and you can separate map/maps changes from others.  Maybe you can wait
+for map changes merged before working on the dso changes.  I know it'd take
+more time but it'd be easier to deal with smaller patches focusing on a single
+factor both for you and the reviewers.
+
+p.s. I know I also have a set of ~50 patches and feel sorry about saying
+like this. ;-p  Maybe I need to split the data type profiling series too.
+
+Thanks,
+Namhyung
 
 
-Got it, will do.
-> 
-> Sascha
-> 
+>  - the dso reference count checking patch is larger due to switch use of dso to
+>    be by accessors, to encapsulate the reference count checker macros. The
+>    reference count checking changes within this largely mechanical change amount
+>    to a few lines and so weren't separated.
+>  - the first patch contains a build fix if the rwsem error checking is
+>    enabled missed from v3.
+>  - the next patches are an assortment of memory size fixes.
+>  - the next patches are the refactoring of maps.
+>  - the next patches are the refactoring of threads.
+>  - the next patches are the refactoring of dsos.
+>  - finally reference count checking is added to dso and some lock/reference
+>    count issues are resolved. This is done after changing the data structures,
+>    for example, as the single pointer on an array is easier to add reference
+>    count checking to compared to the 5 previous pointers.
+>
+> v5: 3 patches were merged. 2nd patch addressed feedback from
+>     namhyung@kernel.org and Guilherme Amadio <amadio@gentoo.org>. 4th
+>     patch rename function to getdelim as suggested by
+>     namhyung@kernel.org. 5 patch adds the missing sysfs mountpoint as
+>     suggested by namhyung@kernel.org. 49th patch fix a missed put in
+>     the dso_data tests.
+> v4: Rebased as 11 changes moved to perf-tools-next. Address comments
+>     from v3 such as error checking on zstd streams. Improve the
+>     dsos/dso in ways similar to threads and maps, with the addition of
+>     reference count checking on dso.
+> v3: Additional memory/speed improvements, in particular for maps and
+>     threads. Address review comments from namhyung@kernel.org and
+>     adrian.hunter@intel.com.
+> v2: Add additional memory fixes on top of initial LBR and rc check
+>     fixes.
+>
+> Ian Rogers (50):
+>   perf comm: Use regular mutex
+>   libperf: Lazily allocate/size mmap event copy
+>   perf mmap: Lazily initialize zstd streams
+>   tools api fs: Switch filename__read_str to use io.h
+>   tools api fs: Avoid reading whole file for a 1 byte bool
+>   tools lib api: Add io_dir an allocation free readdir alternative
+>   perf maps: Switch modules tree walk to io_dir__readdir
+>   perf record: Be lazier in allocating lost samples buffer
+>   perf pmu: Switch to io_dir__readdir
+>   perf header: Switch mem topology to io_dir__readdir
+>   perf events: Remove scandir in thread synthesis
+>   perf map: Simplify map_ip/unmap_ip and make map size smaller
+>   perf maps: Move symbol maps functions to maps.c
+>   perf thread: Add missing RC_CHK_EQUAL
+>   perf maps: Add maps__for_each_map to call a function on each entry
+>   perf maps: Add remove maps function to remove a map based on callback
+>   perf debug: Expose debug file
+>   perf maps: Refactor maps__fixup_overlappings
+>   perf maps: Do simple merge if given map doesn't overlap
+>   perf maps: Rename clone to copy from
+>   perf maps: Add maps__load_first
+>   perf maps: Add find next entry to give entry after the given map
+>   perf maps: Reduce scope of map_rb_node and maps internals
+>   perf maps: Fix up overlaps during fixup_end
+>   perf maps: Switch from rbtree to lazily sorted array for addresses
+>   perf maps: Get map before returning in maps__find
+>   perf maps: Get map before returning in maps__find_by_name
+>   perf maps: Get map before returning in maps__find_next_entry
+>   perf maps: Hide maps internals
+>   perf maps: Locking tidy up of nr_maps
+>   perf dso: Reorder variables to save space in struct dso
+>   perf report: Sort child tasks by tid
+>   perf trace: Ignore thread hashing in summary
+>   perf machine: Move fprintf to for_each loop and a callback
+>   perf threads: Move threads to its own files
+>   perf threads: Switch from rbtree to hashmap
+>   perf threads: Reduce table size from 256 to 8
+>   perf dsos: Attempt to better abstract dsos internals
+>   perf dsos: Tidy reference counting and locking
+>   perf dsos: Add dsos__for_each_dso
+>   perf dso: Move dso functions out of dsos
+>   perf dsos: Switch more loops to dsos__for_each_dso
+>   perf dsos: Switch backing storage to array from rbtree/list
+>   perf dsos: Remove __dsos__addnew
+>   perf dsos: Remove __dsos__findnew_link_by_longname_id
+>   perf dsos: Switch hand code to bsearch
+>   perf dso: Add reference count checking and accessor functions
+>   perf dso: Reference counting related fixes
+>   perf dso: Use container_of to avoid a pointer in dso_data
+>   perf env: Avoid recursively taking env->bpf_progs.lock
+>
+>  tools/lib/api/Makefile                        |    2 +-
+>  tools/lib/api/fs/fs.c                         |   80 +-
+>  tools/lib/api/io.h                            |   11 +-
+>  tools/lib/api/io_dir.h                        |   75 +
+>  tools/lib/perf/include/internal/mmap.h        |    3 +-
+>  tools/lib/perf/mmap.c                         |   21 +-
+>  tools/perf/arch/x86/tests/dwarf-unwind.c      |    1 +
+>  tools/perf/arch/x86/util/event.c              |  103 +-
+>  tools/perf/builtin-annotate.c                 |    6 +-
+>  tools/perf/builtin-buildid-cache.c            |    2 +-
+>  tools/perf/builtin-buildid-list.c             |   18 +-
+>  tools/perf/builtin-inject.c                   |   96 +-
+>  tools/perf/builtin-kallsyms.c                 |    2 +-
+>  tools/perf/builtin-mem.c                      |    4 +-
+>  tools/perf/builtin-record.c                   |   57 +-
+>  tools/perf/builtin-report.c                   |  243 ++--
+>  tools/perf/builtin-script.c                   |    8 +-
+>  tools/perf/builtin-top.c                      |    4 +-
+>  tools/perf/builtin-trace.c                    |   41 +-
+>  tools/perf/tests/code-reading.c               |    8 +-
+>  tools/perf/tests/dso-data.c                   |   67 +-
+>  tools/perf/tests/hists_common.c               |    6 +-
+>  tools/perf/tests/hists_cumulate.c             |    4 +-
+>  tools/perf/tests/hists_output.c               |    2 +-
+>  tools/perf/tests/maps.c                       |   64 +-
+>  tools/perf/tests/symbols.c                    |    2 +-
+>  tools/perf/tests/thread-maps-share.c          |    8 +-
+>  tools/perf/tests/vmlinux-kallsyms.c           |  181 +--
+>  tools/perf/ui/browsers/annotate.c             |    6 +-
+>  tools/perf/ui/browsers/hists.c                |    8 +-
+>  tools/perf/ui/browsers/map.c                  |    4 +-
+>  tools/perf/util/Build                         |    1 +
+>  tools/perf/util/annotate.c                    |   44 +-
+>  tools/perf/util/auxtrace.c                    |    2 +-
+>  tools/perf/util/block-info.c                  |    2 +-
+>  tools/perf/util/bpf-event.c                   |   17 +-
+>  tools/perf/util/bpf-event.h                   |   12 +-
+>  tools/perf/util/bpf_lock_contention.c         |   10 +-
+>  tools/perf/util/build-id.c                    |  136 +-
+>  tools/perf/util/build-id.h                    |    2 -
+>  tools/perf/util/callchain.c                   |    4 +-
+>  tools/perf/util/comm.c                        |   10 +-
+>  tools/perf/util/compress.h                    |    6 +-
+>  tools/perf/util/data-convert-json.c           |    2 +-
+>  tools/perf/util/db-export.c                   |    6 +-
+>  tools/perf/util/debug.c                       |   22 +-
+>  tools/perf/util/debug.h                       |    1 +
+>  tools/perf/util/dlfilter.c                    |   12 +-
+>  tools/perf/util/dso.c                         |  468 ++++---
+>  tools/perf/util/dso.h                         |  544 ++++++--
+>  tools/perf/util/dsos.c                        |  529 ++++---
+>  tools/perf/util/dsos.h                        |   40 +-
+>  tools/perf/util/env.c                         |   53 +-
+>  tools/perf/util/env.h                         |    4 +
+>  tools/perf/util/event.c                       |   12 +-
+>  tools/perf/util/header.c                      |   47 +-
+>  tools/perf/util/hist.c                        |    4 +-
+>  tools/perf/util/intel-pt.c                    |   22 +-
+>  tools/perf/util/machine.c                     |  652 +++------
+>  tools/perf/util/machine.h                     |   32 +-
+>  tools/perf/util/map.c                         |   93 +-
+>  tools/perf/util/map.h                         |   83 +-
+>  tools/perf/util/maps.c                        | 1239 +++++++++++++----
+>  tools/perf/util/maps.h                        |   95 +-
+>  tools/perf/util/mmap.c                        |    5 +-
+>  tools/perf/util/mmap.h                        |    1 -
+>  tools/perf/util/pmu.c                         |   48 +-
+>  tools/perf/util/pmus.c                        |   30 +-
+>  tools/perf/util/probe-event.c                 |   62 +-
+>  tools/perf/util/rb_resort.h                   |    5 -
+>  .../scripting-engines/trace-event-python.c    |   21 +-
+>  tools/perf/util/session.c                     |   21 +
+>  tools/perf/util/session.h                     |    2 +
+>  tools/perf/util/sort.c                        |   19 +-
+>  tools/perf/util/srcline.c                     |   65 +-
+>  tools/perf/util/symbol-elf.c                  |  138 +-
+>  tools/perf/util/symbol.c                      |  521 ++-----
+>  tools/perf/util/symbol.h                      |    1 -
+>  tools/perf/util/symbol_fprintf.c              |    4 +-
+>  tools/perf/util/synthetic-events.c            |  156 ++-
+>  tools/perf/util/thread.c                      |   48 +-
+>  tools/perf/util/thread.h                      |    6 -
+>  tools/perf/util/threads.c                     |  186 +++
+>  tools/perf/util/threads.h                     |   35 +
+>  tools/perf/util/unwind-libunwind-local.c      |   50 +-
+>  tools/perf/util/unwind-libunwind.c            |    9 +-
+>  tools/perf/util/vdso.c                        |   89 +-
+>  tools/perf/util/zstd.c                        |   63 +-
+>  88 files changed, 4101 insertions(+), 2827 deletions(-)
+>  create mode 100644 tools/lib/api/io_dir.h
+>  create mode 100644 tools/perf/util/threads.c
+>  create mode 100644 tools/perf/util/threads.h
+>
+> --
+> 2.43.0.rc1.413.gea7ed67945-goog
+>
