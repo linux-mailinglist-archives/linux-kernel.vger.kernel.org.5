@@ -2,70 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6457C7FEE86
+	by mail.lfdr.de (Postfix) with ESMTP id D33EE7FEE87
 	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 13:05:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345250AbjK3MFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 07:05:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49158 "EHLO
+        id S1345265AbjK3MFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 07:05:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345221AbjK3MFD (ORCPT
+        with ESMTP id S1345206AbjK3MFD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 30 Nov 2023 07:05:03 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4B85D40
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 04:05:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701345909;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=B80Gpj6tociNz1RbRJ/cNcWm35Kf/1SWUfnQzVTmpWk=;
-        b=D4wDA5xconauaWIsEXHp/sTdQHtUW3SRxnE9RINeJFaiV4VzkeJOpVzSzLWEQo+cm3psTf
-        51TO/vsGa4B1X5UMvZP+liasBuKRR3c805hofisMoSGovAHxzfshVCx2aCPYCh7uTlWFdD
-        lNPpxw+snib/VIfkQqADfQNc/xhsW6Y=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-103-BqfA4TXcMKOdz47HbkXqIQ-1; Thu, 30 Nov 2023 07:05:03 -0500
-X-MC-Unique: BqfA4TXcMKOdz47HbkXqIQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 48461811E86;
-        Thu, 30 Nov 2023 12:05:03 +0000 (UTC)
-Received: from localhost (unknown [10.72.113.121])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8D1A42026D68;
-        Thu, 30 Nov 2023 12:05:02 +0000 (UTC)
-Date:   Thu, 30 Nov 2023 20:04:59 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Donald Dutile <ddutile@redhat.com>, Jiri Bohac <jbohac@suse.cz>,
-        Pingfan Liu <piliu@redhat.com>, Tao Liu <ltao@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        Dave Young <dyoung@redhat.com>, kexec@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/4] kdump: crashkernel reservation from CMA
-Message-ID: <ZWh6ax8YmkhxAzIf@MiWiFi-R3L-srv>
-References: <ZWD_fAPqEWkFlEkM@dwarf.suse.cz>
- <CAO7dBbUVQn8xzPZQhhw1XqF+sQT0c6phk4sda+X=MrR6RmPE0A@mail.gmail.com>
- <ZWJllXCN0SDIELrX@dwarf.suse.cz>
- <CAO7dBbVJ=ytRra_77VRZ8ud1wVkP9fub=Vj6cfTkx=CnYg5J2A@mail.gmail.com>
- <ZWVMUxmi66xLZPsr@MiWiFi-R3L-srv>
- <ZWWuBSiZZdF2W12j@tiehlicka>
- <ZWbyDx3TJ7zo3jCw@MiWiFi-R3L-srv>
- <91a31ce5-63d1-7470-18f7-92b039fda8e6@redhat.com>
- <ZWf64BowWrYqA2Rf@MiWiFi-R3L-srv>
- <ZWhg_b3O6piZtkQ-@tiehlicka>
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EDBC9D46;
+        Thu, 30 Nov 2023 04:05:09 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 526E11042;
+        Thu, 30 Nov 2023 04:05:56 -0800 (PST)
+Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 791C53F5A1;
+        Thu, 30 Nov 2023 04:05:08 -0800 (PST)
+Date:   Thu, 30 Nov 2023 12:05:06 +0000
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Sibi Sankar <quic_sibis@quicinc.com>
+Cc:     <cristian.marussi@arm.com>, <linux-arm-msm@vger.kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        <linux-kernel@vger.kernel.org>, <quic_mdtipton@quicinc.com>,
+        <linux-arm-kernel@lists.infradead.org>, <quic_asartor@quicinc.com>,
+        <quic_lingutla@quicinc.com>
+Subject: Re: [PATCH 2/3] firmware: arm_scmi: Fix freq/power truncation in the
+ perf protocol
+Message-ID: <ZWh6cuApg-sRbA2s@bogus>
+References: <20231129065748.19871-1-quic_sibis@quicinc.com>
+ <20231129065748.19871-3-quic_sibis@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZWhg_b3O6piZtkQ-@tiehlicka>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+In-Reply-To: <20231129065748.19871-3-quic_sibis@quicinc.com>
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -74,53 +47,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/30/23 at 11:16am, Michal Hocko wrote:
-> On Thu 30-11-23 11:00:48, Baoquan He wrote:
-> [...]
-> > Now, we are worried if there's risk if the CMA area is retaken into kdump
-> > kernel as system RAM. E.g is it possible that 1st kernel's ongoing RDMA
-> > or DMA will interfere with kdump kernel's normal memory accessing?
-> > Because kdump kernel usually only reset and initialize the needed
-> > device, e.g dump target. Those unneeded devices will be unshutdown and
-> > let go. 
-> 
-> I do not really want to discount your concerns but I am bit confused why
-> this matters so much. First of all, if there is a buggy RDMA driver
-> which doesn't use the proper pinning API (which would migrate away from
-> the CMA) then what is the worst case? We will get crash kernel corrupted
-> potentially and fail to take a proper kernel crash, right? Is this
-> worrisome? Yes. Is it a real roadblock? I do not think so. The problem
-> seems theoretical to me and it is not CMA usage at fault here IMHO. It
-> is the said theoretical driver that needs fixing anyway.
-> 
-> Now, it is really fair to mention that CMA backed crash kernel memory
-> has some limitations
-> 	- CMA reservation can only be used by the userspace in the
-> 	  primary kernel. If the size is overshot this might have
-> 	  negative impact on kernel allocations
-> 	- userspace memory dumping in the crash kernel is fundamentally
-> 	  incomplete.
+On Wed, Nov 29, 2023 at 12:27:47PM +0530, Sibi Sankar wrote:
+> Fix frequency and power truncation seen in the performance protocol by
+> casting it with the correct type.
+>
 
-I am not sure if we are talking about the same thing. My concern is:
-====================================================================
-1) system corrutption happened, crash dumping is prepared, cpu and
-interrupt controllers are shutdown;
-2) all pci devices are kept alive;
-3) kdump kernel boot up, initialization is only done on those devices
-which drivers are added into kdump kernel's initrd;
-4) those on-flight DMA engine could be still working if their kernel
-module is not loaded;
+While I always remembered to handle this when reviewing the spec, seem to
+have forgotten when it came to handling in the implementation :(. Thanks
+for spotting this.
 
-In this case, if the DMA's destination is located in crashkernel=,cma
-region, the DMA writting could continue even when kdump kernel has put
-important kernel data into the area. Is this possible or absolutely not
-possible with DMA, RDMA, or any other stuff which could keep accessing
-that area?
+However I don't like the ugly type casting. I think we can do better. Also
+looking at the code around the recently added level index mode, I think we
+can simplify things like below patch.
 
-The existing crashkernel= syntax can gurantee the reserved crashkernel
-area for kdump kernel is safe.
-=======================================================================
+Cristian,
+What do you think ?
 
-The 1st kernel's data in the ,cma area is ignored once crashkernel=,cma
-is taken.
+Regards,
+Sudeep
+
+-->8
+
+ drivers/firmware/arm_scmi/perf.c | 22 +++++++++++++---------
+ 1 file changed, 13 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/firmware/arm_scmi/perf.c b/drivers/firmware/arm_scmi/perf.c
+index a648521e04a3..2e828b29efab 100644
+--- a/drivers/firmware/arm_scmi/perf.c
++++ b/drivers/firmware/arm_scmi/perf.c
+@@ -268,13 +268,14 @@ scmi_perf_domain_attributes_get(const struct scmi_protocol_handle *ph,
+ 		dom_info->sustained_perf_level =
+ 					le32_to_cpu(attr->sustained_perf_level);
+ 		if (!dom_info->sustained_freq_khz ||
+-		    !dom_info->sustained_perf_level)
++		    !dom_info->sustained_perf_level ||
++		    dom_info->level_indexing_mode)
+ 			/* CPUFreq converts to kHz, hence default 1000 */
+ 			dom_info->mult_factor =	1000;
+ 		else
+ 			dom_info->mult_factor =
+-					(dom_info->sustained_freq_khz * 1000) /
+-					dom_info->sustained_perf_level;
++					(dom_info->sustained_freq_khz * 1000UL)
++					/ dom_info->sustained_perf_level;
+ 		strscpy(dom_info->info.name, attr->name,
+ 			SCMI_SHORT_NAME_MAX_SIZE);
+ 	}
+@@ -804,9 +805,10 @@ static int scmi_dvfs_device_opps_add(const struct scmi_protocol_handle *ph,
+
+ 	for (idx = 0; idx < dom->opp_count; idx++) {
+ 		if (!dom->level_indexing_mode)
+-			freq = dom->opp[idx].perf * dom->mult_factor;
++			freq = dom->opp[idx].perf;
+ 		else
+-			freq = dom->opp[idx].indicative_freq * 1000;
++			freq = dom->opp[idx].indicative_freq;
++		freq *= dom->mult_factor;
+
+ 		data.level = dom->opp[idx].perf;
+ 		data.freq = freq;
+@@ -879,7 +881,7 @@ static int scmi_dvfs_freq_get(const struct scmi_protocol_handle *ph, u32 domain,
+ 		return ret;
+
+ 	if (!dom->level_indexing_mode) {
+-		*freq = level * dom->mult_factor;
++		*freq = level;
+ 	} else {
+ 		struct scmi_opp *opp;
+
+@@ -887,8 +889,9 @@ static int scmi_dvfs_freq_get(const struct scmi_protocol_handle *ph, u32 domain,
+ 		if (!opp)
+ 			return -EIO;
+
+-		*freq = opp->indicative_freq * 1000;
++		*freq = opp->indicative_freq;
+ 	}
++	freq *= dom->mult_factor;
+
+ 	return ret;
+ }
+@@ -908,9 +911,10 @@ static int scmi_dvfs_est_power_get(const struct scmi_protocol_handle *ph,
+
+ 	for (opp = dom->opp, idx = 0; idx < dom->opp_count; idx++, opp++) {
+ 		if (!dom->level_indexing_mode)
+-			opp_freq = opp->perf * dom->mult_factor;
++			opp_freq = opp->perf;
+ 		else
+-			opp_freq = opp->indicative_freq * 1000;
++			opp_freq = opp->indicative_freq;
++		opp_freq *= dom->mult_factor;
+
+ 		if (opp_freq < *freq)
+ 			continue;
 
