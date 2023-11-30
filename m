@@ -2,119 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D9967FE9ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 08:53:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64CC87FE9F2
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 08:55:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231687AbjK3HxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 02:53:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54880 "EHLO
+        id S231707AbjK3Hy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 02:54:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229596AbjK3HxJ (ORCPT
+        with ESMTP id S229596AbjK3Hyz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 02:53:09 -0500
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2096.outbound.protection.outlook.com [40.107.93.96])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66195A3;
-        Wed, 29 Nov 2023 23:53:14 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=h+WbDS611KgkvhVYyrViY76mtvhZrZonQlW/ch3Zuo4mXN6bRmVLaimul1pNWY8naP+lX3MXpQA+xtq6WKGZZr72uoWCIFRdv0JvgatewRv/JB6pAxTJYLSfoHW6V4mukiBKC3iHeCt6GZ35kEtVvfRbuuTg9BTZE1h4QusEkRmkMJr+zltkJ2moadtrnqbQdL0OGwVY3PZvTGJlegdEnpD+glQaA50IfLHHLP8GBvCpzjSsAPTRIq4nkE3TN4LSzmu4F9sf4oSIIZarXo/Y2Y4NWbrtnfdhCAC1gEI0tSpih6X7sWgpebMpTeWwsRb7uCXb2jg73u4fzor+ehJU2w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=asqmTou09C/3k66FLy5kyxq5QD0gk2YCPZVq0DeXgMI=;
- b=P4BgUFGtHTLh0Lk7Rx6WUO9BckKfSSYCFoNFTM5bRRm+kELxR4D3JrSjYpwYyRMICPmE17g1dupXxRZ1z/G7ShFeXl2806uwCz/JUIMjRIOWoFVXkQOCRoOHb4hViluyfXXIJQbNKwT1TcWnWKHUEXH/RiDc4fDVHHRPdJyE/+/Ijq9Op8EGcD1q1kDeUbjksWX9aLqJ/DId1Q1ugph6ckqRQoP7sF5M6dIhELG7c+zYmCF/DDkthHLimjES3JY6SUeKOU+Bx2KtAnmEhlAZWS+v24ATvPghv/YAMI0lsddOtq08xsI69G7JM46nGoz7FTx0AS18XZL3co40fycTnw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
- header.from=os.amperecomputing.com; dkim=pass
- header.d=os.amperecomputing.com; arc=none
+        Thu, 30 Nov 2023 02:54:55 -0500
+Received: from mail-ua1-x92a.google.com (mail-ua1-x92a.google.com [IPv6:2607:f8b0:4864:20::92a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 436A7A3
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 23:55:01 -0800 (PST)
+Received: by mail-ua1-x92a.google.com with SMTP id a1e0cc1a2514c-7bb3e55c120so220250241.0
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 23:55:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=os.amperecomputing.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=asqmTou09C/3k66FLy5kyxq5QD0gk2YCPZVq0DeXgMI=;
- b=GAoFdcgZE+1LSIQzgSyGScnyp3V3qOjGkDFTlMc/D5wi50/gj0thBe9ZV/0vVjO41WbkVKB+zOSHMMjE+tDPJRjGW7W1I8eACZEZn7yod/KsvuMH0b/2kM5wN7rfOgn04BtgkdbNL2+3DJAT9JcO41C9jd2G3QoKwl3Q/yrVPeU=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
-Received: from SN4PR01MB7455.prod.exchangelabs.com (2603:10b6:806:202::11) by
- BN0PR01MB7037.prod.exchangelabs.com (2603:10b6:408:149::9) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7046.23; Thu, 30 Nov 2023 07:53:10 +0000
-Received: from SN4PR01MB7455.prod.exchangelabs.com
- ([fe80::5682:1d84:171a:1d68]) by SN4PR01MB7455.prod.exchangelabs.com
- ([fe80::5682:1d84:171a:1d68%3]) with mapi id 15.20.7025.022; Thu, 30 Nov 2023
- 07:53:10 +0000
-From:   Quan Nguyen <quan@os.amperecomputing.com>
-To:     Jeremy Kerr <jk@codeconstruct.com.au>,
-        Matt Johnston <matt@codeconstruct.com.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org,
-        Open Source Submission <patches@amperecomputing.com>
-Cc:     Phong Vo <phong@os.amperecomputing.com>,
-        Thang Nguyen <thang@os.amperecomputing.com>,
-        Quan Nguyen <quan@os.amperecomputing.com>,
-        Dung Cao <dung@os.amperecomputing.com>
-Subject: [PATCH] mctp i2c: Requeue the packet when arbitration is lost
-Date:   Thu, 30 Nov 2023 14:52:47 +0700
-Message-Id: <20231130075247.3078931-1-quan@os.amperecomputing.com>
-X-Mailer: git-send-email 2.35.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SI2PR04CA0017.apcprd04.prod.outlook.com
- (2603:1096:4:197::15) To SN4PR01MB7455.prod.exchangelabs.com
- (2603:10b6:806:202::11)
+        d=linaro.org; s=google; t=1701330900; x=1701935700; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=bDKAg1oWtzfrgq97MaNgCMwcFK/3NQBpNHoe9HbhccM=;
+        b=i7eLfhdBFSMSktdlLBJ/IA/1MAR3QqU7YJabHU/KkXGM9wsLW4KBVZu17yys2qhMjT
+         wKYfZcBXSAoiefWuRUJdxeLwNihpKErhVK3ilv+Xj3/kn53J/RXcUsZ7TtxSHYUUj3MF
+         ozZGBOPWn7NVWTJJs1IDUHkglmjWWheIgtdNY0Vp7plu8D3wufOrywPVsdvxgH9CtGi+
+         91n6u8TUqSr9sBEv+/p3ieL4d1jSNcPu/GiPCJNjjY9xEIDg1c/YNezEjAua8XU73g0Y
+         IarA/ZBFdGYeV4kX+iMRvgX1h7u1gfaryFF6uPgSw6EcGByvc0gDAbd/7vH2BXmveenZ
+         xy4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701330900; x=1701935700;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bDKAg1oWtzfrgq97MaNgCMwcFK/3NQBpNHoe9HbhccM=;
+        b=iqrF+2V5zmZq9H+vOIp5WnhxzqkBYsLv2/gy/VzZFHj8OzsAwDDl3hGi1Xc4fByf2R
+         rdbjHyzt+pas7V1tusJFVThQ4zBYm2q4+I5VRMKbps9XnvaHPpZCIi0VOZmfTRpR6rrr
+         Rs5SAfs6auiuqRwsT/YlbeEaBIhOZ5b3jk924eYq0rBt7kt4v9pcJkoQmUOdYenx2O09
+         bIajBF17eNgw6Cxiw7OlTuIUUtW55K3GiGhAwMcOrq0RqOzPxgUfwe0ax26N63s5Pj6N
+         UNk5yfkkYFbTibDeKziJD8X63sU04Lns4BFkcrEZuHJbyDozyTD9OwKyjlzd7gWM5+wW
+         3lDw==
+X-Gm-Message-State: AOJu0YxytEm9VWwkJ7qFnkCwlgpbVolE9EK9Od7sFTFqKhUyWQkpVFwv
+        33VVSfiTgAAey7Ey7H6W86xf27jGhoaDoSARQILCBQ==
+X-Google-Smtp-Source: AGHT+IEccAA/wek/3H9QWXeFmStRafU3xHk1GsIZNpnd1Ed7c6lbQ3iUeDJ1WeCYeD5U0C59Z2Suf4hvel78Fk/pgl4=
+X-Received: by 2002:a1f:4982:0:b0:4b2:8efa:65df with SMTP id
+ w124-20020a1f4982000000b004b28efa65dfmr3539451vka.14.1701330900302; Wed, 29
+ Nov 2023 23:55:00 -0800 (PST)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN4PR01MB7455:EE_|BN0PR01MB7037:EE_
-X-MS-Office365-Filtering-Correlation-Id: dec803bb-62be-4d3a-a3db-08dbf1796524
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 0RSgACKP6REJcVpP7GabG/UmPv5uEeQjfoWUZvQ2CA0cKzY7SalkzxtCbYgm1qxGmkGpDVtFPUgQLP+eC/oq8CYCKY//e4XQO0r+WtdDpTapzekIe6Ir2CLp+v/Z+eAH4Ts7m9ZhTa4jHTGo6UrW8ADi6pO7Y2VJCbaVN1k+0OHZaBvTBDtywGpeYrh8vgszHVKLD1gDT19jyGU+d+3V25mhZBHhqG1rHMVi4P4csbcYhuui58o/vNv0Kmw6IpSzaNoEuPWSSI0kr0zzAjAp1jK2E1CPskIpXvBFtSE+WRHDIFDDwZO2Er82zNjYLOqHp91uOuZ2awIsIMdYPVo8Fr3bBrjQrFllPoaCWWx6vGvG3LnH9oNBOz+ZD2UcPwHUa1uz9CJxrXulkHmAjruIGFvqem04fDHI30gb8ULQaW0Ihw3ykWtssabLnLJiB7MEszZZrxupPRcVSLYrHA5pJzYxAAOOQ06ahqMDQD6+HTMNCZMh72oyREdyzOZz6BQh6zHra/UxoMSaH347RG7NqDaeg1jQYaLfqyahj0DT3ADrY9/t/wkvYo43+WbeSs/PWWKfjPMq9Indz7lqfK+bH7xLgHaKIxUGOQz76P2tcOFE9IYknamuRHl92m9lqfmXS4E1JIG6kZBjoQ/jkWT26GqHg+C69yCfaWA/ARYH6zolN7z0dSfEZdbwRc48VeRrtJThbvcx8GHIpluJGdYbFcbitjpJQU3w34bU8DORxNA=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR01MB7455.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(346002)(396003)(39850400004)(366004)(230922051799003)(186009)(1800799012)(64100799003)(451199024)(6506007)(6666004)(52116002)(38100700002)(8676002)(8936002)(4326008)(41300700001)(6512007)(478600001)(6486002)(110136005)(2906002)(921008)(107886003)(38350700005)(2616005)(1076003)(66946007)(316002)(5660300002)(26005)(54906003)(66476007)(66556008)(86362001)(202311291699003)(83380400001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?BTOFA95GMgy6W6Dkz70L9sah9uCiL5iyYcdU2M0IMTJ+EHkTexy3vpnqep63?=
- =?us-ascii?Q?mo/M45TY7G0qbKrPfmy4rC/jsH53hv9MZgE3Ldz5+1C41Oj2SsOwn0o17qxJ?=
- =?us-ascii?Q?EwyyDw9NcVhvh8LbnIYlXNIhLNDNAj9ey20YmI1ttBNBjl20NahSXfwwro4r?=
- =?us-ascii?Q?fSGP0yZ66GFbFEpc+3dPtRwX8sUiE4NMtA0bAEqRcbuZwxYedswhKc9K88DP?=
- =?us-ascii?Q?S7AEKr5HgRYBsdKoP8xAnffpw/3EJf9DWUHa4i4qPqvk35ns/BjfU4CAOo7y?=
- =?us-ascii?Q?DhDyahPsLqL6rMorV4u8Qu3C4ozA0uHh6N9ANEaQORNDgGrEe0yxXxY7Vvuf?=
- =?us-ascii?Q?CnRmcbIOOOFDwapOj+KNEqJeU4II7Uvu56Es+zkwERxcmHrwNmROP76dIZdA?=
- =?us-ascii?Q?BXDAAdpGivu6OHMg+ozb3hhZne4QpsQROtI6hn6AC4KNkNqdgJyyW1ztvDGn?=
- =?us-ascii?Q?XZbgnFYs+WK5ZMDItoPkUPXzc6GRUF2EpQUlwyjD5W1+JdN2E8wpbsxMLsho?=
- =?us-ascii?Q?lpuidcfUsaoXgKK3kL4egwyN2vn30F3/DbzZ4hUPx/Pq6POzbLz30AXk5agu?=
- =?us-ascii?Q?PnxvDJQsLsdbmldGZupQf0RKbruU4C195a7rP3m3iNUDDWsXk8oPfQqB6q0Y?=
- =?us-ascii?Q?nRYRFmt9cmRaX0YByAViO1jpW5dOYpe40Z4eoEh9HuN+NoX5eQUyVrO0QSS0?=
- =?us-ascii?Q?/CHjmXhNndgcyBrrkQ6KGCCOX+hxsbtN2m0iQDAtILqfhKhLtmQwEIHaD+dE?=
- =?us-ascii?Q?/WPET/XJ73ZdrA/sWQ3hTfL+WxBsXiGigMmlr6tpyXci2vb+6tJwLl5tddgo?=
- =?us-ascii?Q?zXGooHeSqh6AakyT++dlKkrYo1Jdqh2kQUCeG17nf7FObjx98uyzVZ8dbfxH?=
- =?us-ascii?Q?D84OUYuD+ucR49kLJ+uBUAvjxLvH0yc0d8adxwnS3UVilFHsKv1moyvdnORJ?=
- =?us-ascii?Q?UFcyvytdfVvUEiFue2Cft75g/lBSH68C+b5Pm0ExUlJesNeG/O/gcpA+2YqH?=
- =?us-ascii?Q?GHHRVjhcv9NE90ITS82T81uYZHvXDYwQl7tBHefuf3fJX+LT5SMSp3Zc/PLk?=
- =?us-ascii?Q?jyOR4soh2Juvd4dc3sUuFQk2k/XwsMKXaF7qt7Q39rAFz174f/7WmsiI5qC6?=
- =?us-ascii?Q?Kcl7YcbhJyjmgW7GK7cHBVjyxIyRoJ2gvEZGPDjiPMpgTiU9DXCGgO1ETAEx?=
- =?us-ascii?Q?KXhN58va9osFy31q1cDGi8/40f3DIMvcao+FJ6jVF71mv6r2bxwJrUqKq43o?=
- =?us-ascii?Q?lKyL9+CyQ2Q2AqMm2SsD5mu3NtjbzlIsV2qOm2eq0mDEZDrCI32+BbBNagtn?=
- =?us-ascii?Q?cYCDJtYOXnU/V4B/cLpGMxkUBAuGhzrMeBCEgFmT0C1AX0ZDr43Ntj4h/lYk?=
- =?us-ascii?Q?Q9umXeqC+02JbSIM4nybo22DXYMQOvODBoFFsDRsbzaehCyiSlyk3aQjn9Ka?=
- =?us-ascii?Q?0+Hzv/Q4pTCUWj0oJGRgkNFKhngbNPTxuDPjxSFkL8YqgifOJBW9HWIuTiVh?=
- =?us-ascii?Q?/fqYB3OyKuVb/pD254lYlgYEKh1gFvkzsUZxht9SduojfkJU98OYXI38OMO1?=
- =?us-ascii?Q?wiqvvo7Uq4b7jakW+Spd9Pek94/YFqA+qc/4/QEzQ3Wuc36AcSN5LmvgjcOY?=
- =?us-ascii?Q?46pGEmCRJnU5mTsM/ywJQvE=3D?=
-X-OriginatorOrg: os.amperecomputing.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dec803bb-62be-4d3a-a3db-08dbf1796524
-X-MS-Exchange-CrossTenant-AuthSource: SN4PR01MB7455.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Nov 2023 07:53:09.9429
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: elJv3Q8NAPvHz53o4EtvuDVriztZEY/i3Ri+y+RlnLWfz9Cy3fz6sGXIx8EiU3IY6d8ebTzpSeVNS0SXzLK3iywdgVZaHIPTcr3Vy1ucP4g=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN0PR01MB7037
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+References: <20231129164439.1130903-1-arnaud.pouliquen@foss.st.com>
+In-Reply-To: <20231129164439.1130903-1-arnaud.pouliquen@foss.st.com>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Thu, 30 Nov 2023 13:24:49 +0530
+Message-ID: <CAFA6WYP=_BPt_x1FxeVdAdB_mMjdz8QzvkfFXx-5msy8PZG6nA@mail.gmail.com>
+Subject: Re: [PATCH v4] tee: Use iov_iter to better support shared buffer registration
+To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Cc:     Jens Wiklander <jens.wiklander@linaro.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        op-tee@lists.trustedfirmware.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -122,110 +68,227 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If arbitration is lost, __i2c_transfer() returns -EAGAIN and the
-packet should be resent.
+On Wed, 29 Nov 2023 at 22:15, Arnaud Pouliquen
+<arnaud.pouliquen@foss.st.com> wrote:
+>
+> Currently it's not possible to register kernel buffers with TEE
+> which are allocated via vmalloc.
+>
+> Use iov_iter and associated helper functions to manage the page
+> registration for all type of memories.
+>
+> Suggested-by: Christoph Hellwig <hch@infradead.org>
+> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+> ---
+> Update from V3 to V4:
+> - improve commit message,
+> - use import_ubuf() instead of iov_iter_init(),
+> - move shm_get_kernel_pages in register_shm_helper,
+> - put back untagged_addr in register_shm_helper(),
+> - move the comment related to pin pages from shm_get_kernel_pages()
+>   to register_shm_helper().
+>
+> Update from V2 to V3:
+> - break lines longer than 80 columns.
+>
+> Update from V1 to V2:
+> - replace ITER_SOURCE by ITER_DEST flag in tee_shm_register_user_buf(),
+> - replace IS_ERR_OR NULL(shm) by IS_ERR(shm) in tee_shm_register_user_buf().
+>
+> V1:
+> The support of buffer registration allocated with vmalloc is no more
+> available since c83900393aa1 ("tee: Remove vmalloc page support").
+>
+> This patch is an alternative to a revert and resulted from a discussion
+> with Christopher Hellwig [1].
+>
+> This patch has been tested using xtest tool in optee qemu environment [2]
+> and using the series related to the remoteproc tee that should be
+> proposed soon [3].
+>
+> References:
+> [1] https://lore.kernel.org/linux-arm-kernel/18a8528d-7d9d-6ed0-0045-5ee47dd39fb2@foss.st.com/T/#m8ec683c44fcd9b69c2aee42eaed0793afac9dd18in
+> [2] https://optee.readthedocs.io/en/latest/building/devices/qemu.html#build-instructions
+> [3] https://lore.kernel.org/linux-arm-kernel/18a8528d-7d9d-6ed0-0045-5ee47dd39fb2@foss.st.com/T/#maca0a1fc897aadd54c7deac432e11473fe970d1d
+> ---
+>  drivers/tee/tee_shm.c | 83 ++++++++++++++++++++++++-------------------
+>  1 file changed, 46 insertions(+), 37 deletions(-)
+>
+> diff --git a/drivers/tee/tee_shm.c b/drivers/tee/tee_shm.c
+> index 673cf0359494..ac73e8143233 100644
+> --- a/drivers/tee/tee_shm.c
+> +++ b/drivers/tee/tee_shm.c
+> @@ -22,23 +22,12 @@ static void shm_put_kernel_pages(struct page **pages, size_t page_count)
+>                 put_page(pages[n]);
+>  }
+>
+> -static int shm_get_kernel_pages(unsigned long start, size_t page_count,
+> -                               struct page **pages)
+> +static void shm_get_kernel_pages(struct page **pages, size_t page_count)
+>  {
+> -       struct page *page;
+>         size_t n;
+>
+> -       if (WARN_ON_ONCE(is_vmalloc_addr((void *)start) ||
+> -                        is_kmap_addr((void *)start)))
+> -               return -EINVAL;
+> -
+> -       page = virt_to_page((void *)start);
+> -       for (n = 0; n < page_count; n++) {
+> -               pages[n] = page + n;
+> +       for (n = 0; n < page_count; n++)
+>                 get_page(pages[n]);
+> -       }
+> -
+> -       return page_count;
+>  }
+>
+>  static void release_registered_pages(struct tee_shm *shm)
+> @@ -214,13 +203,14 @@ struct tee_shm *tee_shm_alloc_priv_buf(struct tee_context *ctx, size_t size)
+>  EXPORT_SYMBOL_GPL(tee_shm_alloc_priv_buf);
+>
+>  static struct tee_shm *
+> -register_shm_helper(struct tee_context *ctx, unsigned long addr,
+> -                   size_t length, u32 flags, int id)
+> +register_shm_helper(struct tee_context *ctx, struct iov_iter *iter, u32 flags,
+> +                   int id)
+>  {
+>         struct tee_device *teedev = ctx->teedev;
+>         struct tee_shm *shm;
+> -       unsigned long start;
+> -       size_t num_pages;
+> +       unsigned long start, addr;
+> +       size_t num_pages, off;
+> +       ssize_t len;
+>         void *ret;
+>         int rc;
+>
+> @@ -245,31 +235,38 @@ register_shm_helper(struct tee_context *ctx, unsigned long addr,
+>         shm->flags = flags;
+>         shm->ctx = ctx;
+>         shm->id = id;
+> -       addr = untagged_addr(addr);
+> +       addr = untagged_addr((unsigned long)iter_iov_addr(iter));
+>         start = rounddown(addr, PAGE_SIZE);
+> -       shm->offset = addr - start;
+> -       shm->size = length;
+> -       num_pages = (roundup(addr + length, PAGE_SIZE) - start) / PAGE_SIZE;
+> +       num_pages = iov_iter_npages(iter, INT_MAX);
+> +       if (!num_pages) {
+> +               ret = ERR_PTR(-ENOMEM);
+> +               goto err_ctx_put;
+> +       }
+> +
+>         shm->pages = kcalloc(num_pages, sizeof(*shm->pages), GFP_KERNEL);
+>         if (!shm->pages) {
+>                 ret = ERR_PTR(-ENOMEM);
+>                 goto err_free_shm;
+>         }
+>
+> -       if (flags & TEE_SHM_USER_MAPPED)
+> -               rc = pin_user_pages_fast(start, num_pages, FOLL_WRITE,
+> -                                        shm->pages);
+> -       else
+> -               rc = shm_get_kernel_pages(start, num_pages, shm->pages);
+> -       if (rc > 0)
+> -               shm->num_pages = rc;
+> -       if (rc != num_pages) {
+> -               if (rc >= 0)
+> -                       rc = -ENOMEM;
+> -               ret = ERR_PTR(rc);
+> -               goto err_put_shm_pages;
+> +       len = iov_iter_extract_pages(iter, &shm->pages, LONG_MAX, num_pages, 0,
+> +                                    &off);
+> +       if (unlikely(len <= 0)) {
+> +               ret = len ? ERR_PTR(len) : ERR_PTR(-ENOMEM);
+> +               goto err_free_shm_pages;
+>         }
+>
+> +       /*
+> +        * iov_iter_extract_kvec_pages does not get reference on the pages,
+> +        * get a pin on them.
 
-Requeue the packet and increase collisions count on this case.
+I think you meant: "get a reference on them". But I don't see the
+value of this comment since iov_iter_extract_kvec_pages() already has
+been commented properly as follows:
 
-Co-developed-by: Dung Cao <dung@os.amperecomputing.com>
-Signed-off-by: Dung Cao <dung@os.amperecomputing.com>
-Signed-off-by: Quan Nguyen <quan@os.amperecomputing.com>
----
- drivers/net/mctp/mctp-i2c.c | 35 +++++++++++++++++++++--------------
- 1 file changed, 21 insertions(+), 14 deletions(-)
+/*
+ * Extract a list of virtually contiguous pages from an ITER_KVEC iterator.
+ * This does not get references on the pages, nor does it get a pin on them.
+ */
 
-diff --git a/drivers/net/mctp/mctp-i2c.c b/drivers/net/mctp/mctp-i2c.c
-index b37a9e4bade4..132023306052 100644
---- a/drivers/net/mctp/mctp-i2c.c
-+++ b/drivers/net/mctp/mctp-i2c.c
-@@ -442,14 +442,14 @@ static void mctp_i2c_unlock_reset(struct mctp_i2c_dev *midev)
- 		i2c_unlock_bus(midev->adapter, I2C_LOCK_SEGMENT);
- }
- 
--static void mctp_i2c_xmit(struct mctp_i2c_dev *midev, struct sk_buff *skb)
-+static int mctp_i2c_xmit(struct mctp_i2c_dev *midev, struct sk_buff *skb)
- {
- 	struct net_device_stats *stats = &midev->ndev->stats;
- 	enum mctp_i2c_flow_state fs;
- 	struct mctp_i2c_hdr *hdr;
- 	struct i2c_msg msg = {0};
- 	u8 *pecp;
--	int rc;
-+	int rc = 0;
- 
- 	fs = mctp_i2c_get_tx_flow_state(midev, skb);
- 
-@@ -461,17 +461,11 @@ static void mctp_i2c_xmit(struct mctp_i2c_dev *midev, struct sk_buff *skb)
- 		dev_warn_ratelimited(&midev->adapter->dev,
- 				     "Bad tx length %d vs skb %u\n",
- 				     hdr->byte_count + 3, skb->len);
--		return;
-+		return -EINVAL;
- 	}
- 
--	if (skb_tailroom(skb) >= 1) {
--		/* Linear case with space, we can just append the PEC */
--		skb_put(skb, 1);
--	} else {
--		/* Otherwise need to copy the buffer */
--		skb_copy_bits(skb, 0, midev->tx_scratch, skb->len);
--		hdr = (void *)midev->tx_scratch;
--	}
-+	skb_copy_bits(skb, 0, midev->tx_scratch, skb->len);
-+	hdr = (void *)midev->tx_scratch;
- 
- 	pecp = (void *)&hdr->source_slave + hdr->byte_count;
- 	*pecp = i2c_smbus_pec(0, (u8 *)hdr, hdr->byte_count + 3);
-@@ -503,17 +497,20 @@ static void mctp_i2c_xmit(struct mctp_i2c_dev *midev, struct sk_buff *skb)
- 		break;
- 
- 	case MCTP_I2C_TX_FLOW_INVALID:
--		return;
-+		return rc;
- 	}
- 
- 	if (rc < 0) {
- 		dev_warn_ratelimited(&midev->adapter->dev,
- 				     "__i2c_transfer failed %d\n", rc);
- 		stats->tx_errors++;
-+		if (rc == -EAGAIN)
-+			stats->collisions++;
- 	} else {
- 		stats->tx_bytes += skb->len;
- 		stats->tx_packets++;
- 	}
-+	return rc;
- }
- 
- static void mctp_i2c_flow_release(struct mctp_i2c_dev *midev)
-@@ -568,6 +565,7 @@ static int mctp_i2c_tx_thread(void *data)
- 	struct mctp_i2c_dev *midev = data;
- 	struct sk_buff *skb;
- 	unsigned long flags;
-+	int rc;
- 
- 	for (;;) {
- 		if (kthread_should_stop())
-@@ -583,8 +581,17 @@ static int mctp_i2c_tx_thread(void *data)
- 			mctp_i2c_flow_release(midev);
- 
- 		} else if (skb) {
--			mctp_i2c_xmit(midev, skb);
--			kfree_skb(skb);
-+			rc = mctp_i2c_xmit(midev, skb);
-+			if (rc == -EAGAIN) {
-+				spin_lock_irqsave(&midev->tx_queue.lock, flags);
-+				if (skb_queue_len(&midev->tx_queue) >= MCTP_I2C_TX_WORK_LEN)
-+					kfree_skb(skb);
-+				else
-+					__skb_queue_head(&midev->tx_queue, skb);
-+				spin_unlock_irqrestore(&midev->tx_queue.lock, flags);
-+			} else {
-+				kfree_skb(skb);
-+			}
- 
- 		} else {
- 			wait_event_idle(midev->tx_wq,
--- 
-2.35.1
+> +        */
+> +       if (iov_iter_is_kvec(iter))
+> +               shm_get_kernel_pages(shm->pages, num_pages);
+> +
+> +       shm->offset = off;
+> +       shm->size = len;
+> +       shm->num_pages = num_pages;
+> +
+>         rc = teedev->desc->ops->shm_register(ctx, shm, shm->pages,
+>                                              shm->num_pages, start);
+>         if (rc) {
+> @@ -279,10 +276,11 @@ register_shm_helper(struct tee_context *ctx, unsigned long addr,
+>
+>         return shm;
+>  err_put_shm_pages:
+> -       if (flags & TEE_SHM_USER_MAPPED)
+> +       if (!iov_iter_is_kvec(iter))
+>                 unpin_user_pages(shm->pages, shm->num_pages);
+>         else
+>                 shm_put_kernel_pages(shm->pages, shm->num_pages);
+> +err_free_shm_pages:
+>         kfree(shm->pages);
+>  err_free_shm:
+>         kfree(shm);
+> @@ -307,8 +305,9 @@ struct tee_shm *tee_shm_register_user_buf(struct tee_context *ctx,
+>         u32 flags = TEE_SHM_USER_MAPPED | TEE_SHM_DYNAMIC;
+>         struct tee_device *teedev = ctx->teedev;
+>         struct tee_shm *shm;
+> +       struct iov_iter iter;
+>         void *ret;
+> -       int id;
+> +       int id, err;
+>
+>         if (!access_ok((void __user *)addr, length))
+>                 return ERR_PTR(-EFAULT);
+> @@ -319,7 +318,11 @@ struct tee_shm *tee_shm_register_user_buf(struct tee_context *ctx,
+>         if (id < 0)
+>                 return ERR_PTR(id);
+>
+> -       shm = register_shm_helper(ctx, addr, length, flags, id);
+> +       err = import_ubuf(ITER_DEST, (void __user *)addr, length, &iter);
 
+As I mentioned in a previous review, import_ubuf() already does the
+access_ok() check, so we don't need the extra access_ok() check above.
+Also, you should move import_ubuf() to be the first invocation within
+this API.
+
+-Sumit
+
+> +       if (err)
+> +               return ERR_PTR(err);
+> +
+> +       shm = register_shm_helper(ctx, &iter, flags, id);
+>         if (IS_ERR(shm)) {
+>                 mutex_lock(&teedev->mutex);
+>                 idr_remove(&teedev->idr, id);
+> @@ -352,8 +355,14 @@ struct tee_shm *tee_shm_register_kernel_buf(struct tee_context *ctx,
+>                                             void *addr, size_t length)
+>  {
+>         u32 flags = TEE_SHM_DYNAMIC;
+> +       struct kvec kvec;
+> +       struct iov_iter iter;
+> +
+> +       kvec.iov_base = addr;
+> +       kvec.iov_len = length;
+> +       iov_iter_kvec(&iter, ITER_DEST, &kvec, 1, length);
+>
+> -       return register_shm_helper(ctx, (unsigned long)addr, length, flags, -1);
+> +       return register_shm_helper(ctx, &iter, flags, -1);
+>  }
+>  EXPORT_SYMBOL_GPL(tee_shm_register_kernel_buf);
+>
+> --
+> 2.25.1
+>
