@@ -2,143 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57E767FF8EA
+	by mail.lfdr.de (Postfix) with ESMTP id AD2E97FF8EB
 	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 18:58:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346628AbjK3R5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 12:57:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45150 "EHLO
+        id S1346646AbjK3R5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 12:57:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235239AbjK3R5A (ORCPT
+        with ESMTP id S230030AbjK3R5a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 12:57:00 -0500
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFC6510F4;
-        Thu, 30 Nov 2023 09:57:04 -0800 (PST)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 8798A5C02E6;
-        Thu, 30 Nov 2023 12:57:01 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Thu, 30 Nov 2023 12:57:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
-        cc:cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm3; t=1701367021; x=1701453421; bh=5D
-        inRe2Ja+E6Yl6fvgP5dTyogaDC1dFejinC1nN/SsY=; b=oEZgAwZ9WRw0EqIhAP
-        uyMMCuO/T84vdiNjP6/l9KP8gUO9upcLSlIYc3E6VEhUh2NmIewXXmYR3GIsZy8T
-        TWJYrn4iACpf2SwJWAYx8mDdvEXrChVpsb9XpJtBmw29i0z7vvZWNe7O13zoEYOD
-        GGUEmr1zMICpv/Y+BR70OCnTEFGVrjQi8NfZ4JbIf9be6MWU3zwSEshzIYkiAYQV
-        m8Oq3P7wSNgt3e4+GAqxJ3vC3RTiWXYDfcpyxhUQrH7Rd12JYwVwFqbOHdoKlqmz
-        aW0CuI/iqTJrmYQio9aX7K6KWmNCDptb1o2MotlH7sNtrDQzJKv6v+Meg8wA7FaG
-        1y9g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1701367021; x=1701453421; bh=5DinRe2Ja+E6Y
-        l6fvgP5dTyogaDC1dFejinC1nN/SsY=; b=yBO7hsXuBEm3JxgYZ5HPuNJ/xO4J5
-        9dqkV1sJtmbgeMtYafJ3A057AM819bf7N2TEfTE1fnr3FlKU7dSv76m7tZHsJ2nF
-        QpbJ2YvTinQHEkslg1fDD3MX1iC5lrcqyLgKkkXktoPKlTMCbbNgrziOj4Z06u9h
-        sSFhj9981nDzmLXH7mfPS9762YArlkQcfnqtvWMnGwxVGAXLrSw0nKEhpN7psHqA
-        HUCsiwDwlsOFI8hzelbzKrlKmh7hNYLH6x/3pRzXMjviax/b7590IEPr+bz7Yz8v
-        WPUNlqZgnkw7vyNcXVluubv/rwKgW2MPBUhs8DqnaGxOoykV5Khc+7cWA==
-X-ME-Sender: <xms:7MxoZVpOfAx7qfsP93LoYsQN1_BRBuc1PjNXjheSHs_-DU_CTH4j4w>
-    <xme:7MxoZXpUQI70Rhgl_FnEf89lCZ-cZB-AOKdwhcBR_qnahyhj6xw_gIbZmL_PiXGMx
-    oGcgXcuJpA-_wlQsCc>
-X-ME-Received: <xmr:7MxoZSPsIQEBNJn7T63OWWEjaxLq01UAbFXbmXdlP4ha7Bf8OKITJP03_lc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeijedguddthecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefvhigt
-    hhhoucetnhguvghrshgvnhcuoehthigthhhosehthigthhhordhpihiiiigrqeenucggtf
-    frrghtthgvrhhnpeeutedttefgjeefffehffffkeejueevieefudelgeejuddtfeffteek
-    lefhleelteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
-    hmpehthigthhhosehthigthhhordhpihiiiigr
-X-ME-Proxy: <xmx:7cxoZQ5pwEScjoo3AckBkcdRZhq1jLnG3_MVuBlFYpofV94s68T83Q>
-    <xmx:7cxoZU4Te13dn7yARTzaD6FovQE5uhGZFIl75RQkyXaNdJiGRvo_XA>
-    <xmx:7cxoZYjojVE1o8Z-Jim2v5vufCNP_hPMdnqmcOUgjFs9uAULLVgo3Q>
-    <xmx:7cxoZf0RBe_Fl3UR5u26L_cJWEhZ231zaiTOhMD2l7VCwmWH6rwIkg>
-Feedback-ID: i21f147d5:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 30 Nov 2023 12:56:59 -0500 (EST)
-Date:   Thu, 30 Nov 2023 10:56:58 -0700
-From:   Tycho Andersen <tycho@tycho.pizza>
-To:     Oleg Nesterov <oleg@redhat.com>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        Tycho Andersen <tandersen@netflix.com>
-Subject: Re: [RFC 1/3] pidfd: allow pidfd_open() on non-thread-group leaders
-Message-ID: <ZWjM6trZ6uw6yBza@tycho.pizza>
-References: <20231130163946.277502-1-tycho@tycho.pizza>
- <20231130173938.GA21808@redhat.com>
+        Thu, 30 Nov 2023 12:57:30 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68ED9131
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 09:57:36 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-40b51e26a7aso3415e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 09:57:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701367055; x=1701971855; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iibl1Xbm3GB8W/wJpqz8MDirHOnwc3sWdRrSTTEFiCY=;
+        b=IEqQUT45g2vV8C4ZcEI5BQ0dHUqzhfWW6LcbWdGmcLiA3WgOtSKUfwmCI5nwZpZAIs
+         82QQs3MaG4O8hI40EO6zXmSegLKF1QdiVO2jhx8Yeaxr2TcL9kdEIk/JDlgeetvVvgT6
+         hDLd6gD42lq040PYpYyiingWCnzTFGy8C94BTaqOQ35V3Br7SvIjvt3FAIIOEzyagEYE
+         GJOksbEbHWlO5vPb/qcfLC2vaPlHQMv4dagbR5cOAy+ivxcHz0ht4zs3aaPP5TT2IZsX
+         ZfAGtCs4QvYeXzMR49VuQIkNwb1iq+wyG2r3ckmgIbhpaI3cf3Mx27U2kdssrxUHwYuJ
+         ry9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701367055; x=1701971855;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iibl1Xbm3GB8W/wJpqz8MDirHOnwc3sWdRrSTTEFiCY=;
+        b=hexze31t2nE8oMOc22bJbHRy4MwkVU9WcjqSOlzongEFzObvXZD3NHK1eSXqJqEd7D
+         H1HjZwhrJ2ZUZl5dR3XgpZyLWHnw/oaLDIZcgSNLzwjS2boEW/2M132Vw67mTNLOvZdH
+         hIs1az2RcbA6+zZay0pxV54k++72wYI+L0H4HQc3d7jnkzydeZ/X3FCrZYZh3iwEGp4v
+         E9bQx4vOOTQFOmNF54ctzfJf5WNyVNxapQnZXceplNjp2eoG2d2W7+fMRuHQ9v1OoWtl
+         ViFh5yvqN1EbN0WTuHbBsF54wXqb5LdluS4teSqBBPqXjJIgWHjVNAtbHXGumDzi7LWA
+         17Ow==
+X-Gm-Message-State: AOJu0YzqhxBDCc6V5NadvVTfLNE8Qpw1sGJzMbOOyHqU/63B6lCJlJnw
+        e1X1M/uwslzsdubQ722MmOv8MjqeLkh+Gvk1lHdTVA==
+X-Google-Smtp-Source: AGHT+IEpGD0t7I0UEuDM+s1ijAIH0PtY0u4nBUtoBBjhJ+joazqMED3bm0OchkfEGpizhKskl6P3GzHGSmXuKcad5eM=
+X-Received: by 2002:a05:600c:1d10:b0:40b:2979:9cc2 with SMTP id
+ l16-20020a05600c1d1000b0040b29799cc2mr159073wms.1.1701367054801; Thu, 30 Nov
+ 2023 09:57:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231130173938.GA21808@redhat.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <ZWjDPL+IzPPsuC3X@kernel.org>
+In-Reply-To: <ZWjDPL+IzPPsuC3X@kernel.org>
+From:   Ian Rogers <irogers@google.com>
+Date:   Thu, 30 Nov 2023 09:57:23 -0800
+Message-ID: <CAP-5=fUkUnaGkdPoUWCQBWkTKdWX5KXs7drR34x1bUW6JRJY-w@mail.gmail.com>
+Subject: Re: [PATCH 1/1] libapi: Add missing linux/types.h header to get the
+ __u64 type on io.h
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 30, 2023 at 06:39:39PM +0100, Oleg Nesterov wrote:
-> Hi Tycho,
-> 
-> I can't really read this patch now, possibly I am wrong, but...
+On Thu, Nov 30, 2023 at 9:15=E2=80=AFAM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
+>
+> There are functions using __u64, so we need to have the linux/types.h
+> header otherwise we'll break when its not included before api/io.h.
+>
+> Fixes: e95770af4c4a280f ("tools api: Add a lightweight buffered reading a=
+pi")
+> Cc: Ian Rogers <irogers@google.com>
+> Cc: Adrian Hunter <adrian.hunter@intel.com>
+> Cc: Jiri Olsa <jolsa@kernel.org>
+> Cc: Namhyung Kim <namhyung@kernel.org>
+> Link: https://lore.kernel.org/lkml/
+> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 
-No worries, no rush here.
+Reviewed-by: Ian Rogers <irogers@google.com>
 
-> On 11/30, Tycho Andersen wrote:
-> >
-> > @@ -263,16 +263,25 @@ void release_task(struct task_struct *p)
-> >  	 */
-> >  	zap_leader = 0;
-> >  	leader = p->group_leader;
-> > -	if (leader != p && thread_group_empty(leader)
-> > -			&& leader->exit_state == EXIT_ZOMBIE) {
-> > -		/*
-> > -		 * If we were the last child thread and the leader has
-> > -		 * exited already, and the leader's parent ignores SIGCHLD,
-> > -		 * then we are the one who should release the leader.
-> > -		 */
-> > -		zap_leader = do_notify_parent(leader, leader->exit_signal);
-> > -		if (zap_leader)
-> > -			leader->exit_state = EXIT_DEAD;
-> > +	if (leader != p) {
-> > +		if (thread_group_empty(leader)
-> > +				&& leader->exit_state == EXIT_ZOMBIE) {
-> > +			/*
-> > +			 * If we were the last child thread and the leader has
-> > +			 * exited already, and the leader's parent ignores SIGCHLD,
-> > +			 * then we are the one who should release the leader.
-> > +			 */
-> > +			zap_leader = do_notify_parent(leader,
-> > +						      leader->exit_signal);
-> > +			if (zap_leader)
-> > +				leader->exit_state = EXIT_DEAD;
-> > +		} else {
-> > +			/*
-> > +			 * wake up pidfd pollers anyway, they want to know this
-> > +			 * thread is dying.
-> > +			 */
-> > +			wake_up_all(&thread_pid->wait_pidfd);
->                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> 
-> somehow I can't believe this is a good change after a quick glance ;)
+Thanks,
+Ian
 
-Yeah, I figured it would raise some eyebrows :)
-
-> I think that wake_up_all(wait_pidfd) should have a single caller,
-> do_notify_pidfd(). This probably means it should be shiftef from
-> do_notify_parent() to exit_notify(), I am not sure...
-
-__exit_signals() is what I was thinking in the patch description, but
-I'll look at exit_notify() too.
-
-Tycho
+> ---
+>  tools/lib/api/io.h | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/tools/lib/api/io.h b/tools/lib/api/io.h
+> index a77b74c5fb655a8c..2a7fe9758813172d 100644
+> --- a/tools/lib/api/io.h
+> +++ b/tools/lib/api/io.h
+> @@ -12,6 +12,7 @@
+>  #include <stdlib.h>
+>  #include <string.h>
+>  #include <unistd.h>
+> +#include <linux/types.h>
+>
+>  struct io {
+>         /* File descriptor being read/ */
+> --
+> 2.41.0
+>
