@@ -2,74 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DE9F7FEE98
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 13:07:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4BE07FEE9C
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 13:08:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345306AbjK3MHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 07:07:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44216 "EHLO
+        id S1345344AbjK3MIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 07:08:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345262AbjK3MHI (ORCPT
+        with ESMTP id S1345310AbjK3MIB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 07:07:08 -0500
-Received: from mickerik.phytec.de (mickerik.phytec.de [91.26.50.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1716984
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 04:07:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a4; c=relaxed/simple;
-        q=dns/txt; i=@phytec.de; t=1701346031; x=1703938031;
-        h=From:Sender:Reply-To:Subject:Date:Message-ID:To:CC:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=6rvUSJqr8VDM1wcMHNaKX2mz3K60DDcaKQABVhX/AaA=;
-        b=oXDMoxxbNjg2H8/Y3ydMucLQ82vbw+mPwH0T9oeXL8kZLbDxDnCaaC+89lyOgCDT
-        FvBKmnpAbNTrp/daeiWhrgKwoLXLLmH6kEMhC1M7h00e7/oTn/jxfNVMVfVtlpKI
-        2JSimuE9+KcTC/atR4RO2r25+UonNMNQ+CRVGUF6LuY=;
-X-AuditID: ac14000a-fbefe7000000290d-02-65687aefde66
-Received: from florix.phytec.de (Unknown_Domain [172.25.0.13])
-        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client did not present a certificate)
-        by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id 28.A8.10509.FEA78656; Thu, 30 Nov 2023 13:07:11 +0100 (CET)
-Received: from [172.25.39.28] (172.25.0.11) by Florix.phytec.de (172.25.0.13)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.6; Thu, 30 Nov
- 2023 13:07:10 +0100
-Message-ID: <bd5284ec-6f25-464a-9ee7-4c50496482f1@phytec.de>
-Date:   Thu, 30 Nov 2023 13:07:09 +0100
+        Thu, 30 Nov 2023 07:08:01 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 837ABC1;
+        Thu, 30 Nov 2023 04:08:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701346085; x=1732882085;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=xdWDkwrDB0IYLW/+HFAQKJXubCc58VNH21RSj30e8Os=;
+  b=KIdWC80AG1xuGoEGie/5B/qZqxR+P6DSHISGugRVi0An9oP7HmFjJqIk
+   ZPSkS6HW5e69F3XVz/cd7xK4FQVnJFjUkrcLaF4H7m5poxlT0XGpcchEz
+   O80YoHqVD2KC87pNhomg3OhYml9GbctfHYWKV5fPgZBL6Oz6TvLWsjpgD
+   8wBDMWbrSSvNP6caevmOKwx7qTCBk3NSQY0lXqIcVh3E2rVOfKek6T7oR
+   FyZInnVr2wOS7jebikkQoGfnmSdJfbss2nVvQcGhmXlwffWzNQiuLPwur
+   /nCqQYm5d6HJbtgRVcuQ51OSUqxrlrS8ePsB9VgtZsFObvmqeOBiKfF89
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="479516026"
+X-IronPort-AV: E=Sophos;i="6.04,239,1695711600"; 
+   d="scan'208";a="479516026"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 04:08:05 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="913175906"
+X-IronPort-AV: E=Sophos;i="6.04,239,1695711600"; 
+   d="scan'208";a="913175906"
+Received: from bergler-mobl.ger.corp.intel.com ([10.249.33.30])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 04:08:03 -0800
+Date:   Thu, 30 Nov 2023 14:08:01 +0200 (EET)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+cc:     Hans de Goede <hdegoede@redhat.com>, markgross@kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        platform-driver-x86@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 3/6] platform/x86/intel/tpmi: Modify external interface
+ to get read/write state
+In-Reply-To: <20231128185605.3027653-4-srinivas.pandruvada@linux.intel.com>
+Message-ID: <e81e79a9-48d1-81ce-eb72-24a9baa02ce7@linux.intel.com>
+References: <20231128185605.3027653-1-srinivas.pandruvada@linux.intel.com> <20231128185605.3027653-4-srinivas.pandruvada@linux.intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [Upstream] [PATCH 1/3] arm64: dts: ti:
- k3-am625-phyboard-lyra-rdk: Lower I2C1 frequency
-Content-Language: en-US
-To:     Garrett Giordano <ggiordano@phytec.com>, <nm@ti.com>,
-        <vigneshr@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
-CC:     <devicetree@vger.kernel.org>, <upstream@lists.phytec.de>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20231129183817.2327259-1-ggiordano@phytec.com>
-From:   Wadim Egorov <w.egorov@phytec.de>
-In-Reply-To: <20231129183817.2327259-1-ggiordano@phytec.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.25.0.11]
-X-ClientProxiedBy: Florix.phytec.de (172.25.0.13) To Florix.phytec.de
- (172.25.0.13)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprBIsWRmVeSWpSXmKPExsWyRpKBV/d9VUaqwbEFOhZr9p5jsph/5Byr
-        xfotv9ksln+ezW7R9+Ihs8Wmx9dYLS7vmsNm8ebHWSaL1r1H2C2636lb/D/7gd2B22PTqk42
-        jzvX9rB5bF5S79Hf3cLq8efiO1aP4ze2M3l83iQXwB7FZZOSmpNZllqkb5fAlXFxxmv2grkc
-        Fc/vXmZsYPzC1sXIwSEhYCLxrKmki5GLQ0hgMZPEio4DzBDOXUaJDa2vgYo4OXgFbCTWXOhk
-        BrFZBFQl3j26zgwRF5Q4OfMJC4gtKiAvcf/WDHYQW1ggTeLp7jdgcWYBcYlbT+YzgQwVEdjG
-        KPFoay8jiMMs0MYo8WBDN9gGIQFriWkn74F1swmoS9zZ8I0VxOYE2jxtYTMzxCQLicVvDrJD
-        2PIS29/OYYbolZd4cWk52DYJIHvaudfMEHaoxPw139knMArPQnLsLCRHzUIydhaSsQsYWVYx
-        CuVmJmenFmVm6xVkVJakJuulpG5iBMWeCAPXDsa+OR6HGJk4GA8xSnAwK4nwXn+anirEm5JY
-        WZValB9fVJqTWnyIUZqDRUmcd3VHcKqQQHpiSWp2ampBahFMlomDU6qB0XGRN+tl6dVSflW6
-        ehX3u6/7fe713/t+ibfX7mMyP+/JGK7/FBRgc5Etr7C+/kvVopVhdz9v3Oj5We2x7pFM8xUH
-        BXxZg9LULnyb2uZo4rOy67bg8rfpxzVNDXiPP7GYY73Vm3VyedTCuHmcT21dL6yQ0Xyl2Jde
-        cyzqz9KPr+9XOH/+d936rxJLcUaioRZzUXEiAKsNnserAgAA
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: multipart/mixed; boundary="8323329-682876541-1701346084=:1808"
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,33 +63,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Am 29.11.23 um 19:38 schrieb Garrett Giordano:
-> The gpio-expander on i2c-1 has a maximum frequency of 100kHz. Update our
-> main_i2c1 frequency to allow the nxp,pcf8574 gpio-expander to function
-> properly.
->
-> Signed-off-by: Garrett Giordano <ggiordano@phytec.com>
+--8323329-682876541-1701346084=:1808
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: 8BIT
 
-For all three patches,
+On Tue, 28 Nov 2023, Srinivas Pandruvada wrote:
 
-Reviewed-by: Wadim Egorov <w.egorov@phytec.de>
-
-
+> Modify the external interface tpmi_get_feature_status() to get read
+> and write blocked instead of locked and disabled. Since auxiliary device
+> is not created when disabled, no use of returning disabled state. Also
+> locked state is not useful as feature driver can't use locked state
+> in a meaningful way.
+> 
+> Using read and write state, feature driver can decide which operations
+> to restrict for that feature.
+> 
+> Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
 > ---
->   arch/arm64/boot/dts/ti/k3-am625-phyboard-lyra-rdk.dts | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/arm64/boot/dts/ti/k3-am625-phyboard-lyra-rdk.dts b/arch/arm64/boot/dts/ti/k3-am625-phyboard-lyra-rdk.dts
-> index a438baf542c2..171354b13e33 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am625-phyboard-lyra-rdk.dts
-> +++ b/arch/arm64/boot/dts/ti/k3-am625-phyboard-lyra-rdk.dts
-> @@ -187,7 +187,7 @@ cpsw3g_phy3: ethernet-phy@3 {
->   &main_i2c1 {
->   	pinctrl-names = "default";
->   	pinctrl-0 = <&main_i2c1_pins_default>;
-> -	clock-frequency = <400000>;
-> +	clock-frequency = <100000>;
->   	status = "okay";
->   
->   	gpio_exp: gpio-expander@21 {
+>  drivers/platform/x86/intel/tpmi.c | 8 ++++----
+>  include/linux/intel_tpmi.h        | 5 ++---
+>  2 files changed, 6 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/platform/x86/intel/tpmi.c b/drivers/platform/x86/intel/tpmi.c
+> index 4edaa182db04..44773c210324 100644
+> --- a/drivers/platform/x86/intel/tpmi.c
+> +++ b/drivers/platform/x86/intel/tpmi.c
+> @@ -351,8 +351,8 @@ static int tpmi_read_feature_status(struct intel_tpmi_info *tpmi_info, int featu
+>  	return ret;
+>  }
+>  
+> -int tpmi_get_feature_status(struct auxiliary_device *auxdev, int feature_id,
+> -			    int *locked, int *disabled)
+> +int tpmi_get_feature_status(struct auxiliary_device *auxdev,
+> +			    int feature_id, int *read_blocked, int *write_blocked)
+
+Noting down there's logical reversion of the parameters here as to me
+locked sound similar to write_blocked and disabled likewise to 
+read_blocked but since there are no users for this function so far
+I suppose it's fine.
+
+Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+
+
+-- 
+ i.
+
+--8323329-682876541-1701346084=:1808--
