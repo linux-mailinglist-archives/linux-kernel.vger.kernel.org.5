@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B43F7FE669
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 02:49:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B62D7FE66A
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 02:49:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234929AbjK3BtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 20:49:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54914 "EHLO
+        id S1344134AbjK3BtU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 20:49:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229658AbjK3BtK (ORCPT
+        with ESMTP id S1344103AbjK3BtL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 20:49:10 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A1661A3
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 17:49:16 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1cfbda041f3so4485145ad.2
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 17:49:16 -0800 (PST)
+        Wed, 29 Nov 2023 20:49:11 -0500
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F02151A3
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 17:49:17 -0800 (PST)
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1cfc34b6890so4396655ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 17:49:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1701308956; x=1701913756; darn=vger.kernel.org;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1701308957; x=1701913757; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=7Jr7JkNTCoyAHbuKHVkD5XQJ6tzPUzNpAQ8g+iKdWxE=;
-        b=YpPDzzfglEuXfTgqsAREQ/UmOmzlttalzqR38FsnqnLz3f6LOaFQ5gAzk5sB324vN5
-         QzDaDxpbj1YEgJi+cOV7zyYYX2Kk1WtLf2QjuEONPY7QVQriMl5iEVSXciCM9sjuVmY8
-         TBstW97607j/i6hdGUK+hMR6Tf7aEBBQB5FxBqY/AUfKjWALA6nXmx6vJjY7XC/vTjqf
-         +Q4S+0HW1MyB3JSrehINz80CduAFhIApCg95gN1OhD4iNpqAPiF4OCwekZUEyU4l2HLm
-         noWLhuM7BXjPV91ql0p5KMdvj+HYRxglm0R0pka+Z71FAGRFpiKvSrrtK80NuGxSiYr4
-         R+gQ==
+        bh=k59bvv7KTPcWcR0nU2285Ag1/kbZ0ckoH5XbjyM+11I=;
+        b=dGvaFk2qt8YVjdutA21Vg7xDf3blmg80KWoZK8M61s74CgtEmM7l7UBjuSmpkwleV6
+         P02YzLIeMNc4C4VwPQBluwSmM4EzkHPPCKXPIUeRs09m8jK+XGqebPB79hhgNkd6fICj
+         MC5X2TZD2KYHRU8p9UgpjmpEZnnLN6IbTA9namEYnorYVQZXe4VeNO4hIElaPGNhGiAz
+         SZBdoVPNytTSTOUUltjV45cWbGT1CJ87H1Ibz8JNEUL9k+NyYFVsGuY5fzW9M9MbkUP1
+         MwPvYj5URVoA3ySAwPUKlMSyXkUrAQ0cYoQzJUbPrGnHy2JwVxDh3sU1hizNPspf6BDG
+         p+qQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701308956; x=1701913756;
+        d=1e100.net; s=20230601; t=1701308957; x=1701913757;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7Jr7JkNTCoyAHbuKHVkD5XQJ6tzPUzNpAQ8g+iKdWxE=;
-        b=kO66z/oLqAVnDG3cgSWNSBV6cqPXVfkvHsr261dAQ2aXfLlcDdbCg4+ORWCyWgGSqZ
-         JlQ7jYoxtJG40+qh8c7OQ6hPCghoWGE+UQ3Kf9ZFbsDmfH0dfSJwbrXu1tAEEVZkjwxO
-         F+FvakyhkCLiYzH2s0yktwQlgzjhZC4d4FZyPsgFobh5lf3XZ6CAhYJCDky+LAqtCJFu
-         gIwMNwSUh2sUueMmN6Q07QX0tcM+0QlSDcxUP3Bp0LYbKVrJ32Z5gE2avAfJtN+WoJhm
-         4I3NLy4CQZmTK2Qv+Wb/v/gw6Td8P7AlRuLztwH3Fphl6bjTvpC0KwiFBLGAeMpOiEwt
-         XK0A==
-X-Gm-Message-State: AOJu0YzRVYkBtqrfeYOBrP8WVvwPx46Z8vrZeYynnji1abD5ZWh6gn4Y
-        HDgq7HMpHb0AE+/AEnLsZbRT9w==
-X-Google-Smtp-Source: AGHT+IHQc/jfjKv11FHDAZ6SssqWcsxklBpB0+uT5dFsDWyCXUV6EYlxkHDsqbFW3Z2rHO8iX8TjLw==
-X-Received: by 2002:a17:902:e74f:b0:1cf:e4d2:bdf with SMTP id p15-20020a170902e74f00b001cfe4d20bdfmr9817512plf.51.1701308955904;
-        Wed, 29 Nov 2023 17:49:15 -0800 (PST)
+        bh=k59bvv7KTPcWcR0nU2285Ag1/kbZ0ckoH5XbjyM+11I=;
+        b=xLrrmwqT0yiiOWVq2vwIMdVtu7DwfGrkTZhVybqn2gX3j4ZiKwa6g3FJCkJ8atZNgf
+         bCnV/8DMcH8DTmiAPXXCh5zNY9X/+v16TdVs3ptU9JxCbZ9wcmxGcNEp6dMaJr+Lq/0Z
+         vBsoXdhVeJr7eW2UzgGbMFDDJWFCrYM1OQb76hU2ceuUn0UCRPBVjRm3i3lpqBhZAwth
+         rVhgUE+YXRY/4DqOlc/l9CZ9UmSYFV4bi1Rcb+TWDV9Q4bMO20Or4bGA6Rxk6j67zsq7
+         AzbDowNl0Pf5XSVmZlgZ0BcH74Juw1+dSVQ7eorMK4DgbX69EsA4byFpWJG+a0JpeU60
+         DIQA==
+X-Gm-Message-State: AOJu0YzPpjZxMq7GKmBagGQYnQZtv9CE+CJ005NfvVpX/TqmyzgRLvjI
+        rc6ZkC9criqmIFhuysrVIP9yvg==
+X-Google-Smtp-Source: AGHT+IFWN+veB1Lo+5WzY9Hv9vg6vdys4LdvUiI0HD+zQd1G2l7aZznMEfaQzC7XjS8ZH8qOxGjBdA==
+X-Received: by 2002:a17:902:c18b:b0:1cf:b2a9:fc00 with SMTP id d11-20020a170902c18b00b001cfb2a9fc00mr21521734pld.9.1701308957476;
+        Wed, 29 Nov 2023 17:49:17 -0800 (PST)
 Received: from [127.0.1.1] ([2601:1c2:1800:f680:9707:1e8c:3166:6a23])
-        by smtp.gmail.com with ESMTPSA id bc3-20020a170902930300b001d00b0bd306sm24455plb.251.2023.11.29.17.49.14
+        by smtp.gmail.com with ESMTPSA id bc3-20020a170902930300b001d00b0bd306sm24455plb.251.2023.11.29.17.49.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Nov 2023 17:49:15 -0800 (PST)
+        Wed, 29 Nov 2023 17:49:17 -0800 (PST)
 From:   Drew Fustini <dfustini@baylibre.com>
-Date:   Wed, 29 Nov 2023 17:48:49 -0800
-Subject: [PATCH v7 3/4] riscv: dts: thead: Enable BeagleV Ahead eMMC and
+Date:   Wed, 29 Nov 2023 17:48:50 -0800
+Subject: [PATCH v7 4/4] riscv: dts: thead: Enable LicheePi 4A eMMC and
  microSD
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231129-th1520_mmc_dts-v7-3-c77fc19caa6f@baylibre.com>
+Message-Id: <20231129-th1520_mmc_dts-v7-4-c77fc19caa6f@baylibre.com>
 References: <20231129-th1520_mmc_dts-v7-0-c77fc19caa6f@baylibre.com>
 In-Reply-To: <20231129-th1520_mmc_dts-v7-0-c77fc19caa6f@baylibre.com>
 To:     Paul Walmsley <paul.walmsley@sifive.com>,
@@ -73,16 +73,17 @@ Cc:     Jason Kridner <jkridner@beagleboard.org>,
         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org, Drew Fustini <dfustini@baylibre.com>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1701308949; l=1108;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1701308949; l=1102;
  i=dfustini@baylibre.com; s=20230430; h=from:subject:message-id;
- bh=x4GrcOzQSHp6HC4WBUnYJkDmvdf8pnCHmIBijw3/K20=;
- b=22ATaiedZ7qoXu7rErPn74nYsPkB3Xum86xjFWOL/OdPNZV6jrsAtQx7tUW/pYkpE0TebmKFx
- QJ3R6ApWzRtC9w/W/38Qwc+tU4oYlO2rQu8Cnr0Ga7klX1hTo7W2d4y
+ bh=FNhPhUUvWwP+QKoj7n3Ul287CfcC/2teVzVQAZNIlgs=;
+ b=dAFvB72xQtzNxvN94yqiVLj81s4pJ66+wqg02OfxeOO3TUhR9uDJUuRgzoq7/QDFIVK5ppXps
+ jq6MzKvmTLKB6BxP95jRZ/iuxxpATqAnJ5doFXEx2wvG5WjZ8euLRfO
 X-Developer-Key: i=dfustini@baylibre.com; a=ed25519;
  pk=p3GKE9XFmjhwAayAHG4U108yag7V8xQVd4zJLdW0g7g=
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -94,14 +95,14 @@ the microSD slot. Set the frequency for the sdhci clock.
 
 Signed-off-by: Drew Fustini <dfustini@baylibre.com>
 ---
- arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts | 20 ++++++++++++++++++++
+ .../boot/dts/thead/th1520-lichee-module-4a.dtsi      | 20 ++++++++++++++++++++
  1 file changed, 20 insertions(+)
 
-diff --git a/arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts b/arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts
-index 70e8042c8304..b767d3f078d7 100644
---- a/arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts
-+++ b/arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts
-@@ -48,6 +48,10 @@ &apb_clk {
+diff --git a/arch/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi b/arch/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi
+index a802ab110429..0818bd3c1f84 100644
+--- a/arch/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi
++++ b/arch/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi
+@@ -29,6 +29,10 @@ &apb_clk {
  	clock-frequency = <62500000>;
  };
  
@@ -112,10 +113,11 @@ index 70e8042c8304..b767d3f078d7 100644
  &uart_sclk {
  	clock-frequency = <100000000>;
  };
-@@ -56,6 +60,22 @@ &dmac0 {
+@@ -36,3 +40,19 @@ &uart_sclk {
+ &dmac0 {
  	status = "okay";
  };
- 
++
 +&mmc0 {
 +	bus-width = <8>;
 +	max-frequency = <198000000>;
@@ -131,10 +133,6 @@ index 70e8042c8304..b767d3f078d7 100644
 +	max-frequency = <198000000>;
 +	status = "okay";
 +};
-+
- &uart0 {
- 	status = "okay";
- };
 
 -- 
 2.34.1
