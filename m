@@ -2,282 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE20D7FEAA0
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 09:31:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C15437FEAA5
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 09:31:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344921AbjK3Ia5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 03:30:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51908 "EHLO
+        id S1344936AbjK3IbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 03:31:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344885AbjK3Iax (ORCPT
+        with ESMTP id S1344935AbjK3Ia7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 03:30:53 -0500
-Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D55710C2;
+        Thu, 30 Nov 2023 03:30:59 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B56010C2
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 00:31:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701333062;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uvwklizxttywrNQn/HzGf7D1oVOeCG+xDam5mVjOLQ0=;
+        b=TcAFb0bdbqbkE78I9x2Gi4rdarMA3VvD1GTPt2wadhFGgmICBxdFGxIKBSoTmo2RcyQxjd
+        WEEUcoGFCvv7L7xopwaiytj3jsN3TnR8zKNJJ+GeyPYk5siKAv34GBn7CBZ+sQ1hI+w/lf
+        oA4IM3/TPfaxv1j1FEq78ezOFgbdjz0=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-604-efITt6chMoGaBFWd_dCXlQ-1; Thu, 30 Nov 2023 03:31:00 -0500
+X-MC-Unique: efITt6chMoGaBFWd_dCXlQ-1
+Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2c88814a48eso7481131fa.0
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 00:31:00 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701333059; x=1701937859;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uvwklizxttywrNQn/HzGf7D1oVOeCG+xDam5mVjOLQ0=;
+        b=lKVmP5pgOHk3Dk2DaNsALgr5U06f+J5lKdVE3wFXAVLo4qHC8bwj9DNmyZy5LLFEv7
+         A3hmcFuU6NAmeHef/nFlgIXhy/BEMPtlufhLcegIE+AVwPN+2YPTqR6KSfeJtrkr7Gvv
+         7GExCaSTQSxpbZSTdsWygoSy4+8MffNAwUSUoL3pl0GdF5rMLFNJVD87cVgmZxCE6p0X
+         p5mbbniVlHIfYKxX0ENSNu/cnWQx+TErGIFKVpmuYJArWUZD2Sg6HrKtgzd96jpDQClG
+         kBVpEcpXLNt2JxbpPmOfpYlebE9kTTbQZQsAZeWhMLcKLx/j7mYTao4fChZSNJkJMQ76
+         x9Qw==
+X-Gm-Message-State: AOJu0Yw27+P/5A5qqDoiDhhtQirvHop7EvgdmlYO1zVCsY0g0R/URdmj
+        KTGC59dS1K8xxbwtnmYbxSrb4ouK2ddT9CFMkJZ6YvcKVsXx7xExQghSOG9lw8TGOozHs/Tuu6q
+        R6NBdTivhpG3uBUQrU98LPCvv
+X-Received: by 2002:a05:6512:3b87:b0:50b:c6c7:1e60 with SMTP id g7-20020a0565123b8700b0050bc6c71e60mr3510712lfv.29.1701333059235;
+        Thu, 30 Nov 2023 00:30:59 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFZPXMRUFPQjq9fdK7LoNwx6iK0sPnSJoC33Kzjoq8NkyT67Yp84Aiz14LjSlhXSudqjwUSpQ==
+X-Received: by 2002:a05:6512:3b87:b0:50b:c6c7:1e60 with SMTP id g7-20020a0565123b8700b0050bc6c71e60mr3510684lfv.29.1701333058851;
         Thu, 30 Nov 2023 00:30:58 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.18.186.51])
-        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4Sgpqr0DKFz9yskM;
-        Thu, 30 Nov 2023 16:14:00 +0800 (CST)
-Received: from mail02.huawei.com (unknown [7.182.16.47])
-        by mail.maildlp.com (Postfix) with ESMTP id 181D11407B1;
-        Thu, 30 Nov 2023 16:30:55 +0800 (CST)
-Received: from [10.48.145.201] (unknown [10.48.145.201])
-        by APP1 (Coremail) with SMTP id LxC2BwBno3MtSGhlf0OkAQ--.62330S2;
-        Thu, 30 Nov 2023 09:30:54 +0100 (CET)
-Message-ID: <66ec6876-483a-4403-9baa-487ebad053f2@huaweicloud.com>
-Date:   Thu, 30 Nov 2023 09:30:34 +0100
+Received: from sgarzare-redhat (host-79-46-200-199.retail.telecomitalia.it. [79.46.200.199])
+        by smtp.gmail.com with ESMTPSA id r5-20020a05600c35c500b0040b54335d57sm4368784wmq.17.2023.11.30.00.30.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Nov 2023 00:30:58 -0800 (PST)
+Date:   Thu, 30 Nov 2023 09:30:54 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseniy Krasnov <avkrasnov@salutedevices.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@sberdevices.ru, oxffffaa@gmail.com
+Subject: Re: [RFC PATCH v4 1/3] vsock: update SO_RCVLOWAT setting callback
+Message-ID: <pewqjb3y45q4s5ffqxwavss5hz2ub5eeucms7egopbfpjq4bnr@rnjezpz2xgsu>
+References: <20231129212519.2938875-1-avkrasnov@salutedevices.com>
+ <20231129212519.2938875-2-avkrasnov@salutedevices.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 23/23] integrity: Switch from rbtree to LSM-managed
- blob for integrity_iint_cache
-Content-Language: en-US
-To:     Casey Schaufler <casey@schaufler-ca.com>,
-        Roberto Sassu <roberto.sassu@huaweicloud.com>,
-        Paul Moore <paul@paul-moore.com>
-Cc:     viro@zeniv.linux.org.uk, brauner@kernel.org,
-        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
-        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
-        jmorris@namei.org, serge@hallyn.com, zohar@linux.ibm.com,
-        dmitry.kasatkin@gmail.com, dhowells@redhat.com, jarkko@kernel.org,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        mic@digikod.net, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
-References: <20231107134012.682009-24-roberto.sassu@huaweicloud.com>
- <17befa132379d37977fc854a8af25f6d.paul@paul-moore.com>
- <2084adba3c27a606cbc5ed7b3214f61427a829dd.camel@huaweicloud.com>
- <CAHC9VhTTKac1o=RnQadu2xqdeKH8C_F+Wh4sY=HkGbCArwc8JQ@mail.gmail.com>
- <b6c51351be3913be197492469a13980ab379e412.camel@huaweicloud.com>
- <CAHC9VhSAryQSeFy0ZMexOiwBG-YdVGRzvh58=heH916DftcmWA@mail.gmail.com>
- <90eb8e9d-c63e-42d6-b951-f856f31590db@huaweicloud.com>
- <366a6e5f-d43d-4266-8421-a8a05938a8fd@schaufler-ca.com>
-From:   Petr Tesarik <petrtesarik@huaweicloud.com>
-In-Reply-To: <366a6e5f-d43d-4266-8421-a8a05938a8fd@schaufler-ca.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LxC2BwBno3MtSGhlf0OkAQ--.62330S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxKrWDZF43ur18Aw4rXr45GFg_yoWfAr4fpF
-        W7Kay7Kr4kAry2kr1IvF45ZFyfKry8XF1UXrn8Jr18A3s0vr1Sqr4UArWUuFyUGrs5Gw1j
-        qr1j9ry7Zr1DAw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkK14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-        6F4UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r4j6r
-        4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
-        c2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
-        v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkG
-        c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
-        0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_
-        Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbJ73D
-        UUUUU==
-X-CM-SenderInfo: hshw23xhvd2x3n6k3tpzhluzxrxghudrp/
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20231129212519.2938875-2-avkrasnov@salutedevices.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+On Thu, Nov 30, 2023 at 12:25:17AM +0300, Arseniy Krasnov wrote:
+>Do not return if transport callback for SO_RCVLOWAT is set (only in
+>error case). In this case we don't need to set 'sk_rcvlowat' field in
+>each transport - only in 'vsock_set_rcvlowat()'. Also, if 'sk_rcvlowat'
+>is now set only in af_vsock.c, change callback name from 'set_rcvlowat'
+>to 'notify_set_rcvlowat'.
+>
+>Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
+>---
+> Changelog:
+> v3 -> v4:
+>  * Rename 'set_rcvlowat' to 'notify_set_rcvlowat'.
+>  * Commit message updated.
 
-On 11/30/2023 1:41 AM, Casey Schaufler wrote:
-> On 11/29/2023 10:46 AM, Roberto Sassu wrote:
->> On 11/29/2023 6:22 PM, Paul Moore wrote:
->>> On Wed, Nov 29, 2023 at 7:28 AM Roberto Sassu
->>> <roberto.sassu@huaweicloud.com> wrote:
->>>>
->>>> On Mon, 2023-11-20 at 16:06 -0500, Paul Moore wrote:
->>>>> On Mon, Nov 20, 2023 at 3:16 AM Roberto Sassu
->>>>> <roberto.sassu@huaweicloud.com> wrote:
->>>>>> On Fri, 2023-11-17 at 15:57 -0500, Paul Moore wrote:
->>>>>>> On Nov  7, 2023 Roberto Sassu <roberto.sassu@huaweicloud.com> wrote:
->>>>>>>>
->>>>>>>> Before the security field of kernel objects could be shared
->>>>>>>> among LSMs with
->>>>>>>> the LSM stacking feature, IMA and EVM had to rely on an
->>>>>>>> alternative storage
->>>>>>>> of inode metadata. The association between inode metadata and
->>>>>>>> inode is
->>>>>>>> maintained through an rbtree.
->>>>>>>>
->>>>>>>> Because of this alternative storage mechanism, there was no need
->>>>>>>> to use
->>>>>>>> disjoint inode metadata, so IMA and EVM today still share them.
->>>>>>>>
->>>>>>>> With the reservation mechanism offered by the LSM
->>>>>>>> infrastructure, the
->>>>>>>> rbtree is no longer necessary, as each LSM could reserve a space
->>>>>>>> in the
->>>>>>>> security blob for each inode. However, since IMA and EVM share the
->>>>>>>> inode metadata, they cannot directly reserve the space for them.
->>>>>>>>
->>>>>>>> Instead, request from the 'integrity' LSM a space in the
->>>>>>>> security blob for
->>>>>>>> the pointer of inode metadata (integrity_iint_cache structure).
->>>>>>>> The other
->>>>>>>> reason for keeping the 'integrity' LSM is to preserve the
->>>>>>>> original ordering
->>>>>>>> of IMA and EVM functions as when they were hardcoded.
->>>>>>>>
->>>>>>>> Prefer reserving space for a pointer to allocating the
->>>>>>>> integrity_iint_cache
->>>>>>>> structure directly, as IMA would require it only for a subset of
->>>>>>>> inodes.
->>>>>>>> Always allocating it would cause a waste of memory.
->>>>>>>>
->>>>>>>> Introduce two primitives for getting and setting the pointer of
->>>>>>>> integrity_iint_cache in the security blob, respectively
->>>>>>>> integrity_inode_get_iint() and integrity_inode_set_iint(). This
->>>>>>>> would make
->>>>>>>> the code more understandable, as they directly replace rbtree
->>>>>>>> operations.
->>>>>>>>
->>>>>>>> Locking is not needed, as access to inode metadata is not
->>>>>>>> shared, it is per
->>>>>>>> inode.
->>>>>>>>
->>>>>>>> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
->>>>>>>> Reviewed-by: Casey Schaufler <casey@schaufler-ca.com>
->>>>>>>> Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
->>>>>>>> ---
->>>>>>>>   security/integrity/iint.c      | 71
->>>>>>>> +++++-----------------------------
->>>>>>>>   security/integrity/integrity.h | 20 +++++++++-
->>>>>>>>   2 files changed, 29 insertions(+), 62 deletions(-)
->>>>>>>>
->>>>>>>> diff --git a/security/integrity/iint.c b/security/integrity/iint.c
->>>>>>>> index 882fde2a2607..a5edd3c70784 100644
->>>>>>>> --- a/security/integrity/iint.c
->>>>>>>> +++ b/security/integrity/iint.c
->>>>>>>> @@ -231,6 +175,10 @@ static int __init integrity_lsm_init(void)
->>>>>>>>      return 0;
->>>>>>>>   }
->>>>>>>>
->>>>>>>> +struct lsm_blob_sizes integrity_blob_sizes __ro_after_init = {
->>>>>>>> +   .lbs_inode = sizeof(struct integrity_iint_cache *),
->>>>>>>> +};
->>>>>>>
->>>>>>> I'll admit that I'm likely missing an important detail, but is there
->>>>>>> a reason why you couldn't stash the integrity_iint_cache struct
->>>>>>> directly in the inode's security blob instead of the pointer?  For
->>>>>>> example:
->>>>>>>
->>>>>>>    struct lsm_blob_sizes ... = {
->>>>>>>      .lbs_inode = sizeof(struct integrity_iint_cache),
->>>>>>>    };
->>>>>>>
->>>>>>>    struct integrity_iint_cache *integrity_inode_get(inode)
->>>>>>>    {
->>>>>>>      if (unlikely(!inode->isecurity))
->>>>>>>        return NULL;
->>>>>>>      return inode->i_security + integrity_blob_sizes.lbs_inode;
->>>>>>>    }
->>>>>>
->>>>>> It would increase memory occupation. Sometimes the IMA policy
->>>>>> encompasses a small subset of the inodes. Allocating the full
->>>>>> integrity_iint_cache would be a waste of memory, I guess?
->>>>>
->>>>> Perhaps, but if it allows us to remove another layer of dynamic memory
->>>>> I would argue that it may be worth the cost.  It's also worth
->>>>> considering the size of integrity_iint_cache, while it isn't small, it
->>>>> isn't exactly huge either.
->>>>>
->>>>>> On the other hand... (did not think fully about that) if we embed the
->>>>>> full structure in the security blob, we already have a mutex
->>>>>> available
->>>>>> to use, and we don't need to take the inode lock (?).
->>>>>
->>>>> That would be excellent, getting rid of a layer of locking would be
->>>>> significant.
->>>>>
->>>>>> I'm fully convinced that we can improve the implementation
->>>>>> significantly. I just was really hoping to go step by step and not
->>>>>> accumulating improvements as dependency for moving IMA and EVM to the
->>>>>> LSM infrastructure.
->>>>>
->>>>> I understand, and I agree that an iterative approach is a good idea, I
->>>>> just want to make sure we keep things tidy from a user perspective,
->>>>> i.e. not exposing the "integrity" LSM when it isn't required.
->>>>
->>>> Ok, I went back to it again.
->>>>
->>>> I think trying to separate integrity metadata is premature now, too
->>>> many things at the same time.
->>>
->>> I'm not bothered by the size of the patchset, it is more important
->>> that we do The Right Thing.  I would like to hear in more detail why
->>> you don't think this will work, I'm not interested in hearing about
->>> difficult it may be, I'm interested in hearing about what challenges
->>> we need to solve to do this properly.
->>
->> The right thing in my opinion is to achieve the goal with the minimal
->> set of changes, in the most intuitive way.
->>
->> Until now, there was no solution that could achieve the primary goal
->> of this patch set (moving IMA and EVM to the LSM infrastructure) and,
->> at the same time, achieve the additional goal you set of removing the
->> 'integrity' LSM.
->>
->> If you see the diff, the changes compared to v5 that was already
->> accepted by Mimi are very straightforward. If the assumption I made
->> that in the end the 'ima' LSM could take over the role of the
->> 'integrity' LSM, that for me is the preferable option.
->>
->> Given that the patch set is not doing any design change, but merely
->> moving calls and storing pointers elsewhere, that leaves us with the
->> option of thinking better what to do next, including like you
->> suggested to make IMA and EVM use disjoint metadata.
->>
->>>> I started to think, does EVM really need integrity metadata or it can
->>>> work without?
->>>>
->>>> The fact is that CONFIG_IMA=n and CONFIG_EVM=y is allowed, so we have
->>>> the same problem now. What if we make IMA the one that manages
->>>> integrity metadata, so that we can remove the 'integrity' LSM?
->>>
->>> I guess we should probably revisit the basic idea of if it even makes
->>> sense to enable EVM without IMA?  Should we update the Kconfig to
->>> require IMA when EVM is enabled?
->>
->> That would be up to Mimi. Also this does not seem the main focus of
->> the patch set.
->>
->>>> Regarding the LSM order, I would take Casey's suggestion of introducing
->>>> LSM_ORDER_REALLY_LAST, for EVM.
->>>
->>> Please understand that I really dislike that we have imposed ordering
->>> constraints at the LSM layer, but I do understand the necessity (the
->>> BPF LSM ordering upsets me the most).  I really don't want to see us
->>> make things worse by adding yet another ordering bucket, I would
->>> rather that we document it well and leave it alone ... basically treat
->>> it like the BPF LSM (grrrrrr).
->>
->> Uhm, that would not be possible right away (the BPF LSM is mutable),
->> remember that we defined LSM_ORDER_LAST so that an LSM can be always
->> enable and placed as last (requested by Mimi)?
-> 
-> It would be nice if the solution directly addresses the problem.
-> EVM needs to be after the LSMs that use xattrs, not after all LSMs.
-> I suggested LSM_ORDER_REALLY_LAST in part to identify the notion as
-> unattractive.
+Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
 
-Excuse me to chime in, but do we really need the ordering in code? FWIW
-the linker guarantees that objects appear in the order they are seen
-during the link (unless --sort-section overrides that default, but this
-option is not used in the kernel). Since *.a archive files are used in
-kbuild, I have also verified that their use does not break the
-assumption; they are always created from scratch.
-
-In short, to enforce an ordering, you can simply list the corresponding
-object files in that order in the Makefile. Of course, add a big fat
-warning comment, so people understand the order is not arbitrary.
-
-Just my two eurocents,
-Petr T
+>
+> include/net/af_vsock.h           | 2 +-
+> net/vmw_vsock/af_vsock.c         | 9 +++++++--
+> net/vmw_vsock/hyperv_transport.c | 4 ++--
+> 3 files changed, 10 insertions(+), 5 deletions(-)
+>
+>diff --git a/include/net/af_vsock.h b/include/net/af_vsock.h
+>index e302c0e804d0..535701efc1e5 100644
+>--- a/include/net/af_vsock.h
+>+++ b/include/net/af_vsock.h
+>@@ -137,7 +137,6 @@ struct vsock_transport {
+> 	u64 (*stream_rcvhiwat)(struct vsock_sock *);
+> 	bool (*stream_is_active)(struct vsock_sock *);
+> 	bool (*stream_allow)(u32 cid, u32 port);
+>-	int (*set_rcvlowat)(struct vsock_sock *vsk, int val);
+>
+> 	/* SEQ_PACKET. */
+> 	ssize_t (*seqpacket_dequeue)(struct vsock_sock *vsk, struct msghdr *msg,
+>@@ -168,6 +167,7 @@ struct vsock_transport {
+> 		struct vsock_transport_send_notify_data *);
+> 	/* sk_lock held by the caller */
+> 	void (*notify_buffer_size)(struct vsock_sock *, u64 *);
+>+	int (*notify_set_rcvlowat)(struct vsock_sock *vsk, int val);
+>
+> 	/* Shutdown. */
+> 	int (*shutdown)(struct vsock_sock *, int);
+>diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+>index 816725af281f..54ba7316f808 100644
+>--- a/net/vmw_vsock/af_vsock.c
+>+++ b/net/vmw_vsock/af_vsock.c
+>@@ -2264,8 +2264,13 @@ static int vsock_set_rcvlowat(struct sock *sk, int val)
+>
+> 	transport = vsk->transport;
+>
+>-	if (transport && transport->set_rcvlowat)
+>-		return transport->set_rcvlowat(vsk, val);
+>+	if (transport && transport->notify_set_rcvlowat) {
+>+		int err;
+>+
+>+		err = transport->notify_set_rcvlowat(vsk, val);
+>+		if (err)
+>+			return err;
+>+	}
+>
+> 	WRITE_ONCE(sk->sk_rcvlowat, val ? : 1);
+> 	return 0;
+>diff --git a/net/vmw_vsock/hyperv_transport.c b/net/vmw_vsock/hyperv_transport.c
+>index 7cb1a9d2cdb4..e2157e387217 100644
+>--- a/net/vmw_vsock/hyperv_transport.c
+>+++ b/net/vmw_vsock/hyperv_transport.c
+>@@ -816,7 +816,7 @@ int hvs_notify_send_post_enqueue(struct vsock_sock *vsk, ssize_t written,
+> }
+>
+> static
+>-int hvs_set_rcvlowat(struct vsock_sock *vsk, int val)
+>+int hvs_notify_set_rcvlowat(struct vsock_sock *vsk, int val)
+> {
+> 	return -EOPNOTSUPP;
+> }
+>@@ -856,7 +856,7 @@ static struct vsock_transport hvs_transport = {
+> 	.notify_send_pre_enqueue  = hvs_notify_send_pre_enqueue,
+> 	.notify_send_post_enqueue = hvs_notify_send_post_enqueue,
+>
+>-	.set_rcvlowat             = hvs_set_rcvlowat
+>+	.notify_set_rcvlowat      = hvs_notify_set_rcvlowat
+> };
+>
+> static bool hvs_check_transport(struct vsock_sock *vsk)
+>-- 
+>2.25.1
+>
 
