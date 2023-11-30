@@ -2,92 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 509807FF3E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 16:47:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F14897FF3E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 16:49:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346388AbjK3PrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 10:47:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55928 "EHLO
+        id S1346394AbjK3PtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 10:49:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232208AbjK3PrF (ORCPT
+        with ESMTP id S232208AbjK3PtH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 10:47:05 -0500
-Received: from mail-40133.protonmail.ch (mail-40133.protonmail.ch [185.70.40.133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29A4110E6
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 07:47:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-        s=protonmail; t=1701359229; x=1701618429;
-        bh=cEvdKECLsg9a2eLWYuxUSspqEsF3BY9+NgXdkgl9pLA=;
-        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-         Message-ID:BIMI-Selector;
-        b=Fq856kW64t+MOtZ9Ri2JEdAgatjjoQSLmYDevIA3Kcr7RHttrKN4KbdCnbI9PusHJ
-         rwtQHx187GizzkFthkPho86Be0FHErw0oRWfivHdt55oypqmOy3Vv/BhzEiUIyMqD+
-         aUy7/X5YKAMNwD3j+31Gl4UZSSr3m1IU8J2JQaeGcAE0P7bWJ57bXlm/V/cofOl7F5
-         O2nhxEx9Q38GQaDffOZbXGoeNZhnIpSkz31NsFCMhC4faMKuUAgKBQFGYfzMWK/wMb
-         VUkmLOkkeW7ebZcomEoR8Ho6MNXhze1jkG+Z4tl6lssBaugVSYQTdAV/Z2ptY8jy7k
-         IpPHjB3xADRAA==
-Date:   Thu, 30 Nov 2023 15:46:55 +0000
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-From:   Benno Lossin <benno.lossin@proton.me>
-Cc:     Alice Ryhl <aliceryhl@google.com>, Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        =?utf-8?Q?Arve_Hj=C3=B8nnev=C3=A5g?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Carlos Llamas <cmllamas@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 1/7] rust: file: add Rust abstraction for `struct file`
-Message-ID: <2gTL0hxPpSCcVa7uvDLOLcjqd_sgtacZ_6XWaEANBH9Gnz72M1JDmjcWNO9Z7UbIeWNoNqx8y-lb3MAq75pEXL6EQEIED0XLxuHvqaQ9K-g=@proton.me>
-In-Reply-To: <2023113041-bring-vagrancy-a417@gregkh>
-References: <20231129-alice-file-v1-0-f81afe8c7261@google.com> <20231129-alice-file-v1-1-f81afe8c7261@google.com> <ksVe7fwt0AVWlCOtxIOb-g34okhYeBQUiXvpWLvqfxcyWXXuUuwWEIhUHigcAXJDFRCDr8drPYD1O1VTrDhaeZQ5mVxjCJqT32-2gHozHIo=@proton.me> <2023113041-bring-vagrancy-a417@gregkh>
-Feedback-ID: 71780778:user:proton
+        Thu, 30 Nov 2023 10:49:07 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3A46C1;
+        Thu, 30 Nov 2023 07:49:13 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-40859dee28cso9262135e9.0;
+        Thu, 30 Nov 2023 07:49:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701359352; x=1701964152; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:references:to
+         :content-language:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=G8ImaGSq+yK32uci9kQ8gJDa7ZpsaoeN49Mmc0aXtG4=;
+        b=LOgMPLvSO1wo4/NWXGQZLGa4gzMaod1ajDjN+AmhtWIXIKpJHHvBjj8jbSPaB3tOzo
+         /y3Ak0CFwbpbbdM5crV7IYCTBGVxAaF5k34D1akQP1svwIrVGbzZd99uJGVa7MXfymg3
+         UoNVcI7kVuajnNwMwDMVAsdvKsJDIlNL5CfGtVkC6r4pDXtuJmIZuKkmGN+SJ0ehHXx1
+         hm6zpGOF8bCgav8wIDIraFjRBiTR3bhoDmOYKLknmszvYi3TX0x+An+uOjdXtaDKjNB+
+         OK8LmHyZ15Ko6GHTPxx0ZXEu+q+/dw+lEjjRw81mXmEa78qAjAwAWb83kJDENfPVsHub
+         NfQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701359352; x=1701964152;
+        h=content-transfer-encoding:in-reply-to:organization:references:to
+         :content-language:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=G8ImaGSq+yK32uci9kQ8gJDa7ZpsaoeN49Mmc0aXtG4=;
+        b=XizxQv0PLD9oUNACzbjz/j+Z7dAVcX0CPxiLOWT81vTbeS7fNCiAwbuwbVQg+R0kQJ
+         3kb0GFKCfSxU4qZQ+DP/2toX2onBLSMh4AameX243danvUi+gAhokavdBV7rMWdaAmKg
+         GCYulJJXyJi9+ylX+jw+S5z6HrIPn5r/u7zckvALcaQzIqbJGtOyClOVnlsZnB/qbryj
+         9KcueSJs2uDV5/CWu3y+cOEnHNXNefJh5J6k12BDOXS7fd4SyLJ4AZNWS4JLTpCjYzQK
+         C+GHYry7Ux8DrjLTT0kMHcN/E106iaT4FQlK8qUVmXmIGEKxzWvzDBx63zpab4hT0uZe
+         uKqw==
+X-Gm-Message-State: AOJu0YxxSUBj0wUfj0MfCuhoh1AnHnN+EF1y7CICkdtCC5jP0V5dgvTZ
+        myzkNltGlgPH7yje1DmXqScYL+tNni0ucMOF
+X-Google-Smtp-Source: AGHT+IEB9DPksNcsSDJF+gYbx+4U10uRUhKK0tMFC5I8x3MPbxcI5/dtvTBLoAnKpdVt/viAq1hJTw==
+X-Received: by 2002:adf:f985:0:b0:332:c9be:d9bd with SMTP id f5-20020adff985000000b00332c9bed9bdmr14938111wrr.45.1701359351919;
+        Thu, 30 Nov 2023 07:49:11 -0800 (PST)
+Received: from [192.168.17.228] (54-240-197-239.amazon.com. [54.240.197.239])
+        by smtp.gmail.com with ESMTPSA id d9-20020a056000114900b00332e8dd713fsm1846302wrx.74.2023.11.30.07.49.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Nov 2023 07:49:11 -0800 (PST)
+From:   Paul Durrant <xadimgnik@gmail.com>
+X-Google-Original-From: Paul Durrant <paul@xen.org>
+Message-ID: <b28dc7d2-a83d-4e0e-8a01-524baeb23151@xen.org>
+Date:   Thu, 30 Nov 2023 15:49:07 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Reply-To: paul@xen.org
+Subject: Re: [PATCH v5] KVM x86/xen: add an override for
+ PVCLOCK_TSC_STABLE_BIT
+Content-Language: en-US
+To:     David Woodhouse <dwmw2@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sean Christopherson <seanjc@google.com>
+References: <20231102162128.2353459-1-paul@xen.org>
+ <356a88e424a58990a1b83afa719662e75f42bf98.camel@infradead.org>
+Organization: Xen Project
+In-Reply-To: <356a88e424a58990a1b83afa719662e75f42bf98.camel@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/30/23 15:59, Greg Kroah-Hartman wrote:
-> On Thu, Nov 30, 2023 at 02:53:35PM +0000, Benno Lossin wrote:
->> On 11/29/23 13:51, Alice Ryhl wrote:
->>> +/// Flags associated with a [`File`].
->>> +pub mod flags {
->>> +    /// File is opened in append mode.
->>> +    pub const O_APPEND: u32 =3D bindings::O_APPEND;
+On 08/11/2023 18:39, David Woodhouse wrote:
+> On Thu, 2023-11-02 at 16:21 +0000, Paul Durrant wrote:
+>> From: Paul Durrant <pdurrant@amazon.com>
 >>
->> Why do all of these constants begin with `O_`?
->=20
-> Because that is how they are defined in the kernel in the C code.  Why
-> would they not be the same here?
+>> Unless explicitly told to do so (by passing 'clocksource=tsc' and
+>> 'tsc=stable:socket', and then jumping through some hoops concerning
+>> potential CPU hotplug) Xen will never use TSC as its clocksource.
+>> Hence, by default, a Xen guest will not see PVCLOCK_TSC_STABLE_BIT set
+>> in either the primary or secondary pvclock memory areas. This has
+>> led to bugs in some guest kernels which only become evident if
+>> PVCLOCK_TSC_STABLE_BIT *is* set in the pvclocks. Hence, to support
+>> such guests, give the VMM a new Xen HVM config flag to tell KVM to
+>> forcibly clear the bit in the Xen pvclocks.
+>>
+>> Signed-off-by: Paul Durrant <pdurrant@amazon.com>
+> 
+> Reviewed-by: David Woodhouse <dwmw@amazon.co.uk>
 
-Then why does the C side name them that way? Is it because `O_*` is
-supposed to mean something, or is it done due to namespacing?
+Sean,
 
-In Rust we have namespacing, so we generally drop common prefixes.
+   Is any more work needed on this?
 
---=20
-Cheers,
-Benno
+   Paul
