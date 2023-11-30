@@ -2,137 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 523437FE95E
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 07:53:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E70CA7FE96A
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 07:56:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344668AbjK3Gx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 01:53:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39126 "EHLO
+        id S1344658AbjK3G4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 01:56:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229643AbjK3GxZ (ORCPT
+        with ESMTP id S229596AbjK3G4a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 01:53:25 -0500
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2127.outbound.protection.outlook.com [40.107.212.127])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 562A710E5;
-        Wed, 29 Nov 2023 22:53:31 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZboDBgDocarYd8kjzoEglGh+qpBrzFvFS0YFZ4I3Tx+oOrHhZVz9hsWsVP24Axq7oNjXnDxn6/Q5Ac1mq0CzPuM3OF8ZC9h+UF2cT0PqBp8yrL71HFPQGJ7xfu1GE3tPQTZMzpYxBXe3Uid6UW2ezP9CbgiK9M6Zcdm/46VAYaHtmvz1EIzDi70JjTma674Cz7WcJTQuxEM3fUQUhY9Ja85hStPzzwKw5IK8sJYt5HZOH7aHHfWbde02yDiBG65IpAe2MtKQ3A0csoNqFkD2r1zIzGKilhsuX/Sf4LxucPInHzQIwuKvXo0YauhtcTIyHnKN59t2ypqfoDPzlwpNuA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=QstX0oUovXITfXSNz2qRU0uKNbgkVM9/YaMS2McO0Tk=;
- b=M8viMY4V0kEbCyh6KZ51FtgLAtFzmT7qSJZUCyKjMfqbvKgUu/ZAWxopfjvQV+Yp5RK/ZJZ7tSY8unQJ/z6ecleutRPmR00oHk+0pmPeQFyhVkRtw1o4f4iNOxCcFRVkEjaoA/kbYV+wROtFj0lX4UsPnSt7ujvsdPVMLrTT/S3r/hmfN2/ApWyxG7eDPCwHIzn/hWNQO6olB853Ts1MRvmoUN7Tfholz3y4FIQCtiR/LiiuBESS65dQZIW4ux69r6YPQKU6uTbSeLfdLMWlWJNHdmIaA8U/m+bdF+WpQZscD1ePY5JxvIBVQqKwG3nDTI0OTji91krZszNmbONfuw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
- header.from=os.amperecomputing.com; dkim=pass
- header.d=os.amperecomputing.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=os.amperecomputing.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QstX0oUovXITfXSNz2qRU0uKNbgkVM9/YaMS2McO0Tk=;
- b=RSSOOOIuxjqfOPbDRiPpPx04lZy+5P2nbhp7BoPPUzEYZ4AgFfpfOTBE41Id0slslrKGjPEGZdKFeIjRZ9qz4B84YEuwAq/CwFa7JtApa0Yo7p9Zr9CZa9zrt7qS3ndOx/eUqhAr0VZCHtNsuCTr8/fqlerldSN798lBdzQBm10=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
-Received: from SN4PR01MB7455.prod.exchangelabs.com (2603:10b6:806:202::11) by
- CH0PR01MB6953.prod.exchangelabs.com (2603:10b6:610:106::13) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7046.23; Thu, 30 Nov 2023 06:53:28 +0000
-Received: from SN4PR01MB7455.prod.exchangelabs.com
- ([fe80::5682:1d84:171a:1d68]) by SN4PR01MB7455.prod.exchangelabs.com
- ([fe80::5682:1d84:171a:1d68%3]) with mapi id 15.20.7025.022; Thu, 30 Nov 2023
- 06:53:27 +0000
-Message-ID: <9ec9b363-0e70-496e-9083-6382a579a0bf@os.amperecomputing.com>
-Date:   Thu, 30 Nov 2023 13:53:22 +0700
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 RESEND 1/2] i2c: aspeed: Fix unhandled Tx done with NAK
-Content-Language: en-CA
-To:     Andi Shyti <andi.shyti@kernel.org>
-Cc:     Brendan Higgins <brendan.higgins@linux.dev>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@codeconstruct.com.au>,
-        Wolfram Sang <wsa@kernel.org>,
-        Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>,
-        Guenter Roeck <linux@roeck-us.net>, linux-i2c@vger.kernel.org,
-        openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Cosmo Chou <chou.cosmo@gmail.com>,
-        Open Source Submission <patches@amperecomputing.com>,
-        Phong Vo <phong@os.amperecomputing.com>,
-        "Thang Q . Nguyen" <thang@os.amperecomputing.com>
-References: <20231128075236.2724038-1-quan@os.amperecomputing.com>
- <20231128075236.2724038-2-quan@os.amperecomputing.com>
- <20231129003542.jfhhotebweb3uwyb@zenone.zhora.eu>
- <3f37c359-1c71-421f-b7d9-054696735adc@os.amperecomputing.com>
- <20231129212552.3uy7oqm5fz5h2m6b@zenone.zhora.eu>
-From:   Quan Nguyen <quan@os.amperecomputing.com>
-In-Reply-To: <20231129212552.3uy7oqm5fz5h2m6b@zenone.zhora.eu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SI1PR02CA0049.apcprd02.prod.outlook.com
- (2603:1096:4:1f5::18) To SN4PR01MB7455.prod.exchangelabs.com
- (2603:10b6:806:202::11)
+        Thu, 30 Nov 2023 01:56:30 -0500
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ADB01AD
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 22:56:36 -0800 (PST)
+Received: from canpemm500009.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Sgn5s1kMszvRM8;
+        Thu, 30 Nov 2023 14:56:01 +0800 (CST)
+Received: from [10.67.121.177] (10.67.121.177) by
+ canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 30 Nov 2023 14:56:33 +0800
+CC:     <yangyicong@hisilicon.com>, <dietmar.eggemann@arm.com>,
+        <gregkh@linuxfoundation.org>, <rafael@kernel.org>,
+        <jonathan.cameron@huawei.com>, <prime.zeng@hisilicon.com>,
+        <linuxarm@huawei.com>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 0/4] Support SMT control on arm64
+To:     <catalin.marinas@arm.com>, <will@kernel.org>,
+        <sudeep.holla@arm.com>, <linux-arm-kernel@lists.infradead.org>
+References: <20231121092602.47792-1-yangyicong@huawei.com>
+From:   Yicong Yang <yangyicong@huawei.com>
+Message-ID: <5b4f8398-f508-86b1-b454-4a7c5a53496f@huawei.com>
+Date:   Thu, 30 Nov 2023 14:56:33 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN4PR01MB7455:EE_|CH0PR01MB6953:EE_
-X-MS-Office365-Filtering-Correlation-Id: 38c66bf3-f305-4516-c85e-08dbf1710e5b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: jjlMxQwTKfhjVk/t6IlWRoV6BPysqrkJ3m+kl82KY3M1QRltfKcZbWSCup0QAgM07DOJGQ0YKBNNaIrkg35MVzckwysDB+SqT8Zamdg8kNrbKSELXmEN3OPuY3A3ogY0Rw3EXhpMJROxSttkkCcpiRh/eWpGiz52i3gvV/jg5DFQrakmUpa939KW7tU3UcPd0nUx/3OUQdormB2W6hZXqbfbeqQS/4yWbs931DoiwdsQP18nxMNYOg0aWAis9rzgqeIHvjnvW1lbKz/6IEkjfxvW/xpQwqueDBtn20kWPFECDnFMJEVhFXsD1s0KxfbYKOEDkPru2OpsB2ueYw/qlqMrEjIXGhmhajLqECXVvrahe8MaEWENRswMc4/Vjv9iHNGRNsG1lUbKHbp2Ull54YYmceykMusCY7ArhsvsXI2A6oBxh7aFfc21F1kgg0G0XLp4IJI9HYth+5SfHd4Wecch05OOFkWvu9CcOTDWmuY6jz5ojNA/nT8tUDuVv89GGk+SD6PgF+V9+L+Yls6t6jDOx9OWIe5JePoYsbeFMVfVPJqjifGzkVIbnvUvV6EbMqYbs8w5aRkiM2OP4iz7JXX20FuUemSfc5Y96Pag+4RXjqSV/qLPoJeJbM4WKDDj+o9KoEGD6UPbx6ghkH5qOA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR01MB7455.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(39850400004)(376002)(346002)(396003)(366004)(136003)(230922051799003)(1800799012)(186009)(64100799003)(451199024)(41300700001)(66946007)(66556008)(66476007)(54906003)(6916009)(31696002)(83380400001)(31686004)(4326008)(38100700002)(8676002)(478600001)(6486002)(966005)(2906002)(7416002)(5660300002)(316002)(8936002)(86362001)(202311291699003)(6666004)(6512007)(53546011)(6506007)(2616005)(107886003)(26005)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?S0M2Syt6dmVjMnp2RTY4MjJJM21UZWNiK280cGlHZ0dGK3ZpWDkybUI0UE5u?=
- =?utf-8?B?NzJ1c0MzZmk3TXdUZ1BSQXFRK2UwWndVdFJxVTlNa0xqTzErVFdGdXdXNE1O?=
- =?utf-8?B?T1dBak8wc2xadTAweTBDamRIS1dqWENGYlJrQU1ZZktrUUR3UUdLL3p0dE54?=
- =?utf-8?B?aFhNRlBuWDZsdndRdXdieUxXeGdPdkQvQUdPakg4NldIaUtWbVR5Y1paaTA0?=
- =?utf-8?B?QTVOS1JycDB1OHA1Y2p1T0NnSkNETVZ5d01PWWNNdlpVZlpBdk0wanNwVjR4?=
- =?utf-8?B?citoQngzR21FdmpNMm94Q3BSOWhoL1EyZlhXaWIyWVF4azNyd2tQSHN1enNo?=
- =?utf-8?B?WmZHRjRmSDdTZFlTTFVlWlhqNFl3cmozNU5JQWJZQi9aVzh2ZnNwcXlvdm0r?=
- =?utf-8?B?bDhZOE1DdDd3L0liY2pDQzIvdFUyZ2xJUHlockFuUU5XU3h6ZEVYSEcvV0dZ?=
- =?utf-8?B?Q2JuQm1mSE1MaUtacmNMUXhUZUg5NnhHWFpqOEhJU2pram1FQVp6WGtJRXd2?=
- =?utf-8?B?U244N0NZQWR3Q2VhdVFoWU9TdUtVMnQyc3F4dnBka1h3cGtYNTQ3ZFR2ZnBV?=
- =?utf-8?B?TEM3M3o3UStsd1ZueFpwbmZMZ1VGQkdmdzlpWDFjaDF6cWRINFVFT2gzemhk?=
- =?utf-8?B?M2Rzd0U4Y3NxcC9TblZqQ2lUWWRqVnRLZ2JMQlgvWEE3dFRoM0gyMHZ2MENE?=
- =?utf-8?B?Z0RlbkRXYVBGdXRCTzZPNlo0T0o1OGpmcXN5VmVCNHJNOHJKRHoxYUp5ckth?=
- =?utf-8?B?RXpMcjcvRlJ6TTVsc05mSFQrT0syZVdxNXYvWTNnaEhqODdNUzVqUTdvRTBY?=
- =?utf-8?B?bXNqRElUQWZTY0JRRUdybjJRclNhdEo3TEo4UEZOY21meG85eU1zWlpneWRr?=
- =?utf-8?B?VXBuRFFzdkhTNEpvNy9SL3Nvc1p1bWlhSlU3N1JoaXVLem84K0pUMmtoUFE2?=
- =?utf-8?B?SWxibkZIdURpUzlMY2pRR3R2Q1lZWC9wODhXSGpEZmI5T2FwTWs5Yk0vNnJw?=
- =?utf-8?B?VXBaWXNyU3NrVTY5K2xnRXNnOGo4ckpRYmFSVFZqOG5ERnM0eDVmbmZQWVpE?=
- =?utf-8?B?VGlZbkVJdEM2R0xIYWp3YlFFUm9ZNGRwd0hFaEdaVTZWTlhxZklYbEsxTVd6?=
- =?utf-8?B?TTIrUXI5R3VYeUx5LyswU0F3YWthUElwYzhUZE5vdmRSdDR1WnBGcG5SWlBk?=
- =?utf-8?B?ZE9aUXlNb2hYaVZhakt4TWpCWllYZzk3MUtCQ0hoSHRkVnQ3OVEzVWJSSm53?=
- =?utf-8?B?a3JiTEZOQlVtZFI1dGZSdjA1V01GRE9BNERSZjJrVTVTeG5BTlRLNWo5QUlj?=
- =?utf-8?B?WG5LWERaWHhlTGtnb0pqNE9IVnVxQnZ5TDFJK2ZreGd4TG9DMEEweVRUVGdN?=
- =?utf-8?B?QTdtQnRzT0ROVktLSEIrWURrSC9QWEJOSVpxZFVyOUVnUTVhb1FwOTlPeGpa?=
- =?utf-8?B?QjllZzBsaVhaWVoyTlhvaDBpWW01WXhSZldWVG1nd1M1QndDM01HaEdHZE80?=
- =?utf-8?B?dk5Fb0VHZ1BGWEpOaGpnY3N1a3dYaHIvejZqeFNFV3RFWFcxRk5CYWdYRXFY?=
- =?utf-8?B?enhzWGRNelNETFV3NzhLZXNKOXRLbGFFbXR5NWlDenZFbWpDN2ExbkxjNThY?=
- =?utf-8?B?T0JzcmMwaVpRNWZKeldnQWZlb0R0MzRibjRUSm5ZY2VRSHdzZkswdUpRMkxY?=
- =?utf-8?B?WlZhVjZBVHNWb0VBL3dwQzBrYXpBMUgzaUUva3JlUVJ2NW5Mc0U5ME9QRm11?=
- =?utf-8?B?ZGd1TnBuOHRxMTdHZGZGWFY3WmIvZ3hYN3Z5Z2I4aG9uMHNkTEIvZ0NOYUsv?=
- =?utf-8?B?RmxCbjNDTHRBVmxhaFIwaG0vU0dTbk5vVW8xV0VjOWZsbXlmNTg2TGJKMXdT?=
- =?utf-8?B?ZElFeUg0Ujk3WkxDRHF2dnR1Y2VPRlBsWTZLQjZudlNkQ09meGRzODRNYjhp?=
- =?utf-8?B?TTV4OFFKNjBISjZrTW0xQzJnaDZ2QlU4djdIN2pIN3p6bWxEL240eGpXc0ph?=
- =?utf-8?B?WERieSt3ZnRXeFoxYzUyMXJIQUtFSWxXbWIxVXJKRkJWZmQ5L2E4Smd4UlhT?=
- =?utf-8?B?a1ZXVHQ4dnR0WUpFVzV4ZFVpdkNRYlpJbGZxeGNGSFRQeDRFR3dKdVpDTE5t?=
- =?utf-8?B?RXBkcFQxMEVFYXUwaUhCeTZwVVR3TldpNlpJWmV4Z0FWTWpnVjZjWVpnc08r?=
- =?utf-8?Q?uvf25l+VytdStmCi+dL5ods=3D?=
-X-OriginatorOrg: os.amperecomputing.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 38c66bf3-f305-4516-c85e-08dbf1710e5b
-X-MS-Exchange-CrossTenant-AuthSource: SN4PR01MB7455.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Nov 2023 06:53:27.9022
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: CCpFRDp+ZcgfmPH0Dq914T4AXqdI6Iz+MHhbAEWKGzIc7ZY/cldIampIk1tux/QD/SONwmDKp+qlY1V5TtONkOi0MOTUjFVvyIBZP85jejk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR01MB6953
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <20231121092602.47792-1-yangyicong@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.121.177]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ canpemm500009.china.huawei.com (7.192.105.203)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -140,112 +53,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Sudeep, Catalin, Will and ARM folks,
 
+Any comments? Appreciate for any feedbacks.
 
-On 30/11/2023 04:25, Andi Shyti wrote:
-> Hi Quan,
-> 
->> On 29/11/2023 07:35, Andi Shyti wrote:
->>> Hi Quan,
->>>
->>> On Tue, Nov 28, 2023 at 02:52:35PM +0700, Quan Nguyen wrote:
->>>> Under normal conditions, after the last byte is sent by the Slave, the
->>>> TX_NAK interrupt is raised.  However, it is also observed that
->>>> sometimes the Master issues the next transaction too quickly while the
->>>> Slave IRQ handler is not yet invoked and the TX_NAK interrupt for the
->>>> last byte of the previous READ_PROCESSED state has not been ack’ed.
->>>> This TX_NAK interrupt is then raised together with SLAVE_MATCH interrupt
->>>> and RX_DONE interrupt of the next coming transaction from Master. The
->>>> Slave IRQ handler currently handles the SLAVE_MATCH and RX_DONE, but
->>>> ignores the TX_NAK, causing complaints such as
->>>> "aspeed-i2c-bus 1e78a040.i2c-bus: irq handled != irq. Expected
->>>> 0x00000086, but was 0x00000084"
->>>>
->>>> This commit adds code to handle this case by emitting a SLAVE_STOP event
->>>> for the TX_NAK before processing the RX_DONE for the coming transaction
->>>> from the Master.
->>>>
->>>> Fixes: f9eb91350bb2 ("i2c: aspeed: added slave support for Aspeed I2C driver")
->>>> Signed-off-by: Quan Nguyen <quan@os.amperecomputing.com>
->>>> ---
->>>> v2:
->>>>     + Split to separate series [Joel]
->>>>     + Added the Fixes line [Joel]
->>>>     + Revised commit message [Quan]
->>>>
->>>> v1:
->>>>     + First introduced in
->>>> https://lore.kernel.org/all/20210519074934.20712-1-quan@os.amperecomputing.com/
->>>> ---
->>>>    drivers/i2c/busses/i2c-aspeed.c | 5 +++++
->>>>    1 file changed, 5 insertions(+)
->>>>
->>>> diff --git a/drivers/i2c/busses/i2c-aspeed.c b/drivers/i2c/busses/i2c-aspeed.c
->>>> index 28e2a5fc4528..79476b46285b 100644
->>>> --- a/drivers/i2c/busses/i2c-aspeed.c
->>>> +++ b/drivers/i2c/busses/i2c-aspeed.c
->>>> @@ -253,6 +253,11 @@ static u32 aspeed_i2c_slave_irq(struct aspeed_i2c_bus *bus, u32 irq_status)
->>>>    	/* Slave was requested, restart state machine. */
->>>>    	if (irq_status & ASPEED_I2CD_INTR_SLAVE_MATCH) {
->>>> +		if (irq_status & ASPEED_I2CD_INTR_TX_NAK &&
->>>> +		    bus->slave_state == ASPEED_I2C_SLAVE_READ_PROCESSED) {
->>>> +			irq_handled |= ASPEED_I2CD_INTR_TX_NAK;
->>>> +			i2c_slave_event(slave, I2C_SLAVE_STOP, &value);
->>>> +		}
->>>
->>> this is a duplicate of a later "if (...)" satement. What is the
->>> need for having them both?
->>>
->> Thanks Andi for the review.
->>
->> I assumed the if statement you mentioned is here in [1]. If so, then that is
->> not duplicate.
->>
->> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/i2c/busses/i2c-aspeed.c?h=v6.7-rc3#n287
->>
->>
->> The if statement is to process the case when Slave sending data to Master
->> but being NAK, the I2C_SLAVE_STOP event will emit later in switch-case
->> statement. But it is only for the case INTR_TX_NAK without INTR_SLAVE_MATCH.
->>
->> The new code is for the case of INTR_TX_NAK with INTR_SLAVE_MATCH. What it
->> does is to detect if there is a mix of INTR_TX_NAK of previous i2c
->> transaction and the start of new i2c transaction, indicate by
->> INTR_SLAVE_MATCH which is only raised when Slave found its address matched
->> on the first byte it received. If so, the new code will try to emit the
->> I2C_SLAVE_STOP first to complete the previous transaction and process the
->> rest as a new request.
->>
->> So if this was the case (with INTR_SLAVE_MATCH), the INTR_RX_DONE should
->> always raise with INTR_SLAVE_MATCH because Slave did receive the data which
->> matched with its Slave address. And this will be translated into either
->> I2C_SLAVE_[READ|WRITE]_REQUESTED and that make the if statement you
->> mentioned [1] evaluate to false and skip.
->>
->> So, in short, the new code is trying to handle the case of INTR_TX_NAK with
->> INTR_SLAVE_MATCH first before let the rest process as normal.
-> 
-> yes, I saw that, but wasn't it easier to do something like this:
-> 
-> 	if (irq_status & ASPEED_I2CD_INTR_TX_NAK &&
-> 	    bus->slave_state == ASPEED_I2C_SLAVE_READ_PROCESSED) {
-> 		irq_handled |= ASPEED_I2CD_INTR_TX_NAK;
-> 		bus->slave_state = ASPEED_I2C_SLAVE_STOP;
-> 
-> 		if (irq_status & ASPEED_I2CD_INTR_SLAVE_MATCH)
-> 			i2c_slave_event(slave, I2C_SLAVE_STOP, &value);
-> 
-> 	}
-> 
-> But I see that Andrew has done some similar comment, also for
-> patch 2. You can answer both in the same mail, not to duplicate
-> the answer :-)
-> 
-> We can wait for him to reply.
-> 
+Thanks.
 
-I think Andrew's idea to handle the STOP conditions prior is much 
-better. Will test and post the next version ASAP.
-
-Thanks a lot for the review
-- Quan
+On 2023/11/21 17:25, Yicong Yang wrote:
+> From: Yicong Yang <yangyicong@hisilicon.com>
+> 
+> The core CPU control framework supports runtime SMT control which
+> is not yet supported on arm64. Besides the general vulnerabilities
+> concerns we want this runtime control on our arm64 server for:
+> 
+> - better single CPU performance in some cases
+> - saving overall power consumption
+> 
+> This patchset implements it in the following aspects:
+> 
+> - implements the basic support in arch_topology driver
+> - support retrieve SMT thread number on OF based system
+> - support retrieve SMT thread number on ACPI based system
+> - select HOTPLUG_SMT for arm64
+> 
+> Tests has been done on our real ACPI based arm64 server and on
+> ACPI/OF based QEMU VMs.
+> 
+> The patchset is based on v6.7-rc1.
+> 
+> Change since v3:
+> - Fix some build and kconfig error reported by kernel test robot <lkp@intel.com>
+> Link: https://lore.kernel.org/linux-arm-kernel/20231114040110.54590-1-yangyicong@huawei.com/
+> 
+> Change since v2:
+> - Detect SMT thread number at topology build from ACPI/DT, avoid looping CPUs
+> - Split patches into ACPI/OF/arch_topology path and enable the kconfig for arm64
+> Link: https://lore.kernel.org/linux-arm-kernel/20231010115335.13862-1-yangyicong@huawei.com/
+> 
+> Yicong Yang (4):
+>   arch_topology: Support basic SMT control for the driver
+>   arch_topology: Support SMT control for OF based system
+>   arm64: topology: Support SMT control on ACPI based system
+>   arm64: Kconfig: Enable HOTPLUG_SMT
+> 
+>  arch/arm64/Kconfig            |  1 +
+>  arch/arm64/kernel/topology.c  | 23 ++++++++++++++++++
+>  drivers/base/arch_topology.c  | 45 +++++++++++++++++++++++++++++++++++
+>  include/linux/arch_topology.h | 14 +++++++++++
+>  4 files changed, 83 insertions(+)
+> 
