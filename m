@@ -2,101 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D88B7FEC78
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 11:05:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3C987FEC7C
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 11:05:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235124AbjK3KFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 05:05:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57258 "EHLO
+        id S231807AbjK3KFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 05:05:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231755AbjK3KFa (ORCPT
+        with ESMTP id S235142AbjK3KFk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 05:05:30 -0500
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8D871B4;
-        Thu, 30 Nov 2023 02:05:36 -0800 (PST)
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3AUA52Pz83445011, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3AUA52Pz83445011
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 30 Nov 2023 18:05:02 +0800
-Received: from RTEXMBS05.realtek.com.tw (172.21.6.98) by
- RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.32; Thu, 30 Nov 2023 18:05:02 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXMBS05.realtek.com.tw (172.21.6.98) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.34; Thu, 30 Nov 2023 18:05:02 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7]) by
- RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7%5]) with mapi id
- 15.01.2375.007; Thu, 30 Nov 2023 18:05:02 +0800
-From:   =?utf-8?B?Q1lfSHVhbmdb6buD6Ymm5pmPXQ==?= <cy.huang@realtek.com>
-To:     =?utf-8?B?Q1lfSHVhbmdb6buD6Ymm5pmPXQ==?= <cy.huang@realtek.com>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        =?utf-8?B?SmFtZXMgVGFpIFvmiLTlv5fls7Bd?= <james.tai@realtek.com>,
-        =?utf-8?B?QW5kcmVhcyBGw6RyYmVy?= <afaerber@suse.de>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-realtek-soc@lists.infradead.org" 
-        <linux-realtek-soc@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2 0/3] Initial RTD1319 SoC and Realtek PymParticle EVB support
-Thread-Topic: [PATCH v2 0/3] Initial RTD1319 SoC and Realtek PymParticle EVB
- support
-Thread-Index: AQHaI3McTWButhzRkEaF+Ca/sqlVU7CSokNg
-Date:   Thu, 30 Nov 2023 10:05:02 +0000
-Message-ID: <ba0bac228116491dba714d6b3cc434d4@realtek.com>
-References: <20231130095345.24524-1-cy.huang@realtek.com>
- <20231130095345.24524-3-cy.huang@realtek.com>
-In-Reply-To: <20231130095345.24524-3-cy.huang@realtek.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-x-originating-ip: [172.21.190.137]
-x-kse-serverinfo: RTEXMBS05.realtek.com.tw, 9
-x-kse-antispam-interceptor-info: fallback
-x-kse-antivirus-interceptor-info: fallback
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Thu, 30 Nov 2023 05:05:40 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 101F510D0
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 02:05:47 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32EEAC433C9;
+        Thu, 30 Nov 2023 10:05:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701338746;
+        bh=O2WWoxTEi44H1URmj3ZurepyAkSwNGHn9e5XUr9Kk2E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GO3DnmRXyD+X+wrA5UhtLCTd4I2x6wWVpYZg1JWHbxw4m7OYujjvNEjQhxBod6gZi
+         zJ34SdZ91eQCPpsfA3A/Ds/pniN7YuNOQo6pEpAOlXUbHykcIllhtvzZvdqJHsJ6wH
+         noSmUGDd1719TwiSX5gzGMyzj6QcaZ0RK8wxtZ4yIFO+ELn8Z5ncS5k0Az5qsd7G6o
+         3cap8LKytjF9hFciuap2Uk22V17c0kxgbZaboKDCJWDGNxqxsMva+T+m1sVdiBoQ7Q
+         SV+1iLCPzyzRXGH9mHU46EzgnTs4fP+/ujcAa+C+KxUViqEz1mywLi/om/KBTRYdIK
+         cgwCE1C5wanww==
+Date:   Thu, 30 Nov 2023 11:05:43 +0100
+From:   Maxime Ripard <mripard@kernel.org>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     daniel@ffwll.ch, Liu Ying <victor.liu@nxp.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-next@vger.kernel.org, sfr@canb.auug.org.au,
+        gregkh@linuxfoundation.org, rafael@kernel.org,
+        andrzej.hajda@intel.com, neil.armstrong@linaro.org,
+        rfoss@kernel.org, Laurent.pinchart@ideasonboard.com,
+        jonas@kwiboo.se, jernej.skrabec@gmail.com,
+        maarten.lankhorst@linux.intel.com, tzimmermann@suse.de,
+        airlied@gmail.com, angelogioacchino.delregno@collabora.com,
+        ulf.hansson@linaro.org
+Subject: Re: [PATCH v2 0/2] drm/bridge: panel: Check device dependency before
+ managing device link
+Message-ID: <cmebtbqvckxlscimbtwgkyf4bkqqmr6uprqaadakz2kcvwxx4t@kj3gvgopezyy>
+References: <20231127051414.3783108-1-victor.liu@nxp.com>
+ <CACRpkdZAtxh5muhbPKvmUQGtQogs3UhGxNZqnSGWoWQNUL7=9g@mail.gmail.com>
+ <k65hxlckssjd46nsrlly6vjrr5nnkrakouzw5pmxgbf6ui3mdl@5ny7j7blkwyj>
+ <CACRpkdbKwycpjuhMfnriqMUcbmwCTb3vJzgzCF7+ARax54q7WQ@mail.gmail.com>
+ <d33ovl3ox2u74jbik2bcraeqiqplqoc57p4quapdyydqlyzrf5@vlhszortxfio>
+ <CACRpkdb1DmH2NJ2nBRtGaB+9Tmbn1tzXafDSpZVxjCFnexz=3g@mail.gmail.com>
 MIME-Version: 1.0
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="b5ujbigdloignsuu"
+Content-Disposition: inline
+In-Reply-To: <CACRpkdb1DmH2NJ2nBRtGaB+9Tmbn1tzXafDSpZVxjCFnexz=3g@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-U29ycnksIHRoZSBlbWFpbCB3YXMgbWlzdHJhbnNtaXR0ZWQNCg0KQ3kNCg0KPi0tLS0tT3JpZ2lu
-YWwgTWVzc2FnZS0tLS0tDQo+RnJvbTogY3kuaHVhbmcgPGN5Lmh1YW5nQHJlYWx0ZWsuY29tPg0K
-PlNlbnQ6IFRodXJzZGF5LCBOb3ZlbWJlciAzMCwgMjAyMyA1OjU0IFBNDQo+VG86IENZX0h1YW5n
-W+m7g+mJpuaZj10gPGN5Lmh1YW5nQHJlYWx0ZWsuY29tPg0KPkNjOiBSb2IgSGVycmluZyA8cm9i
-aCtkdEBrZXJuZWwub3JnPjsgSmFtZXMgVGFpIFvmiLTlv5fls7BdDQo+PGphbWVzLnRhaUByZWFs
-dGVrLmNvbT47IEFuZHJlYXMgRsOkcmJlciA8YWZhZXJiZXJAc3VzZS5kZT47IEtyenlzenRvZg0K
-Pktvemxvd3NraSA8a3J6eXN6dG9mLmtvemxvd3NraStkdEBsaW5hcm8ub3JnPjsNCj5saW51eC1h
-cm0ta2VybmVsQGxpc3RzLmluZnJhZGVhZC5vcmc7IGRldmljZXRyZWVAdmdlci5rZXJuZWwub3Jn
-Ow0KPmxpbnV4LXJlYWx0ZWstc29jQGxpc3RzLmluZnJhZGVhZC5vcmc7IGxpbnV4LWtlcm5lbEB2
-Z2VyLmtlcm5lbC5vcmcNCj5TdWJqZWN0OiBbUEFUQ0ggdjIgMC8zXSBJbml0aWFsIFJURDEzMTkg
-U29DIGFuZCBSZWFsdGVrIFB5bVBhcnRpY2xlIEVWQiBzdXBwb3J0DQo+DQo+SGkgQW5kcmVhcywN
-Cj4NCj5UaGlzIHNlcmllcyBhZGRzIERldmljZSBUcmVlcyBmb3IgdGhlIFJlYWx0ZWsgUlREMTMx
-OSBTb0MgYW5kIFJlYWx0ZWsncw0KPlB5bVBhcnRpY2xlIEVWQi4NCj4NCj52MjoNCj4qIFJURDEz
-MTkgU29DIGFuZCBSZWFsdGVrIFB5bVBhcnRpY2xlIEVWQg0KPg0KPkNjOiBSb2IgSGVycmluZyA8
-cm9iaCtkdEBrZXJuZWwub3JnPg0KPkNjOiBKYW1lcyBUYWkgPGphbWVzLnRhaUByZWFsdGVrLmNv
-bT4NCj5DYzogQW5kcmVhcyBGw6RyYmVyIDxhZmFlcmJlckBzdXNlLmRlPg0KPkNjOiBLcnp5c3p0
-b2YgS296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpK2R0QGxpbmFyby5vcmc+DQo+Q2M6IGxp
-bnV4LWFybS1rZXJuZWxAbGlzdHMuaW5mcmFkZWFkLm9yZw0KPkNjOiBkZXZpY2V0cmVlQHZnZXIu
-a2VybmVsLm9yZw0KPkNjOiBsaW51eC1yZWFsdGVrLXNvY0BsaXN0cy5pbmZyYWRlYWQub3JnDQo+
-Q2M6IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcNCj4NCj5XZWkgQ2hlbiAoMSk6DQo+ICBp
-MmM6IHhnZW5lLXNsaW1wcm86IEZpeCBvdXQtb2YtYm91bmRzIGJ1ZyBpbiB4Z2VuZV9zbGltcHJv
-X2kyY194ZmVyKCkNCj4NCj5jeS5odWFuZyAoMik6DQo+ICBkdC1iaW5kaW5nczogYXJtOiByZWFs
-dGVrOiBBZGQgUmVhbHRlayBQeW0gUGFydGljbGVzIEVWQg0KPiAgYXJtNjQ6IGR0czogcmVhbHRl
-azogQWRkIFJURDEzMTkgU29DIGFuZCBSZWFsdGVrIFB5bSBQYXJ0aWNsZXMgRVZCDQo+DQo+LS0N
-Cj4yLjM5LjANCg0K
+
+--b5ujbigdloignsuu
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi Linus,
+
+On Wed, Nov 29, 2023 at 03:38:35PM +0100, Linus Walleij wrote:
+> On Wed, Nov 29, 2023 at 1:32=E2=80=AFPM Maxime Ripard <mripard@kernel.org=
+> wrote:
+> [Me]
+> > > It is a bigger evil to leave the tree broken than to enforce formal p=
+rocess,
+> > > and it is pretty self-evident. If any of them get annoyed about it we=
+ can
+> > > revert the patch, or both.
+> >
+> > Yeah, I definitely understand why you did it, but I don't think it's
+> > something we would encourage in drm-misc.
+>=20
+> Hm OK I guess, it can be debated but no point in debating it either.
+>=20
+> > We've discussed it with Sima yesterday, and I think we would even need
+> > the extra check in dim to make sure that a committer shouldn't do that
+> > without dim complaining.
+> (...)
+> > Sima played a bit with it, and it should be doable to get something
+> > fairly reliable if you use get_maintainers.pl to retrieve the git tree
+> > (through scripts/get_maintainer.pl --no-email --no-l --scm) and figuring
+> > out if only drm.git, drm-intel.git or drm-misc.git is involved.
+> >
+> > If it isn't, then we should check that there's the ack of one of the
+> > maintainers.
+>=20
+> So check for any code that is hitting namespaces outside drivers/gpu/*
+> Documentation/gpu/* or include/[uapi/]drm/* that it is ACKed by the respe=
+ctive
+> maintainer for that area of the kernel?
+
+We can have something more reliable if we just check the git tree listed
+in MAINTAINERS (and returned by get_maintainers --scm). That way we
+don't have to whitelist anything, and it will always by in sync with
+MAINTAINERS.
+
+And if it's not one of drm trees, then it requires an ack from someone
+else get_maintainers will also tell you about.
+
+> > Could you write a patch to do so?
+>=20
+> Patch dim? Well my bash skills are a bit so-so. But I guess I could
+> learn it. But did you say there is already a prototype?
+
+My shell skills are also fairly limited, so we just discussed the
+solution but didn't do a prototype yet :)
+
+Maxime
+
+--b5ujbigdloignsuu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZWhedwAKCRDj7w1vZxhR
+xVJyAQC/BB7GistGp1TFQsAJh1CdMKlI3ncYUBM1Gp2WoVScbQEAjJ9ZU7eizhiQ
+9g0i2RZGyKnuCldJMbMjRSH6RTnYcAM=
+=WW3o
+-----END PGP SIGNATURE-----
+
+--b5ujbigdloignsuu--
