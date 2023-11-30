@@ -2,103 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 607F07FEB0C
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 09:42:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D401C7FEB0E
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 09:43:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344967AbjK3Imo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 03:42:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49602 "EHLO
+        id S1345002AbjK3InM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 03:43:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231826AbjK3Iml (ORCPT
+        with ESMTP id S1344989AbjK3InJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 03:42:41 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFF9610C2;
-        Thu, 30 Nov 2023 00:42:47 -0800 (PST)
-Date:   Thu, 30 Nov 2023 08:42:44 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1701333765;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gcptB3mvhSIKokDXZRJrI1xRd2c85LJPwOEmETgObR0=;
-        b=VB5YGGYXw58jLYn8NfK6UocG9lVuvAfHNxadzN1Frtx5DXdgPYQ+ufjtt9bitOi+lAixxH
-        nYUwwc6UKzpOWawyaJRSvRC27ezYZB4LzAFqED/WcB1W/2edkLrT8KFaiSxZTxlY4Bu32U
-        NW1KBZ3ub8iE44LyxUwbXdYAXJP+g8OFwn4+OwdYTy1jNote8BU7Y4KT8RF6V/IJCIV8Rn
-        8ECzIu6evfLMacEV7qYgT7v0sqWph7UzIm9iTH3XVuXxht82J0YCvyQSnRJaC0o6FIf1Ty
-        yPmwAo3rZClSwBitUwUCQEfwfXJ7f6RPC5FoHt63tXKTGoOIo8j+acGcy/2ggw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1701333765;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gcptB3mvhSIKokDXZRJrI1xRd2c85LJPwOEmETgObR0=;
-        b=tx5kc+z9FF1xI1oKAljhc3gOHKWijljGrLmAa7PQFG3vmSRJoIUU3txYEM8Td1Mz72/cSp
-        hl81GXFqx/ZAlMBA==
-From:   "tip-bot2 for Namhyung Kim" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] perf/x86/amd: Reject branch stack for IBS events
-Cc:     Namhyung Kim <namhyung@kernel.org>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20231130062246.290-1-ravi.bangoria@amd.com>
-References: <20231130062246.290-1-ravi.bangoria@amd.com>
+        Thu, 30 Nov 2023 03:43:09 -0500
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com [209.85.214.200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 063D5A2
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 00:43:16 -0800 (PST)
+Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-1cfba9f385aso7778625ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 00:43:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701333795; x=1701938595;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mkxVeHpdPTesg4Gj8MIqsgF3u8iigyFeiw0iWW5TmH0=;
+        b=wlAfHoNVV6a13qCNUztRvCCn67uZvLxJ/zQj+X8Nv021xfa5FDRHM3ouGzBKP5mToy
+         0ridUg0V36z0647cUNiQt7vUuOSde44WKIVEreB3rap6lXPDBszd7CgGnzv9I2plqhP6
+         y0MFBebpQcPQw8BG4mOb55OOnomdZyGy76yyGOmleaUxs2H2AsdJCpdL/mR4D0FNrEfq
+         ZdNGCmSwAZqGOp8wwnX80Sc17JQRwNPu6xBdb9gels9F11Q/BcB8SoqzLemfxEX7RUJs
+         TttHcTedZx8t/SAXlR73/tn+IYFZEQmuBGZys6aPrFppWQVtYd1RxoKfLQ/mL+ZZxDwi
+         QSPA==
+X-Gm-Message-State: AOJu0Yy1/O3EuKrRd1mmIHW36sriKGbQTlX9IiYhW/97DQjofRgk3NQJ
+        6q+B1PuiE/5rNJPGJ7RjqY0lfAETzZau1U1UQvfCzICJdDsXPHQ=
+X-Google-Smtp-Source: AGHT+IHKNX1LFrnC+6j0ZHuGLay0h1R4FKweLM2ug51lIvwd0+CH3655n+jYmFErvfeRdE8Okj/WciD0yfANoaMdDitCYXcO4MdO
 MIME-Version: 1.0
-Message-ID: <170133376457.398.10426693252022090421.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a17:903:451:b0:1cf:923e:fafc with SMTP id
+ iw17-20020a170903045100b001cf923efafcmr4210356plb.7.1701333795618; Thu, 30
+ Nov 2023 00:43:15 -0800 (PST)
+Date:   Thu, 30 Nov 2023 00:43:15 -0800
+In-Reply-To: <000000000000db858c05f06f30b0@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000884543060b5aa428@google.com>
+Subject: Re: [syzbot] task hung in exfat_write_inode
+From:   syzbot <syzbot+2f73ed585f115e98aee8@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the perf/core branch of tip:
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org.
 
-Commit-ID:     0f9e0d7928d8e88d57b1482effab70edb9741ce1
-Gitweb:        https://git.kernel.org/tip/0f9e0d7928d8e88d57b1482effab70edb9741ce1
-Author:        Namhyung Kim <namhyung@kernel.org>
-AuthorDate:    Thu, 30 Nov 2023 11:52:46 +05:30
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Thu, 30 Nov 2023 09:34:40 +01:00
+***
 
-perf/x86/amd: Reject branch stack for IBS events
+Subject: task hung in exfat_write_inode
+Author: lizhi.xu@windriver.com
 
-The AMD IBS PMU doesn't handle branch stacks, so it should not accept
-events with brstack.
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git f9ff5644bcc0
 
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-Signed-off-by: Ravi Bangoria <ravi.bangoria@amd.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20231130062246.290-1-ravi.bangoria@amd.com
----
- arch/x86/events/amd/ibs.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/arch/x86/events/amd/ibs.c b/arch/x86/events/amd/ibs.c
-index 6911c53..e91970b 100644
---- a/arch/x86/events/amd/ibs.c
-+++ b/arch/x86/events/amd/ibs.c
-@@ -287,6 +287,9 @@ static int perf_ibs_init(struct perf_event *event)
- 	if (config & ~perf_ibs->config_mask)
- 		return -EINVAL;
+diff --git a/fs/exfat/file.c b/fs/exfat/file.c
+index bfdfafe00993..4bdcdf126a21 100644
+--- a/fs/exfat/file.c
++++ b/fs/exfat/file.c
+@@ -132,14 +132,18 @@ int __exfat_truncate(struct inode *inode)
+ 			clu.dir += num_clusters;
+ 			clu.size -= num_clusters;
+ 		} else {
++			mutex_unlock(&sbi->s_lock);
+ 			while (num_clusters > 0) {
+ 				last_clu = clu.dir;
++				mutex_lock(&sbi->s_lock);
+ 				if (exfat_get_next_cluster(sb, &(clu.dir)))
+ 					return -EIO;
++				mutex_unlock(&sbi->s_lock);
  
-+	if (has_branch_stack(event))
-+		return -EOPNOTSUPP;
-+
- 	ret = validate_group(event);
- 	if (ret)
- 		return ret;
+ 				num_clusters--;
+ 				clu.size--;
+ 			}
++			mutex_lock(&sbi->s_lock);
+ 		}
+ 	} else {
+ 		ei->flags = ALLOC_NO_FAT_CHAIN;
