@@ -2,121 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A68B67FEBEB
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 10:36:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D9E17FEC02
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 10:39:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235087AbjK3JgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 04:36:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37680 "EHLO
+        id S235085AbjK3JjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 04:39:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231755AbjK3JgB (ORCPT
+        with ESMTP id S229462AbjK3JjE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 04:36:01 -0500
-Received: from mail-lf1-x149.google.com (mail-lf1-x149.google.com [IPv6:2a00:1450:4864:20::149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E05ED50
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 01:36:07 -0800 (PST)
-Received: by mail-lf1-x149.google.com with SMTP id 2adb3069b0e04-50bc9aacdc8so614212e87.0
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 01:36:07 -0800 (PST)
+        Thu, 30 Nov 2023 04:39:04 -0500
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B845D4A
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 01:39:10 -0800 (PST)
+Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-54bfa9b4142so8480a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 01:39:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701336965; x=1701941765; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=rtfFST1hu6uQIKluftk2Tkqzt/TD9qBiJocJOhpEzS8=;
-        b=KHdfCe8keuWUgAPjOeEBq96V8I+CZ69pSO8tI5z7racW97tRUBucF7XQPu5yVYdQQ7
-         +/DBWgGuXANUs37ZI6dKFc9o7iE+YwowB6u+nlEeFXLgVOiiKzsIx9iseSVZ8DUoFKN+
-         bUGxVZ4uH5i3E9f7OSZovdBpLgynqvavU7hk0J5RvnQ0ZRQ66Ru3a8+7XEaOAtVwXMyN
-         Ur49PBPfJEOk+PwY4YrpkQqprniBQ/z+VtBnq48CvZBrDnM6VwBYO0DDhGN2Q4X0ssdI
-         TxGoO1kly1HyyouhobuXJtP1ynSbO0TpmKXZr2vi0hWeW1MnKlsqqa0xyKHPe+S8HDT7
-         y+kg==
+        d=google.com; s=20230601; t=1701337149; x=1701941949; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+w0Xsdxg1xmtFzBpIVytZrwRsCdJaB2rhHg1ObCl0ac=;
+        b=EboWee2QIgu+TNRwGRV1uzm7x8ddpkdlWN3dnuIxKzJynRdVoMtJdpUKZrqBGcXGoB
+         ioSfR8vs5rG2yyVyTVjdzkQFLxyd/bx8Hm9IxBgqMf6cfsfJH2u88lDL8lt7WHqPqlyl
+         z6fWuDTTrWDwl9AFimk6oHaiuSj3m7uQcx5u6bm2KDcnhMBnwzwCyBe6XnTsNGvfaiu3
+         wrTwyBbsDBqsglVlQDp7stGGcaSkP4on3UqZOnfsydoHs4oz0eyjmvbNZuoP+awyFpyo
+         5GSCPLPyyohrjmB9dG3WRzKRqbZkaVuYdq7R7IJq3VywG048YF/i0AC37i3K289sp1As
+         MtUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701336965; x=1701941765;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rtfFST1hu6uQIKluftk2Tkqzt/TD9qBiJocJOhpEzS8=;
-        b=SqJxR7uO8630/V5zXKkiePOQaJi5zNnEeTGgO2EARUGdCA96tpoKS54v83WGR4FQb5
-         pM2BTxsEWPIlb/3EeFdvmcdlYS7UOXeTBdgw1MkAESGgkhNZzP5Y+eDo2Ot9SRcawYJV
-         k1yVLto9Ocy6260oEvPXJRX6g1wI6+OtKzLw3QactN4XYaI8ZiPL1ILyCR/3ERS7tUlH
-         4mM+37KgAN25E0CXQU0BRBW0iVJSfaOX8sHa5duicXwHyFojCofo0sBFxtfFl7urvrkM
-         IAH/PNHA30uxeozOIVY8pV2fcDXUY3pRTKYJmhmllpdewWDX2ROtdbg8fCskNYVx2IDE
-         BE0A==
-X-Gm-Message-State: AOJu0YyIiEb4ETuEYhLZ0rEiVCZsdL5DVnAxOHBsFX6A8MyuZdKvA0Jg
-        K7y0EEkWHLban8dO+jq+80n7tTWJ9aGS3Gk=
-X-Google-Smtp-Source: AGHT+IGr3t6cRp0wtyHhcLDzWjsIAFKJ15RL7mKVn9SyM4cYRc5icSBSb3WXOwXPFhH5FEUuXjC70CHhIaK8Z5c=
-X-Received: from aliceryhl2.c.googlers.com ([fda3:e722:ac3:cc00:68:949d:c0a8:572])
- (user=aliceryhl job=sendgmr) by 2002:a05:6512:3e0c:b0:50b:d3ab:daaa with SMTP
- id i12-20020a0565123e0c00b0050bd3abdaaamr5314lfv.0.1701336965612; Thu, 30 Nov
- 2023 01:36:05 -0800 (PST)
-Date:   Thu, 30 Nov 2023 09:36:03 +0000
-In-Reply-To: <20231129-etappen-knapp-08e2e3af539f@brauner>
-Mime-Version: 1.0
-References: <20231129-etappen-knapp-08e2e3af539f@brauner>
-X-Mailer: git-send-email 2.43.0.rc1.413.gea7ed67945-goog
-Message-ID: <20231130093603.113036-1-aliceryhl@google.com>
-Subject: Re: [PATCH 5/7] rust: file: add `Kuid` wrapper
-From:   Alice Ryhl <aliceryhl@google.com>
-To:     brauner@kernel.org
-Cc:     a.hindborg@samsung.com, alex.gaynor@gmail.com,
-        aliceryhl@google.com, arve@android.com, benno.lossin@proton.me,
-        bjorn3_gh@protonmail.com, boqun.feng@gmail.com,
-        cmllamas@google.com, dan.j.williams@intel.com, dxu@dxuuu.xyz,
-        gary@garyguo.net, gregkh@linuxfoundation.org,
-        joel@joelfernandes.org, keescook@chromium.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        maco@android.com, ojeda@kernel.org, peterz@infradead.org,
-        rust-for-linux@vger.kernel.org, surenb@google.com,
-        tglx@linutronix.de, tkjos@android.com, viro@zeniv.linux.org.uk,
-        wedsonaf@gmail.com, willy@infradead.org
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1701337149; x=1701941949;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+w0Xsdxg1xmtFzBpIVytZrwRsCdJaB2rhHg1ObCl0ac=;
+        b=AE0bTPC2SIZW+HEbwkgflBQ06Dtek8P11fTvBeBYOsD96pbNiGSbGNIyyNzPGqPzXj
+         AMWFwYcFeyYQbBlFqKerHlo9BcsPO4wKqLoKf26gkZJ1y986NWlzjXPzg9lgJnB5jkil
+         Hu2z/uw0HIZZ/mTxahV15Ius0VhfjMBBumiwoTzfjOIeb/5ypobYm8jYnuP/ovXXvsgr
+         U83sd7KawqJZwIzey8DlrQ+r9RcMCsfPHTfWqIDaCsGYdSyBOyHhkW0fZAt6ydY+G1kG
+         Sfmjo++RBI5jLR+P0q7oL4qlnBCmIOI2ThJe8/SRj4kQ+M0PNSnT5uKWKT6KEiloxfhg
+         FGnQ==
+X-Gm-Message-State: AOJu0Yx1qASrfy/Z8pQM9abys8IvC0/xDJs/MFsgWRxyhvtyVrL6WXbs
+        0K+Z0eZONGcnOEH0KFKUK87hsYD0QxEXL8M26YcuXQ==
+X-Google-Smtp-Source: AGHT+IH01CaFUo5z6hh/wFpSzJm4ZGqsz0fZRtVHaFB0ZsdcL1YwoDq/BZCXrmXYJW7dz2uCJh9PfLM0rycp3Xm/4k4=
+X-Received: by 2002:a05:6402:1cae:b0:54b:81ba:93b2 with SMTP id
+ cz14-20020a0564021cae00b0054b81ba93b2mr122702edb.2.1701337148606; Thu, 30 Nov
+ 2023 01:39:08 -0800 (PST)
+MIME-Version: 1.0
+References: <CABOYnLy_ufLD=BWDJct2chXMDYdZK=dNb4cnPYD5xo3WW1YCrw@mail.gmail.com>
+ <CANn89iKpO35x-mFNgGA1axhn1hrq2HZBOFXo+wkTRPKxCQyQKA@mail.gmail.com>
+In-Reply-To: <CANn89iKpO35x-mFNgGA1axhn1hrq2HZBOFXo+wkTRPKxCQyQKA@mail.gmail.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Thu, 30 Nov 2023 10:38:57 +0100
+Message-ID: <CANn89iJ7h_LFSV6n_9WmbTMwTMsZ0UgdBj_oGrnzcrZu7oCxFw@mail.gmail.com>
+Subject: Re: [syzbot] [net?] WARNING in cleanup_net (3)
+To:     xingwei lee <xrivendell7@gmail.com>
+Cc:     syzbot+9ada62e1dc03fdc41982@syzkaller.appspotmail.com,
+        davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, pabeni@redhat.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christian Brauner <brauner@kernel.org> writes:
-> I'm a bit puzzled by all these rust_helper_*() calls. Can you explain
-> why they are needed? Because they are/can be static inlines and that
-> somehow doesn't work?
+On Thu, Nov 30, 2023 at 9:46=E2=80=AFAM Eric Dumazet <edumazet@google.com> =
+wrote:
+>
+> On Thu, Nov 30, 2023 at 9:42=E2=80=AFAM xingwei lee <xrivendell7@gmail.co=
+m> wrote:
+> >
+> > Hello
+> > I reproduced this bug with repro.txt and repro.c
+> >
+> >
+>
+>
+> Is your syzbot instance ready to accept patches for testing ?
+>
+> Otherwise, a repro which happens to  work 'by luck' might not work for me=
+.
+>
+> The bug here is a race condition with rds subsystem being dismantled
+> at netns dismantle, the 'repro' could be anything really.
 
-Yes, it's because the methods are inline. Rust can only call C methods
-that are actually exported by the C code.
+Can you test the following patch ?
+Thanks.
 
->> +    /// Converts this kernel UID into a UID that userspace understands. Uses the namespace of the
->> +    /// current task.
->> +    pub fn into_uid_in_current_ns(self) -> bindings::uid_t {
-> 
-> Hm, I wouldn't special-case this. Just expose from_kuid() and let it
-> take a namespace argument, no? You don't need to provide bindings for
-> namespaces ofc.
+diff --git a/net/core/sock.c b/net/core/sock.c
+index fef349dd72fa735b5915fc03e29cbb155b2aff2c..36d2871ac24f383e4e5d1af1168=
+000f076011aae
+100644
+--- a/net/core/sock.c
++++ b/net/core/sock.c
+@@ -2197,8 +2197,6 @@ static void __sk_destruct(struct rcu_head *head)
 
-To make `from_kuid` safe, I would need to wrap the namespace type too. I
-could do that, but it would be more code than this method because I need
-another wrapper struct and so on.
+        if (likely(sk->sk_net_refcnt))
+                put_net_track(sock_net(sk), &sk->ns_tracker);
+-       else
+-               __netns_tracker_free(sock_net(sk), &sk->ns_tracker, false);
 
-Personally I would prefer to special-case it until someone needs the
-non-special-case. Then, they can delete this method when they introduce
-the non-special-case.
+        sk_prot_free(sk->sk_prot_creator, sk);
+ }
+@@ -2212,6 +2210,9 @@ void sk_destruct(struct sock *sk)
+                use_call_rcu =3D true;
+        }
 
-But I'll do it if you think I should.
-
->> +impl PartialEq for Kuid {
->> +    fn eq(&self, other: &Kuid) -> bool {
->> +        // SAFETY: Just an FFI call.
->> +        unsafe { bindings::uid_eq(self.kuid, other.kuid) }
->> +    }
->> +}
->> +
->> +impl Eq for Kuid {}
-> 
-> Do you need that?
-
-Yes. This is the code that tells the compiler what `==` means for the
-`Kuid` type. Binder uses it here:
-
-https://github.com/Darksonn/linux/blob/dca45e6c7848e024709b165a306cdbe88e5b086a/drivers/android/context.rs#L174
-
-Alice
++       if (unlikely(!sk->sk_net_refcnt))
++               __netns_tracker_free(sock_net(sk), &sk->ns_tracker, false);
++
+        if (use_call_rcu)
+                call_rcu(&sk->sk_rcu, __sk_destruct);
+        else
