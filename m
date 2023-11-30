@@ -2,200 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82FD37FE993
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 08:18:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 121287FE998
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 08:20:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344635AbjK3HR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 02:17:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59392 "EHLO
+        id S1344592AbjK3HTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 02:19:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229596AbjK3HRz (ORCPT
+        with ESMTP id S229980AbjK3HTt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 02:17:55 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62A5D19F
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 23:18:01 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-54bfa9b4142so6890a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 23:18:01 -0800 (PST)
+        Thu, 30 Nov 2023 02:19:49 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43D8510D1
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 23:19:55 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id d2e1a72fcca58-6cddc59e731so574789b3a.1
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 23:19:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701328680; x=1701933480; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=o+kuY5Y6I+P0tdWBt7qkVeGxYg6beO52fzMrZF92Ens=;
-        b=FWHqrMussIWmCdvSVxJq4Yuf+d85cy5RZr0BMNSSdwnUpGSOBuaitSjVh4qZz+Q4jW
-         Mc3Lq42+aJpmI5w092QwD1KXY1uKx91C1FwDWXhRWztPw8mBHV9VNGpkKvbzgztj3TKB
-         dHuhUliqBGVgqI2cEO/CDr6t/O/n1SBJ2MckWVw6iDZ8pKMfw32ISotQe1Nh3u6emDvM
-         jodHYy5JToWQUY1qlumZFH6rSC/6ZHrNDxbf5DA0ZGoEmNoFco61BbB/PRi5j4dGH29h
-         VbUYoKyYvxgc08IiW9GCeJYZ2eI4ZAOfXWURSfyAZpHb+uA4fLtVYDhwyI4YIC8ZEpVt
-         W69A==
+        d=gmail.com; s=20230601; t=1701328795; x=1701933595; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=97KetFRbROfrUIuIRy6P4CZMyWy5AFFssR3Tkh7WV80=;
+        b=MwRocG/fL8m/b5eWM298IZBQK2t8sR0ZF6fHxo2V4D2kjzSdYyHwGCKdNfocbdyZEp
+         jMMLpIjiN7EbPSQPnxiiQJuCFycPwH99JeoJfRDuwfY3q+n8itT0lA17gufPe+NAtcJf
+         +qUeFC3iDRm66EBgV7znmtQ2KZdVP9vcZPjP5nQRI5AJi+NbAdmNcQwSJj1lgRN7PAe4
+         ZUfAicWvrw9++4aVlZAf4TTV0mgWwDaEzgj3hh7/wuXWvlfuwGZKPIyP8RpegsCOQP/f
+         dUTGlkTDs/mrOGzb/PMwwZ9Vs+XgtpQPdfRsscN/TKrTRwaiJSiAKQVh8tt8aSxV2Kl9
+         P4lA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701328680; x=1701933480;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=o+kuY5Y6I+P0tdWBt7qkVeGxYg6beO52fzMrZF92Ens=;
-        b=e8PpjkEqNeU2LI3I8Www1FgHJrjbxPrQjqbeir6oFXmg5Nx07tPV9BNOSlQ8qrFmJx
-         8HRH3w4tK3CgHhG+9fI2LNSeiejFkkUlIIigRMilo0Ri4KqZfPA4aV5txqKnVzmXVaza
-         K0JJxVo8QeOJGkp9I76SSnbHwPQSCjGf4x2zbz5ahZ/DjbjAJ7p/9jQ9/c2dbWE4a2jS
-         cPFrjzBh63RT56pL/SvwlRlOOwBYTVU6MOdZc73tMDRkXmTOOp+8S7ap/VB1NCHocSCX
-         4SHOfSMV3FI7jlukV+Mujqcr+P5SSBGfhtR+Lv7hq8r2KvAN04zvv00uwB7OT28eVCtL
-         dn8A==
-X-Gm-Message-State: AOJu0YwXAeIPfIuxH2PJ8b+ElWREwcz0EyDmKm5z4jKYdrbK8FoHvaEc
-        yazrCQa9ltK1hMXQPvGmLrijRkJc/zBlltne9WOVZg==
-X-Google-Smtp-Source: AGHT+IH8E+mN4hJ7VZIZcnUb9J//2LriWYpsOxGEfGfP9TS41dwTXO2GvzmONzyxMWTB0K1u1LBHB6BDFcawDtUwzxw=
-X-Received: by 2002:a50:998c:0:b0:545:279:d075 with SMTP id
- m12-20020a50998c000000b005450279d075mr72707edb.1.1701328679668; Wed, 29 Nov
- 2023 23:17:59 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701328795; x=1701933595;
+        h=to:subject:message-id:date:from:reply-to:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=97KetFRbROfrUIuIRy6P4CZMyWy5AFFssR3Tkh7WV80=;
+        b=KmeYLFC7r66EnP6KHD24x5nppCv2EFk5uo2raNnUvc623RlgWYCAHM36OhXHK/CJc8
+         vqaXFYnpsPvIq2oHykRd/NwaYSAfy6dzFNFwDYLNZmzgvoqYJ05Wz+Sb2JSIFer3JG0q
+         arWWJF8mRrWwOchtmocrk7lui+wqpbHaCtZhQRyq6uWa00FGH8q5ZQvb70tykrx3oXGI
+         GtN5X2fP5HsKNQfJ1vBPB6ZKDycliefRKofJgR2vIwM86vY6gjLeN2XivbK9Q0srhgZ/
+         PU3eC69w8TuGen6gBXKfL83pwDpZg+CsujafCXxHOiL4whIbTrs0ujNogOKBtYdUO2U/
+         Hz9g==
+X-Gm-Message-State: AOJu0YyVn4c9Y6e61mS1Q6lD9DGTOcs0DWEx4S4HF1P1VVokl5GQa/oY
+        hKjtTTUgMi5jgeSZTUdlPwTbG59hBYynsBFjpwo=
+X-Google-Smtp-Source: AGHT+IHvVWxz7lEs8Rm3Q1LQChg5Rnyu6swYDRbLpeEoIDioHqkx8xFhp1Vf+m8rEE2UVOKGbnkNlBib2RYv6sBjfw4=
+X-Received: by 2002:a05:6a21:788e:b0:18a:fbd1:8e6d with SMTP id
+ bf14-20020a056a21788e00b0018afbd18e6dmr22193576pzc.27.1701328794297; Wed, 29
+ Nov 2023 23:19:54 -0800 (PST)
 MIME-Version: 1.0
-References: <20231121162457.17703-1-rf@opensource.cirrus.com>
-In-Reply-To: <20231121162457.17703-1-rf@opensource.cirrus.com>
-From:   David Gow <davidgow@google.com>
-Date:   Thu, 30 Nov 2023 15:17:46 +0800
-Message-ID: <CABVgOS=-bP5t45Qzcm80bV9ms3DTcR8dYPNsQxPaeBtMJYpdsQ@mail.gmail.com>
-Subject: Re: [PATCH] kunit: string-stream-test: Avoid cast warning when
- testing gfp_t flags
-To:     Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc:     brendan.higgins@linux.dev, rmoar@google.com,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org, patches@opensource.cirrus.com,
-        kernel test robot <lkp@intel.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000a05d93060b59732b"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Received: by 2002:a05:7022:672a:b0:6d:d49a:a7fe with HTTP; Wed, 29 Nov 2023
+ 23:19:53 -0800 (PST)
+Reply-To: operationmanagermike@gmail.com
+From:   mike <okiemijueh@gmail.com>
+Date:   Thu, 30 Nov 2023 08:19:53 +0100
+Message-ID: <CAFEvTx0jqDvW=Ka7x0BO1NroEA-f-a9xEh+px0QcK_cLZOeY7w@mail.gmail.com>
+Subject: product order
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=4.2 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000a05d93060b59732b
-Content-Type: text/plain; charset="UTF-8"
+Hello,
 
-On Wed, 22 Nov 2023 at 00:25, Richard Fitzgerald
-<rf@opensource.cirrus.com> wrote:
->
-> Passing a gfp_t to KUNIT_EXPECT_EQ() causes a cast warning:
->
->   lib/kunit/string-stream-test.c:73:9: sparse: sparse: incorrect type in
->   initializer (different base types) expected long long right_value
->   got restricted gfp_t const __right
->
-> Avoid this by testing stream->gfp for the expected value and passing the
-> boolean result of this comparison to KUNIT_EXPECT_TRUE(), as was already
-> done a few lines above in string_stream_managed_init_test().
->
-> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-> Fixes: d1a0d699bfc0 ("kunit: string-stream: Add tests for freeing resource-managed string_stream")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202311181918.0mpCu2Xh-lkp@intel.com/
-> ---
+This is Mr. Mike, let us know if you can export to Germany? Pls confirm
+because we want to purchase from you.
 
-Looks good to me.
+Looking forward to receiving your reply as soon as possible.
 
-Reviewed-by: David Gow <davidgow@google.com>
 
-Cheers,
--- David
+Best Regards
+Mike
 
->  lib/kunit/string-stream-test.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/lib/kunit/string-stream-test.c b/lib/kunit/string-stream-test.c
-> index 06822766f29a..03fb511826f7 100644
-> --- a/lib/kunit/string-stream-test.c
-> +++ b/lib/kunit/string-stream-test.c
-> @@ -72,7 +72,7 @@ static void string_stream_unmanaged_init_test(struct kunit *test)
->
->         KUNIT_EXPECT_EQ(test, stream->length, 0);
->         KUNIT_EXPECT_TRUE(test, list_empty(&stream->fragments));
-> -       KUNIT_EXPECT_EQ(test, stream->gfp, GFP_KERNEL);
-> +       KUNIT_EXPECT_TRUE(test, (stream->gfp == GFP_KERNEL));
->         KUNIT_EXPECT_FALSE(test, stream->append_newlines);
->
->         KUNIT_EXPECT_TRUE(test, string_stream_is_empty(stream));
-> --
-> 2.30.2
->
-
---000000000000a05d93060b59732b
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIIPnwYJKoZIhvcNAQcCoIIPkDCCD4wCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
-ggz5MIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
-VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
-AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
-AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
-IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
-dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
-6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
-c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
-I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
-AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
-BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
-CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
-AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
-MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
-My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
-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
-ddIn9n5Jt6Z1o79zxraLMEwGA1UdIARFMEMwQQYJKwYBBAGgMgEoMDQwMgYIKwYBBQUHAgEWJmh0
-dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAwGA1UdEwEB/wQCMAAwgZoGCCsG
-AQUFBwEBBIGNMIGKMD4GCCsGAQUFBzABhjJodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9jYS9n
-c2F0bGFzcjNzbWltZWNhMjAyMDBIBggrBgEFBQcwAoY8aHR0cDovL3NlY3VyZS5nbG9iYWxzaWdu
-LmNvbS9jYWNlcnQvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3J0MB8GA1UdIwQYMBaAFHzMCmjXouse
-LHIb0c1dlW+N+/JjMEYGA1UdHwQ/MD0wO6A5oDeGNWh0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20v
-Y2EvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3JsMA0GCSqGSIb3DQEBCwUAA4IBAQBtHFwIgQZjer5K
-H+4Q+wns10k7qN+4wN2Uf+JsyOYjukaMEgdLErfA1wwtQ9uHkoYQZcWBuVVkQFa5hI+sqI2m1Weq
-riMCFSiU38s1tADdMX12IMfJRN60Nznhrw+nPyDRZqRhUTW24TwnHorkDnFPW8PHo7fAw4FrpI0n
-impZAng7ccvvK09K3ZuhwTIxJMsPXCZYsrXWORTw5sczRAP6XvKbPBJnsJoSTe5dFBPBHOQJOGhU
-qWfEfWnWMJPF3LxSGLpLFQXO3RwQqmxv08avwXfVPouh1xuB3FX7rpDabT8YDhu9JgIZkLEKko7L
-yQt6zWwng7k8YF/jGbiAta6VMYICajCCAmYCAQEwaDBUMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQ
-R2xvYmFsU2lnbiBudi1zYTEqMCgGA1UEAxMhR2xvYmFsU2lnbiBBdGxhcyBSMyBTTUlNRSBDQSAy
-MDIwAhABzgV+4+mJnUzG7XDy6d2uMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCBb
-RermsCqFAc1UWn2Cb2JtBxuANpiMcQgtT1LMHBErGTAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
-MBwGCSqGSIb3DQEJBTEPFw0yMzExMzAwNzE4MDBaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
-BAEqMAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsG
-CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEACLYimoCnNyRzokhfB2u7
-3LMsTRCTEokx0gubSdEBUNEjCpwLXyGoWW8qoPfZJRHqs4AAyThf1fc3x1Wh4dUvpUZyyp/VZsbY
-EIvP3oJADP64ZejQtOSeHGd6b5yMbopyiUelKwj81tNzN9NUfZ6Ir/dluGMR4JCnDydwYnGs0QJK
-xcYSZanoLaUn2y0F90f13ki3iU+ECcNVZqgG4fsYj81hLbqZNQUHntT6TY4k4HoI9ctey0soYLpx
-AzSpb3msMx8p7qKA5E0m4HBgS6thxRk1P7m4abFjilb8RPRsNrbtN3ZXzTW5kbsZAZ5AGmXXBzgU
-nfji1UgjUaes3n0roA==
---000000000000a05d93060b59732b--
+Operation Manager
+Covestro & co investment
+Email:operationmanagermike@gmail.com
+Mobile:+49-1325457732
+Address:Leipziger Str. 48A, 60488 Frankfurt am Main, Germany
