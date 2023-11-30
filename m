@@ -2,189 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E65EC7FF433
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 16:59:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 406EF7FF43E
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 17:01:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346484AbjK3P7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 10:59:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41730 "EHLO
+        id S1346492AbjK3QB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 11:01:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346478AbjK3P7d (ORCPT
+        with ESMTP id S1346463AbjK3QBX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 10:59:33 -0500
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2047.outbound.protection.outlook.com [40.107.6.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DDB410D5
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 07:59:39 -0800 (PST)
+        Thu, 30 Nov 2023 11:01:23 -0500
+Received: from mx07-00376f01.pphosted.com (mx07-00376f01.pphosted.com [185.132.180.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6216610D9
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 08:01:28 -0800 (PST)
+Received: from pps.filterd (m0168889.ppops.net [127.0.0.1])
+        by mx07-00376f01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3AUDP2tJ019919;
+        Thu, 30 Nov 2023 16:01:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=imgtec.com; h=
+        from:to:cc:subject:date:message-id:content-transfer-encoding
+        :content-type:mime-version; s=dk201812; bh=EYK1KqUTDTPl4Z7U8TQ5r
+        WJ9PaZ//BMXEk0Dmej3Mv0=; b=brB+2qiMjxuIGZ8OwyGA1sIEz72wk5X9cneAw
+        nj+mhDptvTxO1AqHWBaGNjAhw3KY9krQZwoKvyaRo8t8vC3usbfakNblbJqi/cgR
+        qadxpDkvGeWgBpdX2jxCRmZ2qDPt43qUb6kKcZEp2Fewinw7bn2YCURlIs0ijNiq
+        7TwKZ/QNQ7skRQSZv2myOBbSoEO2KOB5i0RNSMpSeVG+PB9/cCarEQP3UbwLy38R
+        pHwDCCTkooKClP7bAupGnF+yVVXiWJ1RQYOeBQKZ60Af9RcLgP40wZgIr3KbgYXr
+        k3ncmPkkPnbXSaZuhrCFvuQwK5vybhSNg6UyXHotaBCWPnrww==
+Received: from hhmail04.hh.imgtec.org ([217.156.249.195])
+        by mx07-00376f01.pphosted.com (PPS) with ESMTPS id 3upgr70nh9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 30 Nov 2023 16:01:02 +0000 (GMT)
+Received: from HHMAIL05.hh.imgtec.org (10.100.10.120) by
+ HHMAIL04.hh.imgtec.org (10.100.10.119) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 30 Nov 2023 16:01:01 +0000
+Received: from GBR01-CWX-obe.outbound.protection.outlook.com (104.47.85.40) by
+ email.imgtec.com (10.100.10.121) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
+ Transport; Thu, 30 Nov 2023 16:01:01 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EuhTBtzjac2K7w2qXhiqdhKgSm/mHVccg+apFxvnz6/XblCUnDOBkojhUU/rgEny1n/Gj7nIAbSRmEget5WBIMtVhtPNqjOyTGqbdewJhgRwn9mzv3wr7eItKMtjkWgCZKDGR79bgfLDO6CVQsQ34XWLpr2R+PtQ78jryjp0CHF2vCzjYbdfFSWQdi/K6Sx2cfIpbX7n9HMV6mXkWbqufnQVZIaXz/IysYgA50NTgJ/grY3FR4qKnpNF3hk5y/sSBsnO64rtojmFIbYrOC7Ie1c5Pgt2Fki2liKirk7IWk2G1QqmlILsKC39d1+10g94GtCh+jd8O/mwL15Segy5yw==
+ b=Y7GtfIBnrWx8AKfaGyM/sZEY+lK+GneWubR9/USTX28HD+FMzZ5HLXJGtlZegwWHAaHYNoBUU/4GWwRGOwcdrxdRk0PXe0hbTHrj4ECPnRzWCsQFalv7cUknq+mTygeZOs0/hWl0McNf1q59zuNpFKh0250VZA/fd/4MpTnzpOaDoBTxwgs9C31DAozxE0PqXhl69EpSYtA/mSxGTroNtT2A6uOH0VXcLU1o8aiR4tlKr6vL6xIB1+j7Etu13fivMAv09aJkUqeGYpZMxVquFk5YSGz2BBztgY6+hP29njStrRdrLuo+H9UY3fQCw5H6y7gP2iPs660d5KSNxcOWVg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4JjQnX4j7SE98pk/4eH6RjzyJOwKfBttdbIn4AImRFQ=;
- b=ObVdbZgWYVZFtMhiFXu2pvqq+HH59PsOPBsVOgKBSspR5Cf2AZ8w4sEX+TytP49nYscmWNL1Uv6GJI1Uhm6PLMU1/BrBFoNnenb36tyJEpokHjS9mMoblR3kfDw6YxpPVojQR3aiejLOfD7yB433QoXOiLa2nCzsgI27wm7TdO0T84xMSk7UwwPYaQiftL342P+PcKViI6Ro+jPomV+8m4gQoZo88sXYdSn9AsBryrFGmqnOq8V7X4PvD6ccDVXIRBTSm46p9Io/viEdJhQCAOkdH+uYhPkozvhit9PG097y04euqdzPiwFuG3qZTTV7girrciWwThHQx5SKawG/Ww==
+ bh=EYK1KqUTDTPl4Z7U8TQ5rWJ9PaZ//BMXEk0Dmej3Mv0=;
+ b=BxMsQKgJCi6L8EQDBw8jY5HngNUyja8QEoAo6XvMY1gq+gCKXqDlX/Gf54bv/u6WBOo7KAwlkgdHZYn36n8zTxdOcDcvxkzn5Q5kbsgJj7oupabMq161qK0o0uFiR3Y3BXOkbHhLWs9MPjx6DHX1BhxbQ3SHSWQ+0Y6hwGXLZyxXUyiyvdoAgSlgPqmVmK1Zj+Km54CTYQ+KDE+uYVEPZnZvy5u50QUgI13H7U0vMa1XWsUWcFLOV+vbmiNnh2F7fdU05IRWiaryfX/kOnAels5sCzHDXzorh/Ntxc9JKE/dgCFBeC/9jr+bf2lKFeOhMRotMCXR1lgPUcN6arASgg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
+ smtp.mailfrom=imgtec.com; dmarc=pass action=none header.from=imgtec.com;
+ dkim=pass header.d=imgtec.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=IMGTecCRM.onmicrosoft.com; s=selector2-IMGTecCRM-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4JjQnX4j7SE98pk/4eH6RjzyJOwKfBttdbIn4AImRFQ=;
- b=YsZWxB+3mWoSHpa8dH2s6lapN+hPdvZ4lOvPoLYPVhAZyZnzVYCfo9yzPBWPqfpndQo7D5RjcsM0zjVaoMqS70zqw/CpS8ny8BNp3U8UcpGgTZvHZK5GeVi8hPu/u1nNx9ZmBBWRxzt8F9T7JXmETBKse9gVhiantAwsAe3bz5rwL47gJ2If8UZ0pjBm4TaRSwRc4yHE8+MDsDeMpKdDjNYMSuRgoRzUb1lvv7Bt3bv60w6dDIuNw7C/kW1+Q7u62a+GTh9fhx0UObaH57hIlgT0qCZBjO6pEjoghK+A3NvYzZS/CfX+Sw6Xo9osCRJQJvK2YMBx79wPN/NwV7L3kA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-Received: from PA4PR04MB7790.eurprd04.prod.outlook.com (2603:10a6:102:cc::8)
- by DBAPR04MB7288.eurprd04.prod.outlook.com (2603:10a6:10:1a3::21) with
+ bh=EYK1KqUTDTPl4Z7U8TQ5rWJ9PaZ//BMXEk0Dmej3Mv0=;
+ b=c39FrDSpG9m6hh9cUiNuGcg9CQt+Hj5gfYA8Xzv7m6pN6WyWfi54TO3tqDpPK1MUQ1K4GnAJqadHuN8TdUchdT5bqM9fEtH0lUm0e555tRZW/uhaBjjyhEhNBH1H843eX0vh4wUOgvn9BUxl/slMVH2426Tl81JHWFK0osmpqaU=
+Received: from CWLP265MB5770.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:1a0::8)
+ by LO3P265MB2410.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:be::7) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.13; Thu, 30 Nov
- 2023 15:59:36 +0000
-Received: from PA4PR04MB7790.eurprd04.prod.outlook.com
- ([fe80::e665:a062:c68b:dd17]) by PA4PR04MB7790.eurprd04.prod.outlook.com
- ([fe80::e665:a062:c68b:dd17%3]) with mapi id 15.20.7068.008; Thu, 30 Nov 2023
- 15:59:36 +0000
-Message-ID: <12a5af2d-c58f-4b4a-a994-49a935f59693@suse.com>
-Date:   Thu, 30 Nov 2023 17:59:33 +0200
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] x86/ia32: State that IA32 emulation is disabled
-Content-Language: en-US
-To:     Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-References: <20231130155213.1407-1-bp@alien8.de>
-From:   Nikolay Borisov <nik.borisov@suse.com>
-In-Reply-To: <20231130155213.1407-1-bp@alien8.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.23; Thu, 30 Nov
+ 2023 16:00:59 +0000
+Received: from CWLP265MB5770.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::a85a:76f7:c085:2b34]) by CWLP265MB5770.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::a85a:76f7:c085:2b34%3]) with mapi id 15.20.7046.024; Thu, 30 Nov 2023
+ 16:00:59 +0000
+From:   Donald Robson <donald.robson@imgtec.com>
+To:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
+CC:     <donald.robson@imgtec.com>, <matt.coster@imgtec.com>,
+        <frank.binns@imgtec.com>, <boris.brezillon@collabora.com>,
+        <maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
+        <tzimmermann@suse.de>, <airlied@gmail.com>, <daniel@ffwll.ch>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH v2 1/5] drm/imagination: Fixed warning due to implicit cast to bool
+Date:   Thu, 30 Nov 2023 16:00:13 +0000
+Message-Id: <20231130160017.259902-1-donald.robson@imgtec.com>
+X-Mailer: git-send-email 2.25.1
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: VI1PR07CA0271.eurprd07.prod.outlook.com
- (2603:10a6:803:b4::38) To PA4PR04MB7790.eurprd04.prod.outlook.com
- (2603:10a6:102:cc::8)
+Content-Type: text/plain
+X-ClientProxiedBy: LO3P123CA0033.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:388::11) To CWLP265MB5770.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:400:1a0::8)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PA4PR04MB7790:EE_|DBAPR04MB7288:EE_
-X-MS-Office365-Filtering-Correlation-Id: f4b9e533-3926-412e-0905-08dbf1bd59b9
+X-MS-TrafficTypeDiagnostic: CWLP265MB5770:EE_|LO3P265MB2410:EE_
+X-MS-Office365-Filtering-Correlation-Id: 248372c1-1e13-456d-173f-08dbf1bd8b94
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: jH3LHQSteqOBJlY4YBkcSkPB9GLlyrzFtSzy6ULJRmfRwcjCqLLPULm2yo2lfELDp62eevrp/duQPBnP3icWvDtTD/SLsrlGobVkYlOqegcXUqLolv1LH2MhDvX1NSLUQ4zuk0QXjiI6cmUMW67rwNViSQ2/p7lYpLjYkQsXPaiwuBdtw/Jiusz92hVy+1Q5r6aog8ufQ2cNrEGmei57Ad9A4OdLXC5xgONKUVCAL3mMSCV03LjgSifWtXuXdTUiD8uS8JF0TqI84WKiXOyzZr8EibgYfHOskX4gBFjA0sivBjcbeVraqv8fyHVagIfTIV5xlYZnb9tOOMG1oMdq0U5MIVWBIW4eyCO9hkcnaBJteXjBHyi/ULHEot6kGA5O0IXaum+8xCdJO26ra9FQhTVyrbaYSMXT33Hwv1pRappsD+7DEpoZwwh6fU6KIkiSk9f1yFQ8IrUnCNDQzV6gKRaULceTuEkerWF/O4HO4GLa8/fDnHyX1b1TlFAkRyEFyNpev+46g/bXr+sCrmVtmsBWm2xidwMSmspQyzwqi5w5lHADXmNzhdZkahqfBBR9QceNbzy1/3/6PFemN7wTYs/Mnkv4cKI7icjC4MxtqguUA1+1kmoS2tAkx9HbDi3YgmkVzazSErqNIzn28/fm6g==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR04MB7790.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(396003)(366004)(136003)(346002)(230922051799003)(1800799012)(186009)(64100799003)(451199024)(86362001)(6506007)(83380400001)(6666004)(6512007)(2616005)(41300700001)(478600001)(4326008)(5660300002)(8676002)(8936002)(2906002)(110136005)(6486002)(316002)(66556008)(66476007)(66946007)(31696002)(36756003)(38100700002)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: FMPyjV6qRfpCbdiGlydpIPlCrCebRK/zeGUw3Od1KzBWC6m7inobQHZFiOW1iXFROMrNO/1NnjRqHzHgBizKAbocINjxyzVwRlJ7RCSzdp937d9mpngfXV6TnS4FSZu4nHO6gdIMmp12ZQtnhJC7iAlXk/Mkj7fuNEC7Sb4oc69j0eGDVMYOn5AU3JK/fzLBHmuEe/tFu4Ox3E+1vKmGbF4uEJ/uHvYKHH/5FCHb0I696MBqcysFZctYzlsXB2eoqZQnJZSNE/n/kqtz7u0f0HlDTgCTR9QeXsryr2iZD+BFQFgBptKFZ52LXvDbeiM6FduRmqnGlFSsD0bF0mEo/0mlV6tZO2HCa22gs343iAvAOvUkGsf2BG2U6Y+tGh9sRum8RfB/BWOXaCJdjwQ2hLleDhb7cCMyMBby6aUARiZ1B6+qSBd8Eqqr9ommhsKVgBcDla6Ohk8k/Sr0OxBcy45fwBbOw3JobT8FcO4vJP1HarwtT/sDzXVaoOY/lb11Bs51/z5WRewDmz/DQHH+ocWrxalbxy/oymiIZCLhtLOo3mOXr/zsGELE+vM4pK0pm/fqtHt4hURWkCop1/i4Nr/uEZ6P6niVqjAXbnzYM3WPAyNVAf+RBAhObF2fwgCQjxDjoX+AZshC7SFjq10X2g==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWLP265MB5770.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(136003)(39850400004)(346002)(396003)(230922051799003)(230173577357003)(230273577357003)(186009)(64100799003)(451199024)(1800799012)(83380400001)(26005)(1076003)(2616005)(38350700005)(66946007)(316002)(66476007)(66556008)(2906002)(5660300002)(4326008)(44832011)(8936002)(8676002)(86362001)(478600001)(6506007)(52116002)(6512007)(36756003)(41300700001)(6486002)(966005)(6666004)(38100700002);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QXhZcHZmUlpCOFNXUXYvSlExU0Q0ZFVhWHZRTUZ4NmxwamZqRVFtWnU3cHh5?=
- =?utf-8?B?SXlkUVExZU9nMm9qZHl3bWVBYUVoU1c5VXh2UGxJOU81MDBDMGZIdU1MdzVq?=
- =?utf-8?B?V0REK1RrNFNxUUl6VVBsa1hnd2JlcGVsVDJIYlVuQ0NwOXI2L1h4Zi83NjNP?=
- =?utf-8?B?OEg0UzlYNHI2S1dNd3JtdEpLSEJ3WVBYWVB4SEdUbVBsUmo5eU8zaVhSajJ0?=
- =?utf-8?B?dWJCckNFWER3M3dKeWIxOXlyNjJZendKcnRSbnp6aSt2VmRSd3gwTW5Da2pw?=
- =?utf-8?B?ZkhSRmtGL2pqVUNldjVNOTZLOXVJaW5YenNFcXcyTk9HYWlPMVQ2RWwwcUJt?=
- =?utf-8?B?bjMza0ttOXNNZUVhVGdLMmdSVDBFVzVna2pBM3JRNGhuNkg3S1lHdmYraENh?=
- =?utf-8?B?aEdPQjdiVVlKN0UwZkYyT3lGWndIK1JheXo4OFEzSEFEREN2enNlYVZMRVRy?=
- =?utf-8?B?VjY4ZklQUWdVMk5Vb09mTDBySncvYXFFMUdXWG9hMXBTMGdsZmRTK2tDVVNz?=
- =?utf-8?B?aHMwSG5FSUFQVkhPMzBoYXZzNC9RaEN2ZkJWUVl5V3dEdytZZW5sVkJNMk4z?=
- =?utf-8?B?QUtyNHU4YTcyK3JSZU5XT2RhOGlWendPUjE0ZjM5aGN4bUozSU41MDJCa3FX?=
- =?utf-8?B?MjVuRHE5ZzBYSTdwMVJrV1kralRXU2hORS9uakNTT1FkbXNwazhGN0F5M0tW?=
- =?utf-8?B?S1lPd2Fha0Z3UmlUUDd2VW9FM2poUm9JNlNOQUU0Uy92WFJlNHFCWlQ5UHZq?=
- =?utf-8?B?SFBrK0Y0SDNVUHVwOE5sMk9BV3o4K3NJZTNPWkhxT2pZSUYrc2VpMXgzZmRt?=
- =?utf-8?B?MHQvR0xQTDFxWU5aVjNvZHRGWGI3YmlqQkdYRVZmOEc3N09vS1QyNVQwUXhZ?=
- =?utf-8?B?cHVLOGlUYVpUSEFWaGkweWdwaEJzWVVRdk5vSGtKZVEvZDQ4SWNROHdJVzRW?=
- =?utf-8?B?VmlWa1FuMThJcEgwSzBodkw1VTJ4cGdMalVuTVR4ZmQraWJDamxaUEpWbWdM?=
- =?utf-8?B?ODhtMy9TajRDdXpaanRIU1VPNUIyK0dhVE9PdDdsMGptZG1UWTVRY0FWMmdE?=
- =?utf-8?B?OGxxTjVFK3JZcEhkVXdUL0tuRkZnTHhJWFJSVU1RMFNPNTRCc1VrbUpJYlpq?=
- =?utf-8?B?TGNIOWlENDNlUW4yeC9oeWc0Q29DYm1oRTFjMmx2WUdKWDB6Q0V3VW1PRDlQ?=
- =?utf-8?B?dnQ5RitOeXJWWTBPMExKSytMd1BabjRaWTBnVXdSNG5CcVVrclNLUlZNNFR3?=
- =?utf-8?B?d1BTQWFJdmFnRGdwVVRrL0w1NFlMRDJueDhVYVpXdWRPY1JPK0xnOGFXeG9F?=
- =?utf-8?B?OENnb3pOL0pFOGJsMTI1OTlEMzRDd2M4djRIaGxJdVR3aUJJTzJuS0wyMTdt?=
- =?utf-8?B?OFpvREpKZXk3QUQ2enowOXhpL2hteDJpVk9OZEt1TW40ZjBHN2c5T1dRc0RT?=
- =?utf-8?B?d0xFUkk3K1FyR25FdFNkZGFxNHNDVnNPS1VOeHluc3dFZkFtd2s1UlFKR0VH?=
- =?utf-8?B?Kys5VU1MUGp5cnAvN0NFUU1MNS8rc2V2NGZyclN4WUNKU3RvYVZFVXlUdlA5?=
- =?utf-8?B?bXFJaHByK0pCUlEwUks2WFFsZGh2QWR3cjFJNk91ZEhNWnhJUUo2S3h0OWxh?=
- =?utf-8?B?VlU3QXlBTE1NdzN3OGkwZGV4RmV4cjBUbUtPd2hSeGNEcGhadGo1VWM1cE9W?=
- =?utf-8?B?SDFaVnBpQXJxbkdPbDlMOGptU0tlMDFyMjI0L3lHMTRKL3RIemVlYktIcTYv?=
- =?utf-8?B?YWJVR21GS3dxMHEwY0pKOGZsaFo2c3M3STFwOXBkcmhQcENXb3pxOVZ0MWJm?=
- =?utf-8?B?Ni9XU29qRFdlNjlPMmlNWVFacHpsVUlJLzgrV1pHL2laSWlxUWx0NVpreStm?=
- =?utf-8?B?dEQyWDFBOTcxWFZhWWE5Nzd0N0wvN0hiZUdOSml1MUIxa2ovMnVsR0xKcXNB?=
- =?utf-8?B?bHFMd3ZWSHdqNXZPU2pHU1l3Yzhuc1AybVFuTDdUbDZtWSsyZ0dXNHovQzA5?=
- =?utf-8?B?b05IU0N1L0JmVkR5T3VMVUJzWW0yU1NXd2JraHJNTSttOGpSdlZqL3BZbThC?=
- =?utf-8?B?MTJGeFMrQVFNUm5ZdkZGOFN4N3FrYnZaSzl4R05nWVdPZmtmbXQzajJLSFFH?=
- =?utf-8?B?NnBNMFZIeXYzNVh4bXpMTzd4Z0RaU0tKNVlJcUs5SVpibm1tZEpFN1VsMkdT?=
- =?utf-8?Q?QMjrE52VN3+tHdZ4d99YfsvNDWaX9Lp6QbTJ31nvFrcZ?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f4b9e533-3926-412e-0905-08dbf1bd59b9
-X-MS-Exchange-CrossTenant-AuthSource: PA4PR04MB7790.eurprd04.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?rvFEvx1ENBv2d2XnrV+ydSRxxaxFiJ788T/MrE8Vk8CDiKMGH6kAG8keF33X?=
+ =?us-ascii?Q?BNTITO374YgG/jN1xK/0zHI1LnI7SZ0UfWfSu7E6vMrNpZEbp/eNSR7vSDuZ?=
+ =?us-ascii?Q?JlV7i3Q/f+oY8GoMTEwPEzC6RMJEyW9BrsOatHmkGlMHszXCdgpYKrL1g7oe?=
+ =?us-ascii?Q?e+HugB/ESVVMzuvhatV+VChGGWHkLiswN3cBjqarQSj+0eNJh36X0zmm2dOq?=
+ =?us-ascii?Q?/UJGPI4TR59vX1IIHempiwX8GVr1uFDEq5Qt6uGQ0M/T0WTbi1oCQZsRprc3?=
+ =?us-ascii?Q?DvE7MI76FlvGeDwvIjGWmL35Oi0td9JzbnVSh1rbSvjptZo8YtIzjYIoxees?=
+ =?us-ascii?Q?sO3ry5v2VBYj46+K6QSgUza32kNjNQ7RmIavE0IVsUWh307aqACDGVPdqPf6?=
+ =?us-ascii?Q?5XPepfaYM5m7cZmHe0gnbrLI+bKFr3GDuXkbhd8/oXc6YMapLmrVJi+6rUvb?=
+ =?us-ascii?Q?f7ApzlxdytrcYNiz7aO1pkFnvnzfGuCgscCT2Bsmsjl6PlIZsRrD23gKINBL?=
+ =?us-ascii?Q?gOzWV7qTqVT+/4Q7+zlbBJDtxJwzh1I/KNVZK0pbIkOFtXKbEPi7xg99oOdq?=
+ =?us-ascii?Q?DL77gDUkKomCGPb1Asa1gLA+w9bf333ZSwBbcMExtOmicQKVVZ8f5XZyNO85?=
+ =?us-ascii?Q?jztxn0VKWYPNqQ5o9K2XonqhPQdbx94+643S281UbH9GkU4/GvaRhbZMmmbb?=
+ =?us-ascii?Q?HQNTb4h7qrdZ4vHqIaGtQwfLQuryGCdOi4ViG4NMgFGmgW/Klz8IKKTVrY4T?=
+ =?us-ascii?Q?H04AtSU/2SPy6FoSufndryQhd9fmLLAikeRybyVBui7MKsaODRcQIV0Deh7m?=
+ =?us-ascii?Q?waUMb4xArco8Fcq8u487NZOl5iypEUv/HinJ0goK9koVrSMUoVLeaebkfghs?=
+ =?us-ascii?Q?6BfNs+nAx8EXnwlrsmb1WJD8EjnsihNQGppu/LtlHtIFH2jpYOg8tY0rFAxF?=
+ =?us-ascii?Q?3PNlndTVyHMZ6n7qQnG9J34YlrARKJNe65IZkOXC/tIXyP1Fgy37OiBrz+tS?=
+ =?us-ascii?Q?OoBftmH/Swxx0oDhNddvEMrUjPusi7xnGH37lUi6qDpS20tZcrDeVOoUUYA6?=
+ =?us-ascii?Q?PeTOj0Br7dd0zO7NCLdoNNDs1OFw5Agc64gfS7HfekAvKfKZzw3p7cAGWYSP?=
+ =?us-ascii?Q?/SU6cbeiFcvZNU73HUXc/8kV8JZs6wkmTo/qnjRuSo0FjgrKM9YmMwv+nJw7?=
+ =?us-ascii?Q?vIbHjIfU5yjXSJYxN7KPdpzq4vxz2CL/wKp+1dIVH8DstfNGzrWr9eA5kDlF?=
+ =?us-ascii?Q?JcyBbuxXUrLNt86APvT54ukUMleAKuUVy28IV+Arhpv21RNo90o0g/X4v+XW?=
+ =?us-ascii?Q?6iMW8Kh+tVJXZ0ms7L/WktX1Q/+450XDOFAjVVY7EOHJpaLjnTcmgevLqFjx?=
+ =?us-ascii?Q?SZqyPQCpkyqY+IvmE+pqZW+fBwpAuZWwB2yGWlO31ntXHHZ13OMYMThEYyDD?=
+ =?us-ascii?Q?yUb+LZ/NWk6GSUlFeMAwPGpKwREC01BqFrFg0J/Z45v4IM8XmVbcu704oPzk?=
+ =?us-ascii?Q?kAr9qE+6z2aXPwYeNUFK3vtvaauXAzj1rwnBv/9T197mnKQkmrpnJTCZCQLE?=
+ =?us-ascii?Q?e8gETSPS1WiovJWja6cPM8eNv4mJd/3mvqgVRkdg5JB8slPpSdTLIbbmiGuY?=
+ =?us-ascii?Q?QA=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 248372c1-1e13-456d-173f-08dbf1bd8b94
+X-MS-Exchange-CrossTenant-AuthSource: CWLP265MB5770.GBRP265.PROD.OUTLOOK.COM
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Nov 2023 15:59:36.0906
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Nov 2023 16:00:59.7579
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-Id: 0d5fd8bb-e8c2-4e0a-8dd5-2c264f7140fe
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: URjkK9cL6BiQlehellF99sUrLZEa6JNZ5cuxCXz7r+Jc+RGO3WrXaOrFk89T/UYg3RTsiZIrngjVBBEgSFFl1A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBAPR04MB7288
+X-MS-Exchange-CrossTenant-UserPrincipalName: JF7Uc0WMzcRkDpOMzvCEFOEMzGwlnYjX2/wKkQ0vgMNIeG50IrOP9ZJnQF5gOhbel/tk44ErFWfmsuVHuowm4UhQrzT/rTwIuNKrKX78YEQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LO3P265MB2410
+X-OriginatorOrg: imgtec.com
+X-EXCLAIMER-MD-CONFIG: 15a78312-3e47-46eb-9010-2e54d84a9631
+X-Proofpoint-ORIG-GUID: rLKPciWTK4LyM_Akzqp-J86nkaU1v3da
+X-Proofpoint-GUID: rLKPciWTK4LyM_Akzqp-J86nkaU1v3da
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This line appears to confuse the compiler and had been noticed previously in
+clang-tidy output. There isn't anything fundamentally wrong that I can see.
+I suspect that it just looks like a mistake - hence the first note.  By making
+the second operand an actual bool result, const correctness can be preserved
+while silencing the warning.
 
+>> drivers/gpu/drm/imagination/pvr_device_info.c:230:47: warning: use of logical '&&' with constant operand [-Wconstant-logical-operand]
+     230 |         } else if (features_size == mapping_max_size && (mapping_max & 63)) {
+         |                                                      ^  ~~~~~~~~~~~~~~~~~~
+   drivers/gpu/drm/imagination/pvr_device_info.c:230:47: note: use '&' for a bitwise operation
+     230 |         } else if (features_size == mapping_max_size && (mapping_max & 63)) {
+         |                                                      ^~
+         |                                                      &
+   drivers/gpu/drm/imagination/pvr_device_info.c:230:47: note: remove constant to silence this warning
+     230 |         } else if (features_size == mapping_max_size && (mapping_max & 63)) {
+         |                                                     ~^~~~~~~~~~~~~~~~~~~~~
+   1 warning generated.
 
-On 30.11.23 г. 17:52 ч., Borislav Petkov wrote:
-> From: "Borislav Petkov (AMD)" <bp@alien8.de>
-> 
-> Issue a short message once, on the first try to load a 32-bit process to
-> save people time when wondering why it won't load and says:
-> 
->    -bash: ./strsep32: cannot execute binary file: Exec format error
-> 
-> No functional changes.
-> 
-> Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-> Cc: Nikolay Borisov <nik.borisov@suse.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202311241752.3iLyyFcA-lkp@intel.com/
+Fixes: 1ff76f7a5b45 ("drm/imagination: Add GPU ID parsing and firmware loading")
+Signed-off-by: Donald Robson <donald.robson@imgtec.com>
+---
+ drivers/gpu/drm/imagination/pvr_device_info.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-LGTM:
+diff --git a/drivers/gpu/drm/imagination/pvr_device_info.c b/drivers/gpu/drm/imagination/pvr_device_info.c
+index 11e6bef52ecd..d3301cde7d11 100644
+--- a/drivers/gpu/drm/imagination/pvr_device_info.c
++++ b/drivers/gpu/drm/imagination/pvr_device_info.c
+@@ -227,7 +227,8 @@ int pvr_device_info_set_features(struct pvr_device *pvr_dev, const u64 *features
+ 	/* Verify no unsupported values in the bitmask. */
+ 	if (features_size > mapping_max_size) {
+ 		drm_warn(from_pvr_device(pvr_dev), "Unsupported features in firmware image");
+-	} else if (features_size == mapping_max_size && (mapping_max & 63)) {
++	} else if (features_size == mapping_max_size &&
++		   ((mapping_max & 63) != 0)) {
+ 		u64 invalid_mask = ~0ull << (mapping_max & 63);
+ 
+ 		if (features[features_size - 1] & invalid_mask)
+-- 
+2.25.1
 
-Reviewed-by: Nikolay Borisov <nik.borisov@suse.com>
-
-Would have liked for this function to replace the non-verbose variant 
-but since it's used in syscall it might be easier to miss.
-
-> ---
->   arch/x86/include/asm/elf.h  | 2 +-
->   arch/x86/include/asm/ia32.h | 9 ++++++++-
->   2 files changed, 9 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/elf.h b/arch/x86/include/asm/elf.h
-> index a0234dfd1031..1e16bd5ac781 100644
-> --- a/arch/x86/include/asm/elf.h
-> +++ b/arch/x86/include/asm/elf.h
-> @@ -150,7 +150,7 @@ do {						\
->   	((x)->e_machine == EM_X86_64)
->   
->   #define compat_elf_check_arch(x)					\
-> -	((elf_check_arch_ia32(x) && ia32_enabled()) ||			\
-> +	((elf_check_arch_ia32(x) && ia32_enabled_verbose()) ||		\
->   	 (IS_ENABLED(CONFIG_X86_X32_ABI) && (x)->e_machine == EM_X86_64))
->   
->   static inline void elf_common_init(struct thread_struct *t,
-> diff --git a/arch/x86/include/asm/ia32.h b/arch/x86/include/asm/ia32.h
-> index 5a2ae24b1204..43e02b52ad19 100644
-> --- a/arch/x86/include/asm/ia32.h
-> +++ b/arch/x86/include/asm/ia32.h
-> @@ -2,7 +2,6 @@
->   #ifndef _ASM_X86_IA32_H
->   #define _ASM_X86_IA32_H
->   
-> -
->   #ifdef CONFIG_IA32_EMULATION
->   
->   #include <linux/compat.h>
-> @@ -84,4 +83,12 @@ static inline bool ia32_enabled(void)
->   
->   #endif
->   
-> +static inline bool ia32_enabled_verbose(void)
-> +{
-> +#ifdef CONFIG_IA32_EMULATION
-> +	pr_notice_once("32-bit emulation disabled. You can reenable with ia32_emulation=on\n");
-> +#endif
-> +	return ia32_enabled();
-> +}
-> +
->   #endif /* _ASM_X86_IA32_H */
