@@ -2,302 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F07C7FEEB8
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 13:16:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 649237FEEB5
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 13:16:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345311AbjK3MQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 07:16:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231897AbjK3MPw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S231974AbjK3MPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 30 Nov 2023 07:15:52 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA72210F1
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 04:15:57 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5BF8C433CB;
-        Thu, 30 Nov 2023 12:15:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701346557;
-        bh=QpkN41YvSor1jwumkkXVhFGSPSCKfdeY2ecGbrzFEKI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ESf7vaUAsJQo7XbJJ8CY2vaTnHvoHNkbU+ygbu3pIqsTakCmjixNfhQdDwhH3M718
-         P+FG9fxJPsUVU3NcK/w6YcR0sDARftVKj8+wU35OIOClovLMLg1lIOfDHEoGWR+a50
-         oZak4RqQlqHKEsRKyQ6byP+eJAo5/NhtajBcjS7OJpOF95XYkmqEzzkGOElrQAVaJ/
-         Hmr+XLn1TqJ1CCfBzuXI9oYXnIykLF5SqtDikWD1gDsglAVcUUwQzULlYKbBg9jPX+
-         fdFuDlRkyQtR81vEQcVsQtWROxYKog+kRHChF2O5LrM3xskVq4hNhXysKZ0+TvRWPm
-         tPFN0WTdrCPGQ==
-From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Song Shuai <suagrfillet@gmail.com>,
-        Guo Ren <guoren@kernel.org>, linux-riscv@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        songshuaishuai@tinylab.org,
-        Evgenii Shatokhin <e.shatokhin@yadro.com>,
-        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@rivosinc.com>
-Subject: [PATCH v12 for-next 4/4] samples: ftrace: Add RISC-V support for SAMPLE_FTRACE_DIRECT[_MULTI]
-Date:   Thu, 30 Nov 2023 13:15:31 +0100
-Message-Id: <20231130121531.1178502-5-bjorn@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231130121531.1178502-1-bjorn@kernel.org>
-References: <20231130121531.1178502-1-bjorn@kernel.org>
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47622 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231951AbjK3MPl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Nov 2023 07:15:41 -0500
+Received: from mail-oa1-x32.google.com (mail-oa1-x32.google.com [IPv6:2001:4860:4864:20::32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 910D3D48
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 04:15:47 -0800 (PST)
+Received: by mail-oa1-x32.google.com with SMTP id 586e51a60fabf-1fa4b632198so388537fac.1
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 04:15:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1701346547; x=1701951347; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=qJCc9G3EC+NAjT0tK5yC9iiI0skMSbzKL4bpKApwWpE=;
+        b=FUnWkKAP4PA7/mj9bve8WLIOgLB3WMdkpkAt23MAKMZlc2q8mElaQMBTOwp3lcmXID
+         5rgfpcZHXiQDZsrhN4BmleUZAK7jgjORbSRPRpHMTzzqtrIX3kwJbc5U2IvpdBs1vFni
+         FVvqtMEhiJGUcGSdAb/Sh3JAyWZQwv/6HyNORrXEyIdAMSFy2PNereIHNh+Bghf/t2eC
+         K08Odxd9ayAAnHakdgWSiOr2zvLTmHj9VOSlxuV7Ayw8RAxJkTq/keu+XMeys98VM0fs
+         rkYwTk4ZdM/ttFTMBvTHIdrCRgLpRtUD5HvW4kF0mdqEnMD/yPMZo+OzE6JbA86F/Nod
+         V9Zg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701346547; x=1701951347;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qJCc9G3EC+NAjT0tK5yC9iiI0skMSbzKL4bpKApwWpE=;
+        b=R0c2kZuw1ntyVgyqsUIiWlm9jHOYdxYyV0IldY5QXBQ6MEkWtSbKbfZ4Rnget3tt6A
+         L/BJhQS5NhpXrsMFbxBRKe2sVjieWSPR4KE9U6kk5VV6sace+w+VsD8zplN/Fnb9x3zA
+         B/EomTuGE9RMKK53QtxjSAXnR0i23si7ACrTvHOsFw5KVjjUr0Bn+ZUOZg9m0syBSlEY
+         /eSRD94s40LZfH1hbDDdjd0MomjaxFxKR7yS6a6eqHwGdPgINu3y/c76gIP830cGRYKU
+         iULzp0uvM1Yy+MQBrkC52max2yIz3/6kKa6jcGo1h5y8V1Tsh9uRKPc+g7LROI18mv3A
+         jHNQ==
+X-Gm-Message-State: AOJu0YzsVoFAb9H1O2eUditzyF9JpRX0hSf7m6RmbSBqNGVpxqdgzrqi
+        aRr7lkxjQmer5b8zl9qrLBxmtKQsatX0EcmjOnE=
+X-Google-Smtp-Source: AGHT+IH4aK3LYbDZTOXkpMfqtUQj0FJCc/XdP+zPGlT1qcjW2LqvVfNRQxQAJceD1zjJyXpuw++Cpw==
+X-Received: by 2002:a05:6870:9e83:b0:1fa:1bf6:b6a3 with SMTP id pu3-20020a0568709e8300b001fa1bf6b6a3mr23299174oab.28.1701346546810;
+        Thu, 30 Nov 2023 04:15:46 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-134-23-187.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.134.23.187])
+        by smtp.gmail.com with ESMTPSA id b26-20020a9d6b9a000000b006b74bea76c0sm127412otq.47.2023.11.30.04.15.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Nov 2023 04:15:45 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1r8fxI-005u3o-RF;
+        Thu, 30 Nov 2023 08:15:44 -0400
+Date:   Thu, 30 Nov 2023 08:15:44 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Baolu Lu <baolu.lu@linux.intel.com>
+Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Kevin Tian <kevin.tian@intel.com>, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] iommu/vt-d: Omit devTLB invalidation requests when
+ TES=0
+Message-ID: <20231130121544.GC1394392@ziepe.ca>
+References: <20231114011036.70142-1-baolu.lu@linux.intel.com>
+ <20231114011036.70142-2-baolu.lu@linux.intel.com>
+ <20231129201020.GK1312390@ziepe.ca>
+ <2f2582df-fb56-4b46-8ce3-364879b34734@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2f2582df-fb56-4b46-8ce3-364879b34734@linux.intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Song Shuai <suagrfillet@gmail.com>
+On Thu, Nov 30, 2023 at 12:06:59PM +0800, Baolu Lu wrote:
+> On 2023/11/30 4:10, Jason Gunthorpe wrote:
+> > On Tue, Nov 14, 2023 at 09:10:34AM +0800, Lu Baolu wrote:
+> > > The latest VT-d spec indicates that when remapping hardware is disabled
+> > > (TES=0 in Global Status Register), upstream ATS Invalidation Completion
+> > > requests are treated as UR (Unsupported Request).
+> > > 
+> > > Consequently, the spec recommends in section 4.3 Handling of Device-TLB
+> > > Invalidations that software refrain from submitting any Device-TLB
+> > > invalidation requests when address remapping hardware is disabled.
+> > > 
+> > > Verify address remapping hardware is enabled prior to submitting Device-
+> > > TLB invalidation requests.
+> > > 
+> > > Fixes: 792fb43ce2c9 ("iommu/vt-d: Enable Intel IOMMU scalable mode by default")
+> > > Signed-off-by: Lu Baolu<baolu.lu@linux.intel.com>
+> > > ---
+> > >   drivers/iommu/intel/dmar.c | 18 ++++++++++++++++++
+> > >   1 file changed, 18 insertions(+)
+> > How did you get to the point where flush_dev_iotlb could even be
+> > called if the iommu has somehow been globally disabled?
+> > 
+> > Shouldn't the attach of the domain compeltely fail if the HW is
+> > disabled?
+> > 
+> > If the domain is not attached to anything why would flushing happen?
+> 
+> The VT-d hardware can be in a state where the hardware is on but DMA
+> translation is deactivated. In this state, the device probe process
+> during boot proceeds as follows:
+> 
+> 1) Initialize the IOMMU contexts: This sets up the data structures that
+>    the IOMMU uses to manage address translation for DMA operations.
+> 
+> 2) Register the IOMMU devices: This registers the IOMMU devices to the
+>    core. The core then probes devices on buses like PCI.
+> 
+> 3) Enable DMA translation: This step activates DMA translation.
+> 
+> With regard to step 2), the call to iommu_flush_iotlb_all() in
+> iommu_create_device_direct_mappings() can potentially cause device TBL
+> invalidation when the VT-d DMA translation is deactivated.
 
-Add RISC-V variants of the ftrace-direct* samples.
+You are trying to create an atomic change at boot from non-translating
+to DMA translating for HW that doesn't support the identity mode?
 
-Tested-by: Evgenii Shatokhin <e.shatokhin@yadro.com>
-Signed-off-by: Song Shuai <suagrfillet@gmail.com>
-Tested-by: Guo Ren <guoren@kernel.org>
-Signed-off-by: Guo Ren <guoren@kernel.org>
-Acked-by: Björn Töpel <bjorn@rivosinc.com>
----
- arch/riscv/Kconfig                          |  2 +
- samples/ftrace/ftrace-direct-modify.c       | 35 ++++++++++++++++++
- samples/ftrace/ftrace-direct-multi-modify.c | 41 +++++++++++++++++++++
- samples/ftrace/ftrace-direct-multi.c        | 25 +++++++++++++
- samples/ftrace/ftrace-direct-too.c          | 28 ++++++++++++++
- samples/ftrace/ftrace-direct.c              | 24 ++++++++++++
- 6 files changed, 155 insertions(+)
+This should probably get a comment in this patch..
 
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 4684cdc754a0..0ee79a92918d 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -142,6 +142,8 @@ config RISCV
- 	select HAVE_REGS_AND_STACK_ACCESS_API
- 	select HAVE_RETHOOK if !XIP_KERNEL
- 	select HAVE_RSEQ
-+	select HAVE_SAMPLE_FTRACE_DIRECT
-+	select HAVE_SAMPLE_FTRACE_DIRECT_MULTI
- 	select HAVE_STACKPROTECTOR
- 	select HAVE_SYSCALL_TRACEPOINTS
- 	select HOTPLUG_CORE_SYNC_DEAD if HOTPLUG_CPU
-diff --git a/samples/ftrace/ftrace-direct-modify.c b/samples/ftrace/ftrace-direct-modify.c
-index e2a6a69352df..81220390851a 100644
---- a/samples/ftrace/ftrace-direct-modify.c
-+++ b/samples/ftrace/ftrace-direct-modify.c
-@@ -24,6 +24,41 @@ extern void my_tramp2(void *);
- 
- static unsigned long my_ip = (unsigned long)schedule;
- 
-+#ifdef CONFIG_RISCV
-+#include <asm/asm.h>
-+
-+asm (
-+"	.pushsection    .text, \"ax\", @progbits\n"
-+"	.type		my_tramp1, @function\n"
-+"	.globl		my_tramp1\n"
-+"   my_tramp1:\n"
-+"	addi	sp,sp,-2*"SZREG"\n"
-+"	"REG_S"	t0,0*"SZREG"(sp)\n"
-+"	"REG_S"	ra,1*"SZREG"(sp)\n"
-+"	call	my_direct_func1\n"
-+"	"REG_L"	t0,0*"SZREG"(sp)\n"
-+"	"REG_L"	ra,1*"SZREG"(sp)\n"
-+"	addi	sp,sp,2*"SZREG"\n"
-+"	jr	t0\n"
-+"	.size		my_tramp1, .-my_tramp1\n"
-+"	.type		my_tramp2, @function\n"
-+"	.globl		my_tramp2\n"
-+
-+"   my_tramp2:\n"
-+"	addi	sp,sp,-2*"SZREG"\n"
-+"	"REG_S"	t0,0*"SZREG"(sp)\n"
-+"	"REG_S"	ra,1*"SZREG"(sp)\n"
-+"	call	my_direct_func2\n"
-+"	"REG_L"	t0,0*"SZREG"(sp)\n"
-+"	"REG_L"	ra,1*"SZREG"(sp)\n"
-+"	addi	sp,sp,2*"SZREG"\n"
-+"	jr	t0\n"
-+"	.size		my_tramp2, .-my_tramp2\n"
-+"	.popsection\n"
-+);
-+
-+#endif /* CONFIG_RISCV */
-+
- #ifdef CONFIG_X86_64
- 
- #include <asm/ibt.h>
-diff --git a/samples/ftrace/ftrace-direct-multi-modify.c b/samples/ftrace/ftrace-direct-multi-modify.c
-index 2e349834d63c..f943e40d57fd 100644
---- a/samples/ftrace/ftrace-direct-multi-modify.c
-+++ b/samples/ftrace/ftrace-direct-multi-modify.c
-@@ -22,6 +22,47 @@ void my_direct_func2(unsigned long ip)
- extern void my_tramp1(void *);
- extern void my_tramp2(void *);
- 
-+#ifdef CONFIG_RISCV
-+#include <asm/asm.h>
-+
-+asm (
-+"	.pushsection    .text, \"ax\", @progbits\n"
-+"	.type		my_tramp1, @function\n"
-+"	.globl		my_tramp1\n"
-+"   my_tramp1:\n"
-+"       addi	sp,sp,-3*"SZREG"\n"
-+"       "REG_S"	a0,0*"SZREG"(sp)\n"
-+"       "REG_S"	t0,1*"SZREG"(sp)\n"
-+"       "REG_S"	ra,2*"SZREG"(sp)\n"
-+"       mv	a0,t0\n"
-+"       call	my_direct_func1\n"
-+"       "REG_L"	a0,0*"SZREG"(sp)\n"
-+"       "REG_L"	t0,1*"SZREG"(sp)\n"
-+"       "REG_L"	ra,2*"SZREG"(sp)\n"
-+"       addi	sp,sp,3*"SZREG"\n"
-+"	jr	t0\n"
-+"	.size		my_tramp1, .-my_tramp1\n"
-+
-+"	.type		my_tramp2, @function\n"
-+"	.globl		my_tramp2\n"
-+"   my_tramp2:\n"
-+"       addi	sp,sp,-3*"SZREG"\n"
-+"       "REG_S"	a0,0*"SZREG"(sp)\n"
-+"       "REG_S"	t0,1*"SZREG"(sp)\n"
-+"       "REG_S"	ra,2*"SZREG"(sp)\n"
-+"       mv	a0,t0\n"
-+"       call	my_direct_func2\n"
-+"       "REG_L"	a0,0*"SZREG"(sp)\n"
-+"       "REG_L"	t0,1*"SZREG"(sp)\n"
-+"       "REG_L"	ra,2*"SZREG"(sp)\n"
-+"       addi	sp,sp,3*"SZREG"\n"
-+"	jr	t0\n"
-+"	.size		my_tramp2, .-my_tramp2\n"
-+"	.popsection\n"
-+);
-+
-+#endif /* CONFIG_RISCV */
-+
- #ifdef CONFIG_X86_64
- 
- #include <asm/ibt.h>
-diff --git a/samples/ftrace/ftrace-direct-multi.c b/samples/ftrace/ftrace-direct-multi.c
-index 9243dbfe4d0c..aed6df2927ce 100644
---- a/samples/ftrace/ftrace-direct-multi.c
-+++ b/samples/ftrace/ftrace-direct-multi.c
-@@ -17,6 +17,31 @@ void my_direct_func(unsigned long ip)
- 
- extern void my_tramp(void *);
- 
-+#ifdef CONFIG_RISCV
-+#include <asm/asm.h>
-+
-+asm (
-+"       .pushsection    .text, \"ax\", @progbits\n"
-+"       .type           my_tramp, @function\n"
-+"       .globl          my_tramp\n"
-+"   my_tramp:\n"
-+"       addi	sp,sp,-3*"SZREG"\n"
-+"       "REG_S"	a0,0*"SZREG"(sp)\n"
-+"       "REG_S"	t0,1*"SZREG"(sp)\n"
-+"       "REG_S"	ra,2*"SZREG"(sp)\n"
-+"       mv	a0,t0\n"
-+"       call	my_direct_func\n"
-+"       "REG_L"	a0,0*"SZREG"(sp)\n"
-+"       "REG_L"	t0,1*"SZREG"(sp)\n"
-+"       "REG_L"	ra,2*"SZREG"(sp)\n"
-+"       addi	sp,sp,3*"SZREG"\n"
-+"       jr	t0\n"
-+"       .size           my_tramp, .-my_tramp\n"
-+"       .popsection\n"
-+);
-+
-+#endif /* CONFIG_RISCV */
-+
- #ifdef CONFIG_X86_64
- 
- #include <asm/ibt.h>
-diff --git a/samples/ftrace/ftrace-direct-too.c b/samples/ftrace/ftrace-direct-too.c
-index e39c3563ae4e..6ff546a5d7eb 100644
---- a/samples/ftrace/ftrace-direct-too.c
-+++ b/samples/ftrace/ftrace-direct-too.c
-@@ -19,6 +19,34 @@ void my_direct_func(struct vm_area_struct *vma, unsigned long address,
- 
- extern void my_tramp(void *);
- 
-+#ifdef CONFIG_RISCV
-+#include <asm/asm.h>
-+
-+asm (
-+"       .pushsection    .text, \"ax\", @progbits\n"
-+"       .type           my_tramp, @function\n"
-+"       .globl          my_tramp\n"
-+"   my_tramp:\n"
-+"       addi	sp,sp,-5*"SZREG"\n"
-+"       "REG_S"	a0,0*"SZREG"(sp)\n"
-+"       "REG_S"	a1,1*"SZREG"(sp)\n"
-+"       "REG_S"	a2,2*"SZREG"(sp)\n"
-+"       "REG_S"	t0,3*"SZREG"(sp)\n"
-+"       "REG_S"	ra,4*"SZREG"(sp)\n"
-+"       call	my_direct_func\n"
-+"       "REG_L"	a0,0*"SZREG"(sp)\n"
-+"       "REG_L"	a1,1*"SZREG"(sp)\n"
-+"       "REG_L"	a2,2*"SZREG"(sp)\n"
-+"       "REG_L"	t0,3*"SZREG"(sp)\n"
-+"       "REG_L"	ra,4*"SZREG"(sp)\n"
-+"       addi	sp,sp,5*"SZREG"\n"
-+"       jr	t0\n"
-+"       .size           my_tramp, .-my_tramp\n"
-+"       .popsection\n"
-+);
-+
-+#endif /* CONFIG_RISCV */
-+
- #ifdef CONFIG_X86_64
- 
- #include <asm/ibt.h>
-diff --git a/samples/ftrace/ftrace-direct.c b/samples/ftrace/ftrace-direct.c
-index 32c477da1e9a..ef0945670e1e 100644
---- a/samples/ftrace/ftrace-direct.c
-+++ b/samples/ftrace/ftrace-direct.c
-@@ -16,6 +16,30 @@ void my_direct_func(struct task_struct *p)
- 
- extern void my_tramp(void *);
- 
-+#ifdef CONFIG_RISCV
-+#include <asm/asm.h>
-+
-+asm (
-+"       .pushsection    .text, \"ax\", @progbits\n"
-+"       .type           my_tramp, @function\n"
-+"       .globl          my_tramp\n"
-+"   my_tramp:\n"
-+"       addi	sp,sp,-3*"SZREG"\n"
-+"       "REG_S"	a0,0*"SZREG"(sp)\n"
-+"       "REG_S"	t0,1*"SZREG"(sp)\n"
-+"       "REG_S"	ra,2*"SZREG"(sp)\n"
-+"       call	my_direct_func\n"
-+"       "REG_L"	a0,0*"SZREG"(sp)\n"
-+"       "REG_L"	t0,1*"SZREG"(sp)\n"
-+"       "REG_L"	ra,2*"SZREG"(sp)\n"
-+"       addi	sp,sp,3*"SZREG"\n"
-+"       jr	t0\n"
-+"       .size           my_tramp, .-my_tramp\n"
-+"       .popsection\n"
-+);
-+
-+#endif /* CONFIG_RISCV */
-+
- #ifdef CONFIG_X86_64
- 
- #include <asm/ibt.h>
--- 
-2.40.1
-
+Jason
