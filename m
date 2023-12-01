@@ -2,104 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6AAC801114
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:21:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0FEC801180
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:22:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378717AbjLARQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 12:16:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40480 "EHLO
+        id S229568AbjLARW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 12:22:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjLARQY (ORCPT
+        with ESMTP id S229457AbjLARWZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 12:16:24 -0500
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04860F3
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 09:16:30 -0800 (PST)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-63-yqVC9vEsO-yucNhPuXm0ag-1; Fri, 01 Dec 2023 17:16:27 +0000
-X-MC-Unique: yqVC9vEsO-yucNhPuXm0ag-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 1 Dec
- 2023 17:16:20 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Fri, 1 Dec 2023 17:16:20 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Arnaldo Carvalho de Melo' <acme@kernel.org>
-CC:     Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 1/1] perf beauty: Don't use 'find ... -printf' as it isn't
- available in busybox
-Thread-Topic: [PATCH 1/1] perf beauty: Don't use 'find ... -printf' as it
- isn't available in busybox
-Thread-Index: AQHaI9e+SqSraxumCUi58U+dHeCYHbCUUq5AgABV0YCAAAJZgA==
-Date:   Fri, 1 Dec 2023 17:16:20 +0000
-Message-ID: <970de0610f8e4c9481817f6aea76c5a3@AcuMS.aculab.com>
-References: <ZWkEeqdmCHMLhLr2@kernel.org>
- <ecad5dffa8474ed8a5367e917610e707@AcuMS.aculab.com>
- <ZWoRhbyvClv0TffR@kernel.org>
-In-Reply-To: <ZWoRhbyvClv0TffR@kernel.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
-MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 1 Dec 2023 12:22:25 -0500
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98B78F3
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 09:22:30 -0800 (PST)
+Received: by mail-pf1-x449.google.com with SMTP id d2e1a72fcca58-6cdeedb755bso2205732b3a.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 09:22:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701451350; x=1702056150; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=X0hnluTx/qG2EHn+RpFAd/ETRXutwQTiMjlCf0oCXNo=;
+        b=bLntICSr/8mgtBACoIeqsxhYqS8qGgkXtAQ+7h5NXVY4uro/NE/7u7Y5wN33V+T4Nr
+         M/JcJiufTxzwQF9H2N9MAFBOEoadgqOVTaZGMnieC1nSZ5g+g0isFR9Aa1J1N1AxULe4
+         gLqLFleBa6cnFI37Om/PemaiSu0JbkoepWWqc0esSlYO2pcmRuQPXTI4Zdbls/zGIxZ/
+         FX8oz68Ub+vX9lPq77aW7P/nFSTwF9MBxsUqPtcFBQe2yQQTFm30sC1DSJbeVdwmduuK
+         LUyfzMy4Hk1zE4RCw5xqpGta6t2aHAms4xPeTzSr6zVRPO4ELk9SoXwtlHDlAJzUl1Qu
+         F59Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701451350; x=1702056150;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=X0hnluTx/qG2EHn+RpFAd/ETRXutwQTiMjlCf0oCXNo=;
+        b=o7fsbL6AsU02NaIvqAMFFu4kwNpVPp7GULndjNmH10GYzN8mstbgwgQCyhPJeU4GO9
+         jXO+5AlTXIi1Z//5bSzI0IkPFBAbljEP91q0IFyJSD/v5k3fvz4ppHFZ6rzWInOtCs1+
+         dLKMJzef2XvAtAjDsRrm1j4YwYTczoCJRahU3VoPl0A+o8wInozSz9mfxx3exKzS8wWl
+         yk0/6rgEN9rsi0LVqj/YfnVdwTR0bxu6w/vGsqiRrwcU0in0KLlSm5K2Cp3nZVs5bh+j
+         uoI2lqmh7/jDuBqCA00EPk4Ump3bo7lkm7WI4HVvAthblX+VwSL1pkmZBaE0dHoeftp/
+         puAg==
+X-Gm-Message-State: AOJu0YzQpFopHTj73s+kn4irnIy1CZdpjivPIZk9rDBMR9bqIxouiP31
+        LI2VXiUto5JdJeVAG99DuY22sPVY/5rYbA==
+X-Google-Smtp-Source: AGHT+IGsyfkzjsCEu2oPo/ywio5RVNKKeLaXUnTVrP23PL9tAZt7FTITs8r7csgqmbVs60gl7Bct4NKLkeXYLQ==
+X-Received: from xllamas.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5070])
+ (user=cmllamas job=sendgmr) by 2002:a05:6a00:399c:b0:6c0:ec5b:bb2d with SMTP
+ id fi28-20020a056a00399c00b006c0ec5bbb2dmr5865061pfb.2.1701451349982; Fri, 01
+ Dec 2023 09:22:29 -0800 (PST)
+Date:   Fri,  1 Dec 2023 17:21:29 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
+Message-ID: <20231201172212.1813387-1-cmllamas@google.com>
+Subject: [PATCH v2 00/28] binder: convert alloc->mutex to spinlock
+From:   Carlos Llamas <cmllamas@google.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com,
+        Carlos Llamas <cmllamas@google.com>,
+        Todd Kjos <tkjos@google.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        John Stultz <jstultz@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Tim Murray <timmurray@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogQXJuYWxkbyBDYXJ2YWxobyBkZSBNZWxvDQo+IFNlbnQ6IDAxIERlY2VtYmVyIDIwMjMg
-MTc6MDINCj4gDQo+IEVtIEZyaSwgRGVjIDAxLCAyMDIzIGF0IDEyOjA1OjMxUE0gKzAwMDAsIERh
-dmlkIExhaWdodCBlc2NyZXZldToNCj4gPiAuLi4NCj4gPiA+ICAjIENyZWF0ZSBsaXN0IG9mIGFy
-Y2hpdGVjdHVyZXMgdGhhdCBoYXZlIGEgc3BlY2lmaWMgZXJybm8uaC4NCj4gPiA+ICBhcmNobGlz
-dD0iIg0KPiA+ID4gLWZvciBhcmNoIGluICQoZmluZCAkdG9vbHNkaXIvYXJjaCAtbWF4ZGVwdGgg
-MSAtbWluZGVwdGggMSAtdHlwZSBkIC1wcmludGYgIiVmXG4iIHwgc29ydCAtcik7IGRvDQo+ID4g
-PiArZm9yIGFyY2ggaW4gJChmaW5kICR0b29sc2Rpci9hcmNoIC1tYXhkZXB0aCAxIC1taW5kZXB0
-aCAxIC10eXBlIGQgfCB3aGlsZSByZWFkIGFyY2ggOyBkbyBiYXNlbmFtZQ0KPiA+ID4gJGFyY2gg
-OyBkb25lIHwgc29ydCAtcik7IGRvDQo+ID4gPiAgCXRlc3QgLWYgJHRvb2xzZGlyL2FyY2gvJGFy
-Y2gvaW5jbHVkZS91YXBpL2FzbS9lcnJuby5oICYmIGFyY2hsaXN0PSIkYXJjaGxpc3QgJGFyY2gi
-DQo+ID4gPiAgZG9uZQ0KPiA+DQo+ID4gSmVlcGVycyAuLi4NCj4gPiBEb2VzIHRoaXMgd29yaz8N
-Cj4gPiAJZm9yIGYgaW4gJHRvb2xzZGlyL2FyY2gvKi9pbmNsdWRlL3VhcGkvYXNtL2Vycm5vLmg7
-IGRvDQo+ID4gCQlbICEgLWYgJGYgXSAmJiBicmVhaw0KPiA+IAkJZD0ke2YlL2luY2x1ZGUvdWFw
-aS9hc20vZXJybm8uaH0NCj4gPiAJCWFyY2hsaXN0PSIke2QjIyovfSAkYXJjaGxpc3QiDQo+ID4g
-CWRvbmUNCj4gPiBObyBmb3JrKClzIG9yIGV4ZWMoKXMuDQo+ID4gSSB0aGluayBpdCBvbmx5IGRp
-ZmZlcnMgaW4gaGF2aW5nIGEgdHJhaWxpbmcgc3BhY2UgaW5zdGVhZCBvZiBhIGxlYWRpbmcgb25l
-Lg0KPiANCj4g4qyiW2FjbWVAdG9vbGJveCBwZXJmLXRvb2xzLW5leHRdJCBmb3IgZiBpbiB0b29s
-cy9hcmNoLyovaW5jbHVkZS91YXBpL2FzbS9lcnJuby5oOyBkbw0KPiBkPSR7ZiUvaW5jbHVkZS91
-YXBpL2FzbS9lcnJuby5ofSA7IGFyY2g9IiR7ZCMjKi99IiA7IGVjaG8gIickYXJjaCciIDsgZG9u
-ZQ0KPiAnYWxwaGEnDQo+ICdtaXBzJw0KPiAncGFyaXNjJw0KPiAncG93ZXJwYycNCj4gJ3NwYXJj
-Jw0KPiAneDg2Jw0KPiDirKJbYWNtZUB0b29sYm94IHBlcmYtdG9vbHMtbmV4dF0kIGZvciBhcmNo
-IGluICQoZmluZCB0b29scy9hcmNoIC1tYXhkZXB0aCAxIC1taW5kZXB0aCAxIC10eXBlIGQgfA0K
-PiB3aGlsZSByZWFkIGFyY2ggOyBkbyBiYXNlbmFtZSAkYXJjaCA7IGRvbmUgfCBzb3J0IC1yKSA7
-IGRvIHRlc3QgLWYNCj4gdG9vbHMvYXJjaC8kYXJjaC9pbmNsdWRlL3VhcGkvYXNtL2Vycm5vLmgg
-JiYgZWNobyAiJyRhcmNoJyIgOyBkb25lDQo+ICd4ODYnDQo+ICdzcGFyYycNCj4gJ3Bvd2VycGMn
-DQo+ICdwYXJpc2MnDQo+ICdtaXBzJw0KPiAnYWxwaGEnDQo+IOKsolthY21lQHRvb2xib3ggcGVy
-Zi10b29scy1uZXh0XSQNCj4gDQo+IFRoZXJlIHdhcyBhIHJlYXNvbiBmb3IgaGF2aW5nIHg4NiBm
-aXJzdCwgbGVtbWUgZGlnIGl0Li4uIEp1c3QgdG8gaGF2ZQ0KPiBhcyB0aGUgZmlyc3Qgc3RyY21w
-IGluOg0KDQpJIHJldmVyc2VkIHRoZSBvcmRlciBieSBhZGRpbmcgdGhlIG5hbWVzIGF0IHRoZSBm
-cm9udCBvZiAkYXJjaGxpc3QgLSBzbyB0aGUgb3JkZXINCndvdWxkIHN0aWxsIGJlIHJldmVyc2Ug
-c29ydGVkICh0aGUgc2hlbGwgc29ydHMgZmlsZW5hbWUgZ2xvYnMpLg0KDQpUaGUgJ1sgLWYgJGYg
-XSB8fCBicmVhaycgbGluZSBpcyBvbmx5IHRoZXJlIGluIGNhc2UgdGhlcmUgYXJlIG5vIG1hdGNo
-aW5nIGZpbGVzLg0KSWYgdGhhdCBjYW4gaGFwcGVuIHB1dHRpbmcgWyAiJGFyY2hsaXN0IiA9ICIq
-ICIgXSAmJiBhcmNobGlzdD0NCmFmdGVyIHRoZSBsb29wIHdvdWxkIGJlIHNsaWdodGx5IGJldHRl
-ci4NCkJ1dCB3aXRoIG9ubHkgNiBpdGVtIHRoZSBleHRyYSBzdGF0KCkgd2lsbCBiZSBub2lzZS4N
-Cg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2Fk
-LCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5v
-OiAxMzk3Mzg2IChXYWxlcykNCg==
+This series refactors the binder buffer allocation space to be able to
+convert the alloc->mutex into a spinlock. Doing so decreases the latency
+of binder transactions seen under worst-case scenarios.
+
+I attempted to organize and improve readability of things that were
+touched during this process. I also include a couple of fixes (unrelated
+to the lock conversion) for issues I found along the way.
+
+Regards,
+Carlos Llamas
+
+Cc: Todd Kjos <tkjos@google.com>
+Cc: Alice Ryhl <aliceryhl@google.com>
+Cc: John Stultz <jstultz@google.com>
+Cc: Suren Baghdasaryan <surenb@google.com> 
+Cc: Tim Murray <timmurray@google.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+v2:
+ - New fix for wasted alloc->free_sync_space calculation
+ - Fix issues pointed out by Alice: incorrect size overflow check, data
+   race in buffer->async_transaction, reorder of __free_page(page) and
+   new_buffer leak in some error paths.
+ - Better naming and comments to accommodate the new scope of things
+   e.g. binder_lru_freelist_add() and binder_install_single_page().
+ - Dropped patch ("binder: do not add pages to LRU in release path")
+   since it is not worth the added complexity.
+ - Avoid _new_ logs of unhashed userspace addresses.
+ - More minor cosmeting changes.
+ - Add Reviewed-by tags.
+
+v1:
+   https://lore.kernel.org/all/20231102185934.773885-1-cmllamas@google.com/
+
+Carlos Llamas (28):
+  binder: use EPOLLERR from eventpoll.h
+  binder: fix use-after-free in shinker's callback
+  binder: fix race between mmput() and do_exit()
+  binder: fix async space check for 0-sized buffers
+  binder: fix unused alloc->free_async_space
+  binder: fix trivial typo of binder_free_buf_locked()
+  binder: fix comment on binder_alloc_new_buf() return value
+  binder: remove extern from function prototypes
+  binder: keep vma addresses type as unsigned long
+  binder: split up binder_update_page_range()
+  binder: do unlocked work in binder_alloc_new_buf()
+  binder: remove pid param in binder_alloc_new_buf()
+  binder: separate the no-space debugging logic
+  binder: relocate low space calculation
+  binder: relocate binder_alloc_clear_buf()
+  binder: refactor page range allocation
+  binder: malloc new_buffer outside of locks
+  binder: initialize lru pages in mmap callback
+  binder: perform page installation outside of locks
+  binder: remove redundant debug log
+  binder: make oversized buffer code more readable
+  binder: rename lru shrinker utilities
+  binder: document the final page calculation
+  binder: collapse print_binder_buffer() into caller
+  binder: refactor binder_delete_free_buffer()
+  binder: avoid user addresses in debug logs
+  binder: reverse locking order in shrinker callback
+  binder: switch alloc->mutex to spinlock_t
+
+ drivers/android/binder.c                |  27 +-
+ drivers/android/binder_alloc.c          | 858 ++++++++++++------------
+ drivers/android/binder_alloc.h          |  61 +-
+ drivers/android/binder_alloc_selftest.c |  14 +-
+ drivers/android/binder_trace.h          |   2 +-
+ 5 files changed, 489 insertions(+), 473 deletions(-)
+
+
+base-commit: 994d5c58e50e91bb02c7be4a91d5186292a895c8
+-- 
+2.43.0.rc2.451.g8631bc7472-goog
 
