@@ -2,77 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F97C80016A
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 03:09:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68D70800169
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 03:09:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376651AbjLACJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 21:09:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54030 "EHLO
+        id S231721AbjLACJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 21:09:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232129AbjLACJm (ORCPT
+        with ESMTP id S229808AbjLACJl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 21:09:42 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59C6212A
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 18:09:48 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-6cdcef8b400so1631189b3a.1
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 18:09:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1701396588; x=1702001388; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZARUzLOCPbgkdrEMse1VgYWmJt+Qe6ydA0SeWnrZFk4=;
-        b=K9gFhz8QY0cvt1mt2tGSzYFp053wIkTePGGFlpUGikKYuPxdpO+ajWDIpFtBK/MDGv
-         HQqoUtdtONom96jUqC3Sg3LyDKRrPC+E7VwOklnpr5p3GVZuZs+thXf1RU1Av1+vozwz
-         EMahE4kwwUxf2YFHIVuLS//Vpax0NeDx6+8oAOSAtUfOhzWLbw8/1nEondWYBYw1BZk4
-         WONFRBRZWhOgrT6cRLNFSwfumWyZt77ZRaSYGcxN+5Woj3qZgkTdXeZQQXnccmyS31ZR
-         pxXhq1ZA32iRe3Bvrf/oJSWZvGhCPGTnUWQ5zEVxpoZPInw1DE9aogLTA+F7FufndDec
-         mJzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701396588; x=1702001388;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZARUzLOCPbgkdrEMse1VgYWmJt+Qe6ydA0SeWnrZFk4=;
-        b=qZ2PiB2HUydjIs7cGDpYlwcyKylLrNkCJJ8yXC2rureJ0+y/MpG+pnoVIWU4CNWrcH
-         Yg3/fuV2uD/OR5mouiGoOhKEMDk0MgY3R7RGD7aT2rFyZsITp0nNda3/ZEK7k1LL38cc
-         C29R3R6C04nJLUd7w2BmG5zCLtLt+pjJPFGvg2J83EnP2zMViv9SQeiSn1Jr9AwzRMU7
-         jetRLnPWnyu3QoJXKt0nefl/sZZsjlnFhP/vUBivzRj64OMR0yExqfRjs5HclIG8q/j2
-         tb+ID+S9I0ivJg0lr760YO+tpctgUdwpvNYQTAQ9hWosuB/ms2RN1j4pED/0TrJ5tkGR
-         d7rg==
-X-Gm-Message-State: AOJu0Yww2AWrYGddAygrUyORtRli5uRNxb1TaFo95eNAENIhd5FPvUqc
-        j0ZuQ3R3ZJ9adzTj+neQiMmZhQ==
-X-Google-Smtp-Source: AGHT+IFrFltqEh9QH9Yno5D9numI3ZTsffVOt7/NhqriRU6xzwbOediCIeDoxAviM9Lpx+G4Hg5LGg==
-X-Received: by 2002:a05:6a20:8409:b0:18b:8dfa:88e8 with SMTP id c9-20020a056a20840900b0018b8dfa88e8mr25889206pzd.43.1701396587726;
-        Thu, 30 Nov 2023 18:09:47 -0800 (PST)
-Received: from ?IPv6:2402:7500:4ce:83aa:9da8:481:b9cc:c515? ([2402:7500:4ce:83aa:9da8:481:b9cc:c515])
-        by smtp.gmail.com with ESMTPSA id e12-20020a17090301cc00b001cc436e9806sm2092007plh.81.2023.11.30.18.09.44
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 30 Nov 2023 18:09:47 -0800 (PST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.7\))
-Subject: Re: [PATCH v2 05/13] crypto: simd - Update `walksize` in simd
- skcipher
-From:   Jerry Shih <jerry.shih@sifive.com>
-In-Reply-To: <20231128172204.GB1148@sol.localdomain>
-Date:   Fri, 1 Dec 2023 10:09:43 +0800
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>, palmer@dabbelt.com,
-        Albert Ou <aou@eecs.berkeley.edu>, herbert@gondor.apana.org.au,
-        davem@davemloft.net, conor.dooley@microchip.com, ardb@kernel.org,
-        heiko@sntech.de, phoebe.chen@sifive.com, hongrong.hsu@sifive.com,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <9F698DA6-51EB-4819-AE5C-1E6B145B4EF2@sifive.com>
-References: <20231127070703.1697-1-jerry.shih@sifive.com>
- <20231127070703.1697-6-jerry.shih@sifive.com>
- <20231128035814.GH1463@sol.localdomain>
- <56F07E23-CA7D-466B-84C7-643F2839E199@sifive.com>
- <20231128172204.GB1148@sol.localdomain>
-To:     Eric Biggers <ebiggers@kernel.org>
-X-Mailer: Apple Mail (2.3445.9.7)
+        Thu, 30 Nov 2023 21:09:41 -0500
+Received: from thorn.bewilderbeest.net (thorn.bewilderbeest.net [IPv6:2605:2700:0:5::4713:9cab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75A28198;
+        Thu, 30 Nov 2023 18:09:46 -0800 (PST)
+Received: from hatter.bewilderbeest.net (unknown [IPv6:2602:61:7e5d:5300::2])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: zev)
+        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id 9D58A5DE;
+        Thu, 30 Nov 2023 18:09:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
+        s=thorn; t=1701396585;
+        bh=IQnr2LuCi9+j4pwVCnA+5NoWhOAKMYkfYmQhdpRD4cI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YmdEvKTkmiFa0xdGC9TtGo9u4paR+p2dW2ZBB2TTZVw/aS2xHZzvge+xUWTmUw0hL
+         WAsSK52ZWG06cgpACcBy9i3hHHRKeZvj0IVMtv6lquM/LpnHNlrD10v52RU8eSoXCs
+         iYZcp9tiMGpcrltk+xiqYADSoFHGUQFB8NV2zi/Y=
+Date:   Thu, 30 Nov 2023 18:09:44 -0800
+From:   Zev Weiss <zev@bewilderbeest.net>
+To:     Renze Nicolai <renze@rnplus.nl>
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-aspeed@lists.ozlabs.org,
+        arnd@arndb.de, olof@lixom.net, soc@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, joel@jms.id.au, andrew@aj.id.au
+Subject: Re: [PATCH v2 2/2] ARM: dts: aspeed: asrock: Add ASRock X570D4U BMC
+Message-ID: <5507daa3-0223-4a65-af2c-99da2c7bb4c9@hatter.bewilderbeest.net>
+References: <20231128232456.2932350-1-renze@rnplus.nl>
+ <20231128232456.2932350-3-renze@rnplus.nl>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20231128232456.2932350-3-renze@rnplus.nl>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -83,155 +54,422 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Nov 29, 2023, at 01:22, Eric Biggers <ebiggers@kernel.org> wrote:
-> On Tue, Nov 28, 2023 at 01:38:29PM +0800, Jerry Shih wrote:
->> On Nov 28, 2023, at 11:58, Eric Biggers <ebiggers@kernel.org> wrote:
->>> On Mon, Nov 27, 2023 at 03:06:55PM +0800, Jerry Shih wrote:
->>>> The `walksize` assignment is missed in simd skcipher.
->>>>=20
->>>> Signed-off-by: Jerry Shih <jerry.shih@sifive.com>
->>>> ---
->>>> crypto/cryptd.c | 1 +
->>>> crypto/simd.c   | 1 +
->>>> 2 files changed, 2 insertions(+)
->>>>=20
->>>> diff --git a/crypto/cryptd.c b/crypto/cryptd.c
->>>> index bbcc368b6a55..253d13504ccb 100644
->>>> --- a/crypto/cryptd.c
->>>> +++ b/crypto/cryptd.c
->>>> @@ -405,6 +405,7 @@ static int cryptd_create_skcipher(struct =
-crypto_template *tmpl,
->>>> 		(alg->base.cra_flags & CRYPTO_ALG_INTERNAL);
->>>> 	inst->alg.ivsize =3D crypto_skcipher_alg_ivsize(alg);
->>>> 	inst->alg.chunksize =3D crypto_skcipher_alg_chunksize(alg);
->>>> +	inst->alg.walksize =3D crypto_skcipher_alg_walksize(alg);
->>>> 	inst->alg.min_keysize =3D crypto_skcipher_alg_min_keysize(alg);
->>>> 	inst->alg.max_keysize =3D crypto_skcipher_alg_max_keysize(alg);
->>>>=20
->>>> diff --git a/crypto/simd.c b/crypto/simd.c
->>>> index edaa479a1ec5..ea0caabf90f1 100644
->>>> --- a/crypto/simd.c
->>>> +++ b/crypto/simd.c
->>>> @@ -181,6 +181,7 @@ struct simd_skcipher_alg =
-*simd_skcipher_create_compat(const char *algname,
->>>>=20
->>>> 	alg->ivsize =3D ialg->ivsize;
->>>> 	alg->chunksize =3D ialg->chunksize;
->>>> +	alg->walksize =3D ialg->walksize;
->>>> 	alg->min_keysize =3D ialg->min_keysize;
->>>> 	alg->max_keysize =3D ialg->max_keysize;
->>>=20
->>> What are the consequences of this bug?  I wonder if it actually =
-matters?  The
->>> "inner" algorithm is the one that actually gets used for the "walk", =
-right?
->>>=20
->>> - Eric
->>=20
->> Without this, we might still use chunksize or cra_blocksize as the =
-walksize
->> even though we setup with the larger walksize.
->>=20
->> Here is the code for the walksize default value:
->> 	static int skcipher_prepare_alg(struct skcipher_alg *alg)
->> 	{
->> 		...
->> 		if (!alg->chunksize)
->> 			alg->chunksize =3D base->cra_blocksize;
->> 		if (!alg->walksize)
->> 			alg->walksize =3D alg->chunksize;
->>=20
->> And we already have the bigger walksize for x86 aes-xts.
->> 		.base =3D {
->> 			.cra_name		=3D "__xts(aes)",
->> 			...
->> 		},
->> 		.walksize	=3D 2 * AES_BLOCK_SIZE,
->>=20
->> The x86 aes-xts only uses one `walk` to handle the tail elements. It =
-assumes
->> that the walksize contains 2 aes blocks. If walksize is not set =
-correctly, maybe
->> some tail elements is not processed in simd-cipher mode for x86 =
-aes-xts.
->=20
-> With the SIMD helper there are three "algorithms": the underlying =
-algorithm, the
-> cryptd algorithm, and the simd algorithm.  This patch makes the =
-"walksize"
-> property be propagated from the underlying algorithm to the cryptd and =
-simd
-> algorithms.  I don't see how that actually makes a difference, since =
-the only
-> place the skcipher_walk happens is on the underlying algorithm.  So it =
-uses the
-> "walksize" from the underlying algorithm, right?
->=20
-> - Eric
+On Tue, Nov 28, 2023 at 03:23:17PM PST, Renze Nicolai wrote:
+>This is a relatively low-cost AST2500-based Amd Ryzen 5000 Series
+>micro-ATX board that we hope can provide a decent platform for OpenBMC
+>development.
+>
+>This initial device-tree provides the necessary configuration for
+>basic BMC functionality such as serial console, KVM support
+>and POST code snooping.
+>
+>Signed-off-by: Renze Nicolai <renze@rnplus.nl>
+>---
+> arch/arm/boot/dts/aspeed/Makefile             |   1 +
+> .../dts/aspeed/aspeed-bmc-asrock-x570d4u.dts  | 359 ++++++++++++++++++
+> 2 files changed, 360 insertions(+)
+> create mode 100644 arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-x570d4u.dts
+>
+>diff --git a/arch/arm/boot/dts/aspeed/Makefile b/arch/arm/boot/dts/aspeed/Makefile
+>index d3ac20e316d0..2205bd079d0c 100644
+>--- a/arch/arm/boot/dts/aspeed/Makefile
+>+++ b/arch/arm/boot/dts/aspeed/Makefile
+>@@ -10,6 +10,7 @@ dtb-$(CONFIG_ARCH_ASPEED) += \
+> 	aspeed-bmc-arm-stardragon4800-rep2.dtb \
+> 	aspeed-bmc-asrock-e3c246d4i.dtb \
+> 	aspeed-bmc-asrock-romed8hm3.dtb \
+>+	aspeed-bmc-asrock-x570d4u.dtb \
+> 	aspeed-bmc-bytedance-g220a.dtb \
+> 	aspeed-bmc-delta-ahe50dc.dtb \
+> 	aspeed-bmc-facebook-bletchley.dtb \
+>diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-x570d4u.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-x570d4u.dts
+>new file mode 100644
+>index 000000000000..b7c84188b405
+>--- /dev/null
+>+++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-x570d4u.dts
+>@@ -0,0 +1,359 @@
+>+// SPDX-License-Identifier: GPL-2.0+
+>+/dts-v1/;
+>+#include "aspeed-g5.dtsi"
+>+#include <dt-bindings/gpio/aspeed-gpio.h>
+>+#include <dt-bindings/leds/common.h>
+>+
+>+/ {
+>+	model = "Asrock Rack X570D4U BMC";
+>+	compatible = "asrock,x570d4u-bmc", "aspeed,ast2500";
+>+
+>+	chosen {
+>+		stdout-path = &uart5;
+>+	};
+>+
+>+	memory@80000000 {
+>+		reg = <0x80000000 0x20000000>;
+>+	};
+>+
+>+	reserved-memory {
+>+		#address-cells = <1>;
+>+		#size-cells = <1>;
+>+		ranges;
+>+
+>+		pci_memory: region@9a000000 {
+>+			no-map;
+>+			reg = <0x9a000000 0x00010000>; /* 64K */
+>+		};
+>+
+>+		video_engine_memory: jpegbuffer {
+>+			size = <0x02800000>;	/* 40M */
+>+			alignment = <0x01000000>;
+>+			compatible = "shared-dma-pool";
+>+			reusable;
+>+		};
+>+
+>+		gfx_memory: framebuffer {
+>+			size = <0x01000000>;
+>+			alignment = <0x01000000>;
+>+			compatible = "shared-dma-pool";
+>+			reusable;
+>+		};
+>+	};
+>+
+>+	leds {
+>+		compatible = "gpio-leds";
+>+
+>+		led0 {
+>+			/* led-heartbeat-n */
+>+			function = LED_FUNCTION_HEARTBEAT;
+>+			color = <LED_COLOR_ID_GREEN>;
+>+			gpios = <&gpio ASPEED_GPIO(H, 6) GPIO_ACTIVE_LOW>;
+>+			linux,default-trigger = "timer";
+>+		};
+>+
+>+		led1 {
+>+			/* led-fault-n */
+>+			function = LED_FUNCTION_FAULT;
+>+			color = <LED_COLOR_ID_AMBER>;
+>+			gpios = <&gpio ASPEED_GPIO(Z, 2) GPIO_ACTIVE_LOW>;
+>+			panic-indicator;
+>+		};
 
-Yes, you are right.
-I re-check the cryptd and simd cipher flow. They use the underlying =
-algorithms.
-So, the actual `walksize` in the underlying algorithm is set by the user =
-in
-skcipher_alg def.
-The x86 aes-xts works correctly for both cryptd and simd-cipher case.
+To strictly match Documentation/devicetree/bindings/leds/leds-gpio.yaml 
+the node names here should be led-0 and led-1 (with a hyphen).
 
-This patch becomes fixing the `walksize` display error in =
-`/proc/crypto`.
+There *is* some automated tooling to check DTs against the bindings that 
+should flag things like that -- see the bits regarding 'make dtbs_check' 
+in Documentation/devicetree/bindings/writing-schema.rst.  However, in 
+its current state it's (a) somewhat fragile and easy to invoke wrong 
+without getting any indication of it (IME, make sure to also pass 
+ARCH=arm on the make command-line), and (b) will probably dump a pretty 
+large quantity of output of which very little pertains to the actual 
+.dts you're adding, which makes it less useful than would be ideal.
 
-The aes-xts skcipher_alg def:
-	...
-	.ivsize =3D AES_BLOCK_SIZE,
-	.chunksize =3D AES_BLOCK_SIZE,
-	.walksize =3D AES_BLOCK_SIZE * 8,
-	.base =3D {
-		.cra_flags =3D CRYPTO_ALG_INTERNAL,
-		.cra_name =3D "__xts(aes)",
-		.cra_driver_name =3D =
-"__xts-aes-riscv64-zvkned-zvbb-zvkg",
-		...
-	},
+>+	};
+>+
+>+	iio-hwmon {
+>+		compatible = "iio-hwmon";
+>+		io-channels = <&adc 0>, <&adc 1>, <&adc 2>, <&adc 3>, <&adc 4>,
+>+			<&adc 5>, <&adc 6>, <&adc 7>, <&adc 8>, <&adc 9>,
+>+			<&adc 10>, <&adc 11>, <&adc 12>;
+>+	};
+>+};
+>+
+>+&gpio {
+>+	status = "okay";
+>+	gpio-line-names =
+>+	/*A0-A3*/       "status-locatorled-n",                    "",                      "button-nmi-n",          "",
+>+	/*A4-A7*/       "",                                       "",                      "",                      "",
+>+	/*B0-B3*/       "input-bios-post-cmplt-n",                "",                      "",                      "",
+>+	/*B4-B7*/       "",                                       "",                      "",                      "",
+>+	/*C0-C3*/       "",                                       "",                      "",                      "",
+>+	/*C4-C7*/       "",                                       "",                      "control-locatorbutton", "",
+>+	/*D0-D3*/       "button-power",                           "control-power",         "button-reset",          "control-reset",
+>+	/*D4-D7*/       "",                                       "",                      "",                      "",
+>+	/*E0-E3*/       "",                                       "",                      "",                      "",
+>+	/*E4-E7*/       "",                                       "",                      "",                      "",
+>+	/*F0-F3*/       "",                                       "",                      "",                      "",
+>+	/*F4-F7*/       "",                                       "",                      "",                      "",
+>+	/*G0-G3*/       "output-rtc-battery-voltage-read-enable", "input-id0",             "input-id1",             "input-id2",
+>+	/*G4-G7*/       "input-alert1-n",                         "input-alert2-n",        "input-alert3-n",        "",
+>+	/*H0-H3*/       "",                                       "",                      "",                      "",
+>+	/*H4-H7*/       "input-mfg",                              "",                      "led-heartbeat-n",       "input-caseopen",
+>+	/*I0-I3*/       "",                                       "",                      "",                      "",
+>+	/*I4-I7*/       "",                                       "",                      "",                      "",
+>+	/*J0-J3*/       "output-bmc-ready",                       "",                      "",                      "",
+>+	/*J4-J7*/       "",                                       "",                      "",                      "",
+>+	/*K0-K3*/       "",                                       "",                      "",                      "",
+>+	/*K4-K7*/       "",                                       "",                      "",                      "",
+>+	/*L0-L3*/       "",                                       "",                      "",                      "",
+>+	/*L4-L7*/       "",                                       "",                      "",                      "",
+>+	/*M0-M3*/       "",                                       "",                      "",                      "",
+>+	/*M4-M7*/       "",                                       "",                      "",                      "",
+>+	/*N0-N3*/       "",                                       "",                      "",                      "",
+>+	/*N4-N7*/       "",                                       "",                      "",                      "",
+>+	/*O0-O3*/       "",                                       "",                      "",                      "",
+>+	/*O4-O7*/       "",                                       "",                      "",                      "",
+>+	/*P0-P3*/       "",                                       "",                      "",                      "",
+>+	/*P4-P7*/       "",                                       "",                      "",                      "",
+>+	/*Q0-Q3*/       "",                                       "",                      "",                      "",
+>+	/*Q4-Q7*/       "",                                       "",                      "",                      "",
+>+	/*R0-R3*/       "",                                       "",                      "",                      "",
+>+	/*R4-R7*/       "",                                       "",                      "",                      "",
+>+	/*S0-S3*/       "input-bmc-pchhot-n",                     "",                      "",                      "",
+>+	/*S4-S7*/       "",                                       "",                      "",                      "",
+>+	/*T0-T3*/       "",                                       "",                      "",                      "",
+>+	/*T4-T7*/       "",                                       "",                      "",                      "",
+>+	/*U0-U3*/       "",                                       "",                      "",                      "",
+>+	/*U4-U7*/       "",                                       "",                      "",                      "",
+>+	/*V0-V3*/       "",                                       "",                      "",                      "",
+>+	/*V4-V7*/       "",                                       "",                      "",                      "",
+>+	/*W0-W3*/       "",                                       "",                      "",                      "",
+>+	/*W4-W7*/       "",                                       "",                      "",                      "",
+>+	/*X0-X3*/       "",                                       "",                      "",                      "",
+>+	/*X4-X7*/       "",                                       "",                      "",                      "",
+>+	/*Y0-Y3*/       "",                                       "",                      "",                      "",
+>+	/*Y4-Y7*/       "",                                       "",                      "",                      "",
+>+	/*Z0-Z3*/       "",                                       "",                      "led-fault-n",           "output-bmc-throttle-n",
+>+	/*Z4-Z7*/       "",                                       "",                      "",                      "",
+>+	/*AA0-AA3*/     "input-cpu1-thermtrip-latch-n",           "",                      "input-cpu1-prochot-n",  "",
+>+	/*AA4-AC7*/     "",                                       "",                      "",                      "",
+>+	/*AB0-AB3*/     "",                                       "",                      "",                      "",
+>+	/*AB4-AC7*/     "",                                       "",                      "",                      "",
+>+	/*AC0-AC3*/     "",                                       "",                      "",                      "",
+>+	/*AC4-AC7*/     "",                                       "",                      "",                      "";
+>+};
+>+
+>+&fmc {
+>+	status = "okay";
+>+	flash@0 {
+>+		status = "okay";
+>+		label = "bmc";
+>+		m25p,fast-read;
+>+		spi-max-frequency = <10000000>;
+>+#include "openbmc-flash-layout-64.dtsi"
+>+	};
+>+};
+>+
+>+&uart5 {
+>+	status = "okay";
+>+};
+>+
+>+&vuart {
+>+	status = "okay";
+>+};
+>+
+>+&mac0 {
+>+	status = "okay";
+>+	pinctrl-names = "default";
+>+	pinctrl-0 = <&pinctrl_rgmii1_default &pinctrl_mdio1_default>;
+>+
+>+	nvmem-cells = <&eth0_macaddress>;
+>+	nvmem-cell-names = "mac-address";
+>+};
+>+
+>+&mac1 {
+>+	status = "okay";
+>+	pinctrl-names = "default";
+>+	pinctrl-0 = <&pinctrl_rmii2_default &pinctrl_mdio2_default>;
+>+	use-ncsi;
+>+
+>+	nvmem-cells = <&eth1_macaddress>;
+>+	nvmem-cell-names = "mac-address";
+>+};
+>+
+>+&i2c0 {
+>+	status = "okay";
+>+};
+>+
+>+&i2c1 {
+>+	status = "okay";
+>+
+>+	w83773g@4c {
+>+		compatible = "nuvoton,w83773g";
+>+		reg = <0x4c>;
+>+	};
+>+};
+>+
+>+&i2c2 {
+>+	status = "okay";
+>+};
+>+
+>+&i2c3 {
+>+	status = "okay";
+>+};
+>+
+>+&i2c4 {
+>+	status = "okay";
+>+
+>+	i2c-mux@70 {
+>+		compatible = "nxp,pca9545";
+>+		reg = <0x70>;
+>+		#address-cells = <1>;
+>+		#size-cells = <0>;
+>+
+>+		i2c4mux0ch0@0 {
+>+			/* SMBus on PCI express 16x slot */
+>+			#address-cells = <1>;
+>+			#size-cells = <0>;
+>+			reg = <0>;
+>+		};
+>+
+>+		i2c4mux0ch1@1 {
+>+			/* SMBus on PCI express 8x slot */
+>+			#address-cells = <1>;
+>+			#size-cells = <0>;
+>+			reg = <1>;
+>+		};
+>+
+>+		i2c4mux0ch2@2 {
+>+			#address-cells = <1>;
+>+			#size-cells = <0>;
+>+			reg = <2>;
+>+		};
+>+
+>+		i2c4mux0ch3@3 {
+>+			/* SMBus on PCI express 1x slot */
+>+			#address-cells = <1>;
+>+			#size-cells = <0>;
+>+			reg = <3>;
+>+		};
+>+	};
 
+Comments here are good, thanks -- was leaving out the suggested bus 
+aliases an intentional choice or just an oversight though?  FWIW, 
+personally I'd definitely recommend it.
 
-Without patch:=09
-The original skcipher:
-	name         : __xts(aes)
-	driver       : __xts-aes-riscv64-zvkned-zvbb-zvkg
-	internal     : yes
-	async        : no
-	...
-	walksize     : 128
+>+};
+>+
+>+&i2c5 {
+>+	status = "okay";
+>+};
+>+
+>+&i2c7 {
+>+	status = "okay";
+>+
+>+	eeprom@57 {
+>+		compatible = "st,24c128", "atmel,24c128";
+>+		reg = <0x57>;
+>+		pagesize = <16>;
+>+		#address-cells = <1>;
+>+		#size-cells = <1>;
+>+
+>+		eth0_macaddress: macaddress@3f80 {
+>+			reg = <0x3f80 6>;
+>+		};
+>+
+>+		eth1_macaddress: macaddress@3f88 {
+>+			reg = <0x3f88 6>;
+>+		};
+>+	};
+>+};
+>+
+>+&gfx {
+>+	status = "okay";
+>+};
+>+
+>+&pinctrl {
+>+	aspeed,external-nodes = <&gfx &lhc>;
+>+};
+>+
+>+&vhub {
+>+	status = "okay";
+>+};
+>+
+>+&ehci1 {
+>+	status = "okay";
+>+};
+>+&uhci {
+>+	status = "okay";
+>+};
 
-The async skcipher registered by simd_register_skciphers_compat:
-	name         : xts(aes)
-	driver       : xts-aes-riscv64-zvkned-zvbb-zvkg
-	internal     : no
-	async        : yes
-	...
-	walksize     : 16
+Micro-nit if you send a v3: a blank line between the ehci1 & uhci nodes 
+here would be nice.
 
-	...
-	name         : __xts(aes)
-	driver       : cryptd(__xts-aes-riscv64-zvkned-zvbb-zvkg)
-	internal     : yes
-	async        : yes
-	...
-	walksize     : 16
-
-With patch:
-	name         : xts(aes)
-	driver       : xts-aes-riscv64-zvkned-zvbb-zvkg
-	internal     : no
-	async        : yes
-	...
-	walksize     : 128
-
-	...
-	name         : __xts(aes)
-	driver       : cryptd(__xts-aes-riscv64-zvkned-zvbb-zvkg)
-	internal     : yes
-	async        : yes
-	...
-	walksize     : 128
-
+>+
+>+&kcs3 {
+>+	aspeed,lpc-io-reg = <0xca2>;
+>+	status = "okay";
+>+};
+>+
+>+&lpc_ctrl {
+>+	status = "okay";
+>+};
+>+
+>+&lpc_snoop {
+>+	status = "okay";
+>+	snoop-ports = <0x80>;
+>+};
+>+
+>+&p2a {
+>+	status = "okay";
+>+	memory-region = <&pci_memory>;
+>+};
+>+
+>+&video {
+>+	status = "okay";
+>+	memory-region = <&video_engine_memory>;
+>+};
+>+
+>+&pwm_tacho {
+>+	status = "okay";
+>+	pinctrl-names = "default";
+>+	pinctrl-0 = <&pinctrl_pwm0_default
+>+				&pinctrl_pwm1_default
+>+				&pinctrl_pwm2_default
+>+				&pinctrl_pwm3_default
+>+				&pinctrl_pwm4_default
+>+				&pinctrl_pwm5_default>;
+>+
+>+	fan@0 {
+>+		reg = <0x00>;
+>+		aspeed,fan-tach-ch = /bits/ 8 <0x00 0x01>;
+>+	};
+>+
+>+	fan@1 {
+>+		reg = <0x01>;
+>+		aspeed,fan-tach-ch = /bits/ 8 <0x02 0x03>;
+>+	};
+>+
+>+	fan@2 {
+>+		reg = <0x02>;
+>+		aspeed,fan-tach-ch = /bits/ 8 <0x04 0x05>;
+>+	};
+>+
+>+	fan@3 {
+>+		reg = <0x03>;
+>+		aspeed,fan-tach-ch = /bits/ 8 <0x06 0x07>;
+>+	};
+>+
+>+	fan@4 {
+>+		reg = <0x04>;
+>+		aspeed,fan-tach-ch = /bits/ 8 <0x08 0x09>;
+>+	};
+>+
+>+	fan@5 {
+>+		reg = <0x05>;
+>+		aspeed,fan-tach-ch = /bits/ 8 <0x0a 0x0b>;
+>+	};
+>+};
+>+
+>+&adc {
+>+	status = "okay";
+>+	pinctrl-names = "default";
+>+	pinctrl-0 = <&pinctrl_adc0_default
+>+				&pinctrl_adc1_default
+>+				&pinctrl_adc2_default
+>+				&pinctrl_adc3_default
+>+				&pinctrl_adc4_default
+>+				&pinctrl_adc5_default
+>+				&pinctrl_adc6_default
+>+				&pinctrl_adc7_default
+>+				&pinctrl_adc8_default
+>+				&pinctrl_adc9_default
+>+				&pinctrl_adc10_default
+>+				&pinctrl_adc11_default
+>+				&pinctrl_adc12_default
+>+				&pinctrl_adc13_default
+>+				&pinctrl_adc14_default
+>+				&pinctrl_adc15_default>;
+>+};
+>-- 
+>2.43.0
+>
+>
