@@ -2,324 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B58E280006B
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 01:42:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F326B80006F
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 01:45:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377470AbjLAAmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 19:42:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36618 "EHLO
+        id S1377458AbjLAAp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 19:45:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbjLAAl6 (ORCPT
+        with ESMTP id S229521AbjLAApW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 19:41:58 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F289D7D;
-        Thu, 30 Nov 2023 16:42:03 -0800 (PST)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AUNZDfR022859;
-        Fri, 1 Dec 2023 00:41:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=5vo08Ia1SDqpZHhlbPsR76IJD6MCn2UqTyf17XskEJ8=;
- b=V9gmE5wFFCKISkgeYCvfeEd6doUDYlW+f74gY+aMjyhs+59MzNo0/yJ+eXnOBs6CSLx5
- 8VvQsnWb2ma5d4jfC8pe0XhaofK8KSC/mB/f6hgbNNk136drkLPWBLoJc22vm/uMd4VJ
- ZeUN793BE/tKI0vGW0FaxGyhx5A/79B6PWAvduQKSd+2Ba2GFVzqok9Gilr9Ub3F7QAe
- Y6rcglTfZ+Ozyty9Tf7LX5z3AX1FhIreGk8Xzfff51+JcaK73bvX17W8N9cvgBkeaHnk
- xlrp3QThVPkjuUOMZDMWAI0mg/1q34ZBNm3li7mIzrUhG6yI89G0+XwpgG/kbt89gu1g Cg== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uprhdt1p2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 01 Dec 2023 00:41:57 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B10fua1012704
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 1 Dec 2023 00:41:56 GMT
-Received: from [10.71.109.77] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 30 Nov
- 2023 16:41:55 -0800
-Message-ID: <3085d544-b6d9-5064-2789-2bbccf4b6818@quicinc.com>
-Date:   Thu, 30 Nov 2023 16:41:55 -0800
+        Thu, 30 Nov 2023 19:45:22 -0500
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2044.outbound.protection.outlook.com [40.107.94.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D07F610C2;
+        Thu, 30 Nov 2023 16:45:27 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZynmiXSlwhF4RUtsUs/yIASaSAInALHwViD/qEQ/fgsFeeJg9KkUkAEDvURq403LQkY17qTBPNJqrhsCqHSzYmKly2BvxbIaTEYzJL/Uvd2VIDgsZsrGzrgE3Tjj8KPXO8NIV6zV43eNG7Y9lQEyjJu/OZTUHsY+gX/RCvf0ePZjcNHkNRV3ZHUREUmlf10aHXF53E/d6hR+FxsiEuoNOqIxPt12ibZA9sgdad2cRyVpjLXf3kA2cRPahg2bhIuiWI0fjRr10PSwNwSKgNiJ9F2NZNXjcqKqIog2X/4fkLgrfR0JorXAEMY9XVj96ty1XYPNQT1m9vqg6vdzYNQ0dA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=DOjsKxdFIWMtTtt7eSoqQIeoVE2+AkUIJq5B4CkdvOs=;
+ b=lLloPFe85ezCeDIWvo8Hop6AgmRZfb8RhrFRDof4B58fwOZdXteAnkm2eQdIn4CcCCUDJxNTsaw1V9Pn7YDYnBnqu7z0jmUrMcLhvYI+HNZy6Pq2bC3D6scNNgvd2z898QI8p8wzpujbQ36ghfMpWujMJSfreHOI72hL3EU/lGiAaqplxo5i2ux6MrM6SxbDYX1Sgf9x5R++EBN28O1Uq0rRixfLMntr+iwKbaxniMN2QkRXdwL7mVQ4bcH5vT5apS1v/PFPDwSa9dKHaCk3/NPuqz5Xqn62aGmMYPAX/gtPZGPHadDHFHp0hmBUGq/sZhyNKqGq5tzBgucrcRp6FA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DOjsKxdFIWMtTtt7eSoqQIeoVE2+AkUIJq5B4CkdvOs=;
+ b=gLmoc4vrUR7MqDCoiMMrZrOGy9XkgJuUdkyzc727iqbo18VQo+3fayuPRVviuepPDHSHP0IYoirSxqt2g87fgJrSZxmJo6soW1RcZo5X2qHcMZqX6Hxs8DY9AWi+4QBem48e7DlNnd6Op7kFWE5Mf7c/cU4UBLecckPBzHREAqnzM1lag33oBrm0002DhJuxBCnbP+Wsz1plSfpZ2d/Xq+MhHONouGVRPWKunGbkne03i5utjLwlNGpXoijLWusKota69LUguUNG1S1KlkH9C45lTR7tqlS3RRpHzD63wsubc1B4TM9zwZkNCnBkI9HrmC5LCXpzVO2DAb5tmn+YrA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by MN2PR12MB4320.namprd12.prod.outlook.com (2603:10b6:208:15f::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.24; Fri, 1 Dec
+ 2023 00:45:25 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93%4]) with mapi id 15.20.7046.015; Fri, 1 Dec 2023
+ 00:45:25 +0000
+Date:   Thu, 30 Nov 2023 20:45:23 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Nicolin Chen <nicolinc@nvidia.com>
+Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
+        "cohuck@redhat.com" <cohuck@redhat.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
+        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
+        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
+        "peterx@redhat.com" <peterx@redhat.com>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "shameerali.kolothum.thodi@huawei.com" 
+        <shameerali.kolothum.thodi@huawei.com>,
+        "lulu@redhat.com" <lulu@redhat.com>,
+        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>,
+        "joao.m.martins@oracle.com" <joao.m.martins@oracle.com>,
+        "Zeng, Xin" <xin.zeng@intel.com>,
+        "Zhao, Yan Y" <yan.y.zhao@intel.com>
+Subject: Re: [PATCH v6 2/6] iommufd: Add IOMMU_HWPT_INVALIDATE
+Message-ID: <20231201004523.GJ1389974@nvidia.com>
+References: <BN9PR11MB52761A9B48A25E89BEECE6308CB8A@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <ZWTzoBTDDEWAKMs9@Asurada-Nvidia>
+ <BN9PR11MB5276FD60A0EDF8E3F231FCC88CBCA@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <ZWaLCSAMIOXTlghk@Asurada-Nvidia>
+ <20231129005715.GS436702@nvidia.com>
+ <ZWaPM4p7yjJ0sEKk@Asurada-Nvidia>
+ <20231129195804.GF436702@nvidia.com>
+ <ZWe2PvatTkkyNCY5@Asurada-Nvidia>
+ <20231130000816.GB1389974@nvidia.com>
+ <ZWjzcEAAg8ptVH4A@Asurada-Nvidia>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZWjzcEAAg8ptVH4A@Asurada-Nvidia>
+X-ClientProxiedBy: MN2PR16CA0018.namprd16.prod.outlook.com
+ (2603:10b6:208:134::31) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH 11/16] drm/msm/dpu: add an API to setup the CDM block for
- writeback
-Content-Language: en-US
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC:     <freedreno@lists.freedesktop.org>, Rob Clark <robdclark@gmail.com>,
-        "Sean Paul" <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        "David Airlie" <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        <dri-devel@lists.freedesktop.org>, <quic_jesszhan@quicinc.com>,
-        <quic_parellan@quicinc.com>, <quic_khsieh@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20230830224910.8091-1-quic_abhinavk@quicinc.com>
- <20230830224910.8091-12-quic_abhinavk@quicinc.com>
- <CAA8EJppBskavOzn4_vUa=kvyYi2zn2XR70Ft-6ZyuOdGYWWL2A@mail.gmail.com>
-From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
-In-Reply-To: <CAA8EJppBskavOzn4_vUa=kvyYi2zn2XR70Ft-6ZyuOdGYWWL2A@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: DohpjEcamTpkXoY5rab2_X43osyJLDpe
-X-Proofpoint-GUID: DohpjEcamTpkXoY5rab2_X43osyJLDpe
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-30_25,2023-11-30_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- phishscore=0 spamscore=0 suspectscore=0 impostorscore=0 mlxlogscore=843
- clxscore=1015 mlxscore=0 priorityscore=1501 adultscore=0 bulkscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2312010002
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|MN2PR12MB4320:EE_
+X-MS-Office365-Filtering-Correlation-Id: b9193dd1-c593-451f-a729-08dbf206ce56
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: oRG5ljgT84xbzjBZnl8jCoUBR4KhMZ052hb8uwarPeMmC+Ul4DhF0ib4tHig3tMC7OXRT2Oe0ZIntNhE1OGdotPgWalXiDiZJxN4d49S3br89L8sp3rWRzJ27IudJQFnthe0k05fW578j+sJEy+1N3nXzaMQFatUXLgfL8HJRYg2jHh4Bk1iS+uUHOrF2CEj11x6V9gdYpu+N0uY4amUhb8u0yL9OuRanFiW3SJqFSx5KbPc+aqxFCZ+mju9iLyXCytZAcrQISG6JoEMik4juNrwHvrePj1iBglGKcYHm62mosNRRsnAngBJkk0q1L6aRoVxBurk9sTZNqMgigMvVFAV5xdi7M/GNAHXMCRVmrNT0howiPslxHlyXVR5VQL9VmR/GxBM+FWPv1rt/0WuwdipAdSB5Lt4s82njN8t7PU15NFZUhNhIaEWe0+hkE78CBibgDW8l1ofKOTp8qmnUlfHyyRsAK2ueuN0uvZf/0+6842tX7o7jVUW7S1tUXX8xM9+DkD0p+6YbRVZ4xEv+YHL4RPqhJctja9UD7OZK1QRNChH23RsSdLTRYd5IAwY
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39860400002)(366004)(346002)(396003)(376002)(230922051799003)(451199024)(64100799003)(1800799012)(186009)(8936002)(6862004)(8676002)(4326008)(36756003)(66556008)(54906003)(66476007)(6636002)(37006003)(316002)(66946007)(2906002)(33656002)(41300700001)(86362001)(5660300002)(7416002)(26005)(83380400001)(1076003)(478600001)(6486002)(6512007)(38100700002)(2616005)(6506007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?chAu73OmQUzKoXjfB+rfLk4N6MIIpiiYW+kbImqoXPtPyTKkYGLJXVjn/rsE?=
+ =?us-ascii?Q?taI5B2U98Zsmd7624J3aKHT/pOJWCmIORVunDxeoWUZkrWSgYQvHGviGjS29?=
+ =?us-ascii?Q?/hTCGrzu+Zf339H1euK7qSXUcrdmCWgg4ruldP66/ylpsOOlNo6zfLXKzm6T?=
+ =?us-ascii?Q?gCBLoVdeZCKPR61yXtIddfw5o3q8TVIK8iW4L0/vNmhJa9tug6TD5Vz33PX/?=
+ =?us-ascii?Q?IITMW3LMN0Bm0RHE77Bf7xURbTZlodpt2/IwTYS2dwmgLjyIJfMp9Rdc7LFA?=
+ =?us-ascii?Q?wD2ExEZsftU5Bfuz4OlYVAbQKSlvnIKXy/fVvwzyxoHCUO1QK58aDSWkw9j3?=
+ =?us-ascii?Q?sdfLPNd44pT1ehlUYRO5UQcHid/c4EqGna4Z3POlXRjtQA9DmTz9TocU8XL4?=
+ =?us-ascii?Q?hNdkrBfrNrgKJaY7BRuaptYN1CosAG9Mkaeix/2tEzqhQMShU4qxNUen4jOk?=
+ =?us-ascii?Q?3fCi3KqZOtyTua1+5wOsL3HVZMYu8HcFbLypuWIsoGtgobTmwPi0zBJphMOg?=
+ =?us-ascii?Q?HnErN581x8phHfPeLXKHv3JRslMHg5M81VwiAtClUmu2fWui1vMZAiWacAkg?=
+ =?us-ascii?Q?frBEPosgA9HT0PYQli8i1bZtBoJdqdKTH5fDRJYcsv7c0WaAN1UYecslhHdJ?=
+ =?us-ascii?Q?b67RShGmTAQdz+kyc9NbpB/vGaz+Nq86IvwsVWGl/OsPzOTwB1PrkK1cgkbz?=
+ =?us-ascii?Q?Hu0yqFbaUQcch2MexSfMRXbFsoW8WKb28utt9C/X3purG9QeIzofCb6YYI3E?=
+ =?us-ascii?Q?AhRGmGkf8CxKZT4KPOaWqSyv1eAHAsr6Ug1+f3TAQKYmt8FdFCqMghSHdEne?=
+ =?us-ascii?Q?wdJBcB+a60nJaTwOf9j2kuDWLA/y9UxcHyCMXWyYlh7oIRP2367Azf/d8BrY?=
+ =?us-ascii?Q?Z+QkT4UThSuBc1AbUe4CqZ3MdpMbZOebFFfN8hh0YY6sw93mwB74oTocgWdi?=
+ =?us-ascii?Q?ZR7R/8xpSWX1Q6TTmtaw4x1PgLpZJI86d2surzy5xFPoCO0QPLy3nzWDqIOP?=
+ =?us-ascii?Q?YmbP9/It9FwvwLcZYzMumQNWA7/Ncf5nbeJuTWe6y6DgUK2HMEWhdhDiximl?=
+ =?us-ascii?Q?uM/mzl0Lw3E/G5EGfVhKb6dON68ZqwlfaU9yfB4TyaEox+qVx1B24/E1z+ZX?=
+ =?us-ascii?Q?/G32dy0w7/rbzFu/TnZ2NVHeX8wTnWQAVBfRCz4kaD8mvsDUtOsBlW5HX9v4?=
+ =?us-ascii?Q?Av6XxGfNTwa4pwxjSXRpPBX16neDdLQ92Zh03lU0KnT177omtmVYb8OBEeVK?=
+ =?us-ascii?Q?i9PHgkKf8Mdj6HyDHauIvYQddiHr+dHCuanRTFDyKLzQONRry0kVhhR6H9gk?=
+ =?us-ascii?Q?ANYJ3ahSNhm3to/JdXcAUBP2YHz2OPz0ltTpfAN3vHFZksSXXLI3pjX6rtfb?=
+ =?us-ascii?Q?xYXRB4CTemVbNDJV+9Wh144eDExpYtMNgduNWylqxrp/R4mE1G9Xv6AbIlJU?=
+ =?us-ascii?Q?OjxFQdUZCxitbmMsVrTmf+X9xu27LHYXNk00NfKr6Lfd7yfj80IzxSWS3i2p?=
+ =?us-ascii?Q?anCqkol+UstqnDqB2ogp4Y77rzwB3GqIHgzsc3JEgw0cD3fscjy7rg0TtFLI?=
+ =?us-ascii?Q?4jciWWNGKQTnkTBCtzFTHqHi0tgMcv2V8Ww91HVM?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b9193dd1-c593-451f-a729-08dbf206ce56
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Dec 2023 00:45:25.0390
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: cNAm1m3Topjrt+n4jbb9hYXLYNK0dwVra0CNjGIOu9+9HjmMK7ebdnF5VwdC3g2D
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4320
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Nov 30, 2023 at 12:41:20PM -0800, Nicolin Chen wrote:
 
-
-On 8/30/2023 5:11 PM, Dmitry Baryshkov wrote:
-> On Thu, 31 Aug 2023 at 01:50, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
->>
->> Add an API dpu_encoder_helper_phys_setup_cdm() which can be used by
->> the writeback encoder to setup the CDM block.
->>
->> Currently, this is defined and used within the writeback's physical
->> encoder layer however, the function can be modified to be used to setup
->> the CDM block even for non-writeback interfaces.
->>
->> Until those modifications are planned and made, keep it local to
->> writeback.
->>
->> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
->> ---
->>   .../gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h  |   3 +
->>   .../drm/msm/disp/dpu1/dpu_encoder_phys_wb.c   | 123 +++++++++++++++++-
->>   2 files changed, 125 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
->> index 510c1c41ddbc..93a8ae67beff 100644
->> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
->> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
->> @@ -16,6 +16,7 @@
->>   #include "dpu_hw_pingpong.h"
->>   #include "dpu_hw_ctl.h"
->>   #include "dpu_hw_top.h"
->> +#include "dpu_hw_cdm.h"
->>   #include "dpu_encoder.h"
->>   #include "dpu_crtc.h"
->>
->> @@ -209,6 +210,7 @@ static inline int dpu_encoder_phys_inc_pending(struct dpu_encoder_phys *phys)
->>    * @wbirq_refcount:     Reference count of writeback interrupt
->>    * @wb_done_timeout_cnt: number of wb done irq timeout errors
->>    * @wb_cfg:  writeback block config to store fb related details
->> + * @cdm_cfg: cdm block config needed to store writeback block's CDM configuration
->>    * @wb_conn: backpointer to writeback connector
->>    * @wb_job: backpointer to current writeback job
->>    * @dest:   dpu buffer layout for current writeback output buffer
->> @@ -218,6 +220,7 @@ struct dpu_encoder_phys_wb {
->>          atomic_t wbirq_refcount;
->>          int wb_done_timeout_cnt;
->>          struct dpu_hw_wb_cfg wb_cfg;
->> +       struct dpu_hw_cdm_cfg cdm_cfg;
->>          struct drm_writeback_connector *wb_conn;
->>          struct drm_writeback_job *wb_job;
->>          struct dpu_hw_fmt_layout dest;
->> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_wb.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_wb.c
->> index 4c2736c3ee6d..11935aac9fd5 100644
->> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_wb.c
->> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_wb.c
->> @@ -24,6 +24,20 @@
->>   #define to_dpu_encoder_phys_wb(x) \
->>          container_of(x, struct dpu_encoder_phys_wb, base)
->>
->> +#define TO_S15D16(_x_)((_x_) << 7)
->> +
->> +static struct dpu_csc_cfg dpu_encoder_phys_wb_rgb2yuv_601l = {
->> +       {
->> +               TO_S15D16(0x0083), TO_S15D16(0x0102), TO_S15D16(0x0032),
->> +               TO_S15D16(0x1fb5), TO_S15D16(0x1f6c), TO_S15D16(0x00e1),
->> +               TO_S15D16(0x00e1), TO_S15D16(0x1f45), TO_S15D16(0x1fdc)
->> +       },
->> +       { 0x00, 0x00, 0x00 },
->> +       { 0x0040, 0x0200, 0x0200 },
->> +       { 0x000, 0x3ff, 0x000, 0x3ff, 0x000, 0x3ff },
->> +       { 0x040, 0x3ac, 0x040, 0x3c0, 0x040, 0x3c0 },
->> +};
+> > So userspace would have to read the event FD
+> > before returning to be correct?
+> > 
+> > Maybe the kernel can somehow return a flag to indicate the event fd
+> > has data in it?
+> > 
+> > If yes then all errors would flow through the event fd?
 > 
-> Nit: we probably need to have a single place with all dpu_csc_cfg entries.
+> I think it'd be nicer to return an immediate error to stop guest
+> CMDQ to raise a fault there accordingly, similar to returning a
+> -EIO for a bad STE in your SMMU part-3 series.
 > 
+> If the "return a flag" is an errno of the ioctl, it could work by
+> reading from a separate memory that belongs to the event fd. Yet,
+> in this case, an eventfd signal (assuming there is one to trigger
+> VMM's fault handler) becomes unnecessary, since the invalidation
+> ioctl is already handling it?
 
-hmmm ... so we have YUV2RGB matrices for dpu plane and RGB2YUV matrices 
-for WB and DP.
+My concern is how does all this fit together and do we push the right
+things to the right places in the right order when an error occurs.
 
-We can move all this to dpu_hw_util.c but lets do that in the DP series 
-as that completes the consumer list of these matrices.
+I did not study the spec carefully to see what exactly is supposed to
+happen here, and I don't see things in Linux that make me think it
+particularly cares..
 
->> +
->>   /**
->>    * dpu_encoder_phys_wb_is_master - report wb always as master encoder
->>    * @phys_enc:  Pointer to physical encoder
->> @@ -225,6 +239,112 @@ static void dpu_encoder_phys_wb_setup_ctl(struct dpu_encoder_phys *phys_enc)
->>          }
->>   }
->>
->> +/**
->> + * dpu_encoder_phys_wb_setup_cdp - setup chroma down sampling block
->> + * @phys_enc:Pointer to physical encoder
->> + */
->> +static void dpu_encoder_helper_phys_setup_cdm(struct dpu_encoder_phys *phys_enc)
->> +{
->> +       struct dpu_hw_cdm *hw_cdm;
->> +       struct dpu_hw_cdm_cfg *cdm_cfg;
->> +       struct dpu_hw_pingpong *hw_pp;
->> +       struct dpu_encoder_phys_wb *wb_enc;
->> +       const struct msm_format *format;
->> +       const struct dpu_format *dpu_fmt;
->> +       struct drm_writeback_job *wb_job;
->> +       int ret;
->> +
->> +       if (!phys_enc)
->> +               return;
->> +
->> +       wb_enc = to_dpu_encoder_phys_wb(phys_enc);
->> +       cdm_cfg = &wb_enc->cdm_cfg;
->> +       hw_pp = phys_enc->hw_pp;
->> +       hw_cdm = phys_enc->hw_cdm;
->> +       wb_job = wb_enc->wb_job;
->> +
->> +       format = msm_framebuffer_format(wb_enc->wb_job->fb);
->> +       dpu_fmt = dpu_get_dpu_format_ext(format->pixel_format, wb_job->fb->modifier);
->> +
->> +       if (!hw_cdm)
->> +               return;
->> +
->> +       if (!DPU_FORMAT_IS_YUV(dpu_fmt)) {
->> +               DPU_DEBUG("[enc:%d] cdm_disable fmt:%x\n", DRMID(phys_enc->parent),
->> +                         dpu_fmt->base.pixel_format);
->> +               if (hw_cdm->ops.disable)
->> +                       hw_cdm->ops.disable(hw_cdm);
->> +
->> +               return;
->> +       }
->> +
->> +       memset(cdm_cfg, 0, sizeof(struct dpu_hw_cdm_cfg));
->> +
->> +       cdm_cfg->output_width = wb_job->fb->width;
->> +       cdm_cfg->output_height = wb_job->fb->height;
->> +       cdm_cfg->output_fmt = dpu_fmt;
->> +       cdm_cfg->output_type = CDM_CDWN_OUTPUT_WB;
->> +       cdm_cfg->output_bit_depth = DPU_FORMAT_IS_DX(dpu_fmt) ?
->> +                       CDM_CDWN_OUTPUT_10BIT : CDM_CDWN_OUTPUT_8BIT;
->> +
->> +       /* enable 10 bit logic */
->> +       switch (cdm_cfg->output_fmt->chroma_sample) {
->> +       case DPU_CHROMA_RGB:
->> +               cdm_cfg->h_cdwn_type = CDM_CDWN_DISABLE;
->> +               cdm_cfg->v_cdwn_type = CDM_CDWN_DISABLE;
->> +               break;
->> +       case DPU_CHROMA_H2V1:
->> +               cdm_cfg->h_cdwn_type = CDM_CDWN_COSITE;
->> +               cdm_cfg->v_cdwn_type = CDM_CDWN_DISABLE;
->> +               break;
->> +       case DPU_CHROMA_420:
->> +               cdm_cfg->h_cdwn_type = CDM_CDWN_COSITE;
->> +               cdm_cfg->v_cdwn_type = CDM_CDWN_OFFSITE;
->> +               break;
->> +       case DPU_CHROMA_H1V2:
->> +       default:
->> +               DPU_ERROR("[enc:%d] unsupported chroma sampling type\n",
->> +                         DRMID(phys_enc->parent));
->> +               cdm_cfg->h_cdwn_type = CDM_CDWN_DISABLE;
->> +               cdm_cfg->v_cdwn_type = CDM_CDWN_DISABLE;
->> +               break;
->> +       }
->> +
->> +       DPU_DEBUG("[enc:%d] cdm_enable:%d,%d,%X,%d,%d,%d,%d]\n",
->> +                 DRMID(phys_enc->parent), cdm_cfg->output_width,
->> +                 cdm_cfg->output_height, cdm_cfg->output_fmt->base.pixel_format,
->> +                 cdm_cfg->output_type, cdm_cfg->output_bit_depth,
->> +                 cdm_cfg->h_cdwn_type, cdm_cfg->v_cdwn_type);
->> +
->> +       if (hw_cdm && hw_cdm->ops.setup_csc_data) {
->> +               ret = hw_cdm->ops.setup_csc_data(hw_cdm, &dpu_encoder_phys_wb_rgb2yuv_601l);
->> +               if (ret < 0) {
->> +                       DPU_ERROR("[enc:%d] failed to setup CSC; ret:%d\n",
->> +                                 DRMID(phys_enc->parent), ret);
->> +                       return;
->> +               }
->> +       }
->> +
->> +       if (hw_cdm && hw_cdm->ops.setup_cdwn) {
-> 
-> You have checked for (!hw_cdm) several lines above. We can drop this
-> condition here.
-> 
+ie Linux doesn't seem like it will know that an async event was even
+triggered while processing the sync to generate an EIO. It looks like
+it just gets ETIMEDOUT? Presumably we should be checking the event
+queue to detect a pushed error?
 
-Ack.
+It is worth understanding if the spec has language that requires
+certain order so we can try to follow it.
 
->> +               ret = hw_cdm->ops.setup_cdwn(hw_cdm, cdm_cfg);
->> +               if (ret < 0) {
->> +                       DPU_ERROR("[enc:%d] failed to setup CDWN; ret:%d\n",
->> +                                 DRMID(phys_enc->parent), ret);
->> +                       return;
->> +               }
->> +       }
->> +
->> +       if (hw_cdm && hw_pp && hw_cdm->ops.enable) {
-> 
-> And what if !hw_pp ? Can it happen here? No, if I understand correctly.
-> 
-
-I dont see any other protection for !hw_pp in this flow so would prefer 
-to keep it.
-
->> +               cdm_cfg->pp_id = hw_pp->idx;
->> +               ret = hw_cdm->ops.enable(hw_cdm, cdm_cfg);
-> 
-> As we are calling these three ops in a row, can we merge them together
-> into a single callback to be called from dpu_encoder.c?
-> 
-
-Good idea. I can add a csc_cfg entry to cdm_cfg and merge all three into 
-the enable() op itself and drop the other two.
-
->> +               if (ret < 0) {
->> +                       DPU_ERROR("[enc:%d] failed to enable CDM; ret:%d\n",
->> +                                 DRMID(phys_enc->parent), ret);
->> +                       return;
->> +               }
->> +       }
->> +}
->> +
->>   /**
->>    * dpu_encoder_phys_wb_atomic_check - verify and fixup given atomic states
->>    * @phys_enc:  Pointer to physical encoder
->> @@ -348,8 +468,9 @@ static void dpu_encoder_phys_wb_setup(
->>
->>          dpu_encoder_phys_wb_setup_fb(phys_enc, fb);
->>
->> -       dpu_encoder_phys_wb_setup_ctl(phys_enc);
->> +       dpu_encoder_helper_phys_setup_cdm(phys_enc);
->>
->> +       dpu_encoder_phys_wb_setup_ctl(phys_enc);
->>   }
->>
->>   static void _dpu_encoder_phys_wb_frame_done_helper(void *arg)
->> --
->> 2.40.1
->>
-> 
-> 
+Jason
