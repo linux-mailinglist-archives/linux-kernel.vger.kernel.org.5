@@ -2,173 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E96C8014D8
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 21:56:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7D188014E4
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 22:03:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379633AbjLAU4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 15:56:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59386 "EHLO
+        id S1379632AbjLAVAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 16:00:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjLAU4M (ORCPT
+        with ESMTP id S229456AbjLAVAg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 15:56:12 -0500
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AECF913E
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 12:56:18 -0800 (PST)
-Received: by mail-il1-x136.google.com with SMTP id e9e14a558f8ab-35c6cefa872so22675ab.0
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 12:56:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701464178; x=1702068978; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iDU6SlWRVKBiv8MHZWR7PalVXO/1RHV9RChrnpMyBqo=;
-        b=p7UQPML1UjIqAibtSyQvnHjq4VunrlInVJZsvT+8KsePoEZyp3M/rOHs8xCl8zDJWr
-         kjsGphDLzcMFs/dWMcuIfr4ut0fpFWIELV3qxSVLt0mBrIzA9Nit0ohlEhW0fNAI9qkq
-         ZulJOLOLuL6gYrKobO06kpXND1uKZLfcbi6RusLtI038BO2ye6xUpLr85lYE5RusgVYv
-         BdfKZ4ZxNV1KGGF7X7wC6PmMM31HLGhJ1WFbis6WdtryF4Uddyrd1UJh+WxJ9XrLGZ1d
-         MTnnpfLuRtkqrYd2bLg/kAeLhpy2P6FyLl19GBzPggPwsKZA5ZOLcV08dOhc1llaKwNf
-         VS0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701464178; x=1702068978;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=iDU6SlWRVKBiv8MHZWR7PalVXO/1RHV9RChrnpMyBqo=;
-        b=QqzPyf6VJbV9h11U071vZiMNZjuVQ6uya0rytjwqdKmjenyJKHRfbdQSfuh3j2aTxJ
-         lIhWkMI9ShSoz4Krww6Y+Y846f0aSJWZ3e1+1itnw9NXEF46HhlX9m1DthXOROA7eGle
-         aPwCqVosMJb7Cn32mLnfJe3ntCW+twJkYJYbAgtGHFybRtfv352e3gcFP/S0JHv847ZQ
-         qlCoRYcg8cjhyOgiETmGXfjqqRKRzd43NfmQuS5UNPa/7GrZ29YVw37UvwJPSwJn799z
-         HoIxO1NccCLRHYvWzaojdm3dusVoHFkx2A8zRRxh9tlXXUQjPUAzyZw4WQpOY8AQSVfC
-         DxVA==
-X-Gm-Message-State: AOJu0Yyv6MtrWM3PxJDgTio6hEzK0YyWQqP9pR13F8v7G1LGCk39TADF
-        A9Xzos1frEF+Tb0LaAZhi1VSrF541ars456kwz+0Tg==
-X-Google-Smtp-Source: AGHT+IHv+vjOPkfAnQO7BH4FNl96FBQtAS+iXk6yc2jOVypvrwLn0XkkQewUIMd8xQ35p4x5GUBkCVa52rVxJFU6goU=
-X-Received: by 2002:a05:6e02:1c01:b0:35d:3785:71c6 with SMTP id
- l1-20020a056e021c0100b0035d378571c6mr214742ilh.26.1701464177957; Fri, 01 Dec
- 2023 12:56:17 -0800 (PST)
+        Fri, 1 Dec 2023 16:00:36 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7615E10E4;
+        Fri,  1 Dec 2023 13:00:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701464442; x=1733000442;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=jxSV6/arsYh72F6t/KHKVkr1kkn4oZ2SKA+HsLWZvlw=;
+  b=l//gh1dAqMJejqzLdb/IV0lYu7in3bvP5adveHC34NcSi1/xzutq9UtN
+   wIMSkkJW5zdgBKOuCv4iIr5A2kDFwnU8UaGxuNlsg1xuc2FrxHaeepjJ8
+   YZB92GVeTQocuC7uwgaf+nQVzbrFE5FDqNnvsvODonFduCojBvkocDEJz
+   poNCjgIaLGkSFfwOYvU7bruwkLHZdQ1WZyKurW3sbsikDrKdviZilAJkP
+   HDt2X/Ik5pg1NcR9oCALBIjDTea6f25hhT2I7bXLgmdUxCRqPtOAMdoFG
+   7Tv+CuUSh5uPe+NuTojUA5tsrCsIRFFteD35iCNYhc08MB3NyynS8i7bk
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="397440652"
+X-IronPort-AV: E=Sophos;i="6.04,242,1695711600"; 
+   d="scan'208";a="397440652"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2023 13:00:41 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="893301312"
+X-IronPort-AV: E=Sophos;i="6.04,242,1695711600"; 
+   d="scan'208";a="893301312"
+Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2023 13:00:36 -0800
+Received: from kekkonen.localdomain (localhost [127.0.0.1])
+        by kekkonen.fi.intel.com (Postfix) with SMTP id 6269E11F915;
+        Fri,  1 Dec 2023 23:00:33 +0200 (EET)
+Date:   Fri, 1 Dec 2023 21:00:33 +0000
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Tommaso Merciai <tomm.merciai@gmail.com>
+Cc:     laurent.pinchart@ideasonboard.com, martin.hecht@avnet.eu,
+        michael.roeder@avnet.eu, linuxfancy@googlegroups.com,
+        mhecht73@gmail.com, christophe.jaillet@wanadoo.fr,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Gerald Loacker <gerald.loacker@wolfvision.net>,
+        Nicholas Roth <nicholas@rothemail.net>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH v14 3/3] media: i2c: Add support for alvium camera
+Message-ID: <ZWpJcS7aJmnRm1CB@kekkonen.localdomain>
+References: <20231124093011.2095073-1-tomm.merciai@gmail.com>
+ <20231124093011.2095073-4-tomm.merciai@gmail.com>
 MIME-Version: 1.0
-References: <20230421141723.2405942-1-peternewman@google.com>
- <20230421141723.2405942-4-peternewman@google.com> <38b9e6df-cccd-a745-da4a-1d1a0ec86ff3@intel.com>
- <CALPaoCg76nUsJ7eYcU61gied8WBuAAmqy0Pqpsq5=Z-S52Qg6w@mail.gmail.com>
- <31993ea8-97e5-b8d5-b344-48db212bc9cf@intel.com> <CALPaoCiPCxUeGKjZytxmse2oNs=qDBbRY9kH7AZGG6iXf1qtJw@mail.gmail.com>
- <04c9eb5e-3395-05e6-f0cc-bc8f054a6031@intel.com>
-In-Reply-To: <04c9eb5e-3395-05e6-f0cc-bc8f054a6031@intel.com>
-From:   Peter Newman <peternewman@google.com>
-Date:   Fri, 1 Dec 2023 12:56:06 -0800
-Message-ID: <CALPaoCjg-W3w8OKLHP_g6Evoo03fbgaOQZrGTLX6vdSLp70=SA@mail.gmail.com>
-Subject: Re: [PATCH v1 3/9] x86/resctrl: Add resctrl_mbm_flush_cpu() to
- collect CPUs' MBM events
-To:     Reinette Chatre <reinette.chatre@intel.com>
-Cc:     Fenghua Yu <fenghua.yu@intel.com>, Babu Moger <babu.moger@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Stephane Eranian <eranian@google.com>,
-        James Morse <james.morse@arm.com>,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231124093011.2095073-4-tomm.merciai@gmail.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Reinette,
+Hi Tommaso,
 
-On Tue, May 16, 2023 at 5:06=E2=80=AFPM Reinette Chatre
-<reinette.chatre@intel.com> wrote:
-> On 5/15/2023 7:42 AM, Peter Newman wrote:
-> >
-> > I used a simple parent-child pipe loop benchmark with the parent in
-> > one monitoring group and the child in another to trigger 2M
-> > context-switches on the same CPU and compared the sample-based
-> > profiles on an AMD and Intel implementation. I used perf diff to
-> > compare the samples between hard and soft RMID switches.
-> >
-> > Intel(R) Xeon(R) Platinum 8173M CPU @ 2.00GHz:
-> >
-> >               +44.80%  [kernel.kallsyms]  [k] __rmid_read
-> >     10.43%     -9.52%  [kernel.kallsyms]  [k] __switch_to
-> >
-> > AMD EPYC 7B12 64-Core Processor:
-> >
-> >               +28.27%  [kernel.kallsyms]  [k] __rmid_read
-> >     13.45%    -13.44%  [kernel.kallsyms]  [k] __switch_to
-> >
-> > Note that a soft RMID switch that doesn't change CLOSID skips the
-> > PQR_ASSOC write completely, so from this data I can roughly say that
-> > __rmid_read() is a little over 2x the length of a PQR_ASSOC write that
-> > changes the current RMID on the AMD implementation and about 4.5x
-> > longer on Intel.
-> >
-> > Let me know if this clarifies the cost enough or if you'd like to also
-> > see instrumented measurements on the individual WRMSR/RDMSR
-> > instructions.
->
-> I can see from the data the portion of total time spent in __rmid_read().
-> It is not clear to me what the impact on a context switch is. Is it
-> possible to say with this data that: this solution makes a context switch
-> x% slower?
->
-> I think it may be optimistic to view this as a replacement of a PQR write=
-.
-> As you point out, that requires that a CPU switches between tasks with th=
-e
-> same CLOSID. You demonstrate that resctrl already contributes a significa=
-nt
-> delay to __switch_to - this work will increase that much more, it has to
-> be clear about this impact and motivate that it is acceptable.
+A few more comments below...
 
-We were operating under the assumption that if the overhead wasn't
-acceptable, we would have heard complaints about it by now, but we
-ultimately learned that this feature wasn't deployed as much as we had
-originally thought on AMD hardware and that the overhead does need to
-be addressed.
+On Fri, Nov 24, 2023 at 10:30:07AM +0100, Tommaso Merciai wrote:
 
-I am interested in your opinion on two options I'm exploring to
-mitigate the overhead, both of which depend on an API like the one
-Babu recently proposed for the AMD ABMC feature [1], where a new file
-interface will allow the user to indicate which mon_groups are
-actively being measured. I will refer to this as "assigned" for now,
-as that's the current proposal.
+...
 
-The first is likely the simpler approach: only read MBM event counters
-which have been marked as "assigned" in the filesystem to avoid paying
-the context switch cost on tasks in groups which are not actively
-being measured. In our use case, we calculate memory bandwidth on
-every group every few minutes by reading the counters twice, 5 seconds
-apart. We would just need counters read during this 5-second window.
+> +static int alvium_get_bcrm_vers(struct alvium_dev *alvium)
+> +{
+> +	struct device *dev = &alvium->i2c_client->dev;
+> +	struct alvium_bcrm_vers *v;
+> +	u64 val;
+> +	int ret;
+> +
+> +	ret = alvium_read(alvium, REG_BCRM_VERSION_R, &val, NULL);
+> +	if (ret)
+> +		return ret;
+> +
+> +	v = (struct alvium_bcrm_vers *)&val;
 
-The second involves avoiding the situation where a hardware counter
-could be deallocated: Determine the number of simultaneous RMIDs
-supported, reduce the effective number of RMIDs available to that
-number. Use the default RMID (0) for all "unassigned" monitoring
-groups and report "Unavailable" on all counter reads (and address the
-default monitoring group's counts being unreliable). When assigned,
-attempt to allocate one of the remaining, usable RMIDs to that group.
-It would only be possible to assign all event counters (local, total,
-occupancy) at the same time. Using this approach, we would no longer
-be able to measure all groups at the same time, but this is something
-we would already be accepting when using the AMD ABMC feature.
+You're still reading the entire struct using a single read. :-( This won't
+work on a BE machine as while the struct fields are in the same memory
+locations, the respective data in a single 64-bit value is not.
 
-While the second feature is a lot more disruptive at the filesystem
-layer, it does eliminate the added context switch overhead. Also, it
-may be helpful in the long run for the filesystem code to start taking
-a more abstract view of hardware monitoring resources, given that few
-implementations can afford to assign hardware to all monitoring IDs
-all the time. In both cases, the meaning of "assigned" could vary
-greatly, even among AMD implementations.
+> +
+> +	dev_info(dev, "bcrm version: %u.%u\n", v->minor, v->major);
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_get_fw_version(struct alvium_dev *alvium)
+> +{
+> +	struct device *dev = &alvium->i2c_client->dev;
+> +	struct alvium_fw_vers *fw_v;
+> +	u64 val;
+> +	int ret;
+> +
+> +	ret = alvium_read(alvium, REG_BCRM_DEVICE_FIRMWARE_VERSION_R, &val, NULL);
+> +	if (ret)
+> +		return ret;
+> +
+> +	fw_v = (struct alvium_fw_vers *)&val;
 
-Thanks!
--Peter
+Same here.
 
-[1] https://lore.kernel.org/lkml/20231201005720.235639-1-babu.moger@amd.com=
-/
+> +
+> +	dev_info(dev, "fw version: %u.%u.%u.%u\n", fw_v->special, fw_v->major,
+> +		 fw_v->minor, fw_v->patch);
+> +
+> +	return 0;
+> +}
+> +
+> +static int alvium_get_bcrm_addr(struct alvium_dev *alvium)
+> +{
+> +	u64 val;
+> +	int ret;
+> +
+> +	ret = alvium_read(alvium, REG_BCRM_REG_ADDR_R, &val, NULL);
+> +	if (ret)
+> +		return ret;
+> +
+> +	alvium->bcrm_addr = val;
+> +
+> +	return 0;
+> +}
+
+...
+
+> +static int alvium_setup_mipi_fmt(struct alvium_dev *alvium)
+> +{
+> +	unsigned int avail_fmt_cnt = 0;
+> +	unsigned int fmt = 0;
+> +	size_t sz = 0;
+> +
+> +	alvium->alvium_csi2_fmt = NULL;
+
+This seems to be unnnecessary: the field is assigned below without using it
+(obviously).
+
+> +
+> +	/* calculate fmt array size */
+> +	for (fmt = 0; fmt < ALVIUM_NUM_SUPP_MIPI_DATA_FMT; fmt++) {
+> +		if (!alvium->is_mipi_fmt_avail[alvium_csi2_fmts[fmt].fmt_av_bit])
+> +			continue;
+> +
+> +		if ((!alvium_csi2_fmts[fmt].is_raw) ||
+> +		    (alvium->is_bay_avail[alvium_csi2_fmts[fmt].bay_av_bit]))
+> +			sz++;
+> +	}
+> +
+> +	/* init alvium_csi2_fmt array */
+> +	alvium->alvium_csi2_fmt_n = sz;
+> +	alvium->alvium_csi2_fmt =
+> +		kmalloc_array(sz, sizeof(struct alvium_pixfmt), GFP_KERNEL);
+> +	if (!alvium->alvium_csi2_fmt)
+> +		return -ENOMEM;
+> +
+> +	/* Create the alvium_csi2 fmt array from formats available */
+> +	for (fmt = 0; fmt < ALVIUM_NUM_SUPP_MIPI_DATA_FMT; fmt++) {
+> +		if (!alvium->is_mipi_fmt_avail[alvium_csi2_fmts[fmt].fmt_av_bit])
+> +			continue;
+> +
+> +		if ((!alvium_csi2_fmts[fmt].is_raw) ||
+> +		    (alvium->is_bay_avail[alvium_csi2_fmts[fmt].bay_av_bit])) {
+> +			alvium->alvium_csi2_fmt[avail_fmt_cnt] = alvium_csi2_fmts[fmt];
+> +			avail_fmt_cnt++;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+
+...
+
+> +static const struct alvium_pixfmt *
+> +alvium_code_to_pixfmt(struct alvium_dev *alvium, u32 code)
+> +{
+> +	const struct alvium_pixfmt *formats = alvium->alvium_csi2_fmt;
+
+I'd use alvium->alvium_csi2_fmt and not add a local variable. Up to you.
+
+> +	unsigned int i;
+> +
+> +	for (i = 0; formats[i].code; ++i)
+> +		if (formats[i].code == code)
+> +			return &formats[i];
+> +
+> +	return &formats[0];
+> +}
+> +
+> +static int alvium_set_mode(struct alvium_dev *alvium,
+> +			   struct v4l2_subdev_state *state)
+> +{
+> +	struct v4l2_mbus_framefmt *fmt;
+> +	struct v4l2_rect *crop;
+> +	int ret;
+> +
+> +	crop = v4l2_subdev_state_get_crop(state, 0);
+> +	fmt = v4l2_subdev_state_get_format(state, 0);
+> +
+> +	v4l_bound_align_image(&fmt->width, alvium->img_min_width,
+> +			      alvium->img_max_width, 0,
+> +			      &fmt->height, alvium->img_min_height,
+> +			      alvium->img_max_height, 0, 0);
+> +
+> +	/* alvium don't accept negative crop left/top */
+> +	crop->left = clamp((u32)max(0, crop->left), alvium->min_offx,
+> +			   (u32)(alvium->img_max_width - fmt->width));
+> +	crop->top = clamp((u32)max(0, crop->top), alvium->min_offy,
+> +			  (u32)(alvium->img_max_height - fmt->height));
+> +
+> +	ret = alvium_set_img_width(alvium, fmt->width);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = alvium_set_img_height(alvium, fmt->height);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = alvium_set_img_offx(alvium, crop->left);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = alvium_set_img_offy(alvium, crop->top);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return 0;
+> +}
+
+-- 
+Kind regards,
+
+Sakari Ailus
