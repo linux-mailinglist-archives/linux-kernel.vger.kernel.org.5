@@ -2,198 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4505F8001DE
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 04:06:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B35F8001E9
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 04:09:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376976AbjLADGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 22:06:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36218 "EHLO
+        id S1377029AbjLADJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 22:09:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232308AbjLADGO (ORCPT
+        with ESMTP id S229808AbjLADJc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 22:06:14 -0500
-Received: from mail-oa1-x33.google.com (mail-oa1-x33.google.com [IPv6:2001:4860:4864:20::33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FDC91715;
-        Thu, 30 Nov 2023 19:06:20 -0800 (PST)
-Received: by mail-oa1-x33.google.com with SMTP id 586e51a60fabf-1fa21f561a1so41181fac.3;
-        Thu, 30 Nov 2023 19:06:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701399979; x=1702004779; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=HlBmXw61xz34FZu2gf3f1pqRz+gjfA0iYgscjQD41D0=;
-        b=eSzFICNiPiCFyIuhyNu86j0qLPu38z4YgCpZY7ZLRIfFef/IbdhKjuVl58Z3PPMkUi
-         ANYh72yHVaR3RuQl5gqPNX0iiJemAHMza2c62qV+KrEIl5GRiZUGV9GsYOjcW257xjTx
-         Z7Kpps5Tvvx/AqbM3OA3T/WS1OfwiYQfskuf/CrLY2u9KTF/vn2R8HpYvH53rUp4/nSV
-         p2w8lA4giUJtq3+fa4Re60zpF79NSmBXELbqOGkS0yF9kOBVeHFbRsdKqnIb0AkxhmF/
-         5WLN7cF8oCxBPHnEGrLmU0LX1Ffqnhg6CX+IwXHPg5rJ2b7ieA7U+dAONcQ5A/BKC8J5
-         LYag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701399979; x=1702004779;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HlBmXw61xz34FZu2gf3f1pqRz+gjfA0iYgscjQD41D0=;
-        b=D2YmBPIyjOSvDnyYjup+aZxtxyP1i0H0bZVvdAstQBy6apWT/eaThHsegOZYlrim06
-         Rgu8BiVuxEOBeNWIiSCNTe6WO1oWLnPfYFGlsInU/6Havfv9bzaoCnh1sAq9XhxNKqPa
-         jWhx4pHiZdLq8dxk+259WWn3Qn0vJaw+QDu5k7mFo/Wko3Tv8yxFpZjJEq9Tmu8VgN+Y
-         ZlRl5b66GsIAjTD57gvL6RNhn2dvenFMMq2HhqJRMdr4FDAZHESX9CGx+MPlHcLoe+fM
-         fyKyV3Roa53BpgtYqf+Pt2PqvcGJpots2jMkhmZh2iXy9Inps2VLfZgV65kEe2zC+jYM
-         HgtQ==
-X-Gm-Message-State: AOJu0YzXKZekC05gY99vusmIodkoUhcejXnfqaeJr7rvMX3IfltR7yzR
-        iPAZcfoIb6YXgMZ4ZS3fwwg=
-X-Google-Smtp-Source: AGHT+IEgnGhO56NtfC2n7g1nUI541wzAoNfYMJjns8/mutxpmQ0j+u4qNM5GGZFdKGMMVIOD52UD5g==
-X-Received: by 2002:a05:6870:8921:b0:1fa:de7e:bfa2 with SMTP id i33-20020a056870892100b001fade7ebfa2mr2196755oao.51.1701399979393;
-        Thu, 30 Nov 2023 19:06:19 -0800 (PST)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id fu18-20020a0568705d9200b001fa8b2d3212sm596221oab.1.2023.11.30.19.06.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Nov 2023 19:06:18 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <91a3f785-8d69-4425-ad23-a6ac0ebddb07@roeck-us.net>
-Date:   Thu, 30 Nov 2023 19:06:16 -0800
+        Thu, 30 Nov 2023 22:09:32 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46E5E1715
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 19:09:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701400178; x=1732936178;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=gpWY4+2JBUfSNhJ0zGnen4UeppHFrmcyggO8JuY1P0g=;
+  b=mr8KwNPRHoLeE8XzX0mRi08vHeXRYTjOlftvqZPZLZgokvGwqSbLfyLh
+   10Ji9zpd5CNvXKFEJBvhjNFmk0yCu4Bn40kPlsnr7res9e13nb2ZZ3GR+
+   XiUbVMYbfXX3z9QXZDxz0nlKxZLD/HHRz+yZMJyw73/FC9dJAZCOGTI0A
+   tdfS0OsZrfK0J00EHrvt1gWlpf9CmRVTfh95VDUIRl1lVyk+r4t6bR+S1
+   9M6WC20s5fYMfGjZqf9M9KbtRRuAkaieBMa3HE2/DkN9owpLfHRv7QX93
+   KVRpRHwi+3t8yn6gmGMcW4kYZ38dcnYqkPzO2iIdBAHjVAbqrS5ctb4z8
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="397318078"
+X-IronPort-AV: E=Sophos;i="6.04,240,1695711600"; 
+   d="scan'208";a="397318078"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 19:09:37 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="769523760"
+X-IronPort-AV: E=Sophos;i="6.04,240,1695711600"; 
+   d="scan'208";a="769523760"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga002.jf.intel.com with ESMTP; 30 Nov 2023 19:09:35 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r8tuH-00030g-1r;
+        Fri, 01 Dec 2023 03:09:33 +0000
+Date:   Fri, 1 Dec 2023 11:08:33 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Marco Elver <elver@google.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: arch/powerpc/platforms/512x/mpc512x_shared.c:251:9: sparse: sparse:
+ incorrect type in argument 2 (different address spaces)
+Message-ID: <202312011113.Dz8KI77X-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/3] hwmon: (coretemp) Fix core count limitation
-Content-Language: en-US
-To:     Zhang Rui <rui.zhang@intel.com>, jdelvare@suse.com
-Cc:     fenghua.yu@intel.com, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231127131651.476795-1-rui.zhang@intel.com>
- <20231127131651.476795-4-rui.zhang@intel.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <20231127131651.476795-4-rui.zhang@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/27/23 05:16, Zhang Rui wrote:
-> Currently, coretemp driver only supports 128 cores per package.
-> This loses some core temperation information on systems that have more
-> than 128 cores per package.
->   [   58.685033] coretemp coretemp.0: Adding Core 128 failed
->   [   58.692009] coretemp coretemp.0: Adding Core 129 failed
-> 
-> Fix the problem by using a per package list to maintain the per core
-> temp_data instead of the fixed length pdata->core_data[] array.
-> 
-> Signed-off-by: Zhang Rui <rui.zhang@intel.com>
-> ---
->   drivers/hwmon/coretemp.c | 110 ++++++++++++++++++---------------------
->   1 file changed, 52 insertions(+), 58 deletions(-)
-> 
-> diff --git a/drivers/hwmon/coretemp.c b/drivers/hwmon/coretemp.c
-> index cef43fedbd58..1bb1a6e4b07b 100644
-> --- a/drivers/hwmon/coretemp.c
-> +++ b/drivers/hwmon/coretemp.c
-> @@ -39,11 +39,7 @@ static int force_tjmax;
->   module_param_named(tjmax, force_tjmax, int, 0444);
->   MODULE_PARM_DESC(tjmax, "TjMax value in degrees Celsius");
->   
-> -#define PKG_SYSFS_ATTR_NO	1	/* Sysfs attribute for package temp */
-> -#define BASE_SYSFS_ATTR_NO	2	/* Sysfs Base attr no for coretemp */
-> -#define NUM_REAL_CORES		128	/* Number of Real cores per cpu */
->   #define CORETEMP_NAME_LENGTH	28	/* String Length of attrs */
-> -#define MAX_CORE_DATA		(NUM_REAL_CORES + BASE_SYSFS_ATTR_NO)
->   
->   enum coretemp_attr_index {
->   	ATTR_LABEL,
-> @@ -90,17 +86,17 @@ struct temp_data {
->   	struct attribute *attrs[TOTAL_ATTRS + 1];
->   	struct attribute_group attr_group;
->   	struct mutex update_lock;
-> +	struct list_head node;
->   };
->   
->   /* Platform Data per Physical CPU */
->   struct platform_data {
->   	struct device		*hwmon_dev;
->   	u16			pkg_id;
-> -	u16			cpu_map[NUM_REAL_CORES];
-> -	struct ida		ida;
->   	struct cpumask		cpumask;
-> -	struct temp_data	*core_data[MAX_CORE_DATA];
->   	struct device_attribute name_attr;
-> +	struct mutex		core_data_lock;
-> +	struct list_head	core_data_list;
->   };
->   
->   struct tjmax_pci {
-> @@ -491,6 +487,23 @@ static struct temp_data *init_temp_data(unsigned int cpu, int pkg_flag)
->   	return tdata;
->   }
->   
-> +static struct temp_data *get_tdata(struct platform_data *pdata, int cpu)
-> +{
-> +	struct temp_data *tdata;
-> +
-> +	mutex_lock(&pdata->core_data_lock);
-> +	list_for_each_entry(tdata, &pdata->core_data_list, node) {
-> +		if (cpu >= 0 && !tdata->is_pkg_data && tdata->cpu_core_id == topology_core_id(cpu))
-> +			goto found;
-> +		if (cpu < 0 && tdata->is_pkg_data)
-> +			goto found;
-> +	}
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   2594faafeee2f4406ff82790604e4e3f55037d60
+commit: 90db9dbedd26ce029f3a0f8d2cbd3a142f452408 kasan, powerpc: don't rename memintrinsics if compiler adds prefixes
+date:   8 months ago
+config: powerpc-randconfig-r131-20231127 (https://download.01.org/0day-ci/archive/20231201/202312011113.Dz8KI77X-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce: (https://download.01.org/0day-ci/archive/20231201/202312011113.Dz8KI77X-lkp@intel.com/reproduce)
 
-I really don't like this. With 128+ cores, it gets terribly expensive.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312011113.Dz8KI77X-lkp@intel.com/
 
-How about calculating the number of cores in the probe function and
-allocating cpu_map[] and core_data[] instead ?
+sparse warnings: (new ones prefixed by >>)
+   arch/powerpc/platforms/512x/mpc512x_shared.c:239:25: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int const volatile [noderef] [usertype] __iomem *addr @@     got restricted __be32 [noderef] __iomem * @@
+   arch/powerpc/platforms/512x/mpc512x_shared.c:239:25: sparse:     expected unsigned int const volatile [noderef] [usertype] __iomem *addr
+   arch/powerpc/platforms/512x/mpc512x_shared.c:239:25: sparse:     got restricted __be32 [noderef] __iomem *
+   arch/powerpc/platforms/512x/mpc512x_shared.c:245:38: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int const volatile [noderef] [usertype] __iomem *addr @@     got restricted __be32 [noderef] __iomem * @@
+   arch/powerpc/platforms/512x/mpc512x_shared.c:245:38: sparse:     expected unsigned int const volatile [noderef] [usertype] __iomem *addr
+   arch/powerpc/platforms/512x/mpc512x_shared.c:245:38: sparse:     got restricted __be32 [noderef] __iomem *
+   arch/powerpc/platforms/512x/mpc512x_shared.c:251:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got void [noderef] __iomem *[assigned] vaddr @@
+   arch/powerpc/platforms/512x/mpc512x_shared.c:251:9: sparse:     expected void const *
+   arch/powerpc/platforms/512x/mpc512x_shared.c:251:9: sparse:     got void [noderef] __iomem *[assigned] vaddr
+   arch/powerpc/platforms/512x/mpc512x_shared.c:251:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got void [noderef] __iomem *[assigned] vaddr @@
+   arch/powerpc/platforms/512x/mpc512x_shared.c:251:9: sparse:     expected void const *
+   arch/powerpc/platforms/512x/mpc512x_shared.c:251:9: sparse:     got void [noderef] __iomem *[assigned] vaddr
+>> arch/powerpc/platforms/512x/mpc512x_shared.c:251:9: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void const *q @@     got void [noderef] __iomem *[assigned] vaddr @@
+   arch/powerpc/platforms/512x/mpc512x_shared.c:251:9: sparse:     expected void const *q
+   arch/powerpc/platforms/512x/mpc512x_shared.c:251:9: sparse:     got void [noderef] __iomem *[assigned] vaddr
+   arch/powerpc/platforms/512x/mpc512x_shared.c:256:24: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int const volatile [noderef] [usertype] __iomem *addr @@     got restricted __be32 [noderef] __iomem * @@
+   arch/powerpc/platforms/512x/mpc512x_shared.c:256:24: sparse:     expected unsigned int const volatile [noderef] [usertype] __iomem *addr
+   arch/powerpc/platforms/512x/mpc512x_shared.c:256:24: sparse:     got restricted __be32 [noderef] __iomem *
+   arch/powerpc/platforms/512x/mpc512x_shared.c:264:25: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int const volatile [noderef] [usertype] __iomem *addr @@     got restricted __be32 [noderef] __iomem * @@
+   arch/powerpc/platforms/512x/mpc512x_shared.c:264:25: sparse:     expected unsigned int const volatile [noderef] [usertype] __iomem *addr
+   arch/powerpc/platforms/512x/mpc512x_shared.c:264:25: sparse:     got restricted __be32 [noderef] __iomem *
+   arch/powerpc/platforms/512x/mpc512x_shared.c:271:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got void [noderef] __iomem *[assigned] vaddr @@
+   arch/powerpc/platforms/512x/mpc512x_shared.c:271:9: sparse:     expected void const *
+   arch/powerpc/platforms/512x/mpc512x_shared.c:271:9: sparse:     got void [noderef] __iomem *[assigned] vaddr
+   arch/powerpc/platforms/512x/mpc512x_shared.c:271:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got void [noderef] __iomem *[assigned] vaddr @@
+   arch/powerpc/platforms/512x/mpc512x_shared.c:271:9: sparse:     expected void const *
+   arch/powerpc/platforms/512x/mpc512x_shared.c:271:9: sparse:     got void [noderef] __iomem *[assigned] vaddr
+   arch/powerpc/platforms/512x/mpc512x_shared.c:271:9: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void const *q @@     got void [noderef] __iomem *[assigned] vaddr @@
+   arch/powerpc/platforms/512x/mpc512x_shared.c:271:9: sparse:     expected void const *q
+   arch/powerpc/platforms/512x/mpc512x_shared.c:271:9: sparse:     got void [noderef] __iomem *[assigned] vaddr
+   arch/powerpc/platforms/512x/mpc512x_shared.c:277:19: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int volatile [noderef] [usertype] __iomem *addr @@     got restricted __be32 [noderef] __iomem * @@
+   arch/powerpc/platforms/512x/mpc512x_shared.c:277:19: sparse:     expected unsigned int volatile [noderef] [usertype] __iomem *addr
+   arch/powerpc/platforms/512x/mpc512x_shared.c:277:19: sparse:     got restricted __be32 [noderef] __iomem *
+   arch/powerpc/platforms/512x/mpc512x_shared.c:278:32: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int volatile [noderef] [usertype] __iomem *addr @@     got restricted __be32 [noderef] __iomem * @@
+   arch/powerpc/platforms/512x/mpc512x_shared.c:278:32: sparse:     expected unsigned int volatile [noderef] [usertype] __iomem *addr
+   arch/powerpc/platforms/512x/mpc512x_shared.c:278:32: sparse:     got restricted __be32 [noderef] __iomem *
+   arch/powerpc/platforms/512x/mpc512x_shared.c:279:32: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int volatile [noderef] [usertype] __iomem *addr @@     got restricted __be32 [noderef] __iomem * @@
+   arch/powerpc/platforms/512x/mpc512x_shared.c:279:32: sparse:     expected unsigned int volatile [noderef] [usertype] __iomem *addr
+   arch/powerpc/platforms/512x/mpc512x_shared.c:279:32: sparse:     got restricted __be32 [noderef] __iomem *
+   arch/powerpc/platforms/512x/mpc512x_shared.c:280:32: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int volatile [noderef] [usertype] __iomem *addr @@     got restricted __be32 [noderef] __iomem * @@
+   arch/powerpc/platforms/512x/mpc512x_shared.c:280:32: sparse:     expected unsigned int volatile [noderef] [usertype] __iomem *addr
+   arch/powerpc/platforms/512x/mpc512x_shared.c:280:32: sparse:     got restricted __be32 [noderef] __iomem *
+   arch/powerpc/platforms/512x/mpc512x_shared.c: note: in included file (through include/linux/mmzone.h, include/linux/gfp.h, include/linux/xarray.h, ...):
+   include/linux/page-flags.h:246:46: sparse: sparse: self-comparison always evaluates to false
 
-Thanks,
-Guenter
+vim +251 arch/powerpc/platforms/512x/mpc512x_shared.c
 
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  208  
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  209  /*
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  210   * Check if DIU was pre-initialized. If so, perform steps
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  211   * needed to continue displaying through the whole boot process.
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  212   * Move area descriptor and gamma table elsewhere, they are
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  213   * destroyed by bootmem allocator otherwise. The frame buffer
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  214   * address range will be reserved in setup_arch() after bootmem
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  215   * allocator is up.
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  216   */
+7e198197ec878c Brian Norris       2013-10-11  217  static void __init mpc512x_init_diu(void)
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  218  {
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  219  	struct device_node *np;
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  220  	struct diu __iomem *diu_reg;
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  221  	phys_addr_t desc;
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  222  	void __iomem *vaddr;
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  223  	unsigned long mode, pix_fmt, res, bpp;
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  224  	unsigned long dst;
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  225  
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  226  	np = of_find_compatible_node(NULL, NULL, "fsl,mpc5121-diu");
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  227  	if (!np) {
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  228  		pr_err("No DIU node\n");
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  229  		return;
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  230  	}
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  231  
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  232  	diu_reg = of_iomap(np, 0);
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  233  	of_node_put(np);
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  234  	if (!diu_reg) {
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  235  		pr_err("Can't map DIU\n");
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  236  		return;
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  237  	}
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  238  
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  239  	mode = in_be32(&diu_reg->diu_mode);
+c4e5a0232763db Timur Tabi         2011-09-28  240  	if (mode == MFB_MODE0) {
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  241  		pr_info("%s: DIU OFF\n", __func__);
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  242  		goto out;
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  243  	}
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  244  
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23 @245  	desc = in_be32(&diu_reg->desc[0]);
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  246  	vaddr = ioremap(desc, sizeof(struct diu_ad));
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  247  	if (!vaddr) {
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  248  		pr_err("Can't map DIU area desc.\n");
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  249  		goto out;
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  250  	}
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23 @251  	memcpy(&diu_shared_fb.ad0, vaddr, sizeof(struct diu_ad));
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  252  	/* flush fb area descriptor */
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  253  	dst = (unsigned long)&diu_shared_fb.ad0;
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  254  	flush_dcache_range(dst, dst + sizeof(struct diu_ad) - 1);
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  255  
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  256  	res = in_be32(&diu_reg->disp_size);
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  257  	pix_fmt = in_le32(vaddr);
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  258  	bpp = ((pix_fmt >> 16) & 0x3) + 1;
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  259  	diu_shared_fb.fb_phys = in_le32(vaddr + 4);
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  260  	diu_shared_fb.fb_len = ((res & 0xfff0000) >> 16) * (res & 0xfff) * bpp;
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  261  	diu_shared_fb.in_use = true;
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  262  	iounmap(vaddr);
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  263  
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  264  	desc = in_be32(&diu_reg->gamma);
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  265  	vaddr = ioremap(desc, sizeof(diu_shared_fb.gamma));
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  266  	if (!vaddr) {
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  267  		pr_err("Can't map DIU area desc.\n");
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  268  		diu_shared_fb.in_use = false;
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  269  		goto out;
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  270  	}
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  271  	memcpy(&diu_shared_fb.gamma, vaddr, sizeof(diu_shared_fb.gamma));
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  272  	/* flush gamma table */
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  273  	dst = (unsigned long)&diu_shared_fb.gamma;
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  274  	flush_dcache_range(dst, dst + sizeof(diu_shared_fb.gamma) - 1);
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  275  
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  276  	iounmap(vaddr);
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  277  	out_be32(&diu_reg->gamma, virt_to_phys(&diu_shared_fb.gamma));
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  278  	out_be32(&diu_reg->desc[1], 0);
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  279  	out_be32(&diu_reg->desc[2], 0);
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  280  	out_be32(&diu_reg->desc[0], virt_to_phys(&diu_shared_fb.ad0));
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  281  
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  282  out:
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  283  	iounmap(diu_reg);
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  284  }
+4b5006ec7bb73c Anatolij Gustschin 2010-07-23  285  
+
+:::::: The code at line 251 was first introduced by commit
+:::::: 4b5006ec7bb73cd9d4c8a723d484b4c87fad4123 powerpc/5121: shared DIU framebuffer support
+
+:::::: TO: Anatolij Gustschin <agust@denx.de>
+:::::: CC: Grant Likely <grant.likely@secretlab.ca>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
