@@ -2,49 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4A3B8013BA
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 20:52:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 876CB8013BF
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 20:53:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379545AbjLATwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 14:52:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45080 "EHLO
+        id S1379548AbjLATxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 14:53:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379522AbjLATws (ORCPT
+        with ESMTP id S1379538AbjLATxg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 14:52:48 -0500
-Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5689F10C2
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 11:52:51 -0800 (PST)
-Received: from gaggiata.pivistrello.it (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
-        by mail11.truemail.it (Postfix) with ESMTPA id 9316F221C6;
-        Fri,  1 Dec 2023 20:52:49 +0100 (CET)
-Received: from livingston (unknown [192.168.42.11])
-        by gaggiata.pivistrello.it (Postfix) with ESMTP id 4686C7F9C0;
-        Fri,  1 Dec 2023 20:52:49 +0100 (CET)
-Received: from pivi by livingston with local (Exim 4.96)
-        (envelope-from <francesco@dolcini.it>)
-        id 1r99ZB-0001DT-0S;
-        Fri, 01 Dec 2023 20:52:49 +0100
-Date:   Fri, 1 Dec 2023 20:52:49 +0100
-From:   Francesco Dolcini <francesco@dolcini.it>
-To:     Nishanth Menon <nm@ti.com>
-Cc:     Francesco Dolcini <francesco@dolcini.it>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Tero Kristo <kristo@kernel.org>,
-        Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH v2] arm64: defconfig: increase SERIAL_8250_NR_UARTS
-Message-ID: <ZWo5kVMoLTzST6F5@livingston.pivistrello.it>
-References: <20231201171544.1901-1-francesco@dolcini.it>
- <20231201191958.kmwkpmttmebsas47@kooky>
+        Fri, 1 Dec 2023 14:53:36 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E77DED54;
+        Fri,  1 Dec 2023 11:53:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=XPWnaxPrm0f6elHZEHty0Q05hMlpsHFhw/SaklHOpvc=; b=3NU6U5fuCupHMo/sgD44cUrAFA
+        /nLb7DQAPa+1nxFgma0kLThjAWE+5Q8mjoKT5jcarJU8KGYsWlqJC/udu4zxEXPqra1sb74XdZpoX
+        1dRkdOHl5JddfH1nJ+swu9LbzodqcjqCAdMdqlqJxgyZMZk1qdU2hDNBKbjzDvySpwzMhTMAM3wTs
+        +EjhiyVpGNZDKtSdtr8GtoOaTtFCm/Utu5HkKWazHOiJdQosQxmmBrzDtTFbIFXf/nAeD+WUD70sT
+        Mi4KeFjralDl1TGfMuLlIpekKzpUrWGn+QtNoit5AcvMxJRcGvn597ndncNUfEdezZssuwoUPCkik
+        +hDrF4NQ==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1r99a0-00EXox-2x;
+        Fri, 01 Dec 2023 19:53:40 +0000
+Message-ID: <bbd1bbfb-c482-433d-bce9-2b591b8e855e@infradead.org>
+Date:   Fri, 1 Dec 2023 11:53:37 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231201191958.kmwkpmttmebsas47@kooky>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+User-Agent: Mozilla Thunderbird
+Subject: Re: linux-next: Tree for Dec 1 (riscv, crash_core)
+Content-Language: en-US
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        kexec <kexec@lists.infradead.org>, Baoquan He <bhe@redhat.com>
+References: <20231201133726.4a4413dd@canb.auug.org.au>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20231201133726.4a4413dd@canb.auug.org.au>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,48 +55,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 01, 2023 at 01:19:58PM -0600, Nishanth Menon wrote:
-> On 18:15-20231201, Francesco Dolcini wrote:
-> > Increase CONFIG_SERIAL_8250_NR_UARTS from 4 to 8, the current legacy value
-> > is not adequate for embedded systems that use SoCs where it's common to
-> > have a large number of serial ports.
-> > 
-> > No need to change CONFIG_SERIAL_8250_RUNTIME_UARTS, see commit 9d86719f8769
-> > ("serial: 8250: Allow using ports higher than SERIAL_8250_RUNTIME_UARTS").
-> > 
-> > The need to increase this value was noticed while working with Toradex
-> > Verdin AM62, this board has 4 serial UART instances available to the user
-> > plus an internal one that is connected to a Bluetooth module. Without this
-> > change the fifth UART connected to the BT module is not instantiated and BT
-> > is not working.
-> > 
-> > Instead of increasing the number to the bare minimum (5) that would be
-> > required to solve this specific issue, we increase this to 8 which seems a
-> > more reasonable number to have in the defconfig and should cover more valid
-> > use cases.
+
+
+On 11/30/23 18:37, Stephen Rothwell wrote:
+> Hi all,
 > 
-> To address Arnd's concern on size increase, it will be good to add:
+> Changes since 20231130:
+> 
 
-I can and I will add it in a v3 - it takes less time to do it than reply to
-this email and thanks for taking the time to provide the actual data.
+on riscv 32-bit or 64-bit, with
+# CONFIG_MMU is not set
 
-With that said my understanding is that the goal of the arm64 defconfig is
-to enable the supported arm64 hardware and the related kernel development.
-It's not supposed to be a minimal config in size nor an optimal
-configuration from the performance point of view. It's a single
-configuration that includes support for each and every platform [1]
-supported by Linux arm64 ...
+In file included from ../arch/riscv/kernel/crash_core.c:3:
+../arch/riscv/kernel/crash_core.c: In function 'arch_crash_save_vmcoreinfo':
+../arch/riscv/kernel/crash_core.c:8:27: error: 'VA_BITS' undeclared (first use in this function)
+    8 |         VMCOREINFO_NUMBER(VA_BITS);
+      |                           ^~~~~~~
+../include/linux/crash_core.h:78:64: note: in definition of macro 'VMCOREINFO_NUMBER'
+   78 |         vmcoreinfo_append_str("NUMBER(%s)=%ld\n", #name, (long)name)
+      |                                                                ^~~~
+../arch/riscv/kernel/crash_core.c:8:27: note: each undeclared identifier is reported only once for each function it appears in
+    8 |         VMCOREINFO_NUMBER(VA_BITS);
+      |                           ^~~~~~~
+../include/linux/crash_core.h:78:64: note: in definition of macro 'VMCOREINFO_NUMBER'
+   78 |         vmcoreinfo_append_str("NUMBER(%s)=%ld\n", #name, (long)name)
+      |                                                                ^~~~
+../arch/riscv/kernel/crash_core.c:12:58: warning: format '%lx' expects argument of type 'long unsigned int', but argument 2 has type 'int' [-Wformat=]
+   12 |         vmcoreinfo_append_str("NUMBER(VMALLOC_START)=0x%lx\n", VMALLOC_START);
+      |                                                        ~~^
+      |                                                          |
+      |                                                          long unsigned int
+      |                                                        %x
+../arch/riscv/kernel/crash_core.c:14:64: error: 'VMEMMAP_START' undeclared (first use in this function)
+   14 |         vmcoreinfo_append_str("NUMBER(VMEMMAP_START)=0x%lx\n", VMEMMAP_START);
+      |                                                                ^~~~~~~~~~~~~
+../arch/riscv/kernel/crash_core.c:15:62: error: 'VMEMMAP_END' undeclared (first use in this function); did you mean 'MEMREMAP_ENC'?
+   15 |         vmcoreinfo_append_str("NUMBER(VMEMMAP_END)=0x%lx\n", VMEMMAP_END);
+      |                                                              ^~~~~~~~~~~
+      |                                                              MEMREMAP_ENC
 
-To me Arnd was just stating a fact, not raising a concern that was supposed
-to be addressed (just correct me if I'm wrong, of course).
+64-bit only: 
 
-[1] well, apart AMD Pensando and Bitmain, at the moment, but you get the
-point, I'm sure ;-).
+../arch/riscv/kernel/crash_core.c:17:64: error: 'MODULES_VADDR' undeclared (first use in this function)
+   17 |         vmcoreinfo_append_str("NUMBER(MODULES_VADDR)=0x%lx\n", MODULES_VADDR);
+      |                                                                ^~~~~~~~~~~~~
+../arch/riscv/kernel/crash_core.c:18:62: error: 'MODULES_END' undeclared (first use in this function)
+   18 |         vmcoreinfo_append_str("NUMBER(MODULES_END)=0x%lx\n", MODULES_END);
+      |                                                              ^~~~~~~~~~~
 
-> ---
-> With this change kernel image increases by ~3.2k. bloat-o-meter summary:
-> add/remove: 1/1 grow/shrink: 7/0 up/down: 3220/-8 (3212)
-> ---
 
-Francesco
 
+-- 
+~Randy
