@@ -2,139 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89829800D23
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 15:28:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD00F800D33
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 15:34:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379167AbjLAO22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 09:28:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59156 "EHLO
+        id S1379170AbjLAOeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 09:34:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379143AbjLAO21 (ORCPT
+        with ESMTP id S1379143AbjLAOeK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 09:28:27 -0500
-Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B546110FD
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 06:28:30 -0800 (PST)
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com [209.85.160.199])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 790413F1D9
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 14:28:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1701440909;
-        bh=J3tX3M2zYj5xzUQ87L+5qVD8j/S83Al/tHxvfxTDyUw=;
-        h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=AkkS/ol59EXGAb+QsIO/byDT45l8s7RHVDq5Qku8XiCzKUPH4+ZsfaE1m3h/Izi9g
-         XFPzW74jIedKNmcw5nWkS0aejur4a3V59DqFIVaOhZ/qLjvTtkIDzbGxxPd1GLyOEh
-         GSHX8obFb97QRLlrdaUyamDeLyievNzmu3v5VI1P49jpNeRX7gcYu9h+6fT7L3O1FB
-         32hzkslUhfC0DH6j+YsVXZnCuxpe9X/go57MOpztZD1eygWguSgfuxsf2yeN0yFFkt
-         KXwC4iydgKmF5cLQQAxj79UkgSBtZOjvVALVYbVa+iB/AojdBg6HSkHZ0fJ6k1V0UB
-         aWQ3DoenkOB9g==
-Received: by mail-qt1-f199.google.com with SMTP id d75a77b69052e-423e22075f4so24776641cf.0
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 06:28:29 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701440908; x=1702045708;
-        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=J3tX3M2zYj5xzUQ87L+5qVD8j/S83Al/tHxvfxTDyUw=;
-        b=qZgAnZU7hVhgDCAqOA9e9k1FsFMRhTgOMl8//Osep7bykAfRbWPE/f2Zfps7JaHSWT
-         c7qv37mih7yAecYonXcLyFjYgXtTNJTCQ7fgLXgrNAed2vU1VshojtHIg/X7ZnZKeRHY
-         tK36MuSevnjFF0g/zdb0ARmwymkrWqLnUpkZP7ucmczJCcQ0xW0kFYk/3TMuMu8Kyyqx
-         F7svxKIluH79cWUnYkZaAL0JgnnnEgk7ZGukRHTEDj/bjXpkksTlqBcyn0O8lPTluCAl
-         QZywy6c8TMUoYJHhzFybRraOEaWM2zn+IywfA/btjg3HacMbTGSaHzC+5XO31ZCc/RdF
-         lY7A==
-X-Gm-Message-State: AOJu0Ywf7OXAzqi1OhJTEnUNN80rxQBgZIHGKiYOgB1BaXUQVUkpCaQ1
-        QOv5Zbm0h4f25NkT0piphw6H8+mF9smJmWHRh9LHZFM6/awXzI+zHCWZRsQTvA5m5gwUFyZHij5
-        BMAtwV6X4mMyEJ2+zg5UTU/xwX9cUlbagYtcxGs99TKRm8rijNoagAyVHgg==
-X-Received: by 2002:ac8:5882:0:b0:423:74a5:2847 with SMTP id t2-20020ac85882000000b0042374a52847mr27370893qta.49.1701440908461;
-        Fri, 01 Dec 2023 06:28:28 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFz6QSK9JfIdYSeG1hMKcfp6BJsk9FZlcDEDSfyu1q6fE+aNUWQuhYy7p5rzkdPobcTPVTqnTSPj2jiq9s9GYc=
-X-Received: by 2002:ac8:5882:0:b0:423:74a5:2847 with SMTP id
- t2-20020ac85882000000b0042374a52847mr27370879qta.49.1701440908234; Fri, 01
- Dec 2023 06:28:28 -0800 (PST)
-Received: from 348282803490 named unknown by gmailapi.google.com with
- HTTPREST; Fri, 1 Dec 2023 15:28:27 +0100
-From:   Emil Renner Berthing <emil.renner.berthing@canonical.com>
-In-Reply-To: <fe4c15dcc3074412326b8dc296b0cbccf79c49bf.1701422582.git.namcao@linutronix.de>
-References: <fd8bf044799ae50a6291ae150ef87b4f1923cacb.1701422582.git.namcao@linutronix.de>
- <fe4c15dcc3074412326b8dc296b0cbccf79c49bf.1701422582.git.namcao@linutronix.de>
-Mime-Version: 1.0
-Date:   Fri, 1 Dec 2023 15:28:27 +0100
-Message-ID: <CAJM55Z9CooaYqeTuZK0FARKupf_StTSfWBo7ziv4KtGq6pEVaQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] pinctrl: starfive: jh7100: ignore disabled device
- tree nodes
-To:     Nam Cao <namcao@linutronix.de>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Jianlong Huang <jianlong.huang@starfivetech.com>,
-        Hal Feng <hal.feng@starfivetech.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Huan Feng <huan.feng@starfivetech.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Fri, 1 Dec 2023 09:34:10 -0500
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97530F3;
+        Fri,  1 Dec 2023 06:34:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=75HpQ8zJCusCnATm5X1WlNretb7dFvKE43V00rPlkpo=; b=QCtT5vcT7WTfHFtgNgve/wjtu+
+        ooH62L/pwcalRhPo19ckukHVwCdpeFjijdpPkuWK+BNXMKztNpYZLnrb8gmV5iD1mFhFM8l6D2JP1
+        /PM0vSqBqtSgEqaXexgFdLgU/pz6GVmRAFB/99VVOkt7xIqu/Ib7kf5ad01jaJbxPx3o=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1r94an-001lho-NF; Fri, 01 Dec 2023 15:34:09 +0100
+Date:   Fri, 1 Dec 2023 15:34:09 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: marvell: move MMP boards to common marvell
+ directory
+Message-ID: <5d511e31-8ff5-4c23-a65e-8660833a9799@lunn.ch>
+References: <20231201132306.60753-1-krzysztof.kozlowski@linaro.org>
+ <1e25e2f4-e4b9-4219-a9c2-cb6230a62549@lunn.ch>
+ <a44b7bb2-34ac-45ab-84c6-630d604f1bcf@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a44b7bb2-34ac-45ab-84c6-630d604f1bcf@linaro.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Nam Cao wrote:
-> The driver always registers pin configurations in device tree. This can
-> cause some inconvenience to users, as pin configurations in the base
-> device tree cannot be disabled in the device tree overlay, even when the
-> relevant devices are not used.
->
-> Ignore disabled pin configuration nodes in device tree.
->
-> Fixes: ec648f6b7686 ("pinctrl: starfive: Add pinctrl driver for StarFive SoCs")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Nam Cao <namcao@linutronix.de>
-> ---
->  drivers/pinctrl/starfive/pinctrl-starfive-jh7100.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/pinctrl/starfive/pinctrl-starfive-jh7100.c b/drivers/pinctrl/starfive/pinctrl-starfive-jh7100.c
-> index 530fe340a9a1..561fd0c6b9b0 100644
-> --- a/drivers/pinctrl/starfive/pinctrl-starfive-jh7100.c
-> +++ b/drivers/pinctrl/starfive/pinctrl-starfive-jh7100.c
-> @@ -492,7 +492,7 @@ static int starfive_dt_node_to_map(struct pinctrl_dev *pctldev,
->
->  	nmaps = 0;
->  	ngroups = 0;
-> -	for_each_child_of_node(np, child) {
-> +	for_each_available_child_of_node(np, child) {
+On Fri, Dec 01, 2023 at 03:21:05PM +0100, Krzysztof Kozlowski wrote:
+> On 01/12/2023 14:51, Andrew Lunn wrote:
+> > On Fri, Dec 01, 2023 at 02:23:06PM +0100, Krzysztof Kozlowski wrote:
+> >> Marvell board bindings are spread over arm/marvell/ and arm/mrvl/
+> >> directories.  Move MMP board bindings from the latter to the former, to
+> >> keep all of them together.
+> > 
+> > Hi Krzysztof
+> > 
+> > Did you test get_maintainers.pl? MMP has a different maintainer to
+> > many of the other Marvell SoCs. We want emails going to the correct
+> > Maintainers, and ideally not spamming the others.
+> 
+> The old binding was not referenced in MAINTAINERS, at least I could not
+> find it.
+> My change does not affect status quo - orphaned files.
+> 
+> OTOH, some entries like Orion list specific files. Others like Marvell
+> list entire directory, which is their mistake in the first place.
+> 
+> There is a mess in this approach, but the mess exists before my patch.
 
-Hi Nam,
+I think these moved files will now match:
 
-Is this safe to do? I mean will the children considered "available" not change
-as drivers are loaded during boot so this is racy?
+ARM/Marvell Kirkwood and Armada 370, 375, 38x, 39x, XP, 3700, 7K/8K, CN9130 SOC support
+M:      Andrew Lunn <andrew@lunn.ch>
+M:      Gregory Clement <gregory.clement@bootlin.com>
+M:      Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+L:      linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+S:      Maintained
+T:      git git://git.kernel.org/pub/scm/linux/kernel/git/gclement/mvebu.git
+F:      Documentation/devicetree/bindings/arm/marvell/
 
-Also arguably this is not a bugfix, but a new feature.
+But these files are not Gregory or my problem.
 
-Same comments apply to the JH7110 patch.
+If they were orphaned before, i would prefer they are either orphaned
+after the move, or associated to the correct maintainer. Being
+associated to the wrong maintainers is worse than having no
+maintainers at all.
 
-/Emil
-
->  		int npinmux = of_property_count_u32_elems(child, "pinmux");
->  		int npins   = of_property_count_u32_elems(child, "pins");
->
-> @@ -527,7 +527,7 @@ static int starfive_dt_node_to_map(struct pinctrl_dev *pctldev,
->  	nmaps = 0;
->  	ngroups = 0;
->  	mutex_lock(&sfp->mutex);
-> -	for_each_child_of_node(np, child) {
-> +	for_each_available_child_of_node(np, child) {
->  		int npins;
->  		int i;
->
-> --
-> 2.39.2
->
+   Andrew
