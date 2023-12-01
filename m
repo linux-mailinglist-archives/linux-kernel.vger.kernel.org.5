@@ -2,105 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFE04801570
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 22:33:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0602801591
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 22:39:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379678AbjLAVdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 16:33:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41550 "EHLO
+        id S1379651AbjLAVix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 16:38:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229616AbjLAVdO (ORCPT
+        with ESMTP id S229456AbjLAViw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 16:33:14 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAF5F10E5
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 13:33:20 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCFC9C433C7;
-        Fri,  1 Dec 2023 21:33:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701466400;
-        bh=YtF+HG7uyHGCB80zMWlxTQc+O5fEWTNNEjS+VJTvaKs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=F31NF7i8Qcu+arEuEbKWIVU5oWYsZGlTsBZSWkUo98N8FkrCPbmUOg5rOclyakcJ0
-         3LnY8ogh/k+x5iIATms0MN/IFMsaD6p0WE6zCIkpyYS0Zu6iibcaVGXmXU7F5WOqOh
-         Bj5/DrPK2aUb7aWZiKvSfIHmzc4bAseovq8gQn2CPbaCrI0CTA/tT0nyQAjFEVfWg6
-         ZjAlQApmm1dN0GHUngQAFkbx69l0pGr1L4PAclJw6nIk++qAfKx8DhthObiN65kqrB
-         Xk/82YE2Ctd3qRfMWarz8krvjuYStXuxNE9pgcm9vnDQyGhACJgP2siU8Bs2KPAPj7
-         94WVkZcZfBoEg==
-Date:   Fri, 1 Dec 2023 13:36:47 -0800
-From:   Bjorn Andersson <andersson@kernel.org>
-To:     Tengfei Fan <quic_tengfan@quicinc.com>
-Cc:     agross@kernel.org, konrad.dybcio@linaro.org,
-        linus.walleij@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@quicinc.com
-Subject: Re: [PATCH v5 4/4] pinctrl: qcom: sm4450: correct incorrect address
- offset
-Message-ID: <dx62durg3wmqviqdpecdqprd5wwkg4i7n5tgcab55axzssdeel@ftt35c6td2sh>
-References: <20231130024046.25938-1-quic_tengfan@quicinc.com>
- <20231130024046.25938-5-quic_tengfan@quicinc.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231130024046.25938-5-quic_tengfan@quicinc.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Fri, 1 Dec 2023 16:38:52 -0500
+Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B22FE6;
+        Fri,  1 Dec 2023 13:38:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
+        ; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
+        :Date:subject:date:message-id:reply-to;
+        bh=r/q53G/cSiatCOhG7xswwAt/NMI7k5B5sYhHKO2N/yc=; b=L9H9um3kspw8xuVxBmJgV6W9OF
+        Zg8JDQBgcX+fISjS2Y9J8XJn+nSdn8psC7q6Jw3han8nDEF5Vi8K1KDmNWnGr6bi7PIuYmcR7aWr5
+        jPbowOuOSO37kF2ggLPd2F2h8dZKeEf9hjijFmj/DTLKIqdNJPRjFdo3kxLM5K6GAFDs=;
+Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:41064 helo=pettiford)
+        by mail.hugovil.com with esmtpa (Exim 4.92)
+        (envelope-from <hugo@hugovil.com>)
+        id 1r9BDj-0006T2-Fk; Fri, 01 Dec 2023 16:38:47 -0500
+Date:   Fri, 1 Dec 2023 16:38:46 -0500
+From:   Hugo Villeneuve <hugo@hugovil.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Jan =?ISO-8859-1?Q?Kundr=E1t?= <jan.kundrat@cesnet.cz>,
+        Cosmin Tanislav <cosmin.tanislav@analog.com>,
+        linux-serial@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-kernel@vger.kernel.org
+Message-Id: <20231201163846.a7c1d79daca7c6a2e1416a70@hugovil.com>
+In-Reply-To: <ce3eaa82-66e9-404b-9062-0f628dc6164f@sirena.org.uk>
+References: <bd91db46c50615bc1d1d62beb659fa7f62386446.1701446070.git.jan.kundrat@cesnet.cz>
+        <20231201132736.65cb0e2bff88fba85121c44a@hugovil.com>
+        <ce3eaa82-66e9-404b-9062-0f628dc6164f@sirena.org.uk>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 70.80.174.168
+X-SA-Exim-Mail-From: hugo@hugovil.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH] tty: max310x: work around regmap->regcache data
+ corruption
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 30, 2023 at 10:40:46AM +0800, Tengfei Fan wrote:
-> The address offset of 0x100000 is already provided in SM4450 DTSI, so
-> subtract 0x100000 from the offset which used by ufs and sdc.
+On Fri, 1 Dec 2023 18:34:38 +0000
+Mark Brown <broonie@kernel.org> wrote:
+
+> On Fri, Dec 01, 2023 at 01:27:36PM -0500, Hugo Villeneuve wrote:
 > 
-
-As Konrad points out, please fix the broken patch, don't add a separate
-fix in the same series.
-
-> Suggested-by: Can Guo <quic_cang@quicinc.com>
-
-We unfortunately don't have a way to give credit to those providing
-review feedback, so omit this when fixing patch #2.
-
-Regards,
-Bjorn
-
-> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
-> ---
->  drivers/pinctrl/qcom/pinctrl-sm4450.c | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
+> > it is funny, as I am preparing to send a patch for the sc16is7xx driver
+> > to convert FIFO R/W to use the _noinc_ versions of regmap functions,
+> > inspired by your patch 3f42b142ea11 ("serial: max310x: fix IO data
+> > corruption in batched operations").
 > 
-> diff --git a/drivers/pinctrl/qcom/pinctrl-sm4450.c b/drivers/pinctrl/qcom/pinctrl-sm4450.c
-> index 49e2e3a7a9cb..5496f955ed2a 100644
-> --- a/drivers/pinctrl/qcom/pinctrl-sm4450.c
-> +++ b/drivers/pinctrl/qcom/pinctrl-sm4450.c
-> @@ -936,14 +936,14 @@ static const struct msm_pingroup sm4450_groups[] = {
->  	[133] = PINGROUP(133, _, phase_flag, _, _, _, _, _, _, _),
->  	[134] = PINGROUP(134, tsense_pwm1_out, tsense_pwm2_out, _, _, _, _, _, _, _),
->  	[135] = PINGROUP(135, _, phase_flag, _, _, _, _, _, _, _),
-> -	[136] = UFS_RESET(ufs_reset, 0x197000),
-> -	[137] = SDC_QDSD_PINGROUP(sdc1_rclk, 0x18c004, 0, 0),
-> -	[138] = SDC_QDSD_PINGROUP(sdc1_clk, 0x18c000, 13, 6),
-> -	[139] = SDC_QDSD_PINGROUP(sdc1_cmd, 0x18c000, 11, 3),
-> -	[140] = SDC_QDSD_PINGROUP(sdc1_data, 0x18c000, 9, 0),
-> -	[141] = SDC_QDSD_PINGROUP(sdc2_clk, 0x18f000, 14, 6),
-> -	[142] = SDC_QDSD_PINGROUP(sdc2_cmd, 0x18f000, 11, 3),
-> -	[143] = SDC_QDSD_PINGROUP(sdc2_data, 0x18f000, 9, 0),
-> +	[136] = UFS_RESET(ufs_reset, 0x97000),
-> +	[137] = SDC_QDSD_PINGROUP(sdc1_rclk, 0x8c004, 0, 0),
-> +	[138] = SDC_QDSD_PINGROUP(sdc1_clk, 0x8c000, 13, 6),
-> +	[139] = SDC_QDSD_PINGROUP(sdc1_cmd, 0x8c000, 11, 3),
-> +	[140] = SDC_QDSD_PINGROUP(sdc1_data, 0x8c000, 9, 0),
-> +	[141] = SDC_QDSD_PINGROUP(sdc2_clk, 0x8f000, 14, 6),
-> +	[142] = SDC_QDSD_PINGROUP(sdc2_cmd, 0x8f000, 11, 3),
-> +	[143] = SDC_QDSD_PINGROUP(sdc2_data, 0x8f000, 9, 0),
->  };
->  
->  static const struct msm_gpio_wakeirq_map sm4450_pdc_map[] = {
-> -- 
-> 2.17.1
-> 
+> If you're working on that driver it'd also be good to update the current
+> use of cache bypass for the enhanced features/interrupt identification
+> register (and anything else in there, that did seem to be the only one)
+> to use regmap ranges instead - that'd remove the need for the efr_lock
+> and be a much more sensible/idiomatic use of the regmap APIs.
+
+Hi Mark,
+agreed, and I have already removed all cache bypass code (after some
+fix for volatile registers)...
+
+I will also look to remove the efr_lock, altough it has more
+implications since this ship has some registers that share a common
+address, and selected by bits in other registers, and I think this
+is why there is this efr_lock.
+
+I need to run more tests to make sure everything is ok, but so far
+so good, and I should be submitting some of these patches soon.
+
+Hugo Villeneuve.
