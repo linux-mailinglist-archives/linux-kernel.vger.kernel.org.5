@@ -2,90 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFACC800A23
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 12:55:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD784800A27
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 12:58:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378654AbjLALzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 06:55:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58658 "EHLO
+        id S1378657AbjLAL6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 06:58:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378585AbjLALzs (ORCPT
+        with ESMTP id S1378585AbjLAL6H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 06:55:48 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4BCC1B4
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 03:55:54 -0800 (PST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 8C09A21A43;
-        Fri,  1 Dec 2023 11:55:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1701431753; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=G7vJ6YHg1yf1wXh0BFGY+i3PS9hKihQbt0xDIMplNys=;
-        b=Wd35BYDuN03/Sw3Tcau0xgrTofCMLtCPdLEuwtzmpEuTLjGc/qffasRDDGF6YWZlOUCnVD
-        dk/iyFT/i2HVpUzxMC8OV8H3nPqsTACBKcj3xf8DJFJH4ye3issVNTIvQ/tqSNgEwb22Kt
-        MjCiThSLh3J6lkmvvHAtuBG6U2i2Nbc=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6C4201369E;
-        Fri,  1 Dec 2023 11:55:53 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-        by imap1.dmz-prg2.suse.org with ESMTPSA
-        id Uv1SF8nJaWWIfwAAD6G6ig
-        (envelope-from <mhocko@suse.com>); Fri, 01 Dec 2023 11:55:53 +0000
-Date:   Fri, 1 Dec 2023 12:55:52 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Philipp Rudo <prudo@redhat.com>
-Cc:     Baoquan He <bhe@redhat.com>, Donald Dutile <ddutile@redhat.com>,
-        Jiri Bohac <jbohac@suse.cz>, Pingfan Liu <piliu@redhat.com>,
-        Tao Liu <ltao@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
-        Dave Young <dyoung@redhat.com>, kexec@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/4] kdump: crashkernel reservation from CMA
-Message-ID: <ZWnJyArAmFo_uYPA@tiehlicka>
-References: <ZWVMUxmi66xLZPsr@MiWiFi-R3L-srv>
- <ZWWuBSiZZdF2W12j@tiehlicka>
- <ZWbyDx3TJ7zo3jCw@MiWiFi-R3L-srv>
- <91a31ce5-63d1-7470-18f7-92b039fda8e6@redhat.com>
- <ZWf64BowWrYqA2Rf@MiWiFi-R3L-srv>
- <ZWhg_b3O6piZtkQ-@tiehlicka>
- <ZWh6ax8YmkhxAzIf@MiWiFi-R3L-srv>
- <ZWiAsJlLookvCI+h@MiWiFi-R3L-srv>
- <ZWiQ-II9CvGv8EWK@tiehlicka>
- <20231201123353.2b3db7fa@rotkaeppchen>
+        Fri, 1 Dec 2023 06:58:07 -0500
+Received: from mout.web.de (mout.web.de [212.227.17.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94BB51B4;
+        Fri,  1 Dec 2023 03:58:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+        t=1701431860; x=1702036660; i=frank.scheiner@web.de;
+        bh=yDnxc0mwxkB4hTCa+vldN21uOr8NxnMJiPSs7aj03Y0=;
+        h=X-UI-Sender-Class:Date:To:Cc:References:Subject:From:
+         In-Reply-To;
+        b=bFO8+4/4gHptdTGbyTUMJUz8VTs+QdmFpZpDmwCBbURTT9FnbSpSxHyq5zBD1TVq
+         oa0giAEKkfm/LhJulOq3KXXmdxkCoi6SrJ7TII4HkMxvt5nXv5vloMCFYtTTjiHEt
+         CqQSZPRDYA0yw0NsUzzRk2QF37QJCeghZ+IGZ5AZvtjz0ZSJxwimzYTHq0fHaxjer
+         DFjlMP9M9i09JF5D02bIuzua/kDPVNSo44CpJcgrpOfErZRt+r0Yw5Wm34gm3BXmX
+         uisxTAomaJOuOJ0kLjDQhMfdYABLmXJniERrvEkfdh9Cxh6xAt6ZRsBrbe86XPgTS
+         swap7Vb2ip8SB7oM0w==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.30] ([87.155.225.196]) by smtp.web.de (mrweb106
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1MXocY-1qluiO1xRE-00YE8T; Fri, 01
+ Dec 2023 12:57:40 +0100
+Message-ID: <473c4430-39f3-471f-8257-648df743fea5@web.de>
+Date:   Fri, 1 Dec 2023 12:57:38 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231201123353.2b3db7fa@rotkaeppchen>
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -0.62
-X-Spamd-Result: default: False [-0.62 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         NEURAL_HAM_LONG(-1.00)[-1.000];
-         MIME_GOOD(-0.10)[text/plain];
-         RCVD_COUNT_THREE(0.00)[3];
-         DKIM_SIGNED(0.00)[suse.com:s=susede1];
-         RCPT_COUNT_SEVEN(0.00)[10];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         MID_RHS_NOT_FQDN(0.50)[];
-         RCVD_TLS_ALL(0.00)[];
-         BAYES_HAM(-0.02)[54.77%]
+User-Agent: Mozilla Thunderbird
+To:     gregkh@linuxfoundation.org, stable@vger.kernel.org
+Cc:     akpm@linux-foundation.org, allen.lkml@gmail.com, conor@kernel.org,
+        f.fainelli@gmail.com, jonathanh@nvidia.com,
+        linux-kernel@vger.kernel.org, linux@roeck-us.net,
+        lkft-triage@lists.linaro.org, patches@kernelci.org,
+        patches@lists.linux.dev, pavel@denx.de, rwarsow@gmx.de,
+        shuah@kernel.org, srw@sladewatkins.net, sudipm.mukherjee@gmail.com,
+        torvalds@linux-foundation.org,
+        =?UTF-8?B?VG9tw6HFoSBHbG96YXI=?= <tglozar@gmail.com>
+References: <20231130162140.298098091@linuxfoundation.org>
+Subject: Re: [PATCH 6.6 000/112] 6.6.4-rc1 review
+Content-Language: en-US
+From:   Frank Scheiner <frank.scheiner@web.de>
+In-Reply-To: <20231130162140.298098091@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:vO3kcCo23/2y0qzIqtOculOADMQRLKmDm+YZtmZihAl4BMiGtHC
+ 2nmYzRlvsE6irpHQyszX5m6y5evydd02VuqwpzDD7rYe8eUJpUp+ejEPQP7J1/XlMDOvGe9
+ HKfyAMPoNgzPwNP6KrVBJ8z4tlHspSdaIkXZzw3rntjkGrU8rilvB7C/PqVF5moKQAWTCbw
+ +CgKSH3G/PHUdFUf1LH3w==
+UI-OutboundReport: notjunk:1;M01:P0:9cNMZsEruAE=;/mD74C7Rk567QqMZlxlMk8f2ve/
+ wIONqcahMui+nQPERBNJV/suGRrvb8rTvyF6xvb1ojiU/uQvfQaGrqMXouw+q0O9AlFhgTIBY
+ Kazsyeqo2W9ZQXTMJs/W+TwAW94TF1MdXq/C5AUGJC4V4KiMWeUGAh1R6EOH8BClLmmFA0GzY
+ nbSAdVSilrD89nv2vcrh0Dxd+nVlWbi4yodEcRrK2faLRitadodpj3AtyTcNXdqAFxGX79TBj
+ +M4uRXnJuz5EUleGVpWb2x9l1z3ANtwwdjlRX0hgzVLrOG9WKZU0j+5HdFraXer7OHJLw7Z1l
+ 7qgLEUslhwCF0fgWdSy3dsB4tGgslEorse6+4Sm1C4fSFKq3xC/iuDjWq2KbwjAUF6RVSk28+
+ c4ClSuWdb2fNOT3U48HdihIRobPXMv1Rifqop+2Ns6VSs1gCnb65GYPz3tAoVzfgadK0ihUV6
+ 8JVuMfxJ1ufFw52o1rBUOIf3TyKbpszm+r9Hi+8Crn/YSTmcn+nqbjG4eqoSlVAxiOqV2po0t
+ LuL58YFfN1KpA/QqshShBhFipoa/aiwwQsLebtCUVFWbCXfWfzOvlNOgIdw0Ge0Zo2TEBhDSH
+ GugvsaXxLjNIuSOVImc9eySHVcOJQMfEEjC53F0pTjSWMoEelrcnVTUarvapDrtVN17HlzS8u
+ JQvvPcOiCqj1yInKcFOaMZDqBa42byht252Gn+Cs2bcM/X0gtP/83KyDvT+PFvtwoyyM6nfRf
+ 5+yBQzbfyfg7UiKsBg6On3sOmORf5pbpmrL9PQjpV05Gc0MvkJZSMIR8DmZmIMlPZGDGl6N68
+ gIBqfN045fwgnOR0fz+qLSejXJ8mY9i6xIFTwvEmtHxMOlPCWJrycQGV0XHy/VX1M/0rOTCrm
+ flDDAaiUEhl7nO7bWb7+emNR8Ttfro+dCC13TL2Zem4mkFKkLwTEPX9yeag97XTdMjzSafj8p
+ 1iequOByCyL9x750krYxrRMR2O4=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -94,24 +80,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 01-12-23 12:33:53, Philipp Rudo wrote:
-[...]
-> And yes, those are all what-if concerns but unfortunately that is all
-> we have right now.
+Hi there,
 
-Should theoretical concerns without an actual evidence (e.g. multiple
-drivers known to be broken) become a roadblock for this otherwise useful
-feature? 
+6.6.4-rc1
 
-> Only alternative would be to run extended tests in
-> the field. Which means this user facing change needs to be included.
-> Which also means that we are stuck with it as once a user facing change
-> is in it's extremely hard to get rid of it again...
+...cross-built (on amd64 w/gcc-13.2.0) and booted successfully on ia64
+(rx2620).
 
-I am not really sure I follow you here. Are you suggesting once
-crashkernel=cma is added it would become a user api and therefore
-impossible to get rid of?
+Tested-by: Frank Scheiner <frank.scheiner@web.de>
 
--- 
-Michal Hocko
-SUSE Labs
+Cheers,
+Frank
