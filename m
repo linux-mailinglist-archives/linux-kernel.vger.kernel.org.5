@@ -2,81 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5345D800F9B
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 17:13:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F25A2800FC8
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 17:13:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379364AbjLAPY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 10:24:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47892 "EHLO
+        id S1379382AbjLAPZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 10:25:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379328AbjLAPYz (ORCPT
+        with ESMTP id S1379358AbjLAPZQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 10:24:55 -0500
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EAC8106
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 07:25:01 -0800 (PST)
-Received: by mail-qk1-x72f.google.com with SMTP id af79cd13be357-77dc733b25cso116054385a.1
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 07:25:01 -0800 (PST)
+        Fri, 1 Dec 2023 10:25:16 -0500
+Received: from smtp-fw-2101.amazon.com (smtp-fw-2101.amazon.com [72.21.196.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5621CD4A;
+        Fri,  1 Dec 2023 07:25:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1701444300; x=1702049100; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=NIctRRSn0vwGQpdvNDPNBUzRbr3mcV06BO064VqiQvE=;
-        b=QnbtxcpgU+d+RlKd0XyMG2Th6tuIqZEUY4mAc77GUBU2ooHKKcyMrncas7INjtom4y
-         eaEGlxYY25WzNQ+c1CVjqCEgmynbvZyGuYKDPqvsqyo+lnWyPLsEteJ0z7EJbqmvrOqI
-         olZXNea6eeNinYGU8YSpj2eTGlcsqbamewYC/R0iZzerz9zFkktZnB1DVVsUXmFgYov8
-         I7xCqxGGG1LklT8wCUTvPBq0Fpwz6/mGxKLMoAG24Eqeqkr6qseW/wttZAu3pZKa/Oz2
-         DKgC3GApKhC8bGySgLS3R128TamaLNZ3TLaYvxNeRXydUwusMCl+mTBoKve08LHNJMFw
-         0/hQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701444300; x=1702049100;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NIctRRSn0vwGQpdvNDPNBUzRbr3mcV06BO064VqiQvE=;
-        b=UPvLk4AtDO75Nd6o2SGsDQYG8PIyZ3Y6lXwklZkfO0VAiBw3+4E2t067T1ckJxMhEc
-         zwE2Jb8von0/+a8wanm+PA4PPxwmCWy9wDj3dDYmp4vyDwUeS3pZcp8Qe8HSzr9cWnWy
-         3LCEb9Jk6S1IqPxpv0SEx/opz+y6wvnRziyHlwAw3cIC7rkNtWPCzbi/igKgiUmF5iVB
-         WfKLcB8I4W0BZ2sTkAgkxb7h7OBLNaXz+1GzG38B9hTCHJmWjjD2IJKItOoNjpT39Be7
-         Fxma/n8hkoxTSNnu7PbIgRpaDD0WiO16WJ/KxWAk97uAlttkb1H5bHO6AMtdAkH+UBBB
-         rIvQ==
-X-Gm-Message-State: AOJu0YwTtXWTC5iMDXtVmQjfkAXKiQMN0bq98FSqaMZkFNMg6T9QZ0d+
-        LZXzpFbwKJn0Q1ulOUCCyO1gqA==
-X-Google-Smtp-Source: AGHT+IH9aQsdojUrYLvHxO5KK9009RG0u9DrfU1zkCcGPgQMNQH05O1B5rZ99KIPwto9uIZJVs6JwQ==
-X-Received: by 2002:a05:620a:6507:b0:76d:aa3b:ac9c with SMTP id qb7-20020a05620a650700b0076daa3bac9cmr30406177qkn.46.1701444300373;
-        Fri, 01 Dec 2023 07:25:00 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-134-23-187.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.134.23.187])
-        by smtp.gmail.com with ESMTPSA id n17-20020a05620a295100b007676f3859fasm1572386qkp.30.2023.12.01.07.24.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Dec 2023 07:24:59 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1r95Nz-006G1Y-DA;
-        Fri, 01 Dec 2023 11:24:59 -0400
-Date:   Fri, 1 Dec 2023 11:24:59 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     Kevin Tian <kevin.tian@intel.com>, Joerg Roedel <joro@8bytes.org>,
-        Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        Yi Liu <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        iommu@lists.linux.dev, linux-kselftest@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/6] iommufd: Deliver fault messages to user space
-Message-ID: <20231201152459.GB1489931@ziepe.ca>
-References: <20231026024930.382898-1-baolu.lu@linux.intel.com>
- <20231026024930.382898-5-baolu.lu@linux.intel.com>
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1701444322; x=1732980322;
+  h=mime-version:content-transfer-encoding:date:message-id:
+   cc:from:to:references:in-reply-to:subject;
+  bh=FfeiQvxbxXeqzRQdfjMLltmlruM6oJfGRqxgBK9e5cE=;
+  b=I/xaCcRrPXKIjSiwt98qVbcVSMQO/hJS4Va9yaJ3VS17rMjZIz0WRwjh
+   KreR3EJJmbLv4em6WG1Gzd7id73v54pViD/vw6EyXFnVedyuvmYFnjQHc
+   h1IAOmDc1jAzyg+KECyQkSdy0Itj58ZD3VedwzbbaV/FrH07e+aBmO6ld
+   E=;
+X-IronPort-AV: E=Sophos;i="6.04,241,1695686400"; 
+   d="scan'208";a="366051200"
+Subject: Re: [RFC 02/33] KVM: x86: Introduce KVM_CAP_APIC_ID_GROUPS
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-pdx-2b-m6i4x-cadc3fbd.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-2101.iad2.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2023 15:25:19 +0000
+Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (pdx2-ws-svc-p26-lb5-vlan2.pdx.amazon.com [10.39.38.66])
+        by email-inbound-relay-pdx-2b-m6i4x-cadc3fbd.us-west-2.amazon.com (Postfix) with ESMTPS id D43E9A3638;
+        Fri,  1 Dec 2023 15:25:16 +0000 (UTC)
+Received: from EX19MTAEUA002.ant.amazon.com [10.0.43.254:15743]
+ by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.26.183:2525] with esmtp (Farcaster)
+ id bc754cf4-d55e-458d-8bc8-0b3c97125d02; Fri, 1 Dec 2023 15:25:15 +0000 (UTC)
+X-Farcaster-Flow-ID: bc754cf4-d55e-458d-8bc8-0b3c97125d02
+Received: from EX19D004EUC001.ant.amazon.com (10.252.51.190) by
+ EX19MTAEUA002.ant.amazon.com (10.252.50.126) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Fri, 1 Dec 2023 15:25:15 +0000
+Received: from localhost (10.13.235.138) by EX19D004EUC001.ant.amazon.com
+ (10.252.51.190) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 1 Dec
+ 2023 15:25:10 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231026024930.382898-5-baolu.lu@linux.intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
+Date:   Fri, 1 Dec 2023 15:25:06 +0000
+Message-ID: <CXD3O3XBHKZO.22U5VF0HFBTC9@amazon.com>
+CC:     <linux-kernel@vger.kernel.org>, <linux-hyperv@vger.kernel.org>,
+        <pbonzini@redhat.com>, <seanjc@google.com>, <vkuznets@redhat.com>,
+        <anelkz@amazon.com>, <graf@amazon.com>, <dwmw@amazon.co.uk>,
+        <jgowans@amazon.com>, <corbert@lwn.net>, <kys@microsoft.com>,
+        <haiyangz@microsoft.com>, <decui@microsoft.com>, <x86@kernel.org>,
+        <linux-doc@vger.kernel.org>, Anel Orazgaliyeva <anelkz@amazon.de>
+From:   Nicolas Saenz Julienne <nsaenz@amazon.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>, <kvm@vger.kernel.org>
+X-Mailer: aerc 0.15.2-182-g389d89a9362e-dirty
+References: <20231108111806.92604-1-nsaenz@amazon.com>
+ <20231108111806.92604-3-nsaenz@amazon.com>
+ <98eee37ed7f4b7b9c16bccbe41737e47a116d1f1.camel@redhat.com>
+In-Reply-To: <98eee37ed7f4b7b9c16bccbe41737e47a116d1f1.camel@redhat.com>
+X-Originating-IP: [10.13.235.138]
+X-ClientProxiedBy: EX19D032UWB003.ant.amazon.com (10.13.139.165) To
+ EX19D004EUC001.ant.amazon.com (10.252.51.190)
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,76 +77,107 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 26, 2023 at 10:49:28AM +0800, Lu Baolu wrote:
+Hi Maxim,
 
-> +static ssize_t hwpt_fault_fops_write(struct file *filep,
-> +				     const char __user *buf,
-> +				     size_t count, loff_t *ppos)
-> +{
-> +	size_t response_size = sizeof(struct iommu_hwpt_page_response);
-> +	struct hw_pgtable_fault *fault = filep->private_data;
-> +	struct iommu_hwpt_page_response response;
-> +	struct iommufd_hw_pagetable *hwpt;
-> +	struct iopf_group *iter, *group;
-> +	struct iommufd_device *idev;
-> +	size_t done = 0;
-> +	int rc = 0;
-> +
-> +	if (*ppos || count % response_size)
-> +		return -ESPIPE;
-> +
-> +	mutex_lock(&fault->mutex);
-> +	while (!list_empty(&fault->response) && count > done) {
-> +		rc = copy_from_user(&response, buf + done, response_size);
-> +		if (rc)
-> +			break;
-> +
-> +		/* Get the device that this response targets at. */
-> +		idev = container_of(iommufd_get_object(fault->ictx,
-> +						       response.dev_id,
-> +						       IOMMUFD_OBJ_DEVICE),
-> +				    struct iommufd_device, obj);
-> +		if (IS_ERR(idev)) {
-> +			rc = PTR_ERR(idev);
-> +			break;
-> +		}
+On Tue Nov 28, 2023 at 6:56 AM UTC, Maxim Levitsky wrote:
+> On Wed, 2023-11-08 at 11:17 +0000, Nicolas Saenz Julienne wrote:
+> > From: Anel Orazgaliyeva <anelkz@amazon.de>
+> >
+> > Introduce KVM_CAP_APIC_ID_GROUPS, this capability segments the VM's API=
+C
+> > ids into two. The lower bits, the physical APIC id, represent the part
+> > that's exposed to the guest. The higher bits, which are private to KVM,
+> > groups APICs together. APICs in different groups are isolated from each
+> > other, and IPIs can only be directed at APICs that share the same group
+> > as its source. Furthermore, groups are only relevant to IPIs, anything
+> > incoming from outside the local APIC complex: from the IOAPIC, MSIs, or
+> > PV-IPIs is targeted at the default APIC group, group 0.
+> >
+> > When routing IPIs with physical destinations, KVM will OR the source's
+> > vCPU APIC group with the ICR's destination ID and use that to resolve
+> > the target lAPIC. The APIC physical map is also made group aware in
+> > order to speed up this process. For the sake of simplicity, the logical
+> > map is not built while KVM_CAP_APIC_ID_GROUPS is in use and we defer IP=
+I
+> > routing to the slower per-vCPU scan method.
+> >
+> > This capability serves as a building block to implement virtualisation
+> > based security features like Hyper-V's Virtual Secure Mode (VSM). VSM
+> > introduces a para-virtualised switch that allows for guest CPUs to jump
+> > into a different execution context, this switches into a different CPU
+> > state, lAPIC state, and memory protections. We model this in KVM by
+> > using distinct kvm_vcpus for each context. Moreover, execution contexts
+> > are hierarchical and its APICs are meant to remain functional even when
+> > the context isn't 'scheduled in'. For example, we have to keep track of
+> > timers' expirations, and interrupt execution of lesser priority context=
+s
+> > when relevant. Hence the need to alias physical APIC ids, while keeping
+> > the ability to target specific execution contexts.
+>
+>
+> A few general remarks on this patch (assuming that we don't go with
+> the approach of a VM per VTL, in which case this patch is not needed)
+>
+> -> This feature has to be done in the kernel because vCPUs sharing same V=
+TL,
+>    will have same APIC ID.
+>    (In addition to that, APIC state is private to a VTL so each VTL
+>    can even change its apic id).
+>
+>    Because of this KVM has to have at least some awareness of this.
+>
+> -> APICv/AVIC should be supported with VTL eventually:
+>    This is thankfully possible by having separate physid/pid tables per V=
+TL,
+>    and will mostly just work but needs KVM awareness.
+>
+> -> I am somewhat against reserving bits in apic id, because that will lim=
+it
+>    the number of apic id bits available to userspace. Currently this is n=
+ot
+>    a problem but it might be in the future if for some reason the userspa=
+ce
+>    will want an apic id with high bits set.
+>
+>    But still things change, and with this being part of KVM's ABI, it mig=
+ht backfire.
+>    A better idea IMHO is just to have 'APIC namespaces', which like say P=
+ID namespaces,
+>    such as each namespace is isolated IPI wise on its own, and let each v=
+CPU belong to
+>    a one namespace.
+>
+>    In fact Intel's PRM has a brief mention of a 'hierarchical cluster' mo=
+de in which
+>    roughly describes this situation in which there are multiple not inter=
+connected APIC buses,
+>    and communication between them needs a 'cluster manager device'
+>
+>    However I don't think that we need an explicit pairs of vCPUs and VTL =
+awareness in the kernel
+>    all of this I think can be done in userspace.
+>
+>    TL;DR: Lets have APIC namespace. a vCPU can belong to a single namespa=
+ce, and all vCPUs
+>    in a namespace send IPIs to each other and know nothing about vCPUs fr=
+om other namespace.
+>
+>    A vCPU sending IPI to a different VTL thankfully can only do this usin=
+g a hypercall,
+>    and thus can be handled in the userspace.
+>
+>
+> Overall though IMHO the approach of a VM per VTL is better unless some sh=
+ow stoppers show up.
+> If we go with a VM per VTL, we gain APIC namespaces for free, together wi=
+th AVIC support and
+> such.
 
-See here it might be better to have a per-fd list of outstanding
-faults per-fd and then the cookie would just index that list, then you
-get everything in one shot instead of having to do a xarray looking
-and then a linear list search
 
-> +static const struct file_operations hwpt_fault_fops = {
-> +	.owner		= THIS_MODULE,
-> +	.read		= hwpt_fault_fops_read,
-> +	.write		= hwpt_fault_fops_write,
-> +};
+Thanks, for the thorough review! I took note of all your design comments
+(here and in subsequent patches).
 
-nonseekable_open() behavior should be integrated into this
+I agree that the way to go is the VM per VTL approach. I'll prepare a
+PoC as soon as I'm back from the holidays and share my results.
 
-> +static int hw_pagetable_get_fault_fd(struct hw_pgtable_fault *fault)
-> +{
-> +	struct file *filep;
-> +	int fdno;
-> +
-> +	fdno = get_unused_fd_flags(O_CLOEXEC);
-> +	if (fdno < 0)
-> +		return fdno;
-> +
-> +	filep = anon_inode_getfile("[iommufd-pgfault]", &hwpt_fault_fops,
-> +				   fault, O_RDWR);
-> +	if (IS_ERR(filep)) {
-> +		put_unused_fd(fdno);
-> +		return PTR_ERR(filep);
-> +	}
-> +
-> +	fd_install(fdno, filep);
-> +	fault->fault_file = filep;
-> +	fault->fault_fd = fdno;
-
-fd_install must be the very last thing before returning success from a
-system call because we cannot undo it.
-
-There are other failure paths before here and the final return
-
-Jason
+Nicolas
