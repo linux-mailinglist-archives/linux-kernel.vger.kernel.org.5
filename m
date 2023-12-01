@@ -2,47 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9776B8003B9
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 07:22:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA1578003D3
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 07:25:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377636AbjLAGWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 01:22:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51600 "EHLO
+        id S1377615AbjLAGZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 01:25:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377654AbjLAGVr (ORCPT
+        with ESMTP id S1377624AbjLAGZp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 01:21:47 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 156B71FC1;
-        Thu, 30 Nov 2023 22:21:42 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 58B3F143D;
-        Thu, 30 Nov 2023 22:22:28 -0800 (PST)
-Received: from a077893.blr.arm.com (a077893.blr.arm.com [10.162.41.8])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id A29E33F73F;
-        Thu, 30 Nov 2023 22:21:37 -0800 (PST)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-To:     linux-arm-kernel@lists.infradead.org, suzuki.poulose@arm.com
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        James Clark <james.clark@arm.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        coresight@lists.linaro.org,
-        linux-stm32@st-md-mailman.stormreply.com
-Subject: [PATCH V2 7/7] coresight: debug: Move ACPI support from AMBA driver to platform driver
-Date:   Fri,  1 Dec 2023 11:50:53 +0530
-Message-Id: <20231201062053.1268492-8-anshuman.khandual@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231201062053.1268492-1-anshuman.khandual@arm.com>
-References: <20231201062053.1268492-1-anshuman.khandual@arm.com>
+        Fri, 1 Dec 2023 01:25:45 -0500
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C53261722;
+        Thu, 30 Nov 2023 22:25:50 -0800 (PST)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3B16OAGH044118;
+        Fri, 1 Dec 2023 00:24:10 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1701411850;
+        bh=jTt7e3ZcUk0/BRs9umqaQu1F8R1WBoLZXviMWv3LpGs=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=vP0jHRRhVlaAlLHxJJHLjmLKiqSUi5kBK1nzO3LAMxSh5qMnsVfq7xpLyTW65CzLQ
+         BRnsRN9FdSyQZgi/BUQm4oRPYHRLHHeZ8fzcT7694rHAXQh2AT+2xpbOEDKrSl8A+J
+         JCxXp8dDsxrT3IQt0n7uXkqJjPcb93DLFkWWAYmI=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3B16OAL7082264
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 1 Dec 2023 00:24:10 -0600
+Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 1
+ Dec 2023 00:24:09 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 1 Dec 2023 00:24:09 -0600
+Received: from [172.24.227.25] (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3B16O5CD017548;
+        Fri, 1 Dec 2023 00:24:06 -0600
+Message-ID: <482d9ad7-86b6-48a9-8dab-5502ce1a5384@ti.com>
+Date:   Fri, 1 Dec 2023 11:54:04 +0530
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 00/11] drm/tidss: Probe related fixes and cleanups
+Content-Language: en-US
+To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Devarsh Thakkar <devarsht@ti.com>,
+        Jyri Sarha <jyri.sarha@iki.fi>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+CC:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Francesco Dolcini <francesco@dolcini.it>,
+        <stable@vger.kernel.org>
+References: <20231109-tidss-probe-v2-0-ac91b5ea35c0@ideasonboard.com>
+From:   Aradhya Bhatia <a-bhatia1@ti.com>
+In-Reply-To: <20231109-tidss-probe-v2-0-ac91b5ea35c0@ideasonboard.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -50,237 +74,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for the cpu debug devices in a new platform driver, which can
-then be used on ACPI based platforms. This change would now allow runtime
-power management for ACPI based systems. The driver would try to enable
-the APB clock if available.
+Hi Tomi,
 
-Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>
-Cc: Sudeep Holla <sudeep.holla@arm.com>
-Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc: Mike Leach <mike.leach@linaro.org>
-Cc: James Clark <james.clark@arm.com>
-Cc: linux-acpi@vger.kernel.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
-Cc: coresight@lists.linaro.org
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
- drivers/acpi/arm64/amba.c                     |   1 -
- .../hwtracing/coresight/coresight-cpu-debug.c | 141 ++++++++++++++++--
- 2 files changed, 127 insertions(+), 15 deletions(-)
+Thank you for the patches!
 
-diff --git a/drivers/acpi/arm64/amba.c b/drivers/acpi/arm64/amba.c
-index bec0976541da..e1f0bbb8f393 100644
---- a/drivers/acpi/arm64/amba.c
-+++ b/drivers/acpi/arm64/amba.c
-@@ -22,7 +22,6 @@
- static const struct acpi_device_id amba_id_list[] = {
- 	{"ARMH0061", 0}, /* PL061 GPIO Device */
- 	{"ARMH0330", 0}, /* ARM DMA Controller DMA-330 */
--	{"ARMHC503", 0}, /* ARM CoreSight Debug */
- 	{"", 0},
- };
- 
-diff --git a/drivers/hwtracing/coresight/coresight-cpu-debug.c b/drivers/hwtracing/coresight/coresight-cpu-debug.c
-index 1874df7c6a73..75a0ba8c62a4 100644
---- a/drivers/hwtracing/coresight/coresight-cpu-debug.c
-+++ b/drivers/hwtracing/coresight/coresight-cpu-debug.c
-@@ -23,6 +23,8 @@
- #include <linux/smp.h>
- #include <linux/types.h>
- #include <linux/uaccess.h>
-+#include <linux/platform_device.h>
-+#include <linux/acpi.h>
- 
- #include "coresight-priv.h"
- 
-@@ -84,6 +86,7 @@
- #define DEBUG_WAIT_TIMEOUT		32000
- 
- struct debug_drvdata {
-+	struct clk	*pclk;
- 	void __iomem	*base;
- 	struct device	*dev;
- 	int		cpu;
-@@ -557,18 +560,12 @@ static void debug_func_exit(void)
- 	debugfs_remove_recursive(debug_debugfs_dir);
- }
- 
--static int debug_probe(struct amba_device *adev, const struct amba_id *id)
-+static int __debug_probe(struct device *dev, struct resource *res)
- {
-+	struct debug_drvdata *drvdata = dev_get_drvdata(dev);
- 	void __iomem *base;
--	struct device *dev = &adev->dev;
--	struct debug_drvdata *drvdata;
--	struct resource *res = &adev->res;
- 	int ret;
- 
--	drvdata = devm_kzalloc(dev, sizeof(*drvdata), GFP_KERNEL);
--	if (!drvdata)
--		return -ENOMEM;
--
- 	drvdata->cpu = coresight_get_cpu(dev);
- 	if (drvdata->cpu < 0)
- 		return drvdata->cpu;
-@@ -579,8 +576,7 @@ static int debug_probe(struct amba_device *adev, const struct amba_id *id)
- 		return -EBUSY;
- 	}
- 
--	drvdata->dev = &adev->dev;
--	amba_set_drvdata(adev, drvdata);
-+	drvdata->dev = dev;
- 
- 	/* Validity for the resource is already checked by the AMBA core */
- 	base = devm_ioremap_resource(dev, res);
-@@ -629,10 +625,21 @@ static int debug_probe(struct amba_device *adev, const struct amba_id *id)
- 	return ret;
- }
- 
--static void debug_remove(struct amba_device *adev)
-+static int debug_probe(struct amba_device *adev, const struct amba_id *id)
-+{
-+	struct debug_drvdata *drvdata;
-+
-+	drvdata = devm_kzalloc(&adev->dev, sizeof(*drvdata), GFP_KERNEL);
-+	if (!drvdata)
-+		return -ENOMEM;
-+
-+	amba_set_drvdata(adev, drvdata);
-+	return __debug_probe(&adev->dev, &adev->res);
-+}
-+
-+static void __debug_remove(struct device *dev)
- {
--	struct device *dev = &adev->dev;
--	struct debug_drvdata *drvdata = amba_get_drvdata(adev);
-+	struct debug_drvdata *drvdata = dev_get_drvdata(dev);
- 
- 	per_cpu(debug_drvdata, drvdata->cpu) = NULL;
- 
-@@ -646,6 +653,11 @@ static void debug_remove(struct amba_device *adev)
- 		debug_func_exit();
- }
- 
-+static void debug_remove(struct amba_device *adev)
-+{
-+	__debug_remove(&adev->dev);
-+}
-+
- static const struct amba_cs_uci_id uci_id_debug[] = {
- 	{
- 		/*  CPU Debug UCI data */
-@@ -677,7 +689,108 @@ static struct amba_driver debug_driver = {
- 	.id_table	= debug_ids,
- };
- 
--module_amba_driver(debug_driver);
-+static int debug_platform_probe(struct platform_device *pdev)
-+{
-+	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	struct debug_drvdata *drvdata;
-+	int ret = 0;
-+
-+	drvdata = devm_kzalloc(&pdev->dev, sizeof(*drvdata), GFP_KERNEL);
-+	if (!drvdata)
-+		return -ENOMEM;
-+
-+	drvdata->pclk = coresight_get_enable_apb_pclk(&pdev->dev);
-+	if (IS_ERR(drvdata->pclk))
-+		return -ENODEV;
-+
-+	if (res) {
-+		drvdata->base = devm_ioremap_resource(&pdev->dev, res);
-+		if (IS_ERR(drvdata->base)) {
-+			clk_put(drvdata->pclk);
-+			return PTR_ERR(drvdata->base);
-+		}
-+	}
-+
-+	dev_set_drvdata(&pdev->dev, drvdata);
-+	pm_runtime_get_noresume(&pdev->dev);
-+	pm_runtime_set_active(&pdev->dev);
-+	pm_runtime_enable(&pdev->dev);
-+
-+	ret = __debug_probe(&pdev->dev, res);
-+	if (ret) {
-+		pm_runtime_put_noidle(&pdev->dev);
-+		pm_runtime_disable(&pdev->dev);
-+	}
-+	return ret;
-+}
-+
-+static int debug_platform_remove(struct platform_device *pdev)
-+{
-+	struct debug_drvdata *drvdata = dev_get_drvdata(&pdev->dev);
-+
-+	if (drvdata)
-+		__debug_remove(&pdev->dev);
-+
-+	pm_runtime_disable(&pdev->dev);
-+	if (drvdata && !IS_ERR_OR_NULL(drvdata->pclk))
-+		clk_put(drvdata->pclk);
-+	return 0;
-+}
-+
-+#ifdef CONFIG_ACPI
-+static const struct acpi_device_id debug_platform_ids[] = {
-+	{"ARMHC503", 0}, /* ARM CoreSight Debug */
-+	{},
-+};
-+MODULE_DEVICE_TABLE(acpi, debug_platform_ids);
-+#endif
-+
-+#ifdef CONFIG_PM
-+static int debug_runtime_suspend(struct device *dev)
-+{
-+	struct debug_drvdata *drvdata = dev_get_drvdata(dev);
-+
-+	if (drvdata->pclk && !IS_ERR_OR_NULL(drvdata->pclk))
-+		clk_disable_unprepare(drvdata->pclk);
-+	return 0;
-+}
-+
-+static int debug_runtime_resume(struct device *dev)
-+{
-+	struct debug_drvdata *drvdata = dev_get_drvdata(dev);
-+
-+	if (drvdata->pclk && !IS_ERR_OR_NULL(drvdata->pclk))
-+		clk_prepare_enable(drvdata->pclk);
-+	return 0;
-+}
-+#endif
-+
-+static const struct dev_pm_ops debug_dev_pm_ops = {
-+	SET_RUNTIME_PM_OPS(debug_runtime_suspend, debug_runtime_resume, NULL)
-+};
-+
-+static struct platform_driver debug_platform_driver = {
-+	.probe	= debug_platform_probe,
-+	.remove	= debug_platform_remove,
-+	.driver	= {
-+		.name			= "coresight-debug-platform",
-+		.acpi_match_table	= ACPI_PTR(debug_platform_ids),
-+		.suppress_bind_attrs	= true,
-+		.pm			= &debug_dev_pm_ops,
-+	},
-+};
-+
-+static int __init debug_init(void)
-+{
-+	return coresight_init_driver("tmc", &debug_driver, &debug_platform_driver);
-+}
-+
-+static void __exit debug_exit(void)
-+{
-+	coresight_remove_driver(&debug_driver, &debug_platform_driver);
-+}
-+module_init(debug_init);
-+module_exit(debug_exit);
- 
- MODULE_AUTHOR("Leo Yan <leo.yan@linaro.org>");
- MODULE_DESCRIPTION("ARM Coresight CPU Debug Driver");
--- 
-2.25.1
+On 09/11/23 13:07, Tomi Valkeinen wrote:
+> While working on the TI BSP kernel, adding bootload splash screen
+> support, I noticed some issues with the driver and opportunities for
+> cleanups and improvements.
+> 
+>  Tomi
+> 
+> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+> ---
+> Changes in v2:
+> - Add missing pm_runtime_dont_use_autosuspend() in error path
+> - Add simple manual "reset" for K2G
+> - Leave tidss->dispc NULL if dispc_init fails
+> - Add Fixes tags
+> - Drop "drm/tidss: Add dispc_is_idle()"
+> - Add "drm/tidss: Use DRM_PLANE_COMMIT_ACTIVE_ONLY"
+> - Link to v1: https://lore.kernel.org/r/20231101-tidss-probe-v1-0-45149e0f9415@ideasonboard.com
+> 
+> ---
+> Tomi Valkeinen (11):
+>       drm/tidss: Use pm_runtime_resume_and_get()
+>       drm/tidss: Use PM autosuspend
+>       drm/tidss: Drop useless variable init
+>       drm/tidss: Move reset to the end of dispc_init()
+>       drm/tidss: Return error value from from softreset
+>       drm/tidss: Check for K2G in in dispc_softreset()
+>       drm/tidss: Add simple K2G manual reset
+>       drm/tidss: Fix dss reset
+>       drm/tidss: IRQ code cleanup
+>       drm/tidss: Fix atomic_flush check
+>       drm/tidss: Use DRM_PLANE_COMMIT_ACTIVE_ONLY
 
+For the series,
+
+Reviewed-by: Aradhya Bhatia <a-bhatia1@ti.com>
+
+Regards
+Aradhya
+
+> 
+>  drivers/gpu/drm/tidss/tidss_crtc.c  | 12 ++----
+>  drivers/gpu/drm/tidss/tidss_dispc.c | 79 +++++++++++++++++++++++++++++++++----
+>  drivers/gpu/drm/tidss/tidss_drv.c   | 15 +++++--
+>  drivers/gpu/drm/tidss/tidss_irq.c   | 54 ++++---------------------
+>  drivers/gpu/drm/tidss/tidss_kms.c   |  2 +-
+>  5 files changed, 97 insertions(+), 65 deletions(-)
+> ---
+> base-commit: 9d7c8c066916f231ca0ed4e4fce6c4b58ca3e451
+> change-id: 20231030-tidss-probe-854b1098c3af
+> 
+> Best regards,
