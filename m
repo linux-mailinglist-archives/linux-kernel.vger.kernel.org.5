@@ -2,135 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52DC08014C5
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 21:47:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFA348014C7
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 21:48:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379612AbjLAUrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 15:47:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50652 "EHLO
+        id S1379547AbjLAUsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 15:48:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229562AbjLAUrH (ORCPT
+        with ESMTP id S229456AbjLAUsO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 15:47:07 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E9CCFF
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 12:47:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701463632;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=roRHhLauepkrd5alx72dFMXjJCaurGVuqpPk08xyld4=;
-        b=cj4L7pIXVjAzwDDpqCXgaESdD9y/+Hszmw3IKc3hl2DL0ftedbNzwTrw7my8RIjV7kr597
-        f5MoZm8fQvfWA/wb20BRDZ/kCSSVnLqCzeP3EvHGm4L2IQn6C78croZhRXEPG9VqfvsDjv
-        3xzDkT3gewE0kHGjPLiM90O25GQ2lNo=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-692-6KzwryLIOoyVd9DSQOToDw-1; Fri, 01 Dec 2023 15:47:11 -0500
-X-MC-Unique: 6KzwryLIOoyVd9DSQOToDw-1
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-332e18f4fdbso1855145f8f.1
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 12:47:10 -0800 (PST)
+        Fri, 1 Dec 2023 15:48:14 -0500
+Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE5E2FF
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 12:48:20 -0800 (PST)
+Received: by mail-oo1-xc29.google.com with SMTP id 006d021491bc7-58d54fd8c5aso1317931eaf.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 12:48:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1701463700; x=1702068500; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=sc0mXGdos+flIqYbEOETr4gKaCIcHlnZcTFOmVNNT/s=;
+        b=PCPpbHgaHaLzF2YJYe/ymH6Kk3KgLSZlnHvGgCVw+0zWtZ/KRGMpk/g0v5Kxl7mt+F
+         ocYzErTRGCkM5yaesc7vmPbyl0yZWZlTQ/pcePv4ipxC6Pc2vpyUVtpDzPgnooWOXQri
+         GkvNwno3Y2VNo7dpFPSyZCvSfjn9KIpZGezYXoaGHb2FobCW5/mys7Wlb4fL5VpEfSCz
+         XAdiXrMX4WDNed/JU2LoDiRHYHELmbmDpEjcSfda015dwV+2zaMqu6q6BmIiMEGDf+fS
+         O7/HSyMAijWE+m4r/ElkDglj18FsMDFdoVr28Q/IOQ75ogmy/rueI6UbxmPZXyjuqar5
+         L+Sw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701463630; x=1702068430;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1701463700; x=1702068500;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=roRHhLauepkrd5alx72dFMXjJCaurGVuqpPk08xyld4=;
-        b=dwG6/NDUwuTqpg8hTw10TJKH0uJ/P/qZVFA22/i1mpT5CLlEcCQvOAC1TuRNOUNz0O
-         /kxH0UcX8Vrdqdn2qH+gU810lH+EGZzJp0Hc4DgRBmfYwnNHaf9kJw5xf0gXWYkJKuiq
-         wQ5AmQ7Uup5SAdYoaNPNfeZnvZvYE7UxDCel11Elw3vMwwMgRQmIpaYWoFXuqhzNvRYy
-         9ubbzvkzg89UBNilF0ulNBHDP18x0P9AraDoDBToVL3f1Qo/zJqfl7BvhVgRQ8F28/2+
-         BBGaxfIrVKpijZlwfw+izEnTlMnbBnqwYDyP87vbUVROc/iuFUIM2Dom6WzaSq5P/drz
-         Ka9w==
-X-Gm-Message-State: AOJu0YwrCWAm3jfltAoR3yu8m1yYlKKVe4sm8J8IRW4t/81qdtJSCMg9
-        riQB76kEd1gLYklueK+DKC9rLVU2oCQg8aTp09str2rAh26u8oJerDfUbaecjZNkVoA0vK1QSte
-        FNufuPcfcUmBc1W+9A2IRnz5V
-X-Received: by 2002:adf:ef0e:0:b0:333:2fd2:5d4e with SMTP id e14-20020adfef0e000000b003332fd25d4emr1458930wro.128.1701463629942;
-        Fri, 01 Dec 2023 12:47:09 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHZKMjh8pTfwrN7X75z4hiGXRlcazvFaCrgi3fYPEKkR9z/8z96TQOeqZHjl2bfL/NASM0NAw==
-X-Received: by 2002:adf:ef0e:0:b0:333:2fd2:5d4e with SMTP id e14-20020adfef0e000000b003332fd25d4emr1458915wro.128.1701463629604;
-        Fri, 01 Dec 2023 12:47:09 -0800 (PST)
-Received: from ?IPV6:2003:d8:2f28:7800:30d7:645a:7306:e437? (p200300d82f28780030d7645a7306e437.dip0.t-ipconnect.de. [2003:d8:2f28:7800:30d7:645a:7306:e437])
-        by smtp.gmail.com with ESMTPSA id c12-20020a056000104c00b00333339e5f42sm1767916wrx.32.2023.12.01.12.47.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Dec 2023 12:47:09 -0800 (PST)
-Message-ID: <a41c759f-78d8-44ed-b708-1bb737a8e6c1@redhat.com>
-Date:   Fri, 1 Dec 2023 21:47:07 +0100
+        bh=sc0mXGdos+flIqYbEOETr4gKaCIcHlnZcTFOmVNNT/s=;
+        b=JIPIkhNdezucTYZIsbc4WPBAuGrkUQzV53VcF9/ihbEnqzAGdTeBpbPLsDvCFC7I4O
+         CQWwTh1nAg9p96Wo1ZPNYi4mUK/B0FJsfN1qZh4N2avNyDVkj8PWO5uAuGPZQkIfTRwy
+         yHaZBvD6NKvfBUe0pXPL3tmpvTr3/Rz+E1YIN9hVPu8t1vq4cdunMqb8qH7QGHdpJRy1
+         39+/bjy0rdaU/M38JYELwQOZCeRxw97I+fu74KR7/bUMS80SpHrIFXzk46lBMCsTQrl2
+         oR57RRlpCoBUyiGqkLsRwxP74AjQ31aywQVG75BdybF1zSg6GTCzcVawkl3WpXfW6G86
+         IL1A==
+X-Gm-Message-State: AOJu0YwY0X3apIbgV0QXee6fz9jZGMNRF4BSxbKHY5ggHrzpBocozjMr
+        G4DK22OnIZJHg+HH8meMBpji0g==
+X-Google-Smtp-Source: AGHT+IEZyyMyYdVZ/U2w+Y1ObRK14n0S0fw+H/3/e0+QnvNoXR/Lw9yKjEGoy++VknK7HJZ3jXY6+w==
+X-Received: by 2002:a05:6870:698c:b0:1fa:789a:d12c with SMTP id my12-20020a056870698c00b001fa789ad12cmr337579oab.38.1701463700064;
+        Fri, 01 Dec 2023 12:48:20 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-134-23-187.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.134.23.187])
+        by smtp.gmail.com with ESMTPSA id s9-20020a0c8d49000000b0067a245efd3csm1825633qvb.135.2023.12.01.12.48.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Dec 2023 12:48:19 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1r9AQs-006OM7-TF;
+        Fri, 01 Dec 2023 16:48:18 -0400
+Date:   Fri, 1 Dec 2023 16:48:18 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Tina Zhang <tina.zhang@intel.com>
+Cc:     iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        Michael Shavit <mshavit@google.com>,
+        Vasant Hegde <vasant.hegde@amd.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Raj Ashok <ashok.raj@intel.com>, Yi Liu <yi.l.liu@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        torvalds@linux-foundation.org,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>
+Subject: Re: [PATCH] iommu: Change kconfig around IOMMU_SVA
+Message-ID: <20231201204818.GH1489931@ziepe.ca>
+References: <20231128021635.5530-1-tina.zhang@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 5/5] selftests/mm: add UFFDIO_MOVE ioctl test
-Content-Language: en-US
-To:     Ryan Roberts <ryan.roberts@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        akpm@linux-foundation.org
-Cc:     viro@zeniv.linux.org.uk, brauner@kernel.org, shuah@kernel.org,
-        aarcange@redhat.com, lokeshgidra@google.com, peterx@redhat.com,
-        hughd@google.com, mhocko@suse.com, axelrasmussen@google.com,
-        rppt@kernel.org, willy@infradead.org, Liam.Howlett@oracle.com,
-        jannh@google.com, zhangpeng362@huawei.com, bgeffon@google.com,
-        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kernel-team@android.com
-References: <20231121171643.3719880-1-surenb@google.com>
- <20231121171643.3719880-6-surenb@google.com>
- <b3c882d2-0135-430c-8179-784f78be0902@arm.com>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <b3c882d2-0135-430c-8179-784f78be0902@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231128021635.5530-1-tina.zhang@intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -138,72 +87,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01.12.23 10:29, Ryan Roberts wrote:
-> On 21/11/2023 17:16, Suren Baghdasaryan wrote:
->> Add tests for new UFFDIO_MOVE ioctl which uses uffd to move source
->> into destination buffer while checking the contents of both after
->> the move. After the operation the content of the destination buffer
->> should match the original source buffer's content while the source
->> buffer should be zeroed. Separate tests are designed for PMD aligned and
->> unaligned cases because they utilize different code paths in the kernel.
->>
->> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
->> ---
->>   tools/testing/selftests/mm/uffd-common.c     |  24 +++
->>   tools/testing/selftests/mm/uffd-common.h     |   1 +
->>   tools/testing/selftests/mm/uffd-unit-tests.c | 189 +++++++++++++++++++
->>   3 files changed, 214 insertions(+)
->>
->> diff --git a/tools/testing/selftests/mm/uffd-common.c b/tools/testing/selftests/mm/uffd-common.c
->> index fb3bbc77fd00..b0ac0ec2356d 100644
->> --- a/tools/testing/selftests/mm/uffd-common.c
->> +++ b/tools/testing/selftests/mm/uffd-common.c
->> @@ -631,6 +631,30 @@ int copy_page(int ufd, unsigned long offset, bool wp)
->>   	return __copy_page(ufd, offset, false, wp);
->>   }
->>   
->> +int move_page(int ufd, unsigned long offset, unsigned long len)
->> +{
->> +	struct uffdio_move uffdio_move;
->> +
->> +	if (offset + len > nr_pages * page_size)
->> +		err("unexpected offset %lu and length %lu\n", offset, len);
->> +	uffdio_move.dst = (unsigned long) area_dst + offset;
->> +	uffdio_move.src = (unsigned long) area_src + offset;
->> +	uffdio_move.len = len;
->> +	uffdio_move.mode = UFFDIO_MOVE_MODE_ALLOW_SRC_HOLES;
->> +	uffdio_move.move = 0;
->> +	if (ioctl(ufd, UFFDIO_MOVE, &uffdio_move)) {
->> +		/* real retval in uffdio_move.move */
->> +		if (uffdio_move.move != -EEXIST)
->> +			err("UFFDIO_MOVE error: %"PRId64,
->> +			    (int64_t)uffdio_move.move);
+
+On Tue, Nov 28, 2023 at 10:16:35AM +0800, Tina Zhang wrote:
+> From: Jason Gunthorpe <jgg@nvidia.com>
 > 
-> Hi Suren,
+> Linus suggested that the kconfig here is confusing:
 > 
-> FYI this error is triggering in mm-unstable (715b67adf4c8):
+> https://lore.kernel.org/all/CAHk-=wgUiAtiszwseM1p2fCJ+sC4XWQ+YN4TanFhUgvUqjr9Xw@mail.gmail.com/
 > 
-> Testing move-pmd on anon... ERROR: UFFDIO_MOVE error: -16 (errno=16,
-> @uffd-common.c:648)
+> Let's break it into three kconfigs controlling distinct things:
 > 
-> I'm running in a VM on Apple M2 (arm64). I haven't debugged any further, but
-> happy to go deeper if you can direct.
+>  - CONFIG_IOMMU_MM_DATA controls if the mm_struct has the additional
+>    fields for the IOMMU. Currently only PASID, but later patches store
+>    a struct iommu_mm_data *
+> 
+>  - CONFIG_ARCH_HAS_CPU_PASID controls if the arch needs the scheduling bit
+>    for keeping track of the ENQCMD instruction. x86 will select this if
+>    IOMMU_SVA is enabled
+> 
+>  - IOMMU_SVA controls if the IOMMU core compiles in the SVA support code
+>    for iommu driver use and the IOMMU exported API
+> 
+> This way ARM will not enable CONFIG_ARCH_HAS_CPU_PASID
+> 
+> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+> Signed-off-by: Tina Zhang <tina.zhang@intel.com>
+> ---
+>  arch/Kconfig             | 5 +++++
+>  arch/x86/Kconfig         | 1 +
+>  arch/x86/kernel/traps.c  | 2 +-
+>  drivers/iommu/Kconfig    | 1 +
+>  include/linux/iommu.h    | 2 +-
+>  include/linux/mm_types.h | 2 +-
+>  include/linux/sched.h    | 2 +-
+>  kernel/fork.c            | 2 +-
+>  mm/Kconfig               | 3 +++
+>  mm/init-mm.c             | 2 +-
+>  10 files changed, 16 insertions(+), 6 deletions(-)
 
-Does it trigger reliably? Which pagesize is that kernel using?
+Try again, you need to cc the mm list and the x86 list
 
-I can spot that uffd_move_pmd_test()/uffd_move_pmd_handle_fault() uses 
-default_huge_page_size(), which reads the default hugetlb size.
-
-That, however, does not necessarily correspond to the THP size. That one 
-can be obtained using read_pmd_pagesize() in vm_util.c
-
-I quickly scanned the code (still want to take a deeper look), but all 
-PAE checks looked sane to me.
-
-I think the issue is folio split handling. I replied to the patch.
-
--- 
-Cheers,
-
-David / dhildenb
-
+Jason
