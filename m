@@ -2,189 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23FA3801107
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:21:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DAAE80117E
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:21:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378534AbjLAQlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 11:41:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40484 "EHLO
+        id S1378538AbjLAQlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 11:41:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378387AbjLAQlV (ORCPT
+        with ESMTP id S1378536AbjLAQlq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 11:41:21 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69110A6;
-        Fri,  1 Dec 2023 08:41:25 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-54b7ef7f4d5so2843944a12.1;
-        Fri, 01 Dec 2023 08:41:25 -0800 (PST)
+        Fri, 1 Dec 2023 11:41:46 -0500
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8CC5197
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 08:41:52 -0800 (PST)
+Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-54744e66d27so13554a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 08:41:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701448884; x=1702053684; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KBCoe9P68J1BvUD57j5ybWcS/HGlu3WqKGKnKAvWToI=;
-        b=Z5YE00/HCdBGEFoH6gNcxshazPnGTOQO3tsbHbFTFPf5CS55vffFW9K3MVhbn5A1xj
-         JiqgCobedGen+IoeFrpnKAXmjMoR78Cc2OKVSzZTgUxUMybfUEqd0cxvSd2ChI5eNhd9
-         b6Yw8PvmTqdfnD1CeCEJAOg5a9dhndgJcilrR3HOXCOwdNoGEJdiWfDnweA5qaV8u6xt
-         2blvpaA67oIpKXDVPZTROZOXC7ZMcD5pmKPuhvXPpEIRrg8WoskChWJopsDQuV/AIPam
-         cOWnq5cMrLAmbLRkARNj2mmiWsMknck+0g3inrjtOLmg/3xOT3kbCiLNPwEFEAfK9q0x
-         pu5A==
+        d=google.com; s=20230601; t=1701448911; x=1702053711; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=wJ6qDwmyRvhNqpylX9f8LuOmYLWmceoEf5k8FTfkzPU=;
+        b=znacTWRINH7bjtkr56UNC1pMzBG1MLZZtyC3HCMP9cD00i5ttvvAjA8JXDV9KPTBrR
+         5qa/JAljXjWikCWHzhvSQ04Sjw5xpx9NNC5ghPD9YxPG9QeQmWFXY0Vh7+USxBu7jQvX
+         NS4cp9Vau1PE4dKvSOv1f0Xm+RpBWpJ5V2w3xQVKo3X35Mq5bA7J3KNF1RLZWA0s4lqD
+         05niG2hrDQFHeLj1T5bbQAFIWNTxN4xP3dbfe6A6scvIUXE0VsBIX02ntC+OHA46EAbu
+         ZBeHwB+QSie0WqcXfuX3BxkbjLSyTpevAILf4mWH/HZnnVbHUy3sk4qW5gCUZYckEAn+
+         eoeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701448884; x=1702053684;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KBCoe9P68J1BvUD57j5ybWcS/HGlu3WqKGKnKAvWToI=;
-        b=SE2nOaezG0L59a3S5blRkAlNGy2mu3c3JR7JB6EGMiBhjNHeVPxpS8BnQzI/i74N52
-         sfXFrdCQYCokfJMaqAm3rUKRATfiRW7N7RbVFnlWZn3zHypmrSLgV7cX6ZSy5aB8edUa
-         NUGSW7+RdW0Szq60+5KoeVRUOirbzOYUtHGQzPIiX3r6Ox231KBT7rMuv/LN9nfJKMwr
-         UcZPND+FG3gy6zI3rc+/BBFRIRbeYWk0LyudVuLuGgKIYZInK/S6KkwBx+EkM2y0F7dL
-         ZBCm5+4Wxorw8L9zteKfSByO6Ns2y8Rq8zcCeypzDWKHMmy7of1AGD32yk3G5UqlF1Lz
-         63xA==
-X-Gm-Message-State: AOJu0Yyzm13FWLwj5M1m2OZ10DXPmnKgU6xhXqMrRuKLvN0tpDZc2E5I
-        aB7NAXhTPrjbsE6O5fi//KMlrsK2Pz+MjvVw1CE=
-X-Google-Smtp-Source: AGHT+IF1tFyDg4QXb8YNuwsvQWvWh5qawucE6c94eA7uFz9H0jYeD62SfhVQANBg3dPZ5YqE08h3ewwMv+V5dL+rOsk=
-X-Received: by 2002:a50:aa88:0:b0:54b:29f4:e22c with SMTP id
- q8-20020a50aa88000000b0054b29f4e22cmr1046858edc.20.1701448883536; Fri, 01 Dec
- 2023 08:41:23 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701448911; x=1702053711;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wJ6qDwmyRvhNqpylX9f8LuOmYLWmceoEf5k8FTfkzPU=;
+        b=gOkTj/OJn6/flkQ5f8o1OM3+jifry+G93vefWQk2fpPVZNyd99PCK/S2/q2YWFDCxg
+         H4w6xlWPRl7lNmprmaQ3S9tDEvvEbz0sYURJc02+OjRUkU1f9Hd4GnL/ClkXVe9RRuTY
+         wvPK9tLCuVoFdoMSfepRSBEBnccqBzZ2RmtVZAR9vdJeISQw1Be7ZYCMJLiG/jrUhg1q
+         PWMReZT89t0XqnPOdNmJyYTg+zATMQn2i1jD+zlSLQdRCbbyDyRxJHRgX7SysfjkhvkN
+         dNMxTGZf7Sehwe8JeYMq5gSO3gCGJ4DIriVDh57PGcZUg0XlF/M4WZEsw0p6uAlXh4OB
+         +qWA==
+X-Gm-Message-State: AOJu0Yx8Ncc6354C8G54YhUDYCksYrqAc9seolckLu3rNo49uLhN3Xgy
+        WUmuqEVC1vnLrb9q/NlysNXukRt0X3MBdUTRA8I3fg==
+X-Google-Smtp-Source: AGHT+IEBCEUy8WWjrEzQFzI0bb+4iHE3xDO/M7JSFQnRwhSwXTDZWgI6uFpXx2LfPxgJyDBAytWfBT1XfxCuFPcOOzo=
+X-Received: by 2002:a50:aade:0:b0:54a:ee8b:7a8c with SMTP id
+ r30-20020a50aade000000b0054aee8b7a8cmr168518edc.0.1701448911052; Fri, 01 Dec
+ 2023 08:41:51 -0800 (PST)
 MIME-Version: 1.0
-References: <20231130162949.83518-1-ubizjak@gmail.com> <170137899052.398.2740335306554226817.tip-bot2@tip-bot2>
- <20231201124608.GAZWnVkA03ZrnMJgVs@fat_crate.local>
-In-Reply-To: <20231201124608.GAZWnVkA03ZrnMJgVs@fat_crate.local>
-From:   Uros Bizjak <ubizjak@gmail.com>
-Date:   Fri, 1 Dec 2023 17:41:12 +0100
-Message-ID: <CAFULd4Y=9kBdtzry+o080fbOk90Faq9WZEOMCh_TQ84iNS4f7w@mail.gmail.com>
-Subject: Re: [tip: x86/percpu] x86/percpu: Declare const_pcpu_hot as extern
- const variable
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
-        kernel test robot <lkp@intel.com>,
-        Ingo Molnar <mingo@kernel.org>, x86@kernel.org
+From:   Jann Horn <jannh@google.com>
+Date:   Fri, 1 Dec 2023 17:41:13 +0100
+Message-ID: <CAG48ez3xSoYb+45f1RLtktROJrpiDQ1otNvdR+YLQf7m+Krj5Q@mail.gmail.com>
+Subject: io_uring: incorrect assumption about mutex behavior on unlock?
+To:     Jens Axboe <axboe@kernel.dk>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        io-uring <io-uring@vger.kernel.org>
+Cc:     kernel list <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 1, 2023 at 5:25=E2=80=AFPM Borislav Petkov <bp@alien8.de> wrote=
-:
->
-> On Thu, Nov 30, 2023 at 09:16:30PM -0000, tip-bot2 for Uros Bizjak wrote:
-> > The following commit has been merged into the x86/percpu branch of tip:
-> >
-> > Commit-ID:     4604c052b84d66407f5e68045a1939685eac401e
-> > Gitweb:        https://git.kernel.org/tip/4604c052b84d66407f5e68045a193=
-9685eac401e
-> > Author:        Uros Bizjak <ubizjak@gmail.com>
-> > AuthorDate:    Thu, 30 Nov 2023 17:27:35 +01:00
-> > Committer:     Ingo Molnar <mingo@kernel.org>
-> > CommitterDate: Thu, 30 Nov 2023 20:19:33 +01:00
-> >
-> > x86/percpu: Declare const_pcpu_hot as extern const variable
-> >
-> > const_pcpu_hot is aliased by linker to pcpu_hot, so there is no need
-> > to use the DECLARE_PER_CPU_ALIGNED() macro. Also, declare const_pcpu_ho=
-t
-> > as extern to avoid allocating storage space for the aliased structure.
-> >
-> > Fixes: ed2f752e0e0a ("x86/percpu: Introduce const-qualified const_pcpu_=
-hot to micro-optimize code generation")
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
-> > Signed-off-by: Ingo Molnar <mingo@kernel.org>
-> > Link: https://lore.kernel.org/r/20231130162949.83518-1-ubizjak@gmail.co=
-m
-> > Closes: https://lore.kernel.org/oe-kbuild-all/202311302257.tSFtZnly-lkp=
-@intel.com/
-> > ---
-> >  arch/x86/include/asm/current.h | 3 +--
-> >  1 file changed, 1 insertion(+), 2 deletions(-)
-> >
-> > diff --git a/arch/x86/include/asm/current.h b/arch/x86/include/asm/curr=
-ent.h
-> > index 0538d24..9fbd7cb 100644
-> > --- a/arch/x86/include/asm/current.h
-> > +++ b/arch/x86/include/asm/current.h
-> > @@ -37,8 +37,7 @@ static_assert(sizeof(struct pcpu_hot) =3D=3D 64);
-> >  DECLARE_PER_CPU_ALIGNED(struct pcpu_hot, pcpu_hot);
-> >
-> >  /* const-qualified alias to pcpu_hot, aliased by linker. */
-> > -DECLARE_PER_CPU_ALIGNED(const struct pcpu_hot __percpu_seg_override,
-> > -                     const_pcpu_hot);
-> > +extern const struct pcpu_hot __percpu_seg_override const_pcpu_hot;
-> >
-> >  static __always_inline struct task_struct *get_current(void)
-> >  {
->
-> WARNING: modpost: EXPORT symbol "const_pcpu_hot" [vmlinux] version genera=
-tion failed, symbol will not be versioned.
-> Is "const_pcpu_hot" prototyped in <asm/asm-prototypes.h>?
-> WARNING: modpost: "const_pcpu_hot" [arch/x86/kvm/kvm.ko] has no CRC!
-> WARNING: modpost: "const_pcpu_hot" [arch/x86/kvm/kvm-intel.ko] has no CRC=
-!
-> WARNING: modpost: "const_pcpu_hot" [kernel/trace/preemptirq_delay_test.ko=
-] has no CRC!
-> WARNING: modpost: "const_pcpu_hot" [fs/exfat/exfat.ko] has no CRC!
-> WARNING: modpost: "const_pcpu_hot" [fs/ntfs/ntfs.ko] has no CRC!
-> WARNING: modpost: "const_pcpu_hot" [fs/xfs/xfs.ko] has no CRC!
-> WARNING: modpost: "const_pcpu_hot" [fs/btrfs/btrfs.ko] has no CRC!
-> WARNING: modpost: "const_pcpu_hot" [drivers/acpi/acpi_pad.ko] has no CRC!
-> WARNING: modpost: "const_pcpu_hot" [drivers/gpu/drm/display/drm_display_h=
-elper.ko] has no CRC!
-> WARNING: modpost: "const_pcpu_hot" [drivers/gpu/drm/drm.ko] has no CRC!
-> WARNING: modpost: "const_pcpu_hot" [drivers/gpu/drm/ttm/ttm.ko] has no CR=
-C!
-> WARNING: modpost: "const_pcpu_hot" [drivers/gpu/drm/i915/i915.ko] has no =
-CRC!
-> WARNING: modpost: "const_pcpu_hot" [drivers/misc/mei/mei.ko] has no CRC!
-> WARNING: modpost: "const_pcpu_hot" [drivers/usb/core/usbcore.ko] has no C=
-RC!
-> WARNING: modpost: "const_pcpu_hot" [drivers/usb/class/cdc-acm.ko] has no =
-CRC!
-> WARNING: modpost: "const_pcpu_hot" [drivers/usb/class/usblp.ko] has no CR=
-C!
-> WARNING: modpost: "const_pcpu_hot" [drivers/usb/storage/usb-storage.ko] h=
-as no CRC!
->
-> And the usual fix for those things:
->
-> diff --git a/arch/x86/include/asm/asm-prototypes.h b/arch/x86/include/asm=
-/asm-prototypes.h
-> index b1a98fa38828..7e6440bae63d 100644
-> --- a/arch/x86/include/asm/asm-prototypes.h
-> +++ b/arch/x86/include/asm/asm-prototypes.h
-> @@ -13,6 +13,7 @@
->  #include <asm/preempt.h>
->  #include <asm/asm.h>
->  #include <asm/gsseg.h>
-> +#include <asm/current.h>
->
->  #ifndef CONFIG_X86_CMPXCHG64
->  extern void cmpxchg8b_emu(void);
->
-> does NOT fix it.
+mutex_unlock() has a different API contract compared to spin_unlock().
+spin_unlock() can be used to release ownership of an object, so that
+as soon as the spinlock is unlocked, another task is allowed to free
+the object containing the spinlock.
+mutex_unlock() does not support this kind of usage: The caller of
+mutex_unlock() must ensure that the mutex stays alive until
+mutex_unlock() has returned.
+(See the thread
+<https://lore.kernel.org/all/20231130204817.2031407-1-jannh@google.com/>
+which discusses adding documentation about this.)
+(POSIX userspace mutexes are different from kernel mutexes, in
+userspace this pattern is allowed.)
 
-I looked into this problem a bit, it is triggered by CONFIG_MODVERSIONS=3Dy
+io_ring_exit_work() has a comment that seems to assume that the
+uring_lock (which is a mutex) can be used as if the spinlock-style API
+contract applied:
 
-The problem is, that genksyms does not know the __seg_gs keyword and
-simply ignores the symbol.
+    /*
+    * Some may use context even when all refs and requests have been put,
+    * and they are free to do so while still holding uring_lock or
+    * completion_lock, see io_req_task_submit(). Apart from other work,
+    * this lock/unlock section also waits them to finish.
+    */
+    mutex_lock(&ctx->uring_lock);
 
-Running:
+I couldn't find any way in which io_req_task_submit() actually still
+relies on this. I think io_fallback_req_func() now relies on it,
+though I'm not sure whether that's intentional. ctx->fallback_work is
+flushed in io_ring_ctx_wait_and_kill(), but I think it can probably be
+restarted later on via:
 
-make V=3D1 arch/x86/kernel/cpu/common.symtypes
+io_ring_exit_work -> io_move_task_work_from_local ->
+io_req_normal_work_add -> io_fallback_tw(sync=false) ->
+schedule_delayed_work
 
-There is NOTHING regarding const_pcpu_hot in the resulting common.symtypes =
-file.
+I think it is probably guaranteed that ctx->refs is non-zero when we
+enter io_fallback_req_func, since I think we can't enter
+io_fallback_req_func with an empty ctx->fallback_llist, and the
+requests queued up on ctx->fallback_llist have to hold refcounted
+references to the ctx. But by the time we reach the mutex_unlock(), I
+think we're not guaranteed to hold any references on the ctx anymore,
+and so the ctx could theoretically be freed in the middle of the
+mutex_unlock() call?
 
-The unpatched source should also fail here due to __seg_gs keyword,
-but it magically didn't.
-
-I don't know what to do here.
-
-Uros.
+I think that to make this code properly correct, it might be necessary
+to either add another flush_delayed_work() call after ctx->refs has
+dropped to zero and we know that the fallback work can't be restarted
+anymore, or create an extra ctx->refs reference that is dropped in
+io_fallback_req_func() after the mutex_unlock(). (Though I guess it's
+probably unlikely that this goes wrong in practice.)
