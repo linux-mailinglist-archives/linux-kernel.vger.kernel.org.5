@@ -2,111 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE5AA8012F0
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 19:42:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 681DE8012F9
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 19:45:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379363AbjLASmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 13:42:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57384 "EHLO
+        id S230335AbjLASph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 13:45:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230207AbjLASmh (ORCPT
+        with ESMTP id S229534AbjLASpe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 13:42:37 -0500
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27A9EEE
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 10:42:43 -0800 (PST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 5A82840E025A;
-        Fri,  1 Dec 2023 18:42:41 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=fail (4096-bit key)
-        reason="fail (body has been altered)" header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id dPMV77SPVAIt; Fri,  1 Dec 2023 18:42:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1701456157; bh=nphy73heotHESjgWYM7KNLZwEMvJWDEfBY+tKnZJzkc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=gT2RpaCJ5K7cFl2aIaYaf+m/zXF2vNijONCjCXJOexroeNDMI8OzTa5Hl4sTemOQz
-         MhwLBCGOA4JbZyO+BSHzSQ3MrX9zNTKUTHJv01DvPhx/PDyEMdT8YgD6Gi0a0ii8kX
-         q3a2J/JYSOeS5vScTsz8J95LgCR/IItx5KhpzcTTT45IjfT1abuSF8wyeqgbI8OTEy
-         jAy0vPhKOOZoFhtTSDjHwfCPDBpYOP+2MPbImjUlwbIz3jQ/oAQRCWSBM1C/0CnxiP
-         pWDuPY0TY2E7VPWwB7HOASLxpOSafrI6esniJ/WhPff6kSxfFm6EWBST81zCuqUhM2
-         9sn18TwqqfMPpd6LDrr283AUKX6EpcUSJjIS3Hc4nRCAMS1A2OPODP9UY2Tv89KLQe
-         +Qpo6YvS4sODkpiTJ7qSdj77jlEpinvNT96NaRFi9uLTx5DTwytQuVEJ6/l2AjnDHo
-         t08EU2SNoeZKxmCFltSBqPCZIcAqcSLqFQszaNN14nh6Pk/ppB6lTp3lJZBAfoWN5e
-         bJgInyTcJNo5DhX397Al06wPZPv11a627UHKci6O2dRoDWKLI2DC/nhf8QHqsS8KCj
-         1Y0DIp5FyOhn30vJtU6JiMU7WPqr58G32jfuMsaPKWeJVvZ49hAy3lsZg+ITrd94r9
-         X08Xz2KmjtZNQCe8iwIkrm4I=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1D7FB40E0030;
-        Fri,  1 Dec 2023 18:42:35 +0000 (UTC)
-From:   Borislav Petkov <bp@alien8.de>
-To:     X86 ML <x86@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH] x86/CPU/AMD: Check vendor in the AMD microcode callback
-Date:   Fri,  1 Dec 2023 19:42:26 +0100
-Message-ID: <20231201184226.16749-1-bp@alien8.de>
-X-Mailer: git-send-email 2.42.0.rc0.25.ga82fb66fed25
+        Fri, 1 Dec 2023 13:45:34 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8A9910D7
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 10:45:40 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E70FC433C9
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 18:45:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701456340;
+        bh=xsaxZc0KDMl85GF4GH4Yoo9cd+8f9Y9i3cFqKb8mFrs=;
+        h=From:Date:Subject:To:From;
+        b=bIHd+PIqaCH3KnUpbCBl/xHTAwBfq3OB/8Wc2UWOxQV8/2xeJC82EkJCqh7CYKH8t
+         0Ybt0MpspXxSmiuCr9e4/4s0X29us2ApQCYm/6pAMjvk7SB9YRp44m3yY0pdvuQLkC
+         vf2uzSTHbXQFd2C/uWcd/Ai3HfmD6Do2cLqb0jnPXokNuG7xqEGgzrKQPnRQEkto7N
+         D/c8zI9hCLWeTRb28aj7GSHQzUEO2nJWU67EVxKZzixRqvYqSFRo88h6Pt/CzS+SoI
+         4EHXQ04WtNPmH2GKrKcrHyRWl6ieQGeIyy31PK8w3Nd8SxTMCXA9wQZWv/0VdmjWNP
+         84UiccT5y1i+Q==
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2c9d1b07e79so24808181fa.1
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 10:45:40 -0800 (PST)
+X-Gm-Message-State: AOJu0YzFqqcM2D1X1AU1qMdMlDdQoLLa12ffLc9AVrzm82soIChLOw4L
+        Y0/uZnG/vka3cCDySvfhB3vmknWiSOhgQZuuVT0=
+X-Google-Smtp-Source: AGHT+IHHFfIYdRRF3S+2hYnc2dtPmvnqPIpc7Viu8sxWAf3ai/PBrkpJwU71/1qcoEyLerTrOY63GOqIszZqwTdZN6E=
+X-Received: by 2002:a2e:8185:0:b0:2c9:bc36:89c4 with SMTP id
+ e5-20020a2e8185000000b002c9bc3689c4mr1232506ljg.0.1701456338890; Fri, 01 Dec
+ 2023 10:45:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sat, 2 Dec 2023 03:45:00 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATt_56mO2Le4v4EnPnAfd3gC8S_Sm5-GCsfa=qXy=8Lrg@mail.gmail.com>
+Message-ID: <CAK7LNATt_56mO2Le4v4EnPnAfd3gC8S_Sm5-GCsfa=qXy=8Lrg@mail.gmail.com>
+Subject: Question about BUILTIN_DTB support in RISCV
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "open list:SIFIVE DRIVERS" <linux-riscv@lists.infradead.org>,
+        Alexandre Ghiti <alex@ghiti.fr>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Borislav Petkov (AMD)" <bp@alien8.de>
+Hi.
 
-Commit in Fixes added an AMD-specific microcode callback. However, it
-didn't check the CPU vendor the kernel runs on explicitly.
+I have a question about CONFIG_BUILTIN_DTB for riscv.
 
-The only reason the Zenbleed check in it didn't run on other x86 vendors
-hardware was pure coincidental luck:
+Please see this commit history.
 
-  if (!cpu_has_amd_erratum(c, amd_zenbleed))
 
-gives true on other vendors because they don't have those families and
-models.
+[1]
+2d2682512f0faf4d09a696184bf3c0bb6838baca
+added built-in DTB support, attempting
+to include multiple DTB into vmlinux
+by using SOC_BUILTIN_DTB_DECLARE() macro.
 
-However, with the removal of the cpu_has_amd_erratum() in
 
-  05f5f73936fa ("x86/CPU/AMD: Drop now unused CPU erratum checking functi=
-on")
+[2]
+d5805af9fe9ffe4a9d975e9bc39496f57a161076
+pointed out that choosing the correct DTB
+is impossible. It fell back to the single
+built-in DTB support, like other architectures.
 
-that coincidental condition is gone, leading to the zenbleed check
-getting executed on other vendors too.
+[3]
+0ddd7eaffa644baa78e247bbd220ab7195b1eed6
+added BUILTIN_DTB support for sifive and microchip,
+while apparently multiple DTBs are embedded into vmlinux.
 
-Add the explicit vendor check for the whole callback as it should've
-been done in the first place.
 
-Fixes: 522b1d69219d ("x86/cpu/amd: Add a Zenbleed fix")
-Cc: <stable@kernel.org>
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
----
- arch/x86/kernel/cpu/amd.c | 3 +++
- 1 file changed, 3 insertions(+)
 
-diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
-index a7eab05e5f29..f322ebd053a9 100644
---- a/arch/x86/kernel/cpu/amd.c
-+++ b/arch/x86/kernel/cpu/amd.c
-@@ -1320,6 +1320,9 @@ static void zenbleed_check_cpu(void *unused)
-=20
- void amd_check_microcode(void)
- {
-+	if (boot_cpu_data.x86_vendor !=3D X86_VENDOR_AMD)
-+		return;
-+
- 	on_each_cpu(zenbleed_check_cpu, NULL, 1);
- }
-=20
---=20
-2.42.0.rc0.25.ga82fb66fed25
+So, how does it work?
 
+
+With
+CONFIG_ARCH_MICROCHIP_POLARFIRE=y
+CONFIG_ARCH_SIFIVE=y
+CONFIG_BUILTIN_DTB=y
+
+7 DTB files are embedded in vmlinux.
+
+
+masahiro@zoe:~/ref/linux(master)$ riscv64-linux-gnu-nm -n vmlinux |
+grep -A15 dtb_start
+ffffffff82112620 D __dtb_start
+ffffffff82115a2c D __dtb_mpfs_icicle_kit_end
+ffffffff82115a40 D __dtb_mpfs_m100pfsevp_begin
+ffffffff82118b3b D __dtb_mpfs_m100pfsevp_end
+ffffffff82118b40 D __dtb_mpfs_polarberry_begin
+ffffffff8211b9c2 D __dtb_mpfs_polarberry_end
+ffffffff8211b9e0 D __dtb_mpfs_sev_kit_begin
+ffffffff8211e7bb D __dtb_mpfs_sev_kit_end
+ffffffff8211e7c0 D __dtb_mpfs_tysom_m_begin
+ffffffff8212162e D __dtb_mpfs_tysom_m_end
+ffffffff82121640 D __dtb_hifive_unleashed_a00_begin
+ffffffff821236af D __dtb_hifive_unleashed_a00_end
+ffffffff821236c0 D __dtb_hifive_unmatched_a00_begin
+ffffffff8212621b D __dtb_hifive_unmatched_a00_end
+ffffffff82126220 D __dtb_end
+
+
+In my understanding, the first one
+(mpfs-icicle-kit.dtb) is always used.
+
+You cannot use the other 6 DTBs.
+Am I missing something?
+
+
+
+arch/riscv64/boot/dts/canaan/Makefile
+is correct because only one DTB is embedded
+if CONFIG_ARCH_CANAAN_K210_DTB_SOURCE contains
+a single word.
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
