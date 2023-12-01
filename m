@@ -2,56 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 816EF800635
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 09:51:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C99BA80063A
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 09:51:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377923AbjLAIu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 03:50:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35578 "EHLO
+        id S1377917AbjLAIvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 03:51:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235234AbjLAIuy (ORCPT
+        with ESMTP id S1377837AbjLAIvq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 03:50:54 -0500
+        Fri, 1 Dec 2023 03:51:46 -0500
 Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7382194;
-        Fri,  1 Dec 2023 00:51:00 -0800 (PST)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3B18otYI126348;
-        Fri, 1 Dec 2023 02:50:55 -0600
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83C6A84;
+        Fri,  1 Dec 2023 00:51:52 -0800 (PST)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3B18phUd126451;
+        Fri, 1 Dec 2023 02:51:43 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1701420655;
-        bh=NscL3Sas4Tp3A3k8UITB+q6E+Lj34rinbPBLH++LU3Y=;
+        s=ti-com-17Q1; t=1701420703;
+        bh=9ui1d+7rj/ZHYz3ASmxCksLX8kM2w9ENRHHVaVCL4+c=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=jplB+oWNqQKOgkRAupfikuz9p/6MhJw3jH656i1ZoS/w4k3h3ACiuJ/b2shwuhZZS
-         35TjurTEeJ6+414cVeks/VfFbM192Qp5OIwKZ+Q8Dy73IdtLlYRgmvyBd7pYuRQoW/
-         v4jfOpQh81k8OkQ+ISgeIoDJdoWI6ygUmnn3xH8s=
+        b=w39ELqPUB81jTG9vLOo3Yuo7wAdCxJ5bmttriBzTVnrneARIozJGf7QEL6Wd+JLCb
+         rSvhwgfLEfpDf5p3Y6JlHN1E9z5+FPqmWUI2Uji8zsFKWpGcCAs+VZXB57IjAUkfvt
+         ylY6H3KXwvQvuuman+78ozkToEOzEIn9MW56ur3k=
 Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3B18otQj116187
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3B18phZL030228
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 1 Dec 2023 02:50:55 -0600
-Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE109.ent.ti.com
+        Fri, 1 Dec 2023 02:51:43 -0600
+Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE109.ent.ti.com
  (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 1
- Dec 2023 02:50:55 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ Dec 2023 02:51:43 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 1 Dec 2023 02:50:55 -0600
+ Frontend Transport; Fri, 1 Dec 2023 02:51:43 -0600
 Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3B18otxG105321;
-        Fri, 1 Dec 2023 02:50:55 -0600
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3B18pgEo015363;
+        Fri, 1 Dec 2023 02:51:42 -0600
 From:   Nishanth Menon <nm@ti.com>
-To:     <vigneshr@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        Nitin Yadav <n-yadav@ti.com>
+To:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 CC:     Nishanth Menon <nm@ti.com>, <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3] arm64: boot: dts: ti: k3-am62a-main: Fix GPIO pin count in DT nodes.
-Date:   Fri, 1 Dec 2023 02:50:53 -0600
-Message-ID: <170142057182.921957.13056043269089747285.b4-ty@ti.com>
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Aradhya Bhatia <a-bhatia1@ti.com>
+Subject: Re: [PATCH] arm64: dts: ti: k3-am65-main: Fix DSS irq trigger type
+Date:   Fri, 1 Dec 2023 02:51:40 -0600
+Message-ID: <170142068081.922136.12853419416211333002.b4-ty@ti.com>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231027065930.1187405-1-n-yadav@ti.com>
-References: <20231027065930.1187405-1-n-yadav@ti.com>
+In-Reply-To: <20231106-am65-dss-clk-edge-v1-1-4a959fec0e1e@ideasonboard.com>
+References: <20231106-am65-dss-clk-edge-v1-1-4a959fec0e1e@ideasonboard.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -66,26 +70,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nitin Yadav,
+Hi Tomi Valkeinen,
 
-On Fri, 27 Oct 2023 12:29:30 +0530, Nitin Yadav wrote:
-> Fix number of gpio pins in main_gpio0 & main_gpio1 DT nodes according
-> to AM62A7 datasheet[0].
+On Mon, 06 Nov 2023 11:57:48 +0200, Tomi Valkeinen wrote:
+> DSS irq trigger type is set to IRQ_TYPE_EDGE_RISING in the DT file, but
+> the TRM says it is level triggered.
 > 
-> [0]https://www.ti.com/lit/gpn/am62a3 Section: 6.3.10 GPIO (Page No. 52-55)
+> For some reason triggering on rising edge results in double the amount
+> of expected interrupts, e.g. for normal page flipping test the number of
+> interrupts per second is 2 * fps. It is as if the IRQ triggers on both
+> edges. There are no other side effects to this issue than slightly
+> increased CPU & power consumption due to the extra interrupt.
 > 
-> 
+> [...]
 
 I have applied the following to branch ti-k3-dts-next on [1].
 Thank you!
 
-[1/1] arm64: boot: dts: ti: k3-am62a-main: Fix GPIO pin count in DT nodes.
-      commit: 7dc4af358cc382c5d20bd5b726e53ef0f526eb6d
-
-NOTE: fixes sha is 12 chars and not 13 (generates a checkpatch warning - which
-you should have run before posting) and the $subject line does'nt need "boot:"
-- I have fixed this locally before I applied, but please take care of this in
-the future.
+[1/1] arm64: dts: ti: k3-am65-main: Fix DSS irq trigger type
+      commit: b57160859263c083c49482b0d083a586b1517f78
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent up the chain during
