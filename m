@@ -2,261 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C07C38007C8
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 10:57:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FA8B8007CA
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 10:58:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378276AbjLAJ5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 04:57:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50898 "EHLO
+        id S1378282AbjLAJ6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 04:58:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378190AbjLAJ5f (ORCPT
+        with ESMTP id S1378274AbjLAJ5q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 04:57:35 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B1FF1BD6;
-        Fri,  1 Dec 2023 01:57:16 -0800 (PST)
-Received: from eldfell (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: pq)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id E2C3F66028F5;
-        Fri,  1 Dec 2023 09:57:13 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1701424635;
-        bh=PdPq0DB/c6iOx69HlAQ2be1/MewAImn65LjY2QpKCFY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=jNXQgo2dpIXE72796wTfVzD5hmiKn76moO9e26J3IOH8lnsdi75U+reb9Uh5I4kQd
-         f154rmmN6A+UdBXnSVQGJnc4fWwy9tNLigvu7JFK9AEskeuDPC+qvdkUUgnM5KLSVi
-         jdnDTYf9hhCOV+ki95OjIBMpRx49bpT3xuhTAiQEqQTb1t225OXFEg2lxIEsmRUS0x
-         XvFCdzel9bTlHJHK7LwZh6Y+gUpg11cxE9wqhXnGJKZ7wiLE0RCuJ9OLlPQQDPEulO
-         dxaIGSkVz6pp7GaoJ/yEwVE5rAY4K2HPKaRueEMTV8aNaPNmHDeCXhuqxSAlC0jvhV
-         O4LKW47TYHgFw==
-Date:   Fri, 1 Dec 2023 11:57:09 +0200
-From:   Pekka Paalanen <pekka.paalanen@collabora.com>
-To:     Simon Ser <contact@emersion.fr>
-Cc:     =?UTF-8?B?QW5kcsOp?= Almeida <andrealmeid@igalia.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel-dev@igalia.com, alexander.deucher@amd.com,
-        christian.koenig@amd.com, Rob Clark <robdclark@gmail.com>,
-        daniel@ffwll.ch, Daniel Stone <daniel@fooishbar.org>,
-        'Marek =?UTF-8?B?T2zFocOhayc=?= <maraeo@gmail.com>,
-        Dave Airlie <airlied@gmail.com>,
-        Michel =?UTF-8?B?RMOkbnplcg==?= <michel.daenzer@mailbox.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Subject: Re: [PATCH] drm/doc: Define KMS atomic state set
-Message-ID: <20231201115709.61c0817e.pekka.paalanen@collabora.com>
-In-Reply-To: <40gonZRoP7FjDn_ugL_LpXsqwoSCZtypIe7jiWg0t8lkTx94-gESc60Cuu5eWxivJoZCNg3i-cUG9kNpKQZeYdCJPawDpTSIXivJ_t_a87E=@emersion.fr>
-References: <20231130200740.53454-1-andrealmeid@igalia.com>
-        <40gonZRoP7FjDn_ugL_LpXsqwoSCZtypIe7jiWg0t8lkTx94-gESc60Cuu5eWxivJoZCNg3i-cUG9kNpKQZeYdCJPawDpTSIXivJ_t_a87E=@emersion.fr>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Fri, 1 Dec 2023 04:57:46 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBC262117;
+        Fri,  1 Dec 2023 01:57:36 -0800 (PST)
+Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B19QMdD018409;
+        Fri, 1 Dec 2023 09:57:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=iE5vL/TCzGzSgU96m+b5jLpBrUhGV6W511CmXEeUKY8=;
+ b=gyPB4x8JelWSpkXRlqDZGqhPfnRFAO33Y/YdTMxXYNvfAfQDV/64Y+Z+ZGJ+KYh47xSP
+ g4osHfxVbYX+VvXA6j6RDnhH87ERsgaOK5dsWxanP2iQESQ475lPW4XS4wow8T/JjNBp
+ LpecGBhTSHSnFanJFODd1fwseVPOaQWIVkfwhK2Mvisa8BoP9woGA5IG45h/5fCfz2WU
+ iT4IpKC6sU2HO21D9vzJLpXs/Rq5vWXzo0v/x6/GWcUB5vQryNRjY0dm/N24/eO1nKWS
+ Kpri93+jUZcte/Ph48EQ05PkMJpma44td3VcvetC4ZC/yo03v8ukziGf8WKlmcHod17v 3g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uqcgs17dc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 01 Dec 2023 09:57:34 +0000
+Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3B19uTiW013513;
+        Fri, 1 Dec 2023 09:57:34 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uqcgs17d6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 01 Dec 2023 09:57:34 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3B19Y2SU017434;
+        Fri, 1 Dec 2023 09:57:33 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3ukvrm44ct-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 01 Dec 2023 09:57:33 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+        by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3B19vU2h28705206
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 1 Dec 2023 09:57:30 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2B6862004B;
+        Fri,  1 Dec 2023 09:57:30 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D96A820040;
+        Fri,  1 Dec 2023 09:57:29 +0000 (GMT)
+Received: from [9.152.224.222] (unknown [9.152.224.222])
+        by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Fri,  1 Dec 2023 09:57:29 +0000 (GMT)
+Message-ID: <90817094-9feb-84e6-7dc9-9b997f054242@linux.ibm.com>
+Date:   Fri, 1 Dec 2023 10:57:28 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Usvah.9E_GuBxISP7sKNNvI";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v4 2/3] s390/vfio-ap: set status response code to 06 on
+ gisc registration failure
+Content-Language: en-US
+To:     Tony Krowiak <akrowiak@linux.ibm.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>
+Cc:     jjherne@linux.ibm.com, pasic@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        frankja@linux.ibm.com, imbrenda@linux.ibm.com, david@redhat.com,
+        Harald Freudenberger <freude@linux.ibm.com>
+References: <20231129145404.263764-1-akrowiak@linux.ibm.com>
+ <20231129145404.263764-3-akrowiak@linux.ibm.com>
+From:   Christian Borntraeger <borntraeger@linux.ibm.com>
+In-Reply-To: <20231129145404.263764-3-akrowiak@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: Mn0oEm_e3xgh5DNv3S01u0JGMHFdxM5X
+X-Proofpoint-ORIG-GUID: lV6f45zuC4MtyjHc38fzPVVSIG4MiOYO
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-01_07,2023-11-30_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 spamscore=0
+ malwarescore=0 phishscore=0 clxscore=1015 lowpriorityscore=0
+ mlxlogscore=999 priorityscore=1501 suspectscore=0 bulkscore=0 mlxscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2312010066
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Usvah.9E_GuBxISP7sKNNvI
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, 01 Dec 2023 09:31:23 +0000
-Simon Ser <contact@emersion.fr> wrote:
-
-> Thanks for writing these docs! A few comments below.
->=20
-> On Thursday, November 30th, 2023 at 21:07, Andr=C3=A9 Almeida <andrealmei=
-d@igalia.com> wrote:
->=20
-> > +KMS atomic state
-> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > +
-> > +An atomic commit can change multiple KMS properties in an atomic fashi=
-on,
-> > +without ever applying intermediate or partial state changes.  Either t=
-he whole
-> > +commit succeeds or fails, and it will never be applied partially. This=
- is the
-> > +fundamental improvement of the atomic API over the older non-atomic AP=
-I which is
-> > +referred to as the "legacy API".  Applying intermediate state could un=
-expectedly
-> > +fail, cause visible glitches, or delay reaching the final state.
-> > +
-> > +An atomic commit can be flagged with DRM_MODE_ATOMIC_TEST_ONLY, which =
-means the =20
->=20
-> It would be nice to link DRM_MODE_ATOMIC_TEST_ONLY to the actual docs her=
-e.
-> This can be done with markup such as:
->=20
->     :c:macro:`DRM_MODE_ATOMIC_TEST_ONLY`
->=20
-> Same applies to other #defines.
->=20
-> > +complete state change is validated but not applied.  Userspace should =
-use this =20
->=20
-> I'd s/should/can/ here, because there are valid cases where user-space do=
-esn't
-> really need to test before applying. Applying a state first validates it =
-in the
-> kernel anwyays.
-
-Those cases a very much an exception. If you want to explain in what
-cases testing is not necessary, that's fine to add, but without it I do
-want to always recommend testing first. There is no harm in testing too
-much, but there is harm in not testing which implies that there is
-likely no fallback either. Without fallbacks, the kernel developers
-have less room to change things, and the userspace itself is probably
-too fragile to be generally useful.
-
-Or, if you think this concern is moot, then why would userspace ever
-use testing?
-
-However, I have understood from past kernel discussions that userspace
-really does need to test and fall back on test failure in almost all
-cases. Otherwise userspace becomes too driver/hardware dependent.
-
-In general, I think recommending best practices with "should" is a good
-idea.
-
-> > +flag to validate any state change before asking to apply it. If valida=
-tion fails
-> > +for any reason, userspace should attempt to fall back to another, perh=
-aps
-> > +simpler, final state.  This allows userspace to probe for various conf=
-igurations
-> > +without causing visible glitches on screen and without the need to und=
-o a
-> > +probing change.
-> > +
-> > +The changes recorded in an atomic commit apply on top the current KMS =
-state in
-> > +the kernel. Hence, the complete new KMS state is the complete old KMS =
-state with
-> > +the committed property settings done on top. The kernel will try to av=
-oid
-> > +no-operation changes, so it is safe for userspace to send redundant pr=
-operty
-> > +settings.  However, not every situation allows for no-op changes, due =
-to the
-> > +need to acquire locks for some attributes. Userspace needs to be aware=
- that some
-> > +redundant information might result in oversynchronization issues.  No-=
-operation
-> > +changes do not count towards actually needed changes, e.g.  setting MO=
-DE_ID to a
-> > +different blob with identical contents as the current KMS state shall =
-not be a
-> > +modeset on its own. As a special exception for VRR needs, explicitly s=
-etting
-> > +FB_ID to its current value is not a no-op. =20
->=20
-> I'm not sure talking about FB_ID is the right thing to do here. There is
-> nothing special about FB_ID in particular. For instance, setting CRTC_ID =
-to the
-> same value as before has the same effect. Talking specifically about FB_I=
-D here
-> can be surprising for user-space: reading these docs, I'd assume setting
-> CRTC_ID to the same value as before is a no-op, but in reality it's not.
-
-Whoa, I never knew that! That's a big surprise!
-
-People have always been talking only about FB_ID so far.
-
-> Instead, I'd suggest explaining how referencing a plane/CRTC/connector in=
- an
-> atomic commit adds it to the new state, even if there are no effective pr=
-operty
-> value changes.
-
-So, if a CRTC object is pulled into drm_atomic_state(?) at all, on VRR
-it will trigger a new scanout cycle always, avoiding the front porch
-timeout?
-
-Yikes.
-
-> > +A "modeset" is a change in KMS state that might enable, disable, or te=
-mporarily
-> > +disrupt the emitted video signal, possibly causing visible glitches on=
- screen. A
-> > +modeset may also take considerably more time to complete than other ki=
-nds of
-> > +changes, and the video sink might also need time to adapt to the new s=
-ignal
-> > +properties. Therefore a modeset must be explicitly allowed with the fl=
-ag
-> > +DRM_MODE_ATOMIC_ALLOW_MODESET.  This in combination with
-> > +DRM_MODE_ATOMIC_TEST_ONLY allows userspace to determine if a state cha=
-nge is
-> > +likely to cause visible disruption on screen and avoid such changes wh=
-en end
-> > +users do not expect them.
-> > +
-> > +An atomic commit with the flag DRM_MODE_PAGE_FLIP_ASYNC is allowed to
-> > +effectively change only the FB_ID property on any planes. No-operation=
- changes
-> > +are ignored as always. Changing any other property will cause the comm=
-it to be
-> > +rejected. Each driver may relax this restriction if they have guarante=
-es that
-> > +such property change doesn't cause modesets. Userspace can use TEST_ON=
-LY commits
-> > +to query the driver about this. =20
->=20
-> This doesn't 100% match reality at the moment, because core DRM now rejec=
-ts any
-> async commit which changes FB_ID on a non-primary plane. And there is no =
-way
-> for drivers to relax this currently.
->=20
-> I'm not sure this is a good place to state such a rule. In the end, it's =
-the
-> same as always: the kernel will reject commits it can't perform.
-> DRM_MODE_PAGE_FLIP_ASYNC does not need to be a special case here. Even wh=
-en
-> changing only FB_ID, the kernel might reject the commit (e.g. i915 does i=
-n some
-> cases).
-
-I think the paragraph is good to drop here, if it's documented in a
-more appropriate place.
 
 
-Thanks,
-pq
+Am 29.11.23 um 15:54 schrieb Tony Krowiak:
+> From: Anthony Krowiak <akrowiak@linux.ibm.com>
+> 
+> The interception handler for the PQAP(AQIC) command calls the
+> kvm_s390_gisc_register function to register the guest ISC with the channel
+> subsystem. If that call fails, the status response code 08 - indicating
+> Invalid ZONE/GISA designation - is returned to the guest. This response
+> code is not valid because setting the ZONE/GISA values is the
+> responsibility of the hypervisor controlling the guest and there is nothing
+> that can be done from the guest perspective to correct that problem.
+> 
+> The likelihood of GISC registration failure is nil and there is no status
+> response code to indicate an invalid ISC value, so let's set the response
+> code to 06 indicating 'Invalid address of AP-queue notification byte'.
+> While this is not entirely accurate, it is better than setting a response
+> code which makes no sense for the guest.
+> 
+> Signed-off-by: Anthony Krowiak <akrowiak@linux.ibm.com>
+> Suggested-by: Halil Pasic <pasic@linux.ibm.com>
+> Reviewed-by: Halil Pasic <pasic@linux.ibm.com>
+> Reviewed-by: Harald Freudenberger <freude@linux.ibm.com>
 
---Sig_/Usvah.9E_GuBxISP7sKNNvI
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Acked-by: Christian Borntraeger <borntraeger@linux.ibm.com>
 
------BEGIN PGP SIGNATURE-----
+should go via the s390 tree
 
-iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmVprfUACgkQI1/ltBGq
-qqdwBw/8DbQXXFIcSV5Jo6udnUvuEyhBA/dpYBwUDy+51gWJYkow2yq7LD6ljNYZ
-+F3wXthzTD82gfs4pMjiAzCnGG3mktAEJd+jpsOQ8yEMiw7HNCMLVognXrjkKJcU
-GkXAh7gqIRHrcJsebRR+R42KMlih0degXVhxv7IyrIQWPYzzM9dopkJs+gUZygeh
-TH2hDAPnYDuP4PIDI20ZsujgfxUWQDdVnuKilJv14jZ9RbpTUVkPV6XWC4lvEyrv
-un+pLBrtWSg6kjC20x5hYMsLmJkEiRJEjfiXwZSW7eaxvlQkw5CVlGS07C7XQ4db
-xWsPzh1tW+bewbOFOQ7LLxHnJSAMEAThvimd9Zk1cpd9ngnvyZdBL8HNcvY7Wah2
-T0srMSn1ELxjaimgSWRtWFuGBHKcOgnRsBFNoYT91Olw8ScFUbb8sYKOL30zNNw+
-8FYy8h8M/ATos3Ut7cu+T66117QuJWeZoEEqe4vDURXxFPKYQiupP44VUWa6KOih
-l61TuIMbO6eXnwhvjBXCYVhJDwob24wgUfA7Ai2nrgMTzMgzR1hWUTUMsjpZL1At
-mdVrSLsTBPsIiHTin3YtKbFmcAJfr1aVSTfY+/gLy1FpDbfyqZn1Rw2Bm9+SvoSz
-763rCp8JxvliCk6KwfUXEtCcFoGwEGWL6ZCOA2iFgOmc99vonps=
-=WyN9
------END PGP SIGNATURE-----
-
---Sig_/Usvah.9E_GuBxISP7sKNNvI--
+> ---
+>   drivers/s390/crypto/vfio_ap_ops.c | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
+> index 9cb28978c186..25d7ce2094f8 100644
+> --- a/drivers/s390/crypto/vfio_ap_ops.c
+> +++ b/drivers/s390/crypto/vfio_ap_ops.c
+> @@ -393,8 +393,8 @@ static int ensure_nib_shared(unsigned long addr, struct gmap *gmap)
+>    * Register the guest ISC to GIB interface and retrieve the
+>    * host ISC to issue the host side PQAP/AQIC
+>    *
+> - * Response.status may be set to AP_RESPONSE_INVALID_ADDRESS in case the
+> - * vfio_pin_pages failed.
+> + * status.response_code may be set to AP_RESPONSE_INVALID_ADDRESS in case the
+> + * vfio_pin_pages or kvm_s390_gisc_register failed.
+>    *
+>    * Otherwise return the ap_queue_status returned by the ap_aqic(),
+>    * all retry handling will be done by the guest.
+> @@ -458,7 +458,7 @@ static struct ap_queue_status vfio_ap_irq_enable(struct vfio_ap_queue *q,
+>   				 __func__, nisc, isc, q->apqn);
+>   
+>   		vfio_unpin_pages(&q->matrix_mdev->vdev, nib, 1);
+> -		status.response_code = AP_RESPONSE_INVALID_GISA;
+> +		status.response_code = AP_RESPONSE_INVALID_ADDRESS;
+>   		return status;
+>   	}
+>   
