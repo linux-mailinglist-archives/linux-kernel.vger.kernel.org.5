@@ -2,121 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E0B080113B
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:21:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E48E7801126
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:21:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378341AbjLAQSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 11:18:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40016 "EHLO
+        id S1378777AbjLAQS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 11:18:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378541AbjLAQRq (ORCPT
+        with ESMTP id S1378342AbjLAQR4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 11:17:46 -0500
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3908F1BDD;
-        Fri,  1 Dec 2023 08:17:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=MIlmoJpSr6Vcy4UC9StocEZWKTbyTCPOWvNn2xIAcU8=; b=ghfi8mtKvcjM95EjlN11GFmSKQ
-        yMe7CJI0QjdMUayeTCJIoHoFq/M7WxtmhLQv58Gv1Wn/4g75F+ean2ydL3I0rjsyaRE7ISA0hu8xa
-        M64kwhzqkjD3FsdpgvqEIqZ6AuROMB44ABCqDZr4h/IoYM/S/TKoIFvJkDWMmsOHwjZI=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1r96Cm-001mF3-BS; Fri, 01 Dec 2023 17:17:28 +0100
-Date:   Fri, 1 Dec 2023 17:17:28 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: marvell: move MMP boards to common marvell
- directory
-Message-ID: <9c50d09e-98a0-416f-b779-9cf39d1a94b5@lunn.ch>
-References: <20231201132306.60753-1-krzysztof.kozlowski@linaro.org>
- <1e25e2f4-e4b9-4219-a9c2-cb6230a62549@lunn.ch>
- <a44b7bb2-34ac-45ab-84c6-630d604f1bcf@linaro.org>
- <5d511e31-8ff5-4c23-a65e-8660833a9799@lunn.ch>
- <944c02f5-d0e6-4367-bb4d-b366054b3e4e@linaro.org>
+        Fri, 1 Dec 2023 11:17:56 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AC201FDA
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 08:17:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701447476; x=1732983476;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=c2E7CG6uyepV9nDHpR+5LjE4/DSDebBB9Tnx7sJ/DOE=;
+  b=JBbLZU8zL4ApBhzxDjxtoPcdIeSl5yzqVk09mLivuTqTVM070uEb7sZh
+   jXRkJyZ2NU8h3w/2ENijgnw2RMgcdqZhRhNJryFhCwK7B4aPQpibMesx1
+   2sNTt8mMUEmAWXF5cXPVn1R3I0N72TGTrQH1HQvLw2VeGypn6F0XtqtIG
+   jGI2+5Q+Mp/LMJdUQDM650EEn9URDvRYbGVeT0XbP84UXwVBnYa5D80/t
+   kVgr0sA5+98cH5meuoigLUrpYHG13MHNCPWO65mSVgZEgpm9VpTTKVVCq
+   T1Dyi4zY3yEf1gWGYz8vEjSjhVHhM0UtTZFRdOHO0RzG3cAAzvqYW7AWu
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="460013094"
+X-IronPort-AV: E=Sophos;i="6.04,242,1695711600"; 
+   d="scan'208";a="460013094"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2023 08:17:56 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="763190783"
+X-IronPort-AV: E=Sophos;i="6.04,242,1695711600"; 
+   d="scan'208";a="763190783"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga007.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2023 08:17:54 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1r96D9-000000012Fn-0ei5;
+        Fri, 01 Dec 2023 18:17:51 +0200
+Date:   Fri, 1 Dec 2023 18:17:50 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Andy Whitcroft <apw@canonical.com>,
+        Joe Perches <joe@perches.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: Re: [PATCH v1 1/1] checkpatch: Add dev_err_probe() to the list of
+ Log Functions
+Message-ID: <ZWoHLkcPk2084gQH@smile.fi.intel.com>
+References: <20231201151446.1593472-1-andriy.shevchenko@linux.intel.com>
+ <3c709cc1-0da8-4d23-9f75-8c18d4d18779@roeck-us.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <944c02f5-d0e6-4367-bb4d-b366054b3e4e@linaro.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <3c709cc1-0da8-4d23-9f75-8c18d4d18779@roeck-us.net>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 01, 2023 at 03:38:36PM +0100, Krzysztof Kozlowski wrote:
-> On 01/12/2023 15:34, Andrew Lunn wrote:
-> > On Fri, Dec 01, 2023 at 03:21:05PM +0100, Krzysztof Kozlowski wrote:
-> >> On 01/12/2023 14:51, Andrew Lunn wrote:
-> >>> On Fri, Dec 01, 2023 at 02:23:06PM +0100, Krzysztof Kozlowski wrote:
-> >>>> Marvell board bindings are spread over arm/marvell/ and arm/mrvl/
-> >>>> directories.  Move MMP board bindings from the latter to the former, to
-> >>>> keep all of them together.
-> >>>
-> >>> Hi Krzysztof
-> >>>
-> >>> Did you test get_maintainers.pl? MMP has a different maintainer to
-> >>> many of the other Marvell SoCs. We want emails going to the correct
-> >>> Maintainers, and ideally not spamming the others.
-> >>
-> >> The old binding was not referenced in MAINTAINERS, at least I could not
-> >> find it.
-> >> My change does not affect status quo - orphaned files.
-> >>
-> >> OTOH, some entries like Orion list specific files. Others like Marvell
-> >> list entire directory, which is their mistake in the first place.
-> >>
-> >> There is a mess in this approach, but the mess exists before my patch.
-> > 
-> > I think these moved files will now match:
-> > 
-> > ARM/Marvell Kirkwood and Armada 370, 375, 38x, 39x, XP, 3700, 7K/8K, CN9130 SOC support
-> > M:      Andrew Lunn <andrew@lunn.ch>
-> > M:      Gregory Clement <gregory.clement@bootlin.com>
-> > M:      Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
-> > L:      linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
-> > S:      Maintained
-> > T:      git git://git.kernel.org/pub/scm/linux/kernel/git/gclement/mvebu.git
-> > F:      Documentation/devicetree/bindings/arm/marvell/
-> > 
-> > But these files are not Gregory or my problem.
-> 
-> Yeah, that's what I meant by listing entire directory.
-> 
-> > 
-> > If they were orphaned before, i would prefer they are either orphaned
-> > after the move, or associated to the correct maintainer. Being
-> > associated to the wrong maintainers is worse than having no
-> > maintainers at all.
-> 
-> I can add this to existing maintainers entry. Which one? I see only two
-> ARM/Marvell.
+On Fri, Dec 01, 2023 at 08:01:28AM -0800, Guenter Roeck wrote:
+> On 12/1/23 07:14, Andy Shevchenko wrote:
+> > dev_err_probe() is missing in the list of Log Functions and hence
+> > checkpatch issues a warning in the cases when any other function
+> > in use won't trigger it. Add dev_err_probe() to the list to behave
+> > consistently.
 
-MMP SUPPORT
-R:      Lubomir Rintel <lkundrak@v3.sk>
-L:      linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
-S:      Odd Fixes
-T:      git git://git.kernel.org/pub/scm/linux/kernel/git/lkundrak/linux-mmp.git
-F:      arch/arm/boot/dts/marvell/mmp*
-F:      arch/arm/mach-mmp/
-F:      include/linux/soc/mmp/
+...
 
-But you also need to modify the ARM/Marvell Kirkwood and ... so that
-it excludes these MMP files.
+> Not sure if I agree. The difference here is that dev_err_probe()
+> has two additional parameters ahead of the string. I would very much prefer
+> to have those two additional parameters on a separate line if the string is
+> too long to fit in 100 columns with those two parameters on the same line.
+> In other words, I very much prefer
+> 
+> 	dev_err_probe(dev, -ESOMETHING,
+> 		      "very long string");
+> over
+> 	dev_err_probe(dev, -ESOMETHING, "very long string");
+> 
+> and I don't really think that the latter has any benefits.
+> 
+> Also note that other dev_xxx() log functions are not included in the above test
+> and would still generate warnings. Accepting
+> 
+> 	dev_err_probe(dev, -ESOMETHING, "very long string");
+> but not
+> 	dev_err(dev, "very long string");
 
-   Andrew
+They are included, see the line previous to the added one.
+(Regexp covers something like x_y_()* and x_*() families with the explicitly
+ listed * suffixes.)
+
+That's why _this_ change makes it consistent.
+
+> doesn't really make sense to me.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
