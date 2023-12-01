@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5673680001B
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 01:15:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C479980001E
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 01:15:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377488AbjLAAPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 19:15:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58958 "EHLO
+        id S1377469AbjLAAPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 19:15:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377435AbjLAAPJ (ORCPT
+        with ESMTP id S1377440AbjLAAPK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 19:15:09 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6557410FA;
-        Thu, 30 Nov 2023 16:15:02 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-40b27726369so14768805e9.0;
-        Thu, 30 Nov 2023 16:15:02 -0800 (PST)
+        Thu, 30 Nov 2023 19:15:10 -0500
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83CD8199D;
+        Thu, 30 Nov 2023 16:15:03 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-40b595bf5d2so11459665e9.2;
+        Thu, 30 Nov 2023 16:15:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20230601; t=1701389701; x=1701994501; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=E05UGHQ4N7O1lFKOAb+MxjheYxLzG4PbQZQyg7KHlkU=;
-        b=XBJezZSwag2JpImPdxd/KvnisgWdGGACm/XDr7qXRG060K0L462WGC6w+410BgYwdJ
-         rszBdu/Tp/HQUqcosuzoJr6j0ddF6pZecedM65J8co+oXH5UL/9vS1BJ6nzKUSvJhLRm
-         DlHBAnTaOulzYrFoXRFSteov1owQmw6wHf9fnXCI5YzE1MftKLPmT7zSVCj3Zq7URjHg
-         FSjDBVAljiCzuXjQjif+BarI0LyFC0r0Va4XITM4n5bLlVFs+RSfImJaNs2NqOUigxJe
-         d7+YfGVsrEbUEWqupah/6t+cXE4SJ8IkZOZg23F+riaUqrOUVOxYTr8dp663BLuQMLr3
-         ygjg==
+        bh=o0La5H0sjddNIq/VvoGQu8ZG94GEUi31ycq7n/iZy+E=;
+        b=jq3pdT26z2bx314KexihN4nYi1TPpZWhkt4N2MrvzQsTpb3RHq7zC7YjAdJEyDki4c
+         t3HPOwJ3s/pcyTFykSrq9sKTRzcYIr/IVau4Pg93D8qCZUTm03wh/NO84peUKS66dQ/g
+         ApqoyVPRCPeOc64RPLkrHOE184JQDYTI+2//ztBRw3kEKKlzeupQlEfx6GOq6bqZktOE
+         OwFQ3UDP2VHrf5HW1Lzbp/L6+RBhMcXHHbEMEs1MMnMU70I9YdXMfzpAuRiKCoCywKmf
+         Msl4cDWu6zly+r2tG7w/JMc0K6J8VUYJiXoE9PDkPVOSyTh+rZy9V3vNPGNNXZJAn8CP
+         9Nfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1701389701; x=1701994501;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=E05UGHQ4N7O1lFKOAb+MxjheYxLzG4PbQZQyg7KHlkU=;
-        b=xAokdh7DrPfNlBX+Y2MeYCeqDoWyyqOqPCTx7ngZVQBVGzdO46Sj+qFRlsEZ97DZs/
-         uCdGyEA6DbTCm8Cd+9+W/OBUjuZrxI2bfAvhljTTlIM7JiVUTlbtJID+czeSTTiaHeTK
-         wfo2QpcSy2ePt6TPVht2Gf3ZpJMH+nMEm5H9TKs4A6QJ6DZ6TTPDmYd21m1qGNsjB/4H
-         sqWt0zcBtOEBNkJIiQ9cNXRczpzcodgedlxLP9VwRr2dQ5DshjMZ1cRGXGbkI9vpUr2d
-         XmbRu7ifUbjXNLJ7Gu/A13kZcuYTuFaQs8te7UbLSbGN9gII/Tb3Qp4fRiwkXz4OsGSC
-         YSrg==
-X-Gm-Message-State: AOJu0YzTsy0Vas2BC88TomzQqwT1/cGQwQi0TyaXjLx8vtRLKW1SOhYm
-        MwI6blsWTbCNb+1agosnba4=
-X-Google-Smtp-Source: AGHT+IGN+riBPwld1Q7RAXo/voLlmSSiGAF3665cBiRdXed+PPj3Aabp+BkOyTtpehGi4O4iU2M0SQ==
-X-Received: by 2002:a5d:63cb:0:b0:332:fe7e:2a2a with SMTP id c11-20020a5d63cb000000b00332fe7e2a2amr207182wrw.44.1701389700625;
-        Thu, 30 Nov 2023 16:15:00 -0800 (PST)
+        bh=o0La5H0sjddNIq/VvoGQu8ZG94GEUi31ycq7n/iZy+E=;
+        b=RNS65/RNPCYsE/A2Ab5FEJJIcbToxRVX/fN5b5HWi8qzoBUUj+6cCMuxaxfqwjVBkU
+         ShAET4jBSlVrTwKiuV1qFP0pt/4bs9acng2JBarqNbSautnluPOTB0pavaLhph/WpbYQ
+         ZSNz7NAg7vkvPcvqS+TaaeSh137L75+GPb1jbm7mKK8ZeneAYAw4fCevsVFUULC89cAg
+         8A/rVXe7s0IKM39iwqD6Lz2mZ0MjhiP6s29ZFqhDj8GiGE6r0845vTmuMHT86+BI8iFD
+         7wj5bizgVaOLakIAYryc45djUWkUAW9DklPBybHlARvwMUGG0G78NVOI2sPB2DLRQxcU
+         D9yQ==
+X-Gm-Message-State: AOJu0YwfQ09at8pmew4Z+xefIUkZWYdGBLZd2Vlju0EYa/aCq5k+zfeO
+        j83z4RO+RWvXlMql0yzrn6w=
+X-Google-Smtp-Source: AGHT+IFtGye2IP2ziCz7F2vBizhjGkh+8k2WtNNzepSDOg/li/0McSwyDBcgg4DN+2Xelyqu8IJkHw==
+X-Received: by 2002:a05:600c:46c9:b0:40b:3faa:c964 with SMTP id q9-20020a05600c46c900b0040b3faac964mr81262wmo.27.1701389701515;
+        Thu, 30 Nov 2023 16:15:01 -0800 (PST)
 Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.googlemail.com with ESMTPSA id g16-20020a05600c4ed000b0040b47c53610sm3535457wmq.14.2023.11.30.16.14.59
+        by smtp.googlemail.com with ESMTPSA id g16-20020a05600c4ed000b0040b47c53610sm3535457wmq.14.2023.11.30.16.15.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Nov 2023 16:15:00 -0800 (PST)
+        Thu, 30 Nov 2023 16:15:01 -0800 (PST)
 From:   Christian Marangi <ansuelsmth@gmail.com>
 To:     Andrew Lunn <andrew@lunn.ch>,
         Heiner Kallweit <hkallweit1@gmail.com>,
@@ -60,9 +60,9 @@ To:     Andrew Lunn <andrew@lunn.ch>,
         Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Cc:     Christian Marangi <ansuelsmth@gmail.com>
-Subject: [net-next PATCH v2 12/12] net: phy: at803x: drop specific PHY ID check from cable test functions
-Date:   Fri,  1 Dec 2023 01:14:22 +0100
-Message-Id: <20231201001423.20989-13-ansuelsmth@gmail.com>
+Subject: [net-next PATCH v2 12/12] net: phy: at803x: drop specific PHY id check from cable test functions
+Date:   Fri,  1 Dec 2023 01:14:23 +0100
+Message-Id: <20231201001423.20989-14-ansuelsmth@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231201001423.20989-1-ansuelsmth@gmail.com>
 References: <20231201001423.20989-1-ansuelsmth@gmail.com>
@@ -78,7 +78,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drop specific PHY ID check for cable test functions for at803x. This is
+Drop specific PHY id check for cable test functions for at803x. This is
 done to make functions more generic. While at it better describe what
 the functions does by using more symbolic function names.
 
