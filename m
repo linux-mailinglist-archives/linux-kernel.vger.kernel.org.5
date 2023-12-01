@@ -2,92 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 253CC800703
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 10:30:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1BC2800708
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 10:31:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378210AbjLAJaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 04:30:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41224 "EHLO
+        id S1378112AbjLAJbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 04:31:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378194AbjLAJ3l (ORCPT
+        with ESMTP id S1378068AbjLAJbD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 04:29:41 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1DF82D47
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 01:27:50 -0800 (PST)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 6934D1FD66;
-        Fri,  1 Dec 2023 09:27:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1701422868; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sQwzdTYvrRv6kwmyIfzY+Auo3yOb/qjcABHg72uxOp8=;
-        b=h9galPa2C+0p7I+D8lvp9bH8FnGklhot5gehpiYeTyxRa2Oez7FV3aemn1mQJzkUVe0BIO
-        /SPOg/SzRc1+X8BRpk495JNnbmX65Py4zEW+9jU1a/bdPvczh+2WIiquzPSbvzAj4J7GbA
-        FenU/BJ17jybUhZrloeAxa8FcFxA5Jk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1701422868;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sQwzdTYvrRv6kwmyIfzY+Auo3yOb/qjcABHg72uxOp8=;
-        b=fdIxNGC76hOGaO75uyt2pUAucI2fsflbx30GV3uhdgnok4QaVk0YkJd+ewgwmmNbH6To9L
-        W+wWRFQuMV5HK7CQ==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 574F913928;
-        Fri,  1 Dec 2023 09:27:48 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-        by imap2.dmz-prg2.suse.org with ESMTPSA
-        id +1yfExSnaWUbZgAAn2gu4w
-        (envelope-from <dwagner@suse.de>); Fri, 01 Dec 2023 09:27:48 +0000
-From:   Daniel Wagner <dwagner@suse.de>
-To:     linux-nvme@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, Keith Busch <kbusch@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Hannes Reinecke <hare@suse.de>, Daniel Wagner <dwagner@suse.de>
-Subject: [RFC v2 3/3] nvme: add csi, ms and nuse to sysfs
-Date:   Fri,  1 Dec 2023 10:27:35 +0100
-Message-ID: <20231201092735.28592-4-dwagner@suse.de>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231201092735.28592-1-dwagner@suse.de>
-References: <20231201092735.28592-1-dwagner@suse.de>
+        Fri, 1 Dec 2023 04:31:03 -0500
+Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43FA5469E
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 01:29:06 -0800 (PST)
+Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-5d34d85e610so17601717b3.3
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 01:29:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701422945; x=1702027745; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CMJWPTMz3I601PDaKg2G9zUK8oGX7I/FmdndTXV+PEQ=;
+        b=cgJ+49/0UbaSjAIUhmS5SocHDBx5KjVQSIBtJrMHoKlfni5Q76uujUzQBPpBqh2pgz
+         CLhspyrejyhIj5Jnih4hoDikQ+kOaHTF2sXwGXboSVwdLQ7vEtHuWgtC0aW64a7Ybnw6
+         yZbmjKQcq4ZG5a329c7iubSwnUzjNz0f3T8vSjigMUp/j75uiF5k72ICj3OdagoPbhwj
+         UDe3VaURzy7E1ZJORcfnF6mM0CQBisKEIfyKNCe8zfRamQTL0dVgBvtHH7BinhaVAdtu
+         j0Ll7MhKQ5q3P7pYpRPUtbkq61hWzlqD64979xH6O3lRDodkChzRht7JURyaSAtfVPZj
+         h7dg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701422945; x=1702027745;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CMJWPTMz3I601PDaKg2G9zUK8oGX7I/FmdndTXV+PEQ=;
+        b=fNUz036TfQ1hqN1cmO6nHjTgKm4NU1FzUJKitPvpdWKFFGF05ZOxvx8z7PTN1OY93r
+         Akc1BBHZMpsrfJS8qXmCXlcNVz2c9XiHaZ6uNgGzR3rE9JfBKmsZyAO7LBwE5lfwl87S
+         I5+OMyGhwAD5pwzrEusyIfF5qIHbaND9q2wKOawZ2yYa2LE8DUs56C3/YHewDopxcQEu
+         ZKI7oUvZTKfajscAFEpakfXdrGqrNEpMc18ViTeSoPjYpfNYwhxEunUMlxuMVsLyExsA
+         gTBgz0xyJASJ4DkhI0ExKg++ciTMNRbe665t27NkJGRfphAgy8qycRMS5xnp5vxn+Hul
+         xb8w==
+X-Gm-Message-State: AOJu0YzG5yo/+LpthGqocdLpUhK9dWFkzdhwP5IkF9g+NrQ3bUY1fFaJ
+        rIKNepLVrRtVClubvgCMf3xjcAd6jls6br8GWb5jaA==
+X-Google-Smtp-Source: AGHT+IH7z5fSeuufF5Cxad9UDRaE+shZZJy1gQvx2kCB4e/jW1K7Fe5gWDdyHCZzHgjNd7epaL2M0znaAmC6vZYwWYo=
+X-Received: by 2002:a81:ae59:0:b0:5d4:313c:4b07 with SMTP id
+ g25-20020a81ae59000000b005d4313c4b07mr937537ywk.23.1701422945075; Fri, 01 Dec
+ 2023 01:29:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out2.suse.de;
-        none
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.30 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         R_MISSING_CHARSET(2.50)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         REPLY(-4.00)[];
-         BROKEN_CONTENT_TYPE(1.50)[];
-         NEURAL_HAM_LONG(-1.00)[-1.000];
-         RCVD_COUNT_THREE(0.00)[3];
-         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-         NEURAL_HAM_SHORT(-0.20)[-1.000];
-         RCPT_COUNT_SEVEN(0.00)[7];
-         MID_CONTAINS_FROM(1.00)[];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_TLS_ALL(0.00)[];
-         BAYES_HAM(-3.00)[100.00%]
-X-Spam-Score: -3.30
+References: <20231201091034.936441-1-jorge@foundries.io>
+In-Reply-To: <20231201091034.936441-1-jorge@foundries.io>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 1 Dec 2023 10:28:52 +0100
+Message-ID: <CACRpkdaMnphBxvqpmvNG_72O02Umny3qdxfyrKdA4BsDwZmtfg@mail.gmail.com>
+Subject: Re: [PATCH] mmc: rpmb: fixes pause retune on all RPMB partitions.
+To:     Jorge Ramirez-Ortiz <jorge@foundries.io>
+Cc:     ulf.hansson@linaro.org, CLoehle@hyperstone.com,
+        adrian.hunter@intel.com, jinpu.wang@ionos.com, hare@suse.de,
+        beanhuo@micron.com, asuk4.q@gmail.com, yangyingliang@huawei.com,
+        yibin.ding@unisoc.com, victor.shih@genesyslogic.com.tw,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -98,88 +72,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-libnvme is using the sysfs for enumarating the nvme resources. Though
-there are few missing attritbutes in the sysfs. For these libnvme issues
-commands during discovering.
+Hi Jorge,
 
-As the kernel already knows all these attributes and we would like to
-avoid libnvme to issue commands all the time, expose these missing
-attributes.
+thanks for your patch!
 
-TODO: update nuse on request
+On Fri, Dec 1, 2023 at 10:10=E2=80=AFAM Jorge Ramirez-Ortiz <jorge@foundrie=
+s.io> wrote:
 
-Signed-off-by: Daniel Wagner <dwagner@suse.de>
----
- drivers/nvme/host/core.c  |  1 +
- drivers/nvme/host/nvme.h  |  1 +
- drivers/nvme/host/sysfs.c | 24 ++++++++++++++++++++++++
- 3 files changed, 26 insertions(+)
+> When RPMB was converted to a character device, it added support for
+> multiple RPMB partitions (Commit 97548575bef3 ("mmc: block: Convert RPMB
+> to a character device").
+>
+> One of the changes in this commit was transforming the variable
+> target_part defined in __mmc_blk_ioctl_cmd into a bitmask.
+>
+> This inadvertedly regressed the validation check done in
+> mmc_blk_part_switch_pre() and mmc_blk_part_switch_post().
+>
+> This commit fixes that regression.
+>
+> Fixes: 97548575bef3 ("mmc: block: Convert RPMB to a character device")
+> Signed-off-by: Jorge Ramirez-Ortiz <jorge@foundries.io>
 
-diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-index bcc5fefb53a8..8aa744356468 100644
---- a/drivers/nvme/host/core.c
-+++ b/drivers/nvme/host/core.c
-@@ -2057,6 +2057,7 @@ static int nvme_update_ns_info_block(struct nvme_ns *ns,
- 	blk_mq_freeze_queue(ns->disk->queue);
- 	lbaf = nvme_lbaf_index(id->flbas);
- 	ns->head->lba_shift = id->lbaf[lbaf].ds;
-+	ns->head->nuse = le64_to_cpu(id->nuse);
- 	nvme_set_queue_limits(ns->ctrl, ns->queue);
- 
- 	ret = nvme_configure_metadata(ns, id);
-diff --git a/drivers/nvme/host/nvme.h b/drivers/nvme/host/nvme.h
-index 1ad2539df6fe..3a2395bf8025 100644
---- a/drivers/nvme/host/nvme.h
-+++ b/drivers/nvme/host/nvme.h
-@@ -456,6 +456,7 @@ struct nvme_ns_head {
- 	u16 pi_size;
- 	u16 sgs;
- 	u32 sws;
-+	u64 nuse;
- 	u8 pi_type;
- 	u8 guard_type;
- #ifdef CONFIG_BLK_DEV_ZONED
-diff --git a/drivers/nvme/host/sysfs.c b/drivers/nvme/host/sysfs.c
-index c6b7fbd4d34d..555e8842f0d4 100644
---- a/drivers/nvme/host/sysfs.c
-+++ b/drivers/nvme/host/sysfs.c
-@@ -114,12 +114,36 @@ static ssize_t nsid_show(struct device *dev, struct device_attribute *attr,
- }
- static DEVICE_ATTR_RO(nsid);
- 
-+static ssize_t csi_show(struct device *dev, struct device_attribute *attr,
-+		char *buf)
-+{
-+	return sysfs_emit(buf, "%d\n", dev_to_ns_head(dev)->ids.csi);
-+}
-+static DEVICE_ATTR_RO(csi);
-+
-+static ssize_t metadata_bytes_show(struct device *dev, struct device_attribute *attr,
-+		char *buf)
-+{
-+	return sysfs_emit(buf, "%d\n", dev_to_ns_head(dev)->ms);
-+}
-+static DEVICE_ATTR_RO(metadata_bytes);
-+
-+static ssize_t nuse_show(struct device *dev, struct device_attribute *attr,
-+		char *buf)
-+{
-+	return sysfs_emit(buf, "%llu\n", dev_to_ns_head(dev)->nuse);
-+}
-+static DEVICE_ATTR_RO(nuse);
-+
- static struct attribute *nvme_ns_id_attrs[] = {
- 	&dev_attr_wwid.attr,
- 	&dev_attr_uuid.attr,
- 	&dev_attr_nguid.attr,
- 	&dev_attr_eui.attr,
-+	&dev_attr_csi.attr,
- 	&dev_attr_nsid.attr,
-+	&dev_attr_metadata_bytes.attr,
-+	&dev_attr_nuse.attr,
- #ifdef CONFIG_NVME_MULTIPATH
- 	&dev_attr_ana_grpid.attr,
- 	&dev_attr_ana_state.attr,
--- 
-2.43.0
+My bug :/
+Shouldn't we also add Cc: stable@vger.kernel.org?
 
+
+> +       const unsigned int mask =3D EXT_CSD_PART_CONFIG_ACC_RPMB;
+>         int ret =3D 0;
+>
+> -       if (part_type =3D=3D EXT_CSD_PART_CONFIG_ACC_RPMB) {
+> +       if (part_type & mask =3D=3D mask) {
+
+That looks complex, can't we just:
+
+if (part_type & EXT_CSD_PART_CONFIG_ACC_RPMB)?
+
+> +       const unsigned int mask =3D EXT_CSD_PART_CONFIG_ACC_RPMB;
+>         int ret =3D 0;
+>
+> -       if (part_type =3D=3D EXT_CSD_PART_CONFIG_ACC_RPMB) {
+> +       if (part_type & mask =3D=3D mask) {
+
+Dito here.
+
+Yours,
+Linus Walleij
