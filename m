@@ -2,211 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 748788000B9
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 01:58:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11EE28000B1
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 01:58:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232464AbjLAA6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 19:58:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58074 "EHLO
+        id S1376893AbjLAA6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 19:58:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232469AbjLAA6R (ORCPT
+        with ESMTP id S231511AbjLAA5t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 19:58:17 -0500
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2071.outbound.protection.outlook.com [40.107.243.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D6E71BCA;
-        Thu, 30 Nov 2023 16:57:55 -0800 (PST)
+        Thu, 30 Nov 2023 19:57:49 -0500
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10olkn2102.outbound.protection.outlook.com [40.92.40.102])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D79931732;
+        Thu, 30 Nov 2023 16:57:45 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=B1BoIGvtF/uFj7tzTU0vhQh4fyLyYy6Gef2FjVzhDHLUHjTJeBeeYvxocojHQLGNIXzwgyLKn826q8o6BW8z8xJAXLqPTp9cIKJ5C1SO41+wUHcsoD/8BTpbjCUO12qRwlz2/NGfneTnADRP8Q0bJmuciMVdGpKN1Ge56ucQbsXyiokxBQJz4jYDxHIfYTE9MwuOHfee1tRhEDbKoqGLp8+wQ1NJpcr5o5uqN1L4BSllZJjrCA2T2gjHYJsYdgRDldIpdHoJyD7KVY6NNQdfptAAbYGn347oSBO5rtZzM21HzF4H+VVxS1dDjmca+YVoAe2KNkdtxK/9yKOnrB3O0w==
+ b=EY1ZafehY69bv3gXgzXM/4iNAc1uWbq0HEGcdSejE5qXFBD+r7flbLX+lN2V92lVzCWhE6Nlm2sx+97+HUepMOidZ4gni0GLKqy2KQ0nYmHUrigpxSJNf8dIbvq2mNd0xyXjrnWdhkrM5sxZK8Mqcm53N0hS7KwyIlg4w04g3+TH+3r9k0VI6mbRB7P3gZkLRfsOPGoAXhn6NLxzRURs4z/lQ39iF9S2QjGIj4jH8iS6a6yVBeG5J0FNl56pM5IYR+VUIjR3SyxNj5FLu/hwsyHOxsVVbDnwFCkglNxZiee6SalqNakS7WnPd4WjrUSY1MWObDz8hBd8Xxf+FnthTg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1geK9kaDb6x1MgaVo0VEehzktdpkHZJQWPtIZJAflmM=;
- b=RZPH7aC3ih70T7b1Z9PVjzzEfVVoIGGbMvlQmEeqhrid6cMtmyjpYyG968UGbRSP0oUltc8M0YUvLncyXlmkJvaI6AAE6e+EQmY4XLw446BVZ2YLDxnLSIrBWHcPb8oGDZABsRt3oqq5eFahmE92vIVrhl5vN6JmNldiEOYQO1jmfMi8C9tJ9zZk9xdOJ2xLhHQCKQ+ahqu90GW6D+otBu+og9vbbouPjZWWkFG4yv8YkNU3owrZVNyqi84tmthUYxsPM940UfX61ocmb4qeUciQoHKk1jUSRxKL2w1NBxbI4LcNxRGSvFgUzCnzP+Y1FxrEBh/+4ExSKhOybRl9wA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=lwn.net smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ bh=8E1XYGOGlifzSJz1VP2C1JHbhRqD3q/E/K5wrzstpSY=;
+ b=kstq06EoVs/+oy2nHi2ey/Xb4YsxFUSjIv88tMoEKvXLikWOiddYR465p7U/S1Doz6v1YlaGyY/BSTfUb/rVjX8wFqU39xBbBtpKZFB51aQDovSEckA6Ju2aLb7X4U0tvBmEXTFbn6/p/1nm1t9ruavOcYgn/HVo6Ut0OOxPWcucPPlZwJiiVFG1WYQISnHaqJA7NDSqGGLGFpBalySltYyr3F+mvm4jIoYCco2v1BRB50DivCjUzmWc6RDZd7/jMkqmT27M2xYuvS0M46cASx4tf2D6OpsKg/ZXJJp2P1X7B51IMqIHWuKmP0Fg888KnE5LHu1lE4IakQ3/h25HDw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1geK9kaDb6x1MgaVo0VEehzktdpkHZJQWPtIZJAflmM=;
- b=EicvuN/k88zxeg2I3LNE+H86ULowWBaierGfSNipIcHRg1EONxkRPGD+eGDic0ZrxNyftQtuf5xBC97G9pUgbw1bFliwMK86bFUcDaChK9SExNnyM2bIL5JoKNscoa0Y4PzWXSJWasOmNGk0tyXUT1wXyhMgoREswiTSzwE8RfY=
-Received: from BN0PR08CA0020.namprd08.prod.outlook.com (2603:10b6:408:142::8)
- by DS7PR12MB6095.namprd12.prod.outlook.com (2603:10b6:8:9c::19) with
+ bh=8E1XYGOGlifzSJz1VP2C1JHbhRqD3q/E/K5wrzstpSY=;
+ b=OjzS6ZG1d1MfGLYllX1bO0hT+gN9wK0nmMfRmZeIcfFc4kgjE02pIBv+i1Rvq1O8iUOQejioVm/RTm2HgqDoFLVCnOIE4mJStRPoiU8kC8xiv7zaSQPnDuaPiRWNziDC6R66WulMkeDiJGCeELMxG2H7KO+6YxOLm2Mcod2/TLelvtjBFsZeo+1B6xxzbkZ2B/u5fB6LeS4wlkknARlppgqsI2gMWuMDoIu+her5o2cj7gMMFkk66kiiNxq/m3sDvrOclLAtEM4ydCNVnPRBiVgi0jKujRcnJvAbfhV5VDkYOA9KwoBsWwZpbqJFOTjH6aRZVvM39gBctFUC71ES4g==
+Received: from IA1PR20MB4953.namprd20.prod.outlook.com (2603:10b6:208:3af::19)
+ by CH3PR20MB6735.namprd20.prod.outlook.com (2603:10b6:610:173::13) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.24; Fri, 1 Dec
- 2023 00:57:52 +0000
-Received: from SN1PEPF000252A2.namprd05.prod.outlook.com
- (2603:10b6:408:142:cafe::74) by BN0PR08CA0020.outlook.office365.com
- (2603:10b6:408:142::8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.24 via Frontend
- Transport; Fri, 1 Dec 2023 00:57:51 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- SN1PEPF000252A2.mail.protection.outlook.com (10.167.242.9) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7046.17 via Frontend Transport; Fri, 1 Dec 2023 00:57:51 +0000
-Received: from bmoger-ubuntu.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Thu, 30 Nov
- 2023 18:57:49 -0600
-From:   Babu Moger <babu.moger@amd.com>
-To:     <corbet@lwn.net>, <fenghua.yu@intel.com>,
-        <reinette.chatre@intel.com>, <tglx@linutronix.de>,
-        <mingo@redhat.com>, <bp@alien8.de>, <dave.hansen@linux.intel.com>
-CC:     <x86@kernel.org>, <hpa@zytor.com>, <paulmck@kernel.org>,
-        <rdunlap@infradead.org>, <tj@kernel.org>, <peterz@infradead.org>,
-        <seanjc@google.com>, <kim.phillips@amd.com>, <babu.moger@amd.com>,
-        <jmattson@google.com>, <ilpo.jarvinen@linux.intel.com>,
-        <jithu.joseph@intel.com>, <kan.liang@linux.intel.com>,
-        <nikunj@amd.com>, <daniel.sneddon@linux.intel.com>,
-        <pbonzini@redhat.com>, <rick.p.edgecombe@intel.com>,
-        <rppt@kernel.org>, <maciej.wieczor-retman@intel.com>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <eranian@google.com>, <peternewman@google.com>, <dhagiani@amd.com>
-Subject: [PATCH 15/15] x86/resctrl: Update ABMC assignment on event configuration changes
-Date:   Thu, 30 Nov 2023 18:57:20 -0600
-Message-ID: <20231201005720.235639-16-babu.moger@amd.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231201005720.235639-1-babu.moger@amd.com>
-References: <20231201005720.235639-1-babu.moger@amd.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.23; Fri, 1 Dec
+ 2023 00:57:43 +0000
+Received: from IA1PR20MB4953.namprd20.prod.outlook.com
+ ([fe80::55b:c350:980:ad8]) by IA1PR20MB4953.namprd20.prod.outlook.com
+ ([fe80::55b:c350:980:ad8%6]) with mapi id 15.20.7046.024; Fri, 1 Dec 2023
+ 00:57:43 +0000
+From:   Inochi Amaoto <inochiama@outlook.com>
+To:     Conor Dooley <conor@kernel.org>
+Cc:     Inochi Amaoto <inochiama@outlook.com>,
+        Yu-Chien Peter Lin <peterlin@andestech.com>,
+        Guo Ren <guoren@kernel.org>, acme@kernel.org,
+        adrian.hunter@intel.com, ajones@ventanamicro.com,
+        alexander.shishkin@linux.intel.com, andre.przywara@arm.com,
+        anup@brainfault.org, aou@eecs.berkeley.edu, atishp@atishpatra.org,
+        conor+dt@kernel.org, conor.dooley@microchip.com,
+        devicetree@vger.kernel.org, dminus@andestech.com,
+        evan@rivosinc.com, geert+renesas@glider.be, heiko@sntech.de,
+        irogers@google.com, jernej.skrabec@gmail.com, jolsa@kernel.org,
+        jszhang@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, locus84@andestech.com,
+        magnus.damm@gmail.com, mark.rutland@arm.com, mingo@redhat.com,
+        n.shubin@yadro.com, namhyung@kernel.org, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, peterz@infradead.org,
+        prabhakar.mahadev-lad.rj@bp.renesas.com, rdunlap@infradead.org,
+        robh+dt@kernel.org, samuel@sholland.org, sunilvl@ventanamicro.com,
+        tglx@linutronix.de, tim609@andestech.com, uwu@icenowy.me,
+        wens@csie.org, will@kernel.org, ycliang@andestech.com
+Subject: Re: [PATCH v4 09/13] dt-bindings: riscv: Add T-Head PMU extension description
+Date:   Fri,  1 Dec 2023 08:57:34 +0800
+Message-ID: <IA1PR20MB4953376542AAC1DFC54C2E02BB81A@IA1PR20MB4953.namprd20.prod.outlook.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20231201-hatchback-lustily-a516298c3556@spud>
+References: <20231201-hatchback-lustily-a516298c3556@spud>
+Content-Type: text/plain; charset=y
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
+X-TMN:  [PkdI8r2rHLpMmeUCObfb0Fs3IyMK0w2bxdJ2jMqicJ4=]
+X-ClientProxiedBy: TYCPR01CA0022.jpnprd01.prod.outlook.com (2603:1096:405::34)
+ To IA1PR20MB4953.namprd20.prod.outlook.com (2603:10b6:208:3af::19)
+X-Microsoft-Original-Message-ID: <20231201005740.57990-1-inochiama@outlook.com>
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN1PEPF000252A2:EE_|DS7PR12MB6095:EE_
-X-MS-Office365-Filtering-Correlation-Id: b1a08a67-e0a4-4c02-d2f8-08dbf2088b9c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
+X-MS-TrafficTypeDiagnostic: IA1PR20MB4953:EE_|CH3PR20MB6735:EE_
+X-MS-Office365-Filtering-Correlation-Id: b34da03f-0b62-43bb-cee8-08dbf2088639
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: SpjN8XXetD0smoW/X5soFA+yOo9YqQFZI+jFjQsmQi/qN3X6Cz+WJ9RJRo4cItzeShwLqDUZG6j1T341wjv8mwZ5GjZgjhPssMX9Vq3wkObFyr26083E+sWrVMjwPVKtA95Ao5fJLKPFJB/C9eYGzV2N6R0UjzMhH52ChyXmh/5SgNF/mlQryj+SkxiQ7cktYETP1kxz3HiiwRq5BkE+1xWMqir3KS9ku0648P7fzHTV8fFYKd9bsGyNy5GuSQJk4WplKaGIAU0ah+sia30OxVWNBTfAo43Njjgx/5DZ5ebVgrx0Y5lioO2Mx+z+/gKKXNMZHtduQlxEysMB0v96ev5fcvj2Y9b0CR2dEY0yL+EwQiUutrR65aU3fg761U6oBXgaSnD3+W3wSj10YKzKVQBR6Af6hjBl4q98UYOwbIJP1wbfulk+gWoIMMKFoqZX3N8mYMA4XmmQ5HQiUG4SkTokSeWqe8vsbr80FABSiq9VRVeZ1u2AohTdw5HHl4EC/chpiA+UENotKS2Q68CWWAfM4EM+KxKe8YrhaRFOxn9ZZzOKzTmBJ/nFHZ39gjLq8H8NJ9QSHLltut7dz8CIcNkqjh0gUDcYAySeORrDRuQzppiZKccQs5E2+ihEbPLQDJjEY2wFTq0gsSe7b23jVnbX4FriFj/OS/So43pFselCow2iTrPxpncFI9G8H0NFgQZI/RofNsNX2HDHBly7+axVivEN6t5NX5gyiUgYfWFhvux8JsUU7rWSvZnyC7TMZJ1B1UpZmdDtJzUdG80cAA==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(136003)(396003)(346002)(376002)(230922051799003)(1800799012)(186009)(64100799003)(451199024)(82310400011)(46966006)(40470700004)(36840700001)(86362001)(40460700003)(83380400001)(26005)(1076003)(6666004)(7696005)(2616005)(47076005)(426003)(36860700001)(478600001)(44832011)(7416002)(8936002)(5660300002)(8676002)(41300700001)(336012)(2906002)(110136005)(966005)(16526019)(4326008)(316002)(15650500001)(81166007)(70206006)(70586007)(54906003)(36756003)(356005)(82740400003)(40480700001)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Dec 2023 00:57:51.8402
+X-Microsoft-Antispam-Message-Info: qCtCw6XP3+TQFl2EqihZCF9QGBjJbzVYxoqWm8jc6nil94b+Y1vsIi56yJT1vTGeHzjFXfQeQncDc/mNg72Ng0avYJK25FOfx7A5A6XGOMOulGXD94myPPtRPfnhyYROyFvGzUSMM4C/MaYkUjpkJqNJ2ZOMa9uwGvqjhjoToBsk0heYqfY3ySZygRo5slg6x36kOtRDLN6Pjo0ThHX7ggx/KFxVzaI4Bmd7PysCIiGyAEfxqNrllpjLfkpECUeMHxlpOCZwS9G/GjnUo9n1eqddeeazJ8e8ZDFBqYJsBvj22zYJns1UrnPaZAb1EvKPj0WMIrZ+cn++UBYuk+A8h7RvJJFdbzn3zRbQ5wJoVoJtGNPQ8wehn6nlmMT66iuYFud2RW3f7AeroqfEFhOeJ9fKCkn3MX0ZD142FM+zXoBZufZIUFDAwoNMXzoBhmCu6vTtEXO3rvCtnR40fqYDWhSuORLwf1YM9rqZJDoEqI//oFBIOKOfc16+lKcNMNq2y2Go7VbkynwOOeuaDgzue42Ip9PAKsB5Lk6PBfhnTP6kQvApnhfUKJizg06kYCXiVyBUmWXgYz0fhxcwyTQ43nN3rAKqXOa80qvyfWEI5Sizx6DBGJKX3YVkiqGawcThqxkmvjStGlR5R/W3ioq2yysAStiRzXpQyXp2EN2OhW8=
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?CfzIb1J79JyOa+3i401WeK6y5++WRhkERZZo5Jaoiw/EL6Yj9eOx/WKGAm5t?=
+ =?us-ascii?Q?iUPMhjG+0dL7jjwhi+46RFloaohyoncaJ+JVaRmWGqId6Kfnt0ddlQkN9rtc?=
+ =?us-ascii?Q?Pm9Low+a95VxSrm163NdH2fTyn1rHJLobDtJb/Uj6UVCJ9eXZWhC7lAWuJnx?=
+ =?us-ascii?Q?0BAZ5arEHIGnPJ4QRcxZZlEUrjhoBhz5l7mj3dsk50elk9JXRnHudt1o8XNU?=
+ =?us-ascii?Q?YQeS7UbWBHrO1qtk/TgaKlrdEXJVu1lS+feloCKSaykIv7wjB6Psahn9Rg32?=
+ =?us-ascii?Q?bart7GfC0LkMABbqH86b5EwJ152GRz1N69tpFqx5eEh8jgLMaY+xtNAn5gYk?=
+ =?us-ascii?Q?2Aeir0HYxf2vjfPJML9Blnyzz/mVDTfnP3X4x1GSAzdgi9Ey/dGjJNu1TEtY?=
+ =?us-ascii?Q?A2c8fLMrcYmdFbsvVXMEvJ/P0ueqEvVrjMwAaGGiPqXHO48hxcoPaIY2RY+w?=
+ =?us-ascii?Q?ZxxOAdKt7WiAWMPhC4iQFBv4NNfLn9N7o0/MbMU6ducvbfjhciSM/uFv9f2a?=
+ =?us-ascii?Q?qf0dWuwAQy+L4U93ZtIhrRB2qhVagaXnoOYKyzOg9InXPGWFTFyn2KVu3nxt?=
+ =?us-ascii?Q?lPzGRbrJ7lIkmF/yw1tZJsOrCGLfcat8iL6ZegUOD7PqREblMp0rWY8yoWVQ?=
+ =?us-ascii?Q?tVAlgjaxykPxUxeHI/kFP8Zh2o//qQber+VKKn/6Vx8ONpze/PGPEdGvNns2?=
+ =?us-ascii?Q?weRDBcICkb2DMb3WWKQCMT8S2m8ET6gV1WTogfdVcPr5wntYOq9XPVGhwQDD?=
+ =?us-ascii?Q?SC9u0/l9fDp/LRA50zgvNlE2oGS6KSENF5amSrioR7Ilmo/JBB6+1f0y713y?=
+ =?us-ascii?Q?3FDWkrwTraqRPCfCaoPXoxlcuGhT2uwnMjYstirFL3l1aJqqoVQzokWJnqHn?=
+ =?us-ascii?Q?y+vGmH6D3Z4cZdNTx0/xwfNCQFfl9ym6uJHqDCavjI0Bu56YPvliutVFTyUk?=
+ =?us-ascii?Q?brtzQN+gk1hRbRnMocNIeSl3VNzkOsqzdUN6GQHoGubIeJ3R7v4FiMTPjE3r?=
+ =?us-ascii?Q?jep9gpgHz4rudhXw8+u9WYcYrO2k/Hga2mVVvdaQCvA5zCyWyKdB62VacZ+m?=
+ =?us-ascii?Q?C5+coSBWEFQAM2bo6bo1VfYxel36vLYYChlMgAnP99sSFn33vooPg6yxjWh3?=
+ =?us-ascii?Q?4d5Jz2bCuO4K++uwFjIQlr78A3dQL79tQs/84ZrNCcNTsN+2x1AzZFs5rH2k?=
+ =?us-ascii?Q?IDOtKYmqP7rYNeDUfiqwH3XhR07iwiopMEjeIh0zo6tptrrW+JqoRAAD+pc?=
+ =?us-ascii?Q?=3D?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b34da03f-0b62-43bb-cee8-08dbf2088639
+X-MS-Exchange-CrossTenant-AuthSource: IA1PR20MB4953.namprd20.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Dec 2023 00:57:43.1879
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: b1a08a67-e0a4-4c02-d2f8-08dbf2088b9c
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: SN1PEPF000252A2.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB6095
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR20MB6735
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When ABMC (Assignable Bandwidth Monitoring Counters) feature is enabled,
-bandwidth events can be read in following methods.
+>
+>On Fri, Dec 01, 2023 at 07:11:31AM +0800, Inochi Amaoto wrote:
+>>>
+>>> On Thu, Nov 30, 2023 at 08:16:38PM +0800, Inochi Amaoto wrote:
+>>>>>
+>>>>> Hi Inochi,
+>>>>>
+>>>>> On Thu, Nov 30, 2023 at 04:29:22PM +0800, Inochi Amaoto wrote:
+>>>>>>>
+>>>>>>> Hi Guo Ren,
+>>>>>>>
+>>>>>>> On Thu, Nov 23, 2023 at 05:14:30AM +0800, Guo Ren wrote:
+>>>>>>>> On Wed, Nov 22, 2023 at 8:17 PM Yu Chien Peter Lin
+>>>>>>>> <peterlin@andestech.com> wrote:
+>>>>>>>>>
+>>>>>>>>> Document the ISA string for T-Head performance monitor extension
+>>>>>>>>> which provides counter overflow interrupt mechanism.
+>>>>>>>>>
+>>>>>>>>> Signed-off-by: Yu Chien Peter Lin <peterlin@andestech.com>
+>>>>>>>>> ---
+>>>>>>>>> Changes v2 -> v3:
+>>>>>>>>>   - New patch
+>>>>>>>>> Changes v3 -> v4:
+>>>>>>>>>   - No change
+>>>>>>>>> ---
+>>>>>>>>>  Documentation/devicetree/bindings/riscv/extensions.yaml | 6 ++++++
+>>>>>>>>>  1 file changed, 6 insertions(+)
+>>>>>>>>>
+>>>>>>>>> diff --git a/Documentation/devicetree/bindings/riscv/extensions.yaml b/Documentation/devicetree/bindings/riscv/extensions.yaml
+>>>>>>>>> index c91ab0e46648..694efaea8fce 100644
+>>>>>>>>> --- a/Documentation/devicetree/bindings/riscv/extensions.yaml
+>>>>>>>>> +++ b/Documentation/devicetree/bindings/riscv/extensions.yaml
+>>>>>>>>> @@ -258,5 +258,11 @@ properties:
+>>>>>>>>>              in commit 2e5236 ("Ztso is now ratified.") of the
+>>>>>>>>>              riscv-isa-manual.
+>>>>>>>>>
+>>>>>>>>> +        - const: xtheadpmu
+>>>>>>>>> +          description:
+>>>>>>>>> +            The T-Head performance monitor extension for counter overflow. For more
+>>>>>>>>> +            details, see the chapter 12 in the Xuantie C906 user manual.
+>>>>>>>>> +            https://github.com/T-head-Semi/openc906/tree/main/doc
+>>>>>>>>> +
+>>>>>>>>>  additionalProperties: true
+>>>>>>>>>  ...
+>>>>>>>>> --
+>>>>>>>>> 2.34.1
+>>>>>>>>>
+>>>>>>>> Reviewed-by: Guo Ren <guoren@kernel.org>
+>>>>>>>
+>>>>>>> Thanks for the review.
+>>>>>>> Would you share document about T-Head PMU?
+>>>>>>>
+>>>>>>
+>>>>>> Hi, Peter Lin:
+>>>>>>
+>>>>>> You can use the following two document to get all events:
+>>>>>> https://github.com/T-head-Semi/openc906/tree/main/doc
+>>>>>> https://github.com/T-head-Semi/openc910/tree/main/doc
+>>>>>>
+>>>>>> There are also some RTL code can describe these events:
+>>>>>> https://github.com/T-head-Semi/openc910/blob/e0c4ad8ec7f8c70f649d826ebd6c949086453272/C910_RTL_FACTORY/gen_rtl/pmu/rtl/ct_hpcp_top.v#L1123
+>>>>>> https://github.com/T-head-Semi/openc906/blob/af5614d72de7e5a4b8609c427d2e20af1deb21c4/C906_RTL_FACTORY/gen_rtl/pmu/rtl/aq_hpcp_top.v#L543
+>>>>>>
+>>>>>> The perf events json can also be used as document, this is already
+>>>>>> applied (with more detailed explanation):
+>>>>>> https://lore.kernel.org/all/IA1PR20MB495325FCF603BAA841E29281BBBAA@IA1PR20MB4953.namprd20.prod.outlook.com/
+>>>>>
+>>>>> Thanks for reaching out!
+>>>>> The updated description will be:
+>>>>>
+>>>>> - const: xtheadpmu
+>>>>>  description:
+>>>>>    The T-Head performance monitor extension for counter overflow, as ratified
+>>>>>    in commit bd9206 ("Initial commit") of Xuantie C906 user manual.
+>>>>>    https://github.com/T-head-Semi/openc906/tree/main/doc
+>>>>>
+>>>>> Is it OK with you?
+>>>>>
+>>>>
+>>>> I suggest using perf event json as event description. The jsons provide
+>>>> more detailed explanation for these events than the user manual.
+>>>
+>>> Does the "perf event json" describe the registers and interrupt behaviour?
+>>>
+>>
+>> It does not. IIRC, the linux just uses SBI as perf driver backend. So
+>> the registers and interrupt behaviour is primarily for SBI developer.
+>
+>Interrupts and registers are the reason that this patch (and the rest of
+>the patchset) exists :)
+>
 
-1. The contents of a specific counter can be read by setting the following
-fields in QM_EVTSEL: [ExtendedEvtID]=1, [EvtID]=L3CacheABMC and setting
-[RMID] to the desired counter ID. Reading QM_CTR will then return the
-contents of the specified counter. The E bit will be set if the counter
-configuration was invalid, or if an invalid counter ID was set in the
-QM_EVTSEL[RMID] field. Supporting this method requires changes in
-rmid_read interface.
+Thanks, it seems I misunderstood something.
 
-2. Alternatively, the contents of a counter may be read by specifying an
-RMID and setting the [EvtID] to L3BWMonEvtn where n= {0,1}. If an
-assignable bandwidth counter is monitoring that RMID with a BwType bitmask
-that matches a QOS_EVT_CFG_n, that counter’s value will be returned when
-reading QM_CTR. However, if multiple counters have the same configuration,
-QM_CTR will return the value of the counter with the lowest CtrID.
+>> For registers and interrup detail, just reference the openc910 doc url
+>> (https://github.com/T-head-Semi/openc910/tree/main/doc) and the T-HEAD
+>> PMU driver in OpenSBI.
+>
+>The former, sure. But I will not accept driver implementations as the
+>reference in this context.
+>
 
-Method 2 is supported in here. For the ABMC counter assignment to work,
-the assignment needs to be updated to match BwType to the contents of the
-MSR QOS_EVT_CFG_n. So, update the ABMC assignment when event configuration
-changes.
+OK, Let's drop it and left the document only.
 
-The feature details are available in APM listed below [1].  [1] AMD64
-Architecture Programmer's Manual Volume 2: System Programming Publication
-(ABMC).
-
-Signed-off-by: Babu Moger <babu.moger@amd.com>
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=206537
----
- arch/x86/kernel/cpu/resctrl/rdtgroup.c | 40 ++++++++++++++++++++++++++
- 1 file changed, 40 insertions(+)
-
-diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-index 6eca47673344..11890b4afb9f 100644
---- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-+++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-@@ -1768,6 +1768,38 @@ static ssize_t rdtgroup_monitor_state_write(struct kernfs_open_file *of,
- 	return ret ?: nbytes;
- }
- 
-+static void rdtgroup_update_abmc(struct rdt_resource *r,
-+				 struct rdt_domain *d, u32 evtid)
-+{
-+	struct rdtgroup *prgrp, *crgrp;
-+	int index, mon_state;
-+
-+	if (evtid == QOS_L3_MBM_TOTAL_EVENT_ID)
-+		mon_state = TOTAL_ASSIGN;
-+	else
-+		mon_state = LOCAL_ASSIGN;
-+
-+	index = mon_event_config_index_get(evtid);
-+	if (index == INVALID_CONFIG_INDEX) {
-+		pr_warn_once("Invalid event id %d\n", evtid);
-+		return;
-+	}
-+
-+	/*
-+	 * Update the assignment for all the monitor groups if the group
-+	 * is configured with ABMC assignment.
-+	 */
-+	list_for_each_entry(prgrp, &rdt_all_groups, rdtgroup_list) {
-+		if (prgrp->mon.monitor_state & mon_state)
-+			rdtgroup_abmc_domain(d, prgrp, evtid, index, 1);
-+
-+		list_for_each_entry(crgrp, &prgrp->mon.crdtgrp_list, mon.crdtgrp_list) {
-+			if (crgrp->mon.monitor_state & mon_state)
-+				rdtgroup_abmc_domain(d, crgrp, evtid, index, 1);
-+		}
-+	}
-+}
-+
- static void mon_event_config_read(void *info)
- {
- 	struct mon_config_info *mon_info = info;
-@@ -1852,6 +1884,7 @@ static void mon_event_config_write(void *info)
- static int mbm_config_write_domain(struct rdt_resource *r,
- 				   struct rdt_domain *d, u32 evtid, u32 val)
- {
-+	struct rdt_hw_resource *hw_res = resctrl_to_arch_res(r);
- 	struct rdt_hw_domain *hw_dom = resctrl_to_arch_dom(d);
- 	struct mon_config_info mon_info = {0};
- 	int ret = 0;
-@@ -1892,6 +1925,13 @@ static int mbm_config_write_domain(struct rdt_resource *r,
- 	else
- 		goto out;
- 
-+	/*
-+	 * Event configuration changed for the domain, so Update
-+	 * the ABMC assignment.
-+	 */
-+	if (hw_res->abmc_enabled)
-+		rdtgroup_update_abmc(r, d, evtid);
-+
- 	/*
- 	 * When an Event Configuration is changed, the bandwidth counters
- 	 * for all RMIDs and Events will be cleared by the hardware. The
--- 
-2.34.1
-
+>Thanks,
+>Conor.
+>
+>
