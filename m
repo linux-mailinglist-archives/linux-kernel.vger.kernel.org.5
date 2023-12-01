@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DEB58009B0
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 12:16:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F42148009B4
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 12:16:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378691AbjLALPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 06:15:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36230 "EHLO
+        id S1378626AbjLALQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 06:16:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378515AbjLALPY (ORCPT
+        with ESMTP id S1378506AbjLALPZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 06:15:24 -0500
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::221])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E6AC10FC;
+        Fri, 1 Dec 2023 06:15:25 -0500
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B5111707;
         Fri,  1 Dec 2023 03:15:28 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id EB6E024000A;
-        Fri,  1 Dec 2023 11:15:25 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 24A011BF20F;
+        Fri,  1 Dec 2023 11:15:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1701429326;
+        t=1701429327;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=p5Y4+QQx6IQCL0sfRkqEobRfltIrsUFlmPw44Fo9wsE=;
-        b=hk1EPBxxfDuPRzao8dYSg9XjL+82XECa5mha/s8D7odiVcFQjquvJ3U14VjT49wpLmmkv3
-        /feO+rjiGPq54X/fc0IrKYMitvllF6vnYmb1uoOJJqFSZBLMpsOzmQkme/VJMT/KYIgVsm
-        D7KHq2QfS/qZQtRMBKO3IjIa57GYXjhzjEdHAPGi7Thn4IUmxDA6gxtnyhag0QNfQg/9GE
-        f7ztQY5GnLgI0PClHxacQC9T2aqqNxl9+XrWbelK5Hi14PZnpSEXl2XFjZxpwTrYTJ0Qqu
-        dg/wcjEtjn41Jz4Olzu9g+6mCvrGS2FD/1sQc/NUoOVFpcl0sBY3QlOJJGxTCQ==
+        bh=f2MzbyPn8rMX/70hHyFKQ1kdGPyPC7EdKYb9ZGPjSt0=;
+        b=k1B8GV5AahIuZsH5+B4XhQsNm4jzPNRSZD5VGYwGBIsDov4TKWbtUI8RkhLzkCe2Qz0Dde
+        3EILQ3QiYzLvPYLZ2HP7wlpM73kO9CPI8Dy33G2/x1l8REFFfqlH6SV7+Qqh8JzEJ7p2iz
+        0ghV2l+jCr0/g1iZ43oPq1jlKdPWIwhIbS1RGyh79y4hZvLZ5Yhq8mxqhAp8+ZBYdiLh72
+        4HYXI493vLywTMv5DOIplUTem40ZBMRVcqh4ZJZd8HHgjbRpRFhwYoBYoZou850wrzIF8v
+        ucQov0aEReRgk9Uwhce3h0Qbvbh5tdIkqveu7MJaWGgt2RTWpnR82txvonXm6Q==
 From:   Gregory CLEMENT <gregory.clement@bootlin.com>
 To:     Paul Burton <paulburton@kernel.org>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
@@ -40,12 +40,10 @@ Cc:     Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
         Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
         Alexandre Belloni <alexandre.belloni@bootlin.com>,
         =?UTF-8?q?Th=C3=A9o=20Lebrun?= <theo.lebrun@bootlin.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Vladimir Kondratiev <vladimir.kondratiev@intel.com>,
-        Gregory CLEMENT <gregory.clement@bootlin.com>
-Subject: [PATCH v3 05/22] MIPS: Fix set_uncached_handler for ebase in XKPHYS
-Date:   Fri,  1 Dec 2023 12:14:48 +0100
-Message-ID: <20231201111512.803120-6-gregory.clement@bootlin.com>
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: [PATCH v3 06/22] MIPS: Refactor mips_cps_core_entry implementation
+Date:   Fri,  1 Dec 2023 12:14:49 +0100
+Message-ID: <20231201111512.803120-7-gregory.clement@bootlin.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231201111512.803120-1-gregory.clement@bootlin.com>
 References: <20231201111512.803120-1-gregory.clement@bootlin.com>
@@ -54,8 +52,8 @@ Content-Transfer-Encoding: 8bit
 X-GND-Sasl: gregory.clement@bootlin.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -64,35 +62,473 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jiaxun Yang <jiaxun.yang@flygoat.com>
 
-ebase may be in XKPHYS if memblock unable to allocate memory
-within KSEG0 physical range.
+Now the exception vector for CPS systems are allocated on-fly
+with memblock as well.
 
-To map ebase into uncached space we just convert it back to
-physical address and then use platform's TO_UNCAC helper
-to create mapping.
+It will try to allocate from KSEG1 first, and then try to allocate
+in low 4G if possible.
 
-Co-developed-by: Vladimir Kondratiev <vladimir.kondratiev@intel.com>
-Signed-off-by: Vladimir Kondratiev <vladimir.kondratiev@intel.com>
-Co-developed-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+The main reset vector is now generated by uasm, to avoid tons
+of patches to the code. Other vectors are copied to the location
+later.
+
 Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
 ---
- arch/mips/kernel/traps.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/mips/include/asm/mips-cm.h |   1 +
+ arch/mips/include/asm/smp-cps.h |   4 +-
+ arch/mips/kernel/cps-vec.S      | 110 ++++++++-------------
+ arch/mips/kernel/smp-cps.c      | 167 +++++++++++++++++++++++++++-----
+ arch/mips/kernel/traps.c        |   2 +
+ 5 files changed, 186 insertions(+), 98 deletions(-)
 
+diff --git a/arch/mips/include/asm/mips-cm.h b/arch/mips/include/asm/mips-cm.h
+index 23c67c0871b17..15d8d69de4550 100644
+--- a/arch/mips/include/asm/mips-cm.h
++++ b/arch/mips/include/asm/mips-cm.h
+@@ -311,6 +311,7 @@ GCR_CX_ACCESSOR_RW(32, 0x018, other)
+ /* GCR_Cx_RESET_BASE - Configure where powered up cores will fetch from */
+ GCR_CX_ACCESSOR_RW(32, 0x020, reset_base)
+ #define CM_GCR_Cx_RESET_BASE_BEVEXCBASE		GENMASK(31, 12)
++#define CM_GCR_Cx_RESET_BASE_MODE		BIT(1)
+ 
+ /* GCR_Cx_ID - Identify the current core */
+ GCR_CX_ACCESSOR_RO(32, 0x028, id)
+diff --git a/arch/mips/include/asm/smp-cps.h b/arch/mips/include/asm/smp-cps.h
+index 22a572b70fe31..39a602e5fecc4 100644
+--- a/arch/mips/include/asm/smp-cps.h
++++ b/arch/mips/include/asm/smp-cps.h
+@@ -24,7 +24,7 @@ struct core_boot_config {
+ 
+ extern struct core_boot_config *mips_cps_core_bootcfg;
+ 
+-extern void mips_cps_core_entry(void);
++extern void mips_cps_core_boot(int cca, void __iomem *gcr_base);
+ extern void mips_cps_core_init(void);
+ 
+ extern void mips_cps_boot_vpes(struct core_boot_config *cfg, unsigned vpe);
+@@ -32,8 +32,6 @@ extern void mips_cps_boot_vpes(struct core_boot_config *cfg, unsigned vpe);
+ extern void mips_cps_pm_save(void);
+ extern void mips_cps_pm_restore(void);
+ 
+-extern void *mips_cps_core_entry_patch_end;
+-
+ #ifdef CONFIG_MIPS_CPS
+ 
+ extern bool mips_cps_smp_in_use(void);
+diff --git a/arch/mips/kernel/cps-vec.S b/arch/mips/kernel/cps-vec.S
+index 64ecfdac6580b..8870a2dbc35aa 100644
+--- a/arch/mips/kernel/cps-vec.S
++++ b/arch/mips/kernel/cps-vec.S
+@@ -4,6 +4,8 @@
+  * Author: Paul Burton <paul.burton@mips.com>
+  */
+ 
++#include <linux/init.h>
++
+ #include <asm/addrspace.h>
+ #include <asm/asm.h>
+ #include <asm/asm-offsets.h>
+@@ -81,40 +83,48 @@
+ 	 nop
+ 	.endm
+ 
++	__INIT
++LEAF(excep_tlbfill)
++	DUMP_EXCEP("TLB Fill")
++	b	.
++	 nop
++	END(excep_tlbfill)
+ 
+-.balign 0x1000
++LEAF(excep_xtlbfill)
++	DUMP_EXCEP("XTLB Fill")
++	b	.
++	 nop
++	END(excep_xtlbfill)
+ 
+-LEAF(mips_cps_core_entry)
+-	/*
+-	 * These first several instructions will be patched by cps_smp_setup to load the
+-	 * CCA to use into register s0 and GCR base address to register s1.
+-	 */
+-	.rept   CPS_ENTRY_PATCH_INSNS
+-	nop
+-	.endr
++LEAF(excep_cache)
++	DUMP_EXCEP("Cache")
++	b	.
++	 nop
++	END(excep_cache)
+ 
+-	.global mips_cps_core_entry_patch_end
+-mips_cps_core_entry_patch_end:
++LEAF(excep_genex)
++	DUMP_EXCEP("General")
++	b	.
++	 nop
++	END(excep_genex)
+ 
+-	/* Check whether we're here due to an NMI */
+-	mfc0	k0, CP0_STATUS
+-	and	k0, k0, ST0_NMI
+-	beqz	k0, not_nmi
++LEAF(excep_intex)
++	DUMP_EXCEP("Interrupt")
++	b	.
+ 	 nop
++	END(excep_intex)
+ 
+-	/* This is an NMI */
+-	PTR_LA	k0, nmi_handler
++LEAF(excep_ejtag)
++	PTR_LA	k0, ejtag_debug_handler
+ 	jr	k0
+ 	 nop
++	END(excep_ejtag)
++	__FINIT
+ 
+-not_nmi:
+-	/* Setup Cause */
+-	li	t0, CAUSEF_IV
+-	mtc0	t0, CP0_CAUSE
+-
+-	/* Setup Status */
+-	li	t0, ST0_CU1 | ST0_CU0 | ST0_BEV | STATUS_BITDEPS
+-	mtc0	t0, CP0_STATUS
++LEAF(mips_cps_core_boot)
++	/* Save  CCA and GCR base */
++	move   s0, a0
++	move   s1, a1
+ 
+ 	/* We don't know how to do coherence setup on earlier ISA */
+ #if MIPS_ISA_REV > 0
+@@ -178,49 +188,7 @@ not_nmi:
+ 	PTR_L	sp, VPEBOOTCFG_SP(v1)
+ 	jr	t1
+ 	 nop
+-	END(mips_cps_core_entry)
+-
+-.org 0x200
+-LEAF(excep_tlbfill)
+-	DUMP_EXCEP("TLB Fill")
+-	b	.
+-	 nop
+-	END(excep_tlbfill)
+-
+-.org 0x280
+-LEAF(excep_xtlbfill)
+-	DUMP_EXCEP("XTLB Fill")
+-	b	.
+-	 nop
+-	END(excep_xtlbfill)
+-
+-.org 0x300
+-LEAF(excep_cache)
+-	DUMP_EXCEP("Cache")
+-	b	.
+-	 nop
+-	END(excep_cache)
+-
+-.org 0x380
+-LEAF(excep_genex)
+-	DUMP_EXCEP("General")
+-	b	.
+-	 nop
+-	END(excep_genex)
+-
+-.org 0x400
+-LEAF(excep_intex)
+-	DUMP_EXCEP("Interrupt")
+-	b	.
+-	 nop
+-	END(excep_intex)
+-
+-.org 0x480
+-LEAF(excep_ejtag)
+-	PTR_LA	k0, ejtag_debug_handler
+-	jr	k0
+-	 nop
+-	END(excep_ejtag)
++	END(mips_cps_core_boot)
+ 
+ LEAF(mips_cps_core_init)
+ #ifdef CONFIG_MIPS_MT_SMP
+@@ -428,7 +396,7 @@ LEAF(mips_cps_boot_vpes)
+ 	/* Calculate a pointer to the VPEs struct vpe_boot_config */
+ 	li	t0, VPEBOOTCFG_SIZE
+ 	mul	t0, t0, ta1
+-	addu	t0, t0, ta3
++	PTR_ADDU t0, t0, ta3
+ 
+ 	/* Set the TC restart PC */
+ 	lw	t1, VPEBOOTCFG_PC(t0)
+@@ -603,10 +571,10 @@ dcache_done:
+ 	lw	$1, TI_CPU(gp)
+ 	sll	$1, $1, LONGLOG
+ 	PTR_LA	\dest, __per_cpu_offset
+-	addu	$1, $1, \dest
++	PTR_ADDU $1, $1, \dest
+ 	lw	$1, 0($1)
+ 	PTR_LA	\dest, cps_cpu_state
+-	addu	\dest, \dest, $1
++	PTR_ADDU \dest, \dest, $1
+ 	.set	pop
+ 	.endm
+ 
+diff --git a/arch/mips/kernel/smp-cps.c b/arch/mips/kernel/smp-cps.c
+index dd55d59b88db3..9aad678a32bd7 100644
+--- a/arch/mips/kernel/smp-cps.c
++++ b/arch/mips/kernel/smp-cps.c
+@@ -7,6 +7,7 @@
+ #include <linux/cpu.h>
+ #include <linux/delay.h>
+ #include <linux/io.h>
++#include <linux/memblock.h>
+ #include <linux/sched/task_stack.h>
+ #include <linux/sched/hotplug.h>
+ #include <linux/slab.h>
+@@ -25,7 +26,33 @@
+ #include <asm/time.h>
+ #include <asm/uasm.h>
+ 
++#define BEV_VEC_SIZE	0x500
++#define BEV_VEC_ALIGN	0x1000
++
++#define A0		4
++#define A1		5
++#define T9		25
++#define K0		26
++#define K1		27
++
++#define C0_STATUS	12, 0
++#define C0_CAUSE	13, 0
++
++#define ST0_NMI_BIT	19
++#ifdef CONFIG_64BIT
++#define ST0_KX_IF_64	ST0_KX
++#else
++#define ST0_KX_IF_64	0
++#endif
++
++enum label_id {
++	label_not_nmi = 1,
++};
++
++UASM_L_LA(_not_nmi)
++
+ static DECLARE_BITMAP(core_power, NR_CPUS);
++static uint32_t core_entry_reg;
+ 
+ struct core_boot_config *mips_cps_core_bootcfg;
+ 
+@@ -34,10 +61,113 @@ static unsigned __init core_vpe_count(unsigned int cluster, unsigned core)
+ 	return min(smp_max_threads, mips_cps_numvps(cluster, core));
+ }
+ 
++static void __init *mips_cps_build_core_entry(void *addr)
++{
++	extern void (*nmi_handler)(void);
++	u32 *p = addr;
++	u32 val;
++	struct uasm_label labels[2];
++	struct uasm_reloc relocs[2];
++	struct uasm_label *l = labels;
++	struct uasm_reloc *r = relocs;
++
++	memset(labels, 0, sizeof(labels));
++	memset(relocs, 0, sizeof(relocs));
++
++	uasm_i_mfc0(&p, K0, C0_STATUS);
++	if (cpu_has_mips_r2_r6)
++		uasm_i_ext(&p, K0, K0, ST0_NMI_BIT, 1);
++	else {
++		uasm_i_srl(&p, K0, K0, ST0_NMI_BIT);
++		uasm_i_andi(&p, K0, K0, 0x1);
++	}
++
++	uasm_il_bnez(&p, &r, K0, label_not_nmi);
++	uasm_i_nop(&p);
++	UASM_i_LA(&p, K0, (long)&nmi_handler);
++
++	uasm_l_not_nmi(&l, p);
++
++	val = CAUSEF_IV;
++	uasm_i_lui(&p, K0, val >> 16);
++	uasm_i_ori(&p, K0, K0, val & 0xffff);
++	uasm_i_mtc0(&p, K0, C0_CAUSE);
++	val = ST0_CU1 | ST0_CU0 | ST0_BEV | ST0_KX_IF_64;
++	uasm_i_lui(&p, K0, val >> 16);
++	uasm_i_ori(&p, K0, K0, val & 0xffff);
++	uasm_i_mtc0(&p, K0, C0_STATUS);
++	uasm_i_ehb(&p);
++	uasm_i_ori(&p, A0, 0, read_c0_config() & CONF_CM_CMASK);
++	UASM_i_LA(&p, A1, (long)mips_gcr_base);
++#if defined(KBUILD_64BIT_SYM32) || defined(CONFIG_32BIT)
++	UASM_i_LA(&p, T9, CKSEG1ADDR(__pa_symbol(mips_cps_core_boot)));
++#else
++	UASM_i_LA(&p, T9, TO_UNCAC(__pa_symbol(mips_cps_core_boot)));
++#endif
++	uasm_i_jr(&p, T9);
++	uasm_i_nop(&p);
++
++	uasm_resolve_relocs(relocs, labels);
++
++	return p;
++}
++
++static int __init setup_cps_vecs(void)
++{
++	extern void excep_tlbfill(void);
++	extern void excep_xtlbfill(void);
++	extern void excep_cache(void);
++	extern void excep_genex(void);
++	extern void excep_intex(void);
++	extern void excep_ejtag(void);
++	phys_addr_t cps_vec_pa;
++	void *cps_vec;
++
++	/* Try to allocate in KSEG1 first */
++	cps_vec_pa = memblock_phys_alloc_range(BEV_VEC_SIZE, BEV_VEC_ALIGN,
++						0x0, KSEGX_SIZE - 1);
++
++	if (cps_vec_pa)
++		core_entry_reg = CKSEG1ADDR(cps_vec_pa) &
++					CM_GCR_Cx_RESET_BASE_BEVEXCBASE;
++
++	if (!cps_vec_pa && mips_cm_is64) {
++		cps_vec_pa = memblock_phys_alloc_range(BEV_VEC_SIZE, BEV_VEC_ALIGN,
++							0x0, SZ_4G - 1);
++		if (cps_vec_pa)
++			core_entry_reg = (cps_vec_pa & CM_GCR_Cx_RESET_BASE_BEVEXCBASE) |
++					CM_GCR_Cx_RESET_BASE_MODE;
++	}
++
++	if (!cps_vec_pa)
++		return -ENOMEM;
++
++	/* We want to ensure cache is clean before writing uncached mem */
++	blast_dcache_range(TO_CAC(cps_vec_pa), TO_CAC(cps_vec_pa) + BEV_VEC_SIZE);
++	bc_wback_inv(TO_CAC(cps_vec_pa), BEV_VEC_SIZE);
++	__sync();
++
++	cps_vec = (void *)TO_UNCAC(cps_vec_pa);
++	mips_cps_build_core_entry(cps_vec);
++
++	memcpy(cps_vec + 0x200, &excep_tlbfill, 0x80);
++	memcpy(cps_vec + 0x280, &excep_xtlbfill, 0x80);
++	memcpy(cps_vec + 0x300, &excep_cache, 0x80);
++	memcpy(cps_vec + 0x380, &excep_genex, 0x80);
++	memcpy(cps_vec + 0x400, &excep_intex, 0x80);
++	memcpy(cps_vec + 0x480, &excep_ejtag, 0x80);
++
++	/* Make sure no prefetched data in cache */
++	blast_inv_dcache_range(TO_CAC(cps_vec_pa), TO_CAC(cps_vec_pa) + BEV_VEC_SIZE);
++	bc_inv(TO_CAC(cps_vec_pa), BEV_VEC_SIZE);
++	__sync();
++
++	return 0;
++}
++
+ static void __init cps_smp_setup(void)
+ {
+ 	unsigned int nclusters, ncores, nvpes, core_vpes;
+-	unsigned long core_entry;
+ 	int cl, c, v;
+ 
+ 	/* Detect & record VPE topology */
+@@ -94,10 +224,11 @@ static void __init cps_smp_setup(void)
+ 	/* Make core 0 coherent with everything */
+ 	write_gcr_cl_coherence(0xff);
+ 
+-	if (mips_cm_revision() >= CM_REV_CM3) {
+-		core_entry = CKSEG1ADDR((unsigned long)mips_cps_core_entry);
+-		write_gcr_bev_base(core_entry);
+-	}
++	if (setup_cps_vecs())
++		pr_err("Failed to setup CPS vectors\n");
++
++	if (core_entry_reg && mips_cm_revision() >= CM_REV_CM3)
++		write_gcr_bev_base(core_entry_reg);
+ 
+ #ifdef CONFIG_MIPS_MT_FPAFF
+ 	/* If we have an FPU, enroll ourselves in the FPU-full mask */
+@@ -110,10 +241,14 @@ static void __init cps_prepare_cpus(unsigned int max_cpus)
+ {
+ 	unsigned ncores, core_vpes, c, cca;
+ 	bool cca_unsuitable, cores_limited;
+-	u32 *entry_code;
+ 
+ 	mips_mt_set_cpuoptions();
+ 
++	if (!core_entry_reg) {
++		pr_err("core_entry address unsuitable, disabling smp-cps\n");
++		goto err_out;
++	}
++
+ 	/* Detect whether the CCA is unsuited to multi-core SMP */
+ 	cca = read_c0_config() & CONF_CM_CMASK;
+ 	switch (cca) {
+@@ -145,20 +280,6 @@ static void __init cps_prepare_cpus(unsigned int max_cpus)
+ 			(cca_unsuitable && cpu_has_dc_aliases) ? " & " : "",
+ 			cpu_has_dc_aliases ? "dcache aliasing" : "");
+ 
+-	/*
+-	 * Patch the start of mips_cps_core_entry to provide:
+-	 *
+-	 * s0 = kseg0 CCA
+-	 */
+-	entry_code = (u32 *)&mips_cps_core_entry;
+-	uasm_i_addiu(&entry_code, 16, 0, cca);
+-	UASM_i_LA(&entry_code, 17, (long)mips_gcr_base);
+-	BUG_ON((void *)entry_code > (void *)&mips_cps_core_entry_patch_end);
+-	blast_dcache_range((unsigned long)&mips_cps_core_entry,
+-			   (unsigned long)entry_code);
+-	bc_wback_inv((unsigned long)&mips_cps_core_entry,
+-		     (void *)entry_code - (void *)&mips_cps_core_entry);
+-	__sync();
+ 
+ 	/* Allocate core boot configuration structs */
+ 	ncores = mips_cps_numcores(0);
+@@ -213,7 +334,7 @@ static void boot_core(unsigned int core, unsigned int vpe_id)
+ 	mips_cm_lock_other(0, core, 0, CM_GCR_Cx_OTHER_BLOCK_LOCAL);
+ 
+ 	/* Set its reset vector */
+-	write_gcr_co_reset_base(CKSEG1ADDR((unsigned long)mips_cps_core_entry));
++	write_gcr_co_reset_base(core_entry_reg);
+ 
+ 	/* Ensure its coherency is disabled */
+ 	write_gcr_co_coherence(0);
+@@ -290,7 +411,6 @@ static int cps_boot_secondary(int cpu, struct task_struct *idle)
+ 	unsigned vpe_id = cpu_vpe_id(&cpu_data[cpu]);
+ 	struct core_boot_config *core_cfg = &mips_cps_core_bootcfg[core];
+ 	struct vpe_boot_config *vpe_cfg = &core_cfg->vpe_config[vpe_id];
+-	unsigned long core_entry;
+ 	unsigned int remote;
+ 	int err;
+ 
+@@ -314,8 +434,7 @@ static int cps_boot_secondary(int cpu, struct task_struct *idle)
+ 
+ 	if (cpu_has_vp) {
+ 		mips_cm_lock_other(0, core, vpe_id, CM_GCR_Cx_OTHER_BLOCK_LOCAL);
+-		core_entry = CKSEG1ADDR((unsigned long)mips_cps_core_entry);
+-		write_gcr_co_reset_base(core_entry);
++		write_gcr_co_reset_base(core_entry_reg);
+ 		mips_cm_unlock_other();
+ 	}
+ 
 diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
-index 60c513c51684f..230728d76d11f 100644
+index 230728d76d11f..ea59d321f713e 100644
 --- a/arch/mips/kernel/traps.c
 +++ b/arch/mips/kernel/traps.c
-@@ -2346,7 +2346,7 @@ static const char panic_null_cerr[] =
- void set_uncached_handler(unsigned long offset, void *addr,
- 	unsigned long size)
- {
--	unsigned long uncached_ebase = CKSEG1ADDR(ebase);
-+	unsigned long uncached_ebase = TO_UNCAC(__pa(ebase));
+@@ -74,6 +74,8 @@
  
- 	if (!addr)
- 		panic(panic_null_cerr);
+ #include "access-helper.h"
+ 
++#define MAX(a, b) ((a) >= (b) ? (a) : (b))
++
+ extern void check_wait(void);
+ extern asmlinkage void rollback_handle_int(void);
+ extern asmlinkage void handle_int(void);
 -- 
 2.42.0
 
