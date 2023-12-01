@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BEBED800473
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 08:11:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBBFA800474
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 08:12:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377707AbjLAHKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 02:10:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44400 "EHLO
+        id S229506AbjLAHMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 02:12:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229768AbjLAHKw (ORCPT
+        with ESMTP id S229496AbjLAHMN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 02:10:52 -0500
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C4CE170C
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 23:10:58 -0800 (PST)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-6cddc59e731so1654544b3a.1
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 23:10:58 -0800 (PST)
+        Fri, 1 Dec 2023 02:12:13 -0500
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 406DBB6
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 23:12:20 -0800 (PST)
+Received: by mail-oi1-x234.google.com with SMTP id 5614622812f47-3b83c4c5aefso126262b6e.1
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 23:12:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701414658; x=1702019458; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1701414739; x=1702019539; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=uPeYY7yP4lwEckam/gxWhbSUYcJHiotQsNkzaHB7yV8=;
-        b=MTeSglVW0tUkLYIf1tHsIuYg5fvKggya+jrd0J6QeVB7GVI80FQxTycf27+Q8qoz8j
-         17G+RF7nXLGBk3/MAoalgFJa9OUt5uKXbVng5oR+LbpfYcKz8EeWrvpmZJJ7L6nOYj9e
-         5166AAXUCaaR24RdqArHj+HR2T2Vc6jUWsi+XGEi+CQSI0cHfP2DCozR4bnDYJs4JM71
-         ucQbFD+znWhMv6ZCl3haRJHMEy1jC2+FvmvLd4GPjLpnZP8/QzyskWvXo7MA2vpFkVOO
-         E6D60JNRUxCGmBPgCqEzqmSCpENaOsWy6uwjfThBjsB8pim/Ndt9aJBo9s+fAa3jI24u
-         e/Vg==
+        bh=GRj7rwJmjk4sqfGJObODWeeU/ipL8kGI/CkkCS5s80k=;
+        b=YUw+3lDkapv+rqlKwig8FmO1OQPfmpGOq3/Ma4/ZRKdSGUfO0znJoj1/U3kxcdKjyN
+         bbuNG540rrPyBrJVe0v3P9ZIVl7MJE793FQCcE1P+pM03MKrAv5QTv+/aQAXqbv2OsjY
+         uLiDtewlSF3AZ3b6fcuYclEdOc/KYuioIPRY5d4mndH84b/rT28A1Ac6oAQioq4ZW/HZ
+         vCXHMyHFxRtU8Ww7urJWzlfgN91h4iXNo6kp7OKeXP473M53ST76JAa5jsy+NRWaWcqr
+         hszEY6W7t+QDGO4xgF7E7yo4yHdZG0c787P4tKe97MJ2CF05uVgUA8oAUS718nSBANCm
+         LvYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701414658; x=1702019458;
+        d=1e100.net; s=20230601; t=1701414739; x=1702019539;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=uPeYY7yP4lwEckam/gxWhbSUYcJHiotQsNkzaHB7yV8=;
-        b=gYpQ9qV3cqVW0x0fs1abhkk6V2E/o+3WPa/2Cb6pNa+ppZ7WOzttLN98XTkphGuFhL
-         zdRsiCkd23CCr7/RqqJa2zr3Onbz/vSRPhsJZX1Hcd87/Le6/3FLZC41BuWdok5UeXn0
-         kguJtU1VtecsjaCHYQ12XALOByWWzg3jJLao5JXEhGrGrH20Ltudjcq3IsaFJmigDxlK
-         Ycm+a6VZw2Z0FjY6hWsD07lI/+i58zO7L5aUFYQYW1+MXoQIgQwxhOWhr4/bVy2edwVD
-         qemNzKYyLzXqDIOcXA65vBQx00YAIkJiWS6GXwgXzjQzRyBI7kEpTyoKhN0k0olOo5Kt
-         DM2w==
-X-Gm-Message-State: AOJu0YwkD5FYGElYYfeBBN2YLQd2S6ojtAohvrUOI6Gw62g2E1XPAdC/
-        ukDHtJsSkGstgyTx9DlOz/ubsazWKPNwSWHFjzRqXg==
-X-Google-Smtp-Source: AGHT+IHgR89G7K4srWE1joNruHuB/eKkiYOFI4uAzXcfg1xgA5r7uqYJl6NgQoDGpkUUNYMWGRXGCA==
-X-Received: by 2002:a05:6a00:1590:b0:6cc:b448:3652 with SMTP id u16-20020a056a00159000b006ccb4483652mr20679946pfk.19.1701414657653;
-        Thu, 30 Nov 2023 23:10:57 -0800 (PST)
+        bh=GRj7rwJmjk4sqfGJObODWeeU/ipL8kGI/CkkCS5s80k=;
+        b=Pxc1d9QPbEYCRsOhfy1Z1JSORlFuDfFmajyTAQ+eAcsXwlxcw5mweYMEyQfer8h3Vx
+         HsQKwU1isd74hIiNXax0aJ99jgWL92Ic/cdYgDSszk6qkXHxSwHEG86OoLkeVP+Folds
+         gw+E+YS6FL3Sho/76g596UFe5LDjWtnsd+sEK+j8ugrrOy6S+Dtlia7PVY0WU0Vpv8IP
+         M4Lr2k1Gv7/rVmcJ719m9FGWAC4UmS9BdyDNT7iDrLc/HG/Eeynw7YA1F+dWXFcqBs+D
+         MR0mAalFwvThYKoO0Fueqdmy9pxkPZilfGB0gMv3JJDh0PsXKKsH4LfZGOLaK4+51BLv
+         +ePw==
+X-Gm-Message-State: AOJu0YysMOEEbPyE/HeaFM/yi5zsqStocQwCP1ls+z5OYrNvKx7aEYzh
+        ADWa6kvACLg0CGPQP3I6SWoSrQ==
+X-Google-Smtp-Source: AGHT+IHbAUNjcI5O42Ussg6bjp2iqSjWbcDPJMqMEgr5UrD7XRUfHOonN9NYYz9izgaelFDlmqV1dA==
+X-Received: by 2002:a05:6808:1242:b0:3ae:5c89:dcc2 with SMTP id o2-20020a056808124200b003ae5c89dcc2mr2117772oiv.34.1701414739396;
+        Thu, 30 Nov 2023 23:12:19 -0800 (PST)
 Received: from google.com (170.102.105.34.bc.googleusercontent.com. [34.105.102.170])
-        by smtp.gmail.com with ESMTPSA id i5-20020aa787c5000000b006cb7e61cfa7sm2321617pfo.36.2023.11.30.23.10.56
+        by smtp.gmail.com with ESMTPSA id ff11-20020a056a002f4b00b006cb797722e6sm2326308pfb.109.2023.11.30.23.12.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Nov 2023 23:10:57 -0800 (PST)
-Date:   Fri, 1 Dec 2023 07:10:53 +0000
+        Thu, 30 Nov 2023 23:12:18 -0800 (PST)
+Date:   Fri, 1 Dec 2023 07:12:15 +0000
 From:   Carlos Llamas <cmllamas@google.com>
 To:     Alice Ryhl <aliceryhl@google.com>
 Cc:     Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
@@ -60,14 +60,14 @@ Cc:     Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
         Martijn Coenen <maco@android.com>,
         Suren Baghdasaryan <surenb@google.com>,
         Todd Kjos <tkjos@android.com>
-Subject: Re: [PATCH 10/21] binder: do unlocked work in binder_alloc_new_buf()
-Message-ID: <ZWmG_XidVJ8XIeuH@google.com>
-References: <20231102185934.773885-11-cmllamas@google.com>
- <20231107090818.258621-1-aliceryhl@google.com>
+Subject: Re: [PATCH 13/21] binder: relocate low space calculation
+Message-ID: <ZWmHT4CfFdadT1bB@google.com>
+References: <20231102185934.773885-14-cmllamas@google.com>
+ <20231107090826.259454-1-aliceryhl@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231107090818.258621-1-aliceryhl@google.com>
+In-Reply-To: <20231107090826.259454-1-aliceryhl@google.com>
 X-Spam-Status: No, score=-13.8 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,FSL_HELO_FAKE,RCVD_IN_DNSWL_BLOCKED,
@@ -80,42 +80,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 07, 2023 at 09:08:18AM +0000, Alice Ryhl wrote:
-> I found a few issues in this patch:
+On Tue, Nov 07, 2023 at 09:08:26AM +0000, Alice Ryhl wrote:
+> Carlos Llamas <cmllamas@google.com> writes:
+> > Move the low async space calculation to debug_low_async_space_locked().
+> > This logic not only fits better here but also offloads some of the many
+> > tasks currently done in binder_alloc_new_buf_locked().
+> > 
+> > No functional change in this patch.
+> > 
+> > Signed-off-by: Carlos Llamas <cmllamas@google.com>
 > 
-> Consolidating the overflow check into one if statement like this doesn't
-> catch all cases of integer overflow. For example, if all three sizes are
-> 9223372036854775816, then the computed size will be 9223372036854775832,
-> so this would not trigger the overflow check.
-
-Thanks for pointing this out, you are right.
-
-I don't understand the reasoning behind using size_t for the uapi. It
-just made things more complicated than needed. These sizes are much
-larger than the maximum buffer size of SZ_4M.
-
-Anyway, I've fixed this for v2.
-
+> One suggestion below, but I'm fine either way.
+> 
+> Reviewed-by: Alice Ryhl <aliceryhl@google.com>
+> 
 > 
 > Carlos Llamas <cmllamas@google.com> writes:
-> >  	mutex_unlock(&alloc->mutex);
-> > +
-> > +	if (IS_ERR(buffer))
-> > +		goto out;
-> > +
-> > +	buffer->data_size = data_size;
-> > +	buffer->offsets_size = offsets_size;
-> > +	buffer->async_transaction = is_async;
-> > +	buffer->extra_buffers_size = extra_buffers_size;
-> > +	buffer->pid = pid;
+> > +		if (debug_low_async_space_locked(alloc))
+> > +			buffer->oneway_spam_suspect = true;
 > 
-> With this change, if there is a concurrent call to
-> debug_low_async_space_locked, then there is a data race on the
-> async_transaction field. Similarly for print_binder_buffer.
+> You could avoid a branch here like this:
 > 
-> Perhaps these writes should be moved before the mutex_unlock?
 
-Also fixed, thanks!
+Sure, sounds good to me.
 
 --
 Carlos Llamas
