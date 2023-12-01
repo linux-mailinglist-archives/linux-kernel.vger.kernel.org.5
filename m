@@ -2,156 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3A9A800932
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 11:59:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81145800938
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 12:00:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378434AbjLAK7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 05:59:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44000 "EHLO
+        id S1378440AbjLALAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 06:00:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378359AbjLAK7g (ORCPT
+        with ESMTP id S1378359AbjLALAT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 05:59:36 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB6CA193
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 02:59:41 -0800 (PST)
-Received: from localhost (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 63AEA66073A6;
-        Fri,  1 Dec 2023 10:59:39 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1701428380;
-        bh=x4Y7dYr3VeCqx4rJVOcJNrX3o5ny+WQ9mP2TBfYRN74=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=gkgdpUVf87AfqPlRtPoMPrVBNOuatZ+hCpkRJMYOmSH6PQWXsTJ1cSOSB1hNkSJJc
-         kTlox7QsWVrK23FdFC9DXpGsRpPiOiFZ3kKymQfedAemnXN9K8d4QboRigqv68WpDV
-         vVmC9SGH+fLvjrZOB+/4MB6rj+RlrqJR3rw0alOP+mAV9uStFxuftOoA7iBB2MNcu4
-         OrBCeNy/olZd+28vtOGPteCb3kamF+w5QhuaeYm+IR3aI1ORXv1TSa/LqQ9/3PRQEl
-         XVpSLQrG9ci5lxhrS1AD1skOI8TRTEOHA/8CEWl9HeCyGzPLOawRLgXizs7Tut2wIt
-         qF+9mojOsHwOg==
-Date:   Fri, 1 Dec 2023 11:59:35 +0100
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     robh@kernel.org, steven.price@arm.com,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, m.szyprowski@samsung.com,
-        krzysztof.kozlowski@linaro.org
-Subject: Re: [PATCH v3 1/3] drm/panfrost: Ignore core_mask for poweroff and
- disable PWRTRANS irq
-Message-ID: <20231201115935.1ac9535a@collabora.com>
-In-Reply-To: <20231201104027.35273-2-angelogioacchino.delregno@collabora.com>
-References: <20231201104027.35273-1-angelogioacchino.delregno@collabora.com>
-        <20231201104027.35273-2-angelogioacchino.delregno@collabora.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Fri, 1 Dec 2023 06:00:19 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09809197
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 03:00:26 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id A2BE5C433CA;
+        Fri,  1 Dec 2023 11:00:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701428425;
+        bh=lDz8O3kEJRuixW9zKX5JW7qIlAHXaOgJ6uYeYOFOs58=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=jFIl4xpGaY0jY17aAExWUdyHLl1BkrPFLilm8AFqAAJSmgoFqM9dYGWkHmx+IKkVg
+         xeNZKHTZIZiH9XiRWAPJ2rDr27WtjMF49+iRdhhJh7cRQe1hgMRw2DHrtuqfLV2wxD
+         5WUCZXHVDAEQNvPaMUVQicMOIVemeXFRPm3dRpwSZYPU0tLE0xG8S+d16Cc5G+V7R9
+         I4RMtOs2NSQxNJ+nUYJk6EjR2OShXspACMq4PxOLGZQsOP/S2jww91SSghLfV6d07g
+         H3yEQ6SSod/J7+R/1JfOV+PVfv6pgTmlBlJpzYTMl6D0WBCQwfGBP+bOXXha5ruEfH
+         Y+ksQl2GLWR6w==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 83F03C59A4C;
+        Fri,  1 Dec 2023 11:00:25 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next] octeon_ep: Fix error code in probe()
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <170142842553.7076.7768114131648140649.git-patchwork-notify@kernel.org>
+Date:   Fri, 01 Dec 2023 11:00:25 +0000
+References: <cd2c5d69-b515-4933-9443-0a8f1b7fc599@moroto.mountain>
+In-Reply-To: <cd2c5d69-b515-4933-9443-0a8f1b7fc599@moroto.mountain>
+To:     Dan Carpenter <dan.carpenter@linaro.org>
+Cc:     srasheed@marvell.com, vburru@marvell.com, sedara@marvell.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri,  1 Dec 2023 11:40:25 +0100
-AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-wrote:
+Hello:
 
-> Some SoCs may be equipped with a GPU containing two core groups
-> and this is exactly the case of Samsung's Exynos 5422 featuring
-> an ARM Mali-T628 MP6 GPU: the support for this GPU in Panfrost
-> is partial, as this driver currently supports using only one
-> core group and that's reflected on all parts of it, including
-> the power on (and power off, previously to this patch) function.
+This patch was applied to netdev/net-next.git (main)
+by David S. Miller <davem@davemloft.net>:
+
+On Tue, 28 Nov 2023 16:13:19 +0300 you wrote:
+> Set the error code if octep_ctrl_net_get_mtu() fails.  Currently the code
+> returns success.
 > 
-> The issue with this is that even though executing the soft reset
-> operation should power off all cores unconditionally, on at least
-> one platform we're seeing a crash that seems to be happening due
-> to an interrupt firing which may be because we are calling power
-
-                               ^ might be caused by us doing a power
-  transition on the first core group only, leaving the second one
-  unchanged.
-
-> transition only on the first core group, leaving the second one
-> unchanged, or because ISR execution was pending before entering
-
-  unchanged. Our changes to the suspend logic seems to have
-  uncovered another issue where the GPU interrupt handler is called
-  after the device as entered the suspend state, which leads to invalid
-  register accesses because the GPU device is no longer
-  powered/clocked. Given the only addition that was done to the suspend
-  logic is the power-off requests, and the fact those generate PWRTRANS
-  interrupts, we have good reason to think the interrupts we are asked
-  to process in that case are the PWRTRANS ones.
-
-> the panfrost_gpu_power_off() function and executed after powering
-> off the GPU cores, or all of the above.
-> 
-> Finally, solve this by:
->  - Avoid to enable the power transition interrupt on reset; and
-     ^ 'Avoiding' or maybe 'Not enabling power transition ...'
-
->  - Ignoring the core_mask and ask the GPU to poweroff both core groups
-> 
-> Fixes: 22aa1a209018 ("drm/panfrost: Really power off GPU cores in panfrost_gpu_power_off()")
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-
-Still
-
-Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
-
+> Fixes: 0a5f8534e398 ("octeon_ep: get max rx packet length from firmware")
+> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
 > ---
->  drivers/gpu/drm/panfrost/panfrost_gpu.c | 12 ++++++++----
->  1 file changed, 8 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c b/drivers/gpu/drm/panfrost/panfrost_gpu.c
-> index 09f5e1563ebd..bd41617c5e4b 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_gpu.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_gpu.c
-> @@ -78,7 +78,12 @@ int panfrost_gpu_soft_reset(struct panfrost_device *pfdev)
->  	}
->  
->  	gpu_write(pfdev, GPU_INT_CLEAR, GPU_IRQ_MASK_ALL);
-> -	gpu_write(pfdev, GPU_INT_MASK, GPU_IRQ_MASK_ALL);
-> +
-> +	/* Only enable the interrupts we care about */
-> +	gpu_write(pfdev, GPU_INT_MASK,
-> +		  GPU_IRQ_MASK_ERROR |
-> +		  GPU_IRQ_PERFCNT_SAMPLE_COMPLETED |
-> +		  GPU_IRQ_CLEAN_CACHES_COMPLETED);
->  
->  	/*
->  	 * All in-flight jobs should have released their cycle
-> @@ -425,11 +430,10 @@ void panfrost_gpu_power_on(struct panfrost_device *pfdev)
->  
->  void panfrost_gpu_power_off(struct panfrost_device *pfdev)
->  {
-> -	u64 core_mask = panfrost_get_core_mask(pfdev);
->  	int ret;
->  	u32 val;
->  
-> -	gpu_write(pfdev, SHADER_PWROFF_LO, pfdev->features.shader_present & core_mask);
-> +	gpu_write(pfdev, SHADER_PWROFF_LO, pfdev->features.shader_present);
->  	ret = readl_relaxed_poll_timeout(pfdev->iomem + SHADER_PWRTRANS_LO,
->  					 val, !val, 1, 1000);
->  	if (ret)
-> @@ -441,7 +445,7 @@ void panfrost_gpu_power_off(struct panfrost_device *pfdev)
->  	if (ret)
->  		dev_err(pfdev->dev, "tiler power transition timeout");
->  
-> -	gpu_write(pfdev, L2_PWROFF_LO, pfdev->features.l2_present & core_mask);
-> +	gpu_write(pfdev, L2_PWROFF_LO, pfdev->features.l2_present);
->  	ret = readl_poll_timeout(pfdev->iomem + L2_PWRTRANS_LO,
->  				 val, !val, 0, 1000);
->  	if (ret)
+>  drivers/net/ethernet/marvell/octeon_ep/octep_main.c | 1 +
+>  1 file changed, 1 insertion(+)
+
+Here is the summary with links:
+  - [net-next] octeon_ep: Fix error code in probe()
+    https://git.kernel.org/netdev/net-next/c/0cd523ee8642
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
