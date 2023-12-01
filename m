@@ -2,434 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DAF8801140
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:21:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28598801159
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:21:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378433AbjLAQlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 11:41:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40478 "EHLO
+        id S229469AbjLAQnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 11:43:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229640AbjLAQlU (ORCPT
+        with ESMTP id S229449AbjLAQny (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 11:41:20 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23194B0
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 08:41:26 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A331BC433C9;
-        Fri,  1 Dec 2023 16:41:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701448885;
-        bh=gl7H4i18Jm2yLgqXk3+J6Itv7zEPVQWiJ43VT4UGz7Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DOL5d121IoNSM2PRow/Xc5LPAKDrQevVVAptMbdR/rc3O8WAIrp3ShBlDzOZwfMMM
-         X6lCSjYjozM1ZElUNlsRic99bmVWf/gCnXQ7F5xJNcYOEJBlHbZ9cpMxqj1iP9h+YC
-         gtBScQVd+XKezaxzb4AbdtKP/yJp8zJ6tgXhPNGFe4F00hmldtA6Q2E/M2Y9HAk5ED
-         6w0NA2cjijtY22rh8H9VHOEc5gXS+3JE58Xi7ZwMiyDCVW6wipYu39Lly72FNUYSkw
-         HgQ/dmE0NpYkX3lezMbv8TiVj0WlG1S9bS1Ga7t0X7xsLXnujtVJ+sITi+Ojt104N4
-         2dLaXGuizfJDA==
-Date:   Fri, 1 Dec 2023 17:41:19 +0100
-From:   Christian Brauner <brauner@kernel.org>
-To:     "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>
-Cc:     Serge Hallyn <serge@hallyn.com>, Paul Moore <paul@paul-moore.com>,
-        Eric Paris <eparis@redhat.com>,
-        James Morris <jmorris@namei.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Amir Goldstein <amir73il@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, audit@vger.kernel.org,
-        linux-unionfs@vger.kernel.org
-Subject: Re: [PATCH 05/16] capability: provide helpers for converting between
- xattrs and vfs_caps
-Message-ID: <20231201-gefahndet-biogas-ee3669edc96c@brauner>
-References: <20231129-idmap-fscap-refactor-v1-0-da5a26058a5b@kernel.org>
- <20231129-idmap-fscap-refactor-v1-5-da5a26058a5b@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231129-idmap-fscap-refactor-v1-5-da5a26058a5b@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 1 Dec 2023 11:43:54 -0500
+Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4207ACF;
+        Fri,  1 Dec 2023 08:43:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
+        ; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
+        :Date:subject:date:message-id:reply-to;
+        bh=7At9uuqHWGrA2m9Dhp2A4PrSwVUv/Y1UlsqVgIz15hI=; b=a6KD8D6juzVjavnBFuM3wf+B7M
+        3uxRChtB/sCuHJekpKBLWWrufDPuWjmX3upNruc3a/hJo3nLGsr9rUjc2NI9fsvamnoXAEXtQJ6A3
+        jWajIBl5kbfzUmctZIMy8g6a74aiMFGHkH8iIiPPI232ZtnjYmp+jf4Pm0F4FAXB1Gvw=;
+Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:49622 helo=pettiford)
+        by mail.hugovil.com with esmtpa (Exim 4.92)
+        (envelope-from <hugo@hugovil.com>)
+        id 1r96cI-0004Xp-IO; Fri, 01 Dec 2023 11:43:51 -0500
+Date:   Fri, 1 Dec 2023 11:43:48 -0500
+From:   Hugo Villeneuve <hugo@hugovil.com>
+To:     Jan =?UTF-8?B?S3VuZHLDoXQ=?= <jan.kundrat@cesnet.cz>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+        <linux-kernel@vger.kernel.org>, <linux-serial@vger.kernel.org>
+Message-Id: <20231201114348.fec7077998136877adb030f9@hugovil.com>
+In-Reply-To: <f6e44cd7-4b25-48de-a57c-96497bf9da6a@cesnet.cz>
+References: <20231122175957.3875102-1-hugo@hugovil.com>
+        <f6e44cd7-4b25-48de-a57c-96497bf9da6a@cesnet.cz>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 70.80.174.168
+X-SA-Exim-Mail-From: hugo@hugovil.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH] serial: max310x: change confusing comment about Tx FIFO
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 03:50:23PM -0600, Seth Forshee (DigitalOcean) wrote:
-> To pass around vfs_caps instead of raw xattr data we will need to
-> convert between the two representations near userspace and disk
-> boundaries. We already convert xattrs from disks to vfs_caps, so move
-> that code into a helper, and change get_vfs_caps_from_disk() to use the
-> helper.
+On Fri, 01 Dec 2023 17:04:15 +0100
+Jan Kundrát <jan.kundrat@cesnet.cz> wrote:
+
+> On středa 22. listopadu 2023 18:59:56 CET, Hugo Villeneuve wrote:
+> > From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+> >
+> > The comment wording can be confusing, as txlen will return the number of
+> > bytes available in the FIFO, which can be less than the maximum theoretical
+> > Tx FIFO size.
 > 
-> When converting vfs_caps to xattrs we have different considerations
-> depending on the destination of the xattr data. For xattrs which will be
-> written to disk we need to reject the xattr if the rootid does not map
-> into the filesystem's user namespace, whereas xattrs read by userspace
-> may need to undergo a conversion from v3 to v2 format when the rootid
-> does not map. So this helper is split into an internal and an external
-> interface. The internal interface does not return an error if the rootid
-> has no mapping in the target user namespace and will be used for
-> conversions targeting userspace. The external interface returns
-> EOVERFLOW if the rootid has no mapping and will be used for all other
-> conversions.
+> This (commit) message is confusing, too, IMHO, because `txlen` is the 
+> number of bytes that are currently waiting in the TX FIFO. So that number 
+> is "available" for the HW UART to pick up and send, but it's not a number 
+> of bytes that's "available" in the FIFO for host to push more bytes to. I 
+> guess you might want to tweak that description here.
+
+Hi Jan,
+you are right, the commit message is confusing. I copied it from the
+commit message of a similar patch for the sc16is7xx driver, and I
+should have modified it for the max310x:
+
+SC16IS7XX TXLVL: spaces available in TX FIFO
+MAX310X TXFIFOLVL: current fill level in TX FIFO
+
+The patch has already been applied to Greg's tty-next tree (my
+understanding is that it cannot be rebased?), but at least
+the comment in the code is still valid.
+
+Thank you for the precision.
+
+Hugo V.
+
+
+> >
+> > Change the comment so that it is unambiguous.
+> >
+> > Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+> > ---
+> >  drivers/tty/serial/max310x.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/tty/serial/max310x.c b/drivers/tty/serial/max310x.c
+> > index 97e4965b73d4..f3a99daebdaa 100644
+> > --- a/drivers/tty/serial/max310x.c
+> > +++ b/drivers/tty/serial/max310x.c
+> > @@ -780,7 +780,7 @@ static void max310x_handle_tx(struct uart_port *port)
+> >  	to_send = uart_circ_chars_pending(xmit);
+> >  	until_end = CIRC_CNT_TO_END(xmit->head, xmit->tail, UART_XMIT_SIZE);
+> >  	if (likely(to_send)) {
+> > -		/* Limit to size of TX FIFO */
+> > +		/* Limit to space available in TX FIFO */
+> >  		txlen = max310x_port_read(port, MAX310X_TXFIFOLVL_REG);
+> >  		txlen = port->fifosize - txlen;
+> >  		to_send = (to_send > txlen) ? txlen : to_send;
+> >
+> > base-commit: 98b1cc82c4affc16f5598d4fa14b1858671b2263
 > 
-> Signed-off-by: Seth Forshee (DigitalOcean) <sforshee@kernel.org>
-> ---
->  include/linux/capability.h |  10 ++
->  security/commoncap.c       | 227 +++++++++++++++++++++++++++++++++++----------
->  2 files changed, 186 insertions(+), 51 deletions(-)
-> 
-> diff --git a/include/linux/capability.h b/include/linux/capability.h
-> index eb46d346bbbc..cdd7d2d8855e 100644
-> --- a/include/linux/capability.h
-> +++ b/include/linux/capability.h
-> @@ -209,6 +209,16 @@ static inline bool checkpoint_restore_ns_capable(struct user_namespace *ns)
->  		ns_capable(ns, CAP_SYS_ADMIN);
->  }
->  
-> +/* helpers to convert between xattr and in-kernel representations */
-> +int vfs_caps_from_xattr(struct mnt_idmap *idmap,
-> +			struct user_namespace *src_userns,
-> +			struct vfs_caps *vfs_caps,
-> +			const void *data, int size);
-> +int vfs_caps_to_xattr(struct mnt_idmap *idmap,
-> +		      struct user_namespace *dest_userns,
-> +		      const struct vfs_caps *vfs_caps,
-> +		      void *data, int size);
-> +
->  /* audit system wants to get cap info from files as well */
->  int get_vfs_caps_from_disk(struct mnt_idmap *idmap,
->  			   const struct dentry *dentry,
-> diff --git a/security/commoncap.c b/security/commoncap.c
-> index 3d045d377e5e..ef37966f3522 100644
-> --- a/security/commoncap.c
-> +++ b/security/commoncap.c
-> @@ -618,54 +618,41 @@ static inline int bprm_caps_from_vfs_caps(struct vfs_caps *caps,
->  }
->  
->  /**
-> - * get_vfs_caps_from_disk - retrieve vfs caps from disk
-> + * vfs_caps_from_xattr - convert raw caps xattr data to vfs_caps
->   *
-> - * @idmap:	idmap of the mount the inode was found from
-> - * @dentry:	dentry from which @inode is retrieved
-> - * @cpu_caps:	vfs capabilities
-> + * @idmap:      idmap of the mount the inode was found from
-> + * @src_userns: user namespace for ids in xattr data
-> + * @vfs_caps:   destination buffer for vfs_caps data
-> + * @data:       rax xattr caps data
-> + * @size:       size of xattr data
->   *
-> - * Extract the on-exec-apply capability sets for an executable file.
-> + * Converts a raw security.capability xattr into the kernel-internal
-> + * capabilities format.
->   *
-> - * If the inode has been found through an idmapped mount the idmap of
-> - * the vfsmount must be passed through @idmap. This function will then
-> - * take care to map the inode according to @idmap before checking
-> - * permissions. On non-idmapped mounts or if permission checking is to be
-> - * performed on the raw inode simply pass @nop_mnt_idmap.
-> + * If the xattr is being read or written through an idmapped mount the
-> + * idmap of the vfsmount must be passed through @idmap. This function
-> + * will then take care to map the rootid according to @idmap.
-> + *
-> + * Return: On success, return 0; on error, return < 0.
->   */
-> -int get_vfs_caps_from_disk(struct mnt_idmap *idmap,
-> -			   const struct dentry *dentry,
-> -			   struct vfs_caps *cpu_caps)
-> +int vfs_caps_from_xattr(struct mnt_idmap *idmap,
-> +			struct user_namespace *src_userns,
-> +			struct vfs_caps *vfs_caps,
-> +			const void *data, int size)
->  {
-> -	struct inode *inode = d_backing_inode(dentry);
->  	__u32 magic_etc;
-> -	int size;
-> -	struct vfs_ns_cap_data data, *nscaps = &data;
-> -	struct vfs_cap_data *caps = (struct vfs_cap_data *) &data;
-> +	const struct vfs_ns_cap_data *ns_caps = data;
-
-The casting here is predicated on the compatibility of these two structs
-and I'm kinda surprised to see no static assertions about their layout.
-So I would recommend to add some to the header:
-
-diff --git a/include/uapi/linux/capability.h b/include/uapi/linux/capability.h
-index 5bb906098697..0fd75aab9754 100644
---- a/include/uapi/linux/capability.h
-+++ b/include/uapi/linux/capability.h
-@@ -16,6 +16,10 @@
-
- #include <linux/types.h>
-
-+#ifdef __KERNEL__
-+#include <linux/build_bug.h>
-+#endif
-+
- /* User-level do most of the mapping between kernel and user
-    capabilities based on the version tag given by the kernel. The
-    kernel might be somewhat backwards compatible, but don't bet on
-@@ -100,6 +104,15 @@ struct vfs_ns_cap_data {
- #define _LINUX_CAPABILITY_VERSION  _LINUX_CAPABILITY_VERSION_1
- #define _LINUX_CAPABILITY_U32S     _LINUX_CAPABILITY_U32S_1
-
-+#else
-+
-+static_assert(offsetof(struct vfs_cap_data, magic_etc) ==
-+             offsetof(struct vfs_ns_cap_data, magic_etc));
-+static_assert(offsetof(struct vfs_cap_data, data) ==
-+             offsetof(struct vfs_ns_cap_data, data));
-+static_assert(sizeof(struct vfs_cap_data) ==
-+             offsetof(struct vfs_ns_cap_data, rootid));
-+
- #endif
-
-
-> +	struct vfs_cap_data *caps = (struct vfs_cap_data *)ns_caps;
->  	kuid_t rootkuid;
-> -	vfsuid_t rootvfsuid;
-> -	struct user_namespace *fs_ns;
-> -
-> -	memset(cpu_caps, 0, sizeof(struct vfs_caps));
-> -
-> -	if (!inode)
-> -		return -ENODATA;
->  
-> -	fs_ns = inode->i_sb->s_user_ns;
-> -	size = __vfs_getxattr((struct dentry *)dentry, inode,
-> -			      XATTR_NAME_CAPS, &data, XATTR_CAPS_SZ);
-> -	if (size == -ENODATA || size == -EOPNOTSUPP)
-> -		/* no data, that's ok */
-> -		return -ENODATA;
-> -
-> -	if (size < 0)
-> -		return size;
-> +	memset(vfs_caps, 0, sizeof(*vfs_caps));
->  
->  	if (size < sizeof(magic_etc))
->  		return -EINVAL;
->  
-> -	cpu_caps->magic_etc = magic_etc = le32_to_cpu(caps->magic_etc);
-> +	vfs_caps->magic_etc = magic_etc = le32_to_cpu(caps->magic_etc);
->  
-> -	rootkuid = make_kuid(fs_ns, 0);
-> +	rootkuid = make_kuid(src_userns, 0);
->  	switch (magic_etc & VFS_CAP_REVISION_MASK) {
->  	case VFS_CAP_REVISION_1:
->  		if (size != XATTR_CAPS_SZ_1)
-> @@ -678,39 +665,177 @@ int get_vfs_caps_from_disk(struct mnt_idmap *idmap,
->  	case VFS_CAP_REVISION_3:
->  		if (size != XATTR_CAPS_SZ_3)
->  			return -EINVAL;
-> -		rootkuid = make_kuid(fs_ns, le32_to_cpu(nscaps->rootid));
-> +		rootkuid = make_kuid(src_userns, le32_to_cpu(ns_caps->rootid));
->  		break;
->  
->  	default:
->  		return -EINVAL;
->  	}
->  
-> -	rootvfsuid = make_vfsuid(idmap, fs_ns, rootkuid);
-> -	if (!vfsuid_valid(rootvfsuid))
-> -		return -ENODATA;
-> +	vfs_caps->rootid = make_vfsuid(idmap, src_userns, rootkuid);
-> +	if (!vfsuid_valid(vfs_caps->rootid))
-> +		return -EOVERFLOW;
->  
-> -	/* Limit the caps to the mounter of the filesystem
-> -	 * or the more limited uid specified in the xattr.
-> +	vfs_caps->permitted.val = le32_to_cpu(caps->data[0].permitted);
-> +	vfs_caps->inheritable.val = le32_to_cpu(caps->data[0].inheritable);
-> +
-> +	/*
-> +	 * Rev1 had just a single 32-bit word, later expanded
-> +	 * to a second one for the high bits
->  	 */
-> -	if (!rootid_owns_currentns(rootvfsuid))
-> -		return -ENODATA;
-> +	if ((magic_etc & VFS_CAP_REVISION_MASK) != VFS_CAP_REVISION_1) {
-> +		vfs_caps->permitted.val += (u64)le32_to_cpu(caps->data[1].permitted) << 32;
-> +		vfs_caps->inheritable.val += (u64)le32_to_cpu(caps->data[1].inheritable) << 32;
-> +	}
-> +
-> +	vfs_caps->permitted.val &= CAP_VALID_MASK;
-> +	vfs_caps->inheritable.val &= CAP_VALID_MASK;
-> +
-> +	return 0;
-> +}
-> +
-> +/*
-> + * Inner implementation of vfs_caps_to_xattr() which does not return an
-> + * error if the rootid does not map into @dest_userns.
-> + */
-> +static int __vfs_caps_to_xattr(struct mnt_idmap *idmap,
-> +			       struct user_namespace *dest_userns,
-> +			       const struct vfs_caps *vfs_caps,
-> +			       void *data, int size)
-> +{
-> +	struct vfs_ns_cap_data *ns_caps = data;
-> +	struct vfs_cap_data *caps = (struct vfs_cap_data *)ns_caps;
-> +	kuid_t rootkuid;
-> +	uid_t rootid;
-> +
-> +	memset(ns_caps, 0, size);
-> +
-> +	rootid = 0;
-> +	switch (vfs_caps->magic_etc & VFS_CAP_REVISION_MASK) {
-> +	case VFS_CAP_REVISION_1:
-> +		if (size < XATTR_CAPS_SZ_1)
-> +			return -EINVAL;
-> +		size = XATTR_CAPS_SZ_1;
-> +		break;
-> +	case VFS_CAP_REVISION_2:
-> +		if (size < XATTR_CAPS_SZ_2)
-> +			return -EINVAL;
-> +		size = XATTR_CAPS_SZ_2;
-> +		break;
-> +	case VFS_CAP_REVISION_3:
-> +		if (size < XATTR_CAPS_SZ_3)
-> +			return -EINVAL;
-> +		size = XATTR_CAPS_SZ_3;
-> +		rootkuid = from_vfsuid(idmap, dest_userns, vfs_caps->rootid);
-> +		rootid = from_kuid(dest_userns, rootkuid);
-> +		ns_caps->rootid = cpu_to_le32(rootid);
-> +		break;
->  
-> -	cpu_caps->permitted.val = le32_to_cpu(caps->data[0].permitted);
-> -	cpu_caps->inheritable.val = le32_to_cpu(caps->data[0].inheritable);
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +
-> +	caps->magic_etc = cpu_to_le32(vfs_caps->magic_etc);
-> +
-> +	caps->data[0].permitted = cpu_to_le32(lower_32_bits(vfs_caps->permitted.val));
-> +	caps->data[0].inheritable = cpu_to_le32(lower_32_bits(vfs_caps->inheritable.val));
->  
->  	/*
->  	 * Rev1 had just a single 32-bit word, later expanded
->  	 * to a second one for the high bits
->  	 */
-> -	if ((magic_etc & VFS_CAP_REVISION_MASK) != VFS_CAP_REVISION_1) {
-> -		cpu_caps->permitted.val += (u64)le32_to_cpu(caps->data[1].permitted) << 32;
-> -		cpu_caps->inheritable.val += (u64)le32_to_cpu(caps->data[1].inheritable) << 32;
-> +	if ((vfs_caps->magic_etc & VFS_CAP_REVISION_MASK) != VFS_CAP_REVISION_1) {
-> +		caps->data[1].permitted =
-> +			cpu_to_le32(upper_32_bits(vfs_caps->permitted.val));
-> +		caps->data[1].inheritable =
-> +			cpu_to_le32(upper_32_bits(vfs_caps->inheritable.val));
->  	}
->  
-> -	cpu_caps->permitted.val &= CAP_VALID_MASK;
-> -	cpu_caps->inheritable.val &= CAP_VALID_MASK;
-> +	return size;
-> +}
-> +
-> +
-> +/**
-> + * vfs_caps_to_xattr - convert vfs_caps to raw caps xattr data
-> + *
-> + * @idmap:       idmap of the mount the inode was found from
-> + * @dest_userns: user namespace for ids in xattr data
-> + * @vfs_caps:    source vfs_caps data
-> + * @data:        destination buffer for rax xattr caps data
-> + * @size:        size of the @data buffer
-> + *
-> + * Converts a kernel-interrnal capability into the raw security.capability
-
-s/interrnal/internal/
-
-> + * xattr format.
-> + *
-> + * If the xattr is being read or written through an idmapped mount the
-> + * idmap of the vfsmount must be passed through @idmap. This function
-> + * will then take care to map the rootid according to @idmap.
-> + *
-> + * Return: On success, return 0; on error, return < 0.
-> + */
-> +int vfs_caps_to_xattr(struct mnt_idmap *idmap,
-> +		      struct user_namespace *dest_userns,
-> +		      const struct vfs_caps *vfs_caps,
-> +		      void *data, int size)
-> +{
-> +	struct vfs_ns_cap_data *caps = data;
-> +	int ret;
-> +
-> +	ret = __vfs_caps_to_xattr(idmap, dest_userns, vfs_caps, data, size);
-> +	if (ret > 0 &&
-> +	    (vfs_caps->magic_etc & VFS_CAP_REVISION_MASK) == VFS_CAP_REVISION_3 &&
-> +	     le32_to_cpu(caps->rootid) == (uid_t)-1)
-> +		return -EOVERFLOW;
-
-I think the return value situation of these two helper is a bit
-confusing. So if they return the size or a negative error pointer the
-return value of both functions should likely be ssize_t.
-
-But unless you actually later use the size in the callers of these
-helpers it would be easier to just stick with 0 on success, negative
-errno on failure. Note that that's what vfs_caps_from_xattr() is doing.
-
-I'll see whether that becomes relevant later in the series though.
-
-> +	return ret;
-> +}
-> +
-> +/**
-> + * get_vfs_caps_from_disk - retrieve vfs caps from disk
-> + *
-> + * @idmap:	idmap of the mount the inode was found from
-> + * @dentry:	dentry from which @inode is retrieved
-> + * @cpu_caps:	vfs capabilities
-> + *
-> + * Extract the on-exec-apply capability sets for an executable file.
-> + *
-> + * If the inode has been found through an idmapped mount the idmap of
-> + * the vfsmount must be passed through @idmap. This function will then
-> + * take care to map the inode according to @idmap before checking
-> + * permissions. On non-idmapped mounts or if permission checking is to be
-> + * performed on the raw inode simply pass @nop_mnt_idmap.
-> + */
-> +int get_vfs_caps_from_disk(struct mnt_idmap *idmap,
-> +			   const struct dentry *dentry,
-> +			   struct vfs_caps *cpu_caps)
-> +{
-> +	struct inode *inode = d_backing_inode(dentry);
-> +	int size, ret;
-> +	struct vfs_ns_cap_data data, *nscaps = &data;
-> +
-> +	if (!inode)
-> +		return -ENODATA;
->  
-> -	cpu_caps->rootid = rootvfsuid;
-> +	size = __vfs_getxattr((struct dentry *)dentry, inode,
-> +			      XATTR_NAME_CAPS, &data, XATTR_CAPS_SZ);
-> +	if (size == -ENODATA || size == -EOPNOTSUPP)
-> +		/* no data, that's ok */
-> +		return -ENODATA;
-> +
-> +	if (size < 0)
-> +		return size;
-> +
-> +	ret = vfs_caps_from_xattr(idmap, inode->i_sb->s_user_ns,
-> +				  cpu_caps, nscaps, size);
-> +	if (ret == -EOVERFLOW)
-> +		return -ENODATA;
-> +	if (ret)
-> +		return ret;
-> +
-> +	/* Limit the caps to the mounter of the filesystem
-> +	 * or the more limited uid specified in the xattr.
-> +	 */
-> +	if (!rootid_owns_currentns(cpu_caps->rootid))
-> +		return -ENODATA;
->  
->  	return 0;
->  }
-> 
-> -- 
-> 2.43.0
 > 
