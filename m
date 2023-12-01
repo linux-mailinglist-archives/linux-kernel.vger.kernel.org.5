@@ -2,151 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0B82800D0F
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 15:21:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CE8D800D11
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 15:22:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379153AbjLAOVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 09:21:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53122 "EHLO
+        id S1379156AbjLAOWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 09:22:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379143AbjLAOVC (ORCPT
+        with ESMTP id S1379143AbjLAOWV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 09:21:02 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE9A910F1
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 06:21:08 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-3330fd19820so1543069f8f.1
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 06:21:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701440467; x=1702045267; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=9SHrQzoDukHuHCFDqbm2JYoczU5EOoJfo9aw9/NPj8E=;
-        b=e3bZx2whNIi1i1Sh0z9aAxcBEw77S/hKukqVt2tz5LNX5VUwY5kFha+t5McE/vWnF4
-         PLEkybeERb6exhX1pXDz2W0O/nDmYAf5gqJ89lY5yTwtZstPnKxOrHpkRDNsDxOO9V5D
-         +t1APqE8KNb61seSaTCDjfSapGSucB0rC+gHBG2JjcbV34fJuIyv1sumdfwPcpoYqne5
-         8+2k8St6Y17zgvgTImd4XieJrFW0f1JqUd4UNq0KmXAouiXzCIajfodW9IzrBfVRkO8V
-         ZahEpEXq8SdZhkwRCIfMLAfbdgQsGnKeyyoIWS7JZGbkpLn8wS4US8IXM1dThIR+bbtr
-         0QuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701440467; x=1702045267;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9SHrQzoDukHuHCFDqbm2JYoczU5EOoJfo9aw9/NPj8E=;
-        b=q6EdAc5uxyAKioDNJ1h3Za5i1Bvgig814Ma/nxGMTjnvGVW2IUewLn2e8dKi6yAVUP
-         7XUj5sTjm4745hPssOnAZY3CBpb8lPNRgsFL19GhBuiPa2HzipitpSfq2bL7XYUk7GFL
-         J6yRUD5sq3Je2aHMKa7tqdWTistSnVI9Dgi2ljJNDCox/mkQLUyRry2gPOJTHzfiwQUo
-         rk1kgYLe44te8aMdq2d3d7f06GDw5LkEWWhPkOMf125P5D/VcuVbTr5GuPoVblvH+Q9l
-         6Jkni64/1wC30t3zyLp8M74rdPt2TiLznI5Z7FGL8VsOiUoooKrXD/Tsek0/TX687YUF
-         Kryw==
-X-Gm-Message-State: AOJu0YwJsWNVldME2d+j5gw+GvIKM0V6P39EZufxPITs41pe98RkUSF6
-        hzvYvcPD9jKCKM6R6V4qgSpqYA==
-X-Google-Smtp-Source: AGHT+IHIICkHJeoMal0DnMr8TzVGKdkoLdqE45DyONJt5VPDnRsnyKH25NUL/W3i/CNXA4xwgZ/0uA==
-X-Received: by 2002:a05:6000:12ca:b0:333:2fd2:6f59 with SMTP id l10-20020a05600012ca00b003332fd26f59mr987524wrx.99.1701440467229;
-        Fri, 01 Dec 2023 06:21:07 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.223.109])
-        by smtp.gmail.com with ESMTPSA id j7-20020adff007000000b00332f02123d2sm4269106wro.54.2023.12.01.06.21.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Dec 2023 06:21:06 -0800 (PST)
-Message-ID: <a44b7bb2-34ac-45ab-84c6-630d604f1bcf@linaro.org>
-Date:   Fri, 1 Dec 2023 15:21:05 +0100
+        Fri, 1 Dec 2023 09:22:21 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8723310F0
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 06:22:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701440547; x=1732976547;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=BPLVm0NmvvEtXLrMNI/giTZDx3EOgxRyFpu+roO4UZI=;
+  b=LjAkCl0QJ68QSF8jG2YkWGLuc61GtkEY4jDwtO3pKpLLcJsKTjBpnMqj
+   qlMG1D+EPPOgQqTXYHojG4lfDUjZyGDqx6AlY2mrYTWSEm9OleHI+Z0Sc
+   ZM+wvBf3HFaIDUwpJPR3BwwbZ6PDXGoT8P50leaUJY/AXHMXewg4w7p6c
+   qGv3H7RAN+94i3rpQZ8Xov0QghdDs5PzwOW686TwiZFulgTNp1GlNhe3B
+   Ki8zG+8SuCOPin2kBuux5THcdnXzZGK0HJFyA4LM1WM4vukcYpfbgIy0N
+   bBIEJEvRLG8aZGn1BZuonx++jAooKzjqHXKyviAhTUvNP0S7wYjQjH9rh
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="524876"
+X-IronPort-AV: E=Sophos;i="6.04,241,1695711600"; 
+   d="scan'208";a="524876"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2023 06:22:27 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="773453108"
+X-IronPort-AV: E=Sophos;i="6.04,241,1695711600"; 
+   d="scan'208";a="773453108"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga007.fm.intel.com with ESMTP; 01 Dec 2023 06:22:25 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r94PQ-0003nM-00;
+        Fri, 01 Dec 2023 14:22:24 +0000
+Date:   Fri, 1 Dec 2023 22:21:46 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Lee Jones <lee@kernel.org>
+Subject: drivers/leds/leds-turris-omnia.c:438:15: sparse: sparse: cast to
+ restricted __le16
+Message-ID: <202312012213.wUNHTGnZ-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dt-bindings: marvell: move MMP boards to common marvell
- directory
-Content-Language: en-US
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231201132306.60753-1-krzysztof.kozlowski@linaro.org>
- <1e25e2f4-e4b9-4219-a9c2-cb6230a62549@lunn.ch>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <1e25e2f4-e4b9-4219-a9c2-cb6230a62549@lunn.ch>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/12/2023 14:51, Andrew Lunn wrote:
-> On Fri, Dec 01, 2023 at 02:23:06PM +0100, Krzysztof Kozlowski wrote:
->> Marvell board bindings are spread over arm/marvell/ and arm/mrvl/
->> directories.  Move MMP board bindings from the latter to the former, to
->> keep all of them together.
-> 
-> Hi Krzysztof
-> 
-> Did you test get_maintainers.pl? MMP has a different maintainer to
-> many of the other Marvell SoCs. We want emails going to the correct
-> Maintainers, and ideally not spamming the others.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   994d5c58e50e91bb02c7be4a91d5186292a895c8
+commit: 43e9082fbccc7df8b2028c1ba040c58cefda703f leds: turris-omnia: Add support for enabling/disabling HW gamma correction
+date:   4 weeks ago
+config: loongarch-randconfig-r034-20230511 (https://download.01.org/0day-ci/archive/20231201/202312012213.wUNHTGnZ-lkp@intel.com/config)
+compiler: loongarch64-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20231201/202312012213.wUNHTGnZ-lkp@intel.com/reproduce)
 
-The old binding was not referenced in MAINTAINERS, at least I could not
-find it.
-My change does not affect status quo - orphaned files.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312012213.wUNHTGnZ-lkp@intel.com/
 
-OTOH, some entries like Orion list specific files. Others like Marvell
-list entire directory, which is their mistake in the first place.
+sparse warnings: (new ones prefixed by >>)
+>> drivers/leds/leds-turris-omnia.c:438:15: sparse: sparse: cast to restricted __le16
+   drivers/leds/leds-turris-omnia.c:446:16: sparse: sparse: cast to restricted __le16
 
-There is a mess in this approach, but the mess exists before my patch.
+vim +438 drivers/leds/leds-turris-omnia.c
 
-Best regards,
-Krzysztof
+   426	
+   427	static int omnia_mcu_get_features(const struct i2c_client *client)
+   428	{
+   429		u16 reply;
+   430		int err;
+   431	
+   432		err = omnia_cmd_read_raw(client->adapter, OMNIA_MCU_I2C_ADDR,
+   433					 CMD_GET_STATUS_WORD, &reply, sizeof(reply));
+   434		if (err < 0)
+   435			return err;
+   436	
+   437		/* Check whether MCU firmware supports the CMD_GET_FEAUTRES command */
+ > 438		if (!(le16_to_cpu(reply) & STS_FEATURES_SUPPORTED))
+   439			return 0;
+   440	
+   441		err = omnia_cmd_read_raw(client->adapter, OMNIA_MCU_I2C_ADDR,
+   442					 CMD_GET_FEATURES, &reply, sizeof(reply));
+   443		if (err < 0)
+   444			return err;
+   445	
+   446		return le16_to_cpu(reply);
+   447	}
+   448	
 
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
