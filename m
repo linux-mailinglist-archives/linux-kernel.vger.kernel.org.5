@@ -2,96 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B30BE8009F9
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 12:35:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA0C98009FB
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 12:35:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378577AbjLALe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 06:34:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37850 "EHLO
+        id S1378574AbjLALfh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 06:35:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378541AbjLALe5 (ORCPT
+        with ESMTP id S1378541AbjLALfg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 06:34:57 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B263CF
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 03:35:04 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5443AC433C8;
-        Fri,  1 Dec 2023 11:35:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701430503;
-        bh=bAkOKZYHWz/B6ZGojduBi42RS2pXekoCHVmKsM+KArI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mn0YDiwFNb08kiD6dNABvWp7l8WtnwibCdgonnaOwbp1itZwfh4Tlx5+66qirmbGh
-         r9Lcrm/m9evgsndO4KfaM3W31iwHQLiilkp9Nl0M5513m4NX6yvybmsF05tnRm/CFs
-         dgAQEWVKRO0eVzRdc2ykXRsih+t7lAns5P8+s1uYdv2+J2xS/ex43dxDkl8691GpEX
-         IOMnDdk5l7SLOJXJm6NyRttFpBvYqE4wpYr6tnoJo0Z0/oDiexOr+jfovNVFA019TW
-         JeDq5j+0eFOdkx+W9/MpTihQhiq0G4GXScOqEP9O3N1pgjbq836l+5M/WugHP1W9bw
-         3W15ZN3K90n/w==
-Date:   Fri, 1 Dec 2023 11:34:56 +0000
-From:   Simon Horman <horms@kernel.org>
-To:     Geetha sowjanya <gakula@marvell.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kuba@kernel.org, davem@davemloft.net, pabeni@redhat.com,
-        edumazet@google.com, sgoutham@marvell.com, lcherian@marvell.com,
-        jerinj@marvell.com, pbhagavatula@marvell.com, sbhatta@marvell.com,
-        hkelam@marvell.com
-Subject: Re: [net-next PATCH] octeontx2-af: cn10k: Increase outstanding LMTST
- transactions
-Message-ID: <20231201113456.GU32077@kernel.org>
-References: <20231129112155.9967-1-gakula@marvell.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231129112155.9967-1-gakula@marvell.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Fri, 1 Dec 2023 06:35:36 -0500
+Received: from mail-lj1-x249.google.com (mail-lj1-x249.google.com [IPv6:2a00:1450:4864:20::249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0CE0FF
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 03:35:42 -0800 (PST)
+Received: by mail-lj1-x249.google.com with SMTP id 38308e7fff4ca-2c9c05fe6c0so14421021fa.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 03:35:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701430541; x=1702035341; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=qEkAP1I3qkXnBXX51BCMUCkxCSmzCgvaSA2DFugwU0k=;
+        b=RSyiSAttj6AD0qcDKZRtFj4CyqlYT8YxZ7cw64/dQXoKu9MmAKHyBRsLnrcKqd6g3j
+         Vx1XIZdXNzihq2Y6fQmgNey96WlGv9CO0vqY2U1c2e+lyledj1LNHnUPIEXIzyzMhPW0
+         tx/MLqRbsI0Vlwdcqz/One6ot1LRfUG6ymJtm7WkFHgqi5aJCZjF3MGA4iuwWyizXgO4
+         w7l9FULQE6l0e7DCJLFNzp0k6gGATb8jUuZ9wJEsujmiHbE1XfVbrazkrAwwu0X/eaHj
+         b1gg4/OucszMKoRTHKxFdHV3VU9MZpoPq3mBSXx+L5eHO42cNlr+8kc5L5oYfKVE/mML
+         C6ww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701430541; x=1702035341;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qEkAP1I3qkXnBXX51BCMUCkxCSmzCgvaSA2DFugwU0k=;
+        b=PJoDO01pj6VrYnaH8CdYVzPVSRJr8ST4Gdz9oa9rVpOGZaFunvYoU8igmn9GV8TGIy
+         E0C7hBk5VtB+K5IeZ110TVCbh0y5/uJVYh8dvmgql+JUie31kakc5CKjTfMm+Yjj3m5P
+         9vevXNJOAF5SBG5d4NvDfa2Gaj9P7JNtI196DJWdItT8BzkJULr2A03scZYBVZQgSF/a
+         Pwux+qeSFMs0UOTZ0+aTs+P6hHU9L7lt0QeAB48kY6MYFKCftMWKIlFcWpojPzsUbQIc
+         G476FrqWJUm2N7COkWZsbNQjR2zPsmcrPuGn9t1BxX7WiaAdcdCmxOUxbslHM+M/bbom
+         PZvw==
+X-Gm-Message-State: AOJu0Yy1Kvn1V2Zq7uUg8MDa3kFkCt+f1T6VgncHKwFWkaq6lV0PvTXZ
+        IzDqcebOrszuxFWRLoa+mlnM8w/mQl7pZCY=
+X-Google-Smtp-Source: AGHT+IFeTcBN1rZeBuZXq6yiD1BS3gZazpYc5NDt39EiWjUlJlgLZM3L2VCrcBV0qyu1cAqEZnjYwmFr2+yoba0=
+X-Received: from aliceryhl2.c.googlers.com ([fda3:e722:ac3:cc00:68:949d:c0a8:572])
+ (user=aliceryhl job=sendgmr) by 2002:a2e:86cd:0:b0:2c9:aecd:306 with SMTP id
+ n13-20020a2e86cd000000b002c9aecd0306mr53095ljj.0.1701430541098; Fri, 01 Dec
+ 2023 03:35:41 -0800 (PST)
+Date:   Fri,  1 Dec 2023 11:35:38 +0000
+In-Reply-To: <LNSA8EeuwLGDBzY1W8GaP1L6gucAPE_34myHWuyg3ziYuheiFLk3WfVBPppzwDZwoGVTCqL8EBjAaxsNshTY6AQq_sNtK9hmea7FeaNJuCo=@proton.me>
+Mime-Version: 1.0
+References: <LNSA8EeuwLGDBzY1W8GaP1L6gucAPE_34myHWuyg3ziYuheiFLk3WfVBPppzwDZwoGVTCqL8EBjAaxsNshTY6AQq_sNtK9hmea7FeaNJuCo=@proton.me>
+X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
+Message-ID: <20231201113538.2202170-1-aliceryhl@google.com>
+Subject: Re: [PATCH 6/7] rust: file: add `DeferredFdCloser`
+From:   Alice Ryhl <aliceryhl@google.com>
+To:     benno.lossin@proton.me
+Cc:     a.hindborg@samsung.com, alex.gaynor@gmail.com,
+        aliceryhl@google.com, arve@android.com, bjorn3_gh@protonmail.com,
+        boqun.feng@gmail.com, brauner@kernel.org, cmllamas@google.com,
+        dan.j.williams@intel.com, dxu@dxuuu.xyz, gary@garyguo.net,
+        gregkh@linuxfoundation.org, joel@joelfernandes.org,
+        keescook@chromium.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, maco@android.com, ojeda@kernel.org,
+        peterz@infradead.org, rust-for-linux@vger.kernel.org,
+        surenb@google.com, tglx@linutronix.de, tkjos@android.com,
+        viro@zeniv.linux.org.uk, wedsonaf@gmail.com, willy@infradead.org
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 04:51:55PM +0530, Geetha sowjanya wrote:
-> From: Pavan Nikhilesh <pbhagavatula@marvell.com>
+Benno Lossin <benno.lossin@proton.me> writes:
+>> +        // SAFETY: The `inner` pointer points at a valid and fully initialized task work that is
+>> +        // ready to be scheduled.
+>> +        unsafe { bindings::task_work_add(current, inner, TWA_RESUME) };
 > 
-> Currently the number of outstanding store transactions issued by AP as
-> a part of LMTST operation is set to 1 i.e default value.
-> This patch set to max supported value to increase the performance.
+> I am a bit confused, when does `do_close_fd` actually run? Does
+> `TWA_RESUME` mean that `inner` is scheduled to run after the current
+> task has been completed?
+
+When the current syscall returns to userspace.
+
+>> +    // SAFETY: This function is an implementation detail of `close_fd`, so its safety comments
+>> +    // should be read in extension of that method.
+>> +    unsafe extern "C" fn do_close_fd(inner: *mut bindings::callback_head) {
+>> +        // SAFETY: In `close_fd` we use this method together with a pointer that originates from a
+>> +        // `Box<DeferredFdCloserInner>`, and we have just been given ownership of that allocation.
+>> +        let inner = unsafe { Box::from_raw(inner as *mut DeferredFdCloserInner) };
 > 
-> Signed-off-by: Pavan Nikhilesh <pbhagavatula@marvell.com>
-> Signed-off-by: Geetha sowjanya <gakula@marvell.com>
+> In order for this call to be sound, `inner` must be an exclusive
+> pointer (including any possible references into the `callback_head`).
+> Is this the case?
 
-...
+Yes, when this is called, it's been removed from the linked list of task
+work. That's why we can kfree it.
 
-> diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cn10k.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cn10k.c
-> index 0e74c5a2231e..93fedabfe31e 100644
-> --- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cn10k.c
-> +++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cn10k.c
-> @@ -559,3 +559,12 @@ void rvu_nix_block_cn10k_init(struct rvu *rvu, struct nix_hw *nix_hw)
->  	cfg |= BIT_ULL(1) | BIT_ULL(2);
->  	rvu_write64(rvu, blkaddr, NIX_AF_CFG, cfg);
->  }
-> +
-> +void rvu_apr_block_cn10k_init(struct rvu *rvu)
-> +{
-> +	u64 reg;
-> +
-> +	reg = rvu_read64(rvu, BLKADDR_APR, APR_AF_LMT_CFG);
-> +	reg |= 0xFULL << 35;
-
-Hi Pavan and Geetha,
-
-I think it would be best to avoid the magic value 35 here.
-
-Best would probably be to use GENMASK_ULL and FIELD_PREP.
-Else defining something similar to APR_LMT_MAP_ENT_SCH_ENA_SHIFT.
-
-It might also be nice to avoid the magic value 0xFULL using a #define.
-
-> +	rvu_write64(rvu, BLKADDR_APR, APR_AF_LMT_CFG, reg);
-> +}
-> -- 
-> 2.25.1
+>> +        // SAFETY: Since `DeferredFdCloserInner` is `#[repr(C)]`, casting the pointers gives a
+>> +        // pointer to the `twork` field.
+>> +        let inner = Box::into_raw(self.inner) as *mut bindings::callback_head;
 > 
+> Here you can just use `.cast::<...>()`.
+
+Will do.
+
+Alice
