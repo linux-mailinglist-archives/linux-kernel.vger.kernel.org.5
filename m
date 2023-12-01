@@ -2,39 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 034768006C8
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 10:25:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 432398006CE
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 10:25:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377962AbjLAJYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 04:24:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58342 "EHLO
+        id S1378010AbjLAJZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 04:25:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbjLAJYt (ORCPT
+        with ESMTP id S1378013AbjLAJZG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 04:24:49 -0500
-Received: from proxmox-new.maurer-it.com (proxmox-new.maurer-it.com [94.136.29.106])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C50C171B;
-        Fri,  1 Dec 2023 01:24:53 -0800 (PST)
-Received: from proxmox-new.maurer-it.com (localhost.localdomain [127.0.0.1])
-        by proxmox-new.maurer-it.com (Proxmox) with ESMTP id A8F5643546;
-        Fri,  1 Dec 2023 10:24:51 +0100 (CET)
-Message-ID: <4dbc72ba-8edb-4ff5-b95d-b601189e4415@proxmox.com>
-Date:   Fri, 1 Dec 2023 10:24:41 +0100
+        Fri, 1 Dec 2023 04:25:06 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1379410F9
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 01:25:12 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31B11C433C7;
+        Fri,  1 Dec 2023 09:25:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701422711;
+        bh=pap0dJ7Aexs0KGqqAq0I3SAp6oVPIn/53vGN/L16G3g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jo++edaPYGu5OZ3NsMc3O5H4BNhyyZ9oJWhGoph0k8VwwbGjUrW9s+S3aWmGKv3TK
+         tfmjJOXp+s2tOMRp0+i5zNc2qKUo6nR/8WlTHdIY9GQgD8Xo0x8K7hDcrhV7XNJyIF
+         VhdoK7wcxtifKlWhm7zF6cOYvqC+Sg1lMZZ/ymyaksY8fWl4p06Ec5cKcJSgmbhZuH
+         bDpwONi70lo4fRUn615W0ON2hrV2ANvFhJ6gRYfPEWWXl7tixuBiqWVmZgbV6skciq
+         vM+D+rrq4EFPxbs4WePG6eXoPiSshuvlniyhdU7aAufwkBAD+tZgS+3D2QeMp4MEn/
+         28RjKeylLLpeg==
+Date:   Fri, 1 Dec 2023 10:25:09 +0100
+From:   Maxime Ripard <mripard@kernel.org>
+To:     Pekka Paalanen <pekka.paalanen@collabora.com>
+Cc:     =?utf-8?B?QW5kcsOp?= Almeida <andrealmeid@igalia.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel-dev@igalia.com, alexander.deucher@amd.com,
+        christian.koenig@amd.com, Simon Ser <contact@emersion.fr>,
+        Rob Clark <robdclark@gmail.com>,
+        Pekka Paalanen <ppaalanen@gmail.com>, daniel@ffwll.ch,
+        Daniel Stone <daniel@fooishbar.org>,
+        'Marek =?utf-8?B?T2zFocOhayc=?= <maraeo@gmail.com>,
+        Dave Airlie <airlied@gmail.com>,
+        Michel =?utf-8?Q?D=C3=A4nzer?= <michel.daenzer@mailbox.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Subject: Re: [PATCH] drm/doc: Define KMS atomic state set
+Message-ID: <bry3w6w32uy2jlmbkcmbtthw6w6nwux7dwlcju5iuxac2wphku@md6njxjtsbvm>
+References: <20231130200740.53454-1-andrealmeid@igalia.com>
+ <x6cqert2tadgc46w3u2rfgcfaw6evxdeerl2mxvh2peycr4i7q@qf6oqymcti4j>
+ <20231201110616.30ad1468.pekka.paalanen@collabora.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: SCSI hotplug issues with UEFI VM with guest kernel >= 6.5
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     linux-pci@vger.kernel.org, linux-acpi@vger.kernel.org,
-        Igor Mammedov <imammedo@redhat.com>,
-        linux-kernel@vger.kernel.org, bhelgaas@google.com, lenb@kernel.org,
-        rafael@kernel.org, Thomas Lamprecht <t.lamprecht@proxmox.com>
-References: <20231130231802.GA498017@bhelgaas>
-Content-Language: en-US
-From:   Fiona Ebner <f.ebner@proxmox.com>
-In-Reply-To: <20231130231802.GA498017@bhelgaas>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="3qxpsltzimgkb2dd"
+Content-Disposition: inline
+In-Reply-To: <20231201110616.30ad1468.pekka.paalanen@collabora.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -43,75 +64,158 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 01.12.23 um 00:18 schrieb Bjorn Helgaas:
-> On Wed, Nov 29, 2023 at 04:22:41PM +0100, Fiona Ebner wrote:
->> Hi,
->> it seems that hot-plugging SCSI disks for QEMU virtual machines booting
->> with UEFI and with guest kernels >= 6.5 might be broken. It's not
->> consistently broken, hinting there might be a race somewhere.
->>
->> Reverting the following two commits seems to make it work reliably again:
->>
->> cc22522fd55e2 ("PCI: acpiphp: Use
->> pci_assign_unassigned_bridge_resources() only for non-root bus")
->> 40613da52b13f ("PCI: acpiphp: Reassign resources on bridge if necessary"
->>
->> Of course, they might only expose some pre-existing issue, but this is
->> my best lead. See below for some logs and details about an affected
->> virtual machine. Happy to provide more information and to debug/test
->> further.
-> 
-> Shoot.  Thanks very much for the report and your debugging.  I'm
-> hoping Igor will chime in with some ideas.
-> 
-> Both of those commits appeard in v6.5 and fixed legit issues, so I
-> hate to revert them, but this does appear to be a regression.
-> 
-> #regzbot introduced: cc22522fd55e2 ^
-> #regzbot introduced: 40613da52b13f ^
-> 
->> Host kernel: 6.5.11-4-pve which is based on the one from Ubuntu
->> Guest kernel: 6.7.0-rc3 and 6.7.0-rc3 with above commits reverted
->> QEMU version: v8.1.0 built from source
->> EDK2 version: submodule in the QEMU v8.1 repository: edk2-stable202302
->>
 
-I should mention that I haven't run into the issue when booting the VM
-with SeaBIOS yet.
+--3qxpsltzimgkb2dd
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Log for 6.7.0-rc3 + SeaBIOS (bundled with QEMU 8.1):
+On Fri, Dec 01, 2023 at 11:06:16AM +0200, Pekka Paalanen wrote:
+> On Fri, 1 Dec 2023 09:29:05 +0100
+> Maxime Ripard <mripard@kernel.org> wrote:
+>=20
+> > Hi,
+> >=20
+> > On Thu, Nov 30, 2023 at 05:07:40PM -0300, Andr=E9 Almeida wrote:
+> > > From: Pekka Paalanen <pekka.paalanen@collabora.com>
+> > >=20
+> > > Specify how the atomic state is maintained between userspace and
+> > > kernel, plus the special case for async flips.
+> > >=20
+> > > Signed-off-by: Pekka Paalanen <pekka.paalanen@collabora.com>
+> > > Signed-off-by: Andr=E9 Almeida <andrealmeid@igalia.com>
+> > > ---
+> > >=20
+> > > This is a standalone patch from the following serie, the other patche=
+s are
+> > > already merged:
+> > > https://lore.kernel.org/lkml/20231122161941.320564-1-andrealmeid@igal=
+ia.com/
+> > >=20
+> > >  Documentation/gpu/drm-uapi.rst | 47 ++++++++++++++++++++++++++++++++=
+++
+> > >  1 file changed, 47 insertions(+)
+> > >=20
+> > > diff --git a/Documentation/gpu/drm-uapi.rst b/Documentation/gpu/drm-u=
+api.rst
+> > > index 370d820be248..d0693f902a5c 100644
+> > > --- a/Documentation/gpu/drm-uapi.rst
+> > > +++ b/Documentation/gpu/drm-uapi.rst
+> > > @@ -570,3 +570,50 @@ dma-buf interoperability
+> > > =20
+> > >  Please see Documentation/userspace-api/dma-buf-alloc-exchange.rst for
+> > >  information on how dma-buf is integrated and exposed within DRM.
+> > > +
+> > > +KMS atomic state
+> > > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > > +
+> > > +An atomic commit can change multiple KMS properties in an atomic fas=
+hion,
+> > > +without ever applying intermediate or partial state changes.  Either=
+ the whole
+> > > +commit succeeds or fails, and it will never be applied partially. Th=
+is is the
+> > > +fundamental improvement of the atomic API over the older non-atomic =
+API which is
+> > > +referred to as the "legacy API".  Applying intermediate state could =
+unexpectedly
+> > > +fail, cause visible glitches, or delay reaching the final state.
+> > > +
+> > > +An atomic commit can be flagged with DRM_MODE_ATOMIC_TEST_ONLY, whic=
+h means the
+> > > +complete state change is validated but not applied.  Userspace shoul=
+d use this
+> > > +flag to validate any state change before asking to apply it. If vali=
+dation fails
+> > > +for any reason, userspace should attempt to fall back to another, pe=
+rhaps
+> > > +simpler, final state.  This allows userspace to probe for various co=
+nfigurations
+> > > +without causing visible glitches on screen and without the need to u=
+ndo a
+> > > +probing change.
+> > > +
+> > > +The changes recorded in an atomic commit apply on top the current KM=
+S state in
+> > > +the kernel. Hence, the complete new KMS state is the complete old KM=
+S state with
+> > > +the committed property settings done on top. The kernel will try to =
+avoid =20
+> >=20
+> > That part is pretty confusing to me.
+> >=20
+> > What are you calling the current and old KMS state?
+>=20
+> Current =3D old, if you read that "current" is the KMS state before
+> considering the atomic commit at hand.
+>=20
+> > What's confusing to me is that, yes, what you're saying is true for a
+> > given object: if it was part of the commit, the new state is the old
+> > state + whatever the new state changed.
+> >=20
+> > However, if that object wasn't part of the commit at all, then it's
+> > completely out of the old or new global KMS state.
+>=20
+> This is not talking about kernel data structures at all. This is
+> talking about how KMS looks from the userspace point of view.
 
-> Dec 01 10:08:08 hotplug kernel: pci 0000:01:02.0: [1af4:1004] type 00 class 0x010000
-> Dec 01 10:08:08 hotplug kernel: pci 0000:01:02.0: reg 0x10: [io  0x0000-0x003f]
-> Dec 01 10:08:08 hotplug kernel: pci 0000:01:02.0: reg 0x14: [mem 0x00000000-0x00000fff]
-> Dec 01 10:08:08 hotplug kernel: pci 0000:01:02.0: reg 0x20: [mem 0x00000000-0x00003fff 64bit pref]
-> Dec 01 10:08:08 hotplug kernel: pci 0000:01:02.0: BAR 4: assigned [mem 0xfd404000-0xfd407fff 64bit pref]
-> Dec 01 10:08:08 hotplug kernel: pci 0000:01:02.0: BAR 1: assigned [mem 0xfe801000-0xfe801fff]
-> Dec 01 10:08:08 hotplug kernel: pci 0000:01:02.0: BAR 0: assigned [io  0xe040-0xe07f]
-> Dec 01 10:08:08 hotplug kernel: pci 0000:00:05.0: PCI bridge to [bus 01]
-> Dec 01 10:08:08 hotplug kernel: pci 0000:00:05.0:   bridge window [io  0xe000-0xefff]
-> Dec 01 10:08:08 hotplug kernel: pci 0000:00:05.0:   bridge window [mem 0xfe800000-0xfe9fffff]
-> Dec 01 10:08:08 hotplug kernel: pci 0000:00:05.0:   bridge window [mem 0xfd400000-0xfd5fffff 64bit pref]
-> Dec 01 10:08:08 hotplug kernel: virtio-pci 0000:01:02.0: enabling device (0000 -> 0003)
-> Dec 01 10:08:08 hotplug kernel: ACPI: \_SB_.LNKC: Enabled at IRQ 11
-> Dec 01 10:08:08 hotplug kernel: scsi host3: Virtio SCSI HBA
-> Dec 01 10:08:08 hotplug kernel: pci 0000:00:05.0: PCI bridge to [bus 01]
-> Dec 01 10:08:08 hotplug kernel: pci 0000:00:05.0:   bridge window [io  0xe000-0xefff]
-> Dec 01 10:08:08 hotplug kernel: pci 0000:00:05.0:   bridge window [mem 0xfe800000-0xfe9fffff]
-> Dec 01 10:08:08 hotplug kernel: scsi 3:0:0:1: Direct-Access     QEMU     QEMU HARDDISK    2.5+ PQ: 0 ANSI: 5
-> Dec 01 10:08:08 hotplug kernel: pci 0000:00:05.0:   bridge window [mem 0xfd400000-0xfd5fffff 64bit pref]
-> Dec 01 10:08:08 hotplug kernel: scsi 3:0:0:1: Attached scsi generic sg1 type 0
-> Dec 01 10:08:08 hotplug kernel: sd 3:0:0:1: Power-on or device reset occurred
-> Dec 01 10:08:08 hotplug kernel: sd 3:0:0:1: [sdb] 2048 512-byte logical blocks: (1.05 MB/1.00 MiB)
-> Dec 01 10:08:08 hotplug kernel: sd 3:0:0:1: [sdb] Write Protect is off
-> Dec 01 10:08:08 hotplug kernel: sd 3:0:0:1: [sdb] Mode Sense: 63 00 00 08
-> Dec 01 10:08:08 hotplug kernel: sd 3:0:0:1: [sdb] Write cache: enabled, read cache: enabled, doesn't support DPO or FUA
-> Dec 01 10:08:08 hotplug kernel: sd 3:0:0:1: [sdb] Attached SCSI disk
+I mean, that's also true from the userspace point of view. You can very
+well commit only a single property on a single object, and only that
+object will be part of the "global KMS state".
 
-Interestingly, the line with "QEMU HARDDISK" does not come after all
-lines with "bridge window" like was the case for the one time it did
-work with UEFI. So maybe that was just a red herring.
+> All objects are always part of the device KMS state as referred to
+> in this doc, whether they were mentioned in the atomic commit state set
+> or not. That's the whole point: all state that was not explicitly
+> modified remains as it was, and is actively used state by the driver
+> and hardware. The practical end result state is the same as if all
+> objects were (redundantly) mentioned.
+>=20
+> For example, if you change properties of CRTC 31, it has no effect on
+> the behaviour of CRTC 54. If CRTC 54 was active, it remains active. If
+> CRTC 54 had certain property values, it continues to have those
+> property values.
 
-Best Regards,
-Fiona
+I'm not quite sure I followed your previous paragraph, sorry, but we
+agree here and it's kind of my point really: CRTC-54 would not be part
+of the new KMS state, so claiming that it is complete is confusing.
 
+It's not complete to me precisely because it doesn't contain the state
+of all objects.
+
+> This is opposed to something else; the UAPI could have
+> been designed to e.g. reset all unmentioned objects to defaults/off by
+> the atomic commit. Obviously that's not how it works today, so we need
+> to mention how things do work.
+
+Sure, I'm not claiming we should change anything but the wording of that
+doc.
+
+> >=20
+> > So yeah, individual object KMS state are indeed complete, but
+> > drm_atomic_state definitely isn't. And it's the whole point of functions
+> > like drm_atomic_get_crtc_state() vs drm_atomic_get_old/new_crtc_state:
+> > the old/new variants only return a state if it was part of
+> > drm_atomic_state to begin with. drm_atomic_get_crtc_state() brings the
+> > crtc state into drm_atomic_state if it wasn't part of it.
+>=20
+> At no point the text is referring to drm_atomic_state or any other
+> kernel data structure.
+
+Then it's even more confusing, because the sentence I was quoting was
+"The changes recorded in an atomic commit apply on top the current KMS
+state *in the kernel*", which is ambiguous then.
+
+Maxime
+
+--3qxpsltzimgkb2dd
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZWmmdAAKCRDj7w1vZxhR
+xb0MAQChGpVdOkDehNkhy/zPifFcMHagclQcoMKLY4C8FwZgeQEAgnPy7SCG7WNB
+JIf40ACZLG5Jj13QUwGmz10Ul888HQQ=
+=0SXM
+-----END PGP SIGNATURE-----
+
+--3qxpsltzimgkb2dd--
