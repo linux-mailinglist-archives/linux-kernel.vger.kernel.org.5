@@ -2,64 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6345800646
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 09:53:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50F9C800651
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 09:54:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377932AbjLAIxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 03:53:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42228 "EHLO
+        id S1377943AbjLAIyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 03:54:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377930AbjLAIxe (ORCPT
+        with ESMTP id S1377930AbjLAIyg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 03:53:34 -0500
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B2DD12A;
-        Fri,  1 Dec 2023 00:53:36 -0800 (PST)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3B18rTMp126953;
-        Fri, 1 Dec 2023 02:53:29 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1701420809;
-        bh=LtcidDfIPRJM6R0cPv02cOKItt85LGasLWw1fH2EQY4=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=LOdvSXAlji+KOO6TphnFfJKK7Prtbw7SHHGXPlpHe9xTMLsz72QN54BpYy1UtoylZ
-         tmXKzpbV3cKevghC526uW3poBFTpNCryGY4XTVZ10f5OGD/4mjrEE1XfDadl3k4S1w
-         agq0DxK9jjDBkpheFpVT+S3PRABkkh89610dF2uk=
-Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3B18rTjC026057
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 1 Dec 2023 02:53:29 -0600
-Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 1
- Dec 2023 02:53:28 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 1 Dec 2023 02:53:28 -0600
-Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3B18rS9a107118;
-        Fri, 1 Dec 2023 02:53:28 -0600
-From:   Nishanth Menon <nm@ti.com>
-To:     Tero Kristo <kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-CC:     Nishanth Menon <nm@ti.com>, <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/3] arm64: dts: ti: k3-am642-evm/sk: Mark mcu_gpio_intr as reserved
-Date:   Fri, 1 Dec 2023 02:53:26 -0600
-Message-ID: <170142080163.923229.11181699314375476710.b4-ty@ti.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231110132508.3137454-1-vigneshr@ti.com>
-References: <20231110132508.3137454-1-vigneshr@ti.com>
+        Fri, 1 Dec 2023 03:54:36 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62854171B;
+        Fri,  1 Dec 2023 00:54:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=vKnBzxozdWGnbst5MfQIf7+dcwp9ORvwYNVmV8gAJa4=; b=O93ILxbmPEQqoZHpPZGIxT73YX
+        Ws5I1XRxugT5Keh77aOXi8td3S1Njs/BHg90kcQL/c6NvAJYe64sKiLvtQ/GWtJ6SDi49vgpyzP6F
+        2XCZYR8+lst5QCL8VQQtupxDV9YiltQ7cK+1ub8OKr6PFSSyO13DnLVj0GhfAjPtugE0njegR/8zM
+        uxqO2oJiKmecPxGFBgU+/P7arSmdeuj4hulfDyq5zqp2t72mPl8XgtWYFInQz8Oke/uEdd4KCJg8z
+        J7xSPs6UxEVZklWRo+luSJrjgrvbUMqqhNcFHY1bChjFr42ChlcO3bFtUiwbfw+hRKwtekgUd2oER
+        aJDNePNg==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1r8zH7-0029rP-2X;
+        Fri, 01 Dec 2023 08:53:32 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id BB6A93004AB; Fri,  1 Dec 2023 09:53:28 +0100 (CET)
+Date:   Fri, 1 Dec 2023 09:53:28 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Gary Guo <gary@garyguo.net>,
+        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Carlos Llamas <cmllamas@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Josh Triplett <josh@joshtriplett.org>
+Subject: Re: [PATCH 1/7] rust: file: add Rust abstraction for `struct file`
+Message-ID: <20231201085328.GE3818@noisy.programming.kicks-ass.net>
+References: <20231129-alice-file-v1-0-f81afe8c7261@google.com>
+ <20231129-alice-file-v1-1-f81afe8c7261@google.com>
+ <ZWdVEk4QjbpTfnbn@casper.infradead.org>
+ <20231129152305.GB23596@noisy.programming.kicks-ass.net>
+ <ZWdv_jsaDFJxZk7G@Boquns-Mac-mini.home>
+ <20231130104226.GB20191@noisy.programming.kicks-ass.net>
+ <ZWipTZysC2YL7qsq@Boquns-Mac-mini.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZWipTZysC2YL7qsq@Boquns-Mac-mini.home>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,43 +81,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vignesh Raghavendra,
-
-On Fri, 10 Nov 2023 18:55:06 +0530, Vignesh Raghavendra wrote:
-> Similar to MCU GPIO, mark the MCU GPIO router also as reserved for MCU
-> domain firmware usage.
+On Thu, Nov 30, 2023 at 07:25:01AM -0800, Boqun Feng wrote:
+> On Thu, Nov 30, 2023 at 11:42:26AM +0100, Peter Zijlstra wrote:
+> > On Wed, Nov 29, 2023 at 09:08:14AM -0800, Boqun Feng wrote:
+> > 
+> > > But but but, I then realized we have asm goto in C but Rust doesn't
+> > > support them, and I haven't thought through how hard tht would be..
+> > 
+> > You're kidding right?
+> > 
 > 
+> I'm not, but I've found this:
 > 
+> 	https://github.com/Amanieu/rfcs/blob/inline-asm/text/0000-inline-asm.md#asm-goto
 
-I have applied the following to branch ti-k3-dts-next on [1].
-Thank you!
+Reading that makes all this even worse, apparently rust can't even use
+memops.
 
-[1/3] arm64: dts: ti: k3-am642-evm/sk: Mark mcu_gpio_intr as reserved
-      commit: 26abae3d840b8b83413c6222725db1104fe4811d
-[2/3] arm64: dts: ti: k3-am62p5-sk: Mark mcu gpio and mcu_gpio_intr as reserved
-      commit: 1b3014a65adb491ec5a777c988f0dd85094d78bd
-[3/3] arm64: dts: ti: k3-am62x-sk-common: Mark mcu gpio and mcu_gpio_intr as reserved
-      commit: 5582b1c623a6d62d3aff62c070173c9f1eb8fabd
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent up the chain during
-the next merge window (or sooner if it is a relevant bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/ti/linux.git
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
-
+So to summarise, Rust cannot properly interop with C, it cannot do
+inline asm from this side of the millenium. Why are we even trying to
+use it again?
