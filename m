@@ -2,166 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF4497FFFC9
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 00:58:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47AAE7FFFCC
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 01:00:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377336AbjK3X6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 18:58:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52758 "EHLO
+        id S1377342AbjLAAAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 19:00:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377294AbjK3X63 (ORCPT
+        with ESMTP id S1377294AbjLAAAU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 18:58:29 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8F16133;
-        Thu, 30 Nov 2023 15:58:35 -0800 (PST)
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AUNPUni017996;
-        Thu, 30 Nov 2023 23:58:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=yguVhYhaPgaT56vaA4oIRBB9Et0MyAZJozsteXHD2Tg=;
- b=Ax6goS4mIlbn31BCIec2U0RmoMNh9mH/QKGWa1hnT/Qbf+gnVqKijITsItiSUdqniFws
- /ExBT2lHyfHs/uNoIBE8IgPKjIXoNQRB4xFaFE0WlKmRiY11p1uC1KZhyH2wVoQc3s5a
- UOZBbgrA10fuOZR4XnK3FeuPZsGz0Y4Ufz9uYD8AScA8k1xr/dG4ARj+j89nlcjIRhxQ
- BIw2rQJMIMHcLlj5GXnbyNf8TqYYoIvqSDMhfTdo7q3KcOXk5NM1sFzSK9PGZN26b6kV
- CHEPjeEl2rlR4rzWFiFyUM28jr/UYP9kvminQJL2YFMwzWQWyBeHuTxw7qCW3OVGgtmz zQ== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3upvm1saq2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 30 Nov 2023 23:58:26 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AUNwPgD027040
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 30 Nov 2023 23:58:25 GMT
-Received: from [10.71.109.77] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 30 Nov
- 2023 15:58:24 -0800
-Message-ID: <5c16e398-4010-718b-d91d-5fc3781b9c0a@quicinc.com>
-Date:   Thu, 30 Nov 2023 15:58:24 -0800
+        Thu, 30 Nov 2023 19:00:20 -0500
+Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8FD910E2
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 16:00:26 -0800 (PST)
+Date:   Thu, 30 Nov 2023 19:00:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1701388824;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1Ly5aykKHFfeWxXNnEM/rLM4wsOswGs38cnjAVJoN6U=;
+        b=oy2SsPwAS+wnMk6eQgAOX2ZsDsMdkgzCngfRilNcFjWaSrqowK94gyQKQqWyUZE1X1JCZ3
+        P6WoZubAsbHlA3q/LRExV9TuL97AC6IRoFydHo+bw3LND2ZBKUzh5qV1lLj0Bx7cPvPtPZ
+        VfYRwDlDiPOLDQvDEutKQ+ONsaeJW3g=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Kent Overstreet <kent.overstreet@linux.dev>
+To:     Roman Gushchin <roman.gushchin@linux.dev>
+Cc:     Qi Zheng <zhengqi.arch@bytedance.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Linux-MM <linux-mm@kvack.org>, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Chinner <david@fromorbit.com>
+Subject: Re: [PATCH 2/7] mm: shrinker: Add a .to_text() method for shrinkers
+Message-ID: <20231201000020.2jwcdup7pklqoudf@moria.home.lan>
+References: <20231125003009.tbaxuquny43uwei3@moria.home.lan>
+ <76A1EE85-B62C-49B3-889C-80F9A2A88040@linux.dev>
+ <20231128035345.5c7yc7jnautjpfoc@moria.home.lan>
+ <abd0ddd6-389c-43dc-b18f-aa5e3a4fcf5a@bytedance.com>
+ <ZWaHG09fY2BYjyGD@P9FQF9L96D.corp.robot.car>
+ <ZWcBDglmDKUJdwMv@tiehlicka>
+ <20231129231147.7msiocerq7phxnyu@moria.home.lan>
+ <04f63966-af72-43ef-a65c-ff927064a3e4@bytedance.com>
+ <20231130032149.ynap4ai47dj62fy3@moria.home.lan>
+ <ZWjcA4BA5vZe57Eh@P9FQF9L96D.corp.robot.car>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH 10/16] drm/msm/dpu: add support to disable CDM block
- during encoder cleanup
-Content-Language: en-US
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC:     <freedreno@lists.freedesktop.org>, Rob Clark <robdclark@gmail.com>,
-        "Sean Paul" <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        "David Airlie" <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        <dri-devel@lists.freedesktop.org>, <quic_jesszhan@quicinc.com>,
-        <quic_parellan@quicinc.com>, <quic_khsieh@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20230830224910.8091-1-quic_abhinavk@quicinc.com>
- <20230830224910.8091-11-quic_abhinavk@quicinc.com>
- <CAA8EJpoUDjTEytGnx0NUKD_grY=azoXgm_sqwNBJVTD7LwCe0g@mail.gmail.com>
-From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
-In-Reply-To: <CAA8EJpoUDjTEytGnx0NUKD_grY=azoXgm_sqwNBJVTD7LwCe0g@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: XJaikXbEGvVeE-34BnxXxws-Mk3ba9PJ
-X-Proofpoint-GUID: XJaikXbEGvVeE-34BnxXxws-Mk3ba9PJ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-30_24,2023-11-30_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- priorityscore=1501 impostorscore=0 phishscore=0 spamscore=0 malwarescore=0
- bulkscore=0 adultscore=0 clxscore=1015 mlxscore=0 mlxlogscore=826
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311300177
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZWjcA4BA5vZe57Eh@P9FQF9L96D.corp.robot.car>
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/30/2023 5:14 PM, Dmitry Baryshkov wrote:
-> On Thu, 31 Aug 2023 at 01:50, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
->>
->> In preparation of setting up CDM block, add the logic to disable it
->> properly during encoder cleanup.
->>
->> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
->> ---
->>   drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c      | 8 ++++++++
->>   drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h | 2 ++
->>   2 files changed, 10 insertions(+)
->>
->> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
->> index 582680804016..1b1e07292a9e 100644
->> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
->> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
->> @@ -26,6 +26,7 @@
->>   #include "dpu_hw_dspp.h"
->>   #include "dpu_hw_dsc.h"
->>   #include "dpu_hw_merge3d.h"
->> +#include "dpu_hw_cdm.h"
->>   #include "dpu_formats.h"
->>   #include "dpu_encoder_phys.h"
->>   #include "dpu_crtc.h"
->> @@ -2097,6 +2098,13 @@ void dpu_encoder_helper_phys_cleanup(struct dpu_encoder_phys *phys_enc)
->>                                          phys_enc->hw_pp->merge_3d->idx);
->>          }
->>
->> +       if (phys_enc->hw_cdm && phys_enc->hw_cdm->ops.bind_pingpong_blk && phys_enc->hw_pp) {
->> +               phys_enc->hw_cdm->ops.bind_pingpong_blk(phys_enc->hw_cdm,
->> +                                                       false, phys_enc->hw_pp->idx);
+On Thu, Nov 30, 2023 at 11:01:23AM -0800, Roman Gushchin wrote:
+> Ok, a simple question then:
+> why can't you dump /proc/slabinfo after the OOM?
 > 
-> But it was already bound in the cdm->enable, wasn't it?
-> 
+> Unlike anon memory, slab memory (fs caches in particular) should not be heavily
+> affected by killing some userspace task.
 
-This is disable. I think you missed the "false" parameter.
+Well, currently the show_mem report dumps slab info if unreclaimable
+slab usage is over some threshold (50%?). So it already does what you
+describe - sometimes.
 
-> Also the update_pending_flush_cdm should be called even for DPU < 5.0,
-> where there should be no bind_pingpong_blk callback.
-> 
-
-Ack. This is a good catch!
-
->> +               if (phys_enc->hw_ctl->ops.update_pending_flush_cdm)
->> +                       phys_enc->hw_ctl->ops.update_pending_flush_cdm(phys_enc->hw_ctl);
->> +       }
->> +
->>          if (dpu_enc->dsc) {
->>                  dpu_encoder_unprep_dsc(dpu_enc);
->>                  dpu_enc->dsc = NULL;
->> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
->> index 24dbc28be4f8..510c1c41ddbc 100644
->> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
->> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
->> @@ -150,6 +150,7 @@ enum dpu_intr_idx {
->>    * @hw_pp:             Hardware interface to the ping pong registers
->>    * @hw_intf:           Hardware interface to the intf registers
->>    * @hw_wb:             Hardware interface to the wb registers
->> + * @hw_cdm:            Hardware interface to the CDM registers
->>    * @dpu_kms:           Pointer to the dpu_kms top level
->>    * @cached_mode:       DRM mode cached at mode_set time, acted on in enable
->>    * @enabled:           Whether the encoder has enabled and running a mode
->> @@ -178,6 +179,7 @@ struct dpu_encoder_phys {
->>          struct dpu_hw_pingpong *hw_pp;
->>          struct dpu_hw_intf *hw_intf;
->>          struct dpu_hw_wb *hw_wb;
->> +       struct dpu_hw_cdm *hw_cdm;
->>          struct dpu_kms *dpu_kms;
->>          struct drm_display_mode cached_mode;
->>          enum dpu_enc_split_role split_role;
->> --
->> 2.40.1
->>
-> 
-> 
+One of the patches in this series trims that down to make it more
+useful; reporting on only the top 10 slabs, by mmeory usage, in sorted
+order and with human readable units.
