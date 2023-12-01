@@ -2,103 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84FF7801322
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 19:50:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07A1E80132B
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 19:54:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379380AbjLASuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 13:50:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35012 "EHLO
+        id S1379383AbjLASyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 13:54:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjLASuT (ORCPT
+        with ESMTP id S229468AbjLASyA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 13:50:19 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96346B2
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 10:50:26 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A377C433C7;
-        Fri,  1 Dec 2023 18:50:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701456626;
-        bh=nlNo7xM9XoRlNYHh2JQaIekxrQZHPuEHEh20xUWik9A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eix0RHOryZ9fBUgKkiP3QDCZYWkQfGj0qw7PH2nt9Ij/gX120ikLc9r3jpDtMy6sf
-         rgmZGHvqQNVhKOxcLmZ161yUAiZn4s78Y23brUdPGdPhTAhFC+i6FJz3XugCzxHlRp
-         Ig+ududz0DuZtxihAgmEp4sXjkOSrBRJ2O122FhozAoQ+kb7GVueZW2LgPNs0rW5Bf
-         YXy8lQVXxIuYYtN19fcnKuN4Ec5bSzGzd23rAds2gzKmFGQo1LsE0NIgp0s2eRVuGk
-         VkpLlgLZlFsGR+b2Yk+9FKc8ZtqR2/HbOqP+o8Mbd+pizyhKM6IIQ+t/Dcj9TftAw6
-         NXhpQFInUQ95w==
-Date:   Fri, 1 Dec 2023 18:50:15 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Lee Jones <lee@kernel.org>
-Cc:     tudor.ambarus@linaro.org, pratyush@kernel.org,
-        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        sbinding@opensource.cirrus.com, james.schulman@cirrus.com,
-        david.rhodes@cirrus.com, rf@opensource.cirrus.com, perex@perex.cz,
-        tiwai@suse.com,
-        Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        michael@walle.cc, linux-mtd@lists.infradead.org,
-        nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
-        claudiu.beznea@tuxon.dev, michal.simek@amd.com,
-        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
-        patches@opensource.cirrus.com, linux-sound@vger.kernel.org,
-        git@amd.com, amitrkcian2002@gmail.com
-Subject: Re: (subset) [PATCH v11 01/10] mfd: tps6594: Use set/get APIs to
- access spi->chip_select
-Message-ID: <395caa58-a8a0-4c75-85d3-4fa0f6f4a9ba@sirena.org.uk>
-References: <20231125092137.2948-1-amit.kumar-mahapatra@amd.com>
- <20231125092137.2948-2-amit.kumar-mahapatra@amd.com>
- <170142465659.3329910.8527538140063947758.b4-ty@kernel.org>
+        Fri, 1 Dec 2023 13:54:00 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2549410DA;
+        Fri,  1 Dec 2023 10:54:06 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-54ba86ae133so2830485a12.2;
+        Fri, 01 Dec 2023 10:54:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701456844; x=1702061644; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=pxC6FvaCwqbKWFKkmrGd/+ggGHthPXEgXLr+pvJmw3g=;
+        b=KtV0henWgarPXsqR7K5sjYvGsx57KfHBi8itTYCkGNHSp4471VY46vQcR/YdVRRyJe
+         JJy7jksLG0mhZgZLGP35b/WKD2cbOsveRBwPH/6TlZ1g6sXdBBIh1jrl+WCyPlKDfIz5
+         fXkb27bicU1rg/+SIg5FtZ6tf6IHpSKM1iuSSbLvM5EhkF8I7OVVoYoYNgVS6mVtdjBk
+         ZBIa6w9Mke4vq8G5GzDiuXorqCwBmrMk/rnpGrzC7HztmSxvfHnvmDDZjES0dAfG/74c
+         mvjT5dDkJxH5XesJOMdaAtnX54cr5pObumL49Z68QnMFbeWlzqPDlWues80FaAH86s3H
+         Mg8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701456844; x=1702061644;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pxC6FvaCwqbKWFKkmrGd/+ggGHthPXEgXLr+pvJmw3g=;
+        b=mFo+49JFWBJz8nQKiuu/9VpAKE34CjggjPEHdywDD761mSGyUPfk+8N6+exVEsUJBs
+         NEOFku62j0OBPMowOOSXvaSY5u+9xwHIjmINmslSpZL3Zl1vIXsyWK8hi0LcE0f/rstV
+         wJ0/vDxHAsLHr4+Q019HDIR0ufVTvQw0QY/0TC+A1lJIwVHaBogSXGx6Pz2jQTf5dYCT
+         8gR81UorIUECd/LumfDcsyHScszIZidUscLk3M0yJ13+p+ouHAvz4Zjq0yS454UDxiK0
+         Lws/x9gYA1rkeiZwBbLkBTuQTMm2J0SJYx9m3uC8qWttWSiHxiX317AE0YJzGBjTxBZl
+         2cpg==
+X-Gm-Message-State: AOJu0Yz/+zJwKfZJxUmwWTDL7AAg5o5HjVjTU4uuyo4J+pc1uHVez5ia
+        fLn+xAUZtt110HZMxXM/K0KzBzO75ew=
+X-Google-Smtp-Source: AGHT+IEbxsBUhuXYvFLq4S++XHBSv/HO34+0JLe6U83mvNd5vKQgX1AbPy8aPiWMpgPtnD3nq3g5eA==
+X-Received: by 2002:a17:907:9047:b0:a10:f9a8:bfe1 with SMTP id az7-20020a170907904700b00a10f9a8bfe1mr1797143ejc.16.1701456844374;
+        Fri, 01 Dec 2023 10:54:04 -0800 (PST)
+Received: from [192.168.8.100] ([148.252.140.112])
+        by smtp.gmail.com with ESMTPSA id q19-20020a1709060e5300b009a19701e7b5sm2185813eji.96.2023.12.01.10.54.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Dec 2023 10:54:04 -0800 (PST)
+Message-ID: <42ef8260-7f92-4312-9291-19301aea3c30@gmail.com>
+Date:   Fri, 1 Dec 2023 18:52:43 +0000
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="uaQ9X2fe+EqjZHC4"
-Content-Disposition: inline
-In-Reply-To: <170142465659.3329910.8527538140063947758.b4-ty@kernel.org>
-X-Cookie: The early worm gets the late bird.
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: io_uring: incorrect assumption about mutex behavior on unlock?
+To:     Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
+        io-uring <io-uring@vger.kernel.org>
+Cc:     kernel list <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>
+References: <CAG48ez3xSoYb+45f1RLtktROJrpiDQ1otNvdR+YLQf7m+Krj5Q@mail.gmail.com>
+Content-Language: en-US
+From:   Pavel Begunkov <asml.silence@gmail.com>
+In-Reply-To: <CAG48ez3xSoYb+45f1RLtktROJrpiDQ1otNvdR+YLQf7m+Krj5Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 12/1/23 16:41, Jann Horn wrote:
+> mutex_unlock() has a different API contract compared to spin_unlock().
+> spin_unlock() can be used to release ownership of an object, so that
+> as soon as the spinlock is unlocked, another task is allowed to free
+> the object containing the spinlock.
+> mutex_unlock() does not support this kind of usage: The caller of
+> mutex_unlock() must ensure that the mutex stays alive until
+> mutex_unlock() has returned.
+> (See the thread
+> <https://lore.kernel.org/all/20231130204817.2031407-1-jannh@google.com/>
+> which discusses adding documentation about this.)
+> (POSIX userspace mutexes are different from kernel mutexes, in
+> userspace this pattern is allowed.)
+> 
+> io_ring_exit_work() has a comment that seems to assume that the
+> uring_lock (which is a mutex) can be used as if the spinlock-style API
+> contract applied:
+> 
+>      /*
+>      * Some may use context even when all refs and requests have been put,
+>      * and they are free to do so while still holding uring_lock or
+>      * completion_lock, see io_req_task_submit(). Apart from other work,
+>      * this lock/unlock section also waits them to finish.
+>      */
+>      mutex_lock(&ctx->uring_lock);
+> 
 
---uaQ9X2fe+EqjZHC4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Oh crap. I'll check if there more suspects and patch it up, thanks
 
-On Fri, Dec 01, 2023 at 09:57:36AM +0000, Lee Jones wrote:
-> On Sat, 25 Nov 2023 14:51:28 +0530, Amit Kumar Mahapatra wrote:
-> > In preparation for adding multiple CS support for a device, set/get
-> > functions were introduces accessing spi->chip_select in
-> > 'commit 303feb3cc06a ("spi: Add APIs in spi core to set/get
-> > spi->chip_select and spi->cs_gpiod")'.
-> > Replace spi->chip_select with spi_get_chipselect() API.
+> I couldn't find any way in which io_req_task_submit() actually still
+> relies on this. I think io_fallback_req_func() now relies on it,
+> though I'm not sure whether that's intentional. ctx->fallback_work is
+> flushed in io_ring_ctx_wait_and_kill(), but I think it can probably be
+> restarted later on via:
 
-> Applied, thanks!
+Yes, io_fallback_req_func() relies on it, and it can be spinned up
+asynchronously from different places, e.g. in-IRQ block request
+completion.
 
-> [01/10] mfd: tps6594: Use set/get APIs to access spi->chip_select
->         commit: dd636638446c87c95c5beddcd367d95ac6764c6c
+> io_ring_exit_work -> io_move_task_work_from_local ->
+> io_req_normal_work_add -> io_fallback_tw(sync=false) ->
+> schedule_delayed_work
+> 
+> I think it is probably guaranteed that ctx->refs is non-zero when we
+> enter io_fallback_req_func, since I think we can't enter
+> io_fallback_req_func with an empty ctx->fallback_llist, and the
+> requests queued up on ctx->fallback_llist have to hold refcounted
+> references to the ctx. But by the time we reach the mutex_unlock(), I
+> think we're not guaranteed to hold any references on the ctx anymore,
+> and so the ctx could theoretically be freed in the middle of the
+> mutex_unlock() call?
 
-Is there a signed tag available for this - without this change the
-subsequent SPI changes introduce a build breakage.
+Right, it comes with refs but loses them in between lock()/unlock().
 
---uaQ9X2fe+EqjZHC4
-Content-Type: application/pgp-signature; name="signature.asc"
+> I think that to make this code properly correct, it might be necessary
+> to either add another flush_delayed_work() call after ctx->refs has
+> dropped to zero and we know that the fallback work can't be restarted
+> anymore, or create an extra ctx->refs reference that is dropped in
+> io_fallback_req_func() after the mutex_unlock(). (Though I guess it's
+> probably unlikely that this goes wrong in practice.)
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVqKuYACgkQJNaLcl1U
-h9APAwf+KLPqe9oVMKPnVoC0/RKtAWqn22qR/OisWnbE+SjMxYnOliwWr1Uy1gfO
-VQpQx3O/7kKmZ5aYGt82J0rykYY+6IFwHvgwUu67iYpCzQgmhVbnbh1B94YeZIkV
-SUkOiN7HUoTbbExTLVa5Jn+5+LKRmMkbjYXVdpb41Jz/fyGNAidXizOnpqct/Qp1
-dMNggC1eWI/kqsOjSr9obsJHhIcyM7u1pwaicJzWGG7SwNM0PSramv3lCHpaKH5W
-UbyLbyZ+G0Z2JIwwnq1hFEyklQ1RVInt+3p4rfYhIInMDF+5cQPUjBTcS4k8ho1J
-FDPG03/Neeonh9yIf8+TSmQ4tVxszQ==
-=/wO/
------END PGP SIGNATURE-----
-
---uaQ9X2fe+EqjZHC4--
+-- 
+Pavel Begunkov
