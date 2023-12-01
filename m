@@ -2,174 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4A74801828
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 00:52:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 044E880182B
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 00:54:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441943AbjLAXwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 18:52:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47754 "EHLO
+        id S231557AbjLAXyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 18:54:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235345AbjLAXwf (ORCPT
+        with ESMTP id S229447AbjLAXyp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 18:52:35 -0500
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2E9D1730;
-        Fri,  1 Dec 2023 15:52:38 -0800 (PST)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-a00ac0101d9so393036166b.0;
-        Fri, 01 Dec 2023 15:52:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701474757; x=1702079557; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BhIirItyGrM+IUEe5Xj2pk25VhtqsjDKJXNwWgIhPek=;
-        b=Tlw4zXl44yxpcxH1XnAQRApMOyAIdD/lOn5823cNUnRS7QnRPH0C7pHmO1GndkXUwr
-         sKxIYNpXtidbaNJSDyyhrs2RI4sXlb4Q+Z/MxOKlqhq2IcpEj4uO0BlVlo1At/pPpnzU
-         A7bPva6PYM6nsRGcusAiYrIj0gq5l7YwodnWHqhjqdNU8kkGNOeSOvedj0KZKaAL1mPY
-         ICznI7KopxKHws2ZFR4JR0z8ueyZptpnIO8QqA9VUCOL6ZHefuDtXgt/59PDdHd4vItO
-         FqwPk5wExXbtGhGC723yDoesYLWZfmwkkbVKmx4sJYSsXDnuz4oeG5XiSzHlwFXkzuTZ
-         W4zQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701474757; x=1702079557;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BhIirItyGrM+IUEe5Xj2pk25VhtqsjDKJXNwWgIhPek=;
-        b=KY1ug6VtVo40hwpCrEA9RWZh1Gxf0KEnVJeAO8sDKLqbNxUQAefgr5xQNP9EUUR7Wo
-         68nwhdliL/dBUuq9V2nld892oIgSUr4QFiwdQ4tBgdlfsclAqwCDPse8bMJQpP6BIi49
-         tRIVAI885s/l5GD/RzLDDyDw/DuqE7sGrTtM++/aqS3XR9QXZQ3qH+4Lks4uKYODcqxf
-         PNIO0Ile1AZBRvTjeFVET5PlnQhcfIIVa+C5DuHc+uVggyKWXEMIzZKAsc3wTyFoNOXT
-         jhCn2nmyz+ePs48d6oOsQCsHTZW50ZeYwPbcQFmmED/mtJK0BmW3LE7sqTqrTknAHZoM
-         KuSQ==
-X-Gm-Message-State: AOJu0Yx5HSBwhCsot/4jlalrb/Tzx4633nJ76gfNkohuhzynjfTXZQB7
-        AUkR3v3CZe3sVuymGcktT/mmRy5r0h2y13ZI7Is=
-X-Google-Smtp-Source: AGHT+IGKhf/n9b6eiNuN56GAqHZi8+0m/CaKAM7wWM3NFDU24OsLJQ7aXZq2mfEVT2h+7kzTpquaPRctHJ6Ioxamf+Y=
-X-Received: by 2002:a17:906:1091:b0:a02:54fa:4f2f with SMTP id
- u17-20020a170906109100b00a0254fa4f2fmr1573374eju.53.1701474757149; Fri, 01
- Dec 2023 15:52:37 -0800 (PST)
-MIME-Version: 1.0
-References: <cover.1701462010.git.dxu@dxuuu.xyz> <e4d14fb5f07145ff4a367cc01d8dcf6c82581c88.1701462010.git.dxu@dxuuu.xyz>
-In-Reply-To: <e4d14fb5f07145ff4a367cc01d8dcf6c82581c88.1701462010.git.dxu@dxuuu.xyz>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 1 Dec 2023 15:52:25 -0800
-Message-ID: <CAEf4Bzaz+_y=kxBpPmwYsvzaHypmL=ZBfOK12vLom04DRDWyPg@mail.gmail.com>
-Subject: Re: [PATCH ipsec-next v3 5/9] libbpf: selftests: Add verifier tests
- for CO-RE bitfield writes
-To:     Daniel Xu <dxu@dxuuu.xyz>
-Cc:     ast@kernel.org, daniel@iogearbox.net, shuah@kernel.org,
-        andrii@kernel.org, steffen.klassert@secunet.com,
-        antony.antony@secunet.com, alexei.starovoitov@gmail.com,
-        yonghong.song@linux.dev, eddyz87@gmail.com, mykolal@fb.com,
-        martin.lau@linux.dev, song@kernel.org, john.fastabend@gmail.com,
-        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-        jolsa@kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        devel@linux-ipsec.org, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 1 Dec 2023 18:54:45 -0500
+Received: from wind.enjellic.com (wind.enjellic.com [76.10.64.91])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A186B9A;
+        Fri,  1 Dec 2023 15:54:50 -0800 (PST)
+Received: from wind.enjellic.com (localhost [127.0.0.1])
+        by wind.enjellic.com (8.15.2/8.15.2) with ESMTP id 3B1NrZqS019545;
+        Fri, 1 Dec 2023 17:53:35 -0600
+Received: (from greg@localhost)
+        by wind.enjellic.com (8.15.2/8.15.2/Submit) id 3B1NrW9C019544;
+        Fri, 1 Dec 2023 17:53:32 -0600
+Date:   Fri, 1 Dec 2023 17:53:32 -0600
+From:   "Dr. Greg" <greg@enjellic.com>
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
+        Paul Moore <paul@paul-moore.com>, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, chuck.lever@oracle.com, jlayton@kernel.org,
+        neilb@suse.de, kolga@netapp.com, Dai.Ngo@oracle.com,
+        tom@talpey.com, jmorris@namei.org, serge@hallyn.com,
+        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
+        dhowells@redhat.com, jarkko@kernel.org,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        mic@digikod.net, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
+Subject: Re: [PATCH v5 23/23] integrity: Switch from rbtree to LSM-managed blob for integrity_iint_cache
+Message-ID: <20231201235332.GA19345@wind.enjellic.com>
+Reply-To: "Dr. Greg" <greg@enjellic.com>
+References: <20231107134012.682009-24-roberto.sassu@huaweicloud.com> <17befa132379d37977fc854a8af25f6d.paul@paul-moore.com> <2084adba3c27a606cbc5ed7b3214f61427a829dd.camel@huaweicloud.com> <CAHC9VhTTKac1o=RnQadu2xqdeKH8C_F+Wh4sY=HkGbCArwc8JQ@mail.gmail.com> <b6c51351be3913be197492469a13980ab379e412.camel@huaweicloud.com> <CAHC9VhSAryQSeFy0ZMexOiwBG-YdVGRzvh58=heH916DftcmWA@mail.gmail.com> <90eb8e9d-c63e-42d6-b951-f856f31590db@huaweicloud.com> <20231201010549.GA8923@wind.enjellic.com> <660e8516-ec1b-41b4-9e04-2b9fabbe59ca@schaufler-ca.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <660e8516-ec1b-41b4-9e04-2b9fabbe59ca@schaufler-ca.com>
+User-Agent: Mutt/1.4i
+X-Greylist: Sender passed SPF test, not delayed by milter-greylist-4.2.3 (wind.enjellic.com [127.0.0.1]); Fri, 01 Dec 2023 17:53:35 -0600 (CST)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 1, 2023 at 12:24=E2=80=AFPM Daniel Xu <dxu@dxuuu.xyz> wrote:
->
-> Add some tests that exercise BPF_CORE_WRITE_BITFIELD() macro. Since some
-> non-trivial bit fiddling is going on, make sure various edge cases (such
-> as adjacent bitfields and bitfields at the edge of structs) are
-> exercised.
->
-> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> ---
->  .../selftests/bpf/prog_tests/verifier.c       |   2 +
->  .../bpf/progs/verifier_bitfield_write.c       | 100 ++++++++++++++++++
->  2 files changed, 102 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/progs/verifier_bitfield_w=
-rite.c
->
+On Fri, Dec 01, 2023 at 10:54:54AM -0800, Casey Schaufler wrote:
 
-LGTM, but I'm not sure why we need all those __failure_unpriv, see
-below. Regardless:
+Good evening Casey, thanks for taking the time to respond.
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> On 11/30/2023 5:05 PM, Dr. Greg wrote:
+> > A suggestion has been made in this thread that there needs to be broad
+> > thinking on this issue, and by extension, other tough problems.  On
+> > that note, we would be interested in any thoughts regarding the notion
+> > of a long term solution for this issue being the migration of EVM to a
+> > BPF based implementation?
+> >
+> > There appears to be consensus that the BPF LSM will always go last, a
+> > BPF implementation would seem to address the EVM ordering issue.
+> >
+> > In a larger context, there have been suggestions in other LSM threads
+> > that BPF is the future for doing LSM's.  Coincident with that has come
+> > some disagreement about whether or not BPF embodies sufficient
+> > functionality for this role.
+> >
+> > The EVM codebase is reasonably modest with a very limited footprint of
+> > hooks that it handles.  A BPF implementation on this scale would seem
+> > to go a long ways in placing BPF sufficiency concerns to rest.
+> >
+> > Thoughts/issues?
 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/te=
-sting/selftests/bpf/prog_tests/verifier.c
-> index 5cfa7a6316b6..67b4948865a3 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/verifier.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
-> @@ -6,6 +6,7 @@
->  #include "verifier_and.skel.h"
->  #include "verifier_array_access.skel.h"
->  #include "verifier_basic_stack.skel.h"
-> +#include "verifier_bitfield_write.skel.h"
->  #include "verifier_bounds.skel.h"
->  #include "verifier_bounds_deduction.skel.h"
->  #include "verifier_bounds_deduction_non_const.skel.h"
-> @@ -115,6 +116,7 @@ static void run_tests_aux(const char *skel_name,
->
->  void test_verifier_and(void)                  { RUN(verifier_and); }
->  void test_verifier_basic_stack(void)          { RUN(verifier_basic_stack=
-); }
-> +void test_verifier_bitfield_write(void)       { RUN(verifier_bitfield_wr=
-ite); }
->  void test_verifier_bounds(void)               { RUN(verifier_bounds); }
->  void test_verifier_bounds_deduction(void)     { RUN(verifier_bounds_dedu=
-ction); }
->  void test_verifier_bounds_deduction_non_const(void)     { RUN(verifier_b=
-ounds_deduction_non_const); }
-> diff --git a/tools/testing/selftests/bpf/progs/verifier_bitfield_write.c =
-b/tools/testing/selftests/bpf/progs/verifier_bitfield_write.c
-> new file mode 100644
-> index 000000000000..8fe355a19ba6
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/verifier_bitfield_write.c
-> @@ -0,0 +1,100 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include <linux/bpf.h>
-> +#include <stdint.h>
-> +
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_core_read.h>
-> +
-> +#include "bpf_misc.h"
-> +
-> +struct core_reloc_bitfields {
-> +       /* unsigned bitfields */
-> +       uint8_t         ub1: 1;
-> +       uint8_t         ub2: 2;
-> +       uint32_t        ub7: 7;
-> +       /* signed bitfields */
-> +       int8_t          sb4: 4;
-> +       int32_t         sb20: 20;
-> +       /* non-bitfields */
-> +       uint32_t        u32;
-> +       int32_t         s32;
-> +} __attribute__((preserve_access_index));
-> +
-> +SEC("tc")
-> +__description("single CO-RE bitfield roundtrip")
-> +__btf_path("btf__core_reloc_bitfields.bpf.o")
-> +__success __failure_unpriv
+> Converting EVM to BPF looks like a 5 to 10 year process. Creating a
+> EVM design description to work from, building all the support functions
+> required, then getting sufficient reviews and testing isn't going to be
+> a walk in the park. That leaves out the issue of distribution of the
+> EVM-BPF programs. Consider how the rush to convert kernel internals to
+> Rust is progressing. EVM isn't huge, but it isn't trivial, either. Tetsuo
+> had a good hard look at converting TOMOYO to BPF, and concluded that it
+> wasn't practical. TOMOYO is considerably less complicated than EVM.
 
-do we want __failure_unpriv at all? Is this failure related to
-*bitfield* logic at all?
+Interesting, thanks for the reflections.
 
-> +__retval(3)
-> +int single_field_roundtrip(struct __sk_buff *ctx)
-> +{
-> +       struct core_reloc_bitfields bitfields;
-> +
-> +       __builtin_memset(&bitfields, 0, sizeof(bitfields));
-> +       BPF_CORE_WRITE_BITFIELD(&bitfields, ub2, 3);
-> +       return BPF_CORE_READ_BITFIELD(&bitfields, ub2);
-> +}
-> +
+On a functional line basis, EVM is 14% of the TOMOYO codebase, not
+counting the IMA code.
 
-[...]
+Given your observations, one would than presume around a decade of
+development effort to deliver a full featured LSM, ie. SELINUX, SMACK,
+APPARMOR, TOMOYO in BPF form.
+
+Very useful information, we can now return the thread to what appears
+is going to be the vexing implementation of:
+
+lsm_set_order(LSM_ORDER_FU_I_REALLY_AM_GOING_TO_BE_THE_LAST_ONE_TO_RUN);
+
+:-)
+
+Have a good weekend.
+
+As always,
+Dr. Greg
+
+The Quixote Project - Flailing at the Travails of Cybersecurity
