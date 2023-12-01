@@ -2,85 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BF50800D0E
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 15:20:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0B82800D0F
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 15:21:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379151AbjLAOUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 09:20:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36332 "EHLO
+        id S1379153AbjLAOVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 09:21:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379117AbjLAOUQ (ORCPT
+        with ESMTP id S1379143AbjLAOVC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 09:20:16 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE29D10FC
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 06:20:22 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 957E8C433CA
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 14:20:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701440422;
-        bh=qOd9AM9K/gG8oPIzpKuiLuGmEfVIuPhFKWAIbD8tI10=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=VcfdcRI3QTLGPQIOy4xmQ6cos8oVyI2Lc0xH6E1W/j7yVYx8UJ5WeRtwQIkbrZVAV
-         vtaAaZn1UlfkbAQuNGCw/Zb7uzTbOlVyB4+7wYq7iWRxlMDG64sjj5ro953Ptx9uD+
-         MinNjhUdkCZy64zF3M+ZG/h3PSX1RthkxEsDHwGiM0ui+6+Bv9LbjcwFTa+dAh0e2a
-         WVj35dBuR3ayUo12OhNF4hdTHWQKL8OhMF30dKxLvN85rP9JjmfATk3rIfJus8C3o4
-         OFGVvIoh/0YQsrQIO+i+0IMe21WuxUpbTCX/3pQVC3TsiAMWydHKdLWElZQHOfQc9g
-         l22QX7wEy+zUg==
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-50be08b8fd9so57173e87.3
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 06:20:22 -0800 (PST)
-X-Gm-Message-State: AOJu0YzjfR/+Q11HcFdaVQYdg0tfxDIbUgGkRnUQRisAObn0wotVccDW
-        RfMCXHmpGyh7jhpjR+kOZUR7EV4BPckLf2QQjg==
-X-Google-Smtp-Source: AGHT+IHzMYOdBohT4Ipc4Fk6L+StttLAf5Y1Vb7CVCsmtwZZRtrZ3Dnhyln3menNCZsN1eyU0atQjt57Gdq80qKAsqM=
-X-Received: by 2002:a05:6512:3b06:b0:50b:d764:967a with SMTP id
- f6-20020a0565123b0600b0050bd764967amr984497lfv.94.1701440420828; Fri, 01 Dec
- 2023 06:20:20 -0800 (PST)
+        Fri, 1 Dec 2023 09:21:02 -0500
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE9A910F1
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 06:21:08 -0800 (PST)
+Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-3330fd19820so1543069f8f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 06:21:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701440467; x=1702045267; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9SHrQzoDukHuHCFDqbm2JYoczU5EOoJfo9aw9/NPj8E=;
+        b=e3bZx2whNIi1i1Sh0z9aAxcBEw77S/hKukqVt2tz5LNX5VUwY5kFha+t5McE/vWnF4
+         PLEkybeERb6exhX1pXDz2W0O/nDmYAf5gqJ89lY5yTwtZstPnKxOrHpkRDNsDxOO9V5D
+         +t1APqE8KNb61seSaTCDjfSapGSucB0rC+gHBG2JjcbV34fJuIyv1sumdfwPcpoYqne5
+         8+2k8St6Y17zgvgTImd4XieJrFW0f1JqUd4UNq0KmXAouiXzCIajfodW9IzrBfVRkO8V
+         ZahEpEXq8SdZhkwRCIfMLAfbdgQsGnKeyyoIWS7JZGbkpLn8wS4US8IXM1dThIR+bbtr
+         0QuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701440467; x=1702045267;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9SHrQzoDukHuHCFDqbm2JYoczU5EOoJfo9aw9/NPj8E=;
+        b=q6EdAc5uxyAKioDNJ1h3Za5i1Bvgig814Ma/nxGMTjnvGVW2IUewLn2e8dKi6yAVUP
+         7XUj5sTjm4745hPssOnAZY3CBpb8lPNRgsFL19GhBuiPa2HzipitpSfq2bL7XYUk7GFL
+         J6yRUD5sq3Je2aHMKa7tqdWTistSnVI9Dgi2ljJNDCox/mkQLUyRry2gPOJTHzfiwQUo
+         rk1kgYLe44te8aMdq2d3d7f06GDw5LkEWWhPkOMf125P5D/VcuVbTr5GuPoVblvH+Q9l
+         6Jkni64/1wC30t3zyLp8M74rdPt2TiLznI5Z7FGL8VsOiUoooKrXD/Tsek0/TX687YUF
+         Kryw==
+X-Gm-Message-State: AOJu0YwJsWNVldME2d+j5gw+GvIKM0V6P39EZufxPITs41pe98RkUSF6
+        hzvYvcPD9jKCKM6R6V4qgSpqYA==
+X-Google-Smtp-Source: AGHT+IHIICkHJeoMal0DnMr8TzVGKdkoLdqE45DyONJt5VPDnRsnyKH25NUL/W3i/CNXA4xwgZ/0uA==
+X-Received: by 2002:a05:6000:12ca:b0:333:2fd2:6f59 with SMTP id l10-20020a05600012ca00b003332fd26f59mr987524wrx.99.1701440467229;
+        Fri, 01 Dec 2023 06:21:07 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.223.109])
+        by smtp.gmail.com with ESMTPSA id j7-20020adff007000000b00332f02123d2sm4269106wro.54.2023.12.01.06.21.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Dec 2023 06:21:06 -0800 (PST)
+Message-ID: <a44b7bb2-34ac-45ab-84c6-630d604f1bcf@linaro.org>
+Date:   Fri, 1 Dec 2023 15:21:05 +0100
 MIME-Version: 1.0
-References: <20231115210245.3744589-1-robh@kernel.org> <CANiq72=VGJDcK=tVkOFCnTumxDNE9YfiyAVocmD534mnAd_1CA@mail.gmail.com>
- <CAL_JsqLcqpGa=sc9niVK=-4LtVyr3jtUBcQJ2pNsafc3PQpj_g@mail.gmail.com> <CANiq72=_VtkEYLYZxz9uyAgFuL4-ZemUAmfWYZR3bcWaDSB=TQ@mail.gmail.com>
-In-Reply-To: <CANiq72=_VtkEYLYZxz9uyAgFuL4-ZemUAmfWYZR3bcWaDSB=TQ@mail.gmail.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Fri, 1 Dec 2023 08:20:08 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqKUVC7ORMRmpPLYqVYhEAb8eiPWWJkesy6K3OiHcL8Kdw@mail.gmail.com>
-Message-ID: <CAL_JsqKUVC7ORMRmpPLYqVYhEAb8eiPWWJkesy6K3OiHcL8Kdw@mail.gmail.com>
-Subject: Re: [RESEND PATCH] auxdisplay: img-ascii-lcd: Use device_get_match_data()
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     Paul Burton <paulburton@kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] dt-bindings: marvell: move MMP boards to common marvell
+ directory
+Content-Language: en-US
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231201132306.60753-1-krzysztof.kozlowski@linaro.org>
+ <1e25e2f4-e4b9-4219-a9c2-cb6230a62549@lunn.ch>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <1e25e2f4-e4b9-4219-a9c2-cb6230a62549@lunn.ch>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 1, 2023 at 7:50=E2=80=AFAM Miguel Ojeda
-<miguel.ojeda.sandonis@gmail.com> wrote:
->
-> On Fri, Dec 1, 2023 at 2:39=E2=80=AFPM Rob Herring <robh@kernel.org> wrot=
-e:
-> >
-> > Can you fix that up while applying? This patch has only been ignored
-> > for 2 months.
-> >
-> > I really only care about getting the includes right so I can apply this=
-[1].
->
-> Then I would recommend saying that in the patch itself.
->
-> If you want to take it in your series to go faster, you can take my:
->
-> Acked-by: Miguel Ojeda <ojeda@kernel.org>
->
-> If you want me to apply it, that is also fine and I can do so.
+On 01/12/2023 14:51, Andrew Lunn wrote:
+> On Fri, Dec 01, 2023 at 02:23:06PM +0100, Krzysztof Kozlowski wrote:
+>> Marvell board bindings are spread over arm/marvell/ and arm/mrvl/
+>> directories.  Move MMP board bindings from the latter to the former, to
+>> keep all of them together.
+> 
+> Hi Krzysztof
+> 
+> Did you test get_maintainers.pl? MMP has a different maintainer to
+> many of the other Marvell SoCs. We want emails going to the correct
+> Maintainers, and ideally not spamming the others.
 
-Please take it. There's other dependencies already, so I'll be sending
-the final patch to Linus at the end of the merge window or after rc1.
+The old binding was not referenced in MAINTAINERS, at least I could not
+find it.
+My change does not affect status quo - orphaned files.
 
-Rob
+OTOH, some entries like Orion list specific files. Others like Marvell
+list entire directory, which is their mistake in the first place.
+
+There is a mess in this approach, but the mess exists before my patch.
+
+Best regards,
+Krzysztof
+
