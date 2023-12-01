@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADB858006F0
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 10:28:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 152F78006F2
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 10:29:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378253AbjLAJ2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 04:28:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35886 "EHLO
+        id S1378192AbjLAJ25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 04:28:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378045AbjLAJ2K (ORCPT
+        with ESMTP id S1378182AbjLAJ2M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 04:28:10 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDBB21FC3
+        Fri, 1 Dec 2023 04:28:12 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17AF510F9
         for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 01:27:27 -0800 (PST)
 From:   Anna-Maria Behnsen <anna-maria@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1701422845;
+        s=2020; t=1701422846;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=2bCi4tjY8tpa6/56LAAq7Ts1AT6CM22+SLDU0+3P94Q=;
-        b=ahMjG98K3D4qOpghguU0ozTb5iyD0FeZ0e5qaVghe+bnsovvsp9OfHlCCOcSaqeATT2Vkh
-        c1SjyHLSvCTPSGf11wOQ2zyxFpjVtFxMniVVw3F/Q52kHz0HrUtZlSBaE/xRYKYjhSSElS
-        WxFViLi9vbKezJgTeWYLvyjOfEEJcuD9Tq0lrBkeaj4TP53vIdwFRvlg3MfeGjugPF8D06
-        +ybZr+fk81iM6Q8TgOKUYnWfazS4hFI6RmskRMMxWUfFwGZINJlsSbuAxriqyYib5oQAjk
-        gi395JEUfMV5MhMhK8rJplN0PV51wsrhLxKt703ruRVq5tCXBavriNC/6VmjQg==
+        bh=eJA4rUNXEYpQORMvzo1itCOqghLSNPP1k7n+/ZfaqQw=;
+        b=kEhWR6BpILpXBPleNuixEgrOHoHU+tSLpntkJXiwMC8Z3g/64p2VWGhRaqc+DO6Mn4EZt3
+        SO9QnO91MCwqCP4ALrC++C3NiTHGCv2Xj2yvjQiWf+xpDcizD47QTatabumYvok/s049QC
+        Tz+T+2CbvsMSpwCdbPqfi5wVGiTaSj9thk/F3OpNgnFwDG4Vl09HX5UORn+Vz1m8M0spqJ
+        3HbiuMuItqnoTfzPiaP0bEMg1GB4c4GAs6osXO1jBr3jpHrsQaR2qP0WevQp63Mz1Z9o7M
+        DymzebXlPg5BwTTWtHVUbz0zYCVu9+a2GQmWontxhQ9njwtYQ6QIra/RoFmvUQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1701422845;
+        s=2020e; t=1701422846;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=2bCi4tjY8tpa6/56LAAq7Ts1AT6CM22+SLDU0+3P94Q=;
-        b=kRRyCgAuOmpklgvzYnSGwKqnsdjYnb8yb20cvQrna6iuwxMVhjGeLMMflSoErV8LCPv6EQ
-        BP7JgzBcRXdMQuCA==
+        bh=eJA4rUNXEYpQORMvzo1itCOqghLSNPP1k7n+/ZfaqQw=;
+        b=PwBCPeViNGgkYRsSqSmBYt+Pw1wS+y9k7jm6ttbX8IIbrYXD4/2A5lmwrnK83nic0Y2ESy
+        WLfgLJyWRc/AmGBA==
 To:     linux-kernel@vger.kernel.org
 Cc:     Peter Zijlstra <peterz@infradead.org>,
         John Stultz <jstultz@google.com>,
@@ -54,10 +54,11 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
         Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
         K Prateek Nayak <kprateek.nayak@amd.com>,
+        "Richard Cochran (linutronix GmbH)" <richardcochran@gmail.com>,
         Anna-Maria Behnsen <anna-maria@linutronix.de>
-Subject: [PATCH v9 27/32] timers: Check if timers base is handled already
-Date:   Fri,  1 Dec 2023 10:26:49 +0100
-Message-Id: <20231201092654.34614-28-anna-maria@linutronix.de>
+Subject: [PATCH v9 28/32] tick/sched: Split out jiffies update helper function
+Date:   Fri,  1 Dec 2023 10:26:50 +0100
+Message-Id: <20231201092654.34614-29-anna-maria@linutronix.de>
 In-Reply-To: <20231201092654.34614-1-anna-maria@linutronix.de>
 References: <20231201092654.34614-1-anna-maria@linutronix.de>
 MIME-Version: 1.0
@@ -72,37 +73,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Due to the conversion of the NOHZ timer placement to a pull at expiry
-time model, the per CPU timer bases with non pinned timers are no
-longer handled only by the local CPU. In case a remote CPU already
-expires the non pinned timers base of the local cpu, nothing more
-needs to be done by the local CPU. A check at the begin of the expire
-timers routine is required, because timer base lock is dropped before
-executing the timer callback function.
+From: "Richard Cochran (linutronix GmbH)" <richardcochran@gmail.com>
 
-This is a preparatory work, but has no functional impact right now.
+The logic to get the time of the last jiffies update will be needed by
+the timer pull model as well.
 
+Move the code into a global function in anticipation of the new caller.
+
+No functional change.
+
+Signed-off-by: Richard Cochran (linutronix GmbH) <richardcochran@gmail.com>
 Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
 ---
-v6: Drop double negation
----
- kernel/time/timer.c | 3 +++
- 1 file changed, 3 insertions(+)
+ kernel/time/tick-internal.h |  1 +
+ kernel/time/tick-sched.c    | 18 +++++++++++++++---
+ 2 files changed, 16 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/time/timer.c b/kernel/time/timer.c
-index b0fa8afe9059..a797603dfd49 100644
---- a/kernel/time/timer.c
-+++ b/kernel/time/timer.c
-@@ -2232,6 +2232,9 @@ static inline void __run_timers(struct timer_base *base)
+diff --git a/kernel/time/tick-internal.h b/kernel/time/tick-internal.h
+index 183ad32330fb..e0e58dd18919 100644
+--- a/kernel/time/tick-internal.h
++++ b/kernel/time/tick-internal.h
+@@ -158,6 +158,7 @@ static inline void tick_nohz_init(void) { }
+ #ifdef CONFIG_NO_HZ_COMMON
+ extern unsigned long tick_nohz_active;
+ extern void timers_update_nohz(void);
++extern u64 get_jiffies_update(unsigned long *basej);
+ # ifdef CONFIG_SMP
+ extern struct static_key_false timers_migration_enabled;
+ extern void fetch_next_timer_interrupt_remote(unsigned long basej, u64 basem,
+diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
+index c6b415052c56..aca0e133ba09 100644
+--- a/kernel/time/tick-sched.c
++++ b/kernel/time/tick-sched.c
+@@ -799,18 +799,30 @@ static inline bool local_timer_softirq_pending(void)
+ 	return local_softirq_pending() & BIT(TIMER_SOFTIRQ);
+ }
  
- 	lockdep_assert_held(&base->lock);
+-static ktime_t tick_nohz_next_event(struct tick_sched *ts, int cpu)
++/*
++ * Read jiffies and the time when jiffies were updated last
++ */
++u64 get_jiffies_update(unsigned long *basej)
+ {
+-	u64 basemono, next_tick, delta, expires;
+ 	unsigned long basejiff;
+ 	unsigned int seq;
++	u64 basemono;
  
-+	if (base->running_timer)
-+		return;
+-	/* Read jiffies and the time when jiffies were updated last */
+ 	do {
+ 		seq = read_seqcount_begin(&jiffies_seq);
+ 		basemono = last_jiffies_update;
+ 		basejiff = jiffies;
+ 	} while (read_seqcount_retry(&jiffies_seq, seq));
++	*basej = basejiff;
++	return basemono;
++}
 +
- 	while (time_after_eq(jiffies, base->clk) &&
- 	       time_after_eq(jiffies, base->next_expiry)) {
- 		levels = collect_expired_timers(base, heads);
++static ktime_t tick_nohz_next_event(struct tick_sched *ts, int cpu)
++{
++	u64 basemono, next_tick, delta, expires;
++	unsigned long basejiff;
++
++	basemono = get_jiffies_update(&basejiff);
+ 	ts->last_jiffies = basejiff;
+ 	ts->timer_expires_base = basemono;
+ 
 -- 
 2.39.2
 
