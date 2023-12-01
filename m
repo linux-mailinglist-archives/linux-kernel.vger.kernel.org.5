@@ -2,79 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 17A6E800431
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 07:55:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F51F800434
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 07:56:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377664AbjLAGzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 01:55:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42494 "EHLO
+        id S1377649AbjLAG4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 01:56:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229830AbjLAGzU (ORCPT
+        with ESMTP id S229496AbjLAG4g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 01:55:20 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F03D31724
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 22:55:26 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D93EFC433CA;
-        Fri,  1 Dec 2023 06:55:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701413726;
-        bh=rvlUpmCWet3DQSETpKuQuIH6X2X3rucwyaSzL3cBqiA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=pc0kazKsvlCfPs4Z3xYAx0puK+inFDLkK4qFrkNh8zKe4t1UwmC8qYzYiWmHRUPHJ
-         lcOj9w/9965gZb+M30Y1vBvNU6rkgVBW2tWol+SKtsndToHXvY1LL79b/XeZlWVird
-         HZ2kQbcUuscBK38s/3Vd3Z0lD9d8caViEk02OudksTno6ezB//2npADfKRHfA4w9Kz
-         jqKTO4NWB5faullFHz+7PG8dUi91obE6Mlv4L5GYCm5dYuICUeUov9ll9L3GRLjSn4
-         HyRxjgh3gKM3QWOitiqCLDCLF+Ro9XzjqmDHH5G18pQXJ7Qi6wDn+01NMhT+EDARgp
-         XWdqR+sSu+/ig==
-Date:   Thu, 30 Nov 2023 22:55:24 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Michal Kubiak <michal.kubiak@intel.com>,
-        Larysa Zaremba <larysa.zaremba@intel.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        "David Christensen" <drc@linux.vnet.ibm.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        "Paul Menzel" <pmenzel@molgen.mpg.de>, <netdev@vger.kernel.org>,
-        <intel-wired-lan@lists.osuosl.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next v5 13/14] libie: add per-queue Page Pool stats
-Message-ID: <20231130225524.76d41381@kernel.org>
-In-Reply-To: <289bf666-b985-4dc4-bf0a-16b1ae072757@intel.com>
-References: <20231124154732.1623518-1-aleksander.lobakin@intel.com>
-        <20231124154732.1623518-14-aleksander.lobakin@intel.com>
-        <e43fc483-3d9c-4ca0-a976-f89226266112@intel.com>
-        <20231129062914.0f895d1c@kernel.org>
-        <f01e7e91-08f1-4548-8e73-aa931d5b4834@intel.com>
-        <289bf666-b985-4dc4-bf0a-16b1ae072757@intel.com>
+        Fri, 1 Dec 2023 01:56:36 -0500
+Received: from mail5.25mail.st (mail5.25mail.st [74.50.62.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73589171A;
+        Thu, 30 Nov 2023 22:56:43 -0800 (PST)
+Received: from localhost (91-158-86-216.elisa-laajakaista.fi [91.158.86.216])
+        by mail5.25mail.st (Postfix) with ESMTPSA id 6350860476;
+        Fri,  1 Dec 2023 06:56:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=atomide.com;
+        s=25mailst; t=1701413803;
+        bh=rCfSlTTMt0AuaLRhIg405pBsrNHK2Y5VgYH9Y2Qiidc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=H/lgqMkVXbMwcGYRzC7DRMWC2iwx0bpoILYJoeeuUrAbiQjpfPCwpELNZykmOLIgL
+         Pwfl02dwxt5Ud7Nf8Le3YOeXWwQIwOgAc8InlHvtn9jPh70yjSu9fJwPRlJ642u2Nx
+         PcT9nM1G8lgarwtxLdf6FpdEQHDnKG7W/+IprlLYC4bDpmt0iewgsW8hXwcUdia29l
+         a4rQe5dU9DbSEMz8pjNEoalD0S0FN3udCG7/XdXoWH42IhD8ZXc+kg6gj+5fK8Ya/h
+         JmSEXcSIk401izJKzStII4aZ7fw4SD3X9cjqnDW37ZJMpiHD0MU5UC8GTrryA/YQ/4
+         c46Y7onyOdyAA==
+Date:   Fri, 1 Dec 2023 08:56:32 +0200
+From:   Tony Lindgren <tony@atomide.com>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     linux-omap@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MAINTAINERS: add omap bus drivers to OMAP2+ SUPPORT
+Message-ID: <20231201065632.GH5169@atomide.com>
+References: <20231115104434.25796-1-lukas.bulwahn@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231115104434.25796-1-lukas.bulwahn@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,T_SPF_PERMERROR autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 30 Nov 2023 17:45:10 +0100 Alexander Lobakin wrote:
-> > Meh, this way the stats won't survive ifdown/ifup cycles as usually
-> > page_pools get destroyed on ifdown :z
-> > In that patch, I backup the PP stats to a device-lifetime container when
-> > the pool gets destroyed, maybe we could do something similar?  
+* Lukas Bulwahn <lukas.bulwahn@gmail.com> [231115 12:44]:
+> While doing some code cleanup in drivers/bus/, I noticed that the files
+> drivers/bus/omap*.[ch] have no maintainer.
 > 
-> I still can pull the PP stats to the driver before destroying it, but
-> there's no way to tell the PP I have some archived stats for it. Maybe
-> we could have page_pool_params_slow::get_stats() or smth like this?
+> As far as I see from the git history, important changes to those files went
+> through Tony Lindgren. Further, the inclusion of those drivers depend on
+> the config ARCH_OMAP2PLUS being enabled. This suggests these drivers are
+> part of the section OMAP2+ SUPPORT.
+> 
+> Add the omap bus drivers to OMAP2+ SUPPORT.
 
-Why do you think the historic values matter?
-User space monitoring will care about incremental values.
-It's not like for page pool we need to match the Rx packet count.
+Applying into omap-for-v6.8/maintainers thanks.
+
+Tony
