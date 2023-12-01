@@ -2,82 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CE3C800FBD
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 17:13:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EC52800FA9
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 17:13:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379422AbjLAPcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 10:32:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43624 "EHLO
+        id S1379433AbjLAPc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 10:32:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379426AbjLAPcj (ORCPT
+        with ESMTP id S1379426AbjLAPc4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 10:32:39 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E8F9194;
-        Fri,  1 Dec 2023 07:32:46 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-40b4a8db331so21440865e9.3;
-        Fri, 01 Dec 2023 07:32:46 -0800 (PST)
+        Fri, 1 Dec 2023 10:32:56 -0500
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 309C810D8
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 07:33:03 -0800 (PST)
+Received: by mail-yb1-xb31.google.com with SMTP id 3f1490d57ef6-db544987c79so635511276.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 07:33:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701444764; x=1702049564; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:references:to
-         :content-language:subject:reply-to:user-agent:mime-version:date
-         :message-id:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=dRp6E9n1PpmFcNuEF+xwWPt12aMl6+EMhLFak8Z0XWM=;
-        b=V0tQfgPcMwsVofxB7tF/PMo5GZBvBA39TQ7YpLFMfZDWIGcvJgm2gMMvk8scHolIXi
-         Bxpg9g/EuuyNt9I5mGSbFeq4IDsSrKYh5zE6jLu1hkMd0bbu3qPh3myZ4GX4pR55QPqy
-         7FoMveErcgjrRKsdgypqMikyly718Tk07zeTqPpHmzHgWpkIxYTLEbzfU8fDjaQWKgW8
-         g9H+25g1TKwMoiT0eYw/vCTkMkLUGjTWLL/9AvPWqNzyDshorwNczAEuC5JckseXaezC
-         4erHiDDsH9f+GG05ut4LwCHN+j07R3CHyFP3m3SsnBVutR/DCyifTSG8lp+bnWb2iaC1
-         GcEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701444764; x=1702049564;
-        h=content-transfer-encoding:in-reply-to:organization:references:to
-         :content-language:subject:reply-to:user-agent:mime-version:date
-         :message-id:from:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1701444782; x=1702049582; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=dRp6E9n1PpmFcNuEF+xwWPt12aMl6+EMhLFak8Z0XWM=;
-        b=gP0wB9FBtKf8bssT/eVdanHe7n+VlfU2g5pQi4s1Co4nLQ8hQ2UAlqi+FuvNZtcV/p
-         RsrGXDo2KrYuyJJUh34eeQxyOkULII35pNPXOX0EDexq5K9cG3o4wq5qJTSD1Xg2Xrvs
-         rwmKbXQSo5dSgjHqA7XeQ+ia9trO1SEHbsdAWrPwdSYEAzVwOqWqK+8RReVr4S24B0Fy
-         zyIjARIZGSZLYFJvlpyel/dQWNVXvS/TyRsEIQKAd769T0aBUi4kNGp9IqSg9NaYdINP
-         ZGw2BrhmIokB+r38U5BD3nJyomo3eFVT3viIKWwXLqJuVlxrb8dYzF2NHSJMXDW6LK84
-         yuJw==
-X-Gm-Message-State: AOJu0Yzjt3QpncqZycOfm/KRPKFXewtsiNAlM9m/B6IN9hplTOxqqquf
-        vKaydVLkiQPSh5UYF6aiAxs=
-X-Google-Smtp-Source: AGHT+IHyHu37ZIqvjQD8gRxG/Xf6cc/VFe5a+Zw6YmS/qOk5OxLwxaySuqge8bA93Bnsjs5Saa2+hA==
-X-Received: by 2002:a05:600c:1c9c:b0:40b:5e21:d374 with SMTP id k28-20020a05600c1c9c00b0040b5e21d374mr475213wms.125.1701444764330;
-        Fri, 01 Dec 2023 07:32:44 -0800 (PST)
-Received: from [192.168.17.41] (54-240-197-239.amazon.com. [54.240.197.239])
-        by smtp.gmail.com with ESMTPSA id fs20-20020a05600c3f9400b0040b5517ae31sm8633529wmb.6.2023.12.01.07.32.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Dec 2023 07:32:43 -0800 (PST)
-From:   Paul Durrant <xadimgnik@gmail.com>
-X-Google-Original-From: Paul Durrant <paul@xen.org>
-Message-ID: <00b3e1bf-4968-474a-ac45-9c8e9549346e@xen.org>
-Date:   Fri, 1 Dec 2023 15:32:40 +0000
+        bh=aXJhsJ8O3q6xngbx8DndV1q5mG4v/r2JTE5ISK5oIYQ=;
+        b=PbrgkW+DvjYddXeGF1IcqzoFY5FJ3zZX3m4JXPWzEXVOj1kpMvoMxvBPI/cJXWWIk5
+         Z3Ob2uLDxA4eKAqDI+F0/3/U9R9/ZDucxIX7eL4QMKEdYmNYu2Rfli4pg/5UHQgs4khd
+         jbMvZyozwNKV24yofD2VRZoFaP64pAETOldGr25ieaRfRwsp8VbwqHaGPaFc7MtZ4KyS
+         tP3oBxjSndXGlazn0t3HLNdJdyM9JTfXEKnMjGl5WxA7clD8o1/+kgthMBW/tGHnnW/E
+         qJf4DBcou6ZPW32UuHTQO8kQn3m+TAHxG0BSgJYCmOjpAj624CJCYJs+hTo4bzJ5z5n/
+         sTeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701444782; x=1702049582;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aXJhsJ8O3q6xngbx8DndV1q5mG4v/r2JTE5ISK5oIYQ=;
+        b=PQCoWe8mclaJiSVxu3h+e8OZoQ+HM02TDKqE8DZHxVvY1jIVB3nrm/s9+l0mszjvep
+         VSo4i8q5N3ihYIAHsuK4dIDdiiL+1VNjMnd3dPnswDD3Znw4YgeemGTZJjxZMpYG9C3t
+         lYRWWh0yOLSk3vnenm4xBImJ+h/2ygXxk1qsFpue83YMAqMKi52ZT7PPatnIFu63jzYi
+         Yoxro+K6AV/EKZkfbiN3OHdcUTqAH2v6AkOjEl25Wg2PYsF31RiIhUrxNI+32r+WU6Th
+         1RtsijgkL7g2V2SkHkIwZffL00M7tyBxRLRtwc1pLC4wptDUja4UNJTwI6Z8hFYY3ZTF
+         gYBw==
+X-Gm-Message-State: AOJu0Yz5o6fJ4jLVhtJmiQgVhSezZCOwsqwiEHOgvnB5DLGVpIODGyTL
+        +1XuMphKqDMCWWXCNSPiGKNU1iHXhxdYKISl/PE=
+X-Google-Smtp-Source: AGHT+IFy7O1fM/EUHXyF9g9UIdmMd5P2MTuCqORmf/mHNBEfa+85uAHjssTm3F/XLFy5D+QFHRYTA283Usz6OVMhVsA=
+X-Received: by 2002:a5b:291:0:b0:db3:fca3:76ea with SMTP id
+ x17-20020a5b0291000000b00db3fca376eamr26324788ybl.0.1701444782289; Fri, 01
+ Dec 2023 07:33:02 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Reply-To: paul@xen.org
-Subject: Re: [PATCH 2/2] KVM: xen: (re-)initialize shared_info if guest
- (32/64-bit) mode is set
-Content-Language: en-US
-To:     David Woodhouse <dwmw2@infradead.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
+References: <20231201053540.9534-1-2023002089@link.tyut.edu.cn>
+ <ZWmB67THrLcztb-3@buildd.core.avm.de> <b118c12f-b94d-46aa-ab72-55ac2ce7813f@link.tyut.edu.cn>
+In-Reply-To: <b118c12f-b94d-46aa-ab72-55ac2ce7813f@link.tyut.edu.cn>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Fri, 1 Dec 2023 16:32:51 +0100
+Message-ID: <CANiq72krGxPJ948xp2=pEBXS==P_AKrHLYEUBc3M7482bbL9UA@mail.gmail.com>
+Subject: Re: [PATCH v2] scripts/show_delta: reformat code
+To:     Hu Haowen <2023002089@link.tyut.edu.cn>
+Cc:     Nicolas Schier <n.schier@avm.de>, gregkh@linuxfoundation.org,
+        akpm@linux-foundation.org, masahiroy@kernel.org,
+        ndesaulniers@google.com, ojeda@kernel.org,
         linux-kernel@vger.kernel.org
-References: <20231201104536.947-1-paul@xen.org>
- <20231201104536.947-3-paul@xen.org>
-Organization: Xen Project
-In-Reply-To: <20231201104536.947-3-paul@xen.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,70 +72,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/12/2023 10:45, Paul Durrant wrote:
-> From: Paul Durrant <pdurrant@amazon.com>
-> 
-> If the shared_info PFN cache has already been initialized then the content
-> of the shared_info page needs to be (re-)initialized if the guest mode is
-> set. It is no lnger done when the PFN cache is activated.
-> Setting the guest mode is either done explicitly by the VMM via the
-> KVM_XEN_ATTR_TYPE_LONG_MODE attribute, or implicitly when the guest writes
-> the MSR to set up the hypercall page.
-> 
-> Signed-off-by: Paul Durrant <pdurrant@amazon.com>
-> ---
->   arch/x86/kvm/xen.c | 20 +++++++++++++++-----
->   1 file changed, 15 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/xen.c b/arch/x86/kvm/xen.c
-> index 7bead3f65e55..bfc8f6698cbc 100644
-> --- a/arch/x86/kvm/xen.c
-> +++ b/arch/x86/kvm/xen.c
-> @@ -624,8 +624,15 @@ int kvm_xen_hvm_set_attr(struct kvm *kvm, struct kvm_xen_hvm_attr *data)
->   		} else {
->   			mutex_lock(&kvm->arch.xen.xen_lock);
->   			kvm->arch.xen.long_mode = !!data->u.long_mode;
-> +
-> +			/*
-> +			 * If shared_info has already been initialized
-> +			 * then re-initialize it with the new width.
-> +			 */
-> +			r = kvm->arch.xen.shinfo_cache.active ?
-> +				kvm_xen_shared_info_init(kvm) : 0;
-> +
->   			mutex_unlock(&kvm->arch.xen.xen_lock);
-> -			r = 0;
->   		}
->   		break;
->   
-> @@ -657,9 +664,6 @@ int kvm_xen_hvm_set_attr(struct kvm *kvm, struct kvm_xen_hvm_attr *data)
->   		}
->   		srcu_read_unlock(&kvm->srcu, idx);
->   
-> -		if (!r && kvm->arch.xen.shinfo_cache.active)
-> -			r = kvm_xen_shared_info_init(kvm);
-> -
->   		mutex_unlock(&kvm->arch.xen.xen_lock);
->   		break;
->   	}
-> @@ -1144,7 +1148,13 @@ int kvm_xen_write_hypercall_page(struct kvm_vcpu *vcpu, u64 data)
->   	bool lm = is_long_mode(vcpu);
->   
->   	/* Latch long_mode for shared_info pages etc. */
-> -	vcpu->kvm->arch.xen.long_mode = lm;
-> +	kvm->arch.xen.long_mode = lm;
-> +
-> +	if (kvm->arch.xen.shinfo_cache.active &&
-> +	    kvm_xen_shared_info_init(kvm)) {
-> +		mutex_unlock(&kvm->arch.xen.xen_lock);
+On Fri, Dec 1, 2023 at 3:49=E2=80=AFPM Hu Haowen <2023002089@link.tyut.edu.=
+cn> wrote:
+>
+> Just got a glimpse on the usage of Black and realized the convenience
+> it provides and strictness of code style it supplies. It is pretty
+> feasible for code style analysis series of Python scripts within the
+> kernel source.
+>
+> However, here comes the issue that this tool binds itself to its own
+> bunches of rules how the code should be formatted by default, resulting
+> in some kind of scenes which do not match what we want when doing kernel
+> programming, or more exactly this tool may not follow the rules regulated
+> by the kernel developers or mentioned within kernel documentation,
+> which means we are obliged to conduct a programming standard for Python
+> coding within kernel source internally, and then ask Black to review and
+> reformat the code accordingly. But this programming standard is absent
+> currently, consequently it should be specified initially from my
+> perspective. What is your idea on this?
 
-This unlock is bogus; it should have been removed. I'll send a v2.
+This is essentially the same problem we have for C.
 
-   Paul
+For C, what I did was try to find an initial "common enough" style and
+document the tool in `Documentation/process/clang-format.rst` so that
+maintainers could start to use the tool easily if they so wished, at
+their own pace. In other words, the benefit was just having the style
+around. Then, maybe, after some years, when the tool is good enough
+and maintainers are on board, we can start to think about
+`clang-format`ing the kernel.
 
-> +		return 1;
-> +	}
->   
->   	/*
->   	 * If Xen hypercall intercept is enabled, fill the hypercall
+Now, for Python, we have orders of magnitude less code, so perhaps
+using the default options of whatever tool is a possibility. In any
+case, it would be a matter of exploring the tools, asking for
+feedback, documenting the choice made in `Documentation/`, providing
+an example patch formatting one of the existing scripts, etc. The main
+benefit would be having decided on a particular approach. I would
+still avoid sending tree-wide formatting of all scripts until
+maintainers of those scripts agree.
 
+I would also recommend taking the chance to also look at linting and
+not just formatting, especially given tools like Ruff provide both.
+And if you happen to find an actual issue in an existing script thanks
+to the linting, then that would be great and allows you to showcase
+their usefulness (and maintainers are probably more likely to welcome
+series like that vs. just formatting :)
+
+Hope that helps!
+
+Cheers,
+Miguel
