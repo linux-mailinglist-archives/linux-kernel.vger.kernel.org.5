@@ -2,115 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D48880013F
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 02:52:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B8FB800142
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 02:52:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376437AbjLABwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 20:52:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59128 "EHLO
+        id S1376487AbjLABwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 20:52:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229781AbjLABwe (ORCPT
+        with ESMTP id S230310AbjLABwo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 20:52:34 -0500
-Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98C2293
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 17:52:40 -0800 (PST)
-Received: by mail-pj1-x104a.google.com with SMTP id 98e67ed59e1d1-2859052aed9so1826296a91.3
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 17:52:40 -0800 (PST)
+        Thu, 30 Nov 2023 20:52:44 -0500
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B4EA131
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 17:52:51 -0800 (PST)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5d379f92d70so17728107b3.1
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 17:52:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701395560; x=1702000360; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1701395570; x=1702000370; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=jDAo7xcaTB61zqktCfZGe7MT3u57tuHVzlhp9HQUcu0=;
-        b=boT7pvegiLKGSOyot5VpydIoDnTrvslBe3SilXkVSDVar4Z6FRP+Qi0VNOzkjTQhEf
-         ZOQ8/HniHu7QLU4RRsPT4bF09fhZOD1F/yvwUWHuBpR/lqFJu0X1irXsBxIhrpchZX7i
-         hOooRFkOBjt8sIMGSeVLBrY33HKp4jY2wTl9tfq1VWsnFIh31h4uVKLIFeGMa5z41S1g
-         7o7Cswl8pP/MlnaPX9ipx8c1Rhy1Hp8C0Fg8+xPdMHimQbuekEqDySOiIcEceAHe16UT
-         1aB43CsT03I25QewZaxBAdI3t05hXJklt57jT2Q89OZ6I4zGxFUbcVT1wouPu6f5hhB9
-         /qTw==
+        bh=VmMRiyNlWj7E7DgTlLHv9EXBHs71X6661FunQt63Zuo=;
+        b=qUMABBidryf5/55E1JgDs6QBRarLv17hNYabXoUbaxIbgfg3ryD1w7R4iuaYBxVBrC
+         mwq+y+eeCNesQJZKjb6hvj3iuP8bCm2uUfyKMTV61DWCv/jH1/ScbeA8B6mTe7gNbKea
+         OqtAkRnJgcpxqRsqueNn/WaR5NcReM86aZvHjDnepcy2DYaurpfJz54lemSgsOQyJxS5
+         sGoW8Lt85oacUiOmZH17XobH5gGjBlPAHFPJTF7sFk3dojLPO/x+dMsHe9JRFJFpGt53
+         gspAuiD1D7DXYfTATT3q+cs8xMrkf5kbSJzkf1rMhSqmGjqxyKhc8oJm81E0RkJp2+tr
+         MzlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701395560; x=1702000360;
+        d=1e100.net; s=20230601; t=1701395570; x=1702000370;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jDAo7xcaTB61zqktCfZGe7MT3u57tuHVzlhp9HQUcu0=;
-        b=IIqWwVeanJXGUgr/NK7sYpIwoNBTMB11Yo546Gbd0EvYejn5YVDj8XyQHR9Dzf41SR
-         HFw2Nz3qykrm2P6cUB4rsdSrzT+fkM0KB2cetH3mjaAh4RzIK/ZbdrBiTWRkc8Gsqn7e
-         w4QAqnGikUYNC21C87MsyWNVN9eLIwGIuagjjp6IN9Ci2qnPM0F0ggLM7oOZI3q92Euz
-         gUK3v1Io6uJF5T851BbyxMRrcI6xi2w0W6PiMRlTQJcqrVS9e8Tr0/RkHy1bVTXyvAMq
-         0KpVEVzLuPcsk0sVSeP2ifTpm9OVASarK2rv5GUpJWVo75mvxa/4/EBRg1V28p/XjLaa
-         q5zg==
-X-Gm-Message-State: AOJu0YzajLimxkP5kR6Cs2m4EILAC1D8CO4/aHB+HVSiqxa9b2F8DSB1
-        t0BSjbF8LX7A6RdcLxNQVx4JAMWy8Ms=
-X-Google-Smtp-Source: AGHT+IEFnK9rSPjSkAn46Nn/t6rQBkPoX0sBJ20OTRSbHUu03F9XcWeU9PActP7gt9A8pR2PCANU8Fv1ej4=
+        bh=VmMRiyNlWj7E7DgTlLHv9EXBHs71X6661FunQt63Zuo=;
+        b=pdaGZR5S6AGnR0z2oWyvgSVAoTNjnznCdIkHAqYAW1TV0cXA4zRpKwJ4/23tw33lFS
+         Y44R0RGti2NSqHKaQYXIeLcvIU6aeoFP9RTTV/b5rtPSdgSE3SJMc4gok01oLWwTRWFS
+         TIxJWFSUNe8ICQBTjtsY+LP4/gZIIUuyOfDkqw6GG+6j/jxgSrqsF0j+IJBcoFpPG/W8
+         qmB416Ch+R1OTwvPWJuAsmd0XWIWGPFxH5BGjwyidDXR7CW8P7hsvL0ZPpeQULoutw+V
+         Xl/n8GilbZR+ZVeiLm4Z59spoWOPsAllwAMx30MOTDT2g2DcmhI/49RbgOt+qsjX7O9f
+         N+CA==
+X-Gm-Message-State: AOJu0YzSHbOFcnJs4IcI2VfM8iOwJWzEsIyAsaBaSfhxdR7QUd+VIOB+
+        Ncs2Slw0mRoxY9iMM5GsKDauWI0BShk=
+X-Google-Smtp-Source: AGHT+IG0csC5MDjPOHcU6NEDOuOjQZAIXLHGqiPVTff1eLcelFsQF5L6YdMrleiiyf2icf/uD20FIF8jycU=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:90b:143:b0:281:37ae:df69 with SMTP id
- em3-20020a17090b014300b0028137aedf69mr4741858pjb.4.1701395560050; Thu, 30 Nov
- 2023 17:52:40 -0800 (PST)
-Date:   Thu, 30 Nov 2023 17:52:06 -0800
-In-Reply-To: <20231102181526.43279-1-pstanner@redhat.com>
+ (user=seanjc job=sendgmr) by 2002:a81:99d0:0:b0:5d4:1835:afe0 with SMTP id
+ q199-20020a8199d0000000b005d41835afe0mr17243ywg.10.1701395570360; Thu, 30 Nov
+ 2023 17:52:50 -0800 (PST)
+Date:   Thu, 30 Nov 2023 17:52:08 -0800
+In-Reply-To: <20230315101606.10636-1-wei.w.wang@intel.com>
 Mime-Version: 1.0
-References: <20231102181526.43279-1-pstanner@redhat.com>
+References: <20230315101606.10636-1-wei.w.wang@intel.com>
 X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
-Message-ID: <170137909771.669092.7450781639631347445.b4-ty@google.com>
-Subject: Re: [PATCH 0/3] Use new wrappers to copy userspace arrays
+Message-ID: <170137868908.667071.11420459240927661184.b4-ty@google.com>
+Subject: Re: [PATCH RESEND v2] KVM: move KVM_CAP_DEVICE_CTRL to the generic check
 From:   Sean Christopherson <seanjc@google.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Philipp Stanner <pstanner@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org
+To:     Sean Christopherson <seanjc@google.com>, pbonzini@redhat.com,
+        Wei Wang <wei.w.wang@intel.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="utf-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 02 Nov 2023 19:15:23 +0100, Philipp Stanner wrote:
-> Linus recently merged [1] the wrapper functions memdup_array_user() and
-> vmemdup_array_user() in include/linux/string.h for Kernel v6.7
-> 
-> I am currently adding them to all places where (v)memdup_user() had been
-> used to copy arrays.
-> 
-> The wrapper is different to the wrapped functions only in that it might
-> return -EOVERFLOW. So this new error code might get pushed up to
-> userspace. I hope this is fine.
+On Wed, 15 Mar 2023 18:16:06 +0800, Wei Wang wrote:
+> KVM_CAP_DEVICE_CTRL allows userspace to check if the kvm_device
+> framework (e.g. KVM_CREATE_DEVICE) is supported by KVM. Move
+> KVM_CAP_DEVICE_CTRL to the generic check for the two reasons:
+> 1) it already supports arch agnostic usages (i.e. KVM_DEV_TYPE_VFIO).
+> For example, userspace VFIO implementation may needs to create
+> KVM_DEV_TYPE_VFIO on x86, riscv, or arm etc. It is simpler to have it
+> checked at the generic code than at each arch's code.
+> 2) KVM_CREATE_DEVICE has been added to the generic code.
 > 
 > [...]
 
-Applied to kvm-x86 generic.  Claudio (or anyone else from s390), holler if
-you want to take the s390 patch through the s390 tree.
+Applied to kvm-x86 generic, thanks!
 
-I massaged the shortlogs to use KVM's standard scopes, and to make it clear
-that these are hardening patches, i.e. that there is no unsafe/buggy behavior
-that is being fixed.  I also added a note at the end of each changelog to call
-out that KVM pre-checks the sizes before copying, again to make it clear that
-using the safer helper isn't expected to actually change KVM's behavior.
-
-[1/3] KVM: x86: Harden copying of userspace-array against overflow
-      https://github.com/kvm-x86/linux/commit/573cc0e5cf14
-[2/3] KVM: s390: Harden copying of userspace-array against overflow
-      https://github.com/kvm-x86/linux/commit/8b81a8d7c6b7
-[3/3] KVM: Harden copying of userspace-array against overflow
-      https://github.com/kvm-x86/linux/commit/bc2cad56094c
+[1/1] KVM: move KVM_CAP_DEVICE_CTRL to the generic check
+      https://github.com/kvm-x86/linux/commit/63912245c19d
 
 --
 https://github.com/kvm-x86/linux/tree/next
