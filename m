@@ -2,141 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF2C8801264
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 19:16:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5DB3801268
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 19:17:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379157AbjLASQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 13:16:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48572 "EHLO
+        id S230262AbjLASRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 13:17:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjLASQD (ORCPT
+        with ESMTP id S229454AbjLASRB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 13:16:03 -0500
-Received: from smtp-fw-2101.amazon.com (smtp-fw-2101.amazon.com [72.21.196.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02B75F9;
-        Fri,  1 Dec 2023 10:16:09 -0800 (PST)
+        Fri, 1 Dec 2023 13:17:01 -0500
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A70CF9
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 10:17:04 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1d048c171d6so7337015ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 10:17:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1701454571; x=1732990571;
-  h=mime-version:content-transfer-encoding:date:message-id:
-   cc:from:to:references:in-reply-to:subject;
-  bh=hgs3mkSW/WgX8t1/olpmhoODPmslM5+oH0THeK3eQWI=;
-  b=Ve1IKSeGrYKw/Ba3YeqbRF91K7neoyETvtJoRUFj91T8Ck1RB+qSDNtO
-   VU+mLSGTWt+fCQxBjWSCBEar2vOM4HLYM0lI08upasd2RpOqrHsic3pwP
-   BU9Bqh2kHF65F89zUslqhLDp4GVatK/lPKY8Fr0FQpbFISNCKc85LwAJl
-   I=;
-X-IronPort-AV: E=Sophos;i="6.04,242,1695686400"; 
-   d="scan'208";a="366083187"
-Subject: Re: [RFC 05/33] KVM: x86: hyper-v: Introduce VTL call/return prologues in
- hypercall page
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-iad-1e-m6i4x-0aba4706.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-2101.iad2.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2023 18:16:08 +0000
-Received: from smtpout.prod.us-east-1.prod.farcaster.email.amazon.dev (iad7-ws-svc-p70-lb3-vlan2.iad.amazon.com [10.32.235.34])
-        by email-inbound-relay-iad-1e-m6i4x-0aba4706.us-east-1.amazon.com (Postfix) with ESMTPS id 9851BA6115;
-        Fri,  1 Dec 2023 18:16:04 +0000 (UTC)
-Received: from EX19MTAEUA002.ant.amazon.com [10.0.43.254:41546]
- by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.14.81:2525] with esmtp (Farcaster)
- id 7a9e3de9-5dbc-4eed-a35e-b26a36385304; Fri, 1 Dec 2023 18:16:03 +0000 (UTC)
-X-Farcaster-Flow-ID: 7a9e3de9-5dbc-4eed-a35e-b26a36385304
-Received: from EX19D004EUC001.ant.amazon.com (10.252.51.190) by
- EX19MTAEUA002.ant.amazon.com (10.252.50.126) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Fri, 1 Dec 2023 18:16:03 +0000
-Received: from localhost (10.13.235.138) by EX19D004EUC001.ant.amazon.com
- (10.252.51.190) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 1 Dec
- 2023 18:15:59 +0000
+        d=chromium.org; s=google; t=1701454624; x=1702059424; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=80BOfbzU3jRYQRqKUun9qybGXNm0Ak9QPhMAb8Oq5lY=;
+        b=ME+7xuShkkCd0062a9EL0L48UcVgl2XNVW5BRL6HrY/mg3DiShxSdpn7IJmQxj/w1W
+         y6Kih+9DYWaLfoqYp+5pe938En1UXK6dzqyoieMKZZnN5wPV/Uq1I9TVzm7jMnnSzyry
+         5cZjnWvfXpQLdgXob0ttJuENteq2/BltyHmws=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701454624; x=1702059424;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=80BOfbzU3jRYQRqKUun9qybGXNm0Ak9QPhMAb8Oq5lY=;
+        b=JVhcVt0tLWvvcBiabuT06iTW33tvqa/R+debx4TPaNcifu4ldMHAeM1jNUJSHi+oJL
+         FybYLwb78o8PLDYho+ULmP/taXJY7F1own1Ckb9Ari4Umq8+4PMxhdqdWAyYfNZwYvhw
+         eItGMihB6huRIvJvgHKSfPXSB70Ih7Xy44r/Ju4dvtZaXmNyD5C+HJf9KXHMPN4+7/tX
+         tgJjPxrUztkFeal1NV+TkF+WASxByKAw625X6IOnzH8f+DX120UoEW+Nj8f/N9yCw6Fx
+         67JPL1dJzdgHJ12IgrRTfs1p4lNa+hS+r7ph00T3UK/ARkJfNHB0FarpmcR/fb5Inw9t
+         mbbw==
+X-Gm-Message-State: AOJu0Yym5SAH7nwlJhWhSDLZFPX4JXxx1UABU3zgNYk4pwUapW+rUFUU
+        FMzPGqXEqWBug+auEEq15hoHOg==
+X-Google-Smtp-Source: AGHT+IHL4QH3wU1zQC3wiy9r3528WOQq1iSHFfDCieTdatztPnIyrMoq50t3CKZORUjazAX/9P8zkg==
+X-Received: by 2002:a17:902:db06:b0:1cf:c376:6d7f with SMTP id m6-20020a170902db0600b001cfc3766d7fmr26246754plx.42.1701454623948;
+        Fri, 01 Dec 2023 10:17:03 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id l6-20020a170902d34600b001cfb99d8b82sm1570921plk.136.2023.12.01.10.17.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Dec 2023 10:17:03 -0800 (PST)
+Date:   Fri, 1 Dec 2023 10:17:02 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     kernel test robot <lkp@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Jeff Johnson <quic_jjohnson@quicinc.com>,
+        Michael Walle <mwalle@kernel.org>,
+        Max Schulze <max.schulze@online.de>, netdev@vger.kernel.org,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] netlink: Return unsigned value for nla_len()
+Message-ID: <202312010953.BEDC06111@keescook>
+References: <20231130200058.work.520-kees@kernel.org>
+ <20231130172520.5a56ae50@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
-Date:   Fri, 1 Dec 2023 18:15:55 +0000
-Message-ID: <CXD7AW5T9R7G.2REFR2IRSVRVZ@amazon.com>
-CC:     Maxim Levitsky <mlevitsk@redhat.com>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-hyperv@vger.kernel.org>,
-        <pbonzini@redhat.com>, <vkuznets@redhat.com>, <anelkz@amazon.com>,
-        <graf@amazon.com>, <dwmw@amazon.co.uk>, <jgowans@amazon.com>,
-        <kys@microsoft.com>, <haiyangz@microsoft.com>,
-        <decui@microsoft.com>, <x86@kernel.org>,
-        <linux-doc@vger.kernel.org>
-From:   Nicolas Saenz Julienne <nsaenz@amazon.com>
-To:     Sean Christopherson <seanjc@google.com>
-X-Mailer: aerc 0.15.2-182-g389d89a9362e-dirty
-References: <20231108111806.92604-1-nsaenz@amazon.com>
- <20231108111806.92604-6-nsaenz@amazon.com>
- <f4495d1f697cf9a7ddfb786eaeeac90f554fc6db.camel@redhat.com>
- <CXD4TVV5QWUK.3SH495QSBTTUF@amazon.com> <ZWoKlJUKJGGhRRgM@google.com>
- <CXD5HJ5LQMTE.11XP9UB9IL8LY@amazon.com> <ZWocI-2ajwudA-S5@google.com>
-In-Reply-To: <ZWocI-2ajwudA-S5@google.com>
-X-Originating-IP: [10.13.235.138]
-X-ClientProxiedBy: EX19D033UWC002.ant.amazon.com (10.13.139.196) To
- EX19D004EUC001.ant.amazon.com (10.252.51.190)
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231130172520.5a56ae50@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri Dec 1, 2023 at 5:47 PM UTC, Sean Christopherson wrote:
-> CAUTION: This email originated from outside of the organization. Do not c=
-lick links or open attachments unless you can confirm the sender and know t=
-he content is safe.
->
->
->
-> On Fri, Dec 01, 2023, Nicolas Saenz Julienne wrote:
-> > On Fri Dec 1, 2023 at 4:32 PM UTC, Sean Christopherson wrote:
-> > > On Fri, Dec 01, 2023, Nicolas Saenz Julienne wrote:
-> > > > > To support this I think that we can add a userspace msr filter on=
- the HV_X64_MSR_HYPERCALL,
-> > > > > although I am not 100% sure if a userspace msr filter overrides t=
-he in-kernel msr handling.
-> > > >
-> > > > I thought about it at the time. It's not that simple though, we sho=
-uld
-> > > > still let KVM set the hypercall bytecode, and other quirks like the=
- Xen
-> > > > one.
-> > >
-> > > Yeah, that Xen quirk is quite the killer.
-> > >
-> > > Can you provide pseudo-assembly for what the final page is supposed t=
-o look like?
-> > > I'm struggling mightily to understand what this is actually trying to=
- do.
-> >
-> > I'll make it as simple as possible (diregard 32bit support and that xen
-> > exists):
-> >
-> > vmcall             <-  Offset 0, regular Hyper-V hypercalls enter here
-> > ret
-> > mov rax,rcx  <-  VTL call hypercall enters here
->
-> I'm missing who/what defines "here" though.  What generates the CALL that=
- points
-> at this exact offset?  If the exact offset is dictated in the TLFS, then =
-aren't
-> we screwed with the whole Xen quirk, which inserts 5 bytes before that fi=
-rst VMCALL?
+On Thu, Nov 30, 2023 at 05:25:20PM -0800, Jakub Kicinski wrote:
+> On Thu, 30 Nov 2023 12:01:01 -0800 Kees Cook wrote:
+> > This has the additional benefit of being defensive in the face of nlattr
+> > corruption or logic errors (i.e. nla_len being set smaller than
+> > NLA_HDRLEN).
+> 
+> As Johannes predicted I'd rather not :(
+> 
+> The callers should put the nlattr thru nla_ok() during validation
+> (nla_validate()), or walking (nla_for_each_* call nla_ok()).
+> 
+> > -static inline int nla_len(const struct nlattr *nla)
+> > +static inline u16 nla_len(const struct nlattr *nla)
+> >  {
+> > -	return nla->nla_len - NLA_HDRLEN;
+> > +	return nla->nla_len > NLA_HDRLEN ? nla->nla_len - NLA_HDRLEN : 0;
+> >  }
+> 
+> Note the the NLA_HDRLEN is the length of struct nlattr.
+> I mean of the @nla object that gets passed in as argument here.
+> So accepting that nla->nla_len may be < NLA_HDRLEN means
+> that we are okay with dereferencing a truncated object...
+> 
+> We can consider making the return unsinged without the condition maybe?
 
-Yes, sorry, I should've included some more context.
+Yes, if we did it without the check, it'd do "less" damage on
+wrap-around. (i.e. off by U16_MAX instead off by INT_MAX).
 
-Here's a rundown (from memory) of how the first VTL call happens:
- - CPU0 start running at VTL0.
- - Hyper-V enables VTL1 on the partition.
- - Hyper-V enabled VTL1 on CPU0, but doesn't yet switch to it. It passes
-   the initial VTL1 CPU state alongside the enablement hypercall
-   arguments.
- - Hyper-V sets the Hypercall page overlay address through
-   HV_X64_MSR_HYPERCALL. KVM fills it.
- - Hyper-V gets the VTL-call and VTL-return offset into the hypercall
-   page using the VP Register HvRegisterVsmCodePageOffsets (VP register
-   handling is in user-space).
- - Hyper-V performs the first VTL-call, and has all it needs to move
-   between VTL0/1.
+But I'd like to understand: what's the harm in adding the clamp? The
+changes to the assembly are tiny:
+https://godbolt.org/z/Ecvbzn1a1
 
-Nicolas
+i.e. a likely dropped-from-the-pipeline xor and a "free" cmov (checking
+the bit from the subtraction). I don't think it could even get measured
+in real-world cycle counts. This is much like the refcount_t work:
+checking for the overflow condition has almost 0 overhead.
+
+(It looks like I should use __builtin_sub_overflow() to correctly hint
+GCC, but Clang gets it right without such hinting. Also I changed
+NLA_HDRLEN to u16 to get the best result, which suggests there might be
+larger savings throughout the code base just from that change...)
+
+-- 
+Kees Cook
