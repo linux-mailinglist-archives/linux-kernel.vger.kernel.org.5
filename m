@@ -2,105 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EEC0800923
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 11:55:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FEBC800926
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 11:56:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378368AbjLAKy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 05:54:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38494 "EHLO
+        id S1378371AbjLAK4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 05:56:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378366AbjLAKy4 (ORCPT
+        with ESMTP id S1378351AbjLAK4T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 05:54:56 -0500
-Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82B2C19F
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 02:55:02 -0800 (PST)
-Received: by mail-vs1-xe33.google.com with SMTP id ada2fe7eead31-4644b935a0aso619397137.1
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 02:55:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1701428101; x=1702032901; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jRc7hGweDPEOg5xEFn3wNwDGBn9iwKQTXIiSrreqaqk=;
-        b=0H0S8Iv2GLs/hEmyWlkPoW69eFRJARXjBH+M+vOKy1yVUzhP1suY6kIGSBRVIqAzVs
-         uxxYN5MgSHj0CgGKXQAa1RPE1dviHs7vG8wDmOQOz0olEUL8FjNlrc5sAKByY8oSoLJz
-         oFMb76JAC5o+jJDTQ8LklAzf2eCn2ul6n+MMLVZ84LeCz/xIM3l5/zBUEu6UJKA4BxR1
-         2hDGRfuUBPp1InGZ6a9+GFEndGSraJ48XS+mfvmtWAboZCHwK6IfboA+5rA9lZPtYJtR
-         jWDM2b+ELreAxINTCsWZdedf2MSePywIOVF8cOC7NEHrYoXKCxJRCAdHESy4R4ogr4WK
-         gQtg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701428101; x=1702032901;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jRc7hGweDPEOg5xEFn3wNwDGBn9iwKQTXIiSrreqaqk=;
-        b=dMmKTk5oA4zHZM/dkTMS8NTMB5WSWkEnA3+Pe58PIsZFjBUV+1p7ttzFQ/x9nfLjS9
-         DzIE7IHF6AagizTLgF591S6zyvf0zdpexkSbvRbvFR2Ado11mZyvDknpu68zoVMCjvjg
-         +8iizI4esMf+xN9rJff2//mF7ofnoykvkq6mQu1/G6NCxhOIL8CgNopKSiWLg2Kw7IMr
-         l5fZJqdqsB1kahp0heNPe4nvl6JI2cIif0lDR+llK/kYX5kLl8QcZCXcflfDsCoz1RfL
-         eamzkdma5ahCQOTwGtU52RYnAbSnt9hyL9rhAv+OS0CnKAQEMBevbG0tmms+GCLGCIxY
-         /meA==
-X-Gm-Message-State: AOJu0YzS7sFvtr9UOa43YuWPBmDly1nyuqitfEtjJllpu+MjBWPcJ369
-        5zBmGDW32omD/1dq6BSQ9hJpvaLuhwZr3NeETOLQiA==
-X-Google-Smtp-Source: AGHT+IGAlIaVRocI/1rYFwxey38Epksigkho811/nZO5hyApNGNgobsySh/w+WreQNGFp5LlrF+be6aYd1v3OJPVV5A=
-X-Received: by 2002:a05:6102:945:b0:45d:b7f4:4639 with SMTP id
- a5-20020a056102094500b0045db7f44639mr22603164vsi.25.1701428101626; Fri, 01
- Dec 2023 02:55:01 -0800 (PST)
+        Fri, 1 Dec 2023 05:56:19 -0500
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::224])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 982658E;
+        Fri,  1 Dec 2023 02:56:24 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id A6509E000A;
+        Fri,  1 Dec 2023 10:56:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1701428183;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+aHykdI2ZYd1V9EjT5KVj02Y0Ap+cQgVJzA3meTQI8g=;
+        b=iEZjQQCWe6qrlWcccMIHxYXYpai7JvMmIwbARLlXoLnLmilJAoiCMiike1Pcq0ppcc3F7H
+        FUvg02eTR4x8vnnXl8aJoVKmNFgpjSgSvdnQCH9ggxCpvx6tInGPi1s6R+Jh3LkESVgs5x
+        27eSkWLQ9QE8+9FSBXiiypTvq/h1fTJJSUVRQ8zAjNfaCvjaWHmuvOajwnChg8wERuzScm
+        aN4plzh4zs/MQmMFQkuAP+QuMN+nd5lbkOigA1cJ2jLJGjGI1QQXh6YHcFTgOj8Iz9/qDu
+        FtQ2MjYJM0gQ574dGqDiFtPCkpN+sKJr6oVKgEllR4bopdeWkq47g7wPycheSQ==
+From:   Gregory CLEMENT <gregory.clement@bootlin.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
+        Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        =?utf-8?Q?Th=C3=A9o?= Lebrun <theo.lebrun@bootlin.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v2 18/21] MIPS: mobileye: Add EyeQ5 dtsi
+In-Reply-To: <46bba00c-00b7-46db-984c-4391f7fc11f6@linaro.org>
+References: <20231123152639.561231-1-gregory.clement@bootlin.com>
+ <20231123152639.561231-19-gregory.clement@bootlin.com>
+ <46bba00c-00b7-46db-984c-4391f7fc11f6@linaro.org>
+Date:   Fri, 01 Dec 2023 11:56:22 +0100
+Message-ID: <87r0k6dwdl.fsf@BL-laptop>
 MIME-Version: 1.0
-References: <20231130134630.18198-1-brgl@bgdev.pl> <20231130134630.18198-2-brgl@bgdev.pl>
- <ZWi34tkzNsvkCQqi@smile.fi.intel.com>
-In-Reply-To: <ZWi34tkzNsvkCQqi@smile.fi.intel.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Fri, 1 Dec 2023 11:54:50 +0100
-Message-ID: <CAMRc=McfMpir_i=0vRoveozQDBp-4W8c9ufbhD55jLoTKdGEZQ@mail.gmail.com>
-Subject: Re: [PATCH v2 01/10] gpiolib: provide gpiochip_dup_line_label()
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-GND-Sasl: gregory.clement@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 30, 2023 at 5:27=E2=80=AFPM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Thu, Nov 30, 2023 at 02:46:21PM +0100, Bartosz Golaszewski wrote:
-> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> >
-> > gpiochip_is_requested() not only has a misleading name but it returns
-> > a pointer to a string that is freed when the descriptor is released.
-> >
-> > Provide a new helper meant to replace it, which returns a copy of the
-> > label string instead.
->
-> ...
->
-> > + * Must not be called from atomic context.
->
-> Put the respective lockdep annotation.
->
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> writes:
 
-What are you referring to?
+> On 23/11/2023 16:26, Gregory CLEMENT wrote:
+>> Add a device tree include file for the Mobileye EyeQ5 SoC.
+>> 
+>> Based on the work of Slava Samsonov <stanislav.samsonov@intel.com>
+>> 
+>> Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+>> ---
+>
+>
+>> +	aliases {
+>> +		serial0 = &uart0;
+>> +		serial1 = &uart1;
+>> +		serial2 = &uart2;
+>> +	};
+>> +
+>> +	cpu_intc: interrupt-controller {
+>> +		compatible = "mti,cpu-interrupt-controller";
+>> +		interrupt-controller;
+>> +		#address-cells = <0>;
+>> +		#interrupt-cells = <1>;
+>> +	};
+>> +
+>> +	gic: interrupt-controller@140000 {
+>
+> Why do you put MMIO nodes in top-level?
 
-Bart
+I can move it back under the soc node I think
 
-> ...
 >
-> > +     char *cpy;
+>> +		compatible = "mti,gic";
+>> +		reg = <0x0 0x140000 0x0 0x20000>;
+>> +		interrupt-controller;
+>> +		#interrupt-cells = <3>;
+>> +
+>> +		/*
+>> +		* Declare the interrupt-parent even though the mti,gic
+>> +		* binding doesn't require it, such that the kernel can
+>> +		* figure out that cpu_intc is the root interrupt
+>> +		* controller & should be probed first.
+>> +		*/
+>> +		interrupt-parent = <&cpu_intc>;
+>> +
+>> +		timer {
+>> +			compatible = "mti,gic-timer";
+>> +			interrupts = <GIC_LOCAL 1 IRQ_TYPE_NONE>;
+>> +			clocks = <&core0_clk>;
+>> +		};
+>> +	};
+>> +
+>> +	soc: soc {
 >
-> So, why not naming it fully, i.e. "copy"?
->
-> --
-> With Best Regards,
-> Andy Shevchenko
->
->
+> Are you sure dtbs_check W=1 does not complain? I think you miss here
+> address.
+
+Yes dtbs_check W=1 does not complain. There is no reg property in this
+node, so there is no address to add to the name of the node.
+
+Gregory
+
+-- 
+Gregory Clement, Bootlin
+Embedded Linux and Kernel engineering
+http://bootlin.com
