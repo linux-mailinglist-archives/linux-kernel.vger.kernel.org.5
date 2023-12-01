@@ -2,61 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E6E380117A
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:21:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2874801176
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:21:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229644AbjLAQgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 11:36:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41434 "EHLO
+        id S1378464AbjLAQjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 11:39:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbjLAQgv (ORCPT
+        with ESMTP id S229539AbjLAQiw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 11:36:51 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 971F3CF
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 08:36:58 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3AF63C433C7;
-        Fri,  1 Dec 2023 16:36:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701448618;
-        bh=RnPR+XBq6lWymlucGaXH1Q9fUC0o3QSRY7BPPDl2A/s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=olZ1DBNJRs1J10iZqvaOwhTBn1G+4W9E1qnGdgYAYiLfukGO13d8GVYduyw5j6ACQ
-         6WeBCrXycQeMWLa/BuVYKdHaSwubOuB13inZWSqmEvtLr3WSJjsfhInatrFjnDUrBE
-         ajP3Mw6AUuh3YqU2haz/WbsWPcyiUM+YHTMMpGBtKwf++YKREoS3E+HmiNccP77HQt
-         PMj2vda64ICsGf3k1xTl3dQjKjKJS4I4JByohsoRJXhmDQtqloq7ByMfm3mNNzsWeW
-         m53cVJ4+jm9bKy3E9GmjFG9mv4hMEuGZus6/kOBxYxqc7IHLS/GakCTxBH0FW+iNn5
-         RLY4jh5xt/CqQ==
-Received: from johan by xi.lan with local (Exim 4.96.2)
-        (envelope-from <johan@kernel.org>)
-        id 1r96WD-0003Dg-3C;
-        Fri, 01 Dec 2023 17:37:34 +0100
-Date:   Fri, 1 Dec 2023 17:37:33 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Conor Dooley <conor@kernel.org>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Johan Hovold <johan+linaro@kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-rtc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: rtc: qcom-pm8xxx: fix inconsistent example
-Message-ID: <ZWoLzTX0zmCOxsVm@hovoldconsulting.com>
-References: <20231130173223.12794-1-johan+linaro@kernel.org>
- <ad96b95a-5f4f-4333-b767-762936932061@linaro.org>
- <ZWmn6uicNIqqSwoE@hovoldconsulting.com>
- <20231201-pursuable-endocrine-1318f4843597@spud>
+        Fri, 1 Dec 2023 11:38:52 -0500
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A65ED10DF
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 08:38:27 -0800 (PST)
+Received: by mail-io1-xd33.google.com with SMTP id ca18e2360f4ac-7b393fd9419so15159039f.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 08:38:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1701448706; x=1702053506; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=F4bReDtBqdZ7CQBg8UmEdVvEuIGOtXfeTpzV766B0GQ=;
+        b=eCPvVuKUtcUML6PCcMRbRoVs9nIim4eBXq2DOUW6ltIoOSMN0LBgO83FAf+eQdrBDq
+         A/PmkuhmUd7P/48s+UEf27F2Mcv2+uZTPpLM6X1n6JWoCdpMkNuT4GtaZDIrhfzxjz/p
+         M4x1KAD0TWPjWfqQjKrbI4r6eByvIohNQ8quo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701448706; x=1702053506;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=F4bReDtBqdZ7CQBg8UmEdVvEuIGOtXfeTpzV766B0GQ=;
+        b=Ub5sRL69Um67xHKXDatE5DPG/wdMM87KSaCIh+WjALxdzTr91fdFG/CmRjIYepCVlm
+         V6lJ+qMQuvouLYA9Zr+pC51ORXhi3nc3SlJc0FRD6V/ASuP0MWS5hU1nh/3QH3/crsyx
+         g/O6Dk0kiQZd2X1PnW/P1g9dALCq37ar48F4j2+aV/y2BDtLwEJSpSCoqUQuj/Xen/8P
+         cR6WVRhoT0CpQ6x3aFc2goCuLC2Z/rKPe3nxLSgfbczeq77ff2QMQ/Ur1MNyommX55Mp
+         PQ8TcMCwBlkvzv8VheRVpORXNZV/iAZkYWT8NYC4QcMOzZRR/8DKdWwiwMF0zkkXCy/p
+         pN3g==
+X-Gm-Message-State: AOJu0YwU1ZR9muSGbL18Ao4NwFNaB4Ftc7uKb90qffT+PI32RZnyBaH+
+        ryUuOFvQIM5txQF53s3VoZRvN8cK+ibQv74Pngk=
+X-Google-Smtp-Source: AGHT+IHG40EFSnt4Yz6Knhpd28geD95aKAGL4h+gRV294CYt5W7hXqom/+d8jZtbFp7xj3MCvp4Ghw==
+X-Received: by 2002:a05:6602:489a:b0:7b3:95a4:de9c with SMTP id ee26-20020a056602489a00b007b395a4de9cmr22727490iob.1.1701448706259;
+        Fri, 01 Dec 2023 08:38:26 -0800 (PST)
+Received: from [192.168.1.128] ([38.175.170.29])
+        by smtp.gmail.com with ESMTPSA id u1-20020a6be901000000b007b3e503d59csm1046219iof.47.2023.12.01.08.38.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Dec 2023 08:38:25 -0800 (PST)
+Message-ID: <8b95b96c-6aeb-4bf0-8ee9-2ba62330c672@linuxfoundation.org>
+Date:   Fri, 1 Dec 2023 09:38:24 -0700
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ry05RoAL5d6Ievs5"
-Content-Disposition: inline
-In-Reply-To: <20231201-pursuable-endocrine-1318f4843597@spud>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 3/3] selftests: livepatch: Test livepatching a heavily
+ called syscall
+Content-Language: en-US
+To:     Marcos Paulo de Souza <mpdesouza@suse.de>
+Cc:     Marcos Paulo de Souza <mpdesouza@suse.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        live-patching@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20231031-send-lp-kselftests-v3-0-2b1655c2605f@suse.com>
+ <20231031-send-lp-kselftests-v3-3-2b1655c2605f@suse.com>
+ <f9d82fa6-08d7-4ab6-badc-691987b37a82@linuxfoundation.org>
+ <unpg4z7eig6qbudgulnr6sog65fq7s2dy4u2vp2dgkdrq5csdw@dltnxuw6kw5b>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <unpg4z7eig6qbudgulnr6sog65fq7s2dy4u2vp2dgkdrq5csdw@dltnxuw6kw5b>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -67,39 +90,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 12/1/23 06:13, Marcos Paulo de Souza wrote:
+> On Thu, Nov 30, 2023 at 04:24:26PM -0700, Shuah Khan wrote:
 
---ry05RoAL5d6Ievs5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+>>
+>> Missing module name? Is there a reason to not name this module?
+> 
+> Can you please elaborate? This new module use the same MODULE_ macros used by
+> the current livepatch selftests. What do you mean by module name?
+> 
 
-On Fri, Dec 01, 2023 at 04:27:33PM +0000, Conor Dooley wrote:
-> On Fri, Dec 01, 2023 at 10:31:22AM +0100, Johan Hovold wrote:
+Pre-commit checpatch script spdx check complained about the module name.
+Please run it to see the message.
 
-> > A Fixes tag does not in itself imply that something should be
-> > backported, we have CC-stable tags for that.
->=20
-> IDK, I think at this point every highly active kernel developer should
-> be aware that the stable maintainers backport way more than just what
-> gets explicitly CCed to stable.
+thanks,
+-- Shuah
 
-I'm quite aware of that, and if one of my patches with a Fixes tag is
-picked up for backporting when it should not I complain loudly.
-
-For this patch, I would not necessarily complain however as the current
-example is misleading.
-
-Johan
-
---ry05RoAL5d6Ievs5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQQHbPq+cpGvN/peuzMLxc3C7H1lCAUCZWoLyQAKCRALxc3C7H1l
-CGwAAQD4pdhkL7tYkLWSHzoZle5G4pVsi5t0oj4r8gD7HUcCwQD/cP5hu7Utw+ZG
-WSjEUNMapd6fy9dBqslr8+BX+/g39wY=
-=YNXt
------END PGP SIGNATURE-----
-
---ry05RoAL5d6Ievs5--
