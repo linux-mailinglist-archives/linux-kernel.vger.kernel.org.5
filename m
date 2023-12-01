@@ -2,60 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 780BA800CF0
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 15:13:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67399800CF6
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 15:16:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379121AbjLAONM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 09:13:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54356 "EHLO
+        id S1379125AbjLAOQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 09:16:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379094AbjLAONM (ORCPT
+        with ESMTP id S1379094AbjLAOQo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 09:13:12 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48D71198
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 06:13:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701439999; x=1732975999;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=smGTfk+fEmzkfLEOWPz94kj9lAqTySLCchhtvSSKhhw=;
-  b=cTFlnY6ICNu02vMy3lP+ExOBzfEsm+jTg07cAPYj9gAryI5hK/MxZ2bM
-   YxANk6w8kycWfALlHcCVHo8LV6iBF+v1CIdDvA+G8UnUJ7F6hnjUyD48A
-   lt+kPdeof1favt47NPibcywCOuDo72QCyxEoqfbUSfkVIfHRk4HHn3tQg
-   41hjdl9hIKIr2cetjxpb9ktlQvGGCV6F3jIFV56LPxybZqSqYubHqGg/A
-   zkcdFZPc7hB4Xq5Mhl7trZJkDnsbY5I9a3uHEV6OqUWXMcHhHBkcUduz9
-   04a9qqHQSoCiVE2wMOmMmAil4uoufIFEATwSxSSvCbylSV+oU0DEwNvRX
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="508781"
-X-IronPort-AV: E=Sophos;i="6.04,241,1695711600"; 
-   d="scan'208";a="508781"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2023 06:13:18 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="1017046021"
-X-IronPort-AV: E=Sophos;i="6.04,241,1695711600"; 
-   d="scan'208";a="1017046021"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga006.fm.intel.com with ESMTP; 01 Dec 2023 06:13:16 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r94GY-0003n6-01;
-        Fri, 01 Dec 2023 14:13:14 +0000
-Date:   Fri, 1 Dec 2023 22:11:31 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Subject: drivers/watchdog/ath79_wdt.c:161:37: sparse: sparse: incorrect type
- in argument 1 (different address spaces)
-Message-ID: <202312012220.3eFrkDts-lkp@intel.com>
+        Fri, 1 Dec 2023 09:16:44 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2594519E
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 06:16:51 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBEE7C43391;
+        Fri,  1 Dec 2023 14:16:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701440210;
+        bh=MJQPrjEbwnWoXRgfWZMLIA19K+UrEYt4GGLLJInlnkw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=VAoqrfB2+2J4i4OGNP/3tHLhCaStYAJg2OWwtGZ7ghy+SXR5LCpWIcvdBLm90tp9f
+         8Wfa2u30Z7n4sxrmBwmQCx2493wxi7ZGRgKpacU9qPTk9yevf/brhE7u+stHfyEfUD
+         lFN2R6uGZ6At7QK6/13kngH7xGIMMQ92/VyI1zrtez5/SIgbF346XmhW/3CPUT8s4K
+         73u41AZzdgvO9CKY7IqyKhCGzqQcbHc5ELkb/xLM15CrhdbVGEiqNWXgxTcIS3BxTy
+         jrvlzpxi/hybq4kv2iOI6hzr/CtbAIgotLHRbb3uBw3IfxqCGQENFPMMiFTnyMf7Lk
+         x3gtHSaJ7IwWA==
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-50bdebb1786so281412e87.1;
+        Fri, 01 Dec 2023 06:16:50 -0800 (PST)
+X-Gm-Message-State: AOJu0YxTVu5hUf5X76XNYlerVJ+7nqNdGI42S4Ddz6I4Qr+3Cgt0ORmx
+        Y6KPLeF+mLe67S5DTUIbSeA6GCVDu61bZ/QtAA==
+X-Google-Smtp-Source: AGHT+IFvdXLlccvsGinrIBKW4A0GOxFYg+cmQXKwotpjG+QcEogIvSJGIwTd8+Y3Cma0S4B2G66D47ghVfowf1JtDjU=
+X-Received: by 2002:a19:430d:0:b0:50b:e03b:ebc7 with SMTP id
+ q13-20020a19430d000000b0050be03bebc7mr83514lfa.20.1701440208798; Fri, 01 Dec
+ 2023 06:16:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20231113085305.1823455-1-javierm@redhat.com> <CAL_JsqKHTN5hfd4qpg5RXbmQLKZNVywDkSj9mxvfGmjrcChQQg@mail.gmail.com>
+ <87jzqi59bt.fsf@minerva.mail-host-address-is-not-set> <CAL_JsqJM9+cbNviwuKGB5+3YbyAP3UH+TxCxsU5nUtX-iRGP2w@mail.gmail.com>
+ <CAMj1kXG7Xyk0ys9j-XRo7Rr8gYz1qJE8fFSixBOwVbm-pjeX+A@mail.gmail.com>
+ <874jhj1fm3.fsf@minerva.mail-host-address-is-not-set> <58672ab8-99bf-4a2a-af79-031d1e8fcba0@suse.de>
+ <87fs0mxlyp.fsf@minerva.mail-host-address-is-not-set>
+In-Reply-To: <87fs0mxlyp.fsf@minerva.mail-host-address-is-not-set>
+From:   Rob Herring <robh@kernel.org>
+Date:   Fri, 1 Dec 2023 08:16:36 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqJbZ736iV+bRbSNNaimkbJLpB9MbeKLSct16Yi67ttFcw@mail.gmail.com>
+Message-ID: <CAL_JsqJbZ736iV+bRbSNNaimkbJLpB9MbeKLSct16Yi67ttFcw@mail.gmail.com>
+Subject: Re: [RFC PATCH] of/platform: Disable sysfb if a simple-framebuffer
+ node is found
+To:     Javier Martinez Canillas <javierm@redhat.com>
+Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
+        Ard Biesheuvel <ardb@kernel.org>, devicetree@vger.kernel.org,
+        Sergio Lopez <slp@redhat.com>,
+        Sima Vetter <daniel.vetter@ffwll.ch>,
+        Hector Martin <marcan@marcan.st>,
+        Andrew Worsley <amworsley@gmail.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Frank Rowand <frowand.list@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,64 +69,125 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   994d5c58e50e91bb02c7be4a91d5186292a895c8
-commit: e5fc436f06eef54ef512ea55a9db8eb9f2e76959 sparse: use static inline for __chk_{user,io}_ptr()
-date:   3 years, 3 months ago
-config: arm-randconfig-r123-20231107 (https://download.01.org/0day-ci/archive/20231201/202312012220.3eFrkDts-lkp@intel.com/config)
-compiler: arm-linux-gnueabi-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231201/202312012220.3eFrkDts-lkp@intel.com/reproduce)
+On Fri, Dec 1, 2023 at 4:21=E2=80=AFAM Javier Martinez Canillas
+<javierm@redhat.com> wrote:
+>
+> Thomas Zimmermann <tzimmermann@suse.de> writes:
+>
+> > Hi
+> >
+> > Am 18.11.23 um 12:10 schrieb Javier Martinez Canillas:
+> >> Ard Biesheuvel <ardb@kernel.org> writes:
+> >>
+> >> Hello Ard,
+> >>
+> >>> On Fri, 17 Nov 2023 at 00:09, Rob Herring <robh@kernel.org> wrote:
+> >>
+> >> [...]
+> >>
+> >>>>>>
+> >>>>>> This could also lead to an interesting scenario. As simple-framebu=
+ffer
+> >>>>>> can define its memory in a /reserved-memory node, but that is igno=
+red
+> >>>>>> in EFI boot. Probably would work, but only because EFI probably
+> >>>>>> generates its memory map table from the /reserved-memory nodes.
+> >>>>>>
+> >>>>>
+> >>>>> I see. So what would be the solution then? Ignoring creating a plat=
+form
+> >>>>> device for "simple-framebuffer" if booted using EFI and have an EFI=
+-GOP?
+> >>>>
+> >>>> Shrug. I don't really know anything more about EFI FB, but I would
+> >>>> guess it can't support handling resources like clocks, power domains=
+,
+> >>>> regulators, etc. that simple-fb can. So if a platform needs those, d=
+o
+> >>>> we say they should not setup EFI-GOP? Or is there a use case for
+> >>>> having both? Clients that don't muck with resources can use EFI-GOP
+> >>>> and those that do use simple-fb. For example, does/can grub use
+> >>>> EFI-GOP, but not simple-fb?
+> >>>>
+> >>>
+> >>> The EFI GOP is just a dumb framebuffer, and it is not even generally
+> >>> possible to cross reference the GOP with a particular device in the
+> >>> device hierarchy unless you e.g., compare the BARs of each device wit=
+h
+> >>> the region described by the GOP protocol.
+> >>>
+> >>> GRUB for EFI will use the GOP and nothing else, but only at boot time
+> >>> (the GOP protocol is more than a magic linear memory region, it also
+> >>> implements a Blt() abstraction that permits the use of framebuffers
+> >>> that are not mapped linearly into the address space at all, and GRUB
+> >>> makes use of this)
+> >>>
+> >>> The EFI stub will only expose GOPs to the kernel if they are in fact
+> >>> linear framebuffers, but has zero insight into whether the hardware
+> >>> needs clocks and regulators, and whether or not the framebuffer needs
+> >>> IOMMU pass through (which might be the case if the scanout is using
+> >>> DMA into system memory)
+> >>>
+> >>> So calling EFI GOP 'source of truth' is rather generous, and I think
+> >>> it makes sense to prioritize more accurate descriptions of the
+> >>> underlying framebuffer over EFI GOP.
+> >>>
+> >>
+> >> That was my opinion as well and the reason why I called the DTB the
+> >> single source of truth.
+> >>
+> >>> However, making 'simple-framebuffer' magic in this regard doesn't see=
+m
+> >>> like a great approach to me. Is there a better way we could get the
+> >>> resource conflict to be decided in a way where the EFI GOP gets
+> >>> superseded if its resources are claimed by another device?
+> >>>
+> >>
+> >> There is an aperture [0] framework that is used by the fbdev and DRM
+> >> subsystems to allow native drivers to remove any conflicting devices
+> >> that share the same framebuffer aperture.
+> >>
+> >> But it only makes sense for native drivers to use that I think, but
+> >> in this case is about two drivers that attempt to use the same frame
+> >> buffer provided by the firmware but getting it from different places.
+> >>
+> >> I don't have a better idea than this patch but maybe Thomas or Sima do=
+?
+> >
+> > At SUSE, we've carried such a patch in our repos for some time. It work=
+s
+> > around the double-framebuffer problem in a similar way. [1]
+> >
+>
+> Thanks for the information. I see that your patch is basically mine but
+> doing it unconditionally while this one only does the sysfb_disable() if
+> a "simple-framebuffer" DT node has been found.
+>
+> > As Javier mentioned, we do track the framebuffer ranges for EFI/VESA/OF
+> > framebuffers in the graphics aperture helpers. Fbdev has done this for
+> > decades, and the current codebase extends and harmonizes this
+> > functionality among fbdev and DRM drivers.
+> >
+> > WRT DT vs EFI: AFAIK the EFI support on affected platforms looks at the
+> > DT to set up the EFI framebuffer. So IMHO the DT is the authoritative
+> > source on the framebuffer.
+> >
+>
+> Agreed. Sima Vetter also mentioned on IRC that they think this patch is
+> the least bad option. Rob, Ard any thoughts? Maybe we can land this as
+> a fix and then figure how this could be better handled in the long term?
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312012220.3eFrkDts-lkp@intel.com/
+What about moving the DT setup code here to sysfb? Then we just setup
+the right thing up front.
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/watchdog/ath79_wdt.c:161:37: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got char const * @@
-   drivers/watchdog/ath79_wdt.c:161:37: sparse:     expected void const volatile [noderef] __user *ptr
-   drivers/watchdog/ath79_wdt.c:161:37: sparse:     got char const *
-   drivers/watchdog/ath79_wdt.c:235:27: sparse: sparse: incorrect type in initializer (incompatible argument 2 (different address spaces)) @@     expected int ( *write )( ... ) @@     got int ( * )( ... ) @@
-   drivers/watchdog/ath79_wdt.c:235:27: sparse:     expected int ( *write )( ... )
-   drivers/watchdog/ath79_wdt.c:235:27: sparse:     got int ( * )( ... )
+However, there might be one other issue with that and this fix. The DT
+simplefb can have resources such as clocks and regulators. With
+fw_devlink, the driver won't probe until those dependencies are met.
+So if you want the framebuffer console up early, then you may want to
+register the EFI framebuffer first and then handoff to the DT simplefb
+when it probes (rather than registering the device).
 
-vim +161 drivers/watchdog/ath79_wdt.c
+But I agree, probably better to take this patch now and have those
+quirks instead of flat out not working.
 
-f8394f61c66f48 Gabor Juhos 2011-01-04  148  
-f8394f61c66f48 Gabor Juhos 2011-01-04  149  static ssize_t ath79_wdt_write(struct file *file, const char *data,
-f8394f61c66f48 Gabor Juhos 2011-01-04  150  				size_t len, loff_t *ppos)
-f8394f61c66f48 Gabor Juhos 2011-01-04  151  {
-f8394f61c66f48 Gabor Juhos 2011-01-04  152  	if (len) {
-f8394f61c66f48 Gabor Juhos 2011-01-04  153  		if (!nowayout) {
-f8394f61c66f48 Gabor Juhos 2011-01-04  154  			size_t i;
-f8394f61c66f48 Gabor Juhos 2011-01-04  155  
-f8394f61c66f48 Gabor Juhos 2011-01-04  156  			clear_bit(WDT_FLAGS_EXPECT_CLOSE, &wdt_flags);
-f8394f61c66f48 Gabor Juhos 2011-01-04  157  
-f8394f61c66f48 Gabor Juhos 2011-01-04  158  			for (i = 0; i != len; i++) {
-f8394f61c66f48 Gabor Juhos 2011-01-04  159  				char c;
-f8394f61c66f48 Gabor Juhos 2011-01-04  160  
-f8394f61c66f48 Gabor Juhos 2011-01-04 @161  				if (get_user(c, data + i))
-f8394f61c66f48 Gabor Juhos 2011-01-04  162  					return -EFAULT;
-f8394f61c66f48 Gabor Juhos 2011-01-04  163  
-f8394f61c66f48 Gabor Juhos 2011-01-04  164  				if (c == 'V')
-f8394f61c66f48 Gabor Juhos 2011-01-04  165  					set_bit(WDT_FLAGS_EXPECT_CLOSE,
-f8394f61c66f48 Gabor Juhos 2011-01-04  166  						&wdt_flags);
-f8394f61c66f48 Gabor Juhos 2011-01-04  167  			}
-f8394f61c66f48 Gabor Juhos 2011-01-04  168  		}
-f8394f61c66f48 Gabor Juhos 2011-01-04  169  
-f8394f61c66f48 Gabor Juhos 2011-01-04  170  		ath79_wdt_keepalive();
-f8394f61c66f48 Gabor Juhos 2011-01-04  171  	}
-f8394f61c66f48 Gabor Juhos 2011-01-04  172  
-f8394f61c66f48 Gabor Juhos 2011-01-04  173  	return len;
-f8394f61c66f48 Gabor Juhos 2011-01-04  174  }
-f8394f61c66f48 Gabor Juhos 2011-01-04  175  
-
-:::::: The code at line 161 was first introduced by commit
-:::::: f8394f61c66f48b1fe9d6964ddce492d7f9a4cd9 watchdog: add driver for the Atheros AR71XX/AR724X/AR913X SoCs
-
-:::::: TO: Gabor Juhos <juhosg@openwrt.org>
-:::::: CC: Wim Van Sebroeck <wim@iguana.be>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Rob
