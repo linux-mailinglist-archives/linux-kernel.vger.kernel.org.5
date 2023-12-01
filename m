@@ -2,75 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC1B08009DB
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 12:24:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B289D8009DD
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 12:25:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378525AbjLALYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 06:24:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53860 "EHLO
+        id S1378529AbjLALZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 06:25:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378500AbjLALYo (ORCPT
+        with ESMTP id S1378502AbjLALZW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 06:24:44 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9832EC4
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 03:24:50 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86B97C433C7;
-        Fri,  1 Dec 2023 11:24:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701429890;
-        bh=rYqBSjamQXtlSslFcg8gvLvU5PS9WpJZS4rNYHLG+H8=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=YmIm5RK3ckUH4e9RsSXlclJRgNNR9mlCL9AKQLWj9hZf4oLIQenz7MCKvfqLFX3Sj
-         N2DBN1jm7uEugLNJ9FQ+AYwDG5kLS+s60SrO5hlE2r1C8ECpoaP6S4f05RysULzBS+
-         DU1YciJ+coOKpPHlVZbn5ym2UigN41+EWF31uGX/Yl1pVWpk3iyGUJBcbv/LY6960v
-         DbTff0rpJ4PIeaH5Gg7q6oHYgEVjnht9IF9J1KOkNtlg1uIml63qY6mVo4+l335UJt
-         TieIg18K1mCrrlwPYr1kIvME+Kg60VRlZYSRIUViVde97kwNHLybC/8iloKqfi0/tm
-         Z6dZ/19r9yApw==
-From:   Lee Jones <lee@kernel.org>
-To:     Lee Jones <lee@kernel.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Helge Deller <deller@gmx.de>,
-        Dan Carpenter <dan.carpenter@linaro.org>,
-        Flavio Suligoi <f.suligoi@asem.it>
-Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20231129164514.2772719-1-f.suligoi@asem.it>
-References: <20231129164514.2772719-1-f.suligoi@asem.it>
-Subject: Re: (subset) [PATCH v2] backlight: mp3309c: fix uninitialized
- local variable
-Message-Id: <170142988824.3370898.14636793712947246293.b4-ty@kernel.org>
-Date:   Fri, 01 Dec 2023 11:24:48 +0000
+        Fri, 1 Dec 2023 06:25:22 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BC7110DF;
+        Fri,  1 Dec 2023 03:25:29 -0800 (PST)
+Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B1BLs6x025771;
+        Fri, 1 Dec 2023 11:25:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=JDUzZoo0usIHW1bL2X7anyVGvbWqKUEA7tIrv8v05tw=;
+ b=tHnqyxfOpKCyJQS9Q2t6T+YBArVIO9T+BksB7CPM23mv787TWNE400l6B35o4efxzIgZ
+ dTVPk64R5ES/U8fIEFZdkk6XmOqPOItJQeGIYkr4RTjVnoTUvos/sgpjBL7sHtasGumI
+ IqsBtbExaSGm0U/D4mKfTxabVmwieN8VVL/Od1F4AAzYpQRMafuh25W1NVF4eyWsmDBm
+ ow/7ypoop/jr4CS5zEI0eV/IiVMIlFaheuK9Vg9wHgXceJScHgJ+9UaKFFEIdZmnYJ8P
+ zPqO1SZOKKYj14HDlUigQ0HYnNwAhJNBvJJHU7VgJ8EWBSVbpJ9T2dUxnzRq6IcGfA2X xA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uqej203cs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 01 Dec 2023 11:25:03 +0000
+Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3B1BMput029715;
+        Fri, 1 Dec 2023 11:25:02 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uqej203bx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 01 Dec 2023 11:25:02 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3B1AXt1j002633;
+        Fri, 1 Dec 2023 11:25:01 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3ukv8p4nxt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 01 Dec 2023 11:25:01 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3B1BOveo11600416
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 1 Dec 2023 11:24:58 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D182D20049;
+        Fri,  1 Dec 2023 11:24:57 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7747820040;
+        Fri,  1 Dec 2023 11:24:57 +0000 (GMT)
+Received: from [9.152.224.222] (unknown [9.152.224.222])
+        by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Fri,  1 Dec 2023 11:24:57 +0000 (GMT)
+Message-ID: <fc436fea-b9af-5649-0b4e-ef6c0ef37ce9@linux.ibm.com>
+Date:   Fri, 1 Dec 2023 12:24:56 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 0/3] Use new wrappers to copy userspace arrays
+To:     Sean Christopherson <seanjc@google.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Philipp Stanner <pstanner@redhat.com>
+Cc:     kvm@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org
+References: <20231102181526.43279-1-pstanner@redhat.com>
+ <170137909771.669092.7450781639631347445.b4-ty@google.com>
+Content-Language: en-US
+From:   Christian Borntraeger <borntraeger@linux.ibm.com>
+In-Reply-To: <170137909771.669092.7450781639631347445.b4-ty@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: LrfhoqbS-eviJ5_jMuCu1wAkL1ISHKbx
+X-Proofpoint-GUID: Xqwf_ASsKyrNP6BsfZQM4xXPHZMO1cS5
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-01_09,2023-11-30_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 spamscore=0
+ priorityscore=1501 lowpriorityscore=0 mlxlogscore=744 adultscore=0
+ phishscore=0 impostorscore=0 mlxscore=0 suspectscore=0 malwarescore=0
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2312010075
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 29 Nov 2023 17:45:14 +0100, Flavio Suligoi wrote:
-> In the function "pm3309c_parse_dt_node", when the dimming analog control
-> mode (by I2C messages) is enabled, the local variable "prop_levels" is
-> tested without any initialization, as indicated by the following smatch
-> warning:
+
+
+Am 01.12.23 um 02:52 schrieb Sean Christopherson:
+> On Thu, 02 Nov 2023 19:15:23 +0100, Philipp Stanner wrote:
+>> Linus recently merged [1] the wrapper functions memdup_array_user() and
+>> vmemdup_array_user() in include/linux/string.h for Kernel v6.7
+>>
+>> I am currently adding them to all places where (v)memdup_user() had been
+>> used to copy arrays.
+>>
+>> The wrapper is different to the wrapped functions only in that it might
+>> return -EOVERFLOW. So this new error code might get pushed up to
+>> userspace. I hope this is fine.
+>>
+>> [...]
 > 
-> drivers/video/backlight/mp3309c.c:279 pm3309c_parse_dt_node() error: uninitialized symbol 'prop_levels'.
-> 
-> [...]
+> Applied to kvm-x86 generic.  Claudio (or anyone else from s390), holler if
+> you want to take the s390 patch through the s390 tree.
 
-Applied, thanks!
+I think this is fine via your tree.
 
-[1/1] backlight: mp3309c: fix uninitialized local variable
-      commit: ab47505ce45b869ab649024dc932e981fcdd6e5f
-
---
-Lee Jones [李琼斯]
-
+Feel free to add
+Acked-by: Christian Borntraeger <borntraeger@linux.ibm.com>
+to patch 2 if the commit id is not yet final.
