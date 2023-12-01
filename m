@@ -2,216 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22DE98002F2
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 06:18:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 458898002F4
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 06:19:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377483AbjLAFSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 00:18:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36424 "EHLO
+        id S1377486AbjLAFTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 00:19:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377435AbjLAFSL (ORCPT
+        with ESMTP id S1377464AbjLAFTO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 00:18:11 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC35BD40
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 21:18:17 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 185C0C433C9;
-        Fri,  1 Dec 2023 05:18:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701407897;
-        bh=dCH6U9DOKu1MDBp3F2VxdSLSjeuwOTuCV17QciUNQRE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cASA5TYKYLtyKWEJ+B6W6xHPbbn4MqWOo92HlcZDaTIUdHRtQOwhk3B/sWKSqdV4U
-         fovI7Idrlv9uvN3ewXvXh/XP3F2dCE0HywhNBZCoWDnYSA+qoeRA59KWKMwzdzmQex
-         4ZCKzFEFUWzEPV0zcea2SD19oJLMqIO6cFGyk9RU6zlR0XWAebLUnf75bjVhFkPktg
-         Qxov3HdiAz1k5W99OcyxyggkQX3C5AEKmDq0yRUh4wuwUZEJpilbo+A6rnXYSYCyjG
-         VK0jf7bVJcsqaaZ1Krx2q18Wae9zIUSf0cpxhsoM+1BHCIjutvU09qxnWDB0EURHGg
-         Iizq4ICOe48hg==
-Date:   Fri, 1 Dec 2023 10:48:00 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Ziqi Chen <quic_ziqichen@quicinc.com>
-Cc:     Manivannan Sadhasivam <mani@kernel.org>,
-        Can Guo <quic_cang@quicinc.com>, quic_asutoshd@quicinc.com,
-        bvanassche@acm.org, beanhuo@micron.com, avri.altman@wdc.com,
-        junwoo80.lee@samsung.com, martin.petersen@oracle.com,
-        quic_nguyenb@quicinc.com, quic_nitirawa@quicinc.com,
-        quic_rampraka@quicinc.com, linux-scsi@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] scsi: ufs: qcom: move ufs_qcom_host_reset() to
- ufs_qcom_device_reset()
-Message-ID: <20231201051800.GA4009@thinkpad>
-References: <1698145815-17396-1-git-send-email-quic_ziqichen@quicinc.com>
- <20231025074128.GA3648@thinkpad>
- <85d7a1ef-92c4-49ae-afe0-727c1b446f55@quicinc.com>
- <c6a72c38-aa63-79b8-c784-d753749f7272@quicinc.com>
- <20231128112731.GV3088@thinkpad>
- <ed81bb9e-a9cd-4d32-bfa0-2f0d28742026@quicinc.com>
+        Fri, 1 Dec 2023 00:19:14 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AF8210FC;
+        Thu, 30 Nov 2023 21:19:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701407958; x=1732943958;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=5D4sYBMTjB5R5OaNXv4qTW184DtnR6MKXDXExqGSeBo=;
+  b=P+CmbapFsWNIZ0ofgJpxXo3uLaTRAB1FB2S0EmyUWgy3DR+AyTQE0jJf
+   xGYUlKVEMKak3CKkfnPqOD0gr2FMatnjfCaufQURqV/nuOaglq7lhzGhW
+   QLSvJSURXYeJnGVs4iZBeIBqZLadMlMlIeLHB6QG7lsn+X52AC9gMF3vU
+   mxtVrN9v8rdANlRZ2W/t9rNdOD4s+VmgZwu9wOw7go0RYEN0iPMKuFj5L
+   GXQOnfIc/O4KjTlMAxbIfmJsLpw/WT/XzNoFuldrA0LiKJFlyK0xc9UCt
+   Z9ltwKyQkHBoOQEhDAt39B6sVqX0jKuWmSPK/vpfBF4ldmgOuc5KkOk03
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="449214"
+X-IronPort-AV: E=Sophos;i="6.04,241,1695711600"; 
+   d="scan'208";a="449214"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 21:19:17 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="840050564"
+X-IronPort-AV: E=Sophos;i="6.04,241,1695711600"; 
+   d="scan'208";a="840050564"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by fmsmga004.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 30 Nov 2023 21:19:17 -0800
+Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Thu, 30 Nov 2023 21:19:16 -0800
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Thu, 30 Nov 2023 21:19:16 -0800
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.169)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Thu, 30 Nov 2023 21:19:16 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YuleB4n+rID2XvSyulbxwFmrB1LJHKRzUJjI5mPvUQPuhPpCyNaHLHU8/5XjBAHQKydi6iNVat2lBcTedpHo6b3qghnrgKES0P/IxvIJ5LyJbE4CsDXxUgOcZiUCfZVwYi3gPd3q/t7gKPbpKcPcf/N/hTvkR8BS7IC2hOTYOXYztJgrfmUIG75gyYkLcfXTeEzDth+qcuEjK1mFuI6maWqhIHlisix7exLyeDONwIu5uzbhGc35VFTloJ8hdYCTrjDj8goITEjkR1jY7wGRwToJle2e3QyhdgzDhd4ZSok8eaPdfdb5NWDr/nngE5tnUrLBXWnuZrT5BCYmJdA5+g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=5D4sYBMTjB5R5OaNXv4qTW184DtnR6MKXDXExqGSeBo=;
+ b=M67rQqMvn5R5qJtzstxgOhmFlOaiDC+3obp9kxfDLVx4gCpZM8hT0uuKZquVahgpG2Ov67DimUZQGHQQVdEVf0ddxIptcbt6DjMfAVYwb4st08LHC7bNTM7SA+rR5O0zqg/78U8E+grI+CCeZkGkb/7N7qsA2Dp+01eK32buBxNc05+upGUenb9g5ESIgKZka0zuoVfcVdh3kr5i9/BdqJQXpI2bzHcYJVM7MiiYqtdH4SBttOarVS9rkc64YNADUmvK7idA1JoG0PSdSOO+/0oEX/w/KV0Y9yyHd3qunDEp289n7zY9uInPhTA4eg2vPqa8fD+sSMf29gPrhD+08w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
+ by SJ0PR11MB5182.namprd11.prod.outlook.com (2603:10b6:a03:2ae::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.22; Fri, 1 Dec
+ 2023 05:19:14 +0000
+Received: from BN9PR11MB5276.namprd11.prod.outlook.com
+ ([fe80::e7a4:a757:2f2e:f96a]) by BN9PR11MB5276.namprd11.prod.outlook.com
+ ([fe80::e7a4:a757:2f2e:f96a%3]) with mapi id 15.20.7046.024; Fri, 1 Dec 2023
+ 05:19:14 +0000
+From:   "Tian, Kevin" <kevin.tian@intel.com>
+To:     Nicolin Chen <nicolinc@nvidia.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>
+CC:     Jason Gunthorpe <jgg@nvidia.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
+        "cohuck@redhat.com" <cohuck@redhat.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
+        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
+        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
+        "peterx@redhat.com" <peterx@redhat.com>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "shameerali.kolothum.thodi@huawei.com" 
+        <shameerali.kolothum.thodi@huawei.com>,
+        "lulu@redhat.com" <lulu@redhat.com>,
+        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>,
+        "joao.m.martins@oracle.com" <joao.m.martins@oracle.com>,
+        "Zeng, Xin" <xin.zeng@intel.com>,
+        "Zhao, Yan Y" <yan.y.zhao@intel.com>
+Subject: RE: [PATCH v6 2/6] iommufd: Add IOMMU_HWPT_INVALIDATE
+Thread-Topic: [PATCH v6 2/6] iommufd: Add IOMMU_HWPT_INVALIDATE
+Thread-Index: AQHaGVcJ4nFLu64FV02Qq9BjVpwSvbCC3axQgAAHEwCAAAD1wIAAl++AgACaJQCAACuAgIAEgqsQgAXeCQCAAMsJ8IABGqOAgAABpoCAA1VUAIAAEHmAgAADm8A=
+Date:   Fri, 1 Dec 2023 05:19:13 +0000
+Message-ID: <BN9PR11MB52761168800700D7131D601D8C81A@BN9PR11MB5276.namprd11.prod.outlook.com>
+References: <BN9PR11MB527659462CCB7280055858D98CB4A@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <ZVuZOYFzAaCuJjXZ@Asurada-Nvidia>
+ <BN9PR11MB5276C8EACE2C300A646EA8A18CBBA@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <ZVw/BXxgGCuCZCA6@Asurada-Nvidia>
+ <BN9PR11MB52761A9B48A25E89BEECE6308CB8A@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <ZWTzoBTDDEWAKMs9@Asurada-Nvidia>
+ <BN9PR11MB5276FD60A0EDF8E3F231FCC88CBCA@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <ZWaLCSAMIOXTlghk@Asurada-Nvidia> <20231129005715.GS436702@nvidia.com>
+ <b5f86fde-eaec-47fc-8b4f-36adb0e9e1a1@intel.com>
+ <ZWlmD1KDUyR3qzdy@Asurada-Nvidia>
+In-Reply-To: <ZWlmD1KDUyR3qzdy@Asurada-Nvidia>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|SJ0PR11MB5182:EE_
+x-ms-office365-filtering-correlation-id: 20cfe8c0-df61-474b-8e9b-08dbf22d0ee7
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: SZVj7/FgxPiforkwSaUDhR1nITA7fjhgcOV5hchU5Jd1l4jiV+ulOuHW1RrYkZx9iFclc8rlhdqkDwPtgIYALZoOUakm66p0s1R4V0f5yCmDjWLA5XS+S5fSCuDU9+PwT0TDFpRjnHIQHkgZEW4k2PSD0IhzznJsP0OyeKj694SbJ6v2+QMYKapOlEjIerNSAgh0YTqnK9KITVKxy5FesEKUj+SnZ7/WWcC7Fhtbxt1vOgeI0xHVrmtuFC+mV3lrAajDuqMBhriNci1n2m6lRa+LQbi8nWSrUrgLeGWkSIKhBoARWKOMcXaoK8QXUNOXhS3E1wibyUAQJWYDKqx71SVtZ19FAUbTyNN4PhlWW9V8XLOqWdgkk7sjLBfdGswS4V83KWIH+fHMhNY9GTEEdhDaAbqKoY2acduE3kDbnsmdVlhoZfdjIYNdtfq29AQLu/AF6yjqZV3JgDZS/PHrpU68pYJG/sVpnGo7FUpchYugve/CVsPpmVcZfNazkEDu5v3Um/4heupxUl819vCpqbDEY16z0sMCuGkpITPORrzEJ2NUE0QqZjrVd2rPc6aGaPhd8GdsYob5cYwWBsEo0bI5wF0QR+0FpUdKerCCtlNLVh0UrS8AzAqai5DSeazs
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(136003)(376002)(39860400002)(346002)(230922051799003)(451199024)(186009)(64100799003)(1800799012)(55016003)(9686003)(71200400001)(26005)(478600001)(82960400001)(38100700002)(86362001)(122000001)(33656002)(38070700009)(83380400001)(6636002)(41300700001)(52536014)(66476007)(7416002)(6506007)(76116006)(4326008)(7696005)(66556008)(54906003)(64756008)(2906002)(66446008)(316002)(8676002)(110136005)(53546011)(66946007)(8936002)(5660300002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?8+nZQNjGDS1N74aBa6xBP+h01e0swZiTF6H8hwoVjLFnabsKr4ZQyKz6s/3b?=
+ =?us-ascii?Q?DM0ck//RZHdMxqXxeOnLtamZOdwOzUCHP0vdIOKiLj6PeCNnYr8xB7NnJiNQ?=
+ =?us-ascii?Q?xw9GT5MQ5NsAS8AlpIaeBcm4iFCKlH2ZWaGhBJO8VZqlQsCW1w2I87dLR0ky?=
+ =?us-ascii?Q?cybdJ68s/EnAmEcGBlHXgFRB7+dFdSnyrepOnlPra9PCnCy7iwQCvdoKyXC5?=
+ =?us-ascii?Q?abj/RxjN2M78+fypqzG/Iq8/83UZzB+fYYguFo1fye4jJrz02a7On2owWzNj?=
+ =?us-ascii?Q?Zc+gXc+QQnF8MuQs/8iJDpFXU8yD4rB53qNakLpcIlDT39PGi1pFnBc5IMTO?=
+ =?us-ascii?Q?Zc6Cksi/tDFsDDAkS5Z3aW1puWjMwnOiSN3pHZdyq+iPSO9hqpKrdzWVz/fP?=
+ =?us-ascii?Q?xxwzKfHrAnZVl97Gup75fu41vghnH5iDBaiBcLHhzuqbZHCGgcptrNQzGYKg?=
+ =?us-ascii?Q?muSw5VwXgX/A74a4bfWdOBnNvs/Obrys/5sQ6bYeJJVIDsSmew5N5Ip6niGH?=
+ =?us-ascii?Q?jDUtgpsW4XdvMpya5Mu46r7lpjIamJcVSnRahb1TvIXvcznzf+MzgBxfq8Ag?=
+ =?us-ascii?Q?MDRQT4c2XytwrK+LQjg8jA+ceuz2Qzjge39JuUpt+GkfkapY6xPeF7EeSx6R?=
+ =?us-ascii?Q?7op2JVF7hK0LU/TtUDhDwe/9jhii3mfTo9nw9rGyNSd1JACHS64DVJlNV42K?=
+ =?us-ascii?Q?RKjp4VGiTDiTb9NFXux9MnqlRQBXUhKR/eNU+3BBfoXlPpI2D+MgmufUAgqc?=
+ =?us-ascii?Q?L9gQOMnpyNt09SZsNVefbHR2nRP219asANtTYNyFCavo7YlDO6TD1zCHpYKv?=
+ =?us-ascii?Q?oo9WC9BjqNncMgkVyMBfw+WKLV6QIf4hboOxy3S+qjjE11XUyQeHbR8L/PR0?=
+ =?us-ascii?Q?SzhQLfVMkNXCUhPKV7TArW8wYSc2TkxVPTErvGZ3fyndjwsvnSxu5ti/x58p?=
+ =?us-ascii?Q?sA6NePXy5IAhyNsi9PMhNTfdOy2YeKUVNxG19Eeqvy3PV2WSe1+/uK0YGq1X?=
+ =?us-ascii?Q?vaFVXtineYbZiawEMdG49m8LnF17lJO7ULguLE0tX7dZF/VDYbJdeia4IUcg?=
+ =?us-ascii?Q?L5sre7LI45Zz01ykKsOdHW+SYiGUYHYyNP/pEPRUFWvU6yL/q7vKqz5HnD52?=
+ =?us-ascii?Q?upyrgM7zexSOOhFu9IxFSlyU9qKV2r2Xrv40agbcl9+NO+iyzuujyfK7Oh01?=
+ =?us-ascii?Q?EOsFpbSG/vzgk4pJdzHwdPQk6Fa4Zea02BsBwh+9R+hKkwrSgn6SDY0QCLtM?=
+ =?us-ascii?Q?xNAi+L+MXjH55CNFfOSHLxXCAgI7EOjzli4j5y3epiZ66VYW2cWRG16t//wv?=
+ =?us-ascii?Q?ZcUezfPDzVb/li2vhDv1LMKZkNQAbE5Mf4eMPQgTiwA8VwbuH9NYT5TWzm8Y?=
+ =?us-ascii?Q?CEPUfcGQ/s8YxF28o+REplmGrWwAJIXseZGjBh2tqdnnDcK9IsI7ULOLHRLA?=
+ =?us-ascii?Q?LQRirWBXq/wTHxYKcTmhTS4Wb2icJg+oykErpvksmgP3UCjolbGqD484Nuyg?=
+ =?us-ascii?Q?JXfJwhZDOVc36qwXhUrz7iqQjTseg5kEUXhFtkh5aPGafK4s7d0N88xTS3yk?=
+ =?us-ascii?Q?M0Kw4IvTS/N8j/PhoE2dyQ2y0TwxyVh93tTm6brj?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ed81bb9e-a9cd-4d32-bfa0-2f0d28742026@quicinc.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 20cfe8c0-df61-474b-8e9b-08dbf22d0ee7
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Dec 2023 05:19:13.9966
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: c7h4ZTrsLRFZLG7fQ4P5/I362kURiJfuLlPnE2VYpc85F9rrMImKE00PT1mU2xmOwe36OPiYSY+FrS+FmU0Uww==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB5182
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 08:10:57PM +0800, Ziqi Chen wrote:
-> 
-> 
-> On 11/28/2023 7:27 PM, Manivannan Sadhasivam wrote:
-> > On Tue, Nov 28, 2023 at 03:40:57AM +0800, Ziqi Chen wrote:
-> > > 
-> > > 
-> > > On 11/22/2023 2:14 PM, Can Guo wrote:
-> > > > 
-> > > > 
-> > > > On 10/25/2023 3:41 PM, Manivannan Sadhasivam wrote:
-> > > > > On Tue, Oct 24, 2023 at 07:10:15PM +0800, Ziqi Chen wrote:
-> > > > > > During PISI test, we found the issue that host Tx still bursting after
-> > > > > 
-> > > > > What is PISI test?
-> > > 
-> > > SI measurement.
-> > > 
-> > 
-> > Please expand it in the patch description.
-> 
-> Sure, I will update in next patch version.
-> 
-> > 
-> > > > > 
-> > > > > > H/W reset. Move ufs_qcom_host_reset() to ufs_qcom_device_reset() and
-> > > > > > reset host before device reset to stop tx burst.
-> > > > > > 
-> > > > > 
-> > > > > device_reset() callback is supposed to reset only the device and not
-> > > > > the host.
-> > > > > So NACK for this patch.
-> > > > 
-> > > > Agree, the change should come in a more reasonable way.
-> > > > 
-> > > > Actually, similar code is already there in ufs_mtk_device_reset() in
-> > > > ufs-mediatek.c, I guess here is trying to mimic that fashion.
-> > > > 
-> > > > This change, from its functionality point of view, we do need it,
-> > > > because I occasionally (2 out of 10) hit PHY error on lane 0 during
-> > > > reboot test (in my case, I tried SM8350, SM8450 and SM8550， all same).
-> > > > 
-> > > > [    1.911188] [DEBUG]ufshcd_update_uic_error: UECPA:0x80000002
-> > > > [    1.922843] [DEBUG]ufshcd_update_uic_error: UECDL:0x80004000
-> > > > [    1.934473] [DEBUG]ufshcd_update_uic_error: UECN:0x0
-> > > > [    1.944688] [DEBUG]ufshcd_update_uic_error: UECT:0x0
-> > > > [    1.954901] [DEBUG]ufshcd_update_uic_error: UECDME:0x0
-> > > > 
-> > > > I found out that the PHY error pops out right after UFS device gets
-> > > > reset in the 2nd init. After having this change in place, the PA/DL
-> > > > errors are gone.
-> > > 
-> > > Hi Mani,
-> > > 
-> > > There is another way that adding a new vops that call XXX_host_reset() from
-> > > soc vendor driver. in this way, we can call this vops in core layer without
-> > > the dependency of device reset.
-> > > due to we already observed such error and received many same reports from
-> > > different OEMs, we need to fix it in some way.
-> > > if you think above way is available, I will update new patch in soon. Or
-> > > could you give us other suggestion?
-> > > 
-> > 
-> > First, please describe the issue in detail. How the issue is getting triggered
-> > and then justify your change. I do not have access to the bug reports that you
-> > received.
-> 
-> From the waveform measured by Samsung , we can see at the end of 2nd Link
-> Startup, host still keep bursting after H/W reset. This abnormal timing
-> would cause the PA/DL error mentioned by Can.
-> 
-> On the other hand, at the end of 1st Link start up, Host ends bursting at
-> first and then sends H/W reset to device. So Samsung suggested to do host
-> reset before every time device reset to fix this issue. That's what you saw
-> in this patch.  This patch has been verified by OEMs.
-> 
+> From: Nicolin Chen <nicolinc@nvidia.com>
+> Sent: Friday, December 1, 2023 12:50 PM
+>=20
+> On Fri, Dec 01, 2023 at 11:51:26AM +0800, Yi Liu wrote:
+> > On 2023/11/29 08:57, Jason Gunthorpe wrote:
+> > > On Tue, Nov 28, 2023 at 04:51:21PM -0800, Nicolin Chen wrote:
+> > > > > > I also thought about making this out_driver_error_code per HW.
+> > > > > > Yet, an error can be either per array or per entry/quest. The
+> > > > > > array-related error should be reported in the array structure
+> > > > > > that is a core uAPI, v.s. the per-HW entry structure. Though
+> > > > > > we could still report an array error in the entry structure
+> > > > > > at the first entry (or indexed by "array->entry_num")?
+> > > > > >
+> > > > >
+> > > > > why would there be an array error? array is just a software
+> > > > > entity containing actual HW invalidation cmds. If there is
+> > > > > any error with the array itself it should be reported via
+> > > > > ioctl errno.
+> > > >
+> > > > User array reading is a software operation, but kernel array
+> > > > reading is a hardware operation that can raise an error when
+> > > > the memory location to the array is incorrect or so.
+> > >
+> > > Well, we shouldn't get into a situation like that.. By the time the H=
+W
+> > > got the address it should be valid.
+> > >
+> > > > With that being said, I think errno (-EIO) could do the job,
+> > > > as you suggested too.
+> > >
+> > > Do we have any idea what HW failures can be generated by the
+> commands
+> > > this will execture? IIRC I don't remember seeing any smmu specific
+> > > codes related to invalid invalidation? Everything is a valid input?
+> > >
+> > > Can vt-d fail single commands? What about AMD?
+> >
+> > Intel VT-d side, after each invalidation request, there is a wait
+> > descriptor which either provide an interrupt or an address for the
+> > hw to notify software the request before the wait descriptor has been
+> > completed. While, if there is error happened on the invalidation reques=
+t,
+> > a flag (IQE, ICE, ITE) would be set in the Fault Status Register, and s=
+ome
+> > detailed information would be recorded in the Invalidation Queue Error
+> > Record Register. So an invalidation request may be failed with some err=
+or
+> > reported. If no error, will return completion via the wait descriptor. =
+Is
+> > this what you mean by "fail a single command"?
+>=20
+> I see the current VT-d series marking those as "REVISIT". How
+> will it report an error to the user space from those register?
+>=20
+> Are they global status registers so that it might be difficult
+> to direct the error to the nested domain for an event fd?
+>=20
 
-Thanks for the detail. This info should have been part of the patch description.
+They are global registers but invalidation queue is also the global
+resource. intel-iommu driver polls the status register after queueing
+new invalidation descriptors. The submission is serialized.
 
-> So do you think if we can keep this change with details update in commit
-> message. or need to do other improvement?
-> 
+If the error is related to a descriptor itself (e.g. format issue) then
+the head register points to the problematic descriptor so software
+can direct it to the related domain.
 
-For sure we should not do host reset within device_reset callback. I'd like to
-know at what point of time we are seeing the host burst after device reset. I
-mean can you point me to the code in the ufshcd driver that when calling
-device_reset you are seeing the issue? Then we can do a host_reset before that
-_specific_ device_reset with the help of the new vops you suggested.
+If the error is related to device tlb invalidation (e.g. timeout) there
+is no way to associate the error with a specific descriptor by current
+spec. But intel-iommu driver batches descriptors per domain so
+we can still direct the error to the nested domain.
 
-- Mani
+But I don't see the need of doing it via eventfd.
 
-> 
-> -Ziqi
-> 
-> > 
-> > - Mani
-> > 
-> > > -Ziqi
-> > > 
-> > > > 
-> > > > Thanks,
-> > > > Can Guo.
-> > > > > 
-> > > > > - Mani
-> > > > > 
-> > > > > > Signed-off-by: Ziqi Chen <quic_ziqichen@quicinc.com>
-> > > > > > ---
-> > > > > >    drivers/ufs/host/ufs-qcom.c | 13 +++++++------
-> > > > > >    1 file changed, 7 insertions(+), 6 deletions(-)
-> > > > > > 
-> > > > > > diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
-> > > > > > index 96cb8b5..43163d3 100644
-> > > > > > --- a/drivers/ufs/host/ufs-qcom.c
-> > > > > > +++ b/drivers/ufs/host/ufs-qcom.c
-> > > > > > @@ -445,12 +445,6 @@ static int
-> > > > > > ufs_qcom_power_up_sequence(struct ufs_hba *hba)
-> > > > > >        struct phy *phy = host->generic_phy;
-> > > > > >        int ret;
-> > > > > > -    /* Reset UFS Host Controller and PHY */
-> > > > > > -    ret = ufs_qcom_host_reset(hba);
-> > > > > > -    if (ret)
-> > > > > > -        dev_warn(hba->dev, "%s: host reset returned %d\n",
-> > > > > > -                  __func__, ret);
-> > > > > > -
-> > > > > >        /* phy initialization - calibrate the phy */
-> > > > > >        ret = phy_init(phy);
-> > > > > >        if (ret) {
-> > > > > > @@ -1709,6 +1703,13 @@ static void ufs_qcom_dump_dbg_regs(struct
-> > > > > > ufs_hba *hba)
-> > > > > >    static int ufs_qcom_device_reset(struct ufs_hba *hba)
-> > > > > >    {
-> > > > > >        struct ufs_qcom_host *host = ufshcd_get_variant(hba);
-> > > > > > +    int ret = 0;
-> > > > > > +
-> > > > > > +    /* Reset UFS Host Controller and PHY */
-> > > > > > +    ret = ufs_qcom_host_reset(hba);
-> > > > > > +    if (ret)
-> > > > > > +        dev_warn(hba->dev, "%s: host reset returned %d\n",
-> > > > > > +                  __func__, ret);
-> > > > > >        /* reset gpio is optional */
-> > > > > >        if (!host->device_reset)
-> > > > > > -- 
-> > > > > > 2.7.4
-> > > > > > 
-> > > > > 
-> > 
+The poll semantics in intel-iommu driver is essentially a sync model.
+vt-d spec does allow software to optionally enable notification upon
+those errors but it's not used so far.
 
--- 
-மணிவண்ணன் சதாசிவம்
+With that I still prefer to having driver-specific error code defined
+in the entry. If ARM is an event-driven model then we can define
+that field at least in vtd specific data structure.
+
+btw given vtd doesn't use native format in uAPI it doesn't make
+sense to forward descriptor formatting errors back to userspace.
+Those, if happen, are driver's own problem. intel-iommu driver
+should verify the uAPI structure and return -EINVAL or proper
+errno to userspace purely in software.
+
+With that Yi please just define error codes for device tlb related
+errors for vtd.
+
+Thanks
+Kevin
