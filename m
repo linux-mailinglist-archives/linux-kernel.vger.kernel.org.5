@@ -2,116 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62B6380008F
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 01:52:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76D99800093
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 01:54:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229653AbjLAAwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 19:52:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51308 "EHLO
+        id S229630AbjLAAya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 19:54:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbjLAAwC (ORCPT
+        with ESMTP id S229493AbjLAAy2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 19:52:02 -0500
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD96210D0
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 16:52:08 -0800 (PST)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5d12853cb89so26594897b3.3
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 16:52:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701391928; x=1701996728; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=D7rrSw0NQO055D8S8vjtnTn1EUTQ7K87+88fh2pqZsE=;
-        b=WLHN/zDnudw72XGN7U34kCKpO9lItXRoXISxGG274BqlzUxYGE/vC8koDz324GYsvN
-         TYFPJTlR+An7MSdXAmSV9aCshp/RtFPa86q7rrUFcSc5pKz8HcSq8hdlFGDWCBG6eM7J
-         y9hGA+vJT9Ic2+29/gpVikI0kD1er6/+l32/amIKIg4oqELjW4AwqKGLdAEUw2UYE5Nb
-         e5bVuiN1vTEJ2CAQGM8hBbqr8lFYfypzgKm8xBfr1OmuJ0F0deFNy2hmhGkHxrmNzGJI
-         WPc4O8+spOEdwXZ3H9I5vvTHlEPzxxyuwmjcy5Cozz76ertBFfaj3ikaBjUjzSivZ1OO
-         ihUA==
+        Thu, 30 Nov 2023 19:54:28 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 962DD10C2
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 16:54:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701392073;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9YNA7ol50o+M8xPlYIHwLzfsOq0Ux1n/0WOxS3M7CEU=;
+        b=PX+XK7V6DGcJc2XgJqMAVMP6UcUeV3tPTQrS3rA5vKsx/HxYtcfA/iq+wAHMWYEGigvedU
+        DwD+jHGh+vBGWK/TNUR95RvykAZ6bLiZvWub0pZ8RpmAvb0ypR4b2lpIt8hkzo4IjGMzHb
+        31tzh0UBKOkOOYdX9uGf6r03Yuefeo0=
+Received: from mail-yw1-f199.google.com (mail-yw1-f199.google.com
+ [209.85.128.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-61-WlLWEHwMNrSMEybN1EU_tw-1; Thu, 30 Nov 2023 19:54:32 -0500
+X-MC-Unique: WlLWEHwMNrSMEybN1EU_tw-1
+Received: by mail-yw1-f199.google.com with SMTP id 00721157ae682-5d064f9e2a1so23516617b3.1
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 16:54:32 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701391928; x=1701996728;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=D7rrSw0NQO055D8S8vjtnTn1EUTQ7K87+88fh2pqZsE=;
-        b=WDo0VIOz4H8d7wFf183urUyqnHfbZk4+82Ywhggj+s5ENYadukB5uKx9QkHAqn6OHN
-         1glPYNAaBEzgLTsbN+AxuEilviWUERQq7hgkDkkEHB+WKWL8qlenZaq/h9ErIgFuDtpa
-         VFvYbNygMezuwihPndu6dQ0BuZIWeyw3Oql7scQHlCL3oEdI7wDlijfxoJpzp/bKjCxM
-         gZE6BceuB0vi6okMXqx2U2+uv4a4ojQTfF45E4p9jw81a9b2SSfRIJ51oGyKvRtic4HV
-         jYetZuWdT293v1O8nhyDDhL6fnIYiar4gXQLB/fi4s+jd8zdTz6VlHqj4num2pO9mWqj
-         7oHQ==
-X-Gm-Message-State: AOJu0YzZKJdOrzhQFOT1jdO0UGazM6tuPjsqLJm6O6ZBCzkBhhCVZfGk
-        2XhMTU1/0A5PpLZ4SSlqOBKGOVBV2qJb
-X-Google-Smtp-Source: AGHT+IFKvXNXIfoRHM0m0qB8MFcGuh4xxwA7sFtdSp36gULSAH59l3Gw6b036WI6Aep1yW9tQy/2NEcFOKdL
-X-Received: from joshdon-desktop.svl.corp.google.com ([2620:15c:2a3:200:6088:f608:a3e0:af40])
- (user=joshdon job=sendgmr) by 2002:a05:690c:845:b0:5a8:205e:1f27 with SMTP id
- bz5-20020a05690c084500b005a8205e1f27mr755718ywb.6.1701391928055; Thu, 30 Nov
- 2023 16:52:08 -0800 (PST)
-Date:   Thu, 30 Nov 2023 16:52:03 -0800
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
-Message-ID: <20231201005203.309873-1-joshdon@google.com>
-Subject: [PATCH] cgroup: Fix documentation for cpu.idle
-From:   Josh Don <joshdon@google.com>
-To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Josh Don <joshdon@google.com>
+        d=1e100.net; s=20230601; t=1701392072; x=1701996872;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9YNA7ol50o+M8xPlYIHwLzfsOq0Ux1n/0WOxS3M7CEU=;
+        b=KnlFCto3NP27CbTXGf1N9QKLef43fvksNw57qKDEKy34Xn0/l8zRp/3SQziGq9V97X
+         KDKSzDBf3ejPPFifdfmJ8scVfibIGoDumFEyV8lDLnOEX28DNMPqcfe8JRTjUYAtnAvK
+         XSM6TXPhvcluL/6eP8ycVzuAX2Iz+GHQM2qd5yeEZkn7rL7rheRL1e30jMxVxH27iQ4C
+         Vjk5gOC0tzTd+Zzq/ZHl1YoeJYwNz3SP/HrCE3ux2mTMKEXn5HbKGrFMbaqxlwYSSAcI
+         cNeH2msKgf5J/+BQI09UsQL4T1+b24IN5xZUbPhNxavnXphs2ekL7vFjTvsbHvpiNfvj
+         vklQ==
+X-Gm-Message-State: AOJu0YyviLT7uZQylxuJsEGygZCu5qMzG2dRLINbNOrSNQOdrrXyNAng
+        MBMyBkrHVSFIPw37ldb0io0fSfMCZLHVN57Jj8tBIVL1NNNQdQeHgUwckdxpbdR1hmjqdXaOvWJ
+        VN12mp1wp4DzsWmxFS999uC4DAKyJHnvejT03BrR1
+X-Received: by 2002:a81:af5a:0:b0:5d3:f707:1b84 with SMTP id x26-20020a81af5a000000b005d3f7071b84mr758447ywj.5.1701392071780;
+        Thu, 30 Nov 2023 16:54:31 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IG0AsPt60yeCWcZErjbPH3Tr+DPo1H+7VWNVgjo2QBMmGBpKlm1EvbTieVX5cZTxsl5r79oGZERX/wEswE4hjQ=
+X-Received: by 2002:a81:af5a:0:b0:5d3:f707:1b84 with SMTP id
+ x26-20020a81af5a000000b005d3f7071b84mr758437ywj.5.1701392071475; Thu, 30 Nov
+ 2023 16:54:31 -0800 (PST)
+MIME-Version: 1.0
+References: <CAO7dBbVJ=ytRra_77VRZ8ud1wVkP9fub=Vj6cfTkx=CnYg5J2A@mail.gmail.com>
+ <ZWVMUxmi66xLZPsr@MiWiFi-R3L-srv> <ZWWuBSiZZdF2W12j@tiehlicka>
+ <ZWbyDx3TJ7zo3jCw@MiWiFi-R3L-srv> <91a31ce5-63d1-7470-18f7-92b039fda8e6@redhat.com>
+ <ZWf64BowWrYqA2Rf@MiWiFi-R3L-srv> <ZWhg_b3O6piZtkQ-@tiehlicka>
+ <ZWh6ax8YmkhxAzIf@MiWiFi-R3L-srv> <ZWiOO-KNJ82f6Gxu@tiehlicka>
+ <CAF+s44QSJL5e6BVTAyyHR9Kzx7RJqZSkR=uXEypaouK_XuBbEw@mail.gmail.com> <ZWiRbLGdBMO2jFGs@tiehlicka>
+In-Reply-To: <ZWiRbLGdBMO2jFGs@tiehlicka>
+From:   Pingfan Liu <piliu@redhat.com>
+Date:   Fri, 1 Dec 2023 08:54:20 +0800
+Message-ID: <CAF+s44TQ2g6VTL4JSubvch5VkW7SSsePp-aBz+kigg563NijJg@mail.gmail.com>
+Subject: Re: [PATCH 0/4] kdump: crashkernel reservation from CMA
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Baoquan He <bhe@redhat.com>, Donald Dutile <ddutile@redhat.com>,
+        Jiri Bohac <jbohac@suse.cz>, Tao Liu <ltao@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Dave Young <dyoung@redhat.com>, kexec@lists.infradead.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Two problems:
-	- cpu.idle cgroups show up with 0 weight, correct the
-	  documentation to indicate this.
-	- cpu.idle has no entry describing it.
+On Thu, Nov 30, 2023 at 9:43=E2=80=AFPM Michal Hocko <mhocko@suse.com> wrot=
+e:
+>
+> On Thu 30-11-23 21:33:04, Pingfan Liu wrote:
+> > On Thu, Nov 30, 2023 at 9:29=E2=80=AFPM Michal Hocko <mhocko@suse.com> =
+wrote:
+> > >
+> > > On Thu 30-11-23 20:04:59, Baoquan He wrote:
+> > > > On 11/30/23 at 11:16am, Michal Hocko wrote:
+> > > > > On Thu 30-11-23 11:00:48, Baoquan He wrote:
+> > > > > [...]
+> > > > > > Now, we are worried if there's risk if the CMA area is retaken =
+into kdump
+> > > > > > kernel as system RAM. E.g is it possible that 1st kernel's ongo=
+ing RDMA
+> > > > > > or DMA will interfere with kdump kernel's normal memory accessi=
+ng?
+> > > > > > Because kdump kernel usually only reset and initialize the need=
+ed
+> > > > > > device, e.g dump target. Those unneeded devices will be unshutd=
+own and
+> > > > > > let go.
+> > > > >
+> > > > > I do not really want to discount your concerns but I am bit confu=
+sed why
+> > > > > this matters so much. First of all, if there is a buggy RDMA driv=
+er
+> > > > > which doesn't use the proper pinning API (which would migrate awa=
+y from
+> > > > > the CMA) then what is the worst case? We will get crash kernel co=
+rrupted
+> > > > > potentially and fail to take a proper kernel crash, right? Is thi=
+s
+> > > > > worrisome? Yes. Is it a real roadblock? I do not think so. The pr=
+oblem
+> > > > > seems theoretical to me and it is not CMA usage at fault here IMH=
+O. It
+> > > > > is the said theoretical driver that needs fixing anyway.
+> > > > >
+> > > > > Now, it is really fair to mention that CMA backed crash kernel me=
+mory
+> > > > > has some limitations
+> > > > >     - CMA reservation can only be used by the userspace in the
+> > > > >       primary kernel. If the size is overshot this might have
+> > > > >       negative impact on kernel allocations
+> > > > >     - userspace memory dumping in the crash kernel is fundamental=
+ly
+> > > > >       incomplete.
+> > > >
+> > > > I am not sure if we are talking about the same thing. My concern is=
+:
+> > > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > > > 1) system corrutption happened, crash dumping is prepared, cpu and
+> > > > interrupt controllers are shutdown;
+> > > > 2) all pci devices are kept alive;
+> > > > 3) kdump kernel boot up, initialization is only done on those devic=
+es
+> > > > which drivers are added into kdump kernel's initrd;
+> > > > 4) those on-flight DMA engine could be still working if their kerne=
+l
+> > > > module is not loaded;
+> > > >
+> > > > In this case, if the DMA's destination is located in crashkernel=3D=
+,cma
+> > > > region, the DMA writting could continue even when kdump kernel has =
+put
+> > > > important kernel data into the area. Is this possible or absolutely=
+ not
+> > > > possible with DMA, RDMA, or any other stuff which could keep access=
+ing
+> > > > that area?
+> > >
+> > > I do nuderstand your concern. But as already stated if anybody uses
+> > > movable memory (CMA including) as a target of {R}DMA then that memory
+> > > should be properly pinned. That would mean that the memory will be
+> > > migrated to somewhere outside of movable (CMA) memory before the
+> > > transfer is configured. So modulo bugs this shouldn't really happen.
+> > > Are there {R}DMA drivers that do not pin memory correctly? Possibly. =
+Is
+> > > that a road bloack to not using CMA to back crash kernel memory, I do
+> > > not think so. Those drivers should be fixed instead.
+> > >
+> > I think that is our concern. Is there any method to guarantee that
+                           ^^^ Sorry, to clarify, I am only speaking for my=
+self.
 
-Signed-off-by: Josh Don <joshdon@google.com>
----
- Documentation/admin-guide/cgroup-v2.rst | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
+> > will not happen instead of 'should be' ?
+> > Any static analysis during compiling time or dynamic checking method?
+>
+> I am not aware of any method to detect a driver is going to configure a
+> RDMA.
+>
 
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 3f85254f3cef..9debf02bcb39 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -1093,7 +1093,11 @@ All time durations are in microseconds.
- 	A read-write single value file which exists on non-root
- 	cgroups.  The default is "100".
- 
--	The weight in the range [1, 10000].
-+	For non idle groups (cpu.idle = 0), the weight is in the
-+	range [1, 10000].
-+
-+	If the cgroup has been configured to be SCHED_IDLE (cpu.idle = 1),
-+	then the weight will show as a 0.
- 
-   cpu.weight.nice
- 	A read-write single value file which exists on non-root
-@@ -1157,6 +1161,16 @@ All time durations are in microseconds.
-         values similar to the sched_setattr(2). This maximum utilization
-         value is used to clamp the task specific maximum utilization clamp.
- 
-+  cpu.idle
-+	A read-write single value file which exists on non-root cgroups.
-+	The default is 0.
-+
-+	This is the cgroup analog of the per-task SCHED_IDLE sched policy.
-+	Setting this value to a 1 will make the scheduling policy of the
-+	cgroup SCHED_IDLE. The threads inside the cgroup will retain their
-+	own relative priorities, but the cgroup itself will be treated as
-+	very low priority relative to its peers.
-+
- 
- 
- Memory
--- 
-2.43.0.rc2.451.g8631bc7472-goog
+If there is a pattern, scripts/coccinelle may give some help. But I am
+not sure about that.
+
+> > If this can be resolved, I think this method is promising.
+>
+> Are you indicating this is a mandatory prerequisite?
+
+IMHO, that should be mandatory. Otherwise for any unexpected kdump
+kernel collapses,  it can not shake off its suspicion.
+
+Thanks,
+
+Pingfan
 
