@@ -2,63 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 745118012E6
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 19:37:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C600D8012E9
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 19:38:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379257AbjLAShq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 13:37:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49954 "EHLO
+        id S1379333AbjLASif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 13:38:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjLAShp (ORCPT
+        with ESMTP id S229468AbjLASie (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 13:37:45 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49507131;
-        Fri,  1 Dec 2023 10:37:51 -0800 (PST)
-Date:   Fri, 01 Dec 2023 18:37:48 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1701455869;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fIxb9RrJ1lv9j0KiMvs3PD5T32FeHGynP5aqt1392L4=;
-        b=H/cSWktp6BjzceTIBS2+PxM1CP/pdkHWzKZLgahAr3On3lCtRPp70vFY/6XE7YM2fl6xBD
-        Mze66VihSAtNaRbJN3xXc0F0uWP/W5dpJYWeu1kc/zTo33uc63n4wSocI5X3TFtz2hj5iG
-        tVmfP5OUob7BFLuEsE27DNA1f+XZ5OTUHiS6xPhb/kJVRhrYPetszkwapgA9FWjtk38Ota
-        tADHozPKjeJF1NItNztMWcwmy0dP8Okktz4jkdKfMqajoHppAYoyV+yZY82x9AIHdZbaCF
-        Z3oxeteSis5+VJmLQsnB3TXbTFT42J1ydlZEfxJ7uXuE8dabf5k/o9T6AgPAQA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1701455869;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fIxb9RrJ1lv9j0KiMvs3PD5T32FeHGynP5aqt1392L4=;
-        b=1P/XNiHXEJWjOTkcF4bEWofkYqz8jstOO/YUvGlj4yuqf4ILJQoqCNAtCEW8xzjdZtq0dz
-        dDrWCOSdROhjN8CA==
-From:   "tip-bot2 for Ashok Raj" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/microcode] x86/microcode/intel: Remove redundant microcode
- late updated message
-Cc:     Ashok Raj <ashok.raj@intel.com>,
-        "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <ZWjYhedNfhAUmt0k@a4bf019067fa.jf.intel.com>
-References: <ZWjYhedNfhAUmt0k@a4bf019067fa.jf.intel.com>
+        Fri, 1 Dec 2023 13:38:34 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF5C0EE;
+        Fri,  1 Dec 2023 10:38:40 -0800 (PST)
+Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 1B4E0660739A;
+        Fri,  1 Dec 2023 18:38:38 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1701455918;
+        bh=nshdBGarWc9GZ7/hAoBX4o9Dx3BkRnL4SICEx41+/Ys=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=KnJJWZpmHLwkB+keOQZvI7md6rHIRpT6G5/imUC16l0vH+mS6lXkgAM9TdbmMiXw8
+         YsCvTpgsZnoWe53/HWWYUZcQBRJKopfp5lsvPV9pjqdSmkisasku0LQCeRj0XBEACA
+         kR3KXuoTTxDNyoqwqYBplTPnxT54+D697KNDLiFt7qq2SsXjzxFGuh75ct0C4qQ4Ub
+         YdttgPdNA90ZTkM83B8v6WT+4MbLoEV/5Z+qUL+9WP5AsvRyQftY/WGPTaWPwZbIVz
+         cjslp+LDvct0vf5ilw5LA6luiAoP1DCtYhF+MMNueZ3GPd8/wtyAVKy6hqkgbOfwrH
+         Tje10/yajjCIQ==
+Date:   Fri, 1 Dec 2023 19:38:34 +0100
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     dregan <dregan@broadcom.com>
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: [PATCH 1/1] mtd: rawnand: Add deassert_wp comment
+Message-ID: <20231201193834.5da80273@collabora.com>
+In-Reply-To: <20231201181542.421077-1-dregan@broadcom.com>
+References: <20231201181542.421077-1-dregan@broadcom.com>
+Organization: Collabora
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Message-ID: <170145586850.398.10184003704108915953.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_PDS_OTHER_BAD_TLD,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,48 +61,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/microcode branch of tip:
+On Fri,  1 Dec 2023 10:15:42 -0800
+dregan <dregan@broadcom.com> wrote:
 
-Commit-ID:     1f693ef550f051ef6a95dbfadfa4fbd600769a81
-Gitweb:        https://git.kernel.org/tip/1f693ef550f051ef6a95dbfadfa4fbd600769a81
-Author:        Ashok Raj <ashok.raj@intel.com>
-AuthorDate:    Wed, 29 Nov 2023 13:56:43 -08:00
-Committer:     Borislav Petkov (AMD) <bp@alien8.de>
-CommitterDate: Fri, 01 Dec 2023 18:52:01 +01:00
+> From: Boris Brezillon <bbrezillon@kernel.org>
 
-x86/microcode/intel: Remove redundant microcode late updated message
+I'm pretty sure I shouldn't be the author. The original patch might
+have been partly written by me, but this is a fixup on top of it.
 
-After successful update, the late loading routine prints an update
-summary similar to:
+> 
+> Add deassert_wp description comment
+> 
+> Signed-off-by: Boris Brezillon <bbrezillon@kernel.org>
 
-  microcode: load: updated on 128 primary CPUs with 128 siblings
-  microcode: revision: 0x21000170 -> 0x21000190
+and you should drop my SoB too.
 
-Remove the redundant message in the Intel side of the driver.
+> Signed-off-by: David Regan <dregan@broadcom.com>
+> ---
+>  include/linux/mtd/rawnand.h | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+> index fcad94aa0515..3049b05d8a20 100644
+> --- a/include/linux/mtd/rawnand.h
+> +++ b/include/linux/mtd/rawnand.h
+> @@ -1001,6 +1001,8 @@ struct nand_op_parser {
+>  /**
+>   * struct nand_operation - NAND operation descriptor
+>   * @cs: the CS line to select for this NAND operation
+> + * @deassert_wp: set to true when the operation requires the WP pin to be
+> + *		 de-asserted (ERASE, PROG, ...)
+>   * @instrs: array of instructions to execute
+>   * @ninstrs: length of the @instrs array
+>   *
 
-  [ bp: Massage commit message. ]
-
-Signed-off-by: Ashok Raj <ashok.raj@intel.com>
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Link: https://lore.kernel.org/r/ZWjYhedNfhAUmt0k@a4bf019067fa.jf.intel.com
----
- arch/x86/kernel/cpu/microcode/intel.c | 6 ------
- 1 file changed, 6 deletions(-)
-
-diff --git a/arch/x86/kernel/cpu/microcode/intel.c b/arch/x86/kernel/cpu/microcode/intel.c
-index 070426b..5d6ea87 100644
---- a/arch/x86/kernel/cpu/microcode/intel.c
-+++ b/arch/x86/kernel/cpu/microcode/intel.c
-@@ -457,12 +457,6 @@ static enum ucode_state apply_microcode_late(int cpu)
- 	if (ret != UCODE_UPDATED && ret != UCODE_OK)
- 		return ret;
- 
--	if (!cpu && uci->cpu_sig.rev != cur_rev) {
--		pr_info("Updated to revision 0x%x, date = %04x-%02x-%02x\n",
--			uci->cpu_sig.rev, mc->hdr.date & 0xffff, mc->hdr.date >> 24,
--			(mc->hdr.date >> 16) & 0xff);
--	}
--
- 	cpu_data(cpu).microcode	 = uci->cpu_sig.rev;
- 	if (!cpu)
- 		boot_cpu_data.microcode = uci->cpu_sig.rev;
