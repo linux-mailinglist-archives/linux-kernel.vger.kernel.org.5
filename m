@@ -2,183 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 93D52800109
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 02:31:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 876A680010E
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 02:33:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230045AbjLABbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 20:31:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54728 "EHLO
+        id S229948AbjLABdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 20:33:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbjLABbA (ORCPT
+        with ESMTP id S229448AbjLABdi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 20:31:00 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB4B810F3;
-        Thu, 30 Nov 2023 17:31:06 -0800 (PST)
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B10L6iB000664;
-        Fri, 1 Dec 2023 01:31:01 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : date :
- subject : mime-version : content-type : content-transfer-encoding :
- message-id : references : in-reply-to : to : cc; s=qcppdkim1;
- bh=/NU2dbFQNyWKS8CYNdbXTOILj/VJ3QBEhaVjuOI+lD8=;
- b=VrQ70tFEB1EPxbl9tUEYn9Dybw6vjaIs9O2e98tLwVEeow/MOHbKIcnbj0BUofsgu6Ft
- xJMCgTQ2r28Px46Xp2wEBlUTqIgyngneuYV/gVcF/fj7v72aRmFILq7lqTLTqiw8YBdE
- 1e8y8JRdRfW5NksW9o5omGuu/asKqQYHSy9TiYfPeHWVbs8KAhhoOvnZqaK5AhErUHbP
- N2tePEC6HBfdGSnvdLQZQnw+Y7TzthPohCTmiMjxgznA6nlFrYDcxH64VnN5+DNXmFzA
- 0NynNBwjKzG4fnTO7W/RNwtOkANlKD0aSlmAt7v90K0nZIJDFwJsMSFXbf5MyNTnoC0p MQ== 
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3upgfd3c8u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 01 Dec 2023 01:31:01 +0000
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B11V0JD024463
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 1 Dec 2023 01:31:00 GMT
-Received: from jesszhan-linux.qualcomm.com (10.80.80.8) by
- nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 30 Nov 2023 17:31:00 -0800
-From:   Jessica Zhang <quic_jesszhan@quicinc.com>
-Date:   Thu, 30 Nov 2023 17:30:34 -0800
-Subject: [PATCH 2/2] drm/msm/dpu: Set input_sel bit for INTF
+        Thu, 30 Nov 2023 20:33:38 -0500
+Received: from new3-smtp.messagingengine.com (new3-smtp.messagingengine.com [66.111.4.229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5BDDD50;
+        Thu, 30 Nov 2023 17:33:44 -0800 (PST)
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 9CEAD580A5A;
+        Thu, 30 Nov 2023 20:33:41 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute7.internal (MEProxy); Thu, 30 Nov 2023 20:33:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm3; t=1701394421; x=1701401621; bh=jf
+        qYqY018jdffj6zz+dnM/tM+okukGD8jcdyViM8tLU=; b=iFG2UTmmYzmIB4IoIc
+        nRRmjJw9ay21fZLZfnHBcmxVZCkud4yQJ+V9Auwh19vxjk5IoliLkrjmAanvRp9e
+        ILdJ8v4jD4l+IXTgw0YXlWdwIRAeYzXhMWrfnjpjiB2Q6hEOkcnz+0HNk5N55d/k
+        efHhKzvnCQvHUaSLxPUxMp4hT/DY6XxGq9JM8N4v8aCA6coqclgEsg3+LqsIH3sp
+        e3mtVu0eBzGZTErTmJguLh6BDlls9iALhKiLf1VW0lJCfOads73lg+IGVAJseXML
+        AtANjKgh5WvRiZ4WlfzH+l09eNHsmjvikUOOw8XBvOJL2LHVSwgp8nDSZsWNL3I7
+        ZTYA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1701394421; x=1701401621; bh=jfqYqY018jdff
+        j6zz+dnM/tM+okukGD8jcdyViM8tLU=; b=E4JAUDbt3CWm62uu3AwTKuhYnxZSm
+        s8urrS3AHDstYIGUMr9sE0iQiTKfsGSSgy50QWr1EfyV2qjlVid/jObea8rfMlb5
+        Mh1hnFHOUzkSzcGiUKzzSI7IQow1lbAB8jkxRdNyS3lga63GM3YraUghVDqwxg9c
+        5ycJzB8zd62g7ScwwDWsnYtd1vBr7Yx/HwxHuYEQbGwyOf+dBqGxnhYwAXoyp4Os
+        ej6Khe8SWeNp1+iX0JZ9Wi0FF1UWDHNKQn8I8gEEwmyaoAYRlCLDAa8aUvqyqMDz
+        e1odz7Ai4fpIS2SEHEpqI6h1iTNx70pB4qvNHwy3ghWl3xZoDHbFmqHng==
+X-ME-Sender: <xms:9DdpZU5etkdH4ZXQ60PrOr3NIHj5E27P2bu01_51Cy0Ytzpke_u8TQ>
+    <xme:9DdpZV5XPj2jVzk8INysCRHEPVDUecPYVOSYzoC3SPonXb5bEXmzdhdwnQpCzbK5s
+    5hpPbsPD3u-jiexFQ>
+X-ME-Received: <xmr:9DdpZTf_ERyiUhaNYMJRCGfI_l9WgIEGjOhsjfgX0paBc7bXii-GH1ZEb43zCNunDvOCNu4_X-QSB87vJVlTybxrhVdBaU5mOzPZMxM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeikedgfeeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdlvdefmdenucfjughrpeffhf
+    fvvefukfhfgggtuggjsehttdfstddttddvnecuhfhrohhmpeffrghnihgvlhcuighuuceo
+    ugiguhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepfedtffeuudehheduhf
+    eggfefjeelhfetgeeiteevieeiheefvdehudeifedvfedunecuffhomhgrihhnpehllhhv
+    mhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
+    hmpegugihusegugihuuhhurdighiii
+X-ME-Proxy: <xmx:9TdpZZKAjFzcl7y16F2sPH0omwvoIR1mu1XGirVrq79w5v9Qn9Dgjg>
+    <xmx:9TdpZYKuMQKWr9UGNG01Q0IsmPpouXO2oGcqwCkpDleStxaLmJamAg>
+    <xmx:9TdpZay1rq7twixNaFHkPcIMydkV9HTttjlZUzvCt3Dgq-KUNnHUVQ>
+    <xmx:9TdpZdjZIRrrCzJsxX_2iYBD2MKNQtm0l3dyxtD8McE5RoTvlgT3QA>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 30 Nov 2023 20:33:39 -0500 (EST)
+Date:   Thu, 30 Nov 2023 18:33:37 -0700
+From:   Daniel Xu <dxu@dxuuu.xyz>
+To:     Eduard Zingerman <eddyz87@gmail.com>
+Cc:     ndesaulniers@google.com, andrii@kernel.org, nathan@kernel.org,
+        daniel@iogearbox.net, ast@kernel.org, steffen.klassert@secunet.com,
+        antony.antony@secunet.com, alexei.starovoitov@gmail.com,
+        yonghong.song@linux.dev, martin.lau@linux.dev, song@kernel.org,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, trix@redhat.com,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, devel@linux-ipsec.org, netdev@vger.kernel.org
+Subject: Re: [PATCH ipsec-next v2 3/6] libbpf: Add BPF_CORE_WRITE_BITFIELD()
+ macro
+Message-ID: <ib27gbqj6c6ilblugm5kalwyfty6h4zujhvykw4a562uorqzjn@6wxeino6q7vk>
+References: <cover.1701193577.git.dxu@dxuuu.xyz>
+ <ed7920365daf5eff1c82892b57e918d3db786ac7.1701193577.git.dxu@dxuuu.xyz>
+ <20c593b6f31720a3d24d75e5e5cc3245b67249d1.camel@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20231130-encoder-fixup-v1-2-585c54cd046e@quicinc.com>
-References: <20231130-encoder-fixup-v1-0-585c54cd046e@quicinc.com>
-In-Reply-To: <20231130-encoder-fixup-v1-0-585c54cd046e@quicinc.com>
-To:     Rob Clark <robdclark@gmail.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        "Daniel Vetter" <daniel@ffwll.ch>
-CC:     <quic_abhinavk@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>,
-        <freedreno@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
-        Jessica Zhang <quic_jesszhan@quicinc.com>
-X-Mailer: b4 0.13-dev-53db1
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1701394259; l=3663;
- i=quic_jesszhan@quicinc.com; s=20230329; h=from:subject:message-id;
- bh=f4MgpUR7qdkeHqkjRkQnRto4i/L5a9mnRaHCbV37d7s=;
- b=YaRowAfYu9UtWmL0tdfOtCJLCUYSpZfgImYT6w+enn5a+q8W013WGwVAs8OLuaN1d6ykP84Gn
- Rn0uCPBwnL8AjxV6SfA9Kw1+xPKpSKcYTJvqW8BYXu4najOkg+BzhS4
-X-Developer-Key: i=quic_jesszhan@quicinc.com; a=ed25519;
- pk=gAUCgHZ6wTJOzQa3U0GfeCDH7iZLlqIEPo4rrjfDpWE=
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: SclDWkzTrjjqxZt7KBFQUeHklgcM3nok
-X-Proofpoint-GUID: SclDWkzTrjjqxZt7KBFQUeHklgcM3nok
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-30_25,2023-11-30_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- lowpriorityscore=0 spamscore=0 malwarescore=0 impostorscore=0
- priorityscore=1501 bulkscore=0 clxscore=1015 mlxscore=0 adultscore=0
- phishscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2311060000 definitions=main-2312010008
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20c593b6f31720a3d24d75e5e5cc3245b67249d1.camel@gmail.com>
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Set the input_sel bit for encoders as it was missed in the initial
-implementation.
+On Tue, Nov 28, 2023 at 07:59:01PM +0200, Eduard Zingerman wrote:
+> On Tue, 2023-11-28 at 10:54 -0700, Daniel Xu wrote:
+> > Similar to reading from CO-RE bitfields, we need a CO-RE aware bitfield
+> > writing wrapper to make the verifier happy.
+> > 
+> > Two alternatives to this approach are:
+> > 
+> > 1. Use the upcoming `preserve_static_offset` [0] attribute to disable
+> >    CO-RE on specific structs.
+> > 2. Use broader byte-sized writes to write to bitfields.
+> > 
+> > (1) is a bit a bit hard to use. It requires specific and
+> > not-very-obvious annotations to bpftool generated vmlinux.h. It's also
+> > not generally available in released LLVM versions yet.
+> > 
+> > (2) makes the code quite hard to read and write. And especially if
+> > BPF_CORE_READ_BITFIELD() is already being used, it makes more sense to
+> > to have an inverse helper for writing.
+> > 
+> > [0]: https://reviews.llvm.org/D133361
+> > From: Eduard Zingerman <eddyz87@gmail.com>
+> > 
+> > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> > ---
+> 
+> Could you please also add a selftest (or several) using __retval()
+> annotation for this macro?
 
-Reported-by: Rob Clark <robdclark@gmail.com>
-Fixes: 91143873a05d ("drm/msm/dpu: Add MISR register support for interface")
-Closes: https://gitlab.freedesktop.org/drm/msm/-/issues/39
-Signed-off-by: Jessica Zhang <quic_jesszhan@quicinc.com>
----
- drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c | 2 +-
- drivers/gpu/drm/msm/disp/dpu1/dpu_hw_lm.c   | 2 +-
- drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c | 7 ++++++-
- drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h | 4 +++-
- 4 files changed, 11 insertions(+), 4 deletions(-)
+Good call about adding tests -- I found a few bugs with the code from
+the other thread. But boy did they take a lot of brain cells to figure
+out.
 
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
-index 3442cf65b86f..d0884997ecb7 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
-@@ -320,7 +320,7 @@ static u32 dpu_hw_intf_get_line_count(struct dpu_hw_intf *intf)
- 
- static void dpu_hw_intf_setup_misr(struct dpu_hw_intf *intf)
- {
--	dpu_hw_setup_misr(&intf->hw, INTF_MISR_CTRL);
-+	dpu_hw_setup_misr(&intf->hw, INTF_MISR_CTRL, true);
- }
- 
- static int dpu_hw_intf_collect_misr(struct dpu_hw_intf *intf, u32 *misr_value)
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_lm.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_lm.c
-index f38473e68f79..77b14107c84a 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_lm.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_lm.c
-@@ -83,7 +83,7 @@ static void dpu_hw_lm_setup_border_color(struct dpu_hw_mixer *ctx,
- 
- static void dpu_hw_lm_setup_misr(struct dpu_hw_mixer *ctx)
- {
--	dpu_hw_setup_misr(&ctx->hw, LM_MISR_CTRL);
-+	dpu_hw_setup_misr(&ctx->hw, LM_MISR_CTRL, false);
- }
- 
- static int dpu_hw_lm_collect_misr(struct dpu_hw_mixer *ctx, u32 *misr_value)
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c
-index a8a0a4e76b94..f441df47fdde 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c
-@@ -481,7 +481,8 @@ void _dpu_hw_setup_qos_lut(struct dpu_hw_blk_reg_map *c, u32 offset,
- 		      cfg->danger_safe_en ? QOS_QOS_CTRL_DANGER_SAFE_EN : 0);
- }
- 
--void dpu_hw_setup_misr(struct dpu_hw_blk_reg_map *c, u32 misr_ctrl_offset)
-+void dpu_hw_setup_misr(struct dpu_hw_blk_reg_map *c, u32 misr_ctrl_offset,
-+		bool set_input_sel)
- {
- 	u32 config = 0;
- 
-@@ -491,6 +492,10 @@ void dpu_hw_setup_misr(struct dpu_hw_blk_reg_map *c, u32 misr_ctrl_offset)
- 	wmb();
- 
- 	config = MISR_FRAME_COUNT | MISR_CTRL_ENABLE | MISR_CTRL_FREE_RUN_MASK;
-+
-+	if (set_input_sel)
-+		config |= MISR_CTRL_INPUT_SEL;
-+
- 	DPU_REG_WRITE(c, misr_ctrl_offset, config);
- }
- 
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h
-index bb496ebe283b..793670d62414 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h
-@@ -17,6 +17,7 @@
- #define MISR_CTRL_ENABLE                BIT(8)
- #define MISR_CTRL_STATUS                BIT(9)
- #define MISR_CTRL_STATUS_CLEAR          BIT(10)
-+#define MISR_CTRL_INPUT_SEL             BIT(24)
- #define MISR_CTRL_FREE_RUN_MASK         BIT(31)
- 
- /*
-@@ -357,7 +358,8 @@ void _dpu_hw_setup_qos_lut(struct dpu_hw_blk_reg_map *c, u32 offset,
- 			   bool qos_8lvl,
- 			   const struct dpu_hw_qos_cfg *cfg);
- 
--void dpu_hw_setup_misr(struct dpu_hw_blk_reg_map *c, u32 misr_ctrl_offset);
-+void dpu_hw_setup_misr(struct dpu_hw_blk_reg_map *c, u32 misr_ctrl_offset,
-+		       bool set_input_sel);
- 
- int dpu_hw_collect_misr(struct dpu_hw_blk_reg_map *c,
- 		u32 misr_ctrl_offset,
+There was some 6th grade algebra involved too -- I'll do my best to
+explain it in the commit msg for v3.
 
--- 
-2.43.0
 
+Here are the fixes in case you are curious:
+
+diff --git a/tools/lib/bpf/bpf_core_read.h b/tools/lib/bpf/bpf_core_read.h
+index 7a764f65d299..8f02c558c0ff 100644
+--- a/tools/lib/bpf/bpf_core_read.h
++++ b/tools/lib/bpf/bpf_core_read.h
+@@ -120,7 +120,9 @@ enum bpf_enum_value_kind {
+        unsigned int byte_size = __CORE_RELO(s, field, BYTE_SIZE);      \
+        unsigned int lshift = __CORE_RELO(s, field, LSHIFT_U64);        \
+        unsigned int rshift = __CORE_RELO(s, field, RSHIFT_U64);        \
+-       unsigned int bit_size = (rshift - lshift);                      \
++       unsigned int bit_size = (64 - rshift);                          \
++       unsigned int hi_size = lshift;                                  \
++       unsigned int lo_size = (rshift - lshift);                       \
+        unsigned long long nval, val, hi, lo;                           \
+                                                                        \
+        asm volatile("" : "+r"(p));                                     \
+@@ -131,13 +133,13 @@ enum bpf_enum_value_kind {
+        case 4: val = *(unsigned int *)p; break;                        \
+        case 8: val = *(unsigned long long *)p; break;                  \
+        }                                                               \
+-       hi = val >> (bit_size + rshift);                                \
+-       hi <<= bit_size + rshift;                                       \
+-       lo = val << (bit_size + lshift);                                \
+-       lo >>= bit_size + lshift;                                       \
++       hi = val >> (64 - hi_size);                                     \
++       hi <<= 64 - hi_size;                                            \
++       lo = val << (64 - lo_size);                                     \
++       lo >>= 64 - lo_size;                                            \
+        nval = new_val;                                                 \
+-       nval <<= lshift;                                                \
+-       nval >>= rshift;                                                \
++       nval <<= (64 - bit_size);                                       \
++       nval >>= (64 - bit_size - lo_size);                             \
+        val = hi | nval | lo;                                           \
+        switch (byte_size) {                                            \
+        case 1: *(unsigned char *)p      = val; break;                  \
+
+
+Thanks,
+Daniel
