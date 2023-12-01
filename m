@@ -2,331 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95FA87FFFCD
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 01:01:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BC3C7FFFD4
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 01:02:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377353AbjLAABH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 19:01:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56876 "EHLO
+        id S1377358AbjLAACO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 19:02:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377331AbjLAABG (ORCPT
+        with ESMTP id S1377331AbjLAACM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 19:01:06 -0500
-Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53AE2133;
-        Thu, 30 Nov 2023 16:01:11 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.18.186.29])
-        by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4ShCXm45tlz9y9TW;
-        Fri,  1 Dec 2023 07:47:20 +0800 (CST)
-Received: from mail02.huawei.com (unknown [7.182.16.47])
-        by mail.maildlp.com (Postfix) with ESMTP id 80487140133;
-        Fri,  1 Dec 2023 08:01:08 +0800 (CST)
-Received: from [10.81.202.161] (unknown [10.81.202.161])
-        by APP1 (Coremail) with SMTP id LxC2BwBXlHQ0ImllMJCuAQ--.12372S2;
-        Fri, 01 Dec 2023 01:01:07 +0100 (CET)
-Message-ID: <f37c47d0-5b20-4293-8bd0-5d465f328ffc@huaweicloud.com>
-Date:   Fri, 1 Dec 2023 01:00:48 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 23/23] integrity: Switch from rbtree to LSM-managed
- blob for integrity_iint_cache
+        Thu, 30 Nov 2023 19:02:12 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BB4210DF;
+        Thu, 30 Nov 2023 16:02:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701388938; x=1732924938;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=f+m8fq+ECjOKrfR3VMXpKFS5tDoo4ZMHKSfbcDtvmy4=;
+  b=DNGa5SV/c+hd0Nwokd5LNNJebpZFziC0WjeUaRkxab0L76biNU6LFk16
+   4ZAzww6OpF/3A+RuWFRkASu/oBAnoTuBu1MdkAwEcDdoudT28Llz7eDMc
+   kZr+qwAD8hS8JKEr8tellpAf1A/dnYgi0AQsGLP22AZKtidSB0j0XSPCP
+   hv3crE0y+KlVKjKrGYyhVKgdoZD7A2VVv2663UW6ceH1N9rqr6/iXclzg
+   ncWZEdykP7Im7OjxpXiySNubYidv9UiXjD8jJuLXawC0QfkOvpbak5v6F
+   SzoT8FiXkYcGqymFJNWIvpueZkkkxBfhbYwOg/wJXt/cF55OQ/WV7cEj8
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="396215384"
+X-IronPort-AV: E=Sophos;i="6.04,240,1695711600"; 
+   d="scan'208";a="396215384"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 16:02:17 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="762923099"
+X-IronPort-AV: E=Sophos;i="6.04,240,1695711600"; 
+   d="scan'208";a="762923099"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orsmga007.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 30 Nov 2023 16:02:17 -0800
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Thu, 30 Nov 2023 16:02:16 -0800
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Thu, 30 Nov 2023 16:02:16 -0800
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Thu, 30 Nov 2023 16:02:16 -0800
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.40) by
+ edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Thu, 30 Nov 2023 16:02:16 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JA4cIQG0x4PCFCHBmARvjTWyziy8uevFMywf0s7nVLDEzUpwGoKuKDctdvGN0BiDaPMhv1hQ8t/f6utwZNBBztgANGHjpJlQMX2k9CJx/G9mkpQrr9+QanwpvyMjQMUidHm97n/YYmotA8zeIvPsilNytGjltx7NZ06LMq8WVN5RECKRkYOlNL6+3/3DXgtszlmPJDGCrsjIMyinWgURQGkVNgIqbihQYbXsJBcri5xcO/VYL1F9r+mNh1LJNdJvLTRsFUdb9uvacRIT3VwBV0/Lz+jbe01/ncp6CAG7ZuLBgDlzP+eQqQhP11sHDXSX5sc+Aygqp6S2OOlB+b28mw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=f+m8fq+ECjOKrfR3VMXpKFS5tDoo4ZMHKSfbcDtvmy4=;
+ b=Iax5PzGy/OJg1cBtCCpaE2WMssWveJAS/cZvz0idtvM73YYhSOMMqPXdFvLXBk+L1tc7GAnva2xmm1EOl5iQlFOe1cl6t19gZx1IC/wy98/EQCT3YD6wSaEDemtmasa8pOg1DcgDGqxZDMRGzZnCTnZsc9nK+E22+F53VhW1ZJft9ERJ+baXGN8cA4046C3JdmVjVjldw3KKnm0fmm/MhzcLDFYmBs5srPCvmdkLRJPj7bt5DMZm39URPExCYNPI2AXu4tUk0jRhsP/QDuAhsa6I2v6gjxQRFKUJ1P20K7N3Da2urLy/KDygf34GSk2qRsr127+d0OWShOKM6cRbXQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from PH0PR11MB5830.namprd11.prod.outlook.com (2603:10b6:510:129::20)
+ by BN9PR11MB5404.namprd11.prod.outlook.com (2603:10b6:408:11d::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.24; Fri, 1 Dec
+ 2023 00:02:14 +0000
+Received: from PH0PR11MB5830.namprd11.prod.outlook.com
+ ([fe80::6ffc:93a3:6d7f:383c]) by PH0PR11MB5830.namprd11.prod.outlook.com
+ ([fe80::6ffc:93a3:6d7f:383c%6]) with mapi id 15.20.7046.024; Fri, 1 Dec 2023
+ 00:02:14 +0000
+From:   "Song, Yoong Siang" <yoong.siang.song@intel.com>
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Bjorn Topel <bjorn@kernel.org>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        "Lorenzo Bianconi" <lorenzo@kernel.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        "Willem de Bruijn" <willemb@google.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
+        "Martin KaFai Lau" <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        "Jose Abreu" <joabreu@synopsys.com>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "xdp-hints@xdp-project.net" <xdp-hints@xdp-project.net>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>
+Subject: RE: [PATCH bpf-next 1/3] xsk: add launch time support to XDP Tx
+ metadata
+Thread-Topic: [PATCH bpf-next 1/3] xsk: add launch time support to XDP Tx
+ metadata
+Thread-Index: AQHaI6lNhMbclA0v6kGITaNu3vmUTbCTUEQAgAA6CiA=
+Date:   Fri, 1 Dec 2023 00:02:13 +0000
+Message-ID: <PH0PR11MB5830FE1DAF09BDBAD59A1A9AD881A@PH0PR11MB5830.namprd11.prod.outlook.com>
+References: <20231130162028.852006-1-yoong.siang.song@intel.com>
+ <20231130162028.852006-2-yoong.siang.song@intel.com>
+ <6568f07418508_fbb8229478@willemb.c.googlers.com.notmuch>
+In-Reply-To: <6568f07418508_fbb8229478@willemb.c.googlers.com.notmuch>
+Accept-Language: en-US
 Content-Language: en-US
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-To:     viro@zeniv.linux.org.uk, brauner@kernel.org,
-        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
-        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
-        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
-        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
-        dhowells@redhat.com, jarkko@kernel.org,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        casey@schaufler-ca.com, mic@digikod.net
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
-References: <20231130231948.2545638-1-roberto.sassu@huaweicloud.com>
- <20231130231948.2545638-5-roberto.sassu@huaweicloud.com>
-In-Reply-To: <20231130231948.2545638-5-roberto.sassu@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: LxC2BwBXlHQ0ImllMJCuAQ--.12372S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxKryfJFyrCry8Cr1UZF4kXrb_yoWfCryUpF
-        42gay8Jw1DZFWj9F4vyFs8uF4Sga4vgFWkWw1Ykw1kAFyqvr1jqFs5AryUuF15GrZ8Kw1I
-        qrn0kr45u3WDtrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWUJVW8JwA2z4x0Y4vEx4A2jsIEc7CjxV
-        AFwI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28IcxkI
-        7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxV
-        Cjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY
-        6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6x
-        AIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280
-        aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x07UAkuxUUUUU=
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQASBF1jj5ceegAAsV
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH0PR11MB5830:EE_|BN9PR11MB5404:EE_
+x-ms-office365-filtering-correlation-id: 0d3d2632-58ce-4d10-9fb6-08dbf200c60a
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: H60uFX4qCVv1PAmohp8co7gA7m7Sv4kkvu5EZce8w+95gd5AIy3B23vyrE4Bjj+OwznQ/iVlcnjQ9KYWudbd2Wcu8Y3fDD1IPEBoFEgyuMuIDEOSVdY/6pWIDKT5Vy77/TkLl4C5mGDfsf3es0K8TitSChyB1ir1JbU5flbzURZt5cFX243qz81LT1qnQ6p9slDz55W/C3jZM6dYeu32murZZb1GfXPqw8gLLvCSnMeLTrlgsDGpDNNRFu5CNkhWU3xabxS3Fazvll7ZzMZGiTkNPogQ0XoY1gN3m4LIaBG3el3tvyE88lRj/rII/RluCwK8JmZnqnyzUnX3wZrlb8uSq6gFqoHcVOfzq+NuMEqCVXrfvDZ5+6CM9KTp5q5NKwYbEFjDwvLXd/D0ZZuLdRYKSAI55U+2Py2FHBAcWguToig93kzcRRnoc+iEZvafIVZU4HLOB+MrTd8eNo+KJ+mz8/8VZHD5gsNlw3VI0YJc1sQKhHJPQt2CJOdLwwcnwICBuBTYVA9DbEpHBHnjI7u5DIoWPbb92ZRVDoMpFmm1NXBKVrWOlaUFbEJuuIVgf2EI3uAlyyYPjvdut0i1OaNL2NJofsksKNlmYr1fAXhhTgbSrHxwl37T3vjYHylR
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5830.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(136003)(366004)(396003)(376002)(346002)(230922051799003)(451199024)(1800799012)(186009)(64100799003)(71200400001)(26005)(6506007)(53546011)(76116006)(66556008)(7696005)(52536014)(5660300002)(9686003)(7416002)(7406005)(41300700001)(478600001)(64756008)(66476007)(8676002)(8936002)(66446008)(110136005)(54906003)(4326008)(66946007)(2906002)(316002)(122000001)(38070700009)(38100700002)(82960400001)(86362001)(33656002)(921008)(55016003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?dHcxSE1NcW56ZG9DUUtYUS9pUGppOGVKTWdEY2ZqQmZCbm1pQ3JaWFZHZE5u?=
+ =?utf-8?B?SFFHbzEzVzlSNlBWTzU0TkNNNytmT00vZ2pYU1ZWUTNEV0YyeVV1ZlN0c1Rj?=
+ =?utf-8?B?RTU2bFdkZXpzajNIeE91ZVpYRisyRjcxVkIxcFpWYlNvQkpONHVYT2kxVHZy?=
+ =?utf-8?B?T0ozNWhOTExwMWJ1S0JBWjhNUTRGOVRuUWhnTGRIU2JycktHVzkyUW1icUZC?=
+ =?utf-8?B?OE13eThyNXQ5WitZckQxWEE1SDJ3LzlGd3RzcWtHV1JBNm9nTlFKVU4raTZh?=
+ =?utf-8?B?cGZ5NlV4YTE0R1Qwa1ZJdU9oWmVzVEw5dkh4NGJKd2JJeVk4Y1pRYUs1TVBm?=
+ =?utf-8?B?MlNSTGYrSEhFT1FDejBhSXdwNWpBQ0ptaE5JVk91NmV2N3BTNDRVY25MeEY1?=
+ =?utf-8?B?QjdRQjBsc0JDT2pWV0JNQzB4YmViaUE4ZVFPYzBCakVuZVhBeU1EQ2haT1FT?=
+ =?utf-8?B?NkdvM1htbVljRUVOSnpndVVxTzdvZjEwRXYrc0ExcWdycDk3L0ZoSTlkUnNo?=
+ =?utf-8?B?VGtNZ21waUdVZ1NuQzU1THRTVGVYRVVxVks4dGsrOTNDTG9DUW1ZRGlob0sw?=
+ =?utf-8?B?Ykp3c1Z4NGxGbUsvZGJtckdsQVhNR1pjZTRmRkh1TWd4TjZmaDJVS0M5K28r?=
+ =?utf-8?B?WTJVM09ndm5CM1B0K29Kb2dhdGtNa0NlaE82T0sxVDRZYVJTbjdQemhnRllh?=
+ =?utf-8?B?Zk9JSkdVUm14VzdmQUoxbVlHQ0xzNHdUQ2lHVHhCU2Nma3NDVEtFWUQ1ckNZ?=
+ =?utf-8?B?LzRCWEt1VzcvWDhmNWFvbEhvUkJ2TjZ3K3drOUdOdWNxVnUxbXlXNlVlWGV1?=
+ =?utf-8?B?NkdERlNhMU5HRjhQT1ZjZERhaGN1Tno1V3N4V2lsUFptdEVlR3R0ZTZpN1pH?=
+ =?utf-8?B?d3R3ajZDUmtzVVd1TkNuVEswbEFjLzhFTDZZSm90WFNmSW50TURPV3N4aXZI?=
+ =?utf-8?B?d05jMVpVVGU4RnlndllYeGNLMVY2ZWJDbC9GZ3Q2a2VqMkVwNlFhcjI1N2Nx?=
+ =?utf-8?B?dGVMUUV2K0xaVTFseGV0RHpIaldwV2RKUktxaE9GdGRWZElKMEE0eFFvMmg1?=
+ =?utf-8?B?SDN3L2c2OWQwZ3h3Z3B1Wk1PTjczc3RocE96WGpQbCs1RDJuMis0emUwQWJy?=
+ =?utf-8?B?UXZLeGkxSE9WWU9vU01RalhxbXdWYzkrVUNRenQrcytGVW40RUlHY3JRWEY4?=
+ =?utf-8?B?SHZCUnFuRnRUSy84ZklER2FtaWdTRXp6dW44ZktFR3c2QVI0UUJjMDdsWldF?=
+ =?utf-8?B?SXMzeFJiblpEb0c4STZwLzRnRmplY3VNMnVtSjhVL2w2WXZBaGVQZTFTSlcv?=
+ =?utf-8?B?ZCtibmpvQXFOMGtWRlI2R1FsQnBKT3hvUGNGU2pNbnVSc2gxVTNGaWRndi9I?=
+ =?utf-8?B?eFpkV1UwZmNMUkpSWTJHUlR0SWdLMnQwbDRlOHpWemMvdnJkUi9mVHl2bnBk?=
+ =?utf-8?B?RWx6WnRHZFdIaWpyTEdvbEt2c0ZidjNxaVp1S1JxeEhzSUFzcm1FakJxbkRj?=
+ =?utf-8?B?dk9CVHBTdXRWVFVvUWpwQWd1ZS8yaVNIWERMTEY5ZDcyb2tIYXg0NHNBam10?=
+ =?utf-8?B?eFNwWGtKL3dWQmNrd3Bra3JkazRGcTUvaFdDK28xY0RzTzNxb0sxUUkyenFK?=
+ =?utf-8?B?eHllaVYrQ2t6UmQ0VDcwQWZxWkZoN0ZubUZyNGV5VWRka1M0K1h6bXBSN2N3?=
+ =?utf-8?B?YUxESzl2REVWQVhsSnh6K0FnbVBwaVdtK0N4M1RxSktjbDNhKzlvZlFPTVk1?=
+ =?utf-8?B?SWRyNENocVFmRkNscnJ3Y3VvQ3I5SEVYVEZlNzVISWliWVBrbnloU0RzZzds?=
+ =?utf-8?B?WEM5MnA2S1J0YlhlMFh3Z0xicFp5eVJIeDBxR0tTaVZKaW5OT2FwbG9taUtY?=
+ =?utf-8?B?TzFrMGUwdEZIVno1ZEdxcUhCZ2xVRjA0VGtsdFhEaFdMSmpBUXdPU0RZMXBJ?=
+ =?utf-8?B?ZVk0ckIwOUVBN1BQWHdNekgrVTZLc1pESXl4Z1EveG1hYllFeXZyemZjTUN4?=
+ =?utf-8?B?R01Id2U2R1B4dFpMUDZwT1QzYTdaaFVkUGRxd3g0VDI1NVhGNEs0elAxOStR?=
+ =?utf-8?B?eHpmenhBWXpGNThQZW5jb3BIWVU5VEVhL0RBOExjc2NMMHRtTkErV0Fxa09C?=
+ =?utf-8?B?MHlsT1JZdTdLT09uNWp6aTVBRUQ4c0dqZVlSMWdqVEUvaE1QM3pNbWRQdWFa?=
+ =?utf-8?B?NGc9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5830.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0d3d2632-58ce-4d10-9fb6-08dbf200c60a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Dec 2023 00:02:13.9309
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 1SL2F1kVbt22kvB5Ulk2hea0m8Yw5tVfmw1SL2ltWNaP6tAj3hGrgkLkfPLFsy7Dj/FQlBGO0D4vWIhurRS22fYjPncvbWP6wqGBYsG/vug=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR11MB5404
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/1/2023 12:19 AM, Roberto Sassu wrote:
-> From: Roberto Sassu <roberto.sassu@huawei.com>
-> 
-> Before the security field of kernel objects could be shared among LSMs with
-> the LSM stacking feature, IMA and EVM had to rely on an alternative storage
-> of inode metadata. The association between inode metadata and inode is
-> maintained through an rbtree.
-> 
-> With the reservation mechanism offered by the LSM infrastructure, the
-> rbtree is no longer necessary, as each LSM could reserve a space in the
-> security blob for each inode.
-> 
-> With the 'integrity' LSM removed, and with the 'ima' LSM taking its role,
-> reserve space from the 'ima' LSM for a pointer to the integrity_iint_cache
-> structure directly, rather than embedding the whole structure in the inode
-> security blob, to minimize the changes and to avoid waste of memory.
-> 
-> If IMA is disabled, EVM faces the same problems as before making it an
-> LSM, metadata verification fails for new files due to not setting the
-> IMA_NEW_FILE flag in ima_post_path_mknod(), and evm_verifyxattr()
-> returns INTEGRITY_UNKNOWN since IMA didn't call integrity_inode_get().
-> 
-> The only difference caused to moving the integrity metadata management
-> to the 'ima' LSM is the fact that EVM cannot take advantage of cached
-> verification results, and has to do the verification again. However,
-> this case should never happen, since the only public API available to
-> all kernel components, evm_verifyxattr(), does not work if IMA is
-> disabled.
-
-This needs some explanation on how EVM can be used currently. EVM 
-verifies inode metadata in the set* LSM hooks, eventually updates the 
-HMAC in the post_set* hooks.
-
-If integrity metadata are not available (IMA is disabled), EVM has to do 
-the inode metadata verification every time, which means that this patch 
-set would introduce a performance regression compared to when integrity 
-metadata were always available and managed by the 'integrity' LSM.
-
-However, the get* LSM hooks are not mediated, user space can freely get 
-a corrupted inode metadata and EVM would not tell anything.
-
-So, at this point it is clear that the main use case of EVM was a kernel 
-component querying EVM about the integrity of inode metadata, by calling 
-evm_verifyxattr(). One suitable place where this function can be called 
-is the d_instantiate LSM hook, when an LSM is getting xattrs from the 
-filesystem to populate the inode security blob.
-
-But as I mentioned, evm_verifyxattr() does not work if IMA is disabled, 
-so there should not be systems using this configuration for which we are 
-introducing a performance regression.
-
-Roberto
-
-> Introduce two primitives for getting and setting the pointer of
-> integrity_iint_cache in the security blob, respectively
-> integrity_inode_get_iint() and integrity_inode_set_iint(). This would make
-> the code more understandable, as they directly replace rbtree operations.
-> 
-> Locking is not needed, as access to inode metadata is not shared, it is per
-> inode.
-> 
-> Keep the blob size and the new primitives definition at the common level in
-> security/integrity rather than moving them in IMA itself, so that EVM can
-> still call integrity_inode_get() and integrity_iint_find() while IMA is
-> disabled. Just add an extra check in integrity_inode_get() to return NULL
-> if that is the case.
-> 
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> ---
->   security/integrity/iint.c         | 70 ++++---------------------------
->   security/integrity/ima/ima_main.c |  1 +
->   security/integrity/integrity.h    | 20 ++++++++-
->   3 files changed, 29 insertions(+), 62 deletions(-)
-> 
-> diff --git a/security/integrity/iint.c b/security/integrity/iint.c
-> index c36054041b84..8fc9455dda11 100644
-> --- a/security/integrity/iint.c
-> +++ b/security/integrity/iint.c
-> @@ -14,56 +14,25 @@
->   #include <linux/slab.h>
->   #include <linux/init.h>
->   #include <linux/spinlock.h>
-> -#include <linux/rbtree.h>
->   #include <linux/file.h>
->   #include <linux/uaccess.h>
->   #include <linux/security.h>
->   #include <linux/lsm_hooks.h>
->   #include "integrity.h"
->   
-> -static struct rb_root integrity_iint_tree = RB_ROOT;
-> -static DEFINE_RWLOCK(integrity_iint_lock);
->   static struct kmem_cache *iint_cache __ro_after_init;
->   
->   struct dentry *integrity_dir;
->   
-> -/*
-> - * __integrity_iint_find - return the iint associated with an inode
-> - */
-> -static struct integrity_iint_cache *__integrity_iint_find(struct inode *inode)
-> -{
-> -	struct integrity_iint_cache *iint;
-> -	struct rb_node *n = integrity_iint_tree.rb_node;
-> -
-> -	while (n) {
-> -		iint = rb_entry(n, struct integrity_iint_cache, rb_node);
-> -
-> -		if (inode < iint->inode)
-> -			n = n->rb_left;
-> -		else if (inode > iint->inode)
-> -			n = n->rb_right;
-> -		else
-> -			return iint;
-> -	}
-> -
-> -	return NULL;
-> -}
-> -
->   /*
->    * integrity_iint_find - return the iint associated with an inode
->    */
->   struct integrity_iint_cache *integrity_iint_find(struct inode *inode)
->   {
-> -	struct integrity_iint_cache *iint;
-> -
->   	if (!IS_IMA(inode))
->   		return NULL;
->   
-> -	read_lock(&integrity_iint_lock);
-> -	iint = __integrity_iint_find(inode);
-> -	read_unlock(&integrity_iint_lock);
-> -
-> -	return iint;
-> +	return integrity_inode_get_iint(inode);
->   }
->   
->   #define IMA_MAX_NESTING (FILESYSTEM_MAX_STACK_DEPTH+1)
-> @@ -123,9 +92,7 @@ static void iint_free(struct integrity_iint_cache *iint)
->    */
->   struct integrity_iint_cache *integrity_inode_get(struct inode *inode)
->   {
-> -	struct rb_node **p;
-> -	struct rb_node *node, *parent = NULL;
-> -	struct integrity_iint_cache *iint, *test_iint;
-> +	struct integrity_iint_cache *iint;
->   
->   	/*
->   	 * After removing the 'integrity' LSM, the 'ima' LSM calls
-> @@ -144,31 +111,10 @@ struct integrity_iint_cache *integrity_inode_get(struct inode *inode)
->   
->   	iint_init_always(iint, inode);
->   
-> -	write_lock(&integrity_iint_lock);
-> -
-> -	p = &integrity_iint_tree.rb_node;
-> -	while (*p) {
-> -		parent = *p;
-> -		test_iint = rb_entry(parent, struct integrity_iint_cache,
-> -				     rb_node);
-> -		if (inode < test_iint->inode) {
-> -			p = &(*p)->rb_left;
-> -		} else if (inode > test_iint->inode) {
-> -			p = &(*p)->rb_right;
-> -		} else {
-> -			write_unlock(&integrity_iint_lock);
-> -			kmem_cache_free(iint_cache, iint);
-> -			return test_iint;
-> -		}
-> -	}
-> -
->   	iint->inode = inode;
-> -	node = &iint->rb_node;
->   	inode->i_flags |= S_IMA;
-> -	rb_link_node(node, parent, p);
-> -	rb_insert_color(node, &integrity_iint_tree);
-> +	integrity_inode_set_iint(inode, iint);
->   
-> -	write_unlock(&integrity_iint_lock);
->   	return iint;
->   }
->   
-> @@ -185,10 +131,8 @@ void integrity_inode_free(struct inode *inode)
->   	if (!IS_IMA(inode))
->   		return;
->   
-> -	write_lock(&integrity_iint_lock);
-> -	iint = __integrity_iint_find(inode);
-> -	rb_erase(&iint->rb_node, &integrity_iint_tree);
-> -	write_unlock(&integrity_iint_lock);
-> +	iint = integrity_iint_find(inode);
-> +	integrity_inode_set_iint(inode, NULL);
->   
->   	iint_free(iint);
->   }
-> @@ -212,6 +156,10 @@ int __init integrity_iintcache_init(void)
->   	return 0;
->   }
->   
-> +struct lsm_blob_sizes integrity_blob_sizes __ro_after_init = {
-> +	.lbs_inode = sizeof(struct integrity_iint_cache *),
-> +};
-> +
->   /*
->    * integrity_kernel_read - read data from the file
->    *
-> diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
-> index 3f59cce3fa02..52b4a3bba45a 100644
-> --- a/security/integrity/ima/ima_main.c
-> +++ b/security/integrity/ima/ima_main.c
-> @@ -1162,6 +1162,7 @@ DEFINE_LSM(ima) = {
->   	.name = "ima",
->   	.init = init_ima_lsm,
->   	.order = LSM_ORDER_LAST,
-> +	.blobs = &integrity_blob_sizes,
->   };
->   
->   late_initcall(init_ima);	/* Start IMA after the TPM is available */
-> diff --git a/security/integrity/integrity.h b/security/integrity/integrity.h
-> index 26d3b08dca1c..2fb35c67d64d 100644
-> --- a/security/integrity/integrity.h
-> +++ b/security/integrity/integrity.h
-> @@ -158,7 +158,6 @@ struct ima_file_id {
->   
->   /* integrity data associated with an inode */
->   struct integrity_iint_cache {
-> -	struct rb_node rb_node;	/* rooted in integrity_iint_tree */
->   	struct mutex mutex;	/* protects: version, flags, digest */
->   	struct inode *inode;	/* back pointer to inode in question */
->   	u64 version;		/* track inode changes */
-> @@ -194,6 +193,25 @@ int integrity_kernel_read(struct file *file, loff_t offset,
->   #define INTEGRITY_KEYRING_MAX		4
->   
->   extern struct dentry *integrity_dir;
-> +extern struct lsm_blob_sizes integrity_blob_sizes;
-> +
-> +static inline struct integrity_iint_cache *
-> +integrity_inode_get_iint(const struct inode *inode)
-> +{
-> +	struct integrity_iint_cache **iint_sec;
-> +
-> +	iint_sec = inode->i_security + integrity_blob_sizes.lbs_inode;
-> +	return *iint_sec;
-> +}
-> +
-> +static inline void integrity_inode_set_iint(const struct inode *inode,
-> +					    struct integrity_iint_cache *iint)
-> +{
-> +	struct integrity_iint_cache **iint_sec;
-> +
-> +	iint_sec = inode->i_security + integrity_blob_sizes.lbs_inode;
-> +	*iint_sec = iint;
-> +}
->   
->   struct modsig;
->   
-
+T24gRnJpZGF5LCBEZWNlbWJlciAxLCAyMDIzIDQ6MjkgQU0sIFdpbGxlbSBkZSBCcnVpam4gd3Jv
+dGU6DQo+U29uZyBZb29uZyBTaWFuZyB3cm90ZToNCj4+IFRoaXMgcGF0Y2ggZXh0ZW5kcyB0aGUg
+WERQIFR4IG1ldGFkYXRhIGZyYW1ld29yayB0byBpbmNsdWRlIFRpbWUtQmFzZWQNCj4+IFNjaGVk
+dWxpbmcgKFRCUykgc3VwcG9ydCB3aGVyZSB0aGUgTklDIHdpbGwgc2NoZWR1bGUgYSBwYWNrZXQg
+Zm9yDQo+PiB0cmFuc21pc3Npb24gYXQgYSBwcmUtZGV0ZXJtaW5lZCB0aW1lIGNhbGxlZCBsYXVu
+Y2ggdGltZS4gVGhlIHZhbHVlIG9mDQo+PiBsYXVuY2ggdGltZSBpcyBjb21tdW5pY2F0ZWQgZnJv
+bSB1c2VyIHNwYWNlIHRvIEV0aGVybmV0IGRyaXZlciB2aWENCj4+IGxhdW5jaF90aW1lIGZpZWxk
+IG9mIHN0cnVjdCB4c2tfdHhfbWV0YWRhdGEuDQo+Pg0KPj4gU3VnZ2VzdGVkLWJ5OiBTdGFuaXNs
+YXYgRm9taWNoZXYgPHNkZkBnb29nbGUuY29tPg0KPj4gU2lnbmVkLW9mZi1ieTogU29uZyBZb29u
+ZyBTaWFuZyA8eW9vbmcuc2lhbmcuc29uZ0BpbnRlbC5jb20+DQo+PiAtLS0NCj4+ICBEb2N1bWVu
+dGF0aW9uL25ldGxpbmsvc3BlY3MvbmV0ZGV2LnlhbWwgICAgICB8ICA0ICsrKysNCj4+ICBEb2N1
+bWVudGF0aW9uL25ldHdvcmtpbmcveHNrLXR4LW1ldGFkYXRhLnJzdCB8ICA1ICsrKysrDQo+PiAg
+aW5jbHVkZS9uZXQveGRwX3NvY2suaCAgICAgICAgICAgICAgICAgICAgICAgfCAxMCArKysrKysr
+KysrDQo+PiAgaW5jbHVkZS9uZXQveGRwX3NvY2tfZHJ2LmggICAgICAgICAgICAgICAgICAgfCAg
+MSArDQo+PiAgaW5jbHVkZS91YXBpL2xpbnV4L2lmX3hkcC5oICAgICAgICAgICAgICAgICAgfCAg
+OSArKysrKysrKysNCj4+ICBpbmNsdWRlL3VhcGkvbGludXgvbmV0ZGV2LmggICAgICAgICAgICAg
+ICAgICB8ICAzICsrKw0KPj4gIG5ldC9jb3JlL25ldGRldi1nZW5sLmMgICAgICAgICAgICAgICAg
+ICAgICAgIHwgIDIgKysNCj4+ICBuZXQveGRwL3hzay5jICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICB8ICAzICsrKw0KPj4gIHRvb2xzL2luY2x1ZGUvdWFwaS9saW51eC9pZl94ZHAuaCAg
+ICAgICAgICAgIHwgIDkgKysrKysrKysrDQo+PiAgdG9vbHMvaW5jbHVkZS91YXBpL2xpbnV4L25l
+dGRldi5oICAgICAgICAgICAgfCAgMyArKysNCj4+ICB0b29scy9uZXQveW5sL2dlbmVyYXRlZC9u
+ZXRkZXYtdXNlci5jICAgICAgICB8ICAxICsNCj4+ICAxMSBmaWxlcyBjaGFuZ2VkLCA1MCBpbnNl
+cnRpb25zKCspDQo+Pg0KPj4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vbmV0bGluay9zcGVj
+cy9uZXRkZXYueWFtbA0KPmIvRG9jdW1lbnRhdGlvbi9uZXRsaW5rL3NwZWNzL25ldGRldi55YW1s
+DQo+PiBpbmRleCAwMDQzOWJjYmQyZTMuLmE2MDI3NzZiYmZiNCAxMDA2NDQNCj4+IC0tLSBhL0Rv
+Y3VtZW50YXRpb24vbmV0bGluay9zcGVjcy9uZXRkZXYueWFtbA0KPj4gKysrIGIvRG9jdW1lbnRh
+dGlvbi9uZXRsaW5rL3NwZWNzL25ldGRldi55YW1sDQo+PiBAQCAtNjYsNiArNjYsMTAgQEAgZGVm
+aW5pdGlvbnM6DQo+PiAgICAgICAgICBuYW1lOiB0eC1jaGVja3N1bQ0KPj4gICAgICAgICAgZG9j
+Og0KPj4gICAgICAgICAgICBMMyBjaGVja3N1bSBIVyBvZmZsb2FkIGlzIHN1cHBvcnRlZCBieSB0
+aGUgZHJpdmVyLg0KPj4gKyAgICAgIC0NCj4+ICsgICAgICAgIG5hbWU6IGxhdW5jaC10aW1lDQo+
+PiArICAgICAgICBkb2M6DQo+PiArICAgICAgICAgIEhXIFRpbWUtQmFzZWQgU2NoZWR1bGluZyAo
+VEJTKSBpcyBzdXBwb3J0ZWQgYnkgdGhlIGRyaXZlci4NCj4NCj5DYW4gd2UgYXZvaWQgaW50cm9k
+dWNpbmcgYW5vdGhlciB0ZXJtPyBXZSBhbHJlYWR5IGhhdmUgdG9vIG1hbnk6DQo+bGF1bmNodGlt
+ZSwgZWFybGllc3QgZGVsaXZlcnkgdGltZSAoRURUKSwgU09fVFhUSU1FLA0KPnBhY2luZyBvZmZs
+b2FkLCBlYXJsaWVzdCB0eHRpbWUgZmlyc3QgKEVURikuDQo+DQoNClN1cmUuIEkgd2lsbCBjaGFu
+Z2UgVEJTIHRvIEVURiBpbiBteSBWMiBzbyB0aGF0IGl0IGlzIGFsaWduZWQgd2l0aCBldGYgY29t
+bWFuZCBpbiB0YyBhcHBsaWNhdGlvbi4gDQo=
