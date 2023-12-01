@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3058F80119E
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:24:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49BC280119F
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:25:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379051AbjLARYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 12:24:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40802 "EHLO
+        id S1379297AbjLARYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 12:24:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379181AbjLARYN (ORCPT
+        with ESMTP id S1379207AbjLARYO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 12:24:13 -0500
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2080C2736
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 09:23:28 -0800 (PST)
-Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-5c627dd2accso928081a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 09:23:28 -0800 (PST)
+        Fri, 1 Dec 2023 12:24:14 -0500
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A6521FD9
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 09:23:30 -0800 (PST)
+Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1cfccc9d6bcso8819645ad.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 09:23:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701451407; x=1702056207; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1701451410; x=1702056210; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=pF1HXnbmSrYchthIdE2P0kzrKumbnX3teWalqa1zpFg=;
-        b=F5QbRUFiAnUl+CmA58PzE2VL2S0EWPi732gmuGSDf7TKZtymWuH/KgeMsMSldaQTkL
-         7O76c1DoHzUWF2DfCjweg8yz7zZv21ySNClcjv5rKbR1zV+P0cv9D+l7thjMRUR+tQTb
-         mkP4unOdzdgEquKhGe80WlEZTPa6vjFGJx1yivPSgs5givJfDwdgfM1vVfsRfbgwG/YA
-         BM2RWBZxDyRFt0uvSRAr9x98BF34g8pf/0L6hzV30LnAMadV++gNZTnUkvVIdbB4A/zU
-         W4tkV4xFahdU8U9ManfEn2ZitYa/VMHdN+XUmmzWOE9JfBn+Bk2d0/YnCkOrtVWO9EdM
-         fKDw==
+        bh=5z21SLbjWHo/KErnPrmSLWG6J9kVLmV3Tx7d+8xOII4=;
+        b=qv2u5+xEx7COcMCTCkZEOPNlSnmnXkEiKMYMQMEefftCmQG85icMGWcLJSF3QlUdI2
+         5WilxB3KniBlc5vvazxGJ+F+Kw8YqT1hkTdX3zCfndM0HKxbjVtLBBfJiy6iaEnJQR7f
+         VW06y8Q1F9q2E6o8Yd+0V6djsZTp7XzmYfxSsbo7Bz0gv3w6GOsKAWjB26TflFbtRbFf
+         fSdjbUL5FlDBN7FjpbDZxnZ/aMD58QbTJtQs2E97PXuCXEArMTcbUSHbbUO71pse/xR2
+         ajTel1ub5ieNvZVbKtuFtmPYl5fbq/XVetin/14jB2yY2xH4jfamLRo6DBq4xl9Ay33o
+         o16w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701451407; x=1702056207;
+        d=1e100.net; s=20230601; t=1701451410; x=1702056210;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pF1HXnbmSrYchthIdE2P0kzrKumbnX3teWalqa1zpFg=;
-        b=umqVVEZu6oqpEwutKBBc3aBYQ5yFM9mWNWu/78NS7Wx6tAOWwmm9+LJ/ml8QoO2XQe
-         /jWtmxbHmbUVZXGRDIUYWNcVSxgW+/SP5ZSD4B6cyAbJ4PjKmqt2ReqVwIiiNPysmev3
-         JQfY6aKXGJp1xoct/CKne9quyAzOBJVDxNonzleKkqI77RhccQDHeScB4BNhmZL6QftR
-         gWp95wtJdmEXwpiDQcRUk+tW5+TC0xsIM/HSZsPsLLPtGOB8I1u0MO3vKpqMGeyEvrAy
-         TPYie1FwtaRC1GRNW4GwQAcGDCxOG5jXuFTB7x5MI+ADIkWS0kug4hLAC2KB+xkNxRwW
-         VaSQ==
-X-Gm-Message-State: AOJu0YwMW+KhvBijXLPV6fMCdVa5nj+lLIWjdluvGC3H2ru3tBeIkFIQ
-        EauLOZrBIcknY/fk2r6+2OuvTCiPw58L7w==
-X-Google-Smtp-Source: AGHT+IHGjfY5XTrK9i72lt1Po9ugG7UBlXvPtE0jY1V4k8nhhcjmWPgtcgyZfDrCVYTGCv+s3fb14BSFs1yWBQ==
+        bh=5z21SLbjWHo/KErnPrmSLWG6J9kVLmV3Tx7d+8xOII4=;
+        b=quNq1rkoJx8ybhnFQS422yEhiH0KK/xuLitfn5gWR+d4uUon+nkEkMi3O+FSxMY1Br
+         KCYym/4Ra5PCIWzkcpqMGL42MvcA6bJ7FSR3fMgtz5wA7UW8dPd/KAOtJdVy2DJ3ujjY
+         L2gGIG39ukUfB81F2crE5dife5k1XABjyqT8eRB7O633MBRmrcETQYeYsrLq85uy8ie6
+         9a8/hjpj7DWPUstXizXCWzX1uDuZRPtM552L3Jv9PNzoAaQRAGBVKHFC6+LyNwgXzzt1
+         nk/e9bXb9cR5I1AvILQx3pA1KPIy0IqKFm2t3QUvMr+/xrtR7ILcElB/EIj3ABzJchfE
+         ue3w==
+X-Gm-Message-State: AOJu0Yy3DeB//TZYMR50eKVGAcSvHC815+XOjU9mjEugYUiywDRkX1qk
+        /rAT8JlLiaIMzjnyjrgx8+5S/1clUM8qRw==
+X-Google-Smtp-Source: AGHT+IE/KKSKjvxzW0LsOzIHnxB/CHY5U3+186iQaS5nWM7NixehyMgbBFvN8eErQX8jIAWyRzrNcDU24bgF1w==
 X-Received: from xllamas.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5070])
- (user=cmllamas job=sendgmr) by 2002:a63:2218:0:b0:5be:123c:5fc with SMTP id
- i24-20020a632218000000b005be123c05fcmr3883861pgi.10.1701451407544; Fri, 01
- Dec 2023 09:23:27 -0800 (PST)
-Date:   Fri,  1 Dec 2023 17:21:53 +0000
+ (user=cmllamas job=sendgmr) by 2002:a17:902:8644:b0:1d0:3090:957d with SMTP
+ id y4-20020a170902864400b001d03090957dmr668385plt.11.1701451409865; Fri, 01
+ Dec 2023 09:23:29 -0800 (PST)
+Date:   Fri,  1 Dec 2023 17:21:54 +0000
 In-Reply-To: <20231201172212.1813387-1-cmllamas@google.com>
 Mime-Version: 1.0
 References: <20231201172212.1813387-1-cmllamas@google.com>
 X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
-Message-ID: <20231201172212.1813387-25-cmllamas@google.com>
-Subject: [PATCH v2 24/28] binder: collapse print_binder_buffer() into caller
+Message-ID: <20231201172212.1813387-26-cmllamas@google.com>
+Subject: [PATCH v2 25/28] binder: refactor binder_delete_free_buffer()
 From:   Carlos Llamas <cmllamas@google.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         "=?UTF-8?q?Arve=20Hj=C3=B8nnev=C3=A5g?=" <arve@android.com>,
@@ -74,59 +74,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The code in print_binder_buffer() is quite small so it can be collapsed
-into its single caller binder_alloc_print_allocated().
-
-No functional change in this patch.
+Skip the freelist call immediately as needed, instead of continuing the
+pointless checks. Also, drop the debug logs that we don't really need.
 
 Signed-off-by: Carlos Llamas <cmllamas@google.com>
 ---
- drivers/android/binder_alloc.c | 22 +++++++++-------------
- 1 file changed, 9 insertions(+), 13 deletions(-)
+ drivers/android/binder_alloc.c | 44 +++++++++-------------------------
+ 1 file changed, 11 insertions(+), 33 deletions(-)
 
 diff --git a/drivers/android/binder_alloc.c b/drivers/android/binder_alloc.c
-index edd9714ec9f5..60c829506d31 100644
+index 60c829506d31..c3fc90966867 100644
 --- a/drivers/android/binder_alloc.c
 +++ b/drivers/android/binder_alloc.c
-@@ -978,16 +978,6 @@ void binder_alloc_deferred_release(struct binder_alloc *alloc)
- 		     __func__, alloc->pid, buffers, page_count);
- }
- 
--static void print_binder_buffer(struct seq_file *m, const char *prefix,
--				struct binder_buffer *buffer)
--{
--	seq_printf(m, "%s %d: %lx size %zd:%zd:%zd %s\n",
--		   prefix, buffer->debug_id, buffer->user_data,
--		   buffer->data_size, buffer->offsets_size,
--		   buffer->extra_buffers_size,
--		   buffer->transaction ? "active" : "delivered");
--}
--
- /**
-  * binder_alloc_print_allocated() - print buffer info
-  * @m:     seq_file for output via seq_printf()
-@@ -999,12 +989,18 @@ static void print_binder_buffer(struct seq_file *m, const char *prefix,
- void binder_alloc_print_allocated(struct seq_file *m,
- 				  struct binder_alloc *alloc)
+@@ -636,48 +636,26 @@ static unsigned long prev_buffer_end_page(struct binder_buffer *buffer)
+ static void binder_delete_free_buffer(struct binder_alloc *alloc,
+ 				      struct binder_buffer *buffer)
  {
-+	struct binder_buffer *buffer;
- 	struct rb_node *n;
+-	struct binder_buffer *prev, *next = NULL;
+-	bool to_free = true;
++	struct binder_buffer *prev, *next;
++
++	if (PAGE_ALIGNED(buffer->user_data))
++		goto skip_freelist;
  
- 	mutex_lock(&alloc->mutex);
--	for (n = rb_first(&alloc->allocated_buffers); n != NULL; n = rb_next(n))
--		print_binder_buffer(m, "  buffer",
--				    rb_entry(n, struct binder_buffer, rb_node));
-+	for (n = rb_first(&alloc->allocated_buffers); n; n = rb_next(n)) {
-+		buffer = rb_entry(n, struct binder_buffer, rb_node);
-+		seq_printf(m, "  buffer %d: %lx size %zd:%zd:%zd %s\n",
-+			   buffer->debug_id, buffer->user_data,
-+			   buffer->data_size, buffer->offsets_size,
-+			   buffer->extra_buffers_size,
-+			   buffer->transaction ? "active" : "delivered");
-+	}
- 	mutex_unlock(&alloc->mutex);
+ 	BUG_ON(alloc->buffers.next == &buffer->entry);
+ 	prev = binder_buffer_prev(buffer);
+ 	BUG_ON(!prev->free);
+-	if (prev_buffer_end_page(prev) == buffer_start_page(buffer)) {
+-		to_free = false;
+-		binder_alloc_debug(BINDER_DEBUG_BUFFER_ALLOC,
+-				   "%d: merge free, buffer %lx share page with %lx\n",
+-				   alloc->pid, buffer->user_data,
+-				   prev->user_data);
+-	}
++	if (prev_buffer_end_page(prev) == buffer_start_page(buffer))
++		goto skip_freelist;
+ 
+ 	if (!list_is_last(&buffer->entry, &alloc->buffers)) {
+ 		next = binder_buffer_next(buffer);
+-		if (buffer_start_page(next) == buffer_start_page(buffer)) {
+-			to_free = false;
+-			binder_alloc_debug(BINDER_DEBUG_BUFFER_ALLOC,
+-					   "%d: merge free, buffer %lx share page with %lx\n",
+-					   alloc->pid,
+-					   buffer->user_data,
+-					   next->user_data);
+-		}
++		if (buffer_start_page(next) == buffer_start_page(buffer))
++			goto skip_freelist;
+ 	}
+ 
+-	if (PAGE_ALIGNED(buffer->user_data)) {
+-		binder_alloc_debug(BINDER_DEBUG_BUFFER_ALLOC,
+-				   "%d: merge free, buffer start %lx is page aligned\n",
+-				   alloc->pid, buffer->user_data);
+-		to_free = false;
+-	}
+-
+-	if (to_free) {
+-		binder_alloc_debug(BINDER_DEBUG_BUFFER_ALLOC,
+-				   "%d: merge free, buffer %lx do not share page with %lx or %lx\n",
+-				   alloc->pid, buffer->user_data,
+-				   prev->user_data,
+-				   next ? next->user_data : 0);
+-		binder_lru_freelist_add(alloc, buffer_start_page(buffer),
+-					buffer_start_page(buffer) + PAGE_SIZE);
+-	}
++	binder_lru_freelist_add(alloc, buffer_start_page(buffer),
++				buffer_start_page(buffer) + PAGE_SIZE);
++skip_freelist:
+ 	list_del(&buffer->entry);
+ 	kfree(buffer);
  }
- 
 -- 
 2.43.0.rc2.451.g8631bc7472-goog
 
