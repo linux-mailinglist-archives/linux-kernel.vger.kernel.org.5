@@ -2,100 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05F23801319
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 19:49:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84FF7801322
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 19:50:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379375AbjLAStU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 13:49:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54508 "EHLO
+        id S1379380AbjLASuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 13:50:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjLAStT (ORCPT
+        with ESMTP id S229468AbjLASuT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 13:49:19 -0500
-Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com [209.85.210.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 880D910DA
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 10:49:22 -0800 (PST)
-Received: by mail-pf1-f197.google.com with SMTP id d2e1a72fcca58-6ce02f230a8so1129564b3a.2
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 10:49:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701456562; x=1702061362;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=V7uf/nKmgeB4s8AOYp5odSuJMyINXnSr8QWYtuxIBzY=;
-        b=jPo/4SmuGW8IVpko4VJBoIm0rb/XTwnrHpZlrvrounmsJErWPtPGluO2O3se0FGRFp
-         j3eyGOvx4P6JnE+a7+GvKBnhskGsmBDVR5cOGLCm2AZQMsouZECuG5AAMxdXV1S5AHbF
-         FplYKejx0TCIZy23jfCs7ZmmC+59hA8/HEuYCaSMEWKUAK1kwS7jHhNnS7LDsWz3nlt2
-         zMawBE0GTD1i2XMmDWbPt7xiRhHaB2PR19DkcMVZ2nDpqDy3h59B73pzniALVW5lpvod
-         wM4huADfMg3Bnd049KDpRkiVUOB2a55rTkRdKtj8EuChORWnLeUDGDHxxmvdyjG3UYAQ
-         6raA==
-X-Gm-Message-State: AOJu0YwqNxZ9aKWwyOHiM377G8D+pYZgly8ULGnZ7BQS4TLl/mN6JApc
-        mx2Zcs0DlGWlEO7Jhq0h88cMk1IKGawDR3xT1az74l55Ac6pvPU=
-X-Google-Smtp-Source: AGHT+IGUlw4/hagoD6X3KinajDD/07g+mo7vw/4QKPKJaydC8FYQx5YjjtYPkMk1e4oyqU+KF7hBYuo2j8nElT2I5fPFt+RJv8tj
+        Fri, 1 Dec 2023 13:50:19 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96346B2
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 10:50:26 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A377C433C7;
+        Fri,  1 Dec 2023 18:50:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701456626;
+        bh=nlNo7xM9XoRlNYHh2JQaIekxrQZHPuEHEh20xUWik9A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eix0RHOryZ9fBUgKkiP3QDCZYWkQfGj0qw7PH2nt9Ij/gX120ikLc9r3jpDtMy6sf
+         rgmZGHvqQNVhKOxcLmZ161yUAiZn4s78Y23brUdPGdPhTAhFC+i6FJz3XugCzxHlRp
+         Ig+ududz0DuZtxihAgmEp4sXjkOSrBRJ2O122FhozAoQ+kb7GVueZW2LgPNs0rW5Bf
+         YXy8lQVXxIuYYtN19fcnKuN4Ec5bSzGzd23rAds2gzKmFGQo1LsE0NIgp0s2eRVuGk
+         VkpLlgLZlFsGR+b2Yk+9FKc8ZtqR2/HbOqP+o8Mbd+pizyhKM6IIQ+t/Dcj9TftAw6
+         NXhpQFInUQ95w==
+Date:   Fri, 1 Dec 2023 18:50:15 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Lee Jones <lee@kernel.org>
+Cc:     tudor.ambarus@linaro.org, pratyush@kernel.org,
+        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        sbinding@opensource.cirrus.com, james.schulman@cirrus.com,
+        david.rhodes@cirrus.com, rf@opensource.cirrus.com, perex@perex.cz,
+        tiwai@suse.com,
+        Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        michael@walle.cc, linux-mtd@lists.infradead.org,
+        nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
+        claudiu.beznea@tuxon.dev, michal.simek@amd.com,
+        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
+        patches@opensource.cirrus.com, linux-sound@vger.kernel.org,
+        git@amd.com, amitrkcian2002@gmail.com
+Subject: Re: (subset) [PATCH v11 01/10] mfd: tps6594: Use set/get APIs to
+ access spi->chip_select
+Message-ID: <395caa58-a8a0-4c75-85d3-4fa0f6f4a9ba@sirena.org.uk>
+References: <20231125092137.2948-1-amit.kumar-mahapatra@amd.com>
+ <20231125092137.2948-2-amit.kumar-mahapatra@amd.com>
+ <170142465659.3329910.8527538140063947758.b4-ty@kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6a00:b4c:b0:6ce:d0:118c with SMTP id
- p12-20020a056a000b4c00b006ce00d0118cmr381472pfo.6.1701456561791; Fri, 01 Dec
- 2023 10:49:21 -0800 (PST)
-Date:   Fri, 01 Dec 2023 10:49:21 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f76a65060b7739da@google.com>
-Subject: [syzbot] Monthly wireless report (Nov 2023)
-From:   syzbot <syzbot+listd3e5fd84a00bcad8b79e@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="uaQ9X2fe+EqjZHC4"
+Content-Disposition: inline
+In-Reply-To: <170142465659.3329910.8527538140063947758.b4-ty@kernel.org>
+X-Cookie: The early worm gets the late bird.
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello wireless maintainers/developers,
 
-This is a 31-day syzbot report for the wireless subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/wireless
+--uaQ9X2fe+EqjZHC4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-During the period, 1 new issues were detected and 0 were fixed.
-In total, 32 issues are still open and 117 have been fixed so far.
+On Fri, Dec 01, 2023 at 09:57:36AM +0000, Lee Jones wrote:
+> On Sat, 25 Nov 2023 14:51:28 +0530, Amit Kumar Mahapatra wrote:
+> > In preparation for adding multiple CS support for a device, set/get
+> > functions were introduces accessing spi->chip_select in
+> > 'commit 303feb3cc06a ("spi: Add APIs in spi core to set/get
+> > spi->chip_select and spi->cs_gpiod")'.
+> > Replace spi->chip_select with spi_get_chipselect() API.
 
-Some of the still happening issues:
+> Applied, thanks!
 
-Ref  Crashes Repro Title
-<1>  5951    Yes   WARNING in __ieee80211_beacon_get
-                   https://syzkaller.appspot.com/bug?extid=18c783c5cf6a781e3e2c
-<2>  4366    Yes   WARNING in __cfg80211_ibss_joined (2)
-                   https://syzkaller.appspot.com/bug?extid=7f064ba1704c2466e36d
-<3>  3474    Yes   WARNING in ieee80211_rx_list
-                   https://syzkaller.appspot.com/bug?extid=8830db5d3593b5546d2e
-<4>  3175    Yes   WARNING in ieee80211_link_info_change_notify (2)
-                   https://syzkaller.appspot.com/bug?extid=de87c09cc7b964ea2e23
-<5>  2663    No    WARNING in ieee80211_ibss_csa_beacon (2)
-                   https://syzkaller.appspot.com/bug?extid=b10a54cb0355d83fd75c
-<6>  984     Yes   WARNING in __rate_control_send_low
-                   https://syzkaller.appspot.com/bug?extid=fdc5123366fb9c3fdc6d
-<7>  829     Yes   WARNING in ar5523_submit_rx_cmd/usb_submit_urb
-                   https://syzkaller.appspot.com/bug?extid=6101b0c732dea13ea55b
-<8>  734     Yes   WARNING in ieee80211_start_next_roc
-                   https://syzkaller.appspot.com/bug?extid=c3a167b5615df4ccd7fb
-<9>  357     Yes   WARNING in ieee80211_bss_info_change_notify (2)
-                   https://syzkaller.appspot.com/bug?extid=dd4779978217b1973180
-<10> 61      Yes   WARNING in ieee80211_free_ack_frame (2)
-                   https://syzkaller.appspot.com/bug?extid=ac648b0525be1feba506
+> [01/10] mfd: tps6594: Use set/get APIs to access spi->chip_select
+>         commit: dd636638446c87c95c5beddcd367d95ac6764c6c
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Is there a signed tag available for this - without this change the
+subsequent SPI changes introduce a build breakage.
 
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
+--uaQ9X2fe+EqjZHC4
+Content-Type: application/pgp-signature; name="signature.asc"
 
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
+-----BEGIN PGP SIGNATURE-----
 
-You may send multiple commands in a single email message.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVqKuYACgkQJNaLcl1U
+h9APAwf+KLPqe9oVMKPnVoC0/RKtAWqn22qR/OisWnbE+SjMxYnOliwWr1Uy1gfO
+VQpQx3O/7kKmZ5aYGt82J0rykYY+6IFwHvgwUu67iYpCzQgmhVbnbh1B94YeZIkV
+SUkOiN7HUoTbbExTLVa5Jn+5+LKRmMkbjYXVdpb41Jz/fyGNAidXizOnpqct/Qp1
+dMNggC1eWI/kqsOjSr9obsJHhIcyM7u1pwaicJzWGG7SwNM0PSramv3lCHpaKH5W
+UbyLbyZ+G0Z2JIwwnq1hFEyklQ1RVInt+3p4rfYhIInMDF+5cQPUjBTcS4k8ho1J
+FDPG03/Neeonh9yIf8+TSmQ4tVxszQ==
+=/wO/
+-----END PGP SIGNATURE-----
+
+--uaQ9X2fe+EqjZHC4--
