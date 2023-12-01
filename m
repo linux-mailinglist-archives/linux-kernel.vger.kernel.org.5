@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBB37801199
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:24:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D68A280119B
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:24:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379106AbjLARYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 12:24:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58574 "EHLO
+        id S1378928AbjLARYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 12:24:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378848AbjLARX6 (ORCPT
+        with ESMTP id S1378958AbjLARYC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 12:23:58 -0500
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DA1E2723
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 09:23:19 -0800 (PST)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5ca2a6f07b6so40373367b3.2
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 09:23:19 -0800 (PST)
+        Fri, 1 Dec 2023 12:24:02 -0500
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64D651BCA
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 09:23:21 -0800 (PST)
+Received: by mail-pg1-x54a.google.com with SMTP id 41be03b00d2f7-5be39ccc2e9so857644a12.3
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 09:23:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701451398; x=1702056198; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1701451401; x=1702056201; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=cAIHsbo51mg8B6aRA1t9pk6vlJjR/cpfdTMz4BgsBxY=;
-        b=zKxTteOXbaQc0IqiA38KA8PjIECFgLqerLwkt5XhrU6CiQrLbjZrIBNuLwdCuk7Y2y
-         LBSfb7ZdBGQpST+1vYvMS/Dh+3qe+Y1Mj5pkWQy67cPRdf7W+AXHcmZZPoEyV4YBDFKp
-         w29X/sJXDxK7p0Qfz3FvbpR+eFTF4TFkxY6Oriwa1Q/LktaMBVxHxeGMZ4PurMXVV/3i
-         XfOpZJUiW64Ltu7ZH0+XJt+T3JGgU7n7x86qotfS2T79p8t/lLzbNEIxqrOklcP4buR/
-         7OZraIEoxHcWNJdfrlknD0ykveja6+K+yp8JRwPj076IBTnurRrWHHAvbFezbLnpq2Bk
-         wcvw==
+        bh=rwPGkNR8076Q07N+OgHVsWjnRk7wPl2kgeueBhqxEBg=;
+        b=hPr3SynxGCIfdWw9lphBKaRKNpqifrVVvEl3k83CC3Sr5kB60DsPegWKk6Tp7t9n47
+         gcVtIOCI5q6H0GzzUH/LovTQkf4jydr99D3IYAE1VJXNMtXR2jLpnaljSuuxw16ueEHE
+         PeYTRoraX71FpR99kOJLHJPk2doGqn+9VoMnTiTWGK+aBtNgsRGsei+3zu2+Jwpjna6x
+         GNJw/NkVY72CXZES4TkJQdRQN0ZsF/UKco8pI0qxXR/RcFu3ZtLBphdZZlRMeTJiUNkB
+         dZEVON+CmngUTY91GSzZXChyjcZ6vCTfInIf//JwPbdn6FEd8czXTK+SlhPhPWrdNbCt
+         FFVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701451398; x=1702056198;
+        d=1e100.net; s=20230601; t=1701451401; x=1702056201;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cAIHsbo51mg8B6aRA1t9pk6vlJjR/cpfdTMz4BgsBxY=;
-        b=nfkMJbU0WrhAc5DUz/9xE757ipn5NgPQHPpFqQrlGBv0rbJsw/fY3Fe/s2GquFpEF6
-         p8/XGnrzxHxqFC6Gtx2TNMa2YhXH4r6JGwZ5VsYFYgh5QKxemPt4BgJ7yEw4JI4Pofns
-         gBlt5oOtQePuMiUOtlsWGcXj9s95GlFrFO2vM2fX5nuAyCLIGl76dkMTewDvDS3xf4G6
-         IaQ3X72tLBnImzaW4dv4xSBZwjbx4n9MhafXZ32GnP0yivi46aDRNYGXEeOvGVvKDl4A
-         GEnTYRncigpSL3SmmohwmIzzo/c08zWPQcA1TTESWhR+Iqa9M9iggcy+A6mnGo1Kge8r
-         XZEA==
-X-Gm-Message-State: AOJu0YzxcYFzf2NLohF8Jx9lidbb5YLNzWzjhwejxMxbVkk8VWzhASNC
-        JtbMK/NxCTSFda2Ch/EIWIFYL6PCx1qphQ==
-X-Google-Smtp-Source: AGHT+IEOJDTYB57hjmKhd8EwwHUzy1iTghVQUhIePO1/xcuUbCKBwqLTyAkiZ5O2yf2CWxPKFJEDSlp064JQNQ==
+        bh=rwPGkNR8076Q07N+OgHVsWjnRk7wPl2kgeueBhqxEBg=;
+        b=dveICv0xRzCKPKQxU4u4nZV5GeiahwpQrz4RFDiucDFCLEnERKiKF7bYoOenCfEgvP
+         MIHZpeWPszBYO3spu7A/6pv69m2O4RAUTeGIB3vTtaMy5Op3HU3PNToEWhqjLlfvyC/D
+         99vCUJFyzbeeT7whYkpqVDy/0G45hGc8xe+JZcwWyMqQf5OHs6YBKNREWvBtMpR8tdQ5
+         rYQDH3cMDiJiPmiq1f4rcUk8gVU4cCYpb63UuIvYbfrjAQtd9rLDQUOxyUv3dfWvRnPh
+         8vsTqdJW/NnYRj9LjmjjYx2PPKaJnVOJC1FCgJcOXJxWTCrgFQuNmMVFzwNj7S/G4Y1G
+         DSug==
+X-Gm-Message-State: AOJu0YwH+C/hD1MYsw/saYQi1FZkgtjBRGOaJ6XLLWKS+/Os8S1NoPJc
+        ANtw6/rPa7vkFrPBC8DDuEJRr7voxT1gpQ==
+X-Google-Smtp-Source: AGHT+IGT4HmJeynTGcHrHKbHhxApSr77DEEehuQkxHWCat3Abm4pqJPAdq7NKaX4LfEaJ6PH+v9tK5N3GGuh0w==
 X-Received: from xllamas.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5070])
- (user=cmllamas job=sendgmr) by 2002:a81:5213:0:b0:5d6:d039:bbf with SMTP id
- g19-20020a815213000000b005d6d0390bbfmr31961ywb.4.1701451398740; Fri, 01 Dec
- 2023 09:23:18 -0800 (PST)
-Date:   Fri,  1 Dec 2023 17:21:49 +0000
+ (user=cmllamas job=sendgmr) by 2002:a63:d304:0:b0:5ae:ce69:e65d with SMTP id
+ b4-20020a63d304000000b005aece69e65dmr4041766pgg.12.1701451400912; Fri, 01 Dec
+ 2023 09:23:20 -0800 (PST)
+Date:   Fri,  1 Dec 2023 17:21:50 +0000
 In-Reply-To: <20231201172212.1813387-1-cmllamas@google.com>
 Mime-Version: 1.0
 References: <20231201172212.1813387-1-cmllamas@google.com>
 X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
-Message-ID: <20231201172212.1813387-21-cmllamas@google.com>
-Subject: [PATCH v2 20/28] binder: remove redundant debug log
+Message-ID: <20231201172212.1813387-22-cmllamas@google.com>
+Subject: [PATCH v2 21/28] binder: make oversized buffer code more readable
 From:   Carlos Llamas <cmllamas@google.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         "=?UTF-8?q?Arve=20Hj=C3=B8nnev=C3=A5g?=" <arve@android.com>,
@@ -74,28 +74,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The debug information in this statement is already logged earlier in the
-same function. We can get rid of this duplicate log.
+The sections in binder_alloc_new_buf_locked() dealing with oversized
+buffers are scattered which makes them difficult to read. Instead,
+consolidate this code into a single block to improve readability.
+
+No functional change here.
 
 Signed-off-by: Carlos Llamas <cmllamas@google.com>
 ---
- drivers/android/binder_alloc.c | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/android/binder_alloc.c | 21 ++++++++++-----------
+ 1 file changed, 10 insertions(+), 11 deletions(-)
 
 diff --git a/drivers/android/binder_alloc.c b/drivers/android/binder_alloc.c
-index 551f08e84408..c9292eee8fee 100644
+index c9292eee8fee..ad9b73c6ddb7 100644
 --- a/drivers/android/binder_alloc.c
 +++ b/drivers/android/binder_alloc.c
-@@ -512,9 +512,6 @@ static struct binder_buffer *binder_alloc_new_buf_locked(
+@@ -483,32 +483,31 @@ static struct binder_buffer *binder_alloc_new_buf_locked(
+ 		goto out;
+ 	}
+ 
+-	if (n == NULL) {
++	if (buffer_size != size) {
++		/* Found an oversized buffer and needs to be split */
+ 		buffer = rb_entry(best_fit, struct binder_buffer, rb_node);
+ 		buffer_size = binder_alloc_buffer_size(alloc, buffer);
++
++		WARN_ON(n || buffer_size == size);
++		new_buffer->user_data = buffer->user_data + size;
++		list_add(&new_buffer->entry, &buffer->entry);
++		new_buffer->free = 1;
++		binder_insert_free_buffer(alloc, new_buffer);
++		new_buffer = NULL;
+ 	}
+ 
+ 	binder_alloc_debug(BINDER_DEBUG_BUFFER_ALLOC,
+ 		     "%d: binder_alloc_buf size %zd got buffer %pK size %zd\n",
+ 		      alloc->pid, size, buffer, buffer_size);
+ 
+-	WARN_ON(n && buffer_size != size);
+-
+ 	has_page_addr = (buffer->user_data + buffer_size) & PAGE_MASK;
+ 	end_page_addr = PAGE_ALIGN(buffer->user_data + size);
+ 	if (end_page_addr > has_page_addr)
+ 		end_page_addr = has_page_addr;
+ 	binder_allocate_page_range(alloc, PAGE_ALIGN(buffer->user_data),
+ 				   end_page_addr);
+-	if (buffer_size != size) {
+-		new_buffer->user_data = buffer->user_data + size;
+-		list_add(&new_buffer->entry, &buffer->entry);
+-		new_buffer->free = 1;
+-		binder_insert_free_buffer(alloc, new_buffer);
+-		new_buffer = NULL;
+-	}
+ 
+-	rb_erase(best_fit, &alloc->free_buffers);
++	rb_erase(&buffer->rb_node, &alloc->free_buffers);
  	buffer->free = 0;
  	buffer->allow_user_free = 0;
  	binder_insert_allocated_buffer_locked(alloc, buffer);
--	binder_alloc_debug(BINDER_DEBUG_BUFFER_ALLOC,
--		     "%d: binder_alloc_buf size %zd got %pK\n",
--		      alloc->pid, size, buffer);
- 	buffer->async_transaction = is_async;
- 	buffer->oneway_spam_suspect = false;
- 	if (is_async) {
 -- 
 2.43.0.rc2.451.g8631bc7472-goog
 
