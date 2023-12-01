@@ -2,51 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FA13800665
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 09:59:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00718800622
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 09:47:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377948AbjLAI7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 03:59:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59320 "EHLO
+        id S1377892AbjLAIrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 03:47:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235220AbjLAI7S (ORCPT
+        with ESMTP id S229455AbjLAIrW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 03:59:18 -0500
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CDF1512A;
-        Fri,  1 Dec 2023 00:59:21 -0800 (PST)
-Received: from loongson.cn (unknown [10.2.5.185])
-        by gateway (Coremail) with SMTP id _____8CxtPBnoGllcSg+AA--.59284S3;
-        Fri, 01 Dec 2023 16:59:19 +0800 (CST)
-Received: from localhost.localdomain (unknown [10.2.5.185])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8AxG9xkoGll4ndRAA--.49050S4;
-        Fri, 01 Dec 2023 16:59:17 +0800 (CST)
-From:   Tianrui Zhao <zhaotianrui@loongson.cn>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>,
+        Fri, 1 Dec 2023 03:47:22 -0500
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 033C8C4;
+        Fri,  1 Dec 2023 00:47:27 -0800 (PST)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-40b27b498c3so19381965e9.0;
+        Fri, 01 Dec 2023 00:47:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701420445; x=1702025245; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Y5k3hp+Fps+KFaY2xy891TNAjRy9G6LGzZSmFk20j0I=;
+        b=c7wK3F3y6AdvN+ox6sT3JMWx5xxt/M7lxTFCNoXDX7vH887AMfYs9UVmnRKaBzfDV7
+         raAbFFdWh4ZJjRyVQfaL8Hv+AcqGlZvgYTkCXiH7ko61K9vf9M8OnYM+C4qjT6kfLQWe
+         +p3THRKVUSHuAXkqsoNMQLoHhqB6gjTZEZ2DBqLlcwxEi3+Q2i86nB2bpvDWitiwg+6d
+         +//D4hPfkkA3JB1+nTc9Zk1PtUfXKETcJGQn7l7Z4FEU1jka4bUNRcgsxfMdW1cuQG+/
+         SVgw0w2pM/Z6m8rwNLGTDJLJustXggva3WxW9klGtpgroIwEjVKQuS/iBkBOxkWgdEj9
+         p4sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701420445; x=1702025245;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Y5k3hp+Fps+KFaY2xy891TNAjRy9G6LGzZSmFk20j0I=;
+        b=jXXtgPT1klV0WXXJj6Tqo7hh4vlR6enFaJW7nd/6Imr3deX0U79JK6pxun7TzrSIoK
+         aUqGnJUSHAptwwAoeYVxE0621AFiNSGbcH+/Aq1mHugFl1y97mb9uMJZzmFFAepI6MAW
+         ZQrLszyi0Ka8eClVSfET2gBAYObS95a44Ixv3HcPIekf7J2DFRh06YjJQhPLDIwOP2dn
+         0NYD92oE1S8eUoWMHoyB+b3uMNPPe1KSKtU14qQ3xYIgJQDlbWBFUMp0t9qBocGYnQlJ
+         owVX2hEC7uzFhGpzYYDeQuf8hpljM4u/0I02tmr4+paChgKlHadl+EUEqor6cG5OZvef
+         eENw==
+X-Gm-Message-State: AOJu0Yzr0F3TZWa95OA0K2sEF+4aXdJGrdXfGAgvcpqQ5U+5dTVJ1Y1y
+        bG6sa/HE+KAhyn5T+aBk67rhFZRftfNda4eq
+X-Google-Smtp-Source: AGHT+IFmXuOgohXVK84QCMKE/3yc6ZibYw+Ofbi/yAqp7du3fd6WZT7PuIGZsP4qN5OaNwgY5pAWPg==
+X-Received: by 2002:a05:600c:178a:b0:40b:5e59:ccce with SMTP id x10-20020a05600c178a00b0040b5e59cccemr282792wmo.175.1701420445117;
+        Fri, 01 Dec 2023 00:47:25 -0800 (PST)
+Received: from ?IPv6:2001:a61:3456:4e01:6ae:b55a:bd1d:57fc? ([2001:a61:3456:4e01:6ae:b55a:bd1d:57fc])
+        by smtp.gmail.com with ESMTPSA id fs16-20020a05600c3f9000b0040b48690c49sm4625136wmb.6.2023.12.01.00.47.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Dec 2023 00:47:24 -0800 (PST)
+Message-ID: <d534c3323c32d4ed2aedae19a9f101be90ef0cc7.camel@gmail.com>
+Subject: Re: [PATCH 04/12] iio: adc: ad9467: fix reset gpio handling
+From:   Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
+To:     David Lechner <dlechner@baylibre.com>, nuno.sa@analog.com
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-iio@vger.kernel.org,
+        Olivier MOYSAN <olivier.moysan@foss.st.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        loongarch@lists.linux.dev, Jens Axboe <axboe@kernel.dk>,
-        Mark Brown <broonie@kernel.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Oliver Upton <oliver.upton@linux.dev>, maobibo@loongson.cn,
-        zhaotianrui@loongson.cn
-Subject: [PATCH v2 2/2] LoongArch: KVM: Add LASX support
-Date:   Fri,  1 Dec 2023 16:46:19 +0800
-Message-Id: <20231201084619.2255983-3-zhaotianrui@loongson.cn>
-X-Mailer: git-send-email 2.39.1
-In-Reply-To: <20231201084619.2255983-1-zhaotianrui@loongson.cn>
-References: <20231201084619.2255983-1-zhaotianrui@loongson.cn>
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>
+Date:   Fri, 01 Dec 2023 09:47:24 +0100
+In-Reply-To: <CAMknhBGCqnzCp6vQ+59Z-SybScvbtU7aWdAD6KnP1e6=q60gVQ@mail.gmail.com>
+References: <20231121-dev-iio-backend-v1-0-6a3d542eba35@analog.com>
+         <20231121-dev-iio-backend-v1-4-6a3d542eba35@analog.com>
+         <CAMknhBGCqnzCp6vQ+59Z-SybScvbtU7aWdAD6KnP1e6=q60gVQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8AxG9xkoGll4ndRAA--.49050S4
-X-CM-SenderInfo: p2kd03xldq233l6o00pqjv00gofq/
-X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
-        ZEXasCq-sGcSsGvfJ3UbIjqfuFe4nvWSU5nxnvy29KBjDU0xBIdaVrnUUvcSsGvfC2Kfnx
-        nUUI43ZEXa7xR_UUUUUUUUU==
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,240 +83,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds LASX support for LoongArch KVM.
-There will be LASX exception in KVM when guest use the LASX
-instruction. KVM will enable LASX and restore the vector
-registers for guest then return to guest to continue running.
+On Thu, 2023-11-30 at 15:41 -0600, David Lechner wrote:
+> On Tue, Nov 21, 2023 at 4:17=E2=80=AFAM Nuno Sa via B4 Relay
+> <devnull+nuno.sa.analog.com@kernel.org> wrote:
+> >=20
+> > From: Nuno Sa <nuno.sa@analog.com>
+> >=20
+> > The reset gpio was being requested with GPIOD_OUT_LOW which means, not
+> > asserted. Then it was being asserted but never de-asserted which means
+> > the devices was left in reset. Fix it by de-asserting the gpio.
+>=20
+> It could be helpful to update the devicetree bindings to state the
+> expected active-high or active-low setting for this gpio so it is
+> clear which state means asserted.
+>=20
 
-Signed-off-by: Tianrui Zhao <zhaotianrui@loongson.cn>
----
- arch/loongarch/include/asm/kvm_host.h |  6 ++++
- arch/loongarch/include/asm/kvm_vcpu.h | 10 ++++++
- arch/loongarch/kernel/fpu.S           |  2 ++
- arch/loongarch/kvm/exit.c             | 18 +++++++++++
- arch/loongarch/kvm/switch.S           | 15 +++++++++
- arch/loongarch/kvm/trace.h            |  4 ++-
- arch/loongarch/kvm/vcpu.c             | 46 ++++++++++++++++++++++++++-
- 7 files changed, 99 insertions(+), 2 deletions(-)
+You could state that the chip is active low but I don't see that change tha=
+t
+important for now. Not sure if this is clear and maybe that's why your comm=
+ent.
+GPIOD_OUT_HIGH has nothing to do with active high or low. It just means, "g=
+et me the
+pin in the asserted state".
 
-diff --git a/arch/loongarch/include/asm/kvm_host.h b/arch/loongarch/include/asm/kvm_host.h
-index a53b47093f4..dc817481b30 100644
---- a/arch/loongarch/include/asm/kvm_host.h
-+++ b/arch/loongarch/include/asm/kvm_host.h
-@@ -97,6 +97,7 @@ enum emulation_result {
- #define KVM_LARCH_SWCSR_LATEST	(0x1 << 1)
- #define KVM_LARCH_HWCSR_USABLE	(0x1 << 2)
- #define KVM_LARCH_LSX		(0x1 << 3)
-+#define KVM_LARCH_LASX		(0x1 << 4)
- 
- struct kvm_vcpu_arch {
- 	/*
-@@ -183,6 +184,11 @@ static inline bool kvm_guest_has_lsx(struct kvm_vcpu_arch *arch)
- 	return arch->cpucfg[2] & CPUCFG2_LSX;
- }
- 
-+static inline bool kvm_guest_has_lasx(struct kvm_vcpu_arch *arch)
-+{
-+	return arch->cpucfg[2] & CPUCFG2_LASX;
-+}
-+
- /* Debug: dump vcpu state */
- int kvm_arch_vcpu_dump_regs(struct kvm_vcpu *vcpu);
- 
-diff --git a/arch/loongarch/include/asm/kvm_vcpu.h b/arch/loongarch/include/asm/kvm_vcpu.h
-index c629771e122..4f87f160185 100644
---- a/arch/loongarch/include/asm/kvm_vcpu.h
-+++ b/arch/loongarch/include/asm/kvm_vcpu.h
-@@ -67,6 +67,16 @@ static inline void kvm_restore_lsx(struct loongarch_fpu *fpu) { }
- static inline void kvm_restore_lsx_upper(struct loongarch_fpu *fpu) { }
- #endif
- 
-+#ifdef CONFIG_CPU_HAS_LASX
-+void kvm_own_lasx(struct kvm_vcpu *vcpu);
-+void kvm_save_lasx(struct loongarch_fpu *fpu);
-+void kvm_restore_lasx(struct loongarch_fpu *fpu);
-+#else
-+static inline void kvm_own_lasx(struct kvm_vcpu *vcpu) { }
-+static inline void kvm_save_lasx(struct loongarch_fpu *fpu) { }
-+static inline void kvm_restore_lasx(struct loongarch_fpu *fpu) { }
-+#endif
-+
- void kvm_acquire_timer(struct kvm_vcpu *vcpu);
- void kvm_init_timer(struct kvm_vcpu *vcpu, unsigned long hz);
- void kvm_reset_timer(struct kvm_vcpu *vcpu);
-diff --git a/arch/loongarch/kernel/fpu.S b/arch/loongarch/kernel/fpu.S
-index d53ab10f464..4382e36ae3d 100644
---- a/arch/loongarch/kernel/fpu.S
-+++ b/arch/loongarch/kernel/fpu.S
-@@ -349,6 +349,7 @@ SYM_FUNC_START(_restore_lsx_upper)
- 	lsx_restore_all_upper a0 t0 t1
- 	jr	ra
- SYM_FUNC_END(_restore_lsx_upper)
-+EXPORT_SYMBOL(_restore_lsx_upper)
- 
- SYM_FUNC_START(_init_lsx_upper)
- 	lsx_init_all_upper t1
-@@ -384,6 +385,7 @@ SYM_FUNC_START(_restore_lasx_upper)
- 	lasx_restore_all_upper a0 t0 t1
- 	jr	ra
- SYM_FUNC_END(_restore_lasx_upper)
-+EXPORT_SYMBOL(_restore_lasx_upper)
- 
- SYM_FUNC_START(_init_lasx_upper)
- 	lasx_init_all_upper t1
-diff --git a/arch/loongarch/kvm/exit.c b/arch/loongarch/kvm/exit.c
-index 1b1c58ccc83..57bd5bf562a 100644
---- a/arch/loongarch/kvm/exit.c
-+++ b/arch/loongarch/kvm/exit.c
-@@ -676,6 +676,23 @@ static int kvm_handle_lsx_disabled(struct kvm_vcpu *vcpu)
- 	return RESUME_GUEST;
- }
- 
-+/*
-+ * kvm_handle_lasx_disabled() - Guest used LASX while disabled in root.
-+ * @vcpu:	Virtual CPU context.
-+ *
-+ * Handle when the guest attempts to use LASX when it is disabled in the root
-+ * context.
-+ */
-+static int kvm_handle_lasx_disabled(struct kvm_vcpu *vcpu)
-+{
-+	if (!kvm_guest_has_lasx(&vcpu->arch))
-+		kvm_queue_exception(vcpu, EXCCODE_INE, 0);
-+	else
-+		kvm_own_lasx(vcpu);
-+
-+	return RESUME_GUEST;
-+}
-+
- /*
-  * LoongArch KVM callback handling for unimplemented guest exiting
-  */
-@@ -705,6 +722,7 @@ static exit_handle_fn kvm_fault_tables[EXCCODE_INT_START] = {
- 	[EXCCODE_TLBM]			= kvm_handle_write_fault,
- 	[EXCCODE_FPDIS]			= kvm_handle_fpu_disabled,
- 	[EXCCODE_LSXDIS]                = kvm_handle_lsx_disabled,
-+	[EXCCODE_LASXDIS]               = kvm_handle_lasx_disabled,
- 	[EXCCODE_GSPR]			= kvm_handle_gspr,
- };
- 
-diff --git a/arch/loongarch/kvm/switch.S b/arch/loongarch/kvm/switch.S
-index 6c48f7d1ca5..215c70b2de3 100644
---- a/arch/loongarch/kvm/switch.S
-+++ b/arch/loongarch/kvm/switch.S
-@@ -266,6 +266,21 @@ SYM_FUNC_START(kvm_restore_lsx_upper)
- SYM_FUNC_END(kvm_restore_lsx_upper)
- #endif
- 
-+#ifdef CONFIG_CPU_HAS_LASX
-+SYM_FUNC_START(kvm_save_lasx)
-+	fpu_save_csr    a0 t1
-+	fpu_save_cc     a0 t1 t2
-+	lasx_save_data  a0 t1
-+	jr              ra
-+SYM_FUNC_END(kvm_save_lasx)
-+
-+SYM_FUNC_START(kvm_restore_lasx)
-+	lasx_restore_data a0 t1
-+	fpu_restore_cc    a0 t1 t2
-+	fpu_restore_csr   a0 t1 t2
-+	jr                ra
-+SYM_FUNC_END(kvm_restore_lasx)
-+#endif
- 	.section ".rodata"
- SYM_DATA(kvm_exception_size, .quad kvm_exc_entry_end - kvm_exc_entry)
- SYM_DATA(kvm_enter_guest_size, .quad kvm_enter_guest_end - kvm_enter_guest)
-diff --git a/arch/loongarch/kvm/trace.h b/arch/loongarch/kvm/trace.h
-index 7da4e230e89..c2484ad4cff 100644
---- a/arch/loongarch/kvm/trace.h
-+++ b/arch/loongarch/kvm/trace.h
-@@ -103,6 +103,7 @@ TRACE_EVENT(kvm_exit_gspr,
- 
- #define KVM_TRACE_AUX_FPU		1
- #define KVM_TRACE_AUX_LSX		2
-+#define KVM_TRACE_AUX_LASX		3
- 
- #define kvm_trace_symbol_aux_op				\
- 	{ KVM_TRACE_AUX_SAVE,		"save" },	\
-@@ -113,7 +114,8 @@ TRACE_EVENT(kvm_exit_gspr,
- 
- #define kvm_trace_symbol_aux_state			\
- 	{ KVM_TRACE_AUX_FPU,     "FPU" },		\
--	{ KVM_TRACE_AUX_LSX,     "LSX" }
-+	{ KVM_TRACE_AUX_LSX,     "LSX" },		\
-+	{ KVM_TRACE_AUX_LASX,    "LASX" }
- 
- TRACE_EVENT(kvm_aux,
- 	    TP_PROTO(struct kvm_vcpu *vcpu, unsigned int op,
-diff --git a/arch/loongarch/kvm/vcpu.c b/arch/loongarch/kvm/vcpu.c
-index 4820c95091f..7802ae68197 100644
---- a/arch/loongarch/kvm/vcpu.c
-+++ b/arch/loongarch/kvm/vcpu.c
-@@ -329,6 +329,13 @@ static int kvm_get_cpucfg_supported(int id, u64 *v)
- 		 */
- 		if (cpu_has_lsx)
- 			*v |= CPUCFG2_LSX;
-+		/*
-+		 * if LASX is supported by CPU, it is also supported by KVM,
-+		 * as we implement it.
-+		 */
-+		if (cpu_has_lasx)
-+			*v |= CPUCFG2_LASX;
-+
- 		break;
- 	default:
- 		ret = -EINVAL;
-@@ -653,12 +660,49 @@ void kvm_own_lsx(struct kvm_vcpu *vcpu)
- }
- #endif
- 
-+#ifdef CONFIG_CPU_HAS_LASX
-+/* Enable LASX for guest and restore context */
-+void kvm_own_lasx(struct kvm_vcpu *vcpu)
-+{
-+	preempt_disable();
-+
-+	set_csr_euen(CSR_EUEN_FPEN | CSR_EUEN_LSXEN | CSR_EUEN_LASXEN);
-+	switch (vcpu->arch.aux_inuse & (KVM_LARCH_FPU | KVM_LARCH_LSX)) {
-+	case KVM_LARCH_LSX | KVM_LARCH_FPU:
-+	case KVM_LARCH_LSX:
-+		/* Guest LSX state already loaded, only restore upper LASX state */
-+		_restore_lasx_upper(&vcpu->arch.fpu);
-+		break;
-+	case KVM_LARCH_FPU:
-+		/* Guest FP state already loaded, only restore 64~256 LASX state */
-+		kvm_restore_lsx_upper(&vcpu->arch.fpu);
-+		_restore_lasx_upper(&vcpu->arch.fpu);
-+		break;
-+	default:
-+		/* Neither FP or LSX already active, restore full LASX state */
-+		kvm_restore_lasx(&vcpu->arch.fpu);
-+		break;
-+	}
-+
-+	trace_kvm_aux(vcpu, KVM_TRACE_AUX_RESTORE, KVM_TRACE_AUX_LASX);
-+	vcpu->arch.aux_inuse |= KVM_LARCH_LASX | KVM_LARCH_LSX | KVM_LARCH_FPU;
-+	preempt_enable();
-+}
-+#endif
-+
- /* Save context and disable FPU */
- void kvm_lose_fpu(struct kvm_vcpu *vcpu)
- {
- 	preempt_disable();
- 
--	if (vcpu->arch.aux_inuse & KVM_LARCH_LSX) {
-+	if (vcpu->arch.aux_inuse & KVM_LARCH_LASX) {
-+		kvm_save_lasx(&vcpu->arch.fpu);
-+		vcpu->arch.aux_inuse &= ~(KVM_LARCH_LSX | KVM_LARCH_FPU | KVM_LARCH_LASX);
-+		trace_kvm_aux(vcpu, KVM_TRACE_AUX_SAVE, KVM_TRACE_AUX_LASX);
-+
-+		/* Disable LASX & LSX & FPU */
-+		clear_csr_euen(CSR_EUEN_FPEN | CSR_EUEN_LSXEN | CSR_EUEN_LASXEN);
-+	} else if (vcpu->arch.aux_inuse & KVM_LARCH_LSX) {
- 		kvm_save_lsx(&vcpu->arch.fpu);
- 		vcpu->arch.aux_inuse &= ~(KVM_LARCH_LSX | KVM_LARCH_FPU);
- 		trace_kvm_aux(vcpu, KVM_TRACE_AUX_SAVE, KVM_TRACE_AUX_LSX);
--- 
-2.39.3
+> > While at it, moved the handling to it's own function and dropped
+> > 'reset_gpio' from the 'struct ad9467_state' as we only need it during
+> > probe. On top of that, refactored things so that we now request the gpi=
+o
+> > asserted (i.e in reset) and then de-assert it.
+> >=20
+> > Fixes: ad6797120238 ("iio: adc: ad9467: add support AD9467 ADC")
+> > Signed-off-by: Nuno Sa <nuno.sa@analog.com>
+> > ---
+> > =C2=A0drivers/iio/adc/ad9467.c | 33 ++++++++++++++++++++-------------
+> > =C2=A01 file changed, 20 insertions(+), 13 deletions(-)
+> >=20
+> > diff --git a/drivers/iio/adc/ad9467.c b/drivers/iio/adc/ad9467.c
+> > index 39eccc28debe..368ea57be117 100644
+> > --- a/drivers/iio/adc/ad9467.c
+> > +++ b/drivers/iio/adc/ad9467.c
+> > @@ -121,7 +121,6 @@ struct ad9467_state {
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned int=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 output_mode;
+> >=20
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct gpio_desc=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 *pwrdown_gpio;
+> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct gpio_desc=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+ *reset_gpio;
+> > =C2=A0};
+> >=20
+> > =C2=A0static int ad9467_spi_read(struct spi_device *spi, unsigned int r=
+eg)
+> > @@ -378,6 +377,23 @@ static int ad9467_preenable_setup(struct adi_axi_a=
+dc_conv
+> > *conv)
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ad9467_outputmode_set=
+(st->spi, st->output_mode);
+> > =C2=A0}
+> >=20
+> > +static int ad9467_reset(struct device *dev)
+> > +{
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct gpio_desc *gpio;
+> > +
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 gpio =3D devm_gpiod_get_optional(=
+dev, "reset", GPIOD_OUT_HIGH);
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (IS_ERR(gpio))
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 return PTR_ERR(gpio);
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!gpio)
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 return 0;
+>=20
+> can be done in one test instead of 2:
+>=20
+> if (IS_ERR_OR_NULL(gpio))
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return PTR_ERR_OR_ZERO(gpio);
+>=20
 
+Yep, better that way...
+
+> > +
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fsleep(1);
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 gpiod_direction_output(gpio, 0);
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fsleep(10);
+>=20
+> Previous version was 10 milliseconds instead of 10 microseconds. Was
+> this change intentional? If yes, it should be mentioned it in the
+> commit message.
+
+Oh, good catch! Copy past thing with even realizing the differences in the =
+arguments
+:face_palm:
+
+- Nuno S=C3=A1
+
+
+>=20
