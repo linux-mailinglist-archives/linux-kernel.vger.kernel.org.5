@@ -2,296 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7631E8008E6
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 11:49:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF8608008A8
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 11:43:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378419AbjLAKsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 05:48:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43426 "EHLO
+        id S1378326AbjLAKnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 05:43:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378410AbjLAKst (ORCPT
+        with ESMTP id S1378281AbjLAKne (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 05:48:49 -0500
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4374010D7;
-        Fri,  1 Dec 2023 02:48:50 -0800 (PST)
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id 9BAF210001E;
-        Fri,  1 Dec 2023 13:48:46 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 9BAF210001E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-        s=mail; t=1701427726;
-        bh=0QmRuJ6P+NvGnzgcot+GjylD1AzrqSceJ8UAoo8Tty4=;
-        h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
-        b=l3JnhuF7o4EBy/NZuvM5w0NkrmTOKF5oyt0+e85/xCSW09W7fj8zFwliKsG8ZfEyW
-         +VOIaR0+hwYWCGX95mxcmFO6aYwe3+J1Hf4YEhyrWSHD0CYcqFR/9U3CriFC4CQF4V
-         ep8Rg+1KkJ6oVjne7j7CzQT0BwNh8/Pf51AMaMjsdP/SiFitvSqOWninoefWCbLprr
-         aQ3URj/9aZcbjGC/7DeB1ZRm+N8jKj6mlwy3/lDorxUlarsQLgcHi0S/YZ4kLw79qw
-         ssM8Mb5oqz3b3rRVQ/dNRk7Dnqx6rQCX53oxqesVUgr9w55b1RK/ZTKLnjKLPd4UeJ
-         vpo+nKXtVUFKQ==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Fri,  1 Dec 2023 13:48:46 +0300 (MSK)
-Received: from [192.168.0.106] (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Fri, 1 Dec 2023 13:48:45 +0300
-Message-ID: <214df55d-89e3-2c1d-250a-7428360b6b1b@salutedevices.com>
-Date:   Fri, 1 Dec 2023 13:40:41 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH net-next v5 2/3] virtio/vsock: send credit update during
- setting SO_RCVLOWAT
+        Fri, 1 Dec 2023 05:43:34 -0500
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B311FD4A;
+        Fri,  1 Dec 2023 02:43:40 -0800 (PST)
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B1ACWGX000393;
+        Fri, 1 Dec 2023 10:43:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-11-20;
+ bh=Cl81cm2oR95qK+NauR74sIjj++uyut8VpGgfiMZdZ+g=;
+ b=lSmEGBglmZQ8CwfDeO+k1axjP7cgxTf6clXZrykRJ0bi9sN9y89g6SC0pjJPU6zV0bII
+ IqULVv+truGBbxAl2C2cra198V9jxoAjist7CfL/pv6IZBnFwdjjC/Jj2kFjtiyvbawd
+ 3mvVz5u4pv6m4j6cXtRa4TjxxRs+ZftFMZWq66pPEJBjV9YSaZKeUjQwXvr1yvr/1RZh
+ aBPaGTS8g2SIgOrN/HlZwhQ84x9qVKvfcUulpvgSFBdJ8wQa29U/n3ZD9VCRxXinHEfT
+ lnQuteydcfuScZwhihgX/cJKfTVJAfXZsz0Pi7ECinvRiho/JlVYDb+ZmdbxdcXMx5Jz eQ== 
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3uqd7xr3pm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 01 Dec 2023 10:43:31 +0000
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3B1A6g05012574;
+        Fri, 1 Dec 2023 10:43:30 GMT
+Received: from nam02-sn1-obe.outbound.protection.outlook.com (mail-sn1nam02lp2040.outbound.protection.outlook.com [104.47.57.40])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3uk7cc72b4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 01 Dec 2023 10:43:30 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UzOzNNCuo8IrLCr75dTtH41TVrRssHW8thXjTzMZCQdYWodj41B/4TmyKbaNOYhCgLJf5RdCg1EDYtF3kcP5bwYFZgsSxHAIVq7HG+9JRYvm6WV5lZcpa+Vvjm0OhvlSqLAHMxniswkzWa+GlggzXvHJMDPcRoHPY14EGYV58NZPIumNcEmJTUmqaUzi7pF+DEfJOxPcCoEQwLqsh6Wri5EOS9XuPdp+B9ExTGN6LT64XP/tx2IghFTZ6e8U+hxCx3P+UszddDT1n1Kbe34vtLbdB8RVL8lWe79P1w5L3eHf9IhySd838Kvor7DXTqcOnoehrfHRf2b1+F2kW5za1g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Cl81cm2oR95qK+NauR74sIjj++uyut8VpGgfiMZdZ+g=;
+ b=FwfoH4F7dDS2A2og8jRa9iFLt8SbctAu5kOK6aIAP2neRLQ0OcRpqemtYla7EIm6WWzNDuaSlwEQYPzP6XLCw6UMhd+zb7za559gA75YK1aH94WRBjERxfgKD5sghYBpGw3s9s+kehOPDs6/QeIkhRDcVRy1bVXym275ss9AYLIMMvxEkBf7VUxNVKelA7njODLbUsjqdf35dN9Y9ffzudsfPg/Thjyo6EQr9sWgKpYG8mjeW74D3z6gUVr0nHUUYFEKWfDQQqudUT45Oin+YTYV99TE482IaeUvyPActi8/HQ/DRs0rZVzR/8zENVoT2pevm0RixpWZkejFf9yg6g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Cl81cm2oR95qK+NauR74sIjj++uyut8VpGgfiMZdZ+g=;
+ b=LSTJB8EtlIL9jNSOelZ1OkKOcox4cV+3QwIL4oPtjQm7Zol+Yc2VAOvVau4FcVgfbAdoiH+VHW0QhM6HsuF56DXjGBkPXOeCRFtRmwIos7RfN/3nStBXbPjlgz5fXoYPbkZxfEP2RKuvT/X7l3XY60i8NUhjdK87CDkh2arVbbc=
+Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
+ by IA1PR10MB6196.namprd10.prod.outlook.com (2603:10b6:208:3a4::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.27; Fri, 1 Dec
+ 2023 10:43:02 +0000
+Received: from DM6PR10MB4313.namprd10.prod.outlook.com
+ ([fe80::102a:f31:30c6:3187]) by DM6PR10MB4313.namprd10.prod.outlook.com
+ ([fe80::102a:f31:30c6:3187%4]) with mapi id 15.20.7046.027; Fri, 1 Dec 2023
+ 10:43:02 +0000
+Message-ID: <85d1b27c-f4ef-43dd-8eed-f497817ab86d@oracle.com>
+Date:   Fri, 1 Dec 2023 10:42:57 +0000
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC 1/7] iomap: Don't fall back to buffered write if the write
+ is atomic
 Content-Language: en-US
-To:     Stefano Garzarella <sgarzare@redhat.com>
-CC:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Bobby Eshleman <bobby.eshleman@bytedance.com>,
-        <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel@sberdevices.ru>, <oxffffaa@gmail.com>
-References: <20231130130840.253733-1-avkrasnov@salutedevices.com>
- <20231130130840.253733-3-avkrasnov@salutedevices.com>
- <20231130084044-mutt-send-email-mst@kernel.org>
- <02de8982-ec4a-b3b2-e8e5-1bca28cfc01b@salutedevices.com>
- <20231130085445-mutt-send-email-mst@kernel.org>
- <pbkiwezwlf6dmogx7exur6tjrtcfzxyn7eqlehqxivqifbkojv@xlziiuzekon4>
- <20231130123815-mutt-send-email-mst@kernel.org>
- <smu77vmxw3ki36xhqnhtvujwswvkg5gkfwnt4vr5bnwljclseh@inbewbwkcqxs>
- <e58cf080-3611-0a19-c6e5-544d7101e975@salutedevices.com>
- <vqlspza4hzs6i5eajidxgeqd7wesv43ajpo42mljm4leuxfym4@j3h6ux2xlxbi>
-From:   Arseniy Krasnov <avkrasnov@salutedevices.com>
-In-Reply-To: <vqlspza4hzs6i5eajidxgeqd7wesv43ajpo42mljm4leuxfym4@j3h6ux2xlxbi>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 181763 [Dec 01 2023]
-X-KSMG-AntiSpam-Version: 6.0.0.2
-X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 5 0.3.5 98d108ddd984cca1d7e65e595eac546a62b0144b, {Tracking_from_domain_doesnt_match_to}, 100.64.160.123:7.1.2;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;salutedevices.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/12/01 09:12:00 #22596488
-X-KSMG-AntiVirus-Status: Clean, skipped
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+To:     Dave Chinner <david@fromorbit.com>,
+        Ojaswin Mujoo <ojaswin@linux.ibm.com>
+Cc:     linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        Ritesh Harjani <ritesh.list@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        linux-block@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, dchinner@redhat.com
+References: <cover.1701339358.git.ojaswin@linux.ibm.com>
+ <09ec4c88b565c85dee91eccf6e894a0c047d9e69.1701339358.git.ojaswin@linux.ibm.com>
+ <ZWj6Tt1zKUL4WPGr@dread.disaster.area>
+From:   John Garry <john.g.garry@oracle.com>
+Organization: Oracle Corporation
+In-Reply-To: <ZWj6Tt1zKUL4WPGr@dread.disaster.area>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: LNXP265CA0052.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:5d::16) To DM6PR10MB4313.namprd10.prod.outlook.com
+ (2603:10b6:5:212::20)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|IA1PR10MB6196:EE_
+X-MS-Office365-Filtering-Correlation-Id: e1654667-1dd7-4e6f-8bdc-08dbf25a4ae5
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ftpfIMFG8XTIzQ3NeKvTilnnrFzlHBeeUCOnMVxW7RnhzfmAbjgJr6o7FTj008BfMFciSISqRKipyQOEOc55eEzXN1sRg5KE9dv0IRfuOS/Z6T82ed2BO9jPIFVPy5b5gos3LPrYeJ0uFB6RI040NcR/cuPpl4b1D/cE1fAEkA2cWxpDjSbYGgm1+jFL5GM4v5lPmgCSSqZPthQ0A6DYRB/qOvp1HuY7FehI0jZfYX9RDEA99iTjz/GFuVASO+cIQVTcvOAqBi2D8DeI8dLNyKBJDHOmWJa8jZwdZZsRoP5E/w++tcx1MSKMJ11o8Rbm8XVA0QUQNcq7WjJduDR8bCTtfQ4/0qkg55F1d7i281dqn8wcR52c0Zpc8M9lASsGje5wJ48KTRUvB25dl06lbbkFlh0fWdkQw0A6/qbGretSrft3ZFMIieQ21ScENnrpmgowFzvD7zH18vk9IIF2jiHAyeuDZ5rmDcocR7KYMect2be1n64MoghaT9pgRLzTPJOCSTtJpSl6t8YkioixRSG0mhJme4TikTj8uNeQ93N6mN2VVe3T9vFCQruRjj2EW8XFnKV+wvd2a8VGK6zW6yTP0d5x++jC0oZ7soa431567rkbiLsD08F/qvX1hhtDS1YWmNAHlAGjlxHLfJum9w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(376002)(39860400002)(366004)(346002)(230922051799003)(1800799012)(451199024)(64100799003)(186009)(83380400001)(38100700002)(36756003)(86362001)(31696002)(66946007)(110136005)(4326008)(8676002)(8936002)(54906003)(66476007)(316002)(66556008)(7416002)(5660300002)(2906002)(31686004)(53546011)(6512007)(2616005)(478600001)(6486002)(6506007)(36916002)(26005)(6666004)(41300700001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dU9ySTQvWVNSVlFFU1JaV0tSVHFjV1pLVnNOMFF3TzRWeWZvSmZpNC9kM2NT?=
+ =?utf-8?B?ZUxDZGlsdTYzS3RXQ2t1TXJtakdwdUVGd0hZN1lhbmxLQlU2YWdGOEJZcU03?=
+ =?utf-8?B?RCt5R1NIYzRQUXBXOE9kR0krR0xiT3plb1ZBSW9GZUthRk9EcUp3ZzRsWU9B?=
+ =?utf-8?B?TXVwUlRrbHpLeG1vMVcyNjJVOFBQNzZTalF0V1RlcDZ3SnRUVHFUd05wSE5R?=
+ =?utf-8?B?d09rNHZwZkVaNXhlbmdpV3dqY05scmRPMHg3bjl6b3dQZW5rOUhGSk5vbytU?=
+ =?utf-8?B?WEh3Wk9MTTJTVEFyS3ZoSndCay9sQi9OVkkrekJ1VzNveGN5YjRvclVCc0d1?=
+ =?utf-8?B?SzFlVmh0NjlqOENrWDVFbDZhNEx3MWdlR3lpYnFsWjROK2Q0bzhOazR4TDk0?=
+ =?utf-8?B?NlJuZmFKUlBHeW1wRXk4VjE0a0d1M0x1VUlnNU1sRW10Zm1qVSsyMjhUcGhC?=
+ =?utf-8?B?MnEwcDNXUDN2VUtsQlBIRXRBTEtJamJXWGFaeFVldW9iL2hHQ090UWVkT0M4?=
+ =?utf-8?B?M0JpeVVlM2liLzYyUU45anRWRzM2eEhIakhDVUdIemJCeHJiNHp2ZzZ3bXhy?=
+ =?utf-8?B?L29NZU85R0FjYStQbjU5dnE5NG00SndXdXBNbSs5WUROeWtJNXFZR1RvRnox?=
+ =?utf-8?B?QXUxK251Uk5XQU53QWlwNisxQXhzMDduaU9tcW4zZEIzdmZkd0dGUERSTTFz?=
+ =?utf-8?B?d2xtUjRnUDY1ZkxuejFucm04MXJYVjJOcEx0dXIyOUk4YUdnSGFreGZjbzlH?=
+ =?utf-8?B?NTJSNEd6SS8zODZ2aDFpOWdOVnFWdkt3REVBWmhIbW1jSmYxbXFtbHlhSnVZ?=
+ =?utf-8?B?azY5bEVxQVZiZm5adG9iVXd4S0FOUjlwanZHNTZSMFFtVGxYVjZsQW16anZt?=
+ =?utf-8?B?MUpRMGtMTEw1c2d2eXZaaXRvVGtLM05QN2QzdGR5RjUrREJGNy9tMld2Tkk5?=
+ =?utf-8?B?QzlNc1NMb1ovNnF0TFczcDRLdU9EQitteUE1YWJ5YU42OEZ1ZUtrOXpEbFFV?=
+ =?utf-8?B?Qy9WOGVnMGh6OVJadStxSUY2dEJYRFhGL2dXVmRsWjBPYmc1cnJaUGdQa3VD?=
+ =?utf-8?B?L0RPUXNwMCtMTHZYYW9FK096U3c3cUNSZ3hFNUJkQllHMDkyNzQvOTI0R0hn?=
+ =?utf-8?B?RFRQS3p4YUQ5ZGc4V25Fd21KamVacUIxenVuN2ptcnpIdUFrRVdwSm5VK0w3?=
+ =?utf-8?B?aDk4cjFrcUJqSDFXS1Y1VnQza2VmdWJtZ3NBTUhVTEx6ZlFKVk5pQ1ROc2tw?=
+ =?utf-8?B?aVF3Tk9uMllmOTZaMTBOcXIvS2dDalo2YW9vc0lkV3M0N0M5VzJjK3lhSldy?=
+ =?utf-8?B?c1k5djVUbVpEZitkeFF2TUo3a3VHZjR5eTZRTXVoTlhNaHRzNDZsbm9UekRP?=
+ =?utf-8?B?ZDNkaWs0OUpzTmpWV3FTdXJBRGZxV3FLSmRMT3RwZlY0Tm9ndUtKcmhiZmtC?=
+ =?utf-8?B?b2pxRFVYdjBCbHYzU0RKcDRBbjc1dGhuWSt4RmYveTRtMnBuMmJvZmE1T3ZV?=
+ =?utf-8?B?djA2NHlUb3ErM2ZkTE1zZGhoUEtoMUVIazJacEluektKS2l5MUxVMmtuZkZT?=
+ =?utf-8?B?MVdCYmVuVlFPMU9WQUJLOEpWbkVPVnREZjZ2djd5S2d2WFA2a0duN2JyS2tk?=
+ =?utf-8?B?OUVoTHVBeFdMUm15ZHU2N2R1aFMyRGlmSUIyM3ZNTmFvdC9mM2VLMEZwT2Va?=
+ =?utf-8?B?Nk9vRUFyVSthYVovY1F1OWhMNXgrUm03UkRMbDdlaXVoQlR0QXpCcE9XcUpC?=
+ =?utf-8?B?RE4vUW4vR05WMVg4M25HeGU1cTNBQk9FcExlUEVtZ3NKOENXeWZKbEtwV3I4?=
+ =?utf-8?B?STczNnJtaWgzM0JibklrOHY5ejFEckFlaDhjWE1JTzNkcmNlMFk4TUVVbUhV?=
+ =?utf-8?B?T3ZzRkFBNWgxQk5lTkl4Z2NhRGZjNytOMXRnZFhyY3cwWVpwazZZbXFhc3lP?=
+ =?utf-8?B?WWlXUEFBZ1JMRHgzd2ZGUXhhcC84RnEyQ1ZPa3Y4WDdIaEd6bmJ2eFRBdTlC?=
+ =?utf-8?B?ak8ra1pxSERCTTdOcGg2OTlBZGE3RGFuNmU5SWdpejRvc0ZBRWk0c09lOXZX?=
+ =?utf-8?B?ejZLZW13RGQwR3QzaU9wZUdJZkdaWlIxVU9laVFHRWRzcGpCYkdoRFpMaUtC?=
+ =?utf-8?Q?mcQ8CADF6QC8eMirvTXE1WGkw?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?utf-8?B?QTJYV29DbFZlUWN3VTZ2QjZTcllrcHlXMW9SVGR5dndpM2hoUnBsMmNPQ1dk?=
+ =?utf-8?B?ZWx5QmlaVk1TMnVDNFFJNkFGOHprZXlxSFFkWGZIaFhXRk1jdDRha3ZyZkdK?=
+ =?utf-8?B?alBaR0dZYXB0Y0ZySWYxYWUxWnhLR1RPYlRaNjZ3Wm9jZm9RMEM3VTNNL1hY?=
+ =?utf-8?B?WHpUbEc5VnVNMVJ6T3FPeUUwSVBlQUdCT3ZTNy8yUTRPeEhsTnNYc2hGRXEy?=
+ =?utf-8?B?Q2V5cXdrOXdJUHNjYTJBUHZMN1RhNmlnSnZqVlB5dkFsYWg4TjRqU0QwU3VQ?=
+ =?utf-8?B?V2thbHlVMGpwaExSeEJTdHJNUzhPU1N3cVJUUGNuYnJTVkpkVHRPZzVJRmVr?=
+ =?utf-8?B?UURCY3dEQi8wRWsvYkN3MGx4Z3BPWEZUT25NTTJDbHIwSUNqTzJ6TzZWbW51?=
+ =?utf-8?B?dms5T2FTZ3hBeXBaNFh5dzdScXFVdXhJckFnQ3p3cVVFbUozclZQdG43dmhT?=
+ =?utf-8?B?YzRPWGxsUHRkMncxMlJFSHA3VXJnWUR5b1pyNnZFQ1JIbTBoVVMwUFY1TVBj?=
+ =?utf-8?B?VWsvMEpHcEs1TWZCL0E2L0hMK0docXR6dTJibkNDYTJJUC8wUVdXOUl1dXl6?=
+ =?utf-8?B?U254NExoalUxQnlDK1F2YnJqaVh5elRlQkw2WVB1L1lDMmJPUWVza3orZ1NX?=
+ =?utf-8?B?dE80emx6ekEvUHhjbUkxMXFwcWxXc0NMZ1I0RVVDVGw5dlZxcUZ0eTFuVlla?=
+ =?utf-8?B?NW1MUGQ4V1RmZzBVWE5qUGd1eDBDb3RLdWlGcllRSDB1Rm14anZ5cTVBbnhj?=
+ =?utf-8?B?SDRSRnAyaU5hWXRLM0xEVEJlVlZNQlhZWWJnTlljMmdxSjE1R2pieURGYVZY?=
+ =?utf-8?B?Smt5SGFPRjZDNEhMd1Jjcy9xYjFMTGJXU2xETTdiSE4zRE9ZdmQ2RXhvZUdQ?=
+ =?utf-8?B?ZlBENncyZjNwa21KdE84SEY3Z2RmazZnZWhpY2sxK3hnZit3N29ZaksrdSt2?=
+ =?utf-8?B?Vi8zb2FrNnpiSk1vRGFYNU1YS3ZuYnZnNjl4UkRPbExyTkExRXZMc0puMld3?=
+ =?utf-8?B?TW5HZWowemZMVnpjM09vZm10aUFwQml3cDB6RGJpTVJZMzQyL0E1ZVBGcEY1?=
+ =?utf-8?B?eDhrZForZE5PaVU3YUgvNVl1WWgzdnMvcnNHdFlFbEJWV0dKNUZBaXRBREMx?=
+ =?utf-8?B?aVdwQTlWMW5PYVd2OSswZDhaVEMvcDdGWXhhL1NORnl1SzBtcjF4WVppNEp0?=
+ =?utf-8?B?TXlMRTVvRWZpWkUvSWo4QW1xaHRraUdsK0Z2ZnpsNjE2SWF0T3JMcmhYd2xI?=
+ =?utf-8?Q?C108I21Md87aFzQ?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e1654667-1dd7-4e6f-8bdc-08dbf25a4ae5
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Dec 2023 10:43:02.2656
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: IvwgQzaA40fNOTlzdlVMUuIZQFnr3pzYaETZsPY+jPOvRu3oNUNiM0hi219KtL65Na3hLdf5L5mv6zZcVLpFaQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR10MB6196
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-01_08,2023-11-30_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0
+ suspectscore=0 mlxscore=0 spamscore=0 adultscore=0 mlxlogscore=999
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2312010070
+X-Proofpoint-ORIG-GUID: ZC2_859SwiCUO-99MltaBurD2J3hHMg9
+X-Proofpoint-GUID: ZC2_859SwiCUO-99MltaBurD2J3hHMg9
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 01.12.2023 12:48, Stefano Garzarella wrote:
-> On Fri, Dec 01, 2023 at 11:35:56AM +0300, Arseniy Krasnov wrote:
+On 30/11/2023 21:10, Dave Chinner wrote:
+> On Thu, Nov 30, 2023 at 07:23:09PM +0530, Ojaswin Mujoo wrote:
+>> Currently, iomap only supports atomic writes for direct IOs and there is
+>> no guarantees that a buffered IO will be atomic. Hence, if the user has
+>> explicitly requested the direct write to be atomic and there's a
+>> failure, return -EIO instead of falling back to buffered IO.
 >>
+>> Signed-off-by: Ojaswin Mujoo<ojaswin@linux.ibm.com>
+>> ---
+>>   fs/iomap/direct-io.c | 8 +++++++-
+>>   1 file changed, 7 insertions(+), 1 deletion(-)
 >>
->> On 01.12.2023 11:27, Stefano Garzarella wrote:
->>> On Thu, Nov 30, 2023 at 12:40:43PM -0500, Michael S. Tsirkin wrote:
->>>> On Thu, Nov 30, 2023 at 03:11:19PM +0100, Stefano Garzarella wrote:
->>>>> On Thu, Nov 30, 2023 at 08:58:58AM -0500, Michael S. Tsirkin wrote:
->>>>> > On Thu, Nov 30, 2023 at 04:43:34PM +0300, Arseniy Krasnov wrote:
->>>>> > >
->>>>> > >
->>>>> > > On 30.11.2023 16:42, Michael S. Tsirkin wrote:
->>>>> > > > On Thu, Nov 30, 2023 at 04:08:39PM +0300, Arseniy Krasnov wrote:
->>>>> > > >> Send credit update message when SO_RCVLOWAT is updated and it is bigger
->>>>> > > >> than number of bytes in rx queue. It is needed, because 'poll()' will
->>>>> > > >> wait until number of bytes in rx queue will be not smaller than
->>>>> > > >> SO_RCVLOWAT, so kick sender to send more data. Otherwise mutual hungup
->>>>> > > >> for tx/rx is possible: sender waits for free space and receiver is
->>>>> > > >> waiting data in 'poll()'.
->>>>> > > >>
->>>>> > > >> Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
->>>>> > > >> ---
->>>>> > > >>  Changelog:
->>>>> > > >>  v1 -> v2:
->>>>> > > >>   * Update commit message by removing 'This patch adds XXX' manner.
->>>>> > > >>   * Do not initialize 'send_update' variable - set it directly during
->>>>> > > >>     first usage.
->>>>> > > >>  v3 -> v4:
->>>>> > > >>   * Fit comment in 'virtio_transport_notify_set_rcvlowat()' to 80 chars.
->>>>> > > >>  v4 -> v5:
->>>>> > > >>   * Do not change callbacks order in transport structures.
->>>>> > > >>
->>>>> > > >>  drivers/vhost/vsock.c                   |  1 +
->>>>> > > >>  include/linux/virtio_vsock.h            |  1 +
->>>>> > > >>  net/vmw_vsock/virtio_transport.c        |  1 +
->>>>> > > >>  net/vmw_vsock/virtio_transport_common.c | 27 +++++++++++++++++++++++++
->>>>> > > >>  net/vmw_vsock/vsock_loopback.c          |  1 +
->>>>> > > >>  5 files changed, 31 insertions(+)
->>>>> > > >>
->>>>> > > >> diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
->>>>> > > >> index f75731396b7e..4146f80db8ac 100644
->>>>> > > >> --- a/drivers/vhost/vsock.c
->>>>> > > >> +++ b/drivers/vhost/vsock.c
->>>>> > > >> @@ -451,6 +451,7 @@ static struct virtio_transport vhost_transport = {
->>>>> > > >>          .notify_buffer_size       = virtio_transport_notify_buffer_size,
->>>>> > > >>
->>>>> > > >>          .read_skb = virtio_transport_read_skb,
->>>>> > > >> +        .notify_set_rcvlowat      = virtio_transport_notify_set_rcvlowat
->>>>> > > >>      },
->>>>> > > >>
->>>>> > > >>      .send_pkt = vhost_transport_send_pkt,
->>>>> > > >> diff --git a/include/linux/virtio_vsock.h b/include/linux/virtio_vsock.h
->>>>> > > >> index ebb3ce63d64d..c82089dee0c8 100644
->>>>> > > >> --- a/include/linux/virtio_vsock.h
->>>>> > > >> +++ b/include/linux/virtio_vsock.h
->>>>> > > >> @@ -256,4 +256,5 @@ void virtio_transport_put_credit(struct virtio_vsock_sock *vvs, u32 credit);
->>>>> > > >>  void virtio_transport_deliver_tap_pkt(struct sk_buff *skb);
->>>>> > > >>  int virtio_transport_purge_skbs(void *vsk, struct sk_buff_head *list);
->>>>> > > >>  int virtio_transport_read_skb(struct vsock_sock *vsk, skb_read_actor_t read_actor);
->>>>> > > >> +int virtio_transport_notify_set_rcvlowat(struct vsock_sock *vsk, int val);
->>>>> > > >>  #endif /* _LINUX_VIRTIO_VSOCK_H */
->>>>> > > >> diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
->>>>> > > >> index af5bab1acee1..8007593a3a93 100644
->>>>> > > >> --- a/net/vmw_vsock/virtio_transport.c
->>>>> > > >> +++ b/net/vmw_vsock/virtio_transport.c
->>>>> > > >> @@ -539,6 +539,7 @@ static struct virtio_transport virtio_transport = {
->>>>> > > >>          .notify_buffer_size       = virtio_transport_notify_buffer_size,
->>>>> > > >>
->>>>> > > >>          .read_skb = virtio_transport_read_skb,
->>>>> > > >> +        .notify_set_rcvlowat      = virtio_transport_notify_set_rcvlowat
->>>>> > > >>      },
->>>>> > > >>
->>>>> > > >>      .send_pkt = virtio_transport_send_pkt,
->>>>> > > >> diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
->>>>> > > >> index f6dc896bf44c..1cb556ad4597 100644
->>>>> > > >> --- a/net/vmw_vsock/virtio_transport_common.c
->>>>> > > >> +++ b/net/vmw_vsock/virtio_transport_common.c
->>>>> > > >> @@ -1684,6 +1684,33 @@ int virtio_transport_read_skb(struct vsock_sock *vsk, skb_read_actor_t recv_acto
->>>>> > > >>  }
->>>>> > > >>  EXPORT_SYMBOL_GPL(virtio_transport_read_skb);
->>>>> > > >>
->>>>> > > >> +int virtio_transport_notify_set_rcvlowat(struct vsock_sock *vsk,
->>>>> > > >> int val)
->>>>> > > >> +{
->>>>> > > >> +    struct virtio_vsock_sock *vvs = vsk->trans;
->>>>> > > >> +    bool send_update;
->>>>> > > >> +
->>>>> > > >> +    spin_lock_bh(&vvs->rx_lock);
->>>>> > > >> +
->>>>> > > >> +    /* If number of available bytes is less than new SO_RCVLOWAT value,
->>>>> > > >> +     * kick sender to send more data, because sender may sleep in
->>>>> > > >> its
->>>>> > > >> +     * 'send()' syscall waiting for enough space at our side.
->>>>> > > >> +     */
->>>>> > > >> +    send_update = vvs->rx_bytes < val;
->>>>> > > >> +
->>>>> > > >> +    spin_unlock_bh(&vvs->rx_lock);
->>>>> > > >> +
->>>>> > > >> +    if (send_update) {
->>>>> > > >> +        int err;
->>>>> > > >> +
->>>>> > > >> +        err = virtio_transport_send_credit_update(vsk);
->>>>> > > >> +        if (err < 0)
->>>>> > > >> +            return err;
->>>>> > > >> +    }
->>>>> > > >> +
->>>>> > > >> +    return 0;
->>>>> > > >> +}
->>>>> > > >
->>>>> > > >
->>>>> > > > I find it strange that this will send a credit update
->>>>> > > > even if nothing changed since this was called previously.
->>>>> > > > I'm not sure whether this is a problem protocol-wise,
->>>>> > > > but it certainly was not envisioned when the protocol was
->>>>> > > > built. WDYT?
->>>>> > >
->>>>> > > >From virtio spec I found:
->>>>> > >
->>>>> > > It is also valid to send a VIRTIO_VSOCK_OP_CREDIT_UPDATE packet without previously receiving a
->>>>> > > VIRTIO_VSOCK_OP_CREDIT_REQUEST packet. This allows communicating updates any time a change
->>>>> > > in buffer space occurs.
->>>>> > > So I guess there is no limitations to send such type of packet, e.g. it is not
->>>>> > > required to be a reply for some another packet. Please, correct me if im wrong.
->>>>> > >
->>>>> > > Thanks, Arseniy
->>>>> >
->>>>> >
->>>>> > Absolutely. My point was different - with this patch it is possible
->>>>> > that you are not adding any credits at all since the previous
->>>>> > VIRTIO_VSOCK_OP_CREDIT_UPDATE.
->>>>>
->>>>> I think the problem we're solving here is that since as an optimization we
->>>>> avoid sending the update for every byte we consume, but we put a threshold,
->>>>> then we make sure we update the peer.
->>>>>
->>>>> A credit update contains a snapshot and sending it the same as the previous
->>>>> one should not create any problem.
->>>>
->>>> Well it consumes a buffer on the other side.
->>>
->>> Sure, but we are already speculating by not updating the other side when
->>> we consume bytes before a certain threshold. This already avoids to
->>> consume many buffers.
->>>
->>> Here we're only sending it once, when the user sets RCVLOWAT, so
->>> basically I expect it won't affect performance.
->>
->> Moreover I think in practice setting RCVLOWAT is rare case, while this patch
->> fixes real problem I guess
->>
->>
->>>
->>>>
->>>>> My doubt now is that we only do this when we set RCVLOWAT , should we also
->>>>> do something when we consume bytes to avoid the optimization we have?
->>>>>
->>>>> Stefano
->>>>
->>>> Isn't this why we have credit request?
->>>
->>> Yep, but in practice we never use it. It would also consume 2 buffers,
->>> one at the transmitter and one at the receiver.
->>>
->>> However I agree that maybe we should start using it before we decide not
->>> to send any more data.
->>>
->>> To be compatible with older devices, though, I think for now we also
->>> need to send a credit update when the bytes in the receive queue are
->>> less than RCVLOWAT, as Arseniy proposed in the other series.
->>
->> Looks like (in theory of course), that credit request is considered to be
->> paired with credit update. While current usage of credit update is something
->> like ACK packet in TCP, e.g. telling peer that we are ready to receive more
->> data.
+>> diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
+>> index 6ef25e26f1a1..3e7cd9bc8f4d 100644
+>> --- a/fs/iomap/direct-io.c
+>> +++ b/fs/iomap/direct-io.c
+>> @@ -662,7 +662,13 @@ __iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
+>>   			if (ret != -EAGAIN) {
+>>   				trace_iomap_dio_invalidate_fail(inode, iomi.pos,
+>>   								iomi.len);
+>> -				ret = -ENOTBLK;
+>> +				/*
+>> +				 * if this write was supposed to be atomic,
+>> +				 * return the err rather than trying to fall
+>> +				 * back to buffered IO.
+>> +				 */
+>> +				if (!atomic_write)
+>> +					ret = -ENOTBLK;
+> This belongs in the caller when it receives an -ENOTBLK from
+> iomap_dio_rw(). The iomap code is saying "this IO cannot be done
+> with direct IO" by returning this value, and then the caller can
+> make the determination of whether to run a buffered IO or not.
 > 
-> I don't honestly know what the original author's choice was, but I think we reduce latency this way.
+> For example, a filesystem might still be able to perform an atomic
+> IO via a COW-based buffered IO slow path. Sure, ext4 can't do this,
+> but the above patch would prevent filesystems that could from being
+> able to implement such a fallback....
 
-Ah I see,ok
+Sure, and I think that we need a better story for supporting buffered IO 
+for atomic writes.
 
-> 
-> Effectively though, if we never send any credit update when we consume bytes and always leave it up to the transmitter to ask for an update before transmission, we save even more buffer than the optimization we have, but maybe the latency would grow a lot.
+Currently we have:
+- man pages tell us RWF_ATOMIC is only supported for direct IO
+- statx gives atomic write unit min/max, not explicitly telling us it's 
+for direct IO
+- RWF_ATOMIC is ignored for !O_DIRECT
 
-I think:
-1) Way where sender must request current credit status before sending packet requires rework of kernel part, and for me this approach is not
-   so clear than current simple implementation (send RW, reply with CREDIT_UPDATE if needed).
-2) In theory yes, we need one more buffer for such CREDIT_UPDATE, but in practice I don't know how big is this trouble.
+So I am thinking of expanding statx support to enable querying of atomic 
+write capabilities for buffered IO and direct IO separately.
 
-Thanks, Arseniy
+Thanks,
+John
 
-> 
-> Stefano
-> 
