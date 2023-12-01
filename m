@@ -2,222 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EECB801245
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 19:09:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EF76801248
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 19:10:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230296AbjLASJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 13:09:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58354 "EHLO
+        id S1379059AbjLASJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 13:09:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjLASJX (ORCPT
+        with ESMTP id S229468AbjLASJu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 13:09:23 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D303106;
-        Fri,  1 Dec 2023 10:09:29 -0800 (PST)
+        Fri, 1 Dec 2023 13:09:50 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97067FF;
+        Fri,  1 Dec 2023 10:09:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701454169; x=1732990169;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=CJz00CJihd1qEeBYs0fVFfE3n80bQ76KtRuppz6FAPc=;
-  b=hImsLTcqg6KtA8Vx+2VeOr2uaHrEPaeENgpBcdUj7Ds4175SvFiLOFTD
-   QzzKE850RYkp+SdafNnsj4b35OaqspLp3zkk2Dmq6Tkt1A43pLMsTZ3+b
-   kl1ATmf1rh5sp2G4i80zxJK1CTZtk3SbAuE0WEmuYADHFVKJp8CWx8QWX
-   sJJnpMBKzKAYNIm/Vfq34vtwaSzQsD4wJ7fzt4x41vEkg2GHL9ao8ph3i
-   BjNQNtpCUUL24HkA8ptY51fSIDEebxmS9pFNsaWF/eCmqpDz1UC+bGA/T
-   Hd4Xm0q//O0cv4p4jCRmaH7cAqiWjIY5nHvmFq/SEVjyTV9IeBPW2g6zJ
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="424689904"
+  t=1701454196; x=1732990196;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=ZAqXOnxDi8CJBM0P2gmiWJwpeYA52txwCkVi6p934tY=;
+  b=H3DaGH8TIFYzczk0AdpXA6G8kfWthkuSP1ss257HArQn8+jv3vWtlrZ3
+   YKAxwCLD0gpoGs+gAi9uIXvnrc808hROrMAzL1tcRfjmXTDo7oLXDdFgf
+   Q8ZsFhRw/Au+fc98j0TgMEqjG3Hv1B2VZI2tT1MUjSQu4B6o1GByO89tI
+   CW+KuN9lm/6PbtR1IPoEPee64C92wL/riAXSXVCSoXv/or6qKlm9U1AMI
+   hA3eEUtFnANEqSrbbEMApUktwQKM/L+ytBNHqGUvuZFuEInpNpt2UX+LJ
+   /S09IIaQ6CqZ17ZIlSG1e5PSshvifwAe4omD9+IDuz/3zamaWOCj7f0IO
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="396330408"
 X-IronPort-AV: E=Sophos;i="6.04,242,1695711600"; 
-   d="scan'208";a="424689904"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2023 10:09:28 -0800
+   d="scan'208";a="396330408"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2023 10:09:56 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="763215712"
+X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="804146951"
 X-IronPort-AV: E=Sophos;i="6.04,242,1695711600"; 
-   d="scan'208";a="763215712"
-Received: from stinkpipe.fi.intel.com (HELO stinkbox) ([10.237.72.74])
-  by orsmga007.jf.intel.com with SMTP; 01 Dec 2023 10:09:23 -0800
-Received: by stinkbox (sSMTP sendmail emulation); Fri, 01 Dec 2023 20:09:22 +0200
-Date:   Fri, 1 Dec 2023 20:09:22 +0200
-From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-To:     Pekka Paalanen <pekka.paalanen@collabora.com>
-Cc:     =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Maxime Ripard <mripard@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        'Marek =?utf-8?B?T2zFocOhayc=?= <maraeo@gmail.com>,
-        Michel =?iso-8859-1?Q?D=E4nzer?= <michel.daenzer@mailbox.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-doc@vger.kernel.org, Thomas Zimmermann <tzimmermann@suse.de>,
-        kernel-dev@igalia.com, alexander.deucher@amd.com,
-        christian.koenig@amd.com
-Subject: Re: [PATCH] drm/doc: Define KMS atomic state set
-Message-ID: <ZWohUl3Ma6Q2fccG@intel.com>
-References: <20231130200740.53454-1-andrealmeid@igalia.com>
- <ZWn1EC04wBSN9hu2@intel.com>
- <20231201181616.4c1f0acc.pekka.paalanen@collabora.com>
+   d="scan'208";a="804146951"
+Received: from shwdedcgde01.ccr.corp.intel.com (HELO rzhang1-mobl7.ccr.corp.intel.com) ([10.254.208.132])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2023 10:09:54 -0800
+From:   Zhang Rui <rui.zhang@intel.com>
+To:     rafael.j.wysocki@intel.com, lenb@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Subject: [PATCH] intel_idle: Add Meteorlake support
+Date:   Sat,  2 Dec 2023 02:09:28 +0800
+Message-Id: <20231201180928.1103797-1-rui.zhang@intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231201181616.4c1f0acc.pekka.paalanen@collabora.com>
-X-Patchwork-Hint: comment
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 01, 2023 at 06:16:16PM +0200, Pekka Paalanen wrote:
-> On Fri, 1 Dec 2023 17:00:32 +0200
-> Ville Syrjälä <ville.syrjala@linux.intel.com> wrote:
-> 
-> > On Thu, Nov 30, 2023 at 05:07:40PM -0300, André Almeida wrote:
-> > > From: Pekka Paalanen <pekka.paalanen@collabora.com>
-> > > 
-> > > Specify how the atomic state is maintained between userspace and
-> > > kernel, plus the special case for async flips.
-> > > 
-> > > Signed-off-by: Pekka Paalanen <pekka.paalanen@collabora.com>
-> > > Signed-off-by: André Almeida <andrealmeid@igalia.com>
-> > > ---
-> > > 
-> > > This is a standalone patch from the following serie, the other patches are
-> > > already merged:
-> > > https://lore.kernel.org/lkml/20231122161941.320564-1-andrealmeid@igalia.com/
-> > > 
-> > >  Documentation/gpu/drm-uapi.rst | 47 ++++++++++++++++++++++++++++++++++
-> > >  1 file changed, 47 insertions(+)
-> > > 
-> > > diff --git a/Documentation/gpu/drm-uapi.rst b/Documentation/gpu/drm-uapi.rst
-> > > index 370d820be248..d0693f902a5c 100644
-> > > --- a/Documentation/gpu/drm-uapi.rst
-> > > +++ b/Documentation/gpu/drm-uapi.rst
-> > > @@ -570,3 +570,50 @@ dma-buf interoperability
-> > >  
-> > >  Please see Documentation/userspace-api/dma-buf-alloc-exchange.rst for
-> > >  information on how dma-buf is integrated and exposed within DRM.
-> > > +
-> > > +KMS atomic state
-> > > +================
-> > > +
-> > > +An atomic commit can change multiple KMS properties in an atomic fashion,
-> > > +without ever applying intermediate or partial state changes.  Either the whole
-> > > +commit succeeds or fails, and it will never be applied partially. This is the
-> > > +fundamental improvement of the atomic API over the older non-atomic API which is
-> > > +referred to as the "legacy API".  Applying intermediate state could unexpectedly
-> > > +fail, cause visible glitches, or delay reaching the final state.
-> > > +
-> > > +An atomic commit can be flagged with DRM_MODE_ATOMIC_TEST_ONLY, which means the
-> > > +complete state change is validated but not applied.  Userspace should use this
-> > > +flag to validate any state change before asking to apply it. If validation fails
-> > > +for any reason, userspace should attempt to fall back to another, perhaps
-> > > +simpler, final state.  This allows userspace to probe for various configurations
-> > > +without causing visible glitches on screen and without the need to undo a
-> > > +probing change.
-> > > +
-> > > +The changes recorded in an atomic commit apply on top the current KMS state in
-> > > +the kernel. Hence, the complete new KMS state is the complete old KMS state with
-> > > +the committed property settings done on top. The kernel will try to avoid
-> > > +no-operation changes,  
-> > 
-> > Not how things work. The driver may try to avoid some really
-> > expensive operations, but generally it will just blindly blast
-> > the full state to the hardware.
-> > 
-> > IIRC this was discussed long ago when atomic was being designed
-> > and the general concensus was that the kernel shouldn't generally
-> > do this kind of stuff, and instead we just leave it to userspace
-> > to generate optimal commits.
-> 
-> I don't think userspace ever got that memo. If I was cheeky, I could
-> ask where that is documented, so you could point at it and say "told
-> you so".
+Add intel_idle support for MeteorLake.
 
-Probably not docuemented anywhere.
+C1 and C1E states on Meteorlake are mutually exclusive like Alderlake
+and Raptorlake, but they have little latency difference with measureable
+power difference. Thus always enable "C1E promotion" bit and expose C1E
+only.
 
-> 
-> When I was working on Weston atomic KMS support many years ago, I
-> created a framework that emitted KMS property changes only when they
-> actually needed changing. By review feedback (*), all that machinery was
-> dropped in a re-design, and today Weston always emits all KMS
-> properties it knows to program for a specific CRTC update including all
-> relevant planes and connectors.
-> 
-> (*) Why do we need to repeat the same state tracking that the kernel
-> does anyway, and also risk getting out of sync with the kernel due to
-> bugs which then become more difficult to diagnose. I guess (assumed)
-> kernel internals leaked to userspace. Oops.
+Expose C6 because it has less power compared with C1E, and smaller
+latency compared with C8/C10.
 
-The kernel does track the full state sure, but it doesn't generally
-go out of its way to figure out what specifically changed in that state.
-Doing so would be a lot of extra checks, and kinda less convenient to
-do inside the driver since at that point the state is already spread 
-all over the various structures. And the fact that those structures
-are a mismash of uapi and internal bits of state (and other metadata 
-for the single commit that really shouldn't be stored there) doesn't
-help matters. I did propose to split the state cleanly into pure uapi
-vs. internal stuff but that didn't gain any traction unfortunately.
+Ignore C8 and expose C10 because C8 does not show latency advantage
+compared with C10.
 
-So I think it might be simpler to do on the uapi property level. It may
-result in a somewhat coarser idea of what changed, but it avoids having
-to track down all the little bits of state everwhere that could have
-changed in response to a single property changing. The kernel could do
-that I suppose, but someone would need to come up with a good way to
-track that information. Currently there are a handful of foo_changed
-booleans ad-hocced here and there, but nothing consistent that covers
-everything.
+Signed-off-by: Zhang Rui <rui.zhang@intel.com>
+---
+ drivers/idle/intel_idle.c | 34 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 34 insertions(+)
 
-> 
-> > > so it is safe for userspace to send redundant property
-> > > +settings.  
-> > 
-> > Safe but not optimal. Any object included in the state will cause said
-> > object to be part of the commit, and side effects will also need to be
-> > observed.
-> > 
-> > So if you add an extra crtc (either directly or indirectly) it will
-> > have a new commit inserted into the queue and thus and any subsequent
-> > commit will either block or be rejected with -EBUSY. Also for directly
-> > added crtcs an event will be emitted once the commit is done.
-> 
-> It is not too hard to keep CRTCs well separated,
-
-Sure. But the way this was worded implied that you can just throw
-everything and the kitchen sink into the commit without any
-repercussions, which is not the case.
-
-> until the kernel
-> driver decides under the hood to pull in an unwanted CRTC.
-
-That is sadly needed too sometimes. Hardware design is often
-a bit disappointing.
-
-> 
-> But yes, that caveat could use extending in the doc.
-> 
-> > Any plane added will also need to observe side effects even if the FB
-> > doesn't change, such as invalidating any internal compressed version
-> > of the old FB contents, PSR/DSI command mode/etc. will need to upload
-> > the frame to the display, etc. I suppose we could specify that if no
-> > FB is specified at all then these kind of side effects could be ignored,
-> > but that is certainly not how things are implemented right now.
-> 
-> Well, this is all surprise news to me.
-> 
-> > So for optimal behaviour userspace should be minimizing the commits.
-> > 
-> 
-> 
-> Thanks,
-> pq
-
+diff --git a/drivers/idle/intel_idle.c b/drivers/idle/intel_idle.c
+index dcda0afecfc5..cfd0b24fd7f1 100644
+--- a/drivers/idle/intel_idle.c
++++ b/drivers/idle/intel_idle.c
+@@ -923,6 +923,35 @@ static struct cpuidle_state adl_l_cstates[] __initdata = {
+ 		.enter = NULL }
+ };
+ 
++static struct cpuidle_state mtl_l_cstates[] __initdata = {
++	{
++		.name = "C1E",
++		.desc = "MWAIT 0x01",
++		.flags = MWAIT2flg(0x01) | CPUIDLE_FLAG_ALWAYS_ENABLE,
++		.exit_latency = 1,
++		.target_residency = 1,
++		.enter = &intel_idle,
++		.enter_s2idle = intel_idle_s2idle, },
++	{
++		.name = "C6",
++		.desc = "MWAIT 0x20",
++		.flags = MWAIT2flg(0x20) | CPUIDLE_FLAG_TLB_FLUSHED,
++		.exit_latency = 140,
++		.target_residency = 420,
++		.enter = &intel_idle,
++		.enter_s2idle = intel_idle_s2idle, },
++	{
++		.name = "C10",
++		.desc = "MWAIT 0x60",
++		.flags = MWAIT2flg(0x60) | CPUIDLE_FLAG_TLB_FLUSHED,
++		.exit_latency = 310,
++		.target_residency = 930,
++		.enter = &intel_idle,
++		.enter_s2idle = intel_idle_s2idle, },
++	{
++		.enter = NULL }
++};
++
+ static struct cpuidle_state gmt_cstates[] __initdata = {
+ 	{
+ 		.name = "C1",
+@@ -1349,6 +1378,10 @@ static const struct idle_cpu idle_cpu_adl_l __initconst = {
+ 	.state_table = adl_l_cstates,
+ };
+ 
++static const struct idle_cpu idle_cpu_mtl_l __initconst = {
++	.state_table = mtl_l_cstates,
++};
++
+ static const struct idle_cpu idle_cpu_gmt __initconst = {
+ 	.state_table = gmt_cstates,
+ };
+@@ -1423,6 +1456,7 @@ static const struct x86_cpu_id intel_idle_ids[] __initconst = {
+ 	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_D,		&idle_cpu_icx),
+ 	X86_MATCH_INTEL_FAM6_MODEL(ALDERLAKE,		&idle_cpu_adl),
+ 	X86_MATCH_INTEL_FAM6_MODEL(ALDERLAKE_L,		&idle_cpu_adl_l),
++	X86_MATCH_INTEL_FAM6_MODEL(METEORLAKE_L,	&idle_cpu_mtl_l),
+ 	X86_MATCH_INTEL_FAM6_MODEL(ATOM_GRACEMONT,	&idle_cpu_gmt),
+ 	X86_MATCH_INTEL_FAM6_MODEL(SAPPHIRERAPIDS_X,	&idle_cpu_spr),
+ 	X86_MATCH_INTEL_FAM6_MODEL(EMERALDRAPIDS_X,	&idle_cpu_spr),
 -- 
-Ville Syrjälä
-Intel
+2.34.1
+
