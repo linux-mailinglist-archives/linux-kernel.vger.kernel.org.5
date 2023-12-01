@@ -2,129 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19D1780003E
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 01:35:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71D22800052
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 01:37:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377452AbjLAAfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 19:35:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46042 "EHLO
+        id S1377456AbjLAAhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 19:37:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377446AbjLAAfU (ORCPT
+        with ESMTP id S1377446AbjLAAhO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 19:35:20 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA7AB10DE;
-        Thu, 30 Nov 2023 16:35:26 -0800 (PST)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AUNNE44000304;
-        Fri, 1 Dec 2023 00:35:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : date :
- subject : mime-version : content-type : content-transfer-encoding :
- message-id : to : cc; s=qcppdkim1;
- bh=ICdgyrkMliI33Zpw9gltYRMWGQds5j3xcF2jKWyi/WY=;
- b=CZwRLBHzw0oIL4/Thp39vVR6BdRlp0zjo7WDSvK3NdSA4DxZGEho3rLJefqqEM/+HFI2
- eokqYp2E+HI4RXi4+rWIVaugNTXwMiFADe3+fL8kf2iKdxuQJBQ2I7huPfFcdko/B2fh
- 01VH4f/TF3WNcEAViWPWxZve9tswPkQrlUg5y58yJYz9ugd+0eiUFOm18w7NiwCzN1+Y
- LpL7fQTDXPuU+qW8Vrh7Cyyahmz2dty8+xS4JKZcNUaFOPhVIcDO8u7TaDe5bKYWG1yd
- Hq0QYcNJGmjDhNgMs06dHnnq00J7KyAqTyNhMiBHq7q7zvN5hFW64OKAvFIQUMHz6I93 BQ== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uprhdt13n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 01 Dec 2023 00:35:08 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B10Z7Pa031593
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 1 Dec 2023 00:35:07 GMT
-Received: from [169.254.0.1] (10.49.16.6) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 30 Nov
- 2023 16:35:07 -0800
-From:   Bjorn Andersson <quic_bjorande@quicinc.com>
-Date:   Thu, 30 Nov 2023 16:35:01 -0800
-Subject: [PATCH] drm/msm/dpu: Add missing safe_lut_tbl in sc8180x catalog
+        Thu, 30 Nov 2023 19:37:14 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D815110DE;
+        Thu, 30 Nov 2023 16:37:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701391040; x=1732927040;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=OAXgylAvqbL36kLJ778XRMQl7eMkZD8otzMFMN2gudo=;
+  b=gMNA2r6oqUgmg9LRxDTmyLraXwvXsPw95rtgV9bDggFNuLF0mQwE3pC/
+   8YiTmhfIYqYI17VVtrJ7NzrDj5F9bYWojS3lr5tDKag/SMTXGGG6iFcWU
+   I/cFKxjK6HptuSNaJy9rQAasP2kagSVEGm2Xdskhu3ZUOZUrr0CYG/gRQ
+   a4XYt7KyQStNku1+A47IZ0VFX56h+MgOU7lWgueIgnE5660xS1QGvcHor
+   UW1TR8OZ1X5wAvZn7oR5Prx16JEs6yy77K5tMjEBxFeKb0fzJmMdbsgq4
+   UFLET5wN1B/yuVrrKNRfgvmyO7FQYIAq/0IULLABk3z9wT4C2vDtrlo85
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="311715"
+X-IronPort-AV: E=Sophos;i="6.04,240,1695711600"; 
+   d="scan'208";a="311715"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 16:37:20 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="839984290"
+X-IronPort-AV: E=Sophos;i="6.04,240,1695711600"; 
+   d="scan'208";a="839984290"
+Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.222.74])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 16:37:20 -0800
+Date:   Thu, 30 Nov 2023 16:37:19 -0800
+From:   Tony Luck <tony.luck@intel.com>
+To:     Reinette Chatre <reinette.chatre@intel.com>
+Cc:     Fam Zheng <fam@euphon.net>, Fenghua Yu <fenghua.yu@intel.com>,
+        Peter Newman <peternewman@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <skhan@linuxfoundation.org>, x86@kernel.org,
+        Shaopeng Tan <tan.shaopeng@fujitsu.com>,
+        James Morse <james.morse@arm.com>,
+        Jamie Iles <quic_jiles@quicinc.com>,
+        Babu Moger <babu.moger@amd.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        patches@lists.linux.dev, Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>
+Subject: Re: [PATCH v12 7/8] x86/resctrl: Sub NUMA Cluster detection and
+ enable
+Message-ID: <ZWkqv+egQuph03Bm@agluck-desk3>
+References: <20231109230915.73600-1-tony.luck@intel.com>
+ <20231130003418.89964-1-tony.luck@intel.com>
+ <20231130003418.89964-8-tony.luck@intel.com>
+ <ZWjOBw0Ygyw226Cc@dell>
+ <ZWj3NdI/qLNOgyg0@agluck-desk3>
+ <1c1a16a5-f235-4179-9d0f-1556e11d9c11@intel.com>
+ <ZWkQBwwtSae4nGgH@agluck-desk3>
+ <5078f930-e56e-45b5-9df3-99e88c0858dd@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20231130-sc8180x-dpu-safe-lut-v1-1-a8a6bbac36b8@quicinc.com>
-X-B4-Tracking: v=1; b=H4sIADQqaWUC/x2N0QqDMAwAf0XyvEBTwcl+ZeyhNskslE6adQjiv
- 6/4eAfHHWBSkxg8hgOq/JKlT+lAtwHiGspbMHFn8M6PRKNDizPNbkfeGlpQwdy+qMqO1Xvi6Q4
- 9XYIJLjWUuPa4tJy73Kpo2q/X83Wef6AHPT97AAAA
-To:     Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "Bjorn Andersson" <andersson@kernel.org>
-CC:     <linux-arm-msm@vger.kernel.org>,
-        Rob Clark <robdclark@chromium.org>,
-        <dri-devel@lists.freedesktop.org>,
-        <freedreno@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
-        Bjorn Andersson <quic_bjorande@quicinc.com>
-X-Mailer: b4 0.12.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1701390907; l=1254;
- i=quic_bjorande@quicinc.com; s=20230915; h=from:subject:message-id;
- bh=MEBwXB+U40Igb6rl9s9JdUj63wjC5O+InEcgkFNeMIA=;
- b=x7bPJlpmlUmEM2cThkbyeN+nKlbeopYuh/BL7ABKUpKBiPz+YHS0MdKpser8mH+VTK5k/WLm5bif
- qCT8UpHeDDXw/YprkmH6dAKoqpdJtto4+f0DjBmPPYhaWcKtfteM
-X-Developer-Key: i=quic_bjorande@quicinc.com; a=ed25519;
- pk=VkhObtljigy9k0ZUIE1Mvr0Y+E1dgBEH9WoLQnUtbIM=
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: krFbri4l06wzhX9N-6J09zRIA-AOB_oC
-X-Proofpoint-GUID: krFbri4l06wzhX9N-6J09zRIA-AOB_oC
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-30_25,2023-11-30_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- phishscore=0 spamscore=0 suspectscore=0 impostorscore=0 mlxlogscore=999
- clxscore=1015 mlxscore=0 priorityscore=1501 adultscore=0 bulkscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2312010002
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5078f930-e56e-45b5-9df3-99e88c0858dd@intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Similar to SC8280XP, the misconfigured SAFE logic causes rather
-significant delays in __arm_smmu_tlb_sync(), resulting in poor
-performance for things such as USB.
+On Thu, Nov 30, 2023 at 03:40:52PM -0800, Reinette Chatre wrote:
+> Hi Tony,
+> 
+> On 11/30/2023 2:43 PM, Tony Luck wrote:
+> > On Thu, Nov 30, 2023 at 01:47:10PM -0800, Reinette Chatre wrote:
+> 
+> ...
+> 
+> >>>  	if (!x86_match_cpu(snc_cpu_ids))
+> >>>  		return 1;
+> >>
+> >> I understand and welcome this change as motivated by robustness. Apart
+> >> from that, with this being a model specific feature for this particular
+> >> group of systems, it it not clear to me in which scenarios this could
+> >> run on a system where a present CPU does not have access to L3 cache.
+> > 
+> > Agreed that on these systems there should always be an L3 cache. Should
+> > I drop the check for "-1"?
+> 
+> Please do keep it. I welcome the additional robustness. The static checker I
+> tried did not complain about this but I expect that it is something that
+> could trigger checks.
+> 
+> > 
+> >>>  
+> >>> -	node_caches = bitmap_zalloc(nr_node_ids, GFP_KERNEL);
+> >>> +	node_caches = bitmap_zalloc(num_online_cpus(), GFP_KERNEL);
+> >>
+> >> Please do take care to take new bitmap size into account in all
+> >> places. From what I can tell there is a later bitmap_weight() call that
+> >> still uses nr_node_ids as size.
+> > 
+> > Oops. I was also using num_online_cpus() before cpus_read_lock(), so
+> > things could theoretically change before the bitmap_weight() call.
+> > I switched to using num_present_cpus() in both places.
+> 
+> Thanks for catching this. I am not sure if num_present_cpus() is the right
+> choice. I found its comment to say "If HOTPLUG is enabled, then cpu_present_mask
+> varies dynamically ...". num_possible_cpus() seems more appropriate when looking
 
-Introduce appropriate SAFE values for SC8180X to correct this.
+I can size the bitmask based on num_possible_cpus().
 
-Fixes: f3af2d6ee9ab ("drm/msm/dpu: Add SC8180x to hw catalog")
-Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
----
- drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_5_1_sc8180x.h | 1 +
- 1 file changed, 1 insertion(+)
+> for something that does not change while not holding the hotplug lock. Reading its
+> description more closely also makes me wonder if the later
+> 	num_online_cpus() != num_present_cpus()
+> should also maybe be 
+> 	num_online_cpus() != num_possible_cpus() ?
+> It seems to more closely match the intention.
 
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_5_1_sc8180x.h b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_5_1_sc8180x.h
-index e07f4c8c25b9..9ffc8804a6fc 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_5_1_sc8180x.h
-+++ b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_5_1_sc8180x.h
-@@ -367,6 +367,7 @@ static const struct dpu_perf_cfg sc8180x_perf_data = {
- 	.min_llcc_ib = 800000,
- 	.min_dram_ib = 800000,
- 	.danger_lut_tbl = {0xf, 0xffff, 0x0},
-+	.safe_lut_tbl = {0xfff0, 0xf000, 0xffff},
- 	.qos_lut_tbl = {
- 		{.nentry = ARRAY_SIZE(sc7180_qos_linear),
- 		.entries = sc7180_qos_linear
+This seems problematic. On a system that does support physical CPU
+hotplug num_possible_cpus() may be some very large number. Reserving
+space for CPUs that can be added later. None of those CPUs can be online
+(obviously!). So this test would fail on such a system.
 
----
-base-commit: 3cd3fe06ff81cfb3a969acb12a56796cff5af23d
-change-id: 20231130-sc8180x-dpu-safe-lut-ffd0df221d67
+> >>>  	if (!node_caches)
+> >>>  		return 1;
+> >>>  
+> >>> @@ -1072,10 +1073,13 @@ static __init int snc_get_config(void)
+> >>>  
+> >>>  	for_each_node(node) {
+> >>>  		cpu = cpumask_first(cpumask_of_node(node));
+> >>> -		if (cpu < nr_cpu_ids)
+> >>> -			set_bit(get_cpu_cacheinfo_id(cpu, 3), node_caches);
+> >>> -		else
+> >>> +		if (cpu < nr_cpu_ids) {
+> >>> +			cache_id = get_cpu_cacheinfo_id(cpu, 3);
+> >>> +			if (cache_id != -1)
+> >>> +				set_bit(cache_id, node_caches);
+> >>> +		} else {
+> >>>  			mem_only_nodes++;
+> >>> +		}
+> >>>  	}
+> >>>  	cpus_read_unlock();
+> >>>  
+> >>
+> >> Could this code be made even more robust by checking the computed
+> >> snc_nodes_per_l3_cache against the limited actually possible values?
+> >> Forcing it to 1 if something went wrong?
+> > 
+> > Added a couple of extra sanity checks. See updated incremental patch
+> > below.
+> 
+> Thank you very much. The additional checks look good to me.
+> 
+> Reinette
 
-Best regards,
--- 
-Bjorn Andersson <quic_bjorande@quicinc.com>
+Thanks for looking at this. I'm applying changes to my local tree. I'll
+give folks a little more time to find additonal issues in v12 and post
+v13 next week.
 
+-Tony
