@@ -2,124 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E47E80036E
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 06:54:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CA2580036F
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 06:55:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377536AbjLAFyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 00:54:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51942 "EHLO
+        id S1377565AbjLAFzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 00:55:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232475AbjLAFyV (ORCPT
+        with ESMTP id S229808AbjLAFza (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 00:54:21 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4716F2
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 21:54:19 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3204CC433C8;
-        Fri,  1 Dec 2023 05:54:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701410059;
-        bh=XWTd2RLDgng2C3LTUEtomheeaQdarXMuLAND323s2cc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MMHU/+pBkRXhRy4fG2fEF7IobU50XbzhbUaAEaIhAE2DFp3BLYAJOvfs4p1nzh1zH
-         zBrwC2W3kdxWr1uRMew1MmondiRuqIgMCYs2G/44N9cdQX0RfjJ6p+oNnKI99Xbtn0
-         z1wpmGVKOJ/idn2biFhL4OnsYL9spQzmkoD1y3+faZ+68I2GrDueqzSB5o1tEfQAfJ
-         uLB/2iKjRzx22/4vvxLCfk6rHkaWTAEDqvGIYSRklhD0AsyEJXppi7niEdgCGErAVw
-         KbrY2R7q6nn9UIo9Bc+BhApDVBCCyvryR1bCFCujqu613A9dXJBXJUcGDOA9XeaeCO
-         1mXbG7aeqjFJg==
-Date:   Fri, 1 Dec 2023 11:23:59 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Mrinmay Sarkar <quic_msarkar@quicinc.com>
-Cc:     agross@kernel.org, andersson@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        konrad.dybcio@linaro.org, robh+dt@kernel.org,
-        quic_shazhuss@quicinc.com, quic_nitegupt@quicinc.com,
-        quic_ramkri@quicinc.com, quic_nayiluri@quicinc.com,
-        dmitry.baryshkov@linaro.org, robh@kernel.org,
-        quic_krichai@quicinc.com, quic_vbadigan@quicinc.com,
-        quic_parass@quicinc.com, quic_schintav@quicinc.com,
-        quic_shijjose@quicinc.com, Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mhi@lists.linux.dev
-Subject: Re: [PATCH v8 4/5] PCI: epf-mhi: Add support for SA8775P
-Message-ID: <20231201055359.GI4009@thinkpad>
-References: <1699669982-7691-1-git-send-email-quic_msarkar@quicinc.com>
- <1699669982-7691-5-git-send-email-quic_msarkar@quicinc.com>
+        Fri, 1 Dec 2023 00:55:30 -0500
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AB5CF2;
+        Thu, 30 Nov 2023 21:55:32 -0800 (PST)
+X-UUID: af621b157147467a8b72dd521f25fb77-20231201
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.33,REQID:4370d4bb-2196-4939-a7ad-15607adacd4b,IP:5,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+        N:release,TS:-10
+X-CID-INFO: VERSION:1.1.33,REQID:4370d4bb-2196-4939-a7ad-15607adacd4b,IP:5,URL
+        :0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+        release,TS:-10
+X-CID-META: VersionHash:364b77b,CLOUDID:abcb0696-10ce-4e4b-85c2-c9b5229ff92b,B
+        ulkID:231201135519P328HBSD,BulkQuantity:0,Recheck:0,SF:66|38|24|17|19|44|1
+        02,TC:nil,Content:0,EDM:-3,IP:-2,URL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil
+        ,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI,
+        TF_CID_SPAM_ULN
+X-UUID: af621b157147467a8b72dd521f25fb77-20231201
+X-User: chentao@kylinos.cn
+Received: from vt.. [(116.128.244.169)] by mailgw
+        (envelope-from <chentao@kylinos.cn>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1806735794; Fri, 01 Dec 2023 13:55:17 +0800
+From:   Kunwu Chan <chentao@kylinos.cn>
+To:     hdegoede@redhat.com, ilpo.jarvinen@linux.intel.com,
+        vadimp@nvidia.com, jdelvare@suse.com, linux@roeck-us.net,
+        shravankr@nvidia.com, jiri@resnulli.us
+Cc:     kunwu.chan@hotmail.com, platform-driver-x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        Kunwu Chan <chentao@kylinos.cn>
+Subject: [PATCH v2] platform/mellanox: Add some null/error pointer checks to mlxbf-pmc.c
+Date:   Fri,  1 Dec 2023 13:54:47 +0800
+Message-Id: <20231201055447.2356001-1-chentao@kylinos.cn>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1699669982-7691-5-git-send-email-quic_msarkar@quicinc.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        UNPARSEABLE_RELAY autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 11, 2023 at 08:03:00AM +0530, Mrinmay Sarkar wrote:
-> Add support for Qualcomm Snapdragon SA8775P SoC to the EPF driver.
-> SA8775P is currently reusing the PID 0x0306 (the default one hardcoded
-> in the config space header) as the unique PID is not yet allocated.
-> But the host side stack works fine with the default PID. It will get
-> updated once the PID is finalized. Currently, it has no fixed PCI class,
-> so it is being advertised as "PCI_CLASS_OTHERS".
-> 
-> Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
+devm_kasprintf() returns a pointer to dynamically allocated memory
+which can be NULL upon failure.
+devm_hwmon_device_register_with_groups return a error pointer upon failure.
 
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Compile-tested only.
 
-- Mani
+Fixes: 1a218d312e65 ("platform/mellanox: mlxbf-pmc: Add Mellanox BlueField PMC driver")
+Suggested-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+Suggested-by: Vadim Pasternak <vadimp@nvidia.com>
+Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+---
+ drivers/platform/mellanox/mlxbf-pmc.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-> ---
->  drivers/pci/endpoint/functions/pci-epf-mhi.c | 17 +++++++++++++++++
->  1 file changed, 17 insertions(+)
-> 
-> diff --git a/drivers/pci/endpoint/functions/pci-epf-mhi.c b/drivers/pci/endpoint/functions/pci-epf-mhi.c
-> index 5b0515a..68801c2 100644
-> --- a/drivers/pci/endpoint/functions/pci-epf-mhi.c
-> +++ b/drivers/pci/endpoint/functions/pci-epf-mhi.c
-> @@ -114,6 +114,22 @@ static const struct pci_epf_mhi_ep_info sm8450_info = {
->  	.flags = MHI_EPF_USE_DMA,
->  };
->  
-> +static struct pci_epf_header sa8775p_header = {
-> +	.vendorid = PCI_VENDOR_ID_QCOM,
-> +	.deviceid = 0x0306,               /* FIXME: Update deviceid for sa8775p EP */
-> +	.baseclass_code = PCI_CLASS_OTHERS,
-> +	.interrupt_pin = PCI_INTERRUPT_INTA,
-> +};
-> +
-> +static const struct pci_epf_mhi_ep_info sa8775p_info = {
-> +	.config = &mhi_v1_config,
-> +	.epf_header = &sa8775p_header,
-> +	.bar_num = BAR_0,
-> +	.epf_flags = PCI_BASE_ADDRESS_MEM_TYPE_32,
-> +	.msi_count = 32,
-> +	.mru = 0x8000,
-> +};
-> +
->  struct pci_epf_mhi {
->  	const struct pci_epc_features *epc_features;
->  	const struct pci_epf_mhi_ep_info *info;
-> @@ -677,6 +693,7 @@ static int pci_epf_mhi_probe(struct pci_epf *epf,
->  }
->  
->  static const struct pci_epf_device_id pci_epf_mhi_ids[] = {
-> +	{ .name = "pci_epf_mhi_sa8775p", .driver_data = (kernel_ulong_t)&sa8775p_info },
->  	{ .name = "pci_epf_mhi_sdx55", .driver_data = (kernel_ulong_t)&sdx55_info },
->  	{ .name = "pci_epf_mhi_sm8450", .driver_data = (kernel_ulong_t)&sm8450_info },
->  	{},
-> -- 
-> 2.7.4
-> 
-
+diff --git a/drivers/platform/mellanox/mlxbf-pmc.c b/drivers/platform/mellanox/mlxbf-pmc.c
+index 0b427fc24a96..1dd84c7a79de 100644
+--- a/drivers/platform/mellanox/mlxbf-pmc.c
++++ b/drivers/platform/mellanox/mlxbf-pmc.c
+@@ -1771,6 +1771,8 @@ static int mlxbf_pmc_init_perftype_counter(struct device *dev, int blk_num)
+ 	attr->dev_attr.show = mlxbf_pmc_event_list_show;
+ 	attr->nr = blk_num;
+ 	attr->dev_attr.attr.name = devm_kasprintf(dev, GFP_KERNEL, "event_list");
++	if (!attr->dev_attr.attr.name)
++		return -ENOMEM;
+ 	pmc->block[blk_num].block_attr[i] = &attr->dev_attr.attr;
+ 	attr = NULL;
+ 
+@@ -1784,6 +1786,8 @@ static int mlxbf_pmc_init_perftype_counter(struct device *dev, int blk_num)
+ 		attr->nr = blk_num;
+ 		attr->dev_attr.attr.name = devm_kasprintf(dev, GFP_KERNEL,
+ 							  "enable");
++		if (!attr->dev_attr.attr.name)
++			return -ENOMEM;
+ 		pmc->block[blk_num].block_attr[++i] = &attr->dev_attr.attr;
+ 		attr = NULL;
+ 	}
+@@ -1810,6 +1814,8 @@ static int mlxbf_pmc_init_perftype_counter(struct device *dev, int blk_num)
+ 		attr->nr = blk_num;
+ 		attr->dev_attr.attr.name = devm_kasprintf(dev, GFP_KERNEL,
+ 							  "counter%d", j);
++		if (!attr->dev_attr.attr.name)
++			return -ENOMEM;
+ 		pmc->block[blk_num].block_attr[++i] = &attr->dev_attr.attr;
+ 		attr = NULL;
+ 
+@@ -1821,6 +1827,8 @@ static int mlxbf_pmc_init_perftype_counter(struct device *dev, int blk_num)
+ 		attr->nr = blk_num;
+ 		attr->dev_attr.attr.name = devm_kasprintf(dev, GFP_KERNEL,
+ 							  "event%d", j);
++		if (!attr->dev_attr.attr.name)
++			return -ENOMEM;
+ 		pmc->block[blk_num].block_attr[++i] = &attr->dev_attr.attr;
+ 		attr = NULL;
+ 	}
+@@ -1853,6 +1861,8 @@ static int mlxbf_pmc_init_perftype_reg(struct device *dev, int blk_num)
+ 		attr->nr = blk_num;
+ 		attr->dev_attr.attr.name = devm_kasprintf(dev, GFP_KERNEL,
+ 							  events[j].evt_name);
++		if (!attr->dev_attr.attr.name)
++			return -ENOMEM;
+ 		pmc->block[blk_num].block_attr[i] = &attr->dev_attr.attr;
+ 		attr = NULL;
+ 		i++;
+@@ -1882,6 +1892,8 @@ static int mlxbf_pmc_create_groups(struct device *dev, int blk_num)
+ 	pmc->block[blk_num].block_attr_grp.attrs = pmc->block[blk_num].block_attr;
+ 	pmc->block[blk_num].block_attr_grp.name = devm_kasprintf(
+ 		dev, GFP_KERNEL, pmc->block_name[blk_num]);
++	if (!pmc->block[blk_num].block_attr_grp.name)
++		return -ENOMEM;
+ 	pmc->groups[pmc->group_num] = &pmc->block[blk_num].block_attr_grp;
+ 	pmc->group_num++;
+ 
+@@ -2063,6 +2075,8 @@ static int mlxbf_pmc_probe(struct platform_device *pdev)
+ 
+ 	pmc->hwmon_dev = devm_hwmon_device_register_with_groups(
+ 		dev, "bfperf", pmc, pmc->groups);
++	if (IS_ERR(pmc->hwmon_dev))
++		return PTR_ERR(pmc->hwmon_dev);
+ 	platform_set_drvdata(pdev, pmc);
+ 
+ 	return 0;
 -- 
-மணிவண்ணன் சதாசிவம்
+2.34.1
+
