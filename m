@@ -2,171 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68E2B8015CC
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 22:59:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEF2D8015CE
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 22:59:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229649AbjLAV7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 16:59:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58724 "EHLO
+        id S1441807AbjLAV7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 16:59:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjLAV7U (ORCPT
+        with ESMTP id S229552AbjLAV7m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 16:59:20 -0500
-Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B864DFF
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 13:59:26 -0800 (PST)
-Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-5d400779f16so10606647b3.0
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 13:59:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701467966; x=1702072766; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Z+exs5h/ORFFX83E63BLP4xoRIe35RXovt/mscKVvNI=;
-        b=hX6VTg28CCxCeP57YZmXo477YSgmH93Dw4fBMR4wa6zhQtrlFGN42dTJW7ffMyR2CE
-         vAl1PUUYT91fOBJfopsUCUmAArwAU/VlXXeMGz5isSl2Of77vITRovW1K3zBV9xyb6x/
-         KF/Q9DLL8h61WDxD5pTUbV55HXMS1+wiPLdBdZlMrzgejIPbQuH9TyOBSG6+RPX7iyxJ
-         H8lRnSppJWjq8j4vS8hgcP5RY9WmKYYEZv4al4VbPGw/seqJTkfGMlmuoO1bX93eVAb5
-         nrrvinDEAAMx+dOteVgfbjAyhpSDOX90IBDRwxDtT8COoK3qtagPQW8Pz4x5gnhfgFzM
-         7Yhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701467966; x=1702072766;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Z+exs5h/ORFFX83E63BLP4xoRIe35RXovt/mscKVvNI=;
-        b=ZjX4VoQ5DHvUA/gQjBelB9O1CW0c33n3hwj7c9DDtPbMcFMlA4nFDLxUqpnyq089HW
-         oGtYugu9skF/nVSNoTb/+pHjGqNa/tmLhu3w7FZ83dBGuHXzAmRUMGTBMCYoq3bPIY4Z
-         hcN8/iH/JZ/0PN2KWdpF+E34YXS/tdS+pRx2Fixuf3ApOWnrd5GyU/EnB06SM6Ml9cwN
-         Mswc205swSH4kbPyDTAfb4KdyMj7pzqvWbHXecT0BPlNxHNzwYmjfLjOosUHppSxPk7O
-         VHS8GVbA/FqhGltGT9dWxUBkwEGC5BOQZiUmSY2/Xk/QhRCiNat0wrs6acGtYtbqcYfL
-         /XZg==
-X-Gm-Message-State: AOJu0YzdgmB4+X348fv99OAxCzWcJZfSZUm6IwXJMpb9+P3jccR6atYp
-        lqiVotrrHWIf1neZc4DidDdYDr2KCS02BQ1ftgGx9A==
-X-Google-Smtp-Source: AGHT+IH5pinfBxSB4oGxosUPol8k+50xPe9U5E7xmyyM7NKUdtj+66RiOT8P6mzKNjGWMLXdmWbEEzCJywNKZK4Oneo=
-X-Received: by 2002:a0d:e684:0:b0:5d7:1a33:5ad3 with SMTP id
- p126-20020a0de684000000b005d71a335ad3mr115182ywe.32.1701467965712; Fri, 01
- Dec 2023 13:59:25 -0800 (PST)
+        Fri, 1 Dec 2023 16:59:42 -0500
+Received: from wnew2-smtp.messagingengine.com (wnew2-smtp.messagingengine.com [64.147.123.27])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 876AD10FF;
+        Fri,  1 Dec 2023 13:59:48 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailnew.west.internal (Postfix) with ESMTP id B415A2B005E2;
+        Fri,  1 Dec 2023 16:59:45 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Fri, 01 Dec 2023 16:59:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm3; t=1701467985; x=1701475185; bh=9R
+        UywHy5pRnc9jdI4T7duTy4HQrezKiKqmZajvx6reU=; b=jIU4MqrAF5Hs0q5K98
+        M9thslGVc3kVtc6S4O3wNX05MTrDRwXqLVAMa4JsD1pg6ph/7avYySJm+Ct1ckdh
+        l3jvN8iwLzqY8XR+BxQf3GZoldRTAc7P4B6ZCAV5UHUpdnewrnxAbYfQZG6SgQkP
+        h3cvU/7n8Tgitp5wxFzbYQr+f3YFH3Dvs8sZRcxzAIzsI7ikX6CreYtvD2CF13Jd
+        pFX7Z2sledvBK0ErKUjTOYtG2VlPjljOKR7XWz+KN9o3o/0YLBSQDP9Qdb250YfG
+        hVlqPXMLQ5wJHq312jSflf5X8JqXv4I91ZORcHn1w9sZfuOlEeuxj30FOXCQV712
+        R5fg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1701467985; x=1701475185; bh=9RUywHy5pRnc9
+        jdI4T7duTy4HQrezKiKqmZajvx6reU=; b=zIVGbocni2KrrZV4Qf9ijkVktgXu7
+        5tcFdv7JeT+OF5ulDfigWgrSMm5EEvv5QUH08JoWyn1bk8BM1AZbWuW8YDZ3SQlp
+        HpCX0YvnQbfj1RXqNa/ioZi//RiNCL7ED83FrzqInI8psP7IgaskeVVPvhv53Wdh
+        pqQgexV5qqBAKbrw+uEwXnWR0CTEJXBHUDuNZSvFHm8aCn9mlpZXBwtEP8SMDcSv
+        D7ahvIdMZ9KpVaPcn/pKIRWzICJnzPiTFVFTHVBRyaU44qLXhjHF1KQYbAmNATdX
+        El4Xv/WqUm9yLqoyzit3u7xQwT71fOy8tpFOHKj3UCrHusrCzw9ntn90A==
+X-ME-Sender: <xms:UFdqZQtI0s2T5yAn4l8f9dzRI4b-L1p2ysCTLB1VAMFatctVxbkNrg>
+    <xme:UFdqZdeqXMuqEIHfFoKVmy8LIVbnMPHwUXbM5lZMETdam5ZqBNucfbrtWMAPW5uCU
+    G0gMAEOo2WSH8cBjQM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeiledgudehiecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdet
+    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
+    htthgvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedt
+    keetffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:UFdqZbw_hr8AgfSDlPYsb9L8Oux8q_rKbNiy66Dz26HwAl4M0xKEoQ>
+    <xmx:UFdqZTN3nzfEGTdGbzUmP8avJTb7uE5rVeAgzXm5xxrq4HIh5Q7PIA>
+    <xmx:UFdqZQ9XRU2F4On96QMppiqhfSN1a-80ofYXcNMTr0f8DG77Ug0fVw>
+    <xmx:UVdqZctDuxBGmkSkd6gxMsJDn8U9mfaHwRWSXKg4WjBhluvR-vACWc6FBho>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 182B2B60089; Fri,  1 Dec 2023 16:59:43 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1178-geeaf0069a7-fm-20231114.001-geeaf0069
 MIME-Version: 1.0
-References: <20231121171643.3719880-1-surenb@google.com> <20231121171643.3719880-6-surenb@google.com>
- <b3c882d2-0135-430c-8179-784f78be0902@arm.com> <a41c759f-78d8-44ed-b708-1bb737a8e6c1@redhat.com>
-In-Reply-To: <a41c759f-78d8-44ed-b708-1bb737a8e6c1@redhat.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Fri, 1 Dec 2023 13:59:14 -0800
-Message-ID: <CAJuCfpGtfxmyGDeCH9+YMMd-aX2z9pgdBch+DD7vGZzcfaC+kw@mail.gmail.com>
-Subject: Re: [PATCH v5 5/5] selftests/mm: add UFFDIO_MOVE ioctl test
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Ryan Roberts <ryan.roberts@arm.com>, akpm@linux-foundation.org,
-        viro@zeniv.linux.org.uk, brauner@kernel.org, shuah@kernel.org,
-        aarcange@redhat.com, lokeshgidra@google.com, peterx@redhat.com,
-        hughd@google.com, mhocko@suse.com, axelrasmussen@google.com,
-        rppt@kernel.org, willy@infradead.org, Liam.Howlett@oracle.com,
-        jannh@google.com, zhangpeng362@huawei.com, bgeffon@google.com,
-        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Message-Id: <3627579b-66dd-42aa-92ab-3d561cdfb2f8@app.fastmail.com>
+In-Reply-To: <c902e7e690dcdf57c2e8402e083d27ce84aee21b.camel@redhat.com>
+References: <20231201121622.16343-1-pstanner@redhat.com>
+ <20231201121622.16343-5-pstanner@redhat.com>
+ <619ea619-29e4-42fb-9b27-1d1a32e0ee66@app.fastmail.com>
+ <b54e5d57624dae0b045d8ff129ac2a41f72e182d.camel@redhat.com>
+ <330df2f8-3796-4f74-8856-06ae1e46ec9b@app.fastmail.com>
+ <c902e7e690dcdf57c2e8402e083d27ce84aee21b.camel@redhat.com>
+Date:   Fri, 01 Dec 2023 22:59:23 +0100
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Philipp Stanner" <pstanner@redhat.com>,
+        "Bjorn Helgaas" <bhelgaas@google.com>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        "Dan Williams" <dan.j.williams@intel.com>,
+        "Jonathan Cameron" <Jonathan.Cameron@huawei.com>,
+        "Jakub Kicinski" <kuba@kernel.org>,
+        "Dave Jiang" <dave.jiang@intel.com>,
+        "Uladzislau Koshchanka" <koshchanka@gmail.com>,
+        "Neil Brown" <neilb@suse.de>,
+        "Niklas Schnelle" <schnelle@linux.ibm.com>,
+        "John Sanpe" <sanpeqf@gmail.com>,
+        "Kent Overstreet" <kent.overstreet@gmail.com>,
+        "Masami Hiramatsu" <mhiramat@kernel.org>,
+        "Kees Cook" <keescook@chromium.org>,
+        "David Gow" <davidgow@google.com>,
+        "Yury Norov" <yury.norov@gmail.com>,
+        "wuqiang.matt" <wuqiang.matt@bytedance.com>,
+        "Jason Baron" <jbaron@akamai.com>,
+        "Kefeng Wang" <wangkefeng.wang@huawei.com>,
+        "Ben Dooks" <ben.dooks@codethink.co.uk>,
+        "Danilo Krummrich" <dakr@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        "Arnd Bergmann" <arnd@kernel.org>
+Subject: Re: [PATCH v2 4/4] lib, pci: unify generic pci_iounmap()
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 1, 2023 at 12:47=E2=80=AFPM David Hildenbrand <david@redhat.com=
-> wrote:
+On Fri, Dec 1, 2023, at 22:56, Philipp Stanner wrote:
+> On Fri, 2023-12-01 at 22:32 +0100, Arnd Bergmann wrote:
+>> On Fri, Dec 1, 2023, at 20:37, Philipp Stanner wrote:
+ 
+>> The best I can think of is to move the lib/iomap.c version
+>> of iomem_is_ioport() to include/asm-generic/iomap.h with
+>> an #ifndef iomem_is_ioport / #define iomem_is_ioport
+>> check around it. This file is only included on parisc, alpha,
+>> sh and when CONFIG_GENERIC_IOMAP is set.
 >
-> On 01.12.23 10:29, Ryan Roberts wrote:
-> > On 21/11/2023 17:16, Suren Baghdasaryan wrote:
-> >> Add tests for new UFFDIO_MOVE ioctl which uses uffd to move source
-> >> into destination buffer while checking the contents of both after
-> >> the move. After the operation the content of the destination buffer
-> >> should match the original source buffer's content while the source
-> >> buffer should be zeroed. Separate tests are designed for PMD aligned a=
-nd
-> >> unaligned cases because they utilize different code paths in the kerne=
-l.
-> >>
-> >> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> >> ---
-> >>   tools/testing/selftests/mm/uffd-common.c     |  24 +++
-> >>   tools/testing/selftests/mm/uffd-common.h     |   1 +
-> >>   tools/testing/selftests/mm/uffd-unit-tests.c | 189 +++++++++++++++++=
-++
-> >>   3 files changed, 214 insertions(+)
-> >>
-> >> diff --git a/tools/testing/selftests/mm/uffd-common.c b/tools/testing/=
-selftests/mm/uffd-common.c
-> >> index fb3bbc77fd00..b0ac0ec2356d 100644
-> >> --- a/tools/testing/selftests/mm/uffd-common.c
-> >> +++ b/tools/testing/selftests/mm/uffd-common.c
-> >> @@ -631,6 +631,30 @@ int copy_page(int ufd, unsigned long offset, bool=
- wp)
-> >>      return __copy_page(ufd, offset, false, wp);
-> >>   }
-> >>
-> >> +int move_page(int ufd, unsigned long offset, unsigned long len)
-> >> +{
-> >> +    struct uffdio_move uffdio_move;
-> >> +
-> >> +    if (offset + len > nr_pages * page_size)
-> >> +            err("unexpected offset %lu and length %lu\n", offset, len=
-);
-> >> +    uffdio_move.dst =3D (unsigned long) area_dst + offset;
-> >> +    uffdio_move.src =3D (unsigned long) area_src + offset;
-> >> +    uffdio_move.len =3D len;
-> >> +    uffdio_move.mode =3D UFFDIO_MOVE_MODE_ALLOW_SRC_HOLES;
-> >> +    uffdio_move.move =3D 0;
-> >> +    if (ioctl(ufd, UFFDIO_MOVE, &uffdio_move)) {
-> >> +            /* real retval in uffdio_move.move */
-> >> +            if (uffdio_move.move !=3D -EEXIST)
-> >> +                    err("UFFDIO_MOVE error: %"PRId64,
-> >> +                        (int64_t)uffdio_move.move);
-> >
-> > Hi Suren,
-> >
-> > FYI this error is triggering in mm-unstable (715b67adf4c8):
-> >
-> > Testing move-pmd on anon... ERROR: UFFDIO_MOVE error: -16 (errno=3D16,
-> > @uffd-common.c:648)
-> >
-> > I'm running in a VM on Apple M2 (arm64). I haven't debugged any further=
-, but
-> > happy to go deeper if you can direct.
+> My implementation from lib/iomap.c basically just throws away the
+> IO_COND macro and does the checks manually:
 >
-> Does it trigger reliably? Which pagesize is that kernel using?
+> #if defined(ARCH_WANTS_GENERIC_IOMEM_IS_IOPORT)
+> bool iomem_is_ioport(void __iomem *addr)
+> {
+> 	unsigned long port = (unsigned long __force)addr;
 >
-> I can spot that uffd_move_pmd_test()/uffd_move_pmd_handle_fault() uses
-> default_huge_page_size(), which reads the default hugetlb size.
+> 	if (port > PIO_OFFSET && port < PIO_RESERVED)
+> 		return true;
 >
-> That, however, does not necessarily correspond to the THP size. That one
-> can be obtained using read_pmd_pagesize() in vm_util.c
+> 	return false;
+> }
+> #endif /* ARCH_WANTS_GENERIC_IOMEM_IS_IOPORT */
+>
+> So we'd also need PIO_OFFSET and PIO_RESERVED, which are not present in
+> asm-generic/iomap.h.
+>
+> Sure, we could move them there or into a common header. But I'm not
+> sure if that is wise, meaning: is it really better than the ugly
+> WANTS_GENERIC_IOMEM... macro?
+>
+> Our entire goal in this series is, after all, to simplify the
+> implementation.
 
-Oh, I didn't realize that default_huge_page_size() is not always the
-actual THP size. Will fix.
+Right, in that case it's probably better to leave it in lib/iomap.c,
+just keep the ARCH_WANTS_GENERIC_IOMEM_IS_IOPORT definition
+in include/asm-generic/iomap.h as well then and keep it out of
+the normal asm-generic/io.h path.
 
->
-> I quickly scanned the code (still want to take a deeper look), but all
-> PAE checks looked sane to me.
->
-> I think the issue is folio split handling. I replied to the patch.
-
-Thanks for your hint! That's very possibly the reason for the test
-failure. I'm in the process of trying to reproduce this issue on
-ARM64. If I'm unable to do so then I'll create a patch to split
-PTE-mapped THP when encountered and will ask Ryan to try that.
-Thanks,
-Suren.
-
->
-> --
-> Cheers,
->
-> David / dhildenb
->
+      Arnd
