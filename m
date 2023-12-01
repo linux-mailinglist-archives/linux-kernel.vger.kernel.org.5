@@ -2,62 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A89280014F
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 02:56:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 506EE800150
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 02:56:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230423AbjLAB4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 20:56:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49324 "EHLO
+        id S1376477AbjLAB4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 20:56:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229808AbjLAB4B (ORCPT
+        with ESMTP id S231563AbjLAB4I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 20:56:01 -0500
+        Thu, 30 Nov 2023 20:56:08 -0500
 Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7ED0F4
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 17:56:07 -0800 (PST)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5d3bdbf1fb5so11423757b3.2
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 17:56:07 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0E4C19E
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 17:56:14 -0800 (PST)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5ccc8b7f578so28599077b3.2
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 17:56:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701395767; x=1702000567; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1701395774; x=1702000574; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Gpg0jRMfZzPs+DxGvN7fA6pxlWT05UdkEs/pO3pcReg=;
-        b=2IDYwr3zmhFsRLV5KrY1UDgjkBoZb36qbFtvi6bwzpMY+6k0rRNVBkstydlj52Fuf6
-         S929fjQVQ4I5Ngv0WWFSDlITPwIcJ+3d9rAA8v1hV7EkqL1QDENupL6SnbnIJDnUW599
-         FCTfcWYcwPueHvjSp0Kn950WdADmJUQTF/kwCNXVxBT9+EL6q0EgoPC19OXssgxpx24W
-         iI9mZv2fm0afxOVTxGl675ZauJAZ4ALslknmjMsWEGr3ZLEodNfNWkrjcvHuTPRzJkyJ
-         kO6nT+cHT9oAry8KGfMWDIfyhPtnYDci+WYehW3XWCuSx97OcJ89eaOqSXk/pwSpsnQO
-         dQVw==
+        bh=UpBBsyYVohX+FTYFefwcFtMNMJUH3TaZgqYxYwvBXOY=;
+        b=g5m715rXsbq9RB3bNRG5/IBH8hxMp04MOk0EWtbLXOSTJCO6vpUpL1MsKBIJxrBGJL
+         K+O+W2A9Htua6xG3Gn8lu66ukoMwPz3TRWKyKe1UlUJ94evpam+AiB35gDT9LN1x0lt4
+         rzqgGZiVJfufOgTX/Ewp0vLSBRDAjBFgxbZf24NffVTQNrkDSsa+OZJ71akRtQcZcQVO
+         cqHwNVguBSRWagwWAD97eAvEPIvwtWVITzNY9X5v3U4gufeQQ8RriFGfUFPqL/NRwi23
+         Gr1ei7C3Not9JRfnEoEPz1TITofmdN4WoWkYAaHO3v7DBzatXykvcMYg5g/nMUVZABUE
+         k4Zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701395767; x=1702000567;
+        d=1e100.net; s=20230601; t=1701395774; x=1702000574;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Gpg0jRMfZzPs+DxGvN7fA6pxlWT05UdkEs/pO3pcReg=;
-        b=OTfln1rD5lAQ3Dud2WtXfOf7yHzmCvzt8dpgo0xBO8QRCDABiMBgxEb4ZSMhlfcVku
-         /hQJjWFjY4l8wlysVcXWOUflZ9shQZO4WYsC+6z/3CH95cwP8630mAFMq4JiqPMg/rkf
-         x7IHygMZH6wQ1XKShsuMT8a7wTLushhjR5mUv2GZY7io1+j9JyRdzmZ3YcyU4cyFR+UK
-         jii7gXLSDPWHQsXBkabsfD1GtinXpI0+ECIQ0oygMLK5/wJXhSoIHLAoT4/PLXk1xj23
-         i+FbYFFthYm/HmY2sLYFtPnfRbkDFDtMcVdeTe7bzeG3TXZJJI27q/YYnyZd8wZ9fNdR
-         my7A==
-X-Gm-Message-State: AOJu0YzPfLDncBb9mjQ0ndiz1waxkSJI7053xxz1Ufk6PWweR2nxNA0H
-        ED48QLQPdMtSBqa1+XMC945vmEMk7AU=
-X-Google-Smtp-Source: AGHT+IFv6EtpNEyk7jG2a6+OFieWqgV/IdpgQSQjtjX702lGZ3QboxxBNrX7OCdF0p//ZUIQ+fbkIwWyrdc=
+        bh=UpBBsyYVohX+FTYFefwcFtMNMJUH3TaZgqYxYwvBXOY=;
+        b=siGPb+Q2OodO/JiLM7mJEhqLRXn0RxermgshgAFl+2ZKzHC8zT6l6KYe8gns8BG0yV
+         udPC2zrY0sB9W/0M9WFXPO86zjvatWe1cmJy0PEC/s62X04vT6RDVA18wjgen0qZo1r1
+         5eaSiDCuWLLbVGK043UxqU1oF3CQHdjWinZfHbjT8TjZVvnPyOdKKQ14UYgf571b2hy1
+         OJkPfq4oZP5OEGTHJTogPaEO7B+FsHP3uPPrCgVDXgHCfpKdYmYzlwezPvdUMFR5lY3L
+         sJwQCn3dEx5Mn7OjSkJXmrq+BtoNHjD1bkJtJ26x/tWHHEOuJ5GZNUN8P0J5TYV73/Kw
+         G06g==
+X-Gm-Message-State: AOJu0Yy2fVSMR3ur3mzVtrdOJWb8QKcS+OPSCH9QnEhakFdqX/08dW1k
+        GTTqYrVuujNKL0QyrHo+up/teNZQFhA=
+X-Google-Smtp-Source: AGHT+IGzAbxxayMyLDqWERzPqpD5Bo/x0IIJ65uHtJJNm2ABavlKe6+btFUsWJ9cdfFF3T0n1HeMmR7p1Cw=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:ff08:0:b0:5cb:1bf4:ce09 with SMTP id
- k8-20020a81ff08000000b005cb1bf4ce09mr798787ywn.2.1701395767042; Thu, 30 Nov
- 2023 17:56:07 -0800 (PST)
-Date:   Thu, 30 Nov 2023 17:52:22 -0800
-In-Reply-To: <20231125083400.1399197-1-pbonzini@redhat.com>
+ (user=seanjc job=sendgmr) by 2002:a25:3d44:0:b0:db4:7ac:fea6 with SMTP id
+ k65-20020a253d44000000b00db407acfea6mr711502yba.7.1701395774125; Thu, 30 Nov
+ 2023 17:56:14 -0800 (PST)
+Date:   Thu, 30 Nov 2023 17:52:24 -0800
+In-Reply-To: <20231103230541.352265-1-seanjc@google.com>
 Mime-Version: 1.0
-References: <20231125083400.1399197-1-pbonzini@redhat.com>
+References: <20231103230541.352265-1-seanjc@google.com>
 X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
-Message-ID: <170137684485.660161.8230111667906795222.b4-ty@google.com>
-Subject: Re: [PATCH v2 0/4] KVM: x86/mmu: small locking cleanups
+Message-ID: <170137839352.665680.16618790592517929019.b4-ty@google.com>
+Subject: Re: [PATCH v2 0/6] KVM: x86/pmu: Clean up emulated PMC event handling
 From:   Sean Christopherson <seanjc@google.com>
 To:     Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
         Paolo Bonzini <pbonzini@redhat.com>
-Cc:     mlevitsk@redhat.com
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Dapeng Mi <dapeng1.mi@linux.intel.com>,
+        Mingwei Zhang <mizhang@google.com>,
+        Roman Kagan <rkagan@amazon.de>,
+        Jim Mattson <jmattson@google.com>,
+        Like Xu <like.xu.linux@gmail.com>
 Content-Type: text/plain; charset="utf-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
@@ -70,27 +74,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 25 Nov 2023 03:33:56 -0500, Paolo Bonzini wrote:
-> Remove "bool shared" argument from functions and iterators that need
-> not know if the lock is taken for read or write.  This is common because
-> protection is achieved via RCU and tdp_mmu_pages_lock or because the
-> argument is only used for assertions that can be written by hand.
-> 
-> Also always take tdp_mmu_pages_lock even if mmu_lock is currently taken
-> for write.
+On Fri, 03 Nov 2023 16:05:35 -0700, Sean Christopherson wrote:
+> The ultimate goal of this series is to track emulated counter events using
+> a dedicated variable instead of trying to track the previous counter value.
+> Tracking the previous counter value is flawed as it takes a snapshot at
+> every emulated event, but only checks for overflow prior to VM-Enter, i.e.
+> KVM could miss an overflow if KVM ever supports emulating event types that
+> can occur multiple times in a single VM-Exit.
 > 
 > [...]
 
-Applied to kvm-x86 mmu, thanks!
+Applied to kvm-x86 pmu, thanks!
 
-[1/4] KVM: x86/mmu: remove unnecessary "bool shared" argument from functions
-      https://github.com/kvm-x86/linux/commit/2d30059d38e6
-[2/4] KVM: x86/mmu: remove unnecessary "bool shared" argument from iterators
-      https://github.com/kvm-x86/linux/commit/59b93e634b40
-[3/4] KVM: x86/mmu: always take tdp_mmu_pages_lock
-      https://github.com/kvm-x86/linux/commit/4072c73104f2
-[4/4] KVM: x86/mmu: fix comment about mmu_unsync_pages_lock
-      https://github.com/kvm-x86/linux/commit/9dc2973a3b20
+[1/6] KVM: x86/pmu: Move PMU reset logic to common x86 code
+      https://github.com/kvm-x86/linux/commit/cbb359d81a26
+[2/6] KVM: x86/pmu: Reset the PMU, i.e. stop counters, before refreshing
+      https://github.com/kvm-x86/linux/commit/1647b52757d5
+[3/6] KVM: x86/pmu: Stop calling kvm_pmu_reset() at RESET (it's redundant)
+      https://github.com/kvm-x86/linux/commit/f2f63f7ec6fd
+[4/6] KVM: x86/pmu: Remove manual clearing of fields in kvm_pmu_init()
+      https://github.com/kvm-x86/linux/commit/ec61b2306dfd
+[5/6] KVM: x86/pmu: Update sample period in pmc_write_counter()
+      https://github.com/kvm-x86/linux/commit/89acf1237b81
+[6/6] KVM: x86/pmu: Track emulated counter events instead of previous counter
+      https://github.com/kvm-x86/linux/commit/fd89499a5151
 
 --
 https://github.com/kvm-x86/linux/tree/next
