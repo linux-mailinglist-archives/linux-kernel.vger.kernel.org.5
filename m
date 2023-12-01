@@ -2,184 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E828C800C6E
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 14:43:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21020800C8A
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 14:50:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379036AbjLANne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 08:43:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53510 "EHLO
+        id S1379047AbjLANtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 08:49:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379035AbjLANnd (ORCPT
+        with ESMTP id S1379035AbjLANty (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 08:43:33 -0500
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A24F1171A;
-        Fri,  1 Dec 2023 05:43:38 -0800 (PST)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-50bc22c836bso3065864e87.0;
-        Fri, 01 Dec 2023 05:43:38 -0800 (PST)
+        Fri, 1 Dec 2023 08:49:54 -0500
+Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C831A6
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 05:50:01 -0800 (PST)
+Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-5d41657b7a5so6697847b3.1
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 05:50:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701438217; x=1702043017; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=9OwuQJSOXjrOdfbj5sQ0Qx3CiHR7kZcKuli9ggq/7fA=;
-        b=SC0nKEvyOdfV42Ld6Y/T1X+zWIuioWYretk99zs/f00BEQDW/8NOQBPYuoPUiBzixO
-         0RPyge9GVuH5oj34KQYjwr64olGOZByHY9BnLkxCSSBdA/BHYj6idawkI+UepU4ZrnSz
-         9smUDg+fJ30TsXK7cB/XvWqbDh6XtJFOxoytgn+6ItPehfBxxcel8Pc4SLRrqyoeIHRN
-         xTLqd2dp9IIgmfun2On20IQ6ru0ytipCDm3aw0Tt6nIqIX+MWakdPbdoU7zopqG6ABcu
-         T/LPKQ+A0JzLG1k28JCtdr2lvW2TGXT8HuAMT9ystzNo/i6yK1V6bCGsW0dIstzjDzty
-         gSnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701438217; x=1702043017;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1701438600; x=1702043400; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=9OwuQJSOXjrOdfbj5sQ0Qx3CiHR7kZcKuli9ggq/7fA=;
-        b=JdoI669+6ga7i/c7Ls304CCI5gbden7XxedrbKLYqQob3vtqIY+uOnbTu4HeeKKy3B
-         jigZ7xQfpuiSmrR7pEXwJs4bj9r3XI/MH2LJQTaGCMRMWYjnSmZFCf9LtZpBi/A+Uc+V
-         bmnMtbotgsht2+H02tYRA6bia6rcV6wRL0uXHSzcuL8kAvj5aPVhM4kgZd6rQhMQjfyl
-         s0ByemNrbRDRv5bKqULt6JMkgdK4eVvubAKmqoCq6fhLMIBBWVNIfvQUGYTpSE0sNd4d
-         knipH4F1e5obtm3T9qEtI/XXCUzevc6S/p8XN59hzt9VC0dA5FGyzrI2YZPyJkoShhZW
-         Cu4w==
-X-Gm-Message-State: AOJu0Yzak0yjCIrL6chLLhNPcV8DLPM0Tbg1UwkPQQAaQM/SDL7BdlO/
-        P4hKRoKJTUDU39fDrIUVJKPINtNkUDs=
-X-Google-Smtp-Source: AGHT+IHCJSo697bipzIClt5iEyV3Ndb+eworhBOfHy+XLwOg96uE68SDl85M9yciK5pjUp2bXczqJA==
-X-Received: by 2002:ac2:4f05:0:b0:50b:d764:6ec4 with SMTP id k5-20020ac24f05000000b0050bd7646ec4mr1200398lfr.116.1701438216683;
-        Fri, 01 Dec 2023 05:43:36 -0800 (PST)
-Received: from gmail.com (83-233-6-197.cust.bredband2.com. [83.233.6.197])
-        by smtp.gmail.com with ESMTPSA id a19-20020ac25e73000000b0050bbb90531esm426867lfr.155.2023.12.01.05.43.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Dec 2023 05:43:35 -0800 (PST)
-Date:   Fri, 1 Dec 2023 14:48:06 +0100
-From:   Marcus Folkesson <marcus.folkesson@gmail.com>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Input: pxrc - simplify mutex handling with guard macro
-Message-ID: <ZWnkFjFeEV7y9tUr@gmail.com>
-References: <20231201-pxrc-guard-v1-1-38937e657368@gmail.com>
- <ZWnfsjIukIbAvQ-l@hovoldconsulting.com>
+        bh=YfySJ1dICjdiZC+5VblosUQS3JDiDAAyeia/RplhGk0=;
+        b=fQ4cP/8pgshf9N6pPumZ3VGaCCKFDNfUuMDQuEqiluVPvRidw9Hog6riazMQoElkDW
+         WuUk5z6wpX71PYf+pQ3JvlKQ8Gi+gCYF62zESpoSACmxw/gXOM6J8jnS/pDN9bi9m/8m
+         8eeRtcS7ejjAQ/QZsWFhLx3BYzmnkb8aYz4I5EtNQzCvXK91/xxdm8MFV2qr9FoMgYxj
+         inJ+UH/B9elbhfYeczOqcDwoAhougggwo2NT6T8HeVYmi3llI5hVWW00BFfXhbzyGUa6
+         uFwYLtaFWeLo1IFAPJZI9hQSsrmKFEFwSXsbJdjm2jwOW4zjWbrQewstBglcNqKn9AF4
+         8SJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701438600; x=1702043400;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YfySJ1dICjdiZC+5VblosUQS3JDiDAAyeia/RplhGk0=;
+        b=OkO+O1H7mcAev+CPOC2fcqy/fepRZ+EmOKlnEsRfMPyXhu/Fd7qiJzwV4G8br54E1H
+         WuM6FCIcaAUgzLTmgC0FxdTreR7TEOgKFnyvpTixdnB3vrRzAp3miFg87YPpPetbO+yZ
+         Q2Aes6dlS0It2HwdMrCAJ1Um/eALwKZb8XyL71tulBnaHWInYIH+8XIgKKwk4+3NswUg
+         OPSiLWq3z9aQLudOsEcjM8RnSqUGbSV21Jpm8/aY0WqIokwsc77uhZQ9MvWbN0Vxxx+B
+         kxVUSjuz2Dgga4fkBD9f3RFsfVop8tVO4eXW1PJeeK4iBVKqUaNA86UDxvX1FvkxtGkw
+         Dtgw==
+X-Gm-Message-State: AOJu0YyTR9Q0pv5/q2cTiUhU5pfXedKzQAYbT6iYHkTjwpNZzOh0bnUJ
+        n+rfZgZQu4FuNUp6AzrS8qg/uAE6kLO7865s9zED4FV2CBV6lA==
+X-Google-Smtp-Source: AGHT+IHQToXFr5QJi82uP07+DFRxW+gxsKh/J3FFC68XDtOw5J1ywL28KJALLPmXIid0kp29CJzY1ne8nnGCIncF9oo=
+X-Received: by 2002:a81:81c1:0:b0:5cd:2f3a:a58c with SMTP id
+ r184-20020a8181c1000000b005cd2f3aa58cmr25599280ywf.37.1701438600482; Fri, 01
+ Dec 2023 05:50:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="nfy3sN/Smg4PYgnm"
-Content-Disposition: inline
-In-Reply-To: <ZWnfsjIukIbAvQ-l@hovoldconsulting.com>
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FSL_HELO_FAKE,
+References: <20231115210245.3744589-1-robh@kernel.org> <CANiq72=VGJDcK=tVkOFCnTumxDNE9YfiyAVocmD534mnAd_1CA@mail.gmail.com>
+ <CAL_JsqLcqpGa=sc9niVK=-4LtVyr3jtUBcQJ2pNsafc3PQpj_g@mail.gmail.com>
+In-Reply-To: <CAL_JsqLcqpGa=sc9niVK=-4LtVyr3jtUBcQJ2pNsafc3PQpj_g@mail.gmail.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Fri, 1 Dec 2023 14:49:49 +0100
+Message-ID: <CANiq72=_VtkEYLYZxz9uyAgFuL4-ZemUAmfWYZR3bcWaDSB=TQ@mail.gmail.com>
+Subject: Re: [RESEND PATCH] auxdisplay: img-ascii-lcd: Use device_get_match_data()
+To:     Rob Herring <robh@kernel.org>
+Cc:     Paul Burton <paulburton@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Dec 1, 2023 at 2:39=E2=80=AFPM Rob Herring <robh@kernel.org> wrote:
+>
+> Can you fix that up while applying? This patch has only been ignored
+> for 2 months.
+>
+> I really only care about getting the includes right so I can apply this[1=
+].
 
---nfy3sN/Smg4PYgnm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Then I would recommend saying that in the patch itself.
 
-On Fri, Dec 01, 2023 at 02:29:22PM +0100, Johan Hovold wrote:
-> On Fri, Dec 01, 2023 at 01:08:45PM +0100, Marcus Folkesson wrote:
-> > Use the guard(mutex) macro for handle mutex lock/unlocks.
-> >=20
-> > Signed-off-by: Marcus Folkesson <marcus.folkesson@gmail.com>
->=20
-> A couple of drive-by comments below.
->=20
-> > ---
-> >  drivers/input/joystick/pxrc.c | 27 +++++++++++----------------
-> >  1 file changed, 11 insertions(+), 16 deletions(-)
-> >=20
-> > diff --git a/drivers/input/joystick/pxrc.c b/drivers/input/joystick/pxr=
-c.c
-> > index ea2bf5951d67..3c3bf7179b46 100644
-> > --- a/drivers/input/joystick/pxrc.c
-> > +++ b/drivers/input/joystick/pxrc.c
-> > @@ -5,15 +5,17 @@
-> >   * Copyright (C) 2018 Marcus Folkesson <marcus.folkesson@gmail.com>
-> >   */
-> > =20
-> > -#include <linux/kernel.h>
-> > +#include <linux/cleanup.h>
-> >  #include <linux/errno.h>
-> > -#include <linux/slab.h>
-> > +#include <linux/input.h>
-> > +#include <linux/kernel.h>
-> >  #include <linux/module.h>
-> > +#include <linux/mutex.h>
-> > +#include <linux/slab.h>
-> >  #include <linux/uaccess.h>
-> > +
-> >  #include <linux/usb.h>
-> >  #include <linux/usb/input.h>
-> > -#include <linux/mutex.h>
-> > -#include <linux/input.h>
->=20
-> Looks like an unrelated change.
+If you want to take it in your series to go faster, you can take my:
 
-I reordered the include files as I added cleanup.h.
-I can do it in a separate patch if that is preferred.
+Acked-by: Miguel Ojeda <ojeda@kernel.org>
 
->  =20
-> >  #define PXRC_VENDOR_ID		0x1781
-> >  #define PXRC_PRODUCT_ID		0x0898
-> > @@ -89,25 +91,20 @@ static int pxrc_open(struct input_dev *input)
-> >  		dev_err(&pxrc->intf->dev,
-> >  			"%s - usb_submit_urb failed, error: %d\n",
-> >  			__func__, retval);
-> > -		retval =3D -EIO;
-> > -		goto out;
-> > +		return -EIO;
-> >  	}
-> > =20
-> >  	pxrc->is_open =3D true;
-> > -
-> > -out:
-> > -	mutex_unlock(&pxrc->pm_mutex);
-> > -	return retval;
-> > +	return 0;
-> >  }
->=20
-> Eh, this looks obviously broken. Did you not test this before
-> submitting? I assume lockdep would complain loudly too.
+If you want me to apply it, that is also fine and I can do so.
 
-Sorry, it is more that I'm not in the habit of using b4 for submitting
-patches yet, so things got wrong.
-There is a v2 out there.
-
-The driver (v2) is quickly tested on HW and, what I can tell, seems to beha=
-ve.
-
->=20
-> You're apparently the author of this driver and can test it, but I fear
-> the coming onslaught of untested guard conversions from the "cleanup"
-> crew. Not sure I find the result generally more readable either.
->=20
-> Johan
-
-
-Best regards
-Marcus Folkesson
-
---nfy3sN/Smg4PYgnm
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEBVGi6LZstU1kwSxliIBOb1ldUjIFAmVp5BIACgkQiIBOb1ld
-UjLsbA/9EqT6TP1FGnNnbx5pd+KL2UAh2cVOe6E4MP5MkjONSbP87J5ass1rtOLE
-j8er6xjoOtR3d/wZaamd01jEbdDPX2ptJVNfDxQmxJ/ExQ/r7Ohn1UW4eJd4ZxHM
-o6FuX8yhkHL9fKmdxVFTAZkeYFOBa97fSDfyYYcUAWxxoS6kiR1zOPPXyvJAs7Kk
-8OGig9dvNM+zi+G4XTisVwLL0X5Qy4U2mbh93DRUkiS6y7GguurFJ2e1Naa6BEG5
-1EVzg+j3jpZh+8OMmSAgbk8IlfbeZVK6lAI0ewAJKTrbB31MWXZ/vnxNlq64u0d6
-SRBdV3y9BgCKzu4xzv3YYgwfw3Tj4D382Cutdq3Tm7lNnpPvKU3iXPnnVTtX/hOU
-F6MxiqM5VL+d+jeAzfJIXgFwsJqHv9CkWOphMxa+r/r2vr8622HSIBYZ3vqBJnz4
-kPYQOq0ZLsFLRb6NGj4UvHhT/Jjr7HLndCOt41qauoWbuaEEmlBKuhJemK4ufXNo
-l5pM0qjS44Z0p/EPkiNr6LU8OlVKWdJ0gmBH5grUHYgakbKk8NWyNu1GOK2c4mWZ
-RrPm2Zlgq66GPcVbODREjfqm+QCfafY30h2P0Ek1ywMKzPvNqDzpSCIyw0NSEdwW
-3267cgWPU6TrfBtRz1f2M85rhRiqbUd9BTVXMUb1Tv2QtKiPoek=
-=wBIH
------END PGP SIGNATURE-----
-
---nfy3sN/Smg4PYgnm--
+Cheers,
+Miguel
