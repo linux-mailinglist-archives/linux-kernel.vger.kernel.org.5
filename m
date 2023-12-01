@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95BF3800419
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 07:43:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F59880041B
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 07:43:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377622AbjLAGnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 01:43:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35604 "EHLO
+        id S1377631AbjLAGna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 01:43:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbjLAGnH (ORCPT
+        with ESMTP id S229830AbjLAGn3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 01:43:07 -0500
+        Fri, 1 Dec 2023 01:43:29 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF74D10A
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 22:43:14 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BFE24C433C7;
-        Fri,  1 Dec 2023 06:43:13 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D9F4131
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 22:43:36 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2828AC433C7;
+        Fri,  1 Dec 2023 06:43:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701412994;
-        bh=gy86aBRFM5ntewX0ZWm8ng5yRP0xd8Rja2LMdU2Bcig=;
+        s=k20201202; t=1701413015;
+        bh=Ac2LAr8zXdRG53W9ecY2idG7L9BWseIgaVc9xlc+IgE=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=bYFS8nnnwr5FxuEdaHlZzR89ekJRVbLOnMByvsOHLnOwVk723yvgGQd6QhdgRXpiD
-         kI4n8oZHVts0pzoeyy18GDPzAb2tTBOf/16AnhGzyUTTlwrs9xYLwIwVgOMEO2lrmB
-         QI8YxwB+bJT88Q1f2etWkLhwbZ+DUG/BSx8nhOQGWbsa9n/JWpNrd8X+2QPBGczd9l
-         VfhIG0XBKro2uPMUCMpcYC/8yQEKs5qMxUDCSmB3LP1Mf0I57WDvxrM/Q+WOSgmPoU
-         M3j5Ye/6u6ZfE/OX0oQujFzNCjEoSOAvGTLKOdT65yP0UX6i34CnMofHL28wIACnDc
-         T8tVh2eHEDfEg==
-Date:   Thu, 30 Nov 2023 22:43:12 -0800
+        b=Y54S440AsWcq4zKgpUJwb6Eo2jPhoX7OEwix9AjAOplmg8KzsEW4mWPmVLbS/be5P
+         zg67q/E27Rcg0tCBvZ+v84oAdnRUG6p9jBD7oGTR3YuBkahqq+0Kxteh/bDjpNGiSw
+         SXsByEmi9u5DSNcdMyAxlUkY1QomkRcc+INawIab8L8ILnzh6ODZe/T09BdZYJ89C/
+         aEYeUCIeSx5bWkt+MZOkk0i36rjzxGnSyYlT8vey+E5MfWKBR/LoCWpcASpjBUmrBK
+         ojgOYv3sryOwtdjHI771ExnzToumZEpVsmO5+PQLFNIqni8jAgTdkodgZeM5BdLnZa
+         bSY0whrHcPqNg==
+Date:   Thu, 30 Nov 2023 22:43:34 -0800
 From:   Jakub Kicinski <kuba@kernel.org>
 To:     Kees Cook <keescook@chromium.org>
-Cc:     Shahed Shaikh <shshaikh@marvell.com>,
-        Manish Chopra <manishc@marvell.com>,
-        GR-Linux-NIC-Dev@marvell.com,
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Paolo Abeni <pabeni@redhat.com>,
         Justin Stitt <justinstitt@google.com>, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] qlcnic: replace deprecated strncpy with strscpy
-Message-ID: <20231130224312.15317a12@kernel.org>
-In-Reply-To: <170138162711.3649080.9337007847087027672.b4-ty@chromium.org>
-References: <20231012-strncpy-drivers-net-ethernet-qlogic-qlcnic-qlcnic_83xx_init-c-v1-1-f0008d5e43be@google.com>
-        <170138162711.3649080.9337007847087027672.b4-ty@chromium.org>
+Subject: Re: [PATCH] net: mdio: replace deprecated strncpy with strscpy
+Message-ID: <20231130224334.1c1f08c9@kernel.org>
+In-Reply-To: <170138163205.3649164.7210516802378847737.b4-ty@chromium.org>
+References: <20231012-strncpy-drivers-net-mdio-mdio-gpio-c-v1-1-ab9b06cfcdab@google.com>
+        <170138163205.3649164.7210516802378847737.b4-ty@chromium.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -56,9 +56,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 30 Nov 2023 14:00:28 -0800 Kees Cook wrote:
-> [1/1] qlcnic: replace deprecated strncpy with strscpy
->       https://git.kernel.org/kees/c/f8bef1ef8095
+On Thu, 30 Nov 2023 14:00:33 -0800 Kees Cook wrote:
+> Applied to for-next/hardening, thanks!
+> 
+> [1/1] net: mdio: replace deprecated strncpy with strscpy
+>       https://git.kernel.org/kees/c/3247bb945786
 
-You asked for changes yourself here, please drop all the networking
-patches you applied today :|
+newer version of this was posted...
