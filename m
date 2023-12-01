@@ -2,222 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 153A38014C3
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 21:45:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52DC08014C5
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 21:47:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230331AbjLAUpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 15:45:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60342 "EHLO
+        id S1379612AbjLAUrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 15:47:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229679AbjLAUpW (ORCPT
+        with ESMTP id S229562AbjLAUrH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 15:45:22 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4268FF;
-        Fri,  1 Dec 2023 12:45:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701463529; x=1732999529;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=yG0Y48woFZNswGTmBBWmxBZc/W1//0MjI/GiuILqv6k=;
-  b=EYC718hv1rugfCcnKoczcZu27jVK0XsMYg8VZDwBK33p9qRlYwsGp3F5
-   0OobgrRzOmI4hAHR8hwPrZN95VS3sAb8r31dE1m6cg6HwNxnLPg+ac0X6
-   DB+bwOANfLg7Jo19qbOwddR5w8Vzjo5wdPJD6gwtrVW+hiFpDncUWfMB2
-   zkfH8v4uz+YpvxUSyhlo1IfEj35mn2hsotcjpbiETgkOTq6nQjQBNyge1
-   tngAXCrW03R/Gy4GrQF7vvm3O1Bm2/6WYSgTH3iUlYbd9e6DYyNE2iGm9
-   cHp1U82KxrZWOXt08RhsQfO3zqTptX7qCFXZ6Nac504DHdcNbTLUl6sLG
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="431731"
-X-IronPort-AV: E=Sophos;i="6.04,242,1695711600"; 
-   d="scan'208";a="431731"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2023 12:45:28 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="1101411470"
-X-IronPort-AV: E=Sophos;i="6.04,242,1695711600"; 
-   d="scan'208";a="1101411470"
-Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.222.74])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2023 12:45:27 -0800
-Date:   Fri, 1 Dec 2023 12:45:26 -0800
-From:   Tony Luck <tony.luck@intel.com>
-To:     Reinette Chatre <reinette.chatre@intel.com>
-Cc:     Fenghua Yu <fenghua.yu@intel.com>,
-        Peter Newman <peternewman@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <skhan@linuxfoundation.org>, x86@kernel.org,
-        Shaopeng Tan <tan.shaopeng@fujitsu.com>,
-        James Morse <james.morse@arm.com>,
-        Jamie Iles <quic_jiles@quicinc.com>,
-        Babu Moger <babu.moger@amd.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        patches@lists.linux.dev
-Subject: Re: [PATCH v4] x86/resctrl: Add mount option to pick total MBM event
-Message-ID: <ZWpF5m4mIeZdK8kv@agluck-desk3>
-References: <20231026200214.16017-1-tony.luck@intel.com>
- <20231128231439.81691-1-tony.luck@intel.com>
- <95a21b05-1838-4098-854f-f60f82f26f5f@intel.com>
+        Fri, 1 Dec 2023 15:47:07 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E9CCFF
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 12:47:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701463632;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=roRHhLauepkrd5alx72dFMXjJCaurGVuqpPk08xyld4=;
+        b=cj4L7pIXVjAzwDDpqCXgaESdD9y/+Hszmw3IKc3hl2DL0ftedbNzwTrw7my8RIjV7kr597
+        f5MoZm8fQvfWA/wb20BRDZ/kCSSVnLqCzeP3EvHGm4L2IQn6C78croZhRXEPG9VqfvsDjv
+        3xzDkT3gewE0kHGjPLiM90O25GQ2lNo=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-692-6KzwryLIOoyVd9DSQOToDw-1; Fri, 01 Dec 2023 15:47:11 -0500
+X-MC-Unique: 6KzwryLIOoyVd9DSQOToDw-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-332e18f4fdbso1855145f8f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 12:47:10 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701463630; x=1702068430;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=roRHhLauepkrd5alx72dFMXjJCaurGVuqpPk08xyld4=;
+        b=dwG6/NDUwuTqpg8hTw10TJKH0uJ/P/qZVFA22/i1mpT5CLlEcCQvOAC1TuRNOUNz0O
+         /kxH0UcX8Vrdqdn2qH+gU810lH+EGZzJp0Hc4DgRBmfYwnNHaf9kJw5xf0gXWYkJKuiq
+         wQ5AmQ7Uup5SAdYoaNPNfeZnvZvYE7UxDCel11Elw3vMwwMgRQmIpaYWoFXuqhzNvRYy
+         9ubbzvkzg89UBNilF0ulNBHDP18x0P9AraDoDBToVL3f1Qo/zJqfl7BvhVgRQ8F28/2+
+         BBGaxfIrVKpijZlwfw+izEnTlMnbBnqwYDyP87vbUVROc/iuFUIM2Dom6WzaSq5P/drz
+         Ka9w==
+X-Gm-Message-State: AOJu0YwrCWAm3jfltAoR3yu8m1yYlKKVe4sm8J8IRW4t/81qdtJSCMg9
+        riQB76kEd1gLYklueK+DKC9rLVU2oCQg8aTp09str2rAh26u8oJerDfUbaecjZNkVoA0vK1QSte
+        FNufuPcfcUmBc1W+9A2IRnz5V
+X-Received: by 2002:adf:ef0e:0:b0:333:2fd2:5d4e with SMTP id e14-20020adfef0e000000b003332fd25d4emr1458930wro.128.1701463629942;
+        Fri, 01 Dec 2023 12:47:09 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHZKMjh8pTfwrN7X75z4hiGXRlcazvFaCrgi3fYPEKkR9z/8z96TQOeqZHjl2bfL/NASM0NAw==
+X-Received: by 2002:adf:ef0e:0:b0:333:2fd2:5d4e with SMTP id e14-20020adfef0e000000b003332fd25d4emr1458915wro.128.1701463629604;
+        Fri, 01 Dec 2023 12:47:09 -0800 (PST)
+Received: from ?IPV6:2003:d8:2f28:7800:30d7:645a:7306:e437? (p200300d82f28780030d7645a7306e437.dip0.t-ipconnect.de. [2003:d8:2f28:7800:30d7:645a:7306:e437])
+        by smtp.gmail.com with ESMTPSA id c12-20020a056000104c00b00333339e5f42sm1767916wrx.32.2023.12.01.12.47.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Dec 2023 12:47:09 -0800 (PST)
+Message-ID: <a41c759f-78d8-44ed-b708-1bb737a8e6c1@redhat.com>
+Date:   Fri, 1 Dec 2023 21:47:07 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <95a21b05-1838-4098-854f-f60f82f26f5f@intel.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 5/5] selftests/mm: add UFFDIO_MOVE ioctl test
+Content-Language: en-US
+To:     Ryan Roberts <ryan.roberts@arm.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        akpm@linux-foundation.org
+Cc:     viro@zeniv.linux.org.uk, brauner@kernel.org, shuah@kernel.org,
+        aarcange@redhat.com, lokeshgidra@google.com, peterx@redhat.com,
+        hughd@google.com, mhocko@suse.com, axelrasmussen@google.com,
+        rppt@kernel.org, willy@infradead.org, Liam.Howlett@oracle.com,
+        jannh@google.com, zhangpeng362@huawei.com, bgeffon@google.com,
+        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kernel-team@android.com
+References: <20231121171643.3719880-1-surenb@google.com>
+ <20231121171643.3719880-6-surenb@google.com>
+ <b3c882d2-0135-430c-8179-784f78be0902@arm.com>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <b3c882d2-0135-430c-8179-784f78be0902@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 03:48:37PM -0800, Reinette Chatre wrote:
-> Hi Tony,
+On 01.12.23 10:29, Ryan Roberts wrote:
+> On 21/11/2023 17:16, Suren Baghdasaryan wrote:
+>> Add tests for new UFFDIO_MOVE ioctl which uses uffd to move source
+>> into destination buffer while checking the contents of both after
+>> the move. After the operation the content of the destination buffer
+>> should match the original source buffer's content while the source
+>> buffer should be zeroed. Separate tests are designed for PMD aligned and
+>> unaligned cases because they utilize different code paths in the kernel.
+>>
+>> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+>> ---
+>>   tools/testing/selftests/mm/uffd-common.c     |  24 +++
+>>   tools/testing/selftests/mm/uffd-common.h     |   1 +
+>>   tools/testing/selftests/mm/uffd-unit-tests.c | 189 +++++++++++++++++++
+>>   3 files changed, 214 insertions(+)
+>>
+>> diff --git a/tools/testing/selftests/mm/uffd-common.c b/tools/testing/selftests/mm/uffd-common.c
+>> index fb3bbc77fd00..b0ac0ec2356d 100644
+>> --- a/tools/testing/selftests/mm/uffd-common.c
+>> +++ b/tools/testing/selftests/mm/uffd-common.c
+>> @@ -631,6 +631,30 @@ int copy_page(int ufd, unsigned long offset, bool wp)
+>>   	return __copy_page(ufd, offset, false, wp);
+>>   }
+>>   
+>> +int move_page(int ufd, unsigned long offset, unsigned long len)
+>> +{
+>> +	struct uffdio_move uffdio_move;
+>> +
+>> +	if (offset + len > nr_pages * page_size)
+>> +		err("unexpected offset %lu and length %lu\n", offset, len);
+>> +	uffdio_move.dst = (unsigned long) area_dst + offset;
+>> +	uffdio_move.src = (unsigned long) area_src + offset;
+>> +	uffdio_move.len = len;
+>> +	uffdio_move.mode = UFFDIO_MOVE_MODE_ALLOW_SRC_HOLES;
+>> +	uffdio_move.move = 0;
+>> +	if (ioctl(ufd, UFFDIO_MOVE, &uffdio_move)) {
+>> +		/* real retval in uffdio_move.move */
+>> +		if (uffdio_move.move != -EEXIST)
+>> +			err("UFFDIO_MOVE error: %"PRId64,
+>> +			    (int64_t)uffdio_move.move);
 > 
-> On 11/28/2023 3:14 PM, Tony Luck wrote:
-> > Add a "total" mount option to be used in conjunction with "mba_MBps"
-> > to request use of the total memory bandwidth event as the feedback
-> > input to the control loop.
+> Hi Suren,
 > 
-> "total" is very generic. It is also not clear to me why users
-> would need to use two mount options. What if the new mount option
-> is "mba_MBps_total" instead, without user needing to also provide
-> "mba_MBps"? 
-
-I wasn't attached to "total". I tried to change the type of the existing
-"mba_MBps" option to fsparam_string_emtpy() in the hope that existing users
-would be able to keep using "mba_MBps", and users who want to use total
-bandwidth could use "mba_MBps=total". But that type requires the "="
-in the string provided by the user for the "empty" case.
-
-So now I'm experimenting with adding a new option:
-
-	fsparam_string("mba_MBps_event", Opt_mba_mbps_event)
-
-so a user would specify "mba_MBps_event=total" instead of "mba_MBps".
-My code also allow for "mba_MBps_event=local" if a user want to ensure
-they use the local bandwidth event (failing the mount if it is not
-available).
-
-Existing code using the legacy "mba_MBps" option will get local by
-default, failing over to total if needed.
-
-> > 
-> > Also fall back to using the total event if the local event is not
-> > supported by the CPU.
-> > 
-> > Update the once-per-second polling code to use the event (local
-> > or total memory bandwidth).
+> FYI this error is triggering in mm-unstable (715b67adf4c8):
 > 
-> Please take care to describe why this change is needed, not just
-> what it does. This is required by x86. For confirmation:
-> https://lore.kernel.org/lkml/20231009172517.GRZSQ3fT05LGgpcW35@fat_crate.local/
-
-Yes. I had some justification in earlier versions, but lost it along the
-way. I will include in next version.
-
-> > 
-> > Signed-off-by: Tony Luck <tony.luck@intel.com>
-> > ---
-> > 
-> > Changes since v3:
-> > 
-> > Reinette suggested that users might like the option to use the total
-> > memory bandwidth event. I tried out some code to make the event runtime
-> > selectable via a r/w file in the resctrl/info directories. But that
-> > got complicated because of the amount of state that needs to be updated
-> > when switching events. Since there isn't a firm use case for user
-> > selectable event, this latest version falls back to the far simpler
-> > case of using a mount option.
+> Testing move-pmd on anon... ERROR: UFFDIO_MOVE error: -16 (errno=16,
+> @uffd-common.c:648)
 > 
-> (I did not realize that that discussion was over.)
+> I'm running in a VM on Apple M2 (arm64). I haven't debugged any further, but
+> happy to go deeper if you can direct.
 
-I'd like to avoid too much feature creep in this series. I'd like to
-finish solving the original problem (systems without local bandwidth
-monitoring should have a way to use total bandwidth) before tackling
-additional issues in a separate patch series. Taking on a simple way
-for users to request total bandwidth isn't much extra code. Making
-it possible to switch events at runtime isn't. Fixing the corner cases
-where the feedback loop may get stuck is also a separate issue.
+Does it trigger reliably? Which pagesize is that kernel using?
 
-> > 
-> >  Documentation/arch/x86/resctrl.rst     |  3 +++
-> >  arch/x86/kernel/cpu/resctrl/internal.h |  3 +++
-> >  arch/x86/kernel/cpu/resctrl/monitor.c  | 20 +++++++++-----------
-> >  arch/x86/kernel/cpu/resctrl/rdtgroup.c | 15 ++++++++++++++-
-> >  4 files changed, 29 insertions(+), 12 deletions(-)
-> > 
-> > diff --git a/Documentation/arch/x86/resctrl.rst b/Documentation/arch/x86/resctrl.rst
-> > index a6279df64a9d..29c3e7137eb8 100644
-> > --- a/Documentation/arch/x86/resctrl.rst
-> > +++ b/Documentation/arch/x86/resctrl.rst
-> > @@ -46,6 +46,9 @@ mount options are:
-> >  "mba_MBps":
-> >  	Enable the MBA Software Controller(mba_sc) to specify MBA
-> >  	bandwidth in MBps
-> > +"total":
-> > +	Use total instead of local memory bandwidth to drive the
-> > +	MBA Software Controller
-> >  "debug":
-> >  	Make debug files accessible. Available debug files are annotated with
-> >  	"Available only with debug option".
-> > diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
-> > index a4f1aa15f0a2..f98fc9adc2da 100644
-> > --- a/arch/x86/kernel/cpu/resctrl/internal.h
-> > +++ b/arch/x86/kernel/cpu/resctrl/internal.h
-> > @@ -59,6 +59,7 @@ struct rdt_fs_context {
-> >  	bool				enable_cdpl2;
-> >  	bool				enable_cdpl3;
-> >  	bool				enable_mba_mbps;
-> > +	bool				use_mbm_total;
-> >  	bool				enable_debug;
-> >  };
-> 
-> Why did you choose new member to not follow existing custom of having
-> an enable_ prefix?
+I can spot that uffd_move_pmd_test()/uffd_move_pmd_handle_fault() uses 
+default_huge_page_size(), which reads the default hugetlb size.
 
-That does look awful. Next version will do this:
+That, however, does not necessarily correspond to the THP size. That one 
+can be obtained using read_pmd_pagesize() in vm_util.c
 
--       bool                            enable_mba_mbps;
-+       bool                            enable_mba_mbps_local;
-+       bool                            enable_mba_mbps_total;
+I quickly scanned the code (still want to take a deeper look), but all 
+PAE checks looked sane to me.
 
-> 
-> >  
-> > @@ -428,6 +429,8 @@ extern struct rdt_hw_resource rdt_resources_all[];
-> >  extern struct rdtgroup rdtgroup_default;
-> >  DECLARE_STATIC_KEY_FALSE(rdt_alloc_enable_key);
-> >  
-> > +extern enum resctrl_event_id mba_mbps_evt_id;
-> > +
-> 
-> This global seems unnecessary. struct resctrl_membw.mba_sc indicates if
-> the software controller is enabled. Creating this global fragments
-> related information.
+I think the issue is folio split handling. I replied to the patch.
 
-Global is now gone.
+-- 
+Cheers,
 
-> One option could be to change the type of struct resctrl_membw.mba_sc to
-> enum resctrl_event_id. I assume that 0 would never be a valid event ID and
-> can thus be used to know if the software controller is disabled. If this
-> is done then enum resctrl_event_id's documentation should be updated
-> with this assumption/usage.
+David / dhildenb
 
-But I'm not fond of this overloading the meaning of resctrl_membw.mba_sc
-by making that assumption that "0" will never be a valid event.
-
-I've left the mba_sc field as a boolean that indicates enabled and added
-a new field for the event:
-
-@@ -138,6 +139,7 @@ struct resctrl_membw {
-        bool                            arch_needs_linear;
-        enum membw_throttle_mode        throttle_mode;
-        bool                            mba_sc;
-+       enum resctrl_event_id           mba_mbps_event;
-        u32                             *mb_map;
- };
-
-New version will be posted soon.
-
--Tony
