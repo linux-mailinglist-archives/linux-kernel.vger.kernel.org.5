@@ -2,61 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA31A800160
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 03:04:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CD85800162
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 03:05:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230310AbjLACEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 21:04:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53954 "EHLO
+        id S231872AbjLACFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 21:05:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbjLACEH (ORCPT
+        with ESMTP id S229523AbjLACFg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 21:04:07 -0500
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22DC9F4
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 18:04:12 -0800 (PST)
-Received: from ptz.office.stw.pengutronix.de ([2a0a:edc0:0:900:1d::77] helo=[127.0.0.1])
-        by metis.whiteo.stw.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1r8ssr-0002h2-N1; Fri, 01 Dec 2023 03:04:01 +0100
-Message-ID: <5e8f42f8-2b03-4033-b6d2-9b3139f081d5@pengutronix.de>
-Date:   Fri, 1 Dec 2023 03:03:58 +0100
+        Thu, 30 Nov 2023 21:05:36 -0500
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D364AF2
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 18:05:42 -0800 (PST)
+Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-a187cd4eb91so187536566b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 18:05:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701396341; x=1702001141; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=RPAyt2cpj8YitcbF/ZXsY/VZI0FRxkT2rx6bb0Jhrv0=;
+        b=opodncZmY3ip+uRvFDRDbPFMkNJG0xC9PLYjg9GY3swEJQT9NhrNwkTny2jAH8yFly
+         xwntoNuOp+XO448jmwHBpijOzExb5KdbS28WcFVlCqSJlGvHPsY/5i7RWMiv/Grlvtj6
+         gBdHoPE7BcxRSTZs8QW3pEbOufEQLSgsEJ+0MnmLl2q0FdeI5L/i8ZYloDkEot+ERa9S
+         ixhrLaRg1tfei7RAIPugBFx1hSzA1890T3XIgWGA9iAxlxph7yN3ZCFBNydwktYQWLoo
+         1PjWc7op8bQ/0V4sXHH4R0TfLOxP31jWojEHL2QoqSA/ihTd6zdg7RwIoh/8/7t9yYVj
+         mCrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701396341; x=1702001141;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RPAyt2cpj8YitcbF/ZXsY/VZI0FRxkT2rx6bb0Jhrv0=;
+        b=H4rRjls5r0PlChzVDTUUt0SVlh6dS6TF2fMVbD/n5OAtYqRs8DCQ4dziRi6xfvPXpN
+         A9tQCW4ls2dUR8/XXSWDzJMI5ECO2tc8N51qI3mVV7C/yi0HyLRIJE1GgVO3uK2jHx13
+         HoQQi8vh+tN20FjlMbIyIdkq1IGXN9MKE3FhoAznWKNa0Ame9FHqacJbBOUXc3Cj7j1b
+         oLcV/TWkEM6F2Ad/dJg9Y7CPkv1j6h3tZB/XDE4ZddesiB9N4DgEZMLHvI7ZlCJ0UEoI
+         gImKI+5VOD3PMwlQ91YYSYakDan+GUByoWdYAE/y/iwB7/VpuQtidojPWcwjQbkmWdjy
+         ocHA==
+X-Gm-Message-State: AOJu0YySKyDt9Moyh9sOj39+CUk1ib7of2ps3wnSmkeV0u9h+uO1yVuq
+        7ckVtVdl167Y4h3hTet72yPSgHgcZwUP59gpyCm2Mg==
+X-Google-Smtp-Source: AGHT+IHCWvetEn5bIjknsZ5SNFidPRGBu7iJZJNJAX9WtyEXizm24lRATxkMRAfd1FM3w1m3E6lh7LQtXHeGYezWHO4=
+X-Received: by 2002:a17:906:108f:b0:a19:4a1d:e5d4 with SMTP id
+ u15-20020a170906108f00b00a194a1de5d4mr275873eju.59.1701396341082; Thu, 30 Nov
+ 2023 18:05:41 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 2/2] arm64: boot: Support Flat Image Tree
-Content-Language: en-US
-To:     Simon Glass <sjg@chromium.org>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Tom Rini <trini@konsulko.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        U-Boot Mailing List <u-boot@lists.denx.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Terrell <terrelln@fb.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Will Deacon <will@kernel.org>, linux-kbuild@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>
-References: <20231129172200.430674-1-sjg@chromium.org>
- <20231129172200.430674-3-sjg@chromium.org>
- <30f32467-51ea-47de-a272-38e074f4060b@pengutronix.de>
- <CAPnjgZ25xoXsi74XYY0E8ucQiowQqPdZgUHrfVNAYWKZEYODHg@mail.gmail.com>
- <875f0dbc-1d78-4901-91b2-6ad152bcea5a@pengutronix.de>
- <CAPnjgZ0UCkm5QCx+JXe1ggSshozPnOLB6cN=UoJyMn6S4wfFkg@mail.gmail.com>
- <06281f7c-e0f2-405c-95a9-0f7e9e84a7f6@pengutronix.de>
- <CAPnjgZ2TT+0BvbjwfnGLQ3EPEXnLW6f1epiFdaBHRYaSAn5xsA@mail.gmail.com>
- <8fbc81b1-31ab-46b0-87f4-b8bd8e8e2b47@pengutronix.de>
- <CAPnjgZ1iyxk0bb56QR10N5aSphRYhLsw7Ly=z2i6rQCxP_AYPw@mail.gmail.com>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-In-Reply-To: <CAPnjgZ1iyxk0bb56QR10N5aSphRYhLsw7Ly=z2i6rQCxP_AYPw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:900:1d::77
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+References: <20231130153658.527556-1-schatzberg.dan@gmail.com>
+ <20231130153658.527556-2-schatzberg.dan@gmail.com> <ec8abbff-8e17-43b3-a210-fa615e71217d@vivo.com>
+In-Reply-To: <ec8abbff-8e17-43b3-a210-fa615e71217d@vivo.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Thu, 30 Nov 2023 18:05:02 -0800
+Message-ID: <CAJD7tkY-npqRXmwJU6kH1srG0c+suiDfffsoc44ngP4x9H0kLA@mail.gmail.com>
+Subject: Re: [PATCH 1/1] mm: add swapiness= arg to memory.reclaim
+To:     Huan Yang <11133793@vivo.com>
+Cc:     Dan Schatzberg <schatzberg.dan@gmail.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Huan Yang <link@vivo.com>, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Huang Ying <ying.huang@intel.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Peter Xu <peterx@redhat.com>,
+        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
+        Yue Zhao <findns94@gmail.com>, Hugh Dickins <hughd@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,76 +83,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Simon,
+> @@ -2327,7 +2330,8 @@ static void get_scan_count(struct lruvec *lruvec, struct scan_control *sc,
+>         struct pglist_data *pgdat = lruvec_pgdat(lruvec);
+>         struct mem_cgroup *memcg = lruvec_memcg(lruvec);
+>         unsigned long anon_cost, file_cost, total_cost;
+> -       int swappiness = mem_cgroup_swappiness(memcg);
+> +       int swappiness = sc->swappiness ?
+> +               *sc->swappiness : mem_cgroup_swappiness(memcg);
+>
+> Should we use "unlikely" here to indicate that sc->swappiness is an unexpected behavior?
+> Due to current use case only apply in proactive reclaim.
 
-On 30.11.23 21:30, Simon Glass wrote:
-> On Wed, 29 Nov 2023 at 12:54, Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
->> On 29.11.23 20:44, Simon Glass wrote:
->>> On Wed, 29 Nov 2023 at 12:33, Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
->>>>
->>>> On 29.11.23 20:27, Simon Glass wrote:
->>>>> On Wed, 29 Nov 2023 at 12:15, Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
->>>>>> On 29.11.23 20:02, Simon Glass wrote:
->>>>>>> On Wed, 29 Nov 2023 at 11:59, Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
->>>>>>>> The specification says that this is the root U-Boot compatible,
->>>>>>>> which I presume to mean the top-level compatible, which makes sense to me.
->>>>>>>>
->>>>>>>> The code here though adds all compatible strings from the device tree though,
->>>>>>>> is this intended?
->>>>>>>
->>>>>>> Yes, since it saves needing to read in each DT just to get the
->>>>>>> compatible stringlist.
->>>>>>
->>>>>> The spec reads as if only one string (root) is supposed to be in the list.
->>>>>> The script adds all compatibles though. This is not really useful as a bootloader
->>>>>> that's compatible with e.g. fsl,imx8mm would just take the first device tree
->>>>>> with that SoC, which is most likely to be wrong. It would be better to just
->>>>>> specify the top-level compatible, so the bootloader fails instead of taking
->>>>>> the first DT it finds.
->>>>>
->>>>> We do need to have a list, since we have to support different board revs, etc.
->>>>
->>>> Can you give me an example? The way I see it, a bootloader with
->>>> compatible "vendor,board" and a FIT with configuration with compatibles:
->>>>
->>>>   "vendor,board-rev-a", "vendor,board"
->>>>   "vendor,board-rev-b", "vendor,board"
->>>>
->>>> would just result in the bootloader booting the first configuration, even if
->>>> the device is actually rev-b.
->>>
->>> You need to find the best match, not just any match. This is
->>> documented in the function comment for fit_conf_find_compat().
->>
->> In my above example, both configuration are equally good.
->> Can you give me an example where it makes sense to have multiple
->> compatibles automatically extracted from the device tree compatible?
->>
->> The way I see it having more than one compatible here just has
->> downsides.
-> 
-> I don't have an example to hand, but this is the required mechanism of
-> FIT. This feature has been in place for many years and is used by
-> ChromeOS, at least.
+On a system that is not under memory pressure, the rate of proactive
+reclaim could be higher than reactive reclaim. We should only use
+likely/unlikely when it's obvious a scenario will happen most of the
+time. I don't believe that's the case here.
 
-I see the utility of a FIT configuration with
+>
+>         u64 fraction[ANON_AND_FILE];
+>         u64 denominator = 0;    /* gcc */
+>         enum scan_balance scan_balance;
+> @@ -2608,6 +2612,9 @@ static int get_swappiness(struct lruvec *lruvec, struct scan_control *sc)
+>             mem_cgroup_get_nr_swap_pages(memcg) < MIN_LRU_BATCH)
+>                 return 0;
+>
+> +       if (sc->swappiness)
+> +               return *sc->swappiness;
+>
+> Also there.
+>
+> +
+>         return mem_cgroup_swappiness(memcg);
+>  }
+>
+> @@ -6433,7 +6440,8 @@ unsigned long mem_cgroup_shrink_node(struct mem_cgroup *memcg,
+>  unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
+>                                            unsigned long nr_pages,
+>                                            gfp_t gfp_mask,
+> -                                          unsigned int reclaim_options)
+> +                                          unsigned int reclaim_options,
+> +                                          int *swappiness)
+>  {
+>         unsigned long nr_reclaimed;
+>         unsigned int noreclaim_flag;
+> @@ -6448,6 +6456,7 @@ unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
+>                 .may_unmap = 1,
+>                 .may_swap = !!(reclaim_options & MEMCG_RECLAIM_MAY_SWAP),
+>                 .proactive = !!(reclaim_options & MEMCG_RECLAIM_PROACTIVE),
+> +               .swappiness = swappiness,
+>         };
+>         /*
+>          * Traverse the ZONELIST_FALLBACK zonelist of the current node to put
+> --
+> 2.34.1
+>
+> My previous patch attempted to ensure fully deterministic semantics under extreme swappiness.
+> For example, when swappiness is set to 200, only anonymous pages will be reclaimed.
+> Due to code in MGLRU isolate_folios will try scan anon if no scanned, will try other type.(We do not want
+> it to attempt this behavior.)
+> How do you think about extreme swappiness scenarios?
 
-    compatible = "vendor,board-rev-a", "vendor,board-rev-b";
+I think having different semantics between swappiness passed to
+proactive reclaim and global swappiness can be confusing. If it's
+needed to have a swappiness value that says "anon only no matter
+what", perhaps we should introduce such a new value and make it
+supported by both global and proactive reclaim swappiness? We could
+support writing "max" or something similar instead of a special value
+to mean that.
 
-I fail to see a utility for a configuration with
-
-    compatible = "vendor,board", "vendor,SoM", "vendor,SoC";
-
-Any configuration that ends up being booted because "vendor,SoC" was matched is
-most likely doomed to fail. Therefore, I would suggest that only the top level
-configuration is written into the FIT configurations automatically.
-
-Cheers,
-Ahmad
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
-
+Writing such value to global swappiness may cause problems and
+premature OOMs IIUC, but that would be misconfiguration. If we think
+that's dangerous, we can introduce this new value but make it valid
+only for proactive reclaim for now.
