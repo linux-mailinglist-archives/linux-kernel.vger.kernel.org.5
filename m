@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37FDA801196
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:24:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8057801197
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:24:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379040AbjLARYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 12:24:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56596 "EHLO
+        id S1379299AbjLARYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 12:24:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379284AbjLARXm (ORCPT
+        with ESMTP id S1379175AbjLARXo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 12:23:42 -0500
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9534D2703
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 09:23:12 -0800 (PST)
-Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-5c6260b60b1so853825a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 09:23:12 -0800 (PST)
+        Fri, 1 Dec 2023 12:23:44 -0500
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F22B8D67
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 09:23:14 -0800 (PST)
+Received: by mail-pf1-x449.google.com with SMTP id d2e1a72fcca58-6cdce35ba97so2290093b3a.1
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 09:23:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701451392; x=1702056192; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1701451394; x=1702056194; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=GgpobR+FdeoXXQhISo2D3a14T7LkRftKpGNdNH3rHWQ=;
-        b=QGHHvOXYvNj8Sn22EK+KhtavyquCh51rVlIXqGMqAGil2owEPeqMGAsnG7B1qgasTh
-         AOiVzPnpUZ9oGX1yR3M+Z72uAmXbrWy9rd+DU3sqzHHe5Fqk7hrgY6zUzMK2xlHFzQxK
-         npVLrLQWsUwwjHi2BahF+IertwXzOvithmp4SWxUE6cEBaWvf4TUEZbJRe0qXV/tLfSi
-         gXqB+ScAdYRTJk0WBGXv84Pkt6on8tG1zSoVpOlCRJk9s1pokQlMxJsnAejB1VtGNTuD
-         g/jumPzcMLN0jStmdYtXDvXE34d9kpHrMwjRx5tOrrBIURC2hG9bIR0mFN+L2S+nc2a6
-         u2+A==
+        bh=QR9ctGv6DD/cqnUAnvJkNGQFqKISSIWTJ6FZIk1lfN4=;
+        b=wCbM/KSaVwi7PC7GtldqNVElZrfj1iPzjGR1U+YLPcdsVRh95S6QRJC3MLzvV1nWLz
+         25cx73QUO7eNj+/r1lKLQnP6dCj03xr+0WoD5AFtWY/L4BHTE+oCVZSrgo/rsA2sJ/Ar
+         xAOw+j/CPPqOdqOqV1mKPwpVtXdzjzVhOfYJW3j83hBniuo+FbnphVAJCQS0N9Gqbut4
+         9MGgmoxyNhed9EgnSy/TVHeUzvl9WhqWO0UrQLuqF7X2Q5BNLsGSshEUOYIqG0nwiJ4W
+         kr8n45DN881EUNHA3cL1UdHPS5PzMK2biTdMuY+UAgF3sVfQPo/INA/UK3P7sKZAM8i0
+         tSxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701451392; x=1702056192;
+        d=1e100.net; s=20230601; t=1701451394; x=1702056194;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GgpobR+FdeoXXQhISo2D3a14T7LkRftKpGNdNH3rHWQ=;
-        b=Su68Y88W1wIspSy+hDRER7lg0627fU+X4e0H8i0CW8Bn5GsdUfpcm91D4VfMi62BN7
-         R1nJyNNQbjp33yA7Yx61XSNYftUZ9BtJfXeJSpSsGtlQP8ACSIaUgzTtPhBXhdJHusGv
-         x6SQ8WzFDb7WKGeFGrv0NBY/rqlQwtriNip31KQ4coBJPQVGOcR6shulBI5uAMq3eBq5
-         Q0mwMH4YWlpI23oInQdf0WQS4T0a48QppFa2rNpwyobnv9sIMkSZiRK68d0zt1KrT8fc
-         +joqWPtHRegnUYdZSFxhNznTpi8f3qrWrJTpmXkzC1Y3Zr/cXiYk4fOlMJCerzIv8Pdt
-         5UcQ==
-X-Gm-Message-State: AOJu0Yy/ga8T3LnQUW0h0WK5z+7HAXs+Y+NGuoYG3E0Qb6sKLsNBFSmu
-        KSZBOsKRq4SUVRQoFxr1vW5c+1L6ppdLQQ==
-X-Google-Smtp-Source: AGHT+IFk7qb1XOgk/gPR/Z8wAQIKxkz6qvGd/kOvDS3EGu/2JEu6PsWnk1K2U/O3ynDscfczmotPw9j51lRhvw==
+        bh=QR9ctGv6DD/cqnUAnvJkNGQFqKISSIWTJ6FZIk1lfN4=;
+        b=Lh1nokrCchsNWqlFsrbVHx2DSNdM5DHLa2zRdCRsEG3POuw1wbdfxP6C665EK39OCt
+         0EzQrCScrjudrSx3W471/4gRMEnpwtOEq8+eheygBQS5olpKdeLWwZu/up3afJvbb3zR
+         Su+WCUIYbA5G2UDAkCGvVeTL0fQj9yDL25Vao9j/Wu5me7gfphW2okwXm5OoSN20LZFx
+         LFoZH2ApDBNHxMcyIhzSNOEWn2/l1X5U93dbuuyKVoBDMf10U+NcPjZdqD5iYfGwCEjV
+         0is1F5ZsrcS0fdcxiOxwLHXcJl04+yGhK7pbm0rAyzOl0pgRaOoW8+z0YhyfqNj7V3sp
+         YDTw==
+X-Gm-Message-State: AOJu0YyLxKLu5b0FsZb/KGg8PKT+yoJ6qD4eADGhEpZbC38y+WdmPdpn
+        +CE5SH/a96qN1QJnPtEvoptIXLwIU3d+1Q==
+X-Google-Smtp-Source: AGHT+IEexwbU8eN6740SghoQkSxMhFv/B/1u51ES3uwG8/KHafMGFnD86hKF60W+Rzj1qsnFaJzcX5jfs7xDAQ==
 X-Received: from xllamas.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5070])
- (user=cmllamas job=sendgmr) by 2002:a63:f902:0:b0:5bd:8130:d2a3 with SMTP id
- h2-20020a63f902000000b005bd8130d2a3mr4059895pgi.5.1701451391957; Fri, 01 Dec
- 2023 09:23:11 -0800 (PST)
-Date:   Fri,  1 Dec 2023 17:21:46 +0000
+ (user=cmllamas job=sendgmr) by 2002:a05:6a00:179a:b0:6cd:dda3:4a5e with SMTP
+ id s26-20020a056a00179a00b006cddda34a5emr1443775pfg.0.1701451394219; Fri, 01
+ Dec 2023 09:23:14 -0800 (PST)
+Date:   Fri,  1 Dec 2023 17:21:47 +0000
 In-Reply-To: <20231201172212.1813387-1-cmllamas@google.com>
 Mime-Version: 1.0
 References: <20231201172212.1813387-1-cmllamas@google.com>
 X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
-Message-ID: <20231201172212.1813387-18-cmllamas@google.com>
-Subject: [PATCH v2 17/28] binder: malloc new_buffer outside of locks
+Message-ID: <20231201172212.1813387-19-cmllamas@google.com>
+Subject: [PATCH v2 18/28] binder: initialize lru pages in mmap callback
 From:   Carlos Llamas <cmllamas@google.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         "=?UTF-8?q?Arve=20Hj=C3=B8nnev=C3=A5g?=" <arve@android.com>,
@@ -62,7 +62,8 @@ To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Christian Brauner <brauner@kernel.org>,
         Carlos Llamas <cmllamas@google.com>,
         Suren Baghdasaryan <surenb@google.com>
-Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com
+Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com,
+        Alice Ryhl <aliceryhl@google.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
@@ -74,130 +75,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Preallocate new_buffer before acquiring the alloc->mutex and hand it
-down to binder_alloc_new_buf_locked(). The new buffer will be used in
-the vast majority of requests (measured at 98.2% in field data). The
-buffer is discarded otherwise. This change is required in preparation
-for transitioning alloc->mutex into a spinlock in subsequent commits.
+Rather than repeatedly initializing some of the binder_lru_page members
+during binder_alloc_new_buf(), perform this initialization just once in
+binder_alloc_mmap_handler(), after the pages have been created.
 
+Reviewed-by: Alice Ryhl <aliceryhl@google.com>
 Signed-off-by: Carlos Llamas <cmllamas@google.com>
 ---
- drivers/android/binder_alloc.c | 44 ++++++++++++++++++----------------
- 1 file changed, 23 insertions(+), 21 deletions(-)
+ drivers/android/binder_alloc.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/android/binder_alloc.c b/drivers/android/binder_alloc.c
-index 1caf0e3d3451..86f4929a55d5 100644
+index 86f4929a55d5..25efdbb2ad5d 100644
 --- a/drivers/android/binder_alloc.c
 +++ b/drivers/android/binder_alloc.c
-@@ -395,24 +395,27 @@ static bool debug_low_async_space_locked(struct binder_alloc *alloc)
- 	return false;
- }
+@@ -274,9 +274,6 @@ static int binder_allocate_page_range(struct binder_alloc *alloc,
  
-+/* Callers preallocate @new_buffer, it is freed by this function if unused */
- static struct binder_buffer *binder_alloc_new_buf_locked(
- 				struct binder_alloc *alloc,
-+				struct binder_buffer *new_buffer,
- 				size_t size,
- 				int is_async)
+ 		trace_binder_alloc_page_start(alloc, index);
+ 
+-		page->alloc = alloc;
+-		INIT_LIST_HEAD(&page->lru);
+-
+ 		ret = binder_install_single_page(alloc, page, page_addr);
+ 		if (ret) {
+ 			binder_free_page_range(alloc, start, page_addr);
+@@ -798,9 +795,9 @@ void binder_alloc_free_buf(struct binder_alloc *alloc,
+ int binder_alloc_mmap_handler(struct binder_alloc *alloc,
+ 			      struct vm_area_struct *vma)
  {
- 	struct rb_node *n = alloc->free_buffers.rb_node;
--	struct binder_buffer *buffer;
--	size_t buffer_size;
- 	struct rb_node *best_fit = NULL;
-+	struct binder_buffer *buffer;
- 	unsigned long has_page_addr;
- 	unsigned long end_page_addr;
-+	size_t buffer_size;
- 	int ret;
+-	int ret;
+-	const char *failure_string;
+ 	struct binder_buffer *buffer;
++	const char *failure_string;
++	int ret, i;
  
- 	if (is_async && alloc->free_async_space < size) {
- 		binder_alloc_debug(BINDER_DEBUG_BUFFER_ALLOC,
- 			     "%d: binder_alloc_buf size %zd failed, no async space left\n",
- 			      alloc->pid, size);
--		return ERR_PTR(-ENOSPC);
-+		buffer = ERR_PTR(-ENOSPC);
-+		goto out;
+ 	if (unlikely(vma->vm_mm != alloc->mm)) {
+ 		ret = -EINVAL;
+@@ -829,6 +826,11 @@ int binder_alloc_mmap_handler(struct binder_alloc *alloc,
+ 		goto err_alloc_pages_failed;
  	}
  
- 	while (n) {
-@@ -436,7 +439,8 @@ static struct binder_buffer *binder_alloc_new_buf_locked(
- 				   "%d: binder_alloc_buf size %zd failed, no address space\n",
- 				   alloc->pid, size);
- 		debug_no_space_locked(alloc);
--		return ERR_PTR(-ENOSPC);
-+		buffer = ERR_PTR(-ENOSPC);
-+		goto out;
- 	}
- 
- 	if (n == NULL) {
-@@ -455,22 +459,17 @@ static struct binder_buffer *binder_alloc_new_buf_locked(
- 		end_page_addr = has_page_addr;
- 	ret = binder_allocate_page_range(alloc, PAGE_ALIGN(buffer->user_data),
- 					 end_page_addr);
--	if (ret)
--		return ERR_PTR(ret);
-+	if (ret) {
-+		buffer = ERR_PTR(ret);
-+		goto out;
++	for (i = 0; i < alloc->buffer_size / PAGE_SIZE; i++) {
++		alloc->pages[i].alloc = alloc;
++		INIT_LIST_HEAD(&alloc->pages[i].lru);
 +	}
- 
- 	if (buffer_size != size) {
--		struct binder_buffer *new_buffer;
--
--		new_buffer = kzalloc(sizeof(*buffer), GFP_KERNEL);
--		if (!new_buffer) {
--			pr_err("%s: %d failed to alloc new buffer struct\n",
--			       __func__, alloc->pid);
--			goto err_alloc_buf_struct_failed;
--		}
- 		new_buffer->user_data = buffer->user_data + size;
- 		list_add(&new_buffer->entry, &buffer->entry);
- 		new_buffer->free = 1;
- 		binder_insert_free_buffer(alloc, new_buffer);
-+		new_buffer = NULL;
- 	}
- 
- 	rb_erase(best_fit, &alloc->free_buffers);
-@@ -491,12 +490,10 @@ static struct binder_buffer *binder_alloc_new_buf_locked(
- 			buffer->oneway_spam_suspect = true;
- 	}
- 
-+out:
-+	/* Discard possibly unused new_buffer */
-+	kfree(new_buffer);
- 	return buffer;
--
--err_alloc_buf_struct_failed:
--	binder_free_page_range(alloc, PAGE_ALIGN(buffer->user_data),
--			       end_page_addr);
--	return ERR_PTR(-ENOMEM);
- }
- 
- /* Calculate the sanitized total size, returns 0 for invalid request */
-@@ -542,7 +539,7 @@ struct binder_buffer *binder_alloc_new_buf(struct binder_alloc *alloc,
- 					   size_t extra_buffers_size,
- 					   int is_async)
- {
--	struct binder_buffer *buffer;
-+	struct binder_buffer *buffer, *next;
- 	size_t size;
- 
- 	/* Check binder_alloc is fully initialized */
-@@ -562,8 +559,13 @@ struct binder_buffer *binder_alloc_new_buf(struct binder_alloc *alloc,
- 		return ERR_PTR(-EINVAL);
- 	}
- 
-+	/* Preallocate the next buffer */
-+	next = kzalloc(sizeof(*next), GFP_KERNEL);
-+	if (!next)
-+		return ERR_PTR(-ENOMEM);
 +
- 	mutex_lock(&alloc->mutex);
--	buffer = binder_alloc_new_buf_locked(alloc, size, is_async);
-+	buffer = binder_alloc_new_buf_locked(alloc, next, size, is_async);
- 	if (IS_ERR(buffer)) {
- 		mutex_unlock(&alloc->mutex);
- 		goto out;
+ 	buffer = kzalloc(sizeof(*buffer), GFP_KERNEL);
+ 	if (!buffer) {
+ 		ret = -ENOMEM;
 -- 
 2.43.0.rc2.451.g8631bc7472-goog
 
