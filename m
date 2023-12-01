@@ -2,166 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47F59800307
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 06:33:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D110E80030A
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 06:35:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377343AbjLAFdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 00:33:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36272 "EHLO
+        id S1377418AbjLAFfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 00:35:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjLAFdn (ORCPT
+        with ESMTP id S229808AbjLAFe6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 00:33:43 -0500
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9A661703;
-        Thu, 30 Nov 2023 21:33:48 -0800 (PST)
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B12Fd3n032634;
-        Thu, 30 Nov 2023 21:33:41 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=pfpt0220; bh=rP3Ji68hr4FNmt1jJp4/fePLt1PrNYK2+C381Tz68Ig=;
- b=TfiQN/AN5Bh6H+7zvuJ0pwy1UPrI7fYEcwuhFCGQsHFd48yWxzhqlNA6xGRUQ/yBXSdr
- TnU9bFiSy3GUONflrx16B/3S6A6qN7BJ0DuUTK7rUsYAtPQZy9fzicWvXokurphRxwKu
- yQ+H0V8rSwbZgrFWVns0yFJLSDvw7+URUevGczG+183CPaHqubpXyxCYx8NFed0wfBQo
- KC7FmwoEFFTD2JY6v9hgwE3h7YYKogQCaAkvJeAVoA+H3xMdNhVmJzKEEK5cOm/ARgAJ
- YBkyJhjXhulQpu596pSZ3QmzK/FgT/v95rrZtpG6xOgiV+oaECDxPgImUMtjd3qj3IXl NA== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3updt6ed9d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Thu, 30 Nov 2023 21:33:40 -0800
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 30 Nov
- 2023 21:33:38 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Thu, 30 Nov 2023 21:33:38 -0800
-Received: from localhost.localdomain (unknown [10.28.36.166])
-        by maili.marvell.com (Postfix) with ESMTP id EC9133F706B;
-        Thu, 30 Nov 2023 21:33:32 -0800 (PST)
-From:   Suman Ghosh <sumang@marvell.com>
-To:     <sgoutham@marvell.com>, <gakula@marvell.com>,
-        <sbhatta@marvell.com>, <hkelam@marvell.com>,
-        <lcherian@marvell.com>, <jerinj@marvell.com>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <horms@kernel.org>,
-        <naveenm@marvell.com>
-CC:     Suman Ghosh <sumang@marvell.com>
-Subject: [net PATCH v3] octeontx2-pf: consider both Rx and Tx packet stats for adaptive interrupt coalescing
-Date:   Fri, 1 Dec 2023 11:03:30 +0530
-Message-ID: <20231201053330.3903694-1-sumang@marvell.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 1 Dec 2023 00:34:58 -0500
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C63191703;
+        Thu, 30 Nov 2023 21:35:04 -0800 (PST)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 4ADB95C01EE;
+        Fri,  1 Dec 2023 00:35:01 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Fri, 01 Dec 2023 00:35:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=who-t.net; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm3; t=1701408901; x=1701495301; bh=GF
+        bRhbSjB9oLO+LwKHE9kfWx3hJNKnD7jw8ytn4NBfc=; b=EvycvNBF7h8MZ6ztIM
+        N1Yw39AfbJCGyaHfRtQ0veDNHIG/xx6lD3NYOexhB57vSyED6ehfQPo6f575fQIi
+        cbFwa1Zho3FR2gIBaI/7qlf+7TybxpsFRBqk2eRLBrMykydGfrSF/wlmOTm9Lz3/
+        ph0w1UlFz/Qq1yCKlRDdfYp2Jjk+2c+279sbr/vaBxU3mI9Iel+9B7sIgTB1+f/D
+        4wclfbtzxBclbTy6sBBErBQydzdYKGRrZnzhaq1LuMqqIC9jkNVN999UHAtLhLUk
+        X2GyMKEXJVlcQgaLCGDU51E2O4ojElNjOvYM0xpSnPlrkIqh3x90AuoBk4ZqdNKy
+        m+KA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1701408901; x=1701495301; bh=GFbRhbSjB9oLO
+        +LwKHE9kfWx3hJNKnD7jw8ytn4NBfc=; b=OnulShBVdt4nTEhF0acVUc1GBaps6
+        XUmxAV6jfI5bDBbJ6RWpCWVob1mNNNwCAsD/DCst2pcogoKIXqqzsgtfiSC2rBD3
+        Cqg/XYb5M5MnGzegr/xP9ywz8WyMCkLUuTSYiFkHkDGo3TJRiyfM9+R1HfSDffTl
+        56onQbPYSTaFGeD+fF2zlHepE/nsVrjXeHystVR4LEKTnL7RTbCkaXfOo3YeVgk9
+        7MhdQ4W4JwOIIRYg6Gx5UheX3adrObhvdfBUZ+/oTb1EnK3CMK7H48sQrcuz4+Q6
+        Dt2SN5g3OUeP//THcWVZs1T1RAT77Of0ah8ym3T/oQ5y/+cGGppObAM1Q==
+X-ME-Sender: <xms:hXBpZfjbiQJ2q5TYvTwMA8NH7jYsFSYEjq-DXvtdbpfzPahjWwAAbg>
+    <xme:hXBpZcCU6RBDAhHY1rRzmhXntfd42M3MI6e0NdPjGfQBPB5hfvoYUqzcF8sxz6iiv
+    QDpYrgiXpDjpL0Px2Y>
+X-ME-Received: <xmr:hXBpZfEteadm9DhObeTPRuG-lVYCavoBNEmwM8TEzLFEdqR53NAt53FPLEXjSAPaQagy_E4RlqWg-XUqK8qqTHZMP1aA9hJvR5ux>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeikedgkeduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomheprfgvthgv
+    rhcujfhuthhtvghrvghruceophgvthgvrhdrhhhuthhtvghrvghrseifhhhoqdhtrdhnvg
+    htqeenucggtffrrghtthgvrhhnpeekvdekgeehfeejgfdvudffhfevheejffevgfeigfek
+    hfduieefudfgtedugfetgfenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
+    grihhlfhhrohhmpehpvghtvghrrdhhuhhtthgvrhgvrhesfihhohdqthdrnhgvth
+X-ME-Proxy: <xmx:hXBpZcSB7soGlszoalFU7aqqGh8dUx_GwSxz3AnzagYCPrZ5DC7Siw>
+    <xmx:hXBpZcwcF4XxcwS-zQDsXprnK2pKTsd3IaERoffCTr5evbozaOaf7w>
+    <xmx:hXBpZS4nrWO-LxShSqQLRkWHkdfFhV73Yk86g90is6KqJ0zgU7otaA>
+    <xmx:hXBpZbqHjd1e5LngYLB0ofa0i5RcN2n_8EzQxC27ewNHaCgU8FpLiA>
+Feedback-ID: i7ce144cd:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 1 Dec 2023 00:34:57 -0500 (EST)
+Date:   Fri, 1 Dec 2023 15:34:52 +1000
+From:   Peter Hutterer <peter.hutterer@who-t.net>
+To:     Benjamin Tissoires <bentiss@kernel.org>
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Shuah Khan <shuah@kernel.org>, linux-input@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 02/12] selftests/hid: vmtest.sh: allow finer control on
+ the build steps
+Message-ID: <20231201053452.GA625212@quokka>
+References: <20231129-wip-selftests-v1-0-ba15a1fe1b0d@kernel.org>
+ <20231129-wip-selftests-v1-2-ba15a1fe1b0d@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: Y_XrMjM9bgam5AieALxwAoa4r4282kvX
-X-Proofpoint-ORIG-GUID: Y_XrMjM9bgam5AieALxwAoa4r4282kvX
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-01_03,2023-11-30_01,2023-05-22_02
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231129-wip-selftests-v1-2-ba15a1fe1b0d@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Naveen Mamindlapalli <naveenm@marvell.com>
+On Wed, Nov 29, 2023 at 04:24:27PM +0100, Benjamin Tissoires wrote:
+> vmtest.sh works great for a one shot test, but not so much for CI where
+> I want to build (with different configs) the bzImage in a separate
+> job than the one I am running it.
+> 
+> Add a "build_only" option to specify whether we need to boot the currently
+> built kernel in the vm.
+> 
+> Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+> ---
+>  tools/testing/selftests/hid/vmtest.sh | 42 ++++++++++++++++++++---------------
+>  1 file changed, 24 insertions(+), 18 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/hid/vmtest.sh b/tools/testing/selftests/hid/vmtest.sh
+> index 301b4e162336..52ada972833b 100755
+> --- a/tools/testing/selftests/hid/vmtest.sh
+> +++ b/tools/testing/selftests/hid/vmtest.sh
+> @@ -32,7 +32,7 @@ DEFAULT_COMMAND="pip3 install hid-tools; make -C tools/testing/selftests TARGETS
+>  usage()
+>  {
+>  	cat <<EOF
+> -Usage: $0 [-i] [-s] [-d <output_dir>] -- [<command>]
+> +Usage: $0 [-j N] [-s] [-b] [-d <output_dir>] -- [<command>]
+>  
+>  <command> is the command you would normally run when you are in
+>  the source kernel direcory. e.g:
+> @@ -55,6 +55,7 @@ Options:
+>  
+>  	-u)		Update the boot2container script to a newer version.
+>  	-d)		Update the output directory (default: ${OUTPUT_DIR})
+> +	-b)		Run the only build steps for the kernel and the selftests
 
-The current adaptive interrupt coalescing code updates only rx
-packet stats for dim algorithm. This patch also updates tx packet
-stats which will be useful when there is only tx traffic.
-Also moved configuring hardware adaptive interrupt setting to
-driver dim callback.
+typo: "run only the"
 
-Fixes: 6e144b47f560 ("octeontx2-pf: Add support for adaptive interrupt coalescing")
-Signed-off-by: Naveen Mamindlapalli <naveenm@marvell.com>
-Signed-off-by: Suman Ghosh <sumang@marvell.com>
----
-v3 changes:
-- Updated signed-off-by signature.
+Cheers,
+  Peter
 
-v2 changes:
-- Missed adding the fixes tag in v1. Added the same in v2.
 
- .../ethernet/marvell/octeontx2/nic/otx2_pf.c  |  9 +++++++++
- .../marvell/octeontx2/nic/otx2_txrx.c         | 20 +++++++++----------
- 2 files changed, 19 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-index ba95ac913274..6c0e0e2c235b 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-@@ -1685,6 +1685,14 @@ static void otx2_do_set_rx_mode(struct otx2_nic *pf)
- 	mutex_unlock(&pf->mbox.lock);
- }
- 
-+static void otx2_set_irq_coalesce(struct otx2_nic *pfvf)
-+{
-+	int cint;
-+
-+	for (cint = 0; cint < pfvf->hw.cint_cnt; cint++)
-+		otx2_config_irq_coalescing(pfvf, cint);
-+}
-+
- static void otx2_dim_work(struct work_struct *w)
- {
- 	struct dim_cq_moder cur_moder;
-@@ -1700,6 +1708,7 @@ static void otx2_dim_work(struct work_struct *w)
- 		CQ_TIMER_THRESH_MAX : cur_moder.usec;
- 	pfvf->hw.cq_ecount_wait = (cur_moder.pkts > NAPI_POLL_WEIGHT) ?
- 		NAPI_POLL_WEIGHT : cur_moder.pkts;
-+	otx2_set_irq_coalesce(pfvf);
- 	dim->state = DIM_START_MEASURE;
- }
- 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-index 6ee15f3c25ed..4d519ea833b2 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-@@ -512,11 +512,18 @@ static void otx2_adjust_adaptive_coalese(struct otx2_nic *pfvf, struct otx2_cq_p
- {
- 	struct dim_sample dim_sample;
- 	u64 rx_frames, rx_bytes;
-+	u64 tx_frames, tx_bytes;
- 
- 	rx_frames = OTX2_GET_RX_STATS(RX_BCAST) + OTX2_GET_RX_STATS(RX_MCAST) +
- 		OTX2_GET_RX_STATS(RX_UCAST);
- 	rx_bytes = OTX2_GET_RX_STATS(RX_OCTS);
--	dim_update_sample(pfvf->napi_events, rx_frames, rx_bytes, &dim_sample);
-+	tx_bytes = OTX2_GET_TX_STATS(TX_OCTS);
-+	tx_frames = OTX2_GET_TX_STATS(TX_UCAST);
-+
-+	dim_update_sample(pfvf->napi_events,
-+			  rx_frames + tx_frames,
-+			  rx_bytes + tx_bytes,
-+			  &dim_sample);
- 	net_dim(&cq_poll->dim, dim_sample);
- }
- 
-@@ -558,16 +565,9 @@ int otx2_napi_handler(struct napi_struct *napi, int budget)
- 		if (pfvf->flags & OTX2_FLAG_INTF_DOWN)
- 			return workdone;
- 
--		/* Check for adaptive interrupt coalesce */
--		if (workdone != 0 &&
--		    ((pfvf->flags & OTX2_FLAG_ADPTV_INT_COAL_ENABLED) ==
--		     OTX2_FLAG_ADPTV_INT_COAL_ENABLED)) {
--			/* Adjust irq coalese using net_dim */
-+		/* Adjust irq coalese using net_dim */
-+		if (pfvf->flags & OTX2_FLAG_ADPTV_INT_COAL_ENABLED)
- 			otx2_adjust_adaptive_coalese(pfvf, cq_poll);
--			/* Update irq coalescing */
--			for (i = 0; i < pfvf->hw.cint_cnt; i++)
--				otx2_config_irq_coalescing(pfvf, i);
--		}
- 
- 		if (unlikely(!filled_cnt)) {
- 			struct refill_work *work;
--- 
-2.25.1
-
+>  	-j)		Number of jobs for compilation, similar to -j in make
+>  			(default: ${NUM_COMPILE_JOBS})
+>  	-s)		Instead of powering off the VM, start an interactive
+> @@ -191,8 +192,9 @@ main()
+>  	local command="${DEFAULT_COMMAND}"
+>  	local update_b2c="no"
+>  	local debug_shell="no"
+> +	local build_only="no"
+>  
+> -	while getopts ':hsud:j:' opt; do
+> +	while getopts ':hsud:j:b' opt; do
+>  		case ${opt} in
+>  		u)
+>  			update_b2c="yes"
+> @@ -207,6 +209,9 @@ main()
+>  			command="/bin/sh"
+>  			debug_shell="yes"
+>  			;;
+> +		b)
+> +			build_only="yes"
+> +			;;
+>  		h)
+>  			usage
+>  			exit 0
+> @@ -226,8 +231,7 @@ main()
+>  	shift $((OPTIND -1))
+>  
+>  	# trap 'catch "$?"' EXIT
+> -
+> -	if [[ "${debug_shell}" == "no" ]]; then
+> +	if [[ "${build_only}" == "no" && "${debug_shell}" == "no" ]]; then
+>  		if [[ $# -eq 0 ]]; then
+>  			echo "No command specified, will run ${DEFAULT_COMMAND} in the vm"
+>  		else
+> @@ -267,24 +271,26 @@ main()
+>  	update_kconfig "${kernel_checkout}" "${kconfig_file}"
+>  
+>  	recompile_kernel "${kernel_checkout}" "${make_command}"
+> +	update_selftests "${kernel_checkout}" "${make_command}"
+>  
+> -	if [[ "${update_b2c}" == "no" && ! -f "${b2c}" ]]; then
+> -		echo "vm2c script not found in ${b2c}"
+> -		update_b2c="yes"
+> -	fi
+> +	if [[ "${build_only}" == "no" ]]; then
+> +		if [[ "${update_b2c}" == "no" && ! -f "${b2c}" ]]; then
+> +			echo "vm2c script not found in ${b2c}"
+> +			update_b2c="yes"
+> +		fi
+>  
+> -	if [[ "${update_b2c}" == "yes" ]]; then
+> -		download $B2C_URL $b2c
+> -		chmod +x $b2c
+> -	fi
+> +		if [[ "${update_b2c}" == "yes" ]]; then
+> +			download $B2C_URL $b2c
+> +			chmod +x $b2c
+> +		fi
+>  
+> -	update_selftests "${kernel_checkout}" "${make_command}"
+> -	run_vm "${kernel_checkout}" $b2c "${kernel_bzimage}" "${command}"
+> -	if [[ "${debug_shell}" != "yes" ]]; then
+> -		echo "Logs saved in ${OUTPUT_DIR}/${LOG_FILE}"
+> -	fi
+> +		run_vm "${kernel_checkout}" $b2c "${kernel_bzimage}" "${command}"
+> +		if [[ "${debug_shell}" != "yes" ]]; then
+> +			echo "Logs saved in ${OUTPUT_DIR}/${LOG_FILE}"
+> +		fi
+>  
+> -	exit $(cat ${OUTPUT_DIR}/${EXIT_STATUS_FILE})
+> +		exit $(cat ${OUTPUT_DIR}/${EXIT_STATUS_FILE})
+> +	fi
+>  }
+>  
+>  main "$@"
+> 
+> -- 
+> 2.41.0
+> 
