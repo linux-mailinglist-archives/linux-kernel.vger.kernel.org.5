@@ -2,133 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 931EF80153B
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 22:21:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8394380153F
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 22:23:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379655AbjLAVVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 16:21:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42496 "EHLO
+        id S1379660AbjLAVWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 16:22:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjLAVVR (ORCPT
+        with ESMTP id S229456AbjLAVWu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 16:21:17 -0500
-Received: from mail-oa1-f44.google.com (mail-oa1-f44.google.com [209.85.160.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4481E10D0;
-        Fri,  1 Dec 2023 13:21:24 -0800 (PST)
-Received: by mail-oa1-f44.google.com with SMTP id 586e51a60fabf-1faf1ba2219so127537fac.0;
-        Fri, 01 Dec 2023 13:21:24 -0800 (PST)
+        Fri, 1 Dec 2023 16:22:50 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 975B510D7;
+        Fri,  1 Dec 2023 13:22:56 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-50abbb23122so3712760e87.3;
+        Fri, 01 Dec 2023 13:22:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701465775; x=1702070575; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:to:from:subject:message-id:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=B3kcUYruKC5iUd8aJKRoo9plHi51/X4cugDuquOO8NY=;
+        b=MOms6duhY6Kx53wlIP5tO0EI3tRsGFoHi0J/Bg29gxxe06F/tcIfAjX95H/m7yeScT
+         E3Gt+H+oxSBz/bLvnAtvNeQ1/2fX7O0fp/YH93qQ8X/5vZg0+kJyUHkCP3qBftyrg5Yv
+         BiNplNGy94/Pnzmd+K2aagZ5yvlIgTh9+YQGqOSdZ6Wjpbx+ZwGIwG2EsKPnMG9wpP62
+         zLVNFXbRRzuinD47KdmMSkQdGZ56AHbSj+nhfHhD6KXzfDxdxeJn75UvDnZREWpH5T3x
+         TapWs5m2y63furSLQw3cmp87E5Y7VT8M29ht23u2AVUrjiD0cstaTyfaNr0lcMNFdHBP
+         8liw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701465683; x=1702070483;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=P006BstmV7W/R+YlcJRbFIYya/BbanV1UGsaFy8YvWQ=;
-        b=TP+l4U+c2gE3rY4JrGuFI75TJEx7SMtigTHlcNWvDo7kQAjBBTUniRlStY2z1wy6UP
-         FK+0dK83RaCNnniRWrFuwGqvRAcTkH1MWXbjd1zjVHA2+ZLqeBcsA75yBj8HO9wu8hAW
-         TvVqbOzbQfVv0OQA1ct2E8X0sm3Z+cGim4MMyX7DWv5ODG4LtuYVNPuOxgX8ugBTfDSV
-         RV7wpVUYAEGHDEL6b1XkStbYynVul5hT6x0lMsW3mbclUCwex/UWVt1FKK/jWFL3JuSq
-         ytHoa3+Vn8r6Jq5UZMXDB70jc5gLp9tA2POtk3NzaKT33APbJJW98YyXkJUpOb6BboWm
-         tuvw==
-X-Gm-Message-State: AOJu0Yz/C96pHGswZdjwmCAIgY+IhlQ8LiYlHBqx4yIY1a9VI2aR1PNt
-        eZa30VVprT963v6Jd3n3BGHpIvOq27Ib011qLto53Nmc6C0=
-X-Google-Smtp-Source: AGHT+IFmQSHvTpybN3UOScBB7T43eZsK6+QIfRufv3Bmbewgran0EV+2WT7QeEhm0MGftcutKRE+etna3KUjqEKf3R0=
-X-Received: by 2002:a05:6870:169b:b0:1fa:db26:78a6 with SMTP id
- j27-20020a056870169b00b001fadb2678a6mr5351843oae.1.1701465683453; Fri, 01 Dec
- 2023 13:21:23 -0800 (PST)
-MIME-Version: 1.0
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 1 Dec 2023 22:21:12 +0100
-Message-ID: <CAJZ5v0iHKMcpK+B9dzCbDJxqZK79PoGdbLUD5hRH6sueAMgKGw@mail.gmail.com>
-Subject: [GIT PULL] Power management fixes for v6.7-rc4
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        d=1e100.net; s=20230601; t=1701465775; x=1702070575;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=B3kcUYruKC5iUd8aJKRoo9plHi51/X4cugDuquOO8NY=;
+        b=O0OjCYp8Tpu4KxN+ZFhTNDZNs4wYzFZ6RT+OHFg35Cvj3nhqCqvfcSALJibM2Trgyg
+         Q5ZzMZ2ePKiVt2XonQ3ayHqWO3+RCSB0j1oCRcAtZlk9M5Xp/lHu6/76d+RU9JvqnQG4
+         bknni/jiOEuv1Kj5mtmlw4F26n/fV2gljHIQSTwD6ZWTedhJTVjCGUWHX1K2T0hswmEs
+         RrO234XUvPztQRysTUIogEMxsmeSpRxQg3hE1HVUsGEOALYOx8BHdF1o0enD5sWDTdTm
+         yA+qxZjrOq43d86o4pDhamYU6VfGzKck6uEvQOt5rxZsQ0XRgpm7rgpy9SvhvL+706BB
+         Dr7w==
+X-Gm-Message-State: AOJu0YwFV05jNHTDm6Bwd3n05t19vsALu+Hdu1CnRkM7dRwELex/wAHd
+        IHKfpBmHLS9VIWiS82uf+j4=
+X-Google-Smtp-Source: AGHT+IH6F806c40B0ns5cCYw37MpVBBr93IvKOgwh/USfc9GdYKyjRv1qKyCoucVjpTTf9WspjWgEg==
+X-Received: by 2002:a05:6512:4017:b0:508:11c3:c8ca with SMTP id br23-20020a056512401700b0050811c3c8camr1640816lfb.7.1701465774460;
+        Fri, 01 Dec 2023 13:22:54 -0800 (PST)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id cm26-20020a0564020c9a00b0054c6b50df3asm500640edb.92.2023.12.01.13.22.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Dec 2023 13:22:54 -0800 (PST)
+Message-ID: <c0c9b60a3c14080f93a8b7b38f0277c6dd0bf7fc.camel@gmail.com>
+Subject: Re: [devel-ipsec] [PATCH ipsec-next v3 3/9] libbpf: Add
+ BPF_CORE_WRITE_BITFIELD() macro
+From:   Eduard Zingerman <eddyz87@gmail.com>
+To:     Daniel Xu <dxu@dxuuu.xyz>, ndesaulniers@google.com,
+        daniel@iogearbox.net, nathan@kernel.org, ast@kernel.org,
+        andrii@kernel.org, steffen.klassert@secunet.com,
+        antony.antony@secunet.com, alexei.starovoitov@gmail.com,
+        yonghong.song@linux.dev, martin.lau@linux.dev, song@kernel.org,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, trix@redhat.com,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, devel@linux-ipsec.org,
+        netdev@vger.kernel.org, Jonathan Lemon <jlemon@aviatrix.com>
+Date:   Fri, 01 Dec 2023 23:22:52 +0200
+In-Reply-To: <2schji4oladptrev3tswmwkbhspz6mdy5u2v7tvll4du7iylri@2u2zmfdzn6fm>
+References: <cover.1701462010.git.dxu@dxuuu.xyz>
+         <adea997dff6d07332d294ad9cd233f3b71494a81.1701462010.git.dxu@dxuuu.xyz>
+         <2schji4oladptrev3tswmwkbhspz6mdy5u2v7tvll4du7iylri@2u2zmfdzn6fm>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.1 
+MIME-Version: 1.0
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- Hi Linus,
+On Fri, 2023-12-01 at 13:51 -0700, Daniel Xu wrote:
+> On Fri, Dec 01, 2023 at 01:23:14PM -0700, Daniel Xu via Devel wrote:
+> > =3D=3D=3D Motivation =3D=3D=3D
+> >=20
+> > Similar to reading from CO-RE bitfields, we need a CO-RE aware bitfield
+> > writing wrapper to make the verifier happy.
+> >=20
+> > Two alternatives to this approach are:
+> >=20
+> > 1. Use the upcoming `preserve_static_offset` [0] attribute to disable
+> >    CO-RE on specific structs.
+> > 2. Use broader byte-sized writes to write to bitfields.
+> >=20
+> > (1) is a bit hard to use. It requires specific and not-very-obvious
+> > annotations to bpftool generated vmlinux.h. It's also not generally
+> > available in released LLVM versions yet.
+> >=20
+> > (2) makes the code quite hard to read and write. And especially if
+> > BPF_CORE_READ_BITFIELD() is already being used, it makes more sense to
+> > to have an inverse helper for writing.
+> >=20
+> > =3D=3D=3D Implementation details =3D=3D=3D
+> >=20
+> > Since the logic is a bit non-obvious, I thought it would be helpful
+> > to explain exactly what's going on.
+> >=20
+> > To start, it helps by explaining what LSHIFT_U64 (lshift) and RSHIFT_U6=
+4
+> > (rshift) is designed to mean. Consider the core of the
+> > BPF_CORE_READ_BITFIELD() algorithm:
+> >=20
+> >         val <<=3D __CORE_RELO(s, field, LSHIFT_U64);
+> >                 val =3D val >> __CORE_RELO(s, field, RSHIFT_U64);
+> >=20
+> > Basically what happens is we lshift to clear the non-relevant (blank)
+> > higher order bits. Then we rshift to bring the relevant bits (bitfield)
+> > down to LSB position (while also clearing blank lower order bits). To
+> > illustrate:
+> >=20
+> >         Start:    ........XXX......
+> >         Lshift:   XXX......00000000
+> >         Rshift:   00000000000000XXX
+> >=20
+> > where `.` means blank bit, `0` means 0 bit, and `X` means bitfield bit.
+> >=20
+> > After the two operations, the bitfield is ready to be interpreted as a
+> > regular integer.
+> >=20
+> > Next, we want to build an alternative (but more helpful) mental model
+> > on lshift and rshift. That is, to consider:
+> >=20
+> > * rshift as the total number of blank bits in the u64
+> > * lshift as number of blank bits left of the bitfield in the u64
+> >=20
+> > Take a moment to consider why that is true by consulting the above
+> > diagram.
+> >=20
+> > With this insight, we can how define the following relationship:
+> >=20
+> >               bitfield
+> >                  _
+> >                 | |
+> >         0.....00XXX0...00
+> >         |      |   |    |
+> >         |______|   |    |
+> >          lshift    |    |
+> >                    |____|
+> >               (rshift - lshift)
+> >=20
+> > That is, we know the number of higher order blank bits is just lshift.
+> > And the number of lower order blank bits is (rshift - lshift).
+> >=20
+> > Finally, we can examine the core of the write side algorithm:
+> >=20
+> >         mask =3D (~0ULL << rshift) >> lshift;   // 1
+> >         nval =3D new_val;                       // 2
+> >         nval =3D (nval << rpad) & mask;         // 3
+> >         val =3D (val & ~mask) | nval;           // 4
+> >=20
+> > (1): Compute a mask where the set bits are the bitfield bits. The first
+> >      left shift zeros out exactly the number of blank bits, leaving a
+> >      bitfield sized set of 1s. The subsequent right shift inserts the
+> >      correct amount of higher order blank bits.
+> > (2): Place the new value into a word sized container, nval.
+> > (3): Place nval at the correct bit position and mask out blank bits.
+> > (4): Mix the bitfield in with original surrounding blank bits.
+> >=20
+> > [0]: https://reviews.llvm.org/D133361
+> > Co-authored-by: Eduard Zingerman <eddyz87@gmail.com>
+> > Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+>=20
+> Just pointing out I inserted Eduard's tags here. Eduard - I hope that's
+> OK. Not sure what the usual procedure for this is.
 
-Please pull from the tag
-
- git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
- pm-6.7-rc4
-
-with top-most commit a6b31256928d78204f8f282220d3b0d64387f79d
-
- Merge branch 'powercap'
-
-on top of commit 2cc14f52aeb78ce3f29677c2de1f06c0e91471ab
-
- Linux 6.7-rc3
-
-to receive power management fixes for 6.7-rc4.
-
-These fix issues in two cpufreq drivers, in the AMD P-state driver and
-in the power-capping DTPM framework.
-
-Specifics:
-
- - Fix the AMD P-state driver's EPP sysfs interface in the cases when the
-   performance governor is in use (Ayush Jain).
-
- - Make the ->fast_switch() callback in the AMD P-state driver return the
-   target frequency as expected (Gautham R. Shenoy).
-
- - Allow user space to control the range of frequencies to use via
-   scaling_min_freq and scaling_max_freq when AMD P-state driver is in
-   use (Wyes Karny).
-
- - Prevent power domains needed for wakeup signaling from being turned
-   off during system suspend on Qualcomm systems and prevent performance
-   states votes from runtime-suspended devices from being lost across
-   a system suspend-resume cycle in qcom-cpufreq-nvmem (Stephan Gerhold).
-
- - Fix disabling the 792 Mhz OPP in the imx6q cpufreq driver for the
-   i.MX6ULL types that can run at that frequency (Christoph Niedermaier).
-
- - Eliminate unnecessary and harmful conversions to uW from the DTPM
-   (dynamic thermal and power management) framework (Lukasz Luba).
-
-Thanks!
-
-
----------------
-
-Ayush Jain (1):
-      cpufreq/amd-pstate: Only print supported EPP values for
-performance governor
-
-Christoph Niedermaier (1):
-      cpufreq: imx6q: Don't disable 792 Mhz OPP unnecessarily
-
-Gautham R. Shenoy (1):
-      cpufreq/amd-pstate: Fix the return value of amd_pstate_fast_switch()
-
-Lukasz Luba (1):
-      powercap: DTPM: Fix unneeded conversions to micro-Watts
-
-Stephan Gerhold (3):
-      cpufreq: qcom-nvmem: Enable virtual power domain devices
-      cpufreq: qcom-nvmem: Preserve PM domain votes in system suspend
-      pmdomain: qcom: rpmpd: Set GENPD_FLAG_ACTIVE_WAKEUP
-
-Wyes Karny (1):
-      cpufreq/amd-pstate: Fix scaling_min_freq and scaling_max_freq update
-
----------------
-
- drivers/cpufreq/amd-pstate.c         | 71 +++++++++++++++++++++++++++--------
- drivers/cpufreq/imx6q-cpufreq.c      |  2 +-
- drivers/cpufreq/qcom-cpufreq-nvmem.c | 73 ++++++++++++++++++++++++++++++++++--
- drivers/pmdomain/qcom/rpmpd.c        |  1 +
- drivers/powercap/dtpm_cpu.c          |  6 +--
- drivers/powercap/dtpm_devfreq.c      | 11 ++----
- include/linux/amd-pstate.h           |  4 ++
- 7 files changed, 136 insertions(+), 32 deletions(-)
+Not that I did a big contribution, you and Andrii figured out a much
+better (and correct) expression :) I'm fine with and without this tag,
+thank you for working on this.
