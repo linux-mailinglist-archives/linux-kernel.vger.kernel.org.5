@@ -2,119 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1BC2800708
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 10:31:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A366680070D
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 10:32:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378112AbjLAJbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 04:31:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46526 "EHLO
+        id S1378183AbjLAJbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 04:31:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378068AbjLAJbD (ORCPT
+        with ESMTP id S1378184AbjLAJbf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 04:31:03 -0500
-Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43FA5469E
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 01:29:06 -0800 (PST)
-Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-5d34d85e610so17601717b3.3
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 01:29:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701422945; x=1702027745; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CMJWPTMz3I601PDaKg2G9zUK8oGX7I/FmdndTXV+PEQ=;
-        b=cgJ+49/0UbaSjAIUhmS5SocHDBx5KjVQSIBtJrMHoKlfni5Q76uujUzQBPpBqh2pgz
-         CLhspyrejyhIj5Jnih4hoDikQ+kOaHTF2sXwGXboSVwdLQ7vEtHuWgtC0aW64a7Ybnw6
-         yZbmjKQcq4ZG5a329c7iubSwnUzjNz0f3T8vSjigMUp/j75uiF5k72ICj3OdagoPbhwj
-         UDe3VaURzy7E1ZJORcfnF6mM0CQBisKEIfyKNCe8zfRamQTL0dVgBvtHH7BinhaVAdtu
-         j0Ll7MhKQ5q3P7pYpRPUtbkq61hWzlqD64979xH6O3lRDodkChzRht7JURyaSAtfVPZj
-         h7dg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701422945; x=1702027745;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CMJWPTMz3I601PDaKg2G9zUK8oGX7I/FmdndTXV+PEQ=;
-        b=fNUz036TfQ1hqN1cmO6nHjTgKm4NU1FzUJKitPvpdWKFFGF05ZOxvx8z7PTN1OY93r
-         Akc1BBHZMpsrfJS8qXmCXlcNVz2c9XiHaZ6uNgGzR3rE9JfBKmsZyAO7LBwE5lfwl87S
-         I5+OMyGhwAD5pwzrEusyIfF5qIHbaND9q2wKOawZ2yYa2LE8DUs56C3/YHewDopxcQEu
-         ZKI7oUvZTKfajscAFEpakfXdrGqrNEpMc18ViTeSoPjYpfNYwhxEunUMlxuMVsLyExsA
-         gTBgz0xyJASJ4DkhI0ExKg++ciTMNRbe665t27NkJGRfphAgy8qycRMS5xnp5vxn+Hul
-         xb8w==
-X-Gm-Message-State: AOJu0YzG5yo/+LpthGqocdLpUhK9dWFkzdhwP5IkF9g+NrQ3bUY1fFaJ
-        rIKNepLVrRtVClubvgCMf3xjcAd6jls6br8GWb5jaA==
-X-Google-Smtp-Source: AGHT+IH7z5fSeuufF5Cxad9UDRaE+shZZJy1gQvx2kCB4e/jW1K7Fe5gWDdyHCZzHgjNd7epaL2M0znaAmC6vZYwWYo=
-X-Received: by 2002:a81:ae59:0:b0:5d4:313c:4b07 with SMTP id
- g25-20020a81ae59000000b005d4313c4b07mr937537ywk.23.1701422945075; Fri, 01 Dec
- 2023 01:29:05 -0800 (PST)
+        Fri, 1 Dec 2023 04:31:35 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 996944C0E;
+        Fri,  1 Dec 2023 01:29:34 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 924E11042;
+        Fri,  1 Dec 2023 01:30:14 -0800 (PST)
+Received: from [10.57.73.130] (unknown [10.57.73.130])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BC3E83F5A1;
+        Fri,  1 Dec 2023 01:29:24 -0800 (PST)
+Message-ID: <b3c882d2-0135-430c-8179-784f78be0902@arm.com>
+Date:   Fri, 1 Dec 2023 09:29:23 +0000
 MIME-Version: 1.0
-References: <20231201091034.936441-1-jorge@foundries.io>
-In-Reply-To: <20231201091034.936441-1-jorge@foundries.io>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 1 Dec 2023 10:28:52 +0100
-Message-ID: <CACRpkdaMnphBxvqpmvNG_72O02Umny3qdxfyrKdA4BsDwZmtfg@mail.gmail.com>
-Subject: Re: [PATCH] mmc: rpmb: fixes pause retune on all RPMB partitions.
-To:     Jorge Ramirez-Ortiz <jorge@foundries.io>
-Cc:     ulf.hansson@linaro.org, CLoehle@hyperstone.com,
-        adrian.hunter@intel.com, jinpu.wang@ionos.com, hare@suse.de,
-        beanhuo@micron.com, asuk4.q@gmail.com, yangyingliang@huawei.com,
-        yibin.ding@unisoc.com, victor.shih@genesyslogic.com.tw,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 5/5] selftests/mm: add UFFDIO_MOVE ioctl test
+Content-Language: en-GB
+To:     Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org
+Cc:     viro@zeniv.linux.org.uk, brauner@kernel.org, shuah@kernel.org,
+        aarcange@redhat.com, lokeshgidra@google.com, peterx@redhat.com,
+        david@redhat.com, hughd@google.com, mhocko@suse.com,
+        axelrasmussen@google.com, rppt@kernel.org, willy@infradead.org,
+        Liam.Howlett@oracle.com, jannh@google.com, zhangpeng362@huawei.com,
+        bgeffon@google.com, kaleshsingh@google.com, ngeoffray@google.com,
+        jdduke@google.com, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, kernel-team@android.com
+References: <20231121171643.3719880-1-surenb@google.com>
+ <20231121171643.3719880-6-surenb@google.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20231121171643.3719880-6-surenb@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jorge,
+On 21/11/2023 17:16, Suren Baghdasaryan wrote:
+> Add tests for new UFFDIO_MOVE ioctl which uses uffd to move source
+> into destination buffer while checking the contents of both after
+> the move. After the operation the content of the destination buffer
+> should match the original source buffer's content while the source
+> buffer should be zeroed. Separate tests are designed for PMD aligned and
+> unaligned cases because they utilize different code paths in the kernel.
+> 
+> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> ---
+>  tools/testing/selftests/mm/uffd-common.c     |  24 +++
+>  tools/testing/selftests/mm/uffd-common.h     |   1 +
+>  tools/testing/selftests/mm/uffd-unit-tests.c | 189 +++++++++++++++++++
+>  3 files changed, 214 insertions(+)
+> 
+> diff --git a/tools/testing/selftests/mm/uffd-common.c b/tools/testing/selftests/mm/uffd-common.c
+> index fb3bbc77fd00..b0ac0ec2356d 100644
+> --- a/tools/testing/selftests/mm/uffd-common.c
+> +++ b/tools/testing/selftests/mm/uffd-common.c
+> @@ -631,6 +631,30 @@ int copy_page(int ufd, unsigned long offset, bool wp)
+>  	return __copy_page(ufd, offset, false, wp);
+>  }
+>  
+> +int move_page(int ufd, unsigned long offset, unsigned long len)
+> +{
+> +	struct uffdio_move uffdio_move;
+> +
+> +	if (offset + len > nr_pages * page_size)
+> +		err("unexpected offset %lu and length %lu\n", offset, len);
+> +	uffdio_move.dst = (unsigned long) area_dst + offset;
+> +	uffdio_move.src = (unsigned long) area_src + offset;
+> +	uffdio_move.len = len;
+> +	uffdio_move.mode = UFFDIO_MOVE_MODE_ALLOW_SRC_HOLES;
+> +	uffdio_move.move = 0;
+> +	if (ioctl(ufd, UFFDIO_MOVE, &uffdio_move)) {
+> +		/* real retval in uffdio_move.move */
+> +		if (uffdio_move.move != -EEXIST)
+> +			err("UFFDIO_MOVE error: %"PRId64,
+> +			    (int64_t)uffdio_move.move);
 
-thanks for your patch!
+Hi Suren,
 
-On Fri, Dec 1, 2023 at 10:10=E2=80=AFAM Jorge Ramirez-Ortiz <jorge@foundrie=
-s.io> wrote:
+FYI this error is triggering in mm-unstable (715b67adf4c8):
 
-> When RPMB was converted to a character device, it added support for
-> multiple RPMB partitions (Commit 97548575bef3 ("mmc: block: Convert RPMB
-> to a character device").
->
-> One of the changes in this commit was transforming the variable
-> target_part defined in __mmc_blk_ioctl_cmd into a bitmask.
->
-> This inadvertedly regressed the validation check done in
-> mmc_blk_part_switch_pre() and mmc_blk_part_switch_post().
->
-> This commit fixes that regression.
->
-> Fixes: 97548575bef3 ("mmc: block: Convert RPMB to a character device")
-> Signed-off-by: Jorge Ramirez-Ortiz <jorge@foundries.io>
+Testing move-pmd on anon... ERROR: UFFDIO_MOVE error: -16 (errno=16,
+@uffd-common.c:648)
 
-My bug :/
-Shouldn't we also add Cc: stable@vger.kernel.org?
+I'm running in a VM on Apple M2 (arm64). I haven't debugged any further, but
+happy to go deeper if you can direct.
+
+Thanks,
+Ryan
 
 
-> +       const unsigned int mask =3D EXT_CSD_PART_CONFIG_ACC_RPMB;
->         int ret =3D 0;
->
-> -       if (part_type =3D=3D EXT_CSD_PART_CONFIG_ACC_RPMB) {
-> +       if (part_type & mask =3D=3D mask) {
+> +		wake_range(ufd, uffdio_move.dst, len);
+> +	} else if (uffdio_move.move != len) {
+> +		err("UFFDIO_MOVE error: %"PRId64, (int64_t)uffdio_move.move);
+> +	} else
+> +		return 1;
+> +	return 0;
+> +}
 
-That looks complex, can't we just:
-
-if (part_type & EXT_CSD_PART_CONFIG_ACC_RPMB)?
-
-> +       const unsigned int mask =3D EXT_CSD_PART_CONFIG_ACC_RPMB;
->         int ret =3D 0;
->
-> -       if (part_type =3D=3D EXT_CSD_PART_CONFIG_ACC_RPMB) {
-> +       if (part_type & mask =3D=3D mask) {
-
-Dito here.
-
-Yours,
-Linus Walleij
