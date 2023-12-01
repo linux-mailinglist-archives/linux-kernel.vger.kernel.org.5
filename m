@@ -2,119 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C1D48007D8
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 11:04:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2F008007DA
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 11:05:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378093AbjLAKEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 05:04:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59404 "EHLO
+        id S1378117AbjLAKFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 05:05:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377899AbjLAKEU (ORCPT
+        with ESMTP id S1377899AbjLAKF2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 05:04:20 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DF6DB2
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 02:04:26 -0800 (PST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id A80CF1FD68;
-        Fri,  1 Dec 2023 10:04:24 +0000 (UTC)
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8AA851379A;
-        Fri,  1 Dec 2023 10:04:24 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-        by imap1.dmz-prg2.suse.org with ESMTPSA
-        id kl3jHqivaWXNWgAAD6G6ig
-        (envelope-from <mhocko@suse.com>); Fri, 01 Dec 2023 10:04:24 +0000
-Date:   Fri, 1 Dec 2023 11:04:23 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     Roman Gushchin <roman.gushchin@linux.dev>,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Linux-MM <linux-mm@kvack.org>, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Chinner <david@fromorbit.com>
-Subject: Re: [PATCH 2/7] mm: shrinker: Add a .to_text() method for shrinkers
-Message-ID: <ZWmvp5Yeb5HE1Uxo@tiehlicka>
-References: <4caadff7-1df0-45cc-9d43-e616f9e4ddb3@bytedance.com>
- <20231125003009.tbaxuquny43uwei3@moria.home.lan>
- <76A1EE85-B62C-49B3-889C-80F9A2A88040@linux.dev>
- <20231128035345.5c7yc7jnautjpfoc@moria.home.lan>
- <abd0ddd6-389c-43dc-b18f-aa5e3a4fcf5a@bytedance.com>
- <ZWaHG09fY2BYjyGD@P9FQF9L96D.corp.robot.car>
- <ZWcBDglmDKUJdwMv@tiehlicka>
- <20231129231147.7msiocerq7phxnyu@moria.home.lan>
- <ZWhEawxI1CT8stu9@tiehlicka>
- <20231201014745.b2ud4w3ymztdtctu@moria.home.lan>
+        Fri, 1 Dec 2023 05:05:28 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8638B2
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 02:05:32 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-50bd4fcbde1so1467061e87.1
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 02:05:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=foundries.io; s=google; t=1701425131; x=1702029931; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=PuneSa6QbCM1xtUYW7Y3DXlGntPa6QFO347mlxKnDHE=;
+        b=mV+fZd7+zK2uX+BR4m4jbMbpjEIac7cKxeMSkaQIQAmPXyxw+3ynzdSHX5nBFO/gnO
+         v7L4Mx87wyeO/694fz3kjTPokAzq6zl5Cd1VBqR0razRUH3kvDh2+DF9b+8410VUJDXS
+         9GcD+KMWZXAdOWQOkvKfZLFAUa+rCN3qdxiryKa72Xx4BtwkOpMguPgR98ICwPhhjgTc
+         yUbjCvg08iZkDoAS9kaAIiPSNLMDriAuSyJb0lCjUEfFoTcNMVj2J0xnUmMp2G8DR/ZF
+         hrA26VgsuzKFCZGuYPcgBIwwrb6DgRy1NUUY72RKc4PVfLYmigDl1boNzQtw1cmyQTUd
+         0CxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701425131; x=1702029931;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=PuneSa6QbCM1xtUYW7Y3DXlGntPa6QFO347mlxKnDHE=;
+        b=qckNDMSfagiTrVQAVUTAKyufUqbXY0OG4TUSHn/d2PKSbEj8U5810ktZ9BV/1e+nKo
+         tlpfmCpQFGi525qmLRqA4k6k3spKeg6VdNnghDafo0KGu7Bt5qDnqxgxJUwEq//3Oiby
+         gRwlSX+FVTDqD5XWwL+Cx3iKaIYgxMgsd2qjZUsR+1+DYsLyGUB04+ZKQw9YVLVBH4st
+         P0PBMfGwQtZZYGKGqspeaGAo1fQ5duSAT0Ah/kMK5J19IcGoBcbOy7EGok9R3tjyPQE/
+         0ScubKD2qYOeGysezZgdK9IE3yDcUPcWsHPa+T8ykslROLBc0Aty7MBAXdoQjnB1v/eE
+         cisw==
+X-Gm-Message-State: AOJu0YxJZp2DyZuq4CrT1enVtLr5y+fFgm3eUIFgdqALxIrc26AGUCjp
+        G9eosiUboJ0XoRQLINE+AbBKzCd9ON7idivtwrw=
+X-Google-Smtp-Source: AGHT+IH0TZ6Fc+ufC5XzTglSQ2dJ28+duooe+E9bpakim9bcU2KfLk/n/0AW7+kUcOs3PCtFnOcHUA==
+X-Received: by 2002:ac2:5967:0:b0:50b:d764:8023 with SMTP id h7-20020ac25967000000b0050bd7648023mr539062lfp.86.1701425130583;
+        Fri, 01 Dec 2023 02:05:30 -0800 (PST)
+Received: from trax.. (139.red-79-144-198.dynamicip.rima-tde.net. [79.144.198.139])
+        by smtp.gmail.com with ESMTPSA id r16-20020a05600c459000b00406408dc788sm8519199wmo.44.2023.12.01.02.05.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Dec 2023 02:05:30 -0800 (PST)
+From:   Jorge Ramirez-Ortiz <jorge@foundries.io>
+To:     jorge@foundries.io, ulf.hansson@linaro.org,
+        linus.walleij@linaro.org, adrian.hunter@intel.com
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: [PATCHv3] mmc: rpmb: fixes pause retune on all RPMB partitions.
+Date:   Fri,  1 Dec 2023 11:05:27 +0100
+Message-Id: <20231201100527.1034292-1-jorge@foundries.io>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231201014745.b2ud4w3ymztdtctu@moria.home.lan>
-X-Spamd-Bar: ++++++++++++++++++
-X-Spam-Score: 18.25
-X-Rspamd-Server: rspamd1
-Authentication-Results: smtp-out2.suse.de;
-        dkim=none;
-        spf=fail (smtp-out2.suse.de: domain of mhocko@suse.com does not designate 2a07:de40:b281:104:10:150:64:97 as permitted sender) smtp.mailfrom=mhocko@suse.com;
-        dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.com (policy=quarantine)
-X-Rspamd-Queue-Id: A80CF1FD68
-X-Spamd-Result: default: False [18.25 / 50.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         R_SPF_FAIL(1.00)[-all];
-         ARC_NA(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         MID_RHS_NOT_FQDN(0.50)[];
-         DMARC_POLICY_QUARANTINE(1.50)[suse.com : No valid SPF, No valid DKIM,quarantine];
-         SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-         RCVD_COUNT_THREE(0.00)[3];
-         MX_GOOD(-0.01)[];
-         NEURAL_HAM_SHORT(-0.20)[-0.997];
-         RCPT_COUNT_SEVEN(0.00)[8];
-         NEURAL_SPAM_LONG(3.45)[0.985];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         R_DKIM_NA(2.20)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_TLS_ALL(0.00)[];
-         BAYES_HAM(-0.00)[34.97%]
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 30-11-23 20:47:45, Kent Overstreet wrote:
-> On Thu, Nov 30, 2023 at 09:14:35AM +0100, Michal Hocko wrote:
-[...]
-> > All that being said, I am with you on the fact that the oom report in
-> > its current form could see improvements.
-> 
-> I'm glad we're finally in agreement on something!
-> 
-> If you want to share your own ideas on what could be improved and what
-> you find useful, maybe we could find some more common ground.
+When RPMB was converted to a character device, it added support for
+multiple RPMB partitions (Commit 97548575bef3 ("mmc: block: Convert RPMB
+to a character device").
 
-One thing that I would consider an improvement is to have a way to
-subscribe drivers with excessive memory consumption or those which are
-struggling to dump their state.
+One of the changes in this commit was transforming the variable
+target_part defined in __mmc_blk_ioctl_cmd into a bitmask.
 
-Maybe your proposal can be extended that way but the crucial point is to
-not dump all sorts of random shrinkers' state and end up with unwieldy
-reports.  If, on the other hand, any particular shrinker struggles to
-reclaim memory and it is sitting on a lot of memory it could be able to
-flag itself to be involved in the dump.
--- 
-Michal Hocko
-SUSE Labs
+This inadvertedly regressed the validation check done in
+mmc_blk_part_switch_pre() and mmc_blk_part_switch_post().
+
+This commit fixes that regression.
+
+Fixes: 97548575bef3 ("mmc: block: Convert RPMB to a character device")
+Signed-off-by: Jorge Ramirez-Ortiz <jorge@foundries.io>
+Cc: <stable@vger.kernel.org> # v6.0+
+---
+
+  v2:
+     fixes parenthesis around condition
+  v3:
+     adds stable to commit header
+
+ drivers/mmc/core/block.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
+index 152dfe593c43..13093d26bf81 100644
+--- a/drivers/mmc/core/block.c
++++ b/drivers/mmc/core/block.c
+@@ -851,9 +851,10 @@ static const struct block_device_operations mmc_bdops = {
+ static int mmc_blk_part_switch_pre(struct mmc_card *card,
+ 				   unsigned int part_type)
+ {
++	const unsigned int mask = EXT_CSD_PART_CONFIG_ACC_RPMB;
+ 	int ret = 0;
+
+-	if (part_type == EXT_CSD_PART_CONFIG_ACC_RPMB) {
++	if ((part_type & mask) == mask) {
+ 		if (card->ext_csd.cmdq_en) {
+ 			ret = mmc_cmdq_disable(card);
+ 			if (ret)
+@@ -868,9 +869,10 @@ static int mmc_blk_part_switch_pre(struct mmc_card *card,
+ static int mmc_blk_part_switch_post(struct mmc_card *card,
+ 				    unsigned int part_type)
+ {
++	const unsigned int mask = EXT_CSD_PART_CONFIG_ACC_RPMB;
+ 	int ret = 0;
+
+-	if (part_type == EXT_CSD_PART_CONFIG_ACC_RPMB) {
++	if ((part_type & mask) == mask) {
+ 		mmc_retune_unpause(card->host);
+ 		if (card->reenable_cmdq && !card->ext_csd.cmdq_en)
+ 			ret = mmc_cmdq_enable(card);
+@@ -3143,4 +3145,3 @@ module_exit(mmc_blk_exit);
+
+ MODULE_LICENSE("GPL");
+ MODULE_DESCRIPTION("Multimedia Card (MMC) block device driver");
+-
+--
+2.34.1
