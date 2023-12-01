@@ -2,253 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 265CD8004D8
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 08:40:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD0718004DA
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 08:41:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377751AbjLAHkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 02:40:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45840 "EHLO
+        id S1377740AbjLAHlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 02:41:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377744AbjLAHkk (ORCPT
+        with ESMTP id S1377734AbjLAHlC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 02:40:40 -0500
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B90FB10FD
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 23:40:45 -0800 (PST)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-40b4c2ef584so16057275e9.3
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 23:40:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=foundries.io; s=google; t=1701416444; x=1702021244; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=DLRWZAxxkZP1tvtSK7R8vRvOQx92KAeCXPnyeVRGmnQ=;
-        b=eZ+kK6OKAFl5yb8VCofINzFu9HtBZ7enfd5dTFLw/gkgkxkNTg48ZwB303ziK9y7Nr
-         G4aXL8R0414N6NyaaM2hJWU7aXXHocRmXlhEMTPIC6ER2ZsAMcI6AqQ/2q2ST1sAutp1
-         jjuJ6UMoMM3a2uai2lLO2TXP80bQ+ew/kTUdc6gWVuvOlIbTIs+k7r+GQBltWvi8xg9b
-         M0kuc5fRK/J2tyRwqSoiVOS1JWCxAN4lYr+oDtiGs9o6aAYzUaeN8MmaRuj52O70k15x
-         T5XobREBNMaK2Zp74gshzgRsK/50vKe2S2i8voQl+//4gXHBrXUC54E1JHr22C8+bj8P
-         ibKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701416444; x=1702021244;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DLRWZAxxkZP1tvtSK7R8vRvOQx92KAeCXPnyeVRGmnQ=;
-        b=ePb5N4/vnuAlkX8Ji4p6XmWTkjniTjoVBTQedi1k77IqFN0vKMdOYIqUTRRjs3z/Mb
-         PuzzP6I6EEKJZ8HfEzk9dA1iVu6vtQOj07Rp33TztUJjizUITF5DauqccK/Rxr1qlpO+
-         2cYPDnp6G8540rQH0uCy+IdCibEPXWahOeWyXmkMYHes7/KO/kMLu1eP+3qZsEbLmSJU
-         3EVRld5bOfFvUspL6o6Ij/9hKUvZDFltmGbZmOy9bNUVtgtMeFB7tTAanIrtJ579UyHz
-         Xthughim8ogXwuXfCvLRKwy4B/aMcXS1tdJk1fkKGFcgSvZFteU8K/Nm3+p3NqB16SNt
-         S2PQ==
-X-Gm-Message-State: AOJu0Yz9oqCNI22WyqX8aRYQ0W85z57CIV/u10kNu8EaCVh1bDB66p3J
-        Nf7WzyQpsmWQ3Jj5wEtTE3hIEA==
-X-Google-Smtp-Source: AGHT+IFRjfzTZKVyHUHfdE8huFflVX1guxJbHFgDqdQy+NYOBXw8UBZgne4e0k2cdX+lb5JLoRzVGg==
-X-Received: by 2002:a1c:7716:0:b0:40b:50f5:3e6e with SMTP id t22-20020a1c7716000000b0040b50f53e6emr320867wmi.24.1701416444045;
-        Thu, 30 Nov 2023 23:40:44 -0800 (PST)
-Received: from trax (139.red-79-144-198.dynamicip.rima-tde.net. [79.144.198.139])
-        by smtp.gmail.com with ESMTPSA id n10-20020a05600c4f8a00b0040b4b2a15ebsm4419522wmq.28.2023.11.30.23.40.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Nov 2023 23:40:43 -0800 (PST)
-From:   "Jorge Ramirez-Ortiz, Foundries" <jorge@foundries.io>
-X-Google-Original-From: "Jorge Ramirez-Ortiz, Foundries" <JorgeRamirez-Ortiz>
-Date:   Fri, 1 Dec 2023 08:40:42 +0100
-To:     "Jorge Ramirez-Ortiz, Foundries" <jorge@foundries.io>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>, CLoehle@hyperstone.com,
-        jinpu.wang@ionos.com, hare@suse.de,
-        Ulf Hansson <ulf.hansson@linaro.org>, beanhuo@micron.com,
-        yangyingliang@huawei.com, asuk4.q@gmail.com, yibin.ding@unisoc.com,
-        victor.shih@genesyslogic.com.tw, marex@denx.de,
-        rafael.beims@toradex.com, robimarko@gmail.com,
-        ricardo@foundries.io, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv2] mmc: rpmb: add quirk MMC_QUIRK_BROKEN_RPMB_RETUNE
-Message-ID: <ZWmN+k+wUWcXT5ID@trax>
-References: <20231129160533.2827458-1-jorge@foundries.io>
- <CAPDyKFpg+7W1ODGHw5oXy_wzWA1Qqzg9w_12rhQ8qW4o--6dWg@mail.gmail.com>
- <ZWiNDgUFF8ug7gZf@trax>
- <fbc82848-d402-4075-8176-de9ed0345d78@intel.com>
- <ZWkGZ7av1S4Clwdv@trax>
- <ZWkKgU+J9atnJdqT@trax>
+        Fri, 1 Dec 2023 02:41:02 -0500
+Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2070.outbound.protection.outlook.com [40.107.215.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CA131719;
+        Thu, 30 Nov 2023 23:41:08 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=N/CG6nBMxLFP8+JHXrMuBKu9wRG7YgyF2xrgNVQYToVqcLErar19aiynLHwMaxpF29FE+JbqakRBRpNCfbJfvNI8r76sbmU+qWM6es4I5iHsMMv6uOJHL8/riHylB2x+aw2JZh8JPa+YJW/JgWXhZ8W6Nd6xDX5Ny7dixoZianYBmN3tQkS8Y4Lo/R5k6EOFcksJmrgNpTVljaBtrR3cHc5sQDo+nJZg5vUIjUafRGqNjB1f9YclBjsp52/JgCSgeSQjE+pcxQ9MRpwWiW4mO4P2rj7Svly17gfDi7hG//LDnJrfSFLYqtzLdAAuer5PcIy7UG+TeNNWvWygfTCFiQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=V5C9lgpJnMN8K9fCXg/F/q0bjyuXeXT4SOfMDaTjRgs=;
+ b=Wkxi3HdIIg5v3UNKRurhl42eybN2dltRpTMaE2jDd/8LH/pasHqmULEfd+uSrNIQdk6cWbhsgAAF5/uL8bQRZWRlXMRTTH/8z99renWLjdBwvSdG3t9Q0IYKlMt2VdccRYobAYOOlJ65AKBqeLoooddLX487pYJKmoIfcActIf1U/msOpxBZQfbpYbF3y1pPbuil/itwEomX/E12NbVD2aUq6J/gJUptD9vfO4+q387Oj8qD2oksRKzAuobRJkCrZkxRpYnucxtgCO/cCtxXjkqg/IyJhuYSrocm1wAC4ktrdwCYDewoZvwikd4REAo832keOh8oj8K5VlQKaYg8DQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=moxa.com; dmarc=pass action=none header.from=moxa.com;
+ dkim=pass header.d=moxa.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=moxa.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=V5C9lgpJnMN8K9fCXg/F/q0bjyuXeXT4SOfMDaTjRgs=;
+ b=ASYBC4AmV9SfJFDddFsJXgfnyZAl+4BlHG1DwbzsH3D/lBfeHMSv9EZRskF4BwtIPl1tb2T+UWnB2TXsW6qFj6ESsetZOi4veDBGvDKztWw7sddMdL3WPQmk23TaTmj4kDKPe4n+6a7aNfOB1sN7FlbT6xg+hZ+opSsIC67L6dg=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=moxa.com;
+Received: from PUZPR01MB5405.apcprd01.prod.exchangelabs.com
+ (2603:1096:301:115::14) by SI6PR01MB6633.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:243::13) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.26; Fri, 1 Dec
+ 2023 07:41:04 +0000
+Received: from PUZPR01MB5405.apcprd01.prod.exchangelabs.com
+ ([fe80::1023:2132:c05e:ea6b]) by PUZPR01MB5405.apcprd01.prod.exchangelabs.com
+ ([fe80::1023:2132:c05e:ea6b%2]) with mapi id 15.20.7046.015; Fri, 1 Dec 2023
+ 07:41:04 +0000
+From:   Crescent CY Hsieh <crescentcy.hsieh@moxa.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        Crescent CY Hsieh <crescentcy.hsieh@moxa.com>
+Subject: [RESEND PATCH] tty: serial: 8250: Fix MOXA RS422/RS485 PCIe boards not work by default
+Date:   Fri,  1 Dec 2023 15:40:55 +0800
+Message-Id: <20231201074055.259207-1-crescentcy.hsieh@moxa.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: TYCP286CA0282.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:400:3c9::9) To PUZPR01MB5405.apcprd01.prod.exchangelabs.com
+ (2603:1096:301:115::14)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZWkKgU+J9atnJdqT@trax>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PUZPR01MB5405:EE_|SI6PR01MB6633:EE_
+X-MS-Office365-Filtering-Correlation-Id: 905329d0-6870-4071-3e7d-08dbf240df24
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 9B9dEfMSTX4yL810E3JZFLqe4giorzEPxoTIDmJY7rB/wgb0ABMyC3zZeXVCTZQZxXDjH7Lt+BZxWDefK/Jka/FjP0jsKMbqhRO74ADBzaoONg5+CN68TBFeJTs59cffIa8bdJI8PCXHjDoYdn7kcRekSQokPZuRAMzxx9U4TwCtsf96gpi4wj5X56sJGNDYkhprPZE0My3b7RkFaBXCZdrKtXr0Xceo9gWkOLxZDuOlwJh/lc66xenHVNPMQnISAfaOSehc1BbypwoCm9hsjP0ufzpvtbu2LTwRfWUCDqYLBt0rJ680ec/J30EZNJJq6kjiJr6QBBkgraMKUs3azoZsHOAJAArxd3Iunu9sfmg0g7iRHnnkbsX5FLaPMkyYuDfxLEgTcFYRydSTe3RYbTrdnIxK3lRv55fCuG86hzrjEa78PW7QGi1l8VuGCStnVdd7gY4ZxHHLLe4PS85oy1mJXNT4M90VepwKA8rUgLvbuBTuFP7XR8v5G1J7G78ctWEZK61KSxCf/5RwfiWFK/Mqs7CMJjeCK1CG0yyhhM5ilZlNpYkJ4ylEKyQ7SVf+iyivKCRc9nfa3OANepzEG1LNtRegLj9dFEBJFMlfvEvmP0i9UCY9XCnJjDxqD4jl
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PUZPR01MB5405.apcprd01.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(39850400004)(376002)(396003)(136003)(366004)(346002)(230922051799003)(1800799012)(451199024)(64100799003)(186009)(107886003)(6666004)(6512007)(2616005)(26005)(1076003)(41300700001)(52116002)(83380400001)(478600001)(110136005)(6506007)(6486002)(8676002)(316002)(4326008)(66476007)(66946007)(8936002)(66556008)(38100700002)(86362001)(36756003)(2906002)(5660300002)(38350700005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?LjW0fyv1xQqhnGfeRNzNURfXyhBsWEDpHJI0febtiwt/6+ez/uIfoz4XaoCO?=
+ =?us-ascii?Q?guaNe9k7qVfghIHJCqMCe7lT95eh3l79IMfGtGDUz989PS6GHGb4S8OJKto0?=
+ =?us-ascii?Q?i+v0ZlFRLAJhJ1Et5VTd02mwJeQ0taud9jCcudemSzSMILKxZaYnPfwrR5U8?=
+ =?us-ascii?Q?b9v1QgFC9ywVtwCJBaoyBOhArx2jJeqbXf89+YwEit6HZ2qWCUHBjfUTIG1m?=
+ =?us-ascii?Q?Li0IY53O1ujOXCG2Qg8OmoizLKdFc7GaRUV1hVuhdJJ7nN08GikvLfXNf+2Z?=
+ =?us-ascii?Q?jVabuTd1l3UtMNQ9EJBfvUH5cm539zz0ilHKaoAnRvJOvvGXUf8tGvJL8Qem?=
+ =?us-ascii?Q?1Jk+u9CaECk02P1t/xulN/XifrTa3HPqpKPCyT0iV6YDtWQrC+/Yh+NnIQhY?=
+ =?us-ascii?Q?44Xv4BDicv5pdof2OTpPkyELYlLzJAwYxYliVWMJ+ogrmqjUj4udIfoO0FWV?=
+ =?us-ascii?Q?pQdK43dz0lyddzb5V8SsU/+3cz5RjIZTtdBjnVmazIg+1rx63fJF3XlOkhQi?=
+ =?us-ascii?Q?vmaaWoOBg5R6nOlDWOR+rwASxCcAQdLm0iLVXvnpSmlFa0NVihDQL0Ypzn6E?=
+ =?us-ascii?Q?GJD/9zJXEHo8j4pWRaLtszm2YFL8LNm9QQN5i7DjumJzNB3Jh1g8X0Pe6fl+?=
+ =?us-ascii?Q?yu3B4qpJqMucbfWMre5pA99jNTYnQEsGr7hkJNzqEuCGoDglDSrpFZX72eCR?=
+ =?us-ascii?Q?gouW5VSByNbdWGRdmaZgesMOBAnU+c6Jr6h5YhzoZp/UtxdzFB5rxhIxJ6mj?=
+ =?us-ascii?Q?3vP57Axqc4ZOkm/0K9/iMOJ7CgvmDTa+0lPFXrwUor9pJnMFhAW/S5B0d9Wv?=
+ =?us-ascii?Q?9QxBUxpPzMfrduS3+rUZ9YbqQnGA+wA5PTZeWWph1kor2lUUMbdDPc1AXMkE?=
+ =?us-ascii?Q?2khuVUoWIJ85xcXrkcm8FCSBIGXZLA/DKXmw35s1/GZOONL8Hxx3H0pQ8PZR?=
+ =?us-ascii?Q?EbQuv24X/HvjDlMzLpZYgOtJd0OYavykoaSCSg1lWcmKokn88PhWPZU6W9Qs?=
+ =?us-ascii?Q?1MVgJSufNN+1iTTFHzDS7fk6Onc01Rr/gWs2FmiNHPFhRF1E4kfmxJTUBpJW?=
+ =?us-ascii?Q?no/ZhEwXcZMu9C4+l8yL1zRLtVaNkOIiCDPewwssNB8tqevHyf9B4tds1hgx?=
+ =?us-ascii?Q?c0xhJwmxo78g5xUiwJYG4uSijQwjMVF9mEe87xWluUrv16LpqM4qGpZzr6Sc?=
+ =?us-ascii?Q?digm8ehkxIQBZGFkFrr9nSE5aSf3ZBUpcyeo2dysS3e3lO5L8fO4QYBYmPds?=
+ =?us-ascii?Q?UhVz9dTJsiLshRoe39goP9bEBhqDj2VkY8m5uxhA/DgClgr6hxTMB9DahaYK?=
+ =?us-ascii?Q?P9MGm4pMo43gfcDXCsjr1vXKdQmKmZmouG04I1oXQIHsrwdWdhJ+JTYaijM+?=
+ =?us-ascii?Q?sxhwxbxB5aS65yD6kMBvwiWo0bH8L2b9K5K9hH3+c0bc7Svrg72+7qASWeOm?=
+ =?us-ascii?Q?yJLotR/ybqrWNCxzyHBng6kK8rxubHlvPBZRqMHovN3UaTXsUJZHGCD/u67m?=
+ =?us-ascii?Q?q92Hc9L86D7oH80vCQQjg8t7q9wAWLQCLeycAkqyJVYezbGKx+2KLCBhYLrB?=
+ =?us-ascii?Q?gPZK/gGIZQjobRpJDsf4zIX4PXaJB0pL41xoDkKFy6Y7NC0d40c3UY2owjaH?=
+ =?us-ascii?Q?oA=3D=3D?=
+X-OriginatorOrg: moxa.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 905329d0-6870-4071-3e7d-08dbf240df24
+X-MS-Exchange-CrossTenant-AuthSource: PUZPR01MB5405.apcprd01.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Dec 2023 07:41:04.0284
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 5571c7d4-286b-47f6-9dd5-0aa688773c8e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 4UUzUFREZgQ7ftpW8+mSSv93SGv4dqBRBFvBapc+5ZW5fOYUIru59lAjl8OTj+wS1izqmryJDj1n4MKbt4B7C1zBLpYFQvwIMLhHauN4wx4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SI6PR01MB6633
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/11/23 23:19:45, Jorge Ramirez-Ortiz, Foundries wrote:
-> On 30/11/23 23:02:15, Jorge Ramirez-Ortiz, Foundries wrote:
-> > On 30/11/23 21:12:28, Adrian Hunter wrote:
-> > > On 30/11/23 15:24, Jorge Ramirez-Ortiz, Foundries wrote:
-> > > > On 30/11/23 11:34:18, Ulf Hansson wrote:
-> > > >> On Wed, 29 Nov 2023 at 17:05, Jorge Ramirez-Ortiz <jorge@foundries.io> wrote:
-> > > >>>
-> > > >>> On the eMMC SanDisk iNAND 7250 configured with HS200, requesting a
-> > > >>> re-tune before switching to the RPMB partition would randomly cause
-> > > >>> subsequent RPMB requests to fail with EILSEQ:
-> > > >>> * data error -84, tigggered in __mmc_blk_ioctl_cmd()
-> > > >>>
-> > > >>> This commit skips the retune when switching to RPMB.
-> > > >>> Tested over several days with per minute RPMB reads.
-> > > >>
-> > > >> This sounds weird to me and needs more testing/debugging in my
-> > > >> opinion, especially at the host driver level. Perhaps add some new
-> > > >> tests in mmc_test, that does a partition switch to/from any partition
-> > > >> and then run regular I/O again to see if the problem is easier to
-> > > >> reproduce?
-> > > >
-> > > > hi Uffe
-> > > >
-> > > > ok I'll have a look - I have never used this driver before, so if you
-> > > > have anything in the works I'll be glad to integrated and adapt.
-> > > >
-> > > >>
-> > > >> The point is, I wonder what is so special with RPMB here? Note that,
-> > > >> it has been quite common that host drivers/controllers have had issues
-> > > >> with their tuning support, so I would not be surprised if that is the
-> > > >> case here too.
-> > > >
-> > > > Right, it is just that the tuning function for of-arasan is the generic
-> > > > __sdhci_execute_tuning() - only wrapped around arasan DLL reset
-> > > > calls. Hence why I aimed for the card: __sdhci_execute_tuning and ZynqMP
-> > > > are not recent functions or architectures.
-> > > >
-> > > >
-> > > >> Certainly I would be surprised if the problem is at
-> > > >> the eMMC card side, but I may be wrong.
-> > > >
-> > > > How do maintainers test the tuning methods? is there anything else for
-> > > > me to do other than forcing a retune with different partitions?
-> > > >
-> > > >>
-> > > >> Kind regards
-> > > >> Uffe
-> > > >
-> > > > For completeness this is the error message - notice that we have a
-> > > > trusted application (fiovb) going through OP-TEE and back to the TEE
-> > > > supplicant issuing an rpmb read of a variable (pretty normal these days,
-> > > > we use it on many different platforms - ST, NXP, AMD/Xilinx, TI..).
-> > > >
-> > > > The issue on this Zynqmp platform is scarily simple to reproduce; you
-> > > > can ignore the OP-TEE trace, it is just the TEE way of reporting that
-> > > > the RPMB read failed.
-> > > >
-> > > > root@uz3cg-dwg-sec:/var/rootdirs/home/fio# fiovb_printenv m4hash
-> > > > [  461.775084] sdhci-arasan ff160000.mmc: __mmc_blk_ioctl_cmd: data error -84
-> > > > E/TC:? 0
-> > > > E/TC:? 0 TA panicked with code 0xffff0000
-> > > > E/LD:  Status of TA 22250a54-0bf1-48fe-8002-7b20f1c9c9b1
-> > > > E/LD:   arch: aarch64
-> > > > E/LD:  region  0: va 0xc0004000 pa 0x7e200000 size 0x002000 flags rw-s (ldelf)
-> > > > E/LD:  region  1: va 0xc0006000 pa 0x7e202000 size 0x008000 flags r-xs (ldelf)
-> > > > E/LD:  region  2: va 0xc000e000 pa 0x7e20a000 size 0x001000 flags rw-s (ldelf)
-> > > > E/LD:  region  3: va 0xc000f000 pa 0x7e20b000 size 0x004000 flags rw-s (ldelf)
-> > > > E/LD:  region  4: va 0xc0013000 pa 0x7e20f000 size 0x001000 flags r--s
-> > > > E/LD:  region  5: va 0xc0014000 pa 0x7e22c000 size 0x005000 flags rw-s (stack)
-> > > > E/LD:  region  6: va 0xc0019000 pa 0x816b31fc8 size 0x001000 flags rw-- (param)
-> > > > E/LD:  region  7: va 0xc001a000 pa 0x816aa1fc8 size 0x002000 flags rw-- (param)
-> > > > E/LD:  region  8: va 0xc006b000 pa 0x00001000 size 0x014000 flags r-xs [0]
-> > > > E/LD:  region  9: va 0xc007f000 pa 0x00015000 size 0x008000 flags rw-s [0]
-> > > > E/LD:   [0] 22250a54-0bf1-48fe-8002-7b20f1c9c9b1 @ 0xc006b000
-> > > > E/LD:  Call stack:
-> > > > E/LD:   0xc006de58
-> > > > E/LD:   0xc006b388
-> > > > E/LD:   0xc006ed40
-> > > > E/LD:   0xc006b624
-> > > > Read persistent value for m4hash failed: Exec format error
-> > >
-> > > Have you tried dynamic debug for mmc
-> > >
-> > >     Kernel must be configured:
-> > >
-> > >         CONFIG_DYNAMIC_DEBUG=y
-> > >
-> > >     To enable mmc debug via sysfs:
-> > >
-> > >         echo 'file drivers/mmc/core/* +p' > /sys/kernel/debug/dynamic_debug/control
-> > >         echo 'file drivers/mmc/host/* +p' > /sys/kernel/debug/dynamic_debug/control
-> > >
-> > >
-> >
-> > hi Adrian
-> >
-> > Sure, this is the output of the trace:
-> >
-> > [  422.018756] mmc0: sdhci: IRQ status 0x00000020
-> > [  422.018789] mmc0: sdhci: IRQ status 0x00000020
-> > [  422.018817] mmc0: sdhci: IRQ status 0x00000020
-> > [  422.018848] mmc0: sdhci: IRQ status 0x00000020
-> > [  422.018875] mmc0: sdhci: IRQ status 0x00000020
-> > [  422.018902] mmc0: sdhci: IRQ status 0x00000020
-> > [  422.018932] mmc0: sdhci: IRQ status 0x00000020
-> > [  422.020013] mmc0: sdhci: IRQ status 0x00000001
-> > [  422.020027] mmc0: sdhci: IRQ status 0x00000002
-> > [  422.020034] mmc0: req done (CMD6): 0: 00000800 00000000 00000000 00000000
-> > [  422.020054] mmc0: starting CMD13 arg 00010000 flags 00000195
-> > [  422.020068] mmc0: sdhci: IRQ status 0x00000001
-> > [  422.020076] mmc0: req done (CMD13): 0: 00000900 00000000 00000000 00000000
-> > [  422.020092] <mmc0: starting CMD23 arg 00000001 flags 00000015>
-> > [  422.020101] mmc0: starting CMD25 arg 00000000 flags 00000035
-> > [  422.020108] mmc0:     blksz 512 blocks 1 flags 00000100 tsac 400 ms nsac 0
-> > [  422.020124] mmc0: sdhci: IRQ status 0x00000001
-> > [  422.021671] mmc0: sdhci: IRQ status 0x00000002
-> > [  422.021691] mmc0: req done <CMD23>: 0: 00000000 00000000 00000000 00000000
-> > [  422.021700] mmc0: req done (CMD25): 0: 00000900 00000000 00000000 00000000
-> > [  422.021708] mmc0:     512 bytes transferred: 0
-> > [  422.021728] mmc0: starting CMD13 arg 00010000 flags 00000195
-> > [  422.021743] mmc0: sdhci: IRQ status 0x00000001
-> > [  422.021752] mmc0: req done (CMD13): 0: 00000900 00000000 00000000 00000000
-> > [  422.021771] <mmc0: starting CMD23 arg 00000001 flags 00000015>
-> > [  422.021779] mmc0: starting CMD18 arg 00000000 flags 00000035
-> > [  422.021785] mmc0:     blksz 512 blocks 1 flags 00000200 tsac 100 ms nsac 0
-> > [  422.021804] mmc0: sdhci: IRQ status 0x00000001
-> > [  422.022566] mmc0: sdhci: IRQ status 0x00208000 <---------------------------------- this doesnt seem right
-> > [  422.022629] mmc0: req done <CMD23>: 0: 00000000 00000000 00000000 00000000
-> > [  422.022639] mmc0: req done (CMD18): 0: 00000900 00000000 00000000 00000000
-> > [  422.022647] mmc0:     0 bytes transferred: -84 < --------------------------------- it should have transfered 4096 bytes
-> > [  422.022669] sdhci-arasan ff160000.mmc: __mmc_blk_ioctl_cmd: data error -84
-> > [  422.029619] mmc0: starting CMD6 arg 03b30001 flags 0000049d
-> > [  422.029636] mmc0: sdhci: IRQ status 0x00000001
-> > [  422.029652] mmc0: sdhci: IRQ status 0x00000002
-> > [  422.029660] mmc0: req done (CMD6): 0: 00000800 00000000 00000000 00000000
-> > [  422.029680] mmc0: starting CMD13 arg 00010000 flags 00000195
-> > [  422.029693] mmc0: sdhci: IRQ status 0x00000001
-> > [  422.029702] mmc0: req done (CMD13): 0: 00000900 00000000 00000000 00000000
-> > [  422.196996] <mmc0: starting CMD23 arg 00000400 flags 00000015>
-> > [  422.197051] mmc0: starting CMD25 arg 058160e0 flags 000000b5
-> > [  422.197079] mmc0:     blksz 512 blocks 1024 flags 00000100 tsac 400 ms nsac 0
-> > [  422.197110] mmc0:     CMD12 arg 00000000 flags 0000049d
-> > [  422.199455] mmc0: sdhci: IRQ status 0x00000020
-> > [  422.199526] mmc0: sdhci: IRQ status 0x00000020
-> > [  422.199585] mmc0: sdhci: IRQ status 0x00000020
-> > [  422.199641] mmc0: sdhci: IRQ status 0x00000020
-> > [  422.199695] mmc0: sdhci: IRQ status 0x00000020
-> > [  422.199753] mmc0: sdhci: IRQ status 0x00000020
-> > [  422.199811] mmc0: sdhci: IRQ status 0x00000020
-> > [  422.199865] mmc0: sdhci: IRQ status 0x00000020
-> > [  422.199919] mmc0: sdhci: IRQ status 0x00000020
-> > [  422.199972] mmc0: sdhci: IRQ status 0x00000020
-> > [  422.200026] mmc0: sdhci: IRQ status 0x00000020
-> >
-> >
-> > does this help?
+MOXA PCIe RS422/RS485 boards will not function by default because of the
+initial default serial interface of all MOXA PCIe boards is set to
+RS232.
 
-Just asking because it doesn't mean much to me other than the obvious CRC
-problem.
+This patch fixes the problem above by setting the initial default serial
+interface to RS422 for those MOXA RS422/RS485 PCIe boards.
 
-Being this issue so easy to trigger - and to fix - indicates a problem
-on the card more than on the algorithm (otherwise faults would be all
-over the place). But I am not an expert on this area.
+Signed-off-by: Crescent CY Hsieh <crescentcy.hsieh@moxa.com>
+Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
+---
+ drivers/tty/serial/8250/8250_pci.c | 58 +++++++++++++++++++++++++++++-
+ 1 file changed, 57 insertions(+), 1 deletion(-)
 
-any additional suggestions welcome.
+diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/8250/8250_pci.c
+index b2be3783f..66a2450da 100644
+--- a/drivers/tty/serial/8250/8250_pci.c
++++ b/drivers/tty/serial/8250/8250_pci.c
+@@ -19,6 +19,7 @@
+ #include <linux/serial_core.h>
+ #include <linux/8250_pci.h>
+ #include <linux/bitops.h>
++#include <linux/bitfield.h>
+ 
+ #include <asm/byteorder.h>
+ #include <asm/io.h>
+@@ -1968,6 +1969,20 @@ pci_sunix_setup(struct serial_private *priv,
+ 
+ #define MOXA_GPIO_PIN2	BIT(2)
+ 
++#define MOXA_RS232	0x00
++#define MOXA_RS422	0x01
++#define MOXA_RS485_4W	0x0B
++#define MOXA_RS485_2W	0x0F
++#define MOXA_UIR_OFFSET	0x04
++#define MOXA_EVEN_RS_MASK	GENMASK(3, 0)
++#define MOXA_ODD_RS_MASK	GENMASK(7, 4)
++
++enum {
++	MOXA_SUPP_RS232 = BIT(0),
++	MOXA_SUPP_RS422 = BIT(1),
++	MOXA_SUPP_RS485 = BIT(2),
++};
++
+ static bool pci_moxa_is_mini_pcie(unsigned short device)
+ {
+ 	if (device == PCI_DEVICE_ID_MOXA_CP102N	||
+@@ -1981,13 +1996,54 @@ static bool pci_moxa_is_mini_pcie(unsigned short device)
+ 	return false;
+ }
+ 
++u32 pci_moxa_supported_rs(struct pci_dev *dev)
++{
++	switch (dev->device & 0x0F00) {
++	case 0x0000:
++	case 0x0600:
++		return MOXA_SUPP_RS232;
++	case 0x0100:
++		return MOXA_SUPP_RS232 | MOXA_SUPP_RS422 | MOXA_SUPP_RS485;
++	case 0x0300:
++		return MOXA_SUPP_RS422 | MOXA_SUPP_RS485;
++	}
++	return 0;
++}
++
++static int pci_moxa_set_interface(const struct pci_dev *dev,
++				  unsigned int port_idx,
++				  u8 mode)
++{
++	resource_size_t iobar_addr = pci_resource_start(dev, 2);
++	resource_size_t UIR_addr = iobar_addr + MOXA_UIR_OFFSET + port_idx / 2;
++	u8 val;
++
++	val = inb(UIR_addr);
++
++	if (port_idx % 2) {
++		val &= ~MOXA_ODD_RS_MASK;
++		val |= FIELD_PREP(MOXA_ODD_RS_MASK, mode);
++	} else {
++		val &= ~MOXA_EVEN_RS_MASK;
++		val |= FIELD_PREP(MOXA_EVEN_RS_MASK, mode);
++	}
++	outb(val, UIR_addr);
++
++	return 0;
++}
++
+ static int pci_moxa_init(struct pci_dev *dev)
+ {
+ 	unsigned short device = dev->device;
+ 	resource_size_t iobar_addr = pci_resource_start(dev, 2);
+-	unsigned int num_ports = (device & 0x00F0) >> 4;
++	unsigned int num_ports = (device & 0x00F0) >> 4, i;
+ 	u8 val;
+ 
++	if (!(pci_moxa_supported_rs(dev) & MOXA_SUPP_RS232)) {
++		for (i = 0; i < num_ports; ++i)
++			pci_moxa_set_interface(dev, i, MOXA_RS422);
++	}
++
+ 	/*
+ 	 * Enable hardware buffer to prevent break signal output when system boots up.
+ 	 * This hardware buffer is only supported on Mini PCIe series.
+-- 
+2.34.1
 
-> >
-> > thanks
-> > Jorge
