@@ -2,87 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8804380127E
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 19:19:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA004801282
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 19:20:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379207AbjLASTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 13:19:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44888 "EHLO
+        id S1379201AbjLASU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 13:20:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379181AbjLASTa (ORCPT
+        with ESMTP id S229468AbjLASUY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 13:19:30 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E417012A
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 10:19:35 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-50bd8efb765so1484704e87.1
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 10:19:35 -0800 (PST)
+        Fri, 1 Dec 2023 13:20:24 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02219106
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 10:20:31 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-6cdfee14c24so862975b3a.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 10:20:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1701454774; x=1702059574; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sRNx8XSp+rNad6wmKaHqg85aiDCSXnZuwfkrOtNdpoU=;
-        b=BA5D7Scf9lzSuxlprNbBwCdU81krcAXNl6a4S7VfjX6bEkPE4RcivDTvF4kaBiPjIp
-         YpXdupAzMHUGLpBbJfWPlW4jKFpLEYrHvW+MaWjXbXF5jHWcC/Uim+bkrCeY0qnAUnoi
-         EQuVDwgD5PreubhiE6cBNT69OJJNv4Uhk55jfms1EyLlNwRZBHglcAG2L8QIiqlSJdy6
-         vfTO7dgjvhNT1gp747DE7btfYS3q4VFWxqi33pWqELXET3wOny3tcevOhH0zgeEQ4WXX
-         KUPYoH961I2P4N8Va6z6I5eem7xvTx/Z7Ewm7B47EbawWyIUidRJKkaEjYcNsSMIg4yO
-         kBEA==
+        d=chromium.org; s=google; t=1701454830; x=1702059630; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=6FH0TcrjcnuCcZhjexfAuu7+PxcUWEk5ugjeQLcg8YU=;
+        b=Yi1v/4XgjPjmzmxX7Ay50OHL2ufSIr+m2qFwG91eDb22CI/nQjeOaJe23mZI0FvMmR
+         nOxZ2BUhBobhumC0YMGvBAcy13YAECeX5iOWfPhKl3S4Je8GOH3tS5yUZ7Xxr1WOP0mp
+         wL4pZgma2yqC7I2XBVd2PtEzVhYKySm0Nev08=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701454774; x=1702059574;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sRNx8XSp+rNad6wmKaHqg85aiDCSXnZuwfkrOtNdpoU=;
-        b=FluTHDN/e02GE3XUj+6P+Fu1zJInJ1kvWzEb0IIBgV2eQqEfq0SYxBE+yI+GBlO8Sc
-         X4bLGEkN6+MQuuo2HhtfAJuS7lOYLvFSXFR+5b7eC8qcvO1VU+9TUtjTfyLXDN7nAtWG
-         T7ZvMwQTBIQbQqd0+GhLI/NKDdSACN7HAjJobJbyO3XKXORuRNcY3jsPACnUQlnQ5rta
-         qCTbm6GDk1hDRTzgSgVUvs0b5ktugIP2EgxnbK5F/gZ96W24jHUEZNj84aYE31GfvCa9
-         ravQx/rOP958OqTFIZxfgf4sYUA9FBC4Rdm0ZSEj9xJReM93v56lamfokdsmi9y+bM/i
-         NTUg==
-X-Gm-Message-State: AOJu0Yy8KBWfXeJo6jMRJ4kICkGpWWQm5aTWpWONfEVK6+wlPaw1YRCA
-        I4ehIXbcWo0fQBXLGbiV2cekSXPtjlt1AHlb76O3zg==
-X-Google-Smtp-Source: AGHT+IEOPydh3is0A9u1QqwKnUn0BBk8fQSGt66RzZiVp8poYynp8cdiZswRdYGUYlw+N0X8qb2brdkVzhIO9rAMA38=
-X-Received: by 2002:a2e:b0f7:0:b0:2c9:d862:c652 with SMTP id
- h23-20020a2eb0f7000000b002c9d862c652mr1076937ljl.63.1701454774162; Fri, 01
- Dec 2023 10:19:34 -0800 (PST)
-MIME-Version: 1.0
-References: <ZWobMUp22oTpP3FW@debian.debian> <CANn89iLLnXVBvajLA-FLwBSN4uRNZKJYAvwvKEymGsvOQQJs1A@mail.gmail.com>
-In-Reply-To: <CANn89iLLnXVBvajLA-FLwBSN4uRNZKJYAvwvKEymGsvOQQJs1A@mail.gmail.com>
-From:   Yan Zhai <yan@cloudflare.com>
-Date:   Fri, 1 Dec 2023 12:19:23 -0600
-Message-ID: <CAO3-Pbq04ZphnB42bSoVDc8sgQ+GbRaqPtXOscsSMC5tXm8UdA@mail.gmail.com>
-Subject: Re: [PATCH v2 net-next] packet: add a generic drop reason for receive
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
+        d=1e100.net; s=20230601; t=1701454830; x=1702059630;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6FH0TcrjcnuCcZhjexfAuu7+PxcUWEk5ugjeQLcg8YU=;
+        b=X28HwDBMLDfbF9rVzy1KwYSk7qBg1dI4abYXva+FPXiRexsLLZan0BLjdyU1Gc9Crb
+         UDE66bX81YORo8NVV6Ba98otiI79zg+kQvDB19zjxwINVlpl46OG58tzTxezOlLL94Ii
+         PiyiBue0kxlF0nBfCVyMpP61JbwC4W/CFofFrVicz1F3P5QKjV+ZjsBqDJ99erYiCcvo
+         OtTiItXM60bqvsk82DZaPCevPwbGGZuFjX+c6EH/DVSlC/6m4AIHKBL+ukdHba4ksnaS
+         2ZmZRz6bUYtaCYG5yOMvUguf92Dvl+LwpeFDMvmd27Lyums3zJtyKkw9iir0qqHWgE8O
+         hdDQ==
+X-Gm-Message-State: AOJu0Yw+cfeR9F5m0gTdHxXf0cITpdNl6WTEmOWhqkxoxlf/Gp7W7vxX
+        d+Ma/28s9Pg8fVLmFqp0hDwJsQ==
+X-Google-Smtp-Source: AGHT+IHmo+dAmB2azgLcLmANp8ELoQuOdQvcO3kAua9TsyV23+hBWe1Ep5gppWgWzdtq/+AMt8jsyA==
+X-Received: by 2002:a05:6a00:2293:b0:6ce:d04:2b46 with SMTP id f19-20020a056a00229300b006ce0d042b46mr1441149pfe.25.1701454830520;
+        Fri, 01 Dec 2023 10:20:30 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id k18-20020a6568d2000000b005c1ae0b5440sm3011950pgt.74.2023.12.01.10.20.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Dec 2023 10:20:30 -0800 (PST)
+Date:   Fri, 1 Dec 2023 10:20:29 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Shay Agroskin <shayagr@amazon.com>,
+        Arthur Kiyanovski <akiyano@amazon.com>,
+        David Arinzon <darinzon@amazon.com>,
+        Noam Dagan <ndagan@amazon.com>,
+        Saeed Bishara <saeedb@amazon.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
         Paolo Abeni <pabeni@redhat.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        linux-kernel@vger.kernel.org, kernel-team@cloudflare.com,
-        Jesper Brouer <jesper@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Justin Stitt <justinstitt@google.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] net: ena: replace deprecated strncpy with strscpy
+Message-ID: <202312011019.A40455F@keescook>
+References: <20231005-strncpy-drivers-net-ethernet-amazon-ena-ena_netdev-c-v1-1-ba4879974160@google.com>
+ <170138158571.3648714.3841499997574845448.b4-ty@chromium.org>
+ <20231130224134.73652d71@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231130224134.73652d71@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 1, 2023 at 11:51=E2=80=AFAM Eric Dumazet <edumazet@google.com> =
-wrote:
->
-> >         bool is_drop_n_account =3D false;
->
-> Why keeping is_drop_n_account  then ?
+On Thu, Nov 30, 2023 at 10:41:34PM -0800, Jakub Kicinski wrote:
+> On Thu, 30 Nov 2023 13:59:48 -0800 Kees Cook wrote:
+> > [1/1] net: ena: replace deprecated strncpy with strscpy
+> >       https://git.kernel.org/kees/c/111f5a435d33
+> 
+> Again, please drop, Arthur requested for the commit message
+> to be changed.
 
-Good catch, thanks! Will send a v3 to fix up.
-Meanwhile, I noticed it is compiled with the
--Wno-unused-but-set-variable flag, is there a reason why we disable
-this warning?
+Dropped, though I did change the commit message in the pulled commit.
 
-Yan
+Justin, can you send a v2 with the commit change? Then it can go through
+regular netdev machinery?
+
+-- 
+Kees Cook
