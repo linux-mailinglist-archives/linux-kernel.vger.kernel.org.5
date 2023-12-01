@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01EBD8006DF
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 10:27:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8D498006DE
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 10:27:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378018AbjLAJ1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 04:27:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54358 "EHLO
+        id S1378114AbjLAJ1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 04:27:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378055AbjLAJ1W (ORCPT
+        with ESMTP id S1378047AbjLAJ1W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 1 Dec 2023 04:27:22 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3A521725
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 01:27:15 -0800 (PST)
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7992E172E
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 01:27:16 -0800 (PST)
 From:   Anna-Maria Behnsen <anna-maria@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1701422834;
+        s=2020; t=1701422835;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=nZi/SXfoi2GICSzM+IYBAVSlO8Hm1DXEFr76jQHYOZ0=;
-        b=lPUu/u3782O76F4tssDfbbwJSu1UYJWRXA1YF1HFvK1m8kbs0zLQsUh/Qrq0SympHt1Xn4
-        fWs6pLLsziRXsDGGtVSkmgIluUmEPyOt49N0oJuW1GpqQsDrQiTwLCGHDYPxL2sHNl8pO8
-        uZrfXgDRa3Soql/IDz++WAZHigpe67VrkWm7MrhlkMdDJb1cuTVJRBpNVrj0k0qs67dVi3
-        SnfBc962XKiwdxw27XZSz4hJUgXOfPYnpxuSOBDbSvDj36Sfa0N/0H08AMFC8K3OePFC/t
-        LsAllTQBY9b+fu99vTafsfRYXEb2PxTXLZsynXnrqJJ34TflfOYmg29flJ7ItA==
+        bh=eWAzXEfpMywLlqp587KxIHRrk44Rp7dtxL6JlN1/eF4=;
+        b=nrPDcWG6y+EdgnAwLZJrMGEaTSj4fpLZbHu1F5MYX4pNfm8XwdDmfbaq3+Qfw75U13WXlN
+        Wn/03lvZN5wgl5keYEfUyqe+Ren56ovfCTN73gvsCHyVcgnrOaxR6UU35FeZKoPn9cXLqx
+        HnQJ41b5XrnUqb9KygJlhKObBRbD0CBisK8MgF7pi4EzW1AySz6TKSzWbQeWz/O25sSOGI
+        mUcxSvIcwOCrfPKPMKcjfpRPDQXVMO/6pXJSNwHje+BVCkdOMwdyCG52Y5obMfOKXuqsrz
+        xPK5vVvU53qVkzQ12pNGeND+dF67+YhA8Kfco1uSKz+rFzdJHkWzTHobUjGZJg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1701422834;
+        s=2020e; t=1701422835;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=nZi/SXfoi2GICSzM+IYBAVSlO8Hm1DXEFr76jQHYOZ0=;
-        b=DGxDnst2vjquka22zFxBnL29sukEirkFvC4s2bWFecYQdCP9TQh2tKsQYBTAwCLj3xIhX6
-        heDteX2CRHR+6lAg==
+        bh=eWAzXEfpMywLlqp587KxIHRrk44Rp7dtxL6JlN1/eF4=;
+        b=ejl4p2jWf2hUodAxU46BdlFPsS0jUview2NzC2fTxisTms7SzXjFDnFPfiT065gMEKHznq
+        UDzdpbW485YF6UAw==
 To:     linux-kernel@vger.kernel.org
 Cc:     Peter Zijlstra <peterz@infradead.org>,
         John Stultz <jstultz@google.com>,
@@ -55,9 +55,9 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
         K Prateek Nayak <kprateek.nayak@amd.com>,
         Anna-Maria Behnsen <anna-maria@linutronix.de>
-Subject: [PATCH v9 12/32] timers: Fix nextevt calculation when no timers are pending
-Date:   Fri,  1 Dec 2023 10:26:34 +0100
-Message-Id: <20231201092654.34614-13-anna-maria@linutronix.de>
+Subject: [PATCH v9 13/32] timers: Restructure get_next_timer_interrupt()
+Date:   Fri,  1 Dec 2023 10:26:35 +0100
+Message-Id: <20231201092654.34614-14-anna-maria@linutronix.de>
 In-Reply-To: <20231201092654.34614-1-anna-maria@linutronix.de>
 References: <20231201092654.34614-1-anna-maria@linutronix.de>
 MIME-Version: 1.0
@@ -72,71 +72,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When no timer is queued into an empty timer base, the next_expiry will not
-be updated. It was originally calculated as
+get_next_timer_interrupt() contains two parts for the next timer interrupt
+calculation. Those two parts are separated by forwarding the base
+clock. But the second part does not depend on the forwarded base
+clock.
 
-  base->clk + NEXT_TIMER_MAX_DELTA
+Therefore restructure get_next_timer_interrupt() to keep things together
+which belong together.
 
-When the timer base stays empty long enough (> NEXT_TIMER_MAX_DELTA), the
-next_expiry value of the empty base suggests that there is a timer pending
-soon. This might be more a kind of a theoretical problem, but the fix
-doesn't hurt.
-
-Use only base->next_expiry value as nextevt when timers are
-pending. Otherwise nextevt will be jiffies + NEXT_TIMER_MAX_DELTA. As all
-information is in place, update base->next_expiry value of the empty timer
-base as well.
+No functional change.
 
 Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
 ---
-v9: New patch
+v9: New patch to eases patch "timers: Split out get next timer functionality"
 ---
- kernel/time/timer.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ kernel/time/timer.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/kernel/time/timer.c b/kernel/time/timer.c
-index 0826018d9873..4dffe966424c 100644
+index 4dffe966424c..9d377ebb7395 100644
 --- a/kernel/time/timer.c
 +++ b/kernel/time/timer.c
-@@ -1922,8 +1922,8 @@ static u64 cmp_next_hrtimer_event(u64 basem, u64 expires)
- u64 get_next_timer_interrupt(unsigned long basej, u64 basem)
- {
- 	struct timer_base *base = this_cpu_ptr(&timer_bases[BASE_STD]);
-+	unsigned long nextevt = basej + NEXT_TIMER_MAX_DELTA;
- 	u64 expires = KTIME_MAX;
--	unsigned long nextevt;
- 
- 	/*
- 	 * Pretend that there is no timer pending if the cpu is offline.
-@@ -1935,7 +1935,6 @@ u64 get_next_timer_interrupt(unsigned long basej, u64 basem)
- 	raw_spin_lock(&base->lock);
+@@ -1936,12 +1936,6 @@ u64 get_next_timer_interrupt(unsigned long basej, u64 basem)
  	if (base->next_expiry_recalc)
  		next_expiry_recalc(base);
--	nextevt = base->next_expiry;
  
- 	/*
- 	 * We have a fresh next event. Check whether we can forward the
-@@ -1944,10 +1943,20 @@ u64 get_next_timer_interrupt(unsigned long basej, u64 basem)
- 	__forward_timer_base(base, basej);
- 
+-	/*
+-	 * We have a fresh next event. Check whether we can forward the
+-	 * base.
+-	 */
+-	__forward_timer_base(base, basej);
+-
  	if (base->timers_pending) {
-+		nextevt = base->next_expiry;
-+
- 		/* If we missed a tick already, force 0 delta */
- 		if (time_before(nextevt, basej))
- 			nextevt = basej;
- 		expires = basem + (u64)(nextevt - basej) * TICK_NSEC;
-+	} else {
-+		/*
-+		 * Move next_expiry for the empty base into the future to
-+		 * prevent a unnecessary raise of the timer softirq when the
-+		 * next_expiry value will be reached even if there is no timer
-+		 * pending.
-+		 */
-+		base->next_expiry = nextevt;
+ 		nextevt = base->next_expiry;
+ 
+@@ -1959,6 +1953,12 @@ u64 get_next_timer_interrupt(unsigned long basej, u64 basem)
+ 		base->next_expiry = nextevt;
  	}
  
++	/*
++	 * We have a fresh next event. Check whether we can forward the
++	 * base.
++	 */
++	__forward_timer_base(base, basej);
++
  	/*
+ 	 * Base is idle if the next event is more than a tick away.
+ 	 *
 -- 
 2.39.2
 
