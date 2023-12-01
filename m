@@ -2,152 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 851778012CC
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 19:31:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EF9D8012B8
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 19:30:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230512AbjLASbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 13:31:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35468 "EHLO
+        id S1379081AbjLASaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 13:30:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379334AbjLASb3 (ORCPT
+        with ESMTP id S229534AbjLASaU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 13:31:29 -0500
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDB58194
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 10:31:34 -0800 (PST)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-6cde14ff73bso1993202b3a.0
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 10:31:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1701455494; x=1702060294; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4QGkTsdRERlNpczcwqSp2Og8v+XNs9gRL2qzJvnknds=;
-        b=NAm7TJYYWKXNyXJQqhfgCjmvkRz0pVGCxouKfwO38mMJeiJ23rVzMICF/GVfMZ8ppf
-         XDm6mJRBLudjMjQjlp47m2wVOs4IifZCBN/9iMaEIbDOoAiAPXb3AFkjVjvVTzWBlTiZ
-         GkP5lpvIVvdufNP1MS3ttUlFaQMJJJEgB4Q1g=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701455494; x=1702060294;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4QGkTsdRERlNpczcwqSp2Og8v+XNs9gRL2qzJvnknds=;
-        b=LDCEHU328gzqq+mHG8TU7bbXMA7B8cHRsTLDy7CMiAOmLgxq46s0YjozfYLs5hXnpY
-         A1nqnAMFOfU6Um4IGut3pR0kvK/Ot/OEnkphztktoI8uyPsP340iunUlYIPgjFP0JL7w
-         lWpHuLFM4mQpM3KPzVhuSJQ+tQYjxbsnQ2sKucA/w3PqBZo56I77Ge4apQ9/jyZGuXcm
-         PYgfOTVy+TQDPDRf+ASORaXCswNXosLhot1teivDaZrUxBmZ5MPmAKHr8Y5XEs7OiapF
-         psW9REALrFtWVsYps9vwIV2a1i3NBsVnBI2RmdqjIB/qHUJro5r6i1Q8gnLW0QKMwP5H
-         vYAA==
-X-Gm-Message-State: AOJu0YzincsHJsW4ZWejqZdr2wXMlB9Ln1Oz0nEaX2YYvXGtWv7q9cZh
-        yz6HWb98elWGZzuWrWTM/sfHyA==
-X-Google-Smtp-Source: AGHT+IEVreiCKxTXFQEfBUwM2+9H3I4ehz8qYButpoJ4w50/BJH9JRBwy33v+a0gi/YRn62yOPKwgg==
-X-Received: by 2002:a05:6a00:430e:b0:6cd:fe6e:ac9b with SMTP id cb14-20020a056a00430e00b006cdfe6eac9bmr3530436pfb.0.1701455494239;
-        Fri, 01 Dec 2023 10:31:34 -0800 (PST)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:9d:2:11eb:92ac:94e:c791])
-        by smtp.gmail.com with ESMTPSA id g11-20020a056a00078b00b006cdda10bdafsm3306926pfu.183.2023.12.01.10.31.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Dec 2023 10:31:33 -0800 (PST)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     linux-usb@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     Grant Grundler <grundler@chromium.org>,
-        Hayes Wang <hayeswang@realtek.com>,
-        Simon Horman <horms@kernel.org>,
-        =?UTF-8?q?Bj=C3=B8rn=20Mork?= <bjorn@mork.no>,
-        netdev@vger.kernel.org, Brian Geffon <bgeffon@google.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Douglas Anderson <dianders@chromium.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH net v2 3/3] r8152: Choose our USB config with choose_configuration() rather than probe()
-Date:   Fri,  1 Dec 2023 10:29:52 -0800
-Message-ID: <20231201102946.v2.3.Ie00e07f07f87149c9ce0b27ae4e26991d307e14b@changeid>
-X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
-In-Reply-To: <20231201183113.343256-1-dianders@chromium.org>
-References: <20231201183113.343256-1-dianders@chromium.org>
+        Fri, 1 Dec 2023 13:30:20 -0500
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00D8E106
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 10:30:22 -0800 (PST)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-64-l9Pbyyc5NbCVu4Mqkqv9Yg-1; Fri, 01 Dec 2023 18:30:13 +0000
+X-MC-Unique: l9Pbyyc5NbCVu4Mqkqv9Yg-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 1 Dec
+ 2023 18:30:05 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Fri, 1 Dec 2023 18:30:05 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Jann Horn' <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
+        "Pavel Begunkov" <asml.silence@gmail.com>,
+        io-uring <io-uring@vger.kernel.org>
+CC:     kernel list <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>
+Subject: RE: io_uring: incorrect assumption about mutex behavior on unlock?
+Thread-Topic: io_uring: incorrect assumption about mutex behavior on unlock?
+Thread-Index: AQHaJHVMNn8At2QRcESH/qhfYed73LCUvC/Q
+Date:   Fri, 1 Dec 2023 18:30:05 +0000
+Message-ID: <811a97651e144b83a35fd7eb713aeeae@AcuMS.aculab.com>
+References: <CAG48ez3xSoYb+45f1RLtktROJrpiDQ1otNvdR+YLQf7m+Krj5Q@mail.gmail.com>
+In-Reply-To: <CAG48ez3xSoYb+45f1RLtktROJrpiDQ1otNvdR+YLQf7m+Krj5Q@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: base64
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If you deauthorize the r8152 device (by writing 0 to the "authorized"
-field in sysfs) and then reauthorize it (by writing a 1) then it no
-longer works. This is because when you do the above we lose the
-special configuration that we set in rtl8152_cfgselector_probe().
-Deauthorizing causes the config to be set to -1 and then reauthorizing
-runs the default logic for choosing the best config.
-
-I made an attempt to fix it so that the config is kept across
-deauthorizing / reauthorizing [1] but it was a bit ugly.
-
-Let's instead use the new USB core feature to override
-choose_configuration().
-
-This patch relies upon the patches ("usb: core: Don't force USB
-generic_subclass drivers to define probe()") and ("usb: core: Allow
-subclassed USB drivers to override usb_choose_configuration()")
-
-[1] https://lore.kernel.org/r/20231130154337.1.Ie00e07f07f87149c9ce0b27ae4e26991d307e14b@changeid
-
-Fixes: ec51fbd1b8a2 ("r8152: add USB device driver for config selection")
-Suggested-by: Alan Stern <stern@rowland.harvard.edu>
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
-
-Changes in v2:
-- ("Choose our USB config with choose_configuration()...) new for v2.
-
- drivers/net/usb/r8152.c | 16 +++++-----------
- 1 file changed, 5 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/net/usb/r8152.c b/drivers/net/usb/r8152.c
-index 2c5c1e91ded6..0da723d11326 100644
---- a/drivers/net/usb/r8152.c
-+++ b/drivers/net/usb/r8152.c
-@@ -10053,7 +10053,7 @@ static struct usb_driver rtl8152_driver = {
- 	.disable_hub_initiated_lpm = 1,
- };
- 
--static int rtl8152_cfgselector_probe(struct usb_device *udev)
-+static int rtl8152_cfgselector_choose_configuration(struct usb_device *udev)
- {
- 	struct usb_host_config *c;
- 	int i, num_configs;
-@@ -10080,19 +10080,13 @@ static int rtl8152_cfgselector_probe(struct usb_device *udev)
- 	if (i == num_configs)
- 		return -ENODEV;
- 
--	if (usb_set_configuration(udev, c->desc.bConfigurationValue)) {
--		dev_err(&udev->dev, "Failed to set configuration %d\n",
--			c->desc.bConfigurationValue);
--		return -ENODEV;
--	}
--
--	return 0;
-+	return c->desc.bConfigurationValue;
- }
- 
- static struct usb_device_driver rtl8152_cfgselector_driver = {
--	.name =		MODULENAME "-cfgselector",
--	.probe =	rtl8152_cfgselector_probe,
--	.id_table =	rtl8152_table,
-+	.name =	MODULENAME "-cfgselector",
-+	.choose_configuration = rtl8152_cfgselector_choose_configuration,
-+	.id_table = rtl8152_table,
- 	.generic_subclass = 1,
- 	.supports_autosuspend = 1,
- };
--- 
-2.43.0.rc2.451.g8631bc7472-goog
+RnJvbTogSmFubiBIb3JuDQo+IFNlbnQ6IDAxIERlY2VtYmVyIDIwMjMgMTY6NDENCj4gDQo+IG11
+dGV4X3VubG9jaygpIGhhcyBhIGRpZmZlcmVudCBBUEkgY29udHJhY3QgY29tcGFyZWQgdG8gc3Bp
+bl91bmxvY2soKS4NCj4gc3Bpbl91bmxvY2soKSBjYW4gYmUgdXNlZCB0byByZWxlYXNlIG93bmVy
+c2hpcCBvZiBhbiBvYmplY3QsIHNvIHRoYXQNCj4gYXMgc29vbiBhcyB0aGUgc3BpbmxvY2sgaXMg
+dW5sb2NrZWQsIGFub3RoZXIgdGFzayBpcyBhbGxvd2VkIHRvIGZyZWUNCj4gdGhlIG9iamVjdCBj
+b250YWluaW5nIHRoZSBzcGlubG9jay4NCj4gbXV0ZXhfdW5sb2NrKCkgZG9lcyBub3Qgc3VwcG9y
+dCB0aGlzIGtpbmQgb2YgdXNhZ2U6IFRoZSBjYWxsZXIgb2YNCj4gbXV0ZXhfdW5sb2NrKCkgbXVz
+dCBlbnN1cmUgdGhhdCB0aGUgbXV0ZXggc3RheXMgYWxpdmUgdW50aWwNCj4gbXV0ZXhfdW5sb2Nr
+KCkgaGFzIHJldHVybmVkLg0KDQpUaGUgcHJvYmxlbSBzZXF1ZW5jZSBtaWdodCBiZToNCglUaHJl
+YWQgQQkJVGhyZWFkIEINCgltdXRleF9sb2NrKCkNCgkJCQljb2RlIHRvIHN0b3AgbXV0ZXggYmVp
+bmcgcmVxdWVzdGVkDQoJCQkJLi4uDQoJCQkJbXV0ZXhfbG9jaygpIC0gc2xlZXBzDQoJbXV0ZXhf
+dW5sb2NrKCkuLi4NCgkJV2FpdGVycyB3b2tlbi4uLg0KCQlpc3IgYW5kL29yIHByZS1lbXB0ZWQN
+CgkJCQktIHdha2VzIHVwDQoJCQkJbXV0ZXhfdW5sb2NrKCkNCgkJCQlmcmVlKCkNCgkJLi4uIG1v
+cmUga2VybmVsIGNvZGUgYWNjZXNzIHRoZSBtdXRleA0KCQlCT09PTQ0KDQpXaGF0IGhhcHBlbnMg
+aW4gYSBQUkVFTVBUX1JUIGtlcm5lbCB3aGVyZSBtb3N0IG9mIHRoZSBzcGluX3VubG9jaygpDQpn
+ZXQgcmVwbGFjZWQgYnkgbXV0ZXhfdW5sb2NrKCkuDQpTZWVtcyBsaWtlIHRoZXkgY2FuIHBvdGVu
+dGlhbGx5IGFjY2VzcyBhIGZyZWVkIG11dGV4Pw0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBB
+ZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMs
+IE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
 
