@@ -2,72 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E20AE8005C3
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 09:36:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 709A58005BF
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 09:36:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377859AbjLAIgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 03:36:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58952 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377871AbjLAIgH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1377876AbjLAIgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 1 Dec 2023 03:36:07 -0500
-Received: from mail-yw1-x1131.google.com (mail-yw1-x1131.google.com [IPv6:2607:f8b0:4864:20::1131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 354101713
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 00:36:13 -0800 (PST)
-Received: by mail-yw1-x1131.google.com with SMTP id 00721157ae682-5d35a952943so15894107b3.3
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 00:36:13 -0800 (PST)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1377863AbjLAIgF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 Dec 2023 03:36:05 -0500
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAD43171F
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 00:36:11 -0800 (PST)
+Received: by mail-io1-xd33.google.com with SMTP id ca18e2360f4ac-7b3854d7270so54578839f.3
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 00:36:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701419772; x=1702024572; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=MtZ5IdIBvkCmVfZiZm9xTlVCWifoa/NZ8bzDIOX3Xng=;
-        b=xSwQCRC7PH8wFmk/UNhjZkE8PNx2np2UEe7CzCaKnnAfOoQehaiA/Hk8V1XWWlV0Du
-         TnRWR4jRf+FHaqr+dAajnJRiTdMNwoR9uFayO2gOZSLfp8bIm4z7dCU+uVEsN1VbHsIT
-         FOFenQgaj8H2u/EmyhopciloKEPqm10zGWc3SwUCpg068xb3slTHjf+6oxM1/D+8o9fo
-         EUE5bAeYmqukUj0IDnvjrNUHioFBs/AKO1QYwkKppsBR8fW67KHdTpQbeExu/8gZvLvU
-         xXvIOWQ/VIy0P71mZmdcZAq7JDCgDWCqt1cYGqoor+NzMOJaM+4aNbl0hr7PeYAxG0Wd
-         M91A==
+        d=linaro.org; s=google; t=1701419771; x=1702024571; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=4Oz99D4o5MrP+/yDQUyDzdznbop0C/bF02PgNBXU/cg=;
+        b=wsl+xzI5t6rKpHPEVZUUYwiGwVyehlhnY98vJJ0l2/fdKDwqqnh0b898569qTJFWC+
+         aJ/UOxCUAaWJOTX9D5c2IWsLxKFRy+fwf1KGOW3ogxf9+eBGRX2BDjrtsWCX3dxVUxDu
+         TTK4pe8Sqpyy7I/e0ljZhQ8UicrFngo9XLa9HHzJxH80olQ/8v2Y8vrPZvBHdB7gyk2O
+         eRtQ6iJGP3K92DZFUKTFMFEkpgNIYwh9UohHXIkLosEHKMD9XIbudlEFbjzb5zDCAnht
+         Xi99SQJr5qZ3EpcdlnBx5Pk+OISkgZDHr8MTei5yt1DN5Yq5HADT/hmElT2PgG+5da40
+         xXiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701419772; x=1702024572;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MtZ5IdIBvkCmVfZiZm9xTlVCWifoa/NZ8bzDIOX3Xng=;
-        b=lvpR/jyO41C9FzHaiTSH3yXaMz08D/ZI4or3Sm7seTCQNvSyOFjI6WFO6KOuTW9/Bh
-         7gkxS/aed+2DDpeQ4bZRk1judVzeak1cARh3qi4IZlKZ3aZgOkiDf9k9aguz1M/fUTnB
-         eW2jspdjTju956g2CmTh4cPpfIorgQ/NUrkbuQJ2Pogab6yM7i5hYN9iWfStFzD0/Bcb
-         p87hLA/B/yeGoI0MUx3dplZ50cEhUmmNIwo1QAI0MRC8oIOk/TsdiEcEaqXXoY+CyhfZ
-         CJ3Cg4c55yuP8SZ5vph6B9KsZep0UM4vn6gZ9XyaCtGTar9QeAUmTZNm1xXucFCvHbFN
-         Vnaw==
-X-Gm-Message-State: AOJu0YwWhUlXI+YSSBf6tfnrXKOMnk92te5ROCGOE1hvfMNjLhc/siQT
-        q0/ie7joGpX3INoSTwEuekcf6rG/YOoW/LlEOnyYtw==
-X-Google-Smtp-Source: AGHT+IFMKwL0EhOV6pMJyoqRG37zW+mNZpW1h9u5bFubBHrQFVO1YAmlDYEKlF7TviFe0+hAEAjElbTHB1G3GbvZyuA=
-X-Received: by 2002:a81:4e86:0:b0:5d3:ba75:758d with SMTP id
- c128-20020a814e86000000b005d3ba75758dmr3335760ywb.2.1701419772391; Fri, 01
- Dec 2023 00:36:12 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701419771; x=1702024571;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4Oz99D4o5MrP+/yDQUyDzdznbop0C/bF02PgNBXU/cg=;
+        b=gCaKn+cFPy9ar4q5iJa71nYrSAWJ+WUSqWbslKqNnHerne41UzUt00DfhtEVU+ajiC
+         4UtefcPLLVhtq+6Td44OE9hSCHM1/ujoKb9ojyIYDyzF/9hGNFVHvQ924ydsrYiZFNrp
+         esp8Zas8jd8sjer6gk3l4/x2IKV1SdGoabAlCR3xwNCrvoI3tr+WIR8+YDCVrvfAg44c
+         sZtcpYvdJQJ8jqRPoerK05Zd9bUDu0ZOkCd60oPqFViK5tChNeXBaVPfPgoDaozqLXw0
+         gWh4bKUyDbTOUrhhVfvWlq8wOkil6Ii7fHxEKYoLoSiIGhYOo9+Su35Hk0EqA40+YvEV
+         rkWA==
+X-Gm-Message-State: AOJu0YwwXa9/Pvmk08HIqBI9nQfdC+TO7imPPFLp/CyMj5PhH1FyKyva
+        jgh9huS7eDDvDhiwTfWpnSmOxA==
+X-Google-Smtp-Source: AGHT+IEw7fWoiIMkPVY6w5hx332IpfxdrRjUxHdLNDtHYkDj/cHzcFh3K1jFS34DT74LmXWgtU5HKw==
+X-Received: by 2002:a92:d5ca:0:b0:35d:3826:511d with SMTP id d10-20020a92d5ca000000b0035d3826511dmr6640117ilq.17.1701419771292;
+        Fri, 01 Dec 2023 00:36:11 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.223.109])
+        by smtp.gmail.com with ESMTPSA id fu12-20020a056638668c00b0046465bfebe3sm768879jab.149.2023.12.01.00.36.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Dec 2023 00:36:10 -0800 (PST)
+Message-ID: <78282e1c-7da1-4721-9ca9-2023cbe3ec60@linaro.org>
+Date:   Fri, 1 Dec 2023 09:36:07 +0100
 MIME-Version: 1.0
-References: <20230830224910.8091-1-quic_abhinavk@quicinc.com>
- <20230830224910.8091-11-quic_abhinavk@quicinc.com> <CAA8EJpoUDjTEytGnx0NUKD_grY=azoXgm_sqwNBJVTD7LwCe0g@mail.gmail.com>
- <5c16e398-4010-718b-d91d-5fc3781b9c0a@quicinc.com>
-In-Reply-To: <5c16e398-4010-718b-d91d-5fc3781b9c0a@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Fri, 1 Dec 2023 10:36:01 +0200
-Message-ID: <CAA8EJpob=mmo1LsyOydMV8RTChYA5P41s1H4xfxkqjRLBWscwQ@mail.gmail.com>
-Subject: Re: [PATCH 10/16] drm/msm/dpu: add support to disable CDM block
- during encoder cleanup
-To:     Abhinav Kumar <quic_abhinavk@quicinc.com>
-Cc:     freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, quic_jesszhan@quicinc.com,
-        quic_parellan@quicinc.com, quic_khsieh@quicinc.com,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/4] dt-bindings: mfd: hisilicon,hi6421-spmi-pmic: fix up
+ binding reference
+Content-Language: en-US
+To:     Johan Hovold <johan+linaro@kernel.org>, Lee Jones <lee@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+References: <20231130172547.12555-1-johan+linaro@kernel.org>
+ <20231130172547.12555-2-johan+linaro@kernel.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
+ m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
+ HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
+ XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
+ mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
+ v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
+ cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
+ rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
+ qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
+ aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
+ gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
+ dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
+ NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
+ hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
+ oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
+ H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
+ yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
+ 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
+ 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
+ +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
+ FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
+ 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
+ DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
+ oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
+ 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
+ Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
+ qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
+ /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
+ qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
+ EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
+ KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
+ fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231130172547.12555-2-johan+linaro@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -76,91 +127,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 1 Dec 2023 at 01:58, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
->
->
->
-> On 8/30/2023 5:14 PM, Dmitry Baryshkov wrote:
-> > On Thu, 31 Aug 2023 at 01:50, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
-> >>
-> >> In preparation of setting up CDM block, add the logic to disable it
-> >> properly during encoder cleanup.
-> >>
-> >> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
-> >> ---
-> >>   drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c      | 8 ++++++++
-> >>   drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h | 2 ++
-> >>   2 files changed, 10 insertions(+)
-> >>
-> >> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-> >> index 582680804016..1b1e07292a9e 100644
-> >> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-> >> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-> >> @@ -26,6 +26,7 @@
-> >>   #include "dpu_hw_dspp.h"
-> >>   #include "dpu_hw_dsc.h"
-> >>   #include "dpu_hw_merge3d.h"
-> >> +#include "dpu_hw_cdm.h"
-> >>   #include "dpu_formats.h"
-> >>   #include "dpu_encoder_phys.h"
-> >>   #include "dpu_crtc.h"
-> >> @@ -2097,6 +2098,13 @@ void dpu_encoder_helper_phys_cleanup(struct dpu_encoder_phys *phys_enc)
-> >>                                          phys_enc->hw_pp->merge_3d->idx);
-> >>          }
-> >>
-> >> +       if (phys_enc->hw_cdm && phys_enc->hw_cdm->ops.bind_pingpong_blk && phys_enc->hw_pp) {
-> >> +               phys_enc->hw_cdm->ops.bind_pingpong_blk(phys_enc->hw_cdm,
-> >> +                                                       false, phys_enc->hw_pp->idx);
-> >
-> > But it was already bound in the cdm->enable, wasn't it?
+On 30/11/2023 18:25, Johan Hovold wrote:
+> Fix up the SPMI PMIC binding document free text reference which
+> erroneously referred to itself rather than the parent SPMI controller
+> binding as intended.
+> 
+> Fixes: 9e5917288545 ("dt: document HiSilicon SPMI controller and mfd/regulator properties")
+> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+> ---
 
-Yes :-(
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-> >
->
-> This is disable. I think you missed the "false" parameter.
->
-> > Also the update_pending_flush_cdm should be called even for DPU < 5.0,
-> > where there should be no bind_pingpong_blk callback.
-> >
->
-> Ack. This is a good catch!
->
-> >> +               if (phys_enc->hw_ctl->ops.update_pending_flush_cdm)
-> >> +                       phys_enc->hw_ctl->ops.update_pending_flush_cdm(phys_enc->hw_ctl);
-> >> +       }
-> >> +
-> >>          if (dpu_enc->dsc) {
-> >>                  dpu_encoder_unprep_dsc(dpu_enc);
-> >>                  dpu_enc->dsc = NULL;
-> >> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
-> >> index 24dbc28be4f8..510c1c41ddbc 100644
-> >> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
-> >> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
-> >> @@ -150,6 +150,7 @@ enum dpu_intr_idx {
-> >>    * @hw_pp:             Hardware interface to the ping pong registers
-> >>    * @hw_intf:           Hardware interface to the intf registers
-> >>    * @hw_wb:             Hardware interface to the wb registers
-> >> + * @hw_cdm:            Hardware interface to the CDM registers
-> >>    * @dpu_kms:           Pointer to the dpu_kms top level
-> >>    * @cached_mode:       DRM mode cached at mode_set time, acted on in enable
-> >>    * @enabled:           Whether the encoder has enabled and running a mode
-> >> @@ -178,6 +179,7 @@ struct dpu_encoder_phys {
-> >>          struct dpu_hw_pingpong *hw_pp;
-> >>          struct dpu_hw_intf *hw_intf;
-> >>          struct dpu_hw_wb *hw_wb;
-> >> +       struct dpu_hw_cdm *hw_cdm;
-> >>          struct dpu_kms *dpu_kms;
-> >>          struct drm_display_mode cached_mode;
-> >>          enum dpu_enc_split_role split_role;
-> >> --
-> >> 2.40.1
-> >>
-> >
-> >
+Best regards,
+Krzysztof
 
-
-
--- 
-With best wishes
-Dmitry
