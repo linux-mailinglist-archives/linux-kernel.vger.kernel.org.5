@@ -2,175 +2,444 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7DC0800CAC
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 14:57:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75926800CB9
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 14:59:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379086AbjLAN5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 08:57:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59566 "EHLO
+        id S1379088AbjLAN7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 08:59:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379060AbjLAN5k (ORCPT
+        with ESMTP id S1379060AbjLAN7G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 08:57:40 -0500
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 743BAA6
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 05:57:46 -0800 (PST)
-Received: by mail-qk1-x730.google.com with SMTP id af79cd13be357-77d66c7af31so263247685a.1
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 05:57:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1701439065; x=1702043865; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=w5RfSzjMMhEGY5HPP+VV7KP4PAnFpwToiPE40rmIjTE=;
-        b=ZHDIx3O3JFtKtmYM0wtN1DhovriW2rtgBX/vtkFKLmqvfTNp9tAhcOoybeJPJXY29q
-         kv2+USLr9TWBWMUCZTXiOq9MSCmaoj1j75l+f5l0yMAcUkPt6/1/LY4hcAkVZv/XBb/w
-         hVVjtNPUtURPYvYPS2l/igt4v4Z2MavAYa6U8PLUA2dzR3h7vHSs+80xTEXYfG1Ar0e0
-         5bgBF3cf9CLPoNdMk1iQb76z7opiGIMUGMqqkVERcf3mtcOiaTso86/ddgs33hazprbT
-         7c5EgMR3w/dPJyKZzyWQkbi8T59/eL3EJs91shCTNqXp7XkhbmLWyR/I+5NlFw+SoCq/
-         sCPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701439065; x=1702043865;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=w5RfSzjMMhEGY5HPP+VV7KP4PAnFpwToiPE40rmIjTE=;
-        b=Vg+UhTWh/d9uX4zfKFhpC7Ztl3XWWAzokPm5aCz816KYgEOha6AMSznpuooq4iK/Df
-         6UNHK7tAspL8RYyR9ku5zPH+BiNi36SH3N5D42PoFlZqm1Mp4fJubNCZvT2pIWqGBorg
-         F4SFyKTwlkTtlqDq77HqcU1BR8hECCZs1y3YDu4RUr8icHHRXgrnnCyQkqdinW4FbFqT
-         h8ssAFaz4V6BGjgN4xC7zftcjGd0ne78U+k1N71HCAPZATcD8gTfOmeioWrCeUiHMvXO
-         DYlM6LF7fUqbnKLMLCzm9T1mqKKHIlUOrmkkPidzn7wxvEDsMzFNeZ+j90NsHBHpKRLC
-         Pusg==
-X-Gm-Message-State: AOJu0Yzswq0H0X4m24ZyW/nUaWMy//BJrDXXw1E+7dVlPgzk3uASW2Um
-        Uukn5dKa2pjbBBRjGrtIp9rgSA==
-X-Google-Smtp-Source: AGHT+IGiHfUB0BG86D+k/H8bgXmfkHHxfAODJ1IDqy5rd6EVUw0TGcCvkgnXizQa+DzIHgV9yCckKw==
-X-Received: by 2002:a05:620a:29c9:b0:773:c43e:5e73 with SMTP id s9-20020a05620a29c900b00773c43e5e73mr47263709qkp.25.1701439065500;
-        Fri, 01 Dec 2023 05:57:45 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-134-23-187.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.134.23.187])
-        by smtp.gmail.com with ESMTPSA id vy13-20020a05620a490d00b0077da601f06csm1508858qkn.10.2023.12.01.05.57.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Dec 2023 05:57:44 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1r941X-006F8M-UN;
-        Fri, 01 Dec 2023 09:57:43 -0400
-Date:   Fri, 1 Dec 2023 09:57:43 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Joerg Roedel <joro@8bytes.org>, Christoph Hellwig <hch@lst.de>,
-        Vineet Gupta <vgupta@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-acpi@vger.kernel.org, iommu@lists.linux.dev,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH 0/7] dma-mapping: Clean up arch_setup_dma_ops()
-Message-ID: <20231201135743.GI1394392@ziepe.ca>
-References: <cover.1701268753.git.robin.murphy@arm.com>
- <20231129203642.GO1312390@ziepe.ca>
- <ae27768f-a6fa-4971-b44c-92899a81a2b7@arm.com>
+        Fri, 1 Dec 2023 08:59:06 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 78C4D10F0
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 05:59:11 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A38E41007;
+        Fri,  1 Dec 2023 05:59:57 -0800 (PST)
+Received: from pluto.fritz.box (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E89923F73F;
+        Fri,  1 Dec 2023 05:59:09 -0800 (PST)
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     sudeep.holla@arm.com, vincent.guittot@linaro.org,
+        souvik.chakravarty@arm.com, nicola.mazzucato@arm.com,
+        Cristian Marussi <cristian.marussi@arm.com>
+Subject: [PATCH] firmware: arm_scmi: Add protocol versioning checks
+Date:   Fri,  1 Dec 2023 13:58:58 +0000
+Message-ID: <20231201135858.2367651-1-cristian.marussi@arm.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ae27768f-a6fa-4971-b44c-92899a81a2b7@arm.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 01, 2023 at 01:07:36PM +0000, Robin Murphy wrote:
-> On 29/11/2023 8:36 pm, Jason Gunthorpe wrote:
-> > On Wed, Nov 29, 2023 at 05:42:57PM +0000, Robin Murphy wrote:
-> > > Hi all,
-> > > 
-> > > Prompted by Jason's proposal[1], here's a first step towards truly
-> > > unpicking the dma_configure vs. IOMMU mess. As I commented before, we
-> > > have an awful lot of accumulated cruft and technical debt here making
-> > > things more complicated than they need to be, and we already have hacks
-> > > on top of hacks trying to work around it, so polishing those hacks even
-> > > further is really not a desirable direction of travel. And I do know
-> > > they're hacks, because I wrote most of them and still remember enough of
-> > > the context of the time ;)
-> > 
-> > I quite like this, I was also looking at getting rid of those other
-> > parameters.
-> > 
-> > I wanted to take smaller steps because it is all pretty hairy.
-> > 
-> > One thing that still concerns me is if the FW data restricts the valid
-> > IOVA window that really should be reflected into the reserved ranges
-> > and not just dumped into the struct device for use by the DMA API.
-> > 
-> > Or, perhaps, viof/iommufd should be using the struct device data to
-> > generate some additional reserved ranges?
-> > 
-> > Either way, I would like to see the dma_iommu and the rest of the
-> > subsystem agree on what the valid IOVA ranges actually are.
-> 
-> Note that there is some intentional divergence where iommu-dma reserves
-> IOVAs matching PCI outbound windows because it knows it wants to avoid
-> clashing with potential peer-to-peer addresses and doesn't want to have to
-> get into the details of ACS redirect etc., but we don't expose those as
-> generic reserved regions because they're firmly a property of the PCI host
-> bridge, not of the IOMMU group (and more practically, because we did do so
-> briefly and it made QEMU unhappy). I think there may also have been some
-> degree of conclusion that it's not the IOMMU API's place to get in the way
-> of other domain users trying to do weird P2P stuff if they really want to.
+Platform and agent supported protocols versions do not necessarily match.
 
-I'm not sure this is the fully correct conclusion - eg if today we
-take a NIC device on a non-ACS topology and run DPDK through VFIO it
-has a chance of failure because some IOVA simply cannot be used by
-DPDK for DMA at all.
+When talking to an older platform SCMI server, supporting only older
+protocol versions, the kernel SCMI agent will downgrade the version of
+the used protocol to match the platform one and avoid compatibility issues.
 
-qemu and kvm are a different situation that want different things. Eg
-it would want to identity map the PCI BAR spaces to the IOVA they are
-claiming.
+In the case, instead, in which the agent happens to communicate with a
+newer platform server which can support newer protocol versions unknown to
+the agent, and potentially backward incompatible, the agent currently
+carries on, silently, in a best-effort approach.
 
-It should still somehow carve out any other IOVA that is unusable due
-to guest-invisible ACS and reflect it through FW tables into the VM.
+Note that the SCMI server, by the specification, has no means to explicitly
+detect the protocol versions used by the agents, neither it is required to
+support multiple, older, protocol versions.
 
-I'm starting to see people build non-ACS systems and want it to work
-with VFIO and I'm a little worried we have been too loose here.
+Add an explicit protocol version check to let the agent detect when this
+version mismatch happens and warn the user about this condition.
 
-> bridge and so inherits its restrictions. However I don't recall any
-> conscious decision for inbound windows to only be considered for DMA domain
-> reservations rather than for proper reserved regions - pretty sure that's
-> just a case of that code being added in the place where it seemed to fit
-> best at the time (because hey it's more host bridge windows and we already
-> have a thing for host bridge windows...)
+Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+---
+Any suggestion for a more meaningful warn message is very much welcome.
+Based on sudeep/for-next/scmi/updates
+---
+ drivers/firmware/arm_scmi/base.c      |  6 +++++-
+ drivers/firmware/arm_scmi/clock.c     |  6 +++++-
+ drivers/firmware/arm_scmi/driver.c    | 11 ++++++++++-
+ drivers/firmware/arm_scmi/perf.c      |  6 +++++-
+ drivers/firmware/arm_scmi/power.c     |  6 +++++-
+ drivers/firmware/arm_scmi/powercap.c  |  6 +++++-
+ drivers/firmware/arm_scmi/protocols.h |  8 +++++++-
+ drivers/firmware/arm_scmi/reset.c     |  6 +++++-
+ drivers/firmware/arm_scmi/sensors.c   |  6 +++++-
+ drivers/firmware/arm_scmi/system.c    |  6 +++++-
+ drivers/firmware/arm_scmi/voltage.c   |  6 +++++-
+ 11 files changed, 62 insertions(+), 11 deletions(-)
 
-Yeah, and I don't think anyone actually cared much..
+diff --git a/drivers/firmware/arm_scmi/base.c b/drivers/firmware/arm_scmi/base.c
+index a52f084a6a87..3f5c89ae5af2 100644
+--- a/drivers/firmware/arm_scmi/base.c
++++ b/drivers/firmware/arm_scmi/base.c
+@@ -13,6 +13,9 @@
+ #include "common.h"
+ #include "notify.h"
+ 
++/* Must be updated only after ALL new features for that version are merged */
++#define SCMI_PROTOCOL_SUPPORTED_VERSION		0x20000
++
+ #define SCMI_BASE_NUM_SOURCES		1
+ #define SCMI_BASE_MAX_CMD_ERR_COUNT	1024
+ 
+@@ -385,7 +388,7 @@ static int scmi_base_protocol_init(const struct scmi_protocol_handle *ph)
+ 
+ 	rev->major_ver = PROTOCOL_REV_MAJOR(version),
+ 	rev->minor_ver = PROTOCOL_REV_MINOR(version);
+-	ph->set_priv(ph, rev);
++	ph->set_priv(ph, rev, version);
+ 
+ 	ret = scmi_base_attributes_get(ph);
+ 	if (ret)
+@@ -423,6 +426,7 @@ static const struct scmi_protocol scmi_base = {
+ 	.instance_init = &scmi_base_protocol_init,
+ 	.ops = NULL,
+ 	.events = &base_protocol_events,
++	.supported_version = SCMI_PROTOCOL_SUPPORTED_VERSION,
+ };
+ 
+ DEFINE_SCMI_PROTOCOL_REGISTER_UNREGISTER(base, scmi_base)
+diff --git a/drivers/firmware/arm_scmi/clock.c b/drivers/firmware/arm_scmi/clock.c
+index 98511a3aa367..5e213faa5fe1 100644
+--- a/drivers/firmware/arm_scmi/clock.c
++++ b/drivers/firmware/arm_scmi/clock.c
+@@ -12,6 +12,9 @@
+ #include "protocols.h"
+ #include "notify.h"
+ 
++/* Must be updated only after ALL new features for that version are merged */
++#define SCMI_PROTOCOL_SUPPORTED_VERSION		0x20001
++
+ enum scmi_clock_protocol_cmd {
+ 	CLOCK_ATTRIBUTES = 0x3,
+ 	CLOCK_DESCRIBE_RATES = 0x4,
+@@ -961,7 +964,7 @@ static int scmi_clock_protocol_init(const struct scmi_protocol_handle *ph)
+ 	}
+ 
+ 	cinfo->version = version;
+-	return ph->set_priv(ph, cinfo);
++	return ph->set_priv(ph, cinfo, version);
+ }
+ 
+ static const struct scmi_protocol scmi_clock = {
+@@ -970,6 +973,7 @@ static const struct scmi_protocol scmi_clock = {
+ 	.instance_init = &scmi_clock_protocol_init,
+ 	.ops = &clk_proto_ops,
+ 	.events = &clk_protocol_events,
++	.supported_version = SCMI_PROTOCOL_SUPPORTED_VERSION,
+ };
+ 
+ DEFINE_SCMI_PROTOCOL_REGISTER_UNREGISTER(clock, scmi_clock)
+diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
+index 3eb19ed6f148..46320f627066 100644
+--- a/drivers/firmware/arm_scmi/driver.c
++++ b/drivers/firmware/arm_scmi/driver.c
+@@ -85,6 +85,7 @@ struct scmi_xfers_info {
+  * @gid: A reference for per-protocol devres management.
+  * @users: A refcount to track effective users of this protocol.
+  * @priv: Reference for optional protocol private data.
++ * @version: Protocol version supported by the platform as detected at runtime.
+  * @ph: An embedded protocol handle that will be passed down to protocol
+  *	initialization code to identify this instance.
+  *
+@@ -97,6 +98,7 @@ struct scmi_protocol_instance {
+ 	void				*gid;
+ 	refcount_t			users;
+ 	void				*priv;
++	unsigned int			version;
+ 	struct scmi_protocol_handle	ph;
+ };
+ 
+@@ -1392,15 +1394,17 @@ static int version_get(const struct scmi_protocol_handle *ph, u32 *version)
+  *
+  * @ph: A reference to the protocol handle.
+  * @priv: The private data to set.
++ * @version: The detected protocol version for the core to register.
+  *
+  * Return: 0 on Success
+  */
+ static int scmi_set_protocol_priv(const struct scmi_protocol_handle *ph,
+-				  void *priv)
++				  void *priv, u32 version)
+ {
+ 	struct scmi_protocol_instance *pi = ph_to_pi(ph);
+ 
+ 	pi->priv = priv;
++	pi->version = version;
+ 
+ 	return 0;
+ }
+@@ -1849,6 +1853,11 @@ scmi_alloc_init_protocol_instance(struct scmi_info *info,
+ 	devres_close_group(handle->dev, pi->gid);
+ 	dev_dbg(handle->dev, "Initialized protocol: 0x%X\n", pi->proto->id);
+ 
++	if (pi->version > proto->supported_version)
++		dev_warn(handle->dev,
++			 "Detected UNSUPPORTED version 0x%X for protocol 0x%X. Backward compatibility is NOT assured.\n",
++			 pi->version, pi->proto->id);
++
+ 	return pi;
+ 
+ clean:
+diff --git a/drivers/firmware/arm_scmi/perf.c b/drivers/firmware/arm_scmi/perf.c
+index 81dd5c5e5533..92fa60127f47 100644
+--- a/drivers/firmware/arm_scmi/perf.c
++++ b/drivers/firmware/arm_scmi/perf.c
+@@ -24,6 +24,9 @@
+ #include "protocols.h"
+ #include "notify.h"
+ 
++/* Must be updated only after ALL new features for that version are merged */
++#define SCMI_PROTOCOL_SUPPORTED_VERSION		0x40000
++
+ #define MAX_OPPS		32
+ 
+ enum scmi_performance_protocol_cmd {
+@@ -1104,7 +1107,7 @@ static int scmi_perf_protocol_init(const struct scmi_protocol_handle *ph)
+ 	if (ret)
+ 		return ret;
+ 
+-	return ph->set_priv(ph, pinfo);
++	return ph->set_priv(ph, pinfo, version);
+ }
+ 
+ static const struct scmi_protocol scmi_perf = {
+@@ -1113,6 +1116,7 @@ static const struct scmi_protocol scmi_perf = {
+ 	.instance_init = &scmi_perf_protocol_init,
+ 	.ops = &perf_proto_ops,
+ 	.events = &perf_protocol_events,
++	.supported_version = SCMI_PROTOCOL_SUPPORTED_VERSION,
+ };
+ 
+ DEFINE_SCMI_PROTOCOL_REGISTER_UNREGISTER(perf, scmi_perf)
+diff --git a/drivers/firmware/arm_scmi/power.c b/drivers/firmware/arm_scmi/power.c
+index 077767d6e902..9d0536baeee5 100644
+--- a/drivers/firmware/arm_scmi/power.c
++++ b/drivers/firmware/arm_scmi/power.c
+@@ -13,6 +13,9 @@
+ #include "protocols.h"
+ #include "notify.h"
+ 
++/* Must be updated only after ALL new features for that version are merged */
++#define SCMI_PROTOCOL_SUPPORTED_VERSION		0x30000
++
+ enum scmi_power_protocol_cmd {
+ 	POWER_DOMAIN_ATTRIBUTES = 0x3,
+ 	POWER_STATE_SET = 0x4,
+@@ -328,7 +331,7 @@ static int scmi_power_protocol_init(const struct scmi_protocol_handle *ph)
+ 
+ 	pinfo->version = version;
+ 
+-	return ph->set_priv(ph, pinfo);
++	return ph->set_priv(ph, pinfo, version);
+ }
+ 
+ static const struct scmi_protocol scmi_power = {
+@@ -337,6 +340,7 @@ static const struct scmi_protocol scmi_power = {
+ 	.instance_init = &scmi_power_protocol_init,
+ 	.ops = &power_proto_ops,
+ 	.events = &power_protocol_events,
++	.supported_version = SCMI_PROTOCOL_SUPPORTED_VERSION,
+ };
+ 
+ DEFINE_SCMI_PROTOCOL_REGISTER_UNREGISTER(power, scmi_power)
+diff --git a/drivers/firmware/arm_scmi/powercap.c b/drivers/firmware/arm_scmi/powercap.c
+index 62a7780fedbb..bb9b1a95139c 100644
+--- a/drivers/firmware/arm_scmi/powercap.c
++++ b/drivers/firmware/arm_scmi/powercap.c
+@@ -17,6 +17,9 @@
+ #include "protocols.h"
+ #include "notify.h"
+ 
++/* Must be updated only after ALL new features for that version are merged */
++#define SCMI_PROTOCOL_SUPPORTED_VERSION		0x20000
++
+ enum scmi_powercap_protocol_cmd {
+ 	POWERCAP_DOMAIN_ATTRIBUTES = 0x3,
+ 	POWERCAP_CAP_GET = 0x4,
+@@ -975,7 +978,7 @@ scmi_powercap_protocol_init(const struct scmi_protocol_handle *ph)
+ 	}
+ 
+ 	pinfo->version = version;
+-	return ph->set_priv(ph, pinfo);
++	return ph->set_priv(ph, pinfo, version);
+ }
+ 
+ static const struct scmi_protocol scmi_powercap = {
+@@ -984,6 +987,7 @@ static const struct scmi_protocol scmi_powercap = {
+ 	.instance_init = &scmi_powercap_protocol_init,
+ 	.ops = &powercap_proto_ops,
+ 	.events = &powercap_protocol_events,
++	.supported_version = SCMI_PROTOCOL_SUPPORTED_VERSION,
+ };
+ 
+ DEFINE_SCMI_PROTOCOL_REGISTER_UNREGISTER(powercap, scmi_powercap)
+diff --git a/drivers/firmware/arm_scmi/protocols.h b/drivers/firmware/arm_scmi/protocols.h
+index b3c6314bb4b8..e683c26f24eb 100644
+--- a/drivers/firmware/arm_scmi/protocols.h
++++ b/drivers/firmware/arm_scmi/protocols.h
+@@ -174,7 +174,8 @@ struct scmi_protocol_handle {
+ 	struct device *dev;
+ 	const struct scmi_xfer_ops *xops;
+ 	const struct scmi_proto_helpers_ops *hops;
+-	int (*set_priv)(const struct scmi_protocol_handle *ph, void *priv);
++	int (*set_priv)(const struct scmi_protocol_handle *ph, void *priv,
++			u32 version);
+ 	void *(*get_priv)(const struct scmi_protocol_handle *ph);
+ };
+ 
+@@ -311,6 +312,10 @@ typedef int (*scmi_prot_init_ph_fn_t)(const struct scmi_protocol_handle *);
+  * @ops: Optional reference to the operations provided by the protocol and
+  *	 exposed in scmi_protocol.h.
+  * @events: An optional reference to the events supported by this protocol.
++ * @supported_version: The highest version currently supported for this
++ *		       protocol by the agent. Each protocol implementation
++ *		       in the agent is supposed to downgrade to match the
++ *		       protocol version supported by the platform.
+  */
+ struct scmi_protocol {
+ 	const u8				id;
+@@ -319,6 +324,7 @@ struct scmi_protocol {
+ 	const scmi_prot_init_ph_fn_t		instance_deinit;
+ 	const void				*ops;
+ 	const struct scmi_protocol_events	*events;
++	unsigned int				supported_version;
+ };
+ 
+ #define DEFINE_SCMI_PROTOCOL_REGISTER_UNREGISTER(name, proto)	\
+diff --git a/drivers/firmware/arm_scmi/reset.c b/drivers/firmware/arm_scmi/reset.c
+index 7217fd7c6afa..a28ebdd53700 100644
+--- a/drivers/firmware/arm_scmi/reset.c
++++ b/drivers/firmware/arm_scmi/reset.c
+@@ -13,6 +13,9 @@
+ #include "protocols.h"
+ #include "notify.h"
+ 
++/* Must be updated only after ALL new features for that version are merged */
++#define SCMI_PROTOCOL_SUPPORTED_VERSION		0x30000
++
+ enum scmi_reset_protocol_cmd {
+ 	RESET_DOMAIN_ATTRIBUTES = 0x3,
+ 	RESET = 0x4,
+@@ -343,7 +346,7 @@ static int scmi_reset_protocol_init(const struct scmi_protocol_handle *ph)
+ 	}
+ 
+ 	pinfo->version = version;
+-	return ph->set_priv(ph, pinfo);
++	return ph->set_priv(ph, pinfo, version);
+ }
+ 
+ static const struct scmi_protocol scmi_reset = {
+@@ -352,6 +355,7 @@ static const struct scmi_protocol scmi_reset = {
+ 	.instance_init = &scmi_reset_protocol_init,
+ 	.ops = &reset_proto_ops,
+ 	.events = &reset_protocol_events,
++	.supported_version = SCMI_PROTOCOL_SUPPORTED_VERSION,
+ };
+ 
+ DEFINE_SCMI_PROTOCOL_REGISTER_UNREGISTER(reset, scmi_reset)
+diff --git a/drivers/firmware/arm_scmi/sensors.c b/drivers/firmware/arm_scmi/sensors.c
+index 9952a7bc6682..c5220b1d6b09 100644
+--- a/drivers/firmware/arm_scmi/sensors.c
++++ b/drivers/firmware/arm_scmi/sensors.c
+@@ -14,6 +14,9 @@
+ #include "protocols.h"
+ #include "notify.h"
+ 
++/* Must be updated only after ALL new features for that version are merged */
++#define SCMI_PROTOCOL_SUPPORTED_VERSION		0x30000
++
+ #define SCMI_MAX_NUM_SENSOR_AXIS	63
+ #define	SCMIv2_SENSOR_PROTOCOL		0x10000
+ 
+@@ -1138,7 +1141,7 @@ static int scmi_sensors_protocol_init(const struct scmi_protocol_handle *ph)
+ 	if (ret)
+ 		return ret;
+ 
+-	return ph->set_priv(ph, sinfo);
++	return ph->set_priv(ph, sinfo, version);
+ }
+ 
+ static const struct scmi_protocol scmi_sensors = {
+@@ -1147,6 +1150,7 @@ static const struct scmi_protocol scmi_sensors = {
+ 	.instance_init = &scmi_sensors_protocol_init,
+ 	.ops = &sensor_proto_ops,
+ 	.events = &sensor_protocol_events,
++	.supported_version = SCMI_PROTOCOL_SUPPORTED_VERSION,
+ };
+ 
+ DEFINE_SCMI_PROTOCOL_REGISTER_UNREGISTER(sensors, scmi_sensors)
+diff --git a/drivers/firmware/arm_scmi/system.c b/drivers/firmware/arm_scmi/system.c
+index 9383d7584539..06fd542cfce1 100644
+--- a/drivers/firmware/arm_scmi/system.c
++++ b/drivers/firmware/arm_scmi/system.c
+@@ -13,6 +13,9 @@
+ #include "protocols.h"
+ #include "notify.h"
+ 
++/* Must be updated only after ALL new features for that version are merged */
++#define SCMI_PROTOCOL_SUPPORTED_VERSION		0x20000
++
+ #define SCMI_SYSTEM_NUM_SOURCES		1
+ 
+ enum scmi_system_protocol_cmd {
+@@ -144,7 +147,7 @@ static int scmi_system_protocol_init(const struct scmi_protocol_handle *ph)
+ 	if (PROTOCOL_REV_MAJOR(pinfo->version) >= 0x2)
+ 		pinfo->graceful_timeout_supported = true;
+ 
+-	return ph->set_priv(ph, pinfo);
++	return ph->set_priv(ph, pinfo, version);
+ }
+ 
+ static const struct scmi_protocol scmi_system = {
+@@ -153,6 +156,7 @@ static const struct scmi_protocol scmi_system = {
+ 	.instance_init = &scmi_system_protocol_init,
+ 	.ops = NULL,
+ 	.events = &system_protocol_events,
++	.supported_version = SCMI_PROTOCOL_SUPPORTED_VERSION,
+ };
+ 
+ DEFINE_SCMI_PROTOCOL_REGISTER_UNREGISTER(system, scmi_system)
+diff --git a/drivers/firmware/arm_scmi/voltage.c b/drivers/firmware/arm_scmi/voltage.c
+index 36e2df77738c..cb51c61ba31c 100644
+--- a/drivers/firmware/arm_scmi/voltage.c
++++ b/drivers/firmware/arm_scmi/voltage.c
+@@ -10,6 +10,9 @@
+ 
+ #include "protocols.h"
+ 
++/* Must be updated only after ALL new features for that version are merged */
++#define SCMI_PROTOCOL_SUPPORTED_VERSION		0x20000
++
+ #define VOLTAGE_DOMS_NUM_MASK		GENMASK(15, 0)
+ #define REMAINING_LEVELS_MASK		GENMASK(31, 16)
+ #define RETURNED_LEVELS_MASK		GENMASK(11, 0)
+@@ -432,7 +435,7 @@ static int scmi_voltage_protocol_init(const struct scmi_protocol_handle *ph)
+ 		dev_warn(ph->dev, "No Voltage domains found.\n");
+ 	}
+ 
+-	return ph->set_priv(ph, vinfo);
++	return ph->set_priv(ph, vinfo, version);
+ }
+ 
+ static const struct scmi_protocol scmi_voltage = {
+@@ -440,6 +443,7 @@ static const struct scmi_protocol scmi_voltage = {
+ 	.owner = THIS_MODULE,
+ 	.instance_init = &scmi_voltage_protocol_init,
+ 	.ops = &voltage_proto_ops,
++	.supported_version = SCMI_PROTOCOL_SUPPORTED_VERSION,
+ };
+ 
+ DEFINE_SCMI_PROTOCOL_REGISTER_UNREGISTER(voltage, scmi_voltage)
+-- 
+2.43.0
 
-At least as a step it would be nice if the DMA API only restrictions
-can come out as a special type of reserved region. Then the caller
-could decide if they want to follow them or not. iommufd could provide
-an opt-in API to DPDK that matches DMA API's safe IOVA allocator.
-
-Jason
