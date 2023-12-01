@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 458DD801127
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:21:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6894D801160
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:21:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229865AbjLAQq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 11:46:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57298 "EHLO
+        id S1378575AbjLAQqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 11:46:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229533AbjLAQql (ORCPT
+        with ESMTP id S229516AbjLAQql (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 1 Dec 2023 11:46:41 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65370196
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 632A2F2
         for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 08:46:47 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3E04C433C9;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6C23C433CA;
         Fri,  1 Dec 2023 16:46:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1701449206;
-        bh=xDVPMQd9A2W8u2+/8JI2ebYPTKJS6OCJRFu32DgoLik=;
+        bh=T2z/FCGOZTuZvMKsnWedFJwmDPaovLjYsoXHwnzGLm8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uY+PvO1S03Humufsfsj2DHvI2+GYSLvtR1QjAbwGAik0BX9qFoqVG2f70w0plapHX
-         CG328qxTt68B1rlfEZhH8f3nVa/TSefo4hU6eV0zIaVzAq2BcEFbwIwOuPbXEnBpOB
-         EZyhh2wENBoW9WkFSKjuQi8sOPBspmlPPkrLvc+fdasB8jDqRjMs9+bXL4WKDoWiWh
-         AdwFpZlDdesVP4rIrX3jPvdk6V+en71o413t3tXIM/EJ5ycC56P2bp62FHG+nzc09a
-         IVOOhtaeRmMvNFxYHft4kRxlVGTgktDOwzXjeTcIp1TeWtiZa3pE0rjD+T9Pb1si0L
-         Hnw/GcxSHzwZw==
+        b=JnnZRrX5/LjFKTZgBsQkxRVjT67NroSOqRvFpXS8Jk3fGMkAexLBFKU9Y4I3kecEA
+         0AbISwqHhcmWSJzYz45n0WsjQ08pF/veCJprXUB1n2nL4W2jQXPH2o4qHl5w0iLPs6
+         yK8oBvAsrrQ9rbABA8VYip2inF5tIEPFDtC028jntSUvZZNuypeuIwbUqnTIR73+32
+         T+4ZkBO+Z+2/wYFRPlGfhWfGykEnC8Cd0XPMzOb9lhLdrgvBF+DbbvAxwC8NanIdtg
+         3CwJHo2GZcXySPQIpEgDhS/WUU9m071VOF4fRnItMYXrXW6iHJpRux3Q5BwQG+p6KF
+         /ONfHqDVCZf8Q==
 Received: from johan by xi.lan with local (Exim 4.96.2)
         (envelope-from <johan+linaro@kernel.org>)
-        id 1r96fj-0003IU-0L;
+        id 1r96fj-0003IW-0a;
         Fri, 01 Dec 2023 17:47:23 +0100
 From:   Johan Hovold <johan+linaro@kernel.org>
 To:     Lee Jones <lee@kernel.org>
@@ -42,10 +42,11 @@ Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
         linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
         linux-arm-msm@vger.kernel.org,
-        Johan Hovold <johan+linaro@kernel.org>
-Subject: [PATCH v2 2/4] dt-bindings: mfd: hisilicon,hi6421-spmi-pmic: fix regulator binding
-Date:   Fri,  1 Dec 2023 17:45:44 +0100
-Message-ID: <20231201164546.12606-3-johan+linaro@kernel.org>
+        Johan Hovold <johan+linaro@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v2 3/4] dt-bindings: mfd: hisilicon,hi6421-spmi-pmic: clean up example
+Date:   Fri,  1 Dec 2023 17:45:45 +0100
+Message-ID: <20231201164546.12606-4-johan+linaro@kernel.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231201164546.12606-1-johan+linaro@kernel.org>
 References: <20231201164546.12606-1-johan+linaro@kernel.org>
@@ -61,44 +62,164 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The regulator child nodes do not have unit addresses so drop the
-incorrect '#address-cells' and '#size-cells' properties from the parent
-'regulators' node.
+The SPMI PMIC sits on an SPMI bus which and has two address cells with
+no size.
 
-Fixes: 352335a6aced ("staging: hikey9xx: hisilicon, hi6421-spmi-pmic.yaml: simplify props")
+Clean up the example by adding a parent SPMI bus node with proper
+'#address-cells' and '#size-cells' properties, using a define for the
+second register value, dropping the unnecessary label and increasing the
+indentation to four spaces.
+
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
 ---
- .../bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml       | 10 ----------
- 1 file changed, 10 deletions(-)
+ .../mfd/hisilicon,hi6421-spmi-pmic.yaml       | 134 +++++++++---------
+ 1 file changed, 70 insertions(+), 64 deletions(-)
 
 diff --git a/Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml b/Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml
-index e36e5ce58136..45cd6a613a91 100644
+index 45cd6a613a91..6a824351834e 100644
 --- a/Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml
 +++ b/Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml
-@@ -42,13 +42,6 @@ properties:
+@@ -59,69 +59,75 @@ additionalProperties: false
  
-     additionalProperties: false
- 
--    properties:
--      '#address-cells':
--        const: 1
+ examples:
+   - |
 -
--      '#size-cells':
--        const: 0
+-    pmic: pmic@0 {
+-      compatible = "hisilicon,hi6421v600-spmi";
+-      reg = <0 0>;
 -
-     patternProperties:
-       '^ldo[0-9]+$':
-         type: object
-@@ -77,9 +70,6 @@ examples:
-       interrupts = <0 0>;
- 
-       regulators {
--        #address-cells = <1>;
--        #size-cells = <0>;
+-      #interrupt-cells = <2>;
+-      interrupt-controller;
+-      interrupt-parent = <&gpio28>;
+-      interrupts = <0 0>;
 -
-         ldo3: ldo3 {
-           regulator-name = "ldo3";
-           regulator-min-microvolt = <1500000>;
+-      regulators {
+-        ldo3: ldo3 {
+-          regulator-name = "ldo3";
+-          regulator-min-microvolt = <1500000>;
+-          regulator-max-microvolt = <2000000>;
+-          regulator-boot-on;
+-        };
+-
+-        ldo4: ldo4 {
+-          regulator-name = "ldo4";
+-          regulator-min-microvolt = <1725000>;
+-          regulator-max-microvolt = <1900000>;
+-          regulator-boot-on;
+-        };
+-
+-        ldo9: ldo9 {
+-          regulator-name = "ldo9";
+-          regulator-min-microvolt = <1750000>;
+-          regulator-max-microvolt = <3300000>;
+-          regulator-boot-on;
+-        };
+-
+-        ldo15: ldo15 {
+-          regulator-name = "ldo15";
+-          regulator-min-microvolt = <1800000>;
+-          regulator-max-microvolt = <3000000>;
+-          regulator-always-on;
+-        };
+-
+-        ldo16: ldo16 {
+-          regulator-name = "ldo16";
+-          regulator-min-microvolt = <1800000>;
+-          regulator-max-microvolt = <3000000>;
+-          regulator-boot-on;
+-        };
+-
+-        ldo17: ldo17 {
+-          regulator-name = "ldo17";
+-          regulator-min-microvolt = <2500000>;
+-          regulator-max-microvolt = <3300000>;
+-        };
+-
+-        ldo33: ldo33 {
+-          regulator-name = "ldo33";
+-          regulator-min-microvolt = <2500000>;
+-          regulator-max-microvolt = <3300000>;
+-          regulator-boot-on;
+-        };
+-
+-        ldo34: ldo34 {
+-          regulator-name = "ldo34";
+-          regulator-min-microvolt = <2600000>;
+-          regulator-max-microvolt = <3300000>;
++    #include <dt-bindings/spmi/spmi.h>
++
++    spmi {
++        #address-cells = <2>;
++        #size-cells = <0>;
++
++        pmic@0 {
++            compatible = "hisilicon,hi6421v600-spmi";
++            reg = <0 SPMI_USID>;
++
++            #interrupt-cells = <2>;
++            interrupt-controller;
++            interrupt-parent = <&gpio28>;
++            interrupts = <0 0>;
++
++            regulators {
++                ldo3 {
++                    regulator-name = "ldo3";
++                    regulator-min-microvolt = <1500000>;
++                    regulator-max-microvolt = <2000000>;
++                    regulator-boot-on;
++                };
++
++                ldo4 {
++                    regulator-name = "ldo4";
++                    regulator-min-microvolt = <1725000>;
++                    regulator-max-microvolt = <1900000>;
++                    regulator-boot-on;
++                };
++
++                ldo9 {
++                    regulator-name = "ldo9";
++                    regulator-min-microvolt = <1750000>;
++                    regulator-max-microvolt = <3300000>;
++                    regulator-boot-on;
++                };
++
++                ldo15 {
++                    regulator-name = "ldo15";
++                    regulator-min-microvolt = <1800000>;
++                    regulator-max-microvolt = <3000000>;
++                    regulator-always-on;
++                };
++
++                ldo16 {
++                    regulator-name = "ldo16";
++                    regulator-min-microvolt = <1800000>;
++                    regulator-max-microvolt = <3000000>;
++                    regulator-boot-on;
++                };
++
++                ldo17 {
++                    regulator-name = "ldo17";
++                    regulator-min-microvolt = <2500000>;
++                    regulator-max-microvolt = <3300000>;
++                };
++
++                ldo33 {
++                    regulator-name = "ldo33";
++                    regulator-min-microvolt = <2500000>;
++                    regulator-max-microvolt = <3300000>;
++                    regulator-boot-on;
++                };
++
++                ldo34 {
++                    regulator-name = "ldo34";
++                    regulator-min-microvolt = <2600000>;
++                    regulator-max-microvolt = <3300000>;
++                };
++            };
+         };
+-      };
+     };
 -- 
 2.41.0
 
