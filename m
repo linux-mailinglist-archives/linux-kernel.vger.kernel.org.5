@@ -2,55 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 486FC80159D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 22:42:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E5B58015A0
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 22:43:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379694AbjLAVlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 16:41:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42828 "EHLO
+        id S1441796AbjLAVnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 16:43:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230492AbjLAVlr (ORCPT
+        with ESMTP id S229456AbjLAVn3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 16:41:47 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B45310D0
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 13:41:53 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55496C433C9;
-        Fri,  1 Dec 2023 21:41:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701466912;
-        bh=TWbyrktty0aiio1Yz8/D+E9sSNPXFW7QN+9676S+CaE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tRnE6JVTBolPMsI2yYyuiCUti/OLVHuxJ0eItuVPz2Rtx+muYnS6qXES+7NKMc7bW
-         HZ171g5Zpnxu7HBdjUjw7jFEXq+VLR/g+CQAiO7345Wlq/7kCFkawjGCAQBy6q+6co
-         mlyxWm4ByTkp7E7LoHZp3/gex1wjZGJq082a/MyoDMhE80cbpvPi1SJIw69CFbJDKz
-         PAx3r6z1tCIgBJ93czwUCfruxcVqGP2kHs9dBS4XpvAI6phCBYbu399yX2/4D3uMVZ
-         bzNfHYMbudmCaZeTQNDGE9KsBIXl578OUWRB7RmpssX4TIIzMj4+m6bGpg8R1CkmJm
-         WoaZ5OL6v+JEA==
-Date:   Fri, 1 Dec 2023 21:41:48 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Hugo Villeneuve <hugo@hugovil.com>
-Cc:     Jan =?iso-8859-1?Q?Kundr=E1t?= <jan.kundrat@cesnet.cz>,
-        Cosmin Tanislav <cosmin.tanislav@analog.com>,
-        linux-serial@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] tty: max310x: work around regmap->regcache data
- corruption
-Message-ID: <f5277458-635a-4eca-a37d-c3b2e83eb4b9@sirena.org.uk>
-References: <bd91db46c50615bc1d1d62beb659fa7f62386446.1701446070.git.jan.kundrat@cesnet.cz>
- <20231201132736.65cb0e2bff88fba85121c44a@hugovil.com>
- <ce3eaa82-66e9-404b-9062-0f628dc6164f@sirena.org.uk>
- <20231201163846.a7c1d79daca7c6a2e1416a70@hugovil.com>
+        Fri, 1 Dec 2023 16:43:29 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57BF7E6;
+        Fri,  1 Dec 2023 13:43:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701467015; x=1733003015;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=Sel7VWXNsxqvT4j9VIG+9AvSbOYVAhD+puphOSux5mY=;
+  b=b4ggmjZLoRD3Q159w4YyyyYIng8403QMDJBsdl8PmybutJxuvQKGAN9I
+   8O5n/bcmEebUiox8oCDCY+qd60RKfWwyAx+mGQ6pbmXzFmy0oYZQVZTmm
+   cHgp8DsNOQawfz1WuU0W+jiq43IzuJChPsaXgylDh4lPZjC0y4ozunSKL
+   WHp4pBrVhs++s3JoM8w1YyffPYfmp4md57GZR2huIkyDRxUBcnVH1KDVU
+   71EsmKSw6/J8RHeXxWDtB5q2ANIlC+AhxvjpeSiBLRVBNtKUIeXnw0YWH
+   FNo/416hEeBZcwTxKNKQ7RkazVwA3FFSGW5VzMqN3W1a+GfEwvBikN5Nh
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="393287963"
+X-IronPort-AV: E=Sophos;i="6.04,242,1695711600"; 
+   d="scan'208";a="393287963"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2023 13:43:34 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="887791730"
+X-IronPort-AV: E=Sophos;i="6.04,242,1695711600"; 
+   d="scan'208";a="887791730"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2023 13:43:34 -0800
+Received: from [10.209.159.147] (kliang2-mobl1.ccr.corp.intel.com [10.209.159.147])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 94F88580C3B;
+        Fri,  1 Dec 2023 13:43:32 -0800 (PST)
+Message-ID: <afefab15-cffc-4345-9cf4-c6a4128d4d9c@linux.intel.com>
+Date:   Fri, 1 Dec 2023 16:43:31 -0500
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="nOhcgoa1wYS3/ikS"
-Content-Disposition: inline
-In-Reply-To: <20231201163846.a7c1d79daca7c6a2e1416a70@hugovil.com>
-X-Cookie: The early worm gets the late bird.
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] perf mem: Fix perf mem error on hybrid
+Content-Language: en-US
+To:     Ian Rogers <irogers@google.com>
+Cc:     acme@kernel.org, mingo@redhat.com, peterz@infradead.org,
+        mark.rutland@arm.com, namhyung@kernel.org, jolsa@kernel.org,
+        adrian.hunter@intel.com, ravi.bangoria@amd.com,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Ammy Yi <ammy.yi@intel.com>
+References: <20231128203940.3964287-1-kan.liang@linux.intel.com>
+ <CAP-5=fUdEgnwk_FNHb-Ju3wCYE2PLLrPHqwZoyBGyURXQhBeSA@mail.gmail.com>
+ <083bfe11-6f6e-487f-ac28-aec22e6b6b06@linux.intel.com>
+ <CAP-5=fXTYX6_QdR4RCBu9yh+k1VwhsTjabKdseVP9Cvi6PE=sA@mail.gmail.com>
+ <f5112f5e-c77c-4a9a-ac3b-66772adba471@linux.intel.com>
+ <CAP-5=fU6EXenN9uU1DZ3X=L+k6Y-4a-XESfY9gL9ZCowhSazWA@mail.gmail.com>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+In-Reply-To: <CAP-5=fU6EXenN9uU1DZ3X=L+k6Y-4a-XESfY9gL9ZCowhSazWA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,43 +77,430 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---nOhcgoa1wYS3/ikS
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Fri, Dec 01, 2023 at 04:38:46PM -0500, Hugo Villeneuve wrote:
-> Mark Brown <broonie@kernel.org> wrote:
+On 2023-11-30 3:36 p.m., Ian Rogers wrote:
+> On Wed, Nov 29, 2023 at 1:15 PM Liang, Kan <kan.liang@linux.intel.com> wrote:
+>>
+>>
+>>
+>> On 2023-11-29 11:17 a.m., Ian Rogers wrote:
+>>> On Wed, Nov 29, 2023 at 5:52 AM Liang, Kan <kan.liang@linux.intel.com> wrote:
+>>>>
+>>>>
+>>>>
+>>>> On 2023-11-29 1:24 a.m., Ian Rogers wrote:
+>>>>> On Tue, Nov 28, 2023 at 12:39 PM <kan.liang@linux.intel.com> wrote:
+>>>>>>
+>>>>>> From: Kan Liang <kan.liang@linux.intel.com>
+>>>>>>
+>>>>>> The below error can be triggered on a hybrid machine.
+>>>>>>
+>>>>>>  $ perf mem record -t load sleep 1
+>>>>>>  event syntax error: 'breakpoint/mem-loads,ldlat=30/P'
+>>>>>>                                 \___ Bad event or PMU
+>>>>>>
+>>>>>>  Unable to find PMU or event on a PMU of 'breakpoint'
+>>>>>>
+>>>>>> In the perf_mem_events__record_args(), the current perf never checks the
+>>>>>> availability of a mem event on a given PMU. All the PMUs will be added
+>>>>>> to the perf mem event list. Perf errors out for the unsupported PMU.
+>>>>>>
+>>>>>> Extend perf_mem_event__supported() and take a PMU into account. Check
+>>>>>> the mem event for each PMU before adding it to the perf mem event list.
+>>>>>>
+>>>>>> Optimize the perf_mem_events__init() a little bit. The function is to
+>>>>>> check whether the mem events are supported in the system. It doesn't
+>>>>>> need to scan all PMUs. Just return with the first supported PMU is good
+>>>>>> enough.
+>>>>>>
+>>>>>> Fixes: 5752c20f3787 ("perf mem: Scan all PMUs instead of just core ones")
+>>>>>> Reported-by: Ammy Yi <ammy.yi@intel.com>
+>>>>>> Tested-by: Ammy Yi <ammy.yi@intel.com>
+>>>>>> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+>>>>>> ---
+>>>>>>  tools/perf/util/mem-events.c | 25 ++++++++++++++-----------
+>>>>>>  1 file changed, 14 insertions(+), 11 deletions(-)
+>>>>>>
+>>>>>> diff --git a/tools/perf/util/mem-events.c b/tools/perf/util/mem-events.c
+>>>>>> index 954b235e12e5..3a2e3687878c 100644
+>>>>>> --- a/tools/perf/util/mem-events.c
+>>>>>> +++ b/tools/perf/util/mem-events.c
+>>>>>> @@ -100,11 +100,14 @@ int perf_mem_events__parse(const char *str)
+>>>>>>         return -1;
+>>>>>>  }
+>>>>>>
+>>>>>> -static bool perf_mem_event__supported(const char *mnt, char *sysfs_name)
+>>>>>> +static bool perf_mem_event__supported(const char *mnt, struct perf_pmu *pmu,
+>>>>>> +                                     struct perf_mem_event *e)
+>>>>>>  {
+>>>>>> +       char sysfs_name[100];
+>>>>>>         char path[PATH_MAX];
+>>>>>>         struct stat st;
+>>>>>>
+>>>>>> +       scnprintf(sysfs_name, sizeof(sysfs_name), e->sysfs_name, pmu->name);
+>>>>>
+>>>>> Not sure if this is right. Looking at sysfs_name values:
+>>>>> https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tree/tools/perf/util/mem-events.c?h=perf-tools-next#n23
+>>>>> "cpu/events/mem-loads" and "cpu/events/mem-stores", so won't pmu->name
+>>>>> never be used?
+>>>>> Is there a missed change to change the cpu to %s?
+>>>>
+>>>> There is a X86 specific perf_mem_events__ptr(), which uses the
+>>>> "%s/mem-loads,ldlat=%u/P" and "%s/events/mem-loads" for Intel platforms.
+>>>> https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tree/tools/perf/arch/x86/util/mem-events.c?h=perf-tools-next#n20
+>>>> The pmu->name is used especially for the hybrid platforms.
+>>>
+>>> Right, that seems wrong. For one thing we're losing the compiler's
+>>> format string argument checking, but hardcoding PMU names just seems
+>>> to be something that will keep needing maintenance. This patch set
+>>> looks to fix an Intel issue but in general it is increasing tech debt
+>>> (or at least churning it) that will need cleaning up to do something
+>>> with better error checking and more generic. perf_mem_event looks like
+>>> a bad abstraction and then there are the integers whose special values
+>>> hold meaning. Could this fix come with some cleanup? It wouldn't seem
+>>> wrong to me to add notions of memory events to the PMU abstraction. As
+>>> it stands this scnprintf looks wrong in non-Intel cases.
+>>>
+>>
+>> The problem is that different ARCHs check different things. Arm and AMD
+>> checks the PMU name, while Intel and Power checks the specific events.
+>> It's hard to have a unified scnprintf.
+>>
+>> But we can abstract them into two cases, PMU name and event name. We use
+>> a different scnprintf to handle them.
+>> How about something as below?
+>>
+>> diff --git a/tools/perf/arch/x86/util/mem-events.c
+>> b/tools/perf/arch/x86/util/mem-events.c
+>> index 191b372f9a2d..4ef70fb9132b 100644
+>> --- a/tools/perf/arch/x86/util/mem-events.c
+>> +++ b/tools/perf/arch/x86/util/mem-events.c
+>> @@ -17,8 +17,8 @@ static char mem_stores_name[100];
+>>  #define E(t, n, s) { .tag = t, .name = n, .sysfs_name = s }
+>>
+>>  static struct perf_mem_event
+>> perf_mem_events_intel[PERF_MEM_EVENTS__MAX] = {
+>> -       E("ldlat-loads",        "%s/mem-loads,ldlat=%u/P",      "%s/events/mem-loads"),
+>> -       E("ldlat-stores",       "%s/mem-stores/P",              "%s/events/mem-stores"),
+>> +       E("ldlat-loads",        "%s/mem-loads,ldlat=%u/P",      "events/mem-loads"),
+>> +       E("ldlat-stores",       "%s/mem-stores/P",              "events/mem-stores"),
+>>         E(NULL,                 NULL,                           NULL),
+>>  };
+>>
+>> diff --git a/tools/perf/util/mem-events.c b/tools/perf/util/mem-events.c
+>> index 3a2e3687878c..ba88cb3d804f 100644
+>> --- a/tools/perf/util/mem-events.c
+>> +++ b/tools/perf/util/mem-events.c
+>> @@ -8,6 +8,7 @@
+>>  #include <unistd.h>
+>>  #include <api/fs/fs.h>
+>>  #include <linux/kernel.h>
+>> +#include <linux/string.h>
+>>  #include "map_symbol.h"
+>>  #include "mem-events.h"
+>>  #include "debug.h"
+>> @@ -20,8 +21,8 @@ unsigned int perf_mem_events__loads_ldlat = 30;
+>>  #define E(t, n, s) { .tag = t, .name = n, .sysfs_name = s }
+>>
+>>  static struct perf_mem_event perf_mem_events[PERF_MEM_EVENTS__MAX] = {
+>> -       E("ldlat-loads",        "cpu/mem-loads,ldlat=%u/P",     "cpu/events/mem-loads"),
+>> -       E("ldlat-stores",       "cpu/mem-stores/P",             "cpu/events/mem-stores"),
+>> +       E("ldlat-loads",        "cpu/mem-loads,ldlat=%u/P",     "events/mem-loads"),
+>> +       E("ldlat-stores",       "cpu/mem-stores/P",             "events/mem-stores"),
+>>         E(NULL,                 NULL,                           NULL),
+>>  };
+>>  #undef E
+>> @@ -103,12 +104,14 @@ int perf_mem_events__parse(const char *str)
+>>  static bool perf_mem_event__supported(const char *mnt, struct perf_pmu
+>> *pmu,
+>>                                       struct perf_mem_event *e)
+>>  {
+>> -       char sysfs_name[100];
+>>         char path[PATH_MAX];
+>>         struct stat st;
+>>
+>> -       scnprintf(sysfs_name, sizeof(sysfs_name), e->sysfs_name, pmu->name);
+>> -       scnprintf(path, PATH_MAX, "%s/devices/%s", mnt, sysfs_name);
+>> +       if (strstarts(e->sysfs_name, "event/"))
+>> +               scnprintf(path, PATH_MAX, "%s/devices/%s/%s", mnt, pmu->name,
+>> e->sysfs_name);
+>> +       else
+>> +               scnprintf(path, PATH_MAX, "%s/devices/%s", mnt, e->sysfs_name);
+>> +
+>>         return !stat(path, &st);
+>>  }
+> 
+> Thanks Kan, how about we move forward with the patch as is. I'm just
+> moaning as I think there is a longer term tech debt issue we should be
+> cleaning up. What I'm imagining in some crude hacking for just the
+> mem-events list case is:
+> 
+> ```
+> --- a/tools/perf/util/mem-events.c
+> +++ b/tools/perf/util/mem-events.c
+> @@ -149,17 +149,19 @@ int perf_mem_events__init(void)
+> 
+> void perf_mem_events__list(void)
+> {
+> -       int j;
+> -
+> -       for (j = 0; j < PERF_MEM_EVENTS__MAX; j++) {
+> -               struct perf_mem_event *e = perf_mem_events__ptr(j);
+> +       static const char *mem_event_names[PERF_MEM_EVENTS__MAX] = {
+> +               [PERF_MEM_EVENTS__LOAD] = "...load...",
+> +               [PERF_MEM_EVENTS__STORE] = "...store...",
+> +               [PERF_MEM_EVENTS__ACCESS] = "...access...",
+> +       };
+> +       while ((pmu = perf_pmus__scan(pmu)) != NULL) {
+> +               if (!perf_pmu__mem_events_supported(pmu))
+> +                       continue;
+> 
+> -               fprintf(stderr, "%-*s%-*s%s",
+> -                       e->tag ? 13 : 0,
+> -                       e->tag ? : "",
+> -                       e->tag && verbose > 0 ? 25 : 0,
+> -                       e->tag && verbose > 0 ?
+> perf_mem_events__name(j, NULL) : "",
+> -                       e->supported ? ": available\n" : "");
+> +               for (int i = 0; i < PERF_MEM_EVENTS__MAX; i++) {
+> +                       if (perf_pmu__mem_event_supported(pmu, i))
+> +                               printf("%s\n", mem_event_names[i]);
+> +               }
+>        }
+> }
+>
 
-> > If you're working on that driver it'd also be good to update the current
-> > use of cache bypass for the enhanced features/interrupt identification
-> > register (and anything else in there, that did seem to be the only one)
-> > to use regmap ranges instead - that'd remove the need for the efr_lock
-> > and be a much more sensible/idiomatic use of the regmap APIs.
+This will be a user visiable change. We may don't want to chage it in a
+cleanup patch. I'm not sure if anyone relies on the output.
 
-> I will also look to remove the efr_lock, altough it has more
-> implications since this ship has some registers that share a common
-> address, and selected by bits in other registers, and I think this
-> is why there is this efr_lock.
+$ sudo perf mem record -e list
+ldlat-loads  : available
+ldlat-stores : available
 
-Right, the registers sharing a common address with the register selected
-by bits in another register is what regmap ranges support - the less
-creative use of this is banked blocks of registers with a selector
-register which picks which page bank is in use, that's moderately common
-especially for TI.
 
---nOhcgoa1wYS3/ikS
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
+> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+> index 3c9609944a2f..e7f4f7d3d082 100644
+> --- a/tools/perf/util/pmu.c
+> +++ b/tools/perf/util/pmu.c
+> @@ -1578,6 +1578,34 @@ int perf_pmu__find_event(struct perf_pmu *pmu,
+> const char *event, void *state, p
+>                                        &args, find_event_callback);
+> }
+> 
+> +bool perf_pmu__mem_events_supported(const struct perf_pmu *pmu)
+> +{
+> +       if (pmu->is_core && is_intel()) {
+> +               return true;
+> +       }
+> +       if (strcmp(pmu->name, "ibs_op")) {
+> +               return true;
+> +       }
+> +       if (ARM...) {
+> +       }
+> +       return false;
+> +}
+> +
+> +bool perf_pmu__mem_event_supported(const struct perf_pmu *pmu, enum
+> mem_event_type type)
+> +{
+> +       if (pmu->is_core && is_intel()) {
+> +               switch (type) {
+> +               case PERF_MEM_EVENTS__LOAD:
+> +                       return perf_pmu__have_event(pmu, "mem-loads");
+> +               case PERF_MEM_EVENTS__STORES:
+> +                       return perf_pmu__have_event(pmu, "mem-stores");
+> +               default:
+> +                       return false;
+> +               }
+> +       }
+> +       ...
+> +}
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVqUxsACgkQJNaLcl1U
-h9Br7Af/ZG85j1+00hl5mD/PF2YAu2qKynlERqrKBWec6mnSm0iequm+2ZfgTZ9E
-qIdMdI5vVM1xPhl+r6uByEkDj5uBVvBonTM+diCzuT6NnXfcvVUfr5jGjJW5dDqp
-wtUwTpLB4FRXlIyFYOpQztxyVGsbO8XTm8ASqe/zqccpG19nuajaOasqdTiGE0zQ
-nJQzy3sqTV4cgxGXujZUuz5Dd1gWD07gqVmaK7C5QefWEdxyIvav/FRRJ/kLHQex
-N03Rx4YdvzA8Ec6twRIkEzwVIrTndo4qZbYOAGCUibgVZdmanzKIngOhSIBqEiM1
-BoZGJ+DqqBfpwu5ajmHRTLFmEFCOaA==
-=4qvG
------END PGP SIGNATURE-----
+I think we'd better keep the ARCH details in the arch specific files.
 
---nOhcgoa1wYS3/ikS--
+> +
+> static void perf_pmu__del_formats(struct list_head *formats)
+> {
+>        struct perf_pmu_format *fmt, *tmp;
+> diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
+> index 424c3fee0949..414f0fbd77a8 100644
+> --- a/tools/perf/util/pmu.h
+> +++ b/tools/perf/util/pmu.h
+> @@ -26,6 +26,13 @@ enum {
+> #define PERF_PMU_FORMAT_BITS 64
+> #define MAX_PMU_NAME_LEN 128
+> 
+> +enum mem_event_type {
+> +       PERF_MEM_EVENTS__LOAD,
+> +       PERF_MEM_EVENTS__STORE,
+> +       PERF_MEM_EVENTS__ACCESS,
+> +       PERF_MEM_EVENTS__MAX,
+> +};
+> +
+> struct perf_event_attr;
+> 
+> struct perf_pmu_caps {
+> @@ -204,6 +211,8 @@ int perf_pmu__check_alias(struct perf_pmu *pmu,
+> struct parse_events_terms *head_
+>                          struct perf_pmu_info *info, bool *rewrote_terms,
+>                          struct parse_events_error *err);
+> int perf_pmu__find_event(struct perf_pmu *pmu, const char *event, void
+> *state, pmu_event_callback cb);
+> +bool perf_pmu__mem_events_supported(const struct perf_pmu *pmu);
+> +bool perf_pmu__mem_event_supported(const struct perf_pmu *pmu, enum
+> mem_event_types type);
+> 
+> int perf_pmu__format_parse(struct perf_pmu *pmu, int dirfd, bool eager_load);
+> void perf_pmu_format__set_value(void *format, int config, unsigned long *bits);
+> ```
+> 
+> or maybe we can have some state in struct pmu and have the
+> perf_pmu__arch_init set that up. Like a bitmask of supported mem
+> events.
+> 
+> I'd kind of like the arch init perf pmu code to be as little as
+> possible. So if you did user space emulation of ARM on Intel (Intel
+> does this with houdini), then you could still read memory bandwidth
+> numbers from the Intel PMU as the logic isn't hidden and is generic.
+> Of course "cpu" is something of a special case PMU.
+
+I'm thinking to add the perf_mem_events struct into the perf_pmu. For
+example,
+
+diff --git a/tools/perf/arch/x86/util/pmu.c b/tools/perf/arch/x86/util/pmu.c
+index 469555ae9b3c..c7d476218793 100644
+--- a/tools/perf/arch/x86/util/pmu.c
++++ b/tools/perf/arch/x86/util/pmu.c
+@@ -30,6 +30,11 @@ void perf_pmu__arch_init(struct perf_pmu *pmu
+__maybe_unused)
+                pmu->selectable = true;
+        }
+ #endif
++       if (x86__is_amd_cpu()) {
++               if (strcmp(pmu->name, "ibs_op"))
++                       pmu->mem_event = perf_mem_events_amd;
++       } else if (pmu->is_core)
++               pmu->mem_event = perf_mem_events_intel;
+ }
+
+ int perf_pmus__num_mem_pmus(void)
+diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
+index d2895d415f08..6acad509f44a 100644
+--- a/tools/perf/util/pmu.h
++++ b/tools/perf/util/pmu.h
+@@ -162,6 +162,8 @@ struct perf_pmu {
+                 */
+                bool exclude_guest;
+        } missing_features;
++
++       struct perf_mem_event   *mem_event;
+ };
+
+
+It should not be hard to add a perf_pmus__scan_mem() to replace the
+current logic of searching the mem_event supported PMU.
+
+The perf_mem_events__ptr() should be simply replaced by pmu->mem_event.
+
+The perf_mem_events__name() can also be replaced similarly, but have to
+specially handle the mem-loads-aux. Maybe we can create a
+perf_mem_events_intel_aux[], and use it in the perf_pmu__arch_init()
+when perf_pmus__have_event(pmu, "mem-loads-aux").
+
+I will implement some codes and see how it goes.
+
+> 
+> Anyway, if you don't feel like the refactor we can move forward with
+> this or a v2, let me know.
+
+I think the refactor is doable. I will work on it next week.
+But I think it should be on top of this fix.
+If you are OK with the fix, I think it's better to have it merged first.
+So everything would work properly. The validation work will not be blocked.
+Then I can send a patch set to cleanup the perf mem events separately.
+
+Thanks,
+Kan
+> 
+> Thanks,
+> Ian
+> 
+>> Thanks,
+>> Kan
+>>
+>>> Thanks,
+>>> Ian
+>>>
+>>>> Thanks,
+>>>> Kan
+>>>>>
+>>>>> Thanks,
+>>>>> Ian
+>>>>>
+>>>>>>         scnprintf(path, PATH_MAX, "%s/devices/%s", mnt, sysfs_name);
+>>>>>>         return !stat(path, &st);
+>>>>>>  }
+>>>>>> @@ -120,7 +123,6 @@ int perf_mem_events__init(void)
+>>>>>>
+>>>>>>         for (j = 0; j < PERF_MEM_EVENTS__MAX; j++) {
+>>>>>>                 struct perf_mem_event *e = perf_mem_events__ptr(j);
+>>>>>> -               char sysfs_name[100];
+>>>>>>                 struct perf_pmu *pmu = NULL;
+>>>>>>
+>>>>>>                 /*
+>>>>>> @@ -136,12 +138,12 @@ int perf_mem_events__init(void)
+>>>>>>                  * of core PMU.
+>>>>>>                  */
+>>>>>>                 while ((pmu = perf_pmus__scan(pmu)) != NULL) {
+>>>>>> -                       scnprintf(sysfs_name, sizeof(sysfs_name), e->sysfs_name, pmu->name);
+>>>>>> -                       e->supported |= perf_mem_event__supported(mnt, sysfs_name);
+>>>>>> +                       e->supported |= perf_mem_event__supported(mnt, pmu, e);
+>>>>>> +                       if (e->supported) {
+>>>>>> +                               found = true;
+>>>>>> +                               break;
+>>>>>> +                       }
+>>>>>>                 }
+>>>>>> -
+>>>>>> -               if (e->supported)
+>>>>>> -                       found = true;
+>>>>>>         }
+>>>>>>
+>>>>>>         return found ? 0 : -ENOENT;
+>>>>>> @@ -167,13 +169,10 @@ static void perf_mem_events__print_unsupport_hybrid(struct perf_mem_event *e,
+>>>>>>                                                     int idx)
+>>>>>>  {
+>>>>>>         const char *mnt = sysfs__mount();
+>>>>>> -       char sysfs_name[100];
+>>>>>>         struct perf_pmu *pmu = NULL;
+>>>>>>
+>>>>>>         while ((pmu = perf_pmus__scan(pmu)) != NULL) {
+>>>>>> -               scnprintf(sysfs_name, sizeof(sysfs_name), e->sysfs_name,
+>>>>>> -                         pmu->name);
+>>>>>> -               if (!perf_mem_event__supported(mnt, sysfs_name)) {
+>>>>>> +               if (!perf_mem_event__supported(mnt, pmu, e)) {
+>>>>>>                         pr_err("failed: event '%s' not supported\n",
+>>>>>>                                perf_mem_events__name(idx, pmu->name));
+>>>>>>                 }
+>>>>>> @@ -183,6 +182,7 @@ static void perf_mem_events__print_unsupport_hybrid(struct perf_mem_event *e,
+>>>>>>  int perf_mem_events__record_args(const char **rec_argv, int *argv_nr,
+>>>>>>                                  char **rec_tmp, int *tmp_nr)
+>>>>>>  {
+>>>>>> +       const char *mnt = sysfs__mount();
+>>>>>>         int i = *argv_nr, k = 0;
+>>>>>>         struct perf_mem_event *e;
+>>>>>>
+>>>>>> @@ -211,6 +211,9 @@ int perf_mem_events__record_args(const char **rec_argv, int *argv_nr,
+>>>>>>                         while ((pmu = perf_pmus__scan(pmu)) != NULL) {
+>>>>>>                                 const char *s = perf_mem_events__name(j, pmu->name);
+>>>>>>
+>>>>>> +                               if (!perf_mem_event__supported(mnt, pmu, e))
+>>>>>> +                                       continue;
+>>>>>> +
+>>>>>>                                 rec_argv[i++] = "-e";
+>>>>>>                                 if (s) {
+>>>>>>                                         char *copy = strdup(s);
+>>>>>> --
+>>>>>> 2.35.1
+>>>>>>
+>>>
