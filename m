@@ -2,48 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EDFA7FFFF9
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 01:13:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B68A1800001
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 01:14:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235211AbjLAAN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 19:13:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50386 "EHLO
+        id S1377394AbjLAAOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 19:14:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbjLAANY (ORCPT
+        with ESMTP id S1377352AbjLAAOo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 19:13:24 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3EFF197
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 16:13:30 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D8D6C433C7;
-        Fri,  1 Dec 2023 00:13:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701389610;
-        bh=JrBMPoryyL0Fy1zFDRIW3Y9lc5BSyHrlKcQMRHEusIc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=pxygyjUqd0Z/0Wcv3T8aabY1hMWXw8/b35zoL3d3cJwj5e229mBQLeOUJQDXD4ALq
-         mhIGA8KlyegvAXUT2wF7kNLhR3VWAbprzkE25uH09xozCpiRKSrdfMq/CELRNA/t29
-         xkVc0dHRaUczP/j3EyGQ4GaqK8YS6hUg6Jep6ROnoluXaMJSZig4J3gvTdeWkM3HhF
-         nocEZxTMcgqNG4HOiYPkDjqbgmUea5YcjU0h2WOv2iTNBrZeW/CwDnYRh+epNXQdkM
-         68alxSN+TuFRAVz8UkDstH3MA+uRBqJmkqTnK7XNx6RxJABjh/9Qg8D+zGSGsg+1SS
-         rEQpRRZ42K2iQ==
-Date:   Fri, 1 Dec 2023 09:13:26 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     JP Kobryn <inwardvessel@gmail.com>
-Cc:     linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org,
-        peterz@infradead.org
-Subject: Re: [PATCH v2] rethook: Use __rcu pointer for rethook::handler
-Message-Id: <20231201091326.e0807750f788d17763481461@kernel.org>
-In-Reply-To: <ZWkCV_D8Yw-cFsXE@localhost.localdomain>
-References: <170126066201.398836.837498688669005979.stgit@devnote2>
-        <ZWkCV_D8Yw-cFsXE@localhost.localdomain>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        Thu, 30 Nov 2023 19:14:44 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6337D196;
+        Thu, 30 Nov 2023 16:14:50 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-333308c3683so131140f8f.3;
+        Thu, 30 Nov 2023 16:14:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701389689; x=1701994489; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=rbMRUAfFn47SD4U+uFEOnC9vSvmwUi2NELQbNX2DDtA=;
+        b=Y8Lu5ZJ5uUoM3fQHPT234pGNqTsADTnSPR37N6u4gZOYOSb4MJmZe5+xvbUWLs32rM
+         YxdyeCznqi2NTRu6SgL78J7kL5NhzPT4XbTNWWeajdJyqpx+aSG08gvtgI30jiA5/Yqj
+         XpyjA548HcT2rn15QOyTENdLZUVyJGIWGKPldTX47/OlDBHWpwQRVYuGx1a/rPAKupH2
+         sn7nZ/XAk2H51KWL3Vm6OyB5+1aHZtDqS2H1OTrPbyjhzNj6dGkEyugLe5d/T+Ujdp1B
+         AO5KnvHlpkHAiMSpok6ymlI4DXsqoYoiVb5jFn/vGCgMHnnOmdSe7JhMI/xWzlO53pD4
+         ZsfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701389689; x=1701994489;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rbMRUAfFn47SD4U+uFEOnC9vSvmwUi2NELQbNX2DDtA=;
+        b=O/J6TrKVNM44MpwZsAVwFObL9oLeRJ8Rrj3EpN/IK3RjzE8V8ifVpO55LhMM2cOrDT
+         nh/wrB0mN+mQEgNyBobjiMSGVPoCviLLuNjDw+cbKA82mb4TJwvop21TutarouQVUwEY
+         7MKFkGc3yldz+fMjihZZKnZa5F7U0DvAPXl/k/qvpbKuEX3OcUELcY8hCZvixkqZC3GM
+         yOmcGJ5tU9g91cfx6xVy/HVm0XRbFZNxhfKVpAZd2xFkPDQDv0DpfLx6WAgp6KOvuL+p
+         hFtfnUNlGx5SIcto4iJTJqpH6fRuxnznJZ1VVc+KypMlwrrK6dyHUR7XQHkOcCe1GJmV
+         M3og==
+X-Gm-Message-State: AOJu0YwUASC09yZ+OtED7hcCuG5jNKSrKyeZGM+4Rx0hvgdFiHDMlxbF
+        6V5fgaT+wAVNKVVtakuJFdg=
+X-Google-Smtp-Source: AGHT+IFwRGHS2tPjFk1hrnhXtuCfo2T+vO+mPvAHX1fulP9kHjEvYxhfoQuWC4gItjSIhrawmk0dmw==
+X-Received: by 2002:adf:e983:0:b0:333:2fc4:464 with SMTP id h3-20020adfe983000000b003332fc40464mr147908wrm.93.1701389688625;
+        Thu, 30 Nov 2023 16:14:48 -0800 (PST)
+Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
+        by smtp.googlemail.com with ESMTPSA id g16-20020a05600c4ed000b0040b47c53610sm3535457wmq.14.2023.11.30.16.14.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Nov 2023 16:14:48 -0800 (PST)
+From:   Christian Marangi <ansuelsmth@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Christian Marangi <ansuelsmth@gmail.com>
+Subject: [net-next PATCH v2 00/12] net: phy: at803x: cleanup
+Date:   Fri,  1 Dec 2023 01:14:10 +0100
+Message-Id: <20231201001423.20989-1-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.40.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -52,155 +75,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 30 Nov 2023 13:44:55 -0800
-JP Kobryn <inwardvessel@gmail.com> wrote:
+The intention of this big series is to try to cleanup the big
+at803x PHY driver.
 
-> On Wed, Nov 29, 2023 at 09:24:22PM +0900, Masami Hiramatsu (Google) wrote:
-> > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > 
-> > Since the rethook::handler is an RCU-maganged pointer so that it will
-> > notice readers the rethook is stopped (unregistered) or not, it should
-> > be an __rcu pointer and use appropriate functions to be accessed. This
-> > will use appropriate memory barrier when accessing it. OTOH,
-> > rethook::data is never changed, so we don't need to check it in
-> > get_kretprobe().
-> > 
-> > NOTE: To avoid sparse warning, rethook::handler is defined by a raw
-> > function pointer type with __rcu instead of rethook_handler_t.
-> > 
-> > Fixes: 54ecbe6f1ed5 ("rethook: Add a generic return hook")
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Closes: https://lore.kernel.org/oe-kbuild-all/202311241808.rv9ceuAh-lkp@intel.com/
-> > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > ---
-> >  include/linux/kprobes.h |    6 ++----
-> >  include/linux/rethook.h |    7 ++++++-
-> >  kernel/trace/rethook.c  |   23 ++++++++++++++---------
-> >  3 files changed, 22 insertions(+), 14 deletions(-)
-> > 
-> > diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
-> > index 64672bace560..0ff44d6633e3 100644
-> > --- a/include/linux/kprobes.h
-> > +++ b/include/linux/kprobes.h
-> > @@ -197,10 +197,8 @@ extern int arch_trampoline_kprobe(struct kprobe *p);
-> >  #ifdef CONFIG_KRETPROBE_ON_RETHOOK
-> >  static nokprobe_inline struct kretprobe *get_kretprobe(struct kretprobe_instance *ri)
-> >  {
-> > -	RCU_LOCKDEP_WARN(!rcu_read_lock_any_held(),
-> > -		"Kretprobe is accessed from instance under preemptive context");
-> > -
-> > -	return (struct kretprobe *)READ_ONCE(ri->node.rethook->data);
-> > +	/* rethook::data is non-changed field, so that you can access it freely. */
-> > +	return (struct kretprobe *)ri->node.rethook->data;
-> >  }
-> >  static nokprobe_inline unsigned long get_kretprobe_retaddr(struct kretprobe_instance *ri)
-> >  {
-> > diff --git a/include/linux/rethook.h b/include/linux/rethook.h
-> > index ce69b2b7bc35..ba60962805f6 100644
-> > --- a/include/linux/rethook.h
-> > +++ b/include/linux/rethook.h
-> > @@ -28,7 +28,12 @@ typedef void (*rethook_handler_t) (struct rethook_node *, void *, unsigned long,
-> >   */
-> >  struct rethook {
-> >  	void			*data;
-> > -	rethook_handler_t	handler;
-> > +	/*
-> > +	 * To avoid sparse warnings, this uses a raw function pointer with
-> > +	 * __rcu, instead of rethook_handler_t. But this must be same as
-> > +	 * rethook_handler_t.
-> > +	 */
-> > +	void (__rcu *handler) (struct rethook_node *, void *, unsigned long, struct pt_regs *);
-> >  	struct objpool_head	pool;
-> >  	struct rcu_head		rcu;
-> >  };
-> > diff --git a/kernel/trace/rethook.c b/kernel/trace/rethook.c
-> > index 6fd7d4ecbbc6..fa03094e9e69 100644
-> > --- a/kernel/trace/rethook.c
-> > +++ b/kernel/trace/rethook.c
-> > @@ -48,7 +48,7 @@ static void rethook_free_rcu(struct rcu_head *head)
-> >   */
-> >  void rethook_stop(struct rethook *rh)
-> >  {
-> > -	WRITE_ONCE(rh->handler, NULL);
-> > +	rcu_assign_pointer(rh->handler, NULL);
-> >  }
-> >  
-> >  /**
-> > @@ -63,7 +63,7 @@ void rethook_stop(struct rethook *rh)
-> >   */
-> >  void rethook_free(struct rethook *rh)
-> >  {
-> > -	WRITE_ONCE(rh->handler, NULL);
-> > +	rethook_stop(rh);
-> >  
-> >  	call_rcu(&rh->rcu, rethook_free_rcu);
-> >  }
-> > @@ -82,6 +82,12 @@ static int rethook_fini_pool(struct objpool_head *head, void *context)
-> >  	return 0;
-> >  }
-> >  
-> > +static inline rethook_handler_t rethook_get_handler(struct rethook *rh)
-> > +{
-> > +	return (rethook_handler_t)rcu_dereference_check(rh->handler,
-> > +							rcu_read_lock_any_held());
-> > +}
-> > +
-> >  /**
-> >   * rethook_alloc() - Allocate struct rethook.
-> >   * @data: a data to pass the @handler when hooking the return.
-> > @@ -107,7 +113,7 @@ struct rethook *rethook_alloc(void *data, rethook_handler_t handler,
-> >  		return ERR_PTR(-ENOMEM);
-> >  
-> >  	rh->data = data;
-> > -	rh->handler = handler;
-> > +	rcu_assign_pointer(rh->handler, handler);
-> >  
-> >  	/* initialize the objpool for rethook nodes */
-> >  	if (objpool_init(&rh->pool, num, size, GFP_KERNEL, rh,
-> > @@ -135,9 +141,10 @@ static void free_rethook_node_rcu(struct rcu_head *head)
-> >   */
-> >  void rethook_recycle(struct rethook_node *node)
-> >  {
-> > -	lockdep_assert_preemption_disabled();
-> > +	rethook_handler_t handler;
-> >  
-> > -	if (likely(READ_ONCE(node->rethook->handler)))
-> > +	handler = rethook_get_handler(node->rethook);
-> > +	if (likely(handler))
-> >  		objpool_push(node, &node->rethook->pool);
-> >  	else
-> >  		call_rcu(&node->rcu, free_rethook_node_rcu);
-> > @@ -153,9 +160,7 @@ NOKPROBE_SYMBOL(rethook_recycle);
-> >   */
-> >  struct rethook_node *rethook_try_get(struct rethook *rh)
-> >  {
-> > -	rethook_handler_t handler = READ_ONCE(rh->handler);
-> > -
-> > -	lockdep_assert_preemption_disabled();
-> > +	rethook_handler_t handler = rethook_get_handler(rh);
-> >  
-> >  	/* Check whether @rh is going to be freed. */
-> >  	if (unlikely(!handler))
-> > @@ -300,7 +305,7 @@ unsigned long rethook_trampoline_handler(struct pt_regs *regs,
-> >  		rhn = container_of(first, struct rethook_node, llist);
-> >  		if (WARN_ON_ONCE(rhn->frame != frame))
-> >  			break;
-> > -		handler = READ_ONCE(rhn->rethook->handler);
-> > +		handler = rethook_get_handler(rhn->rethook);
-> >  		if (handler)
-> >  			handler(rhn, rhn->rethook->data,
-> >  				correct_ret_addr, regs);
-> > 
-> 
-> I applied and tested this patch locally on an x86_64 machine and can
-> confirm there are no RCU-related sparse warnings. Also, kprobe tests
-> within the ftrace selftest suite succeed just the same as before
-> applying the patch.
-> 
-> Tested-by: JP Kobryn <inwardvessel@gmail.com>
+It currently have 3 different family of PHY in it. at803x, qca83xx
+and qca808x.
 
-Thank you for testing!
-Let me push it with your fix.
+The current codebase required lots of cleanup and reworking to
+make the split possible as currently there is a greater use of
+adding special function matching the phy_id.
+
+This has been reworked to make the function actually generic
+and make the change only in more specific one. The result
+is the addition of micro additional function but that is for good
+as it massively simplify splitting the driver later.
+
+Consider that this is all in preparation for the addition of
+qca807x PHY driver that will also uso some of the functions of
+at803x.
+
+Subsequent series will come with the actual PHY split and other
+required cleanup. This is only to start the process with minor
+changes.
+
+Changes v2:
+- Drop split part due to series too big
+- Split changes even more
+- Fix problem pointed out by Russell (flawed reworked function logic)
+- Add Reviewed-by tag from Andrew
+- Minor rework to prevent further code duplication for cdt
+
+Christian Marangi (12):
+  net: phy: at803x: fix passing the wrong reference for config_intr
+  net: phy: at803x: move disable WOL to specific at8031 probe
+  net: phy: at803x: raname hw_stats functions to qca83xx specific name
+  net: phy: at803x: move qca83xx specific check in dedicated functions
+  net: phy: at803x: move specific DT option for at8031 to specific probe
+  net: phy: at803x: move specific at8031 probe mode check to dedicated
+    probe
+  net: phy: at803x: move specific at8031 config_init to dedicated
+    function
+  net: phy: at803x: move specific at8031 WOL bits to dedicated function
+  net: phy: at803x: move specific at8031 config_intr to dedicated
+    function
+  net: phy: at803x: make at8031 related DT functions name more specific
+  net: phy: at803x: move at8035 specific DT parse to dedicated probe
+  net: phy: at803x: drop specific PHY ID check from cable test functions
+
+ drivers/net/phy/at803x.c | 777 +++++++++++++++++++++------------------
+ 1 file changed, 428 insertions(+), 349 deletions(-)
 
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+2.40.1
+
