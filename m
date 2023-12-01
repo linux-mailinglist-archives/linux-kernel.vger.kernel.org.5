@@ -2,94 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19F68801440
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 21:23:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C939680144F
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 21:24:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230052AbjLAUXX convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 1 Dec 2023 15:23:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60564 "EHLO
+        id S230424AbjLAUYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 15:24:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229562AbjLAUXV (ORCPT
+        with ESMTP id S230488AbjLAUX6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 15:23:21 -0500
-Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B027103
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 12:23:28 -0800 (PST)
-Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-28655c04da3so978618a91.0
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 12:23:28 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701462207; x=1702067007;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=c6uSDoNQeYcE0d3VamMdZZXW8gFGXoitBoE7ho02KuE=;
-        b=jOiq6yd+NpgxYq3rm4k4TGPKf+8ht2xLb4cNZVtGsh2Rfh608aQnVk4zhVmnZcyjsJ
-         EbL39RS1PmVSVVRzl9/oHweaxy8rIEqR/IkVIKAfFhhwRab+fwnGHy2O5l/XPLrZrg1x
-         4znGb1g+yzyvCaJMXFgn8eAQ02CfKNoEpG/CEfkaOQVoKLWNMd3qUXHkLsdi6fD1eq1K
-         kbj4b/bRlll46MpMZKhFiIFMFwd48YUlgNxHrhlwO8b64vI2kBYIOR3b0zelGEsI4I9D
-         +qKcSbHh9W4/QlRIjNYnBakdNfNG3nctbztjDYvyBnfTdsVHg/t/xDSutNHWO8MQe+zU
-         bVAA==
-X-Gm-Message-State: AOJu0Yx/JBTq2HPPIzdYelIe2Cniq8rMtdvGrh/VYQwbjxIPlICaBk9I
-        PgISgU5+e6eeP0cT9elbRpNXwFH+MlWaGmQZR2A=
-X-Google-Smtp-Source: AGHT+IElxmUYJWDP0N0x4mjkJdPj7Cphje6oPkxkNXasQkSuVWoCdEedb7NIn6VkqjU3pWEasACeUrfITYeZdZKHTTA=
-X-Received: by 2002:a17:90a:ce92:b0:285:7e62:2822 with SMTP id
- g18-20020a17090ace9200b002857e622822mr214159pju.16.1701462207563; Fri, 01 Dec
- 2023 12:23:27 -0800 (PST)
+        Fri, 1 Dec 2023 15:23:58 -0500
+Received: from new1-smtp.messagingengine.com (new1-smtp.messagingengine.com [66.111.4.221])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D21710F4;
+        Fri,  1 Dec 2023 12:24:02 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 6FB97580994;
+        Fri,  1 Dec 2023 15:24:01 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Fri, 01 Dec 2023 15:24:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+        :cc:content-transfer-encoding:content-type:date:date:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to; s=fm3; t=1701462241; x=
+        1701469441; bh=uvTwqTAZ/68O3KK7heo5AiD3gEgHNW4W5lf/fdX2H2o=; b=K
+        KxjWq6I0Rx6qT+PjICwtMdv+khHm0zKdXc8MnzTorgJsfseEYpzPsvP+8RjmabMc
+        peFPWIYTZCRHo9m+V7VsSUr+7N5jL06vqSR6ubrmDhpwci2C6b+QzstBnbi3CJNA
+        l+qcQco9tUoqN06VdvZCIvFvEs/ity9Ndf1hnuSQ0gWrp/XP3FpzpUX85tiZkZI2
+        loxmtdCX9OYRmM8G/OZsrpXOlaZU1iad1K6Ogg1ZOub+JM/59MiWXFQJbCFhpees
+        yAjou/5l2yj+AWDugeBUJoKX95P5LSDZbevlTklW27HaDhvw+joYBLcsomeiKzQG
+        uEScp44bYagRepShCxjRQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:date:date:feedback-id:feedback-id:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1701462241; x=
+        1701469441; bh=uvTwqTAZ/68O3KK7heo5AiD3gEgHNW4W5lf/fdX2H2o=; b=C
+        I8LCAn0eZsG2zJ4sBKcca3TYOfWtlOD5UfNzpbdV/9icdG4MY8Fi33fwGAH8r3e8
+        RG3643pqYELdxubemBKeLgSUzJbMpulD1hlhJABQdO4QAGkC4sjNg2sd72qXUfMr
+        RY7CTFUOO6ygyC1XePaZjClGQbz3ux0BpvIwS+sXU0HNwIkRPk5CTpLhXJudN/Qf
+        a213iXebdLi7UmCBq/kAYlQVD/C2DMcGkZIkpxjsyVPLNO+/O8LQWF5NhMB5G05G
+        dxJbpRohGnHTbjDF4WUBmwkZa0ZkpaN+2bnsmxrdARmbt25yck2Omzn+8R0eT/wo
+        UBHegv8Sa+Kvj/c2yBPOQ==
+X-ME-Sender: <xms:4UBqZaVvQIAZyHdcOttCcIDqI46CUytrn79KWNV1uLw-qbENrt2wKg>
+    <xme:4UBqZWnjz8kdVwI2gAd8DsaDgWRFTXQfYsSG3e_tHnF8W_ilR9bDOJ3R3L-3_egSv
+    rDpl2xJ0bQfcueHfg>
+X-ME-Received: <xmr:4UBqZeaBAF5S2U0xHTQiEq8tSAqP5pa9fERzNLguXwj0GWxj6w9j7Wcl47VnhFX4u9X9WHnFPzh8N4JeiIxuwYQA-DSuxPp6D91MqKFvBxqB4Q>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeiledgudefjecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecufghrlhcuvffnffculdejtddmnecujfgurhephf
+    fvvefufffkofgjfhgggfestdekredtredttdenucfhrhhomhepffgrnhhivghlucgiuhcu
+    oegugihusegugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpefgfefggeejhfduie
+    ekvdeuteffleeifeeuvdfhheejleejjeekgfffgefhtddtteenucevlhhushhtvghrufhi
+    iigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiii
+X-ME-Proxy: <xmx:4UBqZRVf1_Niz9ZcCw_lMQV3sbSMJdBs3Lnq2173sXzP8RbjysPSEA>
+    <xmx:4UBqZUkewGuEJ1VzygStHTSThoHywugLuL3vRUPEH47JTzOlygk-WA>
+    <xmx:4UBqZWcXNTYXWF_TNuUznzcy9Tnw2CbWxt3ln5dl_FxV-_zwREIxcQ>
+    <xmx:4UBqZcEAEEZdgZRdsjMYvQuNSoVIvf_BzaquY9FyoHSSVN4S2JptUw>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 1 Dec 2023 15:23:59 -0500 (EST)
+From:   Daniel Xu <dxu@dxuuu.xyz>
+To:     ast@kernel.org, daniel@iogearbox.net, shuah@kernel.org,
+        andrii@kernel.org, steffen.klassert@secunet.com,
+        antony.antony@secunet.com, alexei.starovoitov@gmail.com,
+        yonghong.song@linux.dev, eddyz87@gmail.com
+Cc:     mykolal@fb.com, martin.lau@linux.dev, song@kernel.org,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        devel@linux-ipsec.org, netdev@vger.kernel.org
+Subject: [PATCH ipsec-next v3 5/9] libbpf: selftests: Add verifier tests for CO-RE bitfield writes
+Date:   Fri,  1 Dec 2023 13:23:16 -0700
+Message-ID: <e4d14fb5f07145ff4a367cc01d8dcf6c82581c88.1701462010.git.dxu@dxuuu.xyz>
+X-Mailer: git-send-email 2.42.1
+In-Reply-To: <cover.1701462010.git.dxu@dxuuu.xyz>
+References: <cover.1701462010.git.dxu@dxuuu.xyz>
 MIME-Version: 1.0
-References: <20230602194513.1589179-1-namhyung@kernel.org> <c5a40920-0b14-b9b5-19ee-48c965bd12e3@amd.com>
- <ZV9lfJyyC7xawHBC@kernel.org> <3d70b52f-2042-328c-6dc7-37fcbb3510a2@amd.com>
- <ZWSombzfCkxHc7lC@kernel.org> <fc2390cf-bdf9-590e-d078-4bb616d5feb6@amd.com> <ZWiIB0AURxL7qb5e@kernel.org>
-In-Reply-To: <ZWiIB0AURxL7qb5e@kernel.org>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Fri, 1 Dec 2023 12:23:16 -0800
-Message-ID: <CAM9d7chHWovp7W+e6KBaeZh3pBZTuHBe0hRH=6WW9-XBp0SQaw@mail.gmail.com>
-Subject: Re: [PATCH] perf/x86/amd: Reject branch stack for IBS events
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Ingo Molnar <mingo@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 30, 2023 at 5:03 AM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
->
-> Em Thu, Nov 30, 2023 at 11:58:15AM +0530, Ravi Bangoria escreveu:
-> > On 27-Nov-23 8:02 PM, Arnaldo Carvalho de Melo wrote:
-> > > Em Fri, Nov 24, 2023 at 09:30:37AM +0530, Ravi Bangoria escreveu:
-> > >> On 23-Nov-23 8:15 PM, Arnaldo Carvalho de Melo wrote:
-> > >>> Em Tue, Jun 06, 2023 at 10:08:43AM +0530, Ravi Bangoria escreveu:
-> > >>>> On 03-Jun-23 1:15 AM, Namhyung Kim wrote:
-> > >>>>> The AMD IBS PMU doesn't handle branch stacks, so it should not accept
-> > >>>>> events with brstack.
->
-> > >>>>> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > >>>> Reviewed-by: Ravi Bangoria <ravi.bangoria@amd.com>
->
-> > >>> It seems this patch was not merged, can you please check?
->
-> > >> Right. And it does not apply cleanly on peterz/queue.git/perf/core, since
-> > >> surrounding code has changed.
->
-> > > Can you please refresh it if PeterZ has nothing against?
->
-> > Posted v2: https://lore.kernel.org/r/20231130062246.290-1-ravi.bangoria@amd.com
->
-> Peter, can you please consider this one?
+Add some tests that exercise BPF_CORE_WRITE_BITFIELD() macro. Since some
+non-trivial bit fiddling is going on, make sure various edge cases (such
+as adjacent bitfields and bitfields at the edge of structs) are
+exercised.
 
-The v2 is already in the tip tree.  Thanks Ravi for doing this!
-Namhyung
+Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+---
+ .../selftests/bpf/prog_tests/verifier.c       |   2 +
+ .../bpf/progs/verifier_bitfield_write.c       | 100 ++++++++++++++++++
+ 2 files changed, 102 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_bitfield_write.c
+
+diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/testing/selftests/bpf/prog_tests/verifier.c
+index 5cfa7a6316b6..67b4948865a3 100644
+--- a/tools/testing/selftests/bpf/prog_tests/verifier.c
++++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
+@@ -6,6 +6,7 @@
+ #include "verifier_and.skel.h"
+ #include "verifier_array_access.skel.h"
+ #include "verifier_basic_stack.skel.h"
++#include "verifier_bitfield_write.skel.h"
+ #include "verifier_bounds.skel.h"
+ #include "verifier_bounds_deduction.skel.h"
+ #include "verifier_bounds_deduction_non_const.skel.h"
+@@ -115,6 +116,7 @@ static void run_tests_aux(const char *skel_name,
+ 
+ void test_verifier_and(void)                  { RUN(verifier_and); }
+ void test_verifier_basic_stack(void)          { RUN(verifier_basic_stack); }
++void test_verifier_bitfield_write(void)       { RUN(verifier_bitfield_write); }
+ void test_verifier_bounds(void)               { RUN(verifier_bounds); }
+ void test_verifier_bounds_deduction(void)     { RUN(verifier_bounds_deduction); }
+ void test_verifier_bounds_deduction_non_const(void)     { RUN(verifier_bounds_deduction_non_const); }
+diff --git a/tools/testing/selftests/bpf/progs/verifier_bitfield_write.c b/tools/testing/selftests/bpf/progs/verifier_bitfield_write.c
+new file mode 100644
+index 000000000000..8fe355a19ba6
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/verifier_bitfield_write.c
+@@ -0,0 +1,100 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <linux/bpf.h>
++#include <stdint.h>
++
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_core_read.h>
++
++#include "bpf_misc.h"
++
++struct core_reloc_bitfields {
++	/* unsigned bitfields */
++	uint8_t		ub1: 1;
++	uint8_t		ub2: 2;
++	uint32_t	ub7: 7;
++	/* signed bitfields */
++	int8_t		sb4: 4;
++	int32_t		sb20: 20;
++	/* non-bitfields */
++	uint32_t	u32;
++	int32_t		s32;
++} __attribute__((preserve_access_index));
++
++SEC("tc")
++__description("single CO-RE bitfield roundtrip")
++__btf_path("btf__core_reloc_bitfields.bpf.o")
++__success __failure_unpriv
++__retval(3)
++int single_field_roundtrip(struct __sk_buff *ctx)
++{
++	struct core_reloc_bitfields bitfields;
++
++	__builtin_memset(&bitfields, 0, sizeof(bitfields));
++	BPF_CORE_WRITE_BITFIELD(&bitfields, ub2, 3);
++	return BPF_CORE_READ_BITFIELD(&bitfields, ub2);
++}
++
++SEC("tc")
++__description("multiple CO-RE bitfield roundtrip")
++__btf_path("btf__core_reloc_bitfields.bpf.o")
++__success __failure_unpriv
++__retval(0x3FD)
++int multiple_field_roundtrip(struct __sk_buff *ctx)
++{
++	struct core_reloc_bitfields bitfields;
++	uint8_t ub2;
++	int8_t sb4;
++
++	__builtin_memset(&bitfields, 0, sizeof(bitfields));
++	BPF_CORE_WRITE_BITFIELD(&bitfields, ub2, 1);
++	BPF_CORE_WRITE_BITFIELD(&bitfields, sb4, -1);
++
++	ub2 = BPF_CORE_READ_BITFIELD(&bitfields, ub2);
++	sb4 = BPF_CORE_READ_BITFIELD(&bitfields, sb4);
++
++	return (((uint8_t)sb4) << 2) | ub2;
++}
++
++SEC("tc")
++__description("adjacent CO-RE bitfield roundtrip")
++__btf_path("btf__core_reloc_bitfields.bpf.o")
++__success __failure_unpriv
++__retval(7)
++int adjacent_field_roundtrip(struct __sk_buff *ctx)
++{
++	struct core_reloc_bitfields bitfields;
++	uint8_t ub1, ub2;
++
++	__builtin_memset(&bitfields, 0, sizeof(bitfields));
++	BPF_CORE_WRITE_BITFIELD(&bitfields, ub1, 1);
++	BPF_CORE_WRITE_BITFIELD(&bitfields, ub2, 3);
++
++	ub1 = BPF_CORE_READ_BITFIELD(&bitfields, ub1);
++	ub2 = BPF_CORE_READ_BITFIELD(&bitfields, ub2);
++
++	return (ub2 << 1) | ub1;
++}
++
++SEC("tc")
++__description("multibyte CO-RE bitfield roundtrip")
++__btf_path("btf__core_reloc_bitfields.bpf.o")
++__success __failure_unpriv
++__retval(0x21)
++int multibyte_field_roundtrip(struct __sk_buff *ctx)
++{
++	struct core_reloc_bitfields bitfields;
++	uint32_t ub7;
++	uint8_t ub1;
++
++	__builtin_memset(&bitfields, 0, sizeof(bitfields));
++	BPF_CORE_WRITE_BITFIELD(&bitfields, ub1, 1);
++	BPF_CORE_WRITE_BITFIELD(&bitfields, ub7, 16);
++
++	ub1 = BPF_CORE_READ_BITFIELD(&bitfields, ub1);
++	ub7 = BPF_CORE_READ_BITFIELD(&bitfields, ub7);
++
++	return (ub7 << 1) | ub1;
++}
++
++char _license[] SEC("license") = "GPL";
+-- 
+2.42.1
+
