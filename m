@@ -2,156 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B582800DB5
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 15:51:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0784800DB9
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 15:52:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379195AbjLAOvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 09:51:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58552 "EHLO
+        id S1379253AbjLAOwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 09:52:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379244AbjLAOvb (ORCPT
+        with ESMTP id S1379210AbjLAOwV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 09:51:31 -0500
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9D7310FF;
-        Fri,  1 Dec 2023 06:51:35 -0800 (PST)
-Received: by mail-ot1-x336.google.com with SMTP id 46e09a7af769-6d858670630so358385a34.0;
-        Fri, 01 Dec 2023 06:51:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701442295; x=1702047095; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=4kUZpJzd/INNeC9v2YwFr4GrBhIQhybHPbFBJIXAAiI=;
-        b=Upskj1ji8jjpVAUr3Ai1C1ni/usv7FqFgsvox0T/fN4ODW2wQqAtOufKbVIAph9HPg
-         bv+czHZLmgTvY61QlluA2dWUVO4U6yMZH2kdIkte2uM/jx06c4xQii/wDtd676xVztEt
-         jz+A+Y6Uv8F/dnCdoIpzgNaK5vtn68bVRPOU/0iPtyZjc50gvnw7p/O6AYynd0oCftE4
-         sZf7rCnwA8W4yBphtK+8jhrl1UwvbsdqBL8vWH+x2GKe1schjnpWI53iCKySoYXkcFYC
-         viZuq3lI8WdthL9H8UY9w0EQ2juhnl2JNIwcZxpMxgTqvi3Ls6fO5uuannPSpux6XOrd
-         FpLw==
+        Fri, 1 Dec 2023 09:52:21 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 557E1170B
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 06:52:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701442345;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=M36H2ZE/zqK8RyhbzWXIquvsFKXeeJ9yx55a+Ipktnk=;
+        b=NtDObL+hhBBz1ZYZ2HIO5hm6EiEYz4pESwTYHMqsPUnUo9WlFhqJmCFmL3paWMBXj5HbLq
+        ikHVZV5MnZEBhrn7iztPydi6ANHqnDnefololhv+Sadjwx+Fi3x+cvS6Cu+amwD3DAY+Hr
+        1e40bjTdjX1Q9NzcGeG53iutKPYRAE0=
+Received: from mail-yw1-f199.google.com (mail-yw1-f199.google.com
+ [209.85.128.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-282-KBwQtRSxMoakntv3Ca5i9A-1; Fri, 01 Dec 2023 09:52:23 -0500
+X-MC-Unique: KBwQtRSxMoakntv3Ca5i9A-1
+Received: by mail-yw1-f199.google.com with SMTP id 00721157ae682-5d39d74bc14so24226267b3.3
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 06:52:23 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701442295; x=1702047095;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4kUZpJzd/INNeC9v2YwFr4GrBhIQhybHPbFBJIXAAiI=;
-        b=p9Esf27Ktd7xOZ558ouMzdfBowoXU1CjcoQWbolUeL7dxWFmgUzDKXEZNCwMLmEn/F
-         KlSL7+CVCf683u8mzA4C+QoWPmBTKtb+bs0FXgJzIHYTSFtTV59cyShFM3FWqcqx4S65
-         dEC6ZhtUzDFDZmjTSloqG/x5Y6qIET5niWz0+ckf6XSJbaXZg2TMtoyd9IOtgGdJdrg0
-         OyD2CDcyIXFtUgXHyGhXUhHrzVcG86qBLPLOzVx1lz8WHCs8S4Qs/UamRqYkkyjyJ5q9
-         k/LvvA9ocJRC+WS/01bAMTlExgSS82hMY4Cv27SzQkOkr1ZMH7LK+DE4nl+nHIoxhely
-         shdQ==
-X-Gm-Message-State: AOJu0YxKzrBa2gfAym9gRHkSk/8V1tgduMvD3H5m/9FmW5nPYDfASiJj
-        5KxtwT+AykRFtAxcHL+KEZQ=
-X-Google-Smtp-Source: AGHT+IGRY69rAOX0/EsZF/pTja8wL645iNsno8qT2By6dUqBg2egW/esF4nu9KFTdRBeE4vq5nVynQ==
-X-Received: by 2002:a05:6830:65c8:b0:6d8:5518:ab3e with SMTP id co8-20020a05683065c800b006d85518ab3emr4302550otb.36.1701442295020;
-        Fri, 01 Dec 2023 06:51:35 -0800 (PST)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id x5-20020a9d6285000000b006d811e1d91dsm511822otk.72.2023.12.01.06.51.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Dec 2023 06:51:34 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <a77968c8-fd40-4221-96be-740aecdb5e84@roeck-us.net>
-Date:   Fri, 1 Dec 2023 06:51:32 -0800
+        d=1e100.net; s=20230601; t=1701442343; x=1702047143;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=M36H2ZE/zqK8RyhbzWXIquvsFKXeeJ9yx55a+Ipktnk=;
+        b=Y+SxAjDiefTtkafwxU6xZBIb9QFKax4IweorQNrQJ0EoAaFH9qn7dQbAU5RWH1P9Aa
+         7vv5XikOcNAJDpn75fqCuoUY5NZ4yXrNyTSR9+pcGd6gSqjq2G0IHfliON+uDrh+fjrs
+         rNuTduxGqZv8wIxLFysuLKSf+ROtpU8IE+WUQKinwgipOHrbzB1LBLLwjKhrA4+QSFLs
+         SWjDEdlAguX4qmFmoURFhasa9FqaJ2DTxMNFK8j20OknsvJfLHM9QXy8sgdWz/VG4zDW
+         9mshVmAbgH7Fb+FuxKx/1KMNDJv6xOrJAeC0nnH8lWsHAlk4beXmzgawzIO9WkVI/xdb
+         X9ZQ==
+X-Gm-Message-State: AOJu0YwwNm9fQeo2IglLaP6GdlPRUj4cJPIKUxC1Fhcm/Zq4aNafXIJU
+        V5PGlwYiLYIw5PCc7SWUnhpL1jUyrQatN5ZEk5mdkR6cVncAZ7j2LCCMmCNDtoulRaYmIUdq8ZX
+        t1Lq4cWOnHWcFBFLBAFVxw4O1a1ZvweEmN/hRXmyL
+X-Received: by 2002:a81:b60a:0:b0:5ca:7a21:7e22 with SMTP id u10-20020a81b60a000000b005ca7a217e22mr5720820ywh.9.1701442343424;
+        Fri, 01 Dec 2023 06:52:23 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IH77WA6pWwX+ZGRLtEzkklrZy0mJdFDKrtFUrCDSSJGs7MmgNUt5HNm86oHzaOg6LxdBPjKZZLz92vapvRDZ/Y=
+X-Received: by 2002:a81:b60a:0:b0:5ca:7a21:7e22 with SMTP id
+ u10-20020a81b60a000000b005ca7a217e22mr5720796ywh.9.1701442343111; Fri, 01 Dec
+ 2023 06:52:23 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 2/3] hwmon: tmp513: Simplify with dev_err_probe()
-Content-Language: en-US
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Eric Tremblay <etremblay@distech-controls.com>,
-        Jean Delvare <jdelvare@suse.com>
-References: <20231128180654.395692-1-andriy.shevchenko@linux.intel.com>
- <20231128180654.395692-3-andriy.shevchenko@linux.intel.com>
- <1ef66c53-d9ba-4fca-8462-b670f029f5de@roeck-us.net>
- <ZWnlRAOG7EP3RyPR@smile.fi.intel.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <ZWnlRAOG7EP3RyPR@smile.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+References: <20231201104857.665737-1-dtatulea@nvidia.com> <20231201104857.665737-5-dtatulea@nvidia.com>
+In-Reply-To: <20231201104857.665737-5-dtatulea@nvidia.com>
+From:   Eugenio Perez Martin <eperezma@redhat.com>
+Date:   Fri, 1 Dec 2023 15:51:47 +0100
+Message-ID: <CAJaqyWcc2ZtnqUGNk6ox7S_kbnDGy3kWPyxC-7HT4F7aN22BRA@mail.gmail.com>
+Subject: Re: [PATCH vhost 4/7] vdpa/mlx5: Introduce per vq and device resume
+To:     Dragos Tatulea <dtatulea@nvidia.com>
+Cc:     "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Si-Wei Liu <si-wei.liu@oracle.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Gal Pressman <galp@nvidia.com>,
+        Parav Pandit <parav@nvidia.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/1/23 05:53, Andy Shevchenko wrote:
-> On Thu, Nov 30, 2023 at 08:10:12PM -0800, Guenter Roeck wrote:
->> On Tue, Nov 28, 2023 at 08:06:03PM +0200, Andy Shevchenko wrote:
->>> Common pattern of handling deferred probe can be simplified with
->>> dev_err_probe().  Less code and also it prints the error value.
-> 
-> ...
-> 
->>> +	if (IS_ERR(data->regmap))
->>> +		return dev_err_probe(dev, PTR_ERR(data->regmap), "failed to allocate register map\n");
->>
->> That line length was getting too long. Please consider running checkpatch
->> on your patches.
-> 
-> I got your point, but checkpatch has no limit for the string literals, see
-> 
-> f4c014c0dede ("checkpatch: allow printk strings to exceed 80 characters to maintain their searchability")
-> ca56dc098caf ("checkpatch: check for quoted strings broken across lines")
-> 
-> So, what the exact parameters should I supply to it?
-> 
+On Fri, Dec 1, 2023 at 11:50=E2=80=AFAM Dragos Tatulea <dtatulea@nvidia.com=
+> wrote:
+>
+> Implement vdpa vq and device resume if capability detected. Add support
+> for suspend -> ready state change.
+>
+> Signed-off-by: Dragos Tatulea <dtatulea@nvidia.com>
 
-None. Please just run checkpatch.
+Acked-by: Eugenio P=C3=A9rez <eperezma@redhat.com>
 
-$ scripts/checkpatch.pl index.html
-WARNING: line length of 102 exceeds 100 columns
-#126: FILE: drivers/hwmon/tmp513.c:729:
-+		return dev_err_probe(dev, PTR_ERR(data->regmap), "failed to allocate register map\n");
-
-Guenter
+> ---
+>  drivers/vdpa/mlx5/net/mlx5_vnet.c | 67 +++++++++++++++++++++++++++----
+>  1 file changed, 60 insertions(+), 7 deletions(-)
+>
+> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/ml=
+x5_vnet.c
+> index d06285e46fe2..68e534cb57e2 100644
+> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> @@ -1170,7 +1170,12 @@ static int query_virtqueue(struct mlx5_vdpa_net *n=
+dev, struct mlx5_vdpa_virtqueu
+>         return err;
+>  }
+>
+> -static bool is_valid_state_change(int oldstate, int newstate)
+> +static bool is_resumable(struct mlx5_vdpa_net *ndev)
+> +{
+> +       return ndev->mvdev.vdev.config->resume;
+> +}
+> +
+> +static bool is_valid_state_change(int oldstate, int newstate, bool resum=
+able)
+>  {
+>         switch (oldstate) {
+>         case MLX5_VIRTIO_NET_Q_OBJECT_STATE_INIT:
+> @@ -1178,6 +1183,7 @@ static bool is_valid_state_change(int oldstate, int=
+ newstate)
+>         case MLX5_VIRTIO_NET_Q_OBJECT_STATE_RDY:
+>                 return newstate =3D=3D MLX5_VIRTIO_NET_Q_OBJECT_STATE_SUS=
+PEND;
+>         case MLX5_VIRTIO_NET_Q_OBJECT_STATE_SUSPEND:
+> +               return resumable ? newstate =3D=3D MLX5_VIRTIO_NET_Q_OBJE=
+CT_STATE_RDY : false;
+>         case MLX5_VIRTIO_NET_Q_OBJECT_STATE_ERR:
+>         default:
+>                 return false;
+> @@ -1200,6 +1206,7 @@ static int modify_virtqueue(struct mlx5_vdpa_net *n=
+dev,
+>  {
+>         int inlen =3D MLX5_ST_SZ_BYTES(modify_virtio_net_q_in);
+>         u32 out[MLX5_ST_SZ_DW(modify_virtio_net_q_out)] =3D {};
+> +       bool state_change =3D false;
+>         void *obj_context;
+>         void *cmd_hdr;
+>         void *in;
+> @@ -1211,9 +1218,6 @@ static int modify_virtqueue(struct mlx5_vdpa_net *n=
+dev,
+>         if (!modifiable_virtqueue_fields(mvq))
+>                 return -EINVAL;
+>
+> -       if (!is_valid_state_change(mvq->fw_state, state))
+> -               return -EINVAL;
+> -
+>         in =3D kzalloc(inlen, GFP_KERNEL);
+>         if (!in)
+>                 return -ENOMEM;
+> @@ -1226,17 +1230,29 @@ static int modify_virtqueue(struct mlx5_vdpa_net =
+*ndev,
+>         MLX5_SET(general_obj_in_cmd_hdr, cmd_hdr, uid, ndev->mvdev.res.ui=
+d);
+>
+>         obj_context =3D MLX5_ADDR_OF(modify_virtio_net_q_in, in, obj_cont=
+ext);
+> -       if (mvq->modified_fields & MLX5_VIRTQ_MODIFY_MASK_STATE)
+> +
+> +       if (mvq->modified_fields & MLX5_VIRTQ_MODIFY_MASK_STATE) {
+> +               if (!is_valid_state_change(mvq->fw_state, state, is_resum=
+able(ndev))) {
+> +                       err =3D -EINVAL;
+> +                       goto done;
+> +               }
+> +
+>                 MLX5_SET(virtio_net_q_object, obj_context, state, state);
+> +               state_change =3D true;
+> +       }
+>
+>         MLX5_SET64(virtio_net_q_object, obj_context, modify_field_select,=
+ mvq->modified_fields);
+>         err =3D mlx5_cmd_exec(ndev->mvdev.mdev, in, inlen, out, sizeof(ou=
+t));
+> -       kfree(in);
+> -       if (!err)
+> +       if (err)
+> +               goto done;
+> +
+> +       if (state_change)
+>                 mvq->fw_state =3D state;
+>
+>         mvq->modified_fields =3D 0;
+>
+> +done:
+> +       kfree(in);
+>         return err;
+>  }
+>
+> @@ -1430,6 +1446,24 @@ static void suspend_vqs(struct mlx5_vdpa_net *ndev=
+)
+>                 suspend_vq(ndev, &ndev->vqs[i]);
+>  }
+>
+> +static void resume_vq(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtq=
+ueue *mvq)
+> +{
+> +       if (!mvq->initialized || !is_resumable(ndev))
+> +               return;
+> +
+> +       if (mvq->fw_state !=3D MLX5_VIRTIO_NET_Q_OBJECT_STATE_SUSPEND)
+> +               return;
+> +
+> +       if (modify_virtqueue_state(ndev, mvq, MLX5_VIRTIO_NET_Q_OBJECT_ST=
+ATE_RDY))
+> +               mlx5_vdpa_warn(&ndev->mvdev, "modify to resume failed\n")=
+;
+> +}
+> +
+> +static void resume_vqs(struct mlx5_vdpa_net *ndev)
+> +{
+> +       for (int i =3D 0; i < ndev->mvdev.max_vqs; i++)
+> +               resume_vq(ndev, &ndev->vqs[i]);
+> +}
+> +
+>  static void teardown_vq(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_vir=
+tqueue *mvq)
+>  {
+>         if (!mvq->initialized)
+> @@ -3256,6 +3290,21 @@ static int mlx5_vdpa_suspend(struct vdpa_device *v=
+dev)
+>         return 0;
+>  }
+>
+> +static int mlx5_vdpa_resume(struct vdpa_device *vdev)
+> +{
+> +       struct mlx5_vdpa_dev *mvdev =3D to_mvdev(vdev);
+> +       struct mlx5_vdpa_net *ndev =3D to_mlx5_vdpa_ndev(mvdev);
+> +
+> +       mlx5_vdpa_info(mvdev, "resuming device\n");
+> +
+> +       down_write(&ndev->reslock);
+> +       mvdev->suspended =3D false;
+> +       resume_vqs(ndev);
+> +       register_link_notifier(ndev);
+> +       up_write(&ndev->reslock);
+> +       return 0;
+> +}
+> +
+>  static int mlx5_set_group_asid(struct vdpa_device *vdev, u32 group,
+>                                unsigned int asid)
+>  {
+> @@ -3312,6 +3361,7 @@ static const struct vdpa_config_ops mlx5_vdpa_ops =
+=3D {
+>         .get_vq_dma_dev =3D mlx5_get_vq_dma_dev,
+>         .free =3D mlx5_vdpa_free,
+>         .suspend =3D mlx5_vdpa_suspend,
+> +       .resume =3D mlx5_vdpa_resume, /* Op disabled if not supported. */
+>  };
+>
+>  static int query_mtu(struct mlx5_core_dev *mdev, u16 *mtu)
+> @@ -3683,6 +3733,9 @@ static int mlx5v_probe(struct auxiliary_device *ade=
+v,
+>         if (!MLX5_CAP_DEV_VDPA_EMULATION(mdev, desc_group_mkey_supported)=
+)
+>                 mgtdev->vdpa_ops.get_vq_desc_group =3D NULL;
+>
+> +       if (!MLX5_CAP_DEV_VDPA_EMULATION(mdev, freeze_to_rdy_supported))
+> +               mgtdev->vdpa_ops.resume =3D NULL;
+> +
+>         err =3D vdpa_mgmtdev_register(&mgtdev->mgtdev);
+>         if (err)
+>                 goto reg_err;
+> --
+> 2.42.0
+>
 
