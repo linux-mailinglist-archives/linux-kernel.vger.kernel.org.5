@@ -2,217 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E468C8000CE
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 02:07:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E5A88000DF
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 02:16:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229726AbjLABHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 20:07:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40506 "EHLO
+        id S229627AbjLABN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 20:13:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbjLABHl (ORCPT
+        with ESMTP id S229448AbjLABN5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 20:07:41 -0500
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22EF210E2;
-        Thu, 30 Nov 2023 17:07:46 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-6c3363a2b93so1516403b3a.3;
-        Thu, 30 Nov 2023 17:07:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701392865; x=1701997665; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=AUm1+PoLufKuRdIAF0NESslVUVq3hoSsK9m/WIJoGLk=;
-        b=c5U9e4xgyB3S1M/HHcVB8s3F6kqoa4bdeujXHvrKo+f95J41Q7S07Oh2mKpKLoDE6w
-         twELpNVEgO2dal4+JAJJKy9Q5xqTTYj8UKzwQIrrxIjLE3ZfRuXHoQ/pm6eICFPFI6mS
-         iQiT5TCirA+ofU9mZdSqE/AJ/nfZ0xbNFs2iHC9GmbF44VMRlN4zGFa5abK1rxWJaSCU
-         UOc5NDtd06lcH8RyOJJF9zp/Vwz7Xcgo05MDSVBprxseUWBu/fCeXy2kLUey/+sxKeVG
-         vZOW7CsJlU+AP4tDzaSMlsLK3Ycluy8rlbIe+Dd74Ly1MFPzMOombzQUXVDsJMXWCcCc
-         nzag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701392865; x=1701997665;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AUm1+PoLufKuRdIAF0NESslVUVq3hoSsK9m/WIJoGLk=;
-        b=JiD1OwFbWxjyAE6x911PK8DSAj03TZ72msQJD0+Ep1p+teJdxCIF0dCUy1W5aOwIjt
-         TgjNLNuxm0EnFMTdIwT5dp7Xqb4+Va5JgTU0mHjoLHduyAt0guW1pPzaLcOfqrb9Gu/I
-         N0wP0IwzKnW2UwfuYdAYdN2h2n0arUmBlqTDz7EdrvhLBYBkAlx9zeC6DI5YAYT8Fp/i
-         yzy3B38zbF8H6xaDhj9uFJasrRoq+K6Cirj8is2GzvyfNizdOL9CvhYCN9LxzO+YkD3k
-         CUm5I/mP0GTbFJbwdE5iRyPpTRCcdGKaL0BK4nnusZwqr7HSuhg9CDI8bWe62ILERsws
-         MO1g==
-X-Gm-Message-State: AOJu0Ywh8qkEH/5ibJmdIKtgI219E+M+TrXKjMHLwK5KZoQHf+QxsHfy
-        jL5IYtVPWyBMA475vzYj7t8=
-X-Google-Smtp-Source: AGHT+IEpqLtFWr3jS1uwx80udQpJF7FenfSx2/8uNdOnCyRz8PMl0jnNpn2rP/xjSVKJUPB3LIk5Pw==
-X-Received: by 2002:a05:6a20:244b:b0:18c:fa:17f7 with SMTP id t11-20020a056a20244b00b0018c00fa17f7mr28928374pzc.46.1701392865475;
-        Thu, 30 Nov 2023 17:07:45 -0800 (PST)
-Received: from archie.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id x67-20020a626346000000b006be0fb89ac2sm1887957pfb.197.2023.11.30.17.07.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Nov 2023 17:07:44 -0800 (PST)
-Received: by archie.me (Postfix, from userid 1000)
-        id 5370710136909; Fri,  1 Dec 2023 08:07:41 +0700 (WIB)
-Date:   Fri, 1 Dec 2023 08:07:40 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     =?utf-8?B?QW5kcsOp?= Almeida <andrealmeid@igalia.com>,
-        Linux DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc:     kernel-dev@igalia.com, alexander.deucher@amd.com,
-        christian.koenig@amd.com, Simon Ser <contact@emersion.fr>,
-        Rob Clark <robdclark@gmail.com>,
-        Pekka Paalanen <ppaalanen@gmail.com>, daniel@ffwll.ch,
-        Daniel Stone <daniel@fooishbar.org>,
-        'Marek =?utf-8?B?T2zFocOhayc=?= <maraeo@gmail.com>,
-        Dave Airlie <airlied@gmail.com>,
-        Michel =?utf-8?Q?D=C3=A4nzer?= <michel.daenzer@mailbox.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Pekka Paalanen <pekka.paalanen@collabora.com>,
-        Attreyee M <tintinm2017@gmail.com>
-Subject: Re: [PATCH] drm/doc: Define KMS atomic state set
-Message-ID: <ZWkx3IcUTxO-IdIK@archie.me>
-References: <20231130200740.53454-1-andrealmeid@igalia.com>
+        Thu, 30 Nov 2023 20:13:57 -0500
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10olkn2094.outbound.protection.outlook.com [40.92.41.94])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E7F910D1;
+        Thu, 30 Nov 2023 17:14:03 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GPgp6dFhVN3QEGk5RehRNQukzAW42xn0ctVIgnI96pwREQZKv0F0tCu9h0aBmN16Vwj1VBwivd/JSq9nPDJI07dTboH/E59QlPmVvvsSDLHJfL4bZLKv8pTqzkTnJjK4OEUZDn2YMNazpnIMJnr0i511Eu2jyla6AQCaF1LGmc4jgT1GhH9ErsUaIwh4gfHuvrCvsjUySSjM2Wa/1YAKCcEvEshRTbxq21SCoiUhVEhQcA/B0IC1F3kJI96J8kLaoItRS4SgW6JW/39YtN34tVqZG5n1VY5z9aco4siUEmEyr7SrssOdduofUw9ac/7f6VTARg2PAON3LDuFNTDv2g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=yo83G1rRJRvcbUMQfZ8EBJAAeEhMUZNNNMzOYViTmT8=;
+ b=m+ietNhwn+emCwOZrbb9da8fGtGsKeCn3+0yquW4Tq8rAHZH2z0vGoTaogL7aproHGekRqbck8pG5cjsvwHplkcaMXO2pxzVn3mrPSje1CkWliiGrxiPp421Nh8lBmE2MaJCdcU1FKSScheMpisp3q2l/NXKR99D33T0mboxnxTaAPKxxQ9g15MjX5stEq/nCRNVPP6ylRZO/HtZXtLJKqSX8gPTJOGdzRoGNA5mvdsJWi6gFBEE3UW5gkhbZJlo3WC1N+hQp7MxcrwvYwDuu062DHMVTBt3iXekk31kh/O4gcWyCf1AwMkiEGbmJwAngyZn2PSYfP6zlWUQ4l5arA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yo83G1rRJRvcbUMQfZ8EBJAAeEhMUZNNNMzOYViTmT8=;
+ b=rKBhE64A9SAtbr3P9Q1NtIqIffLbxFKqi3hP+SpN5HOpZWLMKzmSBmzLcbZw6whw9yuFpg4HKHJBpXtrO61k2jzPFomTpERsp0QkJyJFUtlg7MNH8bhMfTcm4rkgG1luME/2ZhXuT/wR0kTlFM0ktkBr5EPS2P1kOhkTLGfqjt0mSaFKM2eG2Kd69hFodD8tXP9fPx5JEZy9O96N6hcjolk7SoL9RB32MMqEFgfWrqVEZnSkVhjtlzLp9nKZDJw3fkTgczuX7DdR4zvW1iLumn4oQnzH2BGemSu+BS/Ttiyba7kmX5QKsW8mF7SgozfmM42Tw7qkWZCLtU+Wv9VstA==
+Received: from IA1PR20MB4953.namprd20.prod.outlook.com (2603:10b6:208:3af::19)
+ by MW4PR20MB5373.namprd20.prod.outlook.com (2603:10b6:303:221::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.29; Fri, 1 Dec
+ 2023 01:13:59 +0000
+Received: from IA1PR20MB4953.namprd20.prod.outlook.com
+ ([fe80::55b:c350:980:ad8]) by IA1PR20MB4953.namprd20.prod.outlook.com
+ ([fe80::55b:c350:980:ad8%6]) with mapi id 15.20.7046.024; Fri, 1 Dec 2023
+ 01:13:59 +0000
+From:   Inochi Amaoto <inochiama@outlook.com>
+To:     Yu-Chien Peter Lin <peterlin@andestech.com>
+Cc:     Inochi Amaoto <inochiama@outlook.com>, Guo Ren <guoren@kernel.org>,
+        acme@kernel.org, adrian.hunter@intel.com, ajones@ventanamicro.com,
+        alexander.shishkin@linux.intel.com, andre.przywara@arm.com,
+        anup@brainfault.org, aou@eecs.berkeley.edu, atishp@atishpatra.org,
+        conor+dt@kernel.org, conor.dooley@microchip.com, conor@kernel.org,
+        devicetree@vger.kernel.org, dminus@andestech.com,
+        evan@rivosinc.com, geert+renesas@glider.be, heiko@sntech.de,
+        irogers@google.com, jernej.skrabec@gmail.com, jolsa@kernel.org,
+        jszhang@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, locus84@andestech.com,
+        magnus.damm@gmail.com, mark.rutland@arm.com, mingo@redhat.com,
+        n.shubin@yadro.com, namhyung@kernel.org, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, peterz@infradead.org,
+        prabhakar.mahadev-lad.rj@bp.renesas.com, rdunlap@infradead.org,
+        robh+dt@kernel.org, samuel@sholland.org, sunilvl@ventanamicro.com,
+        tglx@linutronix.de, tim609@andestech.com, uwu@icenowy.me,
+        wens@csie.org, will@kernel.org, ycliang@andestech.com
+Subject: Re: [PATCH v4 09/13] dt-bindings: riscv: Add T-Head PMU extension description
+Date:   Fri,  1 Dec 2023 09:14:00 +0800
+Message-ID: <IA1PR20MB4953460FE5BF431DD32CD860BB81A@IA1PR20MB4953.namprd20.prod.outlook.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <ZWhT_VSpl2aksVK7@APC323>
+References: <ZWhT_VSpl2aksVK7@APC323>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-TMN:  [O6RBKd2btNqpAk3NbgN/5ICNp+Wi114JSt2L4aapwvA=]
+X-ClientProxiedBy: SI1PR02CA0060.apcprd02.prod.outlook.com
+ (2603:1096:4:1f5::17) To IA1PR20MB4953.namprd20.prod.outlook.com
+ (2603:10b6:208:3af::19)
+X-Microsoft-Original-Message-ID: <20231201011401.103057-1-inochiama@outlook.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="caVVT7EznlCmrsO+"
-Content-Disposition: inline
-In-Reply-To: <20231130200740.53454-1-andrealmeid@igalia.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: IA1PR20MB4953:EE_|MW4PR20MB5373:EE_
+X-MS-Office365-Filtering-Correlation-Id: 70909365-d44e-4e2b-ed30-08dbf20acc2c
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 9gRh0N4KrEWKBS0O/+90zqEpMudlwnyFvBD0FH4+K56Bav0hsxXOtcwz7KO9mPg1SKrd0kSZFJ1OThf7su+HvD2xIJkntq9OvJFPM4U4/jWe5ArVzzm2iuh27HQ16M3sfp2oeSRV5ZTsKNZVzGEDymWlZlI27sKvJOWohSovfi531m5O3tdOP0VefHR9YPzhtc9w09tKXymPTf7ylW8Cxke8aJiQKU42mrtGBvPiedAoN2cabajsucOkztjTRfsUhfLNZUZQvdKt26WAaSv8oeN45whIJ7y0GAYRFh6NdsMdRkupaZW1e9kSPXQspFTHkvyCq91/t++7Zq2wXzScLw1oLO9KtmYCa/JGDiEDeq+FH+A2xd93k7+2JSXPM7l9XObOjB47moI9nrQM0mqX4AiSi652QggQnT6NLcPu8/e5qcEtaTS1hkaIJoZ8+zXzpQXvTmC5aOKM6ev+fAVOb8eI/Uig431ZxJXaTsgCSehgpkKAXolEUszLFe/xjEMwROlrTRCnY3PpvbB7CDwYD6hGgJtj6SqyQJrIrQk+sd6qIqqQuax62BLLGmFeeA3CEnW33r301SoTzicNYWWOPrhYd1R+Ed0al03uEVsWe9n65kI1wN+WpvzMhpq5VMTJOGFpLClWBG7NNkOpXf6YTlOdyYmsu9C8iLwA/lEs/B4=
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZnZkU3VMRjdXVVJTMExVSWVJWTRYOFFUcVp1d0VzbjdMQTdXN3VpNFduYmJ1?=
+ =?utf-8?B?M1ZaN2MvSGtuM3dHS0RRZGhRWVpXbG90SXAvcW5WR1pPTjdyTnV1eklXZXVo?=
+ =?utf-8?B?UGMxemV1Y2laWVh4eVlZSnZEbnpIT1l5d2tVY3lZRFh0Sk9aVWtSZm1QQTVJ?=
+ =?utf-8?B?OGNSRldCdkNLWlBiNCsvbDVEd1R4Qy9sNUg5Qm5wQ20xY3RuV2ZsMjljSXNR?=
+ =?utf-8?B?TGtYeG1pME0xMDgvUGc5cGxlZzZHVERvanZ4T1JQUzRNWFFudUl2T0hCMlNP?=
+ =?utf-8?B?bmczclcvRnFZQ3NTSjZrUXp5UHZaYnNKLzJSRFd0cHFmcUlYQUY3VmN6WnYw?=
+ =?utf-8?B?V0txTG9IK0Q0TU5hK1ZKbldndFVaOHVWR2pLQVpacFByOFZJZWJpbTFHa25Y?=
+ =?utf-8?B?SnJlZ3Y3QkJvejlWSmhzWWxhSlVtc0tvMW9qRDdOcHFLRFdnNUI5akkydEtR?=
+ =?utf-8?B?YnBTYUM0S2c5dkdRZ2tNcEE5NmpWRkVRaW9vOUUrMys3SzJENlcxK1pIWnhz?=
+ =?utf-8?B?UTBmazRpSHNmaEZZT3dDUGpMSWhhTUdoR01RUWJwZGI2b09LT3Z6bU1DRm1I?=
+ =?utf-8?B?NXFWV2E4S0xUeGJNSVNDM1lYdHovcUdSMXdUZ3ZrVDcwT1VNaFh3VWJrOXN2?=
+ =?utf-8?B?cXE4S2JFdERpNzZoUlVabW5OdktOZGMydFJ6a2dFWm5rOVN6K2xVZ1IvVUp3?=
+ =?utf-8?B?dWhGNlNpUXJ3WmE5RnRJZE1TU2pPTjNDMFJSR251S1EvbG9HbkxyMld4b3NG?=
+ =?utf-8?B?akd0eEpGK29xdWZ0UitUUXc1Nk9uelUyaXJyU2x2Tzh3SElQTGdJRDJ6SFA4?=
+ =?utf-8?B?SEJCWDNRQmVKMU1GbURIVlFyTFNNczlUSjNXOWp3WHc0aWs2QXN4bGVNcVpj?=
+ =?utf-8?B?RUZpZWRJbENPd3ltWE51d3hMei96d3pud0N2YTRhUSt5YUN0TC83ZUpnc0sv?=
+ =?utf-8?B?WHNHSjdiNWU4K2N2VTNUS3RSWUd0RFJDTmtUM2ZJam04elBCU0pEY0lBMWFv?=
+ =?utf-8?B?L3ZDd3hKbmt0MzBXSjZ0bDZ6V1ZnYU90SkNhV0FmK3JxUkNtZFg4bDZhVEcw?=
+ =?utf-8?B?S0R0MnhtcXltdmF0eGJOb1JWeEpuaktOYzVudWVwQnZjRlhqTm9LUG4vcnYy?=
+ =?utf-8?B?VDNGY0tUa2N0S2p5M3BXOGtDQUFzNFBGdUlEYVF1TDlTaVNRRWxPN2FabDVK?=
+ =?utf-8?B?cnJjM2wxOWFuakJYUTltTDdWS3J2WitHUGlZT1NpM2kvNmdvOGVrVFhWTkZX?=
+ =?utf-8?B?ZXRBL3VWcS92bFZIQWJqcFZIVWRKNzVDeFgzelVRL2luelZJbEx2VjJIRFRv?=
+ =?utf-8?B?a0xvcGo2SnRsYTBKdjF5aDVDcElwcFN0YkNCbDBVMDVLSEJJcnB3NlViK0h2?=
+ =?utf-8?B?NE9oeEY1dlZ5azJsV3lKQzM1ZnZZcGRQMktrSTk3dEdoS1RKMGpmcUREVEpa?=
+ =?utf-8?B?NUpVeHVWc2dsL0h1WjRHa1U3SWZoYUlNS2lRdXlOUkllb0U3a3ZWS3F5WFEy?=
+ =?utf-8?B?cDFoQlRwZkpmYjRvQ2Z3VHpqZVN0dFpFTkZHcjBLR1ZQaGRPMzdGR3c4ZGRm?=
+ =?utf-8?B?c2pycnVuUUNCaTdWZW1tY2RTNWVic3d2aHVrSXpzYUx0SHRvR0VZU2FqM1FT?=
+ =?utf-8?Q?PmhspTENY+DTMniPQiv4WrlVP3wjYLuZ3U6UGLcpqDUc=3D?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 70909365-d44e-4e2b-ed30-08dbf20acc2c
+X-MS-Exchange-CrossTenant-AuthSource: IA1PR20MB4953.namprd20.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Dec 2023 01:13:59.4470
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR20MB5373
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+>
+>Hi Inochi,
+>
+>On Thu, Nov 30, 2023 at 04:29:22PM +0800, Inochi Amaoto wrote:
+>>>
+>>> Hi Guo Ren,
+>>>
+>>> On Thu, Nov 23, 2023 at 05:14:30AM +0800, Guo Ren wrote:
+>>>> On Wed, Nov 22, 2023 at 8:17 PM Yu Chien Peter Lin
+>>>> <peterlin@andestech.com> wrote:
+>>>>>
+>>>>> Document the ISA string for T-Head performance monitor extension
+>>>>> which provides counter overflow interrupt mechanism.
+>>>>>
+>>>>> Signed-off-by: Yu Chien Peter Lin <peterlin@andestech.com>
+>>>>> ---
+>>>>> Changes v2 -> v3:
+>>>>>   - New patch
+>>>>> Changes v3 -> v4:
+>>>>>   - No change
+>>>>> ---
+>>>>>  Documentation/devicetree/bindings/riscv/extensions.yaml | 6 ++++++
+>>>>>  1 file changed, 6 insertions(+)
+>>>>>
+>>>>> diff --git a/Documentation/devicetree/bindings/riscv/extensions.yaml b/Documentation/devicetree/bindings/riscv/extensions.yaml
+>>>>> index c91ab0e46648..694efaea8fce 100644
+>>>>> --- a/Documentation/devicetree/bindings/riscv/extensions.yaml
+>>>>> +++ b/Documentation/devicetree/bindings/riscv/extensions.yaml
+>>>>> @@ -258,5 +258,11 @@ properties:
+>>>>>              in commit 2e5236 ("Ztso is now ratified.") of the
+>>>>>              riscv-isa-manual.
+>>>>>
+>>>>> +        - const: xtheadpmu
+>>>>> +          description:
+>>>>> +            The T-Head performance monitor extension for counter overflow. For more
+>>>>> +            details, see the chapter 12 in the Xuantie C906 user manual.
+>>>>> +            https://github.com/T-head-Semi/openc906/tree/main/doc
+>>>>> +
+>>>>>  additionalProperties: true
+>>>>>  ...
+>>>>> --
+>>>>> 2.34.1
+>>>>>
+>>>> Reviewed-by: Guo Ren <guoren@kernel.org>
+>>>
+>>> Thanks for the review.
+>>> Would you share document about T-Head PMU?
+>>>
+>>
+>> Hi, Peter Lin:
+>>
+>> You can use the following two document to get all events:
+>> https://github.com/T-head-Semi/openc906/tree/main/doc
+>> https://github.com/T-head-Semi/openc910/tree/main/doc
+>>
+>> There are also some RTL code can describe these events:
+>> https://github.com/T-head-Semi/openc910/blob/e0c4ad8ec7f8c70f649d826ebd6c949086453272/C910_RTL_FACTORY/gen_rtl/pmu/rtl/ct_hpcp_top.v#L1123
+>> https://github.com/T-head-Semi/openc906/blob/af5614d72de7e5a4b8609c427d2e20af1deb21c4/C906_RTL_FACTORY/gen_rtl/pmu/rtl/aq_hpcp_top.v#L543
+>>
+>> The perf events json can also be used as document, this is already
+>> applied (with more detailed explanation):
+>> https://lore.kernel.org/all/IA1PR20MB495325FCF603BAA841E29281BBBAA@IA1PR20MB4953.namprd20.prod.outlook.com/
+>
+>Thanks for reaching out!
+>The updated description will be:
+>
+>- const: xtheadpmu
+>  description:
+>    The T-Head performance monitor extension for counter overflow, as ratified
+>    in commit bd9206 ("Initial commit") of Xuantie C906 user manual.
+>    https://github.com/T-head-Semi/openc906/tree/main/doc
+>
+>Is it OK with you?
+>
 
---caVVT7EznlCmrsO+
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Please indicate chapter 12 and chapter 13.5 of the manual related to
+the PMU. And changed openc906 manual to openc910 manual because it is
+more updated.
 
-On Thu, Nov 30, 2023 at 05:07:40PM -0300, Andr=C3=A9 Almeida wrote:
-> From: Pekka Paalanen <pekka.paalanen@collabora.com>
->=20
-> Specify how the atomic state is maintained between userspace and
-> kernel, plus the special case for async flips.
->=20
-> Signed-off-by: Pekka Paalanen <pekka.paalanen@collabora.com>
-> Signed-off-by: Andr=C3=A9 Almeida <andrealmeid@igalia.com>
-> ---
->=20
-> This is a standalone patch from the following serie, the other patches are
-> already merged:
-> https://lore.kernel.org/lkml/20231122161941.320564-1-andrealmeid@igalia.c=
-om/
->=20
->  Documentation/gpu/drm-uapi.rst | 47 ++++++++++++++++++++++++++++++++++
->  1 file changed, 47 insertions(+)
->=20
-> diff --git a/Documentation/gpu/drm-uapi.rst b/Documentation/gpu/drm-uapi.=
-rst
-> index 370d820be248..d0693f902a5c 100644
-> --- a/Documentation/gpu/drm-uapi.rst
-> +++ b/Documentation/gpu/drm-uapi.rst
-> @@ -570,3 +570,50 @@ dma-buf interoperability
-> =20
->  Please see Documentation/userspace-api/dma-buf-alloc-exchange.rst for
->  information on how dma-buf is integrated and exposed within DRM.
-> +
-> +KMS atomic state
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> +
-> +An atomic commit can change multiple KMS properties in an atomic fashion,
-> +without ever applying intermediate or partial state changes.  Either the=
- whole
-> +commit succeeds or fails, and it will never be applied partially. This i=
-s the
-> +fundamental improvement of the atomic API over the older non-atomic API =
-which is
-> +referred to as the "legacy API".  Applying intermediate state could unex=
-pectedly
-> +fail, cause visible glitches, or delay reaching the final state.
-> +
-> +An atomic commit can be flagged with DRM_MODE_ATOMIC_TEST_ONLY, which me=
-ans the
-> +complete state change is validated but not applied.  Userspace should us=
-e this
-> +flag to validate any state change before asking to apply it. If validati=
-on fails
-> +for any reason, userspace should attempt to fall back to another, perhaps
-> +simpler, final state.  This allows userspace to probe for various config=
-urations
-> +without causing visible glitches on screen and without the need to undo a
-> +probing change.
-> +
-> +The changes recorded in an atomic commit apply on top the current KMS st=
-ate in
-> +the kernel. Hence, the complete new KMS state is the complete old KMS st=
-ate with
-> +the committed property settings done on top. The kernel will try to avoid
-> +no-operation changes, so it is safe for userspace to send redundant prop=
-erty
-> +settings.  However, not every situation allows for no-op changes, due to=
- the
-> +need to acquire locks for some attributes. Userspace needs to be aware t=
-hat some
-> +redundant information might result in oversynchronization issues.  No-op=
-eration
-> +changes do not count towards actually needed changes, e.g.  setting MODE=
-_ID to a
-> +different blob with identical contents as the current KMS state shall no=
-t be a
-> +modeset on its own. As a special exception for VRR needs, explicitly set=
-ting
-> +FB_ID to its current value is not a no-op.
-> +
-> +A "modeset" is a change in KMS state that might enable, disable, or temp=
-orarily
-> +disrupt the emitted video signal, possibly causing visible glitches on s=
-creen. A
-> +modeset may also take considerably more time to complete than other kind=
-s of
-> +changes, and the video sink might also need time to adapt to the new sig=
-nal
-> +properties. Therefore a modeset must be explicitly allowed with the flag
-> +DRM_MODE_ATOMIC_ALLOW_MODESET.  This in combination with
-> +DRM_MODE_ATOMIC_TEST_ONLY allows userspace to determine if a state chang=
-e is
-> +likely to cause visible disruption on screen and avoid such changes when=
- end
-> +users do not expect them.
-> +
-> +An atomic commit with the flag DRM_MODE_PAGE_FLIP_ASYNC is allowed to
-> +effectively change only the FB_ID property on any planes. No-operation c=
-hanges
-> +are ignored as always. Changing any other property will cause the commit=
- to be
-> +rejected. Each driver may relax this restriction if they have guarantees=
- that
-> +such property change doesn't cause modesets. Userspace can use TEST_ONLY=
- commits
-> +to query the driver about this.
+If modified:
 
-The wording LGTM, thanks!
+Reviewed-by: Inochi Amaoto <inochiama@outlook.com>
 
-Reviewed-by: Bagas Sanjaya <bagasdotme@gmail.com>
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---caVVT7EznlCmrsO+
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZWkx2QAKCRD2uYlJVVFO
-o1dzAQCN5LKZj1UCW2xL0voB6jCSuPsFMnO4NRaUQ6gOPmqvvQEA/eALo0PO1AJE
-7eegxBLTYviNT27pENbRqxLvYpGQJQc=
-=8SQb
------END PGP SIGNATURE-----
-
---caVVT7EznlCmrsO+--
+>Best regards,
+>Peter Lin
+>
+>> Best regards,
+>> Inochi
+>
