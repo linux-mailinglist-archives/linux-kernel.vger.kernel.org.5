@@ -2,172 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 247C4800B62
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 14:02:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81CFF800B66
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 14:03:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378919AbjLANCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 08:02:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40530 "EHLO
+        id S1378923AbjLANDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 08:03:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378858AbjLANCl (ORCPT
+        with ESMTP id S1378858AbjLANDJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 08:02:41 -0500
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2087.outbound.protection.outlook.com [40.107.94.87])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFB241B3;
-        Fri,  1 Dec 2023 05:02:46 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gprZmvo1RGXBoStFSFuo5nBAAiZWbWf28uCsszDHpD3Y+aLUvps9gKCdLkiDX5znciss7+SE4cphaixVyOW6RdRGpHHqtjna3/kKPmBhrk+h6sQbOvvKbf50EKFWcQnsW20J2Q8dz2nc6kFdLvrSF3VhYSuLM5AMA1YpGe5uepzT424wAdWbQWYbW7prQTqxYjznFyWoOGVRPjGe9gxLKFxv3XJ2Egl0ORji8LGYdDZK7NDAwdxETgYV+4aRs2/qkrzbPj2pKaznGf3CjGtrjR+f2Efve0Zyx/lzGo+I7Q8LFNkEgtXvxKLomppXoUVYsy6JZcqYnrONUN6h0X726A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=rrCfA8ufham5WJFVdTba5/o9lVBfvgzfJ6TyG6wGXIc=;
- b=DCqohLzgVr6WSrfimXn4zmG601Wpmr1oxaS09bfQouqD2VFzAFiuekgaF1JfwixrGseEwTyVX8RhU57WBmIJrDeYnJNn2c3ve6xNO1c3qeDAXb2zfm8gaU26xalSxMUeReiz8QKEpYdkb/9sdcDXPKgQFJfVWo7TqLZmyVhUWhnHCs4Tbr2dOmtFlubdeAchtUxmQZ+1WOJug8vLvJxpAvdBi+Tgg+19dfLXtV04RzwiRjtjiD2mtBwoBcqib9ugiOIrmgclf/7KkwgQWf+nHY0ZFPoYUXZxGVmuoNh19NJE4kcR2HK1j9iZUXw/eeiSEZw0bZabKC0N7z5UF8VU4g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=arm.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rrCfA8ufham5WJFVdTba5/o9lVBfvgzfJ6TyG6wGXIc=;
- b=R/pRRFAnik1cjQ0RJqgzGQqS5KA+T22ik02js4Br476KbMls6nXZoVSGHFn6un5efM35XFFVznd2nKGNM77hC1efss2om9N1JLfYvEWxvuHUYCNJpe7/7A2AzSKrVg3bhhKouDv8JjQqf/BRipcxjdBAsIq09f1BqWmAyid30wlF3AiG6zsjNqatmk8u8uB4nRntQ+yPhQDW1mzwSXHCEjv1hpsLLGx61FGogq5BhBUbPHNnnTsv+VsFEPyCAFcI3O26VQP7tVadaHg2+LwxPG/PKanJD9fVbBBbfAUniZ4DNHHkToGeVT4wu1wq0fkQNwolO8q3D9b2WLdsXAr4pg==
-Received: from PH7PR17CA0021.namprd17.prod.outlook.com (2603:10b6:510:324::27)
- by DM4PR12MB6304.namprd12.prod.outlook.com (2603:10b6:8:a2::7) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7046.24; Fri, 1 Dec 2023 13:02:43 +0000
-Received: from SN1PEPF0002BA52.namprd03.prod.outlook.com
- (2603:10b6:510:324:cafe::2f) by PH7PR17CA0021.outlook.office365.com
- (2603:10b6:510:324::27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.27 via Frontend
- Transport; Fri, 1 Dec 2023 13:02:43 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- SN1PEPF0002BA52.mail.protection.outlook.com (10.167.242.75) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7046.17 via Frontend Transport; Fri, 1 Dec 2023 13:02:43 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Fri, 1 Dec 2023
- 05:02:16 -0800
-Received: from [10.41.21.79] (10.126.231.35) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Fri, 1 Dec 2023
- 05:02:13 -0800
-Message-ID: <3e6077bb-907c-057f-0896-d0a5814a4229@nvidia.com>
-Date:   Fri, 1 Dec 2023 18:32:10 +0530
+        Fri, 1 Dec 2023 08:03:09 -0500
+Received: from Atcsqr.andestech.com (60-248-80-70.hinet-ip.hinet.net [60.248.80.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F76710F3
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 05:03:14 -0800 (PST)
+Received: from mail.andestech.com (ATCPCS16.andestech.com [10.0.1.222])
+        by Atcsqr.andestech.com with ESMTP id 3B1D37RU008087;
+        Fri, 1 Dec 2023 21:03:07 +0800 (+08)
+        (envelope-from peterlin@andestech.com)
+Received: from APC323 (10.0.12.98) by ATCPCS16.andestech.com (10.0.1.222) with
+ Microsoft SMTP Server id 14.3.498.0; Fri, 1 Dec 2023 21:03:07 +0800
+Date:   Fri, 1 Dec 2023 21:03:03 +0800
+From:   Yu-Chien Peter Lin <peterlin@andestech.com>
+To:     Prabhakar <prabhakar.csengg@gmail.com>
+CC:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Samuel Holland <samuel.holland@sifive.com>,
+        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-renesas-soc@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: Re: [PATCH v3] riscv: errata: andes: Probe for IOCP only once in
+ boot stage
+Message-ID: <ZWnZh8vqaNaZmsHf@APC323>
+References: <20231130212647.108746-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v2 2/2] cpufreq: Wire-up arch-flavored freq info into
- cpufreq_verify_current_freq
-Content-Language: en-US
-To:     Ionela Voinescu <ionela.voinescu@arm.com>,
-        Beata Michalska <beata.michalska@arm.com>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-pm@vger.kernel.org>,
-        <sudeep.holla@arm.covm>, <will@kernel.org>,
-        <catalin.marinas@arm.com>, <viresh.kumar@linaro.org>,
-        <rafael@kernel.org>, <yang@os.amperecomputing.com>,
-        <linux-tegra@vger.kernel.org>, Sumit Gupta <sumitg@nvidia.com>
-References: <20231127160838.1403404-1-beata.michalska@arm.com>
- <20231127160838.1403404-3-beata.michalska@arm.com> <ZWXy0h/fFfQh+Rhy@arm.com>
-From:   Sumit Gupta <sumitg@nvidia.com>
-In-Reply-To: <ZWXy0h/fFfQh+Rhy@arm.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.126.231.35]
-X-ClientProxiedBy: rnnvmail203.nvidia.com (10.129.68.9) To
- rnnvmail201.nvidia.com (10.129.68.8)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN1PEPF0002BA52:EE_|DM4PR12MB6304:EE_
-X-MS-Office365-Filtering-Correlation-Id: bccdf2db-2f0a-45a3-4f72-08dbf26dce71
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8ogXGgQNdb/rTEiCZeK5XvOd6c/Cebhs3wlyR678hynVc71RcMZrUtkNzEbZ2VVz2oC9oiRmEyiuSVPgNkyh46QjrdMqUf1y3IPGaQ8hhqLx8laKsWgPJu85qfAXGl+xB1ZAqTaSWzgce5PkMop2ch+jZ0o6s1TV0QbMfCsCkL1c6Zf90P5pg/Eag9RIGmIiHqldV6Uz1oj3dNOoJpUoCgDyGncYuQHqMPu2E4gCqgemTaS2a/H5srfknl1vurfsd9AYuTflzdKzSrRy1Yn/3z0VAMoZtU6We01R4FTFwQrLoa8Ju04KtsMeqtjxPODrbyvyQ1Lw7EnRWl3H6Vs45jM2EI+skldllnaTLD8fQ3/T9I7883PHI4XOhcPUOP9DJFkWeJ9TLjqqI27EaM1DC49cxsozU7xALaZfmJzYfj3n5RiIpUER6CxQjMOqXgfgoSUAbwXY4EjdX58NdEulNMyBeGkeoiRF/Aw8ALnQaZUrhaFY4BF+20Qx4DRs94JUOj8d8E0KaCDE+QgH7aqZrL9NQYkGomfkZF+KMn/LHzdfarUNvPt/3cWGJe7FNmywj4RwjpfQJmK3WCMJQ7jyOcGwfpJiVUqJ2IN9LoC3JhoxcDZ/rqESyLEvhMK99ItWt00Di8lt+rYfY+9fM2lMGHy6cV8QVnV4ZKsGgVii20KYzkW5JyAXeihGNHAmP63mF6fCIEEprT60J98A41bwiYugJ7TFrnH0SDgP6TVTe7LnWXi1xtUw1Jt1aCieLYnxCwV08OcrcMUDtWajTPI56+vSESZQO1PIUTmlejTCBSaYUIYTyvmnYwwdgXehwfBkOstzcgNoN3uCx4hySz8zqh5dNq7zU2l4pDPdYBH2NFk=
-X-Forefront-Antispam-Report: CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(346002)(396003)(376002)(39860400002)(136003)(230922051799003)(64100799003)(82310400011)(451199024)(186009)(1800799012)(40470700004)(36840700001)(46966006)(40480700001)(31686004)(86362001)(83380400001)(40460700003)(70586007)(70206006)(7636003)(356005)(82740400003)(36756003)(31696002)(54906003)(47076005)(36860700001)(426003)(26005)(2616005)(107886003)(110136005)(966005)(16526019)(2906002)(316002)(16576012)(4326008)(5660300002)(336012)(8936002)(7416002)(8676002)(478600001)(41300700001)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Dec 2023 13:02:43.0540
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: bccdf2db-2f0a-45a3-4f72-08dbf26dce71
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: SN1PEPF0002BA52.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6304
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231130212647.108746-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+User-Agent: Mutt/2.2.10 (2023-03-25)
+X-Originating-IP: [10.0.12.98]
+X-DNSRBL: 
+X-SPAM-SOURCE-CHECK: pass
+X-MAIL: Atcsqr.andestech.com 3B1D37RU008087
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ionela,
-
->> --- a/drivers/cpufreq/cpufreq.c
->> +++ b/drivers/cpufreq/cpufreq.c
->> @@ -1756,7 +1756,8 @@ static unsigned int cpufreq_verify_current_freq(struct cpufreq_policy *policy, b
->>   {
->>        unsigned int new_freq;
->>
->> -     new_freq = cpufreq_driver->get(policy->cpu);
->> +     new_freq = arch_freq_get_on_cpu(policy->cpu);
->> +     new_freq = new_freq ?: cpufreq_driver->get(policy->cpu);
+On Thu, Nov 30, 2023 at 09:26:47PM +0000, Prabhakar wrote:
+> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 > 
-> Given that arch_freq_get_on_cpu() is an average frequency, it does not
-> seem right to me to trigger the sync & update process of
-> cpufreq_verify_current_freq() based on it.
+> We need to probe for IOCP only once during boot stage, as we were probing
+> for IOCP for all the stages this caused the below issue during module-init
+> stage,
 > 
-> cpufreq_verify_current_freq() will at least modify the internal state of
-> the policy and send PRE and POST notifications, if not do a full frequency
-> update, based on this average frequency, which is likely different from
-> the current frequency, even beyond the 1MHz threshold.
+> [9.019104] Unable to handle kernel paging request at virtual address ffffffff8100d3a0
+> [9.027153] Oops [#1]
+> [9.029421] Modules linked in: rcar_canfd renesas_usbhs i2c_riic can_dev spi_rspi i2c_core
+> [9.037686] CPU: 0 PID: 90 Comm: udevd Not tainted 6.7.0-rc1+ #57
+> [9.043756] Hardware name: Renesas SMARC EVK based on r9a07g043f01 (DT)
+> [9.050339] epc : riscv_noncoherent_supported+0x10/0x3e
+> [9.055558]  ra : andes_errata_patch_func+0x4a/0x52
+> [9.060418] epc : ffffffff8000d8c2 ra : ffffffff8000d95c sp : ffffffc8003abb00
+> [9.067607]  gp : ffffffff814e25a0 tp : ffffffd80361e540 t0 : 0000000000000000
+> [9.074795]  t1 : 000000000900031e t2 : 0000000000000001 s0 : ffffffc8003abb20
+> [9.081984]  s1 : ffffffff015b57c7 a0 : 0000000000000000 a1 : 0000000000000001
+> [9.089172]  a2 : 0000000000000000 a3 : 0000000000000000 a4 : ffffffff8100d8be
+> [9.096360]  a5 : 0000000000000001 a6 : 0000000000000001 a7 : 000000000900031e
+> [9.103548]  s2 : ffffffff015b57d7 s3 : 0000000000000001 s4 : 000000000000031e
+> [9.110736]  s5 : 8000000000008a45 s6 : 0000000000000500 s7 : 000000000000003f
+> [9.117924]  s8 : ffffffc8003abd48 s9 : ffffffff015b1140 s10: ffffffff8151a1b0
+> [9.125113]  s11: ffffffff015b1000 t3 : 0000000000000001 t4 : fefefefefefefeff
+> [9.132301]  t5 : ffffffff015b57c7 t6 : ffffffd8b63a6000
+> [9.137587] status: 0000000200000120 badaddr: ffffffff8100d3a0 cause: 000000000000000f
+> [9.145468] [<ffffffff8000d8c2>] riscv_noncoherent_supported+0x10/0x3e
+> [9.151972] [<ffffffff800027e8>] _apply_alternatives+0x84/0x86
+> [9.157784] [<ffffffff800029be>] apply_module_alternatives+0x10/0x1a
+> [9.164113] [<ffffffff80008fcc>] module_finalize+0x5e/0x7a
+> [9.169583] [<ffffffff80085cd6>] load_module+0xfd8/0x179c
+> [9.174965] [<ffffffff80086630>] init_module_from_file+0x76/0xaa
+> [9.180948] [<ffffffff800867f6>] __riscv_sys_finit_module+0x176/0x2a8
+> [9.187365] [<ffffffff80889862>] do_trap_ecall_u+0xbe/0x130
+> [9.192922] [<ffffffff808920bc>] ret_from_exception+0x0/0x64
+> [9.198573] Code: 0009 b7e9 6797 014d a783 85a7 c799 4785 0717 0100 (0123) aef7
+> [9.205994] ---[ end trace 0000000000000000 ]---
 > 
-> While I believe it's okay to return this average frequency in
-> cpuinfo_cur_freq, I don't think it should be used as an indication of
-> an accurate current frequency, which is what
-> cpufreq_verify_current_freq() expects.
+> This is because we called riscv_noncoherent_supported() for all the stages
+> during IOCP probe. riscv_noncoherent_supported() function sets
+> noncoherent_supported variable to true which has an annotation set to
+> "__ro_after_init" due to which we were seeing the above splat. Fix this by
+> probing for IOCP only once in boot stage by having a boolean variable
+> "done" which will be set to true upon IOCP probe in errata_probe_iocp()
+> and we bail out early if "done" is set to true.
 > 
-> Sumit, can you give more details on the issue at [1] and why this change
-> fixes it?
+> While at it make return type of errata_probe_iocp() to void as we were
+> not checking the return value in andes_errata_patch_func().
 > 
-> [1] https://lore.kernel.org/lkml/6a5710f6-bfbb-5dfd-11cd-0cd02220cee7@nvidia.com/
+> Fixes: e021ae7f5145 ("riscv: errata: Add Andes alternative ports")
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+
+It seems that vdso.so currently does not have a .alternative section.
+Anyway, it makes sense to me.
+
+Reviewed-by: Yu Chien Peter Lin <peterlin@andestech.com>
+
+Thanks,
+Peter Lin
+
+> ---
+>  arch/riscv/errata/andes/errata.c | 20 +++++++++++++-------
+>  1 file changed, 13 insertions(+), 7 deletions(-)
 > 
-> Thank you,
-> Ionela.
->
-cpufreq_verify_current_freq() also updates 'policy->cur' in POST
-notification if the frequency from hardware has more delta (out of sync).
-
-As the value from 'cpufreq_driver->get()' is not reliable due to [1],
-calling the 'get' hook can update the 'policy->cur' with a wrong value 
-when governor starts in cpufreq_start_governor().
-And if the frequency is never changed after the governor starts during
-boot e.g. when performance governor is set as default, then 
-'scaling_cur_freq' always returns wrong value.
-
-Instead, the arch_freq_get_on_cpu() API updates 'policy->cur' with a 
-more stable freq value.
-
-[1] https://lore.kernel.org/lkml/20230418113459.12860-7-sumitg@nvidia.com/
-
-Best regards,
-Sumit Gupta
-
->>        if (!new_freq)
->>                return 0;
->>
->> --
->> 2.25.1
->>
+> diff --git a/arch/riscv/errata/andes/errata.c b/arch/riscv/errata/andes/errata.c
+> index 197db68cc8da..17a904869724 100644
+> --- a/arch/riscv/errata/andes/errata.c
+> +++ b/arch/riscv/errata/andes/errata.c
+> @@ -38,29 +38,35 @@ static long ax45mp_iocp_sw_workaround(void)
+>  	return ret.error ? 0 : ret.value;
+>  }
+>  
+> -static bool errata_probe_iocp(unsigned int stage, unsigned long arch_id, unsigned long impid)
+> +static void errata_probe_iocp(unsigned int stage, unsigned long arch_id, unsigned long impid)
+>  {
+> +	static bool done;
+> +
+>  	if (!IS_ENABLED(CONFIG_ERRATA_ANDES_CMO))
+> -		return false;
+> +		return;
+> +
+> +	if (done)
+> +		return;
+> +
+> +	done = true;
+>  
+>  	if (arch_id != ANDESTECH_AX45MP_MARCHID || impid != ANDESTECH_AX45MP_MIMPID)
+> -		return false;
+> +		return;
+>  
+>  	if (!ax45mp_iocp_sw_workaround())
+> -		return false;
+> +		return;
+>  
+>  	/* Set this just to make core cbo code happy */
+>  	riscv_cbom_block_size = 1;
+>  	riscv_noncoherent_supported();
+> -
+> -	return true;
+>  }
+>  
+>  void __init_or_module andes_errata_patch_func(struct alt_entry *begin, struct alt_entry *end,
+>  					      unsigned long archid, unsigned long impid,
+>  					      unsigned int stage)
+>  {
+> -	errata_probe_iocp(stage, archid, impid);
+> +	if (stage == RISCV_ALTERNATIVES_BOOT)
+> +		errata_probe_iocp(stage, archid, impid);
+>  
+>  	/* we have nothing to patch here ATM so just return back */
+>  }
+> -- 
+> 2.34.1
+> 
