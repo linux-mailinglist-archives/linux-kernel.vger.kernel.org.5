@@ -2,90 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A339880013A
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 02:51:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6641680013D
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 02:51:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376418AbjLABvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 20:51:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42752 "EHLO
+        id S1376398AbjLABv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 20:51:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230429AbjLABvD (ORCPT
+        with ESMTP id S229781AbjLABvY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 20:51:03 -0500
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0601C10FF;
-        Thu, 30 Nov 2023 17:51:08 -0800 (PST)
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3B11ovBtB4138308, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3B11ovBtB4138308
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 1 Dec 2023 09:50:57 +0800
-Received: from RTEXDAG02.realtek.com.tw (172.21.6.101) by
- RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.32; Fri, 1 Dec 2023 09:50:57 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXDAG02.realtek.com.tw (172.21.6.101) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Fri, 1 Dec 2023 09:50:56 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7]) by
- RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7%5]) with mapi id
- 15.01.2375.007; Fri, 1 Dec 2023 09:50:56 +0800
-From:   =?utf-8?B?VFlfQ2hhbmdb5by15a2Q6YC4XQ==?= <tychang@realtek.com>
-To:     Andy Shevchenko <andy@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-CC:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2 2/2] Add GPIO support for Realtek DHC(Digital Home Center) RTD SoCs.
-Thread-Topic: [PATCH v2 2/2] Add GPIO support for Realtek DHC(Digital Home
- Center) RTD SoCs.
-Thread-Index: AQHaGH4c7D0XjcmgAUiBOm4nmmy8ibCIvO0AgAAfgoCACuJyIA==
-Date:   Fri, 1 Dec 2023 01:50:56 +0000
-Message-ID: <3482d87c4cd74363964d1d867e0c81cd@realtek.com>
-References: <20231116111441.2339-1-tychang@realtek.com>
- <20231116111441.2339-3-tychang@realtek.com>
- <CACRpkdZTFWnH1iwLCeJy02OXJAgTSSVTomzDNEQ3ebWocwkgPA@mail.gmail.com>
- <ZWCJkddstjpXTtQx@smile.fi.intel.com>
-In-Reply-To: <ZWCJkddstjpXTtQx@smile.fi.intel.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-x-originating-ip: [172.21.181.166]
-x-kse-serverinfo: RTEXDAG02.realtek.com.tw, 9
-x-kse-antispam-interceptor-info: fallback
-x-kse-antivirus-interceptor-info: fallback
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        Thu, 30 Nov 2023 20:51:24 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D9E6F2
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 17:51:30 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-daf6c1591d5so73682276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 17:51:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701395489; x=1702000289; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=byu1akO/sublqF94hO2zFUsUyjhsuxmNz1CACi7ldr8=;
+        b=M85+qU07mok2nKpVVS14I5/AtqsAHKxCiAisoAz/blADIlHI2KJuZnWlksqI7T0OFR
+         ue9p2JozxL6HfwbULIlUlYsDubgFWhrX8jlx8uSltjobn6e39yR/XbvjHPj7jWbirtsM
+         FLMHB3l4AttMtV/2aD7eTyT7e6K/jhyYxwlyJgMRYDYFlyJ+2oWIp9t2w97ErpOh276B
+         vj7KmggnSosFdcDI5GdnBt+R7yjQ62Y0GyUDamDfG3FCcUNT4pIdQUbAvhadQDVyqt+d
+         HhEhhTj3GpHJOgQNYBcIa6yWrXGzq6emei+G1BbWPvFAZKbrZbYn8FHahVUPCdEjQuZs
+         dgig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701395489; x=1702000289;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=byu1akO/sublqF94hO2zFUsUyjhsuxmNz1CACi7ldr8=;
+        b=Hnxyf+nIXoNHaATh20RDlxxj4KgDUvrOm/FArnp2G8E60ZX3zuv6VpVoTLi/ZKopRA
+         k6FeQgQDG81cLrnXjdQmxVqGF5gV9sFlq7liDY3iqS97vy3VQob1CXemoYVY3BNrVkoW
+         K0FvmtJxgrTrT9wtXUmUn3bHTvss1ViPpEXO8GvZoSLJOHFxAGWivAbKZmtCEkBxbTUC
+         xr5vDA+8HeuxPzrukqu+lQTmYYXHtGqnVm+aelaGqz4nAM/xY+Gf2SOrvgNQXYpZB88s
+         qyF/5AtKGUgu1Mx3OHr3wrLVJ/Hg/c6WuNgQO4WqAaDzae4d+yiiaYxhS3vZGpOoezY6
+         4SHg==
+X-Gm-Message-State: AOJu0Ywro/6Tu5AZnYkRy+EtSl6d3snKZ1iRnyJjuTY8xnuGNiJUcEfg
+        +E/nOuKjOEwYUh7RsbGsz+qSAbw7DHA=
+X-Google-Smtp-Source: AGHT+IERDrWBX6TL3KZ0VNw9gIs+ZJ0GRBsdo7UlxzR2o5bgEIH2X0Ca3LMD/CAttsegjSycqbhTNmr0dtM=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:a3e6:0:b0:db4:5d34:fa5 with SMTP id
+ e93-20020a25a3e6000000b00db45d340fa5mr754053ybi.0.1701395489584; Thu, 30 Nov
+ 2023 17:51:29 -0800 (PST)
+Date:   Thu, 30 Nov 2023 17:51:28 -0800
+In-Reply-To: <3ad69657ba8e1b19d150db574193619cf0cb34df.camel@redhat.com>
+Mime-Version: 1.0
+References: <20231110235528.1561679-1-seanjc@google.com> <20231110235528.1561679-4-seanjc@google.com>
+ <3ad69657ba8e1b19d150db574193619cf0cb34df.camel@redhat.com>
+Message-ID: <ZWk8IMZamuemfwXG@google.com>
+Subject: Re: [PATCH 3/9] KVM: x86: Initialize guest cpu_caps based on guest CPUID
+From:   Sean Christopherson <seanjc@google.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQW5keSwNCg0KPg0KPk9uIEZyaSwgTm92IDI0LCAyMDIzIGF0IDEwOjM4OjQyQU0gKzAxMDAs
-IExpbnVzIFdhbGxlaWogd3JvdGU6DQo+PiBPbiBUaHUsIE5vdiAxNiwgMjAyMyBhdCAxMjoxNOKA
-r1BNIFR6dXlpIENoYW5nIDx0eWNoYW5nQHJlYWx0ZWsuY29tPg0KPndyb3RlOg0KPj4NCj4+ID4g
-VGhpcyBkcml2ZXIgZW5hYmxlcyBjb25maWd1cmF0aW9uIG9mIEdQSU8gZGlyZWN0aW9uLCBHUElP
-IHZhbHVlcywNCj4+ID4gR1BJTyBkZWJvdW5jZSBzZXR0aW5ncyBhbmQgaGFuZGxlcyBHUElPIGlu
-dGVycnVwdHMuDQo+PiA+DQo+PiA+IFNpZ25lZC1vZmYtYnk6IFR6dXlpIENoYW5nIDx0eWNoYW5n
-QHJlYWx0ZWsuY29tPg0KPj4NCj4+IEFwYXJ0IGZyb20gdGhlIG1pc3Npbmcga2VybmVsZG9jIHRo
-YXQgdGhlIGF1dG9idWlsZGVyIGlzIGNvbXBsYWluaW5nDQo+PiBhYm91dCB0aGlzIGxvb2tzIGdv
-b2QgdG8gbWUuIElmIHlvdSBmaXggdGhlIGtlcm5lbGRvYzoNCj4+IFJldmlld2VkLWJ5OiBMaW51
-cyBXYWxsZWlqIDxsaW51cy53YWxsZWlqQGxpbmFyby5vcmc+DQo+DQo+SSB0aGluayBJIG1pZ2h0
-IGhhdmUgY29tbWVudHMgaW4gdGhlIGZ1dHVyZS4NCj5JIGhhdmVuJ3QgbG9va2VkIGF0IHRoZSBz
-ZXJpZXMgZHVlIHRvIG5vdGljaW5nIExLUCBjb21wbGFpbnMuDQo+DQoNCkkgd2lsbCBmaXggdGhl
-IGJ1aWxkIHdhcm5pbmcgaW4gdGhlIG5leHQgdmVyc2lvbi4NCg0KVGhhbmtzLA0KVHp1eWkgQ2hh
-bmcNCg0K
+On Sun, Nov 19, 2023, Maxim Levitsky wrote:
+> On Fri, 2023-11-10 at 15:55 -0800, Sean Christopherson wrote:
+> > +/*
+> > + * This isn't truly "unsafe", but all callers except kvm_cpu_after_set_cpuid()
+> > + * should use __cpuid_entry_get_reg(), which provides compile-time validation
+> > + * of the input.
+> > + */
+> > +static u32 cpuid_get_reg_unsafe(struct kvm_cpuid_entry2 *entry, u32 reg)
+> > +{
+> > +	switch (reg) {
+> > +	case CPUID_EAX:
+> > +		return entry->eax;
+> > +	case CPUID_EBX:
+> > +		return entry->ebx;
+> > +	case CPUID_ECX:
+> > +		return entry->ecx;
+> > +	case CPUID_EDX:
+> > +		return entry->edx;
+> > +	default:
+> > +		WARN_ON_ONCE(1);
+> > +		return 0;
+> > +	}
+> > +}
+
+...
+
+> >  static void kvm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
+> >  {
+> >  	struct kvm_lapic *apic = vcpu->arch.apic;
+> >  	struct kvm_cpuid_entry2 *best;
+> >  	bool allow_gbpages;
+> > +	int i;
+> >  
+> > -	memset(vcpu->arch.cpu_caps, 0, sizeof(vcpu->arch.cpu_caps));
+> > +	BUILD_BUG_ON(ARRAY_SIZE(reverse_cpuid) != NR_KVM_CPU_CAPS);
+> > +
+> > +	/*
+> > +	 * Reset guest capabilities to userspace's guest CPUID definition, i.e.
+> > +	 * honor userspace's definition for features that don't require KVM or
+> > +	 * hardware management/support (or that KVM simply doesn't care about).
+> > +	 */
+> > +	for (i = 0; i < NR_KVM_CPU_CAPS; i++) {
+> > +		const struct cpuid_reg cpuid = reverse_cpuid[i];
+> > +
+> > +		best = kvm_find_cpuid_entry_index(vcpu, cpuid.function, cpuid.index);
+> > +		if (best)
+> > +			vcpu->arch.cpu_caps[i] = cpuid_get_reg_unsafe(best, cpuid.reg);
+> 
+> Why not just use __cpuid_entry_get_reg? 
+> 
+> cpuid.reg comes from read/only 'reverse_cpuid' anyway, and in fact
+> it seems that all callers of __cpuid_entry_get_reg, take the reg value from
+> x86_feature_cpuid() which also takes it from 'reverse_cpuid'.
+> 
+> So if the compiler is smart enough to not complain in these cases, I don't
+> see why this case is different.
+
+It's because the input isn't a compile-time constant, and so the BUILD_BUG() in
+the default path will fire.  All of the compile-time assertions in reverse_cpuid.h
+rely on the feature being a constant value, which allows the compiler to optimize
+away the dead paths, i.e. turn __cpuid_entry_get_reg()'s switch statement into
+simple pointer arithmetic and thus omit the BUILD_BUG() code.
+
+> Also why not to initialize guest_caps = host_caps & userspace_cpuid?
+>
+> If this was the default we won't need any guest_cpu_cap_restrict and such,
+> instead it will just work.
+
+Hrm, I definitely like the idea.  Unfortunately, unless we do an audit of all
+~120 uses of guest_cpuid_has(), restricting those based on kvm_cpu_caps might
+break userspace.
+
+Aside from purging the governed feature nomenclature, the main goal of this series
+provide a way to do fast lookups of all known guest CPUID bits without needing to
+opt-in on a feature-by-feature basis, including for features that are fully
+controlled by userspace.
+
+It's definitely doable, but I'm not all that confident that the end result would
+be a net positive, e.g. I believe we would need to special case things like the
+feature bits that gate MSR_IA32_SPEC_CTRL and MSR_IA32_PRED_CMD.  MOVBE and RDPID
+are other features that come to mind, where KVM emulates the feature in software
+but it won't be set in kvm_cpu_caps.
+
+Oof, and MONITOR and MWAIT too, as KVM deliberately doesn't advertise those to
+userspace.
+
+So yeah, I'm not opposed to trying that route at some point, but I really don't
+want to do that in this series as the risk of subtly breaking something is super
+high.
+
+> Special code will only be needed in few more complex cases, like forced exposed
+> of a feature to a guest due to a virtualization hole.
+> 
+> 
+> > +		else
+> > +			vcpu->arch.cpu_caps[i] = 0;
+> > +	}
+> >  
+> >  	/*
+> >  	 * If TDP is enabled, let the guest use GBPAGES if they're supported in
+> > @@ -342,8 +380,7 @@ static void kvm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
+> >  	 */
+> >  	allow_gbpages = tdp_enabled ? boot_cpu_has(X86_FEATURE_GBPAGES) :
+> >  				      guest_cpuid_has(vcpu, X86_FEATURE_GBPAGES);
+> > -	if (allow_gbpages)
+> > -		guest_cpu_cap_set(vcpu, X86_FEATURE_GBPAGES);
+> > +	guest_cpu_cap_change(vcpu, X86_FEATURE_GBPAGES, allow_gbpages);
+> 
+> IMHO the original code was more readable, now I need to look up the
+> 'guest_cpu_cap_change()' to understand what is going on.
+
+The change is "necessary".  The issue is that with the caps 0-initialied, the
+!allow_gbpages could simply do nothing.  Now, KVM needs to explicitly clear the
+flag, i.e. would need to do:
+
+	if (allow_gbpages)
+		guest_cpu_cap_set(vcpu, X86_FEATURE_GBPAGES);
+	else
+		guest_cpu_cap_clear(vcpu, X86_FEATURE_GBPAGES);
+
+I don't much love the name either, but it pairs with cpuid_entry_change() and I
+want to keep the kvm_cpu_cap, cpuid_entry, and guest_cpu_cap APIs in sync as far
+as the APIs go.  The only reason kvm_cpu_cap_change() doesn't exist is because
+there aren't any flows that need to toggle a bit.
+
+> >  static __always_inline bool guest_cpu_cap_has(struct kvm_vcpu *vcpu,
+> > diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> > index 8a99a73b6ee5..5827328e30f1 100644
+> > --- a/arch/x86/kvm/svm/svm.c
+> > +++ b/arch/x86/kvm/svm/svm.c
+> > @@ -4315,14 +4315,14 @@ static void svm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
+> >  	 * XSS on VM-Enter/VM-Exit.  Failure to do so would effectively give
+> >  	 * the guest read/write access to the host's XSS.
+> >  	 */
+> > -	if (boot_cpu_has(X86_FEATURE_XSAVE) &&
+> > -	    boot_cpu_has(X86_FEATURE_XSAVES) &&
+> > -	    guest_cpuid_has(vcpu, X86_FEATURE_XSAVE))
+> > -		guest_cpu_cap_set(vcpu, X86_FEATURE_XSAVES);
+> > +	guest_cpu_cap_change(vcpu, X86_FEATURE_XSAVES,
+> > +			     boot_cpu_has(X86_FEATURE_XSAVE) &&
+> > +			     boot_cpu_has(X86_FEATURE_XSAVES) &&
+> > +			     guest_cpuid_has(vcpu, X86_FEATURE_XSAVE));
+> 
+> In theory this change does change behavior, now the X86_FEATURE_XSAVE will
+> be set iff the condition is true, but before it was set *if* the condition was true.
+
+No, before it was set if and only if the condition was true, because in that case
+caps were 0-initialized, i.e. this was/is the only way for XSAVE to be set.
+
+> > -	guest_cpu_cap_check_and_set(vcpu, X86_FEATURE_NRIPS);
+> > -	guest_cpu_cap_check_and_set(vcpu, X86_FEATURE_TSCRATEMSR);
+> > -	guest_cpu_cap_check_and_set(vcpu, X86_FEATURE_LBRV);
+> > +	guest_cpu_cap_restrict(vcpu, X86_FEATURE_NRIPS);
+> > +	guest_cpu_cap_restrict(vcpu, X86_FEATURE_TSCRATEMSR);
+> > +	guest_cpu_cap_restrict(vcpu, X86_FEATURE_LBRV);
+> 
+> One of the main reasons I don't like governed features is this manual list.
+
+To be fair, the manual lists predate the governed features.
+
+> I want to reach the point that one won't need to add anything manually,
+> unless there is a good reason to do so, and there are only a few exceptions
+> when the guest cap is set, while the host's isn't.
+
+Yeah, agreed.
