@@ -2,77 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84F33800952
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 12:07:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8942E800955
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 12:08:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378469AbjLALGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 06:06:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53180 "EHLO
+        id S1378476AbjLALIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 06:08:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378464AbjLALGx (ORCPT
+        with ESMTP id S1378464AbjLALIn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 06:06:53 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B06EC10D8;
-        Fri,  1 Dec 2023 03:06:58 -0800 (PST)
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B18uKgQ022357;
-        Fri, 1 Dec 2023 11:06:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=qcppdkim1;
- bh=ddKWip09Ii5EtoLGy+6Dq9XJZUZNVv7bpq19jVF3sCY=;
- b=Tu5RxNujEtPzzGWyxKBjwTpTh6Nf8ljoPOXDVWu3mn527fcgAIddOaOVB4YjKIWyHjf7
- juQK/0PpRoTuU0N4tmEGtmN8Kzq99eUmapSgo9IxJIn/VWLjGsuOrP06LJ+HgjoYZC0j
- 2RRfFeA8pgDeMSXe7sOkgmZKOVP+SqfVKIsQVwA6wEER7uvZrZJUF88aKU7AO0qqyfpa
- /GX3eKPv1wf6i6aghWoLnG8emTfr3fjL4Qm6KQKjmDiKuRMf+Ta2Pa3HuRtUG8Ewc0bt
- WemhLrAcI6zC0fZqCOGImzgR1UuvWoCyslsvDH41mSoD5yeI5Zd+CkxfhxU+fkk7ShSy Fg== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3upvm1tn6t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 01 Dec 2023 11:06:54 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B1B6rEd017269
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 1 Dec 2023 11:06:53 GMT
-Received: from hu-deesin-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Fri, 1 Dec 2023 03:06:49 -0800
-From:   Deepak Kumar Singh <quic_deesin@quicinc.com>
-To:     <quic_bjorande@quicinc.com>, <bjorn.andersson@kernel.org>,
-        <quic_clew@quicinc.com>, <mathieu.poirier@linaro.org>
-CC:     <linux-kernel@vger.kernel.org>, <quic_sarannya@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>,
-        <linux-remoteproc@vger.kernel.org>,
-        "Deepak Kumar Singh" <quic_deesin@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
-        "Bjorn Andersson" <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>
-Subject: [PATCH V1] rpmsg: glink: smem: validate index before fifo read write
-Date:   Fri, 1 Dec 2023 16:36:31 +0530
-Message-ID: <20231201110631.669085-1-quic_deesin@quicinc.com>
-X-Mailer: git-send-email 2.34.1
+        Fri, 1 Dec 2023 06:08:43 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9499D1B2
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 03:08:49 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6BBCAC433C7;
+        Fri,  1 Dec 2023 11:08:46 +0000 (UTC)
+Date:   Fri, 1 Dec 2023 11:08:43 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Ferry Toth <fntoth@gmail.com>
+Cc:     Alan Stern <stern@rowland.harvard.edu>,
+        Christoph Hellwig <hch@lst.de>,
+        Hamza Mahfooz <someguy@effective-light.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Andrew <travneff@gmail.com>,
+        Ferry Toth <ferry.toth@elsinga.info>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Thorsten Leemhuis <regressions@leemhuis.info>,
+        iommu@lists.linux.dev,
+        Kernel development list <linux-kernel@vger.kernel.org>,
+        USB mailing list <linux-usb@vger.kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Will Deacon <will@kernel.org>
+Subject: Re: Bug in add_dma_entry()'s debugging code
+Message-ID: <ZWm-u2kV1UP09M84@arm.com>
+References: <736e584f-7d5f-41aa-a382-2f4881ba747f@rowland.harvard.edu>
+ <20231127160759.GA1668@lst.de>
+ <637d6dff-de56-4815-a15a-1afccde073f0@rowland.harvard.edu>
+ <20231128133702.GA9917@lst.de>
+ <cb7dc5da-37cb-45ba-9846-5a085f55692e@rowland.harvard.edu>
+ <ZWYnECPRKca5Dpqc@arm.com>
+ <76e8def2-ff45-47d3-91ab-96876ea84079@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 49DiMz7uDClOHEvaBUotB1hqK0N7ZCFp
-X-Proofpoint-GUID: 49DiMz7uDClOHEvaBUotB1hqK0N7ZCFp
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-01_09,2023-11-30_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- priorityscore=1501 impostorscore=0 phishscore=0 spamscore=0 malwarescore=0
- bulkscore=0 adultscore=0 clxscore=1011 mlxscore=0 mlxlogscore=876
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2312010072
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <76e8def2-ff45-47d3-91ab-96876ea84079@gmail.com>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,92 +56,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fifo head and tail index can be modified with wrong values from
-untrusted remote procs. Glink smem is not validating these index
-before using to read or write fifo. This can result in out of
-bound memory access if head and tail have incorrect values.
+On Thu, Nov 30, 2023 at 09:08:23PM +0100, Ferry Toth wrote:
+> Op 28-11-2023 om 18:44 schreef Catalin Marinas:
+> > Or just force the kmalloc() min align to cache_line_size(), something
+> > like:
+> > 
+> > diff --git a/include/linux/dma-mapping.h b/include/linux/dma-mapping.h
+> > index 4a658de44ee9..3ece20367636 100644
+> > --- a/include/linux/dma-mapping.h
+> > +++ b/include/linux/dma-mapping.h
+> > @@ -543,6 +543,8 @@ static inline int dma_get_cache_alignment(void)
+> >   #ifdef ARCH_HAS_DMA_MINALIGN
+> >   	return ARCH_DMA_MINALIGN;
+> >   #endif
+> > +	if (IS_ENABLED(CONFIG_DMA_API_DEBUG))
+> > +		return cache_line_size();
+> >   	return 1;
+> >   }
+> >   #endif
+> > diff --git a/mm/slab_common.c b/mm/slab_common.c
+> > index 8d431193c273..d0b21d6e9328 100644
+> > --- a/mm/slab_common.c
+> > +++ b/mm/slab_common.c
+> > @@ -879,7 +879,7 @@ static unsigned int __kmalloc_minalign(void)
+> >   	unsigned int minalign = dma_get_cache_alignment();
+> >   	if (IS_ENABLED(CONFIG_DMA_BOUNCE_UNALIGNED_KMALLOC) &&
+> > -	    is_swiotlb_allocated())
+> > +	    is_swiotlb_allocated() && !IS_ENABLED(CONFIG_DMA_API_DEBUG))
+> >   		minalign = ARCH_KMALLOC_MINALIGN;
+> >   	return max(minalign, arch_slab_minalign());
+> 
+> With above suggestion "force the kmalloc() min align to cache_line_size()" +
+> Alan's debug code:
+> 
+> root@yuna:~# journalctl -k | grep hub
+> kernel: usbcore: registered new interface driver hub
+> kernel: hub 1-0:1.0: USB hub found
+> kernel: usb usb1: hub buffer at 71c7180, status at 71c71c0
+> kernel: hub 1-0:1.0: 1 port detected
+> kernel: hub 2-0:1.0: USB hub found
+> kernel: usb usb2: hub buffer at 71c79c0, status at 71c7a00
+> kernel: hub 2-0:1.0: 1 port detected
+> kernel: hub 1-1:1.0: USB hub found
+> kernel: usb 1-1: hub buffer at 65b36c0, status at 6639340
+> kernel: hub 1-1:1.0: 7 ports detected
+> 
+> and the stack trace indeed goes away.
+> 
+> IOW also the 2 root hub kmalloc() are now also aligned to the cache line
+> size, even though these never triggered the stack trace. Strange: hub status
+> is aligned far away from hub buffer, kmalloc mysteries.
 
-Add check for validation of head and tail index. This check will
-put index within fifo boundaries, so that no invalid memory access
-is made. Further this may result in certain packet drops unless
-glink finds a valid packet header in fifo again and recovers.
+They are 64 bytes apart in most cases other than the last one which I
+guess the status had to go to a different slab page.
 
-Crash signature and calltrace with wrong head and tail values:
+> This still did not land for me: are we detecting a false alarm here as the 2
+> DMA operations can never happen on the same cache line on non-cache-coherent
+> platforms? If so, shouldn't we fix up the dma debug code to not detect a
+> false alarm? Instead of changing the alignment?
 
-Internal error: Oops: 96000007 [#1] PREEMPT SMP
-pc : __memcpy_fromio+0x34/0xb4
-lr : glink_smem_rx_peak+0x68/0x94
+It's a false alarm indeed on this hardware since the DMA is
+cache-coherent. I think Christoph mentioned earlier in this thread that
+he'd like the DMA API debug to report potential problems even if the
+hardware it is running on is safe.
 
-__memcpy_fromio+0x34/0xb4
-glink_smem_rx_peak+0x68/0x94
-qcom_glink_native_intr+0x90/0x888
+> Or, is this a bonafide warning (for non-cache-coherent platforms)? Then we
+> should not silence it by force aligning it, but issue a WARN (on a cache
+> coherent platform) that is more useful (i.e. here we have not an overlap but
+> a shared cache line). On a non-cache coherent platform something stronger
+> than a WARN might be appropriate?
 
-Signed-off-by: Deepak Kumar Singh <quic_deesin@quicinc.com>
----
- drivers/rpmsg/qcom_glink_smem.c | 21 ++++++++++++++++++---
- 1 file changed, 18 insertions(+), 3 deletions(-)
+A non-cache coherent platform would either have the kmalloc()
+allocations aligned or it would bounce those small, unaligned buffers.
+So it doesn't seem right to issue a warning on x86 where kmalloc()
+minimum alignment is 8 and not getting the warning on a non-coherent
+platform which forces the kmalloc() alignment.
 
-diff --git a/drivers/rpmsg/qcom_glink_smem.c b/drivers/rpmsg/qcom_glink_smem.c
-index 7a982c60a8dd..9eba0aaae916 100644
---- a/drivers/rpmsg/qcom_glink_smem.c
-+++ b/drivers/rpmsg/qcom_glink_smem.c
-@@ -86,9 +86,14 @@ static size_t glink_smem_rx_avail(struct qcom_glink_pipe *np)
- 	tail = le32_to_cpu(*pipe->tail);
- 
- 	if (head < tail)
--		return pipe->native.length - tail + head;
-+		len = pipe->native.length - tail + head;
- 	else
--		return head - tail;
-+		len = head - tail;
-+
-+	if (WARN_ON_ONCE(len > pipe->native.length))
-+		len = 0;
-+
-+	return len;
- }
- 
- static void glink_smem_rx_peek(struct qcom_glink_pipe *np,
-@@ -99,6 +104,10 @@ static void glink_smem_rx_peek(struct qcom_glink_pipe *np,
- 	u32 tail;
- 
- 	tail = le32_to_cpu(*pipe->tail);
-+
-+	if (WARN_ON_ONCE(tail > pipe->native.length))
-+		return;
-+
- 	tail += offset;
- 	if (tail >= pipe->native.length)
- 		tail -= pipe->native.length;
-@@ -121,7 +130,7 @@ static void glink_smem_rx_advance(struct qcom_glink_pipe *np,
- 
- 	tail += count;
- 	if (tail >= pipe->native.length)
--		tail -= pipe->native.length;
-+		tail %= pipe->native.length;
- 
- 	*pipe->tail = cpu_to_le32(tail);
- }
-@@ -146,6 +155,9 @@ static size_t glink_smem_tx_avail(struct qcom_glink_pipe *np)
- 	else
- 		avail -= FIFO_FULL_RESERVE + TX_BLOCKED_CMD_RESERVE;
- 
-+	if (WARN_ON_ONCE(avail > pipe->native.length))
-+		avail = 0;
-+
- 	return avail;
- }
- 
-@@ -155,6 +167,9 @@ static unsigned int glink_smem_tx_write_one(struct glink_smem_pipe *pipe,
- {
- 	size_t len;
- 
-+	if (WARN_ON_ONCE(head > pipe->native.length))
-+		return head;
-+
- 	len = min_t(size_t, count, pipe->native.length - head);
- 	if (len)
- 		memcpy(pipe->fifo + head, data, len);
+If we consider the kmalloc() aspect already covered by bouncing or force
+alignment, the DMA API debug code can still detect other cache line
+sharing situations.
+
 -- 
-2.34.1
-
+Catalin
