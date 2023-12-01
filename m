@@ -2,125 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BC51801169
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:21:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8337580111F
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:21:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229515AbjLARGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 12:06:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57534 "EHLO
+        id S1378761AbjLARJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 12:09:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbjLARGt (ORCPT
+        with ESMTP id S229454AbjLARJ3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 12:06:49 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB469106;
-        Fri,  1 Dec 2023 09:06:55 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id 98e67ed59e1d1-2864d8c8743so1472640a91.1;
-        Fri, 01 Dec 2023 09:06:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701450415; x=1702055215; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8ApfEIiuG4L/aqQ9kotcie87+m7wxOXlew1ELlzFCgs=;
-        b=BtW0mh6eont2J+wDbOVoc0pUq1VMW1l4K1wVfYgUj3Mi/hD+oC8hsfYOwn7uHBWfof
-         Ihz+JSdfIarGvE9wnuNMQ/GbZXL2dDOGqW9rRSAEv7kHb5a7ujgtjWv/KkEwHB6+SjUf
-         Kw0WOtKpow6VeuMg0zkb3j2Xx16vqExXgRNLijiqx2wjXh5A8hK05pyDtYxoT1NoRqg+
-         NYbdpIkU1cjU5wM71HwDzl1Fu+isXxR/KRlCDbOiBzFnhNKbtOg9DuGel2bIovRNu2W7
-         tWJWRO4sRQXePBUNwzRpZ2tgJp0p4lj/BzikfmcqAs85y6rNKrektFPm4Q8t4tDkA5aM
-         JREA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701450415; x=1702055215;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8ApfEIiuG4L/aqQ9kotcie87+m7wxOXlew1ELlzFCgs=;
-        b=xEOsUb6orv5Wezkr+UfMirElSQ29Uv/49OyxCPsdk357tTqbo9LN+WIPqSPBRBH7cQ
-         01XjjrBzVRX3IfJWv3cqDWhL8bLKqWT6OU0M8gZYJI9eiamS+QPCCRHi6Ycpa0nFdSTf
-         atFWxghxOv4ymsj506EzP5fWDJqKW0x17ugSxGYw/Zu1WLj0VSaJPW4fSw019uawU5jr
-         BdfUknzw+KZGwBiJuraQzocgxLLpAcLi9JeZegdjXSF/1pEIOSDK6EjZlE95e/FV0tzJ
-         zB7xwc+BxYaV7Yo15XkACR8oazKdzuk74CQsPM51ufYPJEUD1NmmoPtz4aHlPek5FzcQ
-         Dzxg==
-X-Gm-Message-State: AOJu0YypKoDkpPFiPX9Vv+Zgh3Z3TOfQ5EzB3tleOx2qmpHblrGiYzJL
-        FQCF9cSkvSIFzDoU6ONks/M=
-X-Google-Smtp-Source: AGHT+IFomvySDqYobPhm7POsmRtauV+NVOBDCMgX0NdW/64JtiNsPTo0azcw/rzpSFaErTWak93xmw==
-X-Received: by 2002:a17:90b:4f85:b0:286:295a:b33a with SMTP id qe5-20020a17090b4f8500b00286295ab33amr8393253pjb.8.1701450415016;
-        Fri, 01 Dec 2023 09:06:55 -0800 (PST)
-Received: from localhost ([2620:10d:c090:400::4:27ef])
-        by smtp.gmail.com with ESMTPSA id a5-20020a170902ee8500b001cf594f71f3sm1892920pld.157.2023.12.01.09.06.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Dec 2023 09:06:54 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Fri, 1 Dec 2023 07:06:53 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mrunal Patel <mpatel@redhat.com>,
-        Ryan Phillips <rphillips@redhat.com>,
-        Brent Rowsell <browsell@redhat.com>,
-        Peter Hunt <pehunt@redhat.com>
-Subject: Re: [PATCH-cgroup 2/2] cgroup/cpuset: Include isolated cpuset CPUs
- in cpu_is_isolated() check
-Message-ID: <ZWoSrfztmprcdkpO@slm.duckdns.org>
-References: <20231127041956.266026-1-longman@redhat.com>
- <20231127041956.266026-3-longman@redhat.com>
- <ZWYbqNnnt6gQOssK@slm.duckdns.org>
- <8de482b5-1942-4312-8de4-6f54565ab517@redhat.com>
- <ZWZl0uvqeZ-fR1O9@slm.duckdns.org>
- <b6f88157-cf5e-4c7b-99f3-1944b4e7ebde@redhat.com>
+        Fri, 1 Dec 2023 12:09:29 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B9A0131
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 09:09:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701450575; x=1732986575;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=HXA8m2M8/bQjJKyP3yQS/yBrgQZZV3cFXJM4qlr7ccU=;
+  b=FdCYCiy3eFIDlOizeUlA4jKeR+IKihyOqYL9vsebMF0tDSiMWQEGuve7
+   A2FzkGcnT7ABwO4YAa/DHErgEsdADQstJnBN17EwxL5LNlIAh4IHdYCAV
+   nTL4Rj4mi7aYOIeG3SoaDlq8ocRWSw+RikPkmUFMGyV8VIr1q7V6sVj78
+   8Yi+w4v5AixX3FEr5CpP7D08bg2CtNA9kWI6rhdVGdxz1Rj0ZqI5U0NlA
+   VSZMbsmPEvuKjgCRUB2wCKiqYkjYueJmuRi+ELKlBaAchQXSmpeF6LBFr
+   EtKrx6sCswKTEIvWVH+bAUesIDYU1ME5f1GyknXnNWW35ik/12/F8NSgq
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="533156"
+X-IronPort-AV: E=Sophos;i="6.04,242,1695711600"; 
+   d="scan'208";a="533156"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2023 09:08:14 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="860614411"
+X-IronPort-AV: E=Sophos;i="6.04,242,1695711600"; 
+   d="scan'208";a="860614411"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by FMSMGA003.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2023 09:07:47 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1r96zO-000000012xk-1tQ3;
+        Fri, 01 Dec 2023 19:07:42 +0200
+Date:   Fri, 1 Dec 2023 19:07:42 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Andy Whitcroft <apw@canonical.com>,
+        Joe Perches <joe@perches.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: Re: [PATCH v1 1/1] checkpatch: Add dev_err_probe() to the list of
+ Log Functions
+Message-ID: <ZWoS3gyJukQkndqY@smile.fi.intel.com>
+References: <20231201151446.1593472-1-andriy.shevchenko@linux.intel.com>
+ <3c709cc1-0da8-4d23-9f75-8c18d4d18779@roeck-us.net>
+ <ZWoHLkcPk2084gQH@smile.fi.intel.com>
+ <8fff7625-69b7-4c32-a3bb-d3ca24f149bf@roeck-us.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b6f88157-cf5e-4c7b-99f3-1944b4e7ebde@redhat.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+In-Reply-To: <8fff7625-69b7-4c32-a3bb-d3ca24f149bf@roeck-us.net>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Fri, Dec 01, 2023 at 08:34:14AM -0800, Guenter Roeck wrote:
+> On 12/1/23 08:17, Andy Shevchenko wrote:
+> > On Fri, Dec 01, 2023 at 08:01:28AM -0800, Guenter Roeck wrote:
+> > > On 12/1/23 07:14, Andy Shevchenko wrote:
+> > > > dev_err_probe() is missing in the list of Log Functions and hence
+> > > > checkpatch issues a warning in the cases when any other function
+> > > > in use won't trigger it. Add dev_err_probe() to the list to behave
+> > > > consistently.
 
-On Wed, Nov 29, 2023 at 11:01:04AM -0500, Waiman Long wrote:
 ...
-> > > Depending on how the cpumask operators are implemented, we may not have a
-> > > guarantee that testing CPU 2, for instance, will always return true. That is
-> > Can you please elaborate this part a bit? I'm having a difficult time
-> > imagining the sequence of operations where this would matter but that could
-> > easily be me not being familiar with the details.
+
+> > > Not sure if I agree. The difference here is that dev_err_probe()
+> > > has two additional parameters ahead of the string. I would very much prefer
+> > > to have those two additional parameters on a separate line if the string is
+> > > too long to fit in 100 columns with those two parameters on the same line.
+> > > In other words, I very much prefer
+> > > 
+> > > 	dev_err_probe(dev, -ESOMETHING,
+> > > 		      "very long string");
+> > > over
+> > > 	dev_err_probe(dev, -ESOMETHING, "very long string");
+> > > 
+> > > and I don't really think that the latter has any benefits.
+> > > 
+> > > Also note that other dev_xxx() log functions are not included in the above test
+> > > and would still generate warnings. Accepting
+> > > 
+> > > 	dev_err_probe(dev, -ESOMETHING, "very long string");
+> > > but not
+> > > 	dev_err(dev, "very long string");
+> > 
+> > They are included, see the line previous to the added one.
+> > (Regexp covers something like x_y_()* and x_*() families with the explicitly
+> >   listed * suffixes.)
+> > 
+> > That's why _this_ change makes it consistent.
+> > 
 > 
-> I may be a bit paranoid about incorrect result due to racing as I had been
-> burned before. Just testing a bit in the bitmask may probably be OK. I don't
+> Hmm ok. Still don't like it.
 
-Setting and clearing a bit is as atomic as it gets, right?
-
-> think it will be a problem for x86, but I am less certain about other more
-> exotic architectures like arm64 or PPC which I am less familiar about. I add
-> a seqcount for synchronization just for the peace of mind. I can take the
-> seqcount out if you don't it is necessary.
-
-I just can't think of a case where this would be broken. The data being read
-and written is atomic. There's no way to break a bit operation into multiple
-pieces. It is possible to write a really bone-headed bitmask operations
-(like, if you shift the bits into place or sth) to make the bits go through
-unintended changes but that'd just be a flat-out broken implementation. Even
-for a bitmask where write accesses are synchronized through a spinlock, we
-should still be able to use test_bit() without holding the lock. This seems
-like a pretty basic assumption.
-
-Adding unnecessary synchronization confuses the readers. If we don't need
-it, we shouldn't have it.
-
-Thanks.
+But then it's orthogonal to the change as with consistent behaviour you may
+propose a fix that makes sure that long string literal goes to a separate line
+(after a threshold) for _all_ of them at once. Currently the behaviour is
+inconsistent independently on somebody's preferences...
 
 -- 
-tejun
+With Best Regards,
+Andy Shevchenko
+
+
