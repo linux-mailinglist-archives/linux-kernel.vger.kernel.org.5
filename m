@@ -2,97 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94CBA800147
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 02:54:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 210F8800149
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 02:55:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376408AbjLAByt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 20:54:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45402 "EHLO
+        id S1376547AbjLABzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 20:55:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbjLAByt (ORCPT
+        with ESMTP id S230310AbjLABzD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 20:54:49 -0500
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A86E012A
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 17:54:55 -0800 (PST)
-Received: by mail-pg1-x54a.google.com with SMTP id 41be03b00d2f7-5c612589cfcso80986a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 17:54:55 -0800 (PST)
+        Thu, 30 Nov 2023 20:55:03 -0500
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FB8612A
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 17:55:09 -0800 (PST)
+Received: by mail-pf1-x449.google.com with SMTP id d2e1a72fcca58-6cbe0378d0eso2158422b3a.3
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 17:55:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701395695; x=1702000495; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1701395709; x=1702000509; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=tecn6AmyR5k2Qu/H4+MjzFtOIKWQJZkWQJnuQ75piAk=;
-        b=YJiGLROREVnKrvzffhGG0TC/x+Z5OY0i5IjYPrn0z4jVzeACfg+xNoDfKpg7lrvOBe
-         cq7be5UIaMa6OhhDADV/FoD3vYsbVOj+e4ISVA8ji596oftR5F7OpE/NrmkbmOo3Ywye
-         2f4WO7wZcVXhz4k66H9sKRXrtiosJd0FzGO+Y7BzI3K49qA9tz7fnn3gl6gfnBisq3Ah
-         8lLQM8YhbDB36lDMRUUQAAHn1CQx6VB18T0sbceMgOMn967WVghJbwUhfQXcy399aheK
-         qnorEsmGVRzl1xroIXKb96JRA2PHfAApR74KeY0QX9x6RzhGRycZRAHBH48kR7FBl21j
-         n7iw==
+        bh=b7iAppoCIGt7sEqxpQhMef/LhAid+9ah/Ift0A0NOXg=;
+        b=o1lnoNZ3sSVYOnyXW7F4b6fXUKQAgHDcYo1Ukq1zIIN6AO7T9+iirDjPyxiHO54BLr
+         H77nORb/laJ8NJ3PdDZ7CkRxMI/tMgyjo42eqc/891x1zxb3J7bauDHLop/QpJRvcMLN
+         hH7Y8cxTeSM6AiIeebGxADeRD0yYClEa3p1x7fX60FGGG9RMdtfdYHZGC/MoYTMuI+DM
+         unhbNrqPC6TVRXMq9lf1lel7btY01mY9N1B5V5VhWtkiVARvoxPgMhYxgyTsEKOPBXRt
+         c3Od2oWlOc1a3r2AQ2fPvE7k83KY2DGQuIj4HoHMOH+bydfpd/KC+pRwrYQIagS6Ks/m
+         NRgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701395695; x=1702000495;
+        d=1e100.net; s=20230601; t=1701395709; x=1702000509;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tecn6AmyR5k2Qu/H4+MjzFtOIKWQJZkWQJnuQ75piAk=;
-        b=xS/qPkpupNHW8inQ36tzIL8KokjyLpuvw7SAg9RvOpGbFOkFRztbxOTnUAbndFeXSY
-         BqruWr3rSzth0ewxdXcRlqtc9pzwovTox89JdvhCy+9fOug+o68Sh/FqGGZHGvaossOJ
-         5q+sQ/jsZ6aAN9GBZj56VNhmDXnbO9f4o6XrP8G/O5VvxlnODmoWTT51o+I/lsBukASj
-         k2SJ5rjI1PBvacZrAOzCOuGcI/sToT3jO5lxrEiy2DtKLEw2GNeOqEtqTG+GqGHqF+hO
-         Up9ZBT6P4+oIofmt62um3LUibqKVoN8Xxt9fnrC+rXssFsmvVRPn1YPuh5109Nv9Tghv
-         Bdtg==
-X-Gm-Message-State: AOJu0YwHf3lMjvNzNY1eRz+NJQMy5IKsMo3iNt54IJ9BzneNIP/Y8DbB
-        Nt0v9K1Ustgzo+cIWRlKKNta+Fj2Zs4=
-X-Google-Smtp-Source: AGHT+IFO2twNqlDkXK8VLOVlFLjUse1fmfI8xeu/1k50/w5ETgOYlbPmxVQzKInvfkp6xlTRxN2MwHOfCTU=
+        bh=b7iAppoCIGt7sEqxpQhMef/LhAid+9ah/Ift0A0NOXg=;
+        b=Z0wZ/E9sHVUUD8mqNArF04saagxwsYeIfz6lQWJ+dhicLp6nivzKxZbgxNwLQzcraU
+         TBYV4AWDvpKaNTWC+blfTDJ5FwrAUJwpj7ElNmyB75IEQCU3SssktU5Phhib0v9kwGmk
+         tL8wlBzB/0UUDffqqHBOyCHw12DlEJ+vqBF+D7m9EUarn++MLsb2ea63eaKVGXTCsq4Y
+         E/0lAp9OjKcKp2t/Z4sE1hup0BNypOEOhdbn0BeFG3IvfX9pYG17hKncFt2k7zPhDhBz
+         0VT6K2IAfzYozLDeTba2eMGpQFV40kGlLoe3kqdRZ4IGi/CEK3lR9TswiIZCX6M95MM/
+         iakw==
+X-Gm-Message-State: AOJu0YylWp5jAzK18BNyq+ROYm+8CKikhSwGrE9jrEDBFziMu9QFVooJ
+        /MG3/0hAOIczwO8HetQSJnNOMblU3xU=
+X-Google-Smtp-Source: AGHT+IEAAUZzAhU1ZcFzkmNbSmg/hBxjb42tO8EiKmbuAykScu2XpQrFmEp3XB/fXKQEpskqi5B2wKBq8U8=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a63:1220:0:b0:5c2:2f9:c374 with SMTP id
- h32-20020a631220000000b005c202f9c374mr3894156pgl.9.1701395695116; Thu, 30 Nov
- 2023 17:54:55 -0800 (PST)
-Date:   Thu, 30 Nov 2023 17:52:12 -0800
-In-Reply-To: <20231018195638.1898375-1-seanjc@google.com>
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:1888:b0:6cd:da30:4d75 with SMTP id
+ x8-20020a056a00188800b006cdda304d75mr1200740pfh.4.1701395708904; Thu, 30 Nov
+ 2023 17:55:08 -0800 (PST)
+Date:   Thu, 30 Nov 2023 17:52:14 -0800
+In-Reply-To: <20231018151906.1841689-1-seanjc@google.com>
 Mime-Version: 1.0
-References: <20231018195638.1898375-1-seanjc@google.com>
+References: <20231018151906.1841689-1-seanjc@google.com>
 X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
-Message-ID: <170137723293.662627.9568255433684903794.b4-ty@google.com>
-Subject: Re: [PATCH] KVM: x86: Don't unnecessarily force masterclock update on
- vCPU hotplug
+Message-ID: <170137374226.619180.12045832358402230622.b4-ty@google.com>
+Subject: Re: [PATCH] KVM: x86: Turn off KVM_WERROR by default for all configs
 From:   Sean Christopherson <seanjc@google.com>
 To:     Sean Christopherson <seanjc@google.com>,
         Paolo Bonzini <pbonzini@redhat.com>
 Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Dongli Zhang <dongli.zhang@oracle.com>,
-        David Woodhouse <dwmw2@infradead.org>
+        Jakub Kicinski <kuba@kernel.org>
 Content-Type: text/plain; charset="utf-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Oct 2023 12:56:38 -0700, Sean Christopherson wrote:
-> Don't force a masterclock update when a vCPU synchronizes to the current
-> TSC generation, e.g. when userspace hotplugs a pre-created vCPU into the
-> VM.  Unnecessarily updating the masterclock is undesirable as it can cause
-> kvmclock's time to jump, which is particularly painful on systems with a
-> stable TSC as kvmclock _should_ be fully reliable on such systems.
-> 
-> The unexpected time jumps are due to differences in the TSC=>nanoseconds
-> conversion algorithms between kvmclock and the host's CLOCK_MONOTONIC_RAW
-> (the pvclock algorithm is inherently lossy).  When updating the
-> masterclock, KVM refreshes the "base", i.e. moves the elapsed time since
-> the last update from the kvmclock/pvclock algorithm to the
-> CLOCK_MONOTONIC_RAW algorithm.  Synchronizing kvmclock with
-> CLOCK_MONOTONIC_RAW is the lesser of evils when the TSC is unstable, but
-> adds no real value when the TSC is stable.
+On Wed, 18 Oct 2023 08:19:06 -0700, Sean Christopherson wrote:
+> Don't enable KVM_WERROR by default for x86-64 builds as KVM's one-off
+> -Werror enabling is *mostly* superseded by the kernel-wide WERROR, and
+> enabling KVM_WERROR by default can cause problems for developers working
+> on other subsystems.  E.g. subsystems that have a "zero W=1 regressions"
+> rule can inadvertently build KVM with -Werror and W=1, and end up with
+> build failures that are completely uninteresting to the developer (W=1 is
+> prone to false positives, especially on older compilers).
 > 
 > [...]
 
 Applied to kvm-x86 misc, thanks!
 
-[1/1] KVM: x86: Don't unnecessarily force masterclock update on vCPU hotplug
-      https://github.com/kvm-x86/linux/commit/c52ffadc65e2
+[1/1] KVM: x86: Turn off KVM_WERROR by default for all configs
+      https://github.com/kvm-x86/linux/commit/75bedc1ee90b
 
 --
 https://github.com/kvm-x86/linux/tree/next
