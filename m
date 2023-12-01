@@ -2,83 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 155D6801168
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:21:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFF61801129
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:21:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230414AbjLAQj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 11:39:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52472 "EHLO
+        id S229539AbjLAQnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 11:43:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235310AbjLAQjT (ORCPT
+        with ESMTP id S229486AbjLAQm7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 11:39:19 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D65FA1BC8;
-        Fri,  1 Dec 2023 08:39:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701448742; x=1732984742;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=uaghSnyamW9Et5PGriXmjcF9jtUAO3k+dTZ4UETXamc=;
-  b=WCjptvyxwVZLx1rMfuIbqLjMVaXcbnohEiba1pTuQSoftOdNjDq9Aq5B
-   SWo5HSgegHOprPZmcxPJw3jg3AXH2iOwuvvDABZ7mutcbn3C1qCLR/IAY
-   d3oWt7v8T6NH0i0l8CEyoqI3cATB6Uh9elZ+XW7yyEkBXgeYqf5oKivLV
-   m5ISk5ZWptzZzVK4fQSWBq3ohcSwmQfKXHwbsOnsLNsTN31komCIKMEyA
-   wFNz+qG22Dv9/804rmhgzGphyWjsA1KRqLmAimhvwPKNtv4ecPibg0TIS
-   0JoX4BiDWtyR9tZ0xDWcPJd5lfcsfIkNrXo1n9SBDH0gJ3HogTvabToiN
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="397409109"
-X-IronPort-AV: E=Sophos;i="6.04,242,1695711600"; 
-   d="scan'208";a="397409109"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2023 08:39:02 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,242,1695711600"; 
-   d="scan'208";a="11204510"
-Received: from ixc04.bj.intel.com ([10.238.153.181])
-  by orviesa002.jf.intel.com with ESMTP; 01 Dec 2023 08:39:01 -0800
-From:   Huaisheng Ye <huaisheng.ye@intel.com>
-To:     dan.j.williams@intel.com, ira.weiny@intel.com
-Cc:     linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Huaisheng Ye <huaisheng.ye@intel.com>
-Subject: [PATCH] cxl/core/mbox: get next_persistent_bytes by next_persistent_cap
-Date:   Sat,  2 Dec 2023 00:40:05 +0800
-Message-Id: <20231201164005.135912-1-huaisheng.ye@intel.com>
-X-Mailer: git-send-email 2.39.3
+        Fri, 1 Dec 2023 11:42:59 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 31F20A6;
+        Fri,  1 Dec 2023 08:43:06 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5371C1007;
+        Fri,  1 Dec 2023 08:43:52 -0800 (PST)
+Received: from bogus (unknown [10.57.42.162])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 199DB3F6C4;
+        Fri,  1 Dec 2023 08:43:03 -0800 (PST)
+Date:   Fri, 1 Dec 2023 16:41:02 +0000
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Cristian Marussi <cristian.marussi@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        quic_mdtipton@quicinc.com, quic_asartor@quicinc.com,
+        quic_lingutla@quicinc.com, Sibi Sankar <quic_sibis@quicinc.com>,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH 1/2] firmware: arm_scmi: Fix frequency truncation by
+ promoting multiplier to u64
+Message-ID: <20231201164102.lb2o3mgdgjmtfknk@bogus>
+References: <20231130204343.503076-1-sudeep.holla@arm.com>
+ <20231201143935.be6wzjzxmyl5vpz6@bogus>
+ <ZWoHNPlxs-WnVAFe@pluto>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <ZWoHNPlxs-WnVAFe@pluto>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to CXL 2.0 8.2.9.5.2.1 table 176, the next Persistent
-Bytes should be calculated by next Persistent Capacity.
+On Fri, Dec 01, 2023 at 04:17:56PM +0000, Cristian Marussi wrote:
+> On Fri, Dec 01, 2023 at 02:39:35PM +0000, Sudeep Holla wrote:
+> > On Thu, Nov 30, 2023 at 08:43:42PM +0000, Sudeep Holla wrote:
+> > > Fix the frequency truncation for all values equal to or greater 4GHz by
+> > > updating the multiplier 'mult_factor' to u64 type. It is also possible
+> > > that the multiplier itself can be greater than or equal to 2^32. So we need
+> > > to also fix the equation computing the value of the multiplier.
+> > > 
+> > > Fixes: a9e3fbfaa0ff ("firmware: arm_scmi: add initial support for performance protocol")
+> > > Reported-by: Sibi Sankar <quic_sibis@quicinc.com>
+> > > Closes: https://lore.kernel.org/all/20231129065748.19871-3-quic_sibis@quicinc.com/
+> > > Cc: Cristian Marussi <cristian.marussi@arm.com>
+> > > Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+> > > ---
+> > >  drivers/firmware/arm_scmi/perf.c | 6 +++---
+> > >  1 file changed, 3 insertions(+), 3 deletions(-)
+> > > 
+> > > diff --git a/drivers/firmware/arm_scmi/perf.c b/drivers/firmware/arm_scmi/perf.c
+> > > index 81dd5c5e5533..8ce449922e55 100644
+> > > --- a/drivers/firmware/arm_scmi/perf.c
+> > > +++ b/drivers/firmware/arm_scmi/perf.c
+> > > @@ -152,7 +152,7 @@ struct perf_dom_info {
+> > >  	u32 opp_count;
+> > >  	u32 sustained_freq_khz;
+> > >  	u32 sustained_perf_level;
+> > > -	u32 mult_factor;
+> > > +	u64 mult_factor;
+> > 
+> > I have now changed this to unsigned long instead of u64 to fix the 32-bit
+> > build failure[1].
+> 
+> Right, I was caught a few times too by this kind of failures on v7 :D
+>
 
-Signed-off-by: Huaisheng Ye <huaisheng.ye@intel.com>
----
- drivers/cxl/core/mbox.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+😄
 
-diff --git a/drivers/cxl/core/mbox.c b/drivers/cxl/core/mbox.c
-index 36270dcfb42e..7b8ec73ca37f 100644
---- a/drivers/cxl/core/mbox.c
-+++ b/drivers/cxl/core/mbox.c
-@@ -1069,7 +1069,7 @@ static int cxl_mem_get_partition_info(struct cxl_memdev_state *mds)
- 	mds->next_volatile_bytes =
- 		le64_to_cpu(pi.next_volatile_cap) * CXL_CAPACITY_MULTIPLIER;
- 	mds->next_persistent_bytes =
--		le64_to_cpu(pi.next_volatile_cap) * CXL_CAPACITY_MULTIPLIER;
-+		le64_to_cpu(pi.next_persistent_cap) * CXL_CAPACITY_MULTIPLIER;
- 
- 	return 0;
- }
--- 
-2.39.0
+> ... but this 32bit issue makes me wonder what to do in such a case...
+>
 
+Same here, but the frequency calculations are also unsigned long in higher
+layers, so I don't see any point in making it u64(also 32-bit doesn't
+support 32bit value to be divided by a 64bit value which adds unnecessary
+complications here).
+
+> ...I mean, on 32bit if the calculated freq oveflows, there is just
+> nothing we can do on v7 without overcomplicating the code...but I suppose
+> it is unplausible to have such high freq on a v7...
+
+Yes this is exactly the argument I made myself and got convinced to keep
+it unsigned long(KISS approach) unless we need it on v7.
+
+> as a palliative I can only think of some sort of overflow check (only on v7)
+> that could trigger a warning ... but it is hardly worth the effort
+> probably..
+>
+
+Not sure myself.
+
+--
+Regards,
+Sudeep
