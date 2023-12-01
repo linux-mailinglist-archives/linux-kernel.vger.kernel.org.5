@@ -2,54 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD00F800D33
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 15:34:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5EBB800D36
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 15:34:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379170AbjLAOeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 09:34:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42650 "EHLO
+        id S1379173AbjLAOe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 09:34:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379143AbjLAOeK (ORCPT
+        with ESMTP id S1379161AbjLAOe0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 09:34:10 -0500
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97530F3;
-        Fri,  1 Dec 2023 06:34:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=75HpQ8zJCusCnATm5X1WlNretb7dFvKE43V00rPlkpo=; b=QCtT5vcT7WTfHFtgNgve/wjtu+
-        ooH62L/pwcalRhPo19ckukHVwCdpeFjijdpPkuWK+BNXMKztNpYZLnrb8gmV5iD1mFhFM8l6D2JP1
-        /PM0vSqBqtSgEqaXexgFdLgU/pz6GVmRAFB/99VVOkt7xIqu/Ib7kf5ad01jaJbxPx3o=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1r94an-001lho-NF; Fri, 01 Dec 2023 15:34:09 +0100
-Date:   Fri, 1 Dec 2023 15:34:09 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: marvell: move MMP boards to common marvell
- directory
-Message-ID: <5d511e31-8ff5-4c23-a65e-8660833a9799@lunn.ch>
-References: <20231201132306.60753-1-krzysztof.kozlowski@linaro.org>
- <1e25e2f4-e4b9-4219-a9c2-cb6230a62549@lunn.ch>
- <a44b7bb2-34ac-45ab-84c6-630d604f1bcf@linaro.org>
+        Fri, 1 Dec 2023 09:34:26 -0500
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9C2310F4
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 06:34:31 -0800 (PST)
+Received: by mail-oi1-x235.google.com with SMTP id 5614622812f47-3b843fea0dfso329557b6e.3
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 06:34:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701441271; x=1702046071; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=fln7JZ3gmS5L0otpWNEVUCaXcYxV9vulN7piRIGYzVQ=;
+        b=WP/3yrzwIRguyqCqLf5jCa9eFR2me4nTFrvT2SHfOjNyX3yXgnM7eGjmqCQT+Z8nDH
+         EX0Vf268SQPPDdXXFY1T8/9Ac6hoJ7S/47i6VRsOIWomlOur5wq2Hu3Syk4aoWwFZOZR
+         hDU0mx771UDd0e/5n2GdVfQuibdK7zx2ZvuG17R/WdRgZc6hcjj1Mq+ZBWz1RdhUgXBy
+         40va/WsFokJ0/nartux6RNVNeQHankTIAEiQMA6xhbnqeuIiV8Nh9KNgJ885AHX/2WpM
+         NolPGTa5jtNEOI6YABpzplx+nipAWLS9m4E5NF8W0OItNskLBcIsIKRvt2P70qgofc8J
+         9TUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701441271; x=1702046071;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fln7JZ3gmS5L0otpWNEVUCaXcYxV9vulN7piRIGYzVQ=;
+        b=FOgUF/m7msEcSTWVpGfQXZ32uKTzG4DTvIMB+Wm5OHQsPE6zqwgO4rzhKrqe0pQUIJ
+         06hl6t/PZ29JzKXZFzyHd3AC6Bfs0i5GAITnC8ayhtbcij+kscYo6Sbt8iBAgSUe2pN1
+         HAroAVH56G3DKpUcnUUbWsVfkM+2syACQEcNQlH/gSsnwMkWu2qXGqtucv/q46AkYaeX
+         iCdUr9+H3hMohmlAtskAp2gRLV6d5kBgZESlId8bZYw8kgh+BJ038sbA8MX7jqSeHA/8
+         3EyTlhojVzq7mdHspwFHRlbAMKjkq4a6oA5K3IOjsgCYbRheNtKK1TygP2+xc2pUvI6k
+         MdIQ==
+X-Gm-Message-State: AOJu0Yw4PNYcbE6xgR3kCc3WubzBT1yDgt/Zc4UMHZgJ4VO3++aqmDnL
+        PBQGjoxZ1zSJNVNhzfWuz54N3g==
+X-Google-Smtp-Source: AGHT+IGlS0ZJiPjHS08tYhuYYizp/NnBi/oTgvFplF5P7lsUqNoJ5XZsvgT8CEP84o377lqBaJlDIw==
+X-Received: by 2002:a05:6808:ec6:b0:3b7:73c:ce5f with SMTP id q6-20020a0568080ec600b003b7073cce5fmr3469254oiv.41.1701441271073;
+        Fri, 01 Dec 2023 06:34:31 -0800 (PST)
+Received: from [192.168.17.16] ([138.84.45.78])
+        by smtp.gmail.com with ESMTPSA id k15-20020a54468f000000b003a3860b375esm555786oic.34.2023.12.01.06.34.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Dec 2023 06:34:30 -0800 (PST)
+Message-ID: <4cf40ef6-058f-4472-88c9-3dc735175c85@linaro.org>
+Date:   Fri, 1 Dec 2023 08:34:26 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a44b7bb2-34ac-45ab-84c6-630d604f1bcf@linaro.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 5.15 00/69] 5.15.141-rc1 review
+To:     Francis Laniel <flaniel@linux.microsoft.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        allen.lkml@gmail.com, Guenter Roeck <linux@roeck-us.net>
+References: <20231130162133.035359406@linuxfoundation.org>
+ <CAEUSe78tYPTFuauB7cxZzvAeMhzB_25Q8DqLUfF7Nro9WsUhNw@mail.gmail.com>
+ <2023120134-sabotage-handset-0b0d@gregkh> <4879383.31r3eYUQgx@pwmachine>
+ <2023120155-mascot-scope-7bc6@gregkh>
+Content-Language: en-US
+From:   =?UTF-8?Q?Daniel_D=C3=ADaz?= <daniel.diaz@linaro.org>
+In-Reply-To: <2023120155-mascot-scope-7bc6@gregkh>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,44 +83,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 01, 2023 at 03:21:05PM +0100, Krzysztof Kozlowski wrote:
-> On 01/12/2023 14:51, Andrew Lunn wrote:
-> > On Fri, Dec 01, 2023 at 02:23:06PM +0100, Krzysztof Kozlowski wrote:
-> >> Marvell board bindings are spread over arm/marvell/ and arm/mrvl/
-> >> directories.  Move MMP board bindings from the latter to the former, to
-> >> keep all of them together.
-> > 
-> > Hi Krzysztof
-> > 
-> > Did you test get_maintainers.pl? MMP has a different maintainer to
-> > many of the other Marvell SoCs. We want emails going to the correct
-> > Maintainers, and ideally not spamming the others.
-> 
-> The old binding was not referenced in MAINTAINERS, at least I could not
-> find it.
-> My change does not affect status quo - orphaned files.
-> 
-> OTOH, some entries like Orion list specific files. Others like Marvell
-> list entire directory, which is their mistake in the first place.
-> 
-> There is a mess in this approach, but the mess exists before my patch.
+Hello!
 
-I think these moved files will now match:
+On 01/12/23 3:44 a. m., Greg Kroah-Hartman wrote:
+> Please take some time with a cross-compiler on the above listed
+> architectures and configurations to verify your changes do not break
+> anything again.
 
-ARM/Marvell Kirkwood and Armada 370, 375, 38x, 39x, XP, 3700, 7K/8K, CN9130 SOC support
-M:      Andrew Lunn <andrew@lunn.ch>
-M:      Gregory Clement <gregory.clement@bootlin.com>
-M:      Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
-L:      linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
-S:      Maintained
-T:      git git://git.kernel.org/pub/scm/linux/kernel/git/gclement/mvebu.git
-F:      Documentation/devicetree/bindings/arm/marvell/
+It failed in more architectures than we initially reported. FWIW, this error can be easily reproduced this way:
 
-But these files are not Gregory or my problem.
+   tuxmake --runtime podman --target-arch arm     --toolchain gcc-8  --kconfig imx_v4_v5_defconfig
+   tuxmake --runtime podman --target-arch arm64   --toolchain gcc-12 --kconfig allmodconfig
+   tuxmake --runtime podman --target-arch i386    --toolchain gcc-12 --kconfig defconfig
+   tuxmake --runtime podman --target-arch x86_64  --toolchain gcc-12 --kconfig defconfig
+   tuxmake --runtime podman --target-arch mips    --toolchain gcc-12 --kconfig allmodconfig
+   tuxmake --runtime podman --target-arch parisc  --toolchain gcc-11 --kconfig allmodconfig
+   tuxmake --runtime podman --target-arch powerpc --toolchain gcc-12 --kconfig defconfig
+   tuxmake --runtime podman --target-arch riscv   --toolchain gcc-12 --kconfig allmodconfig
+   tuxmake --runtime podman --target-arch sh      --toolchain gcc-11 --kconfig defconfig
+   tuxmake --runtime podman --target-arch sparc   --toolchain gcc-11 --kconfig sparc64_defconfig
 
-If they were orphaned before, i would prefer they are either orphaned
-after the move, or associated to the correct maintainer. Being
-associated to the wrong maintainers is worse than having no
-maintainers at all.
 
-   Andrew
+Greetings!
+
+Daniel Díaz
+daniel.diaz@linaro.org
+
