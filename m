@@ -2,62 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AAF6801809
+	by mail.lfdr.de (Postfix) with ESMTP id 90F4780180A
 	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 00:48:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231218AbjLAXsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 18:48:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44818 "EHLO
+        id S230440AbjLAXsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 18:48:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbjLAXsO (ORCPT
+        with ESMTP id S229447AbjLAXsM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 18:48:14 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9FD81AD
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 15:48:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701474500; x=1733010500;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=OCxQAzh0g1Swiyhk7+3YI6icCg7/EsTLTcp+7y+mHP0=;
-  b=cKZMaD/PHxhF53W1QMUae18DCo2FhM7eKjN9m5ffcaR1wrCl93yg0p+G
-   sopcl0fC07D0deJnGIPqj3/RnoKUXw19NycQzmmB9mswtEm1gZtTYfarA
-   OAJpXVVk8eAxUL7D04UNwDmfFdQ8Wyz+boJG5dqQ9UHODWrDQ6Asz+2BL
-   vgqluWJ1rHFU5zVoDF72WA11MvRfv8EMCHrALxqIaJqfM0bPWOr1VkWVr
-   3Bp4w0gKnA7rFJ3BTb/Wnh7cB6VUxHKeNXkA5MBtd/rcNZa7PbvmSKaoX
-   SoBYK82NpIoYjKYRDA7leiBIyoMbZHvbZaA7jdWCfGFU88PZ905jBWR+M
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="390728616"
-X-IronPort-AV: E=Sophos;i="6.04,243,1695711600"; 
-   d="scan'208";a="390728616"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2023 15:48:20 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="835918586"
-X-IronPort-AV: E=Sophos;i="6.04,243,1695711600"; 
-   d="scan'208";a="835918586"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 01 Dec 2023 15:48:18 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r9DEt-0004Q2-2E;
-        Fri, 01 Dec 2023 23:48:11 +0000
-Date:   Sat, 2 Dec 2023 07:47:13 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>
-Subject: mm/kfence/core.c:329:34: sparse: sparse: cast to restricted __le64
-Message-ID: <202312020738.7YABe2N2-lkp@intel.com>
+        Fri, 1 Dec 2023 18:48:12 -0500
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA6951AD
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 15:48:17 -0800 (PST)
+Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-50bc743c7f7so3753775e87.3
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 15:48:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701474496; x=1702079296; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MJVF1ZrmInpC3Gvm7OoxUYxrkOmo0ZmH7AoQY/EPSs0=;
+        b=mZd1tuEKRfnRNS0QnROcQtzivqmaGm5La3GJFMAIGcspDCufWl11BE3goa/nC5mDQQ
+         YCqC974jIbEYugeztPTDvqyIM+9yXh4wFiRRUcpqLha/OBxP34b+oTw5NS1MUS6Oct+k
+         DQyhIpdTHTL8Bau8vQXNeJzDsFa1pELRgdVP0iTkPW7k2yILuwN318fSiM7WiVhcUs8U
+         5iv9uDU7/Iq8FoLPv+pd/7A8eIEl++jLsl+XdBHx4RTq9VoAlVMogquSZIXWzWH5ago0
+         id71As2c4cd5GqgBlDeiE4fXLzLMtIHPO+j5VVteSSTzYGcMyh0BgXbi7oNt+4cEmfHB
+         fNrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701474496; x=1702079296;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MJVF1ZrmInpC3Gvm7OoxUYxrkOmo0ZmH7AoQY/EPSs0=;
+        b=LBsnaT4ywgSl2737pEpdGMS1Qmdb7VyGT/19R8rNgNp2r+KqmyRxhtO1dVDaVcA1fO
+         /q8FV2luKQPmJETETPvHOBBOsjNGfBeeVobXFFB+QzhFhJdIRHHX4JndOegnWA4MSAj5
+         OPCef2j1UXJWKFJZSZWt3vRuTIs5YxMS+d9OGCaCgMsLpmwGMGp5lOSqCar0vV9XRcSQ
+         5JmFQdBMT5djiz8Kq5qgoOoFbwnpJ7/VYDsPPV+jYs0OyFaaathlrqqlBovpl4kkiUaG
+         TnObK5PhPOIfuazGhkPuYKduZBnvl7GxvM488eSpnZehYQIW+lxf6dX7uuQ8ymHUxMaq
+         aImw==
+X-Gm-Message-State: AOJu0Yy1pogJ7RKeWM2aiF6uK+j2SwZz6zQvqN2qZzCcXFbHNiv8n7fj
+        s9vZ9dDq3aFJIPn7qlKMQTJXeg==
+X-Google-Smtp-Source: AGHT+IHTNUQKLLhXANUvRoFzT3r6DBEs/yUnPcAE4JI0ahtu6IrjM/fQLRF3nClcM2LwCY50wd2GhA==
+X-Received: by 2002:a2e:991a:0:b0:2c9:b8c6:1a3f with SMTP id v26-20020a2e991a000000b002c9b8c61a3fmr1491188lji.46.1701474496154;
+        Fri, 01 Dec 2023 15:48:16 -0800 (PST)
+Received: from ?IPV6:2001:14ba:a0db:1f00::8a5? (dzdqv0yyyyyyyyyyybcwt-3.rev.dnainternet.fi. [2001:14ba:a0db:1f00::8a5])
+        by smtp.gmail.com with ESMTPSA id u16-20020a05651c131000b002c9e7c4a7c0sm118565lja.33.2023.12.01.15.48.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Dec 2023 15:48:15 -0800 (PST)
+Message-ID: <e380c8c6-59eb-46c2-8b62-e9cbc4e90752@linaro.org>
+Date:   Sat, 2 Dec 2023 01:48:14 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/msm/a6xx: add QMP dependency
+Content-Language: en-GB
+To:     Arnd Bergmann <arnd@kernel.org>, Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Akhil P Oommen <quic_akhilpo@quicinc.com>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20231016200415.791090-1-arnd@kernel.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+In-Reply-To: <20231016200415.791090-1-arnd@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,53 +85,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   c9a925b7bcd9552f19ba50519c6a49ed7ca61691
-commit: 7581495ac82d6cb073609284c7f7186a48021d1e mm: kfence: fix false positives on big endian
-date:   7 months ago
-config: s390-randconfig-r113-20231102 (https://download.01.org/0day-ci/archive/20231202/202312020738.7YABe2N2-lkp@intel.com/config)
-compiler: s390-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231202/202312020738.7YABe2N2-lkp@intel.com/reproduce)
+On 16/10/2023 23:04, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> When QMP is in a loadable module, the A6xx GPU driver fails to link
+> as built-in:
+> 
+> x86_64-linux-ld: drivers/gpu/drm/msm/adreno/a6xx_gmu.o: in function `a6xx_gmu_resume':
+> a6xx_gmu.c:(.text+0xd62): undefined reference to `qmp_send'
+> 
+> Add the usual dependency that still allows compiling without QMP but
+> otherwise avoids the broken combination of options.
+> 
+> Fixes: 88a0997f2f949 ("drm/msm/a6xx: Send ACD state to QMP at GMU resume")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>   drivers/gpu/drm/msm/Kconfig | 1 +
+>   1 file changed, 1 insertion(+)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312020738.7YABe2N2-lkp@intel.com/
-
-sparse warnings: (new ones prefixed by >>)
->> mm/kfence/core.c:329:34: sparse: sparse: cast to restricted __le64
-   mm/kfence/core.c:333:34: sparse: sparse: cast to restricted __le64
-   mm/kfence/core.c:352:21: sparse: sparse: cast to restricted __le64
-   mm/kfence/core.c:372:21: sparse: sparse: cast to restricted __le64
-   mm/kfence/core.c:1181:9: sparse: sparse: context imbalance in 'kfence_handle_page_fault' - different lock contexts for basic block
-
-vim +329 mm/kfence/core.c
-
-0ce20dd840897b Alexander Potapenko 2021-02-25  318  
-1ba3cbf3ec3b21 Peng Zhang          2023-04-03  319  static inline void set_canary(const struct kfence_metadata *meta)
-0ce20dd840897b Alexander Potapenko 2021-02-25  320  {
-0ce20dd840897b Alexander Potapenko 2021-02-25  321  	const unsigned long pageaddr = ALIGN_DOWN(meta->addr, PAGE_SIZE);
-1ba3cbf3ec3b21 Peng Zhang          2023-04-03  322  	unsigned long addr = pageaddr;
-1ba3cbf3ec3b21 Peng Zhang          2023-04-03  323  
-1ba3cbf3ec3b21 Peng Zhang          2023-04-03  324  	/*
-1ba3cbf3ec3b21 Peng Zhang          2023-04-03  325  	 * The canary may be written to part of the object memory, but it does
-1ba3cbf3ec3b21 Peng Zhang          2023-04-03  326  	 * not affect it. The user should initialize the object before using it.
-1ba3cbf3ec3b21 Peng Zhang          2023-04-03  327  	 */
-1ba3cbf3ec3b21 Peng Zhang          2023-04-03  328  	for (; addr < meta->addr; addr += sizeof(u64))
-1ba3cbf3ec3b21 Peng Zhang          2023-04-03 @329  		*((u64 *)addr) = KFENCE_CANARY_PATTERN_U64;
-1ba3cbf3ec3b21 Peng Zhang          2023-04-03  330  
-1ba3cbf3ec3b21 Peng Zhang          2023-04-03  331  	addr = ALIGN_DOWN(meta->addr + meta->size, sizeof(u64));
-1ba3cbf3ec3b21 Peng Zhang          2023-04-03  332  	for (; addr - pageaddr < PAGE_SIZE; addr += sizeof(u64))
-1ba3cbf3ec3b21 Peng Zhang          2023-04-03  333  		*((u64 *)addr) = KFENCE_CANARY_PATTERN_U64;
-1ba3cbf3ec3b21 Peng Zhang          2023-04-03  334  }
-1ba3cbf3ec3b21 Peng Zhang          2023-04-03  335  
-
-:::::: The code at line 329 was first introduced by commit
-:::::: 1ba3cbf3ec3b21d866436fb46b4bb7bdc38608f9 mm: kfence: improve the performance of __kfence_alloc() and __kfence_free()
-
-:::::: TO: Peng Zhang <zhangpeng.00@bytedance.com>
-:::::: CC: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+With best wishes
+Dmitry
+
