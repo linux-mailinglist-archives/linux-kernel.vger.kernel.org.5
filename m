@@ -2,233 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A970800351
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 06:51:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 858D4800353
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 06:51:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377533AbjLAFvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 00:51:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37526 "EHLO
+        id S1377553AbjLAFva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 00:51:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377368AbjLAFvQ (ORCPT
+        with ESMTP id S1377566AbjLAFv1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 00:51:16 -0500
+        Fri, 1 Dec 2023 00:51:27 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CDEAF2
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 21:51:23 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4416C433C7;
-        Fri,  1 Dec 2023 05:51:13 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F1E41730
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 21:51:33 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A89C3C433C7;
+        Fri,  1 Dec 2023 05:51:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701409882;
-        bh=+VnGs6Seo0e7jvF3XvNq79ffhry+pZ72obFBhYKEFHA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Hiur9O1H+pALNUUYUIxgg42umh9EA0kMeqOXgI22vNjkNhwE0LRnzxIbwiIMtlkyM
-         DmK3zm2nq99QGQ6iDu9c5Gw5Oxdpx0Z9oMf/NFku18SKqTGAJWUt6fU3qRqImnnMCv
-         p0yYyLwWzRpbfHn/ZXPJnrHW6DoNKYITR/gXQ01m3fBb5Pj+yisdH5VPRKnNzC76Ff
-         i8T6oFZSr/jBnJwdz6GFjhCY9ONCD0Q85EuV3Cy7soLFCT0WwunhwLPcZO+q8NqPSX
-         pXCA0+x71uQalT3G/fvcO08AnJGDzSYTbDZFxfcCXvh8Hyl0vk1L1vSka9cySo29CZ
-         gv7FgqlCZYdOA==
-Date:   Fri, 1 Dec 2023 11:21:03 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Mrinmay Sarkar <quic_msarkar@quicinc.com>
-Cc:     agross@kernel.org, andersson@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        konrad.dybcio@linaro.org, robh+dt@kernel.org,
-        quic_shazhuss@quicinc.com, quic_nitegupt@quicinc.com,
-        quic_ramkri@quicinc.com, quic_nayiluri@quicinc.com,
-        dmitry.baryshkov@linaro.org, robh@kernel.org,
-        quic_krichai@quicinc.com, quic_vbadigan@quicinc.com,
-        quic_parass@quicinc.com, quic_schintav@quicinc.com,
-        quic_shijjose@quicinc.com, Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mhi@lists.linux.dev
-Subject: Re: [PATCH v8 1/5] dt-bindings: PCI: qcom-ep: Add support for
- SA8775P SoC
-Message-ID: <20231201055103.GG4009@thinkpad>
-References: <1699669982-7691-1-git-send-email-quic_msarkar@quicinc.com>
- <1699669982-7691-2-git-send-email-quic_msarkar@quicinc.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1699669982-7691-2-git-send-email-quic_msarkar@quicinc.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        s=k20201202; t=1701409893;
+        bh=u4fezI674MfIiRcaNlHhXBBvjWBXFe/Vu9dKNlCWKL8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=j9ftvqxc9QdhdMf9LvQAOFNLl5/DfDGD+5eO1gkcTof4dlFfhaa/DxzCv/MlYci2K
+         nVKKlUNYr/rvetf5rUY7HUvCQGKpO3AnsFXhajtth5JZ4z12/acd/VY0f8acKdgHiD
+         6FtrGZZneu8RZrC7lz9q/61uZv6kRVQ/SlX9Bs1p11qCa3h5SQ8oM8d9Txch0ST9a/
+         Z0NMn0ggsiueRagWdsunV+KemTtgT63qU80cn26YguBY/2HicuBnGAqH/Nn+YeuRI3
+         g0kTrHFXrxSRhhzLl7NOlqB54QtPToPdTZ74TkajfvJ5fMY0x4JwHOmyD4GP1e5h5u
+         pM05lgAImQnaA==
+Date:   Fri, 1 Dec 2023 14:51:29 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] tracing/uprobe: Replace strlcpy() with strscpy()
+Message-Id: <20231201145129.30fcaf1b762a9b496ac44a2f@kernel.org>
+In-Reply-To: <20231130205607.work.463-kees@kernel.org>
+References: <20231130205607.work.463-kees@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 11, 2023 at 08:02:57AM +0530, Mrinmay Sarkar wrote:
-> Add devicetree bindings support for SA8775P SoC. It has DMA register
-> space and dma interrupt to support HDMA.
+On Thu, 30 Nov 2023 12:56:08 -0800
+Kees Cook <keescook@chromium.org> wrote:
+
+> strlcpy() reads the entire source buffer first. This read may exceed
+> the destination size limit. This is both inefficient and can lead
+> to linear read overflows if a source string is not NUL-terminated[1].
+> Additionally, it returns the size of the source string, not the
+> resulting size of the destination string. In an effort to remove strlcpy()
+> completely[2], replace strlcpy() here with strscpy().
 > 
-> Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
+> The negative return value is already handled by this code so no new
+> handling is needed here.
+> 
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strlcpy [1]
+> Link: https://github.com/KSPP/linux/issues/89 [2]
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Masami Hiramatsu <mhiramat@kernel.org>
+> Cc: linux-trace-kernel@vger.kernel.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-Acked-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Thanks for reporting! Let me pick this.
 
-- Mani
+Thanks!
 
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 > ---
->  .../devicetree/bindings/pci/qcom,pcie-ep.yaml      | 64 +++++++++++++++++++++-
->  1 file changed, 62 insertions(+), 2 deletions(-)
+>  kernel/trace/trace_uprobe.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml b/Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml
-> index a223ce0..46802f7 100644
-> --- a/Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml
-> +++ b/Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml
-> @@ -13,6 +13,7 @@ properties:
->    compatible:
->      oneOf:
->        - enum:
-> +          - qcom,sa8775p-pcie-ep
->            - qcom,sdx55-pcie-ep
->            - qcom,sm8450-pcie-ep
->        - items:
-> @@ -20,6 +21,7 @@ properties:
->            - const: qcom,sdx55-pcie-ep
+> diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
+> index 99c051de412a..a84b85d8aac1 100644
+> --- a/kernel/trace/trace_uprobe.c
+> +++ b/kernel/trace/trace_uprobe.c
+> @@ -151,7 +151,7 @@ fetch_store_string(unsigned long addr, void *dest, void *base)
+>  		return -ENOMEM;
 >  
->    reg:
-> +    minItems: 6
->      items:
->        - description: Qualcomm-specific PARF configuration registers
->        - description: DesignWare PCIe registers
-> @@ -27,8 +29,10 @@ properties:
->        - description: Address Translation Unit (ATU) registers
->        - description: Memory region used to map remote RC address space
->        - description: BAR memory region
-> +      - description: DMA register space
->  
->    reg-names:
-> +    minItems: 6
->      items:
->        - const: parf
->        - const: dbi
-> @@ -36,13 +40,14 @@ properties:
->        - const: atu
->        - const: addr_space
->        - const: mmio
-> +      - const: dma
->  
->    clocks:
-> -    minItems: 7
-> +    minItems: 5
->      maxItems: 8
->  
->    clock-names:
-> -    minItems: 7
-> +    minItems: 5
->      maxItems: 8
->  
->    qcom,perst-regs:
-> @@ -57,14 +62,18 @@ properties:
->            - description: Perst separation enable offset
->  
->    interrupts:
-> +    minItems: 2
->      items:
->        - description: PCIe Global interrupt
->        - description: PCIe Doorbell interrupt
-> +      - description: DMA interrupt
->  
->    interrupt-names:
-> +    minItems: 2
->      items:
->        - const: global
->        - const: doorbell
-> +      - const: dma
->  
->    reset-gpios:
->      description: GPIO used as PERST# input signal
-> @@ -125,6 +134,10 @@ allOf:
->                - qcom,sdx55-pcie-ep
->      then:
->        properties:
-> +        reg:
-> +          maxItems: 6
-> +        reg-names:
-> +          maxItems: 6
->          clocks:
->            items:
->              - description: PCIe Auxiliary clock
-> @@ -143,6 +156,10 @@ allOf:
->              - const: slave_q2a
->              - const: sleep
->              - const: ref
-> +        interrupts:
-> +          maxItems: 2
-> +        interrupt-names:
-> +          maxItems: 2
->  
->    - if:
->        properties:
-> @@ -152,6 +169,10 @@ allOf:
->                - qcom,sm8450-pcie-ep
->      then:
->        properties:
-> +        reg:
-> +          maxItems: 6
-> +        reg-names:
-> +          maxItems: 6
->          clocks:
->            items:
->              - description: PCIe Auxiliary clock
-> @@ -172,6 +193,45 @@ allOf:
->              - const: ref
->              - const: ddrss_sf_tbu
->              - const: aggre_noc_axi
-> +        interrupts:
-> +          maxItems: 2
-> +        interrupt-names:
-> +          maxItems: 2
-> +
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            enum:
-> +              - qcom,sa8775p-pcie-ep
-> +    then:
-> +      properties:
-> +        reg:
-> +          minItems: 7
-> +          maxItems: 7
-> +        reg-names:
-> +          minItems: 7
-> +          maxItems: 7
-> +        clocks:
-> +          items:
-> +            - description: PCIe Auxiliary clock
-> +            - description: PCIe CFG AHB clock
-> +            - description: PCIe Master AXI clock
-> +            - description: PCIe Slave AXI clock
-> +            - description: PCIe Slave Q2A AXI clock
-> +        clock-names:
-> +          items:
-> +            - const: aux
-> +            - const: cfg
-> +            - const: bus_master
-> +            - const: bus_slave
-> +            - const: slave_q2a
-> +        interrupts:
-> +          minItems: 3
-> +          maxItems: 3
-> +        interrupt-names:
-> +          minItems: 3
-> +          maxItems: 3
->  
->  unevaluatedProperties: false
->  
+>  	if (addr == FETCH_TOKEN_COMM)
+> -		ret = strlcpy(dst, current->comm, maxlen);
+> +		ret = strscpy(dst, current->comm, maxlen);
+>  	else
+>  		ret = strncpy_from_user(dst, src, maxlen);
+>  	if (ret >= 0) {
 > -- 
-> 2.7.4
+> 2.34.1
 > 
+
 
 -- 
-மணிவண்ணன் சதாசிவம்
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
