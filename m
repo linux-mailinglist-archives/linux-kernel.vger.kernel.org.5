@@ -2,119 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CB4780112D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:21:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87C71801139
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:21:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378204AbjLAQUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 11:20:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33466 "EHLO
+        id S1378134AbjLAQVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 11:21:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbjLAQUT (ORCPT
+        with ESMTP id S229539AbjLAQVN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 11:20:19 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B04B5C4
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 08:20:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701447626; x=1732983626;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ika2VtjZETtxM/AtAN25RiLrwnIQx+U2XpZBHMuTOUI=;
-  b=Co4qHFcbyBEKz87F0cJSDbDi5pgQ0TFjLs0kvomItFKGKQhWA4cq5Sw+
-   EwkoppsdqeQFGe29PbMv7KCiNhmjPmy+Gfe850EMqoz2xFF97p7ULAqeN
-   ieZP48pi9TC32ndQzxQtUFhkMXWOZeogXUIFsqZ/nn/e1L5kOWWFcu9lG
-   sFZwbaTvD3EVikVx87VdCsTd0Xo25LQfDh5XYD2YPU6As6enmjvsjPOFh
-   J5OC3NzwPD0YvJluauOv7XlWzIqgYzFMnF2iTiYasOn9tKlNql2MtyYoN
-   s6CN95uOGupxoYZaoi36Plxx68SrSDe6ElOXcE574z+VucV/KvfitDFcf
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="15062681"
-X-IronPort-AV: E=Sophos;i="6.04,242,1695711600"; 
-   d="scan'208";a="15062681"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2023 08:20:25 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="943131592"
-X-IronPort-AV: E=Sophos;i="6.04,242,1695711600"; 
-   d="scan'208";a="943131592"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga005.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2023 08:20:23 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1r96FY-000000012Hi-15zF;
-        Fri, 01 Dec 2023 18:20:20 +0200
-Date:   Fri, 1 Dec 2023 18:20:19 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Andy Whitcroft <apw@canonical.com>,
-        Joe Perches <joe@perches.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: Re: [PATCH v1 1/1] checkpatch: Add dev_err_probe() to the list of
- Log Functions
-Message-ID: <ZWoHwzQiYWj0HXAL@smile.fi.intel.com>
-References: <20231201151446.1593472-1-andriy.shevchenko@linux.intel.com>
- <3c709cc1-0da8-4d23-9f75-8c18d4d18779@roeck-us.net>
- <ZWoHLkcPk2084gQH@smile.fi.intel.com>
+        Fri, 1 Dec 2023 11:21:13 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8743F83
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 08:21:19 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2155C433C9;
+        Fri,  1 Dec 2023 16:21:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701447679;
+        bh=cDugfAWAT5G/xGu+06cvSWYQg2BA2F/CfT8nBweNIWQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=c3kvIYkTxGaQHJYWqQl2anjmpLtxGpDBZdjmFBPmQmk0BDa0Gqn4lisY5Qhyv+oYm
+         bv+0lVe2gDTusYqqFTJiZ3dQij9DbQRiRjF0BS/ON3ePJRxmedZX3Ha7ldzjWX0j/d
+         WBF/VvF266fomO+k8mjfQeNH3cKFjUnNbUTaeskYLNw9tXxxChyaAUpdltz33gnje5
+         ueJrUMoVNKsXfx8iassNDvaLpYVXhce8mEQylWobMbFBtmX2WO2WmwaRgcFparfv5V
+         jxOFowKbxB+rfQ8ThS0pE+U/ji05tDLqQieJRNEKcPJ0cUcfwz09vrN6qR8L8roVC/
+         qSgXfjmhL2jgw==
+Date:   Fri, 1 Dec 2023 16:21:13 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Inochi Amaoto <inochiama@outlook.com>
+Cc:     Chen Wang <unicorn_wang@outlook.com>,
+        Chao Wei <chao.wei@sophgo.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Anup Patel <anup@brainfault.org>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v4 0/7] Add Huashan Pi board support
+Message-ID: <20231201-nutshell-uptake-48161193c6e7@spud>
+References: <20231201-strung-mandarin-110a322468c9@wendy>
+ <IA1PR20MB49539E82E5C0B5CBFD889F39BB81A@IA1PR20MB4953.namprd20.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="uXPxtQUqc4AkN2jk"
 Content-Disposition: inline
-In-Reply-To: <ZWoHLkcPk2084gQH@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <IA1PR20MB49539E82E5C0B5CBFD889F39BB81A@IA1PR20MB4953.namprd20.prod.outlook.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 01, 2023 at 06:17:51PM +0200, Andy Shevchenko wrote:
-> On Fri, Dec 01, 2023 at 08:01:28AM -0800, Guenter Roeck wrote:
-> > On 12/1/23 07:14, Andy Shevchenko wrote:
-> > > dev_err_probe() is missing in the list of Log Functions and hence
-> > > checkpatch issues a warning in the cases when any other function
-> > > in use won't trigger it. Add dev_err_probe() to the list to behave
-> > > consistently.
 
-...
+--uXPxtQUqc4AkN2jk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> > Not sure if I agree. The difference here is that dev_err_probe()
-> > has two additional parameters ahead of the string. I would very much prefer
-> > to have those two additional parameters on a separate line if the string is
-> > too long to fit in 100 columns with those two parameters on the same line.
-> > In other words, I very much prefer
-> > 
-> > 	dev_err_probe(dev, -ESOMETHING,
-> > 		      "very long string");
-> > over
-> > 	dev_err_probe(dev, -ESOMETHING, "very long string");
-> > 
-> > and I don't really think that the latter has any benefits.
-> > 
-> > Also note that other dev_xxx() log functions are not included in the above test
-> > and would still generate warnings. Accepting
-> > 
-> > 	dev_err_probe(dev, -ESOMETHING, "very long string");
-> > but not
-> > 	dev_err(dev, "very long string");
-> 
-> They are included, see the line previous to the added one.
-> (Regexp covers something like x_y_()* and x_*() families with the explicitly
+On Fri, Dec 01, 2023 at 04:31:38PM +0800, Inochi Amaoto wrote:
+> >
+> >On Fri, Dec 01, 2023 at 09:02:59AM +0800, Inochi Amaoto wrote:
+> >>>
+> >>> On Fri, Dec 01, 2023 at 07:21:29AM +0800, Inochi Amaoto wrote:
+> >>>>>
+> >>>>> On Thu, 19 Oct 2023 07:18:00 +0800, Inochi Amaoto wrote:
+> >>>>>> Huashan Pi board is an embedded development platform based on the
+> >>>>>> CV1812H chip. Add minimal device tree files for this board.
+> >>>>>> Currently, it can boot to a basic shell.
+> >>>>>>
+> >>>>>> NOTE: this series is based on the Jisheng's Milk-V Duo patch.
+> >>>>>>
+> >>>>>> Link: https://en.sophgo.com/product/introduce/huashan.html
+> >>>>>> Link: https://en.sophgo.com/product/introduce/cv181xH.html
+> >>>>>> Link: https://lore.kernel.org/linux-riscv/20231006121449.721-1-jsz=
+hang@kernel.org/
+> >>>>>>
+> >>>>>> [...]
+> >>>>>
+> >>>>> Applied to riscv-dt-for-next, thanks! LMK if something looks not as
+> >>>>> expected.
+> >>>>>
+> >>>>> [1/7] dt-bindings: interrupt-controller: Add SOPHGO CV1812H plic
+> >>>>>      https://git.kernel.org/conor/c/21a34e63afcc
+> >>>>> [2/7] dt-bindings: timer: Add SOPHGO CV1812H clint
+> >>>>>      https://git.kernel.org/conor/c/06ea2a1968a9
+> >>>>> [3/7] dt-bindings: riscv: Add SOPHGO Huashan Pi board compatibles
+> >>>>>      https://git.kernel.org/conor/c/d7b92027834e
+> >>>>> [4/7] riscv: dts: sophgo: Separate compatible specific for CV1800B =
+soc
+> >>>>>      https://git.kernel.org/conor/c/5b5dce3951b2
+> >>>>> [5/7] riscv: dts: sophgo: cv18xx: Add gpio devices
+> >>>>>      https://git.kernel.org/conor/c/dd791b45c866
+> >>>>> [6/7] riscv: dts: sophgo: add initial CV1812H SoC device tree
+> >>>>>      https://git.kernel.org/conor/c/681ec684a741
+> >>>>> [7/7] riscv: dts: sophgo: add Huashan Pi board device tree
+> >>>>>      https://git.kernel.org/conor/c/2c36b0cfb408
+> >
+> >>>> Thanks for the confirmation. But I suggest to revert these patches.
+> >>>> Several days ago, Sophgo informed me that CV1810 series will be
+> >>>> renamed. And the Huashan Pi will switch to the chip with new name.
+> >>>> To avoid unnecessary conflict, please drop these patch and I will
+> >>>> prepare a new patch once the renamed chip is launched.
+> >>>
+> >>> This is a board that exists, that you (and possibly others) have, rig=
+ht?
+> >>>
+> >>
+> >> Yes, of course.
+> >
+> >I dunno then. It sounds from your message that this is purely a rebrand
+> >of the SoCs,
+>=20
+> IIRC, it is.
+> FYI, Chen and Chao. Maybe you know something more.
+>=20
+> >so since people already have these boards, I'd rather not.
+> >We should be able to support both since it's just a naming change,
+> >right?
+>=20
+> I agree with this. If the above is true, we can just reuse the exists code
+> with a different compatible name, right?
 
-Should read: x_y_*()
+I think so? I'm not sure what the precedent really is for pure
+rebrandings of an SoC.
+I say for now, assume we can do that, and we can discuss it with Rob and
+Krzysztof when the time comes if there is no difference between the SoCs
+and boards.
 
->  listed * suffixes.)
-> 
-> That's why _this_ change makes it consistent.
-> 
-> > doesn't really make sense to me.
+Cheers,
+Conor.
 
--- 
-With Best Regards,
-Andy Shevchenko
+--uXPxtQUqc4AkN2jk
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZWoH+QAKCRB4tDGHoIJi
+0grUAP0S9amy4TrGcFFu/F4s2tNM5WedtZOnPZBjxgrdKnrdJgD/ZJZEqehUxEN4
+eaHuCHDQlp6ulBfBbzfKighJU6ZLUwQ=
+=BD5D
+-----END PGP SIGNATURE-----
+
+--uXPxtQUqc4AkN2jk--
