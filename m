@@ -2,48 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F84E8013D6
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 21:01:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6DCC8013DC
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 21:03:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379568AbjLAUBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 15:01:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34288 "EHLO
+        id S1379580AbjLAUDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 15:03:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379550AbjLAUBf (ORCPT
+        with ESMTP id S1379565AbjLAUDK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 15:01:35 -0500
+        Fri, 1 Dec 2023 15:03:10 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0E05FA
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 12:01:41 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8AF5C433C8;
-        Fri,  1 Dec 2023 20:01:39 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4798CB2
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 12:03:16 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BAE5EC433C7;
+        Fri,  1 Dec 2023 20:02:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701460901;
-        bh=eO0+A/HoDSUXkRzZYBTH4WJttajSMnTAC/ilJrr2b+g=;
-        h=Date:From:To:Subject:References:In-Reply-To:From;
-        b=Z0yVGh7M8sUHaxzmBGXP/uhJvlMZo1QvDo+u38ssMkZSwc4XX7TlReiKiCdk6P/2k
-         VU7OFp+IfVGwH55/whD1sHyzxSVso4oGqclMT4LZHeEph5Xx6rgwZnKxbCj+r6Lqio
-         UrZGc58gBfjaCTR/yuGRok0EZ2SvS9R4+5lSA0aEfm+DlJOWuvaAjsdgHHZpwV2S0q
-         bw9lEmUSZnYJJSloJarRf7YkQ5S6GG2N/kl5CHZm/xWdoPcEPtsL/uqp7siUZw3h9h
-         m98lDoPMJCfy3ngUCOXKGybzXiMH6au43I9kcBaECH5HMnfrUexYgqhyx0Faxgi2hx
-         kL77x2GoS4cYA==
-Date:   Fri, 1 Dec 2023 20:01:36 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Matthias Reichl <hias@horus.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, stable@vger.kernel.org,
-        jslaby@suse.cz
-Subject: Re: Linux 6.6.3
-Message-ID: <dea2db44-2e13-47c1-be0b-8548bfd54473@sirena.org.uk>
-References: <2023112811-ecosphere-defender-a75a@gregkh>
- <ZWo45hiK-n8W_yWJ@camel3.lan>
+        s=k20201202; t=1701460995;
+        bh=zlGJvgaDfOaydmVhAssBO1Q2xtvGzqBX82vPMeow6H8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kBUFM1U32mC5a5kuNSctBT/Fei8oX4ETaFZtXddMPB++K5JXpgPLe/pJmjPb6seMc
+         LLxZ7zrTSEOFyYMDddaolGtJTT6BWMxR8MEtaIjW89DIZ/nl7F4kWfcABWasD/X6Uu
+         RwJXWG5HphFmZXVTwMZQMLnJswrQI4jFBKkbwH64zOgUU1b/R/sUdgRDfwIglc3A1u
+         /asI/HVmSEXQPIO0P7T8f2aCUej/5vQRM2qitHnCTk9KdHn8NE4aRHQwt61i1qdIfa
+         GPVQzyWlFAWE83+BsHHiaWNaDYjK0qFsGyJMuztArG9nvN2VTEp4A9TFcgKPDCBU/A
+         K6w/DEyCt32og==
+Date:   Fri, 1 Dec 2023 12:02:47 -0800
+From:   Josh Poimboeuf <jpoimboe@kernel.org>
+To:     Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, tony.luck@intel.com,
+        ak@linux.intel.com, tim.c.chen@linux.intel.com,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Nikolay Borisov <nik.borisov@suse.com>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        kvm@vger.kernel.org,
+        Alyssa Milburn <alyssa.milburn@linux.intel.com>,
+        Daniel Sneddon <daniel.sneddon@linux.intel.com>,
+        antonio.gomez.iglesias@linux.intel.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH  v4 6/6] KVM: VMX: Move VERW closer to VMentry for MDS
+ mitigation
+Message-ID: <20231201200247.vui6enzdj5nzctf4@treble>
+References: <20231027-delay-verw-v4-0-9a3622d4bcf7@linux.intel.com>
+ <20231027-delay-verw-v4-6-9a3622d4bcf7@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="yLjAKkh/iKJFbDI8"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZWo45hiK-n8W_yWJ@camel3.lan>
-X-Cookie: The early worm gets the late bird.
+In-Reply-To: <20231027-delay-verw-v4-6-9a3622d4bcf7@linux.intel.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -54,33 +67,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Oct 27, 2023 at 07:39:12AM -0700, Pawan Gupta wrote:
+> -	vmx_disable_fb_clear(vmx);
+> +	/*
+> +	 * Optimize the latency of VERW in guests for MMIO mitigation. Skip
+> +	 * the optimization when MDS mitigation(later in asm) is enabled.
+> +	 */
+> +	if (!cpu_feature_enabled(X86_FEATURE_CLEAR_CPU_BUF))
+> +		vmx_disable_fb_clear(vmx);
+>  
+>  	if (vcpu->arch.cr2 != native_read_cr2())
+>  		native_write_cr2(vcpu->arch.cr2);
+> @@ -7248,7 +7256,8 @@ static noinstr void vmx_vcpu_enter_exit(struct kvm_vcpu *vcpu,
+>  
+>  	vmx->idt_vectoring_info = 0;
+>  
+> -	vmx_enable_fb_clear(vmx);
+> +	if (!cpu_feature_enabled(X86_FEATURE_CLEAR_CPU_BUF))
+> +		vmx_enable_fb_clear(vmx);
+>  
 
---yLjAKkh/iKJFbDI8
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+It may be cleaner to instead check X86_FEATURE_CLEAR_CPU_BUF when
+setting vmx->disable_fb_clear in the first place, in
+vmx_update_fb_clear_dis().
 
-On Fri, Dec 01, 2023 at 08:49:58PM +0100, Matthias Reichl wrote:
-
-> I'm not familiar with the regcache code but it looks a bit like the
-> return value from the regcache_read check is leaking out - not
-> assigning the value to ret seems to resolve the issue, too
-> (no idea though if that would be the correct fix):
-
-That looks sensible, can you submit as a proper patch please?
-
---yLjAKkh/iKJFbDI8
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVqO58ACgkQJNaLcl1U
-h9BZUAf/R0pVAXDalAF0Bfn7Of6eKAwLqYXSIdXvgq+CKZ6wfJlzAO6nKAbnEIc0
-R/dhGkURtTHhE9XNVoFYLiIx5xfOxlAi0D03I753lKOYmTspm0alp+BgoVvFWnpy
-uE2Kl8mCycb7BwO17BFIc1Lf8PPdHTzGEhDiG4uWX/2wnjGVBnKaYuTNdOIr4jc/
-iC0PdgWCJxvGYKz67wJ4DSO8lKV9/oky4Etcgcix1ZOCrvAgXXICsgzpDDuc1BDJ
-29Cm77qEqckdPfyt8UO5ziZtPQeBxw93QDpFTJOtUo9rhtKrwPUObNqJNNFhuqEM
-Sh5gua5CigMj0MpxQOPDTF/QTiZEFQ==
-=FoTj
------END PGP SIGNATURE-----
-
---yLjAKkh/iKJFbDI8--
+-- 
+Josh
