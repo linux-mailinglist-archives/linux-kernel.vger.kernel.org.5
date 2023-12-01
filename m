@@ -2,212 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D521800686
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 10:06:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C188C80068C
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 10:06:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377978AbjLAJGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 04:06:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41358 "EHLO
+        id S1377989AbjLAJGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 04:06:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377855AbjLAJGX (ORCPT
+        with ESMTP id S1377991AbjLAJGe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 04:06:23 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47FCE128;
-        Fri,  1 Dec 2023 01:06:29 -0800 (PST)
-Received: from eldfell (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: pq)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 5C41C660739A;
-        Fri,  1 Dec 2023 09:06:26 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1701421587;
-        bh=rTJZzJCgLiIwcExEqYbSM1DrO64iWFfVeLwuztLPWMY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=YK8Z4kJsctmCvtC34do7rBld3Q7LYUZl/0nv9aqDmV99WVGG7Rg1mq5NIKqD0RFCD
-         rOY+hghc+077Ykui0ABFFZHaByhTaQHjmmBYaH0RV/0j0lrfyePcM+/uFj5U5RSJhw
-         H39ez4s55uhOOTgE46zhbdqjDkitqvTH7OlKglu5MVRbyNtoJsI5qGT7wddWRj6zT1
-         NgaBowSx1mD57TEa0xl8QvnETDjqJyVcPx99QvWXXW8hAhx/0dpZg/H7EY8mjFgXXh
-         j4ssFHJ8UO821ShXUeVTtrBMCu9JITIcyJ6SaS55Gk0cMbwmEXQBawUXdCrQibipT6
-         nv7wCSBBL4lHQ==
-Date:   Fri, 1 Dec 2023 11:06:16 +0200
-From:   Pekka Paalanen <pekka.paalanen@collabora.com>
-To:     Maxime Ripard <mripard@kernel.org>
-Cc:     =?UTF-8?B?QW5kcsOp?= Almeida <andrealmeid@igalia.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel-dev@igalia.com, alexander.deucher@amd.com,
-        christian.koenig@amd.com, Simon Ser <contact@emersion.fr>,
-        Rob Clark <robdclark@gmail.com>,
-        Pekka Paalanen <ppaalanen@gmail.com>, daniel@ffwll.ch,
-        Daniel Stone <daniel@fooishbar.org>,
-        'Marek =?UTF-8?B?T2zFocOhayc=?= <maraeo@gmail.com>,
-        Dave Airlie <airlied@gmail.com>,
-        Michel =?UTF-8?B?RMOkbnplcg==?= <michel.daenzer@mailbox.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Subject: Re: [PATCH] drm/doc: Define KMS atomic state set
-Message-ID: <20231201110616.30ad1468.pekka.paalanen@collabora.com>
-In-Reply-To: <x6cqert2tadgc46w3u2rfgcfaw6evxdeerl2mxvh2peycr4i7q@qf6oqymcti4j>
-References: <20231130200740.53454-1-andrealmeid@igalia.com>
-        <x6cqert2tadgc46w3u2rfgcfaw6evxdeerl2mxvh2peycr4i7q@qf6oqymcti4j>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Ilb4Canwm_BXnib/16uRTnM";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Fri, 1 Dec 2023 04:06:34 -0500
+Received: from mail-lf1-x149.google.com (mail-lf1-x149.google.com [IPv6:2a00:1450:4864:20::149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 884791713
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 01:06:40 -0800 (PST)
+Received: by mail-lf1-x149.google.com with SMTP id 2adb3069b0e04-50bcd1578c8so1945741e87.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 01:06:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701421599; x=1702026399; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=1JTU9CaHiSbs+o3JtKXRUkQIh0ncmcY1dLiLoH2GmSc=;
+        b=eRDiVXl/J1Agej0Ydb4tN2X57AnRHeJUzyHAhbzAm1VWss/THydLxgLa0hQdGZN8dw
+         5pEH1Tys+h+JWpqEmUDzLS+jB9fR8AhUGSjO/2KrqKOH5R4Tw3h6QeGxa+hxFjYFdkgJ
+         dcXgR4C7Cqy9PcvY5RVP7yDmEtcqAoQNOl4eL3Xc0/ym1QruDVjN3sAq2VtCwtZ6dh64
+         sqkH4mM51y9XsWFRtNawvuDHB36V3dWG8ClVyHMvuszrjpEMU+nWQzoOaBXcwlE+bwiw
+         QYG8i/depsz5/nDVozJaNkZLVsNB0wwkg1MVUttrLEoWWFpg8j4XHlT4QZgpURCzFQwK
+         Kwtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701421599; x=1702026399;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1JTU9CaHiSbs+o3JtKXRUkQIh0ncmcY1dLiLoH2GmSc=;
+        b=pHfrwymj6oa/zBwJOttJ7W233fQbtYX0A7IXkQsKpeYjbddpiaat6j/a0Lr886DE39
+         KsNBsUFfLs4k7sM8CesOfdgkfRZEc29ldIu5SUBsrviEg1NQdHfKutu3jUYBaWIPtYDc
+         njN6b2Vjn723RpxrMzJj724FRiber9lZxs5ACl84joKZ59Roq4FCrqLMkHkJrKSij3c1
+         9BRl3oIJeJxz4JYd+/2wFZOTwTE1IzmiI0YsrlHzoldtFPkzJ7uDF2g1zLilK7XUraiP
+         Kw2b3riJQ9Pim+1PCbjIg31EKCzCNruiTJmlfusv/Ts/q3ba8HxhM+993ekdxLfq3U2s
+         L8KA==
+X-Gm-Message-State: AOJu0YxngYREKxt2ondpkQ4sMnFOCnSsMRgVNAUX+8NjJ3ABEUAZuO8W
+        LihCXJps7DHo5pOnb/hZcMWP3AYl0SHisXU=
+X-Google-Smtp-Source: AGHT+IF1d71ZSf2Kl5mbx0A46QnrKWBkTAOhf3JIYbyOUWPIwbkOelkfoAfTB16bjtarCcRq9aTx9X9Pkee6Tmo=
+X-Received: from aliceryhl2.c.googlers.com ([fda3:e722:ac3:cc00:68:949d:c0a8:572])
+ (user=aliceryhl job=sendgmr) by 2002:a05:6512:203:b0:50a:bbf5:6697 with SMTP
+ id a3-20020a056512020300b0050abbf56697mr34127lfo.4.1701421598775; Fri, 01 Dec
+ 2023 01:06:38 -0800 (PST)
+Date:   Fri,  1 Dec 2023 09:06:35 +0000
+In-Reply-To: <W6StBLpVsvvGchAT5ZEvH9JJyzu401dMqR3yN73NZPjPeZRoaKAuoYe40QWErmPwrnJVTH7BbLKtWXDOMYny5xjwd3CSLyz5IYYReB6-450=@proton.me>
+Mime-Version: 1.0
+References: <W6StBLpVsvvGchAT5ZEvH9JJyzu401dMqR3yN73NZPjPeZRoaKAuoYe40QWErmPwrnJVTH7BbLKtWXDOMYny5xjwd3CSLyz5IYYReB6-450=@proton.me>
+X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
+Message-ID: <20231201090636.2179663-1-aliceryhl@google.com>
+Subject: Re: [PATCH 2/7] rust: cred: add Rust abstraction for `struct cred`
+From:   Alice Ryhl <aliceryhl@google.com>
+To:     benno.lossin@proton.me, brauner@kernel.org
+Cc:     a.hindborg@samsung.com, alex.gaynor@gmail.com,
+        aliceryhl@google.com, arve@android.com, bjorn3_gh@protonmail.com,
+        boqun.feng@gmail.com, cmllamas@google.com,
+        dan.j.williams@intel.com, dxu@dxuuu.xyz, gary@garyguo.net,
+        gregkh@linuxfoundation.org, joel@joelfernandes.org,
+        keescook@chromium.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, maco@android.com, ojeda@kernel.org,
+        peterz@infradead.org, rust-for-linux@vger.kernel.org,
+        surenb@google.com, tglx@linutronix.de, tkjos@android.com,
+        viro@zeniv.linux.org.uk, wedsonaf@gmail.com, willy@infradead.org
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Ilb4Canwm_BXnib/16uRTnM
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Benno Lossin <benno.lossin@proton.me> writes:
+> On 11/29/23 13:51, Alice Ryhl wrote:
+>> +    /// Returns the credentials of the task that originally opened the file.
+>> +    pub fn cred(&self) -> &Credential {
+>> +        // This `read_volatile` is intended to correspond to a READ_ONCE call.
+>> +        //
+>> +        // SAFETY: The file is valid because the shared reference guarantees a nonzero refcount.
+>> +        //
+>> +        // TODO: Replace with `read_once` when available on the Rust side.
+>> +        let ptr = unsafe { core::ptr::addr_of!((*self.0.get()).f_cred).read_volatile() };
+>> +
+>> +        // SAFETY: The signature of this function ensures that the caller will only access the
+>> +        // returned credential while the file is still valid, and the credential must stay valid
+>> +        // while the file is valid.
+> 
+> About the last part of this safety comment, is this a guarantee from the
+> C side? If yes, then I would phrase it that way:
+> 
+>     ... while the file is still valid, and the C side ensures that the
+>     credentials stay valid while the file is valid.
 
-On Fri, 1 Dec 2023 09:29:05 +0100
-Maxime Ripard <mripard@kernel.org> wrote:
+Yes, that's my intention with this code.
 
-> Hi,
->=20
-> On Thu, Nov 30, 2023 at 05:07:40PM -0300, Andr=C3=A9 Almeida wrote:
-> > From: Pekka Paalanen <pekka.paalanen@collabora.com>
-> >=20
-> > Specify how the atomic state is maintained between userspace and
-> > kernel, plus the special case for async flips.
-> >=20
-> > Signed-off-by: Pekka Paalanen <pekka.paalanen@collabora.com>
-> > Signed-off-by: Andr=C3=A9 Almeida <andrealmeid@igalia.com>
-> > ---
-> >=20
-> > This is a standalone patch from the following serie, the other patches =
-are
-> > already merged:
-> > https://lore.kernel.org/lkml/20231122161941.320564-1-andrealmeid@igalia=
-.com/
-> >=20
-> >  Documentation/gpu/drm-uapi.rst | 47 ++++++++++++++++++++++++++++++++++
-> >  1 file changed, 47 insertions(+)
-> >=20
-> > diff --git a/Documentation/gpu/drm-uapi.rst b/Documentation/gpu/drm-uap=
-i.rst
-> > index 370d820be248..d0693f902a5c 100644
-> > --- a/Documentation/gpu/drm-uapi.rst
-> > +++ b/Documentation/gpu/drm-uapi.rst
-> > @@ -570,3 +570,50 @@ dma-buf interoperability
-> > =20
-> >  Please see Documentation/userspace-api/dma-buf-alloc-exchange.rst for
-> >  information on how dma-buf is integrated and exposed within DRM.
-> > +
-> > +KMS atomic state
-> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > +
-> > +An atomic commit can change multiple KMS properties in an atomic fashi=
-on,
-> > +without ever applying intermediate or partial state changes.  Either t=
-he whole
-> > +commit succeeds or fails, and it will never be applied partially. This=
- is the
-> > +fundamental improvement of the atomic API over the older non-atomic AP=
-I which is
-> > +referred to as the "legacy API".  Applying intermediate state could un=
-expectedly
-> > +fail, cause visible glitches, or delay reaching the final state.
-> > +
-> > +An atomic commit can be flagged with DRM_MODE_ATOMIC_TEST_ONLY, which =
-means the
-> > +complete state change is validated but not applied.  Userspace should =
-use this
-> > +flag to validate any state change before asking to apply it. If valida=
-tion fails
-> > +for any reason, userspace should attempt to fall back to another, perh=
-aps
-> > +simpler, final state.  This allows userspace to probe for various conf=
-igurations
-> > +without causing visible glitches on screen and without the need to und=
-o a
-> > +probing change.
-> > +
-> > +The changes recorded in an atomic commit apply on top the current KMS =
-state in
-> > +the kernel. Hence, the complete new KMS state is the complete old KMS =
-state with
-> > +the committed property settings done on top. The kernel will try to av=
-oid =20
->=20
-> That part is pretty confusing to me.
->=20
-> What are you calling the current and old KMS state?
+But I guess this is a good question for Christian Brauner to confirm:
 
-Current =3D old, if you read that "current" is the KMS state before
-considering the atomic commit at hand.
+If I read the credential from the `f_cred` field, is it guaranteed that
+the pointer remains valid for at least as long as the file?
 
-> What's confusing to me is that, yes, what you're saying is true for a
-> given object: if it was part of the commit, the new state is the old
-> state + whatever the new state changed.
->=20
-> However, if that object wasn't part of the commit at all, then it's
-> completely out of the old or new global KMS state.
+Or should I do some dance along the lines of "lock file, increment
+refcount on credential, unlock file"?
 
-This is not talking about kernel data structures at all. This is
-talking about how KMS looks from the userspace point of view.
-
-All objects are always part of the device KMS state as referred to
-in this doc, whether they were mentioned in the atomic commit state set
-or not. That's the whole point: all state that was not explicitly
-modified remains as it was, and is actively used state by the driver
-and hardware. The practical end result state is the same as if all
-objects were (redundantly) mentioned.
-
-For example, if you change properties of CRTC 31, it has no effect on
-the behaviour of CRTC 54. If CRTC 54 was active, it remains active. If
-CRTC 54 had certain property values, it continues to have those
-property values. This is opposed to something else; the UAPI could have
-been designed to e.g. reset all unmentioned objects to defaults/off by
-the atomic commit. Obviously that's not how it works today, so we need
-to mention how things do work.
-
->=20
-> So yeah, individual object KMS state are indeed complete, but
-> drm_atomic_state definitely isn't. And it's the whole point of functions
-> like drm_atomic_get_crtc_state() vs drm_atomic_get_old/new_crtc_state:
-> the old/new variants only return a state if it was part of
-> drm_atomic_state to begin with. drm_atomic_get_crtc_state() brings the
-> crtc state into drm_atomic_state if it wasn't part of it.
-
-At no point the text is referring to drm_atomic_state or any other
-kernel data structure.
-
-
-Thanks,
-pq
-
---Sig_/Ilb4Canwm_BXnib/16uRTnM
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmVpoggACgkQI1/ltBGq
-qqc6AxAAlBWeVudinBA3iet8KUI3heH4Rzpso1wX7XAnCiCN/FL949KDlWavHoao
-oNJIeeWdQWl+1aaMd4Rh5cj49XknqYoFHWGiNitY7bWgOARhZ2QRuZq12P/EghkB
-gwLb0suqe5SSPMqWxQy74R1vZezInMWnRSKVQCyXyMKdTqTg2h//P5X7I6BS5fR7
-UnKrMChRwJR2fIdf0BbLGlyZfalxZZ2YTG2P0I3pycPUru6XmdY/SHn/81fezaw/
-9+aUz8B77k2tp4w6/FtUaiKW34UG5QjJzar1GDZKCdf74H99MCjTROUlbde55yVq
-r8E6m9VT931yu6SREN3vPynBUJvBrukkXO9Ymtum4fajcB0RFCu5NmFmbgm2nHWR
-xRVkA11+VqRBuUrG+RbhLnSTh3dB1iKNbcjo490LyzqyifSSq8D3meyCmyY7fhc2
-09XqRYtBVqNUZzaLf3JbfWVZ4INq2PA6Q8Yq+bEx7tXgE3uNyvM5kabxd8OXmT5S
-WOmFPgiFrJTgh2K4CCrtpPdxUXEvPoLQu7mE3DmQeLyQsuGFdycekRzqsBUPWfc2
-lS0ur8J9qNod02uP9fSKW/2UdKwBroSO5t2d+s/LAmAgwm/xc93hnhbYSjmivKpd
-TFzMmDPNCkZC+2BHmy7WZhVTvoSoIQiHZsjoq9jtyYcNxnUO0G4=
-=gKNe
------END PGP SIGNATURE-----
-
---Sig_/Ilb4Canwm_BXnib/16uRTnM--
+Alice
