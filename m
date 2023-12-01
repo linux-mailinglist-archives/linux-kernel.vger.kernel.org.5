@@ -2,159 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FA8B8007CA
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 10:58:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F1758007CC
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 10:58:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378282AbjLAJ6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 04:58:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41712 "EHLO
+        id S1378182AbjLAJ6U convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 1 Dec 2023 04:58:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378274AbjLAJ5q (ORCPT
+        with ESMTP id S1378307AbjLAJ56 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 04:57:46 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBC262117;
-        Fri,  1 Dec 2023 01:57:36 -0800 (PST)
-Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B19QMdD018409;
-        Fri, 1 Dec 2023 09:57:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=iE5vL/TCzGzSgU96m+b5jLpBrUhGV6W511CmXEeUKY8=;
- b=gyPB4x8JelWSpkXRlqDZGqhPfnRFAO33Y/YdTMxXYNvfAfQDV/64Y+Z+ZGJ+KYh47xSP
- g4osHfxVbYX+VvXA6j6RDnhH87ERsgaOK5dsWxanP2iQESQ475lPW4XS4wow8T/JjNBp
- LpecGBhTSHSnFanJFODd1fwseVPOaQWIVkfwhK2Mvisa8BoP9woGA5IG45h/5fCfz2WU
- iT4IpKC6sU2HO21D9vzJLpXs/Rq5vWXzo0v/x6/GWcUB5vQryNRjY0dm/N24/eO1nKWS
- Kpri93+jUZcte/Ph48EQ05PkMJpma44td3VcvetC4ZC/yo03v8ukziGf8WKlmcHod17v 3g== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uqcgs17dc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 01 Dec 2023 09:57:34 +0000
-Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3B19uTiW013513;
-        Fri, 1 Dec 2023 09:57:34 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uqcgs17d6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 01 Dec 2023 09:57:34 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3B19Y2SU017434;
-        Fri, 1 Dec 2023 09:57:33 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3ukvrm44ct-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 01 Dec 2023 09:57:33 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-        by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3B19vU2h28705206
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 1 Dec 2023 09:57:30 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2B6862004B;
-        Fri,  1 Dec 2023 09:57:30 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D96A820040;
-        Fri,  1 Dec 2023 09:57:29 +0000 (GMT)
-Received: from [9.152.224.222] (unknown [9.152.224.222])
-        by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Fri,  1 Dec 2023 09:57:29 +0000 (GMT)
-Message-ID: <90817094-9feb-84e6-7dc9-9b997f054242@linux.ibm.com>
-Date:   Fri, 1 Dec 2023 10:57:28 +0100
+        Fri, 1 Dec 2023 04:57:58 -0500
+Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E30D82134;
+        Fri,  1 Dec 2023 01:57:43 -0800 (PST)
+Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-db510605572so322835276.0;
+        Fri, 01 Dec 2023 01:57:43 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701424662; x=1702029462;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hDOIqFg4pESUQz8ST7BsU3RSPktSqE3GKIxBJ7SXCTM=;
+        b=RYdqDyRpsXDhlymiuPrIzXx3bwpBvTm4FoFWZUk/GPTHCjt/py4Yb19kx7jgdnU/Vn
+         oxcynVqMOAtZsLcwbIk6Y4hMivHWXYdcRxXBrpVQUrIl/ihhU/QbKxz5g8AIgtwVpFRY
+         TeLHn6Pjskl7OAv/GG4MpsJIIYkZdlfpb64svQexFq9grxVRGdGGg7ZboYWKxaC9idHz
+         l8VxorEoh8TY0wlnsPeSpd3FlFoDsQkqLcAP7Us0XohHAMwphMUcAX+eEGawKlLpuUH5
+         VF3N6kcDSSwERBtH+soSmsc/CkG3SfYYvr1i9/YNENfiXa5VsJ97PVek8dn/vVZdnmtC
+         oSNw==
+X-Gm-Message-State: AOJu0YwqWSK39qCIfcKKomHd0vYMXfFfylkEm5t5sSXtwPf359q2GFx0
+        ht7m+DMs1V6AKIJpWXArx3g/DDYKkQQmag==
+X-Google-Smtp-Source: AGHT+IHY5Vfq0h4QhouT3wnV7oV0XZfnBeef88ASo/MtLd1cFnHGr45GkLyjel5mZJo6H7agECKSnw==
+X-Received: by 2002:a05:6902:e81:b0:da0:cea9:2b3b with SMTP id dg1-20020a0569020e8100b00da0cea92b3bmr27301329ybb.62.1701424662324;
+        Fri, 01 Dec 2023 01:57:42 -0800 (PST)
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com. [209.85.128.175])
+        by smtp.gmail.com with ESMTPSA id e134-20020a25e78c000000b00d9a36ded1besm283114ybh.6.2023.12.01.01.57.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Dec 2023 01:57:41 -0800 (PST)
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-5d33574f64eso18843277b3.3;
+        Fri, 01 Dec 2023 01:57:40 -0800 (PST)
+X-Received: by 2002:a0d:c607:0:b0:5c8:708f:1ea with SMTP id
+ i7-20020a0dc607000000b005c8708f01eamr26098779ywd.32.1701424660131; Fri, 01
+ Dec 2023 01:57:40 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v4 2/3] s390/vfio-ap: set status response code to 06 on
- gisc registration failure
-Content-Language: en-US
-To:     Tony Krowiak <akrowiak@linux.ibm.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>
-Cc:     jjherne@linux.ibm.com, pasic@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        frankja@linux.ibm.com, imbrenda@linux.ibm.com, david@redhat.com,
-        Harald Freudenberger <freude@linux.ibm.com>
-References: <20231129145404.263764-1-akrowiak@linux.ibm.com>
- <20231129145404.263764-3-akrowiak@linux.ibm.com>
-From:   Christian Borntraeger <borntraeger@linux.ibm.com>
-In-Reply-To: <20231129145404.263764-3-akrowiak@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: Mn0oEm_e3xgh5DNv3S01u0JGMHFdxM5X
-X-Proofpoint-ORIG-GUID: lV6f45zuC4MtyjHc38fzPVVSIG4MiOYO
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-01_07,2023-11-30_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 spamscore=0
- malwarescore=0 phishscore=0 clxscore=1015 lowpriorityscore=0
- mlxlogscore=999 priorityscore=1501 suspectscore=0 bulkscore=0 mlxscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2312010066
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231130212647.108746-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20231130212647.108746-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 1 Dec 2023 10:57:29 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdXf=xDeM7qz=n-YNPpkZD25R04RQZMG0C+BP5O6VvMDiA@mail.gmail.com>
+Message-ID: <CAMuHMdXf=xDeM7qz=n-YNPpkZD25R04RQZMG0C+BP5O6VvMDiA@mail.gmail.com>
+Subject: Re: [PATCH v3] riscv: errata: andes: Probe for IOCP only once in boot stage
+To:     Prabhakar <prabhakar.csengg@gmail.com>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Yu Chien Peter Lin <peterlin@andestech.com>,
+        Samuel Holland <samuel.holland@sifive.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Nov 30, 2023 at 10:27 PM Prabhakar <prabhakar.csengg@gmail.com> wrote:
+> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+>
+> We need to probe for IOCP only once during boot stage, as we were probing
+> for IOCP for all the stages this caused the below issue during module-init
+> stage,
+>
+> [9.019104] Unable to handle kernel paging request at virtual address ffffffff8100d3a0
+> [9.027153] Oops [#1]
+> [9.029421] Modules linked in: rcar_canfd renesas_usbhs i2c_riic can_dev spi_rspi i2c_core
+> [9.037686] CPU: 0 PID: 90 Comm: udevd Not tainted 6.7.0-rc1+ #57
+> [9.043756] Hardware name: Renesas SMARC EVK based on r9a07g043f01 (DT)
+> [9.050339] epc : riscv_noncoherent_supported+0x10/0x3e
+> [9.055558]  ra : andes_errata_patch_func+0x4a/0x52
+> [9.060418] epc : ffffffff8000d8c2 ra : ffffffff8000d95c sp : ffffffc8003abb00
+> [9.067607]  gp : ffffffff814e25a0 tp : ffffffd80361e540 t0 : 0000000000000000
+> [9.074795]  t1 : 000000000900031e t2 : 0000000000000001 s0 : ffffffc8003abb20
+> [9.081984]  s1 : ffffffff015b57c7 a0 : 0000000000000000 a1 : 0000000000000001
+> [9.089172]  a2 : 0000000000000000 a3 : 0000000000000000 a4 : ffffffff8100d8be
+> [9.096360]  a5 : 0000000000000001 a6 : 0000000000000001 a7 : 000000000900031e
+> [9.103548]  s2 : ffffffff015b57d7 s3 : 0000000000000001 s4 : 000000000000031e
+> [9.110736]  s5 : 8000000000008a45 s6 : 0000000000000500 s7 : 000000000000003f
+> [9.117924]  s8 : ffffffc8003abd48 s9 : ffffffff015b1140 s10: ffffffff8151a1b0
+> [9.125113]  s11: ffffffff015b1000 t3 : 0000000000000001 t4 : fefefefefefefeff
+> [9.132301]  t5 : ffffffff015b57c7 t6 : ffffffd8b63a6000
+> [9.137587] status: 0000000200000120 badaddr: ffffffff8100d3a0 cause: 000000000000000f
+> [9.145468] [<ffffffff8000d8c2>] riscv_noncoherent_supported+0x10/0x3e
+> [9.151972] [<ffffffff800027e8>] _apply_alternatives+0x84/0x86
+> [9.157784] [<ffffffff800029be>] apply_module_alternatives+0x10/0x1a
+> [9.164113] [<ffffffff80008fcc>] module_finalize+0x5e/0x7a
+> [9.169583] [<ffffffff80085cd6>] load_module+0xfd8/0x179c
+> [9.174965] [<ffffffff80086630>] init_module_from_file+0x76/0xaa
+> [9.180948] [<ffffffff800867f6>] __riscv_sys_finit_module+0x176/0x2a8
+> [9.187365] [<ffffffff80889862>] do_trap_ecall_u+0xbe/0x130
+> [9.192922] [<ffffffff808920bc>] ret_from_exception+0x0/0x64
+> [9.198573] Code: 0009 b7e9 6797 014d a783 85a7 c799 4785 0717 0100 (0123) aef7
+> [9.205994] ---[ end trace 0000000000000000 ]---
+>
+> This is because we called riscv_noncoherent_supported() for all the stages
+> during IOCP probe. riscv_noncoherent_supported() function sets
+> noncoherent_supported variable to true which has an annotation set to
+> "__ro_after_init" due to which we were seeing the above splat. Fix this by
+> probing for IOCP only once in boot stage by having a boolean variable
+> "done" which will be set to true upon IOCP probe in errata_probe_iocp()
+> and we bail out early if "done" is set to true.
+>
+> While at it make return type of errata_probe_iocp() to void as we were
+> not checking the return value in andes_errata_patch_func().
+>
+> Fixes: e021ae7f5145 ("riscv: errata: Add Andes alternative ports")
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Am 29.11.23 um 15:54 schrieb Tony Krowiak:
-> From: Anthony Krowiak <akrowiak@linux.ibm.com>
-> 
-> The interception handler for the PQAP(AQIC) command calls the
-> kvm_s390_gisc_register function to register the guest ISC with the channel
-> subsystem. If that call fails, the status response code 08 - indicating
-> Invalid ZONE/GISA designation - is returned to the guest. This response
-> code is not valid because setting the ZONE/GISA values is the
-> responsibility of the hypervisor controlling the guest and there is nothing
-> that can be done from the guest perspective to correct that problem.
-> 
-> The likelihood of GISC registration failure is nil and there is no status
-> response code to indicate an invalid ISC value, so let's set the response
-> code to 06 indicating 'Invalid address of AP-queue notification byte'.
-> While this is not entirely accurate, it is better than setting a response
-> code which makes no sense for the guest.
-> 
-> Signed-off-by: Anthony Krowiak <akrowiak@linux.ibm.com>
-> Suggested-by: Halil Pasic <pasic@linux.ibm.com>
-> Reviewed-by: Halil Pasic <pasic@linux.ibm.com>
-> Reviewed-by: Harald Freudenberger <freude@linux.ibm.com>
+Gr{oetje,eeting}s,
 
-Acked-by: Christian Borntraeger <borntraeger@linux.ibm.com>
+                        Geert
 
-should go via the s390 tree
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-> ---
->   drivers/s390/crypto/vfio_ap_ops.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
-> index 9cb28978c186..25d7ce2094f8 100644
-> --- a/drivers/s390/crypto/vfio_ap_ops.c
-> +++ b/drivers/s390/crypto/vfio_ap_ops.c
-> @@ -393,8 +393,8 @@ static int ensure_nib_shared(unsigned long addr, struct gmap *gmap)
->    * Register the guest ISC to GIB interface and retrieve the
->    * host ISC to issue the host side PQAP/AQIC
->    *
-> - * Response.status may be set to AP_RESPONSE_INVALID_ADDRESS in case the
-> - * vfio_pin_pages failed.
-> + * status.response_code may be set to AP_RESPONSE_INVALID_ADDRESS in case the
-> + * vfio_pin_pages or kvm_s390_gisc_register failed.
->    *
->    * Otherwise return the ap_queue_status returned by the ap_aqic(),
->    * all retry handling will be done by the guest.
-> @@ -458,7 +458,7 @@ static struct ap_queue_status vfio_ap_irq_enable(struct vfio_ap_queue *q,
->   				 __func__, nisc, isc, q->apqn);
->   
->   		vfio_unpin_pages(&q->matrix_mdev->vdev, nib, 1);
-> -		status.response_code = AP_RESPONSE_INVALID_GISA;
-> +		status.response_code = AP_RESPONSE_INVALID_ADDRESS;
->   		return status;
->   	}
->   
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
