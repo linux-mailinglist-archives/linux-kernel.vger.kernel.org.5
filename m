@@ -2,144 +2,343 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D9CD8015B0
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 22:46:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96EF18015B3
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 22:47:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441808AbjLAVpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 16:45:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33764 "EHLO
+        id S229639AbjLAVrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 16:47:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjLAVpr (ORCPT
+        with ESMTP id S229456AbjLAVrj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 16:45:47 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD12C10EA
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 13:45:52 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-a195a1474easo248249666b.2
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 13:45:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701467151; x=1702071951; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8sn6TIMQGfSCwqnbYuewhqgGKU0sPXKc6S7oOa0pf30=;
-        b=nBH1jcCiXs3HaRgxJJ0QMoKL7bPIQzjdXBjFmDeGC3KBEvs/zRf3TV0vsEKV6sW2Wg
-         8ZXVBx2LLBQtAaAL7fSGNzgHWOwMw4+rwJnt1xxhgcBx+EMdn8LG6yha5OBW6d+ncmlP
-         Dv7POHpFWOryrV2EUagw8Yj6BRLl8aBANIP4BcA8nmnuNUvK5FphZjNNGiLYyz/EbfLz
-         H4L+7MWrMi6mOkNL/qfVOfYKxPElwqFBYglrxv8Ysf9D7RBm8dTc6ZLHg/7sdBONSgLU
-         xLfMvyNJyr19CPreSYoSE+VsZvd4Fdn4/bYSMYZM8FCajMvNUwpg4bxaiQFj9J2jMxN1
-         E5Ng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701467151; x=1702071951;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8sn6TIMQGfSCwqnbYuewhqgGKU0sPXKc6S7oOa0pf30=;
-        b=hpoKO9umWvdaaLyaXFa37/fzSFw7P+S+JMhoYsgC2R00/euzWFpGTK9MnGzs5IAHCl
-         mfkAqSdwGVgFVjaUfP3seUJYfk0hsLFKqd6F4+r9cGPreNMklw+MwIXJnWlSfeFPWJAX
-         oP9p9Qi3Sg4lsD5m0bf4br2M1eTviiw7hswY5GCTCqDV1vtAUjSyUvGibEeTUcvTxple
-         M+9bQqxxapPyGbkA+5PA5nYtRLujGMLc0foE1QNvcj5o0M2FNUqOsf2Hziw9OGcQzkq2
-         kKQF+x+HRNrhvsYhYS0UFeQ9uSzArLpG4jWPd7clTRHSzmX0qqwd1afA5L/i14YB2EX4
-         bszQ==
-X-Gm-Message-State: AOJu0YyCVwbAg3A4X0qdzVqJna549InWEATEY5cMCasAzOi94ImRvD3C
-        WtkpRA5V2m5BjMtBTqkOj3m1nA==
-X-Google-Smtp-Source: AGHT+IEwdQx3qk30hc3NuMNho+pYuDCvbHivi7c1Kv4hAHmi7L90T8BZhGRCFodD8UzyTeAHY8dopg==
-X-Received: by 2002:a17:906:109c:b0:a19:396e:99bc with SMTP id u28-20020a170906109c00b00a19396e99bcmr550273eju.39.1701467151471;
-        Fri, 01 Dec 2023 13:45:51 -0800 (PST)
-Received: from [192.168.209.83] (178235187166.dynamic-4-waw-k-2-3-0.vectranet.pl. [178.235.187.166])
-        by smtp.gmail.com with ESMTPSA id a7-20020a1709062b0700b009fc8f309183sm2339415ejg.51.2023.12.01.13.45.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Dec 2023 13:45:51 -0800 (PST)
-Message-ID: <f1604d9c-663a-4778-87e6-53f8e4b8b25e@linaro.org>
-Date:   Fri, 1 Dec 2023 22:45:49 +0100
+        Fri, 1 Dec 2023 16:47:39 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDD90D6C;
+        Fri,  1 Dec 2023 13:47:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701467266; x=1733003266;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=7qGZLOVX0lRzoXgrjU5Lf+xhYula8oqkMn+WAagOJ54=;
+  b=YFMtEvsP46AnR8GSjubPz5LW3/lFM83NOfGgkeQLwb/NCLce2NAB5xcQ
+   kHc870aRGaJpX4n3Wuaie0MTlr8YtIe1QZLY8IRAC4N7Vikq2jlCYj7gt
+   tYDnHz4FVhwU3kcyLFwhj5ae6MZVkTRXSvik0LEaVFPHlxv0LpiI2TQOl
+   rQozaPLQTHKkezVXtgIqsBt382PdUmCWkpKUvy+/DLi9u2sZ0woBzoRe5
+   K0rAn556tUi55/lh6pvv/7zFqLqHgysr1p7yc+8f/Q4uu2+T/UjXo/n8L
+   YOepodj9jhlCbhVn8yr5UuIeI7xTlFgaqToX/+X0DlMxSxZi2lUpsP5PJ
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="6843256"
+X-IronPort-AV: E=Sophos;i="6.04,242,1695711600"; 
+   d="scan'208";a="6843256"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2023 13:47:45 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,242,1695711600"; 
+   d="scan'208";a="17904739"
+Received: from agluck-desk3.sc.intel.com ([172.25.222.74])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2023 13:47:45 -0800
+From:   Tony Luck <tony.luck@intel.com>
+To:     Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Peter Newman <peternewman@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <skhan@linuxfoundation.org>, x86@kernel.org
+Cc:     Shaopeng Tan <tan.shaopeng@fujitsu.com>,
+        James Morse <james.morse@arm.com>,
+        Jamie Iles <quic_jiles@quicinc.com>,
+        Babu Moger <babu.moger@amd.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        patches@lists.linux.dev, Tony Luck <tony.luck@intel.com>
+Subject: [PATCH v5] x86/resctrl: Add event choices for mba_MBps
+Date:   Fri,  1 Dec 2023 13:47:37 -0800
+Message-ID: <20231201214737.104444-1-tony.luck@intel.com>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20231128231439.81691-1-tony.luck@intel.com>
+References: <20231128231439.81691-1-tony.luck@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 4/4] clk: qcom: videocc-sm8150: Add runtime PM support
-Content-Language: en-US
-To:     Satya Priya Kakitapalli <quic_skakitap@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jonathan Marek <jonathan@marek.ca>
-Cc:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231201-videocc-8150-v3-0-56bec3a5e443@quicinc.com>
- <20231201-videocc-8150-v3-4-56bec3a5e443@quicinc.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20231201-videocc-8150-v3-4-56bec3a5e443@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1.12.2023 10:50, Satya Priya Kakitapalli wrote:
-> Add runtime PM support to ensure the supply rails are enabled
-> when necessary.
-> 
-> Signed-off-by: Satya Priya Kakitapalli <quic_skakitap@quicinc.com>
-> ---
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+The MBA Software Controller(mba_sc) is a feedback loop that uses
+measurements of local memory bandwidth to adjust MBA throttling levels to
+keep workloads in a resctrl group within a target bandwidth set in the
+schemata file.
 
-Konrad
->  	clk_trion_pll_configure(&video_pll0, regmap, &video_pll0_config);
->  
->  	/* Keep VIDEO_CC_XO_CLK ALWAYS-ON */
->  	regmap_update_bits(regmap, 0x984, 0x1, 0x1);
->  
-> -	return qcom_cc_really_probe(pdev, &video_cc_sm8150_desc, regmap);
-> +	ret = qcom_cc_really_probe(pdev, &video_cc_sm8150_desc, regmap);
-> +
-> +	pm_runtime_put_sync(&pdev->dev);
-> +
-> +	return ret;
->  }
->  
->  static struct platform_driver video_cc_sm8150_driver = {
-> 
+But on Intel systems the memory bandwidth monitoring events are
+independently enumerated. It is possible for a system to support
+total memory bandwidth monitoring, but not support local bandwidth
+monitoring. On such a system a user could not enable mba_sc mode.
+Users will see this highly unhelpful error message from mount:
+
+ # mount -t resctrl -o mba_MBps resctrl /sys/fs/resctrl
+ mount: /sys/fs/resctrl: wrong fs type, bad option, bad superblock on
+ resctrl, missing codepage or helper program, or other error.
+ dmesg(1) may have more information after failed mount system call.
+
+dmesg(1) does not provide any additional information.
+
+Add a new mount option "mba_MBps_event=[local|total]" that allows
+a user to specify which monitoring event to use. Also modify the
+existing "mba_MBps" option to switch to total bandwidth monitoring
+if local monitoring is not available.
+
+Update the once-per-second polling code to use the chosen event (local
+or total memory bandwidth).
+
+Signed-off-by: Tony Luck <tony.luck@intel.com>
+---
+ Documentation/arch/x86/resctrl.rst     |  7 +++-
+ include/linux/resctrl.h                |  2 ++
+ arch/x86/kernel/cpu/resctrl/internal.h |  3 +-
+ arch/x86/kernel/cpu/resctrl/monitor.c  | 21 ++++++-----
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c | 48 ++++++++++++++++++++------
+ 5 files changed, 58 insertions(+), 23 deletions(-)
+
+diff --git a/Documentation/arch/x86/resctrl.rst b/Documentation/arch/x86/resctrl.rst
+index a6279df64a9d..f06cb189911a 100644
+--- a/Documentation/arch/x86/resctrl.rst
++++ b/Documentation/arch/x86/resctrl.rst
+@@ -45,7 +45,12 @@ mount options are:
+ 	Enable code/data prioritization in L2 cache allocations.
+ "mba_MBps":
+ 	Enable the MBA Software Controller(mba_sc) to specify MBA
+-	bandwidth in MBps
++	bandwidth in MBps. Defaults to using MBM local bandwidth,
++	but will use total bandwidth on systems that do not support
++	local bandwidth monitoring.
++"mba_MBps_event=[local|total]":
++	Enable the MBA Software Controller(mba_sc) with a specific
++	MBM event as input to the feedback loop.
+ "debug":
+ 	Make debug files accessible. Available debug files are annotated with
+ 	"Available only with debug option".
+diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h
+index 66942d7fba7f..1feb3b2e64fa 100644
+--- a/include/linux/resctrl.h
++++ b/include/linux/resctrl.h
+@@ -129,6 +129,7 @@ enum membw_throttle_mode {
+  * @throttle_mode:	Bandwidth throttling mode when threads request
+  *			different memory bandwidths
+  * @mba_sc:		True if MBA software controller(mba_sc) is enabled
++ * @mba_mbps_event:	Event (local or total) for mba_sc
+  * @mb_map:		Mapping of memory B/W percentage to memory B/W delay
+  */
+ struct resctrl_membw {
+@@ -138,6 +139,7 @@ struct resctrl_membw {
+ 	bool				arch_needs_linear;
+ 	enum membw_throttle_mode	throttle_mode;
+ 	bool				mba_sc;
++	enum resctrl_event_id		mba_mbps_event;
+ 	u32				*mb_map;
+ };
+ 
+diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
+index a4f1aa15f0a2..8b9b8f664324 100644
+--- a/arch/x86/kernel/cpu/resctrl/internal.h
++++ b/arch/x86/kernel/cpu/resctrl/internal.h
+@@ -58,7 +58,8 @@ struct rdt_fs_context {
+ 	struct kernfs_fs_context	kfc;
+ 	bool				enable_cdpl2;
+ 	bool				enable_cdpl3;
+-	bool				enable_mba_mbps;
++	bool				enable_mba_mbps_local;
++	bool				enable_mba_mbps_total;
+ 	bool				enable_debug;
+ };
+ 
+diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
+index f136ac046851..d9e590f1cbc3 100644
+--- a/arch/x86/kernel/cpu/resctrl/monitor.c
++++ b/arch/x86/kernel/cpu/resctrl/monitor.c
+@@ -431,9 +431,10 @@ static int __mon_event_count(u32 rmid, struct rmid_read *rr)
+  */
+ static void mbm_bw_count(u32 rmid, struct rmid_read *rr)
+ {
+-	struct mbm_state *m = &rr->d->mbm_local[rmid];
+ 	u64 cur_bw, bytes, cur_bytes;
++	struct mbm_state *m;
+ 
++	m = get_mbm_state(rr->d, rmid, rr->evtid);
+ 	cur_bytes = rr->val;
+ 	bytes = cur_bytes - m->prev_bw_bytes;
+ 	m->prev_bw_bytes = cur_bytes;
+@@ -521,19 +522,21 @@ static void update_mba_bw(struct rdtgroup *rgrp, struct rdt_domain *dom_mbm)
+ 	u32 closid, rmid, cur_msr_val, new_msr_val;
+ 	struct mbm_state *pmbm_data, *cmbm_data;
+ 	u32 cur_bw, delta_bw, user_bw;
++	enum resctrl_event_id evt_id;
+ 	struct rdt_resource *r_mba;
+ 	struct rdt_domain *dom_mba;
+ 	struct list_head *head;
+ 	struct rdtgroup *entry;
+ 
+-	if (!is_mbm_local_enabled())
++	if (!is_mbm_enabled())
+ 		return;
+ 
+ 	r_mba = &rdt_resources_all[RDT_RESOURCE_MBA].r_resctrl;
++	evt_id = r_mba->membw.mba_mbps_event;
+ 
+ 	closid = rgrp->closid;
+ 	rmid = rgrp->mon.rmid;
+-	pmbm_data = &dom_mbm->mbm_local[rmid];
++	pmbm_data = get_mbm_state(dom_mbm, rmid, evt_id);
+ 
+ 	dom_mba = get_domain_from_cpu(smp_processor_id(), r_mba);
+ 	if (!dom_mba) {
+@@ -553,7 +556,7 @@ static void update_mba_bw(struct rdtgroup *rgrp, struct rdt_domain *dom_mbm)
+ 	 */
+ 	head = &rgrp->mon.crdtgrp_list;
+ 	list_for_each_entry(entry, head, mon.crdtgrp_list) {
+-		cmbm_data = &dom_mbm->mbm_local[entry->mon.rmid];
++		cmbm_data = get_mbm_state(dom_mbm, entry->mon.rmid, evt_id);
+ 		cur_bw += cmbm_data->prev_bw;
+ 		delta_bw += cmbm_data->delta_bw;
+ 	}
+@@ -616,18 +619,14 @@ static void mbm_update(struct rdt_resource *r, struct rdt_domain *d, int rmid)
+ 		rr.evtid = QOS_L3_MBM_TOTAL_EVENT_ID;
+ 		rr.val = 0;
+ 		__mon_event_count(rmid, &rr);
++		if (is_mba_sc(NULL) && rr.evtid == r->membw.mba_mbps_event)
++			mbm_bw_count(rmid, &rr);
+ 	}
+ 	if (is_mbm_local_enabled()) {
+ 		rr.evtid = QOS_L3_MBM_LOCAL_EVENT_ID;
+ 		rr.val = 0;
+ 		__mon_event_count(rmid, &rr);
+-
+-		/*
+-		 * Call the MBA software controller only for the
+-		 * control groups and when user has enabled
+-		 * the software controller explicitly.
+-		 */
+-		if (is_mba_sc(NULL))
++		if (is_mba_sc(NULL) && rr.evtid == r->membw.mba_mbps_event)
+ 			mbm_bw_count(rmid, &rr);
+ 	}
+ }
+diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+index 69a1de92384a..79141d33d5b4 100644
+--- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
++++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+@@ -2294,7 +2294,7 @@ static bool supports_mba_mbps(void)
+ {
+ 	struct rdt_resource *r = &rdt_resources_all[RDT_RESOURCE_MBA].r_resctrl;
+ 
+-	return (is_mbm_local_enabled() &&
++	return (is_mbm_enabled() &&
+ 		r->alloc_capable && is_mba_linear());
+ }
+ 
+@@ -2302,7 +2302,7 @@ static bool supports_mba_mbps(void)
+  * Enable or disable the MBA software controller
+  * which helps user specify bandwidth in MBps.
+  */
+-static int set_mba_sc(bool mba_sc)
++static int set_mba_sc(bool mba_sc, enum resctrl_event_id mba_mbps_event)
+ {
+ 	struct rdt_resource *r = &rdt_resources_all[RDT_RESOURCE_MBA].r_resctrl;
+ 	u32 num_closid = resctrl_arch_get_num_closid(r);
+@@ -2313,6 +2313,7 @@ static int set_mba_sc(bool mba_sc)
+ 		return -EINVAL;
+ 
+ 	r->membw.mba_sc = mba_sc;
++	r->membw.mba_mbps_event = mba_mbps_event;
+ 
+ 	list_for_each_entry(d, &r->domains, list) {
+ 		for (i = 0; i < num_closid; i++)
+@@ -2445,13 +2446,14 @@ static void rdt_disable_ctx(void)
+ {
+ 	resctrl_arch_set_cdp_enabled(RDT_RESOURCE_L3, false);
+ 	resctrl_arch_set_cdp_enabled(RDT_RESOURCE_L2, false);
+-	set_mba_sc(false);
++	set_mba_sc(false, QOS_L3_MBM_LOCAL_EVENT_ID);
+ 
+ 	resctrl_debug = false;
+ }
+ 
+ static int rdt_enable_ctx(struct rdt_fs_context *ctx)
+ {
++	enum resctrl_event_id mba_mbps_event;
+ 	int ret = 0;
+ 
+ 	if (ctx->enable_cdpl2) {
+@@ -2466,8 +2468,12 @@ static int rdt_enable_ctx(struct rdt_fs_context *ctx)
+ 			goto out_cdpl2;
+ 	}
+ 
+-	if (ctx->enable_mba_mbps) {
+-		ret = set_mba_sc(true);
++	if (ctx->enable_mba_mbps_local || ctx->enable_mba_mbps_total) {
++		if (ctx->enable_mba_mbps_total)
++			mba_mbps_event = QOS_L3_MBM_TOTAL_EVENT_ID;
++		else
++			mba_mbps_event = QOS_L3_MBM_LOCAL_EVENT_ID;
++		ret = set_mba_sc(true, mba_mbps_event);
+ 		if (ret)
+ 			goto out_cdpl3;
+ 	}
+@@ -2683,15 +2689,17 @@ enum rdt_param {
+ 	Opt_cdp,
+ 	Opt_cdpl2,
+ 	Opt_mba_mbps,
++	Opt_mba_mbps_event,
+ 	Opt_debug,
+ 	nr__rdt_params
+ };
+ 
+ static const struct fs_parameter_spec rdt_fs_parameters[] = {
+-	fsparam_flag("cdp",		Opt_cdp),
+-	fsparam_flag("cdpl2",		Opt_cdpl2),
+-	fsparam_flag("mba_MBps",	Opt_mba_mbps),
+-	fsparam_flag("debug",		Opt_debug),
++	fsparam_flag("cdp",			Opt_cdp),
++	fsparam_flag("cdpl2",			Opt_cdpl2),
++	fsparam_flag("mba_MBps",		Opt_mba_mbps),
++	fsparam_string("mba_MBps_event",	Opt_mba_mbps_event),
++	fsparam_flag("debug",			Opt_debug),
+ 	{}
+ };
+ 
+@@ -2715,7 +2723,27 @@ static int rdt_parse_param(struct fs_context *fc, struct fs_parameter *param)
+ 	case Opt_mba_mbps:
+ 		if (!supports_mba_mbps())
+ 			return -EINVAL;
+-		ctx->enable_mba_mbps = true;
++		if (is_mbm_local_enabled())
++			ctx->enable_mba_mbps_local = true;
++		else if (is_mbm_total_enabled())
++			ctx->enable_mba_mbps_total = true;
++		else
++			return -EINVAL;
++		return 0;
++	case Opt_mba_mbps_event:
++		if (!supports_mba_mbps())
++			return -EINVAL;
++		if (!strcmp("local", param->string)) {
++			if (!is_mbm_local_enabled())
++				return -EINVAL;
++			ctx->enable_mba_mbps_local = true;
++		} else if (!strcmp("total", param->string)) {
++			if (!is_mbm_total_enabled())
++				return -EINVAL;
++			ctx->enable_mba_mbps_total = true;
++		} else {
++			return -EINVAL;
++		}
+ 		return 0;
+ 	case Opt_debug:
+ 		ctx->enable_debug = true;
+-- 
+2.41.0
+
