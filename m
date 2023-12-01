@@ -2,53 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B72118012E4
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 19:34:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 745118012E6
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 19:37:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379334AbjLASei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 13:34:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42038 "EHLO
+        id S1379257AbjLAShq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 13:37:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbjLASeg (ORCPT
+        with ESMTP id S229468AbjLAShp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 13:34:36 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0CC912A
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 10:34:43 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF7A9C433C8;
-        Fri,  1 Dec 2023 18:34:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701455683;
-        bh=lYdOkcbomoCo/nDtxoX8etSmCoMmoEHguT3Ti1W4duA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UOhhNVOSw3fCPve8hlbeOyjnlL/v6IMxAd+k0rooLnXPrHQgk7tlahDTnB97llX5G
-         62nda7t9cMp0s4sGUckPKPGjYw/QadaFD2kItLLWZ4MsNLIcvVZ+5chTMsdZE5Q8Ej
-         YPBZ0r84e/W5xc+Ln3K8K0cPaDBkQJKtabtrqvNkAijylqEsATBznw3BCJ+OAOIeze
-         bjKxqioabN/eGCf3/8QgZMHq0PCxnEsbJjv3YGJUmwCzY4bCGBqPsrR2T69ZgzqXTR
-         zgu4SV++amgJvCp7oiTViI3d7rZsFVAVogEv6k8wu7YTF0AtPHQYn+2TRxbMWFLzev
-         3xI3tdib1faMw==
-Date:   Fri, 1 Dec 2023 18:34:38 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Hugo Villeneuve <hugo@hugovil.com>
-Cc:     Jan =?iso-8859-1?Q?Kundr=E1t?= <jan.kundrat@cesnet.cz>,
-        Cosmin Tanislav <cosmin.tanislav@analog.com>,
-        linux-serial@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Fri, 1 Dec 2023 13:37:45 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49507131;
+        Fri,  1 Dec 2023 10:37:51 -0800 (PST)
+Date:   Fri, 01 Dec 2023 18:37:48 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1701455869;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fIxb9RrJ1lv9j0KiMvs3PD5T32FeHGynP5aqt1392L4=;
+        b=H/cSWktp6BjzceTIBS2+PxM1CP/pdkHWzKZLgahAr3On3lCtRPp70vFY/6XE7YM2fl6xBD
+        Mze66VihSAtNaRbJN3xXc0F0uWP/W5dpJYWeu1kc/zTo33uc63n4wSocI5X3TFtz2hj5iG
+        tVmfP5OUob7BFLuEsE27DNA1f+XZ5OTUHiS6xPhb/kJVRhrYPetszkwapgA9FWjtk38Ota
+        tADHozPKjeJF1NItNztMWcwmy0dP8Okktz4jkdKfMqajoHppAYoyV+yZY82x9AIHdZbaCF
+        Z3oxeteSis5+VJmLQsnB3TXbTFT42J1ydlZEfxJ7uXuE8dabf5k/o9T6AgPAQA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1701455869;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fIxb9RrJ1lv9j0KiMvs3PD5T32FeHGynP5aqt1392L4=;
+        b=1P/XNiHXEJWjOTkcF4bEWofkYqz8jstOO/YUvGlj4yuqf4ILJQoqCNAtCEW8xzjdZtq0dz
+        dDrWCOSdROhjN8CA==
+From:   "tip-bot2 for Ashok Raj" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/microcode] x86/microcode/intel: Remove redundant microcode
+ late updated message
+Cc:     Ashok Raj <ashok.raj@intel.com>,
+        "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] tty: max310x: work around regmap->regcache data
- corruption
-Message-ID: <ce3eaa82-66e9-404b-9062-0f628dc6164f@sirena.org.uk>
-References: <bd91db46c50615bc1d1d62beb659fa7f62386446.1701446070.git.jan.kundrat@cesnet.cz>
- <20231201132736.65cb0e2bff88fba85121c44a@hugovil.com>
+In-Reply-To: <ZWjYhedNfhAUmt0k@a4bf019067fa.jf.intel.com>
+References: <ZWjYhedNfhAUmt0k@a4bf019067fa.jf.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="gAP8eIWqXiRQDLma"
-Content-Disposition: inline
-In-Reply-To: <20231201132736.65cb0e2bff88fba85121c44a@hugovil.com>
-X-Cookie: The early worm gets the late bird.
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Message-ID: <170145586850.398.10184003704108915953.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_PDS_OTHER_BAD_TLD,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,37 +66,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following commit has been merged into the x86/microcode branch of tip:
 
---gAP8eIWqXiRQDLma
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Commit-ID:     1f693ef550f051ef6a95dbfadfa4fbd600769a81
+Gitweb:        https://git.kernel.org/tip/1f693ef550f051ef6a95dbfadfa4fbd600769a81
+Author:        Ashok Raj <ashok.raj@intel.com>
+AuthorDate:    Wed, 29 Nov 2023 13:56:43 -08:00
+Committer:     Borislav Petkov (AMD) <bp@alien8.de>
+CommitterDate: Fri, 01 Dec 2023 18:52:01 +01:00
 
-On Fri, Dec 01, 2023 at 01:27:36PM -0500, Hugo Villeneuve wrote:
+x86/microcode/intel: Remove redundant microcode late updated message
 
-> it is funny, as I am preparing to send a patch for the sc16is7xx driver
-> to convert FIFO R/W to use the _noinc_ versions of regmap functions,
-> inspired by your patch 3f42b142ea11 ("serial: max310x: fix IO data
-> corruption in batched operations").
+After successful update, the late loading routine prints an update
+summary similar to:
 
-If you're working on that driver it'd also be good to update the current
-use of cache bypass for the enhanced features/interrupt identification
-register (and anything else in there, that did seem to be the only one)
-to use regmap ranges instead - that'd remove the need for the efr_lock
-and be a much more sensible/idiomatic use of the regmap APIs.
+  microcode: load: updated on 128 primary CPUs with 128 siblings
+  microcode: revision: 0x21000170 -> 0x21000190
 
---gAP8eIWqXiRQDLma
-Content-Type: application/pgp-signature; name="signature.asc"
+Remove the redundant message in the Intel side of the driver.
 
------BEGIN PGP SIGNATURE-----
+  [ bp: Massage commit message. ]
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVqJz4ACgkQJNaLcl1U
-h9ChbAf9GpZIS6eBd6Ine2BXBOp73JNB258Km8SfUElURLlKyXyp+U7Zx0fVC9kr
-/QTWjWU6knqGimoKpz6qSMpHEgzLvsTtDHd0ZqSdqnJasG7b0nGnnU9RYuPlknP/
-W2/+GFsWXp7MIDrDLw64stkvW+XAUj/DPtVSbC2cptRQg58u+0OdFBdh1jREUpBk
-AQlUWPzRK/sNyQ+z7I7+28yRd9hsrNAr4B8wcyZY371boAdyJLGnuCop0KiyhXjc
-8w6K90XP0sfYWjebkRMTy0pMWpwUecVYGNJUyEgsSTN4l9C/y+kyWEPpwmij5Fin
-tE+vh22LAogp64YZbvuwKX5vo2b60Q==
-=I0gd
------END PGP SIGNATURE-----
+Signed-off-by: Ashok Raj <ashok.raj@intel.com>
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Link: https://lore.kernel.org/r/ZWjYhedNfhAUmt0k@a4bf019067fa.jf.intel.com
+---
+ arch/x86/kernel/cpu/microcode/intel.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
---gAP8eIWqXiRQDLma--
+diff --git a/arch/x86/kernel/cpu/microcode/intel.c b/arch/x86/kernel/cpu/microcode/intel.c
+index 070426b..5d6ea87 100644
+--- a/arch/x86/kernel/cpu/microcode/intel.c
++++ b/arch/x86/kernel/cpu/microcode/intel.c
+@@ -457,12 +457,6 @@ static enum ucode_state apply_microcode_late(int cpu)
+ 	if (ret != UCODE_UPDATED && ret != UCODE_OK)
+ 		return ret;
+ 
+-	if (!cpu && uci->cpu_sig.rev != cur_rev) {
+-		pr_info("Updated to revision 0x%x, date = %04x-%02x-%02x\n",
+-			uci->cpu_sig.rev, mc->hdr.date & 0xffff, mc->hdr.date >> 24,
+-			(mc->hdr.date >> 16) & 0xff);
+-	}
+-
+ 	cpu_data(cpu).microcode	 = uci->cpu_sig.rev;
+ 	if (!cpu)
+ 		boot_cpu_data.microcode = uci->cpu_sig.rev;
