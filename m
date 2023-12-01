@@ -2,110 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71DF7800845
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 11:34:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D79480085C
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 11:36:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378275AbjLAKe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 05:34:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51938 "EHLO
+        id S1378286AbjLAKgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 05:36:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378239AbjLAKe1 (ORCPT
+        with ESMTP id S1378239AbjLAKgj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 05:34:27 -0500
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::227])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5456DDE;
-        Fri,  1 Dec 2023 02:34:33 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 3D85120003;
-        Fri,  1 Dec 2023 10:34:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1701426871;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=x9QLIDvjWUePyTNPo1KyKIxmABI1QYlXqcofIXZnDv4=;
-        b=Efp+K6ppRKNmXRXC312z4I4B/6CUBUuHRLy8PLz+V/UGueyXXhjUby1z/imQlO2LUhYGLR
-        GLCiyYckN/srl+stf7jfzn6vO8+xatIFz1FFvYGMSuvYAi3wqhfzOT3fcrulMkGFlAu1wJ
-        6sfsj3uvzn9oKJQUzs7Nsw2oDCTQ7M3ErnbzRY7fohDNl9k2hSPTae29J1N6eUF5QhPVDe
-        cf/keirVpnBJrg6utYHwPH1+cFVRs0rSUSj/XvDwYB8MoeDtu35HIV2LS2XSCu2aqyWtBx
-        zv8qYSdo+dMxNt9XMG8q/3X1Sff/mM5tgB3tImLUaHFEtH/5iGRG0Tpgo/cy/Q==
-From:   Gregory CLEMENT <gregory.clement@bootlin.com>
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        "paulburton@kernel.org" <paulburton@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
-        Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        =?utf-8?Q?Th=C3=A9o?= Lebrun <theo.lebrun@bootlin.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v2 20/21] MIPS: generic: Add support for Mobileye EyeQ5
-In-Reply-To: <db993514-7daa-41cb-8e6e-179305c16e24@app.fastmail.com>
-References: <20231123152639.561231-1-gregory.clement@bootlin.com>
- <20231123152639.561231-21-gregory.clement@bootlin.com>
- <db993514-7daa-41cb-8e6e-179305c16e24@app.fastmail.com>
-Date:   Fri, 01 Dec 2023 11:34:30 +0100
-Message-ID: <87ttp2dxe1.fsf@BL-laptop>
+        Fri, 1 Dec 2023 05:36:39 -0500
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E347DE;
+        Fri,  1 Dec 2023 02:36:45 -0800 (PST)
+Received: by mail-qv1-xf29.google.com with SMTP id 6a1803df08f44-67a295e40baso10816686d6.1;
+        Fri, 01 Dec 2023 02:36:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701427004; x=1702031804; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+1CSvziGe/qbcOkKXo9IQPR3y1xjDPlILN2WHHl8yYE=;
+        b=EAX2L9u9pfQmtiQ7puEQ0bQB43z+FHTSKdwWQz6a39zOwe3gpcgzjfEF+5Y7TskRLd
+         FX1BpsQzVoIlOwCRdaGNgPpPTEuJX9QwxtTPhDGwrAMv6y9ukma2Gpe6jcOgHSjatRjG
+         UVC4NNVY1W0oXZTh7IDMTGyBqH8/3lrp97xDvVCwTVG19l9toEawUV4tozOqdtTuZ04m
+         vZNiXxWP9QbvUJ+o64gJHnczpgY4HDUG0apuwce8fvX9gyi5e/sW+C8SZ73Maw6pkGMJ
+         ycLz2+ZXk3ZVZ4v4WDpckFSBkmUh7mbyqBxfX4AvR7DtDludtfw2Cy00fkZS/e0xTpMR
+         +gyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701427004; x=1702031804;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+1CSvziGe/qbcOkKXo9IQPR3y1xjDPlILN2WHHl8yYE=;
+        b=bxRvzz1mxRIyEifnWIIMZ6L3wgGw8zgYfmGKhFTNW9ilJweSXTv65BO/TvXYsHIF8O
+         WBhFweONX230EnCaRn7yoaLjTJVL0jkpzXn5d4FM8E4ERZeORAI/0oC1uNLvxo0usLT8
+         6jlOsee3V2LdwXMBnHw1MPKj5+qAOznwhnjpCQanndUYOzLBy6WeC9+Rp3xF8sx0UoWm
+         NE5yvmonjA77vmhbZ1DJamPzNvd1RGmo51RZ9be4B2GqHXSLZvrOwC0E/D9JQJNVxtD8
+         6DWVR5ucP1vBaYTXka7QWM9q/FfmTjx4PyTZIvrilcLZveL+rB5Yr0d+Qm+V2g8wKq0e
+         o77A==
+X-Gm-Message-State: AOJu0YxPMRS8BdEIR/aRBaftHe/RLr+QjBygJWrrkqfOIqT2ya4PsKY+
+        Wj36dzcXYRCq8vYtqtp0sJ8=
+X-Google-Smtp-Source: AGHT+IH/N7qs1+keta3j5dgaOQn5pnyM0432C78QHFxQAM7OJhtFbhoQVStmruTbCa77V8FDMz+82w==
+X-Received: by 2002:ad4:42c3:0:b0:67a:4709:34bb with SMTP id f3-20020ad442c3000000b0067a470934bbmr16104179qvr.41.1701427004422;
+        Fri, 01 Dec 2023 02:36:44 -0800 (PST)
+Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
+        by smtp.gmail.com with ESMTPSA id q20-20020a0cf5d4000000b0067a4452d459sm1380580qvm.116.2023.12.01.02.36.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Dec 2023 02:36:44 -0800 (PST)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 6D28E27C0054;
+        Fri,  1 Dec 2023 05:36:43 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Fri, 01 Dec 2023 05:36:43 -0500
+X-ME-Sender: <xms:OrdpZdyYzsRjmakWy7jQ_qAYWAeLmvh4KsJ1M1b5NuG-sFkPlbX6SA>
+    <xme:OrdpZdTZEmSsMsgbCgAinTm1OtRrIpuh_INBOFoZ7q4-AK-bc6rpFJopot4TVYHao
+    kf1ZI_v5UH-C9U0Jg>
+X-ME-Received: <xmr:OrdpZXWPiypSbJWQm4Xz9tNPPXU7pxL2UZ2HJULdThdE95MONgE-5kwyCg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeiledgudekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhu
+    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
+    htthgvrhhnpeelueeiffdugeeliedvjeethfettdeiffffueeiffelhfejgefghedtjedv
+    ffffhfenucffohhmrghinhepghhithhhuhgsrdgtohhmpddttddttddqihhnlhhinhgvqd
+    grshhmrdhmugenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhr
+    ohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvge
+    ehtdeigedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhm
+    sehfihigmhgvrdhnrghmvg
+X-ME-Proxy: <xmx:OrdpZfieDnseTYfSrzkeHadb8cRYXoZvuhCFgJKLiQHLxMuq0CjI6A>
+    <xmx:OrdpZfBD8GCumgXRpc5JVJNklzmOx_N-JzSLAzvI5neWV6Nb-1kSBA>
+    <xmx:OrdpZYIpfWUCXQi0h2zv3RYVRBoOhbYjG89sNO3GraUWlR4SivnS7Q>
+    <xmx:O7dpZaVfAHXypI2kUAIvwy0-WLqBe9Pff0zXgyFT1XwXm9zQNO6YtA>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 1 Dec 2023 05:36:42 -0500 (EST)
+Date:   Fri, 1 Dec 2023 02:36:40 -0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Gary Guo <gary@garyguo.net>,
+        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Carlos Llamas <cmllamas@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Josh Triplett <josh@joshtriplett.org>
+Subject: Re: [PATCH 1/7] rust: file: add Rust abstraction for `struct file`
+Message-ID: <ZWm3OGWWhIWmB9gV@Boquns-Mac-mini.home>
+References: <20231129-alice-file-v1-0-f81afe8c7261@google.com>
+ <20231129-alice-file-v1-1-f81afe8c7261@google.com>
+ <ZWdVEk4QjbpTfnbn@casper.infradead.org>
+ <20231129152305.GB23596@noisy.programming.kicks-ass.net>
+ <ZWdv_jsaDFJxZk7G@Boquns-Mac-mini.home>
+ <20231130104226.GB20191@noisy.programming.kicks-ass.net>
+ <ZWipTZysC2YL7qsq@Boquns-Mac-mini.home>
+ <20231201085328.GE3818@noisy.programming.kicks-ass.net>
+ <ZWmlEiiPXAIOYsM1@Boquns-Mac-mini.home>
+ <20231201094037.GI3818@noisy.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: gregory.clement@bootlin.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231201094037.GI3818@noisy.programming.kicks-ass.net>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"Jiaxun Yang" <jiaxun.yang@flygoat.com> writes:
+On Fri, Dec 01, 2023 at 10:40:37AM +0100, Peter Zijlstra wrote:
+> On Fri, Dec 01, 2023 at 01:19:14AM -0800, Boqun Feng wrote:
+> 
+> > > > 	https://github.com/Amanieu/rfcs/blob/inline-asm/text/0000-inline-asm.md#asm-goto
+> > > 
+> > > Reading that makes all this even worse, apparently rust can't even use
+> > > memops.
+> > 
+> > What do you mean by "memops"?
+> 
+> Above link has the below in "future possibilities":
+> 
+> "Memory operands
+> 
+> We could support mem as an alternative to specifying a register class
+> which would leave the operand in memory and instead produce a memory
+> address when inserted into the asm string. This would allow generating
+> more efficient code by taking advantage of addressing modes instead of
+> using an intermediate register to hold the computed address."
+> 
+> Just so happens that every x86 atomic block uses memops.. and per-cpu
+> and ...
+> 
 
-> =E5=9C=A82023=E5=B9=B411=E6=9C=8823=E6=97=A5=E5=8D=81=E4=B8=80=E6=9C=88 =
-=E4=B8=8B=E5=8D=883:26=EF=BC=8CGregory CLEMENT=E5=86=99=E9=81=93=EF=BC=9A
->> Introduce support for the MIPS based Mobileye EyeQ5 SoCs.
->>
->> Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
->> ---
-> [...]
->> diff --git a/arch/mips/generic/Kconfig b/arch/mips/generic/Kconfig
->> index 7dc5b3821cc6e..04e1fc6f789b5 100644
->> --- a/arch/mips/generic/Kconfig
->> +++ b/arch/mips/generic/Kconfig
->> @@ -48,6 +48,13 @@ config SOC_VCOREIII
->>  config MSCC_OCELOT
->>  	bool
->>=20
->> +config SOC_EYEQ5
->> +	select ARM_AMBA
->> +	select WEAK_ORDERING
->> +	select WEAK_REORDERING_BEYOND_LLSC
->> +	select PHYSICAL_START_BOOL
->> +	bool
->
-> ^ I believe WEAK_ORDERING is already selected by MIPS_CPS,
+Oh yes, I found out Rust's asm! doesn't support specifying a memory
+location as input or output recently as well.
 
-But MIPS_CPS can be disabled: it is not selected by
-MIPS_GENERIC_KERNEL.
 
-> and WEAK_REORDERING_BEYOND_LLSC should be selected by MIPS_CPS as well.
+I don't speak for the Rust langauge community, but I think this is
+something that they should improve. I understand it could be frustrating
+that we find out the new stuff doesn't support good old tools we use
+(trust me, I do!), but I believe you also understand that a higher level
+language can help in some places, for example, SBRM is naturally
+supported ;-) This answers half of the question: "Why are we even trying
+to use it again?".
 
-WEAK_REORDERING_BEYOND_LLSC is only selected by CPU_LOONGSON64 for
-now not by MIPS_CPS
+The other half is how languages are designed is different in these days:
+a language community may do a better job on listening to the users and
+the real use cases can affect the language design in return. While we
+are doing our own experiment, we might well give that a shot too.
 
-Thanks,
+And at least the document admits these are "future possibilities", so
+they should be more motivated to implement these.
 
-Gregory
->=20=20
-> Thanks
-> --=20
-> - Jiaxun
+It's never perfect, but we gotta start somewhere.
 
---=20
-Gregory Clement, Bootlin
-Embedded Linux and Kernel engineering
-http://bootlin.com
+Regards,
+Boqun
+
+> 
