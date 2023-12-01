@@ -2,124 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 42A2B8011E6
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:41:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DF958011EF
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:43:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378951AbjLARl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 12:41:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41728 "EHLO
+        id S1378944AbjLARmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 12:42:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378962AbjLARl1 (ORCPT
+        with ESMTP id S229534AbjLARmv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 12:41:27 -0500
+        Fri, 1 Dec 2023 12:42:51 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D7FA12A
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 09:41:33 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1946BC433B7;
-        Fri,  1 Dec 2023 17:41:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701452493;
-        bh=75rmXXel6gkQ09ZUtOrVjeJz8Bv+JHZyI/Mg2YOrLIQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WXTtho4ex0hJPDqQpffSCq2fOFEj/CJfHgGppx0uP4cFjMq/OFG/QzUcTT9daD19T
-         YbU5UnTBHwdslUPhQLXYdpr/3w7Dds3e0DEVf2E7aV8zOPoAt1fsLe6tr9y2TJt42Y
-         mdi0Cdm/wpNwS99RpGQgYIJSKoz1GeFlMf6b6/pwNZ/Qw2GQpVqAFGMq+ZJDNwAN5M
-         x02jF6FKxM/kI9crv3m9hg1b9PSS30YwLxzvNIJI9K+VnPaJMoURTJsQQIW74Vz9qe
-         m3WWp9pn7gMOSgZ51/WsFjs4+VBm6nJ2WsZX4aS2y8o1GzjvNOO9nK/U13bpMDRhi1
-         0yZ3lsPQ2ZVgA==
-Date:   Fri, 1 Dec 2023 11:41:32 -0600
-From:   "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Serge Hallyn <serge@hallyn.com>, Paul Moore <paul@paul-moore.com>,
-        Eric Paris <eparis@redhat.com>,
-        James Morris <jmorris@namei.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Amir Goldstein <amir73il@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, audit@vger.kernel.org,
-        linux-unionfs@vger.kernel.org
-Subject: Re: [PATCH 08/16] fs: add vfs_get_fscaps()
-Message-ID: <ZWoazNMO/R36u1QB@do-x1extreme>
-References: <20231129-idmap-fscap-refactor-v1-0-da5a26058a5b@kernel.org>
- <20231129-idmap-fscap-refactor-v1-8-da5a26058a5b@kernel.org>
- <20231201-wodurch-holen-ce9c44d8aaf5@brauner>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AAB8C4
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 09:42:58 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2E47C433C7;
+        Fri,  1 Dec 2023 17:42:54 +0000 (UTC)
+Date:   Fri, 1 Dec 2023 17:42:52 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     Ferry Toth <ferry.toth@elsinga.info>,
+        Ferry Toth <fntoth@gmail.com>, Christoph Hellwig <hch@lst.de>,
+        Hamza Mahfooz <someguy@effective-light.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Andrew <travneff@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Thorsten Leemhuis <regressions@leemhuis.info>,
+        iommu@lists.linux.dev,
+        Kernel development list <linux-kernel@vger.kernel.org>,
+        USB mailing list <linux-usb@vger.kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Will Deacon <will@kernel.org>
+Subject: Re: Bug in add_dma_entry()'s debugging code
+Message-ID: <ZWobHJqBji80CTm-@arm.com>
+References: <736e584f-7d5f-41aa-a382-2f4881ba747f@rowland.harvard.edu>
+ <20231127160759.GA1668@lst.de>
+ <637d6dff-de56-4815-a15a-1afccde073f0@rowland.harvard.edu>
+ <20231128133702.GA9917@lst.de>
+ <cb7dc5da-37cb-45ba-9846-5a085f55692e@rowland.harvard.edu>
+ <ZWYnECPRKca5Dpqc@arm.com>
+ <76e8def2-ff45-47d3-91ab-96876ea84079@gmail.com>
+ <ZWm-u2kV1UP09M84@arm.com>
+ <5425cf42-0f49-41b5-b26d-1e099d5bdcc2@elsinga.info>
+ <5093ce37-047e-4aa8-a9e8-2978da9d734a@rowland.harvard.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231201-wodurch-holen-ce9c44d8aaf5@brauner>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <5093ce37-047e-4aa8-a9e8-2978da9d734a@rowland.harvard.edu>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 01, 2023 at 06:09:36PM +0100, Christian Brauner wrote:
-> On Wed, Nov 29, 2023 at 03:50:26PM -0600, Seth Forshee (DigitalOcean) wrote:
-> > Provide a type-safe interface for retrieving filesystem capabilities and
-> > a generic implementation suitable for most filesystems. Also add an
-> > internal interface, __vfs_get_fscaps(), which skips security checks for
-> > later use from the capability code.
+Replying to both here.
+
+On Fri, Dec 01, 2023 at 11:21:40AM -0500, Alan Stern wrote:
+> On Fri, Dec 01, 2023 at 01:17:43PM +0100, Ferry Toth wrote:
+> > > A non-cache coherent platform would either have the kmalloc()
+> > > allocations aligned or it would bounce those small, unaligned buffers.
 > > 
-> > Signed-off-by: Seth Forshee (DigitalOcean) <sforshee@kernel.org>
-> > ---
-> >  fs/xattr.c         | 66 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-> >  include/linux/fs.h |  4 ++++
-> >  2 files changed, 70 insertions(+)
+> > It would? Or it always has?
+
+It depends on the configuration. arm64 does the bounce as it opted in to
+CONFIG_DMA_BOUNCE_UNALIGNED_KMALLOC.
+
+> > > So it doesn't seem right to issue a warning on x86 where kmalloc()
+> > > minimum alignment is 8 and not getting the warning on a non-coherent
+> > > platform which forces the kmalloc() alignment.
 > > 
-> > diff --git a/fs/xattr.c b/fs/xattr.c
-> > index 09d927603433..3abaf9bef0a5 100644
-> > --- a/fs/xattr.c
-> > +++ b/fs/xattr.c
-> > @@ -181,6 +181,72 @@ xattr_supports_user_prefix(struct inode *inode)
-> >  }
-> >  EXPORT_SYMBOL(xattr_supports_user_prefix);
-> >  
-> > +static int generic_get_fscaps(struct mnt_idmap *idmap, struct dentry *dentry,
-> > +			      struct vfs_caps *caps)
-> > +{
-> > +	struct inode *inode = d_inode(dentry);
-> > +	struct vfs_ns_cap_data *nscaps = NULL;
-> > +	int ret;
-> > +
-> > +	ret = (int)vfs_getxattr_alloc(idmap, dentry, XATTR_NAME_CAPS,
+> > If *all*non-coherent platforms implement either correct alignment or bounce
+> > buffer, and on (coherent) x86 we get an WARN, then it is a false alarm
+> > right?
+> > 
+> > That is exactly my question (because I have no idea which platforms have
+> > non-coherent caches).
 > 
-> I don't think you need that case here.
-
-Yep. I played with a few different implementations of this function, so
-I'm guessing I did need it at one point and failed to notice when it was
-no longer needed.
-
+> Don't forget, not all DMA buffers are allocated by kmalloc().  A buffer 
+> allocated by some other means might not be aligned properly and might 
+> share a cache line with another buffer.
 > 
-> > +				      (char **)&nscaps, 0, GFP_NOFS);
-> > +
-> > +	if (ret >= 0)
-> > +		ret = vfs_caps_from_xattr(idmap, i_user_ns(inode), caps, nscaps, ret);
-> > +
-> > +	kfree(nscaps);
-> > +	return ret;
-> > +}
-> > +
-> > +/**
-> > + * __vfs_get_fscaps - get filesystem capabilities without security checks
-> > + * @idmap: idmap of the mount the inode was found from
-> > + * @dentry: the dentry from which to get filesystem capabilities
-> > + * @caps: storage in which to return the filesystem capabilities
-> > + *
-> > + * This function gets the filesystem capabilities for the dentry and returns
-> > + * them in @caps. It does not perform security checks.
-> > + *
-> > + * Return: 0 on success, a negative errno on error.
-> > + */
-> > +int __vfs_get_fscaps(struct mnt_idmap *idmap, struct dentry *dentry,
-> > +		     struct vfs_caps *caps)
-> 
-> I would rename that to vfs_get_fscaps_nosec(). We do that for
-> vfs_getxattr_nosec() as well. It's not pretty but it's better than just
-> slapping underscores onto it imo.
+> Or you might have a single data structure that was allocated by 
+> kmalloc() and then create separate DMA mappings for two members of that 
+> structure.  If the two members are in the same cache line, that would be 
+> an error.
 
-Will do.
+Indeed, so to be sure we don't trip over other false alarms, we'd also
+need to force ARCH_DMA_MINALIGN to be at least a cache-line size. That's
+used in some structures to force a static alignment of various members
+that take DMA transfers. After that, anything reported might actually be
+a potential issue, not a false alarm.
+
+However, I wonder whether we'd actually hide some genuine problems.
+Let's say x86 gets some DMA corruption when it tries to DMA 8 bytes
+into two adjacent buffers because of some DMA buffer overflow, nothing
+to do with cache lines. You enable the DMA API debugging to see if it
+reports anything and it suddenly starts working because of the forced
+minimum alignment.
+
+-- 
+Catalin
