@@ -2,194 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0447780115C
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:21:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDBB980111D
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:21:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378599AbjLAQ5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 11:57:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37414 "EHLO
+        id S1378601AbjLAQ5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 11:57:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229504AbjLAQ5f (ORCPT
+        with ESMTP id S229504AbjLAQ5v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 11:57:35 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76D46106
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 08:57:41 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2184BC433C7;
-        Fri,  1 Dec 2023 16:57:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701449861;
-        bh=6vMNAOKP66LLVDFXHE2xulBRP5+kbafGsKVcFcSK8FY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Cit9ZhmMSyoCkjy+grl3uTlHprsinUNvt+W4WTt7jmY5etF5kFiDFNW86HNCv/F4T
-         qNk4uU08eCKjfvXAD83amYZuHBdgachnDcJgtWLUXppplDKrWJhEi/ZBZcG27DI6p3
-         K+muHICLhXuSKDbuXwDQjlVKNooPfYRozMd1gFIgSVf3IuY9GImMa0FrHx/cyaXDif
-         U9hYz9pxe52m0hI3U481ER/Ga9db26BE48Aabe5d7N6XDgPvA0LWNenDKJmI9tv9Na
-         ZmNrlMhQ2ooFi8414P1dFkjKFgHHE4feh16izh9YD5bw16PUH/DoRkLYINUry4wyTh
-         T9/pJzWAi5cAQ==
-Date:   Fri, 1 Dec 2023 17:57:35 +0100
-From:   Christian Brauner <brauner@kernel.org>
-To:     "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>
-Cc:     Serge Hallyn <serge@hallyn.com>, Paul Moore <paul@paul-moore.com>,
-        Eric Paris <eparis@redhat.com>,
-        James Morris <jmorris@namei.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Amir Goldstein <amir73il@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, audit@vger.kernel.org,
-        linux-unionfs@vger.kernel.org
-Subject: Re: [PATCH 06/16] capability: provide a helper for converting
- vfs_caps to xattr for userspace
-Message-ID: <20231201-seide-famos-74e8c23ee2cc@brauner>
-References: <20231129-idmap-fscap-refactor-v1-0-da5a26058a5b@kernel.org>
- <20231129-idmap-fscap-refactor-v1-6-da5a26058a5b@kernel.org>
+        Fri, 1 Dec 2023 11:57:51 -0500
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2044.outbound.protection.outlook.com [40.107.8.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14CEE103;
+        Fri,  1 Dec 2023 08:57:58 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WQDg0/9ETcn22wc2o6sSffpO9mAOxaUoYScU7/crew8B2rSRfeDboZcGY66tMzgvwXcYkqoN/lVulIj2XQ1xoWbW5hNe24a+968Upq89wNSBNtTT/JAm1IPgH3VQrnCBkIWnAMbUcgmda3zvKWQ0dQOUr7WkD8ZZYYGuOLuqLHdA+LE/POjmUaHhJHi0D5jyzsRt8Xk54FSOaqFBPEsfn/DrGHOBubDCj/aZc7uuAuGGwHZXRanIKw/PpDBW3kHU6+eJdl8BAGRXhSruHVULO+GJCDfq5+R8lDTHi+3G7xONBUpU2/PklEMcK5ibjDbujaC2HcUEN1rxGAqGk0D9aQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=exM7pQii7xBQlI4hetaZD2uQ6p8dFoNyHPVysuK6AmE=;
+ b=Pj9XeatpMt6AsCwJDThb7Czz2oFTpRHhi7gzpYTxyBgkJyEm4+97a8yL88RylCxnPOn6QITosfzz2iEWuxQ01Z9RnizcPhMNooUarRjfqfCfuY1owPimPq/fW+DeD1sOp13N4HLdxsSYztfJQHwgqH6aYQMvQkylSbq+P+NjV2fe/W6IAeK7y+YJG89Jq/EW1Or7x1FO9QDo4wFMyzAefL+N2YSg7RXQRd6vJIbRKk8gAfFzzp/a6PrYMytwM0sUth1G4RLoanzsRtdX1bf/uer5jAw4T0ncqzGwi8g5zNUfVKZuK1o/lq5J1jUAzZ6vqsGf5ejqFQPvYhTjcLj99Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=exM7pQii7xBQlI4hetaZD2uQ6p8dFoNyHPVysuK6AmE=;
+ b=FoWhYZfdh5buyEH9JQiPMuOGEOftfpCgxPSSha3MJ4P24fNcmiOslqXdtza17ODD20WEcrN1uUisXTyndnWbUSQBgoW65OQjZ8prOUOJmPLzhvDyaSp016Au3hLJXH2TVYcsvJ5CCHlWqfz/hFs1hxJ0p7nz5l6SL/2YFyOTocI=
+Received: from AM0PR04MB5956.eurprd04.prod.outlook.com (2603:10a6:208:114::23)
+ by AS5PR04MB9800.eurprd04.prod.outlook.com (2603:10a6:20b:677::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.11; Fri, 1 Dec
+ 2023 16:57:54 +0000
+Received: from AM0PR04MB5956.eurprd04.prod.outlook.com
+ ([fe80::611a:53a9:3185:c548]) by AM0PR04MB5956.eurprd04.prod.outlook.com
+ ([fe80::611a:53a9:3185:c548%3]) with mapi id 15.20.7068.012; Fri, 1 Dec 2023
+ 16:57:54 +0000
+From:   Roy Zang <roy.zang@nxp.com>
+To:     Frank Li <frank.li@nxp.com>,
+        "manivannan.sadhasivam@linaro.org" <manivannan.sadhasivam@linaro.org>
+CC:     "bhelgaas@google.com" <bhelgaas@google.com>,
+        "imx@lists.linux.dev" <imx@lists.linux.dev>,
+        "kw@linux.com" <kw@linux.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "lpieralisi@kernel.org" <lpieralisi@kernel.org>,
+        "M.H. Lian" <minghuan.lian@nxp.com>,
+        Mingkai Hu <mingkai.hu@nxp.com>,
+        "robh@kernel.org" <robh@kernel.org>
+Subject: RE: [PATCH v5 2/4] PCI: layerscape: Add suspend/resume for ls1021a
+Thread-Topic: [PATCH v5 2/4] PCI: layerscape: Add suspend/resume for ls1021a
+Thread-Index: AQHaJHHnnq69VzUD20q7VrwvBWLj1LCUpguQ
+Date:   Fri, 1 Dec 2023 16:57:54 +0000
+Message-ID: <AM0PR04MB59568824DB8F8509363471B38B81A@AM0PR04MB5956.eurprd04.prod.outlook.com>
+References: <20231201161712.1645987-1-Frank.Li@nxp.com>
+ <20231201161712.1645987-3-Frank.Li@nxp.com>
+In-Reply-To: <20231201161712.1645987-3-Frank.Li@nxp.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: AM0PR04MB5956:EE_|AS5PR04MB9800:EE_
+x-ms-office365-filtering-correlation-id: 20834806-c2d6-4e64-2632-08dbf28ea998
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: uHrw5XLep8sjv5iD56mfoGEz3oH8wHV8nQyhVy1xKVGnS882IG9AjALCwhfpoDdBuUqsdYepiXzztQznghEE/fkLRALvef+tA3NGAYhnGyF1dVdel4Oxe1VmHyCWfi6yj0IGH2pby3Wsi/bvGHWT7vAbpEj0T6ohXNSCapIJbQzKnPQl/ZBSMQOqda3n39Sgj4GlTTBjr5ylGh7xCUWu5bq6aQkYUZp1zCw14kf/4YUZ0xt09GfP/BkunOLabWhZy69j9TfqKJh/iuZ0WQNGzSJNBOTut/gDFUSfinbgdj6RyxTSraWSv8ICaneyA/RkumIvXHOtGwxqdYs8yT4FOwvmeTR39tDRdcP26pqL/2ODqUUcQCvxavwhhIexwHL+SCVuPfXAYXR5M9GucfkY+ner8CRbSQIdJW2+JuSdT9P22elneVf2SmxMEacGuZ2y8tgYi6R+nJysX5BhQfJGHfCH5rKMvgX2mk0U7DYfPq4+eDo2A6wVanC/lMaeP+die1aoNTMWeNuE3pFqCzWVaw3j6/lGOlO0nDEiYuFF8ntoUy4Z07PjRsY6pxYY2fZFLhWB9X3r+YK0m9dlc7NkH/gCCjEv1i03ElcZU/wKjF094YKc7qtsAPOjVIqPV6yx
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB5956.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(39860400002)(136003)(366004)(396003)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(8676002)(26005)(38070700009)(8936002)(6506007)(9686003)(66446008)(7696005)(83380400001)(66946007)(5660300002)(15650500001)(7416002)(55236004)(52536014)(71200400001)(2906002)(478600001)(41300700001)(316002)(4326008)(110136005)(44832011)(76116006)(66476007)(66556008)(64756008)(4744005)(54906003)(122000001)(86362001)(38100700002)(33656002)(55016003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?ajpnF2icG0/+QPBB0/sT+mBeQcNO/pu8jtQxN0zKuhjsfaG7ZFKA/laWNaXv?=
+ =?us-ascii?Q?glL02RW1wPNYAs+GHgxYWFvPgi1JLDABJEhrSsjrIieOcL7DbwWFqJbY3ukH?=
+ =?us-ascii?Q?BXS5GqoSQzgpxy8IyhlsRlYAjuIONXJWBUkYasLu0r48BYEEKkBXk5wKyKtE?=
+ =?us-ascii?Q?bt4XtUVabw8rSTsqwI0P0M8Hg3FwFWnFwisCry+5LwILg05VWZZvOfwzzWGy?=
+ =?us-ascii?Q?IZT23ReMFV2dAzJeV4TczVYMpcBxUYMqIceI2R7R4l5YjEW6KsvdeqXYgvmo?=
+ =?us-ascii?Q?fvZiyG7EGJVw0c4npHtKrMAI8KGkwcwEgfF2RzcCMrka6SKDrP9Yt+oVyK6x?=
+ =?us-ascii?Q?r6FIeWHOXiLnnXjUNaX95RS25nZ52urodfyerEaWVcp711V2sg+fqFfcNG06?=
+ =?us-ascii?Q?TXKO6KEzPj6IPzHKzFdlEyWHyjcxzCWP3rW/wpSkgch81MBKUaHT+b9fzUJv?=
+ =?us-ascii?Q?x3RCtJ9cssFIvkCCtckmPO/lxO5gBKrAgGP2Zab1CvE/E9jM0yk9xxPXDWaT?=
+ =?us-ascii?Q?ftu1dYNwhHsfrLhqak8WuypJ3ehgN2hb+1ljdr6luASiX9kaVKhuClIUHVzo?=
+ =?us-ascii?Q?9/Tbzk90Ry6X6y+yU88j8x/LFs+PTVrCRFS/jHkVWtoCz6od9pBAoCBlvJdJ?=
+ =?us-ascii?Q?gDnnGuFUOS77St4b5zMaSlSdAFk8cIbHYjumSb97eCQo0ljT/EpqQNpCGbU3?=
+ =?us-ascii?Q?IjLSQBhv+qYq+P6LB8vtrj1Y2CKwyBIS2ri9ix44W7iubf+ATaou0LqLfiTC?=
+ =?us-ascii?Q?xV6Qx/2YpF2OvpYt6BeabwWBBKLSMDRxOgfYr/rEyPdO9GAutjlFQFOPkHNd?=
+ =?us-ascii?Q?aG/ohfHkU9jql+aP0HPJpAJZkHwAQLdLrxWNMjJMXQ/zJPHd4pLKbGhQGYM+?=
+ =?us-ascii?Q?5x376FqP2t5SkW5FmX0alLJPOswbOw9BZoZAgSD5q8byuDm02rV8Sct4538I?=
+ =?us-ascii?Q?dnOlpQsZrO9l79cK3qoG6WhId3HzuV2f07TsovYSt3w1a1rv4m569C4uDmG8?=
+ =?us-ascii?Q?8+hW0qL4wQaCHuPadtD4f33MKdi2Xj3WEe6ph2nmfcRZD9CO3Gra8l2U7raE?=
+ =?us-ascii?Q?s4EM1KFAP0aGH8xswADKzXD/GbeI50RWSKWtHq++rtqYDSBfoRhzzp3LeBmq?=
+ =?us-ascii?Q?vSbxKXmD5n2PmzZzD+g/ngvUUNKvz2QpUeu7FRWFuCLYt6Zervb7HiZq3azz?=
+ =?us-ascii?Q?qQUEVyfUcJXodUiY0fy/UFIWUqgGyirgzbth/uDJjWk4w1CjljfciW8oDaKP?=
+ =?us-ascii?Q?9NYkcRsaS2z2L+cK020Rz7ADETAMdwjrHDLctgDvQNcGhPax6xE7z8PCWGNC?=
+ =?us-ascii?Q?ap5zOi0S2YHAgPPKPvGiAbRJjNopEyf7d/eL2zhkr19MONy9H3kTl1w5PELy?=
+ =?us-ascii?Q?Gunt8nT495CcCF0OyRpaU5FjHZnuGYQYGxX7DwZGmXtgP3OtwLC4/OEv5yrn?=
+ =?us-ascii?Q?JI+9/PSWUlxzfaL2/EHhe1cXZbW9fLpCELhOkp4zD9x1CBcsV7D52pCD+x4Q?=
+ =?us-ascii?Q?5zgGw6AxTraSv191YK/ciiiGbC7JLcIw7Ck1cIvs7d6pon44cdV2+0MzaYct?=
+ =?us-ascii?Q?PlJvqkG1az3tSDqWODc=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231129-idmap-fscap-refactor-v1-6-da5a26058a5b@kernel.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB5956.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 20834806-c2d6-4e64-2632-08dbf28ea998
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Dec 2023 16:57:54.7026
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: hzHziuYGgakWOheNxGL4OSwV2PDn0EgWZ5KORdU34IAAFtv2fL/a5hBMxiZSWPsbtJBftphE16vdcAK0W1QYxw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS5PR04MB9800
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 03:50:24PM -0600, Seth Forshee (DigitalOcean) wrote:
-> cap_inode_getsecurity() implements a handful of policies for capability
-> xattrs read by userspace:
-> 
->  - It returns EINVAL if the on-disk capability is in v1 format.
-> 
->  - It masks off all bits in magic_etc except for the version and
->    VFS_CAP_FLAGS_EFFECTIVE.
-> 
->  - v3 capabilities are converted to v2 format if the rootid returned to
->    userspace would be 0 or if the rootid corresponds to root in an
->    ancestor user namespace.
-> 
->  - It returns EOVERFLOW for a v3 capability whose rootid does not map to
->    a valid id in current_user_ns() or to root in an ancestor namespace.
-
-Nice. Precise and clear, please just drop these bullet points into the
-kernel-doc of that function.
-
-> 
-> These policies must be maintained when converting vfs_caps to an xattr
-> for userspace. Provide a vfs_caps_to_user_xattr() helper which will
-> enforce these policies.
-> 
-> Signed-off-by: Seth Forshee (DigitalOcean) <sforshee@kernel.org>
-> ---
->  include/linux/capability.h |  4 +++
->  security/commoncap.c       | 68 ++++++++++++++++++++++++++++++++++++++++++++++
->  2 files changed, 72 insertions(+)
-> 
-> diff --git a/include/linux/capability.h b/include/linux/capability.h
-> index cdd7d2d8855e..c0bd9447685b 100644
-> --- a/include/linux/capability.h
-> +++ b/include/linux/capability.h
-> @@ -218,6 +218,10 @@ int vfs_caps_to_xattr(struct mnt_idmap *idmap,
->  		      struct user_namespace *dest_userns,
->  		      const struct vfs_caps *vfs_caps,
->  		      void *data, int size);
-> +int vfs_caps_to_user_xattr(struct mnt_idmap *idmap,
-> +			   struct user_namespace *dest_userns,
-> +			   const struct vfs_caps *vfs_caps,
-> +			   void *data, int size);
->  
->  /* audit system wants to get cap info from files as well */
->  int get_vfs_caps_from_disk(struct mnt_idmap *idmap,
-> diff --git a/security/commoncap.c b/security/commoncap.c
-> index ef37966f3522..c645330f83a0 100644
-> --- a/security/commoncap.c
-> +++ b/security/commoncap.c
-> @@ -789,6 +789,74 @@ int vfs_caps_to_xattr(struct mnt_idmap *idmap,
->  	return ret;
->  }
->  
-> +/**
-> + * vfs_caps_to_user_xattr - convert vfs_caps to caps xattr for userspace
-> + *
-> + * @idmap:       idmap of the mount the inode was found from
-> + * @dest_userns: user namespace for ids in xattr data
-> + * @vfs_caps:    source vfs_caps data
-> + * @data:        destination buffer for rax xattr caps data
-> + * @size:        size of the @data buffer
-> + *
-> + * Converts a kernel-interrnal capability into the raw security.capability
-> + * xattr format. Includes permission checking and v2->v3 conversion as
-> + * appropriate.
-> + *
-> + * If the xattr is being read or written through an idmapped mount the
-> + * idmap of the vfsmount must be passed through @idmap. This function
-> + * will then take care to map the rootid according to @idmap.
-> + *
-> + * Return: On success, return 0; on error, return < 0.
-> + */
-> +int vfs_caps_to_user_xattr(struct mnt_idmap *idmap,
-> +			   struct user_namespace *dest_userns,
-> +			   const struct vfs_caps *vfs_caps,
-> +			   void *data, int size)
-> +{
-> +	struct vfs_ns_cap_data *ns_caps = data;
-> +	bool is_v3;
-> +	u32 magic;
-> +
-> +	/* Preserve previous behavior of returning EINVAL for v1 caps */
-> +	if ((vfs_caps->magic_etc & VFS_CAP_REVISION_MASK) == VFS_CAP_REVISION_1)
-> +		return -EINVAL;
-> +
-> +	size = __vfs_caps_to_xattr(idmap, dest_userns, vfs_caps, data, size);
-> +	if (size < 0)
-> +		return size;
-> +
-> +	magic = vfs_caps->magic_etc &
-> +		(VFS_CAP_REVISION_MASK | VFS_CAP_FLAGS_EFFECTIVE);
-> +	ns_caps->magic_etc = cpu_to_le32(magic);
-> +
-> +	/*
-> +	 * If this is a v3 capability with a valid, non-zero rootid, return
-> +	 * the v3 capability to userspace. A v3 capability with a rootid of
-> +	 * 0 will be converted to a v2 capability below for compatibility
-> +	 * with old userspace.
-> +	 */
-> +	is_v3 = (vfs_caps->magic_etc & VFS_CAP_REVISION_MASK) == VFS_CAP_REVISION_3;
-> +	if (is_v3) {
-> +		uid_t rootid = le32_to_cpu(ns_caps->rootid);
-> +		if (rootid != (uid_t)-1 && rootid != (uid_t)0)
-> +			return size;
-> +	}
-> +
-> +	if (!rootid_owns_currentns(vfs_caps->rootid))
-> +		return -EOVERFLOW;
-
-For a v2 cap that we read vfs_caps->rootid will be vfsuid 0, right?
-So that means we're guaranteed to resolve that in the initial user
-namespace. IOW, rootid_owns_currentns() will indeed work with a pure v2
-cap. Ok. Just making sure that I understand that this won't cause
-EOVERFLOW for v2. But you would've likely seen that in tests right away.
-
-> +
-> +	/* This comes from a parent namespace. Return as a v2 capability. */
-> +	if (is_v3) {
-> +		magic = VFS_CAP_REVISION_2 |
-> +			(vfs_caps->magic_etc & VFS_CAP_FLAGS_EFFECTIVE);
-> +		ns_caps->magic_etc = cpu_to_le32(magic);
-> +		ns_caps->rootid = cpu_to_le32(0);
-> +		size = XATTR_CAPS_SZ_2;
-> +	}
-> +
-> +	return size;
-> +}
-> +
->  /**
->   * get_vfs_caps_from_disk - retrieve vfs caps from disk
->   *
-> 
-> -- 
-> 2.43.0
-> 
+> From: Frank Li <frank.li@nxp.com>
+> Subject: [PATCH v5 2/4] PCI: layerscape: Add suspend/resume for ls1021a
+>=20
+> Add suspend/resume support for Layerscape LS1021a.
+>=20
+> In the suspend path, PME_Turn_Off message is sent to the endpoint to
+> transition the link to L2/L3_Ready state. In this SoC, there is no way to=
+ check if
+> the controller has received the PME_To_Ack from the endpoint or not. So t=
+o be
+> on the safer side, the driver just waits for PCIE_PME_TO_L2_TIMEOUT_US
+> before asserting the SoC specific PMXMTTURNOFF bit to complete the
+> PME_Turn_Off handshake. Then the link would enter L2/L3 state depending o=
+n
+> the VAUX supply.
+>=20
+> In the resume path, the link is brought back from L2 to L0 by doing a sof=
+tware
+> reset.
+>=20
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+Acked-by:  Roy Zang <Roy.Zang@nxp.com>
+Roy
