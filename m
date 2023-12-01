@@ -2,207 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7BE68002A6
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 05:47:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75B8C8002A9
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 05:51:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230412AbjLAErR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 23:47:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51994 "EHLO
+        id S231537AbjLAEur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 23:50:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229808AbjLAErP (ORCPT
+        with ESMTP id S229505AbjLAEuo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 23:47:15 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DF12171F;
-        Thu, 30 Nov 2023 20:47:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701406041; x=1732942041;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=JDLRpKTSRrEw/g7XT/CM3vm9/sL/ruhWUtc67KOIm4o=;
-  b=H0pxZp2XGb5rDmv114LfmKA6wDLtEhWTMINiPdwuKYnXFG2FtRSngsLX
-   3hpRiU2SCATb/hT0DO+ekcbpj7ZvR8iGLgmjut0ZVg1yT7PJsm+4IIPLF
-   DeM174WSvgpvkCP/DiexmWSwR+mnEIh8YKxbRSKh/PeygjdPMei4qUtoL
-   4TXep1hdKvvq5vkA2pd58HBtd2NXGtMdzV73GR3ttXqPTAMCmExqnLj0/
-   PBM3rSuzsaz7c9q4rcw+iSJYwnirT2Z4XLLUhoUxYgS4NQC1dsSP82WAs
-   gUNCPLMk6vgax6LEjM5bUnETJpN0IYOrpayYB4WFLPCfSAQEIsy4Ydf9c
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="424588073"
-X-IronPort-AV: E=Sophos;i="6.04,240,1695711600"; 
-   d="scan'208";a="424588073"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 20:47:20 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="769544904"
-X-IronPort-AV: E=Sophos;i="6.04,240,1695711600"; 
-   d="scan'208";a="769544904"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by orsmga002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 30 Nov 2023 20:47:20 -0800
-Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Thu, 30 Nov 2023 20:47:19 -0800
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Thu, 30 Nov 2023 20:47:19 -0800
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.100)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Thu, 30 Nov 2023 20:47:19 -0800
+        Thu, 30 Nov 2023 23:50:44 -0500
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2083.outbound.protection.outlook.com [40.107.243.83])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8E1110DE;
+        Thu, 30 Nov 2023 20:50:50 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jn6w0UVJaJnzPuHc5kHBcqmzBcK+/2ar+32shsH+Yb1xookia2xcR8nyps688a2cKu9gsUmJ6p2I35R0mZsreppyw8O0LBdDv3dyYgXkyWzzu8K8RXYw1NvfXqxCmrUz/rFco0rW81EG2QIFVJQPJ7EntV6HDzZZBzdXV2kbpE0AJUs53Dv3tGqqONKeKfvrlfXT4PNv3OsWTOjNc9oWgEJQBwAXHFlxzi4y2tZx7LypO7MTSoLzvJLI7pZ4IB+bMkRgnegsHN27rKbQmviXuN3J7olASmOmcVFH/eQmiRYTVlOAo8uJjg5LuVZJ6FB2hoyXN8iUB61VMk6JQPasZQ==
+ b=PgJ0xJ485nu4lNqeXID+SDeeFbRTDVTO0snMS84mhTcc6SlNimM9iu3i+X2qBVnT5Q+X8EEqqV0fpkl/0wTd4xU5EcyYWJl4THw02Q2/GcRy5Zj0PHhv986KNFC48VO2eU4SI5Bdq0Wfq+0sjt9NtNRvQbyRnZbqaoF5BOC7/O59rOuwXpg8dDjH+IvX1OI4Iq/r09G2Prp422vAZru3HOYCoFYxws9Piq6fnxP5B4aTmeGa/+GgGNPINpyK0kdgeSeiTVBnoHxKrxBhzO3R6kMw+HTmz+lqjhTkTDD2wcmpblmaGTeefR/QH/TsoNvR7vpe2u2iwfly+9Yj6JNVmA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=G28QBAQDR5G/axx/LLtF5bTs+UO5+sn32ryRGWavuu0=;
- b=RrsVRhQCVnwQ5a6Ctezy8MmubRacbQOyzAZ/FBpn+qNbMqIQa/SHCzVEr7yj8VVdzTzjwg87JxOpCLeuRMNHxAOtjVCsFVadYMy1nKWFBWS7bFW7XEYR5Gn+6wZHsHWYjhNQ83TPAp2irpkngRjX8+c+Oh6QmYsrFcYeD25heQL8RCQsugCmZrD0GkNDUnr9pQAkaqfXbKUCHj0h9VhA7sym6a6GyO482turSlONWGOOdhTPFa57QK1wgTk2+pqNw/AhuDvedNR/ti2hkj78dPgr8NQs5bsMy/IkxJfQWF1nk3fUei/8EFXF070o64pJ17ac67oZFzDClMyHYdYOjw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SJ1PR11MB6201.namprd11.prod.outlook.com (2603:10b6:a03:45c::14)
- by MN2PR11MB4711.namprd11.prod.outlook.com (2603:10b6:208:24e::13) with
+ bh=thYPPq2k4CeKMVcpyS/RRZCpA7n96oLmYgTv4phq+lU=;
+ b=fXjKSNN2d832PSYOhw9B/CMlzBr1jN4dC+R4iUrB2M+RRmQaeCD0Q/S6fsOzRVVl11fKZVUPS1re89CKrxo3Q8Gx8ILpf5HlMd7ypQ3D4k+p/vtE6+6NEXFRpyl4K9wKe8GgF9Pl4mY3TdgwLTOHml8UbvEOBoJDnQHC8TPftvl9vmD2UFPvt4YzZTJBPfy/qvsB93kJ15JDcSWH5J9H6EagxHJSH8/VtkuSm2PsnQz5eIfUfdiope5/ZfDoAZC21gCq8TWD/Pbz+7vqhkSlXFGbrmapLtznz+eYX9pGUda4INKJMtJApIUIYwqHVTg7sXJfNs67sBRwfTgGlzghWA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=intel.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=thYPPq2k4CeKMVcpyS/RRZCpA7n96oLmYgTv4phq+lU=;
+ b=OSs2ATVtZewnWLirCBSdRXRUB4558DiZCtEwz1Vp3vrLpbrNIjNc4XcTjYP30MJMD/OCGZTnn2Yyu2mL4h6wrzNp2Vr552+44eXuCWbqY4Q6V9KSoRrdYB8ebYTSHJOa4Va8boJ8ayIJLA1dfGM1QVRf7Kb8BGEX6r17xfN1k6YmbR8TnUphSWWVmSnhu74o2pJ1zj3sBAAgr8EygDyEINIBcMfGWrJWts70Pp6dsCHNUE4S9W8ihZMC4pniRjc7zvcbuqu2hFush9bpPm9Na6KHDXBB8UPv9uUeiuxNIVBjhYxw9JZKODl2niVZ//2bmV+/MgiMHQ9r2LjhM9aDOA==
+Received: from BL0PR02CA0082.namprd02.prod.outlook.com (2603:10b6:208:51::23)
+ by CH0PR12MB8552.namprd12.prod.outlook.com (2603:10b6:610:18e::9) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.24; Fri, 1 Dec
- 2023 04:47:12 +0000
-Received: from SJ1PR11MB6201.namprd11.prod.outlook.com
- ([fe80::6299:dc9f:239:202e]) by SJ1PR11MB6201.namprd11.prod.outlook.com
- ([fe80::6299:dc9f:239:202e%5]) with mapi id 15.20.7046.023; Fri, 1 Dec 2023
- 04:47:12 +0000
-Date:   Thu, 30 Nov 2023 20:47:06 -0800
-From:   Ashok Raj <ashok.raj@intel.com>
-To:     Guenter Roeck <linux@roeck-us.net>
-CC:     Ashok Raj <ashok_raj@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>, <jdelvare@suse.com>,
-        <fenghua.yu@intel.com>, <linux-hwmon@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Ashok Raj <ashok.raj@intel.com>
-Subject: Re: [PATCH 1/3] hwmon: (coretemp) Introduce enum for attr index
-Message-ID: <ZWllSmdI5pVGc0+3@a4bf019067fa.jf.intel.com>
-References: <20231127131651.476795-1-rui.zhang@intel.com>
- <20231127131651.476795-2-rui.zhang@intel.com>
- <ZWkDQ5y3e4oPONni@araj-dh-work.jf.intel.com>
- <0646bcf5-fd41-41e5-b7b1-06b425973c86@roeck-us.net>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.28; Fri, 1 Dec
+ 2023 04:50:48 +0000
+Received: from MN1PEPF0000F0E2.namprd04.prod.outlook.com
+ (2603:10b6:208:51:cafe::f8) by BL0PR02CA0082.outlook.office365.com
+ (2603:10b6:208:51::23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.29 via Frontend
+ Transport; Fri, 1 Dec 2023 04:50:48 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ MN1PEPF0000F0E2.mail.protection.outlook.com (10.167.242.40) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7046.17 via Frontend Transport; Fri, 1 Dec 2023 04:50:48 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Thu, 30 Nov
+ 2023 20:50:26 -0800
+Received: from rnnvmail202.nvidia.com (10.129.68.7) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Thu, 30 Nov
+ 2023 20:50:26 -0800
+Received: from Asurada-Nvidia (10.127.8.9) by mail.nvidia.com (10.129.68.7)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41 via Frontend
+ Transport; Thu, 30 Nov 2023 20:50:25 -0800
+Date:   Thu, 30 Nov 2023 20:50:23 -0800
+From:   Nicolin Chen <nicolinc@nvidia.com>
+To:     Yi Liu <yi.l.liu@intel.com>
+CC:     Jason Gunthorpe <jgg@nvidia.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
+        "cohuck@redhat.com" <cohuck@redhat.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
+        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
+        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
+        "peterx@redhat.com" <peterx@redhat.com>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "shameerali.kolothum.thodi@huawei.com" 
+        <shameerali.kolothum.thodi@huawei.com>,
+        "lulu@redhat.com" <lulu@redhat.com>,
+        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>,
+        "joao.m.martins@oracle.com" <joao.m.martins@oracle.com>,
+        "Zeng, Xin" <xin.zeng@intel.com>,
+        "Zhao, Yan Y" <yan.y.zhao@intel.com>
+Subject: Re: [PATCH v6 2/6] iommufd: Add IOMMU_HWPT_INVALIDATE
+Message-ID: <ZWlmD1KDUyR3qzdy@Asurada-Nvidia>
+References: <BN9PR11MB527659462CCB7280055858D98CB4A@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <ZVuZOYFzAaCuJjXZ@Asurada-Nvidia>
+ <BN9PR11MB5276C8EACE2C300A646EA8A18CBBA@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <ZVw/BXxgGCuCZCA6@Asurada-Nvidia>
+ <BN9PR11MB52761A9B48A25E89BEECE6308CB8A@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <ZWTzoBTDDEWAKMs9@Asurada-Nvidia>
+ <BN9PR11MB5276FD60A0EDF8E3F231FCC88CBCA@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <ZWaLCSAMIOXTlghk@Asurada-Nvidia>
+ <20231129005715.GS436702@nvidia.com>
+ <b5f86fde-eaec-47fc-8b4f-36adb0e9e1a1@intel.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <0646bcf5-fd41-41e5-b7b1-06b425973c86@roeck-us.net>
-X-ClientProxiedBy: MW4PR04CA0315.namprd04.prod.outlook.com
- (2603:10b6:303:82::20) To SJ1PR11MB6201.namprd11.prod.outlook.com
- (2603:10b6:a03:45c::14)
-MIME-Version: 1.0
+In-Reply-To: <b5f86fde-eaec-47fc-8b4f-36adb0e9e1a1@intel.com>
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ1PR11MB6201:EE_|MN2PR11MB4711:EE_
-X-MS-Office365-Filtering-Correlation-Id: 244c6694-f6ce-428a-32f4-08dbf2289537
+X-MS-TrafficTypeDiagnostic: MN1PEPF0000F0E2:EE_|CH0PR12MB8552:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6588d784-f456-4331-1c6d-08dbf2291625
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: EVb24q1fmnLKB9bfpR4VNn4WlJXGXxZkSURAhZGIdvhASHAFxrpRBFtvh2wASvG9voD/ITIMvLRcxZZeweAd8CHWCPYjQ1m2E8Y2GPZmol5sUquVFqo7MtIiswv3UScEyJgRCgqyQSq6HybbGads45iyqktkAva7DtAWWQYnsNiP4+MvlPrR8zSiyZObR1QnB0tCF/C9JCbvGMTOcaGNAmtWLdieZHiXoq1066PJagBfpQX+IR22A9LrkPc7L3L3Lg6+dN0CV/rYAzzHTVaCzLZqIjGywN7JLMtISIvtY/l6LiMXYIUjnMYa8AGb9Uyra59HZWRfn+dmFOuDuF4J4mcYkSQGHi6ACmj3/qjfIBiQLhnBWk34OU2v4M38kAyp4fGvCUk32exjmBtI+0Uj/3anE9aohtROVNfU7EhcWYzQXjK+yi6vZJZbVURL3+cez7zmWkHzqXSvuy3ocNERHuCbMWNoADchWsPVFDxa0ibaL+mh2Ygk74WsqohsoNWmQ0/gu+S6FVetVRT8J0RygSFDyZpMCn5+4A8HD3GSjKDdoqcumNw848wgYO67GNv2EcjPHPnSKnn32QFvtmqQpmOZnyegb/N4lfNkRPhFhSQ=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ1PR11MB6201.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(366004)(376002)(39860400002)(396003)(230922051799003)(1800799012)(451199024)(186009)(64100799003)(478600001)(66556008)(8936002)(6916009)(86362001)(8676002)(4326008)(54906003)(44832011)(6486002)(316002)(66476007)(66946007)(41300700001)(2906002)(5660300002)(82960400001)(38100700002)(6506007)(6512007)(53546011)(6666004)(83380400001)(26005)(67856001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?m26JFOF/jWwsRNBSpeze8ySCb/NK1EHUUSi4xcpGlh0eDHF6S182lUyF8Q2a?=
- =?us-ascii?Q?od5ZW8l200t3xoZZ1HJKJhYQSWXMN8NekEAmRurqGTn1q9tnqj1fLpjKHwOA?=
- =?us-ascii?Q?5Uhr7ZrHckehpcDy5iV7DKQLptPdtqMyWaa724ejiGFz1El+6dEHnXNZ8Ywo?=
- =?us-ascii?Q?cPpMYvHtoRTbsSJ583MgFEqJqU0nEbaJB5RKNXFPKhO0V21jYZDr0oPMeqjl?=
- =?us-ascii?Q?ULqnLBr4BpVwEr1upyoiRqyxafd2JCopWcUYIk57cL3bqx8r3XEy/xB79qCn?=
- =?us-ascii?Q?FJ4kWMdsf8GZSV2UHMhETNd6KZxfyNQHOiHgjTyq4HOc52IhnABsdNGFaKKs?=
- =?us-ascii?Q?4tPbyBd1i+k6FLJLViTwb5aXeeTo7iNoi3llmDzGMhwqZSKVH1QzX1p0MuIF?=
- =?us-ascii?Q?DMu9lRoB7nhhtGALnkkhvxqUQ9rf5LCbMZYDlyMy++lQvaWbO4MK9e5tXZZ2?=
- =?us-ascii?Q?RvKsbC6J8Nro7fx32k1CxN8RPiCpNMtf5ozG18NpFu5AmpeAzifokoOuzNqe?=
- =?us-ascii?Q?xybv+9h2Y6LqfYh6whsyqhpCOI1W9WEEDiN9cU4M8LfNDdeC/iG0I06ttBQk?=
- =?us-ascii?Q?MEeS00H5xnBzjrnvj2s2xPTAP9xKFPe1zH7SrzKODEUlR0XWgCR3HObEqeSj?=
- =?us-ascii?Q?EWdcJFovVwp+eHX42HRZsJO0gPMbdul0hQqcEKTnsZ0+WIdphrQbynC/dIOB?=
- =?us-ascii?Q?TtzNgVdwip0XKLrBD6Bjfq6hH9gKKh5GhM0poF5HsFMLpS6M7oiCpT42MfS6?=
- =?us-ascii?Q?wXGn2rNuUg8PqTaA+SrwReQKrZDaQdFzgtlnr6gQuPtr4bCId/2A7U7J85Ex?=
- =?us-ascii?Q?T6lh7cyGEipznRDNMhi8MHEPymfO+IuUPrzKbpp/RQJFiR+45HzIXoQpZoPh?=
- =?us-ascii?Q?/+8UEWdBwgGmRGDepDjxrjQ4LQDJrp4APk3+JTN6seTFGvlqRgBdePGlOEMP?=
- =?us-ascii?Q?4P2KT/iTb6HSQ4shT5CqGgdbodXnX3OM+fA4O4mU8mTuAE9auE8BhL6KEhZb?=
- =?us-ascii?Q?lfwrhndpFkKLpCxBx0zaqZCGFuhvJG3bHaOIu5e+UsZ32xbuuXibjgWOIteA?=
- =?us-ascii?Q?edXfSLQnE+wsXmXsVr3zQsx1l/aQbIL9oG2VFW5L0hXrEYia8kfxKny2B+EL?=
- =?us-ascii?Q?oCv1q8nAFbRMa5/F5KBfiFEOvNzv0rl/IDPdvuJZ/dmX4cnD7TOIUebmFF7c?=
- =?us-ascii?Q?s1PDYPHz6GU3eUj2+ly7Q/x+wPQFwMpfLtp/KbQn4EGbfTvDvx4hbmz1GBFm?=
- =?us-ascii?Q?4a9/Q0n1clBxn/UZ8jw/tiRrvrLKIUOllaouFofbepFGLzEZvy5y/cdoxj9m?=
- =?us-ascii?Q?lHWMUKIFnZJ7WJl7clu9EgTA2BLA2MXdIkntdLb1avRCiZR25p3WXm8LW7CW?=
- =?us-ascii?Q?xbZZe09gqjE+SWtY7riZkPitpiwC4U5RIdRa4OcEHeJN7eRzEnHZAxsTT6Q7?=
- =?us-ascii?Q?JsciRAWp7cL7OBINNi620i+A7nn59sH8eDYGSguu+p2QPcD4GqrPITJG5n9W?=
- =?us-ascii?Q?TEXmmqeu4sZOyKIFuZiTQXTZ49HsHVLskcqXyLSb+/hXSq6xSb3+Wgq4RUda?=
- =?us-ascii?Q?HEYtvCxKMaOwGgCzq6ADEBnHXzDD69fa+JI1NZqO65oLeqzmMjDN2h5N236K?=
- =?us-ascii?Q?Fw=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 244c6694-f6ce-428a-32f4-08dbf2289537
-X-MS-Exchange-CrossTenant-AuthSource: SJ1PR11MB6201.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Dec 2023 04:47:12.0136
+X-Microsoft-Antispam-Message-Info: PZviGfzrdEPbRKZMU7qM43ayvYKrV+u3HogpZaDTcJPn/yhkFKm+mDowfjQNzFvXtPc8Cpj8I1UCCVTL+ZI93JM/G+9dScNt1QpGCho1/NLVjPJfieY5lA84N53sH/U6N66IaXviJbbfIsIchFYGJo53HjQ3FnDLlVVA7gCrN6MnBSmYwKiVtdCy01pGvMZnn3lsJKTny/VvFTMhHw0LGcMvOlyR/ObKBrLQc6wNrt+0hmAX+vkk0tuBhJd5Ut5zzYIOCdfCXZSU73jSt71B5v4SOszJkpoH7d6VJZOjwvRFXOB3caDNPzpFIP+cUSjEpHO/BlVBO3/Yq0zYFxoisYQZ/vWdtELkz3BzyexPiQjQ2wdNtus+1+vmTPI39dOc4wIy/VhOJyoaDdZQGegDe6RGli6zHvIpzPrJQo6/9hGCZL2Ym8jbt9sAXjJhkfg7RmGtN0Q+iO70xQT7bu3PVuB0FscBbPH/DX8mDp0eoVUQDj39zNVHn+XAkC36VC/dHfns3g48c6+QBWKZYVSky8dtt8cvY3JzxcD56Tp1IBXlc+nJBiJj0NnnUjBYDdWPrQF9/xV6wS2omQClkh5NSRdkICkEQVUgW64+Ngyx9/Pspy0DhVLRHSbjEwQTJwhSB4s/iEg0BzAsyupC2Mrel6DDD6FjmiJA8tnr7FY7uOi/jn9+UudF/4jHUI006KFso0zTLZ0ZwpFozqLCCzmB8gnzMa8dx36nQ575PQLHKuOXZ+rByFvpAuCLUGv8jb29
+X-Forefront-Antispam-Report: CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(136003)(396003)(39860400002)(346002)(376002)(230922051799003)(451199024)(1800799012)(82310400011)(64100799003)(186009)(36840700001)(46966006)(40470700004)(55016003)(40480700001)(40460700003)(70586007)(70206006)(54906003)(6916009)(7636003)(356005)(82740400003)(86362001)(47076005)(36860700001)(426003)(83380400001)(26005)(336012)(9686003)(53546011)(2906002)(316002)(33716001)(478600001)(5660300002)(8936002)(8676002)(4326008)(41300700001)(7416002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Dec 2023 04:50:48.0137
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: qD8J6WHz1Fsi4sOpu+CfbWztVQIYncCg03b9a56hpG/P6Mte7wSuyB/4nvfOlcOO46UdXpkvnr4H84+0jJMtxA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB4711
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6588d784-f456-4331-1c6d-08dbf2291625
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: MN1PEPF0000F0E2.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR12MB8552
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 30, 2023 at 08:14:48PM -0800, Guenter Roeck wrote:
-> On 11/30/23 13:51, Ashok Raj wrote:
-> > On Mon, Nov 27, 2023 at 09:16:49PM +0800, Zhang Rui wrote:
-> > > Introduce enum coretemp_attr_index to better describe the index of each
-> > > sensor attribute and the maximum number of basic/possible attributes.
+On Fri, Dec 01, 2023 at 11:51:26AM +0800, Yi Liu wrote:
+> On 2023/11/29 08:57, Jason Gunthorpe wrote:
+> > On Tue, Nov 28, 2023 at 04:51:21PM -0800, Nicolin Chen wrote:
+> > > > > I also thought about making this out_driver_error_code per HW.
+> > > > > Yet, an error can be either per array or per entry/quest. The
+> > > > > array-related error should be reported in the array structure
+> > > > > that is a core uAPI, v.s. the per-HW entry structure. Though
+> > > > > we could still report an array error in the entry structure
+> > > > > at the first entry (or indexed by "array->entry_num")?
+> > > > > 
+> > > > 
+> > > > why would there be an array error? array is just a software
+> > > > entity containing actual HW invalidation cmds. If there is
+> > > > any error with the array itself it should be reported via
+> > > > ioctl errno.
 > > > 
-> > > No functional change.
-> > > 
-> > > Signed-off-by: Zhang Rui <rui.zhang@intel.com>
-> > > ---
-> > >   drivers/hwmon/coretemp.c | 12 ++++++++++--
-> > >   1 file changed, 10 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/drivers/hwmon/coretemp.c b/drivers/hwmon/coretemp.c
-> > > index ba82d1e79c13..6053ed3761c2 100644
-> > > --- a/drivers/hwmon/coretemp.c
-> > > +++ b/drivers/hwmon/coretemp.c
-> > > @@ -43,10 +43,18 @@ MODULE_PARM_DESC(tjmax, "TjMax value in degrees Celsius");
-> > >   #define BASE_SYSFS_ATTR_NO	2	/* Sysfs Base attr no for coretemp */
-> > >   #define NUM_REAL_CORES		128	/* Number of Real cores per cpu */
-> > >   #define CORETEMP_NAME_LENGTH	28	/* String Length of attrs */
-> > > -#define MAX_CORE_ATTRS		4	/* Maximum no of basic attrs */
-> > > -#define TOTAL_ATTRS		(MAX_CORE_ATTRS + 1)
-> > >   #define MAX_CORE_DATA		(NUM_REAL_CORES + BASE_SYSFS_ATTR_NO)
-> > > +enum coretemp_attr_index {
-> > > +	ATTR_LABEL,
-> > > +	ATTR_CRIT_ALARM,
-> > > +	ATTR_TEMP,
-> > > +	ATTR_TJMAX,
-> > > +	ATTR_TTARGET,
-> > > +	TOTAL_ATTRS,			/* Maximum no of possible attrs */
-> > > +	MAX_CORE_ATTRS = ATTR_TJMAX + 1	/* Maximum no of basic attrs */
+> > > User array reading is a software operation, but kernel array
+> > > reading is a hardware operation that can raise an error when
+> > > the memory location to the array is incorrect or so.
 > > 
-> > This seems odd. TOTAL_ATTRS being the last entry seems fine, but defining a
-> > MAX_CORE_ATTR the way above sounds a bit hacky.
+> > Well, we shouldn't get into a situation like that.. By the time the HW
+> > got the address it should be valid.
 > > 
+> > > With that being said, I think errno (-EIO) could do the job,
+> > > as you suggested too.
+> > 
+> > Do we have any idea what HW failures can be generated by the commands
+> > this will execture? IIRC I don't remember seeing any smmu specific
+> > codes related to invalid invalidation? Everything is a valid input?
+> > 
+> > Can vt-d fail single commands? What about AMD?
 > 
-> Complaining is easy. What do you suggest that would be better ?
-> 
-Fair enough.
+> Intel VT-d side, after each invalidation request, there is a wait
+> descriptor which either provide an interrupt or an address for the
+> hw to notify software the request before the wait descriptor has been
+> completed. While, if there is error happened on the invalidation request,
+> a flag (IQE, ICE, ITE) would be set in the Fault Status Register, and some
+> detailed information would be recorded in the Invalidation Queue Error
+> Record Register. So an invalidation request may be failed with some error
+> reported. If no error, will return completion via the wait descriptor. Is
+> this what you mean by "fail a single command"?
 
-How about 
+I see the current VT-d series marking those as "REVISIT". How
+will it report an error to the user space from those register?
 
-ATTR_LABEL,
-ATTR_CRIT_ALARM,
-ATTR_TEMP,
-ATTR_TJMAX,
-MAX_CORE_ATTRS,		/* One more than TJMAX */
-ATTR_TTARGET = MAX_CORE_ATTRS,
-TOTAL_ATTRS
+Are they global status registers so that it might be difficult
+to direct the error to the nested domain for an event fd?
 
-Each enum can be assigned any value, but this way they are just increasing
-order. 
-
-
+Nic
