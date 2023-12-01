@@ -2,55 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E05FC8001EB
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 04:12:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B64B28001F3
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 04:15:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229757AbjLADMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 22:12:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55684 "EHLO
+        id S1376975AbjLADPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 22:15:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbjLADMd (ORCPT
+        with ESMTP id S232273AbjLADPc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 22:12:33 -0500
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D1CA1711;
-        Thu, 30 Nov 2023 19:12:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1701400357;
-        bh=F+eemxID8zfTy/ruTCOTo0d3EXe5X2w1QPkRpR78dqQ=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=AYWCthT3Cc4OavkvdIPlxGVT5FPG5D0Kcpf9gVQ4prm9G7rkEb2GPFX9FzsImp7ed
-         cqQrqeLBqaSYkB1cE2WZicIwpuZk+lXzMO/orjH6HZ6sVSqimW9T/yyVkgkXKI8VRk
-         SONQqxKO1u3+xEnnJKMZ/faR7CiXyf5gLYr1sQEgA9fbKj4s3sdDZjIfTBo3vwpz/P
-         rHWkHyGH9BU1p6184e238DoUma4l6EVcDT1fc9QAF65xbXE4lI0zFlBgtgV//6eQyv
-         KGpDj3InY9LhNYovM/Jo9ik2rdyIe/WTlaC1F2j9jtkvTUa+GjyI7jxjHti+S8WAM5
-         ZLISLjLJq4lZw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4ShJ5c58N9z4wdD;
-        Fri,  1 Dec 2023 14:12:36 +1100 (AEDT)
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>
-Subject: Re: linux-next: build failure after merge of the mm tree
-In-Reply-To: <20231130145251.f9dca8d062117e8ae1b129c1@linux-foundation.org>
-References: <20231127132809.45c2b398@canb.auug.org.au>
- <20231127144852.069b2e7e@canb.auug.org.au>
- <20231201090439.7ae92c13@canb.auug.org.au> <87sf4m27dz.fsf@mail.lhotse>
- <20231130145251.f9dca8d062117e8ae1b129c1@linux-foundation.org>
-Date:   Fri, 01 Dec 2023 14:12:27 +1100
-Message-ID: <87msuu1uqs.fsf@mail.lhotse>
+        Thu, 30 Nov 2023 22:15:32 -0500
+Received: from pv50p00im-ztdg10012101.me.com (pv50p00im-ztdg10012101.me.com [17.58.6.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AC9C1717
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 19:15:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
+        t=1701400537; bh=J1e8MVpgYKHHT8qqYA/cG+J/c7QhLqjmRpXuY46jjUg=;
+        h=From:To:Subject:Date:Message-Id:MIME-Version;
+        b=p/ExqYdyjjh/7+kW7Oq553AaJ5HcCHmiEaAP2M9d1MXDz5q5U5gRldCdxABgimeP+
+         oPkQpcLMTWS4MTAL7OTljh9keoVRHBWrgam/glg/9TAq36HleXB62Xj4/Iy/+yfwHL
+         IbgxSTcB9dHe9BiFlfVj0yyiWQE1YBZeBhTx9u5ncXrXIKc1FU9hD+cOJFa3izxzXr
+         CsO6wD8mMDMzf+T9/5sQshTe3+2OSuv+k/LweKyE2s86LAyXKodIeusLeHdC8Xz7CC
+         Wk244t3BJX08DflI13bTIvq9iyCl2IoxKCXu9nS7eQMG1MIARirT/PYCjGHjWzcSCj
+         x4AcBAJsQL7nA==
+Received: from xiongwei.. (pv50p00im-dlb-asmtp-mailmevip.me.com [17.56.9.10])
+        by pv50p00im-ztdg10012101.me.com (Postfix) with ESMTPSA id D9178740116;
+        Fri,  1 Dec 2023 03:15:30 +0000 (UTC)
+From:   sxwjean@me.com
+To:     vbabka@suse.cz, 42.hyeyoo@gmail.com, cl@linux.com,
+        linux-mm@kvack.org
+Cc:     penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
+        roman.gushchin@linux.dev, corbet@lwn.net, keescook@chromium.org,
+        arnd@arndb.de, akpm@linux-foundation.org,
+        gregkh@linuxfoundation.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Xiongwei Song <xiongwei.song@windriver.com>
+Subject: [PATCH 0/3] supplyment of slab allocator removal
+Date:   Fri,  1 Dec 2023 11:15:02 +0800
+Message-Id: <20231201031505.286117-1-sxwjean@me.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-ORIG-GUID: i1IoE9P_OLRrjIyA_2bZMmMAKEmtUx-t
+X-Proofpoint-GUID: i1IoE9P_OLRrjIyA_2bZMmMAKEmtUx-t
+X-Proofpoint-Virus-Version: =?UTF-8?Q?vendor=3Dfsecure_engine=3D1.1.170-22c6f66c430a71ce266a39bfe25bc?=
+ =?UTF-8?Q?2903e8d5c8f:6.0.517,18.0.572,17.11.64.514.0000000_definitions?=
+ =?UTF-8?Q?=3D2022-06-21=5F01:2022-06-21=5F01,2020-02-14=5F11,2022-02-23?=
+ =?UTF-8?Q?=5F01_signatures=3D0?=
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0
+ clxscore=1011 mlxscore=0 phishscore=0 suspectscore=0 malwarescore=0
+ adultscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2312010018
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,18 +63,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andrew Morton <akpm@linux-foundation.org> writes:
-> On Fri, 01 Dec 2023 09:39:20 +1100 Michael Ellerman <mpe@ellerman.id.au> wrote:
->
->> > I am still carrying this patch (it should probably go into the mm
->> > tree).  Is someone going to pick it up (assuming it is correct)?
->> 
->> I applied it to my next a few days ago, but I must have forgotten to
->> push. It's in there now.
->
-> I'll keep a copy in mm.git, to keep the dependencies nice.  I added
-> your acked-by.
+From: Xiongwei Song <xiongwei.song@windriver.com>
 
-Sure thing. Thanks.
+Hi,
 
-cheers
+Patch 1 is to remove an unused parameter. This patch acutually is v3, but
+it is not reasonable to add v3 tag in the cover letter, so I put the
+change history inside the patch.
+
+---
+Patch 2 is to replace slub_$params with slab_$params.
+Vlastimil Babka pointed out we should use "slab_$param" as the primary
+prefix for long-term plan. Please see [1] for more infomation.
+
+This patch is to do that. However, the patch is big, I'm not sure if
+everything is proper in it, so I added "RFC" in the patch title. For more
+information please see the commit message of patch.
+
+I did the basic tests with qemu, which passed values by sl[au]b_max_order,
+sl[au]b_min_order, sl[au]b_min_objects and sl[au]b_debug in command line.
+The values looks correct by printing them out before calculating orders.
+
+One thing I'm not sure about the forth parameter of __setup_param(),
+Is it correct to set the parameter to 0 directly?
+
+---
+Patch 3 is not related to slab allocator removal. It's to correct the
+description of default value of slub_min_objects in
+Documentation/mm/slub.rst. 
+
+---
+Regards,
+Xiongwei
+
+[1] https://lore.kernel.org/linux-mm/7512b350-4317-21a0-fab3-4101bc4d8f7a@suse.cz/
+
+Xiongwei Song (3):
+  Documentation: kernel-parameters: remove noaliencache
+  mm/slub: unify all slab/slub parameters with "slab_$param"
+  mm/slub: correct the default slub_min_objects value in doc
+
+ .../admin-guide/kernel-parameters.txt         |  48 +++---
+ Documentation/mm/slub.rst                     |   2 +-
+ drivers/misc/lkdtm/heap.c                     |   2 +-
+ mm/Kconfig.debug                              |   6 +-
+ mm/slab.h                                     |  16 +-
+ mm/slab_common.c                              |   8 +-
+ mm/slub.c                                     | 142 +++++++++---------
+ 7 files changed, 110 insertions(+), 114 deletions(-)
+
+-- 
+2.34.1
+
