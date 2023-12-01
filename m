@@ -2,78 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 872F3800AEE
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 13:31:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C395800AEA
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 13:31:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378859AbjLAMbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 07:31:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43652 "EHLO
+        id S1378849AbjLAMbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 07:31:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378804AbjLAMbX (ORCPT
+        with ESMTP id S1378804AbjLAMbU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 07:31:23 -0500
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5644F13E;
-        Fri,  1 Dec 2023 04:31:29 -0800 (PST)
-Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2c9b5c12898so25523161fa.2;
-        Fri, 01 Dec 2023 04:31:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701433887; x=1702038687; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=XiunD3rGt4P6HEz12hNIUnkO3H4wWSc2YPfZTqYm9yc=;
-        b=OuPedNNG78RzU62X1kd/mrtQ/FU05FSlFkFU/+HUVPxqiKiGsQowLjltmlLk4tANt5
-         33ZEh0pTcYACiU3rqUVLBLUpTqGMHtuMSeVdSpEapdJLgdggM/QhNEkho7zIpOQy5AO8
-         OvX+UEUyBvzs3P9IZ5jBH9HuoA/0zgLUNpAEoWxXYSXoOHYTBUPPP/lBeJYoXZbWu7W+
-         P5QOxyzEOSPcwEFJStSnW9S/YI1LuxiBDQ62SQU++FYxVYr7FMYNjGr4OmK59k/pm7YB
-         h8/WYFkBNbntfOGY+BdIkyR8ZIDJDES1FIGZ1grFlildCk+cKgHX0VJ+gewduZdF8Du7
-         gNoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701433887; x=1702038687;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XiunD3rGt4P6HEz12hNIUnkO3H4wWSc2YPfZTqYm9yc=;
-        b=RcBXaamozFMeQXV/rokYx1Yi21weySFtEHeB8SPxNoG1O4i/rExkK683coeVjgJHx9
-         pU9EucoLcAO7yMkCVZ3Zs1q9YMEpsnErAMyBYQCAvuA8Lic1HUuohiy347qRcfFucONm
-         UlccliGJzy4IqphhrHKlAChY4GwnkT70l+1TE/s0dPgvRYM+VpxTnEehShx4JXixsl0H
-         xQyBrJN7Rk97+1mf+ElNuMMgpieoB0pcI2uNPhhpNPY36zI9jxGtlekff6YAhMW4iNKe
-         VXCjNZjCTGQxMq28dsVP02pkYENQNE2Nfb2s6Vy7qi00ZFcoJPIpv1jJLEmglsJCEAqT
-         Rhrw==
-X-Gm-Message-State: AOJu0Yw4RNEKOqCmCG9CvdjL4aNw/XFaL/lXRp00U8z7ANOlXtSH6wJL
-        kXM7ZBGdx0LQiyhsUDFACP4=
-X-Google-Smtp-Source: AGHT+IG8rR0U5EKN7BCgxTGQgipxfo/JHWvXxTZ2FEZ/VetQGkryte+h9ijQaxKv7SNun1rNkxmIOg==
-X-Received: by 2002:a2e:97c1:0:b0:2c9:c51c:5b68 with SMTP id m1-20020a2e97c1000000b002c9c51c5b68mr653304ljj.39.1701433887242;
-        Fri, 01 Dec 2023 04:31:27 -0800 (PST)
-Received: from mobilestation ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id a14-20020a2e88ce000000b002b6daa3fa2csm382483ljk.69.2023.12.01.04.31.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Dec 2023 04:31:26 -0800 (PST)
-Date:   Fri, 1 Dec 2023 15:31:24 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Gregory CLEMENT <gregory.clement@bootlin.com>
-Cc:     Paul Burton <paulburton@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
-        Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        =?utf-8?B?VGjDqW8=?= Lebrun <theo.lebrun@bootlin.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v3 15/22] dt-bindings: mips: cpus: Sort the entries
-Message-ID: <ldsl5czjvfx6s5j3sniyriidzkspncuatfk5qrwmrvje5we7i6@kbafgbwxwnfc>
-References: <20231201111512.803120-1-gregory.clement@bootlin.com>
- <20231201111512.803120-16-gregory.clement@bootlin.com>
+        Fri, 1 Dec 2023 07:31:20 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 713991717;
+        Fri,  1 Dec 2023 04:31:26 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5CCEC1007;
+        Fri,  1 Dec 2023 04:32:12 -0800 (PST)
+Received: from e129166.arm.com (unknown [10.57.4.62])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id AED743F5A1;
+        Fri,  1 Dec 2023 04:31:24 -0800 (PST)
+From:   Lukasz Luba <lukasz.luba@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        daniel.lezcano@linaro.org
+Cc:     lukasz.luba@arm.com, rafael@kernel.org, stable@vger.kernel.org
+Subject: [PATCH] powercap: DTPM: Fix the missing cpufreq_cpu_put() calls
+Date:   Fri,  1 Dec 2023 12:32:05 +0000
+Message-Id: <20231201123205.1996790-1-lukasz.luba@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231201111512.803120-16-gregory.clement@bootlin.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,54 +40,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 01, 2023 at 12:14:58PM +0100, Gregory CLEMENT wrote:
-> The entries were nearly sorted but there were still some entries at
-> the wrong places. Let's fix it.
-> 
-> Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+The policy returned by cpufreq_cpu_get() has to be released with
+the help of cpufreq_cpu_put() to balance its kobject reference counter
+properly.
 
-Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
+Add the missing calls to cpufreq_cpu_put() in the code.
 
--Serge(y)
+Fixes: 0aea2e4ec2a2 ("powercap/dtpm_cpu: Reset per_cpu variable in the release function")
+Fixes: 0e8f68d7f048 ("powercap/drivers/dtpm: Add CPU energy model based support")
+Cc: <stable@vger.kernel.org> # v5.10+
+Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+---
+ drivers/powercap/dtpm_cpu.c | 17 +++++++++++++----
+ 1 file changed, 13 insertions(+), 4 deletions(-)
 
-> ---
->  Documentation/devicetree/bindings/mips/cpus.yaml | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/mips/cpus.yaml b/Documentation/devicetree/bindings/mips/cpus.yaml
-> index cf382dea3922c..9bc47868d28b6 100644
-> --- a/Documentation/devicetree/bindings/mips/cpus.yaml
-> +++ b/Documentation/devicetree/bindings/mips/cpus.yaml
-> @@ -23,22 +23,22 @@ properties:
->        - brcm,bmips4380
->        - brcm,bmips5000
->        - brcm,bmips5200
-> -      - ingenic,xburst-mxu1.0
->        - ingenic,xburst-fpu1.0-mxu1.1
->        - ingenic,xburst-fpu2.0-mxu2.0
-> +      - ingenic,xburst-mxu1.0
->        - ingenic,xburst2-fpu2.1-mxu2.1-smt
->        - loongson,gs264
->        - mips,m14Kc
-> -      - mips,mips4Kc
-> -      - mips,mips4KEc
-> -      - mips,mips24Kc
-> +      - mips,mips1004Kc
->        - mips,mips24KEc
-> +      - mips,mips24Kc
-> +      - mips,mips4KEc
-> +      - mips,mips4Kc
->        - mips,mips74Kc
-> -      - mips,mips1004Kc
->        - mti,interaptiv
-> -      - mti,mips24KEc
->        - mti,mips14KEc
->        - mti,mips14Kc
-> +      - mti,mips24KEc
->  
->    reg:
->      maxItems: 1
-> -- 
-> 2.42.0
-> 
-> 
+diff --git a/drivers/powercap/dtpm_cpu.c b/drivers/powercap/dtpm_cpu.c
+index 45bb7e2849d7..aac278e162d9 100644
+--- a/drivers/powercap/dtpm_cpu.c
++++ b/drivers/powercap/dtpm_cpu.c
+@@ -152,6 +152,8 @@ static void pd_release(struct dtpm *dtpm)
+ 	if (policy) {
+ 		for_each_cpu(dtpm_cpu->cpu, policy->related_cpus)
+ 			per_cpu(dtpm_per_cpu, dtpm_cpu->cpu) = NULL;
++
++		cpufreq_cpu_put(policy);
+ 	}
+ 	
+ 	kfree(dtpm_cpu);
+@@ -204,12 +206,16 @@ static int __dtpm_cpu_setup(int cpu, struct dtpm *parent)
+ 		return 0;
+ 
+ 	pd = em_cpu_get(cpu);
+-	if (!pd || em_is_artificial(pd))
+-		return -EINVAL;
++	if (!pd || em_is_artificial(pd)) {
++		ret = -EINVAL;
++		goto release_policy;
++	}
+ 
+ 	dtpm_cpu = kzalloc(sizeof(*dtpm_cpu), GFP_KERNEL);
+-	if (!dtpm_cpu)
+-		return -ENOMEM;
++	if (!dtpm_cpu) {
++		ret = -ENOMEM;
++		goto release_policy;
++	}
+ 
+ 	dtpm_init(&dtpm_cpu->dtpm, &dtpm_ops);
+ 	dtpm_cpu->cpu = cpu;
+@@ -231,6 +237,7 @@ static int __dtpm_cpu_setup(int cpu, struct dtpm *parent)
+ 	if (ret)
+ 		goto out_dtpm_unregister;
+ 
++	cpufreq_cpu_put(policy);
+ 	return 0;
+ 
+ out_dtpm_unregister:
+@@ -242,6 +249,8 @@ static int __dtpm_cpu_setup(int cpu, struct dtpm *parent)
+ 		per_cpu(dtpm_per_cpu, cpu) = NULL;
+ 	kfree(dtpm_cpu);
+ 
++release_policy:
++	cpufreq_cpu_put(policy);
+ 	return ret;
+ }
+ 
+-- 
+2.25.1
+
