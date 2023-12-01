@@ -2,56 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EF76801248
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 19:10:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25E6180124B
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 19:10:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379059AbjLASJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 13:09:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43032 "EHLO
+        id S230147AbjLASKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 13:10:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjLASJu (ORCPT
+        with ESMTP id S229468AbjLASJ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 13:09:50 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97067FF;
-        Fri,  1 Dec 2023 10:09:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701454196; x=1732990196;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=ZAqXOnxDi8CJBM0P2gmiWJwpeYA52txwCkVi6p934tY=;
-  b=H3DaGH8TIFYzczk0AdpXA6G8kfWthkuSP1ss257HArQn8+jv3vWtlrZ3
-   YKAxwCLD0gpoGs+gAi9uIXvnrc808hROrMAzL1tcRfjmXTDo7oLXDdFgf
-   Q8ZsFhRw/Au+fc98j0TgMEqjG3Hv1B2VZI2tT1MUjSQu4B6o1GByO89tI
-   CW+KuN9lm/6PbtR1IPoEPee64C92wL/riAXSXVCSoXv/or6qKlm9U1AMI
-   hA3eEUtFnANEqSrbbEMApUktwQKM/L+ytBNHqGUvuZFuEInpNpt2UX+LJ
-   /S09IIaQ6CqZ17ZIlSG1e5PSshvifwAe4omD9+IDuz/3zamaWOCj7f0IO
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="396330408"
-X-IronPort-AV: E=Sophos;i="6.04,242,1695711600"; 
-   d="scan'208";a="396330408"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2023 10:09:56 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="804146951"
-X-IronPort-AV: E=Sophos;i="6.04,242,1695711600"; 
-   d="scan'208";a="804146951"
-Received: from shwdedcgde01.ccr.corp.intel.com (HELO rzhang1-mobl7.ccr.corp.intel.com) ([10.254.208.132])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2023 10:09:54 -0800
-From:   Zhang Rui <rui.zhang@intel.com>
-To:     rafael.j.wysocki@intel.com, lenb@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: [PATCH] intel_idle: Add Meteorlake support
-Date:   Sat,  2 Dec 2023 02:09:28 +0800
-Message-Id: <20231201180928.1103797-1-rui.zhang@intel.com>
-X-Mailer: git-send-email 2.34.1
+        Fri, 1 Dec 2023 13:09:58 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6FA4FE
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 10:10:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701454204;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zNpyc+USobI6amLbpzPhS9IlXEPDw+xJpgpdIIbgOk4=;
+        b=C/cYra78Ccmv653op49WAYstpgh3KS9g9X9NldPLMPskN1QeIB7kTiu8Qw344IZWxE1/4c
+        3qNhF3fqKNV6JEolg2wX2MOLdUDTQqcZjCHU8CMbFvb9B5qa/jX2CianfKX4T6puBUcqCn
+        MKGj1HzcbiPotfU4qkbkm37Fb/5ccuM=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-298--Utt3jrmNROW3JOUTlDIWg-1; Fri,
+ 01 Dec 2023 13:09:58 -0500
+X-MC-Unique: -Utt3jrmNROW3JOUTlDIWg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 71134280CFA8;
+        Fri,  1 Dec 2023 18:09:58 +0000 (UTC)
+Received: from [10.22.17.155] (unknown [10.22.17.155])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E5E3910E46;
+        Fri,  1 Dec 2023 18:09:57 +0000 (UTC)
+Message-ID: <a873ce8e-96b2-448c-a380-214b91d3f03f@redhat.com>
+Date:   Fri, 1 Dec 2023 13:09:57 -0500
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH-cgroup v5 1/2] cgroup/rstat: Optimize
+ cgroup_rstat_updated_list()
+Content-Language: en-US
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Joe Mario <jmario@redhat.com>,
+        Sebastian Jug <sejug@redhat.com>,
+        Yosry Ahmed <yosryahmed@google.com>
+References: <20231130204327.494249-1-longman@redhat.com>
+ <20231130204327.494249-2-longman@redhat.com>
+ <ZWoZ7U8f5NNwimej@slm.duckdns.org>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <ZWoZ7U8f5NNwimej@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,83 +71,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add intel_idle support for MeteorLake.
 
-C1 and C1E states on Meteorlake are mutually exclusive like Alderlake
-and Raptorlake, but they have little latency difference with measureable
-power difference. Thus always enable "C1E promotion" bit and expose C1E
-only.
+On 12/1/23 12:37, Tejun Heo wrote:
+> On Thu, Nov 30, 2023 at 03:43:26PM -0500, Waiman Long wrote:
+>> The current design of cgroup_rstat_cpu_pop_updated() is to traverse
+>> the updated tree in a way to pop out the leaf nodes first before
+>> their parents. This can cause traversal of multiple nodes before a
+>> leaf node can be found and popped out. IOW, a given node in the tree
+>> can be visited multiple times before the whole operation is done. So
+>> it is not very efficient and the code can be hard to read.
+>>
+>> With the introduction of cgroup_rstat_updated_list() to build a list
+>> of cgroups to be flushed first before any flushing operation is being
+>> done, we can optimize the way the updated tree nodes are being popped
+>> by pushing the parents first to the tail end of the list before their
+>> children. In this way, most updated tree nodes will be visited only
+>> once with the exception of the subtree root as we still need to go
+>> back to its parent and popped it out of its updated_children list.
+>> This also makes the code easier to read.
+>>
+>> Signed-off-by: Waiman Long <longman@redhat.com>
+> Applied to cgroup/for-6.8 with a small comment edit.
+>
+> ...
+>> + * Iteratively traverse down the cgroup_rstat_cpu updated tree level by
+>> + * level and push all the parents first before their next level children
+>> + * into a singly linked list built from the tail backward like "pushing"
+>> + * cgroups into a stack. The parent is by the caller.
+> I found the last sentence a bit difficult to understand and changed it to
+> "The root is pushed by the caller." That's what you meant, right?
 
-Expose C6 because it has less power compared with C1E, and smaller
-latency compared with C8/C10.
+Yes, you are right. Thanks for the edit.
 
-Ignore C8 and expose C10 because C8 does not show latency advantage
-compared with C10.
-
-Signed-off-by: Zhang Rui <rui.zhang@intel.com>
----
- drivers/idle/intel_idle.c | 34 ++++++++++++++++++++++++++++++++++
- 1 file changed, 34 insertions(+)
-
-diff --git a/drivers/idle/intel_idle.c b/drivers/idle/intel_idle.c
-index dcda0afecfc5..cfd0b24fd7f1 100644
---- a/drivers/idle/intel_idle.c
-+++ b/drivers/idle/intel_idle.c
-@@ -923,6 +923,35 @@ static struct cpuidle_state adl_l_cstates[] __initdata = {
- 		.enter = NULL }
- };
- 
-+static struct cpuidle_state mtl_l_cstates[] __initdata = {
-+	{
-+		.name = "C1E",
-+		.desc = "MWAIT 0x01",
-+		.flags = MWAIT2flg(0x01) | CPUIDLE_FLAG_ALWAYS_ENABLE,
-+		.exit_latency = 1,
-+		.target_residency = 1,
-+		.enter = &intel_idle,
-+		.enter_s2idle = intel_idle_s2idle, },
-+	{
-+		.name = "C6",
-+		.desc = "MWAIT 0x20",
-+		.flags = MWAIT2flg(0x20) | CPUIDLE_FLAG_TLB_FLUSHED,
-+		.exit_latency = 140,
-+		.target_residency = 420,
-+		.enter = &intel_idle,
-+		.enter_s2idle = intel_idle_s2idle, },
-+	{
-+		.name = "C10",
-+		.desc = "MWAIT 0x60",
-+		.flags = MWAIT2flg(0x60) | CPUIDLE_FLAG_TLB_FLUSHED,
-+		.exit_latency = 310,
-+		.target_residency = 930,
-+		.enter = &intel_idle,
-+		.enter_s2idle = intel_idle_s2idle, },
-+	{
-+		.enter = NULL }
-+};
-+
- static struct cpuidle_state gmt_cstates[] __initdata = {
- 	{
- 		.name = "C1",
-@@ -1349,6 +1378,10 @@ static const struct idle_cpu idle_cpu_adl_l __initconst = {
- 	.state_table = adl_l_cstates,
- };
- 
-+static const struct idle_cpu idle_cpu_mtl_l __initconst = {
-+	.state_table = mtl_l_cstates,
-+};
-+
- static const struct idle_cpu idle_cpu_gmt __initconst = {
- 	.state_table = gmt_cstates,
- };
-@@ -1423,6 +1456,7 @@ static const struct x86_cpu_id intel_idle_ids[] __initconst = {
- 	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_D,		&idle_cpu_icx),
- 	X86_MATCH_INTEL_FAM6_MODEL(ALDERLAKE,		&idle_cpu_adl),
- 	X86_MATCH_INTEL_FAM6_MODEL(ALDERLAKE_L,		&idle_cpu_adl_l),
-+	X86_MATCH_INTEL_FAM6_MODEL(METEORLAKE_L,	&idle_cpu_mtl_l),
- 	X86_MATCH_INTEL_FAM6_MODEL(ATOM_GRACEMONT,	&idle_cpu_gmt),
- 	X86_MATCH_INTEL_FAM6_MODEL(SAPPHIRERAPIDS_X,	&idle_cpu_spr),
- 	X86_MATCH_INTEL_FAM6_MODEL(EMERALDRAPIDS_X,	&idle_cpu_spr),
--- 
-2.34.1
+Cheers,
+Longman
 
