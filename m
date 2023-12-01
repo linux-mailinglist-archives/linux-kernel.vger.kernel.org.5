@@ -2,216 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1D6680018E
+	by mail.lfdr.de (Postfix) with ESMTP id 4BB6B80018D
 	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 03:26:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376694AbjLACXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 21:23:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52924 "EHLO
+        id S1376670AbjLACYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 21:24:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229808AbjLACXR (ORCPT
+        with ESMTP id S229523AbjLACYG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 21:23:17 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AC87115;
-        Thu, 30 Nov 2023 18:23:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701397404; x=1732933404;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=jpsySEYYE+OHtZZSiTDa8xMx0KEHS/YSGyhLZRSbcao=;
-  b=JxVrnRn5emsl2V99NxIcUiTdExiIcDR1EUfcXdsk/v8CLoIT5JsicIH0
-   OKtet9KbWMdvvHcWXhYbV3IZ7WSEzoyWi9guMgemqLHvCr4PXjhYTRtcp
-   sq+Y+drAbyi1OqOOPTGNYTm8CCnfewRd7yAQiYKa0cYn+1/3LMS0Fn3mg
-   CrCWXSRk6dgJkUIJd6iMsawUi9XKPfG9gojgdzG6kBT/CRfqItn+5UEsT
-   N5AIp50LfuAUUh3zt480pE8EK9tZkSXBN3keK4qbIuxTv3jDxQ+ThNABt
-   OMuUNRdEEDWwSOYmsruOPhxrsycI3vvCKJMhgIwbpowj9CWP3qXfNKjQB
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="14973850"
-X-IronPort-AV: E=Sophos;i="6.04,240,1695711600"; 
-   d="scan'208";a="14973850"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 18:23:23 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="840014932"
-X-IronPort-AV: E=Sophos;i="6.04,240,1695711600"; 
-   d="scan'208";a="840014932"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by fmsmga004.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 30 Nov 2023 18:23:19 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Thu, 30 Nov 2023 18:23:19 -0800
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Thu, 30 Nov 2023 18:23:19 -0800
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.100)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Thu, 30 Nov 2023 18:23:18 -0800
+        Thu, 30 Nov 2023 21:24:06 -0500
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2108.outbound.protection.outlook.com [40.107.255.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9852A115;
+        Thu, 30 Nov 2023 18:24:12 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=n89hpCSnxUyfWzBIEP9dM2txFPnHXk7Pef0Kh39NFb8vxb/TKpwO3o3MP/YLAYwtljJHyJnJugdsfkxEerWA2HVm4nbNTWjtrlYQsfX9VK8LOd1Mb2dU+kZF7Z2f67rLLNc3fTUpsMq2ML1W5LT5sRaSMuZwQzPdAVj/5UDE6aiH+EOPMMorK6mvGQ1JR7wnwnQPCzf5c1TafahfgtEyYPzC4nG+LG9VyQeYTBeoJc+gTB5DO+Wq7GecBoM8Cfd5W20oO814J8Fu7c6/GBPe3bc3yixdqzSBjuKRsXugvEv6NRuXvDJN2owoehspiP5z8lv+fUYkPneu/Qp5kv5Ubg==
+ b=VQeyKqXS7H1O9HGAsIjaYYVHJT6n2y4dhrtNLQPrmYX7M/RePWxo6xmyF8nUMWOcWfF50e0tkx3Qbf/gQZMekYSUMNbWGuymRWL5gL8vOPsKmL4CljDPk/tRd8JOLhDLjyt19BkYJ70LAY4JngHWUGEDVP3kvYhepan1a7X2hMNjxVBxpbUW7dG884rVEygHiuZAVOsllgF6lfQijGrlCGkfaa8YurhDPEgogVp3zvPFLCkZeFdwsxrJyqDmtCywK+XDBErUmRKLIFKcflyY2pKBfFO+K/bJahnfHwDAeK2NiBiioYknj2Qc+pMYg9NXuvSlClc8nsUQ1GQ9kO8M1Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Illqm9H4x9UIsAP5K9i8IK93IJ4M45Epcuh5nmn5x2s=;
- b=I0Whcbl0r14GY0nE2dEgB+Yvqw3zLjuOXwDzeHgPY5h72R4Xu6axDP2Cw627neQ+g7BWV7n/AWorqc7yXyJyC+YLLbmhb1vI43intFYO1UhNK7bkIdqV4HvjfLM3u+fOWVvgyXbx0KAa9j1zoAYMX5rvC7hdAitYsMc8AK7IsiVwvD7qeHCdzkMaApK/qR/1T6XhyWcLE0tSAm2idzJ4cWPBiIyoFmtd96DjRsH6sdX+Xi6hInQnDjhUgD6XD8K9TdAcEctiwtuN4oDttz2zd4HBhQaPVfQu3PdDBXLR9+uQGznFFOQIVgNKSP5VabDzbrfIlYJKCW6BpShVZ21icA==
+ bh=cWJ7xAO3+0dD+0sMIHRGKOvzKUeGm8oJyXiudKV0OXw=;
+ b=An0lIygazgz/5jlScZwt0NeHXfahC83Nd9ElhaA20GIk3JngN0NxM8YaTcvbi/wDM6HYPDTX5qObQl1D1iVkZiysQnptN6hJFWTXa3G46lJmemaChPe/ckv5ithfQIKXHOcfWWi21oNrL0x3Xhmwqy7FDhXZJpuEgPrW4XK9v+kky9evDuEVDdh6PVzlBo9RAVgqiM4wc3HcxkknQY4+HzrH8sfedgCleVdJY20/qiPVK9Ux+qI7clnz1ugsIxsO3aPbt/uyrj7cdHmIKH0kcwEEtsmnpag5gJkTWAseF1I5qgq8d6tpdzBbSH0JsBw8MeMkS0w9K7PA1PYwfySgTQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cWJ7xAO3+0dD+0sMIHRGKOvzKUeGm8oJyXiudKV0OXw=;
+ b=XxdwcsaEXEh2y5ass9ljwqoWGcEFLCXonJRFIjKirTUaCzft/QFri+Hg4hgzfV4MCxa/zF/pf3LpqdxFFiC84eHmJjFJzdQf2NqakhYSdoACg6vQ4Y1e7OAxgGAdrmReLhv3JvumEV3+kfI0fwxVcK+iFixBL5EiOhWh7iYhcwZYdvY+xsIbqBsAZnV1/L+iAJ2jtAa1BlLdwXAxQx3fYSzQDnqR/zQjsShcM5olvfzfX1s5wQE+O+XNR71vM3NpVGB76+SOkxW6m2JXauzHYTjmdti1u4xAlBeRUJnMtYXy8SEjQvpGNBt9aBtyNSDgs3hiCrpTqE0f8orKWPm6sA==
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CH3PR11MB8660.namprd11.prod.outlook.com (2603:10b6:610:1ce::13)
- by MW4PR11MB6763.namprd11.prod.outlook.com (2603:10b6:303:20b::7) with
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from PUZPR06MB5676.apcprd06.prod.outlook.com (2603:1096:301:f8::10)
+ by OS8PR06MB7324.apcprd06.prod.outlook.com (2603:1096:604:28b::9) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.24; Fri, 1 Dec
- 2023 02:23:14 +0000
-Received: from CH3PR11MB8660.namprd11.prod.outlook.com
- ([fe80::66ec:5c08:f169:6038]) by CH3PR11MB8660.namprd11.prod.outlook.com
- ([fe80::66ec:5c08:f169:6038%3]) with mapi id 15.20.7025.022; Fri, 1 Dec 2023
- 02:23:12 +0000
-Date:   Fri, 1 Dec 2023 10:23:01 +0800
-From:   Chao Gao <chao.gao@intel.com>
-To:     Maxim Levitsky <mlevitsk@redhat.com>
-CC:     Yang Weijiang <weijiang.yang@intel.com>, <seanjc@google.com>,
-        <pbonzini@redhat.com>, <dave.hansen@intel.com>,
-        <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <peterz@infradead.org>, <rick.p.edgecombe@intel.com>,
-        <john.allen@amd.com>
-Subject: Re: [PATCH v7 21/26] KVM: x86: Save and reload SSP to/from SMRAM
-Message-ID: <ZWlDhYBYGiX7ir4X@chao-email>
-References: <20231124055330.138870-1-weijiang.yang@intel.com>
- <20231124055330.138870-22-weijiang.yang@intel.com>
- <d2be8a787969b76f71194ce65bd6f35426b60dcc.camel@redhat.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <d2be8a787969b76f71194ce65bd6f35426b60dcc.camel@redhat.com>
-X-ClientProxiedBy: SG2PR03CA0122.apcprd03.prod.outlook.com
- (2603:1096:4:91::26) To CH3PR11MB8660.namprd11.prod.outlook.com
- (2603:10b6:610:1ce::13)
+ 2023 02:24:09 +0000
+Received: from PUZPR06MB5676.apcprd06.prod.outlook.com
+ ([fe80::d754:7b3:dc4c:6b48]) by PUZPR06MB5676.apcprd06.prod.outlook.com
+ ([fe80::d754:7b3:dc4c:6b48%7]) with mapi id 15.20.7046.027; Fri, 1 Dec 2023
+ 02:24:09 +0000
+Message-ID: <f69c6d14-7b04-4bf6-91a4-e042f2ebc413@vivo.com>
+Date:   Fri, 1 Dec 2023 10:24:03 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/1] mm: add swapiness= arg to memory.reclaim
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Dan Schatzberg <schatzberg.dan@gmail.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Huan Yang <link@vivo.com>, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Huang Ying <ying.huang@intel.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Peter Xu <peterx@redhat.com>,
+        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
+        Yue Zhao <findns94@gmail.com>, Hugh Dickins <hughd@google.com>
+References: <20231130153658.527556-1-schatzberg.dan@gmail.com>
+ <20231130153658.527556-2-schatzberg.dan@gmail.com>
+ <ec8abbff-8e17-43b3-a210-fa615e71217d@vivo.com>
+ <CAJD7tkY-npqRXmwJU6kH1srG0c+suiDfffsoc44ngP4x9H0kLA@mail.gmail.com>
+ <abc73ea8-f172-422e-bc58-7424e47636b8@vivo.com>
+ <CAJD7tkaXUsvCEkenaoBOGYaSjCW5yQNCuFiWJEDJOtKXLaYeeg@mail.gmail.com>
+From:   Huan Yang <11133793@vivo.com>
+In-Reply-To: <CAJD7tkaXUsvCEkenaoBOGYaSjCW5yQNCuFiWJEDJOtKXLaYeeg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SI1PR02CA0049.apcprd02.prod.outlook.com
+ (2603:1096:4:1f5::18) To PUZPR06MB5676.apcprd06.prod.outlook.com
+ (2603:1096:301:f8::10)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PR11MB8660:EE_|MW4PR11MB6763:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9633d216-ec55-4516-cb2e-08dbf2147693
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-TrafficTypeDiagnostic: PUZPR06MB5676:EE_|OS8PR06MB7324:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6fa4b345-f8e8-4335-46b3-08dbf2149965
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: QpYZL6ghHP/rNpV5ah4azB/ZmMefa8xvZLOS3cH/qoRocppxKEpTTvkTo5Yo+AgIodJlBvI99vjiqN5DMpT90K0BmuEjaWmgvopV0ynpT2KcYFdiDSRTExasxbP6gDBaluL/TJuzJFEUuPQFFlOO0VVtovP1A6lvLEpcl38L53uDNynL6vS+Twi7hw6gCDS60v47+IaNBSgUAzQYqebMg5NjNRZCThOUZtrn7Z0+cMogaYXhwRETc1RJKhW0qCooCmPjjsYqeqvpLdYXqwqGW4Q28E6ZiJUsSRX/lPtNhB91l/VRAvwMWhHAXhOtIM+w2eCXaM+g51J4i7PE7nxIIoDua3y9EGIUZ1K0zgr4xfEOFIC/qMCQDDDDphakTL1oMQPTO9I0kB6/Nf/YypetDEGgvDissyAij4UfXNW68VCP2DpSzYCMmtAjgp1tocuUax9CmqQqky2PY6abHoDUdsW1O+AQ+rLFjfHZ19/YrXlGXi9JpjrGn3jvHXi0dJ89CTpR35Ah2Wyz01UbhZAi+hK/AXRInuR1i3mmfwSJaeqUf8AUAONhk7nnB4ij+z8C
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR11MB8660.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(39860400002)(136003)(396003)(346002)(376002)(366004)(230922051799003)(1800799012)(186009)(64100799003)(451199024)(86362001)(83380400001)(6506007)(26005)(9686003)(6666004)(6512007)(4001150100001)(6486002)(478600001)(44832011)(8936002)(5660300002)(8676002)(41300700001)(2906002)(4326008)(66556008)(33716001)(316002)(66946007)(6916009)(66476007)(38100700002)(82960400001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: iNPDxCsJYZUDZoYW4im/JqLj0GDK0sK/vcGWuFnihDV9oG1J+G/nA1xo8ym/37OBjx+RrcRc+cVE07TRjaGfcvOOipL4TK9Bf7PyfL/enZtYdD9M2CVMtjECMxeS3cPTEtKhDt+bWWrF6ZlreL2Tdzd7l2qLbhOYdKTGGSw97j5EF55Y3XpxoTXSEvlr/GbNL6+C/+njgp0LileQlM27x06W3VlgcqXXhIl5ij/GUq382SlFhkwg2ZebLwW1SfInHpCr0ICP3uZjhMPG2+DazG7ZWE68Hw9MsPTpbXkVDuilT4qVt7ucwfuZfcZQfCH8yHlxyaqLO4pxkXk78Af3FUlAN1kmodJ9JwhSazB9cC3gT6fCq+3R0A9ZXphExLrVhnWLy7Vs1HC+huKsRHHuIwpBsVqqaJRwo8NgvsMcBlQvdLBYbZ4/g/pEo1X8+A8quIfL82N9Scs40vyGU4E/sJuxHcjHf8ZjeRfMXWUWkKzSQjmZw5s/+13ylQfBwKLhF9UJvIAypuaDrsyzC+KC8Z0cKldm8SXsiczCoDbHuTUBD9fAF3hKsOyKSOjYNFvydKt5HSB57U82P+GQRlq4PwZdOSoLobpqbpjKPx1pfMxFecHX2u2uQOtc8LrnlRf6dDQrhCyUWu8mAtCWCZeRwHOA4tC/3Gje+m8aUXaBjWku2PEHApfPGbTMhlzEdC17dzfN21euBe4vNIIWqm5jvQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PUZPR06MB5676.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(366004)(136003)(376002)(346002)(230922051799003)(1800799012)(64100799003)(451199024)(186009)(31696002)(31686004)(316002)(4326008)(8676002)(6486002)(478600001)(38100700002)(8936002)(36756003)(5660300002)(54906003)(66476007)(66556008)(6916009)(66946007)(7416002)(2906002)(38350700005)(6506007)(53546011)(52116002)(6666004)(41300700001)(6512007)(26005)(2616005)(83380400001)(81742002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Oo4GFcEgsSZWcUM2ZgZ27zle5EWuSRolq4a6nvMhh4dM0WqImPUdOJ6AOlPn?=
- =?us-ascii?Q?Lb+Pt+P9Uhvwen8zA46Hpf7Tr1+41ON7/O9GXzWsDF4OrTXiNyH0hkLgugew?=
- =?us-ascii?Q?Lo4qmTG2itPfw7Xe5Lda9MJPghTRDzhjAl3UdPPoySk27HYZm8UMvARewNLW?=
- =?us-ascii?Q?+2FVez+uJ0mlFt5F2RygSeLKkXfCz3dimJdYBeQ/Vjy/LcDcKrrORVr9Vp0M?=
- =?us-ascii?Q?CMeYWRMw58VFz41ZP5Dg18TDwdYZc+MvrA7X0tE2rfLtTTta1u3qzyNjYPCg?=
- =?us-ascii?Q?LAqkfQjTjyWS5MuSN6neQvbSxOp/vFEhgyZMOhxgOtdb8xqKLhpIIXE+cGR8?=
- =?us-ascii?Q?89c1hLxcMq52M1QZbrYyTO0ldheImYGfbBC/azmMkwjqhqSY2RAHq8xhtPRI?=
- =?us-ascii?Q?H78YrYcZOcxRgcdW7MLR15rRbAVLcURyUmW8gvoz7sn+wXrvTCEMv/dT+oQc?=
- =?us-ascii?Q?/8FqK9gSigocux5Ypth5fifCiGDRvLmTkU/BZoAXsCX29yg93FqJCJhaIdH0?=
- =?us-ascii?Q?3vcprLXY4NwjK5gOD10UQspZRApL7+dJzUUvViN1WwNlcLPd3UMFAXra2hkZ?=
- =?us-ascii?Q?kbm8AgrICadAssI8xsSLfmJ8NjNT4Ji1w00M9mrgD3A3VWYCtG+eAUoLa2wT?=
- =?us-ascii?Q?69Jj6pxLx3dCrP3gFXsTJEBa6jOwvGAkB17AM6rugu88g5+VYjXSz1GG/MWW?=
- =?us-ascii?Q?4N0WM6lemny49lGqbaocM0TP7ZHulR96HPROw2gS8W33bJW8LiqPgOhvXrFE?=
- =?us-ascii?Q?tgbwAFzm5aKEVsfxJGHWK4JgqGJPggi/9HSSWClRffR5VKWqVokbQDLZXGhe?=
- =?us-ascii?Q?mmFbfSkqfuBNSXgGB0DNj9fx/N83LVmqvEgBlTPorC/lXTRyn/6NxupZpYmS?=
- =?us-ascii?Q?PlDbxmKv7Jhq5yVQC7FyYNhDxSi6W4mlDZmcYnRxWFj5PWaefv1onZNeyuY2?=
- =?us-ascii?Q?eNVbrBlzwGYLBXTtup92gE92OqMhJPe8WNvGmrNdaVIqn38Z0hO2U0+F0huX?=
- =?us-ascii?Q?m9fZf0koy1z/HWsAoSILejKftBDFl4TuG6dTHbf5rIen6kXCo+5skbWdPX/8?=
- =?us-ascii?Q?xN2F7EgDwilQj12h4M9K5fv5LlcFwQKBUjg43o3VKI43lD3lPPDdPzQoRBsx?=
- =?us-ascii?Q?qxXPPIiz540mLvM3QiA8ca4LN3GXZF2VFCGu7wzAAHdCNqHkf3cglkmFmAZF?=
- =?us-ascii?Q?o7Exca0ryvwZxmkzbwguv2ZJ0SA9HnnsTi4PYuNRoUPeCBtJ/zxdw0OuP5Ui?=
- =?us-ascii?Q?yxbs/aUzK7Lw5oGmv1X+DmAG3UxBKNeK1joDPYslTKN0zNbPrLY6kS11e2ON?=
- =?us-ascii?Q?BebEbEJITJVCj+oSID4HVO7V+lixtV6MxKBh0vAHGhGu+BQ94zqADdp5UR2f?=
- =?us-ascii?Q?0WFtiklFrqhYbUf1zFUbcF6TY775+x+gbetWF8JzmvKXAvADzrmChiYDfDRv?=
- =?us-ascii?Q?WoeqDqtmKv75qpZR7wrnGpJUh2PlYwlZtCjNvqJtiYH6ewolEw9b0SalD2F9?=
- =?us-ascii?Q?5BedDDufnOglnUWzmlgV9GE8opQSpV6T/UepZUuS8o2RJMMiq/CGtULn1aiB?=
- =?us-ascii?Q?mVPE7sIJ7dqRwq/XQTmZzZd/p0dQabzJlY/qgfQC?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9633d216-ec55-4516-cb2e-08dbf2147693
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR11MB8660.namprd11.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZVl3N1lXVmNvYkMzMGVTazFmeFpyVGtkMjMrelhhMmt6UTV3TTZGNXhnSWxT?=
+ =?utf-8?B?aUpQUUo4ZFpacCtjN2VoSDFRd2dBMnViUlVLQ0dOdUFCMWVHSzRnOWlIZGlM?=
+ =?utf-8?B?ZDVvUDE0M2V0enNVRE11K2EzMlYxb2pscyt4NjQwMnZrUnBWa083OU5JWHoy?=
+ =?utf-8?B?ZnRUL0R0blBEcWlEdUlpQ043U1E5QVpDSmpSeFN5Z2lEOE5aUkpyNXlUSTdh?=
+ =?utf-8?B?ZVhaRFh2dmhpQzFzZnQ0dWIxMTVmOUZZZjJsV28yQnIrdCtjSHkwUVNiQXRH?=
+ =?utf-8?B?elYyeHEwUG5tSzRDRjgvUDhFQ1F3S0UycFJUcXlHZWlWcjNpeWx3eHpCb2JR?=
+ =?utf-8?B?YjM3OGIvdzl4SkpVYnNUOFRXZjh1NDRTK3pYTkRoWS94bllPTlZPNkNBYWZO?=
+ =?utf-8?B?aXVhMi9EZTlrZHZJMlVsMTNuZ2UwdnN5aGQyeDBoSHl2Y1BRc0tXSlZZV28v?=
+ =?utf-8?B?OGFSVjBscitlZDJxTytxRmxmaGdDblo0WDZVYlkwbW9BcVhwMVI4UlllUEJt?=
+ =?utf-8?B?Qktrek54ZzZ0NnhTRHpwN1BWS0R2UjA3eXdXcEFSVW5RbVVCU3pDRlBpWmRC?=
+ =?utf-8?B?RE9EbUNndUo5ZGpWK0xRTTV6L0VtQjhVVmJjUVNkTEp5NUlSWkplOEVTRlU5?=
+ =?utf-8?B?cUEwcFc3d1ExbWpxanc4MVBvWWxtUkJ5azVKL1NkeHBYa2Fqd3JPcThqNitF?=
+ =?utf-8?B?RE80WVFITloreHBrcTVXcmltSWRvOHBPVzRJNE1oUyt1Z2hORkV5VHYyMVlm?=
+ =?utf-8?B?RWNsaUQ4YUdWRm9JNFVMTXZGcVBJM3duV1pBZ3RKcldaNzJESWh1UXRtaER3?=
+ =?utf-8?B?MnJ4eHIycHV2eWlWOGQyNXd6VmU4VXU1THhhSHRpZkhaNEVDU2tYeFhhblZl?=
+ =?utf-8?B?TnFKcW5BL3ZuV2JUR1NDaUlaQXZ2cUlNQVdsL3J4dnNBYk1Kd0UvV3MvaU8v?=
+ =?utf-8?B?bHRMWXBwbUNKZmYvdmEwMFY4WGtsSHZ6cXBFYUtyMVg0WkIwUHY4d3M3OVAy?=
+ =?utf-8?B?TUpYWk44UXJwYUdjNm5VSzFTc0Q4Y1VjdUcyZlhrNHEvNGtPK092Z044NG4v?=
+ =?utf-8?B?TzhTdld6SU5JRGM3OGxWdHB3MjExaXFlTEhjdkRmWnBFbUwreUp2OUVjWHo3?=
+ =?utf-8?B?RitIUFA3emhUaHhLZmJnKzQ3UHJlSk1ObTl3VXhLVnl3SW9yRmI1d3hmQnVh?=
+ =?utf-8?B?S05DU1JzQ1AvMXNYWHY2VWgvVWREZG1tQ2RrWThZSlk1b1FxdHVlMlNyU2NZ?=
+ =?utf-8?B?Z1puSTBYL1lrWXFyZEwyTlgvdDBRMThCRk8vdERGUHdlSnpxbWUyM2dwMGpx?=
+ =?utf-8?B?RFdEcHFWd0hlOTdXWXVwM2l0L2xTWWtRdnQ1aUgyc0pwRmhGZkZTTTFpaTJM?=
+ =?utf-8?B?TDFjUTNINEgrckk0M1lvbEkxOG9hWG14Q0dRbjNoSWNuZjlCQm44NWZTRlJr?=
+ =?utf-8?B?c0FrajlKa05xSVRBOEN6UWVWL1ZpTFVTM1p3UEtyaVNtRWVEUEhyY3lyajJy?=
+ =?utf-8?B?ZUF4eWRsWERvcjYzRVNZK2w2bkJvckcxaU5KZnBVRGtYQVc4anZtWGt0dHI5?=
+ =?utf-8?B?bzZVS2lSVFltMDV5VzJ5b0VhSWFLNnJWVVBYa0RJclV4VmdydkhWNGg0Y2FX?=
+ =?utf-8?B?TWo2bGpEd3VTRWtOYkxSY2JadHhBblYvOFdWdDJtK29KaTVRaVRkR0VrUnZX?=
+ =?utf-8?B?VVNMVGE3THUxSXBZV3BnemRRdU42OVhlQ2piOEtCNlh3YlJjMGZxZmlpaHB1?=
+ =?utf-8?B?SkcyTXRhTTJjUWdqZkNuMWVSaTJSRTNOLzdpSTAzaXlUOTlhM0g4TUVYaE1n?=
+ =?utf-8?B?SFFnSThEcUdodGNPNkdRZWhrZGpsRDc4eHBGS0d1YWJIM1VtS3I2ZGdPdmJL?=
+ =?utf-8?B?RXNWMUQ2a2V5Y2RlRnE4NGVramhtS3ptNHhPTHpTN3dVR2I5MC9Vb3QvVnAy?=
+ =?utf-8?B?T0J4aXJoMmRSd2dxWEZYcGIxcnFRSXVIWVZ6OG1oRS85cklPTVVkcFJFd3ZF?=
+ =?utf-8?B?YlZobTJoczU0OWFPYmoxN3VUcnJvNDBJMHcyamxyM3J3TjVDSEhBMndaZHE5?=
+ =?utf-8?B?MnNMUGdIRllueDVnaXk5dmlvNkRDaityQ3pURVA2dWsxcE5zN3hOM1k4enRF?=
+ =?utf-8?Q?70RE6QtMaJ+D6RwdAEDnwVGTo?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6fa4b345-f8e8-4335-46b3-08dbf2149965
+X-MS-Exchange-CrossTenant-AuthSource: PUZPR06MB5676.apcprd06.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Dec 2023 02:23:11.1514
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Dec 2023 02:24:09.2363
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /eWMqEeKk98/28xUhTR+tG3//cG2OXo1+87Doqk2ahgPOUvyrDTnPk7X+fcguO1nKWE5FVHnrzUyX8ij2DUhHA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR11MB6763
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-MS-Exchange-CrossTenant-UserPrincipalName: p078xhHm1NnshdxDpYgaURMScd3o6ZMwVJFGV0EZS/uUieqU1mv+P4wVZWEyX/mly1uhqHedFWg0P0sNxxfAVw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS8PR06MB7324
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 30, 2023 at 07:42:44PM +0200, Maxim Levitsky wrote:
->On Fri, 2023-11-24 at 00:53 -0500, Yang Weijiang wrote:
->> Save CET SSP to SMRAM on SMI and reload it on RSM. KVM emulates HW arch
->> behavior when guest enters/leaves SMM mode,i.e., save registers to SMRAM
->> at the entry of SMM and reload them at the exit to SMM. Per SDM, SSP is
->> one of such registers on 64bit Arch, so add the support for SSP.
->> 
->> Suggested-by: Sean Christopherson <seanjc@google.com>
->> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
->> ---
->>  arch/x86/kvm/smm.c | 8 ++++++++
->>  arch/x86/kvm/smm.h | 2 +-
->>  2 files changed, 9 insertions(+), 1 deletion(-)
->> 
->> diff --git a/arch/x86/kvm/smm.c b/arch/x86/kvm/smm.c
->> index 45c855389ea7..7aac9c54c353 100644
->> --- a/arch/x86/kvm/smm.c
->> +++ b/arch/x86/kvm/smm.c
->> @@ -275,6 +275,10 @@ static void enter_smm_save_state_64(struct kvm_vcpu *vcpu,
->>  	enter_smm_save_seg_64(vcpu, &smram->gs, VCPU_SREG_GS);
->>  
->>  	smram->int_shadow = static_call(kvm_x86_get_interrupt_shadow)(vcpu);
->> +
->> +	if (guest_can_use(vcpu, X86_FEATURE_SHSTK))
->> +		KVM_BUG_ON(kvm_msr_read(vcpu, MSR_KVM_SSP, &smram->ssp),
->> +			   vcpu->kvm);
->>  }
->>  #endif
->>  
->> @@ -564,6 +568,10 @@ static int rsm_load_state_64(struct x86_emulate_ctxt *ctxt,
->>  	static_call(kvm_x86_set_interrupt_shadow)(vcpu, 0);
->>  	ctxt->interruptibility = (u8)smstate->int_shadow;
->>  
->> +	if (guest_can_use(vcpu, X86_FEATURE_SHSTK))
->> +		KVM_BUG_ON(kvm_msr_write(vcpu, MSR_KVM_SSP, smstate->ssp),
->> +			   vcpu->kvm);
->> +
->>  	return X86EMUL_CONTINUE;
->>  }
->>  #endif
->> diff --git a/arch/x86/kvm/smm.h b/arch/x86/kvm/smm.h
->> index a1cf2ac5bd78..1e2a3e18207f 100644
->> --- a/arch/x86/kvm/smm.h
->> +++ b/arch/x86/kvm/smm.h
->> @@ -116,8 +116,8 @@ struct kvm_smram_state_64 {
->>  	u32 smbase;
->>  	u32 reserved4[5];
->>  
->> -	/* ssp and svm_* fields below are not implemented by KVM */
->>  	u64 ssp;
->> +	/* svm_* fields below are not implemented by KVM */
->>  	u64 svm_guest_pat;
->>  	u64 svm_host_efer;
->>  	u64 svm_host_cr4;
->
->
->My review feedback from the previous patch series still applies, and I don't
->know why it was not addressed/replied to:
->
->I still think that it is worth it to have a check that CET is not enabled in
->enter_smm_save_state_32 which is called for pure 32 bit guests (guests that don't
->have X86_FEATURE_LM enabled)
 
-can KVM just reject a KVM_SET_CPUID ioctl which attempts to expose shadow stack
-(or even any CET feature) to 32-bit guest in the first place? I think it is simpler.
+在 2023/12/1 10:17, Yosry Ahmed 写道:
+> On Thu, Nov 30, 2023 at 6:14 PM Huan Yang <11133793@vivo.com> wrote:
+>>
+>> 在 2023/12/1 10:05, Yosry Ahmed 写道:
+>>>> @@ -2327,7 +2330,8 @@ static void get_scan_count(struct lruvec *lruvec, struct scan_control *sc,
+>>>>           struct pglist_data *pgdat = lruvec_pgdat(lruvec);
+>>>>           struct mem_cgroup *memcg = lruvec_memcg(lruvec);
+>>>>           unsigned long anon_cost, file_cost, total_cost;
+>>>> -       int swappiness = mem_cgroup_swappiness(memcg);
+>>>> +       int swappiness = sc->swappiness ?
+>>>> +               *sc->swappiness : mem_cgroup_swappiness(memcg);
+>>>>
+>>>> Should we use "unlikely" here to indicate that sc->swappiness is an unexpected behavior?
+>>>> Due to current use case only apply in proactive reclaim.
+>>> On a system that is not under memory pressure, the rate of proactive
+>>> reclaim could be higher than reactive reclaim. We should only use
+>>> likely/unlikely when it's obvious a scenario will happen most of the
+>>> time. I don't believe that's the case here.
+>> Not all vendors will use proactive interfaces, and reactive reclaim are
+>> a normal
+>> system behavior. In this regard, I think it is appropriate to add
+>> "unlikely".
+> The general guidance is not to use likely/unlikely when it's not
+> certain, which I believe is the case here. I think the CPU will make
+OK, I will remember this part.
+> better decisions on its own than if we give it hints that's wrong in
+> some situations. Others please correct me if I am wrong.
+No, you're right. CPU is good to do this.
+>
+>>>>           u64 fraction[ANON_AND_FILE];
+>>>>           u64 denominator = 0;    /* gcc */
+>>>>           enum scan_balance scan_balance;
+>>>> @@ -2608,6 +2612,9 @@ static int get_swappiness(struct lruvec *lruvec, struct scan_control *sc)
+>>>>               mem_cgroup_get_nr_swap_pages(memcg) < MIN_LRU_BATCH)
+>>>>                   return 0;
+>>>>
+>>>> +       if (sc->swappiness)
+>>>> +               return *sc->swappiness;
+>>>>
+>>>> Also there.
+>>>>
+>>>> +
+>>>>           return mem_cgroup_swappiness(memcg);
+>>>>    }
+>>>>
+>>>> @@ -6433,7 +6440,8 @@ unsigned long mem_cgroup_shrink_node(struct mem_cgroup *memcg,
+>>>>    unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
+>>>>                                              unsigned long nr_pages,
+>>>>                                              gfp_t gfp_mask,
+>>>> -                                          unsigned int reclaim_options)
+>>>> +                                          unsigned int reclaim_options,
+>>>> +                                          int *swappiness)
+>>>>    {
+>>>>           unsigned long nr_reclaimed;
+>>>>           unsigned int noreclaim_flag;
+>>>> @@ -6448,6 +6456,7 @@ unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
+>>>>                   .may_unmap = 1,
+>>>>                   .may_swap = !!(reclaim_options & MEMCG_RECLAIM_MAY_SWAP),
+>>>>                   .proactive = !!(reclaim_options & MEMCG_RECLAIM_PROACTIVE),
+>>>> +               .swappiness = swappiness,
+>>>>           };
+>>>>           /*
+>>>>            * Traverse the ZONELIST_FALLBACK zonelist of the current node to put
+>>>> --
+>>>> 2.34.1
+>>>>
+>>>> My previous patch attempted to ensure fully deterministic semantics under extreme swappiness.
+>>>> For example, when swappiness is set to 200, only anonymous pages will be reclaimed.
+>>>> Due to code in MGLRU isolate_folios will try scan anon if no scanned, will try other type.(We do not want
+>>>> it to attempt this behavior.)
+>>>> How do you think about extreme swappiness scenarios?
+>>> I think having different semantics between swappiness passed to
+>>> proactive reclaim and global swappiness can be confusing. If it's
+>>> needed to have a swappiness value that says "anon only no matter
+>>> what", perhaps we should introduce such a new value and make it
+>>> supported by both global and proactive reclaim swappiness? We could
+>>> support writing "max" or something similar instead of a special value
+>>> to mean that.
+>> Yes, use other hint more suitable for this scenario.
+>>
+>> However, from this patch, it seems that this feature is not supported.
+>> Do you have a demand for this scenario?
+> We do anonymous-only proactive reclaim in some setups, so it would be
+> nice to have. I am not sure if it's absolutely needed vs. just using
+> swappiness=200 and living with the possibility of reclaiming some file
+> pages.
+Right now, the scenario where swappiness=200 is sufficient for us, but 
+having the
+tendency to only reclaim anonymous pages has a clear semantics that is
+suitable for upper-level strategy scenarios, rather than relying solely on
+the functionality of swappiness.
