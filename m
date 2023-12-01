@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEDF080118A
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:23:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB02280118B
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:23:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378877AbjLARW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 12:22:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35358 "EHLO
+        id S1378946AbjLARXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 12:23:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378875AbjLARWm (ORCPT
+        with ESMTP id S1378938AbjLARWw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 12:22:42 -0500
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41D78D40
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 09:22:47 -0800 (PST)
-Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1cfccc9d6bcso8814175ad.2
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 09:22:47 -0800 (PST)
+        Fri, 1 Dec 2023 12:22:52 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE5A610FC
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 09:22:49 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-db4038d7cfdso990208276.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 09:22:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701451367; x=1702056167; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1701451369; x=1702056169; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=VC2uJLzEqyfXA07DP6aRcEwY5WDZYJjFpRfi6yvMkTY=;
-        b=DM4YkdGpaS+Q4/yBF4UQ7iF6WTlEMj4+z4R6cDBPMZOrlBrBkCtTGniUQ6rSvNfH7z
-         kp3iOVYyXQuoieP7RCz6lXojvaRY0OBSIzC9oZV/Q/GIa0H6EOBJCHR6XF3NHflK8i/C
-         X54aVeJ20Uib0ooDcDRg4LMEIkyK1DxW/ApZmB0t1zHrli6lDWMIexG1wpQ4KFZlDab4
-         JR3vHbveX2MhCQ933OEBI7BlEVI8RVLJuvsfW5I/GOtOXn2FZP68uLw9u1LMpcYP6GxM
-         ct0aimurUfOBHvxNy4ZUHVcAuD5Q8JueDR7AEB+gZ0k8L86jBdX18ORkkQzn+JAsGinY
-         ElTQ==
+        bh=i8lzNNyGh9YxFrbdbNM0dDCNT8qnC2FAkz/L9borbvI=;
+        b=DPujzvQX/ijuvdElTrA+p6r+aHAN3CRTOq14R2EmCz6skT8/TO2GM61SIKl1qeXp0n
+         fZ+Pr+0z6gznhqPFzbLfO3bTNj3zpwqWuNnbhpot4Zx9rOtr6YPGSzWO9pzuzadOARX4
+         re7TI5zrcG4CGCpmHyNLCOJMRuXQXpPFqOh6MIXUZecKgXgZ9/3NmHHvt5rBUAVEIdzN
+         b6q6wKVD7UwiSDrsCt9TdgAyXDW0ml9LncrmJSrtgUTZdEPk6AREk9ex1FLh98lOxg/V
+         NnwLVqVLzSDFrHWNokgl8dWnxFqNYrmBTHKU3GsEppIEvIf/6yHOa/tx/fRJkBaIsK67
+         9/fg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701451367; x=1702056167;
+        d=1e100.net; s=20230601; t=1701451369; x=1702056169;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VC2uJLzEqyfXA07DP6aRcEwY5WDZYJjFpRfi6yvMkTY=;
-        b=JUq6gmCS7kX3dwcvQlnuSHVqIhWW8/PgPS6vR7LzvtGDJXl5k4KplB0djWnYkMP3m7
-         N8zymS7dpCwfb6MMBKNtx+wCbruaiCGh3LWYm+4VoA6LOE/dCTKU29xNBstvjEVXLc6V
-         ykVul0clktf8813ZIjfibor5KkyLgA1U32nGecN+t9vHt/nXUbkaGx+bYuie6r/uT5Pm
-         M4+6YnQSRdaxuCzm9uicIdAxBfrGVbcjGReebEWOvaMpiBdrMnTk/6B8hF6VUmlt5e8w
-         hPEVZqdCAoD8lM74RyoFJLaEukHzvvOaLD+HpxYZ5+4g1tzWTpEVavCXxvWxWcZf84MR
-         XchQ==
-X-Gm-Message-State: AOJu0YykC1+/tl8l6zFZPDM0It14LcHBZPrsey6eXa8zoKgfi/0oa+tk
-        fC3bPAk4U2VNA7B3QosFmClVSv0ePhdNSg==
-X-Google-Smtp-Source: AGHT+IEkcV1p6eqdu0bez7LWIawyKVoI1FER2wUkLTAiVsOWMewcldTbRdmYDL1RqOrJrrmFZZ1q2xec/67Bmg==
+        bh=i8lzNNyGh9YxFrbdbNM0dDCNT8qnC2FAkz/L9borbvI=;
+        b=YBoQeZe9oI0BUzkJsan56vfCjlNH7ynAVJTsHoeVP1DpPd3MFVxlxHvQlbYMyvvv80
+         cZH/5cPSKZ75kISWMbIedGlru2qUAJMBvSayQ+/nvHr9v4fdVbFQ840Grwt3Eg0nqG8e
+         BdWXF7cm0uSpU5MjZUa50DtZj19Nh8qUNPyxyHwkP8M9TjL5G2jWb40Abq5NZaYsb6Ed
+         Tc9vXhEjYDd30jYgd/kzX8zeIY9V1eZMJYDwnr1YhYbMsMIpIH/hjBWpfIH2JusTR5Ck
+         D5Vyn7wQKv6HTQrUryGcpOEngotI/DhnVxwviMzEroRoo1d32En/2AYOZyMuCOTrKLUx
+         mduQ==
+X-Gm-Message-State: AOJu0Yw5Un3LJTG9M4qqJekechpR2atvJHWM84B21KsSYeTFXNLG9GMs
+        XZ0hKajGFSLGaB4hqT21tNn72SvhlkAZrQ==
+X-Google-Smtp-Source: AGHT+IHjF+ng2E43F9BQKf99LVucEjoO3ykuz42nnRR7hpAJ0pBW2m6GsFcflbGRPtHvtKawEVX1SCXVdvfftg==
 X-Received: from xllamas.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5070])
- (user=cmllamas job=sendgmr) by 2002:a17:902:8644:b0:1d0:3090:957d with SMTP
- id y4-20020a170902864400b001d03090957dmr668283plt.11.1701451366752; Fri, 01
- Dec 2023 09:22:46 -0800 (PST)
-Date:   Fri,  1 Dec 2023 17:21:35 +0000
+ (user=cmllamas job=sendgmr) by 2002:a25:d6c8:0:b0:db5:452a:8e4f with SMTP id
+ n191-20020a25d6c8000000b00db5452a8e4fmr171087ybg.4.1701451368959; Fri, 01 Dec
+ 2023 09:22:48 -0800 (PST)
+Date:   Fri,  1 Dec 2023 17:21:36 +0000
 In-Reply-To: <20231201172212.1813387-1-cmllamas@google.com>
 Mime-Version: 1.0
 References: <20231201172212.1813387-1-cmllamas@google.com>
 X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
-Message-ID: <20231201172212.1813387-7-cmllamas@google.com>
-Subject: [PATCH v2 06/28] binder: fix trivial typo of binder_free_buf_locked()
+Message-ID: <20231201172212.1813387-8-cmllamas@google.com>
+Subject: [PATCH v2 07/28] binder: fix comment on binder_alloc_new_buf() return value
 From:   Carlos Llamas <cmllamas@google.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         "=?UTF-8?q?Arve=20Hj=C3=B8nnev=C3=A5g?=" <arve@android.com>,
@@ -63,8 +63,7 @@ To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Carlos Llamas <cmllamas@google.com>,
         Suren Baghdasaryan <surenb@google.com>
 Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com,
-        stable@vger.kernel.org, Alice Ryhl <aliceryhl@google.com>,
-        Todd Kjos <tkjos@google.com>
+        stable@vger.kernel.org, Alice Ryhl <aliceryhl@google.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
@@ -76,12 +75,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix minor misspelling of the function in the comment section.
+Update the comments of binder_alloc_new_buf() to reflect that the return
+value of the function is now ERR_PTR(-errno) on failure.
 
 No functional changes in this patch.
 
 Cc: stable@vger.kernel.org
-Fixes: 0f966cba95c7 ("binder: add flag to clear buffer on txn complete")
+Fixes: 57ada2fb2250 ("binder: add log information for binder transaction failures")
 Reviewed-by: Alice Ryhl <aliceryhl@google.com>
 Signed-off-by: Carlos Llamas <cmllamas@google.com>
 ---
@@ -89,18 +89,18 @@ Signed-off-by: Carlos Llamas <cmllamas@google.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/android/binder_alloc.c b/drivers/android/binder_alloc.c
-index 9b5c4d446efa..a124d2743c69 100644
+index a124d2743c69..a56cbfd9ba44 100644
 --- a/drivers/android/binder_alloc.c
 +++ b/drivers/android/binder_alloc.c
-@@ -704,7 +704,7 @@ void binder_alloc_free_buf(struct binder_alloc *alloc,
- 	/*
- 	 * We could eliminate the call to binder_alloc_clear_buf()
- 	 * from binder_alloc_deferred_release() by moving this to
--	 * binder_alloc_free_buf_locked(). However, that could
-+	 * binder_free_buf_locked(). However, that could
- 	 * increase contention for the alloc mutex if clear_on_free
- 	 * is used frequently for large buffers. The mutex is not
- 	 * needed for correctness here.
+@@ -556,7 +556,7 @@ static struct binder_buffer *binder_alloc_new_buf_locked(
+  * is the sum of the three given sizes (each rounded up to
+  * pointer-sized boundary)
+  *
+- * Return:	The allocated buffer or %NULL if error
++ * Return:	The allocated buffer or %ERR_PTR(-errno) if error
+  */
+ struct binder_buffer *binder_alloc_new_buf(struct binder_alloc *alloc,
+ 					   size_t data_size,
 -- 
 2.43.0.rc2.451.g8631bc7472-goog
 
