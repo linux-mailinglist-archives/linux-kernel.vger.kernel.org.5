@@ -2,66 +2,309 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30932800977
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 12:14:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FD1A80097A
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 12:14:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378491AbjLALOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 06:14:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45974 "EHLO
+        id S1378494AbjLALOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 06:14:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378442AbjLALOH (ORCPT
+        with ESMTP id S1378442AbjLALOh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 06:14:07 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D4091A4
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 03:14:14 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B319C433C9;
-        Fri,  1 Dec 2023 11:14:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701429254;
-        bh=OdzoVebDs7gSdJjM+MmGQrpOk9Ze++QAhPVoPuuGU1k=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=IQaau0mdxsNM12uO+lcCAhGYbIw4GtwNSFzKew/Owrh11L1GUik+55cJsxWR6wUrp
-         Qv5Aan4do5nb8j/jwyXtbktfGZ6MJXsLZkl5CddkPYwLTYueRfM16vHFQF6A+94HcR
-         I19e9TZy/a7sVok3hrTXCIr1sn+E2u2+Yb4Arm8iDeYxIjz7BcwBSQciP3u4GogBtV
-         xPgjDBWFVx1/1fRxxlyCHc/9Mdc9RNjX9fPbp9waVubILxFpl1QLBFo/b1L1BEOv/H
-         Pw9MuRVoKKaO2SmiT93IToz3Vbqw6PUIrRunZNyU3+/3XK0OwQ9LRFJ6zGqARhV388
-         JoKPkjn2TXJmQ==
-From:   Lee Jones <lee@kernel.org>
-To:     cw00.choi@samsung.com, krzysztof.kozlowski@linaro.org,
-        lee@kernel.org, linux-kernel@vger.kernel.org,
-        zhongkaihua <zhongkaihua@kylinos.cn>
-Cc:     huangwei@kylinos.cn, zhang.chen@cs2c.com.cn,
-        k2ci <kernel-bot@kylinos.cn>
-In-Reply-To: <20231129015526.3302865-1-zhongkaihua@kylinos.cn>
-References: <20231129015526.3302865-1-zhongkaihua@kylinos.cn>
-Subject: Re: (subset) [PATCH] mfd: fix comment typos
-Message-Id: <170142925181.3367050.2594131835189756038.b4-ty@kernel.org>
-Date:   Fri, 01 Dec 2023 11:14:11 +0000
+        Fri, 1 Dec 2023 06:14:37 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 119DE1A4
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 03:14:43 -0800 (PST)
+Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id D3F0666073A1;
+        Fri,  1 Dec 2023 11:14:40 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1701429281;
+        bh=W5BFlXtoyKmd31EMjrnzRW6SOTld/TWU/7ZUZClZ9Bc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=BJGAiH2SV+gSyAGsLO9cnm18Igl4YLPWMcjXpB9ybf+wnq4kmLrSMvc5qNdmwYjQH
+         2mrLClFsjVuPd0RDk6Cz3B086IlpaQtjfrUgJ177Kjn8tVrqWLto6uRm17ktMKhYss
+         DR65bzLiAbIQIJU2CDzCBiJ6nW3H61YvnnxH2tPDwC/EsOpsHw0NDviSkVsaZacerk
+         u+kMtjodAMPrRV9vByFaMu9AXnwcOHbgrX5KDnOh99DJJtAUu/CojZFGq0yZWPd/PH
+         NgxjQ/JXcB1vvUBOTxzIoEr9b8FhKYzzXPEPp8Y3soqLeS1QSfr3piFZgPLsZq5AOP
+         CmJxjUWlpXSEg==
+Date:   Fri, 1 Dec 2023 12:14:37 +0100
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Cc:     robh@kernel.org, steven.price@arm.com,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, m.szyprowski@samsung.com,
+        krzysztof.kozlowski@linaro.org
+Subject: Re: [PATCH v3 3/3] drm/panfrost: Synchronize and disable interrupts
+ before powering off
+Message-ID: <20231201121437.7d5cdefb@collabora.com>
+In-Reply-To: <20231201104027.35273-4-angelogioacchino.delregno@collabora.com>
+References: <20231201104027.35273-1-angelogioacchino.delregno@collabora.com>
+        <20231201104027.35273-4-angelogioacchino.delregno@collabora.com>
+Organization: Collabora
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 29 Nov 2023 09:55:26 +0800, zhongkaihua wrote:
-> Fix four comment typos in mfd pmic header files.
+On Fri,  1 Dec 2023 11:40:27 +0100
+AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+wrote:
+
+> To make sure that we don't unintentionally perform any unclocked and/or
+> unpowered R/W operation on GPU registers, before turning off clocks and
+> regulators we must make sure that no GPU, JOB or MMU ISR execution is
+> pending: doing that required to add a mechanism to synchronize the
+
+                      ^ requires the addition of a mechanism...
+
+> interrupts on suspend.
 > 
+> Add functions panfrost_{gpu,job,mmu}_suspend_irq() which will perform
+> interrupts masking and ISR execution synchronization, and then call
+> those in the panfrost_device_runtime_suspend() handler in the exact
+> sequence of job (may require mmu!) -> mmu -> gpu.
 > 
+> As a side note, JOB and MMU suspend_irq functions needed some special
+> treatment: as their interrupt handlers will unmask interrupts, it was
+> necessary to add a bitmap for `is_suspended` which is used to address
 
-Applied, thanks!
+            to add an `is_suspended` bitmap which is used...
 
-[1/1] mfd: fix comment typos
-      commit: 37e0d13c07b761c40dc9c900cea7649fcd1b661e
+> the possible corner case of unintentional IRQ unmasking because of ISR
+> execution after a call to synchronize_irq().
 
---
-Lee Jones [李琼斯]
+Also fixes the case where the interrupt handler is called when the
+device is suspended because the IRQ line is shared with another device.
+No need to update the commit message for that though.
+
+> 
+> At resume, clear each is_suspended bit in the reset path of JOB/MMU
+> to allow unmasking the interrupts.
+> 
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> ---
+>  drivers/gpu/drm/panfrost/panfrost_device.c |  3 +++
+>  drivers/gpu/drm/panfrost/panfrost_device.h |  7 +++++++
+>  drivers/gpu/drm/panfrost/panfrost_gpu.c    |  6 ++++++
+>  drivers/gpu/drm/panfrost/panfrost_gpu.h    |  1 +
+>  drivers/gpu/drm/panfrost/panfrost_job.c    | 20 +++++++++++++++++---
+>  drivers/gpu/drm/panfrost/panfrost_job.h    |  1 +
+>  drivers/gpu/drm/panfrost/panfrost_mmu.c    | 19 ++++++++++++++++---
+>  drivers/gpu/drm/panfrost/panfrost_mmu.h    |  1 +
+>  8 files changed, 52 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.c b/drivers/gpu/drm/panfrost/panfrost_device.c
+> index c90ad5ee34e7..a45e4addcc19 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_device.c
+> +++ b/drivers/gpu/drm/panfrost/panfrost_device.c
+> @@ -421,6 +421,9 @@ static int panfrost_device_runtime_suspend(struct device *dev)
+>  		return -EBUSY;
+>  
+>  	panfrost_devfreq_suspend(pfdev);
+> +	panfrost_job_suspend_irq(pfdev);
+> +	panfrost_mmu_suspend_irq(pfdev);
+> +	panfrost_gpu_suspend_irq(pfdev);
+>  	panfrost_gpu_power_off(pfdev);
+>  
+>  	return 0;
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.h b/drivers/gpu/drm/panfrost/panfrost_device.h
+> index 54a8aad54259..5c24f01f8904 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_device.h
+> +++ b/drivers/gpu/drm/panfrost/panfrost_device.h
+> @@ -25,6 +25,12 @@ struct panfrost_perfcnt;
+>  #define NUM_JOB_SLOTS 3
+>  #define MAX_PM_DOMAINS 5
+>  
+> +enum panfrost_drv_comp_bits {
+> +	PANFROST_COMP_BIT_MMU,
+> +	PANFROST_COMP_BIT_JOB,
+
+I think we need one for the GPU interrupt too, for the
+irq-line-is-shared-with-another-device thing I was mentioning.
+
+> +	PANFROST_COMP_BIT_MAX
+> +};
+> +
+>  /**
+>   * enum panfrost_gpu_pm - Supported kernel power management features
+>   * @GPU_PM_CLK_DIS:  Allow disabling clocks during system suspend
+> @@ -109,6 +115,7 @@ struct panfrost_device {
+>  
+>  	struct panfrost_features features;
+>  	const struct panfrost_compatible *comp;
+> +	DECLARE_BITMAP(is_suspended, PANFROST_COMP_BIT_MAX);
+>  
+>  	spinlock_t as_lock;
+>  	unsigned long as_in_use_mask;
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c b/drivers/gpu/drm/panfrost/panfrost_gpu.c
+> index 7adc4441fa14..3a6a4fe7aca1 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_gpu.c
+> +++ b/drivers/gpu/drm/panfrost/panfrost_gpu.c
+> @@ -452,6 +452,12 @@ void panfrost_gpu_power_off(struct panfrost_device *pfdev)
+>  		dev_err(pfdev->dev, "l2 power transition timeout");
+>  }
+>  
+> +void panfrost_gpu_suspend_irq(struct panfrost_device *pfdev)
+> +{
+
+        set_bit(PANFROST_COMP_BIT_GPU, pfdev->is_suspended);
+
+here, and an extra check in panfrost_gpu_irq_handler() to bail out
+before the register accesses if PANFROST_COMP_BIT_GPU is set.
+
+> +	gpu_write(pfdev, GPU_INT_MASK, 0);
+> +	synchronize_irq(pfdev->gpu_irq);
+> +}
+> +
+>  int panfrost_gpu_init(struct panfrost_device *pfdev)
+>  {
+>  	int err;
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.h b/drivers/gpu/drm/panfrost/panfrost_gpu.h
+> index 876fdad9f721..d841b86504ea 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_gpu.h
+> +++ b/drivers/gpu/drm/panfrost/panfrost_gpu.h
+> @@ -15,6 +15,7 @@ u32 panfrost_gpu_get_latest_flush_id(struct panfrost_device *pfdev);
+>  int panfrost_gpu_soft_reset(struct panfrost_device *pfdev);
+>  void panfrost_gpu_power_on(struct panfrost_device *pfdev);
+>  void panfrost_gpu_power_off(struct panfrost_device *pfdev);
+> +void panfrost_gpu_suspend_irq(struct panfrost_device *pfdev);
+>  
+>  void panfrost_cycle_counter_get(struct panfrost_device *pfdev);
+>  void panfrost_cycle_counter_put(struct panfrost_device *pfdev);
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_job.c b/drivers/gpu/drm/panfrost/panfrost_job.c
+> index f9446e197428..7600e7741211 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_job.c
+> +++ b/drivers/gpu/drm/panfrost/panfrost_job.c
+> @@ -405,6 +405,8 @@ void panfrost_job_enable_interrupts(struct panfrost_device *pfdev)
+>  	int j;
+>  	u32 irq_mask = 0;
+>  
+> +	clear_bit(PANFROST_COMP_BIT_JOB, pfdev->is_suspended);
+> +
+>  	for (j = 0; j < NUM_JOB_SLOTS; j++) {
+>  		irq_mask |= MK_JS_MASK(j);
+>  	}
+> @@ -413,6 +415,14 @@ void panfrost_job_enable_interrupts(struct panfrost_device *pfdev)
+>  	job_write(pfdev, JOB_INT_MASK, irq_mask);
+>  }
+>  
+> +void panfrost_job_suspend_irq(struct panfrost_device *pfdev)
+> +{
+> +	set_bit(PANFROST_COMP_BIT_JOB, pfdev->is_suspended);
+> +
+> +	job_write(pfdev, JOB_INT_MASK, 0);
+> +	synchronize_irq(pfdev->js->irq);
+> +}
+> +
+>  static void panfrost_job_handle_err(struct panfrost_device *pfdev,
+>  				    struct panfrost_job *job,
+>  				    unsigned int js)
+> @@ -792,9 +802,13 @@ static irqreturn_t panfrost_job_irq_handler_thread(int irq, void *data)
+>  	struct panfrost_device *pfdev = data;
+>  
+>  	panfrost_job_handle_irqs(pfdev);
+> -	job_write(pfdev, JOB_INT_MASK,
+> -		  GENMASK(16 + NUM_JOB_SLOTS - 1, 16) |
+> -		  GENMASK(NUM_JOB_SLOTS - 1, 0));
+> +
+> +	/* Enable interrupts only if we're not about to get suspended */
+> +	if (!test_bit(PANFROST_COMP_BIT_JOB, pfdev->is_suspended))
+> +		job_write(pfdev, JOB_INT_MASK,
+> +			  GENMASK(16 + NUM_JOB_SLOTS - 1, 16) |
+> +			  GENMASK(NUM_JOB_SLOTS - 1, 0));
+> +
+
+Missing if (test_bit(PANFROST_COMP_BIT_JOB, pfdev->is_suspended)) in
+panfrost_job_irq_handler(), to make sure you don't access the registers
+if the GPU is suspended.
+
+>  	return IRQ_HANDLED;
+>  }
+>  
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_job.h b/drivers/gpu/drm/panfrost/panfrost_job.h
+> index 17ff808dba07..ec581b97852b 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_job.h
+> +++ b/drivers/gpu/drm/panfrost/panfrost_job.h
+> @@ -47,6 +47,7 @@ int panfrost_job_get_slot(struct panfrost_job *job);
+>  int panfrost_job_push(struct panfrost_job *job);
+>  void panfrost_job_put(struct panfrost_job *job);
+>  void panfrost_job_enable_interrupts(struct panfrost_device *pfdev);
+> +void panfrost_job_suspend_irq(struct panfrost_device *pfdev);
+>  int panfrost_job_is_idle(struct panfrost_device *pfdev);
+>  
+>  #endif
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_mmu.c b/drivers/gpu/drm/panfrost/panfrost_mmu.c
+> index ac4296c1e54b..d79d41fe22fe 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_mmu.c
+> +++ b/drivers/gpu/drm/panfrost/panfrost_mmu.c
+> @@ -231,6 +231,8 @@ void panfrost_mmu_reset(struct panfrost_device *pfdev)
+>  {
+>  	struct panfrost_mmu *mmu, *mmu_tmp;
+>  
+> +	clear_bit(PANFROST_COMP_BIT_MMU, pfdev->is_suspended);
+> +
+>  	spin_lock(&pfdev->as_lock);
+>  
+>  	pfdev->as_alloc_mask = 0;
+> @@ -744,9 +746,12 @@ static irqreturn_t panfrost_mmu_irq_handler_thread(int irq, void *data)
+>  			status = mmu_read(pfdev, MMU_INT_RAWSTAT) & ~pfdev->as_faulty_mask;
+>  	}
+>  
+> -	spin_lock(&pfdev->as_lock);
+> -	mmu_write(pfdev, MMU_INT_MASK, ~pfdev->as_faulty_mask);
+> -	spin_unlock(&pfdev->as_lock);
+> +	/* Enable interrupts only if we're not about to get suspended */
+> +	if (!test_bit(PANFROST_COMP_BIT_MMU, pfdev->is_suspended)) {
+> +		spin_lock(&pfdev->as_lock);
+> +		mmu_write(pfdev, MMU_INT_MASK, ~pfdev->as_faulty_mask);
+> +		spin_unlock(&pfdev->as_lock);
+> +	}
+
+Ditto, missing if (test_bit(PANFROST_COMP_BIT_MMU, pfdev->is_suspended))
+in panfrost_job_irq_handler(), to make sure you don't access the
+registers if the GPU is suspended.
+
+>  
+>  	return IRQ_HANDLED;
+>  };
+> @@ -777,3 +782,11 @@ void panfrost_mmu_fini(struct panfrost_device *pfdev)
+>  {
+>  	mmu_write(pfdev, MMU_INT_MASK, 0);
+>  }
+> +
+> +void panfrost_mmu_suspend_irq(struct panfrost_device *pfdev)
+> +{
+> +	set_bit(PANFROST_COMP_BIT_MMU, pfdev->is_suspended);
+> +
+> +	mmu_write(pfdev, MMU_INT_MASK, 0);
+> +	synchronize_irq(pfdev->mmu_irq);
+> +}
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_mmu.h b/drivers/gpu/drm/panfrost/panfrost_mmu.h
+> index cc2a0d307feb..022a9a74a114 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_mmu.h
+> +++ b/drivers/gpu/drm/panfrost/panfrost_mmu.h
+> @@ -14,6 +14,7 @@ void panfrost_mmu_unmap(struct panfrost_gem_mapping *mapping);
+>  int panfrost_mmu_init(struct panfrost_device *pfdev);
+>  void panfrost_mmu_fini(struct panfrost_device *pfdev);
+>  void panfrost_mmu_reset(struct panfrost_device *pfdev);
+> +void panfrost_mmu_suspend_irq(struct panfrost_device *pfdev);
+>  
+>  u32 panfrost_mmu_as_get(struct panfrost_device *pfdev, struct panfrost_mmu *mmu);
+>  void panfrost_mmu_as_put(struct panfrost_device *pfdev, struct panfrost_mmu *mmu);
 
