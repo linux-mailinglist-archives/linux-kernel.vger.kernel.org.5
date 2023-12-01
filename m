@@ -2,164 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7098801134
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:21:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F39D801121
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:21:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378610AbjLAQ7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 11:59:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35250 "EHLO
+        id S1378605AbjLAQ72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 11:59:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229888AbjLAQ7B (ORCPT
+        with ESMTP id S229534AbjLAQ70 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 11:59:01 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE1829A
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 08:59:05 -0800 (PST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id CB7481FD7F;
-        Fri,  1 Dec 2023 16:59:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1701449943; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8lC7vlGIZCDtxYgghp69uMiLgN5wT33v6vp9VGEip7M=;
-        b=iCLzZBGeHwTaopLyzeZXrnzlZRLhRgwoMlJ3TstRPb7jsrLGdVJjjx68Ls6C/+sF1usJbe
-        qJTiD2w/AwtWxrIixZGsUj4HmgByLfRDPasE04Barcf4uZC17nqzLSk+it6ZebwH8hvwWH
-        wU6jKOVF56YSfkqLowsXrT+Zn6APurw=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A7DDB1379A;
-        Fri,  1 Dec 2023 16:59:03 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-        by imap1.dmz-prg2.suse.org with ESMTPSA
-        id /FoDJtcQamUlZAAAD6G6ig
-        (envelope-from <mhocko@suse.com>); Fri, 01 Dec 2023 16:59:03 +0000
-Date:   Fri, 1 Dec 2023 17:59:02 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Philipp Rudo <prudo@redhat.com>
-Cc:     Baoquan He <bhe@redhat.com>, Donald Dutile <ddutile@redhat.com>,
-        Jiri Bohac <jbohac@suse.cz>, Pingfan Liu <piliu@redhat.com>,
-        Tao Liu <ltao@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
-        Dave Young <dyoung@redhat.com>, kexec@lists.infradead.org,
+        Fri, 1 Dec 2023 11:59:26 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AA09A2;
+        Fri,  1 Dec 2023 08:59:33 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-6cddc59e731so2153369b3a.1;
+        Fri, 01 Dec 2023 08:59:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701449973; x=1702054773; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3dRbGatx1opBY03QMl1LAqDJ92qlmNckr8hscmiczpg=;
+        b=DtQiTnMgqNMo0z3q2fRLNtShFxO0EEeHcKWuyKGSBUCuzlI+W3XIJqwNqzOkGkRMsP
+         ixgbsV3z2QxkiUlzIFVnhVhY3s5FX7ZpuP79v7ys4j6iwhumc0C7Nkbbk5yn1vbd0ocp
+         TcJS6U9nJSrfhuDOkqDaqBqHwYzlyH4jn9+rzBeWFnC5oJnZSYKLX9AUDbqSmw6HsGpP
+         9YENVHpmFFR8Ot+A9yI/CRLa3yCqxrEgBRddnK5ScI2ndq/953fL5NJCsyJkE8Yxiys3
+         9G4ca6z3vEjtn4w+OrScdUB/kkKMNGTHGyT1hx89MGwsmvfDJFgA6oPGDyipuf5Z8bxe
+         fV/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701449973; x=1702054773;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3dRbGatx1opBY03QMl1LAqDJ92qlmNckr8hscmiczpg=;
+        b=KwM6NhS2VYDhfr9Aq74HjTnCq95e2nTQWoJCZ+tvlO9VKKVwMS+mleaK/zSxqRuIMu
+         Tac9cesDbfxwB8Fo3lh6C30UX3ObG1BDlspe1BQznlHdpvRpGe8y32opAK/Z112dTFH4
+         XuJKNeoo5si/cdXU5DktKiRaUMLs+p6LWCCPVT/Eri0Xjwiv/Fy8s4sA7YD/P9RgTqY3
+         83qXKHDQojnhnWARrrhoMRc7R0vAWyRqU3uz+SEdLVHuBie0McxTrX/qDTjcU0C+1z/X
+         93tfj52fQIBD+v++gLAW5CTxDBL0pM1KIFwzNN5VhRtzMWHq4Db9wFdIybiwzFjmFvuz
+         7L+g==
+X-Gm-Message-State: AOJu0YxvY/H1SM6wJdReeRW19WamGEnlwydpiWePZ2Z8+5YvWLP96xts
+        1i0TtkDYxlGK83pRDfeA5H4=
+X-Google-Smtp-Source: AGHT+IHaQXt2nCWUoqLr98KVdxbGpPD4vg9+YHblnrEG2m0hzeYNXnZMAn3OXjQfLt95pfx/lMACwg==
+X-Received: by 2002:a05:6a20:918e:b0:185:a90d:363d with SMTP id v14-20020a056a20918e00b00185a90d363dmr29094374pzd.2.1701449972533;
+        Fri, 01 Dec 2023 08:59:32 -0800 (PST)
+Received: from localhost ([2620:10d:c090:400::4:27ef])
+        by smtp.gmail.com with ESMTPSA id g1-20020a62e301000000b006c4d86a259csm3222850pfh.28.2023.12.01.08.59.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Dec 2023 08:59:32 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Fri, 1 Dec 2023 06:59:30 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Max Kellermann <max.kellermann@ionos.com>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/4] kdump: crashkernel reservation from CMA
-Message-ID: <ZWoQ1k2AikSiMjys@tiehlicka>
-References: <ZWbyDx3TJ7zo3jCw@MiWiFi-R3L-srv>
- <91a31ce5-63d1-7470-18f7-92b039fda8e6@redhat.com>
- <ZWf64BowWrYqA2Rf@MiWiFi-R3L-srv>
- <ZWhg_b3O6piZtkQ-@tiehlicka>
- <ZWh6ax8YmkhxAzIf@MiWiFi-R3L-srv>
- <ZWiAsJlLookvCI+h@MiWiFi-R3L-srv>
- <ZWiQ-II9CvGv8EWK@tiehlicka>
- <20231201123353.2b3db7fa@rotkaeppchen>
- <ZWnJyArAmFo_uYPA@tiehlicka>
- <20231201165113.43211a48@rotkaeppchen>
+Subject: Re: [PATCH 1/2] kernel/cgroup: use kernfs_create_dir_ns()
+Message-ID: <ZWoQ8uroTtMDsBF8@slm.duckdns.org>
+References: <20231201125638.1699026-1-max.kellermann@ionos.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231201165113.43211a48@rotkaeppchen>
-Authentication-Results: smtp-out2.suse.de;
-        none
-X-Spam-Level: 
-X-Spamd-Result: default: False [-0.60 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         NEURAL_SPAM_SHORT(3.00)[1.000];
-         MIME_GOOD(-0.10)[text/plain];
-         NEURAL_HAM_LONG(-1.00)[-0.996];
-         RCVD_COUNT_THREE(0.00)[3];
-         DKIM_SIGNED(0.00)[suse.com:s=susede1];
-         RCPT_COUNT_SEVEN(0.00)[10];
-         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         MID_RHS_NOT_FQDN(0.50)[];
-         RCVD_TLS_ALL(0.00)[];
-         BAYES_HAM(-3.00)[100.00%]
-X-Spam-Score: -0.60
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231201125638.1699026-1-max.kellermann@ionos.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 01-12-23 16:51:13, Philipp Rudo wrote:
-> On Fri, 1 Dec 2023 12:55:52 +0100
-> Michal Hocko <mhocko@suse.com> wrote:
+Hello,
+
+On Fri, Dec 01, 2023 at 01:56:37PM +0100, Max Kellermann wrote:
+> By passing the fsugid to kernfs_create_dir_ns(), we don't need
+> cgroup_kn_set_ugid() any longer.  That function was added for exactly
+> this purpose by commit 49957f8e2a ("cgroup: newly created dirs and
+> files should be owned by the creator").
 > 
-> > On Fri 01-12-23 12:33:53, Philipp Rudo wrote:
-> > [...]
-> > > And yes, those are all what-if concerns but unfortunately that is all
-> > > we have right now.  
-> > 
-> > Should theoretical concerns without an actual evidence (e.g. multiple
-> > drivers known to be broken) become a roadblock for this otherwise useful
-> > feature? 
+> Eliminating this piece of duplicate code means we benefit from future
+> improvements to kernfs_create_dir_ns(); for example, both are lacking
+> S_ISGID support currently, which my next patch will add to
+> kernfs_create_dir_ns().  It cannot (easily) be added to
+> cgroup_kn_set_ugid() because we can't dereference struct kernfs_iattrs
+> from there.
 > 
-> Those concerns aren't just theoretical. They are experiences we have
-> from a related feature that suffers exactly the same problem regularly
-> which wouldn't exist if everybody would simply work "properly".
+> Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
 
-What is the related feature?
- 
-> And yes, even purely theoretical concerns can become a roadblock for a
-> feature when the cost of those theoretical concerns exceed the benefit
-> of the feature. The thing is that bugs will be reported against kexec.
-> So _we_ need to figure out which of the shitty drivers caused the
-> problem. That puts additional burden on _us_. What we are trying to
-> evaluate at the moment is if the benefit outweighs the extra burden
-> with the information we have at the moment.
+ Acked-by: Tejun Heo <tj@kernel.org>
 
-I do understand your concerns! But I am pretty sure you do realize that
-it is really hard to argue theoreticals.  Let me restate what I consider
-facts. Hopefully we can agree on these points
-	- the CMA region can be used by user space memory which is a
-	  great advantage because the memory is not wasted and our
-	  experience has shown that users do care about this a lot. We
-	  _know_ that pressure on making those reservations smaller
-	  results in a less reliable crashdump and more resources spent
-	  on tuning and testing (especially after major upgrades).  A
-	  larger reservation which is not completely wasted for the
-	  normal runtime is addressing that concern.
-	- There is no other known mechanism to achieve the reusability
-	  of the crash kernel memory to stop the wastage without much
-	  more intrusive code/api impact (e.g. a separate zone or
-	  dedicated interface to prevent any hazardous usage like RDMA).
-	- implementation wise the patch has a very small footprint. It
-	  is using an existing infrastructure (CMA) and it adds a
-	  minimal hooking into crashkernel configuration.
-	- The only identified risk so far is RDMA acting on this memory
-	  without using proper pinning interface. If it helps to have a
-	  statement from RDMA maintainers/developers then we can pull
-	  them in for a further discussion of course.
-	- The feature requires an explicit opt-in so this doesn't bring
-	  any new risk to existing crash kernel users until they decide
-	  to use it. AFAIU there is no way to tell that the crash kernel
-	  memory used to be CMA based in the primary kernel. If you
-	  believe that having that information available for
-	  debugability would help then I believe this shouldn't be hard
-	  to add.  I think it would even make sense to mark this feature
-	  experimental to make it clear to users that this needs some
-	  time before it can be marked production ready.
+Greg, given that the two patches are related, it'd probably be less
+confusing to route them together through your tree. If you want to route
+them differently, please let me know.
 
-I hope I haven't really missed anything important. The final
-cost/benefit judgment is up to you, maintainers, of course but I would
-like to remind that we are dealing with a _real_ problem that many
-production systems are struggling with and that we don't really have any
-other solution available.
+Thanks.
+
 -- 
-Michal Hocko
-SUSE Labs
+tejun
