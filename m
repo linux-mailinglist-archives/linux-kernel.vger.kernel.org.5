@@ -2,140 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0BB78008B4
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 11:44:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C6338008B7
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 11:44:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378347AbjLAKoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 05:44:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35476 "EHLO
+        id S1378332AbjLAKoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 05:44:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378331AbjLAKoH (ORCPT
+        with ESMTP id S1378309AbjLAKoV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 05:44:07 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86281D40;
-        Fri,  1 Dec 2023 02:44:13 -0800 (PST)
-Date:   Fri, 01 Dec 2023 10:44:09 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1701427450;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qPCIzTyiZpaSnXIh/BvFIvvdQAACVmWB9mApE7JKoAs=;
-        b=DvakLAApprtB0OyOTMY42r02WoLgRIQ/ta6o+V3Hwr+e8WxyucftkyCOtIs0dGreeHx/8C
-        4VexC5Qo83qvFbep6hWE5pgnqtndnXwD1uqZfG9Ph89V1FeVymawKhzsdEtGi6fzxeXQF+
-        9UH37eE3ClHq9iNqNxCIo0vWXWqk5GXRGnocuSzsZ6RWJEUXda7FsvH8qzMUfGARF/kAlM
-        mvhgYWByQPu2xsFv9NdmJi9XK8V4p7GvkF/7ESHPf8TPLB7XuFamtobukk9kqlJ55Q5SxJ
-        sCWVEHVSy1swB3tKJKXR5fr2mSZ+fhY1avsYNJoaFaRQ49fcs8tUGB4IFjGvgA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1701427450;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qPCIzTyiZpaSnXIh/BvFIvvdQAACVmWB9mApE7JKoAs=;
-        b=F2lG/6euZHkXs93PwgAAg1+EU07oCX9oLV1x9G1eyAL//oYtb7ZABV7ZBBpl4zgjYNf22V
-        DWU5rgKWWP/OIUAA==
-From:   "tip-bot2 for Jann Horn" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/core] locking/mutex: Document that mutex_unlock() is non-atomic
-Cc:     Jann Horn <jannh@google.com>, Ingo Molnar <mingo@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20231130204817.2031407-1-jannh@google.com>
-References: <20231130204817.2031407-1-jannh@google.com>
+        Fri, 1 Dec 2023 05:44:21 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E33210D8;
+        Fri,  1 Dec 2023 02:44:27 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 8E28B1FD69;
+        Fri,  1 Dec 2023 10:44:24 +0000 (UTC)
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7E0DA1379A;
+        Fri,  1 Dec 2023 10:44:24 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+        by imap1.dmz-prg2.suse.org with ESMTPSA
+        id KFRiHgi5aWUUZwAAD6G6ig
+        (envelope-from <vbabka@suse.cz>); Fri, 01 Dec 2023 10:44:24 +0000
+Message-ID: <f0353b3e-9cb3-4009-9c2e-4e0912f28dc2@suse.cz>
+Date:   Fri, 1 Dec 2023 11:44:24 +0100
 MIME-Version: 1.0
-Message-ID: <170142744948.398.4203675877225809071.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] docs: admin-guide: remove obsolete advice related to SLAB
+ allocator
+Content-Language: en-US
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231130095515.21586-1-lukas.bulwahn@gmail.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20231130095515.21586-1-lukas.bulwahn@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spamd-Bar: +++++++++
+X-Spam-Score: 9.73
+X-Rspamd-Server: rspamd1
+Authentication-Results: smtp-out2.suse.de;
+        dkim=none;
+        spf=softfail (smtp-out2.suse.de: 2a07:de40:b281:104:10:150:64:97 is neither permitted nor denied by domain of vbabka@suse.cz) smtp.mailfrom=vbabka@suse.cz;
+        dmarc=none
+X-Rspamd-Queue-Id: 8E28B1FD69
+X-Spamd-Result: default: False [9.73 / 50.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         ARC_NA(0.00)[];
+         SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         DMARC_NA(1.20)[suse.cz];
+         R_SPF_SOFTFAIL(4.60)[~all];
+         RCPT_COUNT_FIVE(0.00)[5];
+         RCVD_COUNT_THREE(0.00)[3];
+         NEURAL_SPAM_SHORT(1.34)[0.448];
+         MX_GOOD(-0.01)[];
+         BAYES_HAM(-3.00)[100.00%];
+         NEURAL_SPAM_LONG(3.50)[1.000];
+         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email];
+         FREEMAIL_TO(0.00)[gmail.com,lwn.net,vger.kernel.org];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         R_DKIM_NA(2.20)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_TLS_ALL(0.00)[];
+         MID_RHS_MATCH_FROM(0.00)[]
+X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the locking/core branch of tip:
+On 11/30/23 10:55, Lukas Bulwahn wrote:
+> Commit 1db9d06aaa55 ("mm/slab: remove CONFIG_SLAB from all Kconfig and
 
-Commit-ID:     a51749ab34d9e5dec548fe38ede7e01e8bb26454
-Gitweb:        https://git.kernel.org/tip/a51749ab34d9e5dec548fe38ede7e01e8bb26454
-Author:        Jann Horn <jannh@google.com>
-AuthorDate:    Thu, 30 Nov 2023 21:48:17 +01:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Fri, 01 Dec 2023 11:27:43 +01:00
+Note that's a -next (from slab/for-next) commit which might still change at
+this point.
 
-locking/mutex: Document that mutex_unlock() is non-atomic
+> Makefile") removes the config SLAB and makes the SLUB allocator the only
+> default allocator in the kernel. Hence, the advice on reducing OS jitter
+> due to kworker kernel threads to build with CONFIG_SLUB instead of
+> CONFIG_SLAB is obsolete.
+> 
+> Remove the obsolete advice to build with SLUB instead of SLAB.
+> 
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 
-I have seen several cases of attempts to use mutex_unlock() to release an
-object such that the object can then be freed by another task.
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
-This is not safe because mutex_unlock(), in the
-MUTEX_FLAG_WAITERS && !MUTEX_FLAG_HANDOFF case, accesses the mutex
-structure after having marked it as unlocked; so mutex_unlock() requires
-its caller to ensure that the mutex stays alive until mutex_unlock()
-returns.
+But due to above, maybe it's best to wait after the removal goes through.
 
-If MUTEX_FLAG_WAITERS is set and there are real waiters, those waiters
-have to keep the mutex alive, but we could have a spurious
-MUTEX_FLAG_WAITERS left if an interruptible/killable waiter bailed
-between the points where __mutex_unlock_slowpath() did the cmpxchg
-reading the flags and where it acquired the wait_lock.
+> ---
+>  .../admin-guide/kernel-per-CPU-kthreads.rst      | 16 ++++++----------
+>  1 file changed, 6 insertions(+), 10 deletions(-)
+> 
+> diff --git a/Documentation/admin-guide/kernel-per-CPU-kthreads.rst b/Documentation/admin-guide/kernel-per-CPU-kthreads.rst
+> index 993c2a05f5ee..b6aeae3327ce 100644
+> --- a/Documentation/admin-guide/kernel-per-CPU-kthreads.rst
+> +++ b/Documentation/admin-guide/kernel-per-CPU-kthreads.rst
+> @@ -243,13 +243,9 @@ To reduce its OS jitter, do any of the following:
+>  3.	Do any of the following needed to avoid jitter that your
+>  	application cannot tolerate:
+>  
+> -	a.	Build your kernel with CONFIG_SLUB=y rather than
+> -		CONFIG_SLAB=y, thus avoiding the slab allocator's periodic
+> -		use of each CPU's workqueues to run its cache_reap()
+> -		function.
+> -	b.	Avoid using oprofile, thus avoiding OS jitter from
+> +	a.	Avoid using oprofile, thus avoiding OS jitter from
+>  		wq_sync_buffer().
+> -	c.	Limit your CPU frequency so that a CPU-frequency
+> +	b.	Limit your CPU frequency so that a CPU-frequency
+>  		governor is not required, possibly enlisting the aid of
+>  		special heatsinks or other cooling technologies.  If done
+>  		correctly, and if you CPU architecture permits, you should
+> @@ -259,7 +255,7 @@ To reduce its OS jitter, do any of the following:
+>  
+>  		WARNING:  Please check your CPU specifications to
+>  		make sure that this is safe on your particular system.
+> -	d.	As of v3.18, Christoph Lameter's on-demand vmstat workers
+> +	c.	As of v3.18, Christoph Lameter's on-demand vmstat workers
+>  		commit prevents OS jitter due to vmstat_update() on
+>  		CONFIG_SMP=y systems.  Before v3.18, is not possible
+>  		to entirely get rid of the OS jitter, but you can
+> @@ -274,7 +270,7 @@ To reduce its OS jitter, do any of the following:
+>  		(based on an earlier one from Gilad Ben-Yossef) that
+>  		reduces or even eliminates vmstat overhead for some
+>  		workloads at https://lore.kernel.org/r/00000140e9dfd6bd-40db3d4f-c1be-434f-8132-7820f81bb586-000000@email.amazonses.com.
+> -	e.	If running on high-end powerpc servers, build with
+> +	d.	If running on high-end powerpc servers, build with
+>  		CONFIG_PPC_RTAS_DAEMON=n.  This prevents the RTAS
+>  		daemon from running on each CPU every second or so.
+>  		(This will require editing Kconfig files and will defeat
+> @@ -282,12 +278,12 @@ To reduce its OS jitter, do any of the following:
+>  		due to the rtas_event_scan() function.
+>  		WARNING:  Please check your CPU specifications to
+>  		make sure that this is safe on your particular system.
+> -	f.	If running on Cell Processor, build your kernel with
+> +	e.	If running on Cell Processor, build your kernel with
+>  		CBE_CPUFREQ_SPU_GOVERNOR=n to avoid OS jitter from
+>  		spu_gov_work().
+>  		WARNING:  Please check your CPU specifications to
+>  		make sure that this is safe on your particular system.
+> -	g.	If running on PowerMAC, build your kernel with
+> +	f.	If running on PowerMAC, build your kernel with
+>  		CONFIG_PMAC_RACKMETER=n to disable the CPU-meter,
+>  		avoiding OS jitter from rackmeter_do_timer().
+>  
 
-( With spinlocks, that kind of code pattern is allowed and, from what I
-  remember, used in several places in the kernel. )
-
-Document this, such a semantic difference between mutexes and spinlocks
-is fairly unintuitive.
-
-[ mingo: Made the changelog a bit more assertive, refined the comments. ]
-
-Signed-off-by: Jann Horn <jannh@google.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20231130204817.2031407-1-jannh@google.com
----
- Documentation/locking/mutex-design.rst | 6 ++++++
- kernel/locking/mutex.c                 | 5 +++++
- 2 files changed, 11 insertions(+)
-
-diff --git a/Documentation/locking/mutex-design.rst b/Documentation/locking/mutex-design.rst
-index 78540cd..7572339 100644
---- a/Documentation/locking/mutex-design.rst
-+++ b/Documentation/locking/mutex-design.rst
-@@ -101,6 +101,12 @@ features that make lock debugging easier and faster:
-     - Detects multi-task circular deadlocks and prints out all affected
-       locks and tasks (and only those tasks).
- 
-+Releasing a mutex is not an atomic operation: Once a mutex release operation
-+has begun, another context may be able to acquire the mutex before the release
-+operation has fully completed. The mutex user must ensure that the mutex is not
-+destroyed while a release operation is still in progress - in other words,
-+callers of mutex_unlock() must ensure that the mutex stays alive until
-+mutex_unlock() has returned.
- 
- Interfaces
- ----------
-diff --git a/kernel/locking/mutex.c b/kernel/locking/mutex.c
-index 2deeeca..cbae8c0 100644
---- a/kernel/locking/mutex.c
-+++ b/kernel/locking/mutex.c
-@@ -532,6 +532,11 @@ static noinline void __sched __mutex_unlock_slowpath(struct mutex *lock, unsigne
-  * This function must not be used in interrupt context. Unlocking
-  * of a not locked mutex is not allowed.
-  *
-+ * The caller must ensure that the mutex stays alive until this function has
-+ * returned - mutex_unlock() can NOT directly be used to release an object such
-+ * that another concurrent task can free it.
-+ * Mutexes are different from spinlocks & refcounts in this aspect.
-+ *
-  * This function is similar to (but not equivalent to) up().
-  */
- void __sched mutex_unlock(struct mutex *lock)
