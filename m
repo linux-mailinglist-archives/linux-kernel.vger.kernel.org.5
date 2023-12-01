@@ -2,104 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 059FC800E5B
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 16:16:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCBB4800E43
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 16:14:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379427AbjLAPPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 10:15:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56648 "EHLO
+        id S1379373AbjLAPOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 10:14:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379488AbjLAPPS (ORCPT
+        with ESMTP id S1379382AbjLAPOi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 10:15:18 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BF8D1BF3
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 07:15:19 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-6cde4aeea29so1897578b3a.2
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 07:15:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701443719; x=1702048519; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=99jwCtueYKuqHSnO06pq+vanF2UHvfzCABwBvmt41SY=;
-        b=dqpTXmDoXE6wytJPhm2PCBQfp/5HV7AtqtFuSibrn7aUkYe89B32Er6GSctfWsodS3
-         5adNy7vLCG/+vARD/4JbpdWTFJb8JGike3Oa9YjC3A18kQ5paNKCktHOGIWb5SY8rFdx
-         hYwMu2edywVkLpgNa1FYcalgADmyGnWCieRxbjpkzNO96Q+qqi7AxLB3HcbyhJup1WKe
-         9nAw/W4/BGMt8cMwavX5YXBQo2jeXN1wMH7Jxa/8X88R7KKhsq0gpmNI97pOpt2IC8lo
-         ZdXDc5tnZxdwXd1Aekcl8X9VjzPKXRjDe60PRrzGBVhNdZUMd4PmmlSipE1Tu7p1+FCc
-         po+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701443719; x=1702048519;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=99jwCtueYKuqHSnO06pq+vanF2UHvfzCABwBvmt41SY=;
-        b=YRcOBAh4wYT/VPi++LBEYd1xu95/WtzV18yrNBV6w3C3HqmNx3w9bQk2h/PoDIq+E8
-         AWBuPumvmqgbRPfXaSoHccgx/LtvS26qlwz6cVadgNciVfBh+77DvqQDPHhzl4hGxqkG
-         lZIESNgIVvFI40axaIzbgWOY4aSUWoXKZ4bWBgSb8oOtREVsw7AmaBUQWqHMNfKCV/3p
-         DxhqWUoYBwcoMRkMqTz0iB9iGeh1yug5D3pXG0onh6JDSn3qJUEaMyfS5J6gI1Rcb9Ee
-         GOhikrCzayVNvzEAdzJDBtfJ2H9cdc/ojxsJa5ZrJ4YX7L1xaV7RKsJFe1f1poytQMf1
-         N5/Q==
-X-Gm-Message-State: AOJu0YyjUEHxp2Akn1wlgPURAAyfcTy4TZ531LuwDoR6yjX3ZVeR0srD
-        v0cFGiITukZ+bIQNaphbKxr3
-X-Google-Smtp-Source: AGHT+IG0lDGObraHLt0PSday0c1vddh/0X4DzkGcDUEtJFQ4rieNhf2pWlFV1r7BSDu6rIgWhh5OOA==
-X-Received: by 2002:a05:6a00:938d:b0:6cd:faa6:fc36 with SMTP id ka13-20020a056a00938d00b006cdfaa6fc36mr3968638pfb.30.1701443718764;
-        Fri, 01 Dec 2023 07:15:18 -0800 (PST)
-Received: from localhost.localdomain ([117.213.98.226])
-        by smtp.gmail.com with ESMTPSA id s14-20020a65644e000000b00578afd8e012sm2765824pgv.92.2023.12.01.07.15.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Dec 2023 07:15:18 -0800 (PST)
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     martin.petersen@oracle.com, jejb@linux.ibm.com
-Cc:     andersson@kernel.org, konrad.dybcio@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_cang@quicinc.com,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH 13/13] scsi: ufs: qcom: Initialize cycles_in_1us variable in ufs_qcom_set_core_clk_ctrl()
-Date:   Fri,  1 Dec 2023 20:44:17 +0530
-Message-Id: <20231201151417.65500-14-manivannan.sadhasivam@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231201151417.65500-1-manivannan.sadhasivam@linaro.org>
-References: <20231201151417.65500-1-manivannan.sadhasivam@linaro.org>
+        Fri, 1 Dec 2023 10:14:38 -0500
+Received: from mail-40134.protonmail.ch (mail-40134.protonmail.ch [185.70.40.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE46310DF;
+        Fri,  1 Dec 2023 07:14:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+        s=protonmail; t=1701443676; x=1701702876;
+        bh=CQrld9s0aEvaSp170xsyS5XrYFnhPFO9afBIK1y6HCo=;
+        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+         Message-ID:BIMI-Selector;
+        b=ESSodeRcWhQ69FRDO31zQsuhJ18eu49av4FlLHOs6Wa4p2y2FvTJ0fL+SrhTH5QwW
+         SHY6UJVaydogC1YiZC3ANwAhEyGOqxkxfzJ3XAtJsJh+IOEd+jyBSxLlvuONp0hDbn
+         wc0zCNMN/B8pqE2czBXysJfnN7r50wpMsCRDdc2KeEOJV/GQAWkmlQRSJ4nOF9fPm6
+         JhlVlPhvJTBlwRT/Wnm8boUfKDWb7aWRPy5MySD9VIIWj/XkBNEbvg7i0eBvmGw8U1
+         vRxATOK5aS5mylcY6bfXhHaT+ff25u7IS7IH15VDN5DlEvCsTczrREsEAoakySopEE
+         heOFaUqUgKhhQ==
+Date:   Fri, 01 Dec 2023 15:14:23 +0000
+To:     Theodore Ts'o <tytso@mit.edu>
+From:   Benno Lossin <benno.lossin@proton.me>
+Cc:     Alice Ryhl <aliceryhl@google.com>, david.laight@aculab.com,
+        a.hindborg@samsung.com, alex.gaynor@gmail.com, arve@android.com,
+        bjorn3_gh@protonmail.com, boqun.feng@gmail.com, brauner@kernel.org,
+        cmllamas@google.com, dan.j.williams@intel.com, dxu@dxuuu.xyz,
+        gary@garyguo.net, gregkh@linuxfoundation.org,
+        joel@joelfernandes.org, keescook@chromium.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        maco@android.com, ojeda@kernel.org, peterz@infradead.org,
+        rust-for-linux@vger.kernel.org, surenb@google.com,
+        tglx@linutronix.de, tkjos@android.com, viro@zeniv.linux.org.uk,
+        wedsonaf@gmail.com, willy@infradead.org
+Subject: Re: [PATCH 1/7] rust: file: add Rust abstraction for `struct file`
+Message-ID: <zWaYgly6VpMZcvVUAILQWBSs9VnO7nFiAiCo4eTzT4SJEfqXY8G8w7f6az7kz9wEB4pA8EbajkQZRX4CuifI00Ce3EA_4muXjz_kfdAuzOU=@proton.me>
+In-Reply-To: <20231201150442.GC509422@mit.edu>
+References: <386bbdee165d47338bc451a04e788dd6@AcuMS.aculab.com> <20231201122740.2214259-1-aliceryhl@google.com> <20231201150442.GC509422@mit.edu>
+Feedback-ID: 71780778:user:proton
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In case the "core_clk_unipro" clock is not provided, "cycles_in_1us"
-variable will be used as uninitialized. So initialize it with 0.
+On 12/1/23 16:04, Theodore Ts'o wrote:
+> On Fri, Dec 01, 2023 at 12:27:40PM +0000, Alice Ryhl wrote:
+>>
+>> You can import it with a use statement. For example:
+>>
+>> use kernel::file::flags::O_RDONLY;
+>> // use as O_RDONLY
+>=20
+> That's good to hear, but it still means that we have to use the XYZ_*
+> prefix, because otherwise, after something like
+>=20
+> use kernel::file::flags::RDONLY;
+> use kernel::uapi::rwf::RDONLY;
+>=20
+> that will blow up.  So that has to be
+>=20
+> use kernel::file::flags::O_RDONLY;
+> use kernel::uapi::rwf::RWF_RDONLY;
 
-Issue reported by Smatch tool:
+You can just import the `flags` and `rwf` modules (the fourth option
+posted by Alice):
 
-drivers/ufs/host/ufs-qcom.c:1336 ufs_qcom_set_core_clk_ctrl() error: uninitialized symbol 'cycles_in_1us'.
-drivers/ufs/host/ufs-qcom.c:1341 ufs_qcom_set_core_clk_ctrl() error: uninitialized symbol 'cycles_in_1us'.
+    use kernel::file::flags;
+    use kernel::uapi::rwf;
+   =20
+    // usage:
+   =20
+    flags::O_RDONLY
+   =20
+    rwf::RDONLY
 
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
- drivers/ufs/host/ufs-qcom.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Alternatively if we end up with multiple flags modules you can do this
+(the sixth option from Alice):
 
-diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
-index 590a2c67cf7d..208543a62d43 100644
---- a/drivers/ufs/host/ufs-qcom.c
-+++ b/drivers/ufs/host/ufs-qcom.c
-@@ -1296,7 +1296,7 @@ static int ufs_qcom_set_core_clk_ctrl(struct ufs_hba *hba, bool is_scale_up)
- 	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
- 	struct list_head *head = &hba->clk_list_head;
- 	struct ufs_clk_info *clki;
--	u32 cycles_in_1us;
-+	u32 cycles_in_1us = 0;
- 	u32 core_clk_ctrl_reg;
- 	int err;
- 
--- 
-2.25.1
+    use kernel::file::flags as file_flags;
+    use kernel::foo::flags as foo_flags;
 
+    // usage:
+
+    file_flags::O_RDONLY
+
+    foo_flags::O_RDONLY
+
+--=20
+Cheers,
+Benno
