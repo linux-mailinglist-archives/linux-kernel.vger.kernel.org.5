@@ -2,158 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66F2A801811
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 00:50:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 773FA801815
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 00:50:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230509AbjLAXuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 18:50:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45500 "EHLO
+        id S230452AbjLAXui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 18:50:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbjLAXuO (ORCPT
+        with ESMTP id S229447AbjLAXuf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 18:50:14 -0500
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24810D54;
-        Fri,  1 Dec 2023 15:50:20 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-a00f67f120aso381293666b.2;
-        Fri, 01 Dec 2023 15:50:20 -0800 (PST)
+        Fri, 1 Dec 2023 18:50:35 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AC9310E4
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 15:50:40 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-db548f8dae4so1467234276.3
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 15:50:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701474618; x=1702079418; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rFUGo0PQsn1/kJSh+5sohX4OjpVDcSqvtXQ5CgJtBJw=;
-        b=ZT5HGoF83VgZbKieavGgTdXpWm401aNpXPNi+5e8P5bzNCsOxSemq4jMIwrxNKOIB8
-         0IbxDYfIAfXFlFajqSQ9BIT1YdwINASXAJbIv/4y4RI7MdBYpq4tf6emEm1GwI/rJ+M8
-         zVSrXW8/b/q4xjpKTTZBnMKuNv1zKDfCxmh6gJ+qHvW54zwLyvedqF2tAj8mcy0SRrNP
-         B7/3RVzw/6/Ka1lNSJhNCE3P9Zc3GEJDLSVPl4FKXrOK+MzjxjU4ssWObxveNHhV5rEn
-         k+fHFRL9SJcJaooRoYVUuxm2b9C1YA6HuhlbAAeMdMIJ1/UEwrPVWpLZUrmxu6R8FETl
-         InSg==
+        d=google.com; s=20230601; t=1701474639; x=1702079439; darn=vger.kernel.org;
+        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=PMWeTAylF3bUIvrApUeKD5Af/l0nzPxNAdOfQ8ZWtyk=;
+        b=VPLK8ylzIs3LTjCvGHt2TOWKY6j5qZOCmv4K5x+D3BP3VeNe+ETocBZMJnW7kS1yll
+         y+6h7yhVC1i4z8uHnSxkQNaSkXqru//4CzP2MMDfiP7wCnFg8otITcuVT+FsoH6jUj3d
+         2gcrgTVmlUXzYHWf5KFMzj+DORb8qHSNcYBy6xcZdZp/7kfU21r4N1pq8+R/J6W652Hf
+         zbo4AEPvP6rgUEZzykB2T/fbB9zIoKZOlLhboNw9n4Sha4rfs3pF0GOB96zqh3W4E4wH
+         6RGZiXbOrUjKStkr4D/xw4udz48v5T2eyiN0+elVTmofHlCMLVP/Nz2LiLJy6lh32u4/
+         AsFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701474618; x=1702079418;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rFUGo0PQsn1/kJSh+5sohX4OjpVDcSqvtXQ5CgJtBJw=;
-        b=PbjbKKvjvKR9n9O9wMca+FWo4mg61todiMqLkW/iitzWhdXLawHrIwC77Ykb3xUXaX
-         JddY/U1LR9M3hvy2F/HnzNBATV7Ch2Lb0ahP5HaoVSva/JpoHOaxCShoxmFfAQ3GqH19
-         jYIDqpKpc3UXq1RS7oX5UT2H7snhF3eLl0GmH1HjeGUZMgFDCRn8Xp7S+ax2ZK6QImMU
-         EIg661mhztFx0H7u03Xb/Q4FAHMFJxXPGboS+pd+uP/iPpaHc7z4WWsdp5D++h3+WHN/
-         MnU52giiRFSLAnKnkdwxxnXOARgCGSzDLAKPfJYMfkMvAguE9zfC82zkZWOWyhLMbvVA
-         MauQ==
-X-Gm-Message-State: AOJu0YyAO/qDzieHajtfvSIeaRasIi5t5sT/Pfcn56EyNlq6Zwl+vRSU
-        JIaFdokSfJykzHPrCBUsN0Ig442COcLSlniIyic=
-X-Google-Smtp-Source: AGHT+IF4xrsSNbZaNj/H+0+WreINN4EYpqXyPlVf9bDtdHDmq2SLULkZhcpPM0wXDLY6D6hFaLMIfbZSF2D3iQpj3TM=
-X-Received: by 2002:a17:907:3dac:b0:a03:a857:c6e0 with SMTP id
- he44-20020a1709073dac00b00a03a857c6e0mr1865751ejc.77.1701474618457; Fri, 01
- Dec 2023 15:50:18 -0800 (PST)
-MIME-Version: 1.0
-References: <cover.1701462010.git.dxu@dxuuu.xyz> <68419933c552bd30e92d432e287ce91deb3ed52e.1701462010.git.dxu@dxuuu.xyz>
-In-Reply-To: <68419933c552bd30e92d432e287ce91deb3ed52e.1701462010.git.dxu@dxuuu.xyz>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 1 Dec 2023 15:50:06 -0800
-Message-ID: <CAEf4Bzasuzsb_5ShPoZaDwPn5yvArD5Rj9j5W7GoRSK+=xkrfQ@mail.gmail.com>
-Subject: Re: [PATCH ipsec-next v3 4/9] bpf: selftests: test_loader: Support
- __btf_path() annotation
-To:     Daniel Xu <dxu@dxuuu.xyz>
-Cc:     ast@kernel.org, daniel@iogearbox.net, shuah@kernel.org,
-        andrii@kernel.org, steffen.klassert@secunet.com,
-        antony.antony@secunet.com, alexei.starovoitov@gmail.com,
-        yonghong.song@linux.dev, eddyz87@gmail.com, mykolal@fb.com,
-        martin.lau@linux.dev, song@kernel.org, john.fastabend@gmail.com,
-        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-        jolsa@kernel.org, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devel@linux-ipsec.org, netdev@vger.kernel.org
+        d=1e100.net; s=20230601; t=1701474639; x=1702079439;
+        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=PMWeTAylF3bUIvrApUeKD5Af/l0nzPxNAdOfQ8ZWtyk=;
+        b=ofNVr5kglKDFkUVHbitCCqC8X/muTL/xEVlUwQefZEHlDDvlknq2Ro58mSaLvL23bd
+         yD3VA/6gc9EgMjxJQHRPJBmay6vUXx7tjtpF9NrrUBrMqku+fRLA70eCePBxTb4zWOWl
+         YKEnmU4n9QHpbjujO0CXGxGA8eDsvUmFzcuW2mBLyjKOUZZVSEhSND0g43UUG5A7zWX5
+         /sAwzsqLrgaiLCAybqS5RvzRBzkVAI8/KRvv1bWZezRt4kvxagDB+Q3CjgI2oyKBX95v
+         o/RBJfhj/O+Ye0Y9dj+HJrWBH5pmHoILXRNSwarsPkS47W08498gIXSTCjKOs3rQUn/Z
+         SQ7Q==
+X-Gm-Message-State: AOJu0YxFqsvKJsYgInnmY1cqxQ/dfsc9UtuwAD825XtB/AUHgsLMaUVR
+        8X0bTU3QuesBL/LaLwhnY3twlavjLI+t
+X-Google-Smtp-Source: AGHT+IFNARd7MyKjCR2gLvJy45/OB20UrZiZukoWo3tgtMA/0nbQdgyhR+LI1WVbM0lMkdiPHvakkjNz/pMc
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:df3:224b:7b7f:efc5])
+ (user=irogers job=sendgmr) by 2002:a25:dad3:0:b0:db5:3d61:8e63 with SMTP id
+ n202-20020a25dad3000000b00db53d618e63mr241281ybf.13.1701474639430; Fri, 01
+ Dec 2023 15:50:39 -0800 (PST)
+Date:   Fri,  1 Dec 2023 15:50:23 -0800
+Message-Id: <20231201235031.475293-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
+Subject: [PATCH v1 1/9] perf thread_map: Skip exited threads when scanning /proc
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        James Clark <james.clark@arm.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        John Garry <john.g.garry@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        llvm@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 1, 2023 at 12:24=E2=80=AFPM Daniel Xu <dxu@dxuuu.xyz> wrote:
->
-> This commit adds support for per-prog btf_custom_path. This is necessary
-> for testing CO-RE relocations on non-vmlinux types using test_loader
-> infrastructure.
->
-> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> ---
->  tools/testing/selftests/bpf/progs/bpf_misc.h | 1 +
->  tools/testing/selftests/bpf/test_loader.c    | 7 +++++++
->  2 files changed, 8 insertions(+)
->
+Scanning /proc is inherently racy. Scanning /proc/pid/task within that
+is also racy as the pid can terminate. Rather than failing in
+__thread_map__new_all_cpus, skip pids for such failures.
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/perf/util/thread_map.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
+diff --git a/tools/perf/util/thread_map.c b/tools/perf/util/thread_map.c
+index e848579e61a8..18fbc41d09f3 100644
+--- a/tools/perf/util/thread_map.c
++++ b/tools/perf/util/thread_map.c
+@@ -109,9 +109,10 @@ static struct perf_thread_map *__thread_map__new_all_cpus(uid_t uid)
+ 
+ 		snprintf(path, sizeof(path), "/proc/%d/task", pid);
+ 		items = scandir(path, &namelist, filter, NULL);
+-		if (items <= 0)
+-			goto out_free_closedir;
+-
++		if (items <= 0) {
++			pr_debug("scandir for %d returned empty, skipping\n", pid);
++			continue;
++		}
+ 		while (threads->nr + items >= max_threads) {
+ 			max_threads *= 2;
+ 			grow = true;
+@@ -152,8 +153,6 @@ static struct perf_thread_map *__thread_map__new_all_cpus(uid_t uid)
+ 	for (i = 0; i < items; i++)
+ 		zfree(&namelist[i]);
+ 	free(namelist);
+-
+-out_free_closedir:
+ 	zfree(&threads);
+ 	goto out_closedir;
+ }
+-- 
+2.43.0.rc2.451.g8631bc7472-goog
 
-> diff --git a/tools/testing/selftests/bpf/progs/bpf_misc.h b/tools/testing=
-/selftests/bpf/progs/bpf_misc.h
-> index 799fff4995d8..2fd59970c43a 100644
-> --- a/tools/testing/selftests/bpf/progs/bpf_misc.h
-> +++ b/tools/testing/selftests/bpf/progs/bpf_misc.h
-> @@ -71,6 +71,7 @@
->  #define __retval_unpriv(val)   __attribute__((btf_decl_tag("comment:test=
-_retval_unpriv=3D"#val)))
->  #define __auxiliary            __attribute__((btf_decl_tag("comment:test=
-_auxiliary")))
->  #define __auxiliary_unpriv     __attribute__((btf_decl_tag("comment:test=
-_auxiliary_unpriv")))
-> +#define __btf_path(path)       __attribute__((btf_decl_tag("comment:test=
-_btf_path=3D" path)))
->
->  /* Convenience macro for use with 'asm volatile' blocks */
->  #define __naked __attribute__((naked))
-> diff --git a/tools/testing/selftests/bpf/test_loader.c b/tools/testing/se=
-lftests/bpf/test_loader.c
-> index a350ecdfba4a..74ceb7877ae2 100644
-> --- a/tools/testing/selftests/bpf/test_loader.c
-> +++ b/tools/testing/selftests/bpf/test_loader.c
-> @@ -27,6 +27,7 @@
->  #define TEST_TAG_RETVAL_PFX_UNPRIV "comment:test_retval_unpriv=3D"
->  #define TEST_TAG_AUXILIARY "comment:test_auxiliary"
->  #define TEST_TAG_AUXILIARY_UNPRIV "comment:test_auxiliary_unpriv"
-> +#define TEST_BTF_PATH "comment:test_btf_path=3D"
->
->  /* Warning: duplicated in bpf_misc.h */
->  #define POINTER_VALUE  0xcafe4all
-> @@ -58,6 +59,7 @@ struct test_spec {
->         const char *prog_name;
->         struct test_subspec priv;
->         struct test_subspec unpriv;
-> +       const char *btf_custom_path;
->         int log_level;
->         int prog_flags;
->         int mode_mask;
-> @@ -288,6 +290,8 @@ static int parse_test_spec(struct test_loader *tester=
-,
->                                         goto cleanup;
->                                 update_flags(&spec->prog_flags, flags, cl=
-ear);
->                         }
-> +               } else if (str_has_pfx(s, TEST_BTF_PATH)) {
-> +                       spec->btf_custom_path =3D s + sizeof(TEST_BTF_PAT=
-H) - 1;
->                 }
->         }
->
-> @@ -578,6 +582,9 @@ void run_subtest(struct test_loader *tester,
->                 }
->         }
->
-> +       /* Implicitly reset to NULL if next test case doesn't specify */
-> +       open_opts->btf_custom_path =3D spec->btf_custom_path;
-> +
->         tobj =3D bpf_object__open_mem(obj_bytes, obj_byte_cnt, open_opts)=
-;
->         if (!ASSERT_OK_PTR(tobj, "obj_open_mem")) /* shouldn't happen */
->                 goto subtest_cleanup;
-> --
-> 2.42.1
->
