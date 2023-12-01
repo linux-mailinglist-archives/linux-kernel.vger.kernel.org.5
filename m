@@ -2,184 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4A96800A04
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 12:47:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E1EF800A0C
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 12:48:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378595AbjLALrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 06:47:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55990 "EHLO
+        id S1378607AbjLALrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 06:47:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378541AbjLALrS (ORCPT
+        with ESMTP id S1378585AbjLALrl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 06:47:18 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C85F1B3
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 03:47:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701431243;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6uHVtje56LWat5Vmv+PcEyAck+di+XL9VN6HEiOJE+M=;
-        b=cpgMDxSzDZ0GU5naCPN+Zw1Hm/HvfEp5RiIe/Z9ZYzovUW+9lG6Hd+Sy4Mu/+qdIJpBZiM
-        R63J8fzLMIbFJVHCszWTGSsLlVbXZrEsht35pdXB603J4wMTDfmyAfHubD/InsJUgWwwvJ
-        SBVwU/Eq6SQ9rM76MH2B1YN26S2SzaM=
-Received: from mail-yw1-f198.google.com (mail-yw1-f198.google.com
- [209.85.128.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-265-QrJ49SLzMZWsOdh1H5s26A-1; Fri, 01 Dec 2023 06:47:22 -0500
-X-MC-Unique: QrJ49SLzMZWsOdh1H5s26A-1
-Received: by mail-yw1-f198.google.com with SMTP id 00721157ae682-5d6b751dabcso2349057b3.1
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 03:47:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701431242; x=1702036042;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6uHVtje56LWat5Vmv+PcEyAck+di+XL9VN6HEiOJE+M=;
-        b=k2cS/VeJezRbzJ7MPQoL5O3OG00GWqal5dhuQiVerd3swEwhsxPDe+r1rT3jx4jltn
-         EgVwYq1S8PsxkDfExtZfGJtOwCu8BpbZtQh1oG6Ih7DUaXtHxXiCdUtCM3meXMwwYG3U
-         zQBwP2I/yfY4m2f5wRyclgdaJXxJUFkANIiLlK8WtxrO7jBsgYHmtYNLeJneKcaB7DR5
-         HSnqJBmlAc6cYIty6E1+ycJ8L7VyrRIjZ0v7xu1/Cfkag8Zy/sfK7OLqaKgitNGo+NjJ
-         hamKgv3/W0bdXohh726T4f68ILff1yV49K5fZayGVRsYVwAnzcENc+jdaHoQV3RUnV7q
-         wH5g==
-X-Gm-Message-State: AOJu0YzsGaV+T6W+Ng2NWT+bh12tCcXyMMlUh9FzAGLfRhOBR7QR8HZi
-        DD6D3IFbOJSN8ZOzRCMKqyq7qwhl6gSpF4i6raqoSNipxUqzVZE6DM226RtLIzd+H9P0SC8vhiE
-        dBQyEPM34L4UlYfUtAJKW/OoyIeFmNUnqABHI6tN+
-X-Received: by 2002:a81:b60c:0:b0:5d4:226f:69a4 with SMTP id u12-20020a81b60c000000b005d4226f69a4mr1446066ywh.28.1701431241865;
-        Fri, 01 Dec 2023 03:47:21 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGg2MuyiMF1tTj3uUQulmb0jD2AozD8K6xVD0pM3BW790ulvznuBYypSmkNfOvOQQkPXQZjksPtzVYkngc8Se0=
-X-Received: by 2002:a81:b60c:0:b0:5d4:226f:69a4 with SMTP id
- u12-20020a81b60c000000b005d4226f69a4mr1446054ywh.28.1701431241604; Fri, 01
- Dec 2023 03:47:21 -0800 (PST)
+        Fri, 1 Dec 2023 06:47:41 -0500
+Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A67A1B3;
+        Fri,  1 Dec 2023 03:47:47 -0800 (PST)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id E714A3200A8E;
+        Fri,  1 Dec 2023 06:47:45 -0500 (EST)
+Received: from imap44 ([10.202.2.94])
+  by compute3.internal (MEProxy); Fri, 01 Dec 2023 06:47:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        cc:cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
+        1701431265; x=1701517665; bh=7ri5tWAUJf5m69RwLv3NcQqa3J7mZD+4VnE
+        JqjN5jpM=; b=cti0Sb3GU7HoMOuPP9fGsYx+/uuDBCHB/PT1vW7jwhW1F4Uye+C
+        vI55yEmiRg6AG8vh8P254lCMS1Xp5f5aCW+PILNu4AX2up6wkp5oGj3+OuFQgIRg
+        5vxT1ULbCv3mUctmBb9UO5SQWvVUTyuQQOAIkI7lboezTvnKJN6oB/uHdLg1mqK5
+        MuWU2BUZ/b/6anWebeoIyuN7E0AjSuxuN/KD7bNDEplvDzRTLkv9ssdzz9VTg4E1
+        FovAeaIkynAYJn6IURzDKYp4Z3EjvvL41WQ1N5BZkN4u9Iaa8GKiqo7xCWoTyNHe
+        SAnaUpTc8zrlT7KicP+F4vzSNgWT4vXuG3A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+        1701431265; x=1701517665; bh=7ri5tWAUJf5m69RwLv3NcQqa3J7mZD+4VnE
+        JqjN5jpM=; b=KiYhWAYqXPGFmvkgUsTNo4otFI1qgTbiywt89/Bq9CEkRvGLt1S
+        lQy0EPd4oKpmWSXnUwPHMvsx4/swdI81PE21aQzMBPp1GpfkA2CQC198A4IdtyX+
+        HVKATxbd8rcxHYtd0gelltOHeJxnt2l7C7I2cIbmuOIvj+P8p+Ey9GnkxNA5Ee15
+        aKUc4rVbw8jx1Cr+eNi221KSSqul5YJOVdbCDYJIKYJSm4pgWrpF8oQ9tFQOQDqD
+        fLVMI2jIic2QSaVpICvNKWnUxWNcyYh5DZVQFWcDMgRxT4L4Lryp26Vfu+2vLSdb
+        vJx9azWezVFYvYEHNSPQO7r7V4kj8KW1HkA==
+X-ME-Sender: <xms:4cdpZchjquCZxF_jug5S__RCc5dNASZ7uj6JWF59ncLH-zJjNMIa0A>
+    <xme:4cdpZVBIiHIys14tQL0Fqd542V6CAHEXeckkibXE0gPvS2C-3TUpBhYowi9uzsvDY
+    2SEBCZNnW51J1fhX90>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeiledgfeduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdfl
+    ihgrgihunhcujggrnhhgfdcuoehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtoh
+    hmqeenucggtffrrghtthgvrhhnpeetvdegffdtgfegjeetgeegjeeitddvvefgieettefg
+    hfeuhfevleduieeffedugeenucffohhmrghinhepihhtshdrshgsnecuvehluhhsthgvrh
+    fuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepjhhirgiguhhnrdihrghnghes
+    fhhlhihgohgrthdrtghomh
+X-ME-Proxy: <xmx:4cdpZUECHzYyOYjyZYJSfsYjSqupdS-c9sTYhH281jGgFNlTGJRS6Q>
+    <xmx:4cdpZdTHCZ5jLtsjiUqZjnzkKicEmpB2z2sb03R8hR_6WT4YmrG-dg>
+    <xmx:4cdpZZxRZl8GUKVXTerF_VVh3hqASWRmAKAXVRYDhMduPS1Y4NFsFA>
+    <xmx:4cdpZeqCtBBWz_1eiiJtZQc-8_SytZ3GkvbiOqH6cheam9rnFrwAhg>
+Feedback-ID: ifd894703:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 0BE6C36A0075; Fri,  1 Dec 2023 06:47:44 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1178-geeaf0069a7-fm-20231114.001-geeaf0069
 MIME-Version: 1.0
-References: <20231201104857.665737-1-dtatulea@nvidia.com> <20231201104857.665737-3-dtatulea@nvidia.com>
-In-Reply-To: <20231201104857.665737-3-dtatulea@nvidia.com>
-From:   Eugenio Perez Martin <eperezma@redhat.com>
-Date:   Fri, 1 Dec 2023 12:46:45 +0100
-Message-ID: <CAJaqyWc3Xa9abmS+MxFbgQHUao0_=tcx4mres2AeDWqvtmZ5Jg@mail.gmail.com>
-Subject: Re: [PATCH vhost 2/7] vdpa/mlx5: Split function into locked and
- unlocked variants
-To:     Dragos Tatulea <dtatulea@nvidia.com>
-Cc:     "Michael S . Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Si-Wei Liu <si-wei.liu@oracle.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Gal Pressman <galp@nvidia.com>,
-        Parav Pandit <parav@nvidia.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
+Message-Id: <4eb150cf-3fb7-41c8-accc-06b13e46f086@app.fastmail.com>
+In-Reply-To: <20231201111512.803120-22-gregory.clement@bootlin.com>
+References: <20231201111512.803120-1-gregory.clement@bootlin.com>
+ <20231201111512.803120-22-gregory.clement@bootlin.com>
+Date:   Fri, 01 Dec 2023 11:47:16 +0000
+From:   "Jiaxun Yang" <jiaxun.yang@flygoat.com>
+To:     "Gregory CLEMENT" <gregory.clement@bootlin.com>,
+        "paulburton@kernel.org" <paulburton@kernel.org>,
+        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     "Vladimir Kondratiev" <vladimir.kondratiev@mobileye.com>,
+        "Tawfik Bayouk" <tawfik.bayouk@mobileye.com>,
+        "Alexandre Belloni" <alexandre.belloni@bootlin.com>,
+        =?UTF-8?Q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>,
+        "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v3 21/22] MIPS: generic: Add support for Mobileye EyeQ5
+Content-Type: text/plain;charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 1, 2023 at 11:49=E2=80=AFAM Dragos Tatulea <dtatulea@nvidia.com=
-> wrote:
->
-> mlx5_vdpa_destroy_mr contains more logic than _mlx5_vdpa_destroy_mr.
-> There is no reason for this to be the case. All the logic can go into
-> the unlocked variant.
->
-> Using the unlocked version is needed in a follow-up patch. And it also
-> makes it more consistent with mlx5_vdpa_create_mr.
->
-> Signed-off-by: Dragos Tatulea <dtatulea@nvidia.com>
 
-Acked-by: Eugenio P=C3=A9rez <eperezma@redhat.com>
 
+=E5=9C=A82023=E5=B9=B412=E6=9C=881=E6=97=A5=E5=8D=81=E4=BA=8C=E6=9C=88 =E4=
+=B8=8A=E5=8D=8811:15=EF=BC=8CGregory CLEMENT=E5=86=99=E9=81=93=EF=BC=9A
+> Introduce support for the MIPS based Mobileye EyeQ5 SoCs.
+>
+> Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
 > ---
->  drivers/vdpa/mlx5/core/mr.c | 31 ++++++++++++++++---------------
->  1 file changed, 16 insertions(+), 15 deletions(-)
+>  arch/mips/configs/generic/board-eyeq5.config | 43 ++++++++++++++++++++
+>  arch/mips/generic/Kconfig                    | 15 +++++++
+>  arch/mips/generic/Platform                   |  2 +
+>  arch/mips/generic/board-epm5.its.S           | 24 +++++++++++
+>  4 files changed, 84 insertions(+)
+>  create mode 100644 arch/mips/configs/generic/board-eyeq5.config
+>  create mode 100644 arch/mips/generic/board-epm5.its.S
 >
-> diff --git a/drivers/vdpa/mlx5/core/mr.c b/drivers/vdpa/mlx5/core/mr.c
-> index 2197c46e563a..8c80d9e77935 100644
-> --- a/drivers/vdpa/mlx5/core/mr.c
-> +++ b/drivers/vdpa/mlx5/core/mr.c
-> @@ -498,32 +498,32 @@ static void destroy_user_mr(struct mlx5_vdpa_dev *m=
-vdev, struct mlx5_vdpa_mr *mr
->
->  static void _mlx5_vdpa_destroy_mr(struct mlx5_vdpa_dev *mvdev, struct ml=
-x5_vdpa_mr *mr)
->  {
-> +       if (!mr)
-> +               return;
-> +
->         if (mr->user_mr)
->                 destroy_user_mr(mvdev, mr);
->         else
->                 destroy_dma_mr(mvdev, mr);
->
-> +       for (int i =3D 0; i < MLX5_VDPA_NUM_AS; i++) {
-> +               if (mvdev->mr[i] =3D=3D mr)
-> +                       mvdev->mr[i] =3D NULL;
-> +       }
-> +
->         vhost_iotlb_free(mr->iotlb);
-> +
-> +       kfree(mr);
->  }
->
->  void mlx5_vdpa_destroy_mr(struct mlx5_vdpa_dev *mvdev,
->                           struct mlx5_vdpa_mr *mr)
->  {
-> -       if (!mr)
-> -               return;
-> -
->         mutex_lock(&mvdev->mr_mtx);
->
->         _mlx5_vdpa_destroy_mr(mvdev, mr);
->
-> -       for (int i =3D 0; i < MLX5_VDPA_NUM_AS; i++) {
-> -               if (mvdev->mr[i] =3D=3D mr)
-> -                       mvdev->mr[i] =3D NULL;
-> -       }
-> -
->         mutex_unlock(&mvdev->mr_mtx);
-> -
-> -       kfree(mr);
->  }
->
->  void mlx5_vdpa_update_mr(struct mlx5_vdpa_dev *mvdev,
-> @@ -535,10 +535,7 @@ void mlx5_vdpa_update_mr(struct mlx5_vdpa_dev *mvdev=
-,
->         mutex_lock(&mvdev->mr_mtx);
->
->         mvdev->mr[asid] =3D new_mr;
-> -       if (old_mr) {
-> -               _mlx5_vdpa_destroy_mr(mvdev, old_mr);
-> -               kfree(old_mr);
-> -       }
-> +       _mlx5_vdpa_destroy_mr(mvdev, old_mr);
->
->         mutex_unlock(&mvdev->mr_mtx);
->
-> @@ -546,8 +543,12 @@ void mlx5_vdpa_update_mr(struct mlx5_vdpa_dev *mvdev=
-,
->
->  void mlx5_vdpa_destroy_mr_resources(struct mlx5_vdpa_dev *mvdev)
->  {
-> +       mutex_lock(&mvdev->mr_mtx);
-> +
->         for (int i =3D 0; i < MLX5_VDPA_NUM_AS; i++)
-> -               mlx5_vdpa_destroy_mr(mvdev, mvdev->mr[i]);
-> +               _mlx5_vdpa_destroy_mr(mvdev, mvdev->mr[i]);
-> +
-> +       mutex_unlock(&mvdev->mr_mtx);
->
->         prune_iotlb(mvdev->cvq.iotlb);
->  }
-> --
-> 2.42.0
->
+> diff --git a/arch/mips/configs/generic/board-eyeq5.config=20
+> b/arch/mips/configs/generic/board-eyeq5.config
+> new file mode 100644
+> index 0000000000000..d5109fda6e821
+> --- /dev/null
+> +++ b/arch/mips/configs/generic/board-eyeq5.config
+> @@ -0,0 +1,43 @@
+> +CONFIG_HIGH_RES_TIMERS=3Dy
+> +CONFIG_TASKSTATS=3Dy
+> +CONFIG_FIT_IMAGE_FDT_EPM5=3Dy
+> +CONFIG_BOARD_EYEQ5=3Dy
+> +CONFIG_USE_XKPHYS=3Dy
+> +CONFIG_PHYSICAL_START=3D0xa800000808000000
+> +CONFIG_ZBOOT_LOAD_ADDRESS=3D0xA800000080480000
+^ I wonder why are you overriding CONFIG_ZBOOT_LOAD_ADDRESS here, automa=
+tic
+calculation should work well.
 
+Also I think by adding board-eyeq5.config you are hijacking CONFIG_PHYSI=
+CAL_START
+for `make 32r2el_defconfig` without BOARDS option as well.
+
+Probably we should implement something to backlist this board from gener=
+ic
+config.
+
+Thanks
+- Jiaxun
+
+> +CONFIG_CPU_HAS_MSA=3Dy
+> +CONFIG_NET_KEY=3Dy
+> +CONFIG_CAN=3Dy
+> +CONFIG_PCI=3Dy
+> +CONFIG_PCI_MSI=3Dy
+> +CONFIG_PCI_DEBUG=3Dy
+> +CONFIG_PCI_ENDPOINT=3Dy
+> +CONFIG_CONNECTOR=3Dy
+> +CONFIG_MTD=3Dy
+> +CONFIG_MTD_CMDLINE_PARTS=3Dy
+> +CONFIG_MTD_BLOCK=3Dy
+> +CONFIG_MTD_RAM=3Dy
+> +CONFIG_MTD_ROM=3Dy
+> +CONFIG_MTD_PHYSMAP=3Dy
+> +CONFIG_MTD_PHYSMAP_OF=3Dy
+> +CONFIG_MTD_BLOCK2MTD=3Dy
+> +CONFIG_MTD_UBI=3Dy
+> +CONFIG_MTD_UBI_BLOCK=3Dy
+> +CONFIG_NETDEVICES=3Dy
+> +CONFIG_MACVLAN=3Dy
+> +CONFIG_IPVLAN=3Dy
+> +CONFIG_MACB=3Dy
+> +CONFIG_MARVELL_PHY=3Dy
+> +CONFIG_MICREL_PHY=3Dy
+> +CONFIG_CAN_M_CAN=3Dy
+> +CONFIG_SERIAL_AMBA_PL011=3Dy
+> +CONFIG_SERIAL_AMBA_PL011_CONSOLE=3Dy
+> +CONFIG_PINCTRL=3Dy
+> +CONFIG_MMC=3Dy
+> +CONFIG_MMC_SDHCI=3Dy
+> +CONFIG_MMC_SDHCI_CADENCE=3Dy
+> +CONFIG_RESET_CONTROLLER=3Dy
+> +CONFIG_FANOTIFY=3Dy
+> +CONFIG_ROMFS_FS=3Dy
+> +CONFIG_ROMFS_BACKED_BY_BOTH=3Dy
+> +CONFIG_PAGE_SIZE_16KB=3Dy
+> \ No newline at end of file
+> diff --git a/arch/mips/generic/Kconfig b/arch/mips/generic/Kconfig
+> index 7dc5b3821cc6e..04e1fc6f789b5 100644
+> --- a/arch/mips/generic/Kconfig
+> +++ b/arch/mips/generic/Kconfig
+> @@ -48,6 +48,13 @@ config SOC_VCOREIII
+>  config MSCC_OCELOT
+>  	bool
+>=20
+> +config SOC_EYEQ5
+> +	select ARM_AMBA
+> +	select WEAK_ORDERING
+> +	select WEAK_REORDERING_BEYOND_LLSC
+> +	select PHYSICAL_START_BOOL
+> +	bool
+> +
+>  comment "FIT/UHI Boards"
+>=20
+>  config FIT_IMAGE_FDT_BOSTON
+> @@ -124,4 +131,12 @@ config VIRT_BOARD_RANCHU
+>  	  Android emulator. Android emulator is based on Qemu, and contains
+>  	  the support for the same set of virtual devices.
+>=20
+> +config FIT_IMAGE_FDT_EPM5
+> +	bool "Include FDT for Mobileye EyeQ5 development platforms"
+> +	select SOC_EYEQ5
+> +	default n
+> +	help
+> +	  Enable this to include the FDT for the EyeQ5 development platforms
+> +	  from Mobileye in the FIT kernel image.
+> +	  This requires u-boot on the platform.
+>  endif
+> diff --git a/arch/mips/generic/Platform b/arch/mips/generic/Platform
+> index 0c03623f38970..45db9824a11d6 100644
+> --- a/arch/mips/generic/Platform
+> +++ b/arch/mips/generic/Platform
+> @@ -24,3 +24,5 @@ its-$(CONFIG_FIT_IMAGE_FDT_JAGUAR2)	+=3D=20
+> board-jaguar2.its.S
+>  its-$(CONFIG_FIT_IMAGE_FDT_SERVAL)	+=3D board-serval.its.S
+>  its-$(CONFIG_FIT_IMAGE_FDT_XILFPGA)	+=3D board-xilfpga.its.S
+>  its-$(CONFIG_FIT_IMAGE_FDT_MARDUK)	+=3D board-marduk.its.S
+> +its-$(CONFIG_FIT_IMAGE_FDT_EPM5)	+=3D board-epm5.its.S
+> +
+> diff --git a/arch/mips/generic/board-epm5.its.S=20
+> b/arch/mips/generic/board-epm5.its.S
+> new file mode 100644
+> index 0000000000000..08e8c4f183d63
+> --- /dev/null
+> +++ b/arch/mips/generic/board-epm5.its.S
+> @@ -0,0 +1,24 @@
+> +/* SPDX-License-Identifier: (GPL-2.0 OR MIT) */
+> +/ {
+> +	images {
+> +		fdt-mobileye-epm5 {
+> +			description =3D "Mobileeye MP5 Device Tree";
+> +			data =3D /incbin/("boot/dts/mobileye/eyeq5-epm5.dtb");
+> +			type =3D "flat_dt";
+> +			arch =3D "mips";
+> +			compression =3D "none";
+> +			hash {
+> +				algo =3D "sha1";
+> +			};
+> +		};
+> +	};
+> +
+> +    configurations {
+> +		default =3D "conf-1";
+> +		conf-1 {
+> +			description =3D "Mobileye EPM5 Linux kernel";
+> +			kernel =3D "kernel";
+> +			fdt =3D "fdt-mobileye-epm5";
+> +		};
+> +	};
+> +};
+> --=20
+> 2.42.0
+
+--=20
+- Jiaxun
