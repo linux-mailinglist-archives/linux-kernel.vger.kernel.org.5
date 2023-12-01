@@ -2,255 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76FB180007D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 01:46:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDECB800088
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 01:48:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377471AbjLAAp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 19:45:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59098 "EHLO
+        id S229802AbjLAAsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 19:48:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377506AbjLAApx (ORCPT
+        with ESMTP id S229627AbjLAAsb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 19:45:53 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 173F51720;
-        Thu, 30 Nov 2023 16:45:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701391554; x=1732927554;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=73L/5MpJgDADkf8EGzv+uHsARB1sIWvTa2gaWO1Ctok=;
-  b=QX727bTB4ti+A/oZe5z8slrxkrLIbSpUG9sGUk8VJtfD9ByecuEWjyoQ
-   gAFke1FerQRT7y3lx88eBl9yzmwH0R9uC6jHmISYtCWq78ECIhi6rIzbd
-   6M+GABNLyUf7RDq6c2hFqChnWPkpjqm+3eUq3Pwyrtzm/iMho85zTFqBK
-   2QzXZpDt/SeFEOEP7rjuO+hyBmyKlp/JAj5DZJl5HiDHRB4pDpJXZ/aCO
-   ejqV+XYMkJsgCXHKgd2g4WJ4UymVPJj+CG+piAp0PgeLuS7VAl10zna0L
-   2gBu+M3IYjSLFdIakuy5v61gA73wWL1BNP3WCwTxLF66Bj1wk0Zfkiz61
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="378447174"
-X-IronPort-AV: E=Sophos;i="6.04,240,1695711600"; 
-   d="scan'208";a="378447174"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 16:45:53 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="762933849"
-X-IronPort-AV: E=Sophos;i="6.04,240,1695711600"; 
-   d="scan'208";a="762933849"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by orsmga007.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 30 Nov 2023 16:45:53 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Thu, 30 Nov 2023 16:45:52 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Thu, 30 Nov 2023 16:45:52 -0800
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Thu, 30 Nov 2023 16:45:52 -0800
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.100)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Thu, 30 Nov 2023 16:45:52 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JM06dRunMwTnpEcOpIfTbEZUpw+9oEnilleasndRAKO9ZqFKuN+fqe9mASny4OAI90/BZm4e5dIY+5oiPSG+c3WEfhW11xqtxPErDsHMq1C1YQ0fPXZmRI7eBe/lZi7qDUprfoRS1ZitTdOXFbAlycJ/WhNmG4ojTYz4oMQZLnv187UieTtItpFSBmyBvJ9GjkeHKalj+sKCByf6nTIU+/F20LGRFGsTtReHVTJ9vkIRe9emLh1Enqb8PhReicUaTASDfMeCehGFTPR0Hj2gbUX0T1GJ2IVfuJAjUmcCf4hHTRmi2yj+2rGys/OJrOFTVit1mrCdROujQPrANGtbHA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=73L/5MpJgDADkf8EGzv+uHsARB1sIWvTa2gaWO1Ctok=;
- b=F3dDwv+tQ55XfDBNLIH/pU+5FO9o4FZXG7aQzsj2dtgzvoD0uxsKo2Jw0hdnmtK8NQf3JKMufivF3y8Yq04tAetafMZuBYzL8VGNG/GCagmirkeL/zpQS9O/X/9PGEXhT4bR6dHX2RgMevBszxEBNxJY/3LQmVBYWygH9eSVF+wY67vjYx/9HSxjFlTPZJ6IrY3v3zPREGPR4sttlKdmeoqoW16sxeoVyMwP8OGRBJJHywPbGreZFXW6eXGn41pVHVlBLyuDiNYJySLR99D97/YVI8/QGiIdq3gw3hZagxjkAExNhXESPGepN7mY985FMppwkN42p33fwCYylsvjRw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from MN0PR11MB5963.namprd11.prod.outlook.com (2603:10b6:208:372::10)
- by IA1PR11MB7755.namprd11.prod.outlook.com (2603:10b6:208:420::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.23; Fri, 1 Dec
- 2023 00:45:49 +0000
-Received: from MN0PR11MB5963.namprd11.prod.outlook.com
- ([fe80::6dc:cee5:b26b:7d93]) by MN0PR11MB5963.namprd11.prod.outlook.com
- ([fe80::6dc:cee5:b26b:7d93%4]) with mapi id 15.20.7046.023; Fri, 1 Dec 2023
- 00:45:49 +0000
-From:   "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-To:     "peterz@infradead.org" <peterz@infradead.org>,
-        "madvenka@linux.microsoft.com" <madvenka@linux.microsoft.com>
-CC:     "ssicleru@bitdefender.com" <ssicleru@bitdefender.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mic@digikod.net" <mic@digikod.net>,
-        "marian.c.rotariu@gmail.com" <marian.c.rotariu@gmail.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "tgopinath@microsoft.com" <tgopinath@microsoft.com>,
-        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
-        "qemu-devel@nongnu.org" <qemu-devel@nongnu.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jgowans@amazon.com" <jgowans@amazon.com>,
-        "ztarkhani@microsoft.com" <ztarkhani@microsoft.com>,
-        "mdontu@bitdefender.com" <mdontu@bitdefender.com>,
-        "x86@kernel.org" <x86@kernel.org>, "bp@alien8.de" <bp@alien8.de>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        "jamorris@linux.microsoft.com" <jamorris@linux.microsoft.com>,
-        "seanjc@google.com" <seanjc@google.com>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "Andersen, John S" <john.s.andersen@intel.com>,
-        "yu.c.zhang@linux.intel.com" <yu.c.zhang@linux.intel.com>,
-        "nicu.citu@icloud.com" <nicu.citu@icloud.com>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "Graf, Alexander" <graf@amazon.com>,
-        "wanpengli@tencent.com" <wanpengli@tencent.com>,
-        "dev@lists.cloudhypervisor.org" <dev@lists.cloudhypervisor.org>,
-        "will@kernel.org" <will@kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "yuanyu@google.com" <yuanyu@google.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
-        "quic_tsoni@quicinc.com" <quic_tsoni@quicinc.com>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>
-Subject: Re: [RFC PATCH v2 17/19] heki: x86: Update permissions counters
- during text patching
-Thread-Topic: [RFC PATCH v2 17/19] heki: x86: Update permissions counters
- during text patching
-Thread-Index: AQHaFdikZALJvW8dw0mqOzn84o3Of7B36I2AgBaO2oCAADfvgIADNQeAgAHPZQA=
-Date:   Fri, 1 Dec 2023 00:45:49 +0000
-Message-ID: <4103d68b07bb382e434cdaf19ab1986f9079b0bb.camel@intel.com>
-References: <20231113022326.24388-1-mic@digikod.net>
-         <20231113022326.24388-18-mic@digikod.net>
-         <20231113081929.GA16138@noisy.programming.kicks-ass.net>
-         <a52d8885-43cc-4a4e-bb47-9a800070779e@linux.microsoft.com>
-         <20231127200841.GZ3818@noisy.programming.kicks-ass.net>
-         <ea63ae4e-e8ea-4fbf-9383-499e14de2f5e@linux.microsoft.com>
-In-Reply-To: <ea63ae4e-e8ea-4fbf-9383-499e14de2f5e@linux.microsoft.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.44.4-0ubuntu2 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MN0PR11MB5963:EE_|IA1PR11MB7755:EE_
-x-ms-office365-filtering-correlation-id: 9265360b-1e06-4a76-c094-08dbf206dcd7
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: sJYoQmCZ9mUPmSzGFYkw9jYzjKYfGtykpnm4aO9u7dFdvv1Xibb8bQXOABMiUjRcZj0aMHik80/SCYPArurUciRsE/O9EdxFjYPr7DxUujqt/P7vrjc1Uh3TbZ8d6iefaU5sBa0PIs0Vk6YYrxltMgUMjnM6DJhfrUjuAPG22LEFiLgLMmJxihuBX7dXdPa1qL2NEvJ3/wvFU/L/SuaCeRLM3Y8GLIquJFfjqTBD+lrUogrc/A2n9n7YPPmKhJy4VtbG94r3YRJOIZM2UpCinom8zAdDP8jgQ4ImT76eVP76a7tz6Brzz6qhP+Bz/Hf/QqV3Snt0jG5keP4zJ13pr45mtQOn9as8BpP3tQxcz4EeazjptT5TQndpfctZk+E/rM20GYe6e4X7sXTo/JoSqvLSSsWMi0pOCLdhDcs4WEgqFP6qXftTpf60VSoczn796+UkKyvJ0zeDRF/Ymy1FbdwVjwEe79Nnc0jFhF0pu1UkxRVTB+WJo0i5XSmYyYWM5RVOjuHo3AFEToqIDRnaP36MAcJ0Rq012izzR7KvkjceDq3+uTYM766SWRsyIUyhRRnG32H1a/0SDQd+rj5+SO8qAXrvF0fYxX9UlC0dmf4=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB5963.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(39860400002)(136003)(366004)(376002)(230922051799003)(64100799003)(451199024)(186009)(1800799012)(82960400001)(122000001)(38100700002)(83380400001)(4001150100001)(8676002)(110136005)(91956017)(2906002)(8936002)(86362001)(4326008)(5660300002)(7406005)(66946007)(66556008)(316002)(15650500001)(64756008)(54906003)(66476007)(6486002)(478600001)(966005)(71200400001)(76116006)(36756003)(6506007)(41300700001)(7416002)(66446008)(6512007)(38070700009)(26005)(2616005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?SlpZeDU0UUNDOTM3Z1NSU0hLVnNQWmozamtVQ29ZdCt5Z1JQUlNFU2krTzI2?=
- =?utf-8?B?czhKbk1OTGl6bzJRa3R1bmY3c3VNSnpZMjNVTkR0VE5lYktBb1ptVEV1R252?=
- =?utf-8?B?TE9Wa01qd1gxTHQzQW44aElDMHhFbytVSitja054WTNUcDBnMkRVZWYxTXBF?=
- =?utf-8?B?Y1M1aEJybDJvaG5hQk84L1ROTUFkaFdHczJ1Q2Ria3hXTkRiQkZVZ3Vkck5o?=
- =?utf-8?B?QjFkK1JRYkQzOWhiZDB0aTZnSDEraUFZSWhmY0Q4enlRayt3QjNqUkE2WVp2?=
- =?utf-8?B?eCtKQ1UyU1hqUG96d0lSL1Vma0ZkQ1ZWZUIxZlR2M1RtQWpFcGszYlNFRnNI?=
- =?utf-8?B?bzUrYXovak91Skl2MlROVm5MYlRKZmZRVmtDL3F3dUFkV29yOEdodnFMdkJw?=
- =?utf-8?B?N0kzbWdKbFhVeWRUbTB1Uzd2MGZhdjZzdmVreUtJZ2xJWUo1Qi9PVmFFa2NL?=
- =?utf-8?B?UmhaWG14NGM3MFlJWW9JTUgrQnRPc0Zzb1lkQVpRaHdUMnBwZHVUZHJUN292?=
- =?utf-8?B?bFlMcEJUTExqOFFObVlobTJPMW9Ca3BoMWNiYU9tN0dEd0VOWmZQbnd5aDBZ?=
- =?utf-8?B?bThDYjZSVGJyM29UTmJHcXBCc0M3R0ZDLzdkNG56YnZIdWZ2QjUrQjZFMXNq?=
- =?utf-8?B?dk0zR05hVk1rSG9LdEVQVXZPSk9Qb2R2OHB3ZC9KbUxEK0tBZlBOOVBwd3dP?=
- =?utf-8?B?NnlKMW1FeHkxUUF4QWZXbTZVQzlaRVROYkw4aXlQSTRNblNCQUtpZEtmOG1v?=
- =?utf-8?B?K1NpcTlQd25sdXovZThveVpjRUs3UkFFSDM0ampacjFkMllic2xGQVRaVVBU?=
- =?utf-8?B?OHFQc1hGbWtTQ1k5ZncwajFZaDJ2NVRrVXp2dnBxTnpGR3FESytqZUNMNElv?=
- =?utf-8?B?eW9jL08za1laOE5NVFBBS0tQVHZUd3Z4MUptdmpSRnRleEpVNU1qVE5lTUxx?=
- =?utf-8?B?S29HYjhDbDFMOUpBYUV3TTdPcVBuMWJBbE1vTi9VRWlwUnhUOC9LWDhMeUIr?=
- =?utf-8?B?UC8vbjFTQVRxUXRHYWZYaEppZXVDdko5cHJHVmlkb29vNEF6WlUxUUVXaEVG?=
- =?utf-8?B?SGxuYlVpV0lZTTZvUnYvL1kxYTZybGhxN0VGQVJaM05Wdnh1UU5tNW84SGk4?=
- =?utf-8?B?SjRmVWtaa2FHbitjb01zb1RkZFFiQ2l1clBoRmRwS3lpSmJLSmtReEZMSVRP?=
- =?utf-8?B?Q1hiOTEwSWxteVlDMlFDY3J6UWF3dTBPdURyQUg1N2NMa0lWWFFrMlhvbjlJ?=
- =?utf-8?B?ZnZ6ZG5lRkJqMXp5Y0N6YjJtazZsaVBSWkI1UkllN2ZjVE5oMnU5V3QyOWdw?=
- =?utf-8?B?dzNNTG5vMVVYVTZQSGdMZytkQkdLVGd3NEFUNkZtRGIrNDM2bjBZR0xzd3E5?=
- =?utf-8?B?Ym5iakIvSG5CWWpoMUNpQ1k4Tm1kdVJ2YXRiYlBjQUVNalg2MmlJTUc4bTlu?=
- =?utf-8?B?WGpSdGR2WmhjZUJnT3pPWnRaOENaZXJwNU1YaEs0Y2VJYUExRi80UWtTS28w?=
- =?utf-8?B?MGVlS085SWZSQTFnWTY4ZUszWkgyNE5UWkRlRjZ6QmJzZFU3WkZaSXNOUGdN?=
- =?utf-8?B?QitUMHJUeFQvaW1CWllVSFVhYnRSRTZsT0VmUFVPL1UwdjVheldIT2ZOU0Uw?=
- =?utf-8?B?c2YyU1VVVGVCeFVDVzg4VkcwWG9ES2owL3cwRk9QSk5xYXM5RTJ2Q0s5dzBn?=
- =?utf-8?B?dHltdDdxZ0lkc0RXV2VxMzlVWW0rZ1hUbHVEOUVVSm9mangrLytBeDJuOW5x?=
- =?utf-8?B?KzVRU0R1c2tlOG9jdkc1ZXFYRVV6ZTcxU3h6V1ZtQVo5SXQ3cy92NTdDdERG?=
- =?utf-8?B?WWVQaWcxUjYwVklxOUE1M0tVZzBXMXVONGZLOHJXWDRJOCtHSUViMjM1VEZv?=
- =?utf-8?B?MXRzZzlDcG5TWVY1Qk5qZ1QrV0tOeEFZL0svVVNxd3dUWGJBSXBsNzhRTUZH?=
- =?utf-8?B?RUdGWktsMm55bXdVTDdtRklVZk1wTzlNMG16YjV6L3U5UnA0QTVCUFlWVEt6?=
- =?utf-8?B?SlFaWFQwbkIxSFBVZFRXUUk5LzQ1Q3ZtZGxtbVQxY093dXBuNnBmQWdXb0hy?=
- =?utf-8?B?ek1zVCs0VWVyTEx1WkZsY21TT1BMRG5aTS80a1VPenhySzhiNC8rK0J2dVBx?=
- =?utf-8?B?K3I5djgrbFBJdm1lSHFYNVUvdVZNNGRBTHR4cHJIR3h6elM4aU41Z2hKcGli?=
- =?utf-8?B?cWc9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <76B637047A03374C8C5D77D8BAB3AE3A@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Thu, 30 Nov 2023 19:48:31 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9EE910D0
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 16:48:37 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76E2BC433C7;
+        Fri,  1 Dec 2023 00:48:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701391717;
+        bh=X3BUXBkYtJpQwRLU1TU93lDeXDMkOvPhcnf4C78mwE4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=B34NecWmUeynFoxpCccTt6X0ePUEaVz/2L95Aj+VnddScKVn/x0F4wjvOMXnI2TTB
+         FXX1VNB8ZcBQa01kvBfpJHTROGZFOdQXBDN6Kjm9rqBbfbGPbwtb5y81sntzf3JDaE
+         kwrSkHGlolekoczeVKSUfM7owM6p1L1yeY1EBJvUpmaR2+cZ78fEa1ISTXEdtXl2V9
+         GmTbNLpSLwy0i46h76+7YF7152eZVL3sjvXTx6Sikks1ZieN37ghoraiRU5NQA2XHM
+         faUokYGOtzMd2bmf5ePKtZnmJvLuJSMhunnUkfJ7lGGlzipGWqvoflW+cLjHQCXmBg
+         mzfoh4DDL6ocQ==
+Date:   Thu, 30 Nov 2023 16:48:36 -0800
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Jiachen Zhang <zhangjiachen.jaycee@bytedance.com>
+Cc:     Chandan Babu R <chandan.babu@oracle.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        Allison Henderson <allison.henderson@oracle.com>,
+        Zhang Tianci <zhangtianci.1997@bytedance.com>,
+        Brian Foster <bfoster@redhat.com>, linux-xfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, xieyongji@bytedance.com, me@jcix.top,
+        Dave Chinner <david@fromorbit.com>
+Subject: Re: [PATCH v3 2/3] xfs: update dir3 leaf block metadata after swap
+Message-ID: <20231201004836.GS361584@frogsfrogsfrogs>
+References: <20231130040516.35677-1-zhangjiachen.jaycee@bytedance.com>
+ <20231130040516.35677-3-zhangjiachen.jaycee@bytedance.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB5963.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9265360b-1e06-4a76-c094-08dbf206dcd7
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Dec 2023 00:45:49.1438
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: +eP2airK01gzQvEdRBBxf1yTqqROY91HXa9KYnvsYacLVHYQ7NfB67f3RlcgFmj7FNrvgKKZi+CQMASUHQzEdLP6nNrnsUQ5uVm1oZN4Crc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB7755
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231130040516.35677-3-zhangjiachen.jaycee@bytedance.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIzLTExLTI5IGF0IDE1OjA3IC0wNjAwLCBNYWRoYXZhbiBULiBWZW5rYXRhcmFt
-YW4gd3JvdGU6DQo+IFRocmVhdCBNb2RlbA0KPiAtLS0tLS0tLS0tLS0NCj4gDQo+IEluIHRoZSB0
-aHJlYXQgbW9kZWwgaW4gSGVraSwgdGhlIGF0dGFja2VyIGlzIGEgdXNlciBzcGFjZSBhdHRhY2tl
-cg0KPiB3aG8gZXhwbG9pdHMNCj4gYSBrZXJuZWwgdnVsbmVyYWJpbGl0eSB0byBnYWluIG1vcmUg
-cHJpdmlsZWdlcyBvciBieXBhc3MgdGhlIGtlcm5lbCdzDQo+IGFjY2Vzcw0KPiBjb250cm9sIGFu
-ZCBzZWxmLXByb3RlY3Rpb24gbWVjaGFuaXNtcy4gDQo+IA0KPiBJbiB0aGUgY29udGV4dCBvZiB0
-aGUgZ3Vlc3QgcGFnZSB0YWJsZSwgb25lIG9mIHRoZSB0aGluZ3MgdGhhdCB0aGUNCj4gdGhyZWF0
-IG1vZGVsIHRyYW5zbGF0ZXMNCj4gdG8gaXMgYSBoYWNrZXIgZ2FpbmluZyBhY2Nlc3MgdG8gYSBn
-dWVzdCBwYWdlIHdpdGggUldYIHBlcm1pc3Npb25zLg0KPiBFLmcuLCBieSBhZGRpbmcgZXhlY3V0
-ZQ0KPiBwZXJtaXNzaW9ucyB0byBhIHdyaXRhYmxlIHBhZ2Ugb3IgYnkgYWRkaW5nIHdyaXRlIHBl
-cm1pc3Npb25zIHRvIGFuDQo+IGV4ZWN1dGFibGUgcGFnZS4NCj4gDQo+IFRvZGF5LCB0aGUgcGVy
-bWlzc2lvbnMgZm9yIGEgZ3Vlc3QgcGFnZSBpbiB0aGUgZXh0ZW5kZWQgcGFnZSB0YWJsZQ0KPiBh
-cmUgUldYIGJ5DQo+IGRlZmF1bHQuIFNvLCBpZiBhIGhhY2tlciBtYW5hZ2VzIHRvIGVzdGFibGlz
-aCBSV1ggZm9yIGEgcGFnZSBpbiB0aGUNCj4gZ3Vlc3QgcGFnZQ0KPiB0YWJsZSwgdGhlbiB0aGF0
-IGlzIGFsbCBoZSBuZWVkcyB0byBkbyBzb21lIGRhbWFnZS4NCg0KSSBoYWQgYSBmZXcgcmFuZG9t
-IGNvbW1lbnRzIGZyb20gd2F0Y2hpbmcgdGhlIHBsdW1iZXJzIHRhbGsgb25saW5lOg0KDQpJcyB0
-aGVyZSByZWFsbHkgYSBiaWcgZGlmZmVyZW5jZSBiZXR3ZWVuIGEgcGFnZSB0aGF0IGlzIFJXWCwg
-YW5kIGEgUlcNCnBhZ2UgdGhhdCBpcyBhYm91dCB0byBiZWNvbWUgUlg/IEkgcmVhbGl6ZSB0aGF0
-IHRoZXJlIGlzIGFuIGFkZGl0aW9uIG9mDQp0aW1pbmcsIGJ1dCB3aGVuIGV4ZWN1dGFibGUgY29k
-ZSBpcyBnZXR0aW5nIGxvYWRlZCBpdCBjYW4gYmUgd3JpdHRlbiB0bw0KdGhlbiBhbmQgbGF0ZXIg
-ZXhlY3V0ZWQuIEkgdGhpbmsgdGhhdCBnYXAgY291bGQgYmUgYWRkcmVzc2VkIGluIHR3bw0KZGlm
-ZmVyZW50IHdheXMsIGJvdGggcHJldHR5IGRpZmZpY3VsdDoNCiAxLiBWZXJpZnlpbmcgdGhlIGxv
-YWRlZCBjb2RlIGJlZm9yZSBpdCBnZXRzIG1hcmtlZMKgDQogICAgZXhlY3V0YWJsZS4gVGhpc8Kg
-aXPCoGRpZmZpY3VsdCBiZWNhdXNlIHRoZSBrZXJuZWwgZG9lcyBsb3RzIG9mwqANCiAgICB0d2Vh
-a3Mgb24gdGhlIGNvZGUgaXQgaXMgbG9hZGluZyAoYWx0ZXJuYXRpdmVzLCBldGMpLiBJdCBjYW4n
-dMKgDQogICAganVzdMKgY2hlY2sgYSBzaWduYXR1cmUuDQogMi4gTG9hZGluZyB0aGUgY29kZSBp
-biBhIHByb3RlY3RlZCBlbnZpcm9ubWVudC4gSW4gdGhpcyBtb2RlbCB0aGXCoA0KICAgIChmb3LC
-oGV4YW1wbGUpIG1vZHVsZSBzaWduYXR1cmUgd291bGQgYmUgY2hlY2tlZCwgdGhlbiB0aGUgY29k
-ZcKgDQogICAgd291bGQgYmUgbG9hZGVkIGluIHNvbWUgc29ydCBvZiBwcm90ZWN0ZWQgZW52aXJv
-bm1lbnQuIFRoaXMgd2F5wqANCiAgICBpbnRlZ3JpdHkgb2YgdGhlIGxvYWRlZCBjb2RlIHdvdWxk
-IGJlIGVuZm9yY2VkLiBCdXQgZXh0cmFjdGluZ8KgDQogICAgbW9kdWxlIGxvYWRpbmcgaW50byBh
-IHNlcGFyYXRlIGRvbWFpbiB3b3VsZCBiZSBkaWZmaWN1bHQuwqANCiAgICBWYXJpb3VzIHNjYXR0
-ZXJlZMKgZmVhdHVyZXMgYWxsIGhhdmUgdGhlaXIgaGFuZHMgaW4gdGhlIGxvYWRpbmcuDQoNClNl
-Y29uZGx5LCBJIHdvbmRlciBpZiBhbm90aGVyIHdheSB0byBsb29rIGF0IHRoZSBtZW1vcnkgcGFy
-dHMgb2YgSEVLSQ0KY291bGQgYmUgdGhhdCB0aGlzIGlzIGEgd2F5IHRvIHByb3RlY3QgY2VydGFp
-biBwYWdlIHRhYmxlIGJpdHMgZnJvbQ0Kc3RheSB3cml0ZXMuIFRoZSBSV1ggYml0cyBpbiB0aGUg
-RVBUIGFyZSBub3QgZGlyZWN0bHkgd3JpdGFibGUsIHNvIG1vcmUNCnN0ZXBzIGFyZSBuZWVkZWQg
-dG8gY2hhbmdlIHRoaW5ncyB0aGFuIGp1c3QgYSBzdHJheSB3cml0ZSAoaW5zdGVhZCB0aGUNCmhl
-bHBlcnMgaW52b2x2ZWQgaW4gdGhlIG9wZXJhdGlvbnMgbmVlZCB0byBiZSBjYWxsZWQpLiBJZiB0
-aGF0IGlzIGENCmZhaXIgd2F5IG9mIGxvb2tpbmcgYXQgaXQsIHRoZW4gSSB3b25kZXIgaG93IEhF
-S0kgY29tcGFyZXMgdG8gYQ0Kc29sdXRpb24gbGlrZSB0aGlzIHNlY3VyaXR5LXdpc2U6DQpodHRw
-czovL2xvcmUua2VybmVsLm9yZy9sa21sLzIwMjEwODMwMjM1OTI3LjY0NDMtMS1yaWNrLnAuZWRn
-ZWNvbWJlQGludGVsLmNvbS8NCg0KRnVuY3Rpb25hbC13aXNlIGl0IGhhZCB0aGUgYmVuZWZpdCBv
-ZiB3b3JraW5nIG9uIGJhcmUgbWV0YWwgYW5kDQpzdXBwb3J0aW5nIHRoZSBub3JtYWwga2VybmVs
-IGZlYXR1cmVzLg0K
+On Thu, Nov 30, 2023 at 12:05:15PM +0800, Jiachen Zhang wrote:
+> From: Zhang Tianci <zhangtianci.1997@bytedance.com>
+> 
+> xfs_da3_swap_lastblock() copy the last block content to the dead block,
+> but do not update the metadata in it. We need update some metadata
+> for some kinds of type block, such as dir3 leafn block records its
+> blkno, we shall update it to the dead block blkno. Otherwise,
+> before write the xfs_buf to disk, the verify_write() will fail in
+> blk_hdr->blkno != xfs_buf->b_bn, then xfs will be shutdown.
+> 
+> We will get this warning:
+> 
+>   XFS (dm-0): Metadata corruption detected at xfs_dir3_leaf_verify+0xa8/0xe0 [xfs], xfs_dir3_leafn block 0x178
+>   XFS (dm-0): Unmount and run xfs_repair
+>   XFS (dm-0): First 128 bytes of corrupted metadata buffer:
+>   00000000e80f1917: 00 80 00 0b 00 80 00 07 3d ff 00 00 00 00 00 00  ........=.......
+>   000000009604c005: 00 00 00 00 00 00 01 a0 00 00 00 00 00 00 00 00  ................
+>   000000006b6fb2bf: e4 44 e3 97 b5 64 44 41 8b 84 60 0e 50 43 d9 bf  .D...dDA..`.PC..
+>   00000000678978a2: 00 00 00 00 00 00 00 83 01 73 00 93 00 00 00 00  .........s......
+>   00000000b28b247c: 99 29 1d 38 00 00 00 00 99 29 1d 40 00 00 00 00  .).8.....).@....
+>   000000002b2a662c: 99 29 1d 48 00 00 00 00 99 49 11 00 00 00 00 00  .).H.....I......
+>   00000000ea2ffbb8: 99 49 11 08 00 00 45 25 99 49 11 10 00 00 48 fe  .I....E%.I....H.
+>   0000000069e86440: 99 49 11 18 00 00 4c 6b 99 49 11 20 00 00 4d 97  .I....Lk.I. ..M.
+>   XFS (dm-0): xfs_do_force_shutdown(0x8) called from line 1423 of file fs/xfs/xfs_buf.c.  Return address = 00000000c0ff63c1
+>   XFS (dm-0): Corruption of in-memory data detected.  Shutting down filesystem
+>   XFS (dm-0): Please umount the filesystem and rectify the problem(s)
+> 
+> From the log above, we know xfs_buf->b_no is 0x178, but the block's hdr record
+> its blkno is 0x1a0.
+> 
+> Fixes: 24df33b45ecf ("xfs: add CRC checking to dir2 leaf blocks")
+> Signed-off-by: Zhang Tianci <zhangtianci.1997@bytedance.com>
+> Suggested-by: Dave Chinner <david@fromorbit.com>
+
+Looks fine to me,
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+
+--D
+
+> ---
+>  fs/xfs/libxfs/xfs_da_btree.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/fs/xfs/libxfs/xfs_da_btree.c b/fs/xfs/libxfs/xfs_da_btree.c
+> index e576560b46e9..f3f987a65bc1 100644
+> --- a/fs/xfs/libxfs/xfs_da_btree.c
+> +++ b/fs/xfs/libxfs/xfs_da_btree.c
+> @@ -2316,10 +2316,18 @@ xfs_da3_swap_lastblock(
+>  		return error;
+>  	/*
+>  	 * Copy the last block into the dead buffer and log it.
+> +	 * If xfs enable crc, the node/leaf block records its blkno, we
+> +	 * must update it.
+>  	 */
+>  	memcpy(dead_buf->b_addr, last_buf->b_addr, args->geo->blksize);
+> +	if (xfs_has_crc(mp)) {
+> +		struct xfs_da3_blkinfo *da3 = dead_buf->b_addr;
+> +
+> +		da3->blkno = cpu_to_be64(xfs_buf_daddr(dead_buf));
+> +	}
+>  	xfs_trans_log_buf(tp, dead_buf, 0, args->geo->blksize - 1);
+>  	dead_info = dead_buf->b_addr;
+> +
+>  	/*
+>  	 * Get values from the moved block.
+>  	 */
+> -- 
+> 2.20.1
+> 
+> 
