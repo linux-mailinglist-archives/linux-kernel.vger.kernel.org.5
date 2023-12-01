@@ -2,68 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62E36800C94
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 14:51:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 123A5800C99
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 14:53:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379063AbjLANva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 08:51:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56920 "EHLO
+        id S1379062AbjLANxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 08:53:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379066AbjLANv2 (ORCPT
+        with ESMTP id S1379044AbjLANxG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 08:51:28 -0500
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E41F01734;
-        Fri,  1 Dec 2023 05:51:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=AvV8JJJxcriT9Y3w0PKezGi7UKnqKJcMe2L3N57bRPI=; b=gCTDf9AKh80iH7/jlDZTCIN76n
-        PRR1oFOe4hTzVENWvQWqgmHCdUoJq7kocrD1LCHmtFSGYDrdFjecx7oeDfyyTsZH97WarAhsLbs5T
-        fqDdR/5MT73cnLr0187tw+moyu5y6ObuOIulDteevnaAObXKLMgLhVS/hOSaOlEE+S68=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1r93vK-001lXZ-0X; Fri, 01 Dec 2023 14:51:18 +0100
-Date:   Fri, 1 Dec 2023 14:51:17 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: marvell: move MMP boards to common marvell
- directory
-Message-ID: <1e25e2f4-e4b9-4219-a9c2-cb6230a62549@lunn.ch>
-References: <20231201132306.60753-1-krzysztof.kozlowski@linaro.org>
+        Fri, 1 Dec 2023 08:53:06 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64241A6;
+        Fri,  1 Dec 2023 05:53:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701438793; x=1732974793;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ub9mgjqgK5kv69AKSxuHPaODWlRDLdyKhrwmElxQA2Q=;
+  b=TAwd83dbqIZT/3Gr4jzRTGRwfq14gpZ65gcP/8SY0XgCcnAqJcrP0TB2
+   MBkTP00/63Kq14ih4Ox6V1hOoJ2TCqYW90kzZN9KTuBbeNLVlXjigIZxw
+   hA76CKf9ZzCx2pGdVMeXycM0ssVcLKw13I/LiI+YoUzyGciNTSrJ2Mgin
+   ADmRmXfo5U0mry0zLqIU7UpLKnltY4yMOm8b+AwyvQrC8evNGQnErs4nJ
+   b4lXl/CfnX4mERK8+13FjPWN6/YR2cokSwbJYiyntQwolMYfnh3BmE81o
+   y7nt1MzmVhOLT6O8SuEEVuWi14uTsOmMobQONRAQEB7L3KMn3ZNO2j8/2
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="383894770"
+X-IronPort-AV: E=Sophos;i="6.04,241,1695711600"; 
+   d="scan'208";a="383894770"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2023 05:53:12 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="804076770"
+X-IronPort-AV: E=Sophos;i="6.04,241,1695711600"; 
+   d="scan'208";a="804076770"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga001.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2023 05:53:11 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1r93x6-000000010GN-3YAW;
+        Fri, 01 Dec 2023 15:53:08 +0200
+Date:   Fri, 1 Dec 2023 15:53:08 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Eric Tremblay <etremblay@distech-controls.com>,
+        Jean Delvare <jdelvare@suse.com>
+Subject: Re: [PATCH v1 2/3] hwmon: tmp513: Simplify with dev_err_probe()
+Message-ID: <ZWnlRAOG7EP3RyPR@smile.fi.intel.com>
+References: <20231128180654.395692-1-andriy.shevchenko@linux.intel.com>
+ <20231128180654.395692-3-andriy.shevchenko@linux.intel.com>
+ <1ef66c53-d9ba-4fca-8462-b670f029f5de@roeck-us.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231201132306.60753-1-krzysztof.kozlowski@linaro.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <1ef66c53-d9ba-4fca-8462-b670f029f5de@roeck-us.net>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 01, 2023 at 02:23:06PM +0100, Krzysztof Kozlowski wrote:
-> Marvell board bindings are spread over arm/marvell/ and arm/mrvl/
-> directories.  Move MMP board bindings from the latter to the former, to
-> keep all of them together.
+On Thu, Nov 30, 2023 at 08:10:12PM -0800, Guenter Roeck wrote:
+> On Tue, Nov 28, 2023 at 08:06:03PM +0200, Andy Shevchenko wrote:
+> > Common pattern of handling deferred probe can be simplified with
+> > dev_err_probe().  Less code and also it prints the error value.
 
-Hi Krzysztof
+...
 
-Did you test get_maintainers.pl? MMP has a different maintainer to
-many of the other Marvell SoCs. We want emails going to the correct
-Maintainers, and ideally not spamming the others.
+> > +	if (IS_ERR(data->regmap))
+> > +		return dev_err_probe(dev, PTR_ERR(data->regmap), "failed to allocate register map\n");
+> 
+> That line length was getting too long. Please consider running checkpatch
+> on your patches.
 
-	Andrew
+I got your point, but checkpatch has no limit for the string literals, see
+
+f4c014c0dede ("checkpatch: allow printk strings to exceed 80 characters to maintain their searchability")
+ca56dc098caf ("checkpatch: check for quoted strings broken across lines")
+
+So, what the exact parameters should I supply to it?
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
