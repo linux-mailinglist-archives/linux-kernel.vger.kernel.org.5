@@ -2,104 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62912800CEB
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 15:09:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 780BA800CF0
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 15:13:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379118AbjLAOJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 09:09:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40722 "EHLO
+        id S1379121AbjLAONM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 09:13:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379094AbjLAOJh (ORCPT
+        with ESMTP id S1379094AbjLAONM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 09:09:37 -0500
-Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a02:c205:3004:2154::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 668781B2;
-        Fri,  1 Dec 2023 06:09:43 -0800 (PST)
-Received: from [185.238.219.102] (helo=akair)
-        by mail.andi.de1.cc with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <andreas@kemnade.info>)
-        id 1r94D6-006uXL-CN; Fri, 01 Dec 2023 15:09:40 +0100
-Date:   Fri, 1 Dec 2023 15:09:37 +0100
-From:   Andreas Kemnade <andreas@kemnade.info>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        kristo@kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: clock: ti: Convert interface.txt to
- json-schema
-Message-ID: <20231201150937.3631ee99@akair>
-In-Reply-To: <221ba6a3-c4c2-40cd-b1d8-8170af78c784@linaro.org>
-References: <20231127202359.145778-1-andreas@kemnade.info>
-        <7a62ed8a-b0e3-4881-90d7-b8f5d38e482e@linaro.org>
-        <20231128093241.707a4fa0@aktux>
-        <7361082a-f271-4ef4-9dad-06ee7445c749@linaro.org>
-        <20231128214116.22dfff1e@akair>
-        <221ba6a3-c4c2-40cd-b1d8-8170af78c784@linaro.org>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.37; x86_64-pc-linux-gnu)
+        Fri, 1 Dec 2023 09:13:12 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48D71198
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 06:13:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701439999; x=1732975999;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=smGTfk+fEmzkfLEOWPz94kj9lAqTySLCchhtvSSKhhw=;
+  b=cTFlnY6ICNu02vMy3lP+ExOBzfEsm+jTg07cAPYj9gAryI5hK/MxZ2bM
+   YxANk6w8kycWfALlHcCVHo8LV6iBF+v1CIdDvA+G8UnUJ7F6hnjUyD48A
+   lt+kPdeof1favt47NPibcywCOuDo72QCyxEoqfbUSfkVIfHRk4HHn3tQg
+   41hjdl9hIKIr2cetjxpb9ktlQvGGCV6F3jIFV56LPxybZqSqYubHqGg/A
+   zkcdFZPc7hB4Xq5Mhl7trZJkDnsbY5I9a3uHEV6OqUWXMcHhHBkcUduz9
+   04a9qqHQSoCiVE2wMOmMmAil4uoufIFEATwSxSSvCbylSV+oU0DEwNvRX
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="508781"
+X-IronPort-AV: E=Sophos;i="6.04,241,1695711600"; 
+   d="scan'208";a="508781"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2023 06:13:18 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="1017046021"
+X-IronPort-AV: E=Sophos;i="6.04,241,1695711600"; 
+   d="scan'208";a="1017046021"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga006.fm.intel.com with ESMTP; 01 Dec 2023 06:13:16 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r94GY-0003n6-01;
+        Fri, 01 Dec 2023 14:13:14 +0000
+Date:   Fri, 1 Dec 2023 22:11:31 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Subject: drivers/watchdog/ath79_wdt.c:161:37: sparse: sparse: incorrect type
+ in argument 1 (different address spaces)
+Message-ID: <202312012220.3eFrkDts-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=2.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_SBL_CSS,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: **
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Wed, 29 Nov 2023 09:15:57 +0100
-schrieb Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>:
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   994d5c58e50e91bb02c7be4a91d5186292a895c8
+commit: e5fc436f06eef54ef512ea55a9db8eb9f2e76959 sparse: use static inline for __chk_{user,io}_ptr()
+date:   3 years, 3 months ago
+config: arm-randconfig-r123-20231107 (https://download.01.org/0day-ci/archive/20231201/202312012220.3eFrkDts-lkp@intel.com/config)
+compiler: arm-linux-gnueabi-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231201/202312012220.3eFrkDts-lkp@intel.com/reproduce)
 
-> On 28/11/2023 21:41, Andreas Kemnade wrote:
-> > Am Tue, 28 Nov 2023 09:41:23 +0100
-> > schrieb Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>:  
-> >>> If the interface clock is not below a ti,clksel then we have reg.
-> >>>    
-> >>
-> >> This should be expressed in the bindings. It's fine to make the reg
-> >> optional (skip the description, it's confusing), but the ti,clksel
-> >> should reference this schema and enforce it on the children.
-> >>  
-> > Well there are other compatibles below ti,clksel, too, so should we
-> > rather add them when the other .txt files are converted?  
-> 
-> This binding should already be referenced by ti,clksel. When the other
-> are ready, you will change additionalProperties from object to false.
->
-I played around with it:
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312012220.3eFrkDts-lkp@intel.com/
 
---- a/Documentation/devicetree/bindings/clock/ti/ti,clksel.yaml
-+++ b/Documentation/devicetree/bindings/clock/ti/ti,clksel.yaml
-@@ -33,6 +33,11 @@ properties:
-     const: 2
-     description: The CLKSEL register and bit offset
- 
-+patternProperties:
-+  "-ick$":
-+    $ref: /schemas/clock/ti/ti,interface-clock.yaml#
-+    type: object
-+
- required:
-   - compatible
-   - reg
+sparse warnings: (new ones prefixed by >>)
+>> drivers/watchdog/ath79_wdt.c:161:37: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got char const * @@
+   drivers/watchdog/ath79_wdt.c:161:37: sparse:     expected void const volatile [noderef] __user *ptr
+   drivers/watchdog/ath79_wdt.c:161:37: sparse:     got char const *
+   drivers/watchdog/ath79_wdt.c:235:27: sparse: sparse: incorrect type in initializer (incompatible argument 2 (different address spaces)) @@     expected int ( *write )( ... ) @@     got int ( * )( ... ) @@
+   drivers/watchdog/ath79_wdt.c:235:27: sparse:     expected int ( *write )( ... )
+   drivers/watchdog/ath79_wdt.c:235:27: sparse:     got int ( * )( ... )
 
- 
-That generates warnings, which look more serious than just a
-non-converted compatible, so lowering the overall "signal-noise-ratio".
+vim +161 drivers/watchdog/ath79_wdt.c
 
-e.g.
-from schema $id:
-http://devicetree.org/schemas/clock/ti/ti,clksel.yaml#
-/home/andi/linux-dtbs/arch/arm/boot/dts/ti/omap/omap3-overo-tobiduo.dtb:
-clock@c40: clock-rm-ick: 'ti,index-starts-at-one', 'ti,max-div' do not
-match any of the regexes: 'pinctrl-[0-9]+'
+f8394f61c66f48 Gabor Juhos 2011-01-04  148  
+f8394f61c66f48 Gabor Juhos 2011-01-04  149  static ssize_t ath79_wdt_write(struct file *file, const char *data,
+f8394f61c66f48 Gabor Juhos 2011-01-04  150  				size_t len, loff_t *ppos)
+f8394f61c66f48 Gabor Juhos 2011-01-04  151  {
+f8394f61c66f48 Gabor Juhos 2011-01-04  152  	if (len) {
+f8394f61c66f48 Gabor Juhos 2011-01-04  153  		if (!nowayout) {
+f8394f61c66f48 Gabor Juhos 2011-01-04  154  			size_t i;
+f8394f61c66f48 Gabor Juhos 2011-01-04  155  
+f8394f61c66f48 Gabor Juhos 2011-01-04  156  			clear_bit(WDT_FLAGS_EXPECT_CLOSE, &wdt_flags);
+f8394f61c66f48 Gabor Juhos 2011-01-04  157  
+f8394f61c66f48 Gabor Juhos 2011-01-04  158  			for (i = 0; i != len; i++) {
+f8394f61c66f48 Gabor Juhos 2011-01-04  159  				char c;
+f8394f61c66f48 Gabor Juhos 2011-01-04  160  
+f8394f61c66f48 Gabor Juhos 2011-01-04 @161  				if (get_user(c, data + i))
+f8394f61c66f48 Gabor Juhos 2011-01-04  162  					return -EFAULT;
+f8394f61c66f48 Gabor Juhos 2011-01-04  163  
+f8394f61c66f48 Gabor Juhos 2011-01-04  164  				if (c == 'V')
+f8394f61c66f48 Gabor Juhos 2011-01-04  165  					set_bit(WDT_FLAGS_EXPECT_CLOSE,
+f8394f61c66f48 Gabor Juhos 2011-01-04  166  						&wdt_flags);
+f8394f61c66f48 Gabor Juhos 2011-01-04  167  			}
+f8394f61c66f48 Gabor Juhos 2011-01-04  168  		}
+f8394f61c66f48 Gabor Juhos 2011-01-04  169  
+f8394f61c66f48 Gabor Juhos 2011-01-04  170  		ath79_wdt_keepalive();
+f8394f61c66f48 Gabor Juhos 2011-01-04  171  	}
+f8394f61c66f48 Gabor Juhos 2011-01-04  172  
+f8394f61c66f48 Gabor Juhos 2011-01-04  173  	return len;
+f8394f61c66f48 Gabor Juhos 2011-01-04  174  }
+f8394f61c66f48 Gabor Juhos 2011-01-04  175  
 
-I think we should rather postpone such referencing.
+:::::: The code at line 161 was first introduced by commit
+:::::: f8394f61c66f48b1fe9d6964ddce492d7f9a4cd9 watchdog: add driver for the Atheros AR71XX/AR724X/AR913X SoCs
 
-Regards,
-Andreas
+:::::: TO: Gabor Juhos <juhosg@openwrt.org>
+:::::: CC: Wim Van Sebroeck <wim@iguana.be>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
