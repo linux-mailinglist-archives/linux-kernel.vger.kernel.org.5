@@ -2,149 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50B1D80092E
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 11:58:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3A9A800932
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 11:59:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378431AbjLAK6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 05:58:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50192 "EHLO
+        id S1378434AbjLAK7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 05:59:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378359AbjLAK6I (ORCPT
+        with ESMTP id S1378359AbjLAK7g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 05:58:08 -0500
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E507F193;
-        Fri,  1 Dec 2023 02:58:14 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Qyn0xGDGtryUf5HO3wZB6Ekda5v2yjOpW5APbVNCihVUwWge5ScZ+H2jakvh5vKzIZTMBXxFFT70BhWZdcMtIA54slo4z2Erj++W+1N5a/efEqJKoxnOWdq+nCRVv+iUITTljKkgQbgNnJs2c26zcySMrtvHr7zMiB7y8c7ZU2Wfh37lEh2RhaORJoTz2SijuqtShXC2GiDAlFZNHSUWZJboWJZr+3LiOJwMs2ywETdEeKadbYVMG0v53ehPhiXqEa9L8TmKJ921eRMr5OG6xI+GTsRWmhzl3vrr9Oka4g1uTISixDVxH8iY/WnD2mWc65V/YAZ6JDWH+U6G1Prhlw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xpCvoex/hummGcJ/Lxt3vwxHc80WWRrYFLiPOsXlxeE=;
- b=gdhsB1nutoXn2c0HQIsrKC7PebwPZTo8QlophREazetuOGa9BxxrJcbpPRwQaZz9izqPtuevuCPn3fsL9N8LpfpGKR9kCzaVPpMt6/GeybG/bozJ29sjLpr/B/yC7pIEHSB319tXmgbUNPkFAufDL4aWtRgSCVGAdyf7l4BDfie0QaqpYwNXSzvkEcMQQCE3X0Ev4ynpedbvWOU6iQCoAsyIv3r3WPSPDF1/n/a+e/yLNSguQrAoUoaMBZccHL1wGJ3kKqPp42wfrCeXBSzncPeXl7cQRGizE0Zhk1hNrbR4i7Js1WYJuHMgLcr+00NznDM+xLKuyS0Y0/h+96oHsQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.233) smtp.rcpttodomain=linuxfoundation.org
- smtp.mailfrom=nvidia.com; dmarc=pass (p=reject sp=reject pct=100) action=none
- header.from=nvidia.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xpCvoex/hummGcJ/Lxt3vwxHc80WWRrYFLiPOsXlxeE=;
- b=nFWPgWM2Unjbv0JIboZOkRguVYWZgHX9UV1WdpMXN8qlXtiPADdp2HFldWX0qcOA2dgdqviHhsqc5APzew4js5Z+9Er86cA8LwBD5CEzR/cJ+bHKL9V4KpXMAUulSxEACXhGx3vnug7pfKHDP4aoCjYZclKpUSj4y4pSy/FgOoaupqD2RoBSq4DXNDc4ifoHFqRC3UtfEph/hpBOJyy57EVBgWauTKy/knFQ2h/+yEOpO6pKtrsZKZE6GWoohqYy225jIPhMO0ewlAqB+ZlSZejdG4o01E8jdUv3Z8+M+wyghJdAgg3y0Wl7n3kQFc791f+toGQFy6F/S3Ri2v74+Q==
-Received: from DS7PR03CA0016.namprd03.prod.outlook.com (2603:10b6:5:3b8::21)
- by LV3PR12MB9168.namprd12.prod.outlook.com (2603:10b6:408:19a::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.23; Fri, 1 Dec
- 2023 10:58:11 +0000
-Received: from CY4PEPF0000EE33.namprd05.prod.outlook.com
- (2603:10b6:5:3b8:cafe::ad) by DS7PR03CA0016.outlook.office365.com
- (2603:10b6:5:3b8::21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.32 via Frontend
- Transport; Fri, 1 Dec 2023 10:58:11 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.233) by
- CY4PEPF0000EE33.mail.protection.outlook.com (10.167.242.39) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7046.17 via Frontend Transport; Fri, 1 Dec 2023 10:58:11 +0000
-Received: from drhqmail203.nvidia.com (10.126.190.182) by mail.nvidia.com
- (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Fri, 1 Dec 2023
- 02:58:11 -0800
-Received: from drhqmail202.nvidia.com (10.126.190.181) by
- drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.41; Fri, 1 Dec 2023 02:58:10 -0800
-Received: from jonathanh-vm-01.nvidia.com (10.127.8.9) by mail.nvidia.com
- (10.126.190.181) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41 via Frontend
- Transport; Fri, 1 Dec 2023 02:58:10 -0800
-From:   Jon Hunter <jonathanh@nvidia.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <patches@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
-        <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <sudipm.mukherjee@gmail.com>, <srw@sladewatkins.net>,
-        <rwarsow@gmx.de>, <conor@kernel.org>, <allen.lkml@gmail.com>,
-        <linux-tegra@vger.kernel.org>, <stable@vger.kernel.org>
-Subject: Re: [PATCH 6.6 000/112] 6.6.4-rc1 review
-In-Reply-To: <20231130162140.298098091@linuxfoundation.org>
-References: <20231130162140.298098091@linuxfoundation.org>
-X-NVConfidentiality: public
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        Fri, 1 Dec 2023 05:59:36 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB6CA193
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 02:59:41 -0800 (PST)
+Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 63AEA66073A6;
+        Fri,  1 Dec 2023 10:59:39 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1701428380;
+        bh=x4Y7dYr3VeCqx4rJVOcJNrX3o5ny+WQ9mP2TBfYRN74=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=gkgdpUVf87AfqPlRtPoMPrVBNOuatZ+hCpkRJMYOmSH6PQWXsTJ1cSOSB1hNkSJJc
+         kTlox7QsWVrK23FdFC9DXpGsRpPiOiFZ3kKymQfedAemnXN9K8d4QboRigqv68WpDV
+         vVmC9SGH+fLvjrZOB+/4MB6rj+RlrqJR3rw0alOP+mAV9uStFxuftOoA7iBB2MNcu4
+         OrBCeNy/olZd+28vtOGPteCb3kamF+w5QhuaeYm+IR3aI1ORXv1TSa/LqQ9/3PRQEl
+         XVpSLQrG9ci5lxhrS1AD1skOI8TRTEOHA/8CEWl9HeCyGzPLOawRLgXizs7Tut2wIt
+         qF+9mojOsHwOg==
+Date:   Fri, 1 Dec 2023 11:59:35 +0100
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Cc:     robh@kernel.org, steven.price@arm.com,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, m.szyprowski@samsung.com,
+        krzysztof.kozlowski@linaro.org
+Subject: Re: [PATCH v3 1/3] drm/panfrost: Ignore core_mask for poweroff and
+ disable PWRTRANS irq
+Message-ID: <20231201115935.1ac9535a@collabora.com>
+In-Reply-To: <20231201104027.35273-2-angelogioacchino.delregno@collabora.com>
+References: <20231201104027.35273-1-angelogioacchino.delregno@collabora.com>
+        <20231201104027.35273-2-angelogioacchino.delregno@collabora.com>
+Organization: Collabora
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Message-ID: <aea02578-2910-417f-8678-a97c2dcc61dd@drhqmail202.nvidia.com>
-Date:   Fri, 1 Dec 2023 02:58:10 -0800
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000EE33:EE_|LV3PR12MB9168:EE_
-X-MS-Office365-Filtering-Correlation-Id: b17481e0-7063-46e9-583a-08dbf25c68f5
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: XqOUjFDBu0/WQYm0PCI3x7Dej+/s+57EtCjRfXD7W0ZwCfoZSO1wD7HnQeCja6m6bvBRlDi3DYjRXJA7owLWxE5IsxbmkJ8Qxx0glGnCFT0cc1ztjqP7mPE0tv7ldKssSswz/3ZkSQOLAtuITsl3swUwhG+rUSASDJzqyLcpNIkZWQX47siWINMoPY/O0hrpPCiBUCJst6BlGnMIN0ESKmX5wCFW3p9cKrf5/uRUFKX45aESD77MGRE4UhHqvfxuIMXyYn5J0Kb3A3U9H2nHfnXzO0xnZp2bBZxUzBqwTWlJfUHX5SiSjmiJ3SKg+LoymhX5Hb1iZKvIiHd/6HdJtNFRG8cXeJ5YBbaiFSagXiY+VCHErNqMLcdfTO3EUAKM+P1hwX3irev4wlJRJ1qkOsx910mFS/mNo9jFKUADrHxPBfmqdj3HU0AKWcOi7Tr1jq60gDQpHkshEAx7EGafCAWP7+sdAMAkDFrQ/JdfSX0n0zo8vROIYKEBPmh2lUmHokm5AIcy1iF84blr9Uy3D1aATU7izWI36Abr9zVRR7CKMR1GkgQOKZwZHYY+xK9AltPfKz4dlWe+WUwIiz2Jg7iphOK1o8EK0BDief2atE/zvmBh2xjogPlOQkoZPW0pFZCa5mqFYumVwB7UfXqD54YQGGHUYmguU07PjZWlO7YevKa4vdmrQJVmXvLTRbV4tnRNnbgLMXpl4ar54r+qPsUqIzNj7d7L+iXIY5KHfguOxuNRshbKYPiagCi6n0nj+t661WoG9cchRuB/M2sxU8NdH85rkNLzheDGpaU6Qds=
-X-Forefront-Antispam-Report: CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(376002)(396003)(346002)(136003)(230922051799003)(64100799003)(1800799012)(82310400011)(186009)(451199024)(46966006)(40470700004)(36840700001)(6916009)(316002)(26005)(4326008)(40480700001)(8676002)(2906002)(8936002)(478600001)(7416002)(426003)(966005)(5660300002)(41300700001)(336012)(36860700001)(54906003)(47076005)(31686004)(70206006)(70586007)(7636003)(356005)(82740400003)(40460700003)(31696002)(86362001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Dec 2023 10:58:11.3942
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: b17481e0-7063-46e9-583a-08dbf25c68f5
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000EE33.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR12MB9168
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 30 Nov 2023 16:20:47 +0000, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.6.4 release.
-> There are 112 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Fri,  1 Dec 2023 11:40:25 +0100
+AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+wrote:
+
+> Some SoCs may be equipped with a GPU containing two core groups
+> and this is exactly the case of Samsung's Exynos 5422 featuring
+> an ARM Mali-T628 MP6 GPU: the support for this GPU in Panfrost
+> is partial, as this driver currently supports using only one
+> core group and that's reflected on all parts of it, including
+> the power on (and power off, previously to this patch) function.
 > 
-> Responses should be made by Sat, 02 Dec 2023 16:21:18 +0000.
-> Anything received after that time might be too late.
+> The issue with this is that even though executing the soft reset
+> operation should power off all cores unconditionally, on at least
+> one platform we're seeing a crash that seems to be happening due
+> to an interrupt firing which may be because we are calling power
+
+                               ^ might be caused by us doing a power
+  transition on the first core group only, leaving the second one
+  unchanged.
+
+> transition only on the first core group, leaving the second one
+> unchanged, or because ISR execution was pending before entering
+
+  unchanged. Our changes to the suspend logic seems to have
+  uncovered another issue where the GPU interrupt handler is called
+  after the device as entered the suspend state, which leads to invalid
+  register accesses because the GPU device is no longer
+  powered/clocked. Given the only addition that was done to the suspend
+  logic is the power-off requests, and the fact those generate PWRTRANS
+  interrupts, we have good reason to think the interrupts we are asked
+  to process in that case are the PWRTRANS ones.
+
+> the panfrost_gpu_power_off() function and executed after powering
+> off the GPU cores, or all of the above.
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.4-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
-> and the diffstat can be found below.
+> Finally, solve this by:
+>  - Avoid to enable the power transition interrupt on reset; and
+     ^ 'Avoiding' or maybe 'Not enabling power transition ...'
+
+>  - Ignoring the core_mask and ask the GPU to poweroff both core groups
 > 
-> thanks,
+> Fixes: 22aa1a209018 ("drm/panfrost: Really power off GPU cores in panfrost_gpu_power_off()")
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+
+Still
+
+Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+
+> ---
+>  drivers/gpu/drm/panfrost/panfrost_gpu.c | 12 ++++++++----
+>  1 file changed, 8 insertions(+), 4 deletions(-)
 > 
-> greg k-h
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c b/drivers/gpu/drm/panfrost/panfrost_gpu.c
+> index 09f5e1563ebd..bd41617c5e4b 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_gpu.c
+> +++ b/drivers/gpu/drm/panfrost/panfrost_gpu.c
+> @@ -78,7 +78,12 @@ int panfrost_gpu_soft_reset(struct panfrost_device *pfdev)
+>  	}
+>  
+>  	gpu_write(pfdev, GPU_INT_CLEAR, GPU_IRQ_MASK_ALL);
+> -	gpu_write(pfdev, GPU_INT_MASK, GPU_IRQ_MASK_ALL);
+> +
+> +	/* Only enable the interrupts we care about */
+> +	gpu_write(pfdev, GPU_INT_MASK,
+> +		  GPU_IRQ_MASK_ERROR |
+> +		  GPU_IRQ_PERFCNT_SAMPLE_COMPLETED |
+> +		  GPU_IRQ_CLEAN_CACHES_COMPLETED);
+>  
+>  	/*
+>  	 * All in-flight jobs should have released their cycle
+> @@ -425,11 +430,10 @@ void panfrost_gpu_power_on(struct panfrost_device *pfdev)
+>  
+>  void panfrost_gpu_power_off(struct panfrost_device *pfdev)
+>  {
+> -	u64 core_mask = panfrost_get_core_mask(pfdev);
+>  	int ret;
+>  	u32 val;
+>  
+> -	gpu_write(pfdev, SHADER_PWROFF_LO, pfdev->features.shader_present & core_mask);
+> +	gpu_write(pfdev, SHADER_PWROFF_LO, pfdev->features.shader_present);
+>  	ret = readl_relaxed_poll_timeout(pfdev->iomem + SHADER_PWRTRANS_LO,
+>  					 val, !val, 1, 1000);
+>  	if (ret)
+> @@ -441,7 +445,7 @@ void panfrost_gpu_power_off(struct panfrost_device *pfdev)
+>  	if (ret)
+>  		dev_err(pfdev->dev, "tiler power transition timeout");
+>  
+> -	gpu_write(pfdev, L2_PWROFF_LO, pfdev->features.l2_present & core_mask);
+> +	gpu_write(pfdev, L2_PWROFF_LO, pfdev->features.l2_present);
+>  	ret = readl_poll_timeout(pfdev->iomem + L2_PWRTRANS_LO,
+>  				 val, !val, 0, 1000);
+>  	if (ret)
 
-All tests passing for Tegra ...
-
-Test results for stable-v6.6:
-    10 builds:	10 pass, 0 fail
-    26 boots:	26 pass, 0 fail
-    116 tests:	116 pass, 0 fail
-
-Linux version:	6.6.4-rc1-gd7aca62a9eef
-Boards tested:	tegra124-jetson-tk1, tegra186-p2771-0000,
-                tegra194-p2972-0000, tegra194-p3509-0000+p3668-0000,
-                tegra20-ventana, tegra210-p2371-2180,
-                tegra210-p3450-0000, tegra30-cardhu-a04
-
-Tested-by: Jon Hunter <jonathanh@nvidia.com>
-
-Jon
