@@ -2,157 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 168708005E2
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 09:38:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4EE88005EA
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 09:39:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377891AbjLAIih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 03:38:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40194 "EHLO
+        id S1377888AbjLAIji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 03:39:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377890AbjLAIib (ORCPT
+        with ESMTP id S1377878AbjLAIjd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 03:38:31 -0500
-Received: from codeconstruct.com.au (pi.codeconstruct.com.au [203.29.241.158])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 265B51713;
-        Fri,  1 Dec 2023 00:38:36 -0800 (PST)
-Received: from pecola.lan (unknown [159.196.93.152])
-        by mail.codeconstruct.com.au (Postfix) with ESMTPSA id E4D562014F;
-        Fri,  1 Dec 2023 16:38:29 +0800 (AWST)
+        Fri, 1 Dec 2023 03:39:33 -0500
+Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 027DE1713
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 00:39:40 -0800 (PST)
+Received: by mail-oo1-xc32.google.com with SMTP id 006d021491bc7-58d956c8c38so1047523eaf.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 00:39:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=codeconstruct.com.au; s=2022a; t=1701419911;
-        bh=+KSs+S6XcLMSAulP0SuGmY2oifnKHSYDKmvztsfn43M=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=V2jdfQrP6FJNnJhX557yHgaxcphbnWagtP61AzZRcHnwAuHr0u8+WR6znCpndlsdN
-         p34DBEct2U1bFfiubxx5AzSQnwCNIPKqbBCP1VdA/DJnSvEYxKjTgZO6ITNqaWeMKW
-         eqMlYPOGoVviI/IK4C66EdgPVBkqX3r1BAJb5fdlAXHpFtpbS3K6wDw2+vmztRJ/aH
-         5MRTheUJIY8AuIUMMRGqrFhp5KBaVC9ZgoYo55nGImbRj4o4e+OaTZoWIiLJ9yVK5d
-         kBl+3TYVHcOlt/n3P0J+QGkkWa2A7DLonMy7l34r53azZ5pvtCkGsuhDcBqo4yB35m
-         U9gj+4RF0Eing==
-Message-ID: <10491ca5819563f98e2f4414836fd4da0c84c753.camel@codeconstruct.com.au>
-Subject: Re: [PATCH] mctp i2c: Requeue the packet when arbitration is lost
-From:   Jeremy Kerr <jk@codeconstruct.com.au>
-To:     Quan Nguyen <quan@os.amperecomputing.com>,
-        Matt Johnston <matt@codeconstruct.com.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
+        d=chromium.org; s=google; t=1701419979; x=1702024779; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=HAD/BJOp3KfcAEwToEpZAFOpfcfSAx6mao3aBhe0GVs=;
+        b=fOftkOdjSW3o0FXm6twOtVVAn04q2GIaFHpMitI+XsVqySe/WDltjjm4EpHmV6/6Vs
+         MquYTSl8iG2kG5MJx119L/+ri8Lc1IlMUvfj4Aham58cEwbR/fwJREtIcl5GNf4VH+Vy
+         rz1OEz9YYevRQ6pzDkWEi0G7eG/ffF7+SeTz0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701419979; x=1702024779;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HAD/BJOp3KfcAEwToEpZAFOpfcfSAx6mao3aBhe0GVs=;
+        b=V/0u2js1thNBTfvl5KNAj92WhKpq+rd2gyGDIEttC9SgNmXyrvMyLQCpwbUMXnAHUx
+         V08slpg3iKcGYKS/3YjSRT/WZBe35hwlReWKXwk8yL2Xk3qFaEolVIKtpFwb5ebIgCT9
+         22hAomSxvGv0+fhGnJ1mnPyo5sNL/8OxgIYGmI+ApHYdY3Q1f9Bh3HzxAQuAWub+AduM
+         F/WDtaa/IRt5/sqXuXCIf9Q/brz6L28kic0Qc2Nj8mji2ykoQW5F3hFzz2ZLmrJP9Ehu
+         2mmgWh78N6eJrJ1KdP4Ch4+Er5Pz4kv4MCx5K0pwYOebBjzUkRhA+n2ZLr7nb52y31b4
+         NrRg==
+X-Gm-Message-State: AOJu0Yy6e6/eBLLXNxo0iE8hPOqeiYkACIxAPILbI0oa3jEHigqBERKB
+        KniQMMGUVo2NV4EjyObEuMxeOA==
+X-Google-Smtp-Source: AGHT+IFRIZi1t3+6sB5l+ZFlRb5IEgTuJyz64lMyM/xKkArWyB7tZ0RcUsK3ZoDsk1o6uNy6C/voyA==
+X-Received: by 2002:a05:6358:3a0e:b0:16d:d643:4800 with SMTP id g14-20020a0563583a0e00b0016dd6434800mr25665290rwe.21.1701419979280;
+        Fri, 01 Dec 2023 00:39:39 -0800 (PST)
+Received: from judyhsiao0523.c.googlers.com.com (148.175.199.104.bc.googleusercontent.com. [104.199.175.148])
+        by smtp.gmail.com with ESMTPSA id hy7-20020a056a006a0700b0068790c41ca2sm2500089pfb.27.2023.12.01.00.39.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Dec 2023 00:39:38 -0800 (PST)
+From:   Judy Hsiao <judyhsiao@chromium.org>
+To:     Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@kernel.org>,
+        Simon Horman <horms@kernel.org>
+Cc:     Douglas Anderson <dianders@chromium.org>,
+        Judy Hsiao <judyhsiao@chromium.org>,
+        Brian Haley <haleyb.dev@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org,
-        Open Source Submission <patches@amperecomputing.com>
-Cc:     Phong Vo <phong@os.amperecomputing.com>,
-        Thang Nguyen <thang@os.amperecomputing.com>,
-        Dung Cao <dung@os.amperecomputing.com>
-Date:   Fri, 01 Dec 2023 16:38:29 +0800
-In-Reply-To: <3e8b18e6-673c-4ee6-a56b-08641c605efc@os.amperecomputing.com>
-References: <20231130075247.3078931-1-quan@os.amperecomputing.com>
-         <473048522551f1cae5273eb4cd31b732d6e33e53.camel@codeconstruct.com.au>
-         <706506b7-a89c-4dfc-b233-be7822eb056e@os.amperecomputing.com>
-         <852eaa7b5040124049e51ceba2d13a5799cb6748.camel@codeconstruct.com.au>
-         <3e8b18e6-673c-4ee6-a56b-08641c605efc@os.amperecomputing.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4-2 
+        Joel Granados <joel.granados@gmail.com>,
+        Julian Anastasov <ja@ssi.bg>,
+        Leon Romanovsky <leon@kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH v1] neighbour: Don't let neigh_forced_gc() disable preemption for long
+Date:   Fri,  1 Dec 2023 08:39:03 +0000
+Message-ID: <20231201083926.1817394-1-judyhsiao@chromium.org>
+X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Quan,
+We are seeing cases where neigh_cleanup_and_release() is called by
+neigh_forced_gc() many times in a row with preemption turned off.
+When running on a low powered CPU at a low CPU frequency, this has
+been measured to keep preemption off for ~10 ms. That's not great on a
+system with HZ=1000 which expects tasks to be able to schedule in
+with ~1ms latency.
 
-> As per [1], __i2c_transfer() will retry for adap->retries times=20
-> consecutively (without any wait) within the amount of time specified
-> by adap->timeout.
->=20
-> So as per my observation, once it loses the arbitration, the next
-> retry is most likely still lost as another controller who win the
-> arbitration may still be using the bus.
+Suggested-by: Douglas Anderson <dianders@chromium.org>
+Signed-off-by: Judy Hsiao <judyhsiao@chromium.org>
 
-In general (and specifically with your hardware setup), the controller
-should be waiting for a bus-idle state before attempting the
-retransmission. You may well hit another arbitration loss after that,
-but it won't be from the same bus activity.
+---
 
-> Especially for upper layer protocol message like PLDM or SPDM, which
-> size is far bigger than SMBus, usually ends up to queue several MCTP
-> packets at a time. But if to requeue the packet, it must wait to
-> acquire the lock
+ net/core/neighbour.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-... you're relying on the delay of acquiring a spinlock? The only
-contention on that lock is from local packets being sent to the device
-(and, in heavy TX backlogs, the netif queue will be stopped, so that
-lock will be uncontended).
+diff --git a/net/core/neighbour.c b/net/core/neighbour.c
+index df81c1f0a570..f7a89c7a7673 100644
+--- a/net/core/neighbour.c
++++ b/net/core/neighbour.c
+@@ -256,6 +256,8 @@ static int neigh_forced_gc(struct neigh_table *tbl)
+ 	unsigned long tref = jiffies - 5 * HZ;
+ 	struct neighbour *n, *tmp;
+ 	int shrunk = 0;
++	bool finish = true;
++	unsigned long timeout = jiffies + msecs_to_jiffies(1);        /* timeout in 1ms */
+ 
+ 	NEIGH_CACHE_STAT_INC(tbl, forced_gc_runs);
+ 
+@@ -278,10 +280,14 @@ static int neigh_forced_gc(struct neigh_table *tbl)
+ 				shrunk++;
+ 			if (shrunk >= max_clean)
+ 				break;
++			if (time_after(jiffies, timeout)) {
++				finish = false;
++				break;
++			}
+ 		}
+ 	}
+-
+-	WRITE_ONCE(tbl->last_flush, jiffies);
++	if (finish)
++		WRITE_ONCE(tbl->last_flush, jiffies);
+ 
+ 	write_unlock_bh(&tbl->lock);
+ 
+-- 
+2.43.0.rc2.451.g8631bc7472-goog
 
-That sounds fairly fragile, and somewhat disconnected from the goal of
-waiting for a bus idle state.
-
-> before actually queueing that packet, and that is
-> more likely to increase the chance to win the arbitration than to
-> retry it right away as on the i2c core.
->=20
-> Another reason is that, as i2c is widely used for many other=20
-> applications, fixing the retry algorithm within the i2c core seems=20
-> impossible.
-
-What needs fixing there? You haven't identified any issue with it.
-
-> The other fact is that the initial default value of these two
-> parameters=20
-> depends on each type of controller; I'm not sure why yet.
->=20
-> + i2c-aspeed: =C2=A0 =C2=A0 retries=3D0 timeout=3D1 sec [2]
-> + i2c-cadence: =C2=A0 =C2=A0retries=3D3 timeout=3D1 sec [3]
-> + i2c-designware: retries=3D3 timeout=3D1 sec [4], [5]
-> + i2c-emev2: =C2=A0 =C2=A0 =C2=A0retries=3D5 timeout=3D1 sec [6]
-> + ...
->=20
-> Unfortunately, in our case, we use i2c-aspeed, and there is only one
-> try (see [2]), and that means we have only one single shot. I'm not
-> sure why i2c-aspeed chose to set retries=3D0 by default, but I guess
-> there must be a reason behind it.
-
-I would suggest that the actual fix you want here is to increase that
-retry count, rather than working-around your "not sure" points above
-with a duplication of the common retry mechanism.
-
-> And yes, I agree, as per [7], these two parameters could be adjusted
-> via ioctl() from userspace if the user wishes to change them. But,
-> honestly, forcing users to change these parameters is not a good way,
-> as I might have to say.
-
-But now you're forcing users to use your infinite-retry mechanism
-instead.
-
-We already have a retry mechanism, which is user-configurable, and we
-can set per-controller defaults. If you believe the defaults (present in
-the aspeed driver) are not suitable, and it's too onerous for users to
-adjust, then I would suggest proposing a change to the default.
-
-Your requeue approach has a problem, in that there is no mechanism for
-recovery on repeated packet contention. In a scenario where a specific
-packet always causes contention (say, a faulty device on the bus
-attempts to respond to that packet too early), then the packet is never
-dequeued; other packets already queued will be blocked behind this one
-packet. The only way to make forward progress from there is to fill the
-TX queue completely.
-
-You could address that by limiting the retries and/or having a timeout,
-but then you may as well just use the existing retry mechanism that we
-already have, which already does that.
-
-> To avoid that, requeueing the packet in the MCTP layer was kind of
-> way better choice, and it was confirmed via our case.
-
-Your earlier examples showed a max of one retry was needed for recovery.
-I would suggest bumping the i2c-aspeed driver default to suit the other
-in-tree controllers would be a much more appropriate fix.
-
-Cheers,
-
-
-Jeremy
