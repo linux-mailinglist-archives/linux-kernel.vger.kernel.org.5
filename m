@@ -2,203 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51428801298
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 19:26:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB2FD80129B
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 19:27:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230273AbjLAS0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 13:26:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53832 "EHLO
+        id S1379214AbjLAS1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 13:27:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229905AbjLAS0a (ORCPT
+        with ESMTP id S229534AbjLAS1i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 13:26:30 -0500
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0ECB115;
-        Fri,  1 Dec 2023 10:26:36 -0800 (PST)
-Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-50bdec453c8so685861e87.3;
-        Fri, 01 Dec 2023 10:26:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701455195; x=1702059995; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=1ep11bMRk1v3QCOoLwm0Yn6OjGUPrQYX7GTrJRrOZYQ=;
-        b=OuL9UiztS2p9EBAvCldsoY8qGsk5PwEs/IyqvdTCTtIyBYc6zxIKqWWDh5dVzqWBGQ
-         8NPiW+pR9BEiuOOSyx4NO+3ivKmVznY1GU/xiGVrejR854C/ZBuxmGybvkhqf/D/VFQ7
-         0JJ9Bo+B/BMYZ9Ru/JbOBsk1pb6HNANhDMwkETtx5v96V1Cdmg7IqsJIRFwIW+O/37If
-         UUJZGncr+fwfL8CYBx/UAKKRWKQMwHfKkTU/L0Zlx1tBS8Q+dSGix29VYX5aRXxFI7IN
-         RE/TgEPTId/PhJs4hFd/4qN+3CflCl6NbWoeeNbrdfb9MHTYp0azTkFVdcsVZfztIb1j
-         lYzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701455195; x=1702059995;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1ep11bMRk1v3QCOoLwm0Yn6OjGUPrQYX7GTrJRrOZYQ=;
-        b=MacU4NswbNBHu/cZqZRACUwwQd4ZAgnSrDhSGTVbZ7nKE9fIxsy5oQqgNNzXMPIOB7
-         onfd8+yJOE5f9N/jhAYJEkD9osdEzj8hMv6TzV0BYYTx/gvw79gdY97nb/yzuHPQbfmD
-         qz8N9MpJrIYFWyLe1IF/QAqyQ+ZtUMu0RB8gW7tHd+kX15eUQ248Zz/3RzY3i/7v3tut
-         5+/4jS/rRofMwWKwz9LsF2Ly8pjZ5cxjlHotnc2auLxVHpN8j1whuFrtutC0gan1rySQ
-         EwNdmKpvrrNsenx5KS+eNjFguSxlcdXGkIcJ7DQdn8m31PmAlW14hnkQISe5ksnlOAMr
-         bnZA==
-X-Gm-Message-State: AOJu0YyUf5KLRLO8Ed9w2W+chqOQslv4I6puq8GUA3+iNCKo8ZTpN/eQ
-        jWLVdz5HdrUHtwHXTd8N5K5oYpVMtGYF8g==
-X-Google-Smtp-Source: AGHT+IEd8uxBR2dNyumkQ7246sFbygQLGPDJa56MB2qhN12tmB7F/mg3R6x+3/DOyzDRt6p5svmQMw==
-X-Received: by 2002:a05:6512:32b3:b0:50b:d764:6ea9 with SMTP id q19-20020a05651232b300b0050bd7646ea9mr964105lfe.89.1701455194684;
-        Fri, 01 Dec 2023 10:26:34 -0800 (PST)
-Received: from mobilestation ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id l15-20020ac2554f000000b0050bc6317952sm484042lfk.274.2023.12.01.10.26.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Dec 2023 10:26:34 -0800 (PST)
-Date:   Fri, 1 Dec 2023 21:26:31 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Yinglu Yang <yangyinglu@loongson.cn>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Aleksandar Rikalo <aleksandar.rikalo@syrmia.com>,
-        Aleksandar Rikalo <arikalo@gmail.com>,
-        Dragan Mladjenovic <dragan.mladjenovic@syrmia.com>,
-        Chao-ying Fu <cfu@wavecomp.com>, Marc Zyngier <maz@kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/7] mips: dmi: Fix early remap on MIPS32
-Message-ID: <7lla5haj4r4thqqhqvkzvcu2g5oaquubgp6zyemn4up3acoeev@saxalnh6vudt>
-References: <3iksuovvsln3cw3xpmjd7f7xixfvwaneu4ok56fnookvyolpco@wrxxew3thgnq>
- <dfda70b6-3291-462f-bc87-06dcc87bd068@app.fastmail.com>
- <ysij22pivneyg7tk3bv3hti3tsgbzglb6pin3my7r3bokzxjj6@jrjmu45gbupr>
- <c73d9dbf-b637-47ff-ae2d-6f8987345410@app.fastmail.com>
- <3pgnihbrp5orh4tmj45fipbfoxdwzjh6uefitdpcea2vgkarcm@d56gv3areswl>
- <2148a67f-bd4f-432e-aa0d-c914a4bd5e0d@app.fastmail.com>
- <xbkplqgv4ipnofk7hp6ws2rkqk4fsjl3y72blcdephoiocolh7@7l5p5efe7yda>
- <bb13c070-bdfe-47ae-afed-a05e1e55bb94@app.fastmail.com>
- <fqwkkyt253uvdaj6qlsu67b25qj35ongh4rbxzgzuwnykl36hi@xinsnpcltpgx>
- <f883ed8d-7140-40af-9ebb-cefbd4c40f9d@app.fastmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <f883ed8d-7140-40af-9ebb-cefbd4c40f9d@app.fastmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 1 Dec 2023 13:27:38 -0500
+Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7521D106;
+        Fri,  1 Dec 2023 10:27:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
+        ; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
+        :Date:subject:date:message-id:reply-to;
+        bh=p15K61YVmkwcv6g72/Gggszer5DgJqcxM7vBW4kqy+M=; b=wSzSSMHzGaw6UDX7oDlqgnfE6V
+        c5PQQf/HvCUKiwWcF2LS+PgZKvKA+00/e9NQBY5rXcMqtOctPOgKg9ABJbDZ9T4PxZcnXcQQhjtAi
+        oLrcQ+mRijKn4t7+bg28UFugIUVBmGQ0YFvtOzCHErngUgwmZ8H4KoYAZp7FOq4LYxPY=;
+Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:52430 helo=pettiford)
+        by mail.hugovil.com with esmtpa (Exim 4.92)
+        (envelope-from <hugo@hugovil.com>)
+        id 1r98Ei-00056U-Pr; Fri, 01 Dec 2023 13:27:38 -0500
+Date:   Fri, 1 Dec 2023 13:27:36 -0500
+From:   Hugo Villeneuve <hugo@hugovil.com>
+To:     Jan =?ISO-8859-1?Q?Kundr=E1t?= <jan.kundrat@cesnet.cz>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Cosmin Tanislav <cosmin.tanislav@analog.com>,
+        linux-serial@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-kernel@vger.kernel.org
+Message-Id: <20231201132736.65cb0e2bff88fba85121c44a@hugovil.com>
+In-Reply-To: <bd91db46c50615bc1d1d62beb659fa7f62386446.1701446070.git.jan.kundrat@cesnet.cz>
+References: <bd91db46c50615bc1d1d62beb659fa7f62386446.1701446070.git.jan.kundrat@cesnet.cz>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+X-SA-Exim-Connect-IP: 70.80.174.168
+X-SA-Exim-Mail-From: hugo@hugovil.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH] tty: max310x: work around regmap->regcache data
+ corruption
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 01, 2023 at 03:10:13PM +0000, Jiaxun Yang wrote:
-> 
-> 
-> 在2023年12月1日十二月 下午2:54，Serge Semin写道：
-> > On Fri, Dec 01, 2023 at 12:13:22AM +0000, Jiaxun Yang wrote:
-> >> 
-> >> 
-> >> 在2023年11月30日十一月 下午7:16，Serge Semin写道：
-> >> > On Tue, Nov 28, 2023 at 03:46:37PM +0000, Jiaxun Yang wrote:
-> >> [...]
-> >> >
-> >> >> I'd say the safest option is to use CKSEG0 or TO_CAC here, 
-> >> >
-> >> > I would have agreed with you if MIPS didn't have that special
-> >> > _page_cachable_default variable which is undefined for some platforms
-> >> > and which might be re-defined during the boot-up process, and if
-> >> > MIPS64 didn't have ioremap_prot() always mapping to the uncached
-> >> > region.  But IMO updating ioremap_prot() currently seems more risky
-> >> > than just converting dmi_early_remap() to the uncached version
-> >> > especially seeing it won't change anything. MIPS64 always have IO
-> >> > remapped to the uncached region. MIPS32 won't be able to have cached
-> >> > mapping until VM is available, and paging and slabs are initialized.
-> >> > So on the early MIPS32 bootup stages ioremap_cache() wouldn't have
-> >> > worked anyway.
-> >> 
-> >
-> >> I really didn't get that, using CKSEG0 on 32bit system and TO_CAC
-> >> on 64bit system won't hurt.
-> >> 
-> >> Something like:
-> >> #ifdef CONFIG_64BIT
-> >> #define dmi_remap(x, l)		(void *)TO_CAC(x)
-> >> #else
-> >> #define dmi_remap(x, l)		(void *)CKSEG0(x)
-> >> #endif
-> >> 
-> >> Can help us avoid all the hassle. Since it always ensures we are
-> >> using same CCA to access DMI tables. We can always trust Config.K0
-> >> left by firmware in this case.
-> >
-> > Please note my only concern is about dmi_early_remap(), not
-> > dmi_remap(). The later one can be safely left backended by the
-> > ioremap_cache() method because at the stage it's utilized MIPS32
-> > version of ioremap_prot() will be able to create any mapping it's
-> > requested to. The dmi_early_remap() function is called very early with
-> > no paging or VM or even cache stuff initialized. So currently AFAICS
-> > it just doesn't work on _all_ _MIPS32_ platform, because
-> > ioremap_prot() relies on VM and slab being available to have any
-> > cacheable mapping, which aren't at the moment of the dmi_setup()
-> > function invocation. Seeing the ioremap_cache() is just a stub on
-> > MIPS64 which always performs the uncached mapping, it will be
-> > completely safe to just convert dmi_early_remap() to ioremap() with
-> > no risk to beak anything. dmi_early_remap() semantics won't be
-> > actually changed, it will work as before on MIPS64 and will be fixed
-> > on MIPS32. This (AFAICS) is a completely safe fix of the problem with
-> > just a few affected platforms around.
-> >
-> 
+On Fri, 1 Dec 2023 15:51:51 +0100
+Jan Kundr=E1t <jan.kundrat@cesnet.cz> wrote:
 
-> The only platform enabled DMI in upstream kernel is Loongson64, which
-> I'm perfectly sure that the mapping for DMI tables *should* be Cached.
+> The TL;DR summary is that the regmap_noinc_write spills over the data
+> that are correctly written to the HW also to the following registers in
+> the regcache. As a result, regcache then contains user-controlled
+> garbage which will be used later for bit updates on unrelated registers.
+>=20
+> This patch is a "wrong" fix; a real fix would involve fixing regmap
+> and/or regcache, but that code has too many indirections for my little
+> mind.
+>=20
+> I was investigating a regression that happened somewhere between 5.12.4
+> (plus 14 of our patches) and v6.5.9 (plus 7 of our patches). Our
+> MAX14830 UART would work fine the first time, but when our application
+> opens the UART the second time it just wouldn't send anything over the
+> physical TX pin. With the help of a logical analyzer, I found out that
+> the kernel was sending value 0xcd to the MODE1 register, which on this
+> chip is a request to set the UART's TX pin to the Hi-Z mode and to
+> switch off RX completely. That's certainly not the intention of the
+> code, but that's what I was seeing on the physical SPI bus, and also in
+> the log when I instrumented the regmap layer.
+>=20
+> It turned out that one of the *data* bytes which were sent over the UART
+> was 0xdd, and that this *data byte* somehow ended up in the regcache's
+> idea about the value within the MODE1 register. When the UART is opened
+> up the next time and max310x_startup updates a single unrelated bit in
+> MODE1, that code consults the regcache, notices the 0xdd data byte in
+> there, and ends up sending 0xcd over SPI.
+>=20
+> Here's what dump_stack() shows:
+>=20
+>  max310x spi1.2: regcache_write: reg 0x9 value 0xdd
+>  max310x spi1.2: PWNED
+>  CPU: 1 PID: 26 Comm: kworker/1:1 Not tainted 6.5.9-7-g9e090fe75fd8 #7
+>  Hardware name: Marvell Armada 380/385 (Device Tree)
+>  Workqueue: events max310x_tx_proc
+>   unwind_backtrace from show_stack+0x10/0x14
+>   show_stack from dump_stack_lvl+0x40/0x4c
+>   dump_stack_lvl from regcache_write+0xc0/0xc4
+>   regcache_write from _regmap_raw_write_impl+0x178/0x828
+>   _regmap_raw_write_impl from _regmap_raw_write+0xb8/0x134
+>   _regmap_raw_write from regmap_noinc_write+0x130/0x178
+>   regmap_noinc_write from max310x_tx_proc+0xd4/0x1a4
+>   max310x_tx_proc from process_one_work+0x21c/0x4e4
+>   process_one_work from worker_thread+0x50/0x54c
+>   worker_thread from kthread+0xe0/0xfc
+>   kthread from ret_from_fork+0x14/0x28
+>=20
+> Clearly, regmap_noinc_write of a register 0x00 (that's the TX FIFO on
+> this chip) has no business updating register 0x09, but that's what was
+> happening here. The regmap_config is already set up in a way that
+> register 0x00 is marked precious and volatile, so it has no business
+> going through the cache at all. Also, the documentation for
+> regmap_noinc_write suggests that this driver was using the regmap
+> infrastructure correctly, and that the real bug is somewhere in
+> regmap/regcache where a call to regmap_noinc_write end up updating an
+> unrelated register in regcache.
 
-Then it looks like it must have been broken in the first place.
+Hi Jan,
+it is funny, as I am preparing to send a patch for the sc16is7xx driver
+to convert FIFO R/W to use the _noinc_ versions of regmap functions,
+inspired by your patch 3f42b142ea11 ("serial: max310x: fix IO data
+corruption in batched operations").
 
-> It is an accident that ioremap_cache is misused here, so I'm proposing
-> to replace it with CKSEG0/TO_CAC. Also as per MIPS UHI spec, all the
-> data passed from bootloader to firmware should lay in KSEG0,
+I am testing on a custom board with two SC16IS752 in SPI mode.
 
-I failed to find the MIPS UHI spec. The only link google freely
-provide is
-http://prplfoundation.org/wiki/MIPS_documentation
-but it's broken. Could you please share the doc somehow?
-Anyway AFAICS from the MIPS arch code it only concerns the dtb pointer
-passed to the kernel. Does it really mandate all the data being in KSEG0?
+Here is our current FIFO write code:
 
-> please
-> let me know if your platform is an exception here.
+  regcache_cache_bypass(one->regmap, true);
+  regmap_raw_write(one->regmap, SC16IS7XX_THR_REG, s->buf, to_send);
+  regcache_cache_bypass(one->regmap, false);
 
-No, it's not. U-boot is executed in kseg0 anyway.
+I am converting it to _noinc_ version to be able to remove the manual
+(and ugly) cache control workaround to this:
 
-> 
-> Using ioremap_cache at dmi_early_remap does not sound safe to me as well.
-> What if DMI code tried to remap something beyond KSEG range at this place?
+  regmap_noinc_write(one->regmap, SC16IS7XX_THR_REG, s->buf, to_send);
 
-Right. I've found out that for the safety sake the generic version of the
-ioremap_prot() has been recently updated not to do any mapping if the
-slab hasn't been initialized:
-Link: https://lore.kernel.org/lkml/20230515090848.833045-7-bhe@redhat.com/
-I'll add a similar fix to the MIPS-version of the ioremap_prop()
-method to make sure no early cached remapping is attempted.
+SC16IS7XX_THR_REG is already in precious and volatile, and I also
+have put it in the noinc list.
 
-> 
-> The safest option here is just bypassing ioremap framework, which does
-> not give you any advantage but only burden.
-> 
-> I'll propose a patch later.
+To confirm that this works ok, I have put debug traces in some regmap
+functions, and escpecially a trace in regcache_write() to indicate if
+regmap is caching or not the register.
 
-Ok. I see. I'll resubmit my series today as is then. Should you need
-to have the problem fixed differently, please either re-base your
-patch on top of it, or add your explicit comment that you'll have a
-better fix so Thomas could be able to consider to postpone this patch
-mergein until your fix is ready.
+Here is an example when writing 01234567890123456789 (20 bytes) to the
+Tx FIFO:
 
--Serge(y)
+sc16is7xx spi0.0: sc16is7xx_tx_proc(): entry
+sc16is7xx spi0.0: sc16is7xx_handle_tx(): entry
+sc16is7xx spi0.0: regcache_read() not caching volatile reg $08
+spi0.0-port0: regmap_read:  [08] 40
+sc16is7xx spi0.0: regcache_write() not caching volatile reg $08
+sc16is7xx spi0.0: _regmap_raw_write_impl() reg     =3D $00
+sc16is7xx spi0.0: _regmap_raw_write_impl() val_len =3D 20
+sc16is7xx spi0.0: regcache_write() not caching volatile reg $00
+spi0.0-port0: regmap_write: [00] 30 31 32 33 34 35 36 37 38 39...
+spi0.0-port0: regmap_write: [00] 36 37 38 39
+...
 
-> -- 
-> - Jiaxun
+With this I have confirmed that regmap _noinc_ works as intended, with
+regcache_write() indicating it is not caching the volatile register 00
+(THR).
+
+I hope this can help you with your investigation, let me know if I can
+help more.
+
+Hugo Villeneuve.
+
+
+=20
+> Until regmap/regcache is fixed, let's just use an adapted version of the
+> old code that bypasses regmap altogether, and just sends out an SPI
+> transaction.
+>=20
+> This is related to my commit 3f42b142ea1171967e40e10e4b0241c0d6d28d41
+> ("serial: max310x: fix IO data corruption in batched operations") which
+> introduced usage of regmap_noinc_write() to this driver. That commit is
+> a fixup of commit 285e76fc049c4d32c772eea9460a7ef28a193802 ("serial:
+> max310x: use regmap methods for SPI batch operations") which started
+> using regmap_raw_write(), which was however also a wrong function.
+>=20
+> Fixes: 3f42b142ea11 ("serial: max310x: fix IO data corruption in batched =
+operations")
+> Fixes: 285e76fc049c ("serial: max310x: use regmap methods for SPI batch o=
+perations")
+> Signed-off-by: Jan Kundr=E1t <jan.kundrat@cesnet.cz>
+> To: Mark Brown <broonie@kernel.org>
+> To: Cosmin Tanislav <cosmin.tanislav@analog.com>
+> To: linux-serial@vger.kernel.org
+> Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Cc: linux-kernel@vger.kernel.org
+> ---
+>  drivers/tty/serial/max310x.c | 30 ++++++++++++++++++++++++------
+>  1 file changed, 24 insertions(+), 6 deletions(-)
+>=20
+> diff --git a/drivers/tty/serial/max310x.c b/drivers/tty/serial/max310x.c
+> index c44237470bee..79797b573723 100644
+> --- a/drivers/tty/serial/max310x.c
+> +++ b/drivers/tty/serial/max310x.c
+> @@ -663,16 +663,34 @@ static u32 max310x_set_ref_clk(struct device *dev, =
+struct max310x_port *s,
+> =20
+>  static void max310x_batch_write(struct uart_port *port, u8 *txbuf, unsig=
+ned int len)
+>  {
+> -	struct max310x_one *one =3D to_max310x_port(port);
+> -
+> -	regmap_noinc_write(one->regmap, MAX310X_THR_REG, txbuf, len);
+> +	const u8 header =3D (port->iobase * 0x20 + MAX310X_THR_REG) | MAX310X_W=
+RITE_BIT;
+> +	struct spi_transfer xfer[] =3D {
+> +		{
+> +			.tx_buf =3D &header,
+> +			.len =3D 1,
+> +		},
+> +		{
+> +			.tx_buf =3D txbuf,
+> +			.len =3D len,
+> +		},
+> +	};
+> +	spi_sync_transfer(to_spi_device(port->dev), xfer, ARRAY_SIZE(xfer));
+>  }
+> =20
+>  static void max310x_batch_read(struct uart_port *port, u8 *rxbuf, unsign=
+ed int len)
+>  {
+> -	struct max310x_one *one =3D to_max310x_port(port);
+> -
+> -	regmap_noinc_read(one->regmap, MAX310X_RHR_REG, rxbuf, len);
+> +	const u8 header =3D port->iobase * 0x20 + MAX310X_RHR_REG;
+> +	struct spi_transfer xfer[] =3D {
+> +		{
+> +			.tx_buf =3D &header,
+> +			.len =3D 1,
+> +		},
+> +		{
+> +			.rx_buf =3D rxbuf,
+> +			.len =3D len,
+> +		},
+> +	};
+> +	spi_sync_transfer(to_spi_device(port->dev), xfer, ARRAY_SIZE(xfer));
+>  }
+> =20
+>  static void max310x_handle_rx(struct uart_port *port, unsigned int rxlen)
+> --=20
+> 2.42.0
+>=20
+>=20
+>=20
