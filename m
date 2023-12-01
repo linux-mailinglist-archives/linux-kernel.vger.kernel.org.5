@@ -2,49 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D6FF800AF6
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 13:34:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31926800AFD
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 13:35:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378863AbjLAMej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 07:34:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54356 "EHLO
+        id S1378864AbjLAMfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 07:35:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378853AbjLAMeh (ORCPT
+        with ESMTP id S1378862AbjLAMfC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 07:34:37 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4A4201A4
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 04:34:43 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 71F85143D;
-        Fri,  1 Dec 2023 04:35:29 -0800 (PST)
-Received: from [10.1.28.20] (e122027.cambridge.arm.com [10.1.28.20])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E22573F5A1;
-        Fri,  1 Dec 2023 04:34:40 -0800 (PST)
-Message-ID: <5cad3d21-5485-49aa-ae97-589dcb831925@arm.com>
-Date:   Fri, 1 Dec 2023 12:34:39 +0000
+        Fri, 1 Dec 2023 07:35:02 -0500
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75B3D1728;
+        Fri,  1 Dec 2023 04:35:07 -0800 (PST)
+Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2c9c30c7eafso25883291fa.0;
+        Fri, 01 Dec 2023 04:35:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701434106; x=1702038906; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=YAJ12ZP/6sikIFKSSmQlShHQawFcbI6eeUcRDaDj6EQ=;
+        b=PYFM/DuKm0NGrhD23v+U3Uk4EpSo/F7LSCjilX4k8ZJDwaFSjGeVLOXW2JwtO5N5jk
+         IdCyiPtcOki98odsR/tZmdkDNhkOtA4j2Z1B+7maDm6f9fe/KCR4hZxmROgdrSiuXpBz
+         9rtC9Tyyl1qiI6pYDP2yz5PYqx+vzAhHCjCXnOxriimgfyc1e1pCtFnhor8v9e3ua/7w
+         GB0ZAa9cMIizwgvQeR4Bt/hy1r7E3IEXEW/SV/k2PB5ieNBy7ByVc8qcfcpZAyshvwZp
+         YXcIwA5p2B9tVu1xs7wlW6Ch8Co/nsI86T7G4s213OM2XSyfDIwzy1UcyhnzVw7JCpWf
+         C9TQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701434106; x=1702038906;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YAJ12ZP/6sikIFKSSmQlShHQawFcbI6eeUcRDaDj6EQ=;
+        b=TP2QdNGZswOK9xCXcatwvw2uMPshYc0/DYZ2wzCWPTWbPyHsrkhW/RRfT/EwVUGpUI
+         54+mCQFmCarrMnTh+nf2MQ/igFaMYJdwXEKhsU3oaUyMiIGabTEHGG2o45DsynHRG6+K
+         g8947ZFW2dU1peyXV1AiGJwFjqFxg3verygshwKd5lkRrEk/pb1RH7+6IUfgdPm2oa1S
+         Wdc0ix15zL3kmN0JhDrV5kHS6lBMryeDxlTbWsMsAA4fjCvn6G5bifJwuY64msDlgx6b
+         eyoBtPnJ742L+fxmynzsoCBEek1X1DANjkmGSsEwgadWVNl7YGtQOeJzpH5XZIFwN3FI
+         E5lg==
+X-Gm-Message-State: AOJu0Ywyjr0gnz5Ga6eDXWB7LFxGA+K8juhqBT/CBqTAA9oqwDCvBJNq
+        kWk/CjBusfPiQcdhGwlkTzs=
+X-Google-Smtp-Source: AGHT+IFWvGMZWlpeLzOqlvxU4Iovm3Lrni2kgJ/FhveV1eY9wgfEIZEwE7tYYQ2Va/X639zttJ8beg==
+X-Received: by 2002:a2e:8895:0:b0:2c9:d874:6efc with SMTP id k21-20020a2e8895000000b002c9d8746efcmr818380lji.89.1701434105454;
+        Fri, 01 Dec 2023 04:35:05 -0800 (PST)
+Received: from mobilestation ([178.176.56.174])
+        by smtp.gmail.com with ESMTPSA id i21-20020a2e8655000000b002c9b873270asm408702ljj.123.2023.12.01.04.35.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Dec 2023 04:35:05 -0800 (PST)
+Date:   Fri, 1 Dec 2023 15:35:02 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Sneh Shah <quic_snehshah@quicinc.com>
+Cc:     Vinod Koul <vkoul@kernel.org>,
+        Bhupesh Sharma <bhupesh.sharma@linaro.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        netdev@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel@quicinc.com, Andrew Halaney <ahalaney@redhat.com>
+Subject: Re: [PATCH v2] net: stmmac: update Rx clk divider for 10M SGMII
+Message-ID: <mfcvaq2n2lzsg47nzgk25n5fpmii2ftbx6gkrmz7pkxv6mq4w6@eia6ymhx3wff>
+References: <20231201100548.12994-1-quic_snehshah@quicinc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 3/3] drm/panfrost: Synchronize and disable interrupts
- before powering off
-Content-Language: en-GB
-To:     Boris Brezillon <boris.brezillon@collabora.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     robh@kernel.org, maarten.lankhorst@linux.intel.com,
-        mripard@kernel.org, tzimmermann@suse.de, airlied@gmail.com,
-        daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, kernel@collabora.com,
-        m.szyprowski@samsung.com, krzysztof.kozlowski@linaro.org
-References: <20231201104027.35273-1-angelogioacchino.delregno@collabora.com>
- <20231201104027.35273-4-angelogioacchino.delregno@collabora.com>
- <20231201121437.7d5cdefb@collabora.com>
-From:   Steven Price <steven.price@arm.com>
-In-Reply-To: <20231201121437.7d5cdefb@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231201100548.12994-1-quic_snehshah@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,74 +82,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/12/2023 11:14, Boris Brezillon wrote:
-> On Fri,  1 Dec 2023 11:40:27 +0100
-> AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-> wrote:
-> 
->> To make sure that we don't unintentionally perform any unclocked and/or
->> unpowered R/W operation on GPU registers, before turning off clocks and
->> regulators we must make sure that no GPU, JOB or MMU ISR execution is
->> pending: doing that required to add a mechanism to synchronize the
-> 
->                       ^ requires the addition of a mechanism...
-> 
->> interrupts on suspend.
->>
->> Add functions panfrost_{gpu,job,mmu}_suspend_irq() which will perform
->> interrupts masking and ISR execution synchronization, and then call
->> those in the panfrost_device_runtime_suspend() handler in the exact
->> sequence of job (may require mmu!) -> mmu -> gpu.
->>
->> As a side note, JOB and MMU suspend_irq functions needed some special
->> treatment: as their interrupt handlers will unmask interrupts, it was
->> necessary to add a bitmap for `is_suspended` which is used to address
-> 
->             to add an `is_suspended` bitmap which is used...
-> 
->> the possible corner case of unintentional IRQ unmasking because of ISR
->> execution after a call to synchronize_irq().
-> 
-> Also fixes the case where the interrupt handler is called when the
-> device is suspended because the IRQ line is shared with another device.
-> No need to update the commit message for that though.
-> 
->>
->> At resume, clear each is_suspended bit in the reset path of JOB/MMU
->> to allow unmasking the interrupts.
->>
->> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
->> ---
+On Fri, Dec 01, 2023 at 03:35:48PM +0530, Sneh Shah wrote:
+> SGMII 10MBPS mode needs RX clock divider to avoid drops in Rx.
+> Update configure SGMII function with rx clk divider programming.
 
-<snip>
+> [PATCH v2] net: stmmac: update Rx clk divider for 10M SGMII
 
->>  static void panfrost_job_handle_err(struct panfrost_device *pfdev,
->>  				    struct panfrost_job *job,
->>  				    unsigned int js)
->> @@ -792,9 +802,13 @@ static irqreturn_t panfrost_job_irq_handler_thread(int irq, void *data)
->>  	struct panfrost_device *pfdev = data;
->>  
->>  	panfrost_job_handle_irqs(pfdev);
->> -	job_write(pfdev, JOB_INT_MASK,
->> -		  GENMASK(16 + NUM_JOB_SLOTS - 1, 16) |
->> -		  GENMASK(NUM_JOB_SLOTS - 1, 0));
->> +
->> +	/* Enable interrupts only if we're not about to get suspended */
->> +	if (!test_bit(PANFROST_COMP_BIT_JOB, pfdev->is_suspended))
->> +		job_write(pfdev, JOB_INT_MASK,
->> +			  GENMASK(16 + NUM_JOB_SLOTS - 1, 16) |
->> +			  GENMASK(NUM_JOB_SLOTS - 1, 0));
->> +
+It would be better to add "dwmac-qcom-ethqos" prefix to the subject
+since the patch concerns the Qualcomm Eth MAC only. 
+
+-Serge(y)
+
 > 
-> Missing if (test_bit(PANFROST_COMP_BIT_JOB, pfdev->is_suspended)) in
-> panfrost_job_irq_handler(), to make sure you don't access the registers
-> if the GPU is suspended.
-
-I think generally these IRQ handler functions should simply check the
-is_suspended flag and early out if the flag is set. It's not the
-re-enabling of the interrupts specifically that we want to gate - it's
-any access to the hardware as in the shared-IRQ case the GPU might
-already have been powered down/unclocked.
-
-Steve
-
+> Fixes: 463120c31c58 ("net: stmmac: dwmac-qcom-ethqos: add support for SGMII")
+> Signed-off-by: Sneh Shah <quic_snehshah@quicinc.com>
+> ---
+> v2 changelog:
+> - Use FIELD_PREP to prepare bifield values in place of GENMASK
+> - Add fixes tag
+> ---
+>  drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
+> index d3bf42d0fceb..df6ff8bcdb5c 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
+> @@ -34,6 +34,7 @@
+>  #define RGMII_CONFIG_LOOPBACK_EN		BIT(2)
+>  #define RGMII_CONFIG_PROG_SWAP			BIT(1)
+>  #define RGMII_CONFIG_DDR_MODE			BIT(0)
+> +#define RGMII_CONFIG_SGMII_CLK_DVDR		GENMASK(18, 10)
+>  
+>  /* SDCC_HC_REG_DLL_CONFIG fields */
+>  #define SDCC_DLL_CONFIG_DLL_RST			BIT(30)
+> @@ -617,6 +618,9 @@ static int ethqos_configure_sgmii(struct qcom_ethqos *ethqos)
+>  	case SPEED_10:
+>  		val |= ETHQOS_MAC_CTRL_PORT_SEL;
+>  		val &= ~ETHQOS_MAC_CTRL_SPEED_MODE;
+> +		rgmii_updatel(ethqos, RGMII_CONFIG_SGMII_CLK_DVDR,
+> +			      FIELD_PREP(RGMII_CONFIG_SGMII_CLK_DVDR, 0x31),
+> +			      RGMII_IO_MACRO_CONFIG);
+>  		break;
+>  	}
+>  
+> -- 
+> 2.17.1
+> 
+> 
