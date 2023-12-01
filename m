@@ -2,151 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47103800CA6
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 14:57:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9048C800CA8
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 14:57:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379076AbjLAN4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 08:56:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39146 "EHLO
+        id S1379082AbjLAN5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 08:57:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379060AbjLAN4s (ORCPT
+        with ESMTP id S1379060AbjLAN5h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 08:56:48 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01526BC
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 05:56:54 -0800 (PST)
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B1DYtPe005182;
-        Fri, 1 Dec 2023 13:56:51 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : reply-to : from :
- in-reply-to : content-type : content-transfer-encoding; s=pp1;
- bh=3ZxkDESyoMAB+q846kEjbTqewcNq0RNz7Qif+xxbj9Q=;
- b=EaDUnKn7xUFk6SB7J7PAhYxRBOaQEsHrhBo5RMC7X7KJxCAnlmAvPDFaYFdQ/uUIiFfd
- 60WXYK4hByzMTDixjjqHGf3LBLWMkTmedwJJzjnVLJxfhq3quWqrvlfxJygyDeiwRle6
- nsAl9JtbbbgEg7DI5U+k4TEPi1aXbTUpwGjXURtGZMUvvdh26k3M1S6NEAs3GKSO08f5
- 5Er0YcyFW9sAdbbZKsuNkqnpBxHx6zCGUVW3YF1jrpfFwpCRSYeoQc2fG1LSEzz+v71N
- f2dxMK9Z0BlVY5VSDRtixEPGxM651waZEXXK5iG8DbwCNesOntsGm9HapyZoJ+nnuYFW 6A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uqgg9rnn8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 01 Dec 2023 13:56:50 +0000
-Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3B1DZVfP006941;
-        Fri, 1 Dec 2023 13:56:50 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uqgg9rnn2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 01 Dec 2023 13:56:49 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3B1Dn3ww002612;
-        Fri, 1 Dec 2023 13:56:49 GMT
-Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
-        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3ukv8p5bet-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 01 Dec 2023 13:56:49 +0000
-Received: from smtpav06.wdc07v.mail.ibm.com (smtpav06.wdc07v.mail.ibm.com [10.39.53.233])
-        by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3B1DunOs26673808
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 1 Dec 2023 13:56:49 GMT
-Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E79B25803F;
-        Fri,  1 Dec 2023 13:56:48 +0000 (GMT)
-Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AB4CB58064;
-        Fri,  1 Dec 2023 13:56:42 +0000 (GMT)
-Received: from [9.171.1.191] (unknown [9.171.1.191])
-        by smtpav06.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-        Fri,  1 Dec 2023 13:56:42 +0000 (GMT)
-Message-ID: <37cd9872-7a59-d614-fbcb-ef9e1eae185c@linux.ibm.com>
-Date:   Fri, 1 Dec 2023 19:26:40 +0530
+        Fri, 1 Dec 2023 08:57:37 -0500
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 691EFBC
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 05:57:43 -0800 (PST)
+Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-54b532b261bso2663142a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 05:57:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701439062; x=1702043862; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5n/qv2LCwI00fHFBUjE06/h0++7Sj0TWAFXvAyHTE2s=;
+        b=EyAcB0PSZcfjT2K6+eEuMxIj6OH7virM0tRIUdfKyhy753ALN1CTTOEAjlil5n4gnh
+         noByHM6O1sN9Wo61PCTzMTxM4mAhNr5RDR1Oo19hjy1CkLoGlw2T6KtFwyPj+y2rS9rc
+         /lafKaAYoUyC6g/54Z1AOh3YNCLooURaznLj9cf8TuT0HfEkN5fBgFhAQD0SokPD0Ve+
+         L3LcVRfdlxYABKN8RJJxV6LkhwFH/JgbtknbSFOsvA6dmhTdog0P1qNZXcjkx5P8JBoO
+         b766bxVUwwYbP+xr3CI6bOjHXn3Kqjo81dapbY6Jb4THbAFNkhiH8TaWxnkiiH4tEzO0
+         ZD2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701439062; x=1702043862;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5n/qv2LCwI00fHFBUjE06/h0++7Sj0TWAFXvAyHTE2s=;
+        b=p9m2ZTRfdbgwCjiU8Sp/rfbpbyMuYIb2pz6hyaya9a9VIfipOkFBYAxt0dGQheniKO
+         8O4QVZ1JoEXpjYE/8WM9fp26PsP1iHCBz1/xgQzt8KkAJuFjxKSoaznUmeXPSkFRaqbj
+         nOkptQrfP96km26ozrN/ah7Af66VTvKxFS4XHo0c9nY/16bxgbb3MrY7LbI2fMAkwKgV
+         RCdgu+mav+97FOtvfe/0JDDIVUb8nGZ2DE/t+TOuV0+THAjguBh4KXdZNhMLYAhw+Pr6
+         /+kz5r1RGdPXwUNPP9QB/C7pengpYYML2CRkfrWwrQ8NOjB2iB/FmaWkfQ5WyxvuGQ2j
+         LBAQ==
+X-Gm-Message-State: AOJu0Yw2KDVxAZvibROjMAw2Xh7U3xmJM/mUCEtobfY6cmqqeZvfaOhG
+        GmmMHTmws53GkF2cZa6dGJ+MANGn3Zahlf1z7wE=
+X-Google-Smtp-Source: AGHT+IFfkOWyhwcAkAnHUnlFEmYBTN9VWeBVAvneasImqWYtB0+3VBTv+Y0p8zOZF+Yrv8OmgdUOw+emPLOO3ekbsKk=
+X-Received: by 2002:a50:aa84:0:b0:54c:4837:81f1 with SMTP id
+ q4-20020a50aa84000000b0054c483781f1mr845192edc.66.1701439061559; Fri, 01 Dec
+ 2023 05:57:41 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v2 3/3] sched/fair: do not scribble cache-hot CPU in
- select_idle_cpu()
-Content-Language: en-US
-To:     Chen Yu <yu.chen.surf@gmail.com>
-Cc:     Chen Yu <yu.c.chen@intel.com>, Tim Chen <tim.c.chen@intel.com>,
-        Aaron Lu <aaron.lu@intel.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mel Gorman <mgorman@suse.de>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
-        linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Madadi Vineeth Reddy <vineethr@linux.ibm.com>
-References: <cover.1700548379.git.yu.c.chen@intel.com>
- <35e612eb2851693a52f7ed1ff9be5bc24011136f.1700548379.git.yu.c.chen@intel.com>
- <3dd5ae53-a914-bfd1-285e-e206ba0c58bd@linux.ibm.com>
- <CADjb_WTFrPAgf5h1af4GuMFJ8UrDjzCPb_K+SZFo5s80xcniVA@mail.gmail.com>
-Reply-To: CADjb_WTFrPAgf5h1af4GuMFJ8UrDjzCPb_K+SZFo5s80xcniVA@mail.gmail.com
-From:   Madadi Vineeth Reddy <vineethr@linux.ibm.com>
-In-Reply-To: <CADjb_WTFrPAgf5h1af4GuMFJ8UrDjzCPb_K+SZFo5s80xcniVA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: z9Q6Gdce9sa6Y3cLpH73qM9RjoiOVdp1
-X-Proofpoint-GUID: PWGXZ1nAXgwlkvi-QbK2kAHeysvu4yoy
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-01_11,2023-11-30_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 spamscore=0
- malwarescore=0 mlxlogscore=977 lowpriorityscore=0 adultscore=0 bulkscore=0
- impostorscore=0 clxscore=1015 priorityscore=1501 phishscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2312010094
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <202310080853.UhMe5iWa-lkp@intel.com>
+In-Reply-To: <202310080853.UhMe5iWa-lkp@intel.com>
+From:   Uros Bizjak <ubizjak@gmail.com>
+Date:   Fri, 1 Dec 2023 14:57:29 +0100
+Message-ID: <CAFULd4ZgT1dZFz36ZbPeqJa+U2NwusSTudg175sSarhpvEu-Zw@mail.gmail.com>
+Subject: Re: [tip:x86/percpu 12/12] arch/x86/include/asm/preempt.h:27:55:
+ sparse: sparse: incompatible types for operation (&):
+To:     kernel test robot <lkp@intel.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        x86@kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Nadav Amit <namit@vmware.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/11/23 12:13, Chen Yu wrote:
-> Hi Madadi,
-> 
-> On Thu, Nov 30, 2023 at 1:26 AM Madadi Vineeth Reddy
-> <vineethr@linux.ibm.com> wrote:
->>
->> Hi Chen Yu,
->>
-> [snip...]
-> 
->>
->> As per my understanding, if the task which tagged a particular CPU as cache hot has woken up before
->> the cache_hot_timeout, we still don't allow that task to run on that particular CPU. Is this correct?
->>
-> 
-> Not exactly. When we reached select_idle_cpu(), we have already
-> checked if the wakee's previous CPU
-> is idle or not in select_idle_sibling(), if it is idle, we don't check
-> the cache-hot tag and return the wakee's
-> previous CPU directly in select_idle_sibling().
+On Sun, Oct 8, 2023 at 2:43=E2=80=AFAM kernel test robot <lkp@intel.com> wr=
+ote:
+>
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/p=
+ercpu
+> head:   ca4256348660cb2162668ec3d13d1f921d05374a
+> commit: ca4256348660cb2162668ec3d13d1f921d05374a [12/12] x86/percpu: Use =
+C for percpu read/write accessors
+> config: x86_64-randconfig-122-20231007 (https://download.01.org/0day-ci/a=
+rchive/20231008/202310080853.UhMe5iWa-lkp@intel.com/config)
+> compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+> reproduce (this is a W=3D1 build): (https://download.01.org/0day-ci/archi=
+ve/20231008/202310080853.UhMe5iWa-lkp@intel.com/reproduce)
+>
+> If you fix the issue in a separate patch/commit (i.e. not just a new vers=
+ion of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202310080853.UhMe5iWa-lkp=
+@intel.com/
+>
+> sparse warnings: (new ones prefixed by >>)
+>    kernel/bpf/percpu_freelist.c: note: in included file (through arch/x86=
+/include/asm/preempt.h, include/linux/preempt.h, include/linux/spinlock.h, =
+...):
+>    arch/x86/include/asm/percpu.h:550:49: sparse: sparse: Expected ) at en=
+d of cast operator
+>    arch/x86/include/asm/percpu.h:550:49: sparse: sparse: got __seg_gs
+>    arch/x86/include/asm/percpu.h:564:33: sparse: sparse: Expected ) at en=
+d of cast operator
+>    arch/x86/include/asm/percpu.h:564:33: sparse: sparse: got __seg_gs
 
-Yeah..got it. Thanks.
+sparse is too strict here. The following code is perfectly legal:
 
-So, the way another task(t') can select the cache hot tagged cpu(tagged for task t) is when t' gets 
-it's target cpu as this cache hot tagged cpu from wake_affine() in select_task_rq_fair. 
-The other way being /* pick the first cache-hot CPU as the last resort */.
+--cut here--
+int __seg_gs foo;
 
-> 
-> thanks,
-> Chenyu
-> 
->> If correct, then why don't we let the task to select the CPU if it's the one that tagged it?
->>
->> Thanks and Regards
->> Madadi Vineeth Reddy
+int bar (int *pcp)
+{
+  return *(typeof (*pcp) __seg_gs *)(unsigned long)(pcp);
+}
+--cut here--
 
-Thanks and Regards
-Madadi Vineeth Reddy
+$ gcc -O2 -S -Wextra -Wall test.c
+$
+$ sparse test.c
+test.c:1:14: error: Expected ; at end of declaration
+test.c:1:14: error: got foo
+test.c:5:26: error: Expected ) at end of cast operator
+test.c:5:26: error: got __seg_gs
+$
 
+Uros.
