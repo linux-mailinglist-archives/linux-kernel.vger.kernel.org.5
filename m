@@ -2,82 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1AC480112E
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:21:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7E47801173
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:21:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378693AbjLARJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 12:09:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44398 "EHLO
+        id S1378804AbjLARLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 12:11:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229912AbjLARJw (ORCPT
+        with ESMTP id S229843AbjLARLb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 12:09:52 -0500
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9A3F197
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 09:09:57 -0800 (PST)
-Received: by mail-qv1-xf2d.google.com with SMTP id 6a1803df08f44-67a959e3afaso4797626d6.2
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 09:09:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1701450597; x=1702055397; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=UHSBlrWKXm1wAl594fX7qblvpqL30ZdbgTyCgGt+Df8=;
-        b=nCVmDprTxS0ZF+WtC5Pq/FiUtgi4HPiOKYuOq2vWTzMYbvdNkl4JEHP7OtLBdPXo7T
-         iilMMPXDJLV8dsPsIDuI42FKpzZ56yq1Kagf9BurUQhXV1WnXkCXp2rDqGPAZMihvSNF
-         DuEAYAcKdtP0+nqyVOlQ+zYeiFmudCDUkZQd6Ohm0t0NG3OnXX+DOvKhe/Htq61GHj14
-         OiJK38WTkXvCcJMhBVYRte4rN1kcvcRGnzRaEqgIwck4Vjg+OIzV2OU5pNOG2WO3vO9y
-         rhl76JxPT9wpyUzVzZDN3SYnqLg3qM15F4YMGlGzatq7EwNCwfAd66z+i3pJkBdFK8sO
-         eKrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701450597; x=1702055397;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UHSBlrWKXm1wAl594fX7qblvpqL30ZdbgTyCgGt+Df8=;
-        b=UEzVFSKgrdC5zYmCZI3A6JTUolHmKvkf1nStSzdy2m7Cfg6Vio0Txbj8R6SQVfzrHh
-         BlgYURR1jjeysGSGUvBf+go47tzOpNzUTHujgLdfySrkJl2yq7kt40S8I+6TSc1o0aZc
-         A92j3gbLtqRILjGPileS+hZ3mPE2Ap312n9v4s2CH/nH3clZDqSb7Da93dXiyEuv4iEn
-         WIxv6QuIih1F1PDV+TJSGratuUrbgBrsih9AYk4q3iukFGHM1yDPt6qwQkpOvnsZGEV/
-         MbbmpnigcHjP3ec/Bm91/JN7lF/3EGqocgxrNjPtmIkzD92nFsaBmaRKcz8EiTV9rK4E
-         L+jQ==
-X-Gm-Message-State: AOJu0YzR6cPnNxH+CFYHuiZLk/aDLBY8DiqLo5i/s0B3dlThKp2MZzdb
-        cCw36GbhInW/U7IiTLsgbqCL+A==
-X-Google-Smtp-Source: AGHT+IHqQfbSInVj9aP1pUXmAYQeii4YG2nj7kgSlMdhi5m0/8lKOirnLYXwBxYrgyzVTwed0GPvbA==
-X-Received: by 2002:a0c:e90e:0:b0:67a:fd5:24a9 with SMTP id a14-20020a0ce90e000000b0067a0fd524a9mr30266352qvo.19.1701450596905;
-        Fri, 01 Dec 2023 09:09:56 -0800 (PST)
-Received: from localhost (2603-7000-0c01-2716-da5e-d3ff-fee7-26e7.res6.spectrum.com. [2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
-        by smtp.gmail.com with ESMTPSA id du5-20020a05621409a500b0067aa28ac616sm255221qvb.113.2023.12.01.09.09.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Dec 2023 09:09:56 -0800 (PST)
-Date:   Fri, 1 Dec 2023 12:09:55 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Dan Schatzberg <schatzberg.dan@gmail.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Yosry Ahmed <yosryahmed@google.com>, Huan Yang <link@vivo.com>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Peter Xu <peterx@redhat.com>,
-        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
-        Yue Zhao <findns94@gmail.com>, Hugh Dickins <hughd@google.com>
-Subject: Re: [PATCH 0/1] Add swappiness argument to memory.reclaim
-Message-ID: <20231201170955.GA694615@cmpxchg.org>
-References: <20231130153658.527556-1-schatzberg.dan@gmail.com>
- <ZWiw9cEsDap1Qm5h@tiehlicka>
- <20231130165642.GA386439@cmpxchg.org>
- <ZWmoTa7MlD7h9FYm@tiehlicka>
+        Fri, 1 Dec 2023 12:11:31 -0500
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89764C1;
+        Fri,  1 Dec 2023 09:11:37 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id C96FF24000A;
+        Fri,  1 Dec 2023 17:11:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1701450696;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=cf3RboC7v/50jqCoPEsittoiIyTcKQhGJ+tHg/wFrhY=;
+        b=n4Vi5Tt5sKveHLBat483FVqcza4IsZpHTrtcSEZINAubs6cAcbVayEPxmGIEB9QfRADqr5
+        XcE2LrhHThb28R7H2xyCe2x94jrAfoPpPH70qnTGakXJEMebTLLkWXpyTlmKHGjX7FZrF5
+        xJK/NILhT7XoHMBC2uxzfw1ysxRKKznhYnNPWCzhNjDAoshb/yOD+ZgRmDVowaBX3k9p4d
+        +0/FeHYPDjxn9Gll/OpGpOE5GJHFSQCaTTUvw5twG43ZmcGxDV2qkVMrEXLrUOiCDPIz5W
+        RrQeIFfa2dkkalFhClmW5imt1E2ZT5OJkKN2YVXPvYUg2CNOB7CvI2nQGT/RxQ==
+From:   Kory Maincent <kory.maincent@bootlin.com>
+Subject: [PATCH net-next v2 0/8] net: Add support for Power over Ethernet
+ (PoE)
+Date:   Fri, 01 Dec 2023 18:10:22 +0100
+Message-Id: <20231201-feature_poe-v2-0-56d8cac607fa@bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZWmoTa7MlD7h9FYm@tiehlicka>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAH4TamUC/1WNywrCMBBFf6XM2kgeg1pX/Q8p0taJHdCkJDFUS
+ v/dkJ3Lw+Geu0GkwBTh2mwQKHNk7wroQwPTPLgnCX4UBi21UVKjsDSkT6D74kko02Ir6WxQGii
+ LJZDltdZu4CgJR2uCvpiZY/LhW2+yqr4WlTr9FbMSUoyEF4k4Wo1tN3qfXuyOk39Dv+/7D4mr0
+ SuyAAAA
+To:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Russ Weight <russ.weight@linux.dev>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, devicetree@vger.kernel.org,
+        Dent Project <dentproject@linuxfoundation.org>,
+        Kory Maincent <kory.maincent@bootlin.com>
+X-Mailer: b4 0.12.4
+X-GND-Sasl: kory.maincent@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,58 +70,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 01, 2023 at 10:33:01AM +0100, Michal Hocko wrote:
-> On Thu 30-11-23 11:56:42, Johannes Weiner wrote:
-> [...]
-> > So I wouldn't say it's merely a reclaim hint. It controls a very
-> > concrete and influential factor in VM decision making. And since the
-> > global swappiness is long-established ABI, I don't expect its meaning
-> > to change significantly any time soon.
-> 
-> As I've said I am more worried about potential future changes which
-> would modify existing, reduce or add more corner cases which would be
-> seen as a change of behavior from the user space POV. That means that we
-> would have to be really explicit about the fact that the reclaim is free
-> to override the swappiness provided by user. So essentially a best
-> effort interface without any actual guarantees. That surely makes it
-> harder to use. Is it still useable?
+This patch series aims at adding support for PoE (Power over Ethernet),
+based on the already existing support for PoDL (Power over Data Line)
+implementation. In addition, it adds support for one specific PoE
+controller, the Microchip PD692x0.
 
-But it's not free to override the setting as it pleases. I wrote a
-detailed list of the current exceptions, and why the user wouldn't
-have strong expectations of swappiness being respected in those
-cases. Having reasonable limitations is not the same as everything
-being up for grabs.
+The PD692x0 driver is based on the patch merged in an immutable branch
+from Jakub repo. It is Tagged at:
+git://git.kernel.org/pub/scm/linux/kernel/git/kuba/linux.git firmware_loader-add-upload-error
+The patch is already merged in net-next.
 
-Again, the swappiness setting is ABI, and people would definitely
-complain if we ignored their request in an unexpected situation and
-regressed their workloads.
+In detail:
+- Patch 1 to 6 prepare net to support PoE devices.
+- Patch 7 and 8 add PD692x0 PoE PSE controller driver and its binding.
 
-I'm not against documenting the exceptions and limitations. Not just
-for proactive reclaim, but for swappiness in general. But I don't
-think it's fair to say that there are NO rules and NO userspace
-contract around this parameter (and I'm the one who wrote most of the
-balancing code that implements the swappiness control).
+Changes in v2:
+- Extract "firmware_loader: Expand Firmware upload error codes patches" to
+  send it alone and get it merge in an immutable branch.
+- Add "c33" prefix for PoE variables and enums.
+- Enhance few comments.
+- Add PSE Documentation.
+- Make several changes in pd692x0 driver, mainly for readibility.
+- Link to v1: https://lore.kernel.org/r/20231116-feature_poe-v1-0-be48044bf249@bootlin.com
 
-So considering what swappiness DOES provide, and the definition and
-behavior to which we're tied by ABI rules, yes I do think it's useful
-to control this from the proactive reclaim context. In fact, we know
-it's useful, because we've been doing it for a while in production now
-- just in a hacky way, and this patch is merely making it less hacky.
+Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
+---
+Kory Maincent (8):
+      net: pse-pd: Rectify and adapt the naming of admin_cotrol member of struct pse_control_config
+      ethtool: Expand Ethernet Power Equipment with c33 (PoE) alongside PoDL
+      net: pse-pd: Introduce PSE types enumeration
+      net: ethtool: pse-pd: Expand pse commands with the PSE PoE interface
+      netlink: specs: Modify pse attribute prefix
+      netlink: specs: Expand the pse netlink command with PoE interface
+      dt-bindings: net: pse-pd: Add bindings for PD692x0 PSE controller
+      net: pse-pd: Add PD692x0 PSE controller driver
 
-> Btw. IIRC these concerns were part of the reason why memcg v2 doesn't
-> have swappiness interface. If we decide to export swappiness via
-> memory.reclaim interface does it mean we will do so on per-memcg level
-> as well?
+ .../bindings/net/pse-pd/microchip,pd692x0.yaml     |   77 ++
+ Documentation/netlink/specs/ethtool.yaml           |   33 +-
+ Documentation/networking/ethtool-netlink.rst       |   20 +
+ Documentation/networking/pse-pd/introduction.rst   |   73 ++
+ MAINTAINERS                                        |    7 +
+ drivers/net/pse-pd/Kconfig                         |   11 +
+ drivers/net/pse-pd/Makefile                        |    1 +
+ drivers/net/pse-pd/pd692x0.c                       | 1025 ++++++++++++++++++++
+ drivers/net/pse-pd/pse_core.c                      |    9 +
+ drivers/net/pse-pd/pse_regulator.c                 |    9 +-
+ include/linux/pse-pd/pse.h                         |   35 +-
+ include/uapi/linux/ethtool.h                       |   43 +
+ include/uapi/linux/ethtool_netlink.h               |    3 +
+ net/ethtool/pse-pd.c                               |   64 +-
+ tools/net/ynl/generated/ethtool-user.c             |   54 +-
+ tools/net/ynl/generated/ethtool-user.h             |   81 +-
+ 16 files changed, 1481 insertions(+), 64 deletions(-)
+---
+base-commit: 98137c429a4854583210707a82114b4f5c171c5e
+change-id: 20231024-feature_poe-139490e73403
 
-Well I'm the person who wrote the initial cgroup2 memory interface,
-and I left it out because there was no clear usecase for why you'd
-want to tweak it on a per-container basis.
+Best regards,
+-- 
+Köry Maincent, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
 
-But Dan did bring up a new and very concrete usecase: controlling for
-write endurance. And it's not just a theoretical one, but a proven
-real world application.
-
-As far as adding a static memory.swappiness goes, I wouldn't add it
-just because, but wait for a concrete usecase for that specifically. I
-don't think Dan's rationale extends to it. But if a usecase comes up
-and is convincing, I wouldn't be opposed to it.
