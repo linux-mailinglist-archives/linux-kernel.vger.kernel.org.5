@@ -2,384 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28276800C5F
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 14:41:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3CA2800C63
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 14:42:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379025AbjLANlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 08:41:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39056 "EHLO
+        id S1379027AbjLANlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 08:41:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379013AbjLANlH (ORCPT
+        with ESMTP id S1379013AbjLANlq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 08:41:07 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 61B0A10E2;
-        Fri,  1 Dec 2023 05:41:12 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2DA291007;
-        Fri,  1 Dec 2023 05:41:58 -0800 (PST)
-Received: from [10.1.197.1] (ewhatever.cambridge.arm.com [10.1.197.1])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1AEC93F73F;
-        Fri,  1 Dec 2023 05:41:09 -0800 (PST)
-Message-ID: <56e9bc16-7962-46c6-858d-53aa7a6c8555@arm.com>
-Date:   Fri, 1 Dec 2023 13:41:08 +0000
+        Fri, 1 Dec 2023 08:41:46 -0500
+Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E66D8193
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 05:41:51 -0800 (PST)
+Received: by mail-vs1-xe2f.google.com with SMTP id ada2fe7eead31-464434e7804so743645137.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 05:41:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701438111; x=1702042911; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ud4MQNG0kpdoUboL30yQ6RvJpvRhcnzA03rhefBPilQ=;
+        b=a6tggfkMG5C0Xzl6OW2T8qEhZHTvURpVg7LBX8h6YQSVglEZFjQ7frTeqEtatj3dy1
+         HM5O/cQ0ogeTgGTNb2C/ZgKdNGax3+DJhRea4U8xp4IgsbSF1XLslIjNRM4MEVvsm+he
+         PDocjFiV7pvK5QkAL4jM6R6LeQ11jcccwZ8SteZP8ijxq5octTjYTimb8iIdsc7I7CAw
+         /VJNdgI77kpoBSn8RxOnzb37c28KmoPXGj4JOhOcOvWosjbcrlzMBOBIVxKTxvGRuI7T
+         0sz7D8noqRvHjeypSM8pu8qZJdA5IDxkHggmcaFQqFJs+FvOgMaKlietc6xm8+0meSUp
+         GmWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701438111; x=1702042911;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Ud4MQNG0kpdoUboL30yQ6RvJpvRhcnzA03rhefBPilQ=;
+        b=gYqG+xoxKeAcqapO8jrivzZKYwS31SBCyJUMIQ6r2Rb2yh5iemhftIUDEWIgirzCzM
+         E7Dvda+JS3jCEdputU2saClyhYaiwN4wPfZYqzZDeHLfaHNTew1UYQRPFGrVkma5y5Nc
+         JPFcNBOjVzE/NST5FD8TLUH8LwC+0WC2tdeLjZK8Djf7NBPnEnkdq2mPdJIDKE8jTtNX
+         Ze9PWZeSXzIYL3w0g8pr2l6ZxbLvttDnV0MsarHSVHLzc/gkKh0LFNH5FT62ZOqikKrN
+         fYoe6ryoGZbIE+0b186w7BJ1luVnmq8w1+ELzg0LYCA7hC/WFj1XPrjzmCOBZ5S2HTir
+         mMCQ==
+X-Gm-Message-State: AOJu0YxNBZ8rczQsguHNR9TUaytnq0rAmsROa4S/y8x+OiUZnO5GkHIh
+        nyMWXwXVYZbZ6hZnrX/ZuTTlIf86QUuttQwjJsZc+w==
+X-Google-Smtp-Source: AGHT+IEicy1qN87mEQef8NwvPqnYXdc2XJLVSSrclbSdSp2zf38QwwS0ohzKVUpQcnIM6g1p6MjherBnXenZzLzpYH0=
+X-Received: by 2002:a05:6102:2a75:b0:464:5ca3:3655 with SMTP id
+ hp21-20020a0561022a7500b004645ca33655mr4493569vsb.15.1701438110964; Fri, 01
+ Dec 2023 05:41:50 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V2 3/7] coresight: catu: Move ACPI support from AMBA
- driver to platform driver
-Content-Language: en-US
-To:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        James Clark <james.clark@arm.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        coresight@lists.linaro.org,
-        linux-stm32@st-md-mailman.stormreply.com
-References: <20231201062053.1268492-1-anshuman.khandual@arm.com>
- <20231201062053.1268492-4-anshuman.khandual@arm.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <20231201062053.1268492-4-anshuman.khandual@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231130162135.977485944@linuxfoundation.org>
+In-Reply-To: <20231130162135.977485944@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 1 Dec 2023 19:11:39 +0530
+Message-ID: <CA+G9fYvBUtFAid4ZK=XQtxM8AvUXuFwOrGV_UqCGnnvT9sNG=A@mail.gmail.com>
+Subject: Re: [PATCH 6.1 00/82] 6.1.65-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org, allen.lkml@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Anshuman,
-
-On 01/12/2023 06:20, Anshuman Khandual wrote:
-> Add support for the catu devices in a new platform driver, which can then
-> be used on ACPI based platforms. This change would now allow runtime power
-> management for ACPI based systems. The driver would try to enable the APB
-> clock if available.
-
-This doesn't talk about the new helper. As such I would prefer that to 
-be a separate preparatory patch. See below.
-
-> 
-> Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>
-> Cc: Sudeep Holla <sudeep.holla@arm.com>
-> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Cc: Mike Leach <mike.leach@linaro.org>
-> Cc: James Clark <james.clark@arm.com>
-> Cc: linux-acpi@vger.kernel.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: coresight@lists.linaro.org
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
->   drivers/acpi/arm64/amba.c                    |   1 -
->   drivers/hwtracing/coresight/coresight-catu.c | 130 ++++++++++++++++---
->   drivers/hwtracing/coresight/coresight-catu.h |   1 +
->   drivers/hwtracing/coresight/coresight-core.c |  29 +++++
->   include/linux/coresight.h                    |   7 +
->   5 files changed, 149 insertions(+), 19 deletions(-)
-> 
-> diff --git a/drivers/acpi/arm64/amba.c b/drivers/acpi/arm64/amba.c
-> index afb6afb66967..587061b0fd2f 100644
-> --- a/drivers/acpi/arm64/amba.c
-> +++ b/drivers/acpi/arm64/amba.c
-> @@ -27,7 +27,6 @@ static const struct acpi_device_id amba_id_list[] = {
->   	{"ARMHC503", 0}, /* ARM CoreSight Debug */
->   	{"ARMHC979", 0}, /* ARM CoreSight TPIU */
->   	{"ARMHC97C", 0}, /* ARM CoreSight SoC-400 TMC, SoC-600 ETF/ETB */
-> -	{"ARMHC9CA", 0}, /* ARM CoreSight CATU */
->   	{"", 0},
->   };
->   
-> diff --git a/drivers/hwtracing/coresight/coresight-catu.c b/drivers/hwtracing/coresight/coresight-catu.c
-> index 3949ded0d4fa..ba5ee7d158dd 100644
-> --- a/drivers/hwtracing/coresight/coresight-catu.c
-> +++ b/drivers/hwtracing/coresight/coresight-catu.c
-> @@ -7,6 +7,8 @@
->    * Author: Suzuki K Poulose <suzuki.poulose@arm.com>
->    */
->   
-> +#include <linux/platform_device.h>
-> +#include <linux/acpi.h>
->   #include <linux/amba/bus.h>
->   #include <linux/device.h>
->   #include <linux/dma-mapping.h>
-> @@ -502,28 +504,20 @@ static const struct coresight_ops catu_ops = {
->   	.helper_ops = &catu_helper_ops,
->   };
->   
-> -static int catu_probe(struct amba_device *adev, const struct amba_id *id)
-> +static int __catu_probe(struct device *dev, struct resource *res)
->   {
->   	int ret = 0;
->   	u32 dma_mask;
-> -	struct catu_drvdata *drvdata;
-> +	struct catu_drvdata *drvdata = dev_get_drvdata(dev);
->   	struct coresight_desc catu_desc;
->   	struct coresight_platform_data *pdata = NULL;
-> -	struct device *dev = &adev->dev;
->   	void __iomem *base;
->   
->   	catu_desc.name = coresight_alloc_device_name(&catu_devs, dev);
->   	if (!catu_desc.name)
->   		return -ENOMEM;
->   
-> -	drvdata = devm_kzalloc(dev, sizeof(*drvdata), GFP_KERNEL);
-> -	if (!drvdata) {
-> -		ret = -ENOMEM;
-> -		goto out;
-> -	}
-> -
-> -	dev_set_drvdata(dev, drvdata);
-> -	base = devm_ioremap_resource(dev, &adev->res);
-> +	base = devm_ioremap_resource(dev, res);
->   	if (IS_ERR(base)) {
->   		ret = PTR_ERR(base);
->   		goto out;
-> @@ -568,18 +562,35 @@ static int catu_probe(struct amba_device *adev, const struct amba_id *id)
->   	if (IS_ERR(drvdata->csdev))
->   		ret = PTR_ERR(drvdata->csdev);
->   	else
-> -		pm_runtime_put(&adev->dev);
-> +		pm_runtime_put(dev);
->   out:
->   	return ret;
->   }
->   
-> -static void catu_remove(struct amba_device *adev)
-> +static int catu_probe(struct amba_device *adev, const struct amba_id *id)
-> +{
-> +	struct catu_drvdata *drvdata;
-> +
-> +	drvdata = devm_kzalloc(&adev->dev, sizeof(*drvdata), GFP_KERNEL);
-> +	if (!drvdata)
-> +		return -ENOMEM;
-> +
-> +	amba_set_drvdata(adev, drvdata);
-> +	return __catu_probe(&adev->dev, &adev->res);
-> +}
-> +
-> +static void __catu_remove(struct device *dev)
->   {
-> -	struct catu_drvdata *drvdata = dev_get_drvdata(&adev->dev);
-> +	struct catu_drvdata *drvdata = dev_get_drvdata(dev);
->   
->   	coresight_unregister(drvdata->csdev);
->   }
->   
-> +static void catu_remove(struct amba_device *adev)
-> +{
-> +	__catu_remove(&adev->dev);
-> +}
-> +
->   static struct amba_id catu_ids[] = {
->   	CS_AMBA_ID(0x000bb9ee),
->   	{},
-> @@ -598,13 +609,96 @@ static struct amba_driver catu_driver = {
->   	.id_table			= catu_ids,
->   };
->   
-> +static int catu_platform_probe(struct platform_device *pdev)
-> +{
-> +	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	struct catu_drvdata *drvdata;
-> +	int ret = 0;
-> +
-> +	drvdata = devm_kzalloc(&pdev->dev, sizeof(*drvdata), GFP_KERNEL);
-> +	if (!drvdata)
-> +		return -ENOMEM;
-> +
-> +	drvdata->pclk = coresight_get_enable_apb_pclk(&pdev->dev);
-> +	if (IS_ERR(drvdata->pclk))
-> +		return -ENODEV;
-> +
-> +	if (res) {
-> +		drvdata->base = devm_ioremap_resource(&pdev->dev, res);
-> +		if (IS_ERR(drvdata->base)) {
-> +			clk_put(drvdata->pclk);
-> +			return PTR_ERR(drvdata->base);
-> +		}
-> +	}
-> +
-> +	pm_runtime_get_noresume(&pdev->dev);
-> +	pm_runtime_set_active(&pdev->dev);
-> +	pm_runtime_enable(&pdev->dev);
-> +
-> +	dev_set_drvdata(&pdev->dev, drvdata);
-> +	ret = __catu_probe(&pdev->dev, res);
-> +	if (ret) {
-> +		pm_runtime_put_noidle(&pdev->dev);
-> +		pm_runtime_disable(&pdev->dev);
-> +	}
-> +	return ret;
-> +}
-> +
-> +static int catu_platform_remove(struct platform_device *pdev)
-> +{
-> +	__catu_remove(&pdev->dev);
-> +	return 0;
-> +}
-> +
-> +#ifdef CONFIG_PM
-> +static int catu_runtime_suspend(struct device *dev)
-> +{
-> +	struct catu_drvdata *drvdata = dev_get_drvdata(dev);
-> +
-> +	if (drvdata->pclk && !IS_ERR_OR_NULL(drvdata->pclk))
-
-Only the second part is needed. IS_ERR_OR_NULL() already checks for NULL.
-
-> +		clk_disable_unprepare(drvdata->pclk);
-> +	return 0;
-> +}
-> +
-> +static int catu_runtime_resume(struct device *dev)
-> +{
-> +	struct catu_drvdata *drvdata = dev_get_drvdata(dev);
-> +
-> +	if (drvdata->pclk && !IS_ERR_OR_NULL(drvdata->pclk))
-
-Same here.
-
-> +		clk_prepare_enable(drvdata->pclk);
-> +	return 0;
-> +}
-> +#endif
-> +
-> +static const struct dev_pm_ops catu_dev_pm_ops = {
-> +	SET_RUNTIME_PM_OPS(catu_runtime_suspend, catu_runtime_resume, NULL)
-> +};
-> +
-> +#ifdef CONFIG_ACPI
-> +static const struct acpi_device_id catu_acpi_ids[] = {
-> +	{"ARMHC9CA", 0}, /* ARM CoreSight CATU */
-> +	{},
-> +};
-> +
-> +MODULE_DEVICE_TABLE(acpi, catu_acpi_ids);
-> +#endif
-> +
-> +static struct platform_driver catu_platform_driver = {
-> +	.probe	= catu_platform_probe,
-> +	.remove	= catu_platform_remove,
-> +	.driver	= {
-> +		.name			= "coresight-catu-platform",
-> +		.acpi_match_table	= ACPI_PTR(catu_acpi_ids),
-> +		.suppress_bind_attrs	= true,
-> +		.pm			= &catu_dev_pm_ops,
-> +	},
-> +};
-> +
->   static int __init catu_init(void)
->   {
->   	int ret;
->   
-> -	ret = amba_driver_register(&catu_driver);
-> -	if (ret)
-> -		pr_info("Error registering catu driver\n");
-> +	ret = coresight_init_driver("catu", &catu_driver, &catu_platform_driver);
->   	tmc_etr_set_catu_ops(&etr_catu_buf_ops);
->   	return ret;
->   }
-> @@ -612,7 +706,7 @@ static int __init catu_init(void)
->   static void __exit catu_exit(void)
->   {
->   	tmc_etr_remove_catu_ops();
-> -	amba_driver_unregister(&catu_driver);
-> +	coresight_remove_driver(&catu_driver, &catu_platform_driver);
->   }
->   
->   module_init(catu_init);
-> diff --git a/drivers/hwtracing/coresight/coresight-catu.h b/drivers/hwtracing/coresight/coresight-catu.h
-> index 442e034bbfba..141feac1c14b 100644
-> --- a/drivers/hwtracing/coresight/coresight-catu.h
-> +++ b/drivers/hwtracing/coresight/coresight-catu.h
-> @@ -61,6 +61,7 @@
->   #define CATU_IRQEN_OFF		0x0
->   
->   struct catu_drvdata {
-> +	struct clk *pclk;
->   	void __iomem *base;
->   	struct coresight_device *csdev;
->   	int irq;
-> diff --git a/drivers/hwtracing/coresight/coresight-core.c b/drivers/hwtracing/coresight/coresight-core.c
-> index 9fabe00a40d6..ede9b0723f95 100644
-> --- a/drivers/hwtracing/coresight/coresight-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-core.c
-> @@ -1833,6 +1833,35 @@ static void __exit coresight_exit(void)
->   module_init(coresight_init);
->   module_exit(coresight_exit);
->   
-
----8>---
-
-> +int coresight_init_driver(const char *drv, struct amba_driver *amba_drv,
-> +			  struct platform_driver *pdev_drv)
-> +{
-> +	int ret;
-> +
-> +	ret = amba_driver_register(amba_drv);
-> +	if (ret) {
-> +		pr_err("%s: error registering AMBA driver\n", drv);
-> +		return ret;
-> +	}
-> +
-> +	ret = platform_driver_register(pdev_drv);
-> +	if (!ret)
-> +		return 0;
-> +
-> +	pr_err("%s: error registering platform driver\n", drv);
-> +	amba_driver_unregister(amba_drv);
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(coresight_init_driver);
-> +
-> +void coresight_remove_driver(struct amba_driver *amba_drv,
-> +			     struct platform_driver *pdev_drv)
-> +{
-> +	amba_driver_unregister(amba_drv);
-> +	platform_driver_unregister(pdev_drv);
-> +}
-> +EXPORT_SYMBOL_GPL(coresight_remove_driver);
-
-Please could we split this into a separate patch itself ? Also, can we 
-not use them for the other components ? funnel, replicator ?
+On Thu, 30 Nov 2023 at 21:59, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 6.1.65 release.
+> There are 82 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sat, 02 Dec 2023 16:21:18 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.65-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
 
-> +
->   MODULE_LICENSE("GPL v2");
->   MODULE_AUTHOR("Pratik Patel <pratikp@codeaurora.org>");
->   MODULE_AUTHOR("Mathieu Poirier <mathieu.poirier@linaro.org>");
-> diff --git a/include/linux/coresight.h b/include/linux/coresight.h
-> index a269fffaf991..be7fe3793763 100644
-> --- a/include/linux/coresight.h
-> +++ b/include/linux/coresight.h
-> @@ -12,6 +12,8 @@
->   #include <linux/io.h>
->   #include <linux/perf_event.h>
->   #include <linux/sched.h>
-> +#include <linux/amba/bus.h>
-> +#include <linux/platform_device.h>
->   
->   /* Peripheral id registers (0xFD0-0xFEC) */
->   #define CORESIGHT_PERIPHIDR4	0xfd0
-> @@ -597,6 +599,11 @@ void coresight_relaxed_write64(struct coresight_device *csdev,
->   			       u64 val, u32 offset);
->   void coresight_write64(struct coresight_device *csdev, u64 val, u32 offset);
->   
-> +int coresight_init_driver(const char *drv, struct amba_driver *amba_drv,
-> +			  struct platform_driver *pdev_drv);
-> +
-> +void coresight_remove_driver(struct amba_driver *amba_drv,
-> +			     struct platform_driver *pdev_drv);
->   #else
->   static inline struct coresight_device *
->   coresight_register(struct coresight_desc *desc) { return NULL; }
+Results from Linaro's test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Suzuki
+## Build
+* kernel: 6.1.65-rc1
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-6.1.y
+* git commit: 49ac60b65ef717d2d74b3b83ca97b61a011557de
+* git describe: v6.1.64-83-g49ac60b65ef7
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.1.y/build/v6.1.64-83-g49ac60b65ef7
+
+## Test Regressions (compared to v6.1.64)
+
+## Metric Regressions (compared to v6.1.64)
+
+## Test Fixes (compared to v6.1.64)
+
+## Metric Fixes (compared to v6.1.64)
+
+## Test result summary
+total: 134263, pass: 113838, fail: 2710, skip: 17581, xfail: 134
+
+## Build Summary
+* arc: 5 total, 5 passed, 0 failed
+* arm: 151 total, 150 passed, 1 failed
+* arm64: 52 total, 51 passed, 1 failed
+* i386: 39 total, 39 passed, 0 failed
+* mips: 26 total, 26 passed, 0 failed
+* parisc: 4 total, 4 passed, 0 failed
+* powerpc: 36 total, 36 passed, 0 failed
+* riscv: 15 total, 15 passed, 0 failed
+* s390: 16 total, 16 passed, 0 failed
+* sh: 10 total, 10 passed, 0 failed
+* sparc: 8 total, 8 passed, 0 failed
+* x86_64: 46 total, 46 passed, 0 failed
+
+## Test suites summary
+* boot
+* kselftest-android
+* kselftest-arm64
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers-dma-buf
+* kselftest-efivarfs
+* kselftest-exec
+* kselftest-filesystems
+* kselftest-filesystems-binderfs
+* kselftest-filesystems-epoll
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-ftrace
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-net-forwarding
+* kselftest-net-mptcp
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-user_events
+* kselftest-vDSO
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kunit
+* libgpiod
+* log-parser-boot
+* log-parser-test
+* ltp-cap_bounds
+* ltp-commands
+* ltp-containers
+* ltp-controllers
+* ltp-cpuhotplug
+* ltp-crypto
+* ltp-cve
+* ltp-dio
+* ltp-fcntl-locktests
+* ltp-filecaps
+* ltp-fs
+* ltp-fs_bind
+* ltp-fs_perms_simple
+* ltp-fsx
+* ltp-hugetlb
+* ltp-io
+* ltp-ipc
+* ltp-math
+* ltp-mm
+* ltp-nptl
+* ltp-pty
+* ltp-sched
+* ltp-securebits
+* ltp-smoke
+* ltp-syscalls
+* ltp-tracing
+* network-basic-tests
+* perf
+* rcutorture
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
