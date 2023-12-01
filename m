@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C9CA8006DB
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 10:27:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A617F8006DA
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 10:27:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378013AbjLAJ1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 04:27:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49066 "EHLO
+        id S1378079AbjLAJ11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 04:27:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378033AbjLAJ1G (ORCPT
+        with ESMTP id S1378034AbjLAJ1G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 1 Dec 2023 04:27:06 -0500
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 582C510F3
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 01:27:12 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 092D610F9
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 01:27:13 -0800 (PST)
 From:   Anna-Maria Behnsen <anna-maria@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1701422830;
+        s=2020; t=1701422831;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=abaveLygv3WKLQ70azOX5Nhmi35F03D2H7Exz6wvRjs=;
-        b=a1nd9r7lEBC9ci6wUVUgi1hN4JCBZlGitekHspDsibrFdu+pl6/3sTyy+324ahw5Rz8T2d
-        uZTYVbFq3MMn/Aork8Mx5jwoQm179AXqZBvu+n7AGwyQykOZik6lmJ1xXTsu7yTmC/HkdF
-        52j3JYYAPDW4Jg3KME89B0f6l7d6zprctDbQgkcff1pjV5mC/jwRLOLQoZ3LolluWMH1mH
-        YXyx1z+xAybkeuZWQL3+Nc/UPifl2f29OmDqW1J2HjXXELtCOe0OrwmJDsD96TOeH86fTW
-        Sx8OSCuD5mmbxt7QitqcraPf+7fQ+bdykkWeOR1RtVUiv6anLw2D4wUnaXBKgw==
+        bh=gO/udsWQ+bQJ+e/QIsLEl2DMKpANRb9evAUW1EC/BoI=;
+        b=eIQqB/WQldigQLY0Gair11m9tMLsVtE1Ib3/oPytcBEd0/qDyfDCkRvTegLi/ZOrzT7FAp
+        m6oEWHBnwrgAMkh9+bzPfsxav1MuLLAhzI9oyKAjTVdcqH2yPJXlWIy6lJF+SCwvcwKr1X
+        7Pp+MFb8jhvlCfqGjEwPSRKuAt9kEkCnabNBehpLjPbkXIZ8K5IoNUljS6/u50/eSfQgUf
+        VSThVmxWrJu8mpM5Qi5/FgIUXg+bYlY8yit7NI2v3s5jB8u5yF0EAH4bk1q8dEM325dil4
+        5dNv4T2hfHZdbg62aF0lh9ESjOV1r6Dbv991Z5BpJBgmgLhuWM8DC8/sKkvU4g==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1701422830;
+        s=2020e; t=1701422831;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=abaveLygv3WKLQ70azOX5Nhmi35F03D2H7Exz6wvRjs=;
-        b=e0qcp8TwrijRK7VdVHlEYhM6yUkMF56vK2jMfSzEgzTaI8OYcOICJciV0hJSwlLduf3n9/
-        MRWLn7kdMu364XBA==
+        bh=gO/udsWQ+bQJ+e/QIsLEl2DMKpANRb9evAUW1EC/BoI=;
+        b=DLkvoQ1hQ176JTziAZ/kfHhh7nRRJW7GCXqvS2BDCpVLtS0WNM3KRr3h6ZYLXNylsajT5P
+        e48W33DVK1JYzuDw==
 To:     linux-kernel@vger.kernel.org
 Cc:     Peter Zijlstra <peterz@infradead.org>,
         John Stultz <jstultz@google.com>,
@@ -55,9 +55,9 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
         K Prateek Nayak <kprateek.nayak@amd.com>,
         Anna-Maria Behnsen <anna-maria@linutronix.de>
-Subject: [PATCH v9 07/32] timers: Move store of next event into __next_timer_interrupt()
-Date:   Fri,  1 Dec 2023 10:26:29 +0100
-Message-Id: <20231201092654.34614-8-anna-maria@linutronix.de>
+Subject: [PATCH v9 08/32] timers: Clarify check in forward_timer_base()
+Date:   Fri,  1 Dec 2023 10:26:30 +0100
+Message-Id: <20231201092654.34614-9-anna-maria@linutronix.de>
 In-Reply-To: <20231201092654.34614-1-anna-maria@linutronix.de>
 References: <20231201092654.34614-1-anna-maria@linutronix.de>
 MIME-Version: 1.0
@@ -72,72 +72,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Both call sites of __next_timer_interrupt() store the return value directly
-in base->next_expiry. Move the store into __next_timer_interrupt() and to
-make its purpose more clear, rename the function to next_expiry_recalc().
+The current check whether a forward of the timer base is required can be
+simplified by using an already existing comparison function which is easier
+to read. The related comment is outdated and was not updated when the check
+changed in commit 36cd28a4cdd0 ("timers: Lower base clock forwarding
+threshold").
+
+Use time_before_eq() for the check and replace the comment by copying the
+comment from the same check inside get_next_timer_interrupt(). Move the
+precious information of the outdated comment to the proper place in
+__run_timers().
 
 No functional change.
 
 Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
-Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
 Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 ---
-v9: Typo fix only
-
-v6: Fix typos in commit message and drop not required return as suggested
-    by Peter Zijlstra
-
-v4: rename function as suggested by Frederic Weisbecker
+v9: Move precious information of outdated comment to proper place (as
+    suggested by Frederic)
 ---
- kernel/time/timer.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ kernel/time/timer.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
 diff --git a/kernel/time/timer.c b/kernel/time/timer.c
-index a6e31b09637c..3ca706db1d20 100644
+index 3ca706db1d20..66bac56909ba 100644
 --- a/kernel/time/timer.c
 +++ b/kernel/time/timer.c
-@@ -1800,8 +1800,10 @@ static int next_pending_bucket(struct timer_base *base, unsigned offset,
- /*
-  * Search the first expiring timer in the various clock levels. Caller must
-  * hold base->lock.
-+ *
-+ * Store next expiry time in base->next_expiry.
-  */
--static unsigned long __next_timer_interrupt(struct timer_base *base)
-+static void next_expiry_recalc(struct timer_base *base)
- {
- 	unsigned long clk, next, adj;
- 	unsigned lvl, offset = 0;
-@@ -1867,10 +1869,9 @@ static unsigned long __next_timer_interrupt(struct timer_base *base)
- 		clk += adj;
- 	}
- 
-+	base->next_expiry = next;
- 	base->next_expiry_recalc = false;
- 	base->timers_pending = !(next == base->clk + NEXT_TIMER_MAX_DELTA);
--
--	return next;
- }
- 
- #ifdef CONFIG_NO_HZ_COMMON
-@@ -1930,7 +1931,7 @@ u64 get_next_timer_interrupt(unsigned long basej, u64 basem)
- 
- 	raw_spin_lock(&base->lock);
- 	if (base->next_expiry_recalc)
--		base->next_expiry = __next_timer_interrupt(base);
-+		next_expiry_recalc(base);
- 	nextevt = base->next_expiry;
+@@ -944,11 +944,10 @@ static inline void forward_timer_base(struct timer_base *base)
+ 	unsigned long jnow = READ_ONCE(jiffies);
  
  	/*
-@@ -2015,7 +2016,7 @@ static inline void __run_timers(struct timer_base *base)
+-	 * No need to forward if we are close enough below jiffies.
+-	 * Also while executing timers, base->clk is 1 offset ahead
+-	 * of jiffies to avoid endless requeuing to current jiffies.
++	 * Check whether we can forward the base. We can only do that when
++	 * @basej is past base->clk otherwise we might rewind base->clk.
+ 	 */
+-	if ((long)(jnow - base->clk) < 1)
++	if (time_before_eq(jnow, base->clk))
+ 		return;
+ 
+ 	/*
+@@ -2015,6 +2014,10 @@ static inline void __run_timers(struct timer_base *base)
+ 		 */
  		WARN_ON_ONCE(!levels && !base->next_expiry_recalc
  			     && base->timers_pending);
++		/*
++		 * While executing timers, base->clk is set 1 offset ahead of
++		 * jiffies to avoid endless requeuing to current jiffies.
++		 */
  		base->clk++;
--		base->next_expiry = __next_timer_interrupt(base);
-+		next_expiry_recalc(base);
+ 		next_expiry_recalc(base);
  
- 		while (levels--)
- 			expire_timers(base, heads + levels);
 -- 
 2.39.2
 
