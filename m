@@ -2,80 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD717800E32
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 16:14:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0724800E3B
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 16:14:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379338AbjLAPOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 10:14:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52548 "EHLO
+        id S1379353AbjLAPOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 10:14:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379307AbjLAPOE (ORCPT
+        with ESMTP id S1379355AbjLAPO0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 10:14:04 -0500
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22F81194
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 07:14:08 -0800 (PST)
-Received: by mail-qk1-x730.google.com with SMTP id af79cd13be357-77dd08f75afso118452085a.3
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 07:14:08 -0800 (PST)
+        Fri, 1 Dec 2023 10:14:26 -0500
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E6A6D4A
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 07:14:32 -0800 (PST)
+Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-6cdcef787ffso2228476b3a.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 07:14:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1701443647; x=1702048447; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=pVJUq6suPpiRp09p/ZEgMXSUtvlWnaDkWeaaG3LqGnA=;
-        b=kV1V8uTBRwtBEC1fbz0wKMu7ypRWI1bA6yUkJHm1f6VBBzl02ClyOLTyS2de7HS6an
-         TPAMnoonZMi4KFQ+yGOhzASlPcXxn9O11Q4o2w3VmB/S+v0KA/zcjlF3gsQUZrG5YMkJ
-         FeBzT+HKg6d8DrKUlPNp+CchNlnRgMVUrTxpAd2AKETVtQ746b3PafxZm8rXdAJSprl4
-         CRVQLr6vG06DIgFGDvObSOgyfeSBdlWejsZEVlOBOPHufGZ5Lm9inQcWGBqIzke7baQO
-         8cqH24z/Avk4OF79lzCDzWKAne5suvFbRHkOls7wM7mBmAYVuCuD/wn4C0DiAztks325
-         uCgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701443647; x=1702048447;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=linaro.org; s=google; t=1701443671; x=1702048471; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=pVJUq6suPpiRp09p/ZEgMXSUtvlWnaDkWeaaG3LqGnA=;
-        b=gTF7JiK1AFEN1ely9MCYRLBiZVnShKXd4cLIa11K6K8GDMOsJYrjxbagF/8TNo0xLO
-         77hnJJ4KIn/SDCpcmcgdIT4xM+Tj3sX6XtmhVIHCRmlzVqIhuOKJDv3ly4V6KjuHkrpz
-         PEN2j6tvGHc9pS2SQvgELjvpphjQyR9tZm9Zf16+ANIHoDI8amRPp5RU2ZQvXwsP+Urz
-         BLjB0zGEPTqNGAQQMWkdXpia7Le3hC9gTDyJjXiOqUB8u98Papf9xLNp6KFF3+UfaWHX
-         B89TTTHeQVYpLcGBXnp/TxZ5fTuWZql9uAWLuRvn92/GtQOQopyUBHToCirGzlhaQOdT
-         DXCA==
-X-Gm-Message-State: AOJu0YzviqfXJ0BhrKEkwGHeJ0oCl7wjOo7nscBe5dYnpNACwlaBdY8+
-        ZOZjw0QHvoCZF+PsSMCB7SjmlMwcmUsu/C4NGD8=
-X-Google-Smtp-Source: AGHT+IFojjBiYAyjB0qLsDw0/NdOZZDHh2j3CXMufmKOLt2sxpuBu/20ksASH3BMi0Fs2c9I9Tu+9Q==
-X-Received: by 2002:a05:620a:1256:b0:77b:bf2e:c082 with SMTP id a22-20020a05620a125600b0077bbf2ec082mr27411255qkl.75.1701443647075;
-        Fri, 01 Dec 2023 07:14:07 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-134-23-187.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.134.23.187])
-        by smtp.gmail.com with ESMTPSA id i9-20020a05620a27c900b007788c1a81b6sm1567869qkp.46.2023.12.01.07.14.06
+        bh=jvLkGXNQshvzZU680OmMrA5c7oAf7WIO0uWnCsVQkig=;
+        b=M/72Xi7LtlcaLyxOdtc4W175e5smNQovEC4vDu2GqlgfWJWMjdUOx6hntqSCeQpnUq
+         Xo65QX9+aNbQuQQCJRcXzv34xSD/vPTGtAPRs+9mKtGARv/XUlqPEC6J1HuepwjYD49k
+         sXGv9g1kb/XoYQh1s9yv89vJnCW8XSfWiWtXtjOMWfCyyKnOxASVaVyBu9NCNB80pyk8
+         mzcTxH3ic9hGqOehjaww7qhc5kuemW/bph53cg+RmEIos6BtV56jwVKWW+HyJsK5Vw44
+         NQS5VgwFRFoqz7w6FrHjF0+XieN3EDCWvn4Y5H1AOWCy5P7KEa5sVpBzY5zXmAdxiHRc
+         E/XQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701443671; x=1702048471;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jvLkGXNQshvzZU680OmMrA5c7oAf7WIO0uWnCsVQkig=;
+        b=QHRmmd+Je1YzbHAHhCqIweT5YEe7tQLja85Jsw68rjK8bp07qfqvkCrQQ6Fu2PiDXF
+         OEpbdQwpFkMGuSCztNl+pcEKoa3zQYacIiy9el4cHZs5dRum+0b3L71CK4Udq8sphE94
+         I/Tnuy5FrMmqb2vt55OJYtxT/dieHns183gOR6kJZ2Gl7ZvJlU4d7fsUoqNQYSzaTGob
+         mqEDmE6faKNlyVGLEEP//bYkzMA9My3XBP8GVQzNw7ozDkfIwWuRwWNE2GUOx7ffyWIG
+         EmSdRDKshMKOeNuinwnjFlAXZ9f87ADysEp5tS/fTIT0A+a7Ino/ZK2lIw44u3j+s/fA
+         Iahg==
+X-Gm-Message-State: AOJu0YwDNsj5pMIsvcuBZ9Gu2CT8D4Fkjq9j/N1GNeO/Cr0TBCCrk2Ar
+        gy6sfsQlqDZkx3MLc9JzRp+nztfHjHLZNZBlrA==
+X-Google-Smtp-Source: AGHT+IHfg55fjDOeogk5wYiCzOSIR5XBMDXPS6dtqYKnYjDL4+dYx/9pbpMpF4BYl4nFFNl2hYsOGA==
+X-Received: by 2002:a05:6a20:8e26:b0:18c:abeb:b0db with SMTP id y38-20020a056a208e2600b0018cabebb0dbmr18760847pzj.49.1701443671549;
+        Fri, 01 Dec 2023 07:14:31 -0800 (PST)
+Received: from localhost.localdomain ([117.213.98.226])
+        by smtp.gmail.com with ESMTPSA id s14-20020a65644e000000b00578afd8e012sm2765824pgv.92.2023.12.01.07.14.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Dec 2023 07:14:06 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1r95DR-006Fy6-Or;
-        Fri, 01 Dec 2023 11:14:05 -0400
-Date:   Fri, 1 Dec 2023 11:14:05 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     Kevin Tian <kevin.tian@intel.com>, Joerg Roedel <joro@8bytes.org>,
-        Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        Yi Liu <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        iommu@lists.linux.dev, linux-kselftest@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/6] iommufd: Add iommu page fault uapi data
-Message-ID: <20231201151405.GA1489931@ziepe.ca>
-References: <20231026024930.382898-1-baolu.lu@linux.intel.com>
- <20231026024930.382898-3-baolu.lu@linux.intel.com>
+        Fri, 01 Dec 2023 07:14:31 -0800 (PST)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     martin.petersen@oracle.com, jejb@linux.ibm.com
+Cc:     andersson@kernel.org, konrad.dybcio@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, quic_cang@quicinc.com,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH 01/13] scsi: ufs: qcom: Use clk_bulk APIs for managing lane clocks
+Date:   Fri,  1 Dec 2023 20:44:05 +0530
+Message-Id: <20231201151417.65500-2-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20231201151417.65500-1-manivannan.sadhasivam@linaro.org>
+References: <20231201151417.65500-1-manivannan.sadhasivam@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231026024930.382898-3-baolu.lu@linux.intel.com>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -84,106 +74,167 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 26, 2023 at 10:49:26AM +0800, Lu Baolu wrote:
+Lane clock handling can be simplified by using the clk_bulk APIs. So let's
+make use of them. This also get's rid of the clock validation in the driver
+as kernel should just rely on the firmware (DT/ACPI) to provide the clocks
+required for proper functioning.
 
-> + * @IOMMU_HWPT_ALLOC_IOPF_CAPABLE: User is capable of handling IO page faults.
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+---
+ drivers/ufs/host/ufs-qcom.c | 94 ++-----------------------------------
+ drivers/ufs/host/ufs-qcom.h |  6 +--
+ 2 files changed, 7 insertions(+), 93 deletions(-)
 
-This does not seem like the best name?
-
-Probably like this given my remark in the cover letter:
-
---- a/include/uapi/linux/iommufd.h
-+++ b/include/uapi/linux/iommufd.h
-@@ -359,6 +359,7 @@ struct iommu_vfio_ioas {
- enum iommufd_hwpt_alloc_flags {
-        IOMMU_HWPT_ALLOC_NEST_PARENT = 1 << 0,
-        IOMMU_HWPT_ALLOC_DIRTY_TRACKING = 1 << 1,
-+       IOMMU_HWPT_IOPFD_FD_VALID = 1 << 2,
- };
+diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
+index 96cb8b5b4e66..cbb6a696cd97 100644
+--- a/drivers/ufs/host/ufs-qcom.c
++++ b/drivers/ufs/host/ufs-qcom.c
+@@ -194,52 +194,12 @@ static inline int ufs_qcom_ice_suspend(struct ufs_qcom_host *host)
+ }
+ #endif
  
- /**
-@@ -440,6 +441,7 @@ struct iommu_hwpt_alloc {
-        __u32 data_type;
-        __u32 data_len;
-        __aligned_u64 data_uptr;
-+       __s32 iopf_fd;
- };
- #define IOMMU_HWPT_ALLOC _IO(IOMMUFD_TYPE, IOMMUFD_CMD_HWPT_ALLOC)
+-static int ufs_qcom_host_clk_get(struct device *dev,
+-		const char *name, struct clk **clk_out, bool optional)
+-{
+-	struct clk *clk;
+-	int err = 0;
+-
+-	clk = devm_clk_get(dev, name);
+-	if (!IS_ERR(clk)) {
+-		*clk_out = clk;
+-		return 0;
+-	}
+-
+-	err = PTR_ERR(clk);
+-
+-	if (optional && err == -ENOENT) {
+-		*clk_out = NULL;
+-		return 0;
+-	}
+-
+-	if (err != -EPROBE_DEFER)
+-		dev_err(dev, "failed to get %s err %d\n", name, err);
+-
+-	return err;
+-}
+-
+-static int ufs_qcom_host_clk_enable(struct device *dev,
+-		const char *name, struct clk *clk)
+-{
+-	int err = 0;
+-
+-	err = clk_prepare_enable(clk);
+-	if (err)
+-		dev_err(dev, "%s: %s enable failed %d\n", __func__, name, err);
+-
+-	return err;
+-}
+-
+ static void ufs_qcom_disable_lane_clks(struct ufs_qcom_host *host)
+ {
+ 	if (!host->is_lane_clks_enabled)
+ 		return;
+ 
+-	clk_disable_unprepare(host->tx_l1_sync_clk);
+-	clk_disable_unprepare(host->tx_l0_sync_clk);
+-	clk_disable_unprepare(host->rx_l1_sync_clk);
+-	clk_disable_unprepare(host->rx_l0_sync_clk);
++	clk_bulk_disable_unprepare(host->num_clks, host->clks);
+ 
+ 	host->is_lane_clks_enabled = false;
+ }
+@@ -247,43 +207,14 @@ static void ufs_qcom_disable_lane_clks(struct ufs_qcom_host *host)
+ static int ufs_qcom_enable_lane_clks(struct ufs_qcom_host *host)
+ {
+ 	int err;
+-	struct device *dev = host->hba->dev;
+-
+-	if (host->is_lane_clks_enabled)
+-		return 0;
+ 
+-	err = ufs_qcom_host_clk_enable(dev, "rx_lane0_sync_clk",
+-		host->rx_l0_sync_clk);
++	err = clk_bulk_prepare_enable(host->num_clks, host->clks);
+ 	if (err)
+ 		return err;
+ 
+-	err = ufs_qcom_host_clk_enable(dev, "tx_lane0_sync_clk",
+-		host->tx_l0_sync_clk);
+-	if (err)
+-		goto disable_rx_l0;
+-
+-	err = ufs_qcom_host_clk_enable(dev, "rx_lane1_sync_clk",
+-			host->rx_l1_sync_clk);
+-	if (err)
+-		goto disable_tx_l0;
+-
+-	err = ufs_qcom_host_clk_enable(dev, "tx_lane1_sync_clk",
+-			host->tx_l1_sync_clk);
+-	if (err)
+-		goto disable_rx_l1;
+-
+ 	host->is_lane_clks_enabled = true;
+ 
+ 	return 0;
+-
+-disable_rx_l1:
+-	clk_disable_unprepare(host->rx_l1_sync_clk);
+-disable_tx_l0:
+-	clk_disable_unprepare(host->tx_l0_sync_clk);
+-disable_rx_l0:
+-	clk_disable_unprepare(host->rx_l0_sync_clk);
+-
+-	return err;
+ }
+ 
+ static int ufs_qcom_init_lane_clks(struct ufs_qcom_host *host)
+@@ -294,26 +225,11 @@ static int ufs_qcom_init_lane_clks(struct ufs_qcom_host *host)
+ 	if (has_acpi_companion(dev))
+ 		return 0;
+ 
+-	err = ufs_qcom_host_clk_get(dev, "rx_lane0_sync_clk",
+-					&host->rx_l0_sync_clk, false);
+-	if (err)
+-		return err;
+-
+-	err = ufs_qcom_host_clk_get(dev, "tx_lane0_sync_clk",
+-					&host->tx_l0_sync_clk, false);
+-	if (err)
++	err = devm_clk_bulk_get_all(dev, &host->clks);
++	if (err <= 0)
+ 		return err;
+ 
+-	/* In case of single lane per direction, don't read lane1 clocks */
+-	if (host->hba->lanes_per_direction > 1) {
+-		err = ufs_qcom_host_clk_get(dev, "rx_lane1_sync_clk",
+-			&host->rx_l1_sync_clk, false);
+-		if (err)
+-			return err;
+-
+-		err = ufs_qcom_host_clk_get(dev, "tx_lane1_sync_clk",
+-			&host->tx_l1_sync_clk, true);
+-	}
++	host->num_clks = err;
+ 
+ 	return 0;
+ }
+diff --git a/drivers/ufs/host/ufs-qcom.h b/drivers/ufs/host/ufs-qcom.h
+index 9950a0089475..e2df4c528a2a 100644
+--- a/drivers/ufs/host/ufs-qcom.h
++++ b/drivers/ufs/host/ufs-qcom.h
+@@ -213,10 +213,8 @@ struct ufs_qcom_host {
+ 	struct phy *generic_phy;
+ 	struct ufs_hba *hba;
+ 	struct ufs_pa_layer_attr dev_req_params;
+-	struct clk *rx_l0_sync_clk;
+-	struct clk *tx_l0_sync_clk;
+-	struct clk *rx_l1_sync_clk;
+-	struct clk *tx_l1_sync_clk;
++	struct clk_bulk_data *clks;
++	u32 num_clks;
+ 	bool is_lane_clks_enabled;
+ 
+ 	struct icc_path *icc_ddr;
+-- 
+2.25.1
 
-
-
-> @@ -679,6 +688,62 @@ struct iommu_dev_data_arm_smmuv3 {
->  	__u32 sid;
->  };
->  
-> +/**
-> + * struct iommu_hwpt_pgfault - iommu page fault data
-> + * @size: sizeof(struct iommu_hwpt_pgfault)
-> + * @flags: Combination of IOMMU_PGFAULT_FLAGS_ flags.
-> + *  - PASID_VALID: @pasid field is valid
-> + *  - LAST_PAGE: the last page fault in a group
-> + *  - PRIV_DATA: @private_data field is valid
-> + *  - RESP_NEEDS_PASID: the page response must have the same
-> + *                      PASID value as the page request.
-> + * @dev_id: id of the originated device
-> + * @pasid: Process Address Space ID
-> + * @grpid: Page Request Group Index
-> + * @perm: requested page permissions (IOMMU_PGFAULT_PERM_* values)
-> + * @addr: page address
-> + * @private_data: device-specific private information
-> + */
-> +struct iommu_hwpt_pgfault {
-> +	__u32 size;
-> +	__u32 flags;
-> +#define IOMMU_PGFAULT_FLAGS_PASID_VALID		(1 << 0)
-> +#define IOMMU_PGFAULT_FLAGS_LAST_PAGE		(1 << 1)
-> +#define IOMMU_PGFAULT_FLAGS_PRIV_DATA		(1 << 2)
-> +#define IOMMU_PGFAULT_FLAGS_RESP_NEEDS_PASID	(1 << 3)
-> +	__u32 dev_id;
-> +	__u32 pasid;
-> +	__u32 grpid;
-> +	__u32 perm;
-> +#define IOMMU_PGFAULT_PERM_READ			(1 << 0)
-> +#define IOMMU_PGFAULT_PERM_WRITE		(1 << 1)
-> +#define IOMMU_PGFAULT_PERM_EXEC			(1 << 2)
-> +#define IOMMU_PGFAULT_PERM_PRIV			(1 << 3)
-> +	__u64 addr;
-> +	__u64 private_data[2];
-> +};
-
-This mixed #define is not the style, these should be in enums,
-possibly with kdocs
-
-Use __aligned_u64 also
-
-> +
-> +/**
-> + * struct iommu_hwpt_response - IOMMU page fault response
-> + * @size: sizeof(struct iommu_hwpt_response)
-> + * @flags: Must be set to 0
-> + * @hwpt_id: hwpt ID of target hardware page table for the response
-> + * @dev_id: device ID of target device for the response
-> + * @pasid: Process Address Space ID
-> + * @grpid: Page Request Group Index
-> + * @code: response code. The supported codes include:
-> + *        0: Successful; 1: Response Failure; 2: Invalid Request.
-> + */
-> +struct iommu_hwpt_page_response {
-> +	__u32 size;
-> +	__u32 flags;
-> +	__u32 hwpt_id;
-> +	__u32 dev_id;
-> +	__u32 pasid;
-> +	__u32 grpid;
-> +	__u32 code;
-> +};
-
-Is it OK to have the user pass in all this detailed information? Is it
-a security problem if the user lies? Ie shouldn't we only ack page
-faults we actually have outstanding?
-
-IOW should iommu_hwpt_pgfault just have a 'response_cookie' generated
-by the kernel that should be placed here? The kernel would keep track
-of all this internal stuff?
-
-Jason
