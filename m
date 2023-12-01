@@ -2,94 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C1B38013E2
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 21:05:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CE2E8013E5
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 21:05:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379584AbjLAUFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 15:05:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54246 "EHLO
+        id S1379587AbjLAUFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 15:05:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379559AbjLAUFG (ORCPT
+        with ESMTP id S1379559AbjLAUFs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 15:05:06 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C85B810F4
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 12:05:12 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6952FC433C8;
-        Fri,  1 Dec 2023 20:04:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701461112;
-        bh=VZNoAqDPTg8yDoctRcEB3F3opYWUlSBiujMwK2WyTQk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CJ1WjZYZ+qso1UgSidqe3y+J/eJKvHShQw2R3MIzQEk70r87eQP1DebG3EQAiSLIj
-         IUqhHtHkfHjsuBzdihsJ/ioN6yOXRd3wk9v9HE6RTary1ugjedS5FIL4PVk+6wU/ez
-         g9DPCfWdfABoNpMiyisxXIZsO0px3oHHZYB77AAaBAGg1g+WXNqe/+ZY/8Xs6oj+ud
-         LBLNz8APsX4gnPGHkBG46TW0JkbA7erLdKsm+gCXkSOaxRnSHnSGmTAZx6/Eo8gWe0
-         0lOj7Mfj5wmuVLHJTKpo4wPE5uVmAJClr6yxMBQ67sBDQKBPKWsKgwaxLyKpz+g8rk
-         EBv4asusLbiFg==
-Date:   Fri, 1 Dec 2023 12:04:42 -0800
-From:   Josh Poimboeuf <jpoimboe@kernel.org>
-To:     Andrew Cooper <andrew.cooper3@citrix.com>
-Cc:     Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, tony.luck@intel.com,
-        ak@linux.intel.com, tim.c.chen@linux.intel.com,
-        Nikolay Borisov <nik.borisov@suse.com>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        kvm@vger.kernel.org,
-        Alyssa Milburn <alyssa.milburn@linux.intel.com>,
-        Daniel Sneddon <daniel.sneddon@linux.intel.com>,
-        antonio.gomez.iglesias@linux.intel.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alyssa Milburn <alyssa.milburn@intel.com>
-Subject: Re: [PATCH v4 1/6] x86/bugs: Add asm helpers for executing VERW
-Message-ID: <20231201200442.lvyep5uqc6oa7kwj@treble>
-References: <20231027-delay-verw-v4-0-9a3622d4bcf7@linux.intel.com>
- <20231027-delay-verw-v4-1-9a3622d4bcf7@linux.intel.com>
- <20231201193657.mvzslo4nlcbuv2q4@treble>
- <c61402de-c61e-4d7f-a2b1-3eaa13e4ef33@citrix.com>
+        Fri, 1 Dec 2023 15:05:48 -0500
+Received: from new1-smtp.messagingengine.com (new1-smtp.messagingengine.com [66.111.4.221])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34F3EB2;
+        Fri,  1 Dec 2023 12:05:54 -0800 (PST)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id A7F0C580773;
+        Fri,  1 Dec 2023 15:05:51 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Fri, 01 Dec 2023 15:05:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm3; t=
+        1701461151; x=1701468351; bh=/u3yLH29k8T5r7NJxXWGv9BlZGGVl+1F2ls
+        zusvsbJ0=; b=qGpYgkjNlqWggIHiSu4D3RZgSJ3nBcLv5OqMeVZguaCQyi5QNEp
+        9cgeMwa9X8sJ3Ttg4uh0ZXAOpEuILMhkgqCRSofFtZAsT3NguXWGTJJPxiwHmjw4
+        UwnZ24pzEHzKJ24Rz869muRs25eB97k+q9lK8l7LOEHAs1VyQBu920DxKPzLnGiG
+        ofq/PLmKQo4Q58loWslypGUJksj1Vyz3z3/Z4B1FyQgzeTftTkjLasamFTBTGxLP
+        XOt+dMB6O6UEO7QYzAsRYmAepXsFt+GDBbaY+O8HrVB0KH+CFaewQqaJ8HbxJi5L
+        yzjtAWAABEJoqsVOEX7rmVwt0FhFDTFoqsQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+        1701461151; x=1701468351; bh=/u3yLH29k8T5r7NJxXWGv9BlZGGVl+1F2ls
+        zusvsbJ0=; b=Z3I5vxLf2sF9upN8LhfnCJPBDEtQYg/Tr9l3XRyFdiPuxKxN2Y7
+        ghg4kqphZf5+YkfnbNHwLbsWZL8Iubi4WPmld0ucsGXWWCYpFkt8xgismuAf0RSc
+        tC1WUGs0ffZe73UUQDj2n+keugJizzrBPpA3a21fpnZhpfJ9/+qwJs0UmRGIl9zh
+        KZCvKN3rbIGzjq03qzMvNwiO8IB9huNIlVXD7qawLbEkj4tH+Pd/nC83sAphOwZs
+        z1O6dtu5eG4fPByRtKeBt96owIMuIJnkRltvgjnYopqanbEjbohRcTt5ONjWzoRJ
+        qEEkifcAU4d6brV1I7HkPdMv2Oznd5MWlAg==
+X-ME-Sender: <xms:nzxqZWUjC9lp9p6jh7fwpomS4my8s8UrkjxESTFi5KjtlmOIbhyCYQ>
+    <xme:nzxqZSnsnOqBeegXNad2P5ufA9lN21YsbSAn0yvH7xNWzB0HUvaiFx5_hVy2fZl6h
+    IzloH8fI_EjpF8W7A>
+X-ME-Received: <xmr:nzxqZaa7KRzdSDXvNQjUhOSjmZkjSzAiqm0sxiJ_nWsG3-NAOIKgsr48CtlDTlgwCFHDv1owU6feqTMxwAV_DSMu2aKbjkbOHNTe8ig>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeiledgudeffecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enfghrlhcuvffnffculddvfedmnecujfgurhepfffhvfevuffkfhggtggugfgjsehtkefs
+    tddttdejnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihii
+    eqnecuggftrfgrthhtvghrnhephfduffelfedvfedvveduheefveejgeekffdtteeuteet
+    udeihfekvdfgtdfghfevnecuffhomhgrihhnpehllhhvmhdrohhrghenucevlhhushhtvg
+    hrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdig
+    hiii
+X-ME-Proxy: <xmx:nzxqZdV1R7IHQVG1uD13WEcP23w4KVAxdyWo7iH3H_UPuPYB96S_Lw>
+    <xmx:nzxqZQlO6q7EWBmx-R03AXcYRmis09HJ83070hOriaz7Vqznz8TCJg>
+    <xmx:nzxqZSfsETtnVxUqj8VpSjnEOwPoRbchBot0QB__Cux1aSdUq4zOSg>
+    <xmx:nzxqZSXU1j-qVCk7LL3oxDwiL4B6NCT3bAv3EFbLN_MSLITWcuso1g>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 1 Dec 2023 15:05:49 -0500 (EST)
+Date:   Fri, 1 Dec 2023 13:05:47 -0700
+From:   Daniel Xu <dxu@dxuuu.xyz>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Eduard Zingerman <eddyz87@gmail.com>, ndesaulniers@google.com,
+        andrii@kernel.org, nathan@kernel.org, daniel@iogearbox.net,
+        ast@kernel.org, steffen.klassert@secunet.com,
+        antony.antony@secunet.com, alexei.starovoitov@gmail.com,
+        yonghong.song@linux.dev, martin.lau@linux.dev, song@kernel.org,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, trix@redhat.com,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, devel@linux-ipsec.org, netdev@vger.kernel.org
+Subject: Re: [PATCH ipsec-next v2 3/6] libbpf: Add BPF_CORE_WRITE_BITFIELD()
+ macro
+Message-ID: <hoqjfeuhcb36whzorttcpepvsnysmkcxmfteqo34tdhz5r5oqx@vcqcoc2iyoub>
+References: <cover.1701193577.git.dxu@dxuuu.xyz>
+ <ed7920365daf5eff1c82892b57e918d3db786ac7.1701193577.git.dxu@dxuuu.xyz>
+ <20c593b6f31720a3d24d75e5e5cc3245b67249d1.camel@gmail.com>
+ <ib27gbqj6c6ilblugm5kalwyfty6h4zujhvykw4a562uorqzjn@6wxeino6q7vk>
+ <CAEf4BzbO80kFyFBCUixJ_NGqjJv79i+6oQXz+-jzRE+MaoRYZA@mail.gmail.com>
+ <CAEf4BzYGLVXVUptLym8p4dw4X=XxRErPLuPi=msHrwvXgDbCbQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <c61402de-c61e-4d7f-a2b1-3eaa13e4ef33@citrix.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzYGLVXVUptLym8p4dw4X=XxRErPLuPi=msHrwvXgDbCbQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 01, 2023 at 07:39:05PM +0000, Andrew Cooper wrote:
-> On 01/12/2023 7:36 pm, Josh Poimboeuf wrote:
-> > On Fri, Oct 27, 2023 at 07:38:40AM -0700, Pawan Gupta wrote:
-> >> +.pushsection .entry.text, "ax"
-> >> +
-> >> +.align L1_CACHE_BYTES, 0xcc
-> >> +SYM_CODE_START_NOALIGN(mds_verw_sel)
-> >> +	UNWIND_HINT_UNDEFINED
-> >> +	ANNOTATE_NOENDBR
-> >> +	.word __KERNEL_DS
-> >> +.align L1_CACHE_BYTES, 0xcc
-> >> +SYM_CODE_END(mds_verw_sel);
-> >> +/* For KVM */
-> >> +EXPORT_SYMBOL_GPL(mds_verw_sel);
-> >> +
-> >> +.popsection
-> > This is data, so why is it "CODE" in .entry.text?
+On Fri, Dec 01, 2023 at 11:13:13AM -0800, Andrii Nakryiko wrote:
+> On Fri, Dec 1, 2023 at 11:11 AM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Thu, Nov 30, 2023 at 5:33 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
+> > >
+> > > On Tue, Nov 28, 2023 at 07:59:01PM +0200, Eduard Zingerman wrote:
+> > > > On Tue, 2023-11-28 at 10:54 -0700, Daniel Xu wrote:
+> > > > > Similar to reading from CO-RE bitfields, we need a CO-RE aware bitfield
+> > > > > writing wrapper to make the verifier happy.
+> > > > >
+> > > > > Two alternatives to this approach are:
+> > > > >
+> > > > > 1. Use the upcoming `preserve_static_offset` [0] attribute to disable
+> > > > >    CO-RE on specific structs.
+> > > > > 2. Use broader byte-sized writes to write to bitfields.
+> > > > >
+> > > > > (1) is a bit a bit hard to use. It requires specific and
+> > > > > not-very-obvious annotations to bpftool generated vmlinux.h. It's also
+> > > > > not generally available in released LLVM versions yet.
+> > > > >
+> > > > > (2) makes the code quite hard to read and write. And especially if
+> > > > > BPF_CORE_READ_BITFIELD() is already being used, it makes more sense to
+> > > > > to have an inverse helper for writing.
+> > > > >
+> > > > > [0]: https://reviews.llvm.org/D133361
+> > > > > From: Eduard Zingerman <eddyz87@gmail.com>
+> > > > >
+> > > > > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> > > > > ---
+> > > >
+> > > > Could you please also add a selftest (or several) using __retval()
+> > > > annotation for this macro?
+> > >
+> > > Good call about adding tests -- I found a few bugs with the code from
+> > > the other thread. But boy did they take a lot of brain cells to figure
+> > > out.
+> > >
+> > > There was some 6th grade algebra involved too -- I'll do my best to
+> > > explain it in the commit msg for v3.
+> > >
+> > >
+> > > Here are the fixes in case you are curious:
+> > >
+> > > diff --git a/tools/lib/bpf/bpf_core_read.h b/tools/lib/bpf/bpf_core_read.h
+> > > index 7a764f65d299..8f02c558c0ff 100644
+> > > --- a/tools/lib/bpf/bpf_core_read.h
+> > > +++ b/tools/lib/bpf/bpf_core_read.h
+> > > @@ -120,7 +120,9 @@ enum bpf_enum_value_kind {
+> > >         unsigned int byte_size = __CORE_RELO(s, field, BYTE_SIZE);      \
+> > >         unsigned int lshift = __CORE_RELO(s, field, LSHIFT_U64);        \
+> > >         unsigned int rshift = __CORE_RELO(s, field, RSHIFT_U64);        \
+> > > -       unsigned int bit_size = (rshift - lshift);                      \
+> > > +       unsigned int bit_size = (64 - rshift);                          \
+> > > +       unsigned int hi_size = lshift;                                  \
+> > > +       unsigned int lo_size = (rshift - lshift);                       \
+> >
+> > nit: let's drop unnecessary ()
+> >
+> > >         unsigned long long nval, val, hi, lo;                           \
+> > >                                                                         \
+> > >         asm volatile("" : "+r"(p));                                     \
+> > > @@ -131,13 +133,13 @@ enum bpf_enum_value_kind {
+> > >         case 4: val = *(unsigned int *)p; break;                        \
+> > >         case 8: val = *(unsigned long long *)p; break;                  \
+> > >         }                                                               \
+> > > -       hi = val >> (bit_size + rshift);                                \
+> > > -       hi <<= bit_size + rshift;                                       \
+> > > -       lo = val << (bit_size + lshift);                                \
+> > > -       lo >>= bit_size + lshift;                                       \
+> > > +       hi = val >> (64 - hi_size);                                     \
+> > > +       hi <<= 64 - hi_size;                                            \
+> > > +       lo = val << (64 - lo_size);                                     \
+> > > +       lo >>= 64 - lo_size;                                            \
+> > >         nval = new_val;                                                 \
+> > > -       nval <<= lshift;                                                \
+> > > -       nval >>= rshift;                                                \
+> > > +       nval <<= (64 - bit_size);                                       \
+> > > +       nval >>= (64 - bit_size - lo_size);                             \
+> > >         val = hi | nval | lo;                                           \
+> >
+> > this looks.. unusual. I'd imagine we calculate a mask, mask out bits
+> > we are replacing, and then OR with new values, roughly (assuming all
+> > the right left/right shift values and stuff)
+> >
+> > /* clear bits */
+> > val &= ~(bitfield_mask << shift);
 > 
-> Because KPTI.
+> we can also calculate shifted mask with just
+> 
+> bitfield_mask = (-1ULL) << some_left_shift >> some_right_shift;
+> val &= ~bitfield_mask;
 
-Urgh... Pawan please add a comment.
+Yeah I was chatting w/ JonathanL about this and I've got basically that
+code ready to send for v3.
 
--- 
-Josh
+Thanks,
+Daniel
