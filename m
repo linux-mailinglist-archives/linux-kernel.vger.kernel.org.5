@@ -2,194 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50E368014D4
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 21:51:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADAD58014D6
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 21:53:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379619AbjLAUvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 15:51:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57362 "EHLO
+        id S1379618AbjLAUxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 15:53:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjLAUvm (ORCPT
+        with ESMTP id S229456AbjLAUxh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 15:51:42 -0500
-Received: from new1-smtp.messagingengine.com (new1-smtp.messagingengine.com [66.111.4.221])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C91C710D;
-        Fri,  1 Dec 2023 12:51:48 -0800 (PST)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 1616B580C55;
-        Fri,  1 Dec 2023 15:51:48 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Fri, 01 Dec 2023 15:51:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-        :content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm3; t=1701463908; x=1701471108; bh=nK
-        6LDD0U/Eoft2OMP2N2jIS27TuNzocTptkvpWvSp38=; b=nIg0wlqJmQgXCJuSDe
-        92opTTkESihZX/Vg+hr56JZfOTb/wJHRhYAT0gFgqhaMf0UFj+sQ9YOEBZzb4THf
-        hVsLO+HLag8r8iXKOlqvQrJwj7Q7mjfpwCjuzfzdqkL839ubPiI83D1rSVLKkn3T
-        X0f+ypmSuv4i17xXHAQ4hbaZcND+vagqN5lHW1g7ffj0+Pwrh61aR9W8hVlFwfbf
-        +nisRjKKfWSvmcfZOZ9SFR90/1vWF2gbFi6gLSRECJ+WcZcvZF//G2eRazd/4MYl
-        n+bxHhlZoqpczSaZac477GzLBCoCd/TIaAYsXT4ECq0BYpUiKj0zPy3fWZzmTKWQ
-        qleA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1701463908; x=1701471108; bh=nK6LDD0U/Eoft
-        2OMP2N2jIS27TuNzocTptkvpWvSp38=; b=KlTtA6eZzg0M3pIQr2eDndN+IiA/W
-        QJ+ZVpHZzSIG27e/3SRLqTZBx4B/hO2kdBseqEgy9ERGf+aB+pE201vJ19clUMSh
-        3cMMl9+qjM4+jfzpX8zpUnv8eqVj0oYQbkgUPDtn72poDdvrJqTcDIEDCEnb7oeq
-        ENf1qiMzvajJGsVoBKudmk37r3sRu/jKOCYfXnvt26mUEzksbi5lprCz7thOo4ox
-        23I7aElDYSVI3XgFMNAxqs9xsjzmPCNtgAFPWfchnUPy6HdRfGpx69GozTImpjel
-        h3AA2zJetUZaAH2Y6SKGxrFQtVzEpAZkky3nYVH7J4jI3sTt1r4XCjxDA==
-X-ME-Sender: <xms:Y0dqZdWw7Z57e_F_jzT6r77jA0oChVoCY-e3yhbfkKF2hBvfhnENEw>
-    <xme:Y0dqZdnEZTpBK67nO26_viJxeoRX99IjOGl2jh4KJUtapmauTVnk-uMH-Eb3TjFKX
-    Ixm3b2SV2qsjJp-ZQ>
-X-ME-Received: <xmr:Y0dqZZYenOkTMeGG3PeTLGtgu6UpKfVY7QxNQKEl0KQmYEsOb-4QL9WMLQja40f2RIpPNHHKUkHRldbUlNKxnI-nUmhvOmiYnsBBjbU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeiledgudegvdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enfghrlhcuvffnffculddvfedmnecujfgurhepfffhvffukfhfgggtuggjsehttdfstddt
-    tddvnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqne
-    cuggftrfgrthhtvghrnhepkeehjeekudeltdeljeehhfefjeevjefgudfhteehlefftdfh
-    hfduieeiieeifeelnecuffhomhgrihhnpehllhhvmhdrohhrghenucevlhhushhtvghruf
-    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiii
-X-ME-Proxy: <xmx:Y0dqZQU2H0aSXaMmYGtnXM6NhyhX8jPS57zW40zKz6W3tC-BEDk4kQ>
-    <xmx:Y0dqZXlCskQjQ51LmOLr2-gvpbSVz_2nlLzOcxkNcNVXj7RU5idvZw>
-    <xmx:Y0dqZdefER4FRLOR8mmKFjBUlM_l_64-lCV-0fSvzWx0fCI3-DDyCA>
-    <xmx:ZEdqZZXZvPoszJ8kX480_MlkQBL4KrHQk4d1Ca-kpSKmH3qbMdYlbw>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 1 Dec 2023 15:51:46 -0500 (EST)
-Date:   Fri, 1 Dec 2023 13:51:44 -0700
-From:   Daniel Xu <dxu@dxuuu.xyz>
-To:     ndesaulniers@google.com, daniel@iogearbox.net, nathan@kernel.org,
-        ast@kernel.org, andrii@kernel.org, steffen.klassert@secunet.com,
-        antony.antony@secunet.com, alexei.starovoitov@gmail.com,
-        yonghong.song@linux.dev, eddyz87@gmail.com, martin.lau@linux.dev,
-        song@kernel.org, john.fastabend@gmail.com, kpsingh@kernel.org,
-        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
-        trix@redhat.com, bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, devel@linux-ipsec.org,
-        netdev@vger.kernel.org, Jonathan Lemon <jlemon@aviatrix.com>
-Subject: Re: [devel-ipsec] [PATCH ipsec-next v3 3/9] libbpf: Add
- BPF_CORE_WRITE_BITFIELD() macro
-Message-ID: <2schji4oladptrev3tswmwkbhspz6mdy5u2v7tvll4du7iylri@2u2zmfdzn6fm>
-References: <cover.1701462010.git.dxu@dxuuu.xyz>
- <adea997dff6d07332d294ad9cd233f3b71494a81.1701462010.git.dxu@dxuuu.xyz>
+        Fri, 1 Dec 2023 15:53:37 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59D5F9A
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 12:53:44 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ACF65C433C9;
+        Fri,  1 Dec 2023 20:53:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701464023;
+        bh=wD6Jai5Z6eOt34oUVbS2GgQXkDc/gl9dotnnn2cqqgE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=F+zt3yjybvfdRpuXOCYuMprFSepkR5tEJl93tYALkj7A7UOGb57vOwgaMV12mYZbD
+         3V5uneF/jocIAOliE3T4X11e2wxcj78/zo06tXffb6pub2cbJuT0AhP5NKqENfPD1H
+         R5nRw7DI90Q3wO6yNkSm0BLu7xqjgsVRvu/VLbedtzJEaeXkjTuJCUYgsIzq+dW2XR
+         +Di/dIpHDxo7YVbcJ9FkB+pjsED0/I0iVX84f+NFh0Sg2udEkIkqmq9BWwMGX4vI5y
+         c6+figDUcvvOEn8ytN0gfkBEUBsCeJ5gy0XZF6wTtRVmwIOnmxjhUNGDkOTLMF2VQj
+         lxO7t8l0Ml95w==
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-50bce42295eso3037829e87.2;
+        Fri, 01 Dec 2023 12:53:43 -0800 (PST)
+X-Gm-Message-State: AOJu0Yx+7ospLi1kQzn9FzQNqr1h+qqT4GCnyBQ1cm2CL9OgXw9XND7r
+        yjXFTqzXCESpQ1IoAQnLkRi2gM8z4MoliCD1b6s=
+X-Google-Smtp-Source: AGHT+IHa0ADuo5W7wjVuQiyPdvhr+vVxBJ9UQ9nycBbdc3wukIBfY9EVdWxYP4xpxmL5MhQz99GdgsHqbrkgeHvKjys=
+X-Received: by 2002:a05:6512:3b23:b0:509:49fc:c261 with SMTP id
+ f35-20020a0565123b2300b0050949fcc261mr1738205lfv.51.1701464021881; Fri, 01
+ Dec 2023 12:53:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <adea997dff6d07332d294ad9cd233f3b71494a81.1701462010.git.dxu@dxuuu.xyz>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231129043127.2245901-1-yukuai1@huaweicloud.com> <20231129043127.2245901-3-yukuai1@huaweicloud.com>
+In-Reply-To: <20231129043127.2245901-3-yukuai1@huaweicloud.com>
+From:   Song Liu <song@kernel.org>
+Date:   Fri, 1 Dec 2023 12:53:29 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW75Qmn1QamykogAnMBDMGwMrfTKh+VeNCtxmjkyszgEag@mail.gmail.com>
+Message-ID: <CAPhsuW75Qmn1QamykogAnMBDMGwMrfTKh+VeNCtxmjkyszgEag@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] md: don't leave 'MD_RECOVERY_FROZEN' in error path
+ of md_set_readonly()
+To:     Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     xni@redhat.com, yukuai3@huawei.com, linux-raid@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        yangerkun@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 01, 2023 at 01:23:14PM -0700, Daniel Xu via Devel wrote:
-> === Motivation ===
-> 
-> Similar to reading from CO-RE bitfields, we need a CO-RE aware bitfield
-> writing wrapper to make the verifier happy.
-> 
-> Two alternatives to this approach are:
-> 
-> 1. Use the upcoming `preserve_static_offset` [0] attribute to disable
->    CO-RE on specific structs.
-> 2. Use broader byte-sized writes to write to bitfields.
-> 
-> (1) is a bit hard to use. It requires specific and not-very-obvious
-> annotations to bpftool generated vmlinux.h. It's also not generally
-> available in released LLVM versions yet.
-> 
-> (2) makes the code quite hard to read and write. And especially if
-> BPF_CORE_READ_BITFIELD() is already being used, it makes more sense to
-> to have an inverse helper for writing.
-> 
-> === Implementation details ===
-> 
-> Since the logic is a bit non-obvious, I thought it would be helpful
-> to explain exactly what's going on.
-> 
-> To start, it helps by explaining what LSHIFT_U64 (lshift) and RSHIFT_U64
-> (rshift) is designed to mean. Consider the core of the
-> BPF_CORE_READ_BITFIELD() algorithm:
-> 
->         val <<= __CORE_RELO(s, field, LSHIFT_U64);
->                 val = val >> __CORE_RELO(s, field, RSHIFT_U64);
-> 
-> Basically what happens is we lshift to clear the non-relevant (blank)
-> higher order bits. Then we rshift to bring the relevant bits (bitfield)
-> down to LSB position (while also clearing blank lower order bits). To
-> illustrate:
-> 
->         Start:    ........XXX......
->         Lshift:   XXX......00000000
->         Rshift:   00000000000000XXX
-> 
-> where `.` means blank bit, `0` means 0 bit, and `X` means bitfield bit.
-> 
-> After the two operations, the bitfield is ready to be interpreted as a
-> regular integer.
-> 
-> Next, we want to build an alternative (but more helpful) mental model
-> on lshift and rshift. That is, to consider:
-> 
-> * rshift as the total number of blank bits in the u64
-> * lshift as number of blank bits left of the bitfield in the u64
-> 
-> Take a moment to consider why that is true by consulting the above
-> diagram.
-> 
-> With this insight, we can how define the following relationship:
-> 
->               bitfield
->                  _
->                 | |
->         0.....00XXX0...00
->         |      |   |    |
->         |______|   |    |
->          lshift    |    |
->                    |____|
->               (rshift - lshift)
-> 
-> That is, we know the number of higher order blank bits is just lshift.
-> And the number of lower order blank bits is (rshift - lshift).
-> 
-> Finally, we can examine the core of the write side algorithm:
-> 
->         mask = (~0ULL << rshift) >> lshift;   // 1
->         nval = new_val;                       // 2
->         nval = (nval << rpad) & mask;         // 3
->         val = (val & ~mask) | nval;           // 4
-> 
-> (1): Compute a mask where the set bits are the bitfield bits. The first
->      left shift zeros out exactly the number of blank bits, leaving a
->      bitfield sized set of 1s. The subsequent right shift inserts the
->      correct amount of higher order blank bits.
-> (2): Place the new value into a word sized container, nval.
-> (3): Place nval at the correct bit position and mask out blank bits.
-> (4): Mix the bitfield in with original surrounding blank bits.
-> 
-> [0]: https://reviews.llvm.org/D133361
-> Co-authored-by: Eduard Zingerman <eddyz87@gmail.com>
-> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+On Tue, Nov 28, 2023 at 8:32=E2=80=AFPM Yu Kuai <yukuai1@huaweicloud.com> w=
+rote:
+>
+> From: Yu Kuai <yukuai3@huawei.com>
+>
+> If md_set_readonly() failed, the array could still be read-write, however
+> 'MD_RECOVERY_FROZEN' could still be set, which leave the array in an
+> abnormal state that sync or recovery can't continue anymore.
+> Hence make sure the flag is cleared after md_set_readonly() returns.
+>
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> Acked-by: Xiao Ni <xni@redhat.com>
 
-Just pointing out I inserted Eduard's tags here. Eduard - I hope that's
-OK. Not sure what the usual procedure for this is.
+Since we are shipping this via the md-fixes branch, we need a Fixes tag.
 
-> Co-authored-by: Jonathan Lemon <jlemon@aviatrix.com>
-> Signed-off-by: Jonathan Lemon <jlemon@aviatrix.com>
-> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
 > ---
->  tools/lib/bpf/bpf_core_read.h | 34 ++++++++++++++++++++++++++++++++++
->  1 file changed, 34 insertions(+)
-> 
+>  drivers/md/md.c | 24 +++++++++++++-----------
+>  1 file changed, 13 insertions(+), 11 deletions(-)
+>
+> diff --git a/drivers/md/md.c b/drivers/md/md.c
+> index 5640a948086b..2d8e45a1af23 100644
+> --- a/drivers/md/md.c
+> +++ b/drivers/md/md.c
+> @@ -6355,6 +6355,9 @@ static int md_set_readonly(struct mddev *mddev, str=
+uct block_device *bdev)
+>         int err =3D 0;
+>         int did_freeze =3D 0;
+>
+> +       if (mddev->external && test_bit(MD_SB_CHANGE_PENDING, &mddev->sb_=
+flags))
+> +               return -EBUSY;
+> +
+>         if (!test_bit(MD_RECOVERY_FROZEN, &mddev->recovery)) {
+>                 did_freeze =3D 1;
+>                 set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
+> @@ -6369,8 +6372,6 @@ static int md_set_readonly(struct mddev *mddev, str=
+uct block_device *bdev)
+>          */
+>         md_wakeup_thread_directly(mddev->sync_thread);
+>
+> -       if (mddev->external && test_bit(MD_SB_CHANGE_PENDING, &mddev->sb_=
+flags))
+> -               return -EBUSY;
+>         mddev_unlock(mddev);
+>         wait_event(resync_wait, !test_bit(MD_RECOVERY_RUNNING,
+>                                           &mddev->recovery));
+> @@ -6383,29 +6384,30 @@ static int md_set_readonly(struct mddev *mddev, s=
+truct block_device *bdev)
+>             mddev->sync_thread ||
+>             test_bit(MD_RECOVERY_RUNNING, &mddev->recovery)) {
+>                 pr_warn("md: %s still in use.\n",mdname(mddev));
+> -               if (did_freeze) {
+> -                       clear_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
+> -                       set_bit(MD_RECOVERY_NEEDED, &mddev->recovery);
+> -                       md_wakeup_thread(mddev->thread);
+> -               }
 
-[..]
+This change (move did_freeze, etc.) is not explained in the commit log.
+Is it just refactor?
+
+Thanks,
+Song
+
+
+>                 err =3D -EBUSY;
+>                 goto out;
+>         }
+> +
+>         if (mddev->pers) {
+>                 __md_stop_writes(mddev);
+>
+> -               err  =3D -ENXIO;
+> -               if (mddev->ro =3D=3D MD_RDONLY)
+> +               if (mddev->ro =3D=3D MD_RDONLY) {
+> +                       err  =3D -ENXIO;
+>                         goto out;
+> +               }
+> +
+>                 mddev->ro =3D MD_RDONLY;
+>                 set_disk_ro(mddev->gendisk, 1);
+> +       }
+> +
+> +out:
+> +       if ((mddev->pers && !err) || did_freeze) {
+>                 clear_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
+>                 set_bit(MD_RECOVERY_NEEDED, &mddev->recovery);
+>                 md_wakeup_thread(mddev->thread);
+>                 sysfs_notify_dirent_safe(mddev->sysfs_state);
+> -               err =3D 0;
+>         }
+> -out:
+> +
+>         mutex_unlock(&mddev->open_mutex);
+>         return err;
+>  }
+> --
+> 2.39.2
+>
