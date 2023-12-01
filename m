@@ -2,71 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9A8B800FCA
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 17:13:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4679A800FC6
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 17:13:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379403AbjLAP3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 10:29:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44420 "EHLO
+        id S1379420AbjLAPap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 10:30:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379398AbjLAP3r (ORCPT
+        with ESMTP id S1379398AbjLAPam (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 10:29:47 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD7ED10E4;
-        Fri,  1 Dec 2023 07:29:53 -0800 (PST)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B1BUNui013936;
-        Fri, 1 Dec 2023 15:29:51 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=qcppdkim1;
- bh=q3bEk0jgRGlHbYEBNYLlCZUrcpZe0e6Cv9QCLmPDcqQ=;
- b=COnBI6WxIkbMrkETC9YX7IdBNt2xXaCprcAvEjs2FXYJLgI5f7QU6lweNrNbPVfWqfkf
- P3I19lWG3iin6m9yv5RC0K9REhGFTm0ubRvLslTLLFro68rWn4PYjvJQiqAAwW8MjqY1
- /N/IjXanyR8g2CZOnSBtHjg8w7Ema2FytpDF86jsheksHQAGS8b3NtFqB5nhgYPgQoTm
- q2/4ER9Z5unIxd1wpgf61wdWIcL2N1XHaNjxuYnPCcLGYMFvxTJJ6Cj9lh8IpoucjGa3
- 8N5Zt61OiiPxgV+5Mdt7DP6lBkSJTUdtSiJsQmup5OZRkxQge1sSN2AAZgucoI4UeqGN NQ== 
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uq2kpa6vp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 01 Dec 2023 15:29:51 +0000
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B1FToPp004863
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 1 Dec 2023 15:29:50 GMT
-Received: from aiquny2-gv.qualcomm.com (10.80.80.8) by
- nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Fri, 1 Dec 2023 07:29:45 -0800
-From:   Maria Yu <quic_aiquny@quicinc.com>
-To:     <linus.walleij@linaro.org>
-CC:     Maria Yu <quic_aiquny@quicinc.com>, <linux-gpio@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>,
-        <torvalds@linux-foundation.org>, <linux-arm-msm@vger.kernel.org>
-Subject: [PATCH] pinctrl: Add lock to ensure the state atomization
-Date:   Fri, 1 Dec 2023 23:29:31 +0800
-Message-ID: <20231201152931.31161-1-quic_aiquny@quicinc.com>
-X-Mailer: git-send-email 2.17.1
+        Fri, 1 Dec 2023 10:30:42 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC01A103;
+        Fri,  1 Dec 2023 07:30:47 -0800 (PST)
+Received: from pendragon.ideasonboard.com (aztw-30-b2-v4wan-166917-cust845.vm26.cable.virginm.net [82.37.23.78])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id E6ACBD52;
+        Fri,  1 Dec 2023 16:30:07 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1701444608;
+        bh=FTr9jD8Lm2XwjtyGHb2zex8kSear/RyYVG6QAL8cQOw=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=Reysu4UkUxuLjHQtxGH/l4zxCZSpvfkhmjL2HESDiSHqLzcLZtAw7inb/beM659MB
+         ZD57gii2iVjKADR+1Y+Qn5+vprQnp+vwEu1BcvPu6dkyQhNe4FD4XMcPxZAGISJXoD
+         08BfENw0V0oq+uXIkUbjCe9xBAAHO31+2cLp2aqY=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: Wm301lwrpI7xCONVAXFQC28SP4NYl-zr
-X-Proofpoint-GUID: Wm301lwrpI7xCONVAXFQC28SP4NYl-zr
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-01_13,2023-11-30_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 impostorscore=0
- mlxscore=0 malwarescore=0 suspectscore=0 adultscore=0 lowpriorityscore=0
- bulkscore=0 clxscore=1015 spamscore=0 mlxlogscore=756 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
- definitions=main-2312010108
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20231201140433.2126011-5-paul.elder@ideasonboard.com>
+References: <20231201140433.2126011-1-paul.elder@ideasonboard.com> <20231201140433.2126011-5-paul.elder@ideasonboard.com>
+Subject: Re: [PATCH v2 4/4] media: rkisp1: debug: Consolidate counter debugfs files
+From:   Kieran Bingham <kieran.bingham@ideasonboard.com>
+Cc:     laurent.pinchart@ideasonboard.com, tomi.valkeinen@ideasonboard.com,
+        umang.jain@ideasonboard.com,
+        Paul Elder <paul.elder@ideasonboard.com>,
+        Dafna Hirschfeld <dafna@fastmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+To:     Paul Elder <paul.elder@ideasonboard.com>,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org
+Date:   Fri, 01 Dec 2023 15:30:42 +0000
+Message-ID: <170144464218.1400840.7647651809740627975@ping.linuxembedded.co.uk>
+User-Agent: alot/0.10
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,92 +54,174 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently pinctrl_select_state is an export symbol and don't have
-effective re-entrance protect design. And possible of pinctrl state
-changed during pinctrl_commit_state handling. Add per pinctrl lock to
-ensure the old state and new state transition atomization.
-Move dev error print message right before old_state pinctrl_select_state
-and out of lock protection to avoid console related driver call
-pinctrl_select_state recursively.
+Quoting Paul Elder (2023-12-01 14:04:33)
+> Consolidate all the debugfs files that were each a single counter into a
+> single "counters" file.
+>=20
+> While at it, reset the counters at stream on time to make it easier for
+> to interpret the values in userspace.
 
-Fixes: 4198a9b57106 ("pinctrl: avoid reload of p state in list iteration")
-Signed-off-by: Maria Yu <quic_aiquny@quicinc.com>
----
- drivers/pinctrl/core.c | 11 +++++++++--
- drivers/pinctrl/core.h |  2 ++
- 2 files changed, 11 insertions(+), 2 deletions(-)
+That gives a better atomicity here I think so that's good. I guess the
+debug struct could have a lock around it sometime - but I don't think
+that matters in this context.
 
-diff --git a/drivers/pinctrl/core.c b/drivers/pinctrl/core.c
-index f2977eb65522..a19c286bf82e 100644
---- a/drivers/pinctrl/core.c
-+++ b/drivers/pinctrl/core.c
-@@ -1066,6 +1066,7 @@ static struct pinctrl *create_pinctrl(struct device *dev,
- 	p->dev = dev;
- 	INIT_LIST_HEAD(&p->states);
- 	INIT_LIST_HEAD(&p->dt_maps);
-+	spin_lock_init(&p->lock);
- 
- 	ret = pinctrl_dt_to_map(p, pctldev);
- 	if (ret < 0) {
-@@ -1262,9 +1263,12 @@ static void pinctrl_link_add(struct pinctrl_dev *pctldev,
- static int pinctrl_commit_state(struct pinctrl *p, struct pinctrl_state *state)
- {
- 	struct pinctrl_setting *setting, *setting2;
--	struct pinctrl_state *old_state = READ_ONCE(p->state);
-+	struct pinctrl_state *old_state;
- 	int ret;
-+	unsigned long flags;
- 
-+	spin_lock_irqsave(&p->lock, flags);
-+	old_state = p->state;
- 	if (old_state) {
- 		/*
- 		 * For each pinmux setting in the old state, forget SW's record
-@@ -1329,11 +1333,11 @@ static int pinctrl_commit_state(struct pinctrl *p, struct pinctrl_state *state)
- 	}
- 
- 	p->state = state;
-+	spin_unlock_irqrestore(&p->lock, flags);
- 
- 	return 0;
- 
- unapply_new_state:
--	dev_err(p->dev, "Error applying setting, reverse things back\n");
- 
- 	list_for_each_entry(setting2, &state->settings, node) {
- 		if (&setting2->node == &setting->node)
-@@ -1349,6 +1353,9 @@ static int pinctrl_commit_state(struct pinctrl *p, struct pinctrl_state *state)
- 			pinmux_disable_setting(setting2);
- 	}
- 
-+	spin_unlock_irqrestore(&p->lock, flags);
-+
-+	dev_err(p->dev, "Error applying setting, reverse things back\n");
- 	/* There's no infinite recursive loop here because p->state is NULL */
- 	if (old_state)
- 		pinctrl_select_state(p, old_state);
-diff --git a/drivers/pinctrl/core.h b/drivers/pinctrl/core.h
-index 530370443c19..86fc41393f7b 100644
---- a/drivers/pinctrl/core.h
-+++ b/drivers/pinctrl/core.h
-@@ -12,6 +12,7 @@
- #include <linux/list.h>
- #include <linux/mutex.h>
- #include <linux/radix-tree.h>
-+#include <linux/spinlock.h>
- #include <linux/types.h>
- 
- #include <linux/pinctrl/machine.h>
-@@ -91,6 +92,7 @@ struct pinctrl {
- 	struct pinctrl_state *state;
- 	struct list_head dt_maps;
- 	struct kref users;
-+	spinlock_t lock;
- };
- 
- /**
+Resetting at stream on looks to make sense so:
 
-base-commit: 994d5c58e50e91bb02c7be4a91d5186292a895c8
--- 
-2.17.1
 
+Reviewed-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
+
+>=20
+> Signed-off-by: Paul Elder <paul.elder@ideasonboard.com>
+>=20
+> ---
+> New in v2
+>=20
+>  .../platform/rockchip/rkisp1/rkisp1-capture.c |  2 +
+>  .../platform/rockchip/rkisp1/rkisp1-common.h  |  4 ++
+>  .../platform/rockchip/rkisp1/rkisp1-debug.c   | 69 ++++++++++++-------
+>  3 files changed, 50 insertions(+), 25 deletions(-)
+>=20
+> diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c b/dr=
+ivers/media/platform/rockchip/rkisp1/rkisp1-capture.c
+> index c6d7e01c8949..67b2e94dfd67 100644
+> --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c
+> +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c
+> @@ -1030,6 +1030,8 @@ rkisp1_vb2_start_streaming(struct vb2_queue *queue,=
+ unsigned int count)
+>         struct media_entity *entity =3D &cap->vnode.vdev.entity;
+>         int ret;
+> =20
+> +       rkisp1_debug_reset_counters(cap->rkisp1);
+> +
+>         mutex_lock(&cap->rkisp1->stream_lock);
+> =20
+>         ret =3D video_device_pipeline_start(&cap->vnode.vdev, &cap->rkisp=
+1->pipe);
+> diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h b/dri=
+vers/media/platform/rockchip/rkisp1/rkisp1-common.h
+> index be69173958a4..789259fb304a 100644
+> --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
+> +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
+> @@ -599,9 +599,13 @@ int rkisp1_params_register(struct rkisp1_device *rki=
+sp1);
+>  void rkisp1_params_unregister(struct rkisp1_device *rkisp1);
+> =20
+>  #if IS_ENABLED(CONFIG_DEBUG_FS)
+> +void rkisp1_debug_reset_counters(struct rkisp1_device *rkisp1);
+>  void rkisp1_debug_init(struct rkisp1_device *rkisp1);
+>  void rkisp1_debug_cleanup(struct rkisp1_device *rkisp1);
+>  #else
+> +static inline void rkisp1_debug_reset_counters(struct rkisp1_device *rki=
+sp1)
+> +{
+> +}
+>  static inline void rkisp1_debug_init(struct rkisp1_device *rkisp1)
+>  {
+>  }
+> diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-debug.c b/driv=
+ers/media/platform/rockchip/rkisp1/rkisp1-debug.c
+> index 79cda589d935..4358ed1367ed 100644
+> --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-debug.c
+> +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-debug.c
+> @@ -25,6 +25,11 @@ struct rkisp1_debug_register {
+>         const char * const name;
+>  };
+> =20
+> +struct rkisp1_debug_counter {
+> +       const char * const name;
+> +       unsigned long *value;
+> +};
+> +
+>  #define RKISP1_DEBUG_REG(name)         { RKISP1_CIF_##name, 0, #name }
+>  #define RKISP1_DEBUG_SHD_REG(name) { \
+>         RKISP1_CIF_##name, RKISP1_CIF_##name##_SHD, #name \
+> @@ -191,6 +196,43 @@ static int rkisp1_debug_input_status_show(struct seq=
+_file *m, void *p)
+>  }
+>  DEFINE_SHOW_ATTRIBUTE(rkisp1_debug_input_status);
+> =20
+> +static int rkisp1_debug_counters_show(struct seq_file *m, void *p)
+> +{
+> +       struct rkisp1_device *rkisp1 =3D m->private;
+> +       struct rkisp1_debug *debug =3D &rkisp1->debug;
+> +
+> +       const struct rkisp1_debug_counter counters[] =3D {
+> +               { "data_loss", &debug->data_loss },
+> +               { "outform_size_err", &debug->outform_size_error },
+> +               { "img_stabilization_size_error", &debug->img_stabilizati=
+on_size_error },
+> +               { "inform_size_error", &debug->inform_size_error },
+> +               { "irq_delay", &debug->irq_delay },
+> +               { "mipi_error", &debug->mipi_error },
+> +               { "stats_error", &debug->stats_error },
+> +               { "mp_stop_timeout", &debug->stop_timeout[RKISP1_MAINPATH=
+] },
+> +               { "sp_stop_timeout", &debug->stop_timeout[RKISP1_SELFPATH=
+] },
+> +               { "mp_frame_drop", &debug->frame_drop[RKISP1_MAINPATH] },
+> +               { "sp_frame_drop", &debug->frame_drop[RKISP1_SELFPATH] },
+> +               { "complete_frames", &debug->complete_frames },
+> +               { /* Sentinel */ },
+> +       };
+> +
+> +       const struct rkisp1_debug_counter *counter =3D counters;
+> +
+> +       for (; counter->name; ++counter)
+> +               seq_printf(m, "%s: %lu\n", counter->name, *counter->value=
+);
+> +
+> +       return 0;
+> +}
+> +DEFINE_SHOW_ATTRIBUTE(rkisp1_debug_counters);
+> +
+> +void rkisp1_debug_reset_counters(struct rkisp1_device *rkisp1)
+> +{
+> +       struct dentry *debugfs_dir =3D rkisp1->debug.debugfs_dir;
+> +       memset(&rkisp1->debug, 0, sizeof(rkisp1->debug));
+> +       rkisp1->debug.debugfs_dir =3D debugfs_dir;
+> +}
+> +
+>  void rkisp1_debug_init(struct rkisp1_device *rkisp1)
+>  {
+>         struct rkisp1_debug *debug =3D &rkisp1->debug;
+> @@ -198,31 +240,8 @@ void rkisp1_debug_init(struct rkisp1_device *rkisp1)
+> =20
+>         debug->debugfs_dir =3D debugfs_create_dir(dev_name(rkisp1->dev), =
+NULL);
+> =20
+> -       debugfs_create_ulong("data_loss", 0444, debug->debugfs_dir,
+> -                            &debug->data_loss);
+> -       debugfs_create_ulong("outform_size_err", 0444,  debug->debugfs_di=
+r,
+> -                            &debug->outform_size_error);
+> -       debugfs_create_ulong("img_stabilization_size_error", 0444,
+> -                            debug->debugfs_dir,
+> -                            &debug->img_stabilization_size_error);
+> -       debugfs_create_ulong("inform_size_error", 0444,  debug->debugfs_d=
+ir,
+> -                            &debug->inform_size_error);
+> -       debugfs_create_ulong("irq_delay", 0444,  debug->debugfs_dir,
+> -                            &debug->irq_delay);
+> -       debugfs_create_ulong("mipi_error", 0444, debug->debugfs_dir,
+> -                            &debug->mipi_error);
+> -       debugfs_create_ulong("stats_error", 0444, debug->debugfs_dir,
+> -                            &debug->stats_error);
+> -       debugfs_create_ulong("mp_stop_timeout", 0444, debug->debugfs_dir,
+> -                            &debug->stop_timeout[RKISP1_MAINPATH]);
+> -       debugfs_create_ulong("sp_stop_timeout", 0444, debug->debugfs_dir,
+> -                            &debug->stop_timeout[RKISP1_SELFPATH]);
+> -       debugfs_create_ulong("mp_frame_drop", 0444, debug->debugfs_dir,
+> -                            &debug->frame_drop[RKISP1_MAINPATH]);
+> -       debugfs_create_ulong("sp_frame_drop", 0444, debug->debugfs_dir,
+> -                            &debug->frame_drop[RKISP1_SELFPATH]);
+> -       debugfs_create_ulong("complete_frames", 0444, debug->debugfs_dir,
+> -                            &debug->complete_frames);
+> +       debugfs_create_file("counters", 0444, debug->debugfs_dir, rkisp1,
+> +                           &rkisp1_debug_counters_fops);
+>         debugfs_create_file("input_status", 0444, debug->debugfs_dir, rki=
+sp1,
+>                             &rkisp1_debug_input_status_fops);
+> =20
+> --=20
+> 2.39.2
+>
