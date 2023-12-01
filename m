@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CFC580119D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:24:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3058F80119E
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:24:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379175AbjLARYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 12:24:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35684 "EHLO
+        id S1379051AbjLARYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 12:24:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379023AbjLARYM (ORCPT
+        with ESMTP id S1379181AbjLARYN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 12:24:12 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C3771FCA
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 09:23:26 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-db4038d7cfdso991283276.2
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 09:23:26 -0800 (PST)
+        Fri, 1 Dec 2023 12:24:13 -0500
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2080C2736
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 09:23:28 -0800 (PST)
+Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-5c627dd2accso928081a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 09:23:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701451405; x=1702056205; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1701451407; x=1702056207; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=UowIgf2Hkvsym+UG5nPcinbceA5kAaZjExn8YUFB188=;
-        b=JeJgN5THSgb9SB3EgUpbUjM/6cX43vwHFvAQM+2kTreoVPNSKs7NccJSYHolJNlb5d
-         yt9a4DkrKkrHftyD2M3i0jY004t/HkldkZ72/wt7Wm/6ULUdIiC/v5/VCR985Q/gK66+
-         PEmzG7hgHjOr4CxHtNf0JdmFqJ48w8lBGbaEzTmxLJYByumsjUYbaQYuNLU0ze6t4aOp
-         dkrwAqSFwORW4IJdS2RXLUIXoAAgjcCkkHiZs4fRkCMmzqHEdP7teT4pUmGkbHEDQcAB
-         cXiytKUpONJXeJe9z9TIqpQUTomU0Zr43TBY7Cw6ZkvMQqf/BRArlxNiPlhV5wVAOnef
-         nQLw==
+        bh=pF1HXnbmSrYchthIdE2P0kzrKumbnX3teWalqa1zpFg=;
+        b=F5QbRUFiAnUl+CmA58PzE2VL2S0EWPi732gmuGSDf7TKZtymWuH/KgeMsMSldaQTkL
+         7O76c1DoHzUWF2DfCjweg8yz7zZv21ySNClcjv5rKbR1zV+P0cv9D+l7thjMRUR+tQTb
+         mkP4unOdzdgEquKhGe80WlEZTPa6vjFGJx1yivPSgs5givJfDwdgfM1vVfsRfbgwG/YA
+         BM2RWBZxDyRFt0uvSRAr9x98BF34g8pf/0L6hzV30LnAMadV++gNZTnUkvVIdbB4A/zU
+         W4tkV4xFahdU8U9ManfEn2ZitYa/VMHdN+XUmmzWOE9JfBn+Bk2d0/YnCkOrtVWO9EdM
+         fKDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701451405; x=1702056205;
+        d=1e100.net; s=20230601; t=1701451407; x=1702056207;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UowIgf2Hkvsym+UG5nPcinbceA5kAaZjExn8YUFB188=;
-        b=KLir2x/eI1nZ18wRYGN7GA8QUATs2+Ke4ncjX1xiKvcwFYwWFGudv4O5QU6CzlMzAW
-         aYr3OIizSamRRcA9dE/yz5Qmct3pV7orvzpBCf0IQRiZ5EBUw8wc7bdFBX84vOEBydPa
-         uQe8LlBTUrwQEtWM2OORJdf68XUMAKf+4xrctkr7N9gmiN3uEUI0UUB64xRn/i8rR/zy
-         FJmoyMXW2g/e09mPsa0I/4PONr3JG0bi0a0LqG29PninY/3FaP11LLCR560R+wJwinrI
-         Kgvz+HQhLbSx9IceIbPoyKp+RvD8s5XLS5hR0ZITVIB6I+BZX2AjS0yIkUYMKIfdQBE5
-         0HeQ==
-X-Gm-Message-State: AOJu0Yyu/dkpJDldX7u40qbwRNnch92In5LlM3POagpbxCn6z2pqdePz
-        OucNrudtg+tUI3xkL4TiwrWoW8yLku4+vQ==
-X-Google-Smtp-Source: AGHT+IFxE/YZI8XAIHX/EFeweT5gpBgj3wRk384Ua9bcBWH5K5/1ssVdxRKeQmEELlewcCRtjXcK/bCiYAi6ZQ==
+        bh=pF1HXnbmSrYchthIdE2P0kzrKumbnX3teWalqa1zpFg=;
+        b=umqVVEZu6oqpEwutKBBc3aBYQ5yFM9mWNWu/78NS7Wx6tAOWwmm9+LJ/ml8QoO2XQe
+         /jWtmxbHmbUVZXGRDIUYWNcVSxgW+/SP5ZSD4B6cyAbJ4PjKmqt2ReqVwIiiNPysmev3
+         JQfY6aKXGJp1xoct/CKne9quyAzOBJVDxNonzleKkqI77RhccQDHeScB4BNhmZL6QftR
+         gWp95wtJdmEXwpiDQcRUk+tW5+TC0xsIM/HSZsPsLLPtGOB8I1u0MO3vKpqMGeyEvrAy
+         TPYie1FwtaRC1GRNW4GwQAcGDCxOG5jXuFTB7x5MI+ADIkWS0kug4hLAC2KB+xkNxRwW
+         VaSQ==
+X-Gm-Message-State: AOJu0YwMW+KhvBijXLPV6fMCdVa5nj+lLIWjdluvGC3H2ru3tBeIkFIQ
+        EauLOZrBIcknY/fk2r6+2OuvTCiPw58L7w==
+X-Google-Smtp-Source: AGHT+IHGjfY5XTrK9i72lt1Po9ugG7UBlXvPtE0jY1V4k8nhhcjmWPgtcgyZfDrCVYTGCv+s3fb14BSFs1yWBQ==
 X-Received: from xllamas.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5070])
- (user=cmllamas job=sendgmr) by 2002:a25:ccc1:0:b0:db5:f536:17d4 with SMTP id
- l184-20020a25ccc1000000b00db5f53617d4mr77092ybf.11.1701451405614; Fri, 01 Dec
- 2023 09:23:25 -0800 (PST)
-Date:   Fri,  1 Dec 2023 17:21:52 +0000
+ (user=cmllamas job=sendgmr) by 2002:a63:2218:0:b0:5be:123c:5fc with SMTP id
+ i24-20020a632218000000b005be123c05fcmr3883861pgi.10.1701451407544; Fri, 01
+ Dec 2023 09:23:27 -0800 (PST)
+Date:   Fri,  1 Dec 2023 17:21:53 +0000
 In-Reply-To: <20231201172212.1813387-1-cmllamas@google.com>
 Mime-Version: 1.0
 References: <20231201172212.1813387-1-cmllamas@google.com>
 X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
-Message-ID: <20231201172212.1813387-24-cmllamas@google.com>
-Subject: [PATCH v2 23/28] binder: document the final page calculation
+Message-ID: <20231201172212.1813387-25-cmllamas@google.com>
+Subject: [PATCH v2 24/28] binder: collapse print_binder_buffer() into caller
 From:   Carlos Llamas <cmllamas@google.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         "=?UTF-8?q?Arve=20Hj=C3=B8nnev=C3=A5g?=" <arve@android.com>,
@@ -74,64 +74,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The code to determine the page range for binder_lru_freelist_del() is
-quite obscure. It leverages the buffer_size calculated before doing an
-oversized buffer split. This is used to figure out if the last page is
-being shared with another active buffer. If so, the page gets trimmed
-out of the range as it has been previously removed from the freelist.
+The code in print_binder_buffer() is quite small so it can be collapsed
+into its single caller binder_alloc_print_allocated().
 
-This would be equivalent to getting the start page of the next in-use
-buffer explicitly. However, the code for this is much larger as we can
-see in binder_free_buf_locked() routine. Instead, lets settle on
-documenting the tricky step and using better names for now.
-
-I believe an ideal solution would be to count the binder_page->users to
-determine when a page should be added or removed from the freelist.
-However, this is a much bigger change than what I'm willing to risk at
-this time.
+No functional change in this patch.
 
 Signed-off-by: Carlos Llamas <cmllamas@google.com>
 ---
- drivers/android/binder_alloc.c | 18 +++++++++++-------
- 1 file changed, 11 insertions(+), 7 deletions(-)
+ drivers/android/binder_alloc.c | 22 +++++++++-------------
+ 1 file changed, 9 insertions(+), 13 deletions(-)
 
 diff --git a/drivers/android/binder_alloc.c b/drivers/android/binder_alloc.c
-index 052a8c3b0ce1..edd9714ec9f5 100644
+index edd9714ec9f5..60c829506d31 100644
 --- a/drivers/android/binder_alloc.c
 +++ b/drivers/android/binder_alloc.c
-@@ -446,8 +446,8 @@ static struct binder_buffer *binder_alloc_new_buf_locked(
- 	struct rb_node *n = alloc->free_buffers.rb_node;
- 	struct rb_node *best_fit = NULL;
- 	struct binder_buffer *buffer;
--	unsigned long has_page_addr;
--	unsigned long end_page_addr;
-+	unsigned long next_used_page;
-+	unsigned long curr_last_page;
- 	size_t buffer_size;
+@@ -978,16 +978,6 @@ void binder_alloc_deferred_release(struct binder_alloc *alloc)
+ 		     __func__, alloc->pid, buffers, page_count);
+ }
  
- 	if (is_async && alloc->free_async_space < size) {
-@@ -500,12 +500,16 @@ static struct binder_buffer *binder_alloc_new_buf_locked(
- 		     "%d: binder_alloc_buf size %zd got buffer %pK size %zd\n",
- 		      alloc->pid, size, buffer, buffer_size);
+-static void print_binder_buffer(struct seq_file *m, const char *prefix,
+-				struct binder_buffer *buffer)
+-{
+-	seq_printf(m, "%s %d: %lx size %zd:%zd:%zd %s\n",
+-		   prefix, buffer->debug_id, buffer->user_data,
+-		   buffer->data_size, buffer->offsets_size,
+-		   buffer->extra_buffers_size,
+-		   buffer->transaction ? "active" : "delivered");
+-}
+-
+ /**
+  * binder_alloc_print_allocated() - print buffer info
+  * @m:     seq_file for output via seq_printf()
+@@ -999,12 +989,18 @@ static void print_binder_buffer(struct seq_file *m, const char *prefix,
+ void binder_alloc_print_allocated(struct seq_file *m,
+ 				  struct binder_alloc *alloc)
+ {
++	struct binder_buffer *buffer;
+ 	struct rb_node *n;
  
--	has_page_addr = (buffer->user_data + buffer_size) & PAGE_MASK;
--	end_page_addr = PAGE_ALIGN(buffer->user_data + size);
--	if (end_page_addr > has_page_addr)
--		end_page_addr = has_page_addr;
-+	/*
-+	 * Now we remove the pages from the freelist. A clever calculation
-+	 * with buffer_size determines if the last page is shared with an
-+	 * adjacent in-use buffer. In such case, the page has been already
-+	 * removed from the freelist so we trim our range short.
-+	 */
-+	next_used_page = (buffer->user_data + buffer_size) & PAGE_MASK;
-+	curr_last_page = PAGE_ALIGN(buffer->user_data + size);
- 	binder_lru_freelist_del(alloc, PAGE_ALIGN(buffer->user_data),
--				end_page_addr);
-+				min(next_used_page, curr_last_page));
+ 	mutex_lock(&alloc->mutex);
+-	for (n = rb_first(&alloc->allocated_buffers); n != NULL; n = rb_next(n))
+-		print_binder_buffer(m, "  buffer",
+-				    rb_entry(n, struct binder_buffer, rb_node));
++	for (n = rb_first(&alloc->allocated_buffers); n; n = rb_next(n)) {
++		buffer = rb_entry(n, struct binder_buffer, rb_node);
++		seq_printf(m, "  buffer %d: %lx size %zd:%zd:%zd %s\n",
++			   buffer->debug_id, buffer->user_data,
++			   buffer->data_size, buffer->offsets_size,
++			   buffer->extra_buffers_size,
++			   buffer->transaction ? "active" : "delivered");
++	}
+ 	mutex_unlock(&alloc->mutex);
+ }
  
- 	rb_erase(&buffer->rb_node, &alloc->free_buffers);
- 	buffer->free = 0;
 -- 
 2.43.0.rc2.451.g8631bc7472-goog
 
