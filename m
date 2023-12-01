@@ -2,146 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB1AF80078E
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 10:51:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6637B800791
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 10:52:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235264AbjLAJvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 04:51:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59852 "EHLO
+        id S1378074AbjLAJwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 04:52:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378116AbjLAJvG (ORCPT
+        with ESMTP id S1378036AbjLAJwR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 04:51:06 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 892CA170D;
-        Fri,  1 Dec 2023 01:51:07 -0800 (PST)
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B19W1Q0015381;
-        Fri, 1 Dec 2023 09:50:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : date :
- subject : mime-version : content-type : content-transfer-encoding :
- message-id : references : in-reply-to : to : cc; s=qcppdkim1;
- bh=WFLYfX+LyYJ6QVe4Q1/+gTF/6c882WUnjs7t2bRQoBk=;
- b=OfX8D6OlKOpwmTpcchUNd82qxQ0eJ1oSfVluSj4xNKcwXuFuA1ogZYm5eTA6b9Y3Ojgc
- dDXxiQJqU5w+Hn8O6HGF9JDs9hjYv9NTSQQ4MJt53mSWE3VR3vPttlKop4nT3QYej9XJ
- ya9Iybh7VWIx5dcvgh3s8MV+Gb2nIMXeitgoufUkIJhN8bjajwFB4FWKwYAQaccjHkis
- +tljn8BWphOx9GelBTJDf4uaqKfsKlozhZ9WvxYfKAeluT17RhT2nV2PgPc0aVTeZflb
- O8yhGp3pzA0rYYzTHshqqEadxrPzKRgb9htIGQ/j+qIqGaGOuvVjIP/XlDxgkGfNknoc HQ== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3upw12tbvs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 01 Dec 2023 09:50:54 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B19orfZ006804
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 1 Dec 2023 09:50:53 GMT
-Received: from hu-skakitap-hyd.qualcomm.com (10.80.80.8) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Fri, 1 Dec 2023 01:50:48 -0800
-From:   Satya Priya Kakitapalli <quic_skakitap@quicinc.com>
-Date:   Fri, 1 Dec 2023 15:20:27 +0530
-Subject: [PATCH v3 4/4] clk: qcom: videocc-sm8150: Add runtime PM support
+        Fri, 1 Dec 2023 04:52:17 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA171E6;
+        Fri,  1 Dec 2023 01:52:23 -0800 (PST)
+Received: from [192.168.88.20] (91-158-149-209.elisa-laajakaista.fi [91.158.149.209])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 0F5F8D52;
+        Fri,  1 Dec 2023 10:51:44 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1701424305;
+        bh=J4yAZVRMRNvNFIq6OJVR1XbRD8IPLkqCPRNc1euUS3o=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=Gk9sySZma9Ps6BOg14ppr2LkywZhexltsAmTsL0JezqPT5T9fsZ5f7JTi1ttfWU1r
+         lu8bVD+X8qot/IlRPV73ednrj4WcA/k5i2TX8fUXLbQpB8sO+egzUeFUPSNYr2BpS5
+         OVSFt66Bg7P2iOMAnc0fG+2taaWiiK+88VBAUkww=
+Message-ID: <f229619d-5b1c-475f-9e7f-42190c142af6@ideasonboard.com>
+Date:   Fri, 1 Dec 2023 11:52:18 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20231201-videocc-8150-v3-4-56bec3a5e443@quicinc.com>
-References: <20231201-videocc-8150-v3-0-56bec3a5e443@quicinc.com>
-In-Reply-To: <20231201-videocc-8150-v3-0-56bec3a5e443@quicinc.com>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 0/2] Add DSS support for TI AM62A7 SoC
+Content-Language: en-US
+To:     Aradhya Bhatia <a-bhatia1@ti.com>, Jyri Sarha <jyri.sarha@iki.fi>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jonathan Marek <jonathan@marek.ca>
-CC:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "Satya Priya Kakitapalli" <quic_skakitap@quicinc.com>
-X-Mailer: b4 0.12.4
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: syiUyzuHoWTiqdwhGtVfh99d6hDaAp-V
-X-Proofpoint-ORIG-GUID: syiUyzuHoWTiqdwhGtVfh99d6hDaAp-V
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-01_07,2023-11-30_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
- malwarescore=0 suspectscore=0 mlxlogscore=999 phishscore=0
- priorityscore=1501 spamscore=0 impostorscore=0 adultscore=0
- lowpriorityscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2311060000 definitions=main-2312010065
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     DRI Development List <dri-devel@lists.freedesktop.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Devarsh Thakkar <devarsht@ti.com>,
+        Jayesh Choudhary <j-choudhary@ti.com>,
+        Jai Luthra <j-luthra@ti.com>
+References: <20231108171619.978438-1-a-bhatia1@ti.com>
+From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
+ 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
+In-Reply-To: <20231108171619.978438-1-a-bhatia1@ti.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add runtime PM support to ensure the supply rails are enabled
-when necessary.
+On 08/11/2023 19:16, Aradhya Bhatia wrote:
+> This patch series adds a new compatible for the Display SubSystem (DSS)
+> controller on TI's AM62A7 SoC. It further adds the required support, for
+> the same, in the tidss driver.
+> 
+> The DSS controller is similar to the recently added AM625 DSS, with the
+> key difference being the absence of VP1 output on the SoC. The VP1 in
+> AM62A7 DSS is tied off and cannot be used, unlike in AM625, where the
+> VP1 was connected to 2 OLDI TXes. The video pipeline that corresponds to
+> VP1 still exists and can be used to overlay planes on the VP2's primary
+> plane. This can be done using the overlay managers inside the SoC.
+> Moreover, DSS VP2 can output Full-HD RGB888 DPI video signals.
+> 
+> I have tested these patches on AM62A7 SK-EVM, which converts DPI signals
+> to HDMI on the platform using the Sil9022A HDMI transmitter. All the
+> patches, required to enable display on AM62A7-SK, can be found on my
+> github fork[0] in the branch "next_am62a-v3".
+> 
+> Regards
+> Aradhya
+> 
+> [0]: https://github.com/aradhya07/linux-ab/tree/next_am62a-v3
+> 
+> Change Log:
+> V2 -> V3:
+>    - Add Krzysztof Kozlowski's R-b in patch 1/2.
+>    - Add new DISPC_VP_TIED_OFF for tied-off video-ports in patch 2/2.
+> 
+> V1 -> V2:
+>    - Correctly sort DISPC_AM62A7 macro after DISPC_AM625 in patch 2/2.
+> 
+> Previous Versions:
+> V1: https://lore.kernel.org/all/20230818131750.4779-1-a-bhatia1@ti.com/
+> V2: https://lore.kernel.org/all/20230818142124.8561-1-a-bhatia1@ti.com/
+> 
+> Aradhya Bhatia (2):
+>    dt-bindings: display: ti: Add support for am62a7 dss
+>    drivers/tidss: Add support for AM62A7 DSS
+> 
+>   .../bindings/display/ti/ti,am65x-dss.yaml     | 14 +++++
+>   drivers/gpu/drm/tidss/tidss_dispc.c           | 59 +++++++++++++++++++
+>   drivers/gpu/drm/tidss/tidss_dispc.h           |  3 +
+>   drivers/gpu/drm/tidss/tidss_drv.c             |  1 +
+>   4 files changed, 77 insertions(+)
+> 
+> 
+> base-commit: 2220f68f4504aa1ccce0fac721ccdb301e9da32f
 
-Signed-off-by: Satya Priya Kakitapalli <quic_skakitap@quicinc.com>
----
- drivers/clk/qcom/videocc-sm8150.c | 20 ++++++++++++++++++--
- 1 file changed, 18 insertions(+), 2 deletions(-)
+Thanks, I'm applying to drm-misc.
 
-diff --git a/drivers/clk/qcom/videocc-sm8150.c b/drivers/clk/qcom/videocc-sm8150.c
-index 52a9a453a143..f1456eaa87c4 100644
---- a/drivers/clk/qcom/videocc-sm8150.c
-+++ b/drivers/clk/qcom/videocc-sm8150.c
-@@ -6,6 +6,7 @@
- #include <linux/clk-provider.h>
- #include <linux/module.h>
- #include <linux/platform_device.h>
-+#include <linux/pm_runtime.h>
- #include <linux/regmap.h>
- 
- #include <dt-bindings/clock/qcom,videocc-sm8150.h>
-@@ -240,17 +241,32 @@ MODULE_DEVICE_TABLE(of, video_cc_sm8150_match_table);
- static int video_cc_sm8150_probe(struct platform_device *pdev)
- {
- 	struct regmap *regmap;
-+	int ret;
-+
-+	ret = devm_pm_runtime_enable(&pdev->dev);
-+	if (ret)
-+		return ret;
-+
-+	ret = pm_runtime_resume_and_get(&pdev->dev);
-+	if (ret)
-+		return ret;
- 
- 	regmap = qcom_cc_map(pdev, &video_cc_sm8150_desc);
--	if (IS_ERR(regmap))
-+	if (IS_ERR(regmap)) {
-+		pm_runtime_put_sync(&pdev->dev);
- 		return PTR_ERR(regmap);
-+	}
- 
- 	clk_trion_pll_configure(&video_pll0, regmap, &video_pll0_config);
- 
- 	/* Keep VIDEO_CC_XO_CLK ALWAYS-ON */
- 	regmap_update_bits(regmap, 0x984, 0x1, 0x1);
- 
--	return qcom_cc_really_probe(pdev, &video_cc_sm8150_desc, regmap);
-+	ret = qcom_cc_really_probe(pdev, &video_cc_sm8150_desc, regmap);
-+
-+	pm_runtime_put_sync(&pdev->dev);
-+
-+	return ret;
- }
- 
- static struct platform_driver video_cc_sm8150_driver = {
-
--- 
-2.25.1
+  Tomi
 
