@@ -2,95 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 123A5800C99
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 14:53:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 096E3800C9A
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 14:53:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379062AbjLANxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 08:53:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55092 "EHLO
+        id S1379075AbjLANxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 08:53:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379044AbjLANxG (ORCPT
+        with ESMTP id S1379044AbjLANxb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 08:53:06 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64241A6;
-        Fri,  1 Dec 2023 05:53:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701438793; x=1732974793;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ub9mgjqgK5kv69AKSxuHPaODWlRDLdyKhrwmElxQA2Q=;
-  b=TAwd83dbqIZT/3Gr4jzRTGRwfq14gpZ65gcP/8SY0XgCcnAqJcrP0TB2
-   MBkTP00/63Kq14ih4Ox6V1hOoJ2TCqYW90kzZN9KTuBbeNLVlXjigIZxw
-   hA76CKf9ZzCx2pGdVMeXycM0ssVcLKw13I/LiI+YoUzyGciNTSrJ2Mgin
-   ADmRmXfo5U0mry0zLqIU7UpLKnltY4yMOm8b+AwyvQrC8evNGQnErs4nJ
-   b4lXl/CfnX4mERK8+13FjPWN6/YR2cokSwbJYiyntQwolMYfnh3BmE81o
-   y7nt1MzmVhOLT6O8SuEEVuWi14uTsOmMobQONRAQEB7L3KMn3ZNO2j8/2
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="383894770"
-X-IronPort-AV: E=Sophos;i="6.04,241,1695711600"; 
-   d="scan'208";a="383894770"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2023 05:53:12 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="804076770"
-X-IronPort-AV: E=Sophos;i="6.04,241,1695711600"; 
-   d="scan'208";a="804076770"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga001.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2023 05:53:11 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1r93x6-000000010GN-3YAW;
-        Fri, 01 Dec 2023 15:53:08 +0200
-Date:   Fri, 1 Dec 2023 15:53:08 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Eric Tremblay <etremblay@distech-controls.com>,
-        Jean Delvare <jdelvare@suse.com>
-Subject: Re: [PATCH v1 2/3] hwmon: tmp513: Simplify with dev_err_probe()
-Message-ID: <ZWnlRAOG7EP3RyPR@smile.fi.intel.com>
-References: <20231128180654.395692-1-andriy.shevchenko@linux.intel.com>
- <20231128180654.395692-3-andriy.shevchenko@linux.intel.com>
- <1ef66c53-d9ba-4fca-8462-b670f029f5de@roeck-us.net>
+        Fri, 1 Dec 2023 08:53:31 -0500
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 059E110FC
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 05:53:36 -0800 (PST)
+Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-50bd928b13cso1028059e87.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 05:53:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1701438814; x=1702043614; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=B2gDIyfWC+W4ytDLyZ1ApFFOSpObEoeppni2yotM7Sk=;
+        b=Yk573CjBNOA4iH35REuCAlz0xcvrPdhovdZ10G+9ct9/82MJ2VUkatWF5ob7pNDWHA
+         quWrakx+4FF5/3XxvR9LtyfIDhm487E0vDDSXGnyFHtYI6mDH0TY6fk/h/3gmV1C23gR
+         u+j36SCyGcOQ6ubn8/4hNrahVAFCc3S6xZJ7yYv2HkoAaRGWKI7xwDI1Farhm0gLIuG8
+         w0y0Ix375m7LdTFa20D2Cd7XERlNahb3EAJ9mSeSu3MSKb5MmvJJmbEikY+vNDgLL2E4
+         BwlqV0QaZcYNaGlMM5nWO8nalNRO1MUptzEi0wUC7rWJ8FgsQNWGbd3WwOgSVDDkcvIi
+         cj6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701438814; x=1702043614;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=B2gDIyfWC+W4ytDLyZ1ApFFOSpObEoeppni2yotM7Sk=;
+        b=cJBJcHWmJGFh148L47Em6B/xfk8c28JV7aG5+uGwZhxeC8WPhuYVw6QYylahwJ8Ycc
+         RZJZc+hG1a5hWrtaf2dzlPV5SGEvZQAUqNoPj5c8lFlADTjTofq5FI6bZDNlpr3/4OE/
+         NNiBg0SzPStihzdECqSr8Xs9wXungb294NQge5lmQbTMl1n5jdaUGfJ7Lafj4NyquC4H
+         iaIm/fJ2Ih5A1A2LqiQjT0vkOpTlnc1HA+PvdPnoJ3TxSGYGbjvoLcLFgdTKcyy5H9Ru
+         YcZDcZB6pnDprlP/jZIIlJhrXd4wgWmx0OSG6cFwrdmYLC8vwrN6vF+IwHVwthjShlyC
+         JevQ==
+X-Gm-Message-State: AOJu0Yw6a7VslHeF4To6VOrn7NOh20cGHJ9x+zO3hJOZEjXN2+DVTZRf
+        pPtzAFHLVOg+2/HDveQ47+6VxIxAqacIYd6/3YAU4w==
+X-Google-Smtp-Source: AGHT+IEWbDp/BHTI35lHYKJahi0bZ7EApCyKw47RGLaZzY7863jjC5lW9Ntg2R4fr5oj1AbZZjB53QPWww4cZ5h4s3o=
+X-Received: by 2002:a2e:8783:0:b0:2c9:c22e:31eb with SMTP id
+ n3-20020a2e8783000000b002c9c22e31ebmr611668lji.22.1701438814214; Fri, 01 Dec
+ 2023 05:53:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1ef66c53-d9ba-4fca-8462-b670f029f5de@roeck-us.net>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <ZV5zGROLefrsEcHJ@r13-u19.micron.com> <CACSyD1OFjROw26+2ojG37eDBParVg721x1HCROMiF2pW2aHj8A@mail.gmail.com>
+ <ZV/HSFMmv3xwkNPL@memverge.com> <CACSyD1MrCzyV-93Ov07NpV3Nm3u0fYExmD1ShE_e2tapW6a6HA@mail.gmail.com>
+ <ZWizUEd/rsxSc0fW@memverge.com>
+In-Reply-To: <ZWizUEd/rsxSc0fW@memverge.com>
+From:   Zhongkun He <hezhongkun.hzk@bytedance.com>
+Date:   Fri, 1 Dec 2023 21:53:23 +0800
+Message-ID: <CACSyD1PCjPEwPCVXKVULjbNwxUG89DZUUfiDLg+wFyJRJXAPzA@mail.gmail.com>
+Subject: Re: [RFC PATCH] mm/mbind: Introduce process_mbind() syscall for
+ external memory binding
+To:     Gregory Price <gregory.price@memverge.com>
+Cc:     Vinicius Petrucci <vpetrucci@gmail.com>, akpm@linux-foundation.org,
+        linux-mm@vger.kernel.org, linux-cxl@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-api@vger.kernel.org, minchan@kernel.org,
+        dave.hansen@linux.intel.com, x86@kernel.org,
+        Jonathan.Cameron@huawei.com, aneesh.kumar@linux.ibm.com,
+        ying.huang@intel.com, dan.j.williams@intel.com, fvdl@google.com,
+        surenb@google.com, rientjes@google.com, hannes@cmpxchg.org,
+        mhocko@suse.com, Hasan.Maruf@amd.com, jgroves@micron.com,
+        ravis.opensrc@micron.com, sthanneeru@micron.com,
+        emirakhur@micron.com, vtavarespetr@micron.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 30, 2023 at 08:10:12PM -0800, Guenter Roeck wrote:
-> On Tue, Nov 28, 2023 at 08:06:03PM +0200, Andy Shevchenko wrote:
-> > Common pattern of handling deferred probe can be simplified with
-> > dev_err_probe().  Less code and also it prints the error value.
+>
+> Hi ZhongKun!
+>
+> I actually just sent out a more general RFC to mempolicy updates that
+> discuss this more completely:
+>
+> https://lore.kernel.org/linux-mm/ZWezcQk+BYEq%2FWiI@memverge.com/
+>
 
-...
+OK.
 
-> > +	if (IS_ERR(data->regmap))
-> > +		return dev_err_probe(dev, PTR_ERR(data->regmap), "failed to allocate register map\n");
-> 
-> That line length was getting too long. Please consider running checkpatch
-> on your patches.
+> and another post on even more issues with pidfd modifications to vma
+> mempolicies:
+>
+> https://lore.kernel.org/linux-mm/ZWYsth2CtC4Ilvoz@memverge.com/
+>
+> We may have to slow-walk the changes to vma policies due to there being
+> many more hidden accesses to (current) than expected. It's a rather
+> nasty rats nest of mempolicy-vma-cpusets-shmem callbacks that obscure
+> these current-task accesses, it will take time to work through.
+>
 
-I got your point, but checkpatch has no limit for the string literals, see
+Got it, thanks. It's more complicated than I thought.
 
-f4c014c0dede ("checkpatch: allow printk strings to exceed 80 characters to maintain their searchability")
-ca56dc098caf ("checkpatch: check for quoted strings broken across lines")
+> As for hot-path reference counting - we may need to change the way
+> mempolicy is managed, possibly we could leverage RCU to manage mempolicy
+> references in the hot path, rather than using locks.  In this scenario,
+> we would likely need to change the way the default policy is applied
+> (maybe not, I haven't fully explored it).
+>
 
-So, what the exact parameters should I supply to it?
+RCU may have a long time in the read-side critical section.
 
--- 
-With Best Regards,
-Andy Shevchenko
+We should probably replace the atomic_t refcnt with percpu_ref in
+mempolicy(also suggested by Michal), but refactoring work involves
+a lot of code.
 
+A simple way is to use task_work to release the mempolicy which may
+be used by alloc_pages(). But it doesn't have a direct result.
 
+> Do you have thoughts on this?  Would very much like additional comments
+> before I go through the refactor work.
+>
+> Regards,
+> Gregory
