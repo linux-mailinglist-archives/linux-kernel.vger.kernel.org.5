@@ -2,96 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ECD28007C5
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 10:57:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C07C38007C8
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 10:57:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378298AbjLAJ5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 04:57:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41692 "EHLO
+        id S1378276AbjLAJ5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 04:57:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378169AbjLAJ5a (ORCPT
+        with ESMTP id S1378190AbjLAJ5f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 04:57:30 -0500
-Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24264B2;
-        Fri,  1 Dec 2023 01:57:02 -0800 (PST)
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-        by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-        id 1r90GQ-005hRv-ME; Fri, 01 Dec 2023 17:56:51 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 01 Dec 2023 17:56:59 +0800
-Date:   Fri, 1 Dec 2023 17:56:59 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Edward Adam Davis <eadavis@qq.com>
-Cc:     syzbot+c52ab18308964d248092@syzkaller.appspotmail.com,
-        davem@davemloft.net, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, olivia@selenic.com,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: [PATCH] hwrng: core - fix task hung in hwrng_fillfn
-Message-ID: <ZWmt6wrbxN1W+cnv@gondor.apana.org.au>
+        Fri, 1 Dec 2023 04:57:35 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B1FF1BD6;
+        Fri,  1 Dec 2023 01:57:16 -0800 (PST)
+Received: from eldfell (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: pq)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id E2C3F66028F5;
+        Fri,  1 Dec 2023 09:57:13 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1701424635;
+        bh=PdPq0DB/c6iOx69HlAQ2be1/MewAImn65LjY2QpKCFY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=jNXQgo2dpIXE72796wTfVzD5hmiKn76moO9e26J3IOH8lnsdi75U+reb9Uh5I4kQd
+         f154rmmN6A+UdBXnSVQGJnc4fWwy9tNLigvu7JFK9AEskeuDPC+qvdkUUgnM5KLSVi
+         jdnDTYf9hhCOV+ki95OjIBMpRx49bpT3xuhTAiQEqQTb1t225OXFEg2lxIEsmRUS0x
+         XvFCdzel9bTlHJHK7LwZh6Y+gUpg11cxE9wqhXnGJKZ7wiLE0RCuJ9OLlPQQDPEulO
+         dxaIGSkVz6pp7GaoJ/yEwVE5rAY4K2HPKaRueEMTV8aNaPNmHDeCXhuqxSAlC0jvhV
+         O4LKW47TYHgFw==
+Date:   Fri, 1 Dec 2023 11:57:09 +0200
+From:   Pekka Paalanen <pekka.paalanen@collabora.com>
+To:     Simon Ser <contact@emersion.fr>
+Cc:     =?UTF-8?B?QW5kcsOp?= Almeida <andrealmeid@igalia.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel-dev@igalia.com, alexander.deucher@amd.com,
+        christian.koenig@amd.com, Rob Clark <robdclark@gmail.com>,
+        daniel@ffwll.ch, Daniel Stone <daniel@fooishbar.org>,
+        'Marek =?UTF-8?B?T2zFocOhayc=?= <maraeo@gmail.com>,
+        Dave Airlie <airlied@gmail.com>,
+        Michel =?UTF-8?B?RMOkbnplcg==?= <michel.daenzer@mailbox.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Subject: Re: [PATCH] drm/doc: Define KMS atomic state set
+Message-ID: <20231201115709.61c0817e.pekka.paalanen@collabora.com>
+In-Reply-To: <40gonZRoP7FjDn_ugL_LpXsqwoSCZtypIe7jiWg0t8lkTx94-gESc60Cuu5eWxivJoZCNg3i-cUG9kNpKQZeYdCJPawDpTSIXivJ_t_a87E=@emersion.fr>
+References: <20231130200740.53454-1-andrealmeid@igalia.com>
+        <40gonZRoP7FjDn_ugL_LpXsqwoSCZtypIe7jiWg0t8lkTx94-gESc60Cuu5eWxivJoZCNg3i-cUG9kNpKQZeYdCJPawDpTSIXivJ_t_a87E=@emersion.fr>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <tencent_97BC6EC36EF24C91A7E7C6DFD2C106688906@qq.com>
-X-Newsgroups: apana.lists.os.linux.cryptoapi,apana.lists.os.linux.kernel
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/Usvah.9E_GuBxISP7sKNNvI";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Edward Adam Davis <eadavis@qq.com> wrote:
->
-> diff --git a/drivers/char/hw_random/core.c b/drivers/char/hw_random/core.c
-> index 420f155d251f..7323ddc958ce 100644
-> --- a/drivers/char/hw_random/core.c
-> +++ b/drivers/char/hw_random/core.c
-> @@ -225,17 +225,18 @@ static ssize_t rng_dev_read(struct file *filp, char __user *buf,
->                        goto out;
->                }
-> 
-> -               if (mutex_lock_interruptible(&reading_mutex)) {
-> -                       err = -ERESTARTSYS;
-> -                       goto out_put;
-> -               }
->                if (!data_avail) {
-> +                       if (mutex_lock_interruptible(&reading_mutex)) {
-> +                               err = -ERESTARTSYS;
-> +                               goto out_put;
-> +                       }
->                        bytes_read = rng_get_data(rng, rng_buffer,
->                                rng_buffer_size(),
->                                !(filp->f_flags & O_NONBLOCK));
-> +                       mutex_unlock(&reading_mutex);
->                        if (bytes_read < 0) {
->                                err = bytes_read;
-> -                               goto out_unlock_reading;
-> +                               goto out_put;
->                        }
->                        data_avail = bytes_read;
->                }
+--Sig_/Usvah.9E_GuBxISP7sKNNvI
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Does this change anything at all? Please explain why it was holding
-this lock for 143 seconds in the first place.  If it's doing it in
-rng_get_data, then your change has zero effect.
+On Fri, 01 Dec 2023 09:31:23 +0000
+Simon Ser <contact@emersion.fr> wrote:
 
-> @@ -501,7 +499,10 @@ static int hwrng_fillfn(void *unused)
->                rng = get_current_rng();
->                if (IS_ERR(rng) || !rng)
->                        break;
-> -               mutex_lock(&reading_mutex);
-> +               if (mutex_lock_interruptible(&reading_mutex)) {
-> +                       put_rng(rng);
-> +                       return -ERESTARTSYS;
-> +               }
+> Thanks for writing these docs! A few comments below.
+>=20
+> On Thursday, November 30th, 2023 at 21:07, Andr=C3=A9 Almeida <andrealmei=
+d@igalia.com> wrote:
+>=20
+> > +KMS atomic state
+> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > +
+> > +An atomic commit can change multiple KMS properties in an atomic fashi=
+on,
+> > +without ever applying intermediate or partial state changes.  Either t=
+he whole
+> > +commit succeeds or fails, and it will never be applied partially. This=
+ is the
+> > +fundamental improvement of the atomic API over the older non-atomic AP=
+I which is
+> > +referred to as the "legacy API".  Applying intermediate state could un=
+expectedly
+> > +fail, cause visible glitches, or delay reaching the final state.
+> > +
+> > +An atomic commit can be flagged with DRM_MODE_ATOMIC_TEST_ONLY, which =
+means the =20
+>=20
+> It would be nice to link DRM_MODE_ATOMIC_TEST_ONLY to the actual docs her=
+e.
+> This can be done with markup such as:
+>=20
+>     :c:macro:`DRM_MODE_ATOMIC_TEST_ONLY`
+>=20
+> Same applies to other #defines.
+>=20
+> > +complete state change is validated but not applied.  Userspace should =
+use this =20
+>=20
+> I'd s/should/can/ here, because there are valid cases where user-space do=
+esn't
+> really need to test before applying. Applying a state first validates it =
+in the
+> kernel anwyays.
 
-No this is just the symptom.  The real problem is why is the driver
-spending 143 seconds in rng_get_data?
+Those cases a very much an exception. If you want to explain in what
+cases testing is not necessary, that's fine to add, but without it I do
+want to always recommend testing first. There is no harm in testing too
+much, but there is harm in not testing which implies that there is
+likely no fallback either. Without fallbacks, the kernel developers
+have less room to change things, and the userspace itself is probably
+too fragile to be generally useful.
 
-Cheers,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Or, if you think this concern is moot, then why would userspace ever
+use testing?
+
+However, I have understood from past kernel discussions that userspace
+really does need to test and fall back on test failure in almost all
+cases. Otherwise userspace becomes too driver/hardware dependent.
+
+In general, I think recommending best practices with "should" is a good
+idea.
+
+> > +flag to validate any state change before asking to apply it. If valida=
+tion fails
+> > +for any reason, userspace should attempt to fall back to another, perh=
+aps
+> > +simpler, final state.  This allows userspace to probe for various conf=
+igurations
+> > +without causing visible glitches on screen and without the need to und=
+o a
+> > +probing change.
+> > +
+> > +The changes recorded in an atomic commit apply on top the current KMS =
+state in
+> > +the kernel. Hence, the complete new KMS state is the complete old KMS =
+state with
+> > +the committed property settings done on top. The kernel will try to av=
+oid
+> > +no-operation changes, so it is safe for userspace to send redundant pr=
+operty
+> > +settings.  However, not every situation allows for no-op changes, due =
+to the
+> > +need to acquire locks for some attributes. Userspace needs to be aware=
+ that some
+> > +redundant information might result in oversynchronization issues.  No-=
+operation
+> > +changes do not count towards actually needed changes, e.g.  setting MO=
+DE_ID to a
+> > +different blob with identical contents as the current KMS state shall =
+not be a
+> > +modeset on its own. As a special exception for VRR needs, explicitly s=
+etting
+> > +FB_ID to its current value is not a no-op. =20
+>=20
+> I'm not sure talking about FB_ID is the right thing to do here. There is
+> nothing special about FB_ID in particular. For instance, setting CRTC_ID =
+to the
+> same value as before has the same effect. Talking specifically about FB_I=
+D here
+> can be surprising for user-space: reading these docs, I'd assume setting
+> CRTC_ID to the same value as before is a no-op, but in reality it's not.
+
+Whoa, I never knew that! That's a big surprise!
+
+People have always been talking only about FB_ID so far.
+
+> Instead, I'd suggest explaining how referencing a plane/CRTC/connector in=
+ an
+> atomic commit adds it to the new state, even if there are no effective pr=
+operty
+> value changes.
+
+So, if a CRTC object is pulled into drm_atomic_state(?) at all, on VRR
+it will trigger a new scanout cycle always, avoiding the front porch
+timeout?
+
+Yikes.
+
+> > +A "modeset" is a change in KMS state that might enable, disable, or te=
+mporarily
+> > +disrupt the emitted video signal, possibly causing visible glitches on=
+ screen. A
+> > +modeset may also take considerably more time to complete than other ki=
+nds of
+> > +changes, and the video sink might also need time to adapt to the new s=
+ignal
+> > +properties. Therefore a modeset must be explicitly allowed with the fl=
+ag
+> > +DRM_MODE_ATOMIC_ALLOW_MODESET.  This in combination with
+> > +DRM_MODE_ATOMIC_TEST_ONLY allows userspace to determine if a state cha=
+nge is
+> > +likely to cause visible disruption on screen and avoid such changes wh=
+en end
+> > +users do not expect them.
+> > +
+> > +An atomic commit with the flag DRM_MODE_PAGE_FLIP_ASYNC is allowed to
+> > +effectively change only the FB_ID property on any planes. No-operation=
+ changes
+> > +are ignored as always. Changing any other property will cause the comm=
+it to be
+> > +rejected. Each driver may relax this restriction if they have guarante=
+es that
+> > +such property change doesn't cause modesets. Userspace can use TEST_ON=
+LY commits
+> > +to query the driver about this. =20
+>=20
+> This doesn't 100% match reality at the moment, because core DRM now rejec=
+ts any
+> async commit which changes FB_ID on a non-primary plane. And there is no =
+way
+> for drivers to relax this currently.
+>=20
+> I'm not sure this is a good place to state such a rule. In the end, it's =
+the
+> same as always: the kernel will reject commits it can't perform.
+> DRM_MODE_PAGE_FLIP_ASYNC does not need to be a special case here. Even wh=
+en
+> changing only FB_ID, the kernel might reject the commit (e.g. i915 does i=
+n some
+> cases).
+
+I think the paragraph is good to drop here, if it's documented in a
+more appropriate place.
+
+
+Thanks,
+pq
+
+--Sig_/Usvah.9E_GuBxISP7sKNNvI
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmVprfUACgkQI1/ltBGq
+qqdwBw/8DbQXXFIcSV5Jo6udnUvuEyhBA/dpYBwUDy+51gWJYkow2yq7LD6ljNYZ
++F3wXthzTD82gfs4pMjiAzCnGG3mktAEJd+jpsOQ8yEMiw7HNCMLVognXrjkKJcU
+GkXAh7gqIRHrcJsebRR+R42KMlih0degXVhxv7IyrIQWPYzzM9dopkJs+gUZygeh
+TH2hDAPnYDuP4PIDI20ZsujgfxUWQDdVnuKilJv14jZ9RbpTUVkPV6XWC4lvEyrv
+un+pLBrtWSg6kjC20x5hYMsLmJkEiRJEjfiXwZSW7eaxvlQkw5CVlGS07C7XQ4db
+xWsPzh1tW+bewbOFOQ7LLxHnJSAMEAThvimd9Zk1cpd9ngnvyZdBL8HNcvY7Wah2
+T0srMSn1ELxjaimgSWRtWFuGBHKcOgnRsBFNoYT91Olw8ScFUbb8sYKOL30zNNw+
+8FYy8h8M/ATos3Ut7cu+T66117QuJWeZoEEqe4vDURXxFPKYQiupP44VUWa6KOih
+l61TuIMbO6eXnwhvjBXCYVhJDwob24wgUfA7Ai2nrgMTzMgzR1hWUTUMsjpZL1At
+mdVrSLsTBPsIiHTin3YtKbFmcAJfr1aVSTfY+/gLy1FpDbfyqZn1Rw2Bm9+SvoSz
+763rCp8JxvliCk6KwfUXEtCcFoGwEGWL6ZCOA2iFgOmc99vonps=
+=WyN9
+-----END PGP SIGNATURE-----
+
+--Sig_/Usvah.9E_GuBxISP7sKNNvI--
