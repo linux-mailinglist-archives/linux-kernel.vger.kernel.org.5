@@ -2,96 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B92458016D5
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 23:46:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 670EA8016D7
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 23:46:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230202AbjLAWpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 17:45:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43648 "EHLO
+        id S1441843AbjLAWqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 17:46:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjLAWpw (ORCPT
+        with ESMTP id S229545AbjLAWqX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 17:45:52 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D6E5E0
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 14:45:59 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7810CC433C7;
-        Fri,  1 Dec 2023 22:45:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701470758;
-        bh=mCohPRAX+vrdHwTJQfgkUwLwKKdD+fr/q27He1nuF8E=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=Kx1uGmM9g+AIj3wuXBYWMCmQc9JPLjuznc9FaYjduL06/UxSMwuS8ZN7X/yHVTnCD
-         WokxVBc+afmbzOK1IXvBwaMbSVcetA7WC9BhkiWjLVefqDhR0ZvnFcHEuGe35jQf+S
-         IURMlnW9WmH++LEenQOz1HU4fVh+/NNVMDiUhUbaMuSnshQFxjVNqH8bRpJmEzSHCs
-         4centAtD1uaulNfuu66PXGaTzLujuEVPIHiiUWoQoVYRqje9rTG2+ko6aF+23nvHhc
-         nBTVHL8ZeulJ9judD0RjvheDiMGblkuL0zhKYgCKdTmvz7lzc5o7Auh2O/ZjzVyZsa
-         dHxqFZTpv1WmQ==
-Date:   Fri, 1 Dec 2023 16:45:56 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Herve Codina <herve.codina@bootlin.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lizhi Hou <lizhi.hou@amd.com>, Max Zhen <max.zhen@amd.com>,
-        Sonal Santan <sonal.santan@amd.com>,
-        Stefano Stabellini <stefano.stabellini@xilinx.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        Allan Nielsen <allan.nielsen@microchip.com>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        Steen Hegelund <steen.hegelund@microchip.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v2 0/2] Attach DT nodes to existing PCI devices
-Message-ID: <20231201224556.GA534342@bhelgaas>
+        Fri, 1 Dec 2023 17:46:23 -0500
+Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 600A7E0;
+        Fri,  1 Dec 2023 14:46:30 -0800 (PST)
+Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-6d7fa93afe9so679916a34.2;
+        Fri, 01 Dec 2023 14:46:30 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701470789; x=1702075589;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XsJlub1jKb7AVxZRT2Qd6Hjew3onl3DN9hVzEMU4t/E=;
+        b=VzzVT4BwStBpnzx+cD7mUO/LYgLYFwGtzzyh8JuqBpuxjQshUw5aoAYSjaTVtP04TA
+         hSVMd8MOZb9haI1nT2dKSK38ntwHd/XdSlUB647Q4PdTovrtjFmOzjdu5thQt6elQFLT
+         4CM1OVrtPlab1tIWsTjLLvLEf6g/EKj7DRjdStNVddln6oR9tMiw5m+z/uobFmNbxW6k
+         qUeNLlXwDcKPSXdJ6SttypXEgs9l3ioxfqiSQax3NcA0++ZrlQ4QoN139bRUT8WMl0e3
+         R0pp2TNpW9xXHIIvLqVgOJzLhscnGMMJ+AJGMUI+G3/sLs5tL74txCvKdO0o2A8pzPv3
+         aoxA==
+X-Gm-Message-State: AOJu0YzOEhxPFYszhncx6QrXsf+D4fSxYK1ZRLEVNZzdfMuOSbiazwHE
+        NANxQNPmQpwN1FOfZAqdEjuz9qeXIA==
+X-Google-Smtp-Source: AGHT+IFEzpdrZvP08UQ5AKzXn3nOe74340Cbmknp6Vg3gEN0o8klYjfJl0ZLYKiXwsntkXmY3sMMmw==
+X-Received: by 2002:a05:6830:448c:b0:6d8:74e2:6f2f with SMTP id r12-20020a056830448c00b006d874e26f2fmr249091otv.43.1701470789556;
+        Fri, 01 Dec 2023 14:46:29 -0800 (PST)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id q3-20020a9d6643000000b006d7f6adcbb6sm638104otm.78.2023.12.01.14.46.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Dec 2023 14:46:28 -0800 (PST)
+Received: (nullmailer pid 2632594 invoked by uid 1000);
+        Fri, 01 Dec 2023 22:46:28 -0000
+Date:   Fri, 1 Dec 2023 16:46:28 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Johan Hovold <johan+linaro@kernel.org>
+Cc:     Lee Jones <lee@kernel.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v2 2/4] dt-bindings: mfd: hisilicon,hi6421-spmi-pmic: fix
+ regulator binding
+Message-ID: <20231201224628.GA2631861-robh@kernel.org>
+References: <20231201164546.12606-1-johan+linaro@kernel.org>
+ <20231201164546.12606-3-johan+linaro@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAL_JsqJvt6FpXK+FgAwE8xN3G5Z23Ktq=SEY-K7VA7nM5XgZRg@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231201164546.12606-3-johan+linaro@kernel.org>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 01, 2023 at 04:26:45PM -0600, Rob Herring wrote:
-> On Thu, Nov 30, 2023 at 10:57 AM Herve Codina <herve.codina@bootlin.com> wrote:
-> ...
+On Fri, Dec 01, 2023 at 05:45:44PM +0100, Johan Hovold wrote:
+> The regulator child nodes do not have unit addresses so drop the
+> incorrect '#address-cells' and '#size-cells' properties from the parent
+> 'regulators' node.
+> 
+> Fixes: 352335a6aced ("staging: hikey9xx: hisilicon, hi6421-spmi-pmic.yaml: simplify props")
+> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+> ---
+>  .../bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml       | 10 ----------
+>  1 file changed, 10 deletions(-)
 
-> Also, no idea if the bridge part works because my qemu setup doesn't
-> create bridges (anyone got a magic cmdline to create them?).
-
-I probably copied this from somewhere and certainly couldn't construct
-it from scratch, but it did create a hierarchy like this:
-
-  00:04.0 bridge to [bus 01-04] (Root Port)
-  01:00.0 bridge to [bus 02-04] (Switch Upstream Port)
-  02:00.0 bridge to [bus 03] (Switch Downstream Port)
-  02:01.0 bridge to [bus 04] (Switch Downstream Port)
-  03:00.0 endpoint
-  04:00.0 endpoint
-
-  IMAGE=ubuntu.img
-  KERNEL=~/linux/arch/x86/boot/bzImage
-  IMGDIR=~/virt/img/
-
-  qemu-system-x86_64 -enable-kvm -s -m 2048 $IMAGE \
-      -device pcie-root-port,id=root_port1,chassis=1,slot=1 \
-      -device x3130-upstream,id=upstream_port1,bus=root_port1 \
-      -device xio3130-downstream,id=downstream_port1,bus=upstream_port1,chassis=2,slot=1 \
-      -device xio3130-downstream,id=downstream_port2,bus=upstream_port1,chassis=2,slot=2 \
-      -drive file=${IMGDIR}/nvme.qcow2,if=none,id=nvme1,snapshot=on \
-      -device nvme,drive=nvme1,serial=nvme1,cmb_size_mb=2048,bus=downstream_port1 \
-      -drive file=${IMGDIR}/nvme2.qcow2,if=none,id=nvme2,snapshot=on \
-      -device nvme,drive=nvme2,serial=nvme1,bus=downstream_port2 \
-      -virtfs local,id=home,path=/home/,security_model=mapped,mount_tag=home \
-      -nographic \
-      -kernel $KERNEL \
-      -append "root=/dev/sda2 rootfstype=ext4 console=ttyS0,38400n8"
+Reviewed-by: Rob Herring <robh@kernel.org>
