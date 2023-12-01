@@ -2,59 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5507E8003D2
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 07:25:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6280B8003D8
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 07:26:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377627AbjLAGZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 01:25:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47394 "EHLO
+        id S231723AbjLAG0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 01:26:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377615AbjLAGZn (ORCPT
+        with ESMTP id S1377668AbjLAGZz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 01:25:43 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1C491729
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 22:25:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701411948;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=+Zt79wZvYhz4gi4hOOtVo1AQdfO7nRSajk5T4VGHojQ=;
-        b=RUiLUZENr5QGR9V3SkFpLuR3FTBvaHwG+btecFM0V2laJY7c2gVHDeRf+7eKLzjWoyLeqS
-        nEjr1L8d2Iyib0y73Tsfyj+omN4HqGM4FqVQbjuIRshiOaZ97jmY1yxDSKogTFIb+vFMDp
-        Hv3Nmc6gnybfzkO23H5wld8MMD25QdE=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-554-VG3zhdtUPFCBKXDt90IU9w-1; Fri, 01 Dec 2023 01:25:46 -0500
-X-MC-Unique: VG3zhdtUPFCBKXDt90IU9w-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 22309185A780;
-        Fri,  1 Dec 2023 06:25:46 +0000 (UTC)
-Received: from MiWiFi-R3L-srv.redhat.com (unknown [10.72.113.121])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 813FE1C060AE;
-        Fri,  1 Dec 2023 06:25:42 +0000 (UTC)
-From:   Baoquan He <bhe@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-riscv@lists.infradead.org, kexec@lists.infradead.org,
-        mick@ics.forth.gr, changbin.du@intel.com, paul.walmsley@sifive.com,
-        palmer@dabbelt.com, aou@eecs.berkeley.edu,
-        Baoquan He <bhe@redhat.com>
-Subject: [PATCH] riscv, kexec: fix the ifdeffery for AFLAGS_kexec_relocate.o
-Date:   Fri,  1 Dec 2023 14:25:38 +0800
-Message-ID: <20231201062538.27240-1-bhe@redhat.com>
+        Fri, 1 Dec 2023 01:25:55 -0500
+Received: from mail5.25mail.st (mail5.25mail.st [74.50.62.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ED68199D;
+        Thu, 30 Nov 2023 22:26:00 -0800 (PST)
+Received: from localhost (91-158-86-216.elisa-laajakaista.fi [91.158.86.216])
+        by mail5.25mail.st (Postfix) with ESMTPSA id 0CC2560862;
+        Fri,  1 Dec 2023 06:25:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=atomide.com;
+        s=25mailst; t=1701411959;
+        bh=ZJAwNvSXMC8cowLrTynxRvpm84SZ2cxEGo3qzsfogxc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=edUlIFBJaucLIgcQi96n2pKUElAOdQ/fXOnxG0qKWCPJ9JQ0Jjm8W1O18a+0A1QO3
+         2zMAUaNhOUU3guy1IwJSeLNWHF/nmqfUmAIBvLwVZHcKi6yLF1DGDC0mFqIJH62y5Z
+         7mJV0MKk9WcRFntz6lcb/gaJ+K+6oX8I4hYKhCsFdDuUws3Lv2X7KvpsDK0yViIglT
+         9+72fo1SA9hDFHH7ziOZLzb/xEJKyJxsnjHkw8XPVXdblbJSBRWhse8hQy7CtMVaul
+         XeVqX2i8+G9hKbPALyZdD4lcQ2r0SSFldOEeFdr860M9d46Jl8YUnTHeU8PLHObtrv
+         Q1opwUMqdJ3Mw==
+Date:   Fri, 1 Dec 2023 08:25:38 +0200
+From:   Tony Lindgren <tony@atomide.com>
+To:     Andreas Kemnade <andreas@kemnade.info>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        bcousson@baylibre.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linux-omap@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] ARM: dts: omap4-embt2ws: Add Bluetooth
+Message-ID: <20231201062538.GF5169@atomide.com>
+References: <20231004070309.2408745-1-andreas@kemnade.info>
+ <6b4968d9-80d3-4a5a-b42e-3982825e45e9@linaro.org>
+ <20231007070015.GS34982@atomide.com>
+ <20231007072442.GW34982@atomide.com>
+ <20231130183555.1b329b78@aktux>
 MIME-Version: 1.0
-Content-type: text/plain
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231130183555.1b329b78@aktux>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,T_SPF_PERMERROR autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,35 +57,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This was introduced in commit fba8a8674f68 ("RISC-V: Add kexec
-support").
+* Andreas Kemnade <andreas@kemnade.info> [231130 17:36]:
+> On Sat, 7 Oct 2023 10:24:42 +0300
+> Tony Lindgren <tony@atomide.com> wrote:
+> > arch/arm/boot/dts/ti/omap/omap4-epson-embt2ws.dts:457.17-462.4: Warning (clocks_property):
+> > /ocp/interconnect@48000000/segment@0/target-module@6c000/serial@0/bluetooth-gnss:
+> > Missing property '#clock-cells' in node /ocp/interconnect@48000000/segment@0/targe
+> >
+> 
+> I do not get this warning on top of omap-for-v6.8/dt. So I think the
+> time is really there for this patch.
 
-It should work on CONFIG_KEXEC_CORE, but not CONFIG_KEXEC only, since
-we could set CONFIG_KEXEC_FILE=y and CONFIG_KEXEC=N, or only set
-CONFIG_CRASH_DUMP=y and disable both CONFIG_KEXEC and CONFIG_KEXEC_FILE.
-In these cases, the AFLAGS won't take effect with the current ifdeffery
-for AFLAGS_kexec_relocate.o.
+OK thanks applying into omap-for-v6.8/dt.
 
-So fix it now.
-
-Signed-off-by: Baoquan He <bhe@redhat.com>
----
- arch/riscv/kernel/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
-index fee22a3d1b53..82940b6a79a2 100644
---- a/arch/riscv/kernel/Makefile
-+++ b/arch/riscv/kernel/Makefile
-@@ -11,7 +11,7 @@ endif
- CFLAGS_syscall_table.o	+= $(call cc-option,-Wno-override-init,)
- CFLAGS_compat_syscall_table.o += $(call cc-option,-Wno-override-init,)
- 
--ifdef CONFIG_KEXEC
-+ifdef CONFIG_KEXEC_CORE
- AFLAGS_kexec_relocate.o := -mcmodel=medany $(call cc-option,-mno-relax)
- endif
- 
--- 
-2.41.0
-
+Tony
