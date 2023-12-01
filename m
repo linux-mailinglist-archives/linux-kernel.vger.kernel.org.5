@@ -2,248 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB2FD80129B
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 19:27:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6712180129F
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 19:29:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379214AbjLAS1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 13:27:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44784 "EHLO
+        id S230325AbjLAS2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 13:28:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbjLAS1i (ORCPT
+        with ESMTP id S229534AbjLAS2w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 13:27:38 -0500
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7521D106;
-        Fri,  1 Dec 2023 10:27:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-        ; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
-        :Date:subject:date:message-id:reply-to;
-        bh=p15K61YVmkwcv6g72/Gggszer5DgJqcxM7vBW4kqy+M=; b=wSzSSMHzGaw6UDX7oDlqgnfE6V
-        c5PQQf/HvCUKiwWcF2LS+PgZKvKA+00/e9NQBY5rXcMqtOctPOgKg9ABJbDZ9T4PxZcnXcQQhjtAi
-        oLrcQ+mRijKn4t7+bg28UFugIUVBmGQ0YFvtOzCHErngUgwmZ8H4KoYAZp7FOq4LYxPY=;
-Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:52430 helo=pettiford)
-        by mail.hugovil.com with esmtpa (Exim 4.92)
-        (envelope-from <hugo@hugovil.com>)
-        id 1r98Ei-00056U-Pr; Fri, 01 Dec 2023 13:27:38 -0500
-Date:   Fri, 1 Dec 2023 13:27:36 -0500
-From:   Hugo Villeneuve <hugo@hugovil.com>
-To:     Jan =?ISO-8859-1?Q?Kundr=E1t?= <jan.kundrat@cesnet.cz>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Cosmin Tanislav <cosmin.tanislav@analog.com>,
-        linux-serial@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-kernel@vger.kernel.org
-Message-Id: <20231201132736.65cb0e2bff88fba85121c44a@hugovil.com>
-In-Reply-To: <bd91db46c50615bc1d1d62beb659fa7f62386446.1701446070.git.jan.kundrat@cesnet.cz>
-References: <bd91db46c50615bc1d1d62beb659fa7f62386446.1701446070.git.jan.kundrat@cesnet.cz>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-X-SA-Exim-Connect-IP: 70.80.174.168
-X-SA-Exim-Mail-From: hugo@hugovil.com
+        Fri, 1 Dec 2023 13:28:52 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F64FC1
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 10:28:58 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3274AC433C8;
+        Fri,  1 Dec 2023 18:28:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701455338;
+        bh=GRzvb6K1F09jnFNhMGdAakhzpcFCOUV6/A//CTedh4I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=A81vm8AffuWGRBlTGQ6h8Ukd3z/U1Ud6I5sNaVbK5J3kTwKD/u3+evexovH0kUvYr
+         PtSE3KDikxJeZNGdGkSNH0mc6fmmAylgGwpToBd04E2B4LbMW14o+TcWeY25snyHDw
+         fTtnf9n4lwHqrh8lDDaUZCoi9HMWqYsmkT0aVi2nsRZuoTN4oUBdH8i/5U/p/PTbu2
+         S2lGZJkv12gi0Q+9npLmBClZCuduDTBzgKiVkuRAouu7FmM1eWtUXxo2EweuRo9LfK
+         ViEAJXevymtpRykKPA7pw6Da9zAy2v538ZItO3J830G494ZzD5isvKvrohPdYQ50j0
+         m6yojiW2HtnTQ==
+Date:   Fri, 1 Dec 2023 18:28:48 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
+        Deepak Gupta <debug@rivosinc.com>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
+        Will Deacon <will@kernel.org>,
+        Kees Cook <keescook@chromium.org>, jannh@google.com,
+        linux-kselftest@vger.kernel.org, linux-api@vger.kernel.org,
+        David Hildenbrand <david@redhat.com>
+Subject: Re: [PATCH RFT v4 0/5] fork: Support shadow stacks in clone3()
+Message-ID: <37a35edb-e72d-4983-8be7-67c56d2292c5@sirena.org.uk>
+References: <20231128-clone3-shadow-stack-v4-0-8b28ffe4f676@kernel.org>
+ <ZWjb6r0RWPo199pC@arm.com>
+ <fce4c169-5d19-40e8-bc32-0abec9bb008e@sirena.org.uk>
+ <ZWoYLs2STGA1LZLU@arm.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="CkFryha6tlsnAYUC"
+Content-Disposition: inline
+In-Reply-To: <ZWoYLs2STGA1LZLU@arm.com>
+X-Cookie: The early worm gets the late bird.
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
-Subject: Re: [PATCH] tty: max310x: work around regmap->regcache data
- corruption
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 1 Dec 2023 15:51:51 +0100
-Jan Kundr=E1t <jan.kundrat@cesnet.cz> wrote:
 
-> The TL;DR summary is that the regmap_noinc_write spills over the data
-> that are correctly written to the HW also to the following registers in
-> the regcache. As a result, regcache then contains user-controlled
-> garbage which will be used later for bit updates on unrelated registers.
->=20
-> This patch is a "wrong" fix; a real fix would involve fixing regmap
-> and/or regcache, but that code has too many indirections for my little
-> mind.
->=20
-> I was investigating a regression that happened somewhere between 5.12.4
-> (plus 14 of our patches) and v6.5.9 (plus 7 of our patches). Our
-> MAX14830 UART would work fine the first time, but when our application
-> opens the UART the second time it just wouldn't send anything over the
-> physical TX pin. With the help of a logical analyzer, I found out that
-> the kernel was sending value 0xcd to the MODE1 register, which on this
-> chip is a request to set the UART's TX pin to the Hi-Z mode and to
-> switch off RX completely. That's certainly not the intention of the
-> code, but that's what I was seeing on the physical SPI bus, and also in
-> the log when I instrumented the regmap layer.
->=20
-> It turned out that one of the *data* bytes which were sent over the UART
-> was 0xdd, and that this *data byte* somehow ended up in the regcache's
-> idea about the value within the MODE1 register. When the UART is opened
-> up the next time and max310x_startup updates a single unrelated bit in
-> MODE1, that code consults the regcache, notices the 0xdd data byte in
-> there, and ends up sending 0xcd over SPI.
->=20
-> Here's what dump_stack() shows:
->=20
->  max310x spi1.2: regcache_write: reg 0x9 value 0xdd
->  max310x spi1.2: PWNED
->  CPU: 1 PID: 26 Comm: kworker/1:1 Not tainted 6.5.9-7-g9e090fe75fd8 #7
->  Hardware name: Marvell Armada 380/385 (Device Tree)
->  Workqueue: events max310x_tx_proc
->   unwind_backtrace from show_stack+0x10/0x14
->   show_stack from dump_stack_lvl+0x40/0x4c
->   dump_stack_lvl from regcache_write+0xc0/0xc4
->   regcache_write from _regmap_raw_write_impl+0x178/0x828
->   _regmap_raw_write_impl from _regmap_raw_write+0xb8/0x134
->   _regmap_raw_write from regmap_noinc_write+0x130/0x178
->   regmap_noinc_write from max310x_tx_proc+0xd4/0x1a4
->   max310x_tx_proc from process_one_work+0x21c/0x4e4
->   process_one_work from worker_thread+0x50/0x54c
->   worker_thread from kthread+0xe0/0xfc
->   kthread from ret_from_fork+0x14/0x28
->=20
-> Clearly, regmap_noinc_write of a register 0x00 (that's the TX FIFO on
-> this chip) has no business updating register 0x09, but that's what was
-> happening here. The regmap_config is already set up in a way that
-> register 0x00 is marked precious and volatile, so it has no business
-> going through the cache at all. Also, the documentation for
-> regmap_noinc_write suggests that this driver was using the regmap
-> infrastructure correctly, and that the real bug is somewhere in
-> regmap/regcache where a call to regmap_noinc_write end up updating an
-> unrelated register in regcache.
+--CkFryha6tlsnAYUC
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Hi Jan,
-it is funny, as I am preparing to send a patch for the sc16is7xx driver
-to convert FIFO R/W to use the _noinc_ versions of regmap functions,
-inspired by your patch 3f42b142ea11 ("serial: max310x: fix IO data
-corruption in batched operations").
+On Fri, Dec 01, 2023 at 05:30:22PM +0000, Catalin Marinas wrote:
 
-I am testing on a custom board with two SC16IS752 in SPI mode.
+> Another concern I had was that map_shadow_stack() currently takes
+> a flags arg (though only one flag) while the clone/clone3() allocate the
+> shadow stack with an implicit configuration (other than size). Would
+> map_shadow_stack() ever get new flags that we may also need to set on
+> the default thread shadow stack (e.g. a new permission type)? At that
+> point it would be better if clone3() allowed a shadow stack pointer so
+> that any specific attributes would be limited to map_shadow_stack().
 
-Here is our current FIFO write code:
+The flags argument currently only lets you specify if a stack switch
+token should be written (which is not relevant for the clone3() case)
+and if a top of stack marker should be included (which since the top of
+stack marker is NULL for arm64 only has perceptible effect if a token is
+being written).  I'm not particularly anticipating any further additions,
+though never say never.
 
-  regcache_cache_bypass(one->regmap, true);
-  regmap_raw_write(one->regmap, SC16IS7XX_THR_REG, s->buf, to_send);
-  regcache_cache_bypass(one->regmap, false);
+> If that's only theoretical, I'm fine to go ahead with a size-only
+> argument for clone3(). We could also add the pointer now and allocate
+> the stack if NULL or reuse it if not, maybe with some prctl to allow
+> this. It might be overengineering and we'd never use such feature
+> though.
 
-I am converting it to _noinc_ version to be able to remove the manual
-(and ugly) cache control workaround to this:
+Yeah, it seems like a bunch of work and interface to test that I'm not
+convinced anyone would actually use.
 
-  regmap_noinc_write(one->regmap, SC16IS7XX_THR_REG, s->buf, to_send);
+> > As well as the actual configuration of the size the other thing that we
+> > gain is that as well as relying on heuristics to determine if we need to
+> > allocate a new shadow stack for the new thread we allow userspace to
+> > explicitly request a new shadow stack.
 
-SC16IS7XX_THR_REG is already in precious and volatile, and I also
-have put it in the noinc list.
+> But the reverse is not true - we can't use clone3() to create a thread
+> without a shadow stack AFAICT.
 
-To confirm that this works ok, I have put debug traces in some regmap
-functions, and escpecially a trace in regcache_write() to indicate if
-regmap is caching or not the register.
+Right.  Given the existing implicit allocation only x86 ABI we'd need to
+retrofit that by adding an explicit "no shadow stack" flag.  That is
+possible though I'm having a hard time seeing the use case for it.
 
-Here is an example when writing 01234567890123456789 (20 bytes) to the
-Tx FIFO:
+--CkFryha6tlsnAYUC
+Content-Type: application/pgp-signature; name="signature.asc"
 
-sc16is7xx spi0.0: sc16is7xx_tx_proc(): entry
-sc16is7xx spi0.0: sc16is7xx_handle_tx(): entry
-sc16is7xx spi0.0: regcache_read() not caching volatile reg $08
-spi0.0-port0: regmap_read:  [08] 40
-sc16is7xx spi0.0: regcache_write() not caching volatile reg $08
-sc16is7xx spi0.0: _regmap_raw_write_impl() reg     =3D $00
-sc16is7xx spi0.0: _regmap_raw_write_impl() val_len =3D 20
-sc16is7xx spi0.0: regcache_write() not caching volatile reg $00
-spi0.0-port0: regmap_write: [00] 30 31 32 33 34 35 36 37 38 39...
-spi0.0-port0: regmap_write: [00] 36 37 38 39
-...
+-----BEGIN PGP SIGNATURE-----
 
-With this I have confirmed that regmap _noinc_ works as intended, with
-regcache_write() indicating it is not caching the volatile register 00
-(THR).
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVqJeAACgkQJNaLcl1U
+h9DzAQf+LrewNdEd54lFym1uNzfqTALngDRzqEQiwyX9OjpXl7qCfKd77el1CZ0K
+CJz64ccqu/oWsPYXYcGbSzzFELkIyPbqIWZ48NeKCGVMapsadRneUI6QO0pONxhV
+UBVjFK0nqQeKMuXZXSPnPQ4r2TP6/8V0GXwpTmI6t2rMAIKgUQ0co0qAQBbVUWVh
+C+V88onP3gYcXwH6uKjmj27pT2gr2vJABiO/VkXt1CSXUlqK9VgG0cPwj/DHIq9X
+RiFY1ItDu4w+4efoNzq6mmX+hbBRDfqWWYzUeJl/XLd/1cDY3ZLB/CCzNvN5s4YW
+PXlpWyT3/osvaRjlXy33OnPqJ7lLQQ==
+=UeuB
+-----END PGP SIGNATURE-----
 
-I hope this can help you with your investigation, let me know if I can
-help more.
-
-Hugo Villeneuve.
-
-
-=20
-> Until regmap/regcache is fixed, let's just use an adapted version of the
-> old code that bypasses regmap altogether, and just sends out an SPI
-> transaction.
->=20
-> This is related to my commit 3f42b142ea1171967e40e10e4b0241c0d6d28d41
-> ("serial: max310x: fix IO data corruption in batched operations") which
-> introduced usage of regmap_noinc_write() to this driver. That commit is
-> a fixup of commit 285e76fc049c4d32c772eea9460a7ef28a193802 ("serial:
-> max310x: use regmap methods for SPI batch operations") which started
-> using regmap_raw_write(), which was however also a wrong function.
->=20
-> Fixes: 3f42b142ea11 ("serial: max310x: fix IO data corruption in batched =
-operations")
-> Fixes: 285e76fc049c ("serial: max310x: use regmap methods for SPI batch o=
-perations")
-> Signed-off-by: Jan Kundr=E1t <jan.kundrat@cesnet.cz>
-> To: Mark Brown <broonie@kernel.org>
-> To: Cosmin Tanislav <cosmin.tanislav@analog.com>
-> To: linux-serial@vger.kernel.org
-> Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Cc: linux-kernel@vger.kernel.org
-> ---
->  drivers/tty/serial/max310x.c | 30 ++++++++++++++++++++++++------
->  1 file changed, 24 insertions(+), 6 deletions(-)
->=20
-> diff --git a/drivers/tty/serial/max310x.c b/drivers/tty/serial/max310x.c
-> index c44237470bee..79797b573723 100644
-> --- a/drivers/tty/serial/max310x.c
-> +++ b/drivers/tty/serial/max310x.c
-> @@ -663,16 +663,34 @@ static u32 max310x_set_ref_clk(struct device *dev, =
-struct max310x_port *s,
-> =20
->  static void max310x_batch_write(struct uart_port *port, u8 *txbuf, unsig=
-ned int len)
->  {
-> -	struct max310x_one *one =3D to_max310x_port(port);
-> -
-> -	regmap_noinc_write(one->regmap, MAX310X_THR_REG, txbuf, len);
-> +	const u8 header =3D (port->iobase * 0x20 + MAX310X_THR_REG) | MAX310X_W=
-RITE_BIT;
-> +	struct spi_transfer xfer[] =3D {
-> +		{
-> +			.tx_buf =3D &header,
-> +			.len =3D 1,
-> +		},
-> +		{
-> +			.tx_buf =3D txbuf,
-> +			.len =3D len,
-> +		},
-> +	};
-> +	spi_sync_transfer(to_spi_device(port->dev), xfer, ARRAY_SIZE(xfer));
->  }
-> =20
->  static void max310x_batch_read(struct uart_port *port, u8 *rxbuf, unsign=
-ed int len)
->  {
-> -	struct max310x_one *one =3D to_max310x_port(port);
-> -
-> -	regmap_noinc_read(one->regmap, MAX310X_RHR_REG, rxbuf, len);
-> +	const u8 header =3D port->iobase * 0x20 + MAX310X_RHR_REG;
-> +	struct spi_transfer xfer[] =3D {
-> +		{
-> +			.tx_buf =3D &header,
-> +			.len =3D 1,
-> +		},
-> +		{
-> +			.rx_buf =3D rxbuf,
-> +			.len =3D len,
-> +		},
-> +	};
-> +	spi_sync_transfer(to_spi_device(port->dev), xfer, ARRAY_SIZE(xfer));
->  }
-> =20
->  static void max310x_handle_rx(struct uart_port *port, unsigned int rxlen)
-> --=20
-> 2.42.0
->=20
->=20
->=20
+--CkFryha6tlsnAYUC--
