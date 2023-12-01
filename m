@@ -2,115 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95B47800B51
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 13:56:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6E0C800B58
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 13:59:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378915AbjLAM4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 07:56:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58530 "EHLO
+        id S1378914AbjLAM7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 07:59:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378858AbjLAM4i (ORCPT
+        with ESMTP id S1378858AbjLAM7U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 07:56:38 -0500
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44C0B10F9
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 04:56:44 -0800 (PST)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-a00a9c6f283so295647266b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 04:56:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1701435403; x=1702040203; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gM3txpR7KJT3aJLknAwcYyGwwkt0hTNGCSJEHZF76+c=;
-        b=dwm77DbY05vUESPpsO+GLsOcz3tWtZGm+Z6tydNvmu7KkBI5Qnq24MnUa0iBnVty5H
-         HQv2jbbICt28S4AkGc8n5Yo+NN9qNs0nN1lBGr/G4YeSwJwQbespYfuGDmSrRzedVHI7
-         45uNlbJpvXRdrWyoDw0xyYyLxlRB+pdqhHBVixZ9rzsNoiIX1Dq/tNme98BlEkb0acda
-         Zk1U71zj2UUhCEqa9mpvg94E0zGlrqb+Ao8Q/ip0bRf6CuvIlBJnygPJ+Xq7U8cP8IN5
-         VKYmAZQIOtPC6mNWaXHRgY13E38DGbRN3VkZbkLqE2A+YVlmGulnjwse5Ec9y6fcQKsm
-         UYyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701435403; x=1702040203;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gM3txpR7KJT3aJLknAwcYyGwwkt0hTNGCSJEHZF76+c=;
-        b=W9AUc34yBhFKpwoQYkoG/guxy6NNPL1bEawqhSJNX2OPG9/sWeN7taFiFKvvjDeylh
-         SbiWxThvISEfRxbwF6qm6HHDNWpsRodlI52X49N5hi0N/R6B++u0/Jucuy0yEyhC2Siz
-         2ISmRLu6MWW5/3n+b6N1DlDe5lQXcnTJsUo1KwOPzNSgG6an81RgAY89AFgUYxVaCv6k
-         JlMogfvf02zJFbYY8C2M+jrZPBZiivit5yiGg443veStVfcbTVtx4/EiibPiqV+Y4wIA
-         evXft7lQ9xUK27XJZ9DQt93+SEJwW6mdefdwznkBNnYZpeasTqjoBh28x/ulLhNKtUo8
-         lUmA==
-X-Gm-Message-State: AOJu0Ywp37Aya7cbdBQprRBJX1vFD8OBsK/D49EsRirm1TDFgaoGR0CF
-        rOezqcjkkpKJiyVFNvs6F0lzNg==
-X-Google-Smtp-Source: AGHT+IHp8Nv4OXPtvFgF6XpWvvRxj9c2EaQ1SrhCB00kpjwuFfVPKkcfIqVfgPCkzqkIRsPhVs+yKQ==
-X-Received: by 2002:a17:906:718b:b0:9fe:81a:c258 with SMTP id h11-20020a170906718b00b009fe081ac258mr1704769ejk.26.1701435402759;
-        Fri, 01 Dec 2023 04:56:42 -0800 (PST)
-Received: from heron.intern.cm-ag (p200300dc6f0b6500529a4cfffe3dd983.dip0.t-ipconnect.de. [2003:dc:6f0b:6500:529a:4cff:fe3d:d983])
-        by smtp.gmail.com with ESMTPSA id p10-20020a170906a00a00b00a0be4fec1b4sm1870231ejy.138.2023.12.01.04.56.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Dec 2023 04:56:42 -0800 (PST)
-From:   Max Kellermann <max.kellermann@ionos.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>
-Cc:     Max Kellermann <max.kellermann@ionos.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] fs/kernfs/dir: obey S_ISGID
-Date:   Fri,  1 Dec 2023 13:56:38 +0100
-Message-Id: <20231201125638.1699026-2-max.kellermann@ionos.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231201125638.1699026-1-max.kellermann@ionos.com>
-References: <20231201125638.1699026-1-max.kellermann@ionos.com>
+        Fri, 1 Dec 2023 07:59:20 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EA0510E2
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 04:59:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701435566; x=1732971566;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=5Kqdmd55kIhS9SwDbQZlx9iiKpwsGiJGuBjRxOl5VQM=;
+  b=MN1wBbJjCEC27eazxc/TLbe0K2mfrim3wH3c5CkfhVa2BYjh2Hid6NyD
+   uEZo1FODXexj+IsSQF/ztCj+1nv/lyxPomn3u3lIADE1WSgMDlfqHNPYD
+   anOt4jV+t4o5oxXy9LMW/+G56i3pXHS2A+jGazJ5/UFFYwJ1tndqh19uW
+   WH26wcKb9sOHnuh5dY2xEU+Qwoz/KIPjBp3tEZiMMN/AHI5jYq5ZmFu8K
+   75MPzP9piGxyCt6SzRBIjJvPshk6MqhRDFSP7QiVl/Ng0ekkqT7EDoE5H
+   Se5v3b4DlrUrr7dwXsAUvSK66uPZbGjERslk1WLBFhorKhIBWLlC0VQE5
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="393229477"
+X-IronPort-AV: E=Sophos;i="6.04,241,1695711600"; 
+   d="scan'208";a="393229477"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2023 04:59:26 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="893212259"
+X-IronPort-AV: E=Sophos;i="6.04,241,1695711600"; 
+   d="scan'208";a="893212259"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 01 Dec 2023 04:59:24 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r9373-0003hQ-2D;
+        Fri, 01 Dec 2023 12:59:21 +0000
+Date:   Fri, 1 Dec 2023 20:58:42 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Lukas Wunner <lukas@wunner.de>
+Subject: drivers/pci/pci.h:343:17: sparse: sparse: cast from restricted
+ pci_channel_state_t
+Message-ID: <202312012039.pWgQURKD-lkp@intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Handling of S_ISGID is usually done by inode_init_owner() in all other
-filesystems, but kernfs doesn't use that function.  In kernfs, struct
-kernfs_node is the primary data structure, and struct inode is only
-created from it on demand.  Therefore, inode_init_owner() can't be
-used and we need to imitate its behavior.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   994d5c58e50e91bb02c7be4a91d5186292a895c8
+commit: c82458101d5490230d735caecce14c9c27b1010c PCI/PM: Mark devices disconnected if upstream PCIe link is down on resume
+date:   9 weeks ago
+config: loongarch-randconfig-r034-20230511 (https://download.01.org/0day-ci/archive/20231201/202312012039.pWgQURKD-lkp@intel.com/config)
+compiler: loongarch64-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20231201/202312012039.pWgQURKD-lkp@intel.com/reproduce)
 
-S_ISGID support is useful for the cgroup filesystem; it allows
-subtrees managed by an unprivileged process to retain a certain owner
-gid, which then enables sharing access to the subtree with another
-unprivileged process.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312012039.pWgQURKD-lkp@intel.com/
 
-Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
----
- fs/kernfs/dir.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+sparse warnings: (new ones prefixed by >>)
+   drivers/pci/pci-driver.c:522:42: sparse: sparse: restricted pci_power_t degrades to integer
+   drivers/pci/pci-driver.c:522:61: sparse: sparse: restricted pci_power_t degrades to integer
+   drivers/pci/pci-driver.c:757:28: sparse: sparse: restricted pci_power_t degrades to integer
+   drivers/pci/pci-driver.c:757:46: sparse: sparse: restricted pci_power_t degrades to integer
+   drivers/pci/pci-driver.c: note: in included file:
+>> drivers/pci/pci.h:343:17: sparse: sparse: cast from restricted pci_channel_state_t
+>> drivers/pci/pci.h:343:17: sparse: sparse: cast to restricted pci_channel_state_t
+   drivers/pci/pci.h:346:23: sparse: sparse: cast from restricted pci_channel_state_t
+   drivers/pci/pci.h:346:23: sparse: sparse: cast from restricted pci_channel_state_t
+   drivers/pci/pci.h:346:23: sparse: sparse: cast to restricted pci_channel_state_t
+   drivers/pci/pci.h:350:23: sparse: sparse: cast from restricted pci_channel_state_t
+   drivers/pci/pci.h:350:23: sparse: sparse: cast from restricted pci_channel_state_t
+   drivers/pci/pci.h:350:23: sparse: sparse: cast to restricted pci_channel_state_t
 
-diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
-index 8b2bd65d70e7..7580cc340d28 100644
---- a/fs/kernfs/dir.c
-+++ b/fs/kernfs/dir.c
-@@ -676,6 +676,17 @@ struct kernfs_node *kernfs_new_node(struct kernfs_node *parent,
- {
- 	struct kernfs_node *kn;
- 
-+	if (parent->mode & S_ISGID) {
-+		/* this code block imitates inode_init_owner() for
-+		 * kernfs */
-+
-+		if (parent->iattr)
-+			gid = parent->iattr->ia_gid;
-+
-+		if (flags & KERNFS_DIR)
-+			mode |= S_ISGID;
-+	}
-+
- 	kn = __kernfs_new_node(kernfs_root(parent), parent,
- 			       name, mode, uid, gid, flags);
- 	if (kn) {
+vim +343 drivers/pci/pci.h
+
+ac04840350e2c2 Lukas Wunner         2023-03-11  324  
+a6bd101b8f84f9 Keith Busch          2018-09-20  325  /**
+a6bd101b8f84f9 Keith Busch          2018-09-20  326   * pci_dev_set_io_state - Set the new error state if possible.
+a6bd101b8f84f9 Keith Busch          2018-09-20  327   *
+347269c113f10f Krzysztof Wilczyński 2021-07-03  328   * @dev: PCI device to set new error_state
+347269c113f10f Krzysztof Wilczyński 2021-07-03  329   * @new: the state we want dev to be in
+a6bd101b8f84f9 Keith Busch          2018-09-20  330   *
+74ff8864cc842b Lukas Wunner         2023-01-20  331   * If the device is experiencing perm_failure, it has to remain in that state.
+74ff8864cc842b Lukas Wunner         2023-01-20  332   * Any other transition is allowed.
+a6bd101b8f84f9 Keith Busch          2018-09-20  333   *
+a6bd101b8f84f9 Keith Busch          2018-09-20  334   * Returns true if state has been changed to the requested state.
+a6bd101b8f84f9 Keith Busch          2018-09-20  335   */
+a6bd101b8f84f9 Keith Busch          2018-09-20  336  static inline bool pci_dev_set_io_state(struct pci_dev *dev,
+a6bd101b8f84f9 Keith Busch          2018-09-20  337  					pci_channel_state_t new)
+a6bd101b8f84f9 Keith Busch          2018-09-20  338  {
+74ff8864cc842b Lukas Wunner         2023-01-20  339  	pci_channel_state_t old;
+a6bd101b8f84f9 Keith Busch          2018-09-20  340  
+a6bd101b8f84f9 Keith Busch          2018-09-20  341  	switch (new) {
+a6bd101b8f84f9 Keith Busch          2018-09-20  342  	case pci_channel_io_perm_failure:
+74ff8864cc842b Lukas Wunner         2023-01-20 @343  		xchg(&dev->error_state, pci_channel_io_perm_failure);
+74ff8864cc842b Lukas Wunner         2023-01-20  344  		return true;
+a6bd101b8f84f9 Keith Busch          2018-09-20  345  	case pci_channel_io_frozen:
+74ff8864cc842b Lukas Wunner         2023-01-20  346  		old = cmpxchg(&dev->error_state, pci_channel_io_normal,
+74ff8864cc842b Lukas Wunner         2023-01-20  347  			      pci_channel_io_frozen);
+74ff8864cc842b Lukas Wunner         2023-01-20  348  		return old != pci_channel_io_perm_failure;
+a6bd101b8f84f9 Keith Busch          2018-09-20  349  	case pci_channel_io_normal:
+74ff8864cc842b Lukas Wunner         2023-01-20  350  		old = cmpxchg(&dev->error_state, pci_channel_io_frozen,
+74ff8864cc842b Lukas Wunner         2023-01-20  351  			      pci_channel_io_normal);
+74ff8864cc842b Lukas Wunner         2023-01-20  352  		return old != pci_channel_io_perm_failure;
+74ff8864cc842b Lukas Wunner         2023-01-20  353  	default:
+74ff8864cc842b Lukas Wunner         2023-01-20  354  		return false;
+a6bd101b8f84f9 Keith Busch          2018-09-20  355  	}
+a6bd101b8f84f9 Keith Busch          2018-09-20  356  }
+89ee9f7680031d Keith Busch          2017-03-29  357  
+
+:::::: The code at line 343 was first introduced by commit
+:::::: 74ff8864cc842be994853095dba6db48e716400a PCI: hotplug: Allow marking devices as disconnected during bind/unbind
+
+:::::: TO: Lukas Wunner <lukas@wunner.de>
+:::::: CC: Bjorn Helgaas <bhelgaas@google.com>
+
 -- 
-2.39.2
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
