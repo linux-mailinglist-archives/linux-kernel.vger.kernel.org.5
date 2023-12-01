@@ -2,182 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E61C8801599
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 22:41:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01FC0801594
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 22:40:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379687AbjLAVlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 16:41:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50860 "EHLO
+        id S1379683AbjLAVk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 16:40:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbjLAVlV (ORCPT
+        with ESMTP id S229562AbjLAVkY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 16:41:21 -0500
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CC81E6
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 13:41:27 -0800 (PST)
-Received: by mail-qt1-x82a.google.com with SMTP id d75a77b69052e-423c28db22eso30968521cf.1
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 13:41:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=hefring-com.20230601.gappssmtp.com; s=20230601; t=1701466886; x=1702071686; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=59mXeYglHvFe+i0q8a+nNQILZScUscbdHfS/fP8kp0o=;
-        b=cRGJHK1Gf02sJnV6elAOh99xCx4MP65bmpP4BtcDT7D92BfirX1OYHwgC4IT6rKMv+
-         b96+LMav+i8mm1vFDCxIUBT8iyIqhMfOpfCa5uU69CauqSlAx1yxgIuMWNO/Xsbk+lcE
-         ZwoNYakZiz95QWWVV4nFEXjD9deXgtA4XXplF/R+cpjkDb2D4BQaXp7JWeiPsIZgXOY6
-         1Wz95gf/O211yM273HUS49UJ0cOTYsIuVS2Lovm5tPlwGQjg6qU0ZYXRWSSGs5K3CyYB
-         tq4J0YJBBf+qxDqIH+h8GGOFIikU4lxgGLHve4JNsF8suz76KLFu/Yy7eh2P8PXxzrYu
-         EE6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701466886; x=1702071686;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=59mXeYglHvFe+i0q8a+nNQILZScUscbdHfS/fP8kp0o=;
-        b=jkiGQ5/HT1rpr2pc5mGbg98EsxlNVP9FnZAjWQdY9DeMSLgvBpIptRtuAUQkukG8Oc
-         8r8qZw8tZq3IhifSv9Ga02/05QDDRUMik2b751uo8Wv4K1DUyofE2XRGsbW2cHvttH7U
-         CL9NDS8DazQX16GSjI3qOZo/ebNi+0WozRSvvrhrS4Ta2tsbqZuruUon9ZQ8E87E/Qd2
-         kcn+7TXa1DHrthGQVQ7Zm7cKrQTpGgYneZg8fWZPK4S/ed393MMq3GXjDil1RyI+Jg/4
-         bpV2uJgQXtqV/s6dD2ZCJ2M3N9d7FC8q29+mnlZPi1W3Izv/pgRzn9jd0P6fg8bHo1uZ
-         wJ8w==
-X-Gm-Message-State: AOJu0Yw6QTd5OJ+hz63A4C0EOdNZjqypqM7kkUVs/tbpoqcG9BHXTv7C
-        PrOYocZu14bXoPrqSNlsC0QNxQ==
-X-Google-Smtp-Source: AGHT+IGoHQeQx+AvBZHeMuz4zrtTBJeL+RuLI8owzZH0hlPvq2bzzBRU91U6JRy1DLfm1yGhJb+4/A==
-X-Received: by 2002:a05:622a:1306:b0:425:4054:bc51 with SMTP id v6-20020a05622a130600b004254054bc51mr236289qtk.45.1701466886267;
-        Fri, 01 Dec 2023 13:41:26 -0800 (PST)
-Received: from localhost.localdomain ([50.212.55.89])
-        by smtp.gmail.com with ESMTPSA id v20-20020ac873d4000000b00423af25edefsm1834582qtp.27.2023.12.01.13.41.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Dec 2023 13:41:25 -0800 (PST)
-From:   Ben Wolsieffer <ben.wolsieffer@hefring.com>
-To:     linux-spi@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Mark Brown <broonie@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Alain Volmat <alain.volmat@foss.st.com>,
-        Ben Wolsieffer <ben.wolsieffer@hefring.com>
-Subject: [PATCH] spi: stm32: enable controller before asserting CS
-Date:   Fri,  1 Dec 2023 16:40:14 -0500
-Message-ID: <20231201214014.2539031-1-ben.wolsieffer@hefring.com>
-X-Mailer: git-send-email 2.42.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 1 Dec 2023 16:40:24 -0500
+Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAE6A10D0;
+        Fri,  1 Dec 2023 13:40:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
+        ; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
+        :Date:subject:date:message-id:reply-to;
+        bh=aMlkXbO2aFr6HQPefe+4mq3piTgwSgFpITAGHVUFRNk=; b=gAbpk/y9RwxBcI7KaYwLrum/ja
+        wpBOYsaXaOMzZwJ0OneFW/+8Y3vx1AAVUYVhL48DOr/fgeLCfnh8HXdeyVGjpdb2LsU6jYzVXwa5N
+        oHEwyMSDqJIW9H5gFZCHDtyatdQx4TktfRxErDnEqMgD4rPCWaLNrxDQyD/kBth8UWc0=;
+Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:50820 helo=pettiford)
+        by mail.hugovil.com with esmtpa (Exim 4.92)
+        (envelope-from <hugo@hugovil.com>)
+        id 1r9BFI-0006WO-Nj; Fri, 01 Dec 2023 16:40:25 -0500
+Date:   Fri, 1 Dec 2023 16:40:24 -0500
+From:   Hugo Villeneuve <hugo@hugovil.com>
+To:     Hugo Villeneuve <hugo@hugovil.com>
+Cc:     Jan =?ISO-8859-1?Q?Kundr=E1t?= <jan.kundrat@cesnet.cz>,
+        Mark Brown <broonie@kernel.org>,
+        Cosmin Tanislav <cosmin.tanislav@analog.com>,
+        linux-serial@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-kernel@vger.kernel.org
+Message-Id: <20231201164024.61d81e7224d9c16073be565d@hugovil.com>
+In-Reply-To: <20231201132736.65cb0e2bff88fba85121c44a@hugovil.com>
+References: <bd91db46c50615bc1d1d62beb659fa7f62386446.1701446070.git.jan.kundrat@cesnet.cz>
+        <20231201132736.65cb0e2bff88fba85121c44a@hugovil.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+X-SA-Exim-Connect-IP: 70.80.174.168
+X-SA-Exim-Mail-From: hugo@hugovil.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH] tty: max310x: work around regmap->regcache data
+ corruption
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On the STM32F4/7, the SPI pins float while the controller is disabled.
-Currently, the controller is enabled in the transfer_one() callback,
-which runs after CS is asserted. Therefore, there is a period where the
-SPI pins are floating while CS is asserted, making it possible for stray
-signals to disrupt communications. An analogous problem occurs at the
-end of the transfer when the controller is disabled before CS is
-released.
+On Fri, 1 Dec 2023 13:27:36 -0500
+Hugo Villeneuve <hugo@hugovil.com> wrote:
 
-This problem can be reliably observed by enabling the pull-up (if
-CPOL=0) or pull-down (if CPOL=1) on the clock pin. This will cause two
-extra unintended clock edges per transfer, when the controller is
-enabled and disabled.
+> On Fri, 1 Dec 2023 15:51:51 +0100
+> Jan Kundr=E1t <jan.kundrat@cesnet.cz> wrote:
+>=20
+> > The TL;DR summary is that the regmap_noinc_write spills over the data
+> > that are correctly written to the HW also to the following registers in
+> > the regcache. As a result, regcache then contains user-controlled
+> > garbage which will be used later for bit updates on unrelated registers.
+> >=20
+> > This patch is a "wrong" fix; a real fix would involve fixing regmap
+> > and/or regcache, but that code has too many indirections for my little
+> > mind.
+> >=20
+> > I was investigating a regression that happened somewhere between 5.12.4
+> > (plus 14 of our patches) and v6.5.9 (plus 7 of our patches). Our
+> > MAX14830 UART would work fine the first time, but when our application
+> > opens the UART the second time it just wouldn't send anything over the
+> > physical TX pin. With the help of a logical analyzer, I found out that
+> > the kernel was sending value 0xcd to the MODE1 register, which on this
+> > chip is a request to set the UART's TX pin to the Hi-Z mode and to
+> > switch off RX completely. That's certainly not the intention of the
+> > code, but that's what I was seeing on the physical SPI bus, and also in
+> > the log when I instrumented the regmap layer.
+> >=20
+> > It turned out that one of the *data* bytes which were sent over the UART
+> > was 0xdd, and that this *data byte* somehow ended up in the regcache's
+> > idea about the value within the MODE1 register. When the UART is opened
+> > up the next time and max310x_startup updates a single unrelated bit in
+> > MODE1, that code consults the regcache, notices the 0xdd data byte in
+> > there, and ends up sending 0xcd over SPI.
+> >=20
+> > Here's what dump_stack() shows:
+> >=20
+> >  max310x spi1.2: regcache_write: reg 0x9 value 0xdd
+> >  max310x spi1.2: PWNED
+> >  CPU: 1 PID: 26 Comm: kworker/1:1 Not tainted 6.5.9-7-g9e090fe75fd8 #7
+> >  Hardware name: Marvell Armada 380/385 (Device Tree)
+> >  Workqueue: events max310x_tx_proc
+> >   unwind_backtrace from show_stack+0x10/0x14
+> >   show_stack from dump_stack_lvl+0x40/0x4c
+> >   dump_stack_lvl from regcache_write+0xc0/0xc4
+> >   regcache_write from _regmap_raw_write_impl+0x178/0x828
+> >   _regmap_raw_write_impl from _regmap_raw_write+0xb8/0x134
+> >   _regmap_raw_write from regmap_noinc_write+0x130/0x178
+> >   regmap_noinc_write from max310x_tx_proc+0xd4/0x1a4
+> >   max310x_tx_proc from process_one_work+0x21c/0x4e4
+> >   process_one_work from worker_thread+0x50/0x54c
+> >   worker_thread from kthread+0xe0/0xfc
+> >   kthread from ret_from_fork+0x14/0x28
+> >=20
+> > Clearly, regmap_noinc_write of a register 0x00 (that's the TX FIFO on
+> > this chip) has no business updating register 0x09, but that's what was
+> > happening here. The regmap_config is already set up in a way that
+> > register 0x00 is marked precious and volatile, so it has no business
+> > going through the cache at all. Also, the documentation for
+> > regmap_noinc_write suggests that this driver was using the regmap
+> > infrastructure correctly, and that the real bug is somewhere in
+> > regmap/regcache where a call to regmap_noinc_write end up updating an
+> > unrelated register in regcache.
+>=20
+> Hi Jan,
+> it is funny, as I am preparing to send a patch for the sc16is7xx driver
+> to convert FIFO R/W to use the _noinc_ versions of regmap functions,
+> inspired by your patch 3f42b142ea11 ("serial: max310x: fix IO data
+> corruption in batched operations").
+>=20
+> I am testing on a custom board with two SC16IS752 in SPI mode.
 
-This patch fixes the bug by enabling the controller in prepare_message()
-and disabling it in unprepare_message(), which are called while CS is
-not asserted.
+Hi,
+I ran the tests on Greg's tty-next tree.
 
-Note that bug is likely not present on the STM32H7, because it supports
-the AFCNTR bit (and this driver sets it), which keeps the SPI pins
-driven even while the controller is disabled.
+Hugo Villeneuve.
 
-This patch has been tested on an STM32F746 with a MAX14830 UART
-expander.
 
-Signed-off-by: Ben Wolsieffer <ben.wolsieffer@hefring.com>
----
- drivers/spi/spi-stm32.c | 14 ++------------
- 1 file changed, 2 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/spi/spi-stm32.c b/drivers/spi/spi-stm32.c
-index 94df3836834c..885f53a51441 100644
---- a/drivers/spi/spi-stm32.c
-+++ b/drivers/spi/spi-stm32.c
-@@ -948,10 +948,8 @@ static irqreturn_t stm32fx_spi_irq_event(int irq, void *dev_id)
- static irqreturn_t stm32fx_spi_irq_thread(int irq, void *dev_id)
- {
- 	struct spi_controller *ctrl = dev_id;
--	struct stm32_spi *spi = spi_controller_get_devdata(ctrl);
- 
- 	spi_finalize_current_transfer(ctrl);
--	stm32fx_spi_disable(spi);
- 
- 	return IRQ_HANDLED;
- }
-@@ -1118,6 +1116,8 @@ static int stm32_spi_prepare_msg(struct spi_controller *ctrl,
- 			 ~clrb) | setb,
- 			spi->base + spi->cfg->regs->cpol.reg);
- 
-+	stm32_spi_enable(spi);
-+
- 	spin_unlock_irqrestore(&spi->lock, flags);
- 
- 	return 0;
-@@ -1135,7 +1135,6 @@ static void stm32fx_spi_dma_tx_cb(void *data)
- 
- 	if (spi->cur_comm == SPI_SIMPLEX_TX || spi->cur_comm == SPI_3WIRE_TX) {
- 		spi_finalize_current_transfer(spi->ctrl);
--		stm32fx_spi_disable(spi);
- 	}
- }
- 
-@@ -1150,7 +1149,6 @@ static void stm32_spi_dma_rx_cb(void *data)
- 	struct stm32_spi *spi = data;
- 
- 	spi_finalize_current_transfer(spi->ctrl);
--	spi->cfg->disable(spi);
- }
- 
- /**
-@@ -1235,8 +1233,6 @@ static int stm32fx_spi_transfer_one_irq(struct stm32_spi *spi)
- 
- 	stm32_spi_set_bits(spi, STM32FX_SPI_CR2, cr2);
- 
--	stm32_spi_enable(spi);
--
- 	/* starting data transfer when buffer is loaded */
- 	if (spi->tx_buf)
- 		spi->cfg->write_tx(spi);
-@@ -1273,8 +1269,6 @@ static int stm32h7_spi_transfer_one_irq(struct stm32_spi *spi)
- 
- 	spin_lock_irqsave(&spi->lock, flags);
- 
--	stm32_spi_enable(spi);
--
- 	/* Be sure to have data in fifo before starting data transfer */
- 	if (spi->tx_buf)
- 		stm32h7_spi_write_txfifo(spi);
-@@ -1306,8 +1300,6 @@ static void stm32fx_spi_transfer_one_dma_start(struct stm32_spi *spi)
- 		 */
- 		stm32_spi_set_bits(spi, STM32FX_SPI_CR2, STM32FX_SPI_CR2_ERRIE);
- 	}
--
--	stm32_spi_enable(spi);
- }
- 
- /**
-@@ -1341,8 +1333,6 @@ static void stm32h7_spi_transfer_one_dma_start(struct stm32_spi *spi)
- 
- 	stm32_spi_set_bits(spi, STM32H7_SPI_IER, ier);
- 
--	stm32_spi_enable(spi);
--
- 	if (STM32_SPI_MASTER_MODE(spi))
- 		stm32_spi_set_bits(spi, STM32H7_SPI_CR1, STM32H7_SPI_CR1_CSTART);
- }
--- 
-2.42.1
-
+> Here is our current FIFO write code:
+>=20
+>   regcache_cache_bypass(one->regmap, true);
+>   regmap_raw_write(one->regmap, SC16IS7XX_THR_REG, s->buf, to_send);
+>   regcache_cache_bypass(one->regmap, false);
+>=20
+> I am converting it to _noinc_ version to be able to remove the manual
+> (and ugly) cache control workaround to this:
+>=20
+>   regmap_noinc_write(one->regmap, SC16IS7XX_THR_REG, s->buf, to_send);
+>=20
+> SC16IS7XX_THR_REG is already in precious and volatile, and I also
+> have put it in the noinc list.
+>=20
+> To confirm that this works ok, I have put debug traces in some regmap
+> functions, and escpecially a trace in regcache_write() to indicate if
+> regmap is caching or not the register.
+>=20
+> Here is an example when writing 01234567890123456789 (20 bytes) to the
+> Tx FIFO:
+>=20
+> sc16is7xx spi0.0: sc16is7xx_tx_proc(): entry
+> sc16is7xx spi0.0: sc16is7xx_handle_tx(): entry
+> sc16is7xx spi0.0: regcache_read() not caching volatile reg $08
+> spi0.0-port0: regmap_read:  [08] 40
+> sc16is7xx spi0.0: regcache_write() not caching volatile reg $08
+> sc16is7xx spi0.0: _regmap_raw_write_impl() reg     =3D $00
+> sc16is7xx spi0.0: _regmap_raw_write_impl() val_len =3D 20
+> sc16is7xx spi0.0: regcache_write() not caching volatile reg $00
+> spi0.0-port0: regmap_write: [00] 30 31 32 33 34 35 36 37 38 39...
+> spi0.0-port0: regmap_write: [00] 36 37 38 39
+> ...
+>=20
+> With this I have confirmed that regmap _noinc_ works as intended, with
+> regcache_write() indicating it is not caching the volatile register 00
+> (THR).
+>=20
+> I hope this can help you with your investigation, let me know if I can
+> help more.
+>=20
+> Hugo Villeneuve.
+>=20
+>=20
+> =20
+> > Until regmap/regcache is fixed, let's just use an adapted version of the
+> > old code that bypasses regmap altogether, and just sends out an SPI
+> > transaction.
+> >=20
+> > This is related to my commit 3f42b142ea1171967e40e10e4b0241c0d6d28d41
+> > ("serial: max310x: fix IO data corruption in batched operations") which
+> > introduced usage of regmap_noinc_write() to this driver. That commit is
+> > a fixup of commit 285e76fc049c4d32c772eea9460a7ef28a193802 ("serial:
+> > max310x: use regmap methods for SPI batch operations") which started
+> > using regmap_raw_write(), which was however also a wrong function.
+> >=20
+> > Fixes: 3f42b142ea11 ("serial: max310x: fix IO data corruption in batche=
+d operations")
+> > Fixes: 285e76fc049c ("serial: max310x: use regmap methods for SPI batch=
+ operations")
+> > Signed-off-by: Jan Kundr=E1t <jan.kundrat@cesnet.cz>
+> > To: Mark Brown <broonie@kernel.org>
+> > To: Cosmin Tanislav <cosmin.tanislav@analog.com>
+> > To: linux-serial@vger.kernel.org
+> > Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
+> > Cc: linux-kernel@vger.kernel.org
+> > ---
+> >  drivers/tty/serial/max310x.c | 30 ++++++++++++++++++++++++------
+> >  1 file changed, 24 insertions(+), 6 deletions(-)
+> >=20
+> > diff --git a/drivers/tty/serial/max310x.c b/drivers/tty/serial/max310x.c
+> > index c44237470bee..79797b573723 100644
+> > --- a/drivers/tty/serial/max310x.c
+> > +++ b/drivers/tty/serial/max310x.c
+> > @@ -663,16 +663,34 @@ static u32 max310x_set_ref_clk(struct device *dev=
+, struct max310x_port *s,
+> > =20
+> >  static void max310x_batch_write(struct uart_port *port, u8 *txbuf, uns=
+igned int len)
+> >  {
+> > -	struct max310x_one *one =3D to_max310x_port(port);
+> > -
+> > -	regmap_noinc_write(one->regmap, MAX310X_THR_REG, txbuf, len);
+> > +	const u8 header =3D (port->iobase * 0x20 + MAX310X_THR_REG) | MAX310X=
+_WRITE_BIT;
+> > +	struct spi_transfer xfer[] =3D {
+> > +		{
+> > +			.tx_buf =3D &header,
+> > +			.len =3D 1,
+> > +		},
+> > +		{
+> > +			.tx_buf =3D txbuf,
+> > +			.len =3D len,
+> > +		},
+> > +	};
+> > +	spi_sync_transfer(to_spi_device(port->dev), xfer, ARRAY_SIZE(xfer));
+> >  }
+> > =20
+> >  static void max310x_batch_read(struct uart_port *port, u8 *rxbuf, unsi=
+gned int len)
+> >  {
+> > -	struct max310x_one *one =3D to_max310x_port(port);
+> > -
+> > -	regmap_noinc_read(one->regmap, MAX310X_RHR_REG, rxbuf, len);
+> > +	const u8 header =3D port->iobase * 0x20 + MAX310X_RHR_REG;
+> > +	struct spi_transfer xfer[] =3D {
+> > +		{
+> > +			.tx_buf =3D &header,
+> > +			.len =3D 1,
+> > +		},
+> > +		{
+> > +			.rx_buf =3D rxbuf,
+> > +			.len =3D len,
+> > +		},
+> > +	};
+> > +	spi_sync_transfer(to_spi_device(port->dev), xfer, ARRAY_SIZE(xfer));
+> >  }
+> > =20
+> >  static void max310x_handle_rx(struct uart_port *port, unsigned int rxl=
+en)
+> > --=20
+> > 2.42.0
+> >=20
+> >=20
+> >=20
+>=20
