@@ -2,204 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D500E8015DC
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 23:08:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A00008015E2
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 23:09:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231152AbjLAWIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 17:08:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34584 "EHLO
+        id S1441823AbjLAWJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 17:09:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjLAWIU (ORCPT
+        with ESMTP id S1441818AbjLAWJl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 17:08:20 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F5B210D
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 14:08:26 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D893BC433C7;
-        Fri,  1 Dec 2023 22:08:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701468505;
-        bh=J5w34K9IrU/nR2a8B14bwImOYjReMdTVS9JU/XNvSsM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=qfXuNNACF7hA0zP4Ro4689MIjK0/2F1aOBAT/G0zwtzTIjnYMcoxCWS6RjHDeVk/x
-         xZu0qNhJlmR9figpgQo5rTN1w+7GOjYTz3FoZPYMwrDQG+zQ7rsG8dnfrO81tO0o1P
-         aoEzy25IPws+/yPeAB6HkdxNzdmNHXqc6FPGU/n9qxk3v3Gyn1ElCs3W+hqdUN95pW
-         emw6LaECUJNUM3oyvzY11C98NWqYRF4LmMa5MSBe9XeRAGE2g+RBlEEpf8i4GE/N+m
-         V8RPAxz998LeavKHGQdSdaO8mIwp0G26dy2y5wIkCw8CjHCNGcilVyTT4dhNhFPoEN
-         naaRKXvkSlueA==
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2c9ee6fed3eso1451721fa.0;
-        Fri, 01 Dec 2023 14:08:25 -0800 (PST)
-X-Gm-Message-State: AOJu0YwfMraCFkEz1mh/xCiWER8971UVzPUVe/r7Wm3VuuKUAVFv6Clo
-        t258WL5//KVk+9Dsav8GXKjJSwsErdhI0N+qVPk=
-X-Google-Smtp-Source: AGHT+IFyU0hHoUTao7qYuN1h9ap95jN4vHRIrlLsDHJbqiCnwLomDQNsV4I8eA8CmODrnx8Irt6bLh40Ub599KVaRh8=
-X-Received: by 2002:a2e:99c5:0:b0:2c9:e9eb:8ccb with SMTP id
- l5-20020a2e99c5000000b002c9e9eb8ccbmr345272ljj.69.1701468504052; Fri, 01 Dec
- 2023 14:08:24 -0800 (PST)
+        Fri, 1 Dec 2023 17:09:41 -0500
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0675110D
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 14:09:47 -0800 (PST)
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1cc79f73e58so13375ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 14:09:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701468586; x=1702073386; darn=vger.kernel.org;
+        h=mime-version:user-agent:message-id:date:references:in-reply-to
+         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=zf6pqupbIe+fO+VPEeN59lUPlZ+0JUCn5Zq7zLY8rPA=;
+        b=y3mL1KW47saAW2cWOsKpj6YLIi5ohLcu8SsY7+qPsq9ruYTUUUPtxrTKmCa4l5+ur7
+         f+9C6nBmqInJJnEg5YT4BpXCWFdSUfK1puPQqCjFLNOwE8WwRa/ODZu8A3118BMc3jYT
+         ieys3pnQbTcpyny6KbJUO7Hz4prP1EdVh28QUkbN9hbq9iaU229zvlY5sNoCpxP/dQoc
+         x9ZIPc4mqzgyZxGJEVGDMUMdVrU+sK2d9rUV8OBL3QWoX/9ymyzFA98hgxTUvx3Ftf57
+         84FqDqpmitdSufzrcu3I4uUWwJDDkQlh87bTyb0gjhW0t4MOOshi02lpj/Ca35FAI4xs
+         KG1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701468586; x=1702073386;
+        h=mime-version:user-agent:message-id:date:references:in-reply-to
+         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zf6pqupbIe+fO+VPEeN59lUPlZ+0JUCn5Zq7zLY8rPA=;
+        b=sarf9zFvNGMQfz3bS6q7tWA0FTthq+z2CFnrB8o9Bxip3KmeSCfXZMXBK17o1AUbHc
+         LTVhGjSPezp0kegBnHu6A/4TxEKXGNJA34cKP2oKUM8nbYbNT+9R7odatH9nx90976rT
+         IxTrqE+pNG68w2UgGqiC9opX17pnxz0XYlU1S6/7d/PUFzcdngophLR5ylfUx2zLZPZg
+         GXQkqbT+Uq400WDMEKTrXOx6SWEyzE0zk+gvCh6CaCvM+k+IbEkvSVm05A0oDEpxDcVi
+         E0g7csaqLNRrVMB6R3dkzr/kXnn285ETBpnVDLwgi1WRYwb5MvLgRe4I+2sKO9OI0s67
+         aP8A==
+X-Gm-Message-State: AOJu0YxaH/hrN5jRQZXncA/munlyFQTAcezOLzsVf0/Mu0EglpbUXGDI
+        6Q7TjVYMJf+aATmJFOCblY1Jjw==
+X-Google-Smtp-Source: AGHT+IEpQPoqRS2n5kgEc7poBOJajiuDgEEwUvsw74Ur/tUoKWGSyQHMfD+27vcX9SHMccdsHL0eVw==
+X-Received: by 2002:a17:902:f681:b0:1cf:dbef:79c9 with SMTP id l1-20020a170902f68100b001cfdbef79c9mr326306plg.2.1701468586144;
+        Fri, 01 Dec 2023 14:09:46 -0800 (PST)
+Received: from bsegall-glaptop.localhost (c-73-158-249-138.hsd1.ca.comcast.net. [73.158.249.138])
+        by smtp.gmail.com with ESMTPSA id a34-20020a630b62000000b005b9083b81f0sm3548809pgl.36.2023.12.01.14.09.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Dec 2023 14:09:45 -0800 (PST)
+From:   Benjamin Segall <bsegall@google.com>
+To:     Valentin Schneider <vschneid@redhat.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Phil Auld <pauld@redhat.com>,
+        Clark Williams <williams@redhat.com>,
+        Tomas Glozar <tglozar@redhat.com>
+Subject: Re: [RFC PATCH 1/2] sched/fair: Only throttle CFS tasks on return
+ to userspace
+In-Reply-To: <xhsmhfs0maw49.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+        (Valentin Schneider's message of "Fri, 01 Dec 2023 14:30:14 +0100")
+References: <20231130161245.3894682-1-vschneid@redhat.com>
+        <20231130161245.3894682-2-vschneid@redhat.com>
+        <xm26sf4n2ar6.fsf@google.com>
+        <xhsmhfs0maw49.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+Date:   Fri, 01 Dec 2023 14:09:43 -0800
+Message-ID: <xm26o7f93788.fsf@google.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-References: <20231129043127.2245901-1-yukuai1@huaweicloud.com> <20231129043127.2245901-4-yukuai1@huaweicloud.com>
-In-Reply-To: <20231129043127.2245901-4-yukuai1@huaweicloud.com>
-From:   Song Liu <song@kernel.org>
-Date:   Fri, 1 Dec 2023 14:08:11 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW6ato6HNAosJZa1o2WHpoF1Y+qcSPLd3Y_rwW1ZiHAydQ@mail.gmail.com>
-Message-ID: <CAPhsuW6ato6HNAosJZa1o2WHpoF1Y+qcSPLd3Y_rwW1ZiHAydQ@mail.gmail.com>
-Subject: Re: [PATCH v3 3/3] md: fix stopping sync thread
-To:     Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     xni@redhat.com, yukuai3@huawei.com, linux-raid@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-        yangerkun@huawei.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 8:32=E2=80=AFPM Yu Kuai <yukuai1@huaweicloud.com> w=
-rote:
->
-> From: Yu Kuai <yukuai3@huawei.com>
->
-> Currently sync thread is stopped from multiple contex:
->  - idle_sync_thread
->  - frozen_sync_thread
->  - __md_stop_writes
->  - md_set_readonly
->  - do_md_stop
->
-> And there are some problems:
-> 1) sync_work is flushed while reconfig_mutex is grabbed, this can
->    deadlock because the work function will grab reconfig_mutex as well.
-> 2) md_reap_sync_thread() can't be called directly while md_do_sync() is
->    not finished yet, for example, commit 130443d60b1b ("md: refactor
->    idle/frozen_sync_thread() to fix deadlock").
-> 3) If MD_RECOVERY_RUNNING is not set, there is no need to stop
->    sync_thread at all because sync_thread must not be registered.
->
-> Factor out a helper prepare_to_stop_sync_thread(), so that above contex
-> will behave the same. Fix 1) by flushing sync_work after reconfig_mutex
-> is released, before waiting for sync_thread to be done; Fix 2) bt
-> letting daemon thread to unregister sync_thread; Fix 3) by always
-> checking MD_RECOVERY_RUNNING first.
->
-> Fixes: db5e653d7c9f ("md: delay choosing sync action to md_start_sync()")
-> Acked-by: Xiao Ni <xni@redhat.com>
->
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-> ---
->  drivers/md/md.c | 96 +++++++++++++++++++++++--------------------------
->  1 file changed, 45 insertions(+), 51 deletions(-)
->
-> diff --git a/drivers/md/md.c b/drivers/md/md.c
-> index 2d8e45a1af23..05902e36db66 100644
-> --- a/drivers/md/md.c
-> +++ b/drivers/md/md.c
-> @@ -4840,26 +4840,9 @@ action_show(struct mddev *mddev, char *page)
->         return sprintf(page, "%s\n", type);
->  }
->
-> -static void stop_sync_thread(struct mddev *mddev)
-> +static void prepare_to_stop_sync_thread(struct mddev *mddev)
-> +       __releases(&mddev->reconfig_mutex)
->  {
-> -       if (!test_bit(MD_RECOVERY_RUNNING, &mddev->recovery))
-> -               return;
-> -
-> -       if (mddev_lock(mddev))
-> -               return;
-> -
-> -       /*
-> -        * Check again in case MD_RECOVERY_RUNNING is cleared before lock=
- is
-> -        * held.
-> -        */
-> -       if (!test_bit(MD_RECOVERY_RUNNING, &mddev->recovery)) {
-> -               mddev_unlock(mddev);
-> -               return;
-> -       }
-> -
-> -       if (work_pending(&mddev->sync_work))
-> -               flush_workqueue(md_misc_wq);
-> -
->         set_bit(MD_RECOVERY_INTR, &mddev->recovery);
->         /*
->          * Thread might be blocked waiting for metadata update which will=
- now
-> @@ -4868,6 +4851,8 @@ static void stop_sync_thread(struct mddev *mddev)
->         md_wakeup_thread_directly(mddev->sync_thread);
->
->         mddev_unlock(mddev);
-> +       if (work_pending(&mddev->sync_work))
-> +               flush_work(&mddev->sync_work);
->  }
->
->  static void idle_sync_thread(struct mddev *mddev)
-> @@ -4876,10 +4861,20 @@ static void idle_sync_thread(struct mddev *mddev)
->
->         mutex_lock(&mddev->sync_mutex);
->         clear_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
-> -       stop_sync_thread(mddev);
->
-> -       wait_event(resync_wait, sync_seq !=3D atomic_read(&mddev->sync_se=
-q) ||
-> +       if (mddev_lock(mddev)) {
-> +               mutex_unlock(&mddev->sync_mutex);
-> +               return;
-> +       }
-> +
-> +       if (test_bit(MD_RECOVERY_RUNNING, &mddev->recovery)) {
-> +               prepare_to_stop_sync_thread(mddev);
-> +               wait_event(resync_wait,
-> +                       sync_seq !=3D atomic_read(&mddev->sync_seq) ||
->                         !test_bit(MD_RECOVERY_RUNNING, &mddev->recovery))=
-;
-> +       } else {
-> +               mddev_unlock(mddev);
-> +       }
+Valentin Schneider <vschneid@redhat.com> writes:
 
-We have a few patterns like this:
+> On 30/11/23 13:26, Benjamin Segall wrote:
+>> Valentin Schneider <vschneid@redhat.com> writes:
+>>
+>> The alternative we've been experimenting with (and still running into
+>> other issues that have made it hard to tell if they work) is to still
+>> leave the tasks on their cfs_rqs, but instead have two task_timelines or
+>> similar per cfs_rq, one of which only has unthrottleable tasks (or
+>> partially-throttled child cgroups) on it. Then when picking into a
+>> partially-unthrottled cfs_rq you only look at that alternate task_timeline.
+>>
+>
+> IIUC then you don't dequeue the cfs_rq's se, but instead rely on the RB
+> tree switch to only have unthrottable tasks running.
 
-        if (test_bit(MD_RECOVERY_RUNNING, &mddev->recovery)) {
-                prepare_to_stop_sync_thread(mddev);
-                wait_event(resync_wait,
-                        sync_seq !=3D atomic_read(&mddev->sync_seq) ||
-                        !test_bit(MD_RECOVERY_RUNNING, &mddev->recovery));
-        } else {
-                mddev_unlock(mddev);
-        }
+Correct.
 
-This is pretty confusing. Maybe try something like (untested)
+>
+>> This means that we get to skip this per-actually-throttled-task loop:
+>>
+>>> @@ -5548,7 +5548,61 @@ static int tg_unthrottle_up(struct task_group *tg, void *data)
+>>>  {
+>>>      struct rq *rq = data;
+>>>      struct cfs_rq *cfs_rq = tg->cfs_rq[cpu_of(rq)];
+>>> +	struct sched_entity *se = tg->se[cpu_of(rq)];
+>>> +	struct cfs_rq *pcfs_rq = cfs_rq_of(se);
+>>> +	long task_delta = 0, idle_task_delta = 0;
+>>> +	struct task_struct *p, *tmp;
+>>>
+>>> +	/*
+>>> +	 * Re-enqueue the tasks that have been throttled at this level.
+>>> +	 *
+>>> +	 * The task count is up-propagated via ->unthrottled_*h_nr_running,
+>>> +	 * as we can't purely rely on h_nr_running post-enqueue: the unthrottle
+>>> +	 * might happen when a cfs_rq still has some tasks enqueued, either still
+>>> +	 * making their way to userspace, or freshly migrated to it.
+>>> +	 */
+>>> +	list_for_each_entry_safe(p, tmp, &cfs_rq->throttled_limbo_list, throttle_node) {
+>>> +		struct sched_entity *pse = &p->se;
+>>> +
+>>> +		list_del_init(&p->throttle_node);
+>>> +		enqueue_entity(cfs_rq, pse, ENQUEUE_WAKEUP);
+>>> +		task_delta++;
+>>> +		idle_task_delta += task_has_idle_policy(p);
+>>> +	}
+>>
+>> The downsides are that you instead have extra operations per
+>> enqueue/dequeue/pick (but just an extra list/rbtree operation or check),
+>> and that it doesn't do *any* accounting change for a partially dequeued
+>> cfs_rq.
+>>
+>
+> I would assume we want to keep the *nr_running as close to reality as
+> possible, given their impact on pick_next_task_fair() & load_balance().
+>
 
-static void stop_sync_thread(struct mddev *mddev,
-                             bool do_unlock, bool check_sync_seq)
-{
-        if (test_bit(MD_RECOVERY_RUNNING, &mddev->recovery)) {
-                if (do_unlock)
-                        mddev_unlock(mddev);
-                return;
-        }
-        set_bit(MD_RECOVERY_INTR, &mddev->recovery);
-        /*
-         * Thread might be blocked waiting for metadata update which will n=
-ow
-         * never happen
-         */
-        md_wakeup_thread_directly(mddev->sync_thread);
+Yeah, and while it's maybe ok for the longer-period load_balance, it's
+definitely sketchy for the shorter term things like select_idle_sibling.
+In theory we could duplicate more and more of the accounting... (though
+that also then becomes questionable amounts of increased overhead on
+enqueue/dequeue).
 
-        mddev_unlock(mddev);
-        if (work_pending(&mddev->sync_work))
-                flush_work(&mddev->sync_work);
-        wait_event(resync_wait,
-                   !test_bit(MD_RECOVERY_RUNNING, &mddev->recovery) ||
-                   (check_sync_seq && sync_seq !=3D
-atomic_read(&mddev->sync_seq)));
-        if (!do_unlock)
-                mddev_lock_nointr(mddev);
-}
+>> I'm going to try putting together a cleaner variant of our version that
+>> works via task_work instead of bracketing every relevant entry point.
+>> (That design came from when we were trying instead to only do it for
+>> tasks holding actual locks)
+>
+> Interesting, thank you for sharing! I assume then the motivation for this
+> is to reduce latencies caused by throttling lock holders?
 
-Thanks,
-Song
+Yeah, and then we ran into things like percpu-rwsem where lock/unlock
+accounting doesn't work as well, but kept the basic design.
