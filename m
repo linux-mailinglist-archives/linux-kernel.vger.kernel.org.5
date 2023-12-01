@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 977E08006D4
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 10:27:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 170078006D5
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 10:27:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378029AbjLAJ1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 04:27:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49024 "EHLO
+        id S1378040AbjLAJ1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 04:27:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378004AbjLAJ1C (ORCPT
+        with ESMTP id S1378020AbjLAJ1D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 04:27:02 -0500
+        Fri, 1 Dec 2023 04:27:03 -0500
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E703D10F3
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 01:27:08 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A980E194
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 01:27:09 -0800 (PST)
 From:   Anna-Maria Behnsen <anna-maria@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1701422827;
+        s=2020; t=1701422828;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=jl8/xzU+GiuSpXdMfzNJncPixT2cuPm0ChHCjye17qI=;
-        b=PRcshUeiqQBP6Ypl/4igU9gnAZax/WZ9o6XJmRkijSQlV8N4QjPU98SYISHBREqA75uWZe
-        aXLpTqOnLIMMSJtBYXQmc9vf6PUTFIdnVOz1ssiOQTEDoFR/CgOrgEXe6urDrJO3mAyMOZ
-        CnXf0fRTJBCt/jCRZ09/255zi7frJtW4JTzBXU4m3SuzthrUHV2wDxvgqhxrl/ebelKOPs
-        8+OOkyFutkDdkDCpN3W0Cap8wApvWQSwQCdI0nIAKfgUSjYLhsPGYaaWgOTaY6tPN0rP28
-        fpvOInjCw9cXNbhxFLhb7yxte3vgMP/miUKuEACWllOZLXZawL5HAxaL+esNsA==
+        bh=TpL4QHNJmRbyjNaiO3+z9ClPjQHijZRgI0ccvQpegrw=;
+        b=UJJq6nocAW/HiAnWK8GyTPEfN1oOPO+9lXJFr9C7HGZTAE0APcdz0FcSis+Nc63mNgmw7f
+        DQPc5vLiU1FzKvIj7a/2povI1jdnoqtwEcyQ4eoRRnp+/slR/Hg9n99bO/DdzE97DLkd42
+        hzRcSz+mTyBFBysF7BFmGGc2ExkPoKocraYbLNw8ngI0NZCg+akvnglvPjX9CmYUNTqa0i
+        Z+SVu3HynyVTQZWf/Bm6/K2wD5JvHi04S7bTy8ANUEXKTMjAfXPp71O+NVOGHyTBwtWZ62
+        Jt2ZkJr4otEraNlGF8lGS4zufaLNY/yoA57SyGoui/zyn0ZZgM4oNgQ8y6fvlQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1701422827;
+        s=2020e; t=1701422828;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=jl8/xzU+GiuSpXdMfzNJncPixT2cuPm0ChHCjye17qI=;
-        b=Sb+rjhnebJJIO1g9BgSS4qyOLxH+tt5Barqeak47ZCMSmExPUqtDHBEroBlyuhU1DJydwt
-        x7ySNlMzzhm9QdCg==
+        bh=TpL4QHNJmRbyjNaiO3+z9ClPjQHijZRgI0ccvQpegrw=;
+        b=iUF3pD/b/ZHxN9ryp4qCxj+pHqQ1FCpLeP6M2yWc0rOxGEeo31fEwzQLExz/7zDZSZEI2g
+        JFxHUEpcXyBZvzCA==
 To:     linux-kernel@vger.kernel.org
 Cc:     Peter Zijlstra <peterz@infradead.org>,
         John Stultz <jstultz@google.com>,
@@ -55,9 +55,9 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
         K Prateek Nayak <kprateek.nayak@amd.com>,
         Anna-Maria Behnsen <anna-maria@linutronix.de>
-Subject: [PATCH v9 02/32] tick/sched: Cleanup confusing variables
-Date:   Fri,  1 Dec 2023 10:26:24 +0100
-Message-Id: <20231201092654.34614-3-anna-maria@linutronix.de>
+Subject: [PATCH v9 03/32] tick-sched: Warn when next tick seems to be in the past
+Date:   Fri,  1 Dec 2023 10:26:25 +0100
+Message-Id: <20231201092654.34614-4-anna-maria@linutronix.de>
 In-Reply-To: <20231201092654.34614-1-anna-maria@linutronix.de>
 References: <20231201092654.34614-1-anna-maria@linutronix.de>
 MIME-Version: 1.0
@@ -72,66 +72,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tick_nohz_stop_tick() contains the expires (u64 variable) and tick
-(ktime_t) variable. In the beginning the value of expires is written to
-tick. Afterwards none of the variables is changed. They are only used for
-checks.
+When the next tick is in the past, the delta between basemono and the next
+tick gets negativ. But the next tick should never be in the past. The
+negative effect of a wrong next tick might be a stop of the tick and timers
+might expire late.
 
-Drop the not required variable tick and use always expires instead.
+To prevent expensive debugging when changing underlying code, add a
+WARN_ON_ONCE into this code path. To prevent complete misbehaviour, also
+reset next_tick to basemono in this case.
 
 Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
-Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 ---
-v9: Fix typo in commit message
+v9: Add reset of next_tick to basemono
 ---
- kernel/time/tick-sched.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+ kernel/time/tick-sched.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
 diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
-index 5c28cc80fd25..89517cfb6510 100644
+index 89517cfb6510..b1b591de781e 100644
 --- a/kernel/time/tick-sched.c
 +++ b/kernel/time/tick-sched.c
-@@ -887,7 +887,6 @@ static void tick_nohz_stop_tick(struct tick_sched *ts, int cpu)
- 	struct clock_event_device *dev = __this_cpu_read(tick_cpu_device.evtdev);
- 	u64 basemono = ts->timer_expires_base;
- 	u64 expires = ts->timer_expires;
--	ktime_t tick = expires;
- 
- 	/* Make sure we won't be trying to stop it twice in a row. */
- 	ts->timer_expires_base = 0;
-@@ -910,7 +909,7 @@ static void tick_nohz_stop_tick(struct tick_sched *ts, int cpu)
- 	/* Skip reprogram of event if it's not changed */
- 	if (ts->tick_stopped && (expires == ts->next_tick)) {
- 		/* Sanity check: make sure clockevent is actually programmed */
--		if (tick == KTIME_MAX || ts->next_tick == hrtimer_get_expires(&ts->sched_timer))
-+		if (expires == KTIME_MAX || ts->next_tick == hrtimer_get_expires(&ts->sched_timer))
- 			return;
- 
- 		WARN_ON_ONCE(1);
-@@ -935,7 +934,7 @@ static void tick_nohz_stop_tick(struct tick_sched *ts, int cpu)
- 		trace_tick_stop(1, TICK_DEP_MASK_NONE);
+@@ -839,6 +839,10 @@ static ktime_t tick_nohz_next_event(struct tick_sched *ts, int cpu)
+ 		ts->next_timer = next_tick;
  	}
  
--	ts->next_tick = tick;
-+	ts->next_tick = expires;
- 
++	/* Make sure next_tick is never before basemono! */
++	if (WARN_ON_ONCE(basemono > next_tick))
++		next_tick = basemono;
++
  	/*
- 	 * If the expiration time == KTIME_MAX, then we simply stop
-@@ -950,11 +949,11 @@ static void tick_nohz_stop_tick(struct tick_sched *ts, int cpu)
- 	}
- 
- 	if (ts->nohz_mode == NOHZ_MODE_HIGHRES) {
--		hrtimer_start(&ts->sched_timer, tick,
-+		hrtimer_start(&ts->sched_timer, expires,
- 			      HRTIMER_MODE_ABS_PINNED_HARD);
- 	} else {
--		hrtimer_set_expires(&ts->sched_timer, tick);
--		tick_program_event(tick, 1);
-+		hrtimer_set_expires(&ts->sched_timer, expires);
-+		tick_program_event(expires, 1);
- 	}
- }
- 
+ 	 * If the tick is due in the next period, keep it ticking or
+ 	 * force prod the timer.
 -- 
 2.39.2
 
