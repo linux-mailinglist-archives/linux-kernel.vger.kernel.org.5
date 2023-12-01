@@ -2,123 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32FA280086C
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 11:37:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40BB5800873
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 11:38:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378303AbjLAKhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 05:37:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55484 "EHLO
+        id S1378305AbjLAKiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 05:38:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378266AbjLAKha (ORCPT
+        with ESMTP id S1378266AbjLAKiG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 05:37:30 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DA22F4
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 02:37:36 -0800 (PST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 5061221C55;
-        Fri,  1 Dec 2023 10:37:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1701427054; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3AKHXuA9rkIsDSYU4VYYdpC7Z1E4D6XbgmPzoeVMV08=;
-        b=CY5cWtFOcN9jOy0PFWPsrJrLEpFGDaWd6f52ktF+iZ2lmZWLHChlb++7dLUkPDxpsYNoZw
-        cVbos4WRyBhkKA8Ojovn8rsa3/Xmd6J20OADutV0XA77pLK1p9OIdUqTTHXWbt62jgMy89
-        E4D5c0wnfPIpqefwkppJvFnM515DRS8=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2EDF81379A;
-        Fri,  1 Dec 2023 10:37:34 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-        by imap1.dmz-prg2.suse.org with ESMTPSA
-        id D1qICG63aWXNZAAAD6G6ig
-        (envelope-from <mhocko@suse.com>); Fri, 01 Dec 2023 10:37:34 +0000
-Date:   Fri, 1 Dec 2023 11:37:33 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Pingfan Liu <piliu@redhat.com>
-Cc:     Baoquan He <bhe@redhat.com>, Donald Dutile <ddutile@redhat.com>,
-        Jiri Bohac <jbohac@suse.cz>, Tao Liu <ltao@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        Dave Young <dyoung@redhat.com>, kexec@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/4] kdump: crashkernel reservation from CMA
-Message-ID: <ZWm3bYYsMXVFqnnj@tiehlicka>
-References: <ZWWuBSiZZdF2W12j@tiehlicka>
- <ZWbyDx3TJ7zo3jCw@MiWiFi-R3L-srv>
- <91a31ce5-63d1-7470-18f7-92b039fda8e6@redhat.com>
- <ZWf64BowWrYqA2Rf@MiWiFi-R3L-srv>
- <ZWhg_b3O6piZtkQ-@tiehlicka>
- <ZWh6ax8YmkhxAzIf@MiWiFi-R3L-srv>
- <ZWiOO-KNJ82f6Gxu@tiehlicka>
- <CAF+s44QSJL5e6BVTAyyHR9Kzx7RJqZSkR=uXEypaouK_XuBbEw@mail.gmail.com>
- <ZWiRbLGdBMO2jFGs@tiehlicka>
- <CAF+s44TQ2g6VTL4JSubvch5VkW7SSsePp-aBz+kigg563NijJg@mail.gmail.com>
+        Fri, 1 Dec 2023 05:38:06 -0500
+Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9352712A
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 02:38:11 -0800 (PST)
+Received: by mail-vs1-xe32.google.com with SMTP id ada2fe7eead31-4644f2e611bso662353137.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 02:38:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1701427090; x=1702031890; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UTTB5Qf3NGi+WB3GCJHG37DhU59Gl9ODLb3haNT1v/c=;
+        b=kEJAUXezhcezJLZxMjtGjmmwIBcxqs+4A2DBK2At1NFG4VXACwh4I+X4Z5X6yja1lJ
+         F2ESnvA0dnxy2jC87uy7dPz+HuVPHbcQLwsthM/Jjh13zRLzl+7WXan2CNE2w0aTDOX6
+         2NVQENlG5BJw6FwWlmt2fkbh5kHFVpn8HOrrbzlTkxVX4P/TjecdWGfE3PB533uF++7H
+         Sj7TIgNjvdESagMEbr41pg38lJ3JiC5rLFZj5Eg4dRm4Ez01/9rHHQdUO/gOb7My+ja6
+         OuvuwWLdPBW3eWljkWFFNO/5gNi5S9rOv8cSTXx5d68se+xwosg0JzDSgEI9QMT9uJnz
+         q4AA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701427090; x=1702031890;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UTTB5Qf3NGi+WB3GCJHG37DhU59Gl9ODLb3haNT1v/c=;
+        b=TsX93OOmSniOzTwI5iczNK3bV1cEObNLMdT7HorgWaREiHto8r9LAEmMnSeM8tdHMp
+         GBe39Zq685aXZMtNG32QN2tAaejamcxAgSloCr51A8U1Oxxy0ztRRk+PKd174FoEgM/x
+         i1Skfe2i3ooxaegU+XhXHmyNmVJurRP2H4BxJu4K46zuycb2Wz8Ihb4MshMHLIK+Yhw9
+         1CY4otvVODRII5pJeq73Iw8AaSwoiGRQqe/xOxDxgjcxVo7JK7mi6VVQblTeXaB6PTpj
+         azG+Ebh910L+0HY8mb02QqazWHHfibrcjMwjlppx4QR52/TS93upr0vXToG4ocB0egvi
+         0DYg==
+X-Gm-Message-State: AOJu0Yz+tcUC+YkK74ilHNy9RiPQLZ98T6Syk8hbyi6VWZ/7DVnWB0PG
+        6JjU72ag7HDFdECWjpY0PR9spd6kWdiJVxSxArBYchAZWYlVymWH
+X-Google-Smtp-Source: AGHT+IHD3C4jeU8YUMrsywQzBJT50HuwUQ8yJRyHKKpw9tFA3HPIcqu/SHTN20FoIPSzlf2zVyUp/WJHxr0sgyP3xm4=
+X-Received: by 2002:a67:bc19:0:b0:464:4891:cce4 with SMTP id
+ t25-20020a67bc19000000b004644891cce4mr8735525vsn.20.1701427090706; Fri, 01
+ Dec 2023 02:38:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAF+s44TQ2g6VTL4JSubvch5VkW7SSsePp-aBz+kigg563NijJg@mail.gmail.com>
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -1.19
-X-Spamd-Result: default: False [-1.19 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         NEURAL_HAM_LONG(-1.00)[-1.000];
-         MIME_GOOD(-0.10)[text/plain];
-         RCVD_COUNT_THREE(0.00)[3];
-         DKIM_SIGNED(0.00)[suse.com:s=susede1];
-         RCPT_COUNT_SEVEN(0.00)[9];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         MID_RHS_NOT_FQDN(0.50)[];
-         RCVD_TLS_ALL(0.00)[];
-         BAYES_HAM(-0.59)[81.62%]
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <10db3021e8617c1f98eca51e26d350dc4b51b53c.1701335736.git.michal.simek@amd.com>
+In-Reply-To: <10db3021e8617c1f98eca51e26d350dc4b51b53c.1701335736.git.michal.simek@amd.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Fri, 1 Dec 2023 11:37:59 +0100
+Message-ID: <CAMRc=Md7iQnkOp+nB3=haakpt5jF_STtYgDAcxRVQJjYWnjFKA@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: gpio: modepin: Describe label property
+To:     Michal Simek <michal.simek@amd.com>
+Cc:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
+        michal.simek@xilinx.com, git@xilinx.com,
+        Andy Shevchenko <andy@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Piyush Mehta <piyush.mehta@amd.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 01-12-23 08:54:20, Pingfan Liu wrote:
-[...]
-> > I am not aware of any method to detect a driver is going to configure a
-> > RDMA.
-> >
-> 
-> If there is a pattern, scripts/coccinelle may give some help. But I am
-> not sure about that.
+On Thu, Nov 30, 2023 at 10:15=E2=80=AFAM Michal Simek <michal.simek@amd.com=
+> wrote:
+>
+> Describe optional label property which can be used for better gpio
+> identification.
+>
+> Signed-off-by: Michal Simek <michal.simek@amd.com>
+> ---
+>
+>  .../devicetree/bindings/gpio/xlnx,zynqmp-gpio-modepin.yaml     | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/gpio/xlnx,zynqmp-gpio-mode=
+pin.yaml b/Documentation/devicetree/bindings/gpio/xlnx,zynqmp-gpio-modepin.=
+yaml
+> index 56143f1fe84a..b1fd632718d4 100644
+> --- a/Documentation/devicetree/bindings/gpio/xlnx,zynqmp-gpio-modepin.yam=
+l
+> +++ b/Documentation/devicetree/bindings/gpio/xlnx,zynqmp-gpio-modepin.yam=
+l
+> @@ -23,6 +23,8 @@ properties:
+>    "#gpio-cells":
+>      const: 2
+>
+> +  label: true
+> +
+>  required:
+>    - compatible
+>    - gpio-controller
+> @@ -37,6 +39,7 @@ examples:
+>              compatible =3D "xlnx,zynqmp-gpio-modepin";
+>              gpio-controller;
+>              #gpio-cells =3D <2>;
+> +            label =3D "modepin";
+>          };
+>      };
+>
+> --
+> 2.36.1
+>
 
-I am not aware of any pattern.
+Applied, thanks!
 
-> > > If this can be resolved, I think this method is promising.
-> >
-> > Are you indicating this is a mandatory prerequisite?
-> 
-> IMHO, that should be mandatory. Otherwise for any unexpected kdump
-> kernel collapses,  it can not shake off its suspicion.
-
-I appreciate your carefulness! But I do not really see how such a
-detection would work and be maintained over time. What exactly is the
-scope of such a tooling? Should it be limited to RDMA drivers? Should we
-protect from stray writes in general?
-
-Also to make it clear. Are you going to nak the proposed solution if
-there is no such tooling available?
--- 
-Michal Hocko
-SUSE Labs
+Bart
