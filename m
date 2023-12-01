@@ -2,46 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA50E80148B
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 21:35:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFABC8014B6
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 21:42:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379610AbjLAUfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 15:35:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59152 "EHLO
+        id S230364AbjLAUl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 15:41:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379597AbjLAUfn (ORCPT
+        with ESMTP id S229456AbjLAUly (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 15:35:43 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0452F10E4
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 12:35:50 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 346A3C433C9;
-        Fri,  1 Dec 2023 20:35:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701462949;
-        bh=/TnZS0HuOiZtqdpeKk51Z32DjLXO4zdmRL4p1KDlMX0=;
+        Fri, 1 Dec 2023 15:41:54 -0500
+Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB662FF
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 12:42:00 -0800 (PST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 0DC8D40E025A;
+        Fri,  1 Dec 2023 20:41:59 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id dtF9r-Yr94qi; Fri,  1 Dec 2023 20:41:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1701463316; bh=Byd7KdvcncbN7gGuEC25NvwTc2Eqb0K83JwmPnTaOeY=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nuIUSC2KcV7FM+30c0UfS9RFJL5UdaqyTsZOK2FqD//8T/b276NdoI8m+YF20LoNM
-         5wAuKZj+wKVShIfyEbd0MimM68YPFpDzxA10NbkGhZcV2ocC944n6CGWfkSL8q0iRd
-         P0ntSTShaDcjjILKCAngWAUTu3Z8lG7OJJIIJAEGqQ+hbcWsVNKpTFQ1GmjZUJNGa9
-         6A3jugUlzCutWP3a2Wuuw1n8V7ee7oqzm41Jgxnh9KN6/EJKgcPnt31wN3mj2dmaLr
-         i/EORjhhBN18rLz0bPJ7Fpvs8AlrLISUe7+BPUT/l/k+0HU9p/LC0AA3kX2yocc8m2
-         J7z/uvgG7yMDQ==
-Date:   Fri, 1 Dec 2023 12:39:15 -0800
-From:   Bjorn Andersson <andersson@kernel.org>
-To:     Maria Yu <quic_aiquny@quicinc.com>
-Cc:     linus.walleij@linaro.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel@quicinc.com,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH] pinctrl: Add lock to ensure the state atomization
-Message-ID: <6jlui5h7d2rs37sdvvwmii55mwhm5dzfo2m62hwt53mkx4z32a@aw5kcghe4bik>
-References: <20231201152931.31161-1-quic_aiquny@quicinc.com>
+        b=M+yL/PueUuR2N7pMxdTKChMM0zp47nG29XS7CLUxj0TlhLKWDIiGiOgUrJ6PIT+JT
+         ka/FN4hnyHw6OXt+rVs43Lj9V0nYyVGXDL8hlYMjJFdThUlwDEj+U49XI2FvZYNjdU
+         utzck5W/i0BIlBn2rLWdG6uZWZ8uR8w/0c6oD+6h94AdJEM+fQ3wSxwaNZ7/yn3exA
+         /tVT3X8Y2yKZ2DCghO0vPpAFpysYVxyEXiYwl6U9aSFfOeULuYcUFX5z5ovjSe7cbt
+         GFKk4JQMsODTv+pJwX1MifQbNXPhNhxB3xjcN+dpLfZvXKczqO9/S4qbpYEvaNbJtu
+         bBLfzFqBAsWQ1rV0RCly17e3js1knA5k5RuyCttjhdasCtExDPIEhu5ZdTR11F0dOb
+         TGwYkP2zK+NfHCsr3/S1yCM1/Fy9yy7saUoPU9QYsGO8s6PXA/u7m1uJL1dBvCcjHB
+         5aO0linwtiTfADE/e/w548MnM/bsbnyqj3sith921E2Y0wmGTN12KFzqHkDPT4Toxq
+         OwU8pVVJBYoDSdctVadegDY3O3hvLGNMB6wYPPm/rJF4Sr/rNIrXFFQvqMeG0GB67x
+         BcBTvGMcsShugoYOfnhowBETD0aMm2ppRqNDqdU/OBas7o/a62/SKdUDuHJa94hTbY
+         G4PwJv7jAnlJJJRVlOQLn1eE=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 141CE40E0239;
+        Fri,  1 Dec 2023 20:41:52 +0000 (UTC)
+Date:   Fri, 1 Dec 2023 21:41:46 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Ashok Raj <ashok.raj@intel.com>
+Cc:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH 2/2] x86/microcode: Rework early revisions reporting
+Message-ID: <20231201204146.GGZWpFCqodLUPS27tJ@fat_crate.local>
+References: <20231115210212.9981-1-bp@alien8.de>
+ <20231115210212.9981-3-bp@alien8.de>
+ <ZWjVt5dNRjbcvlzR@a4bf019067fa.jf.intel.com>
+ <20231201163928.GCZWoMQNAAQSA9U12D@fat_crate.local>
+ <ZWpDHgNjhQKLodF6@a4bf019067fa.jf.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231201152931.31161-1-quic_aiquny@quicinc.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+In-Reply-To: <ZWpDHgNjhQKLodF6@a4bf019067fa.jf.intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -50,108 +70,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 01, 2023 at 11:29:31PM +0800, Maria Yu wrote:
-> Currently pinctrl_select_state is an export symbol and don't have
-> effective re-entrance protect design. And possible of pinctrl state
-> changed during pinctrl_commit_state handling. Add per pinctrl lock to
-> ensure the old state and new state transition atomization.
-> Move dev error print message right before old_state pinctrl_select_state
-> and out of lock protection to avoid console related driver call
-> pinctrl_select_state recursively.
+On Fri, Dec 01, 2023 at 12:33:34PM -0800, Ashok Raj wrote:
+> I'll get a dmesg shortly once i get my test system back.
 
-I'm uncertain about the validity of having client code call this api in
-a racy manner. I'm likely just missing something here... It would be
-nice if this scenario was described in a little bit more detail.
+Thanks.
 
-The recursive error print sounds like a distinct problem of its own,
-that warrants being introduced in a patch of its own. But as with the
-other part, I'm not able to spot a code path in the upstream kernel
-where this hppens, so please properly describe the scenario where
-touching the console would result back in another pinctrl_select_state().
+> What I meant was 
 
-Thanks,
-Bjorn
+I know what you meant. Did you see the diff I sent you?
 
-> 
-> Fixes: 4198a9b57106 ("pinctrl: avoid reload of p state in list iteration")
-> Signed-off-by: Maria Yu <quic_aiquny@quicinc.com>
-> ---
->  drivers/pinctrl/core.c | 11 +++++++++--
->  drivers/pinctrl/core.h |  2 ++
->  2 files changed, 11 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/pinctrl/core.c b/drivers/pinctrl/core.c
-> index f2977eb65522..a19c286bf82e 100644
-> --- a/drivers/pinctrl/core.c
-> +++ b/drivers/pinctrl/core.c
-> @@ -1066,6 +1066,7 @@ static struct pinctrl *create_pinctrl(struct device *dev,
->  	p->dev = dev;
->  	INIT_LIST_HEAD(&p->states);
->  	INIT_LIST_HEAD(&p->dt_maps);
-> +	spin_lock_init(&p->lock);
->  
->  	ret = pinctrl_dt_to_map(p, pctldev);
->  	if (ret < 0) {
-> @@ -1262,9 +1263,12 @@ static void pinctrl_link_add(struct pinctrl_dev *pctldev,
->  static int pinctrl_commit_state(struct pinctrl *p, struct pinctrl_state *state)
->  {
->  	struct pinctrl_setting *setting, *setting2;
-> -	struct pinctrl_state *old_state = READ_ONCE(p->state);
-> +	struct pinctrl_state *old_state;
->  	int ret;
-> +	unsigned long flags;
->  
-> +	spin_lock_irqsave(&p->lock, flags);
-> +	old_state = p->state;
->  	if (old_state) {
->  		/*
->  		 * For each pinmux setting in the old state, forget SW's record
-> @@ -1329,11 +1333,11 @@ static int pinctrl_commit_state(struct pinctrl *p, struct pinctrl_state *state)
->  	}
->  
->  	p->state = state;
-> +	spin_unlock_irqrestore(&p->lock, flags);
->  
->  	return 0;
->  
->  unapply_new_state:
-> -	dev_err(p->dev, "Error applying setting, reverse things back\n");
->  
->  	list_for_each_entry(setting2, &state->settings, node) {
->  		if (&setting2->node == &setting->node)
-> @@ -1349,6 +1353,9 @@ static int pinctrl_commit_state(struct pinctrl *p, struct pinctrl_state *state)
->  			pinmux_disable_setting(setting2);
->  	}
->  
-> +	spin_unlock_irqrestore(&p->lock, flags);
-> +
-> +	dev_err(p->dev, "Error applying setting, reverse things back\n");
->  	/* There's no infinite recursive loop here because p->state is NULL */
->  	if (old_state)
->  		pinctrl_select_state(p, old_state);
-> diff --git a/drivers/pinctrl/core.h b/drivers/pinctrl/core.h
-> index 530370443c19..86fc41393f7b 100644
-> --- a/drivers/pinctrl/core.h
-> +++ b/drivers/pinctrl/core.h
-> @@ -12,6 +12,7 @@
->  #include <linux/list.h>
->  #include <linux/mutex.h>
->  #include <linux/radix-tree.h>
-> +#include <linux/spinlock.h>
->  #include <linux/types.h>
->  
->  #include <linux/pinctrl/machine.h>
-> @@ -91,6 +92,7 @@ struct pinctrl {
->  	struct pinctrl_state *state;
->  	struct list_head dt_maps;
->  	struct kref users;
-> +	spinlock_t lock;
->  };
->  
->  /**
-> 
-> base-commit: 994d5c58e50e91bb02c7be4a91d5186292a895c8
-> -- 
-> 2.17.1
-> 
-> 
+It has the fix already:
+
+@@ -410,13 +421,19 @@ void __init load_ucode_intel_bsp(struct early_load_data *ed)
+ {
+        struct ucode_cpu_info uci;
+
+-       ed->old_rev = intel_get_microcode_revision();
+-
+        uci.mc = get_microcode_blob(&uci, false);
+-       if (uci.mc && apply_microcode_early(&uci) == UCODE_UPDATED)
++       ed->old_rev = uci.cpu_sig.rev;
++
++       uc_dbg("old_rev: 0x%x", ed->old_rev);
++
++       if (uci.mc && apply_microcode_early(&uci) == UCODE_UPDATED) {
+                ucode_patch_va = UCODE_BSP_LOADED;
++               ed->new_rev = uci.cpu_sig.rev;
++
++               uc_dbg("updated, new_rev: 0x%x", ed->new_rev);
++       }
+^^^^^^^^^^^^^
+
+The assignment is now inside the UCODE_UPDATED conditional.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
