@@ -2,56 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE0D6800BE4
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 14:27:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3966A800BF7
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 14:28:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379005AbjLAN1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 08:27:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45510 "EHLO
+        id S1379009AbjLAN2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 08:28:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378992AbjLAN1r (ORCPT
+        with ESMTP id S1378992AbjLAN2l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 08:27:47 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9443913E;
-        Fri,  1 Dec 2023 05:27:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=BXafAH8BWhpG1fug+rYpt7+DF2WwHDSy3uyXtRATKBk=; b=r0m9sutmr5xmt6az4XdA/s9puy
-        39xESoVJx9QhEJZHFTVdpltFC2CUtssZRepC6G0/fP0pUgM/lnsMsM4v2xhTQYVSLRPsAeNiXHqfi
-        vmq0ipcVerKP7IssioLADTR1Lsh9pAzdQ+cBtUS1XSK/9wqqNJ6nUh66OL1V407hB9mHGN1IuNJ3P
-        Pm0d1kXhp9sg4rrgz9S4ORZdFZCSCTFHcoU0gJSoBLU+/D+hjHv7d8oiiplH6Srz8ACkFI7h7/5pa
-        dq7uNxx9yF08s3gl+3kpO3+Xbc1Xw5m3OBMeW0hIroetRwD7oTdX5wc1PxAOnXaqqkIrnL0qjK+w2
-        feN+UV6g==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1r93YV-00FY5Z-Kf; Fri, 01 Dec 2023 13:27:43 +0000
-Date:   Fri, 1 Dec 2023 13:27:43 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     John Garry <john.g.garry@oracle.com>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        Ojaswin Mujoo <ojaswin@linux.ibm.com>,
-        linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
-        Ritesh Harjani <ritesh.list@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        linux-block@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, dchinner@redhat.com
-Subject: Re: [RFC 1/7] iomap: Don't fall back to buffered write if the write
- is atomic
-Message-ID: <ZWnfT1+afsZ9JaZP@casper.infradead.org>
-References: <cover.1701339358.git.ojaswin@linux.ibm.com>
- <09ec4c88b565c85dee91eccf6e894a0c047d9e69.1701339358.git.ojaswin@linux.ibm.com>
- <ZWj6Tt1zKUL4WPGr@dread.disaster.area>
- <85d1b27c-f4ef-43dd-8eed-f497817ab86d@oracle.com>
+        Fri, 1 Dec 2023 08:28:41 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABC62197
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 05:28:47 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 438D0C433C7;
+        Fri,  1 Dec 2023 13:28:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701437327;
+        bh=Qpt/aNUBs3S/L2cKojCHHUwbYv5eELV0YcgOZU1TGKQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lMXOQXidhON+jm5+n6xuu+kOTqu4R0ycQTD2qewfdiBSBDFqVQQPKY+nyYMgirEof
+         3MKlC31acfD1/9i8FlBrXve9/GZ27NXryKzAPkZlcg5iII4wGMG2s8mQVDBvzM72dy
+         uAyMzPZerMy255H2xgLj3iplnZBMiUKOnOmZUVj/tGaL6+OFHft0IuAEnBMVu0/yGD
+         8Hp6Aq5J+hgDqUQ+ZmOSPaN5EGgV59xjkUPkklU2VUAp9Azk71TUX9UArFXew84o2q
+         qwFXJz4UppDfioAZQJXLU2V7HCAi3BTZER7PNdhRrfa88waMqDhmdzAf9kaQbm3X5i
+         UrhqiZVsOGflw==
+Received: from johan by xi.lan with local (Exim 4.96.2)
+        (envelope-from <johan@kernel.org>)
+        id 1r93a6-0001z3-3B;
+        Fri, 01 Dec 2023 14:29:23 +0100
+Date:   Fri, 1 Dec 2023 14:29:22 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Marcus Folkesson <marcus.folkesson@gmail.com>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Input: pxrc - simplify mutex handling with guard macro
+Message-ID: <ZWnfsjIukIbAvQ-l@hovoldconsulting.com>
+References: <20231201-pxrc-guard-v1-1-38937e657368@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <85d1b27c-f4ef-43dd-8eed-f497817ab86d@oracle.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <20231201-pxrc-guard-v1-1-38937e657368@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,42 +53,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 01, 2023 at 10:42:57AM +0000, John Garry wrote:
-> Sure, and I think that we need a better story for supporting buffered IO for
-> atomic writes.
+On Fri, Dec 01, 2023 at 01:08:45PM +0100, Marcus Folkesson wrote:
+> Use the guard(mutex) macro for handle mutex lock/unlocks.
 > 
-> Currently we have:
-> - man pages tell us RWF_ATOMIC is only supported for direct IO
-> - statx gives atomic write unit min/max, not explicitly telling us it's for
-> direct IO
-> - RWF_ATOMIC is ignored for !O_DIRECT
+> Signed-off-by: Marcus Folkesson <marcus.folkesson@gmail.com>
+
+A couple of drive-by comments below.
+
+> ---
+>  drivers/input/joystick/pxrc.c | 27 +++++++++++----------------
+>  1 file changed, 11 insertions(+), 16 deletions(-)
 > 
-> So I am thinking of expanding statx support to enable querying of atomic
-> write capabilities for buffered IO and direct IO separately.
+> diff --git a/drivers/input/joystick/pxrc.c b/drivers/input/joystick/pxrc.c
+> index ea2bf5951d67..3c3bf7179b46 100644
+> --- a/drivers/input/joystick/pxrc.c
+> +++ b/drivers/input/joystick/pxrc.c
+> @@ -5,15 +5,17 @@
+>   * Copyright (C) 2018 Marcus Folkesson <marcus.folkesson@gmail.com>
+>   */
+>  
+> -#include <linux/kernel.h>
+> +#include <linux/cleanup.h>
+>  #include <linux/errno.h>
+> -#include <linux/slab.h>
+> +#include <linux/input.h>
+> +#include <linux/kernel.h>
+>  #include <linux/module.h>
+> +#include <linux/mutex.h>
+> +#include <linux/slab.h>
+>  #include <linux/uaccess.h>
+> +
+>  #include <linux/usb.h>
+>  #include <linux/usb/input.h>
+> -#include <linux/mutex.h>
+> -#include <linux/input.h>
 
-Or ... we could support RWF_ATOMIC in the page cache?
+Looks like an unrelated change.
+  
+>  #define PXRC_VENDOR_ID		0x1781
+>  #define PXRC_PRODUCT_ID		0x0898
+> @@ -89,25 +91,20 @@ static int pxrc_open(struct input_dev *input)
+>  		dev_err(&pxrc->intf->dev,
+>  			"%s - usb_submit_urb failed, error: %d\n",
+>  			__func__, retval);
+> -		retval = -EIO;
+> -		goto out;
+> +		return -EIO;
+>  	}
+>  
+>  	pxrc->is_open = true;
+> -
+> -out:
+> -	mutex_unlock(&pxrc->pm_mutex);
+> -	return retval;
+> +	return 0;
+>  }
 
-I haven't particularly been following the atomic writes patchset, but
-for filesystems which support large folios, we now create large folios
-in the write path.  I see four problems to solve:
+Eh, this looks obviously broken. Did you not test this before
+submitting? I assume lockdep would complain loudly too.
 
-1. We might already have a smaller folio in the page cache from an
-   earlier access,  We'd have to kick it out before creating a new folio
-   that is the appropriate size.
+You're apparently the author of this driver and can test it, but I fear
+the coming onslaught of untested guard conversions from the "cleanup"
+crew. Not sure I find the result generally more readable either.
 
-2. We currently believe it's always OK to fall back to allocating smaller
-   folios if memory allocation fails.  We'd need to change that policy
-   (which we need to modify anyway for the bs>PS support).
-
-3. We need to somewhere keep the information that writeback of this
-   folio has to use the atomic commands.  Maybe it becomes a per-inode
-   flag so that all writeback from this inode now uses the atomic
-   commands?
-
-4. If somebody does a weird thing like truncate/holepunch into the
-   middle of the folio, we need to define what we do.  It's conceptually
-   a bizarre thing to do, so I can't see any user actually wanting to
-   do that ... but we need to define the semantics.
-
-Maybe there are things I haven't thought of.  And of course, some
-filesystems don't support large folios yet.
+Johan
