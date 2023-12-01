@@ -2,87 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA58F8006B1
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 10:19:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B117E8006AF
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 10:19:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377999AbjLAJTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 04:19:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45282 "EHLO
+        id S1377994AbjLAJTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 04:19:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377985AbjLAJTY (ORCPT
+        with ESMTP id S235242AbjLAJTO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 04:19:24 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F15A10FA;
-        Fri,  1 Dec 2023 01:19:30 -0800 (PST)
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B15cHvc022539;
-        Fri, 1 Dec 2023 09:19:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=Zka4KzIUcTY1DnFiW9G0zPvTAMcdwMCa69wvvZaIvwg=;
- b=aWkydWqruTEOIxl6gXrgbPzkAHePPA/4EVZc3PSFkeJ7KrXKvMtkwhd8kROB8o5Tx8FV
- F6Cixw1mBZZ3qWqohGmHSU5eYHxKCgCLSX5kVS+IVnm2WOJ7PrMZv0eHJeNq4GVif77M
- N+0Y/iyX5AtT+tnagNd7k6GEbgBw6n6gOYuIsZwLXrk4f7l1yyCcQbdGEnU2e8avgvpQ
- hiIbvKFgHhsN3qKOHe2Gz9ZZZnJr7iTxOcVNK/eEayBfdV2bsXoBxd1PowW6i7VSoniB
- f/mxSP0+4tx+BWyfCSoQVP1cfkWa/TxJh7C8ocHYYVsFAK1jxSkNNYx18uz0OGetmoxX DQ== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3upv482ek2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 01 Dec 2023 09:19:24 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B19JNei024942
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 1 Dec 2023 09:19:23 GMT
-Received: from [10.216.46.214] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 1 Dec
- 2023 01:19:17 -0800
-Message-ID: <f38fa45b-6b57-f941-7bf9-5b6c2d0ea1b8@quicinc.com>
-Date:   Fri, 1 Dec 2023 14:49:12 +0530
+        Fri, 1 Dec 2023 04:19:14 -0500
+Received: from mail-vk1-xa32.google.com (mail-vk1-xa32.google.com [IPv6:2607:f8b0:4864:20::a32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB4BE1713;
+        Fri,  1 Dec 2023 01:19:19 -0800 (PST)
+Received: by mail-vk1-xa32.google.com with SMTP id 71dfb90a1353d-4b29d7e3a37so613933e0c.0;
+        Fri, 01 Dec 2023 01:19:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701422359; x=1702027159; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=D1s6ku9jxSTJIcLU4eEo9sIfanosqAVFmhUz2VWVY2U=;
+        b=gRS1Af3SvbygZE8Lp7szptVdlEDTF/7VW2b0uU38BNjEbi2pvVoDqxWCx3TuMV7VIE
+         qWUUyL26fj8nkBfrMVSduSC3LCNcQePOspptgyPhH88dhdf3OLkOmPRSePu9htDAMJrY
+         ++DVDauIMCiQemJJiJImnWmf3JL/Lmlz5st1RLNayOLDpOg2kS6O7UkFDbbj0ZzgUgaX
+         7Hsm4sPtIuEv+F+HLunpOHUP1lfYuF7zIphsTu4q2xD0qlbaP+ybHBgr5X36792aEn6P
+         HwIbSKcRlrb0NGg5iA0CIWFCKYvlefa1zoRyZjNC3LhePDyJCsiki2jrYei2W0cGpKuh
+         qtFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701422359; x=1702027159;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=D1s6ku9jxSTJIcLU4eEo9sIfanosqAVFmhUz2VWVY2U=;
+        b=JW7oL70ymO+3p7lXLjWRiWNyou9UldiPKAri+Wyza5hoTp8K8TLkGXGjOYs9tqWFez
+         i7HG7/K57/frFi8CVcj0lcUOBp70Yn3gtfDS4Me1JCWJrGl+Jrt39DcKysGjltFpBU9m
+         5Qa1t0dlvuPHG/3vzx2vQXiz1nFZr9MareX9eQbqMvfaVljroXGbNZc55tWHtEAQtlRt
+         c1+20YaIcfF2OaXzPCwzg4gX180d4AA+Iq/pbqhdxREXGFH18Ciaypt7Y60t2lbvF/+u
+         ogjkLaEYE5rTuolyiV26I0+IRR72gv2fTf9OCLVbWZ3equcCcqYFi8lOEK9I9235j9e6
+         BbDg==
+X-Gm-Message-State: AOJu0YxAKCXByST0Us7PBHV62uKQBEssPOqfWL5xqU2BjJzbwPEfh80C
+        vnP09ToX1S6bGFCFKHC7o24=
+X-Google-Smtp-Source: AGHT+IG3LSJ1DCsXNb0LC0NGqh4r7KjJmMKJql5UGVOjZr7aD6BsJX6RajBGyqUoRbd67DD1G6yIuQ==
+X-Received: by 2002:a1f:f8cf:0:b0:4b2:777a:a860 with SMTP id w198-20020a1ff8cf000000b004b2777aa860mr11699340vkh.13.1701422358882;
+        Fri, 01 Dec 2023 01:19:18 -0800 (PST)
+Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
+        by smtp.gmail.com with ESMTPSA id i15-20020a0cf38f000000b0067a4059068dsm1299513qvk.139.2023.12.01.01.19.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Dec 2023 01:19:18 -0800 (PST)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 9811527C005B;
+        Fri,  1 Dec 2023 04:19:17 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Fri, 01 Dec 2023 04:19:17 -0500
+X-ME-Sender: <xms:FKVpZSruAz3wCkAJGgGsEnuix9VDARrLVUG2gD87AqzOLk9TEDZKlQ>
+    <xme:FKVpZQpAVMUQmlDTbQCDfRZcosrkXCK-qmx0T-eQCexAsoXw2p7QoOwfMNBa6DihT
+    qiAjtbUWcOMCjh9rQ>
+X-ME-Received: <xmr:FKVpZXOYAGMau57obswY-IU_R3EBtIj4igueT1pDba2L6bKzIUYHiKiMpA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeiledgtdefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhu
+    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
+    htthgvrhhnpeelueeiffdugeeliedvjeethfettdeiffffueeiffelhfejgefghedtjedv
+    ffffhfenucffohhmrghinhepghhithhhuhgsrdgtohhmpddttddttddqihhnlhhinhgvqd
+    grshhmrdhmugenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhr
+    ohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvge
+    ehtdeigedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhm
+    sehfihigmhgvrdhnrghmvg
+X-ME-Proxy: <xmx:FKVpZR6nHzkRQnplmHAZ2rB1zDeZ6O7oKEUINQLqNmdcecXjEX4iFg>
+    <xmx:FKVpZR7gihJNYFl8WCaTU2YfEHR3JXjpdHwHVdYu-r8c21H5ScsYpQ>
+    <xmx:FKVpZRj9CstpHzbdmyYqv7p9ZclW1aNo8kG2oAGINOuR8La5aHwvGA>
+    <xmx:FaVpZdOqsurV2g3DL_yvGUFgUNfsFc4INr-ZMDnd8VsQEoseXuSs1Q>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 1 Dec 2023 04:19:16 -0500 (EST)
+Date:   Fri, 1 Dec 2023 01:19:14 -0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Gary Guo <gary@garyguo.net>,
+        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Carlos Llamas <cmllamas@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Josh Triplett <josh@joshtriplett.org>
+Subject: Re: [PATCH 1/7] rust: file: add Rust abstraction for `struct file`
+Message-ID: <ZWmlEiiPXAIOYsM1@Boquns-Mac-mini.home>
+References: <20231129-alice-file-v1-0-f81afe8c7261@google.com>
+ <20231129-alice-file-v1-1-f81afe8c7261@google.com>
+ <ZWdVEk4QjbpTfnbn@casper.infradead.org>
+ <20231129152305.GB23596@noisy.programming.kicks-ass.net>
+ <ZWdv_jsaDFJxZk7G@Boquns-Mac-mini.home>
+ <20231130104226.GB20191@noisy.programming.kicks-ass.net>
+ <ZWipTZysC2YL7qsq@Boquns-Mac-mini.home>
+ <20231201085328.GE3818@noisy.programming.kicks-ass.net>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: [PATCH V2 0/4] Add runtime PM support for videocc on SM8150
-Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Konrad Dybcio <konradybcio@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-References: <20231118123944.2202630-1-quic_skakitap@quicinc.com>
- <47925f9e-32aa-4762-a4ec-aa559e18ff12@kernel.org>
- <26b69814-201b-8d07-d844-27e804aa3016@quicinc.com>
- <2ca148cc-564c-499a-8fdf-487391c9024c@linaro.org>
-From:   "Satya Priya Kakitapalli (Temp)" <quic_skakitap@quicinc.com>
-In-Reply-To: <2ca148cc-564c-499a-8fdf-487391c9024c@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: NCiTyvsxjcNA6kaVhnTlc3f9a5qWfh18
-X-Proofpoint-ORIG-GUID: NCiTyvsxjcNA6kaVhnTlc3f9a5qWfh18
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-01_06,2023-11-30_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 malwarescore=0
- spamscore=0 clxscore=1015 impostorscore=0 lowpriorityscore=0 mlxscore=0
- phishscore=0 suspectscore=0 bulkscore=0 priorityscore=1501 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
- definitions=main-2312010061
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231201085328.GE3818@noisy.programming.kicks-ass.net>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -91,56 +128,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Dec 01, 2023 at 09:53:28AM +0100, Peter Zijlstra wrote:
+> On Thu, Nov 30, 2023 at 07:25:01AM -0800, Boqun Feng wrote:
+> > On Thu, Nov 30, 2023 at 11:42:26AM +0100, Peter Zijlstra wrote:
+> > > On Wed, Nov 29, 2023 at 09:08:14AM -0800, Boqun Feng wrote:
+> > > 
+> > > > But but but, I then realized we have asm goto in C but Rust doesn't
+> > > > support them, and I haven't thought through how hard tht would be..
+> > > 
+> > > You're kidding right?
+> > > 
+> > 
+> > I'm not, but I've found this:
+> > 
+> > 	https://github.com/Amanieu/rfcs/blob/inline-asm/text/0000-inline-asm.md#asm-goto
+> 
+> Reading that makes all this even worse, apparently rust can't even use
+> memops.
 
-On 11/29/2023 7:30 PM, Konrad Dybcio wrote:
-> On 28.11.2023 17:11, Satya Priya Kakitapalli (Temp) wrote:
->> On 11/20/2023 5:18 PM, Konrad Dybcio wrote:
->>> On 18.11.2023 13:39, Satya Priya Kakitapalli wrote:
->>>> Add runtime support for videocc on SM8150 and update the resets
->>>> and video_pll0_config configuration.
->>>>
->>>> Satya Priya Kakitapalli (4):
->>>>     dt-bindings: clock: Update the videocc resets for sm8150
->>>>     clk: qcom: videocc-sm8150: Update the videocc resets
->>>>     clk: qcom: videocc-sm8150: Add missing PLL config properties
->>>>     clk: qcom: videocc-sm8150: Add runtime PM support
->>> Hi, it's good practive to include a link to the previous revision
->>> and a summary of changes.
->>>
->>> The b4 tool [1] does that for you, please consider using it.
->>
->> Hi, I have installed b4 and followed all the steps, but it doesn't populate my cover letter with change log and previous series link, do i need to use some option for that?
-> You probably did something like this:
->
-> b4 prep -n 8150vidcc --from-thread 26b69814-201b-8d07-d844-27e804aa3016@quicinc.com
->
-> Then if you do:
->
-> b4 prep --edit-cover
->
-> you'll see a note like
->
-> EDITME: Imported from f26b69814-201b-8d07-d844-27e804aa3016@quicinc.com
->          Please review before sending.
->
-> so you need to do it manually.
->
->
-> Generally, when the series has been sent at least once with b4 already,
-> you'll notice that `b4 send` appends something like this to the cover
-> letter:
->
-> Changes in v2:
-> - EDITME: describe what is new in this series revision.
-> - EDITME: use bulletpoints and terse descriptions.
-> - Link to v1: https://lore.kernel.org/r/20230830-topic-refgenphy-v1-0-892db196a1c0@linaro.org
->
->
-> This should be only necessary to do by hand once, since as mentioned it's
-> the first time b4 sees this series
->
+What do you mean by "memops"?
 
-Thanks for the information, will add them manually.
+Regards,
+Boqun
 
-
-> Konrad
+> 
+> So to summarise, Rust cannot properly interop with C, it cannot do
+> inline asm from this side of the millenium. Why are we even trying to
+> use it again?
