@@ -2,77 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 131D1800615
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 09:43:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EEFE800617
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 09:43:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377848AbjLAInI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 03:43:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54984 "EHLO
+        id S1377886AbjLAInr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 03:43:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbjLAInG (ORCPT
+        with ESMTP id S229473AbjLAInp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 03:43:06 -0500
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CEAB1712
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 00:42:49 -0800 (PST)
-Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-5c637e83915so225410a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 00:42:49 -0800 (PST)
+        Fri, 1 Dec 2023 03:43:45 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0464171C
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 00:43:51 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-54c5d041c23so357107a12.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 00:43:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1701420169; x=1702024969; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+BektOburQXG+cnVes1gG9CvIvVklrxBOP0251luLyc=;
-        b=kHYsiKrj19n2T9Kt0FmcQ0QcDbtiHorBeZoHw5NhUJoKIz09o3vkNMQ2QNq9U/323u
-         QdyJ8WGL9kY+CTx4572elOksuM/z5ekEeqeAVdRFdmWbxAnlumlBmJXsdmpoPUGOdJhR
-         Yxef/EEZy8gKa1WBikMrAC3cvQbbgOlTjs9M5XkyQr0TflQW0vvoxhEDIsQVvBSIZ94G
-         4gY/T7aW0bM1KnobZeNuckOYqc68QLS84MGmrEgPowJWd2kF3wyLolNyKh0123zp+Ov0
-         IjZfY3jl9oTPTnLVxWHiTupaNUJSq3nYsc4vGfZiFxvGNUSsZPbhLC7rvtE7OdHekS/8
-         4Wmw==
+        d=linaro.org; s=google; t=1701420230; x=1702025030; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=LreaEOps/ITcKlz6Y6DRed+efQd2GpRA3o3lo1JZ76Q=;
+        b=NNh+1KLnBhpo16Tw6umdoOFYQX6IHY+wrI14pnDDfd4qRdUMZFO+qXSqc4IIh4fU8P
+         WndkFuQqPRUtSIGqdnLlhnFDnc5nOcoLeRFQm3qJmF0+59xJQZnMUyUi9NNs9vzgN1GT
+         jpBsKf25yko3mZ/Z+f2tPzqKql9n3nVLD3IFlW+YXOWFFxN6tuJve660yLtllJHgCrF7
+         IaSamdK8m40kWWwF/txKQYdeSflV8bXGvNqATONo7nHwIbAazXbYvLJTChpyKRKoMoS6
+         sO1hwlILRL0vmjcpq1oFsD3NXwk/EYauP5vSrnw7xrQu11HUijf+uDBgish5OkFq5edG
+         n44g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701420169; x=1702024969;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=+BektOburQXG+cnVes1gG9CvIvVklrxBOP0251luLyc=;
-        b=R5oFYfDlilq6DmVks/AV/JHlGzybRHnQcKd2Xr9ZDY7S96wHz31rzUAAn48xeYVOnc
-         eMHSayUuVzVu5PN0+pH2N9P5FNQ0sdp7qR+9VJ6kjErZPZS1oVqp0owqAqNQPerW5Tlq
-         I/JAQsQ+tuej7IDZwvNS/9eSkdmf7pRkcB+i09TP0bI7rmbD/taUl/Olnv2vaSvjNqwK
-         GxXPH98wzRKa+BlqZjEqrlQbyJip8Zdzg9oROJuT6tmRHw3QnZqXYeE1jeY2czUAT2ok
-         ZBQ//P8W0IlvvO4hohTobEL39Qy8inBypmqyYwRqpPo9hZOVHQA9kcm5IpWBCuFdzPRU
-         Fg9g==
-X-Gm-Message-State: AOJu0YxkOkouR6kRQczRKFXTIQ436KYtmTgfHHt+UXWwRP/K5pc+pZwz
-        Z7ZdGSTO1UISc1g7mon9NJjs8Q==
-X-Google-Smtp-Source: AGHT+IHQlZQSaiA1mjh+Q6JoSIYJ8AxSKOD+/HgFMegaxFy19UtbZ/j6lBZcz5IClhqCixQds2+CYQ==
-X-Received: by 2002:a17:90b:3a90:b0:285:8cb6:6153 with SMTP id om16-20020a17090b3a9000b002858cb66153mr33062567pjb.17.1701420168679;
-        Fri, 01 Dec 2023 00:42:48 -0800 (PST)
-Received: from [10.84.154.115] ([203.208.167.146])
-        by smtp.gmail.com with ESMTPSA id o10-20020a170902d4ca00b001cfba9dac6esm2770341plg.115.2023.12.01.00.42.44
+        d=1e100.net; s=20230601; t=1701420230; x=1702025030;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LreaEOps/ITcKlz6Y6DRed+efQd2GpRA3o3lo1JZ76Q=;
+        b=UepixZZTzfu2GdbVx9XOAB3rJ2M6tQUo2CA9sSRztwXYVYyWaQtXzBP6yfn16us1SY
+         dSqxLsEU5zxGANkr5kiNq4riMGILnvR2ivCxxuwhBdxWn9dqFrw6aDs/B1Pc9cvsrhQi
+         dV28ccpxWBuxc75nUFIexMOg0XfjgNZvFhmAd+OSjMfv2FBj+GENiHe9S2Fvt8tcuHRY
+         pJFBlbv+d1aYW9HSaYALRPFBUOS2ygB9OX3nYfjJ5Ehy1DbA5kv6ZcB5U4LDb4dbpN0R
+         hauJ04SWvbr/SL5azYVNUxG64zvovWScFLiB0jSwX2ZLidRX87pcFzf0z+H2m3PoOcqx
+         Tp+g==
+X-Gm-Message-State: AOJu0YzRqz1zPjtwHggd9FWsWJvb9YQB/4pjkg+S5XlfDbAkvxzO8pLz
+        QsbQJFMhhW++EhejzRaH9lZIkg==
+X-Google-Smtp-Source: AGHT+IFRWyGU8MxkZTvsGUMOMSPU4Xb2kFPSmfD1GgUVofsz/It26rDuCKPaeHkfdUxBwsfJmq0ZZg==
+X-Received: by 2002:a50:96d1:0:b0:54c:d2:ea3a with SMTP id z17-20020a5096d1000000b0054c00d2ea3amr349483eda.42.1701420230043;
+        Fri, 01 Dec 2023 00:43:50 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.223.109])
+        by smtp.gmail.com with ESMTPSA id n21-20020aa7c695000000b0054af73f3c72sm1394844edq.11.2023.12.01.00.43.48
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Dec 2023 00:42:48 -0800 (PST)
-Message-ID: <57587b74-f865-4b56-8d65-a5cbc6826079@bytedance.com>
-Date:   Fri, 1 Dec 2023 16:42:42 +0800
+        Fri, 01 Dec 2023 00:43:49 -0800 (PST)
+Message-ID: <ae58c04a-25e3-49f2-8f12-58a0483f8f9b@linaro.org>
+Date:   Fri, 1 Dec 2023 09:43:47 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: Re: [PATCH bpf-next] netkit: Add some ethtool ops to provide
- information to user
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Nikolay Aleksandrov <razor@blackwall.org>, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yangzhenze@bytedance.com,
-        wangdongdong.6@bytedance.com, tangchen.1@bytedance.com
-References: <20231130075844.52932-1-zhoufeng.zf@bytedance.com>
- <51dd35c9-ff5b-5b11-04d1-9a5ae9466780@blackwall.org>
- <16b4d42d-2d62-460e-912f-6e3b86f3004d@bytedance.com>
- <94e335d4-ec90-ba78-b2b4-8419b25bfa88@iogearbox.net>
-From:   Feng Zhou <zhoufeng.zf@bytedance.com>
-In-Reply-To: <94e335d4-ec90-ba78-b2b4-8419b25bfa88@iogearbox.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH 1/3] dt-bindings: soc: qcom: stats: Add QMP handle
+Content-Language: en-US
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Maulik Shah <quic_mkshah@quicinc.com>
+Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231130-topic-ddr_sleep_stats-v1-0-5981c2e764b6@linaro.org>
+ <20231130-topic-ddr_sleep_stats-v1-1-5981c2e764b6@linaro.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231130-topic-ddr_sleep_stats-v1-1-5981c2e764b6@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,70 +126,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-在 2023/11/30 18:56, Daniel Borkmann 写道:
-> On 11/30/23 10:24 AM, Feng Zhou wrote:
->> 在 2023/11/30 17:06, Nikolay Aleksandrov 写道:
->>> On 11/30/23 09:58, Feng zhou wrote:
->>>> From: Feng Zhou <zhoufeng.zf@bytedance.com>
->>>>
->>>> Add get_strings, get_sset_count, get_ethtool_stats to get peer
->>>> ifindex.
->>>> ethtool -S nk1
->>>> NIC statistics:
->>>>       peer_ifindex: 36
->>>>
->>>> Add get_link, get_link_ksettings to get link stat.
->>>> ethtool nk1
->>>> Settings for nk1:
->>>>     ...
->>>>     Link detected: yes
->>>>
->>>> Add get_ts_info.
->>>> ethtool -T nk1
->>>> Time stamping parameters for nk1:
->>>> ...
->>>>
->>>> Signed-off-by: Feng Zhou <zhoufeng.zf@bytedance.com>
->>>> ---
->>>>   drivers/net/netkit.c | 53 
->>>> ++++++++++++++++++++++++++++++++++++++++++++
->>>>   1 file changed, 53 insertions(+)
->>>>
->>>
->>> Hi,
->>> I don't see any point in sending peer_ifindex through ethtool, even
->>> worse through ethtool stats. That is definitely the wrong place for it.
->>> You can already retrieve that through netlink. About the speed/duplex
->>> this one makes more sense, but this is the wrong way to do it.
->>> See how we did it for virtio_net (you are free to set speed/duplex
->>> to anything to please bonding for example). Although I doubt anyone 
->>> will use netkit with bonding, so even that is questionable. :)
->>>
->>> Nacked-by: Nikolay Aleksandrov <razor@blackwall.org>
->>
->> We use netkit to replace veth to improve performance, veth can be used 
->> ethtool -S veth to get peer_ifindex, so this part is added, as long as 
->> it is to keep the netkit part and veth unified, to ensure the same 
->> usage habits, and to replace it without perception.
+On 30/11/2023 15:58, Konrad Dybcio wrote:
+> The stats can be expanded by poking the Always-On Subsystem through QMP.
+> Allow passing a QMP handle for configurations that support it.
 > 
-> Could you elaborate some more on the use case why you need to retrieve it
-> via ethtool, what alternatives were tried and don't work?
-> 
-> Please also elaborate on the case for netkit_get_link_ksettings() and which
-> concrete problem you are trying to address with this extension?
-> 
-> The commit message only explains what is done but does not go into the 
-> detail
-> of _why_ you need it.
-> 
-> Thanks,
-> Daniel
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> ---
+>  Documentation/devicetree/bindings/soc/qcom/qcom-stats.yaml | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
 
-In general, this information can be obtained through ip commands or 
-netlink, and netkit_get_link_ksettings really not necessary. The reason 
-why ethtool supports this is that when we use veth, our business 
-colleagues are used to using ethtool to obtain peer_ifindex, and then 
-replace netkit, found that it could not be used, resulting in their 
-script failure, so they asked us for a request.
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
+Best regards,
+Krzysztof
 
