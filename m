@@ -2,116 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8F088012F7
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 19:45:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61C3A8012FC
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 19:46:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379360AbjLASpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 13:45:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53832 "EHLO
+        id S1379386AbjLASpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 13:45:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229780AbjLASpB (ORCPT
+        with ESMTP id S230338AbjLASpu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 13:45:01 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E85493
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 10:45:07 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CAF83C433C7;
-        Fri,  1 Dec 2023 18:45:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701456307;
-        bh=6ayoBSJy6iihyBHwxLrx8Luk1kVUOImElJUsiwGZ0Z0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=FcqG69kPysYDU470FPhnMo9aFkTzh5UFfSP+GB7jG1Kq2MgYkKkO9/7xS41/QItmY
-         GKebXgxqnFcpvOyfbJxBjKyr9N5A9UjF5UCcyDgiSAxUIUp9IvwZ+ix+on+62kKSLA
-         F7mloqInbrkRAX4DPZUL3VG/kZayO0kR6UoLgpzcdpDbW+qF62RXqVpn+LTW8v/oW8
-         vpsqubTRa1P6t/SiRDNShl1ShpFTrhT8bF9vrbcOzAIqFCFq6tgs9GLLlbvPi9r6QQ
-         niQ7PdyMU5YSJWJzwrDgR+MFlC8rvJC0pglI1Zk9VSYE7cGdU6bIzoMCDY/dLyS5qS
-         1v1SjukglLfEg==
-Date:   Fri, 1 Dec 2023 10:45:05 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     kernel test robot <lkp@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Jeff Johnson <quic_jjohnson@quicinc.com>,
-        Michael Walle <mwalle@kernel.org>,
-        Max Schulze <max.schulze@online.de>, netdev@vger.kernel.org,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] netlink: Return unsigned value for nla_len()
-Message-ID: <20231201104505.44ec5c89@kernel.org>
-In-Reply-To: <202312010953.BEDC06111@keescook>
-References: <20231130200058.work.520-kees@kernel.org>
-        <20231130172520.5a56ae50@kernel.org>
-        <202312010953.BEDC06111@keescook>
+        Fri, 1 Dec 2023 13:45:50 -0500
+Received: from mail-oa1-x2d.google.com (mail-oa1-x2d.google.com [IPv6:2001:4860:4864:20::2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CD0E10F1
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 10:45:55 -0800 (PST)
+Received: by mail-oa1-x2d.google.com with SMTP id 586e51a60fabf-1f5d34235dbso401428fac.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 10:45:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1701456354; x=1702061154; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gXMK7gYwKBc2+MSS7X0vjsoPudj5rbIJ6yvk1AkwxJg=;
+        b=WplXVf4upWCCb7CSbt38ErPIoI9Z2UDLLOLNyoBFQnsRyk2Z4bjY5AF0EhPtZv0/U+
+         eGgmMbF/9N7qeooIIOi0vixdaXdXVdCt7q1pieel0OM2FiPnXuGvYtP/TgF1oD6gg/va
+         Q8i79uo/gXeHA0nYR9KTh1f8xccuABMnxxrLk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701456354; x=1702061154;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gXMK7gYwKBc2+MSS7X0vjsoPudj5rbIJ6yvk1AkwxJg=;
+        b=JXDYXb+1ggwN3i8E0zPBjNl7cE3y9k/l62Ca2EX+KpyI/47WDbxP7ub8sQGh6wdZpN
+         I5eb3Td49hm2vSbAI0OCiPGwgpb+yCiHqY8x1vbAdbPjnUXRKsRTkdLpxijyXhL1grwb
+         +6OY3InURsVWn0yzJ3+GCtjJEbYACZWuTrelJaufePe+OEvTvATcFM0QvtkCo/gaoHvs
+         jP0wLD8hzD+nAc4iNNmslbXr9bX0nZWE+YKIXr+i6dJ9PMoYEFclmGdhTY9Kaqv+fR9W
+         pzFoXUKTcMYARENng0gfsWadzW6NFDoWYaOaLgLy7yhhZe+M9Vl6Ht5swpyLgdmiFhXB
+         OV7Q==
+X-Gm-Message-State: AOJu0YzSagvS7NNHiyYEIpQz3j3/Iz1vrLB0BJqVxROjnLxtAqsLYE0V
+        jKQmmKepQDCXMlCwW34R0YasA+la/qTpZ767+kgyPg==
+X-Google-Smtp-Source: AGHT+IHMHMcYPYJEIHVAEic1PgqT5IKoS7UnELlwPN8I0iVdtmL68Gt5D+mP/xNOZdR+tp4wkE0Og5lhbpj2EQiyud0=
+X-Received: by 2002:a05:6870:724f:b0:1fa:2fbe:21f6 with SMTP id
+ y15-20020a056870724f00b001fa2fbe21f6mr11207646oaf.12.1701456354652; Fri, 01
+ Dec 2023 10:45:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+References: <20231201181542.421077-1-dregan@broadcom.com> <20231201193834.5da80273@collabora.com>
+In-Reply-To: <20231201193834.5da80273@collabora.com>
+From:   David Regan <dregan@broadcom.com>
+Date:   Fri, 1 Dec 2023 10:45:43 -0800
+Message-ID: <CAA_RMS7DJEdC_uUcT2MF4crVvPFiDGCpx+wKGYtPP=u3xRuOAQ@mail.gmail.com>
+Subject: Re: [PATCH 1/1] mtd: rawnand: Add deassert_wp comment
+To:     Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     dregan <dregan@broadcom.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 1 Dec 2023 10:17:02 -0800 Kees Cook wrote:
-> > > -static inline int nla_len(const struct nlattr *nla)
-> > > +static inline u16 nla_len(const struct nlattr *nla)
-> > >  {
-> > > -	return nla->nla_len - NLA_HDRLEN;
-> > > +	return nla->nla_len > NLA_HDRLEN ? nla->nla_len - NLA_HDRLEN : 0;
-> > >  } =20
-> >=20
-> > Note the the NLA_HDRLEN is the length of struct nlattr.
-> > I mean of the @nla object that gets passed in as argument here.
-> > So accepting that nla->nla_len may be < NLA_HDRLEN means
-> > that we are okay with dereferencing a truncated object...
-> >=20
-> > We can consider making the return unsinged without the condition maybe?=
- =20
->=20
-> Yes, if we did it without the check, it'd do "less" damage on
-> wrap-around. (i.e. off by U16_MAX instead off by INT_MAX).
->=20
-> But I'd like to understand: what's the harm in adding the clamp? The
-> changes to the assembly are tiny:
-> https://godbolt.org/z/Ecvbzn1a1
+I'm sorry my mistake, I had originally missed this comment which came from =
+here:
+https://github.com/bbrezillon/linux/commit/e612e1f2c69a33ac5f2c91d13669f0f1=
+72d58717
 
-Hm, I wonder if my explanation was unclear or you disagree..
-
-This is the structure:
-
-struct nlattr {
-	__u16           nla_len; // attr len, incl. this header
-	__u16           nla_type;
-};
-
-and (removing no-op wrappers):
-
-#define NLA_HDRLEN	sizeof(struct nlattr)
-
-So going back to the code:
-
-	return nla->nla_len > NLA_HDRLEN ? nla->nla_len - NLA_HDRLEN...
-
-We are reading nla->nla_len, which is the first 2 bytes of the structure.
-And then we check if the structure is... there?
-
-If we don't trust that struct nlattr which gets passed here is at least
-NLA_HDRLEN (4B) then why do we think it's safe to read nla_len (the
-first 2B of it)?
-
-That's why I was pointing at nla_ok(). nla_ok() takes the size of the
-buffer / message as an arg, so that it can also check if looking at
-nla_len itself is not going to be an OOB access. 99% of netlink buffers
-we parse come from user space. So it's not like someone could have
-mis-initialized the nla_len in the kernel and being graceful is helpful.
-
-The extra conditional is just a minor thing. The major thing is that
-unless I'm missing something the check makes me go =F0=9F=A4=A8=EF=B8=8F
-
+On Fri, Dec 1, 2023 at 10:38=E2=80=AFAM Boris Brezillon
+<boris.brezillon@collabora.com> wrote:
+>
+> On Fri,  1 Dec 2023 10:15:42 -0800
+> dregan <dregan@broadcom.com> wrote:
+>
+> > From: Boris Brezillon <bbrezillon@kernel.org>
+>
+> I'm pretty sure I shouldn't be the author. The original patch might
+> have been partly written by me, but this is a fixup on top of it.
+>
+> >
+> > Add deassert_wp description comment
+> >
+> > Signed-off-by: Boris Brezillon <bbrezillon@kernel.org>
+>
+> and you should drop my SoB too.
+>
+> > Signed-off-by: David Regan <dregan@broadcom.com>
+> > ---
+> >  include/linux/mtd/rawnand.h | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+> > index fcad94aa0515..3049b05d8a20 100644
+> > --- a/include/linux/mtd/rawnand.h
+> > +++ b/include/linux/mtd/rawnand.h
+> > @@ -1001,6 +1001,8 @@ struct nand_op_parser {
+> >  /**
+> >   * struct nand_operation - NAND operation descriptor
+> >   * @cs: the CS line to select for this NAND operation
+> > + * @deassert_wp: set to true when the operation requires the WP pin to=
+ be
+> > + *            de-asserted (ERASE, PROG, ...)
+> >   * @instrs: array of instructions to execute
+> >   * @ninstrs: length of the @instrs array
+> >   *
+>
