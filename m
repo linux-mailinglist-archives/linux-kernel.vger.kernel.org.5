@@ -2,135 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDAC580008B
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 01:50:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62B6380008F
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 01:52:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229678AbjLAAut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 19:50:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49424 "EHLO
+        id S229653AbjLAAwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 19:52:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229617AbjLAAur (ORCPT
+        with ESMTP id S229521AbjLAAwC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 19:50:47 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49B2B10D9;
-        Thu, 30 Nov 2023 16:50:53 -0800 (PST)
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AUN8NfG019022;
-        Fri, 1 Dec 2023 00:50:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=v2bv+KAdIdm9IFWwcr9OUqBoM9HY+CK+i+kY21Cut3Q=;
- b=EzBhfu0+aH2VGLOb0yrbVN5UuhdYTKj+JEUmy7xeu+llFwMj5ng565GtTSXo4sR3H/oh
- Gch+3ouKtiWTbEZWg/R3R09I5bVjbIagT1Hj5PAC2zcFNzjuq9tClKgl5DwRT2yUtwqk
- 62QUeEqT6n+dzJu8SjeTxPECuiBxycWm9ukmyFvWh6oC43O9ZyT8PFUiKFGteadMhWJG
- iN9lOD+u81tTjHASEjbDbvlLxR6sAhtvXGBSCFqeEN7qEHvaFSnDIIHrVeu0899WrfMC
- a+4d31l/Vsu+Y009MPWzeLXxZYwBoi8Ke3vBHMN9w9k/8ZsP42HJ8WeGlkkMdZQTiSD9 XQ== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3upvm1see9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 01 Dec 2023 00:50:40 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B10odWk024718
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 1 Dec 2023 00:50:39 GMT
-Received: from [10.71.109.77] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 30 Nov
- 2023 16:50:39 -0800
-Message-ID: <6ed0c636-c222-36b3-aae9-eb822e088a2c@quicinc.com>
-Date:   Thu, 30 Nov 2023 16:50:38 -0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH 14/16] drm/msm/dpu: do not allow YUV formats if no CDM
- block is present
-Content-Language: en-US
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC:     <freedreno@lists.freedesktop.org>, Rob Clark <robdclark@gmail.com>,
-        "Sean Paul" <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        "David Airlie" <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        <dri-devel@lists.freedesktop.org>, <quic_jesszhan@quicinc.com>,
-        <quic_parellan@quicinc.com>, <quic_khsieh@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20230830224910.8091-1-quic_abhinavk@quicinc.com>
- <20230830224910.8091-15-quic_abhinavk@quicinc.com>
- <CAA8EJprZma-e=zbtDuGKfcHK7zTaSykACt+=rh7W92iEpif=Ug@mail.gmail.com>
-From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
-In-Reply-To: <CAA8EJprZma-e=zbtDuGKfcHK7zTaSykACt+=rh7W92iEpif=Ug@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: GP_k8ApHg65NP_08TXp-Cw7iD8AlHq5I
-X-Proofpoint-GUID: GP_k8ApHg65NP_08TXp-Cw7iD8AlHq5I
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-30_25,2023-11-30_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- priorityscore=1501 impostorscore=0 phishscore=0 spamscore=0 malwarescore=0
- bulkscore=0 adultscore=0 clxscore=1015 mlxscore=0 mlxlogscore=749
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2312010004
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 30 Nov 2023 19:52:02 -0500
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD96210D0
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 16:52:08 -0800 (PST)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5d12853cb89so26594897b3.3
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 16:52:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701391928; x=1701996728; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=D7rrSw0NQO055D8S8vjtnTn1EUTQ7K87+88fh2pqZsE=;
+        b=WLHN/zDnudw72XGN7U34kCKpO9lItXRoXISxGG274BqlzUxYGE/vC8koDz324GYsvN
+         TYFPJTlR+An7MSdXAmSV9aCshp/RtFPa86q7rrUFcSc5pKz8HcSq8hdlFGDWCBG6eM7J
+         y9hGA+vJT9Ic2+29/gpVikI0kD1er6/+l32/amIKIg4oqELjW4AwqKGLdAEUw2UYE5Nb
+         e5bVuiN1vTEJ2CAQGM8hBbqr8lFYfypzgKm8xBfr1OmuJ0F0deFNy2hmhGkHxrmNzGJI
+         WPc4O8+spOEdwXZ3H9I5vvTHlEPzxxyuwmjcy5Cozz76ertBFfaj3ikaBjUjzSivZ1OO
+         ihUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701391928; x=1701996728;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=D7rrSw0NQO055D8S8vjtnTn1EUTQ7K87+88fh2pqZsE=;
+        b=WDo0VIOz4H8d7wFf183urUyqnHfbZk4+82Ywhggj+s5ENYadukB5uKx9QkHAqn6OHN
+         1glPYNAaBEzgLTsbN+AxuEilviWUERQq7hgkDkkEHB+WKWL8qlenZaq/h9ErIgFuDtpa
+         VFvYbNygMezuwihPndu6dQ0BuZIWeyw3Oql7scQHlCL3oEdI7wDlijfxoJpzp/bKjCxM
+         gZE6BceuB0vi6okMXqx2U2+uv4a4ojQTfF45E4p9jw81a9b2SSfRIJ51oGyKvRtic4HV
+         jYetZuWdT293v1O8nhyDDhL6fnIYiar4gXQLB/fi4s+jd8zdTz6VlHqj4num2pO9mWqj
+         7oHQ==
+X-Gm-Message-State: AOJu0YzZKJdOrzhQFOT1jdO0UGazM6tuPjsqLJm6O6ZBCzkBhhCVZfGk
+        2XhMTU1/0A5PpLZ4SSlqOBKGOVBV2qJb
+X-Google-Smtp-Source: AGHT+IFKvXNXIfoRHM0m0qB8MFcGuh4xxwA7sFtdSp36gULSAH59l3Gw6b036WI6Aep1yW9tQy/2NEcFOKdL
+X-Received: from joshdon-desktop.svl.corp.google.com ([2620:15c:2a3:200:6088:f608:a3e0:af40])
+ (user=joshdon job=sendgmr) by 2002:a05:690c:845:b0:5a8:205e:1f27 with SMTP id
+ bz5-20020a05690c084500b005a8205e1f27mr755718ywb.6.1701391928055; Thu, 30 Nov
+ 2023 16:52:08 -0800 (PST)
+Date:   Thu, 30 Nov 2023 16:52:03 -0800
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
+Message-ID: <20231201005203.309873-1-joshdon@google.com>
+Subject: [PATCH] cgroup: Fix documentation for cpu.idle
+From:   Josh Don <joshdon@google.com>
+To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Josh Don <joshdon@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Two problems:
+	- cpu.idle cgroups show up with 0 weight, correct the
+	  documentation to indicate this.
+	- cpu.idle has no entry describing it.
 
+Signed-off-by: Josh Don <joshdon@google.com>
+---
+ Documentation/admin-guide/cgroup-v2.rst | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
 
-On 8/30/2023 5:24 PM, Dmitry Baryshkov wrote:
-> On Thu, 31 Aug 2023 at 01:50, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
->>
->> On chipsets where CDM block is not available OR where support has
->> not been added yet do not allow YUV formats for writeback block.
->>
->> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
->> ---
->>   drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_wb.c | 6 ++++++
->>   1 file changed, 6 insertions(+)
->>
->> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_wb.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_wb.c
->> index 7fc174b33ae2..d8edca9bc964 100644
->> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_wb.c
->> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_wb.c
->> @@ -406,6 +406,12 @@ static int dpu_encoder_phys_wb_atomic_check(
->>                  return ret;
->>          }
->>
->> +       if (DPU_FORMAT_IS_YUV(to_dpu_format(msm_framebuffer_format(fb))) &&
->> +           !phys_enc->dpu_kms->catalog->cdm) {
->> +               DPU_ERROR("cannot support YUV formats without CDM block\n");
->> +               return -EINVAL;
->> +       }
-> 
-> Can we have YUV formats in wb_formats if we do not support CDM? That
-> would be an error.
+diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+index 3f85254f3cef..9debf02bcb39 100644
+--- a/Documentation/admin-guide/cgroup-v2.rst
++++ b/Documentation/admin-guide/cgroup-v2.rst
+@@ -1093,7 +1093,11 @@ All time durations are in microseconds.
+ 	A read-write single value file which exists on non-root
+ 	cgroups.  The default is "100".
+ 
+-	The weight in the range [1, 10000].
++	For non idle groups (cpu.idle = 0), the weight is in the
++	range [1, 10000].
++
++	If the cgroup has been configured to be SCHED_IDLE (cpu.idle = 1),
++	then the weight will show as a 0.
+ 
+   cpu.weight.nice
+ 	A read-write single value file which exists on non-root
+@@ -1157,6 +1161,16 @@ All time durations are in microseconds.
+         values similar to the sched_setattr(2). This maximum utilization
+         value is used to clamp the task specific maximum utilization clamp.
+ 
++  cpu.idle
++	A read-write single value file which exists on non-root cgroups.
++	The default is 0.
++
++	This is the cgroup analog of the per-task SCHED_IDLE sched policy.
++	Setting this value to a 1 will make the scheduling policy of the
++	cgroup SCHED_IDLE. The threads inside the cgroup will retain their
++	own relative priorities, but the cgroup itself will be treated as
++	very low priority relative to its peers.
++
+ 
+ 
+ Memory
+-- 
+2.43.0.rc2.451.g8631bc7472-goog
 
-I can drop this one once i address the comments on the next patch.
-
-Yeah the reason for this change was we had one formats array for wb and 
-were using that for all chipsets. We can have two arrays : one only rgb 
-and the other rgb+yuv to address this.
-
-> 
->> +
->>          return 0;
->>   }
->>
->> --
->> 2.40.1
->>
-> 
-> 
