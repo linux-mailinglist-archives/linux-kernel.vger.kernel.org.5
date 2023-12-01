@@ -2,167 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B71A5801270
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 19:18:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4D51801274
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 19:18:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379134AbjLASR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 13:17:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52138 "EHLO
+        id S229454AbjLASSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 13:18:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjLASRz (ORCPT
+        with ESMTP id S229534AbjLASSg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 13:17:55 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A4EE10D
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 10:18:02 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85ACAC433C7;
-        Fri,  1 Dec 2023 18:18:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701454681;
-        bh=ujCjp75X8yi+WvQp0VZeg+iQb5i3JpQWywg/I5QIQBI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZGaKbsUpWLmQ+x99zErN9VEnQZkJDK2RXwFBwKt9EkRarBXR4Eq+oRs9CTm7VRogN
-         7CXUVH2iRK5JimTZJSit/XUgSn0e4pVksPYOo8ft0SLJf16t1yF6roxVv+Zg+CLbIa
-         sSjydc7rreEqs7iTUfOC8jFCVWVmFCYl5UURZVlCmu9pQ0TJbc5ezvtkBajPAVJGWV
-         stUE1Q5SbW+VbUiicRRVuxYvkTKpQattI4R2PoYhqSsmuc+paipASOfjZQuVQOGOBE
-         x0Xa2wjFsNiGAdD11zOBFpltnEO56LzG+qJQ3G4KK1C9ngKquLfHNgx7kXYyxDh8S4
-         vyLb93E9AgRtw==
-Date:   Fri, 1 Dec 2023 12:18:00 -0600
-From:   "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Serge Hallyn <serge@hallyn.com>, Paul Moore <paul@paul-moore.com>,
-        Eric Paris <eparis@redhat.com>,
-        James Morris <jmorris@namei.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Amir Goldstein <amir73il@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, audit@vger.kernel.org,
-        linux-unionfs@vger.kernel.org
-Subject: Re: [PATCH 09/16] fs: add vfs_set_fscaps()
-Message-ID: <ZWojWE7/HRnByRb+@do-x1extreme>
-References: <20231129-idmap-fscap-refactor-v1-0-da5a26058a5b@kernel.org>
- <20231129-idmap-fscap-refactor-v1-9-da5a26058a5b@kernel.org>
- <20231201-reintreten-gehalt-435a960f80ed@brauner>
+        Fri, 1 Dec 2023 13:18:36 -0500
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9CA2129
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 10:18:41 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-54c52baaa59so950a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 10:18:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701454720; x=1702059520; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sG2qvU0QskaUquCTeF5oijEUHu0uj9CGz7uyq4JY4sk=;
+        b=k7zvQIUQjgTyLEcYqwFRnGUxZHa/bg7DowIKyRfvrG0TpRk3ibV0u/G3HEn1qoeAqB
+         XnZaQaCxYWCa/lcRZNdjQuw08eJbqPewDGFDBDx9lrghLNmZcApZ3N5Vv+EQqPsPiVAj
+         vbt7gqWHTq3abqKSRbhaqpR2AqDkNxUnNXQxSil3wSKasCXzUeOaIpd7roog+ocQpNz+
+         zM7ovAB6K4gqgsRiwittGDNJVYqfqLG9oaHbFsWxgi66tCN1E655wzZ+AA9gEG7W/a9B
+         nPsqrpuv3GQuvuF5hVxfN44krwXsMuUNDiz5bWuBHvl9zjBhNlBCwiz/aAzonflwkLJn
+         1m9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701454720; x=1702059520;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sG2qvU0QskaUquCTeF5oijEUHu0uj9CGz7uyq4JY4sk=;
+        b=vkfFtoGBOKAssYovhXVnoz5O108Y92sBhChdLzegafXJXG7Zjt86UATUGW8gsYU5A4
+         6w9k3OTSFibim+msoRzrw8+OlNe/pNT1PDF6vNCmyeFG5U8Gjg3tWycosQWJ4s/X4hB+
+         H6ccgVdDsA1zEFTvADfewLLHT5aT1FoQSEhTdGty6QjnAk66s+XD/P6pN8jVzaWjs15F
+         MRj1SuRTv4jsIXzbiSwP6jDoKqyBP7VzuMzgTrq4eyjNNTZj7IyC87Eei7HTqtrtzlYS
+         HoQGEKYFve11bmF94mw5j7RvCF8v72MROVBzM2/Xp61OZJ7uL+t2t5H8IvlPGOkpv6AJ
+         f92w==
+X-Gm-Message-State: AOJu0YwSM0Tw+KfIpQDfn64+PVdzTC6tdJbv+ABEu0scXDK6gdPzatRF
+        IMuK6DK1Js7RZToet7kNb3gvjP/b2ITc++b2ot4A2A==
+X-Google-Smtp-Source: AGHT+IF65u7rI3BqvWNhPLCqFe6obTBbRQ5ETF5EFDDXxUy02aSXHG2k1RzarlGVTbjqjtWkoVGkW3b8radjMqSANaM=
+X-Received: by 2002:a50:d5d4:0:b0:54b:6b3f:4a86 with SMTP id
+ g20-20020a50d5d4000000b0054b6b3f4a86mr203053edj.4.1701454720168; Fri, 01 Dec
+ 2023 10:18:40 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231201-reintreten-gehalt-435a960f80ed@brauner>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231130204817.2031407-1-jannh@google.com> <06c05c8b-9a3b-4c04-b898-0f82e98da70f@redhat.com>
+ <CAG48ez1a=VuEWwPTjcXFAwCyt9bRH-WzAfw0uP-qVu83kdxkZw@mail.gmail.com> <28b147c3d7354d1a8ff0b903da9b54f4@AcuMS.aculab.com>
+In-Reply-To: <28b147c3d7354d1a8ff0b903da9b54f4@AcuMS.aculab.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Fri, 1 Dec 2023 19:18:02 +0100
+Message-ID: <CAG48ez1bOwbqEbD_ycC2fyWK_tW4rqr=gogJbQOx5CECyPGZcg@mail.gmail.com>
+Subject: Re: [PATCH] locking: Document that mutex_unlock() is non-atomic
+To:     David Laight <David.Laight@aculab.com>
+Cc:     Waiman Long <longman@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 01, 2023 at 06:39:18PM +0100, Christian Brauner wrote:
-> > +/**
-> > + * vfs_set_fscaps - set filesystem capabilities
-> > + * @idmap: idmap of the mount the inode was found from
-> > + * @dentry: the dentry on which to set filesystem capabilities
-> > + * @caps: the filesystem capabilities to be written
-> > + * @flags: setxattr flags to use when writing the capabilities xattr
-> > + *
-> > + * This function writes the supplied filesystem capabilities to the dentry.
-> > + *
-> > + * Return: 0 on success, a negative errno on error.
-> > + */
-> > +int vfs_set_fscaps(struct mnt_idmap *idmap, struct dentry *dentry,
-> > +		   const struct vfs_caps *caps, int flags)
-> > +{
-> > +	struct inode *inode = d_inode(dentry);
-> > +	struct inode *delegated_inode = NULL;
-> > +	struct vfs_ns_cap_data nscaps;
-> > +	int size, error;
-> > +
-> > +	/*
-> > +	 * Unfortunately EVM wants to have the raw xattr value to compare to
-> > +	 * the on-disk version, so we need to pass the raw xattr to the
-> > +	 * security hooks. But we also want to do security checks before
-> > +	 * breaking leases, so that means a conversion to the raw xattr here
-> > +	 * which will usually be reduntant with the conversion we do for
-> > +	 * writing the xattr to disk.
-> > +	 */
-> > +	size = vfs_caps_to_xattr(idmap, i_user_ns(inode), caps, &nscaps,
-> > +				 sizeof(nscaps));
-> > +	if (size < 0)
-> > +		return size;
-> 
-> Oh right, I remember that. Slight eyeroll. See below though...
-> 
-> > +
-> > +retry_deleg:
-> > +	inode_lock(inode);
-> > +
-> > +	error = xattr_permission(idmap, inode, XATTR_NAME_CAPS, MAY_WRITE);
-> > +	if (error)
-> > +		goto out_inode_unlock;
-> > +	error = security_inode_setxattr(idmap, dentry, XATTR_NAME_CAPS, &nscaps,
-> > +					size, flags);
-> > +	if (error)
-> > +		goto out_inode_unlock;
-> 
-> For posix acls I added dedicated security hooks that take the struct
-> posix_acl stuff and then plumb that down into the security modules. You
-> could do the same thing here and then just force EVM and others to do
-> their own conversion from in-kernel to xattr format, instead of forcing
-> the VFS to do this.
-> 
-> Because right now we make everyone pay the price all the time when
-> really EVM should pay that price and this whole unpleasantness.
+On Fri, Dec 1, 2023 at 7:12=E2=80=AFPM David Laight <David.Laight@aculab.co=
+m> wrote:
+> From: Jann Horn
+> > Sent: 01 December 2023 15:02
+> >
+> > On Fri, Dec 1, 2023 at 1:33=E2=80=AFAM Waiman Long <longman@redhat.com>=
+ wrote:
+> > > On 11/30/23 15:48, Jann Horn wrote:
+> > > > I have seen several cases of attempts to use mutex_unlock() to rele=
+ase an
+> > > > object such that the object can then be freed by another task.
+> > > > My understanding is that this is not safe because mutex_unlock(), i=
+n the
+> > > > MUTEX_FLAG_WAITERS && !MUTEX_FLAG_HANDOFF case, accesses the mutex
+> > > > structure after having marked it as unlocked; so mutex_unlock() req=
+uires
+> > > > its caller to ensure that the mutex stays alive until mutex_unlock(=
+)
+> > > > returns.
+> > > >
+> > > > If MUTEX_FLAG_WAITERS is set and there are real waiters, those wait=
+ers
+> > > > have to keep the mutex alive, I think; but we could have a spurious
+> > > > MUTEX_FLAG_WAITERS left if an interruptible/killable waiter bailed
+> > > > between the points where __mutex_unlock_slowpath() did the cmpxchg
+> > > > reading the flags and where it acquired the wait_lock.
+> > > >
+> > > > (With spinlocks, that kind of code pattern is allowed and, from wha=
+t I
+> > > > remember, used in several places in the kernel.)
+> > > >
+> > > > If my understanding of this is correct, we should probably document=
+ this -
+> > > > I think such a semantic difference between mutexes and spinlocks is=
+ fairly
+> > > > unintuitive.
+> > >
+> > > Spinlocks are fair. So doing a lock/unlock sequence will make sure th=
+at
+> > > all the previously waiting waiters are done with the lock. Para-virtu=
+al
+> > > spinlocks, however, can be a bit unfair so doing a lock/unlock sequen=
+ce
+> > > may not be enough to guarantee there is no waiter. The same is true f=
+or
+> > > mutex. Adding a spin_is_locked() or mutex_is_locked() check can make
+> > > sure that all the waiters are gone.
+> >
+> > I think this pattern anyway only works when you're only trying to wait
+> > for the current holder of the lock, not tasks that are queued up on
+> > the lock as waiters - so a task initially holds a stable reference to
+> > some object, then acquires the object's lock, then drops the original
+> > reference, and then later drops the lock.
+> > You can see an example of such mutex usage (which is explicitly legal
+> > with userspace POSIX mutexes, but is forbidden with kernel mutexes) at
+> > the bottom of the POSIX manpage for pthread_mutex_destroy() at
+> > <https://pubs.opengroup.org/onlinepubs/007904875/functions/pthread_mute=
+x_destroy.html>,
+> > in the section "Destroying Mutexes".
+>
+> I don't understand at all what any of this is about.
+> You cannot de-initialise, free (etc) a mutex (or any other piece of
+> memory for that matter) if another thread can have a reference to it.
+> If some other code might be holding the mutex it also might be just
+> about to acquire it - you always need another lock of some kind to
+> ensure that doesn't happen.
+>
+> IIRC pretty much the only time you need to acquire the mutex in the
+> free path is if locks are chained, eg:
+>         lock(table)
+>         entry =3D find_entry();
+>         lock(entry)
+>         unlock(table)
+>         ...
+>         unlock(entry)
+>
+> Then the free code has to:
+>         lock(table)
+>         remove_from_table(entry)
+>         lock(entry)
+>         unlock(entry)
+>         unlock(table)
+>         free(entry)
 
-Good point, I'll do that.
-
-> 
-> > +
-> > +	error = try_break_deleg(inode, &delegated_inode);
-> > +	if (error)
-> > +		goto out_inode_unlock;
-> > +
-> > +	if (inode->i_opflags & IOP_XATTR) {
-> 
-> So I'm trying to remember the details how I did this for POSIX ACLs in
-> commit e499214ce3ef ("acl: don't depend on IOP_XATTR"). I think what you
-> did here is correct because you need to have an xattr handler for
-> fscaps currently. IOW, it isn't purely based on inode operations.
-> 
-> And here starts the hate mail in so far as you'll hate me for asking
-> this:
-> 
-> I think I asked this before when we talked about this but how feasible
-> would it be to move fscaps completely off of xattr handlers and purely
-> on inode operations for all filesystems?
-> 
-> Yes, that's a fairly large patchset but it would also be a pretty good
-> win because we avoid munging this from inode operations through xattr
-> handlers again which seems a bit ugly and what we really wanted to
-> avoid desperately with POSIX ACLs.
-> 
-> If this is feasible and you'd be up for it I wouldn't even mind doing
-> that in two steps. IOW, merge something like this first and them move
-> everyone off of their individual xattr handlers.
-> 
-> Could you quickly remind me whether there would be any issues with this?
-
-It's certainly possible to do this. There wouldn't be any issues per se,
-but there are some tradoffs to consider.
-
-First, it's really only overlayfs that needs special handling. It seems
-pretty unfortunate to make every filesystem provide its own
-implementations which are virtually identical, which is what we'd need
-to do if we want to completely avoid the xattr handlers. But we could
-still provide a generic implementation that uses only
-__vfs_{get,set}xattr(), and most filesystems could use those in their
-inode ops. How does that sound?
-
-The other drawback I see is needing to duplicate logic from the
-{get,set}xattr codepaths into the fscaps codepaths and maintain them in
-parallel. I was trying to avoid that as much as possible, but in the end
-I had to duplicate some of the logic anyway. And as Amir pointed out I
-did miss some things I needed to duplicate from the setxattr logic, so I
-already need to revisit that code and probably pull in more of the
-setxattr logic, so there may not be as much benefit here as I'd
-originally hoped.
+Yep, this is exactly the kind of code pattern for which I'm trying to
+document that it is forbidden with mutexes (while it is allowed with
+spinlocks).
