@@ -2,134 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FDC18012EB
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 19:40:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F34EF8012EC
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 19:41:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379349AbjLASkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 13:40:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50212 "EHLO
+        id S230259AbjLASlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 13:41:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjLASki (ORCPT
+        with ESMTP id S230207AbjLASlA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 13:40:38 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 755A3D63
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 10:40:44 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-54c77d011acso1070a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 10:40:44 -0800 (PST)
+        Fri, 1 Dec 2023 13:41:00 -0500
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A4BD10D0
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 10:41:02 -0800 (PST)
+Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-a18ebac19efso365165966b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 10:41:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701456043; x=1702060843; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1701456058; x=1702060858; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=WkVHqNvonNn8A5RdXCNM0KGca3KT1K9/6epU/Ala7ns=;
-        b=gJh5Bp2Gq+zevHlFu7FzvXMLs/Dr6P8fJ86RAC/FgyO8UzEXlxo3OY+HPn29N9cUDM
-         I5Gryuusox6WflgyVQ92N7v2DHj1Xg6utmR6NCKn0gr353JVS7t5I6UBgQnZDib4o1Fi
-         fMPGeHpCxOq1adthQw/URIRsEupe3BqbGUJhyFNUcqI//xtjXDd/HF2Fe8Odqj6xxe1m
-         uhUVMsUugsdltseN4pY3aMz87z1t2QpRo03OYfAe9cs6KlWRZzgBPNLQrVAou9DIRAuy
-         YYsFXM3CkHHGuszmOII0pAqWD/UJAVV1YwcoVtgxy4MU1dAL42q9YBZ39ZzhH+2f2nRR
-         jx7g==
+        bh=55+ZUEjsrc3UB5LYQhm11Jk8d+ZjC/aqtysvU5RZ+wA=;
+        b=Ef3Rl8uD2Z95PGtuJBl7HqGyGzLMfC7aT4P0C1CVrW1GxULmqtJJL0ipzgJnR59yLu
+         hYG67eZJnQwLUXnwkbrI2ZUY5oFjDZ1gf2htwQ5co3bmCIoQODtuIGyKba1SEyu61Tpu
+         n5LeRLWhpMJvlIzpnlq6WJujQ/NKaxTfrsMu8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701456043; x=1702060843;
+        d=1e100.net; s=20230601; t=1701456058; x=1702060858;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=WkVHqNvonNn8A5RdXCNM0KGca3KT1K9/6epU/Ala7ns=;
-        b=en0AOm2p/A1mwwLZwXHfP7UlXyQ25kwM1mqO7Fgx39CX5PSs9vGeyNF9uF34y90GrI
-         j/TFG9X4ZeDx3gxtPpm7iKvwVUOGk+0pfdNfhnpqU0zEV6xWJ9YSQyrPsBoxVc1qa9yS
-         e1Ze9GPAW+cywog0b+iGcHfX8dGPzPFoUkAJklVjW/xCv6/jn53Pcbat7NEJxSDVZ19M
-         ajgeTV9HddHvcxmPZRPpd3KS/J79+p3cj0MGkhMN0BnkOrDl19S9dzy0waKK7UlCQNa0
-         TBFLLiFZTlJWgjOzYPllrnY8QY3IV/lka8zJji6iKjY7eLRopeI/LR4BlvUuElrfC6fB
-         2ZDw==
-X-Gm-Message-State: AOJu0YyqrcczOFh5MAWcT5ZxGc7uw84SW7iSxg8ACn/gR5mGQBFRAM5I
-        VEYnZN964Yfs2aZ94tkbZ/OdG4m2fPreMun/Q0jp/g==
-X-Google-Smtp-Source: AGHT+IHFucvwGuwgf6CWwT0KxM9o15mQSPjEtFtLdi2XRjUgtzKITMVco+W+TyDdXuCWjtgGx7pIOKvxPeuX3lZfkVw=
-X-Received: by 2002:a50:aacf:0:b0:54b:321:ef1a with SMTP id
- r15-20020a50aacf000000b0054b0321ef1amr160337edc.6.1701456042587; Fri, 01 Dec
- 2023 10:40:42 -0800 (PST)
+        bh=55+ZUEjsrc3UB5LYQhm11Jk8d+ZjC/aqtysvU5RZ+wA=;
+        b=ZKqoteVwxg20NRXjfwCv8eRwiQmMK5Z9p+oRlPq09S9L0bZgBoM88EpU251o6iQ2sv
+         eNyjd532Z0sRffimYCSCAip+rxfy5D/s1SGqNuXOo4QYxgc3Ujlm8JP0SiBW14mMZ9x4
+         3Q/qCq8uYIBFxRIa1+NGEABYLHfr9tIK4dyGT9l3oaEkeJ1ErYTZVNooozI8R0iDwt/a
+         gqNDj6I5yDUWAkE5/GRocECC/400fj+wEHWR3D2bx5iUZDV99spzm4CGgOsHj58xNG/o
+         WjnQfRmeOTsj0xwqy0ivswQq49IotdPRHoyEWFJTlXNqbDJLNbtdHFSg5UQfNnH7BUyI
+         V+eQ==
+X-Gm-Message-State: AOJu0YzGJzPWwjkUMRW7Qi80GjgsDhtlghEwlqTSliF+BhkaWjGHUM1W
+        vjPeqofsHdffPemGB8UyIdf2oBDPet1VM2A2sLdgi1pe
+X-Google-Smtp-Source: AGHT+IEkR28U+zt8ErIg0AJD8/ZX+sbKiLKXJEmJ+rE8UGraXAoLUInYhmeUu8etl8CtQWw29UhuzA==
+X-Received: by 2002:a17:906:208d:b0:a18:a5b1:31a9 with SMTP id 13-20020a170906208d00b00a18a5b131a9mr2042939ejq.12.1701456058466;
+        Fri, 01 Dec 2023 10:40:58 -0800 (PST)
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com. [209.85.208.53])
+        by smtp.gmail.com with ESMTPSA id r18-20020a17090609d200b00a015eac52dcsm2171559eje.108.2023.12.01.10.40.57
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Dec 2023 10:40:58 -0800 (PST)
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-548ae9a5eeaso1097a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 10:40:57 -0800 (PST)
+X-Received: by 2002:a50:bb48:0:b0:54b:bf08:a95f with SMTP id
+ y66-20020a50bb48000000b0054bbf08a95fmr204880ede.6.1701456057266; Fri, 01 Dec
+ 2023 10:40:57 -0800 (PST)
 MIME-Version: 1.0
-References: <CAG48ez3xSoYb+45f1RLtktROJrpiDQ1otNvdR+YLQf7m+Krj5Q@mail.gmail.com>
- <811a97651e144b83a35fd7eb713aeeae@AcuMS.aculab.com>
-In-Reply-To: <811a97651e144b83a35fd7eb713aeeae@AcuMS.aculab.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Fri, 1 Dec 2023 19:40:06 +0100
-Message-ID: <CAG48ez1jT0T69t62wrduEWLSwY0UZpm0CwK4tC3uTPiWJ-powg@mail.gmail.com>
-Subject: mutex/spinlock semantics [was: Re: io_uring: incorrect assumption
- about mutex behavior on unlock?]
-To:     David Laight <David.Laight@aculab.com>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        io-uring <io-uring@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>
+References: <20231201083926.1817394-1-judyhsiao@chromium.org>
+ <CANn89iJMbMZdnJRP0CUVfEi20whhShBfO+DAmdaerhiXfiTx5A@mail.gmail.com>
+ <CAD=FV=Vf18TxUWpGTN9b=iECq=5BmEoopQjsMH2U6bDX2=T3cQ@mail.gmail.com>
+ <CANn89iLzmKOGhMeUUxeM=1b2PP3kieTeYsmpfA0GvJdcQMkgtQ@mail.gmail.com>
+ <CAD=FV=UxS9qxYNdd+kqtW3VRSK=0H9ZPgW=CeSEjfbJXut+PaQ@mail.gmail.com> <CANn89iLuY3dg6tpJCosGVOVR2FbT09DGXZpfb+zuW_BnPVf32g@mail.gmail.com>
+In-Reply-To: <CANn89iLuY3dg6tpJCosGVOVR2FbT09DGXZpfb+zuW_BnPVf32g@mail.gmail.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Fri, 1 Dec 2023 10:40:41 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=XvczUqrYVzDYy=uQ7-LMcRgpJj3iiehzfJNAq=UvJXbg@mail.gmail.com>
+Message-ID: <CAD=FV=XvczUqrYVzDYy=uQ7-LMcRgpJj3iiehzfJNAq=UvJXbg@mail.gmail.com>
+Subject: Re: [PATCH v1] neighbour: Don't let neigh_forced_gc() disable
+ preemption for long
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     Judy Hsiao <judyhsiao@chromium.org>,
+        David Ahern <dsahern@kernel.org>,
+        Simon Horman <horms@kernel.org>,
+        Brian Haley <haleyb.dev@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Joel Granados <joel.granados@gmail.com>,
+        Julian Anastasov <ja@ssi.bg>,
+        Leon Romanovsky <leon@kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 1, 2023 at 7:30=E2=80=AFPM David Laight <David.Laight@aculab.co=
-m> wrote:
+Hi,
+
+On Fri, Dec 1, 2023 at 9:35=E2=80=AFAM Eric Dumazet <edumazet@google.com> w=
+rote:
 >
-> From: Jann Horn
-> > Sent: 01 December 2023 16:41
+> > > > > @@ -253,9 +253,11 @@ static int neigh_forced_gc(struct neigh_tabl=
+e *tbl)
+> > > > >  {
+> > > > >         int max_clean =3D atomic_read(&tbl->gc_entries) -
+> > > > >                         READ_ONCE(tbl->gc_thresh2);
+> > > > > +       u64 tmax =3D ktime_get_ns() + NSEC_PER_MSEC;
+> > > >
+> > > > It might be nice to make the above timeout based on jiffies. On a
+> > > > HZ=3D100 system it's probably OK to keep preemption disabled for 10=
+ ms
+> > > > but on a HZ=3D1000 system you'd want 1 ms. ...so maybe you'd want t=
+o use
+> > > > jiffies_to_nsecs(1)?
+> > >
+> > > I do not think so. 10ms would be awfully long.
+> > >
+> > > We have nsec based time service, why downgrading to jiffies resolutio=
+n ???
 > >
-> > mutex_unlock() has a different API contract compared to spin_unlock().
-> > spin_unlock() can be used to release ownership of an object, so that
-> > as soon as the spinlock is unlocked, another task is allowed to free
-> > the object containing the spinlock.
-> > mutex_unlock() does not support this kind of usage: The caller of
-> > mutex_unlock() must ensure that the mutex stays alive until
-> > mutex_unlock() has returned.
+> > Well, the whole issue is that we're disabling preemption, right?
+> > Unless I'm mistaken, on a 1000 HZ system then a task's timeslice is
+> > 1ms and on a 100 HZ system then a task's timeslice is 10ms. When we
+> > disable preemption then the problem is that we can keep going past the
+> > end of our timeslice. This is bad for whatever task the system is
+> > trying to schedule instead of us since it will be blocked waiting for
+> > us to re-enable preemption.
+> >
+> > So essentially the problem here is really tied to jiffies resolution,
+> > right? Specifically, if jiffies is 100 Hz then it's actually
+> > inefficient to timeout every 1 ms--I think it would be better to use
+> > up our whole timeslice.
 >
-> The problem sequence might be:
->         Thread A                Thread B
->         mutex_lock()
->                                 code to stop mutex being requested
->                                 ...
->                                 mutex_lock() - sleeps
->         mutex_unlock()...
->                 Waiters woken...
->                 isr and/or pre-empted
->                                 - wakes up
->                                 mutex_unlock()
->                                 free()
->                 ... more kernel code access the mutex
->                 BOOOM
+> It is not because a kernel is built with HZ=3D100 that each thread has
+> to consume cpu times in 10ms slices.
 >
-> What happens in a PREEMPT_RT kernel where most of the spin_unlock()
-> get replaced by mutex_unlock().
-> Seems like they can potentially access a freed mutex?
+> Process scheduler does not use jiffies at all, but high resolution time s=
+ervice.
+>
+> Keep in mind this code is run from soft-interrupt, not a dedicated proces=
+sus.
 
-RT spinlocks don't use mutexes, they use rtmutexes, and I think those
-explicitly support this usecase. See the call path:
+Fair enough. I guess my mental model is wrong here. Please disregard
+my suggestion about using something based on how long "jiffies" is
+then. Using a fixed 1 ms timeout sounds great, then.
 
-spin_unlock -> rt_spin_unlock -> rt_mutex_slowunlock
 
-rt_mutex_slowunlock() has a comment, added in commit 27e35715df54
-("rtmutex: Plug slow unlock race"):
+> > > Can you tell us in which scenario this gc_list can be so big, other
+> > > than fuzzers ?
+> >
+> > The place we hit this wasn't actually with fuzzers but with normal
+> > usage in our labs. The only case where it was a really big problem was
+> > when neigh_forced_gc() was scheduled on a "little" CPU (in a
+> > big.LITTLE system) and that little CPU happened to be running at the
+> > lowest CPU frequency. Specifically Judy was testing on sc7180-trogdor
+> > and the lowest CPU Frequency of the "little" CPUs was 300 MHz. Since
+> > the littles are less powerful than the bigs, this is roughly the
+> > equivalent processing power of a big core running at 120 MHz.
+> >
+> > FWIW, we are apparently no longer seeing the bad latency after
+> > <https://crrev.com/c/4914309>, which does this:
+> >
+> > # Increase kernel neighbor table size.
+> > echo 1024 > /proc/sys/net/ipv4/neigh/default/gc_thresh1
+> > echo 4096 > /proc/sys/net/ipv4/neigh/default/gc_thresh2
+> > echo 8192 > /proc/sys/net/ipv4/neigh/default/gc_thresh3
+> > echo 1024 > /proc/sys/net/ipv6/neigh/default/gc_thresh1
+> > echo 4096 > /proc/sys/net/ipv6/neigh/default/gc_thresh2
+> > echo 8192 > /proc/sys/net/ipv6/neigh/default/gc_thresh3
+> >
+> > However, I still believe that we should land something like Judy's
+> > patch because, no matter what kernel tunings we have, the kernel
+> > shouldn't be disabling preemption for so long.
+>
+> Sure, and I suggested a refinement, because as I said jiffies can
+> stick to a value.
+>
+> Not sure why a refinement given by a network maintainer is not an option =
+?
+>
+> I must be missing something.
 
-         * We must be careful here if the fast path is enabled. If we
-         * have no waiters queued we cannot set owner to NULL here
-         * because of:
-         *
-         * foo->lock->owner =3D NULL;
-         *                      rtmutex_lock(foo->lock);   <- fast path
-         *                      free =3D atomic_dec_and_test(foo->refcnt);
-         *                      rtmutex_unlock(foo->lock); <- fast path
-         *                      if (free)
-         *                              kfree(foo);
-         * raw_spin_unlock(foo->lock->wait_lock);
-
-That commit also explicitly refers to wanting to support this pattern
-with spin_unlock() in the commit message.
+Your refinement was good. I was merely trying to answer the question
+you asked about how we got into it as completely as possible. Sorry if
+I caused confusion.
