@@ -2,135 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 17693800FA0
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 17:13:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6861C800FC3
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 17:13:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379454AbjLAPbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 10:31:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53442 "EHLO
+        id S1379465AbjLAPdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 10:33:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379398AbjLAPbo (ORCPT
+        with ESMTP id S1379441AbjLAPdm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 10:31:44 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33D2619E
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 07:31:48 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-40b595bf5d2so18439265e9.2
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 07:31:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=foundries.io; s=google; t=1701444706; x=1702049506; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=zrDqyx6agu66CFsaEwAwGPFt5h6we10bOzm7YE4XX+0=;
-        b=gxNGJ2jeuQGtb1QsJNITbFf+iT3QGZAmiMpR9SqfX5Wr7+Jcb5dSpHE/2YFUv5+ikx
-         3AJAVFGpuDmiSPIWSNkDWF39estfYTg9jwGvy1OZDDbqOXIwqZA7fnWMhFmxyYqTE+W/
-         XCmSvwEYH6oZWB4uZb1rXLmgXAV8++KVLMdoyTOCUXcFdwwhWP3K1hii3yWZl1Q9EGjf
-         rLUiwwYCPW6Om2jfV0iZE29/tSBoeyR7PGRFpeLjdA8arORSBrdCyShfCBC4T821UYQ0
-         RS3ZHP9VFFwFPbRyQK8+75CCqubs1deteehyrhSSo3mlxRx0/KSnY1/e8wGABSBdTBwj
-         AOHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701444706; x=1702049506;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zrDqyx6agu66CFsaEwAwGPFt5h6we10bOzm7YE4XX+0=;
-        b=wVF4HGUaTFx2F6E2zFyHWfHj+HDGGN8VWF3cO3Su+F0SQkhYOgS7DBIEkjvhGDN1JF
-         srP8U84baKfBxR45xX5QGSTOv3yb0Webc46df17PKG5/zMUIufMIonwosTn8FqvSdvS6
-         K8EEbiUFvMhpnnzvKK2teMLYOhxkHM1+HnlX3z3jvLY6OR4WHaqeJIn6zZHpSrytGzbV
-         uYXeopULSTyN7KC8NIFEcAz8DgOPyKmFM9/c/X64IXxp+5FBYioapoW8nHIJEDVLzP76
-         T1AFSrhLT/27JmSb9XkR736UXIPMFHRmrcZsB+eW2WRZGrdNg94+FPbSjXiVLMLvVUJF
-         vXNA==
-X-Gm-Message-State: AOJu0Yxh5f5WVzR9KWQPdYwsWw1o1NjM1V96M7DWPC28ANrht1udjFIC
-        YwbKuWf4D948L4iuIJfdsuPF6g==
-X-Google-Smtp-Source: AGHT+IF4yZefDhQfkn3bHpMubMuak5XxvCL7T38seWdW+e8Eg9jNLWcrCT1ET5ZnEZ3m4aGk9V5qkA==
-X-Received: by 2002:a05:600c:468f:b0:40b:5e59:99ca with SMTP id p15-20020a05600c468f00b0040b5e5999camr346457wmo.234.1701444706433;
-        Fri, 01 Dec 2023 07:31:46 -0800 (PST)
-Received: from trax.. (139.red-79-144-198.dynamicip.rima-tde.net. [79.144.198.139])
-        by smtp.gmail.com with ESMTPSA id l5-20020adffe85000000b0033331b248acsm1771415wrr.91.2023.12.01.07.31.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Dec 2023 07:31:45 -0800 (PST)
-From:   Jorge Ramirez-Ortiz <jorge@foundries.io>
-To:     jorge@foundries.io, ulf.hansson@linaro.org,
-        linus.walleij@linaro.org, adrian.hunter@intel.com
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: [PATCHv4] mmc: rpmb: fixes pause retune on all RPMB partitions.
-Date:   Fri,  1 Dec 2023 16:31:43 +0100
-Message-Id: <20231201153143.1449753-1-jorge@foundries.io>
-X-Mailer: git-send-email 2.34.1
+        Fri, 1 Dec 2023 10:33:42 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5B2D51A6
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 07:33:48 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 82A221007;
+        Fri,  1 Dec 2023 07:34:34 -0800 (PST)
+Received: from bogus (unknown [10.57.42.162])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 544683F73F;
+        Fri,  1 Dec 2023 07:33:46 -0800 (PST)
+Date:   Fri, 1 Dec 2023 15:31:45 +0000
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Cristian Marussi <cristian.marussi@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        vincent.guittot@linaro.org, souvik.chakravarty@arm.com,
+        nicola.mazzucato@arm.com
+Subject: Re: [PATCH] firmware: arm_scmi: Add protocol versioning checks
+Message-ID: <20231201153145.emneavw53en4hsju@bogus>
+References: <20231201135858.2367651-1-cristian.marussi@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231201135858.2367651-1-cristian.marussi@arm.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When RPMB was converted to a character device, it added support for
-multiple RPMB partitions (Commit 97548575bef3 ("mmc: block: Convert RPMB
-to a character device").
+On Fri, Dec 01, 2023 at 01:58:58PM +0000, Cristian Marussi wrote:
+> Platform and agent supported protocols versions do not necessarily match.
+> 
+> When talking to an older platform SCMI server, supporting only older
+> protocol versions, the kernel SCMI agent will downgrade the version of
+> the used protocol to match the platform one and avoid compatibility issues.
+> 
+> In the case, instead, in which the agent happens to communicate with a
+> newer platform server which can support newer protocol versions unknown to
+> the agent, and potentially backward incompatible, the agent currently
+> carries on, silently, in a best-effort approach.
+> 
+> Note that the SCMI server, by the specification, has no means to explicitly
+> detect the protocol versions used by the agents, neither it is required to
+> support multiple, older, protocol versions.
+> 
+> Add an explicit protocol version check to let the agent detect when this
+> version mismatch happens and warn the user about this condition.
+> 
+> Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+> ---
+> Any suggestion for a more meaningful warn message is very much welcome.
 
-One of the changes in this commit was transforming the variable
-target_part defined in __mmc_blk_ioctl_cmd into a bitmask.
+Looks good to me. I will apply soon with couple of changes as mentioned
+below. Let me know if you agree/disagree.
 
-This inadvertedly regressed the validation check done in
-mmc_blk_part_switch_pre() and mmc_blk_part_switch_post().
+> Based on sudeep/for-next/scmi/updates
+> ---
+>  drivers/firmware/arm_scmi/base.c      |  6 +++++-
+>  drivers/firmware/arm_scmi/clock.c     |  6 +++++-
+>  drivers/firmware/arm_scmi/driver.c    | 11 ++++++++++-
+>  drivers/firmware/arm_scmi/perf.c      |  6 +++++-
+>  drivers/firmware/arm_scmi/power.c     |  6 +++++-
+>  drivers/firmware/arm_scmi/powercap.c  |  6 +++++-
+>  drivers/firmware/arm_scmi/protocols.h |  8 +++++++-
+>  drivers/firmware/arm_scmi/reset.c     |  6 +++++-
+>  drivers/firmware/arm_scmi/sensors.c   |  6 +++++-
+>  drivers/firmware/arm_scmi/system.c    |  6 +++++-
+>  drivers/firmware/arm_scmi/voltage.c   |  6 +++++-
+>  11 files changed, 62 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/firmware/arm_scmi/base.c b/drivers/firmware/arm_scmi/base.c
+> index a52f084a6a87..3f5c89ae5af2 100644
+> --- a/drivers/firmware/arm_scmi/base.c
+> +++ b/drivers/firmware/arm_scmi/base.c
+> @@ -13,6 +13,9 @@
+>  #include "common.h"
+>  #include "notify.h"
+>  
+> +/* Must be updated only after ALL new features for that version are merged */
 
-This commit fixes that regression.
+s/new/mandatory/
 
-Fixes: 97548575bef3 ("mmc: block: Convert RPMB to a character device")
-Signed-off-by: Jorge Ramirez-Ortiz <jorge@foundries.io>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Cc: <stable@vger.kernel.org> # v4.14+
----
+> +#define SCMI_PROTOCOL_SUPPORTED_VERSION		0x20000
+> +
+>  #define SCMI_BASE_NUM_SOURCES		1
+>  #define SCMI_BASE_MAX_CMD_ERR_COUNT	1024
+>  
+> index 3eb19ed6f148..46320f627066 100644
+> --- a/drivers/firmware/arm_scmi/driver.c
+> +++ b/drivers/firmware/arm_scmi/driver.c
+> @@ -1849,6 +1853,11 @@ scmi_alloc_init_protocol_instance(struct scmi_info *info,
+>  	devres_close_group(handle->dev, pi->gid);
+>  	dev_dbg(handle->dev, "Initialized protocol: 0x%X\n", pi->proto->id);
+>  
+> +	if (pi->version > proto->supported_version)
+> +		dev_warn(handle->dev,
+> +			 "Detected UNSUPPORTED version 0x%X for protocol 0x%X. Backward compatibility is NOT assured.\n",
 
-  v2:
-     fixes parenthesis around condition
-  v3:
-     adds stable to commit header
-  v4:
-     fixes the stable version to v4.14
-     adds Reviewed-by
+s/UNSUPPORTED version/UNSUPPORTED newer version/ or higher instead of newer
 
- drivers/mmc/core/block.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
-index 152dfe593c43..13093d26bf81 100644
---- a/drivers/mmc/core/block.c
-+++ b/drivers/mmc/core/block.c
-@@ -851,9 +851,10 @@ static const struct block_device_operations mmc_bdops = {
- static int mmc_blk_part_switch_pre(struct mmc_card *card,
- 				   unsigned int part_type)
- {
-+	const unsigned int mask = EXT_CSD_PART_CONFIG_ACC_RPMB;
- 	int ret = 0;
-
--	if (part_type == EXT_CSD_PART_CONFIG_ACC_RPMB) {
-+	if ((part_type & mask) == mask) {
- 		if (card->ext_csd.cmdq_en) {
- 			ret = mmc_cmdq_disable(card);
- 			if (ret)
-@@ -868,9 +869,10 @@ static int mmc_blk_part_switch_pre(struct mmc_card *card,
- static int mmc_blk_part_switch_post(struct mmc_card *card,
- 				    unsigned int part_type)
- {
-+	const unsigned int mask = EXT_CSD_PART_CONFIG_ACC_RPMB;
- 	int ret = 0;
-
--	if (part_type == EXT_CSD_PART_CONFIG_ACC_RPMB) {
-+	if ((part_type & mask) == mask) {
- 		mmc_retune_unpause(card->host);
- 		if (card->reenable_cmdq && !card->ext_csd.cmdq_en)
- 			ret = mmc_cmdq_enable(card);
-@@ -3143,4 +3145,3 @@ module_exit(mmc_blk_exit);
-
- MODULE_LICENSE("GPL");
- MODULE_DESCRIPTION("Multimedia Card (MMC) block device driver");
--
---
-2.34.1
+-- 
+Regards,
+Sudeep
