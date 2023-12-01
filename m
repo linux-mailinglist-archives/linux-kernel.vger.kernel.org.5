@@ -2,170 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABF90800C7B
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 14:47:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E828C800C6E
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 14:43:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379049AbjLANrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 08:47:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36020 "EHLO
+        id S1379036AbjLANne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 08:43:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379035AbjLANrX (ORCPT
+        with ESMTP id S1379035AbjLANnd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 08:47:23 -0500
-Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com [209.85.215.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4CF1193
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 05:47:28 -0800 (PST)
-Received: by mail-pg1-f199.google.com with SMTP id 41be03b00d2f7-5bd0c909c50so518741a12.3
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 05:47:28 -0800 (PST)
+        Fri, 1 Dec 2023 08:43:33 -0500
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A24F1171A;
+        Fri,  1 Dec 2023 05:43:38 -0800 (PST)
+Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-50bc22c836bso3065864e87.0;
+        Fri, 01 Dec 2023 05:43:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701438217; x=1702043017; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=9OwuQJSOXjrOdfbj5sQ0Qx3CiHR7kZcKuli9ggq/7fA=;
+        b=SC0nKEvyOdfV42Ld6Y/T1X+zWIuioWYretk99zs/f00BEQDW/8NOQBPYuoPUiBzixO
+         0RPyge9GVuH5oj34KQYjwr64olGOZByHY9BnLkxCSSBdA/BHYj6idawkI+UepU4ZrnSz
+         9smUDg+fJ30TsXK7cB/XvWqbDh6XtJFOxoytgn+6ItPehfBxxcel8Pc4SLRrqyoeIHRN
+         xTLqd2dp9IIgmfun2On20IQ6ru0ytipCDm3aw0Tt6nIqIX+MWakdPbdoU7zopqG6ABcu
+         T/LPKQ+A0JzLG1k28JCtdr2lvW2TGXT8HuAMT9ystzNo/i6yK1V6bCGsW0dIstzjDzty
+         gSnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701438448; x=1702043248;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Ubg4CkkqI3qHcp6AvgCSIHVx9LzIZ9ITG/mX/n79muk=;
-        b=cPR1jZDomyaNBsDQSiVVAZv0TKzwl48dS7L4xGVR/8DP0FuRKM0pty8TmhVkBLrEZV
-         tWa484Z2yPPAMRY9ZHh6bwjR4iLu1BZotTnBZuMn4g3wxRcuRN9mO4rCnLI5Shxa61Z4
-         e0P/nJG+X0VV+UT5jybABwjxiL+FeomjwWxEgV27uvZioaichXwNP14ag68l9N8vi/n2
-         Q11FmlyXHE6W0/NGjg+GV3/mB10gbZ6UowcGxLGT6IxUh+ajKx7VZwrnqt/e4m0DCAmm
-         AnvuHIGwyl+tzSpsFxh9TF48xhxlv5kqUima7939SUBI6xLjyxWyjoxoNbkITL2TFPb8
-         GT/Q==
-X-Gm-Message-State: AOJu0YxcBUYXeYlglIq07xtLhdI8w/xU7GUmIdts1sTSB1j1EpFACDkh
-        mkDEV7hFmQma0nZV7KCB1FoKnYXk4GiRtUHtOtdjP7PYxAcZ
-X-Google-Smtp-Source: AGHT+IEWk4jKP+y3oDg/U2wTff41+4PtCwDGGw/BiglWNWuuHGSe11XLgals7sY/Q5zZms7peKy1rI5d6r8o5OxuwU96areV9AIU
+        d=1e100.net; s=20230601; t=1701438217; x=1702043017;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9OwuQJSOXjrOdfbj5sQ0Qx3CiHR7kZcKuli9ggq/7fA=;
+        b=JdoI669+6ga7i/c7Ls304CCI5gbden7XxedrbKLYqQob3vtqIY+uOnbTu4HeeKKy3B
+         jigZ7xQfpuiSmrR7pEXwJs4bj9r3XI/MH2LJQTaGCMRMWYjnSmZFCf9LtZpBi/A+Uc+V
+         bmnMtbotgsht2+H02tYRA6bia6rcV6wRL0uXHSzcuL8kAvj5aPVhM4kgZd6rQhMQjfyl
+         s0ByemNrbRDRv5bKqULt6JMkgdK4eVvubAKmqoCq6fhLMIBBWVNIfvQUGYTpSE0sNd4d
+         knipH4F1e5obtm3T9qEtI/XXCUzevc6S/p8XN59hzt9VC0dA5FGyzrI2YZPyJkoShhZW
+         Cu4w==
+X-Gm-Message-State: AOJu0Yzak0yjCIrL6chLLhNPcV8DLPM0Tbg1UwkPQQAaQM/SDL7BdlO/
+        P4hKRoKJTUDU39fDrIUVJKPINtNkUDs=
+X-Google-Smtp-Source: AGHT+IHCJSo697bipzIClt5iEyV3Ndb+eworhBOfHy+XLwOg96uE68SDl85M9yciK5pjUp2bXczqJA==
+X-Received: by 2002:ac2:4f05:0:b0:50b:d764:6ec4 with SMTP id k5-20020ac24f05000000b0050bd7646ec4mr1200398lfr.116.1701438216683;
+        Fri, 01 Dec 2023 05:43:36 -0800 (PST)
+Received: from gmail.com (83-233-6-197.cust.bredband2.com. [83.233.6.197])
+        by smtp.gmail.com with ESMTPSA id a19-20020ac25e73000000b0050bbb90531esm426867lfr.155.2023.12.01.05.43.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Dec 2023 05:43:35 -0800 (PST)
+Date:   Fri, 1 Dec 2023 14:48:06 +0100
+From:   Marcus Folkesson <marcus.folkesson@gmail.com>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Input: pxrc - simplify mutex handling with guard macro
+Message-ID: <ZWnkFjFeEV7y9tUr@gmail.com>
+References: <20231201-pxrc-guard-v1-1-38937e657368@gmail.com>
+ <ZWnfsjIukIbAvQ-l@hovoldconsulting.com>
 MIME-Version: 1.0
-X-Received: by 2002:a63:1009:0:b0:5b9:6677:b8d with SMTP id
- f9-20020a631009000000b005b966770b8dmr3798970pgl.6.1701438448308; Fri, 01 Dec
- 2023 05:47:28 -0800 (PST)
-Date:   Fri, 01 Dec 2023 05:47:28 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000051a218060b7302be@google.com>
-Subject: [syzbot] [btrfs?] kernel BUG in __reserve_bytes
-From:   syzbot <syzbot+1c134362d18de07842ca@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="nfy3sN/Smg4PYgnm"
+Content-Disposition: inline
+In-Reply-To: <ZWnfsjIukIbAvQ-l@hovoldconsulting.com>
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FSL_HELO_FAKE,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-syzbot found the following issue on:
+--nfy3sN/Smg4PYgnm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-HEAD commit:    e8f60209d6cf Merge tag 'pmdomain-v6.7-rc2' of git://git.ke..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=10b3499ae80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=bb39fe85d254f638
-dashboard link: https://syzkaller.appspot.com/bug?extid=1c134362d18de07842ca
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+On Fri, Dec 01, 2023 at 02:29:22PM +0100, Johan Hovold wrote:
+> On Fri, Dec 01, 2023 at 01:08:45PM +0100, Marcus Folkesson wrote:
+> > Use the guard(mutex) macro for handle mutex lock/unlocks.
+> >=20
+> > Signed-off-by: Marcus Folkesson <marcus.folkesson@gmail.com>
+>=20
+> A couple of drive-by comments below.
+>=20
+> > ---
+> >  drivers/input/joystick/pxrc.c | 27 +++++++++++----------------
+> >  1 file changed, 11 insertions(+), 16 deletions(-)
+> >=20
+> > diff --git a/drivers/input/joystick/pxrc.c b/drivers/input/joystick/pxr=
+c.c
+> > index ea2bf5951d67..3c3bf7179b46 100644
+> > --- a/drivers/input/joystick/pxrc.c
+> > +++ b/drivers/input/joystick/pxrc.c
+> > @@ -5,15 +5,17 @@
+> >   * Copyright (C) 2018 Marcus Folkesson <marcus.folkesson@gmail.com>
+> >   */
+> > =20
+> > -#include <linux/kernel.h>
+> > +#include <linux/cleanup.h>
+> >  #include <linux/errno.h>
+> > -#include <linux/slab.h>
+> > +#include <linux/input.h>
+> > +#include <linux/kernel.h>
+> >  #include <linux/module.h>
+> > +#include <linux/mutex.h>
+> > +#include <linux/slab.h>
+> >  #include <linux/uaccess.h>
+> > +
+> >  #include <linux/usb.h>
+> >  #include <linux/usb/input.h>
+> > -#include <linux/mutex.h>
+> > -#include <linux/input.h>
+>=20
+> Looks like an unrelated change.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+I reordered the include files as I added cleanup.h.
+I can do it in a separate patch if that is preferred.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/2af2eefe2f60/disk-e8f60209.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/15130e50c05d/vmlinux-e8f60209.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/6e0a0602189b/bzImage-e8f60209.xz
+>  =20
+> >  #define PXRC_VENDOR_ID		0x1781
+> >  #define PXRC_PRODUCT_ID		0x0898
+> > @@ -89,25 +91,20 @@ static int pxrc_open(struct input_dev *input)
+> >  		dev_err(&pxrc->intf->dev,
+> >  			"%s - usb_submit_urb failed, error: %d\n",
+> >  			__func__, retval);
+> > -		retval =3D -EIO;
+> > -		goto out;
+> > +		return -EIO;
+> >  	}
+> > =20
+> >  	pxrc->is_open =3D true;
+> > -
+> > -out:
+> > -	mutex_unlock(&pxrc->pm_mutex);
+> > -	return retval;
+> > +	return 0;
+> >  }
+>=20
+> Eh, this looks obviously broken. Did you not test this before
+> submitting? I assume lockdep would complain loudly too.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+1c134362d18de07842ca@syzkaller.appspotmail.com
+Sorry, it is more that I'm not in the habit of using b4 for submitting
+patches yet, so things got wrong.
+There is a v2 out there.
 
-------------[ cut here ]------------
-kernel BUG at fs/btrfs/space-info.c:1638!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 15269 Comm: syz-executor.2 Not tainted 6.7.0-rc3-syzkaller-00048-ge8f60209d6cf #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
-RIP: 0010:__reserve_bytes+0xd8e/0x12e0 fs/btrfs/space-info.c:1638
-Code: e9 b3 f5 ff ff e8 d2 db ed fd b9 66 06 00 00 48 c7 c2 e0 2c 19 8b 48 c7 c6 a0 32 19 8b 48 c7 c7 80 2d 19 8b e8 b3 b7 d0 fd 90 <0f> 0b e8 ab db ed fd e8 b6 39 dd fd 48 89 44 24 18 e9 62 f7 ff ff
-RSP: 0018:ffffc90017956bd0 EFLAGS: 00010282
-RAX: 000000000000003b RBX: ffff88807a22c000 RCX: ffffc9000b468000
-RDX: 0000000000000000 RSI: ffffffff816b0182 RDI: 0000000000000005
-RBP: 0000000000000005 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000080000000 R11: 000000000019c548 R12: 0000000000000000
-R13: ffff88805bc04000 R14: 1ffff92002f2ad81 R15: dffffc0000000000
-FS:  00007fa7588a16c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000000 CR3: 0000000078fa2000 CR4: 0000000000350ef0
-Call Trace:
- <TASK>
- btrfs_reserve_metadata_bytes+0x2a/0x110 fs/btrfs/space-info.c:1783
- btrfs_reserve_trans_metadata fs/btrfs/transaction.c:598 [inline]
- start_transaction+0x1837/0x1c90 fs/btrfs/transaction.c:692
- btrfs_dirty_inode+0x189/0x200 fs/btrfs/inode.c:6015
- btrfs_update_time fs/btrfs/inode.c:6041 [inline]
- btrfs_update_time+0xae/0xe0 fs/btrfs/inode.c:6032
- inode_update_time fs/inode.c:1955 [inline]
- touch_atime+0x34f/0x5d0 fs/inode.c:2028
- file_accessed include/linux/fs.h:2360 [inline]
- filemap_read+0xb09/0xcf0 mm/filemap.c:2661
- btrfs_file_read_iter+0x1dc/0x830 fs/btrfs/file.c:3823
- __kernel_read+0x301/0x870 fs/read_write.c:428
- integrity_kernel_read+0x7f/0xb0 security/integrity/iint.c:221
- ima_calc_file_hash_tfm+0x2c5/0x3d0 security/integrity/ima/ima_crypto.c:485
- ima_calc_file_shash security/integrity/ima/ima_crypto.c:516 [inline]
- ima_calc_file_hash+0x1c6/0x4a0 security/integrity/ima/ima_crypto.c:573
- ima_collect_measurement+0x85e/0xa20 security/integrity/ima/ima_api.c:290
- process_measurement+0xe92/0x2260 security/integrity/ima/ima_main.c:359
- ima_file_check+0xc2/0x110 security/integrity/ima/ima_main.c:557
- do_open fs/namei.c:3624 [inline]
- path_openat+0x1821/0x2c50 fs/namei.c:3779
- do_filp_open+0x1de/0x430 fs/namei.c:3809
- do_sys_openat2+0x176/0x1e0 fs/open.c:1440
- do_sys_open fs/open.c:1455 [inline]
- __do_sys_open fs/open.c:1463 [inline]
- __se_sys_open fs/open.c:1459 [inline]
- __x64_sys_open+0x154/0x1e0 fs/open.c:1459
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x40/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7fa757a7cae9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fa7588a10c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000002
-RAX: ffffffffffffffda RBX: 00007fa757b9c050 RCX: 00007fa757a7cae9
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000020000240
-RBP: 00007fa757ac847a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000006e R14: 00007fa757b9c050 R15: 00007ffd9a11eb28
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:__reserve_bytes+0xd8e/0x12e0 fs/btrfs/space-info.c:1638
-Code: e9 b3 f5 ff ff e8 d2 db ed fd b9 66 06 00 00 48 c7 c2 e0 2c 19 8b 48 c7 c6 a0 32 19 8b 48 c7 c7 80 2d 19 8b e8 b3 b7 d0 fd 90 <0f> 0b e8 ab db ed fd e8 b6 39 dd fd 48 89 44 24 18 e9 62 f7 ff ff
-RSP: 0018:ffffc90017956bd0 EFLAGS: 00010282
+The driver (v2) is quickly tested on HW and, what I can tell, seems to beha=
+ve.
 
-RAX: 000000000000003b RBX: ffff88807a22c000 RCX: ffffc9000b468000
-RDX: 0000000000000000 RSI: ffffffff816b0182 RDI: 0000000000000005
-RBP: 0000000000000005 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000080000000 R11: 000000000019c548 R12: 0000000000000000
-R13: ffff88805bc04000 R14: 1ffff92002f2ad81 R15: dffffc0000000000
-FS:  00007fa7588a16c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000001b3245f000 CR3: 0000000078fa2000 CR4: 0000000000350ef0
+>=20
+> You're apparently the author of this driver and can test it, but I fear
+> the coming onslaught of untested guard conversions from the "cleanup"
+> crew. Not sure I find the result generally more readable either.
+>=20
+> Johan
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Best regards
+Marcus Folkesson
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+--nfy3sN/Smg4PYgnm
+Content-Type: application/pgp-signature; name="signature.asc"
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+-----BEGIN PGP SIGNATURE-----
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+iQIzBAEBCAAdFiEEBVGi6LZstU1kwSxliIBOb1ldUjIFAmVp5BIACgkQiIBOb1ld
+UjLsbA/9EqT6TP1FGnNnbx5pd+KL2UAh2cVOe6E4MP5MkjONSbP87J5ass1rtOLE
+j8er6xjoOtR3d/wZaamd01jEbdDPX2ptJVNfDxQmxJ/ExQ/r7Ohn1UW4eJd4ZxHM
+o6FuX8yhkHL9fKmdxVFTAZkeYFOBa97fSDfyYYcUAWxxoS6kiR1zOPPXyvJAs7Kk
+8OGig9dvNM+zi+G4XTisVwLL0X5Qy4U2mbh93DRUkiS6y7GguurFJ2e1Naa6BEG5
+1EVzg+j3jpZh+8OMmSAgbk8IlfbeZVK6lAI0ewAJKTrbB31MWXZ/vnxNlq64u0d6
+SRBdV3y9BgCKzu4xzv3YYgwfw3Tj4D382Cutdq3Tm7lNnpPvKU3iXPnnVTtX/hOU
+F6MxiqM5VL+d+jeAzfJIXgFwsJqHv9CkWOphMxa+r/r2vr8622HSIBYZ3vqBJnz4
+kPYQOq0ZLsFLRb6NGj4UvHhT/Jjr7HLndCOt41qauoWbuaEEmlBKuhJemK4ufXNo
+l5pM0qjS44Z0p/EPkiNr6LU8OlVKWdJ0gmBH5grUHYgakbKk8NWyNu1GOK2c4mWZ
+RrPm2Zlgq66GPcVbODREjfqm+QCfafY30h2P0Ek1ywMKzPvNqDzpSCIyw0NSEdwW
+3267cgWPU6TrfBtRz1f2M85rhRiqbUd9BTVXMUb1Tv2QtKiPoek=
+=wBIH
+-----END PGP SIGNATURE-----
 
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+--nfy3sN/Smg4PYgnm--
