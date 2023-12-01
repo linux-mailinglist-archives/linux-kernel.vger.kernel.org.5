@@ -2,146 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50147800F98
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 17:13:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DBF6800F95
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 17:13:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379434AbjLAPbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 10:31:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50368 "EHLO
+        id S1379460AbjLAPcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 10:32:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379398AbjLAPbU (ORCPT
+        with ESMTP id S1379398AbjLAPb4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 10:31:20 -0500
-Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com [209.85.214.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93632198
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 07:31:24 -0800 (PST)
-Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-1d01c45ff34so9331995ad.1
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 07:31:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701444684; x=1702049484;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0oJz4ABqI6dQYHTyvK+VaenbIcleK/g5CtSQLh80SqY=;
-        b=Rjt/rkHywCzrgTnF5eCDy8pMFQrsqSFDoQ1oJzFbyu5WiDgPjIk5XAAjFsAi1tbnWn
-         1ywNm2VddFCCbmJRkXLoLLm2YJoAami+xkohoVDJ2zM/OO76j2DkCVo9fWKnfBxVFO+7
-         liRJbKFKyYcPbuvL7IczgH/kfS3S1L+7zc8ofhn/6DtxlBjx+lHPsuHhrEwyhwwU6PPq
-         PepsyIByoSXkc6eIj6g/OTIw95WnDOtFXeCl5ROt1z8UGSuCxF9SllCFS7yKnpFOvkFZ
-         UlKL7gm5CL++PHqxqI/yFdNa61nHIaS0rs1HySbUdumeKwaKakl91etUz2Zu18h4wJWM
-         IY1A==
-X-Gm-Message-State: AOJu0YzQ96cEScrEzUIgjbNgbkMIGH3XJjAcsME6FXaOKgpjhfztDS8m
-        TV7KvjyflXZ00PAlaXD66LET+lkZixEJxxYUY6lIzWVwwugW
-X-Google-Smtp-Source: AGHT+IEpfkl2TVrJUq3upLcd96cDovCb5c1uhiWIvTt2OW0A5SrXccNr+K53jgdEjnBTjCOmmHJuSjF/KEqeMS5ZdULuHsQxD8zE
+        Fri, 1 Dec 2023 10:31:56 -0500
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E902C10F9
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 07:31:59 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id 4A7665C00E0;
+        Fri,  1 Dec 2023 10:31:59 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Fri, 01 Dec 2023 10:31:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm3; t=1701444719; x=1701531119; bh=S2
+        3umPlXJQkeulBSJ4NyHT/ySrJcetJwnTwa7Bmt//A=; b=GCgnEJblV3NjK6qiRz
+        12TBLKwVjPHyT8xGbs8zmQj5y0esR77HR2kGT2V0uIyEQHQT2Ld43Ty53uK0xboW
+        ram+ZE6/UWM7J0H8XOGgqDXV348NO00EHdFhe+NyQ0k8F2Eo1oGiKi6Rot27IjWy
+        rvmGuhvs2ggvVnD1xKuKGh1XAiXVvFWGh6quY7Ws7elg/IC3HeGwMYCxqN6ZhiKF
+        9har4YLSuV17ig6Snm7+9aZQJECTbzAcQkDW3EX4FEqBBryKwSOPxi1qNGXI+65N
+        v4NwOCWIOnK24U4Sig4i/mCLg9TTXAFOur8aPOOqxUVH2P0OVRJ6UZVInzoZ6Jk0
+        6+HA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1701444719; x=1701531119; bh=S23umPlXJQkeu
+        lBSJ4NyHT/ySrJcetJwnTwa7Bmt//A=; b=M7Y6Tzi3+CtpLrklENV7GZQkfjvn6
+        ox3arxwg7QfZfqEiqVSRAiKkxON6U/B6KtOq25nh7u2gsRk6X21TLfScB0n5B+jP
+        TZg3OuOQEpgc9JSR6HvfF+98BItPKJdu+jq464u/ShCZ3qQJm0tLNRYzhjg7+GrQ
+        9uQqoPYwxvxMXRReepRBvk28dNXcfRicat8gyczobRxaatYY1Xg1CDeYIprS3Je8
+        aOcDXGgWtBBotix2rcNKMvnGQKIAvPVLhB4/50rqvqlEMciCFYC8FvFZ3c43XFSh
+        OkEpa5YApTWtulyQZcvOA4By9K3L7gBz0+TUTqjJOKa9v5o7piRDFi6Rw==
+X-ME-Sender: <xms:bvxpZaLjHA_wtw8fNniMtRzggxYTwrS1uAehlU5pUKXddSEWWmGmkQ>
+    <xme:bvxpZSKUHgG0PRQTmL02-3arBK6G4u5aL15Y1boOcMJcjV8dAWn-kxIsWDpUN_EgN
+    uNGlRsYPX6YfvZ_Qnk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeiledgjeekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:bvxpZav20_WiL886aUxDD3IyF_wRtfaAuzSEUeSEgv6R8GkhumynOw>
+    <xmx:bvxpZfYUZQ9Me4GkAFN8ASQy-QA3LynZogDPwkcnxrSooA4oZTD1Jw>
+    <xmx:bvxpZRa16kGx1eHmkIiRw5vySjms0-AWAnoWZPmumUU9qSpo0hhhaQ>
+    <xmx:b_xpZWN18qCVdRJu1_i6n1dJk9Dg8LSpLT81CXnOTre-n-2WFzOUeQ>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 8A674B60089; Fri,  1 Dec 2023 10:31:58 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1178-geeaf0069a7-fm-20231114.001-geeaf0069
 MIME-Version: 1.0
-X-Received: by 2002:a17:903:2308:b0:1cc:274d:ba5a with SMTP id
- d8-20020a170903230800b001cc274dba5amr5686495plh.0.1701444684119; Fri, 01 Dec
- 2023 07:31:24 -0800 (PST)
-Date:   Fri, 01 Dec 2023 07:31:23 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000000843f060b747650@google.com>
-Subject: [syzbot] [wireguard?] KCSAN: data-race in wg_packet_handshake_receive_worker
- / wg_packet_rx_poll (6)
-From:   syzbot <syzbot+57cb9d16a1b17521eb76@syzkaller.appspotmail.com>
-To:     Jason@zx2c4.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, pabeni@redhat.com,
-        syzkaller-bugs@googlegroups.com, wireguard@lists.zx2c4.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=2.3 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SORTED_RECIPS,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: **
+Message-Id: <855dfa50-a3a3-415a-8612-4da59f995ef0@app.fastmail.com>
+In-Reply-To: <20231201064919.5mbmqo5fco7n3rgq@endnote>
+References: <20231130231657.12715-1-francesco@dolcini.it>
+ <20231201060346.GE5169@atomide.com> <20231201064919.5mbmqo5fco7n3rgq@endnote>
+Date:   Fri, 01 Dec 2023 16:31:38 +0100
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Nishanth Menon" <nm@ti.com>, "Tony Lindgren" <tony@atomide.com>
+Cc:     "Francesco Dolcini" <francesco@dolcini.it>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        "Vignesh Raghavendra" <vigneshr@ti.com>,
+        "Catalin Marinas" <catalin.marinas@arm.com>,
+        "Will Deacon" <will@kernel.org>, "Tero Kristo" <kristo@kernel.org>
+Subject: Re: [PATCH] arm64: defconfig: increase SERIAL_8250_NR_UARTS
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Fri, Dec 1, 2023, at 07:49, Nishanth Menon wrote:
+> On 08:03-20231201, Tony Lindgren wrote:
+>> * Francesco Dolcini <francesco@dolcini.it> [231130 23:17]:
+>> > Increase CONFIG_SERIAL_8250_NR_UARTS from 4 to 8, the current legacy value
+>> > is not adequate for embedded systems that use SoCs where it's common to
+>> > have a large number of serial ports.
+>> > 
+>> > No need to change CONFIG_SERIAL_8250_RUNTIME_UARTS, see commit 9d86719f8769
+>> > ("serial: 8250: Allow using ports higher than SERIAL_8250_RUNTIME_UARTS").
+>> > 
+>> > This enables using the UART connected Bluetooth device on Verdin AM62
+>> > board.
+>> 
+>> OK makes sense for distro use.
+>> 
+>> Disabling unused ports leads into port names shifting, which we still can't
+>> easily tolerate until we have the DEVNAME:0.0 style addressing available for
+>> ports. So for now we still depend CONFIG_SERIAL_8250_NR_UARTS, eventually
+>> that too should become just a legacy ISA port array.. Meanwhile:
+>> 
+>> Reviewed-by: Tony Lindgren <tony@atomide.com>
+>
+> I'd prefer to get Arnd's view on the topic as well (I kind of
+> recollect some historic discussion which I am not failing to trace
+> that there usage model doesn't exceed 4 and aliases could be used to
+> map these as required for the platform). The 8250 debate has been
+> popping on and off over the years.. Sigh.. memories of [1] still haunt
+> me.
 
-syzbot found the following issue on:
+I don't recall any reason to have the limit set to the default
+of 4, other than possibly using excessive amounts of .data in
+vmlinux, but we have other serial port drivers that just hardcode
+a much larger value.
 
-HEAD commit:    d2da77f431ac Merge tag 'parisc-for-6.7-rc3' of git://git.k..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=11294880e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8c1151391aefc0c3
-dashboard link: https://syzkaller.appspot.com/bug?extid=57cb9d16a1b17521eb76
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/0ebc29947781/disk-d2da77f4.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/a82ec858fbee/vmlinux-d2da77f4.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/d45f2fa85085/bzImage-d2da77f4.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+57cb9d16a1b17521eb76@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KCSAN: data-race in wg_packet_handshake_receive_worker / wg_packet_rx_poll
-
-read-write to 0xffff8881392abfa0 of 8 bytes by interrupt on cpu 1:
- update_rx_stats drivers/net/wireguard/receive.c:23 [inline]
- wg_packet_consume_data_done drivers/net/wireguard/receive.c:358 [inline]
- wg_packet_rx_poll+0xd35/0xf00 drivers/net/wireguard/receive.c:474
- __napi_poll+0x60/0x3b0 net/core/dev.c:6533
- napi_poll net/core/dev.c:6602 [inline]
- net_rx_action+0x32b/0x750 net/core/dev.c:6735
- __do_softirq+0xc4/0x279 kernel/softirq.c:553
- do_softirq+0x5e/0x90 kernel/softirq.c:454
- __local_bh_enable_ip+0x64/0x70 kernel/softirq.c:381
- __raw_spin_unlock_bh include/linux/spinlock_api_smp.h:167 [inline]
- _raw_spin_unlock_bh+0x36/0x40 kernel/locking/spinlock.c:210
- spin_unlock_bh include/linux/spinlock.h:396 [inline]
- ptr_ring_consume_bh include/linux/ptr_ring.h:367 [inline]
- wg_packet_handshake_receive_worker+0x184/0x5e0 drivers/net/wireguard/receive.c:212
- process_one_work kernel/workqueue.c:2630 [inline]
- process_scheduled_works+0x5b8/0xa30 kernel/workqueue.c:2703
- worker_thread+0x525/0x730 kernel/workqueue.c:2784
- kthread+0x1d7/0x210 kernel/kthread.c:388
- ret_from_fork+0x48/0x60 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
-
-read-write to 0xffff8881392abfa0 of 8 bytes by task 22808 on cpu 0:
- update_rx_stats drivers/net/wireguard/receive.c:23 [inline]
- wg_receive_handshake_packet drivers/net/wireguard/receive.c:198 [inline]
- wg_packet_handshake_receive_worker+0x4b9/0x5e0 drivers/net/wireguard/receive.c:213
- process_one_work kernel/workqueue.c:2630 [inline]
- process_scheduled_works+0x5b8/0xa30 kernel/workqueue.c:2703
- worker_thread+0x525/0x730 kernel/workqueue.c:2784
- kthread+0x1d7/0x210 kernel/kthread.c:388
- ret_from_fork+0x48/0x60 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
-
-value changed: 0x00000000000070b0 -> 0x00000000000070d0
-
-Reported by Kernel Concurrency Sanitizer on:
-CPU: 0 PID: 22808 Comm: kworker/0:4 Not tainted 6.7.0-rc2-syzkaller-00265-gd2da77f431ac #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
-Workqueue: wg-kex-wg2 wg_packet_handshake_receive_worker
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+    Arnd
