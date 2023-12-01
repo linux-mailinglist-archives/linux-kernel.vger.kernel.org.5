@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 709A58005BF
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 09:36:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 273BA8005C6
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 09:36:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377876AbjLAIgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 03:36:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39570 "EHLO
+        id S1377869AbjLAIgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 03:36:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377863AbjLAIgF (ORCPT
+        with ESMTP id S1377884AbjLAIgV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 03:36:05 -0500
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAD43171F
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 00:36:11 -0800 (PST)
-Received: by mail-io1-xd33.google.com with SMTP id ca18e2360f4ac-7b3854d7270so54578839f.3
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 00:36:11 -0800 (PST)
+        Fri, 1 Dec 2023 03:36:21 -0500
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EA121984
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 00:36:22 -0800 (PST)
+Received: by mail-io1-xd2a.google.com with SMTP id ca18e2360f4ac-7b3708b3eacso54036139f.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 00:36:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701419771; x=1702024571; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1701419781; x=1702024581; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=4Oz99D4o5MrP+/yDQUyDzdznbop0C/bF02PgNBXU/cg=;
-        b=wsl+xzI5t6rKpHPEVZUUYwiGwVyehlhnY98vJJ0l2/fdKDwqqnh0b898569qTJFWC+
-         aJ/UOxCUAaWJOTX9D5c2IWsLxKFRy+fwf1KGOW3ogxf9+eBGRX2BDjrtsWCX3dxVUxDu
-         TTK4pe8Sqpyy7I/e0ljZhQ8UicrFngo9XLa9HHzJxH80olQ/8v2Y8vrPZvBHdB7gyk2O
-         eRtQ6iJGP3K92DZFUKTFMFEkpgNIYwh9UohHXIkLosEHKMD9XIbudlEFbjzb5zDCAnht
-         Xi99SQJr5qZ3EpcdlnBx5Pk+OISkgZDHr8MTei5yt1DN5Yq5HADT/hmElT2PgG+5da40
-         xXiQ==
+        bh=8ed8LytsGe2s6orGqXQm8S3xZz0bmv4bdy14VfW1EeA=;
+        b=Y43m0D+fxDu0D2oaSwlow6Ec89eg8u/DdSjZAvSultuYBZ/00sm5mexAwj4lw9+Z9M
+         K254kLNyMQDuz8Cy6R2jXfa0TUc0iEXFkwD9RjPntWoDnghSgzfyN8uI7yoFqp++/j30
+         HT0YHcZASYrDBJoi2Vtsfiizcmic8HUPS2OMwr3ygTyi5PmYewDU7A+Lwq2C/RP69tBj
+         pCS1b0YLNytRkSQnmCnKNiuOgYaUNsfBtx4Ec9koYF0nReINCUQy8IM+HhTvvG8WpzaZ
+         TCxSCy90GRn1g0/gcoKyRlP62DtTq6hfLr5OavM5jd3s+8CORT/me1yrxSzok7QfZTQd
+         HF2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701419771; x=1702024571;
+        d=1e100.net; s=20230601; t=1701419781; x=1702024581;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4Oz99D4o5MrP+/yDQUyDzdznbop0C/bF02PgNBXU/cg=;
-        b=gCaKn+cFPy9ar4q5iJa71nYrSAWJ+WUSqWbslKqNnHerne41UzUt00DfhtEVU+ajiC
-         4UtefcPLLVhtq+6Td44OE9hSCHM1/ujoKb9ojyIYDyzF/9hGNFVHvQ924ydsrYiZFNrp
-         esp8Zas8jd8sjer6gk3l4/x2IKV1SdGoabAlCR3xwNCrvoI3tr+WIR8+YDCVrvfAg44c
-         sZtcpYvdJQJ8jqRPoerK05Zd9bUDu0ZOkCd60oPqFViK5tChNeXBaVPfPgoDaozqLXw0
-         gWh4bKUyDbTOUrhhVfvWlq8wOkil6Ii7fHxEKYoLoSiIGhYOo9+Su35Hk0EqA40+YvEV
-         rkWA==
-X-Gm-Message-State: AOJu0YwwXa9/Pvmk08HIqBI9nQfdC+TO7imPPFLp/CyMj5PhH1FyKyva
-        jgh9huS7eDDvDhiwTfWpnSmOxA==
-X-Google-Smtp-Source: AGHT+IEw7fWoiIMkPVY6w5hx332IpfxdrRjUxHdLNDtHYkDj/cHzcFh3K1jFS34DT74LmXWgtU5HKw==
-X-Received: by 2002:a92:d5ca:0:b0:35d:3826:511d with SMTP id d10-20020a92d5ca000000b0035d3826511dmr6640117ilq.17.1701419771292;
-        Fri, 01 Dec 2023 00:36:11 -0800 (PST)
+        bh=8ed8LytsGe2s6orGqXQm8S3xZz0bmv4bdy14VfW1EeA=;
+        b=Dvj0A2XduKNjwmeBLCeMmcvpw3Q1Cd8FtVD7kRXBh5n0KP3Uv8OOdjVywV+9MvoyNc
+         4Eur35Mpq0DwM1Z3wvjjRpRMLcZZxRLG33wpUQL7ZhQ7oVp6et0wR7C7gISswWJah0dG
+         TB/NY/4kW4Xq1cVlpPbtBB0ogXhQhfqtcJuG04IL5oQLi/KO/UPMFe8k7CqRvSGQ916O
+         OZNhu7wropD+bUBRDvDNFZKwjbgKGIYQP2AsKnGrMyPbXgtK5E6lC/ErLmdUctXxzqzB
+         fK1duGSRf6MP0vOaxyrAj9O+wtogEz/HWtKqNi5r135SW//ACp9JJifuxbLbAS76ErUw
+         EFgw==
+X-Gm-Message-State: AOJu0Ywi0kBfr0D/9Nmv6AX4MQzTb2bczcU1RV42fP8s0tm45B/f+Jgs
+        0+kg4FkrO88KJSesa8DXpTqvwg==
+X-Google-Smtp-Source: AGHT+IEAiPJPfzT+xszs7Eo0fNrOp/A1DdJfra/V/R8cnANKpC5M8hxhny42uYf13rhlpVNar4VuEg==
+X-Received: by 2002:a6b:d912:0:b0:7b3:92e3:97ac with SMTP id r18-20020a6bd912000000b007b392e397acmr20709625ioc.11.1701419781510;
+        Fri, 01 Dec 2023 00:36:21 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.223.109])
-        by smtp.gmail.com with ESMTPSA id fu12-20020a056638668c00b0046465bfebe3sm768879jab.149.2023.12.01.00.36.07
+        by smtp.gmail.com with ESMTPSA id fu12-20020a056638668c00b0046465bfebe3sm768879jab.149.2023.12.01.00.36.17
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Dec 2023 00:36:10 -0800 (PST)
-Message-ID: <78282e1c-7da1-4721-9ca9-2023cbe3ec60@linaro.org>
-Date:   Fri, 1 Dec 2023 09:36:07 +0100
+        Fri, 01 Dec 2023 00:36:21 -0800 (PST)
+Message-ID: <fadc58f8-ffdc-430d-ab89-7e572f7c1725@linaro.org>
+Date:   Fri, 1 Dec 2023 09:36:16 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/4] dt-bindings: mfd: hisilicon,hi6421-spmi-pmic: fix up
- binding reference
+Subject: Re: [PATCH 2/4] dt-bindings: mfd: hisilicon,hi6421-spmi-pmic: fix
+ example regulator node
 Content-Language: en-US
 To:     Johan Hovold <johan+linaro@kernel.org>, Lee Jones <lee@kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
@@ -68,7 +68,7 @@ Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
         linux-arm-msm@vger.kernel.org
 References: <20231130172547.12555-1-johan+linaro@kernel.org>
- <20231130172547.12555-2-johan+linaro@kernel.org>
+ <20231130172547.12555-3-johan+linaro@kernel.org>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -114,12 +114,12 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231130172547.12555-2-johan+linaro@kernel.org>
+In-Reply-To: <20231130172547.12555-3-johan+linaro@kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -128,13 +128,11 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 30/11/2023 18:25, Johan Hovold wrote:
-> Fix up the SPMI PMIC binding document free text reference which
-> erroneously referred to itself rather than the parent SPMI controller
-> binding as intended.
+> The example regulator child nodes do not have unit addresses so drop the
+> incorrect '#address-cells' and '#size-cells' properties from the parent
+> node.
 > 
-> Fixes: 9e5917288545 ("dt: document HiSilicon SPMI controller and mfd/regulator properties")
 > Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
-> ---
 
 Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
