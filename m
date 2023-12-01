@@ -2,133 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B289D8009DD
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 12:25:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B37D68009E5
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 12:26:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378529AbjLALZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 06:25:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38908 "EHLO
+        id S1378545AbjLALZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 06:25:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378502AbjLALZW (ORCPT
+        with ESMTP id S1378601AbjLALZu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 06:25:22 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BC7110DF;
-        Fri,  1 Dec 2023 03:25:29 -0800 (PST)
-Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B1BLs6x025771;
-        Fri, 1 Dec 2023 11:25:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=JDUzZoo0usIHW1bL2X7anyVGvbWqKUEA7tIrv8v05tw=;
- b=tHnqyxfOpKCyJQS9Q2t6T+YBArVIO9T+BksB7CPM23mv787TWNE400l6B35o4efxzIgZ
- dTVPk64R5ES/U8fIEFZdkk6XmOqPOItJQeGIYkr4RTjVnoTUvos/sgpjBL7sHtasGumI
- IqsBtbExaSGm0U/D4mKfTxabVmwieN8VVL/Od1F4AAzYpQRMafuh25W1NVF4eyWsmDBm
- ow/7ypoop/jr4CS5zEI0eV/IiVMIlFaheuK9Vg9wHgXceJScHgJ+9UaKFFEIdZmnYJ8P
- zPqO1SZOKKYj14HDlUigQ0HYnNwAhJNBvJJHU7VgJ8EWBSVbpJ9T2dUxnzRq6IcGfA2X xA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uqej203cs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 01 Dec 2023 11:25:03 +0000
-Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3B1BMput029715;
-        Fri, 1 Dec 2023 11:25:02 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uqej203bx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 01 Dec 2023 11:25:02 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3B1AXt1j002633;
-        Fri, 1 Dec 2023 11:25:01 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3ukv8p4nxt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 01 Dec 2023 11:25:01 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3B1BOveo11600416
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 1 Dec 2023 11:24:58 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D182D20049;
-        Fri,  1 Dec 2023 11:24:57 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7747820040;
-        Fri,  1 Dec 2023 11:24:57 +0000 (GMT)
-Received: from [9.152.224.222] (unknown [9.152.224.222])
-        by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Fri,  1 Dec 2023 11:24:57 +0000 (GMT)
-Message-ID: <fc436fea-b9af-5649-0b4e-ef6c0ef37ce9@linux.ibm.com>
-Date:   Fri, 1 Dec 2023 12:24:56 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 0/3] Use new wrappers to copy userspace arrays
-To:     Sean Christopherson <seanjc@google.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Fri, 1 Dec 2023 06:25:50 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1ADCC4;
+        Fri,  1 Dec 2023 03:25:56 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1701429955;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kTlhtH9a0LDiJlYkT6vgajK3kHtKUEVv+qg/KTKk4HU=;
+        b=0+ilR1tNhs5VaMIv76WOvkPT0qv5Fi2xLMjWOd8iwpKFF2e1rQLr8de2mbc/bHnkaNjaQe
+        LbiC5q4mkGd+Sj/kPhd1ERxWAS9+FoWokpwkA65PKVnzoPGIz6d5oLfQpSLkrkRNE3pzdQ
+        //bcpn1X9PhQ9O1fXMhZdr1auoP18Z7eHjeOjyN9GFUebTn83i1KnnfcKG5x+dss03Xtki
+        ttU09OzufBNos8ljNL69jCpLD5yOQ+wCs/EozGUtX5kcJ5FgGKvheIIRatcpoYJRoVyDnr
+        D0DygGmWcdNwEcac6KOaBeh495U3limq2zXQEY3QChB6Uu522eK6w17xZwQlAQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1701429955;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kTlhtH9a0LDiJlYkT6vgajK3kHtKUEVv+qg/KTKk4HU=;
+        b=EXq/pPMbI6sA6TcIEmqxncJn2e32OeM2qAllVTE4SFvTjeMaTIOAzfm4oL3PcYAI5mDcr2
+        IYeKQ7k9Tpe0HrBQ==
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
+        x86@kernel.org, linux-csky@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-parisc@vger.kernel.org
+Cc:     Albert Ou <aou@eecs.berkeley.edu>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
         Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Philipp Stanner <pstanner@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org
-References: <20231102181526.43279-1-pstanner@redhat.com>
- <170137909771.669092.7450781639631347445.b4-ty@google.com>
-Content-Language: en-US
-From:   Christian Borntraeger <borntraeger@linux.ibm.com>
-In-Reply-To: <170137909771.669092.7450781639631347445.b4-ty@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: LrfhoqbS-eviJ5_jMuCu1wAkL1ISHKbx
-X-Proofpoint-GUID: Xqwf_ASsKyrNP6BsfZQM4xXPHZMO1cS5
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-01_09,2023-11-30_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 spamscore=0
- priorityscore=1501 lowpriorityscore=0 mlxlogscore=744 adultscore=0
- phishscore=0 impostorscore=0 mlxscore=0 suspectscore=0 malwarescore=0
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2312010075
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Guo Ren <guoren@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        James Morse <james.morse@arm.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        jianyong.wu@arm.com, justin.he@arm.com,
+        Len Brown <lenb@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        WANG Xuerui <kernel@xen0n.name>, Will Deacon <will@kernel.org>
+Subject: Re: [PATCH 00/21] Initial cleanups for vCPU hotplug
+In-Reply-To: <ZVyz/Ve5pPu8AWoA@shell.armlinux.org.uk>
+References: <ZVyz/Ve5pPu8AWoA@shell.armlinux.org.uk>
+Date:   Fri, 01 Dec 2023 12:25:54 +0100
+Message-ID: <87plzqxiyl.ffs@tglx>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Russell!
 
+On Tue, Nov 21 2023 at 13:43, Russell King wrote:
+> This series aims to switch most architectures over to using generic CPU
+> devices rather than arch specific implementations, which I think is
+> worthwhile doing even if the vCPU hotplug series needs further work.
 
-Am 01.12.23 um 02:52 schrieb Sean Christopherson:
-> On Thu, 02 Nov 2023 19:15:23 +0100, Philipp Stanner wrote:
->> Linus recently merged [1] the wrapper functions memdup_array_user() and
->> vmemdup_array_user() in include/linux/string.h for Kernel v6.7
->>
->> I am currently adding them to all places where (v)memdup_user() had been
->> used to copy arrays.
->>
->> The wrapper is different to the wrapped functions only in that it might
->> return -EOVERFLOW. So this new error code might get pushed up to
->> userspace. I hope this is fine.
->>
->> [...]
-> 
-> Applied to kvm-x86 generic.  Claudio (or anyone else from s390), holler if
-> you want to take the s390 patch through the s390 tree.
+I went through the whole series and I can't find anything
+objectionable.
 
-I think this is fine via your tree.
+Vs. merging: It does not make sense to split this up and route
+individual patches.
 
-Feel free to add
-Acked-by: Christian Borntraeger <borntraeger@linux.ibm.com>
-to patch 2 if the commit id is not yet final.
+So I can pick the whole pile up and route it through tip smp/core unless
+Rafael or Greg prefer to take it through one of their trees. For the
+latter case:
+
+       Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
+
+Greg, Rafael?
+
+Thanks,
+
+        tglx
