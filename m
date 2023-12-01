@@ -2,150 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4539C800941
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 12:02:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF4F1800945
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 12:03:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378445AbjLALCV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 06:02:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59644 "EHLO
+        id S1378455AbjLALDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 06:03:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378359AbjLALCS (ORCPT
+        with ESMTP id S1378403AbjLALDi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 06:02:18 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0DD9193
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 03:02:24 -0800 (PST)
-Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+        Fri, 1 Dec 2023 06:03:38 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8D1A1A4;
+        Fri,  1 Dec 2023 03:03:42 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id BEF5D66073A7;
-        Fri,  1 Dec 2023 11:02:22 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1701428543;
-        bh=5nRlxV5xR+QSI2ksBC7Nd3SYtW2NA/ujO6wXRgTKfgA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=W1mcUGMr+glx4CsviP9noNC0Fh8BwmJeLAYKOotsH+oXQbcEuJZPhr21z7DZTzJ2p
-         kmz/uOGkNc7AF3rUcvjs/8wdl2iOvOPLsoYJzqEtLOK87dAwvt83kwskg5HaA5peMk
-         FHvjgq6l7Yo8Nud+4Y+kWCCE5fQFn8MTG7VyRPx/1rAZ3JUbsy/selI26mDPgp58bC
-         NDMGNPRgug2xmVFRUbJzoJ9YJ8+cvMit1PIvU2FU3aVjBUhgG7z2+O2WTgKdwyc3zO
-         Rcs24hikrCjLwPSF/TkP+YmxCRDhceBTyyPCKCplLSbpWgz7hD/ntfiefQR+MvxouT
-         CH6ae5bhSbSpQ==
-Date:   Fri, 1 Dec 2023 12:02:19 +0100
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     robh@kernel.org, steven.price@arm.com,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, m.szyprowski@samsung.com,
-        krzysztof.kozlowski@linaro.org
-Subject: Re: [PATCH v3 2/3] drm/panfrost: Add gpu_irq, mmu_irq to struct
- panfrost_device
-Message-ID: <20231201120219.6ded1788@collabora.com>
-In-Reply-To: <20231201104027.35273-3-angelogioacchino.delregno@collabora.com>
-References: <20231201104027.35273-1-angelogioacchino.delregno@collabora.com>
-        <20231201104027.35273-3-angelogioacchino.delregno@collabora.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
-MIME-Version: 1.0
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 5190C1FD63;
+        Fri,  1 Dec 2023 11:03:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1701428621; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type;
+        bh=UF7FbYcgVqquli64XbVKd7ovJQg3WdQq1uzTcAG9rqQ=;
+        b=rb5khlMIR4w6HfBKjdLrLEBgwG2kdlZZEtJOfl73XsR9RwQ/BUTbje4h2wEhf4VsUsf5H6
+        43l3m/zKIKC/D1wTrgzeH79E8TuTfKgmOZOU8vnNR9fXZkuJ0XoieIa5mDxOX+CIFJ0bBa
+        p5KCgsy+MHGwPhkWsEJnwtUbhnAZ/hI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1701428621;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type;
+        bh=UF7FbYcgVqquli64XbVKd7ovJQg3WdQq1uzTcAG9rqQ=;
+        b=6Dmsh2WBkRoSABGWnaISmjXjCAwWY9QTuoI3GV8ErI/rYsrN88Khu9XNPBZOSm0e692ZHw
+        8zWAXtvsPdhdQTAQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 291971369E;
+        Fri,  1 Dec 2023 11:03:41 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+        by imap1.dmz-prg2.suse.org with ESMTPSA
+        id N0blB429aWWvbQAAD6G6ig
+        (envelope-from <tiwai@suse.de>); Fri, 01 Dec 2023 11:03:41 +0000
+Date:   Fri, 01 Dec 2023 12:03:40 +0100
+Message-ID: <87edg6b2wj.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] sound fixes for 6.7-rc4
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Authentication-Results: smtp-out2.suse.de;
+        none
+X-Spam-Level: 
+X-Spamd-Result: default: False [-0.68 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         RCPT_COUNT_THREE(0.00)[3];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         NEURAL_HAM_LONG(-0.96)[-0.959];
+         RCVD_COUNT_THREE(0.00)[3];
+         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+         NEURAL_HAM_SHORT(-0.20)[-1.000];
+         MID_CONTAINS_FROM(1.00)[];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_TLS_ALL(0.00)[];
+         BAYES_HAM(-0.42)[78.30%]
+X-Spam-Score: -0.68
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri,  1 Dec 2023 11:40:26 +0100
-AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-wrote:
+Linus,
 
-> In preparation for adding a IRQ synchronization mechanism for PM suspend
+please pull sound fixes for v6.7-rc4 from:
 
-Maybe add a ',' after 'suspend'
+  git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-6.7-rc4
 
-> add gpu_irq and mmu_irq variables to struct panfrost_device and change
-> functions panfrost_gpu_init() and panfrost_mmu_init() to use those.
-> 
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+The topmost commit is a337c355719c42a6c5b67e985ad753590ed844fb
 
-Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+----------------------------------------------------------------
 
-> ---
->  drivers/gpu/drm/panfrost/panfrost_device.h |  2 ++
->  drivers/gpu/drm/panfrost/panfrost_gpu.c    | 10 +++++-----
->  drivers/gpu/drm/panfrost/panfrost_mmu.c    | 10 +++++-----
->  3 files changed, 12 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.h b/drivers/gpu/drm/panfrost/panfrost_device.h
-> index 0fc558db6bfd..54a8aad54259 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_device.h
-> +++ b/drivers/gpu/drm/panfrost/panfrost_device.h
-> @@ -94,6 +94,8 @@ struct panfrost_device {
->  	struct device *dev;
->  	struct drm_device *ddev;
->  	struct platform_device *pdev;
-> +	int gpu_irq;
-> +	int mmu_irq;
->  
->  	void __iomem *iomem;
->  	struct clk *clock;
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c b/drivers/gpu/drm/panfrost/panfrost_gpu.c
-> index bd41617c5e4b..7adc4441fa14 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_gpu.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_gpu.c
-> @@ -454,7 +454,7 @@ void panfrost_gpu_power_off(struct panfrost_device *pfdev)
->  
->  int panfrost_gpu_init(struct panfrost_device *pfdev)
->  {
-> -	int err, irq;
-> +	int err;
->  
->  	err = panfrost_gpu_soft_reset(pfdev);
->  	if (err)
-> @@ -469,11 +469,11 @@ int panfrost_gpu_init(struct panfrost_device *pfdev)
->  
->  	dma_set_max_seg_size(pfdev->dev, UINT_MAX);
->  
-> -	irq = platform_get_irq_byname(to_platform_device(pfdev->dev), "gpu");
-> -	if (irq < 0)
-> -		return irq;
-> +	pfdev->gpu_irq = platform_get_irq_byname(to_platform_device(pfdev->dev), "gpu");
-> +	if (pfdev->gpu_irq < 0)
-> +		return pfdev->gpu_irq;
->  
-> -	err = devm_request_irq(pfdev->dev, irq, panfrost_gpu_irq_handler,
-> +	err = devm_request_irq(pfdev->dev, pfdev->gpu_irq, panfrost_gpu_irq_handler,
->  			       IRQF_SHARED, KBUILD_MODNAME "-gpu", pfdev);
->  	if (err) {
->  		dev_err(pfdev->dev, "failed to request gpu irq");
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_mmu.c b/drivers/gpu/drm/panfrost/panfrost_mmu.c
-> index 846dd697c410..ac4296c1e54b 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_mmu.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_mmu.c
-> @@ -753,13 +753,13 @@ static irqreturn_t panfrost_mmu_irq_handler_thread(int irq, void *data)
->  
->  int panfrost_mmu_init(struct panfrost_device *pfdev)
->  {
-> -	int err, irq;
-> +	int err;
->  
-> -	irq = platform_get_irq_byname(to_platform_device(pfdev->dev), "mmu");
-> -	if (irq < 0)
-> -		return irq;
-> +	pfdev->mmu_irq = platform_get_irq_byname(to_platform_device(pfdev->dev), "mmu");
-> +	if (pfdev->mmu_irq < 0)
-> +		return pfdev->mmu_irq;
->  
-> -	err = devm_request_threaded_irq(pfdev->dev, irq,
-> +	err = devm_request_threaded_irq(pfdev->dev, pfdev->mmu_irq,
->  					panfrost_mmu_irq_handler,
->  					panfrost_mmu_irq_handler_thread,
->  					IRQF_SHARED, KBUILD_MODNAME "-mmu",
+sound fixes for 6.7-rc4
+
+No surprise here, including only a collection of HD-audio
+device-specific small fixes.
+
+----------------------------------------------------------------
+
+Kailang Yang (2):
+      ALSA: hda/realtek: Headset Mic VREF to 100%
+      ALSA: hda/realtek: Add supported ALC257 for ChromeOS
+
+Peter Ujfalusi (1):
+      ALSA: hda: intel-nhlt: Ignore vbps when looking for DMIC 32 bps format
+
+Richard Fitzgerald (1):
+      ALSA: hda: cs35l56: Enable low-power hibernation mode on SPI
+
+Stefan Binding (2):
+      ALSA: hda: cs35l41: Remove unnecessary boolean state variable firmware_running
+      ALSA: cs35l41: Fix for old systems which do not support command
+
+Takashi Iwai (1):
+      ALSA: hda: Disable power-save on KONTRON SinglePC
+
+Vasiliy Kovalev (1):
+      ALSA: hda - Fix speaker and headset mic pin config for CHUWI CoreBook XPro
+
+---
+ include/sound/cs35l41.h         |  2 +-
+ sound/hda/intel-nhlt.c          | 33 +++++++++++++++++++++++++++++----
+ sound/pci/hda/cs35l41_hda.c     | 28 ++++++++++++----------------
+ sound/pci/hda/cs35l56_hda_spi.c |  4 ++++
+ sound/pci/hda/hda_intel.c       |  2 ++
+ sound/pci/hda/patch_realtek.c   | 22 ++++++++++++++++++++++
+ sound/soc/codecs/cs35l41-lib.c  |  6 ++++--
+ sound/soc/codecs/cs35l41.c      |  4 ++--
+ 8 files changed, 76 insertions(+), 25 deletions(-)
 
