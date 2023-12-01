@@ -2,130 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ECA1801293
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 19:25:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EDD8801296
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 19:26:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379284AbjLASYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 13:24:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57558 "EHLO
+        id S1379274AbjLASZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 13:25:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379172AbjLASYu (ORCPT
+        with ESMTP id S1379218AbjLASZv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 13:24:50 -0500
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A50BE106;
-        Fri,  1 Dec 2023 10:24:56 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.18.186.31])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4ShhDr5Hjtz6K5yg;
-        Sat,  2 Dec 2023 02:20:12 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-        by mail.maildlp.com (Postfix) with ESMTPS id E5C9F140B33;
-        Sat,  2 Dec 2023 02:24:54 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 1 Dec
- 2023 18:24:54 +0000
-Date:   Fri, 1 Dec 2023 18:24:53 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Petre Rodan <petre.rodan@subdimension.ro>
-CC:     Jonathan Cameron <jic23@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        "Andy Shevchenko" <andriy.shevchenko@linux.intel.com>,
-        Angel Iglesias <ang.iglesiasg@gmail.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>,
-        Andreas Klinger <ak@it-klinger.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Subject: Re: [PATCH v3 2/2] iio: pressure: driver for Honeywell HSC/SSC
- series pressure sensors
-Message-ID: <20231201182453.00005673@Huawei.com>
-In-Reply-To: <ZWX55o_-WT5BQlo-@sunspire>
-References: <20231126102721.15322-1-petre.rodan@subdimension.ro>
-        <20231126183334.625d2d8b@jic23-huawei>
-        <ZWX55o_-WT5BQlo-@sunspire>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Fri, 1 Dec 2023 13:25:51 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93775129
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 10:25:57 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1cfae5ca719so7485035ad.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 10:25:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1701455157; x=1702059957; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=orj9kF5e+hUcR28yOOxjlUg2Ej6Q6UVVNyYtII2f8D8=;
+        b=EIW98yMkqWGv6NAbMULA46eyhHZ6XfRcZOPmJDtyo6oHeUqpiaZWieLOrRQ9GRjWuV
+         1eC029v54Ia4Ka6R0A5OJkLS/MMt4sbEUTrs1kAd7fIU7Dswu0Qj96MOH3r0VTWIPGs7
+         VVIrd+p7KJe2KwSY/prKQKEzn+Svwh3bywAzQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701455157; x=1702059957;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=orj9kF5e+hUcR28yOOxjlUg2Ej6Q6UVVNyYtII2f8D8=;
+        b=nX0QxLw8hSWcdQ4zi1n3yPRBONfYe1sDgyiMC0qiwr860R6w3A7mvQhTiSBertAbhp
+         CKcJy7CxWmSbZjwfWqWC0jF4w6bb8AlrMLWDmbN2/BCorBVfPGNOWhyWGPw9aemS5Sfa
+         nFaVbkQh5/9iSA1GQcHsfuaGdAJZLkpMBe7q/rHgahWKqN3kjPubvIINZyT31J3KJY9G
+         OYqSOPTgFgvW7UQEchgBmgDkYgn7S0rq9WS+9EPZgqUTn+xKETaIEjn0kvcVHS1TbHM4
+         4vMHNX5QBugpNWMBZV9EwGbL/hOx/FauFj2LAKIWge/icEyr21bE49D10LUq3+i9UQIJ
+         9I5A==
+X-Gm-Message-State: AOJu0YyGdKTVk+UM9bYdTsGhZTfEKmDMIRCJhTSHa8lvcShxbl+1wL93
+        HCe8rhLmPAMDd3M256RrJ26YYw==
+X-Google-Smtp-Source: AGHT+IEbUvlE58eT2LaLFiL7khlyUcE1aUZwyJ3/wHK55llArs7nB+pjInhr6ocqQcgHJVujAr2xgA==
+X-Received: by 2002:a17:903:2302:b0:1cf:c649:61a3 with SMTP id d2-20020a170903230200b001cfc64961a3mr21194686plh.52.1701455157079;
+        Fri, 01 Dec 2023 10:25:57 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id d9-20020a170902aa8900b001cfc50e5ae9sm3667469plr.78.2023.12.01.10.25.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Dec 2023 10:25:56 -0800 (PST)
+From:   Kees Cook <keescook@chromium.org>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Kees Cook <keescook@chromium.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] tracing/uprobe: Replace strlcpy() with strscpy()
+Date:   Fri,  1 Dec 2023 10:25:49 -0800
+Message-Id: <170145514843.55310.746207226357478640.b4-ty@chromium.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231130205607.work.463-kees@kernel.org>
+References: <20231130205607.work.463-kees@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml100003.china.huawei.com (7.191.160.210) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > > +	u8 buffer[HSC_REG_MEASUREMENT_RD_SIZE];  
-> > 
-> > This is used for SPI transfers so should be DMA safe. It's not currently.
-> > Look at how IIO_DMA_MINALIGN is used in other drivers to ensure there is
-> > no unsafe sharing of cachelines.
-> > 
-> > On some architectures this is fixed by the stuff that bounces all small transfers
-> > but I don't think that is universal yet.  If you want more info find the talk
-> > by Wolfram Sang from a few years ago an ELCE on I2C DMA safe buffers.  
+On Thu, 30 Nov 2023 12:56:08 -0800, Kees Cook wrote:
+> strlcpy() reads the entire source buffer first. This read may exceed
+> the destination size limit. This is both inefficient and can lead
+> to linear read overflows if a source string is not NUL-terminated[1].
+> Additionally, it returns the size of the source string, not the
+> resulting size of the destination string. In an effort to remove strlcpy()
+> completely[2], replace strlcpy() here with strscpy().
 > 
-> that was a nice rabbit hole, thanks for the pointer.
+> [...]
 
-:) 
+Applied to for-next/hardening, thanks!
 
-> 
-> now, based on [2] I will skip explicit i2c dma-related code since my requests
-> are 4 bytes long. according to the document, any i2c xfer below 8bytes is not
-> worth the overhead.
-> 
-> [2] https://www.kernel.org/doc/html/latest/i2c/dma-considerations.html
-> 
-> > > +static int hsc_spi_probe(struct spi_device *spi)
-> > > +{
-> > > +	struct iio_dev *indio_dev;
-> > > +	struct hsc_data *hsc;
-> > > +	struct device *dev = &spi->dev;
-> > > +
-> > > +	indio_dev = devm_iio_device_alloc(dev, sizeof(*hsc));
-> > > +	if (!indio_dev)
-> > > +		return -ENOMEM;
-> > > +
-> > > +	hsc = iio_priv(indio_dev);
-> > > +	hsc->xfer = hsc_spi_xfer;  
-> > 
-> > Also, pass the callback and spi->dev into hsc probe. Easy to use
-> > a container_of() to get back to the struct spi_device *spi  
-> 
-> I'd rather simply pass along the client struct.
-> 
+[1/1] tracing/uprobe: Replace strlcpy() with strscpy()
+      https://git.kernel.org/kees/c/8a3750ecf810
 
-I don't like the fact it has to be a void *
+Take care,
 
-The core code has no idea what is in there.  At least we constraint it
-somewhat with a struct device.
-
-If you want to use a union of the possible types, that would also be fine.
-
-> > > +	hsc->client = spi;
-> > > +
-> > > +	return hsc_probe(indio_dev, &spi->dev, spi_get_device_id(spi)->name,
-> > > +			 spi_get_device_id(spi)->driver_data);  
-> > Don't use anything form spi_get_device_id()
-> > 
-> > Name is a fixed string currently so pass that directly.
-> > For driver data, there isn't any yet but if there were use
-> > spi_get_device_match_data() and make sure to provide the data in all the
-> > id tables.  That function will search the firmware ones first then call
-> > back to the spi specific varient.  
-> 
-> along the way driver_data became redundant, so it was removed from the function
-> prototype.
-> 
-> best regards,
-> peter
-> 
-> 
+-- 
+Kees Cook
 
