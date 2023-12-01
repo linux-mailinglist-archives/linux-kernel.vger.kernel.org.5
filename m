@@ -2,114 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD395800528
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 09:05:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDDDD80052A
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 09:06:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377785AbjLAIFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 03:05:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57452 "EHLO
+        id S232500AbjLAIFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 03:05:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbjLAIFT (ORCPT
+        with ESMTP id S229530AbjLAIFq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 03:05:19 -0500
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91C6810FC;
-        Fri,  1 Dec 2023 00:05:24 -0800 (PST)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3B185FV5112095;
-        Fri, 1 Dec 2023 02:05:15 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1701417915;
-        bh=PPlc3mvy+reBbqsxVS8a5Ol+L9ejWge2/nC9xigzSp4=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=I7UuEFfmj2pyTPI6YhAXRzeWrlEuXdBG4fUmdBjATxTYY8bUQqvGy7SrMJRwba+tl
-         p3DnZwnaojZ1fNoXrx8iL6scxxWhm45SJCuq3a/hsDY/QkaiuchLvBXaNko2TLT/bT
-         51LBrV1R7OtVigC7N8IZbHOYdbkwyZJs4ce2Suik=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3B185FpH087613
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 1 Dec 2023 02:05:15 -0600
-Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 1
- Dec 2023 02:05:15 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 1 Dec 2023 02:05:14 -0600
-Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3B185FYG020015;
-        Fri, 1 Dec 2023 02:05:15 -0600
-Date:   Fri, 1 Dec 2023 02:05:15 -0600
-From:   Nishanth Menon <nm@ti.com>
-To:     Thomas Richard <thomas.richard@bootlin.com>
-CC:     Tero Kristo <kristo@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <thomas.petazzoni@bootlin.com>, <gregory.clement@bootlin.com>,
-        <u-kumar1@ti.com>, <khilman@baylibre.com>, <vibhore@ti.com>,
-        <vishalm@ti.com>, <d-gole@ti.com>
-Subject: Re: [PATCH 2/5] firmware: ti_sci: add suspend/resume support for irqs
-Message-ID: <20231201080515.6g4wvjvays7ik647@passport>
-References: <20231129-j7200-tisci-s2r-v1-0-c1d5964ed574@bootlin.com>
- <20231129-j7200-tisci-s2r-v1-2-c1d5964ed574@bootlin.com>
+        Fri, 1 Dec 2023 03:05:46 -0500
+Received: from mx10.didiglobal.com (mx10.didiglobal.com [111.202.70.125])
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id 48594170B
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 00:05:51 -0800 (PST)
+Received: from mail.didiglobal.com (unknown [10.79.65.12])
+        by mx10.didiglobal.com (MailData Gateway V2.8.8) with ESMTPS id E5D5A1808BB6B4;
+        Fri,  1 Dec 2023 16:05:49 +0800 (CST)
+Received: from didi-ThinkCentre-M930t-N000 (10.79.64.101) by
+ ZJY02-ACTMBX-02.didichuxing.com (10.79.65.12) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Fri, 1 Dec 2023 16:05:49 +0800
+Date:   Fri, 1 Dec 2023 16:05:41 +0800
+X-MD-Sfrom: tiozhang@didiglobal.com
+X-MD-SrcIP: 10.79.65.12
+From:   tiozhang <tiozhang@didiglobal.com>
+To:     <bigeasy@linutronix.de>, <tglx@linutronix.de>,
+        <rostedt@goodmis.org>, <mingo@redhat.com>, <peterz@infradead.org>,
+        <juri.lelli@redhat.com>, <vincent.guittot@linaro.org>
+CC:     <linux-kernel@vger.kernel.org>, <dietmar.eggemann@arm.com>,
+        <rostedt@goodmis.org>, <bsegall@google.com>, <mgorman@suse.de>,
+        <bristot@redhat.com>, <vschneid@redhat.com>,
+        <zyhtheonly@gmail.com>, <tiozhang@didiglobal.com>,
+        <zyhtheonly@yeah.net>
+Subject: [PATCH v3] sched/cputime: let ktimers align with ksoftirqd in
+ accounting CPUTIME_SOFTIRQ
+Message-ID: <20231201080522.GA31309@didi-ThinkCentre-M930t-N000>
+Mail-Followup-To: bigeasy@linutronix.de, tglx@linutronix.de,
+        rostedt@goodmis.org, mingo@redhat.com, peterz@infradead.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        linux-kernel@vger.kernel.org, dietmar.eggemann@arm.com,
+        bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
+        vschneid@redhat.com, zyhtheonly@gmail.com, zyhtheonly@yeah.net
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20231129-j7200-tisci-s2r-v1-2-c1d5964ed574@bootlin.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231201073240.T9bFNCkU@linutronix.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [10.79.64.101]
+X-ClientProxiedBy: ZJY01-PUBMBX-01.didichuxing.com (10.79.64.32) To
+ ZJY02-ACTMBX-02.didichuxing.com (10.79.65.12)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16:31-20231129, Thomas Richard wrote:
-> On j7200, during suspend to ram, the SoC is powered-off.
+In CONFIG_PREEMPT_RT kernel, ktimers also calls __do_softirq,
+so when accounting CPUTIME_SOFTIRQ, ktimers need to be accounted the same
+as ksoftirqd.
 
-A53  and main domain is powered off in the case of J7200 - there are
-different nuanced suspend-to-ram scenarios involved which the system
-control firmware manages for us (Linux).
+Signed-off-by: tiozhang <tiozhang@didiglobal.com>
+---
+ include/linux/interrupt.h | 5 +++++
+ kernel/sched/cputime.c    | 6 ++++--
+ 2 files changed, 9 insertions(+), 2 deletions(-)
 
-> The irqs configuration is lost, so it shall be restored at resume.
-> The ti-sci has an internal list of irqs updated at each set/free.
-> All irqs in this list are restored at resume.
-
-This I don't disagree - but apply to all K3 SoCs. But what I do disagree
-is that this is sufficient enough to have suspend-to-ram actually
-functional. there are additional handshakes that are needed and the
-driver just has a single suspend-resume handler..
-
-git log --oneline drivers/firmware/ti_sci.c tells us that we have
-already had a bunch of introduction, revert of suspend-resume handler
-(too much for my comfort). I wish I didn't have to say this, but I
-guess having seen TFA[1], U-boot[2] series (not that the kernel patch
-discussion is independent of TFA/U-boot discussions), and having known
-that the AM62x team is also working towards a suspend-resume scheme
-(CCying Kevin and AM62x folks) - Since we all share a single driver,
-I suggest we get together and draw through the arch of how this flow
-will look like and not create additional confusion in the public list
-on this till we have a settled down view (also the reason I haven't
-picked up am62x patches so far either).
-
-For now, I am going to punt this series until I see clarity overall
-and I am assured that we have a relatively final path for all users of
-TISCI driver/lib/infra.
-
-
-[1] https://review.trustedfirmware.org/c/TF-A/trusted-firmware-a/+/23992/7
-[2] https://lore.kernel.org/u-boot/20231109140738.GF6601@bill-the-cat/
-
+diff --git a/include/linux/interrupt.h b/include/linux/interrupt.h
+index a5091ac97fc6..a88646acaf3f 100644
+--- a/include/linux/interrupt.h
++++ b/include/linux/interrupt.h
+@@ -621,6 +621,11 @@ static inline unsigned int local_pending_timers(void)
+         return __this_cpu_read(pending_timer_softirq);
+ }
+ 
++static inline struct task_struct *this_cpu_ktimers(void)
++{
++	return this_cpu_read(timersd);
++}
++
+ #else
+ static inline void raise_timer_softirq(void)
+ {
+diff --git a/kernel/sched/cputime.c b/kernel/sched/cputime.c
+index af7952f12e6c..2393c533314f 100644
+--- a/kernel/sched/cputime.c
++++ b/kernel/sched/cputime.c
+@@ -73,7 +73,8 @@ void irqtime_account_irq(struct task_struct *curr, unsigned int offset)
+ 	 */
+ 	if (pc & HARDIRQ_MASK)
+ 		irqtime_account_delta(irqtime, delta, CPUTIME_IRQ);
+-	else if ((pc & SOFTIRQ_OFFSET) && curr != this_cpu_ksoftirqd())
++	else if (((pc & SOFTIRQ_OFFSET) && curr != this_cpu_ksoftirqd() &&
++		  (!IS_ENABLED(CONFIG_PREEMPT_RT) || curr != this_cpu_ktimers()))
+ 		irqtime_account_delta(irqtime, delta, CPUTIME_SOFTIRQ);
+ }
+ 
+@@ -391,7 +392,8 @@ static void irqtime_account_process_tick(struct task_struct *p, int user_tick,
+ 
+ 	cputime -= other;
+ 
+-	if (this_cpu_ksoftirqd() == p) {
++	if (this_cpu_ksoftirqd() == p ||
++	   (IS_ENABLED(CONFIG_PREEMPT_RT) && this_cpu_ktimers() == p)) {
+ 		/*
+ 		 * ksoftirqd time do not get accounted in cpu_softirq_time.
+ 		 * So, we have to handle it separately here.
 -- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+2.17.1
+
