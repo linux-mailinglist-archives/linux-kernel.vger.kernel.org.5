@@ -2,245 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A969C801410
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 21:11:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 391C2801426
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 21:14:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441794AbjLAULk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 15:11:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57662 "EHLO
+        id S1379594AbjLAUOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 15:14:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379635AbjLAULL (ORCPT
+        with ESMTP id S229679AbjLAUOq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 15:11:11 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 735FA170E;
-        Fri,  1 Dec 2023 12:11:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701461474; x=1732997474;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=FOJKKwBDyPTvOhkSfKzfKhw74WOFaAM0dGsOitiUkxI=;
-  b=kALs3Kct2xcJ8UOT/k8XQuMFrMcQWATzqmfHTLKIzPRbuoCPIEmS9oGZ
-   xCv27005hwSUjxVYHqJUV4XbfBfMoPHKf5XcJ+EJUTmhRXqbGA6LDxa7T
-   fc9lztAkGZ+nEz1a+/N+0NSLdtDVKGEMbg7hgRMNoSxsPLjvRyrlBQFOJ
-   6oMza6ePHwlEzNqKzfe+Sjn5GvFmCIUjj1XtoFqL7aAFuTwYgLpDHJmSJ
-   zM0ZIsCzaulI1I2VNkfJmVDDjEEu0zIEOJ8tixwKad/Fa2QJA5xcL9iFy
-   CER3NqAaonn1cqgMOOUYWWvNiIVHXQEseFNnp1e7sNkjdbilmM0wSC8Rc
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="427946"
-X-IronPort-AV: E=Sophos;i="6.04,242,1695711600"; 
-   d="scan'208";a="427946"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2023 12:11:13 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="860671258"
-X-IronPort-AV: E=Sophos;i="6.04,242,1695711600"; 
-   d="scan'208";a="860671258"
-Received: from temersox-mobl2.amr.corp.intel.com (HELO tzanussi-mobl1.amr.corp.intel.com) ([10.213.166.197])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2023 12:11:11 -0800
-From:   Tom Zanussi <tom.zanussi@linux.intel.com>
-To:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        fenghua.yu@intel.com, vkoul@kernel.org
-Cc:     dave.jiang@intel.com, tony.luck@intel.com,
-        wajdi.k.feghali@intel.com, james.guilford@intel.com,
-        kanchana.p.sridhar@intel.com, vinodh.gopal@intel.com,
-        giovanni.cabiddu@intel.com, pavel@ucw.cz,
-        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        dmaengine@vger.kernel.org
-Subject: [PATCH v11 14/14] dmaengine: idxd: Add support for device/wq defaults
-Date:   Fri,  1 Dec 2023 14:10:35 -0600
-Message-Id: <20231201201035.172465-15-tom.zanussi@linux.intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231201201035.172465-1-tom.zanussi@linux.intel.com>
-References: <20231201201035.172465-1-tom.zanussi@linux.intel.com>
+        Fri, 1 Dec 2023 15:14:46 -0500
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2051.outbound.protection.outlook.com [40.107.8.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DF25A8;
+        Fri,  1 Dec 2023 12:14:52 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jQXoy00uj/CKJk2FIyRdyQLGSQjuVscem8oH9b2PFERFZBtH/jl0kdbCaSMR05BypqlE17r8h0Aulr8a/VTixkzs9S5AdcC0Y1an/2lx2KpWCKoKQ7nZQhi5Y0WHa4/RlKS0E9m1oq9PlXI3x8T0aslU2Lrs9ETzcZhN2CZjzKiGcL6v0GV6pQ5v50UONlZeFDn9UunCPeeqO1XUkM/yRYYRyD1OUrTsiDBqRnFt138yCMSogeP0UeKFIQCWfs+pIySJmpeVsW0Ex4qqNwr6B0N9VSXDCqWSh0f5YnLBhB85dbh5G5fRFIytPw+DLbzy75/8SI9I9h+0hMYV2p431g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=m/wB5Y3nXgp9MixbMHI6a5JCOkXDuSQevMM4zlDm3go=;
+ b=XIBxhR4xKQknzWGiR324a94eE0DBNNcZD1Pzrjdxr1DncS+l1uAK+EggM2qLughhS7sqC0V7WN11ps/Wz6CBB0I1NTIzkYhrUFVifwDqTN2Y/39r4iWYt6NZyGZPSQBA+7gHB1QrBvCDwQ+A6/Cx4CfaVhSCwmb1mccwqSdY18IHIPAsrNaPyt8STI94EKssxzCe8ozE1ROIA4KXHKnYNOroeQtVzatI2rA5DqTKOY/lCdal/+Lh99J+znZmUIh48SFUBkanNNEEFxPNFztne9WSq+MK21hYlzC6LRKUeZuntTgqVldaEvYxJJvZJ6/wlS1N8EJY7Wg+5/af+RRV5Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=m/wB5Y3nXgp9MixbMHI6a5JCOkXDuSQevMM4zlDm3go=;
+ b=uhdpIcC8GojWd5bRb9fAAFoeUTzHAm2ySz6K+QwyOJD0IMADIzV98YUUtaywzqhmQaGBz/DrrBVL1/n1N4xPRwMd42qtKtfcdNrXiRtSjiJKurxgP/o1MFjqPCsf/LYv4NKftprRgklUBP4fJQ+hk+ZrUOpLtoXQ/2tdMozoUBMPLhKMJ+iUiQqlQTg1fxm1wzUCqxOn4fbBwwH49KjJs/kYtKKZengeH4zE311LJCzZVEEioiWk/S+rGIHeZm/Fv5lGWkdErfMIhW+dwoqDE9hcuRHRry3HXjScjFY5AyP7vS0qopTrCACcSnjUproMg8ixuOANP5OyIaBN47Z9Ag==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=suse.com;
+Received: from VE1PR04MB6478.eurprd04.prod.outlook.com (2603:10a6:803:12a::10)
+ by AS8PR04MB7653.eurprd04.prod.outlook.com (2603:10a6:20b:299::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.13; Fri, 1 Dec
+ 2023 20:14:49 +0000
+Received: from VE1PR04MB6478.eurprd04.prod.outlook.com
+ ([fe80::775f:9e9:ef9a:6a09]) by VE1PR04MB6478.eurprd04.prod.outlook.com
+ ([fe80::775f:9e9:ef9a:6a09%4]) with mapi id 15.20.7046.015; Fri, 1 Dec 2023
+ 20:14:48 +0000
+Message-ID: <4ce32363-378c-4ea3-9a4e-d7274d4f7787@suse.com>
+Date:   Fri, 1 Dec 2023 21:14:46 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] net: usb: ax88179_178a: avoid failed operations when
+ device is disconnected
+To:     Jose Ignacio Tornos Martinez <jtornosm@redhat.com>, greg@kroah.com
+Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        netdev@vger.kernel.org, oneukum@suse.com, pabeni@redhat.com,
+        stern@rowland.harvard.edu, stable@vger.kernel.org
+References: <2023120130-repair-tackle-698e@gregkh>
+ <20231201132647.178979-1-jtornosm@redhat.com>
+Content-Language: en-US
+From:   Oliver Neukum <oneukum@suse.com>
+In-Reply-To: <20231201132647.178979-1-jtornosm@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BE1P281CA0192.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:b10:8d::14) To VE1PR04MB6478.eurprd04.prod.outlook.com
+ (2603:10a6:803:12a::10)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: VE1PR04MB6478:EE_|AS8PR04MB7653:EE_
+X-MS-Office365-Filtering-Correlation-Id: d719336f-4eb6-4cac-5d21-08dbf2aa2ad0
+X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: g73qm4NihvHGcQw++nsp+XWKhOSclthWWpF+9mixSS/l8FFg+x1jmN74awNAGqKMTHTocu2yYKni3/Siql4Tj00DklA9X2e6Sf2lEP3ySw/teg2Td/LuweN20QQ0rj+1nN7EMrY7zg+oruOXt+INaI0KEWzraUC/GQtQza6fB1Kk1BjkJGfi06VFy4QZs6oUvroF+cembDT+aCe17kDKbot+IRMCiF/abY+QdzJqIvgLwuSfqfigThHecxgNY0bhoK5+jZE7xV+pf3vnK97fd6yDv9q4tk/9396+WEJT4sONJNStEsWN2Tz3C1RXp7a/hfBv+uA3IiUjVpX5SPblqso+8P1lkr+ZXwLZxmBgVCjcgdML/1/kGZKu/LXpYoeAKoPk47UQW/I3O9itYPB3Q6Wne23NY9j0lLxpLykM7bpZjtMGtrin81v9eB3ToDaX1PBtZZmA4wzhY7wuWLfJF2mWNuwHmHgPe0UUCCTC9QpDfocYEtOTxW8v55ahzg7j8Alrm/wZ95uX3uaa4+/qInJ2KIs/otk5fj+MiNBlVmR4wOtWvMrpdcWOhbvq4bTOftr0XUlOyoPMZCNFl/WE5/sUeN0YiJgm0x2ai7uLe2FCGDLsOhf6Caqtm+a9KxqIAVMZM8W6kUoiiMO8boTvzQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6478.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(366004)(376002)(396003)(39860400002)(346002)(230922051799003)(451199024)(64100799003)(186009)(1800799012)(38100700002)(41300700001)(6512007)(83380400001)(2616005)(316002)(6486002)(508600001)(66556008)(66946007)(66476007)(6506007)(53546011)(36756003)(5660300002)(2906002)(7416002)(8676002)(4326008)(8936002)(31696002)(86362001)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?N3NDMmdyZUJaajNGeHh2NFdVSXdIK1liM0d1cWhTbzZPZWIrbXFNc1c1U2N4?=
+ =?utf-8?B?N2NxUS9JTnhQQytmanRldWFVanN1bGRuZXpUVlFZbWNISkVCZ3BPN0kwOU14?=
+ =?utf-8?B?U0cxV0p4SnRmVlBNQzJMODVWL2ZMZjQyaG5vMnlFeHNlUzQ0R2xPM1NGb3g2?=
+ =?utf-8?B?bXZuMTZvclJDVmNKZVhvQktLYkZEeFI1ZUp4ckRoYlJ3L00vcXlsUmpRVlk4?=
+ =?utf-8?B?Ukl1NnlmZ3c4N0VPYlF6Nk5IbVR1MjJsbjM1QUxKVlduMEVSQVYwSnRuK2pk?=
+ =?utf-8?B?K3lPR2pLL2FnYVdhQ2tWOEFCT0ZnS2QwK2dLdE8wUFFYR2x0ZVVPb1k5ZjM0?=
+ =?utf-8?B?RWVsblRaWXdkcFBYVTJKa1RpU2phV1FJcCtHbEFrRjJiZkc3cGhTcFB5NEMv?=
+ =?utf-8?B?djYydHVQRWwvSFQzQ1pDVWRaZnJxRFJKU3VlbFVzVU1iQ21nTEJpZHEyL1dy?=
+ =?utf-8?B?dlBESEhZdHB1aGZUYlJYUFJid1AvYXZOeXFrZk14QzdiemZOK0pNOFRLN0Jm?=
+ =?utf-8?B?b3NVQzZqRjhFdVJoajdRMDdUczYwZE1HNWhqZFdRcmhqMWxyQVRxRU1lbWZU?=
+ =?utf-8?B?L3dDYkhnOSs5MHdHRlY1YXVuSERuM0VSeDVvODg2d3NzeUVXVnVDZDJkZGd2?=
+ =?utf-8?B?cUFrT2R3N0x4UjNOQS84azB5WWtNNzUxOFBkbk9zMytIazBYUmY3MHhrV0Ji?=
+ =?utf-8?B?V2lNb2k5K004VS9ib2thMkE1NWFFOTBMSnI5TWpvSWlTcEh4UVl1TWR2OFRU?=
+ =?utf-8?B?UndPUWw4WjBUUHlkY0lnOU8veXFVYlBFM3Uzam5iZFgrTEYrQnU5U2RONVU3?=
+ =?utf-8?B?clN5V0IvQWo2UkY0bi9heC9rYnFhNzVHMG0zS0JJRi9zK0lUWVRuVEdXNXlD?=
+ =?utf-8?B?RU1YVGtkUGxnREprM0JCL3JmQ1ZSMVZkYVg1MXVobENQa0UyUnh4WXhoOG1O?=
+ =?utf-8?B?YVM2M1VWbndQUUkzM2ZES05saUFTOXRUdjR0R0VLdzUvWThXSHZEUDNibnVF?=
+ =?utf-8?B?VnA2VEluZHUrN3JxdWN1UlNhRUZTWlJnMWE3dnpQeTYyaGJ3aVlVbXkzcEtM?=
+ =?utf-8?B?djhPaDhPWHVmZ1VCRzJndlJIOGNpTlNUaGQ0b0p2OVN2NmV5UEYrVFQyWFJa?=
+ =?utf-8?B?OG5JZkJOcy9pU3FmNnZiUHJnaWdxMDdqZ202RDFOS20wUldTd0hFL3Z3UUhL?=
+ =?utf-8?B?MUJQWEl4ZFpjaWJXTFRGNktwK2VCdVI0SHpJeEJ3cU9DSjBCTFpNSnp6TlJZ?=
+ =?utf-8?B?dEpNUmdEOEE1aFZ1Qjdvc2Y2Wk5IU3MxNDBuS0k4ZW5EWDB5eGQvMmZ3VCtR?=
+ =?utf-8?B?QjhnQWovbUI5QmhmdDhIdkpEZVRDN0Q0MGpoNEFlNTM1UjlDajhQRm4xZ3Nr?=
+ =?utf-8?B?U080UElCUUY1dlU2VmpGdG5HVEtWcCt5ekQ5RUdhWG15Wlo3c1VwMGRic0ZE?=
+ =?utf-8?B?VEJMR0hoVy9xUVlnZVJVZUVBeGp1SjlCNDExRzJXNExoSHVUdlJhdFZWeCtS?=
+ =?utf-8?B?YXFxa1MrekJXcXJ2aGR4dWxBby9oZ0NsamREVlc4Unh5RW9QbTl6b2hNTTFF?=
+ =?utf-8?B?bDlsaXVEbkdFQmF6Q3V5WWplcTFLSXZ1M2duVTVqTzkvTDl1eU9xTndqTFRX?=
+ =?utf-8?B?K3RnVTNPZVZPdU5zbWp2Y3FpcFJlZlZ4dVhtUmVZb2lmSlVGeXVjYkZLd1Y4?=
+ =?utf-8?B?WHN1OStKVFpNTGZZdWxjbE1RZS9DVndnaGhoanZSd1JSY3RoeUxpenpqT0pw?=
+ =?utf-8?B?WEVjVUp2ZitwTFdUYmlZRHpqVzRITGpWK0gxQmdhT2NDUEEvYlNEbXdvc2NF?=
+ =?utf-8?B?UTg1NXR3azBzYlROZUJuSHA1WFZaTEJxcHBic3czRWxEbGRvQ0dWejJxTXpF?=
+ =?utf-8?B?TEF5MzR2Nm5BYTdiSkdYYjE0bEp0RHF5aTZKajRQaHdYT0pMRHg3TWdEdWJJ?=
+ =?utf-8?B?M0FqRVFLQXVQUmljNDB6R2lyM3ByQWlYNjZ0T1dTTStKQlM5K2h6aUs4Yk9h?=
+ =?utf-8?B?d01GdkhrU2E3amcxWlEydzVWVEd6MWpGcjVaYkJ3cWtqQ2R6QysvWEkrVU5M?=
+ =?utf-8?B?OU13bWtrQmVFb3RRa2FyWktvM0VBNis2NHlSSTdUWHFsLzZQa2R1Mzk5dFZw?=
+ =?utf-8?B?dHJyYXhlR2FUck9qZHVTS05xb21tSHY1bEZzZUZPVU9EV2JRRG5RcFd5UTJF?=
+ =?utf-8?Q?KYyXTV56a8vfnBqpUEu9kdEQjeuoaVAgLCQcEvPz+NTB?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d719336f-4eb6-4cac-5d21-08dbf2aa2ad0
+X-MS-Exchange-CrossTenant-AuthSource: VE1PR04MB6478.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Dec 2023 20:14:48.2663
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: K5+dJYt0ZX8MGKNnBdfhtAEyqMMfUXCwW0IdogWOhT8eqK1TJCyiUdgPS1vwamxbcSoJ+odPa3pLWUyz4l54Vg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB7653
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a load_device_defaults() function pointer to struct
-idxd_driver_data, which if defined, will be called when an idxd device
-is probed and will allow the idxd device to be configured with default
-values.
+On 01.12.23 14:26, Jose Ignacio Tornos Martinez wrote:
+Hi,
 
-The load_device_defaults() function is passed an idxd device to work
-with to set specific device attributes.
+this is much better.
+   
+> @@ -1661,14 +1668,19 @@ static int ax88179_reset(struct usbnet *dev)
+>   
+>   static int ax88179_stop(struct usbnet *dev)
+>   {
+> +	struct ax88179_data *ax179_data = dev->driver_priv;
+>   	u16 tmp16;
+>   
+> +	ax179_data->stopping_unbinding = 1;
 
-Also add a load_device_defaults() implementation IAA devices; future
-patches would add default functions for other device types such as
-DSA.
+This is problematic. ndo_stop() is not limited to disconnection.
+It is also used whenever an interface transitions from up to down.
 
-The way idxd device probing works, if the device configuration is
-valid at that point e.g. at least one workqueue and engine is properly
-configured then the device will be enabled and ready to go.
+> +
+>   	ax88179_read_cmd(dev, AX_ACCESS_MAC, AX_MEDIUM_STATUS_MODE,
+>   			 2, 2, &tmp16);
+>   	tmp16 &= ~AX_MEDIUM_RECEIVE_EN;
+>   	ax88179_write_cmd(dev, AX_ACCESS_MAC, AX_MEDIUM_STATUS_MODE,
+>   			  2, 2, &tmp16);
+>   
+> +	ax179_data->stopping_unbinding = 0;
+> +
+>   	return 0;
+>   }
+>   
 
-The IAA implementation, idxd_load_iaa_device_defaults(), configures a
-single workqueue (wq0) for each device with the following default
-values:
+On a general note, you are going for a belt and suspenders approach.
+It seems to me that you have two options.
 
-      mode     	        "dedicated"
-      threshold		0
-      size		Total WQ Size from WQCAP
-      priority		10
-      type		IDXD_WQT_KERNEL
-      group		0
-      name              "iaa_crypto"
-      driver_name       "crypto"
+1. Do as Alan suggested and ignore ENODEV. You'd be acknowledging that
+these devices are hotpluggable and therefore -ENODEV is not an error
+2. Use only a flag. But if you do that, you are setting it in the wrong
+place. It should be set in usbnet_disconnect()
 
-Note that this now adds another configuration step for any users that
-want to configure their own devices/workqueus with something different
-in that they'll first need to disable (in the case of IAA) wq0 and the
-device itself before they can set their own attributes and re-enable,
-since they've been already been auto-enabled.  Note also that in order
-for the new configuration to be applied to the deflate-iaa crypto
-algorithm the iaa_crypto module needs to unregister the old version,
-which is accomplished by removing the iaa_crypto module, and
-re-registering it with the new configuration by reinserting the
-iaa_crypto module.
+O and, well, this is a very mior issue, but you've introduced a memory
+ordering issue. You ought to use smp_wmb() after setting the flag and
+smp_rmb() before reading it.
 
-Signed-off-by: Tom Zanussi <tom.zanussi@linux.intel.com>
-Reviewed-by: Dave Jiang <dave.jiang@intel.com>
----
- drivers/dma/idxd/Makefile   |  2 +-
- drivers/dma/idxd/defaults.c | 53 +++++++++++++++++++++++++++++++++++++
- drivers/dma/idxd/idxd.h     |  4 +++
- drivers/dma/idxd/init.c     |  7 +++++
- 4 files changed, 65 insertions(+), 1 deletion(-)
- create mode 100644 drivers/dma/idxd/defaults.c
-
-diff --git a/drivers/dma/idxd/Makefile b/drivers/dma/idxd/Makefile
-index c5e679070e46..2b4a0d406e1e 100644
---- a/drivers/dma/idxd/Makefile
-+++ b/drivers/dma/idxd/Makefile
-@@ -4,7 +4,7 @@ obj-$(CONFIG_INTEL_IDXD_BUS) += idxd_bus.o
- idxd_bus-y := bus.o
- 
- obj-$(CONFIG_INTEL_IDXD) += idxd.o
--idxd-y := init.o irq.o device.o sysfs.o submit.o dma.o cdev.o debugfs.o
-+idxd-y := init.o irq.o device.o sysfs.o submit.o dma.o cdev.o debugfs.o defaults.o
- 
- idxd-$(CONFIG_INTEL_IDXD_PERFMON) += perfmon.o
- 
-diff --git a/drivers/dma/idxd/defaults.c b/drivers/dma/idxd/defaults.c
-new file mode 100644
-index 000000000000..c607ae8dd12c
---- /dev/null
-+++ b/drivers/dma/idxd/defaults.c
-@@ -0,0 +1,53 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright(c) 2023 Intel Corporation. All rights rsvd. */
-+#include <linux/kernel.h>
-+#include "idxd.h"
-+
-+int idxd_load_iaa_device_defaults(struct idxd_device *idxd)
-+{
-+	struct idxd_engine *engine;
-+	struct idxd_group *group;
-+	struct idxd_wq *wq;
-+
-+	if (!test_bit(IDXD_FLAG_CONFIGURABLE, &idxd->flags))
-+		return 0;
-+
-+	wq = idxd->wqs[0];
-+
-+	if (wq->state != IDXD_WQ_DISABLED)
-+		return -EPERM;
-+
-+	/* set mode to "dedicated" */
-+	set_bit(WQ_FLAG_DEDICATED, &wq->flags);
-+	wq->threshold = 0;
-+
-+	/* only setting up 1 wq, so give it all the wq space */
-+	wq->size = idxd->max_wq_size;
-+
-+	/* set priority to 10 */
-+	wq->priority = 10;
-+
-+	/* set type to "kernel" */
-+	wq->type = IDXD_WQT_KERNEL;
-+
-+	/* set wq group to 0 */
-+	group = idxd->groups[0];
-+	wq->group = group;
-+	group->num_wqs++;
-+
-+	/* set name to "iaa_crypto" */
-+	memset(wq->name, 0, WQ_NAME_SIZE + 1);
-+	strscpy(wq->name, "iaa_crypto", WQ_NAME_SIZE + 1);
-+
-+	/* set driver_name to "crypto" */
-+	memset(wq->driver_name, 0, DRIVER_NAME_SIZE + 1);
-+	strscpy(wq->driver_name, "crypto", DRIVER_NAME_SIZE + 1);
-+
-+	engine = idxd->engines[0];
-+
-+	/* set engine group to 0 */
-+	engine->group = idxd->groups[0];
-+	engine->group->num_engines++;
-+
-+	return 0;
-+}
-diff --git a/drivers/dma/idxd/idxd.h b/drivers/dma/idxd/idxd.h
-index 62ea21b25906..47de3f93ff1e 100644
---- a/drivers/dma/idxd/idxd.h
-+++ b/drivers/dma/idxd/idxd.h
-@@ -277,6 +277,8 @@ struct idxd_dma_dev {
- 	struct dma_device dma;
- };
- 
-+typedef int (*load_device_defaults_fn_t) (struct idxd_device *idxd);
-+
- struct idxd_driver_data {
- 	const char *name_prefix;
- 	enum idxd_type type;
-@@ -286,6 +288,7 @@ struct idxd_driver_data {
- 	int evl_cr_off;
- 	int cr_status_off;
- 	int cr_result_off;
-+	load_device_defaults_fn_t load_device_defaults;
- };
- 
- struct idxd_evl {
-@@ -730,6 +733,7 @@ void idxd_unregister_devices(struct idxd_device *idxd);
- void idxd_wqs_quiesce(struct idxd_device *idxd);
- bool idxd_queue_int_handle_resubmit(struct idxd_desc *desc);
- void multi_u64_to_bmap(unsigned long *bmap, u64 *val, int count);
-+int idxd_load_iaa_device_defaults(struct idxd_device *idxd);
- 
- /* device interrupt control */
- irqreturn_t idxd_misc_thread(int vec, void *data);
-diff --git a/drivers/dma/idxd/init.c b/drivers/dma/idxd/init.c
-index 0eb1c827a215..14df1f1347a8 100644
---- a/drivers/dma/idxd/init.c
-+++ b/drivers/dma/idxd/init.c
-@@ -59,6 +59,7 @@ static struct idxd_driver_data idxd_driver_data[] = {
- 		.evl_cr_off = offsetof(struct iax_evl_entry, cr),
- 		.cr_status_off = offsetof(struct iax_completion_record, status),
- 		.cr_result_off = offsetof(struct iax_completion_record, error_code),
-+		.load_device_defaults = idxd_load_iaa_device_defaults,
- 	},
- };
- 
-@@ -745,6 +746,12 @@ static int idxd_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 		goto err;
- 	}
- 
-+	if (data->load_device_defaults) {
-+		rc = data->load_device_defaults(idxd);
-+		if (rc)
-+			dev_warn(dev, "IDXD loading device defaults failed\n");
-+	}
-+
- 	rc = idxd_register_devices(idxd);
- 	if (rc) {
- 		dev_err(dev, "IDXD sysfs setup failed\n");
--- 
-2.34.1
-
+	Regards
+		Oliver
