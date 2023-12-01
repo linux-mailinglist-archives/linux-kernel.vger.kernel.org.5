@@ -2,219 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 994D3800281
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 05:27:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ADF5800285
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 05:30:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377302AbjLAE1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 23:27:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34788 "EHLO
+        id S1377331AbjLAE35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 23:29:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbjLAE1C (ORCPT
+        with ESMTP id S229505AbjLAE3x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 23:27:02 -0500
-Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DB281711
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 20:27:06 -0800 (PST)
-Received: from epcas5p3.samsung.com (unknown [182.195.41.41])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20231201042705epoutp044f627e45d9b10b8c083f683925d15776~cmqyNUQ_N3196531965epoutp04P
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 04:27:05 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20231201042705epoutp044f627e45d9b10b8c083f683925d15776~cmqyNUQ_N3196531965epoutp04P
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1701404825;
-        bh=rDUID7+wO8S6gDUwBZrAJ/Mf3Fc0sfmHHhUiK0Rejpc=;
-        h=Subject:Reply-To:From:To:CC:Date:References:From;
-        b=lLIRT4wRyeupUiRtuz+wtXo9McneedrlSCWziSPXTYRQv1gwiLNDpgUJvuwLFAsKq
-         0f6jVqDiBVVW2cD3DwxsF0s5J0AOEugAuLRJ3OIQ3awe2voLFoH9+NaRefItHfuSm+
-         2jnC7wHu9aO2CBuWjcB2M7aQcDbTQiN2UB8/sjuY=
-Received: from epsmges5p2new.samsung.com (unknown [182.195.42.74]) by
-        epcas5p4.samsung.com (KnoxPortal) with ESMTP id
-        20231201042704epcas5p4f1b57dad7ec41e7193fb03eb01cd9f18~cmqx8PM7c2676726767epcas5p4e;
-        Fri,  1 Dec 2023 04:27:04 +0000 (GMT)
-X-AuditID: b6c32a4a-261fd70000002719-0e-656960980477
-Received: from epcas5p2.samsung.com ( [182.195.41.40]) by
-        epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        6D.8B.10009.89069656; Fri,  1 Dec 2023 13:27:04 +0900 (KST)
-Mime-Version: 1.0
-Subject: Re[4]: [PATCH] input: gpio-keys - optimize wakeup sequence.
-Reply-To: abhi1.singh@samsung.com
-Sender: Abhishek Kumar Singh <abhi1.singh@samsung.com>
-From:   Abhishek Kumar Singh <abhi1.singh@samsung.com>
-To:     "dmitry.torokhov@gmail.com" <dmitry.torokhov@gmail.com>,
-        "robh@kernel.org" <robh@kernel.org>
-CC:     "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        SRI-N IT Security <sri-n.itsec@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20231201042704epcms5p5663a96562d942fa226235dba6e40cd15@epcms5p5>
-Date:   Fri, 01 Dec 2023 09:57:04 +0530
-X-CMS-MailID: 20231201042704epcms5p5663a96562d942fa226235dba6e40cd15
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="utf-8"
-CMS-TYPE: 105P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrGIsWRmVeSWpSXmKPExsWy7bCmhu6MhMxUg3292haHF71gtLj56Rur
-        xeVdc9gs/u/ZwW5x4s8mZgdWj52z7rJ7bFrVyebRt2UVo8fnTXIBLFFcNimpOZllqUX6dglc
-        GcdnTmQumBlYcb75FksDY49/FyMnh4SAiUTDjNksXYxcHEICuxklvkzYydTFyMHBKyAo8XeH
-        MEiNsICLxO7XG1lAbCEBRYlFczqYIeJmEpvvvmMEKWcDmrNiOw9IWEQgSeLTzh42kJHMAusZ
-        JS58+s0GsYtXYkb7UxYIW1pi+/KtjBC2qMTN1W/ZYez3x+ZDxUUkWu+dZYawBSUe/NzNCNP7
-        /cAtqJn1Eqe+TwC7X0Kgh1Fi3txPUAvMJc786gGzeQV8Jc6f+8YMciiLgKpE7zeomS4SN/fd
-        AJvJLKAtsWzha7ASZgFNifW79CHCfBK9v58wwZy/Yx6MrSqx/+w/ZphzdkxaBXW+h8S/p0fZ
-        QMYICQRK9LzUmcAoNwsRnrOQ7JqFsGsBI/MqRsnUguLc9NRi0wKjvNRyveLE3OLSvHS95Pzc
-        TYzgpKDltYPx4YMPeocYmTgYDzFKcDArifBef5qeKsSbklhZlVqUH19UmpNafIhRmoNFSZz3
-        devcFCGB9MSS1OzU1ILUIpgsEwenVAMTV+XXVnd70UVz2L4fZpg2Y/33KjehfJPzfr+bT64N
-        PPp9Ranx9YQFB/T/9kvKtj5pOrdx4m3t9tld8VZibFM8N2aLWeo+CDFsdH/7zklt9/Rg65J9
-        j46YTfHi3tspsE1wuq+c+3feVR3qDb1M2y7d0j2cpcu0ee+ipP8RxnlOwb1Pnn67x3Ersvfo
-        9dOTFSX3h0wp3DF5ovzK+YJM6d5H6gL+erNEqfvdt3SRDb67pPHD7zUJZzf5f5nivrWtzqpi
-        2yovz093eeMfrjCzcK5N3SebeMSp7/7iHbn8F/fdOFwXoT3lp84daa6rx9j65PW//ZnLbla0
-        +5rAEvPcxSLBQYvfH2xWCav/dCHx3JXZSizFGYmGWsxFxYkAEsbgI3kDAAA=
-X-CMS-RootMailID: 20231017103415epcms5p2f8f5b28a8f5d71055622b82f71b0fc93
-References: <CGME20231017103415epcms5p2f8f5b28a8f5d71055622b82f71b0fc93@epcms5p5>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Thu, 30 Nov 2023 23:29:53 -0500
+Received: from JPN01-OS0-obe.outbound.protection.outlook.com (mail-os0jpn01on2108.outbound.protection.outlook.com [40.107.113.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 730191711
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 20:29:58 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kiPk0JoCepsK4NE6HIMKuQcFeBXL9ABQ7Vz0PvLSV9PT7u3iuLNQgIazS2NkPVqT6y2chWZ2lcjSbLKxtd0YQ7iJVe+GWh/Bkm6tkBgp0cqkmqG69RVrgP1v0TMOszyKEXTOAwWC90GraHJo9HROZwynpEALn7pWcTAeJeog7C3CdRwyWT3b2PPAZnvvl1n+5ilGg2RuPS/6uPcmRxLFsCxQ3uL6JFrYPRQ0Dpc2qsWif+JrThL1bo1FJPlPk1O/UjKYa2eHcUYFnv38CiUiHukuy0gJDvvhQgk+NViHiAF32NbmyM7y1V+2tYnbd1b6Y7QbDGKgeP9KUYNhzMnBsg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=YsJ9ue6eqL3fxS4b+GsaE/vR1dLATusKP+vsG6dMoAE=;
+ b=gGbTyeak0w+Nnd3hCTxXPu2OpoyvBt6YdXAbK5hoxHTkdwQEi/7YfVF262wGeLvbuB0nQgmPvYX/3oFRgUNjEJpC7DRHU1tY1t6FD6m9QJdyrjoXsqzP/+0SWcUHmHlhryvRySEovfRAZhWKsoPT7v77eDaifqwPCOvWHqItoLTvgo/7qz54pq5L8XfeCu/aKmwfCLOgXqvAXuw4ujVJHqV5fk/EDMsucuurCApa4Hin7MWu5nCfnPpR4EnnsdwfOeVVle3A8LU/T71xUPCl2ctcPVyONf6dQ/uTV/by7hKyhE53Wx02IM8/GDvQkN6uSUIPpDQLOMAEkxFDqDoEAg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=dm.renesas.com; dmarc=pass action=none
+ header.from=dm.renesas.com; dkim=pass header.d=dm.renesas.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dm.renesas.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YsJ9ue6eqL3fxS4b+GsaE/vR1dLATusKP+vsG6dMoAE=;
+ b=goqChZo2GOKa4XdpeC3HSxOL1EC7i89ddEwj3/UIM/nVhhFIKcAbWkaOdv9TbBoOoCXSf44UTFiNbTA/izwYNnWcj0wFAgZcKM5o+OLevXIq3YrBfJtrh1mSDMNHq68ge0E7XXJPg9DO464uy8ETj3qxsUnNbbpU6WHow+7UkiE=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=dm.renesas.com;
+Received: from OS3PR01MB6641.jpnprd01.prod.outlook.com (2603:1096:604:10b::11)
+ by TYWPR01MB9921.jpnprd01.prod.outlook.com (2603:1096:400:231::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.22; Fri, 1 Dec
+ 2023 04:29:55 +0000
+Received: from OS3PR01MB6641.jpnprd01.prod.outlook.com
+ ([fe80::f6c1:b978:d777:e7ba]) by OS3PR01MB6641.jpnprd01.prod.outlook.com
+ ([fe80::f6c1:b978:d777:e7ba%6]) with mapi id 15.20.7046.015; Fri, 1 Dec 2023
+ 04:29:55 +0000
+From:   David Rau <David.Rau.opensource@dm.renesas.com>
+To:     broonie@kernel.org
+Cc:     support.opensource@diasemi.com, lgirdwood@gmail.com,
+        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org,
+        David Rau <David.Rau.opensource@dm.renesas.com>
+Subject: [PATCH] ASoC: da7219: Support low DC impedance headset
+Date:   Fri,  1 Dec 2023 12:29:33 +0800
+Message-Id: <20231201042933.26392-1-David.Rau.opensource@dm.renesas.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: TYCPR01CA0026.jpnprd01.prod.outlook.com
+ (2603:1096:405:1::14) To OS3PR01MB6641.jpnprd01.prod.outlook.com
+ (2603:1096:604:10b::11)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: OS3PR01MB6641:EE_|TYWPR01MB9921:EE_
+X-MS-Office365-Filtering-Correlation-Id: aa9f3a5c-8ce9-4ab8-434e-08dbf2262b6e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: iCM351XYsIHQtQWD/v2j3n2eB/3o9UM3WkfP2Qyzugtq05UOD49ZkaLN+MYQ5JnxiFxuu5QoXOakJzXlqEWXRwqIb/mPvTv7kyWJKJBTHEzIB3yiMY4hIO5NDevnNCQhGVrlZnzrHcFgK2QbDMqrsmnSr+l15q7oPNO54RSmGPuGUrfd11RHikK1kI83J6/w8nWnhFGZvtj+PKmIeqkObesJbEzhkhEJLCSI6marem487hZsOHYCj9CidUVUm0NcOj9TW7tC+644X9qLMV7qHF3VNp8rEbmoAjvMiZKQD2asVDwoZfwulNnLtOmJtfwp/RpDy+Fiq2ibkpm3Nh6yq/S+JG87QUO1ji87c6XCMBGQDQ8RXHLXomyoZ7Aq4n4B2gRi2f6R/TBQ9QlFLFrzisL98uRdo6TaT6dS3GqCliICHHMGluMPJAwAhXMTb6M09SXuNgQx6nrPZa/i2+emYJ3LOWUIChPYPPHs39TLFWZBolMDSSbWWHR4ZdHSFF5bpHc4TNO8C7uZZV/AYTESbK3QZdj1XRO82AuThAOiA/T5iKqSJ0KGILR5vDTFF9q/t5/KW1tpJZkSXhgloS87LcSKICdiF5moE8Gh3JJViypCLjZxDl+Nj5h8Snd07Sy2
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS3PR01MB6641.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(396003)(346002)(376002)(39860400002)(230922051799003)(451199024)(186009)(64100799003)(1800799012)(26005)(478600001)(2616005)(6512007)(107886003)(6666004)(1076003)(38100700002)(86362001)(103116003)(38350700005)(83380400001)(41300700001)(6916009)(66476007)(52116002)(4326008)(66556008)(2906002)(316002)(8676002)(6506007)(6486002)(4744005)(66946007)(8936002)(5660300002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?OjNDjdZAxDZDE5d8p8FvrxbVOGM6IodhOHh64SioLcUiTetj4np6KKOkq3F2?=
+ =?us-ascii?Q?lmAO/B2kaEa4rUbGm8isrQOI9wa0x5vtq6SAxun9zfjIQ9MJP6FcOImylQCh?=
+ =?us-ascii?Q?1E0HN7eXVsYpOOXdzOlvDn3fC+AN86XaBF0i4grQ1QMiazbGdT3WrWB8RtcH?=
+ =?us-ascii?Q?SRqzetdL6roNU5xzyPPL5QojRUdAofhCxa2Qq3rRYazxC3vFUOVo49QHnKv/?=
+ =?us-ascii?Q?HmkGikHEUfmQZQt5pBmyx2lsL29DmsW2uEQwOQO1M9STHHYNz2CO8ptWWo2n?=
+ =?us-ascii?Q?5bBYvfKudWAg+piw2gkd4YVUutUTmAaMEy3jg192yjt7o4zqerzN3+AvbnaZ?=
+ =?us-ascii?Q?RbvqAFs8/BFw167zlLJm7q3t7UWgJ3N274jglqHHPV4IwXvssXR2tWZY6jAy?=
+ =?us-ascii?Q?fXZqHemm0ssvwHQi924djW4hrs6/+c57Y+URxGfcB7foVtaAb8dB2UXgJ9A/?=
+ =?us-ascii?Q?u2c5cLk4JUUkLyVjeBoEjoUJKoC5DuCot6ArXJt6OFLO/1cnRxvQ+z0up7vB?=
+ =?us-ascii?Q?HdzJgX9K8fhyHDpy1jurxrgIdIg/OsBAw/9+4VltfQBp2bjmNJd8elR/Jcd1?=
+ =?us-ascii?Q?xIuMeObPlYi3tM+yJ2fIKOrqXCZrqmAlTFDKGBRCI/oj5wR9CqZH9t+3rHbs?=
+ =?us-ascii?Q?IavQ+SnYD7Rskd7H+sELE5aUiX3QjqX3p3dmx8KlSXN2OcFmJWHHQ99yjjOK?=
+ =?us-ascii?Q?TrOqwdOwEf7o9YvtVVrb1FPXJbvyL3qSrhLtP25+bjLZudGklHvR+BrAsFcH?=
+ =?us-ascii?Q?k4VmYxSjhQZFl1x8grHk8KTwhgajHOgzHY+kH9wEaC1mb48mYUyavpmvniBo?=
+ =?us-ascii?Q?wr/puWWT/QQNK0Ol6eNkPM49DNyiFOdxzdchjrtoljSpyyWvblbKbnh/c48p?=
+ =?us-ascii?Q?THzsMKM5PZe9fRRRC7hn3U8U0h0eg0DTKU0SpyR33s4tvy1GTM6CqDT7ZLxe?=
+ =?us-ascii?Q?ULuxLk1dlwAukN8SWRg9FOL85YlMXLR6+vEWF/8M1Is3hEc48a2tRatylbVa?=
+ =?us-ascii?Q?UNm1avpRsnPQXvvY1a7NcxjfvFVcIUmsBZpRg+bVsIqbKefkjYRWFMviuZBc?=
+ =?us-ascii?Q?aRzNATJr6GCXU/pQ/x2ScLYdXXXY4uLdyf4yz2PCn00YielcQlreTyWzOx6Q?=
+ =?us-ascii?Q?QvneqrNLD6/e3I/e3F5gSHWnW2FARLMp8vv2TM2ZM+/cwtaBpe8OKYZoSy27?=
+ =?us-ascii?Q?N92gy2vOLnWnF3d1so5Nm2ySc3oTDQK5QYEqz60elzk49nhIxShaTLrZElcb?=
+ =?us-ascii?Q?dfQhhlQdcjzhtXkxBRbi5SvcP2B+ZzM3WjWYeZHPIyTBbuZFBqRLx5IEtID9?=
+ =?us-ascii?Q?sR2iO1A9vK64Si7mgeuLBA8T9FwLx+w/q43QqWYy1N/go9pXCnGI6Asjuovu?=
+ =?us-ascii?Q?uPjQHy0M/FyLOpF2aSZD2DLnOXV4Du1m+dNJQzFoKgleSYYbYvvfOqUpdV8V?=
+ =?us-ascii?Q?u1CjTmErAFAsSoxSVYAo30DmohqVvGHWRDn8/vr2EJE81Jxv3Z16peZr4KB5?=
+ =?us-ascii?Q?TLrRsHDHxvxqtHOXRGdI4w9j9FpWtAZv5wayMmqkeY2OU2kSuMGBbkDIQMrl?=
+ =?us-ascii?Q?7Q1/TrXf7/FPbCzI2fWf3lcC3o5Qsciq+41iazwiPfhjBLtOKu9LFQr1jiXI?=
+ =?us-ascii?Q?fw=3D=3D?=
+X-OriginatorOrg: dm.renesas.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: aa9f3a5c-8ce9-4ab8-434e-08dbf2262b6e
+X-MS-Exchange-CrossTenant-AuthSource: OS3PR01MB6641.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Dec 2023 04:29:55.6330
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 53d82571-da19-47e4-9cb4-625a166a4a2a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: PfeYa/beLpLEiSYe/444KwZpB0ICG0GP/anPCOmcsQSw044v3oAY+6ejEiLv2ZTff0DMgWIPaDCIqkZwGPdTGeHbuN4o62boM+KoG8xTWrs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYWPR01MB9921
+X-Spam-Status: No, score=0.5 required=5.0 tests=AC_FROM_MANY_DOTS,BAYES_00,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Dmitry,=C2=A0=0D=0AGreetings=21=21=0D=0A=C2=A0=0D=0ACould=20you=20plea=
-se=20help=20to=20review=20and=20update=20on=20this?=0D=0A=0D=0A=0D=0AThanks=
-=20and=20Regards,=0D=0AAbhishek=20Kumar=20Singh=0D=0ASr.=20Chief=20Engineer=
-,=0D=0ASamsung=20Electronics,=20Noida-India=0D=0A=0D=0A=C2=A0=0D=0A--------=
--=20Original=20Message=20---------=0D=0ASender=20:=20Abhishek=20Kumar=20Sin=
-gh=20<abhi1.singh=40samsung.com>System=20Power=20Part=20/SRI-Noida/Samsung=
-=20Electronics=0D=0ADate=C2=A0=20=C2=A0:=202023-11-07=2013:59=20(GMT+5:30)=
-=0D=0ATitle=C2=A0=20:=20Re=5B2=5D:=20=5BPATCH=5D=20input:=20gpio-keys=20-=
-=20optimize=20wakeup=20sequence.=0D=0A=C2=A0=0D=0ADear=20Dmitry,=C2=A0=0D=
-=0A=0D=0AGreetings=21=21=21=0D=0A=0D=0AThank=20you=20so=20much=20for=20your=
-=20response.=0D=0A=0D=0AI=20checked=20in=20detailed=20again=20and=20observe=
-d=20the=20below=20points,=20please=20help=20to=20review=C2=A0=0D=0Aand=20ap=
-prove=20it.=0D=0A=0D=0A=0D=0A=0D=0AThere=20is=20ISR=20=22gpio_keys_gpio_isr=
-=22=20which=20is=20called=20when=20the=20key=20state=20is=201=20i.e.=C2=A0=
-=0D=0Akey=20pressed.=0D=0ATherefore=20modified=20code=20will=20not=20impact=
-=20on=20the=20existing=20driver=20code.=0D=0A=0D=0A//For=20key=20pressed=20=
-event:=0D=0A<3>=5B=C2=A0=20549.180072=5D=20I=5B0:=C2=A0=20=C2=A0=20=C2=A0=
-=20swapper/0:=C2=A0=20=C2=A0=200=5D=20gpio_keys_gpio_isr=0D=0A<3>=5B=C2=A0=
-=20549.196126=5D=C2=A0=20=5B1:=C2=A0=20=C2=A0=20kworker/1:1:=C2=A0=20=C2=A0=
-78=5D=20gpio_keys_gpio_work_func=0D=0A<3>=5B=C2=A0=20549.196198=5D=C2=A0=20=
-=5B1:=C2=A0=20=C2=A0=20kworker/1:1:=C2=A0=20=C2=A078=5D=20gpio-keys=20soc:g=
-pio_keys:=20gpio_keys_gpio_report_event=20key=20=3D=20115,=20value=20=3D=20=
-1=0D=0A=0D=0A=0D=0A=0D=0APerformance:=0D=0A=0D=0AI=20have=20calculated=20th=
-e=20differece=20between=20entry=20&=20exit=20time=C2=A0=0D=0Awith=20modifie=
-d=20and=20without=20modified=20code=20and=20observed=20that=C2=A0=0D=0A0.3m=
-s=20extra=20computation=20time=20in=20current=20scenario=20in=20each=20entr=
-y/exit=20time.=0D=0A=0D=0ABecause=20below=20APIs=20will=20not=20be=20called=
-=20in=20every=20resume=20functions:=0D=0A=0D=0A1.=20static=20void=20gpio_ke=
-ys_report_state(struct=20gpio_keys_drvdata=20*ddata)=0D=0A2.=20static=20voi=
-d=20gpio_keys_gpio_report_event(struct=20gpio_button_data=20*bdata)=0D=0A3.=
-=20gpiod_get_value_cansleep(bdata->gpiod);=0D=0A4.=20input_event(input,=20t=
-ype,=20*bdata->code,=20state);=0D=0A5.=20input_sync(input)=0D=0A=0D=0ASo=20=
-we=20can=20save=200.3ms=20computation=20time,=20resume=20operations=20will=
-=20faster=20and=20save=20battery=20as=20well.=0D=0A=0D=0A=0D=0A=0D=0AWith=
-=20changes:=0D=0A=0D=0ALine=C2=A0=20=C2=A0311960:=2007-18=2016:50:09.359=C2=
-=A0=20root=C2=A0=20=C2=A0=20=C2=A00=C2=A0=20=C2=A0=20=C2=A00=20I=20=5B0:=C2=
-=A0=20=C2=A0Binder:699_1:20972=5D=20PM:=20gpio_keys_report_state=20exit=202=
-023-07-18=2011:20:37.573207725=20UTC=0D=0ALine=C2=A0=20=C2=A0312626:=2007-1=
-8=2016:50:42.123=C2=A0=20root=C2=A0=20=C2=A0=20=C2=A00=C2=A0=20=C2=A0=20=C2=
-=A00=20I=20=5B0:=C2=A0=20=C2=A0Binder:699_1:20972=5D=20PM:=20gpio_keys_repo=
-rt_state=20enrty=202023-07-18=2011:22:20.503579404=20UTC=0D=0ALine=C2=A0=20=
-=C2=A0312627:=2007-18=2016:50:42.123=C2=A0=20root=C2=A0=20=C2=A0=20=C2=A00=
-=C2=A0=20=C2=A0=20=C2=A00=20I=20=5B0:=C2=A0=20=C2=A0Binder:699_1:20972=5D=
-=20PM:=20gpio_keys_report_state=20exit=202023-07-18=2011:22:20.503656644=20=
-UTC=0D=0ALine=C2=A0=20=C2=A0313301:=2007-18=2016:52:24.182=C2=A0=20root=C2=
-=A0=20=C2=A0=20=C2=A00=C2=A0=20=C2=A0=20=C2=A00=20I=20=5B0:=C2=A0=20=C2=A0B=
-inder:699_1:20972=5D=20PM:=20gpio_keys_report_state=20enrty=202023-07-18=20=
-11:22:33.865626325=20UTC=0D=0ALine=C2=A0=20=C2=A0313302:=2007-18=2016:52:24=
-.182=C2=A0=20root=C2=A0=20=C2=A0=20=C2=A00=C2=A0=20=C2=A0=20=C2=A00=20I=20=
-=5B0:=C2=A0=20=C2=A0Binder:699_1:20972=5D=20PM:=20gpio_keys_report_state=20=
-exit=202023-07-18=2011:22:33.865724502=20UTC=0D=0ALine=C2=A0=20=C2=A0313572=
-:=2007-18=2016:52:35.111=C2=A0=20root=C2=A0=20=C2=A0=20=C2=A00=C2=A0=20=C2=
-=A0=20=C2=A00=20I=20=5B1:=C2=A0=20=C2=A0Binder:699_1:20972=5D=20PM:=20gpio_=
-keys_report_state=20enrty=202023-07-18=2011:22:37.678468979=20UTC=0D=0ALine=
-=C2=A0=20=C2=A0313573:=2007-18=2016:52:35.111=C2=A0=20root=C2=A0=20=C2=A0=
-=20=C2=A00=C2=A0=20=C2=A0=20=C2=A00=20I=20=5B1:=C2=A0=20=C2=A0Binder:699_1:=
-20972=5D=20PM:=20gpio_keys_report_state=20exit=202023-07-18=2011:22:37.6785=
-66167=20UTC=0D=0ALine=C2=A0=20=C2=A0314209:=2007-18=2016:52:43.598=C2=A0=20=
-root=C2=A0=20=C2=A0=20=C2=A00=C2=A0=20=C2=A0=20=C2=A00=20I=20=5B0:=C2=A0=20=
-=C2=A0Binder:699_1:20972=5D=20PM:=20gpio_keys_report_state=20enrty=202023-0=
-7-18=2011:23:05.925340634=20UTC=0D=0ALine=C2=A0=20=C2=A0314210:=2007-18=201=
-6:52:43.598=C2=A0=20root=C2=A0=20=C2=A0=20=C2=A00=C2=A0=20=C2=A0=20=C2=A00=
-=20I=20=5B0:=C2=A0=20=C2=A0Binder:699_1:20972=5D=20PM:=20gpio_keys_report_s=
-tate=20exit=202023-07-18=2011:23:05.925439384=20UTC=0D=0A=0D=0A=0D=0AWithou=
-t=20changes:=0D=0A=0D=0ALine=C2=A0=20=C2=A0372095:=2007-18=2016:10:24.250=
-=C2=A0=20root=C2=A0=20=C2=A0=20=C2=A00=C2=A0=20=C2=A0=20=C2=A00=20I=20=5B1:=
-=C2=A0=20=C2=A0Binder:702_2:18137=5D=20PM:=20gpio_keys_report_state=20exit=
-=202023-07-18=2010:43:38.592548979=20UTC=0D=0ALine=C2=A0=20=C2=A0372344:=20=
-07-18=2016:13:45.439=C2=A0=20root=C2=A0=20=C2=A0=20=C2=A00=C2=A0=20=C2=A0=
-=20=C2=A00=20I=20=5B0:=C2=A0=20=C2=A0Binder:702_2:18137=5D=20PM:=20gpio_key=
-s_report_state=20enrty=202023-07-18=2010:44:11.589164226=20UTC=0D=0ALine=C2=
-=A0=20=C2=A0372346:=2007-18=2016:13:45.439=C2=A0=20root=C2=A0=20=C2=A0=20=
-=C2=A00=C2=A0=20=C2=A0=20=C2=A00=20I=20=5B0:=C2=A0=20=C2=A0Binder:702_2:181=
-37=5D=20PM:=20gpio_keys_report_state=20exit=202023-07-18=2010:44:11.5895149=
-55=20UTC=0D=0ALine=C2=A0=20=C2=A0372573:=2007-18=2016:14:13.414=C2=A0=20roo=
-t=C2=A0=20=C2=A0=20=C2=A00=C2=A0=20=C2=A0=20=C2=A00=20I=20=5B0:=C2=A0=20=C2=
-=A0Binder:702_2:18137=5D=20PM:=20gpio_keys_report_state=20enrty=202023-07-1=
-8=2010:44:22.606227138=20UTC=0D=0ALine=C2=A0=20=C2=A0372575:=2007-18=2016:1=
-4:13.414=C2=A0=20root=C2=A0=20=C2=A0=20=C2=A00=C2=A0=20=C2=A0=20=C2=A00=20I=
-=20=5B0:=C2=A0=20=C2=A0Binder:702_2:18137=5D=20PM:=20gpio_keys_report_state=
-=20exit=202023-07-18=2010:44:22.606490107=20UTC=0D=0ALine=C2=A0=20=C2=A0372=
-944:=2007-18=2016:14:26.732=C2=A0=20root=C2=A0=20=C2=A0=20=C2=A00=C2=A0=20=
-=C2=A0=20=C2=A00=20I=20=5B1:=C2=A0=20=C2=A0Binder:702_2:18137=5D=20PM:=20gp=
-io_keys_report_state=20enrty=202023-07-18=2010:44:29.024121927=20UTC=0D=0AL=
-ine=C2=A0=20=C2=A0372946:=2007-18=2016:14:26.732=C2=A0=20root=C2=A0=20=C2=
-=A0=20=C2=A00=C2=A0=20=C2=A0=20=C2=A00=20I=20=5B1:=C2=A0=20=C2=A0Binder:702=
-_2:18137=5D=20PM:=20gpio_keys_report_state=20exit=202023-07-18=2010:44:29.0=
-24528958=20UTC=0D=0ALine=C2=A0=20=C2=A0373181:=2007-18=2016:14:30.790=C2=A0=
-=20root=C2=A0=20=C2=A0=20=C2=A00=C2=A0=20=C2=A0=20=C2=A00=20I=20=5B0:=C2=A0=
-=20=C2=A0Binder:702_2:18137=5D=20PM:=20gpio_keys_report_state=20enrty=20202=
-3-07-18=2010:44:30.904866770=20UTC=0D=0ALine=C2=A0=20=C2=A0373183:=2007-18=
-=2016:14:30.790=C2=A0=20root=C2=A0=20=C2=A0=20=C2=A00=C2=A0=20=C2=A0=20=C2=
-=A00=20I=20=5B0:=C2=A0=20=C2=A0Binder:702_2:18137=5D=20PM:=20gpio_keys_repo=
-rt_state=20exit=202023-07-18=2010:44:30.905126353=20UTC=0D=0A=0D=0A=0D=0A=
-=0D=0A=0D=0AThanks=20and=20Regards,=0D=0AAbhishek=20Kumar=20Singh=0D=0ASr.=
-=20Chief=20Engineer,=20Samsung=20Electronics,=20Noida-India=0D=0A=0D=0A=0D=
-=0A=C2=A0=0D=0A---------=20Original=20Message=20---------=0D=0ASender=20:=
-=20dmitry.torokhov=40gmail.com=20<dmitry.torokhov=40gmail.com>=0D=0ADate=C2=
-=A0=20=C2=A0:=202023-10-29=2007:42=20(GMT+5:30)=0D=0ATitle=C2=A0=20:=20Re:=
-=20=5BPATCH=5D=20input:=20gpio-keys=20-=20optimize=20wakeup=20sequence.=0D=
-=0ATo=20:=20Abhishek=20Kumar=20Singh<abhi1.singh=40samsung.com>=0D=0ACC=20:=
-=20robh=40kernel.org<robh=40kernel.org>,=20linux-input=40vger.kernel.org<li=
-nux-input=40vger.kernel.org>,=20linux-kernel=40vger.kernel.org<linux-kernel=
-=40vger.kernel.org>,=20SRI-N=20IT=20Security<sri-n.itsec=40samsung.com>=0D=
-=0A=C2=A0=0D=0AHi=20Abhishek,=0D=0A=0D=0AOn=20Thu,=20Oct=2026,=202023=20at=
-=2011:23:20AM=20+0530,=20Abhishek=20Kumar=20Singh=20wrote:=0D=0A>=20Dear=20=
-Mr.=20Dmitry,=0D=0A>=20Greetings=21=0D=0A>=C2=A0=0D=0A>=C2=A0=0D=0A>=20The=
-=20patch=20removes=20unused=20many=20APIs=20call=20chain=20for=20every=20su=
-spend/resume=20of=20the=20device=C2=A0=0D=0A>=20if=20no=20key=20press=20eve=
-nt=20triggered.=0D=0A>=C2=A0=0D=0A>=C2=A0=0D=0A>=20There=20is=20a=20call=20=
-back=20function=20gpio_keys_resume()=20called=20for=0D=0A>=20every=20suspen=
-d/resume=20of=20the=20device.=20and=20whenever=20this=20function=20called,=
-=20it=20is=0D=0A>=20reading=20the=20status=20of=20the=20key.=20And=20gpio_k=
-eys_resume()=20API=20further=20calls=20the=0D=0A>=20below=20chain=20of=20AP=
-I=20irrespective=20of=20key=20press=20event=0D=0A>=C2=A0=0D=0A>=C2=A0=0D=0A=
->=20APIs=20call=20chain:=0D=0A>=20static=20void=20gpio_keys_report_state(st=
-ruct=20gpio_keys_drvdata=20*ddata)=0D=0A>=20static=20void=20gpio_keys_gpio_=
-report_event(struct=20gpio_button_data=20*bdata)=0D=0A>=20gpiod_get_value_c=
-ansleep(bdata->gpiod);=0D=0A>=20input_event(input,=20type,=20*bdata->code,=
-=20state);=0D=0A>=20input_sync(input);=0D=0A>=C2=A0=0D=0A>=C2=A0=0D=0A>=20T=
-he=20patch=20avoid=20the=20above=20APIs=20call=20chain=20if=20there=20is=20=
-no=20key=20press=20event=20triggered.=0D=0A>=20It=20will=20save=20the=20dev=
-ice=20computational=20resources,=20power=20resources=20and=20optimize=20the=
-=20suspend/resume=20time=0D=0A=0D=0AUnfortunately=20it=20also=20breaks=20th=
-e=20driver=20as=20button->value=20does=20not=20hold=0D=0Athe=20current=20st=
-ate=20of=20the=20GPIO=20but=20rather=20set=20one=20via=20device=20tree=20so=
-=20that=0D=0Athe=20driver=20can=20use=20that=20value=20when=20sending=20EV_=
-ABS=20events.=20So=20with=0D=0Atypical=20GPIO-backed=20keys=20or=20buttons=
-=20you=20change=20results=20in=20no=20events=0D=0Areported=20on=20resume.=
-=0D=0A=0D=0AI=20also=20wonder=20what=20kind=20of=20measurements=20you=20did=
-=20on=20improvements=20to=0D=0Asuspend/resume=20time=20with=20your=20change=
-.=0D=0A=0D=0AThanks.=0D=0A=0D=0A--=C2=A0=0D=0ADmitry=0D=0A=0D=0A=C2=A0=0D=
-=0AThanks=20and=20Regards,=0D=0A=C2=A0=C2=A0=0D=0A=C2=A0=0D=0AThanks=20and=
-=20Regards,=0D=0A=C2=A0=C2=A0=0D=0A=C2=A0=0D=0AThanks=20and=20Regards,
+Change the default MIC detection impedance threshold to 200ohm
+to support low mic DC impedance headset.
+
+Signed-off-by: David Rau <David.Rau.opensource@dm.renesas.com>
+---
+ sound/soc/codecs/da7219-aad.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/da7219-aad.c b/sound/soc/codecs/da7219-aad.c
+index 4c4405942779..6bc068cdcbe2 100644
+--- a/sound/soc/codecs/da7219-aad.c
++++ b/sound/soc/codecs/da7219-aad.c
+@@ -696,7 +696,7 @@ static struct da7219_aad_pdata *da7219_aad_fw_to_pdata(struct device *dev)
+ 		aad_pdata->mic_det_thr =
+ 			da7219_aad_fw_mic_det_thr(dev, fw_val32);
+ 	else
+-		aad_pdata->mic_det_thr = DA7219_AAD_MIC_DET_THR_500_OHMS;
++		aad_pdata->mic_det_thr = DA7219_AAD_MIC_DET_THR_200_OHMS;
+ 
+ 	if (fwnode_property_read_u32(aad_np, "dlg,jack-ins-deb", &fw_val32) >= 0)
+ 		aad_pdata->jack_ins_deb =
+-- 
+2.17.1
+
