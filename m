@@ -2,331 +2,653 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA85D800449
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 08:03:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8862E800451
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 08:05:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232338AbjLAHDi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 02:03:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47480 "EHLO
+        id S1377680AbjLAHFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 02:05:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377678AbjLAHDg (ORCPT
+        with ESMTP id S229506AbjLAHFq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 02:03:36 -0500
-Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BF37103;
-        Thu, 30 Nov 2023 23:03:40 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=34;SR=0;TI=SMTPD_---0VxXwK5O_1701414213;
-Received: from 30.240.114.121(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0VxXwK5O_1701414213)
-          by smtp.aliyun-inc.com;
-          Fri, 01 Dec 2023 15:03:37 +0800
-Message-ID: <b56fbae2-0d9b-4c42-94bf-7fd58b3fd738@linux.alibaba.com>
-Date:   Fri, 1 Dec 2023 15:03:28 +0800
+        Fri, 1 Dec 2023 02:05:46 -0500
+Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B86F103
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 23:05:51 -0800 (PST)
+Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-5d279bcce64so20620717b3.3
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 23:05:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701414350; x=1702019150; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Uq0o4Jzv060/CIGWfNwClaO6KwnNc51kzCIq/4hD56Y=;
+        b=dKvjsBKtN2nwZeglmPARoruXBSggwW6Lx4L9VNTaX0QzWiPrMLFvcpzZWaeN30e/wV
+         NR9ZUloj/pnBRRSqeZKAhkTlj1y4RGv4eqsx/CcuVpafogL/L9xmUblFYuZBkyjiiwnq
+         Xq2P3TUgySA3v0OY/SF7OUqU5wbmnxEzwhfL94FefMacBr1VwYWY/XE9KhpSd471Mm7o
+         L2IGhE0ZtbcdFZrq5psqz6CEWdY6A3D3LHLKyfr5w5SRBlfN7hlIhfl+5h6ka4xhR/45
+         L/Sh+g2eV2JpIhNaAn7U5fpl8QbuASjo53dgpLE8kzCvBMGqahpMrF1oWwGp5dDD4ESg
+         SScA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701414350; x=1702019150;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Uq0o4Jzv060/CIGWfNwClaO6KwnNc51kzCIq/4hD56Y=;
+        b=cZFv8CLu2gm3uiuiQx4Bn3zAg4FPaqiu3xkWcDYTWpDxRUfLpsLs1fucXEB97soFWs
+         f8NfBe2vQEjl3snSDXHYIouexwS9LorenFffwL+gRImBxdbvjSmoGGKUIr1IiI7CH2TT
+         710Hkwi3tXwzVirUaqO/27S7Z3U/yeiYo8AIFQXh+EwWOFMH2xKK5icUjzrlOwmC0H8Z
+         ehnW4+UMp0KO9o0t2qO7WkOPQOXK/WwWJloWjCOs4HDUDO6ThJu7dw1jTX7I44U0OwzB
+         wJ3ALlF8mZc3d6j/8vH/IEHpnHHJUURybparGUaN5OxeYYm4rbhvcsnRvM4gNFmNrzf8
+         PiTw==
+X-Gm-Message-State: AOJu0YxaNU9FduE5/OwiXd5ScNcp4G2hlc/U2Rrs7OGo5AdSyw7ZhdUk
+        hAjDBVXQr1M/hBqkE83nmVKP+BAa5GDUEfJyi+dgPw==
+X-Google-Smtp-Source: AGHT+IGwaOjPJO/K0RzW4XZFivflOYIsV8YT7sPLlz1EcaoZl5lNuv/3mh9LC+cbICFT3d1yAXsDfPPwhkmE0aBuCfw=
+X-Received: by 2002:a05:690c:3588:b0:5d3:37fe:54ce with SMTP id
+ fr8-20020a05690c358800b005d337fe54cemr4925920ywb.8.1701414350166; Thu, 30 Nov
+ 2023 23:05:50 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 2/2] ACPI: APEI: handle synchronous exceptions in task
- work
-Content-Language: en-US
-To:     James Morse <james.morse@arm.com>, rafael@kernel.org,
-        wangkefeng.wang@huawei.com, tanxiaofei@huawei.com,
-        mawupeng1@huawei.com, tony.luck@intel.com, linmiaohe@huawei.com,
-        naoya.horiguchi@nec.com, gregkh@linuxfoundation.org,
-        will@kernel.org, jarkko@kernel.org
-Cc:     linux-acpi@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        linux-edac@vger.kernel.org, acpica-devel@lists.linuxfoundation.org,
-        stable@vger.kernel.org, x86@kernel.org, justin.he@arm.com,
-        ardb@kernel.org, ying.huang@intel.com, ashish.kalra@amd.com,
-        baolin.wang@linux.alibaba.com, bp@alien8.de, tglx@linutronix.de,
-        mingo@redhat.com, dave.hansen@linux.intel.com, lenb@kernel.org,
-        hpa@zytor.com, robert.moore@intel.com, lvying6@huawei.com,
-        xiexiuqi@huawei.com, zhuo.song@linux.alibaba.com
-References: <20221027042445.60108-1-xueshuai@linux.alibaba.com>
- <20231007072818.58951-3-xueshuai@linux.alibaba.com>
- <874f0170-a829-47db-8882-52b9ed8e869d@arm.com>
-From:   Shuai Xue <xueshuai@linux.alibaba.com>
-In-Reply-To: <874f0170-a829-47db-8882-52b9ed8e869d@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230830224910.8091-1-quic_abhinavk@quicinc.com>
+ <20230830224910.8091-7-quic_abhinavk@quicinc.com> <CAA8EJpowk1veNE1z_gwzkF2o9whz7XjCViTaXKR36nu9Gkc+OQ@mail.gmail.com>
+ <98d13044-06d2-7752-b08c-e2c322534025@quicinc.com>
+In-Reply-To: <98d13044-06d2-7752-b08c-e2c322534025@quicinc.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Fri, 1 Dec 2023 09:05:38 +0200
+Message-ID: <CAA8EJponr1khFMivD_RuK_V6sO9+OPz+LaaBMM4yc6iBNaK62w@mail.gmail.com>
+Subject: Re: [PATCH 06/16] drm/msm/dpu: add dpu_hw_cdm abstraction for CDM block
+To:     Abhinav Kumar <quic_abhinavk@quicinc.com>
+Cc:     freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, quic_jesszhan@quicinc.com,
+        quic_parellan@quicinc.com, quic_khsieh@quicinc.com,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 1 Dec 2023 at 01:36, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
+>
+>
+>
+> On 8/30/2023 5:00 PM, Dmitry Baryshkov wrote:
+> > On Thu, 31 Aug 2023 at 01:50, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
+> >>
+> >> CDM block comes with its own set of registers and operations
+> >> which can be done. In-line with other hardware sub-blocks, this
+> >> change adds the dpu_hw_cdm abstraction for the CDM block.
+> >>
+> >> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
+> >> ---
+> >>   drivers/gpu/drm/msm/Makefile                |   1 +
+> >>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.c  | 272 ++++++++++++++++++++
+> >>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.h  | 135 ++++++++++
+> >>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h |   1 +
+> >>   4 files changed, 409 insertions(+)
+> >>   create mode 100644 drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.c
+> >>   create mode 100644 drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.h
+> >>
+> >> diff --git a/drivers/gpu/drm/msm/Makefile b/drivers/gpu/drm/msm/Makefile
+> >> index 8d02d8c33069..2010cb1ca995 100644
+> >> --- a/drivers/gpu/drm/msm/Makefile
+> >> +++ b/drivers/gpu/drm/msm/Makefile
+> >> @@ -63,6 +63,7 @@ msm-$(CONFIG_DRM_MSM_DPU) += \
+> >>          disp/dpu1/dpu_encoder_phys_wb.o \
+> >>          disp/dpu1/dpu_formats.o \
+> >>          disp/dpu1/dpu_hw_catalog.o \
+> >> +       disp/dpu1/dpu_hw_cdm.o \
+> >>          disp/dpu1/dpu_hw_ctl.o \
+> >>          disp/dpu1/dpu_hw_dsc.o \
+> >>          disp/dpu1/dpu_hw_dsc_1_2.o \
+> >> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.c
+> >> new file mode 100644
+> >> index 000000000000..a2f7ee8f54e4
+> >> --- /dev/null
+> >> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.c
+> >> @@ -0,0 +1,272 @@
+> >> +// SPDX-License-Identifier: GPL-2.0-only
+> >> +/*
+> >> + * Copyright (c) 2023, The Linux Foundation. All rights reserved.
+> >> + */
+> >> +
+> >> +#include <drm/drm_managed.h>
+> >> +
+> >> +#include "dpu_hw_mdss.h"
+> >> +#include "dpu_hw_util.h"
+> >> +#include "dpu_hw_catalog.h"
+> >> +#include "dpu_hw_cdm.h"
+> >> +#include "dpu_kms.h"
+> >> +
+> >> +#define CDM_CSC_10_OPMODE                  0x000
+> >> +#define CDM_CSC_10_BASE                    0x004
+> >> +
+> >> +#define CDM_CDWN2_OP_MODE                  0x100
+> >> +#define CDM_CDWN2_CLAMP_OUT                0x104
+> >> +#define CDM_CDWN2_PARAMS_3D_0              0x108
+> >> +#define CDM_CDWN2_PARAMS_3D_1              0x10C
+> >> +#define CDM_CDWN2_COEFF_COSITE_H_0         0x110
+> >> +#define CDM_CDWN2_COEFF_COSITE_H_1         0x114
+> >> +#define CDM_CDWN2_COEFF_COSITE_H_2         0x118
+> >> +#define CDM_CDWN2_COEFF_OFFSITE_H_0        0x11C
+> >> +#define CDM_CDWN2_COEFF_OFFSITE_H_1        0x120
+> >> +#define CDM_CDWN2_COEFF_OFFSITE_H_2        0x124
+> >> +#define CDM_CDWN2_COEFF_COSITE_V           0x128
+> >> +#define CDM_CDWN2_COEFF_OFFSITE_V          0x12C
+> >> +#define CDM_CDWN2_OUT_SIZE                 0x130
+> >> +
+> >> +#define CDM_HDMI_PACK_OP_MODE              0x200
+> >> +#define CDM_CSC_10_MATRIX_COEFF_0          0x004
+> >> +
+> >> +#define CDM_MUX                            0x224
+> >> +
+> >> +/**
+> >> + * Horizontal coefficients for cosite chroma downscale
+> >> + * s13 representation of coefficients
+> >> + */
+> >> +static u32 cosite_h_coeff[] = {0x00000016, 0x000001cc, 0x0100009e};
+> >> +
+> >> +/**
+> >> + * Horizontal coefficients for offsite chroma downscale
+> >> + */
+> >> +static u32 offsite_h_coeff[] = {0x000b0005, 0x01db01eb, 0x00e40046};
+> >> +
+> >> +/**
+> >> + * Vertical coefficients for cosite chroma downscale
+> >> + */
+> >> +static u32 cosite_v_coeff[] = {0x00080004};
+> >> +/**
+> >> + * Vertical coefficients for offsite chroma downscale
+> >> + */
+> >> +static u32 offsite_v_coeff[] = {0x00060002};
+> >> +
+> >> +static int dpu_hw_cdm_setup_csc_10bit(struct dpu_hw_cdm *ctx, struct dpu_csc_cfg *data)
+> >> +{
+> >> +       dpu_hw_csc_setup(&ctx->hw, CDM_CSC_10_MATRIX_COEFF_0, data, true);
+> >
+> > Where was this defined?
+> >
+>
+> Its in this file itself
+>
+> +#define CDM_CSC_10_MATRIX_COEFF_0          0x004
+>
+> >> +
+> >> +       return 0;
+> >> +}
+> >> +
+> >> +static int dpu_hw_cdm_setup_cdwn(struct dpu_hw_cdm *ctx, struct dpu_hw_cdm_cfg *cfg)
+> >> +{
+> >> +       struct dpu_hw_blk_reg_map *c = &ctx->hw;
+> >> +       u32 opmode = 0;
+> >> +       u32 out_size = 0;
+> >> +
+> >> +       if (cfg->output_bit_depth == CDM_CDWN_OUTPUT_10BIT)
+> >> +               opmode &= ~BIT(7);
+> >> +       else
+> >> +               opmode |= BIT(7);
+> >> +
+> >> +       /* ENABLE DWNS_H bit */
+> >> +       opmode |= BIT(1);
+> >> +
+> >> +       switch (cfg->h_cdwn_type) {
+> >> +       case CDM_CDWN_DISABLE:
+> >> +               /* CLEAR METHOD_H field */
+> >> +               opmode &= ~(0x18);
+> >> +               /* CLEAR DWNS_H bit */
+> >> +               opmode &= ~BIT(1);
+> >> +               break;
+> >> +       case CDM_CDWN_PIXEL_DROP:
+> >> +               /* Clear METHOD_H field (pixel drop is 0) */
+> >> +               opmode &= ~(0x18);
+> >> +               break;
+> >> +       case CDM_CDWN_AVG:
+> >> +               /* Clear METHOD_H field (Average is 0x1) */
+> >> +               opmode &= ~(0x18);
+> >> +               opmode |= (0x1 << 0x3);
+> >> +               break;
+> >> +       case CDM_CDWN_COSITE:
+> >> +               /* Clear METHOD_H field (Average is 0x2) */
+> >> +               opmode &= ~(0x18);
+> >> +               opmode |= (0x2 << 0x3);
+> >> +               /* Co-site horizontal coefficients */
+> >> +               DPU_REG_WRITE(c, CDM_CDWN2_COEFF_COSITE_H_0,
+> >> +                               cosite_h_coeff[0]);
+> >> +               DPU_REG_WRITE(c, CDM_CDWN2_COEFF_COSITE_H_1,
+> >> +                               cosite_h_coeff[1]);
+> >> +               DPU_REG_WRITE(c, CDM_CDWN2_COEFF_COSITE_H_2,
+> >> +                               cosite_h_coeff[2]);
+> >> +               break;
+> >> +       case CDM_CDWN_OFFSITE:
+> >> +               /* Clear METHOD_H field (Average is 0x3) */
+> >> +               opmode &= ~(0x18);
+> >> +               opmode |= (0x3 << 0x3);
+> >> +
+> >> +               /* Off-site horizontal coefficients */
+> >> +               DPU_REG_WRITE(c, CDM_CDWN2_COEFF_OFFSITE_H_0,
+> >> +                               offsite_h_coeff[0]);
+> >> +               DPU_REG_WRITE(c, CDM_CDWN2_COEFF_OFFSITE_H_1,
+> >> +                               offsite_h_coeff[1]);
+> >> +               DPU_REG_WRITE(c, CDM_CDWN2_COEFF_OFFSITE_H_2,
+> >> +                               offsite_h_coeff[2]);
+> >> +               break;
+> >> +       default:
+> >> +               pr_err("%s invalid horz down sampling type\n", __func__);
+> >> +               return -EINVAL;
+> >> +       }
+> >> +
+> >> +       /* ENABLE DWNS_V bit */
+> >> +       opmode |= BIT(2);
+> >> +
+> >> +       switch (cfg->v_cdwn_type) {
+> >> +       case CDM_CDWN_DISABLE:
+> >> +               /* CLEAR METHOD_V field */
+> >> +               opmode &= ~(0x60);
+> >
+> > #define, GENMASK
+> >
+> >> +               /* CLEAR DWNS_V bit */
+> >> +               opmode &= ~BIT(2);
+> >> +               break;
+> >> +       case CDM_CDWN_PIXEL_DROP:
+> >> +               /* Clear METHOD_V field (pixel drop is 0) */
+> >> +               opmode &= ~(0x60);
+> >> +               break;
+> >> +       case CDM_CDWN_AVG:
+> >> +               /* Clear METHOD_V field (Average is 0x1) */
+> >> +               opmode &= ~(0x60);
+> >> +               opmode |= (0x1 << 0x5);
+> >
+> > #define
+> >
+> >> +               break;
+> >> +       case CDM_CDWN_COSITE:
+> >> +               /* Clear METHOD_V field (Average is 0x2) */
+> >> +               opmode &= ~(0x60);
+> >> +               opmode |= (0x2 << 0x5);
+> >> +               /* Co-site vertical coefficients */
+> >> +               DPU_REG_WRITE(c,
+> >> +                               CDM_CDWN2_COEFF_COSITE_V,
+> >> +                               cosite_v_coeff[0]);
+> >
+> > align to opening bracket
+> >
+> >> +               break;
+> >> +       case CDM_CDWN_OFFSITE:
+> >> +               /* Clear METHOD_V field (Average is 0x3) */
+> >> +               opmode &= ~(0x60);
+> >> +               opmode |= (0x3 << 0x5);
+> >> +
+> >> +               /* Off-site vertical coefficients */
+> >> +               DPU_REG_WRITE(c,
+> >> +                               CDM_CDWN2_COEFF_OFFSITE_V,
+> >> +                               offsite_v_coeff[0]);
+> >
+> > align to opening bracket
+> >
+> >> +               break;
+> >> +       default:
+> >> +               return -EINVAL;
+> >> +       }
+> >> +
+> >> +       if (cfg->v_cdwn_type || cfg->h_cdwn_type)
+> >> +               opmode |= BIT(0); /* EN CDWN module */
+> >
+> > #define
+> >
+>
+> Ack to all comments about GENMASK and #define
+>
+> >> +       else
+> >> +               opmode &= ~BIT(0);
+> >> +
+> >> +       out_size = (cfg->output_width & 0xFFFF) |
+> >> +               ((cfg->output_height & 0xFFFF) << 16);
+> >> +       DPU_REG_WRITE(c, CDM_CDWN2_OUT_SIZE, out_size);
+> >> +       DPU_REG_WRITE(c, CDM_CDWN2_OP_MODE, opmode);
+> >> +       DPU_REG_WRITE(c, CDM_CDWN2_CLAMP_OUT,
+> >> +                       ((0x3FF << 16) | 0x0));
+> >> +
+> >> +       return 0;
+> >> +}
+> >> +
+> >> +int dpu_hw_cdm_enable(struct dpu_hw_cdm *ctx, struct dpu_hw_cdm_cfg *cdm)
+> >> +{
+> >> +       struct dpu_hw_blk_reg_map *c = &ctx->hw;
+> >> +       const struct dpu_format *fmt;
+> >> +       u32 opmode = 0;
+> >> +       u32 csc = 0;
+> >> +
+> >> +       if (!ctx || !cdm)
+> >> +               return -EINVAL;
+> >> +
+> >> +       fmt = cdm->output_fmt;
+> >> +
+> >> +       if (!DPU_FORMAT_IS_YUV(fmt))
+> >> +               return -EINVAL;
+> >> +
+> >> +       if (cdm->output_type == CDM_CDWN_OUTPUT_HDMI) {
+> >> +               if (fmt->chroma_sample != DPU_CHROMA_H1V2)
+> >> +                       return -EINVAL; /*unsupported format */
+> >> +               opmode = BIT(0);
+> >> +               opmode |= (fmt->chroma_sample << 1);
+> >> +       }
+> >> +
+> >> +       csc |= BIT(2);
+> >> +       csc &= ~BIT(1);
+> >> +       csc |= BIT(0);
+> >
+> > Can we get some sensible #defines for all this magic, please?
+> >
+>
+> Ack, will do.
+>
+> >> +
+> >> +       if (ctx && ctx->ops.bind_pingpong_blk)
+> >> +               ctx->ops.bind_pingpong_blk(ctx, true,
+> >> +                               cdm->pp_id);
+> >> +
+> >> +       DPU_REG_WRITE(c, CDM_CSC_10_OPMODE, csc);
+> >> +       DPU_REG_WRITE(c, CDM_HDMI_PACK_OP_MODE, opmode);
+> >> +       return 0;
+> >> +}
+> >> +
+> >> +void dpu_hw_cdm_disable(struct dpu_hw_cdm *ctx)
+> >> +{
+> >> +       if (!ctx)
+> >> +               return;
+> >> +
+> >> +       if (ctx && ctx->ops.bind_pingpong_blk)
+> >> +               ctx->ops.bind_pingpong_blk(ctx, false, 0);
+> >
+> > PINGPONG_NONE.
+> >
+> >> +}
+> >> +
+> >> +static void dpu_hw_cdm_bind_pingpong_blk(struct dpu_hw_cdm *ctx, bool enable,
+> >> +                                        const enum dpu_pingpong pp)
+> >> +{
+> >> +       struct dpu_hw_blk_reg_map *c;
+> >> +       int mux_cfg = 0xF;
+> >> +
+> >> +       if (!ctx || (enable && (pp < PINGPONG_0 || pp >= PINGPONG_MAX)))
+> >> +               return;
+> >
+> > I'd say, this is useless. We don't have such checks in other
+> > bind_pingpong_blk() callbacks.
+> >
+> > Also there should be a guarding check for DPU >= 5.0 either here or at
+> > the ops init.
+> >
+>
+> Will add it at ops init
+>
+> >> +
+> >> +       c = &ctx->hw;
+> >> +
+> >> +       if (enable)
+> >> +               mux_cfg = (pp - PINGPONG_0) & 0x7;
+> >> +
+> >> +       DPU_REG_WRITE(c, CDM_MUX, mux_cfg);
+> >> +}
+> >> +
+> >> +static void _setup_cdm_ops(struct dpu_hw_cdm_ops *ops, unsigned long features)
+> >
+> > Please inline
+> >
+>
+> OK
+>
+> >> +{
+> >> +       ops->setup_csc_data = dpu_hw_cdm_setup_csc_10bit;
+> >> +       ops->setup_cdwn = dpu_hw_cdm_setup_cdwn;
+> >> +       ops->enable = dpu_hw_cdm_enable;
+> >> +       ops->disable = dpu_hw_cdm_disable;
+> >> +       ops->bind_pingpong_blk = dpu_hw_cdm_bind_pingpong_blk;
+> >
+> > As you seem to call this function directly, we might as well drop the
+> > callback from the ops.
+> >
+>
+> There are two paths for the bind_pingpong_blk(). One is absorbed within
+> cdm_enable and cdm_disable calls to bind and unbind the pingpong resp.
+> And yes, for that we dont need a separate ops as its within the same file.
+>
+> This will handle cases where we transition from YUV to non-YUV cases and
+> vice-versa without an encoder disable in between which I believe happens
+> in the IGT cases.
+>
+> But the dpu_encoder_helper_phys_cleanup() path is only in the encoder
+> disable() path without a non-YUV frame in the middle so lets say we were
+> in YUV mode but then just disabled the encoder we do need the cleanup
+> there and since thats outside of the dpu_hw_cdm, we do need this op.
+>
+> I agree we need to protect this with the DPU revision check.
+>
+> >> +}
+> >> +
+> >> +struct dpu_hw_cdm *dpu_hw_cdm_init(const struct dpu_cdm_cfg *cfg, void __iomem *addr)
+> >> +{
+> >> +       struct dpu_hw_cdm *c;
+> >> +
+> >> +       c = kzalloc(sizeof(*c), GFP_KERNEL);
+> >> +       if (!c)
+> >> +               return ERR_PTR(-ENOMEM);
+> >> +
+> >> +       c->hw.blk_addr = addr + cfg->base;
+> >> +       c->hw.log_mask = DPU_DBG_MASK_CDM;
+> >> +
+> >> +       /* Assign ops */
+> >> +       c->idx = cfg->id;
+> >> +       c->caps = cfg;
+> >> +       _setup_cdm_ops(&c->ops, c->caps->features);
+> >> +
+> >> +       return c;
+> >> +}
+> >> +
+> >> +void dpu_hw_cdm_destroy(struct dpu_hw_cdm *cdm)
+> >> +{
+> >> +       kfree(cdm);
+> >
+> > I'd prefer not to introduce another manual kzalloc/kfree pair, see
+> > https://patchwork.freedesktop.org/series/120366/
+> >
+>
+> I recall I did not want to have a manual kzalloc/kfree pair. But the
+> issue was I think this series was not merged that time (and is isnt
+> merged now either)
+
+No response, no reviews since 15th August. Today is the 1st of December.
+
+I'm close to deciding that unreviewed series have no issues and start
+showing them to -next after a grace period of 1 month.
+
+> and this is the one which passes drm_dev to
+> dpu_rm_init. I thought maybe it was easier for you to absorb this change
+> into that series instead of me pulling that whole series to make this
+> one compile as we will not be adding new HW blocks after this for the
+> next 2 cycles. It will only be using existing ones.
+>
+> If its too much trouble for you, I will rebase on top of that series but
+> I am pretty sure you will have to rebase and post that again anyway on
+> top of the current msm-next.
+>
+> I am also going to do the same thing now with this series.
+>
+> So we can just decide that in whose rebase we will handle it.
+>
+> >> +}
+> >> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.h
+> >> new file mode 100644
+> >> index 000000000000..da60893a5c02
+> >> --- /dev/null
+> >> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.h
+> >> @@ -0,0 +1,135 @@
+> >> +/* SPDX-License-Identifier: GPL-2.0-only */
+> >> +/*
+> >> + * Copyright (c) 2023, The Linux Foundation. All rights reserved.
+> >> + */
+> >> +
+> >> +#ifndef _DPU_HW_CDM_H
+> >> +#define _DPU_HW_CDM_H
+> >> +
+> >> +#include "dpu_hw_mdss.h"
+> >> +#include "dpu_hw_top.h"
+> >> +
+> >> +struct dpu_hw_cdm;
+> >> +
+> >> +struct dpu_hw_cdm_cfg {
+> >> +       u32 output_width;
+> >> +       u32 output_height;
+> >> +       u32 output_bit_depth;
+> >> +       u32 h_cdwn_type;
+> >> +       u32 v_cdwn_type;
+> >> +       const struct dpu_format *output_fmt;
+> >> +       u32 output_type;
+> >> +       int pp_id;
+> >> +};
+> >> +
+> >> +enum dpu_hw_cdwn_type {
+> >> +       CDM_CDWN_DISABLE,
+> >> +       CDM_CDWN_PIXEL_DROP,
+> >> +       CDM_CDWN_AVG,
+> >> +       CDM_CDWN_COSITE,
+> >> +       CDM_CDWN_OFFSITE,
+> >> +};
+> >> +
+> >> +enum dpu_hw_cdwn_output_type {
+> >> +       CDM_CDWN_OUTPUT_HDMI,
+> >> +       CDM_CDWN_OUTPUT_WB,
+> >> +};
+> >> +
+> >> +enum dpu_hw_cdwn_output_bit_depth {
+> >> +       CDM_CDWN_OUTPUT_8BIT,
+> >> +       CDM_CDWN_OUTPUT_10BIT,
+> >> +};
+> >> +
+> >> +/**
+> >> + * struct dpu_hw_cdm_ops : Interface to the chroma down Hw driver functions
+> >> + *                         Assumption is these functions will be called after
+> >> + *                         clocks are enabled
+> >> + *  @setup_csc:            Programs the csc matrix
+> >> + *  @setup_cdwn:           Sets up the chroma down sub module
+> >> + *  @enable:               Enables the output to interface and programs the
+> >> + *                         output packer
+> >> + *  @disable:              Puts the cdm in bypass mode
+> >> + *  @bind_pingpong_blk:    enable/disable the connection with pingpong which
+> >> + *                         will feed pixels to this cdm
+> >> + */
+> >> +struct dpu_hw_cdm_ops {
+> >> +       /**
+> >> +        * Programs the CSC matrix for conversion from RGB space to YUV space,
+> >> +        * it is optional to call this function as this matrix is automatically
+> >> +        * set during initialization, user should call this if it wants
+> >> +        * to program a different matrix than default matrix.
+> >> +        * @cdm:          Pointer to the chroma down context structure
+> >> +        * @data          Pointer to CSC configuration data
+> >> +        * return:        0 if success; error code otherwise
+> >> +        */
+> >> +       int (*setup_csc_data)(struct dpu_hw_cdm *cdm, struct dpu_csc_cfg *data);
+> >> +
+> >> +       /**
+> >> +        * Programs the Chroma downsample part.
+> >> +        * @cdm         Pointer to chroma down context
+> >> +        * @cfg         Pointer to the cdm configuration data
+> >> +        */
+> >> +       int (*setup_cdwn)(struct dpu_hw_cdm *cdm, struct dpu_hw_cdm_cfg *cfg);
+> >> +
+> >> +       /**
+> >> +        * Enable the CDM module
+> >> +        * @cdm         Pointer to chroma down context
+> >> +        */
+> >> +       int (*enable)(struct dpu_hw_cdm *cdm, struct dpu_hw_cdm_cfg *cfg);
+> >> +
+> >> +       /**
+> >> +        * Disable the CDM module
+> >> +        * @cdm         Pointer to chroma down context
+> >> +        */
+> >> +       void (*disable)(struct dpu_hw_cdm *cdm);
+> >> +
+> >> +       /**
+> >> +        * Enable/disable the connection with pingpong
+> >> +        * @cdm         Pointer to chroma down context
+> >> +        * @enable      Enable/disable control
+> >> +        * @pp          pingpong block id.
+> >> +        */
+> >> +       void (*bind_pingpong_blk)(struct dpu_hw_cdm *cdm, bool enable,
+> >> +                                 const enum dpu_pingpong pp);
+> >> +};
+> >> +
+> >> +/**
+> >> + * struct dpu_hw_cdm - cdm description
+> >> + * @base: Hardware block base structure
+> >> + * @hw: Block hardware details
+> >> + * @idx: CDM index
+> >> + * @caps: Pointer to cdm_cfg
+> >> + * @ops: handle to operations possible for this CDM
+> >> + */
+> >> +struct dpu_hw_cdm {
+> >> +       struct dpu_hw_blk base;
+> >> +       struct dpu_hw_blk_reg_map hw;
+> >> +
+> >> +       /* chroma down */
+> >> +       const struct dpu_cdm_cfg *caps;
+> >> +       enum  dpu_cdm  idx;
+> >> +
+> >> +       /* ops */
+> >> +       struct dpu_hw_cdm_ops ops;
+> >> +};
+> >> +
+> >> +/**
+> >> + * dpu_hw_cdm_init - initializes the cdm hw driver object.
+> >> + * should be called once before accessing every cdm.
+> >> + * @cdm: CDM catalog entry for which driver object is required
+> >> + * @addr :   mapped register io address of MDSS
+> >> + */
+> >> +struct dpu_hw_cdm *dpu_hw_cdm_init(const struct dpu_cdm_cfg *cdm, void __iomem *addr);
+> >> +
+> >> +/**
+> >> + * dpu_hw_cdm_destroy - destroys cdm driver context
+> >> + * @cdm:   Pointer to cdm driver context returned by dpu_hw_cdm_init
+> >> + */
+> >> +void dpu_hw_cdm_destroy(struct dpu_hw_cdm *cdm);
+> >> +
+> >> +static inline struct dpu_hw_cdm *to_dpu_hw_cdm(struct dpu_hw_blk *hw)
+> >> +{
+> >> +       return container_of(hw, struct dpu_hw_cdm, base);
+> >> +}
+> >> +
+> >> +#endif /*_DPU_HW_CDM_H */
+> >> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h
+> >> index 4d6dba18caf0..34f943102499 100644
+> >> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h
+> >> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h
+> >> @@ -463,6 +463,7 @@ struct dpu_mdss_color {
+> >>   #define DPU_DBG_MASK_ROT      (1 << 9)
+> >>   #define DPU_DBG_MASK_DSPP     (1 << 10)
+> >>   #define DPU_DBG_MASK_DSC      (1 << 11)
+> >> +#define DPU_DBG_MASK_CDM      (1 << 12)
+> >>
+> >>   /**
+> >>    * struct dpu_hw_tear_check - Struct contains parameters to configure
+> >> --
+> >> 2.40.1
+> >>
+> >
+> >
+> > --
+> > With best wishes
+> > Dmitry
 
 
-On 2023/12/1 01:39, James Morse wrote:
-> Hi Shuai,
-> 
-> On 07/10/2023 08:28, Shuai Xue wrote:
->> Hardware errors could be signaled by synchronous interrupt,
-> 
-> I'm struggling with 'synchronous interrupt'. Do you mean arm64's 'precise' (all
-> instructions before the exception were executed, and none after).
-> Otherwise, surely any interrupt from a background scrubber is inherently asynchronous!
-> 
 
-I am sorry, this is typo. I mean asynchronous interrupt.
-
-> 
->> e.g.  when an
->> error is detected by a background scrubber, or signaled by synchronous
->> exception, e.g. when an uncorrected error is consumed. Both synchronous and
->> asynchronous error are queued and handled by a dedicated kthread in
->> workqueue.
->>
->> commit 7f17b4a121d0 ("ACPI: APEI: Kick the memory_failure() queue for
->> synchronous errors") keep track of whether memory_failure() work was
->> queued, and make task_work pending to flush out the workqueue so that the
->> work for synchronous error is processed before returning to user-space.
-> 
-> It does it regardless, if user-space was interrupted by APEI any work queued as a result
-> of that should be completed before we go back to user-space. Otherwise we can bounce
-> between user-space and firmware, with the kernel only running the APEI code, and never
-> making progress.
-> 
-
-Agreed.
-
-> 
->> The trick ensures that the corrupted page is unmapped and poisoned. And
->> after returning to user-space, the task starts at current instruction which
->> triggering a page fault in which kernel will send SIGBUS to current process
->> due to VM_FAULT_HWPOISON.
->>
->> However, the memory failure recovery for hwpoison-aware mechanisms does not
->> work as expected. For example, hwpoison-aware user-space processes like
->> QEMU register their customized SIGBUS handler and enable early kill mode by
->> seting PF_MCE_EARLY at initialization. Then the kernel will directly notify
-> 
-> (setting, directly)
-
-Thank you. Will fix it.
-
-> 
->> the process by sending a SIGBUS signal in memory failure with wrong
-> 
->> si_code: the actual user-space process accessing the corrupt memory
->> location, but its memory failure work is handled in a kthread context, so
->> it will send SIGBUS with BUS_MCEERR_AO si_code to the actual user-space
->> process instead of BUS_MCEERR_AR in kill_proc().
-> 
-> This is hard to parse, "the user-space process is accessing"? (dropping 'actual' and
-> adding 'is')
-
-Will fix it.
-
-
-> 
-> 
-> Wasn't this behaviour fixed by the previous patch?
-> 
-> What problem are you fixing here?
-
-
-Nope. The memory_failure() runs in a kthread context, but not the
-user-space process which consuming poison data.
-
-
-    // kill_proc() in memory-failure.c
-
-	if ((flags & MF_ACTION_REQUIRED) && (t == current))
-		ret = force_sig_mceerr(BUS_MCEERR_AR,
-				 (void __user *)tk->addr, addr_lsb);
-	else
-		ret = send_sig_mceerr(BUS_MCEERR_AO, (void __user *)tk->addr,
-				      addr_lsb, t);
-
-So, even we queue memory_failure() with MF_ACTION_REQUIRED flags in
-previous patch, it will still send a sigbus with BUS_MCEERR_AO in the else
-branch of kill_proc().
-
-> 
-> 
->> To this end, separate synchronous and asynchronous error handling into
->> different paths like X86 platform does:
->>
->> - valid synchronous errors: queue a task_work to synchronously send SIGBUS
->>   before ret_to_user.
-> 
->> - valid asynchronous errors: queue a work into workqueue to asynchronously
->>   handle memory failure.
-> 
-> Why? The signal issue was fixed by the previous patch. Why delay the handling of a
-> poisoned memory location further?
-
-The signal issue is not fixed completely. See my reply above.
-
-> 
-> 
->> - abnormal branches such as invalid PA, unexpected severity, no memory
->>   failure config support, invalid GUID section, OOM, etc.
-> 
-> ... do what?
-
-If no memory failure work is queued for abnormal errors, do a force kill.
-Will also add this comment to commit log.
-
-> 
-> 
->> Then for valid synchronous errors, the current context in memory failure is
->> exactly belongs to the task consuming poison data and it will send SIBBUS
->> with proper si_code.
-> 
-> 
->> diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
->> index 6f35f724cc14..1675ff77033d 100644
->> --- a/arch/x86/kernel/cpu/mce/core.c
->> +++ b/arch/x86/kernel/cpu/mce/core.c
->> @@ -1334,17 +1334,10 @@ static void kill_me_maybe(struct callback_head *cb)
->>  		return;
->>  	}
->>  
->> -	/*
->> -	 * -EHWPOISON from memory_failure() means that it already sent SIGBUS
->> -	 * to the current process with the proper error info,
->> -	 * -EOPNOTSUPP means hwpoison_filter() filtered the error event,
->> -	 *
->> -	 * In both cases, no further processing is required.
->> -	 */
->>  	if (ret == -EHWPOISON || ret == -EOPNOTSUPP)
->>  		return;
->>  
->> -	pr_err("Memory error not recovered");
->> +	pr_err("Sending SIGBUS to current task due to memory error not recovered");
->>  	kill_me_now(cb);
->>  }
->>  
-> 
-> I'm not sure how this hunk is relevant to the commit message.
-
-I handle memory_failure() error code in its arm64 call site
-memory_failure_cb() with some comments, similar to x86 call site
-kill_me_maybe(). I moved these two part comments to function declaration,
-followed by review comments from Kefeng.
-
-I should split this into a separate patch. Will do it in next version.
-
-> 
-> 
->> diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
->> index 88178aa6222d..014401a65ed5 100644
->> --- a/drivers/acpi/apei/ghes.c
->> +++ b/drivers/acpi/apei/ghes.c
->> @@ -484,6 +497,18 @@ static bool ghes_do_memory_failure(u64 physical_addr, int flags)
->>  		return false;
->>  	}
->>  
->> +	if (flags == MF_ACTION_REQUIRED && current->mm) {
->> +		twcb = kmalloc(sizeof(*twcb), GFP_ATOMIC);
->> +		if (!twcb)
->> +			return false;
-> 
-> Yuck - New failure modes! This is why the existing code always has this memory allocated
-> in struct ghes_estatus_node.
-
-Are you suggesting to move fields of struct sync_task_work to struct
-ghes_estatus_node, and use ghes_estatus_node here? Or we can just alloc
-struct sync_task_work with gen_pool_alloc from ghes_estatus_pool.
-
-> 
-> 
->> +		twcb->pfn = pfn;
->> +		twcb->flags = flags;
->> +		init_task_work(&twcb->twork, memory_failure_cb);
->> +		task_work_add(current, &twcb->twork, TWA_RESUME);
->> +		return true;
->> +	}
->> +
->>  	memory_failure_queue(pfn, flags);
->>  	return true;
->>  }
-> 
-> [..]
-> 
->> @@ -696,7 +721,14 @@ static bool ghes_do_proc(struct ghes *ghes,
->>  		}
->>  	}
->>  
->> -	return queued;
->> +	/*
->> +	 * If no memory failure work is queued for abnormal synchronous
->> +	 * errors, do a force kill.
->> +	 */
->> +	if (sync && !queued) {
->> +		pr_err("Sending SIGBUS to current task due to memory error not recovered");
->> +		force_sig(SIGBUS);
->> +	}
->>  }
-> 
-> I think this is a lot of churn, and this hunk is the the only meaningful change in
-> behaviour. Can you explain how this happens?
-
-For example:
-- invalid GUID section in ghes_do_proc()
-- CPER_MEM_VALID_PA is not set, unexpected severity in
-  ghes_handle_memory_failure().
-- CONFIG_ACPI_APEI_MEMORY_FAILURE is not enabled, !pfn_vaild(pfn) in
-  ghes_do_memory_failure()
-
-> 
-> 
-> Wouldn't it be simpler to split ghes_kick_task_work() to have a sync/async version.
-> The synchronous version can unconditionally force_sig_mceerr(BUS_MCEERR_AR, ...) after
-> memory_failure_queue_kick() - but that still means memory_failure() is unable to disappear
-> errors that it fixed - see MF_RECOVERED.
-
-Sorry, I don't think so. Unconditionally send a sigbus is not a good
-choice.  For example, if a sync memory error detected in instruction memory
-error, the kernel should transparently fix and no signal should be send.
-
-    ./einj_mem_uc instr
-    [168522.751671] Memory failure: 0x89dedd: corrupted page was clean: dropped without side effects
-    [168522.751679] Memory failure: 0x89dedd: recovery action for clean LRU page: Recovered
-
-With this patch set, the instr case behaves consistently on both the arm64 and x86 platforms.
-
-The complex page error_states are handled in memory_failure(). IMHO, we
-should left this part to it.
-
-> 
->> diff --git a/mm/memory-failure.c b/mm/memory-failure.c
->> index 4d6e43c88489..0d02f8a0b556 100644
->> --- a/mm/memory-failure.c
->> +++ b/mm/memory-failure.c
->> @@ -2161,9 +2161,12 @@ static int memory_failure_dev_pagemap(unsigned long pfn, int flags,
->>   * Must run in process context (e.g. a work queue) with interrupts
->>   * enabled and no spinlocks held.
->>   *
->> - * Return: 0 for successfully handled the memory error,
->> - *         -EOPNOTSUPP for hwpoison_filter() filtered the error event,
->> - *         < 0(except -EOPNOTSUPP) on failure.
->> + * Return values:
->> + *   0             - success
->> + *   -EOPNOTSUPP   - hwpoison_filter() filtered the error event.
->> + *   -EHWPOISON    - sent SIGBUS to the current process with the proper
->> + *                   error info by kill_accessing_process().
->> + *   other negative values - failure
->>   */
->>  int memory_failure(unsigned long pfn, int flags)
->>  {
-> 
-> I'm not sure how this hunk is relevant to the commit message.
-
-
-As mentioned, I will split this into a separate patch.
-
-> 
-> 
-> Thanks,
-> 
-> James
-
-
-Thank you for valuable comments.
-Best Regards,
-Shuai
+-- 
+With best wishes
+Dmitry
