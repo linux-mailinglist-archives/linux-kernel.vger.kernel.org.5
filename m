@@ -2,82 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EF9D8012B8
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 19:30:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E5918012BE
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 19:30:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379081AbjLASaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 13:30:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55982 "EHLO
+        id S230249AbjLASah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 13:30:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbjLASaU (ORCPT
+        with ESMTP id S229534AbjLASad (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 13:30:20 -0500
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00D8E106
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 10:30:22 -0800 (PST)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-64-l9Pbyyc5NbCVu4Mqkqv9Yg-1; Fri, 01 Dec 2023 18:30:13 +0000
-X-MC-Unique: l9Pbyyc5NbCVu4Mqkqv9Yg-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 1 Dec
- 2023 18:30:05 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Fri, 1 Dec 2023 18:30:05 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Jann Horn' <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        "Pavel Begunkov" <asml.silence@gmail.com>,
-        io-uring <io-uring@vger.kernel.org>
-CC:     kernel list <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>
-Subject: RE: io_uring: incorrect assumption about mutex behavior on unlock?
-Thread-Topic: io_uring: incorrect assumption about mutex behavior on unlock?
-Thread-Index: AQHaJHVMNn8At2QRcESH/qhfYed73LCUvC/Q
-Date:   Fri, 1 Dec 2023 18:30:05 +0000
-Message-ID: <811a97651e144b83a35fd7eb713aeeae@AcuMS.aculab.com>
-References: <CAG48ez3xSoYb+45f1RLtktROJrpiDQ1otNvdR+YLQf7m+Krj5Q@mail.gmail.com>
-In-Reply-To: <CAG48ez3xSoYb+45f1RLtktROJrpiDQ1otNvdR+YLQf7m+Krj5Q@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Fri, 1 Dec 2023 13:30:33 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 859E3131
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 10:30:39 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-a06e59384b6so356558866b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 10:30:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google09082023; t=1701455438; x=1702060238; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3cv2Uee2oIziALezonnt1Q9SYpgaVQLza5Azfx+pJao=;
+        b=DPIsJR1TxC9i/XKb5UNCALzuewCVdiNO0BAxxBk8zAb2wUfLfUGLu6vk02sF5NBGT7
+         hVTQVUZZaetlZEaCkTRg1ln/Xk9FHdJfr39K0TWamJloEBu/5yoaa1M7v90Fl+nS3HjA
+         eKdbLG2geqq40z6qCpo+zNbFGfHcrs3C1BjIyZ1r842LkwAts7tcG8XEIsQU8KeuU9TA
+         rtYtC29Ou457Yh5Biux9LgH2kwva58bPbwDDskuCqN3eBhsDQVnuT4N9XpuZi4eaqyXn
+         YPMobU3dhwacS6RLputzP7GjhJQH08LlUc8+1RvecLdQOJY5JAMZNNsB8lqbI9HmuMcT
+         xc3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701455438; x=1702060238;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3cv2Uee2oIziALezonnt1Q9SYpgaVQLza5Azfx+pJao=;
+        b=uNzAj+/4vT6z1e1LgklUNc5BZgd+zQ9FoatNy54gALt11GsjDBRrUtsBWc/nNx/UCF
+         luogYFYnfolAZK6cAyQhHdKh9N5/NP3jVIhMJ03MvP3jl3mBBB3D2T9sITTV/o+MaNNX
+         Oxqdtq41GSu9h5YWPFHgE8TziLJU+33D7BC6LEeM1fuwbv1K0mu3MpQbbAemzEjqd0NJ
+         4nOLvbwr+MvATYxyrMkxzb5z5Wm8dM2bedOdTzBOWK67AZ+OlFMA4RFsMVDufyRoeJoA
+         2paLVwvsuw9jhuevpWKewnmXiMbvGbCHMKjv/nJKaVJJBJHo6Hby1e7imz2pS0o9X6/i
+         473A==
+X-Gm-Message-State: AOJu0YwZHZ1UO5lZXkqyvfpa5a8KuJ5gBZYhKXNdq3NdNhuRG+vfLNPa
+        mXchAwMLC010EqZ4SoTfka0GUolitUR82/OSA7JCqQ==
+X-Google-Smtp-Source: AGHT+IGWSDZTLPUhUxs9cJ/sDJr5Poc0NUX2A6DsxCgLTqdYrxJewgcmhq31tvPFbnQaRKG9qX3tYM7yIjoPY8ai5eU=
+X-Received: by 2002:a17:906:c9c2:b0:a19:a19b:c704 with SMTP id
+ hk2-20020a170906c9c200b00a19a19bc704mr883176ejb.84.1701455437997; Fri, 01 Dec
+ 2023 10:30:37 -0800 (PST)
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <ZWobMUp22oTpP3FW@debian.debian> <CANn89iLLnXVBvajLA-FLwBSN4uRNZKJYAvwvKEymGsvOQQJs1A@mail.gmail.com>
+ <CAO3-Pbq04ZphnB42bSoVDc8sgQ+GbRaqPtXOscsSMC5tXm8UdA@mail.gmail.com>
+In-Reply-To: <CAO3-Pbq04ZphnB42bSoVDc8sgQ+GbRaqPtXOscsSMC5tXm8UdA@mail.gmail.com>
+From:   Yan Zhai <yan@cloudflare.com>
+Date:   Fri, 1 Dec 2023 12:30:27 -0600
+Message-ID: <CAO3-PbqD5Fpf9ddYFt4OvaT-4fq505X9LfBK0oKareJB+z65gw@mail.gmail.com>
+Subject: Re: [PATCH v2 net-next] packet: add a generic drop reason for receive
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        linux-kernel@vger.kernel.org, kernel-team@cloudflare.com,
+        Jesper Brouer <jesper@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogSmFubiBIb3JuDQo+IFNlbnQ6IDAxIERlY2VtYmVyIDIwMjMgMTY6NDENCj4gDQo+IG11
-dGV4X3VubG9jaygpIGhhcyBhIGRpZmZlcmVudCBBUEkgY29udHJhY3QgY29tcGFyZWQgdG8gc3Bp
-bl91bmxvY2soKS4NCj4gc3Bpbl91bmxvY2soKSBjYW4gYmUgdXNlZCB0byByZWxlYXNlIG93bmVy
-c2hpcCBvZiBhbiBvYmplY3QsIHNvIHRoYXQNCj4gYXMgc29vbiBhcyB0aGUgc3BpbmxvY2sgaXMg
-dW5sb2NrZWQsIGFub3RoZXIgdGFzayBpcyBhbGxvd2VkIHRvIGZyZWUNCj4gdGhlIG9iamVjdCBj
-b250YWluaW5nIHRoZSBzcGlubG9jay4NCj4gbXV0ZXhfdW5sb2NrKCkgZG9lcyBub3Qgc3VwcG9y
-dCB0aGlzIGtpbmQgb2YgdXNhZ2U6IFRoZSBjYWxsZXIgb2YNCj4gbXV0ZXhfdW5sb2NrKCkgbXVz
-dCBlbnN1cmUgdGhhdCB0aGUgbXV0ZXggc3RheXMgYWxpdmUgdW50aWwNCj4gbXV0ZXhfdW5sb2Nr
-KCkgaGFzIHJldHVybmVkLg0KDQpUaGUgcHJvYmxlbSBzZXF1ZW5jZSBtaWdodCBiZToNCglUaHJl
-YWQgQQkJVGhyZWFkIEINCgltdXRleF9sb2NrKCkNCgkJCQljb2RlIHRvIHN0b3AgbXV0ZXggYmVp
-bmcgcmVxdWVzdGVkDQoJCQkJLi4uDQoJCQkJbXV0ZXhfbG9jaygpIC0gc2xlZXBzDQoJbXV0ZXhf
-dW5sb2NrKCkuLi4NCgkJV2FpdGVycyB3b2tlbi4uLg0KCQlpc3IgYW5kL29yIHByZS1lbXB0ZWQN
-CgkJCQktIHdha2VzIHVwDQoJCQkJbXV0ZXhfdW5sb2NrKCkNCgkJCQlmcmVlKCkNCgkJLi4uIG1v
-cmUga2VybmVsIGNvZGUgYWNjZXNzIHRoZSBtdXRleA0KCQlCT09PTQ0KDQpXaGF0IGhhcHBlbnMg
-aW4gYSBQUkVFTVBUX1JUIGtlcm5lbCB3aGVyZSBtb3N0IG9mIHRoZSBzcGluX3VubG9jaygpDQpn
-ZXQgcmVwbGFjZWQgYnkgbXV0ZXhfdW5sb2NrKCkuDQpTZWVtcyBsaWtlIHRoZXkgY2FuIHBvdGVu
-dGlhbGx5IGFjY2VzcyBhIGZyZWVkIG11dGV4Pw0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBB
-ZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMs
-IE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
+On Fri, Dec 1, 2023 at 12:19=E2=80=AFPM Yan Zhai <yan@cloudflare.com> wrote=
+:
+>
+> On Fri, Dec 1, 2023 at 11:51=E2=80=AFAM Eric Dumazet <edumazet@google.com=
+> wrote:
+> >
+> > >         bool is_drop_n_account =3D false;
+> >
+> > Why keeping is_drop_n_account  then ?
+>
+> Good catch, thanks! Will send a v3 to fix up.
+> Meanwhile, I noticed it is compiled with the
+> -Wno-unused-but-set-variable flag, is there a reason why we disable
+> this warning?
 
+I found the answer in scripts/Makefile.extrawarn. Good to learn how this wo=
+rks!
+
+>
+> Yan
