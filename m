@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5243E8006D3
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 10:27:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 977E08006D4
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 10:27:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378017AbjLAJ1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 04:27:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38742 "EHLO
+        id S1378029AbjLAJ1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 04:27:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbjLAJ1B (ORCPT
+        with ESMTP id S1378004AbjLAJ1C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 04:27:01 -0500
+        Fri, 1 Dec 2023 04:27:02 -0500
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75009194
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E703D10F3
         for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 01:27:08 -0800 (PST)
 From:   Anna-Maria Behnsen <anna-maria@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1701422826;
+        s=2020; t=1701422827;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Q6FUfFnmqt4IfzZcGlQkVi9fkygYWanokVt8epCh18g=;
-        b=lgvXqUjFJoLwU9+ZZLvtquxTwT6ofi+2y79zdhzkCm+arupJRiVKmMIVcB3lduxwWCFofb
-        MFOL7JDx6+6MFnMmEPZRzTDdRIidDu055pueLPcpiGoOrPv1g40SAikE1AQ96Zg1aCUWsu
-        /RfyywAtAOETUaaOeWDUdTjDg1K5i8v5TCoy1b8UAilHhdNHc0/3AnPNkftGpd67MIalU9
-        PXMyPG5DMKfCOgRGIYO2Vtiq31A/P7fOfozAca61lrAgMbutkFYtbzGQ38QYnXCUZcDprj
-        jhoN1vY2o7ZgxvN6IUOgYw/d4bOtBFlACxjARMnb88bChF6B1h2PGlbSvNVcnQ==
+        bh=jl8/xzU+GiuSpXdMfzNJncPixT2cuPm0ChHCjye17qI=;
+        b=PRcshUeiqQBP6Ypl/4igU9gnAZax/WZ9o6XJmRkijSQlV8N4QjPU98SYISHBREqA75uWZe
+        aXLpTqOnLIMMSJtBYXQmc9vf6PUTFIdnVOz1ssiOQTEDoFR/CgOrgEXe6urDrJO3mAyMOZ
+        CnXf0fRTJBCt/jCRZ09/255zi7frJtW4JTzBXU4m3SuzthrUHV2wDxvgqhxrl/ebelKOPs
+        8+OOkyFutkDdkDCpN3W0Cap8wApvWQSwQCdI0nIAKfgUSjYLhsPGYaaWgOTaY6tPN0rP28
+        fpvOInjCw9cXNbhxFLhb7yxte3vgMP/miUKuEACWllOZLXZawL5HAxaL+esNsA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1701422826;
+        s=2020e; t=1701422827;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Q6FUfFnmqt4IfzZcGlQkVi9fkygYWanokVt8epCh18g=;
-        b=swIBVCbe9PNsC1cAlRdY84Lq5DKzwDPoPs3oPMIaRGhQn1B3L/aGAyxpp9foQnhZvbP1Cq
-        ixM6qqPcxQvkLZBg==
+        bh=jl8/xzU+GiuSpXdMfzNJncPixT2cuPm0ChHCjye17qI=;
+        b=Sb+rjhnebJJIO1g9BgSS4qyOLxH+tt5Barqeak47ZCMSmExPUqtDHBEroBlyuhU1DJydwt
+        x7ySNlMzzhm9QdCg==
 To:     linux-kernel@vger.kernel.org
 Cc:     Peter Zijlstra <peterz@infradead.org>,
         John Stultz <jstultz@google.com>,
@@ -55,9 +55,9 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
         K Prateek Nayak <kprateek.nayak@amd.com>,
         Anna-Maria Behnsen <anna-maria@linutronix.de>
-Subject: [PATCH v9 01/32] tick-sched: Fix function names in comments
-Date:   Fri,  1 Dec 2023 10:26:23 +0100
-Message-Id: <20231201092654.34614-2-anna-maria@linutronix.de>
+Subject: [PATCH v9 02/32] tick/sched: Cleanup confusing variables
+Date:   Fri,  1 Dec 2023 10:26:24 +0100
+Message-Id: <20231201092654.34614-3-anna-maria@linutronix.de>
 In-Reply-To: <20231201092654.34614-1-anna-maria@linutronix.de>
 References: <20231201092654.34614-1-anna-maria@linutronix.de>
 MIME-Version: 1.0
@@ -72,37 +72,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When referencing functions in comments, it might be helpful to use full
-function names (including the prefix) to be able to find it when grepping.
+tick_nohz_stop_tick() contains the expires (u64 variable) and tick
+(ktime_t) variable. In the beginning the value of expires is written to
+tick. Afterwards none of the variables is changed. They are only used for
+checks.
+
+Drop the not required variable tick and use always expires instead.
 
 Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 ---
-v9: New cleanup patch
+v9: Fix typo in commit message
 ---
- kernel/time/tick-sched.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ kernel/time/tick-sched.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
 diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
-index be77b021e5d6..5c28cc80fd25 100644
+index 5c28cc80fd25..89517cfb6510 100644
 --- a/kernel/time/tick-sched.c
 +++ b/kernel/time/tick-sched.c
-@@ -920,11 +920,11 @@ static void tick_nohz_stop_tick(struct tick_sched *ts, int cpu)
+@@ -887,7 +887,6 @@ static void tick_nohz_stop_tick(struct tick_sched *ts, int cpu)
+ 	struct clock_event_device *dev = __this_cpu_read(tick_cpu_device.evtdev);
+ 	u64 basemono = ts->timer_expires_base;
+ 	u64 expires = ts->timer_expires;
+-	ktime_t tick = expires;
+ 
+ 	/* Make sure we won't be trying to stop it twice in a row. */
+ 	ts->timer_expires_base = 0;
+@@ -910,7 +909,7 @@ static void tick_nohz_stop_tick(struct tick_sched *ts, int cpu)
+ 	/* Skip reprogram of event if it's not changed */
+ 	if (ts->tick_stopped && (expires == ts->next_tick)) {
+ 		/* Sanity check: make sure clockevent is actually programmed */
+-		if (tick == KTIME_MAX || ts->next_tick == hrtimer_get_expires(&ts->sched_timer))
++		if (expires == KTIME_MAX || ts->next_tick == hrtimer_get_expires(&ts->sched_timer))
+ 			return;
+ 
+ 		WARN_ON_ONCE(1);
+@@ -935,7 +934,7 @@ static void tick_nohz_stop_tick(struct tick_sched *ts, int cpu)
+ 		trace_tick_stop(1, TICK_DEP_MASK_NONE);
  	}
  
+-	ts->next_tick = tick;
++	ts->next_tick = expires;
+ 
  	/*
--	 * nohz_stop_sched_tick() can be called several times before
--	 * nohz_restart_sched_tick() is called. This happens when
--	 * interrupts arrive which do not cause a reschedule. In the
--	 * first call we save the current tick time, so we can restart
--	 * the scheduler tick in nohz_restart_sched_tick().
-+	 * tick_nohz_stop_sched_tick() can be called several times before
-+	 * tick_nohz_restart_sched_tick() is called. This happens when
-+	 * interrupts arrive which do not cause a reschedule. In the first call
-+	 * we save the current tick time, so we can restart the scheduler tick
-+	 * in tick_nohz_restart_sched_tick().
- 	 */
- 	if (!ts->tick_stopped) {
- 		calc_load_nohz_start();
+ 	 * If the expiration time == KTIME_MAX, then we simply stop
+@@ -950,11 +949,11 @@ static void tick_nohz_stop_tick(struct tick_sched *ts, int cpu)
+ 	}
+ 
+ 	if (ts->nohz_mode == NOHZ_MODE_HIGHRES) {
+-		hrtimer_start(&ts->sched_timer, tick,
++		hrtimer_start(&ts->sched_timer, expires,
+ 			      HRTIMER_MODE_ABS_PINNED_HARD);
+ 	} else {
+-		hrtimer_set_expires(&ts->sched_timer, tick);
+-		tick_program_event(tick, 1);
++		hrtimer_set_expires(&ts->sched_timer, expires);
++		tick_program_event(expires, 1);
+ 	}
+ }
+ 
 -- 
 2.39.2
 
