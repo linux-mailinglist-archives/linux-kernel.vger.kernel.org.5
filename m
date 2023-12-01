@@ -2,54 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 834E3800DA6
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 15:47:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D059800DA3
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 15:47:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379247AbjLAOrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 09:47:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51666 "EHLO
+        id S1379240AbjLAOrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 09:47:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379208AbjLAOra (ORCPT
+        with ESMTP id S1379221AbjLAOrK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 09:47:30 -0500
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70661170E
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 06:47:36 -0800 (PST)
-Received: from cwcc.thunk.org (pool-173-48-111-98.bstnma.fios.verizon.net [173.48.111.98])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 3B1EkvpZ005615
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 1 Dec 2023 09:46:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1701442020; bh=kArsuLagsSnYy/Wige3LZnikmXXjnr7ZjdM85XfWUMQ=;
-        h=From:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=fOxxb2mKE0KV987CyElNlxzOFvPu7JIxFgB6eAJd2sxQKtC6QZTFGVRHEcC65W/aq
-         4wURw7svKD0bD3Kq0Y7hDinQBAm2JoCPhlhoD8IplEo1eM1jJuRYdiHjvTY8JYNW9p
-         d7wxBe83et/K1i7I7lovT1D88M/Sdr4KXBx3/QrcsFkmbjXc+4CxOTLrOi3ozfjTpS
-         B6iGc2ha+/NVtlyQxt+6h0oSN2YtdJsV60iqERx56Ygyw8CZ6Jh5JBQoOJ/MMVj06X
-         Qhuarot+BqNf6APmPyMpI1XtEhlIe3f41psUBIqpN4UYN0zvbS3FSLKy4P9BE7prfU
-         IGUWFDtXlgW3w==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 5E5F515C0290; Fri,  1 Dec 2023 09:46:57 -0500 (EST)
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     linux-ext4@vger.kernel.org, Baokun Li <libaokun1@huawei.com>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>, adilger.kernel@dilger.ca,
-        jack@suse.cz, ritesh.list@gmail.com, linux-kernel@vger.kernel.org,
-        djwong@kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com,
-        yukuai3@huawei.com, stable@kernel.org
-Subject: Re: [PATCH] ext4: prevent the normalized size from exceeding EXT_MAX_BLOCKS
-Date:   Fri,  1 Dec 2023 09:46:55 -0500
-Message-Id: <170144199127.633830.13561950566118838688.b4-ty@mit.edu>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20231127063313.3734294-1-libaokun1@huawei.com>
-References: <20231127063313.3734294-1-libaokun1@huawei.com>
+        Fri, 1 Dec 2023 09:47:10 -0500
+Received: from hi1smtp01.de.adit-jv.com (smtp1.de.adit-jv.com [93.241.18.167])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37ACF10F4;
+        Fri,  1 Dec 2023 06:47:15 -0800 (PST)
+Received: from hi2exch02.adit-jv.com (hi2exch02.adit-jv.com [10.72.92.28])
+        by hi1smtp01.de.adit-jv.com (Postfix) with ESMTP id 4EB9D520123;
+        Fri,  1 Dec 2023 15:47:13 +0100 (CET)
+Received: from vmlxhi-118.adit-jv.com (10.72.93.77) by hi2exch02.adit-jv.com
+ (10.72.92.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Fri, 1 Dec
+ 2023 15:47:13 +0100
+From:   Hardik Gajjar <hgajjar@de.adit-jv.com>
+To:     <gregkh@linuxfoundation.org>, <stern@rowland.harvard.edu>,
+        <corbet@lwn.net>
+CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <erosca@de.adit-jv.com>, <hgajjar@de.adit-jv.com>, <tj@kernel.org>,
+        <paulmck@kernel.org>, <Martin.Mueller5@de.bosch.com>
+Subject: [PATCH v3] usb: hub: Add quirk to decrease IN-ep poll interval for Microchip USB491x hub
+Date:   Fri, 1 Dec 2023 15:47:05 +0100
+Message-ID: <20231201144705.97385-1-hgajjar@de.adit-jv.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+Content-Type: text/plain
+X-Originating-IP: [10.72.93.77]
+X-ClientProxiedBy: hi2exch02.adit-jv.com (10.72.92.28) To
+ hi2exch02.adit-jv.com (10.72.92.28)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,39 +46,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+There is a potential delay in notifying Linux USB drivers of downstream
+USB bus activity when connecting a high-speed or superSpeed device via the
+Microchip USB491x hub. This delay is due to the fixed bInterval value of
+12 in the silicon of the Microchip USB491x hub.
 
-On Mon, 27 Nov 2023 14:33:13 +0800, Baokun Li wrote:
-> For files with logical blocks close to EXT_MAX_BLOCKS, the file size
-> predicted in ext4_mb_normalize_request() may exceed EXT_MAX_BLOCKS.
-> This can cause some blocks to be preallocated that will not be used.
-> And after [Fixes], the following issue may be triggered:
-> 
-> =========================================================
->  kernel BUG at fs/ext4/mballoc.c:4653!
->  Internal error: Oops - BUG: 00000000f2000800 [#1] SMP
->  CPU: 1 PID: 2357 Comm: xfs_io 6.7.0-rc2-00195-g0f5cc96c367f
->  Hardware name: linux,dummy-virt (DT)
->  pc : ext4_mb_use_inode_pa+0x148/0x208
->  lr : ext4_mb_use_inode_pa+0x98/0x208
->  Call trace:
->   ext4_mb_use_inode_pa+0x148/0x208
->   ext4_mb_new_inode_pa+0x240/0x4a8
->   ext4_mb_use_best_found+0x1d4/0x208
->   ext4_mb_try_best_found+0xc8/0x110
->   ext4_mb_regular_allocator+0x11c/0xf48
->   ext4_mb_new_blocks+0x790/0xaa8
->   ext4_ext_map_blocks+0x7cc/0xd20
->   ext4_map_blocks+0x170/0x600
->   ext4_iomap_begin+0x1c0/0x348
-> =========================================================
-> 
-> [...]
+Microchip requested to ignore the device descriptor and decrease that
+value to 9 as it was too late to modify that in silicon.
 
-Applied, thanks!
+This patch speeds up the USB enummeration process that helps to pass
+Apple Carplay certifications and improve the User experience when utilizing
+the USB device via Microchip Multihost USB491x Hub.
 
-[1/1] ext4: prevent the normalized size from exceeding EXT_MAX_BLOCKS
-      commit: 2dcf5fde6dffb312a4bfb8ef940cea2d1f402e32
+A new hub quirk HUB_QUIRK_REDUCE_FRAME_INTR_BINTERVAL speeds up
+the notification process for Microchip USB491x hub by limiting
+the maximum bInterval value to 9.
 
-Best regards,
+Signed-off-by: Hardik Gajjar <hgajjar@de.adit-jv.com>
+---
+changes since version 1:
+	- Move implementation from config.c and quirk.c to hub.c as this is hub
+	  specific changes.
+	- Improve commit message.
+	- Link to v1 - https://lore.kernel.org/all/20231123081948.58776-1-hgajjar@de.adit-jv.com/
+
+changes since version 2:
+    - Call usb_set_interface after updating the bInterval to Tell the HCD about modification
+	- Link to v2 - https://lore.kernel.org/all/20231130084855.119937-1-hgajjar@de.adit-jv.com/
+---
+ drivers/usb/core/hub.c | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
+
+diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
+index b4584a0cd484..b5ac29c5f016 100644
+--- a/drivers/usb/core/hub.c
++++ b/drivers/usb/core/hub.c
+@@ -47,12 +47,18 @@
+ #define USB_VENDOR_TEXAS_INSTRUMENTS		0x0451
+ #define USB_PRODUCT_TUSB8041_USB3		0x8140
+ #define USB_PRODUCT_TUSB8041_USB2		0x8142
++#define USB_VENDOR_MICROCHIP			0x0424
++#define USB_PRODUCT_USB4913			0x4913
++#define USB_PRODUCT_USB4914			0x4914
++#define USB_PRODUCT_USB4915			0x4915
+ #define HUB_QUIRK_CHECK_PORT_AUTOSUSPEND	0x01
+ #define HUB_QUIRK_DISABLE_AUTOSUSPEND		0x02
++#define HUB_QUIRK_REDUCE_FRAME_INTR_BINTERVAL	0x08
+ 
+ #define USB_TP_TRANSMISSION_DELAY	40	/* ns */
+ #define USB_TP_TRANSMISSION_DELAY_MAX	65535	/* ns */
+ #define USB_PING_RESPONSE_TIME		400	/* ns */
++#define USB_REDUCE_FRAME_INTR_BINTERVAL	9
+ 
+ /* Protect struct usb_device->state and ->children members
+  * Note: Both are also protected by ->dev.sem, except that ->state can
+@@ -1927,6 +1933,14 @@ static int hub_probe(struct usb_interface *intf, const struct usb_device_id *id)
+ 		usb_autopm_get_interface_no_resume(intf);
+ 	}
+ 
++	if ((id->driver_info & HUB_QUIRK_REDUCE_FRAME_INTR_BINTERVAL) &&
++	    desc->endpoint[0].desc.bInterval > USB_REDUCE_FRAME_INTR_BINTERVAL) {
++		desc->endpoint[0].desc.bInterval =
++			USB_REDUCE_FRAME_INTR_BINTERVAL;
++		/* Tell the HCD about the interrupt ep's new bInterval */
++		usb_set_interface(hdev, 0, 0);
++	}
++
+ 	if (hub_configure(hub, &desc->endpoint[0].desc) >= 0) {
+ 		onboard_hub_create_pdevs(hdev, &hub->onboard_hub_devs);
+ 
+@@ -5918,6 +5932,21 @@ static const struct usb_device_id hub_id_table[] = {
+       .idVendor = USB_VENDOR_TEXAS_INSTRUMENTS,
+       .idProduct = USB_PRODUCT_TUSB8041_USB3,
+       .driver_info = HUB_QUIRK_DISABLE_AUTOSUSPEND},
++	{ .match_flags = USB_DEVICE_ID_MATCH_VENDOR
++			| USB_DEVICE_ID_MATCH_PRODUCT,
++	  .idVendor = USB_VENDOR_MICROCHIP,
++	  .idProduct = USB_PRODUCT_USB4913,
++	  .driver_info = HUB_QUIRK_REDUCE_FRAME_INTR_BINTERVAL},
++	{ .match_flags = USB_DEVICE_ID_MATCH_VENDOR
++			| USB_DEVICE_ID_MATCH_PRODUCT,
++	  .idVendor = USB_VENDOR_MICROCHIP,
++	  .idProduct = USB_PRODUCT_USB4914,
++	  .driver_info = HUB_QUIRK_REDUCE_FRAME_INTR_BINTERVAL},
++	{ .match_flags = USB_DEVICE_ID_MATCH_VENDOR
++			| USB_DEVICE_ID_MATCH_PRODUCT,
++	  .idVendor = USB_VENDOR_MICROCHIP,
++	  .idProduct = USB_PRODUCT_USB4915,
++	  .driver_info = HUB_QUIRK_REDUCE_FRAME_INTR_BINTERVAL},
+     { .match_flags = USB_DEVICE_ID_MATCH_DEV_CLASS,
+       .bDeviceClass = USB_CLASS_HUB},
+     { .match_flags = USB_DEVICE_ID_MATCH_INT_CLASS,
 -- 
-Theodore Ts'o <tytso@mit.edu>
+2.17.1
+
