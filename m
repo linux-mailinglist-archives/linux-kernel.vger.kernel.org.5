@@ -2,72 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C6428011D3
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:37:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6A418011D4
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:37:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230107AbjLARhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 12:37:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59426 "EHLO
+        id S1378848AbjLARhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 12:37:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjLARhS (ORCPT
+        with ESMTP id S229454AbjLARhp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 12:37:18 -0500
-Received: from mail-40131.protonmail.ch (mail-40131.protonmail.ch [185.70.40.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6287C4
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 09:37:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-        s=733i7nh34fae7nqvhxrtxokxny.protonmail; t=1701452241; x=1701711441;
-        bh=SDEs+kKoImcW0/37ZK07RqKOEiMzhsKpKss6HpH9yX8=;
-        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-         Message-ID:BIMI-Selector;
-        b=NGszqyCTA9a++ZSjmKG7lMsbXMaRsYWcE1OOO82R9qa95qsfTr+JngRey35OgZdnf
-         q8MOOHsKA7qRcFaqREzbnppBsmo1EcJ5ya4zmvuQXSApR+2svSWP95OwDbjdHhj3tD
-         26S3dYAXNkw3i3P0+X6festAERaAmDJ1CBEDuop4czT9JR559meWHij2vGgPA35jBH
-         KG1S+NAMLsYbTOrbsybnT0KK7ilCDSHlqCMFQkxVvl/T+1UYnOx0IW+GEG4Jb6TU7t
-         GNRon9RiE6BmQZOgJdK+bz5bydWReHzyb1cS7NRs4iT553RjNIS4B6HgcEWMjFY73/
-         nbOHG+G+GTqnQ==
-Date:   Fri, 01 Dec 2023 17:37:06 +0000
-To:     David Laight <David.Laight@ACULAB.COM>
-From:   Benno Lossin <benno.lossin@proton.me>
-Cc:     Theodore Ts'o <tytso@mit.edu>, Alice Ryhl <aliceryhl@google.com>,
-        "a.hindborg@samsung.com" <a.hindborg@samsung.com>,
-        "alex.gaynor@gmail.com" <alex.gaynor@gmail.com>,
-        "arve@android.com" <arve@android.com>,
-        "bjorn3_gh@protonmail.com" <bjorn3_gh@protonmail.com>,
-        "boqun.feng@gmail.com" <boqun.feng@gmail.com>,
-        "brauner@kernel.org" <brauner@kernel.org>,
-        "cmllamas@google.com" <cmllamas@google.com>,
-        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
-        "dxu@dxuuu.xyz" <dxu@dxuuu.xyz>,
-        "gary@garyguo.net" <gary@garyguo.net>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "joel@joelfernandes.org" <joel@joelfernandes.org>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "maco@android.com" <maco@android.com>,
-        "ojeda@kernel.org" <ojeda@kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "rust-for-linux@vger.kernel.org" <rust-for-linux@vger.kernel.org>,
-        "surenb@google.com" <surenb@google.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "tkjos@android.com" <tkjos@android.com>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "wedsonaf@gmail.com" <wedsonaf@gmail.com>,
-        "willy@infradead.org" <willy@infradead.org>
-Subject: RE: [PATCH 1/7] rust: file: add Rust abstraction for `struct file`
-Message-ID: <ajiq9UHMeP48LeNuGAPzLS38mW-fCL0OlXZKOCzg1D9H1JSQo2NroOEEjzLuuClpn7b3Do-IuDO8DqAT3z9s8ozEHAdqyGhHXUl0fvUKDDg=@proton.me>
-In-Reply-To: <70efae6ae16647ddbb2b2c887e90e7c8@AcuMS.aculab.com>
-References: <386bbdee165d47338bc451a04e788dd6@AcuMS.aculab.com> <20231201122740.2214259-1-aliceryhl@google.com> <20231201150442.GC509422@mit.edu> <zWaYgly6VpMZcvVUAILQWBSs9VnO7nFiAiCo4eTzT4SJEfqXY8G8w7f6az7kz9wEB4pA8EbajkQZRX4CuifI00Ce3EA_4muXjz_kfdAuzOU=@proton.me> <70efae6ae16647ddbb2b2c887e90e7c8@AcuMS.aculab.com>
-Feedback-ID: 71780778:user:proton
+        Fri, 1 Dec 2023 12:37:45 -0500
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF06EFE;
+        Fri,  1 Dec 2023 09:37:51 -0800 (PST)
+Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-6ce015fd299so787611b3a.2;
+        Fri, 01 Dec 2023 09:37:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701452271; x=1702057071; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=h1vqngejylljTl8aS0wEyCo9hvaRqIL121iZk7bSTek=;
+        b=BWrsDN6bFv6dEdWNbX2GjqRojrgzaLAnTM84pTfad/jJBGwDaB9pMTdb6xm4iuynR6
+         Ki3kPHZdHhgyk6dZWIuKBMOIUUMFKRNhlzFs+kHv8cgrMS6DM4vtCJOQyx7VGk4RDQai
+         6zFy+hZV8kWc7frhzCGmAD/SaqLNh7dq4OilINsQaZsi1Ja8pVMYNGJIDqoBpQnRkBPh
+         H7MKk+In6in1vDVrlPLH51M0ybdUInLiXMG8ls13eh83IIuMtA+UHq/e5Ql0NhSX8/jF
+         dKCjmRldX5OuOqEJ0nB3peICZp/jPGbxAXXCz75SqUvgvk/HezYHccw1gh1KmziX/IuP
+         lmsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701452271; x=1702057071;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=h1vqngejylljTl8aS0wEyCo9hvaRqIL121iZk7bSTek=;
+        b=aPlJBh0ewahY/3M99Q5aG4KeDepU/FMh55jHEWWMYewXKRpPaWnaDEVW2fR4VJWeG0
+         24QhFEoy/9q+//nQ67O0KmpsfXDP7bi4N1xP4O/pxpQOGCkVmGeFGKFRiw0rDTdaOD+e
+         2QHFAlQT8Emc0zowvf9BccDlqPTB3tRfQPPy+rGyehHEmYJRsgO4zomoGw16jDne/yuR
+         bx0+GWn7c2522+EWcPe6HlixsCSdBziwMg9yS9J2I4FXZAZbaa6TCj6jyDZrVu5jWy4O
+         gZowecFZTWILkwx1eOPKZOlPA+kmX7QjclfA0efL1YLtmeK2GGfpx3kzyAyce1tMYC3/
+         ElwA==
+X-Gm-Message-State: AOJu0YxcHxQZ7q3TsE82JzL5Gd4HB4vh0FGIUcBCPSye8SKoSZU1rpOn
+        X/0N3usnfRiVaBrjxNlKPLw=
+X-Google-Smtp-Source: AGHT+IFAt0LiS7l0sn2Vw/b/IlTmAaaNeqgD2j10o5eTcjXrQnLBJ5810dswT4esP2xu+ZTLejLRGA==
+X-Received: by 2002:a05:6a20:914a:b0:18c:651:c40e with SMTP id x10-20020a056a20914a00b0018c0651c40emr28205199pzc.50.1701452271350;
+        Fri, 01 Dec 2023 09:37:51 -0800 (PST)
+Received: from localhost ([2620:10d:c090:400::4:27ef])
+        by smtp.gmail.com with ESMTPSA id gx21-20020a056a001e1500b006930db1e6cfsm3255376pfb.62.2023.12.01.09.37.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Dec 2023 09:37:50 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Fri, 1 Dec 2023 07:37:49 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Joe Mario <jmario@redhat.com>,
+        Sebastian Jug <sejug@redhat.com>,
+        Yosry Ahmed <yosryahmed@google.com>
+Subject: Re: [PATCH-cgroup v5 1/2] cgroup/rstat: Optimize
+ cgroup_rstat_updated_list()
+Message-ID: <ZWoZ7U8f5NNwimej@slm.duckdns.org>
+References: <20231130204327.494249-1-longman@redhat.com>
+ <20231130204327.494249-2-longman@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231130204327.494249-2-longman@redhat.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,64 +79,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/1/23 18:25, David Laight wrote:
-> From: Benno Lossin
->> Sent: 01 December 2023 15:14
->>
->> On 12/1/23 16:04, Theodore Ts'o wrote:
->>> On Fri, Dec 01, 2023 at 12:27:40PM +0000, Alice Ryhl wrote:
->>>>
->>>> You can import it with a use statement. For example:
->>>>
->>>> use kernel::file::flags::O_RDONLY;
->>>> // use as O_RDONLY
->>>
->>> That's good to hear,
->=20
-> Except that the examples here seem to imply you can't import
-> all of the values without listing them all.
+On Thu, Nov 30, 2023 at 03:43:26PM -0500, Waiman Long wrote:
+> The current design of cgroup_rstat_cpu_pop_updated() is to traverse
+> the updated tree in a way to pop out the leaf nodes first before
+> their parents. This can cause traversal of multiple nodes before a
+> leaf node can be found and popped out. IOW, a given node in the tree
+> can be visited multiple times before the whole operation is done. So
+> it is not very efficient and the code can be hard to read.
+> 
+> With the introduction of cgroup_rstat_updated_list() to build a list
+> of cgroups to be flushed first before any flushing operation is being
+> done, we can optimize the way the updated tree nodes are being popped
+> by pushing the parents first to the tail end of the list before their
+> children. In this way, most updated tree nodes will be visited only
+> once with the exception of the subtree root as we still need to go
+> back to its parent and popped it out of its updated_children list.
+> This also makes the code easier to read.
+> 
+> Signed-off-by: Waiman Long <longman@redhat.com>
 
-Alice has given an example above, but you might not have noticed:
+Applied to cgroup/for-6.8 with a small comment edit.
 
-    use kernel::file::flags::*;
-   =20
-    // usage:
+...
+> + * Iteratively traverse down the cgroup_rstat_cpu updated tree level by
+> + * level and push all the parents first before their next level children
+> + * into a singly linked list built from the tail backward like "pushing"
+> + * cgroups into a stack. The parent is by the caller.
 
-    O_RDONLY
-    O_APPEND
+I found the last sentence a bit difficult to understand and changed it to
+"The root is pushed by the caller." That's what you meant, right?
 
-> From what I've seen of the rust patches the language seems
-> to have a lower SNR than ADA or VHDL.
-> Too much syntatic 'goop' makes it difficult to see what code
-> is actually doing.
+Thanks.
 
-This is done for better readability, e.g. when you do not have
-rust-analyzer to help you jump to the right definition. But there are
-certainly instances where we use the `::*` imports (just look at the
-first patch).
-
-> ....
->> Alternatively if we end up with multiple flags modules you can do this
->> (the sixth option from Alice):
->>
->>     use kernel::file::flags as file_flags;
->>     use kernel::foo::flags as foo_flags;
->>
->>     // usage:
->>
->>     file_flags::O_RDONLY
->>
->>     foo_flags::O_RDONLY
->=20
-> That looks useful for the 'obfuscated rust' competition.
-> Consider:
-> =09use kernel::file::flags as foo_flags;
-> =09use kernel::foo::flags as file_flags;
-
-This is no worse than C preprocessor macros doing funky stuff.
-We will just have to catch this in review.
-
---=20
-Cheers,
-Benno
-
+-- 
+tejun
