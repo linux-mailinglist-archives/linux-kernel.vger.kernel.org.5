@@ -2,84 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86ACC8000E4
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 02:18:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B7CF8000E7
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 02:23:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229578AbjLABSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 20:18:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32986 "EHLO
+        id S229746AbjLABXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 20:23:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbjLABSl (ORCPT
+        with ESMTP id S229448AbjLABXE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 20:18:41 -0500
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC22610D1
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 17:18:47 -0800 (PST)
-Received: by mail-pg1-x535.google.com with SMTP id 41be03b00d2f7-5c6001ec920so29479a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 17:18:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1701393527; x=1701998327; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=g/48m46wPgyvqnD4XpgC0rhUYtIZ3FOXv9eiG/yAP/4=;
-        b=vquECw7LY7U9wZ9FGmu3KeuJE3PL9M7XK5Vv2/ry21FXNE0FxvzdJtqqbmV/CLd6RX
-         dnphUPkzvzOZyUAyUUWtS/+idD1AdtVS75iGTTLGGMmS7I90zYd/nqC8xnzJWwhaosG+
-         qaM2m187eZZlR2S/uYpewt09kuenGgBjILN7rN80LMoVJlQqV/W9WI+3+40Jn8mFKotL
-         p+HnBWf8F4gE5+KWBHfPF8fLesSXlFR3YGrTZ/yNEREG9pQB3rssM58qWejN4mSM3Kkw
-         BxfD+2uKTfTAUw3y+0z1hljulAnkgGaAz2rSi1a46kDgVoA5Hbf15EnEsacP6IPyTbO+
-         zqCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701393527; x=1701998327;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=g/48m46wPgyvqnD4XpgC0rhUYtIZ3FOXv9eiG/yAP/4=;
-        b=QnDl2yNIuSKkQ5uztWgio8FnKrHPNodreHlrRzAt9HdOH6nkbtI79qhS5EGkUYJ757
-         VbPmh6jlAZXobFJm3iJ+u/FSAQ383386yzcMQYulKIK9d1sZFv0hYRshZ3r1aYVRaiDj
-         d4WNBKZvR0vwz0aMhmTbaynj8/okHpgOH69Bc0cHMDYXtCOkAWwBBtLdxj9I4T0jHeJM
-         qACDvNjHgFTRrbg+sbeRvRwyna1xSIrL/795Av1Nu2Gz4MovEpOiHxlVvgSHG7jYNm3Q
-         g2tf4cUEgfb9k7pGwLSPMzI/Lcu+LnbZ3x3/p//rGvbZUmnLaOzGII8XNAtwLx+Wq+Nl
-         aYUw==
-X-Gm-Message-State: AOJu0Yz/IsV0VdDKaf78peFmYDjEKyVav3NIVYOa05Vc+NYwjl8Kifc3
-        Z1NssZF5T6RuQD4OLhM5B0cldw==
-X-Google-Smtp-Source: AGHT+IFbXpDmkQrMsVjyH2MbAdXUl/hHHiinDnOdNUwvXQkqgibcLnsfNxUrQES1AUWkmrI2vqAZ7g==
-X-Received: by 2002:a05:6a20:daaa:b0:187:c662:9b7e with SMTP id iy42-20020a056a20daaa00b00187c6629b7emr24458515pzb.25.1701393527121;
-        Thu, 30 Nov 2023 17:18:47 -0800 (PST)
-Received: from dread.disaster.area (pa49-180-125-5.pa.nsw.optusnet.com.au. [49.180.125.5])
-        by smtp.gmail.com with ESMTPSA id hq23-20020a056a00681700b006cddd9d0174sm1843768pfb.108.2023.11.30.17.18.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Nov 2023 17:18:46 -0800 (PST)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-        (envelope-from <david@fromorbit.com>)
-        id 1r8sB2-002C0s-0T;
-        Fri, 01 Dec 2023 12:18:44 +1100
-Date:   Fri, 1 Dec 2023 12:18:44 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Roman Gushchin <roman.gushchin@linux.dev>
-Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Linux-MM <linux-mm@kvack.org>, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH 2/7] mm: shrinker: Add a .to_text() method for shrinkers
-Message-ID: <ZWk0dI0PISWBbbKr@dread.disaster.area>
-References: <20231125003009.tbaxuquny43uwei3@moria.home.lan>
- <76A1EE85-B62C-49B3-889C-80F9A2A88040@linux.dev>
- <20231128035345.5c7yc7jnautjpfoc@moria.home.lan>
- <abd0ddd6-389c-43dc-b18f-aa5e3a4fcf5a@bytedance.com>
- <ZWaHG09fY2BYjyGD@P9FQF9L96D.corp.robot.car>
- <ZWcBDglmDKUJdwMv@tiehlicka>
- <20231129231147.7msiocerq7phxnyu@moria.home.lan>
- <04f63966-af72-43ef-a65c-ff927064a3e4@bytedance.com>
- <20231130032149.ynap4ai47dj62fy3@moria.home.lan>
- <ZWjcA4BA5vZe57Eh@P9FQF9L96D.corp.robot.car>
+        Thu, 30 Nov 2023 20:23:04 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4FCC10E2;
+        Thu, 30 Nov 2023 17:23:09 -0800 (PST)
+Received: from localhost (ec2-34-240-57-77.eu-west-1.compute.amazonaws.com [34.240.57.77])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: dbrouwer)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id DAC95660737B;
+        Fri,  1 Dec 2023 01:23:07 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1701393788;
+        bh=1i2HnnQfTypOiRtiRcffrhQrlquEpEU4UmvedzEbSdA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MwKnWsLg32TfCrl6Fo2v9eJfCNALX6BBP3YhHRumF2m9ZXNNJ0RL1HX8hu6OR7quK
+         W/B/j1faiMh9tKK4YTkB8HbYwoQW5L54B4J3RcA8/inUaHbefzMtyU4uRq6eGYCu6M
+         PvuaZoNj5rEs51Ap6y2NclaSMA4rNUwAPU89wQGHObZwyJAl+iBy3phT0nYvcGqdmA
+         2T6NxYXrVzMJl2zCENJ6ESN0a8lr5YbwBmabTl3jBYAJkdLz3h8MSaX5Dr8WAUIa7G
+         fB6bqOQEYZT8qxRnY6QWI5v4zzBNAuzhhOrVB2MMdUFp1a+1Bw1qdJWzv5usSJI7CR
+         b2diYpd5VqbnA==
+Date:   Thu, 30 Nov 2023 17:23:04 -0800
+From:   Deborah Brouwer <deborah.brouwer@collabora.com>
+To:     Hugues Fruchet <hugues.fruchet@foss.st.com>
+Cc:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Daniel Almeida <daniel.almeida@collabora.com>,
+        Benjamin Mugnier <benjamin.mugnier@foss.st.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil@xs4all.nl>, linux-media@vger.kernel.org,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        Adam Ford <aford173@gmail.com>
+Subject: Re: [RFC 1/6] media: uapi: Add VP8 stateless encoder controls
+Message-ID: <ZWk1eBN3Ri0P9EHS@mz550>
+References: <20231004103720.3540436-1-hugues.fruchet@foss.st.com>
+ <20231004103720.3540436-2-hugues.fruchet@foss.st.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZWjcA4BA5vZe57Eh@P9FQF9L96D.corp.robot.car>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+In-Reply-To: <20231004103720.3540436-2-hugues.fruchet@foss.st.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -87,104 +74,241 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 30, 2023 at 11:01:23AM -0800, Roman Gushchin wrote:
-> On Wed, Nov 29, 2023 at 10:21:49PM -0500, Kent Overstreet wrote:
-> > On Thu, Nov 30, 2023 at 11:09:42AM +0800, Qi Zheng wrote:
-> > > For non-bcachefs developers, who knows what those statistics mean?
-
-For non-mm developers, who knows what those internal mm state
-statistics mean?
-
-IOWs, a non-mm developer goes and asks a mm developer to
-help them decipher the output to determine what to do next.
-
-So why can't a mm developer go an ask a subsystem developer to tell
-them what the shrinker oom-kill output means?
-
-Such a question is a demonstration of an unconscious bias
-that prioritises internal mm stuff as far more important than what
-anyone else outside core-mm might ever need...
-
-> > > You can use BPF or drgn to traverse in advance to get the address of the
-> > > bcachefs shrinker structure, and then during OOM, find the bcachefs
-> > > private structure through the shrinker->private_data member, and then
-> > > dump the bcachefs private data. Is there any problem with this?
-> > 
-> > No, BPF is not an excuse for improving our OOM/allocation failure
-> > reports. BPF/tracing are secondary tools; whenever we're logging
-> > information about a problem we should strive to log enough information
-> > to debug the issue.
+On Wed, Oct 04, 2023 at 12:37:15PM +0200, Hugues Fruchet wrote:
+> From: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
 > 
-> Ok, a simple question then:
-> why can't you dump /proc/slabinfo after the OOM?
+> Add uAPI for stateless VP8 encoders.
+> 
+> Signed-off-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+> ---
+>  drivers/media/v4l2-core/v4l2-ctrls-core.c | 13 ++++
+>  drivers/media/v4l2-core/v4l2-ctrls-defs.c |  5 ++
+>  include/media/v4l2-ctrls.h                |  2 +
+>  include/uapi/linux/v4l2-controls.h        | 91 +++++++++++++++++++++++
+>  include/uapi/linux/videodev2.h            |  3 +
+>  5 files changed, 114 insertions(+)
+> 
+> diff --git a/drivers/media/v4l2-core/v4l2-ctrls-core.c b/drivers/media/v4l2-core/v4l2-ctrls-core.c
+> index a662fb60f73f..c7799ceb3d6d 100644
+> --- a/drivers/media/v4l2-core/v4l2-ctrls-core.c
+> +++ b/drivers/media/v4l2-core/v4l2-ctrls-core.c
+> @@ -811,6 +811,7 @@ static int std_validate_compound(const struct v4l2_ctrl *ctrl, u32 idx,
+>  	struct v4l2_ctrl_hevc_pps *p_hevc_pps;
+>  	struct v4l2_ctrl_hdr10_mastering_display *p_hdr10_mastering;
+>  	struct v4l2_ctrl_hevc_decode_params *p_hevc_decode_params;
+> +	struct v4l2_ctrl_vp8_encode_params *p_vp8_encode_params;
+>  	struct v4l2_area *area;
+>  	void *p = ptr.p + idx * ctrl->elem_size;
+>  	unsigned int i;
+> @@ -1047,6 +1048,15 @@ static int std_validate_compound(const struct v4l2_ctrl *ctrl, u32 idx,
+>  		zero_padding(p_vp8_frame->coder_state);
+>  		break;
+>  
+> +	case V4L2_CTRL_TYPE_VP8_ENCODE_PARAMS:
+> +		p_vp8_encode_params = p;
+> +		if (p_vp8_encode_params->loop_filter_level > 63)
+> +			return -EINVAL;
+> +
+> +		if (p_vp8_encode_params->sharpness_level > 7)
+> +			return -EINVAL;
+> +		break;
+> +
+>  	case V4L2_CTRL_TYPE_HEVC_SPS:
+>  		p_hevc_sps = p;
+>  
+> @@ -1868,6 +1878,9 @@ static struct v4l2_ctrl *v4l2_ctrl_new(struct v4l2_ctrl_handler *hdl,
+>  	case V4L2_CTRL_TYPE_AREA:
+>  		elem_size = sizeof(struct v4l2_area);
+>  		break;
+> +	case V4L2_CTRL_TYPE_VP8_ENCODE_PARAMS:
+> +		elem_size = sizeof(struct v4l2_ctrl_vp8_encode_params);
+> +		break;
+>  	default:
+>  		if (type < V4L2_CTRL_COMPOUND_TYPES)
+>  			elem_size = sizeof(s32);
+> diff --git a/drivers/media/v4l2-core/v4l2-ctrls-defs.c b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+> index 8696eb1cdd61..bd26f1d89bd5 100644
+> --- a/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+> +++ b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+> @@ -1236,6 +1236,8 @@ const char *v4l2_ctrl_get_name(u32 id)
+>  	case V4L2_CID_STATELESS_AV1_TILE_GROUP_ENTRY:		return "AV1 Tile Group Entry";
+>  	case V4L2_CID_STATELESS_AV1_FRAME:			return "AV1 Frame Parameters";
+>  	case V4L2_CID_STATELESS_AV1_FILM_GRAIN:			return "AV1 Film Grain";
+> +	case V4L2_CID_STATELESS_VP8_ENCODE_PARAMS:		return "VP8 Encode Parameters";
+> +	case V4L2_CID_STATELESS_VP8_ENCODE_QP:			return "VP8 Encode QP";
+>  
+>  	/* Colorimetry controls */
+>  	/* Keep the order of the 'case's the same as in v4l2-controls.h! */
+> @@ -1592,6 +1594,9 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
+>  	case V4L2_CID_STATELESS_AV1_FILM_GRAIN:
+>  		*type = V4L2_CTRL_TYPE_AV1_FILM_GRAIN;
+>  		break;
+> +	case V4L2_CID_STATELESS_VP8_ENCODE_PARAMS:
+> +		*type = V4L2_CTRL_TYPE_VP8_ENCODE_PARAMS;
+> +		break;
+>  	case V4L2_CID_UNIT_CELL_SIZE:
+>  		*type = V4L2_CTRL_TYPE_AREA;
+>  		*flags |= V4L2_CTRL_FLAG_READ_ONLY;
+> diff --git a/include/media/v4l2-ctrls.h b/include/media/v4l2-ctrls.h
+> index 59679a42b3e7..a165719e1139 100644
+> --- a/include/media/v4l2-ctrls.h
+> +++ b/include/media/v4l2-ctrls.h
+> @@ -56,6 +56,7 @@ struct video_device;
+>   * @p_av1_tile_group_entry:	Pointer to an AV1 tile group entry structure.
+>   * @p_av1_frame:		Pointer to an AV1 frame structure.
+>   * @p_av1_film_grain:		Pointer to an AV1 film grain structure.
+> + * @p_vp8_encode_params:	Pointer to a VP8 encode parameter structure.
+>   * @p:				Pointer to a compound value.
+>   * @p_const:			Pointer to a constant compound value.
+>   */
+> @@ -89,6 +90,7 @@ union v4l2_ctrl_ptr {
+>  	struct v4l2_ctrl_av1_tile_group_entry *p_av1_tile_group_entry;
+>  	struct v4l2_ctrl_av1_frame *p_av1_frame;
+>  	struct v4l2_ctrl_av1_film_grain *p_av1_film_grain;
+> +	struct v4l2_ctrl_vp8_encode_params *p_vp8_encode_params;
+>  	void *p;
+>  	const void *p_const;
+>  };
+> diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
+> index c3604a0a3e30..fdec5764e09c 100644
+> --- a/include/uapi/linux/v4l2-controls.h
+> +++ b/include/uapi/linux/v4l2-controls.h
+> @@ -3479,6 +3479,97 @@ struct v4l2_ctrl_av1_film_grain {
+>  	__u8 reserved[4];
+>  };
+>  
+> +#define V4L2_CID_STATELESS_VP8_ENCODE_PARAMS	(V4L2_CID_CODEC_STATELESS_BASE + 601)
+> +
+> +#define V4L2_VP8_FRAME_FLAG_SHOWFRAME			0x1
+> +#define V4L2_VP8_FRAME_FLAG_GOLDEN_REFRESH		0x2
+> +#define V4L2_VP8_FRAME_FLAG_ALTREF_REFRESH		0x4
+> +#define V4L2_VP8_FRAME_FLAG_SEGMENT_ENABLED		0x8
+> +#define V4L2_VP8_FRAME_FLAG_LOOP_FILTER_ADJ_ENABLED	0x10
+> +#define V4L2_VP8_FRAME_FLAG_REFRESH_ENTROPY_PROBS	0x20
 
-Taken to it's logical conclusion, we arrive at:
+Hi Andrzej,
 
-	OOM-kill doesn't need to output anything at all except for
-	what it killed because we can dump
-	/proc/{mem,zone,vmalloc,buddy,slab}info after the OOM....
+Would you be able to add "ENCODE" to these FLAG names e.g. 
+something like this:
 
-As it is, even asking such a question shows that you haven't looked
-at the OOM kill output for a long time - it already reports the slab
-cache usage information for caches that are reclaimable.
+V4L2_VP8_FRAME_ENCODE_FLAG_SHOWFRAME
 
-That is, if too much accounted slab cache based memory consumption
-is detected at OOM-kill, it will calldump_unreclaimable_slab() to
-dump all the SLAB_RECLAIM_ACCOUNT caches (i.e. those with shrinkers)
-to the console as part of the OOM-kill output.
+Just to disguish these flag names from the ones that are used in
+the stateless vp8 decoder struct v4l2_ctrl_vp8_frame.
 
-The problem Kent is trying to address is that this output *isn't
-sufficient to debug shrinker based memory reclaim issues*. It hasn't
-been for a long time, and so we've all got our own special debug
-patches and methods for checking that shrinkers are doing what they
-are supposed to. Kent is trying to formalise one of the more useful
-general methods for exposing that internal information when OOM
-occurs...
+If it makes no difference otherwise, it would be helpful for someone
+who might be trying to parse this future uAPI with a perl script :)
 
-Indeed, I can think of several uses for a shrinker->to_text() output
-that we simply cannot do right now.
+thanks,
+Deborah
 
-Any shrinker that does garbage collection on something that is not a
-pure slab cache (e.g. xfs buffer cache, xfs inode gc subsystem,
-graphics memory allocators, binder, etc) has no visibility of the
-actuall memory being used by the subsystem in the OOM-kill output.
-This information isn't in /proc/slabinfo, it's not accounted by a
-SLAB_RECLAIM_ACCOUNT cache, and it's not accounted by anything in
-the core mm statistics.
-
-e.g. How does anyone other than a XFS expert know that the 500k of
-active xfs_buf handles in the slab cache actually pins 15GB of
-cached metadata allocated directly from the page allocator, not just
-the 150MB of slab cache the handles take up?
-
-Another example is that an inode can pin lots of heap memory (e.g.
-for in-memory extent lists) and that may not be freeable until the
-inode is reclaimed. So while the slab cache might not be excesively
-large, we might have an a million inodes with a billion cumulative
-extents cached in memory and it is the heap memory consumed by the
-cached extents that is consuming the 30GB of "missing" kernel memory
-that is causing OOM-kills to occur.
-
-How is a user or developer supposed to know when one of these
-situations has occurred given the current lack of memory usage
-introspection into subsystems?
-
-These are the sorts of situations that shrinker->to_text() would
-allow us to enumerate when it is necessary (i.e. at OOM-kill). At
-any other time, it just doesn't matter, but when we're at OOM having
-a mechanism to report somewhat accurate subsystem memory consumption
-would be very useful indeed.
-
-> Unlike anon memory, slab memory (fs caches in particular) should not be heavily
-> affected by killing some userspace task.
-
-Whether tasks get killed or not is completely irrelevant. The issue
-is that not all memory that is reclaimed by shrinkers is either pure
-slab cache memory or directly accounted as reclaimable to the mm
-subsystem....
-
--Dave.
-
--- 
-Dave Chinner
-david@fromorbit.com
+> +
+> +#define V4L2_VP8_FRAME_TYPE_KEYFRAME	0
+> +#define V4L2_VP8_FRAME_TYPE_INTER	1
+> +
+> +#define V4L2_VP8_FRAME_COLOR_SPACE_YUV		0
+> +#define V4L2_VP8_FRAME_COLOR_SPACE_RESERVED	1
+> +
+> +#define V4L2_VP8_FRAME_CLAMPING_REQUIRED	0
+> +#define V4L2_VP8_FRAME_CLAMPING_NO		1
+> +
+> +#define V4L2_VP8_FRAME_FILTER_TYPE_NORMAL	0
+> +#define V4L2_VP8_FRAME_FILTER_TYPE_SIMPLE	1
+> +
+> +#define V4L2_VP8_FRAME_NBR_DCT_PARTITIONS_1	0
+> +#define V4L2_VP8_FRAME_NBR_DCT_PARTITIONS_2	1
+> +#define V4L2_VP8_FRAME_NBR_DCT_PARTITIONS_4	2
+> +#define V4L2_VP8_FRAME_NBR_DCT_PARTITIONS_8	3
+> +
+> +#define V4L2_VP8_FRAME_GOLDEN_KEEP		0
+> +#define V4L2_VP8_FRAME_GOLDEN_LASTFRAME		1
+> +#define V4L2_VP8_FRAME_GOLDEN_ALTREF		2
+> +
+> +#define V4L2_VP8_FRAME_ALTREF_KEEP		0
+> +#define V4L2_VP8_FRAME_ALTREF_LASTFRAME		1
+> +#define V4L2_VP8_FRAME_ALTREF_GOLDEN		2
+> +
+> +#define V4L2_VP8_FRAME_REF_LAST		0
+> +#define V4L2_VP8_FRAME_REF_GOLDEN	1
+> +#define V4L2_VP8_FRAME_REF_ALT		2
+> +
+> +/**
+> + * struct v4l2_ctrl_vp8_encode_params - VP8 encode parameters
+> + * @flags: combination of V4L2_VP8_FRAME_FLAG_{} flags.
+> + * @frame_type: specifies the frame type (key or inter).
+> + *		Set to one of V4L2_VP8_FRAME_TYPE_{}.
+> + * @color_space: defines the YUV color space of the sequence.
+> + *		 V4L2_VP8_FRAME_TYPE_INTER frames shall set this field to zero.
+> + *		 Set to one of V4L2_VP8_FRAME_COLOR_SPACE_{}.
+> + * @clamping_type: defines pixel value clamping type.
+> + *		   V4L2_VP8_FRAME_TYPE_INTER frames shall set this field to zero.
+> + *		   Set to one of V4L2_VP8_FRAME_CLAMPING_{}.
+> + * @loop_filter_type: selects the type of loop filter applied.
+> + *		      Set to one of V4L2_VP8_FRAME_FILTER_TYPE_{}.
+> + * @loop_filter_level: sets the strength of the applied loop filter.
+> + *		       Set to a value from the rage 0..63.
+> + * @sharpness_level: sets the sharpness of the applied loop filter.
+> + *		     Set to a value from the range 0..7.
+> + * @log2_nbr_of_dct_partitions: determines the number of separate partitions
+> + *				containing the DCT coefficients of macroblocks.
+> + *				Set to one of V4L2_VP8_FRAME_NBR_DCT_PARTITIONS_{}.
+> + * @prob_intra: indicates the probability of an intra macroblock.
+> + *		Set to a value from the range 0..255.
+> + * @prob_last: indicates the probability that the last reference frame is used for inter-prediction.
+> + *	       Set to a value from the range 0..255.
+> + * @prob_gf: indicates the probability that the golden reference frame is used for inter-prediction.
+> + *	     Set to a value from the range 0..255.
+> + * @copy_buffer_to_golden: specifies the golden frame refresh strategy.
+> + *			   Set to one of V4L2_VP8_FRAME_FLAG_GOLDEN_{}.
+> + * @copy_buffer_to_alternate: specifies the atlref frame refresh strategy.
+> + *			      Set to one of V4L2_VP8_FRAME_FLAG_ALTREF_{}.
+> + * @reference_type: specifies what kind of reference to use for current inter frame.
+> + *		    V4L2_VP8_FRAME_TYPE_KEYFRAME shall set this field to zero.
+> + *		    Set to one of V4L2_VP8_FRAME_REF_{}.
+> + */
+> +struct v4l2_ctrl_vp8_encode_params {
+> +	__u32 flags;
+> +	__u8 frame_type;
+> +	__u8 color_space;
+> +	__u8 clamping_type;
+> +	__u8 loop_filter_type;
+> +	__u8 loop_filter_level;
+> +	__u8 sharpness_level;
+> +	__u8 log2_nbr_of_dct_partitions;
+> +	__u8 prob_intra;
+> +	__u8 prob_last;
+> +	__u8 prob_gf;
+> +	__u8 copy_buffer_to_golden;
+> +	__u8 copy_buffer_to_alternate;
+> +	__u8 reference_type;
+> +};
+> +
+> +#define V4L2_CID_STATELESS_VP8_ENCODE_QP	(V4L2_CID_CODEC_STATELESS_BASE + 602)
+> +
+>  /* MPEG-compression definitions kept for backwards compatibility */
+>  #ifndef __KERNEL__
+>  #define V4L2_CTRL_CLASS_MPEG            V4L2_CTRL_CLASS_CODEC
+> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
+> index 78260e5d9985..b3cbdc60b82c 100644
+> --- a/include/uapi/linux/videodev2.h
+> +++ b/include/uapi/linux/videodev2.h
+> @@ -1836,6 +1836,7 @@ struct v4l2_ext_control {
+>  		struct v4l2_ctrl_av1_tile_group_entry __user *p_av1_tile_group_entry;
+>  		struct v4l2_ctrl_av1_frame __user *p_av1_frame;
+>  		struct v4l2_ctrl_av1_film_grain __user *p_av1_film_grain;
+> +		struct v4l2_ctrl_vp8_encode_params __user *p_vp8_encode_params;
+>  		void __user *ptr;
+>  	};
+>  } __attribute__ ((packed));
+> @@ -1914,6 +1915,8 @@ enum v4l2_ctrl_type {
+>  	V4L2_CTRL_TYPE_AV1_TILE_GROUP_ENTRY = 0x281,
+>  	V4L2_CTRL_TYPE_AV1_FRAME	    = 0x282,
+>  	V4L2_CTRL_TYPE_AV1_FILM_GRAIN	    = 0x283,
+> +
+> +	V4L2_CTRL_TYPE_VP8_ENCODE_PARAMS	= 0x0290,
+>  };
+>  
+>  /*  Used in the VIDIOC_QUERYCTRL ioctl for querying controls */
+> -- 
+> 2.25.1
+> 
