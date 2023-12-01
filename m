@@ -2,505 +2,327 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E8DD80110A
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:21:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A093801124
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:21:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378295AbjLAQbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 11:31:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46456 "EHLO
+        id S1378343AbjLAQb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 11:31:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229536AbjLAQbD (ORCPT
+        with ESMTP id S229674AbjLAQb1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 11:31:03 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 603A083;
-        Fri,  1 Dec 2023 08:31:08 -0800 (PST)
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B1GUIPF002470;
-        Fri, 1 Dec 2023 16:31:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=wIr0pVsfWvGANkOc79yLdF5wut93kx7dMxtsOXN+uIM=;
- b=PBAiFj3AbnqLXfcM+338Fq8tg/e5CgOFSD7CgcyyBcmNm6cxPsG5rY2XYUD9+++sQ3MK
- ZQJ7Tfl/ufnVx1e8kuQhWP5DYTiDQo/RGFe+04q5zQwYyJ9UCCiBj6LqL50MEFRcU7vc
- cAulEEijM/AfeZpQEGa87N3t2OQCfDOWGSDaGSHEg0gVqHSnlEcKlq0UCTY9oOEBmxoX
- 4V9yI3jjmtYLoMUbzPQTMTS2ji4fCSHzNWM1ezooOdf6ScjZkM1izv1CR1ySvzykDnjw
- oBBdVOlm4bOkdAa8HXT1Rtjzi/V0TAthXpBl4xD0yuZ5kHHNNutXvv4dLT6W5rNVk99p Nw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uqk2k822r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 01 Dec 2023 16:31:01 +0000
-Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3B1GUOXQ002818;
-        Fri, 1 Dec 2023 16:31:00 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uqk2k821v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 01 Dec 2023 16:31:00 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3B1DoNlE031663;
-        Fri, 1 Dec 2023 16:30:59 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3ukun06cwh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 01 Dec 2023 16:30:59 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-        by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3B1GUumi22872826
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 1 Dec 2023 16:30:56 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 40FF12004B;
-        Fri,  1 Dec 2023 16:30:56 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 10B8A20040;
-        Fri,  1 Dec 2023 16:30:55 +0000 (GMT)
-Received: from [9.179.28.5] (unknown [9.179.28.5])
-        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Fri,  1 Dec 2023 16:30:54 +0000 (GMT)
-Message-ID: <19b288d3-5434-40b1-93fa-7db47e417f60@linux.ibm.com>
-Date:   Fri, 1 Dec 2023 17:30:54 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v3 5/7] net/smc: compatible with 128-bits extend
- GID of virtual ISM device
-Content-Language: en-US
-To:     Wen Gu <guwen@linux.alibaba.com>, wenjia@linux.ibm.com,
-        hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, kgraul@linux.ibm.com, jaka@linux.ibm.com
-Cc:     borntraeger@linux.ibm.com, svens@linux.ibm.com,
-        alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
-        raspl@linux.ibm.com, schnelle@linux.ibm.com,
-        linux-s390@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1701343695-122657-1-git-send-email-guwen@linux.alibaba.com>
- <1701343695-122657-6-git-send-email-guwen@linux.alibaba.com>
-From:   Alexandra Winter <wintera@linux.ibm.com>
-In-Reply-To: <1701343695-122657-6-git-send-email-guwen@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: J3ErTrvEnCj9xbn8jvO_FnmGVAPd24SY
-X-Proofpoint-GUID: 9gnKUn2vcGwTXfSkZZM2aoUcRnPA4FpH
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Fri, 1 Dec 2023 11:31:27 -0500
+Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBD75D40;
+        Fri,  1 Dec 2023 08:31:27 -0800 (PST)
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20231201163123euoutp01665d06b3e9693dcbe494a262b1aed34f~cwjMbTCwJ0139601396euoutp01n;
+        Fri,  1 Dec 2023 16:31:23 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20231201163123euoutp01665d06b3e9693dcbe494a262b1aed34f~cwjMbTCwJ0139601396euoutp01n
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1701448284;
+        bh=WVy81ELyRL4ewwE4ZYe0oK50KRr9OpFGuAYWG5kBZMs=;
+        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+        b=T5hnN8q50eP00IBSFxXQAmJOUWxamW7q5TgY32OyLDzxtqknOy+NSFpaD+hNGS22h
+         lAl1jSR1s6PYfGTR44xLswxW6E0bJ5PeYeyD92Yig9PVD9pgWwbw+RdOAP96cSRFpa
+         HSL5sRW9jZcY5g+9CAJzjtum8vWCcOBeJWmcoFcg=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20231201163123eucas1p12da48aab4b9c40d3f3a425181f60030e~cwjMQKq0E3066430664eucas1p1T;
+        Fri,  1 Dec 2023 16:31:23 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id D8.E0.09539.B5A0A656; Fri,  1
+        Dec 2023 16:31:23 +0000 (GMT)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20231201163123eucas1p2f5f881dbb605051d96bc381d005105bc~cwjLqZTvw2617626176eucas1p2w;
+        Fri,  1 Dec 2023 16:31:23 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20231201163123eusmtrp17d8c939cc6ca86c6494a9f619ce5e83a~cwjLpySTf0767607676eusmtrp1X;
+        Fri,  1 Dec 2023 16:31:23 +0000 (GMT)
+X-AuditID: cbfec7f2-52bff70000002543-f5-656a0a5b309c
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id E3.8C.09274.A5A0A656; Fri,  1
+        Dec 2023 16:31:23 +0000 (GMT)
+Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20231201163122eusmtip13205e20233e61dd48e89596404465dd2~cwjLawovx0218502185eusmtip13;
+        Fri,  1 Dec 2023 16:31:22 +0000 (GMT)
+Received: from localhost (106.210.248.232) by CAMSVWEXC02.scsc.local
+        (2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
+        Fri, 1 Dec 2023 16:31:22 +0000
+Date:   Fri, 1 Dec 2023 17:31:20 +0100
+From:   Joel Granados <j.granados@samsung.com>
+To:     Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+CC:     Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-hardening@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH RFC 0/7] sysctl: constify sysctl ctl_tables
+Message-ID: <20231201163120.depfyngsxdiuchvc@localhost>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-01_15,2023-11-30_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- priorityscore=1501 phishscore=0 suspectscore=0 lowpriorityscore=0
- spamscore=0 mlxscore=0 impostorscore=0 bulkscore=0 mlxlogscore=999
- adultscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2311060000 definitions=main-2312010112
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg="pgp-sha512";
+        protocol="application/pgp-signature"; boundary="62vksxdeaplkstjx"
+Content-Disposition: inline
+In-Reply-To: <475cd5fa-f0cc-4b8b-9e04-458f6d143178@t-8ch.de>
+X-Originating-IP: [106.210.248.232]
+X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
+        CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrNKsWRmVeSWpSXmKPExsWy7djP87rRXFmpBienaFg0L17PZvHr4jRW
+        izPduRZ79p5ksZi3/iejxeVdc9gsfv94xmRxY8JTRotlO/0cOD1mN1xk8ViwqdRj06pONo/9
+        c9ewe3zeJOfR332MPYAtissmJTUnsyy1SN8ugSujadst1oI79hVLZrWxNjBeNupi5OSQEDCR
+        +HP2EmMXIxeHkMAKRom7K6ewQzhfGCW2v1/KAuF8ZpTomvCYHablbE8PVNVyRonWZV3scFW7
+        uv9DDdvCKPHh3l6gDAcHi4CKxLn/liDdbAI6Euff3GEGsUUEbCRWfvsM1swssItJ4vHDuUwg
+        CWEBe4meg+vYQGxeAXOJ/Rs6oWxBiZMzn7CA2MwCFRJ/N85nBpnPLCAtsfwfB0iYE2jm7eal
+        jBCXKktcn/mCCcKulTi15RYTyC4JgeWcEndOHmeFSLhINHa/ZYOwhSVeHd8C9aaMxOnJPSwQ
+        DZMZJfb/+8AO4axmlFjW+BVqrLVEy5UnUB2OEj1/1zKCXCQhwCdx460gxKF8EpO2TWeGCPNK
+        dLQJQVSrSay+94ZlAqPyLCSvzULy2iyE1yDCehI3pk5hwxDWlli28DUzhG0rsW7de5YFjOyr
+        GMVTS4tz01OLDfNSy/WKE3OLS/PS9ZLzczcxAtPc6X/HP+1gnPvqo94hRiYOxkOMKkDNjzas
+        vsAoxZKXn5eqJMJ7/Wl6qhBvSmJlVWpRfnxRaU5q8SFGaQ4WJXFe1RT5VCGB9MSS1OzU1ILU
+        IpgsEwenVANTCUPQkw2sew/NfRH29oPb83TP6G9dOrO++y06Lbj4bGDVmqaNDfLJPq+uT7o2
+        1XDBlauPVvJEyRe1KP3sMpdu/F7IO3X++b+xKasZ5k2d8YYj/qNtR0M01zr75V/X3r3LYvkj
+        vOh2xuOZm9L5DXN8djx5/+T/XX23BbpPNive9ro5yULn9pnwB7+PftEXOcp7P0q/uC0nO2Xh
+        Dn8lD55b0dO+LXdoz++8t9tDSdPpxTS3xftmxnGvqP5yru172eK/ExjzY03Dk1fP5fuoFf4g
+        a6L7+3cflqVcLDzPpP1r6o8DBzuWq7X7F+4v87arZOBJnHg1ODzbhsvA5WfA8YAJWzW+ShnU
+        3VytwGMl98HglhJLcUaioRZzUXEiAK5DLCHuAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrGIsWRmVeSWpSXmKPExsVy+t/xu7rRXFmpBj+bmCyaF69ns/h1cRqr
+        xZnuXIs9e0+yWMxb/5PR4vKuOWwWv388Y7K4MeEpo8WynX4OnB6zGy6yeCzYVOqxaVUnm8f+
+        uWvYPT5vkvPo7z7GHsAWpWdTlF9akqqQkV9cYqsUbWhhpGdoaaFnZGKpZ2hsHmtlZKqkb2eT
+        kpqTWZZapG+XoJexdOt8poJb9hVnm5awNzBeNOpi5OSQEDCRONvTw97FyMUhJLCUUeJ7x1UW
+        iISMxMYvV1khbGGJP9e62CCKPjJK7J80EcrZwiix6dxjoCoODhYBFYlz/y1BGtgEdCTOv7nD
+        DGKLCNhIrPz2GWwDs8AuJonHD+cygSSEBewleg6uYwOxeQXMJfZv6ASzhQR+MEq86KuEiAtK
+        nJz5BOwiZoEyiWNnvjGC7GIWkJZY/o8DJMwJNP9281JGiEOVJa7PfMEEYddKfP77jHECo/As
+        JJNmIZk0C2ESRFhHYufWO2wYwtoSyxa+ZoawbSXWrXvPsoCRfRWjSGppcW56brGRXnFibnFp
+        Xrpecn7uJkZgpG879nPLDsaVrz7qHWJk4mA8xKgC1Plow+oLjFIsefl5qUoivNefpqcK8aYk
+        VlalFuXHF5XmpBYfYjQFBuJEZinR5HxgCsoriTc0MzA1NDGzNDC1NDNWEuf1LOhIFBJITyxJ
+        zU5NLUgtgulj4uCUamBa0qAxM2BRMIvEVd+DTc15T5duNFwixOXJw/Mmqu4sh8365PxQw4Sm
+        MIGV9ZPLDj1el+F9LV7C3VH1ywPbtw8dfrI8XFDO4i5iN9GEYfXG3m+K05y2eOUemWV3yE60
+        fs5Ci6vZIsdFk0NLZj46rPdV9UDVLcFJljNVivkTmgV7ZPhXzs6RmBbQLqni7a92J0SxOPOA
+        4IEyfnefp1vfbt6QyOwY72ahH8uvYceygNVNqz/9eYjiufsfp61fvfjO2vrLdrwp7xtLtGNk
+        JUIZz8e9zjK5kBdzefLhjRJbDtjN0nn3YxdPeNVZ7+gPPvuuyIpy58Rlr3umtsRUKm/u9MDr
+        /fvmSScEFS+edySBQYmlOCPRUIu5qDgRAM2fcV6JAwAA
+X-CMS-MailID: 20231201163123eucas1p2f5f881dbb605051d96bc381d005105bc
+X-Msg-Generator: CA
+X-RootMTR: 20231125125305eucas1p2ebdf870dd8ef46ea9d346f727b832439
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20231125125305eucas1p2ebdf870dd8ef46ea9d346f727b832439
+References: <CGME20231125125305eucas1p2ebdf870dd8ef46ea9d346f727b832439@eucas1p2.samsung.com>
+        <20231125-const-sysctl-v1-0-5e881b0e0290@weissschuh.net>
+        <20231127101323.sdnibmf7c3d5ovye@localhost>
+        <475cd5fa-f0cc-4b8b-9e04-458f6d143178@t-8ch.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--62vksxdeaplkstjx
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+Hey Thomas.
 
-On 30.11.23 12:28, Wen Gu wrote:
-[...]
-> diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
-> index 766a1f1..d1e18bf 100644
-> --- a/net/smc/af_smc.c
-> +++ b/net/smc/af_smc.c
-[...]
-> @@ -1048,7 +1048,8 @@ static int smc_find_ism_v2_device_clnt(struct smc_sock *smc,
->  {
->  	int rc = SMC_CLC_DECL_NOSMCDDEV;
->  	struct smcd_dev *smcd;
-> -	int i = 1;
-> +	int i = 1, entry = 1;
-> +	bool is_virtual;
->  	u16 chid;
->  
->  	if (smcd_indicated(ini->smc_type_v1))
-> @@ -1060,14 +1061,23 @@ static int smc_find_ism_v2_device_clnt(struct smc_sock *smc,
->  		chid = smc_ism_get_chid(smcd);
->  		if (!smc_find_ism_v2_is_unique_chid(chid, ini, i))
->  			continue;
-> +		is_virtual = __smc_ism_is_virtual(chid);
->  		if (!smc_pnet_is_pnetid_set(smcd->pnetid) ||
->  		    smc_pnet_is_ndev_pnetid(sock_net(&smc->sk), smcd->pnetid)) {
-> +			if (is_virtual && entry == SMC_MAX_ISM_DEVS)
-> +				/* only one GID-CHID entry left in CLC Proposal SMC-Dv2
-> +				 * extension. but a virtual ISM device's GID takes two
-> +				 * entries. So give up it and try the next potential ISM
-> +				 * device.
-> +				 */
+Thx for the clarifications. I did more of a deep dive into your set and
+have additional comments (in line). I think const-ing all this is a good
+approach. The way forward is to be able to see the entire patch set of
+changes in a V1 or a shared repo somewhere to have a better picture of
+what is going on. By the "entire patchset" I mean all the changes that
+you described in the "full process".
 
-It is really importatnt to note that virtual ISMs take 2 entries.
-But it is still hard to understand this piece of code. e.g. I was wondering for a while,
-why you mention CLC here...
-Maybe it would be easier to understand this, if you rename SMC_MAX_ISM_DEVS to something else?
-Something like SMCD_MAX_V2_GID_ENTRIES?
+On Tue, Nov 28, 2023 at 09:18:30AM +0100, Thomas Wei=DFschuh wrote:
+> Hi Joel,
+>=20
+> On 2023-11-27 11:13:23+0100, Joel Granados wrote:
+> > In general I would like to see more clarity with the motivation and I
+> > would also expect some system testing. My comments inline:
+>=20
+> Thanks for your feedback, response are below.
+>=20
+> > On Sat, Nov 25, 2023 at 01:52:49PM +0100, Thomas Wei=DFschuh wrote:
+> > > Problem description:
+> > >=20
+> > > The kernel contains a lot of struct ctl_table throught the tree.
+> > > These are very often 'static' definitions.
+> > > It would be good to mark these tables const to avoid accidental or
+> > > malicious modifications.
+>=20
+> > It is unclear to me what you mean here with accidental or malicious
+> > modifications. Do you have a specific attack vector in mind? Do you
+> > have an example of how this could happen maliciously? With
+> > accidental, do you mean in proc/sysctl.c? Can you expand more on the
+> > accidental part?
+>=20
+> There is no specific attack vector I have in mind. The goal is to remove
+> mutable data, especially if it contains pointers, that could be used by
+> an attacker as a step in an exploit. See for example [0], [1].
+I think you should work "remove mutable data" as part of you main
+motivation when you send the non-RFC patch. I would also including [0]
+and [1] (and any other previous work) to help contextualize.
 
-> +				continue;
->  			ini->ism_dev[i] = smcd;
->  			ini->ism_chid[i] = chid;
->  			ini->is_smcd = true;
->  			rc = 0;
->  			i++;
-> -			if (i > SMC_MAX_ISM_DEVS)
-> +			entry = is_virtual ? entry + 2 : entry + 1;
-> +			if (entry > SMC_MAX_ISM_DEVS)
->  				break;
->  		}
->  	}
-[...]
+>=20
+> Accidental can be any out-of-bounds write throughout the kernel.
+>=20
+> > What happens with the code that modifies these outside the sysctl core?
+> > Like for example in sysctl_route_net_init where the table is modified
+> > depending on the net->user_ns? Would these non-const ctl_table pointers
+> > be ok? would they be handled differently?
+>=20
+> It is still completely fine to modify the tables before registering,
+> like sysctl_route_net_init is doing. That code should not need any
+> changes.
+>=20
+> Modifying the table inside the handler function would bypass the
+> validation done when registering so sounds like a bad idea in general.
+This is done before registering. So the approach *is* sound.
 
+> It would still be possible however for a subsystem to do so by just not
+> making their sysctl table const and then modifying the table directly.
+Indeed. Which might be intended or migth be someone that just forgets to
+put const. I think you mentioned that there would be some sort of static
+check for this (coccinelle or smach, or something else)?=20
 
+> =20
+> > > Unfortunately the tables can not be made const because the core
+> > > registration functions expect mutable tables.
+> > >=20
+> > > This is for two reasons:
+> > >=20
+> > > 1) sysctl_{set,clear}_perm_empty_ctl_header in the sysctl core modify
+> > >    the table. This should be fixable by only modifying the header
+> > >    instead of the table itself.
+> > > 2) The table is passed to the handler function as a non-const pointer.
+> > >=20
+> > > This series is an aproach on fixing reason 2).
+>=20
+> > So number 2 will be sent in another set?
+Sorry, this was supposed to be "number 1", but you got my meaning :)
 
-> @@ -2154,18 +2176,35 @@ static void smc_find_ism_v2_device_serv(struct smc_sock *new_smc,
->  	smcd_v2_ext = smc_get_clc_smcd_v2_ext(smc_v2_ext);
->  
->  	mutex_lock(&smcd_dev_list.mutex);
-> -	if (pclc_smcd->ism.chid)
-> +	if (pclc_smcd->ism.chid) {
->  		/* check for ISM device matching proposed native ISM device */
-> +		smcd_gid.gid = ntohll(pclc_smcd->ism.gid);
-> +		smcd_gid.gid_ext = 0;
->  		smc_check_ism_v2_match(ini, ntohs(pclc_smcd->ism.chid),
-> -				       ntohll(pclc_smcd->ism.gid), &matches);
-> +				       &smcd_gid, &matches);
-> +	}
->  	for (i = 1; i <= smc_v2_ext->hdr.ism_gid_cnt; i++) {
+>=20
+> If the initial feedback to the RFC and general process is positive, yes.
+Off the top of my head, putting  that type in the header instead of the
+ctl_table seems ok. I would include it in non-RFC version together with
+2.
 
-IMO the following code would be easier to read, if you change the above to count 
-from i = 0; i < smc_v2_ext->hdr.ism_gid_cnt;
-and then use i and i+1 as indexes below.
+>=20
+> > >=20
+> > > Full process:
+> > >=20
+> > > * Introduce field proc_handler_new for const handlers (this series)
+I don't understand why we need a new handler. Couldn't we just change
+the existing handler to receive `const struct ctl_table` and change all
+the `proc_do*` handlers?
+I'm guessing its because you want to do this in steps? if that is the
+case, it would be very helpfull to see (in some repo or V1) the steps
+to change all the handlers in the non-RFC version=20
 
->  		/* check for ISM devices matching proposed non-native ISM
->  		 * devices
->  		 */
-> -		smc_check_ism_v2_match(ini,
-> -				       ntohs(smcd_v2_ext->gidchid[i - 1].chid),
-> -				       ntohll(smcd_v2_ext->gidchid[i - 1].gid),
-> -				       &matches);
-> +		smcd_gid.gid = ntohll(smcd_v2_ext->gidchid[i - 1].gid);
-> +		smcd_gid.gid_ext = 0;
-> +		chid = ntohs(smcd_v2_ext->gidchid[i - 1].chid);
-> +		if (__smc_ism_is_virtual(chid)) {
-> +			if (i == smc_v2_ext->hdr.ism_gid_cnt ||
-> +			    chid != ntohs(smcd_v2_ext->gidchid[i].chid))
-> +				/* a virtual ISM device takes two GID-CHID entries
-> +				 * and CHID of the second entry repeats that of the
-> +				 * first entry.
-> +				 *
-> +				 * So check if the second GID-CHID entry exists and
-> +				 * the CHIDs of these two entries are the same.
-> +				 */
-> +				continue;
-> +
-> +			smcd_gid.gid_ext = ntohll(smcd_v2_ext->gidchid[i++].gid);
-> +		}
-> +		smc_check_ism_v2_match(ini, chid, &smcd_gid, &matches);
->  	}
->  	mutex_unlock(&smcd_dev_list.mutex);
->  
-[...]
+> > > * Migrate all core handlers to proc_handler_new (this series, partial)
+> > >   This can hopefully be done in a big switch, as it only involves
+> > >   functions and structures owned by the core sysctl code.
+It would be helpful to see what the "big switch" would look like. If it
+is all sysctl code and cannot be chunked up because of dependencies,
+then it should be ok to do it in one go.
 
+> > > * Migrate all other sysctl handlers to proc_handler_new.
+> > > * Drop the old proc_handler_field.
+> > > * Fix the sysctl core to not modify the tables anymore.
+> > > * Adapt public sysctl APIs to take "const struct ctl_table *".
+> > > * Teach checkpatch.pl to warn on non-const "struct ctl_table"
+> > >   definitions.
+Have you considered how to ignore the cases where the ctl_tables are
+supposed to be non-const when they are defined (like in the network
+code that we were discussing earlier)
 
+> > > * Migrate definitions of "struct ctl_table" to "const" where applicab=
+le.
+These migrations are treewide and are usually reviewed by a wider
+audience. You might need to chunk it up to make the review more palpable
+for the other maintainers.
 
-> diff --git a/net/smc/smc_clc.c b/net/smc/smc_clc.c
-> index e2e437b..2d8bc0b 100644
-> --- a/net/smc/smc_clc.c
-> +++ b/net/smc/smc_clc.c
-[...]
-> @@ -1020,23 +1033,28 @@ static int smc_clc_send_confirm_accept(struct smc_sock *smc,
->  	if (first_contact)
->  		clc->hdr.typev2 |= SMC_FIRST_CONTACT_MASK;
->  	if (conn->lgr->is_smcd) {
+> > > =20
+> > >=20
+> > > Notes:
+> > >=20
+> > > Just casting the function pointers around would trigger
+> > > CFI (control flow integrity) warnings.
+> > >=20
+> > > The name of the new handler "proc_handler_new" is a bit too long mess=
+ing
+> > > up the alignment of the table definitions.
+> > > Maybe "proc_handler2" or "proc_handler_c" for (const) would be better.
+>=20
+> > indeed the name does not say much. "_new" looses its meaning quite fast
+> > :)
+>=20
+> Hopefully somebody comes up with a better name!
+I would like to avoid this all together and just do add the const to the
+existing "proc_handler"
 
-It would be nice to have 2 subfunctions for ism and rdma instead of this large if/else block.
+>=20
+> > In my experience these tree wide modifications are quite tricky. Have y=
+ou
+> > run any tests to see that everything is as it was? sysctl selftests and
+> > 0-day come to mind.
+>=20
+> I managed to miss one change in my initial submission:
+> With the hunk below selftests and typing emails work.
+>=20
+> --- a/fs/proc/proc_sysctl.c
+> +++ b/fs/proc/proc_sysctl.c
+> @@ -1151,7 +1151,7 @@ static int sysctl_check_table(const char *path, str=
+uct ctl_table_header *header)
+>                         else
+>                                 err |=3D sysctl_check_table_array(path, e=
+ntry);
+>                 }
+> -               if (!entry->proc_handler)
+> +               if (!entry->proc_handler && !entry->proc_handler_new)
+>                         err |=3D sysctl_err(path, entry, "No proc_handler=
+");
+> =20
+>                 if ((entry->mode & (S_IRUGO|S_IWUGO)) !=3D entry->mode)
+>=20
+> > [..]
+>=20
+> [0] 43a7206b0963 ("driver core: class: make class_register() take a const=
+ *")
+> [1] https://lore.kernel.org/lkml/20230930050033.41174-1-wedsonaf@gmail.co=
+m/
+>=20
+>=20
+> Thomas
 
-> +		struct smcd_gid smcd_gid;
-> +		u16 chid;
-> +
->  		/* SMC-D specific settings */
->  		memcpy(clc->hdr.eyecatcher, SMCD_EYECATCHER,
->  		       sizeof(SMCD_EYECATCHER));
-> +		conn->lgr->smcd->ops->get_local_gid(conn->lgr->smcd, &smcd_gid);
->  		clc->hdr.typev1 = SMC_TYPE_D;
-> -		clc->d0.gid =
-> -			conn->lgr->smcd->ops->get_local_gid(conn->lgr->smcd);
-> -		clc->d0.token = conn->rmb_desc->token;
-> +		clc->d0.gid = htonll(smcd_gid.gid);
-> +		clc->d0.token = htonll(conn->rmb_desc->token);
->  		clc->d0.dmbe_size = conn->rmbe_size_comp;
->  		clc->d0.dmbe_idx = 0;
->  		memcpy(&clc->d0.linkid, conn->lgr->id, SMC_LGR_ID_SIZE);
->  		if (version == SMC_V1) {
->  			clc->hdr.length = htons(SMCD_CLC_ACCEPT_CONFIRM_LEN);
->  		} else {
-> -			clc_v2->d1.chid =
-> -				htons(smc_ism_get_chid(conn->lgr->smcd));
-> +			chid = smc_ism_get_chid(conn->lgr->smcd);
-> +			clc_v2->d1.chid = htons(chid);
->  			if (eid && eid[0])
->  				memcpy(clc_v2->d1.eid, eid, SMC_MAX_EID_LEN);
-> +			if (__smc_ism_is_virtual(chid))
-> +				clc_v2->d1.gid_ext = htonll(smcd_gid.gid_ext);
->  			len = SMCD_CLC_ACCEPT_CONFIRM_LEN_V2;
->  			if (first_contact) {
->  				fce_len = smc_clc_fill_fce_v2x(&fce_v2x, ini);
-> diff --git a/net/smc/smc_clc.h b/net/smc/smc_clc.h
-> index e64c235..dcc63f4 100644
-> --- a/net/smc/smc_clc.h
-> +++ b/net/smc/smc_clc.h
-> @@ -205,8 +205,8 @@ struct smcr_clc_msg_accept_confirm {	/* SMCR accept/confirm */
->  } __packed;
->  
->  struct smcd_clc_msg_accept_confirm_common {	/* SMCD accept/confirm */
-> -	u64 gid;		/* Sender GID */
-> -	u64 token;		/* DMB token */
-> +	__be64 gid;		/* Sender GID */
-> +	__be64 token;		/* DMB token */
+--=20
 
-Good catch, that this needs to be __be. (including the host to net conversions you did above)
-This is not related to the subject of this patch though. So either this should be in a separate patch
-or at least mentioned in the commit message.
+Best
+Joel Granados
 
->  	u8 dmbe_idx;		/* DMBE index */
->  #if defined(__BIG_ENDIAN_BITFIELD)
->  	u8 dmbe_size : 4,	/* buf size (compressed) */
-> @@ -285,8 +285,8 @@ struct smc_clc_msg_accept_confirm_v2 {	/* clc accept / confirm message */
->  			struct smcd_clc_msg_accept_confirm_common d0;
->  			__be16 chid;
->  			u8 eid[SMC_MAX_EID_LEN];
-> -			u8 reserved5[8];
-> -		} d1;
-> +			__be64 gid_ext;
-> +		} __packed d1;
->  	};
->  };
->  
-> diff --git a/net/smc/smc_core.c b/net/smc/smc_core.c
-> index d520ee6..32eece5 100644
-> --- a/net/smc/smc_core.c
-> +++ b/net/smc/smc_core.> @@ -506,6 +506,7 @@ static int smc_nl_fill_smcd_lgr(struct smc_link_group *lgr,
->  {
->  	char smc_pnet[SMC_MAX_PNETID_LEN + 1];
->  	struct smcd_dev *smcd = lgr->smcd;
-> +	struct smcd_gid smcd_gid;
->  	struct nlattr *attrs;
->  	void *nlh;
->  
-> @@ -521,11 +522,11 @@ static int smc_nl_fill_smcd_lgr(struct smc_link_group *lgr,
->  
->  	if (nla_put_u32(skb, SMC_NLA_LGR_D_ID, *((u32 *)&lgr->id)))
->  		goto errattr;
-> +	smcd->ops->get_local_gid(smcd, &smcd_gid);
->  	if (nla_put_u64_64bit(skb, SMC_NLA_LGR_D_GID,
-> -			      smcd->ops->get_local_gid(smcd),
-> -				  SMC_NLA_LGR_D_PAD))
-> +			      smcd_gid.gid, SMC_NLA_LGR_D_PAD))
->  		goto errattr;
-> -	if (nla_put_u64_64bit(skb, SMC_NLA_LGR_D_PEER_GID, lgr->peer_gid,
-> +	if (nla_put_u64_64bit(skb, SMC_NLA_LGR_D_PEER_GID, lgr->peer_gid.gid,
->  			      SMC_NLA_LGR_D_PAD))
->  		goto errattr;
+--62vksxdeaplkstjx
+Content-Type: application/pgp-signature; name="signature.asc"
 
-For virtual ism, you will only see the first half of the GID.
-Is that acceptable? Today we use netlink only for display purposes. 
-What if somebody uses the netlink content as functional input to a user space program?
+-----BEGIN PGP SIGNATURE-----
 
+iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmVqClcACgkQupfNUreW
+QU8bjAv/XDH1QrpOnyw0p5Ef1/EuNDqDCpf//956rA9GC1T48F2ovsuVAtFR7Vht
+vrYW3bE4eJlV2IjwDXoLldcVeJoKJPvQXzbX4ALXjnF3FREfaMHz8lU4YuLDhwE4
+yaclYTzU8T4YTSTH827E4r0I4qYi+7Vysx0Nj1Lu4OQ4cXmxLwefPrC3BrXpW5Pe
+B3nccgjbGdy9ho20n8hWXLlJn114RVPgUxlqX5SbuH2EoPsBCVpfXzHETcOPOFXw
+O5IGLleLH+1/A9JI5woGx+WQmGETev2/2Cc9V2hYGU+6kE4LFBbfN4IPYshvAx5z
+kQx+3AJluJQXeQ0hCBR0CvSTRPaAKnoLkt5/P+8omwZFUunkyk5iL1o0i0UkxaVT
+GHVqtd7gYXUJGr5WSt7brMhUOxhYYrsWl9PKgmqgrhmANVwGxKGfwu0Y3BjzZC47
+WCqLSphlvAg6/hKdgAw1iBVixcxOPJK8Ujx7/gafCHmXp/onZmB6egXAG/pYtEhe
+9nIBsKx8
+=SQPW
+-----END PGP SIGNATURE-----
 
->  	if (nla_put_u8(skb, SMC_NLA_LGR_D_VLAN_ID, lgr->vlan_id))
-> @@ -876,7 +877,10 @@ static int smc_lgr_create(struct smc_sock *smc, struct smc_init_info *ini)
->  		/* SMC-D specific settings */
-
-
-I guess I never really understood, why we define a single linkgroup for SMC-D.
-Probably because SMC-R linkgroups were implemented before SMC-D support was added.
-To all: Do we want to keep that concept?
-
-
->  		smcd = ini->ism_dev[ini->ism_selected];
->  		get_device(smcd->ops->get_dev(smcd));
-> -		lgr->peer_gid = ini->ism_peer_gid[ini->ism_selected];
-> +		lgr->peer_gid.gid =
-> +			ini->ism_peer_gid[ini->ism_selected].gid;
-> +		lgr->peer_gid.gid_ext =
-> +			ini->ism_peer_gid[ini->ism_selected].gid_ext;
->  		lgr->smcd = ini->ism_dev[ini->ism_selected];
->  		lgr_list = &ini->ism_dev[ini->ism_selected]->lgr_list;
->  		lgr_lock = &lgr->smcd->lgr_lock;
-> @@ -1514,7 +1518,8 @@ void smc_lgr_terminate_sched(struct smc_link_group *lgr)
->  }
->  
->  /* Called when peer lgr shutdown (regularly or abnormally) is received */
-> -void smc_smcd_terminate(struct smcd_dev *dev, u64 peer_gid, unsigned short vlan)
-> +void smc_smcd_terminate(struct smcd_dev *dev, struct smcd_gid *peer_gid,
-> +			unsigned short vlan)
->  {
->  	struct smc_link_group *lgr, *l;
->  	LIST_HEAD(lgr_free_list);
-> @@ -1522,9 +1527,12 @@ void smc_smcd_terminate(struct smcd_dev *dev, u64 peer_gid, unsigned short vlan)
->  	/* run common cleanup function and build free list */
->  	spin_lock_bh(&dev->lgr_lock);
->  	list_for_each_entry_safe(lgr, l, &dev->lgr_list, list) {
-> -		if ((!peer_gid || lgr->peer_gid == peer_gid) &&
-> +		if ((!peer_gid->gid ||
-> +		     (lgr->peer_gid.gid == peer_gid->gid &&
-> +		      !smc_ism_is_virtual(dev) ? 1 :
-> +		      lgr->peer_gid.gid_ext == peer_gid->gid_ext)) &&
->  		    (vlan == VLAN_VID_MASK || lgr->vlan_id == vlan)) {
-> -			if (peer_gid) /* peer triggered termination */
-> +			if (peer_gid->gid) /* peer triggered termination */
->  				lgr->peer_shutdown = 1;
->  			list_move(&lgr->list, &lgr_free_list);
->  			lgr->freeing = 1;
-> @@ -1859,10 +1867,12 @@ static bool smcr_lgr_match(struct smc_link_group *lgr, u8 smcr_version,
->  	return false;
->  }
->  
-> -static bool smcd_lgr_match(struct smc_link_group *lgr,
-> -			   struct smcd_dev *smcismdev, u64 peer_gid)
-> +static bool smcd_lgr_match(struct smc_link_group *lgr, struct smcd_dev *smcismdev,
-> +			   struct smcd_gid *peer_gid)
->  {
-> -	return lgr->peer_gid == peer_gid && lgr->smcd == smcismdev;
-> +	return lgr->peer_gid.gid == peer_gid->gid && lgr->smcd == smcismdev &&
-> +		smc_ism_is_virtual(smcismdev) ?
-> +		(lgr->peer_gid.gid_ext == peer_gid->gid_ext) : 1;
->  }
->  
->  /* create a new SMC connection (and a new link group if necessary) */
-> @@ -1892,7 +1902,7 @@ int smc_conn_create(struct smc_sock *smc, struct smc_init_info *ini)
->  		write_lock_bh(&lgr->conns_lock);
->  		if ((ini->is_smcd ?
->  		     smcd_lgr_match(lgr, ini->ism_dev[ini->ism_selected],
-> -				    ini->ism_peer_gid[ini->ism_selected]) :
-> +				    &ini->ism_peer_gid[ini->ism_selected]) :
->  		     smcr_lgr_match(lgr, ini->smcr_version,
->  				    ini->peer_systemid,
->  				    ini->peer_gid, ini->peer_mac, role,
-[...]
-> diff --git a/net/smc/smc_diag.c b/net/smc/smc_diag.c
-> index a584613..c180c18 100644
-> --- a/net/smc/smc_diag.c
-> +++ b/net/smc/smc_diag.c
-> @@ -21,6 +21,7 @@
->  
->  #include "smc.h"
->  #include "smc_core.h"
-> +#include "smc_ism.h"
->  
->  struct smc_diag_dump_ctx {
->  	int pos[2];
-> @@ -168,12 +169,14 @@ static int __smc_diag_dump(struct sock *sk, struct sk_buff *skb,
->  		struct smc_connection *conn = &smc->conn;
->  		struct smcd_diag_dmbinfo dinfo;
->  		struct smcd_dev *smcd = conn->lgr->smcd;
-> +		struct smcd_gid smcd_gid;
->  
->  		memset(&dinfo, 0, sizeof(dinfo));
->  
->  		dinfo.linkid = *((u32 *)conn->lgr->id);
-> -		dinfo.peer_gid = conn->lgr->peer_gid;
-> -		dinfo.my_gid = smcd->ops->get_local_gid(smcd);
-> +		dinfo.peer_gid = conn->lgr->peer_gid.gid;
-> +		smcd->ops->get_local_gid(smcd, &smcd_gid);
-> +		dinfo.my_gid = smcd_gid.gid;
-
-For virtual ism, you will only see the first half of the GID.
-Is that acceptable? 
-
->  		dinfo.token = conn->rmb_desc->token;
->  		dinfo.peer_token = conn->peer_token;
->  
-> diff --git a/net/smc/smc_ism.c b/net/smc/smc_ism.c
-> index fbee249..a33f861 100644
-> --- a/net/smc/smc_ism.c
-> +++ b/net/smc/smc_ism.c
-
-Some of the content of this file is specific to s390 firmware ISMs and some is
-relevant to all future ism devices.
-IMO there is some more work to do to create a clean "smcd-protocol to scmd-device" interface.
-Maybe also some moving between this file and drivers/s390/net/ism_drv.c
-
-Maybe this would be a good next patchset?
-
-Whoever takes this work, remember:
-https://lore.kernel.org/netdev/1c6bdfbf-54c1-4251-916e-9a703a9f644c@infradead.org/T/
-We want to be able to combine SMC, ISM and future kernel modules in any combination.
-Gerd's patch above was meant to solve the current problem. For additional ism devices,
-we need some more improvements, I think.
-
-
-
-
-
-> @@ -44,7 +44,8 @@ static void smcd_handle_irq(struct ism_dev *ism, unsigned int dmbno,
->  #endif
->  
->  /* Test if an ISM communication is possible - same CPC */
-> -int smc_ism_cantalk(u64 peer_gid, unsigned short vlan_id, struct smcd_dev *smcd)
-> +int smc_ism_cantalk(struct smcd_gid *peer_gid, unsigned short vlan_id,
-> +		    struct smcd_dev *smcd)
->  {
->  	return smcd->ops->query_remote_gid(smcd, peer_gid, vlan_id ? 1 : 0,
->  					   vlan_id);
-> @@ -208,7 +209,7 @@ int smc_ism_register_dmb(struct smc_link_group *lgr, int dmb_len,
->  	dmb.dmb_len = dmb_len;
->  	dmb.sba_idx = dmb_desc->sba_idx;
->  	dmb.vlan_id = lgr->vlan_id;
-> -	dmb.rgid = lgr->peer_gid;
-> +	dmb.rgid = lgr->peer_gid.gid;
->  	rc = lgr->smcd->ops->register_dmb(lgr->smcd, &dmb, &smc_ism_client);
->  	if (!rc) {
->  		dmb_desc->sba_idx = dmb.sba_idx;
-> @@ -340,18 +341,20 @@ struct smc_ism_event_work {
->  
->  static void smcd_handle_sw_event(struct smc_ism_event_work *wrk)
->  {
-> +	struct smcd_gid peer_gid = { .gid = wrk->event.tok,
-> +				     .gid_ext = 0 };
->  	union smcd_sw_event_info ev_info;
->  
->  	ev_info.info = wrk->event.info;
->  	switch (wrk->event.code) {
->  	case ISM_EVENT_CODE_SHUTDOWN:	/* Peer shut down DMBs */
-> -		smc_smcd_terminate(wrk->smcd, wrk->event.tok, ev_info.vlan_id);
-> +		smc_smcd_terminate(wrk->smcd, &peer_gid, ev_info.vlan_id);
->  		break;
->  	case ISM_EVENT_CODE_TESTLINK:	/* Activity timer */
->  		if (ev_info.code == ISM_EVENT_REQUEST) {
->  			ev_info.code = ISM_EVENT_RESPONSE;
->  			wrk->smcd->ops->signal_event(wrk->smcd,
-> -						     wrk->event.tok,
-> +						     &peer_gid,
->  						     ISM_EVENT_REQUEST_IR,
->  						     ISM_EVENT_CODE_TESTLINK,
->  						     ev_info.info);
-> @@ -365,10 +368,12 @@ static void smc_ism_event_work(struct work_struct *work)
->  {
->  	struct smc_ism_event_work *wrk =
->  		container_of(work, struct smc_ism_event_work, work);
-> +	struct smcd_gid smcd_gid = { .gid = wrk->event.tok,
-> +				     .gid_ext = 0 };
->  
->  	switch (wrk->event.type) {
->  	case ISM_EVENT_GID:	/* GID event, token is peer GID */
-> -		smc_smcd_terminate(wrk->smcd, wrk->event.tok, VLAN_VID_MASK);
-> +		smc_smcd_terminate(wrk->smcd, &smcd_gid, VLAN_VID_MASK);
->  		break;
->  	case ISM_EVENT_DMB:
->  		break;
-> @@ -525,7 +530,7 @@ int smc_ism_signal_shutdown(struct smc_link_group *lgr)
->  	memcpy(ev_info.uid, lgr->id, SMC_LGR_ID_SIZE);
->  	ev_info.vlan_id = lgr->vlan_id;
->  	ev_info.code = ISM_EVENT_REQUEST;
-> -	rc = lgr->smcd->ops->signal_event(lgr->smcd, lgr->peer_gid,
-> +	rc = lgr->smcd->ops->signal_event(lgr->smcd, &lgr->peer_gid,
->  					  ISM_EVENT_REQUEST_IR,
->  					  ISM_EVENT_CODE_SHUTDOWN,
->  					  ev_info.info);
-[...]
+--62vksxdeaplkstjx--
