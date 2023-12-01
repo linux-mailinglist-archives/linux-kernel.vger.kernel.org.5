@@ -2,209 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E55DE8011B5
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:30:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB44B8011BA
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:30:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378762AbjLARaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 12:30:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38730 "EHLO
+        id S1378776AbjLARa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 12:30:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229888AbjLARaP (ORCPT
+        with ESMTP id S230186AbjLARaZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 12:30:15 -0500
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC8EF1AD
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 09:30:20 -0800 (PST)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5d6b751dabcso7391847b3.1
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 09:30:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701451820; x=1702056620; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=VAwqWhtGBymfFWGSRnnaYIZdN2QXYyqbsCWaqHXus74=;
-        b=3DJjGyWyqnykttnQCAtneJdAf/T8zEWffb1IQXSxpmDrHIf5ZTkbRAJdr2trdklq9/
-         F7sxaggk0VlnyM0QAwEwAsva8fJHg9PW5NbjbP9AWjCJoQPIk3I1SA33G7DmkZO0XlNq
-         oe8c7lQ6S2rkWxm7BTfu9Mi7c500hhmlBLC7Rnflip6I3Va/GZ7398zqyB4+LjzZy8pY
-         MlSKi86PFFeg74zd4dv8p4cXNB2l9fHFkK75llbpx+pk4EyhGj58yk0zikdO/0VIZysa
-         45xaF9PAJ2b8w7YagWRu7IMCUFwyeE8UvrUHWq7VX0VA1B9+Nja8j2F+C1TQw9YDY6AM
-         QRaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701451820; x=1702056620;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=VAwqWhtGBymfFWGSRnnaYIZdN2QXYyqbsCWaqHXus74=;
-        b=rrr9/TqpNiccSuGLBNtm4cPPCP63FoR0+CAPSKIUWLw5ivBYUcUsSyc8c2rYPgh0yK
-         ZvCJfG+whqfNwWCU4L1QuX10xuR0onSl/6eWHYe4BeRyJZ5iMvVLITG7A2KrPANCDX9V
-         ahfryxUC7eCG9tJV4E1wCVQNhdtC8IbK2veP/61gMz32sSeA23GX3cI4jGEUqEFeYU+U
-         5giRjqQKlDXvECZKt7g6WLWEk8WH6X3mL+ZydodR8yhGt0N5hPit8Otu+3S6fyRp+6lC
-         USBnKjlg0/EH1C/48Km3rtf3CfeVDvqppNz+ba1kihjO8POUOH6p8fN3nEyoJd3Q0CqI
-         LEew==
-X-Gm-Message-State: AOJu0Yx5QNBXyc5IAAJupsCafT8dZ3QF6BRK/UJCudRd8LAWepsO322b
-        ELHxqOslPeIxdPGRFFJRqTzZsSCtxjo=
-X-Google-Smtp-Source: AGHT+IHyhcKzCnONo7e+a7QXWq3GbY4bKLR6abaqSXFAlCVSPnEer33Z4LVtdS7hrcP1myZX+DFMf5ogeNg=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a0d:dfd7:0:b0:5d3:b449:e58e with SMTP id
- i206-20020a0ddfd7000000b005d3b449e58emr168400ywe.6.1701451819845; Fri, 01 Dec
- 2023 09:30:19 -0800 (PST)
-Date:   Fri, 1 Dec 2023 09:30:18 -0800
-In-Reply-To: <20231116133628.5976-1-clopez@suse.de>
-Mime-Version: 1.0
-References: <20231116133628.5976-1-clopez@suse.de>
-Message-ID: <ZWoYKs0OKdSOLOLR@google.com>
-Subject: Re: [PATCH v2] KVM: X86: improve documentation for KVM_CAP_X86_BUS_LOCK_EXIT
-From:   Sean Christopherson <seanjc@google.com>
-To:     "Carlos =?utf-8?B?TMOzcGV6?=" <clopez@suse.de>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-doc@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        Fri, 1 Dec 2023 12:30:25 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21C6710F4
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 09:30:31 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46A19C433C8;
+        Fri,  1 Dec 2023 17:30:25 +0000 (UTC)
+Date:   Fri, 1 Dec 2023 17:30:22 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
+        Deepak Gupta <debug@rivosinc.com>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
+        Will Deacon <will@kernel.org>,
+        Kees Cook <keescook@chromium.org>, jannh@google.com,
+        linux-kselftest@vger.kernel.org, linux-api@vger.kernel.org,
+        David Hildenbrand <david@redhat.com>
+Subject: Re: [PATCH RFT v4 0/5] fork: Support shadow stacks in clone3()
+Message-ID: <ZWoYLs2STGA1LZLU@arm.com>
+References: <20231128-clone3-shadow-stack-v4-0-8b28ffe4f676@kernel.org>
+ <ZWjb6r0RWPo199pC@arm.com>
+ <fce4c169-5d19-40e8-bc32-0abec9bb008e@sirena.org.uk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fce4c169-5d19-40e8-bc32-0abec9bb008e@sirena.org.uk>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 16, 2023, Carlos L=C3=B3pez wrote:
-> Improve the description for the KVM_CAP_X86_BUS_LOCK_EXIT capability,
-> fixing a few typos and improving grammar for overall clarity.
->=20
-> Signed-off-by: Carlos L=C3=B3pez <clopez@suse.de>
-> ---
-> v2: Corrected the name of the KVM_RUN_X86_BUS_LOCK flag
->=20
->  Documentation/virt/kvm/api.rst | 28 ++++++++++++++--------------
->  1 file changed, 14 insertions(+), 14 deletions(-)
->=20
-> diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.=
-rst
-> index 7025b3751027..4701370bf46f 100644
-> --- a/Documentation/virt/kvm/api.rst
-> +++ b/Documentation/virt/kvm/api.rst
-> @@ -6256,9 +6256,9 @@ More architecture-specific flags detailing state of=
- the VCPU that may
->  affect the device's behavior. Current defined flags::
-> =20
->    /* x86, set if the VCPU is in system management mode */
-> -  #define KVM_RUN_X86_SMM     (1 << 0)
-> +  #define KVM_RUN_X86_SMM          (1 << 0)
->    /* x86, set if bus lock detected in VM */
-> -  #define KVM_RUN_BUS_LOCK    (1 << 1)
-> +  #define KVM_RUN_X86_BUS_LOCK     (1 << 1)
->    /* arm64, set for KVM_EXIT_DEBUG */
->    #define KVM_DEBUG_ARCH_HSR_HIGH_VALID  (1 << 0)
-> =20
-> @@ -7582,20 +7582,20 @@ KVM_BUS_LOCK_DETECTION_OFF and KVM_BUS_LOCK_DETEC=
-TION_EXIT are supported
->  currently and mutually exclusive with each other. More bits can be added=
- in
->  the future.
+Thanks all for the clarification.
 
-Meh, there's a lot of pointless boilerplate in here.  These statements hold=
- true
-for almost every KVM capability.
+On Thu, Nov 30, 2023 at 09:51:04PM +0000, Mark Brown wrote:
+> On Thu, Nov 30, 2023 at 07:00:58PM +0000, Catalin Marinas wrote:
+> > My hope when looking at the arm64 patches was that we can completely
+> > avoid the kernel allocation/deallocation of the shadow stack since it
+> > doesn't need to do this for the normal stack either. Could someone
+> > please summarise why we dropped the shadow stack pointer after v1? IIUC
+> > there was a potential security argument but I don't think it was a very
+> > strong one. Also what's the threat model for this feature? I thought
+> > it's mainly mitigating stack corruption. If some rogue code can do
+> > syscalls, we have bigger problems than clone3() taking a shadow stack
+> > pointer.
+> 
+> As well as preventing/detecting corruption of the in memory stack shadow
+> stacks are also ensuring that any return instructions are unwinding a
+> prior call instruction, and that the returns are done in opposite order
+> to the calls.  This forces usage of the stack - any value we attempt to
+> RET to is going to be checked against the top of the shadow stack which
+> makes chaining returns together as a substitute for branches harder.
+> 
+> The concern Rick raised was that allowing user to pick the exact shadow
+> stack pointer would allow userspace to corrupt or reuse the stack of an
+> existing thread by starting a new thread with the shadow stack pointing
+> into the existing shadow stack of that thread.  While in isolation
+> that's not too much more than what userspace could just do directly
+> anyway it might compose with other issues to something more "interesting"
+> (eg, I'd be a bit concerned about overlap with pkeys/POE though I've not
+> thought through potential uses in detail).
 
-> -With KVM_BUS_LOCK_DETECTION_OFF set, bus locks in guest will not cause v=
-m exits
-> +With KVM_BUS_LOCK_DETECTION_OFF set, bus locks in guest will not cause V=
-M exits
->  so that no additional actions are needed. This is the default mode.
+Another concern I had was that map_shadow_stack() currently takes
+a flags arg (though only one flag) while the clone/clone3() allocate the
+shadow stack with an implicit configuration (other than size). Would
+map_shadow_stack() ever get new flags that we may also need to set on
+the default thread shadow stack (e.g. a new permission type)? At that
+point it would be better if clone3() allowed a shadow stack pointer so
+that any specific attributes would be limited to map_shadow_stack().
 
-Heh, this is technically wrong.  KVM intercepts #AC when the non-virtualize=
-d
-split-lock detection is enabled, i.e. bus locks will cause VM-Exit, though =
-they
-won't be forwarded to userspace.
+If that's only theoretical, I'm fine to go ahead with a size-only
+argument for clone3(). We could also add the pointer now and allocate
+the stack if NULL or reuse it if not, maybe with some prctl to allow
+this. It might be overengineering and we'd never use such feature
+though.
 
-> -With KVM_BUS_LOCK_DETECTION_EXIT set, vm exits happen when bus lock dete=
-cted
-> -in VM. KVM just exits to userspace when handling them. Userspace can enf=
-orce
-> -its own throttling or other policy based mitigations.
-> -
-> -This capability is aimed to address the thread that VM can exploit bus l=
-ocks to
-> -degree the performance of the whole system. Once the userspace enable th=
-is
-> -capability and select the KVM_BUS_LOCK_DETECTION_EXIT mode, KVM will set=
- the
-> -KVM_RUN_BUS_LOCK flag in vcpu-run->flags field and exit to userspace. Co=
-ncerning
-> -the bus lock vm exit can be preempted by a higher priority VM exit, the =
-exit
-> -notifications to userspace can be KVM_EXIT_BUS_LOCK or other reasons.
-> -KVM_RUN_BUS_LOCK flag is used to distinguish between them.
-> +With KVM_BUS_LOCK_DETECTION_EXIT set, VM exits happen when a bus lock is
-> +detected in VM. KVM just exits to userspace when handling them. Userspac=
-e can
-> +enforce its own throttling or other policy based mitigations.
-> +
-> +This capability is aimed to address the fact that a VM can exploit bus l=
-ocks to
+> > I'm not against clone3() getting a shadow_stack_size argument but asking
+> > some more questions. If we won't pass a pointer as well, is there any
+> > advantage in expanding this syscall vs a specific prctl() option? Do we
+> > need a different size per thread or do all threads have the same shadow
+> > stack size? A new RLIMIT doesn't seem to map well though, it is more
+> > like an upper limit rather than a fixed/default size (glibc I think uses
+> > it for thread stacks but bionic or musl don't AFAIK).
+> 
+> I don't know what the userspace patterns are likely to be here, it's
+> possible a single value for each process might be fine but I couldn't
+> say that confidently.  I agree that a RLIMIT does seem like a poor fit.
 
-I liked the attempt to capture that this is a threat mitigation, although t=
-he
-typo probably made that hard to see.
+Szabolcs clarified that there are cases where we need the size per
+thread.
 
-> +impact the performance of the whole system. Once userspace enables this
-> +capability and selects the KVM_BUS_LOCK_DETECTION_EXIT mode, KVM will se=
-t the
-> +KVM_RUN_X86_BUS_LOCK flag in the vcpu->run->flags field and exit to user=
-space.
+> As well as the actual configuration of the size the other thing that we
+> gain is that as well as relying on heuristics to determine if we need to
+> allocate a new shadow stack for the new thread we allow userspace to
+> explicitly request a new shadow stack.
 
-Oof, the existing wording is nonsensical.  This reads like KVM unconditiona=
-lly sets
-KVM_RUN_X86_BUS_LOCK whenever the capability is enabled.
+But the reverse is not true - we can't use clone3() to create a thread
+without a shadow stack AFAICT.
 
-> +Concerning the bus lock, a VM exit can be preempted by a higher priority=
- VM
-> +exit, so the exit notification to userspace can be KVM_EXIT_BUS_LOCK or =
-another
-> +reason. KVM_RUN_X86_BUS_LOCK flag is used to distinguish between them.
+> > Another dumb question on arm64 - is GCSPR_EL0 writeable by the user? If
+> > yes, can the libc wrapper for threads allocate a shadow stack via
+> > map_shadow_stack() and set it up in the thread initialisation handler
+> > before invoking the thread function?
+> 
+> No, GCSPR_EL0 can only be changed by EL0 through BL, RET and the
+> new GCS instructions (push/pop and stack switch).  Push is optional -
+> userspace has to explicitly request that it be enabled and this could be
+> prevented through seccomp or some other LSM.  The stack switch
+> instructions require a token at the destination address which must
+> either be written by a higher EL or will be written in the process of
+> switching away from a stack so you can switch back.  Unless I've missed
+> one every mechanism for userspace to update GCSPR_EL0 will do a GCS
+> memory access so providing guard pages have been allocated wrapping to a
+> different stack will be prevented.
+> 
+> We would need a syscall to allow GCSPR_EL0 to be written.
 
-This is also worded rather weirdly.  It's not so much that VM exits can be
-preempted, it's that the CPU can detect a bus lock while also delivering an
-unrelated VM exit.
+Good point, I thought I must be missing something.
 
-Something like this?
-
----
-
-This capability allows userspace to force VM exits on bus locks detected in=
- the
-guest, irrespective whether or not host has enabled split-lock detection (w=
-hich
-triggers an #AC exception that KVM intercepts).  This capability is intende=
-d to
-mitigate attacks where a malicious/buggy guest can exploit bus locks to deg=
-rade
-the performance of the whole system.=20
-
-If bus lock detection is OFF, KVM doesn't force guest bus locks to VM exit,
-although the host kernel's split-lock #AC detection still applies, if enabl=
-ed.
-
-If bus lock detection is set to EXIT, KVM enables a CPU feature that ensure=
-s
-bus locks in the guest trigger a VM exit, and KVM exits to userspace for al=
-l
-such VM exits, e.g. to allow userspace to throttle the offending guest and/=
-or
-apply some other policy-based mitigation.  When exiting to userspace, KVM s=
-ets
-KVM_RUN_X86_BUS_LOCK in vcpu-run->flags, and conditionally sets the exit_re=
-ason
-to KVM_EXIT_X86_BUS_LOCK.
-
-Note!  Detected bus locks may be coincident with other exits to userspace, =
-i.e.
-KVM_RUN_X86_BUS_LOCK should be checked regardless of the primary exit reaso=
-n if
-userspace wants to take action on all detected bus locks.
+-- 
+Catalin
