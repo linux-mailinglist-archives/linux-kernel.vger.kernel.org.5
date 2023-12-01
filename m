@@ -2,144 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A43AB8005A9
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 09:34:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 962068005AE
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 09:35:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235176AbjLAIef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 03:34:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52912 "EHLO
+        id S229497AbjLAIfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 03:35:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbjLAIed (ORCPT
+        with ESMTP id S1377842AbjLAIfD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 03:34:33 -0500
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 719691729
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 00:34:38 -0800 (PST)
-Received: by mail-io1-xd31.google.com with SMTP id ca18e2360f4ac-7b06841efdcso55849739f.2
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 00:34:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701419678; x=1702024478; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=K3Yxil9QXZ7JQy43Phh685O5TjH76XNF3w9qfHqbcY8=;
-        b=bqHxA+ngdmYsteR2jsDEYtfclZvilYE0/n8Lb6q8BgoO+kKgcfp1fcnVEhglce1HdF
-         e+a+Ydx8LvHIl4cSP300BPeTs2nc6KBY/Qqe7Z3uufJlPappwmO8vIONqDQbutlkHeAg
-         8h1OIwIJwDDJC98Y9G/UtJjgzdzcCRJW2ttph8NWXQsJ9nmk5WTDXZDAxqNiy6sutj5G
-         afhqrX4YyFZ2hpAAUr3FDhvU5+UPFg+r4t/ic1sApSdjHN6ZYCGZx5NH31OY8zZtgGfq
-         huyGB0tiGwbfTc2Rsc6JENDzPJvGYkCcYYHAdUWAg60foyEyIRpTi6YCT07xiPnhcj1v
-         ygQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701419678; x=1702024478;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=K3Yxil9QXZ7JQy43Phh685O5TjH76XNF3w9qfHqbcY8=;
-        b=GDbTPwolXaUzCWZ7RHFN3W5dLbFuOkgn+7oc0U4iENoBpudDa4mUnDbda/+RftsMTa
-         ngbfitGTaX5WpsStfWrxkbXlqXHyWVxQZY3zXnLRMTSL4AuJI6/ji/ZWhXXVLLbXzXHm
-         KByqi7pvd24kh4KXAMDjlYcr1OgyYWbsmTrPRAeLTg9OhpNBGH+oDlIrsRbkd/7fnTu8
-         1NdOZQcpEGEJHhrcTVuQ1wXLf+XRNK4fgLaRkQalhUCCMPXHfBDw+ZjtH8gFdGDsK83r
-         9lQkXS17Uebi0tF1AwrEvS6zWcFQnKs7XtWfRX1XOpEYbMVrEvwl6fjUZqe+sE64zETk
-         8W6A==
-X-Gm-Message-State: AOJu0YwLlywpRrhw9SnaPf89QtN8S5/zpjVKUjyjVYnrU/fATBN3598A
-        RqRFve7Jg8hVg4S4RvqYzgH9GQ==
-X-Google-Smtp-Source: AGHT+IGQ3qnt3tC6HC6SBjxWSY7LXEbqVzswjzwBs32hzFuSm4t5Jw7cAK7yEM/Z879OOfPlO15e7g==
-X-Received: by 2002:a05:6602:4818:b0:7a9:571c:5694 with SMTP id ed24-20020a056602481800b007a9571c5694mr29187257iob.10.1701419677896;
-        Fri, 01 Dec 2023 00:34:37 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.223.109])
-        by smtp.gmail.com with ESMTPSA id fu12-20020a056638668c00b0046465bfebe3sm768879jab.149.2023.12.01.00.34.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Dec 2023 00:34:37 -0800 (PST)
-Message-ID: <e40c4957-346e-430e-8cb4-ece866ef8d1b@linaro.org>
-Date:   Fri, 1 Dec 2023 09:34:33 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dt-bindings: pinctrl: qcom,pmic-mpp: clean up example
-Content-Language: en-US
-To:     Johan Hovold <johan+linaro@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Fri, 1 Dec 2023 03:35:03 -0500
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2040.outbound.protection.outlook.com [40.107.212.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 460531713;
+        Fri,  1 Dec 2023 00:35:09 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SD/Ax/Z5RYjQMZNqeRbZnZVjrp08ER366sU+YBYAqb8+PrbPp1B9qPoKkYqz5rRTygD2cWwohAuWqLRIRLjaq8xk8DJ/u9M8gQ/skSnGGZK7KuPMDpX/X3LA2ivbZTx7DjLTbiYRQk8dZisRumP8Js8utquutIpYMfe99XMRVUHH35uRin7RQwJh+leOS1IMraNFaog69DJHLac80p8D1tWHGFlzUi0sbuTSWscKJJsojT2fQle6LXw1Uvl0qf4Yh96xuFguxrEjEMgCNrM04H4UinM6Hz6gsPmemfNEL2pmhcFgE4g/p3Rc4ysJN7gTO6gfq1bBU/VwOd15/DggxQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=gQO3jU2U4w74d0809v9cFZI851sfm4xMZAoZO/BOlyI=;
+ b=gWke0099SFJLal6ErWqhRBTwK7I9daF2Q4zS5h2sHFcUXHsOYpKZB7nUcigczSdtuLCm0q5xvmCOVhPPt7v5Q5FatEN8HEbjjrr1EvtpsGNQhXyNzrxR5HqRJZdIvOKPfKdGLaWDypGtpEdXtmPCObhYVSblCiwi++RCPJl9uLbgGB94vHOQGrZX0482NNyGLGiAA4fkNG/VVzNQKorTCfb5bbFHDJ6ODUBfXkPu5riqC6iwg4dOEhNsL4NyypUb0m4Dm1cnjPJeW46GKPjQCCWHuxap2T/nzp2pwskV3ANi5h0SP/VpRV5yENQDLu31QnIGw6/MWpEvTv1jhMwINA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gQO3jU2U4w74d0809v9cFZI851sfm4xMZAoZO/BOlyI=;
+ b=ilwPbNpnfWfcQxmAppAqv7/qnbhCh9CYfUCSYWdOApCLL17tAn7h9h2C6ThljG7D6wcJKdLmQe1ELdh9GRTlT4v8BOejrp5bZETNkAmJZV9HXfiUyEtajfCf36R5FqmuJyHPDj3wx7M4DeqqcgzHl/jaGynRA8xWvzlbmk2hzSY=
+Received: from DM6PR07CA0047.namprd07.prod.outlook.com (2603:10b6:5:74::24) by
+ PH7PR12MB9253.namprd12.prod.outlook.com (2603:10b6:510:30d::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.27; Fri, 1 Dec
+ 2023 08:35:05 +0000
+Received: from DS3PEPF000099E2.namprd04.prod.outlook.com
+ (2603:10b6:5:74:cafe::47) by DM6PR07CA0047.outlook.office365.com
+ (2603:10b6:5:74::24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.27 via Frontend
+ Transport; Fri, 1 Dec 2023 08:35:05 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ DS3PEPF000099E2.mail.protection.outlook.com (10.167.17.201) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7046.17 via Frontend Transport; Fri, 1 Dec 2023 08:35:04 +0000
+Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Fri, 1 Dec
+ 2023 02:35:03 -0600
+From:   Michal Simek <michal.simek@amd.com>
+To:     <linux-kernel@vger.kernel.org>, <monstr@monstr.eu>,
+        <michal.simek@xilinx.com>, <git@xilinx.com>
+CC:     Conor Dooley <conor.dooley@microchip.com>,
         Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231130172834.12653-1-johan+linaro@kernel.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231130172834.12653-1-johan+linaro@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        Guenter Roeck <linux@roeck-us.net>,
+        Jean Delvare <jdelvare@suse.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-hwmon@vger.kernel.org>
+Subject: [PATCH v2] dt-bindings: hwmon: Increase max number of io-channels
+Date:   Fri, 1 Dec 2023 09:35:00 +0100
+Message-ID: <5110a313a5ce52ce6d7b5cb6b08368d42063dc30.1701419691.git.michal.simek@amd.com>
+X-Mailer: git-send-email 2.36.1
+MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=990; i=michal.simek@amd.com; h=from:subject:message-id; bh=D11Ilo0ssCKrOXoMqOB54IpNbAYI60OPiOj+Khvw2jo=; b=owGbwMvMwCR4yjP1tKYXjyLjabUkhtTMWWs+zrMVLmY7oGD5TOXUPBGl98GXnm9ZGKqTbJQm/ au699uTjlgWBkEmBlkxRRZpmytn9lbOmCJ88bAczBxWJpAhDFycAjCRplSGBQ2KRe/0HZ3NlrHz sDNy2LNEpC/3ZZhnvKr6vFaNqs214+XzzZkf/bs7d/c/AA==
+X-Developer-Key: i=michal.simek@amd.com; a=openpgp; fpr=67350C9BF5CCEE9B5364356A377C7F21FE3D1F91
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS3PEPF000099E2:EE_|PH7PR12MB9253:EE_
+X-MS-Office365-Filtering-Correlation-Id: c6ac305c-051c-40ca-786e-08dbf2486aee
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: sDrEOW5E8ReFB+hSJoZKP4NCVwLi+pJqBiTWFcaKsSH+Ou5Y0vZ4qR2e4Xiv9PRprPGPs7TbvkxIu4bCzdpzrTOX8JUltYZUmTmAdfz8aZIFjow3XrUcGen+BcUIQ+u+KW1RPUQ+B7H3II+s7lFJJlvEgsP9PDiMX6qh2XzRplHmWPNsp8JlgY79xVirYi3AWifGM79jXxRvmfSkCwba/H0cSMfFBWwe4Zc+kwbWokPaEs+wB1MFjlB83kZjCXadhclfL4vO4ENSqJFOAX4FjxF5OKTiRjVDUOCmIU8z8POK/STEHrvaiVOIX9NAjSyTxg86NV+XgEv0OdC+MCPOAy3nWiymfZ1f//AY5lSsILSO1/uXLzXZcir4g/MuZ49yvn/3jzvUhXo8ni57Ffmhc6IaOpAKNxpyV4O5o4Cu8rPv/TIBsUwihMp9+J4EqJoD9u4nCvWGtIAluzhaQMcV4tY51SNMGC2joRLxnojRh7nT7C2X8t/pajusLZbBDRfhRWO4tM9mi+ii0tb3xoNSgAgL/vjexLj1CjhPbx3RhZcU6/hJQoPCBmPkNBB4QGytR79nfvizO9RpiAHn1FLuJK/1puaseo2EfaaYusJRqopvlDfssFES1bnLAVfCDTV/Rt4j+WlOT3ZwZVH3e6LiUp9JwKA/+kuKerYQecGpr5YnLWb/PiYCZRyNck2ncH+tx+rqHh88Bv+v+TLbYtwIdfpDtjha39yH7rh6X/tmZo7RNK9ijYUF2wsE52cTZP8MEF+M3Kh9q/l5G3nOUXPRVuR52azwm7jo8GVEe+vmzpk=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(396003)(136003)(376002)(39860400002)(230922051799003)(451199024)(82310400011)(1800799012)(64100799003)(186009)(46966006)(36840700001)(40470700004)(86362001)(36756003)(44832011)(5660300002)(7416002)(4744005)(40460700003)(2906002)(41300700001)(82740400003)(83380400001)(426003)(110136005)(70206006)(70586007)(54906003)(478600001)(336012)(2616005)(16526019)(26005)(40480700001)(316002)(8936002)(8676002)(4326008)(356005)(47076005)(81166007)(36860700001)(36900700001)(2101003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Dec 2023 08:35:04.7700
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: c6ac305c-051c-40ca-786e-08dbf2486aee
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: DS3PEPF000099E2.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB9253
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/11/2023 18:28, Johan Hovold wrote:
-> The Multi-Purpose Pin controller block is part of an SPMI PMIC (which in
-> turns sits on an SPMI bus) and uses a single value for the register
-> property that corresponds to its base address.
-> 
-> Clean up the example by adding a parent PMIC node with proper
-> '#address-cells' and '#size-cells' properties, dropping the incorrect
-> second register value, adding some newline separators and increasing the
-> indentation to four spaces.
-> 
-> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
-> ---
+The Analog Monitoring System (AMS) defines 51 channels
+(Documentation/devicetree/bindings/iio/adc/xlnx,zynqmp-ams.yaml)
+that's why increase number to 51.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Signed-off-by: Michal Simek <michal.simek@amd.com>
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+---
 
-Best regards,
-Krzysztof
+Changes in v2:
+- Add Conor's ack
+- Update commit message
+
+ Documentation/devicetree/bindings/hwmon/iio-hwmon.yaml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/hwmon/iio-hwmon.yaml b/Documentation/devicetree/bindings/hwmon/iio-hwmon.yaml
+index e5b24782f448..be5c7d4579bb 100644
+--- a/Documentation/devicetree/bindings/hwmon/iio-hwmon.yaml
++++ b/Documentation/devicetree/bindings/hwmon/iio-hwmon.yaml
+@@ -19,7 +19,7 @@ properties:
+ 
+   io-channels:
+     minItems: 1
+-    maxItems: 8 # Should be enough
++    maxItems: 51 # Should be enough
+     description: >
+       List of phandles to ADC channels to read the monitoring values
+ 
+-- 
+2.36.1
 
