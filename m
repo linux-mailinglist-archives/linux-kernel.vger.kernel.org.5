@@ -2,63 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CA1C800422
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 07:49:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 377A980042F
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 07:55:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377637AbjLAGtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 01:49:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49460 "EHLO
+        id S229825AbjLAGzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 01:55:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230402AbjLAGtL (ORCPT
+        with ESMTP id S229496AbjLAGzO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 01:49:11 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 123011728;
-        Thu, 30 Nov 2023 22:49:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701413358; x=1732949358;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=zgA9er2TieuKbZ/sO/TlArv1h+YGFZzAROMCbrfkuck=;
-  b=oG4y/BOLVU5wnhhvV8vDksxpoKCcBpjUr/ufmHI06sf39Zhtq3DYi0FZ
-   LghLrUhY0sZ8bmDIWMgwtix4A55V/xSBXUKHfeuhItlkPzm+IURM4v88J
-   eY0SMUCec+RWLsOm76ltGSzT06oCdgEn4OO/PUcJmb0bfmDEmgdpQ32B5
-   WooP0qJt1Ud06f9fHmIZ3nVvc28JB2sLSoKw/pT6MQYmi05mI8cDOsGX3
-   RCRJJTT2ZvIHgX/cwBlv4I/SJ3AaVGtZfOS8K9yI2teqSllkBaWW6lwoI
-   ojc5EOGSjH1aUmstjqVFjPZVR7ADYhKiBvvlhjzbQrpDQljhWfmWxdp6I
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="372835334"
-X-IronPort-AV: E=Sophos;i="6.04,241,1695711600"; 
-   d="scan'208";a="372835334"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 22:49:17 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="835678296"
-X-IronPort-AV: E=Sophos;i="6.04,241,1695711600"; 
-   d="scan'208";a="835678296"
-Received: from ppgyli0104.png.intel.com ([10.126.160.64])
-  by fmsmga008.fm.intel.com with ESMTP; 30 Nov 2023 22:49:12 -0800
-From:   Rohan G Thomas <rohan.g.thomas@intel.com>
-To:     fancer.lancer@gmail.com
-Cc:     alexandre.torgue@foss.st.com, andriy.shevchenko@linux.intel.com,
-        davem@davemloft.net, edumazet@google.com, joabreu@synopsys.com,
-        kuba@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        mcoquelin.stm32@gmail.com, netdev@vger.kernel.org,
-        pabeni@redhat.com, rohan.g.thomas@intel.com
-Subject: Re: [PATCH net-next 1/1] net: stmmac: xgmac: EST interrupts handling
-Date:   Fri,  1 Dec 2023 14:49:09 +0800
-Message-Id: <20231201064909.28399-1-rohan.g.thomas@intel.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cjgx6e3agc6gpvs75nhkf6wlztk73epmct6tcuooyqvk2nx2o2@vr5buyk637t3>
-References: <cjgx6e3agc6gpvs75nhkf6wlztk73epmct6tcuooyqvk2nx2o2@vr5buyk637t3>
+        Fri, 1 Dec 2023 01:55:14 -0500
+X-Greylist: delayed 361 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 30 Nov 2023 22:55:19 PST
+Received: from mail.avm.de (mail.avm.de [212.42.244.119])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75DEF171A
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 22:55:19 -0800 (PST)
+Received: from mail-auth.avm.de (unknown [IPv6:2001:bf0:244:244::71])
+        by mail.avm.de (Postfix) with ESMTPS;
+        Fri,  1 Dec 2023 07:49:16 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=avm.de; s=mail;
+        t=1701413356; bh=UkHNm551AemnKql0mWZXE1Rzd6MlbxdsnUeJmPzDx9E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vaC3ywoCokr58m2guflRShHIjBHDySrAqb7IWv6oCUTRVVxIqYansECY/EQ6H94zV
+         7BH34Gec5kwu1NYdtQWGEl0xoeVU3amJLXNeEUk+FMIAY55FIEH50yjWKlft7bJAQQ
+         5fJUdMRlZYKiSenptrFXxxu0th8c47pRTFiHGbjw=
+Received: from buildd.core.avm.de (buildd-sv-01.avm.de [172.16.0.225])
+        by mail-auth.avm.de (Postfix) with ESMTPA id 91CCA80596;
+        Fri,  1 Dec 2023 07:49:15 +0100 (CET)
+Received: by buildd.core.avm.de (Postfix, from userid 1000)
+        id 835A91811CC; Fri,  1 Dec 2023 07:49:15 +0100 (CET)
+Date:   Fri, 1 Dec 2023 07:49:13 +0100
+From:   Nicolas Schier <n.schier@avm.de>
+To:     Hu Haowen <2023002089@link.tyut.edu.cn>
+Cc:     gregkh@linuxfoundation.org, akpm@linux-foundation.org,
+        masahiroy@kernel.org, ndesaulniers@google.com, ojeda@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] scripts/show_delta: reformat code
+Message-ID: <ZWmB67THrLcztb-3@buildd.core.avm.de>
+References: <20231201053540.9534-1-2023002089@link.tyut.edu.cn>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="x9YCRS3AC2fWuNsT"
+Content-Disposition: inline
+In-Reply-To: <20231201053540.9534-1-2023002089@link.tyut.edu.cn>
+Organization: AVM GmbH
+X-purgate-ID: 149429::1701413356-B56E3A59-5B79312B/0/0
+X-purgate-type: clean
+X-purgate-size: 2617
+X-purgate-Ad: Categorized by eleven eXpurgate (R) http://www.eleven.de
+X-purgate: This mail is considered clean (visit http://www.eleven.de for further information)
+X-purgate: clean
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,47 +61,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 6 Oct 2023 13:08:33 +0300 Serge Semin wrote:
-> Hi Rohan, Jakub
-> ...
-> Interesting thing. My DW QoS Eth _v5.10a_ HW manual explicitly states that
-> it's multiplied by _6_ in nanoseconds (just rechecked). So either there is a
-> difference between the minor DW QoS Eth IP-core releases or the older HW-
-> manuals have had a typo in the MTL_EST_CONTROL.PTOV field description.
-> Synopsys normally describes such changes (whether it was a mistake or a
-> functional change) in the IP-core release notes. The release notes document
-> is supplied as a separate pdf file. Alas I don't have one.( Even if I had it it
-> would have been useless since the change was introduced in the newer QoS
-> IP-cores. Rohan, do you happen to have the release notes for DW QoS Eth IP-
-> core v5.30 at hands?
-> Something like DWC_ether_qos_rc_relnotes.pdf?
 
-Hi Serge,
+--x9YCRS3AC2fWuNsT
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Date: Fri, 1 Dec 2023 07:49:13 +0100
+From: Nicolas Schier <n.schier@avm.de>
+To: Hu Haowen <2023002089@link.tyut.edu.cn>
+Cc: gregkh@linuxfoundation.org, akpm@linux-foundation.org,
+	masahiroy@kernel.org, ndesaulniers@google.com, ojeda@kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] scripts/show_delta: reformat code
 
-Sorry for the delay. Sends out another version with the suggested changes.
+On Fri, Dec 01, 2023 at 01:35:40PM +0800, Hu Haowen wrote:
+> Correct some lines in irregular coding style to make them look more
+> harmonious and fit the common coding regulations in Python.
+>=20
+> Signed-off-by: Hu Haowen <2023002089@link.tyut.edu.cn>
+> ---
+>  scripts/show_delta | 18 +++++++++---------
+>  1 file changed, 9 insertions(+), 9 deletions(-)
+>=20
+> diff --git a/scripts/show_delta b/scripts/show_delta
+> index 291ad65e3089..33446adce74b 100755
+> --- a/scripts/show_delta
+> +++ b/scripts/show_delta
+> @@ -13,7 +13,7 @@ import sys
+>  import string
+> =20
+>  def usage():
+> -	print ("""usage: show_delta [<options>] <filename>
+> +	print("""usage: show_delta [<options>] <filename>
 
-Managed to get DWC_ether_qos_relnotes.pdf for v5.20a and v5.30a. But I couldn't
-find anything related to this. So for refactoring, I'm keeping the logic as in
-the upstream code to avoid any regression.
+Hi,
 
-> 
-> Also please double check that your DW QoS Eth v5.30a for sure states that
-> MTL_EST_CONTROL.PTOV contains value multiplied by _6_. So we wouldn't
-> be wasting time trying to workaround a more complex problem than we
-> already have.
+thanks for your patch.  What Miguel already noticed for v1 is valid for
+v2, too: there are still inconsistencies in the coding style, e.g.
+`print (...)` and `print(...)`.
 
-Yes, I checked this again. For DW QoS Eth v5.30a the multiplier for 
-MTL_EST_CONTROL.PTOV is _9_ as per the databook.
+To simplify a consistent coding style for future work on the script,
+using an external tool for reformatting (and mentioning it in the commit
+message) would be helpful.  Miguel suggested Black or Ruff, I think this
+is a good idea.
 
-Also noticed a similar difference for MTL_EST_Status.BTRL field length. As per
-the upstream code and DW QoS Eth v5.10a databook this field covers bit 8 to bit
-11. But for the xgmac IP and DW QoS Eth v5.30a databook this field covers bit 8
-to bit 15. Again nothing mentioned in the release notes. Here also I'm keeping
-the logic as in the upstream code to avoid any regression.
+Kind regards,
+Nicolas
 
-> 
-> -Serge(y)
-> 
+--x9YCRS3AC2fWuNsT
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Best Regards,
-Rohan
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEDv+Fiet06YHnC6RpiMa8nIiabbgFAmVpgekACgkQiMa8nIia
+bbiuKA//Var3w983693LJ/e1B3Mn0KJvP4LlvdFlcoevj6NnSa4RLO7BFVLwPfPN
+LV/v4Be6+Qe8SwLwCZTL1QPyF98F1tP9/zHetlEnMw2zG+Il+dvAqmpkc4bmYntu
+JROh0n9C9hUmka0xiEYrEPgU7sEn6HXXjhiqliLCfeEsnmnaFdLr6RIAo7n5U5Za
+kxVZc+Inp4wi3sGD2QnzuJOEMUgvtrSJBtQYniWz54ZZju0cMqGZWAzK7PMItcen
+fwzh38U3UC/p7bACiZPz/BLDqVOyISZV4TT7geMUUPHLs+U7wY/kovZEoNVSMqBQ
+/nV4t2xaQ0+xifxRHGHSHIWhzJl5Q4SDKTsxXR0hRXQK6hHWwILFUjq6s52GecNi
+coUWrp0zqh/qniCPGvSWaH9xkYBhTJKj5V45eiFdhzn/bAIa+OuKE8si0aF7ZJ1t
+519hXo017GU9IUQCu0tqMXs4J02flRgdFjcqvaW4zmOu1npKxkAGxkJe3so0xKnV
+/2e4kwsiYgEqAfoVXINJk9CD9D1C8+Szh9bv9wbpidELRlQnve3PdgrrocRZX2JO
+S6/1hR6AwJXfBYQ+xbZZZeVM6HHhHBlAL55+GNb1CAlBGq8TF0Xgl9V4nsSko3Hc
+aPIYEaRdPJUycLNP3NXI3R+NXI8TTBjgDJaKlTJQFYJ26PaK4Yw=
+=fejp
+-----END PGP SIGNATURE-----
+
+--x9YCRS3AC2fWuNsT--
