@@ -2,141 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07A1E80132B
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 19:54:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 443F980132D
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 19:55:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379383AbjLASyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 13:54:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60352 "EHLO
+        id S230338AbjLASy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 13:54:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjLASyA (ORCPT
+        with ESMTP id S229468AbjLASyy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 13:54:00 -0500
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2549410DA;
-        Fri,  1 Dec 2023 10:54:06 -0800 (PST)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-54ba86ae133so2830485a12.2;
-        Fri, 01 Dec 2023 10:54:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701456844; x=1702061644; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=pxC6FvaCwqbKWFKkmrGd/+ggGHthPXEgXLr+pvJmw3g=;
-        b=KtV0henWgarPXsqR7K5sjYvGsx57KfHBi8itTYCkGNHSp4471VY46vQcR/YdVRRyJe
-         JJy7jksLG0mhZgZLGP35b/WKD2cbOsveRBwPH/6TlZ1g6sXdBBIh1jrl+WCyPlKDfIz5
-         fXkb27bicU1rg/+SIg5FtZ6tf6IHpSKM1iuSSbLvM5EhkF8I7OVVoYoYNgVS6mVtdjBk
-         ZBIa6w9Mke4vq8G5GzDiuXorqCwBmrMk/rnpGrzC7HztmSxvfHnvmDDZjES0dAfG/74c
-         mvjT5dDkJxH5XesJOMdaAtnX54cr5pObumL49Z68QnMFbeWlzqPDlWues80FaAH86s3H
-         Mg8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701456844; x=1702061644;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pxC6FvaCwqbKWFKkmrGd/+ggGHthPXEgXLr+pvJmw3g=;
-        b=mFo+49JFWBJz8nQKiuu/9VpAKE34CjggjPEHdywDD761mSGyUPfk+8N6+exVEsUJBs
-         NEOFku62j0OBPMowOOSXvaSY5u+9xwHIjmINmslSpZL3Zl1vIXsyWK8hi0LcE0f/rstV
-         wJ0/vDxHAsLHr4+Q019HDIR0ufVTvQw0QY/0TC+A1lJIwVHaBogSXGx6Pz2jQTf5dYCT
-         8gR81UorIUECd/LumfDcsyHScszIZidUscLk3M0yJ13+p+ouHAvz4Zjq0yS454UDxiK0
-         Lws/x9gYA1rkeiZwBbLkBTuQTMm2J0SJYx9m3uC8qWttWSiHxiX317AE0YJzGBjTxBZl
-         2cpg==
-X-Gm-Message-State: AOJu0Yz/+zJwKfZJxUmwWTDL7AAg5o5HjVjTU4uuyo4J+pc1uHVez5ia
-        fLn+xAUZtt110HZMxXM/K0KzBzO75ew=
-X-Google-Smtp-Source: AGHT+IEbxsBUhuXYvFLq4S++XHBSv/HO34+0JLe6U83mvNd5vKQgX1AbPy8aPiWMpgPtnD3nq3g5eA==
-X-Received: by 2002:a17:907:9047:b0:a10:f9a8:bfe1 with SMTP id az7-20020a170907904700b00a10f9a8bfe1mr1797143ejc.16.1701456844374;
-        Fri, 01 Dec 2023 10:54:04 -0800 (PST)
-Received: from [192.168.8.100] ([148.252.140.112])
-        by smtp.gmail.com with ESMTPSA id q19-20020a1709060e5300b009a19701e7b5sm2185813eji.96.2023.12.01.10.54.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Dec 2023 10:54:04 -0800 (PST)
-Message-ID: <42ef8260-7f92-4312-9291-19301aea3c30@gmail.com>
-Date:   Fri, 1 Dec 2023 18:52:43 +0000
+        Fri, 1 Dec 2023 13:54:54 -0500
+Received: from sonic306-27.consmr.mail.ne1.yahoo.com (sonic306-27.consmr.mail.ne1.yahoo.com [66.163.189.89])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF351F3
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 10:55:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1701456899; bh=e1c5H6gQ9lDwVbTGoBiWnnHvVQC0hMQZF4WAzuShOY4=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=Q8uwrgZSIiTj/GnbpzgGOT5uJKwzSSxQNWUTboIPGtBPnrZVPQ8rg8dle1np6pzFvGPeqvMTrAzCotdq6AXl2wB92GkwNNy/LJfzNqhkte2fChlMEF8G18LzrHyfRb7JHFKoyz3RbaupSaTxel+rB5/ppuRapa7wNRgXM9HtxgR7gtd1rekCWuheruh1GBk5qbHBaR87rCQHYAkH5xpe6fP5ql8MBjNITMzd4bjmPzau0MUgA4/Zzc3Ssl7EFUU2bvSVEpxZGJ64eiSYSfMPrDA1Rg8UBWFJa47KPh54op/v3p4zY4zbQWSIz57VcmTypuaCYI/T+jPq6+SGyRWOOg==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1701456899; bh=VGgq8ROJyVarPFZTyr/AaJIbB1K5YpSR5K9JojLZtvr=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=NO6uIAnDa0lugLaUXY1M6sUjST/EEyJ4PgNGXwI328OuDs4rA8nUjIPnXNQ7lgXRvLC4fkPwVsc24YPIXGOOfPf+bJqcV4drwIiHlxbGNEpBl0GOaiDQLPYv20G7tD1i38Z6rQCcqUdQuvjnsU2S+E10mMGq3jAyNN6h69RPMfjQKOj+Ezn6X0wlToIu5TutS2soGzeBbPcuHAIgYKKkdC3ZoLpaXYtcWeVLlkOWl15QT0Gj9rmlxWA0YwBGj2qP1KEYp8572wCEAFNVIy4g3N8JJkQ6Bbja6X+Ac1t6ASVCJjS9SoXWKLjyWi3EUQ4U7CUR5/42md1FRgeSuWfRLg==
+X-YMail-OSG: _feEPkkVM1nVTU50MPOVJ73Gnma0deiW437hg6rFj_57AKjMX7rH13qcJzcOyNI
+ fZ_5MvBMsaLjOErJKvZcRRg8s_VLV0iCiwA8k_NFM0rsWk02.PYhpL6APjeBLWcBk8UE2b86FM3L
+ aL_qGbXvaGkqobOhoQdMVs3EW7u7hBMW4BBlIplIR10SrI3fmB4v6MHcZa_3T7JSp1afVHS52gve
+ m.ZnSuzSuI7sCqA6qCw.OAEKwweq3DM4Wf.TtC6aZFIUFrDq6dGLj1H6cDk5Om13p8JXlh86rk4V
+ GlYFkiSMAT072JOyjGXeNTmb7DqkXsggw1de7eFeghygG3rJkvL9ELuiZ0vc5j4j6JOPV.PTzp9z
+ t_s7Kf37Mxtsn2AfeVNhY3qjF8fnE6Gqgp1.AqA5.duAvrWZ1HbPWlq7h_pTFB3pWaQQTyhKuWoZ
+ TI0YjcOuFPBY0eT_KrJkntBNj2oQUyO.x8ZRozgs4VUug6ng2DrjN8dLlSbWkE1CjH45VF5puTVg
+ srEsk1y.8i._GkTNt2QJuErmlKKCpZ1jK.EnpnYOwE7_4kyM3bsqEaMPy6DWm8dZWtQqzN.XZJLZ
+ gUgeAlAEO._6LtRkYUJqKzknmfOyqs8BucRUg4F3AXE6lHNdE_cE2u6ALMKxs2WGftHJ94T3jPRD
+ 7duZWF6V0G7ObYuQyDEy2unZcdBJf0nqRJi9_E42jA.7osqFSAUqdOjqkDtGhhvHxq29fVRm_dGN
+ 4pzXC0z4ydEnkR99ENQQyRByizan.w9MvR4IJpExbTVb0z9LaBS_79HXD9pnz.N6ILams2rHuzZa
+ EERTwYAIERuX3cVOgspWhMtkkUJRKaIMzQ.1AvKaw.dOsHB70jVJ7I2TK10KixF7He6jZO2DEOYD
+ 3q8tY3wJiJTHn_nwwO4k3wSjjczu_ZvC73V7t9HHlASf5TxfRcaHHhDgvRGjh3ZY1X9oNNp7GqGQ
+ 9X2.Vx7Gec7xwdxD_xtqX9LBGUWs6lE0W1s0DlqTpiGY8JIcwDZLfxwFunT6pR43BG2XliQWOT7h
+ _Ink6KXO6cMHvE_lQTBezen3k.ouK2K6vFgMxnHWbLzGwe08P0hB0ZSZ5rifXsTJvT3ryFImp_y8
+ .WgdU_9QBMtXnOCR8zEu8MThpJxpyfQXKsV.yIgKAk1JOM_myGH.gns5y59l17k.iAumyqX0jHoq
+ cbJvvd7yP.8zBh2nOM4hzbyDxJhPl.Het7_iL57uk5WViG8azcOR7oHIS3nAO0P3O27U2tBXuVrE
+ rA6CpM6GH49EGvcY59kXM8jb.hBCmu0haimLa5vUiFq7RwU6V1_HIncN78iENnWxiqfPtSRylghn
+ 70JNAzaeJXmOBwBJrsS9b4WvqM84CsQGvAcnrnMpaze8n6g9h3v_ciJnTZc_afdBAclpLLn68a4o
+ by5fwgPP_m09uwE_vrw8pYlS6rqahtIQoLRE7aRShrd0Bp6HdqBv5TPnO4xf3ELpWhJqPGgjxkEf
+ W0TIx0QZhvOoFpm7Q75GQ1o0NDEIomQ1drERpDZrnP9wyYxHfFcVLJB40INuQnm28fHXhx8qq8Hm
+ RljS_vVQxAdwLq.d3QYZHzNs3FKEVTEFJATfNe8xjZipd9_TnIW_g4GALqLTTX._.6GLSPgSHOLk
+ 0WxffKLXVORp59vnFozukBAZejXiMLim3Tkghj1G7iqW_dNRlMGbfXe1phlXUkghRU3VYiMXMMIW
+ f4x_1c2kxyyIgX9VfADmEg_LCsYMRLVHh.vSc7kBmjlSwV.Rt35sKLXdPJ37bLVN8cxkQd7fWQc2
+ AyLccHVy97S8pGacyEzFtV_SrR8iaOI1cblR8M9zMlg5Qv9bacEi1a1xa.Fs7uGuk6qjglYiT7mt
+ 8DcCQNrD9cPPVNx7oP8T6JJQqEWt8ONImNZPPkZxbOm.OaEJmFntjXilaxuNjzXrHNE4fSdze720
+ enP_bp3S0BYP_wvbjdarBIhVKvh2_ma6oJoZZAO.yS5ap9XlR3gwi6LROoXch.01v9HiGm633hCw
+ 0Rbtbwmp2u6gXTQwAVaS7LZ3_X1uHj.jgnzX9JD_kfwohR_sMV6rcJyRjGbUBGayNbfxzN5dBkh4
+ WM6NKAE9FCUY294JuTs2ldOs2nAm1qhYQCz4Kpe587f4ChLNYS_sssW2mqoreMvjpESbGHVfSMmi
+ sK5GlwFH2fsE1za2AyaclrHPvAyodvWir3nu758PnH5GJOrMPL8bAdqVPH2cfNOBEJvkip_ptEUH
+ riVHrC5zoV4rtwwEdC3OYwIYbnrDJEOnZBrS4U3K7rviz5l3vwlpiUd1gZJ4-
+X-Sonic-MF: <casey@schaufler-ca.com>
+X-Sonic-ID: 314df4d2-9588-42e4-9861-1d5e2ca2691f
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic306.consmr.mail.ne1.yahoo.com with HTTP; Fri, 1 Dec 2023 18:54:59 +0000
+Received: by hermes--production-gq1-5cf8f76c44-z2sg6 (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 74d77983c061dd50f267fe5c917be7ff;
+          Fri, 01 Dec 2023 18:54:57 +0000 (UTC)
+Message-ID: <660e8516-ec1b-41b4-9e04-2b9fabbe59ca@schaufler-ca.com>
+Date:   Fri, 1 Dec 2023 10:54:54 -0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: io_uring: incorrect assumption about mutex behavior on unlock?
-To:     Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        io-uring <io-uring@vger.kernel.org>
-Cc:     kernel list <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>
-References: <CAG48ez3xSoYb+45f1RLtktROJrpiDQ1otNvdR+YLQf7m+Krj5Q@mail.gmail.com>
+Subject: Re: [PATCH v5 23/23] integrity: Switch from rbtree to LSM-managed
+ blob for integrity_iint_cache
 Content-Language: en-US
-From:   Pavel Begunkov <asml.silence@gmail.com>
-In-Reply-To: <CAG48ez3xSoYb+45f1RLtktROJrpiDQ1otNvdR+YLQf7m+Krj5Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     "Dr. Greg" <greg@enjellic.com>,
+        Roberto Sassu <roberto.sassu@huaweicloud.com>
+Cc:     Paul Moore <paul@paul-moore.com>, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, chuck.lever@oracle.com, jlayton@kernel.org,
+        neilb@suse.de, kolga@netapp.com, Dai.Ngo@oracle.com,
+        tom@talpey.com, jmorris@namei.org, serge@hallyn.com,
+        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
+        dhowells@redhat.com, jarkko@kernel.org,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        mic@digikod.net, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
+        Casey Schaufler <casey@schaufler-ca.com>
+References: <20231107134012.682009-24-roberto.sassu@huaweicloud.com>
+ <17befa132379d37977fc854a8af25f6d.paul@paul-moore.com>
+ <2084adba3c27a606cbc5ed7b3214f61427a829dd.camel@huaweicloud.com>
+ <CAHC9VhTTKac1o=RnQadu2xqdeKH8C_F+Wh4sY=HkGbCArwc8JQ@mail.gmail.com>
+ <b6c51351be3913be197492469a13980ab379e412.camel@huaweicloud.com>
+ <CAHC9VhSAryQSeFy0ZMexOiwBG-YdVGRzvh58=heH916DftcmWA@mail.gmail.com>
+ <90eb8e9d-c63e-42d6-b951-f856f31590db@huaweicloud.com>
+ <20231201010549.GA8923@wind.enjellic.com>
+From:   Casey Schaufler <casey@schaufler-ca.com>
+In-Reply-To: <20231201010549.GA8923@wind.enjellic.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Mailer: WebService/1.1.21896 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/1/23 16:41, Jann Horn wrote:
-> mutex_unlock() has a different API contract compared to spin_unlock().
-> spin_unlock() can be used to release ownership of an object, so that
-> as soon as the spinlock is unlocked, another task is allowed to free
-> the object containing the spinlock.
-> mutex_unlock() does not support this kind of usage: The caller of
-> mutex_unlock() must ensure that the mutex stays alive until
-> mutex_unlock() has returned.
-> (See the thread
-> <https://lore.kernel.org/all/20231130204817.2031407-1-jannh@google.com/>
-> which discusses adding documentation about this.)
-> (POSIX userspace mutexes are different from kernel mutexes, in
-> userspace this pattern is allowed.)
-> 
-> io_ring_exit_work() has a comment that seems to assume that the
-> uring_lock (which is a mutex) can be used as if the spinlock-style API
-> contract applied:
-> 
->      /*
->      * Some may use context even when all refs and requests have been put,
->      * and they are free to do so while still holding uring_lock or
->      * completion_lock, see io_req_task_submit(). Apart from other work,
->      * this lock/unlock section also waits them to finish.
->      */
->      mutex_lock(&ctx->uring_lock);
-> 
+On 11/30/2023 5:05 PM, Dr. Greg wrote:
+> A suggestion has been made in this thread that there needs to be broad
+> thinking on this issue, and by extension, other tough problems.  On
+> that note, we would be interested in any thoughts regarding the notion
+> of a long term solution for this issue being the migration of EVM to a
+> BPF based implementation?
+>
+> There appears to be consensus that the BPF LSM will always go last, a
+> BPF implementation would seem to address the EVM ordering issue.
+>
+> In a larger context, there have been suggestions in other LSM threads
+> that BPF is the future for doing LSM's.  Coincident with that has come
+> some disagreement about whether or not BPF embodies sufficient
+> functionality for this role.
+>
+> The EVM codebase is reasonably modest with a very limited footprint of
+> hooks that it handles.  A BPF implementation on this scale would seem
+> to go a long ways in placing BPF sufficiency concerns to rest.
+>
+> Thoughts/issues?
 
-Oh crap. I'll check if there more suspects and patch it up, thanks
+Converting EVM to BPF looks like a 5 to 10 year process. Creating a
+EVM design description to work from, building all the support functions
+required, then getting sufficient reviews and testing isn't going to be
+a walk in the park. That leaves out the issue of distribution of the
+EVM-BPF programs. Consider how the rush to convert kernel internals to
+Rust is progressing. EVM isn't huge, but it isn't trivial, either. Tetsuo
+had a good hard look at converting TOMOYO to BPF, and concluded that it
+wasn't practical. TOMOYO is considerably less complicated than EVM.
 
-> I couldn't find any way in which io_req_task_submit() actually still
-> relies on this. I think io_fallback_req_func() now relies on it,
-> though I'm not sure whether that's intentional. ctx->fallback_work is
-> flushed in io_ring_ctx_wait_and_kill(), but I think it can probably be
-> restarted later on via:
-
-Yes, io_fallback_req_func() relies on it, and it can be spinned up
-asynchronously from different places, e.g. in-IRQ block request
-completion.
-
-> io_ring_exit_work -> io_move_task_work_from_local ->
-> io_req_normal_work_add -> io_fallback_tw(sync=false) ->
-> schedule_delayed_work
-> 
-> I think it is probably guaranteed that ctx->refs is non-zero when we
-> enter io_fallback_req_func, since I think we can't enter
-> io_fallback_req_func with an empty ctx->fallback_llist, and the
-> requests queued up on ctx->fallback_llist have to hold refcounted
-> references to the ctx. But by the time we reach the mutex_unlock(), I
-> think we're not guaranteed to hold any references on the ctx anymore,
-> and so the ctx could theoretically be freed in the middle of the
-> mutex_unlock() call?
-
-Right, it comes with refs but loses them in between lock()/unlock().
-
-> I think that to make this code properly correct, it might be necessary
-> to either add another flush_delayed_work() call after ctx->refs has
-> dropped to zero and we know that the fallback work can't be restarted
-> anymore, or create an extra ctx->refs reference that is dropped in
-> io_fallback_req_func() after the mutex_unlock(). (Though I guess it's
-> probably unlikely that this goes wrong in practice.)
-
--- 
-Pavel Begunkov
