@@ -2,125 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9048C800CA8
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 14:57:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7DC0800CAC
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 14:57:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379082AbjLAN5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 08:57:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59552 "EHLO
+        id S1379086AbjLAN5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 08:57:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379060AbjLAN5h (ORCPT
+        with ESMTP id S1379060AbjLAN5k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 08:57:37 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 691EFBC
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 05:57:43 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-54b532b261bso2663142a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 05:57:43 -0800 (PST)
+        Fri, 1 Dec 2023 08:57:40 -0500
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 743BAA6
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 05:57:46 -0800 (PST)
+Received: by mail-qk1-x730.google.com with SMTP id af79cd13be357-77d66c7af31so263247685a.1
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 05:57:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701439062; x=1702043862; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5n/qv2LCwI00fHFBUjE06/h0++7Sj0TWAFXvAyHTE2s=;
-        b=EyAcB0PSZcfjT2K6+eEuMxIj6OH7virM0tRIUdfKyhy753ALN1CTTOEAjlil5n4gnh
-         noByHM6O1sN9Wo61PCTzMTxM4mAhNr5RDR1Oo19hjy1CkLoGlw2T6KtFwyPj+y2rS9rc
-         /lafKaAYoUyC6g/54Z1AOh3YNCLooURaznLj9cf8TuT0HfEkN5fBgFhAQD0SokPD0Ve+
-         L3LcVRfdlxYABKN8RJJxV6LkhwFH/JgbtknbSFOsvA6dmhTdog0P1qNZXcjkx5P8JBoO
-         b766bxVUwwYbP+xr3CI6bOjHXn3Kqjo81dapbY6Jb4THbAFNkhiH8TaWxnkiiH4tEzO0
-         ZD2Q==
+        d=ziepe.ca; s=google; t=1701439065; x=1702043865; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=w5RfSzjMMhEGY5HPP+VV7KP4PAnFpwToiPE40rmIjTE=;
+        b=ZHDIx3O3JFtKtmYM0wtN1DhovriW2rtgBX/vtkFKLmqvfTNp9tAhcOoybeJPJXY29q
+         kv2+USLr9TWBWMUCZTXiOq9MSCmaoj1j75l+f5l0yMAcUkPt6/1/LY4hcAkVZv/XBb/w
+         hVVjtNPUtURPYvYPS2l/igt4v4Z2MavAYa6U8PLUA2dzR3h7vHSs+80xTEXYfG1Ar0e0
+         5bgBF3cf9CLPoNdMk1iQb76z7opiGIMUGMqqkVERcf3mtcOiaTso86/ddgs33hazprbT
+         7c5EgMR3w/dPJyKZzyWQkbi8T59/eL3EJs91shCTNqXp7XkhbmLWyR/I+5NlFw+SoCq/
+         sCPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701439062; x=1702043862;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5n/qv2LCwI00fHFBUjE06/h0++7Sj0TWAFXvAyHTE2s=;
-        b=p9m2ZTRfdbgwCjiU8Sp/rfbpbyMuYIb2pz6hyaya9a9VIfipOkFBYAxt0dGQheniKO
-         8O4QVZ1JoEXpjYE/8WM9fp26PsP1iHCBz1/xgQzt8KkAJuFjxKSoaznUmeXPSkFRaqbj
-         nOkptQrfP96km26ozrN/ah7Af66VTvKxFS4XHo0c9nY/16bxgbb3MrY7LbI2fMAkwKgV
-         RCdgu+mav+97FOtvfe/0JDDIVUb8nGZ2DE/t+TOuV0+THAjguBh4KXdZNhMLYAhw+Pr6
-         /+kz5r1RGdPXwUNPP9QB/C7pengpYYML2CRkfrWwrQ8NOjB2iB/FmaWkfQ5WyxvuGQ2j
-         LBAQ==
-X-Gm-Message-State: AOJu0Yw2KDVxAZvibROjMAw2Xh7U3xmJM/mUCEtobfY6cmqqeZvfaOhG
-        GmmMHTmws53GkF2cZa6dGJ+MANGn3Zahlf1z7wE=
-X-Google-Smtp-Source: AGHT+IFfkOWyhwcAkAnHUnlFEmYBTN9VWeBVAvneasImqWYtB0+3VBTv+Y0p8zOZF+Yrv8OmgdUOw+emPLOO3ekbsKk=
-X-Received: by 2002:a50:aa84:0:b0:54c:4837:81f1 with SMTP id
- q4-20020a50aa84000000b0054c483781f1mr845192edc.66.1701439061559; Fri, 01 Dec
- 2023 05:57:41 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701439065; x=1702043865;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=w5RfSzjMMhEGY5HPP+VV7KP4PAnFpwToiPE40rmIjTE=;
+        b=Vg+UhTWh/d9uX4zfKFhpC7Ztl3XWWAzokPm5aCz816KYgEOha6AMSznpuooq4iK/Df
+         6UNHK7tAspL8RYyR9ku5zPH+BiNi36SH3N5D42PoFlZqm1Mp4fJubNCZvT2pIWqGBorg
+         F4SFyKTwlkTtlqDq77HqcU1BR8hECCZs1y3YDu4RUr8icHHRXgrnnCyQkqdinW4FbFqT
+         h8ssAFaz4V6BGjgN4xC7zftcjGd0ne78U+k1N71HCAPZATcD8gTfOmeioWrCeUiHMvXO
+         DYlM6LF7fUqbnKLMLCzm9T1mqKKHIlUOrmkkPidzn7wxvEDsMzFNeZ+j90NsHBHpKRLC
+         Pusg==
+X-Gm-Message-State: AOJu0Yzswq0H0X4m24ZyW/nUaWMy//BJrDXXw1E+7dVlPgzk3uASW2Um
+        Uukn5dKa2pjbBBRjGrtIp9rgSA==
+X-Google-Smtp-Source: AGHT+IGiHfUB0BG86D+k/H8bgXmfkHHxfAODJ1IDqy5rd6EVUw0TGcCvkgnXizQa+DzIHgV9yCckKw==
+X-Received: by 2002:a05:620a:29c9:b0:773:c43e:5e73 with SMTP id s9-20020a05620a29c900b00773c43e5e73mr47263709qkp.25.1701439065500;
+        Fri, 01 Dec 2023 05:57:45 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-134-23-187.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.134.23.187])
+        by smtp.gmail.com with ESMTPSA id vy13-20020a05620a490d00b0077da601f06csm1508858qkn.10.2023.12.01.05.57.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Dec 2023 05:57:44 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1r941X-006F8M-UN;
+        Fri, 01 Dec 2023 09:57:43 -0400
+Date:   Fri, 1 Dec 2023 09:57:43 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Joerg Roedel <joro@8bytes.org>, Christoph Hellwig <hch@lst.de>,
+        Vineet Gupta <vgupta@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Hanjun Guo <guohanjun@huawei.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-acpi@vger.kernel.org, iommu@lists.linux.dev,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH 0/7] dma-mapping: Clean up arch_setup_dma_ops()
+Message-ID: <20231201135743.GI1394392@ziepe.ca>
+References: <cover.1701268753.git.robin.murphy@arm.com>
+ <20231129203642.GO1312390@ziepe.ca>
+ <ae27768f-a6fa-4971-b44c-92899a81a2b7@arm.com>
 MIME-Version: 1.0
-References: <202310080853.UhMe5iWa-lkp@intel.com>
-In-Reply-To: <202310080853.UhMe5iWa-lkp@intel.com>
-From:   Uros Bizjak <ubizjak@gmail.com>
-Date:   Fri, 1 Dec 2023 14:57:29 +0100
-Message-ID: <CAFULd4ZgT1dZFz36ZbPeqJa+U2NwusSTudg175sSarhpvEu-Zw@mail.gmail.com>
-Subject: Re: [tip:x86/percpu 12/12] arch/x86/include/asm/preempt.h:27:55:
- sparse: sparse: incompatible types for operation (&):
-To:     kernel test robot <lkp@intel.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        x86@kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Nadav Amit <namit@vmware.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ae27768f-a6fa-4971-b44c-92899a81a2b7@arm.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 8, 2023 at 2:43=E2=80=AFAM kernel test robot <lkp@intel.com> wr=
-ote:
->
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/p=
-ercpu
-> head:   ca4256348660cb2162668ec3d13d1f921d05374a
-> commit: ca4256348660cb2162668ec3d13d1f921d05374a [12/12] x86/percpu: Use =
-C for percpu read/write accessors
-> config: x86_64-randconfig-122-20231007 (https://download.01.org/0day-ci/a=
-rchive/20231008/202310080853.UhMe5iWa-lkp@intel.com/config)
-> compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-> reproduce (this is a W=3D1 build): (https://download.01.org/0day-ci/archi=
-ve/20231008/202310080853.UhMe5iWa-lkp@intel.com/reproduce)
->
-> If you fix the issue in a separate patch/commit (i.e. not just a new vers=
-ion of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202310080853.UhMe5iWa-lkp=
-@intel.com/
->
-> sparse warnings: (new ones prefixed by >>)
->    kernel/bpf/percpu_freelist.c: note: in included file (through arch/x86=
-/include/asm/preempt.h, include/linux/preempt.h, include/linux/spinlock.h, =
-...):
->    arch/x86/include/asm/percpu.h:550:49: sparse: sparse: Expected ) at en=
-d of cast operator
->    arch/x86/include/asm/percpu.h:550:49: sparse: sparse: got __seg_gs
->    arch/x86/include/asm/percpu.h:564:33: sparse: sparse: Expected ) at en=
-d of cast operator
->    arch/x86/include/asm/percpu.h:564:33: sparse: sparse: got __seg_gs
+On Fri, Dec 01, 2023 at 01:07:36PM +0000, Robin Murphy wrote:
+> On 29/11/2023 8:36 pm, Jason Gunthorpe wrote:
+> > On Wed, Nov 29, 2023 at 05:42:57PM +0000, Robin Murphy wrote:
+> > > Hi all,
+> > > 
+> > > Prompted by Jason's proposal[1], here's a first step towards truly
+> > > unpicking the dma_configure vs. IOMMU mess. As I commented before, we
+> > > have an awful lot of accumulated cruft and technical debt here making
+> > > things more complicated than they need to be, and we already have hacks
+> > > on top of hacks trying to work around it, so polishing those hacks even
+> > > further is really not a desirable direction of travel. And I do know
+> > > they're hacks, because I wrote most of them and still remember enough of
+> > > the context of the time ;)
+> > 
+> > I quite like this, I was also looking at getting rid of those other
+> > parameters.
+> > 
+> > I wanted to take smaller steps because it is all pretty hairy.
+> > 
+> > One thing that still concerns me is if the FW data restricts the valid
+> > IOVA window that really should be reflected into the reserved ranges
+> > and not just dumped into the struct device for use by the DMA API.
+> > 
+> > Or, perhaps, viof/iommufd should be using the struct device data to
+> > generate some additional reserved ranges?
+> > 
+> > Either way, I would like to see the dma_iommu and the rest of the
+> > subsystem agree on what the valid IOVA ranges actually are.
+> 
+> Note that there is some intentional divergence where iommu-dma reserves
+> IOVAs matching PCI outbound windows because it knows it wants to avoid
+> clashing with potential peer-to-peer addresses and doesn't want to have to
+> get into the details of ACS redirect etc., but we don't expose those as
+> generic reserved regions because they're firmly a property of the PCI host
+> bridge, not of the IOMMU group (and more practically, because we did do so
+> briefly and it made QEMU unhappy). I think there may also have been some
+> degree of conclusion that it's not the IOMMU API's place to get in the way
+> of other domain users trying to do weird P2P stuff if they really want to.
 
-sparse is too strict here. The following code is perfectly legal:
+I'm not sure this is the fully correct conclusion - eg if today we
+take a NIC device on a non-ACS topology and run DPDK through VFIO it
+has a chance of failure because some IOVA simply cannot be used by
+DPDK for DMA at all.
 
---cut here--
-int __seg_gs foo;
+qemu and kvm are a different situation that want different things. Eg
+it would want to identity map the PCI BAR spaces to the IOVA they are
+claiming.
 
-int bar (int *pcp)
-{
-  return *(typeof (*pcp) __seg_gs *)(unsigned long)(pcp);
-}
---cut here--
+It should still somehow carve out any other IOVA that is unusable due
+to guest-invisible ACS and reflect it through FW tables into the VM.
 
-$ gcc -O2 -S -Wextra -Wall test.c
-$
-$ sparse test.c
-test.c:1:14: error: Expected ; at end of declaration
-test.c:1:14: error: got foo
-test.c:5:26: error: Expected ) at end of cast operator
-test.c:5:26: error: got __seg_gs
-$
+I'm starting to see people build non-ACS systems and want it to work
+with VFIO and I'm a little worried we have been too loose here.
 
-Uros.
+> bridge and so inherits its restrictions. However I don't recall any
+> conscious decision for inbound windows to only be considered for DMA domain
+> reservations rather than for proper reserved regions - pretty sure that's
+> just a case of that code being added in the place where it seemed to fit
+> best at the time (because hey it's more host bridge windows and we already
+> have a thing for host bridge windows...)
+
+Yeah, and I don't think anyone actually cared much..
+
+At least as a step it would be nice if the DMA API only restrictions
+can come out as a special type of reserved region. Then the caller
+could decide if they want to follow them or not. iommufd could provide
+an opt-in API to DPDK that matches DMA API's safe IOVA allocator.
+
+Jason
