@@ -2,124 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C32D800726
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 10:34:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31D89800727
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 10:34:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378073AbjLAJeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 04:34:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57304 "EHLO
+        id S1378061AbjLAJeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 04:34:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378050AbjLAJeD (ORCPT
+        with ESMTP id S1378139AbjLAJeP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 04:34:03 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86CD0324D;
-        Fri,  1 Dec 2023 01:33:04 -0800 (PST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id CDD221FD63;
-        Fri,  1 Dec 2023 09:33:02 +0000 (UTC)
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9B4CA1369E;
-        Fri,  1 Dec 2023 09:33:02 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-        by imap1.dmz-prg2.suse.org with ESMTPSA
-        id XBWZIU6oaWWRUQAAD6G6ig
-        (envelope-from <mhocko@suse.com>); Fri, 01 Dec 2023 09:33:02 +0000
-Date:   Fri, 1 Dec 2023 10:33:01 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Dan Schatzberg <schatzberg.dan@gmail.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Yosry Ahmed <yosryahmed@google.com>, Huan Yang <link@vivo.com>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Peter Xu <peterx@redhat.com>,
-        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
-        Yue Zhao <findns94@gmail.com>, Hugh Dickins <hughd@google.com>
-Subject: Re: [PATCH 0/1] Add swappiness argument to memory.reclaim
-Message-ID: <ZWmoTa7MlD7h9FYm@tiehlicka>
-References: <20231130153658.527556-1-schatzberg.dan@gmail.com>
- <ZWiw9cEsDap1Qm5h@tiehlicka>
- <20231130165642.GA386439@cmpxchg.org>
+        Fri, 1 Dec 2023 04:34:15 -0500
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E3103268
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 01:33:45 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-5488bf9e193so2234358a12.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 01:33:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fairphone.com; s=fair; t=1701423223; x=1702028023; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZHVrjeIvHlbkENQloINWmB2dsPrtzcOkwkp/DcbG/G4=;
+        b=SeYjkzI5cMP4BR3ShT0Idgn/x3Hwp6sH51dI4B22CW1dIk8SqdWWvwyopbnhyu3K7A
+         9TQzlCeKuDZU9QiOl94uNgX1Ki3IRgcncVjBQsC7Fp45meFHumK5P/D5wBLk815qzAls
+         7t9hr3D56tqLFo4SK7QMVrVyWZGKiOjSXQukdnuIxhmy60BWctFCuYKKXXCTeWIN7e9G
+         x/iKEJFNAMr++56ndZ9LMFLgetxcsoaVB5r2Ws3aP/lgZTAHbhuh0JRjLEOqGRkLyjE7
+         eFcfdMvB0tLPNsSIRWIADsvn1TqdI+Z5HCCeVuEO9xHzMMJ+M8m9GCoFPXk6Jak3S+tu
+         Df9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701423223; x=1702028023;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZHVrjeIvHlbkENQloINWmB2dsPrtzcOkwkp/DcbG/G4=;
+        b=kUdcvjuv+ThbZxx6bY3wcY08UBomBPe0n1+xoHynnQbSm6bn2eFXbVMWll+JM182bD
+         ha+G4i7Fm+Js2Amis2nV3PHCg0t4x41mfvilI5k3f9zSBL1KGpEYINu/pHfhk+IhdUer
+         FJdgHQtRRdwMvvsNmGpLuiDtMnkNWyNnw9JuGHmqoj3onwe5vttViguoBfh53E10E+Ip
+         cGMvBZK12/iiW/HvbzpfSI3u0k22wgqMr3I1RESZKzgIM1h3Uw1SJKx9FYHVSx6kWAc/
+         AQlJ9T0ndxUYgZzlrlXQe1EWlnT5025ikxjVL1zewDQfiHX7wJmvVoTYff1n/Qb2gRN7
+         Jlpg==
+X-Gm-Message-State: AOJu0YyvSjo2U3tRroIRFgFrLXeT0I/bogs7gVhq8IYnE5t0br+CPhF7
+        WdsbVjPVnN5rEkbUlVsXAWXVxA==
+X-Google-Smtp-Source: AGHT+IEid4Ye47Vw7u2H0QYSqPZWJcAhKKUil0A7lFg/3cgLgNI+1GrOrPS+aUv+vw6IHdlWx7zz+g==
+X-Received: by 2002:a50:c251:0:b0:54b:7a1c:6b01 with SMTP id t17-20020a50c251000000b0054b7a1c6b01mr589403edf.33.1701423223596;
+        Fri, 01 Dec 2023 01:33:43 -0800 (PST)
+Received: from otso.luca.vpn.lucaweiss.eu (dhcp-089-099-055-216.chello.nl. [89.99.55.216])
+        by smtp.gmail.com with ESMTPSA id b16-20020a05640202d000b0054bbc6b6580sm1423708edx.31.2023.12.01.01.33.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Dec 2023 01:33:43 -0800 (PST)
+From:   Luca Weiss <luca.weiss@fairphone.com>
+Subject: [PATCH v3 0/3] Enable venus on Fairphone 5 / non-ChromeOS sc7280
+ venus support
+Date:   Fri, 01 Dec 2023 10:33:17 +0100
+Message-Id: <20231201-sc7280-venus-pas-v3-0-bc132dc5fc30@fairphone.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231130165642.GA386439@cmpxchg.org>
-X-Spamd-Bar: +++++++++++++++
-X-Spam-Score: 15.00
-X-Rspamd-Server: rspamd1
-Authentication-Results: smtp-out2.suse.de;
-        dkim=none;
-        spf=fail (smtp-out2.suse.de: domain of mhocko@suse.com does not designate 2a07:de40:b281:104:10:150:64:97 as permitted sender) smtp.mailfrom=mhocko@suse.com;
-        dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.com (policy=quarantine)
-X-Rspamd-Queue-Id: CDD221FD63
-X-Spamd-Result: default: False [15.00 / 50.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         R_SPF_FAIL(1.00)[-all];
-         ARC_NA(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         NEURAL_HAM_LONG(-1.00)[-1.000];
-         DMARC_POLICY_QUARANTINE(1.50)[suse.com : No valid SPF, No valid DKIM,quarantine];
-         SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-         RCVD_COUNT_THREE(0.00)[3];
-         MID_RHS_NOT_FQDN(0.50)[];
-         MX_GOOD(-0.01)[];
-         NEURAL_HAM_SHORT(-0.05)[-0.266];
-         RCPT_COUNT_TWELVE(0.00)[19];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         R_DKIM_NA(2.20)[];
-         MIME_TRACE(0.00)[0:+];
-         FREEMAIL_CC(0.00)[gmail.com,linux.dev,google.com,vivo.com,vger.kernel.org,kvack.org,linux-foundation.org,redhat.com,infradead.org,intel.com,huawei.com];
-         RCVD_TLS_ALL(0.00)[];
-         SUSPICIOUS_RECIPS(1.50)[]
-X-Spam: Yes
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAF2oaWUC/33NsQ7CIBDG8VcxzGKOQwo4+R7GAenVMkgbUKJp+
+ u7SDg7GOP6/5H43sUwpUGaHzcQSlZDDEGvI7Yb53sUr8dDWZggowaLl2Ws0wAvFR+ajy5ycbSQ
+ oVFpJVs/GRF14ruTpXLsP+T6k1/qhiGX9gxXBgVvfaGl8J5R2x86FNPZDpJ0fbmwBC34QAYA/E
+ KzIpcU9GGOFFPobmef5DTjxykT5AAAA
+To:     Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
+        Vikash Garodia <quic_vgarodia@quicinc.com>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        cros-qcom-dts-watchers@chromium.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Luca Weiss <luca.weiss@fairphone.com>
+X-Mailer: b4 0.12.4
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 30-11-23 11:56:42, Johannes Weiner wrote:
-[...]
-> So I wouldn't say it's merely a reclaim hint. It controls a very
-> concrete and influential factor in VM decision making. And since the
-> global swappiness is long-established ABI, I don't expect its meaning
-> to change significantly any time soon.
+Devices with Qualcomm firmware (compared to ChromeOS firmware) need some
+changes in the venus driver and dts layout so that venus can initialize.
 
-As I've said I am more worried about potential future changes which
-would modify existing, reduce or add more corner cases which would be
-seen as a change of behavior from the user space POV. That means that we
-would have to be really explicit about the fact that the reclaim is free
-to override the swappiness provided by user. So essentially a best
-effort interface without any actual guarantees. That surely makes it
-harder to use. Is it still useable?
+Do these changes, similar to sc7180.
 
-Btw. IIRC these concerns were part of the reason why memcg v2 doesn't
-have swappiness interface. If we decide to export swappiness via
-memory.reclaim interface does it mean we will do so on per-memcg level
-as well?
+Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+---
+Changes in v3:
+- Move 0x2184 iommu from sc7280.dtsi to sc7280-chrome-common.dtsi since
+  it seems to cause crash on some boards (Vikash)
+- Pick up tags
+- Link to v2: https://lore.kernel.org/r/20231002-sc7280-venus-pas-v2-0-bd2408891317@fairphone.com
 
+Changes in v2:
+- Reword commit message 2/3 to be clearer (Konrad)
+- Link to v1: https://lore.kernel.org/r/20230929-sc7280-venus-pas-v1-0-9c6738cf157a@fairphone.com
+
+---
+Luca Weiss (3):
+      media: venus: core: Set up secure memory ranges for SC7280
+      arm64: dts: qcom: sc7280: Move video-firmware to chrome-common
+      arm64: dts: qcom: qcm6490-fairphone-fp5: Enable venus node
+
+ arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts |  5 +++++
+ arch/arm64/boot/dts/qcom/sc7280-chrome-common.dtsi | 11 +++++++++++
+ arch/arm64/boot/dts/qcom/sc7280.dtsi               |  9 +++------
+ drivers/media/platform/qcom/venus/core.c           |  4 ++++
+ 4 files changed, 23 insertions(+), 6 deletions(-)
+---
+base-commit: b2a4d0696192f24f79ea71fea2d775da28fb9157
+change-id: 20230929-sc7280-venus-pas-ea9630525753
+
+Best regards,
 -- 
-Michal Hocko
-SUSE Labs
+Luca Weiss <luca.weiss@fairphone.com>
+
