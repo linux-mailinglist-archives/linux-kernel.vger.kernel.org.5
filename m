@@ -2,138 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC8D6801258
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 19:14:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C057801261
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 19:16:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379060AbjLASOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 13:14:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34130 "EHLO
+        id S1379104AbjLASQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 13:16:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbjLASOd (ORCPT
+        with ESMTP id S229454AbjLASQA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 13:14:33 -0500
-Received: from mailo.com (msg-2.mailo.com [213.182.54.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3F3A10D;
-        Fri,  1 Dec 2023 10:14:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailoo.org; s=mailo;
-        t=1701454446; bh=8ItrQJpfnYJNBvx9/ZxfYVCB4X1PSHGmZpReeVMVCbM=;
-        h=X-EA-Auth:From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
-         References:MIME-Version:Content-Transfer-Encoding;
-        b=BlRJe1XoLRRfLfBlqX9FKJXDcczc9GjGwiHexrrf2wJDGyH4QwQYFcMP2gml325Ew
-         x7N8QzhHSsMKY7CiqKsYPa6vBzklsiX/NIoj3ILcNFVOLU8i9gQdnDCOwfhj/oiF8Q
-         B3zFDEDOCYN62u80TcrXeY4f3rb7yGbgSSfNzuis=
-Received: by b221-6.in.mailobj.net [192.168.90.26] with ESMTP
-        via ip-22.mailoo.org [213.182.54.22]
-        Fri,  1 Dec 2023 19:14:05 +0100 (CET)
-X-EA-Auth: ym1ciIqVgZ9eNjymoAMtLEFtuPM6bDp74qWVWVEHmy5LVtFvlqvwNHZnHGLyOdmKhJr18Ui7S9JftJCkKqCam+ZcJB/sbMs1XtBetbwXJJ0=
-From:   Vincent Knecht <vincent.knecht@mailoo.org>
-To:     Tianshu Qiu <tian.shu.qiu@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Yassine Oudjana <y.oudjana@protonmail.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Vincent Knecht <vincent.knecht@mailoo.org>
-Subject: [PATCH v2 3/3] media: i2c: ak7375: Add support for ak7345
-Date:   Fri,  1 Dec 2023 19:13:50 +0100
-Message-ID: <20231201181350.26454-3-vincent.knecht@mailoo.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231201181350.26454-1-vincent.knecht@mailoo.org>
-References: <20231201181350.26454-1-vincent.knecht@mailoo.org>
+        Fri, 1 Dec 2023 13:16:00 -0500
+Received: from relay.smtp-ext.broadcom.com (saphodev.broadcom.com [192.19.144.205])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC7A4F9
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 10:16:06 -0800 (PST)
+Received: from bld-lvn-bcawlan-34.lvn.broadcom.net (bld-lvn-bcawlan-34.lvn.broadcom.net [10.75.138.137])
+        by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id A6970C0000D4;
+        Fri,  1 Dec 2023 10:16:05 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com A6970C0000D4
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
+        s=dkimrelay; t=1701454565;
+        bh=oOit/4rL2wvddJb+2fxKmDWbNk0f7jYnHz9/Hr/bK+c=;
+        h=From:To:Subject:Date:From;
+        b=C4tDQY8EKcPwDOkiiufmRVq8/AV+fmjWbbxXz9rWjYHsRquZSCpJtqNOXCJpwi7gO
+         /LztMBDdDSpGUScW6K3X0vre14j350zSWmAK2+ukeBiZrMV67+1Jtmx/PwuKpUy0LZ
+         GX+49kybcRVrRovdTPAh0ufSlwFx07Hbr/K6F+/8=
+Received: from bcacpedev-irv-3.lvn.broadcom.net (bcacpedev-irv-3.lvn.broadcom.net [10.75.138.105])
+        by bld-lvn-bcawlan-34.lvn.broadcom.net (Postfix) with ESMTPSA id 6C42F18728D;
+        Fri,  1 Dec 2023 10:16:05 -0800 (PST)
+From:   dregan <dregan@broadcom.com>
+To:     dregan <dregan@broadcom.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: [PATCH 1/1] mtd: rawnand: Add deassert_wp comment
+Date:   Fri,  1 Dec 2023 10:15:42 -0800
+Message-Id: <20231201181542.421077-1-dregan@broadcom.com>
+X-Mailer: git-send-email 2.37.3
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for ak7345 VCM, which has 9 bits position values,
-longer power-up delay, and no known standby register setting.
-Might be compatible as-is with ak7348.
+From: Boris Brezillon <bbrezillon@kernel.org>
 
-Tested on msm8916-alcatel-idol347 phone.
+Add deassert_wp description comment
 
-Signed-off-by: Vincent Knecht <vincent.knecht@mailoo.org>
+Signed-off-by: Boris Brezillon <bbrezillon@kernel.org>
+Signed-off-by: David Regan <dregan@broadcom.com>
 ---
-v2: no change
----
- drivers/media/i2c/ak7375.c | 26 ++++++++++++++++++++++----
- 1 file changed, 22 insertions(+), 4 deletions(-)
+ include/linux/mtd/rawnand.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/media/i2c/ak7375.c b/drivers/media/i2c/ak7375.c
-index 3a14eff41531..9a2432cea3ff 100644
---- a/drivers/media/i2c/ak7375.c
-+++ b/drivers/media/i2c/ak7375.c
-@@ -16,6 +16,7 @@ struct ak73xx_chipdef {
- 	u8 shift_pos;
- 	u8 mode_active;
- 	u8 mode_standby;
-+	bool has_standby;	/* Some chips may not have standby mode */
- 	u16 focus_pos_max;
- 	/*
- 	 * This sets the minimum granularity for the focus positions.
-@@ -37,12 +38,26 @@ struct ak73xx_chipdef {
- 	u16 power_delay_us;
- };
- 
-+static const struct ak73xx_chipdef ak7345_cdef = {
-+	.reg_position	= 0x0,
-+	.reg_cont	= 0x2,
-+	.shift_pos	= 7,	/* 9 bits position values, need to << 7 */
-+	.mode_active	= 0x0,
-+	.has_standby	= false,
-+	.focus_pos_max	= 511,
-+	.focus_steps	= 1,
-+	.ctrl_steps	= 16,
-+	.ctrl_delay_us	= 1000,
-+	.power_delay_us	= 20000,
-+};
-+
- static const struct ak73xx_chipdef ak7375_cdef = {
- 	.reg_position	= 0x0,
- 	.reg_cont	= 0x2,
- 	.shift_pos	= 4,	/* 12 bits position values, need to << 4 */
- 	.mode_active	= 0x0,
- 	.mode_standby	= 0x40,
-+	.has_standby	= true,
- 	.focus_pos_max	= 4095,
- 	.focus_steps	= 1,
- 	.ctrl_steps	= 64,
-@@ -249,10 +264,12 @@ static int __maybe_unused ak7375_vcm_suspend(struct device *dev)
- 		usleep_range(cdef->ctrl_delay_us, cdef->ctrl_delay_us + 10);
- 	}
- 
--	ret = ak7375_i2c_write(ak7375_dev, cdef->reg_cont,
--			       cdef->mode_standby, 1);
--	if (ret)
--		dev_err(dev, "%s I2C failure: %d\n", __func__, ret);
-+	if (cdef->has_standby) {
-+		ret = ak7375_i2c_write(ak7375_dev, cdef->reg_cont,
-+				       cdef->mode_standby, 1);
-+		if (ret)
-+			dev_err(dev, "%s I2C failure: %d\n", __func__, ret);
-+	}
- 
- 	ret = regulator_bulk_disable(ARRAY_SIZE(ak7375_supply_names),
- 				     ak7375_dev->supplies);
-@@ -312,6 +329,7 @@ static int __maybe_unused ak7375_vcm_resume(struct device *dev)
- }
- 
- static const struct of_device_id ak7375_of_table[] = {
-+	{ .compatible = "asahi-kasei,ak7345", .data = &ak7345_cdef, },
- 	{ .compatible = "asahi-kasei,ak7375", .data = &ak7375_cdef, },
- 	{ /* sentinel */ }
- };
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index fcad94aa0515..3049b05d8a20 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -1001,6 +1001,8 @@ struct nand_op_parser {
+ /**
+  * struct nand_operation - NAND operation descriptor
+  * @cs: the CS line to select for this NAND operation
++ * @deassert_wp: set to true when the operation requires the WP pin to be
++ *		 de-asserted (ERASE, PROG, ...)
+  * @instrs: array of instructions to execute
+  * @ninstrs: length of the @instrs array
+  *
 -- 
-2.43.0
-
-
+2.37.3
 
