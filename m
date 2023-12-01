@@ -2,126 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 247EE8007E0
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 11:06:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A9998007E3
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 11:07:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378129AbjLAKGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 05:06:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55706 "EHLO
+        id S1378135AbjLAKGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 05:06:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377899AbjLAKGL (ORCPT
+        with ESMTP id S1377992AbjLAKGs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 05:06:11 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 442FBB2;
-        Fri,  1 Dec 2023 02:06:18 -0800 (PST)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B14mDrR030535;
-        Fri, 1 Dec 2023 10:06:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id; s=qcppdkim1;
- bh=A1EGrq2r/Zjw8fa3aqVFo2FlroFAid1G/BIBvjuO6XE=;
- b=EolkPQDcG1j3zhat+vvfRdu5KMutWS9ebFOytYPeKH34926T1Fy4QjTwnIXJyUeoKiGG
- QKzL8mon3wb6igqPzbAHzbVFP9S+YnNyh59iUmBq3xgHziu3s1IArhuzVvEsOZuQk8RO
- U62qDOJfQ/IMLGqTWHLzlKdDdhWf7/CpdS0vyvWP/OG1y9sQUICF1imGBh/kqcppNnus
- Uvlh3tpXKg/88lgNWoIl0iI1AUZL2HyEh/1Osm9uyKl9IZGaFLlL+rmz4TszjTz47tiS
- a5TjpqmBhnyvlh4HdxJ+WuFML4t7Vu09xZasH3yRalVzmIlvTnh9dWt0kRm8wXnT3zGC zQ== 
-Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uprhdu3v8-1
+        Fri, 1 Dec 2023 05:06:48 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 458A7C7;
+        Fri,  1 Dec 2023 02:06:53 -0800 (PST)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B17e3EP010711;
+        Fri, 1 Dec 2023 10:06:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=tUAP8wCFyJh9BD59PB2im9kCmmk+FkPAweHCMGjBBAA=;
+ b=L4OYvJMxY0y25H+jtTuhS7h0sWK2U5YQSki6oRr8C3ONybbtOZ6wFxY9GbD0ZHQxlL/p
+ 0eI2ToF/jOFNYC+fnijq0AqJbpjpKEpmM4Pc/rGW34ATtvaO77TKT7sC26JP9s+dIN5c
+ C8ll+0bnc5tYs692NEPUh57S3Q8hwmgn4Qmi6ZUPB/iYOEhih85/ynUWk//+Bnp0lDW8
+ tENu6LB5pY0pb3W7Cqis+LgK6myWyTeyre62XnyEebXTWWsNmxvx+xdqrNhrioNWFURw
+ wvvGcihktvajBxvhQsJ/RyNztMtOQkz78W54KTAdXYo616q//JnAOvt2g/f3qoDffVQc 3g== 
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uq3f7s7hy-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 01 Dec 2023 10:06:02 +0000
-Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
-        by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 3B1A5urY026649;
-        Fri, 1 Dec 2023 10:05:56 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 3unmf087ye-1;
-        Fri, 01 Dec 2023 10:05:56 +0000
-Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3B1A5uQd026644;
-        Fri, 1 Dec 2023 10:05:56 GMT
-Received: from hu-maiyas-hyd.qualcomm.com (hu-snehshah-hyd.qualcomm.com [10.147.246.35])
-        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 3B1A5ulh026640;
-        Fri, 01 Dec 2023 10:05:56 +0000
-Received: by hu-maiyas-hyd.qualcomm.com (Postfix, from userid 2319345)
-        id 6DC595001C3; Fri,  1 Dec 2023 15:35:55 +0530 (+0530)
-From:   Sneh Shah <quic_snehshah@quicinc.com>
-To:     Vinod Koul <vkoul@kernel.org>,
-        Bhupesh Sharma <bhupesh.sharma@linaro.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        netdev@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Sneh Shah <quic_snehshah@quicinc.com>, kernel@quicinc.com,
-        Andrew Halaney <ahalaney@redhat.com>
-Subject: [PATCH v2] net: stmmac: update Rx clk divider for 10M SGMII
-Date:   Fri,  1 Dec 2023 15:35:48 +0530
-Message-Id: <20231201100548.12994-1-quic_snehshah@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-X-QCInternal: smtphost
+        Fri, 01 Dec 2023 10:06:46 +0000
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B1A6kOI027353
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 1 Dec 2023 10:06:46 GMT
+Received: from [10.239.133.73] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 1 Dec
+ 2023 02:06:44 -0800
+Message-ID: <9714f76f-0cf3-4f54-8e0d-fe3ca2990eed@quicinc.com>
+Date:   Fri, 1 Dec 2023 18:06:42 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [GIT PULL] Pin control fixes for v6.7
+To:     Linus Walleij <linus.walleij@linaro.org>
+CC:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Chester Lin <clin@suse.com>
+References: <CACRpkdZtVNZFWSUgb4=gUE2mQRb=aT_3=zRv1U71Vsq0Mm34eg@mail.gmail.com>
+ <CAHk-=whk4oNQazgpzkujc2=ntVQMhU5ko7Canp2Uuq6CpyGzmA@mail.gmail.com>
+ <CACRpkdZRf7bNVmJCgsVD0uheD1VLkLKG13d1oS-kbT8BFyRKQw@mail.gmail.com>
+ <e703c87e-32b9-4dce-b232-89c0e909c35e@quicinc.com>
+ <CACRpkdZtCxwLZCY4autrTvonmZ3XcVzH6iXqXanS97VKCZ+ERw@mail.gmail.com>
+From:   "Aiqun(Maria) Yu" <quic_aiquny@quicinc.com>
+In-Reply-To: <CACRpkdZtCxwLZCY4autrTvonmZ3XcVzH6iXqXanS97VKCZ+ERw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: H7GjdgLppbe_t5WTRxU9l3iP1t53Znd7
-X-Proofpoint-GUID: H7GjdgLppbe_t5WTRxU9l3iP1t53Znd7
+X-Proofpoint-ORIG-GUID: 6VN6YwDyKRyki-DpCrDpO4bclbAQUFCp
+X-Proofpoint-GUID: 6VN6YwDyKRyki-DpCrDpO4bclbAQUFCp
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-12-01_07,2023-11-30_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- phishscore=0 spamscore=0 suspectscore=0 impostorscore=0 mlxlogscore=763
- clxscore=1015 mlxscore=0 priorityscore=1501 adultscore=0 bulkscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
+ spamscore=0 impostorscore=0 lowpriorityscore=0 phishscore=0
+ priorityscore=1501 mlxlogscore=964 bulkscore=0 clxscore=1015 mlxscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2311060000 definitions=main-2312010067
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGMII 10MBPS mode needs RX clock divider to avoid drops in Rx.
-Update configure SGMII function with rx clk divider programming.
+On 12/1/2023 4:10 PM, Linus Walleij wrote:
+> Hi Nathan, Nick,
+> 
+> (just picking some LLVM compiler people I know of... and trust)
+> 
+> Context is this patch:
+> https://lore.kernel.org/linux-gpio/20231115102824.23727-1-quic_aiquny@quicinc.com/
+> 
+> On Thu, Nov 30, 2023 at 6:37 AM Aiqun(Maria) Yu <quic_aiquny@quicinc.com> wrote:
+>> On 11/29/2023 11:08 PM, Linus Walleij wrote:
+>>> On Wed, Nov 29, 2023 at 3:56 PM Linus Torvalds
+>>> <torvalds@linux-foundation.org> wrote:
+>>>> On Wed, 29 Nov 2023 at 04:09, Linus Walleij <linus.walleij@linaro.org> wrote:
+>>>>>
+>>>>> The most interesting patch is the list iterator fix in the core by Maria
+>>>>> Yu, it took a while for me to realize what was going on there.
+>>>>
+>>>> That commit message still doesn't explain what the problem was.
+>>>>
+>>>> Why is p->state volatile there? It seems to be a serious locking bug
+>>>> if p->state can randomly change there, and the READ_ONCE() looks like
+>>>> a "this hides the problem" rather than an actual real fix.
+>>
+>> This is indeed an interesting issue. Thx for the comment, Linus.
+>> **Let me explain how: "p->state becomes volatile in the list iterator",
+>> and "why READ_ONCE is suggested".
+>>
+>> The current critical code is:
+>>     list_for_each_entry(setting, &p->state->settings, node)
+>>
+>> after elaborating the define list_for_each_entry, so above critical code
+>> will be:
+>>     for (setting = list_head(&p->state->settings, typeof(*setting), node); \
+>> &setting->node != (&p->state->settings); \
+>> setting = list_next(setting , node))
+>>
+>> The asm code(refer result from Clang version 10.0) can cleared explain
+>> the step of p->state reload actions:
+>> loop:
+>> ldr x22,[x22] ; x22=list_next(setting , node))
+>> add x9,x8,#0x18 ; x9=&p->state->setting
+>> cmp x22,x9 ; setting,x9
+>> b.eq 0xFFFFFF9B24483530
+>>
+>> ldr w9,[x22,#0x10] ; w9,[setting,#16]
+>> cmp w9,#0x2 ; w9,#2
+>> b.ne 0xFFFFFF9B24483504
+>>
+>> mov x0,x22 ; x0,setting
+>> bl 0xFFFFFF9B24486048 ; pinmux_disable_setting
+>>
+>> ldr x8,[x19,#0x28] ; x19=p, x8=[p->state], *reload p->state*
+>> b loop
+>>
+>> The *reload p->state* inside the loop for checking is not needed and can
+>> cause possible infinite loop. So READ_ONCE is highly suggested even if
+>> p->state is not randomly changed. And then unnecessary "ldr
+>> x8,[x19,#0x28]" can be removed from above loop code.
+>>
+>> **Comments about the locking bug:
+>> currently pinctrl_select_state is an export symbol and don't have
+>> effective reentrance protect design. That's why current infinite loop
+>> issue was observed with customer's multi thread call with
+>> pinctrl_select_state without lock protection. pinctrl_select_state
+>> totally rely on driver module user side to ensure the reentrant state.
+>>
+>> Usually the suggested usage from driver side who are using pinctrl would be:
+>> LOCK;
+>> pinctrl_select_state();
+>> gpio pulling;
+>> udelay();
+>> check state;
+>> other hardware behaviors;
+>> UNLOCK;
+>>
+>> So the locking bug fix I have told customer side to fix from their own
+>> driver part. Since usually not only a simple pinctrl_select_state call
+>> can finish the hardware state transaction.
+>>
+>> I myself also is fine to have a small per pinctrl lock to only protect
+>> the current pinctrl_select_state->pinctrl_commit_state reentrance
+>> issues. Pls any pinctrl maintainer help to comment to suggest or not and
+>> I can prepare a change as well.
+> 
+> Luckily I am the pin control maintainer :D
+> And I also ha my morning coffee and looked over the patch again.
+> 
+> So tilting the compiler to generate code that is less prone to race
+> conditions with READ_ONCE() isn't really the solution is it? We need
+> to introduce a proper lock that stops this from happening if it is
+> a problem people are facing.
+> 
+> Can you try to make a patch that removes READ_ONCE()
+> and introduce a lock instead?
+> 
+> Racing is rarely an issue in pin control for reasons explained
+> in another context here:
+> https://lore.kernel.org/linux-gpio/CACRpkdZ0cnJpYuzU=47-oW-7N_YGMo2vXpKOeXeNi5PhPY7QMA@mail.gmail.com/
+> 
+> ...but if people still manage to run into it, we better have a lock
+> there. Just make sure it is not just an issue with outoftree code,
+> but a real problem?
+> 
+> The change that changes the code to use the old_state variable
+> should stay in, it makes the code more readable, it's just the
+> READ_ONCE() macro which is dubious.
+Thx for confirm. I am preparing the new change now. :)
 
-Fixes: 463120c31c58 ("net: stmmac: dwmac-qcom-ethqos: add support for SGMII")
-Signed-off-by: Sneh Shah <quic_snehshah@quicinc.com>
----
-v2 changelog:
-- Use FIELD_PREP to prepare bifield values in place of GENMASK
-- Add fixes tag
----
- drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c | 4 ++++
- 1 file changed, 4 insertions(+)
+READ_ONCE can only avoid the possible infinite loop and not crash the 
+whole kernel, while the lock is needed to protect the multi parallel 
+call of pinctrl_commit_state api have a consistent atomic hardware 
+result as well.
+> 
+> Yours,
+> Linus Walleij
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-index d3bf42d0fceb..df6ff8bcdb5c 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-@@ -34,6 +34,7 @@
- #define RGMII_CONFIG_LOOPBACK_EN		BIT(2)
- #define RGMII_CONFIG_PROG_SWAP			BIT(1)
- #define RGMII_CONFIG_DDR_MODE			BIT(0)
-+#define RGMII_CONFIG_SGMII_CLK_DVDR		GENMASK(18, 10)
- 
- /* SDCC_HC_REG_DLL_CONFIG fields */
- #define SDCC_DLL_CONFIG_DLL_RST			BIT(30)
-@@ -617,6 +618,9 @@ static int ethqos_configure_sgmii(struct qcom_ethqos *ethqos)
- 	case SPEED_10:
- 		val |= ETHQOS_MAC_CTRL_PORT_SEL;
- 		val &= ~ETHQOS_MAC_CTRL_SPEED_MODE;
-+		rgmii_updatel(ethqos, RGMII_CONFIG_SGMII_CLK_DVDR,
-+			      FIELD_PREP(RGMII_CONFIG_SGMII_CLK_DVDR, 0x31),
-+			      RGMII_IO_MACRO_CONFIG);
- 		break;
- 	}
- 
 -- 
-2.17.1
+Thx and BRs,
+Aiqun(Maria) Yu
 
