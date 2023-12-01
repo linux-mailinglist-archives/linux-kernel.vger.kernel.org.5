@@ -2,309 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FD1A80097A
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 12:14:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B820D800990
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 12:15:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378494AbjLALOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 06:14:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34264 "EHLO
+        id S1378512AbjLALPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 06:15:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378442AbjLALOh (ORCPT
+        with ESMTP id S1378475AbjLALPT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 06:14:37 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 119DE1A4
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 03:14:43 -0800 (PST)
-Received: from localhost (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id D3F0666073A1;
-        Fri,  1 Dec 2023 11:14:40 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1701429281;
-        bh=W5BFlXtoyKmd31EMjrnzRW6SOTld/TWU/7ZUZClZ9Bc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=BJGAiH2SV+gSyAGsLO9cnm18Igl4YLPWMcjXpB9ybf+wnq4kmLrSMvc5qNdmwYjQH
-         2mrLClFsjVuPd0RDk6Cz3B086IlpaQtjfrUgJ177Kjn8tVrqWLto6uRm17ktMKhYss
-         DR65bzLiAbIQIJU2CDzCBiJ6nW3H61YvnnxH2tPDwC/EsOpsHw0NDviSkVsaZacerk
-         u+kMtjodAMPrRV9vByFaMu9AXnwcOHbgrX5KDnOh99DJJtAUu/CojZFGq0yZWPd/PH
-         NgxjQ/JXcB1vvUBOTxzIoEr9b8FhKYzzXPEPp8Y3soqLeS1QSfr3piFZgPLsZq5AOP
-         CmJxjUWlpXSEg==
-Date:   Fri, 1 Dec 2023 12:14:37 +0100
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     robh@kernel.org, steven.price@arm.com,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, m.szyprowski@samsung.com,
-        krzysztof.kozlowski@linaro.org
-Subject: Re: [PATCH v3 3/3] drm/panfrost: Synchronize and disable interrupts
- before powering off
-Message-ID: <20231201121437.7d5cdefb@collabora.com>
-In-Reply-To: <20231201104027.35273-4-angelogioacchino.delregno@collabora.com>
-References: <20231201104027.35273-1-angelogioacchino.delregno@collabora.com>
-        <20231201104027.35273-4-angelogioacchino.delregno@collabora.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Fri, 1 Dec 2023 06:15:19 -0500
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::225])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23D7C1B2;
+        Fri,  1 Dec 2023 03:15:23 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 420B71C0004;
+        Fri,  1 Dec 2023 11:15:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1701429322;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=4imsoNotdCY9kpBwQ1K6ybkxBX5vA3o4lFD6+R+1ft4=;
+        b=N8HfEVAf50Nq7BZnY9kfsTYlgt4koQNK4FTPx+aaqu0yEt9V94CP51O/Xjn9jRYS12H6ix
+        +Mbcjzox9UdKl3AzQ7I9rjshWPK9cZ7EWuiUVOpghkqa/MMhDYG9p7v+wAkryb6zokEk7B
+        HkEmv6MptCwILz7flJbOHQWvjI0p+qtLsamokxexGHGkHy+q3ej0CNHNSHy8jqDB1nReHm
+        6/hQjLpBq1a0VP0R8ZrXMQWcGVcppMVDfpSowvGWPnMDdTonxZrofs17XmkzfUAfFhWfLv
+        BJuRCh8qsGmrRVhCG9Mxi4jl7KPxkQyVRQ4Fsm4v25RySjE7brdB73yYpUi0CQ==
+From:   Gregory CLEMENT <gregory.clement@bootlin.com>
+To:     Paul Burton <paulburton@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
+        Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        =?UTF-8?q?Th=C3=A9o=20Lebrun?= <theo.lebrun@bootlin.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Gregory CLEMENT <gregory.clement@bootlin.com>
+Subject: [PATCH v3 00/22] Add support for the Mobileye EyeQ5 SoC
+Date:   Fri,  1 Dec 2023 12:14:43 +0100
+Message-ID: <20231201111512.803120-1-gregory.clement@bootlin.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: gregory.clement@bootlin.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri,  1 Dec 2023 11:40:27 +0100
-AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-wrote:
 
-> To make sure that we don't unintentionally perform any unclocked and/or
-> unpowered R/W operation on GPU registers, before turning off clocks and
-> regulators we must make sure that no GPU, JOB or MMU ISR execution is
-> pending: doing that required to add a mechanism to synchronize the
+Hello,
 
-                      ^ requires the addition of a mechanism...
+The EyeQ5 SoC from Mobileye is based on the MIPS I6500 architecture
+and features multiple controllers such as the classic UART, I2C, SPI,
+as well as CAN-FD, PCIe, Octal/Quad SPI Flash interface, Gigabit
+Ethernet, MIPI CSI-2, and eMMC 5.1. It also includes a Hardware
+Security Module, Functional Safety Hardware, and MJPEG encoder.
 
-> interrupts on suspend.
-> 
-> Add functions panfrost_{gpu,job,mmu}_suspend_irq() which will perform
-> interrupts masking and ISR execution synchronization, and then call
-> those in the panfrost_device_runtime_suspend() handler in the exact
-> sequence of job (may require mmu!) -> mmu -> gpu.
-> 
-> As a side note, JOB and MMU suspend_irq functions needed some special
-> treatment: as their interrupt handlers will unmask interrupts, it was
-> necessary to add a bitmap for `is_suspended` which is used to address
+One peculiarity of this SoC is that the physical address of the DDDR
+exceeds 32 bits. Given that the architecture is 64 bits, this is not
+an issue, but it requires some changes in how the mips64 is currently
+managed during boot.
 
-            to add an `is_suspended` bitmap which is used...
+In this third version there are only few changes done in the device
+tree related part. I however managed to test this series on top of the
+Jiaxun patches enabling SPARSMEM[1], and it fixed my issue about memory
+consumption for memmap.
 
-> the possible corner case of unintentional IRQ unmasking because of ISR
-> execution after a call to synchronize_irq().
+To build and test the kernel, we need to run the following commands:
 
-Also fixes the case where the interrupt handler is called when the
-device is suspended because the IRQ line is shared with another device.
-No need to update the commit message for that though.
+make 64r6el_defconfig BOARDS=eyeq5
+make vmlinuz.itb
 
-> 
-> At resume, clear each is_suspended bit in the reset path of JOB/MMU
-> to allow unmasking the interrupts.
-> 
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-> ---
->  drivers/gpu/drm/panfrost/panfrost_device.c |  3 +++
->  drivers/gpu/drm/panfrost/panfrost_device.h |  7 +++++++
->  drivers/gpu/drm/panfrost/panfrost_gpu.c    |  6 ++++++
->  drivers/gpu/drm/panfrost/panfrost_gpu.h    |  1 +
->  drivers/gpu/drm/panfrost/panfrost_job.c    | 20 +++++++++++++++++---
->  drivers/gpu/drm/panfrost/panfrost_job.h    |  1 +
->  drivers/gpu/drm/panfrost/panfrost_mmu.c    | 19 ++++++++++++++++---
->  drivers/gpu/drm/panfrost/panfrost_mmu.h    |  1 +
->  8 files changed, 52 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.c b/drivers/gpu/drm/panfrost/panfrost_device.c
-> index c90ad5ee34e7..a45e4addcc19 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_device.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_device.c
-> @@ -421,6 +421,9 @@ static int panfrost_device_runtime_suspend(struct device *dev)
->  		return -EBUSY;
->  
->  	panfrost_devfreq_suspend(pfdev);
-> +	panfrost_job_suspend_irq(pfdev);
-> +	panfrost_mmu_suspend_irq(pfdev);
-> +	panfrost_gpu_suspend_irq(pfdev);
->  	panfrost_gpu_power_off(pfdev);
->  
->  	return 0;
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.h b/drivers/gpu/drm/panfrost/panfrost_device.h
-> index 54a8aad54259..5c24f01f8904 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_device.h
-> +++ b/drivers/gpu/drm/panfrost/panfrost_device.h
-> @@ -25,6 +25,12 @@ struct panfrost_perfcnt;
->  #define NUM_JOB_SLOTS 3
->  #define MAX_PM_DOMAINS 5
->  
-> +enum panfrost_drv_comp_bits {
-> +	PANFROST_COMP_BIT_MMU,
-> +	PANFROST_COMP_BIT_JOB,
+I noticed that if the kernel can't be in kseg0 at all by using
+low memory at 0x40000000, then I got the following message during
+boot:
 
-I think we need one for the GPU interrupt too, for the
-irq-line-is-shared-with-another-device thing I was mentioning.
+ Run /init as init process
+ Unhandled kernel unaligned access[#1]:
+ CPU: 0 PID: 22 Comm: kcompactd0 Not tainted 6.7.0-rc1-00024-g7d48f10cb2bb-dirty #409
+ $ 0   : 0000000000000000 0000000000000001 0000000000000010 a80000080800e100
+ $ 4   : a8000008088fe758 00000000088fe758 0000000000000004 0000000000000002
+ $ 8   : 0000000000000089 0000000008fa0000 0000000000000000 0000000008ad0000
+ $12   : 00000000140000e1 000000001000001e 0000000000000000 0000000000000141
+ $16   : a80000080321fa30 0000000000000000 b88f553ba6dfc404 a8000008081bfe9c
+ $20   : a800000808ad0000 a8000008081c03e4 0000000000012488 a80000080907afb4
+ $24   : 0000000000000000 0000000008ad0000                                  
+ $28   : a80000080321c000 a80000080321f950 0000000000000000 a80000080800dcd0
+ epc   : a80000080800e104 emulate_load_store_insn+0x544/0xba0
+ ra    : a80000080800dcd0 emulate_load_store_insn+0x110/0xba0
+ Status: 140000e3 KX SX UX KERNEL EXL IE 
+ Cause : 80800410 (ExcCode 04)
+ BadVA : b88f553ba6dfc40b
+ PrId  : 0001b028 (MIPS I6500)
+ Modules linked in:
+ Process kcompactd0 (pid: 22, threadinfo=(____ptrval____), task=(____ptrval____), tls=0000000000000000)
+ Stack : 0000000000000000 0000000000000000 00000000dc420010 a8afa5b0e1346800
+         0000000000012488 a80000080907af80 a80000080321fd28 a800000808acfb80
+         a800000808ad0000 0000000000000000 a80000080321fa30 a80000080800e90c
+         0000000000000000 0000000000000000 0000000000000000 0000000000000000
+         0000000000000000 a8afa5b0e1346800 0000000000000000 a80000080907afb4
+         0000000000012488 a80000080907af80 a80000080321fd28 a800000809078d80
+         0000000000000000 0000000000000000 0000000000000000 a800000808003174
+         0000000000000000 0000000000000001 b88f553ba6dfc3f4 f91f7fb9d6d87a3d
+         0000000000000002 fffffffffffffffc 0000000000000080 0000000008b90000
+         0000000000000089 0000000008fc0000 0000000000000000 0000000000000000
+         ...
+ Call Trace:
+ [<a80000080800e104>] emulate_load_store_insn+0x544/0xba0
+ [<a80000080800e90c>] do_ade+0x1ac/0x1520
+ [<a800000808003174>] handle_adel_int+0x30/0x3c
+ 
+ Code: 3c03a800  cbffff4d  24020010 <205100f0> 82510007  92410006  00118a38  02218825  92410005 
+ 
+ ---[ end trace 0000000000000000 ]---
 
-> +	PANFROST_COMP_BIT_MAX
-> +};
-> +
->  /**
->   * enum panfrost_gpu_pm - Supported kernel power management features
->   * @GPU_PM_CLK_DIS:  Allow disabling clocks during system suspend
-> @@ -109,6 +115,7 @@ struct panfrost_device {
->  
->  	struct panfrost_features features;
->  	const struct panfrost_compatible *comp;
-> +	DECLARE_BITMAP(is_suspended, PANFROST_COMP_BIT_MAX);
->  
->  	spinlock_t as_lock;
->  	unsigned long as_in_use_mask;
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c b/drivers/gpu/drm/panfrost/panfrost_gpu.c
-> index 7adc4441fa14..3a6a4fe7aca1 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_gpu.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_gpu.c
-> @@ -452,6 +452,12 @@ void panfrost_gpu_power_off(struct panfrost_device *pfdev)
->  		dev_err(pfdev->dev, "l2 power transition timeout");
->  }
->  
-> +void panfrost_gpu_suspend_irq(struct panfrost_device *pfdev)
-> +{
+But then I don't see other error when running the system.
+So I don't know if this is a "real" error and how to fix it.
 
-        set_bit(PANFROST_COMP_BIT_GPU, pfdev->is_suspended);
+Changelog:
+ v2 -> v3
 
-here, and an extra check in panfrost_gpu_irq_handler() to bail out
-before the register accesses if PANFROST_COMP_BIT_GPU is set.
+ - Add more reviewed-by and acked-by tags
 
-> +	gpu_write(pfdev, GPU_INT_MASK, 0);
-> +	synchronize_irq(pfdev->gpu_irq);
-> +}
-> +
->  int panfrost_gpu_init(struct panfrost_device *pfdev)
->  {
->  	int err;
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.h b/drivers/gpu/drm/panfrost/panfrost_gpu.h
-> index 876fdad9f721..d841b86504ea 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_gpu.h
-> +++ b/drivers/gpu/drm/panfrost/panfrost_gpu.h
-> @@ -15,6 +15,7 @@ u32 panfrost_gpu_get_latest_flush_id(struct panfrost_device *pfdev);
->  int panfrost_gpu_soft_reset(struct panfrost_device *pfdev);
->  void panfrost_gpu_power_on(struct panfrost_device *pfdev);
->  void panfrost_gpu_power_off(struct panfrost_device *pfdev);
-> +void panfrost_gpu_suspend_irq(struct panfrost_device *pfdev);
->  
->  void panfrost_cycle_counter_get(struct panfrost_device *pfdev);
->  void panfrost_cycle_counter_put(struct panfrost_device *pfdev);
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_job.c b/drivers/gpu/drm/panfrost/panfrost_job.c
-> index f9446e197428..7600e7741211 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_job.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_job.c
-> @@ -405,6 +405,8 @@ void panfrost_job_enable_interrupts(struct panfrost_device *pfdev)
->  	int j;
->  	u32 irq_mask = 0;
->  
-> +	clear_bit(PANFROST_COMP_BIT_JOB, pfdev->is_suspended);
-> +
->  	for (j = 0; j < NUM_JOB_SLOTS; j++) {
->  		irq_mask |= MK_JS_MASK(j);
->  	}
-> @@ -413,6 +415,14 @@ void panfrost_job_enable_interrupts(struct panfrost_device *pfdev)
->  	job_write(pfdev, JOB_INT_MASK, irq_mask);
->  }
->  
-> +void panfrost_job_suspend_irq(struct panfrost_device *pfdev)
-> +{
-> +	set_bit(PANFROST_COMP_BIT_JOB, pfdev->is_suspended);
-> +
-> +	job_write(pfdev, JOB_INT_MASK, 0);
-> +	synchronize_irq(pfdev->js->irq);
-> +}
-> +
->  static void panfrost_job_handle_err(struct panfrost_device *pfdev,
->  				    struct panfrost_job *job,
->  				    unsigned int js)
-> @@ -792,9 +802,13 @@ static irqreturn_t panfrost_job_irq_handler_thread(int irq, void *data)
->  	struct panfrost_device *pfdev = data;
->  
->  	panfrost_job_handle_irqs(pfdev);
-> -	job_write(pfdev, JOB_INT_MASK,
-> -		  GENMASK(16 + NUM_JOB_SLOTS - 1, 16) |
-> -		  GENMASK(NUM_JOB_SLOTS - 1, 0));
-> +
-> +	/* Enable interrupts only if we're not about to get suspended */
-> +	if (!test_bit(PANFROST_COMP_BIT_JOB, pfdev->is_suspended))
-> +		job_write(pfdev, JOB_INT_MASK,
-> +			  GENMASK(16 + NUM_JOB_SLOTS - 1, 16) |
-> +			  GENMASK(NUM_JOB_SLOTS - 1, 0));
-> +
+ - Fix sorting for cpus entries in Documentation/devicetree/bindings/mips/cpus.yaml
 
-Missing if (test_bit(PANFROST_COMP_BIT_JOB, pfdev->is_suspended)) in
-panfrost_job_irq_handler(), to make sure you don't access the registers
-if the GPU is suspended.
+ - Fix indentation issue in Documentation/devicetree/bindings/mips/mobileye.yaml
 
->  	return IRQ_HANDLED;
->  }
->  
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_job.h b/drivers/gpu/drm/panfrost/panfrost_job.h
-> index 17ff808dba07..ec581b97852b 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_job.h
-> +++ b/drivers/gpu/drm/panfrost/panfrost_job.h
-> @@ -47,6 +47,7 @@ int panfrost_job_get_slot(struct panfrost_job *job);
->  int panfrost_job_push(struct panfrost_job *job);
->  void panfrost_job_put(struct panfrost_job *job);
->  void panfrost_job_enable_interrupts(struct panfrost_device *pfdev);
-> +void panfrost_job_suspend_irq(struct panfrost_device *pfdev);
->  int panfrost_job_is_idle(struct panfrost_device *pfdev);
->  
->  #endif
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_mmu.c b/drivers/gpu/drm/panfrost/panfrost_mmu.c
-> index ac4296c1e54b..d79d41fe22fe 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_mmu.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_mmu.c
-> @@ -231,6 +231,8 @@ void panfrost_mmu_reset(struct panfrost_device *pfdev)
->  {
->  	struct panfrost_mmu *mmu, *mmu_tmp;
->  
-> +	clear_bit(PANFROST_COMP_BIT_MMU, pfdev->is_suspended);
-> +
->  	spin_lock(&pfdev->as_lock);
->  
->  	pfdev->as_alloc_mask = 0;
-> @@ -744,9 +746,12 @@ static irqreturn_t panfrost_mmu_irq_handler_thread(int irq, void *data)
->  			status = mmu_read(pfdev, MMU_INT_RAWSTAT) & ~pfdev->as_faulty_mask;
->  	}
->  
-> -	spin_lock(&pfdev->as_lock);
-> -	mmu_write(pfdev, MMU_INT_MASK, ~pfdev->as_faulty_mask);
-> -	spin_unlock(&pfdev->as_lock);
-> +	/* Enable interrupts only if we're not about to get suspended */
-> +	if (!test_bit(PANFROST_COMP_BIT_MMU, pfdev->is_suspended)) {
-> +		spin_lock(&pfdev->as_lock);
-> +		mmu_write(pfdev, MMU_INT_MASK, ~pfdev->as_faulty_mask);
-> +		spin_unlock(&pfdev->as_lock);
-> +	}
+ - Move gic node under soc node in arch/mips/boot/dts/mobileye/eyeq5.dtsi
 
-Ditto, missing if (test_bit(PANFROST_COMP_BIT_MMU, pfdev->is_suspended))
-in panfrost_job_irq_handler(), to make sure you don't access the
-registers if the GPU is suspended.
+ v1 -> v2
 
->  
->  	return IRQ_HANDLED;
->  };
-> @@ -777,3 +782,11 @@ void panfrost_mmu_fini(struct panfrost_device *pfdev)
->  {
->  	mmu_write(pfdev, MMU_INT_MASK, 0);
->  }
-> +
-> +void panfrost_mmu_suspend_irq(struct panfrost_device *pfdev)
-> +{
-> +	set_bit(PANFROST_COMP_BIT_MMU, pfdev->is_suspended);
-> +
-> +	mmu_write(pfdev, MMU_INT_MASK, 0);
-> +	synchronize_irq(pfdev->mmu_irq);
-> +}
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_mmu.h b/drivers/gpu/drm/panfrost/panfrost_mmu.h
-> index cc2a0d307feb..022a9a74a114 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_mmu.h
-> +++ b/drivers/gpu/drm/panfrost/panfrost_mmu.h
-> @@ -14,6 +14,7 @@ void panfrost_mmu_unmap(struct panfrost_gem_mapping *mapping);
->  int panfrost_mmu_init(struct panfrost_device *pfdev);
->  void panfrost_mmu_fini(struct panfrost_device *pfdev);
->  void panfrost_mmu_reset(struct panfrost_device *pfdev);
-> +void panfrost_mmu_suspend_irq(struct panfrost_device *pfdev);
->  
->  u32 panfrost_mmu_as_get(struct panfrost_device *pfdev, struct panfrost_mmu *mmu);
->  void panfrost_mmu_as_put(struct panfrost_device *pfdev, struct panfrost_mmu *mmu);
+ - Added reviewed-by and acked-by tags
+
+ - Fix typos reported
+
+ - In patch 15 use 'img' vendor string instead of mti
+
+ - In patch 16 modify licence
+
+ - In patch 17 give more explanations about the block usage.
+
+ - In patch 18, remove _ in node names, don't use anymore
+   CONFIG_BUILTIN_DTB in Makefile, remove macro, modify licence.
+
+ - In patch 19 remove most of the bootargs and only keeps earlycon. I
+   also split the memory in 2 part in the device tree.
+
+ - Integrate the series from Jiaxun Yang
+   https://lore.kernel.org/linux-mips/20231027221106.405666-1-jiaxun.yang@flygoat.com/
+
+  They are patches 2 to 6 and 8 to 12
+
+  Then I added patch 7 to fix the cache issue visible on the Mobileye
+  platform, I also add patch 13 to improve warning message when ebase
+  doesn't belong to KSEG0
+
+Regards,
+
+Gregory
+
+[1]: https://lore.kernel.org/linux-mips/20231028-mm-v1-0-45377cd158cf@flygoat.com/
+
+Gregory CLEMENT (12):
+  MIPS: compressed: Use correct instruction for 64 bit code
+  MIPS: Fix cache issue with mips_cps_core_entry
+  MIPS: traps: Give more explanations if ebase doesn't belong to KSEG0
+  dt-bindings: Add vendor prefix for Mobileye Vision Technologies Ltd.
+  dt-bindings: mips: cpus: Sort the entries
+  dt-bindings: mips: cpu: Add I-Class I6500 Multiprocessor Core
+  dt-bindings: mips: Add bindings for Mobileye SoCs
+  dt-bindings: mfd: syscon: Document EyeQ5 OLB
+  MIPS: mobileye: Add EyeQ5 dtsi
+  MIPS: mobileye: Add EPM5 device tree
+  MIPS: generic: Add support for Mobileye EyeQ5
+  MAINTAINERS: Add entry for Mobileye MIPS SoCs
+
+Jiaxun Yang (10):
+  MIPS: Export higher/highest relocation functions in uasm
+  MIPS: spaces: Define a couple of handy macros
+  MIPS: genex: Fix except_vec_vi for kernel in XKPHYS
+  MIPS: Fix set_uncached_handler for ebase in XKPHYS
+  MIPS: Refactor mips_cps_core_entry implementation
+  MIPS: Allow kernel base to be set from Kconfig for all platforms
+  MIPS: traps: Handle CPU with non standard vint offset
+  MIPS: Avoid unnecessary reservation of exception space
+  MIPS: traps: Enhance memblock ebase allocation process
+  MIPS: Get rid of CONFIG_NO_EXCEPT_FILL
+
+ .../devicetree/bindings/mfd/syscon.yaml       |   1 +
+ .../devicetree/bindings/mips/cpus.yaml        |  13 +-
+ .../devicetree/bindings/mips/mobileye.yaml    |  32 ++
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ MAINTAINERS                                   |  12 +
+ arch/mips/Kconfig                             |  26 +-
+ arch/mips/boot/compressed/head.S              |   4 +-
+ arch/mips/boot/dts/Makefile                   |   1 +
+ arch/mips/boot/dts/mobileye/Makefile          |   4 +
+ arch/mips/boot/dts/mobileye/eyeq5-epm5.dts    |  24 ++
+ .../boot/dts/mobileye/eyeq5-fixed-clocks.dtsi | 292 ++++++++++++++++++
+ arch/mips/boot/dts/mobileye/eyeq5.dtsi        | 134 ++++++++
+ arch/mips/configs/generic/board-eyeq5.config  |  43 +++
+ arch/mips/generic/Kconfig                     |  15 +
+ arch/mips/generic/Platform                    |   2 +
+ arch/mips/generic/board-epm5.its.S            |  24 ++
+ arch/mips/include/asm/addrspace.h             |   5 +
+ arch/mips/include/asm/mach-generic/spaces.h   |   5 +-
+ arch/mips/include/asm/mips-cm.h               |   1 +
+ arch/mips/include/asm/smp-cps.h               |   4 +-
+ arch/mips/include/asm/traps.h                 |   1 -
+ arch/mips/include/asm/uasm.h                  |   2 +
+ arch/mips/kernel/cps-vec.S                    | 110 +++----
+ arch/mips/kernel/cpu-probe.c                  |   5 -
+ arch/mips/kernel/cpu-r3k-probe.c              |   2 -
+ arch/mips/kernel/genex.S                      |  19 +-
+ arch/mips/kernel/head.S                       |   7 +-
+ arch/mips/kernel/smp-cps.c                    | 171 ++++++++--
+ arch/mips/kernel/traps.c                      |  90 ++++--
+ arch/mips/mm/uasm.c                           |   6 +-
+ 30 files changed, 896 insertions(+), 161 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mips/mobileye.yaml
+ create mode 100644 arch/mips/boot/dts/mobileye/Makefile
+ create mode 100644 arch/mips/boot/dts/mobileye/eyeq5-epm5.dts
+ create mode 100644 arch/mips/boot/dts/mobileye/eyeq5-fixed-clocks.dtsi
+ create mode 100644 arch/mips/boot/dts/mobileye/eyeq5.dtsi
+ create mode 100644 arch/mips/configs/generic/board-eyeq5.config
+ create mode 100644 arch/mips/generic/board-epm5.its.S
+
+-- 
+2.42.0
 
