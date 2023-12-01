@@ -2,114 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E48E7801126
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:21:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A58380110D
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:21:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378777AbjLAQS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 11:18:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57912 "EHLO
+        id S235318AbjLAQSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 11:18:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378342AbjLAQR4 (ORCPT
+        with ESMTP id S1378508AbjLAQR5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 11:17:56 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AC201FDA
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 08:17:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701447476; x=1732983476;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=c2E7CG6uyepV9nDHpR+5LjE4/DSDebBB9Tnx7sJ/DOE=;
-  b=JBbLZU8zL4ApBhzxDjxtoPcdIeSl5yzqVk09mLivuTqTVM070uEb7sZh
-   jXRkJyZ2NU8h3w/2ENijgnw2RMgcdqZhRhNJryFhCwK7B4aPQpibMesx1
-   2sNTt8mMUEmAWXF5cXPVn1R3I0N72TGTrQH1HQvLw2VeGypn6F0XtqtIG
-   jGI2+5Q+Mp/LMJdUQDM650EEn9URDvRYbGVeT0XbP84UXwVBnYa5D80/t
-   kVgr0sA5+98cH5meuoigLUrpYHG13MHNCPWO65mSVgZEgpm9VpTTKVVCq
-   T1Dyi4zY3yEf1gWGYz8vEjSjhVHhM0UtTZFRdOHO0RzG3cAAzvqYW7AWu
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="460013094"
-X-IronPort-AV: E=Sophos;i="6.04,242,1695711600"; 
-   d="scan'208";a="460013094"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2023 08:17:56 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="763190783"
-X-IronPort-AV: E=Sophos;i="6.04,242,1695711600"; 
-   d="scan'208";a="763190783"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga007.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2023 08:17:54 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1r96D9-000000012Fn-0ei5;
-        Fri, 01 Dec 2023 18:17:51 +0200
-Date:   Fri, 1 Dec 2023 18:17:50 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Andy Whitcroft <apw@canonical.com>,
-        Joe Perches <joe@perches.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: Re: [PATCH v1 1/1] checkpatch: Add dev_err_probe() to the list of
- Log Functions
-Message-ID: <ZWoHLkcPk2084gQH@smile.fi.intel.com>
-References: <20231201151446.1593472-1-andriy.shevchenko@linux.intel.com>
- <3c709cc1-0da8-4d23-9f75-8c18d4d18779@roeck-us.net>
+        Fri, 1 Dec 2023 11:17:57 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3CCF11BC5;
+        Fri,  1 Dec 2023 08:18:00 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6408A1007;
+        Fri,  1 Dec 2023 08:18:46 -0800 (PST)
+Received: from pluto (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C4F043F6C4;
+        Fri,  1 Dec 2023 08:17:58 -0800 (PST)
+Date:   Fri, 1 Dec 2023 16:17:56 +0000
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        quic_mdtipton@quicinc.com, quic_asartor@quicinc.com,
+        quic_lingutla@quicinc.com, Sibi Sankar <quic_sibis@quicinc.com>,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH 1/2] firmware: arm_scmi: Fix frequency truncation by
+ promoting multiplier to u64
+Message-ID: <ZWoHNPlxs-WnVAFe@pluto>
+References: <20231130204343.503076-1-sudeep.holla@arm.com>
+ <20231201143935.be6wzjzxmyl5vpz6@bogus>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3c709cc1-0da8-4d23-9f75-8c18d4d18779@roeck-us.net>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20231201143935.be6wzjzxmyl5vpz6@bogus>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 01, 2023 at 08:01:28AM -0800, Guenter Roeck wrote:
-> On 12/1/23 07:14, Andy Shevchenko wrote:
-> > dev_err_probe() is missing in the list of Log Functions and hence
-> > checkpatch issues a warning in the cases when any other function
-> > in use won't trigger it. Add dev_err_probe() to the list to behave
-> > consistently.
-
-...
-
-> Not sure if I agree. The difference here is that dev_err_probe()
-> has two additional parameters ahead of the string. I would very much prefer
-> to have those two additional parameters on a separate line if the string is
-> too long to fit in 100 columns with those two parameters on the same line.
-> In other words, I very much prefer
+On Fri, Dec 01, 2023 at 02:39:35PM +0000, Sudeep Holla wrote:
+> On Thu, Nov 30, 2023 at 08:43:42PM +0000, Sudeep Holla wrote:
+> > Fix the frequency truncation for all values equal to or greater 4GHz by
+> > updating the multiplier 'mult_factor' to u64 type. It is also possible
+> > that the multiplier itself can be greater than or equal to 2^32. So we need
+> > to also fix the equation computing the value of the multiplier.
+> > 
+> > Fixes: a9e3fbfaa0ff ("firmware: arm_scmi: add initial support for performance protocol")
+> > Reported-by: Sibi Sankar <quic_sibis@quicinc.com>
+> > Closes: https://lore.kernel.org/all/20231129065748.19871-3-quic_sibis@quicinc.com/
+> > Cc: Cristian Marussi <cristian.marussi@arm.com>
+> > Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+> > ---
+> >  drivers/firmware/arm_scmi/perf.c | 6 +++---
+> >  1 file changed, 3 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/drivers/firmware/arm_scmi/perf.c b/drivers/firmware/arm_scmi/perf.c
+> > index 81dd5c5e5533..8ce449922e55 100644
+> > --- a/drivers/firmware/arm_scmi/perf.c
+> > +++ b/drivers/firmware/arm_scmi/perf.c
+> > @@ -152,7 +152,7 @@ struct perf_dom_info {
+> >  	u32 opp_count;
+> >  	u32 sustained_freq_khz;
+> >  	u32 sustained_perf_level;
+> > -	u32 mult_factor;
+> > +	u64 mult_factor;
 > 
-> 	dev_err_probe(dev, -ESOMETHING,
-> 		      "very long string");
-> over
-> 	dev_err_probe(dev, -ESOMETHING, "very long string");
-> 
-> and I don't really think that the latter has any benefits.
-> 
-> Also note that other dev_xxx() log functions are not included in the above test
-> and would still generate warnings. Accepting
-> 
-> 	dev_err_probe(dev, -ESOMETHING, "very long string");
-> but not
-> 	dev_err(dev, "very long string");
+> I have now changed this to unsigned long instead of u64 to fix the 32-bit
+> build failure[1].
 
-They are included, see the line previous to the added one.
-(Regexp covers something like x_y_()* and x_*() families with the explicitly
- listed * suffixes.)
+Right, I was caught a few times too by this kind of failures on v7 :D
 
-That's why _this_ change makes it consistent.
+... but this 32bit issue makes me wonder what to do in such a case...
 
-> doesn't really make sense to me.
+...I mean, on 32bit if the calculated freq oveflows, there is just
+nothing we can do on v7 without overcomplicating the code...but I suppose
+it is unplausible to have such high freq on a v7... as a palliative I can
+only think of some sort of overflow check (only on v7) that could trigger
+a warning ... but it is hardly worth the effort probably..
 
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Thanks,
+Cristian
