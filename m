@@ -2,92 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD784800A27
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 12:58:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64E9B800A29
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 12:59:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378657AbjLAL6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 06:58:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52042 "EHLO
+        id S1378663AbjLAL6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 06:58:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378585AbjLAL6H (ORCPT
+        with ESMTP id S1378625AbjLAL6v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 06:58:07 -0500
-Received: from mout.web.de (mout.web.de [212.227.17.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94BB51B4;
-        Fri,  1 Dec 2023 03:58:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-        t=1701431860; x=1702036660; i=frank.scheiner@web.de;
-        bh=yDnxc0mwxkB4hTCa+vldN21uOr8NxnMJiPSs7aj03Y0=;
-        h=X-UI-Sender-Class:Date:To:Cc:References:Subject:From:
-         In-Reply-To;
-        b=bFO8+4/4gHptdTGbyTUMJUz8VTs+QdmFpZpDmwCBbURTT9FnbSpSxHyq5zBD1TVq
-         oa0giAEKkfm/LhJulOq3KXXmdxkCoi6SrJ7TII4HkMxvt5nXv5vloMCFYtTTjiHEt
-         CqQSZPRDYA0yw0NsUzzRk2QF37QJCeghZ+IGZ5AZvtjz0ZSJxwimzYTHq0fHaxjer
-         DFjlMP9M9i09JF5D02bIuzua/kDPVNSo44CpJcgrpOfErZRt+r0Yw5Wm34gm3BXmX
-         uisxTAomaJOuOJ0kLjDQhMfdYABLmXJniERrvEkfdh9Cxh6xAt6ZRsBrbe86XPgTS
-         swap7Vb2ip8SB7oM0w==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.30] ([87.155.225.196]) by smtp.web.de (mrweb106
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1MXocY-1qluiO1xRE-00YE8T; Fri, 01
- Dec 2023 12:57:40 +0100
-Message-ID: <473c4430-39f3-471f-8257-648df743fea5@web.de>
-Date:   Fri, 1 Dec 2023 12:57:38 +0100
+        Fri, 1 Dec 2023 06:58:51 -0500
+Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 452681704;
+        Fri,  1 Dec 2023 03:58:57 -0800 (PST)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id 8C3DB3200B3B;
+        Fri,  1 Dec 2023 06:58:56 -0500 (EST)
+Received: from imap44 ([10.202.2.94])
+  by compute3.internal (MEProxy); Fri, 01 Dec 2023 06:58:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        cc:cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
+        1701431936; x=1701518336; bh=8sJJAwW3fvcdkz9kiX5KI4PX0G+t1oYo33H
+        a8laNn/c=; b=HPwSQPZpYheqxKo/cVLb2867b/LQN0msH+ibE5ne/gQuj5UVeNs
+        02/1VeN5bSKLZ1k6cL/wXjekPMSmaptrI+dDSjQyreGxyNMYL8VyvFAUJshzObVR
+        gkzKzhu02q0uTUrQIemEARitT5k31eHEGaRdYyU6CZq+PSlHO2CiveOT73RFQdsE
+        tY74ABgcfoV+izsicdEaPk3jMLZzzz1tEDZrJjoX+pe8/um5i8EkRsVMZpr5IH8D
+        bPcexuExOSX25wsOCtPjnVwc6JeW+SkCCAs+4W9IhvhtqBzmAKyD1XIC9mbfgEfF
+        1kOC9i7fgUSBAjmtcH+NTwvqTFJoyQkomvA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+        1701431936; x=1701518336; bh=8sJJAwW3fvcdkz9kiX5KI4PX0G+t1oYo33H
+        a8laNn/c=; b=S+j2lw6WlSWXH3SDKaNF89IiiJcBVpYtlfCTfsG7bazXs36sxAb
+        JkaeWQrIyB40i942Yh0USSGoXHlqjpgp9+K2c9FXTdeYGWWo6etR3SmyDlP0WOlh
+        yIwPur7uhfS7oxIcfGXX7htHwygTw/zIu5jn4jrWlG0rfZa7QOCpLHDqH6K27e3X
+        aJvlQhW3B0m8Bcg6UqGJOxDqGvIpmP4z/gHsXc3kE+LL0N4DmXERcB4J8D5dV+iF
+        GjcVvR3wy0MuK5xP3WNrf7bz2/Cuv7H0JfHMN8GIMFXuyCA4/j7qRCHWJL3tErKY
+        ctl5mlTL3OBTOF3SCmJwY5rgj2ybVqSJ5zw==
+X-ME-Sender: <xms:f8ppZWKKB_U6erSXSZZkxEpV82pgT4GF0Z7OM_kRXzSXtLto6tCWMQ>
+    <xme:f8ppZeIT2PB1Dc70dQNl8XSuC7IaqlcUA9JwP6HtyD67rqD8Q_jMnjZ7VW4E3TdqE
+    wQvv_Jz5bJqZAZfEtI>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeiledgfeegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdfl
+    ihgrgihunhcujggrnhhgfdcuoehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtoh
+    hmqeenucggtffrrghtthgvrhhnpeekleevffehtdeigfekfefhffdtudffvdeuvedtffet
+    heeuiefhgfetleekleekjeenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluh
+    hsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepjhhirgiguhhnrdih
+    rghnghesfhhlhihgohgrthdrtghomh
+X-ME-Proxy: <xmx:f8ppZWvblfWumeKsVl1LnF-jb1YmwTPU1faYssFn-BcWwjPcWb4sjA>
+    <xmx:f8ppZbb6d4mAn1l9qF6xz7zNSD0gFyIWMOsZRMHZOppXIR5TQ7o6Vg>
+    <xmx:f8ppZdYHYYPZddjRwXu-ReahHkXQV0NALYPBDX2cARAS_2F2w3tQHA>
+    <xmx:gMppZeDaXA9FPY4-uPqsETBCn6OjzUqvu--UD3fPPuSMMcHNFn6tXA>
+Feedback-ID: ifd894703:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id BD8A036A0075; Fri,  1 Dec 2023 06:58:55 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1178-geeaf0069a7-fm-20231114.001-geeaf0069
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To:     gregkh@linuxfoundation.org, stable@vger.kernel.org
-Cc:     akpm@linux-foundation.org, allen.lkml@gmail.com, conor@kernel.org,
-        f.fainelli@gmail.com, jonathanh@nvidia.com,
-        linux-kernel@vger.kernel.org, linux@roeck-us.net,
-        lkft-triage@lists.linaro.org, patches@kernelci.org,
-        patches@lists.linux.dev, pavel@denx.de, rwarsow@gmx.de,
-        shuah@kernel.org, srw@sladewatkins.net, sudipm.mukherjee@gmail.com,
-        torvalds@linux-foundation.org,
-        =?UTF-8?B?VG9tw6HFoSBHbG96YXI=?= <tglozar@gmail.com>
-References: <20231130162140.298098091@linuxfoundation.org>
-Subject: Re: [PATCH 6.6 000/112] 6.6.4-rc1 review
-Content-Language: en-US
-From:   Frank Scheiner <frank.scheiner@web.de>
-In-Reply-To: <20231130162140.298098091@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Message-Id: <ce132300-e2cc-4966-8dc8-35cf5f6d3f83@app.fastmail.com>
+In-Reply-To: <20231029-mips_debug_ll-v1-0-d7a491e8c278@flygoat.com>
+References: <20231029-mips_debug_ll-v1-0-d7a491e8c278@flygoat.com>
+Date:   Fri, 01 Dec 2023 11:58:34 +0000
+From:   "Jiaxun Yang" <jiaxun.yang@flygoat.com>
+To:     "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>
+Cc:     "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/8] MIPS: Unify low-level debugging functionalities
+Content-Type: text/plain;charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:vO3kcCo23/2y0qzIqtOculOADMQRLKmDm+YZtmZihAl4BMiGtHC
- 2nmYzRlvsE6irpHQyszX5m6y5evydd02VuqwpzDD7rYe8eUJpUp+ejEPQP7J1/XlMDOvGe9
- HKfyAMPoNgzPwNP6KrVBJ8z4tlHspSdaIkXZzw3rntjkGrU8rilvB7C/PqVF5moKQAWTCbw
- +CgKSH3G/PHUdFUf1LH3w==
-UI-OutboundReport: notjunk:1;M01:P0:9cNMZsEruAE=;/mD74C7Rk567QqMZlxlMk8f2ve/
- wIONqcahMui+nQPERBNJV/suGRrvb8rTvyF6xvb1ojiU/uQvfQaGrqMXouw+q0O9AlFhgTIBY
- Kazsyeqo2W9ZQXTMJs/W+TwAW94TF1MdXq/C5AUGJC4V4KiMWeUGAh1R6EOH8BClLmmFA0GzY
- nbSAdVSilrD89nv2vcrh0Dxd+nVlWbi4yodEcRrK2faLRitadodpj3AtyTcNXdqAFxGX79TBj
- +M4uRXnJuz5EUleGVpWb2x9l1z3ANtwwdjlRX0hgzVLrOG9WKZU0j+5HdFraXer7OHJLw7Z1l
- 7qgLEUslhwCF0fgWdSy3dsB4tGgslEorse6+4Sm1C4fSFKq3xC/iuDjWq2KbwjAUF6RVSk28+
- c4ClSuWdb2fNOT3U48HdihIRobPXMv1Rifqop+2Ns6VSs1gCnb65GYPz3tAoVzfgadK0ihUV6
- 8JVuMfxJ1ufFw52o1rBUOIf3TyKbpszm+r9Hi+8Crn/YSTmcn+nqbjG4eqoSlVAxiOqV2po0t
- LuL58YFfN1KpA/QqshShBhFipoa/aiwwQsLebtCUVFWbCXfWfzOvlNOgIdw0Ge0Zo2TEBhDSH
- GugvsaXxLjNIuSOVImc9eySHVcOJQMfEEjC53F0pTjSWMoEelrcnVTUarvapDrtVN17HlzS8u
- JQvvPcOiCqj1yInKcFOaMZDqBa42byht252Gn+Cs2bcM/X0gtP/83KyDvT+PFvtwoyyM6nfRf
- 5+yBQzbfyfg7UiKsBg6On3sOmORf5pbpmrL9PQjpV05Gc0MvkJZSMIR8DmZmIMlPZGDGl6N68
- gIBqfN045fwgnOR0fz+qLSejXJ8mY9i6xIFTwvEmtHxMOlPCWJrycQGV0XHy/VX1M/0rOTCrm
- flDDAaiUEhl7nO7bWb7+emNR8Ttfro+dCC13TL2Zem4mkFKkLwTEPX9yeag97XTdMjzSafj8p
- 1iequOByCyL9x750krYxrRMR2O4=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi there,
 
-6.6.4-rc1
 
-...cross-built (on amd64 w/gcc-13.2.0) and booted successfully on ia64
-(rx2620).
+=E5=9C=A82023=E5=B9=B410=E6=9C=8829=E6=97=A5=E5=8D=81=E6=9C=88 =E4=B8=8A=
+=E5=8D=882:53=EF=BC=8CJiaxun Yang=E5=86=99=E9=81=93=EF=BC=9A
+> Hi all,
 
-Tested-by: Frank Scheiner <frank.scheiner@web.de>
+Hi Thomas,
 
-Cheers,
-Frank
+A gentle ping on this series :-)
+
+I've got too much patch floating out there.
+
+Thanks
+- Jiaxun
+
+>
+> This is a attempt to bring all low-level debugging print functions
+> together and provide a arm-like low-level debugging interface and
+> a further function to debug early exceptions.
+>
+> The plan is to elimiate platform specific early_printk and
+> cps-vec-ns16550 by debug_ll and earlycon.
+>
+> cps-vec-ns16550 is leave unchanged for now due to pending patch[1].
+>
+> Hope you'll find them handy :-)
+>
+> Happy hacking!
+>
+> Thanks
+> Jiaxun
+>
+> [1]:=20
+> https://lore.kernel.org/linux-mips/20231027221106.405666-6-jiaxun.yang=
+@flygoat.com/
+>
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> ---
+> Jiaxun Yang (8):
+>       MIPS: asm: Move strings to .rodata.str section
+>       MIPS: debug: Implement low-level debugging functions
+>       MIPS: debug: Hook up DEBUG_LL with early printk
+>       MIPS: debug: Provide an early exception vector for low-level deb=
+ugging
+>       MIPS: debug_ll: Add Kconfig symbols for some 8250 uarts
+>       MIPS: debug_ll: Implement support for Alchemy uarts
+>       MIPS: debug_ll: Implement support for AR933X uarts
+>       MIPS: zboot: Convert to use debug_ll facilities
+>
+>  arch/mips/Kconfig                        |  12 +-
+>  arch/mips/Kconfig.debug                  | 212 ++++++++++++++++++++++=
++++++----
+>  arch/mips/boot/compressed/Makefile       |   9 +-
+>  arch/mips/boot/compressed/dbg.c          |  37 ------
+>  arch/mips/boot/compressed/debug-vec.S    |   3 +
+>  arch/mips/boot/compressed/debug.S        |   3 +
+>  arch/mips/boot/compressed/decompress.c   |   6 +-
+>  arch/mips/boot/compressed/head.S         |   6 +
+>  arch/mips/boot/compressed/uart-16550.c   |  47 -------
+>  arch/mips/boot/compressed/uart-alchemy.c |   7 -
+>  arch/mips/boot/compressed/uart-ath79.c   |   2 -
+>  arch/mips/boot/compressed/uart-prom.c    |   7 -
+>  arch/mips/include/asm/asm.h              |   2 +-
+>  arch/mips/include/debug/8250.S           |  60 +++++++++
+>  arch/mips/include/debug/alchemy.S        |  46 +++++++
+>  arch/mips/include/debug/ar933x.S         |  41 ++++++
+>  arch/mips/include/debug/uhi.S            |  48 +++++++
+>  arch/mips/kernel/Makefile                |   3 +
+>  arch/mips/kernel/debug-vec.S             | 194 ++++++++++++++++++++++=
+++++++
+>  arch/mips/kernel/debug.S                 | 130 +++++++++++++++++++
+>  arch/mips/kernel/early_printk.c          |  19 +++
+>  arch/mips/kernel/head.S                  |   4 +
+>  22 files changed, 750 insertions(+), 148 deletions(-)
+> ---
+> base-commit: 66f1e1ea3548378ff6387b1ce0b40955d54e86aa
+> change-id: 20231028-mips_debug_ll-ef9cce16767b
+>
+> Best regards,
+> --=20
+> Jiaxun Yang <jiaxun.yang@flygoat.com>
+
+--=20
+- Jiaxun
