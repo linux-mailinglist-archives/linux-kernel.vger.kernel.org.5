@@ -2,37 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6122B8014D0
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 21:49:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50E368014D4
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 21:51:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379620AbjLAUtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 15:49:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51204 "EHLO
+        id S1379619AbjLAUvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 15:51:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjLAUtF (ORCPT
+        with ESMTP id S229456AbjLAUvm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 15:49:05 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 758E810D
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 12:49:11 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5ECFFC433C7;
-        Fri,  1 Dec 2023 20:49:10 +0000 (UTC)
-Date:   Fri, 1 Dec 2023 15:49:32 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: [RCU] rcu_tasks_trace_qs(): trc_reader_special.b.need_qs value
- incorrect likely()?
-Message-ID: <20231201154932.468d088b@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Fri, 1 Dec 2023 15:51:42 -0500
+Received: from new1-smtp.messagingengine.com (new1-smtp.messagingengine.com [66.111.4.221])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C91C710D;
+        Fri,  1 Dec 2023 12:51:48 -0800 (PST)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 1616B580C55;
+        Fri,  1 Dec 2023 15:51:48 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Fri, 01 Dec 2023 15:51:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+        :content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm3; t=1701463908; x=1701471108; bh=nK
+        6LDD0U/Eoft2OMP2N2jIS27TuNzocTptkvpWvSp38=; b=nIg0wlqJmQgXCJuSDe
+        92opTTkESihZX/Vg+hr56JZfOTb/wJHRhYAT0gFgqhaMf0UFj+sQ9YOEBZzb4THf
+        hVsLO+HLag8r8iXKOlqvQrJwj7Q7mjfpwCjuzfzdqkL839ubPiI83D1rSVLKkn3T
+        X0f+ypmSuv4i17xXHAQ4hbaZcND+vagqN5lHW1g7ffj0+Pwrh61aR9W8hVlFwfbf
+        +nisRjKKfWSvmcfZOZ9SFR90/1vWF2gbFi6gLSRECJ+WcZcvZF//G2eRazd/4MYl
+        n+bxHhlZoqpczSaZac477GzLBCoCd/TIaAYsXT4ECq0BYpUiKj0zPy3fWZzmTKWQ
+        qleA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1701463908; x=1701471108; bh=nK6LDD0U/Eoft
+        2OMP2N2jIS27TuNzocTptkvpWvSp38=; b=KlTtA6eZzg0M3pIQr2eDndN+IiA/W
+        QJ+ZVpHZzSIG27e/3SRLqTZBx4B/hO2kdBseqEgy9ERGf+aB+pE201vJ19clUMSh
+        3cMMl9+qjM4+jfzpX8zpUnv8eqVj0oYQbkgUPDtn72poDdvrJqTcDIEDCEnb7oeq
+        ENf1qiMzvajJGsVoBKudmk37r3sRu/jKOCYfXnvt26mUEzksbi5lprCz7thOo4ox
+        23I7aElDYSVI3XgFMNAxqs9xsjzmPCNtgAFPWfchnUPy6HdRfGpx69GozTImpjel
+        h3AA2zJetUZaAH2Y6SKGxrFQtVzEpAZkky3nYVH7J4jI3sTt1r4XCjxDA==
+X-ME-Sender: <xms:Y0dqZdWw7Z57e_F_jzT6r77jA0oChVoCY-e3yhbfkKF2hBvfhnENEw>
+    <xme:Y0dqZdnEZTpBK67nO26_viJxeoRX99IjOGl2jh4KJUtapmauTVnk-uMH-Eb3TjFKX
+    Ixm3b2SV2qsjJp-ZQ>
+X-ME-Received: <xmr:Y0dqZZYenOkTMeGG3PeTLGtgu6UpKfVY7QxNQKEl0KQmYEsOb-4QL9WMLQja40f2RIpPNHHKUkHRldbUlNKxnI-nUmhvOmiYnsBBjbU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeiledgudegvdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enfghrlhcuvffnffculddvfedmnecujfgurhepfffhvffukfhfgggtuggjsehttdfstddt
+    tddvnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqne
+    cuggftrfgrthhtvghrnhepkeehjeekudeltdeljeehhfefjeevjefgudfhteehlefftdfh
+    hfduieeiieeifeelnecuffhomhgrihhnpehllhhvmhdrohhrghenucevlhhushhtvghruf
+    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiii
+X-ME-Proxy: <xmx:Y0dqZQU2H0aSXaMmYGtnXM6NhyhX8jPS57zW40zKz6W3tC-BEDk4kQ>
+    <xmx:Y0dqZXlCskQjQ51LmOLr2-gvpbSVz_2nlLzOcxkNcNVXj7RU5idvZw>
+    <xmx:Y0dqZdefER4FRLOR8mmKFjBUlM_l_64-lCV-0fSvzWx0fCI3-DDyCA>
+    <xmx:ZEdqZZXZvPoszJ8kX480_MlkQBL4KrHQk4d1Ca-kpSKmH3qbMdYlbw>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 1 Dec 2023 15:51:46 -0500 (EST)
+Date:   Fri, 1 Dec 2023 13:51:44 -0700
+From:   Daniel Xu <dxu@dxuuu.xyz>
+To:     ndesaulniers@google.com, daniel@iogearbox.net, nathan@kernel.org,
+        ast@kernel.org, andrii@kernel.org, steffen.klassert@secunet.com,
+        antony.antony@secunet.com, alexei.starovoitov@gmail.com,
+        yonghong.song@linux.dev, eddyz87@gmail.com, martin.lau@linux.dev,
+        song@kernel.org, john.fastabend@gmail.com, kpsingh@kernel.org,
+        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
+        trix@redhat.com, bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, devel@linux-ipsec.org,
+        netdev@vger.kernel.org, Jonathan Lemon <jlemon@aviatrix.com>
+Subject: Re: [devel-ipsec] [PATCH ipsec-next v3 3/9] libbpf: Add
+ BPF_CORE_WRITE_BITFIELD() macro
+Message-ID: <2schji4oladptrev3tswmwkbhspz6mdy5u2v7tvll4du7iylri@2u2zmfdzn6fm>
+References: <cover.1701462010.git.dxu@dxuuu.xyz>
+ <adea997dff6d07332d294ad9cd233f3b71494a81.1701462010.git.dxu@dxuuu.xyz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <adea997dff6d07332d294ad9cd233f3b71494a81.1701462010.git.dxu@dxuuu.xyz>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -40,83 +92,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Paul,
+On Fri, Dec 01, 2023 at 01:23:14PM -0700, Daniel Xu via Devel wrote:
+> === Motivation ===
+> 
+> Similar to reading from CO-RE bitfields, we need a CO-RE aware bitfield
+> writing wrapper to make the verifier happy.
+> 
+> Two alternatives to this approach are:
+> 
+> 1. Use the upcoming `preserve_static_offset` [0] attribute to disable
+>    CO-RE on specific structs.
+> 2. Use broader byte-sized writes to write to bitfields.
+> 
+> (1) is a bit hard to use. It requires specific and not-very-obvious
+> annotations to bpftool generated vmlinux.h. It's also not generally
+> available in released LLVM versions yet.
+> 
+> (2) makes the code quite hard to read and write. And especially if
+> BPF_CORE_READ_BITFIELD() is already being used, it makes more sense to
+> to have an inverse helper for writing.
+> 
+> === Implementation details ===
+> 
+> Since the logic is a bit non-obvious, I thought it would be helpful
+> to explain exactly what's going on.
+> 
+> To start, it helps by explaining what LSHIFT_U64 (lshift) and RSHIFT_U64
+> (rshift) is designed to mean. Consider the core of the
+> BPF_CORE_READ_BITFIELD() algorithm:
+> 
+>         val <<= __CORE_RELO(s, field, LSHIFT_U64);
+>                 val = val >> __CORE_RELO(s, field, RSHIFT_U64);
+> 
+> Basically what happens is we lshift to clear the non-relevant (blank)
+> higher order bits. Then we rshift to bring the relevant bits (bitfield)
+> down to LSB position (while also clearing blank lower order bits). To
+> illustrate:
+> 
+>         Start:    ........XXX......
+>         Lshift:   XXX......00000000
+>         Rshift:   00000000000000XXX
+> 
+> where `.` means blank bit, `0` means 0 bit, and `X` means bitfield bit.
+> 
+> After the two operations, the bitfield is ready to be interpreted as a
+> regular integer.
+> 
+> Next, we want to build an alternative (but more helpful) mental model
+> on lshift and rshift. That is, to consider:
+> 
+> * rshift as the total number of blank bits in the u64
+> * lshift as number of blank bits left of the bitfield in the u64
+> 
+> Take a moment to consider why that is true by consulting the above
+> diagram.
+> 
+> With this insight, we can how define the following relationship:
+> 
+>               bitfield
+>                  _
+>                 | |
+>         0.....00XXX0...00
+>         |      |   |    |
+>         |______|   |    |
+>          lshift    |    |
+>                    |____|
+>               (rshift - lshift)
+> 
+> That is, we know the number of higher order blank bits is just lshift.
+> And the number of lower order blank bits is (rshift - lshift).
+> 
+> Finally, we can examine the core of the write side algorithm:
+> 
+>         mask = (~0ULL << rshift) >> lshift;   // 1
+>         nval = new_val;                       // 2
+>         nval = (nval << rpad) & mask;         // 3
+>         val = (val & ~mask) | nval;           // 4
+> 
+> (1): Compute a mask where the set bits are the bitfield bits. The first
+>      left shift zeros out exactly the number of blank bits, leaving a
+>      bitfield sized set of 1s. The subsequent right shift inserts the
+>      correct amount of higher order blank bits.
+> (2): Place the new value into a word sized container, nval.
+> (3): Place nval at the correct bit position and mask out blank bits.
+> (4): Mix the bitfield in with original surrounding blank bits.
+> 
+> [0]: https://reviews.llvm.org/D133361
+> Co-authored-by: Eduard Zingerman <eddyz87@gmail.com>
+> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 
-I just started running my branch tracer (that checks all branches and also
-gives likely and unlikely correctness). And I found this:
+Just pointing out I inserted Eduard's tags here. Eduard - I hope that's
+OK. Not sure what the usual procedure for this is.
 
- correct incorrect  %        Function                  File              Line
- ------- ---------  -        --------                  ----              ----
-       0  1217713 100 rcu_softirq_qs                 tree.c               247
+> Co-authored-by: Jonathan Lemon <jlemon@aviatrix.com>
+> Signed-off-by: Jonathan Lemon <jlemon@aviatrix.com>
+> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> ---
+>  tools/lib/bpf/bpf_core_read.h | 34 ++++++++++++++++++++++++++++++++++
+>  1 file changed, 34 insertions(+)
+> 
 
-Which comes down to this:
-
-
-# define rcu_tasks_trace_qs(t)							\
-	do {									\
-		int ___rttq_nesting = READ_ONCE((t)->trc_reader_nesting);	\
-										\
-		if (likely(!READ_ONCE((t)->trc_reader_special.b.need_qs)) &&	\
-		    likely(!___rttq_nesting)) {					\
-			rcu_trc_cmpxchg_need_qs((t), 0,	TRC_NEED_QS_CHECKED);	\
-		} else if (___rttq_nesting && ___rttq_nesting != INT_MIN &&	\
-			   !READ_ONCE((t)->trc_reader_special.b.blocked)) {	\
-			rcu_tasks_trace_qs_blkd(t);				\
-		}								\
-	} while (0)
-
-
-I added just before the likely/unlikely to my test box and I see this:
-
-		trace_printk("need qs? %d %d\n", READ_ONCE((t)->trc_reader_special.b.need_qs), ___rttq_nesting); \
-
-          <idle>-0       [005] d.h1.     2.482412: rcu_sched_clock_irq: need qs? 2 0
-          <idle>-0       [002] d.h1.     2.482464: rcu_sched_clock_irq: need qs? 2 0
-          <idle>-0       [000] d.h1.     2.482766: rcu_sched_clock_irq: need qs? 2 0
-          <idle>-0       [001] d.h1.     2.482951: rcu_sched_clock_irq: need qs? 2 0
-          <idle>-0       [007] d.h1.     2.482958: rcu_sched_clock_irq: need qs? 2 0
-          <idle>-0       [005] d.h1.     2.483600: rcu_sched_clock_irq: need qs? 2 0
-          <idle>-0       [002] d.h1.     2.483624: rcu_sched_clock_irq: need qs? 2 0
-          <idle>-0       [000] d.h1.     2.483927: rcu_sched_clock_irq: need qs? 2 0
-          <idle>-0       [007] d.h1.     2.484068: rcu_sched_clock_irq: need qs? 2 0
-          <idle>-0       [001] d.h1.     2.484127: rcu_sched_clock_irq: need qs? 2 0
-          <idle>-0       [002] d.h1.     2.484723: rcu_sched_clock_irq: need qs? 2 0
-          <idle>-0       [005] d.h1.     2.484745: rcu_sched_clock_irq: need qs? 2 0
-          <idle>-0       [000] d.h1.     2.485015: rcu_sched_clock_irq: need qs? 2 0
-          <idle>-0       [007] d.h1.     2.485202: rcu_sched_clock_irq: need qs? 2 0
-          <idle>-0       [001] d.h1.     2.485258: rcu_sched_clock_irq: need qs? 2 0
-          <idle>-0       [002] d.h1.     2.485818: rcu_sched_clock_irq: need qs? 2 0
-          <idle>-0       [005] d.h1.     2.485929: rcu_sched_clock_irq: need qs? 2 0
-          <idle>-0       [000] d.h1.     2.486224: rcu_sched_clock_irq: need qs? 2 0
-          <idle>-0       [007] d.h1.     2.486370: rcu_sched_clock_irq: need qs? 2 0
-          <idle>-0       [001] d.h1.     2.486399: rcu_sched_clock_irq: need qs? 2 0
-          <idle>-0       [002] d.h1.     2.486895: rcu_sched_clock_irq: need qs? 2 0
-          <idle>-0       [005] d.h1.     2.487049: rcu_sched_clock_irq: need qs? 2 0
-          <idle>-0       [000] d.h1.     2.487318: rcu_sched_clock_irq: need qs? 2 0
-          <idle>-0       [007] d.h1.     2.487472: rcu_sched_clock_irq: need qs? 2 0
-          <idle>-0       [001] d.h1.     2.487522: rcu_sched_clock_irq: need qs? 2 0
-          <idle>-0       [002] d.h1.     2.488034: rcu_sched_clock_irq: need qs? 2 0
-          <idle>-0       [005] d.h1.     2.488220: rcu_sched_clock_irq: need qs? 2 0
-
-
-Note, that "2" is the READ_ONCE() without the "!" to it. Thus:
-
-		if (likely(!READ_ONCE((t)->trc_reader_special.b.need_qs)) &&	\
-
-Is unlikely to be true.
-
-Was this supposed to be:
-
-		if (!likely(READ_ONCE((t)->trc_reader_special.b.need_qs)) &&	\
-
-Or could it be converted to:
-
-		if (unlikely(!READ_ONCE((t)->trc_reader_special.b.need_qs)) &&	\
-
-?
-
-Note, the unlikely tracing is running on my production server v6.6.3.
-
-The above trace is from my test box with latest Linus's tree.
-
--- Steve
+[..]
