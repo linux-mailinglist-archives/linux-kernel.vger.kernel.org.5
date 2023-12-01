@@ -2,196 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDB76801365
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 20:10:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9183080136C
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 20:11:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379448AbjLATJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 14:09:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39638 "EHLO
+        id S1379480AbjLATLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 14:11:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379440AbjLATJw (ORCPT
+        with ESMTP id S1379411AbjLATLk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 14:09:52 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C3D3F7
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 11:09:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701457797;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CPgX2vuUcASoWFoD2/jgg/jyDeKYMt7bHlJcifpLFYM=;
-        b=FPf/CVwcMZpfVSHu+q5mdUgUPK1QopjhwBoDE0KgeDey8ugIfh6MYRFyY7rm+sg0nzo6VO
-        leWkZxFJys4ntKuoRJN7yu++CDi2PVdhHH9ZHY1RcbFwMR4Aaw77kuV8g70cSZfqhrKRo6
-        QRf5t1MEIntV1Tgfrgq4rsN42cVbTsg=
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
- [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-112-R9n5SnCENO2nDXO5o7FngA-1; Fri, 01 Dec 2023 14:09:56 -0500
-X-MC-Unique: R9n5SnCENO2nDXO5o7FngA-1
-Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-50bbc314873so643603e87.0
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 11:09:55 -0800 (PST)
+        Fri, 1 Dec 2023 14:11:40 -0500
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD572B0;
+        Fri,  1 Dec 2023 11:11:45 -0800 (PST)
+Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-54b0e553979so3164643a12.2;
+        Fri, 01 Dec 2023 11:11:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701457904; x=1702062704; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7b2qv0QWPtpd3SOyHqmLbQnb6QDi1Dy0b3kkXbjYsP4=;
+        b=b51SJEeiyQgzOMZsm5+PJonTmWBDCbNPSYxZEsQYowrVYmwZoeySw6Kb9AdQb/N4sV
+         MlaoWKz4bMtZHozsq931bXwFl44MDmzNGskglLB/Uw4yMNS28n9HjAajCE8JEzEeure9
+         Q+8Ql8WX9AT1IGpc5AyuGCNK8ZYE8FlFPdOmAz/Hl63MZo6y2eluuQcpei94T3Z+A7Ir
+         a4VaUVBo7DoiY0si5YwzgsOqPR8ZqpkWM+arwe6nofhjBwOWPsXuqF9+Pz2rJ2tFS13m
+         UYkDCIkzQV4G1aGgPeFpt29DWjqSIt7EEsZWouGnrUF8xWhZMj5XtfoaONE3Iy17N5hp
+         JQ8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701457795; x=1702062595;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=CPgX2vuUcASoWFoD2/jgg/jyDeKYMt7bHlJcifpLFYM=;
-        b=Lk3UYMDb6tj+S4LJ0klHiF0vzZrcQaubE4JRcx7THyMcw8zd7am4o8QuWPdHBs9g0x
-         YtZ+oNSm8UO83zpnGZJdF8l3tRQN0JD20WQaliyHHqDjE117O0ZZz9rpQwagAlsQwj3T
-         mbBNCjl7oJgeOGz2i4PGRpHpv9nOtKHRAbFQSqHXmao59lEZMy/3Ft5wVR7Kr5ib0S4V
-         LVXiF0mgxRjaWLhpJGs9romwJ0B8eQv9F8iDaiul+Qd6R7AkExbsQCw/+CSEPtBijh07
-         RtvsrmG7cjp9ZlVyblRSmj4Y/XMjnkywPPrVIZoUUqs81ZgBm2zpaMj5FzmCmhRp7Zw8
-         F6xA==
-X-Gm-Message-State: AOJu0YznhhPFyU+oOXp0MTzqWtkR5HTUrkT9jjsemDLhg1/R9TW2e2wv
-        yErX6NoKE+tZ1PXRqPRZ2WpW6p1glvjeJcncno8gTPi5BI7JMxDp1f6EXWaCMzxWLgE5Qvkk85X
-        jvvqnlZvtRyHSUvhfogALrePy
-X-Received: by 2002:ac2:4e08:0:b0:50b:d0e3:c965 with SMTP id e8-20020ac24e08000000b0050bd0e3c965mr4242453lfr.5.1701457794781;
-        Fri, 01 Dec 2023 11:09:54 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IG+pFXhJJ2U8EV+mvP9hBFsmKL2W6+GEdgWEYBMyR0sJ00sdylPYR3zzG7P9Uoj9MXt+F0MYA==
-X-Received: by 2002:ac2:4e08:0:b0:50b:d0e3:c965 with SMTP id e8-20020ac24e08000000b0050bd0e3c965mr4242416lfr.5.1701457794394;
-        Fri, 01 Dec 2023 11:09:54 -0800 (PST)
-Received: from pstanner-thinkpadt14sgen1.remote.csb ([2001:9e8:32e2:4e00:227b:d2ff:fe26:2a7a])
-        by smtp.gmail.com with ESMTPSA id h15-20020a05600c314f00b004083a105f27sm9785776wmo.26.2023.12.01.11.09.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Dec 2023 11:09:54 -0800 (PST)
-Message-ID: <65079f6d5f512f9aff003bdfea127b214a9f9290.camel@redhat.com>
-Subject: Re: [PATCH v2 0/4] Regather scattered PCI-Code
-From:   Philipp Stanner <pstanner@redhat.com>
-To:     Arnd Bergmann <arnd@arndb.de>, Bjorn Helgaas <bhelgaas@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Uladzislau Koshchanka <koshchanka@gmail.com>,
-        Neil Brown <neilb@suse.de>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        John Sanpe <sanpeqf@gmail.com>,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        David Gow <davidgow@google.com>,
-        Yury Norov <yury.norov@gmail.com>,
-        "wuqiang.matt" <wuqiang.matt@bytedance.com>,
-        Jason Baron <jbaron@akamai.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Ben Dooks <ben.dooks@codethink.co.uk>,
-        Danilo Krummrich <dakr@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        Linux-Arch <linux-arch@vger.kernel.org>, pstanner@redhat.com
-Date:   Fri, 01 Dec 2023 20:09:51 +0100
-In-Reply-To: <3871b83a-0e80-402e-bbe6-359c17127842@app.fastmail.com>
-References: <20231201121622.16343-1-pstanner@redhat.com>
-         <3871b83a-0e80-402e-bbe6-359c17127842@app.fastmail.com>
+        d=1e100.net; s=20230601; t=1701457904; x=1702062704;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7b2qv0QWPtpd3SOyHqmLbQnb6QDi1Dy0b3kkXbjYsP4=;
+        b=lIrewYxez0NIbc76ZN8meLQFTvrIsyKf7YByaFNhCdMmcDb5WFq4enFSQB/rixOgZa
+         VedjtQPaQp8KyJYNTvQpk599vKCh6p1VO+dWrJD4gVf8RWEVPEbzA0Og8i0R99R57S1h
+         PdQDT+rwaEtiXpyxKktUelpyMkyLurfzKbvNREEGFJYg6pSrry/7yborwbzGIE9wvay/
+         NIaHOdpRZlxH6e77kHFkLSpWpC4FSG+XSw4tgrFUJP1/gXv1xfK2B+k818CbP02yJBz9
+         PMbyaXLWi6ZAFXtlkKVCzgOsIjUjaEpexHDN3gIVVqyaARUHRK0GFArNc6AjCY/ysBF2
+         dkoQ==
+X-Gm-Message-State: AOJu0YxEzhHzY9nDGHWLFhxFGmsXcG5Ijo53K6wRFIJmjl9BvV2PTOtg
+        yXJjT0CiWW6yDY6X6JWrvwgsQLfQumNxLuAK3EbdVOvo
+X-Google-Smtp-Source: AGHT+IGIQpnkASsjxBknJbw9LL3639mMvt4MnBhyj+0QZCNfwUSuXzZCXcCDeoZ3xygNZeUuaF+Z7qJQqLRxhyr3Afc=
+X-Received: by 2002:a17:906:f84a:b0:a19:a19b:55f9 with SMTP id
+ ks10-20020a170906f84a00b00a19a19b55f9mr1129420ejb.137.1701457903624; Fri, 01
+ Dec 2023 11:11:43 -0800 (PST)
+MIME-Version: 1.0
+References: <cover.1701193577.git.dxu@dxuuu.xyz> <ed7920365daf5eff1c82892b57e918d3db786ac7.1701193577.git.dxu@dxuuu.xyz>
+ <20c593b6f31720a3d24d75e5e5cc3245b67249d1.camel@gmail.com> <ib27gbqj6c6ilblugm5kalwyfty6h4zujhvykw4a562uorqzjn@6wxeino6q7vk>
+In-Reply-To: <ib27gbqj6c6ilblugm5kalwyfty6h4zujhvykw4a562uorqzjn@6wxeino6q7vk>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 1 Dec 2023 11:11:31 -0800
+Message-ID: <CAEf4BzbO80kFyFBCUixJ_NGqjJv79i+6oQXz+-jzRE+MaoRYZA@mail.gmail.com>
+Subject: Re: [PATCH ipsec-next v2 3/6] libbpf: Add BPF_CORE_WRITE_BITFIELD() macro
+To:     Daniel Xu <dxu@dxuuu.xyz>
+Cc:     Eduard Zingerman <eddyz87@gmail.com>, ndesaulniers@google.com,
+        andrii@kernel.org, nathan@kernel.org, daniel@iogearbox.net,
+        ast@kernel.org, steffen.klassert@secunet.com,
+        antony.antony@secunet.com, alexei.starovoitov@gmail.com,
+        yonghong.song@linux.dev, martin.lau@linux.dev, song@kernel.org,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, trix@redhat.com,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, devel@linux-ipsec.org, netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
-MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-12-01 at 17:27 +0100, Arnd Bergmann wrote:
-> On Fri, Dec 1, 2023, at 13:16, Philipp Stanner wrote:
-> >=20
-> > Arnd has suggested that architectures defining a custom inb() need
-> > their
-> > own iomem_is_ioport(), as well. I've grepped for inb() and found
-> > the
-> > following list of archs that define their own:
-> > =C2=A0 - alpha
-> > =C2=A0 - arm
-> > =C2=A0 - m68k <--
-> > =C2=A0 - parisc
-> > =C2=A0 - powerpc
-> > =C2=A0 - sh
-> > =C2=A0 - sparc
-> > =C2=A0 - x86 <--
-> >=20
-> > All of those have their own definitons of pci_iounmap(). Therefore,
-> > they
-> > don't need our generic version in the first place and, thus, also
-> > need
-> > no iomem_is_ioport().
->=20
-> What I meant of course is that they should define iomem_is_ioport()
-> in order to drop the custom pci_iounmap() and have only one remaining
-> definition of that function left.
+On Thu, Nov 30, 2023 at 5:33=E2=80=AFPM Daniel Xu <dxu@dxuuu.xyz> wrote:
+>
+> On Tue, Nov 28, 2023 at 07:59:01PM +0200, Eduard Zingerman wrote:
+> > On Tue, 2023-11-28 at 10:54 -0700, Daniel Xu wrote:
+> > > Similar to reading from CO-RE bitfields, we need a CO-RE aware bitfie=
+ld
+> > > writing wrapper to make the verifier happy.
+> > >
+> > > Two alternatives to this approach are:
+> > >
+> > > 1. Use the upcoming `preserve_static_offset` [0] attribute to disable
+> > >    CO-RE on specific structs.
+> > > 2. Use broader byte-sized writes to write to bitfields.
+> > >
+> > > (1) is a bit a bit hard to use. It requires specific and
+> > > not-very-obvious annotations to bpftool generated vmlinux.h. It's als=
+o
+> > > not generally available in released LLVM versions yet.
+> > >
+> > > (2) makes the code quite hard to read and write. And especially if
+> > > BPF_CORE_READ_BITFIELD() is already being used, it makes more sense t=
+o
+> > > to have an inverse helper for writing.
+> > >
+> > > [0]: https://reviews.llvm.org/D133361
+> > > From: Eduard Zingerman <eddyz87@gmail.com>
+> > >
+> > > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> > > ---
+> >
+> > Could you please also add a selftest (or several) using __retval()
+> > annotation for this macro?
+>
+> Good call about adding tests -- I found a few bugs with the code from
+> the other thread. But boy did they take a lot of brain cells to figure
+> out.
+>
+> There was some 6th grade algebra involved too -- I'll do my best to
+> explain it in the commit msg for v3.
+>
+>
+> Here are the fixes in case you are curious:
+>
+> diff --git a/tools/lib/bpf/bpf_core_read.h b/tools/lib/bpf/bpf_core_read.=
+h
+> index 7a764f65d299..8f02c558c0ff 100644
+> --- a/tools/lib/bpf/bpf_core_read.h
+> +++ b/tools/lib/bpf/bpf_core_read.h
+> @@ -120,7 +120,9 @@ enum bpf_enum_value_kind {
+>         unsigned int byte_size =3D __CORE_RELO(s, field, BYTE_SIZE);     =
+ \
+>         unsigned int lshift =3D __CORE_RELO(s, field, LSHIFT_U64);       =
+ \
+>         unsigned int rshift =3D __CORE_RELO(s, field, RSHIFT_U64);       =
+ \
+> -       unsigned int bit_size =3D (rshift - lshift);                     =
+ \
+> +       unsigned int bit_size =3D (64 - rshift);                         =
+ \
+> +       unsigned int hi_size =3D lshift;                                 =
+ \
+> +       unsigned int lo_size =3D (rshift - lshift);                      =
+ \
 
-Ah, gotcha!
-Yes, that would be neat. Would also allow for droping
-ARCH_WANTS_GENERIC_PCI_IOUNMAP.
+nit: let's drop unnecessary ()
 
->=20
-> The one special case that I missed the last time is s390, which
-> does not use GENERIC_PCI_IOMAP and will just require a separate
-> copy of pci_iounmap() to go along with the is custom pci_iomap().
->=20
-> > The two exceptions are x86 and m68k. The former uses lib/iomap.c
-> > through
-> > CONFIG_GENERIC_IOMAP, as Arnd pointed out in the previous
-> > discussion
-> > (thus, CONFIG_GENERIC_IOMAP is not really generic in this regard).
-> >=20
-> > So as I see it, only m68k WOULD need its own custom definition of
-> > iomem_is_ioport(). But as I understand it it doesn't because it
-> > uses the
-> > one from asm-generic/pci_iomap.h ??
->=20
-> At the moment, m68k gets the pci_iounmap() from lib/iomap.c
-> if PCI is enabled for coldfire, but that incorrectly calls
-> iounmap() on PCI_IO_PA if it gets passed a PIO address.
->=20
-> The version from asm-generic/io.h should fix this.
+>         unsigned long long nval, val, hi, lo;                           \
+>                                                                         \
+>         asm volatile("" : "+r"(p));                                     \
+> @@ -131,13 +133,13 @@ enum bpf_enum_value_kind {
+>         case 4: val =3D *(unsigned int *)p; break;                       =
+ \
+>         case 8: val =3D *(unsigned long long *)p; break;                 =
+ \
+>         }                                                               \
+> -       hi =3D val >> (bit_size + rshift);                               =
+ \
+> -       hi <<=3D bit_size + rshift;                                      =
+ \
+> -       lo =3D val << (bit_size + lshift);                               =
+ \
+> -       lo >>=3D bit_size + lshift;                                      =
+ \
+> +       hi =3D val >> (64 - hi_size);                                    =
+ \
+> +       hi <<=3D 64 - hi_size;                                           =
+ \
+> +       lo =3D val << (64 - lo_size);                                    =
+ \
+> +       lo >>=3D 64 - lo_size;                                           =
+ \
+>         nval =3D new_val;                                                =
+ \
+> -       nval <<=3D lshift;                                               =
+ \
+> -       nval >>=3D rshift;                                               =
+ \
+> +       nval <<=3D (64 - bit_size);                                      =
+ \
+> +       nval >>=3D (64 - bit_size - lo_size);                            =
+ \
+>         val =3D hi | nval | lo;                                          =
+ \
 
-So, to be sure: m68k will use the generic iomem_is_ioport() despite
-defining its own inb()?
+this looks.. unusual. I'd imagine we calculate a mask, mask out bits
+we are replacing, and then OR with new values, roughly (assuming all
+the right left/right shift values and stuff)
 
->=20
-> For classic m68k, there is no PCI, so nothing calls pci_iounmap().
->=20
-> > I wasn't entirely sure how to deal with the address ranges for the
-> > generic implementation in asm-generic/io.h. It's marked with a
-> > TODO.
-> > Input appreciated.
->=20
-> I commented on the function directly. To clarify, I think we should
-> be able to directly turn each pci_iounmap() definition into
-> a iomem_is_ioport() definition by keeping the logic unchanged
-> and just return 'true' for the PIO variant or 'false' for the MMIO
-> version.
->=20
-> > I removed the guard around define pci_iounmap in asm-generic/io.h.
-> > An
-> > alternative would be to have it be guarded by CONFIG_GENERIC_IOMAP
-> > and
-> > CONFIG_GENERIC_PCI_IOMAP, both. Without such a guard, there is no
-> > collision however, because generic pci_iounmap() from
-> > drivers/pci/iomap.c will only get pulled in when
-> > CONFIG_GENERIC_PCI_IOMAP is actually set.
->=20
-> The "#define pci_iomap" can be removed entirely I think.
+/* clear bits */
+val &=3D ~(bitfield_mask << shift);
+/* set bits */
+val |=3D (nval & bitfield_mask) << shift;
 
-I also think it can, because first arch/asm/io.h includes asm-
-generic/io.h.
-I was just wondering why many other functions in asm-generic/io.h
-always define their own names..
+?
 
-It's obviously very hard to test which config will break, so I thought
-it's better safe than sorry here
-
-P.
-
->=20
-> =C2=A0=C2=A0=C2=A0=C2=A0 Arnd
->=20
-
+>         switch (byte_size) {                                            \
+>         case 1: *(unsigned char *)p      =3D val; break;                 =
+ \
+>
+>
+> Thanks,
+> Daniel
