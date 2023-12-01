@@ -2,105 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FF42801119
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:21:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51BDD801113
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:21:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377899AbjLAQVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 11:21:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60162 "EHLO
+        id S1378366AbjLAQVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 11:21:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229785AbjLAQVf (ORCPT
+        with ESMTP id S1378351AbjLAQVl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 11:21:35 -0500
-Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
-        by lindbergh.monkeyblade.net (Postfix) with SMTP id DA08CFE
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 08:21:41 -0800 (PST)
-Received: (qmail 291592 invoked by uid 1000); 1 Dec 2023 11:21:40 -0500
-Date:   Fri, 1 Dec 2023 11:21:40 -0500
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Ferry Toth <ferry.toth@elsinga.info>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Ferry Toth <fntoth@gmail.com>, Christoph Hellwig <hch@lst.de>,
-        Hamza Mahfooz <someguy@effective-light.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Andrew <travneff@gmail.com>,
+        Fri, 1 Dec 2023 11:21:41 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 225D0196
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 08:21:47 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80714C433C7;
+        Fri,  1 Dec 2023 16:21:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701447706;
+        bh=OxaoKaXIZz97QSlVLuylRvJDT+kPyPJndjvasxIdAOg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QDXJugR2UvAVEwMYL/EPAs2rufs3M/7pGlG8EQSqI6FAMEcAIv0Wt6nAJOO6ZugUG
+         nJ4cyQhFMkZpc85ygbt+1eGdiJN0M41Qww1VuD3X+o6mIH6KfxwX2X2Wd2Q3Zni86q
+         /BKZDvlXPEwabj30PiI/oV/WMgpGUsGtH/tsOxL4KtcntPjpYnc45hcmq7uZTSVDUw
+         btH/KJ1xqiFfS+PzLMQRXHbqDtvna/8HrxgDqnzOFozmyLVZn9sgly7F99tJkUhRJ+
+         wFt9K/FEF97FJL2fk2E/6x2zx5OKULAQcbpdjKp3Ed/Fa2w82MbMQ9nsLiCqdhLnjZ
+         8WyoXFGg5Mpwg==
+Date:   Fri, 1 Dec 2023 16:21:42 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Jan =?iso-8859-1?Q?Kundr=E1t?= <jan.kundrat@cesnet.cz>
+Cc:     Cosmin Tanislav <cosmin.tanislav@analog.com>,
+        linux-serial@vger.kernel.org,
         Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Thorsten Leemhuis <regressions@leemhuis.info>,
-        iommu@lists.linux.dev,
-        Kernel development list <linux-kernel@vger.kernel.org>,
-        USB mailing list <linux-usb@vger.kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Will Deacon <will@kernel.org>
-Subject: Re: Bug in add_dma_entry()'s debugging code
-Message-ID: <5093ce37-047e-4aa8-a9e8-2978da9d734a@rowland.harvard.edu>
-References: <736e584f-7d5f-41aa-a382-2f4881ba747f@rowland.harvard.edu>
- <20231127160759.GA1668@lst.de>
- <637d6dff-de56-4815-a15a-1afccde073f0@rowland.harvard.edu>
- <20231128133702.GA9917@lst.de>
- <cb7dc5da-37cb-45ba-9846-5a085f55692e@rowland.harvard.edu>
- <ZWYnECPRKca5Dpqc@arm.com>
- <76e8def2-ff45-47d3-91ab-96876ea84079@gmail.com>
- <ZWm-u2kV1UP09M84@arm.com>
- <5425cf42-0f49-41b5-b26d-1e099d5bdcc2@elsinga.info>
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] tty: max310x: work around regmap->regcache data
+ corruption
+Message-ID: <f66cf0a3-4d63-4548-8648-e93a1ef995e2@sirena.org.uk>
+References: <bd91db46c50615bc1d1d62beb659fa7f62386446.1701446070.git.jan.kundrat@cesnet.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="S1ok82JjTyGj+vog"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5425cf42-0f49-41b5-b26d-1e099d5bdcc2@elsinga.info>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+In-Reply-To: <bd91db46c50615bc1d1d62beb659fa7f62386446.1701446070.git.jan.kundrat@cesnet.cz>
+X-Cookie: The early worm gets the late bird.
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 01, 2023 at 01:17:43PM +0100, Ferry Toth wrote:
-> > A non-cache coherent platform would either have the kmalloc()
-> > allocations aligned or it would bounce those small, unaligned buffers.
-> It would? Or it always has?
-> > So it doesn't seem right to issue a warning on x86 where kmalloc()
-> > minimum alignment is 8 and not getting the warning on a non-coherent
-> > platform which forces the kmalloc() alignment.
-> 
-> If *all*non-coherent platforms implement either correct alignment or bounce
-> buffer, and on (coherent) x86 we get an WARN, then it is a false alarm
-> right?
-> 
-> That is exactly my question (because I have no idea which platforms have
-> non-coherent caches).
 
-Don't forget, not all DMA buffers are allocated by kmalloc().  A buffer 
-allocated by some other means might not be aligned properly and might 
-share a cache line with another buffer.
+--S1ok82JjTyGj+vog
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Or you might have a single data structure that was allocated by 
-kmalloc() and then create separate DMA mappings for two members of that 
-structure.  If the two members are in the same cache line, that would be 
-an error.
+On Fri, Dec 01, 2023 at 03:51:51PM +0100, Jan Kundr=E1t wrote:
 
-Alan Stern
+> The TL;DR summary is that the regmap_noinc_write spills over the data
+> that are correctly written to the HW also to the following registers in
+> the regcache. As a result, regcache then contains user-controlled
+> garbage which will be used later for bit updates on unrelated registers.
 
-> > If we consider the kmalloc() aspect already covered by bouncing or force
-> > alignment, the DMA API debug code can still detect other cache line
-> > sharing situations.
-> 
-> Consider? Or know?
-> 
-> If we know, and we can not easily prevent false WARN's on x86 it could be
-> sufficient to change the message to "possible cacheline sharing detected"
-> and add a line that "DMA_API_DEBUG" should be disabled on production
-> systems.
-> 
-> And while at it, we might be able to fix the missed real cacheline sharing
-> mentioned by Alan:
-> 
->  "As a separate issue, active_cacheline_insert() fails to detect
-> overlap in situations where a mapping occupies more than one cache line.
-> For example, if mapping A uses lines N and N+1 and mapping B uses line
-> N+1, no overlap will be detected because the radix-tree keys for A and B
-> will be different (N vs. N+1)."
-> 
+> I was investigating a regression that happened somewhere between 5.12.4
+> (plus 14 of our patches) and v6.5.9 (plus 7 of our patches). Our
+
+Can you reproduce this with current kernels?  That's not even an up to
+date v6.5 - we're up to v6.5.13 now from the looks of things including
+one upstream fix that looks potentially relevant.  The most direct thing
+would be to write a kunit test demonstrating the issue with current
+mainline.
+
+If things are already fine with mainline then you'd need to talk to the
+stable maintainers about what they've chosen to backport. =20
+
+--S1ok82JjTyGj+vog
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVqCBUACgkQJNaLcl1U
+h9DTMgf/Ymn+p9dkuv6cArGpPGkvboMvHFC62w1huJaKWI3nH93Z9cDd+E123d3o
+/fM635v3qV5OyCkBS5z78OPA0rZC8hG4Ka5pFPngedNCZ7L7SLi21I9gb3403XQ6
+7sCqIyTNVol59GEvalXc5bq6w585qESs2yWZmUKdLQHlUm+JfoGL4EbD85PpMrS9
+xcaAUuH5LvnD4i+s4azhDbs5nOaentmWUFXZN5i/AcMOGCZyZESlJ4NOStVzgt6h
+Q8jMV43gEu4POF1IpCuHUKzi7YJcyn+5+c8kkPXiaSMa2je6SRbymhbdISorfKFh
+PrU+aJEMDjL2HN8reaaaZaXrAqfcNA==
+=pihy
+-----END PGP SIGNATURE-----
+
+--S1ok82JjTyGj+vog--
