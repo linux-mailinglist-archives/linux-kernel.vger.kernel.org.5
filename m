@@ -2,124 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37683800A18
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 12:50:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EB2C800A1C
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 12:52:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378614AbjLALuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 06:50:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46496 "EHLO
+        id S1378630AbjLALv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 06:51:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378585AbjLALut (ORCPT
+        with ESMTP id S1378585AbjLALvy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 06:50:49 -0500
-Received: from mail-lf1-x14a.google.com (mail-lf1-x14a.google.com [IPv6:2a00:1450:4864:20::14a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67A781708
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 03:50:55 -0800 (PST)
-Received: by mail-lf1-x14a.google.com with SMTP id 2adb3069b0e04-50bcb455a3fso2249034e87.1
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 03:50:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701431453; x=1702036253; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/BVYl63ZIrcNFLUa5Nj/riyis5Au6tDAIb2Q4+PiwNE=;
-        b=gaCdCZS8Wo+IpU+LvrghZGHSCTDlu2ovMWwXkkq4WgqAeFm2ZldnNzNzYETqGn4oX9
-         eiSezNoCyNNLOq/PGtLrxZMYYkKilymI4NS2vIIYP1I0cTK6dfjIagIRyHDRnFQH6o1Q
-         e4is4Ikj/5HnQ9VUMspMc6P17oQQEvHsqfsaAKTWAH351ICZ4HJ8pBAmLKbEaRGfM9HM
-         VCtYrQyeNByRu2XlXYmzuE0nKhJCtWuGPwDdeoU1/R8DzSe8nxFg8YiILJ1c5AFBWJx9
-         jCxytya20EekFz/xA+eAtupMe9j6Lq3+WMEO9ufiQT8WCY4+U4dNJTd9FdaVCCCua7U6
-         FAKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701431453; x=1702036253;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/BVYl63ZIrcNFLUa5Nj/riyis5Au6tDAIb2Q4+PiwNE=;
-        b=YM4yMPj0vZTOa0h8xZYLqh6jKBCzxw1zvWRneAv5Qmr6lBnNjE8ZjxIbUqhmuKd0yR
-         A1LJ6/QD+nGVNB57vH6WEQazekIxnyUe4USwsEzr8T1jsuH8CxNx+hLWVEqSfuVEMTuz
-         RzleJxpNni2FYBpP2FUVRPLQPZL6Ef9vdJ/oQPT6qc/Mu6mC9CwzvwHjVtA23J619JHj
-         OpCIccp9hY7NwzXHWYRq4/CXHfCpHY2vOyKl6vK6YN434bls7iwoMwoic8iloXsh8L2A
-         RNzDL4AkhBImrPth1SdP0vIJsQ7jQfQpnAkZL06TTw9nfMED0qB6vw94vh289+jP29ZY
-         LAoA==
-X-Gm-Message-State: AOJu0YwSy4kfBbZRvMGad6xjdfQqNPXMRpx48/8CL9z4CepPFsTIeq/2
-        XU1kTd1od+M1IOi9TRhiLmTD1RrUyRcszR8=
-X-Google-Smtp-Source: AGHT+IHWIVTksmK0edVZGPr78JsVaudS40Jz9JyjF/DFPOEUrS0ZrluBGntBFY5f8ZeB66yp5PYJtPcHyw+v+T8=
-X-Received: from aliceryhl2.c.googlers.com ([fda3:e722:ac3:cc00:68:949d:c0a8:572])
- (user=aliceryhl job=sendgmr) by 2002:a05:6512:2392:b0:50b:d466:bb with SMTP
- id c18-20020a056512239200b0050bd46600bbmr53383lfv.4.1701431453776; Fri, 01
- Dec 2023 03:50:53 -0800 (PST)
-Date:   Fri,  1 Dec 2023 11:50:51 +0000
-In-Reply-To: <ZWkPGF5AS6creWTH@boqun-archlinux>
-Mime-Version: 1.0
-References: <ZWkPGF5AS6creWTH@boqun-archlinux>
-X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
-Message-ID: <20231201115051.2209084-1-aliceryhl@google.com>
-Subject: Re: [PATCH 7/7] rust: file: add abstraction for `poll_table`
-From:   Alice Ryhl <aliceryhl@google.com>
-To:     boqun.feng@gmail.com
-Cc:     a.hindborg@samsung.com, alex.gaynor@gmail.com,
-        aliceryhl@google.com, arve@android.com, benno.lossin@proton.me,
-        bjorn3_gh@protonmail.com, brauner@kernel.org, cmllamas@google.com,
-        dan.j.williams@intel.com, dxu@dxuuu.xyz, gary@garyguo.net,
-        gregkh@linuxfoundation.org, joel@joelfernandes.org,
-        keescook@chromium.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, maco@android.com, ojeda@kernel.org,
-        peterz@infradead.org, rust-for-linux@vger.kernel.org,
-        surenb@google.com, tglx@linutronix.de, tkjos@android.com,
-        viro@zeniv.linux.org.uk, wedsonaf@gmail.com, willy@infradead.org
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        Fri, 1 Dec 2023 06:51:54 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00DBD1707
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 03:51:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701431519;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fycN3hZGNRl6X4amyCpma7UV8ZHfLxVOfAL+B4rgRck=;
+        b=HpjnCW0kr6goHhzPQT/vV9E8i1FlXOw3UMinxcOBGnGFJiUODuEwdLjWfkEqEPhWhzyPQ9
+        5N9QFvQv4kGbiGIicV0UBdbw/LfqwiegOYO6jr40kNR0bq0Liv+InFHG6SGapNbNz9PslV
+        ELGoZe2CSZP+OHUD3dkX/RQTi7cCy/4=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-562-DfTxXO3AO86EyAC7MNdX8Q-1; Fri, 01 Dec 2023 06:51:57 -0500
+X-MC-Unique: DfTxXO3AO86EyAC7MNdX8Q-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4E172831520;
+        Fri,  1 Dec 2023 11:51:57 +0000 (UTC)
+Received: from fedora.redhat.com (unknown [10.39.193.68])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1413C2166B26;
+        Fri,  1 Dec 2023 11:51:54 +0000 (UTC)
+From:   Jose Ignacio Tornos Martinez <jtornosm@redhat.com>
+To:     stern@rowland.harvard.edu
+Cc:     davem@davemloft.net, edumazet@google.com, jtornosm@redhat.com,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
+        oneukum@suse.com, pabeni@redhat.com
+Subject: [PATCH v2] net: usb: ax88179_178a: avoid failed operations when device is disconnected
+Date:   Fri,  1 Dec 2023 12:51:43 +0100
+Message-ID: <20231201115143.177081-1-jtornosm@redhat.com>
+In-Reply-To: <e8e4ac26-9168-452c-80bc-f32904808cc9@rowland.harvard.edu>
+References: <e8e4ac26-9168-452c-80bc-f32904808cc9@rowland.harvard.edu>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Boqun Feng <boqun.feng@gmail.com> writes:
->> That said, `synchronize_rcu` is rather expensive and is not needed in
->> all cases: If we have never registered a `poll_table` with the
->> `wait_list`, then we don't need to call `synchronize_rcu`. (And this is
->> a common case in Binder - not all processes use Binder with epoll.) The
->> current implementation does not account for this, but we could change it
->> to store a boolean next to the `wait_list` to keep track of whether a
->> `poll_table` has ever been registered. It is up to discussion whether
->> this is desireable.
->> 
->> It is not clear to me whether we can implement the above without storing
->> an extra boolean. We could check whether the `wait_list` is empty, but
->> it is not clear that this is sufficient. Perhaps someone knows the
->> answer? If a `poll_table` has previously been registered with a
-> 
-> That won't be sufficient, considering this:
-> 
->     CPU 0                           CPU 1
->                                     ep_remove_wait_queue():
->                                       whead = smp_load_acquire(&pwq->whead); // whead is not NULL
->     PollCondVar::drop():
->       self.inner.notify():
->         <for each wait entry in the list>
-> 	  ep_poll_callback():
-> 	    <remove wait entry>
->             smp_store_release(&ep_pwq_from_wait(wait)->whead, NULL);
->       <lock the waitqueue>
->       waitqueue_active() // return false, since the queue is emtpy
->       <unlock>
->     ...
->     <free the waitqueue>
-> 				       if (whead) {
-> 				         remove_wait_queue(whead, &pwq->wait); // Use-after-free BOOM!
-> 				       }
->       
-> 
-> Note that moving the `wait_list` empty checking before
-> `self.inner.notify()` won't change the result, since there might be a
-> `notify` called by users before `PollCondVar::drop()`, hence the same
-> result.
-> 
-> Regards,
-> Boqun
+When the device is disconnected we get the following messages showing
+failed operations:
+Nov 28 20:22:11 localhost kernel: usb 2-3: USB disconnect, device number 2
+Nov 28 20:22:11 localhost kernel: ax88179_178a 2-3:1.0 enp2s0u3: unregister 'ax88179_178a' usb-0000:02:00.0-3, ASIX AX88179 USB 3.0 Gigabit Ethernet
+Nov 28 20:22:11 localhost kernel: ax88179_178a 2-3:1.0 enp2s0u3: Failed to read reg index 0x0002: -19
+Nov 28 20:22:11 localhost kernel: ax88179_178a 2-3:1.0 enp2s0u3: Failed to write reg index 0x0002: -19
+Nov 28 20:22:11 localhost kernel: ax88179_178a 2-3:1.0 enp2s0u3 (unregistered): Failed to write reg index 0x0002: -19
+Nov 28 20:22:11 localhost kernel: ax88179_178a 2-3:1.0 enp2s0u3 (unregistered): Failed to write reg index 0x0001: -19
+Nov 28 20:22:11 localhost kernel: ax88179_178a 2-3:1.0 enp2s0u3 (unregistered): Failed to write reg index 0x0002: -19
 
-Thank you for confirming my suspicion.
+The reason is that although the device is detached, normal stop and
+unbind operations are commanded from the driver. These operations are
+not necessary in this situation, so avoid these logs when the device is
+detached if the result of the operation is -ENODEV and if the new flag
+informing about the stopping or unbind operation is enabled.
 
-Alice
+Fixes: e2ca90c276e1f ("ax88179_178a: ASIX AX88179_178A USB 3.0/2.0 to gigabit ethernet adapter driver")
+Signed-off-by: Jose Ignacio Tornos Martinez <jtornosm@redhat.com>
+---
+V1 -> V2:
+- Follow the suggestions from Alan Stern and Oliver Neukum to check the
+result of the operations (-ENODEV) and not the internal state of the USB 
+layer (USB_STATE_NOTATTACHED).
+
+ drivers/net/usb/ax88179_178a.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/usb/ax88179_178a.c b/drivers/net/usb/ax88179_178a.c
+index 4ea0e155bb0d..105bae360128 100644
+--- a/drivers/net/usb/ax88179_178a.c
++++ b/drivers/net/usb/ax88179_178a.c
+@@ -173,6 +173,7 @@ struct ax88179_data {
+ 	u8 in_pm;
+ 	u32 wol_supported;
+ 	u32 wolopts;
++	u8 stopping_unbinding;
+ };
+ 
+ struct ax88179_int_data {
+@@ -208,6 +209,7 @@ static int __ax88179_read_cmd(struct usbnet *dev, u8 cmd, u16 value, u16 index,
+ {
+ 	int ret;
+ 	int (*fn)(struct usbnet *, u8, u8, u16, u16, void *, u16);
++	struct ax88179_data *ax179_data = dev->driver_priv;
+ 
+ 	BUG_ON(!dev);
+ 
+@@ -219,7 +221,7 @@ static int __ax88179_read_cmd(struct usbnet *dev, u8 cmd, u16 value, u16 index,
+ 	ret = fn(dev, cmd, USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
+ 		 value, index, data, size);
+ 
+-	if (unlikely(ret < 0))
++	if (unlikely(ret < 0 && !(ret == -ENODEV && ax179_data->stopping_unbinding)))
+ 		netdev_warn(dev->net, "Failed to read reg index 0x%04x: %d\n",
+ 			    index, ret);
+ 
+@@ -231,6 +233,7 @@ static int __ax88179_write_cmd(struct usbnet *dev, u8 cmd, u16 value, u16 index,
+ {
+ 	int ret;
+ 	int (*fn)(struct usbnet *, u8, u8, u16, u16, const void *, u16);
++	struct ax88179_data *ax179_data = dev->driver_priv;
+ 
+ 	BUG_ON(!dev);
+ 
+@@ -242,7 +245,7 @@ static int __ax88179_write_cmd(struct usbnet *dev, u8 cmd, u16 value, u16 index,
+ 	ret = fn(dev, cmd, USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
+ 		 value, index, data, size);
+ 
+-	if (unlikely(ret < 0))
++	if (unlikely(ret < 0 && !(ret == -ENODEV && ax179_data->stopping_unbinding)))
+ 		netdev_warn(dev->net, "Failed to write reg index 0x%04x: %d\n",
+ 			    index, ret);
+ 
+@@ -1308,6 +1311,8 @@ static void ax88179_unbind(struct usbnet *dev, struct usb_interface *intf)
+ 	struct ax88179_data *ax179_data = dev->driver_priv;
+ 	u16 tmp16;
+ 
++	ax179_data->stopping_unbinding = 1;
++
+ 	/* Configure RX control register => stop operation */
+ 	tmp16 = AX_RX_CTL_STOP;
+ 	ax88179_write_cmd(dev, AX_ACCESS_MAC, AX_RX_CTL, 2, 2, &tmp16);
+@@ -1319,6 +1324,8 @@ static void ax88179_unbind(struct usbnet *dev, struct usb_interface *intf)
+ 	tmp16 = 0;
+ 	ax88179_write_cmd(dev, AX_ACCESS_MAC, AX_PHYPWR_RSTCTL, 2, 2, &tmp16);
+ 
++	ax179_data->stopping_unbinding = 0;
++
+ 	kfree(ax179_data);
+ }
+ 
+@@ -1661,14 +1668,19 @@ static int ax88179_reset(struct usbnet *dev)
+ 
+ static int ax88179_stop(struct usbnet *dev)
+ {
++	struct ax88179_data *ax179_data = dev->driver_priv;
+ 	u16 tmp16;
+ 
++	ax179_data->stopping_unbinding = 1;
++
+ 	ax88179_read_cmd(dev, AX_ACCESS_MAC, AX_MEDIUM_STATUS_MODE,
+ 			 2, 2, &tmp16);
+ 	tmp16 &= ~AX_MEDIUM_RECEIVE_EN;
+ 	ax88179_write_cmd(dev, AX_ACCESS_MAC, AX_MEDIUM_STATUS_MODE,
+ 			  2, 2, &tmp16);
+ 
++	ax179_data->stopping_unbinding = 0;
++
+ 	return 0;
+ }
+ 
+-- 
+2.43.0
+
