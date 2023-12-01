@@ -2,35 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B79E3800A3A
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 13:02:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 408BC800A41
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 13:02:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378692AbjLAMCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 07:02:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54574 "EHLO
+        id S1378711AbjLAMC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 07:02:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378688AbjLAMCQ (ORCPT
+        with ESMTP id S1378685AbjLAMCW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 07:02:16 -0500
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2529A170E;
-        Fri,  1 Dec 2023 04:02:22 -0800 (PST)
-Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4ShWqx2WS9zWhx4;
-        Fri,  1 Dec 2023 20:01:33 +0800 (CST)
+        Fri, 1 Dec 2023 07:02:22 -0500
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 876AA171B;
+        Fri,  1 Dec 2023 04:02:24 -0800 (PST)
+Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4ShWlF1GCdzMnPl;
+        Fri,  1 Dec 2023 19:57:29 +0800 (CST)
 Received: from localhost.localdomain (10.69.192.56) by
  dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 1 Dec 2023 20:02:20 +0800
+ 15.1.2507.35; Fri, 1 Dec 2023 20:02:22 +0800
 From:   Yunsheng Lin <linyunsheng@huawei.com>
 To:     <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>
 CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         Yunsheng Lin <linyunsheng@huawei.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>, <linux-mm@kvack.org>
-Subject: [PATCH RFC 3/6] mm/page_alloc: use initial zero offset for page_frag_alloc_align()
-Date:   Fri, 1 Dec 2023 20:02:04 +0800
-Message-ID: <20231201120208.15080-4-linyunsheng@huawei.com>
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        <kvm@vger.kernel.org>, <virtualization@lists.linux.dev>,
+        <bpf@vger.kernel.org>
+Subject: [PATCH RFC 4/6] vhost/net: remove vhost_net_page_frag_refill()
+Date:   Fri, 1 Dec 2023 20:02:05 +0800
+Message-ID: <20231201120208.15080-5-linyunsheng@huawei.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20231201120208.15080-1-linyunsheng@huawei.com>
 References: <20231201120208.15080-1-linyunsheng@huawei.com>
@@ -51,97 +57,189 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The next patch is above to use page_frag_alloc_align() to
-replace vhost_net_page_frag_refill(), the main difference
-between those two frag page implementations is whether we
-use a initial zero offset or not.
+The page frag in vhost_net_page_frag_refill() uses the
+'struct page_frag' from skb_page_frag_refill(), but it's
+implementation is similar to page_frag_alloc_align() now.
 
-It seems more nature to use a initial zero offset, as it
-may enable more correct cache prefetching and skb frag
-coalescing in the networking, so change it to use initial
-zero offset.
+This patch removes vhost_net_page_frag_refill() by using
+'struct page_frag_cache' instead of 'struct page_frag',
+and allocating frag using page_frag_alloc_align().
+
+The added benefit is that not only unifying the page frag
+implementation a little, but also having about 0.5% performance
+boost testing by using the vhost_net_test introduced in the
+last patch.
 
 Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
-CC: Alexander Duyck <alexander.duyck@gmail.com>
 ---
- mm/page_alloc.c | 30 ++++++++++++++----------------
- 1 file changed, 14 insertions(+), 16 deletions(-)
+ drivers/vhost/net.c | 93 ++++++++++++++-------------------------------
+ 1 file changed, 29 insertions(+), 64 deletions(-)
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 1f0b36dd81b5..083e0c38fb62 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -4720,7 +4720,7 @@ void *page_frag_alloc_align(struct page_frag_cache *nc,
- 		      unsigned int fragsz, gfp_t gfp_mask,
- 		      unsigned int align)
- {
--	unsigned int size = PAGE_SIZE;
-+	unsigned int size;
- 	struct page *page;
- 	int offset;
+diff --git a/drivers/vhost/net.c b/drivers/vhost/net.c
+index e574e21cc0ca..805e11d598e4 100644
+--- a/drivers/vhost/net.c
++++ b/drivers/vhost/net.c
+@@ -141,10 +141,8 @@ struct vhost_net {
+ 	unsigned tx_zcopy_err;
+ 	/* Flush in progress. Protected by tx vq lock. */
+ 	bool tx_flush;
+-	/* Private page frag */
+-	struct page_frag page_frag;
+-	/* Refcount bias of page frag */
+-	int refcnt_bias;
++	/* Private page frag cache */
++	struct page_frag_cache pf_cache;
+ };
  
-@@ -4732,10 +4732,6 @@ void *page_frag_alloc_align(struct page_frag_cache *nc,
- 		if (!page)
- 			return NULL;
+ static unsigned vhost_net_zcopy_mask __read_mostly;
+@@ -655,41 +653,6 @@ static bool tx_can_batch(struct vhost_virtqueue *vq, size_t total_len)
+ 	       !vhost_vq_avail_empty(vq->dev, vq);
+ }
  
--#if (PAGE_SIZE < PAGE_FRAG_CACHE_MAX_SIZE)
--		/* if size can vary use size else just use PAGE_SIZE */
--		size = nc->size;
--#endif
- 		/* Even if we own the page, we do not use atomic_set().
- 		 * This would break get_page_unless_zero() users.
- 		 */
-@@ -4744,11 +4740,18 @@ void *page_frag_alloc_align(struct page_frag_cache *nc,
- 		/* reset page count bias and offset to start of new frag */
- 		nc->pfmemalloc = page_is_pfmemalloc(page);
- 		nc->pagecnt_bias = PAGE_FRAG_CACHE_MAX_SIZE + 1;
--		nc->offset = size;
-+		nc->offset = 0;
+-static bool vhost_net_page_frag_refill(struct vhost_net *net, unsigned int sz,
+-				       struct page_frag *pfrag, gfp_t gfp)
+-{
+-	if (pfrag->page) {
+-		if (pfrag->offset + sz <= pfrag->size)
+-			return true;
+-		__page_frag_cache_drain(pfrag->page, net->refcnt_bias);
+-	}
+-
+-	pfrag->offset = 0;
+-	net->refcnt_bias = 0;
+-	if (SKB_FRAG_PAGE_ORDER) {
+-		/* Avoid direct reclaim but allow kswapd to wake */
+-		pfrag->page = alloc_pages((gfp & ~__GFP_DIRECT_RECLAIM) |
+-					  __GFP_COMP | __GFP_NOWARN |
+-					  __GFP_NORETRY | __GFP_NOMEMALLOC,
+-					  SKB_FRAG_PAGE_ORDER);
+-		if (likely(pfrag->page)) {
+-			pfrag->size = PAGE_SIZE << SKB_FRAG_PAGE_ORDER;
+-			goto done;
+-		}
+-	}
+-	pfrag->page = alloc_page(gfp);
+-	if (likely(pfrag->page)) {
+-		pfrag->size = PAGE_SIZE;
+-		goto done;
+-	}
+-	return false;
+-
+-done:
+-	net->refcnt_bias = USHRT_MAX;
+-	page_ref_add(pfrag->page, USHRT_MAX - 1);
+-	return true;
+-}
+-
+ #define VHOST_NET_RX_PAD (NET_IP_ALIGN + NET_SKB_PAD)
+ 
+ static int vhost_net_build_xdp(struct vhost_net_virtqueue *nvq,
+@@ -699,7 +662,6 @@ static int vhost_net_build_xdp(struct vhost_net_virtqueue *nvq,
+ 	struct vhost_net *net = container_of(vq->dev, struct vhost_net,
+ 					     dev);
+ 	struct socket *sock = vhost_vq_get_backend(vq);
+-	struct page_frag *alloc_frag = &net->page_frag;
+ 	struct virtio_net_hdr *gso;
+ 	struct xdp_buff *xdp = &nvq->xdp[nvq->batched_xdp];
+ 	struct tun_xdp_hdr *hdr;
+@@ -710,6 +672,7 @@ static int vhost_net_build_xdp(struct vhost_net_virtqueue *nvq,
+ 	int sock_hlen = nvq->sock_hlen;
+ 	void *buf;
+ 	int copied;
++	int ret;
+ 
+ 	if (unlikely(len < nvq->sock_hlen))
+ 		return -EFAULT;
+@@ -719,18 +682,17 @@ static int vhost_net_build_xdp(struct vhost_net_virtqueue *nvq,
+ 		return -ENOSPC;
+ 
+ 	buflen += SKB_DATA_ALIGN(len + pad);
+-	alloc_frag->offset = ALIGN((u64)alloc_frag->offset, SMP_CACHE_BYTES);
+-	if (unlikely(!vhost_net_page_frag_refill(net, buflen,
+-						 alloc_frag, GFP_KERNEL)))
++	buf = page_frag_alloc_align(&net->pf_cache, buflen, GFP_KERNEL,
++				    SMP_CACHE_BYTES);
++	if (unlikely(!buf))
+ 		return -ENOMEM;
+ 
+-	buf = (char *)page_address(alloc_frag->page) + alloc_frag->offset;
+-	copied = copy_page_from_iter(alloc_frag->page,
+-				     alloc_frag->offset +
+-				     offsetof(struct tun_xdp_hdr, gso),
+-				     sock_hlen, from);
+-	if (copied != sock_hlen)
+-		return -EFAULT;
++	copied = copy_from_iter(buf + offsetof(struct tun_xdp_hdr, gso),
++				sock_hlen, from);
++	if (copied != sock_hlen) {
++		ret = -EFAULT;
++		goto err;
++	}
+ 
+ 	hdr = buf;
+ 	gso = &hdr->gso;
+@@ -743,27 +705,30 @@ static int vhost_net_build_xdp(struct vhost_net_virtqueue *nvq,
+ 			       vhost16_to_cpu(vq, gso->csum_start) +
+ 			       vhost16_to_cpu(vq, gso->csum_offset) + 2);
+ 
+-		if (vhost16_to_cpu(vq, gso->hdr_len) > len)
+-			return -EINVAL;
++		if (vhost16_to_cpu(vq, gso->hdr_len) > len) {
++			ret = -EINVAL;
++			goto err;
++		}
  	}
  
--	offset = nc->offset - fragsz;
--	if (unlikely(offset < 0)) {
-+#if (PAGE_SIZE < PAGE_FRAG_CACHE_MAX_SIZE)
-+	/* if size can vary use size else just use PAGE_SIZE */
-+	size = nc->size;
-+#else
-+	size = PAGE_SIZE;
-+#endif
+ 	len -= sock_hlen;
+-	copied = copy_page_from_iter(alloc_frag->page,
+-				     alloc_frag->offset + pad,
+-				     len, from);
+-	if (copied != len)
+-		return -EFAULT;
++	copied = copy_from_iter(buf + pad, len, from);
++	if (copied != len) {
++		ret = -EFAULT;
++		goto err;
++	}
+ 
+ 	xdp_init_buff(xdp, buflen, NULL);
+ 	xdp_prepare_buff(xdp, buf, pad, len, true);
+ 	hdr->buflen = buflen;
+ 
+-	--net->refcnt_bias;
+-	alloc_frag->offset += buflen;
+-
+ 	++nvq->batched_xdp;
+ 
+ 	return 0;
 +
-+	offset = ALIGN(nc->offset, align);
-+	if (unlikely(offset + fragsz > size)) {
- 		page = virt_to_page(nc->va);
++err:
++	page_frag_free(buf);
++	return ret;
+ }
  
- 		if (!page_ref_sub_and_test(page, nc->pagecnt_bias))
-@@ -4759,17 +4762,13 @@ void *page_frag_alloc_align(struct page_frag_cache *nc,
- 			goto refill;
- 		}
+ static void handle_tx_copy(struct vhost_net *net, struct socket *sock)
+@@ -1353,8 +1318,7 @@ static int vhost_net_open(struct inode *inode, struct file *f)
+ 			vqs[VHOST_NET_VQ_RX]);
  
--#if (PAGE_SIZE < PAGE_FRAG_CACHE_MAX_SIZE)
--		/* if size can vary use size else just use PAGE_SIZE */
--		size = nc->size;
--#endif
- 		/* OK, page count is 0, we can safely set it */
- 		set_page_count(page, PAGE_FRAG_CACHE_MAX_SIZE + 1);
+ 	f->private_data = n;
+-	n->page_frag.page = NULL;
+-	n->refcnt_bias = 0;
++	n->pf_cache.va = NULL;
  
- 		/* reset page count bias and offset to start of new frag */
- 		nc->pagecnt_bias = PAGE_FRAG_CACHE_MAX_SIZE + 1;
--		offset = size - fragsz;
--		if (unlikely(offset < 0)) {
-+		offset = 0;
-+		if (unlikely(fragsz > size)) {
- 			/*
- 			 * The caller is trying to allocate a fragment
- 			 * with fragsz > PAGE_SIZE but the cache isn't big
-@@ -4784,8 +4783,7 @@ void *page_frag_alloc_align(struct page_frag_cache *nc,
- 	}
- 
- 	nc->pagecnt_bias--;
--	offset &= -align;
--	nc->offset = offset;
-+	nc->offset = offset + fragsz;
- 
- 	return nc->va + offset;
+ 	return 0;
+ }
+@@ -1422,8 +1386,9 @@ static int vhost_net_release(struct inode *inode, struct file *f)
+ 	kfree(n->vqs[VHOST_NET_VQ_RX].rxq.queue);
+ 	kfree(n->vqs[VHOST_NET_VQ_TX].xdp);
+ 	kfree(n->dev.vqs);
+-	if (n->page_frag.page)
+-		__page_frag_cache_drain(n->page_frag.page, n->refcnt_bias);
++	if (n->pf_cache.va)
++		__page_frag_cache_drain(virt_to_head_page(n->pf_cache.va),
++					n->pf_cache.pagecnt_bias);
+ 	kvfree(n);
+ 	return 0;
  }
 -- 
 2.33.0
