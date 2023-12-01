@@ -2,95 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CAB2D801161
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:21:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B5EE801111
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:21:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378637AbjLARDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 12:03:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50846 "EHLO
+        id S1378628AbjLARC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 12:02:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229888AbjLARDE (ORCPT
+        with ESMTP id S229504AbjLARCz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 12:03:04 -0500
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C79F5133;
-        Fri,  1 Dec 2023 09:03:09 -0800 (PST)
-Received: by mail-qv1-xf33.google.com with SMTP id 6a1803df08f44-67a9be1407aso3180156d6.0;
-        Fri, 01 Dec 2023 09:03:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701450189; x=1702054989; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=c3Y5WlluNSG52Oh+RdmatqU/FPHpilvW0wo2a8wMtzM=;
-        b=m2D7pzVcoi24CicR2Lxu4tdcTFdL5+xS/neCTf8HxqbnvHwAcdEC9enE73iP0wn1ji
-         wsP/14ZxYoUmNtoFf59Q7CfhlhmBvYmLIX95X1OInym4dFzszozSGjEEWipDY5n1QwQE
-         5oK+b3t3xyC6RYaK5saQNJqjmaGY0EbdCvGNK38Pys9W9uOPFdQXTYDEmrSWdU1hN7IY
-         IKd7e02vVMihfrBBfhsIHuhtaYAKDlfpzfKYbd0zMdUbXI4AP5CmAat7l8r1iO8u9OrV
-         KoB4Fe+61GJrot+i3MQGYy5HjfZumgAvlNeHoM+COORByt7KQs7yayP7BdkQ3YRgtgiD
-         s38w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701450189; x=1702054989;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=c3Y5WlluNSG52Oh+RdmatqU/FPHpilvW0wo2a8wMtzM=;
-        b=ogBfUJjRf2tYZENyqZM6TqNgFt3MA3vZ13PJ4JlQ4JoDcYOPw7zplIXMd5W+YdYNVt
-         VVdSX9JLG7CTTr+MhX+EM+VxbnEOBft5zBkPDo9OJnOrwwCNzySZgrgD4MtbFGiNBudx
-         kGnCHLwb/XYv68eUkKUrEjPYTec76mqKOvHy4OtMM9oTj311tPgg20ZPNnXJdEDMBwWS
-         a6hVAcLl4Y5LpsBzt02qEFOb6zA70DeZK3dT3uOQXrzWgbFRqn0ZCq8eXHGpYlcpyd1M
-         jWrvxRvdTi9vAm8XJnPgjaJvzdMPQGXdgwLb/mgwvG1TpHWXK3uuKfqgWjkj24hYWMSI
-         SqzA==
-X-Gm-Message-State: AOJu0YzxTTdCLibjfVtzPLj1lq36lJ50E2SVgI8r7vbAmwrRYYL6XB1l
-        hYjnmyN9f/GC2WxTMkZXrfpvePJShE7+Xee7BNR/XwCB9Sfs4A==
-X-Google-Smtp-Source: AGHT+IHkW94Rn0OtDnloPqiS5e/fIK1HP8bF4z4jorVnA1687IcHdprRTtd2wRxkyZd1fh+ZAKtEAnx09pPNZ6JeQZA=
-X-Received: by 2002:a0c:ed52:0:b0:67a:1e8d:6f89 with SMTP id
- v18-20020a0ced52000000b0067a1e8d6f89mr26121941qvq.44.1701450188706; Fri, 01
- Dec 2023 09:03:08 -0800 (PST)
+        Fri, 1 Dec 2023 12:02:55 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01DDDC1
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 09:03:01 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FE76C433C8;
+        Fri,  1 Dec 2023 17:02:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701450181;
+        bh=sXjXaBvFhx+/CtKXYxToECUN8YYuv4D897MDwp3vLf8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jh1ch6A6+kAKLnu3qBATlucOO4fbgwy9c//Zu5vQ8sGKG1C+vvz2n1sOkJsJ0KKIv
+         sJQfE20WLnP3sG5ler/x4cqKkn7ZgOsBOs8C/ksyvebxieGtKwsgqwELYZ5x+JrD7o
+         724kbJ8agY4F8yupZUTdHvx9hNRCF3qj6nExJLRLpxjDF+tDhBeTId4TNoWs0zdXyc
+         LQXv9N0KTsOHllIYclzm2GT/dOkLgAX95zHafoxGcoWhq2Sz76Qez78AUShA1/6cN5
+         JjXwG/Iyjpw6JYPb4jC0SyPC9IvLngfkdtZjq9YG3h2O9DZIvJ9KD93UnsCkwj3VPg
+         +PmjGYG+PbL9A==
+Date:   Fri, 1 Dec 2023 18:02:55 +0100
+From:   Christian Brauner <brauner@kernel.org>
+To:     "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>
+Cc:     Serge Hallyn <serge@hallyn.com>, Paul Moore <paul@paul-moore.com>,
+        Eric Paris <eparis@redhat.com>,
+        James Morris <jmorris@namei.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Amir Goldstein <amir73il@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, audit@vger.kernel.org,
+        linux-unionfs@vger.kernel.org
+Subject: Re: [PATCH 07/16] fs: add inode operations to get/set/remove fscaps
+Message-ID: <20231201-drohnen-ausverkauf-61e5c94364ca@brauner>
+References: <20231129-idmap-fscap-refactor-v1-0-da5a26058a5b@kernel.org>
+ <20231129-idmap-fscap-refactor-v1-7-da5a26058a5b@kernel.org>
 MIME-Version: 1.0
-References: <bd91db46c50615bc1d1d62beb659fa7f62386446.1701446070.git.jan.kundrat@cesnet.cz>
- <f66cf0a3-4d63-4548-8648-e93a1ef995e2@sirena.org.uk>
-In-Reply-To: <f66cf0a3-4d63-4548-8648-e93a1ef995e2@sirena.org.uk>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 1 Dec 2023 19:02:32 +0200
-Message-ID: <CAHp75Vc4tB_CuT-e+gofanWK=mss-k_A-mqPo-8+Rv-aQ8tu_w@mail.gmail.com>
-Subject: Re: [PATCH] tty: max310x: work around regmap->regcache data corruption
-To:     Mark Brown <broonie@kernel.org>
-Cc:     =?UTF-8?B?SmFuIEt1bmRyw6F0?= <jan.kundrat@cesnet.cz>,
-        Cosmin Tanislav <cosmin.tanislav@analog.com>,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231129-idmap-fscap-refactor-v1-7-da5a26058a5b@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 1, 2023 at 6:21=E2=80=AFPM Mark Brown <broonie@kernel.org> wrot=
-e:
-> On Fri, Dec 01, 2023 at 03:51:51PM +0100, Jan Kundr=C3=A1t wrote:
->
-> > The TL;DR summary is that the regmap_noinc_write spills over the data
-> > that are correctly written to the HW also to the following registers in
-> > the regcache. As a result, regcache then contains user-controlled
-> > garbage which will be used later for bit updates on unrelated registers=
-.
->
-> > I was investigating a regression that happened somewhere between 5.12.4
-> > (plus 14 of our patches) and v6.5.9 (plus 7 of our patches). Our
->
-> Can you reproduce this with current kernels?  That's not even an up to
-> date v6.5 - we're up to v6.5.13 now from the looks of things including
-> one upstream fix that looks potentially relevant.
+On Wed, Nov 29, 2023 at 03:50:25PM -0600, Seth Forshee (DigitalOcean) wrote:
+> Add inode operations for getting, setting and removing filesystem
+> capabilities rather than passing around raw xattr data. This provides
+> better type safety for ids contained within xattrs.
+> 
+> Signed-off-by: Seth Forshee (DigitalOcean) <sforshee@kernel.org>
+> ---
+>  include/linux/fs.h | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index 98b7a7a8c42e..a0a77f67b999 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -2002,6 +2002,11 @@ struct inode_operations {
+>  				     int);
+>  	int (*set_acl)(struct mnt_idmap *, struct dentry *,
+>  		       struct posix_acl *, int);
+> +	int (*get_fscaps)(struct mnt_idmap *, struct dentry *,
+> +			  struct vfs_caps *);
+> +	int (*set_fscaps)(struct mnt_idmap *, struct dentry *,
+> +			  const struct vfs_caps *, int flags);
 
-Indeed, the 984a4afdc87a ("regmap: prevent noinc writes from
-clobbering cache") seems quite relevant.
+If it's really a flags argument, then unsigned int, please,
+Reviewed-by: Christian Brauner <brauner@kernel.org>
 
---=20
-With Best Regards,
-Andy Shevchenko
+> +	int (*remove_fscaps)(struct mnt_idmap *, struct dentry *);
+>  	int (*fileattr_set)(struct mnt_idmap *idmap,
+>  			    struct dentry *dentry, struct fileattr *fa);
+>  	int (*fileattr_get)(struct dentry *dentry, struct fileattr *fa);
+
+Ofc we managed to add get/set_foo() and bar_get/set().
