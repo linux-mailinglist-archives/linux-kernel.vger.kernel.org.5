@@ -2,85 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 525698009ED
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 12:28:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A3D48009F3
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 12:30:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378554AbjLAL2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 06:28:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45672 "EHLO
+        id S1378561AbjLALan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 06:30:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378547AbjLAL2h (ORCPT
+        with ESMTP id S1378544AbjLALal (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 06:28:37 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57D30CF;
-        Fri,  1 Dec 2023 03:28:44 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1701430122;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kxBXQG/f8kU5v0EK+ncURnwi12nHyxr77nDpaGQa42Y=;
-        b=AtU97WuWe4IF4u/AOHjTBbTRVKwBw93eRxWv8WhB3zCFMCDmgmr+dgtLqCEYjoa5E7fHXP
-        zzUpOmfPz3lDPCaYsOdRpEVVWgfJEQEWWJ76JhPQar9deQQGFzAXxOZRpe41MSrf3kYphx
-        YcaDy3CxUt+2//MyKV4M3wPreT7u/GT2W9/Z+00HXC/Tr8h/OJdTOzay8mfBYUik9kXTT4
-        L9bGC8KIWdPRNAKS8B/ij/HRzYgGo+WuYNYjQkeS4ruamqoZwFIrF7gCrcRjtRW9TwWDM8
-        fgb9pCJtKIQR465KaqxjEOA5+HmboM4l0aIMo53XGN9amKFmCCH7dCM+YHVdbw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1701430122;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kxBXQG/f8kU5v0EK+ncURnwi12nHyxr77nDpaGQa42Y=;
-        b=qd/HkafcWYHXHFYCQMVbiHc+ZmtzQRiF4LgZ9uk4bfggE/cqqFpEvaN4pBeHm0TmVjoOhM
-        PV7ASivB+78rMNCA==
-To:     Vlastimil Babka <vbabka@suse.cz>,
-        David Rientjes <rientjes@google.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Marco Elver <elver@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Kees Cook <keescook@chromium.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        cgroups@vger.kernel.org, linux-hardening@vger.kernel.org,
-        Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH v2 06/21] cpu/hotplug: remove CPUHP_SLAB_PREPARE hooks
-In-Reply-To: <20231120-slab-remove-slab-v2-6-9c9c70177183@suse.cz>
-References: <20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz>
- <20231120-slab-remove-slab-v2-6-9c9c70177183@suse.cz>
-Date:   Fri, 01 Dec 2023 12:28:42 +0100
-Message-ID: <87msuuxitx.ffs@tglx>
+        Fri, 1 Dec 2023 06:30:41 -0500
+Received: from mail21.mail.schwarz (mail21.mail.schwarz [185.124.192.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CAF0F1;
+        Fri,  1 Dec 2023 03:30:44 -0800 (PST)
+X-SCHWARZ-TO: coreteam@netfilter.org, netdev@vger.kernel.org, pabeni@redhat.com,
+ edumazet@google.com, kadlec@netfilter.org, pablo@netfilter.org,
+ linux-kernel@vger.kernel.org, davem@davemloft.net,
+ netfilter-devel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ shuah@kernel.org, fw@strlen.de
+X-SCHWARZ-ENVELOPEFROM: felix.huettner@mail.schwarz
+Received: from unknown (HELO kernel-bug-kernel-bug) ([45.129.43.133])
+  by mail21.mail.schwarz with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2023 11:30:42 +0000
+Date:   Fri, 1 Dec 2023 11:30:41 +0000
+From:   Felix Huettner <felix.huettner@mail.schwarz>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, kadlec@netfilter.org,
+        fw@strlen.de, davem@davemloft.net, edumazet@google.com,
+        pabeni@redhat.com, shuah@kernel.org, luca.czesla@mail.schwarz,
+        max.lamprecht@mail.schwarz
+Subject: Re: [PATCH net-next v2] net: ctnetlink: support filtering by zone
+Message-ID: <ZWnD4SqjhHXmtXlR@kernel-bug-kernel-bug>
+References: <ZWSCPKtDuYRG1XWt@kernel-bug-kernel-bug>
+ <ZWSNrlHYdp+URAy6@calendula>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZWSNrlHYdp+URAy6@calendula>
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 20 2023 at 19:34, Vlastimil Babka wrote:
+Hi,
 
-> The CPUHP_SLAB_PREPARE hooks are only used by SLAB which is removed.
-> SLUB defines them as NULL, so we can remove those altogether.
->
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+On Mon, Nov 27, 2023 at 01:38:06PM +0100, Pablo Neira Ayuso wrote:
+> Hi,
+> 
+> On Mon, Nov 27, 2023 at 11:49:16AM +0000, Felix Huettner wrote:
+> > conntrack zones are heavily used by tools like openvswitch to run
+> > multiple virtual "routers" on a single machine. In this context each
+> > conntrack zone matches to a single router, thereby preventing
+> > overlapping IPs from becoming issues.
+> > In these systems it is common to operate on all conntrack entries of a
+> > given zone, e.g. to delete them when a router is deleted. Previously this
+> > required these tools to dump the full conntrack table and filter out the
+> > relevant entries in userspace potentially causing performance issues.
+> > 
+> > To do this we reuse the existing CTA_ZONE attribute. This was previous
+> > parsed but not used during dump and flush requests. Now if CTA_ZONE is
+> > set we filter these operations based on the provided zone.
+> > However this means that users that previously passed CTA_ZONE will
+> > experience a difference in functionality.
+> > 
+> > Alternatively CTA_FILTER could have been used for the same
+> > functionality. However it is not yet supported during flush requests and
+> > is only available when using AF_INET or AF_INET6.
+> 
+> You mean, AF_UNSPEC cannot be specified in CTA_FILTER?
 
-Acked-by: Thomas Gleixner <tglx@linutronix.de>
+Currently ctnetlink_parse_tuple_filter returns EOPNOTSUPP if e.g.
+AF_UNSPEC would be passed. This could probably be changed to only
+require this for the CTA_IP_SRC and CTA_IP_DST filter flags. However i
+am unsure about assumptions in other pieces of code that these fields
+exist.
 
+Also CTA_FILTER seems to be currently not supported when deleting
+conntrack entries.
+
+> 
+> Please, extend libnetfilter_conntrack to support for this feature,
+> there is a filter API that can be used for this purpose.
+
+I will do that and post it here (or in the next version) once i am done.
+
+> 
+> Thanks.
+
+Thanks for the fast feedback
