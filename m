@@ -2,207 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31CB680148C
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 21:36:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA50E80148B
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 21:35:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230455AbjLAUfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 15:35:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59192 "EHLO
+        id S1379610AbjLAUfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 15:35:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230364AbjLAUfu (ORCPT
+        with ESMTP id S1379597AbjLAUfn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 15:35:50 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F318310E5;
-        Fri,  1 Dec 2023 12:35:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701462956; x=1732998956;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=LMf1fItzoZA3T76vtDhmr3DZRsMRth2RfoIKey8Owo0=;
-  b=HLmEZvFkXHlwS9hobsZN10QXNY9JajhFBVtEg22WrDjVpukCdzcVkJqB
-   WJ2xsk0oMqPm9XLfCGJ8N6PZZQqIJTVp5FJveNI1jBTE+T7FeYhJ4+XJL
-   bvHESli7uhAexuFFVtrRVrwbN/dBLQkKFROx8gmqPQlDRu2YD5ANVn/gy
-   v10+nmjcgadG3HoFiJlY5bBYuH7/Wc7Tlm6RFb317So+F6tFmQNQRKQ9z
-   SFnzjyUE6efx7lYq8jdjEkq7tmG+gmJuB3J0Jl3WGoiuLdNoXP6iitH6W
-   0Y/e+LAYPaG8vh38sI87bEUvRO6g+GBRlQ/5pckBL0UgcACG/hGroe3Sr
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="390714800"
-X-IronPort-AV: E=Sophos;i="6.04,242,1695711600"; 
-   d="scan'208";a="390714800"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2023 12:35:55 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="773551436"
-X-IronPort-AV: E=Sophos;i="6.04,242,1695711600"; 
-   d="scan'208";a="773551436"
-Received: from jturmaud-mobl1.amr.corp.intel.com (HELO [10.209.91.66]) ([10.209.91.66])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2023 12:35:53 -0800
-Message-ID: <b3b265f9-48fa-4574-a925-cbdaaa44a689@intel.com>
-Date:   Fri, 1 Dec 2023 12:35:53 -0800
+        Fri, 1 Dec 2023 15:35:43 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0452F10E4
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 12:35:50 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 346A3C433C9;
+        Fri,  1 Dec 2023 20:35:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701462949;
+        bh=/TnZS0HuOiZtqdpeKk51Z32DjLXO4zdmRL4p1KDlMX0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nuIUSC2KcV7FM+30c0UfS9RFJL5UdaqyTsZOK2FqD//8T/b276NdoI8m+YF20LoNM
+         5wAuKZj+wKVShIfyEbd0MimM68YPFpDzxA10NbkGhZcV2ocC944n6CGWfkSL8q0iRd
+         P0ntSTShaDcjjILKCAngWAUTu3Z8lG7OJJIIJAEGqQ+hbcWsVNKpTFQ1GmjZUJNGa9
+         6A3jugUlzCutWP3a2Wuuw1n8V7ee7oqzm41Jgxnh9KN6/EJKgcPnt31wN3mj2dmaLr
+         i/EORjhhBN18rLz0bPJ7Fpvs8AlrLISUe7+BPUT/l/k+0HU9p/LC0AA3kX2yocc8m2
+         J7z/uvgG7yMDQ==
+Date:   Fri, 1 Dec 2023 12:39:15 -0800
+From:   Bjorn Andersson <andersson@kernel.org>
+To:     Maria Yu <quic_aiquny@quicinc.com>
+Cc:     linus.walleij@linaro.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel@quicinc.com,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH] pinctrl: Add lock to ensure the state atomization
+Message-ID: <6jlui5h7d2rs37sdvvwmii55mwhm5dzfo2m62hwt53mkx4z32a@aw5kcghe4bik>
+References: <20231201152931.31161-1-quic_aiquny@quicinc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v15 22/23] x86/mce: Improve error log of kernel space TDX
- #MC due to erratum
-Content-Language: en-US
-To:     Kai Huang <kai.huang@intel.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     x86@kernel.org, kirill.shutemov@linux.intel.com,
-        peterz@infradead.org, tony.luck@intel.com, tglx@linutronix.de,
-        bp@alien8.de, mingo@redhat.com, hpa@zytor.com, seanjc@google.com,
-        pbonzini@redhat.com, rafael@kernel.org, david@redhat.com,
-        dan.j.williams@intel.com, len.brown@intel.com, ak@linux.intel.com,
-        isaku.yamahata@intel.com, ying.huang@intel.com, chao.gao@intel.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com, nik.borisov@suse.com,
-        bagasdotme@gmail.com, sagis@google.com, imammedo@redhat.com
-References: <cover.1699527082.git.kai.huang@intel.com>
- <9e80873fac878aa5d697cbcd4d456d01e1009d1f.1699527082.git.kai.huang@intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
-In-Reply-To: <9e80873fac878aa5d697cbcd4d456d01e1009d1f.1699527082.git.kai.huang@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231201152931.31161-1-quic_aiquny@quicinc.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/9/23 03:55, Kai Huang wrote:
-> +static bool is_pamt_page(unsigned long phys)
-> +{
-> +	struct tdmr_info_list *tdmr_list = &tdx_tdmr_list;
-> +	int i;
+On Fri, Dec 01, 2023 at 11:29:31PM +0800, Maria Yu wrote:
+> Currently pinctrl_select_state is an export symbol and don't have
+> effective re-entrance protect design. And possible of pinctrl state
+> changed during pinctrl_commit_state handling. Add per pinctrl lock to
+> ensure the old state and new state transition atomization.
+> Move dev error print message right before old_state pinctrl_select_state
+> and out of lock protection to avoid console related driver call
+> pinctrl_select_state recursively.
+
+I'm uncertain about the validity of having client code call this api in
+a racy manner. I'm likely just missing something here... It would be
+nice if this scenario was described in a little bit more detail.
+
+The recursive error print sounds like a distinct problem of its own,
+that warrants being introduced in a patch of its own. But as with the
+other part, I'm not able to spot a code path in the upstream kernel
+where this hppens, so please properly describe the scenario where
+touching the console would result back in another pinctrl_select_state().
+
+Thanks,
+Bjorn
+
+> 
+> Fixes: 4198a9b57106 ("pinctrl: avoid reload of p state in list iteration")
+> Signed-off-by: Maria Yu <quic_aiquny@quicinc.com>
+> ---
+>  drivers/pinctrl/core.c | 11 +++++++++--
+>  drivers/pinctrl/core.h |  2 ++
+>  2 files changed, 11 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/pinctrl/core.c b/drivers/pinctrl/core.c
+> index f2977eb65522..a19c286bf82e 100644
+> --- a/drivers/pinctrl/core.c
+> +++ b/drivers/pinctrl/core.c
+> @@ -1066,6 +1066,7 @@ static struct pinctrl *create_pinctrl(struct device *dev,
+>  	p->dev = dev;
+>  	INIT_LIST_HEAD(&p->states);
+>  	INIT_LIST_HEAD(&p->dt_maps);
+> +	spin_lock_init(&p->lock);
+>  
+>  	ret = pinctrl_dt_to_map(p, pctldev);
+>  	if (ret < 0) {
+> @@ -1262,9 +1263,12 @@ static void pinctrl_link_add(struct pinctrl_dev *pctldev,
+>  static int pinctrl_commit_state(struct pinctrl *p, struct pinctrl_state *state)
+>  {
+>  	struct pinctrl_setting *setting, *setting2;
+> -	struct pinctrl_state *old_state = READ_ONCE(p->state);
+> +	struct pinctrl_state *old_state;
+>  	int ret;
+> +	unsigned long flags;
+>  
+> +	spin_lock_irqsave(&p->lock, flags);
+> +	old_state = p->state;
+>  	if (old_state) {
+>  		/*
+>  		 * For each pinmux setting in the old state, forget SW's record
+> @@ -1329,11 +1333,11 @@ static int pinctrl_commit_state(struct pinctrl *p, struct pinctrl_state *state)
+>  	}
+>  
+>  	p->state = state;
+> +	spin_unlock_irqrestore(&p->lock, flags);
+>  
+>  	return 0;
+>  
+>  unapply_new_state:
+> -	dev_err(p->dev, "Error applying setting, reverse things back\n");
+>  
+>  	list_for_each_entry(setting2, &state->settings, node) {
+>  		if (&setting2->node == &setting->node)
+> @@ -1349,6 +1353,9 @@ static int pinctrl_commit_state(struct pinctrl *p, struct pinctrl_state *state)
+>  			pinmux_disable_setting(setting2);
+>  	}
+>  
+> +	spin_unlock_irqrestore(&p->lock, flags);
 > +
-> +	/*
-> +	 * This function is called from #MC handler, and theoretically
-> +	 * it could run in parallel with the TDX module initialization
-> +	 * on other logical cpus.  But it's not OK to hold mutex here
-> +	 * so just blindly check module status to make sure PAMTs/TDMRs
-> +	 * are stable to access.
-> +	 *
-> +	 * This may return inaccurate result in rare cases, e.g., when
-> +	 * #MC happens on a PAMT page during module initialization, but
-> +	 * this is fine as #MC handler doesn't need a 100% accurate
-> +	 * result.
-> +	 */
-
-It doesn't need perfect accuracy.  But how do we know it's not going to
-go, for instance, chase a bad pointer?
-
-> +	if (tdx_module_status != TDX_MODULE_INITIALIZED)
-> +		return false;
-
-As an example, what prevents this CPU from observing
-tdx_module_status==TDX_MODULE_INITIALIZED while the PAMT structure is
-being assembled?
-
-> +	for (i = 0; i < tdmr_list->nr_consumed_tdmrs; i++) {
-> +		unsigned long base, size;
-> +
-> +		tdmr_get_pamt(tdmr_entry(tdmr_list, i), &base, &size);
-> +
-> +		if (phys >= base && phys < (base + size))
-> +			return true;
-> +	}
-> +
-> +	return false;
-> +}
-> +
-> +/*
-> + * Return whether the memory page at the given physical address is TDX
-> + * private memory or not.  Called from #MC handler do_machine_check().
-> + *
-> + * Note this function may not return an accurate result in rare cases.
-> + * This is fine as the #MC handler doesn't need a 100% accurate result,
-> + * because it cannot distinguish #MC between software bug and real
-> + * hardware error anyway.
-> + */
-> +bool tdx_is_private_mem(unsigned long phys)
-> +{
-> +	struct tdx_module_args args = {
-> +		.rcx = phys & PAGE_MASK,
-> +	};
-> +	u64 sret;
-> +
-> +	if (!platform_tdx_enabled())
-> +		return false;
-> +
-> +	/* Get page type from the TDX module */
-> +	sret = __seamcall_ret(TDH_PHYMEM_PAGE_RDMD, &args);
-> +	/*
-> +	 * Handle the case that CPU isn't in VMX operation.
-> +	 *
-> +	 * KVM guarantees no VM is running (thus no TDX guest)
-> +	 * when there's any online CPU isn't in VMX operation.
-> +	 * This means there will be no TDX guest private memory
-> +	 * and Secure-EPT pages.  However the TDX module may have
-> +	 * been initialized and the memory page could be PAMT.
-> +	 */
-> +	if (sret == TDX_SEAMCALL_UD)
-> +		return is_pamt_page(phys);
-
-Either this is comment is wonky or the module initialization is buggy.
-
-config_global_keyid() goes and does SEAMCALLs on all CPUs.  There are
-zero checks or special handling in there for whether the CPU has done
-VMXON.  So, by the time we've started initializing the TDX module
-(including the PAMT), all online CPUs must be able to do SEAMCALLs.  Right?
-
-So how can we have a working PAMT here when this CPU can't do SEAMCALLs?
-
-I don't think we should even bother with this complexity.  I think we
-can just fix the whole thing by saying that unless you can make a
-non-init SEAMCALL, we just assume the memory can't be private.
-
-The transition to being able to make non-init SEAMCALLs is also #MC safe
-*and* it's at a point when the tdmr_list is stable.
-
-Can anyone shoot any holes in that? :)
+> +	dev_err(p->dev, "Error applying setting, reverse things back\n");
+>  	/* There's no infinite recursive loop here because p->state is NULL */
+>  	if (old_state)
+>  		pinctrl_select_state(p, old_state);
+> diff --git a/drivers/pinctrl/core.h b/drivers/pinctrl/core.h
+> index 530370443c19..86fc41393f7b 100644
+> --- a/drivers/pinctrl/core.h
+> +++ b/drivers/pinctrl/core.h
+> @@ -12,6 +12,7 @@
+>  #include <linux/list.h>
+>  #include <linux/mutex.h>
+>  #include <linux/radix-tree.h>
+> +#include <linux/spinlock.h>
+>  #include <linux/types.h>
+>  
+>  #include <linux/pinctrl/machine.h>
+> @@ -91,6 +92,7 @@ struct pinctrl {
+>  	struct pinctrl_state *state;
+>  	struct list_head dt_maps;
+>  	struct kref users;
+> +	spinlock_t lock;
+>  };
+>  
+>  /**
+> 
+> base-commit: 994d5c58e50e91bb02c7be4a91d5186292a895c8
+> -- 
+> 2.17.1
+> 
+> 
