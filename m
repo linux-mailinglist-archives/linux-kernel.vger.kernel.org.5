@@ -2,38 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75926800CB9
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 14:59:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FB99800CC3
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 15:00:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379088AbjLAN7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 08:59:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52390 "EHLO
+        id S1379092AbjLAOAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 09:00:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379060AbjLAN7G (ORCPT
+        with ESMTP id S1379060AbjLAOAd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 08:59:06 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 78C4D10F0
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 05:59:11 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A38E41007;
-        Fri,  1 Dec 2023 05:59:57 -0800 (PST)
-Received: from pluto.fritz.box (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E89923F73F;
-        Fri,  1 Dec 2023 05:59:09 -0800 (PST)
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     sudeep.holla@arm.com, vincent.guittot@linaro.org,
-        souvik.chakravarty@arm.com, nicola.mazzucato@arm.com,
-        Cristian Marussi <cristian.marussi@arm.com>
-Subject: [PATCH] firmware: arm_scmi: Add protocol versioning checks
-Date:   Fri,  1 Dec 2023 13:58:58 +0000
-Message-ID: <20231201135858.2367651-1-cristian.marussi@arm.com>
-X-Mailer: git-send-email 2.43.0
+        Fri, 1 Dec 2023 09:00:33 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 534FACF
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 06:00:40 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2913FC433C8;
+        Fri,  1 Dec 2023 14:00:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701439240;
+        bh=cH/WQ4KETfzKoL236M7jGi9GYZdkGcwb5KqlIXUvyeg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XzdUKyurfLDqP1vkQGdkeo9Vp39hy0C1j4hwqhkwLy7UQuhcHmAyKkp1AaJR1YvpY
+         wxRjWAynnlmZYfUCkPde5kSEXOKswvqf0pi37yfB8ceEgmFhbIfsHYODylbheVYZ+M
+         wZRHT4F1OqsXdAoHXOVO4bc9nVePCrf5RQj2KhO2Pzg//uLffyqFr0St0XRTOHrQ6j
+         LqiyoIRT2UAUU8Srdu/U64y5jcNsfh7rGTiZ437YpYybTc9hfO+eyb/jYRkRVYNdNk
+         VinrS6WtrpYkKGsi0U9wEndI/l6c8EkO37vujystxtJrA3ddO160nmhXnf1zQNMAzk
+         1rtXbGcyuHkEQ==
+Date:   Fri, 1 Dec 2023 14:00:31 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc:     "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
+        "keescook@chromium.org" <keescook@chromium.org>,
+        "Szabolcs.Nagy@arm.com" <Szabolcs.Nagy@arm.com>,
+        "brauner@kernel.org" <brauner@kernel.org>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "debug@rivosinc.com" <debug@rivosinc.com>,
+        "mgorman@suse.de" <mgorman@suse.de>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "fweimer@redhat.com" <fweimer@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "hjl.tools@gmail.com" <hjl.tools@gmail.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "vschneid@redhat.com" <vschneid@redhat.com>,
+        "shuah@kernel.org" <shuah@kernel.org>,
+        "bristot@redhat.com" <bristot@redhat.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "jannh@google.com" <jannh@google.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "bsegall@google.com" <bsegall@google.com>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "david@redhat.com" <david@redhat.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>
+Subject: Re: [PATCH RFT v4 0/5] fork: Support shadow stacks in clone3()
+Message-ID: <a3a04d9c-7c53-4399-b096-dee406716193@sirena.org.uk>
+References: <20231128-clone3-shadow-stack-v4-0-8b28ffe4f676@kernel.org>
+ <ZWjb6r0RWPo199pC@arm.com>
+ <fce4c169-5d19-40e8-bc32-0abec9bb008e@sirena.org.uk>
+ <881e1b6d89d61cef4e71c6be688635fc47bb2b8e.camel@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="RXABTafy96aV2/7C"
+Content-Disposition: inline
+In-Reply-To: <881e1b6d89d61cef4e71c6be688635fc47bb2b8e.camel@intel.com>
+X-Cookie: The early worm gets the late bird.
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -41,405 +81,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Platform and agent supported protocols versions do not necessarily match.
 
-When talking to an older platform SCMI server, supporting only older
-protocol versions, the kernel SCMI agent will downgrade the version of
-the used protocol to match the platform one and avoid compatibility issues.
+--RXABTafy96aV2/7C
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-In the case, instead, in which the agent happens to communicate with a
-newer platform server which can support newer protocol versions unknown to
-the agent, and potentially backward incompatible, the agent currently
-carries on, silently, in a best-effort approach.
+On Thu, Nov 30, 2023 at 11:37:42PM +0000, Edgecombe, Rick P wrote:
+> On Thu, 2023-11-30 at 21:51 +0000, Mark Brown wrote:
+> > On Thu, Nov 30, 2023 at 07:00:58PM +0000, Catalin Marinas wrote:
 
-Note that the SCMI server, by the specification, has no means to explicitly
-detect the protocol versions used by the agents, neither it is required to
-support multiple, older, protocol versions.
+> > explicitly request a new shadow stack.=A0 There was some corner case
+> > with
+> > IIRC posix_nspawn() mentioned where the heuristics aren't what we
+> > want
+> > for example.
 
-Add an explicit protocol version check to let the agent detect when this
-version mismatch happens and warn the user about this condition.
+> Can't posix_spawn() pass in a shadow stack size into clone3 to get a
+> new shadow stack after this series?
 
-Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
----
-Any suggestion for a more meaningful warn message is very much welcome.
-Based on sudeep/for-next/scmi/updates
----
- drivers/firmware/arm_scmi/base.c      |  6 +++++-
- drivers/firmware/arm_scmi/clock.c     |  6 +++++-
- drivers/firmware/arm_scmi/driver.c    | 11 ++++++++++-
- drivers/firmware/arm_scmi/perf.c      |  6 +++++-
- drivers/firmware/arm_scmi/power.c     |  6 +++++-
- drivers/firmware/arm_scmi/powercap.c  |  6 +++++-
- drivers/firmware/arm_scmi/protocols.h |  8 +++++++-
- drivers/firmware/arm_scmi/reset.c     |  6 +++++-
- drivers/firmware/arm_scmi/sensors.c   |  6 +++++-
- drivers/firmware/arm_scmi/system.c    |  6 +++++-
- drivers/firmware/arm_scmi/voltage.c   |  6 +++++-
- 11 files changed, 62 insertions(+), 11 deletions(-)
+Yes, the above was addressing Catalin's suggestion that we add stack
+size control separately to clone3() instead - doing that would remove
+the ability to explicitly request a new stack unless we add a flag to
+clone3() at which point we're back to modifying clone3() anyway.
 
-diff --git a/drivers/firmware/arm_scmi/base.c b/drivers/firmware/arm_scmi/base.c
-index a52f084a6a87..3f5c89ae5af2 100644
---- a/drivers/firmware/arm_scmi/base.c
-+++ b/drivers/firmware/arm_scmi/base.c
-@@ -13,6 +13,9 @@
- #include "common.h"
- #include "notify.h"
- 
-+/* Must be updated only after ALL new features for that version are merged */
-+#define SCMI_PROTOCOL_SUPPORTED_VERSION		0x20000
-+
- #define SCMI_BASE_NUM_SOURCES		1
- #define SCMI_BASE_MAX_CMD_ERR_COUNT	1024
- 
-@@ -385,7 +388,7 @@ static int scmi_base_protocol_init(const struct scmi_protocol_handle *ph)
- 
- 	rev->major_ver = PROTOCOL_REV_MAJOR(version),
- 	rev->minor_ver = PROTOCOL_REV_MINOR(version);
--	ph->set_priv(ph, rev);
-+	ph->set_priv(ph, rev, version);
- 
- 	ret = scmi_base_attributes_get(ph);
- 	if (ret)
-@@ -423,6 +426,7 @@ static const struct scmi_protocol scmi_base = {
- 	.instance_init = &scmi_base_protocol_init,
- 	.ops = NULL,
- 	.events = &base_protocol_events,
-+	.supported_version = SCMI_PROTOCOL_SUPPORTED_VERSION,
- };
- 
- DEFINE_SCMI_PROTOCOL_REGISTER_UNREGISTER(base, scmi_base)
-diff --git a/drivers/firmware/arm_scmi/clock.c b/drivers/firmware/arm_scmi/clock.c
-index 98511a3aa367..5e213faa5fe1 100644
---- a/drivers/firmware/arm_scmi/clock.c
-+++ b/drivers/firmware/arm_scmi/clock.c
-@@ -12,6 +12,9 @@
- #include "protocols.h"
- #include "notify.h"
- 
-+/* Must be updated only after ALL new features for that version are merged */
-+#define SCMI_PROTOCOL_SUPPORTED_VERSION		0x20001
-+
- enum scmi_clock_protocol_cmd {
- 	CLOCK_ATTRIBUTES = 0x3,
- 	CLOCK_DESCRIBE_RATES = 0x4,
-@@ -961,7 +964,7 @@ static int scmi_clock_protocol_init(const struct scmi_protocol_handle *ph)
- 	}
- 
- 	cinfo->version = version;
--	return ph->set_priv(ph, cinfo);
-+	return ph->set_priv(ph, cinfo, version);
- }
- 
- static const struct scmi_protocol scmi_clock = {
-@@ -970,6 +973,7 @@ static const struct scmi_protocol scmi_clock = {
- 	.instance_init = &scmi_clock_protocol_init,
- 	.ops = &clk_proto_ops,
- 	.events = &clk_protocol_events,
-+	.supported_version = SCMI_PROTOCOL_SUPPORTED_VERSION,
- };
- 
- DEFINE_SCMI_PROTOCOL_REGISTER_UNREGISTER(clock, scmi_clock)
-diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
-index 3eb19ed6f148..46320f627066 100644
---- a/drivers/firmware/arm_scmi/driver.c
-+++ b/drivers/firmware/arm_scmi/driver.c
-@@ -85,6 +85,7 @@ struct scmi_xfers_info {
-  * @gid: A reference for per-protocol devres management.
-  * @users: A refcount to track effective users of this protocol.
-  * @priv: Reference for optional protocol private data.
-+ * @version: Protocol version supported by the platform as detected at runtime.
-  * @ph: An embedded protocol handle that will be passed down to protocol
-  *	initialization code to identify this instance.
-  *
-@@ -97,6 +98,7 @@ struct scmi_protocol_instance {
- 	void				*gid;
- 	refcount_t			users;
- 	void				*priv;
-+	unsigned int			version;
- 	struct scmi_protocol_handle	ph;
- };
- 
-@@ -1392,15 +1394,17 @@ static int version_get(const struct scmi_protocol_handle *ph, u32 *version)
-  *
-  * @ph: A reference to the protocol handle.
-  * @priv: The private data to set.
-+ * @version: The detected protocol version for the core to register.
-  *
-  * Return: 0 on Success
-  */
- static int scmi_set_protocol_priv(const struct scmi_protocol_handle *ph,
--				  void *priv)
-+				  void *priv, u32 version)
- {
- 	struct scmi_protocol_instance *pi = ph_to_pi(ph);
- 
- 	pi->priv = priv;
-+	pi->version = version;
- 
- 	return 0;
- }
-@@ -1849,6 +1853,11 @@ scmi_alloc_init_protocol_instance(struct scmi_info *info,
- 	devres_close_group(handle->dev, pi->gid);
- 	dev_dbg(handle->dev, "Initialized protocol: 0x%X\n", pi->proto->id);
- 
-+	if (pi->version > proto->supported_version)
-+		dev_warn(handle->dev,
-+			 "Detected UNSUPPORTED version 0x%X for protocol 0x%X. Backward compatibility is NOT assured.\n",
-+			 pi->version, pi->proto->id);
-+
- 	return pi;
- 
- clean:
-diff --git a/drivers/firmware/arm_scmi/perf.c b/drivers/firmware/arm_scmi/perf.c
-index 81dd5c5e5533..92fa60127f47 100644
---- a/drivers/firmware/arm_scmi/perf.c
-+++ b/drivers/firmware/arm_scmi/perf.c
-@@ -24,6 +24,9 @@
- #include "protocols.h"
- #include "notify.h"
- 
-+/* Must be updated only after ALL new features for that version are merged */
-+#define SCMI_PROTOCOL_SUPPORTED_VERSION		0x40000
-+
- #define MAX_OPPS		32
- 
- enum scmi_performance_protocol_cmd {
-@@ -1104,7 +1107,7 @@ static int scmi_perf_protocol_init(const struct scmi_protocol_handle *ph)
- 	if (ret)
- 		return ret;
- 
--	return ph->set_priv(ph, pinfo);
-+	return ph->set_priv(ph, pinfo, version);
- }
- 
- static const struct scmi_protocol scmi_perf = {
-@@ -1113,6 +1116,7 @@ static const struct scmi_protocol scmi_perf = {
- 	.instance_init = &scmi_perf_protocol_init,
- 	.ops = &perf_proto_ops,
- 	.events = &perf_protocol_events,
-+	.supported_version = SCMI_PROTOCOL_SUPPORTED_VERSION,
- };
- 
- DEFINE_SCMI_PROTOCOL_REGISTER_UNREGISTER(perf, scmi_perf)
-diff --git a/drivers/firmware/arm_scmi/power.c b/drivers/firmware/arm_scmi/power.c
-index 077767d6e902..9d0536baeee5 100644
---- a/drivers/firmware/arm_scmi/power.c
-+++ b/drivers/firmware/arm_scmi/power.c
-@@ -13,6 +13,9 @@
- #include "protocols.h"
- #include "notify.h"
- 
-+/* Must be updated only after ALL new features for that version are merged */
-+#define SCMI_PROTOCOL_SUPPORTED_VERSION		0x30000
-+
- enum scmi_power_protocol_cmd {
- 	POWER_DOMAIN_ATTRIBUTES = 0x3,
- 	POWER_STATE_SET = 0x4,
-@@ -328,7 +331,7 @@ static int scmi_power_protocol_init(const struct scmi_protocol_handle *ph)
- 
- 	pinfo->version = version;
- 
--	return ph->set_priv(ph, pinfo);
-+	return ph->set_priv(ph, pinfo, version);
- }
- 
- static const struct scmi_protocol scmi_power = {
-@@ -337,6 +340,7 @@ static const struct scmi_protocol scmi_power = {
- 	.instance_init = &scmi_power_protocol_init,
- 	.ops = &power_proto_ops,
- 	.events = &power_protocol_events,
-+	.supported_version = SCMI_PROTOCOL_SUPPORTED_VERSION,
- };
- 
- DEFINE_SCMI_PROTOCOL_REGISTER_UNREGISTER(power, scmi_power)
-diff --git a/drivers/firmware/arm_scmi/powercap.c b/drivers/firmware/arm_scmi/powercap.c
-index 62a7780fedbb..bb9b1a95139c 100644
---- a/drivers/firmware/arm_scmi/powercap.c
-+++ b/drivers/firmware/arm_scmi/powercap.c
-@@ -17,6 +17,9 @@
- #include "protocols.h"
- #include "notify.h"
- 
-+/* Must be updated only after ALL new features for that version are merged */
-+#define SCMI_PROTOCOL_SUPPORTED_VERSION		0x20000
-+
- enum scmi_powercap_protocol_cmd {
- 	POWERCAP_DOMAIN_ATTRIBUTES = 0x3,
- 	POWERCAP_CAP_GET = 0x4,
-@@ -975,7 +978,7 @@ scmi_powercap_protocol_init(const struct scmi_protocol_handle *ph)
- 	}
- 
- 	pinfo->version = version;
--	return ph->set_priv(ph, pinfo);
-+	return ph->set_priv(ph, pinfo, version);
- }
- 
- static const struct scmi_protocol scmi_powercap = {
-@@ -984,6 +987,7 @@ static const struct scmi_protocol scmi_powercap = {
- 	.instance_init = &scmi_powercap_protocol_init,
- 	.ops = &powercap_proto_ops,
- 	.events = &powercap_protocol_events,
-+	.supported_version = SCMI_PROTOCOL_SUPPORTED_VERSION,
- };
- 
- DEFINE_SCMI_PROTOCOL_REGISTER_UNREGISTER(powercap, scmi_powercap)
-diff --git a/drivers/firmware/arm_scmi/protocols.h b/drivers/firmware/arm_scmi/protocols.h
-index b3c6314bb4b8..e683c26f24eb 100644
---- a/drivers/firmware/arm_scmi/protocols.h
-+++ b/drivers/firmware/arm_scmi/protocols.h
-@@ -174,7 +174,8 @@ struct scmi_protocol_handle {
- 	struct device *dev;
- 	const struct scmi_xfer_ops *xops;
- 	const struct scmi_proto_helpers_ops *hops;
--	int (*set_priv)(const struct scmi_protocol_handle *ph, void *priv);
-+	int (*set_priv)(const struct scmi_protocol_handle *ph, void *priv,
-+			u32 version);
- 	void *(*get_priv)(const struct scmi_protocol_handle *ph);
- };
- 
-@@ -311,6 +312,10 @@ typedef int (*scmi_prot_init_ph_fn_t)(const struct scmi_protocol_handle *);
-  * @ops: Optional reference to the operations provided by the protocol and
-  *	 exposed in scmi_protocol.h.
-  * @events: An optional reference to the events supported by this protocol.
-+ * @supported_version: The highest version currently supported for this
-+ *		       protocol by the agent. Each protocol implementation
-+ *		       in the agent is supposed to downgrade to match the
-+ *		       protocol version supported by the platform.
-  */
- struct scmi_protocol {
- 	const u8				id;
-@@ -319,6 +324,7 @@ struct scmi_protocol {
- 	const scmi_prot_init_ph_fn_t		instance_deinit;
- 	const void				*ops;
- 	const struct scmi_protocol_events	*events;
-+	unsigned int				supported_version;
- };
- 
- #define DEFINE_SCMI_PROTOCOL_REGISTER_UNREGISTER(name, proto)	\
-diff --git a/drivers/firmware/arm_scmi/reset.c b/drivers/firmware/arm_scmi/reset.c
-index 7217fd7c6afa..a28ebdd53700 100644
---- a/drivers/firmware/arm_scmi/reset.c
-+++ b/drivers/firmware/arm_scmi/reset.c
-@@ -13,6 +13,9 @@
- #include "protocols.h"
- #include "notify.h"
- 
-+/* Must be updated only after ALL new features for that version are merged */
-+#define SCMI_PROTOCOL_SUPPORTED_VERSION		0x30000
-+
- enum scmi_reset_protocol_cmd {
- 	RESET_DOMAIN_ATTRIBUTES = 0x3,
- 	RESET = 0x4,
-@@ -343,7 +346,7 @@ static int scmi_reset_protocol_init(const struct scmi_protocol_handle *ph)
- 	}
- 
- 	pinfo->version = version;
--	return ph->set_priv(ph, pinfo);
-+	return ph->set_priv(ph, pinfo, version);
- }
- 
- static const struct scmi_protocol scmi_reset = {
-@@ -352,6 +355,7 @@ static const struct scmi_protocol scmi_reset = {
- 	.instance_init = &scmi_reset_protocol_init,
- 	.ops = &reset_proto_ops,
- 	.events = &reset_protocol_events,
-+	.supported_version = SCMI_PROTOCOL_SUPPORTED_VERSION,
- };
- 
- DEFINE_SCMI_PROTOCOL_REGISTER_UNREGISTER(reset, scmi_reset)
-diff --git a/drivers/firmware/arm_scmi/sensors.c b/drivers/firmware/arm_scmi/sensors.c
-index 9952a7bc6682..c5220b1d6b09 100644
---- a/drivers/firmware/arm_scmi/sensors.c
-+++ b/drivers/firmware/arm_scmi/sensors.c
-@@ -14,6 +14,9 @@
- #include "protocols.h"
- #include "notify.h"
- 
-+/* Must be updated only after ALL new features for that version are merged */
-+#define SCMI_PROTOCOL_SUPPORTED_VERSION		0x30000
-+
- #define SCMI_MAX_NUM_SENSOR_AXIS	63
- #define	SCMIv2_SENSOR_PROTOCOL		0x10000
- 
-@@ -1138,7 +1141,7 @@ static int scmi_sensors_protocol_init(const struct scmi_protocol_handle *ph)
- 	if (ret)
- 		return ret;
- 
--	return ph->set_priv(ph, sinfo);
-+	return ph->set_priv(ph, sinfo, version);
- }
- 
- static const struct scmi_protocol scmi_sensors = {
-@@ -1147,6 +1150,7 @@ static const struct scmi_protocol scmi_sensors = {
- 	.instance_init = &scmi_sensors_protocol_init,
- 	.ops = &sensor_proto_ops,
- 	.events = &sensor_protocol_events,
-+	.supported_version = SCMI_PROTOCOL_SUPPORTED_VERSION,
- };
- 
- DEFINE_SCMI_PROTOCOL_REGISTER_UNREGISTER(sensors, scmi_sensors)
-diff --git a/drivers/firmware/arm_scmi/system.c b/drivers/firmware/arm_scmi/system.c
-index 9383d7584539..06fd542cfce1 100644
---- a/drivers/firmware/arm_scmi/system.c
-+++ b/drivers/firmware/arm_scmi/system.c
-@@ -13,6 +13,9 @@
- #include "protocols.h"
- #include "notify.h"
- 
-+/* Must be updated only after ALL new features for that version are merged */
-+#define SCMI_PROTOCOL_SUPPORTED_VERSION		0x20000
-+
- #define SCMI_SYSTEM_NUM_SOURCES		1
- 
- enum scmi_system_protocol_cmd {
-@@ -144,7 +147,7 @@ static int scmi_system_protocol_init(const struct scmi_protocol_handle *ph)
- 	if (PROTOCOL_REV_MAJOR(pinfo->version) >= 0x2)
- 		pinfo->graceful_timeout_supported = true;
- 
--	return ph->set_priv(ph, pinfo);
-+	return ph->set_priv(ph, pinfo, version);
- }
- 
- static const struct scmi_protocol scmi_system = {
-@@ -153,6 +156,7 @@ static const struct scmi_protocol scmi_system = {
- 	.instance_init = &scmi_system_protocol_init,
- 	.ops = NULL,
- 	.events = &system_protocol_events,
-+	.supported_version = SCMI_PROTOCOL_SUPPORTED_VERSION,
- };
- 
- DEFINE_SCMI_PROTOCOL_REGISTER_UNREGISTER(system, scmi_system)
-diff --git a/drivers/firmware/arm_scmi/voltage.c b/drivers/firmware/arm_scmi/voltage.c
-index 36e2df77738c..cb51c61ba31c 100644
---- a/drivers/firmware/arm_scmi/voltage.c
-+++ b/drivers/firmware/arm_scmi/voltage.c
-@@ -10,6 +10,9 @@
- 
- #include "protocols.h"
- 
-+/* Must be updated only after ALL new features for that version are merged */
-+#define SCMI_PROTOCOL_SUPPORTED_VERSION		0x20000
-+
- #define VOLTAGE_DOMS_NUM_MASK		GENMASK(15, 0)
- #define REMAINING_LEVELS_MASK		GENMASK(31, 16)
- #define RETURNED_LEVELS_MASK		GENMASK(11, 0)
-@@ -432,7 +435,7 @@ static int scmi_voltage_protocol_init(const struct scmi_protocol_handle *ph)
- 		dev_warn(ph->dev, "No Voltage domains found.\n");
- 	}
- 
--	return ph->set_priv(ph, vinfo);
-+	return ph->set_priv(ph, vinfo, version);
- }
- 
- static const struct scmi_protocol scmi_voltage = {
-@@ -440,6 +443,7 @@ static const struct scmi_protocol scmi_voltage = {
- 	.owner = THIS_MODULE,
- 	.instance_init = &scmi_voltage_protocol_init,
- 	.ops = &voltage_proto_ops,
-+	.supported_version = SCMI_PROTOCOL_SUPPORTED_VERSION,
- };
- 
- DEFINE_SCMI_PROTOCOL_REGISTER_UNREGISTER(voltage, scmi_voltage)
--- 
-2.43.0
+> > > Another dumb question on arm64 - is GCSPR_EL0 writeable by the
+> > > user? If
+> > > yes, can the libc wrapper for threads allocate a shadow stack via
+> > > map_shadow_stack() and set it up in the thread initialisation
+> > > handler
+> > > before invoking the thread function?
 
+> > We would need a syscall to allow GCSPR_EL0 to be written.
+
+> I think the problem with doing this is signals. If a signal is
+> delivered to the new thread, then it could push to the old shadow stack
+> before userspace gets a chance to switch. So the thread needs to start
+> on a new shadow/stack.
+
+That's an issue, plus using a syscall just wouldn't work with a security
+model that locked down writes to the pointer which does seem like
+something people would reasonably want to deploy.
+
+--RXABTafy96aV2/7C
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVp5v4ACgkQJNaLcl1U
+h9B1egf/blIXdR5uSvIkINi89u3Br4JE6lupOzoIADM0aQZN7uaqtT7T3F3qzJAV
+bqBIpN//uR3KUtud8CnlC1jMqYPUtCg4qiki9BYkG5z2libk8YJg/4rgFYhei7Zl
+iT9caiCXwNWGHxlp2yGLFh1VmRz4YFSuqf75Q3Cifl84LgcyvO5gu62jRHfwXDMU
+9qL3k1dIhPVPKhGjORaj+80DUCC72LzolsXYrOZDwwqp9jb1g+8F31Em2P/d9HF0
+7f0DkhYh+AI3t7qRYgGFYL+HW49MEfGFk0SxdOusMOsXF2CZN0LZgPuu0Xap7+CV
+7IQIlw8S47qEV4/7yVFqNLoPb2Pp/g==
+=hmJJ
+-----END PGP SIGNATURE-----
+
+--RXABTafy96aV2/7C--
