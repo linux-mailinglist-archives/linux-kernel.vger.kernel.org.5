@@ -2,130 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA1578003D3
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 07:25:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D7418003BB
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 07:24:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377615AbjLAGZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 01:25:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47424 "EHLO
+        id S229808AbjLAGYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 01:24:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377624AbjLAGZp (ORCPT
+        with ESMTP id S229505AbjLAGYh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 01:25:45 -0500
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C53261722;
-        Thu, 30 Nov 2023 22:25:50 -0800 (PST)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3B16OAGH044118;
-        Fri, 1 Dec 2023 00:24:10 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1701411850;
-        bh=jTt7e3ZcUk0/BRs9umqaQu1F8R1WBoLZXviMWv3LpGs=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=vP0jHRRhVlaAlLHxJJHLjmLKiqSUi5kBK1nzO3LAMxSh5qMnsVfq7xpLyTW65CzLQ
-         BRnsRN9FdSyQZgi/BUQm4oRPYHRLHHeZ8fzcT7694rHAXQh2AT+2xpbOEDKrSl8A+J
-         JCxXp8dDsxrT3IQt0n7uXkqJjPcb93DLFkWWAYmI=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3B16OAL7082264
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 1 Dec 2023 00:24:10 -0600
-Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 1
- Dec 2023 00:24:09 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 1 Dec 2023 00:24:09 -0600
-Received: from [172.24.227.25] (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3B16O5CD017548;
-        Fri, 1 Dec 2023 00:24:06 -0600
-Message-ID: <482d9ad7-86b6-48a9-8dab-5502ce1a5384@ti.com>
-Date:   Fri, 1 Dec 2023 11:54:04 +0530
+        Fri, 1 Dec 2023 01:24:37 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 774FA1718;
+        Thu, 30 Nov 2023 22:24:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701411883; x=1732947883;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=OrXONeV7YlBRhiTW3LB5rHkzQDQL8wPC8aPc0x4910w=;
+  b=Zag7mclosS6/OwdbIaP6Xff5DAUvlz5TUY5nFCBZrpRXDa1a/PhvjlYt
+   WSvVaAgfw1HJLiCrKcMyfTSYiztdJCuGxC6ga2XEseuX84lZy/yRxOHqS
+   dSjTlB/ZyvLRwd1St35D5gg7sdUCn+CO0wlgvYnd041kb84oGWQ2qpn/b
+   azFFCGJj0EPeVESlFvHQf/Ey2rhZRarQdwiVvmC6ebjRO34E9fpDKKyVM
+   d+aX3lpBp7sg/bLoaDCkiPQy2uKKZ4rnbC2jIe6xg2vLQpijy+sSJVDDo
+   tINh/0AgBbzRfn6o9UrENXwWM7JCO9LGn2pclK/H/OXyyQNuOvQd/8Yd+
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="6722778"
+X-IronPort-AV: E=Sophos;i="6.04,241,1695711600"; 
+   d="scan'208";a="6722778"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 22:24:43 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="803945044"
+X-IronPort-AV: E=Sophos;i="6.04,241,1695711600"; 
+   d="scan'208";a="803945044"
+Received: from p12ill20yoongsia.png.intel.com ([10.88.227.28])
+  by orsmga001.jf.intel.com with ESMTP; 30 Nov 2023 22:24:31 -0800
+From:   Song Yoong Siang <yoong.siang.song@intel.com>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Bjorn Topel <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, bpf@vger.kernel.org,
+        xdp-hints@xdp-project.net,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-kselftest@vger.kernel.org,
+        Song Yoong Siang <yoong.siang.song@intel.com>
+Subject: [PATCH bpf-next v2 0/3] xsk: TX metadata txtime support
+Date:   Fri,  1 Dec 2023 14:24:18 +0800
+Message-Id: <20231201062421.1074768-1-yoong.siang.song@intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 00/11] drm/tidss: Probe related fixes and cleanups
-Content-Language: en-US
-To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Devarsh Thakkar <devarsht@ti.com>,
-        Jyri Sarha <jyri.sarha@iki.fi>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-CC:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Francesco Dolcini <francesco@dolcini.it>,
-        <stable@vger.kernel.org>
-References: <20231109-tidss-probe-v2-0-ac91b5ea35c0@ideasonboard.com>
-From:   Aradhya Bhatia <a-bhatia1@ti.com>
-In-Reply-To: <20231109-tidss-probe-v2-0-ac91b5ea35c0@ideasonboard.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.4 required=5.0 tests=AC_FROM_MANY_DOTS,BAYES_00,
+        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tomi,
+This series expands XDP TX metadata framework to include ETF HW offload.
 
-Thank you for the patches!
+Changes since v1:
+- rename Time-Based Scheduling (TBS) to Earliest TxTime First (ETF)
+- rename launch-time to txtime
 
-On 09/11/23 13:07, Tomi Valkeinen wrote:
-> While working on the TI BSP kernel, adding bootload splash screen
-> support, I noticed some issues with the driver and opportunities for
-> cleanups and improvements.
-> 
->  Tomi
-> 
-> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-> ---
-> Changes in v2:
-> - Add missing pm_runtime_dont_use_autosuspend() in error path
-> - Add simple manual "reset" for K2G
-> - Leave tidss->dispc NULL if dispc_init fails
-> - Add Fixes tags
-> - Drop "drm/tidss: Add dispc_is_idle()"
-> - Add "drm/tidss: Use DRM_PLANE_COMMIT_ACTIVE_ONLY"
-> - Link to v1: https://lore.kernel.org/r/20231101-tidss-probe-v1-0-45149e0f9415@ideasonboard.com
-> 
-> ---
-> Tomi Valkeinen (11):
->       drm/tidss: Use pm_runtime_resume_and_get()
->       drm/tidss: Use PM autosuspend
->       drm/tidss: Drop useless variable init
->       drm/tidss: Move reset to the end of dispc_init()
->       drm/tidss: Return error value from from softreset
->       drm/tidss: Check for K2G in in dispc_softreset()
->       drm/tidss: Add simple K2G manual reset
->       drm/tidss: Fix dss reset
->       drm/tidss: IRQ code cleanup
->       drm/tidss: Fix atomic_flush check
->       drm/tidss: Use DRM_PLANE_COMMIT_ACTIVE_ONLY
+v1: https://patchwork.kernel.org/project/netdevbpf/cover/20231130162028.852006-1-yoong.siang.song@intel.com/
 
-For the series,
+Song Yoong Siang (3):
+  xsk: add ETF support to XDP Tx metadata
+  net: stmmac: Add txtime support to XDP ZC
+  selftests/bpf: Add txtime to xdp_hw_metadata
 
-Reviewed-by: Aradhya Bhatia <a-bhatia1@ti.com>
+ Documentation/netlink/specs/netdev.yaml        |  4 ++++
+ Documentation/networking/xsk-tx-metadata.rst   |  5 +++++
+ drivers/net/ethernet/stmicro/stmmac/stmmac.h   |  2 ++
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c  | 13 +++++++++++++
+ include/net/xdp_sock.h                         |  9 +++++++++
+ include/net/xdp_sock_drv.h                     |  1 +
+ include/uapi/linux/if_xdp.h                    |  9 +++++++++
+ include/uapi/linux/netdev.h                    |  3 +++
+ net/core/netdev-genl.c                         |  2 ++
+ net/xdp/xsk.c                                  |  3 +++
+ tools/include/uapi/linux/if_xdp.h              |  9 +++++++++
+ tools/include/uapi/linux/netdev.h              |  3 +++
+ tools/net/ynl/generated/netdev-user.c          |  1 +
+ tools/testing/selftests/bpf/xdp_hw_metadata.c  | 18 +++++++++++++++++-
+ 14 files changed, 81 insertions(+), 1 deletion(-)
 
-Regards
-Aradhya
+-- 
+2.34.1
 
-> 
->  drivers/gpu/drm/tidss/tidss_crtc.c  | 12 ++----
->  drivers/gpu/drm/tidss/tidss_dispc.c | 79 +++++++++++++++++++++++++++++++++----
->  drivers/gpu/drm/tidss/tidss_drv.c   | 15 +++++--
->  drivers/gpu/drm/tidss/tidss_irq.c   | 54 ++++---------------------
->  drivers/gpu/drm/tidss/tidss_kms.c   |  2 +-
->  5 files changed, 97 insertions(+), 65 deletions(-)
-> ---
-> base-commit: 9d7c8c066916f231ca0ed4e4fce6c4b58ca3e451
-> change-id: 20231030-tidss-probe-854b1098c3af
-> 
-> Best regards,
