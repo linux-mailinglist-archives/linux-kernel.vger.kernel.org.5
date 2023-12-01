@@ -2,68 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1674800392
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 07:11:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83E72800393
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 07:11:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377608AbjLAGLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 01:11:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60040 "EHLO
+        id S1377605AbjLAGL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 01:11:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377605AbjLAGLL (ORCPT
+        with ESMTP id S1377596AbjLAGL0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 01:11:11 -0500
-Received: from smtp-fw-52005.amazon.com (smtp-fw-52005.amazon.com [52.119.213.156])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 968FE1718;
-        Thu, 30 Nov 2023 22:11:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1701411077; x=1732947077;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=imOUrKzRu91zDn/pGcYIGFr1s3jxwBoPXiydnadbZRo=;
-  b=ZQD9YICiL1RXbU7GXib5e9B+dg1PGg+0uIZ4+J1kR6aUBem2W+IO61TK
-   TilVLHs4W73DRqJKFtI6fNzILdzpd2J5YEXGk1OT1jhBQNgMa59V1C6Jj
-   TrnttqgjCW4FZE2ce4DHPbGgEpi80P6biiMO05WDqkS4Ke1Gygb49X7m5
-   E=;
-X-IronPort-AV: E=Sophos;i="6.04,241,1695686400"; 
-   d="scan'208";a="619218272"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-pdx-2b-m6i4x-32fb4f1a.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-52005.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2023 06:11:16 +0000
-Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (pdx2-ws-svc-p26-lb5-vlan2.pdx.amazon.com [10.39.38.66])
-        by email-inbound-relay-pdx-2b-m6i4x-32fb4f1a.us-west-2.amazon.com (Postfix) with ESMTPS id A946AC1C42;
-        Fri,  1 Dec 2023 06:11:14 +0000 (UTC)
-Received: from EX19MTAUWC001.ant.amazon.com [10.0.38.20:20288]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.38.133:2525] with esmtp (Farcaster)
- id e3fac716-f7f9-4c80-b8e5-d8dc0bace6c5; Fri, 1 Dec 2023 06:11:14 +0000 (UTC)
-X-Farcaster-Flow-ID: e3fac716-f7f9-4c80-b8e5-d8dc0bace6c5
-Received: from EX19D010UWA004.ant.amazon.com (10.13.138.204) by
- EX19MTAUWC001.ant.amazon.com (10.250.64.174) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Fri, 1 Dec 2023 06:11:14 +0000
-Received: from u0acfa43c8cad58.ant.amazon.com (10.187.170.26) by
- EX19D010UWA004.ant.amazon.com (10.13.138.204) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Fri, 1 Dec 2023 06:11:13 +0000
-From:   Munehisa Kamata <kamatam@amazon.com>
-To:     <casey@schaufler-ca.com>
-CC:     <akpm@linux-foundation.org>, <kamatam@amazon.com>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] proc: Update inode upon changing task security attribute
-Date:   Thu, 30 Nov 2023 22:10:56 -0800
-Message-ID: <20231201061056.71730-1-kamatam@amazon.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <0cffc85b-c378-421f-baa1-fe52a193b2a1@schaufler-ca.com>
-References: <0cffc85b-c378-421f-baa1-fe52a193b2a1@schaufler-ca.com>
+        Fri, 1 Dec 2023 01:11:26 -0500
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09A691703;
+        Thu, 30 Nov 2023 22:11:31 -0800 (PST)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3B16BDfs038786;
+        Fri, 1 Dec 2023 00:11:13 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1701411073;
+        bh=epgSri49vYEanu4EViex8BzQiAMqKTxnJBmbQuxifM0=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=t6PJjZxaE/YtFzz/B70/3TNeztm9LWWkw4Mfud1GkBiyFotsioiKmtNipJ2Ot7c0E
+         uix24CTz1p4MZTgBCORTXNCg7kJpaoYYyKxR6yq0V7880YozN2BGPYFiKVL4IWu2E1
+         cD/WcgQl1E+nfecTyEi17z6l25t5vSxKzxq/fSdQ=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3B16BCN2059564
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 1 Dec 2023 00:11:12 -0600
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 1
+ Dec 2023 00:11:12 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 1 Dec 2023 00:11:12 -0600
+Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3B16BCeA082440;
+        Fri, 1 Dec 2023 00:11:12 -0600
+Date:   Fri, 1 Dec 2023 00:11:12 -0600
+From:   Nishanth Menon <nm@ti.com>
+To:     Sebastian Fricke <sebastian.fricke@collabora.com>
+CC:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Nas Chung <nas.chung@chipsnmedia.com>,
+        Jackson Lee <jackson.lee@chipsnmedia.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Robert Beckett <bob.beckett@collabora.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>, <linux-media@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH -next] media: chips-media: VIDEO_WAVE_VPU should depend
+ on ARCH_K3
+Message-ID: <20231201061112.jvera4kirvoqseqz@reseal>
+References: <eb27184d182811520de31e59f449ea49e7cc6963.1701195705.git.geert+renesas@glider.be>
+ <20231130100647.pbgk7oqgynx3pzrw@basti-XPS-13-9310>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.187.170.26]
-X-ClientProxiedBy: EX19D042UWA004.ant.amazon.com (10.13.139.16) To
- EX19D010UWA004.ant.amazon.com (10.13.138.204)
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20231130100647.pbgk7oqgynx3pzrw@basti-XPS-13-9310>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,148 +74,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2023-11-30 16:31:11 -0800, Casey Schaufler wrote:
->
-> On 11/30/2023 12:35 PM, Munehisa Kamata wrote:
-> > On Thu, 2023-11-30 18:00:13 +0000, Casey Schaufler wrote:
-> >> On 11/29/2023 7:07 PM, Munehisa Kamata wrote:
-> >>> Hi Casey,
-> >>>
-> >>> On Wed, 2023-11-29 18:28:55 -0800, Casey Schaufler wrote:
-> >>>> On 11/29/2023 4:37 PM, Munehisa Kamata wrote:
-> >>>>> I'm not clear whether VFS is a better (or worse) place[1] to fix the
-> >>>>> problem described below and would like to hear opinion.
-> >>>> Please To: or at least Cc: me on all Smack related issues.
-> >>> Will do that next.
-> >>>
-> >>>>> If the /proc/[pid] directory is bind-mounted on a system with Smack
-> >>>>> enabled, and if the task updates its current security attribute, the task
-> >>>>> may lose access to files in its own /proc/[pid] through the mountpoint.
-> >>>>>
-> >>>>>  $ sudo capsh --drop=cap_mac_override --
-> >>>>>  # mkdir -p dir
-> >>>>>  # mount --bind /proc/$$ dir
-> >>>>>  # echo AAA > /proc/$$/task/current		# assuming built-in echo
-> >>>> I don't see "current" in /proc/$$/task. Did you mean /proc/$$/attr?
-> >>> Ahh, yes, I meant /proc/$$/attr/current. Sorry about that...
-> >>>
-> >>>>>  # cat /proc/$$/task/current			# revalidate
-> >>>>>  AAA
-> >>>>>  # echo BBB > dir/attr/current
-> >>>>>  # cat dir/attr/current
-> >>>>>  cat: dir/attr/current: Permission denied
-> >>>>>  # ls dir/
-> >>>>>  ls: cannot access dir/: Permission denied
-> >> I don't see this behavior. What kernel version are you using?
-> >> I have a 6.5 kernel.
-> > I verified the behavior with 6.7-rc3. 
-> >
-> > Here is more "raw" log from my machine:
-> >
-> >  [ec2-user@ip-10-0-32-198 ~]$ uname -r
-> >  6.7.0-rc3-proc-fix+
-> >  [ec2-user@ip-10-0-32-198 ~]$ sudo capsh --drop=cap_mac_override --
-> >  [root@ip-10-0-32-198 ec2-user]# mount --bind /proc/$$ dir
-> >  [root@ip-10-0-32-198 ec2-user]# echo AAA > /proc/$$/attr/current
-> >  [root@ip-10-0-32-198 ec2-user]# cat /proc/$$/attr/current; echo
-> >  AAA
-> >  [root@ip-10-0-32-198 ec2-user]# echo BBB > dir/attr/current
-> >  [root@ip-10-0-32-198 ec2-user]# cat dir/attr/current
-> >  cat: dir/attr/current: Permission denied
-> >
-> > If something frequently scans /proc, such as ps, top or whatever, on your
-> > machine, the inode may get updated quickly (i.e. revalidated during path
-> > lookup) and then you may only have a short window to observe the behavior. 
+On 11:07-20231130, Sebastian Fricke wrote:
+> Hey Geert,
 > 
-> I was able to reproduce the issue with a 6.5 kernel. The window seems
-> to be really short.
-
-Creating a PID namespace before the bind-mount may make the window lasts
-longer (or forever).
-
- $ sudo unshare -pf --mount-proc
- 
-> Would it be completely unreasonable for your sandboxing application to
-> call syncfs(2) after writing to current?
-
-It doesn't help. It won't revalidate dentries.
-
-> >
-> >>>>>  # cat /proc/$$/attr/current			# revalidate
-> >>>>>  BBB
-> >>>>>  # cat dir/attr/current
-> >>>>>  BBB
-> >>>>>  # echo CCC > /proc/$$/attr/current
-> >>>>>  # cat dir/attr/current
-> >>>>>  cat: dir/attr/current: Permission denied
-> >>>>>
-> >>>>> This happens because path lookup doesn't revalidate the dentry of the
-> >>>>> /proc/[pid] when traversing the filesystem boundary, so the inode security
-> >>>>> blob of the /proc/[pid] doesn't get updated with the new task security
-> >>>>> attribute. Then, this may lead security modules to deny an access to the
-> >>>>> directory. Looking at the code[2] and the /proc/pid/attr/current entry in
-> >>>>> proc man page, seems like the same could happen with SELinux. Though, I
-> >>>>> didn't find relevant reports.
-> >>>>>
-> >>>>> The steps above are quite artificial. I actually encountered such an
-> >>>>> unexpected denial of access with an in-house application sandbox
-> >>>>> framework; each app has its own dedicated filesystem tree where the
-> >>>>> process's /proc/[pid] is bind-mounted to and the app enters into via
-> >>>>> chroot.
-> >>>>>
-> >>>>> With this patch, writing to /proc/[pid]/attr/current (and its per-security
-> >>>>> module variant) updates the inode security blob of /proc/[pid] or
-> >>>>> /proc/[pid]/task/[tid] (when pid != tid) with the new attribute.
-> >>>>>
-> >>>>> [1] https://lkml.kernel.org/linux-fsdevel/4A2D15AF.8090000@sun.com/
-> >>>>> [2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/security/selinux/hooks.c#n4220
-> >>>>>
-> >>>>> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-> >>>>> Signed-off-by: Munehisa Kamata <kamatam@amazon.com>
-> >>>>> ---
-> >>>>>  fs/proc/base.c | 23 ++++++++++++++++++++---
-> >>>>>  1 file changed, 20 insertions(+), 3 deletions(-)
-> >>>>>
-> >>>>> diff --git a/fs/proc/base.c b/fs/proc/base.c
-> >>>>> index dd31e3b6bf77..bdb7bea53475 100644
-> >>>>> --- a/fs/proc/base.c
-> >>>>> +++ b/fs/proc/base.c
-> >>>>> @@ -2741,6 +2741,7 @@ static ssize_t proc_pid_attr_write(struct file * file, const char __user * buf,
-> >>>>>  {
-> >>>>>  	struct inode * inode = file_inode(file);
-> >>>>>  	struct task_struct *task;
-> >>>>> +	const char *name = file->f_path.dentry->d_name.name;
-> >>>>>  	void *page;
-> >>>>>  	int rv;
-> >>>>>  
-> >>>>> @@ -2784,10 +2785,26 @@ static ssize_t proc_pid_attr_write(struct file * file, const char __user * buf,
-> >>>>>  	if (rv < 0)
-> >>>>>  		goto out_free;
-> >>>>>  
-> >>>>> -	rv = security_setprocattr(PROC_I(inode)->op.lsm,
-> >>>>> -				  file->f_path.dentry->d_name.name, page,
-> >>>>> -				  count);
-> >>>>> +	rv = security_setprocattr(PROC_I(inode)->op.lsm, name, page, count);
-> >>>>>  	mutex_unlock(&current->signal->cred_guard_mutex);
-> >>>>> +
-> >>>>> +	/*
-> >>>>> +	 *  Update the inode security blob in advance if the task's security
-> >>>>> +	 *  attribute was updated
-> >>>>> +	 */
-> >>>>> +	if (rv > 0 && !strcmp(name, "current")) {
-> >>>>> +		struct pid *pid;
-> >>>>> +		struct proc_inode *cur, *ei;
-> >>>>> +
-> >>>>> +		rcu_read_lock();
-> >>>>> +		pid = get_task_pid(current, PIDTYPE_PID);
-> >>>>> +		hlist_for_each_entry(cur, &pid->inodes, sibling_inodes)
-> >>>>> +			ei = cur;
-> >>>>> +		put_pid(pid);
-> >>>>> +		pid_update_inode(current, &ei->vfs_inode);
-> >>>>> +		rcu_read_unlock();
-> >>>>> +	}
-> >>>>> +
-> >>>>>  out_free:
-> >>>>>  	kfree(page);
-> >>>>>  out:
+> Thanks for the patch!
 > 
+> Could you please adjust the subject line to:
+> media: chips-media: wave5: VIDEO_WAVE_VPU should depend on ARCH_K3
+>                     ^^^^^^
+> 
+> On 28.11.2023 19:26, Geert Uytterhoeven wrote:
+> > The Chips&Media Wave 5 Series multi-standard codec IP is currently only
+> > supported on Texas Instruments K3 J721S2 SoC.  Hence add a dependency on
+> 
+> While it is true that is currently only tested on the K3 architecture ,
+> it is not only supported by that exact SoC, as you can see here:
+> https://lore.kernel.org/all/20231127223718.2651185-4-b-brnich@ti.com/T/
+> 
+> So, maybe this commit is worded better with:
+> 
+> is currently only supported on the Texas Instruments K3 architecture.
+> 
+> The change however is obviously correct.
+> 
+> Greetings,
+> Sebastian
+> 
+> > ARCH_K3, to prevent asking the user about this driver when configuring a
+> > kernel without Texas Instruments K3 Multicore SoC support.
+> > 
+> > Fixes: 9707a6254a8a6b97 ("media: chips-media: wave5: Add the v4l2 layer")
+
+Thank you Sebastian, in addition, a nitpick: checkpatch.pl complains:
+Please use correct Fixes: style 'Fixes: <12 chars of sha1> ("<title line>")'
+https://docs.kernel.org/process/submitting-patches.html
+Quote:
+
+If your patch fixes a bug in a specific commit, e.g. you found an
+issue using git bisect, please use the 'Fixes:' tag with the first 12
+characters of the SHA-1 ID, and the one line summary. Do not split
+the tag across multiple lines, tags are exempt from the "wrap at 75
+columns" rule in order to simplify parsing scripts
+
+
+with the above fixed, please feel free to add:
+Reviewed-by: Nishanth Menon <nm@ti.com>
+
+> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> > ---
+> > drivers/media/platform/chips-media/wave5/Kconfig | 1 +
+> > 1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/drivers/media/platform/chips-media/wave5/Kconfig b/drivers/media/platform/chips-media/wave5/Kconfig
+> > index 77e7ae5c8f35f454..9ccc1f7e32f3874f 100644
+> > --- a/drivers/media/platform/chips-media/wave5/Kconfig
+> > +++ b/drivers/media/platform/chips-media/wave5/Kconfig
+> > @@ -3,6 +3,7 @@ config VIDEO_WAVE_VPU
+> > 	tristate "Chips&Media Wave Codec Driver"
+> > 	depends on V4L_MEM2MEM_DRIVERS
+> > 	depends on VIDEO_DEV && OF
+> > +	depends on ARCH_K3 || COMPILE_TEST
+> > 	select VIDEOBUF2_DMA_CONTIG
+> > 	select VIDEOBUF2_VMALLOC
+> > 	select V4L2_MEM2MEM_DEV
+
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
