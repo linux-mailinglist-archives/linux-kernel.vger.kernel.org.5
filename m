@@ -2,324 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12CA5800FC2
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 17:13:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17848800FB1
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 17:13:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379399AbjLAP0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 10:26:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34544 "EHLO
+        id S1379445AbjLAP0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 10:26:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379357AbjLAP0g (ORCPT
+        with ESMTP id S1379432AbjLAP0r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 10:26:36 -0500
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2041.outbound.protection.outlook.com [40.107.244.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC01FB6;
-        Fri,  1 Dec 2023 07:26:42 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hxmez6Uw3de9Fue8Lk4PIau9UVQ8IpcMO0Q4FQ22gHcBa0CAOoGd+L16oluO1LGMrq6JxUQ309FjqyS2kSOO00t46s3G2Xy+0J7rRjtMmRe4YJXm8SmipD+RhXXY3q+RmXEyxRgBfGYxv/sPdZVGVlSiUk+MeZ3IblqNxJIon/Tn5nuQ8OXml+PeaxKMwxuB1UPpUaCNrPiQKiiwXNn8KLGOYNAP/QLO86zd0wuVgdQRl8BD/f9bxEF7NM6yAQVhWgmbZNLjyz+tGDAGS802XeaAfJuzzDisUwRHfUWUwm6TfcY9aB8/WuBqHf6W3fW+dHuG1HPN6w8dtB7EFfcV1w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=/HfbQe3DVIcBpWk5fwFs7qR+YU6lZ9oFZruAXg+ICt8=;
- b=KOYF1lGBrtD/MDF9L6RoZVv8JpibLwng8LgV/dSGQ5f9gB1kWdCinTh40i4zPxeutPBX/GTg6T7TFMkoH5t+cBqqvoOoVEJD/568S0+mGcPqZ59fnqrsDKGfBY7h30BeVh8bU7FH9s9i687TDAX1a+wvgrJipdMnjh76evHBvNUMWtdIhTAu7u3h9NOyWmj9s10gVk1UoMrgP30g+dMVsBz5fCM083p2fsYQrazLo7Un1jky3GWubR/XMNGTbv/unQ1OLF7MzYRe0HAdP8Yu0rKzQufLsA/kDLaGMpi8LJ8wLO+mncMXZ1y2j3Ov/jMgtCK6hgT5aWSGG81RwefJQw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/HfbQe3DVIcBpWk5fwFs7qR+YU6lZ9oFZruAXg+ICt8=;
- b=a9Q2SBIejLcUFTnadp0fGVLd41qMnar7kmZ1R3vYrz4bseXUjGaPaRRAutosiJw1KsN/0KJSRwu0gqPYlQfNR/tYhVLwQNVaI/YSd2NCA576/z7ClF/brMOnXg+GPFDzE9q+5xPlystsTpifWD6RMoEDjGD4gS0aA1+eqIayKrv0H8HsugntF/9AUU4qOnyanZtvIeJEdUnRv/G+NuCvUdNtVXcVB34RBW4IlAM6uwkGQvsYKQzfxVqnFhyO9OZ9ZLO5n6px1gqQaAhsCIu6o1VPh5CRw5nPh5STqwU06uygc3EEM06MsXWn+i2Qf7PuZ8vv+Bg762eNgFZkwjBQqw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB5565.namprd12.prod.outlook.com (2603:10b6:5:1b6::13)
- by BL1PR12MB5377.namprd12.prod.outlook.com (2603:10b6:208:31f::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.27; Fri, 1 Dec
- 2023 15:26:38 +0000
-Received: from DM6PR12MB5565.namprd12.prod.outlook.com
- ([fe80::bd76:47ad:38a9:a258]) by DM6PR12MB5565.namprd12.prod.outlook.com
- ([fe80::bd76:47ad:38a9:a258%5]) with mapi id 15.20.7046.027; Fri, 1 Dec 2023
- 15:26:37 +0000
-Date:   Fri, 1 Dec 2023 16:26:31 +0100
-From:   Dragos Tatulea <dtatulea@nvidia.com>
-To:     Eugenio Perez Martin <eperezma@redhat.com>
-Cc:     "Michael S . Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Si-Wei Liu <si-wei.liu@oracle.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Parav Pandit <parav@nvidia.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH vhost 3/7] vdpa/mlx5: Allow modifying multiple vq fields
- in one modify command
-Message-ID: <ahb5gkmzvempjyty4p767lkbwbmwj64vnhi3xpsgweqn7mvhmx@73jqxye2icd6>
-References: <20231201104857.665737-1-dtatulea@nvidia.com>
- <20231201104857.665737-4-dtatulea@nvidia.com>
- <CAJaqyWe_VZ8CsG5j75oAD1FdNi7dc4rLJwjm5AoQNBm4ABfAZA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJaqyWe_VZ8CsG5j75oAD1FdNi7dc4rLJwjm5AoQNBm4ABfAZA@mail.gmail.com>
-X-ClientProxiedBy: FR2P281CA0083.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:9b::7) To DM6PR12MB5565.namprd12.prod.outlook.com
- (2603:10b6:5:1b6::13)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR12MB5565:EE_|BL1PR12MB5377:EE_
-X-MS-Office365-Filtering-Correlation-Id: 79d72bb2-493e-47fe-0611-08dbf281e8e8
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Joo01kWsrXYQ4RC9vhWlPTeMBKz5nUnUWPDEypPBysCrwS6wZn9HhRFr37hMihcPBmC7Jc1bxFCDZYf2DfSGWAVjSuFyzhcdUP8JyRa2orc79kICpYAGoBIC02Noniyq3it4jff+DuN3QeQ/aGq2yR89no8pGVapNCcwGsPTTAb5vME8YmnVbG39jiTKEWVq6h3ZVQaK7uEclbGdJbvfV2L0HuaiMbvzZnw2W0tsyurKuJAGRXuc6rUkNF29eAHZfPmMvsK5tCQM2WfPYShF0RebqXXTObDA5lL4M/Ys5HuTn2bTRg/1/G2NkylJHAUD2Xw6cj6hDZ7uX4IMlwVkzRtIQRxIntYxMLS1mtvggN9k/enXhJkTHpSePYUxfMdudQ63qYFnWJdpmrVYfhiFQ6JMHoyyY6VPnftsxodPLF0Daa/l3JufmXC7qfskWvYeAaVprCghw8dsHkZsfuML4NeeJeTMEuqGA/JCr+sVa0cTCEVa2xlEV4FZtyK99qWLGcWW0TlKpWT6OSaE7nRh8lgTL1I+p/o/2aaRtMmS7JA/FOCzX510d15V0XtITqYa
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB5565.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(136003)(396003)(376002)(346002)(366004)(39860400002)(230922051799003)(1800799012)(451199024)(64100799003)(186009)(66899024)(83380400001)(38100700002)(33716001)(86362001)(66946007)(8936002)(8676002)(54906003)(4326008)(6916009)(66476007)(66556008)(316002)(5660300002)(2906002)(53546011)(6512007)(9686003)(478600001)(6486002)(6506007)(6666004)(41300700001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Zk1oUDNSa0VmelNCVmY2VFEyVGE1R2MxT2x2RjdkeHU1MG9BRUV4WEcvb1g5?=
- =?utf-8?B?VWVQSExWS25aQ0xkaUU0TG9kZnhPMlVoaVF3bnVSSUVacFhRTkxzUGpCZVk3?=
- =?utf-8?B?Q0QyWFBsYW5DRXBpOVVtdGxYcFl6N1lBR3R5L3M2MVdZS0JqYVhPQ0ZqU0R5?=
- =?utf-8?B?Tk5TSHFoZlpmMmphZnNidS83US9FZ0cvVE1SVndsWDRLRXU1czlDeGcyc2RM?=
- =?utf-8?B?TWc5VGlUSlhRdk1sYmNYRHc5MG5oa2RhRG13aldqcTgyZXpBMjNsZXlDY0lL?=
- =?utf-8?B?ckV4T3hBSTBmM056TlAwYURuckJLWWZaSTNxSk1SVGlTQ0dyN3FPZEpheWhP?=
- =?utf-8?B?VnpUQ3JiSjNub2hSaFNPbk1xWXhBSUpkVlIyci8wYlQ3dTdrMmNMWk9jbGpk?=
- =?utf-8?B?ZjZlSE5uV3RPMTlWQUpWazlLeDg0VnhQNEpjK2VTUHRia09uNVY0T2xxeXRS?=
- =?utf-8?B?ejRQa3dueG0zTm1lSjNhanJZc3ZnR1NsZ1pycnA0N0lSTGNMVjBRUjFXSkgy?=
- =?utf-8?B?ME5DTEpNODlOZXZoQURaRTJ0WnZYNDNENUU4UitFMmxPelRoVEhkbWlMRFV2?=
- =?utf-8?B?dGlsNzUvSVhlMURYZXN4VW5mbTNxc1p4eUQ4MllBYXcybC90L1p1K05rSVNw?=
- =?utf-8?B?d01yb2ZVNUJrQW5idWNNSks3c0twOXpZaEl2S0VId3NMNFhqaU85QytmQ2Nt?=
- =?utf-8?B?eW5qRTFZRWpTK0tubGNSb0s1dG5icEVUMzBtcHl1aXJ2NERCbHlqWGZRQkR3?=
- =?utf-8?B?T0hhVlNqZEljVlJzWU1NZFBTQlhhcW82ZW8rTGVKWUljUXVFU1I0eFB4R3hK?=
- =?utf-8?B?UWFGNUlqN1hLY21neTlIeHJiejc1Mk9rUHgwak5nTkVEYWFuNnUxR1gvZ2tt?=
- =?utf-8?B?eWZaRTdUZVhvMjVJK0dVMnNmM1dTdnlSSTBQT1cvKzk5RUZ6Y2JvK0pwR0pu?=
- =?utf-8?B?TEZwU1JlL0d4RjNTYklQSGVBWVZFOXFTUGtLdmdmOEFqckhaeHBsNFBBZnhX?=
- =?utf-8?B?SCtwaWYwT1BQb3hQRXQ3Z0pIWlU1dTRlV0FuSHV1WjNiTkZod3hsaEVYcEtk?=
- =?utf-8?B?OFR3RGVMYkxqTEdhL2tGdzVCVW9jOEZ6ZE5xZFJYYVhCbG8yYlZqU2N1ZkZ0?=
- =?utf-8?B?RndtVGk4azJZVE9iN3hmSVVXTVNHUW80RHhnM0ZGS1FpeTdCc0p1V0RBZStp?=
- =?utf-8?B?YWhUbmxqV3lubzlpWElFSHVFODV6bmI4T1JSK0s1a0xHK0szYkttTHJFMThl?=
- =?utf-8?B?R21raEhjUlRTVjZPM1p4TEttVGxOVldyeGtHQVFSek9IOXNMdTU2YUlRa090?=
- =?utf-8?B?YWhSb0tXeTFNcnFQK0pkS1VzN08xRThNUytUNCtZZERuaE1Jay9DeHlXbjg2?=
- =?utf-8?B?M25WbThmWVgvUE4remxxak5oTHV0SEFocTZqNkRtTjhZdmhrTHZQc1EzVFhR?=
- =?utf-8?B?TkJBcmNKRnFHb1NTZHRrRzl2ZzEwa2x5b1YzTnoxZnhEdEp1UFRLK2V1RnlP?=
- =?utf-8?B?R3MyTno5OFBKNHhuVW90SkZ4NjVvMjNpM2RzK3NYSXhQRkQ0V2ZHNVR1RUNO?=
- =?utf-8?B?QkVUTmI3eHgyQ1c3NTR3T0xjenFkbmNVRk16cElFdlpnbFdqazdYN1FZS2tr?=
- =?utf-8?B?ZzJBN3cyYkdVODBPLzQwWkFtbUd1WHZpNTlGV29GREt0OGtPVU9xQ3RoMDhB?=
- =?utf-8?B?R2dSbnJZa0QxVzJTVWJ6ZFhJNW8rdmlvbmEwRm5QOFVzN2RrNHV2bXAxUlY5?=
- =?utf-8?B?MHZNV3REOHE0V1lwS2JhQ0JhMlNtWmJ3SUkwVWRzZGp0ZDdvRytHMXF3TDdr?=
- =?utf-8?B?cmoyclVOUDV2OFB4VWpEb3J0cG5ZQWhQWXpLOGJPTHZQNlN0OVRGVUtjVDVl?=
- =?utf-8?B?Qyt0R2hxb0NTUGF3NGhlc3ExQnV6cUdUN0IzVGtRNW1JQ2xzMUhpeWs1QTZD?=
- =?utf-8?B?MUZEaktocE5aRGZ5ekgxaHRGWFpFcXdZZnpxdGhTc0NHZ2FWQ215ZjNKcWw4?=
- =?utf-8?B?c3Zpd2tNR1ZlR3FadG0zNjlsR2dDUVFYdlhMeitXRlF3d0xQNFI4T3MxWEJx?=
- =?utf-8?B?TFFUSEwyV3dtd3pIYW9wWWRieGlRWHdEeUVpQ0FlWTZvdWdIdmJKaGhmRGk0?=
- =?utf-8?B?UkZJL1RMSm9mWFhHTEZsN0hMcTZZMjFFQ0ltNnNscWVlZExiWlk3OGduZEFO?=
- =?utf-8?Q?uo57uYm57L8/CoYWv87rroY+6rwbpaTWwGZtDgG90SrN?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 79d72bb2-493e-47fe-0611-08dbf281e8e8
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB5565.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Dec 2023 15:26:37.6874
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /xG8v0cvxRfLGrMcVd0quKeS6U+sS22PCYy3BXGh+ssi8VIjW18Hfd720wFXa1rmk/bK2ro+MAP2Tk5aKOAHOQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5377
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+        Fri, 1 Dec 2023 10:26:47 -0500
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F76F103;
+        Fri,  1 Dec 2023 07:26:53 -0800 (PST)
+Received: by mail-qt1-x836.google.com with SMTP id d75a77b69052e-423f2d0c8baso13722541cf.2;
+        Fri, 01 Dec 2023 07:26:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701444412; x=1702049212; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+Y5uUpKThH5AlPxwZK/+8ce/JS/o6enGufFaGhxrFrA=;
+        b=LlkAVm0E4GDkDf9KHlwLtfA44S2vZn7n7tu7k0Syq3g8Vy7TobnUZOEMLm+C4RRy5w
+         mFd5f2BdgT3QF0mYiEuaOH/AbRTq2kRppiB6v6aPkzRYSYjMlz3c2fKVjbhLtLcawuDG
+         qCafr0+1phPmkEYQt17zrgradddvlb5Zrg2LKgCmihhXFXJ3L2rtbtlRBjFEgpDFzINg
+         iRvfhULsQ4GW4+2ptSo2Jt3k1yuo2X6PFUin3PfbQZ4rQHAxT7AD8Y7eLAfGApwuoSl+
+         RMc+0TboXHMBzA9O2MmKiAXm0IBO3vRqUccFrZyekvQaZG1RIpGXmvcUWKAUHDVtYb61
+         qI8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701444412; x=1702049212;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=+Y5uUpKThH5AlPxwZK/+8ce/JS/o6enGufFaGhxrFrA=;
+        b=HcPi8dnQXOmRsVhxlXHKJHskiCTfmvgJV22pBv4v2n5Bt/mbJuzaJes8/chvDpypVG
+         KeqVR1gVjmUZuEDuo237m9s0sQ9HujJlzSH3dVYdg/ZfwHPLp09J7X2HT7Q/O64Em4by
+         H6JQUAkFoSRWDeC4zQnaxGxM0NTGZFo1XVl3bHXbOH8I9xkQ4hOL/u17V4eV/NQuTQqn
+         2l9F1m8BnphgYaSme3ZSV4wkav/Ib5dMfiiQHdL0EXGu5PM3/zi+R9HUdIQl1lWxMpGU
+         mXGR3Yu8Lb2YqdqPnfJiEtTSnGmFkaRO4mT6/3F7HWkxHFs6ftkbKrlIO7d7U0TNoQTh
+         vVyg==
+X-Gm-Message-State: AOJu0YwcAhuwBdJQHhh0nab/5S9BUd54E+dNPmXYVWHpesvCj5uX2p27
+        PoPpKwBkEGx4gSdgafvMD6s=
+X-Google-Smtp-Source: AGHT+IE7pPHWo5O6L0cGSE4Vt8ZBvbgF4ZpSTi5qSKV/OfAW0SLGDPjTMnoWDJPMCufOEPTxcgQJbA==
+X-Received: by 2002:a05:622a:1a89:b0:423:6e29:c149 with SMTP id s9-20020a05622a1a8900b004236e29c149mr30091182qtc.1.1701444412484;
+        Fri, 01 Dec 2023 07:26:52 -0800 (PST)
+Received: from localhost (114.66.194.35.bc.googleusercontent.com. [35.194.66.114])
+        by smtp.gmail.com with ESMTPSA id w2-20020ac87182000000b00423de58d3d8sm1567519qto.40.2023.12.01.07.26.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Dec 2023 07:26:51 -0800 (PST)
+Date:   Fri, 01 Dec 2023 10:26:51 -0500
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To:     Jesper Dangaard Brouer <hawk@kernel.org>,
+        Song Yoong Siang <yoong.siang.song@intel.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Bjorn Topel <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, bpf@vger.kernel.org,
+        xdp-hints@xdp-project.net,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-kselftest@vger.kernel.org
+Message-ID: <6569fb3b31fb6_1396ec2948@willemb.c.googlers.com.notmuch>
+In-Reply-To: <5a660c0f-d3ed-47a2-b9be-098a224b8a12@kernel.org>
+References: <20231201062421.1074768-1-yoong.siang.song@intel.com>
+ <20231201062421.1074768-3-yoong.siang.song@intel.com>
+ <5a660c0f-d3ed-47a2-b9be-098a224b8a12@kernel.org>
+Subject: Re: [PATCH bpf-next v2 2/3] net: stmmac: Add txtime support to XDP ZC
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/01, Eugenio Perez Martin wrote:
-> On Fri, Dec 1, 2023 at 11:49 AM Dragos Tatulea <dtatulea@nvidia.com> wrote:
-> >
-> > Add a bitmask variable that tracks hw vq field changes that
-> > are supposed to be modified on next hw vq change command.
-> >
-> > This will be useful to set multiple vq fields when resuming the vq.
-> >
-> > The state needs to remain as a parameter as it doesn't make sense to
-> > make it part of the vq struct: fw_state is updated only after a
-> > successful command.
-> >
+Jesper Dangaard Brouer wrote:
 > 
-> I don't get this paragraph, "modified_fields" is a member of
-> "mlx5_vdpa_virtqueue". Am I missing something?
 > 
-I think this paragraph adds more confusion than clarification. I meant
-to say that the state argument from modified_virtqueue needs to remain
-there, as opposed to integrating it into the mlx5_vdpa_virtqueue struct.
-
-> 
-> > Signed-off-by: Dragos Tatulea <dtatulea@nvidia.com>
+> On 12/1/23 07:24, Song Yoong Siang wrote:
+> > This patch enables txtime support to XDP zero copy via XDP Tx
+> > metadata framework.
+> > 
+> > Signed-off-by: Song Yoong Siang<yoong.siang.song@intel.com>
 > > ---
-> >  drivers/vdpa/mlx5/net/mlx5_vnet.c | 48 +++++++++++++++++++++++++------
-> >  1 file changed, 40 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > index 12ac3397f39b..d06285e46fe2 100644
-> > --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > @@ -120,6 +120,9 @@ struct mlx5_vdpa_virtqueue {
-> >         u16 avail_idx;
-> >         u16 used_idx;
-> >         int fw_state;
-> > +
-> > +       u64 modified_fields;
-> > +
-> >         struct msi_map map;
-> >
-> >         /* keep last in the struct */
-> > @@ -1181,7 +1184,19 @@ static bool is_valid_state_change(int oldstate, int newstate)
-> >         }
-> >  }
-> >
-> > -static int modify_virtqueue(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue *mvq, int state)
-> > +static bool modifiable_virtqueue_fields(struct mlx5_vdpa_virtqueue *mvq)
-> > +{
-> > +       /* Only state is always modifiable */
-> > +       if (mvq->modified_fields & ~MLX5_VIRTQ_MODIFY_MASK_STATE)
-> > +               return mvq->fw_state == MLX5_VIRTIO_NET_Q_OBJECT_STATE_INIT ||
-> > +                      mvq->fw_state == MLX5_VIRTIO_NET_Q_OBJECT_STATE_SUSPEND;
-> > +
-> > +       return true;
-> > +}
-> > +
-> > +static int modify_virtqueue(struct mlx5_vdpa_net *ndev,
-> > +                           struct mlx5_vdpa_virtqueue *mvq,
-> > +                           int state)
-> >  {
-> >         int inlen = MLX5_ST_SZ_BYTES(modify_virtio_net_q_in);
-> >         u32 out[MLX5_ST_SZ_DW(modify_virtio_net_q_out)] = {};
-> > @@ -1193,6 +1208,9 @@ static int modify_virtqueue(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtque
-> >         if (mvq->fw_state == MLX5_VIRTIO_NET_Q_OBJECT_NONE)
-> >                 return 0;
-> >
-> > +       if (!modifiable_virtqueue_fields(mvq))
-> > +               return -EINVAL;
-> > +
+> >   drivers/net/ethernet/stmicro/stmmac/stmmac.h      |  2 ++
+> >   drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 13 +++++++++++++
+> >   2 files changed, 15 insertions(+)
 > 
-> I'm ok with this change, but since modified_fields is (or will be) a
-> bitmap tracking changes to state, addresses, mkey, etc, doesn't have
-> more sense to check it like:
+> I think we need to see other drivers using this new feature to evaluate
+> if API is sane.
 > 
-> if (modified_fields & 1<<change_1_flag)
->   // perform change 1
-> if (modified_fields & 1<<change_2_flag)
->   // perform change 2
-> if (modified_fields & 1<<change_3_flag)
->   // perform change 13
-> ---
+> I suggest implementing this for igc driver (chip i225) and also for igb
+> (i210 chip) that both support this kind of LaunchTime feature in HW.
 > 
-> Instead of:
-> if (!modified_fields)
->   return
+> The API and stmmac driver takes a u64 as time.
+> I'm wondering how this applies to i210 that[1] have 25-bit for
+> LaunchTime (with 32 nanosec granularity) limiting LaunchTime max 0.5
+> second into the future.
+> And i225 that [1] have 30-bit max 1 second into the future.
 > 
-> if (modified_fields & 1<<change_1_flag)
->   // perform change 1
-> if (modified_fields & 1<<change_2_flag)
->   // perform change 2
 > 
-> // perform change 3, no checking, as it is the only possible value of
-> modified_fields
-> ---
-> 
-> Or am I missing something?
-> 
-modifiable_virtqueue_fields() is meant to check that the modification is
-done only in the INIT or SUSPEND state of the queue. Or did I
-misunderstand your question?
+> [1] 
+> https://github.com/xdp-project/xdp-project/blob/master/areas/tsn/code01_follow_qdisc_TSN_offload.org
 
-> The rest looks good to me.
->
-Thanks for reviewing my patches Eugenio!
+Good point Jesper.
 
-> >         if (!is_valid_state_change(mvq->fw_state, state))
-> >                 return -EINVAL;
-> >
-> > @@ -1208,17 +1226,28 @@ static int modify_virtqueue(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtque
-> >         MLX5_SET(general_obj_in_cmd_hdr, cmd_hdr, uid, ndev->mvdev.res.uid);
-> >
-> >         obj_context = MLX5_ADDR_OF(modify_virtio_net_q_in, in, obj_context);
-> > -       MLX5_SET64(virtio_net_q_object, obj_context, modify_field_select,
-> > -                  MLX5_VIRTQ_MODIFY_MASK_STATE);
-> > -       MLX5_SET(virtio_net_q_object, obj_context, state, state);
-> > +       if (mvq->modified_fields & MLX5_VIRTQ_MODIFY_MASK_STATE)
-> > +               MLX5_SET(virtio_net_q_object, obj_context, state, state);
-> > +
-> > +       MLX5_SET64(virtio_net_q_object, obj_context, modify_field_select, mvq->modified_fields);
-> >         err = mlx5_cmd_exec(ndev->mvdev.mdev, in, inlen, out, sizeof(out));
-> >         kfree(in);
-> >         if (!err)
-> >                 mvq->fw_state = state;
-> >
-> > +       mvq->modified_fields = 0;
-> > +
-> >         return err;
-> >  }
-> >
-> > +static int modify_virtqueue_state(struct mlx5_vdpa_net *ndev,
-> > +                                 struct mlx5_vdpa_virtqueue *mvq,
-> > +                                 unsigned int state)
-> > +{
-> > +       mvq->modified_fields |= MLX5_VIRTQ_MODIFY_MASK_STATE;
-> > +       return modify_virtqueue(ndev, mvq, state);
-> > +}
-> > +
-> >  static int counter_set_alloc(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue *mvq)
-> >  {
-> >         u32 in[MLX5_ST_SZ_DW(create_virtio_q_counters_in)] = {};
-> > @@ -1347,7 +1376,7 @@ static int setup_vq(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue *mvq)
-> >                 goto err_vq;
-> >
-> >         if (mvq->ready) {
-> > -               err = modify_virtqueue(ndev, mvq, MLX5_VIRTIO_NET_Q_OBJECT_STATE_RDY);
-> > +               err = modify_virtqueue_state(ndev, mvq, MLX5_VIRTIO_NET_Q_OBJECT_STATE_RDY);
-> >                 if (err) {
-> >                         mlx5_vdpa_warn(&ndev->mvdev, "failed to modify to ready vq idx %d(%d)\n",
-> >                                        idx, err);
-> > @@ -1382,7 +1411,7 @@ static void suspend_vq(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue *m
-> >         if (mvq->fw_state != MLX5_VIRTIO_NET_Q_OBJECT_STATE_RDY)
-> >                 return;
-> >
-> > -       if (modify_virtqueue(ndev, mvq, MLX5_VIRTIO_NET_Q_OBJECT_STATE_SUSPEND))
-> > +       if (modify_virtqueue_state(ndev, mvq, MLX5_VIRTIO_NET_Q_OBJECT_STATE_SUSPEND))
-> >                 mlx5_vdpa_warn(&ndev->mvdev, "modify to suspend failed\n");
-> >
-> >         if (query_virtqueue(ndev, mvq, &attr)) {
-> > @@ -1407,6 +1436,7 @@ static void teardown_vq(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue *
-> >                 return;
-> >
-> >         suspend_vq(ndev, mvq);
-> > +       mvq->modified_fields = 0;
-> >         destroy_virtqueue(ndev, mvq);
-> >         dealloc_vector(ndev, mvq);
-> >         counter_set_dealloc(ndev, mvq);
-> > @@ -2207,7 +2237,7 @@ static void mlx5_vdpa_set_vq_ready(struct vdpa_device *vdev, u16 idx, bool ready
-> >         if (!ready) {
-> >                 suspend_vq(ndev, mvq);
-> >         } else {
-> > -               err = modify_virtqueue(ndev, mvq, MLX5_VIRTIO_NET_Q_OBJECT_STATE_RDY);
-> > +               err = modify_virtqueue_state(ndev, mvq, MLX5_VIRTIO_NET_Q_OBJECT_STATE_RDY);
-> >                 if (err) {
-> >                         mlx5_vdpa_warn(mvdev, "modify VQ %d to ready failed (%d)\n", idx, err);
-> >                         ready = false;
-> > @@ -2804,8 +2834,10 @@ static void clear_vqs_ready(struct mlx5_vdpa_net *ndev)
-> >  {
-> >         int i;
-> >
-> > -       for (i = 0; i < ndev->mvdev.max_vqs; i++)
-> > +       for (i = 0; i < ndev->mvdev.max_vqs; i++) {
-> >                 ndev->vqs[i].ready = false;
-> > +               ndev->vqs[i].modified_fields = 0;
-> > +       }
-> >
-> >         ndev->mvdev.cvq.ready = false;
-> >  }
-> > --
-> > 2.42.0
-> >
-> 
+Can we also explicitly document what the type of the field is?
+Nanoseconds against the NIC hardware clock, it sounds like.
+
+We have some experience with this, too. Something needs to do the
+conversion from host clock to NIC clock. It is not sufficent to just
+assume that the host clock is synced against the NIC clock by PTP.
+
