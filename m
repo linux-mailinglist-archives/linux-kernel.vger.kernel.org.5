@@ -2,348 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66279800DCC
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 15:56:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1804800DD0
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 16:00:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379279AbjLAO4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 09:56:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33276 "EHLO
+        id S1379269AbjLAPAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 10:00:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379265AbjLAOzx (ORCPT
+        with ESMTP id S1379257AbjLAPAg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 09:55:53 -0500
-Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CFB110FA;
-        Fri,  1 Dec 2023 06:55:58 -0800 (PST)
-Received: from francesco-nb.pivistrello.it (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
-        by mail11.truemail.it (Postfix) with ESMTPA id AA4F7211B9;
-        Fri,  1 Dec 2023 15:55:56 +0100 (CET)
-From:   Francesco Dolcini <francesco@dolcini.it>
-To:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     Joao Paulo Goncalves <joao.goncalves@toradex.com>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Francesco Dolcini <francesco.dolcini@toradex.com>
-Subject: [PATCH v2 3/3] arm64: dts: ti: add verdin am62 mallow board
-Date:   Fri,  1 Dec 2023 15:55:51 +0100
-Message-Id: <20231201145551.23337-4-francesco@dolcini.it>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231201145551.23337-1-francesco@dolcini.it>
-References: <20231201145551.23337-1-francesco@dolcini.it>
+        Fri, 1 Dec 2023 10:00:36 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14B03103;
+        Fri,  1 Dec 2023 07:00:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701442842; x=1732978842;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=neT4Hf+obtBf9p4YDRJKGw0EfyhXIRhgDs2UETBnJqQ=;
+  b=INnYnJKm+BeQAPAH7r9tp2z+Zqf4AhauGp0G4hIHrUUkzLLHEEP+Rcjz
+   l7e641NACodlCHACgg8hPK/3ZSlpFTP9UHAvmjj/pVI/OkDWM9R3FBQH4
+   nJd1PVqkjCkfBnlH9xu3saPu+3xqX6Yx4jvRbl1mQI9nDaBNl8KTghWrn
+   awF+lqYq4p+HnkgmZK2LpTWcZQCaEMfbEqWpKrRcMydVoJVQEdPUrscWT
+   zM/+kYmrD16LMcNC5nGBhXDrCbSY+UQKflrtCudr6oLohWtNMzIZjA8vr
+   8qGK0tNmpb8jYWQq6Nd7x18zi+uCPqGRypImcsNgSDFyjsi0icpiVDEan
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="383903036"
+X-IronPort-AV: E=Sophos;i="6.04,241,1695711600"; 
+   d="scan'208";a="383903036"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2023 07:00:41 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="763166038"
+X-IronPort-AV: E=Sophos;i="6.04,241,1695711600"; 
+   d="scan'208";a="763166038"
+Received: from stinkpipe.fi.intel.com (HELO stinkbox) ([10.237.72.74])
+  by orsmga007.jf.intel.com with SMTP; 01 Dec 2023 07:00:33 -0800
+Received: by stinkbox (sSMTP sendmail emulation); Fri, 01 Dec 2023 17:00:32 +0200
+Date:   Fri, 1 Dec 2023 17:00:32 +0200
+From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To:     =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Maxime Ripard <mripard@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Pekka Paalanen <pekka.paalanen@collabora.com>,
+        'Marek =?utf-8?B?T2zFocOhayc=?= <maraeo@gmail.com>,
+        Michel =?iso-8859-1?Q?D=E4nzer?= <michel.daenzer@mailbox.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-doc@vger.kernel.org, Pekka Paalanen <ppaalanen@gmail.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>, kernel-dev@igalia.com,
+        alexander.deucher@amd.com, christian.koenig@amd.com
+Subject: Re: [PATCH] drm/doc: Define KMS atomic state set
+Message-ID: <ZWn1EC04wBSN9hu2@intel.com>
+References: <20231130200740.53454-1-andrealmeid@igalia.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231130200740.53454-1-andrealmeid@igalia.com>
+X-Patchwork-Hint: comment
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joao Paulo Goncalves <joao.goncalves@toradex.com>
+On Thu, Nov 30, 2023 at 05:07:40PM -0300, André Almeida wrote:
+> From: Pekka Paalanen <pekka.paalanen@collabora.com>
+> 
+> Specify how the atomic state is maintained between userspace and
+> kernel, plus the special case for async flips.
+> 
+> Signed-off-by: Pekka Paalanen <pekka.paalanen@collabora.com>
+> Signed-off-by: André Almeida <andrealmeid@igalia.com>
+> ---
+> 
+> This is a standalone patch from the following serie, the other patches are
+> already merged:
+> https://lore.kernel.org/lkml/20231122161941.320564-1-andrealmeid@igalia.com/
+> 
+>  Documentation/gpu/drm-uapi.rst | 47 ++++++++++++++++++++++++++++++++++
+>  1 file changed, 47 insertions(+)
+> 
+> diff --git a/Documentation/gpu/drm-uapi.rst b/Documentation/gpu/drm-uapi.rst
+> index 370d820be248..d0693f902a5c 100644
+> --- a/Documentation/gpu/drm-uapi.rst
+> +++ b/Documentation/gpu/drm-uapi.rst
+> @@ -570,3 +570,50 @@ dma-buf interoperability
+>  
+>  Please see Documentation/userspace-api/dma-buf-alloc-exchange.rst for
+>  information on how dma-buf is integrated and exposed within DRM.
+> +
+> +KMS atomic state
+> +================
+> +
+> +An atomic commit can change multiple KMS properties in an atomic fashion,
+> +without ever applying intermediate or partial state changes.  Either the whole
+> +commit succeeds or fails, and it will never be applied partially. This is the
+> +fundamental improvement of the atomic API over the older non-atomic API which is
+> +referred to as the "legacy API".  Applying intermediate state could unexpectedly
+> +fail, cause visible glitches, or delay reaching the final state.
+> +
+> +An atomic commit can be flagged with DRM_MODE_ATOMIC_TEST_ONLY, which means the
+> +complete state change is validated but not applied.  Userspace should use this
+> +flag to validate any state change before asking to apply it. If validation fails
+> +for any reason, userspace should attempt to fall back to another, perhaps
+> +simpler, final state.  This allows userspace to probe for various configurations
+> +without causing visible glitches on screen and without the need to undo a
+> +probing change.
+> +
+> +The changes recorded in an atomic commit apply on top the current KMS state in
+> +the kernel. Hence, the complete new KMS state is the complete old KMS state with
+> +the committed property settings done on top. The kernel will try to avoid
+> +no-operation changes,
 
-Add Toradex Verdin AM62 Mallow carrier board support. Mallow is a
-low-cost carrier board in the Verdin family with a small form factor and
-build for volume production making it ideal for industrial and embedded
-applications.
+Not how things work. The driver may try to avoid some really
+expensive operations, but generally it will just blindly blast
+the full state to the hardware.
 
-https://www.toradex.com/products/carrier-board/mallow-carrier-board
+IIRC this was discussed long ago when atomic was being designed
+and the general concensus was that the kernel shouldn't generally
+do this kind of stuff, and instead we just leave it to userspace
+to generate optimal commits.
 
-Signed-off-by: Joao Paulo Goncalves <joao.goncalves@toradex.com>
-Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
----
-v2: fixed temperature sensor compatible (s/tmp75c/tmp1075)
----
- arch/arm64/boot/dts/ti/Makefile               |   2 +
- .../boot/dts/ti/k3-am62-verdin-mallow.dtsi    | 198 ++++++++++++++++++
- .../dts/ti/k3-am625-verdin-nonwifi-mallow.dts |  22 ++
- .../dts/ti/k3-am625-verdin-wifi-mallow.dts    |  22 ++
- 4 files changed, 244 insertions(+)
- create mode 100644 arch/arm64/boot/dts/ti/k3-am62-verdin-mallow.dtsi
- create mode 100644 arch/arm64/boot/dts/ti/k3-am625-verdin-nonwifi-mallow.dts
- create mode 100644 arch/arm64/boot/dts/ti/k3-am625-verdin-wifi-mallow.dts
+> so it is safe for userspace to send redundant property
+> +settings.
 
-diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
-index 77a347f9f47d..92ebf001a217 100644
---- a/arch/arm64/boot/dts/ti/Makefile
-+++ b/arch/arm64/boot/dts/ti/Makefile
-@@ -16,9 +16,11 @@ dtb-$(CONFIG_ARCH_K3) += k3-am625-phyboard-lyra-rdk.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am625-sk.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am625-verdin-nonwifi-dahlia.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am625-verdin-nonwifi-dev.dtb
-+dtb-$(CONFIG_ARCH_K3) += k3-am625-verdin-nonwifi-mallow.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am625-verdin-nonwifi-yavia.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am625-verdin-wifi-dahlia.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am625-verdin-wifi-dev.dtb
-+dtb-$(CONFIG_ARCH_K3) += k3-am625-verdin-wifi-mallow.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am625-verdin-wifi-yavia.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am62-lp-sk.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am625-sk-hdmi-audio.dtb
-diff --git a/arch/arm64/boot/dts/ti/k3-am62-verdin-mallow.dtsi b/arch/arm64/boot/dts/ti/k3-am62-verdin-mallow.dtsi
-new file mode 100644
-index 000000000000..77b1beb638ad
---- /dev/null
-+++ b/arch/arm64/boot/dts/ti/k3-am62-verdin-mallow.dtsi
-@@ -0,0 +1,198 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
-+/*
-+ * Copyright 2023 Toradex
-+ *
-+ * Common dtsi for Verdin AM62 SoM on Mallow carrier board
-+ *
-+ * https://www.toradex.com/computer-on-modules/verdin-arm-family/ti-am62
-+ * https://www.toradex.com/products/carrier-board/mallow-carrier-board
-+ */
-+
-+#include <dt-bindings/leds/common.h>
-+
-+/ {
-+	leds {
-+		compatible = "gpio-leds";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_qspi1_clk_gpio>,
-+			    <&pinctrl_qspi1_cs_gpio>,
-+			    <&pinctrl_qspi1_io0_gpio>,
-+			    <&pinctrl_qspi1_io1_gpio>;
-+
-+		/* SODIMM 52 - USER_LED_1_RED */
-+		led-0 {
-+			color = <LED_COLOR_ID_RED>;
-+			function = LED_FUNCTION_DEBUG;
-+			function-enumerator = <1>;
-+			gpios = <&main_gpio0 0 GPIO_ACTIVE_HIGH>;
-+		};
-+
-+		/* SODIMM 54 - USER_LED_1_GREEN */
-+		led-1 {
-+			color = <LED_COLOR_ID_GREEN>;
-+			function = LED_FUNCTION_DEBUG;
-+			function-enumerator = <1>;
-+			gpios = <&main_gpio0 11 GPIO_ACTIVE_HIGH>;
-+		};
-+
-+		/* SODIMM 56 - USER_LED_2_RED */
-+		led-2 {
-+			color = <LED_COLOR_ID_RED>;
-+			function = LED_FUNCTION_DEBUG;
-+			function-enumerator = <2>;
-+			gpios = <&main_gpio0 3 GPIO_ACTIVE_HIGH>;
-+		};
-+
-+		/* SODIMM 58 - USER_LED_2_GREEN */
-+		led-3 {
-+			color = <LED_COLOR_ID_GREEN>;
-+			function = LED_FUNCTION_DEBUG;
-+			function-enumerator = <2>;
-+			gpios = <&main_gpio0 4 GPIO_ACTIVE_HIGH>;
-+		};
-+	};
-+};
-+
-+/* Verdin ETH */
-+&cpsw3g {
-+	status = "okay";
-+};
-+
-+/* Verdin MDIO */
-+&cpsw3g_mdio {
-+	status = "okay";
-+};
-+
-+/* Verdin ETH_1*/
-+&cpsw_port1 {
-+	status = "okay";
-+};
-+
-+/* Verdin PWM_1 and PWM_2*/
-+&epwm0 {
-+	status = "okay";
-+};
-+
-+/* Verdin PWM_3 DSI */
-+&epwm1 {
-+	status = "okay";
-+};
-+
-+&main_gpio0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_ctrl_sleep_moci>,
-+		    <&pinctrl_gpio_1>,
-+		    <&pinctrl_gpio_2>,
-+		    <&pinctrl_gpio_3>,
-+		    <&pinctrl_gpio_4>;
-+};
-+
-+/* Verdin I2C_1 */
-+&main_i2c1 {
-+	status = "okay";
-+
-+	/* Temperature sensor */
-+	sensor@4f {
-+		compatible = "ti,tmp1075";
-+		reg = <0x4f>;
-+	};
-+
-+	/* EEPROM */
-+	eeprom@57 {
-+		compatible = "st,24c02", "atmel,24c02";
-+		reg = <0x57>;
-+		pagesize = <16>;
-+	};
-+};
-+
-+/* Verdin I2C_2 DSI */
-+&main_i2c2 {
-+	status = "okay";
-+};
-+
-+/* Verdin I2C_4 CSI */
-+&main_i2c3 {
-+	status = "okay";
-+};
-+
-+/* Verdin CAN_1 */
-+&main_mcan0 {
-+	status = "okay";
-+};
-+
-+/* Verdin SPI_1 */
-+&main_spi1 {
-+	pinctrl-0 = <&pinctrl_spi1>,
-+		    <&pinctrl_spi1_cs0>,
-+		    <&pinctrl_qspi1_cs2_gpio>;
-+	cs-gpios = <0>, <&main_gpio0 12 GPIO_ACTIVE_LOW>;
-+	status = "okay";
-+
-+	tpm@1 {
-+		compatible = "infineon,slb9670", "tcg,tpm_tis-spi";
-+		reg = <1>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_qspi1_dqs_gpio>;
-+		interrupt-parent = <&main_gpio1>;
-+		interrupts = <18 IRQ_TYPE_EDGE_FALLING>;
-+		spi-max-frequency = <18500000>;
-+	};
-+};
-+
-+/* Verdin UART_3 */
-+&main_uart0 {
-+	status = "okay";
-+};
-+
-+/* Verdin UART_1 */
-+&main_uart1 {
-+	status = "okay";
-+};
-+
-+/* Verdin I2C_3_HDMI */
-+&mcu_i2c0 {
-+	status = "okay";
-+};
-+
-+/* Verdin CAN_2 */
-+&mcu_mcan0 {
-+	status = "okay";
-+};
-+
-+/* Verdin UART_4 */
-+&mcu_uart0 {
-+	status = "okay";
-+};
-+
-+/* Verdin SD_1 */
-+&sdhci1 {
-+	status = "okay";
-+};
-+
-+/* Verdin USB_1 */
-+&usbss0 {
-+	status = "okay";
-+};
-+
-+&usb0 {
-+	status = "okay";
-+};
-+
-+/* Verdin USB_2 */
-+&usbss1 {
-+	status = "okay";
-+};
-+
-+&usb1 {
-+	status = "okay";
-+};
-+
-+/* Verdin CTRL_WAKE1_MICO# */
-+&verdin_gpio_keys {
-+	status = "okay";
-+};
-+
-+/* Verdin UART_2 */
-+&wkup_uart0 {
-+	status = "okay";
-+};
-diff --git a/arch/arm64/boot/dts/ti/k3-am625-verdin-nonwifi-mallow.dts b/arch/arm64/boot/dts/ti/k3-am625-verdin-nonwifi-mallow.dts
-new file mode 100644
-index 000000000000..9cae12106e0e
---- /dev/null
-+++ b/arch/arm64/boot/dts/ti/k3-am625-verdin-nonwifi-mallow.dts
-@@ -0,0 +1,22 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
-+/*
-+ * Copyright 2023 Toradex
-+ *
-+ * https://www.toradex.com/computer-on-modules/verdin-arm-family/ti-am62
-+ * https://www.toradex.com/products/carrier-board/mallow-carrier-board
-+ */
-+
-+/dts-v1/;
-+
-+#include "k3-am625.dtsi"
-+#include "k3-am62-verdin.dtsi"
-+#include "k3-am62-verdin-nonwifi.dtsi"
-+#include "k3-am62-verdin-mallow.dtsi"
-+
-+/ {
-+	model = "Toradex Verdin AM62 on Mallow Board";
-+	compatible = "toradex,verdin-am62-nonwifi-mallow",
-+		     "toradex,verdin-am62-nonwifi",
-+		     "toradex,verdin-am62",
-+		     "ti,am625";
-+};
-diff --git a/arch/arm64/boot/dts/ti/k3-am625-verdin-wifi-mallow.dts b/arch/arm64/boot/dts/ti/k3-am625-verdin-wifi-mallow.dts
-new file mode 100644
-index 000000000000..81d834b22649
---- /dev/null
-+++ b/arch/arm64/boot/dts/ti/k3-am625-verdin-wifi-mallow.dts
-@@ -0,0 +1,22 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
-+/*
-+ * Copyright 2023 Toradex
-+ *
-+ * https://www.toradex.com/computer-on-modules/verdin-arm-family/ti-am62
-+ * https://www.toradex.com/products/carrier-board/mallow-carrier-board
-+ */
-+
-+/dts-v1/;
-+
-+#include "k3-am625.dtsi"
-+#include "k3-am62-verdin.dtsi"
-+#include "k3-am62-verdin-wifi.dtsi"
-+#include "k3-am62-verdin-mallow.dtsi"
-+
-+/ {
-+	model = "Toradex Verdin AM62 WB on Mallow Board";
-+	compatible = "toradex,verdin-am62-wifi-mallow",
-+		     "toradex,verdin-am62-wifi",
-+		     "toradex,verdin-am62",
-+		     "ti,am625";
-+};
+Safe but not optimal. Any object included in the state will cause said
+object to be part of the commit, and side effects will also need to be
+observed.
+
+So if you add an extra crtc (either directly or indirectly) it will
+have a new commit inserted into the queue and thus and any subsequent
+commit will either block or be rejected with -EBUSY. Also for directly
+added crtcs an event will be emitted once the commit is done.
+
+Any plane added will also need to observe side effects even if the FB
+doesn't change, such as invalidating any internal compressed version
+of the old FB contents, PSR/DSI command mode/etc. will need to upload
+the frame to the display, etc. I suppose we could specify that if no
+FB is specified at all then these kind of side effects could be ignored,
+but that is certainly not how things are implemented right now.
+
+So for optimal behaviour userspace should be minimizing the commits.
+
 -- 
-2.25.1
-
+Ville Syrjälä
+Intel
