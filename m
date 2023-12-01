@@ -2,220 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C37E800177
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 03:14:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51F70800179
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 03:16:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376621AbjLACN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 21:13:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51592 "EHLO
+        id S1376627AbjLACQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 21:16:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbjLACN5 (ORCPT
+        with ESMTP id S229523AbjLACQR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 21:13:57 -0500
-Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2108.outbound.protection.outlook.com [40.107.255.108])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10A3E112;
-        Thu, 30 Nov 2023 18:14:03 -0800 (PST)
+        Thu, 30 Nov 2023 21:16:17 -0500
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2100.outbound.protection.outlook.com [40.107.94.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A3A9112;
+        Thu, 30 Nov 2023 18:16:23 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=B8eyqaLDqoLAuruXvTpTgd2qSu8HiQOMTJm8iAdtvQ7ehZZAubjj0L32rF+u0g2PfCUFiQl/DxU9+cQ8H6MEWDAONoWDPdAfsgo5tSpd1E5700Qd6sNiApLyHi6QLUIzuaiOVXvt4boOKXmuyxtTxopwqD2z0E27wN3gKHLL8bmrPh1GsSOWni8d5tPRTgLCl4CUdyjDZUc29CA5tMgPlY+Rzt4vCm1uUNb/SCb1RqOwfE7AL28nwQDG1NvbXOur4fp9Wr3NET7MkHsAEs2HMxuXa7aWx/JoOYGs+772oNfnCuQC2dT4Qimf8T2JrgONZ6IMWhuxTWPO31OQOqnhIQ==
+ b=l4q8PTko8dlooLZjZb934k4BI6htjGm6fMOPnbQylOv5YV8ceqP/WnbXif29u4GD/tAGe6INdJ8f2MlSTCiRK+MnH2qH3TFhW8fNi0snroO70xuLKnjrONafqcu1cI4D9bqUq8mCIrKyoNlJu/ww10hSB57fFGLhlUqKXnUCEiBRa0V4+aieIUiASBQRzy9Au4aHjmXaZLYFfCrAHLkHJ94U5aAhSZY7Ib+7kTc9LG+QRtohqvPYPoTlBR9LBXUkCuSLBwY0LebSURAjPU3GA49tdssc1IJS22QlhNQT9dN4j/yuSNH4LkTNJ1XZ61mkwWvIRvNNtBLvuUb6J3anTA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lvY2NvlvqTAames2zA9gKuIi5NWGpocv4rnlEWye6+c=;
- b=KWmkdOTJ+sjhYrdKfkVf7J9WjEM6LvZP2Bj5q4rCBekalRIlnKf4dlbh6bpjBbFFRgX5B0NAzZNA54QIn4txqrle+N3DUkwngaNgp6/qUNiP+CtRzxbIpt+Wn7vg/hRmZDrEaA608W2KLLc7P+DuxKAaF8IxB8wGKf5XDfcjr1ELUaY8s62sN+EKZ/tyZZBV91bh+pwRGOzxVvH6gJdq3I3rY/AfqyUvmVBRBce9bmpsg7PxYaSNQAI7O01Pqj+RAlLrL2xmqBx7+xZIupEFKBL7SO/5T2pS1Ks86eJQYez24Y0q65BDHN5NL80Ajr9X+WXNNgxjbpSKYCv36JfxTg==
+ bh=zGurZVkYhzSqmOTmu3ByfEKKBypjGyVnMq0JnmaeEWI=;
+ b=hIWMVieFd0eN1+fzToU4fsFHmXnDpJNdB4U8cxAJjF3Vmyzu48JCGYpyYhu3Y6nZb97owLJDfYlLGruNJFoOK5CRE0XzyE1KZ9dwsew5BBnCwkE/Bj9he57mv8oF6bqs54bzGI73YdTj19QmflV8K+jomsCQum263n0JhLjf5fFBz/B061UZ4Ok/etu6lJWPpsBSANBIxOVFThqjIHh5y414hgVbB2lc+V2zvEuyYSSrWspKbS3lcrqRP/bz3iKakcKGqNhHOjAFWl/od3s1kYzBp2+bZ5bghzEQZxfAC4DVQr0ZTjQwp+Cu6qamdr21Q/I9Rez40fG0a0x+KiAljQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=os.amperecomputing.com; dkim=pass
+ header.d=os.amperecomputing.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=os.amperecomputing.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lvY2NvlvqTAames2zA9gKuIi5NWGpocv4rnlEWye6+c=;
- b=ic6YaAEHEnLkh3eT8cqqa76KDXpbwJsxeV2Tny1pUEaobxs5F7eXYQRK5SEu56nk/iRPgqUF64PclSgK1bLUjuDWgzdaa/h7k2uiuMKJwtIP765OibIOcp7OQodrXDTJmiSDRhpnLDO1JKeucdf8rXyNgNSCQlQenO9cdCNVE0e/msmBdpKzUI6240h9SqcOxF5yFNve33M9OKrmS1eE8wBLPx+4nxv0od5Z8V7FlZOm0KMy/CklznwJjpwiJS6yriz9g2WlAjVPKtjj/7DwF1o/EvwMYCfyqFygYen6DhyWHulqJVavzaaHd2K0f4dYpZf7Xw7PxPbLFF+kvJX9hw==
+ bh=zGurZVkYhzSqmOTmu3ByfEKKBypjGyVnMq0JnmaeEWI=;
+ b=GeUlPeBYGEUSEnpZhM/O5okYf6sUj3S6oKDuuQdLMQX39F50JJ1E4WhqC/5gUZwF0gIunutxwSX9nXB78ELFJpAmiQwc9bbig6q0fTvkLcHokG6LGAP+TDmjAT/cy8G/22FXTQqiFKpWQeeocUw/ZA8u13fPuSFn5ecjlsOS0NY=
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from PUZPR06MB5676.apcprd06.prod.outlook.com (2603:1096:301:f8::10)
- by SI2PR06MB4609.apcprd06.prod.outlook.com (2603:1096:4:142::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.27; Fri, 1 Dec
- 2023 02:13:56 +0000
-Received: from PUZPR06MB5676.apcprd06.prod.outlook.com
- ([fe80::d754:7b3:dc4c:6b48]) by PUZPR06MB5676.apcprd06.prod.outlook.com
- ([fe80::d754:7b3:dc4c:6b48%7]) with mapi id 15.20.7046.027; Fri, 1 Dec 2023
- 02:13:56 +0000
-Message-ID: <abc73ea8-f172-422e-bc58-7424e47636b8@vivo.com>
-Date:   Fri, 1 Dec 2023 10:13:50 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/1] mm: add swapiness= arg to memory.reclaim
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Dan Schatzberg <schatzberg.dan@gmail.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Huan Yang <link@vivo.com>, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Peter Xu <peterx@redhat.com>,
-        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
-        Yue Zhao <findns94@gmail.com>, Hugh Dickins <hughd@google.com>
-References: <20231130153658.527556-1-schatzberg.dan@gmail.com>
- <20231130153658.527556-2-schatzberg.dan@gmail.com>
- <ec8abbff-8e17-43b3-a210-fa615e71217d@vivo.com>
- <CAJD7tkY-npqRXmwJU6kH1srG0c+suiDfffsoc44ngP4x9H0kLA@mail.gmail.com>
-From:   Huan Yang <11133793@vivo.com>
-In-Reply-To: <CAJD7tkY-npqRXmwJU6kH1srG0c+suiDfffsoc44ngP4x9H0kLA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+ header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
+Received: from DM5PR0102MB3590.prod.exchangelabs.com (2603:10b6:4:a4::25) by
+ MW4PR01MB6196.prod.exchangelabs.com (2603:10b6:303:71::21) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7046.24; Fri, 1 Dec 2023 02:16:19 +0000
+Received: from DM5PR0102MB3590.prod.exchangelabs.com
+ ([fe80::49fa:8dc0:6fd1:72e6]) by DM5PR0102MB3590.prod.exchangelabs.com
+ ([fe80::49fa:8dc0:6fd1:72e6%4]) with mapi id 15.20.7046.024; Fri, 1 Dec 2023
+ 02:16:19 +0000
+From:   Ilkka Koskinen <ilkka@os.amperecomputing.com>
+To:     John Garry <john.g.garry@oracle.com>,
+        Will Deacon <will@kernel.org>,
+        James Clark <james.clark@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ilkka Koskinen <ilkka@os.amperecomputing.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org
+Subject: [PATCH 0/3] perf vendor events arm64: Add AmpereOneX events and metrics and fix AmpereOne bugs
+Date:   Thu, 30 Nov 2023 18:15:47 -0800
+Message-ID: <20231201021550.1109196-1-ilkka@os.amperecomputing.com>
+X-Mailer: git-send-email 2.41.0
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SG3P274CA0006.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:be::18)
- To PUZPR06MB5676.apcprd06.prod.outlook.com (2603:1096:301:f8::10)
+Content-Type: text/plain
+X-ClientProxiedBy: CH3P221CA0024.NAMP221.PROD.OUTLOOK.COM
+ (2603:10b6:610:1e7::33) To DM5PR0102MB3590.prod.exchangelabs.com
+ (2603:10b6:4:a4::25)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PUZPR06MB5676:EE_|SI2PR06MB4609:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3c7aa811-c018-4375-352c-08dbf2132bba
+X-MS-TrafficTypeDiagnostic: DM5PR0102MB3590:EE_|MW4PR01MB6196:EE_
+X-MS-Office365-Filtering-Correlation-Id: c5c92bb7-88bb-46c6-d902-08dbf2138120
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 02asBQPUeTYmKv7MChC9iiXZjeVVo+/fpV88hYREV94AYzVW/OEkhBDJCPwc2V4F5n+XwssSnOtGccgawtY0sZ9zLpPaN2lcxSnRDW5wtGJzQsL7hAoiKS+mtWhMVNpAdv2RzXAu55IYN5ZLlvYxz9/CUOGBvCTx1PFW2PnLibVGvjncIltw21N2eAxwTvwD1loiCGMN+3wi3wu2WO/k/2qhdFA95jmaKIS6/mN/htkdIeAYVmw2e61s38JxiGrZHWcrtO69lbFJOEmLDMQh0Y0I4/oW91p0NBAU+W5hvsvn/ch/wAfgFCEFFH1IdWhmWjd/GZV7mp+/m7Jp4DxxXQKVbp7jpwM7CpIqKwVHo+3rOM2ygsiy7x87eUsLZ1ST32OnMqqbt0GZjpFxFc3yGJYrINCpRe0mpucWcJKz5urUWujmaTl+UrRUnWxg6Eu6F8yEsYKOd9wVFzetQxeq/C8sw4ss6a8rlzglKhkZpPEs+HoZK99ApXKFYF+aNe4n6E1KKuIGFtpRgiXQSBcXaAe/V7GL1gNbmp2ocBduDtmhP+O+Jm71jZvH9uaIVOSLEliXZsRv7/oYX6wCV1dSq0ysK64Twm+1BxoELKsPU+NRHJZ+6oUvIb1OpP2oc0kBDM9AWL7blvU7Mi5Z2pxqaf3fFj497/c+tO7RSYUaaWhWYMrxHT9QNgStPg6JPUrh9KopCtbipm3ptp2NsXNPiw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PUZPR06MB5676.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(136003)(396003)(366004)(39860400002)(230922051799003)(186009)(451199024)(64100799003)(1800799012)(316002)(66476007)(66556008)(66946007)(6916009)(54906003)(6486002)(478600001)(6666004)(5660300002)(7416002)(38350700005)(41300700001)(36756003)(38100700002)(2906002)(31696002)(4326008)(8676002)(8936002)(2616005)(31686004)(26005)(6506007)(52116002)(6512007)(83380400001)(81742002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: KYzvshdQnXxjJkvuYWP/jBSzmWQKYYi54K21Lmc43PRtURDtOumZd8PNx01eHAnsmRCIGb6MNC7U0VWRAxkm/RVbtuntT2/QV35DmWojDChPBLxRkDhfwyHr4P+NNlAyZTas4A6As+7/oefkyFCxV2o3EMDZhbrXbGo5Dq0/rDZS0nsTFW6f+0kZNhCptWXsDvb/Q9Ju8BkFaDia6Sd4dppyvqBuCgeip+Ti9z5a0s7XACjdQhPrB/0W/7yWycxIeKfl+VfUC0MyaYT5nP/KqZ2hCK88U6MChzvCArQLX9JxfrYyl9gP17U/PbR0f7POrWuKuWoO6pxFHV5opw2NeMoMXFWgVt2NHXCzKn+jOlJCid85SaZ8OYa0L4gJwZbLtYbfyRFCqFN/VChN0S5wvildblc3yNG6LomOElIQCmnlOcfMt1CVi/rt9g/7iXl/kkUFC0wnYR0ADkE4Ufeh/823bFpiymyxNXRm/MENiv8mGBcPtjLwNhos13bdQLkXlTMNKwRywJnPr7dXL/Gf5B6RLO7blkF/lumN3u/2YIbt0B16ofrLFNMu3B2Dh5KJNo529XpJ0E05xjuGBoqDa6yNAwXlV04SxOu/NNSlTXIBAsd+fI6ojudi8BuLZzAZbxC8FTXMUcSRkZfi7D1BzQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR0102MB3590.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39850400004)(376002)(396003)(366004)(136003)(230922051799003)(64100799003)(186009)(1800799012)(451199024)(1076003)(921008)(83380400001)(26005)(38350700005)(38100700002)(41300700001)(7049001)(52116002)(6512007)(2616005)(6666004)(6486002)(5660300002)(2906002)(7416002)(316002)(6506007)(66556008)(110136005)(66476007)(66946007)(478600001)(86362001)(8936002)(8676002)(4326008);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?emtZOXZ0VUtKaDRESkZFU2l3WHhoZ251K3l2NEJhZlczejRGeDlEYlhhUkNQ?=
- =?utf-8?B?YzBvazNOeGhNRWJYTmY5L0lLMEJ0c3ZhOHdiV2RMa1dvdzE3d2ZCMzZlZ1Vl?=
- =?utf-8?B?YWxST1pFTUVGdlJCajA1dDEwa096aVZlUUppeUlRbEJkTmZDWnlGWnRYR0JW?=
- =?utf-8?B?TlprOWxRYnFSbkNILzJTWUo2YkZPSVBob2xoREpBOVRCR1Zoa2o2ZjlnazZU?=
- =?utf-8?B?WndUZFJoTVZDQmh4ZWVJL3JreEJvbVpVTFJ2bG1ab0dTMTNWMXpsNlovMTZ6?=
- =?utf-8?B?bmJjb01yblZ5cjFzdTJ5RDVuOVFaYk1qU0E0SnpnUXNuUFFRWG55TnAxZ3Ft?=
- =?utf-8?B?cEI2QW84bHZLdjVqWUJWcE53dXl1TG5lblJaRUEvMlozYnZHTVJ5Sk91TGE3?=
- =?utf-8?B?S3RaREFRb1Z2ZWJOLzBZUHNEUFlxRUJiNkJjYU9CRjB4QXZqWEJoYWVBQVpy?=
- =?utf-8?B?QXRzdUJtMlN2MzZCV0xRUGdWampXblhrR2hqeUlLM1hQUXUvOUtWMy85OEZL?=
- =?utf-8?B?b0pickFFaElnMkkzSXFyK2NFaVBhRlBJOXMwZXUrMllReFpwamdKajZsQU9n?=
- =?utf-8?B?bFJ2QUxLOExLYXRydExaQTE5Q05vSnhCRzQ4amJJdDgvejFFdDRCUVJuakZK?=
- =?utf-8?B?NEczeHZPMllNTGVRTUUvZW1ZSVFsVjBrVkg5aUp2QzFoY01CY0xybGFMTFNn?=
- =?utf-8?B?TUQ3blBBb3JOTjFFcU1pVkthZWQyZXJKZmJuRUlMdlRXNktOVFphQlA2SG1P?=
- =?utf-8?B?ZUM2amN1b0xkOWw5YlpLajM3NFpzOVk1S2o5Y21URnVId011TU1yQW0wY2Rq?=
- =?utf-8?B?dmgyVEgrenhnSU9KNFBPVFN3dzlTSXlRQVh5QzBPZlc4NDRpZkFNemgvNUY1?=
- =?utf-8?B?TCt4ZGNhVXNqTzVSdDBXZk9MUTQ1L0pNL3kwRHhKRXNaM3VLc1Qxblk5aUhS?=
- =?utf-8?B?NFlQQmRybXVyYThmWGVCRnJkNU9ZWlJoVkV5ZzVtWHZNY3BKdnNZelJRcXl5?=
- =?utf-8?B?c3BoN1RVTHJDaGxWcjQvSEhqY2l4bVdVT3NxbnhvZmhHRWE1UXE2a1hnRFph?=
- =?utf-8?B?eVVLRlRwQ3M2Z2VnZWFyMEJIRTdVQlFBN1VRd003VUJaK0ExeTRrNjZKOG9H?=
- =?utf-8?B?dittNm1kTXhvQmtKeWJtUzdIZjYvVm8wc1B3cUZxS1Z4aUtQYURGMzR3aXBQ?=
- =?utf-8?B?THg0VEMzNStxd3lta3dOdTFTVnNFVWlYZVl4enR4dENpemhZSG41aCtBdnFL?=
- =?utf-8?B?MHBqUHN4OExkS0JKUElKRHhsOXZTVzNsb0pBa25kL3M0aC9nd1VxWnhWNTZK?=
- =?utf-8?B?RWJOTlp4N0ZJbUFReEFWSEZrL0pQS0MrMG9TZzlPaHZldm03UkY4dTlLUVFL?=
- =?utf-8?B?VTRnSXhwaVhGTlpuM0k2V0gyTFBkUjdqNWdPZHI4ZmcxMFRrT0x0TWJlR0pk?=
- =?utf-8?B?NCtldks2OHdidkJnK2hWT1FTS1UzL0J3TWlOaC9RRzdpNVpsRDVDdElTU3o5?=
- =?utf-8?B?WVVKUFRhamZveUdqUTZYTEUrZTlRcTc3dktBblQzK04yZyswbDR2NjcyN3pv?=
- =?utf-8?B?bkdobWF2Ylh3V2xndDNhb0h5YUpvMHQrRVRkUU9ENTVFcEpWKzlmdnp5bXcz?=
- =?utf-8?B?TVhWT3MrQy8yZll2VFZPOGl0RWsxOUtha1FDeGFWbDh2bzVEZTJQRk5wazlJ?=
- =?utf-8?B?Q0NrcXN3ZVZGY1hYTTFxNlZZekkzc2tBUDcwWk9WRHhITDZaR0lQZlh2WmJY?=
- =?utf-8?B?Z3pUaEQ4SFFuMmgvaEZqanRXYnh2YVJySGc4S0wrd3ZlRzNoRGdiUTVOYnE2?=
- =?utf-8?B?NjdpQ0RuSWFtbm9YS1AvRVV3TktlYlBsbjI5S1MwczVPN0dYK2FBd2pqVlNR?=
- =?utf-8?B?dDQzOGhLWGl1M1BCY1ovcFZmK0xweDNHQTdYZkVRcXJrRzV4WFdjcVVaVGdn?=
- =?utf-8?B?T0VSNmhyUGVCTWFkdTNpYWlSMWwzbTRrNjhXbUN2NWVMbXdiTitLRnpmYVhr?=
- =?utf-8?B?bSt6NjliLy9UK1liL1AyUkFMRkdQYlVKVkRvaFIxTDRUVCtZY0dlYUNpK1F1?=
- =?utf-8?B?UTNRNUJYWmUxc2h6L2ttUFBTYTJ5N2FkVWhpWkoveGdkNEFsZDRJNTllc3Bj?=
- =?utf-8?Q?qdqvsbBY7Bc2bK9fJruRmKqI6?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3c7aa811-c018-4375-352c-08dbf2132bba
-X-MS-Exchange-CrossTenant-AuthSource: PUZPR06MB5676.apcprd06.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?2CKHjUzXInfLWbkFxXBWl2spu+d1rG1Fq0cAuNpyl12HB61OQ06ZaprWBIPx?=
+ =?us-ascii?Q?1Baow3fdWdrPqKvk5gQZrEAZswX5TzG4J0c2iiKO0iOZgkEXhqc1rBk7KAuE?=
+ =?us-ascii?Q?BZGBf1E/rUCwPR+ATiAPmMQHCgODSnFZZSjpzvPGDAtBFCfirA9jlG05QXpr?=
+ =?us-ascii?Q?nR7a5iL8wh5tQvUmIKZHwopMUerA+o/Oooj7zVr4yjNr5r0IFENazzek/tNx?=
+ =?us-ascii?Q?O6YYfSQxVBdG1SHKmjlz4NvdBChwogZsZ64kG4fz6CPArIZ8dqL8LkWg1OE2?=
+ =?us-ascii?Q?5lMXukqJPudH+JRMJAT2RknAUh3uYI9gfQoHdCe9TYHxZ28HYOoMP+u5dUZs?=
+ =?us-ascii?Q?umtELw1gHQ7PEWFaxgUXrRlcRo+5q845x7GW9qkAq5z5zcqAQ+YemE1I4UHI?=
+ =?us-ascii?Q?bTxN5PHXGDrbknzliYGgWVyZ1nq6aM1zgexTiKghm4bEgZPCG9wSyiuco/R+?=
+ =?us-ascii?Q?hDasGtE1CtDw2ANKhF/iC7/rYk/qezFuZwZbmS3sMDU8ZL/43Q9WgiCIfshc?=
+ =?us-ascii?Q?4kIVao1c15q0h9fBuhRDdVxl3Bh8iLHwSp2sEAzDygYJcw44eudqajDdvrna?=
+ =?us-ascii?Q?it45tRLWNxIYGX6X8kOkV6SkQHmcUsWmF7CH6jAtIdFzYmEWVOYBJFQ4uZoM?=
+ =?us-ascii?Q?OP1BLPOPCqFOT/OtANWt6rgpltcuEPjjZT+bFU7+renEOPuKgQGLnpNNIrC3?=
+ =?us-ascii?Q?oRRRUeyH1OXPYiG3YMM9RhqeSjdaFpdH4/Wx+Ra44/OqIAhK+ru9vM3H6wFn?=
+ =?us-ascii?Q?6ws0SUme7Wr/TqZIkip1kIPsfS1e83RkxKzGj6ExqkXqll/4SwUN86ITs+e7?=
+ =?us-ascii?Q?dY12Ko3CVwOhHRx2nyAVXMRnEVr6DKeNaheK8XC/llXuNGKbk6Zuc0t7dGXx?=
+ =?us-ascii?Q?3sTbvrUWGsAiOt9MpYTIVnMPs3TzLHpXrwwNhy8aXQNVRzQLLmcuistI683+?=
+ =?us-ascii?Q?AdYXHs/VryTJnWLNYQbwZqeqjg/VqrSMcnxRH/EsmHlDJtcu6UN91RNO09tV?=
+ =?us-ascii?Q?fgvry2Oy4NvRL4g2mTNOWphx5Lo2zTH1EJ1jL/PTc/xTVjnQIzsJl65tTZ6R?=
+ =?us-ascii?Q?5LPiURV3me6kp040KogIRj7WVYSZwBefHCGkqQLk7gy8kscXcrdioatWyiIo?=
+ =?us-ascii?Q?qBuZpOuAyMhtptqi7f00tz7YahvijHpI00SDtLM8azrO18drvchV7l8I6TDt?=
+ =?us-ascii?Q?LdjIXdqCyfnQDOStCaEDuhyyVxK/ciOf3c8byp7XcFDIAiuVu4vzzieQeoHO?=
+ =?us-ascii?Q?7J7p2+fN6w3LvvNx0uTX0Uuw8ijqXZ1hQgeMCGAigMF7gl0Hxq7F9AixGUX0?=
+ =?us-ascii?Q?VOeZslXFtdpqx5XSEvfFDKMmcHLA3fCDGq9gcIYbhjtO9np79dkjYiKNzrOs?=
+ =?us-ascii?Q?K5jy7ferTHj5RRUx8LywGqUfE8gmfTKH7gGx68nTDLJ4LC+8yPulPx80YSpF?=
+ =?us-ascii?Q?AbJ1uk+QP//wsWOrPt+VHX+DtxG0+3SFFVPsj4NRLOP8vFHgPd/V0f7W6isB?=
+ =?us-ascii?Q?rt8ilbEXnpG73SfLMlyfN0SzTB3RE13LGFL2oaz2hPhu7U8kI6sPAP977ADh?=
+ =?us-ascii?Q?U0NjxIWF7iuS/ZuWAKHmQKlsy4VAZzhhcEnWZQ1gWq8aRa1k5hfQ8ImPN7oc?=
+ =?us-ascii?Q?ASF/65u6Tmje5LX/LJXjA1o=3D?=
+X-OriginatorOrg: os.amperecomputing.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c5c92bb7-88bb-46c6-d902-08dbf2138120
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR0102MB3590.prod.exchangelabs.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Dec 2023 02:13:55.6412
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Dec 2023 02:16:18.9527
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: mPFklL2qL54FWxO6CWlt/+O+y3ms7nrQoF9+kedEZO8XKI7ZktZzoQFJNHriI11Wa2OOc5OwVYVxAH2xFzkEpQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SI2PR06MB4609
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-UserPrincipalName: n4h/Jts5+exFct3WQKVPp8boHlCJN4XRQPIfyupjZ9dOO9a/sOIZDZu0ouwiiWsZtls34v+TD4zArIKmIYMr//4PafZ8XCIgS2l7fyfBoQwIG7iaRbwqwgmJHHq00a27
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR01MB6196
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add support for AmpereOneX Core PMU events. In addition, fix typo in
+GPC_FLUSH_MEM_FAULT's name and add missing DefaultMetricgroupName to
+metrics.
 
-在 2023/12/1 10:05, Yosry Ahmed 写道:
->> @@ -2327,7 +2330,8 @@ static void get_scan_count(struct lruvec *lruvec, struct scan_control *sc,
->>          struct pglist_data *pgdat = lruvec_pgdat(lruvec);
->>          struct mem_cgroup *memcg = lruvec_memcg(lruvec);
->>          unsigned long anon_cost, file_cost, total_cost;
->> -       int swappiness = mem_cgroup_swappiness(memcg);
->> +       int swappiness = sc->swappiness ?
->> +               *sc->swappiness : mem_cgroup_swappiness(memcg);
->>
->> Should we use "unlikely" here to indicate that sc->swappiness is an unexpected behavior?
->> Due to current use case only apply in proactive reclaim.
-> On a system that is not under memory pressure, the rate of proactive
-> reclaim could be higher than reactive reclaim. We should only use
-> likely/unlikely when it's obvious a scenario will happen most of the
-> time. I don't believe that's the case here.
-Not all vendors will use proactive interfaces, and reactive reclaim are 
-a normal
-system behavior. In this regard, I think it is appropriate to add 
-"unlikely".
->
->>          u64 fraction[ANON_AND_FILE];
->>          u64 denominator = 0;    /* gcc */
->>          enum scan_balance scan_balance;
->> @@ -2608,6 +2612,9 @@ static int get_swappiness(struct lruvec *lruvec, struct scan_control *sc)
->>              mem_cgroup_get_nr_swap_pages(memcg) < MIN_LRU_BATCH)
->>                  return 0;
->>
->> +       if (sc->swappiness)
->> +               return *sc->swappiness;
->>
->> Also there.
->>
->> +
->>          return mem_cgroup_swappiness(memcg);
->>   }
->>
->> @@ -6433,7 +6440,8 @@ unsigned long mem_cgroup_shrink_node(struct mem_cgroup *memcg,
->>   unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
->>                                             unsigned long nr_pages,
->>                                             gfp_t gfp_mask,
->> -                                          unsigned int reclaim_options)
->> +                                          unsigned int reclaim_options,
->> +                                          int *swappiness)
->>   {
->>          unsigned long nr_reclaimed;
->>          unsigned int noreclaim_flag;
->> @@ -6448,6 +6456,7 @@ unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
->>                  .may_unmap = 1,
->>                  .may_swap = !!(reclaim_options & MEMCG_RECLAIM_MAY_SWAP),
->>                  .proactive = !!(reclaim_options & MEMCG_RECLAIM_PROACTIVE),
->> +               .swappiness = swappiness,
->>          };
->>          /*
->>           * Traverse the ZONELIST_FALLBACK zonelist of the current node to put
->> --
->> 2.34.1
->>
->> My previous patch attempted to ensure fully deterministic semantics under extreme swappiness.
->> For example, when swappiness is set to 200, only anonymous pages will be reclaimed.
->> Due to code in MGLRU isolate_folios will try scan anon if no scanned, will try other type.(We do not want
->> it to attempt this behavior.)
->> How do you think about extreme swappiness scenarios?
-> I think having different semantics between swappiness passed to
-> proactive reclaim and global swappiness can be confusing. If it's
-> needed to have a swappiness value that says "anon only no matter
-> what", perhaps we should introduce such a new value and make it
-> supported by both global and proactive reclaim swappiness? We could
-> support writing "max" or something similar instead of a special value
-> to mean that.
+Ilkka Koskinen (3):
+  perf vendor events arm64: AmpereOne: Add missing
+    DefaultMetricgroupName fields
+  perf vendor events arm64: AmpereOne: Rename BPU_FLUSH_MEM_FAULT to
+    GPC_FLUSH_MEM_FAULT
+  perf vendor events arm64: AmpereOneX: Add core PMU events and metrics
 
-Yes, use other hint more suitable for this scenario.
+ .../arm64/ampere/ampereone/core-imp-def.json  |   2 +-
+ .../arch/arm64/ampere/ampereone/metrics.json  |   2 +
+ .../arch/arm64/ampere/ampereonex/branch.json  | 125 +++++
+ .../arch/arm64/ampere/ampereonex/bus.json     |  20 +
+ .../arch/arm64/ampere/ampereonex/cache.json   | 206 ++++++++
+ .../arm64/ampere/ampereonex/core-imp-def.json | 464 ++++++++++++++++++
+ .../arm64/ampere/ampereonex/exception.json    |  47 ++
+ .../arm64/ampere/ampereonex/instruction.json  | 128 +++++
+ .../arm64/ampere/ampereonex/intrinsic.json    |  14 +
+ .../arch/arm64/ampere/ampereonex/memory.json  |  41 ++
+ .../arch/arm64/ampere/ampereonex/metrics.json | 442 +++++++++++++++++
+ .../arch/arm64/ampere/ampereonex/mmu.json     | 170 +++++++
+ .../arm64/ampere/ampereonex/pipeline.json     |  41 ++
+ .../arch/arm64/ampere/ampereonex/spe.json     |  14 +
+ tools/perf/pmu-events/arch/arm64/mapfile.csv  |   1 +
+ 15 files changed, 1716 insertions(+), 1 deletion(-)
+ create mode 100644 tools/perf/pmu-events/arch/arm64/ampere/ampereonex/branch.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/ampere/ampereonex/bus.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/ampere/ampereonex/cache.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/ampere/ampereonex/core-imp-def.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/ampere/ampereonex/exception.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/ampere/ampereonex/instruction.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/ampere/ampereonex/intrinsic.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/ampere/ampereonex/memory.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/ampere/ampereonex/metrics.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/ampere/ampereonex/mmu.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/ampere/ampereonex/pipeline.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/ampere/ampereonex/spe.json
 
-However, from this patch, it seems that this feature is not supported.
-Do you have a demand for this scenario?
+-- 
+2.41.0
 
->
-> Writing such value to global swappiness may cause problems and
-> premature OOMs IIUC, but that would be misconfiguration. If we think
-> that's dangerous, we can introduce this new value but make it valid
-> only for proactive reclaim for now.
