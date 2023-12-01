@@ -2,73 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6712180129F
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 19:29:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F5558012C4
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 19:31:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230325AbjLAS2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 13:28:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60716 "EHLO
+        id S1379172AbjLASbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 13:31:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbjLAS2w (ORCPT
+        with ESMTP id S229534AbjLASbX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 13:28:52 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F64FC1
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 10:28:58 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3274AC433C8;
-        Fri,  1 Dec 2023 18:28:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701455338;
-        bh=GRzvb6K1F09jnFNhMGdAakhzpcFCOUV6/A//CTedh4I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=A81vm8AffuWGRBlTGQ6h8Ukd3z/U1Ud6I5sNaVbK5J3kTwKD/u3+evexovH0kUvYr
-         PtSE3KDikxJeZNGdGkSNH0mc6fmmAylgGwpToBd04E2B4LbMW14o+TcWeY25snyHDw
-         fTtnf9n4lwHqrh8lDDaUZCoi9HMWqYsmkT0aVi2nsRZuoTN4oUBdH8i/5U/p/PTbu2
-         S2lGZJkv12gi0Q+9npLmBClZCuduDTBzgKiVkuRAouu7FmM1eWtUXxo2EweuRo9LfK
-         ViEAJXevymtpRykKPA7pw6Da9zAy2v538ZItO3J830G494ZzD5isvKvrohPdYQ50j0
-         m6yojiW2HtnTQ==
-Date:   Fri, 1 Dec 2023 18:28:48 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
-        Deepak Gupta <debug@rivosinc.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-        Will Deacon <will@kernel.org>,
-        Kees Cook <keescook@chromium.org>, jannh@google.com,
-        linux-kselftest@vger.kernel.org, linux-api@vger.kernel.org,
-        David Hildenbrand <david@redhat.com>
-Subject: Re: [PATCH RFT v4 0/5] fork: Support shadow stacks in clone3()
-Message-ID: <37a35edb-e72d-4983-8be7-67c56d2292c5@sirena.org.uk>
-References: <20231128-clone3-shadow-stack-v4-0-8b28ffe4f676@kernel.org>
- <ZWjb6r0RWPo199pC@arm.com>
- <fce4c169-5d19-40e8-bc32-0abec9bb008e@sirena.org.uk>
- <ZWoYLs2STGA1LZLU@arm.com>
+        Fri, 1 Dec 2023 13:31:23 -0500
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38AD6C1
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 10:31:29 -0800 (PST)
+Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-6cdd28aa7f8so2327913b3a.3
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 10:31:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1701455489; x=1702060289; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ga3+iKjA62Fa6KbPgroTk3zWELzaacYSZ02Ed8CuNZM=;
+        b=bxgEyueOZAnQphyhoXq+kHAIBv2uqcFALaBHS/qh6qysSt6be1qSPaD7prM/eJnSw7
+         +Ikv09MrPqjYMD+N+zuij8PWmZW0fstyim34jalRP1o8OAc5eV0T0sdmZzHu5hAQw2Rm
+         xHPF539GQrw49LYIdIlm9h49bc0lOHqBjAOs0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701455489; x=1702060289;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Ga3+iKjA62Fa6KbPgroTk3zWELzaacYSZ02Ed8CuNZM=;
+        b=KyAJVDWX4HtVffE6Kvmy03VsBbr8lsJES2f48cDCb9L9BX/3kxxYtRUgLVoe9rmWGD
+         NTDXpVxq2uudyQAgV23kCyIk09MHdhT7dxZX/PSbpa6pWp0xyd498Qhzm6IkewwHs5qV
+         AxLZJJjOFCGSBn4/7sWLiEaPzvj0HbeH3myG/OAqBo+TOO3gWGy67bQEukS7kXeq5oeT
+         qI8sqF0KjAiM/cCp5PkgY3MkVzT/GqJjuk1EgYlxOotenmgtwCxpTAI35tAWr461eOMt
+         xlRTQYlDkv/qdcYSh2kfjl9xK1SLVqJP/NpSVTORoBc7iiMaBaGHgzE8pc6tD+/5H8+c
+         7rvA==
+X-Gm-Message-State: AOJu0YxImvUoNrJZSvPL773UEWpCBfr9hL43jO55WJ7KkowKofp/nj8b
+        cHNyI67S4T0o5WtZJf8nBGdJsg==
+X-Google-Smtp-Source: AGHT+IHbE+wbfalZufbhJj+tBtKr6YsDYezEXtezfVLD2wtXqSnvF5LqZTRKvLOu6DAzM7mOVEHhuw==
+X-Received: by 2002:a05:6a00:1f0a:b0:6cb:63cb:83c0 with SMTP id be10-20020a056a001f0a00b006cb63cb83c0mr29667323pfb.29.1701455488688;
+        Fri, 01 Dec 2023 10:31:28 -0800 (PST)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:9d:2:11eb:92ac:94e:c791])
+        by smtp.gmail.com with ESMTPSA id g11-20020a056a00078b00b006cdda10bdafsm3306926pfu.183.2023.12.01.10.31.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Dec 2023 10:31:28 -0800 (PST)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     linux-usb@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     Grant Grundler <grundler@chromium.org>,
+        Hayes Wang <hayeswang@realtek.com>,
+        Simon Horman <horms@kernel.org>,
+        =?UTF-8?q?Bj=C3=B8rn=20Mork?= <bjorn@mork.no>,
+        netdev@vger.kernel.org, Brian Geffon <bgeffon@google.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Douglas Anderson <dianders@chromium.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/3] net: usb: r8152: Fix lost config across deauthorize+authorize
+Date:   Fri,  1 Dec 2023 10:29:49 -0800
+Message-ID: <20231201183113.343256-1-dianders@chromium.org>
+X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="CkFryha6tlsnAYUC"
-Content-Disposition: inline
-In-Reply-To: <ZWoYLs2STGA1LZLU@arm.com>
-X-Cookie: The early worm gets the late bird.
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -76,61 +82,42 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---CkFryha6tlsnAYUC
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This series fixes problems introduced by commit ec51fbd1b8a2 ("r8152:
+add USB device driver for config selection") where the r8152 device
+would stop functioning if you deauthorized it (by writing 0 to the
+"authorized" field in sysfs) and then reauthorized it (by writing a
+1).
 
-On Fri, Dec 01, 2023 at 05:30:22PM +0000, Catalin Marinas wrote:
+In v1 this was just a single patch [1], but it's now a 3-patch series
+and solves the problem in a much cleaner way, as suggested by Alan
+Stern.
 
-> Another concern I had was that map_shadow_stack() currently takes
-> a flags arg (though only one flag) while the clone/clone3() allocate the
-> shadow stack with an implicit configuration (other than size). Would
-> map_shadow_stack() ever get new flags that we may also need to set on
-> the default thread shadow stack (e.g. a new permission type)? At that
-> point it would be better if clone3() allowed a shadow stack pointer so
-> that any specific attributes would be limited to map_shadow_stack().
+Since these three patches straddle the USB subsystem and the
+networking subsystem then maintainers will (obviously) need to work
+out a way for them to land. I don't have any strong suggestions here
+so I'm happy to let the maintainers propose what they think will work
+best.
 
-The flags argument currently only lets you specify if a stack switch
-token should be written (which is not relevant for the clone3() case)
-and if a top of stack marker should be included (which since the top of
-stack marker is NULL for arm64 only has perceptible effect if a token is
-being written).  I'm not particularly anticipating any further additions,
-though never say never.
+[1] https://lore.kernel.org/r/20231130154337.1.Ie00e07f07f87149c9ce0b27ae4e26991d307e14b@changeid
 
-> If that's only theoretical, I'm fine to go ahead with a size-only
-> argument for clone3(). We could also add the pointer now and allocate
-> the stack if NULL or reuse it if not, maybe with some prctl to allow
-> this. It might be overengineering and we'd never use such feature
-> though.
+Changes in v2:
+- ("Don't force USB generic_subclass drivers to define ...") new for v2.
+- ("Allow subclassed USB drivers to override ...") new for v2.
+- ("Choose our USB config with choose_configuration()...) new for v2.
 
-Yeah, it seems like a bunch of work and interface to test that I'm not
-convinced anyone would actually use.
+Douglas Anderson (3):
+  usb: core: Don't force USB generic_subclass drivers to define probe()
+  usb: core: Allow subclassed USB drivers to override
+    usb_choose_configuration()
+  r8152: Choose our USB config with choose_configuration() rather than
+    probe()
 
-> > As well as the actual configuration of the size the other thing that we
-> > gain is that as well as relying on heuristics to determine if we need to
-> > allocate a new shadow stack for the new thread we allow userspace to
-> > explicitly request a new shadow stack.
+ drivers/net/usb/r8152.c    | 16 +++++-----------
+ drivers/usb/core/driver.c  |  5 ++++-
+ drivers/usb/core/generic.c |  7 +++++++
+ include/linux/usb.h        |  6 ++++++
+ 4 files changed, 22 insertions(+), 12 deletions(-)
 
-> But the reverse is not true - we can't use clone3() to create a thread
-> without a shadow stack AFAICT.
+-- 
+2.43.0.rc2.451.g8631bc7472-goog
 
-Right.  Given the existing implicit allocation only x86 ABI we'd need to
-retrofit that by adding an explicit "no shadow stack" flag.  That is
-possible though I'm having a hard time seeing the use case for it.
-
---CkFryha6tlsnAYUC
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVqJeAACgkQJNaLcl1U
-h9DzAQf+LrewNdEd54lFym1uNzfqTALngDRzqEQiwyX9OjpXl7qCfKd77el1CZ0K
-CJz64ccqu/oWsPYXYcGbSzzFELkIyPbqIWZ48NeKCGVMapsadRneUI6QO0pONxhV
-UBVjFK0nqQeKMuXZXSPnPQ4r2TP6/8V0GXwpTmI6t2rMAIKgUQ0co0qAQBbVUWVh
-C+V88onP3gYcXwH6uKjmj27pT2gr2vJABiO/VkXt1CSXUlqK9VgG0cPwj/DHIq9X
-RiFY1ItDu4w+4efoNzq6mmX+hbBRDfqWWYzUeJl/XLd/1cDY3ZLB/CCzNvN5s4YW
-PXlpWyT3/osvaRjlXy33OnPqJ7lLQQ==
-=UeuB
------END PGP SIGNATURE-----
-
---CkFryha6tlsnAYUC--
