@@ -2,295 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29D54800214
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 04:26:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04D8080021D
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 04:28:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377071AbjLAD0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 22:26:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60742 "EHLO
+        id S232135AbjLAD2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 22:28:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbjLAD03 (ORCPT
+        with ESMTP id S229523AbjLAD2j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 22:26:29 -0500
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D36D31717;
-        Thu, 30 Nov 2023 19:26:34 -0800 (PST)
-Received: by mail-ot1-x333.google.com with SMTP id 46e09a7af769-6d83ff72dbbso47785a34.1;
-        Thu, 30 Nov 2023 19:26:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701401194; x=1702005994; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=fvebJ5QToydTLWgRyxHFD+Ru+EdCC8PFScYOP2fmWDk=;
-        b=MXMZe047HX0MGLmuuuvZc8cl0jVRZc2JJnoVdncQ0YLOAgnIzDtiDwwBHzFUij45Do
-         Vu7eXAYWRYNHQpslfko+5onC+7HnReBTfeI8RxY23h6vUchNTpXe30eFb6Zk3d/pevvN
-         uIDFI9hsDhOMl06s0ci2eDrYKKbtYJIDSEjeA5Y0FBadnx3ZcPb1HWSSZkThmhob0DOk
-         Ezr5RjKi11v1e1hPDk9maoDKv8Zm23H4BvBqIJHVNQsoLXvCyEHgnPj45ldBEmJPe6Yp
-         sARaYOY7Gpga41q0assB9sk9lkxSLxrzM+H6xA2NWPwXWhD2Ih61JUHI8lxDqAm8x/SX
-         SaWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701401194; x=1702005994;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=fvebJ5QToydTLWgRyxHFD+Ru+EdCC8PFScYOP2fmWDk=;
-        b=iftv3Q3FV+rrlj74KhTTcg72Us75gwRpVGhbdxhHGvtwBYIIOhXxNJvNGJkXAMham3
-         T+ud6kBkvolkC3tKnaapoiPxu7touIwcYel2supf69yabQVrKN04jN3Xn1bVvlR4GgNt
-         u8BXG65BILJ/jZ+QcNAI5pN4FgJTk540PsbG935fDrQPpWYnWneqm4P0eRpsShOrMgHN
-         EVfPg2J2s5ivHIton3dvRBk+78O6ou2qZrp9y3M8+ZSocOvS71ZZ+RdLaqmAyRLKCG5C
-         DBdPaROCheN7GJGazLQmmX0YmudFoxTRYHfiOG/YRag2e4W6a/SfMBJEpnJpN4oAXXIw
-         Wvig==
-X-Gm-Message-State: AOJu0YyC91m7Z5YhaHaxne98UfbfkWXqg0U7xry/arm09AKFg2vUCl5X
-        hJHhToFLumojtDV3yWP4j/jGIsMH6EI=
-X-Google-Smtp-Source: AGHT+IGoiHWETNrJC4inT/fCcLG731oG4jHY1kIHTzXuRgu9IJjEi+I4o8dbdLI7LwVEVp+iWbr44A==
-X-Received: by 2002:a9d:630e:0:b0:6c4:56b4:e91c with SMTP id q14-20020a9d630e000000b006c456b4e91cmr895317otk.7.1701401194098;
-        Thu, 30 Nov 2023 19:26:34 -0800 (PST)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id u12-20020a056830118c00b006ce2db9e6c4sm363220otq.36.2023.11.30.19.26.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Nov 2023 19:26:33 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <b4723259-92a1-4c9a-8f4a-52b4b61940c5@roeck-us.net>
-Date:   Thu, 30 Nov 2023 19:26:31 -0800
+        Thu, 30 Nov 2023 22:28:39 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73C411728
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 19:28:45 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B46F2C433C9;
+        Fri,  1 Dec 2023 03:28:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701401325;
+        bh=dprFJ6x5ESRUrN+ixh3IhUPlCeLLde0KvclcLHkX+mo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=p7HtC0TO+dp4tn5bU5Hi4lZpVik3hHJfF0fkgiRsWE2kUdwMXbMgvb607D/fTgQIC
+         0XBNl4jDkkm5f+yscuk3rbecTDtXuOpsOrdjtHX4nxweXdkV2O8rrNeDj9olRlcChW
+         FmLe19I0xWDfCSAoHuN6tDppou5I+N7GhIW9rYaGGGYMee7vdFoU3r9aSgCBygwhiY
+         UN6GcazerG4e+jFlGa9WtWh6+6V2s4TP3pN0dks8aBqC4rCystihZ4DUAg6TJkEUQT
+         vDx1pC8KFN3jmHpMGJYfZBEvyD+61N3cQNsfJQ841lEkI3aqirTPOP5TOjDgB+xxnp
+         IAVW9Qn+f240Q==
+Date:   Fri, 1 Dec 2023 08:58:31 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Frank Li <Frank.li@nxp.com>
+Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        bhelgaas@google.com, imx@lists.linux.dev, kw@linux.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        lpieralisi@kernel.org, minghuan.Lian@nxp.com, mingkai.hu@nxp.com,
+        robh@kernel.org, roy.zang@nxp.com
+Subject: Re: [PATCH v4 4/4] PCI: layerscape: Add suspend/resume for ls1043a
+Message-ID: <20231201032831.GA2898@thinkpad>
+References: <20231129214412.327633-1-Frank.Li@nxp.com>
+ <20231129214412.327633-5-Frank.Li@nxp.com>
+ <20231130165100.GV3043@thinkpad>
+ <ZWjt412xtyZWVjdL@lizhi-Precision-Tower-5810>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] hwmon: (coretemp) Remove unnecessary dependency of
- array index
-Content-Language: en-US
-To:     Ashok Raj <ashok_raj@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>
-Cc:     jdelvare@suse.com, fenghua.yu@intel.com,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ashok Raj <ashok.raj@intel.com>
-References: <20231127131651.476795-1-rui.zhang@intel.com>
- <20231127131651.476795-3-rui.zhang@intel.com>
- <ZWk2ZAxuyOFDCTmv@araj-dh-work.jf.intel.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <ZWk2ZAxuyOFDCTmv@araj-dh-work.jf.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZWjt412xtyZWVjdL@lizhi-Precision-Tower-5810>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/30/23 17:27, Ashok Raj wrote:
-> On Mon, Nov 27, 2023 at 09:16:50PM +0800, Zhang Rui wrote:
->> When sensor_device_attribute pointer is available, use container_of() to
->> get the temp_data address.
->>
->> This removes the unnecessary dependency of cached index in
->> pdata->core_data[].
->>
->> Signed-off-by: Zhang Rui <rui.zhang@intel.com>
->> ---
->>   drivers/hwmon/coretemp.c | 15 +++++----------
->>   1 file changed, 5 insertions(+), 10 deletions(-)
->>
->> diff --git a/drivers/hwmon/coretemp.c b/drivers/hwmon/coretemp.c
->> index 6053ed3761c2..cef43fedbd58 100644
->> --- a/drivers/hwmon/coretemp.c
->> +++ b/drivers/hwmon/coretemp.c
->> @@ -342,7 +342,7 @@ static ssize_t show_label(struct device *dev,
->>   {
->>   	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
->>   	struct platform_data *pdata = dev_get_drvdata(dev);
->> -	struct temp_data *tdata = pdata->core_data[attr->index];
->> +	struct temp_data *tdata = container_of(attr, struct temp_data, sd_attrs[ATTR_LABEL]);
->>   
->>   	if (tdata->is_pkg_data)
->>   		return sprintf(buf, "Package id %u\n", pdata->pkg_id);
->> @@ -355,8 +355,7 @@ static ssize_t show_crit_alarm(struct device *dev,
->>   {
->>   	u32 eax, edx;
->>   	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
->> -	struct platform_data *pdata = dev_get_drvdata(dev);
->> -	struct temp_data *tdata = pdata->core_data[attr->index];
->> +	struct temp_data *tdata = container_of(attr, struct temp_data, sd_attrs[ATTR_CRIT_ALARM]);
->>   
->>   	mutex_lock(&tdata->update_lock);
->>   	rdmsr_on_cpu(tdata->cpu, tdata->status_reg, &eax, &edx);
->> @@ -369,8 +368,7 @@ static ssize_t show_tjmax(struct device *dev,
->>   			struct device_attribute *devattr, char *buf)
->>   {
->>   	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
->> -	struct platform_data *pdata = dev_get_drvdata(dev);
->> -	struct temp_data *tdata = pdata->core_data[attr->index];
->> +	struct temp_data *tdata = container_of(attr, struct temp_data, sd_attrs[ATTR_TJMAX]);
->>   	int tjmax;
->>   
->>   	mutex_lock(&tdata->update_lock);
->> @@ -384,8 +382,7 @@ static ssize_t show_ttarget(struct device *dev,
->>   				struct device_attribute *devattr, char *buf)
->>   {
->>   	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
->> -	struct platform_data *pdata = dev_get_drvdata(dev);
->> -	struct temp_data *tdata = pdata->core_data[attr->index];
->> +	struct temp_data *tdata = container_of(attr, struct temp_data, sd_attrs[ATTR_TTARGET]);
->>   	int ttarget;
->>   
->>   	mutex_lock(&tdata->update_lock);
->> @@ -402,8 +399,7 @@ static ssize_t show_temp(struct device *dev,
->>   {
->>   	u32 eax, edx;
->>   	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
->> -	struct platform_data *pdata = dev_get_drvdata(dev);
->> -	struct temp_data *tdata = pdata->core_data[attr->index];
->> +	struct temp_data *tdata = container_of(attr, struct temp_data, sd_attrs[ATTR_TEMP]);
->>   	int tjmax;
->>   
->>   	mutex_lock(&tdata->update_lock);
->> @@ -445,7 +441,6 @@ static int create_core_attrs(struct temp_data *tdata, struct device *dev,
->>   		tdata->sd_attrs[i].dev_attr.attr.name = tdata->attr_name[i];
->>   		tdata->sd_attrs[i].dev_attr.attr.mode = 0444;
->>   		tdata->sd_attrs[i].dev_attr.show = rd_ptr[i];
->> -		tdata->sd_attrs[i].index = attr_no;
+On Thu, Nov 30, 2023 at 03:17:39PM -0500, Frank Li wrote:
+> On Thu, Nov 30, 2023 at 10:21:00PM +0530, Manivannan Sadhasivam wrote:
+> > On Wed, Nov 29, 2023 at 04:44:12PM -0500, Frank Li wrote:
+> > > In the suspend path, PME_Turn_Off message is sent to the endpoint to
+> > > transition the link to L2/L3_Ready state. In this SoC, there is no way to
+> > > check if the controller has received the PME_To_Ack from the endpoint or
+> > > not. So to be on the safer side, the driver just waits for
+> > > PCIE_PME_TO_L2_TIMEOUT_US before asserting the SoC specific PMXMTTURNOFF
+> > > bit to complete the PME_Turn_Off handshake. This link would then enter
+> > > L2/L3 state depending on the VAUX supply.
+> > > 
+> > > In the resume path, the link is brought back from L2 to L0 by doing a
+> > > software reset.
+> > > 
+> > 
+> > Same comment on the patch description as on patch 2/4.
+> > 
+> > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> > > ---
+> > > 
+> > > Notes:
+> > >     Change from v3 to v4
+> > >     - Call scfg_pcie_send_turnoff_msg() shared with ls1021a
+> > >     - update commit message
+> > >     
+> > >     Change from v2 to v3
+> > >     - Remove ls_pcie_lut_readl(writel) function
+> > >     
+> > >     Change from v1 to v2
+> > >     - Update subject 'a' to 'A'
+> > > 
+> > >  drivers/pci/controller/dwc/pci-layerscape.c | 63 ++++++++++++++++++++-
+> > >  1 file changed, 62 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/drivers/pci/controller/dwc/pci-layerscape.c b/drivers/pci/controller/dwc/pci-layerscape.c
+> > > index 590e07bb27002..d39700b3afaaa 100644
+> > > --- a/drivers/pci/controller/dwc/pci-layerscape.c
+> > > +++ b/drivers/pci/controller/dwc/pci-layerscape.c
+> > > @@ -41,6 +41,15 @@
+> > >  #define SCFG_PEXSFTRSTCR	0x190
+> > >  #define PEXSR(idx)		BIT(idx)
+> > >  
+> > > +/* LS1043A PEX PME control register */
+> > > +#define SCFG_PEXPMECR		0x144
+> > > +#define PEXPME(idx)		BIT(31 - (idx) * 4)
+> > > +
+> > > +/* LS1043A PEX LUT debug register */
+> > > +#define LS_PCIE_LDBG	0x7fc
+> > > +#define LDBG_SR		BIT(30)
+> > > +#define LDBG_WE		BIT(31)
+> > > +
+> > >  #define PCIE_IATU_NUM		6
+> > >  
+> > >  struct ls_pcie_drvdata {
+> > > @@ -225,6 +234,45 @@ static int ls1021a_pcie_exit_from_l2(struct dw_pcie_rp *pp)
+> > >  	return scfg_pcie_exit_from_l2(pcie->scfg, SCFG_PEXSFTRSTCR, PEXSR(pcie->index));
+> > >  }
+> > >  
+> > > +static void ls1043a_pcie_send_turnoff_msg(struct dw_pcie_rp *pp)
+> > > +{
+> > > +	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+> > > +	struct ls_pcie *pcie = to_ls_pcie(pci);
+> > > +
+> > > +	scfg_pcie_send_turnoff_msg(pcie->scfg, SCFG_PEXPMECR, PEXPME(pcie->index));
+> > > +}
+> > > +
+> > > +static int ls1043a_pcie_exit_from_l2(struct dw_pcie_rp *pp)
+> > > +{
+> > > +	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+> > > +	struct ls_pcie *pcie = to_ls_pcie(pci);
+> > > +	u32 val;
+> > > +
+> > > +	/*
+> > > +	 * Only way let PEX module exit L2 is do a software reset.
+> > 
+> > Can you expand PEX? What is it used for?
+> > 
+> > Also if the reset is only for the PEX module, please use the same comment in
+> > both patches 2 and 4. Patch 2 doesn't mention PEX in the comment.
 > 
-> I was naively thinking if we could nuke that "index". I can see that used
-> in couple macros, but seems like we can lose it?
+> After read spec again, I think PEX is pci express. So it should software
+> reset controller. I don't know what exactly did in the chip. But without
+> below code, PCIe can't exit L2/L3.
 > 
-> Completely untested.. and uncertain :-)
-> 
+> Any harmful if dwc controller reset? Anyway these code works well with
+> intel network card.
 
-If you had suggested to replace
-	struct sensor_device_attribute sd_attrs[TOTAL_ATTRS];
-with
-	struct device_attribute sd_attrs[TOTAL_ATTRS];
-what you suggested may actually be possible and make sense. However,
-suggesting to dump the index parameter of SENSOR_ATTR() completely
-because _this_ driver may no longer need it seems to be a little excessive.
+If it is a DWC controller reset, then we need to program all CSRs like DBI
+etc... But from your reply it seems like the reset is limited to some module,
+so it is fine.
+
+- Mani
 
 > 
-> diff --git a/include/linux/hwmon-sysfs.h b/include/linux/hwmon-sysfs.h
-> index d896713359cd..4855893f9401 100644
-> --- a/include/linux/hwmon-sysfs.h
-> +++ b/include/linux/hwmon-sysfs.h
-> @@ -12,36 +12,35 @@
->   
->   struct sensor_device_attribute{
->   	struct device_attribute dev_attr;
-> -	int index;
->   };
->   #define to_sensor_dev_attr(_dev_attr) \
->   	container_of(_dev_attr, struct sensor_device_attribute, dev_attr)
->   
-> -#define SENSOR_ATTR(_name, _mode, _show, _store, _index)	\
-> +#define SENSOR_ATTR(_name, _mode, _show, _store)	\
->   	{ .dev_attr = __ATTR(_name, _mode, _show, _store),	\
-> -	  .index = _index }
-> +	  }
->   
-> -#define SENSOR_ATTR_RO(_name, _func, _index)			\
-> +#define SENSOR_ATTR_RO(_name, _func)			\
->   	SENSOR_ATTR(_name, 0444, _func##_show, NULL, _index)
->   
-> -#define SENSOR_ATTR_RW(_name, _func, _index)			\
-> -	SENSOR_ATTR(_name, 0644, _func##_show, _func##_store, _index)
-> +#define SENSOR_ATTR_RW(_name, _func)			\
-> +	SENSOR_ATTR(_name, 0644, _func##_show, _func##_store)
->   
-> -#define SENSOR_ATTR_WO(_name, _func, _index)			\
-> -	SENSOR_ATTR(_name, 0200, NULL, _func##_store, _index)
-> +#define SENSOR_ATTR_WO(_name, _func)			\
-> +	SENSOR_ATTR(_name, 0200, NULL, _func##_store)
->   
-> -#define SENSOR_DEVICE_ATTR(_name, _mode, _show, _store, _index)	\
-> +#define SENSOR_DEVICE_ATTR(_name, _mode, _show, _store)	\
->   struct sensor_device_attribute sensor_dev_attr_##_name		\
-> -	= SENSOR_ATTR(_name, _mode, _show, _store, _index)
-> +	= SENSOR_ATTR(_name, _mode, _show, _store)
->   
-> -#define SENSOR_DEVICE_ATTR_RO(_name, _func, _index)		\
-> -	SENSOR_DEVICE_ATTR(_name, 0444, _func##_show, NULL, _index)
-> +#define SENSOR_DEVICE_ATTR_RO(_name, _func)		\
-> +	SENSOR_DEVICE_ATTR(_name, 0444, _func##_show, NULL)
->   
->   #define SENSOR_DEVICE_ATTR_RW(_name, _func, _index)		\
-> -	SENSOR_DEVICE_ATTR(_name, 0644, _func##_show, _func##_store, _index)
-> +	SENSOR_DEVICE_ATTR(_name, 0644, _func##_show, _func##_store)
->   
-> -#define SENSOR_DEVICE_ATTR_WO(_name, _func, _index)		\
-> -	SENSOR_DEVICE_ATTR(_name, 0200, NULL, _func##_store, _index)
-> +#define SENSOR_DEVICE_ATTR_WO(_name, _func)		\
-> +	SENSOR_DEVICE_ATTR(_name, 0200, NULL, _func##_store)
->   
->   struct sensor_device_attribute_2 {
->   	struct device_attribute dev_attr;
-> diff --git a/drivers/gpu/drm/i915/i915_hwmon.c b/drivers/gpu/drm/i915/i915_hwmon.c
-> index 975da8e7f2a9..c3bbf2f7d6eb 100644
-> --- a/drivers/gpu/drm/i915/i915_hwmon.c
-> +++ b/drivers/gpu/drm/i915/i915_hwmon.c
-> @@ -239,7 +239,7 @@ hwm_power1_max_interval_store(struct device *dev,
->   
->   static SENSOR_DEVICE_ATTR(power1_max_interval, 0664,
->   			  hwm_power1_max_interval_show,
-> -			  hwm_power1_max_interval_store, 0);
-> +			  hwm_power1_max_interval_store);
->   
+> Frank
+> 
+> > 
+> > - Mani
+> > 
+> > > +	 * LDBG_WE: allows the user to have write access to the PEXDBG[SR] for both setting and
+> > > +	 *	    clearing the soft reset on the PEX module.
+> > > +	 * LDBG_SR: When SR is set to 1, the PEX module enters soft reset.
+> > > +	 */
+> > > +	val = ls_pcie_pf_lut_readl(pcie, LS_PCIE_LDBG);
+> > > +	val |= LDBG_WE;
+> > > +	ls_pcie_pf_lut_writel(pcie, LS_PCIE_LDBG, val);
+> > > +
+> > > +	val = ls_pcie_pf_lut_readl(pcie, LS_PCIE_LDBG);
+> > > +	val |= LDBG_SR;
+> > > +	ls_pcie_pf_lut_writel(pcie, LS_PCIE_LDBG, val);
+> > > +
+> > > +	val = ls_pcie_pf_lut_readl(pcie, LS_PCIE_LDBG);
+> > > +	val &= ~LDBG_SR;
+> > > +	ls_pcie_pf_lut_writel(pcie, LS_PCIE_LDBG, val);
+> > > +
+> > > +	val = ls_pcie_pf_lut_readl(pcie, LS_PCIE_LDBG);
+> > > +	val &= ~LDBG_WE;
+> > > +	ls_pcie_pf_lut_writel(pcie, LS_PCIE_LDBG, val);
+> > > +
+> > > +	return 0;
+> > > +}
+> > > +
+> > >  static const struct dw_pcie_host_ops ls_pcie_host_ops = {
+> > >  	.host_init = ls_pcie_host_init,
+> > >  	.pme_turn_off = ls_pcie_send_turnoff_msg,
+> > > @@ -242,6 +290,19 @@ static const struct ls_pcie_drvdata ls1021a_drvdata = {
+> > >  	.exit_from_l2 = ls1021a_pcie_exit_from_l2,
+> > >  };
+> > >  
+> > > +static const struct dw_pcie_host_ops ls1043a_pcie_host_ops = {
+> > > +	.host_init = ls_pcie_host_init,
+> > > +	.pme_turn_off = ls1043a_pcie_send_turnoff_msg,
+> > > +};
+> > > +
+> > > +static const struct ls_pcie_drvdata ls1043a_drvdata = {
+> > > +	.pf_lut_off = 0x10000,
+> > > +	.pm_support = true,
+> > > +	.scfg_support = true,
+> > > +	.ops = &ls1043a_pcie_host_ops,
+> > > +	.exit_from_l2 = ls1043a_pcie_exit_from_l2,
+> > > +};
+> > > +
+> > >  static const struct ls_pcie_drvdata layerscape_drvdata = {
+> > >  	.pf_lut_off = 0xc0000,
+> > >  	.pm_support = true,
+> > > @@ -252,7 +313,7 @@ static const struct of_device_id ls_pcie_of_match[] = {
+> > >  	{ .compatible = "fsl,ls1012a-pcie", .data = &layerscape_drvdata },
+> > >  	{ .compatible = "fsl,ls1021a-pcie", .data = &ls1021a_drvdata },
+> > >  	{ .compatible = "fsl,ls1028a-pcie", .data = &layerscape_drvdata },
+> > > -	{ .compatible = "fsl,ls1043a-pcie", .data = &ls1021a_drvdata },
+> > > +	{ .compatible = "fsl,ls1043a-pcie", .data = &ls1043a_drvdata },
+> > >  	{ .compatible = "fsl,ls1046a-pcie", .data = &layerscape_drvdata },
+> > >  	{ .compatible = "fsl,ls2080a-pcie", .data = &layerscape_drvdata },
+> > >  	{ .compatible = "fsl,ls2085a-pcie", .data = &layerscape_drvdata },
+> > > -- 
+> > > 2.34.1
+> > > 
+> > 
+> > -- 
+> > மணிவண்ணன் சதாசிவம்
 
-That driver could and should have used DEVICE_ATTR() instead of
-SENSOR_DEVICE_ATTR(), and there are various other drivers where
-that would have made sense. Actually, it should have used
-DEVICE_ATTR_RW() but that is just a detail.
-
-However, there are more than 2,000 uses of SENSOR_DEVICE_ATTR() and derived
-macros in the kernel. The large majority of those do set index to values != 0,
-and the affected drivers would not be happy if that argument disappeared.
-
-Frankly, I am not entirely sure if you were serious with your suggestion.
-I tried to give a serious reply, but I am not entirely sure if I succeeded.
-My apologies if some sarcasm was bleeding through.
-
-Guenter
-
+-- 
+மணிவண்ணன் சதாசிவம்
