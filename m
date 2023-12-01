@@ -2,209 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CBC0880075D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 10:44:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBB6180075F
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 10:45:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378045AbjLAJoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 04:44:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57172 "EHLO
+        id S1378037AbjLAJpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 04:45:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377992AbjLAJoL (ORCPT
+        with ESMTP id S1378047AbjLAJpj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 04:44:11 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 900E5B2
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 01:44:17 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCBF5C433C7;
-        Fri,  1 Dec 2023 09:44:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1701423857;
-        bh=/HU7YYYGlZOsppIXzdMtY/s2vvadGzpqVvlRTqQ1tNs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kRgA1lB/6Lju+B52wsCua6IXa1rYnyzl++bAVlQqFX00OSzp/bLNu/zmaDzi98rWL
-         7zQq9+389a1W/UOEBznahHlZk/D//5GXVRqOsxKHYGDgIajs9ElL7A69baYPFKt3Q5
-         uDnOGD736Fdmf6hYIzKjRZRfVSzqJ9+RkNXmnUu0=
-Date:   Fri, 1 Dec 2023 09:44:15 +0000
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Francis Laniel <flaniel@linux.microsoft.com>
-Cc:     Daniel =?iso-8859-1?Q?D=EDaz?= <daniel.diaz@linaro.org>,
-        stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-        allen.lkml@gmail.com, Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH 5.15 00/69] 5.15.141-rc1 review
-Message-ID: <2023120155-mascot-scope-7bc6@gregkh>
-References: <20231130162133.035359406@linuxfoundation.org>
- <CAEUSe78tYPTFuauB7cxZzvAeMhzB_25Q8DqLUfF7Nro9WsUhNw@mail.gmail.com>
- <2023120134-sabotage-handset-0b0d@gregkh>
- <4879383.31r3eYUQgx@pwmachine>
+        Fri, 1 Dec 2023 04:45:39 -0500
+Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76CC010F3
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 01:45:45 -0800 (PST)
+Received: by mail-vs1-xe2f.google.com with SMTP id ada2fe7eead31-4645a9ab3d2so534484137.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 01:45:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1701423944; x=1702028744; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9ekfjW5/RgeJMklE7juR1PMpyxSeXgb7TqD/ojEgNQc=;
+        b=RiGjBsq508f4Xnodj8k5T9pILSjQRsHEhMzLYt37HgBTQtRbfowOIOb9wfbMgzVXCd
+         0/NdgOaZeeGhkSbomoGCl3c+918KoFMrdJCg8xRcpZTbfu1TygZSMUbxTHwtug34Kfzd
+         I65Xjnp9YQo5CGIDwqRNDs3C9o1wMzujGSn2ORkL3ulKAnDh6gLbE7/L1ydp7RJdisso
+         yCGdTBOfdJHykysDnP6dQiFHLecWAK0eS/PHcIsPAb9/Ge80jIhb8OwdmG4iIQpEeGKa
+         SWdISdHaHgR0nGtxE0dkPpCiPKT3p9frsfaIsyYFhx1VCArOLbCKqq90s4kFBcOwZiup
+         z9VA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701423944; x=1702028744;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9ekfjW5/RgeJMklE7juR1PMpyxSeXgb7TqD/ojEgNQc=;
+        b=DDZ/sa888d4vt73Sv6qoTwf3kOeG7RoPYuBxvrUpnGXyw4QWd4dmFN2sx28n5GGN2k
+         kfCLrYX1UfaqRp60oxrpuPdoFZrwJGD/4l2ziuGyl+lTDJ7sXhLANQFHCX7a8UrJB9Ho
+         uDC1eZKQ+45tvJuhTnDX8UmytAvChioy/oJtP+AeNqm/t4PlnwMcKrsTlhy1u3jd2z6p
+         CdyNFCb7XPKm0ZpFHVqvnb3TrA+eutYH+p3cLduZiwxpC97aXLVLrYQ3bdv5qu3svgcb
+         k3WKeK5mRmVhMK+lVBoMHiZdMeOux11JFVVqaMh6Jf7BDbFb9S7ENy/rdumQOn/l7XKZ
+         HODw==
+X-Gm-Message-State: AOJu0Yzv8Xb88569jGGZ6qz6AJBzT5Okpg4a8ET474KZCfyEv8QrJBsZ
+        UL5dkG9N0t4dpLL0LIAPFT5MR9FxadhwapIERsqP6w==
+X-Google-Smtp-Source: AGHT+IFr+Ufz2SBZX19p2XbDRne9u7F1ltfFub1k2ZxTvyuIg3+ny5t7o6ebQ713T2lIv6X1Ub4M1HAWVO27LQo6MNk=
+X-Received: by 2002:a05:6102:450:b0:464:6018:abc5 with SMTP id
+ e16-20020a056102045000b004646018abc5mr3747554vsq.5.1701423944545; Fri, 01 Dec
+ 2023 01:45:44 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4879383.31r3eYUQgx@pwmachine>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231129152307.28517-1-boerge.struempfel@gmail.com>
+In-Reply-To: <20231129152307.28517-1-boerge.struempfel@gmail.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Fri, 1 Dec 2023 10:45:33 +0100
+Message-ID: <CAMRc=Mc6YV0ayaaSO9CnxnTGT4FAe7kADt+j32xKY+xh1OwBRQ@mail.gmail.com>
+Subject: Re: [PATCH v3] gpiolib: sysfs: Fix error handling on failed export
+To:     Boerge Struempfel <boerge.struempfel@gmail.com>
+Cc:     andy@kernel.org, Linus Walleij <linus.walleij@linaro.org>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Rob Herring <robh@kernel.org>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bstruempfel@ultratronik.de
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 01, 2023 at 10:35:33AM +0100, Francis Laniel wrote:
-> Hi!
-> 
-> Le vendredi 1 décembre 2023, 09:21:33 CET Greg Kroah-Hartman a écrit :
-> > On Thu, Nov 30, 2023 at 12:11:31PM -0600, Daniel Díaz wrote:
-> > > Hello!
-> > > 
-> > > On Thu, 30 Nov 2023 at 11:44, Guenter Roeck <linux@roeck-us.net> wrote:
-> > > > On 11/30/23 09:21, Daniel Díaz wrote:
-> > > > > Hello!
-> > > > > 
-> > > > > Lots of failures everywhere:
-> > > > > * clang-17-lkftconfig                 arm64
-> > > > > * clang-17-lkftconfig                 arm64
-> > > > > * clang-17-lkftconfig                 arm64
-> > > > > * clang-lkftconfig                    arm64
-> > > > > * clang-lkftconfig                    arm
-> > > > > * clang-lkftconfig                    i386
-> > > > > * clang-lkftconfig                    x86_64
-> > > > > * gcc-12-lkftconfig                   arm64
-> > > > > * gcc-12-lkftconfig                   arm
-> > > > > * gcc-12-lkftconfig                   i386
-> > > > > * gcc-12-lkftconfig                   x86_64
-> > > > > * gcc-12-lkftconfig-64k_page_size     arm64
-> > > > > * gcc-12-lkftconfig-64k_page_size     arm64
-> > > > > * gcc-12-lkftconfig-armv8_features    arm64
-> > > > > * gcc-12-lkftconfig-debug             arm64
-> > > > > * gcc-12-lkftconfig-debug             arm64
-> > > > > * gcc-12-lkftconfig-debug             arm
-> > > > > * gcc-12-lkftconfig-debug             i386
-> > > > > * gcc-12-lkftconfig-debug             x86_64
-> > > > > * gcc-12-lkftconfig-debug-kmemleak    arm64
-> > > > > * gcc-12-lkftconfig-debug-kmemleak    arm
-> > > > > * gcc-12-lkftconfig-debug-kmemleak    i386
-> > > > > * gcc-12-lkftconfig-debug-kmemleak    x86_64
-> > > > > * gcc-12-lkftconfig-devicetree        arm64
-> > > > > * gcc-12-lkftconfig-kasan             arm64
-> > > > > * gcc-12-lkftconfig-kasan             arm64
-> > > > > * gcc-12-lkftconfig-kasan             x86_64
-> > > > > * gcc-12-lkftconfig-kselftest         arm64
-> > > > > * gcc-12-lkftconfig-kselftest-kernel  arm64
-> > > > > * gcc-12-lkftconfig-kselftest-kernel  arm
-> > > > > * gcc-12-lkftconfig-kselftest-kernel  i386
-> > > > > * gcc-12-lkftconfig-kunit             arm64
-> > > > > * gcc-12-lkftconfig-kunit             arm64
-> > > > > * gcc-12-lkftconfig-kunit             arm
-> > > > > * gcc-12-lkftconfig-kunit             i386
-> > > > > * gcc-12-lkftconfig-kunit             x86_64
-> > > > > * gcc-12-lkftconfig-libgpiod          arm64
-> > > > > * gcc-12-lkftconfig-libgpiod          arm
-> > > > > * gcc-12-lkftconfig-libgpiod          i386
-> > > > > * gcc-12-lkftconfig-libgpiod          x86_64
-> > > > > * gcc-12-lkftconfig-perf              arm64
-> > > > > * gcc-12-lkftconfig-perf-kernel       arm64
-> > > > > * gcc-12-lkftconfig-perf-kernel       arm
-> > > > > * gcc-12-lkftconfig-perf-kernel       i386
-> > > > > * gcc-12-lkftconfig-perf-kernel       x86_64
-> > > > > * gcc-12-lkftconfig-rcutorture        arm64
-> > > > > * gcc-12-lkftconfig-rcutorture        arm64
-> > > > > * gcc-12-lkftconfig-rcutorture        arm
-> > > > > * gcc-12-lkftconfig-rcutorture        i386
-> > > > > * gcc-12-lkftconfig-rcutorture        x86_64
-> > > > > 
-> > > > > It's essentially this:
-> > > > > 
-> > > > > -----8<-----
-> > > > > 
-> > > > >    make --silent --keep-going --jobs=8
-> > > > > 
-> > > > > O=/home/tuxbuild/.cache/tuxmake/builds/1/build ARCH=x86_64 SRCARCH=x86
-> > > > > CROSS_COMPILE=x86_64-linux-gnu- 'CC=sccache x86_64-linux-gnu-gcc'
-> > > > > 'HOSTCC=sccache gcc'
-> > > > > 
-> > > > >    arch/x86/kernel/smp.o: warning: objtool: sysvec_reboot()+0x51:
-> > > > > unreachable instruction
-> > > > > 
-> > > > >    x86_64-linux-gnu-ld: kernel/trace/trace_kprobe.o: in function
-> > > > > 
-> > > > > `__trace_kprobe_create':
-> > > > >    trace_kprobe.c:(.text+0x2f39): undefined reference to
-> > > > > 
-> > > > > `kallsyms_on_each_symbol'
-> > > > > 
-> > > > >    x86_64-linux-gnu-ld: kernel/trace/trace_kprobe.o: in function
-> > > > > 
-> > > > > `create_local_trace_kprobe':
-> > > > >    trace_kprobe.c:(.text+0x384b): undefined reference to
-> > > > > 
-> > > > > `kallsyms_on_each_symbol'
-> > > > > 
-> > > > >    make[1]: *** [/builds/linux/Makefile:1227: vmlinux] Error 1
-> > > > >    make[1]: Target '__all' not remade because of errors.
-> > > > >    make: *** [Makefile:226: __sub-make] Error 2
-> > > > >    make: Target '__all' not remade because of errors.
-> > > > > 
-> > > > > ----->8-----
-> > > > > 
-> > > > > It only affects 5.15. Bisection in progress.
-> > > > 
-> > > > I guess it will point to
-> > > > 
-> > > > >> Francis Laniel <flaniel@linux.microsoft.com>
-> > > > >> 
-> > > > >>      tracing/kprobes: Return EADDRNOTAVAIL when func matches several
-> > > > >>      symbols
-> > > 
-> > > It sure did!:
-> > >   commit 7b4375c36a4c0e1b4b97ccbcdd427db5a460e04f
-> > >   Author: Francis Laniel <flaniel@linux.microsoft.com>
-> > >   Date:   Fri Oct 20 13:42:49 2023 +0300
-> > >   
-> > >       tracing/kprobes: Return EADDRNOTAVAIL when func matches several
-> > >       symbols
-> > >       
-> > >       commit b022f0c7e404887a7c5229788fc99eff9f9a80d5 upstream.
-> > > 
-> > > Reverting that commit made the build pass again.
-> > 
-> > {sigh}
-> > 
-> > Francis, I think this is the second or third time this has happened with
-> > the attempt to get this patch merged.  I'm going to go drop it from all
-> > of the pending stable queues again, and please, if you wish to have it
-> > applied in the future, I am going to have to see some proof it was
-> > actually tested on the architectures that it keeps breaking.
-> 
-> Sorry for the disagreement, for this one, I had to add the CONFIG_LIVEPATCH to 
-> then be able to call kallsyms_on_each_symbol(), as on 5.15, this function is 
-> within a ifdef guard [1].
-> 
-> I suppose you do not want to add CONFIG_LIVEPATCH to default config, so I will 
-> try to find a way for this specific kernel!
+On Wed, Nov 29, 2023 at 4:23=E2=80=AFPM Boerge Struempfel
+<boerge.struempfel@gmail.com> wrote:
+>
+> If gpio_set_transitory() fails, we should free the GPIO again. Most
+> notably, the flag FLAG_REQUESTED has previously been set in
+> gpiod_request_commit(), and should be reset on failure.
+>
+> To my knowledge, this does not affect any current users, since the
+> gpio_set_transitory() mainly returns 0 and -ENOTSUPP, which is converted
+> to 0. However the gpio_set_transitory() function calles the .set_config()
+> function of the corresponding GPIO chip and there are some GPIO drivers i=
+n
+> which some (unlikely) branches return other values like -EPROBE_DEFER,
+> and -EINVAL. In these cases, the above mentioned FLAG_REQUESTED would not
+> be reset, which results in the pin being blocked until the next reboot.
+>
+> Fixes: e10f72bf4b3e ("gpio: gpiolib: Generalise state persistence beyond =
+sleep")
+> Signed-off-by: Boerge Struempfel <boerge.struempfel@gmail.com>
+>
+> ---
+>
+> V2: https://lore.kernel.org/linux-gpio/CAEktqcv8NC0Cy+wo7nRGOp9USoBdta=3D=
+n=3Dmrbo-WomxgcmWN5nQ@mail.gmail.com/T/#t
+> V1: https://lore.kernel.org/linux-gpio/CAEktqcuxS1sPfkGVCgSy1ki8fmUDmuUsH=
+rdAT+zFKy5vGSoKPw@mail.gmail.com/T/#t
+>
+> Changes from V2:
+>         - Capitalized all occurances of GPIO in commit message
+>         - Added Missing - in front of Error Code in commit message
+>         - Added Fixes Tag in commit message
+>
+> Changes from V1:
+>         - Marked all functions in commit message with parenthesis
+>         - Elaborated in commit message
+>
+>  drivers/gpio/gpiolib-sysfs.c | 15 +++++++++------
+>  1 file changed, 9 insertions(+), 6 deletions(-)
+>
+> diff --git a/drivers/gpio/gpiolib-sysfs.c b/drivers/gpio/gpiolib-sysfs.c
+> index 6f309a3b2d9a..12d853845bb8 100644
+> --- a/drivers/gpio/gpiolib-sysfs.c
+> +++ b/drivers/gpio/gpiolib-sysfs.c
+> @@ -474,14 +474,17 @@ static ssize_t export_store(const struct class *cla=
+ss,
+>                 goto done;
+>
+>         status =3D gpiod_set_transitory(desc, false);
+> -       if (!status) {
+> -               status =3D gpiod_export(desc, true);
+> -               if (status < 0)
+> -                       gpiod_free(desc);
+> -               else
+> -                       set_bit(FLAG_SYSFS, &desc->flags);
+> +       if (status) {
+> +               gpiod_free(desc);
+> +               goto done;
+>         }
+>
+> +       status =3D gpiod_export(desc, true);
+> +       if (status < 0)
+> +               gpiod_free(desc);
+> +       else
+> +               set_bit(FLAG_SYSFS, &desc->flags);
+> +
+>  done:
+>         if (status)
+>                 pr_debug("%s: status %d\n", __func__, status);
+> --
+> 2.42.0
+>
 
-It doesn't matter about any "default config", you can not break the
-build of any config.
+Applied, thanks!
 
-> Did you get problems only for 5.15 kernel? Or others too?
-
-I don't know, but for obvious reasons if it is not working in 5.15.y, we
-can't take it in older kernels as that would be a regression when people
-move to a newer one.
-
-> In the second case, can you please link me the problems and I will polish 
-> everything.
-
-Please take some time with a cross-compiler on the above listed
-architectures and configurations to verify your changes do not break
-anything again.
-
-thanks,
-
-greg k-h
+Bart
