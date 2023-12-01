@@ -2,84 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DCBB08002ED
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 06:15:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22DE98002F2
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 06:18:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377478AbjLAFPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 00:15:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33644 "EHLO
+        id S1377483AbjLAFSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 00:18:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377434AbjLAFPs (ORCPT
+        with ESMTP id S1377435AbjLAFSL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 00:15:48 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D50310E2
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 21:15:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701407753;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SHwmJNsb+e2xdb/Uv7JTIMOAPZD+rYanzUJIDl9T/t0=;
-        b=Asuarcxwquj4hxA/WL97CdQvCe04Zx3H5Opn6MrIgwkHo0NE13UDavWcRlfl3ZKdwB2pPl
-        xOPiwBVXgHYXicrloohIVXnmza08MJmsEyREISxj0SZ/CRKME3RsfIZleot3VzF2RWPxdB
-        xqQpvEnKZal4peFRskqRS4B3Td4jmtI=
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
- [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-98-NcYGog6lPu-96e0ZmB_uyQ-1; Fri, 01 Dec 2023 00:15:52 -0500
-X-MC-Unique: NcYGog6lPu-96e0ZmB_uyQ-1
-Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-50bd74b7869so569993e87.0
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 21:15:51 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701407750; x=1702012550;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SHwmJNsb+e2xdb/Uv7JTIMOAPZD+rYanzUJIDl9T/t0=;
-        b=N//642EXmAozttVn0lgXkqAcQzyhnSEd5kco1AWo16OPwSjXcSKj7ZezVTI7oelZF5
-         O6BYv/0PRKdvivDgRj1MQyWKlp06Sxm+LgMwWV5QZCAw0O+xYYTmZsv1nd8LO1omrXWK
-         2JeK/Dnd5JHhWQrtHlNjrrcc7nKvAucK+4IrAl1KSwjau4OACHV3CT8/8MDdwoIXQonO
-         vARP2rNlZ80WO5rJVpWFHDbGUer8ZLMAWbCPRKcC7s5LcVYSrpvgE90SzqxF7QbP4iLO
-         L0qjL2BTDdpXevxCZGgOpv0XxYjgB6YCab+yijczr0iMG6jG3FkPfoSgGQWnA+66BRU8
-         Z4hw==
-X-Gm-Message-State: AOJu0Yz2K2IMV4OmqNKR+Xe0yUlaALZAV4uBTTWQqIfIn85bATkmmtKK
-        5Rql9BeCUox8CYygoczmu7JocMtBICLQbjol5Zjktfc1tyvO43qMowQrboAGXjCp02Cw83WX7ky
-        e3+evpYgkPcpPwiAKdRK+Jq6Gw7eSHtMSb+uizvMWc0UZpl+7fIw=
-X-Received: by 2002:a19:5507:0:b0:50b:d944:c01c with SMTP id n7-20020a195507000000b0050bd944c01cmr120851lfe.222.1701407750231;
-        Thu, 30 Nov 2023 21:15:50 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHDBmetXyWF5RpBUSGtpgeHdSYlEbcjte2vsAB88zgUOH9Pe6a2lbEGXksrcRpWFGOS8rAg498bSWjWs3JsMxo=
-X-Received: by 2002:a19:5507:0:b0:50b:d944:c01c with SMTP id
- n7-20020a195507000000b0050bd944c01cmr120809lfe.222.1701407744848; Thu, 30 Nov
- 2023 21:15:44 -0800 (PST)
+        Fri, 1 Dec 2023 00:18:11 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC35BD40
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 21:18:17 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 185C0C433C9;
+        Fri,  1 Dec 2023 05:18:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701407897;
+        bh=dCH6U9DOKu1MDBp3F2VxdSLSjeuwOTuCV17QciUNQRE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cASA5TYKYLtyKWEJ+B6W6xHPbbn4MqWOo92HlcZDaTIUdHRtQOwhk3B/sWKSqdV4U
+         fovI7Idrlv9uvN3ewXvXh/XP3F2dCE0HywhNBZCoWDnYSA+qoeRA59KWKMwzdzmQex
+         4ZCKzFEFUWzEPV0zcea2SD19oJLMqIO6cFGyk9RU6zlR0XWAebLUnf75bjVhFkPktg
+         Qxov3HdiAz1k5W99OcyxyggkQX3C5AEKmDq0yRUh4wuwUZEJpilbo+A6rnXYSYCyjG
+         VK0jf7bVJcsqaaZ1Krx2q18Wae9zIUSf0cpxhsoM+1BHCIjutvU09qxnWDB0EURHGg
+         Iizq4ICOe48hg==
+Date:   Fri, 1 Dec 2023 10:48:00 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Ziqi Chen <quic_ziqichen@quicinc.com>
+Cc:     Manivannan Sadhasivam <mani@kernel.org>,
+        Can Guo <quic_cang@quicinc.com>, quic_asutoshd@quicinc.com,
+        bvanassche@acm.org, beanhuo@micron.com, avri.altman@wdc.com,
+        junwoo80.lee@samsung.com, martin.petersen@oracle.com,
+        quic_nguyenb@quicinc.com, quic_nitirawa@quicinc.com,
+        quic_rampraka@quicinc.com, linux-scsi@vger.kernel.org,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] scsi: ufs: qcom: move ufs_qcom_host_reset() to
+ ufs_qcom_device_reset()
+Message-ID: <20231201051800.GA4009@thinkpad>
+References: <1698145815-17396-1-git-send-email-quic_ziqichen@quicinc.com>
+ <20231025074128.GA3648@thinkpad>
+ <85d7a1ef-92c4-49ae-afe0-727c1b446f55@quicinc.com>
+ <c6a72c38-aa63-79b8-c784-d753749f7272@quicinc.com>
+ <20231128112731.GV3088@thinkpad>
+ <ed81bb9e-a9cd-4d32-bfa0-2f0d28742026@quicinc.com>
 MIME-Version: 1.0
-References: <20230903181338-mutt-send-email-mst@kernel.org>
- <647701d8-c99b-4ca8-9817-137eaefda237@linux.intel.com> <CACGkMEvoGOO0jtq5T7arAjRoB_0_fHB2+hPJe1JsPqcAuvr98w@mail.gmail.com>
- <6f84bbad-62f9-43df-8134-a6836cc3b66c@linux.intel.com> <CACGkMEvtus2BseZec8at6YORO=As1v9r9p=xtZjE1e2i=uhwhA@mail.gmail.com>
- <20231130044045-mutt-send-email-mst@kernel.org>
-In-Reply-To: <20231130044045-mutt-send-email-mst@kernel.org>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Fri, 1 Dec 2023 13:15:32 +0800
-Message-ID: <CACGkMEuvnmif_pBJRqAER3wuYmF_ebzgRnKwwUnHMH4kv2XrFQ@mail.gmail.com>
-Subject: Re: [GIT PULL] virtio: features
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     "Ning, Hongyu" <hongyu.ning@linux.intel.com>,
-        xuanzhuo@linux.alibaba.com,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        eperezma@redhat.com, shannon.nelson@amd.com,
-        yuanyaogoog@chromium.org, yuehaibing@huawei.com,
-        kirill.shutemov@linux.intel.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com,
-        alexander.shishkin@linux.intel.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ed81bb9e-a9cd-4d32-bfa0-2f0d28742026@quicinc.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -87,152 +66,152 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 30, 2023 at 5:44=E2=80=AFPM Michael S. Tsirkin <mst@redhat.com>=
- wrote:
->
-> On Wed, Nov 29, 2023 at 06:20:31PM +0800, Jason Wang wrote:
-> > On Wed, Nov 29, 2023 at 6:12=E2=80=AFPM Ning, Hongyu
-> > <hongyu.ning@linux.intel.com> wrote:
-> > >
-> > >
-> > > On 2023/11/29 17:16, Jason Wang wrote:
-> > > > On Wed, Nov 29, 2023 at 5:05=E2=80=AFPM Ning, Hongyu
-> > > > <hongyu.ning@linux.intel.com> wrote:
-> > > >>
-> > > >>
-> > > >>
-> > > >> On 2023/9/4 6:13, Michael S. Tsirkin wrote:
-> > > >>> The following changes since commit 2dde18cd1d8fac735875f2e4987f11=
-817cc0bc2c:
-> > > >>>
-> > > >>>     Linux 6.5 (2023-08-27 14:49:51 -0700)
-> > > >>>
-> > > >>> are available in the Git repository at:
-> > > >>>
-> > > >>>     https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git=
- tags/for_linus
-> > > >>>
-> > > >>> for you to fetch changes up to 1acfe2c1225899eab5ab724c91b7e1eb28=
-81b9ab:
-> > > >>>
-> > > >>>     virtio_ring: fix avail_wrap_counter in virtqueue_add_packed (=
-2023-09-03 18:10:24 -0400)
-> > > >>>
-> > > >>> ----------------------------------------------------------------
-> > > >>> virtio: features
-> > > >>>
-> > > >>> a small pull request this time around, mostly because the
-> > > >>> vduse network got postponed to next relase so we can be sure
-> > > >>> we got the security store right.
-> > > >>>
-> > > >>> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-> > > >>>
-> > > >>> ----------------------------------------------------------------
-> > > >>> Eugenio P=C3=A9rez (4):
-> > > >>>         vdpa: add VHOST_BACKEND_F_ENABLE_AFTER_DRIVER_OK flag
-> > > >>>         vdpa: accept VHOST_BACKEND_F_ENABLE_AFTER_DRIVER_OK backe=
-nd feature
-> > > >>>         vdpa: add get_backend_features vdpa operation
-> > > >>>         vdpa_sim: offer VHOST_BACKEND_F_ENABLE_AFTER_DRIVER_OK
-> > > >>>
-> > > >>> Jason Wang (1):
-> > > >>>         virtio_vdpa: build affinity masks conditionally
-> > > >>>
-> > > >>> Xuan Zhuo (12):
-> > > >>>         virtio_ring: check use_dma_api before unmap desc for indi=
-rect
-> > > >>>         virtio_ring: put mapping error check in vring_map_one_sg
-> > > >>>         virtio_ring: introduce virtqueue_set_dma_premapped()
-> > > >>>         virtio_ring: support add premapped buf
-> > > >>>         virtio_ring: introduce virtqueue_dma_dev()
-> > > >>>         virtio_ring: skip unmap for premapped
-> > > >>>         virtio_ring: correct the expression of the description of=
- virtqueue_resize()
-> > > >>>         virtio_ring: separate the logic of reset/enable from virt=
-queue_resize
-> > > >>>         virtio_ring: introduce virtqueue_reset()
-> > > >>>         virtio_ring: introduce dma map api for virtqueue
-> > > >>>         virtio_ring: introduce dma sync api for virtqueue
-> > > >>>         virtio_net: merge dma operations when filling mergeable b=
-uffers
-> > > >>
-> > > >> Hi,
-> > > >> above patch (upstream commit 295525e29a5b) seems causing a virtnet
-> > > >> related Call Trace after WARNING from kernel/dma/debug.c.
-> > > >>
-> > > >> details (log and test setup) tracked in
-> > > >> https://bugzilla.kernel.org/show_bug.cgi?id=3D218204
-> > > >>
-> > > >> it's recently noticed in a TDX guest testing since v6.6.0 release =
-cycle
-> > > >> and can still be reproduced in latest v6.7.0-rc3.
-> > > >>
-> > > >> as local bisects results show, above WARNING and Call Trace is lin=
-ked
-> > > >> with this patch, do you mind to take a look?
-> > > >
-> > > > Looks like virtqueue_dma_sync_single_range_for_cpu() use
-> > > > DMA_BIDIRECTIONAL unconditionally.
-> > > >
-> > > > We should use dir here.
-> > > >
-> > > > Mind to try?
-> > > >
-> > > > Thanks
-> > > >
-> > >
-> > > sure, but what I see in the code
-> > > virtqueue_dma_sync_single_range_for_cpu() is using DMA_FROM_DEVICE,
-> > > probably I misunderstood your point?
-> > >
-> > > Please let me know any patch/setting to try here.
-> >
-> > Something like attached.  (Not even compiling test).
-> >
-> > Thanks
->
-> Forwarding it inline for the record - I am not sure all the
-> 0 day machinery handles attachments. Jason given it's reported to work
-> can you please repost properly with a full commit log etc?
-> I think we also need to fix virtqueue_dma_sync_single_range_for_device -
-> please include that too.
+On Wed, Nov 29, 2023 at 08:10:57PM +0800, Ziqi Chen wrote:
+> 
+> 
+> On 11/28/2023 7:27 PM, Manivannan Sadhasivam wrote:
+> > On Tue, Nov 28, 2023 at 03:40:57AM +0800, Ziqi Chen wrote:
+> > > 
+> > > 
+> > > On 11/22/2023 2:14 PM, Can Guo wrote:
+> > > > 
+> > > > 
+> > > > On 10/25/2023 3:41 PM, Manivannan Sadhasivam wrote:
+> > > > > On Tue, Oct 24, 2023 at 07:10:15PM +0800, Ziqi Chen wrote:
+> > > > > > During PISI test, we found the issue that host Tx still bursting after
+> > > > > 
+> > > > > What is PISI test?
+> > > 
+> > > SI measurement.
+> > > 
+> > 
+> > Please expand it in the patch description.
+> 
+> Sure, I will update in next patch version.
+> 
+> > 
+> > > > > 
+> > > > > > H/W reset. Move ufs_qcom_host_reset() to ufs_qcom_device_reset() and
+> > > > > > reset host before device reset to stop tx burst.
+> > > > > > 
+> > > > > 
+> > > > > device_reset() callback is supposed to reset only the device and not
+> > > > > the host.
+> > > > > So NACK for this patch.
+> > > > 
+> > > > Agree, the change should come in a more reasonable way.
+> > > > 
+> > > > Actually, similar code is already there in ufs_mtk_device_reset() in
+> > > > ufs-mediatek.c, I guess here is trying to mimic that fashion.
+> > > > 
+> > > > This change, from its functionality point of view, we do need it,
+> > > > because I occasionally (2 out of 10) hit PHY error on lane 0 during
+> > > > reboot test (in my case, I tried SM8350, SM8450 and SM8550， all same).
+> > > > 
+> > > > [    1.911188] [DEBUG]ufshcd_update_uic_error: UECPA:0x80000002
+> > > > [    1.922843] [DEBUG]ufshcd_update_uic_error: UECDL:0x80004000
+> > > > [    1.934473] [DEBUG]ufshcd_update_uic_error: UECN:0x0
+> > > > [    1.944688] [DEBUG]ufshcd_update_uic_error: UECT:0x0
+> > > > [    1.954901] [DEBUG]ufshcd_update_uic_error: UECDME:0x0
+> > > > 
+> > > > I found out that the PHY error pops out right after UFS device gets
+> > > > reset in the 2nd init. After having this change in place, the PA/DL
+> > > > errors are gone.
+> > > 
+> > > Hi Mani,
+> > > 
+> > > There is another way that adding a new vops that call XXX_host_reset() from
+> > > soc vendor driver. in this way, we can call this vops in core layer without
+> > > the dependency of device reset.
+> > > due to we already observed such error and received many same reports from
+> > > different OEMs, we need to fix it in some way.
+> > > if you think above way is available, I will update new patch in soon. Or
+> > > could you give us other suggestion?
+> > > 
+> > 
+> > First, please describe the issue in detail. How the issue is getting triggered
+> > and then justify your change. I do not have access to the bug reports that you
+> > received.
+> 
+> From the waveform measured by Samsung , we can see at the end of 2nd Link
+> Startup, host still keep bursting after H/W reset. This abnormal timing
+> would cause the PA/DL error mentioned by Can.
+> 
+> On the other hand, at the end of 1st Link start up, Host ends bursting at
+> first and then sends H/W reset to device. So Samsung suggested to do host
+> reset before every time device reset to fix this issue. That's what you saw
+> in this patch.  This patch has been verified by OEMs.
+> 
 
-Yes, want to sent something like this yesterday but it was interrupted
-by other tasks.
+Thanks for the detail. This info should have been part of the patch description.
 
-I see Xuan has posted a patch, I will ack on that.
+> So do you think if we can keep this change with details update in commit
+> message. or need to do other improvement?
+> 
 
-Thanks
+For sure we should not do host reset within device_reset callback. I'd like to
+know at what point of time we are seeing the host burst after device reset. I
+mean can you point me to the code in the ufshcd driver that when calling
+device_reset you are seeing the issue? Then we can do a host_reset before that
+_specific_ device_reset with the help of the new vops you suggested.
 
->
->
-> From: Jason Wang <jasowang@redhat.com>
-> Date: Wed, 29 Nov 2023 17:14:15 +0800
-> Subject: [PATCH] virtio_ring: fix DMA dir during sync
-> Content-type: text/plain
->
-> Signed-off-by: Jason Wang <jasowang@redhat.com>
-> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
->
-> ---
->  drivers/virtio/virtio_ring.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-> index 81ecb29c88f1..91d869814373 100644
-> --- a/drivers/virtio/virtio_ring.c
-> +++ b/drivers/virtio/virtio_ring.c
-> @@ -3220,7 +3220,7 @@ void virtqueue_dma_sync_single_range_for_cpu(struct=
- virtqueue *_vq,
->                 return;
->
->         dma_sync_single_range_for_cpu(dev, addr, offset, size,
-> -                                     DMA_BIDIRECTIONAL);
-> +                                     dir);
->  }
->  EXPORT_SYMBOL_GPL(virtqueue_dma_sync_single_range_for_cpu);
->
-> --
-> 2.42.0
->
+- Mani
 
+> 
+> -Ziqi
+> 
+> > 
+> > - Mani
+> > 
+> > > -Ziqi
+> > > 
+> > > > 
+> > > > Thanks,
+> > > > Can Guo.
+> > > > > 
+> > > > > - Mani
+> > > > > 
+> > > > > > Signed-off-by: Ziqi Chen <quic_ziqichen@quicinc.com>
+> > > > > > ---
+> > > > > >    drivers/ufs/host/ufs-qcom.c | 13 +++++++------
+> > > > > >    1 file changed, 7 insertions(+), 6 deletions(-)
+> > > > > > 
+> > > > > > diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
+> > > > > > index 96cb8b5..43163d3 100644
+> > > > > > --- a/drivers/ufs/host/ufs-qcom.c
+> > > > > > +++ b/drivers/ufs/host/ufs-qcom.c
+> > > > > > @@ -445,12 +445,6 @@ static int
+> > > > > > ufs_qcom_power_up_sequence(struct ufs_hba *hba)
+> > > > > >        struct phy *phy = host->generic_phy;
+> > > > > >        int ret;
+> > > > > > -    /* Reset UFS Host Controller and PHY */
+> > > > > > -    ret = ufs_qcom_host_reset(hba);
+> > > > > > -    if (ret)
+> > > > > > -        dev_warn(hba->dev, "%s: host reset returned %d\n",
+> > > > > > -                  __func__, ret);
+> > > > > > -
+> > > > > >        /* phy initialization - calibrate the phy */
+> > > > > >        ret = phy_init(phy);
+> > > > > >        if (ret) {
+> > > > > > @@ -1709,6 +1703,13 @@ static void ufs_qcom_dump_dbg_regs(struct
+> > > > > > ufs_hba *hba)
+> > > > > >    static int ufs_qcom_device_reset(struct ufs_hba *hba)
+> > > > > >    {
+> > > > > >        struct ufs_qcom_host *host = ufshcd_get_variant(hba);
+> > > > > > +    int ret = 0;
+> > > > > > +
+> > > > > > +    /* Reset UFS Host Controller and PHY */
+> > > > > > +    ret = ufs_qcom_host_reset(hba);
+> > > > > > +    if (ret)
+> > > > > > +        dev_warn(hba->dev, "%s: host reset returned %d\n",
+> > > > > > +                  __func__, ret);
+> > > > > >        /* reset gpio is optional */
+> > > > > >        if (!host->device_reset)
+> > > > > > -- 
+> > > > > > 2.7.4
+> > > > > > 
+> > > > > 
+> > 
+
+-- 
+மணிவண்ணன் சதாசிவம்
