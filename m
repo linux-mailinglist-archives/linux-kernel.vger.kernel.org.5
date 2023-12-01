@@ -2,48 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78F7E800965
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 12:09:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E08D1800968
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 12:09:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378481AbjLALJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 06:09:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54736 "EHLO
+        id S1378479AbjLALJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 06:09:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378464AbjLALJ1 (ORCPT
+        with ESMTP id S1378464AbjLALJn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 06:09:27 -0500
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15758193
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 03:09:33 -0800 (PST)
-Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4ShVZD5LMQzMngB;
-        Fri,  1 Dec 2023 19:04:36 +0800 (CST)
-Received: from [10.174.177.243] (10.174.177.243) by
- dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 1 Dec 2023 19:09:29 +0800
-Message-ID: <9e5c199a-9b4d-4d1b-97d4-dd2b776ac85f@huawei.com>
-Date:   Fri, 1 Dec 2023 19:09:29 +0800
+        Fri, 1 Dec 2023 06:09:43 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08B7E1A4
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 03:09:49 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5EB25C433C8;
+        Fri,  1 Dec 2023 11:09:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701428988;
+        bh=o05AhYqQMl6gqIIPfGCy+BD9YDKBTaLzd34nySfyWC8=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=ObgOAzlGppLIARiW9BNQhCs7HUjaLBSKRMhtQ7DM97/eILMUSwzVUGLDlQLiNYPoG
+         2kxr3XplZIBqxW1ofmIxBV6dQLD7kn8LTQ5Bi0D8PeQXOgJNfrtwVfs3hL2uWue4dK
+         OxUsZwJzBVbfiOb5PXFNB+pTQtn3rIDcH5WnRwJ+AAxX4pXCZ67DjvAvayC71LWUE3
+         SjHNf5Wr0ORlU4GAanKnhn+yHYxFhioAAmbfMORbjtY5iB6+FHHoB4BpXBJ6q6FGxg
+         9M64qnfg1QKRRayQLXIRT2MzornCrSNSFf+jSNsaoeV05TP6Dx0qtsUU6a8WoOqgKE
+         z5yGuxuI8zuTA==
+From:   Lee Jones <lee@kernel.org>
+To:     lee@kernel.org, pavel@ucw.cz, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        andy.shevchenko@gmail.com,
+        Dmitry Rokosov <ddrokosov@salutedevices.com>
+Cc:     kernel@sberdevices.ru, rockosov@gmail.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-leds@vger.kernel.org
+In-Reply-To: <20231125200519.1750-1-ddrokosov@salutedevices.com>
+References: <20231125200519.1750-1-ddrokosov@salutedevices.com>
+Subject: Re: [PATCH v5 00/11] leds: aw200xx: several driver updates
+Message-Id: <170142898612.3365188.2222761548333694548.b4-ty@kernel.org>
+Date:   Fri, 01 Dec 2023 11:09:46 +0000
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/4] mm: pagewalk: assert write mmap lock only for walking
- the user page tables
-Content-Language: en-US
-To:     Muchun Song <songmuchun@bytedance.com>, <mike.kravetz@oracle.com>,
-        <muchun.song@linux.dev>, <akpm@linux-foundation.org>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-References: <20231127084645.27017-1-songmuchun@bytedance.com>
- <20231127084645.27017-2-songmuchun@bytedance.com>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-In-Reply-To: <20231127084645.27017-2-songmuchun@bytedance.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.243]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm100001.china.huawei.com (7.185.36.93)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -52,72 +54,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2023/11/27 16:46, Muchun Song wrote:
-> The 8782fb61cc848 ("mm: pagewalk: Fix race between unmap and page walker")
-> introduces an assertion to walk_page_range_novma() to make all the users
-> of page table walker is safe. However, the race only exists for walking the
-> user page tables. And it is ridiculous to hold a particular user mmap write
-> lock against the changes of the kernel page tables. So only assert at least
-> mmap read lock when walking the kernel page tables. And some users matching
-> this case could downgrade to a mmap read lock to relief the contention of
-> mmap lock of init_mm, it will be nicer in hugetlb (only holding mmap read
-> lock) in the next patch.
+On Sat, 25 Nov 2023 23:05:08 +0300, Dmitry Rokosov wrote:
+> The following patch series includes several updates for the AW200XX LED
+> driver:
+>     - some small fixes and optimizations to the driver implementation:
+>       delays, autodimming calculation, disable_locking regmap flag,
+>       display_rows calculation in runtime;
+>     - fix LED device tree node pattern to accept LED names counting not
+>       only from 0 to f;
+>     - add missing reg constraints;
+>     - support HWEN hardware control, which allows enabling or disabling
+>       AW200XX RTL logic from the main SoC using a GPIO pin;
+>     - introduce the new AW20108 LED controller, the datasheet for this
+>       controller can be found at [1].
 > 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> ---
->   mm/pagewalk.c | 29 ++++++++++++++++++++++++++++-
->   1 file changed, 28 insertions(+), 1 deletion(-)
-> 
-> diff --git a/mm/pagewalk.c b/mm/pagewalk.c
-> index b7d7e4fcfad7a..f46c80b18ce4f 100644
-> --- a/mm/pagewalk.c
-> +++ b/mm/pagewalk.c
-> @@ -539,6 +539,11 @@ int walk_page_range(struct mm_struct *mm, unsigned long start,
->    * not backed by VMAs. Because 'unusual' entries may be walked this function
->    * will also not lock the PTEs for the pte_entry() callback. This is useful for
->    * walking the kernel pages tables or page tables for firmware.
-> + *
-> + * Note: Be careful to walk the kernel pages tables, the caller may be need to
-> + * take other effective approache (mmap lock may be insufficient) to prevent
-> + * the intermediate kernel page tables belonging to the specified address range
-> + * from being freed (e.g. memory hot-remove).
->    */
->   int walk_page_range_novma(struct mm_struct *mm, unsigned long start,
->   			  unsigned long end, const struct mm_walk_ops *ops,
-> @@ -556,7 +561,29 @@ int walk_page_range_novma(struct mm_struct *mm, unsigned long start,
->   	if (start >= end || !walk.mm)
->   		return -EINVAL;
->   
-> -	mmap_assert_write_locked(walk.mm);
-> +	/*
-> +	 * 1) For walking the user virtual address space:
-> +	 *
-> +	 * The mmap lock protects the page walker from changes to the page
-> +	 * tables during the walk.  However a read lock is insufficient to
-> +	 * protect those areas which don't have a VMA as munmap() detaches
-> +	 * the VMAs before downgrading to a read lock and actually tearing
-> +	 * down PTEs/page tables. In which case, the mmap write lock should
-> +	 * be hold.
-> +	 *
-> +	 * 2) For walking the kernel virtual address space:
-> +	 *
-> +	 * The kernel intermediate page tables usually do not be freed, so
-> +	 * the mmap map read lock is sufficient. But there are some exceptions.
-> +	 * E.g. memory hot-remove. In which case, the mmap lock is insufficient
-> +	 * to prevent the intermediate kernel pages tables belonging to the
-> +	 * specified address range from being freed. The caller should take
-> +	 * other actions to prevent this race.
-> +	 */
-> +	if (mm == &init_mm)
-> +		mmap_assert_locked(walk.mm);
-> +	else
-> +		mmap_assert_write_locked(walk.mm);
+> [...]
 
-Maybe just use process_mm_walk_lock() and set correct page_walk_lock in 
-struct mm_walk_ops?
+Applied, thanks!
 
->   
->   	return walk_pgd_range(start, end, &walk);
->   }
+[01/11] leds: aw200xx: fix write to DIM parameter
+        commit: 785fec3a8daff2957fd55e49cbdfe0a50866fdb7
+[02/11] leds: aw200xx: support HWEN hardware control
+        commit: eabe8239022cf3c75b90d9ee07dcfbbe4e50bcac
+[03/11] dt-bindings: leds: aw200xx: introduce optional enable-gpios property
+        commit: e91899ea3759d04e185721153a036e1a25e315b7
+[04/11] leds: aw200xx: calculate dts property display_rows in the driver
+        commit: 4ccd392c3ea7ceefbee58622e634d4997ef46acc
+[05/11] dt-bindings: leds: aw200xx: remove property "awinic,display-rows"
+        commit: 66d078f105837670c52bb31da29e26ad13bc2923
+[06/11] leds: aw200xx: add delay after software reset
+        commit: aac13e5630d6e081a9f6c5a57e5e6fc1152acca8
+[07/11] leds: aw200xx: enable disable_locking flag in regmap config
+        commit: 851fa70b9b162bbf5b5f5f92fc450633e6b21a3a
+[08/11] leds: aw200xx: improve autodim calculation method
+        commit: 5fcc24b92b43f012cbf430244f0698ff588ec9fc
+[09/11] leds: aw200xx: add support for aw20108 device
+        commit: abc74724d5e714bb3359124f3576d5318828a83e
+[10/11] dt-bindings: leds: awinic,aw200xx: add AW20108 device
+        commit: d6bbe677add2c560ae4aa2f9dab7a19c287e2193
+[11/11] dt-bindings: leds: aw200xx: fix led pattern and add reg constraints
+        commit: 5707a06e5391a4eeaf0c2705f973336537a41c79
+
+--
+Lee Jones [李琼斯]
+
