@@ -2,162 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD2F0800FA8
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 17:13:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CE3C800FBD
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 17:13:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379485AbjLAPc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 10:32:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38888 "EHLO
+        id S1379422AbjLAPcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 10:32:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379461AbjLAPcV (ORCPT
+        with ESMTP id S1379426AbjLAPcj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 10:32:21 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EABC1738;
-        Fri,  1 Dec 2023 07:32:25 -0800 (PST)
-Received: from [100.94.55.57] (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: ehristev)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 88F3E660739A;
-        Fri,  1 Dec 2023 15:32:23 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1701444744;
-        bh=tNdSmYTDgv9TDc5k/n3GNbFZ1OQJA3GgTmeWeu7A4x8=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=Z6E7zwKeTZgTXBpUwQV/3AUvSEy1KeCPkbw/7VMdxJN+uykpCdyaS7JAE3NAbRzc7
-         4B7RFcXoUvZ2F9iSURyGjptLaVmDAB+WyuMU4HVGGm8n8l55h7Vj/TarpfWrIw9RLz
-         9KuUkSv8DFdG5HneVf3pMH0cpGqNFe4CXdCPdVb+C0eNRrvacsCyEikKkNGKTEI4ek
-         SVRo049kcwUsPKEDPhSrFmC81NXpCACgb9SvTvvuyQj9T3UaHmNsjdbiPzvCuDRUYb
-         n2T/JbRCXRndQMECr5Ms4kiAidVeAjVb+25aLwWQ466vbvNkGifv7hECjgnETjcsQv
-         SauXuJyjmAeoQ==
-Message-ID: <525f20de-4eb8-4786-84b5-64eb989bdc4c@collabora.com>
-Date:   Fri, 1 Dec 2023 17:32:20 +0200
+        Fri, 1 Dec 2023 10:32:39 -0500
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E8F9194;
+        Fri,  1 Dec 2023 07:32:46 -0800 (PST)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-40b4a8db331so21440865e9.3;
+        Fri, 01 Dec 2023 07:32:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701444764; x=1702049564; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:references:to
+         :content-language:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=dRp6E9n1PpmFcNuEF+xwWPt12aMl6+EMhLFak8Z0XWM=;
+        b=V0tQfgPcMwsVofxB7tF/PMo5GZBvBA39TQ7YpLFMfZDWIGcvJgm2gMMvk8scHolIXi
+         Bxpg9g/EuuyNt9I5mGSbFeq4IDsSrKYh5zE6jLu1hkMd0bbu3qPh3myZ4GX4pR55QPqy
+         7FoMveErcgjrRKsdgypqMikyly718Tk07zeTqPpHmzHgWpkIxYTLEbzfU8fDjaQWKgW8
+         g9H+25g1TKwMoiT0eYw/vCTkMkLUGjTWLL/9AvPWqNzyDshorwNczAEuC5JckseXaezC
+         4erHiDDsH9f+GG05ut4LwCHN+j07R3CHyFP3m3SsnBVutR/DCyifTSG8lp+bnWb2iaC1
+         GcEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701444764; x=1702049564;
+        h=content-transfer-encoding:in-reply-to:organization:references:to
+         :content-language:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dRp6E9n1PpmFcNuEF+xwWPt12aMl6+EMhLFak8Z0XWM=;
+        b=gP0wB9FBtKf8bssT/eVdanHe7n+VlfU2g5pQi4s1Co4nLQ8hQ2UAlqi+FuvNZtcV/p
+         RsrGXDo2KrYuyJJUh34eeQxyOkULII35pNPXOX0EDexq5K9cG3o4wq5qJTSD1Xg2Xrvs
+         rwmKbXQSo5dSgjHqA7XeQ+ia9trO1SEHbsdAWrPwdSYEAzVwOqWqK+8RReVr4S24B0Fy
+         zyIjARIZGSZLYFJvlpyel/dQWNVXvS/TyRsEIQKAd769T0aBUi4kNGp9IqSg9NaYdINP
+         ZGw2BrhmIokB+r38U5BD3nJyomo3eFVT3viIKWwXLqJuVlxrb8dYzF2NHSJMXDW6LK84
+         yuJw==
+X-Gm-Message-State: AOJu0Yzjt3QpncqZycOfm/KRPKFXewtsiNAlM9m/B6IN9hplTOxqqquf
+        vKaydVLkiQPSh5UYF6aiAxs=
+X-Google-Smtp-Source: AGHT+IHyHu37ZIqvjQD8gRxG/Xf6cc/VFe5a+Zw6YmS/qOk5OxLwxaySuqge8bA93Bnsjs5Saa2+hA==
+X-Received: by 2002:a05:600c:1c9c:b0:40b:5e21:d374 with SMTP id k28-20020a05600c1c9c00b0040b5e21d374mr475213wms.125.1701444764330;
+        Fri, 01 Dec 2023 07:32:44 -0800 (PST)
+Received: from [192.168.17.41] (54-240-197-239.amazon.com. [54.240.197.239])
+        by smtp.gmail.com with ESMTPSA id fs20-20020a05600c3f9400b0040b5517ae31sm8633529wmb.6.2023.12.01.07.32.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Dec 2023 07:32:43 -0800 (PST)
+From:   Paul Durrant <xadimgnik@gmail.com>
+X-Google-Original-From: Paul Durrant <paul@xen.org>
+Message-ID: <00b3e1bf-4968-474a-ac45-9c8e9549346e@xen.org>
+Date:   Fri, 1 Dec 2023 15:32:40 +0000
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6/9] arm64: dts: mediatek: Add MT8186 Krabby platform
- based Tentacruel / Tentacool
+Reply-To: paul@xen.org
+Subject: Re: [PATCH 2/2] KVM: xen: (re-)initialize shared_info if guest
+ (32/64-bit) mode is set
 Content-Language: en-US
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Chen-Yu Tsai <wenst@chromium.org>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20231012230237.2676469-1-wenst@chromium.org>
- <20231012230237.2676469-7-wenst@chromium.org>
- <60beb523-292b-4c77-9030-1bfdfd73c140@collabora.com>
- <CAGXv+5GmjZbzLbxADoNXDiF8dTAwnxva29vuM0FG8vY-6wTJcQ@mail.gmail.com>
- <4c15c9a4-bf04-492d-9e02-d630092b6caa@collabora.com>
-From:   Eugen Hristev <eugen.hristev@collabora.com>
-In-Reply-To: <4c15c9a4-bf04-492d-9e02-d630092b6caa@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+To:     David Woodhouse <dwmw2@infradead.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231201104536.947-1-paul@xen.org>
+ <20231201104536.947-3-paul@xen.org>
+Organization: Xen Project
+In-Reply-To: <20231201104536.947-3-paul@xen.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/27/23 15:05, AngeloGioacchino Del Regno wrote:
-> Il 27/11/23 05:00, Chen-Yu Tsai ha scritto:
->> On Mon, Oct 23, 2023 at 5:05 PM Eugen Hristev
->> <eugen.hristev@collabora.com> wrote:
->>>
->>> On 10/13/23 02:02, Chen-Yu Tsai wrote:
->>>> Tentacruel and Tentacool are MT8186 based Chromebooks based on the
->>>> Krabby design.
->>>>
->>>> Tentacruel, also known as the ASUS Chromebook CM14 Flip CM1402F, is a
->>>> convertible device with touchscreen and stylus.
->>>>
->>>> Tentacool, also known as the ASUS Chromebook CM14 CM1402C, is a laptop
->>>> device. It does not have a touchscreen or stylus.
->>>>
->>>> The two devices both have two variants. The difference is a second
->>>> source touchpad controller that shares the same address as the original,
->>>> but is incompatible.
->>>>
->>>> The extra SKU IDs for the Tentacruel devices map to different sensor
->>>> components attached to the Embedded Controller. These are not visible
->>>> to the main processor.
->>>>
->>>> Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
->>>> ---
->>>>    arch/arm64/boot/dts/mediatek/Makefile         |    4 +
->>>>    .../dts/mediatek/mt8186-corsola-krabby.dtsi   |  130 ++
->>>>    .../mt8186-corsola-tentacool-sku327681.dts    |   49 +
->>>>    .../mt8186-corsola-tentacool-sku327683.dts    |   26 +
->>>>    .../mt8186-corsola-tentacruel-sku262144.dts   |   44 +
->>>>    .../mt8186-corsola-tentacruel-sku262148.dts   |   28 +
->>>>    .../boot/dts/mediatek/mt8186-corsola.dtsi     | 1704 +++++++++++++++++
->>>>    7 files changed, 1985 insertions(+)
->>>>    create mode 100644 arch/arm64/boot/dts/mediatek/mt8186-corsola-krabby.dtsi
->>>>    create mode 100644 arch/arm64/boot/dts/mediatek/mt8186-corsola-tentacool-sku327681.dts
->>>>    create mode 100644 arch/arm64/boot/dts/mediatek/mt8186-corsola-tentacool-sku327683.dts
->>>>    create mode 100644 arch/arm64/boot/dts/mediatek/mt8186-corsola-tentacruel-sku262144.dts
->>>>    create mode 100644 arch/arm64/boot/dts/mediatek/mt8186-corsola-tentacruel-sku262148.dts
->>>>    create mode 100644 arch/arm64/boot/dts/mediatek/mt8186-corsola.dtsi
->>>>
->>
->> [...]
->>
->>>> diff --git a/arch/arm64/boot/dts/mediatek/mt8186-corsola.dtsi b/arch/arm64/boot/dts/mediatek/mt8186-corsola.dtsi
->>>> new file mode 100644
->>>> index 000000000000..42ebab1bafeb
->>>> --- /dev/null
->>>> +++ b/arch/arm64/boot/dts/mediatek/mt8186-corsola.dtsi
->>>> @@ -0,0 +1,1704 @@
->>
->> [...]
->>
->>>
->>> Hi Chen-Yu,
->>>
->>> These two aud_gpio_tdm empty entries cause this message to be printed:
->>>
->>> [   12.949519] mt8186_mt6366_rt1019_rt5682s sound: there is not valid
->>> maps for state aud_gpio_tdm_off
->>> [   12.959025] mt8186_mt6366_rt1019_rt5682s sound: there is not valid
->>> maps for state aud_gpio_tdm_on
->>
->> I guess we need to teach the sound driver to ignore empty pinmux states?
+On 01/12/2023 10:45, Paul Durrant wrote:
+> From: Paul Durrant <pdurrant@amazon.com>
 > 
-> ...and we need to teach to the bindings that the aud_gpio_tdm_{off,on} are
-> optional states and can be omitted.
-
-Hello Angelo,
-
-The binding does not appear to specify any required states. Am I getting this
-wrong? Hence, we can just remove these states from the DT node.
-
-
-Hello Chen-Yu,
-
-The error message comes from the pinctrl, from dt_to_map_one_config() .
-I believe we can safely just remove these two if corsola device does not use TDM.
-From my perspective it is pointless to have two empty pinctrl states just for the
-sake of it if there are no pins involved.
-Please correct me if you have more knowledge about it.
-
-Thanks,
-Eugen
-
+> If the shared_info PFN cache has already been initialized then the content
+> of the shared_info page needs to be (re-)initialized if the guest mode is
+> set. It is no lnger done when the PFN cache is activated.
+> Setting the guest mode is either done explicitly by the VMM via the
+> KVM_XEN_ATTR_TYPE_LONG_MODE attribute, or implicitly when the guest writes
+> the MSR to set up the hypercall page.
 > 
-> Cheers,
-> Angelo
+> Signed-off-by: Paul Durrant <pdurrant@amazon.com>
+> ---
+>   arch/x86/kvm/xen.c | 20 +++++++++++++++-----
+>   1 file changed, 15 insertions(+), 5 deletions(-)
 > 
->>
->> ChenYu
-> 
-> 
-> 
+> diff --git a/arch/x86/kvm/xen.c b/arch/x86/kvm/xen.c
+> index 7bead3f65e55..bfc8f6698cbc 100644
+> --- a/arch/x86/kvm/xen.c
+> +++ b/arch/x86/kvm/xen.c
+> @@ -624,8 +624,15 @@ int kvm_xen_hvm_set_attr(struct kvm *kvm, struct kvm_xen_hvm_attr *data)
+>   		} else {
+>   			mutex_lock(&kvm->arch.xen.xen_lock);
+>   			kvm->arch.xen.long_mode = !!data->u.long_mode;
+> +
+> +			/*
+> +			 * If shared_info has already been initialized
+> +			 * then re-initialize it with the new width.
+> +			 */
+> +			r = kvm->arch.xen.shinfo_cache.active ?
+> +				kvm_xen_shared_info_init(kvm) : 0;
+> +
+>   			mutex_unlock(&kvm->arch.xen.xen_lock);
+> -			r = 0;
+>   		}
+>   		break;
+>   
+> @@ -657,9 +664,6 @@ int kvm_xen_hvm_set_attr(struct kvm *kvm, struct kvm_xen_hvm_attr *data)
+>   		}
+>   		srcu_read_unlock(&kvm->srcu, idx);
+>   
+> -		if (!r && kvm->arch.xen.shinfo_cache.active)
+> -			r = kvm_xen_shared_info_init(kvm);
+> -
+>   		mutex_unlock(&kvm->arch.xen.xen_lock);
+>   		break;
+>   	}
+> @@ -1144,7 +1148,13 @@ int kvm_xen_write_hypercall_page(struct kvm_vcpu *vcpu, u64 data)
+>   	bool lm = is_long_mode(vcpu);
+>   
+>   	/* Latch long_mode for shared_info pages etc. */
+> -	vcpu->kvm->arch.xen.long_mode = lm;
+> +	kvm->arch.xen.long_mode = lm;
+> +
+> +	if (kvm->arch.xen.shinfo_cache.active &&
+> +	    kvm_xen_shared_info_init(kvm)) {
+> +		mutex_unlock(&kvm->arch.xen.xen_lock);
+
+This unlock is bogus; it should have been removed. I'll send a v2.
+
+   Paul
+
+> +		return 1;
+> +	}
+>   
+>   	/*
+>   	 * If Xen hypercall intercept is enabled, fill the hypercall
 
