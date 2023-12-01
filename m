@@ -2,115 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B74DE801170
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:21:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1AC480112E
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:21:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378790AbjLARJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 12:09:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43162 "EHLO
+        id S1378693AbjLARJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 12:09:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378820AbjLARJf (ORCPT
+        with ESMTP id S229912AbjLARJw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 12:09:35 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AF8FF3
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 09:09:42 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F30F9C433C9;
-        Fri,  1 Dec 2023 17:09:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701450582;
-        bh=uEyHckuH85mFToap34E21cKoNiYKQu7WvLyHdU6m5Mk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jticPDpkXPNXiHfum1CiK44sgJUxDUnC/w4iHEXmx2Xh1ucb6e2kv1iB+0JN1lOR3
-         AGgJVmd0mTbNI0ZGlCw8dwv0wOAd7IHSkr4nIgg4fdAezdcg0EgJEPJhoij4nUGOOj
-         ey+JiEvigeCyf3MJ2PJ9j60r2zbSAgOJUMfagG+WBB0ZPw/erAcUg89RUU0LMrBupr
-         dKm85sjvxIm6eM9BHPpFOebQkA6sS2/RcIal4nfGMhcojMIWP9eMz+ZiJc65xPRN4l
-         feH/Iuax6lcUsuMVTlZzXcl1S8qNdS/iNleYZXlhxBCYFnEeTWU6TS9vesMSYvJt8/
-         Ph6eLHgPRM/0Q==
-Date:   Fri, 1 Dec 2023 18:09:36 +0100
-From:   Christian Brauner <brauner@kernel.org>
-To:     "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>
-Cc:     Serge Hallyn <serge@hallyn.com>, Paul Moore <paul@paul-moore.com>,
-        Eric Paris <eparis@redhat.com>,
-        James Morris <jmorris@namei.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Amir Goldstein <amir73il@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, audit@vger.kernel.org,
-        linux-unionfs@vger.kernel.org
-Subject: Re: [PATCH 08/16] fs: add vfs_get_fscaps()
-Message-ID: <20231201-wodurch-holen-ce9c44d8aaf5@brauner>
-References: <20231129-idmap-fscap-refactor-v1-0-da5a26058a5b@kernel.org>
- <20231129-idmap-fscap-refactor-v1-8-da5a26058a5b@kernel.org>
+        Fri, 1 Dec 2023 12:09:52 -0500
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9A3F197
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 09:09:57 -0800 (PST)
+Received: by mail-qv1-xf2d.google.com with SMTP id 6a1803df08f44-67a959e3afaso4797626d6.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 09:09:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1701450597; x=1702055397; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=UHSBlrWKXm1wAl594fX7qblvpqL30ZdbgTyCgGt+Df8=;
+        b=nCVmDprTxS0ZF+WtC5Pq/FiUtgi4HPiOKYuOq2vWTzMYbvdNkl4JEHP7OtLBdPXo7T
+         iilMMPXDJLV8dsPsIDuI42FKpzZ56yq1Kagf9BurUQhXV1WnXkCXp2rDqGPAZMihvSNF
+         DuEAYAcKdtP0+nqyVOlQ+zYeiFmudCDUkZQd6Ohm0t0NG3OnXX+DOvKhe/Htq61GHj14
+         OiJK38WTkXvCcJMhBVYRte4rN1kcvcRGnzRaEqgIwck4Vjg+OIzV2OU5pNOG2WO3vO9y
+         rhl76JxPT9wpyUzVzZDN3SYnqLg3qM15F4YMGlGzatq7EwNCwfAd66z+i3pJkBdFK8sO
+         eKrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701450597; x=1702055397;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UHSBlrWKXm1wAl594fX7qblvpqL30ZdbgTyCgGt+Df8=;
+        b=UEzVFSKgrdC5zYmCZI3A6JTUolHmKvkf1nStSzdy2m7Cfg6Vio0Txbj8R6SQVfzrHh
+         BlgYURR1jjeysGSGUvBf+go47tzOpNzUTHujgLdfySrkJl2yq7kt40S8I+6TSc1o0aZc
+         A92j3gbLtqRILjGPileS+hZ3mPE2Ap312n9v4s2CH/nH3clZDqSb7Da93dXiyEuv4iEn
+         WIxv6QuIih1F1PDV+TJSGratuUrbgBrsih9AYk4q3iukFGHM1yDPt6qwQkpOvnsZGEV/
+         MbbmpnigcHjP3ec/Bm91/JN7lF/3EGqocgxrNjPtmIkzD92nFsaBmaRKcz8EiTV9rK4E
+         L+jQ==
+X-Gm-Message-State: AOJu0YzR6cPnNxH+CFYHuiZLk/aDLBY8DiqLo5i/s0B3dlThKp2MZzdb
+        cCw36GbhInW/U7IiTLsgbqCL+A==
+X-Google-Smtp-Source: AGHT+IHqQfbSInVj9aP1pUXmAYQeii4YG2nj7kgSlMdhi5m0/8lKOirnLYXwBxYrgyzVTwed0GPvbA==
+X-Received: by 2002:a0c:e90e:0:b0:67a:fd5:24a9 with SMTP id a14-20020a0ce90e000000b0067a0fd524a9mr30266352qvo.19.1701450596905;
+        Fri, 01 Dec 2023 09:09:56 -0800 (PST)
+Received: from localhost (2603-7000-0c01-2716-da5e-d3ff-fee7-26e7.res6.spectrum.com. [2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
+        by smtp.gmail.com with ESMTPSA id du5-20020a05621409a500b0067aa28ac616sm255221qvb.113.2023.12.01.09.09.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Dec 2023 09:09:56 -0800 (PST)
+Date:   Fri, 1 Dec 2023 12:09:55 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Dan Schatzberg <schatzberg.dan@gmail.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Yosry Ahmed <yosryahmed@google.com>, Huan Yang <link@vivo.com>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Huang Ying <ying.huang@intel.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Peter Xu <peterx@redhat.com>,
+        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
+        Yue Zhao <findns94@gmail.com>, Hugh Dickins <hughd@google.com>
+Subject: Re: [PATCH 0/1] Add swappiness argument to memory.reclaim
+Message-ID: <20231201170955.GA694615@cmpxchg.org>
+References: <20231130153658.527556-1-schatzberg.dan@gmail.com>
+ <ZWiw9cEsDap1Qm5h@tiehlicka>
+ <20231130165642.GA386439@cmpxchg.org>
+ <ZWmoTa7MlD7h9FYm@tiehlicka>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231129-idmap-fscap-refactor-v1-8-da5a26058a5b@kernel.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <ZWmoTa7MlD7h9FYm@tiehlicka>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 03:50:26PM -0600, Seth Forshee (DigitalOcean) wrote:
-> Provide a type-safe interface for retrieving filesystem capabilities and
-> a generic implementation suitable for most filesystems. Also add an
-> internal interface, __vfs_get_fscaps(), which skips security checks for
-> later use from the capability code.
+On Fri, Dec 01, 2023 at 10:33:01AM +0100, Michal Hocko wrote:
+> On Thu 30-11-23 11:56:42, Johannes Weiner wrote:
+> [...]
+> > So I wouldn't say it's merely a reclaim hint. It controls a very
+> > concrete and influential factor in VM decision making. And since the
+> > global swappiness is long-established ABI, I don't expect its meaning
+> > to change significantly any time soon.
 > 
-> Signed-off-by: Seth Forshee (DigitalOcean) <sforshee@kernel.org>
-> ---
->  fs/xattr.c         | 66 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
->  include/linux/fs.h |  4 ++++
->  2 files changed, 70 insertions(+)
-> 
-> diff --git a/fs/xattr.c b/fs/xattr.c
-> index 09d927603433..3abaf9bef0a5 100644
-> --- a/fs/xattr.c
-> +++ b/fs/xattr.c
-> @@ -181,6 +181,72 @@ xattr_supports_user_prefix(struct inode *inode)
->  }
->  EXPORT_SYMBOL(xattr_supports_user_prefix);
->  
-> +static int generic_get_fscaps(struct mnt_idmap *idmap, struct dentry *dentry,
-> +			      struct vfs_caps *caps)
-> +{
-> +	struct inode *inode = d_inode(dentry);
-> +	struct vfs_ns_cap_data *nscaps = NULL;
-> +	int ret;
-> +
-> +	ret = (int)vfs_getxattr_alloc(idmap, dentry, XATTR_NAME_CAPS,
+> As I've said I am more worried about potential future changes which
+> would modify existing, reduce or add more corner cases which would be
+> seen as a change of behavior from the user space POV. That means that we
+> would have to be really explicit about the fact that the reclaim is free
+> to override the swappiness provided by user. So essentially a best
+> effort interface without any actual guarantees. That surely makes it
+> harder to use. Is it still useable?
 
-I don't think you need that case here.
+But it's not free to override the setting as it pleases. I wrote a
+detailed list of the current exceptions, and why the user wouldn't
+have strong expectations of swappiness being respected in those
+cases. Having reasonable limitations is not the same as everything
+being up for grabs.
 
-> +				      (char **)&nscaps, 0, GFP_NOFS);
-> +
-> +	if (ret >= 0)
-> +		ret = vfs_caps_from_xattr(idmap, i_user_ns(inode), caps, nscaps, ret);
-> +
-> +	kfree(nscaps);
-> +	return ret;
-> +}
-> +
-> +/**
-> + * __vfs_get_fscaps - get filesystem capabilities without security checks
-> + * @idmap: idmap of the mount the inode was found from
-> + * @dentry: the dentry from which to get filesystem capabilities
-> + * @caps: storage in which to return the filesystem capabilities
-> + *
-> + * This function gets the filesystem capabilities for the dentry and returns
-> + * them in @caps. It does not perform security checks.
-> + *
-> + * Return: 0 on success, a negative errno on error.
-> + */
-> +int __vfs_get_fscaps(struct mnt_idmap *idmap, struct dentry *dentry,
-> +		     struct vfs_caps *caps)
+Again, the swappiness setting is ABI, and people would definitely
+complain if we ignored their request in an unexpected situation and
+regressed their workloads.
 
-I would rename that to vfs_get_fscaps_nosec(). We do that for
-vfs_getxattr_nosec() as well. It's not pretty but it's better than just
-slapping underscores onto it imo.
+I'm not against documenting the exceptions and limitations. Not just
+for proactive reclaim, but for swappiness in general. But I don't
+think it's fair to say that there are NO rules and NO userspace
+contract around this parameter (and I'm the one who wrote most of the
+balancing code that implements the swappiness control).
+
+So considering what swappiness DOES provide, and the definition and
+behavior to which we're tied by ABI rules, yes I do think it's useful
+to control this from the proactive reclaim context. In fact, we know
+it's useful, because we've been doing it for a while in production now
+- just in a hacky way, and this patch is merely making it less hacky.
+
+> Btw. IIRC these concerns were part of the reason why memcg v2 doesn't
+> have swappiness interface. If we decide to export swappiness via
+> memory.reclaim interface does it mean we will do so on per-memcg level
+> as well?
+
+Well I'm the person who wrote the initial cgroup2 memory interface,
+and I left it out because there was no clear usecase for why you'd
+want to tweak it on a per-container basis.
+
+But Dan did bring up a new and very concrete usecase: controlling for
+write endurance. And it's not just a theoretical one, but a proven
+real world application.
+
+As far as adding a static memory.swappiness goes, I wouldn't add it
+just because, but wait for a concrete usecase for that specifically. I
+don't think Dan's rationale extends to it. But if a usecase comes up
+and is convincing, I wouldn't be opposed to it.
