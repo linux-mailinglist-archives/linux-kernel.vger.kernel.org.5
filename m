@@ -2,61 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 115618000F5
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 02:29:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DEF8800105
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 02:31:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229920AbjLAB3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 20:29:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51960 "EHLO
+        id S229993AbjLABbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 20:31:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbjLAB3V (ORCPT
+        with ESMTP id S229448AbjLABbA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 20:29:21 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3AF210D1;
-        Thu, 30 Nov 2023 17:29:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701394167; x=1732930167;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Od0OV/m0R2tQLMJWSylL1P+SOYauHRST34A3DngAhiY=;
-  b=m427PfKTAZEicOESssWYVFDYP441fzXZr12MbapD7EtOzHskZH7hmjDZ
-   rXBbJBusqXKCS8i5//gnlIqXYKkGwVKlbguo8e6pWrFNDTNyFNQUZbTdT
-   2jY/6kXLcA/fJRXjkc9WuBpu3+mtK5WmmUdhhLTD4laW1jQvlAeeQlI8m
-   4KCv9I9jUtTPiy26u0UsB/2YHmKfFifCPrD2DheDeZzPM64LYIoqhj3uP
-   Nz++iCCBlHEM5aiV2j0J0r7bJTrVT7TQV5hKZO9C3nRg4gGfR/FtybQMe
-   H/v9gDTIozWly9i7wJmJiITgCm/hMxbTSNGIV+Q1ZIABTaCXosJ5w0gsc
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="303875"
-X-IronPort-AV: E=Sophos;i="6.04,240,1695711600"; 
-   d="scan'208";a="303875"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 17:29:27 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="745821708"
-X-IronPort-AV: E=Sophos;i="6.04,240,1695711600"; 
-   d="scan'208";a="745821708"
-Received: from araj-dh-work.jf.intel.com ([10.165.157.158])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 17:29:26 -0800
-Date:   Thu, 30 Nov 2023 17:27:00 -0800
-From:   Ashok Raj <ashok_raj@linux.intel.com>
-To:     Zhang Rui <rui.zhang@intel.com>
-Cc:     linux@roeck-us.net, jdelvare@suse.com, fenghua.yu@intel.com,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ashok Raj <ashok.raj@intel.com>
-Subject: Re: [PATCH 2/3] hwmon: (coretemp) Remove unnecessary dependency of
- array index
-Message-ID: <ZWk2ZAxuyOFDCTmv@araj-dh-work.jf.intel.com>
-References: <20231127131651.476795-1-rui.zhang@intel.com>
- <20231127131651.476795-3-rui.zhang@intel.com>
+        Thu, 30 Nov 2023 20:31:00 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB39910E2;
+        Thu, 30 Nov 2023 17:31:06 -0800 (PST)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B11OIbU023702;
+        Fri, 1 Dec 2023 01:31:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : subject :
+ date : message-id : mime-version : content-type :
+ content-transfer-encoding : to : cc; s=qcppdkim1;
+ bh=lL5LPWoqynUz811+lSvI5f46fxNGa5JB3siV0Ial9r8=;
+ b=U6lEyvi4ECnoXfYmsz1NbkHutVNeJK2loOJSxbqyImvM2CLtElhEWok/05knyWxcLQwu
+ 08k4aSNbGxMsrqwg9mnltILy5h0+nAL2O8NWc4FyiI+zKZU9imIfxfJ+d118GE244uft
+ RUtgdXfqp8/+RE1vRYTwWrZtOSOru8ts0V/VuNiNkDpzbor6mfJEeePtIMAaXVz0QZjQ
+ QuZzs0OTht1C8eMLiAn/LOdNy/E68PBf210dCa5MlJI1NG9tJnA/CLqsKg8YrN3nVo4c
+ HRpBp1CKE2A2SgYFnZ69H09HZXmJ7y3utAoxxAYbnW42xJ+M/Co7fJEAyMAq1FV7f7fU wQ== 
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uq3f7r9n1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 01 Dec 2023 01:31:00 +0000
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B11UxgE024457
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 1 Dec 2023 01:30:59 GMT
+Received: from jesszhan-linux.qualcomm.com (10.80.80.8) by
+ nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Thu, 30 Nov 2023 17:30:59 -0800
+From:   Jessica Zhang <quic_jesszhan@quicinc.com>
+Subject: [PATCH 0/2] drm/msm/dpu: INTF CRC configuration cleanups and fix
+Date:   Thu, 30 Nov 2023 17:30:32 -0800
+Message-ID: <20231130-encoder-fixup-v1-0-585c54cd046e@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231127131651.476795-3-rui.zhang@intel.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIADg3aWUC/x2MQQqAIBAAvyJ7TnCNpPpKdCjdai8qShGIf086D
+ sNMgUyJKcMsCiR6OHPwDbATYK/NnyTZNQatdI+otSRvg6MkD37vKA1anNSORo0DtCYmauL/LWu
+ tHz7Xi61fAAAA
+To:     Rob Clark <robdclark@gmail.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        "Daniel Vetter" <daniel@ffwll.ch>
+CC:     <quic_abhinavk@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>,
+        <freedreno@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+        Jessica Zhang <quic_jesszhan@quicinc.com>
+X-Mailer: b4 0.13-dev-53db1
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1701394259; l=1054;
+ i=quic_jesszhan@quicinc.com; s=20230329; h=from:subject:message-id;
+ bh=ZBK/2ML/yPdAWm4KnzoE/Yq4664M2aS3wyAmmBswsLg=;
+ b=Bk/EOTFm3PKvlT31UCBAqFquX349JAJzfGvaaYiBvsBhWZgBZNMXrb2qesUBpeMx1Jzuv0WFl
+ SgpG9wEyUfuCtoBspkBpT1aeBkG2r3PPLqcRauoQ2gHG3nS9yXzJx6I
+X-Developer-Key: i=quic_jesszhan@quicinc.com; a=ed25519;
+ pk=gAUCgHZ6wTJOzQa3U0GfeCDH7iZLlqIEPo4rrjfDpWE=
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: wTJLSiEw7vAAhahnHGHLFK491AsvNGzn
+X-Proofpoint-GUID: wTJLSiEw7vAAhahnHGHLFK491AsvNGzn
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-30_25,2023-11-30_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
+ spamscore=0 impostorscore=0 lowpriorityscore=0 phishscore=0
+ priorityscore=1501 mlxlogscore=591 bulkscore=0 clxscore=1011 mlxscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2312010008
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,148 +92,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 27, 2023 at 09:16:50PM +0800, Zhang Rui wrote:
-> When sensor_device_attribute pointer is available, use container_of() to
-> get the temp_data address.
-> 
-> This removes the unnecessary dependency of cached index in
-> pdata->core_data[].
-> 
-> Signed-off-by: Zhang Rui <rui.zhang@intel.com>
-> ---
->  drivers/hwmon/coretemp.c | 15 +++++----------
->  1 file changed, 5 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/hwmon/coretemp.c b/drivers/hwmon/coretemp.c
-> index 6053ed3761c2..cef43fedbd58 100644
-> --- a/drivers/hwmon/coretemp.c
-> +++ b/drivers/hwmon/coretemp.c
-> @@ -342,7 +342,7 @@ static ssize_t show_label(struct device *dev,
->  {
->  	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
->  	struct platform_data *pdata = dev_get_drvdata(dev);
-> -	struct temp_data *tdata = pdata->core_data[attr->index];
-> +	struct temp_data *tdata = container_of(attr, struct temp_data, sd_attrs[ATTR_LABEL]);
->  
->  	if (tdata->is_pkg_data)
->  		return sprintf(buf, "Package id %u\n", pdata->pkg_id);
-> @@ -355,8 +355,7 @@ static ssize_t show_crit_alarm(struct device *dev,
->  {
->  	u32 eax, edx;
->  	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
-> -	struct platform_data *pdata = dev_get_drvdata(dev);
-> -	struct temp_data *tdata = pdata->core_data[attr->index];
-> +	struct temp_data *tdata = container_of(attr, struct temp_data, sd_attrs[ATTR_CRIT_ALARM]);
->  
->  	mutex_lock(&tdata->update_lock);
->  	rdmsr_on_cpu(tdata->cpu, tdata->status_reg, &eax, &edx);
-> @@ -369,8 +368,7 @@ static ssize_t show_tjmax(struct device *dev,
->  			struct device_attribute *devattr, char *buf)
->  {
->  	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
-> -	struct platform_data *pdata = dev_get_drvdata(dev);
-> -	struct temp_data *tdata = pdata->core_data[attr->index];
-> +	struct temp_data *tdata = container_of(attr, struct temp_data, sd_attrs[ATTR_TJMAX]);
->  	int tjmax;
->  
->  	mutex_lock(&tdata->update_lock);
-> @@ -384,8 +382,7 @@ static ssize_t show_ttarget(struct device *dev,
->  				struct device_attribute *devattr, char *buf)
->  {
->  	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
-> -	struct platform_data *pdata = dev_get_drvdata(dev);
-> -	struct temp_data *tdata = pdata->core_data[attr->index];
-> +	struct temp_data *tdata = container_of(attr, struct temp_data, sd_attrs[ATTR_TTARGET]);
->  	int ttarget;
->  
->  	mutex_lock(&tdata->update_lock);
-> @@ -402,8 +399,7 @@ static ssize_t show_temp(struct device *dev,
->  {
->  	u32 eax, edx;
->  	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
-> -	struct platform_data *pdata = dev_get_drvdata(dev);
-> -	struct temp_data *tdata = pdata->core_data[attr->index];
-> +	struct temp_data *tdata = container_of(attr, struct temp_data, sd_attrs[ATTR_TEMP]);
->  	int tjmax;
->  
->  	mutex_lock(&tdata->update_lock);
-> @@ -445,7 +441,6 @@ static int create_core_attrs(struct temp_data *tdata, struct device *dev,
->  		tdata->sd_attrs[i].dev_attr.attr.name = tdata->attr_name[i];
->  		tdata->sd_attrs[i].dev_attr.attr.mode = 0444;
->  		tdata->sd_attrs[i].dev_attr.show = rd_ptr[i];
-> -		tdata->sd_attrs[i].index = attr_no;
+This series drops the frame_count and enable parameters (as they're always
+set to the same value). It also sets input_sel=0x1 for INTF.
 
-I was naively thinking if we could nuke that "index". I can see that used
-in couple macros, but seems like we can lose it?
+Signed-off-by: Jessica Zhang <quic_jesszhan@quicinc.com>
+---
+Jessica Zhang (2):
+      drm/msm/dpu: Drop enable and frame_count parameters from dpu_hw_setup_misr()
+      drm/msm/dpu: Set input_sel bit for INTF
 
-Completely untested.. and uncertain :-) 
+ drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c    |  4 ++--
+ drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c |  4 ++--
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c |  6 +++---
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h |  4 ++--
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_lm.c   |  6 +++---
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_lm.h   |  3 ++-
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c | 18 +++++++-----------
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h | 11 +++++------
+ 8 files changed, 26 insertions(+), 30 deletions(-)
+---
+base-commit: 4047f50eb64d980fcd581a19bbe6164dab25ebc7
+change-id: 20231122-encoder-fixup-61c190b16085
 
+Best regards,
+-- 
+Jessica Zhang <quic_jesszhan@quicinc.com>
 
-diff --git a/include/linux/hwmon-sysfs.h b/include/linux/hwmon-sysfs.h
-index d896713359cd..4855893f9401 100644
---- a/include/linux/hwmon-sysfs.h
-+++ b/include/linux/hwmon-sysfs.h
-@@ -12,36 +12,35 @@
- 
- struct sensor_device_attribute{
- 	struct device_attribute dev_attr;
--	int index;
- };
- #define to_sensor_dev_attr(_dev_attr) \
- 	container_of(_dev_attr, struct sensor_device_attribute, dev_attr)
- 
--#define SENSOR_ATTR(_name, _mode, _show, _store, _index)	\
-+#define SENSOR_ATTR(_name, _mode, _show, _store)	\
- 	{ .dev_attr = __ATTR(_name, _mode, _show, _store),	\
--	  .index = _index }
-+	  }
- 
--#define SENSOR_ATTR_RO(_name, _func, _index)			\
-+#define SENSOR_ATTR_RO(_name, _func)			\
- 	SENSOR_ATTR(_name, 0444, _func##_show, NULL, _index)
- 
--#define SENSOR_ATTR_RW(_name, _func, _index)			\
--	SENSOR_ATTR(_name, 0644, _func##_show, _func##_store, _index)
-+#define SENSOR_ATTR_RW(_name, _func)			\
-+	SENSOR_ATTR(_name, 0644, _func##_show, _func##_store)
- 
--#define SENSOR_ATTR_WO(_name, _func, _index)			\
--	SENSOR_ATTR(_name, 0200, NULL, _func##_store, _index)
-+#define SENSOR_ATTR_WO(_name, _func)			\
-+	SENSOR_ATTR(_name, 0200, NULL, _func##_store)
- 
--#define SENSOR_DEVICE_ATTR(_name, _mode, _show, _store, _index)	\
-+#define SENSOR_DEVICE_ATTR(_name, _mode, _show, _store)	\
- struct sensor_device_attribute sensor_dev_attr_##_name		\
--	= SENSOR_ATTR(_name, _mode, _show, _store, _index)
-+	= SENSOR_ATTR(_name, _mode, _show, _store)
- 
--#define SENSOR_DEVICE_ATTR_RO(_name, _func, _index)		\
--	SENSOR_DEVICE_ATTR(_name, 0444, _func##_show, NULL, _index)
-+#define SENSOR_DEVICE_ATTR_RO(_name, _func)		\
-+	SENSOR_DEVICE_ATTR(_name, 0444, _func##_show, NULL)
- 
- #define SENSOR_DEVICE_ATTR_RW(_name, _func, _index)		\
--	SENSOR_DEVICE_ATTR(_name, 0644, _func##_show, _func##_store, _index)
-+	SENSOR_DEVICE_ATTR(_name, 0644, _func##_show, _func##_store)
- 
--#define SENSOR_DEVICE_ATTR_WO(_name, _func, _index)		\
--	SENSOR_DEVICE_ATTR(_name, 0200, NULL, _func##_store, _index)
-+#define SENSOR_DEVICE_ATTR_WO(_name, _func)		\
-+	SENSOR_DEVICE_ATTR(_name, 0200, NULL, _func##_store)
- 
- struct sensor_device_attribute_2 {
- 	struct device_attribute dev_attr;
-diff --git a/drivers/gpu/drm/i915/i915_hwmon.c b/drivers/gpu/drm/i915/i915_hwmon.c
-index 975da8e7f2a9..c3bbf2f7d6eb 100644
---- a/drivers/gpu/drm/i915/i915_hwmon.c
-+++ b/drivers/gpu/drm/i915/i915_hwmon.c
-@@ -239,7 +239,7 @@ hwm_power1_max_interval_store(struct device *dev,
- 
- static SENSOR_DEVICE_ATTR(power1_max_interval, 0664,
- 			  hwm_power1_max_interval_show,
--			  hwm_power1_max_interval_store, 0);
-+			  hwm_power1_max_interval_store);
- 
- static struct attribute *hwm_attributes[] = {
- 	&sensor_dev_attr_power1_max_interval.dev_attr.attr,
