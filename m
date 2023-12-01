@@ -2,76 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 137C2801153
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:21:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E6D180111E
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:21:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378359AbjLAQQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 11:16:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60182 "EHLO
+        id S1378704AbjLAQRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 11:17:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378131AbjLAQQz (ORCPT
+        with ESMTP id S230249AbjLAQRA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 11:16:55 -0500
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7E23519AE;
-        Fri,  1 Dec 2023 08:17:00 -0800 (PST)
-Received: from [192.168.1.150] (181-28-144-85.ftth.glasoperator.nl [85.144.28.181])
-        by linux.microsoft.com (Postfix) with ESMTPSA id EED9820B74C0;
-        Fri,  1 Dec 2023 08:16:55 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com EED9820B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1701447419;
-        bh=NMYkmf4971siLaRL4OWx2op6fuwe7tx/W/X81lmjSxk=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=GItS9ys7im+FCS/EcsKLiMbm8OOpOlpEo7mev1mM6uvfYmK7n/gq8kdDL30K4OoCk
-         jnCSMBlqUwV8OWLpBsct4In2pzDgbDzaX//ugzHjVON0i0f1wB5K7ndNiqQLnGp2Ht
-         /rTb8ld5hUhuP8wzqIVDfp6FdEOxglkP0PZXrmcc=
-Message-ID: <02e079e8-cc72-49d8-9191-8a753526eb18@linux.microsoft.com>
-Date:   Fri, 1 Dec 2023 17:16:56 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 1/3] x86/tdx: Check for TDX partitioning during early
- TDX init
-Content-Language: en-US
-To:     "Huang, Kai" <kai.huang@intel.com>,
-        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-        "mhkelley58@gmail.com" <mhkelley58@gmail.com>,
-        "Cui, Dexuan" <decui@microsoft.com>
-Cc:     "tim.gardner@canonical.com" <tim.gardner@canonical.com>,
-        "cascardo@canonical.com" <cascardo@canonical.com>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
-        "roxana.nicolescu@canonical.com" <roxana.nicolescu@canonical.com>,
-        "haiyangz@microsoft.com" <haiyangz@microsoft.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "stefan.bader@canonical.com" <stefan.bader@canonical.com>,
-        "nik.borisov@suse.com" <nik.borisov@suse.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
+        Fri, 1 Dec 2023 11:17:00 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 092F3170E
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 08:17:07 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D10DCC433C7;
+        Fri,  1 Dec 2023 16:17:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701447426;
+        bh=1clXQHaKlN3+Iey4fwvTDjGR7w5qW4bBovJgyAH6bm0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DXOtzgxTZmqTX7UMTBKAELYx0R+uGIzx1B+2m8VO3+dC+h/phPJnHkvjZuHzYjrs0
+         RA1ZG6+t7FLbFSgM648hNOOH313ZOvtkCkQoF2AsQBBwfYIasV3QECsUNrUaFgkBda
+         ov6QgW4jCFO9P4m0vdcvg3eRPbrMkYTiSpp/xM6xH30feYpk4OneCB3d1eBJ2wUP4u
+         nk5w3gjQ07fJriufkNUvdTnAh1WLcv9FAcR7HdRLuHhngaFOwTrFMycJ2M1IYAaRKb
+         PXAKJ0dHhe011leboXXazfoD1N9l/EitARVA4/qPWNwkr9PESF4uUa60Qr0zIwdDvQ
+         oBHkyZWd/C/Bw==
+Date:   Fri, 1 Dec 2023 16:16:59 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Xu Yang <xu.yang_2@nxp.com>
+Cc:     Frank Li <frank.li@nxp.com>, "will@kernel.org" <will@kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        "irogers@google.com" <irogers@google.com>,
+        "namhyung@kernel.org" <namhyung@kernel.org>,
+        "acme@kernel.org" <acme@kernel.org>,
+        "john.g.garry@oracle.com" <john.g.garry@oracle.com>,
+        "james.clark@arm.com" <james.clark@arm.com>,
+        "mike.leach@linaro.org" <mike.leach@linaro.org>,
+        "leo.yan@linaro.org" <leo.yan@linaro.org>,
         "peterz@infradead.org" <peterz@infradead.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "sashal@kernel.org" <sashal@kernel.org>,
-        "kys@microsoft.com" <kys@microsoft.com>,
-        "x86@kernel.org" <x86@kernel.org>
-References: <20231122170106.270266-1-jpiotrowski@linux.microsoft.com>
- <20231123135846.pakk44rqbbi7njmb@box.shutemov.name>
- <9f550947-9d13-479c-90c4-2e3f7674afee@linux.microsoft.com>
- <20231124104337.gjfyasjmo5pp666l@box.shutemov.name>
- <58c82110-45b2-4e23-9a82-90e1f3fa43c2@linux.microsoft.com>
- <20231124133358.sdhomfs25seki3lg@box.shutemov.name>
- <6f27610f-afc4-4356-b297-13253bb0a232@linux.microsoft.com>
- <ffcc8c550d5ba6122b201d8170b42ee581826d47.camel@intel.com>
-From:   Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
-In-Reply-To: <ffcc8c550d5ba6122b201d8170b42ee581826d47.camel@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "alexander.shishkin@linux.intel.com" 
+        <alexander.shishkin@linux.intel.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [EXT] Re: [PATCH 1/3] dt-bindings: perf: fsl-imx-ddr: Add i.MX95
+ compatible
+Message-ID: <20231201-pointer-statue-f30a42b8102e@spud>
+References: <20231127073208.1055466-1-xu.yang_2@nxp.com>
+ <20231127-whoever-magical-5a7cf2b142e1@spud>
+ <DB7PR04MB51460A715C6870642B6D7BBE8C81A@DB7PR04MB5146.eurprd04.prod.outlook.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="TkOZ/60oHOjywoPV"
+Content-Disposition: inline
+In-Reply-To: <DB7PR04MB51460A715C6870642B6D7BBE8C81A@DB7PR04MB5146.eurprd04.prod.outlook.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,189 +77,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/11/2023 05:36, Huang, Kai wrote:
-> On Fri, 2023-11-24 at 17:19 +0100, Jeremi Piotrowski wrote:
->> On 24/11/2023 14:33, Kirill A. Shutemov wrote:
->>> On Fri, Nov 24, 2023 at 12:04:56PM +0100, Jeremi Piotrowski wrote:
->>>> On 24/11/2023 11:43, Kirill A. Shutemov wrote:
->>>>> On Fri, Nov 24, 2023 at 11:31:44AM +0100, Jeremi Piotrowski wrote:
->>>>>> On 23/11/2023 14:58, Kirill A. Shutemov wrote:
->>>>>>> On Wed, Nov 22, 2023 at 06:01:04PM +0100, Jeremi Piotrowski wrote:
->>>>>>>> Check for additional CPUID bits to identify TDX guests running with Trust
->>>>>>>> Domain (TD) partitioning enabled. TD partitioning is like nested virtualization
->>>>>>>> inside the Trust Domain so there is a L1 TD VM(M) and there can be L2 TD VM(s).
->>>>>>>>
->>>>>>>> In this arrangement we are not guaranteed that the TDX_CPUID_LEAF_ID is visible
->>>>>>>> to Linux running as an L2 TD VM. This is because a majority of TDX facilities
->>>>>>>> are controlled by the L1 VMM and the L2 TDX guest needs to use TD partitioning
->>>>>>>> aware mechanisms for what's left. So currently such guests do not have
->>>>>>>> X86_FEATURE_TDX_GUEST set.
->>>>>>>>
->>>>>>>> We want the kernel to have X86_FEATURE_TDX_GUEST set for all TDX guests so we
->>>>>>>> need to check these additional CPUID bits, but we skip further initialization
->>>>>>>> in the function as we aren't guaranteed access to TDX module calls.
->>>>>>>
->>>>>>> I don't follow. The idea of partitioning is that L2 OS can be
->>>>>>> unenlightened and have no idea if it runs indide of TD. But this patch
->>>>>>> tries to enumerate TDX anyway.
->>>>>>>
->>>>>>> Why?
->>>>>>>
->>>>>>
->>>>>> That's not the only idea of partitioning. Partitioning provides different privilege
->>>>>> levels within the TD, and unenlightened L2 OS can be made to work but are inefficient.
->>>>>> In our case Linux always runs enlightened (both with and without TD partitioning), and
->>>>>> uses TDX functionality where applicable (TDX vmcalls, PTE encryption bit).
->>>>>
->>>>> What value L1 adds in this case? If L2 has to be enlightened just run the
->>>>> enlightened OS directly as L1 and ditch half-measures. I think you can
->>>>> gain some performance this way.
->>>>>
->>>>
->>>> It's primarily about the privilege separation, performance is a reason
->>>> one doesn't want to run unenlightened. The L1 makes the following possible:
->>>> - TPM emulation within the trust domain but isolated from the OS
->>>> - infrastructure interfaces for things like VM live migration
->>>> - support for Virtual Trust Levels[1], Virtual Secure Mode[2]
->>>>
->>>> These provide a lot of value to users, it's not at all about half-measures.
-> 
-> It's not obvious why the listed things above are related to TDX guest.  They
-> look more like hyperv specific enlightenment which don't have dependency of TDX
-> guest.
-> 
-> For instance, the "Emulating Hyper-V VSM with KVM" design in your above [2] says
-> nothing about TDX (or SEV):
-> 
-> https://lore.kernel.org/lkml/20231108111806.92604-34-nsaenz@amazon.com/
-> 
 
-These are features that require TD-partitioning to implement in the context of a
-TDX guest. I was trying to answer Kirill's question "What value L1 adds in this case?".
+--TkOZ/60oHOjywoPV
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-In SEV-SNP we implement the same features using VMPLs (privilege levels) and an SVSM
-(but call it paravisor).
+On Fri, Dec 01, 2023 at 06:41:59AM +0000, Xu Yang wrote:
+> Hi Conor,
+>=20
+> >=20
+> > On Mon, Nov 27, 2023 at 03:32:06PM +0800, Xu Yang wrote:
+> > > i.MX95 has a more precise counting capability than i.MX93. This will =
+add
+> > > a compatible for it.
+> >=20
+> > It is hard to tell from this comment, but I figure this "more precise
+> > capability" is not an option you can enable, but instead makes the
+> > programming model of this device different to that of the imx93?
+>=20
+> Actually, imx95 is compatible with imx93 except AXI ID filter capability.
+> But for AXI ID filter, imx95 is using different registers and bits from
+> imx93 for filter configuration.
 
-I should have elaborated on what I meant with [2]: it shows how others are trying to 
-implement Virtual Trust Levels in KVM for non-confidential guests. You can't do that
-for TDX without TD-partitioning.
+This sounds like it conflicts with...
 
->>>
->>> Hm. Okay.
->>>
->>> Can we take a step back? What is bigger picture here? What enlightenment
->>> do you expect from the guest when everything is in-place?
->>>
->>
->> All the functional enlightenment are already in place in the kernel and
->> everything works (correct me if I'm wrong Dexuan/Michael). The enlightenments
->> are that TDX VMCALLs are needed for MSR manipulation and vmbus operations,
->> encrypted bit needs to be manipulated in the page tables and page
->> visibility propagated to VMM.
-> 
-> Not quite family with hyperv enlightenments, but are these enlightenments TDX
-> guest specific?  Because if they are not, then they should be able to be
-> emulated by the normal hyperv, thus the hyperv as L1 (which is TDX guest) can
-> emulate them w/o letting the L2 know the hypervisor it runs on is actually a TDX
-> guest.
+> To distinguish them, I need use different
+> compatible because programming model cannot recognize which device is
+> running.
+>=20
+> compatible =3D "fsl,imx95-ddr-pmu";
 
-I would say that these hyperv enlightenments are confidential guest specific
-(TDX/SNP) when running with TD-partitioning/VMPL. In both cases there are TDX/SNP
-specific ways to exit directly to L0 (when needed) and native privileged instructions
-trap to the paravisor.
+> compatible =3D "fsl,imx95-ddr-pmu", "fsl,imx93-ddr-pmu";
 
-L1 is not hyperv and no one wants to emulate the I/O path. The L2 guest knows that
-it's confidential so that it can explicitly use swiotlb, toggle page visibility
-and notify the host (L0) on the I/O path without incurring additional emulation
-overhead.
+=2E..this. If drivers for the imx93 need changes to work on the imx95,
+then `compatible =3D "fsl,imx95-ddr-pmu", "fsl,imx93-ddr-pmu";` cannot be
+used. If they will work, with only the new imx95 features being
+non-functional, then you can use it.
 
-> 
-> Btw, even if there's performance concern here, as you mentioned the TDVMCALL is
-> actually made to the L0 which means L0 must be aware such VMCALL is from L2 and
-> needs to be injected to L1 to handle, which IMHO not only complicates the L0 but
-> also may not have any performance benefits.
+> Both above compatible is okay for me. Therefore, "fsl,imx95-ddr-pmu" is n=
+eeded.
 
-The TDVMCALLs are related to the I/O path (networking/block io) into the L2 guest, and
-so they intentionally go straight to L0 and are never injected to L1. L1 is not
-involved in that path at all.
+--TkOZ/60oHOjywoPV
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Using something different than TDVMCALLs here would lead to additional traps to L1 and
-just add latency/complexity.
+-----BEGIN PGP SIGNATURE-----
 
-> 
->>
->> Whats missing is the tdx_guest flag is not exposed to userspace in /proc/cpuinfo,
->> and as a result dmesg does not currently display:
->> "Memory Encryption Features active: Intel TDX".
->>
->> That's what I set out to correct.
->>
->>> So far I see that you try to get kernel think that it runs as TDX guest,
->>> but not really. This is not very convincing model.
->>>
->>
->> No that's not accurate at all. The kernel is running as a TDX guest so I
->> want the kernel to know that. 
->>
-> 
-> But it isn't.  It runs on a hypervisor which is a TDX guest, but this doesn't
-> make itself a TDX guest.> 
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZWoG+wAKCRB4tDGHoIJi
+0vEhAP4wzNFvpXcJTLzerrD4dUi4x/ljKAP60wZOIvaUeVfIggEAmh++tRu2JE6H
+W9PxEUNaXYdEI2l4eUhUFMLEGSaNvws=
+=61zC
+-----END PGP SIGNATURE-----
 
-That depends on your definition of "TDX guest". The TDX 1.5 TD partitioning spec
-talks of TDX-enlightened L1 VMM, (optionally) TDX-enlightened L2 VM and Unmodified
-Legacy L2 VM. Here we're dealing with a TDX-enlightened L2 VM.
-
-If a guest runs inside an Intel TDX protected TD, is aware of memory encryption and
-issues TDVMCALLs - to me that makes it a TDX guest.
-
->> TDX is not a monolithic thing, it has different
->> features that can be in-use and it has differences in behavior when running
->> with TD partitioning (example: no #VE/TDX module calls). So those differences
->> need to be clearly modeled in code.
-> 
-> Well IMHO this is a design choice but not a fact.  E.g., if we never sets
-> TDX_GUEST flag for L2 then it naturally doesn't use TDX guest related staff. 
-> Otherwise we need additional patches like your patch 2/3 in this series to stop
-> the L2 to use certain TDX functionality.
-> 
-> And I guess we will need more patches to stop L2 from doing TDX guest things. 
-> E.g., we might want to disable TDX attestation interface support in the L2
-> guest, because the L2 is indeed not a TDX guest..
-> 
-
-The TDX attestation interface uses a TDCALL, I covered that in patch 2. The only
-extra patch missing is to not rely on tdx_safe_halt (which is a TDVMCALL).
-
-> So to me even there's value to advertise L2 as TDX guest, the pros/cons need to
-> be evaluated to see whether it is worth.
-> 
-
-This all started from this discussion [1]. X86_FEATURE_TDX_GUEST is needed so
-that dmesg contains the correct print ("Memory Encryption Features active: Intel TDX")
-and so that userspace sees X86_FEATURE_TDX_GUEST. I think it's fair to want parity
-here so that a workload scheduler like kubernetes knows how to place a workload
-in a TDX protected VM, regardless of what hypervisor runs underneath.
-
-[1]: https://lore.kernel.org/lkml/1699546489-4606-1-git-send-email-jpiotrowski@linux.microsoft.com/
-
->>
->>> Why does L2 need to know if it runs under TDX or SEV? Can't it just think
->>> it runs as Hyper-V guest and all difference between TDX and SEV abstracted
->>> by L1?
->>>
->>
->> If you look into the git history you'll find this was attempted with
->> CC_VENDOR_HYPERV. That proved to be a dead end as some things just can't be
->> abstracted (GHCI vs GHCB; the encrypted bit works differently). What resulted
->> was a ton of conditionals and duplication. After long discussions with Borislav
->> we converged on clearly identifying with the underlying technology (SEV/TDX)
->> and being explicit about support for optional parts in each scheme (like vTOM).
-> 
-> Can you provide more background?  For instance, why does the L2 needs to know
-> the encrypted bit that is in *L1*?
-> 
-> 
-
-Michael or Dexuan know way more about this than me, but my understanding is that when
-the L2 guest accesses a bounce buffer that it has shared with the host then it needs
-to do so through a mapping the correct kind of mapping with the "decrypted bit" set.
+--TkOZ/60oHOjywoPV--
