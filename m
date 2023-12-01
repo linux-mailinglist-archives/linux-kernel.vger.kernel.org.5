@@ -2,72 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1F6780120C
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:50:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54B02801217
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:51:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378950AbjLARuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 12:50:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43724 "EHLO
+        id S1379039AbjLARvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 12:51:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjLARuD (ORCPT
+        with ESMTP id S229454AbjLARvJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 12:50:03 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09B01D3
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 09:50:10 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1d0538d9bbcso6842385ad.3
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 09:50:10 -0800 (PST)
+        Fri, 1 Dec 2023 12:51:09 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C8F5AD
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 09:51:15 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-54c77d011acso75a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 09:51:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1701453009; x=1702057809; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=61mRZHUPoSC+/V5UJ4QedAj4EUtFQC65cWS1GaV62vk=;
-        b=b+wII0J7L2Fgq8jeVhjyuDXMk/KN6AtxVDDSkJhtfyoxRWjEpA0x+2UhC9At/XoH9V
-         D4Rqewe5z4hu49LzEnxv78xRM4XNSRWMVvGuRvJFgVY3Ke4H41KN0a0oZY+d/fdY+hn3
-         AYf4GxEa7BCx2jyheBtnvDO2qESWXWzwtRRsE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701453009; x=1702057809;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1701453073; x=1702057873; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=61mRZHUPoSC+/V5UJ4QedAj4EUtFQC65cWS1GaV62vk=;
-        b=N+D+QopT5IPKHMScpows+YFNaGC8CHbSUp2dv8e/gvhIaydOmfnNiv7dbQ3jS1GiCV
-         Tx/7X+BdRBeywsMNWuyeupBf2IaSJm8p5Ef+JXzTAM0n5lB3dwSTrFh3lGNsg7CELqps
-         6Q9LqMew2tKIxPfA1UR0e/jHf1gXstyn0fEldDJbec0MBtDoFrfP1txJnZCJ+so3Jm/s
-         FxJQoa78ybYgunLNgnDRh+Wfoc0bDknv12ARTJajZwfT7mjnFWTXgprslODMBpQ80dhh
-         4SGivqKRZuUiYQZNTIE7cXOT9POkRWBNvJnc4UJLDl2EKLXi7RVoK+9OoS+LQ4icfndH
-         nFHg==
-X-Gm-Message-State: AOJu0YyJy9OIkIdH100UbbdU0/CuKL87zjtB9KqFmvJ5y/qldL8/oqy9
-        7aeHKyM8E5PsbhOOItoOMZTdhA==
-X-Google-Smtp-Source: AGHT+IFyZfMEe3PmabCp9F5OxkYHT5tTq3uuvSeo+6Da+zmgcN0FNPX5uOuo9lQMGQ2bvVuB0z4EkA==
-X-Received: by 2002:a17:902:c944:b0:1cf:a2e7:f843 with SMTP id i4-20020a170902c94400b001cfa2e7f843mr34281143pla.23.1701453009544;
-        Fri, 01 Dec 2023 09:50:09 -0800 (PST)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id h1-20020a170902f54100b001b3bf8001a9sm3615644plf.48.2023.12.01.09.50.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Dec 2023 09:50:08 -0800 (PST)
-Date:   Fri, 1 Dec 2023 09:50:08 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     sxwjean@me.com
-Cc:     vbabka@suse.cz, 42.hyeyoo@gmail.com, cl@linux.com,
-        linux-mm@kvack.org, penberg@kernel.org, rientjes@google.com,
-        iamjoonsoo.kim@lge.com, roman.gushchin@linux.dev, corbet@lwn.net,
-        arnd@arndb.de, akpm@linux-foundation.org,
-        gregkh@linuxfoundation.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Xiongwei Song <xiongwei.song@windriver.com>
-Subject: Re: [PATCH 3/3] mm/slub: correct the default value of
- slub_min_objects in doc
-Message-ID: <202312010948.63ACCAAE@keescook>
-References: <20231201031505.286117-1-sxwjean@me.com>
- <20231201031505.286117-4-sxwjean@me.com>
+        bh=n3pnThC3OPQt1u7swR/CEmmm2L1BbqHWt2vccyU+wqY=;
+        b=dFnb0GoWAqwCCJgSyyNchhPslfWB1/pjpjSaF7b3RaPqQkAlf8xrITTLEF+WWgGI4t
+         fASC1mMdLnQQ9/xQu56JXkMlcQzF7whgRuX80ZsDwxmYJtTCRhjTuWVj9uT1gwbwE3Eu
+         d3oLDOuN33ic1mD5qvdgXQ+13E22lROqJ+zGIz6SlPe9BQ6g9jTMnBaST8vWsjTlTOWZ
+         12vo0Bwinsodc4bCxJnqprKV8U7Qlcv9lrLEjE4JSx7XPj3egtAvuRUhdHkh5yKj+cpT
+         FvPKoufQOvhqjQ5wTcL4SNgs8b3JYjG7/NDxYHlkVdJEYPp2yPUffjJDREfM9nTjEUYQ
+         NVCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701453073; x=1702057873;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=n3pnThC3OPQt1u7swR/CEmmm2L1BbqHWt2vccyU+wqY=;
+        b=NgehJbMPqvzxp8okSaQJ0Zxm3njzvxjvCpEldReh4FWuxV3ZTcvHW5BZ3BsUOOPSlh
+         Zyl5syxKpIOPyb+wu4mSoNigAmL+oQTASk4uDoGfgBXsdfdAz59SjTVicHFFLFilBoCQ
+         TCtTlV6fMa7SPZ7qgwd10ibvHC4NbAsIvE5vxZonN7xKgTVDmhVARaBRPHst28o7d+Ct
+         mQXpU2sAXKwIm02KTBG1tCbNYkef1I7tiOWJ/FYdOB24CxaaD4+8rMEQ1B1t4MxTKRfc
+         nl5aIURVwEp4/jggmGDDKk7TcebB0kgn/fY23EjeRKVzph+fwA30ONcSVU+RKkHTgpuT
+         FVmQ==
+X-Gm-Message-State: AOJu0YzuEzax1pAFh9wIBEZivkV84pDdDtd4yHEoNUqXwSuxRGdHtjaQ
+        dK1W5bAbgC4jV1PkQQrW5k9v3OXJWUL7Ybd4bDd3lg==
+X-Google-Smtp-Source: AGHT+IF+QIR6TaWoGuTkiAnwgaJjp4j91us2yyByWB+XCzNBr5ZqeJ+yZO8B/pZ5Twzrl27VU8eKH2lxWwExO89XVXc=
+X-Received: by 2002:a50:aacf:0:b0:54b:321:ef1a with SMTP id
+ r15-20020a50aacf000000b0054b0321ef1amr152058edc.6.1701453073216; Fri, 01 Dec
+ 2023 09:51:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231201031505.286117-4-sxwjean@me.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <ZWobMUp22oTpP3FW@debian.debian>
+In-Reply-To: <ZWobMUp22oTpP3FW@debian.debian>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Fri, 1 Dec 2023 18:51:02 +0100
+Message-ID: <CANn89iLLnXVBvajLA-FLwBSN4uRNZKJYAvwvKEymGsvOQQJs1A@mail.gmail.com>
+Subject: Re: [PATCH v2 net-next] packet: add a generic drop reason for receive
+To:     Yan Zhai <yan@cloudflare.com>
+Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Weongyo Jeong <weongyo.linux@gmail.com>,
+        linux-kernel@vger.kernel.org, kernel-team@cloudflare.com,
+        Jesper Brouer <jesper@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,43 +75,148 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 01, 2023 at 11:15:05AM +0800, sxwjean@me.com wrote:
-> From: Xiongwei Song <xiongwei.song@windriver.com>
-> 
-> There is no a value assigned to slub_min_objects by default, it awlays
-                                                                  ^^^^^^
-> is 0 that is intailized by compiler if no assigned value by command line.
-               ^^^^^^^^^^
-> min_objects is calculated based on proccessor numbers in
-                                     ^^^^^^^^^^
-> calculate_order(). For more details, see commit 9b2cd506e5f2 ("slub:
-> Calculate min_objects based on number of processors.")
-
-nit: multiple spelling mistakes here. Please double-check commit logs
-with a spell checker. :)
-
-> 
-> Signed-off-by: Xiongwei Song <xiongwei.song@windriver.com>
+On Fri, Dec 1, 2023 at 6:43=E2=80=AFPM Yan Zhai <yan@cloudflare.com> wrote:
+>
+> Commit da37845fdce2 ("packet: uses kfree_skb() for errors.") switches
+> from consume_skb to kfree_skb to improve error handling. However, this
+> could bring a lot of noises when we monitor real packet drops in
+> kfree_skb[1], because in tpacket_rcv or packet_rcv only packet clones
+> can be freed, not actual packets.
+>
+> Adding a generic drop reason to allow distinguish these "clone drops".
+>
+> [1]: https://lore.kernel.org/netdev/CABWYdi00L+O30Q=3DZah28QwZ_5RU-xcxLFU=
+K2Zj08A8MrLk9jzg@mail.gmail.com/
+> Fixes: da37845fdce2 ("packet: uses kfree_skb() for errors.")
+> Suggested-by: Eric Dumazet <edumazet@google.com>
+> Signed-off-by: Yan Zhai <yan@cloudflare.com>
 > ---
->  Documentation/mm/slub.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/mm/slub.rst b/Documentation/mm/slub.rst
-> index be75971532f5..1f4399581449 100644
-> --- a/Documentation/mm/slub.rst
-> +++ b/Documentation/mm/slub.rst
-> @@ -150,7 +150,7 @@ list_lock once in a while to deal with partial slabs. That overhead is
->  governed by the order of the allocation for each slab. The allocations
->  can be influenced by kernel parameters:
->  
-> -.. slub_min_objects=x		(default 4)
-> +.. slub_min_objects=x		(default 0)
->  .. slub_min_order=x		(default 0)
->  .. slub_max_order=x		(default 3 (PAGE_ALLOC_COSTLY_ORDER))
+>  include/net/dropreason-core.h |  6 ++++++
+>  net/packet/af_packet.c        | 22 +++++++++++++---------
+>  2 files changed, 19 insertions(+), 9 deletions(-)
+>
+> diff --git a/include/net/dropreason-core.h b/include/net/dropreason-core.=
+h
+> index 3c70ad53a49c..278e4c7d465c 100644
+> --- a/include/net/dropreason-core.h
+> +++ b/include/net/dropreason-core.h
+> @@ -86,6 +86,7 @@
+>         FN(IPV6_NDISC_NS_OTHERHOST)     \
+>         FN(QUEUE_PURGE)                 \
+>         FN(TC_ERROR)                    \
+> +       FN(PACKET_SOCK_ERROR)           \
+>         FNe(MAX)
+>
+>  /**
+> @@ -378,6 +379,11 @@ enum skb_drop_reason {
+>         SKB_DROP_REASON_QUEUE_PURGE,
+>         /** @SKB_DROP_REASON_TC_ERROR: generic internal tc error. */
+>         SKB_DROP_REASON_TC_ERROR,
+> +       /**
+> +        * @SKB_DROP_REASON_PACKET_SOCK_ERROR: generic packet socket erro=
+rs
+> +        * after its filter matches an incoming packet.
+> +        */
+> +       SKB_DROP_REASON_PACKET_SOCK_ERROR,
+>         /**
+>          * @SKB_DROP_REASON_MAX: the maximum of core drop reasons, which
+>          * shouldn't be used as a real 'reason' - only for tracing code g=
+en
+> diff --git a/net/packet/af_packet.c b/net/packet/af_packet.c
+> index a84e00b5904b..0a7c05d8fe9f 100644
+> --- a/net/packet/af_packet.c
+> +++ b/net/packet/af_packet.c
+> @@ -2128,6 +2128,7 @@ static int packet_rcv(struct sk_buff *skb, struct n=
+et_device *dev,
+>         int skb_len =3D skb->len;
+>         unsigned int snaplen, res;
+>         bool is_drop_n_account =3D false;
 
-But otherwise, yes, this change matches what the code does.
+Why keeping is_drop_n_account  then ?
 
--Kees
 
--- 
-Kees Cook
+> +       enum skb_drop_reason drop_reason =3D SKB_CONSUMED;
+>
+>         if (skb->pkt_type =3D=3D PACKET_LOOPBACK)
+>                 goto drop;
+> @@ -2161,6 +2162,10 @@ static int packet_rcv(struct sk_buff *skb, struct =
+net_device *dev,
+>         res =3D run_filter(skb, sk, snaplen);
+>         if (!res)
+>                 goto drop_n_restore;
+> +
+> +       /* skb will only be "consumed" not "dropped" before this */
+> +       drop_reason =3D SKB_DROP_REASON_PACKET_SOCK_ERROR;
+> +
+>         if (snaplen > res)
+>                 snaplen =3D res;
+>
+> @@ -2227,10 +2232,7 @@ static int packet_rcv(struct sk_buff *skb, struct =
+net_device *dev,
+>                 skb->len =3D skb_len;
+>         }
+>  drop:
+> -       if (!is_drop_n_account)
+
+Because after your patch it will be set but never read.
+
+> -               consume_skb(skb);
+> -       else
+> -               kfree_skb(skb);
+> +       kfree_skb_reason(skb, drop_reason);
+>         return 0;
+>  }
+>
+> @@ -2253,6 +2255,7 @@ static int tpacket_rcv(struct sk_buff *skb, struct =
+net_device *dev,
+>         bool is_drop_n_account =3D false;
+
+Same remark here.
+
+>         unsigned int slot_id =3D 0;
+>         int vnet_hdr_sz =3D 0;
+> +       enum skb_drop_reason drop_reason =3D SKB_CONSUMED;
+>
+>         /* struct tpacket{2,3}_hdr is aligned to a multiple of TPACKET_AL=
+IGNMENT.
+>          * We may add members to them until current aligned size without =
+forcing
+> @@ -2355,6 +2358,10 @@ static int tpacket_rcv(struct sk_buff *skb, struct=
+ net_device *dev,
+>                         vnet_hdr_sz =3D 0;
+>                 }
+>         }
+> +
+> +       /* skb will only be "consumed" not "dropped" before this */
+> +       drop_reason =3D SKB_DROP_REASON_PACKET_SOCK_ERROR;
+> +
+>         spin_lock(&sk->sk_receive_queue.lock);
+>         h.raw =3D packet_current_rx_frame(po, skb,
+>                                         TP_STATUS_KERNEL, (macoff+snaplen=
+));
+> @@ -2498,10 +2505,7 @@ static int tpacket_rcv(struct sk_buff *skb, struct=
+ net_device *dev,
+>                 skb->len =3D skb_len;
+>         }
+>  drop:
+> -       if (!is_drop_n_account)
+> -               consume_skb(skb);
+> -       else
+> -               kfree_skb(skb);
+> +       kfree_skb_reason(skb, drop_reason);
+>         return 0;
+>
+>  drop_n_account:
+> @@ -2510,7 +2514,7 @@ static int tpacket_rcv(struct sk_buff *skb, struct =
+net_device *dev,
+>         is_drop_n_account =3D true;
+>
+>         sk->sk_data_ready(sk);
+> -       kfree_skb(copy_skb);
+> +       kfree_skb_reason(copy_skb, drop_reason);
+>         goto drop_n_restore;
+>  }
+>
+> --
+> 2.30.2
+>
