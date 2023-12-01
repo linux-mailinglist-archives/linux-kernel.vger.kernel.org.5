@@ -2,65 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DC8F800235
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 04:47:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2280380023B
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 04:48:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377191AbjLADrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 22:47:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34918 "EHLO
+        id S1377217AbjLADr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 22:47:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229950AbjLADrV (ORCPT
+        with ESMTP id S232136AbjLADrz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 22:47:21 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93DB3171D
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 19:47:27 -0800 (PST)
+        Thu, 30 Nov 2023 22:47:55 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91AAE1724
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 19:48:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701402446;
+        s=mimecast20190719; t=1701402481;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=+Q5xYcnLhhl5wab+9SUNf2YG1+1AQAaLiKPAT2IR83M=;
-        b=GwcEOei/lLwIZ/h+Dr/DDXabPaXge2yF8NXZJtnkWdFkRFCs/BEo3rWlfGt5EsnmOuIw7I
-        pE3UVLoxAXp8MM2oChDKxulXc0D80IbODC+VH4HyLfE+23VH2gy9qiyZfHlZPje6L0hc9t
-        AUb3M1dfHjkq1enR5+TKmGsmpYNKBZc=
-Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
- [209.85.215.200]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=lkYkgQb1oSonM5Ah318XDYvX5RNZmhN/5LooxGJ95vQ=;
+        b=W8b8xMzqUkxOrqytylop2P45XZpFjvsavV5pZXo+tGWZbO9elj9KP6uJYne8jUIExklptg
+        u6ww96604We+YyRgjyBXFBhxAJsfo0CKdg8IrtDpcONUpMnHCCUGkz0LpWYqnlFdyW02Bv
+        SGE3hrPWZgKRYdTLnVWafXUopmHJa1s=
+Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com
+ [209.85.210.197]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-576-fUHhQS29Ms-7ohgkbWIzZQ-1; Thu, 30 Nov 2023 22:47:23 -0500
-X-MC-Unique: fUHhQS29Ms-7ohgkbWIzZQ-1
-Received: by mail-pg1-f200.google.com with SMTP id 41be03b00d2f7-5be154fe98bso133822a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 19:47:23 -0800 (PST)
+ us-mta-517-l4ag8GICO5GKvd0qSJW2Iw-1; Thu, 30 Nov 2023 22:47:58 -0500
+X-MC-Unique: l4ag8GICO5GKvd0qSJW2Iw-1
+Received: by mail-pf1-f197.google.com with SMTP id d2e1a72fcca58-6cdfbba2c4dso678990b3a.3
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 19:47:58 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701402442; x=1702007242;
+        d=1e100.net; s=20230601; t=1701402478; x=1702007278;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+Q5xYcnLhhl5wab+9SUNf2YG1+1AQAaLiKPAT2IR83M=;
-        b=YEpJPi6luUJgkduXN/mLG4mAarW4YgsDn2Zxr4/+uFMH4M9dMWYr6VecFJLDHcQXMX
-         TZKzp7OOPTu4lBxiTGRt8iO8byFY2dihCRrqaZ52NRrk79as9ft/RpCSVRFlphrt0O4Q
-         f2lBT4fI8yEInQZS/JSZ/zOw4Lryp2AnXyJKzGyzXrDtlLStOyjJaF7HftrmwbdH7euS
-         6YVqntHl7aiZelz3aGnjbecrsUs2W7X0MU6kgKj2syDP/os8cFF7QoQDOJ0F1zkmlPgq
-         gD7M7/ZVPCHaO9YkcfpzDjgavoerA1DFKJ6vzWo+w9GUtylIjREXHaqDAolPPhgWLsa8
-         ZHtQ==
-X-Gm-Message-State: AOJu0Yyo3nsM6EX95tGXBxnRnevHzXfqY8mNYA2QKo6KHAjeN+zbsBTg
-        Iw0gkt28W9YoSnPtoCcEC0bBYLmO6GkBubH1wFBnY9FFJnarPvT82xgA/dKW69HuvvoSg/e7aR0
-        PVkyLZUx7E5RUC6xSR4uvwicJ
-X-Received: by 2002:a17:902:d2cb:b0:1cf:de3e:e4c9 with SMTP id n11-20020a170902d2cb00b001cfde3ee4c9mr23769909plc.29.1701402442620;
-        Thu, 30 Nov 2023 19:47:22 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFFc/FRI9UHJwfBJxYeFRAhPaME7NIPXUpzMmMZaQsrSUZaHXjj5IgT1PfH3h0ARxutVZDmxg==
-X-Received: by 2002:a17:902:d2cb:b0:1cf:de3e:e4c9 with SMTP id n11-20020a170902d2cb00b001cfde3ee4c9mr23769867plc.29.1701402442296;
-        Thu, 30 Nov 2023 19:47:22 -0800 (PST)
+        bh=lkYkgQb1oSonM5Ah318XDYvX5RNZmhN/5LooxGJ95vQ=;
+        b=FuyKB5lmIsKsnDStrawGgWYqDP9qInj6RXOnBKbHujtUiUmVS2Zg4z800fXFo0wN1Q
+         XFaXsPVV1axMtnhcAXcs5aGXq4pXyBAyLubJHyafzgxY+1kPNdZp6vSoPy0EuQwlWYub
+         q7wcqhEDVAirL2U1MKBmmrYLkHFP0vcVRwbOtugUdbb8900T9MzcUnydfnKHVUFF5+m6
+         UmYZDy2tS3kqXf+3FwyTIzEoe2gAQuvx4bYCwzgzLtLQUHHztHOTiIs9/CF7opesWupG
+         gF2P1kjXN3AAY/PJPSZMfTRd1yJcReMarBicuRKGQIeOb+vQ8Y3MwOJntKS0eRN5T730
+         cDvQ==
+X-Gm-Message-State: AOJu0YxmwUoV2OR1TQ2/sgqCGihy8pwWAI90tTQNDayLHVbXQdU12TE3
+        N11Neoue2MT1BtQf9CVOkUVWeNXZNFo3l4KLJcOey79sWQ3biPrq/C6zzpFM3+FtYWvo3qgrOxH
+        ogxnYfGIfn2LMbb4U0Xi1uTY3
+X-Received: by 2002:a05:6a21:3513:b0:18b:236d:3f0 with SMTP id zc19-20020a056a21351300b0018b236d03f0mr27000773pzb.43.1701402477953;
+        Thu, 30 Nov 2023 19:47:57 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGhKtgcw5NHksOzMAUau0Dc/qB+PpJdNsaezOVmfl0zRSeeAEUNdBUUxpUuWqCHC+jsRZjfoQ==
+X-Received: by 2002:a05:6a21:3513:b0:18b:236d:3f0 with SMTP id zc19-20020a056a21351300b0018b236d03f0mr27000757pzb.43.1701402477684;
+        Thu, 30 Nov 2023 19:47:57 -0800 (PST)
 Received: from [192.168.68.51] ([43.252.115.3])
-        by smtp.gmail.com with ESMTPSA id p5-20020a170902e74500b001cfc1a593f7sm2185691plf.217.2023.11.30.19.47.14
+        by smtp.gmail.com with ESMTPSA id p5-20020a170902e74500b001cfc1a593f7sm2185691plf.217.2023.11.30.19.47.50
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Nov 2023 19:47:21 -0800 (PST)
-Message-ID: <8c3ca6c7-fa5f-4f45-b36d-1c7d9d94c918@redhat.com>
-Date:   Fri, 1 Dec 2023 14:47:11 +1100
+        Thu, 30 Nov 2023 19:47:57 -0800 (PST)
+Message-ID: <c01d4958-1cf7-4428-9d97-f6a893f175ce@redhat.com>
+Date:   Fri, 1 Dec 2023 14:47:49 +1100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 08/21] drivers: base: Implement weak arch_unregister_cpu()
+Subject: Re: [PATCH 09/21] drivers: base: add arch_cpu_is_hotpluggable()
 Content-Language: en-US
 To:     "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
         linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
@@ -76,20 +76,19 @@ Cc:     Salil Mehta <salil.mehta@huawei.com>,
         James Morse <james.morse@arm.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         "Rafael J. Wysocki" <rafael@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>
 References: <ZVyz/Ve5pPu8AWoA@shell.armlinux.org.uk>
- <E1r5R3H-00CszC-2n@rmk-PC.armlinux.org.uk>
+ <E1r5R3M-00CszH-6r@rmk-PC.armlinux.org.uk>
 From:   Gavin Shan <gshan@redhat.com>
-In-Reply-To: <E1r5R3H-00CszC-2n@rmk-PC.armlinux.org.uk>
+In-Reply-To: <E1r5R3M-00CszH-6r@rmk-PC.armlinux.org.uk>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -97,28 +96,17 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 11/22/23 00:44, Russell King (Oracle) wrote:
-> From: James Morse <james.morse@arm.com>
+> The differences between architecture specific implementations of
+> arch_register_cpu() are down to whether the CPU is hotpluggable or not.
+> Rather than overriding the weak version of arch_register_cpu(), provide
+> a function that can be used to provide this detail instead.
 > 
-> Add arch_unregister_cpu() to allow the ACPI machinery to call
-> unregister_cpu(). This is enough for arm64, riscv and loongarch, but
-> needs to be overridden by x86 and ia64 who need to do more work.
-> 
-> CC: Jean-Philippe Brucker <jean-philippe@linaro.org>
-> Signed-off-by: James Morse <james.morse@arm.com>
 > Reviewed-by: Shaoqin Huang <shahuang@redhat.com>
 > Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 > ---
-> An open question remains from the RFC v2 posting: should we provide a
-> __weak stub for !HOTPLUG_CPU as well, since in later patches ACPI may
-> reference this if the compiler doesn't optimise as we expect?
-> 
-> Changes since v1:
->   * Added CONFIG_HOTPLUG_CPU ifdeffery around unregister_cpu
-> Changes since RFC v2:
->   * Move earlier in the series
-> ---
->   drivers/base/cpu.c | 9 ++++++++-
->   1 file changed, 8 insertions(+), 1 deletion(-)
+>   drivers/base/cpu.c  | 11 ++++++++++-
+>   include/linux/cpu.h |  1 +
+>   2 files changed, 11 insertions(+), 1 deletion(-)
 > 
 
 Reviewed-by: Gavin Shan <gshan@redhat.com>
