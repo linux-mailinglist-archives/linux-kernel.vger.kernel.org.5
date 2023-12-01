@@ -2,183 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A4E680091B
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 11:53:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25F0A800911
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 11:53:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378372AbjLAKxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 05:53:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51890 "EHLO
+        id S1378361AbjLAKwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 05:52:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378363AbjLAKw6 (ORCPT
+        with ESMTP id S1378354AbjLAKwt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 05:52:58 -0500
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99C9B129;
-        Fri,  1 Dec 2023 02:53:03 -0800 (PST)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3B1Aqmd0031556;
-        Fri, 1 Dec 2023 04:52:48 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1701427968;
-        bh=/cutW9QPrLFWJk+wnyikwznN80+OCcsK1FqEjatfhaU=;
-        h=Date:CC:Subject:To:References:From:In-Reply-To;
-        b=xxt4GRkBn7rF0fFqACfyn4W9IoiFfYwwvngG1b9DZ2XDTJs/IzXEIIP+lu/SC0r1u
-         tCV3UFINw/8DQTEJfVQz8pczIWyMbMG7ljwnqQ9IqmIUgJSZ930TXo1Awcbv2iQgj4
-         dThykZonyVU558Q2TGjCCVAPYCc68C15yJfOscI4=
-Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3B1Aqmia024019
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 1 Dec 2023 04:52:48 -0600
-Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 1
- Dec 2023 04:52:48 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 1 Dec 2023 04:52:48 -0600
-Received: from [172.24.227.9] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3B1AqiTX103167;
-        Fri, 1 Dec 2023 04:52:45 -0600
-Message-ID: <c671e9f3-c932-4461-bcfc-3b320bf43483@ti.com>
-Date:   Fri, 1 Dec 2023 16:22:44 +0530
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-CC:     Krzysztof Wilczy_ski <kw@linux.com>, Rob Herring <robh@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tom Joseph <tjoseph@cadence.com>, <linux-omap@vger.kernel.org>,
-        <linux-pci@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <s-vadapalli@ti.com>
-Subject: Re: [PATCH v5] PCI: j721e: Delay T_PVPERL+TPERST_CLK before PERST#
- inactive
-Content-Language: en-US
-To:     Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-References: <20230817093619.1079267-1-a-verma1@ti.com>
-From:   Siddharth Vadapalli <s-vadapalli@ti.com>
-In-Reply-To: <20230817093619.1079267-1-a-verma1@ti.com>
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 1 Dec 2023 05:52:49 -0500
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2046.outbound.protection.outlook.com [40.107.96.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 478EB19F;
+        Fri,  1 Dec 2023 02:52:55 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=icOhYIxCNGSExK2jTq2CrxlwpmcNe2eOHF1c2gkTIk0J4MJCzkAr3sOXEwZOhjPbPVRNRejYx2vYJf2Mf/yRjKvREkn9FcVy5tL/OCHFWT6r/Zh1AYVnRf1g2lkun3cjpQq7v4jmvqh9ZMW0vhV5qCPHDDgGY1SST6J9ozgmtiZIkWPjdUNSKEO2ikTL/5LCuny4DVc7GEzMQKiu7q6C20WaWFZdkmzeuye/N24uiSNoidGXp1A8i8p22N4hZuJwWUQVGE7LWcvByZi6feh7Q/gNeA0iFc1J+M8u95XQ0MGdvB2O8UX46oPA4ITWSJPCjxA8kSYXtfAIUQSJ5iaPvw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Qxwnx8yJvQ42owbUT+bzn8sAP7Ypk8qMNFPW5aE14/M=;
+ b=nM0L+jfuIQc2k6oZiWWW65bp/NMnjyi4EjG0b3xMo/6e94JJWZYE0TpZBtdBYuhn8Kq7p3IANX9M4lR5FpVwPxwrX0KFBfziFloIEfqLHIkIt6b1CcZMBRqhJ3zA9QSyb0xIN9zybKrk8QhL5MLIbXgfAn1ZqBmPb5Z6SLQ3rm2RgepEyLz8X50yvgDxWQFHHY9c8xWHbHipyiqBHqga+Ex31PqReKfELDmLTL2E8ox8eLl5qpBA3MEfpC7IGlkoiDvqjjOqFpsZt+Ck3uLRA+th+//Cjb87AXjJERIr3jzXRjFkjFHBd1E/nXyYHNIj2+lWrbZ1/wdZzWDk3JhAyQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.232) smtp.rcpttodomain=linuxfoundation.org
+ smtp.mailfrom=nvidia.com; dmarc=pass (p=reject sp=reject pct=100) action=none
+ header.from=nvidia.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Qxwnx8yJvQ42owbUT+bzn8sAP7Ypk8qMNFPW5aE14/M=;
+ b=S7vfVjMSrV8NLV82VqW8oe9zL16vTU0er7+zkgJYAYlE80mZwaydzKczlCakZaWFt7TBgQBYyUhJ0Ko4GWlc/DAFps2GToRdJsO4x9fEsOwZQ7zjjGh6ygdEGLz8ntRppQkHpfMHdIlh37hDgti3C/xwU0lh5tAg8KlBSnrV6TpS4En5tX6Lh5Tg9wHjGysPAby5vulKkgRRDKs1yCIZiqMTgtiTsbjC9I/s+5vemIu5FM5PoZoJmzaKSygmDPwZvQjyFQSA05SR0Pi/j8U1JVseCpdAdIVtshnm2hDh0VcF3SMmZY3bnatvKDL3SYKlE+ls+KHAwiWqW+aEW8F+sw==
+Received: from BN0PR04CA0113.namprd04.prod.outlook.com (2603:10b6:408:ec::28)
+ by PH7PR12MB6668.namprd12.prod.outlook.com (2603:10b6:510:1aa::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.27; Fri, 1 Dec
+ 2023 10:52:52 +0000
+Received: from SN1PEPF000252A3.namprd05.prod.outlook.com
+ (2603:10b6:408:ec:cafe::80) by BN0PR04CA0113.outlook.office365.com
+ (2603:10b6:408:ec::28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.26 via Frontend
+ Transport; Fri, 1 Dec 2023 10:52:52 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.232) by
+ SN1PEPF000252A3.mail.protection.outlook.com (10.167.242.10) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7046.17 via Frontend Transport; Fri, 1 Dec 2023 10:52:51 +0000
+Received: from drhqmail202.nvidia.com (10.126.190.181) by mail.nvidia.com
+ (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Fri, 1 Dec 2023
+ 02:52:50 -0800
+Received: from drhqmail203.nvidia.com (10.126.190.182) by
+ drhqmail202.nvidia.com (10.126.190.181) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.41; Fri, 1 Dec 2023 02:52:50 -0800
+Received: from jonathanh-vm-01.nvidia.com (10.127.8.9) by mail.nvidia.com
+ (10.126.190.182) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41 via Frontend
+ Transport; Fri, 1 Dec 2023 02:52:50 -0800
+From:   Jon Hunter <jonathanh@nvidia.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <patches@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
+        <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <sudipm.mukherjee@gmail.com>, <srw@sladewatkins.net>,
+        <rwarsow@gmx.de>, <conor@kernel.org>, <allen.lkml@gmail.com>,
+        <linux-tegra@vger.kernel.org>, <stable@vger.kernel.org>
+Subject: Re: [PATCH 5.15 00/68] 5.15.141-rc2 review
+In-Reply-To: <20231201082345.123842367@linuxfoundation.org>
+References: <20231201082345.123842367@linuxfoundation.org>
+X-NVConfidentiality: public
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+Message-ID: <a7a3ed3b-26c5-4c30-b5b9-3949ffbd4e54@drhqmail203.nvidia.com>
+Date:   Fri, 1 Dec 2023 02:52:50 -0800
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN1PEPF000252A3:EE_|PH7PR12MB6668:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5f9bc0f4-1f81-48a4-0c07-08dbf25baa93
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: YGqgVWmV26cs2Q6QITZZfZFRm/85GMX4iRM8nQPt8AMXXW6/PRrPVxotT/CZ8BOD0RRNvWpuZIhjVnnbrw4Wuft77JZsmMzqc4xTYY2njPcr0GFkxgsavyJYV7GFjsZmiPfqxCS7AGBu+qS6MehwhrXFXsrpUtfT+Xvcx/Ab651oRTE1AdMDG+zDW03ifonBxrH9uaMjjveH+BYuZebwSVptlnDSKTe0G1AvdSMgD+9M8gWAHYzMcYPeke4X1MGVOQP5IB+Pu1aW2qpGbY8eGbN6RuFxDjbgY5qnTA7ga53b7yqn0rH9TOn1CklFoRpTo5sfPdSrFsoTprZAilLV+gzTmI4GWQe4hQYyUxAuMD3BY8QAfHv9rLFEj5sSzKiv0O67PLbn+BtuHXcdn57Sb3l0/olBjuPXFSzam3mlrS8GECQHMsDmI6F3ChJiwtokHMMJjDxYY7DadVU8KpF2/hxUVMcoR1wD8Q5fLr9AWiATyr9ZKn0F8AIvXj+VinJiaYTmUHES0wOYT3dI4UBrG35DqNgMg159D6HfuzaCxN29YkaZ5LzMBmY2JTyrNQ0iKCWVn5pFJLVYdKOTS+yl+ZdDRGRXCCu24HkUBx2fsh0I9LuSwHSGZmhtoGiV8EAjP0h5CvjAI6imBJ3JT12cZ4nTeAVGnlyqHwor3J1DSi4eQ57jiQZPZ9lq285/9cz5rbA8sIV04bTprXEfNwOTbeu7nA0S/Q9C3qi6FtqDeEnwWlZ4jIKjLyJzOvlKRebfU8AnDlU915ONuvfqz55PMIthJB/XD7Z+XERZM10BEy0=
+X-Forefront-Antispam-Report: CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(136003)(346002)(39860400002)(396003)(376002)(230922051799003)(451199024)(64100799003)(1800799012)(82310400011)(186009)(36840700001)(40470700004)(46966006)(82740400003)(356005)(7636003)(7416002)(36860700001)(5660300002)(40460700003)(2906002)(41300700001)(86362001)(31696002)(54906003)(8676002)(966005)(478600001)(4326008)(8936002)(26005)(426003)(6916009)(336012)(316002)(40480700001)(31686004)(70586007)(70206006)(47076005);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Dec 2023 10:52:51.9516
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5f9bc0f4-1f81-48a4-0c07-08dbf25baa93
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: SN1PEPF000252A3.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB6668
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Lorenzo, Bjorn,
-
-On 17/08/23 15:06, Achal Verma wrote:
-> As per the PCIe Card Electromechanical specification REV. 5.0, PERST#
-> signal should be de-asserted after minimum 100ms from the time power-rails
-> achieve specified operating limits and 100us after reference clock gets
-> stable.
+On Fri, 01 Dec 2023 08:25:54 +0000, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.15.141 release.
+> There are 68 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> From PCIe Card Electromechanical specification REV. 5.0 section 2.9.2:
-> TPVPERL: Power stable to PERST# inactive - 100ms
-> TPERST_CLK: REFCLK stable before PERST# inactive - 100us
+> Responses should be made by Sun, 03 Dec 2023 08:23:33 +0000.
+> Anything received after that time might be too late.
 > 
-> Fixes: f3e25911a430 ("PCI: j721e: Add TI J721E PCIe driver")
-> Signed-off-by: Achal Verma <a-verma1@ti.com>
-> ---
->  drivers/pci/controller/cadence/pci-j721e.c | 30 +++++++++++-----------
->  drivers/pci/pci.h                          |  3 +++
->  2 files changed, 18 insertions(+), 15 deletions(-)
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.141-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> and the diffstat can be found below.
 > 
-> diff --git a/drivers/pci/controller/cadence/pci-j721e.c b/drivers/pci/controller/cadence/pci-j721e.c
-> index e70213c9060a..b09924b010ab 100644
-> --- a/drivers/pci/controller/cadence/pci-j721e.c
-> +++ b/drivers/pci/controller/cadence/pci-j721e.c
-> @@ -34,6 +34,8 @@
->  #define J721E_PCIE_USER_LINKSTATUS	0x14
->  #define LINK_STATUS			GENMASK(1, 0)
->  
-> +#define PERST_INACTIVE_US (PCIE_TPVPERL_MS*USEC_PER_MSEC + PCIE_TPERST_CLK_US)
+> thanks,
+> 
+> greg k-h
 
-This implementation appears incorrect to me since T_PVPERL already accounts for
-T_PERST-CLK according to Figure 2-3 of PCI Express Card Electromechanical
-Specification Revision 5.1:
-https://members.pcisig.com/wg/PCI-SIG/document/19922
+All tests passing for Tegra ...
 
-Could you please share your opinion since I wish to post a v6 for this patch,
-rebasing it to the latest tree which has the commit:
-164f66be0c25 PCI: Add T_PVPERL macro
-The macro can be used in the current patch, instead of the PERST_INACTIVE_US macro.
+Test results for stable-v5.15:
+    10 builds:	10 pass, 0 fail
+    26 boots:	26 pass, 0 fail
+    102 tests:	102 pass, 0 fail
 
-> +
->  enum link_status {
->  	NO_RECEIVERS_DETECTED,
->  	LINK_TRAINING_IN_PROGRESS,
-> @@ -359,7 +361,7 @@ static int j721e_pcie_probe(struct platform_device *pdev)
->  	struct j721e_pcie *pcie;
->  	struct cdns_pcie_rc *rc = NULL;
->  	struct cdns_pcie_ep *ep = NULL;
-> -	struct gpio_desc *gpiod;
-> +	struct gpio_desc *perst_gpiod;
->  	void __iomem *base;
->  	struct clk *clk;
->  	u32 num_lanes;
-> @@ -468,11 +470,10 @@ static int j721e_pcie_probe(struct platform_device *pdev)
->  
->  	switch (mode) {
->  	case PCI_MODE_RC:
-> -		gpiod = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_LOW);
-> -		if (IS_ERR(gpiod)) {
-> -			ret = PTR_ERR(gpiod);
-> -			if (ret != -EPROBE_DEFER)
-> -				dev_err(dev, "Failed to get reset GPIO\n");
-> +		perst_gpiod = devm_gpiod_get(dev, "reset", GPIOD_OUT_LOW);
-> +		if (IS_ERR(perst_gpiod)) {
-> +			ret = PTR_ERR(perst_gpiod);
-> +			dev_err(dev, "Failed to get reset GPIO\n");
->  			goto err_get_sync;
->  		}
->  
-> @@ -498,16 +499,15 @@ static int j721e_pcie_probe(struct platform_device *pdev)
->  
->  		/*
->  		 * "Power Sequencing and Reset Signal Timings" table in
-> -		 * PCI EXPRESS CARD ELECTROMECHANICAL SPECIFICATION, REV. 3.0
-> -		 * indicates PERST# should be deasserted after minimum of 100us
-> -		 * once REFCLK is stable. The REFCLK to the connector in RC
-> -		 * mode is selected while enabling the PHY. So deassert PERST#
-> -		 * after 100 us.
-> +		 * PCI EXPRESS CARD ELECTROMECHANICAL SPECIFICATION, REV. 5.0
-> +		 * indicates PERST# should be deasserted after minimum of 100ms
-> +		 * after power rails achieve specified operating limits and
-> +		 * 100us after reference clock gets stable.
-> +		 * PERST_INACTIVE_US accounts for both delays.
->  		 */
-> -		if (gpiod) {
-> -			usleep_range(100, 200);
-> -			gpiod_set_value_cansleep(gpiod, 1);
-> -		}
-> +
-> +		fsleep(PERST_INACTIVE_US);
-> +		gpiod_set_value_cansleep(perst_gpiod, 1);
->  
->  		ret = cdns_pcie_host_setup(rc);
->  		if (ret < 0) {
-> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-> index a4c397434057..80d520be34e6 100644
-> --- a/drivers/pci/pci.h
-> +++ b/drivers/pci/pci.h
-> @@ -13,6 +13,9 @@
->  
->  #define PCIE_LINK_RETRAIN_TIMEOUT_MS	1000
->  
-> +#define PCIE_TPVPERL_MS		100	/* see PCIe CEM r5.0, sec 2.9.2 */
-> +#define PCIE_TPERST_CLK_US	100
-> +
->  extern const unsigned char pcie_link_speed[];
->  extern bool pci_early_dump;
->  
+Linux version:	5.15.141-rc2-gc66b1a8641b0
+Boards tested:	tegra124-jetson-tk1, tegra186-p2771-0000,
+                tegra194-p2972-0000, tegra194-p3509-0000+p3668-0000,
+                tegra20-ventana, tegra210-p2371-2180,
+                tegra210-p3450-0000, tegra30-cardhu-a04
 
--- 
-Regards,
-Siddharth.
+Tested-by: Jon Hunter <jonathanh@nvidia.com>
+
+Jon
