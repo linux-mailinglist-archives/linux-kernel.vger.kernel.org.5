@@ -2,203 +2,324 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52465800FAC
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 17:13:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12CA5800FC2
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 17:13:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379417AbjLAP0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 10:26:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55870 "EHLO
+        id S1379399AbjLAP0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 10:26:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379412AbjLAP0o (ORCPT
+        with ESMTP id S1379357AbjLAP0g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 10:26:44 -0500
-Received: from new3-smtp.messagingengine.com (new3-smtp.messagingengine.com [66.111.4.229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBD311A6;
-        Fri,  1 Dec 2023 07:26:49 -0800 (PST)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 2FCE2580B7E;
-        Fri,  1 Dec 2023 10:26:49 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Fri, 01 Dec 2023 10:26:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm3; t=1701444409; x=1701451609; bh=kz
-        ZQHdKoAAB6+QfS9nk3zfKOvPAc1RPjvivwc2Gzfyk=; b=tSSvQ/XNZ3ynaWywM6
-        O2qOAAwm6/yH9PjS77M2/Q9aKwXZek8fBS0aSD2KECe1D8Dx/NwERvitb3hqsB6E
-        bwBjdi61UDIa7VUnAcycsP5NqfS4a39CV1wO/UzplGjXgjWrKc8zkBlZ6aQ2i07A
-        aNSwORpTAVmQDEV80XNIAbPnvteoB/F1pY4TZ/CXaY+eqK+Wu0VuG5zHbK8uXwqc
-        nZGJAUlddmzXCu3xEvO5rSiqiOeOAKKnOdtQu4wH0OJhCpouv4xXw9avkArEAgJF
-        KnBo+jRgQO9FqKszPRUTU+RZQR81aPJEBMxqkojgxyLt0zGBl8Gv9oyZKKyXIOqI
-        YQZQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1701444409; x=1701451609; bh=kzZQHdKoAAB6+
-        QfS9nk3zfKOvPAc1RPjvivwc2Gzfyk=; b=LR7YgG92SvMJUcrWxR02LU+JCYKuS
-        X9GrH0wt+Ns6is1sMWzBiI4296x+7LNvpS3NRjLVl8R5XvPRVJXavrc7smV2q4H+
-        Jwhdk3u+MJrK1W+G3MYKPc7HSu/VpcxdPfKjd+EX013OdaFKsj1J7eSYjVHGhQ5t
-        i2E3WRlZ5nFK/fnUvA2dpcGBVnUTfTPhjkF51gLu4gbd4bDy0lEFrwOb2M5Yq9Gh
-        3584dzcqvpyfRfRK+g7hwq3h35NXlfGyDOY9VYMEO4jx+lfLAfxD9+4HbQ7Q+ZUM
-        ZvdR9hrAwqUqdVqiZBH5p5aaxb4ZCe+/PXJRT3WlWYaCafc6Y7eaWBf3Q==
-X-ME-Sender: <xms:N_tpZdc2iDyIULkyu78iP-8qvlVtSTEExG7xaQGeygmCEuHpSwMgtg>
-    <xme:N_tpZbOfbm_2vo0beWL8uSogQtGDNpg6i6r8GtA5IlvdGC2L_BsjnWEnWIsEA_J63
-    L6V04OzMRtikUO5gnc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeiledgjeejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:OPtpZWgp-T_dWsVgn7yC5TiiAZYL2j-CEi2qJJq45jBWMPcY1jnWLA>
-    <xmx:OPtpZW99Dblp5rnQ9Ltr9-pcMMSPDOt_Csdui7-h-avKqpmP0lUQTg>
-    <xmx:OPtpZZvmBwqQAEMyRuzM5ZgAXDTzVgF05-zYgladKDIUbhC2lUyfCg>
-    <xmx:OftpZZeI7Btyq6g_HlGQgiGKPT8NE7ZzIsrQNdjdYfLs5A108twiew>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id E5FD2B6008D; Fri,  1 Dec 2023 10:26:47 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1178-geeaf0069a7-fm-20231114.001-geeaf0069
+        Fri, 1 Dec 2023 10:26:36 -0500
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2041.outbound.protection.outlook.com [40.107.244.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC01FB6;
+        Fri,  1 Dec 2023 07:26:42 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hxmez6Uw3de9Fue8Lk4PIau9UVQ8IpcMO0Q4FQ22gHcBa0CAOoGd+L16oluO1LGMrq6JxUQ309FjqyS2kSOO00t46s3G2Xy+0J7rRjtMmRe4YJXm8SmipD+RhXXY3q+RmXEyxRgBfGYxv/sPdZVGVlSiUk+MeZ3IblqNxJIon/Tn5nuQ8OXml+PeaxKMwxuB1UPpUaCNrPiQKiiwXNn8KLGOYNAP/QLO86zd0wuVgdQRl8BD/f9bxEF7NM6yAQVhWgmbZNLjyz+tGDAGS802XeaAfJuzzDisUwRHfUWUwm6TfcY9aB8/WuBqHf6W3fW+dHuG1HPN6w8dtB7EFfcV1w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/HfbQe3DVIcBpWk5fwFs7qR+YU6lZ9oFZruAXg+ICt8=;
+ b=KOYF1lGBrtD/MDF9L6RoZVv8JpibLwng8LgV/dSGQ5f9gB1kWdCinTh40i4zPxeutPBX/GTg6T7TFMkoH5t+cBqqvoOoVEJD/568S0+mGcPqZ59fnqrsDKGfBY7h30BeVh8bU7FH9s9i687TDAX1a+wvgrJipdMnjh76evHBvNUMWtdIhTAu7u3h9NOyWmj9s10gVk1UoMrgP30g+dMVsBz5fCM083p2fsYQrazLo7Un1jky3GWubR/XMNGTbv/unQ1OLF7MzYRe0HAdP8Yu0rKzQufLsA/kDLaGMpi8LJ8wLO+mncMXZ1y2j3Ov/jMgtCK6hgT5aWSGG81RwefJQw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/HfbQe3DVIcBpWk5fwFs7qR+YU6lZ9oFZruAXg+ICt8=;
+ b=a9Q2SBIejLcUFTnadp0fGVLd41qMnar7kmZ1R3vYrz4bseXUjGaPaRRAutosiJw1KsN/0KJSRwu0gqPYlQfNR/tYhVLwQNVaI/YSd2NCA576/z7ClF/brMOnXg+GPFDzE9q+5xPlystsTpifWD6RMoEDjGD4gS0aA1+eqIayKrv0H8HsugntF/9AUU4qOnyanZtvIeJEdUnRv/G+NuCvUdNtVXcVB34RBW4IlAM6uwkGQvsYKQzfxVqnFhyO9OZ9ZLO5n6px1gqQaAhsCIu6o1VPh5CRw5nPh5STqwU06uygc3EEM06MsXWn+i2Qf7PuZ8vv+Bg762eNgFZkwjBQqw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB5565.namprd12.prod.outlook.com (2603:10b6:5:1b6::13)
+ by BL1PR12MB5377.namprd12.prod.outlook.com (2603:10b6:208:31f::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.27; Fri, 1 Dec
+ 2023 15:26:38 +0000
+Received: from DM6PR12MB5565.namprd12.prod.outlook.com
+ ([fe80::bd76:47ad:38a9:a258]) by DM6PR12MB5565.namprd12.prod.outlook.com
+ ([fe80::bd76:47ad:38a9:a258%5]) with mapi id 15.20.7046.027; Fri, 1 Dec 2023
+ 15:26:37 +0000
+Date:   Fri, 1 Dec 2023 16:26:31 +0100
+From:   Dragos Tatulea <dtatulea@nvidia.com>
+To:     Eugenio Perez Martin <eperezma@redhat.com>
+Cc:     "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Si-Wei Liu <si-wei.liu@oracle.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Parav Pandit <parav@nvidia.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH vhost 3/7] vdpa/mlx5: Allow modifying multiple vq fields
+ in one modify command
+Message-ID: <ahb5gkmzvempjyty4p767lkbwbmwj64vnhi3xpsgweqn7mvhmx@73jqxye2icd6>
+References: <20231201104857.665737-1-dtatulea@nvidia.com>
+ <20231201104857.665737-4-dtatulea@nvidia.com>
+ <CAJaqyWe_VZ8CsG5j75oAD1FdNi7dc4rLJwjm5AoQNBm4ABfAZA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJaqyWe_VZ8CsG5j75oAD1FdNi7dc4rLJwjm5AoQNBm4ABfAZA@mail.gmail.com>
+X-ClientProxiedBy: FR2P281CA0083.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:9b::7) To DM6PR12MB5565.namprd12.prod.outlook.com
+ (2603:10b6:5:1b6::13)
 MIME-Version: 1.0
-Message-Id: <619ea619-29e4-42fb-9b27-1d1a32e0ee66@app.fastmail.com>
-In-Reply-To: <20231201121622.16343-5-pstanner@redhat.com>
-References: <20231201121622.16343-1-pstanner@redhat.com>
- <20231201121622.16343-5-pstanner@redhat.com>
-Date:   Fri, 01 Dec 2023 16:26:05 +0100
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Philipp Stanner" <pstanner@redhat.com>,
-        "Bjorn Helgaas" <bhelgaas@google.com>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        "Dan Williams" <dan.j.williams@intel.com>,
-        "Jonathan Cameron" <Jonathan.Cameron@huawei.com>,
-        "Jakub Kicinski" <kuba@kernel.org>,
-        "Dave Jiang" <dave.jiang@intel.com>,
-        "Uladzislau Koshchanka" <koshchanka@gmail.com>,
-        "Neil Brown" <neilb@suse.de>,
-        "Niklas Schnelle" <schnelle@linux.ibm.com>,
-        "John Sanpe" <sanpeqf@gmail.com>,
-        "Kent Overstreet" <kent.overstreet@gmail.com>,
-        "Masami Hiramatsu" <mhiramat@kernel.org>,
-        "Kees Cook" <keescook@chromium.org>,
-        "David Gow" <davidgow@google.com>,
-        "Yury Norov" <yury.norov@gmail.com>,
-        "wuqiang.matt" <wuqiang.matt@bytedance.com>,
-        "Jason Baron" <jbaron@akamai.com>,
-        "Kefeng Wang" <wangkefeng.wang@huawei.com>,
-        "Ben Dooks" <ben.dooks@codethink.co.uk>,
-        "Danilo Krummrich" <dakr@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        "Arnd Bergmann" <arnd@kernel.org>
-Subject: Re: [PATCH v2 4/4] lib, pci: unify generic pci_iounmap()
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR12MB5565:EE_|BL1PR12MB5377:EE_
+X-MS-Office365-Filtering-Correlation-Id: 79d72bb2-493e-47fe-0611-08dbf281e8e8
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Joo01kWsrXYQ4RC9vhWlPTeMBKz5nUnUWPDEypPBysCrwS6wZn9HhRFr37hMihcPBmC7Jc1bxFCDZYf2DfSGWAVjSuFyzhcdUP8JyRa2orc79kICpYAGoBIC02Noniyq3it4jff+DuN3QeQ/aGq2yR89no8pGVapNCcwGsPTTAb5vME8YmnVbG39jiTKEWVq6h3ZVQaK7uEclbGdJbvfV2L0HuaiMbvzZnw2W0tsyurKuJAGRXuc6rUkNF29eAHZfPmMvsK5tCQM2WfPYShF0RebqXXTObDA5lL4M/Ys5HuTn2bTRg/1/G2NkylJHAUD2Xw6cj6hDZ7uX4IMlwVkzRtIQRxIntYxMLS1mtvggN9k/enXhJkTHpSePYUxfMdudQ63qYFnWJdpmrVYfhiFQ6JMHoyyY6VPnftsxodPLF0Daa/l3JufmXC7qfskWvYeAaVprCghw8dsHkZsfuML4NeeJeTMEuqGA/JCr+sVa0cTCEVa2xlEV4FZtyK99qWLGcWW0TlKpWT6OSaE7nRh8lgTL1I+p/o/2aaRtMmS7JA/FOCzX510d15V0XtITqYa
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB5565.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(136003)(396003)(376002)(346002)(366004)(39860400002)(230922051799003)(1800799012)(451199024)(64100799003)(186009)(66899024)(83380400001)(38100700002)(33716001)(86362001)(66946007)(8936002)(8676002)(54906003)(4326008)(6916009)(66476007)(66556008)(316002)(5660300002)(2906002)(53546011)(6512007)(9686003)(478600001)(6486002)(6506007)(6666004)(41300700001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Zk1oUDNSa0VmelNCVmY2VFEyVGE1R2MxT2x2RjdkeHU1MG9BRUV4WEcvb1g5?=
+ =?utf-8?B?VWVQSExWS25aQ0xkaUU0TG9kZnhPMlVoaVF3bnVSSUVacFhRTkxzUGpCZVk3?=
+ =?utf-8?B?Q0QyWFBsYW5DRXBpOVVtdGxYcFl6N1lBR3R5L3M2MVdZS0JqYVhPQ0ZqU0R5?=
+ =?utf-8?B?Tk5TSHFoZlpmMmphZnNidS83US9FZ0cvVE1SVndsWDRLRXU1czlDeGcyc2RM?=
+ =?utf-8?B?TWc5VGlUSlhRdk1sYmNYRHc5MG5oa2RhRG13aldqcTgyZXpBMjNsZXlDY0lL?=
+ =?utf-8?B?ckV4T3hBSTBmM056TlAwYURuckJLWWZaSTNxSk1SVGlTQ0dyN3FPZEpheWhP?=
+ =?utf-8?B?VnpUQ3JiSjNub2hSaFNPbk1xWXhBSUpkVlIyci8wYlQ3dTdrMmNMWk9jbGpk?=
+ =?utf-8?B?ZjZlSE5uV3RPMTlWQUpWazlLeDg0VnhQNEpjK2VTUHRia09uNVY0T2xxeXRS?=
+ =?utf-8?B?ejRQa3dueG0zTm1lSjNhanJZc3ZnR1NsZ1pycnA0N0lSTGNMVjBRUjFXSkgy?=
+ =?utf-8?B?ME5DTEpNODlOZXZoQURaRTJ0WnZYNDNENUU4UitFMmxPelRoVEhkbWlMRFV2?=
+ =?utf-8?B?dGlsNzUvSVhlMURYZXN4VW5mbTNxc1p4eUQ4MllBYXcybC90L1p1K05rSVNw?=
+ =?utf-8?B?d01yb2ZVNUJrQW5idWNNSks3c0twOXpZaEl2S0VId3NMNFhqaU85QytmQ2Nt?=
+ =?utf-8?B?eW5qRTFZRWpTK0tubGNSb0s1dG5icEVUMzBtcHl1aXJ2NERCbHlqWGZRQkR3?=
+ =?utf-8?B?T0hhVlNqZEljVlJzWU1NZFBTQlhhcW82ZW8rTGVKWUljUXVFU1I0eFB4R3hK?=
+ =?utf-8?B?UWFGNUlqN1hLY21neTlIeHJiejc1Mk9rUHgwak5nTkVEYWFuNnUxR1gvZ2tt?=
+ =?utf-8?B?eWZaRTdUZVhvMjVJK0dVMnNmM1dTdnlSSTBQT1cvKzk5RUZ6Y2JvK0pwR0pu?=
+ =?utf-8?B?TEZwU1JlL0d4RjNTYklQSGVBWVZFOXFTUGtLdmdmOEFqckhaeHBsNFBBZnhX?=
+ =?utf-8?B?SCtwaWYwT1BQb3hQRXQ3Z0pIWlU1dTRlV0FuSHV1WjNiTkZod3hsaEVYcEtk?=
+ =?utf-8?B?OFR3RGVMYkxqTEdhL2tGdzVCVW9jOEZ6ZE5xZFJYYVhCbG8yYlZqU2N1ZkZ0?=
+ =?utf-8?B?RndtVGk4azJZVE9iN3hmSVVXTVNHUW80RHhnM0ZGS1FpeTdCc0p1V0RBZStp?=
+ =?utf-8?B?YWhUbmxqV3lubzlpWElFSHVFODV6bmI4T1JSK0s1a0xHK0szYkttTHJFMThl?=
+ =?utf-8?B?R21raEhjUlRTVjZPM1p4TEttVGxOVldyeGtHQVFSek9IOXNMdTU2YUlRa090?=
+ =?utf-8?B?YWhSb0tXeTFNcnFQK0pkS1VzN08xRThNUytUNCtZZERuaE1Jay9DeHlXbjg2?=
+ =?utf-8?B?M25WbThmWVgvUE4remxxak5oTHV0SEFocTZqNkRtTjhZdmhrTHZQc1EzVFhR?=
+ =?utf-8?B?TkJBcmNKRnFHb1NTZHRrRzl2ZzEwa2x5b1YzTnoxZnhEdEp1UFRLK2V1RnlP?=
+ =?utf-8?B?R3MyTno5OFBKNHhuVW90SkZ4NjVvMjNpM2RzK3NYSXhQRkQ0V2ZHNVR1RUNO?=
+ =?utf-8?B?QkVUTmI3eHgyQ1c3NTR3T0xjenFkbmNVRk16cElFdlpnbFdqazdYN1FZS2tr?=
+ =?utf-8?B?ZzJBN3cyYkdVODBPLzQwWkFtbUd1WHZpNTlGV29GREt0OGtPVU9xQ3RoMDhB?=
+ =?utf-8?B?R2dSbnJZa0QxVzJTVWJ6ZFhJNW8rdmlvbmEwRm5QOFVzN2RrNHV2bXAxUlY5?=
+ =?utf-8?B?MHZNV3REOHE0V1lwS2JhQ0JhMlNtWmJ3SUkwVWRzZGp0ZDdvRytHMXF3TDdr?=
+ =?utf-8?B?cmoyclVOUDV2OFB4VWpEb3J0cG5ZQWhQWXpLOGJPTHZQNlN0OVRGVUtjVDVl?=
+ =?utf-8?B?Qyt0R2hxb0NTUGF3NGhlc3ExQnV6cUdUN0IzVGtRNW1JQ2xzMUhpeWs1QTZD?=
+ =?utf-8?B?MUZEaktocE5aRGZ5ekgxaHRGWFpFcXdZZnpxdGhTc0NHZ2FWQ215ZjNKcWw4?=
+ =?utf-8?B?c3Zpd2tNR1ZlR3FadG0zNjlsR2dDUVFYdlhMeitXRlF3d0xQNFI4T3MxWEJx?=
+ =?utf-8?B?TFFUSEwyV3dtd3pIYW9wWWRieGlRWHdEeUVpQ0FlWTZvdWdIdmJKaGhmRGk0?=
+ =?utf-8?B?UkZJL1RMSm9mWFhHTEZsN0hMcTZZMjFFQ0ltNnNscWVlZExiWlk3OGduZEFO?=
+ =?utf-8?Q?uo57uYm57L8/CoYWv87rroY+6rwbpaTWwGZtDgG90SrN?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 79d72bb2-493e-47fe-0611-08dbf281e8e8
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB5565.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Dec 2023 15:26:37.6874
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: /xG8v0cvxRfLGrMcVd0quKeS6U+sS22PCYy3BXGh+ssi8VIjW18Hfd720wFXa1rmk/bK2ro+MAP2Tk5aKOAHOQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5377
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 1, 2023, at 13:16, Philipp Stanner wrote:
-> The implementation of pci_iounmap() is currently scattered over two
-> files, drivers/pci/iounmap.c and lib/iomap.c. Additionally,
-> architectures can define their own version.
+On 12/01, Eugenio Perez Martin wrote:
+> On Fri, Dec 1, 2023 at 11:49 AM Dragos Tatulea <dtatulea@nvidia.com> wrote:
+> >
+> > Add a bitmask variable that tracks hw vq field changes that
+> > are supposed to be modified on next hw vq change command.
+> >
+> > This will be useful to set multiple vq fields when resuming the vq.
+> >
+> > The state needs to remain as a parameter as it doesn't make sense to
+> > make it part of the vq struct: fw_state is updated only after a
+> > successful command.
+> >
+> 
+> I don't get this paragraph, "modified_fields" is a member of
+> "mlx5_vdpa_virtqueue". Am I missing something?
+> 
+I think this paragraph adds more confusion than clarification. I meant
+to say that the state argument from modified_virtqueue needs to remain
+there, as opposed to integrating it into the mlx5_vdpa_virtqueue struct.
+
+> 
+> > Signed-off-by: Dragos Tatulea <dtatulea@nvidia.com>
+> > ---
+> >  drivers/vdpa/mlx5/net/mlx5_vnet.c | 48 +++++++++++++++++++++++++------
+> >  1 file changed, 40 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > index 12ac3397f39b..d06285e46fe2 100644
+> > --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > @@ -120,6 +120,9 @@ struct mlx5_vdpa_virtqueue {
+> >         u16 avail_idx;
+> >         u16 used_idx;
+> >         int fw_state;
+> > +
+> > +       u64 modified_fields;
+> > +
+> >         struct msi_map map;
+> >
+> >         /* keep last in the struct */
+> > @@ -1181,7 +1184,19 @@ static bool is_valid_state_change(int oldstate, int newstate)
+> >         }
+> >  }
+> >
+> > -static int modify_virtqueue(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue *mvq, int state)
+> > +static bool modifiable_virtqueue_fields(struct mlx5_vdpa_virtqueue *mvq)
+> > +{
+> > +       /* Only state is always modifiable */
+> > +       if (mvq->modified_fields & ~MLX5_VIRTQ_MODIFY_MASK_STATE)
+> > +               return mvq->fw_state == MLX5_VIRTIO_NET_Q_OBJECT_STATE_INIT ||
+> > +                      mvq->fw_state == MLX5_VIRTIO_NET_Q_OBJECT_STATE_SUSPEND;
+> > +
+> > +       return true;
+> > +}
+> > +
+> > +static int modify_virtqueue(struct mlx5_vdpa_net *ndev,
+> > +                           struct mlx5_vdpa_virtqueue *mvq,
+> > +                           int state)
+> >  {
+> >         int inlen = MLX5_ST_SZ_BYTES(modify_virtio_net_q_in);
+> >         u32 out[MLX5_ST_SZ_DW(modify_virtio_net_q_out)] = {};
+> > @@ -1193,6 +1208,9 @@ static int modify_virtqueue(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtque
+> >         if (mvq->fw_state == MLX5_VIRTIO_NET_Q_OBJECT_NONE)
+> >                 return 0;
+> >
+> > +       if (!modifiable_virtqueue_fields(mvq))
+> > +               return -EINVAL;
+> > +
+> 
+> I'm ok with this change, but since modified_fields is (or will be) a
+> bitmap tracking changes to state, addresses, mkey, etc, doesn't have
+> more sense to check it like:
+> 
+> if (modified_fields & 1<<change_1_flag)
+>   // perform change 1
+> if (modified_fields & 1<<change_2_flag)
+>   // perform change 2
+> if (modified_fields & 1<<change_3_flag)
+>   // perform change 13
+> ---
+> 
+> Instead of:
+> if (!modified_fields)
+>   return
+> 
+> if (modified_fields & 1<<change_1_flag)
+>   // perform change 1
+> if (modified_fields & 1<<change_2_flag)
+>   // perform change 2
+> 
+> // perform change 3, no checking, as it is the only possible value of
+> modified_fields
+> ---
+> 
+> Or am I missing something?
+> 
+modifiable_virtqueue_fields() is meant to check that the modification is
+done only in the INIT or SUSPEND state of the queue. Or did I
+misunderstand your question?
+
+> The rest looks good to me.
 >
-> Besides one unified version being desirable in the first place, the old
-> version in drivers/pci/iounmap.c contained a bug and could leak memory
-> mappings. The bug was that #ifdef ARCH_HAS_GENERIC_IOPORT_MAP should not
-> have guarded iounmap(p); in addition to the preceding code.
->
-> To have only one version, it's necessary to create a helper function,
-> iomem_is_ioport(), that tells pci_iounmap() whether the passed address
-> points to an ioport or normal memory.
->
-> iomem_is_ioport() can be provided through three different ways:
->   1. The architecture itself provides it.
->   2. As a default version in include/asm-generic/io.h for those
->      architectures that don't use CONFIG_GENERIC_IOMAP, but also don't
->      provide their own version of iomem_is_ioport().
->   3. As a default version in lib/iomap.c for those architectures that
->      define and use CONFIG_GENERIC_IOMAP (currently, only x86 really
->      uses the functions in lib/iomap.c)
+Thanks for reviewing my patches Eugenio!
 
-I would count 3 as a special case of 1 here.
-
-> Create a unified version of pci_iounmap() in drivers/pci/iomap.c.
-> Provide the function iomem_is_ioport() in include/asm-generic/io.h and
-> lib/iomap.c.
->
-> Remove the CONFIG_GENERIC_IOMAP guard around
-> ARCH_WANTS_GENERIC_PCI_IOUNMAP so that configs that set
-> CONFIG_GENERIC_PCI_IOMAP without CONFIG_GENERIC_IOMAP still get the
-> function.
->
-> Fixes: 316e8d79a095 ("pci_iounmap'2: Electric Boogaloo: try to make 
-> sense of it all")
-> Suggested-by: Arnd Bergmann <arnd@kernel.org>
-> Signed-off-by: Philipp Stanner <pstanner@redhat.com>
-
-Looks good overall. It would be nice to go further than this
-and replace all the custom pci_iounmap() variants with custom
-iomem_is_ioport() implementations, but that can be a follow-up
-along with removing the incorrect or useless 'select GENERIC_IOMAP'
-parts.
-
->  		return;
-> -	iounmap(p);
-> +	}
->  #endif
-> +	iounmap(addr);
->  }
-
-I think the bugfix should be a separate patch so we can backport
-it to stable kernels.
-
-> +#ifndef CONFIG_GENERIC_IOMAP
-> +static inline bool iomem_is_ioport(void __iomem *addr)
-> +{
-> +	unsigned long port = (unsigned long __force)addr;
-> +
-> +	// TODO: do we have to take IO_SPACE_LIMIT and PCI_IOBASE into account
-> +	// similar as in ioport_map() ?
-> +
-> +	if (port > MMIO_UPPER_LIMIT)
-> +		return false;
-> +
-> +	return true;
-> +}
-
-This has to have the exact logic that was present in the
-old pci_iounmap(). For the default version that is currently
-in lib/pci_iomap.c, this means something along the linens of
-
-static inline bool struct iomem_is_ioport(void __iomem *p)
-{
-#ifdef CONFIG_HAS_IOPORT
-        uintptr_t start = (uintptr_t) PCI_IOBASE;
-        uintptr_t addr = (uintptr_t) p;
-
-        if (addr >= start && addr < start + IO_SPACE_LIMIT)
-                return true;
-#endif
-        return false;
-}
-
-> +#else /* CONFIG_GENERIC_IOMAP. Version from lib/iomap.c will be used. 
-> */
-> +bool iomem_is_ioport(void __iomem *addr);
-> +#define ARCH_WANTS_GENERIC_IOMEM_IS_IOPORT
-
-I'm not sure what this macro is for, since it appears to
-do the opposite of what its name suggests: rather than
-provide the generic version of iomem_is_ioport(), it
-skips that and provides a custom one to go with lib/iomap.c
-
-     Arnd
+> >         if (!is_valid_state_change(mvq->fw_state, state))
+> >                 return -EINVAL;
+> >
+> > @@ -1208,17 +1226,28 @@ static int modify_virtqueue(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtque
+> >         MLX5_SET(general_obj_in_cmd_hdr, cmd_hdr, uid, ndev->mvdev.res.uid);
+> >
+> >         obj_context = MLX5_ADDR_OF(modify_virtio_net_q_in, in, obj_context);
+> > -       MLX5_SET64(virtio_net_q_object, obj_context, modify_field_select,
+> > -                  MLX5_VIRTQ_MODIFY_MASK_STATE);
+> > -       MLX5_SET(virtio_net_q_object, obj_context, state, state);
+> > +       if (mvq->modified_fields & MLX5_VIRTQ_MODIFY_MASK_STATE)
+> > +               MLX5_SET(virtio_net_q_object, obj_context, state, state);
+> > +
+> > +       MLX5_SET64(virtio_net_q_object, obj_context, modify_field_select, mvq->modified_fields);
+> >         err = mlx5_cmd_exec(ndev->mvdev.mdev, in, inlen, out, sizeof(out));
+> >         kfree(in);
+> >         if (!err)
+> >                 mvq->fw_state = state;
+> >
+> > +       mvq->modified_fields = 0;
+> > +
+> >         return err;
+> >  }
+> >
+> > +static int modify_virtqueue_state(struct mlx5_vdpa_net *ndev,
+> > +                                 struct mlx5_vdpa_virtqueue *mvq,
+> > +                                 unsigned int state)
+> > +{
+> > +       mvq->modified_fields |= MLX5_VIRTQ_MODIFY_MASK_STATE;
+> > +       return modify_virtqueue(ndev, mvq, state);
+> > +}
+> > +
+> >  static int counter_set_alloc(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue *mvq)
+> >  {
+> >         u32 in[MLX5_ST_SZ_DW(create_virtio_q_counters_in)] = {};
+> > @@ -1347,7 +1376,7 @@ static int setup_vq(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue *mvq)
+> >                 goto err_vq;
+> >
+> >         if (mvq->ready) {
+> > -               err = modify_virtqueue(ndev, mvq, MLX5_VIRTIO_NET_Q_OBJECT_STATE_RDY);
+> > +               err = modify_virtqueue_state(ndev, mvq, MLX5_VIRTIO_NET_Q_OBJECT_STATE_RDY);
+> >                 if (err) {
+> >                         mlx5_vdpa_warn(&ndev->mvdev, "failed to modify to ready vq idx %d(%d)\n",
+> >                                        idx, err);
+> > @@ -1382,7 +1411,7 @@ static void suspend_vq(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue *m
+> >         if (mvq->fw_state != MLX5_VIRTIO_NET_Q_OBJECT_STATE_RDY)
+> >                 return;
+> >
+> > -       if (modify_virtqueue(ndev, mvq, MLX5_VIRTIO_NET_Q_OBJECT_STATE_SUSPEND))
+> > +       if (modify_virtqueue_state(ndev, mvq, MLX5_VIRTIO_NET_Q_OBJECT_STATE_SUSPEND))
+> >                 mlx5_vdpa_warn(&ndev->mvdev, "modify to suspend failed\n");
+> >
+> >         if (query_virtqueue(ndev, mvq, &attr)) {
+> > @@ -1407,6 +1436,7 @@ static void teardown_vq(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue *
+> >                 return;
+> >
+> >         suspend_vq(ndev, mvq);
+> > +       mvq->modified_fields = 0;
+> >         destroy_virtqueue(ndev, mvq);
+> >         dealloc_vector(ndev, mvq);
+> >         counter_set_dealloc(ndev, mvq);
+> > @@ -2207,7 +2237,7 @@ static void mlx5_vdpa_set_vq_ready(struct vdpa_device *vdev, u16 idx, bool ready
+> >         if (!ready) {
+> >                 suspend_vq(ndev, mvq);
+> >         } else {
+> > -               err = modify_virtqueue(ndev, mvq, MLX5_VIRTIO_NET_Q_OBJECT_STATE_RDY);
+> > +               err = modify_virtqueue_state(ndev, mvq, MLX5_VIRTIO_NET_Q_OBJECT_STATE_RDY);
+> >                 if (err) {
+> >                         mlx5_vdpa_warn(mvdev, "modify VQ %d to ready failed (%d)\n", idx, err);
+> >                         ready = false;
+> > @@ -2804,8 +2834,10 @@ static void clear_vqs_ready(struct mlx5_vdpa_net *ndev)
+> >  {
+> >         int i;
+> >
+> > -       for (i = 0; i < ndev->mvdev.max_vqs; i++)
+> > +       for (i = 0; i < ndev->mvdev.max_vqs; i++) {
+> >                 ndev->vqs[i].ready = false;
+> > +               ndev->vqs[i].modified_fields = 0;
+> > +       }
+> >
+> >         ndev->mvdev.cvq.ready = false;
+> >  }
+> > --
+> > 2.42.0
+> >
+> 
