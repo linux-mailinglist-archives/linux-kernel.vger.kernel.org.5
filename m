@@ -2,78 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44169800E6A
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 16:18:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C3C3800E6B
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 16:19:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379423AbjLAPSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 10:18:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56520 "EHLO
+        id S1379345AbjLAPTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 10:19:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379475AbjLAPRt (ORCPT
+        with ESMTP id S1379307AbjLAPTQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 10:17:49 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52F2C1726;
-        Fri,  1 Dec 2023 07:17:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701443862; x=1732979862;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=wYPSx9+wbY4jC6jNQkQIxE7XoYAMfQUsgyw8T5lmYsg=;
-  b=BSk1eTp8KH6vv/xHR/hqBvxjsmTmsyXdzRXG1Wo/L7e7G5SfwQylPMG+
-   YkXtbigEZsO5w1S2iweiDGXZE3iSHwiy2hGcke9MzRQ/Wf7+7RbPJQ0yB
-   d5mUl2JYLwlSiJrwkHCENgayWrszw5EjLyyMilpOztM5ZkiPV97WaZgEB
-   gc1xMQicCyPCHH5B7GT7jFQ5weEzDjCf6ukWsA9WbX9GbpQp1Sn42gvk5
-   4GkvCDs2urtN9tMD9T1hSlgCLTLIcZiQkznmc4o0i9HFLq0MGqG2C3/Kv
-   uxzckUkozpf2PnDJddt/I/gU8IcgbWVvio6fga4qiMB/dCuJZVeDyDUHJ
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="362668"
-X-IronPort-AV: E=Sophos;i="6.04,241,1695711600"; 
-   d="scan'208";a="362668"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2023 07:17:41 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="763178004"
-X-IronPort-AV: E=Sophos;i="6.04,241,1695711600"; 
-   d="scan'208";a="763178004"
-Received: from stinkpipe.fi.intel.com (HELO stinkbox) ([10.237.72.74])
-  by orsmga007.jf.intel.com with SMTP; 01 Dec 2023 07:17:36 -0800
-Received: by stinkbox (sSMTP sendmail emulation); Fri, 01 Dec 2023 17:17:35 +0200
-Date:   Fri, 1 Dec 2023 17:17:35 +0200
-From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-To:     Pekka Paalanen <ppaalanen@gmail.com>
-Cc:     Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Emma Anholt <emma@anholt.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        dri-devel@lists.freedesktop.org,
-        Samuel Holland <samuel@sholland.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sandy Huang <hjc@rock-chips.com>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        linux-rockchip@lists.infradead.org, Chen-Yu Tsai <wens@csie.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        linux-sunxi@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-        linux-media@vger.kernel.org
-Subject: Re: [PATCH v4 05/45] drm/connector: Check drm_connector_init
- pointers arguments
-Message-ID: <ZWn5D387DYmsh1sa@intel.com>
-References: <20231128-kms-hdmi-connector-state-v4-0-c7602158306e@kernel.org>
- <20231128-kms-hdmi-connector-state-v4-5-c7602158306e@kernel.org>
- <87h6l66nth.fsf@intel.com>
- <v3hplco5fdedv6bnc6mwx2zhhw4xxdiekha26ykhc5cmy7ol77@2irk3w4hmabw>
- <ZWXv1Oi_sH0BRWao@intel.com>
- <20231129121259.47746996@eldfell>
- <ZWcRoTJ9VgOqZ3ts@intel.com>
+        Fri, 1 Dec 2023 10:19:16 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F36A91
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 07:19:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701443962;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZXm7ORGqBZRQibD2CXBq2iXnUxr20ROajaE6s0OsD8s=;
+        b=aMYR9A4jY9PDP3NFrrk4G6TV922cESTNuZaSwkLtWtk4jtstu9mWBbZodXjkRrOTq+fa37
+        1RfPsyp9viRS/NiqCCSGHfjDgDTX5PeY4feIwvFWQqO/N17wzszQXhoeQVllgHQd19JMct
+        7CYVsZqAyRAGMwhiRSWxM0STXUotj4w=
+Received: from mail-yw1-f200.google.com (mail-yw1-f200.google.com
+ [209.85.128.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-690-t0I11RqgMy6UtQljs1pW7g-1; Fri, 01 Dec 2023 10:19:21 -0500
+X-MC-Unique: t0I11RqgMy6UtQljs1pW7g-1
+Received: by mail-yw1-f200.google.com with SMTP id 00721157ae682-5caf61210e3so33333137b3.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 07:19:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701443960; x=1702048760;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZXm7ORGqBZRQibD2CXBq2iXnUxr20ROajaE6s0OsD8s=;
+        b=nqU/mslpDNQXvqJhRdUrl7F7ZakZrK/a2jMqFBYIyRPxXKXa8mlRePBN1Xhs9tL+DH
+         b+71Bz6OWUssJLvPmMWVj3b56uC+h2poSCPL27G+knTyOYRlan3ageE2roFae/VsER6B
+         EJQgI1DonB2pip3cw5pcYMWV68oXY+vIXYaP6MCrKpsOlViqgOW82UfxrXiP1BywT3Hq
+         9D/6uEhJeE2qzt9yO+PyJYPcbJCF4LLb3hqCJ6ksr70J6ek3c54oQ1D+pHmrxyMkhNag
+         5kHT00QMmA+5tJ2TMO5J7rBGgshPFaZe0UTQhhM2I7ySaTpcJimeoBfp0dWCD/cTMxjT
+         LrCA==
+X-Gm-Message-State: AOJu0YwDBv4qIZ8RQbVJ6XaapCoMkvfy127XVC+AILmDkYBJpar/uvLh
+        CZxp5DL+T3o1Ut3IwAWfrerfP1Svs5DdNQcuA2DfAYvuxPT0mrEV1wqjrrtbEj3pThJnCmZ3LRT
+        7d7er4OjX63LwtUHryqpCNXAb/RYaASBCa1dFS02g
+X-Received: by 2002:a0d:db0f:0:b0:5d6:b412:19dc with SMTP id d15-20020a0ddb0f000000b005d6b41219dcmr1122969ywe.8.1701443960725;
+        Fri, 01 Dec 2023 07:19:20 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IF6lDZLBFR1eE1535WBabPzL29pPwJmipsUSBju2+viJweB3LEtTtxcMwvU+ISfzmVUVeodvROTWBtiXJgwI/Y=
+X-Received: by 2002:a0d:db0f:0:b0:5d6:b412:19dc with SMTP id
+ d15-20020a0ddb0f000000b005d6b41219dcmr1122957ywe.8.1701443960471; Fri, 01 Dec
+ 2023 07:19:20 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZWcRoTJ9VgOqZ3ts@intel.com>
-X-Patchwork-Hint: comment
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+References: <20231201104857.665737-1-dtatulea@nvidia.com> <20231201104857.665737-7-dtatulea@nvidia.com>
+In-Reply-To: <20231201104857.665737-7-dtatulea@nvidia.com>
+From:   Eugenio Perez Martin <eperezma@redhat.com>
+Date:   Fri, 1 Dec 2023 16:18:44 +0100
+Message-ID: <CAJaqyWc1msHWR_5BrFM2F3JBcLriNLhE43Zh-LOz490Xzrz5ng@mail.gmail.com>
+Subject: Re: [PATCH vhost 6/7] vdpa/mlx5: Mark vq state for modification in hw vq
+To:     Dragos Tatulea <dtatulea@nvidia.com>
+Cc:     "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Si-Wei Liu <si-wei.liu@oracle.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Gal Pressman <galp@nvidia.com>,
+        Parav Pandit <parav@nvidia.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -82,48 +83,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 12:25:37PM +0200, Ville Syrjälä wrote:
-> On Wed, Nov 29, 2023 at 12:12:59PM +0200, Pekka Paalanen wrote:
-> > On Tue, 28 Nov 2023 15:49:08 +0200
-> > Ville Syrjälä <ville.syrjala@linux.intel.com> wrote:
-> > 
-> > > Should we perhaps start to use the (arguably hideous)
-> > >  - void f(struct foo *bar)
-> > >  + void f(struct foo bar[static 1])
-> > > syntax to tell the compiler we don't accept NULL pointers?
-> > > 
-> > > Hmm. Apparently that has the same problem as using any
-> > > other kind of array syntax in the prototype. That is,
-> > > the compiler demands to know the definition of 'struct foo'
-> > > even though we're passing in effectively a pointer. Sigh.
-> > 
-> > 
-> > __attribute__((nonnull)) ?
-> 
-> I guess that would work, though the syntax is horrible when
-> you need to flag specific arguments.
+On Fri, Dec 1, 2023 at 11:50=E2=80=AFAM Dragos Tatulea <dtatulea@nvidia.com=
+> wrote:
+>
+> .set_vq_state will set the indices and mark the fields to be modified in
+> the hw vq.
+>
+> Signed-off-by: Dragos Tatulea <dtatulea@nvidia.com>
 
-I played around with this a bit (blindly cocci'd tons of
-drm and i915 function declarations with the nonnull attribute)
-and it's somewhat underwhelming unfortunately.
+Acked-by: Eugenio P=C3=A9rez <eperezma@redhat.com>
 
-It will trip only if the compiler is 100% sure you're passing
-in a NULL. There is no way to eg. tell the compiler that a
-function can return a NULL and thus anything coming from it
-should be checked by the caller before passing it on to
-something with the nonnull attribute. And I suppose error
-pointers would also screw that idea over anyway.
+> ---
+>  drivers/vdpa/mlx5/net/mlx5_vnet.c  | 8 ++++++++
+>  include/linux/mlx5/mlx5_ifc_vdpa.h | 2 ++
+>  2 files changed, 10 insertions(+)
+>
+> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/ml=
+x5_vnet.c
+> index 2277daf4814f..6325aef045e2 100644
+> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> @@ -1249,6 +1249,12 @@ static int modify_virtqueue(struct mlx5_vdpa_net *=
+ndev,
+>                 MLX5_SET64(virtio_q, vq_ctx, available_addr, mvq->driver_=
+addr);
+>         }
+>
+> +       if (mvq->modified_fields & MLX5_VIRTQ_MODIFY_MASK_VIRTIO_Q_AVAIL_=
+IDX)
+> +               MLX5_SET(virtio_net_q_object, obj_context, hw_available_i=
+ndex, mvq->avail_idx);
+> +
+> +       if (mvq->modified_fields & MLX5_VIRTQ_MODIFY_MASK_VIRTIO_Q_USED_I=
+DX)
+> +               MLX5_SET(virtio_net_q_object, obj_context, hw_used_index,=
+ mvq->used_idx);
+> +
+>         MLX5_SET64(virtio_net_q_object, obj_context, modify_field_select,=
+ mvq->modified_fields);
+>         err =3D mlx5_cmd_exec(ndev->mvdev.mdev, in, inlen, out, sizeof(ou=
+t));
+>         if (err)
+> @@ -2328,6 +2334,8 @@ static int mlx5_vdpa_set_vq_state(struct vdpa_devic=
+e *vdev, u16 idx,
+>
+>         mvq->used_idx =3D state->split.avail_index;
+>         mvq->avail_idx =3D state->split.avail_index;
+> +       mvq->modified_fields |=3D MLX5_VIRTQ_MODIFY_MASK_VIRTIO_Q_AVAIL_I=
+DX |
+> +                               MLX5_VIRTQ_MODIFY_MASK_VIRTIO_Q_USED_IDX;
+>         return 0;
+>  }
+>
+> diff --git a/include/linux/mlx5/mlx5_ifc_vdpa.h b/include/linux/mlx5/mlx5=
+_ifc_vdpa.h
+> index 9594ac405740..32e712106e68 100644
+> --- a/include/linux/mlx5/mlx5_ifc_vdpa.h
+> +++ b/include/linux/mlx5/mlx5_ifc_vdpa.h
+> @@ -146,6 +146,8 @@ enum {
+>         MLX5_VIRTQ_MODIFY_MASK_DIRTY_BITMAP_PARAMS      =3D (u64)1 << 3,
+>         MLX5_VIRTQ_MODIFY_MASK_DIRTY_BITMAP_DUMP_ENABLE =3D (u64)1 << 4,
+>         MLX5_VIRTQ_MODIFY_MASK_VIRTIO_Q_ADDRS           =3D (u64)1 << 6,
+> +       MLX5_VIRTQ_MODIFY_MASK_VIRTIO_Q_AVAIL_IDX       =3D (u64)1 << 7,
+> +       MLX5_VIRTQ_MODIFY_MASK_VIRTIO_Q_USED_IDX        =3D (u64)1 << 8,
+>         MLX5_VIRTQ_MODIFY_MASK_DESC_GROUP_MKEY          =3D (u64)1 << 14,
+>  };
+>
+> --
+> 2.42.0
+>
 
-Additionally the NULL device checks being being done in 
-the drm_err/dbg macros trip this up left right and center.
-And hiding that check inside a function (instead of having
-it in the macro) is also ruined by the fact that we apparently
-pass different types of pointers to these macros :( Generics
-could be used to sort out that type mess I suppose, or the
-code that passes the wrong type (DSI code at least) should
-just be changed to not do that. But not sure if there's enough
-benefit to warrant the work.
-
--- 
-Ville Syrjälä
-Intel
