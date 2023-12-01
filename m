@@ -2,141 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18AEF801174
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:21:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAB2D801161
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:21:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378656AbjLARB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 12:01:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47304 "EHLO
+        id S1378637AbjLARDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 12:03:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229504AbjLARBz (ORCPT
+        with ESMTP id S229888AbjLARDE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 12:01:55 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30FF9106
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 09:02:01 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94609C433C8;
-        Fri,  1 Dec 2023 17:02:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701450120;
-        bh=y7kiPIdMJ/eHRHRKfNv778aTflt1jqgDvDpBOIx25i8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Qk7/+MmhgtRaOSV3nMg2hBe9LMIviJrooLIwyhArHVbQegd6wgxG7ggpgUri5+FF9
-         SIs8mNRQqX1iDqAWeRcRoQXWYA6nCSDkQUtvllR7KSQrW3tJQxyJ+t+DT0RmPu2UVl
-         PenZWXCm30cBL4KiL8L2KHCrEnrVFjLvPx7HaaQJLklVmuhRkEftssFwPzIYS2aKn8
-         cm8AHoOou/Z8Ol8u/e/Cb9cQ0HSbjT94qaR5WcweEtHlRA8suG3K79jT21HcJfIhBO
-         nZuNVlEpPS2lenVtkdIj9sgCnltzmtV7m01UMKotFlWjb/JW7ALin/eLabr6eaxUEK
-         0Aa6we3I13Kyw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id CAD9340094; Fri,  1 Dec 2023 14:01:57 -0300 (-03)
-Date:   Fri, 1 Dec 2023 14:01:57 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     David Laight <David.Laight@aculab.com>
-Cc:     Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] perf beauty: Don't use 'find ... -printf' as it
- isn't available in busybox
-Message-ID: <ZWoRhbyvClv0TffR@kernel.org>
-References: <ZWkEeqdmCHMLhLr2@kernel.org>
- <ecad5dffa8474ed8a5367e917610e707@AcuMS.aculab.com>
+        Fri, 1 Dec 2023 12:03:04 -0500
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C79F5133;
+        Fri,  1 Dec 2023 09:03:09 -0800 (PST)
+Received: by mail-qv1-xf33.google.com with SMTP id 6a1803df08f44-67a9be1407aso3180156d6.0;
+        Fri, 01 Dec 2023 09:03:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701450189; x=1702054989; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=c3Y5WlluNSG52Oh+RdmatqU/FPHpilvW0wo2a8wMtzM=;
+        b=m2D7pzVcoi24CicR2Lxu4tdcTFdL5+xS/neCTf8HxqbnvHwAcdEC9enE73iP0wn1ji
+         wsP/14ZxYoUmNtoFf59Q7CfhlhmBvYmLIX95X1OInym4dFzszozSGjEEWipDY5n1QwQE
+         5oK+b3t3xyC6RYaK5saQNJqjmaGY0EbdCvGNK38Pys9W9uOPFdQXTYDEmrSWdU1hN7IY
+         IKd7e02vVMihfrBBfhsIHuhtaYAKDlfpzfKYbd0zMdUbXI4AP5CmAat7l8r1iO8u9OrV
+         KoB4Fe+61GJrot+i3MQGYy5HjfZumgAvlNeHoM+COORByt7KQs7yayP7BdkQ3YRgtgiD
+         s38w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701450189; x=1702054989;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=c3Y5WlluNSG52Oh+RdmatqU/FPHpilvW0wo2a8wMtzM=;
+        b=ogBfUJjRf2tYZENyqZM6TqNgFt3MA3vZ13PJ4JlQ4JoDcYOPw7zplIXMd5W+YdYNVt
+         VVdSX9JLG7CTTr+MhX+EM+VxbnEOBft5zBkPDo9OJnOrwwCNzySZgrgD4MtbFGiNBudx
+         kGnCHLwb/XYv68eUkKUrEjPYTec76mqKOvHy4OtMM9oTj311tPgg20ZPNnXJdEDMBwWS
+         a6hVAcLl4Y5LpsBzt02qEFOb6zA70DeZK3dT3uOQXrzWgbFRqn0ZCq8eXHGpYlcpyd1M
+         jWrvxRvdTi9vAm8XJnPgjaJvzdMPQGXdgwLb/mgwvG1TpHWXK3uuKfqgWjkj24hYWMSI
+         SqzA==
+X-Gm-Message-State: AOJu0YzxTTdCLibjfVtzPLj1lq36lJ50E2SVgI8r7vbAmwrRYYL6XB1l
+        hYjnmyN9f/GC2WxTMkZXrfpvePJShE7+Xee7BNR/XwCB9Sfs4A==
+X-Google-Smtp-Source: AGHT+IHkW94Rn0OtDnloPqiS5e/fIK1HP8bF4z4jorVnA1687IcHdprRTtd2wRxkyZd1fh+ZAKtEAnx09pPNZ6JeQZA=
+X-Received: by 2002:a0c:ed52:0:b0:67a:1e8d:6f89 with SMTP id
+ v18-20020a0ced52000000b0067a1e8d6f89mr26121941qvq.44.1701450188706; Fri, 01
+ Dec 2023 09:03:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ecad5dffa8474ed8a5367e917610e707@AcuMS.aculab.com>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <bd91db46c50615bc1d1d62beb659fa7f62386446.1701446070.git.jan.kundrat@cesnet.cz>
+ <f66cf0a3-4d63-4548-8648-e93a1ef995e2@sirena.org.uk>
+In-Reply-To: <f66cf0a3-4d63-4548-8648-e93a1ef995e2@sirena.org.uk>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 1 Dec 2023 19:02:32 +0200
+Message-ID: <CAHp75Vc4tB_CuT-e+gofanWK=mss-k_A-mqPo-8+Rv-aQ8tu_w@mail.gmail.com>
+Subject: Re: [PATCH] tty: max310x: work around regmap->regcache data corruption
+To:     Mark Brown <broonie@kernel.org>
+Cc:     =?UTF-8?B?SmFuIEt1bmRyw6F0?= <jan.kundrat@cesnet.cz>,
+        Cosmin Tanislav <cosmin.tanislav@analog.com>,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, Dec 01, 2023 at 12:05:31PM +0000, David Laight escreveu:
-> ...
-> >  # Create list of architectures that have a specific errno.h.
-> >  archlist=""
-> > -for arch in $(find $toolsdir/arch -maxdepth 1 -mindepth 1 -type d -printf "%f\n" | sort -r); do
-> > +for arch in $(find $toolsdir/arch -maxdepth 1 -mindepth 1 -type d | while read arch ; do basename
-> > $arch ; done | sort -r); do
-> >  	test -f $toolsdir/arch/$arch/include/uapi/asm/errno.h && archlist="$archlist $arch"
-> >  done
-> 
-> Jeepers ...
-> Does this work?
-> 	for f in $toolsdir/arch/*/include/uapi/asm/errno.h; do
-> 		[ ! -f $f ] && break
-> 		d=${f%/include/uapi/asm/errno.h}
-> 		archlist="${d##*/} $archlist"
-> 	done
-> No fork()s or exec()s.
-> I think it only differs in having a trailing space instead of a leading one.
+On Fri, Dec 1, 2023 at 6:21=E2=80=AFPM Mark Brown <broonie@kernel.org> wrot=
+e:
+> On Fri, Dec 01, 2023 at 03:51:51PM +0100, Jan Kundr=C3=A1t wrote:
+>
+> > The TL;DR summary is that the regmap_noinc_write spills over the data
+> > that are correctly written to the HW also to the following registers in
+> > the regcache. As a result, regcache then contains user-controlled
+> > garbage which will be used later for bit updates on unrelated registers=
+.
+>
+> > I was investigating a regression that happened somewhere between 5.12.4
+> > (plus 14 of our patches) and v6.5.9 (plus 7 of our patches). Our
+>
+> Can you reproduce this with current kernels?  That's not even an up to
+> date v6.5 - we're up to v6.5.13 now from the looks of things including
+> one upstream fix that looks potentially relevant.
 
-⬢[acme@toolbox perf-tools-next]$ for f in tools/arch/*/include/uapi/asm/errno.h; do d=${f%/include/uapi/asm/errno.h} ; arch="${d##*/}" ; echo "'$arch'" ; done
-'alpha'
-'mips'
-'parisc'
-'powerpc'
-'sparc'
-'x86'
-⬢[acme@toolbox perf-tools-next]$ for arch in $(find tools/arch -maxdepth 1 -mindepth 1 -type d | while read arch ; do basename $arch ; done | sort -r) ; do test -f tools/arch/$arch/include/uapi/asm/errno.h && echo "'$arch'" ; done
-'x86'
-'sparc'
-'powerpc'
-'parisc'
-'mips'
-'alpha'
-⬢[acme@toolbox perf-tools-next]$
+Indeed, the 984a4afdc87a ("regmap: prevent noinc writes from
+clobbering cache") seems quite relevant.
 
-There was a reason for having x86 first, lemme dig it... Just to have
-as the first strcmp in:
-
-const char *arch_syscalls__strerrno(const char *arch, int err)
-{
-        if (!strcmp(arch, "x86"))
-                return errno_to_name__x86(err);
-        if (!strcmp(arch, "sparc"))
-                return errno_to_name__sparc(err);
-        if (!strcmp(arch, "powerpc"))
-                return errno_to_name__powerpc(err);
-        if (!strcmp(arch, "parisc"))
-                return errno_to_name__parisc(err);
-        if (!strcmp(arch, "mips"))
-                return errno_to_name__mips(err);
-        if (!strcmp(arch, "alpha"))
-                return errno_to_name__alpha(err);
-        return errno_to_name__generic(err);
-}
-
-But that is a weak reason, we better make users resolve the right
-errno_to_name__$arch() pointer just once and use it without that strcmp.
-
-Will do it in a follow up patch.
-
-Thanks, the resulting diff is below, but I'll first do changes that will
-remove the need for arch_syscalls__strerrno.
-
-diff --git a/tools/perf/trace/beauty/arch_errno_names.sh b/tools/perf/trace/beauty/arch_errno_names.sh
-index 3ec8781344db13ba..b6e0767b4b34e46a 100755
---- a/tools/perf/trace/beauty/arch_errno_names.sh
-+++ b/tools/perf/trace/beauty/arch_errno_names.sh
-@@ -76,7 +76,9 @@ EoHEADER
- 
- # Create list of architectures that have a specific errno.h.
- archlist=""
--for arch in $(find $toolsdir/arch -maxdepth 1 -mindepth 1 -type d | while read arch ; do basename $arch ; done | sort -r); do
-+for f in $toolsdir/arch/*/include/uapi/asm/errno.h; do
-+	d=${f%/include/uapi/asm/errno.h}
-+	arch="${d##*/}"
- 	test -f $toolsdir/arch/$arch/include/uapi/asm/errno.h && archlist="$archlist $arch"
- done
- 
-
-
+--=20
+With Best Regards,
+Andy Shevchenko
