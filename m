@@ -2,51 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDECB800088
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 01:48:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDAC580008B
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 01:50:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229802AbjLAAsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 19:48:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48958 "EHLO
+        id S229678AbjLAAut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 19:50:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229627AbjLAAsb (ORCPT
+        with ESMTP id S229617AbjLAAur (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 19:48:31 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9EE910D0
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 16:48:37 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76E2BC433C7;
-        Fri,  1 Dec 2023 00:48:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701391717;
-        bh=X3BUXBkYtJpQwRLU1TU93lDeXDMkOvPhcnf4C78mwE4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=B34NecWmUeynFoxpCccTt6X0ePUEaVz/2L95Aj+VnddScKVn/x0F4wjvOMXnI2TTB
-         FXX1VNB8ZcBQa01kvBfpJHTROGZFOdQXBDN6Kjm9rqBbfbGPbwtb5y81sntzf3JDaE
-         kwrSkHGlolekoczeVKSUfM7owM6p1L1yeY1EBJvUpmaR2+cZ78fEa1ISTXEdtXl2V9
-         GmTbNLpSLwy0i46h76+7YF7152eZVL3sjvXTx6Sikks1ZieN37ghoraiRU5NQA2XHM
-         faUokYGOtzMd2bmf5ePKtZnmJvLuJSMhunnUkfJ7lGGlzipGWqvoflW+cLjHQCXmBg
-         mzfoh4DDL6ocQ==
-Date:   Thu, 30 Nov 2023 16:48:36 -0800
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Jiachen Zhang <zhangjiachen.jaycee@bytedance.com>
-Cc:     Chandan Babu R <chandan.babu@oracle.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        Allison Henderson <allison.henderson@oracle.com>,
-        Zhang Tianci <zhangtianci.1997@bytedance.com>,
-        Brian Foster <bfoster@redhat.com>, linux-xfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, xieyongji@bytedance.com, me@jcix.top,
-        Dave Chinner <david@fromorbit.com>
-Subject: Re: [PATCH v3 2/3] xfs: update dir3 leaf block metadata after swap
-Message-ID: <20231201004836.GS361584@frogsfrogsfrogs>
-References: <20231130040516.35677-1-zhangjiachen.jaycee@bytedance.com>
- <20231130040516.35677-3-zhangjiachen.jaycee@bytedance.com>
+        Thu, 30 Nov 2023 19:50:47 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49B2B10D9;
+        Thu, 30 Nov 2023 16:50:53 -0800 (PST)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AUN8NfG019022;
+        Fri, 1 Dec 2023 00:50:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=v2bv+KAdIdm9IFWwcr9OUqBoM9HY+CK+i+kY21Cut3Q=;
+ b=EzBhfu0+aH2VGLOb0yrbVN5UuhdYTKj+JEUmy7xeu+llFwMj5ng565GtTSXo4sR3H/oh
+ Gch+3ouKtiWTbEZWg/R3R09I5bVjbIagT1Hj5PAC2zcFNzjuq9tClKgl5DwRT2yUtwqk
+ 62QUeEqT6n+dzJu8SjeTxPECuiBxycWm9ukmyFvWh6oC43O9ZyT8PFUiKFGteadMhWJG
+ iN9lOD+u81tTjHASEjbDbvlLxR6sAhtvXGBSCFqeEN7qEHvaFSnDIIHrVeu0899WrfMC
+ a+4d31l/Vsu+Y009MPWzeLXxZYwBoi8Ke3vBHMN9w9k/8ZsP42HJ8WeGlkkMdZQTiSD9 XQ== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3upvm1see9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 01 Dec 2023 00:50:40 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B10odWk024718
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 1 Dec 2023 00:50:39 GMT
+Received: from [10.71.109.77] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 30 Nov
+ 2023 16:50:39 -0800
+Message-ID: <6ed0c636-c222-36b3-aae9-eb822e088a2c@quicinc.com>
+Date:   Thu, 30 Nov 2023 16:50:38 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231130040516.35677-3-zhangjiachen.jaycee@bytedance.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH 14/16] drm/msm/dpu: do not allow YUV formats if no CDM
+ block is present
+Content-Language: en-US
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC:     <freedreno@lists.freedesktop.org>, Rob Clark <robdclark@gmail.com>,
+        "Sean Paul" <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        "David Airlie" <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        <dri-devel@lists.freedesktop.org>, <quic_jesszhan@quicinc.com>,
+        <quic_parellan@quicinc.com>, <quic_khsieh@quicinc.com>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20230830224910.8091-1-quic_abhinavk@quicinc.com>
+ <20230830224910.8091-15-quic_abhinavk@quicinc.com>
+ <CAA8EJprZma-e=zbtDuGKfcHK7zTaSykACt+=rh7W92iEpif=Ug@mail.gmail.com>
+From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
+In-Reply-To: <CAA8EJprZma-e=zbtDuGKfcHK7zTaSykACt+=rh7W92iEpif=Ug@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: GP_k8ApHg65NP_08TXp-Cw7iD8AlHq5I
+X-Proofpoint-GUID: GP_k8ApHg65NP_08TXp-Cw7iD8AlHq5I
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-30_25,2023-11-30_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ priorityscore=1501 impostorscore=0 phishscore=0 spamscore=0 malwarescore=0
+ bulkscore=0 adultscore=0 clxscore=1015 mlxscore=0 mlxlogscore=749
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2312010004
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -55,73 +88,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 30, 2023 at 12:05:15PM +0800, Jiachen Zhang wrote:
-> From: Zhang Tianci <zhangtianci.1997@bytedance.com>
-> 
-> xfs_da3_swap_lastblock() copy the last block content to the dead block,
-> but do not update the metadata in it. We need update some metadata
-> for some kinds of type block, such as dir3 leafn block records its
-> blkno, we shall update it to the dead block blkno. Otherwise,
-> before write the xfs_buf to disk, the verify_write() will fail in
-> blk_hdr->blkno != xfs_buf->b_bn, then xfs will be shutdown.
-> 
-> We will get this warning:
-> 
->   XFS (dm-0): Metadata corruption detected at xfs_dir3_leaf_verify+0xa8/0xe0 [xfs], xfs_dir3_leafn block 0x178
->   XFS (dm-0): Unmount and run xfs_repair
->   XFS (dm-0): First 128 bytes of corrupted metadata buffer:
->   00000000e80f1917: 00 80 00 0b 00 80 00 07 3d ff 00 00 00 00 00 00  ........=.......
->   000000009604c005: 00 00 00 00 00 00 01 a0 00 00 00 00 00 00 00 00  ................
->   000000006b6fb2bf: e4 44 e3 97 b5 64 44 41 8b 84 60 0e 50 43 d9 bf  .D...dDA..`.PC..
->   00000000678978a2: 00 00 00 00 00 00 00 83 01 73 00 93 00 00 00 00  .........s......
->   00000000b28b247c: 99 29 1d 38 00 00 00 00 99 29 1d 40 00 00 00 00  .).8.....).@....
->   000000002b2a662c: 99 29 1d 48 00 00 00 00 99 49 11 00 00 00 00 00  .).H.....I......
->   00000000ea2ffbb8: 99 49 11 08 00 00 45 25 99 49 11 10 00 00 48 fe  .I....E%.I....H.
->   0000000069e86440: 99 49 11 18 00 00 4c 6b 99 49 11 20 00 00 4d 97  .I....Lk.I. ..M.
->   XFS (dm-0): xfs_do_force_shutdown(0x8) called from line 1423 of file fs/xfs/xfs_buf.c.  Return address = 00000000c0ff63c1
->   XFS (dm-0): Corruption of in-memory data detected.  Shutting down filesystem
->   XFS (dm-0): Please umount the filesystem and rectify the problem(s)
-> 
-> From the log above, we know xfs_buf->b_no is 0x178, but the block's hdr record
-> its blkno is 0x1a0.
-> 
-> Fixes: 24df33b45ecf ("xfs: add CRC checking to dir2 leaf blocks")
-> Signed-off-by: Zhang Tianci <zhangtianci.1997@bytedance.com>
-> Suggested-by: Dave Chinner <david@fromorbit.com>
 
-Looks fine to me,
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
 
---D
-
-> ---
->  fs/xfs/libxfs/xfs_da_btree.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
+On 8/30/2023 5:24 PM, Dmitry Baryshkov wrote:
+> On Thu, 31 Aug 2023 at 01:50, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
+>>
+>> On chipsets where CDM block is not available OR where support has
+>> not been added yet do not allow YUV formats for writeback block.
+>>
+>> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
+>> ---
+>>   drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_wb.c | 6 ++++++
+>>   1 file changed, 6 insertions(+)
+>>
+>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_wb.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_wb.c
+>> index 7fc174b33ae2..d8edca9bc964 100644
+>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_wb.c
+>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_wb.c
+>> @@ -406,6 +406,12 @@ static int dpu_encoder_phys_wb_atomic_check(
+>>                  return ret;
+>>          }
+>>
+>> +       if (DPU_FORMAT_IS_YUV(to_dpu_format(msm_framebuffer_format(fb))) &&
+>> +           !phys_enc->dpu_kms->catalog->cdm) {
+>> +               DPU_ERROR("cannot support YUV formats without CDM block\n");
+>> +               return -EINVAL;
+>> +       }
 > 
-> diff --git a/fs/xfs/libxfs/xfs_da_btree.c b/fs/xfs/libxfs/xfs_da_btree.c
-> index e576560b46e9..f3f987a65bc1 100644
-> --- a/fs/xfs/libxfs/xfs_da_btree.c
-> +++ b/fs/xfs/libxfs/xfs_da_btree.c
-> @@ -2316,10 +2316,18 @@ xfs_da3_swap_lastblock(
->  		return error;
->  	/*
->  	 * Copy the last block into the dead buffer and log it.
-> +	 * If xfs enable crc, the node/leaf block records its blkno, we
-> +	 * must update it.
->  	 */
->  	memcpy(dead_buf->b_addr, last_buf->b_addr, args->geo->blksize);
-> +	if (xfs_has_crc(mp)) {
-> +		struct xfs_da3_blkinfo *da3 = dead_buf->b_addr;
-> +
-> +		da3->blkno = cpu_to_be64(xfs_buf_daddr(dead_buf));
-> +	}
->  	xfs_trans_log_buf(tp, dead_buf, 0, args->geo->blksize - 1);
->  	dead_info = dead_buf->b_addr;
-> +
->  	/*
->  	 * Get values from the moved block.
->  	 */
-> -- 
-> 2.20.1
+> Can we have YUV formats in wb_formats if we do not support CDM? That
+> would be an error.
+
+I can drop this one once i address the comments on the next patch.
+
+Yeah the reason for this change was we had one formats array for wb and 
+were using that for all chipsets. We can have two arrays : one only rgb 
+and the other rgb+yuv to address this.
+
+> 
+>> +
+>>          return 0;
+>>   }
+>>
+>> --
+>> 2.40.1
+>>
 > 
 > 
