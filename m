@@ -2,54 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FF81800AC0
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 13:19:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C4C1800AC6
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 13:20:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378788AbjLAMTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 07:19:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36912 "EHLO
+        id S1378815AbjLAMUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 07:20:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378792AbjLAMTP (ORCPT
+        with ESMTP id S1378787AbjLAMUR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 07:19:15 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C902D48;
-        Fri,  1 Dec 2023 04:19:20 -0800 (PST)
-Received: from pendragon.ideasonboard.com (aztw-30-b2-v4wan-166917-cust845.vm26.cable.virginm.net [82.37.23.78])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 0F1E6556;
-        Fri,  1 Dec 2023 13:18:40 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1701433120;
-        bh=4MUNcOQBhQ9lYXfZUQpJ2ICebkBlDtfeSr3V13uLiuA=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=wgpDfuTXlQl1aB/QrNafqAMOG2vNQ5/r0cLspEXbyjKlXWQhadqEHkre9DAomehoY
-         2896x+IepeF31RB3rrkWj0KUBueFqswNcslY3FWcc5Y+xpBBcuNvaEGt68zmLOaEO3
-         5v7/C8SWqAOYwpiVc3SXxBLpILtWYdZYYz8NtgnA=
+        Fri, 1 Dec 2023 07:20:17 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71F6B10D7
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 04:20:24 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id ECD69C433CA;
+        Fri,  1 Dec 2023 12:20:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701433224;
+        bh=r5+SzKU9zczSRoMsLc2KT920PUqyCU5KZGvs9wZ04Tk=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=tgtB34HNWEu4yrvcSUzDhNwu5XN9cSY4NLKuY5A8dZ7sh5647TPmbFX05LyO/9JgM
+         a8XTzTgVioej19Z/BemV5alT0gLcv7DpXXtxvlaHsBazju7ZNTkZVn5PwHN2aS3PiR
+         4sC7ARSO5nfC3sYWA0sP5lAG6USLAF29jrRI4+geC7tWKqhB/mvH5VP+VmT3oYVQLo
+         jHZXugUhwSY3g7ct//QJzrhRb493Z/wFpfV5XqVegaFdricVB4kywRpJJmLazIBHje
+         RVFrpUNxODpxWSMDy/ijM1RG+B0aWo1kzUmGv5dXVO9PstPttYoTNSuH2e1E6C6gvY
+         j7haFk0biq96Q==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D4DA1C59A4C;
+        Fri,  1 Dec 2023 12:20:23 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1464986273-12039-1-git-send-email-pantelis.antoniou@konsulko.com>
-References: <1464986273-12039-1-git-send-email-pantelis.antoniou@konsulko.com>
-Subject: Re: [RFC 0/3] Portable Device Tree Connector
-From:   Kieran Bingham <kieran.bingham@ideasonboard.com>
-Cc:     Frank Rowand <frowand.list@gmail.com>,
-        Matt Porter <mporter@konsulko.com>,
-        Koen Kooi <koen@dominion.thruhere.net>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Marek Vasut <marex@denx.de>, Wolfram Sang <wsa@the-dreams.de>,
-        Stephen Boyd <stephen.boyd@linaro.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-i2c@vger.kernel.org,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Pantelis Antoniou <panto@antoniou-consulting.com>
-To:     Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Rob Herring <robherring2@gmail.com>
-Date:   Fri, 01 Dec 2023 12:19:14 +0000
-Message-ID: <170143315452.2829918.3199477991260309208@ping.linuxembedded.co.uk>
-User-Agent: alot/0.10
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v3 net] octeontx2-af: Check return value of nix_get_nixlf
+ before using nixlf
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <170143322386.17347.11199094399378598033.git-patchwork-notify@kernel.org>
+Date:   Fri, 01 Dec 2023 12:20:23 +0000
+References: <1701236508-22930-1-git-send-email-sbhatta@marvell.com>
+In-Reply-To: <1701236508-22930-1-git-send-email-sbhatta@marvell.com>
+To:     Subbaraya Sundeep Bhatta <sbhatta@marvell.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kuba@kernel.org, davem@davemloft.net, pabeni@redhat.com,
+        edumazet@google.com, sgoutham@marvell.com, gakula@marvell.com,
+        hkelam@marvell.com, lcherian@marvell.com, jerinj@marvell.com,
+        naveenm@marvell.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,80 +56,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pantelis,
+Hello:
 
-Digging out a thread from 2016!
+This patch was applied to netdev/net.git (main)
+by David S. Miller <davem@davemloft.net>:
 
-Quoting Pantelis Antoniou (2016-06-03 21:37:50)
-> This patchset introduces a portable device tree based connector.
-> It allows definition of a connector in a portable format so that
-> hardware expansion boards that utilize it can use the same
-> DT hardware definitions unchanged for all the boards that
-> have the same kind of connector.
->=20
-> It completely abstracts away the baseboard implementation details
-> and allows one to describe the expansion board in it's isolated
-> domain without having to figure out the per-board specific
-> hardware configuration.
->=20
-> The first patchset is the implementation while the next two
-> define a connector for the beaglebone board.
->=20
-> There was a session at ELC2016 with the slides at
-> http://elinux.org/images/d/d0/Panto.pdf
->=20
-> This patchset is dependent on the previous two patchset I sent out
-> some time ago.
->=20
-> "of: dynamic: Changesets helpers & fixes"
-> "gpio: of: Support cascaded GPIO"
+On Wed, 29 Nov 2023 11:11:48 +0530 you wrote:
+> If a NIXLF is not attached to a PF/VF device then
+> nix_get_nixlf function fails and returns proper error
+> code. But npc_get_default_entry_action does not check it
+> and uses garbage value in subsequent calls. Fix this
+> by cheking the return value of nix_get_nixlf.
+> 
+> Fixes: 967db3529eca ("octeontx2-af: add support for multicast/promisc packet replication feature")
+> Signed-off-by: Subbaraya Sundeep <sbhatta@marvell.com>
+> 
+> [...]
 
-Did you go anywhere with this since 2016?
+Here is the summary with links:
+  - [v3,net] octeontx2-af: Check return value of nix_get_nixlf before using nixlf
+    https://git.kernel.org/netdev/net/c/830139e7b691
 
-As you perhaps saw on the other thread - we're starting to hit an
-explosion of combinatorial arangements of cameras that can be connected
-to and supported on different platforms, thanks in part due to the
-non-standardised but maybe defacto camera standard port cable on RPi (in
-two variations, 15pin with 2 lanes, and 22 pin with 4 data lanes).
-
-I'm wondering how we can build upon or resume this work with DT
-connectors to support expressing camera modules independently from the
-platform they connect to.
-
-The port/connector usually expects an i2c bus, a gpio to enable power
-regulators on the module and perhaps one additional optional gpio, and
-then the clock and data lanes for the MIPI port link.
-
-Any thoughts welcome - and if there was any newer work to build upon or
-resurrect I'd be happy to help test, or find time to start looking at
-how we could build this.
-
-Or of course if there was any reason this work was abandoned (not
-feasible, not acceptable) I'd be keen to hear this before diving in!
-
-Thanks and Regards
-
-Kieran
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
-> Pantelis Antoniou (3):
->   of: Portable Device Tree connector
->   dts: Beaglebone portable connector definitions
->   dts: beaglebone: Portable connector BB_RELAY_4PORT definition
->=20
->  arch/arm/boot/dts/am335x-bone-common.dtsi | 1678 +++++++++++++++++++++++=
-++++++
->  drivers/extcon/Kconfig                    |   20 +
->  drivers/extcon/Makefile                   |    3 +
->  drivers/extcon/extcon-dt-con-gpio.c       |  337 ++++++
->  drivers/extcon/extcon-dt-con-proxy.c      |  480 +++++++++
->  drivers/extcon/extcon-dt-con.c            |  491 +++++++++
->  drivers/extcon/extcon-dt-con.h            |   93 ++
->  7 files changed, 3102 insertions(+)
->  create mode 100644 drivers/extcon/extcon-dt-con-gpio.c
->  create mode 100644 drivers/extcon/extcon-dt-con-proxy.c
->  create mode 100644 drivers/extcon/extcon-dt-con.c
->  create mode 100644 drivers/extcon/extcon-dt-con.h
->=20
-> --=20
-> 1.7.12
