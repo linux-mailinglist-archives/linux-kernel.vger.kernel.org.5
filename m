@@ -2,212 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D8E98003CE
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 07:25:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5507E8003D2
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 07:25:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377613AbjLAGZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 01:25:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35406 "EHLO
+        id S1377627AbjLAGZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 01:25:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230402AbjLAGZa (ORCPT
+        with ESMTP id S1377615AbjLAGZn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 01:25:30 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBD18171B;
-        Thu, 30 Nov 2023 22:25:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701411936; x=1732947936;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=aQNULAQatHgdOb4jEBZidX81obMEZZpL3p3O+o5FSf0=;
-  b=FqT0WF8Jtzw8Y23N13ojU8EeDHcKy29M4jci0R26JdXMDYBtLjHAlxwL
-   PMMjIidCmv8g44VsZ/WfdD9ASDwaoQPhlanec66GKApg5h05egWihfRex
-   +ekrqMBJjU5vJHCqJi1gjEbMlWvLSLORzUN9snxC+jnJFbXuLgb9lLx5V
-   tHRS4CX9i3zAmmgN/sJcInOj8Xvu2vDrkkFlxAW+KwOChu5jlvix2JJBu
-   KWlZ4moUm0YhQlp0LQd5lvZKPnIGENC0omQOrjB9ih5uYTSNM0Er7P2Xk
-   9AUCND/hgrZHYm8sFDOYqlzrrJw0M/b+xRtUP5vFEg5N9BUWFU/5iSLoy
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="6722960"
-X-IronPort-AV: E=Sophos;i="6.04,241,1695711600"; 
-   d="scan'208";a="6722960"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 22:25:35 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="803945141"
-X-IronPort-AV: E=Sophos;i="6.04,241,1695711600"; 
-   d="scan'208";a="803945141"
-Received: from p12ill20yoongsia.png.intel.com ([10.88.227.28])
-  by orsmga001.jf.intel.com with ESMTP; 30 Nov 2023 22:25:23 -0800
-From:   Song Yoong Siang <yoong.siang.song@intel.com>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Bjorn Topel <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, bpf@vger.kernel.org,
-        xdp-hints@xdp-project.net,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-kselftest@vger.kernel.org,
-        Song Yoong Siang <yoong.siang.song@intel.com>
-Subject: [PATCH bpf-next v2 3/3] selftests/bpf: Add txtime to xdp_hw_metadata
-Date:   Fri,  1 Dec 2023 14:24:21 +0800
-Message-Id: <20231201062421.1074768-4-yoong.siang.song@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231201062421.1074768-1-yoong.siang.song@intel.com>
-References: <20231201062421.1074768-1-yoong.siang.song@intel.com>
+        Fri, 1 Dec 2023 01:25:43 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1C491729
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 22:25:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701411948;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=+Zt79wZvYhz4gi4hOOtVo1AQdfO7nRSajk5T4VGHojQ=;
+        b=RUiLUZENr5QGR9V3SkFpLuR3FTBvaHwG+btecFM0V2laJY7c2gVHDeRf+7eKLzjWoyLeqS
+        nEjr1L8d2Iyib0y73Tsfyj+omN4HqGM4FqVQbjuIRshiOaZ97jmY1yxDSKogTFIb+vFMDp
+        Hv3Nmc6gnybfzkO23H5wld8MMD25QdE=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-554-VG3zhdtUPFCBKXDt90IU9w-1; Fri, 01 Dec 2023 01:25:46 -0500
+X-MC-Unique: VG3zhdtUPFCBKXDt90IU9w-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 22309185A780;
+        Fri,  1 Dec 2023 06:25:46 +0000 (UTC)
+Received: from MiWiFi-R3L-srv.redhat.com (unknown [10.72.113.121])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 813FE1C060AE;
+        Fri,  1 Dec 2023 06:25:42 +0000 (UTC)
+From:   Baoquan He <bhe@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-riscv@lists.infradead.org, kexec@lists.infradead.org,
+        mick@ics.forth.gr, changbin.du@intel.com, paul.walmsley@sifive.com,
+        palmer@dabbelt.com, aou@eecs.berkeley.edu,
+        Baoquan He <bhe@redhat.com>
+Subject: [PATCH] riscv, kexec: fix the ifdeffery for AFLAGS_kexec_relocate.o
+Date:   Fri,  1 Dec 2023 14:25:38 +0800
+Message-ID: <20231201062538.27240-1-bhe@redhat.com>
 MIME-Version: 1.0
+Content-type: text/plain
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds txtime support to xdp_hw_metadata. User can configure the
-delta of HW txtime to HW RX-time by using "-l" argument. The default delta
-is set to 1 second.
+This was introduced in commit fba8a8674f68 ("RISC-V: Add kexec
+support").
 
-This patch is tested with stmmac on Intel Tiger Lake platform. Refer to
-result below, the delta between pre-determined ETF txtime and actual HW
-transmit complete time is around 24 us.
+It should work on CONFIG_KEXEC_CORE, but not CONFIG_KEXEC only, since
+we could set CONFIG_KEXEC_FILE=y and CONFIG_KEXEC=N, or only set
+CONFIG_CRASH_DUMP=y and disable both CONFIG_KEXEC and CONFIG_KEXEC_FILE.
+In these cases, the AFLAGS won't take effect with the current ifdeffery
+for AFLAGS_kexec_relocate.o.
 
-$ sudo ./xdp_hw_metadata eth0
-...
-xsk_ring_cons__peek: 1
-0x55fcb80ce7a8: rx_desc[0]->addr=80100 addr=80100 comp_addr=80100 EoP
-No rx_hash err=-95
-HW RX-time:   1677764507059055964 (sec:1677764507.0591) delta to User RX-time sec:0.0002 (237.548 usec)
-XDP RX-time:   1677764507059280741 (sec:1677764507.0593) delta to User RX-time sec:0.0000 (12.771 usec)
-0x55fcb80ce7a8: ping-pong with csum=5619 (want 8626) csum_start=34 csum_offset=6
-HW RX-time:   1677764507059055964 (sec:1677764507.0591) delta to HW Txtime sec:1.0000 (1000000.000 usec)
-0x55fcb80ce7a8: complete tx idx=0 addr=18
-HW Txtime:   1677764508059055964 (sec:1677764508.0591) delta to HW TX-complete-time sec:0.0000 (24.235 usec)
-HW TX-complete-time:   1677764508059080199 (sec:1677764508.0591) delta to User TX-complete-time sec:0.0054 (5423.263 usec)
-XDP RX-time:   1677764507059280741 (sec:1677764507.0593) delta to User TX-complete-time sec:1.0052 (1005222.721 usec)
-HW RX-time:   1677764507059055964 (sec:1677764507.0591) delta to HW TX-complete-time sec:1.0000 (1000024.235 usec)
-0x55fcb80ce7a8: complete rx idx=128 addr=80100
+So fix it now.
 
-$ sudo ./xdp_hw_metadata eth0 -l 10000000
-...
-xsk_ring_cons__peek: 1
-0x5626d54de7a8: rx_desc[0]->addr=80100 addr=80100 comp_addr=80100 EoP
-No rx_hash err=-95
-HW RX-time:   1677764655807717783 (sec:1677764655.8077) delta to User RX-time sec:0.0002 (240.571 usec)
-XDP RX-time:   1677764655807942983 (sec:1677764655.8079) delta to User RX-time sec:0.0000 (15.371 usec)
-0x5626d54de7a8: ping-pong with csum=5619 (want 8626) csum_start=34 csum_offset=6
-HW RX-time:   1677764655807717783 (sec:1677764655.8077) delta to HW Txtime sec:0.0100 (10000.000 usec)
-0x5626d54de7a8: complete tx idx=0 addr=18
-HW Txtime:   1677764655817717783 (sec:1677764655.8177) delta to HW TX-complete-time sec:0.0000 (23.965 usec)
-HW TX-complete-time:   1677764655817741748 (sec:1677764655.8177) delta to User TX-complete-time sec:0.0003 (291.792 usec)
-XDP RX-time:   1677764655807942983 (sec:1677764655.8079) delta to User TX-complete-time sec:0.0101 (10090.557 usec)
-HW RX-time:   1677764655807717783 (sec:1677764655.8077) delta to HW TX-complete-time sec:0.0100 (10023.965 usec)
-0x5626d54de7a8: complete rx idx=128 addr=80100
-
-Signed-off-by: Song Yoong Siang <yoong.siang.song@intel.com>
+Signed-off-by: Baoquan He <bhe@redhat.com>
 ---
- tools/testing/selftests/bpf/xdp_hw_metadata.c | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
+ arch/riscv/kernel/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/bpf/xdp_hw_metadata.c b/tools/testing/selftests/bpf/xdp_hw_metadata.c
-index 3291625ba4fb..e9c3e29dc538 100644
---- a/tools/testing/selftests/bpf/xdp_hw_metadata.c
-+++ b/tools/testing/selftests/bpf/xdp_hw_metadata.c
-@@ -13,6 +13,7 @@
-  * - UDP 9091 packets trigger TX reply
-  * - TX HW timestamp is requested and reported back upon completion
-  * - TX checksum is requested
-+ * - HW txtime is set for transmission
-  */
+diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
+index fee22a3d1b53..82940b6a79a2 100644
+--- a/arch/riscv/kernel/Makefile
++++ b/arch/riscv/kernel/Makefile
+@@ -11,7 +11,7 @@ endif
+ CFLAGS_syscall_table.o	+= $(call cc-option,-Wno-override-init,)
+ CFLAGS_compat_syscall_table.o += $(call cc-option,-Wno-override-init,)
  
- #include <test_progs.h>
-@@ -61,6 +62,8 @@ int rxq;
- bool skip_tx;
- __u64 last_hw_rx_timestamp;
- __u64 last_xdp_rx_timestamp;
-+__u64 last_txtime;
-+__u64 txtime_delta_to_hw_rx_timestamp = 1000000000; /* 1 second */
+-ifdef CONFIG_KEXEC
++ifdef CONFIG_KEXEC_CORE
+ AFLAGS_kexec_relocate.o := -mcmodel=medany $(call cc-option,-mno-relax)
+ endif
  
- void test__fail(void) { /* for network_helpers.c */ }
- 
-@@ -274,6 +277,8 @@ static bool complete_tx(struct xsk *xsk, clockid_t clock_id)
- 	if (meta->completion.tx_timestamp) {
- 		__u64 ref_tstamp = gettime(clock_id);
- 
-+		print_tstamp_delta("HW Txtime", "HW TX-complete-time",
-+				   last_txtime, meta->completion.tx_timestamp);
- 		print_tstamp_delta("HW TX-complete-time", "User TX-complete-time",
- 				   meta->completion.tx_timestamp, ref_tstamp);
- 		print_tstamp_delta("XDP RX-time", "User TX-complete-time",
-@@ -371,6 +376,13 @@ static void ping_pong(struct xsk *xsk, void *rx_packet, clockid_t clock_id)
- 	       xsk, ntohs(udph->check), ntohs(want_csum),
- 	       meta->request.csum_start, meta->request.csum_offset);
- 
-+	/* Set txtime for Earliest TxTime First (ETF) */
-+	meta->flags |= XDP_TXMD_FLAGS_TXTIME;
-+	meta->request.txtime = last_hw_rx_timestamp + txtime_delta_to_hw_rx_timestamp;
-+	last_txtime = meta->request.txtime;
-+	print_tstamp_delta("HW RX-time", "HW Txtime", last_hw_rx_timestamp,
-+			   meta->request.txtime);
-+
- 	memcpy(data, rx_packet, len); /* don't share umem chunk for simplicity */
- 	tx_desc->options |= XDP_TX_METADATA;
- 	tx_desc->len = len;
-@@ -595,6 +607,7 @@ static void print_usage(void)
- 		"  -h    Display this help and exit\n\n"
- 		"  -m    Enable multi-buffer XDP for larger MTU\n"
- 		"  -r    Don't generate AF_XDP reply (rx metadata only)\n"
-+		"  -l    Delta of HW Txtime to HW RX-time in ns (default: 1s)\n"
- 		"Generate test packets on the other machine with:\n"
- 		"  echo -n xdp | nc -u -q1 <dst_ip> 9091\n";
- 
-@@ -605,7 +618,7 @@ static void read_args(int argc, char *argv[])
- {
- 	int opt;
- 
--	while ((opt = getopt(argc, argv, "chmr")) != -1) {
-+	while ((opt = getopt(argc, argv, "chmrl:")) != -1) {
- 		switch (opt) {
- 		case 'c':
- 			bind_flags &= ~XDP_USE_NEED_WAKEUP;
-@@ -621,6 +634,9 @@ static void read_args(int argc, char *argv[])
- 		case 'r':
- 			skip_tx = true;
- 			break;
-+		case 'l':
-+			txtime_delta_to_hw_rx_timestamp = atoll(optarg);
-+			break;
- 		case '?':
- 			if (isprint(optopt))
- 				fprintf(stderr, "Unknown option: -%c\n", optopt);
 -- 
-2.34.1
+2.41.0
 
