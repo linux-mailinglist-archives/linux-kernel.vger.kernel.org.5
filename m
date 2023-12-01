@@ -2,62 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10119800BD6
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 14:27:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE0D6800BE4
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 14:27:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379001AbjLAN1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 08:27:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59404 "EHLO
+        id S1379005AbjLAN1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 08:27:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378985AbjLAN1N (ORCPT
+        with ESMTP id S1378992AbjLAN1r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 08:27:13 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB87C10F8
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 05:27:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701437238;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5i1eC0ROgK2gZ5RGOpll/NrHkavhR+ZFmj0eHmTcPiE=;
-        b=jPoy4rpbA5npsIfKoygcXbo7toAsPSkgKYhPQO+xb7WBV5jlJqnTwvc5HYidM6AVlC33wR
-        Oeb3CHFi+jSnc/EQvhQWZkxaZ/6Y0c+wyEQ7NFovzrNk3gWqGFh4SHRSSlKptsXNsbyYZr
-        7S0QmwEVHAgT9NdSuy+UGquMSar2Bz8=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-232-ANTKSBixPGqBzlomZSIBnA-1; Fri,
- 01 Dec 2023 08:27:14 -0500
-X-MC-Unique: ANTKSBixPGqBzlomZSIBnA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6F2EE381AE57;
-        Fri,  1 Dec 2023 13:27:13 +0000 (UTC)
-Received: from fedora.redhat.com (unknown [10.39.193.68])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id F21571C060AE;
-        Fri,  1 Dec 2023 13:27:09 +0000 (UTC)
-From:   Jose Ignacio Tornos Martinez <jtornosm@redhat.com>
-To:     greg@kroah.com
-Cc:     davem@davemloft.net, edumazet@google.com, jtornosm@redhat.com,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
-        oneukum@suse.com, pabeni@redhat.com, stern@rowland.harvard.edu,
-        stable@vger.kernel.org
-Subject: [PATCH v3] net: usb: ax88179_178a: avoid failed operations when device is disconnected
-Date:   Fri,  1 Dec 2023 14:26:47 +0100
-Message-ID: <20231201132647.178979-1-jtornosm@redhat.com>
-In-Reply-To: <2023120130-repair-tackle-698e@gregkh>
-References: <2023120130-repair-tackle-698e@gregkh>
+        Fri, 1 Dec 2023 08:27:47 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9443913E;
+        Fri,  1 Dec 2023 05:27:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=BXafAH8BWhpG1fug+rYpt7+DF2WwHDSy3uyXtRATKBk=; b=r0m9sutmr5xmt6az4XdA/s9puy
+        39xESoVJx9QhEJZHFTVdpltFC2CUtssZRepC6G0/fP0pUgM/lnsMsM4v2xhTQYVSLRPsAeNiXHqfi
+        vmq0ipcVerKP7IssioLADTR1Lsh9pAzdQ+cBtUS1XSK/9wqqNJ6nUh66OL1V407hB9mHGN1IuNJ3P
+        Pm0d1kXhp9sg4rrgz9S4ORZdFZCSCTFHcoU0gJSoBLU+/D+hjHv7d8oiiplH6Srz8ACkFI7h7/5pa
+        dq7uNxx9yF08s3gl+3kpO3+Xbc1Xw5m3OBMeW0hIroetRwD7oTdX5wc1PxAOnXaqqkIrnL0qjK+w2
+        feN+UV6g==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1r93YV-00FY5Z-Kf; Fri, 01 Dec 2023 13:27:43 +0000
+Date:   Fri, 1 Dec 2023 13:27:43 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     John Garry <john.g.garry@oracle.com>
+Cc:     Dave Chinner <david@fromorbit.com>,
+        Ojaswin Mujoo <ojaswin@linux.ibm.com>,
+        linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        Ritesh Harjani <ritesh.list@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        linux-block@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, dchinner@redhat.com
+Subject: Re: [RFC 1/7] iomap: Don't fall back to buffered write if the write
+ is atomic
+Message-ID: <ZWnfT1+afsZ9JaZP@casper.infradead.org>
+References: <cover.1701339358.git.ojaswin@linux.ibm.com>
+ <09ec4c88b565c85dee91eccf6e894a0c047d9e69.1701339358.git.ojaswin@linux.ibm.com>
+ <ZWj6Tt1zKUL4WPGr@dread.disaster.area>
+ <85d1b27c-f4ef-43dd-8eed-f497817ab86d@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <85d1b27c-f4ef-43dd-8eed-f497817ab86d@oracle.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,120 +59,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the device is disconnected we get the following messages showing
-failed operations:
-Nov 28 20:22:11 localhost kernel: usb 2-3: USB disconnect, device number 2
-Nov 28 20:22:11 localhost kernel: ax88179_178a 2-3:1.0 enp2s0u3: unregister 'ax88179_178a' usb-0000:02:00.0-3, ASIX AX88179 USB 3.0 Gigabit Ethernet
-Nov 28 20:22:11 localhost kernel: ax88179_178a 2-3:1.0 enp2s0u3: Failed to read reg index 0x0002: -19
-Nov 28 20:22:11 localhost kernel: ax88179_178a 2-3:1.0 enp2s0u3: Failed to write reg index 0x0002: -19
-Nov 28 20:22:11 localhost kernel: ax88179_178a 2-3:1.0 enp2s0u3 (unregistered): Failed to write reg index 0x0002: -19
-Nov 28 20:22:11 localhost kernel: ax88179_178a 2-3:1.0 enp2s0u3 (unregistered): Failed to write reg index 0x0001: -19
-Nov 28 20:22:11 localhost kernel: ax88179_178a 2-3:1.0 enp2s0u3 (unregistered): Failed to write reg index 0x0002: -19
+On Fri, Dec 01, 2023 at 10:42:57AM +0000, John Garry wrote:
+> Sure, and I think that we need a better story for supporting buffered IO for
+> atomic writes.
+> 
+> Currently we have:
+> - man pages tell us RWF_ATOMIC is only supported for direct IO
+> - statx gives atomic write unit min/max, not explicitly telling us it's for
+> direct IO
+> - RWF_ATOMIC is ignored for !O_DIRECT
+> 
+> So I am thinking of expanding statx support to enable querying of atomic
+> write capabilities for buffered IO and direct IO separately.
 
-The reason is that although the device is detached, normal stop and
-unbind operations are commanded from the driver. These operations are
-not necessary in this situation, so avoid these logs when the device is
-detached if the result of the operation is -ENODEV and if the new flag
-informing about the stopping or unbind operation is enabled.
+Or ... we could support RWF_ATOMIC in the page cache?
 
-cc: stable@vger.kernel.org
-Fixes: e2ca90c276e1f ("ax88179_178a: ASIX AX88179_178A USB 3.0/2.0 to gigabit ethernet adapter driver")
-Signed-off-by: Jose Ignacio Tornos Martinez <jtornosm@redhat.com>
----
-V1 -> V2:
-- Follow the suggestions from Alan Stern and Oliver Neukum to check the
-result of the operations (-ENODEV) and not the internal state of the USB 
-layer (USB_STATE_NOTATTACHED).
-V2 -> V3
-- Add cc: stable line in the signed-off-by area.
+I haven't particularly been following the atomic writes patchset, but
+for filesystems which support large folios, we now create large folios
+in the write path.  I see four problems to solve:
 
- drivers/net/usb/ax88179_178a.c | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+1. We might already have a smaller folio in the page cache from an
+   earlier access,  We'd have to kick it out before creating a new folio
+   that is the appropriate size.
 
-diff --git a/drivers/net/usb/ax88179_178a.c b/drivers/net/usb/ax88179_178a.c
-index 4ea0e155bb0d..105bae360128 100644
---- a/drivers/net/usb/ax88179_178a.c
-+++ b/drivers/net/usb/ax88179_178a.c
-@@ -173,6 +173,7 @@ struct ax88179_data {
- 	u8 in_pm;
- 	u32 wol_supported;
- 	u32 wolopts;
-+	u8 stopping_unbinding;
- };
- 
- struct ax88179_int_data {
-@@ -208,6 +209,7 @@ static int __ax88179_read_cmd(struct usbnet *dev, u8 cmd, u16 value, u16 index,
- {
- 	int ret;
- 	int (*fn)(struct usbnet *, u8, u8, u16, u16, void *, u16);
-+	struct ax88179_data *ax179_data = dev->driver_priv;
- 
- 	BUG_ON(!dev);
- 
-@@ -219,7 +221,7 @@ static int __ax88179_read_cmd(struct usbnet *dev, u8 cmd, u16 value, u16 index,
- 	ret = fn(dev, cmd, USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
- 		 value, index, data, size);
- 
--	if (unlikely(ret < 0))
-+	if (unlikely(ret < 0 && !(ret == -ENODEV && ax179_data->stopping_unbinding)))
- 		netdev_warn(dev->net, "Failed to read reg index 0x%04x: %d\n",
- 			    index, ret);
- 
-@@ -231,6 +233,7 @@ static int __ax88179_write_cmd(struct usbnet *dev, u8 cmd, u16 value, u16 index,
- {
- 	int ret;
- 	int (*fn)(struct usbnet *, u8, u8, u16, u16, const void *, u16);
-+	struct ax88179_data *ax179_data = dev->driver_priv;
- 
- 	BUG_ON(!dev);
- 
-@@ -242,7 +245,7 @@ static int __ax88179_write_cmd(struct usbnet *dev, u8 cmd, u16 value, u16 index,
- 	ret = fn(dev, cmd, USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
- 		 value, index, data, size);
- 
--	if (unlikely(ret < 0))
-+	if (unlikely(ret < 0 && !(ret == -ENODEV && ax179_data->stopping_unbinding)))
- 		netdev_warn(dev->net, "Failed to write reg index 0x%04x: %d\n",
- 			    index, ret);
- 
-@@ -1308,6 +1311,8 @@ static void ax88179_unbind(struct usbnet *dev, struct usb_interface *intf)
- 	struct ax88179_data *ax179_data = dev->driver_priv;
- 	u16 tmp16;
- 
-+	ax179_data->stopping_unbinding = 1;
-+
- 	/* Configure RX control register => stop operation */
- 	tmp16 = AX_RX_CTL_STOP;
- 	ax88179_write_cmd(dev, AX_ACCESS_MAC, AX_RX_CTL, 2, 2, &tmp16);
-@@ -1319,6 +1324,8 @@ static void ax88179_unbind(struct usbnet *dev, struct usb_interface *intf)
- 	tmp16 = 0;
- 	ax88179_write_cmd(dev, AX_ACCESS_MAC, AX_PHYPWR_RSTCTL, 2, 2, &tmp16);
- 
-+	ax179_data->stopping_unbinding = 0;
-+
- 	kfree(ax179_data);
- }
- 
-@@ -1661,14 +1668,19 @@ static int ax88179_reset(struct usbnet *dev)
- 
- static int ax88179_stop(struct usbnet *dev)
- {
-+	struct ax88179_data *ax179_data = dev->driver_priv;
- 	u16 tmp16;
- 
-+	ax179_data->stopping_unbinding = 1;
-+
- 	ax88179_read_cmd(dev, AX_ACCESS_MAC, AX_MEDIUM_STATUS_MODE,
- 			 2, 2, &tmp16);
- 	tmp16 &= ~AX_MEDIUM_RECEIVE_EN;
- 	ax88179_write_cmd(dev, AX_ACCESS_MAC, AX_MEDIUM_STATUS_MODE,
- 			  2, 2, &tmp16);
- 
-+	ax179_data->stopping_unbinding = 0;
-+
- 	return 0;
- }
- 
--- 
-2.43.0
+2. We currently believe it's always OK to fall back to allocating smaller
+   folios if memory allocation fails.  We'd need to change that policy
+   (which we need to modify anyway for the bs>PS support).
 
+3. We need to somewhere keep the information that writeback of this
+   folio has to use the atomic commands.  Maybe it becomes a per-inode
+   flag so that all writeback from this inode now uses the atomic
+   commands?
+
+4. If somebody does a weird thing like truncate/holepunch into the
+   middle of the folio, we need to define what we do.  It's conceptually
+   a bizarre thing to do, so I can't see any user actually wanting to
+   do that ... but we need to define the semantics.
+
+Maybe there are things I haven't thought of.  And of course, some
+filesystems don't support large folios yet.
