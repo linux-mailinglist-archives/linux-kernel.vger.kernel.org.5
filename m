@@ -2,92 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3A75800A8F
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 13:14:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F9F4800A91
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 13:14:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378747AbjLAMN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 07:13:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51610 "EHLO
+        id S1378758AbjLAMOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 07:14:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378681AbjLAMNy (ORCPT
+        with ESMTP id S1378681AbjLAMOQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 07:13:54 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49938103;
-        Fri,  1 Dec 2023 04:14:00 -0800 (PST)
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B17cSvb008154;
-        Fri, 1 Dec 2023 12:13:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=ey6b8Nb6xUzGGHzqYHcKuMYjKqbqWw261ABK6acpxl0=;
- b=iJ4HA6siTYMXD4qMJyIJa4FVcJEmN7JycdGrj6BqnAJijttXY2Tz1P5Xi/beXmnypGJ6
- MuT7TOej2UJNLfeaEk1YmbQQ4rV0a/MCAzgIDfmcEsFOocrYZuiOyh4862rjz73zewmj
- Cn8m2ybVfv544LB8E4h2w5y+8hiR+UZVoyOkAQ7CYGthDiF3HAJQ/6dQgAc1ETNiYLE/
- cmVrrN+fdeu1rV0rGpWOv2xYPyd2iiB1yRjsZ4VyQHcyZFqc3lRHG3E98mNM/CRqPZpG
- g7n+OxIfhytshpFb4XIbh33TQUsMkiQhfxiYR1kHbXS/dk4mzquuC3fiYJxEWel1fiWe eg== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uq3f7sgeq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 01 Dec 2023 12:13:37 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B1CDaC8007541
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 1 Dec 2023 12:13:36 GMT
-Received: from [10.253.11.15] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 1 Dec
- 2023 04:13:31 -0800
-Message-ID: <50818674-e5b7-415f-a023-40611ea10850@quicinc.com>
-Date:   Fri, 1 Dec 2023 20:13:29 +0800
+        Fri, 1 Dec 2023 07:14:16 -0500
+Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0634213E
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 04:14:21 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.18.186.51])
+        by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4ShWpk3QFYz9yTKj
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 20:00:30 +0800 (CST)
+Received: from mail02.huawei.com (unknown [7.182.16.47])
+        by mail.maildlp.com (Postfix) with ESMTP id 006F21404DB
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 20:14:14 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.126.171.73])
+        by APP1 (Coremail) with SMTP id LxC2BwAnFXUNzmllZ722AQ--.28684S2;
+        Fri, 01 Dec 2023 13:14:13 +0100 (CET)
+From:   Petr Tesarik <petrtesarik@huaweicloud.com>
+To:     Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        iommu@lists.linux.dev (open list:DMA MAPPING HELPERS),
+        linux-kernel@vger.kernel.org (open list)
+Cc:     Wangkefeng <wangkefeng.wang@huawei.com>,
+        Roberto Sassu <roberto.sassu@huaweicloud.com>,
+        petr@tesarici.cz, Petr Tesarik <petr.tesarik1@huawei-partners.com>
+Subject: [PATCH RESEND] swiotlb: reduce area lock contention for non-primary IO TLB pools
+Date:   Fri,  1 Dec 2023 13:13:52 +0100
+Message-Id: <20231201121352.195-1-petrtesarik@huaweicloud.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] scsi: ufs: qcom: move ufs_qcom_host_reset() to
- ufs_qcom_device_reset()
-Content-Language: en-US
-To:     Manivannan Sadhasivam <mani@kernel.org>,
-        Ziqi Chen <quic_ziqichen@quicinc.com>
-CC:     <quic_asutoshd@quicinc.com>, <bvanassche@acm.org>,
-        <beanhuo@micron.com>, <avri.altman@wdc.com>,
-        <junwoo80.lee@samsung.com>, <martin.petersen@oracle.com>,
-        <quic_nguyenb@quicinc.com>, <quic_nitirawa@quicinc.com>,
-        <quic_rampraka@quicinc.com>, <linux-scsi@vger.kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1698145815-17396-1-git-send-email-quic_ziqichen@quicinc.com>
- <20231025074128.GA3648@thinkpad>
- <85d7a1ef-92c4-49ae-afe0-727c1b446f55@quicinc.com>
- <c6a72c38-aa63-79b8-c784-d753749f7272@quicinc.com>
- <20231128112731.GV3088@thinkpad>
- <ed81bb9e-a9cd-4d32-bfa0-2f0d28742026@quicinc.com>
- <20231201051800.GA4009@thinkpad>
-From:   Can Guo <quic_cang@quicinc.com>
-In-Reply-To: <20231201051800.GA4009@thinkpad>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: F7grcWgsbEM9qf_ZPO2mclnFNXKptlYx
-X-Proofpoint-GUID: F7grcWgsbEM9qf_ZPO2mclnFNXKptlYx
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-01_09,2023-11-30_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
- spamscore=0 impostorscore=0 lowpriorityscore=0 phishscore=0
- priorityscore=1501 mlxlogscore=999 bulkscore=0 clxscore=1015 mlxscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2312010081
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-CM-TRANSID: LxC2BwAnFXUNzmllZ722AQ--.28684S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3Xw48XrykuF1DtF17Gry8Zrb_yoW3GF45pF
+        4rAFyftFs8XF1xG34jyayrWF1Fkw1kKrW7Jayak34F9r1UJr90qFykt3yYqFyrWFWxZFW7
+        ta90vrWrCF47XrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkE14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r4UJV
+        WxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7CjxVAKzI0EY4vE
+        52x082I5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrV
+        AFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCI
+        c40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267
+        AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWU
+        JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0JU2fO
+        wUUUUU=
+X-CM-SenderInfo: hshw23xhvd2x3n6k3tpzhluzxrxghudrp/
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -95,186 +67,227 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mani,
+From: Petr Tesarik <petr.tesarik1@huawei-partners.com>
 
-On 12/1/2023 1:18 PM, Manivannan Sadhasivam wrote:
-> On Wed, Nov 29, 2023 at 08:10:57PM +0800, Ziqi Chen wrote:
->>
->>
->> On 11/28/2023 7:27 PM, Manivannan Sadhasivam wrote:
->>> On Tue, Nov 28, 2023 at 03:40:57AM +0800, Ziqi Chen wrote:
->>>>
->>>>
->>>> On 11/22/2023 2:14 PM, Can Guo wrote:
->>>>>
->>>>>
->>>>> On 10/25/2023 3:41 PM, Manivannan Sadhasivam wrote:
->>>>>> On Tue, Oct 24, 2023 at 07:10:15PM +0800, Ziqi Chen wrote:
->>>>>>> During PISI test, we found the issue that host Tx still bursting after
->>>>>>
->>>>>> What is PISI test?
->>>>
->>>> SI measurement.
->>>>
->>>
->>> Please expand it in the patch description.
->>
->> Sure, I will update in next patch version.
->>
->>>
->>>>>>
->>>>>>> H/W reset. Move ufs_qcom_host_reset() to ufs_qcom_device_reset() and
->>>>>>> reset host before device reset to stop tx burst.
->>>>>>>
->>>>>>
->>>>>> device_reset() callback is supposed to reset only the device and not
->>>>>> the host.
->>>>>> So NACK for this patch.
->>>>>
->>>>> Agree, the change should come in a more reasonable way.
->>>>>
->>>>> Actually, similar code is already there in ufs_mtk_device_reset() in
->>>>> ufs-mediatek.c, I guess here is trying to mimic that fashion.
->>>>>
->>>>> This change, from its functionality point of view, we do need it,
->>>>> because I occasionally (2 out of 10) hit PHY error on lane 0 during
->>>>> reboot test (in my case, I tried SM8350, SM8450 and SM8550， all same).
->>>>>
->>>>> [    1.911188] [DEBUG]ufshcd_update_uic_error: UECPA:0x80000002
->>>>> [    1.922843] [DEBUG]ufshcd_update_uic_error: UECDL:0x80004000
->>>>> [    1.934473] [DEBUG]ufshcd_update_uic_error: UECN:0x0
->>>>> [    1.944688] [DEBUG]ufshcd_update_uic_error: UECT:0x0
->>>>> [    1.954901] [DEBUG]ufshcd_update_uic_error: UECDME:0x0
->>>>>
->>>>> I found out that the PHY error pops out right after UFS device gets
->>>>> reset in the 2nd init. After having this change in place, the PA/DL
->>>>> errors are gone.
->>>>
->>>> Hi Mani,
->>>>
->>>> There is another way that adding a new vops that call XXX_host_reset() from
->>>> soc vendor driver. in this way, we can call this vops in core layer without
->>>> the dependency of device reset.
->>>> due to we already observed such error and received many same reports from
->>>> different OEMs, we need to fix it in some way.
->>>> if you think above way is available, I will update new patch in soon. Or
->>>> could you give us other suggestion?
->>>>
->>>
->>> First, please describe the issue in detail. How the issue is getting triggered
->>> and then justify your change. I do not have access to the bug reports that you
->>> received.
->>
->>  From the waveform measured by Samsung , we can see at the end of 2nd Link
->> Startup, host still keep bursting after H/W reset. This abnormal timing
->> would cause the PA/DL error mentioned by Can.
->>
->> On the other hand, at the end of 1st Link start up, Host ends bursting at
->> first and then sends H/W reset to device. So Samsung suggested to do host
->> reset before every time device reset to fix this issue. That's what you saw
->> in this patch.  This patch has been verified by OEMs.
->>
-> 
-> Thanks for the detail. This info should have been part of the patch description.
-> 
->> So do you think if we can keep this change with details update in commit
->> message. or need to do other improvement?
->>
-> 
-> For sure we should not do host reset within device_reset callback. I'd like to
-> know at what point of time we are seeing the host burst after device reset. I
-> mean can you point me to the code in the ufshcd driver that when calling
-> device_reset you are seeing the issue? Then we can do a host_reset before that
-> _specific_ device_reset with the help of the new vops you suggested.
+If multiple areas and multiple IO TLB pools exist, first iterate the
+current CPU specific area in all pools. Then move to the next area index.
 
-Actually, anytime when we are about to reset the device, we need to 
-reset host before that, because, as Ziqi mentioned, if host is still 
-bursting after device is reset, it may lead to PA/DL errors. It might be 
-a bit confusing, because host can be bursting some flow control frames 
-and/or dummy frames even when SW thinks it is in idle state.
+This is best illustrated by a diagram:
 
-The reason why the PHY error cannot be easily observed is because that 
-PHY error is non-fatal, it does not trigger error handling, and there is 
-no logs or prints in serial console, meaning it is silent. However, we 
-have error history, in which PHY error can be recorded. Although PHY 
-error is non-fatal, we don't like to see any of it, because our PHY team 
-and customers are requesting zero tolerance to PHY error.
+        area 0 |  area 1 | ... | area M |
+pool 0    A         B              C
+pool 1    D         E
+...
+pool N    F         G              H
 
-Currently, there are 3 scenarios where host reset should go before 
-device reset -
+Currently, each pool is searched before moving on to the next pool,
+i.e. the search order is A, B ... C, D, E ... F, G ... H. With this patch,
+each area is searched in all pools before moving on to the next area,
+i.e. the search order is A, D ... F, B, E ... G ... C ... H.
 
-1. When Linux boots up, in ufshcd_hba_init(), we reset the device. In 
-this case, we need to reset the host before reset the device, because 
-the previous boot stage usually leave the device and host both active 
-before jumping to Linux. This is the first case which this change was 
-made for at the beginning.
+Note that preemption is not disabled, and raw_smp_processor_id() may not
+return a stable result, but it is called only once to determine the initial
+area index. The search will iterate over all areas eventually, even if the
+current task is preempted.
 
-2. When the 2nd init kicks start in ufshcd_probe_hba(), we reset the 
-device. In this case, we need to reset the host before reset the device. 
-This is the case which I mentioned in my previous reply.
+Next, some pools may have less (but not more) areas than default_nareas.
+Skip such pools if the distance from the initial area index is greater than
+pool->nareas. This logic ensures that for every pool the search starts in
+the initial CPU's own area and never tries any area twice.
 
-3. In UFS error handler, we reset the device. In this case, we need to 
-reset the host before reset the device.
+To verify performance impact, I booted the kernel with a minimum pool
+size ("swiotlb=512,4,force"), so multiple pools get allocated, and I ran
+these benchmarks:
 
-Thanks,
-Can Guo.
+- small: single-threaded I/O of 4 KiB blocks,
+- big: single-threaded I/O of 64 KiB blocks,
+- 4way: 4-way parallel I/O of 4 KiB blocks.
 
-> 
-> - Mani
-> 
->>
->> -Ziqi
->>
->>>
->>> - Mani
->>>
->>>> -Ziqi
->>>>
->>>>>
->>>>> Thanks,
->>>>> Can Guo.
->>>>>>
->>>>>> - Mani
->>>>>>
->>>>>>> Signed-off-by: Ziqi Chen <quic_ziqichen@quicinc.com>
->>>>>>> ---
->>>>>>>     drivers/ufs/host/ufs-qcom.c | 13 +++++++------
->>>>>>>     1 file changed, 7 insertions(+), 6 deletions(-)
->>>>>>>
->>>>>>> diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
->>>>>>> index 96cb8b5..43163d3 100644
->>>>>>> --- a/drivers/ufs/host/ufs-qcom.c
->>>>>>> +++ b/drivers/ufs/host/ufs-qcom.c
->>>>>>> @@ -445,12 +445,6 @@ static int
->>>>>>> ufs_qcom_power_up_sequence(struct ufs_hba *hba)
->>>>>>>         struct phy *phy = host->generic_phy;
->>>>>>>         int ret;
->>>>>>> -    /* Reset UFS Host Controller and PHY */
->>>>>>> -    ret = ufs_qcom_host_reset(hba);
->>>>>>> -    if (ret)
->>>>>>> -        dev_warn(hba->dev, "%s: host reset returned %d\n",
->>>>>>> -                  __func__, ret);
->>>>>>> -
->>>>>>>         /* phy initialization - calibrate the phy */
->>>>>>>         ret = phy_init(phy);
->>>>>>>         if (ret) {
->>>>>>> @@ -1709,6 +1703,13 @@ static void ufs_qcom_dump_dbg_regs(struct
->>>>>>> ufs_hba *hba)
->>>>>>>     static int ufs_qcom_device_reset(struct ufs_hba *hba)
->>>>>>>     {
->>>>>>>         struct ufs_qcom_host *host = ufshcd_get_variant(hba);
->>>>>>> +    int ret = 0;
->>>>>>> +
->>>>>>> +    /* Reset UFS Host Controller and PHY */
->>>>>>> +    ret = ufs_qcom_host_reset(hba);
->>>>>>> +    if (ret)
->>>>>>> +        dev_warn(hba->dev, "%s: host reset returned %d\n",
->>>>>>> +                  __func__, ret);
->>>>>>>         /* reset gpio is optional */
->>>>>>>         if (!host->device_reset)
->>>>>>> -- 
->>>>>>> 2.7.4
->>>>>>>
->>>>>>
->>>
-> 
+The "var" column in the tables below is the coefficient of variance over 5
+runs of the test, the "diff" column is the relative difference against base
+in read-write I/O bandwidth (MiB/s).
+
+Tested on an x86 VM against a QEMU virtio SATA driver backed by a RAM-based
+block device on the host:
+
+	base	   patched
+	var	var	diff
+small	0.69%	0.62%	+25.4%
+big	2.14%	2.27%	+25.7%
+4way	2.65%	1.70%	+23.6%
+
+Tested on a Raspberry Pi against a class-10 A1 microSD card:
+
+	base	   patched
+	var	var	diff
+small	0.53%	1.96%	-0.3%
+big	0.02%	0.57%	+0.8%
+4way	6.17%	0.40%	+0.3%
+
+These results confirm that there is significant performance boost in the
+software IO TLB slot allocation itself. Where performance is dominated by
+actual hardware, there is no measurable change.
+
+Signed-off-by: Petr Tesarik <petr.tesarik1@huawei-partners.com>
+---
+ kernel/dma/swiotlb.c | 90 +++++++++++++++++++++++++++-----------------
+ 1 file changed, 55 insertions(+), 35 deletions(-)
+
+diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+index 33d942615be5..e20b856255ef 100644
+--- a/kernel/dma/swiotlb.c
++++ b/kernel/dma/swiotlb.c
+@@ -957,7 +957,7 @@ static void dec_used(struct io_tlb_mem *mem, unsigned int nslots)
+ #endif /* CONFIG_DEBUG_FS */
+ 
+ /**
+- * swiotlb_area_find_slots() - search for slots in one IO TLB memory area
++ * swiotlb_search_pool_area() - search one memory area in one pool
+  * @dev:	Device which maps the buffer.
+  * @pool:	Memory pool to be searched.
+  * @area_index:	Index of the IO TLB memory area to be searched.
+@@ -972,7 +972,7 @@ static void dec_used(struct io_tlb_mem *mem, unsigned int nslots)
+  *
+  * Return: Index of the first allocated slot, or -1 on error.
+  */
+-static int swiotlb_area_find_slots(struct device *dev, struct io_tlb_pool *pool,
++static int swiotlb_search_pool_area(struct device *dev, struct io_tlb_pool *pool,
+ 		int area_index, phys_addr_t orig_addr, size_t alloc_size,
+ 		unsigned int alloc_align_mask)
+ {
+@@ -1066,41 +1066,50 @@ static int swiotlb_area_find_slots(struct device *dev, struct io_tlb_pool *pool,
+ 	return slot_index;
+ }
+ 
++#ifdef CONFIG_SWIOTLB_DYNAMIC
++
+ /**
+- * swiotlb_pool_find_slots() - search for slots in one memory pool
++ * swiotlb_search_area() - search one memory area in all pools
+  * @dev:	Device which maps the buffer.
+- * @pool:	Memory pool to be searched.
++ * @start_cpu:	Start CPU number.
++ * @cpu_offset:	Offset from @start_cpu.
+  * @orig_addr:	Original (non-bounced) IO buffer address.
+  * @alloc_size: Total requested size of the bounce buffer,
+  *		including initial alignment padding.
+  * @alloc_align_mask:	Required alignment of the allocated buffer.
++ * @retpool:	Used memory pool, updated on return.
+  *
+- * Search through one memory pool to find a sequence of slots that match the
++ * Search one memory area in all pools for a sequence of slots that match the
+  * allocation constraints.
+  *
+  * Return: Index of the first allocated slot, or -1 on error.
+  */
+-static int swiotlb_pool_find_slots(struct device *dev, struct io_tlb_pool *pool,
+-		phys_addr_t orig_addr, size_t alloc_size,
+-		unsigned int alloc_align_mask)
++static int swiotlb_search_area(struct device *dev, int start_cpu,
++		int cpu_offset, phys_addr_t orig_addr, size_t alloc_size,
++		unsigned int alloc_align_mask, struct io_tlb_pool **retpool)
+ {
+-	int start = raw_smp_processor_id() & (pool->nareas - 1);
+-	int i = start, index;
+-
+-	do {
+-		index = swiotlb_area_find_slots(dev, pool, i, orig_addr,
+-						alloc_size, alloc_align_mask);
+-		if (index >= 0)
+-			return index;
+-		if (++i >= pool->nareas)
+-			i = 0;
+-	} while (i != start);
++	struct io_tlb_mem *mem = dev->dma_io_tlb_mem;
++	struct io_tlb_pool *pool;
++	int area_index;
++	int index = -1;
+ 
+-	return -1;
++	rcu_read_lock();
++	list_for_each_entry_rcu(pool, &mem->pools, node) {
++		if (cpu_offset >= pool->nareas)
++			continue;
++		area_index = (start_cpu + cpu_offset) & (pool->nareas - 1);
++		index = swiotlb_search_pool_area(dev, pool, area_index,
++						 orig_addr, alloc_size,
++						 alloc_align_mask);
++		if (index >= 0) {
++			*retpool = pool;
++			break;
++		}
++	}
++	rcu_read_unlock();
++	return index;
+ }
+ 
+-#ifdef CONFIG_SWIOTLB_DYNAMIC
+-
+ /**
+  * swiotlb_find_slots() - search for slots in the whole swiotlb
+  * @dev:	Device which maps the buffer.
+@@ -1124,18 +1133,17 @@ static int swiotlb_find_slots(struct device *dev, phys_addr_t orig_addr,
+ 	unsigned long nslabs;
+ 	unsigned long flags;
+ 	u64 phys_limit;
++	int cpu, i;
+ 	int index;
+ 
+-	rcu_read_lock();
+-	list_for_each_entry_rcu(pool, &mem->pools, node) {
+-		index = swiotlb_pool_find_slots(dev, pool, orig_addr,
+-						alloc_size, alloc_align_mask);
+-		if (index >= 0) {
+-			rcu_read_unlock();
++	cpu = raw_smp_processor_id();
++	for (i = 0; i < default_nareas; ++i) {
++		index = swiotlb_search_area(dev, cpu, i, orig_addr, alloc_size,
++					    alloc_align_mask, &pool);
++		if (index >= 0)
+ 			goto found;
+-		}
+ 	}
+-	rcu_read_unlock();
++
+ 	if (!mem->can_grow)
+ 		return -1;
+ 
+@@ -1148,8 +1156,8 @@ static int swiotlb_find_slots(struct device *dev, phys_addr_t orig_addr,
+ 	if (!pool)
+ 		return -1;
+ 
+-	index = swiotlb_pool_find_slots(dev, pool, orig_addr,
+-					alloc_size, alloc_align_mask);
++	index = swiotlb_search_pool_area(dev, pool, 0, orig_addr,
++					 alloc_size, alloc_align_mask);
+ 	if (index < 0) {
+ 		swiotlb_dyn_free(&pool->rcu);
+ 		return -1;
+@@ -1192,9 +1200,21 @@ static int swiotlb_find_slots(struct device *dev, phys_addr_t orig_addr,
+ 		size_t alloc_size, unsigned int alloc_align_mask,
+ 		struct io_tlb_pool **retpool)
+ {
+-	*retpool = &dev->dma_io_tlb_mem->defpool;
+-	return swiotlb_pool_find_slots(dev, *retpool,
+-				       orig_addr, alloc_size, alloc_align_mask);
++	struct io_tlb_pool *pool;
++	int start, i;
++	int index;
++
++	*retpool = pool = &dev->dma_io_tlb_mem->defpool;
++	i = start = raw_smp_processor_id() & (pool->nareas - 1);
++	do {
++		index = swiotlb_search_pool_area(dev, pool, i, orig_addr,
++						 alloc_size, alloc_align_mask);
++		if (index >= 0)
++			return index;
++		if (++i >= pool->nareas)
++			i = 0;
++	} while (i != start);
++	return -1;
+ }
+ 
+ #endif /* CONFIG_SWIOTLB_DYNAMIC */
+-- 
+2.42.1
+
