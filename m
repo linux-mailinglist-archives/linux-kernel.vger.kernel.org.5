@@ -2,127 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71439800D19
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 15:25:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89829800D23
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 15:28:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379164AbjLAOZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 09:25:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52558 "EHLO
+        id S1379167AbjLAO22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 09:28:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379143AbjLAOZD (ORCPT
+        with ESMTP id S1379143AbjLAO21 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 09:25:03 -0500
-Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 911E610F4;
-        Fri,  1 Dec 2023 06:25:08 -0800 (PST)
-Received: from i53875b61.versanet.de ([83.135.91.97] helo=phil.lan)
-        by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <heiko@sntech.de>)
-        id 1r94Rs-0000PA-CQ; Fri, 01 Dec 2023 15:24:56 +0100
-From:   Heiko Stuebner <heiko@sntech.de>
-To:     andrew@lunn.ch, hkallweit1@gmail.com
-Cc:     linux@armlinux.org.uk, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quentin.schulz@theobroma-systems.com,
-        heiko@sntech.de, Heiko Stuebner <heiko.stuebner@cherry.de>
-Subject: [PATCH] net: mdio: enable optional clock when registering a phy from devicetree
-Date:   Fri,  1 Dec 2023 15:24:53 +0100
-Message-Id: <20231201142453.324697-1-heiko@sntech.de>
-X-Mailer: git-send-email 2.39.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,T_SPF_HELO_TEMPERROR autolearn=ham
-        autolearn_force=no version=3.4.6
+        Fri, 1 Dec 2023 09:28:27 -0500
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B546110FD
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 06:28:30 -0800 (PST)
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com [209.85.160.199])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 790413F1D9
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 14:28:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1701440909;
+        bh=J3tX3M2zYj5xzUQ87L+5qVD8j/S83Al/tHxvfxTDyUw=;
+        h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=AkkS/ol59EXGAb+QsIO/byDT45l8s7RHVDq5Qku8XiCzKUPH4+ZsfaE1m3h/Izi9g
+         XFPzW74jIedKNmcw5nWkS0aejur4a3V59DqFIVaOhZ/qLjvTtkIDzbGxxPd1GLyOEh
+         GSHX8obFb97QRLlrdaUyamDeLyievNzmu3v5VI1P49jpNeRX7gcYu9h+6fT7L3O1FB
+         32hzkslUhfC0DH6j+YsVXZnCuxpe9X/go57MOpztZD1eygWguSgfuxsf2yeN0yFFkt
+         KXwC4iydgKmF5cLQQAxj79UkgSBtZOjvVALVYbVa+iB/AojdBg6HSkHZ0fJ6k1V0UB
+         aWQ3DoenkOB9g==
+Received: by mail-qt1-f199.google.com with SMTP id d75a77b69052e-423e22075f4so24776641cf.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 06:28:29 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701440908; x=1702045708;
+        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=J3tX3M2zYj5xzUQ87L+5qVD8j/S83Al/tHxvfxTDyUw=;
+        b=qZgAnZU7hVhgDCAqOA9e9k1FsFMRhTgOMl8//Osep7bykAfRbWPE/f2Zfps7JaHSWT
+         c7qv37mih7yAecYonXcLyFjYgXtTNJTCQ7fgLXgrNAed2vU1VshojtHIg/X7ZnZKeRHY
+         tK36MuSevnjFF0g/zdb0ARmwymkrWqLnUpkZP7ucmczJCcQ0xW0kFYk/3TMuMu8Kyyqx
+         F7svxKIluH79cWUnYkZaAL0JgnnnEgk7ZGukRHTEDj/bjXpkksTlqBcyn0O8lPTluCAl
+         QZywy6c8TMUoYJHhzFybRraOEaWM2zn+IywfA/btjg3HacMbTGSaHzC+5XO31ZCc/RdF
+         lY7A==
+X-Gm-Message-State: AOJu0Ywf7OXAzqi1OhJTEnUNN80rxQBgZIHGKiYOgB1BaXUQVUkpCaQ1
+        QOv5Zbm0h4f25NkT0piphw6H8+mF9smJmWHRh9LHZFM6/awXzI+zHCWZRsQTvA5m5gwUFyZHij5
+        BMAtwV6X4mMyEJ2+zg5UTU/xwX9cUlbagYtcxGs99TKRm8rijNoagAyVHgg==
+X-Received: by 2002:ac8:5882:0:b0:423:74a5:2847 with SMTP id t2-20020ac85882000000b0042374a52847mr27370893qta.49.1701440908461;
+        Fri, 01 Dec 2023 06:28:28 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFz6QSK9JfIdYSeG1hMKcfp6BJsk9FZlcDEDSfyu1q6fE+aNUWQuhYy7p5rzkdPobcTPVTqnTSPj2jiq9s9GYc=
+X-Received: by 2002:ac8:5882:0:b0:423:74a5:2847 with SMTP id
+ t2-20020ac85882000000b0042374a52847mr27370879qta.49.1701440908234; Fri, 01
+ Dec 2023 06:28:28 -0800 (PST)
+Received: from 348282803490 named unknown by gmailapi.google.com with
+ HTTPREST; Fri, 1 Dec 2023 15:28:27 +0100
+From:   Emil Renner Berthing <emil.renner.berthing@canonical.com>
+In-Reply-To: <fe4c15dcc3074412326b8dc296b0cbccf79c49bf.1701422582.git.namcao@linutronix.de>
+References: <fd8bf044799ae50a6291ae150ef87b4f1923cacb.1701422582.git.namcao@linutronix.de>
+ <fe4c15dcc3074412326b8dc296b0cbccf79c49bf.1701422582.git.namcao@linutronix.de>
+Mime-Version: 1.0
+Date:   Fri, 1 Dec 2023 15:28:27 +0100
+Message-ID: <CAJM55Z9CooaYqeTuZK0FARKupf_StTSfWBo7ziv4KtGq6pEVaQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] pinctrl: starfive: jh7100: ignore disabled device
+ tree nodes
+To:     Nam Cao <namcao@linutronix.de>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Jianlong Huang <jianlong.huang@starfivetech.com>,
+        Hal Feng <hal.feng@starfivetech.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Huan Feng <huan.feng@starfivetech.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heiko Stuebner <heiko.stuebner@cherry.de>
+Nam Cao wrote:
+> The driver always registers pin configurations in device tree. This can
+> cause some inconvenience to users, as pin configurations in the base
+> device tree cannot be disabled in the device tree overlay, even when the
+> relevant devices are not used.
+>
+> Ignore disabled pin configuration nodes in device tree.
+>
+> Fixes: ec648f6b7686 ("pinctrl: starfive: Add pinctrl driver for StarFive SoCs")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Nam Cao <namcao@linutronix.de>
+> ---
+>  drivers/pinctrl/starfive/pinctrl-starfive-jh7100.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/pinctrl/starfive/pinctrl-starfive-jh7100.c b/drivers/pinctrl/starfive/pinctrl-starfive-jh7100.c
+> index 530fe340a9a1..561fd0c6b9b0 100644
+> --- a/drivers/pinctrl/starfive/pinctrl-starfive-jh7100.c
+> +++ b/drivers/pinctrl/starfive/pinctrl-starfive-jh7100.c
+> @@ -492,7 +492,7 @@ static int starfive_dt_node_to_map(struct pinctrl_dev *pctldev,
+>
+>  	nmaps = 0;
+>  	ngroups = 0;
+> -	for_each_child_of_node(np, child) {
+> +	for_each_available_child_of_node(np, child) {
 
-The ethernet-phy binding (now) specifys that phys can declare a clock
-supply. Phy driver itself will handle this when probing the phy-driver.
+Hi Nam,
 
-But there is a gap when trying to detect phys, because the mdio-bus needs
-to talk to the phy to get its phy-id. Using actual phy-ids in the dt like
-       compatible = "ethernet-phy-id0022.1640",
-                    "ethernet-phy-ieee802.3-c22";
-of course circumvents this, but in turn hard-codes the phy.
+Is this safe to do? I mean will the children considered "available" not change
+as drivers are loaded during boot so this is racy?
 
-With boards often having multiple phy options and the mdio-bus being able
-to actually probe devices, this feels like a step back.
+Also arguably this is not a bugfix, but a new feature.
 
-So check for the existence of a phy-clock per the -dtbinding in the
-of_mdiobus_register_phy() and enable the clock around the
-fwnode_mdiobus_register_phy() call which tries to determine the phy-id.
+Same comments apply to the JH7110 patch.
 
-Signed-off-by: Heiko Stuebner <heiko.stuebner@cherry.de>
----
- drivers/net/mdio/of_mdio.c | 34 +++++++++++++++++++++++++++++++++-
- 1 file changed, 33 insertions(+), 1 deletion(-)
+/Emil
 
-diff --git a/drivers/net/mdio/of_mdio.c b/drivers/net/mdio/of_mdio.c
-index 64ebcb6d235c..895b12849b23 100644
---- a/drivers/net/mdio/of_mdio.c
-+++ b/drivers/net/mdio/of_mdio.c
-@@ -8,6 +8,7 @@
-  * out of the OpenFirmware device tree and using it to populate an mii_bus.
-  */
- 
-+#include <linux/clk.h>
- #include <linux/device.h>
- #include <linux/err.h>
- #include <linux/fwnode_mdio.h>
-@@ -15,6 +16,7 @@
- #include <linux/module.h>
- #include <linux/netdevice.h>
- #include <linux/of.h>
-+#include <linux/of_clk.h>
- #include <linux/of_irq.h>
- #include <linux/of_mdio.h>
- #include <linux/of_net.h>
-@@ -46,7 +48,37 @@ EXPORT_SYMBOL(of_mdiobus_phy_device_register);
- static int of_mdiobus_register_phy(struct mii_bus *mdio,
- 				    struct device_node *child, u32 addr)
- {
--	return fwnode_mdiobus_register_phy(mdio, of_fwnode_handle(child), addr);
-+	struct clk *clk = NULL;
-+	int ret;
-+
-+	/* ethernet-phy binding specifies a maximum of 1 clock */
-+	if (of_clk_get_parent_count(child) == 1) {
-+		clk = of_clk_get(child, 0);
-+		if (IS_ERR(clk)) {
-+			if (PTR_ERR(clk) != -ENOENT)
-+				return dev_err_probe(&mdio->dev, PTR_ERR(clk),
-+						     "Could not get defined clock for MDIO device at address %u\n",
-+						     addr);
-+
-+			clk = NULL;
-+		}
-+	}
-+
-+	ret = clk_prepare_enable(clk);
-+	if (ret < 0) {
-+		clk_put(clk);
-+		dev_err(&mdio->dev,
-+			"Could not enable clock for MDIO device at address %u: %d\n",
-+			addr, ret);
-+		return ret;
-+	}
-+
-+	ret = fwnode_mdiobus_register_phy(mdio, of_fwnode_handle(child), addr);
-+
-+	clk_disable_unprepare(clk);
-+	clk_put(clk);
-+
-+	return ret;
- }
- 
- static int of_mdiobus_register_device(struct mii_bus *mdio,
--- 
-2.39.2
-
+>  		int npinmux = of_property_count_u32_elems(child, "pinmux");
+>  		int npins   = of_property_count_u32_elems(child, "pins");
+>
+> @@ -527,7 +527,7 @@ static int starfive_dt_node_to_map(struct pinctrl_dev *pctldev,
+>  	nmaps = 0;
+>  	ngroups = 0;
+>  	mutex_lock(&sfp->mutex);
+> -	for_each_child_of_node(np, child) {
+> +	for_each_available_child_of_node(np, child) {
+>  		int npins;
+>  		int i;
+>
+> --
+> 2.39.2
+>
