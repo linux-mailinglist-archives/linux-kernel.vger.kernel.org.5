@@ -2,151 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 69F417FFFFD
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 01:13:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EDFA7FFFF9
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 01:13:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377392AbjLAANi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 19:13:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39964 "EHLO
+        id S235211AbjLAAN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 19:13:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235228AbjLAANg (ORCPT
+        with ESMTP id S229521AbjLAANY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 19:13:36 -0500
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72E8110FA;
-        Thu, 30 Nov 2023 16:13:42 -0800 (PST)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 7DA245C0114;
-        Thu, 30 Nov 2023 19:13:41 -0500 (EST)
-Received: from imap44 ([10.202.2.94])
-  by compute3.internal (MEProxy); Thu, 30 Nov 2023 19:13:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-        cc:cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
-        1701389621; x=1701476021; bh=6hNLsCFhInh22vC2aH0mgObvwR0nMUCdEXP
-        sUGEMxfE=; b=p4TuFmo2BFWKo6nUyzd0VhruEGR7APHOVeHa7t90HtYDDkV2GOs
-        WbwD4W+8XGQHFzA6R46rClyZ9uhsApeYU9Bq3qCK8SOAbEH0ByqRIqlcdjEyI9+4
-        LxyiFamBQFNzRhGxUmy0PggFnSiP6eH0bMoFtnjor0Jxw2KO97FXc0npahB0MDqx
-        wVtXRagjRm3scqpbc//fDJ8vLhjMOfDqJZMpZvh8Osj9a5xJoo4qedI3SECKEzqX
-        yA8wjoIYfNuFwD89mweOxyuhcxV/gxq5W004xEYCe92NUWczdo0+u8adnH67fqgD
-        JuPP/kpRa3we6p4x8IrsfM+zUIO/TXvFjrA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-        1701389621; x=1701476021; bh=6hNLsCFhInh22vC2aH0mgObvwR0nMUCdEXP
-        sUGEMxfE=; b=AseeZUAspHBmVT0quRu/fmAKonz1GQGNxx9/2hHz/DOFvlD86Tc
-        WSxoaTL/yKw9O64tFfm+I9zOS/vN8FdAwKrKUw4CNwDfJdoBZWldSBgz96c2nGIN
-        vY2YNoLDLYX7w7mlimXfIwhfCCcYIyc/MutJhgQLmFnoPvq2vu6oJ6dKfYFE+SKX
-        ONJVmDmyPtN+tF8DkvxuvUlN1+2G2Fk1UigU4ZYt/r/1kXau4YGaldnbxInqe2sA
-        31hYutAGc2pxbjhnU1B+qqeUd5UqVwQRv7TtXOj+4rjdH3iyCbdGSzlwgNZMRzis
-        NYnIUgGwy+ZPjKej0V4+3mmgnqVNtNU3NKA==
-X-ME-Sender: <xms:MyVpZQw2ntx0IWqZ6vY3aO4mFFcAiAA14kBj3WQIpjrUkVdxGCX8Uw>
-    <xme:MyVpZUTn8Zb9Q9_7HNpgu9EoCv2v-XXBkp9RqYHSDu_topOjNK5WnZ3TFTo4xJcwJ
-    oLZVPVRhWM4YgbI1BM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeikedgvddtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdfl
-    ihgrgihunhcujggrnhhgfdcuoehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtoh
-    hmqeenucggtffrrghtthgvrhhnpedufeegfeetudeghefftdehfefgveffleefgfehhfej
-    ueegveethfduuddvieehgfenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
-    grihhlfhhrohhmpehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhm
-X-ME-Proxy: <xmx:NCVpZSXo1rzKGpJHv7ZxPno1MBaOYD2Sia_VXrTELi54hAb01HnBNQ>
-    <xmx:NCVpZeiBEdnkjummF-m_JEt_ksJok2PYuBHIXWee_vrG2zVD9sGH7Q>
-    <xmx:NCVpZSCETlUoggUjmk0WilrRDxcMTWhzWVeokfZC4speaHRiITcmEw>
-    <xmx:NSVpZYSmELo37kFV8jvsaU641qYX83T-XPSkU4kw2zViepGpW62x-Q>
-Feedback-ID: ifd894703:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id DD1A836A0075; Thu, 30 Nov 2023 19:13:39 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1238-g6cccb1fa34-fm-20231128.002-g6cccb1fa
-MIME-Version: 1.0
-Message-Id: <bb13c070-bdfe-47ae-afed-a05e1e55bb94@app.fastmail.com>
-In-Reply-To: <xbkplqgv4ipnofk7hp6ws2rkqk4fsjl3y72blcdephoiocolh7@7l5p5efe7yda>
-References: <ZV9Fq1ihUm1Rn6yO@alpha.franken.de>
- <d6d7e27a-b1a1-48af-be6c-aa9097c48992@app.fastmail.com>
- <ZV94rifAIF2p9Nej@alpha.franken.de>
- <245d3985-9085-4be0-8c74-d95d06334584@app.fastmail.com>
- <3iksuovvsln3cw3xpmjd7f7xixfvwaneu4ok56fnookvyolpco@wrxxew3thgnq>
- <dfda70b6-3291-462f-bc87-06dcc87bd068@app.fastmail.com>
- <ysij22pivneyg7tk3bv3hti3tsgbzglb6pin3my7r3bokzxjj6@jrjmu45gbupr>
- <c73d9dbf-b637-47ff-ae2d-6f8987345410@app.fastmail.com>
- <3pgnihbrp5orh4tmj45fipbfoxdwzjh6uefitdpcea2vgkarcm@d56gv3areswl>
- <2148a67f-bd4f-432e-aa0d-c914a4bd5e0d@app.fastmail.com>
- <xbkplqgv4ipnofk7hp6ws2rkqk4fsjl3y72blcdephoiocolh7@7l5p5efe7yda>
-Date:   Fri, 01 Dec 2023 00:13:22 +0000
-From:   "Jiaxun Yang" <jiaxun.yang@flygoat.com>
-To:     "Serge Semin" <fancer.lancer@gmail.com>
-Cc:     "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
-        "Arnd Bergmann" <arnd@arndb.de>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        "Mike Rapoport" <rppt@kernel.org>,
-        "Matthew Wilcox" <willy@infradead.org>,
-        "Tiezhu Yang" <yangtiezhu@loongson.cn>,
-        "Huacai Chen" <chenhuacai@kernel.org>,
-        "Yinglu Yang" <yangyinglu@loongson.cn>,
-        "Alexey Malahov" <Alexey.Malahov@baikalelectronics.ru>,
-        "Aleksandar Rikalo" <aleksandar.rikalo@syrmia.com>,
-        "Aleksandar Rikalo" <arikalo@gmail.com>,
-        "Dragan Mladjenovic" <dragan.mladjenovic@syrmia.com>,
-        "Chao-ying Fu" <cfu@wavecomp.com>, "Marc Zyngier" <maz@kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/7] mips: dmi: Fix early remap on MIPS32
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 30 Nov 2023 19:13:24 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3EFF197
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 16:13:30 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D8D6C433C7;
+        Fri,  1 Dec 2023 00:13:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701389610;
+        bh=JrBMPoryyL0Fy1zFDRIW3Y9lc5BSyHrlKcQMRHEusIc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=pxygyjUqd0Z/0Wcv3T8aabY1hMWXw8/b35zoL3d3cJwj5e229mBQLeOUJQDXD4ALq
+         mhIGA8KlyegvAXUT2wF7kNLhR3VWAbprzkE25uH09xozCpiRKSrdfMq/CELRNA/t29
+         xkVc0dHRaUczP/j3EyGQ4GaqK8YS6hUg6Jep6ROnoluXaMJSZig4J3gvTdeWkM3HhF
+         nocEZxTMcgqNG4HOiYPkDjqbgmUea5YcjU0h2WOv2iTNBrZeW/CwDnYRh+epNXQdkM
+         68alxSN+TuFRAVz8UkDstH3MA+uRBqJmkqTnK7XNx6RxJABjh/9Qg8D+zGSGsg+1SS
+         rEQpRRZ42K2iQ==
+Date:   Fri, 1 Dec 2023 09:13:26 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     JP Kobryn <inwardvessel@gmail.com>
+Cc:     linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org,
+        peterz@infradead.org
+Subject: Re: [PATCH v2] rethook: Use __rcu pointer for rethook::handler
+Message-Id: <20231201091326.e0807750f788d17763481461@kernel.org>
+In-Reply-To: <ZWkCV_D8Yw-cFsXE@localhost.localdomain>
+References: <170126066201.398836.837498688669005979.stgit@devnote2>
+        <ZWkCV_D8Yw-cFsXE@localhost.localdomain>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 30 Nov 2023 13:44:55 -0800
+JP Kobryn <inwardvessel@gmail.com> wrote:
 
+> On Wed, Nov 29, 2023 at 09:24:22PM +0900, Masami Hiramatsu (Google) wrote:
+> > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > 
+> > Since the rethook::handler is an RCU-maganged pointer so that it will
+> > notice readers the rethook is stopped (unregistered) or not, it should
+> > be an __rcu pointer and use appropriate functions to be accessed. This
+> > will use appropriate memory barrier when accessing it. OTOH,
+> > rethook::data is never changed, so we don't need to check it in
+> > get_kretprobe().
+> > 
+> > NOTE: To avoid sparse warning, rethook::handler is defined by a raw
+> > function pointer type with __rcu instead of rethook_handler_t.
+> > 
+> > Fixes: 54ecbe6f1ed5 ("rethook: Add a generic return hook")
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Closes: https://lore.kernel.org/oe-kbuild-all/202311241808.rv9ceuAh-lkp@intel.com/
+> > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > ---
+> >  include/linux/kprobes.h |    6 ++----
+> >  include/linux/rethook.h |    7 ++++++-
+> >  kernel/trace/rethook.c  |   23 ++++++++++++++---------
+> >  3 files changed, 22 insertions(+), 14 deletions(-)
+> > 
+> > diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
+> > index 64672bace560..0ff44d6633e3 100644
+> > --- a/include/linux/kprobes.h
+> > +++ b/include/linux/kprobes.h
+> > @@ -197,10 +197,8 @@ extern int arch_trampoline_kprobe(struct kprobe *p);
+> >  #ifdef CONFIG_KRETPROBE_ON_RETHOOK
+> >  static nokprobe_inline struct kretprobe *get_kretprobe(struct kretprobe_instance *ri)
+> >  {
+> > -	RCU_LOCKDEP_WARN(!rcu_read_lock_any_held(),
+> > -		"Kretprobe is accessed from instance under preemptive context");
+> > -
+> > -	return (struct kretprobe *)READ_ONCE(ri->node.rethook->data);
+> > +	/* rethook::data is non-changed field, so that you can access it freely. */
+> > +	return (struct kretprobe *)ri->node.rethook->data;
+> >  }
+> >  static nokprobe_inline unsigned long get_kretprobe_retaddr(struct kretprobe_instance *ri)
+> >  {
+> > diff --git a/include/linux/rethook.h b/include/linux/rethook.h
+> > index ce69b2b7bc35..ba60962805f6 100644
+> > --- a/include/linux/rethook.h
+> > +++ b/include/linux/rethook.h
+> > @@ -28,7 +28,12 @@ typedef void (*rethook_handler_t) (struct rethook_node *, void *, unsigned long,
+> >   */
+> >  struct rethook {
+> >  	void			*data;
+> > -	rethook_handler_t	handler;
+> > +	/*
+> > +	 * To avoid sparse warnings, this uses a raw function pointer with
+> > +	 * __rcu, instead of rethook_handler_t. But this must be same as
+> > +	 * rethook_handler_t.
+> > +	 */
+> > +	void (__rcu *handler) (struct rethook_node *, void *, unsigned long, struct pt_regs *);
+> >  	struct objpool_head	pool;
+> >  	struct rcu_head		rcu;
+> >  };
+> > diff --git a/kernel/trace/rethook.c b/kernel/trace/rethook.c
+> > index 6fd7d4ecbbc6..fa03094e9e69 100644
+> > --- a/kernel/trace/rethook.c
+> > +++ b/kernel/trace/rethook.c
+> > @@ -48,7 +48,7 @@ static void rethook_free_rcu(struct rcu_head *head)
+> >   */
+> >  void rethook_stop(struct rethook *rh)
+> >  {
+> > -	WRITE_ONCE(rh->handler, NULL);
+> > +	rcu_assign_pointer(rh->handler, NULL);
+> >  }
+> >  
+> >  /**
+> > @@ -63,7 +63,7 @@ void rethook_stop(struct rethook *rh)
+> >   */
+> >  void rethook_free(struct rethook *rh)
+> >  {
+> > -	WRITE_ONCE(rh->handler, NULL);
+> > +	rethook_stop(rh);
+> >  
+> >  	call_rcu(&rh->rcu, rethook_free_rcu);
+> >  }
+> > @@ -82,6 +82,12 @@ static int rethook_fini_pool(struct objpool_head *head, void *context)
+> >  	return 0;
+> >  }
+> >  
+> > +static inline rethook_handler_t rethook_get_handler(struct rethook *rh)
+> > +{
+> > +	return (rethook_handler_t)rcu_dereference_check(rh->handler,
+> > +							rcu_read_lock_any_held());
+> > +}
+> > +
+> >  /**
+> >   * rethook_alloc() - Allocate struct rethook.
+> >   * @data: a data to pass the @handler when hooking the return.
+> > @@ -107,7 +113,7 @@ struct rethook *rethook_alloc(void *data, rethook_handler_t handler,
+> >  		return ERR_PTR(-ENOMEM);
+> >  
+> >  	rh->data = data;
+> > -	rh->handler = handler;
+> > +	rcu_assign_pointer(rh->handler, handler);
+> >  
+> >  	/* initialize the objpool for rethook nodes */
+> >  	if (objpool_init(&rh->pool, num, size, GFP_KERNEL, rh,
+> > @@ -135,9 +141,10 @@ static void free_rethook_node_rcu(struct rcu_head *head)
+> >   */
+> >  void rethook_recycle(struct rethook_node *node)
+> >  {
+> > -	lockdep_assert_preemption_disabled();
+> > +	rethook_handler_t handler;
+> >  
+> > -	if (likely(READ_ONCE(node->rethook->handler)))
+> > +	handler = rethook_get_handler(node->rethook);
+> > +	if (likely(handler))
+> >  		objpool_push(node, &node->rethook->pool);
+> >  	else
+> >  		call_rcu(&node->rcu, free_rethook_node_rcu);
+> > @@ -153,9 +160,7 @@ NOKPROBE_SYMBOL(rethook_recycle);
+> >   */
+> >  struct rethook_node *rethook_try_get(struct rethook *rh)
+> >  {
+> > -	rethook_handler_t handler = READ_ONCE(rh->handler);
+> > -
+> > -	lockdep_assert_preemption_disabled();
+> > +	rethook_handler_t handler = rethook_get_handler(rh);
+> >  
+> >  	/* Check whether @rh is going to be freed. */
+> >  	if (unlikely(!handler))
+> > @@ -300,7 +305,7 @@ unsigned long rethook_trampoline_handler(struct pt_regs *regs,
+> >  		rhn = container_of(first, struct rethook_node, llist);
+> >  		if (WARN_ON_ONCE(rhn->frame != frame))
+> >  			break;
+> > -		handler = READ_ONCE(rhn->rethook->handler);
+> > +		handler = rethook_get_handler(rhn->rethook);
+> >  		if (handler)
+> >  			handler(rhn, rhn->rethook->data,
+> >  				correct_ret_addr, regs);
+> > 
+> 
+> I applied and tested this patch locally on an x86_64 machine and can
+> confirm there are no RCU-related sparse warnings. Also, kprobe tests
+> within the ftrace selftest suite succeed just the same as before
+> applying the patch.
+> 
+> Tested-by: JP Kobryn <inwardvessel@gmail.com>
 
-=E5=9C=A82023=E5=B9=B411=E6=9C=8830=E6=97=A5=E5=8D=81=E4=B8=80=E6=9C=88 =
-=E4=B8=8B=E5=8D=887:16=EF=BC=8CSerge Semin=E5=86=99=E9=81=93=EF=BC=9A
-> On Tue, Nov 28, 2023 at 03:46:37PM +0000, Jiaxun Yang wrote:
-[...]
->
->> I'd say the safest option is to use CKSEG0 or TO_CAC here,=20
->
-> I would have agreed with you if MIPS didn't have that special
-> _page_cachable_default variable which is undefined for some platforms
-> and which might be re-defined during the boot-up process, and if
-> MIPS64 didn't have ioremap_prot() always mapping to the uncached
-> region.  But IMO updating ioremap_prot() currently seems more risky
-> than just converting dmi_early_remap() to the uncached version
-> especially seeing it won't change anything. MIPS64 always have IO
-> remapped to the uncached region. MIPS32 won't be able to have cached
-> mapping until VM is available, and paging and slabs are initialized.
-> So on the early MIPS32 bootup stages ioremap_cache() wouldn't have
-> worked anyway.
+Thank you for testing!
+Let me push it with your fix.
 
-I really didn't get that, using CKSEG0 on 32bit system and TO_CAC
-on 64bit system won't hurt.
-
-Something like:
-#ifdef CONFIG_64BIT
-#define dmi_remap(x, l)		(void *)TO_CAC(x)
-#else
-#define dmi_remap(x, l)		(void *)CKSEG0(x)
-#endif
-
-Can help us avoid all the hassle. Since it always ensures we are
-using same CCA to access DMI tables. We can always trust Config.K0
-left by firmware in this case.
-
-You may add some sanity check on 32 bit to avoid generating invalid
-pointer. (And perhaps implement it as ioremap_early.....)=20
-
-Thanks
---=20
-- Jiaxun
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
