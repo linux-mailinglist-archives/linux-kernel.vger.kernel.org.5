@@ -2,99 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C072F80128F
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 19:24:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22816801290
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 19:24:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379192AbjLASYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 13:24:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57534 "EHLO
+        id S1379234AbjLASYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 13:24:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjLASYq (ORCPT
+        with ESMTP id S1379172AbjLASYs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 13:24:46 -0500
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AB139A
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 10:24:52 -0800 (PST)
-Received: by mail-oi1-x241.google.com with SMTP id 5614622812f47-3b2e330033fso539725b6e.3
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 10:24:52 -0800 (PST)
+        Fri, 1 Dec 2023 13:24:48 -0500
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4FD59A
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 10:24:54 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1ce3084c2d1so7400515ad.3
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 10:24:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxtx.org; s=google; t=1701455092; x=1702059892; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1701455094; x=1702059894; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=YReR/ElyLsL0HPHj+5ElEXiMYpqxoQVx7nZynS4QGhQ=;
-        b=eKEBS93+jIUELnJTharIDMKoTEzFqLAUuv2msgc7j+w7ZXNUHv3MIY4jvB6lGKx8m2
-         bkjBaY4vMG2ffefM1uBmIcXjd1l+G5wX9Nju1xK47KURYDB2VgOPn9GDZYPnS+zuGmV2
-         patAy1vTRttovgcCrtL4+iUZhuQO6E+K1Bprc=
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=4XGfXIS6HVXe6/e9l+81iwua90KgKcNdbupUOWB7Nz4=;
+        b=TdPdaFZZ3WviX3IKVUi4jbog10SuoD+yCPANUZKGvaaShxGJwBbme9EtbtTmynM59y
+         UFJfAYfnXr+N+oGV/aZIyHaI09G6n242oOl7SQs1Elm0pHOtU1GsfAlR0T/fCkjFoTWn
+         AZwww81WmkWbCcHy6EuK4/yFZBOieZW47fpmc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701455092; x=1702059892;
+        d=1e100.net; s=20230601; t=1701455094; x=1702059894;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YReR/ElyLsL0HPHj+5ElEXiMYpqxoQVx7nZynS4QGhQ=;
-        b=tlsHmIXc60W1y7geAWjl4absv9lnkl1TGomMtQYaFpeeiUSrQ/qe6NfELQab0GYdri
-         N41kxTXYj6neUyvfgdN0gxPkxv+a6Xh6JlEHRe41YqMvux46MnoqLPkMHNk1nFek47EK
-         szWaPpAXazR6CEEx1XRHavyrQsogvKNhjz2hKpzMS+v8U1hddR7nW6eotbtBsIITYc7H
-         gsEyaWkPQ44JVg4+HfluNLKtNB4wap7JwWFeMmAzVVNdBbw72b7TeUyx+Eyvp05N8+Zr
-         9CXwjK9v/rVB9cLWmRfJmTEGiovrLcEpU7PsMS4kFhoMA97X9dB9gC45Yuzu7O5oyw/y
-         r+2Q==
-X-Gm-Message-State: AOJu0Yzm2KSljqZL8f8UroaOdBij6tR2kCA0PHgruvR3c5iasucPgS7X
-        c6m3k3rtskVoUn6GKJzNv+66Kg==
-X-Google-Smtp-Source: AGHT+IGPgafOly1IVWDEaRcvfphGZBGLi4CqUruCxwY+paDAHENLzM84AGvunQeaAC0WN9Esn1lKIg==
-X-Received: by 2002:a05:6808:2c6:b0:3b8:5e9a:b2bd with SMTP id a6-20020a05680802c600b003b85e9ab2bdmr3632976oid.15.1701455091793;
-        Fri, 01 Dec 2023 10:24:51 -0800 (PST)
-Received: from fedora64.linuxtx.org ([99.47.93.78])
-        by smtp.gmail.com with ESMTPSA id be25-20020a056808219900b003b898ffd8fcsm631188oib.50.2023.12.01.10.24.50
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4XGfXIS6HVXe6/e9l+81iwua90KgKcNdbupUOWB7Nz4=;
+        b=RJ3btY2prhyne/uuH7A89D0ezf/O9CjV2HK4WmwPFkhYNFwFOtooO/nF7QiL73Helf
+         OCsZK34C55Q5sQOkHrXhMYIX+SegLm678KtbnvV6mbkyhl5OL2gSGxDHk1wIUyU1Tqqq
+         jdIOuY6qjhGA+8okJ4cFejrwBm0ldegnWuigOr92Z0R45LoPQVCV7Pia6L+F/B9C8fIb
+         AL5G2YPisVBijdDTAz/YU6/DKX+R1jdfEkkwKYeTzdePC+DAHOutAx+QOqnTKSEu+Cka
+         IsSiRw+oLMxt/0JXmnp6NKYyYRLFQMjXbo229/zDpnfvMF/uzg3Wp4mkVXxxe2nwia/G
+         dyog==
+X-Gm-Message-State: AOJu0YxOwFcvbMY3wW8si4PIMAulbB+rlyMSAd9tA9TU/1tXhYuGwD1+
+        vOnBF0Dmzlr8vd0yRq4Ek9XMf5lBCfJGemgHGc8=
+X-Google-Smtp-Source: AGHT+IEKh1U4LPfxGBUf3mJlHka+NhvaJ2NeciUnM51C148o06P3qKGJSwZ6cx5VsvdxmcRwKotuZA==
+X-Received: by 2002:a17:902:8e8c:b0:1cc:6cc3:d9eb with SMTP id bg12-20020a1709028e8c00b001cc6cc3d9ebmr24187576plb.68.1701455094201;
+        Fri, 01 Dec 2023 10:24:54 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id h2-20020a170902f7c200b001cf7bd9ade5sm344223plw.3.2023.12.01.10.24.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Dec 2023 10:24:50 -0800 (PST)
-Sender: Justin Forbes <jmforbes@linuxtx.org>
-Date:   Fri, 1 Dec 2023 12:24:49 -0600
-From:   Justin Forbes <jforbes@fedoraproject.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, allen.lkml@gmail.com
-Subject: Re: [PATCH 6.6 000/112] 6.6.4-rc1 review
-Message-ID: <ZWokReR-lD3mFIIo@fedora64.linuxtx.org>
-References: <20231130162140.298098091@linuxfoundation.org>
+        Fri, 01 Dec 2023 10:24:53 -0800 (PST)
+Date:   Fri, 1 Dec 2023 10:24:52 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] tracing/uprobe: Replace strlcpy() with strscpy()
+Message-ID: <202312011024.8FD7DD329F@keescook>
+References: <20231130205607.work.463-kees@kernel.org>
+ <20231201152726.91421003ccd64eb5e369043c@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231130162140.298098091@linuxfoundation.org>
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+In-Reply-To: <20231201152726.91421003ccd64eb5e369043c@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 30, 2023 at 04:20:47PM +0000, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.6.4 release.
-> There are 112 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Fri, Dec 01, 2023 at 03:27:26PM +0900, Masami Hiramatsu wrote:
+> On Thu, 30 Nov 2023 12:56:08 -0800
+> Kees Cook <keescook@chromium.org> wrote:
 > 
-> Responses should be made by Sat, 02 Dec 2023 16:21:18 +0000.
-> Anything received after that time might be too late.
+> > strlcpy() reads the entire source buffer first. This read may exceed
+> > the destination size limit. This is both inefficient and can lead
+> > to linear read overflows if a source string is not NUL-terminated[1].
+> > Additionally, it returns the size of the source string, not the
+> > resulting size of the destination string. In an effort to remove strlcpy()
+> > completely[2], replace strlcpy() here with strscpy().
+> > 
+> > The negative return value is already handled by this code so no new
+> > handling is needed here.
+> > 
+> > Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strlcpy [1]
+> > Link: https://github.com/KSPP/linux/issues/89 [2]
+> > Cc: Steven Rostedt <rostedt@goodmis.org>
+> > Cc: Masami Hiramatsu <mhiramat@kernel.org>
+> > Cc: linux-trace-kernel@vger.kernel.org
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.4-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
-> and the diffstat can be found below.
+> Hi Kees,
 > 
-> thanks,
+> As same as sample's change, should I ask you to pick this to your tree?
+> Since it is a kind of a part of series patch. I'm OK for it since this
+> does not change the code so much.
 > 
-> greg k-h
+> In that case, please feel free to add my Ack.
+> 
+> Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-Tested rc1 against the Fedora build system (aarch64, ppc64le, s390x,
-x86_64), and boot tested x86_64. No regressions noted.
+Either way is fine, but I can take it since I've got a few others
+already too. :)
 
-Tested-by: Justin M. Forbes <jforbes@fedoraproject.org>
+Thanks!
+
+-Kees
+
+-- 
+Kees Cook
