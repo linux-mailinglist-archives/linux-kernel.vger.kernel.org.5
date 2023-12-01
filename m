@@ -2,112 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28C70800A5D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 13:06:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22D15800A5B
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 13:05:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378710AbjLAMGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 07:06:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44552 "EHLO
+        id S1378662AbjLAMFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 07:05:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378704AbjLAMGE (ORCPT
+        with ESMTP id S1378677AbjLAMFk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 07:06:04 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CF3D1713
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 04:06:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701432370; x=1732968370;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=RdDrEkMfzxk9kXoil0YGsGW5KjNDzpn5AY23CJu6d6E=;
-  b=V0F9s/J4aRFTaH7SUAct/IeqXVM0bqbNRG04pA6Drq6z535mSCUSqTdf
-   vZl35zVN0l5iQS11dxXGzn5UoJCl64Smn8LAFzxdoYx5x5opVGHRj47dl
-   yswWjcCzzu7PuLxASVGPugDFcDDpvH+xMmJno4b1u5vadvA2QYW7z22DK
-   Xmm6LF9snXr/vmXXjmHYhEIduAOBZMGuRWm5sjEL/G0Fb5GZW3YF+kiXB
-   X2c6H3gTXQWqtidOFoTLggATBSoZm0wH5TCfnXZMdsvS0IMMJ4NRE1SLK
-   bReCuJaHrlyTAzwWj8YEVeCOFolERPBbKNbU4ZjbHjQfCVS5ckPUkI9pw
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="500031"
-X-IronPort-AV: E=Sophos;i="6.04,241,1695711600"; 
-   d="scan'208";a="500031"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2023 04:06:09 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="840165464"
-X-IronPort-AV: E=Sophos;i="6.04,241,1695711600"; 
-   d="scan'208";a="840165464"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 01 Dec 2023 04:06:07 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r92HV-0003dQ-15;
-        Fri, 01 Dec 2023 12:06:05 +0000
-Date:   Fri, 1 Dec 2023 20:05:19 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-Subject: drivers/remoteproc/stm32_rproc.c:139:20: sparse: sparse: incorrect
- type in argument 1 (different address spaces)
-Message-ID: <202312012001.ZnnPjGtU-lkp@intel.com>
+        Fri, 1 Dec 2023 07:05:40 -0500
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EF5C103
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 04:05:46 -0800 (PST)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-206-X74kH0vROIOvVwf52dPxkQ-1; Fri, 01 Dec 2023 12:05:38 +0000
+X-MC-Unique: X74kH0vROIOvVwf52dPxkQ-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 1 Dec
+ 2023 12:05:32 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Fri, 1 Dec 2023 12:05:32 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Arnaldo Carvalho de Melo' <acme@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>
+CC:     Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 1/1] perf beauty: Don't use 'find ... -printf' as it isn't
+ available in busybox
+Thread-Topic: [PATCH 1/1] perf beauty: Don't use 'find ... -printf' as it
+ isn't available in busybox
+Thread-Index: AQHaI9e+SqSraxumCUi58U+dHeCYHbCUUq5A
+Date:   Fri, 1 Dec 2023 12:05:31 +0000
+Message-ID: <ecad5dffa8474ed8a5367e917610e707@AcuMS.aculab.com>
+References: <ZWkEeqdmCHMLhLr2@kernel.org>
+In-Reply-To: <ZWkEeqdmCHMLhLr2@kernel.org>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+Li4uDQo+ICAjIENyZWF0ZSBsaXN0IG9mIGFyY2hpdGVjdHVyZXMgdGhhdCBoYXZlIGEgc3BlY2lm
+aWMgZXJybm8uaC4NCj4gIGFyY2hsaXN0PSIiDQo+IC1mb3IgYXJjaCBpbiAkKGZpbmQgJHRvb2xz
+ZGlyL2FyY2ggLW1heGRlcHRoIDEgLW1pbmRlcHRoIDEgLXR5cGUgZCAtcHJpbnRmICIlZlxuIiB8
+IHNvcnQgLXIpOyBkbw0KPiArZm9yIGFyY2ggaW4gJChmaW5kICR0b29sc2Rpci9hcmNoIC1tYXhk
+ZXB0aCAxIC1taW5kZXB0aCAxIC10eXBlIGQgfCB3aGlsZSByZWFkIGFyY2ggOyBkbyBiYXNlbmFt
+ZQ0KPiAkYXJjaCA7IGRvbmUgfCBzb3J0IC1yKTsgZG8NCj4gIAl0ZXN0IC1mICR0b29sc2Rpci9h
+cmNoLyRhcmNoL2luY2x1ZGUvdWFwaS9hc20vZXJybm8uaCAmJiBhcmNobGlzdD0iJGFyY2hsaXN0
+ICRhcmNoIg0KPiAgZG9uZQ0KDQpKZWVwZXJzIC4uLg0KRG9lcyB0aGlzIHdvcms/DQoJZm9yIGYg
+aW4gJHRvb2xzZGlyL2FyY2gvKi9pbmNsdWRlL3VhcGkvYXNtL2Vycm5vLmg7IGRvDQoJCVsgISAt
+ZiAkZiBdICYmIGJyZWFrDQoJCWQ9JHtmJS9pbmNsdWRlL3VhcGkvYXNtL2Vycm5vLmh9DQoJCWFy
+Y2hsaXN0PSIke2QjIyovfSAkYXJjaGxpc3QiDQoJZG9uZQ0KTm8gZm9yaygpcyBvciBleGVjKClz
+Lg0KSSB0aGluayBpdCBvbmx5IGRpZmZlcnMgaW4gaGF2aW5nIGEgdHJhaWxpbmcgc3BhY2UgaW5z
+dGVhZCBvZiBhIGxlYWRpbmcgb25lLg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNz
+IExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAx
+UFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
 
-First bad commit (maybe != root cause):
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   994d5c58e50e91bb02c7be4a91d5186292a895c8
-commit: 03bd158e1535e68bcd2b1e095b0ebcad7c84bd20 remoteproc: stm32: use correct format strings on 64-bit
-date:   5 months ago
-config: mips-randconfig-r122-20231108 (https://download.01.org/0day-ci/archive/20231201/202312012001.ZnnPjGtU-lkp@intel.com/config)
-compiler: mips-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231201/202312012001.ZnnPjGtU-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312012001.ZnnPjGtU-lkp@intel.com/
-
-sparse warnings: (new ones prefixed by >>)
-   drivers/remoteproc/stm32_rproc.c:122:12: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void *va @@     got void [noderef] __iomem * @@
-   drivers/remoteproc/stm32_rproc.c:122:12: sparse:     expected void *va
-   drivers/remoteproc/stm32_rproc.c:122:12: sparse:     got void [noderef] __iomem *
->> drivers/remoteproc/stm32_rproc.c:139:20: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void *va @@
-   drivers/remoteproc/stm32_rproc.c:139:20: sparse:     expected void const volatile [noderef] __iomem *addr
-   drivers/remoteproc/stm32_rproc.c:139:20: sparse:     got void *va
-   drivers/remoteproc/stm32_rproc.c:644:17: sparse: sparse: cast removes address space '__iomem' of expression
-
-vim +139 drivers/remoteproc/stm32_rproc.c
-
-13140de09cc2dd Fabien Dessenne 2019-05-14  134  
-13140de09cc2dd Fabien Dessenne 2019-05-14  135  static int stm32_rproc_mem_release(struct rproc *rproc,
-13140de09cc2dd Fabien Dessenne 2019-05-14  136  				   struct rproc_mem_entry *mem)
-13140de09cc2dd Fabien Dessenne 2019-05-14  137  {
-13140de09cc2dd Fabien Dessenne 2019-05-14  138  	dev_dbg(rproc->dev.parent, "unmap memory: %pa\n", &mem->dma);
-13140de09cc2dd Fabien Dessenne 2019-05-14 @139  	iounmap(mem->va);
-13140de09cc2dd Fabien Dessenne 2019-05-14  140  
-13140de09cc2dd Fabien Dessenne 2019-05-14  141  	return 0;
-13140de09cc2dd Fabien Dessenne 2019-05-14  142  }
-13140de09cc2dd Fabien Dessenne 2019-05-14  143  
-
-:::::: The code at line 139 was first introduced by commit
-:::::: 13140de09cc2dd5e5166ad42292bb82af4e23cef remoteproc: stm32: add an ST stm32_rproc driver
-
-:::::: TO: Fabien Dessenne <fabien.dessenne@st.com>
-:::::: CC: Bjorn Andersson <bjorn.andersson@linaro.org>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
