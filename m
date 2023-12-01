@@ -2,140 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E295E80117F
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:21:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B82A6801103
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:21:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229874AbjLAQ6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 11:58:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49452 "EHLO
+        id S1378544AbjLAQ65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 11:58:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229890AbjLAQ63 (ORCPT
+        with ESMTP id S229534AbjLAQ64 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 11:58:29 -0500
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2077.outbound.protection.outlook.com [40.107.8.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52E4FC1;
-        Fri,  1 Dec 2023 08:58:35 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=X93isfgIzjqWVo5PwZ0A/OGNAUo898azrF5+fQQzvKo2r6X5b27Z/ck4UIVxhkFYt5HILzYSK/dgZs1t50n/mMMjU+/qitFJcVyYOLPrhFkWPYNrYV+DHmAuO9j6UF7vBEkixuUxnhAlqG12h1Ia0empoJdIL1mlcPvCC4MKf3MP46rYC7dY3BpdpY5wTZ4J5aMTWTUP87TXk4B1PW/cBjI/nqn0HGgPcWT/KJJkUDDGJMfsEavBB61BpKDUICLQOol1HMb41zUCrXO7oHI9CQHDeQ2Desmnlh0sptCclb4dKlCpcn/WBYGawe3fNnteRIbWKGr/gKgmXoYp5PaDxQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=O/1dzKAEEsgGncbJDaoyzJQTECHfD/iDh2etW57YOd0=;
- b=npP320JCQt72OOhYy00ceIxnXi5BILjff6/yG4f8G8tTw15MsClnd1YpLk6YHHEYcTtVqq4v/9jAa5TghgqQYRh2lfdPXrFaG0AR5AMJSWyoXqMGjb2yDj5e6uxrW1cxHRP7nzR9O5iKFJ28jZGanDQqh1M5T1L6S9M9KG1oza2aO4eJrhWc5T6VgcktEpJ3PZWEn9Jc2qQ/d4PgnKD4YAm02gXTXZ5OQsbL7cRMBTabyHcHiuiUJvrWoXVV+d/yiOjBEiEmeUJtFgUY/RnmiAj636pSlxhi/rnfBBeLefb19d2XK3uOQe4w+5+kTR6xdhQ+5PIzUVMHXH6ZWJBKMw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=O/1dzKAEEsgGncbJDaoyzJQTECHfD/iDh2etW57YOd0=;
- b=P3J8HBtfm9u+Rufy5PIc6+/SWrMTO+AHzKAmhlWXMfp81BX1it8ShqJdBVaOlQB12SHIH+QaK6BZdZe9aQXqEnuLy/frUKxNCHfdBAAL3fWyy6Az13isO6twqQpPwU6cRdYBRD2J6TXbq+74Z9jsWoPMhr7Btxz+Wf/mMvNwYXo=
-Received: from AM0PR04MB5956.eurprd04.prod.outlook.com (2603:10a6:208:114::23)
- by AS5PR04MB9800.eurprd04.prod.outlook.com (2603:10a6:20b:677::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.11; Fri, 1 Dec
- 2023 16:58:32 +0000
-Received: from AM0PR04MB5956.eurprd04.prod.outlook.com
- ([fe80::611a:53a9:3185:c548]) by AM0PR04MB5956.eurprd04.prod.outlook.com
- ([fe80::611a:53a9:3185:c548%3]) with mapi id 15.20.7068.012; Fri, 1 Dec 2023
- 16:58:32 +0000
-From:   Roy Zang <roy.zang@nxp.com>
-To:     Frank Li <frank.li@nxp.com>,
-        "manivannan.sadhasivam@linaro.org" <manivannan.sadhasivam@linaro.org>
-CC:     "bhelgaas@google.com" <bhelgaas@google.com>,
-        "imx@lists.linux.dev" <imx@lists.linux.dev>,
-        "kw@linux.com" <kw@linux.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "lpieralisi@kernel.org" <lpieralisi@kernel.org>,
-        "M.H. Lian" <minghuan.lian@nxp.com>,
-        Mingkai Hu <mingkai.hu@nxp.com>,
-        "robh@kernel.org" <robh@kernel.org>
-Subject: RE: [PATCH v5 3/4] PCI: layerscape(ep): Rename pf_* as pf_lut_*
-Thread-Topic: [PATCH v5 3/4] PCI: layerscape(ep): Rename pf_* as pf_lut_*
-Thread-Index: AQHaJHHpb4n5KwIwz0+qhnT7q9yLzLCUpj3g
-Date:   Fri, 1 Dec 2023 16:58:32 +0000
-Message-ID: <AM0PR04MB595652FB78FC4E6ED103B1B38B81A@AM0PR04MB5956.eurprd04.prod.outlook.com>
-References: <20231201161712.1645987-1-Frank.Li@nxp.com>
- <20231201161712.1645987-4-Frank.Li@nxp.com>
-In-Reply-To: <20231201161712.1645987-4-Frank.Li@nxp.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: AM0PR04MB5956:EE_|AS5PR04MB9800:EE_
-x-ms-office365-filtering-correlation-id: 0d11686c-e049-44b8-99cf-08dbf28ec039
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: L6bwJbZAD/xbCNI1pEruegAVfj0F99G6PezsX5avjqj19VaQ0fbNmvSoPJt1IefC1pfF5RcNpX7/UNaEi4707q+A07fJXsbyD4sKoSS9jon9F0mcW2xldEe32G88wTP8gXyhOt2/iIg5l+2bjQaAjP31a5ux/zsswGwcjxD4CLV8wcaKIEBTQhjIB0nDhoU2U4t2ezvFfGdhkSNmBgjONUk2FFdr1z+rEaAS7BHD0fUCgTKrRhzFhaf6pfA1HwfvtTpBN6xifVirlGtsWl6lngjFBTZ3kn6SsjIbZ6ka8RtS9TBzLIO/3pVLM7am83/o9XGBAyRrXoQYiZNo/YCzh80vAM+Z7AANzk1RWu1Jt+1wUKyvlsHaIhHeP1Y6xuj7PErn91cIU97IL5ei0wYnTquITAk2vzpUZIWaLbheudMexOBAHGWh9GA8+/j3SJpoHV0CCA3srznXiKEH2KXTP+sPlfWwEuQDl6LtZMCbWOOQFy2w7dAZIOraxRpK4ZXuZ7eHtUuQBL2Jc8Aigv01BJR0CBW+jdAv4hq7k+WtIYR/D6KnTwHnvOjGX4HJjV+sW9R6hsogE4M+iHvQSwffgfrsWyNEV1VVMwKMaIt5WmWL0iQw4PRyy9H67xBPk05T
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB5956.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(39860400002)(136003)(366004)(396003)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(8676002)(26005)(38070700009)(8936002)(6506007)(9686003)(66446008)(7696005)(66946007)(5660300002)(7416002)(55236004)(52536014)(71200400001)(2906002)(478600001)(41300700001)(316002)(4326008)(110136005)(44832011)(76116006)(66476007)(66556008)(64756008)(4744005)(54906003)(122000001)(86362001)(38100700002)(33656002)(55016003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?EtkFWYZNdk2oQstac0SF2Zjkln/fLjHIJ8eZZYBLxC/zx4pTReDtXJ808AFM?=
- =?us-ascii?Q?eNS3AkPU4vZQDETzmBvKLxZPjLcYCiWLgxda5mXVl7Lv+D5GMy/DUA5bbaIZ?=
- =?us-ascii?Q?7+szD9yWLQR4nNgypAu4wFwIoXgRNDUaMpdQdsbSB/3WJVdP00BtQOQ9nXaT?=
- =?us-ascii?Q?E+iWzdVS05eg25W8i55PS+pafkRmZq83nig1EI39HCHTn7QclA/WiRSnx5pk?=
- =?us-ascii?Q?tJIJC+notmUh7eITzTl2JOh3isM/bzHC5CCBHN0ApkS3LyGiluGhW2vSsxrz?=
- =?us-ascii?Q?40wtIcow/BcOBd3FwhNw2gqr4ZJbh078LYGKLTOxQOpZ2QLkrZrvzs4jbotp?=
- =?us-ascii?Q?ZpoXhMgomMiemY6VfSH7iUm7lOWFdliikPDdcnTTV6fSSt8Ynr9eXZvmrBGR?=
- =?us-ascii?Q?e3wRDvuXFe/dwuiSWi0vzHeIeH17Uen9lmzXyo513+ZHuGWECAmc+amcqQrn?=
- =?us-ascii?Q?TbHY7gWKFYcwXtYNvGtWFfj/rIflOqH8xgUe+/+qwhaSCg3+2FfdIng/o5wN?=
- =?us-ascii?Q?VAcadR9g7DrrOycWdVbXkDYGeVJXwd3zSr89Nm3/sN5P/Isabqebfm/YByh/?=
- =?us-ascii?Q?YCkNmDlQmiweer1e8w1InLkwy4uB9l9z5K/BtSPLvuWbFQ22jbaSKNIbc10b?=
- =?us-ascii?Q?gY8UGdpCB6bjGTVmNz2QrPUcn8dMZXUwU29L9WOG0qilf9mm04WGoXzaN5N9?=
- =?us-ascii?Q?Rnhpp3rXk8BybytXW0uyndeuybe5Vgnc/ByC0knpdNkzDB6pTGNkpap44LPp?=
- =?us-ascii?Q?rTERky9gju2HVqmVRN7Nl1hnDMzv8HuGQtI+NW53we5eHOQ4Tak9sZXYXkxQ?=
- =?us-ascii?Q?YYo4GEmSzBE1PM6DoRSUzlVNuo2w3KTxSK2QpovgoNG4bfmxHP8QG1Nz01fu?=
- =?us-ascii?Q?jrFudltBPkMXZfiMx8s7WeIRGBi853kxRTk+z2ZgAD4tQaP88WHcZYzqQbDf?=
- =?us-ascii?Q?970vIucAzH5xpQj+aoEyPIDPWGjYgzotw2VwW4vElYpMKtpn1+gZXOSTdGne?=
- =?us-ascii?Q?LRkmb1kdYIb82BwNJwe+RyLNhyRJl6ydfRwBS8R6NEVoqWbD5tB2X7mZgnQ7?=
- =?us-ascii?Q?h3wS1eMV7G7LE+lL7ByMy84jf21gcTgLMNNnb1wpKI65QVkEVImdNEaqOPX7?=
- =?us-ascii?Q?PMKAVQfgha/Ls1yYESQbU9R1QPIVfozpFCnY47d2kjgEpIT7UxrQ9eg6o72T?=
- =?us-ascii?Q?u85a51T2kdF26lwSRnkUk8O89QY/vCgDvLa8i3i5z56vQSEo+9NJTXVJm3ay?=
- =?us-ascii?Q?xvEQnJpIVZgPYA/VEXySInP6DXnyOokdQER0Ys2Gu5kITYv1EiZ0YBOFRd5w?=
- =?us-ascii?Q?sVUWpdNAr+U+/sSG8nI64Qqvi8OF95Ju+s0JA2DnEeXt/TkZaNcE7DxwcJ18?=
- =?us-ascii?Q?Ydjgi6WSLz2xODD8xpCzUjOSPapb0IYityGtT7gPezOTsCWfrUcakKx5ogOu?=
- =?us-ascii?Q?+3CdpUE8lV1oE17ApOGLqsMQ8iDslcybZDl4fZT70a+R300YtoGrSoP5liP1?=
- =?us-ascii?Q?o++YONqpbfVnC/2m7EZ2sfR97C1tgGZWkgdoJx2skmNcw7+JeoDk7XjcWsJZ?=
- =?us-ascii?Q?kHETmyi3kPMoOs/MiQw=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Fri, 1 Dec 2023 11:58:56 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28555C1
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 08:59:03 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3BC7C433C9;
+        Fri,  1 Dec 2023 16:58:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701449942;
+        bh=ySU1Do4RoJYFQTmBppKfMwL1Zs9QJ8j0N4J7GgsQg9A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=S16GIxoMRd4elQiyuXo8z2fG6ZF6RPsXHnh/XMUeZmtFYmLAW06VSOwXYTkMifDbx
+         fOvjwqokKn4G/HI9ygdQjVbvlljIH6+Z5DeWBhpqJ7Ugplw0po37kAT6Y2l5/Osv9N
+         jdsPF8mTqtd5Uy6yFU66y+dOQKGQxAeaQ4rUhrpOMh6wD/M6w+qiv1Q0bRHVuZ7seF
+         QZLIiv/fZRavvt0T7bLIuWXAnQi6nb2wi4HEL7z/hnVCy6Qrs3W4E6RvWav0NHYSta
+         v+V0OlZweKRyXTkSdguQRy+/qCMV2oFzBaAGntoLQ8eMluGwZ+Kdc2/LRlO9rmljXw
+         OmDzevbcsXuWw==
+Date:   Fri, 1 Dec 2023 16:58:55 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        will@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com,
+        James Clark <james.clark@arm.com>,
+        Rob Herring <robh@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Suzuki Poulose <suzuki.poulose@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH V15 1/8] arm64/sysreg: Add BRBE registers and fields
+Message-ID: <fd278f4e-0632-4474-8609-7711ad725f85@sirena.org.uk>
+References: <20231201053906.1261704-1-anshuman.khandual@arm.com>
+ <20231201053906.1261704-2-anshuman.khandual@arm.com>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB5956.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0d11686c-e049-44b8-99cf-08dbf28ec039
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Dec 2023 16:58:32.6815
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: N06OkMYqzfUXQQmPe0y6uJlLcJYD+kHRzApMacjMn0iKuPxK3+Fm1zH/X5sBt0rD4cOZT+LMqwpllz4+6RhCwg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS5PR04MB9800
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="JISdTfvGKwhKa25v"
+Content-Disposition: inline
+In-Reply-To: <20231201053906.1261704-2-anshuman.khandual@arm.com>
+X-Cookie: The early worm gets the late bird.
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Frank Li <frank.li@nxp.com>
-> Subject: [PATCH v5 3/4] PCI: layerscape(ep): Rename pf_* as pf_lut_*
->=20
-> 'pf' and 'lut' is just difference name in difference chips, but basic it =
-is a MMIO
-> base address plus an offset.
->=20
-> Rename it to avoid duplicate pf_* and lut_* in driver.
->=20
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
-Acked-by:  Roy Zang <Roy.Zang@nxp.com>
-Roy
+
+--JISdTfvGKwhKa25v
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Dec 01, 2023 at 11:08:59AM +0530, Anshuman Khandual wrote:
+
+This looks good apart from a few small omissions:
+
+> +SysregFields BRBINFx_EL1
+
+> +Enum	13:8		TYPE
+> +	0b000000	UNCOND_DIRECT
+> +	0b000001	INDIRECT
+> +	0b000010	DIRECT_LINK
+> +	0b000011	INDIRECT_LINK
+> +	0b000101	RET
+> +	0b000111	ERET
+> +	0b001000	COND_DIRECT
+> +	0b100001	DEBUG_HALT
+> +	0b100010	CALL
+> +	0b100011	TRAP
+> +	0b100100	SERROR
+> +	0b100110	INSN_DEBUG
+> +	0b100111	DATA_DEBUG
+> +	0b101010	ALIGN_FAULT
+> +	0b101011	INSN_FAULT
+> +	0b101100	DATA_FAULT
+> +	0b101110	IRQ
+> +	0b101111	FIQ
+> +	0b111001	DEBUG_EXIT
+> +EndEnum
+
+DDI0601 2023-09 also defines 0b110000 as an IMPLEMENTATION DEFINED
+exception to EL3.
+
+> +SysregFields	BRBCR_ELx
+> +Res0	63:24
+> +Field	23 	EXCEPTION
+> +Field	22 	ERTN
+> +Res0	21:9
+
+DDI0601 2023-09 defines bit 9 as FZPSS.
+
+> +Sysreg	BRBINFINJ_EL1	2	1	9	1	0
+
+> +Enum	13:8		TYPE
+> +	0b000000	UNCOND_DIRECT
+> +	0b000001	INDIRECT
+> +	0b000010	DIRECT_LINK
+> +	0b000011	INDIRECT_LINK
+> +	0b000101	RET
+> +	0b000111	ERET
+> +	0b001000	COND_DIRECT
+> +	0b100001	DEBUG_HALT
+> +	0b100010	CALL
+> +	0b100011	TRAP
+> +	0b100100	SERROR
+> +	0b100110	INSN_DEBUG
+> +	0b100111	DATA_DEBUG
+> +	0b101010	ALIGN_FAULT
+> +	0b101011	INSN_FAULT
+> +	0b101100	DATA_FAULT
+> +	0b101110	IRQ
+> +	0b101111	FIQ
+> +	0b111001	DEBUG_EXIT
+> +EndEnum
+
+DDI0601 2023-09 also defines 0b11000 as IMPLEMENTATION DEFINED exception
+to EL3.
+
+--JISdTfvGKwhKa25v
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVqEM8ACgkQJNaLcl1U
+h9CdgAf+PuTg+CfzlrPSJrZ9Z36MlL8ZKYtD9hjauM4agzZsJ0u0RLkbkBRi6R+q
+fcLF3WcaI80+35YGa/1BIyM4qYmO7JJNVDvZNf0E6dL7FzPgf499sOSxYHIn8zWP
+5sRunmMDycdZlXGSRVVB+oTf5lFeMT9aKy765546cMNspxDbCOBUBCUcw5I/dxQG
+nuzCEyADW36yKxodStDCx6Jptz8dO3qF0r02YEoc/xCNSXv4lG9CLrM0acDXxyZ/
+BwvWOvSlv66Ta+QM/DL4UhcditW+HXHK71OPD2q/xhSjI41z6tMxKtZwQ02cFO/Z
+cfl0g+Aj1tfzyQdK6OTLxP+i4lASSw==
+=Zs5/
+-----END PGP SIGNATURE-----
+
+--JISdTfvGKwhKa25v--
