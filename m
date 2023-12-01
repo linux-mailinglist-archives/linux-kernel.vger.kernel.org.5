@@ -2,82 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25307800FB4
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 17:13:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C7AA800FC7
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 17:13:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379469AbjLAPes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 10:34:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53890 "EHLO
+        id S1379473AbjLAPfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 10:35:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379426AbjLAPer (ORCPT
+        with ESMTP id S1379464AbjLAPfN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 10:34:47 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0022C194;
-        Fri,  1 Dec 2023 07:34:53 -0800 (PST)
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B1CCNJD031400;
-        Fri, 1 Dec 2023 15:34:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : from : to : cc : references : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=0ZklXZgMgNVIXFADu1Td3CAYvg3iYt75Ybl27HxE12c=;
- b=EKGMR8Zx1hwG/PNhEmIVoxqRqsdQkOuja1cf7g9k48SdbbLfHpGhNUo8My422KnrluIS
- nsoseuycJcNaPcA/IC9KRLzPwdhhziMADIwxRkxCLvzHEMmjQRc6fI2Z2mXEvvZ0rlDd
- lwnJcafO7mJ5kEV/h/gJVbv7E7AQHjroXxteozzFdS4j/nh9/KPsL2wrN50GRPyLgYNc
- nBUrAgSWZex1rM7Q8Is56gqCAmZYZ3d8sWEw31G6DcaD2P5E3NhtOMwwzto8uJRSSX5u
- Mw9WGNhOHBMDURlnY31SqhJ9NgjfI8rFZcb/rMntp8eO9JBNaxHhadNQIBHjwC/+Km2N Bw== 
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uq6dkssbr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 01 Dec 2023 15:34:46 +0000
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B1FYjdP009513
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 1 Dec 2023 15:34:45 GMT
-Received: from [10.239.133.73] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 1 Dec
- 2023 07:34:43 -0800
-Message-ID: <e011b3e9-7c09-4214-8e9c-90e12c38bbaa@quicinc.com>
-Date:   Fri, 1 Dec 2023 23:34:40 +0800
+        Fri, 1 Dec 2023 10:35:13 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C77E31B2
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 07:35:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701444919;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TsjGSOYFgl6bCPMlmbPKHSuXPWM19efMk5kmhq6NZWE=;
+        b=aBQ6pxBerSqS3mT72hZ/ld3+b64lESEDG6P/TzDsF/M1u+evW7C/1pRPh8r3+RqkK/zJXn
+        UinTBHMGEwyQZXYEa06hl0wKuhEJvNidUezPDMZg88NBGgHefxbh20Fl0y23NO222VMDU8
+        buPXCBE/4S1YxkclObdFj/RQe5gfzAI=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-637-9wH9prGVNDmBGbX5YQxUpg-1; Fri, 01 Dec 2023 10:35:17 -0500
+X-MC-Unique: 9wH9prGVNDmBGbX5YQxUpg-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-333305a3d94so545140f8f.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 07:35:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701444916; x=1702049716;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TsjGSOYFgl6bCPMlmbPKHSuXPWM19efMk5kmhq6NZWE=;
+        b=RhqAEman1p6uYkxrVeKQ/HijCHjweRbcW5yWUdgUUfd/VPYyyRGvGWVGnPd1oIZqJJ
+         aaXpooE8fzl2Kq0wGhQesNEH7byV260KPAA1mD/rPLikCytQUqj4FVk0tyrho6/mb/ja
+         Bsa/Hkwm0fio0tncCn5rA8qkozCgoqfIYox1blv24jp20/tyXUNmgH30ha+NGW1jHN0f
+         gZRh8d2TcW+OLWZG5IMcZQDVYga9t3FVr0MCg4/pXX+11qMhlv2+a4rry+479DIU5Nqw
+         xVwnoFsj0H/ZlffVMnXHGd4u6Ir7WmGfbHXuFz0g6wnrBSnQkL6red/nTfJ+fBUWoTU+
+         XRnA==
+X-Gm-Message-State: AOJu0YwbFLDfgZHY4Ai9ZXexVQfF3GXDfROii+6XQHQ2J3Wha8ZWpj0S
+        qnvaI7Kz+LI2njmu+hC/rLMElQl8Jd/DoGIeZxTGxaZcQYTmgdWSLohDT/Y2yWkAQTox5QZUkid
+        XA1Km6QC6UxWxxAJI5jL8U6/qZ2dg7iuyR+otUxZi
+X-Received: by 2002:a5d:54c7:0:b0:333:2d34:3ef4 with SMTP id x7-20020a5d54c7000000b003332d343ef4mr965968wrv.9.1701444916122;
+        Fri, 01 Dec 2023 07:35:16 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHMxld/P6Ep7Ts48kNdUIEhlNH5IuBjgjyNuxuJuLeyrfLAReZ3kUO2FrhzFpuKR1USJXhJldpEuSSF+mfQ9jU=
+X-Received: by 2002:a5d:54c7:0:b0:333:2d34:3ef4 with SMTP id
+ x7-20020a5d54c7000000b003332d343ef4mr965958wrv.9.1701444915844; Fri, 01 Dec
+ 2023 07:35:15 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [GIT PULL] Pin control fixes for v6.7
-From:   "Aiqun(Maria) Yu" <quic_aiquny@quicinc.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-CC:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Chester Lin <clin@suse.com>
-References: <CACRpkdZtVNZFWSUgb4=gUE2mQRb=aT_3=zRv1U71Vsq0Mm34eg@mail.gmail.com>
- <CAHk-=whk4oNQazgpzkujc2=ntVQMhU5ko7Canp2Uuq6CpyGzmA@mail.gmail.com>
- <CACRpkdZRf7bNVmJCgsVD0uheD1VLkLKG13d1oS-kbT8BFyRKQw@mail.gmail.com>
- <e703c87e-32b9-4dce-b232-89c0e909c35e@quicinc.com>
- <CACRpkdZtCxwLZCY4autrTvonmZ3XcVzH6iXqXanS97VKCZ+ERw@mail.gmail.com>
- <9714f76f-0cf3-4f54-8e0d-fe3ca2990eed@quicinc.com>
-In-Reply-To: <9714f76f-0cf3-4f54-8e0d-fe3ca2990eed@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 27hOuwpan4iuFUsE4ei40XA481AewGt6
-X-Proofpoint-GUID: 27hOuwpan4iuFUsE4ei40XA481AewGt6
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-01_13,2023-11-30_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- priorityscore=1501 adultscore=0 impostorscore=0 mlxscore=0 malwarescore=0
- phishscore=0 suspectscore=0 spamscore=0 lowpriorityscore=0 bulkscore=0
- mlxlogscore=958 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2312010108
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+References: <169783215859.257534.17071765559550518745@demetrius> <ZWhgT8s2BDZ566F6@duo.ucw.cz>
+In-Reply-To: <ZWhgT8s2BDZ566F6@duo.ucw.cz>
+From:   Clark Williams <williams@redhat.com>
+Date:   Fri, 1 Dec 2023 15:35:04 +0000
+Message-ID: <CAMLffL-kJzqGBAhWyNEixz_HMNzDfmi=94Ltux-L-5iC=kUK6g@mail.gmail.com>
+Subject: Re: [ANNOUNCE] 6.1.59-rt16
+To:     Pavel Machek <pavel@denx.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Carsten Emde <C.Emde@osadl.org>,
+        John Kacur <jkacur@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Daniel Wagner <daniel.wagner@suse.com>,
+        Tom Zanussi <tom.zanussi@linux.intel.com>,
+        Joseph Salisbury <joseph.salisbury@canonical.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,133 +84,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/1/2023 6:06 PM, Aiqun(Maria) Yu wrote:
-> On 12/1/2023 4:10 PM, Linus Walleij wrote:
->> Hi Nathan, Nick,
->>
->> (just picking some LLVM compiler people I know of... and trust)
->>
->> Context is this patch:
->> https://lore.kernel.org/linux-gpio/20231115102824.23727-1-quic_aiquny@quicinc.com/
->>
->> On Thu, Nov 30, 2023 at 6:37 AM Aiqun(Maria) Yu 
->> <quic_aiquny@quicinc.com> wrote:
->>> On 11/29/2023 11:08 PM, Linus Walleij wrote:
->>>> On Wed, Nov 29, 2023 at 3:56 PM Linus Torvalds
->>>> <torvalds@linux-foundation.org> wrote:
->>>>> On Wed, 29 Nov 2023 at 04:09, Linus Walleij 
->>>>> <linus.walleij@linaro.org> wrote:
->>>>>>
->>>>>> The most interesting patch is the list iterator fix in the core by 
->>>>>> Maria
->>>>>> Yu, it took a while for me to realize what was going on there.
->>>>>
->>>>> That commit message still doesn't explain what the problem was.
->>>>>
->>>>> Why is p->state volatile there? It seems to be a serious locking bug
->>>>> if p->state can randomly change there, and the READ_ONCE() looks like
->>>>> a "this hides the problem" rather than an actual real fix.
->>>
->>> This is indeed an interesting issue. Thx for the comment, Linus.
->>> **Let me explain how: "p->state becomes volatile in the list iterator",
->>> and "why READ_ONCE is suggested".
->>>
->>> The current critical code is:
->>>     list_for_each_entry(setting, &p->state->settings, node)
->>>
->>> after elaborating the define list_for_each_entry, so above critical code
->>> will be:
->>>     for (setting = list_head(&p->state->settings, typeof(*setting), 
->>> node); \
->>> &setting->node != (&p->state->settings); \
->>> setting = list_next(setting , node))
->>>
->>> The asm code(refer result from Clang version 10.0) can cleared explain
->>> the step of p->state reload actions:
->>> loop:
->>> ldr x22,[x22] ; x22=list_next(setting , node))
->>> add x9,x8,#0x18 ; x9=&p->state->setting
->>> cmp x22,x9 ; setting,x9
->>> b.eq 0xFFFFFF9B24483530
->>>
->>> ldr w9,[x22,#0x10] ; w9,[setting,#16]
->>> cmp w9,#0x2 ; w9,#2
->>> b.ne 0xFFFFFF9B24483504
->>>
->>> mov x0,x22 ; x0,setting
->>> bl 0xFFFFFF9B24486048 ; pinmux_disable_setting
->>>
->>> ldr x8,[x19,#0x28] ; x19=p, x8=[p->state], *reload p->state*
->>> b loop
->>>
->>> The *reload p->state* inside the loop for checking is not needed and can
->>> cause possible infinite loop. So READ_ONCE is highly suggested even if
->>> p->state is not randomly changed. And then unnecessary "ldr
->>> x8,[x19,#0x28]" can be removed from above loop code.
->>>
->>> **Comments about the locking bug:
->>> currently pinctrl_select_state is an export symbol and don't have
->>> effective reentrance protect design. That's why current infinite loop
->>> issue was observed with customer's multi thread call with
->>> pinctrl_select_state without lock protection. pinctrl_select_state
->>> totally rely on driver module user side to ensure the reentrant state.
->>>
->>> Usually the suggested usage from driver side who are using pinctrl 
->>> would be:
->>> LOCK;
->>> pinctrl_select_state();
->>> gpio pulling;
->>> udelay();
->>> check state;
->>> other hardware behaviors;
->>> UNLOCK;
->>>
->>> So the locking bug fix I have told customer side to fix from their own
->>> driver part. Since usually not only a simple pinctrl_select_state call
->>> can finish the hardware state transaction.
->>>
->>> I myself also is fine to have a small per pinctrl lock to only protect
->>> the current pinctrl_select_state->pinctrl_commit_state reentrance
->>> issues. Pls any pinctrl maintainer help to comment to suggest or not and
->>> I can prepare a change as well.
->>
->> Luckily I am the pin control maintainer :D
->> And I also ha my morning coffee and looked over the patch again.
->>
->> So tilting the compiler to generate code that is less prone to race
->> conditions with READ_ONCE() isn't really the solution is it? We need
->> to introduce a proper lock that stops this from happening if it is
->> a problem people are facing.
->>
->> Can you try to make a patch that removes READ_ONCE()
->> and introduce a lock instead?
->>
->> Racing is rarely an issue in pin control for reasons explained
->> in another context here:
->> https://lore.kernel.org/linux-gpio/CACRpkdZ0cnJpYuzU=47-oW-7N_YGMo2vXpKOeXeNi5PhPY7QMA@mail.gmail.com/
->>
->> ...but if people still manage to run into it, we better have a lock
->> there. Just make sure it is not just an issue with outoftree code,
->> but a real problem?
->>
->> The change that changes the code to use the old_state variable
->> should stay in, it makes the code more readable, it's just the
->> READ_ONCE() macro which is dubious.
-> Thx for confirm. I am preparing the new change now. :)
-change uploaded link here:
-https://lore.kernel.org/linux-gpio/20231201152931.31161-1-quic_aiquny@quicinc.com/ 
+Pavel,
 
-> 
-> READ_ONCE can only avoid the possible infinite loop and not crash the 
-> whole kernel, while the lock is needed to protect the multi parallel 
-> call of pinctrl_commit_state api have a consistent atomic hardware 
-> result as well.
->>
->> Yours,
->> Linus Walleij
-> 
+I'm working on the v6.1.64 update now, should have something for you by Mon=
+day.
 
--- 
-Thx and BRs,
-Aiqun(Maria) Yu
+Clark
+
+On Thu, Nov 30, 2023 at 10:13=E2=80=AFAM Pavel Machek <pavel@denx.de> wrote=
+:
+>
+> Hi!
+>
+> > I'm pleased to announce the 6.1.59-rt16 stable release.
+>
+> We'd like to -cip-rt release "soon", so I'd like to ask what are the
+> chances of -rt release in next week or so?
+>
+> Thanks and best regards,
+>                                                                     Pavel
+> --
+> DENX Software Engineering GmbH,        Managing Director: Erika Unter
+> HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
 
