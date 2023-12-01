@@ -2,122 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5DB3801268
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 19:17:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B71A5801270
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 19:18:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230262AbjLASRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 13:17:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38518 "EHLO
+        id S1379134AbjLASR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 13:17:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjLASRB (ORCPT
+        with ESMTP id S229454AbjLASRz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 13:17:01 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A70CF9
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 10:17:04 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1d048c171d6so7337015ad.1
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 10:17:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1701454624; x=1702059424; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=80BOfbzU3jRYQRqKUun9qybGXNm0Ak9QPhMAb8Oq5lY=;
-        b=ME+7xuShkkCd0062a9EL0L48UcVgl2XNVW5BRL6HrY/mg3DiShxSdpn7IJmQxj/w1W
-         y6Kih+9DYWaLfoqYp+5pe938En1UXK6dzqyoieMKZZnN5wPV/Uq1I9TVzm7jMnnSzyry
-         5cZjnWvfXpQLdgXob0ttJuENteq2/BltyHmws=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701454624; x=1702059424;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=80BOfbzU3jRYQRqKUun9qybGXNm0Ak9QPhMAb8Oq5lY=;
-        b=JVhcVt0tLWvvcBiabuT06iTW33tvqa/R+debx4TPaNcifu4ldMHAeM1jNUJSHi+oJL
-         FybYLwb78o8PLDYho+ULmP/taXJY7F1own1Ckb9Ari4Umq8+4PMxhdqdWAyYfNZwYvhw
-         eItGMihB6huRIvJvgHKSfPXSB70Ih7Xy44r/Ju4dvtZaXmNyD5C+HJf9KXHMPN4+7/tX
-         tgJjPxrUztkFeal1NV+TkF+WASxByKAw625X6IOnzH8f+DX120UoEW+Nj8f/N9yCw6Fx
-         67JPL1dJzdgHJ12IgrRTfs1p4lNa+hS+r7ph00T3UK/ARkJfNHB0FarpmcR/fb5Inw9t
-         mbbw==
-X-Gm-Message-State: AOJu0Yym5SAH7nwlJhWhSDLZFPX4JXxx1UABU3zgNYk4pwUapW+rUFUU
-        FMzPGqXEqWBug+auEEq15hoHOg==
-X-Google-Smtp-Source: AGHT+IHL4QH3wU1zQC3wiy9r3528WOQq1iSHFfDCieTdatztPnIyrMoq50t3CKZORUjazAX/9P8zkg==
-X-Received: by 2002:a17:902:db06:b0:1cf:c376:6d7f with SMTP id m6-20020a170902db0600b001cfc3766d7fmr26246754plx.42.1701454623948;
-        Fri, 01 Dec 2023 10:17:03 -0800 (PST)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id l6-20020a170902d34600b001cfb99d8b82sm1570921plk.136.2023.12.01.10.17.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Dec 2023 10:17:03 -0800 (PST)
-Date:   Fri, 1 Dec 2023 10:17:02 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     kernel test robot <lkp@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Jeff Johnson <quic_jjohnson@quicinc.com>,
-        Michael Walle <mwalle@kernel.org>,
-        Max Schulze <max.schulze@online.de>, netdev@vger.kernel.org,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] netlink: Return unsigned value for nla_len()
-Message-ID: <202312010953.BEDC06111@keescook>
-References: <20231130200058.work.520-kees@kernel.org>
- <20231130172520.5a56ae50@kernel.org>
+        Fri, 1 Dec 2023 13:17:55 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A4EE10D
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 10:18:02 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85ACAC433C7;
+        Fri,  1 Dec 2023 18:18:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701454681;
+        bh=ujCjp75X8yi+WvQp0VZeg+iQb5i3JpQWywg/I5QIQBI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZGaKbsUpWLmQ+x99zErN9VEnQZkJDK2RXwFBwKt9EkRarBXR4Eq+oRs9CTm7VRogN
+         7CXUVH2iRK5JimTZJSit/XUgSn0e4pVksPYOo8ft0SLJf16t1yF6roxVv+Zg+CLbIa
+         sSjydc7rreEqs7iTUfOC8jFCVWVmFCYl5UURZVlCmu9pQ0TJbc5ezvtkBajPAVJGWV
+         stUE1Q5SbW+VbUiicRRVuxYvkTKpQattI4R2PoYhqSsmuc+paipASOfjZQuVQOGOBE
+         x0Xa2wjFsNiGAdD11zOBFpltnEO56LzG+qJQ3G4KK1C9ngKquLfHNgx7kXYyxDh8S4
+         vyLb93E9AgRtw==
+Date:   Fri, 1 Dec 2023 12:18:00 -0600
+From:   "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     Serge Hallyn <serge@hallyn.com>, Paul Moore <paul@paul-moore.com>,
+        Eric Paris <eparis@redhat.com>,
+        James Morris <jmorris@namei.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Amir Goldstein <amir73il@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, audit@vger.kernel.org,
+        linux-unionfs@vger.kernel.org
+Subject: Re: [PATCH 09/16] fs: add vfs_set_fscaps()
+Message-ID: <ZWojWE7/HRnByRb+@do-x1extreme>
+References: <20231129-idmap-fscap-refactor-v1-0-da5a26058a5b@kernel.org>
+ <20231129-idmap-fscap-refactor-v1-9-da5a26058a5b@kernel.org>
+ <20231201-reintreten-gehalt-435a960f80ed@brauner>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231130172520.5a56ae50@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231201-reintreten-gehalt-435a960f80ed@brauner>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 30, 2023 at 05:25:20PM -0800, Jakub Kicinski wrote:
-> On Thu, 30 Nov 2023 12:01:01 -0800 Kees Cook wrote:
-> > This has the additional benefit of being defensive in the face of nlattr
-> > corruption or logic errors (i.e. nla_len being set smaller than
-> > NLA_HDRLEN).
+On Fri, Dec 01, 2023 at 06:39:18PM +0100, Christian Brauner wrote:
+> > +/**
+> > + * vfs_set_fscaps - set filesystem capabilities
+> > + * @idmap: idmap of the mount the inode was found from
+> > + * @dentry: the dentry on which to set filesystem capabilities
+> > + * @caps: the filesystem capabilities to be written
+> > + * @flags: setxattr flags to use when writing the capabilities xattr
+> > + *
+> > + * This function writes the supplied filesystem capabilities to the dentry.
+> > + *
+> > + * Return: 0 on success, a negative errno on error.
+> > + */
+> > +int vfs_set_fscaps(struct mnt_idmap *idmap, struct dentry *dentry,
+> > +		   const struct vfs_caps *caps, int flags)
+> > +{
+> > +	struct inode *inode = d_inode(dentry);
+> > +	struct inode *delegated_inode = NULL;
+> > +	struct vfs_ns_cap_data nscaps;
+> > +	int size, error;
+> > +
+> > +	/*
+> > +	 * Unfortunately EVM wants to have the raw xattr value to compare to
+> > +	 * the on-disk version, so we need to pass the raw xattr to the
+> > +	 * security hooks. But we also want to do security checks before
+> > +	 * breaking leases, so that means a conversion to the raw xattr here
+> > +	 * which will usually be reduntant with the conversion we do for
+> > +	 * writing the xattr to disk.
+> > +	 */
+> > +	size = vfs_caps_to_xattr(idmap, i_user_ns(inode), caps, &nscaps,
+> > +				 sizeof(nscaps));
+> > +	if (size < 0)
+> > +		return size;
 > 
-> As Johannes predicted I'd rather not :(
+> Oh right, I remember that. Slight eyeroll. See below though...
 > 
-> The callers should put the nlattr thru nla_ok() during validation
-> (nla_validate()), or walking (nla_for_each_* call nla_ok()).
+> > +
+> > +retry_deleg:
+> > +	inode_lock(inode);
+> > +
+> > +	error = xattr_permission(idmap, inode, XATTR_NAME_CAPS, MAY_WRITE);
+> > +	if (error)
+> > +		goto out_inode_unlock;
+> > +	error = security_inode_setxattr(idmap, dentry, XATTR_NAME_CAPS, &nscaps,
+> > +					size, flags);
+> > +	if (error)
+> > +		goto out_inode_unlock;
 > 
-> > -static inline int nla_len(const struct nlattr *nla)
-> > +static inline u16 nla_len(const struct nlattr *nla)
-> >  {
-> > -	return nla->nla_len - NLA_HDRLEN;
-> > +	return nla->nla_len > NLA_HDRLEN ? nla->nla_len - NLA_HDRLEN : 0;
-> >  }
+> For posix acls I added dedicated security hooks that take the struct
+> posix_acl stuff and then plumb that down into the security modules. You
+> could do the same thing here and then just force EVM and others to do
+> their own conversion from in-kernel to xattr format, instead of forcing
+> the VFS to do this.
 > 
-> Note the the NLA_HDRLEN is the length of struct nlattr.
-> I mean of the @nla object that gets passed in as argument here.
-> So accepting that nla->nla_len may be < NLA_HDRLEN means
-> that we are okay with dereferencing a truncated object...
+> Because right now we make everyone pay the price all the time when
+> really EVM should pay that price and this whole unpleasantness.
+
+Good point, I'll do that.
+
 > 
-> We can consider making the return unsinged without the condition maybe?
+> > +
+> > +	error = try_break_deleg(inode, &delegated_inode);
+> > +	if (error)
+> > +		goto out_inode_unlock;
+> > +
+> > +	if (inode->i_opflags & IOP_XATTR) {
+> 
+> So I'm trying to remember the details how I did this for POSIX ACLs in
+> commit e499214ce3ef ("acl: don't depend on IOP_XATTR"). I think what you
+> did here is correct because you need to have an xattr handler for
+> fscaps currently. IOW, it isn't purely based on inode operations.
+> 
+> And here starts the hate mail in so far as you'll hate me for asking
+> this:
+> 
+> I think I asked this before when we talked about this but how feasible
+> would it be to move fscaps completely off of xattr handlers and purely
+> on inode operations for all filesystems?
+> 
+> Yes, that's a fairly large patchset but it would also be a pretty good
+> win because we avoid munging this from inode operations through xattr
+> handlers again which seems a bit ugly and what we really wanted to
+> avoid desperately with POSIX ACLs.
+> 
+> If this is feasible and you'd be up for it I wouldn't even mind doing
+> that in two steps. IOW, merge something like this first and them move
+> everyone off of their individual xattr handlers.
+> 
+> Could you quickly remind me whether there would be any issues with this?
 
-Yes, if we did it without the check, it'd do "less" damage on
-wrap-around. (i.e. off by U16_MAX instead off by INT_MAX).
+It's certainly possible to do this. There wouldn't be any issues per se,
+but there are some tradoffs to consider.
 
-But I'd like to understand: what's the harm in adding the clamp? The
-changes to the assembly are tiny:
-https://godbolt.org/z/Ecvbzn1a1
+First, it's really only overlayfs that needs special handling. It seems
+pretty unfortunate to make every filesystem provide its own
+implementations which are virtually identical, which is what we'd need
+to do if we want to completely avoid the xattr handlers. But we could
+still provide a generic implementation that uses only
+__vfs_{get,set}xattr(), and most filesystems could use those in their
+inode ops. How does that sound?
 
-i.e. a likely dropped-from-the-pipeline xor and a "free" cmov (checking
-the bit from the subtraction). I don't think it could even get measured
-in real-world cycle counts. This is much like the refcount_t work:
-checking for the overflow condition has almost 0 overhead.
-
-(It looks like I should use __builtin_sub_overflow() to correctly hint
-GCC, but Clang gets it right without such hinting. Also I changed
-NLA_HDRLEN to u16 to get the best result, which suggests there might be
-larger savings throughout the code base just from that change...)
-
--- 
-Kees Cook
+The other drawback I see is needing to duplicate logic from the
+{get,set}xattr codepaths into the fscaps codepaths and maintain them in
+parallel. I was trying to avoid that as much as possible, but in the end
+I had to duplicate some of the logic anyway. And as Amir pointed out I
+did miss some things I needed to duplicate from the setxattr logic, so I
+already need to revisit that code and probably pull in more of the
+setxattr logic, so there may not be as much benefit here as I'd
+originally hoped.
