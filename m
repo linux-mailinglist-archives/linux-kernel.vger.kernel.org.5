@@ -2,110 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CE8D800D11
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 15:22:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66283800D13
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 15:24:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379156AbjLAOWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 09:22:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54808 "EHLO
+        id S1379159AbjLAOYM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 09:24:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379143AbjLAOWV (ORCPT
+        with ESMTP id S1379143AbjLAOYL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 09:22:21 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8723310F0
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 06:22:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701440547; x=1732976547;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=BPLVm0NmvvEtXLrMNI/giTZDx3EOgxRyFpu+roO4UZI=;
-  b=LjAkCl0QJ68QSF8jG2YkWGLuc61GtkEY4jDwtO3pKpLLcJsKTjBpnMqj
-   qlMG1D+EPPOgQqTXYHojG4lfDUjZyGDqx6AlY2mrYTWSEm9OleHI+Z0Sc
-   ZM+wvBf3HFaIDUwpJPR3BwwbZ6PDXGoT8P50leaUJY/AXHMXewg4w7p6c
-   qGv3H7RAN+94i3rpQZ8Xov0QghdDs5PzwOW686TwiZFulgTNp1GlNhe3B
-   Ki8zG+8SuCOPin2kBuux5THcdnXzZGK0HJFyA4LM1WM4vukcYpfbgIy0N
-   bBIEJEvRLG8aZGn1BZuonx++jAooKzjqHXKyviAhTUvNP0S7wYjQjH9rh
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="524876"
-X-IronPort-AV: E=Sophos;i="6.04,241,1695711600"; 
-   d="scan'208";a="524876"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2023 06:22:27 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="773453108"
-X-IronPort-AV: E=Sophos;i="6.04,241,1695711600"; 
-   d="scan'208";a="773453108"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga007.fm.intel.com with ESMTP; 01 Dec 2023 06:22:25 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r94PQ-0003nM-00;
-        Fri, 01 Dec 2023 14:22:24 +0000
-Date:   Fri, 1 Dec 2023 22:21:46 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Lee Jones <lee@kernel.org>
-Subject: drivers/leds/leds-turris-omnia.c:438:15: sparse: sparse: cast to
- restricted __le16
-Message-ID: <202312012213.wUNHTGnZ-lkp@intel.com>
+        Fri, 1 Dec 2023 09:24:11 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21DE710FD
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 06:24:17 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-40b40423df8so19046335e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 06:24:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=foundries.io; s=google; t=1701440655; x=1702045455; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=cnm9xET3gpVMzAmdfqU6W57IEJsB01S0uHawBahzWkw=;
+        b=DV3hmUIOSngEeQ3dSL71MQ35B85JYTr9I8k2h0kY3xJkFxt3CFuD759C0BC5nf704k
+         y1gTZbRk3UCicp0pZpj/N9HPMnDCBUtf1Nk8uB+5HaIyqJhptTMwT6LHcKEg91rrP/RB
+         69iOTrFjEdbrzHrxjOZdTc8nS/rVGXwMK98vxUAMixUl8bURdIlextLfoPm4HWIQllsp
+         sQcMIzuMOw3OgsNtpKrhvrzNyVQAGe9uAul48H24z1EccgOrBXsP6fXIhsh3nHKY9vhK
+         foJA9YqlJBHvAJEeMhwvWBOIjRHN4RbqO4463u8kqJ2um63/kB6PohdrRh9lge0RRWra
+         f+4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701440655; x=1702045455;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cnm9xET3gpVMzAmdfqU6W57IEJsB01S0uHawBahzWkw=;
+        b=fhE5XUf5UTLiNKbvvop/Ovy5Sswtk9PJ1B4lnI0hSubdo/UUKW/T/y1++QmRo2lbYD
+         NMzTDazWt11AdiGtZCWzMke59D6i+HVOvE+mkE/WHN6SHm47myZd9mqQwgJWi3rxeJw6
+         ODTvtn46oRwmv5Vz9MmZ7NQkfd7gJhsOpShXSWrrduYocQ7VtrZwUZnxnBH5gp/0a4Fh
+         mf/2YyiTC9zo9vduCnST6E6jy/kmwJ6z6W4OfmMm3d/8TL1POipV389Kx0BbudIjH9Zl
+         Xf2DQclmlh7IJD6HCpGq2FTkt/8DEQKKS1JnfqUW7eycyTBRMFse35uBqDmoxjj6lThB
+         pU4Q==
+X-Gm-Message-State: AOJu0YxZAkbdSpzz3wxpFl/x97AOzqdlDfZZNtxS6JDFNrHL0x2j6Dt7
+        l+anrGglZB8P484W4oTd4mHuwg==
+X-Google-Smtp-Source: AGHT+IGNNaq3UP5sr8OqTdBrASWUv4MmGK4cL0MmkCYZTInNUfnB6b8yDBt3/PpTsEps3mVTFxBteg==
+X-Received: by 2002:a05:600c:5008:b0:40b:5e4a:40da with SMTP id n8-20020a05600c500800b0040b5e4a40damr321477wmr.250.1701440655573;
+        Fri, 01 Dec 2023 06:24:15 -0800 (PST)
+Received: from trax (139.red-79-144-198.dynamicip.rima-tde.net. [79.144.198.139])
+        by smtp.gmail.com with ESMTPSA id j11-20020a05600c190b00b0040b47c69d08sm9218703wmq.18.2023.12.01.06.24.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Dec 2023 06:24:15 -0800 (PST)
+From:   "Jorge Ramirez-Ortiz, Foundries" <jorge@foundries.io>
+X-Google-Original-From: "Jorge Ramirez-Ortiz, Foundries" <JorgeRamirez-Ortiz>
+Date:   Fri, 1 Dec 2023 15:24:14 +0100
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Jorge Ramirez-Ortiz <jorge@foundries.io>, ulf.hansson@linaro.org,
+        linus.walleij@linaro.org, adrian.hunter@intel.com,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCHv3] mmc: rpmb: fixes pause retune on all RPMB partitions.
+Message-ID: <ZWnsjtnag6gXDnuq@trax>
+References: <20231201100527.1034292-1-jorge@foundries.io>
+ <2023120139-untried-unholy-456e@gregkh>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <2023120139-untried-unholy-456e@gregkh>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   994d5c58e50e91bb02c7be4a91d5186292a895c8
-commit: 43e9082fbccc7df8b2028c1ba040c58cefda703f leds: turris-omnia: Add support for enabling/disabling HW gamma correction
-date:   4 weeks ago
-config: loongarch-randconfig-r034-20230511 (https://download.01.org/0day-ci/archive/20231201/202312012213.wUNHTGnZ-lkp@intel.com/config)
-compiler: loongarch64-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20231201/202312012213.wUNHTGnZ-lkp@intel.com/reproduce)
+On 01/12/23 12:22:57, Greg KH wrote:
+> On Fri, Dec 01, 2023 at 11:05:27AM +0100, Jorge Ramirez-Ortiz wrote:
+> > When RPMB was converted to a character device, it added support for
+> > multiple RPMB partitions (Commit 97548575bef3 ("mmc: block: Convert RPMB
+> > to a character device").
+> >
+> > One of the changes in this commit was transforming the variable
+> > target_part defined in __mmc_blk_ioctl_cmd into a bitmask.
+> >
+> > This inadvertedly regressed the validation check done in
+> > mmc_blk_part_switch_pre() and mmc_blk_part_switch_post().
+> >
+> > This commit fixes that regression.
+> >
+> > Fixes: 97548575bef3 ("mmc: block: Convert RPMB to a character device")
+> > Signed-off-by: Jorge Ramirez-Ortiz <jorge@foundries.io>
+> > Cc: <stable@vger.kernel.org> # v6.0+
+>
+> Why only 6.0 when the "Fixes:" tag goes back to a 4.14 commit?
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312012213.wUNHTGnZ-lkp@intel.com/
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/leds/leds-turris-omnia.c:438:15: sparse: sparse: cast to restricted __le16
-   drivers/leds/leds-turris-omnia.c:446:16: sparse: sparse: cast to restricted __le16
+ops so sorry (was WIP and got distracted press sent and forgot), will
+fix and add Linus' Reviewed-by.
 
-vim +438 drivers/leds/leds-turris-omnia.c
 
-   426	
-   427	static int omnia_mcu_get_features(const struct i2c_client *client)
-   428	{
-   429		u16 reply;
-   430		int err;
-   431	
-   432		err = omnia_cmd_read_raw(client->adapter, OMNIA_MCU_I2C_ADDR,
-   433					 CMD_GET_STATUS_WORD, &reply, sizeof(reply));
-   434		if (err < 0)
-   435			return err;
-   436	
-   437		/* Check whether MCU firmware supports the CMD_GET_FEAUTRES command */
- > 438		if (!(le16_to_cpu(reply) & STS_FEATURES_SUPPORTED))
-   439			return 0;
-   440	
-   441		err = omnia_cmd_read_raw(client->adapter, OMNIA_MCU_I2C_ADDR,
-   442					 CMD_GET_FEATURES, &reply, sizeof(reply));
-   443		if (err < 0)
-   444			return err;
-   445	
-   446		return le16_to_cpu(reply);
-   447	}
-   448	
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+>
+> thanks,
+>
+> greg k-h
