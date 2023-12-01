@@ -2,142 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A0798006A0
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 10:14:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6E838006A3
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 10:15:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377954AbjLAJOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 04:14:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52744 "EHLO
+        id S229507AbjLAJPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 04:15:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbjLAJOE (ORCPT
+        with ESMTP id S229473AbjLAJPG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 04:14:04 -0500
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC08B194;
-        Fri,  1 Dec 2023 01:14:10 -0800 (PST)
-Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2c9afe6e21fso25378011fa.0;
-        Fri, 01 Dec 2023 01:14:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701422049; x=1702026849; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=LJuFOgiVO7LDpcAHWQzERNBo1i1LSIVcGAkRUEULNvw=;
-        b=GDjT5o0qGDXrr/BVCkoHltSJM/wsh4G3dzXpFn6MC9Wr5ZWhYXrpLhBdDZ13yQ3/Y9
-         nGScBbMhmnl6mOUopajfyTmIWqbbMezZdEhT2j19WbSlV+L/JtZNZiJ8WimhoBtgTEeU
-         JPXrQTE4fHdp1L2xkHr2Qi7s+OaQ0v3ZUVJoXI2s7HkegrxucfkChFHo49lZSR/on05o
-         LxhtMHHic88ujDKbQlnoiW24uPa8rc7VF30rc1ddPF3YlZ3GY50/SKaGS2nCGfLJhzQq
-         nfd189dBrAdjQSWhDCdehezke0gUO7G904KtFtpc+y7stgC5hP9vSbrRhxQI09XPeSxu
-         WNlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701422049; x=1702026849;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=LJuFOgiVO7LDpcAHWQzERNBo1i1LSIVcGAkRUEULNvw=;
-        b=Q7PKUUKvpqXXxY7ebi4KJKzbOr+Ju8XZ2cd2cBh21lNWyT/6wzQce/GAYDQiCE4YFF
-         bi0NBpEMz3c0u/EpiuYvcHNP2mnMWyi/KxFl5pwUnFRC8C2HlPBaSDiJU2eesaA3bCxz
-         +R+BjMA1oImix4vrZH2NmGC88RWJNAMew5Osc6EluLCT7OX0GOnK8Ow/Q2LD6w6kRMpV
-         wLiPbzVulw+DFv7d9MUsvIoXi1Is3MRNnuTNSKDDnBsFYZ5QGKgqcbF8rOJ9WnE1xVdP
-         taA0nw8f7f32/EayF+iR7/Xflw8H6c7nTA/SzdohNRiHR/iOEOo0KwkdjjKQyZ1G+SUq
-         AlgA==
-X-Gm-Message-State: AOJu0Yzvyob6+xy83OdjRdZ9WypWQxLKrAJz76sLTpI8CBRf0ZhEFOoJ
-        7RPIIGP8ds2hyn600lG1eeA+APxbn93VMIvE
-X-Google-Smtp-Source: AGHT+IF6VrKAEFWor1ZpOLJPZ2guiIvAE4LplEqw8HbHagnQx5gTjp6/Rk136Tv88C1JsjkXDeEP/A==
-X-Received: by 2002:a2e:901a:0:b0:2c9:d863:2c12 with SMTP id h26-20020a2e901a000000b002c9d8632c12mr596841ljg.59.1701422048983;
-        Fri, 01 Dec 2023 01:14:08 -0800 (PST)
-Received: from ?IPv6:2001:a61:3456:4e01:6ae:b55a:bd1d:57fc? ([2001:a61:3456:4e01:6ae:b55a:bd1d:57fc])
-        by smtp.gmail.com with ESMTPSA id o17-20020a5d4751000000b00332f82265b7sm3681185wrs.20.2023.12.01.01.14.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Dec 2023 01:14:08 -0800 (PST)
-Message-ID: <265446de947bf8100aa96fb3799005b113251fc7.camel@gmail.com>
-Subject: Re: [PATCH 00/12] iio: add new backend framework
-From:   Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
-To:     David Lechner <dlechner@baylibre.com>, nuno.sa@analog.com
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-iio@vger.kernel.org,
-        Olivier MOYSAN <olivier.moysan@foss.st.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>
-Date:   Fri, 01 Dec 2023 10:14:08 +0100
-In-Reply-To: <0afd52940147b14db33d4712368c5dcc9ee90882.camel@gmail.com>
-References: <20231121-dev-iio-backend-v1-0-6a3d542eba35@analog.com>
-         <CAMknhBH0pF_+z_JqWGscELBmAEDyxLAtgQ-j3=6P2MeFXnzhWQ@mail.gmail.com>
-         <0afd52940147b14db33d4712368c5dcc9ee90882.camel@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Fri, 1 Dec 2023 04:15:06 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69D2A10A;
+        Fri,  1 Dec 2023 01:15:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701422113; x=1732958113;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=seK9BB9W5x1wulNi9afBuKyCtNetftImiKASE0PZgVo=;
+  b=WXNoQo5pUr6WYf40nNiY1Rf7gdAIghcvUtuqeEeiZcqYmPlQzFVMBJCO
+   j5fcoOhciO7pUdUk7nJ3d6Ajrfw63VvPG0fb967YCNQP4QMn0K+VztPpP
+   dSK8/UXtEyG2w1ONrXHeiiahTBinCyXPTZaP27F6ztqpWQ8ESqUaPJsYL
+   0bhlq6aq2MWWSDKKz2jy75Hyh2magucbLpghsGHK8wcGj06tk5lSy5Hcr
+   3FVLbv0oDHX3vkcFfiWoeR04WxJ7znhBj0w2yM4ns1qA674gPym8O2VZ/
+   g0JsUSKnM3q/l5LqALKBc5mZEafYMQxICdK5E4Qi9G6npmvO663nk30XG
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="6745407"
+X-IronPort-AV: E=Sophos;i="6.04,241,1695711600"; 
+   d="scan'208";a="6745407"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2023 01:15:13 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="719435631"
+X-IronPort-AV: E=Sophos;i="6.04,241,1695711600"; 
+   d="scan'208";a="719435631"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 01 Dec 2023 01:15:09 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r8zc3-0003Ni-1a;
+        Fri, 01 Dec 2023 09:15:07 +0000
+Date:   Fri, 1 Dec 2023 17:14:51 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Haoran Liu <liuhaoran14@163.com>, geert+renesas@glider.be
+Cc:     oe-kbuild-all@lists.linux.dev, magnus.damm@gmail.com,
+        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Haoran Liu <liuhaoran14@163.com>
+Subject: Re: [PATCH] [soc/renesas] renesas-soc: Add error handling in
+ renesas_soc_init
+Message-ID: <202312011703.teVKAipZ-lkp@intel.com>
+References: <20231129143431.34459-1-liuhaoran14@163.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231129143431.34459-1-liuhaoran14@163.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-12-01 at 09:41 +0100, Nuno S=C3=A1 wrote:
-> On Thu, 2023-11-30 at 17:54 -0600, David Lechner wrote:
-> > On Tue, Nov 21, 2023 at 4:17=E2=80=AFAM Nuno Sa via B4 Relay
-> > <devnull+nuno.sa.analog.com@kernel.org> wrote:
-> > >=20
-> > > Hi all,
-> > >=20
-> > > This is a Framework to handle complex IIO aggregate devices.
-> > >=20
-> > > The typical architecture is to have one device as the frontend device=
- which
-> > > can be "linked" against one or multiple backend devices. All the IIO =
-and
-> > > userspace interface is expected to be registers/managed by the fronte=
-nd
-> > > device which will callback into the backends when needed (to get/set
-> > > some configuration that it does not directly control).
-> > >=20
-> > > The basic framework interface is pretty simple:
-> > > =C2=A0- Backends should register themselves with @devm_iio_backend_re=
-gister()
-> > > =C2=A0- Frontend devices should get backends with @devm_iio_backend_g=
-et()
-> > >=20
-> > > (typical provider - consumer stuff)
-> > >=20
-> >=20
-> > The "typical provider - consumer stuff" seems pretty straight forward
-> > for finding and connecting two different devices, but the definition
-> > of what is a frontend and what is a backend seems a bit nebulous. It
-> > would be nice to seem some example devicetree to be able to get a
-> > better picture of how this will be used in practices (links to the the
-> > hardware docs for those examples would be nice too).
-> >=20
-> > In addition to the backend ops given in this series, what are some
-> > other expected ops that could be added in the future? Do we need some
-> > kind of spec to say "I need a backend with feature X and feature Y" or
-> > "I need a backend with compatible string" rather than just "I need a
-> > generic backend"?
+Hi Haoran,
 
-To also reply to this one, I also have somewhere a comment about it (I thin=
-k in the
-code itself). For now, I'm thinking in this to serve all kinds of IIO devic=
-es in a
-generic way which means, yes, the ops structure can grow badly. I'm not so =
-sure if
-that will actually happen in practise but if it does we can always play som=
-e OOP
-games and leave the backend with the generic stuff (like .enable()/.disable=
-() and so
-on) and extend it (for example: having a converters thing that would have o=
-ps more
-suitable for ADCs/DACs). Anyways, for now I think that would be overcomplic=
-ating
-things. It's in kernel interfaces so we can always change things.
+kernel test robot noticed the following build errors:
+
+[auto build test ERROR on geert-renesas-devel/next]
+[also build test ERROR on linus/master v6.7-rc3 next-20231201]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Haoran-Liu/renesas-soc-Add-error-handling-in-renesas_soc_init/20231129-225113
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-devel.git next
+patch link:    https://lore.kernel.org/r/20231129143431.34459-1-liuhaoran14%40163.com
+patch subject: [PATCH] [soc/renesas] renesas-soc: Add error handling in renesas_soc_init
+config: openrisc-allyesconfig (https://download.01.org/0day-ci/archive/20231201/202312011703.teVKAipZ-lkp@intel.com/config)
+compiler: or1k-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231201/202312011703.teVKAipZ-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312011703.teVKAipZ-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   In file included from include/linux/device.h:15,
+                    from include/linux/sys_soc.h:9,
+                    from drivers/soc/renesas/renesas-soc.c:13:
+   drivers/soc/renesas/renesas-soc.c: In function 'renesas_soc_init':
+>> drivers/soc/renesas/renesas-soc.c:492:25: error: 'dev' undeclared (first use in this function); did you mean 'cdev'?
+     492 |                 dev_err(dev, "Failed to read model property: %d\n", ret);
+         |                         ^~~
+   include/linux/dev_printk.h:110:25: note: in definition of macro 'dev_printk_index_wrap'
+     110 |                 _p_func(dev, fmt, ##__VA_ARGS__);                       \
+         |                         ^~~
+   drivers/soc/renesas/renesas-soc.c:492:17: note: in expansion of macro 'dev_err'
+     492 |                 dev_err(dev, "Failed to read model property: %d\n", ret);
+         |                 ^~~~~~~
+   drivers/soc/renesas/renesas-soc.c:492:25: note: each undeclared identifier is reported only once for each function it appears in
+     492 |                 dev_err(dev, "Failed to read model property: %d\n", ret);
+         |                         ^~~
+   include/linux/dev_printk.h:110:25: note: in definition of macro 'dev_printk_index_wrap'
+     110 |                 _p_func(dev, fmt, ##__VA_ARGS__);                       \
+         |                         ^~~
+   drivers/soc/renesas/renesas-soc.c:492:17: note: in expansion of macro 'dev_err'
+     492 |                 dev_err(dev, "Failed to read model property: %d\n", ret);
+         |                 ^~~~~~~
 
 
-- Nuno S=C3=A1
+vim +492 drivers/soc/renesas/renesas-soc.c
+
+   447	
+   448	static int __init renesas_soc_init(void)
+   449	{
+   450		struct soc_device_attribute *soc_dev_attr;
+   451		unsigned int product, eshi = 0, eslo;
+   452		const struct renesas_family *family;
+   453		const struct of_device_id *match;
+   454		const struct renesas_soc *soc;
+   455		const struct renesas_id *id;
+   456		void __iomem *chipid = NULL;
+   457		const char *rev_prefix = "";
+   458		struct soc_device *soc_dev;
+   459		struct device_node *np;
+   460		const char *soc_id;
+   461		int ret;
+   462	
+   463		match = of_match_node(renesas_socs, of_root);
+   464		if (!match)
+   465			return -ENODEV;
+   466	
+   467		soc_id = strchr(match->compatible, ',') + 1;
+   468		soc = match->data;
+   469		family = soc->family;
+   470	
+   471		np = of_find_matching_node_and_match(NULL, renesas_ids, &match);
+   472		if (np) {
+   473			id = match->data;
+   474			chipid = of_iomap(np, 0);
+   475			of_node_put(np);
+   476		} else if (soc->id && family->reg) {
+   477			/* Try hardcoded CCCR/PRR fallback */
+   478			id = &id_prr;
+   479			chipid = ioremap(family->reg, 4);
+   480		}
+   481	
+   482		soc_dev_attr = kzalloc(sizeof(*soc_dev_attr), GFP_KERNEL);
+   483		if (!soc_dev_attr) {
+   484			if (chipid)
+   485				iounmap(chipid);
+   486			return -ENOMEM;
+   487		}
+   488	
+   489		np = of_find_node_by_path("/");
+   490		ret = of_property_read_string(np, "model", &soc_dev_attr->machine);
+   491		if (ret) {
+ > 492			dev_err(dev, "Failed to read model property: %d\n", ret);
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
