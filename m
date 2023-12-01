@@ -2,90 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 016ED8013EB
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 21:08:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EED3C8013EE
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 21:10:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379592AbjLAUIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 15:08:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45514 "EHLO
+        id S1379595AbjLAUJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 15:09:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379559AbjLAUIa (ORCPT
+        with ESMTP id S1379586AbjLAUJ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 15:08:30 -0500
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 821EEF2
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 12:08:37 -0800 (PST)
-Received: by mail-il1-x12e.google.com with SMTP id e9e14a558f8ab-35d4de84195so4123815ab.3
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 12:08:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1701461317; x=1702066117; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=5X67UT48wg/5S+eDppQqxVPicA/oErz3kVT5PTAiSag=;
-        b=ehX/+cx3iPY6svSaiLZ9VzvRWANI0cJqQli64GM088iKs7vFTwHY7bMzd7RNL2vvlQ
-         mK5M/jAhNKEezESaxjUOrwTu+11OxWM2rkjP3h6CA6WkuR6YGfiug5tZqbqrNop9rmlY
-         wMvsyxaFsyDCGKmv5xNVja5rJcjj8boCISxjg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701461317; x=1702066117;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5X67UT48wg/5S+eDppQqxVPicA/oErz3kVT5PTAiSag=;
-        b=oXIPXMgit2LJJpJRowGllUcNxKe97UxuI921tQRTCRClKzGgQgDfRUGKWPa3GxT2hZ
-         g+g5ucj2T7dN0edjVRQ0E7Hvrn8jNYkwqEZhEaTkYAycGoSCqHOxeWNlRfsXybuIXyL9
-         QHTlxMbMMiMb5ryPXUzTyWE9olP5AB2K9q+er41pcRcCGAAQAeMbiN5oiqVhKUuXkrAo
-         eFXEge7pvx8pTf4Bhetupxkae0cmhZt91cIbQm5jXYQdyb6y/vYy+n27daZ4joT/E9Z0
-         nzsq9URVRCmdBuCHU54TT8A9dWFpu5dHqMjR/dbDoeRineg38C/3iEOABvEPFPdWZ238
-         RLgw==
-X-Gm-Message-State: AOJu0YwqFONLUvxaVfmPtWgXhNgATXe6Cei+O6AfMerQQcShIUSb30ot
-        4aCr0KZDCXRiXwt3maS1viQJIQ==
-X-Google-Smtp-Source: AGHT+IGafXXzfp/Kjl2w6ZU4AO7+2S3gpE7t2D/zhikZhTXGjbpHML5z+Irzs9a1Q+blMY1vw9EvXA==
-X-Received: by 2002:a92:dc10:0:b0:35c:a639:bce3 with SMTP id t16-20020a92dc10000000b0035ca639bce3mr76174iln.1.1701461316905;
-        Fri, 01 Dec 2023 12:08:36 -0800 (PST)
-Received: from localhost (74.120.171.34.bc.googleusercontent.com. [34.171.120.74])
-        by smtp.gmail.com with UTF8SMTPSA id bt10-20020a056e02248a00b0035cafe5d3d6sm778ilb.32.2023.12.01.12.08.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Dec 2023 12:08:36 -0800 (PST)
-Date:   Fri, 1 Dec 2023 20:08:36 +0000
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Frieder Schrempf <frieder@fris.de>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Anand Moon <linux.amoon@gmail.com>,
-        Benjamin Bara <benjamin.bara@skidata.com>,
-        Rob Herring <robh@kernel.org>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Subject: Re: [RESEND PATCH v2 2/3] usb: misc: onboard_usb_hub: Add support
- for clock input
-Message-ID: <ZWo0ZjKDsZKa6RyA@google.com>
-References: <20231127112234.109073-1-frieder@fris.de>
- <20231127112234.109073-2-frieder@fris.de>
+        Fri, 1 Dec 2023 15:09:56 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43ED2FA
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 12:10:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701461402; x=1732997402;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=ekETfT6yloJAYS4ADW7GfipxxrW9w4UX+/1WxVPCns4=;
+  b=mAEJaxyWPPEZIPb9NqMyIHb+DOFD8bOc4mnhMv0iwaCi3lmy7SY0v6Kw
+   Xh6YQRKI65q4NEWFrHpITgIKvHqAPfnkkM1JVOXCXDHtK8ibWzIn6XTgS
+   OtHdjNsia9iEkB5bFFad0WJrhq4+Ws1WtIuwiZNj5kDO+J8GNXoHnOIC4
+   y6Jij3hLNJoXVowyFJJNC9wayIdu78kGyBN56biCMIcgnOIAncSpnthzg
+   E8vvpXOC+qGIqaMj2idOFcnRBxwbXebbUTbrWKKkwJWk3SJg1vpbI8Lik
+   4FNnwWMjsGfjARu3YFXY6LRwHC6YbKNDfuEjj2oIhNZ7N1SB7y6XHQQJf
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="397148"
+X-IronPort-AV: E=Sophos;i="6.04,242,1695711600"; 
+   d="scan'208";a="397148"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2023 12:10:01 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="763246779"
+X-IronPort-AV: E=Sophos;i="6.04,242,1695711600"; 
+   d="scan'208";a="763246779"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga007.jf.intel.com with ESMTP; 01 Dec 2023 12:10:00 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r99pm-0004FG-1K;
+        Fri, 01 Dec 2023 20:09:58 +0000
+Date:   Sat, 2 Dec 2023 04:09:26 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: thermometer.c:21:10: fatal error: libconfig.h: No such file or
+ directory
+Message-ID: <202312020401.EaIsKfof-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231127112234.109073-2-frieder@fris.de>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 27, 2023 at 12:22:25PM +0100, Frieder Schrempf wrote:
-> From: Frieder Schrempf <frieder.schrempf@kontron.de>
-> 
-> Most onboard USB hubs have a dedicated crystal oscillator but on some
-> boards the clock signal for the hub is provided by the SoC.
-> 
-> In order to support this, we add the possibility of specifying a
-> clock in the devicetree that gets enabled/disabled when the hub
-> is powered up/down.
-> 
-> Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+Hi Daniel,
 
-Acked-by: Matthias Kaehlcke <mka@chromium.org>
+FYI, the error/warning still remains.
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   994d5c58e50e91bb02c7be4a91d5186292a895c8
+commit: 110acbc6a4518145db3a1a9c0686d730bb258bf1 tools/thermal: Add a temperature capture tool
+date:   1 year, 6 months ago
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231202/202312020401.EaIsKfof-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312020401.EaIsKfof-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+>> thermometer.c:21:10: fatal error: libconfig.h: No such file or directory
+      21 | #include <libconfig.h>
+         |          ^~~~~~~~~~~~~
+   compilation terminated.
+   make[2]: *** [Makefile:23: thermometer] Error 1
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
