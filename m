@@ -2,89 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 210F8800149
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 02:55:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69E2980014B
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 02:55:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376547AbjLABzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 20:55:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41750 "EHLO
+        id S1376554AbjLABzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 20:55:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230310AbjLABzD (ORCPT
+        with ESMTP id S229808AbjLABzV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 20:55:03 -0500
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FB8612A
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 17:55:09 -0800 (PST)
-Received: by mail-pf1-x449.google.com with SMTP id d2e1a72fcca58-6cbe0378d0eso2158422b3a.3
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 17:55:09 -0800 (PST)
+        Thu, 30 Nov 2023 20:55:21 -0500
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D98E13E
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 17:55:27 -0800 (PST)
+Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-5c62c98f682so60874a12.2
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 17:55:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701395709; x=1702000509; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1701395726; x=1702000526; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=b7iAppoCIGt7sEqxpQhMef/LhAid+9ah/Ift0A0NOXg=;
-        b=o1lnoNZ3sSVYOnyXW7F4b6fXUKQAgHDcYo1Ukq1zIIN6AO7T9+iirDjPyxiHO54BLr
-         H77nORb/laJ8NJ3PdDZ7CkRxMI/tMgyjo42eqc/891x1zxb3J7bauDHLop/QpJRvcMLN
-         hH7Y8cxTeSM6AiIeebGxADeRD0yYClEa3p1x7fX60FGGG9RMdtfdYHZGC/MoYTMuI+DM
-         unhbNrqPC6TVRXMq9lf1lel7btY01mY9N1B5V5VhWtkiVARvoxPgMhYxgyTsEKOPBXRt
-         c3Od2oWlOc1a3r2AQ2fPvE7k83KY2DGQuIj4HoHMOH+bydfpd/KC+pRwrYQIagS6Ks/m
-         NRgg==
+        bh=pMhvVnG1xtueP/HsDnRWK/I1MYO4nqN51Oj+ODgatFE=;
+        b=2uAaqd9yZSN2hL5czgo7m5dqLQft1E30C6ao4gy5jTa07sXGvDDQ+h/XR4PadhLClP
+         sJphvnO4aE4otECQkYfVPBNZctV3nUwla6KMBKau5KZv0RVRI85Pb/jGbgTSyE8NrWnG
+         FcpuTPjAbAjcu0Ub5fWEtoR3aPHUJX+8ZYmL7d0tFd8ajcO6ateI2b7XwQdPil/H3TS8
+         4xo4ZQ2cGMKBayaW5mY1qpDjki3sjXS+5eEE3UJeRVBTqKOdZfLuVodwU0xqKfsNmWr0
+         dU+O+/YxN4Tr7ooP/Spmpf9S9tWe3rVc7pHopPnm6sRpV5SQNrlI70I/AafHKnGBFVNp
+         0LwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701395709; x=1702000509;
+        d=1e100.net; s=20230601; t=1701395726; x=1702000526;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=b7iAppoCIGt7sEqxpQhMef/LhAid+9ah/Ift0A0NOXg=;
-        b=Z0wZ/E9sHVUUD8mqNArF04saagxwsYeIfz6lQWJ+dhicLp6nivzKxZbgxNwLQzcraU
-         TBYV4AWDvpKaNTWC+blfTDJ5FwrAUJwpj7ElNmyB75IEQCU3SssktU5Phhib0v9kwGmk
-         tL8wlBzB/0UUDffqqHBOyCHw12DlEJ+vqBF+D7m9EUarn++MLsb2ea63eaKVGXTCsq4Y
-         E/0lAp9OjKcKp2t/Z4sE1hup0BNypOEOhdbn0BeFG3IvfX9pYG17hKncFt2k7zPhDhBz
-         0VT6K2IAfzYozLDeTba2eMGpQFV40kGlLoe3kqdRZ4IGi/CEK3lR9TswiIZCX6M95MM/
-         iakw==
-X-Gm-Message-State: AOJu0YylWp5jAzK18BNyq+ROYm+8CKikhSwGrE9jrEDBFziMu9QFVooJ
-        /MG3/0hAOIczwO8HetQSJnNOMblU3xU=
-X-Google-Smtp-Source: AGHT+IEAAUZzAhU1ZcFzkmNbSmg/hBxjb42tO8EiKmbuAykScu2XpQrFmEp3XB/fXKQEpskqi5B2wKBq8U8=
+        bh=pMhvVnG1xtueP/HsDnRWK/I1MYO4nqN51Oj+ODgatFE=;
+        b=cocNNJeqhsnO9ayZW8iNl3wOXUBYb6A9v2x32vfL2UkHOkPMl9odczyeSj0KJ30bgI
+         YTUeqtxKZ7yG9856JiGQGVFtLEdanQrTAHAKzJw36kZQ6Khyu5ozmehHygVbIh4SnC1N
+         54nX5KyANdSObei+nz5wA+QAwb6gvQkcB2Ssgvdmj9pEpx9lrRjtKfyU5Z4KKmuQYD44
+         YxEPEHu1QavCyJEortCH94FkupFe/Cn6T/d21lNnF9O/iyzfEQHw/7Wiz1VQB4WevckN
+         oBNa7H+nGQSK8ANxBXxqBD5eEp67+QiAGxsmYvzA76BIlSDQUXqfhYjGFEkFxq4/6jrT
+         EQbA==
+X-Gm-Message-State: AOJu0YyEr/tVUYW3SOw7UBLpsmyzcwbw3FTcvpJqDyw4DqoLejx5e1wG
+        DEBymM+M6YEH3/vicgBvwmQ7ulJsIw8=
+X-Google-Smtp-Source: AGHT+IFZDuq2QNjNPRnHN4aVQNGYUElwPt9YjKngMF6v5aNOkCANgF0oTZK/lZARZLlAwxkfL96Likvx8ys=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6a00:1888:b0:6cd:da30:4d75 with SMTP id
- x8-20020a056a00188800b006cdda304d75mr1200740pfh.4.1701395708904; Thu, 30 Nov
- 2023 17:55:08 -0800 (PST)
-Date:   Thu, 30 Nov 2023 17:52:14 -0800
-In-Reply-To: <20231018151906.1841689-1-seanjc@google.com>
+ (user=seanjc job=sendgmr) by 2002:a63:1143:0:b0:5be:3925:b5b7 with SMTP id
+ 3-20020a631143000000b005be3925b5b7mr3791544pgr.5.1701395726312; Thu, 30 Nov
+ 2023 17:55:26 -0800 (PST)
+Date:   Thu, 30 Nov 2023 17:52:16 -0800
+In-Reply-To: <20231031075312.47525-1-ubizjak@gmail.com>
 Mime-Version: 1.0
-References: <20231018151906.1841689-1-seanjc@google.com>
+References: <20231031075312.47525-1-ubizjak@gmail.com>
 X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
-Message-ID: <170137374226.619180.12045832358402230622.b4-ty@google.com>
-Subject: Re: [PATCH] KVM: x86: Turn off KVM_WERROR by default for all configs
+Message-ID: <170137839626.665770.1806442754055441040.b4-ty@google.com>
+Subject: Re: [PATCH] KVM: SVM,VMX: Use %rip-relative addressing to access kvm_rebooting
 From:   Sean Christopherson <seanjc@google.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jakub Kicinski <kuba@kernel.org>
+To:     Sean Christopherson <seanjc@google.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Uros Bizjak <ubizjak@gmail.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>
 Content-Type: text/plain; charset="utf-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Oct 2023 08:19:06 -0700, Sean Christopherson wrote:
-> Don't enable KVM_WERROR by default for x86-64 builds as KVM's one-off
-> -Werror enabling is *mostly* superseded by the kernel-wide WERROR, and
-> enabling KVM_WERROR by default can cause problems for developers working
-> on other subsystems.  E.g. subsystems that have a "zero W=1 regressions"
-> rule can inadvertently build KVM with -Werror and W=1, and end up with
-> build failures that are completely uninteresting to the developer (W=1 is
-> prone to false positives, especially on older compilers).
+On Tue, 31 Oct 2023 08:52:40 +0100, Uros Bizjak wrote:
+> Instruction with %rip-relative address operand is one byte shorter than
+> its absolute address counterpart and is also compatible with position
+> independent executable (-fpie) build.
+> 
+> No functional changes intended.
+> 
 > 
 > [...]
 
 Applied to kvm-x86 misc, thanks!
 
-[1/1] KVM: x86: Turn off KVM_WERROR by default for all configs
-      https://github.com/kvm-x86/linux/commit/75bedc1ee90b
+[1/1] KVM: SVM,VMX: Use %rip-relative addressing to access kvm_rebooting
+      https://github.com/kvm-x86/linux/commit/15223c4f973a
 
 --
 https://github.com/kvm-x86/linux/tree/next
