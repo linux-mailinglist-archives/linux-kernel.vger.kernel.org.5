@@ -2,48 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41ECC800D6D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 15:39:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1D56800D83
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 15:41:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379185AbjLAOjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 09:39:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37286 "EHLO
+        id S1379190AbjLAOlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 09:41:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379206AbjLAOj3 (ORCPT
+        with ESMTP id S1379192AbjLAOlc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 09:39:29 -0500
-Received: from mail-m49198.qiye.163.com (mail-m49198.qiye.163.com [45.254.49.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C2AD1711
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 06:39:30 -0800 (PST)
-Received: from [172.23.111.174] (unknown [111.52.6.202])
-        by mail-m121145.qiye.163.com (Hmail) with ESMTPA id 2C3B6800094;
-        Fri,  1 Dec 2023 22:39:02 +0800 (CST)
-Message-ID: <b118c12f-b94d-46aa-ab72-55ac2ce7813f@link.tyut.edu.cn>
-Date:   Fri, 1 Dec 2023 22:39:01 +0800
+        Fri, 1 Dec 2023 09:41:32 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E4C07129;
+        Fri,  1 Dec 2023 06:41:38 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E17761007;
+        Fri,  1 Dec 2023 06:42:24 -0800 (PST)
+Received: from bogus (unknown [10.57.42.162])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 314D43F73F;
+        Fri,  1 Dec 2023 06:41:36 -0800 (PST)
+Date:   Fri, 1 Dec 2023 14:39:35 +0000
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     quic_mdtipton@quicinc.com, quic_asartor@quicinc.com,
+        quic_lingutla@quicinc.com, Sibi Sankar <quic_sibis@quicinc.com>,
+        linux-arm-msm@vger.kernel.org,
+        Cristian Marussi <cristian.marussi@arm.com>
+Subject: Re: [PATCH 1/2] firmware: arm_scmi: Fix frequency truncation by
+ promoting multiplier to u64
+Message-ID: <20231201143935.be6wzjzxmyl5vpz6@bogus>
+References: <20231130204343.503076-1-sudeep.holla@arm.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] scripts/show_delta: reformat code
-Content-Language: en-US
-To:     Nicolas Schier <n.schier@avm.de>
-Cc:     gregkh@linuxfoundation.org, akpm@linux-foundation.org,
-        masahiroy@kernel.org, ndesaulniers@google.com, ojeda@kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231201053540.9534-1-2023002089@link.tyut.edu.cn>
- <ZWmB67THrLcztb-3@buildd.core.avm.de>
-From:   Hu Haowen <2023002089@link.tyut.edu.cn>
-In-Reply-To: <ZWmB67THrLcztb-3@buildd.core.avm.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-        tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVkaTEtDVhhLTB1IS0tIT0lIQ1UTARMWGhIXJBQOD1
-        lXWRgSC1lBWUpKSlVOSVVNVUlLSVlXWRYaDxIVHRRZQVlPS0hVSkhKTk1JVUpLS1VLWQY+
-X-HM-Tid: 0a8c25d19942b03akuuu2c3b6800094
-X-HM-MType: 10
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Kxg6HCo4Sjw*QxQCGiFICzcf
-        CDRPCRhVSlVKTEtKT09KTk9IS01NVTMWGhIXVUlLSUhLS0lLQ0I7FxIVEFUPAg4PVR4fDlUYFUVZ
-        V1kSC1lBWUpKSlVOSVVNVUlLSVlXWQgBWUFITkxINwY+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231130204343.503076-1-sudeep.holla@arm.com>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -51,62 +45,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Nov 30, 2023 at 08:43:42PM +0000, Sudeep Holla wrote:
+> Fix the frequency truncation for all values equal to or greater 4GHz by
+> updating the multiplier 'mult_factor' to u64 type. It is also possible
+> that the multiplier itself can be greater than or equal to 2^32. So we need
+> to also fix the equation computing the value of the multiplier.
+> 
+> Fixes: a9e3fbfaa0ff ("firmware: arm_scmi: add initial support for performance protocol")
+> Reported-by: Sibi Sankar <quic_sibis@quicinc.com>
+> Closes: https://lore.kernel.org/all/20231129065748.19871-3-quic_sibis@quicinc.com/
+> Cc: Cristian Marussi <cristian.marussi@arm.com>
+> Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+> ---
+>  drivers/firmware/arm_scmi/perf.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/firmware/arm_scmi/perf.c b/drivers/firmware/arm_scmi/perf.c
+> index 81dd5c5e5533..8ce449922e55 100644
+> --- a/drivers/firmware/arm_scmi/perf.c
+> +++ b/drivers/firmware/arm_scmi/perf.c
+> @@ -152,7 +152,7 @@ struct perf_dom_info {
+>  	u32 opp_count;
+>  	u32 sustained_freq_khz;
+>  	u32 sustained_perf_level;
+> -	u32 mult_factor;
+> +	u64 mult_factor;
 
-On 2023/12/1 14:49, Nicolas Schier wrote:
-> On Fri, Dec 01, 2023 at 01:35:40PM +0800, Hu Haowen wrote:
->> Correct some lines in irregular coding style to make them look more
->> harmonious and fit the common coding regulations in Python.
->>
->> Signed-off-by: Hu Haowen <2023002089@link.tyut.edu.cn>
->> ---
->>   scripts/show_delta | 18 +++++++++---------
->>   1 file changed, 9 insertions(+), 9 deletions(-)
->>
->> diff --git a/scripts/show_delta b/scripts/show_delta
->> index 291ad65e3089..33446adce74b 100755
->> --- a/scripts/show_delta
->> +++ b/scripts/show_delta
->> @@ -13,7 +13,7 @@ import sys
->>   import string
->>   
->>   def usage():
->> -	print ("""usage: show_delta [<options>] <filename>
->> +	print("""usage: show_delta [<options>] <filename>
-> Hi,
->
-> thanks for your patch.  What Miguel already noticed for v1 is valid for
-> v2, too: there are still inconsistencies in the coding style, e.g.
-> `print (...)` and `print(...)`.
->
-> To simplify a consistent coding style for future work on the script,
-> using an external tool for reformatting (and mentioning it in the commit
-> message) would be helpful.  Miguel suggested Black or Ruff, I think this
-> is a good idea.
+I have now changed this to unsigned long instead of u64 to fix the 32-bit
+build failure[1].
 
+-- 
+Regards,
+Sudeep
 
-Just got a glimpse on the usage of Black and realized the convenience
-it provides and strictness of code style it supplies. It is pretty
-feasible for code style analysis series of Python scripts within the
-kernel source.
-
-However, here comes the issue that this tool binds itself to its own
-bunches of rules how the code should be formatted by default, resulting
-in some kind of scenes which do not match what we want when doing kernel
-programming, or more exactly this tool may not follow the rules regulated
-by the kernel developers or mentioned within kernel documentation,
-which means we are obliged to conduct a programming standard for Python
-coding within kernel source internally, and then ask Black to review and
-reformat the code accordingly. But this programming standard is absent
-currently, consequently it should be specified initially from my
-perspective. What is your idea on this?
-
-(The Black code style: 
-https://black.readthedocs.io/en/stable/the_black_code_style/current_style.html)
-
-Thanks,
-Hu Haowen
-
-
->
-> Kind regards,
-> Nicolas
+[1] https://lore.kernel.org/all/20231201085914.4ad45eb2@canb.auug.org.au
