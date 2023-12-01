@@ -2,173 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9A008012EE
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 19:41:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE5AA8012F0
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 19:42:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379357AbjLASli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 13:41:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45510 "EHLO
+        id S1379363AbjLASmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 13:42:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230207AbjLASlf (ORCPT
+        with ESMTP id S230207AbjLASmh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 13:41:35 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC40A1A4;
-        Fri,  1 Dec 2023 10:41:41 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1ce3084c2d1so7550845ad.3;
-        Fri, 01 Dec 2023 10:41:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701456101; x=1702060901; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=rTk3l7fJ0YyK9LiTzqj/CkwfO59coSl4jyO6pTu6AKo=;
-        b=TYqZAYcjpYU8wDgpEpigmwJgOj0Fq0BxuT2fJy+4PWDx+3RTRGZrEYUh4YsxDtZQz6
-         +ZFd5ZkGl0BbNjD+ypRFlBl5bFvYX+oobtRq2ae1hTd0tycpaaef4jGcP3q/f5GiqzqW
-         Zs/vE4cFfVA8Ixs3iA/G1e6n1rteI3wI9anmiulU8G8bmSwIkR8m+kdYKdron/2xwVmC
-         AkQd3V6LWE4AI+QnIkyw7u7z18+osTQUFjvCCMlMvKY0H7abC4v0+BHBDVqN3cT2ViSW
-         Ivdz/cqoaR7k+nVAho3LkyRfB8avQK19Wibg0v1u3ZeRGFf9YgQ1UGytUA5uduJytJgK
-         haZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701456101; x=1702060901;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rTk3l7fJ0YyK9LiTzqj/CkwfO59coSl4jyO6pTu6AKo=;
-        b=DeqDHFvPnCZLKuGVZcpfm3zrqZBT6lW2WVaqSPMFQ5TKqScbA2WxkbBLAzCbvdF8Ks
-         LMsg/6d0bPHjf6tpT2YVXsgNDvYuHi7KTXYUIoq7Nta8Q/VinfCHTnjqcbg7aU2wN8M1
-         UDaULOI0cITKhS0bCht/g5h9WZ6B+NEUThW+oOBEkq38jcBkJgfQTwYNXBFDffc+4zaE
-         MYdy5hrXbteQdr3J3rcp2eo/KsqMlSN0mWfZ6CjhjeJOXNVRBlr+nAd5QBik09+q0eJq
-         fbm3NswGNl8WKwVFz1h62T8O4BUuBbJVyy2lt6IN6SM5jkxt5A4SGdWV/UahwytoI+Sj
-         sruw==
-X-Gm-Message-State: AOJu0Ywf873hPUu5aPesoEC8FYjlBGCh2sUldySRcTik7KW7+x2uIqZW
-        4Ox0xfXcnCRKftxupaJw0T8=
-X-Google-Smtp-Source: AGHT+IH8uuVyy0xQcI2Dtm+XIq2vpPWkRjB/VzMHGSFrcGn5ya/+GGU7blbsl0Q+mlj6sB8F5MeXPQ==
-X-Received: by 2002:a17:903:183:b0:1cf:6590:70 with SMTP id z3-20020a170903018300b001cf65900070mr32676849plg.23.1701456101173;
-        Fri, 01 Dec 2023 10:41:41 -0800 (PST)
-Received: from google.com ([2620:0:1000:8411:affa:609d:2701:8e46])
-        by smtp.gmail.com with ESMTPSA id x12-20020a170902ea8c00b001c736b0037fsm1855643plb.231.2023.12.01.10.41.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Dec 2023 10:41:40 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Fri, 1 Dec 2023 10:41:38 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     Dongyun Liu <dongyun.liu3@gmail.com>
-Cc:     senozhatsky@chromium.org, axboe@kernel.dk,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        lincheng.yang@transsion.com, jiajun.ling@transsion.com,
-        ldys2014@foxmail.com, Dongyun Liu <dongyun.liu@transsion.com>
-Subject: Re: [PATCH] zram: Using GFP_ATOMIC instead of GFP_KERNEL to allocate
- bitmap memory in backing_dev_store
-Message-ID: <ZWoo4tbvN99LH7Fs@google.com>
-References: <20231130152047.200169-1-dongyun.liu@transsion.com>
+        Fri, 1 Dec 2023 13:42:37 -0500
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27A9EEE
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 10:42:43 -0800 (PST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 5A82840E025A;
+        Fri,  1 Dec 2023 18:42:41 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=fail (4096-bit key)
+        reason="fail (body has been altered)" header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id dPMV77SPVAIt; Fri,  1 Dec 2023 18:42:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1701456157; bh=nphy73heotHESjgWYM7KNLZwEMvJWDEfBY+tKnZJzkc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=gT2RpaCJ5K7cFl2aIaYaf+m/zXF2vNijONCjCXJOexroeNDMI8OzTa5Hl4sTemOQz
+         MhwLBCGOA4JbZyO+BSHzSQ3MrX9zNTKUTHJv01DvPhx/PDyEMdT8YgD6Gi0a0ii8kX
+         q3a2J/JYSOeS5vScTsz8J95LgCR/IItx5KhpzcTTT45IjfT1abuSF8wyeqgbI8OTEy
+         jAy0vPhKOOZoFhtTSDjHwfCPDBpYOP+2MPbImjUlwbIz3jQ/oAQRCWSBM1C/0CnxiP
+         pWDuPY0TY2E7VPWwB7HOASLxpOSafrI6esniJ/WhPff6kSxfFm6EWBST81zCuqUhM2
+         9sn18TwqqfMPpd6LDrr283AUKX6EpcUSJjIS3Hc4nRCAMS1A2OPODP9UY2Tv89KLQe
+         +Qpo6YvS4sODkpiTJ7qSdj77jlEpinvNT96NaRFi9uLTx5DTwytQuVEJ6/l2AjnDHo
+         t08EU2SNoeZKxmCFltSBqPCZIcAqcSLqFQszaNN14nh6Pk/ppB6lTp3lJZBAfoWN5e
+         bJgInyTcJNo5DhX397Al06wPZPv11a627UHKci6O2dRoDWKLI2DC/nhf8QHqsS8KCj
+         1Y0DIp5FyOhn30vJtU6JiMU7WPqr58G32jfuMsaPKWeJVvZ49hAy3lsZg+ITrd94r9
+         X08Xz2KmjtZNQCe8iwIkrm4I=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1D7FB40E0030;
+        Fri,  1 Dec 2023 18:42:35 +0000 (UTC)
+From:   Borislav Petkov <bp@alien8.de>
+To:     X86 ML <x86@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH] x86/CPU/AMD: Check vendor in the AMD microcode callback
+Date:   Fri,  1 Dec 2023 19:42:26 +0100
+Message-ID: <20231201184226.16749-1-bp@alien8.de>
+X-Mailer: git-send-email 2.42.0.rc0.25.ga82fb66fed25
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231130152047.200169-1-dongyun.liu@transsion.com>
-X-Spam-Status: No, score=-0.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        FSL_HELO_FAKE,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 30, 2023 at 11:20:47PM +0800, Dongyun Liu wrote:
-> We encountered a deadlock issue when using zram on kernel version 5.10.
-> The reason is that the backing_dev_store will first hold the
-> zram->init_lock, and then it will allocate memory with kvmalloc_node. At
-> this moment, the system may be in a state of memory shortage, so it will
-> enter the memory swapping process. In zram_bvec_write, we will trigger
-> our own thread to move data from zram to the backing device to free up
-> more available memory, which is the work done in the
-> try_wakeup_zram_wbd. In this function, zram->init_lock will be acquired
-> again to read zram->bd_wb_limit, which causes a deadlock as follow call
-> trace.
+From: "Borislav Petkov (AMD)" <bp@alien8.de>
 
-Isn't it your custom feature instead of upstream?
+Commit in Fixes added an AMD-specific microcode callback. However, it
+didn't check the CPU vendor the kernel runs on explicitly.
 
-> 
-> The latest version of Linux does not have the bug, but a potential risk
-> in future.If we try to acquire zram->init_lock again in the zram process
-> (for example, when we need to read zram->bd_wb_limit), there is a risk
-> of deadlock. The bug is quite elusive, and it only appears with low
+The only reason the Zenbleed check in it didn't run on other x86 vendors
+hardware was pure coincidental luck:
 
-It would be very helpful if you show how the zram in the upstream could
-cause the deadlock instead of your custom feature.
+  if (!cpu_has_amd_erratum(c, amd_zenbleed))
 
-> probability after conducting a week-long stress test using 50 devices.
-> Therefore, I suggest passing the GFP_ATOMIC flag to allocate memory in
-> the backing_dev_store, to avoid similar issues we encountered. Please
-> consider it, Thank you.
-> 
-> INFO: task init:331 blocked for more than 120 seconds.  "echo 0 >
-> /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> task:init   state:D stack:    0 pid:    1 ppid:     0 flags:0x04000000
-> Call trace:
->   __switch_to+0x244/0x4e4
->   __schedule+0x5bc/0xc48
->   schedule+0x80/0x164
->   rwsem_down_read_slowpath+0x4fc/0xf9c
->   __down_read+0x140/0x188
->   down_read+0x14/0x24
->   try_wakeup_wbd_thread+0x78/0x1ec [zram]
->   __zram_bvec_write+0x720/0x878 [zram]
->   zram_bvec_rw+0xa8/0x234 [zram]
->   zram_submit_bio+0x16c/0x268 [zram]
->   submit_bio_noacct+0x128/0x3c8
->   submit_bio+0x1cc/0x3d0
->   __swap_writepage+0x5c4/0xd4c
->   swap_writepage+0x130/0x158
->   pageout+0x1f4/0x478
->   shrink_page_list+0x9b4/0x1eb8
->   shrink_inactive_list+0x2f4/0xaa8
->   shrink_lruvec+0x184/0x340
->   shrink_node_memcgs+0x84/0x3a0
->   shrink_node+0x2c4/0x6c4
->   shrink_zones+0x16c/0x29c
->   do_try_to_free_pages+0xe4/0x2b4
->   try_to_free_pages+0x388/0x7b4
->   __alloc_pages_direct_reclaim+0x88/0x278
->   __alloc_pages_slowpath+0x4ec/0xf6c
->   __alloc_pages_nodemask+0x1f4/0x3dc
->   kmalloc_order+0x54/0x338
->   kmalloc_order_trace+0x34/0x1bc
->   __kmalloc+0x5e8/0x9c0
->   kvmalloc_node+0xa8/0x264
->   backing_dev_store+0x1a4/0x818 [zram]
->   dev_attr_store+0x38/0x8c
->   sysfs_kf_write+0x64/0xc4
->   kernfs_fop_write_iter+0x168/0x2ac
->   vfs_write+0x300/0x37c
->   ksys_write+0x7c/0xf0
->   __arm64_sys_write+0x20/0x30
->   el0_svc_common+0xd4/0x270
->   el0_svc+0x28/0x98
->   el0_sync_handler+0x8c/0xf0
->   el0_sync+0x1b4/0x1c0
-> 
-> Signed-off-by: Dongyun Liu <dongyun.liu@transsion.com>
-> ---
->  drivers/block/zram/zram_drv.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
-> index d77d3664ca08..ee6c22c50e09 100644
-> --- a/drivers/block/zram/zram_drv.c
-> +++ b/drivers/block/zram/zram_drv.c
-> @@ -514,7 +514,7 @@ static ssize_t backing_dev_store(struct device *dev,
->  
->  	nr_pages = i_size_read(inode) >> PAGE_SHIFT;
->  	bitmap_sz = BITS_TO_LONGS(nr_pages) * sizeof(long);
-> -	bitmap = kvzalloc(bitmap_sz, GFP_KERNEL);
-> +	bitmap = kmalloc(bitmap_sz, GFP_ATOMIC);
->  	if (!bitmap) {
->  		err = -ENOMEM;
->  		goto out;
-> -- 
-> 2.25.1
-> 
+gives true on other vendors because they don't have those families and
+models.
+
+However, with the removal of the cpu_has_amd_erratum() in
+
+  05f5f73936fa ("x86/CPU/AMD: Drop now unused CPU erratum checking functi=
+on")
+
+that coincidental condition is gone, leading to the zenbleed check
+getting executed on other vendors too.
+
+Add the explicit vendor check for the whole callback as it should've
+been done in the first place.
+
+Fixes: 522b1d69219d ("x86/cpu/amd: Add a Zenbleed fix")
+Cc: <stable@kernel.org>
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+---
+ arch/x86/kernel/cpu/amd.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
+index a7eab05e5f29..f322ebd053a9 100644
+--- a/arch/x86/kernel/cpu/amd.c
++++ b/arch/x86/kernel/cpu/amd.c
+@@ -1320,6 +1320,9 @@ static void zenbleed_check_cpu(void *unused)
+=20
+ void amd_check_microcode(void)
+ {
++	if (boot_cpu_data.x86_vendor !=3D X86_VENDOR_AMD)
++		return;
++
+ 	on_each_cpu(zenbleed_check_cpu, NULL, 1);
+ }
+=20
+--=20
+2.42.0.rc0.25.ga82fb66fed25
+
