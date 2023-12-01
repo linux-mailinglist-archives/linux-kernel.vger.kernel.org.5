@@ -2,151 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 667E3800385
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 07:07:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0DE8800389
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 07:08:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377517AbjLAGH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 01:07:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41782 "EHLO
+        id S1377548AbjLAGIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 01:08:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229808AbjLAGHZ (ORCPT
+        with ESMTP id S229459AbjLAGIo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 01:07:25 -0500
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2320193
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 22:07:31 -0800 (PST)
-Received: by mail-qk1-x733.google.com with SMTP id af79cd13be357-77d8c38ea78so89914485a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 22:07:31 -0800 (PST)
+        Fri, 1 Dec 2023 01:08:44 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F4D01711
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 22:08:50 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-a18f732dc83so217446266b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 22:08:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701410851; x=1702015651; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Kgy5hlcvWH3mv4+OMDEYg4gGuadNVhIN6Sw8oNb6ClE=;
-        b=MprJc8WCS3au6vGnDxfd3X5nt9Lzyovn8sGqZPtTb3RH5vp5Jaa9UiRmNZd/QRwKFs
-         xzT5G+6+UDFF1NRNx1iWfDDrMSpMPtTrTEGIfqkTzdQrGVQZbu41QHLM9AMRxliDmhX1
-         mpR2ODU+RbBUE3rUIS0v88FZbPLneqp9DiK6udeZE9QuGGx5YcHRYW6b66aLq3z8sV1Z
-         hxfaf13MtVd7+cvPI4QI1+646esMflrm3oVnvOoPE1pVrpUftnVCeGRVj7XeJiN5C8Vr
-         N2OKBcG6vgY9gh53uco53JQ29aQ40k8ue+GEWPMMj9PWha4DpRXQgYDydPkzOgRCjuCW
-         KeqA==
+        d=google.com; s=20230601; t=1701410929; x=1702015729; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VLKk6oTrF6fAB77fJv+EXNaWWOWxqJcPWfPyun45kVU=;
+        b=hw3a/IiuNAnC+jktLUMQwxMJJxSsuhtheUQy/QDLOtazclZckiUTw+X2XAr1zNv8Vz
+         +PwbJ+MZGlWvjF3KJCVA/pL9fF97vLJX3ZbCNxFT1IrjrKcSIBN+1VUvbxI2+j/FFI9e
+         y7HGsjc/Rv8YcPEeOfKY5S7RrEt7KT5JJQZ4wXDfOGWCuKkt56aJ861wxNgKsjMGjw8U
+         MhNIA5v70TMLViCmFKoId+Exmp5FyIosp2jIeCBf/VlLzV0gJKUCG7vOx8mihueVVGqr
+         Q2g+Y+/VJ53geb3c1dJBuUas63dqCzDi2j2/QFTlA1azWEIE/cH4j2Kv7rjmGrupvfaL
+         40Zg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701410851; x=1702015651;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Kgy5hlcvWH3mv4+OMDEYg4gGuadNVhIN6Sw8oNb6ClE=;
-        b=KqDlxu8i+Tn1PklStuwijHGr1ehu395MIFDIi7R11M3cUERiqQcMTRUHfSGeGir25q
-         XjGk7HmMFEoLl5dSCr6HcyypxBU9Hq9JsJPdv0FcHAdc1cnzl9KyTM7H9JZAWI9Nspyz
-         5xM41fOweZ9z5iPiXf1xMF1GZt3rtI8OWGKrpPBKgL44Vo1ZlZfHoaXVb17rt/W1BGKN
-         ngiba1hqC9NV1fljGFXracpSJ/XeCQ5dOPq/0bcsGxpG/dZffPQFuumjcxL2tl1BlD7Q
-         iFMQHQPAq/8lPbeJ7IchweABcsBO+wB5w4J2W1El6j9CgnoW+1tYOUeXJKQi0WOG9GPv
-         cOxg==
-X-Gm-Message-State: AOJu0YxZGVkkMnK6gWNMCu5r7MOXP1OYL8CLGz8m1cGNMAtkU4xIeEuW
-        9bgLv7bL+EJFTNKRnEYqmIiR
-X-Google-Smtp-Source: AGHT+IHu2ksyKFCtF20WA7pQITHq93w/lCv7QCJfM5F0X7XunthNNyJrRVZbimdwRtLy0LpBiPTuQw==
-X-Received: by 2002:a05:620a:34d:b0:77d:cd41:1254 with SMTP id t13-20020a05620a034d00b0077dcd411254mr7559516qkm.12.1701410850808;
-        Thu, 30 Nov 2023 22:07:30 -0800 (PST)
-Received: from thinkpad ([117.213.102.92])
-        by smtp.gmail.com with ESMTPSA id d23-20020a05620a159700b0077d749de2a3sm1199149qkk.67.2023.11.30.22.07.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Nov 2023 22:07:30 -0800 (PST)
-Date:   Fri, 1 Dec 2023 11:37:16 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        quic_vbadigan@quicinc.com, quic_ramkri@quicinc.com,
-        quic_nitegupt@quicinc.com, quic_skananth@quicinc.com,
-        quic_vpernami@quicinc.com, quic_parass@quicinc.com
-Subject: Re: [PATCH v3 1/3] dt-bindings: phy: qcom,qmp: Add PCIe
- qcom,refclk-always-on property
-Message-ID: <20231201060716.GJ4009@thinkpad>
-References: <20231127-refclk_always_on-v3-0-26d969fa8f1d@quicinc.com>
- <20231127-refclk_always_on-v3-1-26d969fa8f1d@quicinc.com>
- <78815f1b-7390-40de-8afd-ac71806f4051@linaro.org>
- <24fae40a-453b-b14c-923f-88758a246aa7@quicinc.com>
+        d=1e100.net; s=20230601; t=1701410929; x=1702015729;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VLKk6oTrF6fAB77fJv+EXNaWWOWxqJcPWfPyun45kVU=;
+        b=bqbTuaasSnI0Z7/EgQ53Tx40+/ZD2/OCIbLSiOTwgDDKALE5RnuOtTFCxvOcKhO0xg
+         NM/zfyY3JugScnxwjl1vkfSJI3N6i5ag0TF7I81gWWc0RmSmwX8DAP2NbsF6Bt1VM+Wt
+         AxXqaO1omgKsCqnc+0jckpx4iv/piTCFOFHjOV/63Dz3EqOg0RZCn17QzB3E6/Eag0X4
+         MRhagoFv/9U4kClo2JfqUMN6u9Sq2g7w+h2wwH4RUvpwQlEefRHV4DJwqBDcKFd9SanQ
+         i1bxRSV8R4+sOpeLVgnmxVLglLH103L+e3Q0qqJqRe71Q2rJTGfZ0kVAYhYdggKrrfPj
+         zKrA==
+X-Gm-Message-State: AOJu0YzTD9gdAM5nPSCLJrEBsKGmkNr7EUuyxVhGStOrMQPYpPq1+OhB
+        wfnn1E0AY6P0JHDCV3iiatgkOhz64HaYC6zi6VMCeA==
+X-Google-Smtp-Source: AGHT+IEzyszR763EpzzyaSNEQ3HbEzdWwIzjFHJIxSWdGQpefK5Y/sMDWH53RjR7RUG4YRs1uqkUSBiJJIziU8PqkuU=
+X-Received: by 2002:a17:906:738f:b0:a18:5ec7:b8af with SMTP id
+ f15-20020a170906738f00b00a185ec7b8afmr702085ejl.29.1701410928802; Thu, 30 Nov
+ 2023 22:08:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <24fae40a-453b-b14c-923f-88758a246aa7@quicinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231110102054.1393570-1-joychakr@google.com> <CACRpkdZ9RHcHh4o5g62ywK0eQHpLZuGUF0Ud6jogk9Sfqe4krA@mail.gmail.com>
+ <ZVQkLqDB3KtOlIpK@surfacebook.localdomain> <CAOSNQF3QeFd857RCJE8wfJ=__-K7Bi4vfMeTVP-+O+LJ7y9SmQ@mail.gmail.com>
+ <CACRpkdZ+UMOqatH4oOusdaX1ieeH2TtpC7VbX1wf+tzGDSfR3A@mail.gmail.com>
+In-Reply-To: <CACRpkdZ+UMOqatH4oOusdaX1ieeH2TtpC7VbX1wf+tzGDSfR3A@mail.gmail.com>
+From:   Joy Chakraborty <joychakr@google.com>
+Date:   Fri, 1 Dec 2023 11:38:36 +0530
+Message-ID: <CAOSNQF1cwCa9hPNQjN3g5b+nMs2qx+H8057aypH+GHaVn29NQw@mail.gmail.com>
+Subject: Re: [RFC PATCH] PM: runtime: Apply pinctrl settings if defined
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     andy.shevchenko@gmail.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org, manugautam@google.com,
+        aniketmaurya@google.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 02:49:18PM +0530, Krishna Chaitanya Chundru wrote:
-> 
-> On 11/28/2023 2:26 PM, Krzysztof Kozlowski wrote:
-> > On 27/11/2023 13:13, Krishna chaitanya chundru wrote:
-> > > Document qcom,refclk-always-on property which is needed in some platforms
-> > > to supply refclk even in PCIe low power states.
-> > > 
-> > > Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
-> > > ---
-> > >   .../devicetree/bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml        | 7 +++++++
-> > >   1 file changed, 7 insertions(+)
-> > > 
-> > > diff --git a/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml b/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml
-> > > index 2c3d6553a7ba..c747c9f35795 100644
-> > > --- a/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml
-> > > +++ b/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml
-> > > @@ -93,6 +93,13 @@ properties:
-> > >     "#phy-cells":
-> > >       const: 0
-> > > +  qcom,refclk-always-on:
-> > > +    type: boolean
-> > > +    description: In some platform where PCIe switch is connected, pcie switch due to some design
-> > You received a comment to use proper wrapping: 80. Please implement it.
-> I will update this.
-> > > +      limitation fails to propage clkreq signal to the host and due to that host will not send
-> > > +      refclk, which  results in linkdown in L1.2 or L1.1 exit initiated by EP.
-> > > +      This property if set keeps refclk always on even in Low power states.
-> > The property name suggests that's the state of hardware - refclk is
-> > always on. Description suggests you want to instruct OS to do something.
-> > 
-> > Again, third time (once from Bjorn, once from Dmitry), rephrase property
-> > name and description to describe the hardware issue. I see description
-> > improved, but not the property name. Again in the end of description you
-> 
-> Both bjorn and Dmitry gave comments to change the description only, and not
-> the property name,
-> 
-> correct if I am wrong.
-> 
-> > say what Linux should do. Bindings do not describe Linux OS.
-> 
-> I will remove the last line in the next patch.
-> 
+On Fri, Nov 17, 2023 at 1:30=E2=80=AFAM Linus Walleij <linus.walleij@linaro=
+.org> wrote:
+>
+> On Thu, Nov 16, 2023 at 4:34=E2=80=AFPM Joy Chakraborty <joychakr@google.=
+com> wrote:
+>
+> > I tried to place the calls to set the pinctrl states after driver/user
+> > callback  based on my understanding of runtime code so that existing
+> > users do get a chance to set the state with any special sequence that
+> > needs to be performed post which doing another call to set the state
+> > would be ignored in the pinctrl framework.
+>
+> This makes sense. (And also is in the original commit.)
+>
+> I think you should actually over-document this by also mentioning
+> this in the kerneldoc above each of the *_try_* callbacks so
+> users simply can't miss this point.
+>
+> > But this only would be possible with the assumption that even in any
+> > special sequences executed by users they set nothing but "default"
+> > state in runtime_resume, "idle" state in runtime_idle and "'sleep"
+> > state in their runtime suspend callbacks.
+> > And like Andy mentions about "->prepare callback", if there are
+> > drivers that are setting pinctrl state "default", "sleep" or "idle"
+> > from any callback but
+> > ...
+> > int (*runtime_suspend)(struct device *dev);
+> > int (*runtime_resume)(struct device *dev);
+> > int (*runtime_idle)(struct device *dev);
+> > ...
+> > it could indeed be a problem.
+> > I'll dig into users of pinctrl_select_sleep/default/idle and see if
+> > there are such cases or if it could be done in some other way.
+>
+> It's worth a check but I doubt much will turn up. The "idle" and
+> "sleep" states are simply not used much in the kernel.
+>
 
-You should name the property as, "qcom,keep-refclk-always-on"
+Right, I will look into this.
 
-Also, no need to stuff the binding with "why this property is required", that
-info should be part of the patch description. Just describe what this property
-means in binding.
+> Your users will likely be the first.
+>
+> So which hardware target will use this?
+> It's immensely useful to have a good example to point at:
+> that device use "defaul", "sleep", "idle" the idiomatic way.
 
-- Mani
+I see some upstreaming activity on gs101 SOC.
+I think gs101 and follow on SOCs could use this, I will find that out
+and get back.
 
-> - Krishna Chaitanya.
-> 
-> > 
-> > Best regards,
-> > Krzysztof
-> 
+>
+> Yours,
+> Linus Walleij
 
--- 
-மணிவண்ணன் சதாசிவம்
+Thanks a lot for your feedback
+Joy
+
+
+
+
+Joy
