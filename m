@@ -2,187 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75B8C8002A9
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 05:51:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF0ED8002B2
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 06:04:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231537AbjLAEur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 23:50:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54020 "EHLO
+        id S1377352AbjLAFEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 00:04:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbjLAEuo (ORCPT
+        with ESMTP id S231319AbjLAFEW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 23:50:44 -0500
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2083.outbound.protection.outlook.com [40.107.243.83])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8E1110DE;
-        Thu, 30 Nov 2023 20:50:50 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PgJ0xJ485nu4lNqeXID+SDeeFbRTDVTO0snMS84mhTcc6SlNimM9iu3i+X2qBVnT5Q+X8EEqqV0fpkl/0wTd4xU5EcyYWJl4THw02Q2/GcRy5Zj0PHhv986KNFC48VO2eU4SI5Bdq0Wfq+0sjt9NtNRvQbyRnZbqaoF5BOC7/O59rOuwXpg8dDjH+IvX1OI4Iq/r09G2Prp422vAZru3HOYCoFYxws9Piq6fnxP5B4aTmeGa/+GgGNPINpyK0kdgeSeiTVBnoHxKrxBhzO3R6kMw+HTmz+lqjhTkTDD2wcmpblmaGTeefR/QH/TsoNvR7vpe2u2iwfly+9Yj6JNVmA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=thYPPq2k4CeKMVcpyS/RRZCpA7n96oLmYgTv4phq+lU=;
- b=fXjKSNN2d832PSYOhw9B/CMlzBr1jN4dC+R4iUrB2M+RRmQaeCD0Q/S6fsOzRVVl11fKZVUPS1re89CKrxo3Q8Gx8ILpf5HlMd7ypQ3D4k+p/vtE6+6NEXFRpyl4K9wKe8GgF9Pl4mY3TdgwLTOHml8UbvEOBoJDnQHC8TPftvl9vmD2UFPvt4YzZTJBPfy/qvsB93kJ15JDcSWH5J9H6EagxHJSH8/VtkuSm2PsnQz5eIfUfdiope5/ZfDoAZC21gCq8TWD/Pbz+7vqhkSlXFGbrmapLtznz+eYX9pGUda4INKJMtJApIUIYwqHVTg7sXJfNs67sBRwfTgGlzghWA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=intel.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=thYPPq2k4CeKMVcpyS/RRZCpA7n96oLmYgTv4phq+lU=;
- b=OSs2ATVtZewnWLirCBSdRXRUB4558DiZCtEwz1Vp3vrLpbrNIjNc4XcTjYP30MJMD/OCGZTnn2Yyu2mL4h6wrzNp2Vr552+44eXuCWbqY4Q6V9KSoRrdYB8ebYTSHJOa4Va8boJ8ayIJLA1dfGM1QVRf7Kb8BGEX6r17xfN1k6YmbR8TnUphSWWVmSnhu74o2pJ1zj3sBAAgr8EygDyEINIBcMfGWrJWts70Pp6dsCHNUE4S9W8ihZMC4pniRjc7zvcbuqu2hFush9bpPm9Na6KHDXBB8UPv9uUeiuxNIVBjhYxw9JZKODl2niVZ//2bmV+/MgiMHQ9r2LjhM9aDOA==
-Received: from BL0PR02CA0082.namprd02.prod.outlook.com (2603:10b6:208:51::23)
- by CH0PR12MB8552.namprd12.prod.outlook.com (2603:10b6:610:18e::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.28; Fri, 1 Dec
- 2023 04:50:48 +0000
-Received: from MN1PEPF0000F0E2.namprd04.prod.outlook.com
- (2603:10b6:208:51:cafe::f8) by BL0PR02CA0082.outlook.office365.com
- (2603:10b6:208:51::23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.29 via Frontend
- Transport; Fri, 1 Dec 2023 04:50:48 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- MN1PEPF0000F0E2.mail.protection.outlook.com (10.167.242.40) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7046.17 via Frontend Transport; Fri, 1 Dec 2023 04:50:48 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Thu, 30 Nov
- 2023 20:50:26 -0800
-Received: from rnnvmail202.nvidia.com (10.129.68.7) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Thu, 30 Nov
- 2023 20:50:26 -0800
-Received: from Asurada-Nvidia (10.127.8.9) by mail.nvidia.com (10.129.68.7)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41 via Frontend
- Transport; Thu, 30 Nov 2023 20:50:25 -0800
-Date:   Thu, 30 Nov 2023 20:50:23 -0800
-From:   Nicolin Chen <nicolinc@nvidia.com>
-To:     Yi Liu <yi.l.liu@intel.com>
-CC:     Jason Gunthorpe <jgg@nvidia.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-        "cohuck@redhat.com" <cohuck@redhat.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
-        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
-        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "shameerali.kolothum.thodi@huawei.com" 
-        <shameerali.kolothum.thodi@huawei.com>,
-        "lulu@redhat.com" <lulu@redhat.com>,
-        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>,
-        "joao.m.martins@oracle.com" <joao.m.martins@oracle.com>,
-        "Zeng, Xin" <xin.zeng@intel.com>,
-        "Zhao, Yan Y" <yan.y.zhao@intel.com>
-Subject: Re: [PATCH v6 2/6] iommufd: Add IOMMU_HWPT_INVALIDATE
-Message-ID: <ZWlmD1KDUyR3qzdy@Asurada-Nvidia>
-References: <BN9PR11MB527659462CCB7280055858D98CB4A@BN9PR11MB5276.namprd11.prod.outlook.com>
- <ZVuZOYFzAaCuJjXZ@Asurada-Nvidia>
- <BN9PR11MB5276C8EACE2C300A646EA8A18CBBA@BN9PR11MB5276.namprd11.prod.outlook.com>
- <ZVw/BXxgGCuCZCA6@Asurada-Nvidia>
- <BN9PR11MB52761A9B48A25E89BEECE6308CB8A@BN9PR11MB5276.namprd11.prod.outlook.com>
- <ZWTzoBTDDEWAKMs9@Asurada-Nvidia>
- <BN9PR11MB5276FD60A0EDF8E3F231FCC88CBCA@BN9PR11MB5276.namprd11.prod.outlook.com>
- <ZWaLCSAMIOXTlghk@Asurada-Nvidia>
- <20231129005715.GS436702@nvidia.com>
- <b5f86fde-eaec-47fc-8b4f-36adb0e9e1a1@intel.com>
+        Fri, 1 Dec 2023 00:04:22 -0500
+X-Greylist: delayed 406 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 30 Nov 2023 21:04:26 PST
+Received: from mail-m92230.xmail.ntesmail.com (mail-m92230.xmail.ntesmail.com [103.126.92.230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AB30D4A
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 21:04:26 -0800 (PST)
+Received: from [172.23.111.174] (unknown [111.52.6.202])
+        by mail-m121145.qiye.163.com (Hmail) with ESMTPA id 146848000EB;
+        Fri,  1 Dec 2023 12:56:15 +0800 (CST)
+Message-ID: <9075f00e-f914-4739-aae2-ba4ccfd6236b@link.tyut.edu.cn>
+Date:   Fri, 1 Dec 2023 12:56:14 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <b5f86fde-eaec-47fc-8b4f-36adb0e9e1a1@intel.com>
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN1PEPF0000F0E2:EE_|CH0PR12MB8552:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6588d784-f456-4331-1c6d-08dbf2291625
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: PZviGfzrdEPbRKZMU7qM43ayvYKrV+u3HogpZaDTcJPn/yhkFKm+mDowfjQNzFvXtPc8Cpj8I1UCCVTL+ZI93JM/G+9dScNt1QpGCho1/NLVjPJfieY5lA84N53sH/U6N66IaXviJbbfIsIchFYGJo53HjQ3FnDLlVVA7gCrN6MnBSmYwKiVtdCy01pGvMZnn3lsJKTny/VvFTMhHw0LGcMvOlyR/ObKBrLQc6wNrt+0hmAX+vkk0tuBhJd5Ut5zzYIOCdfCXZSU73jSt71B5v4SOszJkpoH7d6VJZOjwvRFXOB3caDNPzpFIP+cUSjEpHO/BlVBO3/Yq0zYFxoisYQZ/vWdtELkz3BzyexPiQjQ2wdNtus+1+vmTPI39dOc4wIy/VhOJyoaDdZQGegDe6RGli6zHvIpzPrJQo6/9hGCZL2Ym8jbt9sAXjJhkfg7RmGtN0Q+iO70xQT7bu3PVuB0FscBbPH/DX8mDp0eoVUQDj39zNVHn+XAkC36VC/dHfns3g48c6+QBWKZYVSky8dtt8cvY3JzxcD56Tp1IBXlc+nJBiJj0NnnUjBYDdWPrQF9/xV6wS2omQClkh5NSRdkICkEQVUgW64+Ngyx9/Pspy0DhVLRHSbjEwQTJwhSB4s/iEg0BzAsyupC2Mrel6DDD6FjmiJA8tnr7FY7uOi/jn9+UudF/4jHUI006KFso0zTLZ0ZwpFozqLCCzmB8gnzMa8dx36nQ575PQLHKuOXZ+rByFvpAuCLUGv8jb29
-X-Forefront-Antispam-Report: CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(136003)(396003)(39860400002)(346002)(376002)(230922051799003)(451199024)(1800799012)(82310400011)(64100799003)(186009)(36840700001)(46966006)(40470700004)(55016003)(40480700001)(40460700003)(70586007)(70206006)(54906003)(6916009)(7636003)(356005)(82740400003)(86362001)(47076005)(36860700001)(426003)(83380400001)(26005)(336012)(9686003)(53546011)(2906002)(316002)(33716001)(478600001)(5660300002)(8936002)(8676002)(4326008)(41300700001)(7416002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Dec 2023 04:50:48.0137
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6588d784-f456-4331-1c6d-08dbf2291625
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: MN1PEPF0000F0E2.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR12MB8552
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] scripts/show_delta: reformat code
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     gregkh@linuxfoundation.org, akpm@linux-foundation.org,
+        masahiroy@kernel.org, ndesaulniers@google.com, n.schier@avm.de,
+        ojeda@kernel.org, linux-kernel@vger.kernel.org
+References: <20231130143822.17173-1-2023002089@link.tyut.edu.cn>
+ <CANiq72nS9_uPXNXc6mORtWsBEUB7JBWeUW+aAQ0Osqnca3vaVA@mail.gmail.com>
+Content-Language: en-US
+From:   Hu Haowen <2023002089@link.tyut.edu.cn>
+In-Reply-To: <CANiq72nS9_uPXNXc6mORtWsBEUB7JBWeUW+aAQ0Osqnca3vaVA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+        tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVkaQx4YVk4fQhpCQ09JGRlPSFUTARMWGhIXJBQOD1
+        lXWRgSC1lBWUpKSlVOSVVNVUlLSVlXWRYaDxIVHRRZQVlPS0hVSkpLSEpDVUpLS1VLWQY+
+X-HM-Tid: 0a8c23bc0b2cb03akuuu146848000eb
+X-HM-MType: 10
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PEk6GDo6DzwrChY1HU0vPywM
+        KAMwClZVSlVKTEtKT0tNTkxOQkxDVTMWGhIXVUlLSUhLS0lLQ0I7FxIVEFUPAg4PVR4fDlUYFUVZ
+        V1kSC1lBWUpKSlVOSVVNVUlLSVlXWQgBWUFJTktONwY+
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 01, 2023 at 11:51:26AM +0800, Yi Liu wrote:
-> On 2023/11/29 08:57, Jason Gunthorpe wrote:
-> > On Tue, Nov 28, 2023 at 04:51:21PM -0800, Nicolin Chen wrote:
-> > > > > I also thought about making this out_driver_error_code per HW.
-> > > > > Yet, an error can be either per array or per entry/quest. The
-> > > > > array-related error should be reported in the array structure
-> > > > > that is a core uAPI, v.s. the per-HW entry structure. Though
-> > > > > we could still report an array error in the entry structure
-> > > > > at the first entry (or indexed by "array->entry_num")?
-> > > > > 
-> > > > 
-> > > > why would there be an array error? array is just a software
-> > > > entity containing actual HW invalidation cmds. If there is
-> > > > any error with the array itself it should be reported via
-> > > > ioctl errno.
-> > > 
-> > > User array reading is a software operation, but kernel array
-> > > reading is a hardware operation that can raise an error when
-> > > the memory location to the array is incorrect or so.
-> > 
-> > Well, we shouldn't get into a situation like that.. By the time the HW
-> > got the address it should be valid.
-> > 
-> > > With that being said, I think errno (-EIO) could do the job,
-> > > as you suggested too.
-> > 
-> > Do we have any idea what HW failures can be generated by the commands
-> > this will execture? IIRC I don't remember seeing any smmu specific
-> > codes related to invalid invalidation? Everything is a valid input?
-> > 
-> > Can vt-d fail single commands? What about AMD?
-> 
-> Intel VT-d side, after each invalidation request, there is a wait
-> descriptor which either provide an interrupt or an address for the
-> hw to notify software the request before the wait descriptor has been
-> completed. While, if there is error happened on the invalidation request,
-> a flag (IQE, ICE, ITE) would be set in the Fault Status Register, and some
-> detailed information would be recorded in the Invalidation Queue Error
-> Record Register. So an invalidation request may be failed with some error
-> reported. If no error, will return completion via the wait descriptor. Is
-> this what you mean by "fail a single command"?
 
-I see the current VT-d series marking those as "REVISIT". How
-will it report an error to the user space from those register?
+On 2023/12/1 01:13, Miguel Ojeda wrote:
+> On Thu, Nov 30, 2023 at 3:49 PM Hu Haowen <2023002089@link.tyut.edu.cn> wrote:
+>> -                               if string.find(rest, base_str)==1:
+>> +                               if string.find(rest, base_str) == 1:
+> If this is changed, shouldn't be others like:
+>
+>>                  if arg=="-b":
+>>                  elif arg=="-h":
+> be changed too?
 
-Are they global status registers so that it might be difficult
-to direct the error to the nested domain for an event fd?
 
-Nic
+Sorry, ignored by accident. I'll make up within the next patch version.
+
+
+> In other words, it seems this was done manually. Should we instead
+> introduce/use something like Black or Ruff if we are going to do this
+> sort of changes?
+
+
+I'm sorry but I'm not familiar with these two things. Are Black and Ruff
+some kind of tools which help identify these code format issues? If so
+it is better to introduce them to assist to accomplish the similar
+series of work instead of only completing it manually with avoiding
+omitted parts simultaneously.
+
+Thanks,
+Hu Haowen
+
+
+> Thanks!
+>
+> Cheers,
+> Miguel
+>
