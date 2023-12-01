@@ -2,167 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DEE6801171
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:21:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68C0280111C
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:21:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378105AbjLAQ2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 11:28:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34250 "EHLO
+        id S1378262AbjLAQ3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 11:29:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbjLAQ2A (ORCPT
+        with ESMTP id S229539AbjLAQ3A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 11:28:00 -0500
-Received: from new3-smtp.messagingengine.com (new3-smtp.messagingengine.com [66.111.4.229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17BBA83;
-        Fri,  1 Dec 2023 08:28:07 -0800 (PST)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailnew.nyi.internal (Postfix) with ESMTP id AAE28580A4F;
-        Fri,  1 Dec 2023 11:28:03 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Fri, 01 Dec 2023 11:28:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm3; t=1701448083; x=1701455283; bh=eY
-        YJBcIdkLd72F1/I/hnCobiC3d8I4lgiTDbsW05Rfk=; b=FewMsGRG2mUxUBSpWO
-        M/0S1myc7hSRL3FvSrwVGHeQGumuLJ4RvB4EGSTNC83CaKyGC1+bFU5Hb33Yf1tY
-        VO4XFT8d/i/Y+dJYjdSDrW/8zqFVcu/2daQX8puPuiveYcVXPGRJH+KQsmRUMjPR
-        NwFZMOCSRsa8S1Ey4IpHbePMk5LTSf60L1Ofqcd9VJQkd/WyYvCNWDGa1gDReibG
-        b/T0TFNxpueSxIzhQhxPzzflpDZv/CtDYmCMGC+o+tsi6PNHCikhWOUPSeIqtY2q
-        iaIMCgLJunahTFwQ7hNYdKEfmK8wz/WAyfaafbTVANnSiri5Qz+V/3uRN2DIrKWG
-        z+xw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1701448083; x=1701455283; bh=eYYJBcIdkLd72
-        F1/I/hnCobiC3d8I4lgiTDbsW05Rfk=; b=A6OuCdxivjbAP5VbfQsErA89IkZzt
-        z5fbjEpYzWg/ItEGqilefFlgi4GX08/yh9jdVCf/SREg/aq70rvhcSq44BckYCkc
-        DSjl9E1eTCLZ5N/sJ1CvoNy1LS6yN1B7ILVTMABRc31B1yU4IzRVNVxs82czDOdk
-        nC/H7Ks4QsPk67HzdQAnS7GpYqCXEuCQ8LXJFYe3/NChoyv8FkMjdScJVEn0TWe8
-        OzHIkGVmihZaABAzrdsxutC3XIc7748UcqyQpX4Js56w1k0caCPxH+6Lxf99GoJI
-        m8P8YdvI+1xJS1J6AM3J94+0H0erqV0jmx+Oxt+OQchX9BLoDLmfMhVyQ==
-X-ME-Sender: <xms:kglqZf_CEBYJvjsczzeens3_fwY4UOf70OKzoSAEwa7BapVJglFI9g>
-    <xme:kglqZbs8XqF0Dc2wngbqmcylIMG9wIWpq6u5yxSmo9EEO77FXCcWwKEyamAjqvTFp
-    0a_wj0rA2xPgpgeRPU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeiledgkeelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:kglqZdA1dH1Ijr6lBN34WvsZKLb0mzMG6v_GRemXoo-tr1a7NNY07g>
-    <xmx:kglqZbc1dxMUS-Une1a8_DLny0TVaaQ8FH7yEcvDf0aJzBSUrB7SSA>
-    <xmx:kglqZUMN_NYtIoLmbna_zQ5GJYdjeAHV9yprhR5PTCxb9ecEL8MfjA>
-    <xmx:kwlqZS3F_5Pk_UhB-2fGmXuWnF6ffq_QrHfqPU2X-VYrH8gd376azQ>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 1E96DB60089; Fri,  1 Dec 2023 11:28:02 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1178-geeaf0069a7-fm-20231114.001-geeaf0069
+        Fri, 1 Dec 2023 11:29:00 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A5E6AD;
+        Fri,  1 Dec 2023 08:29:07 -0800 (PST)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B1BLifl029255;
+        Fri, 1 Dec 2023 16:28:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
+ cc : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=qcppdkim1; bh=G5hw65bwWWTIpsT+/2eFCiG3XyYCVlrTUm4AMs1wZ7A=;
+ b=WWzOL5lfofL8I3wPyemWXmmaSGA/ZZbIUR/Wuxq9Q+AbDCmFieK9QmuVCeOHl8hR5sX6
+ YRguArpxmCYu9HF9dSsjoNhLgn5q221NJWQ6X0lRmmNOss+Pq3v9kuq2YIQ9Uti2eVKd
+ nrulIwLUjTYwEtRj47qld06pWX1T5IiaMHcp5HMwyIxFJQ7N7JjC/SerWLhPmpAvUScb
+ PAN0Y6wX/sMkSGwtDG9WGkCJrnrBaUmaKN0GPd9nVu6I3LpPItsT5QkxCjvBzHlguySz
+ Q81EPCE91YWgb8JLb72glzW94esiPDKqPzV6nRsb5grw7GIGs0y4MEcpoIpxhLHcuXqQ +w== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uq3r2j9jn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 01 Dec 2023 16:28:57 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B1GSuKA015439
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 1 Dec 2023 16:28:56 GMT
+Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Fri, 1 Dec 2023 08:28:56 -0800
+Date:   Fri, 1 Dec 2023 08:28:55 -0800
+From:   Bjorn Andersson <quic_bjorande@quicinc.com>
+To:     Johan Hovold <johan@kernel.org>
+CC:     Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "Bjorn Andersson" <andersson@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>,
+        Rob Clark <robdclark@chromium.org>,
+        <dri-devel@lists.freedesktop.org>,
+        <freedreno@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] drm/msm/dpu: Add missing safe_lut_tbl in sc8180x catalog
+Message-ID: <20231201162855.GH1766637@hu-bjorande-lv.qualcomm.com>
+References: <20231130-sc8180x-dpu-safe-lut-v1-1-a8a6bbac36b8@quicinc.com>
+ <ZWmUFdWif3QGrqQc@hovoldconsulting.com>
 MIME-Version: 1.0
-Message-Id: <3871b83a-0e80-402e-bbe6-359c17127842@app.fastmail.com>
-In-Reply-To: <20231201121622.16343-1-pstanner@redhat.com>
-References: <20231201121622.16343-1-pstanner@redhat.com>
-Date:   Fri, 01 Dec 2023 17:27:40 +0100
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Philipp Stanner" <pstanner@redhat.com>,
-        "Bjorn Helgaas" <bhelgaas@google.com>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        "Dan Williams" <dan.j.williams@intel.com>,
-        "Jonathan Cameron" <Jonathan.Cameron@huawei.com>,
-        "Jakub Kicinski" <kuba@kernel.org>,
-        "Dave Jiang" <dave.jiang@intel.com>,
-        "Uladzislau Koshchanka" <koshchanka@gmail.com>,
-        "Neil Brown" <neilb@suse.de>,
-        "Niklas Schnelle" <schnelle@linux.ibm.com>,
-        "John Sanpe" <sanpeqf@gmail.com>,
-        "Kent Overstreet" <kent.overstreet@gmail.com>,
-        "Masami Hiramatsu" <mhiramat@kernel.org>,
-        "Kees Cook" <keescook@chromium.org>,
-        "David Gow" <davidgow@google.com>,
-        "Yury Norov" <yury.norov@gmail.com>,
-        "wuqiang.matt" <wuqiang.matt@bytedance.com>,
-        "Jason Baron" <jbaron@akamai.com>,
-        "Kefeng Wang" <wangkefeng.wang@huawei.com>,
-        "Ben Dooks" <ben.dooks@codethink.co.uk>,
-        "Danilo Krummrich" <dakr@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        Linux-Arch <linux-arch@vger.kernel.org>
-Subject: Re: [PATCH v2 0/4] Regather scattered PCI-Code
-Content-Type: text/plain
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <ZWmUFdWif3QGrqQc@hovoldconsulting.com>
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 8GGEN6E7BHYpaJCRSd15h9IvrK6-n_Rm
+X-Proofpoint-ORIG-GUID: 8GGEN6E7BHYpaJCRSd15h9IvrK6-n_Rm
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-01_14,2023-11-30_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 clxscore=1015
+ malwarescore=0 lowpriorityscore=0 suspectscore=0 adultscore=0
+ mlxlogscore=903 bulkscore=0 spamscore=0 priorityscore=1501 mlxscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2312010112
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 1, 2023, at 13:16, Philipp Stanner wrote:
->
-> Arnd has suggested that architectures defining a custom inb() need their
-> own iomem_is_ioport(), as well. I've grepped for inb() and found the
-> following list of archs that define their own:
->   - alpha
->   - arm
->   - m68k <--
->   - parisc
->   - powerpc
->   - sh
->   - sparc
->   - x86 <--
->
-> All of those have their own definitons of pci_iounmap(). Therefore, they
-> don't need our generic version in the first place and, thus, also need
-> no iomem_is_ioport().
+On Fri, Dec 01, 2023 at 09:06:45AM +0100, Johan Hovold wrote:
+> On Thu, Nov 30, 2023 at 04:35:01PM -0800, Bjorn Andersson wrote:
+> > Similar to SC8280XP, the misconfigured SAFE logic causes rather
+> > significant delays in __arm_smmu_tlb_sync(), resulting in poor
+> > performance for things such as USB.
+> > 
+> > Introduce appropriate SAFE values for SC8180X to correct this.
+> > 
+> > Fixes: f3af2d6ee9ab ("drm/msm/dpu: Add SC8180x to hw catalog")
+> 
+> Missing CC stable tag?
+> 
 
-What I meant of course is that they should define iomem_is_ioport()
-in order to drop the custom pci_iounmap() and have only one remaining
-definition of that function left.
+I figured it doesn't matter in practice, there's still a few issues left
+preventing people from just running a stable kernel on this platform.
 
-The one special case that I missed the last time is s390, which
-does not use GENERIC_PCI_IOMAP and will just require a separate
-copy of pci_iounmap() to go along with the is custom pci_iomap().
+But it would be the right thing to do...
 
-> The two exceptions are x86 and m68k. The former uses lib/iomap.c through
-> CONFIG_GENERIC_IOMAP, as Arnd pointed out in the previous discussion
-> (thus, CONFIG_GENERIC_IOMAP is not really generic in this regard).
->
-> So as I see it, only m68k WOULD need its own custom definition of
-> iomem_is_ioport(). But as I understand it it doesn't because it uses the
-> one from asm-generic/pci_iomap.h ??
+Cc: stable@vger.kernel.org
 
-At the moment, m68k gets the pci_iounmap() from lib/iomap.c
-if PCI is enabled for coldfire, but that incorrectly calls
-iounmap() on PCI_IO_PA if it gets passed a PIO address.
+Regards,
+Bjorn
 
-The version from asm-generic/io.h should fix this.
-
-For classic m68k, there is no PCI, so nothing calls pci_iounmap().
-
-> I wasn't entirely sure how to deal with the address ranges for the
-> generic implementation in asm-generic/io.h. It's marked with a TODO.
-> Input appreciated.
-
-I commented on the function directly. To clarify, I think we should
-be able to directly turn each pci_iounmap() definition into
-a iomem_is_ioport() definition by keeping the logic unchanged
-and just return 'true' for the PIO variant or 'false' for the MMIO
-version.
-
-> I removed the guard around define pci_iounmap in asm-generic/io.h. An
-> alternative would be to have it be guarded by CONFIG_GENERIC_IOMAP and
-> CONFIG_GENERIC_PCI_IOMAP, both. Without such a guard, there is no
-> collision however, because generic pci_iounmap() from
-> drivers/pci/iomap.c will only get pulled in when
-> CONFIG_GENERIC_PCI_IOMAP is actually set.
-
-The "#define pci_iomap" can be removed entirely I think.
-
-     Arnd
+> > Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
+> 
+> Johan
+> 
