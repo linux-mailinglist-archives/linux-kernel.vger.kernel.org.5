@@ -2,70 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF2E080066C
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 10:00:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FA1580066E
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 10:01:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377947AbjLAJAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 04:00:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42950 "EHLO
+        id S1377958AbjLAJBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 04:01:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377952AbjLAJAj (ORCPT
+        with ESMTP id S1377952AbjLAJA7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 04:00:39 -0500
-Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FFF9171A
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 01:00:44 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0VxZuzXd_1701421234;
-Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0VxZuzXd_1701421234)
-          by smtp.aliyun-inc.com;
-          Fri, 01 Dec 2023 17:00:42 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     harry.wentland@amd.com
-Cc:     sunpeng.li@amd.com, Rodrigo.Siqueira@amd.com,
-        alexander.deucher@amd.com, christian.koenig@amd.com,
-        Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        Abaci Robot <abaci@linux.alibaba.com>
-Subject: [PATCH] drm/amd/display: Simplify the calculation of variables
-Date:   Fri,  1 Dec 2023 17:00:32 +0800
-Message-Id: <20231201090032.131030-1-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 2.20.1.7.g153144c
+        Fri, 1 Dec 2023 04:00:59 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B66E1700;
+        Fri,  1 Dec 2023 01:01:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Y5uy0MWBWonI5NFoxzOx49kq9VkUlR2QCbejhy+1wrw=; b=d7iw7/7VqyuiiFGnXN/Iv8/rhp
+        DKaeRnJK0R1GWrRLXEyYN87/g237v2HeFk8sjr1hdTYbOuQn7fK7iP48jyDb+OMooT6dB66DY5up6
+        B6BJ58KjpPUNXdvjD8toyEEGKpu4zClJexJKZM5/MiT4uL4QDlnAP2BcpoIPthAkPrnjBUS872WmL
+        35pMQ1MmeQAG9KicW0gt+mPYkuZqnXGquaWMZM5U4VMUCSr4ihufvyCnGBZ+kzRBsFNu+WETdM+RQ
+        pYUSoYf5k9M9yU/UZN1rk1Tq0OVQu5m6gnvEZ5y3b4t2kn5DehmXJgY4ETB0UwoM8fO/IunW7JqKx
+        440EuXMQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1r8zO4-0029xu-1C;
+        Fri, 01 Dec 2023 09:00:43 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 056A830040C; Fri,  1 Dec 2023 10:00:40 +0100 (CET)
+Date:   Fri, 1 Dec 2023 10:00:39 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Gary Guo <gary@garyguo.net>,
+        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Carlos Llamas <cmllamas@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Josh Triplett <josh@joshtriplett.org>
+Subject: Re: [PATCH 1/7] rust: file: add Rust abstraction for `struct file`
+Message-ID: <20231201090039.GF3818@noisy.programming.kicks-ass.net>
+References: <20231129-alice-file-v1-0-f81afe8c7261@google.com>
+ <20231129-alice-file-v1-1-f81afe8c7261@google.com>
+ <ZWdVEk4QjbpTfnbn@casper.infradead.org>
+ <20231129152305.GB23596@noisy.programming.kicks-ass.net>
+ <ZWdv_jsaDFJxZk7G@Boquns-Mac-mini.home>
+ <20231130104226.GB20191@noisy.programming.kicks-ass.net>
+ <ZWipTZysC2YL7qsq@Boquns-Mac-mini.home>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZWipTZysC2YL7qsq@Boquns-Mac-mini.home>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-./drivers/gpu/drm/amd/display/dc/dml2/dml2_translation_helper.c:964:49-51: WARNING !A || A && B is equivalent to !A || B.
+On Thu, Nov 30, 2023 at 07:25:01AM -0800, Boqun Feng wrote:
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=7671
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- drivers/gpu/drm/amd/display/dc/dml2/dml2_translation_helper.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> seems to me, the plan for this is something like below:
+> 
+> 	asm!(
+> 		"cmp {}, 42",
+> 		"jeq {}",
+> 		in(reg) val,
+> 		label { println!("a"); },
+> 		fallthrough { println!("b"); }
+>     	);
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dml2/dml2_translation_helper.c b/drivers/gpu/drm/amd/display/dc/dml2/dml2_translation_helper.c
-index fa8fe5bf7e57..519db4931b8d 100644
---- a/drivers/gpu/drm/amd/display/dc/dml2/dml2_translation_helper.c
-+++ b/drivers/gpu/drm/amd/display/dc/dml2/dml2_translation_helper.c
-@@ -961,7 +961,7 @@ static bool get_plane_id(struct dml2_context *dml2, const struct dc_state *conte
- 		if (context->streams[i]->stream_id == stream_id) {
- 			for (j = 0; j < context->stream_status[i].plane_count; j++) {
- 				if (context->stream_status[i].plane_states[j] == plane &&
--					(!is_plane_duplicate || (is_plane_duplicate && (j == plane_index)))) {
-+				    (!is_plane_duplicate || (j == plane_index))) {
- 					*plane_id = (i << 16) | j;
- 					return true;
- 				}
--- 
-2.20.1.7.g153144c
-
+Because rust has horrible syntax I can't parse, I can't tell if this is
+useful or not :/ Can this be used to implement arch_static_branch*() ?
