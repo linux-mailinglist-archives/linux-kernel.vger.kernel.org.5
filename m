@@ -2,68 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9796E800397
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 07:13:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 743538003A2
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 07:18:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377590AbjLAGNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 01:13:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43586 "EHLO
+        id S1377531AbjLAGSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 01:18:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232136AbjLAGNk (ORCPT
+        with ESMTP id S229459AbjLAGSq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 01:13:40 -0500
+        Fri, 1 Dec 2023 01:18:46 -0500
 Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02957172B
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 22:13:46 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB4E41703;
+        Thu, 30 Nov 2023 22:18:52 -0800 (PST)
 Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3B16DSK5082436;
-        Fri, 1 Dec 2023 00:13:28 -0600
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3B16IcYj083745;
+        Fri, 1 Dec 2023 00:18:38 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1701411208;
-        bh=rB1XmTGzoDJq5odP3oGC6AWHoMG4DmhTDFrwngnRKbo=;
+        s=ti-com-17Q1; t=1701411518;
+        bh=Ngjr998Ot8wxlafjh+nVHKWdF0QDzFU2kmFQhMo+Gqg=;
         h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=xmxsdO2X8yuSU30NV85rSXkx/XiVAW+559cW8D+MqgEVi1Qz+rsgZ/te1Bp+johuz
-         Ybqb1pEVFOD897GraRJycluBy8j6M0jm2VpWeBpFbeQBTmJBEL88F/6YwO7egfNTAO
-         ojXMQhmSR6+LeMIrUp+QikplcI8MeYfpW9CXbi9Y=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3B16DSLh075933
+        b=e2fZOZvDQTsqOrZBu26vXbk9lxXTevVTfpXoaedMxA9vx9hEJx+vp5wKurstOtOmV
+         DAaZxnq1SwDDXmmyekshMDXB/DWG7E5CIf6kKvbeAKAC3n2ifODwXEMPN+/j7MmvJL
+         y6fEANWKt77X6YXlNeZqInt2xERThen+r1MdVO6w=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3B16IcBp079001
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 1 Dec 2023 00:13:28 -0600
-Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+        Fri, 1 Dec 2023 00:18:38 -0600
+Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 1
- Dec 2023 00:13:27 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ Dec 2023 00:18:38 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 1 Dec 2023 00:13:27 -0600
-Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3B16DR0l084648;
-        Fri, 1 Dec 2023 00:13:27 -0600
-Date:   Fri, 1 Dec 2023 00:13:27 -0600
+ Frontend Transport; Fri, 1 Dec 2023 00:18:38 -0600
+Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3B16IbMG012571;
+        Fri, 1 Dec 2023 00:18:37 -0600
+Date:   Fri, 1 Dec 2023 00:18:37 -0600
 From:   Nishanth Menon <nm@ti.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-CC:     Frank Binns <frank.binns@imgtec.com>,
-        Donald Robson <donald.robson@imgtec.com>,
-        Matt Coster <matt.coster@imgtec.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sarah Walker <sarah.walker@imgtec.com>,
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+CC:     Jai Luthra <j-luthra@ti.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
         Vignesh Raghavendra <vigneshr@ti.com>,
         Tero Kristo <kristo@kernel.org>,
-        <dri-devel@lists.freedesktop.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] drm/imagination: DRM_POWERVR should depend on ARCH_K3
-Message-ID: <20231201061327.mfadiwejp5akmlal@properly>
-References: <b9360c2044a1001b9a5bcb5914611711d040d4fe.1701196029.git.geert+renesas@glider.be>
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        Aradhya Bhatia <a-bhatia1@ti.com>,
+        Devarsh Thakkar <devarsht@ti.com>,
+        Vaishnav Achath <vaishnav.a@ti.com>,
+        Julien Massot <julien.massot@collabora.com>,
+        Martyn Welch <martyn.welch@collabora.com>,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Subject: Re: [PATCH v3 4/9] arm64: dts: ti: k3-am625-beagleplay: Add overlays
+ for OV5640
+Message-ID: <20231201061837.rqj7r5dvhjd6l3bj@platter>
+References: <20231128-csi_dts-v3-0-0bb11cfa9d43@ti.com>
+ <20231128-csi_dts-v3-4-0bb11cfa9d43@ti.com>
+ <g6m7mwhifsmsy3c5gvkqfiktw6cjdd3aaz55att325yhacncga@eoklyawsppi4>
+ <6e7a0168-5bff-4373-a1c9-e4c1917be0d9@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <b9360c2044a1001b9a5bcb5914611711d040d4fe.1701196029.git.geert+renesas@glider.be>
+In-Reply-To: <6e7a0168-5bff-4373-a1c9-e4c1917be0d9@linaro.org>
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
@@ -75,38 +81,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19:29-20231128, Geert Uytterhoeven wrote:
-> The Imagination Technologies PowerVR Series 6 GPU is currently only
-> supported on Texas Instruments K3 AM62x SoCs.  Hence add a dependency on
-> ARCH_K3, to prevent asking the user about this driver when configuring a
-> kernel without Texas Instruments K3 Multicore SoC support.
+On 15:33-20231128, Krzysztof Kozlowski wrote:
+> On 28/11/2023 11:27, Jai Luthra wrote:
+> > Hi,
+> > 
+> > On Nov 28, 2023 at 15:39:46 +0530, Jai Luthra wrote:
+> >> Three different OV5640 modules are supported using the FFC connector on
+> >> BeaglePlay:
+> >> - Digilent PCam 5C
+> >> - ALINX AN5641
+> >> - TEVI-OV5640-*-RPI
+> >>
+> >> The Digilent and ALINX modules supply a 12Mhz XCLK to the sensor, while
+> >> the TEVI module supplies a 24Mhz XCLK, thus requiring a separate
+> >> overlay.
+> > 
+> > Sorry looks like I forgot to pull Andrew's R-By tag from v2 [1], 
+> > hopefully this works:
+> > 
+> > Reviewed-by: Andrew Davis <afd@ti.com>
 > 
-> Fixes: 4babef0708656c54 ("drm/imagination: Add skeleton PowerVR driver")
+> Sorry, usually not. At least would not work for my scripts, because I do
+> not use b4 parameter to accept tags from other people. I don't know
+> whether the case is here, but I would recommend to wait a day and then
+> resend with short explanation.
 
-Minor nitpick here - 12 char sha.. otherwise:
-
-Reviewed-by: Nishanth Menon <nm@ti.com>
-
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
->  drivers/gpu/drm/imagination/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/gpu/drm/imagination/Kconfig b/drivers/gpu/drm/imagination/Kconfig
-> index 3bfa2ac212dccb73..af492dbd9afd4ed9 100644
-> --- a/drivers/gpu/drm/imagination/Kconfig
-> +++ b/drivers/gpu/drm/imagination/Kconfig
-> @@ -6,6 +6,7 @@ config DRM_POWERVR
->  	depends on ARM64
->  	depends on DRM
->  	depends on PM
-> +	depends on ARCH_K3 || COMPILE_TEST
->  	select DRM_EXEC
->  	select DRM_GEM_SHMEM_HELPER
->  	select DRM_SCHED
-> -- 
-> 2.34.1
-> 
+Jai: Please re-send this series. I'd rather not play a guessing game
+here and don't want to digging up all old series to see Reviews you
+should be carrying forward on which patch or for full series etc..
 
 -- 
 Regards,
