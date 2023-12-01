@@ -2,122 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EC52800FA9
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 17:13:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25307800FB4
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 17:13:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379433AbjLAPc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 10:32:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40000 "EHLO
+        id S1379469AbjLAPes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 10:34:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379426AbjLAPc4 (ORCPT
+        with ESMTP id S1379426AbjLAPer (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 10:32:56 -0500
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 309C810D8
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 07:33:03 -0800 (PST)
-Received: by mail-yb1-xb31.google.com with SMTP id 3f1490d57ef6-db544987c79so635511276.2
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 07:33:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701444782; x=1702049582; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aXJhsJ8O3q6xngbx8DndV1q5mG4v/r2JTE5ISK5oIYQ=;
-        b=PbrgkW+DvjYddXeGF1IcqzoFY5FJ3zZX3m4JXPWzEXVOj1kpMvoMxvBPI/cJXWWIk5
-         Z3Ob2uLDxA4eKAqDI+F0/3/U9R9/ZDucxIX7eL4QMKEdYmNYu2Rfli4pg/5UHQgs4khd
-         jbMvZyozwNKV24yofD2VRZoFaP64pAETOldGr25ieaRfRwsp8VbwqHaGPaFc7MtZ4KyS
-         tP3oBxjSndXGlazn0t3HLNdJdyM9JTfXEKnMjGl5WxA7clD8o1/+kgthMBW/tGHnnW/E
-         qJf4DBcou6ZPW32UuHTQO8kQn3m+TAHxG0BSgJYCmOjpAj624CJCYJs+hTo4bzJ5z5n/
-         sTeA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701444782; x=1702049582;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aXJhsJ8O3q6xngbx8DndV1q5mG4v/r2JTE5ISK5oIYQ=;
-        b=PQCoWe8mclaJiSVxu3h+e8OZoQ+HM02TDKqE8DZHxVvY1jIVB3nrm/s9+l0mszjvep
-         VSo4i8q5N3ihYIAHsuK4dIDdiiL+1VNjMnd3dPnswDD3Znw4YgeemGTZJjxZMpYG9C3t
-         lYRWWh0yOLSk3vnenm4xBImJ+h/2ygXxk1qsFpue83YMAqMKi52ZT7PPatnIFu63jzYi
-         Yoxro+K6AV/EKZkfbiN3OHdcUTqAH2v6AkOjEl25Wg2PYsF31RiIhUrxNI+32r+WU6Th
-         1RtsijgkL7g2V2SkHkIwZffL00M7tyBxRLRtwc1pLC4wptDUja4UNJTwI6Z8hFYY3ZTF
-         gYBw==
-X-Gm-Message-State: AOJu0Yz5o6fJ4jLVhtJmiQgVhSezZCOwsqwiEHOgvnB5DLGVpIODGyTL
-        +1XuMphKqDMCWWXCNSPiGKNU1iHXhxdYKISl/PE=
-X-Google-Smtp-Source: AGHT+IFy7O1fM/EUHXyF9g9UIdmMd5P2MTuCqORmf/mHNBEfa+85uAHjssTm3F/XLFy5D+QFHRYTA283Usz6OVMhVsA=
-X-Received: by 2002:a5b:291:0:b0:db3:fca3:76ea with SMTP id
- x17-20020a5b0291000000b00db3fca376eamr26324788ybl.0.1701444782289; Fri, 01
- Dec 2023 07:33:02 -0800 (PST)
+        Fri, 1 Dec 2023 10:34:47 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0022C194;
+        Fri,  1 Dec 2023 07:34:53 -0800 (PST)
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B1CCNJD031400;
+        Fri, 1 Dec 2023 15:34:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : from : to : cc : references : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=0ZklXZgMgNVIXFADu1Td3CAYvg3iYt75Ybl27HxE12c=;
+ b=EKGMR8Zx1hwG/PNhEmIVoxqRqsdQkOuja1cf7g9k48SdbbLfHpGhNUo8My422KnrluIS
+ nsoseuycJcNaPcA/IC9KRLzPwdhhziMADIwxRkxCLvzHEMmjQRc6fI2Z2mXEvvZ0rlDd
+ lwnJcafO7mJ5kEV/h/gJVbv7E7AQHjroXxteozzFdS4j/nh9/KPsL2wrN50GRPyLgYNc
+ nBUrAgSWZex1rM7Q8Is56gqCAmZYZ3d8sWEw31G6DcaD2P5E3NhtOMwwzto8uJRSSX5u
+ Mw9WGNhOHBMDURlnY31SqhJ9NgjfI8rFZcb/rMntp8eO9JBNaxHhadNQIBHjwC/+Km2N Bw== 
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uq6dkssbr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 01 Dec 2023 15:34:46 +0000
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B1FYjdP009513
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 1 Dec 2023 15:34:45 GMT
+Received: from [10.239.133.73] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 1 Dec
+ 2023 07:34:43 -0800
+Message-ID: <e011b3e9-7c09-4214-8e9c-90e12c38bbaa@quicinc.com>
+Date:   Fri, 1 Dec 2023 23:34:40 +0800
 MIME-Version: 1.0
-References: <20231201053540.9534-1-2023002089@link.tyut.edu.cn>
- <ZWmB67THrLcztb-3@buildd.core.avm.de> <b118c12f-b94d-46aa-ab72-55ac2ce7813f@link.tyut.edu.cn>
-In-Reply-To: <b118c12f-b94d-46aa-ab72-55ac2ce7813f@link.tyut.edu.cn>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Fri, 1 Dec 2023 16:32:51 +0100
-Message-ID: <CANiq72krGxPJ948xp2=pEBXS==P_AKrHLYEUBc3M7482bbL9UA@mail.gmail.com>
-Subject: Re: [PATCH v2] scripts/show_delta: reformat code
-To:     Hu Haowen <2023002089@link.tyut.edu.cn>
-Cc:     Nicolas Schier <n.schier@avm.de>, gregkh@linuxfoundation.org,
-        akpm@linux-foundation.org, masahiroy@kernel.org,
-        ndesaulniers@google.com, ojeda@kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [GIT PULL] Pin control fixes for v6.7
+From:   "Aiqun(Maria) Yu" <quic_aiquny@quicinc.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+CC:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Chester Lin <clin@suse.com>
+References: <CACRpkdZtVNZFWSUgb4=gUE2mQRb=aT_3=zRv1U71Vsq0Mm34eg@mail.gmail.com>
+ <CAHk-=whk4oNQazgpzkujc2=ntVQMhU5ko7Canp2Uuq6CpyGzmA@mail.gmail.com>
+ <CACRpkdZRf7bNVmJCgsVD0uheD1VLkLKG13d1oS-kbT8BFyRKQw@mail.gmail.com>
+ <e703c87e-32b9-4dce-b232-89c0e909c35e@quicinc.com>
+ <CACRpkdZtCxwLZCY4autrTvonmZ3XcVzH6iXqXanS97VKCZ+ERw@mail.gmail.com>
+ <9714f76f-0cf3-4f54-8e0d-fe3ca2990eed@quicinc.com>
+In-Reply-To: <9714f76f-0cf3-4f54-8e0d-fe3ca2990eed@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 27hOuwpan4iuFUsE4ei40XA481AewGt6
+X-Proofpoint-GUID: 27hOuwpan4iuFUsE4ei40XA481AewGt6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-01_13,2023-11-30_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ priorityscore=1501 adultscore=0 impostorscore=0 mlxscore=0 malwarescore=0
+ phishscore=0 suspectscore=0 spamscore=0 lowpriorityscore=0 bulkscore=0
+ mlxlogscore=958 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2312010108
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 1, 2023 at 3:49=E2=80=AFPM Hu Haowen <2023002089@link.tyut.edu.=
-cn> wrote:
->
-> Just got a glimpse on the usage of Black and realized the convenience
-> it provides and strictness of code style it supplies. It is pretty
-> feasible for code style analysis series of Python scripts within the
-> kernel source.
->
-> However, here comes the issue that this tool binds itself to its own
-> bunches of rules how the code should be formatted by default, resulting
-> in some kind of scenes which do not match what we want when doing kernel
-> programming, or more exactly this tool may not follow the rules regulated
-> by the kernel developers or mentioned within kernel documentation,
-> which means we are obliged to conduct a programming standard for Python
-> coding within kernel source internally, and then ask Black to review and
-> reformat the code accordingly. But this programming standard is absent
-> currently, consequently it should be specified initially from my
-> perspective. What is your idea on this?
+On 12/1/2023 6:06 PM, Aiqun(Maria) Yu wrote:
+> On 12/1/2023 4:10 PM, Linus Walleij wrote:
+>> Hi Nathan, Nick,
+>>
+>> (just picking some LLVM compiler people I know of... and trust)
+>>
+>> Context is this patch:
+>> https://lore.kernel.org/linux-gpio/20231115102824.23727-1-quic_aiquny@quicinc.com/
+>>
+>> On Thu, Nov 30, 2023 at 6:37 AM Aiqun(Maria) Yu 
+>> <quic_aiquny@quicinc.com> wrote:
+>>> On 11/29/2023 11:08 PM, Linus Walleij wrote:
+>>>> On Wed, Nov 29, 2023 at 3:56 PM Linus Torvalds
+>>>> <torvalds@linux-foundation.org> wrote:
+>>>>> On Wed, 29 Nov 2023 at 04:09, Linus Walleij 
+>>>>> <linus.walleij@linaro.org> wrote:
+>>>>>>
+>>>>>> The most interesting patch is the list iterator fix in the core by 
+>>>>>> Maria
+>>>>>> Yu, it took a while for me to realize what was going on there.
+>>>>>
+>>>>> That commit message still doesn't explain what the problem was.
+>>>>>
+>>>>> Why is p->state volatile there? It seems to be a serious locking bug
+>>>>> if p->state can randomly change there, and the READ_ONCE() looks like
+>>>>> a "this hides the problem" rather than an actual real fix.
+>>>
+>>> This is indeed an interesting issue. Thx for the comment, Linus.
+>>> **Let me explain how: "p->state becomes volatile in the list iterator",
+>>> and "why READ_ONCE is suggested".
+>>>
+>>> The current critical code is:
+>>>     list_for_each_entry(setting, &p->state->settings, node)
+>>>
+>>> after elaborating the define list_for_each_entry, so above critical code
+>>> will be:
+>>>     for (setting = list_head(&p->state->settings, typeof(*setting), 
+>>> node); \
+>>> &setting->node != (&p->state->settings); \
+>>> setting = list_next(setting , node))
+>>>
+>>> The asm code(refer result from Clang version 10.0) can cleared explain
+>>> the step of p->state reload actions:
+>>> loop:
+>>> ldr x22,[x22] ; x22=list_next(setting , node))
+>>> add x9,x8,#0x18 ; x9=&p->state->setting
+>>> cmp x22,x9 ; setting,x9
+>>> b.eq 0xFFFFFF9B24483530
+>>>
+>>> ldr w9,[x22,#0x10] ; w9,[setting,#16]
+>>> cmp w9,#0x2 ; w9,#2
+>>> b.ne 0xFFFFFF9B24483504
+>>>
+>>> mov x0,x22 ; x0,setting
+>>> bl 0xFFFFFF9B24486048 ; pinmux_disable_setting
+>>>
+>>> ldr x8,[x19,#0x28] ; x19=p, x8=[p->state], *reload p->state*
+>>> b loop
+>>>
+>>> The *reload p->state* inside the loop for checking is not needed and can
+>>> cause possible infinite loop. So READ_ONCE is highly suggested even if
+>>> p->state is not randomly changed. And then unnecessary "ldr
+>>> x8,[x19,#0x28]" can be removed from above loop code.
+>>>
+>>> **Comments about the locking bug:
+>>> currently pinctrl_select_state is an export symbol and don't have
+>>> effective reentrance protect design. That's why current infinite loop
+>>> issue was observed with customer's multi thread call with
+>>> pinctrl_select_state without lock protection. pinctrl_select_state
+>>> totally rely on driver module user side to ensure the reentrant state.
+>>>
+>>> Usually the suggested usage from driver side who are using pinctrl 
+>>> would be:
+>>> LOCK;
+>>> pinctrl_select_state();
+>>> gpio pulling;
+>>> udelay();
+>>> check state;
+>>> other hardware behaviors;
+>>> UNLOCK;
+>>>
+>>> So the locking bug fix I have told customer side to fix from their own
+>>> driver part. Since usually not only a simple pinctrl_select_state call
+>>> can finish the hardware state transaction.
+>>>
+>>> I myself also is fine to have a small per pinctrl lock to only protect
+>>> the current pinctrl_select_state->pinctrl_commit_state reentrance
+>>> issues. Pls any pinctrl maintainer help to comment to suggest or not and
+>>> I can prepare a change as well.
+>>
+>> Luckily I am the pin control maintainer :D
+>> And I also ha my morning coffee and looked over the patch again.
+>>
+>> So tilting the compiler to generate code that is less prone to race
+>> conditions with READ_ONCE() isn't really the solution is it? We need
+>> to introduce a proper lock that stops this from happening if it is
+>> a problem people are facing.
+>>
+>> Can you try to make a patch that removes READ_ONCE()
+>> and introduce a lock instead?
+>>
+>> Racing is rarely an issue in pin control for reasons explained
+>> in another context here:
+>> https://lore.kernel.org/linux-gpio/CACRpkdZ0cnJpYuzU=47-oW-7N_YGMo2vXpKOeXeNi5PhPY7QMA@mail.gmail.com/
+>>
+>> ...but if people still manage to run into it, we better have a lock
+>> there. Just make sure it is not just an issue with outoftree code,
+>> but a real problem?
+>>
+>> The change that changes the code to use the old_state variable
+>> should stay in, it makes the code more readable, it's just the
+>> READ_ONCE() macro which is dubious.
+> Thx for confirm. I am preparing the new change now. :)
+change uploaded link here:
+https://lore.kernel.org/linux-gpio/20231201152931.31161-1-quic_aiquny@quicinc.com/ 
 
-This is essentially the same problem we have for C.
+> 
+> READ_ONCE can only avoid the possible infinite loop and not crash the 
+> whole kernel, while the lock is needed to protect the multi parallel 
+> call of pinctrl_commit_state api have a consistent atomic hardware 
+> result as well.
+>>
+>> Yours,
+>> Linus Walleij
+> 
 
-For C, what I did was try to find an initial "common enough" style and
-document the tool in `Documentation/process/clang-format.rst` so that
-maintainers could start to use the tool easily if they so wished, at
-their own pace. In other words, the benefit was just having the style
-around. Then, maybe, after some years, when the tool is good enough
-and maintainers are on board, we can start to think about
-`clang-format`ing the kernel.
+-- 
+Thx and BRs,
+Aiqun(Maria) Yu
 
-Now, for Python, we have orders of magnitude less code, so perhaps
-using the default options of whatever tool is a possibility. In any
-case, it would be a matter of exploring the tools, asking for
-feedback, documenting the choice made in `Documentation/`, providing
-an example patch formatting one of the existing scripts, etc. The main
-benefit would be having decided on a particular approach. I would
-still avoid sending tree-wide formatting of all scripts until
-maintainers of those scripts agree.
-
-I would also recommend taking the chance to also look at linting and
-not just formatting, especially given tools like Ruff provide both.
-And if you happen to find an actual issue in an existing script thanks
-to the linting, then that would be great and allows you to showcase
-their usefulness (and maintainers are probably more likely to welcome
-series like that vs. just formatting :)
-
-Hope that helps!
-
-Cheers,
-Miguel
