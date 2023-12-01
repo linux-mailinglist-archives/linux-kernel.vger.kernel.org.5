@@ -2,161 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35ADE8009F7
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 12:34:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E96F68009F8
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 12:34:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378568AbjLALd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 06:33:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47116 "EHLO
+        id S1378580AbjLALeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 06:34:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378541AbjLALd4 (ORCPT
+        with ESMTP id S1378541AbjLALeG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 06:33:56 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C30E0FF
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 03:34:02 -0800 (PST)
+        Fri, 1 Dec 2023 06:34:06 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E355DF1
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 03:34:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701430442;
+        s=mimecast20190719; t=1701430452;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=nYm7DltZI4+AHPUZ5dfoYGeOZ9qcY4lfHZBKyjjZBuk=;
-        b=SRX5i8wQOZdKo4jzIi+geUungBoxar+Og8BkhHlK2Q/0IeI9Xdy5GQzWTX42tik6dsDQrj
-        h/5A6NAE/kCucB/gqF+Lgmti9O5IVlBDLX4cIZQ7qxv1TRQYR7YB9LB47D8Cvt9G6ADpQe
-        lHj6A7kBIoKtVOER/l0BF0PO5pafBFk=
+        bh=H76S5nJm1jWqRaGejCWH6ccm2LOJtZaVxPslQ1jiKOQ=;
+        b=LawP4yJWUzcM15gb2Ek8ZbJItc1tk9luuih3SlKfYX6qVtI12F2SwCVnDPDKs089Rb9t6Y
+        4img4nygG1BAdGUY3NPZnBaKsgQ8K3J1KBC1asiIjtosm8atUvcusbGc0mb1RiviT/X8PA
+        iLMm/NOoAOP0R2hZFyS7H0gH/zum/Zw=
 Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
  [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-524-FiU4OtBFP0mrsBgN-gL4uw-1; Fri, 01 Dec 2023 06:33:58 -0500
-X-MC-Unique: FiU4OtBFP0mrsBgN-gL4uw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+ us-mta-607-B9N1asX_MoOt3O0iCcnc5Q-1; Fri, 01 Dec 2023 06:34:09 -0500
+X-MC-Unique: B9N1asX_MoOt3O0iCcnc5Q-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 72547101A529;
-        Fri,  1 Dec 2023 11:33:58 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A5FEF811E7D;
+        Fri,  1 Dec 2023 11:34:08 +0000 (UTC)
 Received: from rotkaeppchen (unknown [10.39.194.211])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 111391121307;
-        Fri,  1 Dec 2023 11:33:56 +0000 (UTC)
-Date:   Fri, 1 Dec 2023 12:33:53 +0100
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 93FF32166B26;
+        Fri,  1 Dec 2023 11:34:07 +0000 (UTC)
+Date:   Fri, 1 Dec 2023 12:34:04 +0100
 From:   Philipp Rudo <prudo@redhat.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Baoquan He <bhe@redhat.com>, Donald Dutile <ddutile@redhat.com>,
-        Jiri Bohac <jbohac@suse.cz>, Pingfan Liu <piliu@redhat.com>,
-        Tao Liu <ltao@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
+To:     Jiri Bohac <jbohac@suse.cz>
+Cc:     Baoquan He <bhe@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
         Dave Young <dyoung@redhat.com>, kexec@lists.infradead.org,
-        linux-kernel@vger.kernel.org
+        linux-kernel@vger.kernel.org, mhocko@suse.cz
 Subject: Re: [PATCH 0/4] kdump: crashkernel reservation from CMA
-Message-ID: <20231201123353.2b3db7fa@rotkaeppchen>
-In-Reply-To: <ZWiQ-II9CvGv8EWK@tiehlicka>
-References: <ZWJllXCN0SDIELrX@dwarf.suse.cz>
-        <CAO7dBbVJ=ytRra_77VRZ8ud1wVkP9fub=Vj6cfTkx=CnYg5J2A@mail.gmail.com>
-        <ZWVMUxmi66xLZPsr@MiWiFi-R3L-srv>
-        <ZWWuBSiZZdF2W12j@tiehlicka>
-        <ZWbyDx3TJ7zo3jCw@MiWiFi-R3L-srv>
-        <91a31ce5-63d1-7470-18f7-92b039fda8e6@redhat.com>
-        <ZWf64BowWrYqA2Rf@MiWiFi-R3L-srv>
-        <ZWhg_b3O6piZtkQ-@tiehlicka>
-        <ZWh6ax8YmkhxAzIf@MiWiFi-R3L-srv>
-        <ZWiAsJlLookvCI+h@MiWiFi-R3L-srv>
-        <ZWiQ-II9CvGv8EWK@tiehlicka>
+Message-ID: <20231201123404.49a46a64@rotkaeppchen>
+In-Reply-To: <ZWD_fAPqEWkFlEkM@dwarf.suse.cz>
+References: <ZWD_fAPqEWkFlEkM@dwarf.suse.cz>
 Organization: Red Hat inc.
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michal,
+Hi Jiri,
 
-On Thu, 30 Nov 2023 14:41:12 +0100
-Michal Hocko <mhocko@suse.com> wrote:
+I'd really love to see something like this to work. Although I also
+share the concerns about shitty device drivers corrupting the CMA.
+Please see my other mail for that.
 
-> On Thu 30-11-23 20:31:44, Baoquan He wrote:
-> [...]
-> > > > which doesn't use the proper pinning API (which would migrate away from
-> > > > the CMA) then what is the worst case? We will get crash kernel corrupted
-> > > > potentially and fail to take a proper kernel crash, right? Is this
-> > > > worrisome? Yes. Is it a real roadblock? I do not think so. The problem  
-> > 
-> > We may fail to take a proper kernel crash, why isn't it a roadblock?  
+Anyway, one more comment below.
+
+On Fri, 24 Nov 2023 20:54:36 +0100
+Jiri Bohac <jbohac@suse.cz> wrote:
+
+[...]
+ 
+> Now, specifying
+> 	crashkernel=100M craskhernel=1G,cma
+> on the command line will make a standard crashkernel reservation
+> of 100M, where kexec will load the kernel and initrd.
 > 
-> It would be if the threat was practical. So far I only see very
-> theoretical what-if concerns. And I do not mean to downplay those at
-> all. As already explained proper CMA users shouldn't ever leak out any
-> writes across kernel reboot.
+> An additional 1G will be reserved from CMA, still usable by the
+> production system. The crash kernel will have 1.1G memory
+> available. The 100M can be reliably predicted based on the size
+> of the kernel and initrd.
 
-You are right, "proper" CMA users don't do that. But "proper" drivers
-also provide a working shutdown() method. Experience shows that there
-are enough shitty drivers out there without working shutdown(). So I
-think it is naive to assume you are only dealing with "proper" CMA
-users.
+I doubt that the fixed part can be predicted "reliably". For sure it
+will be more reliable than today but IMHO we will still be stuck with
+some guessing. Otherwise it would mean that you already know during
+boot which initrd the user space will be loading later on. Which IMHO is
+impossible as the initrd can always be rebuild with a larger size.
+Furthermore, I'd be careful when you are dealing with compressed kernel
+images. As I'm not sure how the different decompressor phases would
+handle scenarios where the (fixed) crashkernel memory is large enough
+to hold the compressed kernel (+initrd) but not the decompressed one.
 
-For me the question is, what is less painful? Hunting down shitty
-(potentially out of tree) drivers that cause a memory corruption? Or ...
-
-> > We
-> > have stable way with a little more memory, why would we take risk to
-> > take another way, just for saving memory? Usually only high end server
-> > needs the big memory for crashkernel and the big end server usually have
-> > huge system ram. The big memory will be a very small percentage relative
-> > to huge system RAM.  
-> 
-> Jiri will likely talk more specific about that but our experience tells
-> that proper crashkernel memory scaling has turned out a real
-> maintainability problem because existing setups tend to break with major
-> kernel version upgrades or non trivial changes.
-
-... frequently test if the crashkernel memory is still appropriate? The
-big advantage of the latter I see is that an OOM situation has very
-easy to detect and debug. A memory corruption isn't. Especially when
-it was triggered by an other kernel.
-
-And yes, those are all what-if concerns but unfortunately that is all
-we have right now. Only alternative would be to run extended tests in
-the field. Which means this user facing change needs to be included.
-Which also means that we are stuck with it as once a user facing change
-is in it's extremely hard to get rid of it again...
+One more thing, I'm not sure I like that you need to reserve two
+separate memory regions. Personally I would prefer it if you could
+reserve one large region for the crashkernel but allow parts of it to
+be reused via CMA. Otherwise I'm afraid there will be people who only
+have one ,cma entry on the command line and cannot figure out why they
+cannot load the crash kernel.
 
 Thanks
 Philipp
-
-> > > > seems theoretical to me and it is not CMA usage at fault here IMHO. It
-> > > > is the said theoretical driver that needs fixing anyway.  
-> > 
-> > Now, what we want to make clear is if it's a theoretical possibility, or
-> > very likely happen. We have met several on-flight DMA stomping into
-> > kexec kernel's initrd in the past two years because device driver didn't
-> > provide shutdown() methor properly. For kdump, once it happen, the pain
-> > is we don't know how to debug. For kexec reboot, customer allows to
-> > login their system to reproduce and figure out the stomping. For kdump,
-> > the system corruption rarely happend, and the stomping could rarely
-> > happen too.  
-> 
-> yes, this is understood.
->  
-> > The code change looks simple and the benefit is very attractive. I
-> > surely like it if finally people confirm there's no risk. As I said, we
-> > can't afford to take the risk if it possibly happen. But I don't object
-> > if other people would rather take risk, we can let it land in kernel.  
-> 
-> I think it is fair to be cautious and I wouldn't impose the new method
-> as a default. Only time can tell how safe this really is. It is hard to
-> protect agains theoretical issues though. Bugs should be fixed.
-> I believe this option would allow to configure kdump much easier and
-> less fragile.
->  
-> > My personal opinion, thanks for sharing your thought.  
-> 
-> Thanks for sharing.
+ 
+> When no crashkernel=size,cma is specified, everything works as
+> before.
 > 
 
