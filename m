@@ -2,82 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BB1A8011C2
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:33:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 124C88011D6
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:38:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230193AbjLARdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 12:33:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55054 "EHLO
+        id S230215AbjLARiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 12:38:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230238AbjLARdH (ORCPT
+        with ESMTP id S232043AbjLARiK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 12:33:07 -0500
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C87E268D
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 09:26:11 -0800 (PST)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-34-VenaSfaZNNST9igTQCh--Q-1; Fri, 01 Dec 2023 17:26:08 +0000
-X-MC-Unique: VenaSfaZNNST9igTQCh--Q-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 1 Dec
- 2023 17:26:00 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Fri, 1 Dec 2023 17:26:00 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Benno Lossin' <benno.lossin@proton.me>,
-        Theodore Ts'o <tytso@mit.edu>
-CC:     Alice Ryhl <aliceryhl@google.com>,
-        "a.hindborg@samsung.com" <a.hindborg@samsung.com>,
-        "alex.gaynor@gmail.com" <alex.gaynor@gmail.com>,
-        "arve@android.com" <arve@android.com>,
-        "bjorn3_gh@protonmail.com" <bjorn3_gh@protonmail.com>,
-        "boqun.feng@gmail.com" <boqun.feng@gmail.com>,
-        "brauner@kernel.org" <brauner@kernel.org>,
-        "cmllamas@google.com" <cmllamas@google.com>,
-        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
-        "dxu@dxuuu.xyz" <dxu@dxuuu.xyz>,
-        "gary@garyguo.net" <gary@garyguo.net>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "joel@joelfernandes.org" <joel@joelfernandes.org>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "maco@android.com" <maco@android.com>,
-        "ojeda@kernel.org" <ojeda@kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "rust-for-linux@vger.kernel.org" <rust-for-linux@vger.kernel.org>,
-        "surenb@google.com" <surenb@google.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "tkjos@android.com" <tkjos@android.com>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "wedsonaf@gmail.com" <wedsonaf@gmail.com>,
-        "willy@infradead.org" <willy@infradead.org>
-Subject: RE: [PATCH 1/7] rust: file: add Rust abstraction for `struct file`
-Thread-Topic: [PATCH 1/7] rust: file: add Rust abstraction for `struct file`
-Thread-Index: AQHaI6grPX7M7xYYCUW0jSY5A3gIgLCUVnoAgAA0bcyAACL7kA==
-Date:   Fri, 1 Dec 2023 17:25:59 +0000
-Message-ID: <70efae6ae16647ddbb2b2c887e90e7c8@AcuMS.aculab.com>
-References: <386bbdee165d47338bc451a04e788dd6@AcuMS.aculab.com>
- <20231201122740.2214259-1-aliceryhl@google.com>
- <20231201150442.GC509422@mit.edu>
- <zWaYgly6VpMZcvVUAILQWBSs9VnO7nFiAiCo4eTzT4SJEfqXY8G8w7f6az7kz9wEB4pA8EbajkQZRX4CuifI00Ce3EA_4muXjz_kfdAuzOU=@proton.me>
-In-Reply-To: <zWaYgly6VpMZcvVUAILQWBSs9VnO7nFiAiCo4eTzT4SJEfqXY8G8w7f6az7kz9wEB4pA8EbajkQZRX4CuifI00Ce3EA_4muXjz_kfdAuzOU=@proton.me>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Fri, 1 Dec 2023 12:38:10 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE10426B7
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 09:27:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701451645;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mIN6tLPw09H9zOs4zuK0VfA5bwhOPcu5mP00NJGpiN4=;
+        b=D9iiemAJnlkecMtuYTcYE5hGz8GXsbcRCLf8HAVECjzbxTPDW15zFHXv5n8B9FeSFp+32c
+        NSi+WJo4TkILcJ7R9SmOqNG2FPX4nkP08o8lUkWajf6l4JSRfO0RBSlzU/KBIL8IwHeQqk
+        lyIwTGIW1sz1KXwczwSTqzQSjDH2Dqg=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-568-eD3LDQIjMwmrsUndj-JnrQ-1; Fri,
+ 01 Dec 2023 12:27:19 -0500
+X-MC-Unique: eD3LDQIjMwmrsUndj-JnrQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4735B3804528;
+        Fri,  1 Dec 2023 17:27:19 +0000 (UTC)
+Received: from fedora.redhat.com (unknown [10.39.193.68])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 362E22026D4C;
+        Fri,  1 Dec 2023 17:27:17 +0000 (UTC)
+From:   Jose Ignacio Tornos Martinez <jtornosm@redhat.com>
+To:     stern@rowland.harvard.edu
+Cc:     davem@davemloft.net, edumazet@google.com, greg@kroah.com,
+        jtornosm@redhat.com, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
+        oneukum@suse.com, pabeni@redhat.com, stable@vger.kernel.org
+Subject: Re: [PATCH v3] net: usb: ax88179_178a: avoid failed operations when device is disconnected
+Date:   Fri,  1 Dec 2023 18:27:14 +0100
+Message-ID: <20231201172716.182693-1-jtornosm@redhat.com>
+In-Reply-To: <140e912f-8702-4e85-8d6c-ef0255e718f8@rowland.harvard.edu>
+References: <140e912f-8702-4e85-8d6c-ef0255e718f8@rowland.harvard.edu>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,27 +65,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogQmVubm8gTG9zc2luDQo+IFNlbnQ6IDAxIERlY2VtYmVyIDIwMjMgMTU6MTQNCj4gDQo+
-IE9uIDEyLzEvMjMgMTY6MDQsIFRoZW9kb3JlIFRzJ28gd3JvdGU6DQo+ID4gT24gRnJpLCBEZWMg
-MDEsIDIwMjMgYXQgMTI6Mjc6NDBQTSArMDAwMCwgQWxpY2UgUnlobCB3cm90ZToNCj4gPj4NCj4g
-Pj4gWW91IGNhbiBpbXBvcnQgaXQgd2l0aCBhIHVzZSBzdGF0ZW1lbnQuIEZvciBleGFtcGxlOg0K
-PiA+Pg0KPiA+PiB1c2Uga2VybmVsOjpmaWxlOjpmbGFnczo6T19SRE9OTFk7DQo+ID4+IC8vIHVz
-ZSBhcyBPX1JET05MWQ0KPiA+DQo+ID4gVGhhdCdzIGdvb2QgdG8gaGVhciwNCg0KRXhjZXB0IHRo
-YXQgdGhlIGV4YW1wbGVzIGhlcmUgc2VlbSB0byBpbXBseSB5b3UgY2FuJ3QgaW1wb3J0DQphbGwg
-b2YgdGhlIHZhbHVlcyB3aXRob3V0IGxpc3RpbmcgdGhlbSBhbGwuDQoNCkZyb20gd2hhdCBJJ3Zl
-IHNlZW4gb2YgdGhlIHJ1c3QgcGF0Y2hlcyB0aGUgbGFuZ3VhZ2Ugc2VlbXMNCnRvIGhhdmUgYSBs
-b3dlciBTTlIgdGhhbiBBREEgb3IgVkhETC4NClRvbyBtdWNoIHN5bnRhdGljICdnb29wJyBtYWtl
-cyBpdCBkaWZmaWN1bHQgdG8gc2VlIHdoYXQgY29kZQ0KaXMgYWN0dWFsbHkgZG9pbmcuDQoNCi4u
-Li4NCj4gQWx0ZXJuYXRpdmVseSBpZiB3ZSBlbmQgdXAgd2l0aCBtdWx0aXBsZSBmbGFncyBtb2R1
-bGVzIHlvdSBjYW4gZG8gdGhpcw0KPiAodGhlIHNpeHRoIG9wdGlvbiBmcm9tIEFsaWNlKToNCj4g
-DQo+ICAgICB1c2Uga2VybmVsOjpmaWxlOjpmbGFncyBhcyBmaWxlX2ZsYWdzOw0KPiAgICAgdXNl
-IGtlcm5lbDo6Zm9vOjpmbGFncyBhcyBmb29fZmxhZ3M7DQo+IA0KPiAgICAgLy8gdXNhZ2U6DQo+
-IA0KPiAgICAgZmlsZV9mbGFnczo6T19SRE9OTFkNCj4gDQo+ICAgICBmb29fZmxhZ3M6Ok9fUkRP
-TkxZDQoNClRoYXQgbG9va3MgdXNlZnVsIGZvciB0aGUgJ29iZnVzY2F0ZWQgcnVzdCcgY29tcGV0
-aXRpb24uDQpDb25zaWRlcjoNCgl1c2Uga2VybmVsOjpmaWxlOjpmbGFncyBhcyBmb29fZmxhZ3M7
-DQoJdXNlIGtlcm5lbDo6Zm9vOjpmbGFncyBhcyBmaWxlX2ZsYWdzOw0KDQpJdCdzIHByb2JhYmx5
-IGZvcnR1bmF0ZSB0aGF0IEknIG9sZCBlbm91Z2ggcmV0aXJlIGJlZm9yZSBhbnlvbmUgZm9yY2Vz
-DQptZSB0byB3cml0ZSBhbnkgb2YgdGhpcyBzdHVmZiA6LSkNCg0KCURhdmlkDQoNCi0NClJlZ2lz
-dGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24g
-S2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
+Hi Alan,
+
+> Would it be good enough just to check for ret != -ENODEV and not do the 
+> stopping_unbinding check at all?
+I thought about that but if possible, I would like to ignore the failed
+operation messages only under a controlled and expected situation. 
+I think that if there is a problem with the device it will be easier to
+analyze it later with all the possible information.
+But this is my opinion ...
+
+Thank you
+
+Best regards
+José Ignacio
 
