@@ -2,261 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CA1680139F
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 20:40:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 289F48013A1
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 20:40:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379411AbjLATh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 14:37:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46330 "EHLO
+        id S230435AbjLATjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 14:39:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230328AbjLATh5 (ORCPT
+        with ESMTP id S230417AbjLATjQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 14:37:57 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BAEA10F2
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 11:38:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701459482;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/l/6GujMYtdeF8lFtocp3i7GfbxtCh5Sv6fX69W1IJI=;
-        b=bApsYd/zRcv3vnSsRsF9VCnII1JwLfPDm+qIX4UBwCRxRcZDH85INYYajfWJICI14Kxii0
-        vjZvTKc8B4ivHzeRMkVuliJFIjuQfmKC7rGW1DQg46Pn0g+y8/I/YvESLQczkIjM0MikVA
-        3QQdzpPbioUoKnUzRwvungq6cU4J5+U=
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
- [209.85.160.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-643-XSZ2RXx1Osmy53mok_c5Ew-1; Fri, 01 Dec 2023 14:38:01 -0500
-X-MC-Unique: XSZ2RXx1Osmy53mok_c5Ew-1
-Received: by mail-qt1-f198.google.com with SMTP id d75a77b69052e-423c28eababso6437061cf.1
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 11:38:01 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701459481; x=1702064281;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/l/6GujMYtdeF8lFtocp3i7GfbxtCh5Sv6fX69W1IJI=;
-        b=j3J9J6FL/mkbkDKPQ+Q+i9SnpWlakH3AIcMIRWZR28Dg8Sa+qGuglci9Q84xgSeWtR
-         Da/Uot0SGjh7bYpo+DWPDjFY1cGwFqvHSTrb6ApYHLkHXiChC73VWB/WfgclTyGQh6FB
-         wEfgVY9BIAMVm70HxcRunMFgnOo9Yb+q9xdP/o9vw83VomvMSTJdr6Fs1VAZleqD5Kpx
-         MwGDUVQ1fGYL+y8u7cr8TwzGPcsclgtLp8oarHlyYUuTxWDMePFJ7VPe4afTCEQnjAa4
-         NzQSSeh0xVGnK/qV6/edGYqPAeUh9aICxnop9FVgnnpAADimsAer5qV2NPG/Qy/JU+Uz
-         PyIw==
-X-Gm-Message-State: AOJu0Yw0I6KshksmK+tG82zxF0U1YhBa73HVSBCk0nSQCZByQYfEu/nB
-        eHvG/tzq/1RsYbzYkuWqFn296MyEII+sngZoeJ1mbM1PsHuzvLEJRdZf9CLcVCV8PpKnuBLTM1e
-        Jupe+QjmjQM6ST6qcRwzKDDRm
-X-Received: by 2002:a05:622a:1e1a:b0:403:c2fa:83b with SMTP id br26-20020a05622a1e1a00b00403c2fa083bmr31754620qtb.4.1701459480776;
-        Fri, 01 Dec 2023 11:38:00 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHXM5smqFVtFSkDyfako0lqL1REl/dMKFL24sZp/a3CqSd9LT5tE3kYqB2s34OlKW2JfQLGzw==
-X-Received: by 2002:a05:622a:1e1a:b0:403:c2fa:83b with SMTP id br26-20020a05622a1e1a00b00403c2fa083bmr31754605qtb.4.1701459480410;
-        Fri, 01 Dec 2023 11:38:00 -0800 (PST)
-Received: from pstanner-thinkpadt14sgen1.remote.csb ([2001:9e8:32e2:4e00:227b:d2ff:fe26:2a7a])
-        by smtp.gmail.com with ESMTPSA id v4-20020ac87484000000b00423a5ea2a0asm1746091qtq.20.2023.12.01.11.37.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Dec 2023 11:38:00 -0800 (PST)
-Message-ID: <b54e5d57624dae0b045d8ff129ac2a41f72e182d.camel@redhat.com>
-Subject: Re: [PATCH v2 4/4] lib, pci: unify generic pci_iounmap()
-From:   Philipp Stanner <pstanner@redhat.com>
-To:     Arnd Bergmann <arnd@arndb.de>, Bjorn Helgaas <bhelgaas@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Uladzislau Koshchanka <koshchanka@gmail.com>,
-        Neil Brown <neilb@suse.de>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        John Sanpe <sanpeqf@gmail.com>,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        David Gow <davidgow@google.com>,
-        Yury Norov <yury.norov@gmail.com>,
-        "wuqiang.matt" <wuqiang.matt@bytedance.com>,
-        Jason Baron <jbaron@akamai.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Ben Dooks <ben.dooks@codethink.co.uk>,
-        Danilo Krummrich <dakr@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>
-Date:   Fri, 01 Dec 2023 20:37:55 +0100
-In-Reply-To: <619ea619-29e4-42fb-9b27-1d1a32e0ee66@app.fastmail.com>
-References: <20231201121622.16343-1-pstanner@redhat.com>
-         <20231201121622.16343-5-pstanner@redhat.com>
-         <619ea619-29e4-42fb-9b27-1d1a32e0ee66@app.fastmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 1 Dec 2023 14:39:16 -0500
+X-Greylist: delayed 62 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 01 Dec 2023 11:39:22 PST
+Received: from esa.hc4959-67.iphmx.com (esa.hc4959-67.iphmx.com [139.138.35.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E30710E4;
+        Fri,  1 Dec 2023 11:39:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=seagate.com; i=@seagate.com; q=dns/txt; s=stxiport;
+  t=1701459563; x=1732995563;
+  h=from:to:cc:subject:date:message-id:
+   content-transfer-encoding:mime-version;
+  bh=h0jMU7WjZ/hlqRIW35kqLPEcBYhPPTfKUhdvWICUfUE=;
+  b=c+bXXjwx7nWtI4OquaIxmOk558lo/SBEiVL75p8jV8zReQCzOc6bUXl3
+   hm5iH20D+ktUQDFXWIXIp5LgtPnA4KlqG0DandM69ZiG57Gr8T0DgZeI/
+   +c+emGUE8EMKyIc6qvGxmBK/9/5OplZXaVYaZ3N4AfOvhO+4qdb9SYxDq
+   A=;
+Received: from mail-dm6nam04lp2041.outbound.protection.outlook.com (HELO NAM04-DM6-obe.outbound.protection.outlook.com) ([104.47.73.41])
+  by ob1.hc4959-67.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2023 11:38:19 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=E17bcjcYm1em9dLZUxwir0Z9QNL87DBux416GSbeIh4cNk9VquQmtYzcdotyeP5eErtZ70c9Xk4K5YTNWVgaXMlHTG9K3eglXopysszIn21iMg1E9GKj+I7bBsMwgvKzyFPIl31N4YcZ7cyarxpgBxpXUjeEozFvzFAXwLW5/y1OOYKYfYvAf9hXMgD1vIsG/f43V2CIWAUdwe3K5Yb4iT83C4TmnndNMvmhU9sBXVK74eeLuJnzQWyD1h9iYbr9KvTlRYs9hE2EI0VQ7hcMoU/PTBYmHL94VWsUiW9qPw8Xd8pNBJC1l7s9Bo9wHGzNtH7fpnR82g2Yw2qx7U66+g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=zOyI7d/QdG6K2JsOEZx1fB6Bqn1zXJxaUWZgJg8t6iM=;
+ b=M2Gyxi5sj61a/naeC4f3CZw5s2ag2RA//apdUzn1gktmoVp3HHLyYLnk5sIfUAW+tHLBK/m0nIGo1Q/JKsboaXlaKcKrb0ZrRb6IomkR+ORpYmezgUJAhz0K7zUpbYZkKX2D+dwgKc91VmqyltkEy3Bp4b3K/DD27SpdrbsOmQ67lfECc7Pag1TMkS3KG8z6hdAJ9KfPY7Z0c5KtHI42WCZ/5U1nIJEq7S32ysy6jNJZpJzfWnQ+DsVzrqeHd9FHF4jtt+lvfJoMMX4Yvu2DYwARwKFWPb5KOvQIA34mzGCKDPlFKnTHbbXHAlHuwNJFlSdSVfkqJmO4K9pfwE9N0A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=seagate.com; dmarc=pass action=none header.from=seagate.com;
+ dkim=pass header.d=seagate.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=seagate.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zOyI7d/QdG6K2JsOEZx1fB6Bqn1zXJxaUWZgJg8t6iM=;
+ b=anew9ORtzIlh5VMk12AhvEjliqYtGJ5CJVU9bPGcxb8m8KnZCi9Utiy8X60VLfxVfOgOOp0oExU8PvfsHIO3wXE6snIT3AOn55B8nNZv0WrxJaNoRT+lWNo6OiUCfnR7CaXjvDZNDWnIudN39ZaCX+RBUstRJ6PuLPiSQZMSmbs=
+Received: from CH0PR20MB3818.namprd20.prod.outlook.com (2603:10b6:610:d9::9)
+ by SA3PR20MB5888.namprd20.prod.outlook.com (2603:10b6:806:318::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.29; Fri, 1 Dec
+ 2023 19:38:15 +0000
+Received: from CH0PR20MB3818.namprd20.prod.outlook.com
+ ([fe80::6ea8:3fb6:2432:e1fb]) by CH0PR20MB3818.namprd20.prod.outlook.com
+ ([fe80::6ea8:3fb6:2432:e1fb%4]) with mapi id 15.20.7046.027; Fri, 1 Dec 2023
+ 19:38:15 +0000
+From:   Nick Spooner <nicholas.spooner@seagate.com>
+To:     "john.g.garry@oracle.com" <john.g.garry@oracle.com>,
+        "yanaijie@huawei.com" <yanaijie@huawei.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "damien.lemoal@opensource.wdc.com" <damien.lemoal@opensource.wdc.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: [PATCH] scsi: libsas: fix whitespace formatting
+Thread-Topic: [PATCH] scsi: libsas: fix whitespace formatting
+Thread-Index: AQHaJIrzpBEYTx4M30uzGoeCOXRQvA==
+Date:   Fri, 1 Dec 2023 19:38:14 +0000
+Message-ID: <CH0PR20MB381839E1C7FCA1F477D7823D9C81A@CH0PR20MB3818.namprd20.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_10398c1c-5e94-454c-bbc4-eb8a4a50b8b0_Enabled=True;MSIP_Label_10398c1c-5e94-454c-bbc4-eb8a4a50b8b0_SiteId=d466216a-c643-434a-9c2e-057448c17cbe;MSIP_Label_10398c1c-5e94-454c-bbc4-eb8a4a50b8b0_SetDate=2023-12-01T19:38:14.629Z;MSIP_Label_10398c1c-5e94-454c-bbc4-eb8a4a50b8b0_Name=Public;MSIP_Label_10398c1c-5e94-454c-bbc4-eb8a4a50b8b0_ContentBits=0;MSIP_Label_10398c1c-5e94-454c-bbc4-eb8a4a50b8b0_Method=Privileged;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=seagate.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: CH0PR20MB3818:EE_|SA3PR20MB5888:EE_
+x-ms-office365-filtering-correlation-id: bc9e8d70-51e4-4548-a299-08dbf2a50fb8
+stx-hosted-ironport-oubound: True
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: /GU822lp9G9vNqiKOPeQzJ19mkQIsFbZ90HuJp6jGXLAgw2dSmoJ1kU64k/YkBaogFi/JUMoYizn3WatIr81Hb3ni3cPeRugvycmdAIap+oQvBA01S0du6AqfPZPubAYU6iFg9BgeifV9R50NYjeRcAgSvOvZk6XbOKTVqsH9aallfWgSWZ5aJ1JS+bkKAkUeXoDETxLROOM4ixnTDNupK1o++pL7C42WG+P9uQm3UZCErtIq3sQJleJDjEd5GgPgPKdXPCYqS8jdUkKjcfpQuZqiU4XfQaLbJPyeafuAYvC5Qp87OcU7nUHHFLRno+3BbFJBG4FPpEDkVn2bgptLnVmN93eW6reXrSBpke3f7RmVQn5yJr6YcPA1dpTX7DDo1KJ+9ES9VUm9hgp4XX0qd2nYxyqd98E3NngzQ5gEzRlGWnxKCo3ZvbvpPPGq398E/C2AcWSCkXoofazj+Wes3We0BWL0jryWpp+XeJi3yD7rMp/lQh25MRi7Kxd1/leISSDUF+iEqD05ExLBidKbktaHgyge82kD/W3VIxpwy8Yzc+N650keYkhqz4/8eP9xM7CIKx8jElJQw/1PSnK/uzWbWoaG1JigL2zwyEdTUSg+BLJund2dsjbGhuyguReX4elBRIdTjEZnBrspyWUAshUjvRtnXQs2UjD0Rnhonk=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR20MB3818.namprd20.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(39860400002)(376002)(396003)(136003)(230922051799003)(230273577357003)(230173577357003)(451199024)(1800799012)(64100799003)(186009)(41300700001)(4326008)(2906002)(55016003)(52536014)(8936002)(8676002)(9686003)(86362001)(71200400001)(6506007)(7696005)(316002)(66476007)(66946007)(66556008)(38070700009)(5660300002)(66446008)(64756008)(54906003)(110136005)(33656002)(83380400001)(478600001)(76116006)(38100700002)(122000001)(26005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?UQbCMdNrkKKEuwOv5lcdcEdaYSzRzymJLu7Hdaum+eXewAfNrgg2n5axdY?=
+ =?iso-8859-1?Q?MiOOQS3F8aXewwgN0ARviYo17cSLg+HEU/Zvp2B9YHW7175zTimgQdatI9?=
+ =?iso-8859-1?Q?7rf3frctGS+aF7d1H2H86cW2rydBamJaBIZfahqBNpcVW6Hdd/9f1t0Wcg?=
+ =?iso-8859-1?Q?/0BWMc+Bjnvj8Cklc9RqXnVJF7xlVKwSE+ggWNDfSEHPYX/mm7GjICD7L3?=
+ =?iso-8859-1?Q?9tTEfoG/pzMw2xlMnVdwyZBToVN10dD4jG5sk311ZBf74iS+45f2jLnIs4?=
+ =?iso-8859-1?Q?hFwBw81rTaD2N9oB65SUMeQyjEf+dI1V/EnUpQYZt5izdziDhF3Bp4mFvs?=
+ =?iso-8859-1?Q?YrsPf3bmJTp5cL0mnwcBwU4zy8c1+CfavLYHfQ7oarFwSHU5aw71pdy2X1?=
+ =?iso-8859-1?Q?+uJy+1ZZooNS1ODIxbVZClL6GjtBV8VnKhK8+b5Lm2kkB1fDH+KxHlls6V?=
+ =?iso-8859-1?Q?XSqR3Y/kDvkILNvejVfhm0dSvlalXXl611YB9LWZ6AKIO4yM0+kvx3Gy6E?=
+ =?iso-8859-1?Q?DFWJ/VGlLsxAOBWQnfM3tfrmORTkWxPwahP2TBLqXNNB1uThlYamVgKEXR?=
+ =?iso-8859-1?Q?cwPVZC3RgJGY2xw/LE4Lh95MQ9Po3Q4eKkQ3mys/ryITZu2qtVyLrqeWSH?=
+ =?iso-8859-1?Q?BjZiwbpZDQQczTyLl6uEOnPn80X7hOEF8SgByVLrzEFrSfhDMwUX3d+f7T?=
+ =?iso-8859-1?Q?t4MsOuw1n1vtPwhCudw0rblBfFZynAKJt5IyjIHsAYQ9dfeN4y1yjtL7x2?=
+ =?iso-8859-1?Q?VppQ9TUPhaBknvBlpfzRoSJW3YxpoyW3YxFaStZ9iQGS3LMRClI8L+ftJj?=
+ =?iso-8859-1?Q?GU5TqLUxKzwXvuz9AQLzuQT5QXWPvr0DJGnHUW+wOszg/azX7mUu/JRJ0y?=
+ =?iso-8859-1?Q?lHI8U+E1dirmuZ+lEvrXo+iUxE2Z8g/27R/h0DRQgDhbLIJ8+XUUYrv3G2?=
+ =?iso-8859-1?Q?PdI90csljbeMzO3S/rgtm9E+IVe/qOcflmS7PGba8GTYDyBb0P0IoCdAHL?=
+ =?iso-8859-1?Q?la0dpsJaNodZF2rbLElmp4n8mOENK9mMSp2ibevzLsf41ISoXsN0FqFZuI?=
+ =?iso-8859-1?Q?hRucSPYdJza28kaa50bMYwq0zAs2036HG9FM7dzWDasOR3X4rIGjTpmods?=
+ =?iso-8859-1?Q?l9Y3Gi0nWwEfw6jzrgMAH70OxScIeA24YhU4apUmwfzTUzuDBcmhPIEhwh?=
+ =?iso-8859-1?Q?uV4ih3A8jf+kuyUyDCWhCIUuFOahhiRjCBgKdFll1IkGtyq1jJMZvsAYOP?=
+ =?iso-8859-1?Q?IeQDzDC6ju/3V4xwiAaASNvxp/rJQYsgpFhH8ehLsIgMuo6e3sORDwiPzb?=
+ =?iso-8859-1?Q?CcVym6CaJahj2cSbVogaFJxZ/oo1XoIYzeXTzbrNx9ngTXnSS6G7iYDuO0?=
+ =?iso-8859-1?Q?vOX5TCepMnAVI9X4JWrsYxmM1jn6wxj7SOIIdA0PEUF2seJm76ohdWXcBD?=
+ =?iso-8859-1?Q?CNScJqMbOhBhSuGK1HoDdxPApl3H6A3xljQ1fhCR8Qhn7zSHDLnnw94yWy?=
+ =?iso-8859-1?Q?WuHne4jxNHDAOKoCup6fSyPqWcJvggy5Zrfl/0CwT5VMJlpgHpdDUCiKRX?=
+ =?iso-8859-1?Q?MIod61AhfGtqpc2vTZpG0YjsG+5lXtOqjrEWcpRQpeubjBVt22Zyz7t/xx?=
+ =?iso-8859-1?Q?OdCdyjyo4rYH5T86jpagrouDtSNBVSoj0AY4rWltH8hn7+n4cjmCglMA?=
+ =?iso-8859-1?Q?=3D=3D?=
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 3Z5BixK28RwAQ1SV6QPEiY1PcN9A/r2CilHz04RmNnURXflaH6d9xlF1JSN0JXf94bmlO0j489VBi9EYoZaOpgU8kGo1B4gFEAP1ngP4bnfwuzmsufeLEKr2jujx2N1pouQHxtzLHI1SEJckOGZPBjH48FAh+pu2H18Lx4BLLzOHJIZNTJoF7cDJr1hLQ9ukMbrGt9r243NvqyTmT2VLOg4Leo7WslQHBXKHhlvq/RcwFYcvAdMEjGMNHVSfEV/1NT+/WxAw5n/R2IPWqt8Luqm/00QoFWwy5R8DBfSWpVMM8xxliNMfQll6MsTDyf9SOsmEPa2szV5DWVYju3AhuD9uEjGvGqHBwCsPGiNmbKQl09Pyzk6VX1gBvQlg0CwKSHTBR1VzfHY4MtGLj4GgY+sRJdIIan3D/9sE2Wzn/xZSjNC2YPxzYMATAzWZN4WkwSu6lHaOwP9P7LaY38AwKy/zIkAs7UbyLZ/iuk3dKkC5vXdujevLRCgNBtB+FP1US6K93565WMEO4GYa0zk4W9VMGWBbTCOwEQml7a5Mv6nKgISXIqoIu6ZD4TVP82ZxrizwJt/w0995vUwIMB0LFpGNg5vrlxqfztoPbNDziUCDVQJRYjMJMoL7zAjDLBnOqLM6Quxk5GfWQy2exl49QkWqcT1gkXAig45Hw/tZcM+ieuyRScQTSdjj0vvfzckzT9DkEPLJ+/aHPRqmKa/YTUIwAbwPGnE7VdRUD+g+Ox/c0pekC5wW6GDlSRoELoCBnCFIS7eoA9SVl1NKLv4r6zKljeckp30xs3Wjc6P5pRXxv+8+DqTW4H0kz5EmtpiEmnzz1bpUbP4FloCIi9+z/WvQb9hmGDUJH+iHqPnl1ENjOju0eCCKJbx6bGsV/EEVDuPr3PpG2LugF1gfgBNDL1rShUNHFJqvypZqRjpdDkE=
+X-OriginatorOrg: seagate.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CH0PR20MB3818.namprd20.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bc9e8d70-51e4-4548-a299-08dbf2a50fb8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Dec 2023 19:38:14.9719
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: d466216a-c643-434a-9c2e-057448c17cbe
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 1VUe7sgRrcXOgkYM5sJj2x5O1ogdPW11fcfwemf5RXySEwx2Vef8QwRt3UKH2yhurEcWvBBaGz0KdNmMwSBi7tBLHiygDvXWHWZaVpuEiDQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR20MB5888
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-12-01 at 16:26 +0100, Arnd Bergmann wrote:
-> On Fri, Dec 1, 2023, at 13:16, Philipp Stanner wrote:
-> > The implementation of pci_iounmap() is currently scattered over two
-> > files, drivers/pci/iounmap.c and lib/iomap.c. Additionally,
-> > architectures can define their own version.
-> >=20
-> > Besides one unified version being desirable in the first place, the
-> > old
-> > version in drivers/pci/iounmap.c contained a bug and could leak
-> > memory
-> > mappings. The bug was that #ifdef ARCH_HAS_GENERIC_IOPORT_MAP
-> > should not
-> > have guarded iounmap(p); in addition to the preceding code.
-> >=20
-> > To have only one version, it's necessary to create a helper
-> > function,
-> > iomem_is_ioport(), that tells pci_iounmap() whether the passed
-> > address
-> > points to an ioport or normal memory.
-> >=20
-> > iomem_is_ioport() can be provided through three different ways:
-> > =C2=A0 1. The architecture itself provides it.
-> > =C2=A0 2. As a default version in include/asm-generic/io.h for those
-> > =C2=A0=C2=A0=C2=A0=C2=A0 architectures that don't use CONFIG_GENERIC_IO=
-MAP, but also
-> > don't
-> > =C2=A0=C2=A0=C2=A0=C2=A0 provide their own version of iomem_is_ioport()=
-.
-> > =C2=A0 3. As a default version in lib/iomap.c for those architectures
-> > that
-> > =C2=A0=C2=A0=C2=A0=C2=A0 define and use CONFIG_GENERIC_IOMAP (currently=
-, only x86
-> > really
-> > =C2=A0=C2=A0=C2=A0=C2=A0 uses the functions in lib/iomap.c)
->=20
-> I would count 3 as a special case of 1 here.
-
-ACK
-
->=20
-> > Create a unified version of pci_iounmap() in drivers/pci/iomap.c.
-> > Provide the function iomem_is_ioport() in include/asm-generic/io.h
-> > and
-> > lib/iomap.c.
-> >=20
-> > Remove the CONFIG_GENERIC_IOMAP guard around
-> > ARCH_WANTS_GENERIC_PCI_IOUNMAP so that configs that set
-> > CONFIG_GENERIC_PCI_IOMAP without CONFIG_GENERIC_IOMAP still get the
-> > function.
-> >=20
-> > Fixes: 316e8d79a095 ("pci_iounmap'2: Electric Boogaloo: try to make
-> > sense of it all")
-> > Suggested-by: Arnd Bergmann <arnd@kernel.org>
-> > Signed-off-by: Philipp Stanner <pstanner@redhat.com>
->=20
-> Looks good overall. It would be nice to go further than this
-> and replace all the custom pci_iounmap() variants with custom
-> iomem_is_ioport() implementations, but that can be a follow-up
-> along with removing the incorrect or useless 'select GENERIC_IOMAP'
-> parts.
-
-Yes, let's schedule that for a follow up. The way my project plans
-sound currently, it's likely that I'll stay close to PCI for the next
-months anyways, so it's likely we'll get an opportunity to pick this up
-on the run
-
->=20
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0return;
-> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0iounmap(p);
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0}
-> > =C2=A0#endif
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0iounmap(addr);
-> > =C2=A0}
->=20
-> I think the bugfix should be a separate patch so we can backport
-> it to stable kernels.
-
-ACK, good idea
-
->=20
-> > +#ifndef CONFIG_GENERIC_IOMAP
-> > +static inline bool iomem_is_ioport(void __iomem *addr)
-> > +{
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0unsigned long port =3D (unsi=
-gned long __force)addr;
-> > +
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0// TODO: do we have to take =
-IO_SPACE_LIMIT and PCI_IOBASE
-> > into account
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0// similar as in ioport_map(=
-) ?
-> > +
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (port > MMIO_UPPER_LIMIT)
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0return false;
-> > +
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return true;
-> > +}
->=20
-> This has to have the exact logic that was present in the
-> old pci_iounmap(). For the default version that is currently
-> in lib/pci_iomap.c, this means something along the linens of
-
-OK, I see, so iomem_is_ioport() takes the form derived from
-lib/pci_iomap.c for asm-generic/io.h, and the form of lib/iomap.c for
-the one in lib/iomap.c (obviously)
-
->=20
-> static inline bool struct iomem_is_ioport(void __iomem *p)
-> {
-> #ifdef CONFIG_HAS_IOPORT
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 uintptr_t start =3D (uintptr_t=
-) PCI_IOBASE;
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 uintptr_t addr =3D (uintptr_t)=
- p;
->=20
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (addr >=3D start && addr < =
-start + IO_SPACE_LIMIT)
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 return true;
-> #endif
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return false;
-> }
->=20
-> > +#else /* CONFIG_GENERIC_IOMAP. Version from lib/iomap.c will be
-> > used.=20
-> > */
-> > +bool iomem_is_ioport(void __iomem *addr);
-> > +#define ARCH_WANTS_GENERIC_IOMEM_IS_IOPORT
->=20
-> I'm not sure what this macro is for, since it appears to
-> do the opposite of what its name suggests: rather than
-> provide the generic version of iomem_is_ioport(), it
-> skips that and provides a custom one to go with lib/iomap.c
-
-Hmmm well now it's getting tricky.
-
-This else-branch is the one where CONFIG_GENERIC_IOMAP is actually set.
-
-I think we're running into the "generic not being generic now that IA64
-has died" problem you were hinting at.
-
-If we build for x86 and have CONFIG_GENERIC set, only then do we want
-iomem_is_ioport() from lib/iomap.c. So the macro serves avoiding a
-collision between symbols. Because lib/iomap.c might be compiled even
-if someone else already has defined iomem_is_ioport().
-I also don't like it, but it was the least bad solution I could come up
-with
-Suggestions?
-
-
-P.
-
->=20
-> =C2=A0=C2=A0=C2=A0=C2=A0 Arnd
->=20
-
+Resolve whitespace issues reported by checkpatch.pl:=0A=
+=0A=
+WARNING: Missing a blank line after declarations=0A=
+CHECK: Blank lines aren't necessary before a close brace '}'=0A=
+CHECK: spaces preferred around that '|' (ctx:VxV)=0A=
+=0A=
+Signed-off-by: Nick Spooner <nicholas.spooner@seagate.com>=0A=
+---=0A=
+ drivers/scsi/libsas/sas_init.c | 5 +++--=0A=
+ 1 file changed, 3 insertions(+), 2 deletions(-)=0A=
+=0A=
+diff --git a/drivers/scsi/libsas/sas_init.c b/drivers/scsi/libsas/sas_init.=
+c=0A=
+index 9c8cc723170d..91946f56b236 100644=0A=
+--- a/drivers/scsi/libsas/sas_init.c=0A=
++++ b/drivers/scsi/libsas/sas_init.c=0A=
+@@ -309,6 +309,7 @@ int sas_phy_reset(struct sas_phy *phy, int hard_reset)=
+=0A=
+        } else {=0A=
+                struct sas_rphy *rphy =3D dev_to_rphy(phy->dev.parent);=0A=
+                struct domain_device *ddev =3D sas_find_dev_by_rphy(rphy);=
+=0A=
++=0A=
+                ret =3D sas_smp_phy_control(ddev, phy->number, reset_type, =
+NULL);=0A=
+        }=0A=
+        return ret;=0A=
+@@ -346,9 +347,9 @@ static int sas_set_phy_speed(struct sas_phy *phy,=0A=
+        } else {=0A=
+                struct sas_rphy *rphy =3D dev_to_rphy(phy->dev.parent);=0A=
+                struct domain_device *ddev =3D sas_find_dev_by_rphy(rphy);=
+=0A=
++=0A=
+                ret =3D sas_smp_phy_control(ddev, phy->number,=0A=
+                                          PHY_FUNC_LINK_RESET, rates);=0A=
+-=0A=
+        }=0A=
+ =0A=
+        return ret;=0A=
+@@ -612,7 +613,7 @@ static inline ssize_t phy_event_threshold_store(struct =
+device *dev,=0A=
+ }=0A=
+ =0A=
+ DEVICE_ATTR(phy_event_threshold,=0A=
+-       S_IRUGO|S_IWUSR,=0A=
++       S_IRUGO | S_IWUSR,=0A=
+        phy_event_threshold_show,=0A=
+        phy_event_threshold_store);=0A=
+ EXPORT_SYMBOL_GPL(dev_attr_phy_event_threshold);=0A=
+-- =0A=
+2.34.1=
