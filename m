@@ -2,103 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5254880113D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:21:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DEE6801171
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:21:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230026AbjLAQ1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 11:27:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49056 "EHLO
+        id S1378105AbjLAQ2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 11:28:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229674AbjLAQ1c (ORCPT
+        with ESMTP id S229539AbjLAQ2A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 11:27:32 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E50BB95
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 08:27:38 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A783DC433C9;
-        Fri,  1 Dec 2023 16:27:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701448058;
-        bh=njXVksqgpE1XeclAX3UMkcIW+TVRAqYLZ+gVVzqrnbY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NkZ/J/sbsMCfgSaZ2qbNVoy9pRtzAQUwewg5iqJLNBjvYUwr9aBD685a+74w1LyU7
-         IwvL5riWnox7sdV7wlbcmdBzAlT8G5RCwW6eN6jnNeVxXIi6QrLvyE95azDn5lGf25
-         IAuvkbfRnCMyBR/LEjLsyQBOPtUWw8zHE75fIKOxJcUyoWKx6mFvMKVUKExEwr5Ch6
-         7EdQTm7UrcyRFqOLLNfSWwiqkfQD97eGR/ymDR/Njcscx1iC0FmXvU5WnvhFVGWwIc
-         xoV3nhGcOB7wr1wP/COiDojfZjTZN0nXeTndkFDdu1pZUZYnAfYZKpTehCIHohTzmB
-         PrSHvuh+M74GQ==
-Date:   Fri, 1 Dec 2023 16:27:33 +0000
-From:   Conor Dooley <conor@kernel.org>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Johan Hovold <johan+linaro@kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-rtc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: rtc: qcom-pm8xxx: fix inconsistent example
-Message-ID: <20231201-pursuable-endocrine-1318f4843597@spud>
-References: <20231130173223.12794-1-johan+linaro@kernel.org>
- <ad96b95a-5f4f-4333-b767-762936932061@linaro.org>
- <ZWmn6uicNIqqSwoE@hovoldconsulting.com>
+        Fri, 1 Dec 2023 11:28:00 -0500
+Received: from new3-smtp.messagingengine.com (new3-smtp.messagingengine.com [66.111.4.229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17BBA83;
+        Fri,  1 Dec 2023 08:28:07 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailnew.nyi.internal (Postfix) with ESMTP id AAE28580A4F;
+        Fri,  1 Dec 2023 11:28:03 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Fri, 01 Dec 2023 11:28:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm3; t=1701448083; x=1701455283; bh=eY
+        YJBcIdkLd72F1/I/hnCobiC3d8I4lgiTDbsW05Rfk=; b=FewMsGRG2mUxUBSpWO
+        M/0S1myc7hSRL3FvSrwVGHeQGumuLJ4RvB4EGSTNC83CaKyGC1+bFU5Hb33Yf1tY
+        VO4XFT8d/i/Y+dJYjdSDrW/8zqFVcu/2daQX8puPuiveYcVXPGRJH+KQsmRUMjPR
+        NwFZMOCSRsa8S1Ey4IpHbePMk5LTSf60L1Ofqcd9VJQkd/WyYvCNWDGa1gDReibG
+        b/T0TFNxpueSxIzhQhxPzzflpDZv/CtDYmCMGC+o+tsi6PNHCikhWOUPSeIqtY2q
+        iaIMCgLJunahTFwQ7hNYdKEfmK8wz/WAyfaafbTVANnSiri5Qz+V/3uRN2DIrKWG
+        z+xw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1701448083; x=1701455283; bh=eYYJBcIdkLd72
+        F1/I/hnCobiC3d8I4lgiTDbsW05Rfk=; b=A6OuCdxivjbAP5VbfQsErA89IkZzt
+        z5fbjEpYzWg/ItEGqilefFlgi4GX08/yh9jdVCf/SREg/aq70rvhcSq44BckYCkc
+        DSjl9E1eTCLZ5N/sJ1CvoNy1LS6yN1B7ILVTMABRc31B1yU4IzRVNVxs82czDOdk
+        nC/H7Ks4QsPk67HzdQAnS7GpYqCXEuCQ8LXJFYe3/NChoyv8FkMjdScJVEn0TWe8
+        OzHIkGVmihZaABAzrdsxutC3XIc7748UcqyQpX4Js56w1k0caCPxH+6Lxf99GoJI
+        m8P8YdvI+1xJS1J6AM3J94+0H0erqV0jmx+Oxt+OQchX9BLoDLmfMhVyQ==
+X-ME-Sender: <xms:kglqZf_CEBYJvjsczzeens3_fwY4UOf70OKzoSAEwa7BapVJglFI9g>
+    <xme:kglqZbs8XqF0Dc2wngbqmcylIMG9wIWpq6u5yxSmo9EEO77FXCcWwKEyamAjqvTFp
+    0a_wj0rA2xPgpgeRPU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeiledgkeelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:kglqZdA1dH1Ijr6lBN34WvsZKLb0mzMG6v_GRemXoo-tr1a7NNY07g>
+    <xmx:kglqZbc1dxMUS-Une1a8_DLny0TVaaQ8FH7yEcvDf0aJzBSUrB7SSA>
+    <xmx:kglqZUMN_NYtIoLmbna_zQ5GJYdjeAHV9yprhR5PTCxb9ecEL8MfjA>
+    <xmx:kwlqZS3F_5Pk_UhB-2fGmXuWnF6ffq_QrHfqPU2X-VYrH8gd376azQ>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 1E96DB60089; Fri,  1 Dec 2023 11:28:02 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1178-geeaf0069a7-fm-20231114.001-geeaf0069
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="1Rvoo8TjijJDXryr"
-Content-Disposition: inline
-In-Reply-To: <ZWmn6uicNIqqSwoE@hovoldconsulting.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Message-Id: <3871b83a-0e80-402e-bbe6-359c17127842@app.fastmail.com>
+In-Reply-To: <20231201121622.16343-1-pstanner@redhat.com>
+References: <20231201121622.16343-1-pstanner@redhat.com>
+Date:   Fri, 01 Dec 2023 17:27:40 +0100
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Philipp Stanner" <pstanner@redhat.com>,
+        "Bjorn Helgaas" <bhelgaas@google.com>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        "Dan Williams" <dan.j.williams@intel.com>,
+        "Jonathan Cameron" <Jonathan.Cameron@huawei.com>,
+        "Jakub Kicinski" <kuba@kernel.org>,
+        "Dave Jiang" <dave.jiang@intel.com>,
+        "Uladzislau Koshchanka" <koshchanka@gmail.com>,
+        "Neil Brown" <neilb@suse.de>,
+        "Niklas Schnelle" <schnelle@linux.ibm.com>,
+        "John Sanpe" <sanpeqf@gmail.com>,
+        "Kent Overstreet" <kent.overstreet@gmail.com>,
+        "Masami Hiramatsu" <mhiramat@kernel.org>,
+        "Kees Cook" <keescook@chromium.org>,
+        "David Gow" <davidgow@google.com>,
+        "Yury Norov" <yury.norov@gmail.com>,
+        "wuqiang.matt" <wuqiang.matt@bytedance.com>,
+        "Jason Baron" <jbaron@akamai.com>,
+        "Kefeng Wang" <wangkefeng.wang@huawei.com>,
+        "Ben Dooks" <ben.dooks@codethink.co.uk>,
+        "Danilo Krummrich" <dakr@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        Linux-Arch <linux-arch@vger.kernel.org>
+Subject: Re: [PATCH v2 0/4] Regather scattered PCI-Code
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Dec 1, 2023, at 13:16, Philipp Stanner wrote:
+>
+> Arnd has suggested that architectures defining a custom inb() need their
+> own iomem_is_ioport(), as well. I've grepped for inb() and found the
+> following list of archs that define their own:
+>   - alpha
+>   - arm
+>   - m68k <--
+>   - parisc
+>   - powerpc
+>   - sh
+>   - sparc
+>   - x86 <--
+>
+> All of those have their own definitons of pci_iounmap(). Therefore, they
+> don't need our generic version in the first place and, thus, also need
+> no iomem_is_ioport().
 
---1Rvoo8TjijJDXryr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+What I meant of course is that they should define iomem_is_ioport()
+in order to drop the custom pci_iounmap() and have only one remaining
+definition of that function left.
 
-On Fri, Dec 01, 2023 at 10:31:22AM +0100, Johan Hovold wrote:
-> On Fri, Dec 01, 2023 at 09:32:46AM +0100, Krzysztof Kozlowski wrote:
-> > On 30/11/2023 18:32, Johan Hovold wrote:
-> > > The PM8921 is an SSBI PMIC but in the binding example it is described
-> > > as being part of an SPMI PMIC while using an SSBI address.
-> > >=20
-> > > Make the example consistent by using the sibling PM8941 SPMI PMIC
-> > > instead.
-> > >=20
-> > > Fixes: 8138c5f0318c ("dt-bindings: rtc: qcom-pm8xxx-rtc: Add qcom pm8=
-xxx rtc bindings")
-> >=20
-> > Similarly to your thermal patch - this is just an example, not a
-> > binding. No bugs are fixed here, no need for backports.
->=20
-> A Fixes tag does not in itself imply that something should be
-> backported, we have CC-stable tags for that.
+The one special case that I missed the last time is s390, which
+does not use GENERIC_PCI_IOMAP and will just require a separate
+copy of pci_iounmap() to go along with the is custom pci_iomap().
 
-IDK, I think at this point every highly active kernel developer should
-be aware that the stable maintainers backport way more than just what
-gets explicitly CCed to stable.
+> The two exceptions are x86 and m68k. The former uses lib/iomap.c through
+> CONFIG_GENERIC_IOMAP, as Arnd pointed out in the previous discussion
+> (thus, CONFIG_GENERIC_IOMAP is not really generic in this regard).
+>
+> So as I see it, only m68k WOULD need its own custom definition of
+> iomem_is_ioport(). But as I understand it it doesn't because it uses the
+> one from asm-generic/pci_iomap.h ??
 
---1Rvoo8TjijJDXryr
-Content-Type: application/pgp-signature; name="signature.asc"
+At the moment, m68k gets the pci_iounmap() from lib/iomap.c
+if PCI is enabled for coldfire, but that incorrectly calls
+iounmap() on PCI_IO_PA if it gets passed a PIO address.
 
------BEGIN PGP SIGNATURE-----
+The version from asm-generic/io.h should fix this.
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZWoJdQAKCRB4tDGHoIJi
-0kcpAPwOBPDbYEHIiIG5ZgnuEYXaQxnncECWz71C4cPI0PFljgD/RllSKhlIYHPQ
-GqC2jbpH54ZYcJgNTHRgB5Ukpd91GQ4=
-=ZTcF
------END PGP SIGNATURE-----
+For classic m68k, there is no PCI, so nothing calls pci_iounmap().
 
---1Rvoo8TjijJDXryr--
+> I wasn't entirely sure how to deal with the address ranges for the
+> generic implementation in asm-generic/io.h. It's marked with a TODO.
+> Input appreciated.
+
+I commented on the function directly. To clarify, I think we should
+be able to directly turn each pci_iounmap() definition into
+a iomem_is_ioport() definition by keeping the logic unchanged
+and just return 'true' for the PIO variant or 'false' for the MMIO
+version.
+
+> I removed the guard around define pci_iounmap in asm-generic/io.h. An
+> alternative would be to have it be guarded by CONFIG_GENERIC_IOMAP and
+> CONFIG_GENERIC_PCI_IOMAP, both. Without such a guard, there is no
+> collision however, because generic pci_iounmap() from
+> drivers/pci/iomap.c will only get pulled in when
+> CONFIG_GENERIC_PCI_IOMAP is actually set.
+
+The "#define pci_iomap" can be removed entirely I think.
+
+     Arnd
