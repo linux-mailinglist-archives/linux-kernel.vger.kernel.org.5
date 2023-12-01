@@ -2,131 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F40FF801394
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 20:30:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DB918013A2
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 20:40:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379528AbjLATah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 14:30:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33122 "EHLO
+        id S1379531AbjLAThn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 14:37:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379411AbjLATaf (ORCPT
+        with ESMTP id S1379411AbjLAThl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 14:30:35 -0500
-Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
-        by lindbergh.monkeyblade.net (Postfix) with SMTP id 09494128
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 11:30:41 -0800 (PST)
-Received: (qmail 298611 invoked by uid 1000); 1 Dec 2023 14:30:41 -0500
-Date:   Fri, 1 Dec 2023 14:30:41 -0500
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     linux-usb@vger.kernel.org,
+        Fri, 1 Dec 2023 14:37:41 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D564128
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 11:37:48 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 483F9C433C9;
+        Fri,  1 Dec 2023 19:37:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701459468;
+        bh=KdVQmlMNK9VXP9HFIu2QT1p2mdpD1OBOQPPhAz2pg08=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JjxDnlKvyDQpbAfh092/uwT5swfIUKguaSbKYeBy4d0GaR7Uk+qzliJlFl6Uvcyb6
+         +wYbjoLol29F9Y0kPWPuLg96ugn+JPoP5vWwCKDD5d4cFb9F3Wf/QyDOTrpXWTUHon
+         KSS9c28X3t2GEApXRs2hWu2gxOClE9+1zWdCoFZIAi+irbqDG1J3cI4Npay6FkxsI2
+         hW8hCKDYZJI7INF8VoVWCHZC4fnitrSdBXNBJ/Ot+Iq92FY/ZWZs1cEVw1SEzujK3J
+         iOi7/r2EwPADi4tMKzmw38/SVNCPZw0smjnvBIAfoGe826M373VnC94tQ0i2NsmraA
+         ++A/5J3ovt5/Q==
+Date:   Fri, 1 Dec 2023 11:36:57 -0800
+From:   Josh Poimboeuf <jpoimboe@kernel.org>
+To:     Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, tony.luck@intel.com,
+        ak@linux.intel.com, tim.c.chen@linux.intel.com,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Nikolay Borisov <nik.borisov@suse.com>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        kvm@vger.kernel.org,
+        Alyssa Milburn <alyssa.milburn@linux.intel.com>,
+        Daniel Sneddon <daniel.sneddon@linux.intel.com>,
+        antonio.gomez.iglesias@linux.intel.com,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Grant Grundler <grundler@chromium.org>,
-        Hayes Wang <hayeswang@realtek.com>,
-        Simon Horman <horms@kernel.org>,
-        =?iso-8859-1?Q?Bj=F8rn?= Mork <bjorn@mork.no>,
-        netdev@vger.kernel.org, Brian Geffon <bgeffon@google.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] usb: core: Allow subclassed USB drivers to
- override usb_choose_configuration()
-Message-ID: <0ca93d42-d650-405f-8acd-075132b8ac14@rowland.harvard.edu>
-References: <20231201183113.343256-1-dianders@chromium.org>
- <20231201102946.v2.2.Iade5fa31997f1a0ca3e1dec0591633b02471df12@changeid>
+        Alyssa Milburn <alyssa.milburn@intel.com>
+Subject: Re: [PATCH  v4 1/6] x86/bugs: Add asm helpers for executing VERW
+Message-ID: <20231201193657.mvzslo4nlcbuv2q4@treble>
+References: <20231027-delay-verw-v4-0-9a3622d4bcf7@linux.intel.com>
+ <20231027-delay-verw-v4-1-9a3622d4bcf7@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231201102946.v2.2.Iade5fa31997f1a0ca3e1dec0591633b02471df12@changeid>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20231027-delay-verw-v4-1-9a3622d4bcf7@linux.intel.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 01, 2023 at 10:29:51AM -0800, Douglas Anderson wrote:
-> For some USB devices we might want to do something different for
-> usb_choose_configuration(). One example here is the r8152 driver where
-> we want to end up using the vendor driver with the preferred
-> interface.
-> 
-> The r8152 driver tried to make things work by implementing a USB
-> generic_subclass driver and then overriding the normal config
-> selection after it happened. This is less than ideal and also caused
-> breakage if someone deauthorized and re-authorized the USB device
-> because the USB core ended up going back to it's default logic for
-> choosing the best config. I made an attempt to fix this [1] but it was
-> a bit ugly.
-> 
-> Let's do this better and allow USB generic_subclass drivers to
-> override usb_choose_configuration().
-> 
-> [1] https://lore.kernel.org/r/20231130154337.1.Ie00e07f07f87149c9ce0b27ae4e26991d307e14b@changeid
-> 
-> Suggested-by: Alan Stern <stern@rowland.harvard.edu>
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> ---
+On Fri, Oct 27, 2023 at 07:38:40AM -0700, Pawan Gupta wrote:
+> +.pushsection .entry.text, "ax"
+> +
+> +.align L1_CACHE_BYTES, 0xcc
+> +SYM_CODE_START_NOALIGN(mds_verw_sel)
+> +	UNWIND_HINT_UNDEFINED
+> +	ANNOTATE_NOENDBR
+> +	.word __KERNEL_DS
+> +.align L1_CACHE_BYTES, 0xcc
+> +SYM_CODE_END(mds_verw_sel);
+> +/* For KVM */
+> +EXPORT_SYMBOL_GPL(mds_verw_sel);
+> +
+> +.popsection
 
-Reviewed-by: Alan Stern <stern@rowland.harvard.edu>
+This is data, so why is it "CODE" in .entry.text?
 
-> Changes in v2:
-> - ("Allow subclassed USB drivers to override ...") new for v2.
-> 
->  drivers/usb/core/generic.c | 7 +++++++
->  include/linux/usb.h        | 6 ++++++
->  2 files changed, 13 insertions(+)
-> 
-> diff --git a/drivers/usb/core/generic.c b/drivers/usb/core/generic.c
-> index 740342a2812a..dcb897158228 100644
-> --- a/drivers/usb/core/generic.c
-> +++ b/drivers/usb/core/generic.c
-> @@ -59,10 +59,17 @@ int usb_choose_configuration(struct usb_device *udev)
->  	int num_configs;
->  	int insufficient_power = 0;
->  	struct usb_host_config *c, *best;
-> +	struct usb_device_driver *udriver = to_usb_device_driver(udev->dev.driver);
->  
->  	if (usb_device_is_owned(udev))
->  		return 0;
->  
-> +	if (udriver->choose_configuration) {
-> +		i = udriver->choose_configuration(udev);
-> +		if (i >= 0)
-> +			return i;
-> +	}
-> +
->  	best = NULL;
->  	c = udev->config;
->  	num_configs = udev->descriptor.bNumConfigurations;
-> diff --git a/include/linux/usb.h b/include/linux/usb.h
-> index 8c61643acd49..618e5a0b1a22 100644
-> --- a/include/linux/usb.h
-> +++ b/include/linux/usb.h
-> @@ -1264,6 +1264,9 @@ struct usb_driver {
->   *	module is being unloaded.
->   * @suspend: Called when the device is going to be suspended by the system.
->   * @resume: Called when the device is being resumed by the system.
-> + * @choose_configuration: If non-NULL, called instead of the default
-> + *	usb_choose_configuration(). If this returns an error then we'll go
-> + *	on to call the normal usb_choose_configuration().
->   * @dev_groups: Attributes attached to the device that will be created once it
->   *	is bound to the driver.
->   * @drvwrap: Driver-model core structure wrapper.
-> @@ -1287,6 +1290,9 @@ struct usb_device_driver {
->  
->  	int (*suspend) (struct usb_device *udev, pm_message_t message);
->  	int (*resume) (struct usb_device *udev, pm_message_t message);
-> +
-> +	int (*choose_configuration) (struct usb_device *udev);
-> +
->  	const struct attribute_group **dev_groups;
->  	struct usbdrv_wrap drvwrap;
->  	const struct usb_device_id *id_table;
-> -- 
-> 2.43.0.rc2.451.g8631bc7472-goog
-> 
+-- 
+Josh
