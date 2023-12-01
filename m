@@ -2,234 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06471800115
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 02:36:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E468C8000CE
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 02:07:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230116AbjLABgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 20:36:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38822 "EHLO
+        id S229726AbjLABHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 20:07:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbjLABgQ (ORCPT
+        with ESMTP id S229448AbjLABHl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 20:36:16 -0500
-X-Greylist: delayed 1748 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 30 Nov 2023 17:36:20 PST
-Received: from wind.enjellic.com (wind.enjellic.com [76.10.64.91])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 68973D50;
-        Thu, 30 Nov 2023 17:36:20 -0800 (PST)
-Received: from wind.enjellic.com (localhost [127.0.0.1])
-        by wind.enjellic.com (8.15.2/8.15.2) with ESMTP id 3B115q1E009250;
-        Thu, 30 Nov 2023 19:05:52 -0600
-Received: (from greg@localhost)
-        by wind.enjellic.com (8.15.2/8.15.2/Submit) id 3B115nMV009249;
-        Thu, 30 Nov 2023 19:05:49 -0600
-Date:   Thu, 30 Nov 2023 19:05:49 -0600
-From:   "Dr. Greg" <greg@enjellic.com>
-To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
-Cc:     Paul Moore <paul@paul-moore.com>, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, chuck.lever@oracle.com, jlayton@kernel.org,
-        neilb@suse.de, kolga@netapp.com, Dai.Ngo@oracle.com,
-        tom@talpey.com, jmorris@namei.org, serge@hallyn.com,
-        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
-        dhowells@redhat.com, jarkko@kernel.org,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        casey@schaufler-ca.com, mic@digikod.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
-Subject: Re: [PATCH v5 23/23] integrity: Switch from rbtree to LSM-managed blob for integrity_iint_cache
-Message-ID: <20231201010549.GA8923@wind.enjellic.com>
-Reply-To: "Dr. Greg" <greg@enjellic.com>
-References: <20231107134012.682009-24-roberto.sassu@huaweicloud.com> <17befa132379d37977fc854a8af25f6d.paul@paul-moore.com> <2084adba3c27a606cbc5ed7b3214f61427a829dd.camel@huaweicloud.com> <CAHC9VhTTKac1o=RnQadu2xqdeKH8C_F+Wh4sY=HkGbCArwc8JQ@mail.gmail.com> <b6c51351be3913be197492469a13980ab379e412.camel@huaweicloud.com> <CAHC9VhSAryQSeFy0ZMexOiwBG-YdVGRzvh58=heH916DftcmWA@mail.gmail.com> <90eb8e9d-c63e-42d6-b951-f856f31590db@huaweicloud.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        Thu, 30 Nov 2023 20:07:41 -0500
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22EF210E2;
+        Thu, 30 Nov 2023 17:07:46 -0800 (PST)
+Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-6c3363a2b93so1516403b3a.3;
+        Thu, 30 Nov 2023 17:07:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701392865; x=1701997665; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=AUm1+PoLufKuRdIAF0NESslVUVq3hoSsK9m/WIJoGLk=;
+        b=c5U9e4xgyB3S1M/HHcVB8s3F6kqoa4bdeujXHvrKo+f95J41Q7S07Oh2mKpKLoDE6w
+         twELpNVEgO2dal4+JAJJKy9Q5xqTTYj8UKzwQIrrxIjLE3ZfRuXHoQ/pm6eICFPFI6mS
+         iQiT5TCirA+ofU9mZdSqE/AJ/nfZ0xbNFs2iHC9GmbF44VMRlN4zGFa5abK1rxWJaSCU
+         UOc5NDtd06lcH8RyOJJF9zp/Vwz7Xcgo05MDSVBprxseUWBu/fCeXy2kLUey/+sxKeVG
+         vZOW7CsJlU+AP4tDzaSMlsLK3Ycluy8rlbIe+Dd74Ly1MFPzMOombzQUXVDsJMXWCcCc
+         nzag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701392865; x=1701997665;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AUm1+PoLufKuRdIAF0NESslVUVq3hoSsK9m/WIJoGLk=;
+        b=JiD1OwFbWxjyAE6x911PK8DSAj03TZ72msQJD0+Ep1p+teJdxCIF0dCUy1W5aOwIjt
+         TgjNLNuxm0EnFMTdIwT5dp7Xqb4+Va5JgTU0mHjoLHduyAt0guW1pPzaLcOfqrb9Gu/I
+         N0wP0IwzKnW2UwfuYdAYdN2h2n0arUmBlqTDz7EdrvhLBYBkAlx9zeC6DI5YAYT8Fp/i
+         yzy3B38zbF8H6xaDhj9uFJasrRoq+K6Cirj8is2GzvyfNizdOL9CvhYCN9LxzO+YkD3k
+         CUm5I/mP0GTbFJbwdE5iRyPpTRCcdGKaL0BK4nnusZwqr7HSuhg9CDI8bWe62ILERsws
+         MO1g==
+X-Gm-Message-State: AOJu0Ywh8qkEH/5ibJmdIKtgI219E+M+TrXKjMHLwK5KZoQHf+QxsHfy
+        jL5IYtVPWyBMA475vzYj7t8=
+X-Google-Smtp-Source: AGHT+IEpqLtFWr3jS1uwx80udQpJF7FenfSx2/8uNdOnCyRz8PMl0jnNpn2rP/xjSVKJUPB3LIk5Pw==
+X-Received: by 2002:a05:6a20:244b:b0:18c:fa:17f7 with SMTP id t11-20020a056a20244b00b0018c00fa17f7mr28928374pzc.46.1701392865475;
+        Thu, 30 Nov 2023 17:07:45 -0800 (PST)
+Received: from archie.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id x67-20020a626346000000b006be0fb89ac2sm1887957pfb.197.2023.11.30.17.07.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Nov 2023 17:07:44 -0800 (PST)
+Received: by archie.me (Postfix, from userid 1000)
+        id 5370710136909; Fri,  1 Dec 2023 08:07:41 +0700 (WIB)
+Date:   Fri, 1 Dec 2023 08:07:40 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     =?utf-8?B?QW5kcsOp?= Almeida <andrealmeid@igalia.com>,
+        Linux DRI Development <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     kernel-dev@igalia.com, alexander.deucher@amd.com,
+        christian.koenig@amd.com, Simon Ser <contact@emersion.fr>,
+        Rob Clark <robdclark@gmail.com>,
+        Pekka Paalanen <ppaalanen@gmail.com>, daniel@ffwll.ch,
+        Daniel Stone <daniel@fooishbar.org>,
+        'Marek =?utf-8?B?T2zFocOhayc=?= <maraeo@gmail.com>,
+        Dave Airlie <airlied@gmail.com>,
+        Michel =?utf-8?Q?D=C3=A4nzer?= <michel.daenzer@mailbox.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Pekka Paalanen <pekka.paalanen@collabora.com>,
+        Attreyee M <tintinm2017@gmail.com>
+Subject: Re: [PATCH] drm/doc: Define KMS atomic state set
+Message-ID: <ZWkx3IcUTxO-IdIK@archie.me>
+References: <20231130200740.53454-1-andrealmeid@igalia.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="caVVT7EznlCmrsO+"
 Content-Disposition: inline
-In-Reply-To: <90eb8e9d-c63e-42d6-b951-f856f31590db@huaweicloud.com>
-User-Agent: Mutt/1.4i
-X-Greylist: Sender passed SPF test, not delayed by milter-greylist-4.2.3 (wind.enjellic.com [127.0.0.1]); Thu, 30 Nov 2023 19:05:52 -0600 (CST)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20231130200740.53454-1-andrealmeid@igalia.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 07:46:43PM +0100, Roberto Sassu wrote:
 
-Good evening, I hope the week has gone well for everyone.
+--caVVT7EznlCmrsO+
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> On 11/29/2023 6:22 PM, Paul Moore wrote:
-> >On Wed, Nov 29, 2023 at 7:28???AM Roberto Sassu
-> ><roberto.sassu@huaweicloud.com> wrote:
-> >>
-> >>On Mon, 2023-11-20 at 16:06 -0500, Paul Moore wrote:
-> >>>On Mon, Nov 20, 2023 at 3:16???AM Roberto Sassu
-> >>><roberto.sassu@huaweicloud.com> wrote:
-> >>>>On Fri, 2023-11-17 at 15:57 -0500, Paul Moore wrote:
-> >>>>>On Nov  7, 2023 Roberto Sassu <roberto.sassu@huaweicloud.com> wrote:
-> >>>>>>
-> >>>>>>Before the security field of kernel objects could be shared among 
-> >>>>>>LSMs with
-> >>>>>>the LSM stacking feature, IMA and EVM had to rely on an alternative 
-> >>>>>>storage
-> >>>>>>of inode metadata. The association between inode metadata and inode is
-> >>>>>>maintained through an rbtree.
-> >>>>>>
-> >>>>>>Because of this alternative storage mechanism, there was no need to 
-> >>>>>>use
-> >>>>>>disjoint inode metadata, so IMA and EVM today still share them.
-> >>>>>>
-> >>>>>>With the reservation mechanism offered by the LSM infrastructure, the
-> >>>>>>rbtree is no longer necessary, as each LSM could reserve a space in 
-> >>>>>>the
-> >>>>>>security blob for each inode. However, since IMA and EVM share the
-> >>>>>>inode metadata, they cannot directly reserve the space for them.
-> >>>>>>
-> >>>>>>Instead, request from the 'integrity' LSM a space in the security 
-> >>>>>>blob for
-> >>>>>>the pointer of inode metadata (integrity_iint_cache structure). The 
-> >>>>>>other
-> >>>>>>reason for keeping the 'integrity' LSM is to preserve the original 
-> >>>>>>ordering
-> >>>>>>of IMA and EVM functions as when they were hardcoded.
-> >>>>>>
-> >>>>>>Prefer reserving space for a pointer to allocating the 
-> >>>>>>integrity_iint_cache
-> >>>>>>structure directly, as IMA would require it only for a subset of 
-> >>>>>>inodes.
-> >>>>>>Always allocating it would cause a waste of memory.
-> >>>>>>
-> >>>>>>Introduce two primitives for getting and setting the pointer of
-> >>>>>>integrity_iint_cache in the security blob, respectively
-> >>>>>>integrity_inode_get_iint() and integrity_inode_set_iint(). This would 
-> >>>>>>make
-> >>>>>>the code more understandable, as they directly replace rbtree 
-> >>>>>>operations.
-> >>>>>>
-> >>>>>>Locking is not needed, as access to inode metadata is not shared, it 
-> >>>>>>is per
-> >>>>>>inode.
-> >>>>>>
-> >>>>>>Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> >>>>>>Reviewed-by: Casey Schaufler <casey@schaufler-ca.com>
-> >>>>>>Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
-> >>>>>>---
-> >>>>>>  security/integrity/iint.c      | 71 
-> >>>>>>  +++++-----------------------------
-> >>>>>>  security/integrity/integrity.h | 20 +++++++++-
-> >>>>>>  2 files changed, 29 insertions(+), 62 deletions(-)
-> >>>>>>
-> >>>>>>diff --git a/security/integrity/iint.c b/security/integrity/iint.c
-> >>>>>>index 882fde2a2607..a5edd3c70784 100644
-> >>>>>>--- a/security/integrity/iint.c
-> >>>>>>+++ b/security/integrity/iint.c
-> >>>>>>@@ -231,6 +175,10 @@ static int __init integrity_lsm_init(void)
-> >>>>>>     return 0;
-> >>>>>>  }
-> >>>>>>
-> >>>>>>+struct lsm_blob_sizes integrity_blob_sizes __ro_after_init = {
-> >>>>>>+   .lbs_inode = sizeof(struct integrity_iint_cache *),
-> >>>>>>+};
-> >>>>>
-> >>>>>I'll admit that I'm likely missing an important detail, but is there
-> >>>>>a reason why you couldn't stash the integrity_iint_cache struct
-> >>>>>directly in the inode's security blob instead of the pointer?  For
-> >>>>>example:
-> >>>>>
-> >>>>>   struct lsm_blob_sizes ... = {
-> >>>>>     .lbs_inode = sizeof(struct integrity_iint_cache),
-> >>>>>   };
-> >>>>>
-> >>>>>   struct integrity_iint_cache *integrity_inode_get(inode)
-> >>>>>   {
-> >>>>>     if (unlikely(!inode->isecurity))
-> >>>>>       return NULL;
-> >>>>>     return inode->i_security + integrity_blob_sizes.lbs_inode;
-> >>>>>   }
-> >>>>
-> >>>>It would increase memory occupation. Sometimes the IMA policy
-> >>>>encompasses a small subset of the inodes. Allocating the full
-> >>>>integrity_iint_cache would be a waste of memory, I guess?
-> >>>
-> >>>Perhaps, but if it allows us to remove another layer of dynamic memory
-> >>>I would argue that it may be worth the cost.  It's also worth
-> >>>considering the size of integrity_iint_cache, while it isn't small, it
-> >>>isn't exactly huge either.
-> >>>
-> >>>>On the other hand... (did not think fully about that) if we embed the
-> >>>>full structure in the security blob, we already have a mutex available
-> >>>>to use, and we don't need to take the inode lock (?).
-> >>>
-> >>>That would be excellent, getting rid of a layer of locking would be 
-> >>>significant.
-> >>>
-> >>>>I'm fully convinced that we can improve the implementation
-> >>>>significantly. I just was really hoping to go step by step and not
-> >>>>accumulating improvements as dependency for moving IMA and EVM to the
-> >>>>LSM infrastructure.
-> >>>
-> >>>I understand, and I agree that an iterative approach is a good idea, I
-> >>>just want to make sure we keep things tidy from a user perspective,
-> >>>i.e. not exposing the "integrity" LSM when it isn't required.
-> >>
-> >>Ok, I went back to it again.
-> >>
-> >>I think trying to separate integrity metadata is premature now, too
-> >>many things at the same time.
-> >
-> >I'm not bothered by the size of the patchset, it is more important
-> >that we do The Right Thing.  I would like to hear in more detail why
-> >you don't think this will work, I'm not interested in hearing about
-> >difficult it may be, I'm interested in hearing about what challenges
-> >we need to solve to do this properly.
-> 
-> The right thing in my opinion is to achieve the goal with the minimal 
-> set of changes, in the most intuitive way.
-> 
-> Until now, there was no solution that could achieve the primary goal of 
-> this patch set (moving IMA and EVM to the LSM infrastructure) and, at 
-> the same time, achieve the additional goal you set of removing the 
-> 'integrity' LSM.
-> 
-> If you see the diff, the changes compared to v5 that was already 
-> accepted by Mimi are very straightforward. If the assumption I made that 
-> in the end the 'ima' LSM could take over the role of the 'integrity' 
-> LSM, that for me is the preferable option.
-> 
-> Given that the patch set is not doing any design change, but merely 
-> moving calls and storing pointers elsewhere, that leaves us with the 
-> option of thinking better what to do next, including like you suggested 
-> to make IMA and EVM use disjoint metadata.
+On Thu, Nov 30, 2023 at 05:07:40PM -0300, Andr=C3=A9 Almeida wrote:
+> From: Pekka Paalanen <pekka.paalanen@collabora.com>
+>=20
+> Specify how the atomic state is maintained between userspace and
+> kernel, plus the special case for async flips.
+>=20
+> Signed-off-by: Pekka Paalanen <pekka.paalanen@collabora.com>
+> Signed-off-by: Andr=C3=A9 Almeida <andrealmeid@igalia.com>
+> ---
+>=20
+> This is a standalone patch from the following serie, the other patches are
+> already merged:
+> https://lore.kernel.org/lkml/20231122161941.320564-1-andrealmeid@igalia.c=
+om/
+>=20
+>  Documentation/gpu/drm-uapi.rst | 47 ++++++++++++++++++++++++++++++++++
+>  1 file changed, 47 insertions(+)
+>=20
+> diff --git a/Documentation/gpu/drm-uapi.rst b/Documentation/gpu/drm-uapi.=
+rst
+> index 370d820be248..d0693f902a5c 100644
+> --- a/Documentation/gpu/drm-uapi.rst
+> +++ b/Documentation/gpu/drm-uapi.rst
+> @@ -570,3 +570,50 @@ dma-buf interoperability
+> =20
+>  Please see Documentation/userspace-api/dma-buf-alloc-exchange.rst for
+>  information on how dma-buf is integrated and exposed within DRM.
+> +
+> +KMS atomic state
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +
+> +An atomic commit can change multiple KMS properties in an atomic fashion,
+> +without ever applying intermediate or partial state changes.  Either the=
+ whole
+> +commit succeeds or fails, and it will never be applied partially. This i=
+s the
+> +fundamental improvement of the atomic API over the older non-atomic API =
+which is
+> +referred to as the "legacy API".  Applying intermediate state could unex=
+pectedly
+> +fail, cause visible glitches, or delay reaching the final state.
+> +
+> +An atomic commit can be flagged with DRM_MODE_ATOMIC_TEST_ONLY, which me=
+ans the
+> +complete state change is validated but not applied.  Userspace should us=
+e this
+> +flag to validate any state change before asking to apply it. If validati=
+on fails
+> +for any reason, userspace should attempt to fall back to another, perhaps
+> +simpler, final state.  This allows userspace to probe for various config=
+urations
+> +without causing visible glitches on screen and without the need to undo a
+> +probing change.
+> +
+> +The changes recorded in an atomic commit apply on top the current KMS st=
+ate in
+> +the kernel. Hence, the complete new KMS state is the complete old KMS st=
+ate with
+> +the committed property settings done on top. The kernel will try to avoid
+> +no-operation changes, so it is safe for userspace to send redundant prop=
+erty
+> +settings.  However, not every situation allows for no-op changes, due to=
+ the
+> +need to acquire locks for some attributes. Userspace needs to be aware t=
+hat some
+> +redundant information might result in oversynchronization issues.  No-op=
+eration
+> +changes do not count towards actually needed changes, e.g.  setting MODE=
+_ID to a
+> +different blob with identical contents as the current KMS state shall no=
+t be a
+> +modeset on its own. As a special exception for VRR needs, explicitly set=
+ting
+> +FB_ID to its current value is not a no-op.
+> +
+> +A "modeset" is a change in KMS state that might enable, disable, or temp=
+orarily
+> +disrupt the emitted video signal, possibly causing visible glitches on s=
+creen. A
+> +modeset may also take considerably more time to complete than other kind=
+s of
+> +changes, and the video sink might also need time to adapt to the new sig=
+nal
+> +properties. Therefore a modeset must be explicitly allowed with the flag
+> +DRM_MODE_ATOMIC_ALLOW_MODESET.  This in combination with
+> +DRM_MODE_ATOMIC_TEST_ONLY allows userspace to determine if a state chang=
+e is
+> +likely to cause visible disruption on screen and avoid such changes when=
+ end
+> +users do not expect them.
+> +
+> +An atomic commit with the flag DRM_MODE_PAGE_FLIP_ASYNC is allowed to
+> +effectively change only the FB_ID property on any planes. No-operation c=
+hanges
+> +are ignored as always. Changing any other property will cause the commit=
+ to be
+> +rejected. Each driver may relax this restriction if they have guarantees=
+ that
+> +such property change doesn't cause modesets. Userspace can use TEST_ONLY=
+ commits
+> +to query the driver about this.
 
-A suggestion has been made in this thread that there needs to be broad
-thinking on this issue, and by extension, other tough problems.  On
-that note, we would be interested in any thoughts regarding the notion
-of a long term solution for this issue being the migration of EVM to a
-BPF based implementation?
+The wording LGTM, thanks!
 
-There appears to be consensus that the BPF LSM will always go last, a
-BPF implementation would seem to address the EVM ordering issue.
+Reviewed-by: Bagas Sanjaya <bagasdotme@gmail.com>
 
-In a larger context, there have been suggestions in other LSM threads
-that BPF is the future for doing LSM's.  Coincident with that has come
-some disagreement about whether or not BPF embodies sufficient
-functionality for this role.
+--=20
+An old man doll... just what I always wanted! - Clara
 
-The EVM codebase is reasonably modest with a very limited footprint of
-hooks that it handles.  A BPF implementation on this scale would seem
-to go a long ways in placing BPF sufficiency concerns to rest.
+--caVVT7EznlCmrsO+
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thoughts/issues?
+-----BEGIN PGP SIGNATURE-----
 
-> Thanks
-> 
-> Roberto
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZWkx2QAKCRD2uYlJVVFO
+o1dzAQCN5LKZj1UCW2xL0voB6jCSuPsFMnO4NRaUQ6gOPmqvvQEA/eALo0PO1AJE
+7eegxBLTYviNT27pENbRqxLvYpGQJQc=
+=8SQb
+-----END PGP SIGNATURE-----
 
-Have a good weekend.
-
-As always,
-Dr. Greg
-
-The Quixote Project - Flailing at the Travails of Cybersecurity
+--caVVT7EznlCmrsO+--
