@@ -2,111 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 590D18012FD
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 19:46:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05F23801319
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 19:49:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379412AbjLASp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 13:45:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58668 "EHLO
+        id S1379375AbjLAStU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 13:49:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379400AbjLASpx (ORCPT
+        with ESMTP id S229468AbjLAStT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 13:45:53 -0500
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E19411719
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 10:45:58 -0800 (PST)
-Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2c9ea37ac87so2840501fa.3
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 10:45:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=quora.org; s=google; t=1701456357; x=1702061157; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ehPF3PQOoozfZlnimBntfStR9Uo37yTTJuQcGJqsFug=;
-        b=k74UPw0gvygvuodz9qrWcR7HUx0dBMN4mF149dah9Uxyi9VWLTZ60NyEPAEAs/R4ub
-         5P9zzkzUxJPVEhx6wPJ2w4wKVJZZoCSTZf2NyddD/4zcsrulrVz4HmcKQbpAnA6Jxq9F
-         B0mFDhbNST8NJrTmf+X4W53+RWTFFSVCJiRf0=
+        Fri, 1 Dec 2023 13:49:19 -0500
+Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com [209.85.210.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 880D910DA
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 10:49:22 -0800 (PST)
+Received: by mail-pf1-f197.google.com with SMTP id d2e1a72fcca58-6ce02f230a8so1129564b3a.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 10:49:22 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701456357; x=1702061157;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ehPF3PQOoozfZlnimBntfStR9Uo37yTTJuQcGJqsFug=;
-        b=HMvrgYvnBBqTJWDmB0mwfkNK6OSQZjYpNkkb2iy77yNUOB0wDRE2hwjmm1+w0ad4mA
-         NzESp7As80985T/Nw/S4OAMOiOkSaxMnQZMB5s4roWDqVDGhc7sQApXouW8K+nYuwbmC
-         YmdNXgZwrMC9776DX4fzCqKEPbJi6aF+2fMFrkvyjanu0HxbGBGYLx/F4rti5Jk9gtgb
-         7CT/6Pf2LxGKXdPr0q8h2qj8kE0axzEoYA0uq8ySVvTcnkRucu/rsTX/WGnKSEMSbHvA
-         U37r4GYVts9KqlT4Y1yVpLvdCxXJhct1ytxtcmf8XaWiAQE2RQpY0HdGg7p3v0xk4g8Q
-         4ngw==
-X-Gm-Message-State: AOJu0YyYvtkZhHPo2S4m/pcT90Ug7bmXUPrLReHcvIuKx6p0WoWrkVPb
-        XP4SCAh0LFePxns3lTWnMuJB2RT96uxCyHuuHkfYTg==
-X-Google-Smtp-Source: AGHT+IE8xiDq7cDppayGfqhkRD9LEy43hC3BSAYf6c5fbstKSddOuXMTu49xOCFaaxIyVwQF4T/pnR9h142dF8etd88=
-X-Received: by 2002:a2e:9e8a:0:b0:2c9:c1f8:fa29 with SMTP id
- f10-20020a2e9e8a000000b002c9c1f8fa29mr873997ljk.33.1701456356945; Fri, 01 Dec
- 2023 10:45:56 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701456562; x=1702061362;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=V7uf/nKmgeB4s8AOYp5odSuJMyINXnSr8QWYtuxIBzY=;
+        b=jPo/4SmuGW8IVpko4VJBoIm0rb/XTwnrHpZlrvrounmsJErWPtPGluO2O3se0FGRFp
+         j3eyGOvx4P6JnE+a7+GvKBnhskGsmBDVR5cOGLCm2AZQMsouZECuG5AAMxdXV1S5AHbF
+         FplYKejx0TCIZy23jfCs7ZmmC+59hA8/HEuYCaSMEWKUAK1kwS7jHhNnS7LDsWz3nlt2
+         zMawBE0GTD1i2XMmDWbPt7xiRhHaB2PR19DkcMVZ2nDpqDy3h59B73pzniALVW5lpvod
+         wM4huADfMg3Bnd049KDpRkiVUOB2a55rTkRdKtj8EuChORWnLeUDGDHxxmvdyjG3UYAQ
+         6raA==
+X-Gm-Message-State: AOJu0YwqNxZ9aKWwyOHiM377G8D+pYZgly8ULGnZ7BQS4TLl/mN6JApc
+        mx2Zcs0DlGWlEO7Jhq0h88cMk1IKGawDR3xT1az74l55Ac6pvPU=
+X-Google-Smtp-Source: AGHT+IGUlw4/hagoD6X3KinajDD/07g+mo7vw/4QKPKJaydC8FYQx5YjjtYPkMk1e4oyqU+KF7hBYuo2j8nElT2I5fPFt+RJv8tj
 MIME-Version: 1.0
-References: <CAMVG2stxMYZbDoAHeVQjgJ7f+Td7+VJrLNRbY8au68ZVkzhb0g@mail.gmail.com>
- <20231201032548.5y3lafkwamlhruqs@moria.home.lan> <20231201052701.jrxwpjte4htzn6wo@moria.home.lan>
-In-Reply-To: <20231201052701.jrxwpjte4htzn6wo@moria.home.lan>
-From:   Daniel J Blueman <daniel@quora.org>
-Date:   Fri, 1 Dec 2023 13:45:45 -0500
-Message-ID: <CAMVG2ssNi_otD9tjobdCVFn6RivojzvKGqS7b6k+aPrvk-7JQA@mail.gmail.com>
-Subject: Re: bcachefs page fault oops after device evacuate/remove and unmount
-To:     Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     linux-bcachefs@vger.kernel.org,
-        Linux Kernel <linux-kernel@vger.kernel.org>
+X-Received: by 2002:a05:6a00:b4c:b0:6ce:d0:118c with SMTP id
+ p12-20020a056a000b4c00b006ce00d0118cmr381472pfo.6.1701456561791; Fri, 01 Dec
+ 2023 10:49:21 -0800 (PST)
+Date:   Fri, 01 Dec 2023 10:49:21 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f76a65060b7739da@google.com>
+Subject: [syzbot] Monthly wireless report (Nov 2023)
+From:   syzbot <syzbot+listd3e5fd84a00bcad8b79e@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 1 Dec 2023 at 00:27, Kent Overstreet <kent.overstreet@linux.dev> wrote:
-> On Thu, Nov 30, 2023 at 10:25:48PM -0500, Kent Overstreet wrote:
-> > On Thu, Nov 30, 2023 at 08:47:33PM -0500, Daniel J Blueman wrote:
-> > > Hi Kent et al,
-> > >
-> > > On upstream bcachefs (master @ evilpiepirate.org/git/bcachefs.git) SHA
-> > > f8a1ba26, I was able to develop a minimal reproducer [1] for a page
-> > > not present oops I can provoke [2]. It appears we need further
-> > > synchronisation during unmount.
-> > >
-> > > Let me know when there is a patch I can test, or for debug.
-> > >
-> > > Thanks,
-> > >   Dan
-> > >
-> > > -- [1]
-> > >
-> > > modprobe brd rd_size=536870912 rd_nr=2
-> > > bcachefs format -f /dev/ram0 /dev/ram1
-> > > mount -t bcachefs /dev/ram0:/dev/ram1 /mnt
-> > > fio --group_reporting --ioengine=io_uring --directory=/mnt --size=16m
-> > > --time_based --runtime=60s --iodepth=256 --verify_async=8 --bs=4k-64k
-> > > --norandommap --random_distribution=zipf:0.5 --numjobs=16 --rw=randrw
-> > > --name=A --direct=1 --name=B --direct=0 >/dev/null &
-> > > bcachefs device evacuate /dev/ram0
-> > > bcachefs device remove --force --force-metadata /dev/ram1
-> > > bcachefs device remove --force --force-metadata /dev/ram1
-> > > kill %1
-> > > wait
-> > > umount /mnt
-> >
-> > The remove fails for me with DEVICE_SET_STATE_NOT_ALLOWED - evacuate set
-> > ram0 to ro, we can't remove our last rw dev.
->
-> Got it to repro, just had to ignore those errors - there's now a ktest
-> test for it, and the fix is in master :)
+Hello wireless maintainers/developers,
 
-Fine work Kent! The fix is good from further testing here.
+This is a 31-day syzbot report for the wireless subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/wireless
 
-Tested-by: Daniel J Blueman <daniel@quora.org>
+During the period, 1 new issues were detected and 0 were fixed.
+In total, 32 issues are still open and 117 have been fixed so far.
 
-Thanks again,
-  Dan
---
-Daniel J Blueman
+Some of the still happening issues:
+
+Ref  Crashes Repro Title
+<1>  5951    Yes   WARNING in __ieee80211_beacon_get
+                   https://syzkaller.appspot.com/bug?extid=18c783c5cf6a781e3e2c
+<2>  4366    Yes   WARNING in __cfg80211_ibss_joined (2)
+                   https://syzkaller.appspot.com/bug?extid=7f064ba1704c2466e36d
+<3>  3474    Yes   WARNING in ieee80211_rx_list
+                   https://syzkaller.appspot.com/bug?extid=8830db5d3593b5546d2e
+<4>  3175    Yes   WARNING in ieee80211_link_info_change_notify (2)
+                   https://syzkaller.appspot.com/bug?extid=de87c09cc7b964ea2e23
+<5>  2663    No    WARNING in ieee80211_ibss_csa_beacon (2)
+                   https://syzkaller.appspot.com/bug?extid=b10a54cb0355d83fd75c
+<6>  984     Yes   WARNING in __rate_control_send_low
+                   https://syzkaller.appspot.com/bug?extid=fdc5123366fb9c3fdc6d
+<7>  829     Yes   WARNING in ar5523_submit_rx_cmd/usb_submit_urb
+                   https://syzkaller.appspot.com/bug?extid=6101b0c732dea13ea55b
+<8>  734     Yes   WARNING in ieee80211_start_next_roc
+                   https://syzkaller.appspot.com/bug?extid=c3a167b5615df4ccd7fb
+<9>  357     Yes   WARNING in ieee80211_bss_info_change_notify (2)
+                   https://syzkaller.appspot.com/bug?extid=dd4779978217b1973180
+<10> 61      Yes   WARNING in ieee80211_free_ack_frame (2)
+                   https://syzkaller.appspot.com/bug?extid=ac648b0525be1feba506
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
+
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
