@@ -2,112 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D78F4801565
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 22:32:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B003980156C
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 22:32:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379666AbjLAVby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 16:31:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45470 "EHLO
+        id S1379677AbjLAVcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 16:32:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbjLAVbw (ORCPT
+        with ESMTP id S1379670AbjLAVcn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 16:31:52 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13B9B10DB
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 13:31:59 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-a1a52aecc67so68072566b.2
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 13:31:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701466317; x=1702071117; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=i42oqIYNtkNxWLewTb6j+4Br3OsD3X8v4jbnNX+Tj4A=;
-        b=wVIAMbQ+gUOHniS+LuPvWhprGMoHNT20ti4lmZqoEPDUKWDdAd6ADjZta8F9/Cno7u
-         2XLrfopD9twFpUOONwyZuwajl9qY6SlLVaHzHA723/JwEuMMueKqYd6B0ONCg2b8LL5U
-         kqJHfdSzhzkPV3SsswrxkabMOaI7c1ysRzrzTS08JzdhT53967RWReKafViaLM3kcLjf
-         5AGLEs3isCTogO9qsnjlF3ZNLpXHXRgmLOwkyEyKWJ3tBCzTEbzsGZMcQTHfmDD9aCBP
-         JEYS/vOcLyBMOv/MnDkIf0y6AqHbN8A07gr/Vd6+sN2UfyDgT4ZFh2Bnk7BkRxp7G4XY
-         oETg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701466317; x=1702071117;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=i42oqIYNtkNxWLewTb6j+4Br3OsD3X8v4jbnNX+Tj4A=;
-        b=Z32EMEJOAFFPMvie33xPe5IAmakx7fuiR2p1VHwJ55wRisklX7qH1Bxv9vPT/HU/q+
-         0pBp3MBDnZsGWc9fs39lfFC8egr8SslWzAm6YIL7/0bpNdICZ48Txd+CiJlBhHuyGzkD
-         WYivAG9EoQhLZBO2BWjg7GCxWzTm6MsFIqPFaPL18EjLNW/qQwgGKUJg5CZofomvqzZy
-         iSj7DV69i+PvayDd1Xto5yD6Be5SWh8pMkeYqBIJBwjQzQoMkBI4eTb5js3JetakMXbf
-         V0fjPa0hRt7GvVyTiwBdOCFz9/l76kA1bW6wOQPWyau6eevk8wH/vZes5jVODXBrpeEB
-         OMQQ==
-X-Gm-Message-State: AOJu0YyECEuW7Le8au2lsD93p9Uvo/e6MYErWgdKm+nk88hLy0aDiAHD
-        yQmtzFSGVcR6LJPd+kS/TygIBA==
-X-Google-Smtp-Source: AGHT+IFJYchC8jH6Si8LIuVMRKB2xaiYfuKglsYxNDNqkyDzVSmjBJXm/YDMrye9iQ2xNbmNNLr6AA==
-X-Received: by 2002:a17:907:38f:b0:a19:a1ba:8cce with SMTP id ss15-20020a170907038f00b00a19a1ba8ccemr1281868ejb.108.1701466317550;
-        Fri, 01 Dec 2023 13:31:57 -0800 (PST)
-Received: from [192.168.209.83] (178235187166.dynamic-4-waw-k-2-3-0.vectranet.pl. [178.235.187.166])
-        by smtp.gmail.com with ESMTPSA id dx9-20020a170906a84900b009fbc655335dsm2331617ejb.27.2023.12.01.13.31.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Dec 2023 13:31:57 -0800 (PST)
-Message-ID: <0770ad02-632c-4a77-a6b2-2f11a6b84880@linaro.org>
-Date:   Fri, 1 Dec 2023 22:31:54 +0100
+        Fri, 1 Dec 2023 16:32:43 -0500
+Received: from wnew2-smtp.messagingengine.com (wnew2-smtp.messagingengine.com [64.147.123.27])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7201910D0
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 13:32:49 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailnew.west.internal (Postfix) with ESMTP id 8F0AC2B003FF;
+        Fri,  1 Dec 2023 16:32:44 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Fri, 01 Dec 2023 16:32:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm3; t=
+        1701466364; x=1701473564; bh=EJcI3n/uJ+tyVR7t2YzAuKRIYKbllJExxoU
+        8CSyelqs=; b=Ha+WtJNw/9/yBPf+qCDeJsxi4wbEdXtVXTJwPIVr7hphlE1Cseh
+        CxUTAcflSnUBVVQl3GPxui2/JbjbcscQKbVvGpA/snPzqB3KJs/DGG9mMjrBNDpQ
+        QuuJeXKO6vOuDNzYSfoXH8Or7zdaOK1QK2LZMLCZC1yjnXqPe4UJsSvFNeQy/SGI
+        MDWgVQIJtZkcfoE95VHugnfnWawCffXYSUHbDnqoYuKG2USxIuRfekh0lZxcjfWo
+        uttyshfytiOJIFjmTxw5RJDPAjueGBPIG089jGy6W4rnP2vR2rqCEVagYkDNBQ2d
+        t2R1Yy101W8RfGoFOB/1xYs5hYJNriTPCQQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+        1701466364; x=1701473564; bh=EJcI3n/uJ+tyVR7t2YzAuKRIYKbllJExxoU
+        8CSyelqs=; b=uaCCuLPfAVLn5GQiRkbAngaCzzUFPmJX87puR5QOry5DRRke/CQ
+        gsaZO1F1zRsAZd36tBxh90CZnCoQWqmAtcigmOqjhuTxXqAVD2QH/tPt3rASpIqh
+        eYaDHj9vf1W2cUKkLCJhE0d6nKnJcyMYneRaj2gTr6n4eP425IV/xnS6y1NG8YHM
+        QMVAXjAFKc8wCmvWkfJdI9HH6ff8lSdgq2LbvbHyfoL5VyhzrSCoV7BymzZXzgvD
+        DK5uPrOYWUfGMepESDIS4F/zNdd38tsm02FbzUiIXZ49uydjq9qo2BNejeid6Pwc
+        AsgXFtJEfcSL2xJ9r8X1ojcEGrxpekcJdTA==
+X-ME-Sender: <xms:-1BqZfcgDWSLq9eHpXr0jgW21vTOuypcyZ9rDdQkL3bamSLfSmHrDQ>
+    <xme:-1BqZVMP30L2wHwUEB8m9h_z3k_fVo3ST1rIexLctYvLug9qJl6mmkOI9jQaJrNO2
+    LAOop80933raiou4rY>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeiledgudeglecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedf
+    tehrnhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrf
+    grthhtvghrnhepgeefjeehvdelvdffieejieejiedvvdfhleeivdelveehjeelteegudek
+    tdfgjeevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    eprghrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:-1BqZYhwovKRLdns9H0BhF7vgHFVWMvRv71PT2gDJISqiwd2ZRpfaQ>
+    <xmx:-1BqZQ-GhzIyXBGmfvZ_03aatO-NdZVKlLQMMmOKzQYF5-_fAHw7Wg>
+    <xmx:-1BqZbtSPRquHUqCKwPcI_t3DUrPG_fkgceN1k3wJ67g4gTmsMEgXg>
+    <xmx:_FBqZbcC0Weo24M59vBMuH6ScicJ1NrZCeQWhiCwHMYmgnu5GDQMtXZXYxc>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id EC766B60089; Fri,  1 Dec 2023 16:32:42 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1178-geeaf0069a7-fm-20231114.001-geeaf0069
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: qcom: sc8180x-primus: Fix HALL_INT polarity
-Content-Language: en-US
-To:     Bjorn Andersson <quic_bjorande@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231130-sc8180x-primus-lid-polarity-v1-1-da917b59604b@quicinc.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20231130-sc8180x-primus-lid-polarity-v1-1-da917b59604b@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Message-Id: <330df2f8-3796-4f74-8856-06ae1e46ec9b@app.fastmail.com>
+In-Reply-To: <b54e5d57624dae0b045d8ff129ac2a41f72e182d.camel@redhat.com>
+References: <20231201121622.16343-1-pstanner@redhat.com>
+ <20231201121622.16343-5-pstanner@redhat.com>
+ <619ea619-29e4-42fb-9b27-1d1a32e0ee66@app.fastmail.com>
+ <b54e5d57624dae0b045d8ff129ac2a41f72e182d.camel@redhat.com>
+Date:   Fri, 01 Dec 2023 22:32:22 +0100
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Philipp Stanner" <pstanner@redhat.com>,
+        "Bjorn Helgaas" <bhelgaas@google.com>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        "Dan Williams" <dan.j.williams@intel.com>,
+        "Jonathan Cameron" <Jonathan.Cameron@huawei.com>,
+        "Jakub Kicinski" <kuba@kernel.org>,
+        "Dave Jiang" <dave.jiang@intel.com>,
+        "Uladzislau Koshchanka" <koshchanka@gmail.com>,
+        "Neil Brown" <neilb@suse.de>,
+        "Niklas Schnelle" <schnelle@linux.ibm.com>,
+        "John Sanpe" <sanpeqf@gmail.com>,
+        "Kent Overstreet" <kent.overstreet@gmail.com>,
+        "Masami Hiramatsu" <mhiramat@kernel.org>,
+        "Kees Cook" <keescook@chromium.org>,
+        "David Gow" <davidgow@google.com>,
+        "Yury Norov" <yury.norov@gmail.com>,
+        "wuqiang.matt" <wuqiang.matt@bytedance.com>,
+        "Jason Baron" <jbaron@akamai.com>,
+        "Kefeng Wang" <wangkefeng.wang@huawei.com>,
+        "Ben Dooks" <ben.dooks@codethink.co.uk>,
+        "Danilo Krummrich" <dakr@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        "Arnd Bergmann" <arnd@kernel.org>
+Subject: Re: [PATCH v2 4/4] lib, pci: unify generic pci_iounmap()
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -115,16 +110,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1.12.2023 01:11, Bjorn Andersson wrote:
-> The hall sensor interrupt on the Primus is active low, which means that
-> with the current configuration the device attempts to suspend when the
-> LID is open.
-> 
-> Fix the polarity of the HALL_INT GPIO to avoid this.
-> 
-> Fixes: 2ce38cc1e8fe ("arm64: dts: qcom: sc8180x: Introduce Primus")
-> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
-> ---
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+On Fri, Dec 1, 2023, at 20:37, Philipp Stanner wrote:
+> On Fri, 2023-12-01 at 16:26 +0100, Arnd Bergmann wrote:
+>>=20
+>> static inline bool struct iomem_is_ioport(void __iomem *p)
+>> {
+>> #ifdef CONFIG_HAS_IOPORT
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 uintptr_t start =3D (uintp=
+tr_t) PCI_IOBASE;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 uintptr_t addr =3D (uintpt=
+r_t) p;
+>>=20
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (addr >=3D start && add=
+r < start + IO_SPACE_LIMIT)
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 return true;
+>> #endif
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return false;
+>> }
+>>=20
+>> > +#else /* CONFIG_GENERIC_IOMAP. Version from lib/iomap.c will be
+>> > used.=20
+>> > */
+>> > +bool iomem_is_ioport(void __iomem *addr);
+>> > +#define ARCH_WANTS_GENERIC_IOMEM_IS_IOPORT
+>>=20
+>> I'm not sure what this macro is for, since it appears to
+>> do the opposite of what its name suggests: rather than
+>> provide the generic version of iomem_is_ioport(), it
+>> skips that and provides a custom one to go with lib/iomap.c
+>
+> Hmmm well now it's getting tricky.
+>
+> This else-branch is the one where CONFIG_GENERIC_IOMAP is actually set.
+>
+> I think we're running into the "generic not being generic now that IA64
+> has died" problem you were hinting at.
+>
+> If we build for x86 and have CONFIG_GENERIC set, only then do we want
+> iomem_is_ioport() from lib/iomap.c. So the macro serves avoiding a
+> collision between symbols. Because lib/iomap.c might be compiled even
+> if someone else already has defined iomem_is_ioport().
+> I also don't like it, but it was the least bad solution I could come up
+> with
+> Suggestions?
 
-Konrad
+The best I can think of is to move the lib/iomap.c version
+of iomem_is_ioport() to include/asm-generic/iomap.h with
+an #ifndef iomem_is_ioport / #define iomem_is_ioport
+check around it. This file is only included on parisc, alpha,
+sh and when CONFIG_GENERIC_IOMAP is set.
+
+The default version in asm-generic/io.h then just needs
+one more #ifdef iomem_is_ioport check around it.
+
+      Arnd
