@@ -2,78 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A9998007E3
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 11:07:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E12538007E5
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 11:07:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378135AbjLAKGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 05:06:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43034 "EHLO
+        id S1378163AbjLAKGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 05:06:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377992AbjLAKGs (ORCPT
+        with ESMTP id S1377899AbjLAKGs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 1 Dec 2023 05:06:48 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 458A7C7;
-        Fri,  1 Dec 2023 02:06:53 -0800 (PST)
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B17e3EP010711;
-        Fri, 1 Dec 2023 10:06:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=tUAP8wCFyJh9BD59PB2im9kCmmk+FkPAweHCMGjBBAA=;
- b=L4OYvJMxY0y25H+jtTuhS7h0sWK2U5YQSki6oRr8C3ONybbtOZ6wFxY9GbD0ZHQxlL/p
- 0eI2ToF/jOFNYC+fnijq0AqJbpjpKEpmM4Pc/rGW34ATtvaO77TKT7sC26JP9s+dIN5c
- C8ll+0bnc5tYs692NEPUh57S3Q8hwmgn4Qmi6ZUPB/iYOEhih85/ynUWk//+Bnp0lDW8
- tENu6LB5pY0pb3W7Cqis+LgK6myWyTeyre62XnyEebXTWWsNmxvx+xdqrNhrioNWFURw
- wvvGcihktvajBxvhQsJ/RyNztMtOQkz78W54KTAdXYo616q//JnAOvt2g/f3qoDffVQc 3g== 
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uq3f7s7hy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 01 Dec 2023 10:06:46 +0000
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B1A6kOI027353
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 1 Dec 2023 10:06:46 GMT
-Received: from [10.239.133.73] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 1 Dec
- 2023 02:06:44 -0800
-Message-ID: <9714f76f-0cf3-4f54-8e0d-fe3ca2990eed@quicinc.com>
-Date:   Fri, 1 Dec 2023 18:06:42 +0800
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FB1BCF;
+        Fri,  1 Dec 2023 02:06:54 -0800 (PST)
+Received: from eldfell (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: pq)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id A9EC966003B9;
+        Fri,  1 Dec 2023 10:06:51 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1701425212;
+        bh=6WWOVpafYoUXOtbV/gIxloanlnjCVTDsutvvOB5R06k=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=eSqNbW/vcMm8gefKx26+RTZNe45vOqDDJId4LeIpzjizuRblOupMr56FPiyAO8cJI
+         HoP3M/JHDlWCJtUXAkO9E+3pvapouu4f9kzZrZS1ByBVvLObKNuVz/EjsXdJng/Iqe
+         pEUMP+ukzHGOoiK0MjyHaQPqmBtkuSxYys47iZKWV2sZn9ubB1OX7Ybr3kZeFM7mxC
+         E552xNCRvIvEqR/05QqkYVsmNBAOC+kh6K2dK2fvoI0mpUjx/8FCZXN+RtkOFLYkhM
+         l03l4l3YoAD317l4jwxcmhJYkwDd07Qh6HBrBn5h/pKyIWilKC/9DL/UTzK6ioqOhQ
+         OP98HRBqNdR1A==
+Date:   Fri, 1 Dec 2023 12:06:48 +0200
+From:   Pekka Paalanen <pekka.paalanen@collabora.com>
+To:     Maxime Ripard <mripard@kernel.org>
+Cc:     =?UTF-8?B?QW5kcsOp?= Almeida <andrealmeid@igalia.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel-dev@igalia.com, alexander.deucher@amd.com,
+        christian.koenig@amd.com, Simon Ser <contact@emersion.fr>,
+        Rob Clark <robdclark@gmail.com>, daniel@ffwll.ch,
+        Daniel Stone <daniel@fooishbar.org>,
+        'Marek =?UTF-8?B?T2zFocOhayc=?= <maraeo@gmail.com>,
+        Dave Airlie <airlied@gmail.com>,
+        Michel =?UTF-8?B?RMOkbnplcg==?= <michel.daenzer@mailbox.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Subject: Re: [PATCH] drm/doc: Define KMS atomic state set
+Message-ID: <20231201120648.2ba706e1.pekka.paalanen@collabora.com>
+In-Reply-To: <bry3w6w32uy2jlmbkcmbtthw6w6nwux7dwlcju5iuxac2wphku@md6njxjtsbvm>
+References: <20231130200740.53454-1-andrealmeid@igalia.com>
+        <x6cqert2tadgc46w3u2rfgcfaw6evxdeerl2mxvh2peycr4i7q@qf6oqymcti4j>
+        <20231201110616.30ad1468.pekka.paalanen@collabora.com>
+        <bry3w6w32uy2jlmbkcmbtthw6w6nwux7dwlcju5iuxac2wphku@md6njxjtsbvm>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [GIT PULL] Pin control fixes for v6.7
-To:     Linus Walleij <linus.walleij@linaro.org>
-CC:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Chester Lin <clin@suse.com>
-References: <CACRpkdZtVNZFWSUgb4=gUE2mQRb=aT_3=zRv1U71Vsq0Mm34eg@mail.gmail.com>
- <CAHk-=whk4oNQazgpzkujc2=ntVQMhU5ko7Canp2Uuq6CpyGzmA@mail.gmail.com>
- <CACRpkdZRf7bNVmJCgsVD0uheD1VLkLKG13d1oS-kbT8BFyRKQw@mail.gmail.com>
- <e703c87e-32b9-4dce-b232-89c0e909c35e@quicinc.com>
- <CACRpkdZtCxwLZCY4autrTvonmZ3XcVzH6iXqXanS97VKCZ+ERw@mail.gmail.com>
-From:   "Aiqun(Maria) Yu" <quic_aiquny@quicinc.com>
-In-Reply-To: <CACRpkdZtCxwLZCY4autrTvonmZ3XcVzH6iXqXanS97VKCZ+ERw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 6VN6YwDyKRyki-DpCrDpO4bclbAQUFCp
-X-Proofpoint-GUID: 6VN6YwDyKRyki-DpCrDpO4bclbAQUFCp
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-01_07,2023-11-30_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
- spamscore=0 impostorscore=0 lowpriorityscore=0 phishscore=0
- priorityscore=1501 mlxlogscore=964 bulkscore=0 clxscore=1015 mlxscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2312010067
+Content-Type: multipart/signed; boundary="Sig_/=bSmbDZcOhdjv3iZ1XwQta1";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -84,123 +69,195 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/1/2023 4:10 PM, Linus Walleij wrote:
-> Hi Nathan, Nick,
-> 
-> (just picking some LLVM compiler people I know of... and trust)
-> 
-> Context is this patch:
-> https://lore.kernel.org/linux-gpio/20231115102824.23727-1-quic_aiquny@quicinc.com/
-> 
-> On Thu, Nov 30, 2023 at 6:37 AM Aiqun(Maria) Yu <quic_aiquny@quicinc.com> wrote:
->> On 11/29/2023 11:08 PM, Linus Walleij wrote:
->>> On Wed, Nov 29, 2023 at 3:56 PM Linus Torvalds
->>> <torvalds@linux-foundation.org> wrote:
->>>> On Wed, 29 Nov 2023 at 04:09, Linus Walleij <linus.walleij@linaro.org> wrote:
->>>>>
->>>>> The most interesting patch is the list iterator fix in the core by Maria
->>>>> Yu, it took a while for me to realize what was going on there.
->>>>
->>>> That commit message still doesn't explain what the problem was.
->>>>
->>>> Why is p->state volatile there? It seems to be a serious locking bug
->>>> if p->state can randomly change there, and the READ_ONCE() looks like
->>>> a "this hides the problem" rather than an actual real fix.
->>
->> This is indeed an interesting issue. Thx for the comment, Linus.
->> **Let me explain how: "p->state becomes volatile in the list iterator",
->> and "why READ_ONCE is suggested".
->>
->> The current critical code is:
->>     list_for_each_entry(setting, &p->state->settings, node)
->>
->> after elaborating the define list_for_each_entry, so above critical code
->> will be:
->>     for (setting = list_head(&p->state->settings, typeof(*setting), node); \
->> &setting->node != (&p->state->settings); \
->> setting = list_next(setting , node))
->>
->> The asm code(refer result from Clang version 10.0) can cleared explain
->> the step of p->state reload actions:
->> loop:
->> ldr x22,[x22] ; x22=list_next(setting , node))
->> add x9,x8,#0x18 ; x9=&p->state->setting
->> cmp x22,x9 ; setting,x9
->> b.eq 0xFFFFFF9B24483530
->>
->> ldr w9,[x22,#0x10] ; w9,[setting,#16]
->> cmp w9,#0x2 ; w9,#2
->> b.ne 0xFFFFFF9B24483504
->>
->> mov x0,x22 ; x0,setting
->> bl 0xFFFFFF9B24486048 ; pinmux_disable_setting
->>
->> ldr x8,[x19,#0x28] ; x19=p, x8=[p->state], *reload p->state*
->> b loop
->>
->> The *reload p->state* inside the loop for checking is not needed and can
->> cause possible infinite loop. So READ_ONCE is highly suggested even if
->> p->state is not randomly changed. And then unnecessary "ldr
->> x8,[x19,#0x28]" can be removed from above loop code.
->>
->> **Comments about the locking bug:
->> currently pinctrl_select_state is an export symbol and don't have
->> effective reentrance protect design. That's why current infinite loop
->> issue was observed with customer's multi thread call with
->> pinctrl_select_state without lock protection. pinctrl_select_state
->> totally rely on driver module user side to ensure the reentrant state.
->>
->> Usually the suggested usage from driver side who are using pinctrl would be:
->> LOCK;
->> pinctrl_select_state();
->> gpio pulling;
->> udelay();
->> check state;
->> other hardware behaviors;
->> UNLOCK;
->>
->> So the locking bug fix I have told customer side to fix from their own
->> driver part. Since usually not only a simple pinctrl_select_state call
->> can finish the hardware state transaction.
->>
->> I myself also is fine to have a small per pinctrl lock to only protect
->> the current pinctrl_select_state->pinctrl_commit_state reentrance
->> issues. Pls any pinctrl maintainer help to comment to suggest or not and
->> I can prepare a change as well.
-> 
-> Luckily I am the pin control maintainer :D
-> And I also ha my morning coffee and looked over the patch again.
-> 
-> So tilting the compiler to generate code that is less prone to race
-> conditions with READ_ONCE() isn't really the solution is it? We need
-> to introduce a proper lock that stops this from happening if it is
-> a problem people are facing.
-> 
-> Can you try to make a patch that removes READ_ONCE()
-> and introduce a lock instead?
-> 
-> Racing is rarely an issue in pin control for reasons explained
-> in another context here:
-> https://lore.kernel.org/linux-gpio/CACRpkdZ0cnJpYuzU=47-oW-7N_YGMo2vXpKOeXeNi5PhPY7QMA@mail.gmail.com/
-> 
-> ...but if people still manage to run into it, we better have a lock
-> there. Just make sure it is not just an issue with outoftree code,
-> but a real problem?
-> 
-> The change that changes the code to use the old_state variable
-> should stay in, it makes the code more readable, it's just the
-> READ_ONCE() macro which is dubious.
-Thx for confirm. I am preparing the new change now. :)
+--Sig_/=bSmbDZcOhdjv3iZ1XwQta1
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-READ_ONCE can only avoid the possible infinite loop and not crash the 
-whole kernel, while the lock is needed to protect the multi parallel 
-call of pinctrl_commit_state api have a consistent atomic hardware 
-result as well.
-> 
-> Yours,
-> Linus Walleij
+On Fri, 1 Dec 2023 10:25:09 +0100
+Maxime Ripard <mripard@kernel.org> wrote:
 
--- 
-Thx and BRs,
-Aiqun(Maria) Yu
+> On Fri, Dec 01, 2023 at 11:06:16AM +0200, Pekka Paalanen wrote:
+> > On Fri, 1 Dec 2023 09:29:05 +0100
+> > Maxime Ripard <mripard@kernel.org> wrote:
+> >  =20
+> > > Hi,
+> > >=20
+> > > On Thu, Nov 30, 2023 at 05:07:40PM -0300, Andr=C3=A9 Almeida wrote: =
+=20
+> > > > From: Pekka Paalanen <pekka.paalanen@collabora.com>
+> > > >=20
+> > > > Specify how the atomic state is maintained between userspace and
+> > > > kernel, plus the special case for async flips.
+> > > >=20
+> > > > Signed-off-by: Pekka Paalanen <pekka.paalanen@collabora.com>
+> > > > Signed-off-by: Andr=C3=A9 Almeida <andrealmeid@igalia.com>
+> > > > ---
+> > > >=20
+> > > > This is a standalone patch from the following serie, the other patc=
+hes are
+> > > > already merged:
+> > > > https://lore.kernel.org/lkml/20231122161941.320564-1-andrealmeid@ig=
+alia.com/
+> > > >=20
+> > > >  Documentation/gpu/drm-uapi.rst | 47 ++++++++++++++++++++++++++++++=
+++++
+> > > >  1 file changed, 47 insertions(+)
+> > > >=20
+> > > > diff --git a/Documentation/gpu/drm-uapi.rst b/Documentation/gpu/drm=
+-uapi.rst
+> > > > index 370d820be248..d0693f902a5c 100644
+> > > > --- a/Documentation/gpu/drm-uapi.rst
+> > > > +++ b/Documentation/gpu/drm-uapi.rst
+> > > > @@ -570,3 +570,50 @@ dma-buf interoperability
+> > > > =20
+> > > >  Please see Documentation/userspace-api/dma-buf-alloc-exchange.rst =
+for
+> > > >  information on how dma-buf is integrated and exposed within DRM.
+> > > > +
+> > > > +KMS atomic state
+> > > > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > > > +
+> > > > +An atomic commit can change multiple KMS properties in an atomic f=
+ashion,
+> > > > +without ever applying intermediate or partial state changes.  Eith=
+er the whole
+> > > > +commit succeeds or fails, and it will never be applied partially. =
+This is the
+> > > > +fundamental improvement of the atomic API over the older non-atomi=
+c API which is
+> > > > +referred to as the "legacy API".  Applying intermediate state coul=
+d unexpectedly
+> > > > +fail, cause visible glitches, or delay reaching the final state.
+> > > > +
+> > > > +An atomic commit can be flagged with DRM_MODE_ATOMIC_TEST_ONLY, wh=
+ich means the
+> > > > +complete state change is validated but not applied.  Userspace sho=
+uld use this
+> > > > +flag to validate any state change before asking to apply it. If va=
+lidation fails
+> > > > +for any reason, userspace should attempt to fall back to another, =
+perhaps
+> > > > +simpler, final state.  This allows userspace to probe for various =
+configurations
+> > > > +without causing visible glitches on screen and without the need to=
+ undo a
+> > > > +probing change.
+> > > > +
+> > > > +The changes recorded in an atomic commit apply on top the current =
+KMS state in
+> > > > +the kernel. Hence, the complete new KMS state is the complete old =
+KMS state with
+> > > > +the committed property settings done on top. The kernel will try t=
+o avoid   =20
+> > >=20
+> > > That part is pretty confusing to me.
+> > >=20
+> > > What are you calling the current and old KMS state? =20
+> >=20
+> > Current =3D old, if you read that "current" is the KMS state before
+> > considering the atomic commit at hand.
+> >  =20
+> > > What's confusing to me is that, yes, what you're saying is true for a
+> > > given object: if it was part of the commit, the new state is the old
+> > > state + whatever the new state changed.
+> > >=20
+> > > However, if that object wasn't part of the commit at all, then it's
+> > > completely out of the old or new global KMS state. =20
+> >=20
+> > This is not talking about kernel data structures at all. This is
+> > talking about how KMS looks from the userspace point of view. =20
+>=20
+> I mean, that's also true from the userspace point of view. You can very
+> well commit only a single property on a single object, and only that
+> object will be part of the "global KMS state".
 
+What is "global KMS state"?
+
+As a userspace developer, the global KMS state is the complete, total,
+hardware and driver instance state. It's not any kind of data
+structure, but it is all the condition and all the programming of the
+whole device (hardware + driver instance) at any specific time instant.
+It is not related to any atomic commit or UAPI call, it is how the
+hardware is currently programmed.
+
+How can we make that clear?
+
+Should "KMS state" be replaced with "complete device state" or
+something similar?
+
+> > All objects are always part of the device KMS state as referred to
+> > in this doc, whether they were mentioned in the atomic commit state set
+> > or not. That's the whole point: all state that was not explicitly
+> > modified remains as it was, and is actively used state by the driver
+> > and hardware. The practical end result state is the same as if all
+> > objects were (redundantly) mentioned.
+> >=20
+> > For example, if you change properties of CRTC 31, it has no effect on
+> > the behaviour of CRTC 54. If CRTC 54 was active, it remains active. If
+> > CRTC 54 had certain property values, it continues to have those
+> > property values. =20
+>=20
+> I'm not quite sure I followed your previous paragraph, sorry, but we
+> agree here and it's kind of my point really: CRTC-54 would not be part
+> of the new KMS state, so claiming that it is complete is confusing.
+>=20
+> It's not complete to me precisely because it doesn't contain the state
+> of all objects.
+
+Did my explanation of what "KMS state" means from userspace perspective
+above help?
+
+> > This is opposed to something else; the UAPI could have
+> > been designed to e.g. reset all unmentioned objects to defaults/off by
+> > the atomic commit. Obviously that's not how it works today, so we need
+> > to mention how things do work. =20
+>=20
+> Sure, I'm not claiming we should change anything but the wording of that
+> doc.
+>=20
+> > >=20
+> > > So yeah, individual object KMS state are indeed complete, but
+> > > drm_atomic_state definitely isn't. And it's the whole point of functi=
+ons
+> > > like drm_atomic_get_crtc_state() vs drm_atomic_get_old/new_crtc_state:
+> > > the old/new variants only return a state if it was part of
+> > > drm_atomic_state to begin with. drm_atomic_get_crtc_state() brings the
+> > > crtc state into drm_atomic_state if it wasn't part of it. =20
+> >=20
+> > At no point the text is referring to drm_atomic_state or any other
+> > kernel data structure. =20
+>=20
+> Then it's even more confusing, because the sentence I was quoting was
+> "The changes recorded in an atomic commit apply on top the current KMS
+> state *in the kernel*", which is ambiguous then.
+
+It's perhaps a misguided attempt to say that the kernel maintains the
+complete device state, and that the complete device state is modified
+in the kernel. If it helps, the "in the kernel" can be dropped.
+
+
+Thanks,
+pq
+
+--Sig_/=bSmbDZcOhdjv3iZ1XwQta1
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmVpsDgACgkQI1/ltBGq
+qqeTfQ//Tx1aj3ET5ljpFzO8+v0bqwcdE10/JnjR54V/GWhcVEFfyL40b7MLpX4K
+AcPjb2BWg3F6DiGMIIM+yl2QAPudYPCXn6pyGFWugEyu+H5MeMSQe3TpwyXKrvse
+lq5mBtN8gxjPz/4hq1U13g4Qrr3ogeuSchDdL8GkvaDadsRBaveQ/vjxHh/XRoVx
+wDdZQQ/ukV1xzstILk64XxSJIXUWFqzwFIAxMNHNjdBhc3h1g/6ccvRbsTLG9k9w
+tumPW0TENqBzTUcKdyknpPrs6pM5GILrNLOBrByrpIL1EOMH8M5tMB4qmqNVsuTg
+TLJ1uANUjgBPvSKJhHrgllY/5KVMWfzR37uDLfXZTAGLgWekTLqvtEkWSb+8dANW
+8LDkNu8kEWYimCk1EoC4lTYoxa/Gv238wzd/QKWAqLqqGyTyzOf1AFnpk2it6Xce
+iIQFTI+g3PYxeQIxHI9tc+523pVqwtVLEXh73Cr8l7fO6NTgOpog/uR7KO2TEVIc
+75G/ho7GxIpyJjnVLeijU/5bL46C5kXNAqE1Nvm4S5BKOt4I7NGSWGSRHlABrMyC
+HLx/0/U3Is5x0JlrR9VUN4BB3/RVKyKyVdfvbRROKYPdHRb4WSaBxMPG2TwtGYNH
+29o1yD9N5yiVM0+7a6/7h/pGM2G4lBppk/KZ9133JgtvOUi71kM=
+=u5wp
+-----END PGP SIGNATURE-----
+
+--Sig_/=bSmbDZcOhdjv3iZ1XwQta1--
