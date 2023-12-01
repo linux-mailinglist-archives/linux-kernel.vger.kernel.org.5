@@ -2,204 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8A32800F9C
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 17:13:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C42CC800FD0
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 17:13:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379484AbjLAPfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 10:35:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33678 "EHLO
+        id S1379475AbjLAPgt convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 1 Dec 2023 10:36:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379464AbjLAPf3 (ORCPT
+        with ESMTP id S1379453AbjLAPgr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 10:35:29 -0500
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4682F194
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 07:35:35 -0800 (PST)
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3B1Cx66t003628;
-        Fri, 1 Dec 2023 09:35:29 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-        message-id:date:mime-version:subject:to:cc:references:from
-        :in-reply-to:content-type:content-transfer-encoding; s=
-        PODMain02222019; bh=YzcY4AtfeWuF2AzFjeIMHMQXTXNXxXbJu0r2/vmZFBY=; b=
-        ewbjU3WUPuDK9jeTX0Q524hIueB6kINYPS7I0gAG06IBPjqrWb049/rAmjye4CH7
-        SKH1SMor6UoqLinoFewSPwkK761Nlp9xuN2g7grBOpI5R4Fmooi9T7B0QgLo/+Fs
-        FXQm0bSrzH+8L1qij2cfh4VKya9qqcPhnEuNyDQDZSE/V4J2T1s32RZgXrNLjKam
-        CR71ZHqX5sT6r7vlT/qrtnA5oLR7dO8XJL4oQT/zih0Z9qa8wnlUWXbrAIOAekar
-        gSUhiCm61BzAUwTBtEo5q28Kqbrg4qdiVLD8eJeLGS+YBG+VypBiN9zCTmTsejJk
-        o9Ez20xLSjiuyD4bRGz4Jg==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3unvhpbke6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 01 Dec 2023 09:35:29 -0600 (CST)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Fri, 1 Dec
- 2023 15:35:27 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.39 via Frontend Transport; Fri, 1 Dec 2023 15:35:27 +0000
-Received: from [198.61.65.94] (EDIN4L06LR3.ad.cirrus.com [198.61.65.94])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id BEE2B468;
-        Fri,  1 Dec 2023 15:35:26 +0000 (UTC)
-Message-ID: <328d1d32-26a0-4e70-8694-237e8ac9f9f6@opensource.cirrus.com>
-Date:   Fri, 1 Dec 2023 15:35:26 +0000
+        Fri, 1 Dec 2023 10:36:47 -0500
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEBE51B2;
+        Fri,  1 Dec 2023 07:36:52 -0800 (PST)
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-5d3d5b10197so13329497b3.2;
+        Fri, 01 Dec 2023 07:36:52 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701445012; x=1702049812;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9UV5Mpe2cpSWdbqOG1++lkTk70fwQykmNN2hXvOVom0=;
+        b=YpNsaaEkTKiJqnC0KmEd8Jo2mC+Bu2i0qEQzNkvoXNWBQKWowhKE6gaeb991D0OtqV
+         SVlD7uMqw+So2IFAeStxmvO+24H4r1lNf0xB3nlsDKUIISky5JgEIeBvIkrbrXZYXgeL
+         ZfKc3U4+Lk8/NOzlIPtkXrFg0xc6wkXSfXtlB0qXjKZromJK1b0GFLUmIbks3XbzuCMG
+         d/+KquNI/LGfjOKgCDQENhxTkIaFwSSXZudNer2WNv69fOaNT5xwMXxs7jpOGxoIRS+L
+         E5iO6tlly9c1OMfmPhzocP3yUz9NCTfaz0XWwhrqU2hEJWyrdRGqp9TXyy907pX/A+Ty
+         pzoA==
+X-Gm-Message-State: AOJu0YzOBtlP+Yn4MysuDStUQ8KWqtU6Bj1qX1fqpoPZmziQ0fxxMNqu
+        v7MvT/vYBaRt0A0phu372Cb9IeMnQsh51A==
+X-Google-Smtp-Source: AGHT+IH90ZSpjcBFpWK8As4egkUF0GGiv6hK3MC47qVKASewNIIfK1QDpleOKB/Q85Az0GxxKXNpJw==
+X-Received: by 2002:a0d:ccc4:0:b0:5d4:244b:9e9a with SMTP id o187-20020a0dccc4000000b005d4244b9e9amr2259159ywd.17.1701445011611;
+        Fri, 01 Dec 2023 07:36:51 -0800 (PST)
+Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com. [209.85.128.181])
+        by smtp.gmail.com with ESMTPSA id i71-20020a0ddf4a000000b005d3758fda7dsm1022205ywe.31.2023.12.01.07.36.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Dec 2023 07:36:50 -0800 (PST)
+Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-5d2c6c1ab66so24433777b3.1;
+        Fri, 01 Dec 2023 07:36:50 -0800 (PST)
+X-Received: by 2002:a0d:fc05:0:b0:5cb:332e:ab68 with SMTP id
+ m5-20020a0dfc05000000b005cb332eab68mr26596241ywf.5.1701445010237; Fri, 01 Dec
+ 2023 07:36:50 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: platform-device-test on 6.6 causes "(null)' : is not initialized,
- yet kobject_get() is being called"
-Content-Language: en-US
-To:     Maxime Ripard <mripard@kernel.org>
-CC:     Greg KH <gregkh@linuxfoundation.org>,
-        Marco Pagani <marpagan@redhat.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        <linux-kernel@vger.kernel.org>, - <patches@opensource.cirrus.com>
-References: <e239b94b-462a-41e5-9a4c-cd1ffd530d75@opensource.cirrus.com>
- <oho6bypbvr7rhveiqmosp3wmb7ptygcuuuq6v2jrsqugfuyfas@5czwntre4pc5>
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-In-Reply-To: <oho6bypbvr7rhveiqmosp3wmb7ptygcuuuq6v2jrsqugfuyfas@5czwntre4pc5>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-GUID: f1QvGvTvocHm-ccCSy00UEqpVNJMmQpf
-X-Proofpoint-ORIG-GUID: f1QvGvTvocHm-ccCSy00UEqpVNJMmQpf
-X-Proofpoint-Spam-Reason: safe
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231120070024.4079344-1-claudiu.beznea.uj@bp.renesas.com>
+ <20231120070024.4079344-4-claudiu.beznea.uj@bp.renesas.com>
+ <CAMuHMdVMpKVY8WX7dbtHfgnwgePH+i9+2BAumb37sFmqccb44g@mail.gmail.com>
+ <CAMuHMdVWvVtFMUe+J9R2ZU8Hi5CGs0NQfwUxitganM85183KkA@mail.gmail.com> <55a0048a-7fa1-49cd-a70f-8f7d948adf27@tuxon.dev>
+In-Reply-To: <55a0048a-7fa1-49cd-a70f-8f7d948adf27@tuxon.dev>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 1 Dec 2023 16:36:38 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdUb79rt2YVQO66_+8YcmAyS-PwFVcx0XfZVN-to3EB2SQ@mail.gmail.com>
+Message-ID: <CAMuHMdUb79rt2YVQO66_+8YcmAyS-PwFVcx0XfZVN-to3EB2SQ@mail.gmail.com>
+Subject: Re: [PATCH 03/14] clk: renesas: rzg2l-cpg: Add support for MSTOP
+To:     claudiu beznea <claudiu.beznea@tuxon.dev>
+Cc:     s.shtylyov@omp.ru, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linux@armlinux.org.uk, magnus.damm@gmail.com,
+        mturquette@baylibre.com, sboyd@kernel.org,
+        linus.walleij@linaro.org, p.zabel@pengutronix.de, arnd@arndb.de,
+        m.szyprowski@samsung.com, alexandre.torgue@foss.st.com, afd@ti.com,
+        broonie@kernel.org, alexander.stein@ew.tq-group.com,
+        eugen.hristev@collabora.com, sergei.shtylyov@gmail.com,
+        prabhakar.mahadev-lad.rj@bp.renesas.com,
+        biju.das.jz@bp.renesas.com, linux-renesas-soc@vger.kernel.org,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/11/23 14:42, Maxime Ripard wrote:
-> Hi,
-> 
-> On Wed, Nov 15, 2023 at 01:28:13PM +0000, Richard Fitzgerald wrote:
->> Target platform: Aaeon Whiskeylake UpXtreme (Celeron CPU)
->> Target OS: Debian 11 (non-graphical install)
->>
->> Kernel: v6.6.1 from
->> git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
->> branch: linux-6.6.y
->> at commit 8afabe2118a9 ("Linux 6.6.1")
->>
->> defconfig attached.
->>
->> CONFIG_DM_KUNIT_TEST=m
->>
->> gcc (Debian 10.2.1-6) 10.2.1 20210110
->>
->> loading the module to run the test causes kobject_get() to WARN:
->>
->> sudo modprobe platform-device-test
->>
->> [   82.595238] KTAP version 1
->> [   82.595252] 1..1
->> [   82.595487]     KTAP version 1
->> [   82.595489]     # Subtest: platform-device-devm
->> [   82.595490]     # module: platform_device_test
->> [   82.595493]     1..4
->> [   82.596130]     ok 1 platform_device_devm_register_unregister_test
->> [   82.596314]     ok 2
->> platform_device_devm_register_get_unregister_with_devm_test
->> [   82.596387] ------------[ cut here ]------------
->> [   82.596395] kobject: '(null)' (0000000067030afc): is not initialized, yet
->> kobject_get() is being called.
->> [   82.596410] WARNING: CPU: 1 PID: 654 at lib/kobject.c:637
->> kobject_get+0x4c/0x70
->> [   82.596415] Modules linked in: platform_device_test(E+)
->> x86_pkg_temp_thermal(E) intel_powerclamp(E) coretemp(E) crc32_pclmul(E)
->> ghash_clmulni_intel(E) sha512_ssse3(E) sha512_generic(E) nls_ascii(E)
->> nls_cp437(E) vfat(E) fat(E) aesni_intel(E) libaes(E) crypto_simd(E)
->> cryptd(E) mei_wdt(E) mei_hdcp(E) snd_hda_codec_hdmi(E) watchdog(E) rapl(E)
->> intel_rapl_msr(E) snd_hda_codec_cs8409(E) snd_hda_codec_generic(E)
->> intel_cstate(E) ledtrig_audio(E) snd_hda_intel(E) snd_intel_dspcfg(E)
->> intel_uncore(E) snd_hda_codec(E) processor_thermal_device_pci_legacy(E)
->> processor_thermal_device(E) snd_hda_core(E) processor_thermal_rfim(E)
->> efi_pstore(E) pcspkr(E) mei_me(E) wmi_bmof(E) snd_pcm(E)
->> processor_thermal_mbox(E) processor_thermal_rapl(E) snd_timer(E)
->> intel_rapl_common(E) int340x_thermal_zone(E) snd(E) intel_soc_dts_iosf(E)
->> mei(E) intel_pch_thermal(E) soundcore(E) tpm_crb(E) evdev(E) tpm_tis(E)
->> tpm_tis_core(E) tpm(E) intel_pmc_core(E) acpi_pad(E) rng_core(E) acpi_tad(E)
->> button(E) msr(E) fuse(E) configfs(E) efivarfs(E) ip_tables(E)
->> [   82.596473]  x_tables(E) autofs4(E) ext4(E) crc32c_generic(E) crc16(E)
->> mbcache(E) jbd2(E) spi_pxa2xx_platform(E) dw_dmac(E) dw_dmac_core(E)
->> mmc_block(E) i915(E) drm_buddy(E) ttm(E) intel_gtt(E) drm_display_helper(E)
->> drm_kms_helper(E) sdhci_pci(E) xhci_pci(E) drm(E) crct10dif_pclmul(E)
->> cqhci(E) crct10dif_common(E) intel_lpss_pci(E) crc32c_intel(E) sdhci(E)
->> intel_lpss(E) xhci_hcd(E) i2c_i801(E) cec(E) i2c_smbus(E) idma64(E)
->> mmc_core(E) usbcore(E) usb_common(E) fan(E) video(E) wmi(E)
->> [   82.596508] CPU: 1 PID: 654 Comm: kunit_try_catch Tainted: G   E    N
->> 6.6.1-test #1
->> [   82.596510] Hardware name: AAEON UP-WHL01/UP-WHL01, BIOS UPW1AM19
->> 11/10/2020
->> [   82.596512] RIP: 0010:kobject_get+0x4c/0x70
->> [   82.596515] Code: 44 24 38 85 c0 74 3b 78 25 83 c0 01 78 20 4c 89 e0 41
->> 5c c3 cc cc cc cc 48 8b 37 48 89 fa 48 c7 c7 80 a6 a1 92 e8 64 2a 68 ff <0f>
->> 0b eb c4 be 01 00 00 00 e8 26 08 af ff 4c 89 e0 41 5c c3 cc cc
->> [   82.596517] RSP: 0018:ffffa2cf814e7d40 EFLAGS: 00010286
->> [   82.596519] RAX: 0000000000000000 RBX: ffffffffc111c510 RCX:
->> ffff8e28e3c9c888
->> [   82.596521] RDX: 00000000ffffffd8 RSI: 0000000000000027 RDI:
->> ffff8e28e3c9c880
->> [   82.596522] RBP: ffff8e27843e48c0 R08: 0000000000000000 R09:
->> 00000000ffffefff
->> [   82.596524] R10: ffffa2cf814e7be0 R11: ffffffff92cd2788 R12:
->> ffffffffc111c510
->> [   82.596525] R13: 0000000000000000 R14: 0000000000000000 R15:
->> ffff8e2784968da0
->> [   82.596526] FS:  0000000000000000(0000) GS:ffff8e28e3c80000(0000)
->> knlGS:0000000000000000
->> [   82.596528] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->> [   82.596530] CR2: 0000558fd9288c70 CR3: 000000002b020003 CR4:
->> 00000000003706e0
->> [   82.596531] Call Trace:
->> [   82.596532]  <TASK>
->> [   82.596534]  ? __warn+0x84/0x170
->> [   82.596538]  ? kobject_get+0x4c/0x70
->> [   82.596541]  ? report_bug+0x198/0x1b0
->> [   82.596545]  ? handle_bug+0x3c/0x70
->> [   82.596547]  ? exc_invalid_op+0x18/0x70
->> [   82.596549]  ? asm_exc_invalid_op+0x1a/0x20
->> [   82.596554]  ? kobject_get+0x4c/0x70
->> [   82.596557]  kobject_add_internal+0x30/0x2b0
->> [   82.596560]  kobject_add+0x7e/0xf0
->> [   82.596565]  kobject_create_and_add+0x51/0x90
->> [   82.596567]  module_add_driver+0xfe/0x110
->> [   82.596571]  bus_add_driver+0x130/0x220
->> [   82.596575]  ? __pfx_kunit_generic_run_threadfn_adapter+0x10/0x10
->> [   82.596578]  driver_register+0x60/0x120
->> [   82.596581]
->> probed_platform_device_devm_register_unregister_test+0x40/0x3e0
->> [platform_device_test]
->> [   82.596587]  ? platform_device_devm_init+0x74/0xd0 [platform_device_test]
->> [   82.596593]  ? __pfx_kunit_generic_run_threadfn_adapter+0x10/0x10
->> [   82.596595]  kunit_generic_run_threadfn_adapter+0x17/0x30
->> [   82.596597]  kthread+0xf4/0x130
->> [   82.596600]  ? __pfx_kthread+0x10/0x10
->> [   82.596604]  ret_from_fork+0x31/0x50
->> [   82.596606]  ? __pfx_kthread+0x10/0x10
->> [   82.596609]  ret_from_fork_asm+0x1b/0x30
->> [   82.596615]  </TASK>
->> [   82.596616] irq event stamp: 975
->> [   82.596618] hardirqs last  enabled at (981): [<ffffffff9193aa6d>]
->> console_unlock+0x10d/0x130
->> [   82.596621] hardirqs last disabled at (986): [<ffffffff9193aa52>]
->> console_unlock+0xf2/0x130
->> [   82.596624] softirqs last  enabled at (0): [<ffffffff9188890f>]
->> copy_process+0xa8f/0x2080
->> [   82.596626] softirqs last disabled at (0): [<0000000000000000>] 0x0
->> [   82.596628] ---[ end trace 0000000000000000 ]---
-> 
-> It's not entirely clear to me what could be happening here, but it looks
-> similar to the issue that Marco was fixing here:
-> https://lore.kernel.org/linux-kselftest/20231128101627.65399-1-marpagan@redhat.com/
-> 
-> Could you test with that fix and see if it still happens?
-> 
-> Thanks!
-> Maxime
+Hi Claudiu,
 
-Yes, Marco's patch fixes it.
+On Mon, Nov 27, 2023 at 8:37 AM claudiu beznea <claudiu.beznea@tuxon.dev> wrote:
+> On 24.11.2023 11:08, Geert Uytterhoeven wrote:
+> > On Thu, Nov 23, 2023 at 5:35 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> >> On Mon, Nov 20, 2023 at 8:01 AM Claudiu <claudiu.beznea@tuxon.dev> wrote:
+> >>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> >>>
+> >>> RZ/{G2L, V2L, G3S} based CPG versions have support for saving extra
+> >>> power when clocks are disabled by activating module standby. This is done
+> >>> though MSTOP specific registers that are part of CPG. Each individual
+> >>> module have one or more bits associated in one MSTOP register (see table
+> >>> "Registers for Module Standby Mode" from HW manuals). Hardware manual
+> >>> associates modules' clocks to one or more MSTOP bits. There are 3 mappings
+> >>> available (identified by researching RZ/G2L, RZ/G3S, RZ/V2L HW manuals):
+> >>>
+> >>> case 1: N clocks mapped to N MSTOP bits (with N={0, ..., X})
+> >>> case 2: N clocks mapped to 1 MSTOP bit  (with N={0, ..., X})
+> >>> case 3: N clocks mapped to M MSTOP bits (with N={0, ..., X}, M={0, ..., Y})
+> >>>
+> >>> Case 3 has been currently identified on RZ/V2L for VCPL4 module.
+> >>>
+> >>> To cover all 3 cases the individual platform drivers will provide to
+> >>> clock driver MSTOP register offset and associated bits in this register
+> >>> as a bitmask and the clock driver will apply this bitmask to proper
+> >>> MSTOP register.
+> >>>
+> >>> As most of the modules have more than one clock and these clocks are
+> >>> mapped to 1 MSTOP bitmap that need to be applied to MSTOP registers,
+> >>> to avoid switching the module to/out of standby when the module has
+> >>> enabled/disabled clocks a counter has been associated to each module
+> >>> (though struct mstop::count) which is incremented/decremented every
+> >>> time a module's clock is enabled/disabled and the settings to MSTOP
+> >>> register are applied only when the counter reaches zero (counter zero
+> >>> means either 1st clock of the module is going to be enabled or all clocks
+> >>> of the module are going to be disabled).
 
+> > After giving this some more thought, it feels odd to derive the standby
+> > state of a module from the state of its module clocks, while the latter
+> > are already controlled through Runtime PM and a Clock Domain.
+> >
+> > A first alternative solution could be to drop the GENPD_FLAG_PM_CLK
+> > flag from the RZ/G2L CPG clock domain, and provide your own
+> > gpd_dev_ops.start() and .stop() callbacks that take care of both
+> > module standby and clocks (through pm_clk_{resume,suspend}().
+> > (See https://elixir.bootlin.com/linux/v6.7-rc2/source/drivers/base/power/domain.c#L2093
+> > for the GENPD_FLAG_PM_CLK case).
+> > That still leaves you with a need to associate an MSTOP register and
+> > bitmask with a device through its module clocks.
+> >
+> > A second alternative solution could be to increase #power-domain-cells
+> > from zero to one, and register individual PM Domains for each module,
+> > and control module standby from the generic_pm_domain.power_{on,off}()
+> > callbacks.  Devices would specify the module using the power-domains =
+> > <&cpg <id> > property in DT, with <id> one of the to-be-added list of
+> > modules in include/dt-bindings/clock/r9a08g045-cpg.h.  The RZ/G2L CPG
+> > driver can handle the mapping from <id> to MSTOP register and bitmask.
+> > This solution requires updates to DT, but you can keep compatibility
+> > with old DTBs by only registering the new PM Domains when
+> > #power-domain-cells is one.
+> > The extra power saving would only be applicable with new DTBs, though.
+>
+> I prefer this alternative even though it cannot be applied for old DTBs, it
+> looks to me that is more modular. What do you think?
+
+I prefer the second alternative, too.
+
+> The only thing is that MSTOP is not really a power off/on switch (if it
+> would be implemented with generic_pm_domain.power_{on, off}) but is more
+
+That's fine: Linux' PM Domains are fairly generic and abstract, and
+not limited to pure power domains/areas.
+
+> like a clock disable/enable functionality (it should not be an issue
+> though, just saying)... According to manual (I'm referring to Figure 41.4
+> Block Connection Overview for Module Standby Mode of HW manula of RZ/G3S),
+> it disables/enables the module's bus clock.
+
+Thanks for the pointer! That picture nicely shows the internal behavior.
+For comparison, on SH/R-Mobile and R-Car SoCs there is a similar
+internal structure, but it is less visible to the programmer:
+there are no individual controls for each clock or reset that is
+fed into a module.  These are all hidden behind a single Module
+Stop resp. Reset control bit.  In Linux, we modeled the module stop
+bit as a gate clock, controlled by Runtime PM through the Clock Domain's
+.start()/.stop() callbacks.
+
+Note that you also have to take into account Figure 41.2 ("Modules in
+Power Domain").  When adding support for power transitions later, you
+can register a PM Domain representing PD_ISOVCC, and use that as the
+parent PM Domain for the individual PM Domains for modules belonging
+to PD_ISOVCC.  All of that can be handled in the driver, and would
+not need any changes to DT.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
