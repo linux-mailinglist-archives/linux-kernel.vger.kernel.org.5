@@ -2,74 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1FEC800CFC
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 15:17:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E400B800D00
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 15:18:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379132AbjLAORr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 09:17:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33892 "EHLO
+        id S1379136AbjLAOSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 09:18:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379094AbjLAORp (ORCPT
+        with ESMTP id S1379117AbjLAOSL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 09:17:45 -0500
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA4F610F0
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 06:17:50 -0800 (PST)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-50bd52e1435so1735607e87.2
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 06:17:50 -0800 (PST)
+        Fri, 1 Dec 2023 09:18:11 -0500
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB7B210FD
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 06:18:17 -0800 (PST)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-40b4a8db314so21628005e9.3
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 06:18:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701440269; x=1702045069; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1701440296; x=1702045096; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=dS/VbPECbYH+oSA/PSIJz8GFSptb5QIDmEdIGI/hnl4=;
-        b=afVsPJ/eeQ+2jgDEpVuFlHj9e2GvcyDWEz1OmhKXTPZrn6B8b+GmFV+Yf+DgFFvedr
-         3kDNEb2qQfoj7F5+CGC2veQ312WtC1pU12IJKN6Ky6ILg8YzIXhuD+xCKCS3Ck5ZVKLk
-         VOUq6KPhMs89rgR6zNaZd6ttr8I3Te49rI7Fas7k6xHcwfWQ19xfvA+NhikZ9VYWiv5l
-         UKz6+CwWCeT8DhSBuNtyatj9gzTvuqNCCKGgvP0fKOaxB6RHk2mouk8+MtpK688vsF/X
-         5Kt7s+fdbTUdIvOdqqtA5lymI3nCeHK8FfhhhJg2OVnUyO15o2M/pXPJvtZWWhuDZSNT
-         Lxlw==
+        bh=FS+WjqQpYUDQECaBhbz1tAeOxXG5jK78RjkjXlhAMRk=;
+        b=vnJp8g6y3nuBY9JJCvan7t0U2B7tG1BoDHwAr1bCxaOUH9+P8lRFJFVXllZtuuAlsq
+         l5Fbqs4vWb++1eCuNRHxalqE2O152wGECzyTZQc1NbnMm9dIaWYvOI1hJ94XD9LxfyDE
+         lv+d9V1Qx2EflOPT2q69aopTXFvK5Li5RD2zn3xITG+9u3mcBH7HwaOxuJz2MxJlzGnz
+         bpykXUaPtwMXR4Sz7g/JtvXY/zvjZs4ON0OukPLif4Y7lSNCtKhWrGIjQs0JqYJNxjMp
+         F/HMqazBNyqaxyyStV/oUJ5MgyS0Qt3wiSVWbBw0GBbay/GVluESg1p79IlKmjg9YCub
+         DjvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701440269; x=1702045069;
+        d=1e100.net; s=20230601; t=1701440296; x=1702045096;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dS/VbPECbYH+oSA/PSIJz8GFSptb5QIDmEdIGI/hnl4=;
-        b=mvtDPtYly35MibldU053OmoGdkhozM2SxWGaOR94/gBzzq+RPAba+OE4nPHD+lFqJl
-         78gbCwImJl+10vcAd6bvxWQYdj+HpE/5SXS8/1o2j67TkYW97cQEjatCPGfbzB1puok1
-         C9/BoMxTkgCR3eeALJ1PoSj4S6nqQIvW+0kafEF34JY5n5mZCh8+rcek7uYDuwdZOlac
-         o0WDMMo0iEK55LnIvNXTd0QH39f5RVMRmVlOKRle80LlgRTamYIOZ3G0ljddjrNJNq0y
-         Ldm7i8w038zkXOHejwqdFX+SE5twrKMTNHcK8WDVtMhyqnwsn/Y8a+fPsfJQvYp+tAH/
-         MN/g==
-X-Gm-Message-State: AOJu0Yz2vkWxo8hBoVv3t9BWiOZw9KwDBX2xT5BLok5dQAifAp9SuK1P
-        KXWCHkYRxm1QEJEiJBg0NUbf7w==
-X-Google-Smtp-Source: AGHT+IGhfzqW22MczkjnR+L75DDw1xhlpjFPn9mwiqVbJaxXJY/AuNzngmeZcGKs64QZ8PkobdKQ+Q==
-X-Received: by 2002:a05:6512:1149:b0:50b:de2c:3d1f with SMTP id m9-20020a056512114900b0050bde2c3d1fmr350496lfg.15.1701440268922;
-        Fri, 01 Dec 2023 06:17:48 -0800 (PST)
+        bh=FS+WjqQpYUDQECaBhbz1tAeOxXG5jK78RjkjXlhAMRk=;
+        b=ddrGm2SU5OO8VG+5lC32HktFzZ/FT6w/ztoIprAunhK1uQTD/3vzTI1tKKd+/BBIQ+
+         H6TaK+ucRt/vAYh7NYZrrEbH1KiyKCmCgKL2GqYuKCIkSpW8rHTOC7vV31kcOOcNpnyI
+         3DGnof0guk7vyVAeGba9QeAQ6J0U+TB9bhrAZCa0xzyGnRO43ji5ABskgwA+0Cfkriiy
+         4aJ/xHXtdOTdtZBai/cXzvItvWTJCIeScsaRGXFNVmQitGypU7mV8t1aVfh6wsYShs6c
+         POreG2VAXYZGZxn6hT46AQvC25vzLCTlRrzyEQj3c3PT3ovGcgNHoG0xftdDRk7BWe1P
+         ygXA==
+X-Gm-Message-State: AOJu0YyV05jR9yug/VllQy92+US82Z5rztMhu9IEAzdkYpcE/l+b7X35
+        JBDxG/y7D7RhO0E4pmMN+WffCw==
+X-Google-Smtp-Source: AGHT+IH4G4jvMoTfsYemUsqfpRa7LrCc+tz4U3Kcd+4VZVVP8T79d20autpaZeSOlzbLhu5s/esa9g==
+X-Received: by 2002:a05:600c:3309:b0:40b:5f03:b3ff with SMTP id q9-20020a05600c330900b0040b5f03b3ffmr179162wmp.289.1701440296256;
+        Fri, 01 Dec 2023 06:18:16 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.223.109])
-        by smtp.gmail.com with ESMTPSA id g18-20020a05600c311200b0040b42df75fcsm5551309wmo.39.2023.12.01.06.17.47
+        by smtp.gmail.com with ESMTPSA id g18-20020a05600c311200b0040b42df75fcsm5551309wmo.39.2023.12.01.06.18.14
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Dec 2023 06:17:48 -0800 (PST)
-Message-ID: <7aaea1e4-b7bd-47e4-a6e6-32b8195ea1bf@linaro.org>
-Date:   Fri, 1 Dec 2023 15:17:46 +0100
+        Fri, 01 Dec 2023 06:18:15 -0800 (PST)
+Message-ID: <ad9a107c-4545-4e9c-8f98-53c3ee0ab567@linaro.org>
+Date:   Fri, 1 Dec 2023 15:18:14 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dt-bindings: clock: ti: Convert interface.txt to
- json-schema
+Subject: Re: [PATCH] dt-bindings: gpio: rockchip: add a pattern for gpio hogs
 Content-Language: en-US
-To:     Andreas Kemnade <andreas@kemnade.info>
-Cc:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        kristo@kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org
-References: <20231127202359.145778-1-andreas@kemnade.info>
- <7a62ed8a-b0e3-4881-90d7-b8f5d38e482e@linaro.org>
- <20231128093241.707a4fa0@aktux>
- <7361082a-f271-4ef4-9dad-06ee7445c749@linaro.org>
- <20231128214116.22dfff1e@akair>
- <221ba6a3-c4c2-40cd-b1d8-8170af78c784@linaro.org>
- <20231201150937.3631ee99@akair>
+To:     Heiko Stuebner <heiko@sntech.de>, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc:     linus.walleij@linaro.org, brgl@bgdev.pl, andy@kernel.org,
+        linux-gpio@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        quentin.schulz@theobroma-systems.com,
+        Heiko Stuebner <heiko.stuebner@cherry.de>
+References: <20231201140840.323762-1-heiko@sntech.de>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -115,11 +109,11 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231201150937.3631ee99@akair>
+In-Reply-To: <20231201140840.323762-1-heiko@sntech.de>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -128,58 +122,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/12/2023 15:09, Andreas Kemnade wrote:
-> Am Wed, 29 Nov 2023 09:15:57 +0100
-> schrieb Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>:
+On 01/12/2023 15:08, Heiko Stuebner wrote:
+> From: Heiko Stuebner <heiko.stuebner@cherry.de>
 > 
->> On 28/11/2023 21:41, Andreas Kemnade wrote:
->>> Am Tue, 28 Nov 2023 09:41:23 +0100
->>> schrieb Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>:  
->>>>> If the interface clock is not below a ti,clksel then we have reg.
->>>>>    
->>>>
->>>> This should be expressed in the bindings. It's fine to make the reg
->>>> optional (skip the description, it's confusing), but the ti,clksel
->>>> should reference this schema and enforce it on the children.
->>>>  
->>> Well there are other compatibles below ti,clksel, too, so should we
->>> rather add them when the other .txt files are converted?  
->>
->> This binding should already be referenced by ti,clksel. When the other
->> are ready, you will change additionalProperties from object to false.
->>
-> I played around with it:
+> Allow validating gpio-hogs defined inside the gpio controller node.
 > 
-> --- a/Documentation/devicetree/bindings/clock/ti/ti,clksel.yaml
-> +++ b/Documentation/devicetree/bindings/clock/ti/ti,clksel.yaml
-> @@ -33,6 +33,11 @@ properties:
->      const: 2
->      description: The CLKSEL register and bit offset
->  
-> +patternProperties:
-> +  "-ick$":
-> +    $ref: /schemas/clock/ti/ti,interface-clock.yaml#
-> +    type: object
-> +
->  required:
->    - compatible
->    - reg
-> 
->  
-> That generates warnings, which look more serious than just a
-> non-converted compatible, so lowering the overall "signal-noise-ratio".
-> 
-> e.g.
-> from schema $id:
-> http://devicetree.org/schemas/clock/ti/ti,clksel.yaml#
-> /home/andi/linux-dtbs/arch/arm/boot/dts/ti/omap/omap3-overo-tobiduo.dtb:
-> clock@c40: clock-rm-ick: 'ti,index-starts-at-one', 'ti,max-div' do not
-> match any of the regexes: 'pinctrl-[0-9]+'
-> 
-> I think we should rather postpone such referencing.
+> Signed-off-by: Heiko Stuebner <heiko.stuebner@cherry.de>
+> ---
 
-Are you sure in such case that your binding is correct? The warnings
-suggest that not, therefore please do not postpone.
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 Best regards,
 Krzysztof
