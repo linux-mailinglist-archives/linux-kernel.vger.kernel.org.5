@@ -2,104 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB807800490
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 08:19:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF77080049F
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 08:20:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377711AbjLAHTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 02:19:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38230 "EHLO
+        id S1377714AbjLAHUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 02:20:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229507AbjLAHTD (ORCPT
+        with ESMTP id S229692AbjLAHUU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 02:19:03 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10AAE10FD
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 23:19:10 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id 98e67ed59e1d1-286447abfbeso933019a91.1
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 23:19:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701415149; x=1702019949; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=w4gjmXzJwfkZpfXVaiVKGn9kscrEqPPEn8et/1JxxBI=;
-        b=kaUkfIeI4tpE1dITHQVPisSpZaZPRclkn6CGLXNVqr6xQ71WAirKsmFIhg2dH0H7l3
-         R3xxN1KU/YF4AkoNHfeHxyBtPk//Cb7bXF45VeRdAQKaUKgfMXpb5Ka4/wk8X8h5Uqfm
-         g0mdvNPFs5w0LcXxffewa0la9wz3OLojJPQXtPaNLyambKd/CHDbaLQcIqImKUNh8yeZ
-         uS6MG/BWcCvWap8566kI4jkCch0L6cKghoVe/l1EFi2V07ln7qpY9fRa6DK2uE45n8BL
-         PfeQENzXmuRJy1IpMwgLEoWfAcOjybZXuNuEKt4seNiwHLsUlHslEulz7Rv/deMvPG9B
-         bjpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701415149; x=1702019949;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=w4gjmXzJwfkZpfXVaiVKGn9kscrEqPPEn8et/1JxxBI=;
-        b=hzjFdr6eSls8GtXspGl4Hhs7w2kUovWzd3du7DYlF49GPlYQQyISnykZoGbqPKJGZH
-         LHmdpDeCGTtbZKMroOdCWKKc19A/CfNdZk9cuRUUu3Eb/ILsp4dMFyJhPFdicxuPXh8r
-         scnbPiPbfFjGAJpMb7NtDTbgDoYPcA0dn0a6LeOkutV0I8M4Ds7/PMW839AOoI5+U8bh
-         9aW1B9jvKMPBAeMtk/+oPMMm72lmQ3QnOphJ9h77ZOQyLF4Pj94xFMxQlv9KSMk/AeU9
-         SztZg/2P92zyHNReGMdjWWLI3EcNqeRrS+gk/HpGPZO9zQX++wtD6gCA950GOj6FRniX
-         o8Fg==
-X-Gm-Message-State: AOJu0YyBlvNGiW3wSrogAqJb5RdS0AkNjlOGXVr643g7gdfqxAr85hPg
-        BFt5GUicMBI1GrKOawRMYGkduQ==
-X-Google-Smtp-Source: AGHT+IFFXGFh0NfgZqE3NMe9QNS4wdzbEv5zae83ZTBI4ZQYdVHxqFgJ4YNDAOOZU0NJfP7hPBZH7w==
-X-Received: by 2002:a17:90b:3ecb:b0:286:1e90:fe2f with SMTP id rm11-20020a17090b3ecb00b002861e90fe2fmr11007696pjb.15.1701415149380;
-        Thu, 30 Nov 2023 23:19:09 -0800 (PST)
-Received: from google.com (170.102.105.34.bc.googleusercontent.com. [34.105.102.170])
-        by smtp.gmail.com with ESMTPSA id f6-20020a170902684600b001cf5d4f8f26sm669493pln.248.2023.11.30.23.19.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Nov 2023 23:19:08 -0800 (PST)
-Date:   Fri, 1 Dec 2023 07:19:05 +0000
-From:   Carlos Llamas <cmllamas@google.com>
-To:     Alice Ryhl <aliceryhl@google.com>
-Cc:     Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        kernel-team@android.com, linux-kernel@vger.kernel.org,
-        Martijn Coenen <maco@android.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Todd Kjos <tkjos@android.com>
-Subject: Re: [PATCH 16/21] binder: refactor page range allocation
-Message-ID: <ZWmI6QxlDuV-Miyr@google.com>
-References: <20231102185934.773885-17-cmllamas@google.com>
- <20231107090835.260342-1-aliceryhl@google.com>
+        Fri, 1 Dec 2023 02:20:20 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EB04131
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 23:20:27 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id E2FEDC433C8;
+        Fri,  1 Dec 2023 07:20:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701415227;
+        bh=vTjtMuTcR9tfuBLdztPV147PSAy8Z/tak0LnQysHFgI=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=OUWwyHgIEIghw9Jtcz2q8j/1bOM6y+rwwvviuAvrRpK/ambeL8n1hLyfjHGg+D9pf
+         +VT33cGbI6mke+zrXHKW7AxK+qVNQD+9Z9ziMoD9JcRXy1Ihjy0T/ADIVaFULxgHiP
+         fE180DHDC+85OTFFQoSfQEbYJZAsHIW/0MKPxQ/ChP441dzGiZ6OBOxG1WLmSHQsR1
+         l5YMcteVKN7iyZ3V1FmTBfZacMmm28YBRX2jV2gyqGDh3+oHDArEBmszfPpb5D3wFs
+         OaOer0CJ36D5rC3LTeOLQG+ONIt1Sn+iIeD9Fa4r6RiPG7YHPH25lmgy+MRdnq7wOf
+         FaiR96IZ8OXHw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C2E10C64459;
+        Fri,  1 Dec 2023 07:20:26 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231107090835.260342-1-aliceryhl@google.com>
-X-Spam-Status: No, score=-13.8 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next v1 1/1] net/sched: cbs: Use units.h instead of the
+ copy of a definition
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <170141522679.3845.12131849353944729756.git-patchwork-notify@kernel.org>
+Date:   Fri, 01 Dec 2023 07:20:26 +0000
+References: <20231128174813.394462-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20231128174813.394462-1-andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        vinicius.gomes@intel.com, jhs@mojatatu.com,
+        xiyou.wangcong@gmail.com, jiri@resnulli.us, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,FSL_HELO_FAKE,RCVD_IN_DNSWL_BLOCKED,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=no autolearn_force=no
-        version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 07, 2023 at 09:08:35AM +0000, Alice Ryhl wrote:
-> Carlos Llamas <cmllamas@google.com> writes:
-> > Instead of looping through the page range twice to first determine if
-> > the mmap lock is required, simply do it per-page as needed. Split out
-> > all this logic into a separate binder_get_user_page_remote() function.
-> >
-> > Signed-off-by: Carlos Llamas <cmllamas@google.com>
-> 
-> One nit, otherwise looks okay to me.
-> Reviewed-by: Alice Ryhl <aliceryhl@google.com>
-> 
-> Carlos Llamas <cmllamas@google.com> writes:
-> > +		unsigned long index;
-> > -		size_t index;
-> 
-> You're changing the type of index to unsigned long here, but it seems to
-> me that size_t is the correct type.
+Hello:
 
-Perhaps size_t made sense before the addresses were also moved to
-unsigned long. I think this is a better fit now.
+This patch was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
---
-Carlos Llamas
+On Tue, 28 Nov 2023 19:48:13 +0200 you wrote:
+> BYTES_PER_KBIT is defined in units.h, use that definition.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  net/sched/sch_cbs.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+
+Here is the summary with links:
+  - [net-next,v1,1/1] net/sched: cbs: Use units.h instead of the copy of a definition
+    https://git.kernel.org/netdev/net-next/c/000db9e9ad42
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
