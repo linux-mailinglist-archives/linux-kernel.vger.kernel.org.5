@@ -2,52 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A77C800AB4
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 13:18:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FF81800AC0
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 13:19:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378796AbjLAMSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 07:18:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59624 "EHLO
+        id S1378788AbjLAMTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 07:19:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378776AbjLAMSL (ORCPT
+        with ESMTP id S1378792AbjLAMTP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 07:18:11 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 946EF1B4;
-        Fri,  1 Dec 2023 04:18:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=FAas7mu+OH2ZpUNv/i/XfzAOSAkuh02Ju9j9sSGd80U=; b=D57ulvjQDCI++VntFACHyMIkYN
-        yX+n3xXk3VNW5qwCVy2GxdeSSyDeoHDSKQmLy36obgS4Z4RP0VwaBwRzIivwoErbxnj1ZKoZUKfba
-        8/m2FSeUG18nPOUP0MhBPEuctsb2QsBS1V1ZERwH5nphcSq+AMS9x5oEOAhBj3KLSmYR3Z2ecPDDV
-        zMrVqq+F2zo5O0tb8/Fim4fMDpRyXC+NWpNLtDbgq7nPPnwt3dOw1H2WSS6zMhnQ3VLrD9wf+zZXk
-        QXThbq9e41Y/JVkPbiAqMGIffmxuyUtFmpar2J6ydnxWGzpwpQ/zkdngPhg7ngjyFblX9OIT2jogA
-        nTCxCNtw==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1r92TB-002CIy-35;
-        Fri, 01 Dec 2023 12:18:11 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 958A230040C; Fri,  1 Dec 2023 13:18:08 +0100 (CET)
-Date:   Fri, 1 Dec 2023 13:18:08 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-tip-commits@vger.kernel.org, Jann Horn <jannh@google.com>,
-        Ingo Molnar <mingo@kernel.org>, x86@kernel.org
-Subject: Re: [tip: locking/core] locking/mutex: Document that mutex_unlock()
- is non-atomic
-Message-ID: <20231201121808.GL3818@noisy.programming.kicks-ass.net>
-References: <20231130204817.2031407-1-jannh@google.com>
- <170142744948.398.4203675877225809071.tip-bot2@tip-bot2>
+        Fri, 1 Dec 2023 07:19:15 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C902D48;
+        Fri,  1 Dec 2023 04:19:20 -0800 (PST)
+Received: from pendragon.ideasonboard.com (aztw-30-b2-v4wan-166917-cust845.vm26.cable.virginm.net [82.37.23.78])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 0F1E6556;
+        Fri,  1 Dec 2023 13:18:40 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1701433120;
+        bh=4MUNcOQBhQ9lYXfZUQpJ2ICebkBlDtfeSr3V13uLiuA=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=wgpDfuTXlQl1aB/QrNafqAMOG2vNQ5/r0cLspEXbyjKlXWQhadqEHkre9DAomehoY
+         2896x+IepeF31RB3rrkWj0KUBueFqswNcslY3FWcc5Y+xpBBcuNvaEGt68zmLOaEO3
+         5v7/C8SWqAOYwpiVc3SXxBLpILtWYdZYYz8NtgnA=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <170142744948.398.4203675877225809071.tip-bot2@tip-bot2>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1464986273-12039-1-git-send-email-pantelis.antoniou@konsulko.com>
+References: <1464986273-12039-1-git-send-email-pantelis.antoniou@konsulko.com>
+Subject: Re: [RFC 0/3] Portable Device Tree Connector
+From:   Kieran Bingham <kieran.bingham@ideasonboard.com>
+Cc:     Frank Rowand <frowand.list@gmail.com>,
+        Matt Porter <mporter@konsulko.com>,
+        Koen Kooi <koen@dominion.thruhere.net>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Marek Vasut <marex@denx.de>, Wolfram Sang <wsa@the-dreams.de>,
+        Stephen Boyd <stephen.boyd@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-i2c@vger.kernel.org,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Pantelis Antoniou <panto@antoniou-consulting.com>
+To:     Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Rob Herring <robherring2@gmail.com>
+Date:   Fri, 01 Dec 2023 12:19:14 +0000
+Message-ID: <170143315452.2829918.3199477991260309208@ping.linuxembedded.co.uk>
+User-Agent: alot/0.10
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,19 +57,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 01, 2023 at 10:44:09AM -0000, tip-bot2 for Jann Horn wrote:
+Hi Pantelis,
 
-> --- a/Documentation/locking/mutex-design.rst
-> +++ b/Documentation/locking/mutex-design.rst
-> @@ -101,6 +101,12 @@ features that make lock debugging easier and faster:
->      - Detects multi-task circular deadlocks and prints out all affected
->        locks and tasks (and only those tasks).
->  
-> +Releasing a mutex is not an atomic operation: Once a mutex release operation
+Digging out a thread from 2016!
 
-I still object to this confusing usage of atomic. Also all this also
-applies to all sleeping locks, rwsem etc. I don't see why we need to
-special case mutex here.
+Quoting Pantelis Antoniou (2016-06-03 21:37:50)
+> This patchset introduces a portable device tree based connector.
+> It allows definition of a connector in a portable format so that
+> hardware expansion boards that utilize it can use the same
+> DT hardware definitions unchanged for all the boards that
+> have the same kind of connector.
+>=20
+> It completely abstracts away the baseboard implementation details
+> and allows one to describe the expansion board in it's isolated
+> domain without having to figure out the per-board specific
+> hardware configuration.
+>=20
+> The first patchset is the implementation while the next two
+> define a connector for the beaglebone board.
+>=20
+> There was a session at ELC2016 with the slides at
+> http://elinux.org/images/d/d0/Panto.pdf
+>=20
+> This patchset is dependent on the previous two patchset I sent out
+> some time ago.
+>=20
+> "of: dynamic: Changesets helpers & fixes"
+> "gpio: of: Support cascaded GPIO"
 
-Also completion_done() has an explicit lock+unlock on wait.lock to
-deal with this there.
+Did you go anywhere with this since 2016?
+
+As you perhaps saw on the other thread - we're starting to hit an
+explosion of combinatorial arangements of cameras that can be connected
+to and supported on different platforms, thanks in part due to the
+non-standardised but maybe defacto camera standard port cable on RPi (in
+two variations, 15pin with 2 lanes, and 22 pin with 4 data lanes).
+
+I'm wondering how we can build upon or resume this work with DT
+connectors to support expressing camera modules independently from the
+platform they connect to.
+
+The port/connector usually expects an i2c bus, a gpio to enable power
+regulators on the module and perhaps one additional optional gpio, and
+then the clock and data lanes for the MIPI port link.
+
+Any thoughts welcome - and if there was any newer work to build upon or
+resurrect I'd be happy to help test, or find time to start looking at
+how we could build this.
+
+Or of course if there was any reason this work was abandoned (not
+feasible, not acceptable) I'd be keen to hear this before diving in!
+
+Thanks and Regards
+
+Kieran
+
+
+> Pantelis Antoniou (3):
+>   of: Portable Device Tree connector
+>   dts: Beaglebone portable connector definitions
+>   dts: beaglebone: Portable connector BB_RELAY_4PORT definition
+>=20
+>  arch/arm/boot/dts/am335x-bone-common.dtsi | 1678 +++++++++++++++++++++++=
+++++++
+>  drivers/extcon/Kconfig                    |   20 +
+>  drivers/extcon/Makefile                   |    3 +
+>  drivers/extcon/extcon-dt-con-gpio.c       |  337 ++++++
+>  drivers/extcon/extcon-dt-con-proxy.c      |  480 +++++++++
+>  drivers/extcon/extcon-dt-con.c            |  491 +++++++++
+>  drivers/extcon/extcon-dt-con.h            |   93 ++
+>  7 files changed, 3102 insertions(+)
+>  create mode 100644 drivers/extcon/extcon-dt-con-gpio.c
+>  create mode 100644 drivers/extcon/extcon-dt-con-proxy.c
+>  create mode 100644 drivers/extcon/extcon-dt-con.c
+>  create mode 100644 drivers/extcon/extcon-dt-con.h
+>=20
+> --=20
+> 1.7.12
