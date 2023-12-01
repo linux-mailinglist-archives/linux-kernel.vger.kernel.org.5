@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76B018006E7
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 10:28:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 841DF8006E8
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 10:28:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378235AbjLAJ2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 04:28:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54410 "EHLO
+        id S1378078AbjLAJ2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 04:28:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378144AbjLAJ1x (ORCPT
+        with ESMTP id S1378151AbjLAJ1y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 04:27:53 -0500
+        Fri, 1 Dec 2023 04:27:54 -0500
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49A161BC0
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E40561BC6
         for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 01:27:22 -0800 (PST)
 From:   Anna-Maria Behnsen <anna-maria@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1701422840;
+        s=2020; t=1701422841;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=HptRrZ5M792iqw/iN2UweCexRRIRvwfiQKQYLI/3wHc=;
-        b=yTBAHA/pD9Zi3YxjUh/mQPwH80wDQzu4NBOMSc/YlI4oybqc9oa+avtTTMz8Kf+WValTlA
-        dlgISBVCf286D9fbca7mOEhZHUF/fAFl+SrOGDRZtFGcwqMIAvDyHD2cBjo+ebBS1CLvEY
-        BXKYL4sowwjTmrKc4/uWkT8jC/FBfRqYPQGcgHMkXH8GrcgMASx+z1ttb8dMp23D7Ifp86
-        dwNPYPaYfxtbVjvmKlyr213mfH7G4EKdLJTnLXs1a3ogr5IK4ts3I8LmE4F7Oh8nBih1j6
-        8/itFyFnOyam5q9D2UY7ueoJkVx4/vtYSK3ZE08jUy2PONXP1WmfA9cIoISLVw==
+        bh=j1C4FMe7pCnDmgmGqNMXsgIVbPWX+pQUl8aT2cvTpxE=;
+        b=F20CyeVDuw7jm58dTRpNRqAbUkr6ff/ZKa8JWcMJjS1xEGOEeyHQaEWSIyjb9dtKsJPOl7
+        J51VieHtILw3lrPjVx/SxFIrkBv3xVrmzu018wirkiPPuCMkentQlQjSk0LX9NJeQXsS2a
+        wiXf9rUilA3GKSDN/as4IYPlBFlBhTLb1VnnECsJcr8VK398l1Si0a67e1JFxOfsB7gxRw
+        HGSINAF+Bw0YFNzOQTmLcxncwk05bTQmawg21ZZ8DFGSw+gUqURM0GR5+jlOxTabKjFv1s
+        mMLPgavKnCIkKjeowAwjCsW9Xe46YZ1AfAWpO/dpgDEj8y0jJyegvsvCsPTEgw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1701422840;
+        s=2020e; t=1701422841;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=HptRrZ5M792iqw/iN2UweCexRRIRvwfiQKQYLI/3wHc=;
-        b=L5L6rigwBQq2b2USGQ9rEjf9ZzpKMx4OAE8/3HInusvYXAisr+mmjXdoDjX4CVFp3WP+ma
-        yfayh02N64lbiAAw==
+        bh=j1C4FMe7pCnDmgmGqNMXsgIVbPWX+pQUl8aT2cvTpxE=;
+        b=zimkCzW5Hc5BNNqsTiWhrRNjS1Qz+YQP0rnArDywmOir6z0bmDO27jgmpr+TsxqqusG/PV
+        rfRDRQ7UyL85FzDg==
 To:     linux-kernel@vger.kernel.org
 Cc:     Peter Zijlstra <peterz@infradead.org>,
         John Stultz <jstultz@google.com>,
@@ -55,9 +55,9 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
         K Prateek Nayak <kprateek.nayak@amd.com>,
         Anna-Maria Behnsen <anna-maria@linutronix.de>
-Subject: [PATCH v9 20/32] timers: Ease code in run_local_timers()
-Date:   Fri,  1 Dec 2023 10:26:42 +0100
-Message-Id: <20231201092654.34614-21-anna-maria@linutronix.de>
+Subject: [PATCH v9 21/32] timers: Split next timer interrupt logic
+Date:   Fri,  1 Dec 2023 10:26:43 +0100
+Message-Id: <20231201092654.34614-22-anna-maria@linutronix.de>
 In-Reply-To: <20231201092654.34614-1-anna-maria@linutronix.de>
 References: <20231201092654.34614-1-anna-maria@linutronix.de>
 MIME-Version: 1.0
@@ -72,48 +72,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The logic for raising a softirq the way it is implemented right now, is
-readable for two timer bases. When increasing numbers of timer bases, code
-gets harder to read. With the introduction of the timer migration
-hierarchy, there will be three timer bases.
+Logic for getting next timer interrupt (no matter of recalculated or
+already stored in base->next_expiry) is split into a separate function
+"next_timer_interrupt()" to make it available for new call sites.
 
-Therefore ease the code. No functional change.
+No functional change.
 
 Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
-Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 ---
-v5: New patch to decrease patch size of follow up patches
+v9: Adapt to the fix for empty timer bases.
 ---
- kernel/time/timer.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+ kernel/time/timer.c | 32 +++++++++++++++++++-------------
+ 1 file changed, 19 insertions(+), 13 deletions(-)
 
 diff --git a/kernel/time/timer.c b/kernel/time/timer.c
-index ea94479ee7e2..b14d84f1fe50 100644
+index b14d84f1fe50..eda4972ca862 100644
 --- a/kernel/time/timer.c
 +++ b/kernel/time/timer.c
-@@ -2132,16 +2132,14 @@ static void run_local_timers(void)
- 	struct timer_base *base = this_cpu_ptr(&timer_bases[BASE_STD]);
- 
- 	hrtimer_run_queues();
--	/* Raise the softirq only if required. */
--	if (time_before(jiffies, base->next_expiry)) {
--		if (!IS_ENABLED(CONFIG_NO_HZ_COMMON))
--			return;
--		/* CPU is awake, so check the deferrable base. */
--		base++;
--		if (time_before(jiffies, base->next_expiry))
-+
-+	for (int i = 0; i < NR_BASES; i++, base++) {
-+		/* Raise the softirq only if required. */
-+		if (time_after_eq(jiffies, base->next_expiry)) {
-+			raise_softirq(TIMER_SOFTIRQ);
- 			return;
-+		}
- 	}
--	raise_softirq(TIMER_SOFTIRQ);
+@@ -1951,12 +1951,29 @@ static u64 cmp_next_hrtimer_event(u64 basem, u64 expires)
+ 	return DIV_ROUND_UP_ULL(nextevt, TICK_NSEC) * TICK_NSEC;
  }
  
- /*
++static unsigned long next_timer_interrupt(struct timer_base *base,
++					  unsigned long basej)
++{
++	if (base->next_expiry_recalc)
++		next_expiry_recalc(base);
++
++	/*
++	 * Move next_expiry for the empty base into the future to prevent a
++	 * unnecessary raise of the timer softirq when the next_expiry value
++	 * will be reached even if there is no timer pending.
++	 */
++	if (!base->timers_pending)
++		base->next_expiry = basej + NEXT_TIMER_MAX_DELTA;
++
++	return base->next_expiry;
++}
++
+ static inline u64 __get_next_timer_interrupt(unsigned long basej, u64 basem,
+ 					     bool *idle)
+ {
+ 	struct timer_base *base = this_cpu_ptr(&timer_bases[BASE_STD]);
+-	unsigned long nextevt = basej + NEXT_TIMER_MAX_DELTA;
+ 	u64 expires = KTIME_MAX;
++	unsigned long nextevt;
+ 
+ 	/*
+ 	 * Pretend that there is no timer pending if the cpu is offline.
+@@ -1969,24 +1986,13 @@ static inline u64 __get_next_timer_interrupt(unsigned long basej, u64 basem,
+ 	}
+ 
+ 	raw_spin_lock(&base->lock);
+-	if (base->next_expiry_recalc)
+-		next_expiry_recalc(base);
++	nextevt = next_timer_interrupt(base, basej);
+ 
+ 	if (base->timers_pending) {
+-		nextevt = base->next_expiry;
+-
+ 		/* If we missed a tick already, force 0 delta */
+ 		if (time_before(nextevt, basej))
+ 			nextevt = basej;
+ 		expires = basem + (u64)(nextevt - basej) * TICK_NSEC;
+-	} else {
+-		/*
+-		 * Move next_expiry for the empty base into the future to
+-		 * prevent a unnecessary raise of the timer softirq when the
+-		 * next_expiry value will be reached even if there is no timer
+-		 * pending.
+-		 */
+-		base->next_expiry = nextevt;
+ 	}
+ 
+ 	/*
 -- 
 2.39.2
 
