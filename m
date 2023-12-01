@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2AD0800315
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 06:39:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CEE3800316
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 06:39:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377496AbjLAFjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 00:39:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34264 "EHLO
+        id S1377506AbjLAFjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 00:39:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377474AbjLAFjW (ORCPT
+        with ESMTP id S1377518AbjLAFjd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 00:39:22 -0500
+        Fri, 1 Dec 2023 00:39:33 -0500
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E5719F2;
-        Thu, 30 Nov 2023 21:39:27 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5DAD91729;
+        Thu, 30 Nov 2023 21:39:34 -0800 (PST)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3CB36143D;
-        Thu, 30 Nov 2023 21:40:14 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AB95C1042;
+        Thu, 30 Nov 2023 21:40:20 -0800 (PST)
 Received: from a077893.blr.arm.com (a077893.blr.arm.com [10.162.41.8])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id DA3413F73F;
-        Thu, 30 Nov 2023 21:39:22 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 4E6F93F73F;
+        Thu, 30 Nov 2023 21:39:28 -0800 (PST)
 From:   Anshuman Khandual <anshuman.khandual@arm.com>
 To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         will@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com
@@ -32,10 +32,12 @@ Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
         Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
         Arnaldo Carvalho de Melo <acme@kernel.org>,
-        linux-perf-users@vger.kernel.org
-Subject: [PATCH V15 1/8] arm64/sysreg: Add BRBE registers and fields
-Date:   Fri,  1 Dec 2023 11:08:59 +0530
-Message-Id: <20231201053906.1261704-2-anshuman.khandual@arm.com>
+        linux-perf-users@vger.kernel.org,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>, kvmarm@lists.linux.dev
+Subject: [PATCH V15 2/8] KVM: arm64: Prevent guest accesses into BRBE system registers/instructions
+Date:   Fri,  1 Dec 2023 11:09:00 +0530
+Message-Id: <20231201053906.1261704-3-anshuman.khandual@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20231201053906.1261704-1-anshuman.khandual@arm.com>
 References: <20231201053906.1261704-1-anshuman.khandual@arm.com>
@@ -50,330 +52,180 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds BRBE related register definitions and various other related field
-macros there in. These will be used subsequently in a BRBE driver, which is
-being added later on.
+Currently BRBE feature is not supported in a guest environment. This hides
+BRBE feature availability via masking ID_AA64DFR0_EL1.BRBE field. This also
+blocks guest accesses into BRBE system registers and instructions as if the
+underlying hardware never implemented FEAT_BRBE feature.
 
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: Oliver Upton <oliver.upton@linux.dev>
+Cc: James Morse <james.morse@arm.com>
+Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
 Cc: Catalin Marinas <catalin.marinas@arm.com>
 Cc: Will Deacon <will@kernel.org>
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: kvmarm@lists.linux.dev
 Cc: linux-arm-kernel@lists.infradead.org
 Cc: linux-kernel@vger.kernel.org
 Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
- arch/arm64/include/asm/sysreg.h | 109 ++++++++++++++++++++
- arch/arm64/tools/sysreg         | 170 ++++++++++++++++++++++++++++++++
- 2 files changed, 279 insertions(+)
+ arch/arm64/kvm/sys_regs.c | 130 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 130 insertions(+)
 
-diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
-index 92dfb41af018..8d0913df5176 100644
---- a/arch/arm64/include/asm/sysreg.h
-+++ b/arch/arm64/include/asm/sysreg.h
-@@ -272,6 +272,109 @@
+diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
+index 4735e1b37fb3..42701065b3cd 100644
+--- a/arch/arm64/kvm/sys_regs.c
++++ b/arch/arm64/kvm/sys_regs.c
+@@ -1583,6 +1583,9 @@ static u64 read_sanitised_id_aa64dfr0_el1(struct kvm_vcpu *vcpu,
+ 	/* Hide SPE from guests */
+ 	val &= ~ID_AA64DFR0_EL1_PMSVer_MASK;
  
- #define SYS_BRBCR_EL2			sys_reg(2, 4, 9, 0, 0)
++	/* Hide BRBE from guests */
++	val &= ~ID_AA64DFR0_EL1_BRBE_MASK;
++
+ 	return val;
+ }
  
-+#define __SYS_BRBINF(n)			sys_reg(2, 1, 8, ((n) & 0xf), ((((n) & 0x10) >> 2) + 0))
-+#define __SYS_BRBSRC(n)			sys_reg(2, 1, 8, ((n) & 0xf), ((((n) & 0x10) >> 2) + 1))
-+#define __SYS_BRBTGT(n)			sys_reg(2, 1, 8, ((n) & 0xf), ((((n) & 0x10) >> 2) + 2))
-+
-+#define SYS_BRBINF0_EL1			__SYS_BRBINF(0)
-+#define SYS_BRBINF1_EL1			__SYS_BRBINF(1)
-+#define SYS_BRBINF2_EL1			__SYS_BRBINF(2)
-+#define SYS_BRBINF3_EL1			__SYS_BRBINF(3)
-+#define SYS_BRBINF4_EL1			__SYS_BRBINF(4)
-+#define SYS_BRBINF5_EL1			__SYS_BRBINF(5)
-+#define SYS_BRBINF6_EL1			__SYS_BRBINF(6)
-+#define SYS_BRBINF7_EL1			__SYS_BRBINF(7)
-+#define SYS_BRBINF8_EL1			__SYS_BRBINF(8)
-+#define SYS_BRBINF9_EL1			__SYS_BRBINF(9)
-+#define SYS_BRBINF10_EL1		__SYS_BRBINF(10)
-+#define SYS_BRBINF11_EL1		__SYS_BRBINF(11)
-+#define SYS_BRBINF12_EL1		__SYS_BRBINF(12)
-+#define SYS_BRBINF13_EL1		__SYS_BRBINF(13)
-+#define SYS_BRBINF14_EL1		__SYS_BRBINF(14)
-+#define SYS_BRBINF15_EL1		__SYS_BRBINF(15)
-+#define SYS_BRBINF16_EL1		__SYS_BRBINF(16)
-+#define SYS_BRBINF17_EL1		__SYS_BRBINF(17)
-+#define SYS_BRBINF18_EL1		__SYS_BRBINF(18)
-+#define SYS_BRBINF19_EL1		__SYS_BRBINF(19)
-+#define SYS_BRBINF20_EL1		__SYS_BRBINF(20)
-+#define SYS_BRBINF21_EL1		__SYS_BRBINF(21)
-+#define SYS_BRBINF22_EL1		__SYS_BRBINF(22)
-+#define SYS_BRBINF23_EL1		__SYS_BRBINF(23)
-+#define SYS_BRBINF24_EL1		__SYS_BRBINF(24)
-+#define SYS_BRBINF25_EL1		__SYS_BRBINF(25)
-+#define SYS_BRBINF26_EL1		__SYS_BRBINF(26)
-+#define SYS_BRBINF27_EL1		__SYS_BRBINF(27)
-+#define SYS_BRBINF28_EL1		__SYS_BRBINF(28)
-+#define SYS_BRBINF29_EL1		__SYS_BRBINF(29)
-+#define SYS_BRBINF30_EL1		__SYS_BRBINF(30)
-+#define SYS_BRBINF31_EL1		__SYS_BRBINF(31)
-+
-+#define SYS_BRBSRC0_EL1			__SYS_BRBSRC(0)
-+#define SYS_BRBSRC1_EL1			__SYS_BRBSRC(1)
-+#define SYS_BRBSRC2_EL1			__SYS_BRBSRC(2)
-+#define SYS_BRBSRC3_EL1			__SYS_BRBSRC(3)
-+#define SYS_BRBSRC4_EL1			__SYS_BRBSRC(4)
-+#define SYS_BRBSRC5_EL1			__SYS_BRBSRC(5)
-+#define SYS_BRBSRC6_EL1			__SYS_BRBSRC(6)
-+#define SYS_BRBSRC7_EL1			__SYS_BRBSRC(7)
-+#define SYS_BRBSRC8_EL1			__SYS_BRBSRC(8)
-+#define SYS_BRBSRC9_EL1			__SYS_BRBSRC(9)
-+#define SYS_BRBSRC10_EL1		__SYS_BRBSRC(10)
-+#define SYS_BRBSRC11_EL1		__SYS_BRBSRC(11)
-+#define SYS_BRBSRC12_EL1		__SYS_BRBSRC(12)
-+#define SYS_BRBSRC13_EL1		__SYS_BRBSRC(13)
-+#define SYS_BRBSRC14_EL1		__SYS_BRBSRC(14)
-+#define SYS_BRBSRC15_EL1		__SYS_BRBSRC(15)
-+#define SYS_BRBSRC16_EL1		__SYS_BRBSRC(16)
-+#define SYS_BRBSRC17_EL1		__SYS_BRBSRC(17)
-+#define SYS_BRBSRC18_EL1		__SYS_BRBSRC(18)
-+#define SYS_BRBSRC19_EL1		__SYS_BRBSRC(19)
-+#define SYS_BRBSRC20_EL1		__SYS_BRBSRC(20)
-+#define SYS_BRBSRC21_EL1		__SYS_BRBSRC(21)
-+#define SYS_BRBSRC22_EL1		__SYS_BRBSRC(22)
-+#define SYS_BRBSRC23_EL1		__SYS_BRBSRC(23)
-+#define SYS_BRBSRC24_EL1		__SYS_BRBSRC(24)
-+#define SYS_BRBSRC25_EL1		__SYS_BRBSRC(25)
-+#define SYS_BRBSRC26_EL1		__SYS_BRBSRC(26)
-+#define SYS_BRBSRC27_EL1		__SYS_BRBSRC(27)
-+#define SYS_BRBSRC28_EL1		__SYS_BRBSRC(28)
-+#define SYS_BRBSRC29_EL1		__SYS_BRBSRC(29)
-+#define SYS_BRBSRC30_EL1		__SYS_BRBSRC(30)
-+#define SYS_BRBSRC31_EL1		__SYS_BRBSRC(31)
-+
-+#define SYS_BRBTGT0_EL1			__SYS_BRBTGT(0)
-+#define SYS_BRBTGT1_EL1			__SYS_BRBTGT(1)
-+#define SYS_BRBTGT2_EL1			__SYS_BRBTGT(2)
-+#define SYS_BRBTGT3_EL1			__SYS_BRBTGT(3)
-+#define SYS_BRBTGT4_EL1			__SYS_BRBTGT(4)
-+#define SYS_BRBTGT5_EL1			__SYS_BRBTGT(5)
-+#define SYS_BRBTGT6_EL1			__SYS_BRBTGT(6)
-+#define SYS_BRBTGT7_EL1			__SYS_BRBTGT(7)
-+#define SYS_BRBTGT8_EL1			__SYS_BRBTGT(8)
-+#define SYS_BRBTGT9_EL1			__SYS_BRBTGT(9)
-+#define SYS_BRBTGT10_EL1		__SYS_BRBTGT(10)
-+#define SYS_BRBTGT11_EL1		__SYS_BRBTGT(11)
-+#define SYS_BRBTGT12_EL1		__SYS_BRBTGT(12)
-+#define SYS_BRBTGT13_EL1		__SYS_BRBTGT(13)
-+#define SYS_BRBTGT14_EL1		__SYS_BRBTGT(14)
-+#define SYS_BRBTGT15_EL1		__SYS_BRBTGT(15)
-+#define SYS_BRBTGT16_EL1		__SYS_BRBTGT(16)
-+#define SYS_BRBTGT17_EL1		__SYS_BRBTGT(17)
-+#define SYS_BRBTGT18_EL1		__SYS_BRBTGT(18)
-+#define SYS_BRBTGT19_EL1		__SYS_BRBTGT(19)
-+#define SYS_BRBTGT20_EL1		__SYS_BRBTGT(20)
-+#define SYS_BRBTGT21_EL1		__SYS_BRBTGT(21)
-+#define SYS_BRBTGT22_EL1		__SYS_BRBTGT(22)
-+#define SYS_BRBTGT23_EL1		__SYS_BRBTGT(23)
-+#define SYS_BRBTGT24_EL1		__SYS_BRBTGT(24)
-+#define SYS_BRBTGT25_EL1		__SYS_BRBTGT(25)
-+#define SYS_BRBTGT26_EL1		__SYS_BRBTGT(26)
-+#define SYS_BRBTGT27_EL1		__SYS_BRBTGT(27)
-+#define SYS_BRBTGT28_EL1		__SYS_BRBTGT(28)
-+#define SYS_BRBTGT29_EL1		__SYS_BRBTGT(29)
-+#define SYS_BRBTGT30_EL1		__SYS_BRBTGT(30)
-+#define SYS_BRBTGT31_EL1		__SYS_BRBTGT(31)
-+
- #define SYS_MIDR_EL1			sys_reg(3, 0, 0, 0, 0)
- #define SYS_MPIDR_EL1			sys_reg(3, 0, 0, 0, 5)
- #define SYS_REVIDR_EL1			sys_reg(3, 0, 0, 0, 6)
-@@ -784,6 +887,12 @@
- #define OP_DVP_RCTX			sys_insn(1, 3, 7, 3, 5)
- #define OP_CPP_RCTX			sys_insn(1, 3, 7, 3, 7)
+@@ -2042,6 +2045,8 @@ static const struct sys_reg_desc sys_reg_descs[] = {
+ 	{ SYS_DESC(SYS_DC_CISW), access_dcsw },
+ 	{ SYS_DESC(SYS_DC_CIGSW), access_dcgsw },
+ 	{ SYS_DESC(SYS_DC_CIGDSW), access_dcgsw },
++	{ SYS_DESC(OP_BRB_IALL), undef_access },
++	{ SYS_DESC(OP_BRB_INJ), undef_access },
  
-+/*
-+ * BRBE Instructions
-+ */
-+#define BRB_IALL_INSN	__emit_inst(0xd5000000 | OP_BRB_IALL | (0x1f))
-+#define BRB_INJ_INSN	__emit_inst(0xd5000000 | OP_BRB_INJ  | (0x1f))
-+
- /* Common SCTLR_ELx flags. */
- #define SCTLR_ELx_ENTP2	(BIT(60))
- #define SCTLR_ELx_DSSBS	(BIT(44))
-diff --git a/arch/arm64/tools/sysreg b/arch/arm64/tools/sysreg
-index 8fe23eac910f..101801fb19f1 100644
---- a/arch/arm64/tools/sysreg
-+++ b/arch/arm64/tools/sysreg
-@@ -1002,6 +1002,176 @@ UnsignedEnum	3:0	BT
- EndEnum
- EndSysreg
+ 	DBG_BCR_BVR_WCR_WVR_EL1(0),
+ 	DBG_BCR_BVR_WCR_WVR_EL1(1),
+@@ -2072,6 +2077,131 @@ static const struct sys_reg_desc sys_reg_descs[] = {
+ 	{ SYS_DESC(SYS_DBGCLAIMCLR_EL1), trap_raz_wi },
+ 	{ SYS_DESC(SYS_DBGAUTHSTATUS_EL1), trap_dbgauthstatus_el1 },
  
++	/*
++	 * BRBE branch record sysreg address space is interleaved between
++	 * corresponding BRBINF<N>_EL1, BRBSRC<N>_EL1, and BRBTGT<N>_EL1.
++	 */
++	{ SYS_DESC(SYS_BRBINF0_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBSRC0_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBTGT0_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBINF16_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBSRC16_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBTGT16_EL1), undef_access },
 +
-+SysregFields BRBINFx_EL1
-+Res0	63:47
-+Field	46	CCU
-+Field	45:32	CC
-+Res0	31:18
-+Field	17	LASTFAILED
-+Field	16	T
-+Res0	15:14
-+Enum	13:8		TYPE
-+	0b000000	UNCOND_DIRECT
-+	0b000001	INDIRECT
-+	0b000010	DIRECT_LINK
-+	0b000011	INDIRECT_LINK
-+	0b000101	RET
-+	0b000111	ERET
-+	0b001000	COND_DIRECT
-+	0b100001	DEBUG_HALT
-+	0b100010	CALL
-+	0b100011	TRAP
-+	0b100100	SERROR
-+	0b100110	INSN_DEBUG
-+	0b100111	DATA_DEBUG
-+	0b101010	ALIGN_FAULT
-+	0b101011	INSN_FAULT
-+	0b101100	DATA_FAULT
-+	0b101110	IRQ
-+	0b101111	FIQ
-+	0b111001	DEBUG_EXIT
-+EndEnum
-+Enum	7:6	EL
-+	0b00	EL0
-+	0b01	EL1
-+	0b10	EL2
-+	0b11	EL3
-+EndEnum
-+Field	5	MPRED
-+Res0	4:2
-+Enum	1:0	VALID
-+	0b00	NONE
-+	0b01	TARGET
-+	0b10	SOURCE
-+	0b11	FULL
-+EndEnum
-+EndSysregFields
++	{ SYS_DESC(SYS_BRBINF1_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBSRC1_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBTGT1_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBINF17_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBSRC17_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBTGT17_EL1), undef_access },
 +
-+SysregFields	BRBCR_ELx
-+Res0	63:24
-+Field	23 	EXCEPTION
-+Field	22 	ERTN
-+Res0	21:9
-+Field	8 	FZP
-+Res0	7
-+Enum	6:5	TS
-+	0b01	VIRTUAL
-+	0b10	GUEST_PHYSICAL
-+	0b11	PHYSICAL
-+EndEnum
-+Field	4	MPRED
-+Field	3	CC
-+Res0	2
-+Field	1	ExBRE
-+Field	0	E0BRE
-+EndSysregFields
++	{ SYS_DESC(SYS_BRBINF2_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBSRC2_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBTGT2_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBINF18_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBSRC18_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBTGT18_EL1), undef_access },
 +
-+Sysreg	BRBCR_EL2	2	4	9	0	0
-+Fields	BRBCR_ELx
-+EndSysreg
++	{ SYS_DESC(SYS_BRBINF3_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBSRC3_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBTGT3_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBINF19_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBSRC19_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBTGT19_EL1), undef_access },
 +
-+Sysreg	BRBCR_EL1	2	1	9	0	0
-+Fields	BRBCR_ELx
-+EndSysreg
++	{ SYS_DESC(SYS_BRBINF4_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBSRC4_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBTGT4_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBINF20_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBSRC20_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBTGT20_EL1), undef_access },
 +
-+Sysreg	BRBCR_EL12	2	5	9	0	0
-+Fields	BRBCR_ELx
-+EndSysreg
++	{ SYS_DESC(SYS_BRBINF5_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBSRC5_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBTGT5_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBINF21_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBSRC21_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBTGT21_EL1), undef_access },
 +
-+Sysreg	BRBFCR_EL1	2	1	9	0	1
-+Res0	63:30
-+Enum	29:28	BANK
-+	0b0	FIRST
-+	0b1	SECOND
-+EndEnum
-+Res0	27:23
-+Field	22	CONDDIR
-+Field	21	DIRCALL
-+Field	20	INDCALL
-+Field	19	RTN
-+Field	18	INDIRECT
-+Field	17	DIRECT
-+Field	16	EnI
-+Res0	15:8
-+Field	7	PAUSED
-+Field	6	LASTFAILED
-+Res0	5:0
-+EndSysreg
++	{ SYS_DESC(SYS_BRBINF6_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBSRC6_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBTGT6_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBINF22_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBSRC22_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBTGT22_EL1), undef_access },
 +
-+Sysreg	BRBTS_EL1	2	1	9	0	2
-+Field	63:0	TS
-+EndSysreg
++	{ SYS_DESC(SYS_BRBINF7_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBSRC7_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBTGT7_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBINF23_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBSRC23_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBTGT23_EL1), undef_access },
 +
-+Sysreg	BRBINFINJ_EL1	2	1	9	1	0
-+Res0	63:47
-+Field	46	CCU
-+Field	45:32	CC
-+Res0	31:18
-+Field	17	LASTFAILED
-+Field	16	T
-+Res0	15:14
-+Enum	13:8		TYPE
-+	0b000000	UNCOND_DIRECT
-+	0b000001	INDIRECT
-+	0b000010	DIRECT_LINK
-+	0b000011	INDIRECT_LINK
-+	0b000101	RET
-+	0b000111	ERET
-+	0b001000	COND_DIRECT
-+	0b100001	DEBUG_HALT
-+	0b100010	CALL
-+	0b100011	TRAP
-+	0b100100	SERROR
-+	0b100110	INSN_DEBUG
-+	0b100111	DATA_DEBUG
-+	0b101010	ALIGN_FAULT
-+	0b101011	INSN_FAULT
-+	0b101100	DATA_FAULT
-+	0b101110	IRQ
-+	0b101111	FIQ
-+	0b111001	DEBUG_EXIT
-+EndEnum
-+Enum	7:6	EL
-+	0b00	EL0
-+	0b01	EL1
-+	0b10	EL2
-+	0b11	EL3
-+EndEnum
-+Field	5	MPRED
-+Res0	4:2
-+Enum	1:0	VALID
-+	0b00	NONE
-+	0b01	TARGET
-+	0b10	SOURCE
-+	0b11	FULL
-+EndEnum
-+EndSysreg
++	{ SYS_DESC(SYS_BRBINF8_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBSRC8_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBTGT8_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBINF24_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBSRC24_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBTGT24_EL1), undef_access },
 +
-+Sysreg	BRBSRCINJ_EL1	2	1	9	1	1
-+Field	63:0 ADDRESS
-+EndSysreg
++	{ SYS_DESC(SYS_BRBINF9_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBSRC9_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBTGT9_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBINF25_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBSRC25_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBTGT25_EL1), undef_access },
 +
-+Sysreg	BRBTGTINJ_EL1	2	1	9	1	2
-+Field	63:0 ADDRESS
-+EndSysreg
++	{ SYS_DESC(SYS_BRBINF10_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBSRC10_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBTGT10_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBINF26_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBSRC26_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBTGT26_EL1), undef_access },
 +
-+Sysreg	BRBIDR0_EL1	2	1	9	2	0
-+Res0	63:16
-+Enum	15:12	CC
-+	0b101	20_BIT
-+EndEnum
-+Enum	11:8	FORMAT
-+	0b0	0
-+EndEnum
-+Enum	7:0		NUMREC
-+	0b0001000	8
-+	0b0010000	16
-+	0b0100000	32
-+	0b1000000	64
-+EndEnum
-+EndSysreg
++	{ SYS_DESC(SYS_BRBINF11_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBSRC11_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBTGT11_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBINF27_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBSRC27_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBTGT27_EL1), undef_access },
 +
- Sysreg	ID_AA64ZFR0_EL1	3	0	0	4	4
- Res0	63:60
- UnsignedEnum	59:56	F64MM
++	{ SYS_DESC(SYS_BRBINF12_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBSRC12_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBTGT12_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBINF28_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBSRC28_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBTGT28_EL1), undef_access },
++
++	{ SYS_DESC(SYS_BRBINF13_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBSRC13_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBTGT13_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBINF29_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBSRC29_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBTGT29_EL1), undef_access },
++
++	{ SYS_DESC(SYS_BRBINF14_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBSRC14_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBTGT14_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBINF30_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBSRC30_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBTGT30_EL1), undef_access },
++
++	{ SYS_DESC(SYS_BRBINF15_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBSRC15_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBTGT15_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBINF31_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBSRC31_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBTGT31_EL1), undef_access },
++
++	/* Remaining BRBE sysreg addresses space */
++	{ SYS_DESC(SYS_BRBCR_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBFCR_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBTS_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBINFINJ_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBSRCINJ_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBTGTINJ_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBIDR0_EL1), undef_access },
++
+ 	{ SYS_DESC(SYS_MDCCSR_EL0), trap_raz_wi },
+ 	{ SYS_DESC(SYS_DBGDTR_EL0), trap_raz_wi },
+ 	// DBGDTR[TR]X_EL0 share the same encoding
 -- 
 2.25.1
 
