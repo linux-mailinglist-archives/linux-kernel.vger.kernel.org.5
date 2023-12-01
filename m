@@ -2,55 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B82A6801103
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:21:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7098801134
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 18:21:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378544AbjLAQ65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 11:58:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35192 "EHLO
+        id S1378610AbjLAQ7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 11:59:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbjLAQ64 (ORCPT
+        with ESMTP id S229888AbjLAQ7B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 11:58:56 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28555C1
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 08:59:03 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3BC7C433C9;
-        Fri,  1 Dec 2023 16:58:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701449942;
-        bh=ySU1Do4RoJYFQTmBppKfMwL1Zs9QJ8j0N4J7GgsQg9A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=S16GIxoMRd4elQiyuXo8z2fG6ZF6RPsXHnh/XMUeZmtFYmLAW06VSOwXYTkMifDbx
-         fOvjwqokKn4G/HI9ygdQjVbvlljIH6+Z5DeWBhpqJ7Ugplw0po37kAT6Y2l5/Osv9N
-         jdsPF8mTqtd5Uy6yFU66y+dOQKGQxAeaQ4rUhrpOMh6wD/M6w+qiv1Q0bRHVuZ7seF
-         QZLIiv/fZRavvt0T7bLIuWXAnQi6nb2wi4HEL7z/hnVCy6Qrs3W4E6RvWav0NHYSta
-         v+V0OlZweKRyXTkSdguQRy+/qCMV2oFzBaAGntoLQ8eMluGwZ+Kdc2/LRlO9rmljXw
-         OmDzevbcsXuWw==
-Date:   Fri, 1 Dec 2023 16:58:55 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        will@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com,
-        James Clark <james.clark@arm.com>,
-        Rob Herring <robh@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Suzuki Poulose <suzuki.poulose@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH V15 1/8] arm64/sysreg: Add BRBE registers and fields
-Message-ID: <fd278f4e-0632-4474-8609-7711ad725f85@sirena.org.uk>
-References: <20231201053906.1261704-1-anshuman.khandual@arm.com>
- <20231201053906.1261704-2-anshuman.khandual@arm.com>
+        Fri, 1 Dec 2023 11:59:01 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE1829A
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 08:59:05 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id CB7481FD7F;
+        Fri,  1 Dec 2023 16:59:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1701449943; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8lC7vlGIZCDtxYgghp69uMiLgN5wT33v6vp9VGEip7M=;
+        b=iCLzZBGeHwTaopLyzeZXrnzlZRLhRgwoMlJ3TstRPb7jsrLGdVJjjx68Ls6C/+sF1usJbe
+        qJTiD2w/AwtWxrIixZGsUj4HmgByLfRDPasE04Barcf4uZC17nqzLSk+it6ZebwH8hvwWH
+        wU6jKOVF56YSfkqLowsXrT+Zn6APurw=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A7DDB1379A;
+        Fri,  1 Dec 2023 16:59:03 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+        by imap1.dmz-prg2.suse.org with ESMTPSA
+        id /FoDJtcQamUlZAAAD6G6ig
+        (envelope-from <mhocko@suse.com>); Fri, 01 Dec 2023 16:59:03 +0000
+Date:   Fri, 1 Dec 2023 17:59:02 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Philipp Rudo <prudo@redhat.com>
+Cc:     Baoquan He <bhe@redhat.com>, Donald Dutile <ddutile@redhat.com>,
+        Jiri Bohac <jbohac@suse.cz>, Pingfan Liu <piliu@redhat.com>,
+        Tao Liu <ltao@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
+        Dave Young <dyoung@redhat.com>, kexec@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/4] kdump: crashkernel reservation from CMA
+Message-ID: <ZWoQ1k2AikSiMjys@tiehlicka>
+References: <ZWbyDx3TJ7zo3jCw@MiWiFi-R3L-srv>
+ <91a31ce5-63d1-7470-18f7-92b039fda8e6@redhat.com>
+ <ZWf64BowWrYqA2Rf@MiWiFi-R3L-srv>
+ <ZWhg_b3O6piZtkQ-@tiehlicka>
+ <ZWh6ax8YmkhxAzIf@MiWiFi-R3L-srv>
+ <ZWiAsJlLookvCI+h@MiWiFi-R3L-srv>
+ <ZWiQ-II9CvGv8EWK@tiehlicka>
+ <20231201123353.2b3db7fa@rotkaeppchen>
+ <ZWnJyArAmFo_uYPA@tiehlicka>
+ <20231201165113.43211a48@rotkaeppchen>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="JISdTfvGKwhKa25v"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231201053906.1261704-2-anshuman.khandual@arm.com>
-X-Cookie: The early worm gets the late bird.
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+In-Reply-To: <20231201165113.43211a48@rotkaeppchen>
+Authentication-Results: smtp-out2.suse.de;
+        none
+X-Spam-Level: 
+X-Spamd-Result: default: False [-0.60 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         NEURAL_SPAM_SHORT(3.00)[1.000];
+         MIME_GOOD(-0.10)[text/plain];
+         NEURAL_HAM_LONG(-1.00)[-0.996];
+         RCVD_COUNT_THREE(0.00)[3];
+         DKIM_SIGNED(0.00)[suse.com:s=susede1];
+         RCPT_COUNT_SEVEN(0.00)[10];
+         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         MID_RHS_NOT_FQDN(0.50)[];
+         RCVD_TLS_ALL(0.00)[];
+         BAYES_HAM(-3.00)[100.00%]
+X-Spam-Score: -0.60
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -59,90 +96,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri 01-12-23 16:51:13, Philipp Rudo wrote:
+> On Fri, 1 Dec 2023 12:55:52 +0100
+> Michal Hocko <mhocko@suse.com> wrote:
+> 
+> > On Fri 01-12-23 12:33:53, Philipp Rudo wrote:
+> > [...]
+> > > And yes, those are all what-if concerns but unfortunately that is all
+> > > we have right now.  
+> > 
+> > Should theoretical concerns without an actual evidence (e.g. multiple
+> > drivers known to be broken) become a roadblock for this otherwise useful
+> > feature? 
+> 
+> Those concerns aren't just theoretical. They are experiences we have
+> from a related feature that suffers exactly the same problem regularly
+> which wouldn't exist if everybody would simply work "properly".
 
---JISdTfvGKwhKa25v
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+What is the related feature?
+ 
+> And yes, even purely theoretical concerns can become a roadblock for a
+> feature when the cost of those theoretical concerns exceed the benefit
+> of the feature. The thing is that bugs will be reported against kexec.
+> So _we_ need to figure out which of the shitty drivers caused the
+> problem. That puts additional burden on _us_. What we are trying to
+> evaluate at the moment is if the benefit outweighs the extra burden
+> with the information we have at the moment.
 
-On Fri, Dec 01, 2023 at 11:08:59AM +0530, Anshuman Khandual wrote:
+I do understand your concerns! But I am pretty sure you do realize that
+it is really hard to argue theoreticals.  Let me restate what I consider
+facts. Hopefully we can agree on these points
+	- the CMA region can be used by user space memory which is a
+	  great advantage because the memory is not wasted and our
+	  experience has shown that users do care about this a lot. We
+	  _know_ that pressure on making those reservations smaller
+	  results in a less reliable crashdump and more resources spent
+	  on tuning and testing (especially after major upgrades).  A
+	  larger reservation which is not completely wasted for the
+	  normal runtime is addressing that concern.
+	- There is no other known mechanism to achieve the reusability
+	  of the crash kernel memory to stop the wastage without much
+	  more intrusive code/api impact (e.g. a separate zone or
+	  dedicated interface to prevent any hazardous usage like RDMA).
+	- implementation wise the patch has a very small footprint. It
+	  is using an existing infrastructure (CMA) and it adds a
+	  minimal hooking into crashkernel configuration.
+	- The only identified risk so far is RDMA acting on this memory
+	  without using proper pinning interface. If it helps to have a
+	  statement from RDMA maintainers/developers then we can pull
+	  them in for a further discussion of course.
+	- The feature requires an explicit opt-in so this doesn't bring
+	  any new risk to existing crash kernel users until they decide
+	  to use it. AFAIU there is no way to tell that the crash kernel
+	  memory used to be CMA based in the primary kernel. If you
+	  believe that having that information available for
+	  debugability would help then I believe this shouldn't be hard
+	  to add.  I think it would even make sense to mark this feature
+	  experimental to make it clear to users that this needs some
+	  time before it can be marked production ready.
 
-This looks good apart from a few small omissions:
-
-> +SysregFields BRBINFx_EL1
-
-> +Enum	13:8		TYPE
-> +	0b000000	UNCOND_DIRECT
-> +	0b000001	INDIRECT
-> +	0b000010	DIRECT_LINK
-> +	0b000011	INDIRECT_LINK
-> +	0b000101	RET
-> +	0b000111	ERET
-> +	0b001000	COND_DIRECT
-> +	0b100001	DEBUG_HALT
-> +	0b100010	CALL
-> +	0b100011	TRAP
-> +	0b100100	SERROR
-> +	0b100110	INSN_DEBUG
-> +	0b100111	DATA_DEBUG
-> +	0b101010	ALIGN_FAULT
-> +	0b101011	INSN_FAULT
-> +	0b101100	DATA_FAULT
-> +	0b101110	IRQ
-> +	0b101111	FIQ
-> +	0b111001	DEBUG_EXIT
-> +EndEnum
-
-DDI0601 2023-09 also defines 0b110000 as an IMPLEMENTATION DEFINED
-exception to EL3.
-
-> +SysregFields	BRBCR_ELx
-> +Res0	63:24
-> +Field	23 	EXCEPTION
-> +Field	22 	ERTN
-> +Res0	21:9
-
-DDI0601 2023-09 defines bit 9 as FZPSS.
-
-> +Sysreg	BRBINFINJ_EL1	2	1	9	1	0
-
-> +Enum	13:8		TYPE
-> +	0b000000	UNCOND_DIRECT
-> +	0b000001	INDIRECT
-> +	0b000010	DIRECT_LINK
-> +	0b000011	INDIRECT_LINK
-> +	0b000101	RET
-> +	0b000111	ERET
-> +	0b001000	COND_DIRECT
-> +	0b100001	DEBUG_HALT
-> +	0b100010	CALL
-> +	0b100011	TRAP
-> +	0b100100	SERROR
-> +	0b100110	INSN_DEBUG
-> +	0b100111	DATA_DEBUG
-> +	0b101010	ALIGN_FAULT
-> +	0b101011	INSN_FAULT
-> +	0b101100	DATA_FAULT
-> +	0b101110	IRQ
-> +	0b101111	FIQ
-> +	0b111001	DEBUG_EXIT
-> +EndEnum
-
-DDI0601 2023-09 also defines 0b11000 as IMPLEMENTATION DEFINED exception
-to EL3.
-
---JISdTfvGKwhKa25v
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVqEM8ACgkQJNaLcl1U
-h9CdgAf+PuTg+CfzlrPSJrZ9Z36MlL8ZKYtD9hjauM4agzZsJ0u0RLkbkBRi6R+q
-fcLF3WcaI80+35YGa/1BIyM4qYmO7JJNVDvZNf0E6dL7FzPgf499sOSxYHIn8zWP
-5sRunmMDycdZlXGSRVVB+oTf5lFeMT9aKy765546cMNspxDbCOBUBCUcw5I/dxQG
-nuzCEyADW36yKxodStDCx6Jptz8dO3qF0r02YEoc/xCNSXv4lG9CLrM0acDXxyZ/
-BwvWOvSlv66Ta+QM/DL4UhcditW+HXHK71OPD2q/xhSjI41z6tMxKtZwQ02cFO/Z
-cfl0g+Aj1tfzyQdK6OTLxP+i4lASSw==
-=Zs5/
------END PGP SIGNATURE-----
-
---JISdTfvGKwhKa25v--
+I hope I haven't really missed anything important. The final
+cost/benefit judgment is up to you, maintainers, of course but I would
+like to remind that we are dealing with a _real_ problem that many
+production systems are struggling with and that we don't really have any
+other solution available.
+-- 
+Michal Hocko
+SUSE Labs
