@@ -2,104 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 523737FFFE8
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 01:10:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AD5A7FFFED
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Dec 2023 01:11:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377390AbjLAAJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Nov 2023 19:09:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44700 "EHLO
+        id S229680AbjLAALX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Nov 2023 19:11:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377367AbjLAAJW (ORCPT
+        with ESMTP id S229521AbjLAALV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Nov 2023 19:09:22 -0500
-Received: from mail-oa1-x36.google.com (mail-oa1-x36.google.com [IPv6:2001:4860:4864:20::36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7379D133
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 16:09:28 -0800 (PST)
-Received: by mail-oa1-x36.google.com with SMTP id 586e51a60fabf-1fa3828b66fso299346fac.1
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Nov 2023 16:09:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1701389368; x=1701994168; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4fHHUuDWZn9YqqYK3EYAhJra7nQxFC5yxmzo6hYrotQ=;
-        b=F1E3cbMw7WdlGcPDREoA6iDs/vuMRsVzWyNJuAMxcW+/TC4SweAp36wrGw1IQJi14l
-         3HW9zwhKYuCGKdgGBq2GTnKwWilPReEBSXtPdku8YHiQttkiZbl+389ACj/Pzob01lik
-         nAEG9+fRoLZ8ACEBrEKl4GqHPkAYMLnbVwMyg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701389368; x=1701994168;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4fHHUuDWZn9YqqYK3EYAhJra7nQxFC5yxmzo6hYrotQ=;
-        b=pGqzWAfsgnB3+LdI+8KMPvtYLZhvckLjVqJjX2KwVqXgcxA+eSfJQ7d6jrIrnfcGHe
-         UDZLJWeZPqjsG9qQXCiFxaC+i1+z8cNAPurxJ50JT6sDp53RrQXiWzD7K1yrgIS78lo2
-         688shznmDfjh4n5NT6zOO7V6o2rAmSGURogrIhxIrD5zthpYyGl6dGgm/GKi2Xy8F3v7
-         sKzU6IgIgq5cCgeEG3eK5Gs9lxAU2m4B7cPk/oPHclLxm/Xfwh8851iB/vAfe7QssJHT
-         8SnlZuYuU8zO/stKx9OLp4cWCra7vL90YHTMwyC5Q+X4dddrt1Ozv0zK0Qlq0mtDVIUt
-         gwPA==
-X-Gm-Message-State: AOJu0YzPemhTTzHaLcDE+Xayv6hgxzTtT6rhmu8KBm3nr1HLGvy5p5Bc
-        brieAt5LltHQjsvz8viXsOdkwA==
-X-Google-Smtp-Source: AGHT+IG8zzeD/auPSzGDXSrUbTz7+QRxnqkXG7XFtfKuRtBOeOFYfWJ5FDWCIruPxeg5QPBDml1OIg==
-X-Received: by 2002:a05:6870:4c12:b0:1fa:3b7d:157d with SMTP id pk18-20020a0568704c1200b001fa3b7d157dmr4532394oab.1.1701389367779;
-        Thu, 30 Nov 2023 16:09:27 -0800 (PST)
-Received: from [192.168.1.128] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id e24-20020a0568301e5800b006cd09ba046fsm315807otj.61.2023.11.30.16.09.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Nov 2023 16:09:27 -0800 (PST)
-Message-ID: <30b73319-4958-4089-8dbc-7c72e66cccec@linuxfoundation.org>
-Date:   Thu, 30 Nov 2023 17:09:26 -0700
+        Thu, 30 Nov 2023 19:11:21 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12B62196;
+        Thu, 30 Nov 2023 16:11:28 -0800 (PST)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AUNbKau026777;
+        Fri, 1 Dec 2023 00:11:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : date :
+ subject : mime-version : content-type : content-transfer-encoding :
+ message-id : to : cc; s=qcppdkim1;
+ bh=x8ZaBzDXo9RnM8FSoL8MO657zArSEWDN6QPepXwp/VM=;
+ b=G8fEjdvIXly47rXWJ7Nv8sPKS8G/5Jt2/Cgfdz8jnBa9K8iPx0acz/loar2naJt21hDE
+ tCN12S/VB5l6M/GIOJKIO+DRa+0yjO3RS/rr7GhD2jrl5r+BoKVFOjwjWfpUxEfi9oXa
+ fbc0nMQot2z57TazTW3SmZBoP2rvY7V490GATXLytLfDz/HZXPVOPphS76whf6i2/ayA
+ wCO9l8Im4i867/oD0P6BZTSjDomYz6RFCxxVLwnRhSN7W2YcLkvUb29rakXiObhWmW+n
+ xNUv4uL12ngDHXY0s3LKRjJeeo2uH0aid1aHk5nuwmFX/+nugpdY35nz8qA2fJtDmXbF AA== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uprhdsy90-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 01 Dec 2023 00:11:23 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B10BMrx004020
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 1 Dec 2023 00:11:22 GMT
+Received: from [169.254.0.1] (10.49.16.6) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 30 Nov
+ 2023 16:11:21 -0800
+From:   Bjorn Andersson <quic_bjorande@quicinc.com>
+Date:   Thu, 30 Nov 2023 16:11:10 -0800
+Subject: [PATCH] arm64: dts: qcom: sc8180x-primus: Fix HALL_INT polarity
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6.1 00/82] 6.1.65-rc1 review
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-        allen.lkml@gmail.com, Shuah Khan <skhan@linuxfoundation.org>
-References: <20231130162135.977485944@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20231130162135.977485944@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Message-ID: <20231130-sc8180x-primus-lid-polarity-v1-1-da917b59604b@quicinc.com>
+X-B4-Tracking: v=1; b=H4sIAJ0kaWUC/x2NywqDMBAAf0X23IXEF9JfKT2syVoX0ii7Wiziv
+ zf0OHOYOcFYhQ3u1QnKHzFZcgF/qyDMlF+MEgtD7erG+8ahhcEP7sBV5b0bJom4LolUti92LVH
+ fum7qfYRSGMkYR6Uc5tLIe0pFrsqTHP/l43ldP6YQVmKCAAAA
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Bjorn Andersson <quic_bjorande@quicinc.com>
+X-Mailer: b4 0.12.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1701389481; l=1151;
+ i=quic_bjorande@quicinc.com; s=20230915; h=from:subject:message-id;
+ bh=hcvBx54O8Bz7zZ8nn5xY8JomAWV5QZKJZJGauXpUmo4=;
+ b=1H7LvLa2c4X4b4X18kJh/M9QCWbLPEDMKD5Ycsg2OBPZuCBpeYkEshhXf5fEdJDDRzrvZsIkeKio
+ hnayN/86Dzr3vNxaSsl6JBHaodojXjWKOrKj4SDpmRlaTyTv34iR
+X-Developer-Key: i=quic_bjorande@quicinc.com; a=ed25519;
+ pk=VkhObtljigy9k0ZUIE1Mvr0Y+E1dgBEH9WoLQnUtbIM=
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: FoUtAkvhBIGJYePSoixuM-oTueLruztk
+X-Proofpoint-GUID: FoUtAkvhBIGJYePSoixuM-oTueLruztk
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-30_24,2023-11-30_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ phishscore=0 spamscore=0 suspectscore=0 impostorscore=0 mlxlogscore=580
+ clxscore=1011 mlxscore=0 priorityscore=1501 adultscore=0 bulkscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311300179
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/30/23 09:21, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.1.65 release.
-> There are 82 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sat, 02 Dec 2023 16:21:18 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.65-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
-Compiled and booted on my test system. No dmesg regressions.
+The hall sensor interrupt on the Primus is active low, which means that
+with the current configuration the device attempts to suspend when the
+LID is open.
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+Fix the polarity of the HALL_INT GPIO to avoid this.
 
-thanks,
--- Shuah
+Fixes: 2ce38cc1e8fe ("arm64: dts: qcom: sc8180x: Introduce Primus")
+Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
+---
+ arch/arm64/boot/dts/qcom/sc8180x-primus.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/qcom/sc8180x-primus.dts b/arch/arm64/boot/dts/qcom/sc8180x-primus.dts
+index fd2fab4895b3..a40ef23a2a4f 100644
+--- a/arch/arm64/boot/dts/qcom/sc8180x-primus.dts
++++ b/arch/arm64/boot/dts/qcom/sc8180x-primus.dts
+@@ -43,7 +43,7 @@ gpio-keys {
+ 		pinctrl-0 = <&hall_int_active_state>;
+ 
+ 		lid-switch {
+-			gpios = <&tlmm 121 GPIO_ACTIVE_HIGH>;
++			gpios = <&tlmm 121 GPIO_ACTIVE_LOW>;
+ 			linux,input-type = <EV_SW>;
+ 			linux,code = <SW_LID>;
+ 			wakeup-source;
+
+---
+base-commit: 3cd3fe06ff81cfb3a969acb12a56796cff5af23d
+change-id: 20231130-sc8180x-primus-lid-polarity-54aa6405f61d
+
+Best regards,
+-- 
+Bjorn Andersson <quic_bjorande@quicinc.com>
 
