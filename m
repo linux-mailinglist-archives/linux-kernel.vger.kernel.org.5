@@ -2,106 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D93E3801CE6
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 14:08:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37C2D801D04
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 14:21:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229949AbjLBNIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 08:08:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45250 "EHLO
+        id S232745AbjLBNRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 08:17:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229671AbjLBNIK (ORCPT
+        with ESMTP id S229451AbjLBNRd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 08:08:10 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 442B0119;
-        Sat,  2 Dec 2023 05:08:16 -0800 (PST)
-Date:   Sat, 02 Dec 2023 13:08:12 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1701522493;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ahtf6qtGLkSFfzmKo7NT7kkLqGD19uzWB44u2/ZhTpI=;
-        b=L9PND/m0+A3zEJvrkuKQ/MakGvjD/5B66zjE4CZEK0P2U/uSg5TlOGU2NTv5A++yunWgpB
-        GKC2AAKEJxKQOmLSoyyiHoiHIr1ce+6x9ZEmhSWYK0XqdAhnu2bMBBha0ZuqlUEeXxHHR+
-        c0xsnjTDvS2XkW14I0qymYgljALCJpmrMKXVkXu+ybBDWgfMVF/VAsJokPPTlhApkYD1U4
-        g20oTh8cBIdyx1O6s6WNeTwOVVQ+Hja8DBh5njl7TQP3vWMykM3RjdvHGVgTTYSc88EeWS
-        4wICZNk0UF+Cf4oxlbZmj30+K0vOmgrF2G3rlRkJ8qQv1R/69SwbKJC9q8aL9A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1701522493;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ahtf6qtGLkSFfzmKo7NT7kkLqGD19uzWB44u2/ZhTpI=;
-        b=ce9VhqqKCeR9Zs6Zb8m/ol+M10bds++4dJzmwwgqpFQVN/p6K/HKeDJXb5xv+14qOnFl+7
-        0qY0wDvoiqiBeuAA==
-From:   "tip-bot2 for Uros Bizjak" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/percpu] x86/callthunks: Correct calculation of dest address
- in is_callthunk()
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Uros Bizjak <ubizjak@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20231201085727.3647051-1-ubizjak@gmail.com>
-References: <20231201085727.3647051-1-ubizjak@gmail.com>
+        Sat, 2 Dec 2023 08:17:33 -0500
+Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF3C2A9;
+        Sat,  2 Dec 2023 05:17:33 -0800 (PST)
+Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
+        by fd01.gateway.ufhost.com (Postfix) with ESMTP id AFCB27F98;
+        Sat,  2 Dec 2023 21:17:25 +0800 (CST)
+Received: from EXMBX171.cuchost.com (172.16.6.91) by EXMBX165.cuchost.com
+ (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Sat, 2 Dec
+ 2023 21:17:25 +0800
+Received: from [192.168.125.85] (113.72.145.176) by EXMBX171.cuchost.com
+ (172.16.6.91) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Sat, 2 Dec
+ 2023 21:17:24 +0800
+Message-ID: <c4154501-5b93-4eaf-8d2d-690809d26c57@starfivetech.com>
+Date:   Sat, 2 Dec 2023 21:17:24 +0800
 MIME-Version: 1.0
-Message-ID: <170152249271.398.7485179912974283410.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v11 0/20] Refactoring Microchip PCIe driver and add
+ StarFive PCIe
+Content-Language: en-US
+To:     Conor Dooley <conor@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        "Daire McNamara" <daire.mcnamara@microchip.com>,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-riscv@lists.infradead.org>, <linux-pci@vger.kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        "Palmer Dabbelt" <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Philipp Zabel" <p.zabel@pengutronix.de>,
+        Mason Huo <mason.huo@starfivetech.com>,
+        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
+        Kevin Xie <kevin.xie@starfivetech.com>
+References: <20231115114912.71448-1-minda.chen@starfivetech.com>
+ <ZWbcjKiSfvp-74CL@fedora.fritz.box> <ZWchVSO6iQbCFwkp@fedora.fritz.box>
+ <1168e373-b049-4c17-9cbd-c588bf913bbb@starfivetech.com>
+ <ZWn8ebtIDrGF9P5i@fedora.fritz.box>
+From:   Minda Chen <minda.chen@starfivetech.com>
+In-Reply-To: <ZWn8ebtIDrGF9P5i@fedora.fritz.box>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Originating-IP: [113.72.145.176]
+X-ClientProxiedBy: EXCAS061.cuchost.com (172.16.6.21) To EXMBX171.cuchost.com
+ (172.16.6.91)
+X-YovoleRuleAgent: yovoleflag
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/percpu branch of tip:
 
-Commit-ID:     fc50065325f8b88d6986f089ae103b5db858ab96
-Gitweb:        https://git.kernel.org/tip/fc50065325f8b88d6986f089ae103b5db858ab96
-Author:        Uros Bizjak <ubizjak@gmail.com>
-AuthorDate:    Fri, 01 Dec 2023 09:57:27 +01:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Sat, 02 Dec 2023 10:51:28 +01:00
 
-x86/callthunks: Correct calculation of dest address in is_callthunk()
+On 2023/12/1 23:32, Damian Tometzki wrote:
+> On Fri, 01. Dec 15:15, Minda Chen wrote:
+>> 
+>> 
+>> On 2023/11/29 19:32, Damian Tometzki wrote:
+>> > On Wed, 29. Nov 07:39, Damian Tometzki wrote:
+>> >> Hello Minda,
+>> >> 
+>> >> i tried this Patchset on Linux-6.6.3 but boot with nvme doesnt work. Linux doesnt find
+>> >> /root partition /dev/nvme0n1p4. 
+>> >> I dont know if it has anything to do with this patchset ?
+>> >> Best regards
+>> >> Damian
+>> > Hi,
+>> > some additional information: 
+>> > Begin: Running /scripts/local-block ... done.
+>> > Begin: Running /scripts/local-block ... done.
+>> > [   11.097653] /soc/pcie@940000000: Failed to get clk index: 1 ret: -517
+>> > [   11.104147] pcie-starfive 940000000.pcie: error -ENODEV: failed to get pcie clocks
+>> > [   11.111981] /soc/pcie@9c0000000: Failed to get clk index: 1 ret: -517
+>> > [   11.118451] pcie-starfive 9c0000000.pcie: error -ENODEV: failed to get pcie clocks
+>> > [   11.126371] platform 17020000.pinctrl: deferred probe pending
+>> > [   11.132145] platform 16010000.mmc: deferred probe pending
+>> > Begin: Running /scripts/local-block ... done.
+>> > Begin: Running /scripts/local-block ... done.
+>> > 
+>> > Damian
+>> > 
+>> It is get stg clk failed. Did you enable CONFIG_CLK_STARFIVE_JH7110_STG=y?
+> Hi,
+> 
+> it is now a little bit better now i get: 
+> Begin: Mounting root file system ... Begin: Running /scripts/local-top ... done.
+> Begin: Running /scripts/local-premount ... done.
+> Begin: Waiting for root file system ... Begin: Running /scripts/local-block ... done.
+> Begin: Running /scripts/local-block ... done.
+> Begin: Running /scripts/local-block ... done.
+> Begin: Running /scripts/local-block ... done.
+> Begin: Running /scripts/local-block ... done.
+> [   13.916056] platform 940000000.pcie: deferred probe pending
+> [   13.921668] platform 9c0000000.pcie: deferred probe pending
+> [   13.927259] platform 16010000.mmc: deferred probe pending
+> Begin: Running /scripts/local-block ... done.
+> Begin: Running /scripts/local-block ... done.
+> Begin: Running /scripts/local-block ... done.
+> 
+> 
+Hi 
+Please check this configuation.
+CONFIG_PHY_STARFIVE_JH7110_PCIE=y
+CONFIG_PINCTRL_STARFIVE_JH7110=y
+CONFIG_PINCTRL_STARFIVE_JH7110_SYS=y
+CONFIG_PINCTRL_STARFIVE_JH7110_AON=y
 
-GCC didn't warn on the invalid use of relocation destination
-pointer, so the calculated destination value was applied to
-the uninitialized pointer location in error.
-
-Fixes: 17bce3b2ae2d ("x86/callthunks: Handle %rip-relative relocations in call thunk template")
-Reported-by: Nathan Chancellor <nathan@kernel.org>
-Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Closes: https://lore.kernel.org/lkml/20231201035457.GA321497@dev-arch.thelio-3990X/
-Link: https://lore.kernel.org/r/20231201085727.3647051-1-ubizjak@gmail.com
----
- arch/x86/kernel/callthunks.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/x86/kernel/callthunks.c b/arch/x86/kernel/callthunks.c
-index f56fa30..2324c7f 100644
---- a/arch/x86/kernel/callthunks.c
-+++ b/arch/x86/kernel/callthunks.c
-@@ -312,7 +312,7 @@ static bool is_callthunk(void *addr)
- 	if (!thunks_initialized || skip_addr((void *)dest))
- 		return false;
- 
--	*pad = dest - tmpl_size;
-+	pad = (void *)(dest - tmpl_size);
- 
- 	memcpy(insn_buff, skl_call_thunk_template, tmpl_size);
- 	apply_relocation(insn_buff, tmpl_size, pad,
+BTW, Maybe you can reply e-mail to me only.
