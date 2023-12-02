@@ -2,238 +2,316 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E65E7801E61
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 21:02:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD9A7801E73
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 21:26:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230051AbjLBTyt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 14:54:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56352 "EHLO
+        id S231267AbjLBUYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 15:24:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjLBTys (ORCPT
+        with ESMTP id S229450AbjLBUYn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 14:54:48 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36435125
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 11:54:54 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id 2adb3069b0e04-50abb83866bso4555036e87.3
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Dec 2023 11:54:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701546892; x=1702151692; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mypENOTvjGc6UKp6SNlOk81hu+cXKNAEwrYZ0eb98SE=;
-        b=gBgZYMDdfdndn4+su1fQ/6xNlU6hi5ZtgEg8RM9ZhAz3S3iDWuP3EW7iZUXTTsnxjx
-         jTkzmNCAGFBgf+E2ZSCYgYvOsIJNpR+qW6UjE0kphwlDQjbXKuKCou3CYDWvoA60mzed
-         22FnMi7AJPBIRpJz4R56teYQOWikdt0AJQhyDGHzfyPx/+QkvlqbzUDVzRRVPOSHE7wo
-         Ywa0V4knZ9opXHGsDr87EPyhyMhbbYEB0w2JtgEqibyRpJQDIJHslpmPKsXjc5oCOwAQ
-         55BNHduAInJEe5WZKFDRp4SP48kXOcKIP3521sxIw/KQklBTWWwLRaGOx7NSYQvAQ3T+
-         c4fQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701546892; x=1702151692;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mypENOTvjGc6UKp6SNlOk81hu+cXKNAEwrYZ0eb98SE=;
-        b=H8zIR+69z5x1ALOlLli+Cjc88O9AGuyVpu/O1IIJjyxXKDUuvacY89vOtguKhHoE51
-         uplklSEcUuht/OGj0wyCvcaQuA687Rkho1irwLerh41AzqBRJ8uMra9/T+TC13TLdKKN
-         6IiVj3IuD4x0x3MCism3iBgfmDN4sGrqFXR4oo+QMT8e2QglZEd/2Ya+FHW2w4Dk0+Sn
-         Kl1Wy5/RhasLdnR1949pAphKhexabATXYqrkppyXbBTHDSUSzCYmQ170JN/kun+DiR1Z
-         Nfni+1B/P5AyGpfTxw8iXkCcuvV9vZf9Xsz5+KzlA+PsK+DaEFiSPbfrAqGC813mm+VQ
-         Jlew==
-X-Gm-Message-State: AOJu0YwXfibCA7F3N+x1VVJOBndxkvjy0pDgwbR4lL5lFsW4vO+G1imO
-        FNX4SfKMetx+a7tYeF3/CX/vCQ==
-X-Google-Smtp-Source: AGHT+IH3My8XPBaauAwFiRuvgLhrkMUD2b5HPKUvjhIU+O7KAUS3Yyc7nyJY4nMMh7APjo3+nzysjg==
-X-Received: by 2002:a05:6512:10ce:b0:50b:d764:28ee with SMTP id k14-20020a05651210ce00b0050bd76428eemr1441389lfg.134.1701546892350;
-        Sat, 02 Dec 2023 11:54:52 -0800 (PST)
-Received: from ?IPV6:2001:14ba:a0db:1f00::8a5? (dzdqv0yyyyyyyyyyybcwt-3.rev.dnainternet.fi. [2001:14ba:a0db:1f00::8a5])
-        by smtp.gmail.com with ESMTPSA id c27-20020ac25f7b000000b00507a0098424sm37426lfc.109.2023.12.02.11.54.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 02 Dec 2023 11:54:51 -0800 (PST)
-Message-ID: <77c229fd-5414-49ad-bccd-7a5732345695@linaro.org>
-Date:   Sat, 2 Dec 2023 21:54:51 +0200
+        Sat, 2 Dec 2023 15:24:43 -0500
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 792A9A8;
+        Sat,  2 Dec 2023 12:24:46 -0800 (PST)
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id 52EC8120037;
+        Sat,  2 Dec 2023 23:24:42 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 52EC8120037
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+        s=mail; t=1701548682;
+        bh=RWcwjSnHEAmOwjrvZ5XQTOp+kK9yRK6Dmvot+OW6x5o=;
+        h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
+        b=aPy5PMP98beRZYWPiCgQA+47fT9u2F+nyU2EN6OjaG9gX/q5wNrZsb2NmBXkzsNaq
+         1X3SZDi8TYXYrbiWzAymKZxQXRtiSSCyTWvHmVd4L1+UUrW1tqdN6+2kIJGwrAH8/m
+         1taq2zOZRPLtp3ymYbiSQhJt1jzr0IASn8EREf9wt0ha1qc5IhsV31IWoubJPg4vQD
+         jU8hSoxfNnQxQNgL7ucEglpwZoQ9sZK1vFfcexVdFtT7ZVZxW/uiz+NC5Pg3DHpqy4
+         JlINLTA2fqE69tkSc/b/TOt+TdkYoBcnr7n91n1ExcHdHQXPiapefs+JmnN1+QRZw9
+         qu9tbZyMmC1lw==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Sat,  2 Dec 2023 23:24:41 +0300 (MSK)
+Received: from [192.168.0.106] (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Sat, 2 Dec 2023 23:24:41 +0300
+Message-ID: <99a4fbce-e963-c49f-84ad-20580fc109c8@salutedevices.com>
+Date:   Sat, 2 Dec 2023 23:16:39 +0300
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] drm/msm/dpu: Set input_sel bit for INTF
-Content-Language: en-GB
-To:     Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Jessica Zhang <quic_jesszhan@quicinc.com>
-Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <20231130-encoder-fixup-v1-0-585c54cd046e@quicinc.com>
- <20231130-encoder-fixup-v1-2-585c54cd046e@quicinc.com>
- <CAA8EJpqeu18q4jN82fUvsEdBRmEjG_mYLQQUWD+LDxjiQQQPsg@mail.gmail.com>
- <a076fced-f4b9-804e-eb73-1fbb510c4951@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-In-Reply-To: <a076fced-f4b9-804e-eb73-1fbb510c4951@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH net-next v5 2/3] virtio/vsock: send credit update during
+ setting SO_RCVLOWAT
+Content-Language: en-US
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+CC:     Stefano Garzarella <sgarzare@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>,
+        <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kernel@sberdevices.ru>, <oxffffaa@gmail.com>
+References: <20231130130840.253733-3-avkrasnov@salutedevices.com>
+ <20231130084044-mutt-send-email-mst@kernel.org>
+ <02de8982-ec4a-b3b2-e8e5-1bca28cfc01b@salutedevices.com>
+ <20231130085445-mutt-send-email-mst@kernel.org>
+ <pbkiwezwlf6dmogx7exur6tjrtcfzxyn7eqlehqxivqifbkojv@xlziiuzekon4>
+ <20231130123815-mutt-send-email-mst@kernel.org>
+ <smu77vmxw3ki36xhqnhtvujwswvkg5gkfwnt4vr5bnwljclseh@inbewbwkcqxs>
+ <e58cf080-3611-0a19-c6e5-544d7101e975@salutedevices.com>
+ <vqlspza4hzs6i5eajidxgeqd7wesv43ajpo42mljm4leuxfym4@j3h6ux2xlxbi>
+ <214df55d-89e3-2c1d-250a-7428360b6b1b@salutedevices.com>
+ <20231202152108-mutt-send-email-mst@kernel.org>
+From:   Arseniy Krasnov <avkrasnov@salutedevices.com>
+In-Reply-To: <20231202152108-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 181782 [Dec 02 2023]
+X-KSMG-AntiSpam-Version: 6.0.0.2
+X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 5 0.3.5 98d108ddd984cca1d7e65e595eac546a62b0144b, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;100.64.160.123:7.1.2;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;salutedevices.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/12/02 19:14:00 #22610823
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/12/2023 23:29, Abhinav Kumar wrote:
-> 
-> 
-> On 11/30/2023 11:36 PM, Dmitry Baryshkov wrote:
->> On Fri, 1 Dec 2023 at 03:31, Jessica Zhang <quic_jesszhan@quicinc.com> 
->> wrote:
->>>
->>> Set the input_sel bit for encoders as it was missed in the initial
->>> implementation.
->>>
->>> Reported-by: Rob Clark <robdclark@gmail.com>
->>> Fixes: 91143873a05d ("drm/msm/dpu: Add MISR register support for 
->>> interface")
->>> Closes: https://gitlab.freedesktop.org/drm/msm/-/issues/39
->>> Signed-off-by: Jessica Zhang <quic_jesszhan@quicinc.com>
->>> ---
->>>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c | 2 +-
->>>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_lm.c   | 2 +-
->>>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c | 7 ++++++-
->>>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h | 4 +++-
->>>   4 files changed, 11 insertions(+), 4 deletions(-)
->>>
->>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c 
->>> b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
->>> index 3442cf65b86f..d0884997ecb7 100644
->>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
->>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
->>> @@ -320,7 +320,7 @@ static u32 dpu_hw_intf_get_line_count(struct 
->>> dpu_hw_intf *intf)
->>>
->>>   static void dpu_hw_intf_setup_misr(struct dpu_hw_intf *intf)
->>>   {
->>> -       dpu_hw_setup_misr(&intf->hw, INTF_MISR_CTRL);
->>> +       dpu_hw_setup_misr(&intf->hw, INTF_MISR_CTRL, true);
->>>   }
->>>
->>>   static int dpu_hw_intf_collect_misr(struct dpu_hw_intf *intf, u32 
->>> *misr_value)
->>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_lm.c 
->>> b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_lm.c
->>> index f38473e68f79..77b14107c84a 100644
->>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_lm.c
->>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_lm.c
->>> @@ -83,7 +83,7 @@ static void dpu_hw_lm_setup_border_color(struct 
->>> dpu_hw_mixer *ctx,
->>>
->>>   static void dpu_hw_lm_setup_misr(struct dpu_hw_mixer *ctx)
->>>   {
->>> -       dpu_hw_setup_misr(&ctx->hw, LM_MISR_CTRL);
->>> +       dpu_hw_setup_misr(&ctx->hw, LM_MISR_CTRL, false);
->>>   }
->>>
->>>   static int dpu_hw_lm_collect_misr(struct dpu_hw_mixer *ctx, u32 
->>> *misr_value)
->>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c 
->>> b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c
->>> index a8a0a4e76b94..f441df47fdde 100644
->>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c
->>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c
->>> @@ -481,7 +481,8 @@ void _dpu_hw_setup_qos_lut(struct 
->>> dpu_hw_blk_reg_map *c, u32 offset,
->>>                        cfg->danger_safe_en ? 
->>> QOS_QOS_CTRL_DANGER_SAFE_EN : 0);
->>>   }
->>>
->>> -void dpu_hw_setup_misr(struct dpu_hw_blk_reg_map *c, u32 
->>> misr_ctrl_offset)
->>> +void dpu_hw_setup_misr(struct dpu_hw_blk_reg_map *c, u32 
->>> misr_ctrl_offset,
->>> +               bool set_input_sel)
->>>   {
->>>          u32 config = 0;
->>>
->>> @@ -491,6 +492,10 @@ void dpu_hw_setup_misr(struct dpu_hw_blk_reg_map 
->>> *c, u32 misr_ctrl_offset)
->>>          wmb();
->>>
->>>          config = MISR_FRAME_COUNT | MISR_CTRL_ENABLE | 
->>> MISR_CTRL_FREE_RUN_MASK;
->>> +
->>> +       if (set_input_sel)
->>> +               config |= MISR_CTRL_INPUT_SEL;
->>> +
->>>          DPU_REG_WRITE(c, misr_ctrl_offset, config);
->>>   }
->>>
->>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h 
->>> b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h
->>> index bb496ebe283b..793670d62414 100644
->>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h
->>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h
->>> @@ -17,6 +17,7 @@
->>>   #define MISR_CTRL_ENABLE                BIT(8)
->>>   #define MISR_CTRL_STATUS                BIT(9)
->>>   #define MISR_CTRL_STATUS_CLEAR          BIT(10)
->>> +#define MISR_CTRL_INPUT_SEL             BIT(24)
->>
->> The public apq8916 TRM documents this as a 4-bit field. I think this
->> was followed into the later generations. Can we please document it
->> correctly and use an uint instead of just bool for set_input_sel?
->>
-> 
-> Can you pls point us to this document you are referring?
 
-I have this link in my bookmarks, which doesn't seem to work no longer:
 
-https://developer.qualcomm.com/download/sd410/snapdragon-410e-technical-reference-manual.pdf?referrer=node/29241
-
-96boards forum has several links and mentions of this doc.
-
-> 
-> I was not aware that bit level details are revealed in external 
-> documents :)
-> 
-> Even though its a 4-bit field, it only takes a 0 or 1 as others are 
-> undefined.
-> 
-> Exposing all the bits will only cause more confusion like it did for 
-> others thinking that input select is actually configurable when its not.
-> 
-> I think what we should do is just pass "misr_type" to this API to tell 
-> whether its lm misr or intf misr and set BIT(24) based on that.
-
-This would be another simplification. Can we instead just use values 0 
-and 1 instead and maybe document that by default everybody should use 0.
-
-> 
-> 
->>>   #define MISR_CTRL_FREE_RUN_MASK         BIT(31)
->>>
->>>   /*
->>> @@ -357,7 +358,8 @@ void _dpu_hw_setup_qos_lut(struct 
->>> dpu_hw_blk_reg_map *c, u32 offset,
->>>                             bool qos_8lvl,
->>>                             const struct dpu_hw_qos_cfg *cfg);
->>>
->>> -void dpu_hw_setup_misr(struct dpu_hw_blk_reg_map *c, u32 
->>> misr_ctrl_offset);
->>> +void dpu_hw_setup_misr(struct dpu_hw_blk_reg_map *c, u32 
->>> misr_ctrl_offset,
->>> +                      bool set_input_sel);
->>>
->>>   int dpu_hw_collect_misr(struct dpu_hw_blk_reg_map *c,
->>>                  u32 misr_ctrl_offset,
->>>
->>> -- 
->>> 2.43.0
->>>
+On 02.12.2023 23:22, Michael S. Tsirkin wrote:
+> On Fri, Dec 01, 2023 at 01:40:41PM +0300, Arseniy Krasnov wrote:
 >>
 >>
+>> On 01.12.2023 12:48, Stefano Garzarella wrote:
+>>> On Fri, Dec 01, 2023 at 11:35:56AM +0300, Arseniy Krasnov wrote:
+>>>>
+>>>>
+>>>> On 01.12.2023 11:27, Stefano Garzarella wrote:
+>>>>> On Thu, Nov 30, 2023 at 12:40:43PM -0500, Michael S. Tsirkin wrote:
+>>>>>> On Thu, Nov 30, 2023 at 03:11:19PM +0100, Stefano Garzarella wrote:
+>>>>>>> On Thu, Nov 30, 2023 at 08:58:58AM -0500, Michael S. Tsirkin wrote:
+>>>>>>>> On Thu, Nov 30, 2023 at 04:43:34PM +0300, Arseniy Krasnov wrote:
+>>>>>>>>>
+>>>>>>>>>
+>>>>>>>>> On 30.11.2023 16:42, Michael S. Tsirkin wrote:
+>>>>>>>>>> On Thu, Nov 30, 2023 at 04:08:39PM +0300, Arseniy Krasnov wrote:
+>>>>>>>>>>> Send credit update message when SO_RCVLOWAT is updated and it is bigger
+>>>>>>>>>>> than number of bytes in rx queue. It is needed, because 'poll()' will
+>>>>>>>>>>> wait until number of bytes in rx queue will be not smaller than
+>>>>>>>>>>> SO_RCVLOWAT, so kick sender to send more data. Otherwise mutual hungup
+>>>>>>>>>>> for tx/rx is possible: sender waits for free space and receiver is
+>>>>>>>>>>> waiting data in 'poll()'.
+>>>>>>>>>>>
+>>>>>>>>>>> Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
+>>>>>>>>>>> ---
+>>>>>>>>>>>   Changelog:
+>>>>>>>>>>>   v1 -> v2:
+>>>>>>>>>>>    * Update commit message by removing 'This patch adds XXX' manner.
+>>>>>>>>>>>    * Do not initialize 'send_update' variable - set it directly during
+>>>>>>>>>>>      first usage.
+>>>>>>>>>>>   v3 -> v4:
+>>>>>>>>>>>    * Fit comment in 'virtio_transport_notify_set_rcvlowat()' to 80 chars.
+>>>>>>>>>>>   v4 -> v5:
+>>>>>>>>>>>    * Do not change callbacks order in transport structures.
+>>>>>>>>>>>
+>>>>>>>>>>>   drivers/vhost/vsock.c                   |  1 +
+>>>>>>>>>>>   include/linux/virtio_vsock.h            |  1 +
+>>>>>>>>>>>   net/vmw_vsock/virtio_transport.c        |  1 +
+>>>>>>>>>>>   net/vmw_vsock/virtio_transport_common.c | 27 +++++++++++++++++++++++++
+>>>>>>>>>>>   net/vmw_vsock/vsock_loopback.c          |  1 +
+>>>>>>>>>>>   5 files changed, 31 insertions(+)
+>>>>>>>>>>>
+>>>>>>>>>>> diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
+>>>>>>>>>>> index f75731396b7e..4146f80db8ac 100644
+>>>>>>>>>>> --- a/drivers/vhost/vsock.c
+>>>>>>>>>>> +++ b/drivers/vhost/vsock.c
+>>>>>>>>>>> @@ -451,6 +451,7 @@ static struct virtio_transport vhost_transport = {
+>>>>>>>>>>>           .notify_buffer_size       = virtio_transport_notify_buffer_size,
+>>>>>>>>>>>
+>>>>>>>>>>>           .read_skb = virtio_transport_read_skb,
+>>>>>>>>>>> +        .notify_set_rcvlowat      = virtio_transport_notify_set_rcvlowat
+>>>>>>>>>>>       },
+>>>>>>>>>>>
+>>>>>>>>>>>       .send_pkt = vhost_transport_send_pkt,
+>>>>>>>>>>> diff --git a/include/linux/virtio_vsock.h b/include/linux/virtio_vsock.h
+>>>>>>>>>>> index ebb3ce63d64d..c82089dee0c8 100644
+>>>>>>>>>>> --- a/include/linux/virtio_vsock.h
+>>>>>>>>>>> +++ b/include/linux/virtio_vsock.h
+>>>>>>>>>>> @@ -256,4 +256,5 @@ void virtio_transport_put_credit(struct virtio_vsock_sock *vvs, u32 credit);
+>>>>>>>>>>>   void virtio_transport_deliver_tap_pkt(struct sk_buff *skb);
+>>>>>>>>>>>   int virtio_transport_purge_skbs(void *vsk, struct sk_buff_head *list);
+>>>>>>>>>>>   int virtio_transport_read_skb(struct vsock_sock *vsk, skb_read_actor_t read_actor);
+>>>>>>>>>>> +int virtio_transport_notify_set_rcvlowat(struct vsock_sock *vsk, int val);
+>>>>>>>>>>>   #endif /* _LINUX_VIRTIO_VSOCK_H */
+>>>>>>>>>>> diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
+>>>>>>>>>>> index af5bab1acee1..8007593a3a93 100644
+>>>>>>>>>>> --- a/net/vmw_vsock/virtio_transport.c
+>>>>>>>>>>> +++ b/net/vmw_vsock/virtio_transport.c
+>>>>>>>>>>> @@ -539,6 +539,7 @@ static struct virtio_transport virtio_transport = {
+>>>>>>>>>>>           .notify_buffer_size       = virtio_transport_notify_buffer_size,
+>>>>>>>>>>>
+>>>>>>>>>>>           .read_skb = virtio_transport_read_skb,
+>>>>>>>>>>> +        .notify_set_rcvlowat      = virtio_transport_notify_set_rcvlowat
+>>>>>>>>>>>       },
+>>>>>>>>>>>
+>>>>>>>>>>>       .send_pkt = virtio_transport_send_pkt,
+>>>>>>>>>>> diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
+>>>>>>>>>>> index f6dc896bf44c..1cb556ad4597 100644
+>>>>>>>>>>> --- a/net/vmw_vsock/virtio_transport_common.c
+>>>>>>>>>>> +++ b/net/vmw_vsock/virtio_transport_common.c
+>>>>>>>>>>> @@ -1684,6 +1684,33 @@ int virtio_transport_read_skb(struct vsock_sock *vsk, skb_read_actor_t recv_acto
+>>>>>>>>>>>   }
+>>>>>>>>>>>   EXPORT_SYMBOL_GPL(virtio_transport_read_skb);
+>>>>>>>>>>>
+>>>>>>>>>>> +int virtio_transport_notify_set_rcvlowat(struct vsock_sock *vsk,
+>>>>>>>>>>> int val)
+>>>>>>>>>>> +{
+>>>>>>>>>>> +    struct virtio_vsock_sock *vvs = vsk->trans;
+>>>>>>>>>>> +    bool send_update;
+>>>>>>>>>>> +
+>>>>>>>>>>> +    spin_lock_bh(&vvs->rx_lock);
+>>>>>>>>>>> +
+>>>>>>>>>>> +    /* If number of available bytes is less than new SO_RCVLOWAT value,
+>>>>>>>>>>> +     * kick sender to send more data, because sender may sleep in
+>>>>>>>>>>> its
+>>>>>>>>>>> +     * 'send()' syscall waiting for enough space at our side.
+>>>>>>>>>>> +     */
+>>>>>>>>>>> +    send_update = vvs->rx_bytes < val;
+>>>>>>>>>>> +
+>>>>>>>>>>> +    spin_unlock_bh(&vvs->rx_lock);
+>>>>>>>>>>> +
+>>>>>>>>>>> +    if (send_update) {
+>>>>>>>>>>> +        int err;
+>>>>>>>>>>> +
+>>>>>>>>>>> +        err = virtio_transport_send_credit_update(vsk);
+>>>>>>>>>>> +        if (err < 0)
+>>>>>>>>>>> +            return err;
+>>>>>>>>>>> +    }
+>>>>>>>>>>> +
+>>>>>>>>>>> +    return 0;
+>>>>>>>>>>> +}
+>>>>>>>>>>
+>>>>>>>>>>
+>>>>>>>>>> I find it strange that this will send a credit update
+>>>>>>>>>> even if nothing changed since this was called previously.
+>>>>>>>>>> I'm not sure whether this is a problem protocol-wise,
+>>>>>>>>>> but it certainly was not envisioned when the protocol was
+>>>>>>>>>> built. WDYT?
+>>>>>>>>>
+>>>>>>>>> >From virtio spec I found:
+>>>>>>>>>
+>>>>>>>>> It is also valid to send a VIRTIO_VSOCK_OP_CREDIT_UPDATE packet without previously receiving a
+>>>>>>>>> VIRTIO_VSOCK_OP_CREDIT_REQUEST packet. This allows communicating updates any time a change
+>>>>>>>>> in buffer space occurs.
+>>>>>>>>> So I guess there is no limitations to send such type of packet, e.g. it is not
+>>>>>>>>> required to be a reply for some another packet. Please, correct me if im wrong.
+>>>>>>>>>
+>>>>>>>>> Thanks, Arseniy
+>>>>>>>>
+>>>>>>>>
+>>>>>>>> Absolutely. My point was different - with this patch it is possible
+>>>>>>>> that you are not adding any credits at all since the previous
+>>>>>>>> VIRTIO_VSOCK_OP_CREDIT_UPDATE.
+>>>>>>>
+>>>>>>> I think the problem we're solving here is that since as an optimization we
+>>>>>>> avoid sending the update for every byte we consume, but we put a threshold,
+>>>>>>> then we make sure we update the peer.
+>>>>>>>
+>>>>>>> A credit update contains a snapshot and sending it the same as the previous
+>>>>>>> one should not create any problem.
+>>>>>>
+>>>>>> Well it consumes a buffer on the other side.
+>>>>>
+>>>>> Sure, but we are already speculating by not updating the other side when
+>>>>> we consume bytes before a certain threshold. This already avoids to
+>>>>> consume many buffers.
+>>>>>
+>>>>> Here we're only sending it once, when the user sets RCVLOWAT, so
+>>>>> basically I expect it won't affect performance.
+>>>>
+>>>> Moreover I think in practice setting RCVLOWAT is rare case, while this patch
+>>>> fixes real problem I guess
+>>>>
+>>>>
+>>>>>
+>>>>>>
+>>>>>>> My doubt now is that we only do this when we set RCVLOWAT , should we also
+>>>>>>> do something when we consume bytes to avoid the optimization we have?
+>>>>>>>
+>>>>>>> Stefano
+>>>>>>
+>>>>>> Isn't this why we have credit request?
+>>>>>
+>>>>> Yep, but in practice we never use it. It would also consume 2 buffers,
+>>>>> one at the transmitter and one at the receiver.
+>>>>>
+>>>>> However I agree that maybe we should start using it before we decide not
+>>>>> to send any more data.
+>>>>>
+>>>>> To be compatible with older devices, though, I think for now we also
+>>>>> need to send a credit update when the bytes in the receive queue are
+>>>>> less than RCVLOWAT, as Arseniy proposed in the other series.
+>>>>
+>>>> Looks like (in theory of course), that credit request is considered to be
+>>>> paired with credit update. While current usage of credit update is something
+>>>> like ACK packet in TCP, e.g. telling peer that we are ready to receive more
+>>>> data.
+>>>
+>>> I don't honestly know what the original author's choice was, but I think we reduce latency this way.
+>>
+>> Ah I see,ok
+>>
+>>>
+>>> Effectively though, if we never send any credit update when we consume bytes and always leave it up to the transmitter to ask for an update before transmission, we save even more buffer than the optimization we have, but maybe the latency would grow a lot.
+>>
+>> I think:
+>> 1) Way where sender must request current credit status before sending packet requires rework of kernel part, and for me this approach is not
+>>    so clear than current simple implementation (send RW, reply with CREDIT_UPDATE if needed).
+>> 2) In theory yes, we need one more buffer for such CREDIT_UPDATE, but in practice I don't know how big is this trouble.
+>>
+>> Thanks, Arseniy
+> 
+> I just worry that yes, normal users will only call RCVLOWAT once,
+> but a bad user might call it many times causing a ton of
+> credit updates. This is why I feel it's prudent to at least
+> keep track of last credit update and if nothing changed
+> do not resend it on a repeated RCVLOWAT.
 
--- 
-With best wishes
-Dmitry
+I see, agree, I'll add this check in the next version!
 
+Thanks, Arseniy
+
+> 
+> 
+> 
+> 
+>>>
+>>> Stefano
+>>>
+> 
