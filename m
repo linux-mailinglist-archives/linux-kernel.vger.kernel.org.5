@@ -2,144 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47B69801CAD
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 13:42:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58F2E801CB0
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 13:43:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232740AbjLBMmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 07:42:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40360 "EHLO
+        id S232678AbjLBMnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 07:43:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232729AbjLBMmE (ORCPT
+        with ESMTP id S232138AbjLBMnL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 07:42:04 -0500
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E13D312E;
-        Sat,  2 Dec 2023 04:42:09 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-a1a22b7f519so197944866b.2;
-        Sat, 02 Dec 2023 04:42:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701520928; x=1702125728; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Mp5m4S58xFYf/pPupXKRpoAWOKmXYjV8KokdiBbVmdU=;
-        b=crWVOoSYBTQ3ncE0rILuyNQWTTbwIGHuzhfrsnpewN96rxMxM0ZwbK/6oPTzzyfW/g
-         s/4KCAKQFGLT+dhc07wPqu7NIngV7EfRNoCHvqMu1kUX04tiZxw8QlkzT8VKij9OOKDR
-         gWd0jaC0IgeUISU+8nktatVdZDXihJwmgw6XY0zSZoLmuJq+ftpJ3r+WYyiW5rTz7DFR
-         XW0xdj1oZ8Er9E5vL8jijIFTLEJel+5PyvctxrDCLSeKzqnn8YB7b5wDrGUoRrQyvVv8
-         bpEDrB9lp4Ln8DrC8JwmoqEK5G9DxE+4aKWfWGL5TjZRSvNV3BH1BPt7FiloDIHDLqzS
-         lkCg==
+        Sat, 2 Dec 2023 07:43:11 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25C32188
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 04:43:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701520997;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=h4DJq4T+U4J3l6LPK0uojmAyF6LfoimHRqrF4QgIogY=;
+        b=KG77iw4gEsvW24mBlBhdUg9P30FufCmID/o9t9SzhnkVt8YnbdygplZAiZHRcr2UyupV7m
+        zzgLhlHLxGYoSiTl0pf1rKrzF+IhURz61Y3VY7NvJ2XGYU51lSFVKh1UvLxQJr2+WVdxq9
+        Nxn7RY3P/+9YXvGEqn1WnFJ1pxsFk/A=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-567-TWpg7M6QNJCAkJjyyRF_-g-1; Sat, 02 Dec 2023 07:43:15 -0500
+X-MC-Unique: TWpg7M6QNJCAkJjyyRF_-g-1
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-a02cc56af16so272115566b.3
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Dec 2023 04:43:15 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701520928; x=1702125728;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Mp5m4S58xFYf/pPupXKRpoAWOKmXYjV8KokdiBbVmdU=;
-        b=qrgu1cHbLwp7oH3AQ2JeRiet9qm5hh/lWGfGD29/OL6yKhGvqXLZV8pgqfo3mNXekG
-         NSdBXFouc5GpRQLaJfssLyLh/eMqoiQh0og2cFb6Tl37mdF1Lv3k8kh8GSRfLEsOdz5F
-         QeBXSeN9Ci7K4CG/gB1Uaw8OwikluwQfzK0rDTb+0GCb5fn7c1blb5yaVeiUPH3Miv0Y
-         xgLezHvjjkqdLHyooeh3KJZDgNeYHHTYU1IeC2T7WuFgMEX6Q8ACWLnNyAh+AFnyax53
-         ILyegJKSBdLuRt2P0qd76+VrVOaR9Q/W0HSV8om0WgCc0wF3l2TKDm6wfdy7vb34WCyg
-         f8Wg==
-X-Gm-Message-State: AOJu0YyjkVhLjKL0H9Wl/rwkrwpITu+2B6LpNEL1QVxldtU6Dv0CqyBZ
-        dbfBPyKZL27BQ/CQm97kqg==
-X-Google-Smtp-Source: AGHT+IFCBdPcJSe8T9O23Y89jCIHxaJaMUXndtVnA4rBtUOnvJCImr6VCsKo/XMoFtC8T+88bYhlPQ==
-X-Received: by 2002:a17:906:51d0:b0:a19:a1ba:baba with SMTP id v16-20020a17090651d000b00a19a1bababamr1018772ejk.96.1701520928353;
-        Sat, 02 Dec 2023 04:42:08 -0800 (PST)
-Received: from U4.lan ([2a02:810b:f40:4300:908e:b829:354b:f8ee])
-        by smtp.gmail.com with ESMTPSA id q19-20020a1709060e5300b009a19701e7b5sm3009602eji.96.2023.12.02.04.42.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Dec 2023 04:42:08 -0800 (PST)
-From:   Alex Bee <knaerzche@gmail.com>
-To:     Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Alex Bee <knaerzche@gmail.com>
-Subject: [PATCH v2 2/2] ARM: dts: rockchip: Enable gmac for XPI-3128
-Date:   Sat,  2 Dec 2023 13:41:59 +0100
-Message-ID: <20231202124158.65615-4-knaerzche@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231202124158.65615-2-knaerzche@gmail.com>
-References: <20231202124158.65615-2-knaerzche@gmail.com>
+        d=1e100.net; s=20230601; t=1701520994; x=1702125794;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=h4DJq4T+U4J3l6LPK0uojmAyF6LfoimHRqrF4QgIogY=;
+        b=roFAHQJAWZsJgU7h198t/HmvKtulqa8bJMLEIsl1Ol2107GpTPDBnOYlh2x2O+23I8
+         t3sQZ1HtvMU6BpaY1o5q4z0N/+d7A7Y1mWnPToujyxs/xCarzlvM2phKa7DCHA43WDv3
+         deYWbUp4hkSFr8hmsnYXANvEH/mN6LXtrn/o+YrhX0zc+YqMWYZMLa8JZCs49Io3cOdW
+         1Yb6ccLGdIIIS1F5JrQluHRBbPrpcmZZXqCvDkHzzOC3oMBtLwYrFsVRP3CiZTh5UQV3
+         c3qtzM7Mi6pLqzQYADybjQZ5F++g7unxp+lzJ/VsowplBQpTPaoLkNirQhxinirWwtEC
+         bicA==
+X-Gm-Message-State: AOJu0YySOIdvnEDbV3QMLPGBsF6qqjcZbkBieoTOtBdjhdaMtyxdqZc6
+        IQS5IhKWAPNGmiSL1I7pTdNdOXIuqFDrtHdgPaSBwH8WYVwHTur2vTd4KERyCxTOLo8dckk/gtM
+        Yp3pORLm1s2EcyD8PQmxcs1zI
+X-Received: by 2002:a17:906:d295:b0:a19:a19b:55f6 with SMTP id ay21-20020a170906d29500b00a19a19b55f6mr1716428ejb.134.1701520994691;
+        Sat, 02 Dec 2023 04:43:14 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEkw8ECvyYB005RuSFu+FKenCisiOosr0lIXRvYlHHyXKgGxBCWlDX8Hlv33kA9TEyha+zm5A==
+X-Received: by 2002:a17:906:d295:b0:a19:a19b:55f6 with SMTP id ay21-20020a170906d29500b00a19a19b55f6mr1716421ejb.134.1701520994397;
+        Sat, 02 Dec 2023 04:43:14 -0800 (PST)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id m25-20020a170906235900b009fcb10eecb2sm2985850eja.84.2023.12.02.04.43.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 02 Dec 2023 04:43:13 -0800 (PST)
+Message-ID: <61ef73e6-e633-47e1-b599-ee66aa179227@redhat.com>
+Date:   Sat, 2 Dec 2023 13:43:13 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 0/4] ACPI: OSL: acpi_os_execute() improvements
+Content-Language: en-US, nl
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Michal Wilczynski <michal.wilczynski@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Mario Limonciello <mario.limonciello@amd.com>
+References: <3281896.aeNJFYEL58@kreacher>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <3281896.aeNJFYEL58@kreacher>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the required properties and enable the gmac node for XPI-3128 board.
+Hi,
 
-The minimum reset timing requirements for the phy have been taken from
-DP83848J's datasheet [0]
+On 11/29/23 14:45, Rafael J. Wysocki wrote:
+> Hi Everyone,
+> 
+> This series improves acpi_os_execute() on top of
+> 
+> https://patchwork.kernel.org/project/linux-acpi/patch/5745568.DvuYhMxLoT@kreacher/
+> 
+> but only the last patch really depends on it.
+> 
+> The first two patches clean up the code somewhat and the third one modifies
+> the function to allow Notify () handlers to run on all CPUs (not on CPU0 only).
+> 
+> The last patch changes it to use GFP_KERNEL for memory allocations, as it does
+> not run in interrupt context any more after the change linked above.
 
-[0] https://www.ti.com/lit/ds/symlink/dp83848j.pdf
+I have added this series, as well as the preceding
+"ACPI: OSL: Use a threaded interrupt handler for SCI"
+patch to my personal tree now, so that it will get tested on various
+devices when I run my personal tree on them.
 
-Signed-off-by: Alex Bee <knaerzche@gmail.com>
----
- .../arm/boot/dts/rockchip/rk3128-xpi-3128.dts | 28 +++++++++++++++++++
- 1 file changed, 28 insertions(+)
+I'll let you know if I hit any issues caused by this series.
 
-diff --git a/arch/arm/boot/dts/rockchip/rk3128-xpi-3128.dts b/arch/arm/boot/dts/rockchip/rk3128-xpi-3128.dts
-index 61b9f069c8a2..e979425f11a0 100644
---- a/arch/arm/boot/dts/rockchip/rk3128-xpi-3128.dts
-+++ b/arch/arm/boot/dts/rockchip/rk3128-xpi-3128.dts
-@@ -11,6 +11,7 @@ / {
- 	compatible = "geniatech,xpi-3128", "rockchip,rk3128";
- 
- 	aliases {
-+		ethernet0 = &gmac;
- 		gpio0 = &gpio0;
- 		gpio1 = &gpio1;
- 		gpio2 = &gpio2;
-@@ -255,6 +256,18 @@ &emmc {
- 	status = "okay";
- };
- 
-+&gmac {
-+	clock_in_out = "output";
-+	phy-supply = <&vcc_lan>;
-+	phy-mode = "rmii";
-+	phy-handle = <&phy0>;
-+	assigned-clocks = <&cru SCLK_MAC_SRC>;
-+	assigned-clock-rates= <50000000>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&rmii_pins>;
-+	status = "okay";
-+};
-+
- &gpio0 {
- 	gpio-line-names = /* GPIO0 A0-A7 */
- 			  "", "", "HEADER_5", "HEADER_3",
-@@ -315,6 +328,21 @@ &gpio3 {
- 			  "", "", "", "";
- };
- 
-+&mdio {
-+	phy0: ethernet-phy@1 {
-+		compatible = "ethernet-phy-ieee802.3-c22";
-+		reg = <1>;
-+		max-speed = <100>;
-+		/* T2.2.4 min. 1 us */
-+		reset-assert-us = <10>;
-+		/* T2.2.1 + T2.2.2 + T2.2.3 min. 6.05 us */
-+		reset-deassert-us = <20>;
-+		reset-gpios = <&gpio2 RK_PD0 GPIO_ACTIVE_LOW>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&dp83848c_rst>;
-+	};
-+};
-+
- &pinctrl {
- 	dp83848c {
- 		dp83848c_rst: dp83848c-rst {
--- 
-2.43.0
+Regards,
+
+Hans
+
 
