@@ -2,46 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9150801D96
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 16:52:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4713C801D9C
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 16:59:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233014AbjLBPwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 10:52:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47622 "EHLO
+        id S232988AbjLBP5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 10:57:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233000AbjLBPwI (ORCPT
+        with ESMTP id S229451AbjLBP5X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 10:52:08 -0500
+        Sat, 2 Dec 2023 10:57:23 -0500
 Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15295129;
-        Sat,  2 Dec 2023 07:52:13 -0800 (PST)
-Received: from i53875b61.versanet.de ([83.135.91.97] helo=diego.localnet)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A58F11F;
+        Sat,  2 Dec 2023 07:57:28 -0800 (PST)
+Received: from i53875b61.versanet.de ([83.135.91.97] helo=phil.lan)
         by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <heiko@sntech.de>)
-        id 1r9SHd-0002AT-MB; Sat, 02 Dec 2023 16:51:57 +0100
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        id 1r9SMq-0002DL-9W; Sat, 02 Dec 2023 16:57:20 +0100
+From:   Heiko Stuebner <heiko@sntech.de>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
         Alex Bee <knaerzche@gmail.com>
-Cc:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
+Cc:     Heiko Stuebner <heiko@sntech.de>,
         Maxime Ripard <mripard@kernel.org>,
+        David Airlie <airlied@gmail.com>, linux-pm@vger.kernel.org,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        dri-devel@lists.freedesktop.org,
+        linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
         Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-pm@vger.kernel.org,
-        Alex Bee <knaerzche@gmail.com>
-Subject: Re: [PATCH v2 2/5] ARM: dts: rockchip: Add power-controller for RK3128
-Date:   Sat, 02 Dec 2023 16:51:56 +0100
-Message-ID: <6926340.F8r316W7xa@diego>
-In-Reply-To: <20231202125144.66052-3-knaerzche@gmail.com>
+        devicetree@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
+        linux-kernel@vger.kernel.org
+Subject: Re: (subset) [PATCH v2 0/5] Add power-controller and gpu for RK3128
+Date:   Sat,  2 Dec 2023 16:57:18 +0100
+Message-Id: <170153263025.376455.12737085983971621612.b4-ty@sntech.de>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20231202125144.66052-1-knaerzche@gmail.com>
 References: <20231202125144.66052-1-knaerzche@gmail.com>
- <20231202125144.66052-3-knaerzche@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_PASS,
         T_SCC_BODY_TEXT_LINE,T_SPF_HELO_TEMPERROR autolearn=ham
         autolearn_force=no version=3.4.6
@@ -51,156 +53,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alex,
-
-Am Samstag, 2. Dezember 2023, 13:51:41 CET schrieb Alex Bee:
-> Add power controller and qos nodes for RK3128 in order to use
-> them as powerdomains.
-
-does the power-domain controller work with the incomplete set of
-pm-domains too?
-
-What I have in mind is
-- adding the power-controller node with the existing set of power-domains
-- the gpu pm-domain is in there
-- adding the gpu parts
-
-
-And a second series with
-- patch1 from here
-- a dts patch adding the additional pm-domains to rk3128.dtsi
-- I guess patch1 also should be split into a patch adding the binding-ids
-  and a separate patch for the code addition.
-
-
-Heiko
-
-> Signed-off-by: Alex Bee <knaerzche@gmail.com>
-> ---
->  arch/arm/boot/dts/rockchip/rk3128.dtsi | 101 +++++++++++++++++++++++++
->  1 file changed, 101 insertions(+)
+On Sat, 2 Dec 2023 13:51:39 +0100, Alex Bee wrote:
+> The first patch in this series fixes the pm-domain driver and adds
+> power-domains which are currently missing. This touches the ABI which is
+> not and was never used until now. Not all of them are used yet, but when
+> the power-controller is added to the DT in patch 2 the ABI should not
+> be changed again.
+> Patch 3-5 are adding the the gpu compatible to dt-bindings, adding the gpu
+> node and the respective operating points to SoC DT and finally enabling it
+> for XPI-3128 board.
 > 
-> diff --git a/arch/arm/boot/dts/rockchip/rk3128.dtsi b/arch/arm/boot/dts/rockchip/rk3128.dtsi
-> index 4e8b38604ecd..b72905db04f7 100644
-> --- a/arch/arm/boot/dts/rockchip/rk3128.dtsi
-> +++ b/arch/arm/boot/dts/rockchip/rk3128.dtsi
-> @@ -8,6 +8,7 @@
->  #include <dt-bindings/interrupt-controller/arm-gic.h>
->  #include <dt-bindings/interrupt-controller/irq.h>
->  #include <dt-bindings/pinctrl/rockchip.h>
-> +#include <dt-bindings/power/rk3128-power.h>
->  
->  / {
->  	compatible = "rockchip,rk3128";
-> @@ -133,6 +134,106 @@ smp-sram@0 {
->  	pmu: syscon@100a0000 {
->  		compatible = "rockchip,rk3128-pmu", "syscon", "simple-mfd";
->  		reg = <0x100a0000 0x1000>;
-> +
-> +		power: power-controller {
-> +			compatible = "rockchip,rk3128-power-controller";
-> +			#power-domain-cells = <1>;
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +
-> +			power-domain@RK3128_PD_VIO {
-> +				reg = <RK3128_PD_VIO>;
-> +				clocks = <&cru ACLK_CIF>,
-> +					 <&cru HCLK_CIF>,
-> +					 <&cru DCLK_EBC>,
-> +					 <&cru HCLK_EBC>,
-> +					 <&cru ACLK_IEP>,
-> +					 <&cru HCLK_IEP>,
-> +					 <&cru ACLK_LCDC0>,
-> +					 <&cru HCLK_LCDC0>,
-> +					 <&cru PCLK_MIPI>,
-> +					 <&cru ACLK_RGA>,
-> +					 <&cru HCLK_RGA>,
-> +					 <&cru ACLK_VIO0>,
-> +					 <&cru ACLK_VIO1>,
-> +					 <&cru HCLK_VIO>,
-> +					 <&cru HCLK_VIO_H2P>,
-> +					 <&cru DCLK_VOP>,
-> +					 <&cru SCLK_VOP>;
-> +				pm_qos = <&qos_ebc>,
-> +					 <&qos_iep>,
-> +					 <&qos_lcdc>,
-> +					 <&qos_rga>,
-> +					 <&qos_vip>;
-> +				#power-domain-cells = <0>;
-> +			};
-> +
-> +			power-domain@RK3128_PD_VIDEO {
-> +				reg = <RK3128_PD_VIDEO>;
-> +				clocks = <&cru ACLK_VDPU>,
-> +					 <&cru HCLK_VDPU>,
-> +					 <&cru ACLK_VEPU>,
-> +					 <&cru HCLK_VEPU>,
-> +					 <&cru SCLK_HEVC_CORE>;
-> +				pm_qos = <&qos_vpu>;
-> +				#power-domain-cells = <0>;
-> +			};
-> +
-> +			power-domain@RK3128_PD_GPU {
-> +				reg = <RK3128_PD_GPU>;
-> +				clocks = <&cru ACLK_GPU>;
-> +				pm_qos = <&qos_gpu>;
-> +				#power-domain-cells = <0>;
-> +			};
-> +
-> +			power-domain@RK3128_PD_CRYPTO {
-> +				reg = <RK3128_PD_CRYPTO>;
-> +				clocks = <&cru HCLK_CRYPTO>,
-> +					 <&cru SCLK_CRYPTO>;
-> +				pm_qos = <&qos_crypto>;
-> +				#power-domain-cells = <0>;
-> +			};
-> +		};
-> +	};
-> +
-> +	qos_crypto: qos@10128080 {
-> +		compatible = "rockchip,rk3128-qos", "syscon";
-> +		reg = <0x10128080 0x20>;
-> +	};
-> +
-> +	qos_gpu: qos@1012d000 {
-> +		compatible = "rockchip,rk3128-qos", "syscon";
-> +		reg = <0x1012d000 0x20>;
-> +	};
-> +
-> +	qos_vpu: qos@1012e000 {
-> +		compatible = "rockchip,rk3128-qos", "syscon";
-> +		reg = <0x1012e000 0x20>;
-> +	};
-> +
-> +	qos_rga: qos@1012f000 {
-> +		compatible = "rockchip,rk3128-qos", "syscon";
-> +		reg = <0x1012f000 0x20>;
-> +	};
-> +
-> +	qos_ebc: qos@1012f080 {
-> +		compatible = "rockchip,rk3128-qos", "syscon";
-> +		reg = <0x1012f080 0x20>;
-> +	};
-> +
-> +	qos_iep: qos@1012f100 {
-> +		compatible = "rockchip,rk3128-qos", "syscon";
-> +		reg = <0x1012f100 0x20>;
-> +	};
-> +
-> +	qos_lcdc: qos@1012f180 {
-> +		compatible = "rockchip,rk3128-qos", "syscon";
-> +		reg = <0x1012f180 0x20>;
-> +	};
-> +
-> +	qos_vip: qos@1012f200 {
-> +		compatible = "rockchip,rk3128-qos", "syscon";
-> +		reg = <0x1012f200 0x20>;
->  	};
->  
->  	gic: interrupt-controller@10139000 {
-> 
+> [...]
 
+Applied, thanks!
 
+[3/5] dt-bindings: gpu: mali-utgard: Add Rockchip RK3128 compatible
+      commit: 5d86c15c3171c3ecebd84d53e30d9812b5591c84
 
-
+Best regards,
+-- 
+Heiko Stuebner <heiko@sntech.de>
