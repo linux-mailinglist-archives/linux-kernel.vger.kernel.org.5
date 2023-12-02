@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD38C8018A3
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 01:07:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5F0E80189C
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 01:07:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441989AbjLBAGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 19:06:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42602 "EHLO
+        id S1442173AbjLBAGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 19:06:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442124AbjLBAFl (ORCPT
+        with ESMTP id S1442128AbjLBAFl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 1 Dec 2023 19:05:41 -0500
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAD2F199F
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 16:05:13 -0800 (PST)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5c87663a873so39602697b3.2
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 16:05:13 -0800 (PST)
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFC891BCD
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 16:05:15 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-db539c987e0so1538753276.3
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 16:05:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701475513; x=1702080313; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1701475515; x=1702080315; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=sn5K0TUz/ND3xDsLXUagKvVZbAXVyeU2LAAk3nLknAQ=;
-        b=je2wEPOphLZAZjfRFJNa2KF5G1I4U0vFNbnTo2yoPrB2K8cpdwT9P/oOWhZTPaw28n
-         uQhAAY9AC9BJWydnxGtq5mx6FTmg/V5USlEPqI0eejjscvipmMKPFGt03BHraLShbQoP
-         BTEE3n+cOLBPLNd7mpE69gTUf7op+PrbpomO94yyvcqrN9Kl7OsGikkkfOMsnCu2XKoh
-         au55mTq38RQENeuktx7odaQq9lh3R+ZZ82eG3Mgh4MRh9C2t0WB358rDnibvG8jgt25g
-         0VRtVNx9YzSmVRmnp4M/OMojZmyoWBmLeDsAl1W0av6WKqF9gygN8wv2xg3NfuXG3bwt
-         RdPg==
+        bh=xw+c5GCsB2b8QDdbiEI/AG23aqiIRhU7uRpXc8eyon4=;
+        b=WkRoMeuko5UfiH3J/18cIfBk1gCbDo1soCgiSVD2hd56Qv4TnX8smp4Ygii8l5KeAI
+         QGHhHNLZqoatieppkT8MzCt7nKGhv4evi9+Kt6QLyDJUw/s+hdSC+FqhnKa3QO4FKnJY
+         bQxvCdX2yh3fBwDcJjyv4VQr7q5rez9QtWpLRR3wh7JjBL5NMRGbX3YXtT/3OFRPKXl7
+         4vx7JSEz7vWGXpGshQQTbtJwpkQbshhLXFHV2Y3LB7mBrrmqb1M1E47nOKJ2GSblCRWN
+         KHEhQDfIBHdZNZNiqfumbY//7oHTMSDVChc49nDJ8GaLJNRj6YsmQxDR1UhY73Oo9UGV
+         LjAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701475513; x=1702080313;
+        d=1e100.net; s=20230601; t=1701475515; x=1702080315;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=sn5K0TUz/ND3xDsLXUagKvVZbAXVyeU2LAAk3nLknAQ=;
-        b=EsD3CZeEoU00PV7bY3mQ+FcPbQ1gCCtUXumttlR4eKdlqE4G1oqO8ZKiR1sbKZXvzR
-         Bqq/FFEsbPGzt1H19jE0Ghkjycb3MBGJhqvj2AS/eeJeGpG7zAbmluI2ZMMTZkIMfqbZ
-         WV3YKzw/1BKQn1WYdOaGVZY2sQUWTxs3IqBrnsKRFt+M+cj9YgzWk+QUEe30e7Vtzy68
-         ijCt0Vziin0zoOdeSAiB/HrKj5sZWT4U9QZOpxhZB2zsgo7VgPoP1xAf//dosy67HU0L
-         zpOeZcyhE6ir6F15/dmUAWt3qtmU/lza90po+WECQ0vTo1Hc6YD5G/hoK8J9wULTP685
-         8eZw==
-X-Gm-Message-State: AOJu0YxFkalzKG0D3IifnWQoOUlxys1FgbNdVMHoqNiICCWfJcGBXMNT
-        B/ZsMrZRH0rRGs/O/cAd1lcZ1jEI1pc=
-X-Google-Smtp-Source: AGHT+IGU5VUK2zTQkg8a/XGiiJ4Q3YoMqy7bJoHyeFwrZZ6a/+7kCqG4KfTBQRJGcM+jcjHoD9/fRhNhGkk=
+        bh=xw+c5GCsB2b8QDdbiEI/AG23aqiIRhU7uRpXc8eyon4=;
+        b=GfVE5GxfWF5SHt7HvmNXH758yScE8Gt3w8IamAOHlb/z2b6mTI7hes8LPpYKAtUMFc
+         HVy+3+8s23NJL1lrL0vX56XX3HLysWrXEc/xQI29TtsVbjTCdEti90XmifbNi8kZv/Wg
+         eggTO0VnljABe61RImhy2TyY1QnlgYaFauB3APtEtN6TPAXwjpDHfTWrAjfwFs6Oy1qr
+         +YWAgEFoCokJVnzbNYCBrZINcqC6PCydzagmj+fSBoJLm4w2b8srt+iVdAIH48HG1wMW
+         EmoZsjfiauICnJYM9h/pixowCFvth4LCwGxm2dc2ZR0WeQfXbA4EO7yhuhCnWQxmRy9r
+         8Jew==
+X-Gm-Message-State: AOJu0YysGVl8aBoWjPaVwwEX0coAFKzq7bc3D4hf+qgstDXMMOL27Tmu
+        m/e7kWh65COTy9ZUlcfR/ToKSqTASNo=
+X-Google-Smtp-Source: AGHT+IGhkJP5g/XYfw/UjHT//gHh8kp5x/HRzqm+5MPT1PYzribzU2fOgOj6KCB2Mi95jvctFRT8RUus6/0=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:d6d1:0:b0:db7:dce9:76d3 with SMTP id
- n200-20020a25d6d1000000b00db7dce976d3mr11991ybg.9.1701475512974; Fri, 01 Dec
- 2023 16:05:12 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a25:3f87:0:b0:d9a:36cd:482e with SMTP id
+ m129-20020a253f87000000b00d9a36cd482emr838388yba.13.1701475515032; Fri, 01
+ Dec 2023 16:05:15 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri,  1 Dec 2023 16:04:16 -0800
+Date:   Fri,  1 Dec 2023 16:04:17 -0800
 In-Reply-To: <20231202000417.922113-1-seanjc@google.com>
 Mime-Version: 1.0
 References: <20231202000417.922113-1-seanjc@google.com>
 X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
-Message-ID: <20231202000417.922113-28-seanjc@google.com>
-Subject: [PATCH v9 27/28] KVM: selftests: Add helpers for safe and safe+forced
- RDMSR, RDPMC, and XGETBV
+Message-ID: <20231202000417.922113-29-seanjc@google.com>
+Subject: [PATCH v9 28/28] KVM: selftests: Extend PMU counters test to validate
+ RDPMC after WRMSR
 From:   Sean Christopherson <seanjc@google.com>
 To:     Sean Christopherson <seanjc@google.com>,
         Paolo Bonzini <pbonzini@redhat.com>
@@ -77,68 +77,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add helpers for safe and safe-with-forced-emulations versions of RDMSR,
-RDPMC, and XGETBV.  Use macro shenanigans to eliminate the rather large
-amount of boilerplate needed to get values in and out of registers.
+Extend the read/write PMU counters subtest to verify that RDPMC also reads
+back the written value.  Opportunsitically verify that attempting to use
+the "fast" mode of RDPMC fails, as the "fast" flag is only supported by
+non-architectural PMUs, which KVM doesn't virtualize.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- .../selftests/kvm/include/x86_64/processor.h  | 40 +++++++++++++------
- 1 file changed, 27 insertions(+), 13 deletions(-)
+ .../selftests/kvm/x86_64/pmu_counters_test.c  | 41 +++++++++++++++++++
+ 1 file changed, 41 insertions(+)
 
-diff --git a/tools/testing/selftests/kvm/include/x86_64/processor.h b/tools/testing/selftests/kvm/include/x86_64/processor.h
-index fe891424ff55..abac816f6594 100644
---- a/tools/testing/selftests/kvm/include/x86_64/processor.h
-+++ b/tools/testing/selftests/kvm/include/x86_64/processor.h
-@@ -1216,21 +1216,35 @@ void vm_install_exception_handler(struct kvm_vm *vm, int vector,
- 	vector;								\
- })
+diff --git a/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c b/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
+index cb808ac827ba..ae5f6042f1e8 100644
+--- a/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
++++ b/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
+@@ -325,9 +325,30 @@ __GUEST_ASSERT(expect_gp ? vector == GP_VECTOR : !vector,			\
+ 		       "Expected " #insn "(0x%x) to yield 0x%lx, got 0x%lx",	\
+ 		       msr, expected_val, val);
  
--static inline uint8_t rdmsr_safe(uint32_t msr, uint64_t *val)
--{
--	uint64_t error_code;
--	uint8_t vector;
--	uint32_t a, d;
--
--	asm volatile(KVM_ASM_SAFE("rdmsr")
--		     : "=a"(a), "=d"(d), KVM_ASM_SAFE_OUTPUTS(vector, error_code)
--		     : "c"(msr)
--		     : KVM_ASM_SAFE_CLOBBERS);
--
--	*val = (uint64_t)a | ((uint64_t)d << 32);
--	return vector;
-+#define BUILD_READ_U64_SAFE_HELPER(insn, _fep, _FEP)			\
-+static inline uint8_t insn##_safe ##_fep(uint32_t idx, uint64_t *val)	\
-+{									\
-+	uint64_t error_code;						\
-+	uint8_t vector;							\
-+	uint32_t a, d;							\
-+									\
-+	asm volatile(KVM_ASM_SAFE##_FEP(#insn)				\
-+		     : "=a"(a), "=d"(d),				\
-+		       KVM_ASM_SAFE_OUTPUTS(vector, error_code)		\
-+		     : "c"(idx)						\
-+		     : KVM_ASM_SAFE_CLOBBERS);				\
-+									\
-+	*val = (uint64_t)a | ((uint64_t)d << 32);			\
-+	return vector;							\
- }
- 
-+/*
-+ * Generate {insn}_safe() and {insn}_safe_fep() helpers for instructions that
-+ * use ECX as in input index, and EDX:EAX as a 64-bit output.
-+ */
-+#define BUILD_READ_U64_SAFE_HELPERS(insn)				\
-+	BUILD_READ_U64_SAFE_HELPER(insn, , )				\
-+	BUILD_READ_U64_SAFE_HELPER(insn, _fep, _FEP)			\
++static void guest_test_rdpmc(uint32_t rdpmc_idx, bool expect_success,
++			     uint64_t expected_val)
++{
++	uint8_t vector;
++	uint64_t val;
 +
-+BUILD_READ_U64_SAFE_HELPERS(rdmsr)
-+BUILD_READ_U64_SAFE_HELPERS(rdpmc)
-+BUILD_READ_U64_SAFE_HELPERS(xgetbv)
++	vector = rdpmc_safe(rdpmc_idx, &val);
++	GUEST_ASSERT_PMC_MSR_ACCESS(RDPMC, rdpmc_idx, !expect_success, vector);
++	if (expect_success)
++		GUEST_ASSERT_PMC_VALUE(RDPMC, rdpmc_idx, val, expected_val);
 +
- static inline uint8_t wrmsr_safe(uint32_t msr, uint64_t val)
++	if (!is_forced_emulation_enabled)
++		return;
++
++	vector = rdpmc_safe_fep(rdpmc_idx, &val);
++	GUEST_ASSERT_PMC_MSR_ACCESS(RDPMC, rdpmc_idx, !expect_success, vector);
++	if (expect_success)
++		GUEST_ASSERT_PMC_VALUE(RDPMC, rdpmc_idx, val, expected_val);
++}
++
+ static void guest_rd_wr_counters(uint32_t base_msr, uint8_t nr_possible_counters,
+ 				 uint8_t nr_counters, uint32_t or_mask)
  {
- 	return kvm_asm_safe("wrmsr", "a"(val & -1u), "d"(val >> 32), "c"(msr));
++	const bool pmu_has_fast_mode = !guest_get_pmu_version();
+ 	uint8_t i;
+ 
+ 	for (i = 0; i < nr_possible_counters; i++) {
+@@ -352,6 +373,7 @@ static void guest_rd_wr_counters(uint32_t base_msr, uint8_t nr_possible_counters
+ 		const uint64_t expected_val = expect_success ? test_val : 0;
+ 		const bool expect_gp = !expect_success && msr != MSR_P6_PERFCTR0 &&
+ 				       msr != MSR_P6_PERFCTR1;
++		uint32_t rdpmc_idx;
+ 		uint8_t vector;
+ 		uint64_t val;
+ 
+@@ -365,6 +387,25 @@ static void guest_rd_wr_counters(uint32_t base_msr, uint8_t nr_possible_counters
+ 		if (!expect_gp)
+ 			GUEST_ASSERT_PMC_VALUE(RDMSR, msr, val, expected_val);
+ 
++		/*
++		 * Redo the read tests with RDPMC, which has different indexing
++		 * semantics and additional capabilities.
++		 */
++		rdpmc_idx = i;
++		if (base_msr == MSR_CORE_PERF_FIXED_CTR0)
++			rdpmc_idx |= INTEL_RDPMC_FIXED;
++
++		guest_test_rdpmc(rdpmc_idx, expect_success, expected_val);
++
++		/*
++		 * KVM doesn't support non-architectural PMUs, i.e. it should
++		 * impossible to have fast mode RDPMC.  Verify that attempting
++		 * to use fast RDPMC always #GPs.
++		 */
++		GUEST_ASSERT(!expect_success || !pmu_has_fast_mode);
++		rdpmc_idx |= INTEL_RDPMC_FAST;
++		guest_test_rdpmc(rdpmc_idx, false, -1ull);
++
+ 		vector = wrmsr_safe(msr, 0);
+ 		GUEST_ASSERT_PMC_MSR_ACCESS(WRMSR, msr, expect_gp, vector);
+ 	}
 -- 
 2.43.0.rc2.451.g8631bc7472-goog
 
