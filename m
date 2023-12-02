@@ -2,114 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0C8E801B86
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 09:36:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3718C801B89
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 09:36:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230093AbjLBIgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 03:36:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43368 "EHLO
+        id S229379AbjLBIgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 03:36:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjLBIgg (ORCPT
+        with ESMTP id S231234AbjLBIgo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 03:36:36 -0500
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::221])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0711C196;
-        Sat,  2 Dec 2023 00:36:41 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 6476F240003;
-        Sat,  2 Dec 2023 08:36:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
-        t=1701506200;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=U2wLMvIIVt4NNTdGsFG3SPBRcTEOfz3PdLa/GlA7GzU=;
-        b=pCSuWAI9D8zF/hQO2V4ig9tFsgd/ew1diFvWU/0pjWH64JXKoxcouGA+Mzja+/yl4zDoov
-        dZF4PpQQKhIXp3LNwFSJGwiHwdRNE7yZs8buTVxP+k7oTs/212WKhDvPKSFzNsn0ALf0oL
-        q68fPW3eq2W9Db7kqa7QDVT6YQPyFgz7AstIXWbpDUCmHorRjocpPgjfmee9962uKVqPfn
-        R9v1QZxORbOLzp1WoB71qxsDqJeFLkW2OYmpzw/YWXZvhxXoOBJ1PX/7dW+/B1ZIpoY+Jv
-        mpVGOWeakcUTBSIRkNJA/4MjvH1fKxC0GmD4coHpvGPYI5Tb00JUT2hfNN4H+A==
-Message-ID: <5e95a436-189f-412e-b409-89a003003292@arinc9.com>
-Date:   Sat, 2 Dec 2023 11:36:03 +0300
+        Sat, 2 Dec 2023 03:36:44 -0500
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D957D6C;
+        Sat,  2 Dec 2023 00:36:50 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-33330305372so1261768f8f.3;
+        Sat, 02 Dec 2023 00:36:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701506209; x=1702111009; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=W1Cz0Am5xXhDu9ok/VyPf97AG12MnC7CAXjo29WYQyA=;
+        b=F8GXHgImotqHhG1331JclfAugip4b6+Hbx2zn+P9NaE6JdfDP/zZJPQGstZd917Awd
+         dZ6NRBn8CfRMU8bkS2xg17M1yHrDY/3yzUR6zNVoNkANcxzjxD5BfFUevNR3VQVZ+pDs
+         Ga30V6peVOhmrbWi9OzXKTOsjtOzzauNvTa7hzstLB50S09kfln0n2aRl5FfPmWaEe/x
+         l1kQJuA2JPIGroxY8/hsUlT86wc2qHjWpQcOWtI0h1LROYGXIM7dwt4BHsFPtNKNEtfI
+         Zp66Dw3B0HZoZMsziuI/eMtyHnvEIuTcdUnpcgIYszaTBqxW93td5XM5sD+cpdzn5vJ/
+         TyqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701506209; x=1702111009;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=W1Cz0Am5xXhDu9ok/VyPf97AG12MnC7CAXjo29WYQyA=;
+        b=OXM34YHQd7Asf4tSnumT+SwFQd+z20sWQDBfcx+JxzGcKEntoGvVfIeEpdZzFpitkO
+         np05VCALtZggVJtBD0EQfbY6BDj2Ew5Txn2dc0w3w/3tnHG+gaAvzckNuPBOO2qNBenN
+         Unei1kQmJfvj4Dq8GvviWZvlzgiZ4YDWcbhkKnrpB0rJIM1J1YmPXEBm5tNCXHrPwaIT
+         syOxBkxyDWYOgujazs0S+lbcYhUkuXtO1ESfcmb3/ocjwr9qwQPdxeJdIG0IJFufuJgP
+         gCiy5lu0MjP3/qCKzDbVHDeGdx6DsIQi5ny3r2JNoDwTuCcAcMJkr4ssej5MmHpt7uIg
+         6IbA==
+X-Gm-Message-State: AOJu0YzC4zcDXqmWcBPSTIB+2E86hXTXKp2a8Yvx57pzvCD3ItuRlTrc
+        4gjHb1BxGNfWSJtBGL6swd42jKwJiDTh5OYg
+X-Google-Smtp-Source: AGHT+IHfOF9eY0WrOu55dMkRd4h3vvFangyeO/vbLfS+S7/JyE28Xxaslwnvil95OAMEwGRBkNthTw==
+X-Received: by 2002:a05:6000:8c:b0:332:d504:c138 with SMTP id m12-20020a056000008c00b00332d504c138mr1564309wrx.1.1701506208355;
+        Sat, 02 Dec 2023 00:36:48 -0800 (PST)
+Received: from ?IPv6:2001:a61:3456:4e01:6ae:b55a:bd1d:57fc? ([2001:a61:3456:4e01:6ae:b55a:bd1d:57fc])
+        by smtp.gmail.com with ESMTPSA id l7-20020a05600002a700b00332eb16d215sm6278953wry.23.2023.12.02.00.36.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 02 Dec 2023 00:36:47 -0800 (PST)
+Message-ID: <3925cb4b6453644c889675c20329b3477a06fcd5.camel@gmail.com>
+Subject: Re: [PATCH 04/12] iio: adc: ad9467: fix reset gpio handling
+From:   Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
+To:     David Lechner <dlechner@baylibre.com>
+Cc:     nuno.sa@analog.com, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-iio@vger.kernel.org,
+        Olivier MOYSAN <olivier.moysan@foss.st.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>
+Date:   Sat, 02 Dec 2023 09:36:47 +0100
+In-Reply-To: <CAMknhBGjm2ja9HOenOWi9O5Ao8qUg=gT=_Vz8CyxQ=pfNX2EJQ@mail.gmail.com>
+References: <20231121-dev-iio-backend-v1-0-6a3d542eba35@analog.com>
+         <20231121-dev-iio-backend-v1-4-6a3d542eba35@analog.com>
+         <CAMknhBGCqnzCp6vQ+59Z-SybScvbtU7aWdAD6KnP1e6=q60gVQ@mail.gmail.com>
+         <d534c3323c32d4ed2aedae19a9f101be90ef0cc7.camel@gmail.com>
+         <CAMknhBGjm2ja9HOenOWi9O5Ao8qUg=gT=_Vz8CyxQ=pfNX2EJQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 05/15] net: dsa: mt7530: improve code path for
- setting up port 5
-Content-Language: en-US
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     Daniel Golle <daniel@makrotopia.org>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        DENG Qingfang <dqfext@gmail.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Frank Wunderlich <frank-w@public-files.de>,
-        Bartel Eerdekens <bartel.eerdekens@constell8.be>,
-        mithat.guner@xeront.com, erkin.bozoglu@xeront.com
-References: <20231118123205.266819-1-arinc.unal@arinc9.com>
- <20231118123205.266819-6-arinc.unal@arinc9.com>
- <ZVjNJ0nf7Mp0kHzH@shell.armlinux.org.uk>
-From:   =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-In-Reply-To: <ZVjNJ0nf7Mp0kHzH@shell.armlinux.org.uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: arinc.unal@arinc9.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18.11.2023 17:41, Russell King (Oracle) wrote:
-> On Sat, Nov 18, 2023 at 03:31:55PM +0300, Arınç ÜNAL wrote:
->> There're two code paths for setting up port 5:
->>
->> mt7530_setup()
->> -> mt7530_setup_port5()
->>
->> mt753x_phylink_mac_config()
->> -> mt753x_mac_config()
->>     -> mt7530_mac_config()
->>        -> mt7530_setup_port5()
->>
->> Currently mt7530_setup_port5() from mt7530_setup() always runs. If port 5
->> is used as a CPU, DSA, or user port, mt7530_setup_port5() from
->> mt753x_phylink_mac_config() won't run. That is because priv->p5_interface
->> set on mt7530_setup_port5() will match state->interface on
->> mt753x_phylink_mac_config() which will stop running mt7530_setup_port5()
->> again.
->>
->> Therefore, mt7530_setup_port5() will never run from
->> mt753x_phylink_mac_config().
->>
->> Address this by not running mt7530_setup_port5() from mt7530_setup() if
->> port 5 is used as a CPU, DSA, or user port. This driver isn't in the
->> dsa_switches_apply_workarounds[] array so phylink will always be present.
->>
->> For the cases of PHY muxing or the port being disabled, call
->> mt7530_setup_port5() from mt7530_setup(). mt7530_setup_port5() from
->> mt753x_phylink_mac_config() won't run when port 5 is disabled or used for
->> PHY muxing as port 5 won't be defined on the devicetree.
-> 
-> ... and this should state why this needs to happen - in other words,
-> the commit message should state why is it critical that port 5 is
-> always setup.
+On Fri, 2023-12-01 at 11:01 -0600, David Lechner wrote:
+> On Fri, Dec 1, 2023 at 2:47=E2=80=AFAM Nuno S=C3=A1 <noname.nuno@gmail.co=
+m> wrote:
+> >=20
+> > On Thu, 2023-11-30 at 15:41 -0600, David Lechner wrote:
+> > > On Tue, Nov 21, 2023 at 4:17=E2=80=AFAM Nuno Sa via B4 Relay
+> > > <devnull+nuno.sa.analog.com@kernel.org> wrote:
+> > > >=20
+> > > > From: Nuno Sa <nuno.sa@analog.com>
+> > > >=20
+> > > > The reset gpio was being requested with GPIOD_OUT_LOW which means, =
+not
+> > > > asserted. Then it was being asserted but never de-asserted which me=
+ans
+> > > > the devices was left in reset. Fix it by de-asserting the gpio.
+> > >=20
+> > > It could be helpful to update the devicetree bindings to state the
+> > > expected active-high or active-low setting for this gpio so it is
+> > > clear which state means asserted.
+> > >=20
+> >=20
+> > You could state that the chip is active low but I don't see that change=
+ that
+> > important for now. Not sure if this is clear and maybe that's why your =
+comment.
+> > GPIOD_OUT_HIGH has nothing to do with active high or low. It just means=
+, "get me
+> > the
+> > pin in the asserted state".
+> >=20
+>=20
+> I would assume that this bug happened in the first place because
+> someone forgot GPIOD_OUT_LOW in the devicetree when they were
+> developing the driver. So this is why I suggested that updating the
+> devicetree binding docs so that future users are less likely to make
+> the same mistake. Currently, the bindings don't even have reset-gpios
+> in the examples.
 
-Actually, port 5 must not always be setup. With patch 7, I explain this
-while preventing mt7530_setup_port5() from running if port 5 is disabled.
+Hmm, I think you're missing the point... The bug has nothing to do with dev=
+icetree.
+This is what was happening:
 
-Arınç
+1) We were calling devm_gpiod_get_optional() with GPIOD_OUT_LOW. What this =
+means is
+that you get an output gpio deasserted. Hence the device is out of reset. A=
+nd here is
+the important part... what you have in dts does not matter. If you have act=
+ive low,
+it means the pin level will be 1. If you have high, the pin level is 0. And=
+ this is
+all handled by gpiolib for you.
+
+2) Then, we called gpiod_direction_output(..., 1), which means set the dire=
+ction out
+(which is actually not needed since it was already done when getting the pi=
+n) and
+assert the pin. Hence, reset the device. And we were never de-asserting the=
+ pin so
+the device would be left in reset.
+
+- Nuno S=C3=A1
