@@ -2,184 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81A68801D02
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 14:21:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CB77801D05
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 14:21:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232759AbjLBNSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 08:18:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33684 "EHLO
+        id S232809AbjLBNUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 08:20:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjLBNSD (ORCPT
+        with ESMTP id S229451AbjLBNUj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 08:18:03 -0500
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B03B512D
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 05:18:09 -0800 (PST)
-Received: by mail-pj1-x102b.google.com with SMTP id 98e67ed59e1d1-2860f7942b0so2888241a91.2
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Dec 2023 05:18:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701523089; x=1702127889; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=jNVEJdsKmtNdAZNQabZKbCjHnVndczD1cYDvKeqA9lU=;
-        b=kQ+yekkqyyQ/F7nqbj0C6HqKvw0Tup0vVuQiicGgP4IC/ANGEkujayhNxdFdSwsyxy
-         TkysHUsjJDwGqz3u0GIXHoMbTPZPHZarGygKGO0Rx6pZb/O4/PgU0utBzwzNK/V3K2M5
-         BrhjFZZ/9kthEzTvr0gtuaEa8ZwT0CrCjOG1anI4URNp8l62sGHHO8wKHzZWvqR+0RGC
-         fbsfHqnmrDkQoh6oe7SX8YQvYC9YuRkone5zvPeeWnlpSbvWbFuUSP5+/vcxhgUjrebM
-         mpmdP0PrjHd8y70uLer18ihGAt9xdbH/W3GwdYR+jeRdfihRWcKE48O4kSlPPZNIli0p
-         dvng==
+        Sat, 2 Dec 2023 08:20:39 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7676F3
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 05:20:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701523245;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PZttw52m3Y5BO6pRmTs4fgflOUqVdmw26+ZPrsBdZjU=;
+        b=bjOVjawIBqzxU6JsrOG0JHx1OyThriw5SmPTEmKFJlJ39mY2R6dx/4qRCivFbastMfmQbx
+        ELzm325C9Erv2U6FtjOT8QG7b2xOA/pVvePvOPuznyHGGUTjA0QA1Verax18MJ5w8pQLpV
+        GEho2jgMncYTJOjzhdVfqeqCuaVrmdA=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-629-I0Twm4L0MFiTaeJmgoKsag-1; Sat, 02 Dec 2023 08:20:43 -0500
+X-MC-Unique: I0Twm4L0MFiTaeJmgoKsag-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-40b39377136so21361595e9.1
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Dec 2023 05:20:43 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701523089; x=1702127889;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jNVEJdsKmtNdAZNQabZKbCjHnVndczD1cYDvKeqA9lU=;
-        b=BwYiwHx8VQ4sa7GaiLxUNFODLyG2dHF15T8bGqL+Zx7muwi6hCgVAeF3uxJKIANgxm
-         Yz4fN+obHMmtnW1aD/2plOOBkWsbvt3TVUSc+LSgYwnqdbFbjsf4P54UTiIZDqcgcTzM
-         TihNa+SV+TKH6udpQ/0ta2W7wr79EO5qrRTCLtFf9gI50TM4CVEzQSZuE0IK5laEkbVe
-         dsajC6+nu1oVIv9ClMIkAKS6WOsYXTgTT3bpcF9Pjsv8baqmthghyltVmsUdoHBvHaLV
-         +TiY3Gu5S34L7844IvWAJw7/WBQ72tgXbbMdfUpm0rClegCeO08WBcATWmoNa9DUiBAj
-         Jcgw==
-X-Gm-Message-State: AOJu0Yyj+l5SdpQ/gtf7IEBweTf/I0iESkzDOC8ua326MCfMhb8Raquo
-        hs/PByaExkE2pfXAeE8TKicrNsIiAu4+Dw==
-X-Google-Smtp-Source: AGHT+IFOq0d0LRMXn8YCPuRoNoCReXQ3iXZt40M5xeNoz63J9Dvc2qGv1phScVe1QzgEMsvzDh1eKw==
-X-Received: by 2002:a17:90b:314b:b0:285:bc16:6135 with SMTP id ip11-20020a17090b314b00b00285bc166135mr786807pjb.30.1701523089140;
-        Sat, 02 Dec 2023 05:18:09 -0800 (PST)
-Received: from archie.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id ei11-20020a17090ae54b00b002864f7464a0sm3583519pjb.31.2023.12.02.05.18.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Dec 2023 05:18:08 -0800 (PST)
-Received: by archie.me (Postfix, from userid 1000)
-        id 10BD61033DCD7; Sat,  2 Dec 2023 20:18:02 +0700 (WIB)
-Date:   Sat, 2 Dec 2023 20:18:02 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Gert Vanhaerents <gert.vanhaerents@hotmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux Nouveau <nouveau@lists.freedesktop.org>
-Cc:     Karol Herbst <kherbst@redhat.com>, Lyude Paul <lyude@redhat.com>,
-        Danilo Krummrich <dakr@redhat.com>
-Subject: Re: Kernel problem with multiseat on one card
-Message-ID: <ZWsuiq7zrYS-pDli@archie.me>
-References: <AM7PR10MB39235DD53D163910E88FDB938E82A@AM7PR10MB3923.EURPRD10.PROD.OUTLOOK.COM>
- <AM7PR10MB3923E07D6024434077E95EBA8E82A@AM7PR10MB3923.EURPRD10.PROD.OUTLOOK.COM>
+        d=1e100.net; s=20230601; t=1701523242; x=1702128042;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PZttw52m3Y5BO6pRmTs4fgflOUqVdmw26+ZPrsBdZjU=;
+        b=IKpkBZmmK+3U78GD/ReQmfGzepRuMnqEimtKO5yRPoAuZMJhhWfm8vfdjxqBPhwUi7
+         lANfaWGI+HKFB/OC/DZbLafCD/iG8jmrr2xOjGyZn/FeF3NfVTMcD5h+0c4p/eyGxF6e
+         es9SiLtUA9XpV8QTwFvmt5uNVQ3VqI6NivDdtbctH8r3+BEIxyHOdKY2PyWapR+dSEuz
+         uQFjcMg12DA5PWosM2ziCI/hwA4eCn4CU6dC9sVVTPxG81zZV/w6oynndiEczkntC04S
+         n1108xd8Nj7P6p94HEsLHa7P06XTpUzksfbTGC7H3Dl75dQlUw7eQMGySZmuoFYoBm4c
+         0AAQ==
+X-Gm-Message-State: AOJu0YwyIVHRMSIq6KPVIAZFm+Mmm74KagJS0A1SWyh1PKPIqFXenygU
+        /Vsv3cViX2AT/ndixWDQww/Az4AIx2OkrSc6mH5aB2bXuVTmHl1ioutq4FukpWd34dx5kRTfPvF
+        DzLRz25pEo+FoKx0R9i/bT0IM
+X-Received: by 2002:a05:600c:4f11:b0:40b:5e21:ec2d with SMTP id l17-20020a05600c4f1100b0040b5e21ec2dmr1121575wmq.95.1701523242234;
+        Sat, 02 Dec 2023 05:20:42 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGLltLfkoO5OH2qY5+ren3SKxd2ZTe11cQhLH7Sg7oQT2aEydS/UK0AWu4SPL2rbaimjc+NaA==
+X-Received: by 2002:a05:600c:4f11:b0:40b:5e21:ec2d with SMTP id l17-20020a05600c4f1100b0040b5e21ec2dmr1121569wmq.95.1701523241891;
+        Sat, 02 Dec 2023 05:20:41 -0800 (PST)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id fd22-20020a056402389600b0054c21d1fda7sm1932805edb.1.2023.12.02.05.20.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 02 Dec 2023 05:20:41 -0800 (PST)
+Message-ID: <b9319272-5e29-4de6-8921-fdac474e421f@redhat.com>
+Date:   Sat, 2 Dec 2023 14:20:40 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="dTlN31Mink/VwRIe"
-Content-Disposition: inline
-In-Reply-To: <AM7PR10MB3923E07D6024434077E95EBA8E82A@AM7PR10MB3923.EURPRD10.PROD.OUTLOOK.COM>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 4/6] ACPI: acpi_video: Replace acpi_driver with
+ platform_driver
+To:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Michal Wilczynski <michal.wilczynski@intel.com>
+Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rafael.j.wysocki@intel.com, andriy.shevchenko@linux.intel.com,
+        lenb@kernel.org
+References: <20231025111806.2416524-1-michal.wilczynski@intel.com>
+ <20231025111806.2416524-5-michal.wilczynski@intel.com>
+ <CAJZ5v0h2G6i0qXvSyFJeC4zsML3yxGZvUt-nUPs2Z3iHEM845A@mail.gmail.com>
+Content-Language: en-US, nl
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <CAJZ5v0h2G6i0qXvSyFJeC4zsML3yxGZvUt-nUPs2Z3iHEM845A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---dTlN31Mink/VwRIe
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 11/29/23 15:19, Rafael J. Wysocki wrote:
+> Hi Hans,
+> 
+> On Wed, Oct 25, 2023 at 2:35 PM Michal Wilczynski
+> <michal.wilczynski@intel.com> wrote:
+>>
+>> The acpi_video driver uses struct acpi_driver to register itself while it
+>> would be more logically consistent to use struct platform_driver for this
+>> purpose, because the corresponding platform device is present and the
+>> role of struct acpi_device is to amend the other bus types. ACPI devices
+>> are not meant to be used as proper representation of hardware entities,
+>> but to collect information on those hardware entities provided by the
+>> platform firmware.
+>>
+>> Use struct platform_driver for registering the acpi_video driver.
+>>
+>> Suggested-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+>> Signed-off-by: Michal Wilczynski <michal.wilczynski@intel.com>
+> 
+> Do you have any particular concerns regarding this change?  For
+> example, are there any setups that can break because of it?
 
-On Thu, Nov 30, 2023 at 11:48:24AM +0100, Gert Vanhaerents wrote:
-> Hi Kernel list,
-> I'm the IT person of a school, earlier we used multiseatcomputers for the
-> school, i have maded with a XGL implementation and it works fine but not =
-so
-> fantastic. The school wants that i build new computers but the XGL project
-> is too outdated so i can't use it anymore.
->=20
-> How can i make a multiseatcomputer with more then one user on one card wi=
-th
-> systemd? I have asked already to the makers of systemd but they said it's=
- a
-> kernel problem.
->=20
-> With Systemd loginctl and the nouveau drivers you have this:
->=20
-> =E2=94=80/sys/devices/pci0000:00/0000:00:03.1/0000:08:00.0/drm/card0
-> =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0 =E2=94=82 [MASTER] drm:card0
-> =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0 =E2=94=82
-> =E2=94=9C=E2=94=80/sys/devices/pci0000:00/0000:00:03.1/0000:08:00.0/drm/c=
-ard0/card0-DVI-D-1
-> =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0 =E2=94=82 =E2=94=82 [MASTER]=
- drm:card0-DVI-D-1
-> =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0 =E2=94=82
-> =E2=94=9C=E2=94=80/sys/devices/pci0000:00/0000:00:03.1/0000:08:00.0/drm/c=
-ard0/card0-HDMI-A-1
-> =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0 =E2=94=82 =E2=94=82 [MASTER]=
- drm:card0-HDMI-A-1
-> =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0 =E2=94=82
-> =E2=94=94=E2=94=80/sys/devices/pci0000:00/0000:00:03.1/0000:08:00.0/drm/c=
-ard0/card0-VGA-1
-> =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0 =E2=94=82=C2=A0=C2=A0 [MASTE=
-R] drm:card0-VGA-1
-> =E2=94=9C=E2=94=80/sys/devices/pci0000:00/0000:00:03.1/0000:08:00.0/drm/r=
-enderD128
-> =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0 =E2=94=82 drm:renderD128
-> =E2=94=9C=E2=94=80/sys/devices/pci0000:00/0000:00:03.1/0000:08:00.0/graph=
-ics/fb0
-> =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0 =E2=94=82 graphics:fb0 "nouv=
-eaudrmfb"
->=20
-> So it will be:
->=20
-> loginctl attach seat1 /sys/devices/pci0000:00/0000:00:03.1/0000:08:00.0/d=
-rm/card0/card0-VGA-1
->=20
-> For the seat1 (the VGA d-sub output for seat1 and the other HDMI output f=
-or
-> seat0) and of course the mouse and keyboard.
->=20
-> When you do this, all the graphics outputs are on the second seat (seat1)
-> and not anymore on the first seat. So i need to move only the VGA output =
-to
-> seat1 and not all the outputs.
+I have just given this a quick test spin and on most hw
+it actually causes the apci_video driver to not bind
+anymore *at all* which will cause a bunch of brokenness
+all over the place.
 
-Do you expect that GUI output is on both seats?
+The problem is that the physical-node for which the 
+/sys/bus/acpi/devices/LNXVIDEO:00 fwnode / acpi-companion node 
+is the companion normally is the GPU, which is a PCI
+device so no /sys/bus/platform/devices/LNXVIDEO:00
+device is instantiated for the new "video" platform driver
+to bind to.
 
->=20
->=20
-> When i install the proprietary Nvidia drivers, i have the following:
->=20
-> [MASTER] pci:0000:08:00.0
-> =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0 =E2=94=82 =E2=94=9C=E2=94=80=
-/sys/devices/pci0000:00/0000:00:03.1/0000:08:00.0/drm/card0
-> =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0 =E2=94=82 =E2=94=82 [MASTER]=
- drm:card0
-> =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0 =E2=94=82
-> =E2=94=94=E2=94=80/sys/devices/pci0000:00/0000:00:03.1/0000:08:00.0/drm/r=
-enderD128
-> =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0 =E2=94=82=C2=A0=C2=A0 drm:re=
-nderD128
->=20
-> =E2=94=80/sys/devices/platform/efi-framebuffer.0/graphics/fb0
-> =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0 =E2=94=82 graphics:fb0 "EFI =
-VGA"
->=20
-> So no VGA, DVI or HDMI items.
+While I appreciate the efforts being done to clean up
+the ACPI subsystem I must also say that this makes me
+question how well all these convert to platform driver
+patches are tested ?
 
-Then report to the GitHub tracker [1].
+Almost all modern x86 hw has a /sys/bus/acpi/devices/LNXVIDEO:00
+device, so this can be tested almost everywhere and this should
+have been caught during testing by a test as simple as:
 
-Thanks.
+1. "ls /sys/bus/platform/devices/LNXVIDEO:00" and notice this
+does not exist and/or:
+2. "ls /sys/bus/platform/drivers/video/" and notice it has not
+bound to anything where before this change the acpi_video
+module would have bound to /sys/bus/acpi/devices/LNXVIDEO:00
 
-[1]: https://github.com/NVIDIA/open-gpu-kernel-modules/issues
+Also the "Video Bus" input/evdev device is now gone
+from "sudo evtest" which is a third quick way to see this
+now all no longer works.
 
---=20
-An old man doll... just what I always wanted! - Clara
+One possible way to solve this is to treat LNXVIDEO devices
+specially and always create a platform_device for them.
 
---dTlN31Mink/VwRIe
-Content-Type: application/pgp-signature; name="signature.asc"
+This will also require some changes to the modalias
+and driver-matching code because normally acpi:xxxx
+modaliases are only used / matched when the platform_device
+is the first physical node, where as I think
+the platform_device will end up being the second physical
+node now.
 
------BEGIN PGP SIGNATURE-----
+One last remark, assuming we find a way to solve this,
+then IMHO the .name field in the driver:
 
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZWsugwAKCRD2uYlJVVFO
-o8SXAP40JF/AVn0kN+P4FxuS8TLOMzBdftMsgeJceZxUMDf1owD9HKB78T3Y1KDl
-oR6PGTObbun/lktLQhn3njU9pKzoWAs=
-=mBNE
------END PGP SIGNATURE-----
+>> +static struct platform_driver acpi_video_bus = {
+>> +       .probe = acpi_video_bus_probe,
+>> +       .remove_new = acpi_video_bus_remove,
+>> +       .driver = {
+>> +               .name = "video",
+>> +               .acpi_match_table = video_device_ids,
+>> +       },
+>>  };
 
---dTlN31Mink/VwRIe--
+MUST not be just "video" platform devices <-> drivers  also get
+matched by dev_name() so if anyone now creates a platform_device
+named "video" then the platform_bus will now bind this driver
+to it. "acpi_video", matching the .c filename (but not the module
+name for historical reasons) would be better IMHO.
+
+Regards,
+
+Hans
+
+
