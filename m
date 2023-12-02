@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E5338018A4
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 01:07:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B12C980189F
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 01:07:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442061AbjLBAGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 19:06:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59990 "EHLO
+        id S1442113AbjLBAGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 19:06:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442054AbjLBAF3 (ORCPT
+        with ESMTP id S1442060AbjLBAFd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 19:05:29 -0500
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD80E2109
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 16:05:05 -0800 (PST)
-Received: by mail-pj1-x1049.google.com with SMTP id 98e67ed59e1d1-286472a0c6dso1918182a91.1
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 16:05:05 -0800 (PST)
+        Fri, 1 Dec 2023 19:05:33 -0500
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E1192118
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 16:05:07 -0800 (PST)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5c941936f7fso31679777b3.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 16:05:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701475505; x=1702080305; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1701475507; x=1702080307; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=1np6+7PRvXQlpdzzc08QPCWEiLYS28PyG2M8UTLh7eY=;
-        b=A5Mro3EI+QYZWxtxK2ilJuraL8g3qepKA9pjc1wlLtI3lDwKyCjU6yEz4wR3JN8TCT
-         Sqi59oNPP2FySRo8UnV9dP/ZmlXLTRPy121LuVWNdvxat78rL4SOElvOcjStttsBI55Y
-         PyG/yIANK4qQye350KSsyt+9fRlM++kKK8AZMYcnlHXvHtXVBwon5o6ilPpvDjtia6JR
-         D8ZIIS/vKK8oKoJW9YNnH1gXLIszQG9WNOdjhn77e/Yp2Iongc06C75YNwGflKp9rs3d
-         B8FTHW8DfkV9IMZyeSBWxHQCzzVl2ZIfagDHOLydS88gu+WxZRjov4Z98OSyK+nmLKMW
-         7jUw==
+        bh=IhZ3de9k1HjNH/Bu/XjK12LAbUtP2nz//8sjZrcxVFU=;
+        b=yi3mtKeSyuMTg2ekZ+/+KHt6dGdM8458RVwREftQmbGtrJYq7406KdRABl9PcTb+CL
+         BxDGHqeC1gn6RyA1uK6n92dx8yT844WisuaPX0XC3v0byK1djW/n+hIvhjq+z4CGh4ZP
+         oKG6hErIloQ3LrBOiDqurHnpbbOy/Q5fmfvgJ6DbEu2DysHogYB5+A9NBkiYC0TG7F+K
+         7CHKIpg9igtAgW1T2+NzZo2dPu5gTAamE5DaEzqQyWFB6gYxhSv9GRsfWhXi5sZ+G3gp
+         Q6p9DDpr32sc0PTPe06Ra+TtDRrtQdi6OjXaIAnHab1Df1GufCC6HEGsGz5smCm+d1Hf
+         rJsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701475505; x=1702080305;
+        d=1e100.net; s=20230601; t=1701475507; x=1702080307;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=1np6+7PRvXQlpdzzc08QPCWEiLYS28PyG2M8UTLh7eY=;
-        b=TuHLuHolj0PpROaQs8D6/rNrG/l3SjFKr4r6q4GgwskjTbJpkdM9El+/jINgRO3u0w
-         RFUFVlrQjdKAGgq5wQdVKEr9F742T1qvBjcEhhAqcLXszvccZn7fjHQGA+4uhK8MdfRm
-         tBR/RUtZrDSRwCxEjJENisprqjljIhQR/ri5uK+TvLTFa9036l+ckTOUohFLkoh1lK1h
-         E60sgwWfBUsNDrUi59+aXfzTVeJyi18MpF1Moj5iyjKYFyt3WpkCQW6vkyqN0jyM1C3Y
-         mzYunJlICxH7iWYh5h91IIpuKgQy76xSIz0nSJ/XtRJqwofJ1E8sY+RoBa1dJNWcTZmG
-         BPqQ==
-X-Gm-Message-State: AOJu0YyP1+0K3zzsgCQaQRvdwQaJFL1GBAGoJFOxbBjHhvu2l/f+0Hj4
-        G65Rc2TIE+z4E9IRvINQM6nPrwhOpfc=
-X-Google-Smtp-Source: AGHT+IEr4G6HLBQRBdAuUJe0tt4hhHjH3qQhIxpXlo42ZNmifvYkJMnHMpc2jRctuuroAajkUJK+Pl7Rdv4=
+        bh=IhZ3de9k1HjNH/Bu/XjK12LAbUtP2nz//8sjZrcxVFU=;
+        b=GLqT2fZjEQwwubG1QYtxgDGPfqmc1O8qsLEdrvwkvFCZ7ojA6uNXlHf7vR6O41Ng6R
+         f8r3stxdyGsbowya1UMAwYG8aT2/idmbHFvjQjaQPdsG/dnwq0VP7Et8ZyOr6sPzgFgL
+         4IlcZcniVE7awv77teCf3c9QvjQRfkem0eGrDFON6QeVM5C03LslgP4H66oQJHwytKg1
+         L4al8ByEF/kcS0Z5LxfD+1eDiSM2rhUWuHuKNCLSPtr+DhNkW7OoTL+2Nh8WZlO3ouWG
+         AxTJzPGa8uT02zRY3u7ED+mKRoR3jqa7nJutH+CG3zgvODz+RnJjVmTFEWTCo/3yp1Gd
+         lNOQ==
+X-Gm-Message-State: AOJu0YwkFAYsCsBlmVktS0SoBK0Ntwh7ykqSSR+xzUc7gxd1hhWgRXZM
+        okMLv4mYym7KjmvxJJS6/lV/cWRrFQg=
+X-Google-Smtp-Source: AGHT+IF7EvbF+32/WpDow2GN0LC+RJVYaIxYrl/y8e1tQA4IoCLx/a9NVjw2ndyWlMFBlrsBZDrM/VqVii8=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:90a:cb97:b0:286:5a99:f834 with SMTP id
- a23-20020a17090acb9700b002865a99f834mr120336pju.3.1701475505056; Fri, 01 Dec
- 2023 16:05:05 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a25:33c2:0:b0:da0:6216:7990 with SMTP id
+ z185-20020a2533c2000000b00da062167990mr1090050ybz.3.1701475507021; Fri, 01
+ Dec 2023 16:05:07 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri,  1 Dec 2023 16:04:12 -0800
+Date:   Fri,  1 Dec 2023 16:04:13 -0800
 In-Reply-To: <20231202000417.922113-1-seanjc@google.com>
 Mime-Version: 1.0
 References: <20231202000417.922113-1-seanjc@google.com>
 X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
-Message-ID: <20231202000417.922113-24-seanjc@google.com>
-Subject: [PATCH v9 23/28] KVM: selftests: Query module param to detect FEP in
- MSR filtering test
+Message-ID: <20231202000417.922113-25-seanjc@google.com>
+Subject: [PATCH v9 24/28] KVM: selftests: Move KVM_FEP macro into common
+ library header
 From:   Sean Christopherson <seanjc@google.com>
 To:     Sean Christopherson <seanjc@google.com>,
         Paolo Bonzini <pbonzini@redhat.com>
@@ -77,118 +77,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a helper to detect KVM support for forced emulation by querying the
-module param, and use the helper to detect support for the MSR filtering
-test instead of throwing a noodle/NOP at KVM to see if it sticks.
+Move the KVM_FEP definition, a.k.a. the KVM force emulation prefix, into
+processor.h so that it can be used for other tests besides the MSR filter
+test.
 
-Cc: Aaron Lewis <aaronlewis@google.com>
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- .../selftests/kvm/include/x86_64/processor.h  |  5 ++++
- .../kvm/x86_64/userspace_msr_exit_test.c      | 27 +++++++------------
- 2 files changed, 14 insertions(+), 18 deletions(-)
+ tools/testing/selftests/kvm/include/x86_64/processor.h       | 3 +++
+ tools/testing/selftests/kvm/x86_64/userspace_msr_exit_test.c | 2 --
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/tools/testing/selftests/kvm/include/x86_64/processor.h b/tools/testing/selftests/kvm/include/x86_64/processor.h
-index ee082ae58f40..d211cea188be 100644
+index d211cea188be..6be365ac2a85 100644
 --- a/tools/testing/selftests/kvm/include/x86_64/processor.h
 +++ b/tools/testing/selftests/kvm/include/x86_64/processor.h
-@@ -1222,6 +1222,11 @@ static inline bool kvm_is_pmu_enabled(void)
- 	return get_kvm_param_bool("enable_pmu");
- }
+@@ -23,6 +23,9 @@
+ extern bool host_cpu_is_intel;
+ extern bool host_cpu_is_amd;
  
-+static inline bool kvm_is_forced_emulation_enabled(void)
-+{
-+	return !!get_kvm_param_integer("force_emulation_prefix");
-+}
++/* Forced emulation prefix, used to invoke the emulator unconditionally. */
++#define KVM_FEP "ud2; .byte 'k', 'v', 'm';"
 +
- uint64_t *__vm_get_page_table_entry(struct kvm_vm *vm, uint64_t vaddr,
- 				    int *level);
- uint64_t *vm_get_page_table_entry(struct kvm_vm *vm, uint64_t vaddr);
+ #define NMI_VECTOR		0x02
+ 
+ #define X86_EFLAGS_FIXED	 (1u << 1)
 diff --git a/tools/testing/selftests/kvm/x86_64/userspace_msr_exit_test.c b/tools/testing/selftests/kvm/x86_64/userspace_msr_exit_test.c
-index 3533dc2fbfee..9e12dbc47a72 100644
+index 9e12dbc47a72..ab3a8c4f0b86 100644
 --- a/tools/testing/selftests/kvm/x86_64/userspace_msr_exit_test.c
 +++ b/tools/testing/selftests/kvm/x86_64/userspace_msr_exit_test.c
-@@ -14,8 +14,7 @@
+@@ -12,8 +12,6 @@
+ #include "kvm_util.h"
+ #include "vmx.h"
  
- /* Forced emulation prefix, used to invoke the emulator unconditionally. */
- #define KVM_FEP "ud2; .byte 'k', 'v', 'm';"
--#define KVM_FEP_LENGTH 5
--static int fep_available = 1;
-+static bool fep_available;
+-/* Forced emulation prefix, used to invoke the emulator unconditionally. */
+-#define KVM_FEP "ud2; .byte 'k', 'v', 'm';"
+ static bool fep_available;
  
  #define MSR_NON_EXISTENT 0x474f4f00
- 
-@@ -260,13 +259,6 @@ static void guest_code_filter_allow(void)
- 	GUEST_ASSERT(data == 2);
- 	GUEST_ASSERT(guest_exception_count == 0);
- 
--	/*
--	 * Test to see if the instruction emulator is available (ie: the module
--	 * parameter 'kvm.force_emulation_prefix=1' is set).  This instruction
--	 * will #UD if it isn't available.
--	 */
--	__asm__ __volatile__(KVM_FEP "nop");
--
- 	if (fep_available) {
- 		/* Let userspace know we aren't done. */
- 		GUEST_SYNC(0);
-@@ -388,12 +380,6 @@ static void guest_fep_gp_handler(struct ex_regs *regs)
- 			   &em_wrmsr_start, &em_wrmsr_end);
- }
- 
--static void guest_ud_handler(struct ex_regs *regs)
--{
--	fep_available = 0;
--	regs->rip += KVM_FEP_LENGTH;
--}
--
- static void check_for_guest_assert(struct kvm_vcpu *vcpu)
- {
- 	struct ucall uc;
-@@ -531,9 +517,11 @@ static void test_msr_filter_allow(void)
- {
- 	struct kvm_vcpu *vcpu;
- 	struct kvm_vm *vm;
-+	uint64_t cmd;
- 	int rc;
- 
- 	vm = vm_create_with_one_vcpu(&vcpu, guest_code_filter_allow);
-+	sync_global_to_guest(vm, fep_available);
- 
- 	rc = kvm_check_cap(KVM_CAP_X86_USER_SPACE_MSR);
- 	TEST_ASSERT(rc, "KVM_CAP_X86_USER_SPACE_MSR is available");
-@@ -561,11 +549,11 @@ static void test_msr_filter_allow(void)
- 	run_guest_then_process_wrmsr(vcpu, MSR_NON_EXISTENT);
- 	run_guest_then_process_rdmsr(vcpu, MSR_NON_EXISTENT);
- 
--	vm_install_exception_handler(vm, UD_VECTOR, guest_ud_handler);
- 	vcpu_run(vcpu);
--	vm_install_exception_handler(vm, UD_VECTOR, NULL);
-+	cmd = process_ucall(vcpu);
- 
--	if (process_ucall(vcpu) != UCALL_DONE) {
-+	if (fep_available) {
-+		TEST_ASSERT_EQ(cmd, UCALL_SYNC);
- 		vm_install_exception_handler(vm, GP_VECTOR, guest_fep_gp_handler);
- 
- 		/* Process emulated rdmsr and wrmsr instructions. */
-@@ -583,6 +571,7 @@ static void test_msr_filter_allow(void)
- 		/* Confirm the guest completed without issues. */
- 		run_guest_then_process_ucall_done(vcpu);
- 	} else {
-+		TEST_ASSERT_EQ(cmd, UCALL_DONE);
- 		printf("To run the instruction emulated tests set the module parameter 'kvm.force_emulation_prefix=1'\n");
- 	}
- 
-@@ -804,6 +793,8 @@ static void test_user_exit_msr_flags(void)
- 
- int main(int argc, char *argv[])
- {
-+	fep_available = kvm_is_forced_emulation_enabled();
-+
- 	test_msr_filter_allow();
- 
- 	test_msr_filter_deny();
 -- 
 2.43.0.rc2.451.g8631bc7472-goog
 
