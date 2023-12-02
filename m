@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD881801C65
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 12:15:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDE27801C66
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 12:15:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232648AbjLBLOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 06:14:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50758 "EHLO
+        id S232662AbjLBLO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 06:14:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232545AbjLBLOp (ORCPT
+        with ESMTP id S232549AbjLBLOs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 06:14:45 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 248A6197;
-        Sat,  2 Dec 2023 03:14:51 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-50bd8efb765so2280969e87.1;
-        Sat, 02 Dec 2023 03:14:51 -0800 (PST)
+        Sat, 2 Dec 2023 06:14:48 -0500
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4184198;
+        Sat,  2 Dec 2023 03:14:52 -0800 (PST)
+Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-50be9e6427dso261994e87.1;
+        Sat, 02 Dec 2023 03:14:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701515689; x=1702120489; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1701515691; x=1702120491; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=v4UHd4uT25TxSUzWPqsFRoZZNpRl4b4/7589i+JJ+rU=;
-        b=HfZFF7nN/oDW4wix+atLctYMRShwcmwalhtabQ9cZATlVxB4WAgWsV9+TiFCSHbuFv
-         ACUiiH5ol6NAIK8jI9ak/uBkf47n2TyfMrJIZMYI9E3K1kiQZ0Kk7XNkIDV+keeT2Rfn
-         SWmztovrDAcAZ6gI6PqmxXchUplEyyzZMmrjeB2+kPLuym4iOHqTpmBBW8OexEHLiF46
-         ItDckB54zXmycUXLaj92EE1O8yDAergFxGFs8Cym17KNreMn+SO8YPNGRJNOTnMaWjOL
-         FH+fEVdol9uxzx/4mG9mFuWlNi3FVaUQqNMThsJVFyWe6LmLU+v3lQNvPq8BTM1+bIrz
-         ynyg==
+        bh=1T4NHCKaEUJcD00hRH2cGzkJVzfRK4nR9CtS9DswDWw=;
+        b=ZLWynJYZqs1lHeaNgkBKy4vWVZ0nmHjrnx/qKSxjxNzIdYwgwg/Xxz6lM/+WbrtVi2
+         OFnCFdmhD0bjMvM0WR8Rc2+Fl4/OlHz4Jcb3NCq0XEq41xU6/U0vDQIAqpSAJLlOKwyo
+         p445N2Kv/3o8zgsLSBMtp1rt08G+fR56EBssOxmkjEieKKG2ESFkX1g2P3jaDwKl8fEj
+         p3YZnw0jdlSET/DBPIwcQPkvmFTG0Jb0um45otdW2qP70I5hIG2lyCiaqiHMqHiFHLUx
+         qJkKykUY+gzslby3cUyamaBYRixsq5DSJT23rh2W6LKBRA2VqRl7El6H5TwODuM7p4W/
+         HMNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701515689; x=1702120489;
+        d=1e100.net; s=20230601; t=1701515691; x=1702120491;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=v4UHd4uT25TxSUzWPqsFRoZZNpRl4b4/7589i+JJ+rU=;
-        b=nW6NltFONyARU5kc7AkU8yM7Ajykvm+STK4Q/VI2jpcgLyl6BMxB1Bj81umdrqoSUm
-         FxEXzzOuPq+7WhGfBsnMCmCkGI8NRZ6murZZZQqvetGXHhph4nKtS03MMDJsdtsYL+Bd
-         DbCCkXyQC+8nAxvaRDYNa5T2d5pEt+2wdI/ijhWkdg+KSGNjLHooBst1Y4dFFkBVY87H
-         4Uw3BBHPPZ00/EPveF1ZKM2gnNDT+4fRnEq/RsUb46641cNRAhXdzeYl62vY+iQ74pxF
-         zTkXHVIHj+5x/kIpgWKcFrlzyvAyUnjwPae/vQLsO5d5uxQVfbeox5qH164BLgfH5g1U
-         mt4w==
-X-Gm-Message-State: AOJu0Ywx4O3m++gIMOld3b9kqfHhTZP8yPcyHSB8rqK3GXHGgwe8oM/b
-        aDnkTE5qAhAWhbgJkO09Frs=
-X-Google-Smtp-Source: AGHT+IFfdPNpiwefBvmuORgudPwNl6+kLbXV7fHeB560V9AMzknQFD1jotIAw/L6yW8iedkhemVsqg==
-X-Received: by 2002:a05:6512:110c:b0:50b:d764:969d with SMTP id l12-20020a056512110c00b0050bd764969dmr1786496lfg.129.1701515689264;
-        Sat, 02 Dec 2023 03:14:49 -0800 (PST)
+        bh=1T4NHCKaEUJcD00hRH2cGzkJVzfRK4nR9CtS9DswDWw=;
+        b=CRxRjgZhO+qDHjKueDqgjcT7/dy9HS/DNz0clSwnllVCdSNHwYhlxC7dl4JjubvUcP
+         gqn/aRHiCthu5IfgbMA5PqLENX3shSaEReMK6WqVYoSIvoP98td7A5hljDey5ovfGdDn
+         3L46RyJgiq/tcFqRVkFeIMG0aTTwZefhenDBJ2AaZyCvoC0WUbXtvdA9pjSWbi/to8vy
+         aL0U7EotBwB8i4pUSJ46r/leDjTaAGD8A4QB8G71weZ1aTySYwq4yNqQf/Y5H3TxA5Ai
+         D9IEIuCd8GpW7Bji7TyqOcZ3sYZUDZYNKT+h4IPswqy9uEFJWLHPBx9KtoLHdnrM3i+g
+         rxRQ==
+X-Gm-Message-State: AOJu0YyNqEGM7IsVnMCK3X79HkNk8oN0UNwmmsHOrFKJYlWUVGhgX8r8
+        ntUZUIsE/l8LmJEVpGbwea0=
+X-Google-Smtp-Source: AGHT+IGCOXEU6dk6EGZWe/MP0XMGJO+yiD5xEQj5BjaTp5rOtf5nyoi67HG1zxO63b1IPn8ZI6EKlA==
+X-Received: by 2002:a05:6512:2316:b0:50b:d764:801d with SMTP id o22-20020a056512231600b0050bd764801dmr1888678lfu.80.1701515691032;
+        Sat, 02 Dec 2023 03:14:51 -0800 (PST)
 Received: from localhost ([95.79.203.166])
-        by smtp.gmail.com with ESMTPSA id c6-20020ac25f66000000b0050bed336e0csm66231lfc.162.2023.12.02.03.14.48
+        by smtp.gmail.com with ESMTPSA id b27-20020a0565120b9b00b0050aab07eb9fsm200142lfv.139.2023.12.02.03.14.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Dec 2023 03:14:48 -0800 (PST)
+        Sat, 02 Dec 2023 03:14:50 -0800 (PST)
 From:   Serge Semin <fancer.lancer@gmail.com>
 To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Jiaxun Yang <jiaxun.yang@flygoat.com>,
@@ -68,9 +68,9 @@ Cc:     Serge Semin <fancer.lancer@gmail.com>,
         Matthew Wilcox <willy@infradead.org>,
         Marc Zyngier <maz@kernel.org>, linux-mips@vger.kernel.org,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 4/6] mips: Optimize max_mapnr init procedure
-Date:   Sat,  2 Dec 2023 14:14:21 +0300
-Message-ID: <20231202111430.18059-5-fancer.lancer@gmail.com>
+Subject: [PATCH v2 5/6] mips: mm: add slab availability checking in ioremap_prot
+Date:   Sat,  2 Dec 2023 14:14:22 +0300
+Message-ID: <20231202111430.18059-6-fancer.lancer@gmail.com>
 X-Mailer: git-send-email 2.42.1
 In-Reply-To: <20231202111430.18059-1-fancer.lancer@gmail.com>
 References: <20231202111430.18059-1-fancer.lancer@gmail.com>
@@ -86,49 +86,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-max_mapnr defines the upper boundary of the pages space in the system.
-Currently in case if HIGHMEM is available it's calculated based on the
-upper high memory PFN limit value. Seeing there is a case when it isn't
-fully correct let's optimize out the max_mapnr variable initialization
-procedure to cover all the handled in the paging_init() method cases:
-1. If CPU has DC-aliases, then high memory is unavailable so the PFNs
-upper boundary is determined by max_low_pfn.
-2. Otherwise if high memory is available, use highend_pfn value
-representing the upper high memory PFNs limit.
-3. Otherwise no high memory is available so set max_mapnr with the
-low-memory upper limit.
+Recent commit a5f616483110 ("mm/ioremap: add slab availability checking in
+ioremap_prot") added the slab availability check to the generic
+ioremap_prot() implementation. It is reasonable to be done for the
+MIPS32-specific method too since it also relies on the
+get_vm_area_caller() function (by means of get_vm_area()) which requires
+the slab allocator being up and running before being called.
 
 Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
-
 ---
+ arch/mips/mm/ioremap.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Since I haven't seen any problem with the denoted misconfiguration on my
-setup, the patch isn't marked as fixes, but is supposed to be considered
-as an optimization.
----
- arch/mips/mm/init.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/arch/mips/mm/init.c b/arch/mips/mm/init.c
-index 6e368a4658b5..b2dce07116e8 100644
---- a/arch/mips/mm/init.c
-+++ b/arch/mips/mm/init.c
-@@ -421,9 +421,13 @@ void __init paging_init(void)
- 		       " %ldk highmem ignored\n",
- 		       (highend_pfn - max_low_pfn) << (PAGE_SHIFT - 10));
- 		max_zone_pfns[ZONE_HIGHMEM] = max_low_pfn;
--	}
+diff --git a/arch/mips/mm/ioremap.c b/arch/mips/mm/ioremap.c
+index b6dad2fd5575..d8243d61ef32 100644
+--- a/arch/mips/mm/ioremap.c
++++ b/arch/mips/mm/ioremap.c
+@@ -72,6 +72,10 @@ void __iomem *ioremap_prot(phys_addr_t phys_addr, unsigned long size,
+ 	    flags == _CACHE_UNCACHED)
+ 		return (void __iomem *) CKSEG1ADDR(phys_addr);
  
--	max_mapnr = highend_pfn ? highend_pfn : max_low_pfn;
-+		max_mapnr = max_low_pfn;
-+	} else if (highend_pfn) {
-+		max_mapnr = highend_pfn;
-+	} else {
-+		max_mapnr = max_low_pfn;
-+	}
- #else
- 	max_mapnr = max_low_pfn;
- #endif
++	/* Early remaps should use the unmapped regions til' VM is available */
++	if (WARN_ON_ONCE(!slab_is_available()))
++		return NULL;
++
+ 	/*
+ 	 * Don't allow anybody to remap RAM that may be allocated by the page
+ 	 * allocator, since that could lead to races & data clobbering.
 -- 
 2.42.1
 
