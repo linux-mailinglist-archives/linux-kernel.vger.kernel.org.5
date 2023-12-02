@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B16CC801BAE
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 10:36:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8BA8801BB1
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 10:37:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232289AbjLBJVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 04:21:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39068 "EHLO
+        id S232072AbjLBJU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 04:20:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232003AbjLBJUy (ORCPT
+        with ESMTP id S231963AbjLBJUw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 04:20:54 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 769901A4;
+        Sat, 2 Dec 2023 04:20:52 -0500
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13571181;
         Sat,  2 Dec 2023 01:20:58 -0800 (PST)
-Received: from dggpeml500005.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Sj47s56G1zsRZf;
-        Sat,  2 Dec 2023 17:17:13 +0800 (CST)
+Received: from dggpeml500005.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Sj46V20rnzMnZj;
+        Sat,  2 Dec 2023 17:16:02 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.2) by
  dggpeml500005.china.huawei.com (7.185.36.59) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
@@ -28,9 +28,9 @@ CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <wangzhou1@hisilicon.com>, <fanghao11@huawei.com>,
         <liulongfang@huawei.com>, <qianweili@huawei.com>,
         <shenyang39@huawei.com>
-Subject: [PATCH 2/5] crypto: hisilicon/qm - save capability registers in qm init process
-Date:   Sat, 2 Dec 2023 17:17:19 +0800
-Message-ID: <20231202091722.1974582-3-songzhiqi1@huawei.com>
+Subject: [PATCH 3/5] crypto: hisilicon/hpre - save capability registers in probe process
+Date:   Sat, 2 Dec 2023 17:17:20 +0800
+Message-ID: <20231202091722.1974582-4-songzhiqi1@huawei.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20231202091722.1974582-1-songzhiqi1@huawei.com>
 References: <20231202091722.1974582-1-songzhiqi1@huawei.com>
@@ -51,249 +51,203 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In previous capability register implementation, qm irq related values
-were read from capability registers dynamically when needed. But in
-abnormal scenario, e.g. the core is timeout and the device needs to
-soft reset and reset failed after disabling the MSE, the device can
-not be removed normally, causing the following call trace:
+Pre-store the valid value of hpre alg support related capability
+register in hpre_qm_init(), which will be called by hpre_probe().
+It can reduce the number of capability register queries and avoid
+obtaining incorrect values in abnormal scenarios, such as reset
+failed and the memory space disabled.
 
-	| Call trace:
-        |  pci_irq_vector+0xfc/0x140
-        |  hisi_qm_uninit+0x278/0x3b0 [hisi_qm]
-        |  hpre_remove+0x16c/0x1c0 [hisi_hpre]
-        |  pci_device_remove+0x6c/0x264
-        |  device_release_driver_internal+0x1ec/0x3e0
-        |  device_release_driver+0x3c/0x60
-        |  pci_stop_bus_device+0xfc/0x22c
-        |  pci_stop_and_remove_bus_device+0x38/0x70
-        |  pci_iov_remove_virtfn+0x108/0x1c0
-        |  sriov_disable+0x7c/0x1e4
-        |  pci_disable_sriov+0x4c/0x6c
-        |  hisi_qm_sriov_disable+0x90/0x160 [hisi_qm]
-        |  hpre_remove+0x1a8/0x1c0 [hisi_hpre]
-        |  pci_device_remove+0x6c/0x264
-        |  device_release_driver_internal+0x1ec/0x3e0
-        |  driver_detach+0x168/0x2d0
-        |  bus_remove_driver+0xc0/0x230
-        |  driver_unregister+0x58/0xdc
-        |  pci_unregister_driver+0x40/0x220
-        |  hpre_exit+0x34/0x64 [hisi_hpre]
-        |  __arm64_sys_delete_module+0x374/0x620
-        [...]
-
-        | Call trace:
-        |  free_msi_irqs+0x25c/0x300
-        |  pci_disable_msi+0x19c/0x264
-        |  pci_free_irq_vectors+0x4c/0x70
-        |  hisi_qm_pci_uninit+0x44/0x90 [hisi_qm]
-        |  hisi_qm_uninit+0x28c/0x3b0 [hisi_qm]
-        |  hpre_remove+0x16c/0x1c0 [hisi_hpre]
-        |  pci_device_remove+0x6c/0x264
-        [...]
-
-The reason for this call trace is that when the MSE is disabled, the value
-of capability registers in the BAR space become invalid. This will make the
-subsequent unregister process get the wrong irq vector through capability
-registers and get the wrong irq number by pci_irq_vector().
-
-So add a capability table structure to pre-store the valid value of the irq
-information capability register in qm init process, avoid obtaining invalid
-capability register value after the MSE is disabled.
-
-Fixes: 3536cc55cada ("crypto: hisilicon/qm - support get device irq information from hardware registers")
+Fixes: f214d59a0603 ("crypto: hisilicon/hpre - support hpre capability")
 Signed-off-by: Zhiqi Song <songzhiqi1@huawei.com>
 ---
- drivers/crypto/hisilicon/qm.c | 62 +++++++++++++++++++++++++++++------
- include/linux/hisi_acc_qm.h   | 12 +++++++
- 2 files changed, 64 insertions(+), 10 deletions(-)
+ drivers/crypto/hisilicon/hpre/hpre_main.c | 82 ++++++++++++++++++-----
+ 1 file changed, 64 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
-index 4170c24c2ed1..d05ad2b16d0a 100644
---- a/drivers/crypto/hisilicon/qm.c
-+++ b/drivers/crypto/hisilicon/qm.c
-@@ -301,6 +301,13 @@ enum qm_basic_type {
- 	QM_VF_IRQ_NUM_CAP,
+diff --git a/drivers/crypto/hisilicon/hpre/hpre_main.c b/drivers/crypto/hisilicon/hpre/hpre_main.c
+index 84c92d85d23d..3255b2a070c7 100644
+--- a/drivers/crypto/hisilicon/hpre/hpre_main.c
++++ b/drivers/crypto/hisilicon/hpre/hpre_main.c
+@@ -226,6 +226,20 @@ static const struct hisi_qm_cap_info hpre_basic_info[] = {
+ 	{HPRE_CORE10_ALG_BITMAP_CAP, 0x3170, 0, GENMASK(31, 0), 0x0, 0x10, 0x10}
  };
  
-+enum qm_pre_store_cap_idx {
-+	QM_EQ_IRQ_TYPE_CAP_IDX = 0x0,
-+	QM_AEQ_IRQ_TYPE_CAP_IDX,
-+	QM_ABN_IRQ_TYPE_CAP_IDX,
-+	QM_PF2VF_IRQ_TYPE_CAP_IDX,
++enum hpre_pre_store_cap_idx {
++	HPRE_CLUSTER_NUM_CAP_IDX = 0x0,
++	HPRE_CORE_ENABLE_BITMAP_CAP_IDX,
++	HPRE_DRV_ALG_BITMAP_CAP_IDX,
++	HPRE_DEV_ALG_BITMAP_CAP_IDX,
 +};
 +
- static const struct hisi_qm_cap_info qm_cap_info_comm[] = {
- 	{QM_SUPPORT_DB_ISOLATION, 0x30,   0, BIT(0),  0x0, 0x0, 0x0},
- 	{QM_SUPPORT_FUNC_QOS,     0x3100, 0, BIT(8),  0x0, 0x0, 0x1},
-@@ -330,6 +337,13 @@ static const struct hisi_qm_cap_info qm_basic_info[] = {
- 	{QM_VF_IRQ_NUM_CAP,     0x311c,   0,  GENMASK(15, 0), 0x1,       0x2,       0x3},
- };
- 
-+static const u32 qm_pre_store_caps[] = {
-+	QM_EQ_IRQ_TYPE_CAP,
-+	QM_AEQ_IRQ_TYPE_CAP,
-+	QM_ABN_IRQ_TYPE_CAP,
-+	QM_PF2VF_IRQ_TYPE_CAP,
++static const u32 hpre_pre_store_caps[] = {
++	HPRE_CLUSTER_NUM_CAP,
++	HPRE_CORE_ENABLE_BITMAP_CAP,
++	HPRE_DRV_ALG_BITMAP_CAP,
++	HPRE_DEV_ALG_BITMAP_CAP,
 +};
 +
- struct qm_mailbox {
- 	__le16 w0;
- 	__le16 queue_num;
-@@ -4774,7 +4788,7 @@ static void qm_unregister_abnormal_irq(struct hisi_qm *qm)
- 	if (qm->fun_type == QM_HW_VF)
- 		return;
+ static const struct hpre_hw_error hpre_hw_errors[] = {
+ 	{
+ 		.int_msk = BIT(0),
+@@ -348,7 +362,7 @@ bool hpre_check_alg_support(struct hisi_qm *qm, u32 alg)
+ {
+ 	u32 cap_val;
  
--	val = hisi_qm_get_hw_info(qm, qm_basic_info, QM_ABN_IRQ_TYPE_CAP, qm->cap_ver);
-+	val = qm->cap_tables.qm_cap_table[QM_ABN_IRQ_TYPE_CAP_IDX].cap_val;
- 	if (!((val >> QM_IRQ_TYPE_SHIFT) & QM_ABN_IRQ_TYPE_MASK))
- 		return;
+-	cap_val = hisi_qm_get_hw_info(qm, hpre_basic_info, HPRE_DRV_ALG_BITMAP_CAP, qm->cap_ver);
++	cap_val = qm->cap_tables.dev_cap_table[HPRE_DRV_ALG_BITMAP_CAP_IDX].cap_val;
+ 	if (alg & cap_val)
+ 		return true;
  
-@@ -4791,7 +4805,7 @@ static int qm_register_abnormal_irq(struct hisi_qm *qm)
- 	if (qm->fun_type == QM_HW_VF)
- 		return 0;
+@@ -424,16 +438,6 @@ static u32 vfs_num;
+ module_param_cb(vfs_num, &vfs_num_ops, &vfs_num, 0444);
+ MODULE_PARM_DESC(vfs_num, "Number of VFs to enable(1-63), 0(default)");
  
--	val = hisi_qm_get_hw_info(qm, qm_basic_info, QM_ABN_IRQ_TYPE_CAP, qm->cap_ver);
-+	val = qm->cap_tables.qm_cap_table[QM_ABN_IRQ_TYPE_CAP_IDX].cap_val;
- 	if (!((val >> QM_IRQ_TYPE_SHIFT) & QM_ABN_IRQ_TYPE_MASK))
- 		return 0;
+-static inline int hpre_cluster_num(struct hisi_qm *qm)
+-{
+-	return hisi_qm_get_hw_info(qm, hpre_basic_info, HPRE_CLUSTER_NUM_CAP, qm->cap_ver);
+-}
+-
+-static inline int hpre_cluster_core_mask(struct hisi_qm *qm)
+-{
+-	return hisi_qm_get_hw_info(qm, hpre_basic_info, HPRE_CORE_ENABLE_BITMAP_CAP, qm->cap_ver);
+-}
+-
+ struct hisi_qp *hpre_create_qp(u8 type)
+ {
+ 	int node = cpu_to_node(smp_processor_id());
+@@ -500,13 +504,15 @@ static int hpre_cfg_by_dsm(struct hisi_qm *qm)
  
-@@ -4808,7 +4822,7 @@ static void qm_unregister_mb_cmd_irq(struct hisi_qm *qm)
- 	struct pci_dev *pdev = qm->pdev;
- 	u32 irq_vector, val;
+ static int hpre_set_cluster(struct hisi_qm *qm)
+ {
+-	u32 cluster_core_mask = hpre_cluster_core_mask(qm);
+-	u8 clusters_num = hpre_cluster_num(qm);
+ 	struct device *dev = &qm->pdev->dev;
+ 	unsigned long offset;
++	u32 cluster_core_mask;
++	u8 clusters_num;
+ 	u32 val = 0;
+ 	int ret, i;
  
--	val = hisi_qm_get_hw_info(qm, qm_basic_info, QM_PF2VF_IRQ_TYPE_CAP, qm->cap_ver);
-+	val = qm->cap_tables.qm_cap_table[QM_PF2VF_IRQ_TYPE_CAP_IDX].cap_val;
- 	if (!((val >> QM_IRQ_TYPE_SHIFT) & QM_IRQ_TYPE_MASK))
- 		return;
++	cluster_core_mask = qm->cap_tables.dev_cap_table[HPRE_CORE_ENABLE_BITMAP_CAP_IDX].cap_val;
++	clusters_num = qm->cap_tables.dev_cap_table[HPRE_CLUSTER_NUM_CAP_IDX].cap_val;
+ 	for (i = 0; i < clusters_num; i++) {
+ 		offset = i * HPRE_CLSTR_ADDR_INTRVL;
  
-@@ -4822,7 +4836,7 @@ static int qm_register_mb_cmd_irq(struct hisi_qm *qm)
- 	u32 irq_vector, val;
- 	int ret;
+@@ -701,11 +707,12 @@ static int hpre_set_user_domain_and_cache(struct hisi_qm *qm)
  
--	val = hisi_qm_get_hw_info(qm, qm_basic_info, QM_PF2VF_IRQ_TYPE_CAP, qm->cap_ver);
-+	val = qm->cap_tables.qm_cap_table[QM_PF2VF_IRQ_TYPE_CAP_IDX].cap_val;
- 	if (!((val >> QM_IRQ_TYPE_SHIFT) & QM_IRQ_TYPE_MASK))
- 		return 0;
+ static void hpre_cnt_regs_clear(struct hisi_qm *qm)
+ {
+-	u8 clusters_num = hpre_cluster_num(qm);
+ 	unsigned long offset;
++	u8 clusters_num;
+ 	int i;
  
-@@ -4839,7 +4853,7 @@ static void qm_unregister_aeq_irq(struct hisi_qm *qm)
- 	struct pci_dev *pdev = qm->pdev;
- 	u32 irq_vector, val;
+ 	/* clear clusterX/cluster_ctrl */
++	clusters_num = qm->cap_tables.dev_cap_table[HPRE_CLUSTER_NUM_CAP_IDX].cap_val;
+ 	for (i = 0; i < clusters_num; i++) {
+ 		offset = HPRE_CLSTR_BASE + i * HPRE_CLSTR_ADDR_INTRVL;
+ 		writel(0x0, qm->io_base + offset + HPRE_CLUSTER_INQURY);
+@@ -992,13 +999,14 @@ static int hpre_pf_comm_regs_debugfs_init(struct hisi_qm *qm)
  
--	val = hisi_qm_get_hw_info(qm, qm_basic_info, QM_AEQ_IRQ_TYPE_CAP, qm->cap_ver);
-+	val = qm->cap_tables.qm_cap_table[QM_AEQ_IRQ_TYPE_CAP_IDX].cap_val;
- 	if (!((val >> QM_IRQ_TYPE_SHIFT) & QM_IRQ_TYPE_MASK))
- 		return;
+ static int hpre_cluster_debugfs_init(struct hisi_qm *qm)
+ {
+-	u8 clusters_num = hpre_cluster_num(qm);
+ 	struct device *dev = &qm->pdev->dev;
+ 	char buf[HPRE_DBGFS_VAL_MAX_LEN];
+ 	struct debugfs_regset32 *regset;
+ 	struct dentry *tmp_d;
++	u8 clusters_num;
+ 	int i, ret;
  
-@@ -4853,7 +4867,7 @@ static int qm_register_aeq_irq(struct hisi_qm *qm)
- 	u32 irq_vector, val;
- 	int ret;
- 
--	val = hisi_qm_get_hw_info(qm, qm_basic_info, QM_AEQ_IRQ_TYPE_CAP, qm->cap_ver);
-+	val = qm->cap_tables.qm_cap_table[QM_AEQ_IRQ_TYPE_CAP_IDX].cap_val;
- 	if (!((val >> QM_IRQ_TYPE_SHIFT) & QM_IRQ_TYPE_MASK))
- 		return 0;
- 
-@@ -4871,7 +4885,7 @@ static void qm_unregister_eq_irq(struct hisi_qm *qm)
- 	struct pci_dev *pdev = qm->pdev;
- 	u32 irq_vector, val;
- 
--	val = hisi_qm_get_hw_info(qm, qm_basic_info, QM_EQ_IRQ_TYPE_CAP, qm->cap_ver);
-+	val = qm->cap_tables.qm_cap_table[QM_EQ_IRQ_TYPE_CAP_IDX].cap_val;
- 	if (!((val >> QM_IRQ_TYPE_SHIFT) & QM_IRQ_TYPE_MASK))
- 		return;
- 
-@@ -4885,7 +4899,7 @@ static int qm_register_eq_irq(struct hisi_qm *qm)
- 	u32 irq_vector, val;
- 	int ret;
- 
--	val = hisi_qm_get_hw_info(qm, qm_basic_info, QM_EQ_IRQ_TYPE_CAP, qm->cap_ver);
-+	val = qm->cap_tables.qm_cap_table[QM_EQ_IRQ_TYPE_CAP_IDX].cap_val;
- 	if (!((val >> QM_IRQ_TYPE_SHIFT) & QM_IRQ_TYPE_MASK))
- 		return 0;
- 
-@@ -4973,7 +4987,29 @@ static int qm_get_qp_num(struct hisi_qm *qm)
- 	return 0;
++	clusters_num = qm->cap_tables.dev_cap_table[HPRE_CLUSTER_NUM_CAP_IDX].cap_val;
+ 	for (i = 0; i < clusters_num; i++) {
+ 		ret = snprintf(buf, HPRE_DBGFS_VAL_MAX_LEN, "cluster%d", i);
+ 		if (ret >= HPRE_DBGFS_VAL_MAX_LEN)
+@@ -1103,6 +1111,34 @@ static void hpre_debugfs_exit(struct hisi_qm *qm)
+ 	debugfs_remove_recursive(qm->debug.debug_root);
  }
  
--static void qm_get_hw_caps(struct hisi_qm *qm)
-+static int qm_pre_store_irq_type_caps(struct hisi_qm *qm)
++static int hpre_pre_store_cap_reg(struct hisi_qm *qm)
 +{
-+	struct hisi_qm_cap_record *qm_cap;
-+	struct pci_dev *pdev = qm->pdev;
++	struct hisi_qm_cap_record *hpre_cap;
++	struct device *dev = &qm->pdev->dev;
 +	size_t i, size;
 +
-+	size = ARRAY_SIZE(qm_pre_store_caps);
-+	qm_cap = devm_kzalloc(&pdev->dev, sizeof(*qm_cap) * size, GFP_KERNEL);
-+	if (!qm_cap)
++	size = ARRAY_SIZE(hpre_pre_store_caps);
++	hpre_cap = devm_kzalloc(dev, sizeof(*hpre_cap) * size, GFP_KERNEL);
++	if (!hpre_cap)
 +		return -ENOMEM;
 +
 +	for (i = 0; i < size; i++) {
-+		qm_cap[i].type = qm_pre_store_caps[i];
-+		qm_cap[i].cap_val = hisi_qm_get_hw_info(qm, qm_basic_info,
-+							qm_pre_store_caps[i], qm->cap_ver);
++		hpre_cap[i].type = hpre_pre_store_caps[i];
++		hpre_cap[i].cap_val = hisi_qm_get_hw_info(qm, hpre_basic_info,
++				      hpre_pre_store_caps[i], qm->cap_ver);
 +	}
 +
-+	qm->cap_tables.qm_cap_table = qm_cap;
++	if (hpre_cap[HPRE_CLUSTER_NUM_CAP_IDX].cap_val > HPRE_CLUSTERS_NUM_MAX) {
++		dev_err(dev, "Device cluster num %u is out of range for driver supports %d!\n",
++			hpre_cap[HPRE_CLUSTER_NUM_CAP_IDX].cap_val, HPRE_CLUSTERS_NUM_MAX);
++		return -EINVAL;
++	}
++
++	qm->cap_tables.dev_cap_table = hpre_cap;
 +
 +	return 0;
 +}
 +
-+static int qm_get_hw_caps(struct hisi_qm *qm)
+ static int hpre_qm_init(struct hisi_qm *qm, struct pci_dev *pdev)
  {
- 	const struct hisi_qm_cap_info *cap_info = qm->fun_type == QM_HW_PF ?
- 						  qm_cap_info_pf : qm_cap_info_vf;
-@@ -5004,6 +5040,9 @@ static void qm_get_hw_caps(struct hisi_qm *qm)
- 		if (val)
- 			set_bit(cap_info[i].type, &qm->caps);
- 	}
-+
-+	/* Fetch and save the value of irq type related capability registers */
-+	return qm_pre_store_irq_type_caps(qm);
- }
- 
- static int qm_get_pci_res(struct hisi_qm *qm)
-@@ -5025,7 +5064,10 @@ static int qm_get_pci_res(struct hisi_qm *qm)
- 		goto err_request_mem_regions;
+ 	u64 alg_msk;
+@@ -1136,7 +1172,15 @@ static int hpre_qm_init(struct hisi_qm *qm, struct pci_dev *pdev)
+ 		return ret;
  	}
  
--	qm_get_hw_caps(qm);
-+	ret = qm_get_hw_caps(qm);
-+	if (ret)
-+		goto err_ioremap;
+-	alg_msk = hisi_qm_get_hw_info(qm, hpre_basic_info, HPRE_DEV_ALG_BITMAP_CAP, qm->cap_ver);
++	/* Fetch and save the value of capability registers */
++	ret = hpre_pre_store_cap_reg(qm);
++	if (ret) {
++		pci_err(pdev, "Failed to pre-store capability registers!\n");
++		hisi_qm_uninit(qm);
++		return ret;
++	}
 +
- 	if (test_bit(QM_SUPPORT_DB_ISOLATION, &qm->caps)) {
- 		qm->db_interval = QM_QP_DB_INTERVAL;
- 		qm->db_phys_base = pci_resource_start(pdev, PCI_BAR_4);
-diff --git a/include/linux/hisi_acc_qm.h b/include/linux/hisi_acc_qm.h
-index cdc979f66dba..5f4c74facf6a 100644
---- a/include/linux/hisi_acc_qm.h
-+++ b/include/linux/hisi_acc_qm.h
-@@ -266,6 +266,16 @@ struct hisi_qm_cap_info {
- 	u32 v3_val;
- };
++	alg_msk = qm->cap_tables.dev_cap_table[HPRE_DEV_ALG_BITMAP_CAP_IDX].cap_val;
+ 	ret = hisi_qm_set_algs(qm, alg_msk, hpre_dev_algs, ARRAY_SIZE(hpre_dev_algs));
+ 	if (ret) {
+ 		pci_err(pdev, "Failed to set hpre algs!\n");
+@@ -1150,11 +1194,12 @@ static int hpre_show_last_regs_init(struct hisi_qm *qm)
+ {
+ 	int cluster_dfx_regs_num =  ARRAY_SIZE(hpre_cluster_dfx_regs);
+ 	int com_dfx_regs_num = ARRAY_SIZE(hpre_com_dfx_regs);
+-	u8 clusters_num = hpre_cluster_num(qm);
+ 	struct qm_debug *debug = &qm->debug;
+ 	void __iomem *io_base;
++	u8 clusters_num;
+ 	int i, j, idx;
  
-+struct hisi_qm_cap_record {
-+	u32 type;
-+	u32 cap_val;
-+};
-+
-+struct hisi_qm_cap_tables {
-+	struct hisi_qm_cap_record *qm_cap_table;
-+	struct hisi_qm_cap_record *dev_cap_table;
-+};
-+
- struct hisi_qm_list {
- 	struct mutex lock;
- 	struct list_head list;
-@@ -376,6 +386,8 @@ struct hisi_qm {
- 	u32 mb_qos;
- 	u32 type_rate;
- 	struct qm_err_isolate isolate_data;
-+
-+	struct hisi_qm_cap_tables cap_tables;
- };
++	clusters_num = qm->cap_tables.dev_cap_table[HPRE_CLUSTER_NUM_CAP_IDX].cap_val;
+ 	debug->last_words = kcalloc(cluster_dfx_regs_num * clusters_num +
+ 			com_dfx_regs_num, sizeof(unsigned int), GFP_KERNEL);
+ 	if (!debug->last_words)
+@@ -1191,10 +1236,10 @@ static void hpre_show_last_dfx_regs(struct hisi_qm *qm)
+ {
+ 	int cluster_dfx_regs_num =  ARRAY_SIZE(hpre_cluster_dfx_regs);
+ 	int com_dfx_regs_num = ARRAY_SIZE(hpre_com_dfx_regs);
+-	u8 clusters_num = hpre_cluster_num(qm);
+ 	struct qm_debug *debug = &qm->debug;
+ 	struct pci_dev *pdev = qm->pdev;
+ 	void __iomem *io_base;
++	u8 clusters_num;
+ 	int i, j, idx;
+ 	u32 val;
  
- struct hisi_qp_status {
+@@ -1209,6 +1254,7 @@ static void hpre_show_last_dfx_regs(struct hisi_qm *qm)
+ 			  hpre_com_dfx_regs[i].name, debug->last_words[i], val);
+ 	}
+ 
++	clusters_num = qm->cap_tables.dev_cap_table[HPRE_CLUSTER_NUM_CAP_IDX].cap_val;
+ 	for (i = 0; i < clusters_num; i++) {
+ 		io_base = qm->io_base + hpre_cluster_offsets[i];
+ 		for (j = 0; j <  cluster_dfx_regs_num; j++) {
 -- 
 2.30.0
 
