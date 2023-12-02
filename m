@@ -2,171 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FB43801DCE
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 17:37:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07EC8801DCF
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 17:37:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233069AbjLBQg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 11:36:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34588 "EHLO
+        id S233081AbjLBQhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 11:37:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233194AbjLBQgv (ORCPT
+        with ESMTP id S229671AbjLBQhR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 11:36:51 -0500
-Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 805E710F4
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 08:36:56 -0800 (PST)
-Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-5d6b9143782so14116707b3.0
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Dec 2023 08:36:56 -0800 (PST)
+        Sat, 2 Dec 2023 11:37:17 -0500
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42DC2114
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 08:37:24 -0800 (PST)
+Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-6cdf3e99621so510591b3a.1
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Dec 2023 08:37:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1701535015; x=1702139815; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=fmq/cFT6Y6dC+ZGZHIOXRnqtNB/fT5Py3GIET4EXKuA=;
-        b=HWFqVjxoY9msD2DSiTEPnknGIyliVtOi9x1JdmwLq0bfqCdOifUKsbBovDkyZQcj+h
-         GObpZyLmc/m1vX4b4Vuzaw48rYdFyLi3Ic+Q4Kw+wETlBDrgy+m2o8kkTngMXCocn32k
-         DQK7grPm1McQ933SNJx0PA3Do74hQCP3Xw6io=
+        d=gmail.com; s=20230601; t=1701535044; x=1702139844; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=r/5fy0dH2xzqcER0suoHkQQxma1xoWVm6Ksyzy3Xy6A=;
+        b=ecfQc3LwBlUzvq3P/+j0euPU5HVDjuPKEaKwf7TNTggezOnaCRom40Qu6l2SDUA7vN
+         WKVapiW8WltxwFX1zPT1yFJh0SdyvbMzbAnsJVPV9awBilvw6a3hZKhdX5a+dct4kJ0N
+         jOxac69bFNVZexKsKNgQezvXDe/Mq9ebwEc2rp0IIOLCZjaczjn2iiuHGGfcyvW/K1xT
+         lV7z9mz0qWidkzycR7coiLPOzB7bCbFY6TrVnkPhAvwLHWxMaQ/xWw2ra4hEdaLcacXq
+         LH16CFFBTEHJ2I978J55tZ/j9T/fSfEcTwwDtP8pIkfH6ZfViaD46nCucu94Xwdh0BfK
+         fj1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701535015; x=1702139815;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1701535044; x=1702139844;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=fmq/cFT6Y6dC+ZGZHIOXRnqtNB/fT5Py3GIET4EXKuA=;
-        b=rs5u8+9h0RTk6drymZ18DiUPEPP76N2UVcVqJSQYiLxyYS0I2spk/jdlDZ++vm7wYn
-         JEeck7p+mFsFd78eAIbMTtnkwKLtmhQmiLideJycZGHcpgU372bJYUOJGfRJGnI3mQRw
-         QhqUdVW8uuhNsI0VQyRoOgPFqR6YXF9tlfRWY3PeCh3o44/o5L4TD9CyBuY7sqpquv4J
-         cZWnDjpal55meiKM4/c/8NXgGBPszORNICRTF3P9wx/KTSfOrSrbQocmxaafJlM3jqwP
-         FTRU+jHnceRc06WHFFyeiDNveu8QlyP24YtiCL3PVIvWt06zcnhuYC4gl5VNi774Uo2N
-         Aibg==
-X-Gm-Message-State: AOJu0YwtD0TiyY3fKm8KBmFyUZYkfw2cfHulRjA+PCSnSRTOLJvjt3zI
-        17e4Y/ER8D1bryQ3O+tYZKM4fHGE+pTcR5mZqwA0Eg==
-X-Google-Smtp-Source: AGHT+IH/60peGhTt9y/eOb6F5Qv2MgIvlLVUHNwYYYShkzzfp7qqnH+PPUtOqXTU5FtOCPkYH/jLqHZEsFZXfccg9JQ=
-X-Received: by 2002:a81:b61f:0:b0:5cd:fd7c:274f with SMTP id
- u31-20020a81b61f000000b005cdfd7c274fmr998750ywh.26.1701535015390; Sat, 02 Dec
- 2023 08:36:55 -0800 (PST)
+        bh=r/5fy0dH2xzqcER0suoHkQQxma1xoWVm6Ksyzy3Xy6A=;
+        b=sa7UQzSo0oSzyh07UFQ+K5XeAXoSJOTwpfk9ax281LwfKlDS+BFHJzrJqOttteXR9z
+         dQFh/3qC7ClKrkDkmY4bue1/EyXX0iXuiwaN1NZfBEf5n5SeBHRCluISZm9zyL1wxAQv
+         PEkgfarY8Tjwir4loH1/wgsNcp+7XXlZ7IfXWZpfDE89kscItzTYp/UFPN2XO84gnV9N
+         97wYCz5vnkoyTBrVKa7A6cn4uBgPBVtXsVBB88PBx5r2IH3dv/wFij2eAr9ep13j1jvR
+         I9AIZvJhbTXF5u0T9Cs/anmF8bwAYzCdelmkIVQn9p7n0qYXxgDtjgihfJ8IYo+Q6PwD
+         s2sA==
+X-Gm-Message-State: AOJu0YyKKJRDMlgbf8q8JZ71QYx+d0Hy0CpzN8sPyBCOHc/K3boIaUYJ
+        uzdOh3TuzGJtfr9MebnFpoU=
+X-Google-Smtp-Source: AGHT+IHoTx7tpZwwL4PhXWWb1kuDPXhYpTG2eZ5lRVjIoBiMm8qb3iWLFfxP9AByjn/JlcnOuy7pGg==
+X-Received: by 2002:a17:902:e80b:b0:1cf:a718:384 with SMTP id u11-20020a170902e80b00b001cfa7180384mr29734467plg.6.1701535043733;
+        Sat, 02 Dec 2023 08:37:23 -0800 (PST)
+Received: from localhost.localdomain ([140.116.154.65])
+        by smtp.gmail.com with ESMTPSA id jc15-20020a17090325cf00b001d07d88a71esm812533plb.73.2023.12.02.08.37.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 02 Dec 2023 08:37:23 -0800 (PST)
+From:   Kuan-Wei Chiu <visitorckw@gmail.com>
+To:     akpm@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, lkml@sdf.org,
+        Kuan-Wei Chiu <visitorckw@gmail.com>
+Subject: [PATCH] lib/sort: Optimize number of calls to comparison function
+Date:   Sun,  3 Dec 2023 00:37:17 +0800
+Message-Id: <20231202163717.687578-1-visitorckw@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20231129172200.430674-1-sjg@chromium.org> <20231129172200.430674-3-sjg@chromium.org>
- <30f32467-51ea-47de-a272-38e074f4060b@pengutronix.de> <CAPnjgZ25xoXsi74XYY0E8ucQiowQqPdZgUHrfVNAYWKZEYODHg@mail.gmail.com>
- <875f0dbc-1d78-4901-91b2-6ad152bcea5a@pengutronix.de> <CAPnjgZ0UCkm5QCx+JXe1ggSshozPnOLB6cN=UoJyMn6S4wfFkg@mail.gmail.com>
- <06281f7c-e0f2-405c-95a9-0f7e9e84a7f6@pengutronix.de> <CAPnjgZ2TT+0BvbjwfnGLQ3EPEXnLW6f1epiFdaBHRYaSAn5xsA@mail.gmail.com>
- <8fbc81b1-31ab-46b0-87f4-b8bd8e8e2b47@pengutronix.de> <CAPnjgZ1iyxk0bb56QR10N5aSphRYhLsw7Ly=z2i6rQCxP_AYPw@mail.gmail.com>
- <5e8f42f8-2b03-4033-b6d2-9b3139f081d5@pengutronix.de>
-In-Reply-To: <5e8f42f8-2b03-4033-b6d2-9b3139f081d5@pengutronix.de>
-From:   Simon Glass <sjg@chromium.org>
-Date:   Sat, 2 Dec 2023 09:36:43 -0700
-Message-ID: <CAPnjgZ2RjNzqJTRZSWvuscQhs+f8CG=fDcEO=qKXNeQLP53LnQ@mail.gmail.com>
-Subject: Re: [PATCH v7 2/2] arm64: boot: Support Flat Image Tree
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Doug Anderson <dianders@chromium.org>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Tom Rini <trini@konsulko.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        U-Boot Mailing List <u-boot@lists.denx.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Terrell <terrelln@fb.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Will Deacon <will@kernel.org>, linux-kbuild@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_SPF_WL autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ahmad,
+The current implementation continues the loop when the comparison
+function returns a non-negative value, which includes the case when it
+returns 0. However, in scenarios where the comparison function returns
+0, further comparisons are unnecessary. By making this adjustment, we
+can potentially reduce the number of comparisons by approximately 50%
+in extreme cases where all elements in the array are equal, and the
+array size is sufficiently large.
 
-On Thu, 30 Nov 2023 at 19:04, Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
->
-> Hello Simon,
->
-> On 30.11.23 21:30, Simon Glass wrote:
-> > On Wed, 29 Nov 2023 at 12:54, Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
-> >> On 29.11.23 20:44, Simon Glass wrote:
-> >>> On Wed, 29 Nov 2023 at 12:33, Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
-> >>>>
-> >>>> On 29.11.23 20:27, Simon Glass wrote:
-> >>>>> On Wed, 29 Nov 2023 at 12:15, Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
-> >>>>>> On 29.11.23 20:02, Simon Glass wrote:
-> >>>>>>> On Wed, 29 Nov 2023 at 11:59, Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
-> >>>>>>>> The specification says that this is the root U-Boot compatible,
-> >>>>>>>> which I presume to mean the top-level compatible, which makes sense to me.
-> >>>>>>>>
-> >>>>>>>> The code here though adds all compatible strings from the device tree though,
-> >>>>>>>> is this intended?
-> >>>>>>>
-> >>>>>>> Yes, since it saves needing to read in each DT just to get the
-> >>>>>>> compatible stringlist.
-> >>>>>>
-> >>>>>> The spec reads as if only one string (root) is supposed to be in the list.
-> >>>>>> The script adds all compatibles though. This is not really useful as a bootloader
-> >>>>>> that's compatible with e.g. fsl,imx8mm would just take the first device tree
-> >>>>>> with that SoC, which is most likely to be wrong. It would be better to just
-> >>>>>> specify the top-level compatible, so the bootloader fails instead of taking
-> >>>>>> the first DT it finds.
-> >>>>>
-> >>>>> We do need to have a list, since we have to support different board revs, etc.
-> >>>>
-> >>>> Can you give me an example? The way I see it, a bootloader with
-> >>>> compatible "vendor,board" and a FIT with configuration with compatibles:
-> >>>>
-> >>>>   "vendor,board-rev-a", "vendor,board"
-> >>>>   "vendor,board-rev-b", "vendor,board"
-> >>>>
-> >>>> would just result in the bootloader booting the first configuration, even if
-> >>>> the device is actually rev-b.
-> >>>
-> >>> You need to find the best match, not just any match. This is
-> >>> documented in the function comment for fit_conf_find_compat().
-> >>
-> >> In my above example, both configuration are equally good.
-> >> Can you give me an example where it makes sense to have multiple
-> >> compatibles automatically extracted from the device tree compatible?
-> >>
-> >> The way I see it having more than one compatible here just has
-> >> downsides.
-> >
-> > I don't have an example to hand, but this is the required mechanism of
-> > FIT. This feature has been in place for many years and is used by
-> > ChromeOS, at least.
->
-> I see the utility of a FIT configuration with
->
->     compatible = "vendor,board-rev-a", "vendor,board-rev-b";
->
-> I fail to see a utility for a configuration with
->
->     compatible = "vendor,board", "vendor,SoM", "vendor,SoC";
->
-> Any configuration that ends up being booted because "vendor,SoC" was matched is
-> most likely doomed to fail. Therefore, I would suggest that only the top level
-> configuration is written into the FIT configurations automatically.
+Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
+---
+ lib/sort.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Firstly, I am not an expert on this.
+diff --git a/lib/sort.c b/lib/sort.c
+index b399bf10d675..1e98a62bb2f3 100644
+--- a/lib/sort.c
++++ b/lib/sort.c
+@@ -267,7 +267,7 @@ void sort_r(void *base, size_t num, size_t size,
+ 			b = c;
+ 
+ 		/* Now backtrack from "b" to the correct location for "a" */
+-		while (b != a && do_cmp(base + a, base + b, cmp_func, priv) >= 0)
++		while (b != a && do_cmp(base + a, base + b, cmp_func, priv) > 0)
+ 			b = parent(b, lsbit, size);
+ 		c = b;			/* Where "a" belongs */
+ 		while (b != a) {	/* Shift it into place */
+-- 
+2.25.1
 
-Say you have a board with variants. The compatible string in U-Boot
-may be something like:
-
-"google,veyron-brain-rev1", "google,veyron-brain", "google,veyron",
-"rockchip,rk3288";
-
-If you then have several FIT configurations, they may be something like:
-
-"google,veyron-brain-rev0", "google,veyron-brain", "google,veyron",
-"rockchip,rk3288";
-"google,veyron-brain-rev1", "google,veyron-brain", "google,veyron",
-"rockchip,rk3288";
-"google,veyron-brain-rev2", "google,veyron-brain", "google,veyron",
-"rockchip,rk3288";
-
-You want to choose the second one, since it is a better match than the others.
-
-+Doug Anderson who knows a lot more about this than me.
-
-Regards,
-Simon
