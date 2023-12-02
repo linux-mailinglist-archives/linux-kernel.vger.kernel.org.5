@@ -2,173 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DEC22801B68
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 09:12:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97AF1801B5F
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 09:05:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229978AbjLBIMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 03:12:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36766 "EHLO
+        id S229775AbjLBICD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 03:02:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjLBIMB (ORCPT
+        with ESMTP id S229379AbjLBICB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 03:12:01 -0500
-X-Greylist: delayed 542 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 02 Dec 2023 00:12:05 PST
-Received: from mail-m12821.netease.com (mail-m12821.netease.com [103.209.128.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA2B3134;
-        Sat,  2 Dec 2023 00:12:05 -0800 (PST)
-Received: from ubuntu.localdomain (unknown [111.222.250.119])
-        by mail-m12750.qiye.163.com (Hmail) with ESMTPA id D46C3F20445;
-        Sat,  2 Dec 2023 16:02:31 +0800 (CST)
-From:   Shifeng Li <lishifeng@sangfor.com.cn>
-To:     saeedm@nvidia.com, leon@kernel.org, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        eranbe@mellanox.com, moshe@mellanox.com
-Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dinghui@sangfor.com.cn,
-        lishifeng1992@126.com, Shifeng Li <lishifeng@sangfor.com.cn>,
-        Moshe Shemesh <moshe@nvidia.com>
-Subject: [PATCH net v4] net/mlx5e: Fix a race in command alloc flow
-Date:   Sat,  2 Dec 2023 00:01:26 -0800
-Message-Id: <20231202080126.1167237-1-lishifeng@sangfor.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Sat, 2 Dec 2023 03:02:01 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 90FE5116;
+        Sat,  2 Dec 2023 00:02:06 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3A0281FB;
+        Sat,  2 Dec 2023 00:02:52 -0800 (PST)
+Received: from [10.57.73.130] (unknown [10.57.73.130])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 96FA23F6C4;
+        Sat,  2 Dec 2023 00:02:02 -0800 (PST)
+Message-ID: <69a197cf-1e2c-4f6e-b0ca-7cbb154c044b@arm.com>
+Date:   Sat, 2 Dec 2023 08:02:01 +0000
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 5/5] selftests/mm: add UFFDIO_MOVE ioctl test
+Content-Language: en-GB
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
+        lokeshgidra@google.com, peterx@redhat.com, david@redhat.com,
+        hughd@google.com, mhocko@suse.com, axelrasmussen@google.com,
+        rppt@kernel.org, willy@infradead.org, Liam.Howlett@oracle.com,
+        jannh@google.com, zhangpeng362@huawei.com, bgeffon@google.com,
+        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kernel-team@android.com
+References: <20231121171643.3719880-1-surenb@google.com>
+ <20231121171643.3719880-6-surenb@google.com>
+ <b3c882d2-0135-430c-8179-784f78be0902@arm.com>
+ <CAJuCfpH8-jsxBRiLeLGWOFYnFE2iuSPfsveZkRf=MYZ6d=G7QA@mail.gmail.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <CAJuCfpH8-jsxBRiLeLGWOFYnFE2iuSPfsveZkRf=MYZ6d=G7QA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-        tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVlCH0oYVkoZHkpMTB0fGh4eHlUTARMWGhIXJBQOD1
-        lXWRgSC1lBWUpKSlVJSUlVSU5LVUpKQllXWRYaDxIVHRRZQVlPS0hVSk1PSUxOVUpLS1VKQktLWQ
-        Y+
-X-HM-Tid: 0a8c298cf3a7b21dkuuud46c3f20445
-X-HM-MType: 1
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6OAw6Dxw*KTw8KAsCGCEZKgE3
-        URMaCzhVSlVKTEtKTktPSk5IS01DVTMWGhIXVRcSCBMSHR4VHDsIGhUcHRQJVRgUFlUYFUVZV1kS
-        C1lBWUpKSlVJSUlVSU5LVUpKQllXWQgBWUFNSEpCNwY+
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix a cmd->ent use after free due to a race on command entry.
-Such race occurs when one of the commands releases its last refcount and
-frees its index and entry while another process running command flush
-flow takes refcount to this command entry. The process which handles
-commands flush may see this command as needed to be flushed if the other
-process allocated a ent->idx but didn't set ent to cmd->ent_arr in
-cmd_work_handler(). Fix it by moving the assignment of cmd->ent_arr into
-the spin lock.
+On 01/12/2023 16:26, Suren Baghdasaryan wrote:
+> On Fri, Dec 1, 2023 at 1:29 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>
+>> On 21/11/2023 17:16, Suren Baghdasaryan wrote:
+>>> Add tests for new UFFDIO_MOVE ioctl which uses uffd to move source
+>>> into destination buffer while checking the contents of both after
+>>> the move. After the operation the content of the destination buffer
+>>> should match the original source buffer's content while the source
+>>> buffer should be zeroed. Separate tests are designed for PMD aligned and
+>>> unaligned cases because they utilize different code paths in the kernel.
+>>>
+>>> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+>>> ---
+>>>  tools/testing/selftests/mm/uffd-common.c     |  24 +++
+>>>  tools/testing/selftests/mm/uffd-common.h     |   1 +
+>>>  tools/testing/selftests/mm/uffd-unit-tests.c | 189 +++++++++++++++++++
+>>>  3 files changed, 214 insertions(+)
+>>>
+>>> diff --git a/tools/testing/selftests/mm/uffd-common.c b/tools/testing/selftests/mm/uffd-common.c
+>>> index fb3bbc77fd00..b0ac0ec2356d 100644
+>>> --- a/tools/testing/selftests/mm/uffd-common.c
+>>> +++ b/tools/testing/selftests/mm/uffd-common.c
+>>> @@ -631,6 +631,30 @@ int copy_page(int ufd, unsigned long offset, bool wp)
+>>>       return __copy_page(ufd, offset, false, wp);
+>>>  }
+>>>
+>>> +int move_page(int ufd, unsigned long offset, unsigned long len)
+>>> +{
+>>> +     struct uffdio_move uffdio_move;
+>>> +
+>>> +     if (offset + len > nr_pages * page_size)
+>>> +             err("unexpected offset %lu and length %lu\n", offset, len);
+>>> +     uffdio_move.dst = (unsigned long) area_dst + offset;
+>>> +     uffdio_move.src = (unsigned long) area_src + offset;
+>>> +     uffdio_move.len = len;
+>>> +     uffdio_move.mode = UFFDIO_MOVE_MODE_ALLOW_SRC_HOLES;
+>>> +     uffdio_move.move = 0;
+>>> +     if (ioctl(ufd, UFFDIO_MOVE, &uffdio_move)) {
+>>> +             /* real retval in uffdio_move.move */
+>>> +             if (uffdio_move.move != -EEXIST)
+>>> +                     err("UFFDIO_MOVE error: %"PRId64,
+>>> +                         (int64_t)uffdio_move.move);
+>>
+>> Hi Suren,
+>>
+>> FYI this error is triggering in mm-unstable (715b67adf4c8):
+>>
+>> Testing move-pmd on anon... ERROR: UFFDIO_MOVE error: -16 (errno=16,
+>> @uffd-common.c:648)
+>>
+>> I'm running in a VM on Apple M2 (arm64). I haven't debugged any further, but
+>> happy to go deeper if you can direct.
+> 
+> Hi Ryan,
+> Thanks for reporting! Could you please share your kernel config file?
 
-[70013.081955] BUG: KASAN: use-after-free in mlx5_cmd_trigger_completions+0x1e2/0x4c0 [mlx5_core]
-[70013.081967] Write of size 4 at addr ffff88880b1510b4 by task kworker/26:1/1433361
-[70013.081968]
-[70013.082028] Workqueue: events aer_isr
-[70013.082053] Call Trace:
-[70013.082067]  dump_stack+0x8b/0xbb
-[70013.082086]  print_address_description+0x6a/0x270
-[70013.082102]  kasan_report+0x179/0x2c0
-[70013.082173]  mlx5_cmd_trigger_completions+0x1e2/0x4c0 [mlx5_core]
-[70013.082267]  mlx5_cmd_flush+0x80/0x180 [mlx5_core]
-[70013.082304]  mlx5_enter_error_state+0x106/0x1d0 [mlx5_core]
-[70013.082338]  mlx5_try_fast_unload+0x2ea/0x4d0 [mlx5_core]
-[70013.082377]  remove_one+0x200/0x2b0 [mlx5_core]
-[70013.082409]  pci_device_remove+0xf3/0x280
-[70013.082439]  device_release_driver_internal+0x1c3/0x470
-[70013.082453]  pci_stop_bus_device+0x109/0x160
-[70013.082468]  pci_stop_and_remove_bus_device+0xe/0x20
-[70013.082485]  pcie_do_fatal_recovery+0x167/0x550
-[70013.082493]  aer_isr+0x7d2/0x960
-[70013.082543]  process_one_work+0x65f/0x12d0
-[70013.082556]  worker_thread+0x87/0xb50
-[70013.082571]  kthread+0x2e9/0x3a0
-[70013.082592]  ret_from_fork+0x1f/0x40
+It's arm64 defconfig (so 4K base pages) plus:
 
-The logical relationship of this error is as follows:
+# Squashfs for snaps, xfs for large file folios.
+./scripts/config --enable CONFIG_SQUASHFS_LZ4
+./scripts/config --enable CONFIG_SQUASHFS_LZO
+./scripts/config --enable CONFIG_SQUASHFS_XZ
+./scripts/config --enable CONFIG_SQUASHFS_ZSTD
+./scripts/config --enable CONFIG_XFS_FS
 
-             aer_recover_work              |          ent->work
--------------------------------------------+------------------------------
-aer_recover_work_func                      |
-|- pcie_do_recovery                        |
-  |- report_error_detected                 |
-    |- mlx5_pci_err_detected               |cmd_work_handler
-      |- mlx5_enter_error_state            |  |- cmd_alloc_index
-        |- enter_error_state               |    |- lock cmd->alloc_lock
-          |- mlx5_cmd_flush                |    |- clear_bit
-            |- mlx5_cmd_trigger_completions|    |- unlock cmd->alloc_lock
-              |- lock cmd->alloc_lock      |
-              |- vector = ~dev->cmd.vars.bitmask
-              |- for_each_set_bit          |
-                |- cmd_ent_get(cmd->ent_arr[i]) (UAF) 
-              |- unlock cmd->alloc_lock    |  |- cmd->ent_arr[ent->idx]=ent
+# Useful trace features (on for Ubuntu configs).
+./scripts/config --enable CONFIG_FTRACE
+./scripts/config --enable CONFIG_FUNCTION_TRACER
+./scripts/config --enable CONFIG_KPROBES
+./scripts/config --enable CONFIG_HIST_TRIGGERS
+./scripts/config --enable CONFIG_FTRACE_SYSCALLS
 
-The cmd->ent_arr[ent->idx] assignment and the bit clearing are not 
-protected by the cmd->alloc_lock in cmd_work_handler().
+# For general mm debug.
+./scripts/config --enable CONFIG_DEBUG_VM
+./scripts/config --enable CONFIG_DEBUG_VM_MAPLE_TREE
+./scripts/config --enable CONFIG_DEBUG_VM_RB
+./scripts/config --enable CONFIG_DEBUG_VM_PGFLAGS
+./scripts/config --enable CONFIG_DEBUG_VM_PGTABLE
+./scripts/config --enable CONFIG_PAGE_TABLE_CHECK
 
-Fixes: 50b2412b7e78 ("net/mlx5: Avoid possible free of command entry while timeout comp handler")
-Reviewed-by: Moshe Shemesh <moshe@nvidia.com>
-Signed-off-by: Shifeng Li <lishifeng@sangfor.com.cn>
----
- drivers/net/ethernet/mellanox/mlx5/core/cmd.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+# For mm selftests.
+./scripts/config --enable CONFIG_USERFAULTFD
+./scripts/config --enable CONFIG_TEST_VMALLOC
+./scripts/config --enable CONFIG_GUP_TEST
 
----
-v1->v2: fix code conflicts.
-v2->v3: modify Fixes line and massage git log.
-v3->v4: add target tree name in the subject and add the logical diagram.
+This is the config I always use when running mm selftests. I'll send you the
+config file separately.
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
-index f8f0a712c943..a7b1f9686c09 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
-@@ -156,15 +156,18 @@ static u8 alloc_token(struct mlx5_cmd *cmd)
- 	return token;
- }
- 
--static int cmd_alloc_index(struct mlx5_cmd *cmd)
-+static int cmd_alloc_index(struct mlx5_cmd *cmd, struct mlx5_cmd_work_ent *ent)
- {
- 	unsigned long flags;
- 	int ret;
- 
- 	spin_lock_irqsave(&cmd->alloc_lock, flags);
- 	ret = find_first_bit(&cmd->vars.bitmask, cmd->vars.max_reg_cmds);
--	if (ret < cmd->vars.max_reg_cmds)
-+	if (ret < cmd->vars.max_reg_cmds) {
- 		clear_bit(ret, &cmd->vars.bitmask);
-+		ent->idx = ret;
-+		cmd->ent_arr[ent->idx] = ent;
-+	}
- 	spin_unlock_irqrestore(&cmd->alloc_lock, flags);
- 
- 	return ret < cmd->vars.max_reg_cmds ? ret : -ENOMEM;
-@@ -979,7 +982,7 @@ static void cmd_work_handler(struct work_struct *work)
- 	sem = ent->page_queue ? &cmd->vars.pages_sem : &cmd->vars.sem;
- 	down(sem);
- 	if (!ent->page_queue) {
--		alloc_ret = cmd_alloc_index(cmd);
-+		alloc_ret = cmd_alloc_index(cmd, ent);
- 		if (alloc_ret < 0) {
- 			mlx5_core_err_rl(dev, "failed to allocate command entry\n");
- 			if (ent->callback) {
-@@ -994,15 +997,14 @@ static void cmd_work_handler(struct work_struct *work)
- 			up(sem);
- 			return;
- 		}
--		ent->idx = alloc_ret;
- 	} else {
- 		ent->idx = cmd->vars.max_reg_cmds;
- 		spin_lock_irqsave(&cmd->alloc_lock, flags);
- 		clear_bit(ent->idx, &cmd->vars.bitmask);
-+		cmd->ent_arr[ent->idx] = ent;
- 		spin_unlock_irqrestore(&cmd->alloc_lock, flags);
- 	}
- 
--	cmd->ent_arr[ent->idx] = ent;
- 	lay = get_inst(cmd, ent->idx);
- 	ent->lay = lay;
- 	memset(lay, 0, sizeof(*lay));
--- 
-2.25.1
+Then I'm running in a QEMU VM with 12G RAM, equally split across 2 (emulated)
+numa nodes. I have these pertinent kernel command line args (intended to ensure
+all the mm selftests can run):
+
+transparent_hugepage=madvise secretmem.enable hugepagesz=1G hugepages=0:2,1:2
+hugepagesz=32M hugepages=0:2,1:2 default_hugepagesz=2M hugepages=0:64,1:64
+hugepagesz=64K hugepages=0:2,1:2
+
+
+> 
+> There are several places UFFDIO_MOVE returns EBUSY: 4 places in
+> move_pages_huge_pmd(), 2 places in move_present_pte(), 2 places in
+> move_pages_pte() and once in move_swap_pte(). While I'm trying to
+> reproduce, it would be useful if you could check which place is
+> triggering the error.
+
+Happy to, but will have to wait for Monday. I should say, the test fails
+consistently for me. But sometimes the failure is EAGAIN (11). Most of the time
+it is EBUSY though and I haven't figured out what causes the difference.
+
+> Thanks,
+> Suren.
+> 
+>>
+>> Thanks,
+>> Ryan
+>>
+>>
+>>> +             wake_range(ufd, uffdio_move.dst, len);
+>>> +     } else if (uffdio_move.move != len) {
+>>> +             err("UFFDIO_MOVE error: %"PRId64, (int64_t)uffdio_move.move);
+>>> +     } else
+>>> +             return 1;
+>>> +     return 0;
+>>> +}
+>>
+>> --
+>> To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
+>>
 
