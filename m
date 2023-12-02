@@ -2,76 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 046F78019F2
+	by mail.lfdr.de (Postfix) with ESMTP id ADB048019F4
 	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 03:15:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231229AbjLBCGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 21:06:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58288 "EHLO
+        id S1442007AbjLBCI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 21:08:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjLBCGV (ORCPT
+        with ESMTP id S229456AbjLBCIY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 21:06:21 -0500
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CABBD5
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 18:06:26 -0800 (PST)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-50bbf7a6029so1265e87.0
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 18:06:26 -0800 (PST)
+        Fri, 1 Dec 2023 21:08:24 -0500
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9AC910E5
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 18:08:26 -0800 (PST)
+Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-50bc9893f32so1154e87.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 18:08:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701482785; x=1702087585; darn=vger.kernel.org;
-        h=content-transfer-encoding:to:subject:message-id:date:from
+        d=google.com; s=20230601; t=1701482905; x=1702087705; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=KM3njdPU2hNDuW3eG9mwGeyTcedFjyL6DVGCrpPchJM=;
-        b=XfRxVOseFmsG3toXYT+mcl1lxI4pWRP+ZDqvubh/2kLsHdb8ceyGAMvhgh9q+K/8DQ
-         XJzK0VYXX8qjkdK27H2mrJdaPG4QRrld1lbRxzzsCj5UEpnNQIH3QWT3ExLmyZM1g8RG
-         hUDDuhgvDjPBN05WcuGv+sV1kWuhz6usZzkqjNSzve0h/sG7L98ggX6or1wigyR/bcIL
-         lCHhkUVVOotWTy+UGJQvD8CoXy8smATHSGQqV0pWgsFI238C5O+s/gdmOIYtPIU1Ibd5
-         NjgQgczlIMNRwmcriENFHkha/Vba+/GQTu6mySs2b+Zvxy7JODeP+O8EDvYR3Q9i7Ype
-         sC9w==
+        bh=ws1DAoL1kilzg1iLjYgWmaH8tZkC0cVm6J50fChhA5Q=;
+        b=bd4aYHswuGrt4j/pWtlzrXP0GTfYtJ/9VDS/QOz/768dGquAHF4zid1Yldn1cz581r
+         MrE2gZl4yIxMOfz0SK+X9+uX9qKU8vhPs8tE5wsf42CjQwv2cJ8nQfLpBRY8YCJIC2ax
+         dQ4yY3/vtYmBwvonBa57Yh0RfVr3CiL5yDBd8h8DraLXHkpZF2Ir1iVzxu9h0dI2nLW6
+         XZUNbsi2Q3rk/dmg2pxYFFQnA3xIGsFhu9I2aRiiH9ebr8CCdHPku0+Hl9hzp6FoPq4L
+         KSmzq1XbspyK7dhHyRayF6lSrPIdbUKmMNSQZIcZiO5deljN93GMT82DfZ5Pf/+QHUSG
+         RwKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701482785; x=1702087585;
-        h=content-transfer-encoding:to:subject:message-id:date:from
+        d=1e100.net; s=20230601; t=1701482905; x=1702087705;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=KM3njdPU2hNDuW3eG9mwGeyTcedFjyL6DVGCrpPchJM=;
-        b=qyobW0Nn/xbaf0cK9hc4w5JgDRGjYudZAAAoBWE2Lha+CgkigYvJ94TTmvO77hUJ2a
-         yt9a+UX7t6Apw2hYDLlXwEHiIzGIuFLq+SOpl40uSuIObqSrCZjO51m+tWrXHzozYrs6
-         +F1joZa8UEHsjAJ0nwVqWkMA+N/1DYT/I07CxDhRA+EuS0kwreoYtbF763JzweoExyod
-         HPSBkREC/GCVQuOWPdVgy3r98bYjLFHHrxObVKd9agZdmYFP8AKg4/SDqIDgNbSy1dSr
-         hP/AkYKJaGZvcM8JqcSI5IQAY/GbEVS5HKmSG7Nk1e5n9EqAKZKVEgpcR1eUsUdVC1YB
-         RHIw==
-X-Gm-Message-State: AOJu0YyFvJhrew8jTPb7r118FD+HWIPUIcVQXOGRMiX8JVSCRo2CP0ca
-        B72WScrIYzWECdNgzRKHCuOX0iQCJaH/dLkmik7rUA==
-X-Google-Smtp-Source: AGHT+IFAMGsgc3tG2f+2P9FeIbOBEb2yiGPU5uiQjCAwDgQP4/KDhHppHhbIc+N33VqFIkvL2hmqxLfhDaTcwH2h1BA=
-X-Received: by 2002:a05:6512:33cf:b0:50b:c542:1dd0 with SMTP id
- d15-20020a05651233cf00b0050bc5421dd0mr174177lfg.5.1701482784414; Fri, 01 Dec
- 2023 18:06:24 -0800 (PST)
+        bh=ws1DAoL1kilzg1iLjYgWmaH8tZkC0cVm6J50fChhA5Q=;
+        b=Y2iFM9qGjVzaPU0c4S4dUIwaUh09+e5/Di6Sc12sTbpvYZ++k7gzPtjhYYE27GmmO/
+         Qyirs9U5ckyjF9mJgOVo7sol4mBeHJLoED7r3kQDlyftw97WKRkp/zm5MK3Zr6T1rzEE
+         0+r+mAeb6vuAcHXRiJUxM8EJtyri1Ca1/qGQWcd15pIf+7T/fgLwO4zE1lRCPpLyat3U
+         nBaAmz6EFzdkNwHjedTsyq1uxQVhxd4zCDxBulxJqr7sxr9Md1OESM3yxeMMUiaD9nE1
+         3i4KJGkBDZ3v1bIoNxVUqIMXuHOSY1cCOpkLKGM6TrE2ieJ4r21jwsPzU6LJLbtjA4VE
+         D7Ag==
+X-Gm-Message-State: AOJu0YzvbCpm4aVPvLuY6qzjvsvXIyoPRn9zQx7gOKaj4/94yXfXs2gR
+        GVoEVn5KMCzMACs7FIzKhFWBmY7E3uRG/cFiRMEfjJiVw79LL7GqHjTUag==
+X-Google-Smtp-Source: AGHT+IHulk/HBrcE7uedPmWU066+YEFacy4IjrB7qfmiMZgjs1ThmOTyZhEgUifB8tvnf/lycgevSCnJzFHUmdB0WOc=
+X-Received: by 2002:a05:6512:1153:b0:504:7b50:ec9a with SMTP id
+ m19-20020a056512115300b005047b50ec9amr197875lfg.1.1701482904598; Fri, 01 Dec
+ 2023 18:08:24 -0800 (PST)
 MIME-Version: 1.0
-References: <20231201235031.475293-1-irogers@google.com> <20231201235031.475293-9-irogers@google.com>
-In-Reply-To: <20231201235031.475293-9-irogers@google.com>
+References: <20231128203940.3964287-1-kan.liang@linux.intel.com>
+ <CAP-5=fUdEgnwk_FNHb-Ju3wCYE2PLLrPHqwZoyBGyURXQhBeSA@mail.gmail.com>
+ <083bfe11-6f6e-487f-ac28-aec22e6b6b06@linux.intel.com> <CAP-5=fXTYX6_QdR4RCBu9yh+k1VwhsTjabKdseVP9Cvi6PE=sA@mail.gmail.com>
+ <f5112f5e-c77c-4a9a-ac3b-66772adba471@linux.intel.com> <CAP-5=fU6EXenN9uU1DZ3X=L+k6Y-4a-XESfY9gL9ZCowhSazWA@mail.gmail.com>
+ <afefab15-cffc-4345-9cf4-c6a4128d4d9c@linux.intel.com>
+In-Reply-To: <afefab15-cffc-4345-9cf4-c6a4128d4d9c@linux.intel.com>
 From:   Ian Rogers <irogers@google.com>
-Date:   Fri, 1 Dec 2023 18:06:12 -0800
-Message-ID: <CAP-5=fUtoi7ynQ-x_7rrv_vYoTZfS_14COA1MskOFVXJ_jCDew@mail.gmail.com>
-Subject: Re: [PATCH v1 9/9] perf tests: Add option to run tests in parallel
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        James Clark <james.clark@arm.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        John Garry <john.g.garry@oracle.com>,
+Date:   Fri, 1 Dec 2023 18:08:13 -0800
+Message-ID: <CAP-5=fW=b7KmiJKgFOxWd4ayG9A+f4E6QuTKCV0bZmf=SWSQ4Q@mail.gmail.com>
+Subject: Re: [PATCH] perf mem: Fix perf mem error on hybrid
+To:     "Liang, Kan" <kan.liang@linux.intel.com>
+Cc:     acme@kernel.org, mingo@redhat.com, peterz@infradead.org,
+        mark.rutland@arm.com, namhyung@kernel.org, jolsa@kernel.org,
+        adrian.hunter@intel.com, ravi.bangoria@amd.com,
         linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        llvm@lists.linux.dev
+        Ammy Yi <ammy.yi@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
@@ -85,416 +77,499 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 1, 2023 at 3:50=E2=80=AFPM Ian Rogers <irogers@google.com> wrot=
-e:
+On Fri, Dec 1, 2023 at 1:43=E2=80=AFPM Liang, Kan <kan.liang@linux.intel.co=
+m> wrote:
 >
-> By default tests are forked, add an option (-p or --parallel) so that
-> the forked tests are all started in parallel and then their output
-> gathered serially. This is opt-in as running in parallel can cause
-> test flakes.
 >
-> Rather than fork within the code, the start_command/finish_command
-> from libsubcmd are used. This changes how stderr and stdout are
-> handled.
 >
-> Signed-off-by: Ian Rogers <irogers@google.com>
+> On 2023-11-30 3:36 p.m., Ian Rogers wrote:
+> > On Wed, Nov 29, 2023 at 1:15=E2=80=AFPM Liang, Kan <kan.liang@linux.int=
+el.com> wrote:
+> >>
+> >>
+> >>
+> >> On 2023-11-29 11:17 a.m., Ian Rogers wrote:
+> >>> On Wed, Nov 29, 2023 at 5:52=E2=80=AFAM Liang, Kan <kan.liang@linux.i=
+ntel.com> wrote:
+> >>>>
+> >>>>
+> >>>>
+> >>>> On 2023-11-29 1:24 a.m., Ian Rogers wrote:
+> >>>>> On Tue, Nov 28, 2023 at 12:39=E2=80=AFPM <kan.liang@linux.intel.com=
+> wrote:
+> >>>>>>
+> >>>>>> From: Kan Liang <kan.liang@linux.intel.com>
+> >>>>>>
+> >>>>>> The below error can be triggered on a hybrid machine.
+> >>>>>>
+> >>>>>>  $ perf mem record -t load sleep 1
+> >>>>>>  event syntax error: 'breakpoint/mem-loads,ldlat=3D30/P'
+> >>>>>>                                 \___ Bad event or PMU
+> >>>>>>
+> >>>>>>  Unable to find PMU or event on a PMU of 'breakpoint'
+> >>>>>>
+> >>>>>> In the perf_mem_events__record_args(), the current perf never chec=
+ks the
+> >>>>>> availability of a mem event on a given PMU. All the PMUs will be a=
+dded
+> >>>>>> to the perf mem event list. Perf errors out for the unsupported PM=
+U.
+> >>>>>>
+> >>>>>> Extend perf_mem_event__supported() and take a PMU into account. Ch=
+eck
+> >>>>>> the mem event for each PMU before adding it to the perf mem event =
+list.
+> >>>>>>
+> >>>>>> Optimize the perf_mem_events__init() a little bit. The function is=
+ to
+> >>>>>> check whether the mem events are supported in the system. It doesn=
+'t
+> >>>>>> need to scan all PMUs. Just return with the first supported PMU is=
+ good
+> >>>>>> enough.
+> >>>>>>
+> >>>>>> Fixes: 5752c20f3787 ("perf mem: Scan all PMUs instead of just core=
+ ones")
+> >>>>>> Reported-by: Ammy Yi <ammy.yi@intel.com>
+> >>>>>> Tested-by: Ammy Yi <ammy.yi@intel.com>
+> >>>>>> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+> >>>>>> ---
+> >>>>>>  tools/perf/util/mem-events.c | 25 ++++++++++++++-----------
+> >>>>>>  1 file changed, 14 insertions(+), 11 deletions(-)
+> >>>>>>
+> >>>>>> diff --git a/tools/perf/util/mem-events.c b/tools/perf/util/mem-ev=
+ents.c
+> >>>>>> index 954b235e12e5..3a2e3687878c 100644
+> >>>>>> --- a/tools/perf/util/mem-events.c
+> >>>>>> +++ b/tools/perf/util/mem-events.c
+> >>>>>> @@ -100,11 +100,14 @@ int perf_mem_events__parse(const char *str)
+> >>>>>>         return -1;
+> >>>>>>  }
+> >>>>>>
+> >>>>>> -static bool perf_mem_event__supported(const char *mnt, char *sysf=
+s_name)
+> >>>>>> +static bool perf_mem_event__supported(const char *mnt, struct per=
+f_pmu *pmu,
+> >>>>>> +                                     struct perf_mem_event *e)
+> >>>>>>  {
+> >>>>>> +       char sysfs_name[100];
+> >>>>>>         char path[PATH_MAX];
+> >>>>>>         struct stat st;
+> >>>>>>
+> >>>>>> +       scnprintf(sysfs_name, sizeof(sysfs_name), e->sysfs_name, p=
+mu->name);
+> >>>>>
+> >>>>> Not sure if this is right. Looking at sysfs_name values:
+> >>>>> https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-nex=
+t.git/tree/tools/perf/util/mem-events.c?h=3Dperf-tools-next#n23
+> >>>>> "cpu/events/mem-loads" and "cpu/events/mem-stores", so won't pmu->n=
+ame
+> >>>>> never be used?
+> >>>>> Is there a missed change to change the cpu to %s?
+> >>>>
+> >>>> There is a X86 specific perf_mem_events__ptr(), which uses the
+> >>>> "%s/mem-loads,ldlat=3D%u/P" and "%s/events/mem-loads" for Intel plat=
+forms.
+> >>>> https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next=
+.git/tree/tools/perf/arch/x86/util/mem-events.c?h=3Dperf-tools-next#n20
+> >>>> The pmu->name is used especially for the hybrid platforms.
+> >>>
+> >>> Right, that seems wrong. For one thing we're losing the compiler's
+> >>> format string argument checking, but hardcoding PMU names just seems
+> >>> to be something that will keep needing maintenance. This patch set
+> >>> looks to fix an Intel issue but in general it is increasing tech debt
+> >>> (or at least churning it) that will need cleaning up to do something
+> >>> with better error checking and more generic. perf_mem_event looks lik=
+e
+> >>> a bad abstraction and then there are the integers whose special value=
+s
+> >>> hold meaning. Could this fix come with some cleanup? It wouldn't seem
+> >>> wrong to me to add notions of memory events to the PMU abstraction. A=
+s
+> >>> it stands this scnprintf looks wrong in non-Intel cases.
+> >>>
+> >>
+> >> The problem is that different ARCHs check different things. Arm and AM=
+D
+> >> checks the PMU name, while Intel and Power checks the specific events.
+> >> It's hard to have a unified scnprintf.
+> >>
+> >> But we can abstract them into two cases, PMU name and event name. We u=
+se
+> >> a different scnprintf to handle them.
+> >> How about something as below?
+> >>
+> >> diff --git a/tools/perf/arch/x86/util/mem-events.c
+> >> b/tools/perf/arch/x86/util/mem-events.c
+> >> index 191b372f9a2d..4ef70fb9132b 100644
+> >> --- a/tools/perf/arch/x86/util/mem-events.c
+> >> +++ b/tools/perf/arch/x86/util/mem-events.c
+> >> @@ -17,8 +17,8 @@ static char mem_stores_name[100];
+> >>  #define E(t, n, s) { .tag =3D t, .name =3D n, .sysfs_name =3D s }
+> >>
+> >>  static struct perf_mem_event
+> >> perf_mem_events_intel[PERF_MEM_EVENTS__MAX] =3D {
+> >> -       E("ldlat-loads",        "%s/mem-loads,ldlat=3D%u/P",      "%s/=
+events/mem-loads"),
+> >> -       E("ldlat-stores",       "%s/mem-stores/P",              "%s/ev=
+ents/mem-stores"),
+> >> +       E("ldlat-loads",        "%s/mem-loads,ldlat=3D%u/P",      "eve=
+nts/mem-loads"),
+> >> +       E("ldlat-stores",       "%s/mem-stores/P",              "event=
+s/mem-stores"),
+> >>         E(NULL,                 NULL,                           NULL),
+> >>  };
+> >>
+> >> diff --git a/tools/perf/util/mem-events.c b/tools/perf/util/mem-events=
+.c
+> >> index 3a2e3687878c..ba88cb3d804f 100644
+> >> --- a/tools/perf/util/mem-events.c
+> >> +++ b/tools/perf/util/mem-events.c
+> >> @@ -8,6 +8,7 @@
+> >>  #include <unistd.h>
+> >>  #include <api/fs/fs.h>
+> >>  #include <linux/kernel.h>
+> >> +#include <linux/string.h>
+> >>  #include "map_symbol.h"
+> >>  #include "mem-events.h"
+> >>  #include "debug.h"
+> >> @@ -20,8 +21,8 @@ unsigned int perf_mem_events__loads_ldlat =3D 30;
+> >>  #define E(t, n, s) { .tag =3D t, .name =3D n, .sysfs_name =3D s }
+> >>
+> >>  static struct perf_mem_event perf_mem_events[PERF_MEM_EVENTS__MAX] =
+=3D {
+> >> -       E("ldlat-loads",        "cpu/mem-loads,ldlat=3D%u/P",     "cpu=
+/events/mem-loads"),
+> >> -       E("ldlat-stores",       "cpu/mem-stores/P",             "cpu/e=
+vents/mem-stores"),
+> >> +       E("ldlat-loads",        "cpu/mem-loads,ldlat=3D%u/P",     "eve=
+nts/mem-loads"),
+> >> +       E("ldlat-stores",       "cpu/mem-stores/P",             "event=
+s/mem-stores"),
+> >>         E(NULL,                 NULL,                           NULL),
+> >>  };
+> >>  #undef E
+> >> @@ -103,12 +104,14 @@ int perf_mem_events__parse(const char *str)
+> >>  static bool perf_mem_event__supported(const char *mnt, struct perf_pm=
+u
+> >> *pmu,
+> >>                                       struct perf_mem_event *e)
+> >>  {
+> >> -       char sysfs_name[100];
+> >>         char path[PATH_MAX];
+> >>         struct stat st;
+> >>
+> >> -       scnprintf(sysfs_name, sizeof(sysfs_name), e->sysfs_name, pmu->=
+name);
+> >> -       scnprintf(path, PATH_MAX, "%s/devices/%s", mnt, sysfs_name);
+> >> +       if (strstarts(e->sysfs_name, "event/"))
+> >> +               scnprintf(path, PATH_MAX, "%s/devices/%s/%s", mnt, pmu=
+->name,
+> >> e->sysfs_name);
+> >> +       else
+> >> +               scnprintf(path, PATH_MAX, "%s/devices/%s", mnt, e->sys=
+fs_name);
+> >> +
+> >>         return !stat(path, &st);
+> >>  }
+> >
+> > Thanks Kan, how about we move forward with the patch as is. I'm just
+> > moaning as I think there is a longer term tech debt issue we should be
+> > cleaning up. What I'm imagining in some crude hacking for just the
+> > mem-events list case is:
+> >
+> > ```
+> > --- a/tools/perf/util/mem-events.c
+> > +++ b/tools/perf/util/mem-events.c
+> > @@ -149,17 +149,19 @@ int perf_mem_events__init(void)
+> >
+> > void perf_mem_events__list(void)
+> > {
+> > -       int j;
+> > -
+> > -       for (j =3D 0; j < PERF_MEM_EVENTS__MAX; j++) {
+> > -               struct perf_mem_event *e =3D perf_mem_events__ptr(j);
+> > +       static const char *mem_event_names[PERF_MEM_EVENTS__MAX] =3D {
+> > +               [PERF_MEM_EVENTS__LOAD] =3D "...load...",
+> > +               [PERF_MEM_EVENTS__STORE] =3D "...store...",
+> > +               [PERF_MEM_EVENTS__ACCESS] =3D "...access...",
+> > +       };
+> > +       while ((pmu =3D perf_pmus__scan(pmu)) !=3D NULL) {
+> > +               if (!perf_pmu__mem_events_supported(pmu))
+> > +                       continue;
+> >
+> > -               fprintf(stderr, "%-*s%-*s%s",
+> > -                       e->tag ? 13 : 0,
+> > -                       e->tag ? : "",
+> > -                       e->tag && verbose > 0 ? 25 : 0,
+> > -                       e->tag && verbose > 0 ?
+> > perf_mem_events__name(j, NULL) : "",
+> > -                       e->supported ? ": available\n" : "");
+> > +               for (int i =3D 0; i < PERF_MEM_EVENTS__MAX; i++) {
+> > +                       if (perf_pmu__mem_event_supported(pmu, i))
+> > +                               printf("%s\n", mem_event_names[i]);
+> > +               }
+> >        }
+> > }
+> >
+>
+> This will be a user visiable change. We may don't want to chage it in a
+> cleanup patch. I'm not sure if anyone relies on the output.
+>
+> $ sudo perf mem record -e list
+> ldlat-loads  : available
+> ldlat-stores : available
+>
+>
+>
+> > diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+> > index 3c9609944a2f..e7f4f7d3d082 100644
+> > --- a/tools/perf/util/pmu.c
+> > +++ b/tools/perf/util/pmu.c
+> > @@ -1578,6 +1578,34 @@ int perf_pmu__find_event(struct perf_pmu *pmu,
+> > const char *event, void *state, p
+> >                                        &args, find_event_callback);
+> > }
+> >
+> > +bool perf_pmu__mem_events_supported(const struct perf_pmu *pmu)
+> > +{
+> > +       if (pmu->is_core && is_intel()) {
+> > +               return true;
+> > +       }
+> > +       if (strcmp(pmu->name, "ibs_op")) {
+> > +               return true;
+> > +       }
+> > +       if (ARM...) {
+> > +       }
+> > +       return false;
+> > +}
+> > +
+> > +bool perf_pmu__mem_event_supported(const struct perf_pmu *pmu, enum
+> > mem_event_type type)
+> > +{
+> > +       if (pmu->is_core && is_intel()) {
+> > +               switch (type) {
+> > +               case PERF_MEM_EVENTS__LOAD:
+> > +                       return perf_pmu__have_event(pmu, "mem-loads");
+> > +               case PERF_MEM_EVENTS__STORES:
+> > +                       return perf_pmu__have_event(pmu, "mem-stores");
+> > +               default:
+> > +                       return false;
+> > +               }
+> > +       }
+> > +       ...
+> > +}
+>
+> I think we'd better keep the ARCH details in the arch specific files.
+>
+> > +
+> > static void perf_pmu__del_formats(struct list_head *formats)
+> > {
+> >        struct perf_pmu_format *fmt, *tmp;
+> > diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
+> > index 424c3fee0949..414f0fbd77a8 100644
+> > --- a/tools/perf/util/pmu.h
+> > +++ b/tools/perf/util/pmu.h
+> > @@ -26,6 +26,13 @@ enum {
+> > #define PERF_PMU_FORMAT_BITS 64
+> > #define MAX_PMU_NAME_LEN 128
+> >
+> > +enum mem_event_type {
+> > +       PERF_MEM_EVENTS__LOAD,
+> > +       PERF_MEM_EVENTS__STORE,
+> > +       PERF_MEM_EVENTS__ACCESS,
+> > +       PERF_MEM_EVENTS__MAX,
+> > +};
+> > +
+> > struct perf_event_attr;
+> >
+> > struct perf_pmu_caps {
+> > @@ -204,6 +211,8 @@ int perf_pmu__check_alias(struct perf_pmu *pmu,
+> > struct parse_events_terms *head_
+> >                          struct perf_pmu_info *info, bool *rewrote_term=
+s,
+> >                          struct parse_events_error *err);
+> > int perf_pmu__find_event(struct perf_pmu *pmu, const char *event, void
+> > *state, pmu_event_callback cb);
+> > +bool perf_pmu__mem_events_supported(const struct perf_pmu *pmu);
+> > +bool perf_pmu__mem_event_supported(const struct perf_pmu *pmu, enum
+> > mem_event_types type);
+> >
+> > int perf_pmu__format_parse(struct perf_pmu *pmu, int dirfd, bool eager_=
+load);
+> > void perf_pmu_format__set_value(void *format, int config, unsigned long=
+ *bits);
+> > ```
+> >
+> > or maybe we can have some state in struct pmu and have the
+> > perf_pmu__arch_init set that up. Like a bitmask of supported mem
+> > events.
+> >
+> > I'd kind of like the arch init perf pmu code to be as little as
+> > possible. So if you did user space emulation of ARM on Intel (Intel
+> > does this with houdini), then you could still read memory bandwidth
+> > numbers from the Intel PMU as the logic isn't hidden and is generic.
+> > Of course "cpu" is something of a special case PMU.
+>
+> I'm thinking to add the perf_mem_events struct into the perf_pmu. For
+> example,
+>
+> diff --git a/tools/perf/arch/x86/util/pmu.c b/tools/perf/arch/x86/util/pm=
+u.c
+> index 469555ae9b3c..c7d476218793 100644
+> --- a/tools/perf/arch/x86/util/pmu.c
+> +++ b/tools/perf/arch/x86/util/pmu.c
+> @@ -30,6 +30,11 @@ void perf_pmu__arch_init(struct perf_pmu *pmu
+> __maybe_unused)
+>                 pmu->selectable =3D true;
+>         }
+>  #endif
+> +       if (x86__is_amd_cpu()) {
+> +               if (strcmp(pmu->name, "ibs_op"))
+> +                       pmu->mem_event =3D perf_mem_events_amd;
+> +       } else if (pmu->is_core)
+> +               pmu->mem_event =3D perf_mem_events_intel;
+>  }
+>
+>  int perf_pmus__num_mem_pmus(void)
+> diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
+> index d2895d415f08..6acad509f44a 100644
+> --- a/tools/perf/util/pmu.h
+> +++ b/tools/perf/util/pmu.h
+> @@ -162,6 +162,8 @@ struct perf_pmu {
+>                  */
+>                 bool exclude_guest;
+>         } missing_features;
+> +
+> +       struct perf_mem_event   *mem_event;
+>  };
+>
+>
+> It should not be hard to add a perf_pmus__scan_mem() to replace the
+> current logic of searching the mem_event supported PMU.
+>
+> The perf_mem_events__ptr() should be simply replaced by pmu->mem_event.
+>
+> The perf_mem_events__name() can also be replaced similarly, but have to
+> specially handle the mem-loads-aux. Maybe we can create a
+> perf_mem_events_intel_aux[], and use it in the perf_pmu__arch_init()
+> when perf_pmus__have_event(pmu, "mem-loads-aux").
+>
+> I will implement some codes and see how it goes.
+>
+> >
+> > Anyway, if you don't feel like the refactor we can move forward with
+> > this or a v2, let me know.
+>
+> I think the refactor is doable. I will work on it next week.
+> But I think it should be on top of this fix.
+> If you are OK with the fix, I think it's better to have it merged first.
+> So everything would work properly. The validation work will not be blocke=
+d.
+> Then I can send a patch set to cleanup the perf mem events separately.
 
-Actually, I think this patch needs more work. The verbose output is
-degraded and missing in some cases. Suggestions on how to fix welcome.
-It'd be nice to fix up the tests and allow parallel to be the default.
-The first patch in this series is 1 such fix. Another is needed to
-make "Couldn't resolve comm name for pid" silent in the cases where it
-is racy. I was also noticing hangs on things like the lock contention
-test. The good news is the tests are doing their job of finding bugs.
+Thanks Kan.
 
-Thanks,
+Acked-by: Ian Rogers <irogers@google.com>
+
 Ian
 
-
-> ---
->  tools/perf/tests/builtin-test.c | 261 +++++++++++++++++++++-----------
->  1 file changed, 169 insertions(+), 92 deletions(-)
->
-> diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-t=
-est.c
-> index 54b11c23e863..91c32b477cbb 100644
-> --- a/tools/perf/tests/builtin-test.c
-> +++ b/tools/perf/tests/builtin-test.c
-> @@ -21,6 +21,7 @@
->  #include "debug.h"
->  #include "color.h"
->  #include <subcmd/parse-options.h>
-> +#include <subcmd/run-command.h>
->  #include "string2.h"
->  #include "symbol.h"
->  #include "util/rlimit.h"
-> @@ -31,7 +32,13 @@
->
->  #include "tests-scripts.h"
->
-> +/*
-> + * Command line option to not fork the test running in the same process =
-and
-> + * making them easier to debug.
-> + */
->  static bool dont_fork;
-> +/* Fork the tests in parallel and then wait for their completion. */
-> +static bool parallel;
->  const char *dso_to_test;
->  const char *test_objdump_path =3D "objdump";
->
-> @@ -211,76 +218,36 @@ static bool perf_test__matches(const char *desc, in=
-t curr, int argc, const char
->         return false;
->  }
->
-> -static int run_test(struct test_suite *test, int subtest)
-> -{
-> -       int status, err =3D -1, child =3D dont_fork ? 0 : fork();
-> -       char sbuf[STRERR_BUFSIZE];
-> -
-> -       if (child < 0) {
-> -               pr_err("failed to fork test: %s\n",
-> -                       str_error_r(errno, sbuf, sizeof(sbuf)));
-> -               return -1;
-> -       }
-> -
-> -       if (!child) {
-> -               if (!dont_fork) {
-> -                       pr_debug("test child forked, pid %d\n", getpid())=
-;
-> -
-> -                       if (verbose <=3D 0) {
-> -                               int nullfd =3D open("/dev/null", O_WRONLY=
+> Thanks,
+> Kan
+> >
+> > Thanks,
+> > Ian
+> >
+> >> Thanks,
+> >> Kan
+> >>
+> >>> Thanks,
+> >>> Ian
+> >>>
+> >>>> Thanks,
+> >>>> Kan
+> >>>>>
+> >>>>> Thanks,
+> >>>>> Ian
+> >>>>>
+> >>>>>>         scnprintf(path, PATH_MAX, "%s/devices/%s", mnt, sysfs_name=
 );
-> -
-> -                               if (nullfd >=3D 0) {
-> -                                       close(STDERR_FILENO);
-> -                                       close(STDOUT_FILENO);
-> -
-> -                                       dup2(nullfd, STDOUT_FILENO);
-> -                                       dup2(STDOUT_FILENO, STDERR_FILENO=
-);
-> -                                       close(nullfd);
-> -                               }
-> -                       } else {
-> -                               signal(SIGSEGV, sighandler_dump_stack);
-> -                               signal(SIGFPE, sighandler_dump_stack);
-> -                       }
-> -               }
-> -
-> -               err =3D test_function(test, subtest)(test, subtest);
-> -               if (!dont_fork)
-> -                       exit(err);
-> -       }
-> -
-> -       if (!dont_fork) {
-> -               wait(&status);
-> +struct child_test {
-> +       struct child_process process;
-> +       struct test_suite *test;
-> +       int test_num;
-> +       int subtest;
-> +};
->
-> -               if (WIFEXITED(status)) {
-> -                       err =3D (signed char)WEXITSTATUS(status);
-> -                       pr_debug("test child finished with %d\n", err);
-> -               } else if (WIFSIGNALED(status)) {
-> -                       err =3D -1;
-> -                       pr_debug("test child interrupted\n");
-> -               }
-> -       }
-> +static int run_test_child(struct child_process *process)
-> +{
-> +       struct child_test *child =3D container_of(process, struct child_t=
-est, process);
-> +       int err;
->
-> -       return err;
-> +       pr_debug("--- start ---\n");
-> +       pr_debug("test child forked, pid %d\n", getpid());
-> +       err =3D test_function(child->test, child->subtest)(child->test, c=
-hild->subtest);
-> +       pr_debug("---- end(%d) ----\n", err);
-> +       fflush(NULL);
-> +       return -err;
->  }
->
-> -#define for_each_test(j, k, t)                 \
-> -       for (j =3D 0, k =3D 0; j < ARRAY_SIZE(tests); j++, k =3D 0)   \
-> -               while ((t =3D tests[j][k++]) !=3D NULL)
-> -
-> -static int test_and_print(struct test_suite *t, int subtest)
-> +static int print_test_result(struct test_suite *t, int i, int subtest, i=
-nt result, int width)
->  {
-> -       int err;
-> -
-> -       pr_debug("\n--- start ---\n");
-> -       err =3D run_test(t, subtest);
-> -       pr_debug("---- end ----\n");
-> +       if (has_subtests(t)) {
-> +               int subw =3D width > 2 ? width - 2 : width;
->
-> -       if (!has_subtests(t))
-> -               pr_debug("%s:", t->desc);
-> -       else
-> -               pr_debug("%s subtest %d:", t->desc, subtest + 1);
-> +               pr_info("%3d.%1d: %-*s:", i + 1, subtest + 1, subw, test_=
-description(t, subtest));
-> +       } else
-> +               pr_info("%3d: %-*s:", i + 1, width, test_description(t, s=
-ubtest));
->
-> -       switch (err) {
-> +       switch (result) {
->         case TEST_OK:
->                 pr_info(" Ok\n");
->                 break;
-> @@ -299,22 +266,135 @@ static int test_and_print(struct test_suite *t, in=
-t subtest)
->                 break;
->         }
->
-> -       return err;
-> +       return 0;
-> +}
-> +
-> +static int finish_test(struct child_test *child_test, int width)
-> +{
-> +       struct test_suite *t =3D child_test->test;
-> +       int i =3D child_test->test_num;
-> +       int subi =3D child_test->subtest;
-> +       int out =3D child_test->process.out;
-> +       int err =3D child_test->process.err;
-> +       int ret;
-> +
-> +       if (verbose) {
-> +               bool out_done =3D false, err_done =3D false;
-> +
-> +               fcntl(out, F_SETFL, O_NONBLOCK);
-> +               fcntl(err, F_SETFL, O_NONBLOCK);
-> +               if (has_subtests(t))
-> +                       pr_info("%3d.%1d: %s:\n", i + 1, subi + 1, test_d=
-escription(t, subi));
-> +               else
-> +                       pr_info("%3d: %s:\n", i + 1, test_description(t, =
--1));
-> +
-> +               while (!out_done && !err_done) {
-> +                       char buf[512];
-> +                       ssize_t len;
-> +
-> +                       if (!out_done) {
-> +                               errno =3D 0;
-> +                               len =3D read(out, buf, sizeof(buf) - 1);
-> +
-> +                               if (len <=3D 0)
-> +                                       err_done =3D errno !=3D EAGAIN;
-> +                               else {
-> +                                       buf[len] =3D '\0';
-> +                                       fprintf(stdout, "%s", buf);
-> +                               }
-> +                       }
-> +                       if (!err_done) {
-> +                               errno =3D 0;
-> +                               len =3D read(err, buf, sizeof(buf) - 1);
-> +
-> +                               if (len <=3D 0)
-> +                                       err_done =3D errno !=3D EAGAIN;
-> +                               else {
-> +                                       buf[len] =3D '\0';
-> +                                       fprintf(stderr, "%s", buf);
-> +                               }
-> +                       }
-> +               }
-> +       }
-> +       ret =3D finish_command(&child_test->process);
-> +       print_test_result(t, i, subi, ret, width);
-> +       if (out >=3D 0)
-> +               close(out);
-> +       if (err >=3D 0)
-> +               close(err);
-> +       return 0;
-> +}
-> +
-> +static int start_test(struct test_suite *test, int i, int subi, struct c=
-hild_test **child,
-> +                     int width)
-> +{
-> +       int err;
-> +
-> +       *child =3D NULL;
-> +       if (dont_fork) {
-> +               pr_debug("--- start ---\n");
-> +               err =3D test_function(test, subi)(test, subi);
-> +               pr_debug("---- end ----\n");
-> +               print_test_result(test, i, subi, err, width);
-> +               return 0;
-> +       }
-> +
-> +       *child =3D zalloc(sizeof(**child));
-> +       if (!*child)
-> +               return -ENOMEM;
-> +
-> +       (*child)->test =3D test;
-> +       (*child)->test_num =3D i;
-> +       (*child)->subtest =3D subi;
-> +       (*child)->process.pid =3D -1;
-> +       (*child)->process.no_stdin =3D 1;
-> +       if (verbose <=3D 0) {
-> +               (*child)->process.no_stdout =3D 1;
-> +               (*child)->process.no_stderr =3D 1;
-> +       } else {
-> +               (*child)->process.out =3D -1;
-> +               (*child)->process.err =3D -1;
-> +       }
-> +       (*child)->process.no_exec_cmd =3D run_test_child;
-> +       err =3D start_command(&(*child)->process);
-> +       if (err || parallel)
-> +               return  err;
-> +       return finish_test(*child, width);
->  }
->
-> +#define for_each_test(j, k, t)                                 \
-> +       for (j =3D 0, k =3D 0; j < ARRAY_SIZE(tests); j++, k =3D 0)   \
-> +               while ((t =3D tests[j][k++]) !=3D NULL)
-> +
->  static int __cmd_test(int argc, const char *argv[], struct intlist *skip=
-list)
->  {
->         struct test_suite *t;
->         unsigned int j, k;
->         int i =3D 0;
->         int width =3D 0;
-> +       size_t num_tests =3D 0;
-> +       struct child_test **child_tests;
-> +       int child_test_num =3D 0;
->
->         for_each_test(j, k, t) {
->                 int len =3D strlen(test_description(t, -1));
->
->                 if (width < len)
->                         width =3D len;
-> +
-> +               if (has_subtests(t)) {
-> +                       for (int l =3D 0, subn =3D num_subtests(t); l < s=
-ubn; l++) {
-> +                               len =3D strlen(test_description(t, -1));
-> +                               if (width < len)
-> +                                       width =3D len;
-> +                               num_tests++;
-> +                       }
-> +               } else
-> +                       num_tests++;
->         }
-> +       child_tests =3D calloc(num_tests, sizeof(*child_tests));
-> +       if (!child_tests)
-> +               return -ENOMEM;
->
->         for_each_test(j, k, t) {
->                 int curr =3D i++;
-> @@ -336,52 +416,47 @@ static int __cmd_test(int argc, const char *argv[],=
- struct intlist *skiplist)
->                                 continue;
->                 }
->
-> -               pr_info("%3d: %-*s:", i, width, test_description(t, -1));
-> -
->                 if (intlist__find(skiplist, i)) {
-> +                       pr_info("%3d: %-*s:", curr + 1, width, test_descr=
-iption(t, -1));
->                         color_fprintf(stderr, PERF_COLOR_YELLOW, " Skip (=
-user override)\n");
->                         continue;
->                 }
->
->                 if (!has_subtests(t)) {
-> -                       test_and_print(t, -1);
-> +                       int err =3D start_test(t, curr, -1, &child_tests[=
-child_test_num++], width);
-> +
-> +                       if (err) {
-> +                               /* TODO: if parallel waitpid the already =
-forked children. */
-> +                               free(child_tests);
-> +                               return err;
-> +                       }
->                 } else {
->                         int subn =3D num_subtests(t);
-> -                       /*
-> -                        * minus 2 to align with normal testcases.
-> -                        * For subtest we print additional '.x' in number=
-.
-> -                        * for example:
-> -                        *
-> -                        * 35: Test LLVM searching and compiling         =
-               :
-> -                        * 35.1: Basic BPF llvm compiling test           =
-               : Ok
-> -                        */
-> -                       int subw =3D width > 2 ? width - 2 : width;
-> -
-> -                       if (subn <=3D 0) {
-> -                               color_fprintf(stderr, PERF_COLOR_YELLOW,
-> -                                             " Skip (not compiled in)\n"=
-);
-> -                               continue;
-> -                       }
-> -                       pr_info("\n");
->
->                         for (subi =3D 0; subi < subn; subi++) {
-> -                               int len =3D strlen(test_description(t, su=
-bi));
-> -
-> -                               if (subw < len)
-> -                                       subw =3D len;
-> -                       }
-> +                               int err;
->
-> -                       for (subi =3D 0; subi < subn; subi++) {
->                                 if (!perf_test__matches(test_description(=
-t, subi),
->                                                         curr, argc, argv)=
-)
->                                         continue;
->
-> -                               pr_info("%3d.%1d: %-*s:", i, subi + 1, su=
-bw,
-> -                                       test_description(t, subi));
-> -                               test_and_print(t, subi);
-> +                               err =3D start_test(t, curr, subi, &child_=
-tests[child_test_num++],
-> +                                                width);
-> +                               if (err)
-> +                                       return err;
->                         }
->                 }
->         }
-> +       for (i =3D 0; i < child_test_num; i++) {
-> +               if (parallel) {
-> +                       int ret  =3D finish_test(child_tests[i], width);
-> +
-> +                       if (ret)
-> +                               return ret;
-> +               }
-> +               free(child_tests[i]);
-> +       }
-> +       free(child_tests);
->         return 0;
->  }
->
-> @@ -449,6 +524,8 @@ int cmd_test(int argc, const char **argv)
->                     "be more verbose (show symbol address, etc)"),
->         OPT_BOOLEAN('F', "dont-fork", &dont_fork,
->                     "Do not fork for testcase"),
-> +       OPT_BOOLEAN('p', "parallel", &parallel,
-> +                   "Run the tests altogether in parallel"),
->         OPT_STRING('w', "workload", &workload, "work", "workload to run f=
-or testing"),
->         OPT_STRING(0, "dso", &dso_to_test, "dso", "dso to test"),
->         OPT_STRING(0, "objdump", &test_objdump_path, "path",
-> --
-> 2.43.0.rc2.451.g8631bc7472-goog
->
+> >>>>>>         return !stat(path, &st);
+> >>>>>>  }
+> >>>>>> @@ -120,7 +123,6 @@ int perf_mem_events__init(void)
+> >>>>>>
+> >>>>>>         for (j =3D 0; j < PERF_MEM_EVENTS__MAX; j++) {
+> >>>>>>                 struct perf_mem_event *e =3D perf_mem_events__ptr(=
+j);
+> >>>>>> -               char sysfs_name[100];
+> >>>>>>                 struct perf_pmu *pmu =3D NULL;
+> >>>>>>
+> >>>>>>                 /*
+> >>>>>> @@ -136,12 +138,12 @@ int perf_mem_events__init(void)
+> >>>>>>                  * of core PMU.
+> >>>>>>                  */
+> >>>>>>                 while ((pmu =3D perf_pmus__scan(pmu)) !=3D NULL) {
+> >>>>>> -                       scnprintf(sysfs_name, sizeof(sysfs_name), =
+e->sysfs_name, pmu->name);
+> >>>>>> -                       e->supported |=3D perf_mem_event__supporte=
+d(mnt, sysfs_name);
+> >>>>>> +                       e->supported |=3D perf_mem_event__supporte=
+d(mnt, pmu, e);
+> >>>>>> +                       if (e->supported) {
+> >>>>>> +                               found =3D true;
+> >>>>>> +                               break;
+> >>>>>> +                       }
+> >>>>>>                 }
+> >>>>>> -
+> >>>>>> -               if (e->supported)
+> >>>>>> -                       found =3D true;
+> >>>>>>         }
+> >>>>>>
+> >>>>>>         return found ? 0 : -ENOENT;
+> >>>>>> @@ -167,13 +169,10 @@ static void perf_mem_events__print_unsupport=
+_hybrid(struct perf_mem_event *e,
+> >>>>>>                                                     int idx)
+> >>>>>>  {
+> >>>>>>         const char *mnt =3D sysfs__mount();
+> >>>>>> -       char sysfs_name[100];
+> >>>>>>         struct perf_pmu *pmu =3D NULL;
+> >>>>>>
+> >>>>>>         while ((pmu =3D perf_pmus__scan(pmu)) !=3D NULL) {
+> >>>>>> -               scnprintf(sysfs_name, sizeof(sysfs_name), e->sysfs=
+_name,
+> >>>>>> -                         pmu->name);
+> >>>>>> -               if (!perf_mem_event__supported(mnt, sysfs_name)) {
+> >>>>>> +               if (!perf_mem_event__supported(mnt, pmu, e)) {
+> >>>>>>                         pr_err("failed: event '%s' not supported\n=
+",
+> >>>>>>                                perf_mem_events__name(idx, pmu->nam=
+e));
+> >>>>>>                 }
+> >>>>>> @@ -183,6 +182,7 @@ static void perf_mem_events__print_unsupport_h=
+ybrid(struct perf_mem_event *e,
+> >>>>>>  int perf_mem_events__record_args(const char **rec_argv, int *argv=
+_nr,
+> >>>>>>                                  char **rec_tmp, int *tmp_nr)
+> >>>>>>  {
+> >>>>>> +       const char *mnt =3D sysfs__mount();
+> >>>>>>         int i =3D *argv_nr, k =3D 0;
+> >>>>>>         struct perf_mem_event *e;
+> >>>>>>
+> >>>>>> @@ -211,6 +211,9 @@ int perf_mem_events__record_args(const char **=
+rec_argv, int *argv_nr,
+> >>>>>>                         while ((pmu =3D perf_pmus__scan(pmu)) !=3D=
+ NULL) {
+> >>>>>>                                 const char *s =3D perf_mem_events_=
+_name(j, pmu->name);
+> >>>>>>
+> >>>>>> +                               if (!perf_mem_event__supported(mnt=
+, pmu, e))
+> >>>>>> +                                       continue;
+> >>>>>> +
+> >>>>>>                                 rec_argv[i++] =3D "-e";
+> >>>>>>                                 if (s) {
+> >>>>>>                                         char *copy =3D strdup(s);
+> >>>>>> --
+> >>>>>> 2.35.1
+> >>>>>>
+> >>>
