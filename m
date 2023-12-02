@@ -2,59 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 120058018A1
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 01:07:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E5338018A4
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 01:07:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442097AbjLBAGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 19:06:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42720 "EHLO
+        id S1442061AbjLBAGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 19:06:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442092AbjLBAFY (ORCPT
+        with ESMTP id S1442054AbjLBAF3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 19:05:24 -0500
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADE3F1996
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 16:05:03 -0800 (PST)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5d351694be7so42037657b3.3
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 16:05:03 -0800 (PST)
+        Fri, 1 Dec 2023 19:05:29 -0500
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD80E2109
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 16:05:05 -0800 (PST)
+Received: by mail-pj1-x1049.google.com with SMTP id 98e67ed59e1d1-286472a0c6dso1918182a91.1
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 16:05:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701475503; x=1702080303; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1701475505; x=1702080305; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=o4Hn9d5ofhE1GJj3G12PpMWX7+kcX8n0WNzzYeEBc4A=;
-        b=a0yc4Rex3MoouOFIWOZKCcYuyd/kTZjnFweVpGCdVLO3DFs3lJA/0j7EtoPQc4aNoU
-         mNO/ISX6b2dXzXjaxZImfkxF87+vcwrzeYQYQNFe0qzy93uAC76LLIEcDO8hui0ktkDX
-         Hs/LrlIN9T9aynAkhHfrWfl+0YtaK5ew0xFJ9LPevm2d18p8Rbl0NgAVicMnkS+0D16v
-         VIoEWC5umWUUAb5sofokEMO/KIgLRXcipArwLDvh3Fhm9f6oS4WDcQT9LSQAw8IPMFfp
-         mySjVlrA6c3oMzhT7Yr+wkYaIGDq8pmbatcZFEfLvJQzN59A9urDZWxLeUmJn3q1zxcT
-         PjqQ==
+        bh=1np6+7PRvXQlpdzzc08QPCWEiLYS28PyG2M8UTLh7eY=;
+        b=A5Mro3EI+QYZWxtxK2ilJuraL8g3qepKA9pjc1wlLtI3lDwKyCjU6yEz4wR3JN8TCT
+         Sqi59oNPP2FySRo8UnV9dP/ZmlXLTRPy121LuVWNdvxat78rL4SOElvOcjStttsBI55Y
+         PyG/yIANK4qQye350KSsyt+9fRlM++kKK8AZMYcnlHXvHtXVBwon5o6ilPpvDjtia6JR
+         D8ZIIS/vKK8oKoJW9YNnH1gXLIszQG9WNOdjhn77e/Yp2Iongc06C75YNwGflKp9rs3d
+         B8FTHW8DfkV9IMZyeSBWxHQCzzVl2ZIfagDHOLydS88gu+WxZRjov4Z98OSyK+nmLKMW
+         7jUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701475503; x=1702080303;
+        d=1e100.net; s=20230601; t=1701475505; x=1702080305;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=o4Hn9d5ofhE1GJj3G12PpMWX7+kcX8n0WNzzYeEBc4A=;
-        b=irc0C+agqlkgZuihDDDtMQaRgEbIopRr1z+EzEo5f/OZhqCBgQL6URdxngHGfgV/Jg
-         WN6gy/0uulOpwig9N7lKOzU4dhcnUUfc3d8/3MglB57AfEnsETgmuPog5tT2xzdFwleR
-         D6UHK3qS9z1c0zXcRYyiDL7kYy8UWLMhuouuu0fJoAs+PH2F0mjG7rph6jFCtVQ1g9oY
-         djFsnAJOAbYDko//SAj4ysDqIq4+j3cAmufqfjY/S7EOJHBz3N/Chtw+3vedFWQhLOMk
-         O3sh/XLp+D1/X6vdLpCzHpP0BHw4xPytzjMaB0gfsvw7UP/UMBxP7ss89bhR81Tj4mFu
-         l35Q==
-X-Gm-Message-State: AOJu0YzrhvFyb/D9omwqNin038QrtqIXt1enuy3x9Oi61FWs/nHX0ddf
-        b2NvWX+KIUO4qFXq01LwYbypBsialEs=
-X-Google-Smtp-Source: AGHT+IEfYD8/aO1YsOS7xpxy1hILfZ6VtNdznm5JECRIumWrla/+fgq7Hq6T/EEWs8LHFWYupYqlfXK5Ptw=
+        bh=1np6+7PRvXQlpdzzc08QPCWEiLYS28PyG2M8UTLh7eY=;
+        b=TuHLuHolj0PpROaQs8D6/rNrG/l3SjFKr4r6q4GgwskjTbJpkdM9El+/jINgRO3u0w
+         RFUFVlrQjdKAGgq5wQdVKEr9F742T1qvBjcEhhAqcLXszvccZn7fjHQGA+4uhK8MdfRm
+         tBR/RUtZrDSRwCxEjJENisprqjljIhQR/ri5uK+TvLTFa9036l+ckTOUohFLkoh1lK1h
+         E60sgwWfBUsNDrUi59+aXfzTVeJyi18MpF1Moj5iyjKYFyt3WpkCQW6vkyqN0jyM1C3Y
+         mzYunJlICxH7iWYh5h91IIpuKgQy76xSIz0nSJ/XtRJqwofJ1E8sY+RoBa1dJNWcTZmG
+         BPqQ==
+X-Gm-Message-State: AOJu0YyP1+0K3zzsgCQaQRvdwQaJFL1GBAGoJFOxbBjHhvu2l/f+0Hj4
+        G65Rc2TIE+z4E9IRvINQM6nPrwhOpfc=
+X-Google-Smtp-Source: AGHT+IEr4G6HLBQRBdAuUJe0tt4hhHjH3qQhIxpXlo42ZNmifvYkJMnHMpc2jRctuuroAajkUJK+Pl7Rdv4=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:57d4:0:b0:5d3:a348:b0bd with SMTP id
- l203-20020a8157d4000000b005d3a348b0bdmr197529ywb.6.1701475502927; Fri, 01 Dec
- 2023 16:05:02 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a17:90a:cb97:b0:286:5a99:f834 with SMTP id
+ a23-20020a17090acb9700b002865a99f834mr120336pju.3.1701475505056; Fri, 01 Dec
+ 2023 16:05:05 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri,  1 Dec 2023 16:04:11 -0800
+Date:   Fri,  1 Dec 2023 16:04:12 -0800
 In-Reply-To: <20231202000417.922113-1-seanjc@google.com>
 Mime-Version: 1.0
 References: <20231202000417.922113-1-seanjc@google.com>
 X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
-Message-ID: <20231202000417.922113-23-seanjc@google.com>
-Subject: [PATCH v9 22/28] KVM: selftests: Add helpers to read integer module params
+Message-ID: <20231202000417.922113-24-seanjc@google.com>
+Subject: [PATCH v9 23/28] KVM: selftests: Query module param to detect FEP in
+ MSR filtering test
 From:   Sean Christopherson <seanjc@google.com>
 To:     Sean Christopherson <seanjc@google.com>,
         Paolo Bonzini <pbonzini@redhat.com>
@@ -76,128 +77,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add helpers to read integer module params, which is painfully non-trivial
-because the pain of dealing with strings in C is exacerbated by the kernel
-inserting a newline.
+Add a helper to detect KVM support for forced emulation by querying the
+module param, and use the helper to detect support for the MSR filtering
+test instead of throwing a noodle/NOP at KVM to see if it sticks.
 
-Don't bother differentiating between int, uint, short, etc.  They all fit
-in an int, and KVM (thankfully) doesn't have any integer params larger
-than an int.
-
+Cc: Aaron Lewis <aaronlewis@google.com>
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- .../selftests/kvm/include/kvm_util_base.h     |  4 ++
- tools/testing/selftests/kvm/lib/kvm_util.c    | 62 +++++++++++++++++--
- 2 files changed, 60 insertions(+), 6 deletions(-)
+ .../selftests/kvm/include/x86_64/processor.h  |  5 ++++
+ .../kvm/x86_64/userspace_msr_exit_test.c      | 27 +++++++------------
+ 2 files changed, 14 insertions(+), 18 deletions(-)
 
-diff --git a/tools/testing/selftests/kvm/include/kvm_util_base.h b/tools/testing/selftests/kvm/include/kvm_util_base.h
-index e0da036a13ae..4293af2cb28c 100644
---- a/tools/testing/selftests/kvm/include/kvm_util_base.h
-+++ b/tools/testing/selftests/kvm/include/kvm_util_base.h
-@@ -257,6 +257,10 @@ bool get_kvm_param_bool(const char *param);
- bool get_kvm_intel_param_bool(const char *param);
- bool get_kvm_amd_param_bool(const char *param);
- 
-+int get_kvm_param_integer(const char *param);
-+int get_kvm_intel_param_integer(const char *param);
-+int get_kvm_amd_param_integer(const char *param);
-+
- unsigned int kvm_check_cap(long cap);
- 
- static inline bool kvm_has_cap(long cap)
-diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
-index 17a978b8a2c4..878bdbc8e618 100644
---- a/tools/testing/selftests/kvm/lib/kvm_util.c
-+++ b/tools/testing/selftests/kvm/lib/kvm_util.c
-@@ -51,13 +51,13 @@ int open_kvm_dev_path_or_exit(void)
- 	return _open_kvm_dev_path_or_exit(O_RDONLY);
+diff --git a/tools/testing/selftests/kvm/include/x86_64/processor.h b/tools/testing/selftests/kvm/include/x86_64/processor.h
+index ee082ae58f40..d211cea188be 100644
+--- a/tools/testing/selftests/kvm/include/x86_64/processor.h
++++ b/tools/testing/selftests/kvm/include/x86_64/processor.h
+@@ -1222,6 +1222,11 @@ static inline bool kvm_is_pmu_enabled(void)
+ 	return get_kvm_param_bool("enable_pmu");
  }
  
--static bool get_module_param_bool(const char *module_name, const char *param)
-+static ssize_t get_module_param(const char *module_name, const char *param,
-+				void *buffer, size_t buffer_size)
++static inline bool kvm_is_forced_emulation_enabled(void)
++{
++	return !!get_kvm_param_integer("force_emulation_prefix");
++}
++
+ uint64_t *__vm_get_page_table_entry(struct kvm_vm *vm, uint64_t vaddr,
+ 				    int *level);
+ uint64_t *vm_get_page_table_entry(struct kvm_vm *vm, uint64_t vaddr);
+diff --git a/tools/testing/selftests/kvm/x86_64/userspace_msr_exit_test.c b/tools/testing/selftests/kvm/x86_64/userspace_msr_exit_test.c
+index 3533dc2fbfee..9e12dbc47a72 100644
+--- a/tools/testing/selftests/kvm/x86_64/userspace_msr_exit_test.c
++++ b/tools/testing/selftests/kvm/x86_64/userspace_msr_exit_test.c
+@@ -14,8 +14,7 @@
+ 
+ /* Forced emulation prefix, used to invoke the emulator unconditionally. */
+ #define KVM_FEP "ud2; .byte 'k', 'v', 'm';"
+-#define KVM_FEP_LENGTH 5
+-static int fep_available = 1;
++static bool fep_available;
+ 
+ #define MSR_NON_EXISTENT 0x474f4f00
+ 
+@@ -260,13 +259,6 @@ static void guest_code_filter_allow(void)
+ 	GUEST_ASSERT(data == 2);
+ 	GUEST_ASSERT(guest_exception_count == 0);
+ 
+-	/*
+-	 * Test to see if the instruction emulator is available (ie: the module
+-	 * parameter 'kvm.force_emulation_prefix=1' is set).  This instruction
+-	 * will #UD if it isn't available.
+-	 */
+-	__asm__ __volatile__(KVM_FEP "nop");
+-
+ 	if (fep_available) {
+ 		/* Let userspace know we aren't done. */
+ 		GUEST_SYNC(0);
+@@ -388,12 +380,6 @@ static void guest_fep_gp_handler(struct ex_regs *regs)
+ 			   &em_wrmsr_start, &em_wrmsr_end);
+ }
+ 
+-static void guest_ud_handler(struct ex_regs *regs)
+-{
+-	fep_available = 0;
+-	regs->rip += KVM_FEP_LENGTH;
+-}
+-
+ static void check_for_guest_assert(struct kvm_vcpu *vcpu)
  {
- 	const int path_size = 128;
- 	char path[path_size];
--	char value;
--	ssize_t r;
--	int fd;
-+	ssize_t bytes_read;
-+	int fd, r;
+ 	struct ucall uc;
+@@ -531,9 +517,11 @@ static void test_msr_filter_allow(void)
+ {
+ 	struct kvm_vcpu *vcpu;
+ 	struct kvm_vm *vm;
++	uint64_t cmd;
+ 	int rc;
  
- 	r = snprintf(path, path_size, "/sys/module/%s/parameters/%s",
- 		     module_name, param);
-@@ -66,11 +66,46 @@ static bool get_module_param_bool(const char *module_name, const char *param)
+ 	vm = vm_create_with_one_vcpu(&vcpu, guest_code_filter_allow);
++	sync_global_to_guest(vm, fep_available);
  
- 	fd = open_path_or_exit(path, O_RDONLY);
+ 	rc = kvm_check_cap(KVM_CAP_X86_USER_SPACE_MSR);
+ 	TEST_ASSERT(rc, "KVM_CAP_X86_USER_SPACE_MSR is available");
+@@ -561,11 +549,11 @@ static void test_msr_filter_allow(void)
+ 	run_guest_then_process_wrmsr(vcpu, MSR_NON_EXISTENT);
+ 	run_guest_then_process_rdmsr(vcpu, MSR_NON_EXISTENT);
  
--	r = read(fd, &value, 1);
--	TEST_ASSERT(r == 1, "read(%s) failed", path);
-+	bytes_read = read(fd, buffer, buffer_size);
-+	TEST_ASSERT(bytes_read > 0, "read(%s) returned %ld, wanted %ld bytes",
-+		    path, bytes_read, buffer_size);
+-	vm_install_exception_handler(vm, UD_VECTOR, guest_ud_handler);
+ 	vcpu_run(vcpu);
+-	vm_install_exception_handler(vm, UD_VECTOR, NULL);
++	cmd = process_ucall(vcpu);
  
- 	r = close(fd);
- 	TEST_ASSERT(!r, "close(%s) failed", path);
-+	return bytes_read;
-+}
-+
-+static int get_module_param_integer(const char *module_name, const char *param)
-+{
-+	/*
-+	 * 16 bytes to hold a 64-bit value (1 byte per char), 1 byte for the
-+	 * NUL char, and 1 byte because the kernel sucks and inserts a newline
-+	 * at the end.
-+	 */
-+	char value[16 + 1 + 1];
-+	ssize_t r;
-+
-+	memset(value, '\0', sizeof(value));
-+
-+	r = get_module_param(module_name, param, value, sizeof(value));
-+	TEST_ASSERT(value[r - 1] == '\n',
-+		    "Expected trailing newline, got char '%c'", value[r - 1]);
-+
-+	/*
-+	 * Squash the newline, otherwise atoi_paranoid() will complain about
-+	 * trailing non-NUL characters in the string.
-+	 */
-+	value[r - 1] = '\0';
-+	return atoi_paranoid(value);
-+}
-+
-+static bool get_module_param_bool(const char *module_name, const char *param)
-+{
-+	char value;
-+	ssize_t r;
-+
-+	r = get_module_param(module_name, param, &value, sizeof(value));
-+	TEST_ASSERT_EQ(r, 1);
+-	if (process_ucall(vcpu) != UCALL_DONE) {
++	if (fep_available) {
++		TEST_ASSERT_EQ(cmd, UCALL_SYNC);
+ 		vm_install_exception_handler(vm, GP_VECTOR, guest_fep_gp_handler);
  
- 	if (value == 'Y')
- 		return true;
-@@ -95,6 +130,21 @@ bool get_kvm_amd_param_bool(const char *param)
- 	return get_module_param_bool("kvm_amd", param);
- }
+ 		/* Process emulated rdmsr and wrmsr instructions. */
+@@ -583,6 +571,7 @@ static void test_msr_filter_allow(void)
+ 		/* Confirm the guest completed without issues. */
+ 		run_guest_then_process_ucall_done(vcpu);
+ 	} else {
++		TEST_ASSERT_EQ(cmd, UCALL_DONE);
+ 		printf("To run the instruction emulated tests set the module parameter 'kvm.force_emulation_prefix=1'\n");
+ 	}
  
-+int get_kvm_param_integer(const char *param)
-+{
-+	return get_module_param_integer("kvm", param);
-+}
+@@ -804,6 +793,8 @@ static void test_user_exit_msr_flags(void)
+ 
+ int main(int argc, char *argv[])
+ {
++	fep_available = kvm_is_forced_emulation_enabled();
 +
-+int get_kvm_intel_param_integer(const char *param)
-+{
-+	return get_module_param_integer("kvm_intel", param);
-+}
-+
-+int get_kvm_amd_param_integer(const char *param)
-+{
-+	return get_module_param_integer("kvm_amd", param);
-+}
-+
- /*
-  * Capability
-  *
+ 	test_msr_filter_allow();
+ 
+ 	test_msr_filter_deny();
 -- 
 2.43.0.rc2.451.g8631bc7472-goog
 
