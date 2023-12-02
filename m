@@ -2,78 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45059801CCA
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 13:52:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CF19801CF4
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 14:09:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232853AbjLBMwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 07:52:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53000 "EHLO
+        id S232904AbjLBNJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 08:09:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232746AbjLBMwA (ORCPT
+        with ESMTP id S232768AbjLBNJg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 07:52:00 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0428E18C;
-        Sat,  2 Dec 2023 04:52:06 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-54c5ed26cf6so1992507a12.3;
-        Sat, 02 Dec 2023 04:52:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701521524; x=1702126324; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uvqh3YsIrEQFTmWeg+MPEc2rGBC/JrpRd/TYuGzYb50=;
-        b=YOG4ixL6jUh9MlGv/w74on9he66ZRyG1UfdLT9e+GwCZds6+8Nqzn5MpYII7XoFRmz
-         FS0VLVEWoTgDB6ugoiYf205j3hv4i0E5LbrkNMnEcW5WS9OLFvHTgP46gnoTHlpLo4Xg
-         Zhev5WQJfazHvnjiNd1rrwqOsZDsxl1Yo5L1xzPxVmiQl3lX9tyUSfDjNXsgznxl3P2H
-         rtT4f4npzx9Cajd4PIpEJXLU1fwlREBdeUhNRA9CFWj6ffdRR2u4x+c0bWcgYohAywZO
-         ysVVLZknoSXBqnfZyaLI3pIImRt24zyOG8mJn3J57q+US9DsVFq9wBHYvi4zbhTNleqQ
-         5OuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701521524; x=1702126324;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uvqh3YsIrEQFTmWeg+MPEc2rGBC/JrpRd/TYuGzYb50=;
-        b=AV9f3X5bM0WxyXI8QJpHMD4kzgnPTtrrudkll1GzSnaeWIaBU4wStfvOPmYP9Vbu7V
-         XNrD49+dq4ayzu1+38V4Njw2LFVWiNplZ4L95mA9v57CgWNSy1rEtCSUZYi2uI52Fcht
-         yRibEBT/KH45avZOIcjqn6dsxIjTi6JZVqJ7nSJSjiAc/HeGgw7eVwdTbA0IITBelJnP
-         HcKvbWhWP25b7OKzhUiTRKthGLFzsfyZhj38qINHc6FEEWfcfH4FfTYG4/9bxp9iafeT
-         /Br+qkb14LnE6+5tP/WHyHPz3+yeARjlX3MBnVE4rtQcnuGbr9pcJqbofVQPwNgotzwo
-         SJbw==
-X-Gm-Message-State: AOJu0Yx9qUcCkuueMbBHDm0j88k8TKfZLtU9iiCC/7aVgannkRHb9Nq0
-        pUUhDsqPj9oxhL0Vv1uPkA==
-X-Google-Smtp-Source: AGHT+IFQ04hd02/k8ts4CI8E4zUUh78rM2JYghUB6DkvNvfM35AgawiZ8im+gUYqpmxxzX2y97BApA==
-X-Received: by 2002:a17:907:bb86:b0:a18:f82c:65d2 with SMTP id xo6-20020a170907bb8600b00a18f82c65d2mr1932769ejc.34.1701521524226;
-        Sat, 02 Dec 2023 04:52:04 -0800 (PST)
-Received: from U4.lan ([2a02:810b:f40:4300:908e:b829:354b:f8ee])
-        by smtp.gmail.com with ESMTPSA id g5-20020a170906198500b009c5c5c2c5a4sm3018161ejd.219.2023.12.02.04.52.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Dec 2023 04:52:03 -0800 (PST)
-From:   Alex Bee <knaerzche@gmail.com>
-To:     Heiko Stuebner <heiko@sntech.de>,
-        Conor Dooley <conor+dt@kernel.org>,
+        Sat, 2 Dec 2023 08:09:36 -0500
+Received: from nikam.ms.mff.cuni.cz (nikam.ms.mff.cuni.cz [195.113.20.16])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFF26198;
+        Sat,  2 Dec 2023 05:09:42 -0800 (PST)
+Received: from gimli.ms.mff.cuni.cz (gimli.ms.mff.cuni.cz [195.113.20.176])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by nikam.ms.mff.cuni.cz (Postfix) with ESMTPS id CB41528BDE5;
+        Sat,  2 Dec 2023 14:00:18 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gimli.ms.mff.cuni.cz;
+        s=gen1; t=1701522018;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=xcZHxF0TOnC7j0lzNEeq08B9JFECUUdheP0hD3aOB9U=;
+        b=DcC1Hdrnh66CtqoxKlvEgAxrQRvSsBH9T20U46E+seBHNwP+ijXbh4l9l3LIHLApYhelqR
+        kIgBevmC9Y3NWCUqBM0GlkC+fAJhh+27W85tYMk3IzEbzwfN0mX8lHXNSAf5eFnFuYdz2N
+        u0JjyigAXg62HpOhLJSMrSyz1o5V4mE=
+Received: from localhost (internet5.mraknet.com [185.200.108.250])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: karelb)
+        by gimli.ms.mff.cuni.cz (Postfix) with ESMTPSA id AA1EC4443E5;
+        Sat,  2 Dec 2023 14:00:18 +0100 (CET)
+From:   Karel Balej <karelb@gimli.ms.mff.cuni.cz>
+To:     Markuss Broks <markuss.broks@gmail.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-pm@vger.kernel.org,
-        Alex Bee <knaerzche@gmail.com>
-Subject: [PATCH v2 5/5] ARM: dts: rockchip: Enable GPU for XPI-3128
-Date:   Sat,  2 Dec 2023 13:51:44 +0100
-Message-ID: <20231202125144.66052-6-knaerzche@gmail.com>
+        Conor Dooley <conor+dt@kernel.org>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?q?Duje=20Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
+        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        Karel Balej <balejk@matfyz.cz>
+Subject: [PATCH v3 0/5] input/touchscreen: imagis: add support for IST3032C
+Date:   Sat,  2 Dec 2023 13:48:31 +0100
+Message-ID: <20231202125948.10345-1-karelb@gimli.ms.mff.cuni.cz>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231202125144.66052-1-knaerzche@gmail.com>
-References: <20231202125144.66052-1-knaerzche@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,29 +65,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the supply and enable gpu node for XPI-3128 board.
+From: Karel Balej <balejk@matfyz.cz>
 
-Signed-off-by: Alex Bee <knaerzche@gmail.com>
+This patch series generalizes the Imagis touchscreen driver to support
+other Imagis chips, namely IST3038B, which use a slightly different
+protocol.
+
+It also adds necessary information to the driver so that the IST3032C
+touchscreen can be used with it. The motivation for this is the
+samsung,coreprimevelte smartphone with which this series has been
+tested. However, the support for this device is not yet in-tree, the
+effort is happening at [1]. In particular, the driver for the regulator
+needed by the touchscreen on this device has not been rewritten for
+mainline yet.
+
+Note that this is a prerequisite for this patch [2] which implements
+support for touch keys for Imagis touchscreens that have it.
+
+[1] https://lore.kernel.org/all/20231102-pxa1908-lkml-v7-0-cabb1a0cb52b@skole.hr/
+[2] https://lore.kernel.org/all/20231112194124.24916-1-duje.mihanovic@skole.hr/
 ---
- arch/arm/boot/dts/rockchip/rk3128-xpi-3128.dts | 5 +++++
- 1 file changed, 5 insertions(+)
+v3:
+- Rebase to v6.7-rc3.
+- v2: https://lore.kernel.org/all/20231003133440.4696-1-karelb@gimli.ms.mff.cuni.cz/
+v2:
+- Do not rename the driver.
+- Do not hardcode voltage required by the IST3032C.
+- Use Markuss' series which generalizes the driver. Link to the original
+  series: https://lore.kernel.org/all/20220504152406.8730-1-markuss.broks@gmail.com/
+- Separate bindings into separate patch.
+- v1: https://lore.kernel.org/all/20230926173531.18715-1-balejk@matfyz.cz/
+---
 
-diff --git a/arch/arm/boot/dts/rockchip/rk3128-xpi-3128.dts b/arch/arm/boot/dts/rockchip/rk3128-xpi-3128.dts
-index 61b9f069c8a2..0a8ead0bfe09 100644
---- a/arch/arm/boot/dts/rockchip/rk3128-xpi-3128.dts
-+++ b/arch/arm/boot/dts/rockchip/rk3128-xpi-3128.dts
-@@ -315,6 +315,11 @@ &gpio3 {
- 			  "", "", "", "";
- };
- 
-+&gpu {
-+	mali-supply = <&vdd_log>;
-+	status = "okay";
-+};
-+
- &pinctrl {
- 	dp83848c {
- 		dp83848c_rst: dp83848c-rst {
+Karel Balej (2):
+  dt-bindings: input/touchscreen: imagis: add compatible for IST3032C
+  input/touchscreen: imagis: add support for IST3032C
+
+Markuss Broks (3):
+  input/touchscreen: imagis: Correct the maximum touch area value
+  dt-bindings: input/touchscreen: Add compatible for IST3038B
+  input/touchscreen: imagis: Add support for Imagis IST3038B
+
+ .../input/touchscreen/imagis,ist3038c.yaml    |  2 +
+ drivers/input/touchscreen/imagis.c            | 70 +++++++++++++++----
+ 2 files changed, 60 insertions(+), 12 deletions(-)
+
 -- 
 2.43.0
 
