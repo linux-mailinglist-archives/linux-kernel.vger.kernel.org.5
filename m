@@ -2,98 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62EE3801C70
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 12:30:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D405A801C71
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 12:30:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232549AbjLBLaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 06:30:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48516 "EHLO
+        id S232605AbjLBLas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 06:30:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232138AbjLBLan (ORCPT
+        with ESMTP id S232519AbjLBLap (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 06:30:43 -0500
+        Sat, 2 Dec 2023 06:30:45 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1195E18C
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 03:30:50 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 854DEC433C9;
-        Sat,  2 Dec 2023 11:30:48 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A41F5194
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 03:30:51 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2535CC433C8;
+        Sat,  2 Dec 2023 11:30:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701516649;
-        bh=oaq++MapooJ2EycnyO1+1SBXzHdLUChecLPa1P5lthc=;
+        s=k20201202; t=1701516651;
+        bh=rkDS2IBecDt7J2zRqqr6JaMkgcMoWUiIilFCMd6Llus=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZeZCW75wrX6ms+WZ1Q1JgUt/WzAHbFZf1HVXg2hrKN0kBjzw08Dy8KNefoQkj8QC9
-         CIbXEeuGws/75/j8IxDFJPY7WGCDnK4OnHFcKM+Jy+ijxoxxT0eRNeOCgzbKzZgh+d
-         8+ISGPYJgWL7hHCdil9LwMReV/TUPNhlFWZ4gkZKwKtmSNzfEDBSYPB0+ng5k+iV9g
-         yckiS4b1k3jHwNDXGXit+F8HnicCnTOjKY3Nava6OZCxlh+d3jJ4iTookCYTDn7r1O
-         ap+b3UJE72tLvB5dAFCaf1nxn0htHgn+LPssyVIvrUVOub1zx7vN2eRPm3GyWkb6gY
-         K3uvO57syMwjw==
+        b=Xo3h81o4SOsZgewKhvmyTV2Zj/40rxCtOTKddVTpzg9zF4/Zku7mMHWIVqXSWCEgP
+         +CyMJUIOpiyAXr2eCnqWjwvW8NjryddrvUd9dAEaJnwZUnVY2HuXQlKbTd3m5Wuh5n
+         JLBwI9Igz0Cp4Z+U/6VRIBtBHbjOjPHpjutDYrwtiK7HRph7m3hKHJVFpIqTWtEl98
+         W1S70016s/KgRfcks+hGjryvJ/4E3M0XAxaw06bxPNUQqkdy/3RBtVBYQihtJRnjkt
+         hv5RK8JonV/Y6+JHEj2TciJIR+SmaISmeA/v3fkDGvr8auJULIl9sRA9CRsssfsYJN
+         7d/TDDXAgxBYg==
 From:   Jisheng Zhang <jszhang@kernel.org>
 To:     Paul Walmsley <paul.walmsley@sifive.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
         Albert Ou <aou@eecs.berkeley.edu>
 Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] riscv: introduce RISCV_EFFICIENT_UNALIGNED_ACCESS
-Date:   Sat,  2 Dec 2023 19:18:21 +0800
-Message-Id: <20231202111822.3569-2-jszhang@kernel.org>
+Subject: [PATCH 2/2] riscv: select DCACHE_WORD_ACCESS for efficient unaligned access HW
+Date:   Sat,  2 Dec 2023 19:18:22 +0800
+Message-Id: <20231202111822.3569-3-jszhang@kernel.org>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <20231202111822.3569-1-jszhang@kernel.org>
 References: <20231202111822.3569-1-jszhang@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PDS_BTC_ID,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some riscv implementations such as T-HEAD's C906, C908, C910 and C920
-supports efficient unaligned access, for performance reason we want
-to enable HAVE_EFFICIENT_UNALIGNED_ACCESS on these platforms. To
-avoid performance regressions on other non efficient unaligned access
-platforms, HAVE_EFFICIENT_UNALIGNED_ACCESS can't be globaly selected.
+DCACHE_WORD_ACCESS uses the word-at-a-time API for optimised string
+comparisons in the vfs layer.
 
-To solve this problem, runtime code patching based on the detected
-speed is a good solution. But that's not easy, it involves lots of
-work to modify vairous subsystems such as net, mm, lib and so on.
-This can be done step by step.
+This patch implements support for load_unaligned_zeropad in much the
+same way as has been done for arm64.
 
-Now let's introduce RISCV_EFFICIENT_UNALIGNED_ACCESS which depends on
-NONPORTABLE, if users know during config time that the kernel will be
-only run on those efficient unaligned access hw platforms, they can
-enable it. Obviously, generic unified kernel Image should enable it.
+Here is the test program and step:
+
+ $ cat tt.c
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <unistd.h>
+
+ #define ITERATIONS 1000000
+
+ #define PATH "123456781234567812345678123456781"
+
+ int main(void)
+ {
+         unsigned long i;
+         struct stat buf;
+
+         for (i = 0; i < ITERATIONS; i++)
+                 stat(PATH, &buf);
+
+         return 0;
+ }
+
+ $ gcc -O2 tt.c
+ $ touch 123456781234567812345678123456781
+ $ time ./a.out
+
+Per my test on T-HEAD C910 platforms, the above test performance is
+improved by about 7.5%.
 
 Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
 ---
- arch/riscv/Kconfig | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ arch/riscv/Kconfig                      |  1 +
+ arch/riscv/include/asm/asm-extable.h    | 15 ++++++++++++
+ arch/riscv/include/asm/word-at-a-time.h | 23 ++++++++++++++++++
+ arch/riscv/mm/extable.c                 | 31 +++++++++++++++++++++++++
+ 4 files changed, 70 insertions(+)
 
 diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 7f8aa25457ba..0a76209e9b02 100644
+index 0a76209e9b02..bb366eb1870e 100644
 --- a/arch/riscv/Kconfig
 +++ b/arch/riscv/Kconfig
-@@ -654,6 +654,18 @@ config RISCV_MISALIGNED
- 	  load/store for both kernel and userspace. When disable, misaligned
- 	  accesses will generate SIGBUS in userspace and panic in kernel.
+@@ -657,6 +657,7 @@ config RISCV_MISALIGNED
+ config RISCV_EFFICIENT_UNALIGNED_ACCESS
+ 	bool "Use unaligned access for some functions"
+ 	depends on NONPORTABLE
++	select DCACHE_WORD_ACCESS if MMU
+ 	select HAVE_EFFICIENT_UNALIGNED_ACCESS
+ 	default n
+ 	help
+diff --git a/arch/riscv/include/asm/asm-extable.h b/arch/riscv/include/asm/asm-extable.h
+index 00a96e7a9664..0c8bfd54fc4e 100644
+--- a/arch/riscv/include/asm/asm-extable.h
++++ b/arch/riscv/include/asm/asm-extable.h
+@@ -6,6 +6,7 @@
+ #define EX_TYPE_FIXUP			1
+ #define EX_TYPE_BPF			2
+ #define EX_TYPE_UACCESS_ERR_ZERO	3
++#define EX_TYPE_LOAD_UNALIGNED_ZEROPAD	4
  
-+config RISCV_EFFICIENT_UNALIGNED_ACCESS
-+	bool "Use unaligned access for some functions"
-+	depends on NONPORTABLE
-+	select HAVE_EFFICIENT_UNALIGNED_ACCESS
-+	default n
-+	help
-+	  Say Y here if you want the kernel only run on hardware platforms which
-+	  support efficient unaligned access, then unaligned access will be used
-+	  in some functions for optimized performance.
-+
-+	  If unsure what to do here, say N.
-+
- endmenu # "Platform type"
+ #ifdef CONFIG_MMU
  
- menu "Kernel features"
+@@ -47,6 +48,11 @@
+ #define EX_DATA_REG_ZERO_SHIFT	5
+ #define EX_DATA_REG_ZERO	GENMASK(9, 5)
+ 
++#define EX_DATA_REG_DATA_SHIFT	0
++#define EX_DATA_REG_DATA	GENMASK(4, 0)
++#define EX_DATA_REG_ADDR_SHIFT	5
++#define EX_DATA_REG_ADDR	GENMASK(9, 5)
++
+ #define EX_DATA_REG(reg, gpr)						\
+ 	"((.L__gpr_num_" #gpr ") << " __stringify(EX_DATA_REG_##reg##_SHIFT) ")"
+ 
+@@ -62,6 +68,15 @@
+ #define _ASM_EXTABLE_UACCESS_ERR(insn, fixup, err)			\
+ 	_ASM_EXTABLE_UACCESS_ERR_ZERO(insn, fixup, err, zero)
+ 
++#define _ASM_EXTABLE_LOAD_UNALIGNED_ZEROPAD(insn, fixup, data, addr)		\
++	__DEFINE_ASM_GPR_NUMS							\
++	__ASM_EXTABLE_RAW(#insn, #fixup,					\
++			  __stringify(EX_TYPE_LOAD_UNALIGNED_ZEROPAD),		\
++			  "("							\
++			    EX_DATA_REG(DATA, data) " | "			\
++			    EX_DATA_REG(ADDR, addr)				\
++			  ")")
++
+ #endif /* __ASSEMBLY__ */
+ 
+ #else /* CONFIG_MMU */
+diff --git a/arch/riscv/include/asm/word-at-a-time.h b/arch/riscv/include/asm/word-at-a-time.h
+index 7c086ac6ecd4..5a3865ac3623 100644
+--- a/arch/riscv/include/asm/word-at-a-time.h
++++ b/arch/riscv/include/asm/word-at-a-time.h
+@@ -9,6 +9,7 @@
+ #define _ASM_RISCV_WORD_AT_A_TIME_H
+ 
+ 
++#include <asm/asm-extable.h>
+ #include <linux/kernel.h>
+ 
+ struct word_at_a_time {
+@@ -45,4 +46,26 @@ static inline unsigned long find_zero(unsigned long mask)
+ /* The mask we created is directly usable as a bytemask */
+ #define zero_bytemask(mask) (mask)
+ 
++/*
++ * Load an unaligned word from kernel space.
++ *
++ * In the (very unlikely) case of the word being a page-crosser
++ * and the next page not being mapped, take the exception and
++ * return zeroes in the non-existing part.
++ */
++static inline unsigned long load_unaligned_zeropad(const void *addr)
++{
++	unsigned long ret;
++
++	/* Load word from unaligned pointer addr */
++	asm(
++	"1:	" REG_L " %0, %2\n"
++	"2:\n"
++	_ASM_EXTABLE_LOAD_UNALIGNED_ZEROPAD(1b, 2b, %0, %1)
++	: "=&r" (ret)
++	: "r" (addr), "m" (*(unsigned long *)addr));
++
++	return ret;
++}
++
+ #endif /* _ASM_RISCV_WORD_AT_A_TIME_H */
+diff --git a/arch/riscv/mm/extable.c b/arch/riscv/mm/extable.c
+index 35484d830fd6..dd1530af3ef1 100644
+--- a/arch/riscv/mm/extable.c
++++ b/arch/riscv/mm/extable.c
+@@ -27,6 +27,14 @@ static bool ex_handler_fixup(const struct exception_table_entry *ex,
+ 	return true;
+ }
+ 
++static inline unsigned long regs_get_gpr(struct pt_regs *regs, unsigned int offset)
++{
++	if (unlikely(!offset || offset > MAX_REG_OFFSET))
++		return 0;
++
++	return *(unsigned long *)((unsigned long)regs + offset);
++}
++
+ static inline void regs_set_gpr(struct pt_regs *regs, unsigned int offset,
+ 				unsigned long val)
+ {
+@@ -50,6 +58,27 @@ static bool ex_handler_uaccess_err_zero(const struct exception_table_entry *ex,
+ 	return true;
+ }
+ 
++static bool
++ex_handler_load_unaligned_zeropad(const struct exception_table_entry *ex,
++				  struct pt_regs *regs)
++{
++	int reg_data = FIELD_GET(EX_DATA_REG_DATA, ex->data);
++	int reg_addr = FIELD_GET(EX_DATA_REG_ADDR, ex->data);
++	unsigned long data, addr, offset;
++
++	addr = regs_get_gpr(regs, reg_addr * sizeof(unsigned long));
++
++	offset = addr & 0x7UL;
++	addr &= ~0x7UL;
++
++	data = *(unsigned long *)addr >> (offset * 8);
++
++	regs_set_gpr(regs, reg_data * sizeof(unsigned long), data);
++
++	regs->epc = get_ex_fixup(ex);
++	return true;
++}
++
+ bool fixup_exception(struct pt_regs *regs)
+ {
+ 	const struct exception_table_entry *ex;
+@@ -65,6 +94,8 @@ bool fixup_exception(struct pt_regs *regs)
+ 		return ex_handler_bpf(ex, regs);
+ 	case EX_TYPE_UACCESS_ERR_ZERO:
+ 		return ex_handler_uaccess_err_zero(ex, regs);
++	case EX_TYPE_LOAD_UNALIGNED_ZEROPAD:
++		return ex_handler_load_unaligned_zeropad(ex, regs);
+ 	}
+ 
+ 	BUG();
 -- 
 2.42.0
 
