@@ -2,140 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD228801AD0
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 05:53:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F847801AB8
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 05:39:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231936AbjLBExR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 23:53:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55290 "EHLO
+        id S231748AbjLBEjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 23:39:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjLBExO (ORCPT
+        with ESMTP id S229456AbjLBEjm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 23:53:14 -0500
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 026C7D7E;
-        Fri,  1 Dec 2023 20:53:21 -0800 (PST)
-Received: by mail-ot1-x336.google.com with SMTP id 46e09a7af769-6d84ddd642fso890500a34.0;
-        Fri, 01 Dec 2023 20:53:20 -0800 (PST)
+        Fri, 1 Dec 2023 23:39:42 -0500
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D829D7E
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 20:39:47 -0800 (PST)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-6cbd24d9557so2274981b3a.1
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 20:39:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701492800; x=1702097600; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=9g00jP/4ER4tvLxbzE6HDHKcIJJYt8aypBEvbdrc17k=;
-        b=cpdppZlyUEchk0TDhcIEjFfE2eKfIjmOY+fa1mTgvF2efLV/gPN4TYq9d3N56g7Cfd
-         JAkU6SW0bqP5HQCwHHd1pVzBUjait3hvm8AxaGW5nx+Cz+7bHvVXxv2EvGK/Q+ad3CRz
-         NNVagUiXLuOC7CaclVnBhxUsmbiXJRrlTrB0ERMF6xWqzOlMyxPaUOJK5lleZUeJETaH
-         CT/nm/HGywZwqicQ846lejU3RhIUvDKds9i/Q2CXfXCiCYX8Ob55yUdMGTuGt751DuXh
-         GXgY2wjt7Frx3OPnB92bx+MGshHqRBYQ1qqILcr0Mh7QmVbkkfCuJUrXfxbwmJxCXJoI
-         eYCA==
+        d=chromium.org; s=google; t=1701491986; x=1702096786; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=8Y6F/avy73hBdHBfGZhJm2X6H2KWeohwE7b2q/RCBhw=;
+        b=iSCU+o241H1kCkeCYWpFLy2r2uzCWe49UkV+VaLP90OcfaAj1vTJ4d3EbfmX622+7M
+         dDpB+xco/Hg3NwLEZYw0/JFjQYbLhyQtA5Y9nHXzzPuOiVCWPp/uGpmB3rzL17ere0Pw
+         XO+DaAYeyVMS6brG2XVU+u+wzpJV2LyTvZXw4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701492800; x=1702097600;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9g00jP/4ER4tvLxbzE6HDHKcIJJYt8aypBEvbdrc17k=;
-        b=LGtbhY0QhWu0gpMg8uS1EmMIISL07BnW7FK3Vf2Ih/FQkC5uTohS2kVGXXntoRrmeD
-         F+7rjZq+LuKEMeGzIx2TvGmP2j4wluJ2uxgI9u3OFaEu3Nj7CswKFdX3IgY3sbaPACI0
-         E1pfOV7KEwA4bzOCBNQ7qC+OT8/kxZfEMzSIVdBDz4NhaO8XVHrdZ+PIeRDELAqDMqp1
-         HvSgsGem5INmiJGMD94AyY/Uy2Zh29L8EkwvwKX4VIlx7xXf3fMdazWsyO5j8d/bI8ZN
-         x3yxSn1vkAzmVYmat7P/S+lL//Gqm4pwaqDof9Jl8A1i6t+t/f4kmv6cWLNAerEUQHw3
-         o8Ag==
-X-Gm-Message-State: AOJu0YwcBq5GLah7Z6r/0Yu8eEe6CrKP/p4LZKTGQJlkXGN3XEKBwE7z
-        tRfHqdb24hKu+VRxfr6o8ng=
-X-Google-Smtp-Source: AGHT+IGaSV0dyhSOKH3ZvNE2tXOOqQtw0bQfuxSB8I7fOHq/OZKK+SJre6OrROocYZSWQcf4+l72ww==
-X-Received: by 2002:a05:6359:7414:b0:170:17eb:9c56 with SMTP id va20-20020a056359741400b0017017eb9c56mr605212rwb.55.1701492800109;
-        Fri, 01 Dec 2023 20:53:20 -0800 (PST)
-Received: from attreyee-HP-Pavilion-Laptop-14-ec0xxx.. ([60.243.28.47])
-        by smtp.gmail.com with ESMTPSA id gz9-20020a17090b0ec900b002839679c23dsm4024319pjb.13.2023.12.01.20.53.17
+        d=1e100.net; s=20230601; t=1701491986; x=1702096786;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8Y6F/avy73hBdHBfGZhJm2X6H2KWeohwE7b2q/RCBhw=;
+        b=DBeZWC7vP9Y1g6AuMHlT9ixz7TJeh0LwcdIUhL/cuSjxCEuCCCz7JxQscrI93q2Q1y
+         spl+5w1h+wwcGB4syVyXCLbyfxM4l3aXTSAXVKW/wCFuNtFC4+0FPhrobwHs+RdWxObe
+         /u1woEBOgJ8WQkcAKVAjU+MNcPSRowQzpJ2YD+b99x8Icrzq0NOWk1+oC0CVJnq2m59g
+         3P5JtnycfEMQMQQ/4Cohogl+f+DorxweH4m+IWxibbqun0lrbvloaHVxbFvooETyEi04
+         M4z5XqUK8e9iO+eo0hxBcTkZT3qOek8yuLUEMW+WICcLnIJPMiFlAV/87C9sinq46Trf
+         dfNg==
+X-Gm-Message-State: AOJu0Yy9a0gyz0+33iTPj6WLwZr5K8Dt8hU5ecu3rZ842jgJ5y1VCHjf
+        kU+aGrnFa/gEyYoBbh9+QWCRog==
+X-Google-Smtp-Source: AGHT+IH/BdewRMQ/fzaT4gRUZfAvLUViODtXGwcWXeQUBcu4ap+HfQc5J3caVqaEYx2QUqjXLsHQUg==
+X-Received: by 2002:a05:6a00:180f:b0:6ce:2757:7858 with SMTP id y15-20020a056a00180f00b006ce27577858mr746645pfa.19.1701491986409;
+        Fri, 01 Dec 2023 20:39:46 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id x13-20020aa784cd000000b006cde2889213sm3848668pfn.14.2023.12.01.20.39.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Dec 2023 20:53:19 -0800 (PST)
-From:   attreyee-muk <tintinm2017@gmail.com>
-To:     linkinjeon@kernel.org, sj1557.seo@samsung.com
-Cc:     attreyee-muk <tintinm2017@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] Tried making changes
-Date:   Sat,  2 Dec 2023 10:09:00 +0530
-Message-Id: <20231202043859.356901-1-tintinm2017@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Fri, 01 Dec 2023 20:39:45 -0800 (PST)
+Date:   Fri, 1 Dec 2023 20:39:44 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     kernel test robot <lkp@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Jeff Johnson <quic_jjohnson@quicinc.com>,
+        Michael Walle <mwalle@kernel.org>,
+        Max Schulze <max.schulze@online.de>, netdev@vger.kernel.org,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] netlink: Return unsigned value for nla_len()
+Message-ID: <202312012026.A0178237@keescook>
+References: <20231130200058.work.520-kees@kernel.org>
+ <20231130172520.5a56ae50@kernel.org>
+ <202312010953.BEDC06111@keescook>
+ <20231201104505.44ec5c89@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231201104505.44ec5c89@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Respected Maintainers, 
+On Fri, Dec 01, 2023 at 10:45:05AM -0800, Jakub Kicinski wrote:
+> On Fri, 1 Dec 2023 10:17:02 -0800 Kees Cook wrote:
+> > > > -static inline int nla_len(const struct nlattr *nla)
+> > > > +static inline u16 nla_len(const struct nlattr *nla)
+> > > >  {
+> > > > -	return nla->nla_len - NLA_HDRLEN;
+> > > > +	return nla->nla_len > NLA_HDRLEN ? nla->nla_len - NLA_HDRLEN : 0;
+> > > >  }  
+> > > 
+> > > Note the the NLA_HDRLEN is the length of struct nlattr.
+> > > I mean of the @nla object that gets passed in as argument here.
+> > > So accepting that nla->nla_len may be < NLA_HDRLEN means
+> > > that we are okay with dereferencing a truncated object...
+> > > 
+> > > We can consider making the return unsinged without the condition maybe?  
+> > 
+> > Yes, if we did it without the check, it'd do "less" damage on
+> > wrap-around. (i.e. off by U16_MAX instead off by INT_MAX).
+> > 
+> > But I'd like to understand: what's the harm in adding the clamp? The
+> > changes to the assembly are tiny:
+> > https://godbolt.org/z/Ecvbzn1a1
+> 
+> Hm, I wonder if my explanation was unclear or you disagree..
+> 
+> This is the structure:
+> 
+> struct nlattr {
+> 	__u16           nla_len; // attr len, incl. this header
+> 	__u16           nla_type;
+> };
+> 
+> and (removing no-op wrappers):
+> 
+> #define NLA_HDRLEN	sizeof(struct nlattr)
+> 
+> So going back to the code:
+> 
+> 	return nla->nla_len > NLA_HDRLEN ? nla->nla_len - NLA_HDRLEN...
+> 
+> We are reading nla->nla_len, which is the first 2 bytes of the structure.
+> And then we check if the structure is... there?
 
-I have tried to solve the bug - UBSAN: shift-out-of-bounds in exfat_fill_super, reported by Syzbot [link - https://syzkaller.appspot.com/bug?extid=d33808a177641a02213e]
+I'm not debating whether it's there or not -- I'm saying the _contents_ of
+"nlattr::nla_len", in the face of corruption or lack of initialization,
+may be less than NLA_HDRLEN. (There's a lot of "but that's can't happen"
+that _does_ happen in the kernel, so I'm extra paranoid.)
 
-Since it didn't have a reproducer, I wasn't able to test the patch
-before sending to the maintainers.
+> If we don't trust that struct nlattr which gets passed here is at least
+> NLA_HDRLEN (4B) then why do we think it's safe to read nla_len (the
+> first 2B of it)?
 
-The issue is in line 503 of fs/exfat/super.c - by analyzing the code, I
-understood that the it is checking if the calculated size of the exFAT
-File Allocation Table is very small as compared to the expected
-size,based on the number of clusters. If the condition is met, then an
-error will be logged. But here inside the if statement, I believe that
-the value of number of bits in sbi->num_FAT_sectors ,at some point is
-coming more than the value of p_boot->sect_size_bits. As a result, a
-shift-out-of-bounds error is being generated. 
+Type confusion (usually due to Use-after-Free flaws) means that a memory
+region is valid (i.e. good pointer), but that the contents might have
+gotten changed through other means. (To see examples of this with
+struct msg_msg, see: https://syst3mfailure.io/wall-of-perdition/)
 
-I tried using the hweight_long() to find the number of bits in
-sbi->num_FAT_sectors in advance and then perform the left shift
-operation only if it's total number of bits is greater than or equal to
-the value of p_boot->sect_size_bits. 
+(On a related note, why does nla_len start at 4 instead of 0? i.e. why
+does it include the size of nlattr? That seems redundant based on the
+same logic you're using here.)
 
-I think that a new else statement should also be included with that and
-I will do that once I get some help from the maintainers and get to know if I
-am thinking in the right direction. 
-Requesting the maintainers to go through the code once and kindly help me in understanding whether I am 
-I am doing it wrong or if I need to add some more things. 
+> That's why I was pointing at nla_ok(). nla_ok() takes the size of the
+> buffer / message as an arg, so that it can also check if looking at
+> nla_len itself is not going to be an OOB access. 99% of netlink buffers
+> we parse come from user space. So it's not like someone could have
+> mis-initialized the nla_len in the kernel and being graceful is helpful.
+> 
+> The extra conditional is just a minor thing. The major thing is that
+> unless I'm missing something the check makes me go 🤨️
 
-Thank you
-Attreyee Mukherjee
+My concern is that there are 562 callers of nla_len():
 
-Signed-off-by: Attreyee Mukherjee <tintinm2017@gmail.com>
----
- fs/exfat/super.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+$ git grep '\bnla_len(\b' | wc -l
+562
 
-diff --git a/fs/exfat/super.c b/fs/exfat/super.c
-index d9d4fa91010b..0d526d9f3e5e 100644
---- a/fs/exfat/super.c
-+++ b/fs/exfat/super.c
-@@ -18,6 +18,7 @@
- #include <linux/nls.h>
- #include <linux/buffer_head.h>
- #include <linux/magic.h>
-+#include <linux/bitops.h>
- 
- #include "exfat_raw.h"
- #include "exfat_fs.h"
-@@ -500,11 +501,18 @@ static int exfat_read_boot_sector(struct super_block *sb)
- 	sbi->used_clusters = EXFAT_CLUSTERS_UNTRACKED;
- 
- 	/* check consistencies */
--	if ((u64)sbi->num_FAT_sectors << p_boot->sect_size_bits <
-+	u64 num_fat_sectors_u64 = (u64)sbi->num_FAT_sectors;
-+	unsigned long num_bits = hweight_long(num_fat_sectors_u64);
-+
-+	if(num_bits>=p_boot->sect_size_bits){
-+
-+		if ((u64)sbi->num_FAT_sectors << p_boot->sect_size_bits <
- 	    (u64)sbi->num_clusters * 4) {
- 		exfat_err(sb, "bogus fat length");
- 		return -EINVAL;
-+		}
- 	}
-+	
- 
- 	if (sbi->data_start_sector <
- 	    (u64)sbi->FAT1_start_sector +
+We have no way to be certain that all callers follow a successful
+nla_ok() call.
+
+Regardless, just moving from "int" to "u16" solves a bunch of value
+range tracking pain that GCC appears to get upset about, so if you
+really don't want the (tiny) sanity check, I can just send the u16
+change.
+
+-Kees
+
 -- 
-2.34.1
-
+Kees Cook
