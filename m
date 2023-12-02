@@ -2,43 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC9FB801BFB
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 10:58:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2326F801BFD
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 10:59:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232516AbjLBJ6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 04:58:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42362 "EHLO
+        id S232460AbjLBJ7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 04:59:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjLBJ6l (ORCPT
+        with ESMTP id S232257AbjLBJ7N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 04:58:41 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1933D48;
-        Sat,  2 Dec 2023 01:58:47 -0800 (PST)
+        Sat, 2 Dec 2023 04:59:13 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 998CFCC;
+        Sat,  2 Dec 2023 01:59:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701511127; x=1733047127;
+  t=1701511160; x=1733047160;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references;
-  bh=9hhVkoMnDMz5pGlI3lvmW362r0q8LSuE7t4ADMue25I=;
-  b=QNgizjN+13FOvANliVFwV8k6h+zGqT7x0n8BKu5LWYxPTOuGTbt+KP+k
-   X8pbvr14EsJrFHXcPOB+W/giYeGEAwVg89NXE61TU9tLldWNLM8f0DioU
-   g+KEKK5eCkbv56ngVkfBY0DJR2jPeTgOoMY2MfK8F+sbj5Y+SkuSTKZWi
-   UgmSq3qdc6EtXEOtUFHOHmSg5sVT/LWWgnpXlScsqz3DVHH47ooJtl8zG
-   Rg/nedfxtMw5FZu2E6m7MD2xCWV26qTrQBEylrIC/9PJdDHrBmZkHGa7Q
-   ixNNBO3nM2ETttdu9C8HD4dqrEsWxV1kIYDtPpPHZK8on7WEJ97SWjCuc
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="393322340"
+  bh=wAzhYUH58e3QaRHxpmVeodzpQMpT0HkCfncirII7TQo=;
+  b=O1YzupEpSEyeQiZfgQr5dumCrIRT7Crl2oGy5iIHdBPHtRQto/iYQd8t
+   F00XLSUgnjZojfkHhq9lVGVmNkvkIMvpqhsNMXyZcYELKJ2M2ptPgC6fz
+   fSQXHDVmsQiLi62rUIxdaUPDvMoNW+sfzaRHkwPh/I606wovvNBwuuTR3
+   0hY3VGVOtWR2fHuxpnziPKZuA3C7hrnrQjkofme7zWRtvsvxJt0LwsTL2
+   ko1kMFegXVtISNNmhL7IenEEmQHeHs6Z+NWsdHlO9kYlwoSTAk6JQrXXN
+   9/nXjoYqh3FWUMnbjS7JbT2yYGtQmAQ1WSQdsv6PUV2d5pYxw7i0zJryb
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="606859"
 X-IronPort-AV: E=Sophos;i="6.04,245,1695711600"; 
-   d="scan'208";a="393322340"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2023 01:58:47 -0800
+   d="scan'208";a="606859"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2023 01:59:19 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="804337647"
 X-IronPort-AV: E=Sophos;i="6.04,245,1695711600"; 
-   d="scan'208";a="804337647"
+   d="scan'208";a="18038610"
 Received: from yzhao56-desk.sh.intel.com ([10.239.159.62])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2023 01:58:43 -0800
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2023 01:59:15 -0800
 From:   Yan Zhao <yan.y.zhao@intel.com>
 To:     iommu@lists.linux.dev, kvm@vger.kernel.org,
         linux-kernel@vger.kernel.org
@@ -47,9 +46,9 @@ Cc:     alex.williamson@redhat.com, jgg@nvidia.com, pbonzini@redhat.com,
         robin.murphy@arm.com, kevin.tian@intel.com,
         baolu.lu@linux.intel.com, dwmw2@infradead.org, yi.l.liu@intel.com,
         Yan Zhao <yan.y.zhao@intel.com>
-Subject: [RFC PATCH 29/42] KVM: x86/mmu: remove param "vcpu" from kvm_mmu_get_tdp_level()
-Date:   Sat,  2 Dec 2023 17:29:48 +0800
-Message-Id: <20231202092948.15224-1-yan.y.zhao@intel.com>
+Subject: [RFC PATCH 30/42] KVM: x86/mmu: remove param "vcpu" from kvm_calc_tdp_mmu_root_page_role()
+Date:   Sat,  2 Dec 2023 17:30:21 +0800
+Message-Id: <20231202093021.15281-1-yan.y.zhao@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20231202091211.13376-1-yan.y.zhao@intel.com>
 References: <20231202091211.13376-1-yan.y.zhao@intel.com>
@@ -63,8 +62,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kvm_mmu_get_tdp_level() only requires param "vcpu" for cpuid_maxphyaddr().
-So, pass in the value of cpuid_maxphyaddr() directly to avoid param "vcpu".
+kvm_calc_tdp_mmu_root_page_role() only requires "vcpu" to get maxphyaddr
+for kvm_mmu_get_tdp_level(). So, just pass in the value of maxphyaddr from
+the caller to get rid of param "vcpu".
 
 This is a preparation patch for later KVM MMU to export TDP.
 
@@ -72,58 +72,42 @@ No functional changes expected.
 
 Signed-off-by: Yan Zhao <yan.y.zhao@intel.com>
 ---
- arch/x86/kvm/mmu/mmu.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ arch/x86/kvm/mmu/mmu.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
 diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 73437c1b1943e..abdf49b5cdd79 100644
+index abdf49b5cdd79..bcf17aef29119 100644
 --- a/arch/x86/kvm/mmu/mmu.c
 +++ b/arch/x86/kvm/mmu/mmu.c
-@@ -5186,14 +5186,14 @@ void __kvm_mmu_refresh_passthrough_bits(struct kvm_vcpu *vcpu,
- 	reset_guest_paging_metadata(vcpu, mmu);
+@@ -5200,7 +5200,7 @@ static inline int kvm_mmu_get_tdp_level(int maxphyaddr)
  }
  
--static inline int kvm_mmu_get_tdp_level(struct kvm_vcpu *vcpu)
-+static inline int kvm_mmu_get_tdp_level(int maxphyaddr)
+ static union kvm_mmu_page_role
+-kvm_calc_tdp_mmu_root_page_role(struct kvm_vcpu *vcpu,
++kvm_calc_tdp_mmu_root_page_role(int maxphyaddr,
+ 				union kvm_cpu_role cpu_role)
  {
- 	/* tdp_root_level is architecture forced level, use it if nonzero */
- 	if (tdp_root_level)
- 		return tdp_root_level;
- 
- 	/* Use 5-level TDP if and only if it's useful/necessary. */
--	if (max_tdp_level == 5 && cpuid_maxphyaddr(vcpu) <= 48)
-+	if (max_tdp_level == 5 && maxphyaddr <= 48)
- 		return 4;
- 
- 	return max_tdp_level;
+ 	union kvm_mmu_page_role role = {0};
 @@ -5211,7 +5211,7 @@ kvm_calc_tdp_mmu_root_page_role(struct kvm_vcpu *vcpu,
  	role.smm = cpu_role.base.smm;
  	role.guest_mode = cpu_role.base.guest_mode;
  	role.ad_disabled = !kvm_ad_enabled();
--	role.level = kvm_mmu_get_tdp_level(vcpu);
-+	role.level = kvm_mmu_get_tdp_level(cpuid_maxphyaddr(vcpu));
+-	role.level = kvm_mmu_get_tdp_level(cpuid_maxphyaddr(vcpu));
++	role.level = kvm_mmu_get_tdp_level(maxphyaddr);
  	role.direct = true;
  	role.has_4_byte_gpte = false;
  
-@@ -5310,7 +5310,7 @@ void kvm_init_shadow_npt_mmu(struct kvm_vcpu *vcpu, unsigned long cr0,
- 	WARN_ON_ONCE(cpu_role.base.direct);
+@@ -5222,7 +5222,9 @@ static void init_kvm_tdp_mmu(struct kvm_vcpu *vcpu,
+ 			     union kvm_cpu_role cpu_role)
+ {
+ 	struct kvm_mmu *context = &vcpu->arch.root_mmu;
+-	union kvm_mmu_page_role root_role = kvm_calc_tdp_mmu_root_page_role(vcpu, cpu_role);
++	union kvm_mmu_page_role root_role;
++
++	root_role = kvm_calc_tdp_mmu_root_page_role(cpuid_maxphyaddr(vcpu), cpu_role);
  
- 	root_role = cpu_role.base;
--	root_role.level = kvm_mmu_get_tdp_level(vcpu);
-+	root_role.level = kvm_mmu_get_tdp_level(cpuid_maxphyaddr(vcpu));
- 	if (root_role.level == PT64_ROOT_5LEVEL &&
- 	    cpu_role.base.level == PT64_ROOT_4LEVEL)
- 		root_role.passthrough = 1;
-@@ -6012,7 +6012,8 @@ static int __kvm_mmu_create(struct kvm_vcpu *vcpu, struct kvm_mmu *mmu)
- 	 * other exception is for shadowing L1's 32-bit or PAE NPT on 64-bit
- 	 * KVM; that horror is handled on-demand by mmu_alloc_special_roots().
- 	 */
--	if (tdp_enabled && kvm_mmu_get_tdp_level(vcpu) > PT32E_ROOT_LEVEL)
-+	if (tdp_enabled &&
-+	    kvm_mmu_get_tdp_level(cpuid_maxphyaddr(vcpu)) > PT32E_ROOT_LEVEL)
- 		return 0;
- 
- 	page = alloc_page(GFP_KERNEL_ACCOUNT | __GFP_DMA32);
+ 	if (cpu_role.as_u64 == context->cpu_role.as_u64 &&
+ 	    root_role.word == context->common.root_role.word)
 -- 
 2.17.1
 
