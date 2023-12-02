@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04B39801CC1
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 13:52:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45059801CCA
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 13:52:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232786AbjLBMwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 07:52:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52972 "EHLO
+        id S232853AbjLBMwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 07:52:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229852AbjLBMv7 (ORCPT
+        with ESMTP id S232746AbjLBMwA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 07:51:59 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A82DBF0;
-        Sat,  2 Dec 2023 04:52:04 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-548f853fc9eso3994173a12.1;
-        Sat, 02 Dec 2023 04:52:04 -0800 (PST)
+        Sat, 2 Dec 2023 07:52:00 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0428E18C;
+        Sat,  2 Dec 2023 04:52:06 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-54c5ed26cf6so1992507a12.3;
+        Sat, 02 Dec 2023 04:52:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701521523; x=1702126323; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1701521524; x=1702126324; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=HR4GQ7+5atR3ar2YrCztGhjSeU/LO6OVqwoc3hEbrC0=;
-        b=JHzXUTJbiNd69oDg7MX0RyDjAE16AQiOxixZLk1Pd7r8N2fsJErw+AQaPoyTWEe9NS
-         p863rOeQqq6wBS9Odv52pmIhOeQ4Pfj7pntvH5JWiaY1cfJ1aLqCgf3TudMEIeWuTTfO
-         V1Hj0Ie55zClqmiuk93Y8VkhHoamU+mvWzgKKcQ5BouxE7IWq7GFck3W/lU8Iaq8O5dG
-         R+llIpOZ3I37VNDCPD8O9iERFP51vS83LidtJuZBFkC+sBGKXp6TmXuslWWY3cPM+Kr4
-         vdOF33yGOFEkMZwiYPvi2tEbOYO3gLOFLm2duJQ/1RIbnF5OX5lb4xmL7slOYj6U/Y2M
-         ZBRQ==
+        bh=uvqh3YsIrEQFTmWeg+MPEc2rGBC/JrpRd/TYuGzYb50=;
+        b=YOG4ixL6jUh9MlGv/w74on9he66ZRyG1UfdLT9e+GwCZds6+8Nqzn5MpYII7XoFRmz
+         FS0VLVEWoTgDB6ugoiYf205j3hv4i0E5LbrkNMnEcW5WS9OLFvHTgP46gnoTHlpLo4Xg
+         Zhev5WQJfazHvnjiNd1rrwqOsZDsxl1Yo5L1xzPxVmiQl3lX9tyUSfDjNXsgznxl3P2H
+         rtT4f4npzx9Cajd4PIpEJXLU1fwlREBdeUhNRA9CFWj6ffdRR2u4x+c0bWcgYohAywZO
+         ysVVLZknoSXBqnfZyaLI3pIImRt24zyOG8mJn3J57q+US9DsVFq9wBHYvi4zbhTNleqQ
+         5OuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701521523; x=1702126323;
+        d=1e100.net; s=20230601; t=1701521524; x=1702126324;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=HR4GQ7+5atR3ar2YrCztGhjSeU/LO6OVqwoc3hEbrC0=;
-        b=oWvFvl1Qo6Hgh5jNCjCdBFCVkwSlGf71rQmz/WCm7wRxyg78JezdILtKSEuNv6cAZ/
-         yVwBT62v2BCKtNYh+0zfC2WUnxKsi/60JoH5KN9NvpwUTPnJq5V1GM3DxtQf6IFp35Y1
-         Vqs7HtBG875he/JiZM/gxwXojjkl7/+rV9Z81tLhUC6vHvIkLuyiIlIXj2ZL6tv/AY9b
-         TOMQVxThVujxM4y6fkEGdH+k470mN7sgARGYAU7PwpnyWnoSpp7n66J/96Lk7ENVcdVc
-         JmXvRIoIWvnxXKALOuTchTLuK3/mi6K4Iv78hqDiK1HKOB07B2ILrV0kKXc4cVYpbUdx
-         yRGg==
-X-Gm-Message-State: AOJu0YyekrVK7hxqguICiYkSgJb480gOpjStUuE1Km5IodVzhBjL5gHz
-        rD8c4Ht117A82pjSk3Q3qA==
-X-Google-Smtp-Source: AGHT+IFsV7yIlBBzkDPIYNDCqw3wEkc8AQ/SUwRG3frSQ5X+KzW+68Zbs/ntALcZcfg6t9TIXCXl8g==
-X-Received: by 2002:a17:906:35ca:b0:a19:a1ba:bacb with SMTP id p10-20020a17090635ca00b00a19a1babacbmr891820ejb.113.1701521523169;
-        Sat, 02 Dec 2023 04:52:03 -0800 (PST)
+        bh=uvqh3YsIrEQFTmWeg+MPEc2rGBC/JrpRd/TYuGzYb50=;
+        b=AV9f3X5bM0WxyXI8QJpHMD4kzgnPTtrrudkll1GzSnaeWIaBU4wStfvOPmYP9Vbu7V
+         XNrD49+dq4ayzu1+38V4Njw2LFVWiNplZ4L95mA9v57CgWNSy1rEtCSUZYi2uI52Fcht
+         yRibEBT/KH45avZOIcjqn6dsxIjTi6JZVqJ7nSJSjiAc/HeGgw7eVwdTbA0IITBelJnP
+         HcKvbWhWP25b7OKzhUiTRKthGLFzsfyZhj38qINHc6FEEWfcfH4FfTYG4/9bxp9iafeT
+         /Br+qkb14LnE6+5tP/WHyHPz3+yeARjlX3MBnVE4rtQcnuGbr9pcJqbofVQPwNgotzwo
+         SJbw==
+X-Gm-Message-State: AOJu0Yx9qUcCkuueMbBHDm0j88k8TKfZLtU9iiCC/7aVgannkRHb9Nq0
+        pUUhDsqPj9oxhL0Vv1uPkA==
+X-Google-Smtp-Source: AGHT+IFQ04hd02/k8ts4CI8E4zUUh78rM2JYghUB6DkvNvfM35AgawiZ8im+gUYqpmxxzX2y97BApA==
+X-Received: by 2002:a17:907:bb86:b0:a18:f82c:65d2 with SMTP id xo6-20020a170907bb8600b00a18f82c65d2mr1932769ejc.34.1701521524226;
+        Sat, 02 Dec 2023 04:52:04 -0800 (PST)
 Received: from U4.lan ([2a02:810b:f40:4300:908e:b829:354b:f8ee])
-        by smtp.gmail.com with ESMTPSA id g5-20020a170906198500b009c5c5c2c5a4sm3018161ejd.219.2023.12.02.04.52.02
+        by smtp.gmail.com with ESMTPSA id g5-20020a170906198500b009c5c5c2c5a4sm3018161ejd.219.2023.12.02.04.52.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Dec 2023 04:52:02 -0800 (PST)
+        Sat, 02 Dec 2023 04:52:03 -0800 (PST)
 From:   Alex Bee <knaerzche@gmail.com>
 To:     Heiko Stuebner <heiko@sntech.de>,
         Conor Dooley <conor+dt@kernel.org>,
@@ -63,9 +63,9 @@ Cc:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-rockchip@lists.infradead.org, linux-pm@vger.kernel.org,
         Alex Bee <knaerzche@gmail.com>
-Subject: [PATCH v2 4/5] ARM: dts: rockchip: Add GPU node for RK3128
-Date:   Sat,  2 Dec 2023 13:51:43 +0100
-Message-ID: <20231202125144.66052-5-knaerzche@gmail.com>
+Subject: [PATCH v2 5/5] ARM: dts: rockchip: Enable GPU for XPI-3128
+Date:   Sat,  2 Dec 2023 13:51:44 +0100
+Message-ID: <20231202125144.66052-6-knaerzche@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231202125144.66052-1-knaerzche@gmail.com>
 References: <20231202125144.66052-1-knaerzche@gmail.com>
@@ -81,79 +81,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RK3128 SoCs have Mali400 MP2 GPU.
-Add the respective device tree node and the correspondending opp-table.
-
-The frequencies and voltages of the opp-table have been taken from
-downstream kernel.
+Add the supply and enable gpu node for XPI-3128 board.
 
 Signed-off-by: Alex Bee <knaerzche@gmail.com>
 ---
- arch/arm/boot/dts/rockchip/rk3128.dtsi | 44 ++++++++++++++++++++++++++
- 1 file changed, 44 insertions(+)
+ arch/arm/boot/dts/rockchip/rk3128-xpi-3128.dts | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/arch/arm/boot/dts/rockchip/rk3128.dtsi b/arch/arm/boot/dts/rockchip/rk3128.dtsi
-index b72905db04f7..b05ee3d926aa 100644
---- a/arch/arm/boot/dts/rockchip/rk3128.dtsi
-+++ b/arch/arm/boot/dts/rockchip/rk3128.dtsi
-@@ -101,6 +101,27 @@ opp-1200000000 {
- 		};
- 	};
+diff --git a/arch/arm/boot/dts/rockchip/rk3128-xpi-3128.dts b/arch/arm/boot/dts/rockchip/rk3128-xpi-3128.dts
+index 61b9f069c8a2..0a8ead0bfe09 100644
+--- a/arch/arm/boot/dts/rockchip/rk3128-xpi-3128.dts
++++ b/arch/arm/boot/dts/rockchip/rk3128-xpi-3128.dts
+@@ -315,6 +315,11 @@ &gpio3 {
+ 			  "", "", "", "";
+ };
  
-+	gpu_opp_table: opp-table-1 {
-+		compatible = "operating-points-v2";
++&gpu {
++	mali-supply = <&vdd_log>;
++	status = "okay";
++};
 +
-+		opp-200000000 {
-+			opp-hz = /bits/ 64 <200000000>;
-+			opp-microvolt = <975000 975000 1250000>;
-+		};
-+		opp-300000000 {
-+			opp-hz = /bits/ 64 <300000000>;
-+			opp-microvolt = <1050000 1050000 1250000>;
-+		};
-+		opp-400000000 {
-+			opp-hz = /bits/ 64 <400000000>;
-+			opp-microvolt = <1150000 1150000 1250000>;
-+		};
-+		opp-480000000 {
-+			opp-hz = /bits/ 64 <480000000>;
-+			opp-microvolt = <1250000 1250000 1250000>;
-+		};
-+	};
-+
- 	timer {
- 		compatible = "arm,armv7-timer";
- 		interrupts = <GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>,
-@@ -131,6 +152,29 @@ smp-sram@0 {
- 		};
- 	};
- 
-+	gpu: gpu@10090000 {
-+		compatible = "rockchip,rk3128-mali", "arm,mali-400";
-+		reg = <0x10090000 0x10000>;
-+		interrupts = <GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>,
-+			     <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>,
-+			     <GIC_SPI 5 IRQ_TYPE_LEVEL_HIGH>,
-+			     <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>,
-+			     <GIC_SPI 5 IRQ_TYPE_LEVEL_HIGH>,
-+			     <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>;
-+		interrupt-names = "gp",
-+				  "gpmmu",
-+				  "pp0",
-+				  "ppmmu0",
-+				  "pp1",
-+				  "ppmmu1";
-+		clocks = <&cru ACLK_GPU>, <&cru ACLK_GPU>;
-+		clock-names = "bus", "core";
-+		power-domains = <&power RK3128_PD_GPU>;
-+		resets = <&cru SRST_GPU>;
-+		operating-points-v2 = <&gpu_opp_table>;
-+		status = "disabled";
-+	};
-+
- 	pmu: syscon@100a0000 {
- 		compatible = "rockchip,rk3128-pmu", "syscon", "simple-mfd";
- 		reg = <0x100a0000 0x1000>;
+ &pinctrl {
+ 	dp83848c {
+ 		dp83848c_rst: dp83848c-rst {
 -- 
 2.43.0
 
