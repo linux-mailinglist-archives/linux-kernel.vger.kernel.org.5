@@ -2,169 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F847801AB8
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 05:39:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 156BA801ABD
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 05:44:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231748AbjLBEjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 23:39:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60284 "EHLO
+        id S229537AbjLBEoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 23:44:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjLBEjm (ORCPT
+        with ESMTP id S229379AbjLBEoS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 23:39:42 -0500
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D829D7E
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 20:39:47 -0800 (PST)
-Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-6cbd24d9557so2274981b3a.1
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 20:39:47 -0800 (PST)
+        Fri, 1 Dec 2023 23:44:18 -0500
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D722D48;
+        Fri,  1 Dec 2023 20:44:25 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1d01c45ffebso11164545ad.1;
+        Fri, 01 Dec 2023 20:44:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1701491986; x=1702096786; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=8Y6F/avy73hBdHBfGZhJm2X6H2KWeohwE7b2q/RCBhw=;
-        b=iSCU+o241H1kCkeCYWpFLy2r2uzCWe49UkV+VaLP90OcfaAj1vTJ4d3EbfmX622+7M
-         dDpB+xco/Hg3NwLEZYw0/JFjQYbLhyQtA5Y9nHXzzPuOiVCWPp/uGpmB3rzL17ere0Pw
-         XO+DaAYeyVMS6brG2XVU+u+wzpJV2LyTvZXw4=
+        d=gmail.com; s=20230601; t=1701492264; x=1702097064; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=mkjJumzQC9OLzeUlKf2cdrps8W5WGvu5yds3ov88Mec=;
+        b=E3gyfexmpid1Z4GSpO06PN8FOE2ZoHik1iF+WMU/TZDtOy6J2933XcvQVhHv86SsTv
+         qxtTGC+I9tMSyeyFIU6OauXFQrzsbFhcM5AXHWy8caZj5fDPkCOslRAZ/sNXWRCB0gjR
+         MRLpk3ld2O6NTW80CQDis9Cjbv+vzAJAlgMGOvMXYSc2eIMejeg1ggZjo9mTxL+OTcpm
+         RtspADyevomAD4sUpqbOw0sB680OKA6hAq9uSTnBtkHUQxz7M6vkXn17kBUXFEfirkcp
+         YE/F9f/qPw10R1azfGoMJw0kYVhK5QVLg3an2lBHtxEZQ+mF3sChVu/vedxxUGdcJM3B
+         tKIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701491986; x=1702096786;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8Y6F/avy73hBdHBfGZhJm2X6H2KWeohwE7b2q/RCBhw=;
-        b=DBeZWC7vP9Y1g6AuMHlT9ixz7TJeh0LwcdIUhL/cuSjxCEuCCCz7JxQscrI93q2Q1y
-         spl+5w1h+wwcGB4syVyXCLbyfxM4l3aXTSAXVKW/wCFuNtFC4+0FPhrobwHs+RdWxObe
-         /u1woEBOgJ8WQkcAKVAjU+MNcPSRowQzpJ2YD+b99x8Icrzq0NOWk1+oC0CVJnq2m59g
-         3P5JtnycfEMQMQQ/4Cohogl+f+DorxweH4m+IWxibbqun0lrbvloaHVxbFvooETyEi04
-         M4z5XqUK8e9iO+eo0hxBcTkZT3qOek8yuLUEMW+WICcLnIJPMiFlAV/87C9sinq46Trf
-         dfNg==
-X-Gm-Message-State: AOJu0Yy9a0gyz0+33iTPj6WLwZr5K8Dt8hU5ecu3rZ842jgJ5y1VCHjf
-        kU+aGrnFa/gEyYoBbh9+QWCRog==
-X-Google-Smtp-Source: AGHT+IH/BdewRMQ/fzaT4gRUZfAvLUViODtXGwcWXeQUBcu4ap+HfQc5J3caVqaEYx2QUqjXLsHQUg==
-X-Received: by 2002:a05:6a00:180f:b0:6ce:2757:7858 with SMTP id y15-20020a056a00180f00b006ce27577858mr746645pfa.19.1701491986409;
-        Fri, 01 Dec 2023 20:39:46 -0800 (PST)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id x13-20020aa784cd000000b006cde2889213sm3848668pfn.14.2023.12.01.20.39.45
+        d=1e100.net; s=20230601; t=1701492264; x=1702097064;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mkjJumzQC9OLzeUlKf2cdrps8W5WGvu5yds3ov88Mec=;
+        b=bWETZYOOpuhztpCxqntx0hEfPI2VAxyvi7tddOBRzwaDGxSDbg6p3bpXbji0CbaTW4
+         bgI3dLwLNHDcSVYTwsXY+i7yDizDiDlIPbHSbXbZucKI/XvZpZc1P8rll5OIJALFtOPJ
+         JJEmPMP41MPNnL09nrcQQLXHjc599XKbhpksMjKEkSaMaWBTHGlwCjvMtzyP6dOZ2d7s
+         q4u8k5+sn91QKXX5OYUi9o9kLf57pwGDxG4H73QjDjip14yW0Yn4MARdMe68oEkXGBc6
+         2nuKXe5lvtKOVyLSalVTmT6ioq4Qx5WRet7t+Ilpvbv2bJURSyM87WBzfhAcvqes8uNC
+         gy8g==
+X-Gm-Message-State: AOJu0YyXtHB5QpkeLn6Y3lUCSGJfOBCdq9vOREpaOJGBNTBCDqQOooko
+        v5Hl178CB82uTNOxzyWi9dE=
+X-Google-Smtp-Source: AGHT+IG+AyARMGDcYbSUtUR0Ml9fa0udGX+8XMSUKKs+Zr4+J4uBha8QS1idDiF0qZFBJrJwksUIvw==
+X-Received: by 2002:a17:902:dacb:b0:1d0:68a:4a46 with SMTP id q11-20020a170902dacb00b001d0068a4a46mr798452plx.3.1701492264465;
+        Fri, 01 Dec 2023 20:44:24 -0800 (PST)
+Received: from archie.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id p14-20020a1709028a8e00b001cf6453b237sm4173552plo.236.2023.12.01.20.44.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Dec 2023 20:39:45 -0800 (PST)
-Date:   Fri, 1 Dec 2023 20:39:44 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     kernel test robot <lkp@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Jeff Johnson <quic_jjohnson@quicinc.com>,
-        Michael Walle <mwalle@kernel.org>,
-        Max Schulze <max.schulze@online.de>, netdev@vger.kernel.org,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] netlink: Return unsigned value for nla_len()
-Message-ID: <202312012026.A0178237@keescook>
-References: <20231130200058.work.520-kees@kernel.org>
- <20231130172520.5a56ae50@kernel.org>
- <202312010953.BEDC06111@keescook>
- <20231201104505.44ec5c89@kernel.org>
+        Fri, 01 Dec 2023 20:44:23 -0800 (PST)
+Received: by archie.me (Postfix, from userid 1000)
+        id B89B9110DB381; Sat,  2 Dec 2023 11:44:18 +0700 (WIB)
+Date:   Sat, 2 Dec 2023 11:44:18 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Nhat Pham <nphamcs@gmail.com>, akpm@linux-foundation.org
+Cc:     hannes@cmpxchg.org, cerasuolodomenico@gmail.com,
+        yosryahmed@google.com, sjenning@redhat.com, ddstreet@ieee.org,
+        vitaly.wool@konsulko.com, mhocko@kernel.org,
+        roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, chrisl@kernel.org, linux-mm@kvack.org,
+        kernel-team@meta.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux CGroups <cgroups@vger.kernel.org>,
+        Linux Documentation <linux-doc@vger.kernel.org>,
+        Linux Kernel Selftests <linux-kselftest@vger.kernel.org>,
+        shuah@kernel.org
+Subject: Re: [PATCH v7 0/6] workload-specific and memory pressure-driven
+ zswap writeback
+Message-ID: <ZWq2IqMMJesqenGK@archie.me>
+References: <20231127234600.2971029-1-nphamcs@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="L3dnvOdQcggt5SPe"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231201104505.44ec5c89@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+In-Reply-To: <20231127234600.2971029-1-nphamcs@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 01, 2023 at 10:45:05AM -0800, Jakub Kicinski wrote:
-> On Fri, 1 Dec 2023 10:17:02 -0800 Kees Cook wrote:
-> > > > -static inline int nla_len(const struct nlattr *nla)
-> > > > +static inline u16 nla_len(const struct nlattr *nla)
-> > > >  {
-> > > > -	return nla->nla_len - NLA_HDRLEN;
-> > > > +	return nla->nla_len > NLA_HDRLEN ? nla->nla_len - NLA_HDRLEN : 0;
-> > > >  }  
-> > > 
-> > > Note the the NLA_HDRLEN is the length of struct nlattr.
-> > > I mean of the @nla object that gets passed in as argument here.
-> > > So accepting that nla->nla_len may be < NLA_HDRLEN means
-> > > that we are okay with dereferencing a truncated object...
-> > > 
-> > > We can consider making the return unsinged without the condition maybe?  
-> > 
-> > Yes, if we did it without the check, it'd do "less" damage on
-> > wrap-around. (i.e. off by U16_MAX instead off by INT_MAX).
-> > 
-> > But I'd like to understand: what's the harm in adding the clamp? The
-> > changes to the assembly are tiny:
-> > https://godbolt.org/z/Ecvbzn1a1
-> 
-> Hm, I wonder if my explanation was unclear or you disagree..
-> 
-> This is the structure:
-> 
-> struct nlattr {
-> 	__u16           nla_len; // attr len, incl. this header
-> 	__u16           nla_type;
-> };
-> 
-> and (removing no-op wrappers):
-> 
-> #define NLA_HDRLEN	sizeof(struct nlattr)
-> 
-> So going back to the code:
-> 
-> 	return nla->nla_len > NLA_HDRLEN ? nla->nla_len - NLA_HDRLEN...
-> 
-> We are reading nla->nla_len, which is the first 2 bytes of the structure.
-> And then we check if the structure is... there?
 
-I'm not debating whether it's there or not -- I'm saying the _contents_ of
-"nlattr::nla_len", in the face of corruption or lack of initialization,
-may be less than NLA_HDRLEN. (There's a lot of "but that's can't happen"
-that _does_ happen in the kernel, so I'm extra paranoid.)
+--L3dnvOdQcggt5SPe
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> If we don't trust that struct nlattr which gets passed here is at least
-> NLA_HDRLEN (4B) then why do we think it's safe to read nla_len (the
-> first 2B of it)?
+On Mon, Nov 27, 2023 at 03:45:54PM -0800, Nhat Pham wrote:
+> Changelog:
+> v7:
+>    * Added the mem_cgroup_iter_online() function to the API for the new
+>      behavior (suggested by Andrew Morton) (patch 2)
+>    * Fixed a missing list_lru_del -> list_lru_del_obj (patch 1)
+> v6:
+>    * Rebase on top of latest mm-unstable.
+>    * Fix/improve the in-code documentation of the new list_lru
+>      manipulation functions (patch 1)
+> v5:
+>    * Replace reference getting with an rcu_read_lock() section for
+>      zswap lru modifications (suggested by Yosry)
+>    * Add a new prep patch that allows mem_cgroup_iter() to return
+>      online cgroup.
+>    * Add a callback that updates pool->next_shrink when the cgroup is
+>      offlined (suggested by Yosry Ahmed, Johannes Weiner)
+> v4:
+>    * Rename list_lru_add to list_lru_add_obj and __list_lru_add to
+>      list_lru_add (patch 1) (suggested by Johannes Weiner and
+> 	 Yosry Ahmed)
+>    * Some cleanups on the memcg aware LRU patch (patch 2)
+>      (suggested by Yosry Ahmed)
+>    * Use event interface for the new per-cgroup writeback counters.
+>      (patch 3) (suggested by Yosry Ahmed)
+>    * Abstract zswap's lruvec states and handling into=20
+>      zswap_lruvec_state (patch 5) (suggested by Yosry Ahmed)
+> v3:
+>    * Add a patch to export per-cgroup zswap writeback counters
+>    * Add a patch to update zswap's kselftest
+>    * Separate the new list_lru functions into its own prep patch
+>    * Do not start from the top of the hierarchy when encounter a memcg
+>      that is not online for the global limit zswap writeback (patch 2)
+>      (suggested by Yosry Ahmed)
+>    * Do not remove the swap entry from list_lru in
+>      __read_swapcache_async() (patch 2) (suggested by Yosry Ahmed)
+>    * Removed a redundant zswap pool getting (patch 2)
+>      (reported by Ryan Roberts)
+>    * Use atomic for the nr_zswap_protected (instead of lruvec's lock)
+>      (patch 5) (suggested by Yosry Ahmed)
+>    * Remove the per-cgroup zswap shrinker knob (patch 5)
+>      (suggested by Yosry Ahmed)
+> v2:
+>    * Fix loongarch compiler errors
+>    * Use pool stats instead of memcg stats when !CONFIG_MEMCG_KEM
+>=20
+> There are currently several issues with zswap writeback:
+>=20
+> 1. There is only a single global LRU for zswap, making it impossible to
+>    perform worload-specific shrinking - an memcg under memory pressure
+>    cannot determine which pages in the pool it owns, and often ends up
+>    writing pages from other memcgs. This issue has been previously
+>    observed in practice and mitigated by simply disabling
+>    memcg-initiated shrinking:
+>=20
+>    https://lore.kernel.org/all/20230530232435.3097106-1-nphamcs@gmail.com=
+/T/#u
+>=20
+>    But this solution leaves a lot to be desired, as we still do not
+>    have an avenue for an memcg to free up its own memory locked up in
+>    the zswap pool.
+>=20
+> 2. We only shrink the zswap pool when the user-defined limit is hit.
+>    This means that if we set the limit too high, cold data that are
+>    unlikely to be used again will reside in the pool, wasting precious
+>    memory. It is hard to predict how much zswap space will be needed
+>    ahead of time, as this depends on the workload (specifically, on
+>    factors such as memory access patterns and compressibility of the
+>    memory pages).
+>=20
+> This patch series solves these issues by separating the global zswap
+> LRU into per-memcg and per-NUMA LRUs, and performs workload-specific
+> (i.e memcg- and NUMA-aware) zswap writeback under memory pressure. The
+> new shrinker does not have any parameter that must be tuned by the
+> user, and can be opted in or out on a per-memcg basis.
+>=20
+> As a proof of concept, we ran the following synthetic benchmark:
+> build the linux kernel in a memory-limited cgroup, and allocate some
+> cold data in tmpfs to see if the shrinker could write them out and
+> improved the overall performance. Depending on the amount of cold data
+> generated, we observe from 14% to 35% reduction in kernel CPU time used
+> in the kernel builds.
+>=20
+> Domenico Cerasuolo (3):
+>   zswap: make shrinking memcg-aware
+>   mm: memcg: add per-memcg zswap writeback stat
+>   selftests: cgroup: update per-memcg zswap writeback selftest
+>=20
+> Nhat Pham (3):
+>   list_lru: allows explicit memcg and NUMA node selection
+>   memcontrol: add a new function to traverse online-only memcg hierarchy
+>   zswap: shrinks zswap pool based on memory pressure
+>=20
+>  Documentation/admin-guide/mm/zswap.rst      |   7 +
+>  drivers/android/binder_alloc.c              |   7 +-
+>  fs/dcache.c                                 |   8 +-
+>  fs/gfs2/quota.c                             |   6 +-
+>  fs/inode.c                                  |   4 +-
+>  fs/nfs/nfs42xattr.c                         |   8 +-
+>  fs/nfsd/filecache.c                         |   4 +-
+>  fs/xfs/xfs_buf.c                            |   6 +-
+>  fs/xfs/xfs_dquot.c                          |   2 +-
+>  fs/xfs/xfs_qm.c                             |   2 +-
+>  include/linux/list_lru.h                    |  54 ++-
+>  include/linux/memcontrol.h                  |  18 +
+>  include/linux/mmzone.h                      |   2 +
+>  include/linux/vm_event_item.h               |   1 +
+>  include/linux/zswap.h                       |  27 +-
+>  mm/list_lru.c                               |  48 ++-
+>  mm/memcontrol.c                             |  32 +-
+>  mm/mmzone.c                                 |   1 +
+>  mm/swap.h                                   |   3 +-
+>  mm/swap_state.c                             |  26 +-
+>  mm/vmstat.c                                 |   1 +
+>  mm/workingset.c                             |   4 +-
+>  mm/zswap.c                                  | 426 +++++++++++++++++---
+>  tools/testing/selftests/cgroup/test_zswap.c |  74 ++--
+>  24 files changed, 641 insertions(+), 130 deletions(-)
+>=20
+>=20
+> base-commit: 5cdba94229e58a39ca389ad99763af29e6b0c5a5
 
-Type confusion (usually due to Use-after-Free flaws) means that a memory
-region is valid (i.e. good pointer), but that the contents might have
-gotten changed through other means. (To see examples of this with
-struct msg_msg, see: https://syst3mfailure.io/wall-of-perdition/)
+No regressions when booting kernel with series applied.
 
-(On a related note, why does nla_len start at 4 instead of 0? i.e. why
-does it include the size of nlattr? That seems redundant based on the
-same logic you're using here.)
+Tested-by: Bagas Sanjaya <bagasdotme@gmail.com>
 
-> That's why I was pointing at nla_ok(). nla_ok() takes the size of the
-> buffer / message as an arg, so that it can also check if looking at
-> nla_len itself is not going to be an OOB access. 99% of netlink buffers
-> we parse come from user space. So it's not like someone could have
-> mis-initialized the nla_len in the kernel and being graceful is helpful.
-> 
-> The extra conditional is just a minor thing. The major thing is that
-> unless I'm missing something the check makes me go 🤨️
+--=20
+An old man doll... just what I always wanted! - Clara
 
-My concern is that there are 562 callers of nla_len():
+--L3dnvOdQcggt5SPe
+Content-Type: application/pgp-signature; name="signature.asc"
 
-$ git grep '\bnla_len(\b' | wc -l
-562
+-----BEGIN PGP SIGNATURE-----
 
-We have no way to be certain that all callers follow a successful
-nla_ok() call.
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZWq2HwAKCRD2uYlJVVFO
+o+mhAP98o1RpDS79BK+Q11P7wQTxU2MYmimbjb5iykn5K7OINwEAx7hxtVV/yTcR
+X+TAaHXp3ua/dAycrhD7Qx+QUiyCRgw=
+=qSwI
+-----END PGP SIGNATURE-----
 
-Regardless, just moving from "int" to "u16" solves a bunch of value
-range tracking pain that GCC appears to get upset about, so if you
-really don't want the (tiny) sanity check, I can just send the u16
-change.
-
--Kees
-
--- 
-Kees Cook
+--L3dnvOdQcggt5SPe--
