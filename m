@@ -2,95 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DEA58801D93
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 16:52:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9150801D96
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 16:52:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230181AbjLBPwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 10:52:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40048 "EHLO
+        id S233014AbjLBPwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 10:52:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjLBPwA (ORCPT
+        with ESMTP id S233000AbjLBPwI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 10:52:00 -0500
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83C52124
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 07:52:06 -0800 (PST)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-270-fdBml9uHNSOD5Hu3Vx4AmA-1; Sat, 02 Dec 2023 15:52:04 +0000
-X-MC-Unique: fdBml9uHNSOD5Hu3Vx4AmA-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sat, 2 Dec
- 2023 15:51:52 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Sat, 2 Dec 2023 15:51:52 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Waiman Long' <longman@redhat.com>, Jann Horn <jannh@google.com>
-CC:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
-Subject: RE: [PATCH] locking: Document that mutex_unlock() is non-atomic
-Thread-Topic: [PATCH] locking: Document that mutex_unlock() is non-atomic
-Thread-Index: AQHaJGdmWd9hceM5t0qWKvuVqma2ELCUtpLQgAAMJ+GAAADgMIAACSgAgAFVFvA=
-Date:   Sat, 2 Dec 2023 15:51:52 +0000
-Message-ID: <f98b04e05c964b57bc27fb895810aaaf@AcuMS.aculab.com>
-References: <20231130204817.2031407-1-jannh@google.com>
- <06c05c8b-9a3b-4c04-b898-0f82e98da70f@redhat.com>
- <CAG48ez1a=VuEWwPTjcXFAwCyt9bRH-WzAfw0uP-qVu83kdxkZw@mail.gmail.com>
- <28b147c3d7354d1a8ff0b903da9b54f4@AcuMS.aculab.com>
- <CAG48ez1bOwbqEbD_ycC2fyWK_tW4rqr=gogJbQOx5CECyPGZcg@mail.gmail.com>
- <1bcee696-d751-413c-a2ec-4a8480bae00b@redhat.com>
- <780e652ff52044d4a213cacbd9276cf8@AcuMS.aculab.com>
- <501501ef-137a-4797-9d43-48ea68851147@redhat.com>
-In-Reply-To: <501501ef-137a-4797-9d43-48ea68851147@redhat.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Sat, 2 Dec 2023 10:52:08 -0500
+Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15295129;
+        Sat,  2 Dec 2023 07:52:13 -0800 (PST)
+Received: from i53875b61.versanet.de ([83.135.91.97] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <heiko@sntech.de>)
+        id 1r9SHd-0002AT-MB; Sat, 02 Dec 2023 16:51:57 +0100
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Alex Bee <knaerzche@gmail.com>
+Cc:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-pm@vger.kernel.org,
+        Alex Bee <knaerzche@gmail.com>
+Subject: Re: [PATCH v2 2/5] ARM: dts: rockchip: Add power-controller for RK3128
+Date:   Sat, 02 Dec 2023 16:51:56 +0100
+Message-ID: <6926340.F8r316W7xa@diego>
+In-Reply-To: <20231202125144.66052-3-knaerzche@gmail.com>
+References: <20231202125144.66052-1-knaerzche@gmail.com>
+ <20231202125144.66052-3-knaerzche@gmail.com>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,T_SPF_HELO_TEMPERROR autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogV2FpbWFuIExvbmcNCj4gU2VudDogMDEgRGVjZW1iZXIgMjAyMyAxOToxNg0KPiANCj4g
-T24gMTIvMS8yMyAxMzo0NCwgRGF2aWQgTGFpZ2h0IHdyb3RlOg0KPiA+DQo+ID4gUGVuZGluZyB3
-YWl0ZXJzIGFyZW4ndCB0aGUgcHJvYmxlbS4NCj4gPg0KPiBQZW5kaW5nIHdhaXRlcnMgY2FuIHN0
-aWxsIGJlIGEgcHJvYmxlbSBpZiBjb2RlIGRlY2lkZXMgdG8gZnJlZSB0aGUgbG9jaw0KPiBjb250
-YWluaW5nIG9iamVjdCBhZnRlciBhIGxvY2svdW5sb2NrIHNlcXVlbmNlIGFzIGl0IG1heSBjYXVz
-ZQ0KPiB1c2UtYWZ0ZXItZnJlZS4NCj4gPg0KPiA+IFlvdSBoYXZlIHRvIGVuc3VyZSB0aGVyZSBh
-cmVuJ3QgYW55LCBidXQgdGhlIG11dGV4KCkgY2FuIGJlIGhlbGQuDQo+ID4NCj4gVXNpbmcgcmVm
-ZXJlbmNlIGNvdW50IHRvIHRyYWNrIHRoZSBudW1iZXIgb2YgYWN0aXZlIHVzZXJzIGlzIG9uZSB3
-YXkgdG8NCj4gcHJldmVudCB0aGF0IGlmIHlvdSBvbmx5IHJlbGVhc2UgdGhlIHJlZmVyZW5jZSBj
-b3VudCBhZnRlcg0KPiBtdXRleF91bmxvY2soKSByZXR1cm5zIGJ1dCBub3QgaW4gdGhlIGxvY2sg
-Y3JpdGljYWwgc2VjdGlvbi4NCg0KSSBzdXNwZWN0IHRoZSBkb2N1bWVudGF0aW9uIG5lZWQgdG8g
-YmUgbW9yZSBleHBsaWNpdCB0aGFuIGp1c3Qgc2F5aW5nDQppdCBpcyBub24tYXRvbWljLg0KU2F5
-aW5nIHNvbWV0aGluZyBsaWtlOg0KDQpUaGUgbXV0ZXggc3RydWN0dXJlIG1heSBiZSBhY2Nlc3Nl
-ZCBieSBtdXRleF91bmxvY2soKSBhZnRlciBhbm90aGVyDQp0aHJlYWQgaGFzIGxvY2tlZCBhbmQg
-dW5sb2NrZWQgdGhlIG11dGV4Lg0KDQpTbyBpZiBhIHJlZmVyZW5jZSBjb3VudCBpcyB1c2VkIHRv
-IGVuc3VyZSBhIHN0cnVjdHVyZSByZW1haW5zIHZhbGlkIHdoZW4NCmEgbG9jayBpcyByZWxlYXNl
-ZCAod2l0aCB0aGUgaXRlbSBiZWluZyBmcmVlZCB3aGVuIHRoZSBjb3VudCBiZWNvbWVzIHplcm8p
-DQp0aGUgcmVmZXJlbmNlIGNvdW50IGl0c2VsZiBjYW5ub3QgYmUgcHJvdGVjdGVkIGJ5IGEgbXV0
-ZXggaW4gdGhlIHN0cnVjdHVyZS4NClNvIGNvZGUgbGlrZToNCgkuLi4NCgljb3VudCA9IC0taXRl
-bS0+cmVmY291bnQ7DQoJbXV0ZXhfdW5sb2NrKGl0ZW0tPm10eCk7DQoJaWYgKCFjb3VudCkNCgkJ
-ZnJlZShpdGVtKTsNCmNhbiBsZWFkIHRvIGEgJ3VzZSBhZnRlciBmcmVlJyBpbiBtdXRleF91bmxv
-Y2soKS4NCkhvd2V2ZXIgaWYgdGhlIHJlZmNvdW50IGlzIGF0b21pYyBhbmQgZGVjcmVtZW50ZWQg
-d2l0aG91dCB0aGUNCm11dGV4IGhlbGQgdGhlcmUgaXNuJ3QgYSBwcm9ibGVtLg0KDQoJRGF2aWQN
-Cg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZh
-cm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYg
-KFdhbGVzKQ0K
+Hi Alex,
+
+Am Samstag, 2. Dezember 2023, 13:51:41 CET schrieb Alex Bee:
+> Add power controller and qos nodes for RK3128 in order to use
+> them as powerdomains.
+
+does the power-domain controller work with the incomplete set of
+pm-domains too?
+
+What I have in mind is
+- adding the power-controller node with the existing set of power-domains
+- the gpu pm-domain is in there
+- adding the gpu parts
+
+
+And a second series with
+- patch1 from here
+- a dts patch adding the additional pm-domains to rk3128.dtsi
+- I guess patch1 also should be split into a patch adding the binding-ids
+  and a separate patch for the code addition.
+
+
+Heiko
+
+> Signed-off-by: Alex Bee <knaerzche@gmail.com>
+> ---
+>  arch/arm/boot/dts/rockchip/rk3128.dtsi | 101 +++++++++++++++++++++++++
+>  1 file changed, 101 insertions(+)
+> 
+> diff --git a/arch/arm/boot/dts/rockchip/rk3128.dtsi b/arch/arm/boot/dts/rockchip/rk3128.dtsi
+> index 4e8b38604ecd..b72905db04f7 100644
+> --- a/arch/arm/boot/dts/rockchip/rk3128.dtsi
+> +++ b/arch/arm/boot/dts/rockchip/rk3128.dtsi
+> @@ -8,6 +8,7 @@
+>  #include <dt-bindings/interrupt-controller/arm-gic.h>
+>  #include <dt-bindings/interrupt-controller/irq.h>
+>  #include <dt-bindings/pinctrl/rockchip.h>
+> +#include <dt-bindings/power/rk3128-power.h>
+>  
+>  / {
+>  	compatible = "rockchip,rk3128";
+> @@ -133,6 +134,106 @@ smp-sram@0 {
+>  	pmu: syscon@100a0000 {
+>  		compatible = "rockchip,rk3128-pmu", "syscon", "simple-mfd";
+>  		reg = <0x100a0000 0x1000>;
+> +
+> +		power: power-controller {
+> +			compatible = "rockchip,rk3128-power-controller";
+> +			#power-domain-cells = <1>;
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +
+> +			power-domain@RK3128_PD_VIO {
+> +				reg = <RK3128_PD_VIO>;
+> +				clocks = <&cru ACLK_CIF>,
+> +					 <&cru HCLK_CIF>,
+> +					 <&cru DCLK_EBC>,
+> +					 <&cru HCLK_EBC>,
+> +					 <&cru ACLK_IEP>,
+> +					 <&cru HCLK_IEP>,
+> +					 <&cru ACLK_LCDC0>,
+> +					 <&cru HCLK_LCDC0>,
+> +					 <&cru PCLK_MIPI>,
+> +					 <&cru ACLK_RGA>,
+> +					 <&cru HCLK_RGA>,
+> +					 <&cru ACLK_VIO0>,
+> +					 <&cru ACLK_VIO1>,
+> +					 <&cru HCLK_VIO>,
+> +					 <&cru HCLK_VIO_H2P>,
+> +					 <&cru DCLK_VOP>,
+> +					 <&cru SCLK_VOP>;
+> +				pm_qos = <&qos_ebc>,
+> +					 <&qos_iep>,
+> +					 <&qos_lcdc>,
+> +					 <&qos_rga>,
+> +					 <&qos_vip>;
+> +				#power-domain-cells = <0>;
+> +			};
+> +
+> +			power-domain@RK3128_PD_VIDEO {
+> +				reg = <RK3128_PD_VIDEO>;
+> +				clocks = <&cru ACLK_VDPU>,
+> +					 <&cru HCLK_VDPU>,
+> +					 <&cru ACLK_VEPU>,
+> +					 <&cru HCLK_VEPU>,
+> +					 <&cru SCLK_HEVC_CORE>;
+> +				pm_qos = <&qos_vpu>;
+> +				#power-domain-cells = <0>;
+> +			};
+> +
+> +			power-domain@RK3128_PD_GPU {
+> +				reg = <RK3128_PD_GPU>;
+> +				clocks = <&cru ACLK_GPU>;
+> +				pm_qos = <&qos_gpu>;
+> +				#power-domain-cells = <0>;
+> +			};
+> +
+> +			power-domain@RK3128_PD_CRYPTO {
+> +				reg = <RK3128_PD_CRYPTO>;
+> +				clocks = <&cru HCLK_CRYPTO>,
+> +					 <&cru SCLK_CRYPTO>;
+> +				pm_qos = <&qos_crypto>;
+> +				#power-domain-cells = <0>;
+> +			};
+> +		};
+> +	};
+> +
+> +	qos_crypto: qos@10128080 {
+> +		compatible = "rockchip,rk3128-qos", "syscon";
+> +		reg = <0x10128080 0x20>;
+> +	};
+> +
+> +	qos_gpu: qos@1012d000 {
+> +		compatible = "rockchip,rk3128-qos", "syscon";
+> +		reg = <0x1012d000 0x20>;
+> +	};
+> +
+> +	qos_vpu: qos@1012e000 {
+> +		compatible = "rockchip,rk3128-qos", "syscon";
+> +		reg = <0x1012e000 0x20>;
+> +	};
+> +
+> +	qos_rga: qos@1012f000 {
+> +		compatible = "rockchip,rk3128-qos", "syscon";
+> +		reg = <0x1012f000 0x20>;
+> +	};
+> +
+> +	qos_ebc: qos@1012f080 {
+> +		compatible = "rockchip,rk3128-qos", "syscon";
+> +		reg = <0x1012f080 0x20>;
+> +	};
+> +
+> +	qos_iep: qos@1012f100 {
+> +		compatible = "rockchip,rk3128-qos", "syscon";
+> +		reg = <0x1012f100 0x20>;
+> +	};
+> +
+> +	qos_lcdc: qos@1012f180 {
+> +		compatible = "rockchip,rk3128-qos", "syscon";
+> +		reg = <0x1012f180 0x20>;
+> +	};
+> +
+> +	qos_vip: qos@1012f200 {
+> +		compatible = "rockchip,rk3128-qos", "syscon";
+> +		reg = <0x1012f200 0x20>;
+>  	};
+>  
+>  	gic: interrupt-controller@10139000 {
+> 
+
+
+
 
