@@ -2,60 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6078480187D
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 01:05:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C720C801884
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 01:05:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442082AbjLBAFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 19:05:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42576 "EHLO
+        id S1442019AbjLBAFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 19:05:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1441990AbjLBAEu (ORCPT
+        with ESMTP id S1441965AbjLBAEw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 19:04:50 -0500
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B6A31BCD
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 16:04:40 -0800 (PST)
-Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1cfd4ef9f06so12115215ad.0
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 16:04:40 -0800 (PST)
+        Fri, 1 Dec 2023 19:04:52 -0500
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A131D1BE6
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 16:04:42 -0800 (PST)
+Received: by mail-pf1-x44a.google.com with SMTP id d2e1a72fcca58-6cdfbba2c64so1794714b3a.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 16:04:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701475479; x=1702080279; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1701475481; x=1702080281; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=kARN2t1cDT1nPhBBpb3LTJ5yo8qfPIAw+yo3QqNarOE=;
-        b=AAY+Tv3HRsRRO7etlXqC0lCOCShST/GGftsFzjIet2J7cna2R5K4TW+Y61HpbcKnLf
-         sSm13SLogQ3Wex8o9pMrXgfes8g8h3edtoWHygcq2Nw89h/Esp3vVCX9u6StgV8ZbOr/
-         xp+dMlXlN3M8BeyHDnB8RWxkCPQuoTXhnXTMRCKeJi9/ypGqDa8hyDlGjhdfoLel7NFg
-         rp5Ph59GGvzjmxvsfB+liF6LhCgqcC8c6VNCZxXV2svH8cHUTcplApVgnI+LW8RfTZY3
-         cMyq/7FpSrVhNmePc9xljNXA/h2WYyj7sjS4BthD5+lum2rwrNFPqYl6AfXNAiZpvxP8
-         03mg==
+        bh=NWUMUOutKGtyIyuL4E6eg71BcaGpjE4r0WivmAjqhQo=;
+        b=vkFmXeBrnLA3KUT2Ag6XygeUQ6MXQduujfOuqBsOvo7RJKXRnBXBV3ATRejtSj4i29
+         mrWuRgX1UWxp0EpwihSkC6XWQfFRQI8cVt4bWhHqlo1RPCtqVh1DFQjRYR4KC2O0o/UC
+         OPnAelKxH+9QRoEgxK56Qh45Zy8O00nZFFgzL01xYXl6TwN4v9kCoj8aUOt/iDF9steF
+         StqVOjgk7A2kJbIq6fxFjkQI56NECaqEsmKSr5stGoPk+lIRazUEZNDNkiD0Kc5xu+UD
+         iRbV98Fimcs43Gyt0CdaJbAWt78KBJXWtvRoz3reolnCgSPWKNiWC2hc/5JWTR7yG2HV
+         F9qA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701475479; x=1702080279;
+        d=1e100.net; s=20230601; t=1701475481; x=1702080281;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=kARN2t1cDT1nPhBBpb3LTJ5yo8qfPIAw+yo3QqNarOE=;
-        b=he9lrv1iDY4dZ8NEpwe3qS+QAmdp70PF/sn1OkzFaHatdX7a93r/a062rSYPBjYR5x
-         +HnS6JdUZTOX87gXfqzRQRIeYnXDfBON5FtcWDcYYhYwueDglUzEbLWrnE5ARjfHS+w4
-         sw38cZj6UuPY2IPjZrvX0kTydHtRrWE1ZobyJaVoXXmF4quOo9ls1fIfIPxs2DrDwVEs
-         XKq/hJEAYyLilWJ0LAd7GPBJOUNS+N/PapBu4e55PhzmqyeeP44cccEOBUOZtQ22DuIS
-         44aRMJBgkUK5NEipBIQUrz8eUQT5m1qCxxK/46Kto5+8BTjFDj5rogpedndbtyTFnXTt
-         F+GA==
-X-Gm-Message-State: AOJu0Yx9Y54kG817Gn5s/PSO2gUm3sdESTigXoXoVXzOYrwlGdMWwn82
-        keubTc/5LCOg9cwP76+Bv3RiOkB8YL8=
-X-Google-Smtp-Source: AGHT+IGkgfpbdPCK5UBd6AozaX6YxWcy/rifmqb9aNIZ5Kc3MKHGLaSP/2ib181qUSOmDWEVRIzpY9ZYZqs=
+        bh=NWUMUOutKGtyIyuL4E6eg71BcaGpjE4r0WivmAjqhQo=;
+        b=axzshEIafP7R+igLTKEywHn5ptsZRWWlQCSJ0Roaxtg6uRjXcsmV6PvcrU+fHgI0KU
+         q//g6BGba0xRRMiEzYnERGFr0DDFCGiuEq3w80ftC/pr8MwR6OPqWtHmMLz3PHA9/f12
+         uHJdDHy1fwk7kJX4RkHFUy9ywhVjMRfbwdtP2Sqj/WvaIReRAUL9VBAoIMN2ml9z46nK
+         FxInlcj9E7nZZnzWUgBhGo0aYEVWl/ZBVaCqKK3pkNLVF0rsMSAuVrp8vBDUNCbB3bq7
+         Hcs1SeLvjgsznXMMFPFSud7vIjttuWR2fKbuPQ+oMzX0PzCPU+2jBLjOmmFcqSHXy23q
+         QMuA==
+X-Gm-Message-State: AOJu0Yx5d2LbtkjVc/eDea+1/A2xqZYUE92zI8iOTb7XwI60FWUhaIY/
+        c+YAYctqB0EOnZDuuiFii9S3IdQwwJ4=
+X-Google-Smtp-Source: AGHT+IFLZ3n4QDdqu0zGYJAic2GBcG2EKc6qFz6tKfjhBAZX1ARziQITUdnBKgtaw6vShuyvqJ6bj5SgKYk=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:903:3291:b0:1cf:5cd7:8416 with SMTP id
- jh17-20020a170903329100b001cf5cd78416mr5059080plb.13.1701475479406; Fri, 01
- Dec 2023 16:04:39 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:2d29:b0:6cd:f18e:17d with SMTP id
+ fa41-20020a056a002d2900b006cdf18e017dmr891277pfb.1.1701475481557; Fri, 01 Dec
+ 2023 16:04:41 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri,  1 Dec 2023 16:03:59 -0800
+Date:   Fri,  1 Dec 2023 16:04:00 -0800
 In-Reply-To: <20231202000417.922113-1-seanjc@google.com>
 Mime-Version: 1.0
 References: <20231202000417.922113-1-seanjc@google.com>
 X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
-Message-ID: <20231202000417.922113-11-seanjc@google.com>
-Subject: [PATCH v9 10/28] KVM: x86/pmu: Explicitly check for RDPMC of
- unsupported Intel PMC types
+Message-ID: <20231202000417.922113-12-seanjc@google.com>
+Subject: [PATCH v9 11/28] KVM: selftests: Add vcpu_set_cpuid_property() to set properties
 From:   Sean Christopherson <seanjc@google.com>
 To:     Sean Christopherson <seanjc@google.com>,
         Paolo Bonzini <pbonzini@redhat.com>
@@ -78,49 +77,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Explicitly check for attempts to read unsupported PMC types instead of
-letting the bounds check fail.  Functionally, letting the check fail is
-ok, but it's unnecessarily subtle and does a poor job of documenting the
-architectural behavior that KVM is emulating.
+From: Jinrong Liang <cloudliang@tencent.com>
 
-Opportunistically add macros for the type vs. index to further document
-what is going on.
+Add vcpu_set_cpuid_property() helper function for setting properties, and
+use it instead of open coding an equivalent for MAX_PHY_ADDR.  Future vPMU
+testcases will also need to stuff various CPUID properties.
 
+Reviewed-by: Jim Mattson <jmattson@google.com>
+Signed-off-by: Jinrong Liang <cloudliang@tencent.com>
+Co-developed-by: Sean Christopherson <seanjc@google.com>
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/vmx/pmu_intel.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ .../selftests/kvm/include/x86_64/processor.h      |  4 +++-
+ .../testing/selftests/kvm/lib/x86_64/processor.c  | 15 ++++++++++++---
+ .../x86_64/smaller_maxphyaddr_emulation_test.c    |  2 +-
+ 3 files changed, 16 insertions(+), 5 deletions(-)
 
-diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
-index 644de27bd48a..bd4f4bdf5419 100644
---- a/arch/x86/kvm/vmx/pmu_intel.c
-+++ b/arch/x86/kvm/vmx/pmu_intel.c
-@@ -23,6 +23,9 @@
- /* Perf's "BASE" is wildly misleading, this is a single-bit flag, not a base. */
- #define INTEL_RDPMC_FIXED	INTEL_PMC_FIXED_RDPMC_BASE
+diff --git a/tools/testing/selftests/kvm/include/x86_64/processor.h b/tools/testing/selftests/kvm/include/x86_64/processor.h
+index a84863503fcb..932944c4ea01 100644
+--- a/tools/testing/selftests/kvm/include/x86_64/processor.h
++++ b/tools/testing/selftests/kvm/include/x86_64/processor.h
+@@ -995,7 +995,9 @@ static inline void vcpu_set_cpuid(struct kvm_vcpu *vcpu)
+ 	vcpu_ioctl(vcpu, KVM_GET_CPUID2, vcpu->cpuid);
+ }
  
-+#define INTEL_RDPMC_TYPE_MASK	GENMASK(31, 16)
-+#define INTEL_RDPMC_INDEX_MASK	GENMASK(15, 0)
-+
- #define MSR_PMC_FULL_WIDTH_BIT      (MSR_IA32_PMC0 - MSR_IA32_PERFCTR0)
+-void vcpu_set_cpuid_maxphyaddr(struct kvm_vcpu *vcpu, uint8_t maxphyaddr);
++void vcpu_set_cpuid_property(struct kvm_vcpu *vcpu,
++			     struct kvm_x86_cpu_property property,
++			     uint32_t value);
  
- static void reprogram_fixed_counters(struct kvm_pmu *pmu, u64 data)
-@@ -82,9 +85,13 @@ static struct kvm_pmc *intel_rdpmc_ecx_to_pmc(struct kvm_vcpu *vcpu,
- 	/*
- 	 * Fixed PMCs are supported on all architectural PMUs.  Note, KVM only
- 	 * emulates fixed PMCs for PMU v2+, but the flag itself is still valid,
--	 * i.e. let RDPMC fail due to accessing a non-existent counter.
-+	 * i.e. let RDPMC fail due to accessing a non-existent counter.  Reject
-+	 * attempts to read all other types, which are unknown/unsupported.
- 	 */
--	idx &= ~INTEL_RDPMC_FIXED;
-+	if (idx & INTEL_RDPMC_TYPE_MASK & ~INTEL_RDPMC_FIXED)
-+		return NULL;
+ void vcpu_clear_cpuid_entry(struct kvm_vcpu *vcpu, uint32_t function);
+ void vcpu_set_or_clear_cpuid_feature(struct kvm_vcpu *vcpu,
+diff --git a/tools/testing/selftests/kvm/lib/x86_64/processor.c b/tools/testing/selftests/kvm/lib/x86_64/processor.c
+index d8288374078e..67eb82a6c754 100644
+--- a/tools/testing/selftests/kvm/lib/x86_64/processor.c
++++ b/tools/testing/selftests/kvm/lib/x86_64/processor.c
+@@ -752,12 +752,21 @@ void vcpu_init_cpuid(struct kvm_vcpu *vcpu, const struct kvm_cpuid2 *cpuid)
+ 	vcpu_set_cpuid(vcpu);
+ }
+ 
+-void vcpu_set_cpuid_maxphyaddr(struct kvm_vcpu *vcpu, uint8_t maxphyaddr)
++void vcpu_set_cpuid_property(struct kvm_vcpu *vcpu,
++			     struct kvm_x86_cpu_property property,
++			     uint32_t value)
+ {
+-	struct kvm_cpuid_entry2 *entry = vcpu_get_cpuid_entry(vcpu, 0x80000008);
++	struct kvm_cpuid_entry2 *entry;
 +
-+	idx &= INTEL_RDPMC_INDEX_MASK;
- 	if (fixed) {
- 		counters = pmu->fixed_counters;
- 		num_counters = pmu->nr_arch_fixed_counters;
++	entry = __vcpu_get_cpuid_entry(vcpu, property.function, property.index);
++
++	(&entry->eax)[property.reg] &= ~GENMASK(property.hi_bit, property.lo_bit);
++	(&entry->eax)[property.reg] |= value << property.lo_bit;
+ 
+-	entry->eax = (entry->eax & ~0xff) | maxphyaddr;
+ 	vcpu_set_cpuid(vcpu);
++
++	/* Sanity check that @value doesn't exceed the bounds in any way. */
++	TEST_ASSERT_EQ(kvm_cpuid_property(vcpu->cpuid, property), value);
+ }
+ 
+ void vcpu_clear_cpuid_entry(struct kvm_vcpu *vcpu, uint32_t function)
+diff --git a/tools/testing/selftests/kvm/x86_64/smaller_maxphyaddr_emulation_test.c b/tools/testing/selftests/kvm/x86_64/smaller_maxphyaddr_emulation_test.c
+index 06edf00a97d6..9b89440dff19 100644
+--- a/tools/testing/selftests/kvm/x86_64/smaller_maxphyaddr_emulation_test.c
++++ b/tools/testing/selftests/kvm/x86_64/smaller_maxphyaddr_emulation_test.c
+@@ -63,7 +63,7 @@ int main(int argc, char *argv[])
+ 	vm_init_descriptor_tables(vm);
+ 	vcpu_init_descriptor_tables(vcpu);
+ 
+-	vcpu_set_cpuid_maxphyaddr(vcpu, MAXPHYADDR);
++	vcpu_set_cpuid_property(vcpu, X86_PROPERTY_MAX_PHY_ADDR, MAXPHYADDR);
+ 
+ 	rc = kvm_check_cap(KVM_CAP_EXIT_ON_EMULATION_FAILURE);
+ 	TEST_ASSERT(rc, "KVM_CAP_EXIT_ON_EMULATION_FAILURE is unavailable");
 -- 
 2.43.0.rc2.451.g8631bc7472-goog
 
