@@ -2,131 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A197801BAC
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 10:36:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB590801BD1
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 10:49:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231964AbjLBJT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 04:19:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50158 "EHLO
+        id S232373AbjLBJtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 04:49:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231732AbjLBJTZ (ORCPT
+        with ESMTP id S232253AbjLBJs7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 04:19:25 -0500
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF99D181;
-        Sat,  2 Dec 2023 01:19:31 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Sj4BP5ZLTz4f3kFv;
-        Sat,  2 Dec 2023 17:19:25 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-        by mail.maildlp.com (Postfix) with ESMTP id CFE961A07F3;
-        Sat,  2 Dec 2023 17:19:27 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-        by APP1 (Coremail) with SMTP id cCh0CgA3iA6d9mpldVEZCg--.44620S3;
-        Sat, 02 Dec 2023 17:19:27 +0800 (CST)
-Subject: Re: [PATCH next] trace/blktrace: fix task hung in blk_trace_ioctl
-To:     Edward Adam Davis <eadavis@qq.com>,
-        syzbot+ed812ed461471ab17a0c@syzkaller.appspotmail.com
-Cc:     akpm@linux-foundation.org, axboe@kernel.dk, dvyukov@google.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, mhiramat@kernel.org,
-        pengfei.xu@intel.com, rostedt@goodmis.org,
-        syzkaller-bugs@googlegroups.com, "yukuai (C)" <yukuai3@huawei.com>
-References: <00000000000047eb7e060b652d9a@google.com>
- <tencent_6537E04AAC74F976B567603CEB377A96FA09@qq.com>
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <5116cbb4-2c85-2459-5499-56c95bb42d16@huaweicloud.com>
-Date:   Sat, 2 Dec 2023 17:19:25 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <tencent_6537E04AAC74F976B567603CEB377A96FA09@qq.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: cCh0CgA3iA6d9mpldVEZCg--.44620S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7AFW7Jw1xXw1ktFyUZrW8JFb_yoW8CrW5pa
-        yUGrsIkr95Ars8ta409w1fu397J3yv9FWUJr98Xr1rZ34DAryagF1Ivr4UurW8Kry8tFZ2
-        yFy5Zr1F9w4UXFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
-        07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
-        GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-        CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
-        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
-        7IU1zuWJUUUUU==
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Sat, 2 Dec 2023 04:48:59 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAC4C181;
+        Sat,  2 Dec 2023 01:49:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701510545; x=1733046545;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references;
+  bh=hOSJlPe1dfesUGDszntE2ySqLMhZ74ABDSSs+Yf065E=;
+  b=UH2Q45X6iGIkbfzmkiFKTDoRJ3efHQne4QGlODGJghZe/cMifXJu7CEF
+   4VkcJnLoPg/rSDMkEG9e6bYogWkfZjlwfaBMnnPPd7bT23iocz+lyp0Vu
+   CHG0loxZq0CfmJyjH+MInDs6M+0H5BIv9sk9Ey4+poykFickaTuguNDLe
+   vNX8k1KG9QPnLRjQW7jjSVahPrWmwI4zHhMYQYGr5cL4H1eOpiYuTtpBm
+   LxFCLOmrCOEkSeix+EuBD3+YKcTfT97bGM1U+37mPEIuZilIAS5o4ya/d
+   aBne3Jyhz7ObNjt5pdv1OxYxqeMl+KISILmVz4+hDrtKqwjXuC+VztpAP
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="373774703"
+X-IronPort-AV: E=Sophos;i="6.04,245,1695711600"; 
+   d="scan'208";a="373774703"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2023 01:49:05 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="1017293275"
+X-IronPort-AV: E=Sophos;i="6.04,245,1695711600"; 
+   d="scan'208";a="1017293275"
+Received: from yzhao56-desk.sh.intel.com ([10.239.159.62])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2023 01:49:02 -0800
+From:   Yan Zhao <yan.y.zhao@intel.com>
+To:     iommu@lists.linux.dev, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     alex.williamson@redhat.com, jgg@nvidia.com, pbonzini@redhat.com,
+        seanjc@google.com, joro@8bytes.org, will@kernel.org,
+        robin.murphy@arm.com, kevin.tian@intel.com,
+        baolu.lu@linux.intel.com, dwmw2@infradead.org, yi.l.liu@intel.com,
+        Yan Zhao <yan.y.zhao@intel.com>
+Subject: [RFC PATCH 10/42] iommu: Add new iommu op to create domains managed by KVM
+Date:   Sat,  2 Dec 2023 17:20:07 +0800
+Message-Id: <20231202092007.14026-1-yan.y.zhao@intel.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20231202091211.13376-1-yan.y.zhao@intel.com>
+References: <20231202091211.13376-1-yan.y.zhao@intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Introduce a new iommu_domain op to create domains managed by KVM through
+IOMMUFD.
 
-ÔÚ 2023/12/02 17:01, Edward Adam Davis Ð´µÀ:
-> The reproducer involves running test programs on multiple processors separately,
-> in order to enter blkdev_ioctl() and ultimately reach blk_trace_ioctl() through
-> two different paths, triggering an AA deadlock.
-> 
-> 	CPU0						CPU1
-> 	---						---
-> 	mutex_lock(&q->debugfs_mutex)			mutex_lock(&q->debugfs_mutex)
-> 	mutex_lock(&q->debugfs_mutex)			mutex_lock(&q->debugfs_mutex)
-> 
-> 
-> The first path:
-> blkdev_ioctl()->
-> 	blk_trace_ioctl()->
-> 		mutex_lock(&q->debugfs_mutex)
-> 
-> The second path:
-> blkdev_ioctl()->				
-> 	blkdev_common_ioctl()->
-> 		blk_trace_ioctl()->
-> 			mutex_lock(&q->debugfs_mutex)
-I still don't understand how this AA deadlock is triggered, does the
-'debugfs_mutex' already held before calling blk_trace_ioctl()?
+These domains have a few different properties compares to kernel owned
+domains and user owned domains:
 
-> 
-> The solution I have proposed is to exit blk_trace_ioctl() to avoid AA locks if
-> a task has already obtained debugfs_mutex.
-> 
-> Fixes: 0d345996e4cb ("x86/kernel: increase kcov coverage under arch/x86/kernel folder")
-> Reported-and-tested-by: syzbot+ed812ed461471ab17a0c@syzkaller.appspotmail.com
-> Signed-off-by: Edward Adam Davis <eadavis@qq.com>
-> ---
->   kernel/trace/blktrace.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
-> index 54ade89a1ad2..34e5bce42b1e 100644
-> --- a/kernel/trace/blktrace.c
-> +++ b/kernel/trace/blktrace.c
-> @@ -735,7 +735,8 @@ int blk_trace_ioctl(struct block_device *bdev, unsigned cmd, char __user *arg)
->   	int ret, start = 0;
->   	char b[BDEVNAME_SIZE];
->   
-> -	mutex_lock(&q->debugfs_mutex);
-> +	if (!mutex_trylock(&q->debugfs_mutex))
-> +		return -EBUSY;
+- They must not be PAGING domains. Page mapping/unmapping is controlled by
+  KVM.
 
-This is absolutely not a proper fix, a lot of user case will fail after
-this patch.
+- They must be stage 2 mappings translating GPA to HPA.
 
-Thanks,
-Kuai
+- Paging structure allocation/free is not managed by IOMMU driver, but
+  by KVM.
 
->   
->   	switch (cmd) {
->   	case BLKTRACESETUP:
-> 
+- TLBs flushes are notified by KVM.
+
+The new op clearly says the domain is being created by IOMMUFD.
+A driver specific structure to the meta data of paging structures from KVM
+is passed in via the op param "data".
+
+IOMMU drivers that cannot support VFIO/IOMMUFD should not support this op.
+
+This new op for now is only supposed to be used by IOMMUFD, hence no
+wrapper for it. IOMMUFD would call the callback directly. As for domain
+free, IOMMUFD would use iommu_domain_free().
+
+Signed-off-by: Yan Zhao <yan.y.zhao@intel.com>
+---
+ include/linux/iommu.h | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+index 9ecee72e2d6c4..0ce23ee399d35 100644
+--- a/include/linux/iommu.h
++++ b/include/linux/iommu.h
+@@ -522,6 +522,13 @@ __iommu_copy_struct_from_user_array(void *dst_data,
+  * @domain_alloc_paging: Allocate an iommu_domain that can be used for
+  *                       UNMANAGED, DMA, and DMA_FQ domain types.
+  * @domain_alloc_sva: Allocate an iommu_domain for Shared Virtual Addressing.
++ * @domain_alloc_kvm: Allocate an iommu domain with type IOMMU_DOMAIN_KVM.
++ *                    It's called by IOMMUFD and must fully initialize the new
++ *                    domain before return.
++ *                    The @data is of type "const void *" whose format is defined
++ *                    in kvm arch specific header "asm/kvm_exported_tdp.h".
++ *                    Unpon success, domain of type IOMMU_DOMAIN_KVM is returned.
++ *                    Upon failure, ERR_PTR is returned.
+  * @probe_device: Add device to iommu driver handling
+  * @release_device: Remove device from iommu driver handling
+  * @probe_finalize: Do final setup work after the device is added to an IOMMU
+@@ -564,6 +571,8 @@ struct iommu_ops {
+ 	struct iommu_domain *(*domain_alloc_paging)(struct device *dev);
+ 	struct iommu_domain *(*domain_alloc_sva)(struct device *dev,
+ 						 struct mm_struct *mm);
++	struct iommu_domain *(*domain_alloc_kvm)(struct device *dev, u32 flags,
++						 const void *data);
+ 
+ 	struct iommu_device *(*probe_device)(struct device *dev);
+ 	void (*release_device)(struct device *dev);
+-- 
+2.17.1
 
