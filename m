@@ -2,94 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 000FF801C41
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 11:41:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56333801C42
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 11:41:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232257AbjLBKjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 05:39:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40056 "EHLO
+        id S232079AbjLBKky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 05:40:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjLBKjN (ORCPT
+        with ESMTP id S232484AbjLBKkm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 05:39:13 -0500
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9C8E12E
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 02:39:19 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-54c79cca895so4970a12.0
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Dec 2023 02:39:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701513558; x=1702118358; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=N/WnMXxklSY059GayMJ+VSslOmBX953aAVO/IsJZMxg=;
-        b=dfr6mqATDtY8AR/5BrrNyhhcpWeoNBl+xc2D4SA7mJxkUkKn8FoMHcyrUm4uYVGyCl
-         RHhNRtcYx/aXN443mNHfoVhzs+FlGM1CmdkxCYsviaYM/ygtuHqJQj+d9COVybxYoGu+
-         xA2wPfSHTYnkn1ALAbI5Rtc0o7m0KyzFN4QPC1U+7d+fZcwTUS3AzsGReiFMBDBD1LoM
-         QNy6P0dHErKWVmNKsRbbIqkUh+fVyYFFNg5oz9OX6Yq7OW068gwnGbiyqlmPl2p38HHz
-         of9FNlYdr+8CHt2ovR5VCnSjBEHzPgBZHfM/RRw6j0hXRyIDjcBVgQCdomwObaxVXFtv
-         rcqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701513558; x=1702118358;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=N/WnMXxklSY059GayMJ+VSslOmBX953aAVO/IsJZMxg=;
-        b=NIrqnDZn0tZjRIIwHhsbc0RE4iFph3pFrVJeSu0qcoqqYrBRAC1WrBdpjf3ZXewiFN
-         c9Rwel/0gQhg1hYdOHbNcRXp8zmQt/4Bbdpi+gKiLTE84eMNy/b8xjJfNc2wZ9h0mTPw
-         YUahUBt9uZRUPGkVDospmBZv9W5mrGMEaxfXahuzmANSNXtr4NtDHTNRqQdj+WyZ1T1W
-         f1DSjmCWErYQhpiXG2s8uvB3sa+4Hfjw73prMZtj1Jcq63WdpPWflAT6QrzyG8py4ylM
-         xzzegscnSHUviIGcNgEKW9m05hJ+2VhBg7YRkJgEeYlQuyBThEw2R15VEuhprWAfTGNP
-         CVyA==
-X-Gm-Message-State: AOJu0Yy+Cl20k9RAbCnupTUaWgVoM8yvlVCz4r2FOxxdpTsK8D8EEGBH
-        IA0l91rNjFa94IOIcvyV2IfVNe3epOuNFzThMaXXHg==
-X-Google-Smtp-Source: AGHT+IEi5OTrtVEcDkGkIvxkbNSaIkzFJXWwFDWd22ponu8vPgDwbmKd5sM0/nrKNfd41vaJZ6ufOmz1cWb5r01HaH8=
-X-Received: by 2002:a50:d7c1:0:b0:545:279:d075 with SMTP id
- m1-20020a50d7c1000000b005450279d075mr221900edj.1.1701513557906; Sat, 02 Dec
- 2023 02:39:17 -0800 (PST)
-MIME-Version: 1.0
-References: <ZWomqO8m4vVcW+ro@debian.debian>
-In-Reply-To: <ZWomqO8m4vVcW+ro@debian.debian>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Sat, 2 Dec 2023 11:39:06 +0100
-Message-ID: <CANn89iJ-xLq8Ug1FqKn_Jp_VRXRdAB9mb3nhEjm4tDV251jeMw@mail.gmail.com>
-Subject: Re: [PATCH v3 net-next] packet: add a generic drop reason for receive
-To:     Yan Zhai <yan@cloudflare.com>
-Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Weongyo Jeong <weongyo.linux@gmail.com>,
-        linux-kernel@vger.kernel.org, kernel-team@cloudflare.com,
-        Jesper Brouer <jesper@cloudflare.com>
+        Sat, 2 Dec 2023 05:40:42 -0500
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:242:246e::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A5F2123;
+        Sat,  2 Dec 2023 02:40:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+        Resent-Cc:Resent-Message-ID; bh=UrYSUWtR9hmePrOrhJRLWibt7ZulRWhgkGXJBEj7lv8=;
+        t=1701513647; x=1702723247; b=w0SVGWs5JzHgMg2UK6rKAhmOL+wtjJmRoNMsdmOIf71WAzw
+        luxjkHbWQbQ16TmIdKxMxqDiMs+V6o6gY6BII6TSK0VntOw+MJCIAAOBP8v40qFdvcGZEOOHzjwOi
+        dJSRMW5jBuAHYSXmk0+8epVOzF6Hm4Wawfa7LCoeKe2ZwBB98tukI+0s1TZUyvGGc/Ope8bXzj4FV
+        oQqKF19T7IX2jR++MHPIMsrVreDGuDn7H4ja0qFo8ACdlsjPRWFkJPJq2XNATFC/FzUAbxYUF3vAu
+        k49ru1dc2zpsmW3Qe6HgZ3lm1bzmbyx/oV6PWv8phm4JGOYd9OVpae8vpsilE8+A==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.97)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1r9NQS-0000000CQpO-49ZI;
+        Sat, 02 Dec 2023 11:40:45 +0100
+Message-ID: <9ffaef32a70d3ba5cd015ec22cf8437cd7c80e79.camel@sipsolutions.net>
+Subject: Re: [RFC PATCH 2/6] debugfs: annotate debugfs handlers vs. removal
+ with lockdep
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Nicolai Stange <nicstange@gmail.com>,
+        Ben Greear <greearb@candelatech.com>,
+        Minchan Kim <minchan@kernel.org>
+Date:   Sat, 02 Dec 2023 11:40:43 +0100
+In-Reply-To: <20231202063735.GD404241@google.com>
+References: <20231109212251.213873-7-johannes@sipsolutions.net>
+         <20231109222251.a62811ebde9b.Ia70a49792c448867fd61b0234e1da507b0f75086@changeid>
+         <20231202063735.GD404241@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+MIME-Version: 1.0
+X-malware-bazaar: not-scanned
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 1, 2023 at 7:32=E2=80=AFPM Yan Zhai <yan@cloudflare.com> wrote:
->
-> Commit da37845fdce2 ("packet: uses kfree_skb() for errors.") switches
-> from consume_skb to kfree_skb to improve error handling. However, this
-> could bring a lot of noises when we monitor real packet drops in
-> kfree_skb[1], because in tpacket_rcv or packet_rcv only packet clones
-> can be freed, not actual packets.
->
-> Adding a generic drop reason to allow distinguish these "clone drops".
->
-> [1]: https://lore.kernel.org/netdev/CABWYdi00L+O30Q=3DZah28QwZ_5RU-xcxLFU=
-K2Zj08A8MrLk9jzg@mail.gmail.com/
-> Fixes: da37845fdce2 ("packet: uses kfree_skb() for errors.")
-> Suggested-by: Eric Dumazet <edumazet@google.com>
-> Signed-off-by: Yan Zhai <yan@cloudflare.com>
-> ---
+On Sat, 2023-12-02 at 15:37 +0900, Sergey Senozhatsky wrote:
+> On (23/11/09 22:22), Johannes Berg wrote:
+> > From: Johannes Berg <johannes.berg@intel.com>
+> >=20
+> > When you take a lock in a debugfs handler but also try
+> > to remove the debugfs file under that lock, things can
+> > deadlock since the removal has to wait for all users
+> > to finish.
+> >=20
+> > Add lockdep annotations in debugfs_file_get()/_put()
+> > to catch such issues.
+>=20
+> So this triggers when I reset zram device (zsmalloc compiled with
+> CONFIG_ZSMALLOC_STAT).
 
-Reviewed-by: Eric Dumazet <edumazet@google.com>
+I shouldn't have put that into the rc, that was more or less an
+accident. I think I'll do a revert.
+
+> debugfs_create_file() and debugfs_remove_recursive() are called
+> under zram->init_lock, and zsmalloc never calls into zram code.
+> What I don't really get is where does the
+> 	`debugfs::classes -> zram->init_lock`
+> dependency come from?
+
+"debugfs:classes" means a file is being accessed and "classes" is the
+name, so that's=20
+
+static int zs_stats_size_show(struct seq_file *s, void *v)
+
+which uses seq_file, so there we have a seq_file lock.
+
+I think eventually the issue is that lockdep isn't telling the various
+seq_file instances apart, and you have one that's removed under lock
+(classes) and another one that's taking the lock (reset).
+
+Anyway, I'll send a revert, don't think this is ready yet. I was fixing
+the wireless debugfs lockdep and had used that to debug it.
+
+johannes
