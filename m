@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDE27801C66
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 12:15:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60B99801C67
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 12:15:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232662AbjLBLO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 06:14:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50772 "EHLO
+        id S232676AbjLBLO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 06:14:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232549AbjLBLOs (ORCPT
+        with ESMTP id S232563AbjLBLOs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 2 Dec 2023 06:14:48 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4184198;
-        Sat,  2 Dec 2023 03:14:52 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-50be9e6427dso261994e87.1;
-        Sat, 02 Dec 2023 03:14:52 -0800 (PST)
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AECF1B3;
+        Sat,  2 Dec 2023 03:14:54 -0800 (PST)
+Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-50be9e6427dso262008e87.1;
+        Sat, 02 Dec 2023 03:14:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701515691; x=1702120491; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1701515693; x=1702120493; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1T4NHCKaEUJcD00hRH2cGzkJVzfRK4nR9CtS9DswDWw=;
-        b=ZLWynJYZqs1lHeaNgkBKy4vWVZ0nmHjrnx/qKSxjxNzIdYwgwg/Xxz6lM/+WbrtVi2
-         OFnCFdmhD0bjMvM0WR8Rc2+Fl4/OlHz4Jcb3NCq0XEq41xU6/U0vDQIAqpSAJLlOKwyo
-         p445N2Kv/3o8zgsLSBMtp1rt08G+fR56EBssOxmkjEieKKG2ESFkX1g2P3jaDwKl8fEj
-         p3YZnw0jdlSET/DBPIwcQPkvmFTG0Jb0um45otdW2qP70I5hIG2lyCiaqiHMqHiFHLUx
-         qJkKykUY+gzslby3cUyamaBYRixsq5DSJT23rh2W6LKBRA2VqRl7El6H5TwODuM7p4W/
-         HMNw==
+        bh=ygdtXD6vQmhTkyIIFbEZLW4cEgmK3nTQybwd/aOy/dw=;
+        b=H+V5pyiVslE0Vdy0IxLksla4ZkUfMHpLREjrSgY0+IoU7vWZInF6iAEa6hmnT4frdH
+         3i/HG4vhM5WiKTy8E2HWfCWEvc5v4ZiIIRkH/sZNN5c3v2QGXW5HQTZxLM+ac0xI08zd
+         s9q0TyKqzM9mhh4Z6lVCaVnJnyYJV12VUOd/tDO6XQnl2rcPRjWXONC0Xt3Rw9eFXi6F
+         vmKB11P3wvb53KJ5iFubeyCWl7CAz5pznJJ9ObMpPRQk14uaBlW3AV81OvZSKexfXNTv
+         95J0nX28HD6hjKc9z8rnPfgydHA4cH+oRgrQyOecW1Dc0cg9SbJmVCgA8BIuVNT0dhU7
+         p3pQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701515691; x=1702120491;
+        d=1e100.net; s=20230601; t=1701515693; x=1702120493;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=1T4NHCKaEUJcD00hRH2cGzkJVzfRK4nR9CtS9DswDWw=;
-        b=CRxRjgZhO+qDHjKueDqgjcT7/dy9HS/DNz0clSwnllVCdSNHwYhlxC7dl4JjubvUcP
-         gqn/aRHiCthu5IfgbMA5PqLENX3shSaEReMK6WqVYoSIvoP98td7A5hljDey5ovfGdDn
-         3L46RyJgiq/tcFqRVkFeIMG0aTTwZefhenDBJ2AaZyCvoC0WUbXtvdA9pjSWbi/to8vy
-         aL0U7EotBwB8i4pUSJ46r/leDjTaAGD8A4QB8G71weZ1aTySYwq4yNqQf/Y5H3TxA5Ai
-         D9IEIuCd8GpW7Bji7TyqOcZ3sYZUDZYNKT+h4IPswqy9uEFJWLHPBx9KtoLHdnrM3i+g
-         rxRQ==
-X-Gm-Message-State: AOJu0YyNqEGM7IsVnMCK3X79HkNk8oN0UNwmmsHOrFKJYlWUVGhgX8r8
-        ntUZUIsE/l8LmJEVpGbwea0=
-X-Google-Smtp-Source: AGHT+IGCOXEU6dk6EGZWe/MP0XMGJO+yiD5xEQj5BjaTp5rOtf5nyoi67HG1zxO63b1IPn8ZI6EKlA==
-X-Received: by 2002:a05:6512:2316:b0:50b:d764:801d with SMTP id o22-20020a056512231600b0050bd764801dmr1888678lfu.80.1701515691032;
-        Sat, 02 Dec 2023 03:14:51 -0800 (PST)
+        bh=ygdtXD6vQmhTkyIIFbEZLW4cEgmK3nTQybwd/aOy/dw=;
+        b=xUMnzUFZkwBjZp1O9/o3/DDwuFWDvsxdu/d5nWtjqXJUF7yXl6Plv103syXL7LRTcR
+         aBCp5LqoAAIk+Dxygn9tpUAUL3uCKQUHqyCDsGlbgLkYCFVG1fqTDaajEtrNkzLY/oIK
+         QLVj9/K16CtM20bQMU46x9agPav3Rvp/wfYzWJ6+N/pseUYj6QkhLlDgTr+YN3VrvVaC
+         KANvc4Lg5uHDxBGB1/RagUaylW9Wjfo8ifLaRbSyeaxvySAm3rk1IemHsdg/dZgbTBux
+         O1f267VDXVYNz81WuMLnFmLAzqvJqz1OSJHbMKmIBlh9YtsfrGZJb2QMHKNtT0Rk/qKF
+         g0dw==
+X-Gm-Message-State: AOJu0Yy/nVYkWIeGGOA0xxyDwIGBEISVFGwasQ9ycdsH+4lgQgevV1sJ
+        IgzuMXD3XMnzovcM1hMOiIQ=
+X-Google-Smtp-Source: AGHT+IFScOFSCgDmnBrEbGs2UJA5K5JEy5fdtO2oKyTDCGHtKc+hpIQHzB67DbaHrlLa/RzVHh6mJA==
+X-Received: by 2002:ac2:44cf:0:b0:50b:df82:3137 with SMTP id d15-20020ac244cf000000b0050bdf823137mr805626lfm.43.1701515692770;
+        Sat, 02 Dec 2023 03:14:52 -0800 (PST)
 Received: from localhost ([95.79.203.166])
-        by smtp.gmail.com with ESMTPSA id b27-20020a0565120b9b00b0050aab07eb9fsm200142lfv.139.2023.12.02.03.14.50
+        by smtp.gmail.com with ESMTPSA id o8-20020ac24bc8000000b0050bde3d7ed4sm309731lfq.147.2023.12.02.03.14.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Dec 2023 03:14:50 -0800 (PST)
+        Sat, 02 Dec 2023 03:14:52 -0800 (PST)
 From:   Serge Semin <fancer.lancer@gmail.com>
 To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Jiaxun Yang <jiaxun.yang@flygoat.com>,
@@ -68,9 +68,9 @@ Cc:     Serge Semin <fancer.lancer@gmail.com>,
         Matthew Wilcox <willy@infradead.org>,
         Marc Zyngier <maz@kernel.org>, linux-mips@vger.kernel.org,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 5/6] mips: mm: add slab availability checking in ioremap_prot
-Date:   Sat,  2 Dec 2023 14:14:22 +0300
-Message-ID: <20231202111430.18059-6-fancer.lancer@gmail.com>
+Subject: [PATCH v2 6/6] mips: Set dump-stack arch description
+Date:   Sat,  2 Dec 2023 14:14:23 +0300
+Message-ID: <20231202111430.18059-7-fancer.lancer@gmail.com>
 X-Mailer: git-send-email 2.42.1
 In-Reply-To: <20231202111430.18059-1-fancer.lancer@gmail.com>
 References: <20231202111430.18059-1-fancer.lancer@gmail.com>
@@ -86,33 +86,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Recent commit a5f616483110 ("mm/ioremap: add slab availability checking in
-ioremap_prot") added the slab availability check to the generic
-ioremap_prot() implementation. It is reasonable to be done for the
-MIPS32-specific method too since it also relies on the
-get_vm_area_caller() function (by means of get_vm_area()) which requires
-the slab allocator being up and running before being called.
+In the framework of the MIPS architecture the mips_set_machine_name()
+method is defined to set the machine name. The name currently is only used
+in the /proc/cpuinfo file content generation. Let's have it utilized to
+mach-personalize the dump-stack data too in a way it's done on ARM, ARM64,
+RISC-V, etc.
 
 Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
 ---
- arch/mips/mm/ioremap.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ arch/mips/kernel/prom.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/mips/mm/ioremap.c b/arch/mips/mm/ioremap.c
-index b6dad2fd5575..d8243d61ef32 100644
---- a/arch/mips/mm/ioremap.c
-+++ b/arch/mips/mm/ioremap.c
-@@ -72,6 +72,10 @@ void __iomem *ioremap_prot(phys_addr_t phys_addr, unsigned long size,
- 	    flags == _CACHE_UNCACHED)
- 		return (void __iomem *) CKSEG1ADDR(phys_addr);
+diff --git a/arch/mips/kernel/prom.c b/arch/mips/kernel/prom.c
+index f88ce78e13e3..6062e6fa589a 100644
+--- a/arch/mips/kernel/prom.c
++++ b/arch/mips/kernel/prom.c
+@@ -28,6 +28,8 @@ __init void mips_set_machine_name(const char *name)
  
-+	/* Early remaps should use the unmapped regions til' VM is available */
-+	if (WARN_ON_ONCE(!slab_is_available()))
-+		return NULL;
+ 	strscpy(mips_machine_name, name, sizeof(mips_machine_name));
+ 	pr_info("MIPS: machine is %s\n", mips_get_machine_name());
 +
- 	/*
- 	 * Don't allow anybody to remap RAM that may be allocated by the page
- 	 * allocator, since that could lead to races & data clobbering.
++	dump_stack_set_arch_desc(name);
+ }
+ 
+ char *mips_get_machine_name(void)
 -- 
 2.42.1
 
