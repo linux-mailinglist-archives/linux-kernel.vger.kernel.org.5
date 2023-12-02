@@ -2,159 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04E89801F00
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 23:24:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BEC6801F01
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 23:27:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232369AbjLBWYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 17:24:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53396 "EHLO
+        id S232397AbjLBW1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 17:27:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjLBWYV (ORCPT
+        with ESMTP id S229450AbjLBW1G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 17:24:21 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4B4B107
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 14:24:27 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6FFBAC433C7;
-        Sat,  2 Dec 2023 22:24:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701555867;
-        bh=SXHC0x0+GI/myrZriQvLJwxGk27i20x6fkxa1/3/bpM=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=VuoOK1Wjn8FfBN+hGBnOMYLJZWL9lC0XOMzRyyx7NM9Jxn3/End/IN5zCy1Ji06Fs
-         rhNsNyWn/yanHCsbBYzo1g/ccueP+EHWUYYZQa1MBCuQEAjfWshj5sX6RsondAnVu4
-         GgpyPJJezNvFHb8A4jDmuGAISCVzA8+Z9dMwTE565NTFzXUbSul1YI782yuZopJRT5
-         3dGR33R7fRg/Vqz1q2lZS60phJggbA/N/PLLmqqOEvTrAWHrSdYyjXM7NuCsJPrFEn
-         QBtpece4r12j4uIiUlCjMTWmTWa7avqi6v3pED4kzXPGB1+1OEwwgfFprv2sjSWQDv
-         azSkmE7JCPe7w==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id F16EFCE10DA; Sat,  2 Dec 2023 14:24:26 -0800 (PST)
-Date:   Sat, 2 Dec 2023 14:24:26 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: Re: [RCU] rcu_tasks_trace_qs(): trc_reader_special.b.need_qs value
- incorrect likely()?
-Message-ID: <b0772bf3-5b47-4aea-b964-17a2bebc6313@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20231201154932.468d088b@gandalf.local.home>
+        Sat, 2 Dec 2023 17:27:06 -0500
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CB64107;
+        Sat,  2 Dec 2023 14:27:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=NjbNFGRIsxm13NIq7QOlU0+7el0vqRk7wXDZtiulYNM=; b=Q66e2ozhslYFy6IZJBTKhUwLJD
+        tUSedC7mVh5eeVXeJAW6cZJ3vDKnxWvy4q3BAanpfHjn8wGd2PlIuBQuYYB2WuffAqVmM81q8Bs4P
+        QkNm9qT+mX8OzUw05W8kcWAOdjd23IDKPgXHC9y/Umuln0Z1DHUTR4cfjrlbRQc6dMEyU6DPTyp2O
+        +V0yKhIDBxMfYGKOflC47npu6f4e7VRU0sGsjL+oWvImoAdz4hBbc0rVl+Ezb6eSftIPTPEsGNZF+
+        hbsz2exqEUt2pgsT+p/eLnlIT0ROABgloY7FuIQQdiFW2riTh7hWpAIf0jpk4BdMepKByyb5Ajjkt
+        NTE5TF1Q==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1r9YS2-006OsI-1h;
+        Sat, 02 Dec 2023 22:27:06 +0000
+Date:   Sat, 2 Dec 2023 22:27:06 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        Tony Luck <tony.luck@intel.com>,
+        linux-hardening@vger.kernel.org,
+        Christian Brauner <brauner@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 5/5] pstore: inode: Use cleanup.h for struct
+ pstore_private
+Message-ID: <20231202222706.GT38156@ZenIV>
+References: <20231202211535.work.571-kees@kernel.org>
+ <20231202212217.243710-5-keescook@chromium.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231201154932.468d088b@gandalf.local.home>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231202212217.243710-5-keescook@chromium.org>
+Sender: Al Viro <viro@ftp.linux.org.uk>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 01, 2023 at 03:49:32PM -0500, Steven Rostedt wrote:
-> Paul,
-> 
-> I just started running my branch tracer (that checks all branches and also
-> gives likely and unlikely correctness). And I found this:
-> 
->  correct incorrect  %        Function                  File              Line
->  ------- ---------  -        --------                  ----              ----
->        0  1217713 100 rcu_softirq_qs                 tree.c               247
-> 
-> Which comes down to this:
-> 
-> 
-> # define rcu_tasks_trace_qs(t)							\
-> 	do {									\
-> 		int ___rttq_nesting = READ_ONCE((t)->trc_reader_nesting);	\
-> 										\
-> 		if (likely(!READ_ONCE((t)->trc_reader_special.b.need_qs)) &&	\
-> 		    likely(!___rttq_nesting)) {					\
-> 			rcu_trc_cmpxchg_need_qs((t), 0,	TRC_NEED_QS_CHECKED);	\
-> 		} else if (___rttq_nesting && ___rttq_nesting != INT_MIN &&	\
-> 			   !READ_ONCE((t)->trc_reader_special.b.blocked)) {	\
-> 			rcu_tasks_trace_qs_blkd(t);				\
-> 		}								\
-> 	} while (0)
-> 
-> 
-> I added just before the likely/unlikely to my test box and I see this:
-> 
-> 		trace_printk("need qs? %d %d\n", READ_ONCE((t)->trc_reader_special.b.need_qs), ___rttq_nesting); \
-> 
->           <idle>-0       [005] d.h1.     2.482412: rcu_sched_clock_irq: need qs? 2 0
->           <idle>-0       [002] d.h1.     2.482464: rcu_sched_clock_irq: need qs? 2 0
->           <idle>-0       [000] d.h1.     2.482766: rcu_sched_clock_irq: need qs? 2 0
->           <idle>-0       [001] d.h1.     2.482951: rcu_sched_clock_irq: need qs? 2 0
->           <idle>-0       [007] d.h1.     2.482958: rcu_sched_clock_irq: need qs? 2 0
->           <idle>-0       [005] d.h1.     2.483600: rcu_sched_clock_irq: need qs? 2 0
->           <idle>-0       [002] d.h1.     2.483624: rcu_sched_clock_irq: need qs? 2 0
->           <idle>-0       [000] d.h1.     2.483927: rcu_sched_clock_irq: need qs? 2 0
->           <idle>-0       [007] d.h1.     2.484068: rcu_sched_clock_irq: need qs? 2 0
->           <idle>-0       [001] d.h1.     2.484127: rcu_sched_clock_irq: need qs? 2 0
->           <idle>-0       [002] d.h1.     2.484723: rcu_sched_clock_irq: need qs? 2 0
->           <idle>-0       [005] d.h1.     2.484745: rcu_sched_clock_irq: need qs? 2 0
->           <idle>-0       [000] d.h1.     2.485015: rcu_sched_clock_irq: need qs? 2 0
->           <idle>-0       [007] d.h1.     2.485202: rcu_sched_clock_irq: need qs? 2 0
->           <idle>-0       [001] d.h1.     2.485258: rcu_sched_clock_irq: need qs? 2 0
->           <idle>-0       [002] d.h1.     2.485818: rcu_sched_clock_irq: need qs? 2 0
->           <idle>-0       [005] d.h1.     2.485929: rcu_sched_clock_irq: need qs? 2 0
->           <idle>-0       [000] d.h1.     2.486224: rcu_sched_clock_irq: need qs? 2 0
->           <idle>-0       [007] d.h1.     2.486370: rcu_sched_clock_irq: need qs? 2 0
->           <idle>-0       [001] d.h1.     2.486399: rcu_sched_clock_irq: need qs? 2 0
->           <idle>-0       [002] d.h1.     2.486895: rcu_sched_clock_irq: need qs? 2 0
->           <idle>-0       [005] d.h1.     2.487049: rcu_sched_clock_irq: need qs? 2 0
->           <idle>-0       [000] d.h1.     2.487318: rcu_sched_clock_irq: need qs? 2 0
->           <idle>-0       [007] d.h1.     2.487472: rcu_sched_clock_irq: need qs? 2 0
->           <idle>-0       [001] d.h1.     2.487522: rcu_sched_clock_irq: need qs? 2 0
->           <idle>-0       [002] d.h1.     2.488034: rcu_sched_clock_irq: need qs? 2 0
->           <idle>-0       [005] d.h1.     2.488220: rcu_sched_clock_irq: need qs? 2 0
-> 
-> 
-> Note, that "2" is the READ_ONCE() without the "!" to it. Thus:
-> 
-> 		if (likely(!READ_ONCE((t)->trc_reader_special.b.need_qs)) &&	\
-> 
-> Is unlikely to be true.
-> 
-> Was this supposed to be:
-> 
-> 		if (!likely(READ_ONCE((t)->trc_reader_special.b.need_qs)) &&	\
-> 
-> Or could it be converted to:
-> 
-> 		if (unlikely(!READ_ONCE((t)->trc_reader_special.b.need_qs)) &&	\
-> 
-> ?
-> 
-> Note, the unlikely tracing is running on my production server v6.6.3.
-> 
-> The above trace is from my test box with latest Linus's tree.
+On Sat, Dec 02, 2023 at 01:22:15PM -0800, Kees Cook wrote:
 
-Nice tool!!!
+>  static void *pstore_ftrace_seq_start(struct seq_file *s, loff_t *pos)
+>  {
+> @@ -338,9 +339,8 @@ int pstore_mkfile(struct dentry *root, struct pstore_record *record)
+>  {
+>  	struct dentry		*dentry;
+>  	struct inode		*inode __free(iput) = NULL;
+> -	int			rc = 0;
+>  	char			name[PSTORE_NAMELEN];
+> -	struct pstore_private	*private, *pos;
+> +	struct pstore_private	*private __free(pstore_private) = NULL, *pos;
+>  	size_t			size = record->size + record->ecc_notice_size;
+>  
+>  	if (WARN_ON(!inode_is_locked(d_inode(root))))
+> @@ -356,7 +356,6 @@ int pstore_mkfile(struct dentry *root, struct pstore_record *record)
+>  			return -EEXIST;
+>  	}
+>  
+> -	rc = -ENOMEM;
+>  	inode = pstore_get_inode(root->d_sb);
+>  	if (!inode)
+>  		return -ENOMEM;
+> @@ -373,7 +372,7 @@ int pstore_mkfile(struct dentry *root, struct pstore_record *record)
+>  
+>  	dentry = d_alloc_name(root, name);
+>  	if (!dentry)
+> -		goto fail_private;
+> +		return -ENOMEM;
+>  
+>  	private->dentry = dentry;
+>  	private->record = record;
+> @@ -386,13 +385,9 @@ int pstore_mkfile(struct dentry *root, struct pstore_record *record)
+>  
+>  	d_add(dentry, no_free_ptr(inode));
+>  
+> -	list_add(&private->list, &records_list);
+> +	list_add(&(no_free_ptr(private))->list, &records_list);
 
-My kneejerk reaction is that that condition is suboptimal.  Does the 
-(untested) patch below help things?
-
-							Thanx, Paul
-
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index aa87c82236dd..1df1dc9e8620 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -184,9 +184,9 @@ void rcu_tasks_trace_qs_blkd(struct task_struct *t);
- 	do {									\
- 		int ___rttq_nesting = READ_ONCE((t)->trc_reader_nesting);	\
- 										\
--		if (likely(!READ_ONCE((t)->trc_reader_special.b.need_qs)) &&	\
-+		if (unlikely(READ_ONCE((t)->trc_reader_special.b.need_qs) == TRC_NEED_QS) &&	\
- 		    likely(!___rttq_nesting)) {					\
--			rcu_trc_cmpxchg_need_qs((t), 0,	TRC_NEED_QS_CHECKED);	\
-+			rcu_trc_cmpxchg_need_qs((t), TRC_NEED_QS, TRC_NEED_QS_CHECKED);	\
- 		} else if (___rttq_nesting && ___rttq_nesting != INT_MIN &&	\
- 			   !READ_ONCE((t)->trc_reader_special.b.blocked)) {	\
- 			rcu_tasks_trace_qs_blkd(t);				\
+That's really brittle.  It critically depends upon having no failure
+exits past the assignment to ->i_private; once you've done that,
+you have transferred the ownership of that thing to the inode
+(look at your ->evict_inode()).  But you can't say
+        inode->i_private = no_free_ptr(private);
+since you are using private past that point.
