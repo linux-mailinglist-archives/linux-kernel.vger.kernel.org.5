@@ -2,128 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1906D801C7A
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 12:43:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E604801C72
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 12:32:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232640AbjLBLkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 06:40:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36960 "EHLO
+        id S232555AbjLBLcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 06:32:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjLBLki (ORCPT
+        with ESMTP id S232083AbjLBLcN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 06:40:38 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B82218C
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 03:40:42 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2E4CC433C9;
-        Sat,  2 Dec 2023 11:40:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701517241;
-        bh=DaUNBnJudQtx/0ecN0kp9sHu1Y4tp3r/amh8XiErTXw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XxP7NmO7pW5CZG2wIqTdiWAbz/p7Cb69Elg+6qaP8cxRpDnbg7ygo36gqVDhTE1K/
-         9ky2d7U5rmERCih5gsM/OV7/Euy7yG9zru8jDb1Wo8AaCAmx16YQ8OWUrgYiZbRZU2
-         j3+lowrobiVTpvQ2b6+uTV66aCyeHH+QBwj9f/5P350NydZGYMw+Zqj8RrAblu9VK9
-         5QbS1cVL3ev75+j1EMolBAA/CKFvjCSTTpRLmXILv7TSu/sdW4GQJdCU2fgWr+hTQd
-         frwOzSl7jv2TwAURI820vGSlC+0FQ9hxApvrrEHa/s+BsP9WMC1YSfh+TShW4XOF4M
-         ZdQ7qFC8qFLAw==
-Date:   Sat, 2 Dec 2023 19:28:10 +0800
-From:   Jisheng Zhang <jszhang@kernel.org>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] riscv: enable EFFICIENT_UNALIGNED_ACCESS and
- DCACHE_WORD_ACCESS
-Message-ID: <ZWsUyjEx1fmXQEfW@xhacker>
-References: <20231202111822.3569-1-jszhang@kernel.org>
+        Sat, 2 Dec 2023 06:32:13 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E5AFF0
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 03:32:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701516739;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xt2SJB3OEyXkH+gdUma+ns8reFuyKzbtvZneat4NxE4=;
+        b=i56ARLIk0Sk67yph9IDy0QRddpNwOHc4Q+MG6rVpfQV6mlq/S4oue563cSK0qrhukvB18D
+        v0ieWf9HJkmdLLqX6BOez7aAvgcm9dJNJXVnPaugvzcIqIODbClNMhKL+zme1xtuL7Hssf
+        xtp8yf4hgP+xxjozYpeEDG4gjlNjtqI=
+Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
+ [209.85.208.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-78-e5t15NhlN-2RK_MZIxFJqw-1; Sat, 02 Dec 2023 06:32:17 -0500
+X-MC-Unique: e5t15NhlN-2RK_MZIxFJqw-1
+Received: by mail-lj1-f198.google.com with SMTP id 38308e7fff4ca-2c9b9837ce8so34247421fa.3
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Dec 2023 03:32:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701516735; x=1702121535;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xt2SJB3OEyXkH+gdUma+ns8reFuyKzbtvZneat4NxE4=;
+        b=NMi1OItzQPyx1KUyCBlSZGiVUrzdGIsbMXXunOipNDv1sTpnK9KhydJTlTCVqZwZxM
+         ZMg82n05rORfIT3tixNdDXz32b7omHM5r943iFdYhLzfJxP/xgJT9DptOHJ40Clc9ull
+         cmjB0WiYetoMzN0DwIqKE35bRiEziOCEn10I1v8KOmlm9NVw0mndjnAMG054XL5IrQTq
+         b/Q73trlyQlxx08NkSdXHVbgc86alhd9ahL1a2S0wJySDuomkydeyaWWkLNv2qQGhMzA
+         g1cf3xxPKO9KE5rXDTWMlkCAGPlnIgDKX5+qHz722KVOKQAJJbYU77it6rgelVbZlCP3
+         z6JA==
+X-Gm-Message-State: AOJu0Yw+XdZ/6ruTqqZL0xOkfck4Ave72nKp7rqpuCzXGqNHMRSmg1AE
+        oRPl5NNKV/2JRMgLELfnve6RVrLNre8geIDichFB2MysAGka+t6fCskiHiHdewRlM39QLY6c5AV
+        BhKDMbpy0jjPAZmjqGH/Q4BAF
+X-Received: by 2002:a2e:381a:0:b0:2c9:caf4:18b0 with SMTP id f26-20020a2e381a000000b002c9caf418b0mr1464760lja.41.1701516735762;
+        Sat, 02 Dec 2023 03:32:15 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IH4QhYhxIdH1bNNlbjq78o8Is9EW7Z3oPOwGwWPajwBN/LhgHcYYJLEsP75hTJr90U5m2gpOQ==
+X-Received: by 2002:a2e:381a:0:b0:2c9:caf4:18b0 with SMTP id f26-20020a2e381a000000b002c9caf418b0mr1464757lja.41.1701516735423;
+        Sat, 02 Dec 2023 03:32:15 -0800 (PST)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id g26-20020a170906199a00b009e776cc92dcsm2928411ejd.181.2023.12.02.03.32.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 02 Dec 2023 03:32:14 -0800 (PST)
+Message-ID: <083d318a-48b2-47f0-aed0-8788e25138f4@redhat.com>
+Date:   Sat, 2 Dec 2023 12:32:14 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231202111822.3569-1-jszhang@kernel.org>
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PDS_BTC_ID,
-        PDS_BTC_MSGID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] platform/x86: acer-wmi: select ACPI_PLATFORM_PROFILE
+Content-Language: en-US, nl
+To:     =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        SungHwan Jung <onenowy@gmail.com>
+Cc:     platform-driver-x86@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20231130124452.3460-1-onenowy@gmail.com>
+ <c13f1666-33a1-2df2-649-c7d32e64c70@linux.intel.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <c13f1666-33a1-2df2-649-c7d32e64c70@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 02, 2023 at 07:18:20PM +0800, Jisheng Zhang wrote:
-> Some riscv implementations such as T-HEAD's C906, C908, C910 and C920
-> supports efficient unaligned access, for performance reason we want
-> to enable HAVE_EFFICIENT_UNALIGNED_ACCESS on these platforms. To
-> avoid performance regressions on other non efficient unaligned access
-> platforms, HAVE_EFFICIENT_UNALIGNED_ACCESS can't be globaly selected.
-> 
-> To solve this problem, runtime code patching based on the detected
-> speed is a good solution. But that's not easy, it involves lots of
-> work to modify vairous subsystems such as net, mm, lib and so on.
-> This can be done step by step.
+Hi,
 
-Adding something as below here can make the series more clear:
-So let's take an easier solution: add support to efficient unaligned
-access and hide the support under NONPORTABLE.
+On 11/30/23 14:00, Ilpo Järvinen wrote:
+> On Thu, 30 Nov 2023, SungHwan Jung wrote:
+> 
+>> select ACPI_PLATFORM_PROFILE to fix the dependency problem for acer-wmi
+>> to support platform profile.
+>>
+>> | Reported-by: kernel test robot <lkp@intel.com>
+>> | Closes: https://lore.kernel.org/oe-kbuild-all/202311301842.ppdT4zWK-lkp@intel.com/
+>>
+>> Signed-off-by: SungHwan Jung <onenowy@gmail.com>
+>>
+>> ---
+>> I apologize that I missed dependency in kconfig.
+>> I have submitted a single patch because the series of patches were alreay
+>> merged to linux-next.
+>> Is this enough or should I re-submit the patch-series including this patch?
+>> (or modify this to apply before "platform/x86: acer-wmi: Add platform
+>> profile and modekey support for Predator PHN16-71" commit?)
+>> ---
+>>  drivers/platform/x86/Kconfig | 1 +
+>>  1 file changed, 1 insertion(+)
+>>
+>> diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
+>> index 8e99a2f10147..81e6cd62a533 100644
+>> --- a/drivers/platform/x86/Kconfig
+>> +++ b/drivers/platform/x86/Kconfig
+>> @@ -182,6 +182,7 @@ config ACER_WMI
+>>  	select INPUT_SPARSEKMAP
+>>  	select LEDS_CLASS
+>>  	select NEW_LEDS
+>> +	select ACPI_PLATFORM_PROFILE
+>>  	help
+>>  	  This is a driver for newer Acer (and Wistron) laptops. It adds
+>>  	  wireless radio and bluetooth control, and on some laptops,
+>>
+> 
+> Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+> 
+> I suspect Hans will just included that into the original patch so this 
+> patch will not appear in the history at all.
 
-> 
-> patch1 introduces RISCV_EFFICIENT_UNALIGNED_ACCESS which depends on
-> NONPORTABLE, if users know during config time that the kernel will be
-> only run on those efficient unaligned access hw platforms, they can
-> enable it. Obviously, generic unified kernel Image should enable it.
+Right.
 
-typo: s/should/shouldn't
+Thank you both for the patch and the review.
 
-> 
-> patch2 adds support DCACHE_WORD_ACCESS when MMU and
-> RISCV_EFFICIENT_UNALIGNED_ACCESS.
-> 
-> Below test program and step shows how much performance can be improved:
-> 
->  $ cat tt.c
->  #include <sys/types.h>
->  #include <sys/stat.h>
->  #include <unistd.h>
-> 
->  #define ITERATIONS 1000000
-> 
->  #define PATH "123456781234567812345678123456781"
-> 
->  int main(void)
->  {
->          unsigned long i;
->          struct stat buf;
-> 
->          for (i = 0; i < ITERATIONS; i++)
->                  stat(PATH, &buf);
-> 
->          return 0;
->  }
-> 
->  $ gcc -O2 tt.c
->  $ touch 123456781234567812345678123456781
->  $ time ./a.out
-> 
-> Per my test on T-HEAD C910 platforms, the above test performance is
-> improved by about 7.5%.
-> 
-> 
-> Jisheng Zhang (2):
->   riscv: introduce RISCV_EFFICIENT_UNALIGNED_ACCESS
->   riscv: select DCACHE_WORD_ACCESS for efficient unaligned access HW
-> 
->  arch/riscv/Kconfig                      | 13 +++++++++++
->  arch/riscv/include/asm/asm-extable.h    | 15 ++++++++++++
->  arch/riscv/include/asm/word-at-a-time.h | 23 ++++++++++++++++++
->  arch/riscv/mm/extable.c                 | 31 +++++++++++++++++++++++++
->  4 files changed, 82 insertions(+)
-> 
-> -- 
-> 2.42.0
-> 
-> 
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+I have squashed this change into the original patch introducing
+the platform_profile support.
+
+You can find the new version in my pdx86/review-hans branch and the
+pdx86/for-next branch now.
+
+Regards,
+
+Hans
+
+
