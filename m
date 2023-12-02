@@ -2,139 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58286801EF3
+	by mail.lfdr.de (Postfix) with ESMTP id 03A99801EF2
 	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 23:14:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232521AbjLBWHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 17:07:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41498 "EHLO
+        id S232371AbjLBWIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 17:08:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232365AbjLBWHt (ORCPT
+        with ESMTP id S229531AbjLBWIp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 17:07:49 -0500
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DC9911F
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 14:07:55 -0800 (PST)
-Received: from mail-oo1-f69.google.com (mail-oo1-f69.google.com [209.85.161.69])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id B537344446
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 22:07:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1701554872;
-        bh=VhuiHjzGmesIrY/hSc2y05bK2i7Am6FUImDyu0cEMgU=;
-        h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=DyHa6fTFxrMFdfW1mld8lFQEIwtgft806aM7Gp7qnP/CXyLGYLMm5DCkb8KAzxIqo
-         7shdaaZODXsjTqNkkfRy3HBsCWhIwKN08OcVr0U6neOPpsXQZz0U7MJ/eXmQWjUYgM
-         XwbnyWVqFWzjju1tZj0iWxvd5aOjd7Uj0pr+FUCAwhFuLQgBeOvVp5foN3jvTCv1c6
-         Z5GYMS7hOPXDpTDHLMSRH5IyH5apPLVLYofDZ8Wofab1m7k/Qvzf6HLVbNtQKZtx6A
-         Y/CYjALKLDxc/ak38EIV8hoXWcG6Y7A/roQkx42pGTJfgU9Pto4G+XQAL8duCDZDs2
-         jPmMDDKY8Y5Og==
-Received: by mail-oo1-f69.google.com with SMTP id 006d021491bc7-58db2015327so3791847eaf.1
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Dec 2023 14:07:52 -0800 (PST)
+        Sat, 2 Dec 2023 17:08:45 -0500
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F498118
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 14:08:51 -0800 (PST)
+Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2c9b9191722so44463211fa.1
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Dec 2023 14:08:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701554929; x=1702159729; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gBnQbPIaKZ1FnI4i+KfUpDsqKQ/SRB/Q4CkBHEZWQ+s=;
+        b=uPfywUtFhR8c5xi6/Qgy3ymOSXmuLeeo1+KUvlM8WrITbezBgmVJjSsSL1Kl27rmVD
+         RsNIa7VJ0c5YnZ5Cb0era8/aWqAp1kAVuqMcqwizMcnphe39h3JaNNWgLfnOc2aOfif7
+         6pjAx7rvbxf9znkLatLkmbKlhepZsCy9IwKUJXPhpykOvKUQBXttzugqApaQbKEnJl9k
+         ULAn1wsNS4vzEoLUsMyRrc8l61lQGozs8zly++NBs9bqWR2qkV8a7O08BdHsaNG+CJyg
+         6OeAST238gS2573L7tMj+FviEtVvETsqobLj3ax/WiOQ/RtY1sphjaccaYTdvKhyB5R8
+         VWWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701554871; x=1702159671;
-        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VhuiHjzGmesIrY/hSc2y05bK2i7Am6FUImDyu0cEMgU=;
-        b=MYhftA2XT2Ue5euFCP7rdW2x0tfzokSoMtjZZ3dpP6EbE9GddcguiWtaLlhDb1IqWu
-         BTJ9ccvB/4b3f6Uq4rB2tlxo6fXaHSUtVsqqJqtdGn9h3OxjF979kTJDGfTl9spL6XOH
-         ovct/tbJvHmTUua2sCCg2RL2BdIfchfYB/CZEJTDbcEh0zA+erB1CHHePc+yjaQ+9yqz
-         RgJK6hZtnFvbLSWTlgZEBRTBCQjo1q4FyyPAUsuY+2nSSIUiyHEocMkcXcAViwE04RXq
-         T6HS+cDJKyP+58MMle1TJXfdUh/biKkFkyvfnTo+so/D1QLWlyfULgR+MW78YVZX0qFP
-         DqnQ==
-X-Gm-Message-State: AOJu0YzxlXhw6lXh/S8SSf21un7+S4wugnAKxY2hqyXsHHz/U698yBZt
-        CB7KNCmacf86gk7PG+nO1uhJGFESudeMu6hjqdp8daul1GR0XwyZMI/5WL0+cV9lXjCSKWGpmPk
-        d5ngytffwzmVb9q+6W2k15bFapzJbcodWcoBoZ/AQAUE9IToo1gUlII8j6A==
-X-Received: by 2002:a05:6358:4e:b0:170:17eb:7c67 with SMTP id 14-20020a056358004e00b0017017eb7c67mr1396025rwx.58.1701554871290;
-        Sat, 02 Dec 2023 14:07:51 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGDgcC7p1ZVM37WrYOl9g6KwCFC9ba5aGWjLgxDGJ2WolVrkOMQ2nYCO3RuaqPRlAtCZA3dv3QColkp70DC18E=
-X-Received: by 2002:a05:6358:4e:b0:170:17eb:7c67 with SMTP id
- 14-20020a056358004e00b0017017eb7c67mr1396010rwx.58.1701554870917; Sat, 02 Dec
- 2023 14:07:50 -0800 (PST)
-Received: from 348282803490 named unknown by gmailapi.google.com with
- HTTPREST; Sat, 2 Dec 2023 14:07:50 -0800
-From:   Emil Renner Berthing <emil.renner.berthing@canonical.com>
-In-Reply-To: <20231202153353.635-1-jszhang@kernel.org>
-References: <20231202153353.635-1-jszhang@kernel.org>
-Mime-Version: 1.0
-Date:   Sat, 2 Dec 2023 14:07:50 -0800
-Message-ID: <CAJM55Z-9Y=QitvAX+z=XTTMM0CGRzGMD5z0H_Bzv=Q85b49rpQ@mail.gmail.com>
-Subject: Re: [PATCH v2 0/3] riscv: dts: starfive: add Milkv Mars board device tree
-To:     Jisheng Zhang <jszhang@kernel.org>,
-        Conor Dooley <conor@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1701554929; x=1702159729;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gBnQbPIaKZ1FnI4i+KfUpDsqKQ/SRB/Q4CkBHEZWQ+s=;
+        b=UNVKA64NnSI5sXZB3Sdc+HZsh0/QbPSjdjRXjY7fMYLL2FtIjrMVPHBmzx1cmmpQTb
+         nUy1ik7hVx9Gztg/bW64Lp+WFOASKfoz6/dfNCoIiQ1iKW80Sb9RxbNmNs4otTR3PBQu
+         fEYiBlcPw5rxK2fwEQgjF/C9+4sOeAG+8QGByCOv77catb0LL/ff8QXZNCICWbHP329T
+         B2/iig8xlclyZFtiu9JqPjmY2pDPJWH2TEwW5JblnrmlPS30xkO4XjjIHA0C8dyaDAVj
+         yI2d7NXkMwlA/h1NJva4ZxSJHP/8ywbxBFgTHGK6auRZgSVUC3vdCwfOmf3EKxwGUveA
+         L91Q==
+X-Gm-Message-State: AOJu0YxSqt7h7MBKO7n3uucIoHece8q3MnGQjTBe1QTp/CAfYomkzvKC
+        5UqNuHiY6KvvwtR4t8JtR/nhNQ==
+X-Google-Smtp-Source: AGHT+IHtNMy5Yq1qJwCjIbPETZ9dRA+AvYabXqW3vd5GCgYQ+Z9Fd/TLncg8J3C2Wr4ROOmIVxmsBA==
+X-Received: by 2002:a2e:b0ca:0:b0:2c9:f57f:fcf6 with SMTP id g10-20020a2eb0ca000000b002c9f57ffcf6mr410723ljl.37.1701554929583;
+        Sat, 02 Dec 2023 14:08:49 -0800 (PST)
+Received: from ?IPV6:2001:14ba:a0db:1f00::8a5? (dzdqv0yyyyyyyyyyybcwt-3.rev.dnainternet.fi. [2001:14ba:a0db:1f00::8a5])
+        by smtp.gmail.com with ESMTPSA id p21-20020a2eba15000000b002c9eca858a0sm344305lja.137.2023.12.02.14.08.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 02 Dec 2023 14:08:49 -0800 (PST)
+Message-ID: <124cf6d1-16b8-45e1-997c-24f176f59e20@linaro.org>
+Date:   Sun, 3 Dec 2023 00:08:46 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/msm/gpu: Fix null-pointer dereference in
+ zap_shader_load_mdt
+Content-Language: en-GB
+To:     Kunwu Chan <chentao@kylinos.cn>, robdclark@gmail.com,
+        quic_abhinavk@quicinc.com, sean@poorly.run,
+        marijn.suijten@somainline.org, airlied@gmail.com, daniel@ffwll.ch,
+        jordan@cosmicpenguin.net, konrad.dybcio@linaro.org
+Cc:     kunwu.chan@hotmail.com, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org
+References: <20231123033329.27477-1-chentao@kylinos.cn>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+In-Reply-To: <20231123033329.27477-1-chentao@kylinos.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jisheng Zhang wrote:
-> The Milkv Mars is a development board based on the Starfive JH7110 SoC.
-> The board features:
->
-> - JH7110 SoC
-> - 1/2/4/8 GiB LPDDR4 DRAM
-> - AXP15060 PMIC
-> - 40 pin GPIO header
-> - 3x USB 3.0 host port
-> - 1x USB 2.0 host port
-> - 1x M.2 E-Key
-> - 1x eMMC slot
-> - 1x MicroSD slot
-> - 1x QSPI Flash
-> - 1x 1Gbps Ethernet port
-> - 1x HDMI port
-> - 1x 2-lane DSI and 1x 4-lane DSI
-> - 1x 2-lane CSI
->
-> patch1 adds 'cpus' label
-> patch2 adds "milkv,mars" board dt-binding
-> patch3 adds the devicetree file describing the currently supported
-> features:
-> Namely PMIC, UART, I2C, GPIO, SD card, QSPI Flash, eMMC and Ethernet.
->
-> Since v1:
->  - add two new patches which add "cpus" label and board dt-binding
->  - adopt Krzysztof's suggestions, thanks
->
-> Hi Conor,
->
-> I see you have sent a patch which moves the timebase-frequency property
-> to soc dtsi, but this series doesn't rebase on that. I can update it
-> once your patch is merged.
+On 23/11/2023 05:33, Kunwu Chan wrote:
+> kasprintf() returns a pointer to dynamically allocated memory
+> which can be NULL upon failure. Ensure the allocation was successful
+> by checking the pointer validity.
+> 
+> Fixes: a9e2559c931d ("drm/msm/gpu: Move zap shader loading to adreno")
+> Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+> ---
+>   drivers/gpu/drm/msm/adreno/adreno_gpu.c | 4 ++++
+>   1 file changed, 4 insertions(+)
 
-Hi Jisheng,
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-Thanks for working on this! On the JH7110 the mtime derives almost directly
-from the external oscillator like this:
+-- 
+With best wishes
+Dmitry
 
-osc (24MHz) -> rtc_toggle (div 6) -> mtime (4MHz)
-
-So to me it makes sense to define the timebase-frequency in the same file as
-the frequency of the external oscillator.
-
-In general it looks good, but if you do
-
-  diff -Naur jh7110-{starfive-visionfive-2.dtsi,milkv-mars.dts}
-
-you'll see that those two files are almost identical. Even external clock
-speeds and all the pin configuration are the same. I'd strongly prefer to have
-all that factored out in a common .dtsi so fixes don't get out of sync.
-
-/Emil
