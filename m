@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0309801C7E
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 13:03:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55770801C83
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 13:06:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232635AbjLBMCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 07:02:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42554 "EHLO
+        id S232666AbjLBMGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 07:06:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjLBMCm (ORCPT
+        with ESMTP id S229472AbjLBMGS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 07:02:42 -0500
+        Sat, 2 Dec 2023 07:06:18 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB0DA123
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 04:02:48 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 546D1C433C9;
-        Sat,  2 Dec 2023 12:02:46 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4C17CF
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 04:06:24 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED22AC433C9;
+        Sat,  2 Dec 2023 12:06:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701518568;
-        bh=ldE38MFENdLkIJBG2ra0TAMo69US2jtI9CimGen7CE0=;
+        s=k20201202; t=1701518784;
+        bh=lHADNuvaU9fEsiOx3WC4Nblcr6d09geCfLNRdzQPQKg=;
         h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=NZQ5wZUJNKHAqwloJUYrLvGCAg47YdkG7in7s/aAxPOJ76zB2clIIIjXKWfLHUeEw
-         CLceC7ojrofT776KQOmHUDH+jjqEYZxm5JxafGfCVRSHe9LXkHzuAk5t1lpwESET0J
-         tRWtdO/H8DhajOnkjIESI9qY5gXmBjQC49WVra0q6smhfHwLijIcUtdwuoLeJyoWHB
-         x7FM5iAnmkRHB0nV1ZCWTxnqU7YOfDpEr5ZQnwOrwLDTKE0eSSkei/6ynunm67/fru
-         Ma8GvdknSqSwEgJli9tXuUvI1wXBHSON/UMi1Wkt1sDaqzTZq0SvpQTMSyF3OMU0HF
-         aWvsNjfKR7NTA==
-Message-ID: <50dfe882-89b8-4fe9-8140-784d322c1385@kernel.org>
-Date:   Sat, 2 Dec 2023 13:02:45 +0100
+        b=n0oqdSdh08rPJOVrFYFfyx7NqsvxpRJFSodxRD3n5BtytNOgMaFMG+THMnfSMpKab
+         Kp/eW99rJ1txx84Z9TRvY5jepIcPdIBYhSHy2We0O971TKCYzencOjWONfyw0gftFa
+         kA64qhnbovY/3FULTRSq+IcU1OgGoz0oBA67IfdmLIwn+87P4AhFYOkPxMFajyAQ90
+         gEUZvNA9yzK1TjcKgFQ59V1boVyZHRD7amW4GyyWyvJhho/1VFko2WaYhwm5hFkRis
+         M9UEaXExWI4d9QT+6Zi2SD79Q1n+82yz6kXGFHcgmZ9OYgy+7mN1uvUh/lwChMvWno
+         tFzwa7yVoQMwQ==
+Message-ID: <406ec8fe-a407-446b-a368-c68e90f1249a@kernel.org>
+Date:   Sat, 2 Dec 2023 13:06:18 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/5] w1: ds2433: remove unused definition
+Subject: Re: [PATCH v3 3/5] w1: ds2433: introduce a configuration structure
 Content-Language: en-US
 To:     marc.ferland@gmail.com, krzysztof.kozlowski@linaro.org
 Cc:     gregkh@linuxfoundation.org, marc.ferland@sonatest.com,
         jeff.dagenais@gmail.com, rdunlap@infradead.org,
         linux-kernel@vger.kernel.org
 References: <20231130135232.191320-1-marc.ferland@sonatest.com>
- <20231130135232.191320-3-marc.ferland@sonatest.com>
+ <20231130135232.191320-4-marc.ferland@sonatest.com>
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 Autocrypt: addr=krzk@kernel.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -83,7 +83,7 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <20231130135232.191320-3-marc.ferland@sonatest.com>
+In-Reply-To: <20231130135232.191320-4-marc.ferland@sonatest.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -97,26 +97,47 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 30/11/2023 14:52, marc.ferland@gmail.com wrote:
-> From: Marc Ferland <marc.ferland@sonatest.com>
-> 
-> W1_F23_TIME isn't used anywhere, get rid of it.
-> 
-> Signed-off-by: Marc Ferland <marc.ferland@sonatest.com>
-> ---
->  drivers/w1/slaves/w1_ds2433.c | 2 --
->  1 file changed, 2 deletions(-)
-> 
-> diff --git a/drivers/w1/slaves/w1_ds2433.c b/drivers/w1/slaves/w1_ds2433.c
-> index 9f21fd98f799..e18523ef8c45 100644
-> --- a/drivers/w1/slaves/w1_ds2433.c
-> +++ b/drivers/w1/slaves/w1_ds2433.c
-> @@ -30,8 +30,6 @@
->  #define W1_PAGE_BITS		5
->  #define W1_PAGE_MASK		0x1F
+>  static int w1_f23_add_slave(struct w1_slave *sl)
+>  {
+> -#ifdef CONFIG_W1_SLAVE_DS2433_CRC
+>  	struct w1_f23_data *data;
 >  
-> -#define W1_F23_TIME		300
+>  	data = kzalloc(sizeof(struct w1_f23_data), GFP_KERNEL);
+>  	if (!data)
+>  		return -ENOMEM;
+> +
+> +	data->cfg = &config_f23;
+> +
+> +#ifdef CONFIG_W1_SLAVE_DS2433_CRC
+> +	data->memory = kzalloc(data->cfg->eeprom_size, GFP_KERNEL);
+> +	if (!data->memory) {
+> +		kfree(data);
+> +		return -ENOMEM;
+> +	}
+> +#endif /* CONFIG_W1_SLAVE_DS2433_CRC */
+>  	sl->family_data = data;
+>  
+> -#endif	/* CONFIG_W1_SLAVE_DS2433_CRC */
+>  	return 0;
+>  }
+>  
+>  static void w1_f23_remove_slave(struct w1_slave *sl)
+>  {
+> +	struct w1_f23_data *data = sl->family_data;
+>  #ifdef CONFIG_W1_SLAVE_DS2433_CRC
+> -	kfree(sl->family_data);
+> +	kfree(data->memory);
+> +#endif /* CONFIG_W1_SLAVE_DS2433_CRC */
+> +	kfree(data);
+>  	sl->family_data = NULL;
 
-Same for W1_PAGE_COUNT and, so is there a point to keep it?
+This should be before kfree(), to match w1_f23_add_slave(). You can move
+it now, since you store the pointer in data.
+
+> -#endif	/* CONFIG_W1_SLAVE_DS2433_CRC */
+>  }
+>  
+>  static const struct w1_family_ops w1_f23_fops = {
 
 Best regards,
 Krzysztof
