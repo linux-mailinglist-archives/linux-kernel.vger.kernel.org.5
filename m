@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A257A801CAF
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 13:42:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47B69801CAD
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 13:42:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232836AbjLBMmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 07:42:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40386 "EHLO
+        id S232740AbjLBMmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 07:42:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232739AbjLBMmF (ORCPT
+        with ESMTP id S232729AbjLBMmE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 07:42:05 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE8FB9C;
-        Sat,  2 Dec 2023 04:42:08 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-a00f67f120aso426280866b.2;
-        Sat, 02 Dec 2023 04:42:08 -0800 (PST)
+        Sat, 2 Dec 2023 07:42:04 -0500
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E13D312E;
+        Sat,  2 Dec 2023 04:42:09 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-a1a22b7f519so197944866b.2;
+        Sat, 02 Dec 2023 04:42:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701520927; x=1702125727; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1701520928; x=1702125728; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=GT6U/Jm1kE8iHTek1ibUnucOypK2mgUYlFeO1cXQKVs=;
-        b=EO950SZ2s/lqNo/xU/+CSxh6JQGuLv3OZWhMbKH9/Z9Qt96Y5QOzvW6q3uzUB8ThBj
-         +geKpl+k3wROoMXUvf31yD4mEHnsh0hyo7gql7H+GcNmxOoVuec6XAA9HRHn7o86JqhR
-         /XW3NTMX/vYovCC/yYiyn3ruP+hgrb/NmeeZXVHPzdLeshHHexGvOMqMH/YgfRKd5cj/
-         xNMIvdk3ORRhzr0uUxdykehG07Cx2LWfXTwnPEBr+kNhwHRotRJ1LUHqplwcNHgncHXN
-         mDdMJZ33CUAOQe3H2VVrhIkBzxwZCKmsLlEJUhHXAwxGwjyRSh/hvEgb7J80I1+EnFn4
-         cVaQ==
+        bh=Mp5m4S58xFYf/pPupXKRpoAWOKmXYjV8KokdiBbVmdU=;
+        b=crWVOoSYBTQ3ncE0rILuyNQWTTbwIGHuzhfrsnpewN96rxMxM0ZwbK/6oPTzzyfW/g
+         s/4KCAKQFGLT+dhc07wPqu7NIngV7EfRNoCHvqMu1kUX04tiZxw8QlkzT8VKij9OOKDR
+         gWd0jaC0IgeUISU+8nktatVdZDXihJwmgw6XY0zSZoLmuJq+ftpJ3r+WYyiW5rTz7DFR
+         XW0xdj1oZ8Er9E5vL8jijIFTLEJel+5PyvctxrDCLSeKzqnn8YB7b5wDrGUoRrQyvVv8
+         bpEDrB9lp4Ln8DrC8JwmoqEK5G9DxE+4aKWfWGL5TjZRSvNV3BH1BPt7FiloDIHDLqzS
+         lkCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701520927; x=1702125727;
+        d=1e100.net; s=20230601; t=1701520928; x=1702125728;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=GT6U/Jm1kE8iHTek1ibUnucOypK2mgUYlFeO1cXQKVs=;
-        b=JpGJ9CHQfmdNnaLOEQdpBjPW2Wa7b1ivuguBQZ/VGUgI0GDcLdgWONMpsHMjA3/0th
-         iJBvSwqsRLMclveKYbi9jP2xFyBDR+Z04YhQUsmNa2EKx6wpOHnqEalb4lUMAOnklOnm
-         Ha8wbTOwViYSwWnisRI7dnqjKC7vyH+eXFNDS7Eyb6aHzp/BYfr9Z1zKKO9qw0uIHXsM
-         7j0Xxd/bprMxClNFctWr0dJS0LwQGJDGqJeZfE2cORS11YkXquh7PXGuo1uVNwy+lgkk
-         WQtuVxUwYEfADjoWRHuMmhX+/XvAkZbN4vzn5A/gevmVX4NA4WAFUR9wnk7f1fWPP24e
-         zFqA==
-X-Gm-Message-State: AOJu0YxwSkSjr3rOrIQZgWHUl0YQH4plOLH80MeV99p46VdjWrypz9DF
-        TXbWcAh9mO8r8sbG/kV+AQ==
-X-Google-Smtp-Source: AGHT+IFChGLYoqEgdEQJLZDJTHMTrQhqKoKtU5gV9YLdkn2cOl7wagJhu5UWTR7yjlabiTPJeZkH9w==
-X-Received: by 2002:a17:906:24e:b0:a19:a19b:55d9 with SMTP id 14-20020a170906024e00b00a19a19b55d9mr2085815ejl.105.1701520927185;
-        Sat, 02 Dec 2023 04:42:07 -0800 (PST)
+        bh=Mp5m4S58xFYf/pPupXKRpoAWOKmXYjV8KokdiBbVmdU=;
+        b=qrgu1cHbLwp7oH3AQ2JeRiet9qm5hh/lWGfGD29/OL6yKhGvqXLZV8pgqfo3mNXekG
+         NSdBXFouc5GpRQLaJfssLyLh/eMqoiQh0og2cFb6Tl37mdF1Lv3k8kh8GSRfLEsOdz5F
+         QeBXSeN9Ci7K4CG/gB1Uaw8OwikluwQfzK0rDTb+0GCb5fn7c1blb5yaVeiUPH3Miv0Y
+         xgLezHvjjkqdLHyooeh3KJZDgNeYHHTYU1IeC2T7WuFgMEX6Q8ACWLnNyAh+AFnyax53
+         ILyegJKSBdLuRt2P0qd76+VrVOaR9Q/W0HSV8om0WgCc0wF3l2TKDm6wfdy7vb34WCyg
+         f8Wg==
+X-Gm-Message-State: AOJu0YyjkVhLjKL0H9Wl/rwkrwpITu+2B6LpNEL1QVxldtU6Dv0CqyBZ
+        dbfBPyKZL27BQ/CQm97kqg==
+X-Google-Smtp-Source: AGHT+IFCBdPcJSe8T9O23Y89jCIHxaJaMUXndtVnA4rBtUOnvJCImr6VCsKo/XMoFtC8T+88bYhlPQ==
+X-Received: by 2002:a17:906:51d0:b0:a19:a1ba:baba with SMTP id v16-20020a17090651d000b00a19a1bababamr1018772ejk.96.1701520928353;
+        Sat, 02 Dec 2023 04:42:08 -0800 (PST)
 Received: from U4.lan ([2a02:810b:f40:4300:908e:b829:354b:f8ee])
-        by smtp.gmail.com with ESMTPSA id q19-20020a1709060e5300b009a19701e7b5sm3009602eji.96.2023.12.02.04.42.06
+        by smtp.gmail.com with ESMTPSA id q19-20020a1709060e5300b009a19701e7b5sm3009602eji.96.2023.12.02.04.42.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Dec 2023 04:42:06 -0800 (PST)
+        Sat, 02 Dec 2023 04:42:08 -0800 (PST)
 From:   Alex Bee <knaerzche@gmail.com>
 To:     Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -57,9 +57,9 @@ To:     Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>,
 Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
         Alex Bee <knaerzche@gmail.com>
-Subject: [PATCH v2 1/2] ARM: dts: rockchip: Add gmac node for RK3128
-Date:   Sat,  2 Dec 2023 13:41:58 +0100
-Message-ID: <20231202124158.65615-3-knaerzche@gmail.com>
+Subject: [PATCH v2 2/2] ARM: dts: rockchip: Enable gmac for XPI-3128
+Date:   Sat,  2 Dec 2023 13:41:59 +0100
+Message-ID: <20231202124158.65615-4-knaerzche@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231202124158.65615-2-knaerzche@gmail.com>
 References: <20231202124158.65615-2-knaerzche@gmail.com>
@@ -75,53 +75,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RK3128's gmac is based on Synopsys Ethernet GMAC IP core.
-Add it to the devicetree.
+Add the required properties and enable the gmac node for XPI-3128 board.
+
+The minimum reset timing requirements for the phy have been taken from
+DP83848J's datasheet [0]
+
+[0] https://www.ti.com/lit/ds/symlink/dp83848j.pdf
 
 Signed-off-by: Alex Bee <knaerzche@gmail.com>
 ---
- arch/arm/boot/dts/rockchip/rk3128.dtsi | 28 ++++++++++++++++++++++++++
+ .../arm/boot/dts/rockchip/rk3128-xpi-3128.dts | 28 +++++++++++++++++++
  1 file changed, 28 insertions(+)
 
-diff --git a/arch/arm/boot/dts/rockchip/rk3128.dtsi b/arch/arm/boot/dts/rockchip/rk3128.dtsi
-index 4e8b38604ecd..c0c9f0eaffa3 100644
---- a/arch/arm/boot/dts/rockchip/rk3128.dtsi
-+++ b/arch/arm/boot/dts/rockchip/rk3128.dtsi
-@@ -525,6 +525,34 @@ pdma: dma-controller@20078000 {
- 		#dma-cells = <1>;
- 	};
+diff --git a/arch/arm/boot/dts/rockchip/rk3128-xpi-3128.dts b/arch/arm/boot/dts/rockchip/rk3128-xpi-3128.dts
+index 61b9f069c8a2..e979425f11a0 100644
+--- a/arch/arm/boot/dts/rockchip/rk3128-xpi-3128.dts
++++ b/arch/arm/boot/dts/rockchip/rk3128-xpi-3128.dts
+@@ -11,6 +11,7 @@ / {
+ 	compatible = "geniatech,xpi-3128", "rockchip,rk3128";
  
-+	gmac: ethernet@2008c000 {
-+		compatible = "rockchip,rk3128-gmac";
-+		reg = <0x2008c000 0x4000>;
-+		interrupts = <GIC_SPI 56 IRQ_TYPE_LEVEL_HIGH>,
-+			     <GIC_SPI 57 IRQ_TYPE_LEVEL_HIGH>;
-+		interrupt-names = "macirq", "eth_wake_irq";
-+		clocks = <&cru SCLK_MAC>,
-+			 <&cru SCLK_MAC_RX>, <&cru SCLK_MAC_TX>,
-+			 <&cru SCLK_MAC_REF>, <&cru SCLK_MAC_REFOUT>,
-+			 <&cru ACLK_GMAC>, <&cru PCLK_GMAC>;
-+		clock-names = "stmmaceth",
-+			      "mac_clk_rx", "mac_clk_tx",
-+			      "clk_mac_ref", "clk_mac_refout",
-+			      "aclk_mac", "pclk_mac";
-+		resets = <&cru SRST_GMAC>;
-+		reset-names = "stmmaceth";
-+		rockchip,grf = <&grf>;
-+		rx-fifo-depth = <4096>;
-+		tx-fifo-depth = <2048>;
-+		status = "disabled";
+ 	aliases {
++		ethernet0 = &gmac;
+ 		gpio0 = &gpio0;
+ 		gpio1 = &gpio1;
+ 		gpio2 = &gpio2;
+@@ -255,6 +256,18 @@ &emmc {
+ 	status = "okay";
+ };
+ 
++&gmac {
++	clock_in_out = "output";
++	phy-supply = <&vcc_lan>;
++	phy-mode = "rmii";
++	phy-handle = <&phy0>;
++	assigned-clocks = <&cru SCLK_MAC_SRC>;
++	assigned-clock-rates= <50000000>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&rmii_pins>;
++	status = "okay";
++};
 +
-+		mdio: mdio {
-+			compatible = "snps,dwmac-mdio";
-+			#address-cells = <0x1>;
-+			#size-cells = <0x0>;
-+		};
+ &gpio0 {
+ 	gpio-line-names = /* GPIO0 A0-A7 */
+ 			  "", "", "HEADER_5", "HEADER_3",
+@@ -315,6 +328,21 @@ &gpio3 {
+ 			  "", "", "", "";
+ };
+ 
++&mdio {
++	phy0: ethernet-phy@1 {
++		compatible = "ethernet-phy-ieee802.3-c22";
++		reg = <1>;
++		max-speed = <100>;
++		/* T2.2.4 min. 1 us */
++		reset-assert-us = <10>;
++		/* T2.2.1 + T2.2.2 + T2.2.3 min. 6.05 us */
++		reset-deassert-us = <20>;
++		reset-gpios = <&gpio2 RK_PD0 GPIO_ACTIVE_LOW>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&dp83848c_rst>;
 +	};
++};
 +
- 	pinctrl: pinctrl {
- 		compatible = "rockchip,rk3128-pinctrl";
- 		rockchip,grf = <&grf>;
+ &pinctrl {
+ 	dp83848c {
+ 		dp83848c_rst: dp83848c-rst {
 -- 
 2.43.0
 
