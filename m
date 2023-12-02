@@ -2,172 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 93194801CB2
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 13:49:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61139801CB4
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 13:52:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232655AbjLBMtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 07:49:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56236 "EHLO
+        id S232138AbjLBMv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 07:51:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjLBMtJ (ORCPT
+        with ESMTP id S229451AbjLBMvy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 07:49:09 -0500
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 270BFF0
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 04:49:15 -0800 (PST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 61B7740E0195;
-        Sat,  2 Dec 2023 12:49:13 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id ZyhtD1Jw_lpt; Sat,  2 Dec 2023 12:49:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1701521350; bh=LooIIPRZ7pl7LhT6BDhGK//INYqvbPWGXvxL+VLbTw0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Eozt7UoCUlSupnilVrnFqo13FyWTvphQZSFJT9cpFkwx6TWCdC9EcNUBLxzsR6IkC
-         ExNYiAhtbqGATxWS61wia/gErr5EcFZaHbGv+hf0mbwqm4dlU567rif+QoKJd+tQxF
-         tgQa6Q+gwmGdwcTesC6R1Y97bRibF3ZV7ZQLl63WXxDb63vWMvdG/9uSF2twR4Z+rw
-         C97QSf18GbqZLEOM9K5BDIvTpZhdyyZMzPU3bBE/X8/19V1HIodq8jSG3z/vUTRVbG
-         mfH3wv2jgZxZFlLLX52IRRAUXGwCGDWld4DOGmkwhfJAZd/NTyq/DsH89RrBE0Ae4E
-         1bvRx/9NDazgUkgXeCn69sb7O09I1fIF4o3y6zalj/eJiC8YR9aNbooK7CtAtOxHkP
-         wvxagN4av8CC96wlq0Q07t8ZeW05P2DmLxEiRMdXuluPiYuYHxQV8Atdv1njP2pQ4h
-         8OECdAN3TEBNvhinb92VDR/8nlqQeqrX9OvoWHeybdLk2mhpj0j/aqh+oZ86EmsMDq
-         dLD9HReT0O3pftJ5suPhZOOBzR+1D13m73EeD6jaxsvZelqlXuKT9JVij7tCpinxHp
-         s7lINQbGG6+AAenXvmkLQHhQI5oWRO67VC1a7E7PJuZ/XOqpzBU4QVwNhdXJ0pQjNj
-         uYtNAm68atoVsSRYYRQUcA4M=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7D53940E0030;
-        Sat,  2 Dec 2023 12:49:06 +0000 (UTC)
-Date:   Sat, 2 Dec 2023 13:49:01 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Tom Lendacky <thomas.lendacky@amd.com>,
-        Brian Gerst <brgerst@gmail.com>
-Cc:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH] x86/CPU/AMD: Add X86_FEATURE_ZEN1
-Message-ID: <20231202124901.GBZWsnvQct4PxsUsXK@fat_crate.local>
-References: <20231120104152.13740-1-bp@alien8.de>
- <20231120104152.13740-2-bp@alien8.de>
- <dc3835e3-0731-4230-bbb9-336bbe3d042b@amd.com>
- <20231130171316.GLZWjCrHGHl+VVp724@fat_crate.local>
- <16400d3d-8264-4f3f-96ca-168064944462@amd.com>
- <20231130185048.GMZWjZiIjhpjrv4rPf@fat_crate.local>
+        Sat, 2 Dec 2023 07:51:54 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3417F0;
+        Sat,  2 Dec 2023 04:52:00 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-54c1cd8d239so3237031a12.0;
+        Sat, 02 Dec 2023 04:52:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701521519; x=1702126319; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=alZsdcAcMlLtVRnOYds6Kv0dEWGog0rlTIYGT7GnEUw=;
+        b=ifEyExez0eL3Iu6M+a36fI8LwjpYvZ7wqFXJIOuKc2qALeFb/uhhI7x/2EkocBYiLH
+         6HqEd6QPC3kJHlN+JkggUrLRjRNSiGSSrRWzsN5TCXd0VO7vri/Irc6L/ID3SvyQZjN4
+         RmcUnZ9A01yqythvMtJGfIM/ZMTENzV0E6zYe8yJY1LOuhvK6K7EFa4zqAZ0gBSTNeve
+         HQzgDFOpfzB7SLzA1OvuioXaFBpKrxfPExO4B1QTGXz975G95f9DxDxhxqup8w+PJvig
+         izJ5ccWRhdI9nfieK21v/AxCroCCBXQtxgOF0uLavTFQhHZZG7cEGqitkDThai32GVT6
+         yizA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701521519; x=1702126319;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=alZsdcAcMlLtVRnOYds6Kv0dEWGog0rlTIYGT7GnEUw=;
+        b=K86zv2UcmwTkZ2JaZznztRESeu0PVw+/hL1lGUeGmGk8zx61z3i5MGf8rlUtkgkq0B
+         nP2s3azK/n/qJz5ZrbCvPvr7WUGgF0eqRcDd87PxjN4KZ5IXpuNUiu/jZcdmi+fAZk9r
+         WpD7Udh9A9wgLBAs+OrQEZu2AWq3F0dIb/dGDcqMuj+IHk7Lv3fUAyVxFI9zQti9kDw/
+         2p/uehwIIXND/OAo0KYggMiKgMJrJpT+Bj2uBQX1uLDbxncgqoWPAcUuL2HWp4s9jQUl
+         YKAVYPDwdwv0Btsdk+OhrFeQJne7waejNt2e1DXGuGcFHg/STBWoCZYZJo4jEiNiCVt9
+         ADAA==
+X-Gm-Message-State: AOJu0YzcyNunr/M4oh03iTakPlJFyNo0j2OFsyaupwL243/JfTP4aGmM
+        /uoAMGepGArellhwBd+PiQ==
+X-Google-Smtp-Source: AGHT+IHtz8+Zp/uL1trpgUWl4gzjVY8w4Xh7BBppb7LpwHM+Q+E5jb/aRHUwTg4W9siZYL2ZFwznIQ==
+X-Received: by 2002:a17:906:51d9:b0:a1a:76cd:697c with SMTP id v25-20020a17090651d900b00a1a76cd697cmr219758ejk.100.1701521519205;
+        Sat, 02 Dec 2023 04:51:59 -0800 (PST)
+Received: from U4.lan ([2a02:810b:f40:4300:908e:b829:354b:f8ee])
+        by smtp.gmail.com with ESMTPSA id g5-20020a170906198500b009c5c5c2c5a4sm3018161ejd.219.2023.12.02.04.51.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 02 Dec 2023 04:51:58 -0800 (PST)
+From:   Alex Bee <knaerzche@gmail.com>
+To:     Heiko Stuebner <heiko@sntech.de>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-pm@vger.kernel.org,
+        Alex Bee <knaerzche@gmail.com>
+Subject: [PATCH v2 0/5] Add power-controller and gpu for RK3128
+Date:   Sat,  2 Dec 2023 13:51:39 +0100
+Message-ID: <20231202125144.66052-1-knaerzche@gmail.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231130185048.GMZWjZiIjhpjrv4rPf@fat_crate.local>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Borislav Petkov (AMD)" <bp@alien8.de>
-Date: Sat, 2 Dec 2023 12:50:23 +0100
+The first patch in this series fixes the pm-domain driver and adds
+power-domains which are currently missing. This touches the ABI which is
+not and was never used until now. Not all of them are used yet, but when
+the power-controller is added to the DT in patch 2 the ABI should not
+be changed again.
+Patch 3-5 are adding the the gpu compatible to dt-bindings, adding the gpu
+node and the respective operating points to SoC DT and finally enabling it
+for XPI-3128 board.
 
-Add a synthetic feature flag specifically for first generation Zen
-machines. There's need to have a generic flag for all Zen generations so
-make X86_FEATURE_ZEN be that flag.
+Note: DT patches are based on maintainer's repo.
 
-Fixes: 30fa92832f40 ("x86/CPU/AMD: Add ZenX generations flags")
-Suggested-by: Brian Gerst <brgerst@gmail.com>
-Suggested-by: Tom Lendacky <thomas.lendacky@amd.com>
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Link: https://lore.kernel.org/r/dc3835e3-0731-4230-bbb9-336bbe3d042b@amd.com
----
- arch/x86/include/asm/cpufeatures.h       | 3 ++-
- arch/x86/kernel/cpu/amd.c                | 7 ++++---
- tools/arch/x86/include/asm/cpufeatures.h | 2 +-
- 3 files changed, 7 insertions(+), 5 deletions(-)
+Alex Bee (5):
+  pmdomain: rockchip: Add missing powerdomains for RK3128
+  ARM: dts: rockchip: Add power-controller for RK3128
+  dt-bindings: gpu: mali-utgard: Add Rockchip RK3128 compatible
+  ARM: dts: rockchip: Add GPU node for RK3128
+  ARM: dts: rockchip: Enable GPU for XPI-3128
 
-diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-index 149cc5d5c2ae..632c26cdeeda 100644
---- a/arch/x86/include/asm/cpufeatures.h
-+++ b/arch/x86/include/asm/cpufeatures.h
-@@ -218,7 +218,7 @@
- #define X86_FEATURE_IBRS		( 7*32+25) /* Indirect Branch Restricted Speculation */
- #define X86_FEATURE_IBPB		( 7*32+26) /* Indirect Branch Prediction Barrier */
- #define X86_FEATURE_STIBP		( 7*32+27) /* Single Thread Indirect Branch Predictors */
--#define X86_FEATURE_ZEN			( 7*32+28) /* "" CPU based on Zen microarchitecture */
-+#define X86_FEATURE_ZEN			( 7*32+28) /* "" Generic flag for all Zen and newer */
- #define X86_FEATURE_L1TF_PTEINV		( 7*32+29) /* "" L1TF workaround PTE inversion */
- #define X86_FEATURE_IBRS_ENHANCED	( 7*32+30) /* Enhanced IBRS */
- #define X86_FEATURE_MSR_IA32_FEAT_CTL	( 7*32+31) /* "" MSR IA32_FEAT_CTL configured */
-@@ -315,6 +315,7 @@
- #define X86_FEATURE_ZEN2		(11*32+28) /* "" CPU based on Zen2 microarchitecture */
- #define X86_FEATURE_ZEN3		(11*32+29) /* "" CPU based on Zen3 microarchitecture */
- #define X86_FEATURE_ZEN4		(11*32+30) /* "" CPU based on Zen4 microarchitecture */
-+#define X86_FEATURE_ZEN1		(11*32+31) /* "" CPU based on Zen1 microarchitecture */
- 
- /* Intel-defined CPU features, CPUID level 0x00000007:1 (EAX), word 12 */
- #define X86_FEATURE_AVX_VNNI		(12*32+ 4) /* AVX VNNI instructions */
-diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
-index 9a2e0ec8d0f9..68669158faa4 100644
---- a/arch/x86/kernel/cpu/amd.c
-+++ b/arch/x86/kernel/cpu/amd.c
-@@ -542,7 +542,7 @@ static void bsp_init_amd(struct cpuinfo_x86 *c)
- 		switch (c->x86_model) {
- 		case 0x00 ... 0x2f:
- 		case 0x50 ... 0x5f:
--			setup_force_cpu_cap(X86_FEATURE_ZEN);
-+			setup_force_cpu_cap(X86_FEATURE_ZEN1);
- 			break;
- 		case 0x30 ... 0x4f:
- 		case 0x60 ... 0x7f:
-@@ -948,6 +948,7 @@ void init_spectral_chicken(struct cpuinfo_x86 *c)
- 
- static void init_amd_zen_common(void)
- {
-+	setup_force_cpu_cap(X86_FEATURE_ZEN);
- #ifdef CONFIG_NUMA
- 	node_reclaim_distance = 32;
- #endif
-@@ -1075,7 +1076,7 @@ static void init_amd(struct cpuinfo_x86 *c)
- 	case 0x16: init_amd_jg(c); break;
- 	}
- 
--	if (boot_cpu_has(X86_FEATURE_ZEN))
-+	if (boot_cpu_has(X86_FEATURE_ZEN1))
- 		init_amd_zen(c);
- 	else if (boot_cpu_has(X86_FEATURE_ZEN2))
- 		init_amd_zen2(c);
-@@ -1143,7 +1144,7 @@ static void init_amd(struct cpuinfo_x86 *c)
- 	 * Counter May Be Inaccurate".
- 	 */
- 	if (cpu_has(c, X86_FEATURE_IRPERF) &&
--	    (boot_cpu_has(X86_FEATURE_ZEN) && c->x86_model > 0x2f))
-+	    (boot_cpu_has(X86_FEATURE_ZEN1) && c->x86_model > 0x2f))
- 		msr_set_bit(MSR_K7_HWCR, MSR_K7_HWCR_IRPERF_EN_BIT);
- 
- 	check_null_seg_clears_base(c);
-diff --git a/tools/arch/x86/include/asm/cpufeatures.h b/tools/arch/x86/include/asm/cpufeatures.h
-index 4af140cf5719..f4542d2718f4 100644
---- a/tools/arch/x86/include/asm/cpufeatures.h
-+++ b/tools/arch/x86/include/asm/cpufeatures.h
-@@ -218,7 +218,7 @@
- #define X86_FEATURE_IBRS		( 7*32+25) /* Indirect Branch Restricted Speculation */
- #define X86_FEATURE_IBPB		( 7*32+26) /* Indirect Branch Prediction Barrier */
- #define X86_FEATURE_STIBP		( 7*32+27) /* Single Thread Indirect Branch Predictors */
--#define X86_FEATURE_ZEN			(7*32+28) /* "" CPU based on Zen microarchitecture */
-+#define X86_FEATURE_ZEN			( 7*32+28) /* "" Generic flag for all Zen and newer */
- #define X86_FEATURE_L1TF_PTEINV		( 7*32+29) /* "" L1TF workaround PTE inversion */
- #define X86_FEATURE_IBRS_ENHANCED	( 7*32+30) /* Enhanced IBRS */
- #define X86_FEATURE_MSR_IA32_FEAT_CTL	( 7*32+31) /* "" MSR IA32_FEAT_CTL configured */
+ .../bindings/gpu/arm,mali-utgard.yaml         |   1 +
+ .../arm/boot/dts/rockchip/rk3128-xpi-3128.dts |   5 +
+ arch/arm/boot/dts/rockchip/rk3128.dtsi        | 145 ++++++++++++++++++
+ drivers/pmdomain/rockchip/pm-domains.c        |  13 +-
+ include/dt-bindings/power/rk3128-power.h      |   3 +
+ 5 files changed, 162 insertions(+), 5 deletions(-)
+
+
+base-commit: fd610e604837936440ef7c64ab6998b004631647
 -- 
-2.42.0.rc0.25.ga82fb66fed25
+2.43.0
 
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
