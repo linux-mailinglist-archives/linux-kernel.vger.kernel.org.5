@@ -2,222 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C453801D39
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 15:16:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB7A7801D60
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 15:46:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232969AbjLBOPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 09:15:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35716 "EHLO
+        id S232921AbjLBOhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 09:37:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjLBOPi (ORCPT
+        with ESMTP id S229451AbjLBOg7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 09:15:38 -0500
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CD8711C;
-        Sat,  2 Dec 2023 06:15:44 -0800 (PST)
-Received: by mail-qk1-x733.google.com with SMTP id af79cd13be357-77dc733b25cso181011485a.1;
-        Sat, 02 Dec 2023 06:15:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701526543; x=1702131343; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cHjT/29o2cHv+uPSUDloG/9K5z+4mwtqcKQnCHqcHPk=;
-        b=XixYoi6gWsVTI/OvkDXmzWnmpY0gqzoB5KNuJV9kiDvtTEuJHgp/FRlGCAuR/aj0h2
-         AL5pIF4AFVP3A58/hheKs0LCmimp6wUV6Hu1hMpFcpzq47k6SQGZrow6ZTNv3HlEsW+6
-         TtZIE/qt13UbV0X6BIhD9zQ+r4BFvUHWj7sNCVKyJIljmYyXmaMA4zGiXFU7sB395jUa
-         cTUvMSa4Gjgw4nc75EwNsJaWKOG4Das3FHdE8R4h0R/d/4NmBd9oHIscM4zCcMDE/sL2
-         bT06kZvqNtRMmOC02oXQvXfgUC+Kxt0u8a2fwwh1idNUUlc6bkgY5p5iBYBmGnsEy8M5
-         kvIw==
+        Sat, 2 Dec 2023 09:36:59 -0500
+Received: from mail-oa1-f70.google.com (mail-oa1-f70.google.com [209.85.160.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F20D129
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 06:37:05 -0800 (PST)
+Received: by mail-oa1-f70.google.com with SMTP id 586e51a60fabf-1fafbf42404so2275247fac.1
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Dec 2023 06:37:05 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701526543; x=1702131343;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=cHjT/29o2cHv+uPSUDloG/9K5z+4mwtqcKQnCHqcHPk=;
-        b=cBvm2KIqrTFjx0Pq3m7EBk98PEmOp+ByOr1sJbLbzZbkpaHvnSGAaaexJEaiwxhZvr
-         GgDcRCgU8MucLctsRXo2jk6PjpQ1UPPgvZqulm2uXKJn5ifsrLjzB+wavmCG91K+QUF4
-         ldrDttvfUAfLi++7hsZWcoYeYYTWV3cL6Z98K9EwCVNH+nlv4eP2RRjtIUuGj1Rm1865
-         6Hu1X6UKYbNPMWTJPqjEqmOiXyHhVC5hXyLGgK/N7DLHi+F1JRZBqlhgBZ0H57h3kKly
-         oBs81mp7maycHvvOyjOEHpPsKQbQqtMdmGoFTxoafidjX299oMZDLDinsCUWDhR8a/Es
-         QE+w==
-X-Gm-Message-State: AOJu0YxbJADUsIyeYh3IlK5D8kytigttcfLylkSj3RMzcg6w+bEhNDDI
-        ycvklnBfuMMT2m/6pgEAn6s=
-X-Google-Smtp-Source: AGHT+IFMroJHDqq6Ir9gZVJ3R728hRmkVYJHVfNaHzVnIzw/nmWz3p78L6RXN42OK1k/cU3B+r7M9w==
-X-Received: by 2002:ae9:f812:0:b0:77e:fba3:4f32 with SMTP id x18-20020ae9f812000000b0077efba34f32mr1152322qkh.136.1701526543353;
-        Sat, 02 Dec 2023 06:15:43 -0800 (PST)
-Received: from localhost (114.66.194.35.bc.googleusercontent.com. [35.194.66.114])
-        by smtp.gmail.com with ESMTPSA id br30-20020a05620a461e00b0077d742fb27esm2452534qkb.49.2023.12.02.06.15.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Dec 2023 06:15:42 -0800 (PST)
-Date:   Sat, 02 Dec 2023 09:15:42 -0500
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To:     Jesper Dangaard Brouer <hawk@kernel.org>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        "Song, Yoong Siang" <yoong.siang.song@intel.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Bjorn Topel <bjorn@kernel.org>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Andre Fredette <afredette@redhat.com>
-Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "xdp-hints@xdp-project.net" <xdp-hints@xdp-project.net>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>
-Message-ID: <656b3c0ebb103_1a6a2c2947d@willemb.c.googlers.com.notmuch>
-In-Reply-To: <179a4581-f7df-4eb1-ab67-8d65f856a2fe@kernel.org>
-References: <20231201062421.1074768-1-yoong.siang.song@intel.com>
- <d4f99931-442c-4cd7-b3cf-80d8681a2986@kernel.org>
- <PH0PR11MB58306C2E50009A6E22F9DAD3D881A@PH0PR11MB5830.namprd11.prod.outlook.com>
- <6569f71bad00d_138af5294d@willemb.c.googlers.com.notmuch>
- <179a4581-f7df-4eb1-ab67-8d65f856a2fe@kernel.org>
-Subject: Re: [PATCH bpf-next v2 0/3] xsk: TX metadata txtime support
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1701527824; x=1702132624;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pZDXcJSRbGQRwJZ0YPEk/jTcyn2Fi5g3nq57TZSWdW4=;
+        b=O/bnCSS+4f03UHq9G9xPGEX7EReWz46TRF6X8snV1dbWoqlFJMKI3pb+4jPgax9oqm
+         6wHc7jBOB5NB+z2E7/OL8a2Oa/4SOe4vpXsiat8FmYRPivG5dDGnQLolkPhXdK1g2SXh
+         QbE8GYT/uedVogyvjD3jmWyffqNG9mdzFbRbHkQ/WRAR+KxUbY0IOQx1efEZciRyr9Jb
+         EgRqDmFbwn4l3e7sSF3zMC9S6ke8AWolJ/EU1vExDAXZx44v72igNL6EQBOHfV/dFAEQ
+         Ji1OAvtHPKEOIYHSVziYrpC6s1hjuN5XuU+Xi1HGuNnDB2whnXaw0dQJuScJct5gOBRH
+         THDg==
+X-Gm-Message-State: AOJu0YxmRrI8HZvGbd/rnRGpeWwxRdQdQWvM0Ojjbl630pJHP2sz88Xg
+        yMe6JPwkq71I7gbq69mbcE58TAOXfS5RxzGqfM6uyT0ETcTC
+X-Google-Smtp-Source: AGHT+IHAgrcB4MuGVebZg+rKkpA7idxRHl8tpHGU/ocjnCWhILfV9rvCOY+aW1umuCDN7wG3NRuAROrEa340znu/sMW5+ztH9V4I
+MIME-Version: 1.0
+X-Received: by 2002:a05:6870:d60e:b0:1fa:fa54:1a6a with SMTP id
+ a14-20020a056870d60e00b001fafa541a6amr702349oaq.6.1701527824494; Sat, 02 Dec
+ 2023 06:37:04 -0800 (PST)
+Date:   Sat, 02 Dec 2023 06:37:04 -0800
+In-Reply-To: <b4bc6554-6870-43fe-87df-1a2f947e6408@siddh.me>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000008df3d7060b87d156@google.com>
+Subject: Re: [syzbot] [net?] [nfc?] KASAN: slab-use-after-free Read in nfc_alloc_send_skb
+From:   syzbot <syzbot+bbe84a4010eeea00982d@syzkaller.appspotmail.com>
+To:     code@siddh.me, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jesper Dangaard Brouer wrote:
-> 
-> 
-> On 12/1/23 16:09, Willem de Bruijn wrote:
-> > Song, Yoong Siang wrote:
-> >> On Friday, December 1, 2023 6:46 PM, Jesper Dangaard Brouer <hawk@kernel.org> wrote:
-> >>> On 12/1/23 07:24, Song Yoong Siang wrote:
-> >>>> This series expands XDP TX metadata framework to include ETF HW offload.
-> >>>>
-> >>>> Changes since v1:
-> >>>> - rename Time-Based Scheduling (TBS) to Earliest TxTime First (ETF)
-> >>>> - rename launch-time to txtime
-> >>>>
-> >>>
-> >>> I strongly disagree with this renaming (sorry to disagree with Willem).
-> >>>
-> >>> The i210 and i225 chips call this LaunchTime in their programmers
-> >>> datasheets, and even in the driver code[1].
-> >>>
-> >>> Using this "txtime" name in the code is also confusing, because how can
-> >>> people reading the code know the difference between:
-> >>>   - tmo_request_timestamp and tmo_request_txtime
-> >>>
-> >>
-> >> Hi Jesper and Willem,
-> >>
-> >> How about using "launch_time" for the flag/variable and
-> >> "Earliest TxTime First" for the description/comments?
-> > 
-> 
-> I don't follow why you are calling the feature:
->   - "Earliest TxTime First" (ETF).
->   - AFAIK this just reference an qdisc name (that most don't know exists)
-> 
-> 
-> > I don't particularly care which term we use, as long as we're
-> > consistent. Especially, don't keep introducing new synonyms.
-> > 
-> > The fact that one happens to be one vendor's marketing term does not
-> > make it preferable, IMHO. On the contrary.
-> >
-> 
-> These kind of hardware features are defined as part of Time Sensitive
-> Networking (TSN).
-> I believe these TSN features are defined as part of IEEE 802.1Qbv (2015)
-> and according to Wikipedia[2] incorporated into IEEE 802.1Q.
-> 
-> [2] https://en.wikipedia.org/wiki/Time-Sensitive_Networking
-> 
-> 
-> > SO_TXTIME is in the ABI, and EDT has been used publicly in kernel
-> > patches and conference talks, e.g., Van Jacobson's Netdev 0x12
-> > keynote. Those are vendor agnostic commonly used terms.
-> > 
-> 
-> I agree that EDT (Earliest Departure Time) have become a thing and term
-> in our community.
-> We could associate this feature with this.
-> I do fear what hardware behavior will be it if I e.g. ask it to send a
-> packet 2 sec in the future on i225 which max support 1 sec.
-> Will hardware send it at 1 sec?
-> Because then I'm violating the *Earliest* Departure Time.
+Hello,
 
-That should definitely not happen. At least not on a device that
-implements EDT semantics.
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+KASAN: slab-use-after-free Read in nfc_alloc_send_skb
 
-This relates to Jakub's question in the previous thread on whether
-this mechanism allows out-of-order transmission or maintains FIFO
-behavior. That really is device specific.
+llcp: nfc_llcp_send_ui_frame: Could not allocate PDU (error=-6)
+==================================================================
+BUG: KASAN: slab-use-after-free in nfc_alloc_send_skb+0x149/0x1c0 net/nfc/core.c:722
+Read of size 4 at addr ffff8880213d0548 by task syz-executor.0/5687
 
-Older devices only support this for low rate (PTP) and with a small
-fixed number of outstanding requests. For pacing offload, devices need
-to support up to linerate and out-of-order.
+CPU: 0 PID: 5687 Comm: syz-executor.0 Not tainted 6.7.0-rc3-syzkaller-00686-g7453d7a633d0 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
+ print_address_description mm/kasan/report.c:364 [inline]
+ print_report+0x163/0x540 mm/kasan/report.c:475
+ kasan_report+0x142/0x170 mm/kasan/report.c:588
+ nfc_alloc_send_skb+0x149/0x1c0 net/nfc/core.c:722
+ nfc_llcp_send_ui_frame+0x2ac/0x670 net/nfc/llcp_commands.c:766
+ sock_sendmsg_nosec net/socket.c:730 [inline]
+ __sock_sendmsg net/socket.c:745 [inline]
+ ____sys_sendmsg+0x592/0x890 net/socket.c:2584
+ ___sys_sendmsg net/socket.c:2638 [inline]
+ __sys_sendmmsg+0x3b2/0x730 net/socket.c:2724
+ __do_sys_sendmmsg net/socket.c:2753 [inline]
+ __se_sys_sendmmsg net/socket.c:2750 [inline]
+ __x64_sys_sendmmsg+0xa0/0xb0 net/socket.c:2750
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x7fa12c27cae9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fa12d00b0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000133
+RAX: ffffffffffffffda RBX: 00007fa12c39bf80 RCX: 00007fa12c27cae9
+RDX: 0000000000000001 RSI: 00000000200013c0 RDI: 0000000000000004
+RBP: 00007fa12c2c847a R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000000b R14: 00007fa12c39bf80 R15: 00007ffd319ae358
+ </TASK>
 
-I don't think we want to enforce either in software, as the hardware
-is already out there. But it would be good if drivers can somehow
-label these capabilities. Including programmable horizon.
+Allocated by task 5687:
+ kasan_save_stack mm/kasan/common.c:45 [inline]
+ kasan_set_track+0x4f/0x70 mm/kasan/common.c:52
+ ____kasan_kmalloc mm/kasan/common.c:374 [inline]
+ __kasan_kmalloc+0x98/0xb0 mm/kasan/common.c:383
+ kmalloc include/linux/slab.h:600 [inline]
+ kzalloc include/linux/slab.h:721 [inline]
+ nfc_allocate_device+0x12f/0x520 net/nfc/core.c:1065
+ nci_allocate_device+0x1e2/0x360 net/nfc/nci/core.c:1179
+ virtual_ncidev_open+0x75/0x1b0 drivers/nfc/virtual_ncidev.c:141
+ misc_open+0x30b/0x380 drivers/char/misc.c:165
+ chrdev_open+0x5ab/0x630 fs/char_dev.c:414
+ do_dentry_open+0x8fd/0x1590 fs/open.c:948
+ do_open fs/namei.c:3622 [inline]
+ path_openat+0x2845/0x3280 fs/namei.c:3779
+ do_filp_open+0x234/0x490 fs/namei.c:3809
+ do_sys_openat2+0x13e/0x1d0 fs/open.c:1440
+ do_sys_open fs/open.c:1455 [inline]
+ __do_sys_openat fs/open.c:1471 [inline]
+ __se_sys_openat fs/open.c:1466 [inline]
+ __x64_sys_openat+0x247/0x290 fs/open.c:1466
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
 
-It is up to the qdisc to ensure that it does not pass packets to the
-device beyond its horizon.
+Freed by task 5686:
+ kasan_save_stack mm/kasan/common.c:45 [inline]
+ kasan_set_track+0x4f/0x70 mm/kasan/common.c:52
+ kasan_save_free_info+0x28/0x40 mm/kasan/generic.c:522
+ ____kasan_slab_free+0xd6/0x120 mm/kasan/common.c:236
+ kasan_slab_free include/linux/kasan.h:164 [inline]
+ slab_free_hook mm/slub.c:1800 [inline]
+ slab_free_freelist_hook mm/slub.c:1826 [inline]
+ slab_free mm/slub.c:3809 [inline]
+ __kmem_cache_free+0x263/0x3a0 mm/slub.c:3822
+ device_release+0x95/0x1c0
+ kobject_cleanup lib/kobject.c:682 [inline]
+ kobject_release lib/kobject.c:716 [inline]
+ kref_put include/linux/kref.h:65 [inline]
+ kobject_put+0x1ee/0x430 lib/kobject.c:733
+ nfc_free_device include/net/nfc/nfc.h:213 [inline]
+ nci_free_device+0x38/0x50 net/nfc/nci/core.c:1209
+ virtual_ncidev_close+0x70/0x90 drivers/nfc/virtual_ncidev.c:169
+ __fput+0x3cc/0xa10 fs/file_table.c:394
+ __do_sys_close fs/open.c:1590 [inline]
+ __se_sys_close+0x15f/0x220 fs/open.c:1575
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
 
-ETF and FQ already have a concept of horizon. And a way to queue
-errors for packets out of bound (SO_EE_CODE_TXTIME_..).
+Last potentially related work creation:
+ kasan_save_stack+0x3f/0x60 mm/kasan/common.c:45
+ __kasan_record_aux_stack+0xad/0xc0 mm/kasan/generic.c:492
+ __call_rcu_common kernel/rcu/tree.c:2681 [inline]
+ call_rcu+0x167/0xa70 kernel/rcu/tree.c:2795
+ netlink_release+0x162a/0x1b00 net/netlink/af_netlink.c:831
+ __sock_release net/socket.c:659 [inline]
+ sock_close+0xb8/0x230 net/socket.c:1419
+ __fput+0x3cc/0xa10 fs/file_table.c:394
+ task_work_run+0x24a/0x300 kernel/task_work.c:180
+ exit_task_work include/linux/task_work.h:38 [inline]
+ do_exit+0xa34/0x2750 kernel/exit.c:871
+ do_group_exit+0x206/0x2c0 kernel/exit.c:1021
+ __do_sys_exit_group kernel/exit.c:1032 [inline]
+ __se_sys_exit_group kernel/exit.c:1030 [inline]
+ __x64_sys_exit_group+0x3f/0x40 kernel/exit.c:1030
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
 
-> 
-> > But as long as Launch Time is not an Intel only trademark, fine to
-> > select that.
-> 
-> The IEEE 802.1Qbv is sometimes called Time-Aware Shaper (TAS), but I
-> don't like to for us to name this after this.  This features is simply
-> taking advantage of exposing one of the hardware building blocks
-> (controlling/setting packet "launch time") that can be used for
-> implementing a TAS.
-> 
-> I like the name "launch time" because it doesn't get easily confused
-> with other timestamps, and intuitively describes packet will be send at
-> a specific time (likely in future).
-> 
-> --Jesper
+The buggy address belongs to the object at ffff8880213d0000
+ which belongs to the cache kmalloc-2k of size 2048
+The buggy address is located 1352 bytes inside of
+ freed 2048-byte region [ffff8880213d0000, ffff8880213d0800)
 
-Understood on your point that txtime and tx_timestamp are too similar.
-As said, I don't care strongly. Launch time sounds fine to me. Others
-can speak up if they disagree.
+The buggy address belongs to the physical page:
+page:ffffea000084f400 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x213d0
+head:ffffea000084f400 order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+anon flags: 0xfff00000000840(slab|head|node=0|zone=1|lastcpupid=0x7ff)
+page_type: 0xffffffff()
+raw: 00fff00000000840 ffff888012c42000 0000000000000000 dead000000000001
+raw: 0000000000000000 0000000000080008 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 3, migratetype Unmovable, gfp_mask 0x1d20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC|__GFP_HARDWALL), pid 4501, tgid 4501 (udevd), ts 68833145467, free_ts 66934106075
+ set_page_owner include/linux/page_owner.h:31 [inline]
+ post_alloc_hook+0x1e6/0x210 mm/page_alloc.c:1544
+ prep_new_page mm/page_alloc.c:1551 [inline]
+ get_page_from_freelist+0x339a/0x3530 mm/page_alloc.c:3319
+ __alloc_pages+0x255/0x670 mm/page_alloc.c:4575
+ alloc_pages_mpol+0x3de/0x640 mm/mempolicy.c:2133
+ alloc_slab_page+0x6a/0x160 mm/slub.c:1870
+ allocate_slab mm/slub.c:2017 [inline]
+ new_slab+0x84/0x2f0 mm/slub.c:2070
+ ___slab_alloc+0xc85/0x1310 mm/slub.c:3223
+ __slab_alloc mm/slub.c:3322 [inline]
+ __slab_alloc_node mm/slub.c:3375 [inline]
+ slab_alloc_node mm/slub.c:3468 [inline]
+ __kmem_cache_alloc_node+0x21d/0x300 mm/slub.c:3517
+ __do_kmalloc_node mm/slab_common.c:1006 [inline]
+ __kmalloc+0xa8/0x230 mm/slab_common.c:1020
+ kmalloc include/linux/slab.h:604 [inline]
+ sk_prot_alloc+0xe0/0x210 net/core/sock.c:2075
+ sk_alloc+0x38/0x370 net/core/sock.c:2128
+ __netlink_create+0x6b/0x2c0 net/netlink/af_netlink.c:647
+ netlink_create+0x3d4/0x590 net/netlink/af_netlink.c:712
+ __sock_create+0x48c/0x910 net/socket.c:1569
+ sock_create net/socket.c:1620 [inline]
+ __sys_socket_create net/socket.c:1657 [inline]
+ __sys_socket+0x14f/0x3b0 net/socket.c:1704
+ __do_sys_socket net/socket.c:1718 [inline]
+ __se_sys_socket net/socket.c:1716 [inline]
+ __x64_sys_socket+0x7a/0x90 net/socket.c:1716
+page last free stack trace:
+ reset_page_owner include/linux/page_owner.h:24 [inline]
+ free_pages_prepare mm/page_alloc.c:1144 [inline]
+ free_unref_page_prepare+0x958/0xa70 mm/page_alloc.c:2354
+ free_unref_page+0x37/0x3f0 mm/page_alloc.c:2494
+ discard_slab mm/slub.c:2116 [inline]
+ __unfreeze_partials+0x1dc/0x220 mm/slub.c:2655
+ put_cpu_partial+0x17b/0x250 mm/slub.c:2731
+ __slab_free+0x2b6/0x390 mm/slub.c:3679
+ qlink_free mm/kasan/quarantine.c:168 [inline]
+ qlist_free_all+0x75/0xe0 mm/kasan/quarantine.c:187
+ kasan_quarantine_reduce+0x14b/0x160 mm/kasan/quarantine.c:294
+ __kasan_slab_alloc+0x23/0x70 mm/kasan/common.c:305
+ kasan_slab_alloc include/linux/kasan.h:188 [inline]
+ slab_post_alloc_hook+0x6c/0x3c0 mm/slab.h:763
+ slab_alloc_node mm/slub.c:3478 [inline]
+ slab_alloc mm/slub.c:3486 [inline]
+ __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
+ kmem_cache_alloc+0x1be/0x350 mm/slub.c:3502
+ getname_flags+0xbc/0x4f0 fs/namei.c:140
+ vfs_fstatat+0x11c/0x190 fs/stat.c:298
+ __do_sys_newfstatat fs/stat.c:463 [inline]
+ __se_sys_newfstatat fs/stat.c:457 [inline]
+ __x64_sys_newfstatat+0x117/0x190 fs/stat.c:457
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
 
-I take launch time as a less strict than EDT: it is a request to send
-at a certain time, with no strict definition on uncertainty. While EDT
-more strictly ensures that a packet is not sent before the timestamp.
+Memory state around the buggy address:
+ ffff8880213d0400: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff8880213d0480: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff8880213d0500: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                              ^
+ ffff8880213d0580: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff8880213d0600: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+
+
+Tested on:
+
+commit:         7453d7a6 nfp: ethtool: expose transmit SO_TIMESTAMPING..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git main
+console output: https://syzkaller.appspot.com/x/log.txt?x=136fe752e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=94286555cac4ea49
+dashboard link: https://syzkaller.appspot.com/bug?extid=bbe84a4010eeea00982d
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+
+Note: no patches were applied.
