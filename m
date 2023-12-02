@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6753D8018A2
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 01:07:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06D0080189D
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 01:07:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441998AbjLBAG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 19:06:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42590 "EHLO
+        id S1442154AbjLBAG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 19:06:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1441975AbjLBAFf (ORCPT
+        with ESMTP id S1442068AbjLBAFf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 1 Dec 2023 19:05:35 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FB3619B2
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 16:05:09 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-db54c11887aso1444180276.1
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 16:05:09 -0800 (PST)
+Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92384199D
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 16:05:11 -0800 (PST)
+Received: by mail-pj1-x104a.google.com with SMTP id 98e67ed59e1d1-285659dcba9so3058544a91.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 16:05:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701475509; x=1702080309; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1701475511; x=1702080311; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=dE/522iynIE4No5Iky1Auot8voCpOZvCwqs6OijcFys=;
-        b=gUCaig798b2RVDgyEyXiYgLs1E3CAK9mlVmTJNs0xCeZ74lV3VljYbS5J6fb8uq62g
-         cJpVQJjLoQnO5MZo+IRm2atdMJ49upR4EJck2UjQcN4tEl05NdT9zSTM25QgvUBkmGpM
-         GtB2KcDfgp55jhs529nx7HGCeKPo4x5Z55fkL80EYdlGLKWih7n61NXAe9gq7LECoZya
-         VhS4V/9N+d5kAS43kIn4HvX85MShforiZE7H/xz0rEq7pIG3Ir1Sxw1LE+HC12b9WdMC
-         KdPJcitZgzjXUzRA/qUEiAYdBAEI66PwPKgJWw4ZWSRGyKlY5VLR41QdJbqHSAYAFoAL
-         l93w==
+        bh=qpKgoUANaXzgzB1hqqiQLagyf1Kc68gB0qDmuBC8lGo=;
+        b=cLk7JunaSWqWyuGHOuhtq2ypdAgM5pGG0k2wx57gDWAmJbSX5mryGE1XSLLZqQ7HMt
+         TacqF3odEYInyR/ge2lsJi6/gwgdEbUp6Ha3dl69OsQJ0K7z3i73t/titZTiCMvvWv7d
+         lELnYemXNFh1zVoSiLFcr2W2fPc4HUBN15UkKnZxvMhvJmPGkIqKiluf/Hdaa1keFZBh
+         Subsz6YDDjxTjwcuNPpn5vQxyNHgbtWq4f4/2dxj5vASMRI8mZw+lMK7y6ncu32dBC8I
+         S3Pb0mGcQK77hjhAbdWK7Fq2KEwCgeOJSX+7D+VzegGCjACfmzLCpNo3bGY0lVr6CnvY
+         ZsrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701475509; x=1702080309;
+        d=1e100.net; s=20230601; t=1701475511; x=1702080311;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=dE/522iynIE4No5Iky1Auot8voCpOZvCwqs6OijcFys=;
-        b=g0FRMyKs1gzICG/tzjpUFUbSzxyH6J9CFLOk1n/5t5lnB6+7gGGFP/vAMNovW1WNDo
-         TFu5CMj1xRc9SRIIYPPXXYJjjnBjbNqbBGk7f39hyr4ROlA05E7bZSEMxfRMtsWebtqe
-         gwDeK9Vw5fzIZkJO2cDGRaH9O1MLgmb7cMaH7PC3YghrWMpMZ2hqEMQEtpegIkh/FYEO
-         oZSZWhrMTvQKUoDP6NvEspOo2xlQI0Pz9xCaQwGbzL+UrcAEe10M3YN7hAVmJtjZEMph
-         nJ90uTSRFoFDQZf5NL0bSj3U1PcHauyNvLTNoNTfsyuHlfwEzIx7FPhxIpHh3urDLrSw
-         8CqA==
-X-Gm-Message-State: AOJu0YwsPyQFEXFVRG47fm/0Klb3zrD14OwJiSS4E6Y3A3ErcHzx1z/i
-        jBxFOApw+/mmNWmZH0FqEaBJYLVsbIc=
-X-Google-Smtp-Source: AGHT+IGlIng6BwRF2Ib3Bd7XWFs1/N2/Y9k1s9wvye+szu8Qcu7oeqH3xFQjJCrkRw6d7XQv5u2LZiutEeY=
+        bh=qpKgoUANaXzgzB1hqqiQLagyf1Kc68gB0qDmuBC8lGo=;
+        b=mPDiMyLEg/DSfGHDYJLT4MUGmfeEGlq0huPlhdVElTzQv7TQRtPcSciGkODKGyYdOY
+         eckbtPcgmHxAJFL8WsxwcjL+bsyL46Oslimj4l0n2kw4w5nrA+zUENTd9mNtUp6saxul
+         8CTEE03+HWcWkDjS+3qORxZfyR1pVvC+bJMw7xRr1eSoxzXfJhxNAt0y3aFxVxa3yfnc
+         oo+dSUhlWjnpZ5XvA26nVwIIYfLK412e05D8UHw4HXBlh+J5qsIoUvAvvz09tumsBcEs
+         mGlHuRxL3fsKNEVVaiqewLIxY+Tm46pb3jY6dOtQXy6F64QkvBeugiZ17TzWdn/6d2Ag
+         sDgw==
+X-Gm-Message-State: AOJu0YyxjKem3pk3f453Q9aB6zkxWzh/CjySEywB76Z1MRQc8vclnaeh
+        9Ugm0hUxJqkOf8tdaLxujf+icU0wZgs=
+X-Google-Smtp-Source: AGHT+IGrbs/Bfe4WYvqwr84jhaR+9OWT8W3meoOYDj0vG84jPCvHXil8+tHYdZD0rUE2KLG/DhFcOdt5ECE=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:d450:0:b0:db5:47c1:e82d with SMTP id
- m77-20020a25d450000000b00db547c1e82dmr182419ybf.6.1701475508883; Fri, 01 Dec
- 2023 16:05:08 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a17:903:246:b0:1cf:8c46:23ea with SMTP id
+ j6-20020a170903024600b001cf8c4623eamr5684988plh.6.1701475510797; Fri, 01 Dec
+ 2023 16:05:10 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri,  1 Dec 2023 16:04:14 -0800
+Date:   Fri,  1 Dec 2023 16:04:15 -0800
 In-Reply-To: <20231202000417.922113-1-seanjc@google.com>
 Mime-Version: 1.0
 References: <20231202000417.922113-1-seanjc@google.com>
 X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
-Message-ID: <20231202000417.922113-26-seanjc@google.com>
-Subject: [PATCH v9 25/28] KVM: selftests: Test PMC virtualization with forced emulation
+Message-ID: <20231202000417.922113-27-seanjc@google.com>
+Subject: [PATCH v9 26/28] KVM: selftests: Add a forced emulation variation of KVM_ASM_SAFE()
 From:   Sean Christopherson <seanjc@google.com>
 To:     Sean Christopherson <seanjc@google.com>,
         Paolo Bonzini <pbonzini@redhat.com>
@@ -69,118 +69,83 @@ Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Extend the PMC counters test to use forced emulation to verify that KVM
-emulates counter events for instructions retired and branches retired.
-Force emulation for only a subset of the measured code to test that KVM
-does the right thing when mixing perf events with emulated events.
+Add KVM_ASM_SAFE_FEP() to allow forcing emulation on an instruction that
+might fault.  Note, KVM skips RIP past the FEP prefix before injecting an
+exception, i.e. the fixup needs to be on the instruction itself.  Do not
+check for FEP support, that is firmly the responsibility of whatever code
+wants to use KVM_ASM_SAFE_FEP().
 
-Reviewed-by: Dapeng Mi <dapeng1.mi@linux.intel.com>
+Sadly, chaining variadic arguments that contain commas doesn't work, thus
+the unfortunate amount of copy+paste.
+
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- .../selftests/kvm/x86_64/pmu_counters_test.c  | 44 +++++++++++++------
- 1 file changed, 30 insertions(+), 14 deletions(-)
+ .../selftests/kvm/include/x86_64/processor.h  | 30 +++++++++++++++++--
+ 1 file changed, 28 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c b/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
-index 9e9dc4084c0d..cb808ac827ba 100644
---- a/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
-+++ b/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
-@@ -21,6 +21,7 @@
- 
- static uint8_t kvm_pmu_version;
- static bool kvm_has_perf_caps;
-+static bool is_forced_emulation_enabled;
- 
- static struct kvm_vm *pmu_vm_create_with_one_vcpu(struct kvm_vcpu **vcpu,
- 						  void *guest_code,
-@@ -34,6 +35,7 @@ static struct kvm_vm *pmu_vm_create_with_one_vcpu(struct kvm_vcpu **vcpu,
- 	vcpu_init_descriptor_tables(*vcpu);
- 
- 	sync_global_to_guest(vm, kvm_pmu_version);
-+	sync_global_to_guest(vm, is_forced_emulation_enabled);
- 
- 	/*
- 	 * Set PERF_CAPABILITIES before PMU version as KVM disallows enabling
-@@ -138,37 +140,50 @@ static void guest_assert_event_count(uint8_t idx,
-  * If CLFUSH{,OPT} is supported, flush the cacheline containing (at least) the
-  * start of the loop to force LLC references and misses, i.e. to allow testing
-  * that those events actually count.
-+ *
-+ * If forced emulation is enabled (and specified), force emulation on a subset
-+ * of the measured code to verify that KVM correctly emulates instructions and
-+ * branches retired events in conjunction with hardware also counting said
-+ * events.
+diff --git a/tools/testing/selftests/kvm/include/x86_64/processor.h b/tools/testing/selftests/kvm/include/x86_64/processor.h
+index 6be365ac2a85..fe891424ff55 100644
+--- a/tools/testing/selftests/kvm/include/x86_64/processor.h
++++ b/tools/testing/selftests/kvm/include/x86_64/processor.h
+@@ -1154,16 +1154,19 @@ void vm_install_exception_handler(struct kvm_vm *vm, int vector,
+  * r9  = exception vector (non-zero)
+  * r10 = error code
   */
--#define GUEST_MEASURE_EVENT(_msr, _value, clflush)				\
-+#define GUEST_MEASURE_EVENT(_msr, _value, clflush, FEP)				\
- do {										\
- 	__asm__ __volatile__("wrmsr\n\t"					\
- 			     clflush "\n\t"					\
- 			     "mfence\n\t"					\
- 			     "1: mov $" __stringify(NUM_BRANCHES) ", %%ecx\n\t"	\
--			     "loop .\n\t"					\
--			     "mov %%edi, %%ecx\n\t"				\
--			     "xor %%eax, %%eax\n\t"				\
--			     "xor %%edx, %%edx\n\t"				\
-+			     FEP "loop .\n\t"					\
-+			     FEP "mov %%edi, %%ecx\n\t"				\
-+			     FEP "xor %%eax, %%eax\n\t"				\
-+			     FEP "xor %%edx, %%edx\n\t"				\
- 			     "wrmsr\n\t"					\
- 			     :: "a"((uint32_t)_value), "d"(_value >> 32),	\
- 				"c"(_msr), "D"(_msr)				\
- 	);									\
- } while (0)
+-#define KVM_ASM_SAFE(insn)					\
++#define __KVM_ASM_SAFE(insn, fep)				\
+ 	"mov $" __stringify(KVM_EXCEPTION_MAGIC) ", %%r9\n\t"	\
+ 	"lea 1f(%%rip), %%r10\n\t"				\
+ 	"lea 2f(%%rip), %%r11\n\t"				\
+-	"1: " insn "\n\t"					\
++	fep "1: " insn "\n\t"					\
+ 	"xor %%r9, %%r9\n\t"					\
+ 	"2:\n\t"						\
+ 	"mov  %%r9b, %[vector]\n\t"				\
+ 	"mov  %%r10, %[error_code]\n\t"
  
-+#define GUEST_TEST_EVENT(_idx, _event, _pmc, _pmc_msr, _ctrl_msr, _value, FEP)	\
-+do {										\
-+	wrmsr(pmc_msr, 0);							\
-+										\
-+	if (this_cpu_has(X86_FEATURE_CLFLUSHOPT))				\
-+		GUEST_MEASURE_EVENT(_ctrl_msr, _value, "clflushopt 1f", FEP);	\
-+	else if (this_cpu_has(X86_FEATURE_CLFLUSH))				\
-+		GUEST_MEASURE_EVENT(_ctrl_msr, _value, "clflush 1f", FEP);	\
-+	else									\
-+		GUEST_MEASURE_EVENT(_ctrl_msr, _value, "nop", FEP);		\
-+										\
-+	guest_assert_event_count(_idx, _event, _pmc, _pmc_msr);			\
-+} while (0)
++#define KVM_ASM_SAFE(insn) __KVM_ASM_SAFE(insn, "")
++#define KVM_ASM_SAFE_FEP(insn) __KVM_ASM_SAFE(insn, KVM_FEP)
 +
- static void __guest_test_arch_event(uint8_t idx, struct kvm_x86_pmu_feature event,
- 				    uint32_t pmc, uint32_t pmc_msr,
- 				    uint32_t ctrl_msr, uint64_t ctrl_msr_value)
+ #define KVM_ASM_SAFE_OUTPUTS(v, ec)	[vector] "=qm"(v), [error_code] "=rm"(ec)
+ #define KVM_ASM_SAFE_CLOBBERS	"r9", "r10", "r11"
+ 
+@@ -1190,6 +1193,29 @@ void vm_install_exception_handler(struct kvm_vm *vm, int vector,
+ 	vector;								\
+ })
+ 
++#define kvm_asm_safe_fep(insn, inputs...)				\
++({									\
++	uint64_t ign_error_code;					\
++	uint8_t vector;							\
++									\
++	asm volatile(KVM_ASM_SAFE(insn)					\
++		     : KVM_ASM_SAFE_OUTPUTS(vector, ign_error_code)	\
++		     : inputs						\
++		     : KVM_ASM_SAFE_CLOBBERS);				\
++	vector;								\
++})
++
++#define kvm_asm_safe_ec_fep(insn, error_code, inputs...)		\
++({									\
++	uint8_t vector;							\
++									\
++	asm volatile(KVM_ASM_SAFE_FEP(insn)				\
++		     : KVM_ASM_SAFE_OUTPUTS(vector, error_code)		\
++		     : inputs						\
++		     : KVM_ASM_SAFE_CLOBBERS);				\
++	vector;								\
++})
++
+ static inline uint8_t rdmsr_safe(uint32_t msr, uint64_t *val)
  {
--	wrmsr(pmc_msr, 0);
-+	GUEST_TEST_EVENT(idx, event, pmc, pmc_msr, ctrl_msr, ctrl_msr_value, "");
- 
--	if (this_cpu_has(X86_FEATURE_CLFLUSHOPT))
--		GUEST_MEASURE_EVENT(ctrl_msr, ctrl_msr_value, "clflushopt 1f");
--	else if (this_cpu_has(X86_FEATURE_CLFLUSH))
--		GUEST_MEASURE_EVENT(ctrl_msr, ctrl_msr_value, "clflush 1f");
--	else
--		GUEST_MEASURE_EVENT(ctrl_msr, ctrl_msr_value, "nop");
--
--	guest_assert_event_count(idx, event, pmc, pmc_msr);
-+	if (is_forced_emulation_enabled)
-+		GUEST_TEST_EVENT(idx, event, pmc, pmc_msr, ctrl_msr, ctrl_msr_value, KVM_FEP);
- }
- 
- #define X86_PMU_FEATURE_NULL						\
-@@ -553,6 +568,7 @@ int main(int argc, char *argv[])
- 
- 	kvm_pmu_version = kvm_cpu_property(X86_PROPERTY_PMU_VERSION);
- 	kvm_has_perf_caps = kvm_cpu_has(X86_FEATURE_PDCM);
-+	is_forced_emulation_enabled = kvm_is_forced_emulation_enabled();
- 
- 	test_intel_counters();
- 
+ 	uint64_t error_code;
 -- 
 2.43.0.rc2.451.g8631bc7472-goog
 
