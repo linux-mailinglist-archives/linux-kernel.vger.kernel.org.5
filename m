@@ -2,129 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25404801D90
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 16:50:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEA58801D93
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 16:52:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231609AbjLBPua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 10:50:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58584 "EHLO
+        id S230181AbjLBPwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 10:52:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjLBPu3 (ORCPT
+        with ESMTP id S229451AbjLBPwA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 10:50:29 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00EBAFD;
-        Sat,  2 Dec 2023 07:50:35 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id d2e1a72fcca58-6cdfb721824so1339924b3a.3;
-        Sat, 02 Dec 2023 07:50:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701532235; x=1702137035; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Fd5HOuEegKoTJGiz25FDlEzvosdY/OfidE22UbIBrzQ=;
-        b=Fm5lcZhTdsoVQApZyhfZwDtR3gciTdMbEJuOB4iL0e4iAuyXdwC5hQGoGruwQcMIb0
-         Hl/+BAsws9gdG0XGZ9bJCndjXppu1raCT3k1nNIUxr7+mKs17d3O1IhNHoeImOH7/Fgz
-         E1mIWp0G5Bstru+LhtXYv1rfeN8fr91kv2NwOYofYBMave9YIdPwbiBfDgBtYIZmDRUu
-         +P2uGXSmJ7BtbdfMntC0v2cqqrNKjcf/N8OOS0w+M4SbdjQ3tFwMV98wgZim/JiRtZqS
-         Ghv4qPhGoG9yZHnNU39Z39xM/BrICHCtywucTwK1kxA6/PLciHAFXM31HqhNKsHqlkP1
-         Y6Uw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701532235; x=1702137035;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Fd5HOuEegKoTJGiz25FDlEzvosdY/OfidE22UbIBrzQ=;
-        b=mm6zDVVqKYcBFF7DMjZCOc2YB7ybCOBcu3PM/xM99WEp9O/+RfOsAtTw/JusPrhZG+
-         FbdlZA/eYizZvTy5+Wzgpo9fRHdbCfKgyb/j8XlHuUyQYLMmtJXHFh5IuWfkMkcT8T4u
-         6XvDbOdRPQu26nqiAJY35ETIEBB4slewe5fhi+bi7/YzLxAhtslc8qlvR1gMhYtteQ5p
-         f4E9sAv5Y0Vj4FZCdGftGOEVtACSl3V6w7cYaOoxae+siEM+zrB13Kx8drlHdsvq29W7
-         wEZGVRLoLJl09OFON4cFzZ1BhY7STWR3WBQr7PQQ28J6ph9XbMUZ0CP0OARWeJ61SDYM
-         0ODg==
-X-Gm-Message-State: AOJu0Ywo4gkS6+2tPjl5KkTJj6aG3VngBjVc9bEkI7G5NW4q+U3ZSOj6
-        ax0IPnjAZPQ6bOd2qJYZwM0=
-X-Google-Smtp-Source: AGHT+IFca1WmCGAfcW1bSAACpzBFXnNuSg9Klfi0NOCvHOUB03AUvHSg1kGTOaKuuzymF5BvIl00zg==
-X-Received: by 2002:a05:6a00:c8e:b0:6ce:2732:1df9 with SMTP id a14-20020a056a000c8e00b006ce27321df9mr586818pfv.51.1701532235352;
-        Sat, 02 Dec 2023 07:50:35 -0800 (PST)
-Received: from [10.164.73.138] ([103.136.251.90])
-        by smtp.gmail.com with ESMTPSA id z24-20020a62d118000000b0069346777241sm5079977pfg.97.2023.12.02.07.50.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 02 Dec 2023 07:50:35 -0800 (PST)
-Message-ID: <b49d6a29-e3a3-4b6b-8892-8ded319b2619@gmail.com>
-Date:   Sat, 2 Dec 2023 23:50:28 +0800
+        Sat, 2 Dec 2023 10:52:00 -0500
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83C52124
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 07:52:06 -0800 (PST)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-270-fdBml9uHNSOD5Hu3Vx4AmA-1; Sat, 02 Dec 2023 15:52:04 +0000
+X-MC-Unique: fdBml9uHNSOD5Hu3Vx4AmA-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sat, 2 Dec
+ 2023 15:51:52 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Sat, 2 Dec 2023 15:51:52 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Waiman Long' <longman@redhat.com>, Jann Horn <jannh@google.com>
+CC:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
+Subject: RE: [PATCH] locking: Document that mutex_unlock() is non-atomic
+Thread-Topic: [PATCH] locking: Document that mutex_unlock() is non-atomic
+Thread-Index: AQHaJGdmWd9hceM5t0qWKvuVqma2ELCUtpLQgAAMJ+GAAADgMIAACSgAgAFVFvA=
+Date:   Sat, 2 Dec 2023 15:51:52 +0000
+Message-ID: <f98b04e05c964b57bc27fb895810aaaf@AcuMS.aculab.com>
+References: <20231130204817.2031407-1-jannh@google.com>
+ <06c05c8b-9a3b-4c04-b898-0f82e98da70f@redhat.com>
+ <CAG48ez1a=VuEWwPTjcXFAwCyt9bRH-WzAfw0uP-qVu83kdxkZw@mail.gmail.com>
+ <28b147c3d7354d1a8ff0b903da9b54f4@AcuMS.aculab.com>
+ <CAG48ez1bOwbqEbD_ycC2fyWK_tW4rqr=gogJbQOx5CECyPGZcg@mail.gmail.com>
+ <1bcee696-d751-413c-a2ec-4a8480bae00b@redhat.com>
+ <780e652ff52044d4a213cacbd9276cf8@AcuMS.aculab.com>
+ <501501ef-137a-4797-9d43-48ea68851147@redhat.com>
+In-Reply-To: <501501ef-137a-4797-9d43-48ea68851147@redhat.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] zram: Using GFP_ATOMIC instead of GFP_KERNEL to allocate
- bitmap memory in backing_dev_store
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc:     minchan@kernel.org, axboe@kernel.dk, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, lincheng.yang@transsion.com,
-        jiajun.ling@transsion.com, ldys2014@foxmail.com,
-        Dongyun Liu <dongyun.liu@transsion.com>
-References: <20231130152047.200169-1-dongyun.liu@transsion.com>
- <20231201153956.GB404241@google.com>
-From:   Dongyun Liu <dongyun.liu3@gmail.com>
-In-Reply-To: <20231201153956.GB404241@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2023/12/1 23:39, Sergey Senozhatsky wrote:
-> On (23/11/30 23:20), Dongyun Liu wrote:
->> INFO: task init:331 blocked for more than 120 seconds.  "echo 0 >
->> /proc/sys/kernel/hung_task_timeout_secs" disables this message.
->> task:init   state:D stack:    0 pid:    1 ppid:     0 flags:0x04000000
->> Call trace:
->>    __switch_to+0x244/0x4e4
->>    __schedule+0x5bc/0xc48
->>    schedule+0x80/0x164
->>    rwsem_down_read_slowpath+0x4fc/0xf9c
->>    __down_read+0x140/0x188
->>    down_read+0x14/0x24
->>    try_wakeup_wbd_thread+0x78/0x1ec [zram]
->>    __zram_bvec_write+0x720/0x878 [zram]
->>    zram_bvec_rw+0xa8/0x234 [zram]
->>    zram_submit_bio+0x16c/0x268 [zram]
->>    submit_bio_noacct+0x128/0x3c8
->>    submit_bio+0x1cc/0x3d0
->>    __swap_writepage+0x5c4/0xd4c
->>    swap_writepage+0x130/0x158
->>    pageout+0x1f4/0x478
->>    shrink_page_list+0x9b4/0x1eb8
->>    shrink_inactive_list+0x2f4/0xaa8
->>    shrink_lruvec+0x184/0x340
->>    shrink_node_memcgs+0x84/0x3a0
->>    shrink_node+0x2c4/0x6c4
->>    shrink_zones+0x16c/0x29c
->>    do_try_to_free_pages+0xe4/0x2b4
->>    try_to_free_pages+0x388/0x7b4
->>    __alloc_pages_direct_reclaim+0x88/0x278
->>    __alloc_pages_slowpath+0x4ec/0xf6c
->>    __alloc_pages_nodemask+0x1f4/0x3dc
->>    kmalloc_order+0x54/0x338
->>    kmalloc_order_trace+0x34/0x1bc
->>    __kmalloc+0x5e8/0x9c0
->>    kvmalloc_node+0xa8/0x264
->>    backing_dev_store+0x1a4/0x818 [zram]
->>    dev_attr_store+0x38/0x8c
->>    sysfs_kf_write+0x64/0xc4
-> 
-> Hmm, I'm not really following this backtrace. Backing device
-> configuration is only possible on un-initialized zram device.
-> If it's uninitialized, then why is it being used for swapout
-> later in the call stack?
-
-Uh, at this moment, zram has finished initializing and is
-working. The backing device is an optional zram-based feature.
-I think it can be created later.
+RnJvbTogV2FpbWFuIExvbmcNCj4gU2VudDogMDEgRGVjZW1iZXIgMjAyMyAxOToxNg0KPiANCj4g
+T24gMTIvMS8yMyAxMzo0NCwgRGF2aWQgTGFpZ2h0IHdyb3RlOg0KPiA+DQo+ID4gUGVuZGluZyB3
+YWl0ZXJzIGFyZW4ndCB0aGUgcHJvYmxlbS4NCj4gPg0KPiBQZW5kaW5nIHdhaXRlcnMgY2FuIHN0
+aWxsIGJlIGEgcHJvYmxlbSBpZiBjb2RlIGRlY2lkZXMgdG8gZnJlZSB0aGUgbG9jaw0KPiBjb250
+YWluaW5nIG9iamVjdCBhZnRlciBhIGxvY2svdW5sb2NrIHNlcXVlbmNlIGFzIGl0IG1heSBjYXVz
+ZQ0KPiB1c2UtYWZ0ZXItZnJlZS4NCj4gPg0KPiA+IFlvdSBoYXZlIHRvIGVuc3VyZSB0aGVyZSBh
+cmVuJ3QgYW55LCBidXQgdGhlIG11dGV4KCkgY2FuIGJlIGhlbGQuDQo+ID4NCj4gVXNpbmcgcmVm
+ZXJlbmNlIGNvdW50IHRvIHRyYWNrIHRoZSBudW1iZXIgb2YgYWN0aXZlIHVzZXJzIGlzIG9uZSB3
+YXkgdG8NCj4gcHJldmVudCB0aGF0IGlmIHlvdSBvbmx5IHJlbGVhc2UgdGhlIHJlZmVyZW5jZSBj
+b3VudCBhZnRlcg0KPiBtdXRleF91bmxvY2soKSByZXR1cm5zIGJ1dCBub3QgaW4gdGhlIGxvY2sg
+Y3JpdGljYWwgc2VjdGlvbi4NCg0KSSBzdXNwZWN0IHRoZSBkb2N1bWVudGF0aW9uIG5lZWQgdG8g
+YmUgbW9yZSBleHBsaWNpdCB0aGFuIGp1c3Qgc2F5aW5nDQppdCBpcyBub24tYXRvbWljLg0KU2F5
+aW5nIHNvbWV0aGluZyBsaWtlOg0KDQpUaGUgbXV0ZXggc3RydWN0dXJlIG1heSBiZSBhY2Nlc3Nl
+ZCBieSBtdXRleF91bmxvY2soKSBhZnRlciBhbm90aGVyDQp0aHJlYWQgaGFzIGxvY2tlZCBhbmQg
+dW5sb2NrZWQgdGhlIG11dGV4Lg0KDQpTbyBpZiBhIHJlZmVyZW5jZSBjb3VudCBpcyB1c2VkIHRv
+IGVuc3VyZSBhIHN0cnVjdHVyZSByZW1haW5zIHZhbGlkIHdoZW4NCmEgbG9jayBpcyByZWxlYXNl
+ZCAod2l0aCB0aGUgaXRlbSBiZWluZyBmcmVlZCB3aGVuIHRoZSBjb3VudCBiZWNvbWVzIHplcm8p
+DQp0aGUgcmVmZXJlbmNlIGNvdW50IGl0c2VsZiBjYW5ub3QgYmUgcHJvdGVjdGVkIGJ5IGEgbXV0
+ZXggaW4gdGhlIHN0cnVjdHVyZS4NClNvIGNvZGUgbGlrZToNCgkuLi4NCgljb3VudCA9IC0taXRl
+bS0+cmVmY291bnQ7DQoJbXV0ZXhfdW5sb2NrKGl0ZW0tPm10eCk7DQoJaWYgKCFjb3VudCkNCgkJ
+ZnJlZShpdGVtKTsNCmNhbiBsZWFkIHRvIGEgJ3VzZSBhZnRlciBmcmVlJyBpbiBtdXRleF91bmxv
+Y2soKS4NCkhvd2V2ZXIgaWYgdGhlIHJlZmNvdW50IGlzIGF0b21pYyBhbmQgZGVjcmVtZW50ZWQg
+d2l0aG91dCB0aGUNCm11dGV4IGhlbGQgdGhlcmUgaXNuJ3QgYSBwcm9ibGVtLg0KDQoJRGF2aWQN
+Cg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZh
+cm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYg
+KFdhbGVzKQ0K
 
