@@ -2,104 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC433801AC5
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 05:47:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FBD8801AC6
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 05:49:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231859AbjLBErM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 23:47:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37838 "EHLO
+        id S231905AbjLBEtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 23:49:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjLBErJ (ORCPT
+        with ESMTP id S229379AbjLBEtO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 23:47:09 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55A58D7E
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 20:47:16 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6AF4DC433C7;
-        Sat,  2 Dec 2023 04:47:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701492435;
-        bh=O5MsatmLjCIH3y5kNOZnBieUoRybd+cftsMxmoL19IM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=CscYVbReNDZ8qotPJtXbn3qj1nIfd0nib1LkrGYXrSlH0IQWhCasA3wUQo2PtCgDx
-         LLxV6/zA4ZOgwfaUbLigTuToX2MUGt5GjD3MnlLHgxgchFAtcD5idFIQvSnjObXJlp
-         ZDuVpYfXo6HVqZ9cA8Nubuf/6rh78mCNBWirjGzcenUeuDC8IJPpB6jwPgx7tASax5
-         Wzt6+dTi/HIZnFyd3t5P20+9N1opE0mYDp0bsj+aoDtIAq4RW5u2PVKdo4YNjijgGE
-         knxgfhsyuGUX+juGk2jk837F22vWitao0m7fl71b/jz1zEV7mvgTl8mhwyTvZ3sv+D
-         V9YDEZL74lRFA==
-Date:   Fri, 1 Dec 2023 20:47:14 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Stefan Wahren <wahrenst@gmx.net>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Lino Sanfilippo <LinoSanfilippo@gmx.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2 1/3] qca_debug: Prevent crash on TX ring changes
-Message-ID: <20231201204714.21f7124c@kernel.org>
-In-Reply-To: <20231129095241.31302-2-wahrenst@gmx.net>
-References: <20231129095241.31302-1-wahrenst@gmx.net>
-        <20231129095241.31302-2-wahrenst@gmx.net>
+        Fri, 1 Dec 2023 23:49:14 -0500
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E847910C2;
+        Fri,  1 Dec 2023 20:49:20 -0800 (PST)
+Received: by mail-pg1-x52e.google.com with SMTP id 41be03b00d2f7-5c21e185df5so947600a12.1;
+        Fri, 01 Dec 2023 20:49:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701492560; x=1702097360; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=NDM7c+J640phVwZ5XAJUWTL/q6brdZPnES26u51DJ/M=;
+        b=LR68eEvHvn4cBOMIj029ghGq+rxu4lf9++Y/FylRtrfsdVWwZidYGl0/W1pV4EXJZ7
+         BSCQgxueGYyNchPmUAD+MZGC3gMjQWWkPxcjJx9I0b1JvLadUJabFO0POkf+cu3BWEgr
+         cAZiOzun4nOlpPhfcy03HnUt1VuRVD8Vd+TcZYgwDIUSQa5kB/Cc5tuEULqStxArtFQ0
+         Qxpn1ezUxuXN2CgRM0DG2rmtBZD8BgIZTj+jlwT/1iyNQPCvFo/VovRngLNsjVQw90mN
+         fs3QCTQR8UROdkXCqUTIThFuaFyfNswmmc9conQWcxeqr+sUabK02HhUeEzWk+pZgRQy
+         eeJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701492560; x=1702097360;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NDM7c+J640phVwZ5XAJUWTL/q6brdZPnES26u51DJ/M=;
+        b=RIlx7yUuP625QoWn8rycCXzBapBKXeYtCIvsmtqHthnE6ZaowKDrZ19BwL+bquxMN2
+         IZliV5aP2uNMk0BKBZc0tBl9SFI7WtCO4vGlMp0KASPOSbSGvNo02/osZgUcwY2DtdrO
+         4Ty3IYcp0HARa9GwrnPXNdJPTdly98mhX/hL/kfigVXC7Lfnxcicdag9U+nuABb/zSGe
+         2E/WHb+g4Mtu5i2mCJrXnxfzlFs4qD5QrxkseM35aQgZvsNv3xnsSwyNP45Z1NYqX9nb
+         Zr4m/VNDSQv4QUqg0ViCwtNyhK/4JmalUq8Q12BcpkX1fAicQy7QLw4Itxt5WqvRueLT
+         PsHg==
+X-Gm-Message-State: AOJu0YzIkbI3ro6dbmgMDLxANY6CAuM+k/b+FuNiv7qXV4+7W7UXJAAR
+        edFOJeuXPl6r824fPCucn0k=
+X-Google-Smtp-Source: AGHT+IFZYcp1sHZaaQ1PH+HUoGIIaqmYaZeowIbuF4MCveJ2xYTvOeak3SGKUDxBGl1uQRjQPOxvMA==
+X-Received: by 2002:a05:6a20:c1aa:b0:18f:97c:978f with SMTP id bg42-20020a056a20c1aa00b0018f097c978fmr940032pzb.119.1701492560286;
+        Fri, 01 Dec 2023 20:49:20 -0800 (PST)
+Received: from archie.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id js3-20020a17090b148300b002809822545dsm3925725pjb.32.2023.12.01.20.49.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Dec 2023 20:49:19 -0800 (PST)
+Received: by archie.me (Postfix, from userid 1000)
+        id 1FFB710211875; Sat,  2 Dec 2023 11:49:16 +0700 (WIB)
+Date:   Sat, 2 Dec 2023 11:49:15 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Jiri Pirko <jiri@resnulli.us>,
+        Linux Networking <netdev@vger.kernel.org>
+Cc:     kuba@kernel.org, pabeni@redhat.com, davem@davemloft.net,
+        edumazet@google.com, corbet@lwn.net,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Documentation <linux-doc@vger.kernel.org>
+Subject: Re: [patch net-next v3] docs: netlink: add NLMSG_DONE message format
+ for doit actions
+Message-ID: <ZWq3S_EEFfCaaEGf@archie.me>
+References: <20231201180154.864007-1-jiri@resnulli.us>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="o4mQa6Zyb7za6H4+"
+Content-Disposition: inline
+In-Reply-To: <20231201180154.864007-1-jiri@resnulli.us>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 29 Nov 2023 10:52:39 +0100 Stefan Wahren wrote:
-> The qca_spi driver stop and restart the SPI kernel thread
-> (via ndo_stop & ndo_open) in case of TX ring changes. This is
-> a big issue because it allows userspace to prevent restart of
-> the SPI kernel thread (via signals). A subsequent change of
-> TX ring wrongly assume a valid spi_thread pointer which result
-> in a crash.
-> 
-> So prevent this by stopping the network queue and temporary park
-> the SPI thread. Because this could happen during transmission
-> we also need to call qcaspi_flush_tx_ring().
-> 
-> Fixes: 291ab06ecf67 ("net: qualcomm: new Ethernet over SPI driver for QCA7000")
-> Signed-off-by: Stefan Wahren <wahrenst@gmx.net>
 
-Still looks a bit racy.
+--o4mQa6Zyb7za6H4+
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> diff --git a/drivers/net/ethernet/qualcomm/qca_debug.c b/drivers/net/ethernet/qualcomm/qca_debug.c
-> index 6f2fa2a42770..9777dbb17ac2 100644
-> --- a/drivers/net/ethernet/qualcomm/qca_debug.c
-> +++ b/drivers/net/ethernet/qualcomm/qca_debug.c
-> @@ -263,22 +263,29 @@ qcaspi_set_ringparam(struct net_device *dev, struct ethtool_ringparam *ring,
->  		     struct kernel_ethtool_ringparam *kernel_ring,
->  		     struct netlink_ext_ack *extack)
->  {
-> -	const struct net_device_ops *ops = dev->netdev_ops;
->  	struct qcaspi *qca = netdev_priv(dev);
-> +	bool queue_active = !netif_queue_stopped(dev);
+On Fri, Dec 01, 2023 at 07:01:54PM +0100, Jiri Pirko wrote:
+> diff --git a/Documentation/userspace-api/netlink/intro.rst b/Documentatio=
+n/userspace-api/netlink/intro.rst
+> index 7b1d401210ef..aacffade8f84 100644
+> --- a/Documentation/userspace-api/netlink/intro.rst
+> +++ b/Documentation/userspace-api/netlink/intro.rst
+> @@ -234,6 +234,10 @@ ACK attributes may be present::
+>    | ** optionally extended ACK                 |
+>    ----------------------------------------------
+> =20
+> +Note that some implementations may issue custom ``NLMSG_DONE`` messages
+> +in reply to ``do`` action requests. In that case the payload is
+> +implementation-specific and may also be absent.
+> +
+>  .. _res_fam:
+> =20
+>  Resolving the Family ID
 
-nothing prevents stopped -> running or running -> stopped
-transitions at this point, so this check can be meaningful
+LGTM, thanks!
 
->  	if ((ring->rx_pending) ||
->  	    (ring->rx_mini_pending) ||
->  	    (ring->rx_jumbo_pending))
->  		return -EINVAL;
-> 
-> -	if (netif_running(dev))
-> -		ops->ndo_stop(dev);
-> +	if (queue_active)
-> +		netif_stop_queue(dev);
+Reviewed-by: Bagas Sanjaya <bagasdotme@gmail.com>
 
-This doesn't wait for xmit to finish, it just sets a bit.
-You probably want something like netif_tx_disable().
+--=20
+An old man doll... just what I always wanted! - Clara
 
-Also - the thread may still be running and wake the queue up right after
-we stop it.
--- 
-pw-bot: cr
+--o4mQa6Zyb7za6H4+
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZWq3SwAKCRD2uYlJVVFO
+oxjbAP9AarUu2n9EKnzgCkkOwiMGjbpkoBRqtCz7KNLFrriFEAD/XzJJwUEScOXU
+6vmxKU/hTr1RceftTUwLRdPL0eTN3gU=
+=nDqC
+-----END PGP SIGNATURE-----
+
+--o4mQa6Zyb7za6H4+--
