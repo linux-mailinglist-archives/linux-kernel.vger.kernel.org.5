@@ -2,82 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F3C6801A93
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 05:18:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BF1F801A9C
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 05:20:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231633AbjLBESV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 23:18:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57050 "EHLO
+        id S1442026AbjLBEU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 23:20:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231748AbjLBESQ (ORCPT
+        with ESMTP id S229524AbjLBEUS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 23:18:16 -0500
-Received: from mail-oa1-f69.google.com (mail-oa1-f69.google.com [209.85.160.69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43AB7D7E
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 20:18:23 -0800 (PST)
-Received: by mail-oa1-f69.google.com with SMTP id 586e51a60fabf-1fafc2d40dfso1320599fac.1
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 20:18:23 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701490702; x=1702095502;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7KfGQmksiLfWKreO3KwREXHNWZfvg2vvc+tmLL1KKQw=;
-        b=GOfITuUuson/XG6DA2sAbKHvItncRv4FYEMfJAeADZSoAGrzlcH857TtTStlqcEaXG
-         YNSH5L6ogqFpB7J5+YuFrqSFyJlD/rLGjQP3cKt0BGvmzDMPTEaugPEWeVfpdOwtfqx7
-         BJd0WjPP6CyaI+QvIZb3N++kqGTJpWwfHhXYH/BcKmv8kP3QWZR/QimT6iJtdCOHgd+o
-         c0FPhylE8sjbEeDAJuXItU9OCG7/yHyeRxGZfnbXZWB+WT6XJ1/JLBQRgqnY3PWXopOu
-         LspwtAtcM/wHi16JfJtgnGFaL6k+NYdlj65btm8x4uPS6tKwSASxQyqqcj1G9fIfpl27
-         vHIA==
-X-Gm-Message-State: AOJu0YyVV6Gk76y1yg+qcwDA5xHAzpQYGxvZFGzSGpAjkMGIOQVQvdhM
-        VdNT/8oDjvinZdwZckuHqD+WhjtYOO/UuVYDVkCtXOEfyOTdXSk=
-X-Google-Smtp-Source: AGHT+IH1y6cmgY5D13RUMjKaV6QJTQ7pv2RzEOa165eSra43SwkD82XTRQNYY4xO1uaPLPWNcNs+dhdaJYonoqscI9QceIMvZIQv
+        Fri, 1 Dec 2023 23:20:18 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DE58D48
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 20:20:25 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id B4163C43395;
+        Sat,  2 Dec 2023 04:20:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701490824;
+        bh=jWE56trVPmQzz+YfD/mLnPE1SjgGNTuR0UnvpUsNe7o=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=LkZzFzkcJbn2KTpvXUgzU+t654jXhocDfQZwy121qw8ciflsXCkqg/nVYtcdjj4Df
+         JIOyMyHEDJqs+1BQV/j2qF2iWrYeluno0vzgI6yTD8D1SHkWX3ksqPYcDL6oHrCqrP
+         +MqHmLMffWHEW6CrNmkdt0oAlEWYjHEXaRqpk2qWwlgDGZZX7EGddghpHhVy+A8igw
+         t84vEK3+h7Hdu3Kd2wwtbSTGFFFJmktHT2/DlKRjvNk7vFP0X1Q0kbOU1QtdLO2Bdz
+         dPsG8nCfMJ9r2NWFsbgakwUXTeisTU6hsoYwWbbmxWub2jlHk1keZUFpfjyUy5x3AZ
+         PIxuGKSvXrnOQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A0B25C64459;
+        Sat,  2 Dec 2023 04:20:24 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:65a0:b0:1fb:564:5c10 with SMTP id
- fp32-20020a05687065a000b001fb05645c10mr139945oab.3.1701490702637; Fri, 01 Dec
- 2023 20:18:22 -0800 (PST)
-Date:   Fri, 01 Dec 2023 20:18:22 -0800
-In-Reply-To: <000000000000f0bfe70605025941@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000eb645a060b7f2c3e@google.com>
-Subject: Re: [syzbot] [gfs2?] kernel BUG in gfs2_quota_cleanup
-From:   syzbot <syzbot+3b6e67ac2b646da57862@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] dt-bindings: net: qcom,ipa: document SM8650 compatible
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <170149082465.6898.10790430963543604877.git-patchwork-notify@kernel.org>
+Date:   Sat, 02 Dec 2023 04:20:24 +0000
+References: <20231129-topic-sm8650-upstream-bindings-ipa-v1-1-ca21eb2dfb14@linaro.org>
+In-Reply-To: <20231129-topic-sm8650-upstream-bindings-ipa-v1-1-ca21eb2dfb14@linaro.org>
+To:     Neil Armstrong <neil.armstrong@linaro.org>
+Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        elder@kernel.org, linux-arm-msm@vger.kernel.org,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org.
+Hello:
 
-***
+This patch was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-Subject: [gfs2?] kernel BUG in gfs2_quota_cleanup
-Author: eadavis@qq.com
+On Wed, 29 Nov 2023 18:22:58 +0100 you wrote:
+> Document the IPA on the SM8650 Platform which uses version 5.5.1,
+> which is a minor revision of v5.5 found on SM8550, thus we can
+> use the SM8550 bindings as fallback since it shares the same
+> register mappings.
+> 
+> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+> 
+> [...]
 
-please test kernel BUG in gfs2_quota_cleanup
+Here is the summary with links:
+  - dt-bindings: net: qcom,ipa: document SM8650 compatible
+    https://git.kernel.org/netdev/net-next/c/a10859384256
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 994d5c58e50e
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-diff --git a/fs/gfs2/quota.c b/fs/gfs2/quota.c
-index 95dae7838b4e..af32dd8a72fa 100644
---- a/fs/gfs2/quota.c
-+++ b/fs/gfs2/quota.c
-@@ -1505,7 +1505,8 @@ void gfs2_quota_cleanup(struct gfs2_sbd *sdp)
- 	LIST_HEAD(dispose);
- 	int count;
- 
--	BUG_ON(test_bit(SDF_JOURNAL_LIVE, &sdp->sd_flags));
-+	BUG_ON(!test_bit(SDF_NORECOVERY, &sdp->sd_flags) && 
-+		test_bit(SDF_JOURNAL_LIVE, &sdp->sd_flags));
- 
- 	spin_lock(&qd_lock);
- 	list_for_each_entry(qd, &sdp->sd_quota_list, qd_list) {
 
