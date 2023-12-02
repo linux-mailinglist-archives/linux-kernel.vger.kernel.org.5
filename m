@@ -2,45 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55770801C83
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 13:06:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B73F5801C84
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 13:10:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232666AbjLBMGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 07:06:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44290 "EHLO
+        id S232488AbjLBMKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 07:10:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjLBMGS (ORCPT
+        with ESMTP id S232138AbjLBMKd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 07:06:18 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4C17CF
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 04:06:24 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED22AC433C9;
-        Sat,  2 Dec 2023 12:06:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701518784;
-        bh=lHADNuvaU9fEsiOx3WC4Nblcr6d09geCfLNRdzQPQKg=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=n0oqdSdh08rPJOVrFYFfyx7NqsvxpRJFSodxRD3n5BtytNOgMaFMG+THMnfSMpKab
-         Kp/eW99rJ1txx84Z9TRvY5jepIcPdIBYhSHy2We0O971TKCYzencOjWONfyw0gftFa
-         kA64qhnbovY/3FULTRSq+IcU1OgGoz0oBA67IfdmLIwn+87P4AhFYOkPxMFajyAQ90
-         gEUZvNA9yzK1TjcKgFQ59V1boVyZHRD7amW4GyyWyvJhho/1VFko2WaYhwm5hFkRis
-         M9UEaXExWI4d9QT+6Zi2SD79Q1n+82yz6kXGFHcgmZ9OYgy+7mN1uvUh/lwChMvWno
-         tFzwa7yVoQMwQ==
-Message-ID: <406ec8fe-a407-446b-a368-c68e90f1249a@kernel.org>
-Date:   Sat, 2 Dec 2023 13:06:18 +0100
+        Sat, 2 Dec 2023 07:10:33 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E98718C
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 04:10:39 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-40b479ec4a3so28407515e9.2
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Dec 2023 04:10:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701519038; x=1702123838; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=GziMkt38oro/EGKCm9dzHghYvSdsiMHqjyJC7MQPmdU=;
+        b=lZ0Pa0Jhs5NMOJ8/k2NGMFYqpg58eWoaxugsRrIplCfvDBnCdkAcarWayGJK6meZiB
+         D02TmpHsLiHV7nOonOH6Xe1KxVPDHXOmai4mlCcaNOAjgP5SM/Bmnl5ZNePJF512B0Ft
+         VdFBOuXDhVRJVLoHgNnpHV/K/3Yw0ITuliZKgb7EcCzsmA1xmQopqBIeFZhaIKBqGm+i
+         SLIxi4xS4MFj+V7gB40j29kOZJhT55sGTchCNH4n8GQJQdMhN52hiAaaTVEHmuHIWfSv
+         V2f2jbEDjMajUh1y3a+woCkVkHnYXTzMttU6iMM55QIWFx1kGa3KE0fr1fyUJfOaICEY
+         9MGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701519038; x=1702123838;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GziMkt38oro/EGKCm9dzHghYvSdsiMHqjyJC7MQPmdU=;
+        b=Yhl3FL8bfaJZm5FIUgLsGFcpGIz7kjjX4WPeaO5hJj03AAgva2CNXLKBgzpCKfBpMf
+         OLbupehWRR9Bgzh3aFgpUxVO6YHII+PcffUgsC221/PQ8YL3yQ4H10L7M8AKCMFl6bbv
+         7VX9v44yeH0A3pj/iFnsrbDAg3u3Ti33l4CdVwr59KLTJC196r9y7bjqJYV4nR78+Obe
+         5J7pAu1uq6FZ7UHXDaF7FAtZ2uhh81ky0BmMkZjhghQvkkw05bnvhhNC+gU/LktnKbCd
+         a7n76GNSe0dsUtP/Z7LE5aElwK4IbvRl2uLa6YGEIKO/0uoY8XdgSaiwjI+saqOKLpma
+         fb+w==
+X-Gm-Message-State: AOJu0YyF4y+bzfHiPooH7z6nIySZsNhUx5NlxAEfz5jsWATmWJLOjA5e
+        z58/n6cyFQMuFm532/X+tHXHyg==
+X-Google-Smtp-Source: AGHT+IGS7rSyE3QiA6fu+aSxIHQW+cIH8fMUj5mo3Ako59ALprfHpD3qewSXaKOU7llpc4x7ZqdJYg==
+X-Received: by 2002:a05:600c:3502:b0:40b:3933:f994 with SMTP id h2-20020a05600c350200b0040b3933f994mr1400816wmq.25.1701519037986;
+        Sat, 02 Dec 2023 04:10:37 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.223.109])
+        by smtp.gmail.com with ESMTPSA id d4-20020a05600c3ac400b0040b538047b4sm11954076wms.3.2023.12.02.04.10.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 02 Dec 2023 04:10:37 -0800 (PST)
+Message-ID: <cdb7c02f-a314-4e64-b95c-66c91e83d4d5@linaro.org>
+Date:   Sat, 2 Dec 2023 13:10:35 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 3/5] w1: ds2433: introduce a configuration structure
+Subject: Re: linux-next: Tree for Nov 27 (drivers/memory/tegra/tegra186.c)
 Content-Language: en-US
-To:     marc.ferland@gmail.com, krzysztof.kozlowski@linaro.org
-Cc:     gregkh@linuxfoundation.org, marc.ferland@sonatest.com,
-        jeff.dagenais@gmail.com, rdunlap@infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20231130135232.191320-1-marc.ferland@sonatest.com>
- <20231130135232.191320-4-marc.ferland@sonatest.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Autocrypt: addr=krzk@kernel.org; keydata=
+To:     Ashish Mhetre <amhetre@nvidia.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20231127150547.461d8bac@canb.auug.org.au>
+ <8b44e417-e9dc-4d6f-b0ae-f9834d0624ac@infradead.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
  cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
  JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
@@ -50,94 +74,80 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  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
- 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 fv0=
-In-Reply-To: <20231130135232.191320-4-marc.ferland@sonatest.com>
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <8b44e417-e9dc-4d6f-b0ae-f9834d0624ac@infradead.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/11/2023 14:52, marc.ferland@gmail.com wrote:
->  static int w1_f23_add_slave(struct w1_slave *sl)
->  {
-> -#ifdef CONFIG_W1_SLAVE_DS2433_CRC
->  	struct w1_f23_data *data;
->  
->  	data = kzalloc(sizeof(struct w1_f23_data), GFP_KERNEL);
->  	if (!data)
->  		return -ENOMEM;
-> +
-> +	data->cfg = &config_f23;
-> +
-> +#ifdef CONFIG_W1_SLAVE_DS2433_CRC
-> +	data->memory = kzalloc(data->cfg->eeprom_size, GFP_KERNEL);
-> +	if (!data->memory) {
-> +		kfree(data);
-> +		return -ENOMEM;
-> +	}
-> +#endif /* CONFIG_W1_SLAVE_DS2433_CRC */
->  	sl->family_data = data;
->  
-> -#endif	/* CONFIG_W1_SLAVE_DS2433_CRC */
->  	return 0;
->  }
->  
->  static void w1_f23_remove_slave(struct w1_slave *sl)
->  {
-> +	struct w1_f23_data *data = sl->family_data;
->  #ifdef CONFIG_W1_SLAVE_DS2433_CRC
-> -	kfree(sl->family_data);
-> +	kfree(data->memory);
-> +#endif /* CONFIG_W1_SLAVE_DS2433_CRC */
-> +	kfree(data);
->  	sl->family_data = NULL;
+On 28/11/2023 01:31, Randy Dunlap wrote:
+> 
+> 
+> On 11/26/23 20:05, Stephen Rothwell wrote:
+>> Hi all,
+>>
+>> Changes since 20231124:
+>>
+> 
+> on ARCH=arm64:
+> when CONFIG_IOMMU_API is not set:
+> 
+> ../drivers/memory/tegra/tegra186.c: In function 'tegra186_mc_resume':
+> ../drivers/memory/tegra/tegra186.c:149:17: error: implicit declaration of function 'tegra186_mc_client_sid_override' [-Werror=implicit-function-declaration]
+>   149 |                 tegra186_mc_client_sid_override(mc, client, client->sid);
 
-This should be before kfree(), to match w1_f23_add_slave(). You can move
-it now, since you store the pointer in data.
+Ashish,
 
-> -#endif	/* CONFIG_W1_SLAVE_DS2433_CRC */
->  }
->  
->  static const struct w1_family_ops w1_f23_fops = {
+This was reported few days ago and still no fix or comment. So we are
+repeating the same case happened weeks ago with other LKP reported issue
+- I need to ping you, otherwise you will not address reports in your
+code. We all expect that contributor addresses the reports related to
+their code.
+
+Knowing this I will double think before I take any code from you.
+
+I am planning to drop this code next week, unless some fix comes.
 
 Best regards,
 Krzysztof
