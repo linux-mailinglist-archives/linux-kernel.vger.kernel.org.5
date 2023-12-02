@@ -2,153 +2,354 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B73F5801C84
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 13:10:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB52C801C8A
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 13:20:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232488AbjLBMKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 07:10:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45426 "EHLO
+        id S232604AbjLBMS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 07:18:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232138AbjLBMKd (ORCPT
+        with ESMTP id S229451AbjLBMS0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 07:10:33 -0500
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E98718C
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 04:10:39 -0800 (PST)
-Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-40b479ec4a3so28407515e9.2
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Dec 2023 04:10:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701519038; x=1702123838; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GziMkt38oro/EGKCm9dzHghYvSdsiMHqjyJC7MQPmdU=;
-        b=lZ0Pa0Jhs5NMOJ8/k2NGMFYqpg58eWoaxugsRrIplCfvDBnCdkAcarWayGJK6meZiB
-         D02TmpHsLiHV7nOonOH6Xe1KxVPDHXOmai4mlCcaNOAjgP5SM/Bmnl5ZNePJF512B0Ft
-         VdFBOuXDhVRJVLoHgNnpHV/K/3Yw0ITuliZKgb7EcCzsmA1xmQopqBIeFZhaIKBqGm+i
-         SLIxi4xS4MFj+V7gB40j29kOZJhT55sGTchCNH4n8GQJQdMhN52hiAaaTVEHmuHIWfSv
-         V2f2jbEDjMajUh1y3a+woCkVkHnYXTzMttU6iMM55QIWFx1kGa3KE0fr1fyUJfOaICEY
-         9MGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701519038; x=1702123838;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GziMkt38oro/EGKCm9dzHghYvSdsiMHqjyJC7MQPmdU=;
-        b=Yhl3FL8bfaJZm5FIUgLsGFcpGIz7kjjX4WPeaO5hJj03AAgva2CNXLKBgzpCKfBpMf
-         OLbupehWRR9Bgzh3aFgpUxVO6YHII+PcffUgsC221/PQ8YL3yQ4H10L7M8AKCMFl6bbv
-         7VX9v44yeH0A3pj/iFnsrbDAg3u3Ti33l4CdVwr59KLTJC196r9y7bjqJYV4nR78+Obe
-         5J7pAu1uq6FZ7UHXDaF7FAtZ2uhh81ky0BmMkZjhghQvkkw05bnvhhNC+gU/LktnKbCd
-         a7n76GNSe0dsUtP/Z7LE5aElwK4IbvRl2uLa6YGEIKO/0uoY8XdgSaiwjI+saqOKLpma
-         fb+w==
-X-Gm-Message-State: AOJu0YyF4y+bzfHiPooH7z6nIySZsNhUx5NlxAEfz5jsWATmWJLOjA5e
-        z58/n6cyFQMuFm532/X+tHXHyg==
-X-Google-Smtp-Source: AGHT+IGS7rSyE3QiA6fu+aSxIHQW+cIH8fMUj5mo3Ako59ALprfHpD3qewSXaKOU7llpc4x7ZqdJYg==
-X-Received: by 2002:a05:600c:3502:b0:40b:3933:f994 with SMTP id h2-20020a05600c350200b0040b3933f994mr1400816wmq.25.1701519037986;
-        Sat, 02 Dec 2023 04:10:37 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.223.109])
-        by smtp.gmail.com with ESMTPSA id d4-20020a05600c3ac400b0040b538047b4sm11954076wms.3.2023.12.02.04.10.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 02 Dec 2023 04:10:37 -0800 (PST)
-Message-ID: <cdb7c02f-a314-4e64-b95c-66c91e83d4d5@linaro.org>
-Date:   Sat, 2 Dec 2023 13:10:35 +0100
+        Sat, 2 Dec 2023 07:18:26 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A24CE6;
+        Sat,  2 Dec 2023 04:18:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701519512; x=1733055512;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=HocNrwPVUIaPbL5UHtlU1yzyXI3OJzQgHbf7LCwlakw=;
+  b=K/0VaHXPTYWgHPK61fQK8yEHBMarrtHpmIeFnyn561+ehmNzO6CCHHmk
+   B8g/Xs3ke6Ad+juwHFTvxqkB3AHk+2m4fH+xjI7032g4jzOhA6+FX5T54
+   WRiP+fXxPSeM4rUHv9+pcKB5rsQiA3j9K7k48KMO8jSV6PFOCR5DEdX2I
+   8XWpnrBm7IxUJodT7MajoFuK2HJdQwOeLehKdQjvvrxUZswhWxlTTZD0S
+   zEAdwpr9S+ztYlUcBJEdS57Ao166gezvA17G3N+m+uzSegJ5LfOp2zsa3
+   peOMVvVsuZWi2W+vKySQmzn1ZtZDeSOvDQKcJ5v/XQ6apifa0Y5TiJSBu
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="424761362"
+X-IronPort-AV: E=Sophos;i="6.04,246,1695711600"; 
+   d="scan'208";a="424761362"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2023 04:18:31 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="804359113"
+X-IronPort-AV: E=Sophos;i="6.04,246,1695711600"; 
+   d="scan'208";a="804359113"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
+  by orsmga001.jf.intel.com with ESMTP; 02 Dec 2023 04:18:29 -0800
+Date:   Sat, 2 Dec 2023 20:16:21 +0800
+From:   Xu Yilun <yilun.xu@linux.intel.com>
+To:     Marco Pagani <marpagan@redhat.com>
+Cc:     Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, linux-fpga@vger.kernel.org
+Subject: Re: [RFC PATCH v2 1/2] fpga: add a module owner field to
+ fpga_manager and fpga_manager_ops
+Message-ID: <ZWsgFViqdJuC7N1d@yilunxu-OptiPlex-7050>
+References: <20231124162807.238724-1-marpagan@redhat.com>
+ <20231124162807.238724-2-marpagan@redhat.com>
+ <ZWG6Tg0egX6Cy9j5@yilunxu-OptiPlex-7050>
+ <7004d215-5185-4cce-a51e-42e131a30453@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: linux-next: Tree for Nov 27 (drivers/memory/tegra/tegra186.c)
-Content-Language: en-US
-To:     Ashish Mhetre <amhetre@nvidia.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20231127150547.461d8bac@canb.auug.org.au>
- <8b44e417-e9dc-4d6f-b0ae-f9834d0624ac@infradead.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <8b44e417-e9dc-4d6f-b0ae-f9834d0624ac@infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7004d215-5185-4cce-a51e-42e131a30453@redhat.com>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/11/2023 01:31, Randy Dunlap wrote:
+On Thu, Nov 30, 2023 at 11:42:36AM +0100, Marco Pagani wrote:
 > 
 > 
-> On 11/26/23 20:05, Stephen Rothwell wrote:
->> Hi all,
->>
->> Changes since 20231124:
->>
+> On 2023-11-25 10:11, Xu Yilun wrote:
+> > On Fri, Nov 24, 2023 at 05:28:06PM +0100, Marco Pagani wrote:
+> >> Add a module *owner field to the fpga_manager_ops and fpga_manager
+> >> structs to protect the fpga manager against the unloading of the
+> >> low-level control module while someone is holding a reference to the
+> >> manager device. Low-level control modules should statically set the
+> >> owner field of the fpga_manager_ops struct to THIS_MODULE. Then, when
+> >> the manager is registered using fpga_mgr_register(), the value is copied
+> >> into the owner field of the fpga_manager struct (that contains the
+> >> device context). In this way, the manager can later use it in
+> >> fpga_mgr_get() to take the low-level module's refcount. To prevent races
+> >> while unloading the low-level control module, fpga_mgr_get() and part of
+> >> the fpga_mgr_unregister() methods are protected with a mutex.
+> >>
+> >> Other changes: move put_device() from __fpga_mgr_get() to fpga_mgr_get()
+> >> and of_fpga_mgr_get() to improve code clarity.
+> >>
+> >> Fixes: 654ba4cc0f3e ("fpga manager: ensure lifetime with of_fpga_mgr_get")
+> >> Signed-off-by: Marco Pagani <marpagan@redhat.com>
+> >> ---
+> >>  drivers/fpga/fpga-mgr.c       | 56 +++++++++++++++++++++++++----------
+> >>  include/linux/fpga/fpga-mgr.h |  4 +++
+> >>  2 files changed, 44 insertions(+), 16 deletions(-)
+> >>
+> >> diff --git a/drivers/fpga/fpga-mgr.c b/drivers/fpga/fpga-mgr.c
+> >> index 06651389c592..608605d59860 100644
+> >> --- a/drivers/fpga/fpga-mgr.c
+> >> +++ b/drivers/fpga/fpga-mgr.c
+> >> @@ -21,6 +21,8 @@
+> >>  static DEFINE_IDA(fpga_mgr_ida);
+> >>  static const struct class fpga_mgr_class;
+> >>  
+> >> +static DEFINE_MUTEX(mgr_lock);
+> >> +
+> >>  struct fpga_mgr_devres {
+> >>  	struct fpga_manager *mgr;
+> >>  };
+> >> @@ -667,17 +669,15 @@ ATTRIBUTE_GROUPS(fpga_mgr);
+> >>  static struct fpga_manager *__fpga_mgr_get(struct device *dev)
+> >>  {
+> >>  	struct fpga_manager *mgr;
+> >> +	struct module *owner;
+> >>  
+> >>  	mgr = to_fpga_manager(dev);
+> >> +	owner = mgr->owner;
+> >>  
+> >> -	if (!try_module_get(dev->parent->driver->owner))
+> >> -		goto err_dev;
+> >> +	if (owner && !try_module_get(owner))
+> > 
+> > No need to test owner == NULL, try_module_get() does this.
 > 
-> on ARCH=arm64:
-> when CONFIG_IOMMU_API is not set:
+> You are right. I'll remove it in the next version.
 > 
-> ../drivers/memory/tegra/tegra186.c: In function 'tegra186_mc_resume':
-> ../drivers/memory/tegra/tegra186.c:149:17: error: implicit declaration of function 'tegra186_mc_client_sid_override' [-Werror=implicit-function-declaration]
->   149 |                 tegra186_mc_client_sid_override(mc, client, client->sid);
+> > 
+> >> +		mgr = ERR_PTR(-ENODEV);
+> >>  
+> >>  	return mgr;
+> >> -
+> >> -err_dev:
+> >> -	put_device(dev);
+> >> -	return ERR_PTR(-ENODEV);
+> >>  }
+> >>  
+> >>  static int fpga_mgr_dev_match(struct device *dev, const void *data)
+> >> @@ -693,12 +693,22 @@ static int fpga_mgr_dev_match(struct device *dev, const void *data)
+> >>   */
+> >>  struct fpga_manager *fpga_mgr_get(struct device *dev)
+> >>  {
+> >> -	struct device *mgr_dev = class_find_device(&fpga_mgr_class, NULL, dev,
+> >> -						   fpga_mgr_dev_match);
+> >> +	struct fpga_manager *mgr = ERR_PTR(-ENODEV);
+> >> +	struct device *mgr_dev;
+> >> +
+> >> +	mutex_lock(&mgr_lock);
+> >> +
+> >> +	mgr_dev = class_find_device(&fpga_mgr_class, NULL, dev, fpga_mgr_dev_match);
+> >>  	if (!mgr_dev)
+> >> -		return ERR_PTR(-ENODEV);
+> >> +		goto out;
+> >> +
+> >> +	mgr = __fpga_mgr_get(mgr_dev);
+> >> +	if (IS_ERR(mgr))
+> >> +		put_device(mgr_dev);
+> >>  
+> >> -	return __fpga_mgr_get(mgr_dev);
+> >> +out:
+> >> +	mutex_unlock(&mgr_lock);
+> >> +	return mgr;
+> >>  }
+> >>  EXPORT_SYMBOL_GPL(fpga_mgr_get);
+> >>  
+> >> @@ -711,13 +721,22 @@ EXPORT_SYMBOL_GPL(fpga_mgr_get);
+> >>   */
+> >>  struct fpga_manager *of_fpga_mgr_get(struct device_node *node)
+> >>  {
+> >> -	struct device *dev;
+> >> +	struct fpga_manager *mgr = ERR_PTR(-ENODEV);
+> >> +	struct device *mgr_dev;
+> >> +
+> >> +	mutex_lock(&mgr_lock);
+> >> +
+> >> +	mgr_dev = class_find_device_by_of_node(&fpga_mgr_class, node);
+> >> +	if (!mgr_dev)
+> >> +		goto out;
+> >>  
+> >> -	dev = class_find_device_by_of_node(&fpga_mgr_class, node);
+> >> -	if (!dev)
+> >> -		return ERR_PTR(-ENODEV);
+> >> +	mgr = __fpga_mgr_get(mgr_dev);
+> >> +	if (IS_ERR(mgr))
+> >> +		put_device(mgr_dev);
+> >>  
+> >> -	return __fpga_mgr_get(dev);
+> >> +out:
+> >> +	mutex_unlock(&mgr_lock);
+> >> +	return mgr;
+> >>  }
+> >>  EXPORT_SYMBOL_GPL(of_fpga_mgr_get);
+> >>  
+> >> @@ -727,7 +746,7 @@ EXPORT_SYMBOL_GPL(of_fpga_mgr_get);
+> >>   */
+> >>  void fpga_mgr_put(struct fpga_manager *mgr)
+> >>  {
+> >> -	module_put(mgr->dev.parent->driver->owner);
+> >> +	module_put(mgr->owner);
+> >>  	put_device(&mgr->dev);
+> >>  }
+> >>  EXPORT_SYMBOL_GPL(fpga_mgr_put);
+> >> @@ -806,6 +825,7 @@ fpga_mgr_register_full(struct device *parent, const struct fpga_manager_info *in
+> >>  
+> >>  	mgr->name = info->name;
+> >>  	mgr->mops = info->mops;
+> >> +	mgr->owner = info->mops->owner;
+> >>  	mgr->priv = info->priv;
+> >>  	mgr->compat_id = info->compat_id;
+> >>  
+> >> @@ -888,7 +908,11 @@ void fpga_mgr_unregister(struct fpga_manager *mgr)
+> >>  	 */
+> >>  	fpga_mgr_fpga_remove(mgr);
+> >>  
+> >> +	mutex_lock(&mgr_lock);
+> >> +
+> >>  	device_unregister(&mgr->dev);
+> >> +
+> >> +	mutex_unlock(&mgr_lock);
+> > 
+> > Why this part should be protected rather than the whole
+> > fpga_mgr_unregister()?
+> >
+> 
+> Protecting the fpga_remove() op seems unnecessary to me because it
+> does not affect the manager device's lifetime. Moreover, it may hold
+> the mutex for a long time since it was intended to interact with the
+> hardware to put it in a specific state before removing the driver.
+> 
+> > I feel the scope of the protection is unclear to me in this patch. What
+> > data should be protected from concurrent access by this mutex? From the
+> > code seems the racing of mgr dev should be protected but apparently it
+> > doesn't have to.
+> 
+> The mutex is there to ensure the lifetime of the manager device and
+> its context (struct fpga_manager) if fpga_mgr_get() happens to run
+> concurrently with the removal of the low-level module.
+> 
+> > 
+> > And with this mutex, the get/put/unregister() for one mgr should be
+> > exclusive with another mgr, but that also seems not necessary.
+> > 
+> 
+> I decided to use a static mutex because I thought putting the mutex
+> in the manager's context would be unsafe since its life would be tied
+> to the manager's life. For instance, consider the following sequence:
+> 
+> - A removes the low-level control module, and delete_module progresses
+> up to the point when it calls the module's exit function, which in turn
+> calls fpga_mgr_unregister().
+> 
+> - fpga_mgr_unregister() takes the mutex but gets descheduled before
+> completing the unregistering of the manager device.
+> 
+> - Meanwhile, B wants to get the manager (it is still there) and calls
+> fpga_mgr_get(), which tries to take the mutex but gets suspended since
+> it is held by A.
+> 
+> - A resumes and fpga_mgr_unregister() releases the manager device and
 
-Ashish,
+The lifecycle of the manager device is not entirely decided by
+fpga_mgr_unregister(), this func just puts/decreases the device
+refcount.
 
-This was reported few days ago and still no fix or comment. So we are
-repeating the same case happened weeks ago with other LKP reported issue
-- I need to ping you, otherwise you will not address reports in your
-code. We all expect that contributor addresses the reports related to
-their code.
+Remember fpga_mgr_get() gets the device via
+class_find_device()->get_device(). I assume if the valid device pointer
+could be returned by class_find_device(), it would never be released by
+other nice players. So I have no worry about the per manager mutex.
 
-Knowing this I will double think before I take any code from you.
+> its context, including the mutex on which B is suspended.
+> 
+> We could mitigate this specific case using mutex_trylock(). However,
+> there will still be other problematic cases, like if fpga_mgr_get()
+> gets suspended right before taking the mutex and then delete_module
+> proceeds up to when fpga_mgr_unregister() frees the manager device
+> and its context.
+> 
+> > I think the mgr->owner & mgr->ops should be protected from concurrent
+> > access of delete_module & fpga_mgr_get/put(), so how about:
+> > 
+> > struct fpga_manager_ops {
+> > 	struct module *owner;
+> > 	...
+> > };
+> > 
+> > struct fpga_manager {
+> > 	...
+> > 	struct mutex mops_lock;
+> > 	const struct fpga_manager_ops *mops;
+> > 	...
+> > };
+> > 
+> > 
+> > static struct fpga_manager *__fpga_mgr_get(struct device *dev)
+> > {
+> > 	struct fpga_manager *mgr;
+> > 
+> > 	mgr = to_fpga_manager(dev);
+> > 
+> > 	mutex_lock(&mgr->mops_lock);
+> > 
+> > 	if (!mgr->mops || !try_module_get(mgr->mops->owner))
+> > 		mgr = ERR_PTR(-ENODEV);
+> > 
+> > 	mutex_unlock(&mgr->mops_lock);
+> > 		
+> > 	return mgr;
+> > }
+> > 
+> > void fpga_mgr_unregister(struct fpga_manager *mgr)
+> > {
+> > 	fpga_mgr_fpga_remove(mgr);	
+> > 
+> > 	mutex_lock(&mgr->ops_lock);
+> > 	mgr->mops = NULL;
+> > 	mutex_unlock(&mgr->ops_lock);
+> > 
+> > 	device_unregister(&mgr->dev);	
+> > }
+> > 
+> > Not actually tested.
+> > 
+> 
+> I think protecting the only the ops is not enough for the same reasons.
+> If fpga_mgr_get() gets suspended right after class_find_device(),and
+> meanwhile the low-level module is removed, it resumes with a reference
+> to a manager device that no longer exists.
+> 
+> In a certain sense, however, using a mutex seems like a mitigation
+> that does not solve the problem at its root. I honestly still think
+> that taking the module's refcount right when registering the manager
+> is the only way that is both safe and robust against code changes.
 
-I am planning to drop this code next week, unless some fix comes.
+I would nak either. As mentioned above, that makes rmmod vendor module
+impossible. Introducing another user interface to release the module's
+refcount is also a bad idea. Who decides to take the ref, who releases
+it. A user has no knowledge of what is happening inside and should not
+enforce.
 
-Best regards,
-Krzysztof
+> However, my proposal was rejected.
+> 
+> So, if you prefer, I can drop the mutex entirely in the next version,
+> and we leave the responsibility of keeping all kernel pieces to the
 
+No, please try to fix it. Could you please reconsider my proposal?
+
+Thanks,
+Yilun
+
+> user. It will still be an improvement over taking the low-level
+> module's refcount through the parent device's driver pointer.
+> 
+> Thanks,
+> Marco
+> 
+> 
