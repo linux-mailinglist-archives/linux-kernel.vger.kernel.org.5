@@ -2,67 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CF9E801EA1
+	by mail.lfdr.de (Postfix) with ESMTP id D1E73801EA2
 	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 22:22:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231589AbjLBVMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 16:12:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41442 "EHLO
+        id S229738AbjLBVWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 16:22:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjLBVMm (ORCPT
+        with ESMTP id S229450AbjLBVWN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 16:12:42 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB207C8
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 13:12:48 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id 98e67ed59e1d1-280cd4e6f47so606253a91.1
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Dec 2023 13:12:48 -0800 (PST)
+        Sat, 2 Dec 2023 16:22:13 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2E82FA
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 13:22:19 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id 98e67ed59e1d1-28659b38bc7so1787870a91.0
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Dec 2023 13:22:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701551568; x=1702156368; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=9QzjFyHuu4z4km46Pkr8ZYovU1LpQ45VCf9QMZMCvCw=;
-        b=XpaBOSuuQqB5cc8vmI/Bgx5YaIQ/tr5+gw58AxvMvAQgtMJIgCNAAEbBfgf4c91F3n
-         ZtwaGRAo+fZ4CsOFzGJPjxK0uKJ+XBrPnyyvv0Pydb2ucm2cYkC12HPpwdBga18NqE1r
-         gUSCvuoP7G/H01JqC91GUAA77934cuXXWRX6gnbuL376BvbCs/JSg0yOrq6yUeoFRvHV
-         AtX7NcnYz4jEc/zXwS6x3mNo5mAub/2IlEVIF4+SY242ed/UlaWvalta/ZI8fANjyDKa
-         2IzcAs2REbXjwwxnWCpXlnvgbQddHBqChJ6SxjGQrB5eruQRB07eegQkZux3WLiW8xca
-         ia4A==
+        d=chromium.org; s=google; t=1701552139; x=1702156939; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=6q9rxKV/doUXKLjycqqgPKowk2OvJvKvEALIpKz5kcY=;
+        b=kHs9wlopJ9gWPHAgN+0LZcpZoEF1b2s6VHwOD8or5m8w60stKKdekaLU279U/0tvvl
+         nlzDo714yQgH9eYTWO3gtSRt6/mi3Q8iEcMBOTrXt/7FuZ/ToLytKnm9IEqd7K3MppnR
+         aXc30wKNGyUaygFgAbyeUi0IiN5ms8GbnaMUA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701551568; x=1702156368;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9QzjFyHuu4z4km46Pkr8ZYovU1LpQ45VCf9QMZMCvCw=;
-        b=S/QqBVQBZolCREZ9QQOhGZcZ72bewVTlrBZFxVBf6WWupgwjLylxFSajpsoowTmTj0
-         khXaBIvIts469AvaAfBprZW1GY8wp/degJhfi0rBtFtZJzwuyYCF7FJxvWl1HzoKZoIj
-         yvqsp+5+A68Cr7oL4LkJxmckN4XDWLMkobabOe/RHj3Aa6YA3157S7LPd0EZHXKxY8r3
-         nNqwqy0nF0yJlIKiwJt3UGd4zIuIMQyMJjx0s5aslaGsXYNSKyATF+xoL7BHjMhbQ2KY
-         AN+cWp0XHm7cfvQtn9uZ45Bnac3CO7gGLJc54PETZc9QkLRk0hxD/8qBZe1VVp06iJx+
-         /ZlA==
-X-Gm-Message-State: AOJu0YzG1vRgSVF7EaGiWWVumC2sDgf/wGK3oGslWsZDN+RFkJ8RQNlu
-        2Kswt3DwL8ty5RNv63jXPQ5hUkwTlNc=
-X-Google-Smtp-Source: AGHT+IGD1Vyu0AzBEb0MZPfnNnBv4EIfVMZw3DbpQ3XIpK/dHj9Y6DxNPeFsPrIeyaxOW7njHJ2YDA==
-X-Received: by 2002:a17:90a:ab8e:b0:285:bc38:b747 with SMTP id n14-20020a17090aab8e00b00285bc38b747mr8895157pjq.4.1701551568360;
-        Sat, 02 Dec 2023 13:12:48 -0800 (PST)
-Received: from sivslab-System-Product-Name ([140.116.154.65])
-        by smtp.gmail.com with ESMTPSA id y24-20020a170902b49800b001cc31dcec49sm5567101plr.146.2023.12.02.13.12.46
+        d=1e100.net; s=20230601; t=1701552139; x=1702156939;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6q9rxKV/doUXKLjycqqgPKowk2OvJvKvEALIpKz5kcY=;
+        b=LCjyZHhuSD/wXuKXQeH7CV4oImFJ1bxGo8cchHZzxNrXS/8BQQjwu4yQ1v5sKwCz/b
+         mQd+B6lOC4q6thfzuA1G7DOV/i2N/8YLXdPkphnM3sdNkGn+aasr2KpfM+GUg8DPkXmD
+         p/Ce8unu8OvblQlHZy7U8lzTt5FYVV4BLR6Q7m1oeDVxOPbSy/cyVbw3oImSWecic8k5
+         VAh/UUMblSXlfiPQB1KbzCYmzIFQsIa1xF9PmAMwALIv5iibulguiESAhfN4FcKm5uxg
+         m803CJjGXlWeIYVvsEgkCUs7urhWQocMa5KWKvuu1WepXFs40dvYkk7ws8X34qoZzd8Y
+         QZfA==
+X-Gm-Message-State: AOJu0YyogxN0ifW4oFOZcOXByX17wEgxZZkt1KT0uJf6b5Zrd9T0e2bW
+        XyblPtI2Mx/d0PEFyHQ8flUSb3dNhCgd0DZ2MkA=
+X-Google-Smtp-Source: AGHT+IGwdZyNrYkF0JkXUehoyBhB49FcgaPQH5ljbn8bJURYFny7K2GwkFNcA9nQkamR1wf/yUNoHQ==
+X-Received: by 2002:a17:90a:4dc7:b0:286:6cc0:cae8 with SMTP id r7-20020a17090a4dc700b002866cc0cae8mr1174330pjl.95.1701552139339;
+        Sat, 02 Dec 2023 13:22:19 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id h8-20020a170902748800b001c9d6923e7dsm1825013pll.222.2023.12.02.13.22.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Dec 2023 13:12:47 -0800 (PST)
-Date:   Sun, 3 Dec 2023 05:12:45 +0800
-From:   Kuan-Wei Chiu <visitorckw@gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] lib/sort: Optimize number of calls to comparison function
-Message-ID: <20231202211245.GA2632691@sivslab-System-Product-Name>
-References: <20231202163717.687578-1-visitorckw@gmail.com>
+        Sat, 02 Dec 2023 13:22:18 -0800 (PST)
+From:   Kees Cook <keescook@chromium.org>
+To:     "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+Cc:     Kees Cook <keescook@chromium.org>, Tony Luck <tony.luck@intel.com>,
+        Christian Brauner <brauner@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: [PATCH 0/5] pstore: Initial use of cleanup.h
+Date:   Sat,  2 Dec 2023 13:22:10 -0800
+Message-Id: <20231202211535.work.571-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231202163717.687578-1-visitorckw@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-Developer-Signature: v=1; a=openpgp-sha256; l=764; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=OkDdOwhG1YDg/PhDeGCQ9MLDBDYk/GZl+EOkqpfwlJY=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBla6AGcFq7mh0j/SHF6DRy6dTOljcIUt/3e8KiD
+ O4m31aHYA6JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZWugBgAKCRCJcvTf3G3A
+ JrS0EACDNa5cDFv8v98syV/CLw45XT9+6rkHlsnLPV6CO+qqH3XWas/PukrFwEtySggzDLfJSVO
+ KMG1z1EhLkxTZ0yEZSb8MPm/gPAVBgorAHz+XxvwVvnd7AK93xAywzkoJJdKlVhw9dwTwnC68wg
+ ocH77HFxf0URgyLGb1o83VKRWc0C7lwcHAjYCFfdj7IhVzAyWTIAclxdIj9A6B0MkMPZH68hKcA
+ HJoMt1GUIvh1/JZvMXedDEC50I/yvOxfvaQQSV1xAIJGbxIsFYCRftyx2RAEn9exGmlOAOKIKOx
+ NGTJTJZokqBFTZUvnv9v3scP9NtfpC2H3xvH0cGgHtC3UszM8Z0X+HIZW2AL8AlI9uz1WcXh69w
+ RjiAzLTbByaoAroGs4Al0Imk2lPjgQ8wEEzsWRpRl+Uff4hKOeEK0F5qex9i245ZUvZg/65ugNK
+ X1rZArEyldUwLgtO58KLapZ9WYAMzCkxOwLq2GjMqT4wazJ1vNCvP72m5odQyMEm3UGN45Qbkot
+ oooPjw0Jpctobyq9xCglh/gJEAu0AJX/artOjUYjLAgXpQ/71dj9QQfn7GD2sLMSFHyk8uy0fWJ
+ ydg392bMXkgv6tAbniE6m6aMoiGi0+Y1kzj0J05WDQsZvnfYj7jJM3rbZszjLwkOJ+aKdo9sw0G
+ l3EdSM5K iUdlLSA==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,43 +85,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 03, 2023 at 12:37:17AM +0800, Kuan-Wei Chiu wrote:
-> The current implementation continues the loop when the comparison
-> function returns a non-negative value, which includes the case when it
-> returns 0. However, in scenarios where the comparison function returns
-> 0, further comparisons are unnecessary. By making this adjustment, we
-> can potentially reduce the number of comparisons by approximately 50%
-> in extreme cases where all elements in the array are equal, and the
-> array size is sufficiently large.
-> 
-> Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
-> ---
->  lib/sort.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/lib/sort.c b/lib/sort.c
-> index b399bf10d675..1e98a62bb2f3 100644
-> --- a/lib/sort.c
-> +++ b/lib/sort.c
-> @@ -267,7 +267,7 @@ void sort_r(void *base, size_t num, size_t size,
->  			b = c;
->  
->  		/* Now backtrack from "b" to the correct location for "a" */
-> -		while (b != a && do_cmp(base + a, base + b, cmp_func, priv) >= 0)
-> +		while (b != a && do_cmp(base + a, base + b, cmp_func, priv) > 0)
->  			b = parent(b, lsbit, size);
->  		c = b;			/* Where "a" belongs */
->  		while (b != a) {	/* Shift it into place */
-> -- 
-> 2.25.1
->
+Hi,
 
-While the patch decreases the number of comparisons, it simultaneously
-leads to an increase in the number of swaps. As a result, the overall
-performance improvement may not be guaranteed.
+Mostly as practice for myself, I rewrote a bunch of the error handling
+paths in pstore to use the new cleanup.h routines. Notably, this meant
+adding a DEFINE_FREE() for struct inode. Notably, I'm enjoying this
+part: "44 insertions(+), 65 deletions(-)"
 
-Therefore, I believe it would be more prudent to drop this patch.
-I apologize for any disruption caused on the mailing list.
+It also passes basic testing. :)
 
-Best regards,
-Kuan-Wei Chiu
+-Kees
+
+Kees Cook (5):
+  pstore: inode: Convert kfree() usage to __free(kfree)
+  pstore: inode: Convert mutex usage to guard(mutex)
+  fs: Add DEFINE_FREE for struct inode
+  pstore: inode: Use __free(iput) for inode allocations
+  pstore: inode: Use cleanup.h for struct pstore_private
+
+ fs/pstore/inode.c  | 107 ++++++++++++++++++---------------------------
+ include/linux/fs.h |   2 +
+ 2 files changed, 44 insertions(+), 65 deletions(-)
+
+-- 
+2.34.1
+
