@@ -2,178 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BACA8801B8F
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 09:49:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B496801B90
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 09:49:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230413AbjLBIqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 03:46:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41230 "EHLO
+        id S231314AbjLBIq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 03:46:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjLBIqQ (ORCPT
+        with ESMTP id S231223AbjLBIqX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 03:46:16 -0500
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::224])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1A9313D;
-        Sat,  2 Dec 2023 00:46:21 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 32C6BE0002;
-        Sat,  2 Dec 2023 08:46:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
-        t=1701506780;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=N3Cgz/RmVnXRaNyY/Ku+4ixDljoP++5AapC1K6OMFqY=;
-        b=VN8OzUDCzkX2EwouK6RVqpAm1WMb/E2SxB+XQ9odyRUXx1f4MW6Srr0UzflTGIbL0+e7Pz
-        yddypq6Hv6svDddCpBSIX2VGG2pIGQMenRwfXXv7jxvzvs68IVc8wZP+FST3N4pN7fJKyH
-        U7+geOCU/iS4Smg2TOjkrwSCTNSRcF+hYrQDNRPOICDBrepKFLw7toluY0sciyvTPLKFhQ
-        Qu6+cXck5UN8ZhBiK9zBaN4qNwUTxJ208m9xnTNTQkR+8X/UCWRgRqTP8eYgQxnL1z6z1y
-        ck4JCS8QVK/DFsl/WhLgberYcK2p3evk8jER/W/kj4aPoMR/KB/uNi4584vIUw==
-Message-ID: <a2826485-70a6-4ba7-89e1-59e68e622901@arinc9.com>
-Date:   Sat, 2 Dec 2023 11:45:42 +0300
+        Sat, 2 Dec 2023 03:46:23 -0500
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 891DE196;
+        Sat,  2 Dec 2023 00:46:29 -0800 (PST)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-40b2ddab817so28121205e9.3;
+        Sat, 02 Dec 2023 00:46:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701506788; x=1702111588; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=czzx1q5MfxMXc1J5zLVzfBntykl0FO7/ypOlTJVyDOk=;
+        b=WX6jKVMzoKyC3xziGSvteEKv50/8dxx8tDm6UOXzsLSTyJhDYjjfk6oZ2SiGkkPLg0
+         cbX4qPuFeA6FxO7eSqvFiWn8a6gJ4zsuFjlfAlUaYHzfloVQrMNHKV9Z45Z/MrF6T8OM
+         VEhDM2L/1iHWDcTfeBhhACGHPL12+Z/ukgorkLYizwc2EuWBYWmyOgJkm02LpfXckHrF
+         tiPJT/wovS8DOnvsKLk1rQe1DclEqEGItaGBJ9kZXIqZXzY9mSshj4hTiMkArxcOGb0p
+         nAqEE5CiHjC5dwF4syTBbidia2kUQmCwvB2gmopUUU4kI5GkdpuQmtuaTwlIlh2fLa9Q
+         mMkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701506788; x=1702111588;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=czzx1q5MfxMXc1J5zLVzfBntykl0FO7/ypOlTJVyDOk=;
+        b=QzTlqzj6TOPwLa6Dg9fG+siVwMnhMOfKjctMARFNte3UDrj8VrO0/WE4DPwwT4FzX9
+         K+X0XULJshT4SK38iCiwf0L9lF6EkBWmF21hpio+kRmES92C90P6fZ8QdT6LFg2Uips0
+         zMzrFmOyebpmR7NWULUQ354DkT+pxUNCUzS3G8gGpbwC4NxKIa+Y8w8SllLjqIGYyxv1
+         7BeDQqDHjkR2GXr3jJQXJWjtK2aVrELIpQQJ+gqWeZAJ3lATF7AAHs6c2Vq8wv5oLJLg
+         OVVdbUv+QNtc82rOg0+XO+3yRNp5amKpt0WnuwnMBVyDgy2Ra59divow38oXcvlnzT9Q
+         Mdbg==
+X-Gm-Message-State: AOJu0YzX4gW8WsaQ24Lh9lUjFyBvECOwPktSIplQEHP1o+mnc2pH82C0
+        qHptve6C/JxaF+V+p9+ASA4=
+X-Google-Smtp-Source: AGHT+IE1mJrcuFnnFr4mC9cQkci9vynRJB1GdY6TluWt9SfPETMDGd6oHEss82dtJ+Q2DxCUy5FbRw==
+X-Received: by 2002:a05:600c:4690:b0:40c:67a:b3bc with SMTP id p16-20020a05600c469000b0040c067ab3bcmr99838wmo.71.1701506787548;
+        Sat, 02 Dec 2023 00:46:27 -0800 (PST)
+Received: from ?IPv6:2001:a61:3456:4e01:6ae:b55a:bd1d:57fc? ([2001:a61:3456:4e01:6ae:b55a:bd1d:57fc])
+        by smtp.gmail.com with ESMTPSA id i19-20020a05600c355300b0040b3867a297sm7800013wmq.36.2023.12.02.00.46.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 02 Dec 2023 00:46:27 -0800 (PST)
+Message-ID: <863114fa44cda4ca58e17a47191f0388df39cc80.camel@gmail.com>
+Subject: Re: [PATCH 10/12] iio: adc: ad9467: convert to backend framework
+From:   Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
+To:     David Lechner <dlechner@baylibre.com>
+Cc:     nuno.sa@analog.com, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-iio@vger.kernel.org,
+        Olivier MOYSAN <olivier.moysan@foss.st.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>
+Date:   Sat, 02 Dec 2023 09:46:26 +0100
+In-Reply-To: <CAMknhBGKinZB==QHLazZ9ZkfALyj2N=rVfZfsOk22p6X9SZSrQ@mail.gmail.com>
+References: <20231121-dev-iio-backend-v1-0-6a3d542eba35@analog.com>
+         <20231121-dev-iio-backend-v1-10-6a3d542eba35@analog.com>
+         <CAMknhBFbLju8UQJ7Uz85kHKrbK4mzt=wTRdnp40+PwWCJa5dsA@mail.gmail.com>
+         <026fa80d29054750937cd077b7f4f689de4e18f2.camel@gmail.com>
+         <CAMknhBGKinZB==QHLazZ9ZkfALyj2N=rVfZfsOk22p6X9SZSrQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 07/15] net: dsa: mt7530: do not run
- mt7530_setup_port5() if port 5 is disabled
-Content-Language: en-US
-To:     Simon Horman <horms@kernel.org>
-Cc:     Daniel Golle <daniel@makrotopia.org>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        DENG Qingfang <dqfext@gmail.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Frank Wunderlich <frank-w@public-files.de>,
-        Bartel Eerdekens <bartel.eerdekens@constell8.be>,
-        mithat.guner@xeront.com, erkin.bozoglu@xeront.com
-References: <20231118123205.266819-1-arinc.unal@arinc9.com>
- <20231118123205.266819-8-arinc.unal@arinc9.com>
- <20231121185358.GA16629@kernel.org>
-From:   =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-In-Reply-To: <20231121185358.GA16629@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: arinc.unal@arinc9.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Simon.
+On Fri, 2023-12-01 at 11:44 -0600, David Lechner wrote:
+> On Fri, Dec 1, 2023 at 3:08=E2=80=AFAM Nuno S=C3=A1 <noname.nuno@gmail.co=
+m> wrote:
+> >=20
+> > On Thu, 2023-11-30 at 17:30 -0600, David Lechner wrote:
+> > > On Tue, Nov 21, 2023 at 4:17=E2=80=AFAM Nuno Sa via B4 Relay
+> > > <devnull+nuno.sa.analog.com@kernel.org> wrote:
+> > > >=20
+> > > > From: Nuno Sa <nuno.sa@analog.com>
+> > > >=20
+> > > > Convert the driver to use the new IIO backend framework. The device
+> > > > functionality is expected to be the same (meaning no added or remov=
+ed
+> > > > features).
+> > >=20
+> > > Missing a devicetree bindings patch before this one?
+> > >=20
+> > > >=20
+> > > > Also note this patch effectively breaks ABI and that's needed so we=
+ can
+> > > > properly support this device and add needed features making use of =
+the
+> > > > new IIO framework.
+> > >=20
+> > > Can you be more specific about what is actually breaking?
+> > >=20
+> > > >=20
+> > > > Signed-off-by: Nuno Sa <nuno.sa@analog.com>
+> > > > ---
+> > > > =C2=A0drivers/iio/adc/Kconfig=C2=A0 |=C2=A0=C2=A0 2 +-
+> > > > =C2=A0drivers/iio/adc/ad9467.c | 256 +++++++++++++++++++++++++++++-=
+---------------
+> > > > --
+> > > > =C2=A02 files changed, 157 insertions(+), 101 deletions(-)
+> > > >=20
+> > > > diff --git a/drivers/iio/adc/Kconfig b/drivers/iio/adc/Kconfig
+> > > > index 1e2b7a2c67c6..af56df63beff 100644
+> > > > --- a/drivers/iio/adc/Kconfig
+> > > > +++ b/drivers/iio/adc/Kconfig
+> > > > @@ -275,7 +275,7 @@ config AD799X
+> > > > =C2=A0config AD9467
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 tristate "Analog Devices=
+ AD9467 High Speed ADC driver"
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 depends on SPI
+> > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 depends on ADI_AXI_ADC
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 select IIO_BACKEND
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 help
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Say yes here=
+ to build support for Analog Devices:
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * AD9467 16-=
+Bit, 200 MSPS/250 MSPS Analog-to-Digital Converter
+> > > > diff --git a/drivers/iio/adc/ad9467.c b/drivers/iio/adc/ad9467.c
+> > > > index 5db5690ccee8..8b0402e73ace 100644
+> > > > --- a/drivers/iio/adc/ad9467.c
+> > > > +++ b/drivers/iio/adc/ad9467.c
+> > >=20
+> > > <snip>
+> > >=20
+> > > > +static int ad9467_buffer_get(struct iio_dev *indio_dev)
+> > >=20
+> > > perhaps a more descriptive name: ad9467_buffer_setup_optional?
+> > >=20
+> >=20
+> > Hmm, no strong feeling. So yeah, can do as you suggest. Even though, no=
+w that I'm
+> > thinking, I'm not so sure if this is just some legacy thing we had in A=
+DI tree. I
+> > wonder if it actually makes sense for a device like with no buffering s=
+upport?!
+> >=20
+> > > > +{
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct device *dev =3D indio_=
+dev->dev.parent;
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 const char *dma_name;
+> > > > +
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!device_property_present(=
+dev, "dmas"))
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 return 0;
+> > > > +
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (device_property_read_stri=
+ng(dev, "dma-names", &dma_name))
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 dma_name =3D "rx";
+> > > > +
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return devm_iio_dmaengine_buf=
+fer_setup(dev, indio_dev, dma_name);
+> > >=20
+> > > The device tree bindings for "adi,ad9467" don't include dma propertie=
+s
+> > > (nor should they). Perhaps the DMA lookup should be a callback to the
+> > > backend? Or something similar to the SPI Engine offload that we are
+> > > working on?
+> > >=20
+> >=20
+> > Oh yes, I need to update the bindings. In the link I sent you we can se=
+e my
+> > thoughts
+> > on this. In theory, hardwarewise, it would actually make sense for the =
+DMA to be
+> > on
+> > the backend device because that's where the connection is in HW. Howeve=
+r, since
+> > we
+> > want to have the IIO interface in the frontend, it would be hard to do =
+that
+> > without
+> > hacking devm_iio_dmaengine_buffer_setup(). I mean, lifetime wise it wou=
+ld be far
+> > from
+> > wise to have the DMA buffer associated to a completely different device=
+ than the
+> > IIO
+> > parent device. I mean, one way could just be export iio_dmaengine_buffe=
+r_free()
+> > and
+> > iio_dmaengine_buffer_alloc() so we can actually control the lifetime of=
+ the
+> > buffer
+> > from the frontend device. If Jonathan is fine with this, I'm on board f=
+or it....
+> >=20
+> > - Nuno S=C3=A1
+> > >=20
+> >=20
+>=20
+> I was planning on exporting iio_dmaengine_buffer_alloc() [1] for SPI
+> Engine offload support, so I hope that is the right way to go. ;-)
+>=20
+> [1]:
+> https://github.com/analogdevicesinc/linux/pull/2341/commits/71048ff83a63e=
+9d0a5ddb9ffa331871edd6bd2a5
 
-On 21.11.2023 21:53, Simon Horman wrote:
-> On Sat, Nov 18, 2023 at 03:31:57PM +0300, Arınç ÜNAL wrote:
->> There's no need to run all the code on mt7530_setup_port5() if port 5 is
->> disabled. The only case for calling mt7530_setup_port5() from
->> mt7530_setup() is when PHY muxing is enabled. That is because port 5 is not
->> defined as a port on the devicetree, therefore, it cannot be controlled by
->> phylink.
->>
->> Because of this, run mt7530_setup_port5() if priv->p5_intf_sel is
->> P5_INTF_SEL_PHY_P0 or P5_INTF_SEL_PHY_P4. Remove the P5_DISABLED case from
->> mt7530_setup_port5().
->>
->> Stop initialising the interface variable as the remaining cases will always
->> call mt7530_setup_port5() with it initialised.
->>
->> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
->> Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
->> ---
->>   drivers/net/dsa/mt7530.c | 9 +++------
->>   1 file changed, 3 insertions(+), 6 deletions(-)
->>
->> diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
->> index fc87ec817672..1aab4c3f28b0 100644
->> --- a/drivers/net/dsa/mt7530.c
->> +++ b/drivers/net/dsa/mt7530.c
->> @@ -942,9 +942,6 @@ static void mt7530_setup_port5(struct dsa_switch *ds, phy_interface_t interface)
->>   		/* MT7530_P5_MODE_GMAC: P5 -> External phy or 2nd GMAC */
->>   		val &= ~MHWTRAP_P5_DIS;
->>   		break;
->> -	case P5_DISABLED:
->> -		interface = PHY_INTERFACE_MODE_NA;
->> -		break;
->>   	default:
->>   		dev_err(ds->dev, "Unsupported p5_intf_sel %d\n",
->>   			priv->p5_intf_sel);
->> @@ -2313,8 +2310,6 @@ mt7530_setup(struct dsa_switch *ds)
->>   		 * Set priv->p5_intf_sel to the appropriate value if PHY muxing
->>   		 * is detected.
->>   		 */
->> -		interface = PHY_INTERFACE_MODE_NA;
->> -
->>   		for_each_child_of_node(dn, mac_np) {
->>   			if (!of_device_is_compatible(mac_np,
->>   						     "mediatek,eth-mac"))
->> @@ -2346,7 +2341,9 @@ mt7530_setup(struct dsa_switch *ds)
->>   			break;
->>   		}
->>   
->> -		mt7530_setup_port5(ds, interface);
->> +		if (priv->p5_intf_sel == P5_INTF_SEL_PHY_P0 ||
->> +		    priv->p5_intf_sel == P5_INTF_SEL_PHY_P4)
->> +			mt7530_setup_port5(ds, interface);
-> 
-> Hi Arınç,
-> 
-> It appears that interface is now uninitialised here.
-> 
-> Flagged by Smatch.
+I don't really want to extend much on this since this is still out of tree =
+code so
+I'm not sure we should be discussing it much in here. But there a couple of=
+ concerns
+already I'm seeing:
 
-I'm not sure why it doesn't catch that for mt7530_setup_port5() to run
-here, priv->p5_intf_sel must be either P5_INTF_SEL_PHY_P0 or
-P5_INTF_SEL_PHY_P4. And for that to happen, the interface variable will be
-initialised.
+* AFAIU, you export the function so you can use it in your pwm trigger. And=
+ you don't
+want to attach the buffer to a device. That looks very questionable. If you=
+ don't
+attach to a device, how do you have the userspace interface working on that=
+ buffer?
+How can you fetch samples from it? Also hiding the buffer allocation in pur=
+e trigger
+device is at the very least questionable. But the point is, in the end of t=
+he day,
+the buffer should belong to a device.
 
-for_each_child_of_node(dn, mac_np) {
-	if (!of_device_is_compatible(mac_np,
-				     "mediatek,eth-mac"))
-		continue;
+* Your PWM trigger seems to be highly focused on the spi_engine offload fea=
+ture. You
+should go for a generic pwm trigger which is something that was already dis=
+cussed on
+the list and AFAIR, completely acceptable. That said, not so sure how much =
+will we
+win (in terms of code simplification) by having devices under the spi_engin=
+e
+controller using a pwm trigger. But conceptually it is correct and we do ha=
+ve a mode
+for hardware triggered buffers.
 
-	ret = of_property_read_u32(mac_np, "reg", &id);
-	if (ret < 0 || id != 1)
-		continue;
-
-	phy_node = of_parse_phandle(mac_np, "phy-handle", 0);
-	if (!phy_node)
-		continue;
-
-	if (phy_node->parent == priv->dev->of_node->parent) {
-		ret = of_get_phy_mode(mac_np, &interface);
-		if (ret && ret != -ENODEV) {
-			of_node_put(mac_np);
-			of_node_put(phy_node);
-			return ret;
-		}
-		id = of_mdio_parse_addr(ds->dev, phy_node);
-		if (id == 0)
-			priv->p5_intf_sel = P5_INTF_SEL_PHY_P0;
-		if (id == 4)
-			priv->p5_intf_sel = P5_INTF_SEL_PHY_P4;
-	}
-	of_node_put(mac_np);
-	of_node_put(phy_node);
-	break;
-}
-
-if (priv->p5_intf_sel == P5_INTF_SEL_PHY_P0 ||
-     priv->p5_intf_sel == P5_INTF_SEL_PHY_P4)
-	mt7530_setup_port5(ds, interface);
-
-Arınç
+- Nuno S=C3=A1
