@@ -2,75 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60A38801DA0
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 17:02:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10B22801DA3
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 17:02:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233092AbjLBQCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 11:02:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38804 "EHLO
+        id S233105AbjLBQCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 11:02:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230239AbjLBQCJ (ORCPT
+        with ESMTP id S230239AbjLBQCk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 11:02:09 -0500
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6D8E184;
-        Sat,  2 Dec 2023 08:02:15 -0800 (PST)
-Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-332c0c32d19so2616398f8f.3;
-        Sat, 02 Dec 2023 08:02:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701532934; x=1702137734; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:cc:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fU/NEbx/GEWzCAUdmHl+WjvtDDH/8BWmzFN7WY12d78=;
-        b=aYe76WwWtTKIIfzv1M1xzazBwXQogh38EoMnXgtsupOGvV4KmyMMWz8uWAN/gBEVFT
-         4JBPMVqKQsGT425gtOGEj3O64wnfhIzvOGMN3PC52j1ZXI76RxeTBxd2y3TgrjB4I4eU
-         Q2f2Tp5nOYBHgvi7MZBq7RdLr5va9L4wYlCaQxwt9xxfV1SrBCGIA7GCrG++gGlRAjCX
-         RJ0K1PrONn8ua7nvC6WLH7gUwCom+Y+Wx7FCyzQ9MFK9tzlQDe+/GdhVxXQcDeKb3FsP
-         nc3Mz0UZWEIq/PbDi3HvtGkuYnjD8HMFgX5UW+TGZyi/nnM0SKCH/hJmKvn4Nn2eW42z
-         CtXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701532934; x=1702137734;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:cc:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fU/NEbx/GEWzCAUdmHl+WjvtDDH/8BWmzFN7WY12d78=;
-        b=JesyeNbp7+Hbue1QCZ/ATL8X4iuGhcEl11ugDpFq2MzHRKLZeAUA+wKAHikc+vAdVX
-         qi3P2BWXUyiHVYzZ/ic9oYybSdA0WtZbHnSNjMJVrQ7L2wbdF4y0P0zntQsLMiKq0fyd
-         n/KFeeQtFOAGNM/u7w4qYDdolZomYcmI7HqXiJ0ZEImt4hO8fkQJ/EhRaIZ8e6DfFQzn
-         qlfRwIi8ldohVzUVI4PEAs83taEqyZAPcg78UkI5+AQPANHCpxwU9GO7+hteHa6eCfFb
-         nh5Hbm4PBdeRbx4Pn9xVGpW3Ti/jVrU1wlyySKsS8d4msbVuvhejb3MgEfFpOG+vmlmP
-         mVww==
-X-Gm-Message-State: AOJu0Yxf4jcKCqe6QBULX+uYVivsmw7K23gHl1UL0STxZfj9/GgSFz9+
-        lhhO59m31YFgu+vVFdqg+jOl7E9cRGUZcw==
-X-Google-Smtp-Source: AGHT+IECoTdcNwtXWz4lBnf7PIuZVcGneQgOEFSxQi3wRpiUqSTAaeOpfhb0b3A0AmZWdsw1yVpS/g==
-X-Received: by 2002:a5d:4dc1:0:b0:333:3ead:54c3 with SMTP id f1-20020a5d4dc1000000b003333ead54c3mr296492wru.97.1701532934065;
-        Sat, 02 Dec 2023 08:02:14 -0800 (PST)
-Received: from [192.168.0.28] (cable-178-148-234-71.dynamic.sbb.rs. [178.148.234.71])
-        by smtp.gmail.com with ESMTPSA id j6-20020a5d5646000000b0033307ffb193sm7157180wrw.29.2023.12.02.08.02.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 02 Dec 2023 08:02:13 -0800 (PST)
-Message-ID: <9d453ea5-e2ce-4559-a611-714ba0201e8d@gmail.com>
-Date:   Sat, 2 Dec 2023 17:02:11 +0100
+        Sat, 2 Dec 2023 11:02:40 -0500
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64F7C129;
+        Sat,  2 Dec 2023 08:02:46 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1701532957; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=Mba3yLAjCNFN7TqM72UcT1PMiLw9ZXaBS2xqGvH78aK8Hl+6X8mflR1GWCHqAG/7xD
+    1DLWcgFSTuV9xMPmbmnWEwtaSW6dZQb5gcWfF5bx3rQtNcsuRDNyTrm21QImt+00zOmq
+    eD/FASXU84pJaLxHx8TASklrjELJ+Vmty3IdY1jCccMK5ugzvvJkgSgIrOU/46RmDWQ9
+    cDINKgHyOWpj3/qy7binNyLz5OsfhYxMFZtFXSVT7qE47WFiAG53O5LZ8Ok/80VXYOIE
+    KOUj8YcNaQcFjSAk8lW9YDBZ3OVkzf+FvJHqlqLVdTlpAFyz4wXJ5sgojm0OGEvCsqEm
+    Lkdw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1701532957;
+    s=strato-dkim-0002; d=strato.com;
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=LXKxrrhtGIdXauUihykJ3ZGi4SIcrDZSrwSO/TvC4Oo=;
+    b=ODzoh84ksfgwMb9aSMragqnT8XX6liHGt5ku8/5t8d8JWKCq8VsvR2EGKQnxFUgeJd
+    ghYwX9S/eHkkylsNortdk4Oz6tTsCaHYMA/0O21Z5VWDgwJtE/8UMUv2s7IwiS4CPqKF
+    +7WK1RjnQ+5+DwlJJBANIgjfHVQLOqwNToiV1oyBwvDBFHqg6aKGdvmZmHbYVKrglq7L
+    owlHc7NUq+2ZjMtxNyS0UR79Wn2BGWrpx246osVKopV7wNH/FKyKBoRzY5vX5nSAUdda
+    LLt+Dpvtw3ANaSdsPWnW4aVNZc0S4iHjXEVcNlRob4LoLCdc6Imj0M9Pj+sM7iP2MhUe
+    mOBw==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1701532957;
+    s=strato-dkim-0002; d=iokpp.de;
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=LXKxrrhtGIdXauUihykJ3ZGi4SIcrDZSrwSO/TvC4Oo=;
+    b=Gh/IHCFqM4S5DlacBKMim1vyXribJAccuk4yE7ZSxw74ci97EpitZ8dXN/udVyekei
+    pShUDfaqDADl//WDQ4s+zSo85T518F5KHXd2u10rvLZTIUj/MSUo9rKDgA6jbwTI3yv+
+    aoxYEVFVWnBx70Zh+dP9LItdEdc5LJQyR3utTN/mXqmna2XyJIlKOS31RHYoqPwYLq5a
+    aHkPMZoK2Bp+x0YH5c3bC9EnKKNkWkeq7x3yI2Eyc9W7WyqDRLwX0vb8ak4xxIwQDfld
+    FZ7mq67MbNrT9HtoWl/jupWFtt7H0l4PqTPauCEU0cQS6TuK/KoT0+1rYuiUTa142lC8
+    9Img==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1701532957;
+    s=strato-dkim-0003; d=iokpp.de;
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=LXKxrrhtGIdXauUihykJ3ZGi4SIcrDZSrwSO/TvC4Oo=;
+    b=QuZ8Rm4VFE+VZSd4CmmrFKBkaWnuOGl1Y+r72uxypq6e3YgLSUUHq+6FfzzkTzVTiu
+    tlwC2OQCKTtPEHWC9BBg==
+X-RZG-AUTH: ":LmkFe0i9dN8c2t4QQyGBB/NDXvjDB6pBSedrgBzPc9DUyubU4DD1QLj68UeUr1+U0BfWsYLe+bQusZClHgu6POSIuOZDSGI3MA01fA=="
+Received: from Munilab01-lab.speedport.ip
+    by smtp.strato.de (RZmta 49.9.7 AUTH)
+    with ESMTPSA id z8d451zB2G2a5CI
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Sat, 2 Dec 2023 17:02:36 +0100 (CET)
+From:   Bean Huo <beanhuo@iokpp.de>
+To:     avri.altman@wdc.com, bvanassche@acm.org, alim.akhtar@samsung.com,
+        jejb@linux.ibm.com, martin.petersen@oracle.com, mani@kernel.org,
+        quic_cang@quicinc.com, quic_asutoshd@quicinc.com,
+        beanhuo@micron.com, thomas@t-8ch.de
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mikebi@micron.com, lporzio@micron.com, Bean Huo <beanhuo@iokpp.de>
+Subject: [PATCH v3 0/3] Add UFS RTC support
+Date:   Sat,  2 Dec 2023 17:02:24 +0100
+Message-Id: <20231202160227.766529-1-beanhuo@iokpp.de>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc:     savicaleksa83@gmail.com, Jean Delvare <jdelvare@suse.com>,
-        linux-hwmon@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] hwmon: Add driver for Gigabyte AORUS Waterforce AIO
- coolers
-To:     Guenter Roeck <linux@roeck-us.net>
-References: <20231020130212.8919-1-savicaleksa83@gmail.com>
- <45484650-4975-4f66-971d-7599681b1538@gmail.com>
- <0b76e7b5-a693-41e9-bf8c-531735c57337@roeck-us.net>
-Content-Language: en-US
-From:   Aleksa Savic <savicaleksa83@gmail.com>
-In-Reply-To: <0b76e7b5-a693-41e9-bf8c-531735c57337@roeck-us.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,16 +84,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-12-02 16:42:25 GMT+01:00, Guenter Roeck wrote:
-> 
-> I was waiting for that. In general, I am too busy to review patches if
-> 0-day reports a problem, and wait for those to be resolved.
-> 
-> Guenter
-> 
+Adding RTC support for embedded storage device UFS in its driver, it is
+important for a few key reasons:
 
-Ah, fair enough. I was hesitant to send a v2 outright, but will do that
-soon and know for the future.
+1. Helps with Regular Maintenance:
+The RTC provides a basic way to keep track of time, making it useful for
+scheduling routine maintenance tasks in the storage device. This includes
+things like making sure data is spread
+evenly across the storage to extend its life.
 
-Thanks,
-Aleksa
+2. Figuring Out How Old Data Is:
+The RTC helps the device estimate how long ago certain parts of the storage
+were last used. This is handy for deciding when to do maintenance tasks to
+keep the storage working well over time.
+
+3. Making Devices Last Longer:
+By using the RTC for regular upkeep, we can make sure the storage device lasts
+longer and stays reliable. This is especially important for devices that need
+to work well for a long time.
+
+4.Fitting In with Other Devices:
+The inclusion of RTC support aligns with existing UFS specifications (starting
+from UFS Spec 2.0) and is consistent with the prevalent industry practice. Many
+UFS devices currently on the market utilize RTC for internal timekeeping. By
+ensuring compatibility with this widely adopted standard, the embedded storage
+device becomes seamlessly integrable with existing hardware and software
+ecosystems, reducing the risk of compatibility issues.
+
+In short, adding RTC support to embedded storage device UFS helps with regular
+upkeep, extends the device's life, ensures compatibility, and keeps everything
+running smoothly with the rest of the system.
+
+Changelog:
+        v2--v3:
+                1. Move ufshcd_is_ufs_dev_busy() to the source file ufshcd.c in patch 1/3.
+                2. Format commit statement in patch 2/3.
+        v1--v2:
+                1. Add a new patch "scsi: ufs: core: Add ufshcd_is_ufs_dev_busy()"
+                2. RTC periodic update work is disabled by default
+                3. Address several issues raised by Avri, Bart, and Thomas.
+
+Bean Huo (3):
+  scsi: ufs: core: Add ufshcd_is_ufs_dev_busy()
+  scsi: ufs: core: Add UFS RTC support
+  scsi: ufs: core: Add sysfs node for UFS RTC update
+
+ Documentation/ABI/testing/sysfs-driver-ufs |  7 ++
+ drivers/ufs/core/ufs-sysfs.c               | 31 +++++++
+ drivers/ufs/core/ufshcd.c                  | 96 +++++++++++++++++++++-
+ include/ufs/ufs.h                          | 15 ++++
+ include/ufs/ufshcd.h                       |  4 +
+ 5 files changed, 149 insertions(+), 4 deletions(-)
+
+-- 
+2.34.1
+
