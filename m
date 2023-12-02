@@ -2,123 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7B1C801D3A
+	by mail.lfdr.de (Postfix) with ESMTP id 8C453801D39
 	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 15:16:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232880AbjLBOOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 09:14:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35104 "EHLO
+        id S232969AbjLBOPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 09:15:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjLBOOx (ORCPT
+        with ESMTP id S229451AbjLBOPi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 09:14:53 -0500
-Received: from sender-of-o51.zoho.in (sender-of-o51.zoho.in [103.117.158.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E65539E;
-        Sat,  2 Dec 2023 06:14:57 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1701526467; cv=none; 
-        d=zohomail.in; s=zohoarc; 
-        b=fDZSOFHCvt5IYr7cKeZ6LcJX7w/yNCwfjgWT8L9PPEPh2epj6UyTSCMszwYnDZJ0pMQv2YtVGdJS0HnBgzd5AasXHH2lvfEiGKZZBlg1xct0Yn5HuOAGfd6Ki5nU7nRAQKWmUnN5/x3Gqy7IKINmRrs45BjEgcSaSm7jD0/uJLY=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.in; s=zohoarc; 
-        t=1701526467; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
-        bh=mfrxv6rAENfS2pZcQgiFWIIxox6pUjw/HvOmlXEpPU0=; 
-        b=P62B31AmP/F47X8guQ+Q1Qm17pnGzaNUA08Gn/21h4gPAHynyxNQ/fgoCq6ySxq7bFUXZs8xbsDeNQQco9AHcaSMZNMM1Zi8IZKO41eP+VfG8mirL6sc6ipn4KvP33x2DJrBTW49Ks2xhFIVtspxfzU4MZowDDXiDe7A8AUzE8c=
-ARC-Authentication-Results: i=1; mx.zohomail.in;
-        dkim=pass  header.i=siddh.me;
-        spf=pass  smtp.mailfrom=code@siddh.me;
-        dmarc=pass header.from=<code@siddh.me>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1701526467;
-        s=zmail; d=siddh.me; i=code@siddh.me;
-        h=Message-ID:Date:Date:MIME-Version:To:To:Cc:Cc:References:Subject:Subject:From:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:Message-Id:Reply-To;
-        bh=mfrxv6rAENfS2pZcQgiFWIIxox6pUjw/HvOmlXEpPU0=;
-        b=HNDDikJnX7LmQ7DRAjQFN8AIM8sbcLBgluSXhheEHUyGnZZ5NLTZkqYOsLMjfhM8
-        Mf3cIDqCBZI+sxQsCVUuoymhveYEs0o+PbmZc7x3xjxaj+7sA3RRzi4t2IijMq1rZgd
-        fkZ49DpjKpJMJqH75RDoO6lWX9p1EDXV8ZzcIp9g=
-Received: from [192.168.1.12] (122.170.35.155 [122.170.35.155]) by mx.zoho.in
-        with SMTPS id 170152646527862.459403783952666; Sat, 2 Dec 2023 19:44:25 +0530 (IST)
-Message-ID: <0642446f-ebd9-429a-a293-94840c765038@siddh.me>
-Date:   Sat, 2 Dec 2023 19:44:24 +0530
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To:     syzbot+bbe84a4010eeea00982d@syzkaller.appspotmail.com
-Cc:     davem@davemloft.net, edumazet@google.com,
-        krzysztof.kozlowski@linaro.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        pabeni@redhat.com, syzkaller-bugs@googlegroups.com
-References: <000000000000cb112e0609b419d3@google.com>
-Subject: Re: [syzbot] [net?] [nfc?] KASAN: slab-use-after-free Read in
- nfc_alloc_send_skb
-Content-Language: en-US, en-GB, hi-IN
-From:   Siddh Raman Pant <code@siddh.me>
-In-Reply-To: <000000000000cb112e0609b419d3@google.com>
-Content-Type: text/plain; charset=UTF-8
+        Sat, 2 Dec 2023 09:15:38 -0500
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CD8711C;
+        Sat,  2 Dec 2023 06:15:44 -0800 (PST)
+Received: by mail-qk1-x733.google.com with SMTP id af79cd13be357-77dc733b25cso181011485a.1;
+        Sat, 02 Dec 2023 06:15:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701526543; x=1702131343; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cHjT/29o2cHv+uPSUDloG/9K5z+4mwtqcKQnCHqcHPk=;
+        b=XixYoi6gWsVTI/OvkDXmzWnmpY0gqzoB5KNuJV9kiDvtTEuJHgp/FRlGCAuR/aj0h2
+         AL5pIF4AFVP3A58/hheKs0LCmimp6wUV6Hu1hMpFcpzq47k6SQGZrow6ZTNv3HlEsW+6
+         TtZIE/qt13UbV0X6BIhD9zQ+r4BFvUHWj7sNCVKyJIljmYyXmaMA4zGiXFU7sB395jUa
+         cTUvMSa4Gjgw4nc75EwNsJaWKOG4Das3FHdE8R4h0R/d/4NmBd9oHIscM4zCcMDE/sL2
+         bT06kZvqNtRMmOC02oXQvXfgUC+Kxt0u8a2fwwh1idNUUlc6bkgY5p5iBYBmGnsEy8M5
+         kvIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701526543; x=1702131343;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=cHjT/29o2cHv+uPSUDloG/9K5z+4mwtqcKQnCHqcHPk=;
+        b=cBvm2KIqrTFjx0Pq3m7EBk98PEmOp+ByOr1sJbLbzZbkpaHvnSGAaaexJEaiwxhZvr
+         GgDcRCgU8MucLctsRXo2jk6PjpQ1UPPgvZqulm2uXKJn5ifsrLjzB+wavmCG91K+QUF4
+         ldrDttvfUAfLi++7hsZWcoYeYYTWV3cL6Z98K9EwCVNH+nlv4eP2RRjtIUuGj1Rm1865
+         6Hu1X6UKYbNPMWTJPqjEqmOiXyHhVC5hXyLGgK/N7DLHi+F1JRZBqlhgBZ0H57h3kKly
+         oBs81mp7maycHvvOyjOEHpPsKQbQqtMdmGoFTxoafidjX299oMZDLDinsCUWDhR8a/Es
+         QE+w==
+X-Gm-Message-State: AOJu0YxbJADUsIyeYh3IlK5D8kytigttcfLylkSj3RMzcg6w+bEhNDDI
+        ycvklnBfuMMT2m/6pgEAn6s=
+X-Google-Smtp-Source: AGHT+IFMroJHDqq6Ir9gZVJ3R728hRmkVYJHVfNaHzVnIzw/nmWz3p78L6RXN42OK1k/cU3B+r7M9w==
+X-Received: by 2002:ae9:f812:0:b0:77e:fba3:4f32 with SMTP id x18-20020ae9f812000000b0077efba34f32mr1152322qkh.136.1701526543353;
+        Sat, 02 Dec 2023 06:15:43 -0800 (PST)
+Received: from localhost (114.66.194.35.bc.googleusercontent.com. [35.194.66.114])
+        by smtp.gmail.com with ESMTPSA id br30-20020a05620a461e00b0077d742fb27esm2452534qkb.49.2023.12.02.06.15.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 02 Dec 2023 06:15:42 -0800 (PST)
+Date:   Sat, 02 Dec 2023 09:15:42 -0500
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To:     Jesper Dangaard Brouer <hawk@kernel.org>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        "Song, Yoong Siang" <yoong.siang.song@intel.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Bjorn Topel <bjorn@kernel.org>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Andre Fredette <afredette@redhat.com>
+Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "xdp-hints@xdp-project.net" <xdp-hints@xdp-project.net>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>
+Message-ID: <656b3c0ebb103_1a6a2c2947d@willemb.c.googlers.com.notmuch>
+In-Reply-To: <179a4581-f7df-4eb1-ab67-8d65f856a2fe@kernel.org>
+References: <20231201062421.1074768-1-yoong.siang.song@intel.com>
+ <d4f99931-442c-4cd7-b3cf-80d8681a2986@kernel.org>
+ <PH0PR11MB58306C2E50009A6E22F9DAD3D881A@PH0PR11MB5830.namprd11.prod.outlook.com>
+ <6569f71bad00d_138af5294d@willemb.c.googlers.com.notmuch>
+ <179a4581-f7df-4eb1-ab67-8d65f856a2fe@kernel.org>
+Subject: Re: [PATCH bpf-next v2 0/3] xsk: TX metadata txtime support
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: 7bit
-X-ZohoMailClient: External
-X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git main
+Jesper Dangaard Brouer wrote:
+> 
+> 
+> On 12/1/23 16:09, Willem de Bruijn wrote:
+> > Song, Yoong Siang wrote:
+> >> On Friday, December 1, 2023 6:46 PM, Jesper Dangaard Brouer <hawk@kernel.org> wrote:
+> >>> On 12/1/23 07:24, Song Yoong Siang wrote:
+> >>>> This series expands XDP TX metadata framework to include ETF HW offload.
+> >>>>
+> >>>> Changes since v1:
+> >>>> - rename Time-Based Scheduling (TBS) to Earliest TxTime First (ETF)
+> >>>> - rename launch-time to txtime
+> >>>>
+> >>>
+> >>> I strongly disagree with this renaming (sorry to disagree with Willem).
+> >>>
+> >>> The i210 and i225 chips call this LaunchTime in their programmers
+> >>> datasheets, and even in the driver code[1].
+> >>>
+> >>> Using this "txtime" name in the code is also confusing, because how can
+> >>> people reading the code know the difference between:
+> >>>   - tmo_request_timestamp and tmo_request_txtime
+> >>>
+> >>
+> >> Hi Jesper and Willem,
+> >>
+> >> How about using "launch_time" for the flag/variable and
+> >> "Earliest TxTime First" for the description/comments?
+> > 
+> 
+> I don't follow why you are calling the feature:
+>   - "Earliest TxTime First" (ETF).
+>   - AFAIK this just reference an qdisc name (that most don't know exists)
+> 
+> 
+> > I don't particularly care which term we use, as long as we're
+> > consistent. Especially, don't keep introducing new synonyms.
+> > 
+> > The fact that one happens to be one vendor's marketing term does not
+> > make it preferable, IMHO. On the contrary.
+> >
+> 
+> These kind of hardware features are defined as part of Time Sensitive
+> Networking (TSN).
+> I believe these TSN features are defined as part of IEEE 802.1Qbv (2015)
+> and according to Wikipedia[2] incorporated into IEEE 802.1Q.
+> 
+> [2] https://en.wikipedia.org/wiki/Time-Sensitive_Networking
+> 
+> 
+> > SO_TXTIME is in the ABI, and EDT has been used publicly in kernel
+> > patches and conference talks, e.g., Van Jacobson's Netdev 0x12
+> > keynote. Those are vendor agnostic commonly used terms.
+> > 
+> 
+> I agree that EDT (Earliest Departure Time) have become a thing and term
+> in our community.
+> We could associate this feature with this.
+> I do fear what hardware behavior will be it if I e.g. ask it to send a
+> packet 2 sec in the future on i225 which max support 1 sec.
+> Will hardware send it at 1 sec?
+> Because then I'm violating the *Earliest* Departure Time.
 
-diff --git a/net/nfc/llcp_core.c b/net/nfc/llcp_core.c
-index 1dac28136e6a..e071cb15bce2 100644
---- a/net/nfc/llcp_core.c
-+++ b/net/nfc/llcp_core.c
-@@ -145,6 +145,12 @@ static void nfc_llcp_socket_release(struct nfc_llcp_local *local, bool device,
- 
- static struct nfc_llcp_local *nfc_llcp_local_get(struct nfc_llcp_local *local)
- {
-+	struct nfc_dev *d;
-+
-+	d = nfc_get_device(local->dev->idx);
-+	if (!d)
-+		return NULL;
-+
- 	kref_get(&local->ref);
- 
- 	return local;
-@@ -180,6 +186,7 @@ int nfc_llcp_local_put(struct nfc_llcp_local *local)
- 	if (local == NULL)
- 		return 0;
- 
-+	nfc_put_device(local->dev);
- 	return kref_put(&local->ref, local_release);
- }
- 
-@@ -959,8 +966,17 @@ static void nfc_llcp_recv_connect(struct nfc_llcp_local *local,
- 	}
- 
- 	new_sock = nfc_llcp_sock(new_sk);
--	new_sock->dev = local->dev;
-+
- 	new_sock->local = nfc_llcp_local_get(local);
-+	if (!new_sock->local) {
-+		reason = LLCP_DM_REJ;
-+		release_sock(&sock->sk);
-+		sock_put(&sock->sk);
-+		sock_put(&new_sock->sk);
-+		goto fail;
-+	}
-+
-+	new_sock->dev = local->dev;
- 	new_sock->rw = sock->rw;
- 	new_sock->miux = sock->miux;
- 	new_sock->nfc_protocol = sock->nfc_protocol;
-@@ -1597,7 +1613,11 @@ int nfc_llcp_register_device(struct nfc_dev *ndev)
- 	if (local == NULL)
- 		return -ENOMEM;
- 
--	local->dev = ndev;
-+	/* Hold a reference to the device. */
-+	local->dev = nfc_get_device(ndev->idx);
-+	if (!local->dev)
-+		return -ENODEV;
-+
- 	INIT_LIST_HEAD(&local->list);
- 	kref_init(&local->ref);
- 	mutex_init(&local->sdp_lock);
+That should definitely not happen. At least not on a device that
+implements EDT semantics.
+
+This relates to Jakub's question in the previous thread on whether
+this mechanism allows out-of-order transmission or maintains FIFO
+behavior. That really is device specific.
+
+Older devices only support this for low rate (PTP) and with a small
+fixed number of outstanding requests. For pacing offload, devices need
+to support up to linerate and out-of-order.
+
+I don't think we want to enforce either in software, as the hardware
+is already out there. But it would be good if drivers can somehow
+label these capabilities. Including programmable horizon.
+
+It is up to the qdisc to ensure that it does not pass packets to the
+device beyond its horizon.
+
+ETF and FQ already have a concept of horizon. And a way to queue
+errors for packets out of bound (SO_EE_CODE_TXTIME_..).
+
+> 
+> > But as long as Launch Time is not an Intel only trademark, fine to
+> > select that.
+> 
+> The IEEE 802.1Qbv is sometimes called Time-Aware Shaper (TAS), but I
+> don't like to for us to name this after this.  This features is simply
+> taking advantage of exposing one of the hardware building blocks
+> (controlling/setting packet "launch time") that can be used for
+> implementing a TAS.
+> 
+> I like the name "launch time" because it doesn't get easily confused
+> with other timestamps, and intuitively describes packet will be send at
+> a specific time (likely in future).
+> 
+> --Jesper
+
+Understood on your point that txtime and tx_timestamp are too similar.
+As said, I don't care strongly. Launch time sounds fine to me. Others
+can speak up if they disagree.
+
+I take launch time as a less strict than EDT: it is a request to send
+at a certain time, with no strict definition on uncertainty. While EDT
+more strictly ensures that a packet is not sent before the timestamp.
