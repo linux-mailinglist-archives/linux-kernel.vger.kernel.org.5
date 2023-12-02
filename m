@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D4EE801BD7
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 10:50:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6D7D801BD9
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 10:51:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231849AbjLBJup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 04:50:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58412 "EHLO
+        id S232401AbjLBJvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 04:51:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232405AbjLBJuk (ORCPT
+        with ESMTP id S232381AbjLBJvJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 04:50:40 -0500
+        Sat, 2 Dec 2023 04:51:09 -0500
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 236C81A4;
-        Sat,  2 Dec 2023 01:50:47 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 020C6134;
+        Sat,  2 Dec 2023 01:51:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701510647; x=1733046647;
+  t=1701510675; x=1733046675;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references;
-  bh=rqH35GdOrKoZEkvGITnBvH+ikDglRlVlt01Gqn8iCuQ=;
-  b=IEVmV/1gdxf356DBwO04fRRnMuNVHGI2FFm259u7fyHoV3w9F0Xt5KLg
-   IlVhnvkJsXcDPS60fWmJLQ/OU2eTm3JusESpxxuII8RJ/LePJCqXHqVGH
-   /p9eFpDJdnDciK/N8xGG+GEANlJL6bYQ+D/6GVUtn2pHWe/iODzI8Pg98
-   lBtNTlGNr2FedY/wpwWIqKx35TRi1AOJC6K896JJlc1Q2huCE7NT950Sc
-   r5hahkRLUP+OzWlBaWDEaGikURFzq/2uhtx1NzhHbdBQ34+tUHiapl7+9
-   5gDvK8sJKvIZUpVJiLLH3QEUmCVVDGcej+r9yjK+YQ27wu3mSHDpsyk1X
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="479794143"
+  bh=oxDYXG3AJzaeGNtpp4op0WAgqkteWZvXNKWbORIdg58=;
+  b=aDfxH2FvMZzJm83tpn9m4uJHPdlpv+39z7N8v06ZXJ12HyePB5DL4shj
+   vgl/li599ggQ0qiZkpTsa15owob3Edxgg4DEJGhgCAO/Ztsn+gzg8sQKn
+   UFDJCQfe2Lqt81C9vUxrEFRxhIS0FuNj6PpylAseERcwQe8Bi7gpghXQd
+   jvqugmLodeVTPmz3f3iNdATbhDvPwRx3eFyRh3sQ3g8/VAKEo82E6UKmK
+   LPZnzeSXWh56DH11+aiMZ/m0UL8r/Eus2BgfACmpjYTkujxHNkjKOp2QH
+   K0sLIDIEDQJ32X6E+VxJmRhHoBsJNklF/NaHqYQDRSTchxHDrYR9/U4+p
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="479794167"
 X-IronPort-AV: E=Sophos;i="6.04,245,1695711600"; 
-   d="scan'208";a="479794143"
+   d="scan'208";a="479794167"
 Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2023 01:50:46 -0800
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2023 01:51:15 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.04,245,1695711600"; 
-   d="scan'208";a="11414277"
+   d="scan'208";a="11414337"
 Received: from yzhao56-desk.sh.intel.com ([10.239.159.62])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2023 01:50:43 -0800
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2023 01:51:12 -0800
 From:   Yan Zhao <yan.y.zhao@intel.com>
 To:     iommu@lists.linux.dev, kvm@vger.kernel.org,
         linux-kernel@vger.kernel.org
@@ -46,9 +46,9 @@ Cc:     alex.williamson@redhat.com, jgg@nvidia.com, pbonzini@redhat.com,
         robin.murphy@arm.com, kevin.tian@intel.com,
         baolu.lu@linux.intel.com, dwmw2@infradead.org, yi.l.liu@intel.com,
         Yan Zhao <yan.y.zhao@intel.com>
-Subject: [RFC PATCH 13/42] iommufd: Add a KVM HW pagetable object
-Date:   Sat,  2 Dec 2023 17:21:47 +0800
-Message-Id: <20231202092147.14208-1-yan.y.zhao@intel.com>
+Subject: [RFC PATCH 14/42] iommufd: Enable KVM HW page table object to be proxy between KVM and IOMMU
+Date:   Sat,  2 Dec 2023 17:22:16 +0800
+Message-Id: <20231202092216.14278-1-yan.y.zhao@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20231202091211.13376-1-yan.y.zhao@intel.com>
 References: <20231202091211.13376-1-yan.y.zhao@intel.com>
@@ -62,200 +62,278 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add new obj type IOMMUFD_OBJ_HWPT_KVM for KVM HW page tables, which
-correspond to iommu stage 2 domains whose paging strcutures and mappings
-are managed by KVM.
+Enable IOMMUFD KVM HW page table object to serve as proxy between KVM and
+IOMMU driver. Config IOMMUFD_KVM_HWPT is added to turn on/off this ability.
 
-Extend the IOMMU_HWPT_ALLOC ioctl to accept KVM HW page table specific
-data of "struct iommu_hwpt_kvm_info".
+KVM HW page table object first gets KVM TDP fd object via KVM exported
+interface kvm_tdp_fd_get() and then queries KVM for vendor meta data of
+page tables exported (shared) by KVM. It then passes the meta data to IOMMU
+driver to create a IOMMU_DOMAIN_KVM domain via op domain_alloc_kvm.
+IOMMU driver is responsible to check compatibility between IOMMU hardware
+and the KVM exported page tables.
 
-The real allocator iommufd_hwpt_kvm_alloc() is now an empty function and
-will be implemented in next patch when config IOMMUFD_KVM_HWPT is on.
+After successfully creating IOMMU_DOMAIN_KVM domain, IOMMUFD KVM HW page
+table object registers invalidation callback to KVM to receive invalidation
+notifications. It then passes the notification to IOMMU driver via op
+cache_invalidate_kvm to invalidate hardware TLBs.
 
 Signed-off-by: Yan Zhao <yan.y.zhao@intel.com>
 ---
- drivers/iommu/iommufd/device.c          | 13 +++++----
- drivers/iommu/iommufd/hw_pagetable.c    | 29 +++++++++++++++++++-
- drivers/iommu/iommufd/iommufd_private.h | 35 +++++++++++++++++++++++++
- drivers/iommu/iommufd/main.c            |  4 +++
- 4 files changed, 75 insertions(+), 6 deletions(-)
+ drivers/iommu/iommufd/Kconfig            |  10 ++
+ drivers/iommu/iommufd/Makefile           |   1 +
+ drivers/iommu/iommufd/hw_pagetable_kvm.c | 183 +++++++++++++++++++++++
+ drivers/iommu/iommufd/iommufd_private.h  |   9 ++
+ 4 files changed, 203 insertions(+)
+ create mode 100644 drivers/iommu/iommufd/hw_pagetable_kvm.c
 
-diff --git a/drivers/iommu/iommufd/device.c b/drivers/iommu/iommufd/device.c
-index 59d3a07300d93..83af6b7e2784b 100644
---- a/drivers/iommu/iommufd/device.c
-+++ b/drivers/iommu/iommufd/device.c
-@@ -629,7 +629,8 @@ static int iommufd_device_change_pt(struct iommufd_device *idev, u32 *pt_id,
+diff --git a/drivers/iommu/iommufd/Kconfig b/drivers/iommu/iommufd/Kconfig
+index 99d4b075df49e..d79e0c1e00a4d 100644
+--- a/drivers/iommu/iommufd/Kconfig
++++ b/drivers/iommu/iommufd/Kconfig
+@@ -32,6 +32,16 @@ config IOMMUFD_VFIO_CONTAINER
  
- 	switch (pt_obj->type) {
- 	case IOMMUFD_OBJ_HWPT_NESTED:
--	case IOMMUFD_OBJ_HWPT_PAGING: {
-+	case IOMMUFD_OBJ_HWPT_PAGING:
-+	case IOMMUFD_OBJ_HWPT_KVM: {
- 		struct iommufd_hw_pagetable *hwpt =
- 			container_of(pt_obj, struct iommufd_hw_pagetable, obj);
+ 	  Unless testing IOMMUFD, say N here.
  
-@@ -667,8 +668,9 @@ static int iommufd_device_change_pt(struct iommufd_device *idev, u32 *pt_id,
- /**
-  * iommufd_device_attach - Connect a device to an iommu_domain
-  * @idev: device to attach
-- * @pt_id: Input a IOMMUFD_OBJ_IOAS, or IOMMUFD_OBJ_HWPT_PAGING
-- *         Output the IOMMUFD_OBJ_HWPT_PAGING ID
-+ * @pt_id: Input a IOMMUFD_OBJ_IOAS, or IOMMUFD_OBJ_HWPT_PAGING, or
-+ *         IOMMUFD_OBJ_HWPT_KVM
-+ *         Output the IOMMUFD_OBJ_HWPT_PAGING ID or IOMMUFD_OBJ_HWPT_KVM ID
-  *
-  * This connects the device to an iommu_domain, either automatically or manually
-  * selected. Once this completes the device could do DMA.
-@@ -696,8 +698,9 @@ EXPORT_SYMBOL_NS_GPL(iommufd_device_attach, IOMMUFD);
- /**
-  * iommufd_device_replace - Change the device's iommu_domain
-  * @idev: device to change
-- * @pt_id: Input a IOMMUFD_OBJ_IOAS, or IOMMUFD_OBJ_HWPT_PAGING
-- *         Output the IOMMUFD_OBJ_HWPT_PAGING ID
-+ * @pt_id: Input a IOMMUFD_OBJ_IOAS, or IOMMUFD_OBJ_HWPT_PAGING, or
-+ *         IOMMUFD_OBJ_HWPT_KVM
-+ *         Output the IOMMUFD_OBJ_HWPT_PAGING ID or IOMMUFD_OBJ_HWPT_KVM ID
-  *
-  * This is the same as::
-  *
-diff --git a/drivers/iommu/iommufd/hw_pagetable.c b/drivers/iommu/iommufd/hw_pagetable.c
-index 367459d92f696..c8430ec42cdf8 100644
---- a/drivers/iommu/iommufd/hw_pagetable.c
-+++ b/drivers/iommu/iommufd/hw_pagetable.c
-@@ -273,6 +273,31 @@ int iommufd_hwpt_alloc(struct iommufd_ucmd *ucmd)
- 	if (IS_ERR(idev))
- 		return PTR_ERR(idev);
- 
-+	if (cmd->data_type == IOMMU_HWPT_DATA_KVM) {
-+		struct iommu_hwpt_kvm_info kvm_data;
-+		struct iommufd_hwpt_kvm *hwpt_kvm;
++config IOMMUFD_KVM_HWPT
++	bool "Supports KVM managed HW page tables"
++	default n
++	help
++	  Selecting this option will allow IOMMUFD to create IOMMU stage 2
++	  page tables whose paging structure and mappings are managed by
++	  KVM MMU. IOMMUFD serves as proxy between KVM and IOMMU driver to
++	  allow IOMMU driver to get paging structure meta data and cache
++	  invalidate notifications from KVM.
 +
-+		if (!cmd->data_len || cmd->data_len != sizeof(kvm_data) ||
-+		    !cmd->data_uptr) {
-+			rc = -EINVAL;
-+			goto out_put_idev;
-+		}
-+		rc = copy_struct_from_user(&kvm_data, sizeof(kvm_data),
-+					   u64_to_user_ptr(cmd->data_uptr),
-+					   cmd->data_len);
-+		if (rc)
-+			goto out_put_idev;
-+
-+		hwpt_kvm = iommufd_hwpt_kvm_alloc(ucmd->ictx, idev, cmd->flags,
-+						  &kvm_data);
-+		if (IS_ERR(hwpt_kvm)) {
-+			rc = PTR_ERR(hwpt_kvm);
-+			goto out_put_idev;
-+		}
-+		hwpt = &hwpt_kvm->common;
-+		goto out_respond;
-+	}
-+
- 	pt_obj = iommufd_get_object(ucmd->ictx, cmd->pt_id, IOMMUFD_OBJ_ANY);
- 	if (IS_ERR(pt_obj)) {
- 		rc = -EINVAL;
-@@ -310,6 +335,7 @@ int iommufd_hwpt_alloc(struct iommufd_ucmd *ucmd)
- 		goto out_put_pt;
- 	}
+ config IOMMUFD_TEST
+ 	bool "IOMMU Userspace API Test support"
+ 	depends on DEBUG_KERNEL
+diff --git a/drivers/iommu/iommufd/Makefile b/drivers/iommu/iommufd/Makefile
+index 34b446146961c..ae1e0b5c300dc 100644
+--- a/drivers/iommu/iommufd/Makefile
++++ b/drivers/iommu/iommufd/Makefile
+@@ -8,6 +8,7 @@ iommufd-y := \
+ 	pages.o \
+ 	vfio_compat.o
  
-+out_respond:
- 	cmd->out_hwpt_id = hwpt->obj.id;
- 	rc = iommufd_ucmd_respond(ucmd, sizeof(*cmd));
- 	if (rc)
-@@ -323,7 +349,8 @@ int iommufd_hwpt_alloc(struct iommufd_ucmd *ucmd)
- 	if (ioas)
- 		mutex_unlock(&ioas->mutex);
- out_put_pt:
--	iommufd_put_object(pt_obj);
-+	if (cmd->data_type != IOMMU_HWPT_DATA_KVM)
-+		iommufd_put_object(pt_obj);
- out_put_idev:
- 	iommufd_put_object(&idev->obj);
- 	return rc;
-diff --git a/drivers/iommu/iommufd/iommufd_private.h b/drivers/iommu/iommufd/iommufd_private.h
-index 160521800d9b4..a46a6e3e537f9 100644
---- a/drivers/iommu/iommufd/iommufd_private.h
-+++ b/drivers/iommu/iommufd/iommufd_private.h
-@@ -125,6 +125,7 @@ enum iommufd_object_type {
- 	IOMMUFD_OBJ_DEVICE,
- 	IOMMUFD_OBJ_HWPT_PAGING,
- 	IOMMUFD_OBJ_HWPT_NESTED,
-+	IOMMUFD_OBJ_HWPT_KVM,
- 	IOMMUFD_OBJ_IOAS,
- 	IOMMUFD_OBJ_ACCESS,
- #ifdef CONFIG_IOMMUFD_TEST
-@@ -266,17 +267,33 @@ struct iommufd_hwpt_nested {
- 	struct iommufd_hwpt_paging *parent;
- };
++iommufd-$(CONFIG_IOMMUFD_KVM_HWPT) += hw_pagetable_kvm.o
+ iommufd-$(CONFIG_IOMMUFD_TEST) += selftest.o
  
-+struct iommufd_hwpt_kvm {
-+	struct iommufd_hw_pagetable common;
-+	void *context;
+ obj-$(CONFIG_IOMMUFD) += iommufd.o
+diff --git a/drivers/iommu/iommufd/hw_pagetable_kvm.c b/drivers/iommu/iommufd/hw_pagetable_kvm.c
+new file mode 100644
+index 0000000000000..e0e205f384ed5
+--- /dev/null
++++ b/drivers/iommu/iommufd/hw_pagetable_kvm.c
+@@ -0,0 +1,183 @@
++// SPDX-License-Identifier: GPL-2.0-only
++#include <linux/iommu.h>
++#include <uapi/linux/iommufd.h>
++#include <linux/kvm_tdp_fd.h>
++
++#include "../iommu-priv.h"
++#include "iommufd_private.h"
++
++static void iommufd_kvmtdp_invalidate(void *data,
++				      unsigned long start, unsigned long size)
++{
++	void (*invalidate_fn)(struct iommu_domain *domain,
++			      unsigned long iova, unsigned long size);
++	struct iommufd_hw_pagetable *hwpt = data;
++
++	if (!hwpt || !hwpt_is_kvm(hwpt))
++		return;
++
++	invalidate_fn = hwpt->domain->ops->cache_invalidate_kvm;
++
++	if (!invalidate_fn)
++		return;
++
++	invalidate_fn(hwpt->domain, start, size);
++
++}
++
++struct kvm_tdp_importer_ops iommufd_import_ops = {
++	.invalidate = iommufd_kvmtdp_invalidate,
 +};
 +
- static inline bool hwpt_is_paging(struct iommufd_hw_pagetable *hwpt)
- {
- 	return hwpt->obj.type == IOMMUFD_OBJ_HWPT_PAGING;
- }
- 
-+static inline bool hwpt_is_kvm(struct iommufd_hw_pagetable *hwpt)
++static inline int kvmtdp_register(struct kvm_tdp_fd *tdp_fd, void *data)
 +{
-+	return hwpt->obj.type == IOMMUFD_OBJ_HWPT_KVM;
++	if (!tdp_fd->ops->register_importer || !tdp_fd->ops->register_importer)
++		return -EOPNOTSUPP;
++
++	return tdp_fd->ops->register_importer(tdp_fd, &iommufd_import_ops, data);
 +}
 +
- static inline struct iommufd_hwpt_paging *
- to_hwpt_paging(struct iommufd_hw_pagetable *hwpt)
- {
- 	return container_of(hwpt, struct iommufd_hwpt_paging, common);
- }
- 
-+static inline struct iommufd_hwpt_kvm *
-+to_hwpt_kvm(struct iommufd_hw_pagetable *hwpt)
++static inline void kvmtdp_unregister(struct kvm_tdp_fd *tdp_fd)
 +{
-+	return container_of(hwpt, struct iommufd_hwpt_kvm, common);
++	WARN_ON(!tdp_fd->ops->unregister_importer);
++
++	tdp_fd->ops->unregister_importer(tdp_fd, &iommufd_import_ops);
 +}
 +
- static inline struct iommufd_hwpt_paging *
- iommufd_get_hwpt_paging(struct iommufd_ucmd *ucmd, u32 id)
- {
-@@ -413,4 +430,22 @@ static inline bool iommufd_selftest_is_mock_dev(struct device *dev)
- 	return false;
- }
- #endif
++static inline void *kvmtdp_get_metadata(struct kvm_tdp_fd *tdp_fd)
++{
++	if (!tdp_fd->ops->get_metadata)
++		return ERR_PTR(-EOPNOTSUPP);
 +
-+struct iommu_hwpt_kvm_info;
-+static inline struct iommufd_hwpt_kvm *
++	return tdp_fd->ops->get_metadata(tdp_fd);
++}
++
++/*
++ * Get KVM TDP FD object and ensure tdp_fd->ops is available
++ */
++static inline struct kvm_tdp_fd *kvmtdp_get(int fd)
++{
++	struct kvm_tdp_fd *tdp_fd = NULL;
++	struct kvm_tdp_fd *(*get_func)(int fd) = NULL;
++	void (*put_func)(struct kvm_tdp_fd *) = NULL;
++
++	get_func = symbol_get(kvm_tdp_fd_get);
++
++	if (!get_func)
++		goto out;
++
++	put_func = symbol_get(kvm_tdp_fd_put);
++	if (!put_func)
++		goto out;
++
++	tdp_fd = get_func(fd);
++	if (!tdp_fd)
++		goto out;
++
++	if (tdp_fd->ops) {
++		/* success */
++		goto out;
++	}
++
++	put_func(tdp_fd);
++	tdp_fd = NULL;
++
++out:
++	if (get_func)
++		symbol_put(kvm_tdp_fd_get);
++
++	if (put_func)
++		symbol_put(kvm_tdp_fd_put);
++
++	return tdp_fd;
++}
++
++static void kvmtdp_put(struct kvm_tdp_fd *tdp_fd)
++{
++	void (*put_func)(struct kvm_tdp_fd *) = NULL;
++
++	put_func = symbol_get(kvm_tdp_fd_put);
++	WARN_ON(!put_func);
++
++	put_func(tdp_fd);
++
++	symbol_put(kvm_tdp_fd_put);
++}
++
++void iommufd_hwpt_kvm_destroy(struct iommufd_object *obj)
++{
++	struct kvm_tdp_fd *tdp_fd;
++	struct iommufd_hwpt_kvm *hwpt_kvm =
++		container_of(obj, struct iommufd_hwpt_kvm, common.obj);
++
++	if (hwpt_kvm->common.domain)
++		iommu_domain_free(hwpt_kvm->common.domain);
++
++	tdp_fd = hwpt_kvm->context;
++	kvmtdp_unregister(tdp_fd);
++	kvmtdp_put(tdp_fd);
++}
++
++void iommufd_hwpt_kvm_abort(struct iommufd_object *obj)
++{
++	iommufd_hwpt_kvm_destroy(obj);
++}
++
++struct iommufd_hwpt_kvm *
 +iommufd_hwpt_kvm_alloc(struct iommufd_ctx *ictx,
 +		       struct iommufd_device *idev, u32 flags,
 +		       const struct iommu_hwpt_kvm_info *kvm_data)
 +{
-+	return ERR_PTR(-EOPNOTSUPP);
-+}
 +
-+static inline void iommufd_hwpt_kvm_abort(struct iommufd_object *obj)
-+{
-+}
++	const struct iommu_ops *ops = dev_iommu_ops(idev->dev);
++	struct iommufd_hwpt_kvm *hwpt_kvm;
++	struct iommufd_hw_pagetable *hwpt;
++	struct kvm_tdp_fd *tdp_fd;
++	void *meta_data;
++	int rc;
 +
-+static inline void iommufd_hwpt_kvm_destroy(struct iommufd_object *obj)
-+{
-+}
++	if (!ops->domain_alloc_kvm)
++		return ERR_PTR(-EOPNOTSUPP);
 +
++	if (kvm_data->fd < 0)
++		return ERR_PTR(-EINVAL);
++
++	tdp_fd = kvmtdp_get(kvm_data->fd);
++	if (!tdp_fd)
++		return ERR_PTR(-EOPNOTSUPP);
++
++	meta_data = kvmtdp_get_metadata(tdp_fd);
++	if (!meta_data || IS_ERR(meta_data)) {
++		rc = -EFAULT;
++		goto out_put_tdp;
++	}
++
++	hwpt_kvm = __iommufd_object_alloc(ictx, hwpt_kvm, IOMMUFD_OBJ_HWPT_KVM,
++					  common.obj);
++	if (IS_ERR(hwpt_kvm)) {
++		rc = PTR_ERR(hwpt_kvm);
++		goto out_put_tdp;
++	}
++
++	hwpt_kvm->context = tdp_fd;
++	hwpt = &hwpt_kvm->common;
++
++	hwpt->domain = ops->domain_alloc_kvm(idev->dev, flags, meta_data);
++	if (IS_ERR(hwpt->domain)) {
++		rc = PTR_ERR(hwpt->domain);
++		hwpt->domain = NULL;
++		goto out_abort;
++	}
++
++	rc = kvmtdp_register(tdp_fd, hwpt);
++	if (rc)
++		goto out_abort;
++
++	return hwpt_kvm;
++
++out_abort:
++	iommufd_object_abort_and_destroy(ictx, &hwpt->obj);
++out_put_tdp:
++	kvmtdp_put(tdp_fd);
++	return ERR_PTR(rc);
++}
+diff --git a/drivers/iommu/iommufd/iommufd_private.h b/drivers/iommu/iommufd/iommufd_private.h
+index a46a6e3e537f9..2c3149b1d5b55 100644
+--- a/drivers/iommu/iommufd/iommufd_private.h
++++ b/drivers/iommu/iommufd/iommufd_private.h
+@@ -432,6 +432,14 @@ static inline bool iommufd_selftest_is_mock_dev(struct device *dev)
  #endif
-diff --git a/drivers/iommu/iommufd/main.c b/drivers/iommu/iommufd/main.c
-index 6edef860f91cc..0798c1279133f 100644
---- a/drivers/iommu/iommufd/main.c
-+++ b/drivers/iommu/iommufd/main.c
-@@ -499,6 +499,10 @@ static const struct iommufd_object_ops iommufd_object_ops[] = {
- 		.destroy = iommufd_hwpt_nested_destroy,
- 		.abort = iommufd_hwpt_nested_abort,
- 	},
-+	[IOMMUFD_OBJ_HWPT_KVM] = {
-+		.destroy = iommufd_hwpt_kvm_destroy,
-+		.abort = iommufd_hwpt_kvm_abort,
-+	},
- #ifdef CONFIG_IOMMUFD_TEST
- 	[IOMMUFD_OBJ_SELFTEST] = {
- 		.destroy = iommufd_selftest_destroy,
+ 
+ struct iommu_hwpt_kvm_info;
++#ifdef CONFIG_IOMMUFD_KVM_HWPT
++struct iommufd_hwpt_kvm *
++iommufd_hwpt_kvm_alloc(struct iommufd_ctx *ictx,
++		       struct iommufd_device *idev, u32 flags,
++		       const struct iommu_hwpt_kvm_info *kvm_data);
++void iommufd_hwpt_kvm_abort(struct iommufd_object *obj);
++void iommufd_hwpt_kvm_destroy(struct iommufd_object *obj);
++#else
+ static inline struct iommufd_hwpt_kvm *
+ iommufd_hwpt_kvm_alloc(struct iommufd_ctx *ictx,
+ 		       struct iommufd_device *idev, u32 flags,
+@@ -447,5 +455,6 @@ static inline void iommufd_hwpt_kvm_abort(struct iommufd_object *obj)
+ static inline void iommufd_hwpt_kvm_destroy(struct iommufd_object *obj)
+ {
+ }
++#endif
+ 
+ #endif
 -- 
 2.17.1
 
