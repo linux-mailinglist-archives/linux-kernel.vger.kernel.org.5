@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6067F801BDD
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 10:52:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA7C3801BDF
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 10:52:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232326AbjLBJwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 04:52:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57256 "EHLO
+        id S232394AbjLBJws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 04:52:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjLBJwD (ORCPT
+        with ESMTP id S231982AbjLBJwq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 04:52:03 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29CF0134;
-        Sat,  2 Dec 2023 01:52:10 -0800 (PST)
+        Sat, 2 Dec 2023 04:52:46 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59A29197;
+        Sat,  2 Dec 2023 01:52:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701510730; x=1733046730;
+  t=1701510772; x=1733046772;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references;
-  bh=qgwPOU0dccalAjjMk9ImV6B09aYt2Eqp8Z37kksWeQw=;
-  b=exT2k//CH2x7cUhAJhUegDfTCDhV71i78bd0gAb/uE0KpTicm/uXnRly
-   rd5BX4U4jpO+4ZnXXBskmf+HbPTAaGoxkYSGTIUYC+ZQGX9Co/ikeA+QV
-   M0kN07q46Q8GLWExk61fN6jckTLAYhig/95FHtyY44kpx2zoIA0zdiDGf
-   hIA9TI8myjUZezXYjYvDuH1CVRrWsYFgmDLTCzlsKjR+nYMfCarkG1g0N
-   6yvlo4IOxBvvcZWRbDvr7aIjXxLgL0icm+DfhB7GzNQIWajujJmxXlG/M
-   frOT8coGfYEO2nhT+WYQuyVE2PMiBr0BdRCbAVPK12msBK7R+51faR/F2
+  bh=4XuvqJzELS5xzXnhxrYHtRshvrsQAG9FckEEWisSVfA=;
+  b=jeGcBlzyeYqbIYpbHw9YFd3s1iQIiYgnehIrJV7lLBqhWECps9dgrXpX
+   CHPfy55cz2Hd/jvkJd/0FeaujyYhcnQyZOxKPQe6fqGahDZ7fwN6jToze
+   +6XOJj7Dk72ccwcPxeohPEDVLV8TBe9cUVxJJ5YY/sTfPef1nQ6H7lsc3
+   W7JNOEKmkKcjDvT56AaQw7tb8FeVurWLVnPY7VjFvL1nsiJKZ+T4LBumv
+   E0TtlmtnhWf9zAdks1rnGMdEvYti0vhy89UK/YlXUHeBasIjwaObJjQhv
+   pnic/iNLkVY/8XqRT2+Ev2BsiqRmr3g5nsVNq0zMvFAFhwIW4NCJ9bdp9
    w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="6886663"
+X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="397479499"
 X-IronPort-AV: E=Sophos;i="6.04,245,1695711600"; 
-   d="scan'208";a="6886663"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2023 01:52:10 -0800
+   d="scan'208";a="397479499"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2023 01:52:51 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="746280168"
+X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="913853337"
 X-IronPort-AV: E=Sophos;i="6.04,245,1695711600"; 
-   d="scan'208";a="746280168"
+   d="scan'208";a="913853337"
 Received: from yzhao56-desk.sh.intel.com ([10.239.159.62])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2023 01:52:05 -0800
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2023 01:52:47 -0800
 From:   Yan Zhao <yan.y.zhao@intel.com>
 To:     iommu@lists.linux.dev, kvm@vger.kernel.org,
         linux-kernel@vger.kernel.org
@@ -47,74 +47,181 @@ Cc:     alex.williamson@redhat.com, jgg@nvidia.com, pbonzini@redhat.com,
         robin.murphy@arm.com, kevin.tian@intel.com,
         baolu.lu@linux.intel.com, dwmw2@infradead.org, yi.l.liu@intel.com,
         Yan Zhao <yan.y.zhao@intel.com>
-Subject: [RFC PATCH 16/42] iommufd: Enable device feature IOPF during device attachment to KVM HWPT
-Date:   Sat,  2 Dec 2023 17:23:11 +0800
-Message-Id: <20231202092311.14392-1-yan.y.zhao@intel.com>
+Subject: [RFC PATCH 17/42] iommu/vt-d: Make some macros and helpers to be extern
+Date:   Sat,  2 Dec 2023 17:23:52 +0800
+Message-Id: <20231202092352.14452-1-yan.y.zhao@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20231202091211.13376-1-yan.y.zhao@intel.com>
 References: <20231202091211.13376-1-yan.y.zhao@intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable device feature IOPF during device attachment to KVM HWPT and abort
-the attachment if feature enabling is failed.
-
-"pin" is not done by KVM HWPT. If VMM wants to create KVM HWPT, it must
-know that all devices attached to this HWPT support IOPF so that pin-all
-is skipped.
+This makes the macros and helpers visible to outside of iommu.c, which
+is a preparation for next patch to create domain of IOMMU_DOMAIN_KVM.
 
 Signed-off-by: Yan Zhao <yan.y.zhao@intel.com>
 ---
- drivers/iommu/iommufd/device.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ drivers/iommu/intel/iommu.c | 39 +++----------------------------------
+ drivers/iommu/intel/iommu.h | 35 +++++++++++++++++++++++++++++++++
+ 2 files changed, 38 insertions(+), 36 deletions(-)
 
-diff --git a/drivers/iommu/iommufd/device.c b/drivers/iommu/iommufd/device.c
-index 83af6b7e2784b..4ea447e052ce1 100644
---- a/drivers/iommu/iommufd/device.c
-+++ b/drivers/iommu/iommufd/device.c
-@@ -381,10 +381,26 @@ int iommufd_hw_pagetable_attach(struct iommufd_hw_pagetable *hwpt,
- 			goto err_unresv;
- 		idev->igroup->hwpt = hwpt;
- 	}
-+	if (hwpt_is_kvm(hwpt)) {
-+		/*
-+		 * Feature IOPF requires ats is enabled which is true only
-+		 * after device is attached to iommu domain.
-+		 * So enable dev feature IOPF after iommu_attach_group().
-+		 * -EBUSY will be returned if feature IOPF is already on.
-+		 */
-+		rc = iommu_dev_enable_feature(idev->dev, IOMMU_DEV_FEAT_IOPF);
-+		if (rc && rc != -EBUSY)
-+			goto err_detach;
-+	}
- 	refcount_inc(&hwpt->obj.users);
- 	list_add_tail(&idev->group_item, &idev->igroup->device_list);
- 	mutex_unlock(&idev->igroup->lock);
- 	return 0;
-+err_detach:
-+	if (list_empty(&idev->igroup->device_list)) {
-+		iommu_detach_group(hwpt->domain, idev->igroup->group);
-+		idev->igroup->hwpt = NULL;
-+	}
- err_unresv:
- 	if (hwpt_is_paging(hwpt))
- 		iopt_remove_reserved_iova(&to_hwpt_paging(hwpt)->ioas->iopt,
-@@ -408,6 +424,8 @@ iommufd_hw_pagetable_detach(struct iommufd_device *idev)
- 	if (hwpt_is_paging(hwpt))
- 		iopt_remove_reserved_iova(&to_hwpt_paging(hwpt)->ioas->iopt,
- 					  idev->dev);
-+	if (hwpt_is_kvm(hwpt))
-+		iommu_dev_disable_feature(idev->dev, IOMMU_DEV_FEAT_IOPF);
- 	mutex_unlock(&idev->igroup->lock);
+diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+index 5df6c21781e1c..924006cda18c5 100644
+--- a/drivers/iommu/intel/iommu.c
++++ b/drivers/iommu/intel/iommu.c
+@@ -49,7 +49,6 @@
+ #define MAX_AGAW_PFN_WIDTH	(MAX_AGAW_WIDTH - VTD_PAGE_SHIFT)
  
- 	/* Caller must destroy hwpt */
+ #define __DOMAIN_MAX_PFN(gaw)  ((((uint64_t)1) << ((gaw) - VTD_PAGE_SHIFT)) - 1)
+-#define __DOMAIN_MAX_ADDR(gaw) ((((uint64_t)1) << (gaw)) - 1)
+ 
+ /* We limit DOMAIN_MAX_PFN to fit in an unsigned long, and DOMAIN_MAX_ADDR
+    to match. That way, we can use 'unsigned long' for PFNs with impunity. */
+@@ -62,10 +61,6 @@
+ 
+ #define IOVA_PFN(addr)		((addr) >> PAGE_SHIFT)
+ 
+-/* page table handling */
+-#define LEVEL_STRIDE		(9)
+-#define LEVEL_MASK		(((u64)1 << LEVEL_STRIDE) - 1)
+-
+ static inline int agaw_to_level(int agaw)
+ {
+ 	return agaw + 2;
+@@ -76,11 +71,6 @@ static inline int agaw_to_width(int agaw)
+ 	return min_t(int, 30 + agaw * LEVEL_STRIDE, MAX_AGAW_WIDTH);
+ }
+ 
+-static inline int width_to_agaw(int width)
+-{
+-	return DIV_ROUND_UP(width - 30, LEVEL_STRIDE);
+-}
+-
+ static inline unsigned int level_to_offset_bits(int level)
+ {
+ 	return (level - 1) * LEVEL_STRIDE;
+@@ -281,8 +271,6 @@ static LIST_HEAD(dmar_satc_units);
+ #define for_each_rmrr_units(rmrr) \
+ 	list_for_each_entry(rmrr, &dmar_rmrr_units, list)
+ 
+-static void intel_iommu_domain_free(struct iommu_domain *domain);
+-
+ int dmar_disabled = !IS_ENABLED(CONFIG_INTEL_IOMMU_DEFAULT_ON);
+ int intel_iommu_sm = IS_ENABLED(CONFIG_INTEL_IOMMU_SCALABLE_MODE_DEFAULT_ON);
+ 
+@@ -450,12 +438,6 @@ int iommu_calculate_agaw(struct intel_iommu *iommu)
+ 	return __iommu_calculate_agaw(iommu, DEFAULT_DOMAIN_ADDRESS_WIDTH);
+ }
+ 
+-static inline bool iommu_paging_structure_coherency(struct intel_iommu *iommu)
+-{
+-	return sm_supported(iommu) ?
+-			ecap_smpwc(iommu->ecap) : ecap_coherent(iommu->ecap);
+-}
+-
+ static void domain_update_iommu_coherency(struct dmar_domain *domain)
+ {
+ 	struct iommu_domain_info *info;
+@@ -1757,7 +1739,7 @@ static bool first_level_by_default(unsigned int type)
+ 	return type != IOMMU_DOMAIN_UNMANAGED;
+ }
+ 
+-static struct dmar_domain *alloc_domain(unsigned int type)
++struct dmar_domain *alloc_domain(unsigned int type)
+ {
+ 	struct dmar_domain *domain;
+ 
+@@ -1842,20 +1824,6 @@ void domain_detach_iommu(struct dmar_domain *domain, struct intel_iommu *iommu)
+ 	spin_unlock(&iommu->lock);
+ }
+ 
+-static inline int guestwidth_to_adjustwidth(int gaw)
+-{
+-	int agaw;
+-	int r = (gaw - 12) % 9;
+-
+-	if (r == 0)
+-		agaw = gaw;
+-	else
+-		agaw = gaw + 9 - r;
+-	if (agaw > 64)
+-		agaw = 64;
+-	return agaw;
+-}
+-
+ static void domain_exit(struct dmar_domain *domain)
+ {
+ 	if (domain->pgd) {
+@@ -4106,7 +4074,7 @@ intel_iommu_domain_alloc_user(struct device *dev, u32 flags,
+ 	return domain;
+ }
+ 
+-static void intel_iommu_domain_free(struct iommu_domain *domain)
++void intel_iommu_domain_free(struct iommu_domain *domain)
+ {
+ 	if (domain != &si_domain->domain)
+ 		domain_exit(to_dmar_domain(domain));
+@@ -4155,8 +4123,7 @@ int prepare_domain_attach_device(struct iommu_domain *domain,
+ 	return 0;
+ }
+ 
+-static int intel_iommu_attach_device(struct iommu_domain *domain,
+-				     struct device *dev)
++int intel_iommu_attach_device(struct iommu_domain *domain, struct device *dev)
+ {
+ 	struct device_domain_info *info = dev_iommu_priv_get(dev);
+ 	int ret;
+diff --git a/drivers/iommu/intel/iommu.h b/drivers/iommu/intel/iommu.h
+index 6acb0211e85fe..c76f558ae6323 100644
+--- a/drivers/iommu/intel/iommu.h
++++ b/drivers/iommu/intel/iommu.h
+@@ -1021,4 +1021,39 @@ static inline const char *decode_prq_descriptor(char *str, size_t size,
+ 	return str;
+ }
+ 
++#define __DOMAIN_MAX_ADDR(gaw) ((((uint64_t)1) << (gaw)) - 1)
++
++/* page table handling */
++#define LEVEL_STRIDE		(9)
++#define LEVEL_MASK		(((u64)1 << LEVEL_STRIDE) - 1)
++
++int intel_iommu_attach_device(struct iommu_domain *domain, struct device *dev);
++void intel_iommu_domain_free(struct iommu_domain *domain);
++struct dmar_domain *alloc_domain(unsigned int type);
++
++static inline int guestwidth_to_adjustwidth(int gaw)
++{
++	int agaw;
++	int r = (gaw - 12) % 9;
++
++	if (r == 0)
++		agaw = gaw;
++	else
++		agaw = gaw + 9 - r;
++	if (agaw > 64)
++		agaw = 64;
++	return agaw;
++}
++
++static inline bool iommu_paging_structure_coherency(struct intel_iommu *iommu)
++{
++	return sm_supported(iommu) ?
++			ecap_smpwc(iommu->ecap) : ecap_coherent(iommu->ecap);
++}
++
++static inline int width_to_agaw(int width)
++{
++	return DIV_ROUND_UP(width - 30, LEVEL_STRIDE);
++}
++
+ #endif
 -- 
 2.17.1
 
