@@ -2,57 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6366C801C59
+	by mail.lfdr.de (Postfix) with ESMTP id B7F50801C5B
 	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 12:14:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232491AbjLBLOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 06:14:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35690 "EHLO
+        id S232527AbjLBLOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 06:14:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjLBLOi (ORCPT
+        with ESMTP id S232488AbjLBLOk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 06:14:38 -0500
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56C9818C;
-        Sat,  2 Dec 2023 03:14:44 -0800 (PST)
-Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2c9d44b2919so23531431fa.0;
-        Sat, 02 Dec 2023 03:14:44 -0800 (PST)
+        Sat, 2 Dec 2023 06:14:40 -0500
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31D2C194;
+        Sat,  2 Dec 2023 03:14:46 -0800 (PST)
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2c9c18e7990so39412951fa.2;
+        Sat, 02 Dec 2023 03:14:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701515682; x=1702120482; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=561K0BGyTpooesF2vZY7Mwtnl+lVJGMkg+53gB719DA=;
-        b=FaUFa9erQ7Ict85AIxpET66VyIydaW/JREiX/mJWAGUw8VU0wDYCN2l7L0RQDZ9KPY
-         bG7YhIHrelmkgG4c2BXTOf0VCFb1ou9gGkuloecbuZHz6dfkFrsd3ABXzsUizFtjguir
-         jQm2v+IcKyN68aEGLt104v+kyuNeGANJMSgiIIBDaYLAgeLxj+LSuK/6TYNJGRmlFT6Q
-         dkfvwwSNY9++kjqtsykHOQ+Q2Wb3fcds7+bClxis9q4DK2yQI9Hu1040aNyzCmLuwViC
-         bTUhL0AxLaHQyTqotDKr4D9aX1Zrg8ANG4lbvUtb0kCQJbQrVYssOZWiJRnnz7LyFRpy
-         ur4g==
+        d=gmail.com; s=20230601; t=1701515684; x=1702120484; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FkjKzmOgBIAZEWmOEC5zndYMsC69jtjEuyfNzanPv9Q=;
+        b=aIb1a2xlanRmJRQvfu0w/i9I6vTTO1xFVMxukOV9B8j2sWy3du/kUImAQQOKk/qnKA
+         ocq0vTx5jrjBQ13lhz801ZgLE0HBQuguhLymIi6R1BpgDXzEnJBTHSQfjuDort9xodWX
+         R3NxSWc9oFmGLDTlFzh41u7JUWr5yDEAVQvNebbTgXTwq9hHiSpzo19ml860IHA3Jp9F
+         8k60/H6ljjWZ66hpZtUoIJGnKyomshXvILEC/mIriE8PlyknzC3P/0I5jKMdhnz4WASd
+         wgV2wlQM3tXhfY5CMHiGW3Ujb3zoXjz9kbdIzoUXhsO7n6BZSRPgUrzjJ5GA1v2PsxPY
+         tgfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701515682; x=1702120482;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=561K0BGyTpooesF2vZY7Mwtnl+lVJGMkg+53gB719DA=;
-        b=MR9a5Dimov7qKviCaJsSkyEg8P3AvSu7UdTWdscS3leoCsAjmTaHmALyvDVddIPTXT
-         YKrMLxLgsBGkGEykTGddJMH2uTpbMjcqBtJuFmtbRp9MDGcrPnlaf7+cw0KniX5wg/EB
-         Pq1O6SRpa1PcctYh/vDO+pklVSrNdJlMuJimrQH/1zT0C6QZQa+t4WFq3/db074zjd/h
-         pUAkahYSeY5kjqQyWn97FSqtvsfwgqktvetPQTdv/Jsakh+T6btxjm72Z46X9WQ2TAL0
-         IvaioUhdebjN+4/ipKEdMF/g7x2woEbCAbAfKbA7Zybeu0HwXPb8w+n8vH9zeP91P6p9
-         0O8g==
-X-Gm-Message-State: AOJu0YyaFaMYL7/OGtzHfDehvx5iZgMupITViDXJNp0xZuusKxakVMcs
-        W5ayvE/NA8YctmTkrUESZ1o=
-X-Google-Smtp-Source: AGHT+IFtuPcs03pVDSegSsFJqR+qgrSu6Yoe7feFmO2GJ9vLYffSE/RHhkzKJ7/saKHyb7BYEvMagA==
-X-Received: by 2002:a2e:2414:0:b0:2c9:f4af:fb9c with SMTP id k20-20020a2e2414000000b002c9f4affb9cmr238456ljk.22.1701515682230;
-        Sat, 02 Dec 2023 03:14:42 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701515684; x=1702120484;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FkjKzmOgBIAZEWmOEC5zndYMsC69jtjEuyfNzanPv9Q=;
+        b=HMwu9OiGAg9+qgXPjuAiovKbmMp//IgcvmJ6DcZfSDQ8gVYVtzaWIy22OvPJZMedTt
+         cQwQCDYWaWyrJxg9zUOphmbfdRSrX4kE7RxKWiVdzyoRapmHSRUBaNt41B3I4fv72TpO
+         SbFSRBL+DJKLLi5IqqWzlViO37cy6lTs3Yl2+B19lLqhqof2q8yOb9RjoAi8dAmsXCjZ
+         6DsOvcxiO3IUchh38zY7fiewQ2W3IRxjmCnXijsZattbodiwEF95kOOnFoKvd4jLtE+4
+         D8YJ3RW2nsfNH5pYsakx2yP48qXispwtljGmMn9w2w9Gd4OQYldV85cm5TGyR+ZjoXXY
+         WCMQ==
+X-Gm-Message-State: AOJu0YzEc4dj2qUqfNWSFpf9LaATDK+zDUaKpkaG2iXlWjjvjV7+rhwq
+        D8L1tekPSiZS13u393g6TxU=
+X-Google-Smtp-Source: AGHT+IHA6+EuRkpkyQ96D47YDeUbDMbpN9C7dhAq1xKmSnGXQA8pEXs0hCR4j4mKPT0f09fQoTKiOg==
+X-Received: by 2002:ac2:5a46:0:b0:50b:c4e3:b601 with SMTP id r6-20020ac25a46000000b0050bc4e3b601mr1409652lfn.66.1701515684172;
+        Sat, 02 Dec 2023 03:14:44 -0800 (PST)
 Received: from localhost ([95.79.203.166])
-        by smtp.gmail.com with ESMTPSA id i7-20020a2ea367000000b002c72bc28b3bsm700722ljn.52.2023.12.02.03.14.41
+        by smtp.gmail.com with ESMTPSA id o12-20020ac24e8c000000b0050bbf6b1f74sm690720lfr.232.2023.12.02.03.14.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Dec 2023 03:14:41 -0800 (PST)
+        Sat, 02 Dec 2023 03:14:43 -0800 (PST)
 From:   Serge Semin <fancer.lancer@gmail.com>
 To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Andrew Morton <akpm@linux-foundation.org>
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Yinglu Yang <yangyinglu@loongson.cn>
 Cc:     Serge Semin <fancer.lancer@gmail.com>,
         Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
         Arnd Bergmann <arnd@arndb.de>,
@@ -61,16 +65,16 @@ Cc:     Serge Semin <fancer.lancer@gmail.com>,
         Dragan Mladjenovic <dragan.mladjenovic@syrmia.com>,
         Christophe Leroy <christophe.leroy@csgroup.eu>,
         Baoquan He <bhe@redhat.com>, Chao-ying Fu <cfu@wavecomp.com>,
-        Yinglu Yang <yangyinglu@loongson.cn>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
         Mike Rapoport <rppt@kernel.org>,
         Matthew Wilcox <willy@infradead.org>,
         Marc Zyngier <maz@kernel.org>, linux-mips@vger.kernel.org,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 0/6] MIPS: mm: Fix some memory-related issues
-Date:   Sat,  2 Dec 2023 14:14:17 +0300
-Message-ID: <20231202111430.18059-1-fancer.lancer@gmail.com>
+Subject: [PATCH v2 1/6] mips: dmi: Fix early remap on MIPS32
+Date:   Sat,  2 Dec 2023 14:14:18 +0300
+Message-ID: <20231202111430.18059-2-fancer.lancer@gmail.com>
 X-Mailer: git-send-email 2.42.1
+In-Reply-To: <20231202111430.18059-1-fancer.lancer@gmail.com>
+References: <20231202111430.18059-1-fancer.lancer@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -83,100 +87,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just recently I've rebased my MIPS32-related work from kernel 6.5-rc4 onto
-the latest kernel 6.7-rc1 and immediately got into a bootup-time
-mm-related bug (see patches 3-4 in this series). After fixing it I decided
-it was time to submit for review the generic MIPS code fixes which I have
-been collecting in my local repo for the last year. I was going to submit
-them a bit later after I finished working on a patchset with my SoC
-arch-specific changes, but since it was getting bigger and bigger, it
-turned to be reasonable to spill out the generic part of series right away
-especially seeing it might get to be useful in the most recent kernel.
+dmi_early_remap() has been defined as ioremap_cache() which on MIPS32 gets
+to be converted to the VM-based mapping. DMI early remapping is performed
+at the setup_arch() stage with no VM available. So calling the
+dmi_early_remap() for MIPS32 causes the system to crash at the early boot
+time. Fix that by converting dmi_early_remap() to the uncached remapping
+which is always available on both 32 and 64-bits MIPS systems.
 
-So this series starts with the MIPS-specific dmi_early_remap()
-implementation fix. It is utilized by the DMI driver in the framework of
-the dmi_setup() method, which is called at the very early boot stage - in
-setup_arch((). No VM and slab available at that stage which is required
-for the ioremap_cache() to properly work. Thus it was a mistake to have
-the dmi_early_remap() macro-function defined as ioremap_cache(). It should
-have been ioremap() in first place.
+Note this change shall not cause any regressions on the current DMI
+support implementation because on the early boot-up stage neither MIPS32
+nor MIPS64 has the cacheable ioremapping support anyway.
 
-After that goes a fix for the high-memory zone PFNs calculation procedure
-on MIPS. It turned out that after some not that recent commit the
-IO-memory or just non-memory PFNs got to the high-memory even though they
-were directly reachable, thus should have been left in the normal zone.
+Fixes: be8fa1cb444c ("MIPS: Add support for Desktop Management Interface (DMI)")
+Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
 
-Then a series of fixes for the recently discovered mm-bug is presented.
-Any attempt to re-map the IO-memory with the cached attribute caused the
-bootup procedure to crash with the "Unhandled kernel unaligned access"
-message. After some digging I found out that the problem was in the
-uninitialized IO-memory pages. Please see the patch "mips: Fix max_mapnr
-being uninitialized on early stages" description for the detailed
-explanation of the problem and suggested fix.
+---
 
-After that goes a patch which adds the slab availability check into the
-ioremap_prot() method. Indeed VM mapping performs the slab allocation in
-the framework of the get_vm_area() method. Thus any other than uncached
-IO-remappings must be proceeded only at the stages when slab is available.
-A similar fix was just recently added to the generic version of
-ioremap_prot() in the framework of commit a5f616483110 ("mm/ioremap: add
-slab availability checking in ioremap_prot").
+Note even though this patch is fully correct from the current
+ioremap()-based semantics point of view and shall fix the denoted problem,
+Jiaxun thinks that it's better to provide a different fix since
+dmi_early_remap() doesn't work correctly on even Loongson64 - the only
+currently DMI-equipped platform. In v1 discussion he promised to provide a
+better fix for the problem. Until then let's consider this patch as the
+only currently available solution.
 
-The patchset is closed with a small improvement which sets the MIPS
-board/machine name to the dump-stack module in order to print
-arch-personalized oopses in the same way as it's done on ARM, ARM64,
-RISC-V, etc.
-
-That's it for today.) Thanks for review in advance. Any tests are very
-welcome.
-
-Link: https://lore.kernel.org/linux-mips/20231122182419.30633-1-fancer.lancer@gmail.com/
 Changelog v2:
-- Drop the patches:
-  [PATCH 5/7] mm/mm_init.c: Extend init unavailable range doc info
-  [PATCH 6/7] mm/mm_init.c: Append '\n' to the unavailable ranges log-message
-  since they have been picked up by Andrew. (@Andrew)
 - Replace ioremap_uc() with using ioremap() due to having the former one
   deprecated. (@Arnd)
-- Add a new patch:
-  [PATCH v2 5/6] mips: mm: add slab availability checking in ioremap_prot
-  picked up from the generic ioremap_prot() implementation.
-- Extend early DMI mem remapping patch log with a note regarding the unsynched
-  caches concern. (@Jiaxun)
+- Extend patch log with a note regarding the unsynched caches concern.
+  (@Jiaxun)
+---
+ arch/mips/include/asm/dmi.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
-Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Aleksandar Rikalo <aleksandar.rikalo@syrmia.com>
-Cc: Aleksandar Rikalo <arikalo@gmail.com>
-Cc: Dragan Mladjenovic <dragan.mladjenovic@syrmia.com>
-Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: Baoquan He <bhe@redhat.com>
-Cc: Chao-ying Fu <cfu@wavecomp.com>
-Cc: Yinglu Yang <yangyinglu@loongson.cn>
-Cc: Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc: Mike Rapoport <rppt@kernel.org>
-Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: linux-mips@vger.kernel.org
-Cc: linux-mm@kvack.org
-Cc: linux-kernel@vger.kernel.org
-
-Serge Semin (6):
-  mips: dmi: Fix early remap on MIPS32
-  mips: Fix incorrect max_low_pfn adjustment
-  mips: Fix max_mapnr being uninitialized on early stages
-  mips: Optimize max_mapnr init procedure
-  mips: mm: add slab availability checking in ioremap_prot
-  mips: Set dump-stack arch description
-
- arch/mips/include/asm/dmi.h |  2 +-
- arch/mips/kernel/prom.c     |  2 ++
- arch/mips/kernel/setup.c    |  4 ++--
- arch/mips/mm/init.c         | 16 +++++++++-------
- arch/mips/mm/ioremap.c      |  4 ++++
- 5 files changed, 18 insertions(+), 10 deletions(-)
-
+diff --git a/arch/mips/include/asm/dmi.h b/arch/mips/include/asm/dmi.h
+index 27415a288adf..dc397f630c66 100644
+--- a/arch/mips/include/asm/dmi.h
++++ b/arch/mips/include/asm/dmi.h
+@@ -5,7 +5,7 @@
+ #include <linux/io.h>
+ #include <linux/memblock.h>
+ 
+-#define dmi_early_remap(x, l)		ioremap_cache(x, l)
++#define dmi_early_remap(x, l)		ioremap(x, l)
+ #define dmi_early_unmap(x, l)		iounmap(x)
+ #define dmi_remap(x, l)			ioremap_cache(x, l)
+ #define dmi_unmap(x)			iounmap(x)
 -- 
 2.42.1
 
