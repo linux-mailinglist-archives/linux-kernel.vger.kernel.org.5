@@ -2,354 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB52C801C8A
+	by mail.lfdr.de (Postfix) with ESMTP id 74E45801C89
 	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 13:20:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232604AbjLBMS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 07:18:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46312 "EHLO
+        id S232658AbjLBMUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 07:20:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjLBMS0 (ORCPT
+        with ESMTP id S229472AbjLBMU3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 07:18:26 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A24CE6;
-        Sat,  2 Dec 2023 04:18:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701519512; x=1733055512;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=HocNrwPVUIaPbL5UHtlU1yzyXI3OJzQgHbf7LCwlakw=;
-  b=K/0VaHXPTYWgHPK61fQK8yEHBMarrtHpmIeFnyn561+ehmNzO6CCHHmk
-   B8g/Xs3ke6Ad+juwHFTvxqkB3AHk+2m4fH+xjI7032g4jzOhA6+FX5T54
-   WRiP+fXxPSeM4rUHv9+pcKB5rsQiA3j9K7k48KMO8jSV6PFOCR5DEdX2I
-   8XWpnrBm7IxUJodT7MajoFuK2HJdQwOeLehKdQjvvrxUZswhWxlTTZD0S
-   zEAdwpr9S+ztYlUcBJEdS57Ao166gezvA17G3N+m+uzSegJ5LfOp2zsa3
-   peOMVvVsuZWi2W+vKySQmzn1ZtZDeSOvDQKcJ5v/XQ6apifa0Y5TiJSBu
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="424761362"
-X-IronPort-AV: E=Sophos;i="6.04,246,1695711600"; 
-   d="scan'208";a="424761362"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2023 04:18:31 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="804359113"
-X-IronPort-AV: E=Sophos;i="6.04,246,1695711600"; 
-   d="scan'208";a="804359113"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
-  by orsmga001.jf.intel.com with ESMTP; 02 Dec 2023 04:18:29 -0800
-Date:   Sat, 2 Dec 2023 20:16:21 +0800
-From:   Xu Yilun <yilun.xu@linux.intel.com>
-To:     Marco Pagani <marpagan@redhat.com>
-Cc:     Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
-        Xu Yilun <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linux-fpga@vger.kernel.org
-Subject: Re: [RFC PATCH v2 1/2] fpga: add a module owner field to
- fpga_manager and fpga_manager_ops
-Message-ID: <ZWsgFViqdJuC7N1d@yilunxu-OptiPlex-7050>
-References: <20231124162807.238724-1-marpagan@redhat.com>
- <20231124162807.238724-2-marpagan@redhat.com>
- <ZWG6Tg0egX6Cy9j5@yilunxu-OptiPlex-7050>
- <7004d215-5185-4cce-a51e-42e131a30453@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7004d215-5185-4cce-a51e-42e131a30453@redhat.com>
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Sat, 2 Dec 2023 07:20:29 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30654E6
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 04:20:35 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E7EAC433C7;
+        Sat,  2 Dec 2023 12:20:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701519634;
+        bh=ejaFDXno/ycGNYAzsMsIvPwtjPT2anJN2aFKbFwFV04=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=PvfwcIfWLh/wjDpU29WREENELuCw5zM+gDaYXkHN1dTQAhMOVMLcKZx0qF+XtbDww
+         Cp8cd0bGhix99JP0W3laRsC/uu0mW48n0dssmWtApkTuYAK+QRQqGRTEDM1Tj7nq3r
+         DfFE8WCm4e9My7K4ry5kpd+J4TThkfjNRic1IjDpX9BZv3TYIgAnHPOagQROkylFKY
+         5CFgXaV5HBHRcNzJxPImcQlZ6BOZyrC8D0rgwpxvA5733vzb24/gDQwiSJc3V3YH5z
+         1HzD2DElwwq/vVfI1K8HndQt7lDMscl/WRpH88NW+QoGuwn8AExtxvvT1rAjw09rBI
+         sO/nNsSPAusbQ==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1r9Oz2-000oDc-6w;
+        Sat, 02 Dec 2023 12:20:32 +0000
+Date:   Sat, 02 Dec 2023 12:20:31 +0000
+Message-ID: <87fs0k94og.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Kunkun Jiang <jiangkunkun@huawei.com>
+Cc:     <dongli.zhang@oracle.com>, <cohuck@redhat.com>,
+        <jasowang@redhat.com>, <stefanha@redhat.com>, <mst@redhat.com>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Gavin Shan <gshan@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "open list:IRQCHIP DRIVERS" <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <kvmarm@lists.linux.dev>,
+        <wanghaibin.wang@huawei.com>
+Subject: Re: [RFC PATCH] KVM: arm/arm64: GICv4: Support shared VLPI
+In-Reply-To: <952bd5dc-dd20-acc3-d77e-c9b14e5728d3@huawei.com>
+References: <20231102143507.840-1-jiangkunkun@huawei.com>
+        <87msvt6cc7.wl-maz@kernel.org>
+        <1fb8353e-e9c4-2570-c2ca-ec537c18ac4d@huawei.com>
+        <86edh228xx.wl-maz@kernel.org>
+        <952bd5dc-dd20-acc3-d77e-c9b14e5728d3@huawei.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: jiangkunkun@huawei.com, dongli.zhang@oracle.com, cohuck@redhat.com, jasowang@redhat.com, stefanha@redhat.com, mst@redhat.com, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, gshan@redhat.com, jean-philippe@linaro.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, wanghaibin.wang@huawei.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 30, 2023 at 11:42:36AM +0100, Marco Pagani wrote:
-> 
-> 
-> On 2023-11-25 10:11, Xu Yilun wrote:
-> > On Fri, Nov 24, 2023 at 05:28:06PM +0100, Marco Pagani wrote:
-> >> Add a module *owner field to the fpga_manager_ops and fpga_manager
-> >> structs to protect the fpga manager against the unloading of the
-> >> low-level control module while someone is holding a reference to the
-> >> manager device. Low-level control modules should statically set the
-> >> owner field of the fpga_manager_ops struct to THIS_MODULE. Then, when
-> >> the manager is registered using fpga_mgr_register(), the value is copied
-> >> into the owner field of the fpga_manager struct (that contains the
-> >> device context). In this way, the manager can later use it in
-> >> fpga_mgr_get() to take the low-level module's refcount. To prevent races
-> >> while unloading the low-level control module, fpga_mgr_get() and part of
-> >> the fpga_mgr_unregister() methods are protected with a mutex.
-> >>
-> >> Other changes: move put_device() from __fpga_mgr_get() to fpga_mgr_get()
-> >> and of_fpga_mgr_get() to improve code clarity.
-> >>
-> >> Fixes: 654ba4cc0f3e ("fpga manager: ensure lifetime with of_fpga_mgr_get")
-> >> Signed-off-by: Marco Pagani <marpagan@redhat.com>
-> >> ---
-> >>  drivers/fpga/fpga-mgr.c       | 56 +++++++++++++++++++++++++----------
-> >>  include/linux/fpga/fpga-mgr.h |  4 +++
-> >>  2 files changed, 44 insertions(+), 16 deletions(-)
-> >>
-> >> diff --git a/drivers/fpga/fpga-mgr.c b/drivers/fpga/fpga-mgr.c
-> >> index 06651389c592..608605d59860 100644
-> >> --- a/drivers/fpga/fpga-mgr.c
-> >> +++ b/drivers/fpga/fpga-mgr.c
-> >> @@ -21,6 +21,8 @@
-> >>  static DEFINE_IDA(fpga_mgr_ida);
-> >>  static const struct class fpga_mgr_class;
-> >>  
-> >> +static DEFINE_MUTEX(mgr_lock);
-> >> +
-> >>  struct fpga_mgr_devres {
-> >>  	struct fpga_manager *mgr;
-> >>  };
-> >> @@ -667,17 +669,15 @@ ATTRIBUTE_GROUPS(fpga_mgr);
-> >>  static struct fpga_manager *__fpga_mgr_get(struct device *dev)
-> >>  {
-> >>  	struct fpga_manager *mgr;
-> >> +	struct module *owner;
-> >>  
-> >>  	mgr = to_fpga_manager(dev);
-> >> +	owner = mgr->owner;
-> >>  
-> >> -	if (!try_module_get(dev->parent->driver->owner))
-> >> -		goto err_dev;
-> >> +	if (owner && !try_module_get(owner))
-> > 
-> > No need to test owner == NULL, try_module_get() does this.
-> 
-> You are right. I'll remove it in the next version.
-> 
-> > 
-> >> +		mgr = ERR_PTR(-ENODEV);
-> >>  
-> >>  	return mgr;
-> >> -
-> >> -err_dev:
-> >> -	put_device(dev);
-> >> -	return ERR_PTR(-ENODEV);
-> >>  }
-> >>  
-> >>  static int fpga_mgr_dev_match(struct device *dev, const void *data)
-> >> @@ -693,12 +693,22 @@ static int fpga_mgr_dev_match(struct device *dev, const void *data)
-> >>   */
-> >>  struct fpga_manager *fpga_mgr_get(struct device *dev)
-> >>  {
-> >> -	struct device *mgr_dev = class_find_device(&fpga_mgr_class, NULL, dev,
-> >> -						   fpga_mgr_dev_match);
-> >> +	struct fpga_manager *mgr = ERR_PTR(-ENODEV);
-> >> +	struct device *mgr_dev;
-> >> +
-> >> +	mutex_lock(&mgr_lock);
-> >> +
-> >> +	mgr_dev = class_find_device(&fpga_mgr_class, NULL, dev, fpga_mgr_dev_match);
-> >>  	if (!mgr_dev)
-> >> -		return ERR_PTR(-ENODEV);
-> >> +		goto out;
-> >> +
-> >> +	mgr = __fpga_mgr_get(mgr_dev);
-> >> +	if (IS_ERR(mgr))
-> >> +		put_device(mgr_dev);
-> >>  
-> >> -	return __fpga_mgr_get(mgr_dev);
-> >> +out:
-> >> +	mutex_unlock(&mgr_lock);
-> >> +	return mgr;
-> >>  }
-> >>  EXPORT_SYMBOL_GPL(fpga_mgr_get);
-> >>  
-> >> @@ -711,13 +721,22 @@ EXPORT_SYMBOL_GPL(fpga_mgr_get);
-> >>   */
-> >>  struct fpga_manager *of_fpga_mgr_get(struct device_node *node)
-> >>  {
-> >> -	struct device *dev;
-> >> +	struct fpga_manager *mgr = ERR_PTR(-ENODEV);
-> >> +	struct device *mgr_dev;
-> >> +
-> >> +	mutex_lock(&mgr_lock);
-> >> +
-> >> +	mgr_dev = class_find_device_by_of_node(&fpga_mgr_class, node);
-> >> +	if (!mgr_dev)
-> >> +		goto out;
-> >>  
-> >> -	dev = class_find_device_by_of_node(&fpga_mgr_class, node);
-> >> -	if (!dev)
-> >> -		return ERR_PTR(-ENODEV);
-> >> +	mgr = __fpga_mgr_get(mgr_dev);
-> >> +	if (IS_ERR(mgr))
-> >> +		put_device(mgr_dev);
-> >>  
-> >> -	return __fpga_mgr_get(dev);
-> >> +out:
-> >> +	mutex_unlock(&mgr_lock);
-> >> +	return mgr;
-> >>  }
-> >>  EXPORT_SYMBOL_GPL(of_fpga_mgr_get);
-> >>  
-> >> @@ -727,7 +746,7 @@ EXPORT_SYMBOL_GPL(of_fpga_mgr_get);
-> >>   */
-> >>  void fpga_mgr_put(struct fpga_manager *mgr)
-> >>  {
-> >> -	module_put(mgr->dev.parent->driver->owner);
-> >> +	module_put(mgr->owner);
-> >>  	put_device(&mgr->dev);
-> >>  }
-> >>  EXPORT_SYMBOL_GPL(fpga_mgr_put);
-> >> @@ -806,6 +825,7 @@ fpga_mgr_register_full(struct device *parent, const struct fpga_manager_info *in
-> >>  
-> >>  	mgr->name = info->name;
-> >>  	mgr->mops = info->mops;
-> >> +	mgr->owner = info->mops->owner;
-> >>  	mgr->priv = info->priv;
-> >>  	mgr->compat_id = info->compat_id;
-> >>  
-> >> @@ -888,7 +908,11 @@ void fpga_mgr_unregister(struct fpga_manager *mgr)
-> >>  	 */
-> >>  	fpga_mgr_fpga_remove(mgr);
-> >>  
-> >> +	mutex_lock(&mgr_lock);
-> >> +
-> >>  	device_unregister(&mgr->dev);
-> >> +
-> >> +	mutex_unlock(&mgr_lock);
-> > 
-> > Why this part should be protected rather than the whole
-> > fpga_mgr_unregister()?
-> >
-> 
-> Protecting the fpga_remove() op seems unnecessary to me because it
-> does not affect the manager device's lifetime. Moreover, it may hold
-> the mutex for a long time since it was intended to interact with the
-> hardware to put it in a specific state before removing the driver.
-> 
-> > I feel the scope of the protection is unclear to me in this patch. What
-> > data should be protected from concurrent access by this mutex? From the
-> > code seems the racing of mgr dev should be protected but apparently it
-> > doesn't have to.
-> 
-> The mutex is there to ensure the lifetime of the manager device and
-> its context (struct fpga_manager) if fpga_mgr_get() happens to run
-> concurrently with the removal of the low-level module.
-> 
-> > 
-> > And with this mutex, the get/put/unregister() for one mgr should be
-> > exclusive with another mgr, but that also seems not necessary.
-> > 
-> 
-> I decided to use a static mutex because I thought putting the mutex
-> in the manager's context would be unsafe since its life would be tied
-> to the manager's life. For instance, consider the following sequence:
-> 
-> - A removes the low-level control module, and delete_module progresses
-> up to the point when it calls the module's exit function, which in turn
-> calls fpga_mgr_unregister().
-> 
-> - fpga_mgr_unregister() takes the mutex but gets descheduled before
-> completing the unregistering of the manager device.
-> 
-> - Meanwhile, B wants to get the manager (it is still there) and calls
-> fpga_mgr_get(), which tries to take the mutex but gets suspended since
-> it is held by A.
-> 
-> - A resumes and fpga_mgr_unregister() releases the manager device and
+Hi Kunkun,
 
-The lifecycle of the manager device is not entirely decided by
-fpga_mgr_unregister(), this func just puts/decreases the device
-refcount.
+On Wed, 08 Nov 2023 09:45:51 +0000,
+Kunkun Jiang <jiangkunkun@huawei.com> wrote:
+> 
+> Hi Marc,
+> 
+> On 2023/11/6 23:33, Marc Zyngier wrote:
+> > On Mon, 06 Nov 2023 14:59:01 +0000,
+> > Kunkun Jiang <jiangkunkun@huawei.com> wrote:
+> >> The virtio-pci driver write entry1-6
+> >> massage.data in the msix-table and trap to QEMU for processing. The
+> >> massage.data is as follow:
+> >>> entry-0 0
+> >>> entry-1 1
+> >>> entry-2 1
+> >>> entry-3 1
+> >>> entry-4 1
+> >>> entry-5 1
+> >>> entry-6 1
+> > Urgh... is vp_modern_queue_vector() used in your configuration? This
+> > is ... terrible.
+> I encountered this problem using the 4.19 version kernel, but not the
+> 5.10 version. This vp_modern_queue_vector() function does not exist
+> in 4.19, but it uses 'vp_iowrite16(msix_vec, &cfg->queue_msix_vector)',
+> the same as vp_modern_queue_vector().
+> 
+> In the past two days, I learned about the virtio driver and made some
+> new discoveries. When 'num_queues' is greater than maxcpus, it will
+> fall back into MSI-X with one shared for queues. The two patches[1],
+> submitted by Dongli, limits the number of hw queues used by
+> virtio-blk/virtio-scsi by 'nr_cpu_ids'. The two patches were merged
+> in 5.1-rc2. And the patch related virtio-blk was merged into the 4.19
+> stable branch.The patch related virtio-scsi was not merged.
+> [1]
+> https://lore.kernel.org/all/1553682995-5682-1-git-send-email-dongli.zhang@oracle.com/
+> 
+> This is the earliest discussion.
+> https://lore.kernel.org/all/e4afe4c5-0262-4500-aeec-60f30734b4fc@default/
+> 
+> I don't know if there are other circumstances that would cause it to
+> fall back into MSI-X with one shared for queues. At least the hack
+> method is possible.
+> > I wonder if PCIe actually allows this sort of thing.
+> Do you think the virtio driver should be modified?
 
-Remember fpga_mgr_get() gets the device via
-class_find_device()->get_device(). I assume if the valid device pointer
-could be returned by class_find_device(), it would never be released by
-other nice players. So I have no worry about the per manager mutex.
+I think the virtio driver should stop messing with the MSI-X
+configuration behind the kernel's back. For example, what happens if
+the kernel needs to do a disable_irq() on the "shared" interrupt? It
+will mask the interrupt in *one* of the vectors, and the interrupt
+will still be screaming.
 
-> its context, including the mutex on which B is suspended.
-> 
-> We could mitigate this specific case using mutex_trylock(). However,
-> there will still be other problematic cases, like if fpga_mgr_get()
-> gets suspended right before taking the mutex and then delete_module
-> proceeds up to when fpga_mgr_unregister() frees the manager device
-> and its context.
-> 
-> > I think the mgr->owner & mgr->ops should be protected from concurrent
-> > access of delete_module & fpga_mgr_get/put(), so how about:
-> > 
-> > struct fpga_manager_ops {
-> > 	struct module *owner;
-> > 	...
-> > };
-> > 
-> > struct fpga_manager {
-> > 	...
-> > 	struct mutex mops_lock;
-> > 	const struct fpga_manager_ops *mops;
-> > 	...
-> > };
-> > 
-> > 
-> > static struct fpga_manager *__fpga_mgr_get(struct device *dev)
-> > {
-> > 	struct fpga_manager *mgr;
-> > 
-> > 	mgr = to_fpga_manager(dev);
-> > 
-> > 	mutex_lock(&mgr->mops_lock);
-> > 
-> > 	if (!mgr->mops || !try_module_get(mgr->mops->owner))
-> > 		mgr = ERR_PTR(-ENODEV);
-> > 
-> > 	mutex_unlock(&mgr->mops_lock);
-> > 		
-> > 	return mgr;
-> > }
-> > 
-> > void fpga_mgr_unregister(struct fpga_manager *mgr)
-> > {
-> > 	fpga_mgr_fpga_remove(mgr);	
-> > 
-> > 	mutex_lock(&mgr->ops_lock);
-> > 	mgr->mops = NULL;
-> > 	mutex_unlock(&mgr->ops_lock);
-> > 
-> > 	device_unregister(&mgr->dev);	
-> > }
-> > 
-> > Not actually tested.
-> > 
-> 
-> I think protecting the only the ops is not enough for the same reasons.
-> If fpga_mgr_get() gets suspended right after class_find_device(),and
-> meanwhile the low-level module is removed, it resumes with a reference
-> to a manager device that no longer exists.
-> 
-> In a certain sense, however, using a mutex seems like a mitigation
-> that does not solve the problem at its root. I honestly still think
-> that taking the module's refcount right when registering the manager
-> is the only way that is both safe and robust against code changes.
+This is terribly broken, even on x86.
 
-I would nak either. As mentioned above, that makes rmmod vendor module
-impossible. Introducing another user interface to release the module's
-refcount is also a bad idea. Who decides to take the ref, who releases
-it. A user has no knowledge of what is happening inside and should not
-enforce.
+> > In any case, this sort of behaviour breaks so many thing in KVM's
+> > implementation that I'd recommend you disable GICv4 until we have a
+> > good solution for that.
+> There seems to be no restriction in the GIC specification that multiple
+> host irqs cannot be mapped to the same vlpi. Or maybe I didn't notice.
+> Do you think there are any risks?
 
-> However, my proposal was rejected.
-> 
-> So, if you prefer, I can drop the mutex entirely in the next version,
-> and we leave the responsibility of keeping all kernel pieces to the
+Please see 5.2.10 ("Restrictions for INTID mapping rules"), which
+clearly forbids the case we have here: "Maps multiple EventID-DeviceID
+combinations to the same virtual LPI INTID-vPEID.".
 
-No, please try to fix it. Could you please reconsider my proposal?
+> GICv3 does not have this issue, but is this configuration legal?
 
-Thanks,
-Yilun
+With GICv3, the ITS doesn't see multiple mappings to the same
+LPI. Each DeviceID/EventID pair has its own LPI, and KVM will just see
+the injection callback from VFIO.
 
-> user. It will still be an improvement over taking the low-level
-> module's refcount through the parent device's driver pointer.
-> 
-> Thanks,
-> Marco
-> 
-> 
+Honestly, the virtio driver is broken (irrespective of the
+architecture), and incompatible with the GIC architecture.
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
