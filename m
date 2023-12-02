@@ -2,235 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22AE6801EF5
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 23:14:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AEC6801EF9
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 23:20:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232250AbjLBWOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 17:14:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60356 "EHLO
+        id S232365AbjLBWUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 17:20:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjLBWOA (ORCPT
+        with ESMTP id S229450AbjLBWUV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 17:14:00 -0500
-Received: from mail1.merlins.org (magic.merlins.org [209.81.13.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FD4BCD
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 14:14:05 -0800 (PST)
-Received: from c-76-132-34-178.hsd1.ca.comcast.net ([76.132.34.178]:33994 helo=sauron.svh.merlins.org)
-        by mail1.merlins.org with esmtpsa 
-        (Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim 4.94.2 #2)
-        id 1r9YFO-0001jB-VK by authid <merlins.org> with srv_auth_plain; Sat, 02 Dec 2023 14:14:02 -0800
-Received: from merlin by sauron.svh.merlins.org with local (Exim 4.92)
-        (envelope-from <marc_nouveau@merlins.org>)
-        id 1r9YFO-0003Wt-Q3; Sat, 02 Dec 2023 14:14:02 -0800
-Date:   Sat, 2 Dec 2023 14:14:02 -0800
-From:   Marc MERLIN <marc_nouveau@merlins.org>
-To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux Nouveau <nouveau@lists.freedesktop.org>,
-        Timur Tabi <ttabi@nvidia.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>
-Subject: Re: [Nouveau] Thinkpad P17 gen 2 kernel 6.4 and 6.6 lack of support
- for nvidia GA104GLM [RTX A5000 Mobile] and missing module firmware
-Message-ID: <20231202221402.GA11155@merlins.org>
+        Sat, 2 Dec 2023 17:20:21 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAB7B119
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 14:20:26 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-50bef9b7a67so382840e87.1
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Dec 2023 14:20:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701555625; x=1702160425; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Ev48WhSxuIt318yon0pzoZ1KohyLW6w41dJCtn1iVzE=;
+        b=mU+aP8MJ6RG1EPaQk9kaIByBsReFSmS/pYPB7R9IafEfgcH8K2tsK/yH/dZCrAQwOC
+         c59C4AJKKTrO7xHpFYlKsbbWqay/QjobleBnGTFNUNJpb5hKZlErN+h/Qk1vOB3b9YYp
+         FjTF0t6mtRE+3GCGS+1Bygc7QFArL3XyFUJWKZZR23NVxKCD35kcyHU+B6vT/EDG/n5m
+         jJ1AjzmtRmqfPCgDPiIXPFyCI64Reo7G5iNyqWcn6jpuXtypPu/RX0G8++nhLbP9Y/0b
+         GuOZqUqKZcbewXfym7N4fzWFmvuh/B+cdhoTafgNT0fV7mriR/dECwe3ejjs0Lxp0MBB
+         skuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701555625; x=1702160425;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ev48WhSxuIt318yon0pzoZ1KohyLW6w41dJCtn1iVzE=;
+        b=BEakyVYIO/TWX6e/jMwSM4Z0IaeUhAZ2qw/c4DU0A6xpAqVQS76ngqLgrvxwNU2tux
+         4tNId2TCP+fqxEo7rBg2gEQKHp8icomRW/nxzI/SWLLRaxuKK9Y0cg9Qsirjgy7YgDfM
+         nc6nQsKfuzTqx/QVpHMsRQoAcc6q278kXfUqxeBwq3IuHACpOARAVLT/nue9k0Xr9oLJ
+         iaxvYNOCaPpCkg7XNUs5pDsTW3Xo0l6i8CHeYjN/G8qv+sYyKecaAm4TfBJiwCDonB7v
+         8MFjlnFmuuMHjlDViUwTDTJIvhHWEdSOhiQKYVEZ6EkPkP2Kar2NcveK/SiVYKDmecPO
+         P63Q==
+X-Gm-Message-State: AOJu0Yw7xYapN3SMctvJ5XafE/0SqGNKcfraLXmlSkkywP7F8OyfzVJB
+        uxL3Xhgq1eePpg5BheJlBfH69A==
+X-Google-Smtp-Source: AGHT+IGbjQPABgG+QUpn0WgrJETi3NKiVKW/2ZOl0KFy6XCqqXBc/S1CkBQzmaR+Yk1DIjvr1dLFHA==
+X-Received: by 2002:a19:ca4d:0:b0:50b:c1b8:9442 with SMTP id h13-20020a19ca4d000000b0050bc1b89442mr1466391lfj.51.1701555624756;
+        Sat, 02 Dec 2023 14:20:24 -0800 (PST)
+Received: from ?IPV6:2001:14ba:a0db:1f00::8a5? (dzdqv0yyyyyyyyyyybcwt-3.rev.dnainternet.fi. [2001:14ba:a0db:1f00::8a5])
+        by smtp.gmail.com with ESMTPSA id l24-20020a19c218000000b005092e621916sm816406lfc.222.2023.12.02.14.20.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 02 Dec 2023 14:20:24 -0800 (PST)
+Message-ID: <d7199b2c-6baa-4241-b2e6-c739f7c540e1@linaro.org>
+Date:   Sun, 3 Dec 2023 00:20:22 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/6] drm/msm/dpu: fix video mode DSC for DSI
+Content-Language: en-GB
+To:     Jonathan Marek <jonathan@marek.ca>,
+        Kuogee Hsieh <quic_khsieh@quicinc.com>
+Cc:     freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Kuogee Hsieh <quic_khsieh@quicinc.com>,
+        Jessica Zhang <quic_jesszhan@quicinc.com>,
+        Vinod Polimera <quic_vpolimer@quicinc.com>,
+        Kalyan Thota <quic_kalyant@quicinc.com>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Arnaud Vrac <rawoul@gmail.com>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <dri-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20231114225857.19702-1-jonathan@marek.ca>
+ <20231114225857.19702-2-jonathan@marek.ca>
+ <CAA8EJpp0OGkgf0P6LcwE-H6BVN9kbtF_eRCsef+7NgDFmJOZfA@mail.gmail.com>
+ <d93a7c6f-a798-c9ec-6c10-08e4e5a70f4d@marek.ca>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+In-Reply-To: <d93a7c6f-a798-c9ec-6c10-08e4e5a70f4d@marek.ca>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231202214503.GA153303@merlins.org>
- <ee2168cb672d8210854535dc9d80c854880ea4fb.camel@nvidia.com>
- <20231202171326.GB24486@merlins.org>
-X-Sysadmin: BOFH
-X-URL:  http://marc.merlins.org/
-X-SA-Exim-Connect-IP: 76.132.34.178
-X-SA-Exim-Mail-From: marc_nouveau@merlins.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 02, 2023 at 06:08:01PM +0000, Timur Tabi wrote:
-> On Sat, 2023-12-02 at 09:13 -0800, Marc MERLIN wrote:
-> > [��� 3.184525] nouveau: unknown parameter 'modset' ignored
+On 16/11/2023 20:30, Jonathan Marek wrote:
+> On 11/15/23 3:53 AM, Dmitry Baryshkov wrote:
+>> On Wed, 15 Nov 2023 at 01:00, Jonathan Marek <jonathan@marek.ca> wrote:
+>>>
+>>> Add necessary DPU changes for DSC to work with DSI video mode.
+>>>
+>>> Note this changes the logic to enable HCTL to match downstream, it will
+>>> now be enabled for the no-DSC no-widebus case.
+>>>
+>>> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+>>> ---
+>>>   drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c         |  2 +-
+>>>   drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h    |  2 +-
+>>>   .../gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c    | 11 +++++++++++
+>>>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c         | 13 ++++++++++++-
+>>>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h         |  1 +
+>>>   5 files changed, 26 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c 
+>>> b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+>>> index 1cf7ff6caff4..d745c8678b9d 100644
+>>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+>>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+>>> @@ -2477,7 +2477,7 @@ enum dpu_intf_mode 
+>>> dpu_encoder_get_intf_mode(struct drm_encoder *encoder)
+>>>          return INTF_MODE_NONE;
+>>>   }
+>>>
+>>> -unsigned int dpu_encoder_helper_get_dsc(struct dpu_encoder_phys 
+>>> *phys_enc)
+>>> +unsigned int dpu_encoder_helper_get_dsc(const struct 
+>>> dpu_encoder_phys *phys_enc)
+>>
+>> Why?
+>>
 > 
-> For starters, you misspelled "modeset"
+> drm_mode_to_intf_timing_params has "phys_enc" pointer declared as const, 
+> so one of them needs to change to call dpu_encoder_helper_get_dsc
+> 
+>>>   {
+>>>          struct drm_encoder *encoder = phys_enc->parent;
+>>>          struct dpu_encoder_virt *dpu_enc = 
+>>> to_dpu_encoder_virt(encoder);
+>>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h 
+>>> b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
+>>> index 6f04c3d56e77..7e27a7da0887 100644
+>>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
+>>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
+>>> @@ -332,7 +332,7 @@ static inline enum dpu_3d_blend_mode 
+>>> dpu_encoder_helper_get_3d_blend_mode(
+>>>    *   used for this encoder.
+>>>    * @phys_enc: Pointer to physical encoder structure
+>>>    */
+>>> -unsigned int dpu_encoder_helper_get_dsc(struct dpu_encoder_phys 
+>>> *phys_enc);
+>>> +unsigned int dpu_encoder_helper_get_dsc(const struct 
+>>> dpu_encoder_phys *phys_enc);
+>>>
+>>>   /**
+>>>    * dpu_encoder_helper_split_config - split display configuration 
+>>> helper function
+>>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c 
+>>> b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c
+>>> index a01fda711883..df10800a9615 100644
+>>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c
+>>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c
+>>> @@ -100,6 +100,8 @@ static void drm_mode_to_intf_timing_params(
+>>>          }
+>>>
+>>>          timing->wide_bus_en = 
+>>> dpu_encoder_is_widebus_enabled(phys_enc->parent);
+>>> +       if (dpu_encoder_helper_get_dsc(phys_enc))
+>>> +               timing->compression_en = true;
+>>>
+>>>          /*
+>>>           * for DP, divide the horizonal parameters by 2 when
+>>> @@ -112,6 +114,15 @@ static void drm_mode_to_intf_timing_params(
+>>>                  timing->h_front_porch = timing->h_front_porch >> 1;
+>>>                  timing->hsync_pulse_width = 
+>>> timing->hsync_pulse_width >> 1;
+>>>          }
+>>> +
+>>> +       /*
+>>> +        * for DSI, if compression is enabled, then divide the 
+>>> horizonal active
+>>> +        * timing parameters by compression ratio.
+>>> +        */
+>>> +       if (phys_enc->hw_intf->cap->type != INTF_DP && 
+>>> timing->compression_en) {
+>>> +               timing->width = timing->width / 3; /* XXX: don't 
+>>> assume 3:1 compression ratio */
+>>
+>> Is this /3 from bpp / compressed_bpp?
+>>
+> 
+> It is the compression ratio of DSC for 8bpc (24bpp) compressed to 8bpp. 
+> DSI driver doesn't support any other cases so this assumption should be 
+> OK for now (the other common ratio is 3.75 for 10bpc compressed to 8bpp 
+> - from downstream driver it appears this would mean a division by 3.75 
+> here).
+> 
+>>> +               timing->xres = timing->width;
+>>> +       }
+>>>   }
+>>>
+>>>   static u32 get_horizontal_total(const struct 
+>>> dpu_hw_intf_timing_params *timing)
+>>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c 
+>>> b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
+>>> index e8b8908d3e12..d6fe45a6da2d 100644
+>>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
+>>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
+>>> @@ -166,10 +166,21 @@ static void 
+>>> dpu_hw_intf_setup_timing_engine(struct dpu_hw_intf *ctx,
+>>>           * video timing. It is recommended to enable it for all 
+>>> cases, except
+>>>           * if compression is enabled in 1 pixel per clock mode
+>>>           */
+>>> +       if (!p->compression_en || p->wide_bus_en)
+>>> +               intf_cfg2 |= INTF_CFG2_DATA_HCTL_EN;
+>>> +
+>>>          if (p->wide_bus_en)
+>>> -               intf_cfg2 |= INTF_CFG2_DATABUS_WIDEN | 
+>>> INTF_CFG2_DATA_HCTL_EN;
+>>> +               intf_cfg2 |= INTF_CFG2_DATABUS_WIDEN;
+>>>
+>>>          data_width = p->width;
+>>> +       if (p->wide_bus_en && !dp_intf)
+>>> +               data_width = p->width >> 1;
+>>> +
+>>> +       if (p->compression_en)
+>>> +               intf_cfg2 |= INTF_CFG2_DCE_DATA_COMPRESS;
+>>> +
+>>> +       if (p->compression_en && dp_intf)
+>>> +               DPU_ERROR("missing adjustments for DSC+DP\n");
+>>>
+>>>          hsync_data_start_x = hsync_start_x;
+>>>          hsync_data_end_x =  hsync_start_x + data_width - 1;
+>>
+>> This should go into a separate commit with the proper justification.
+>>
+> 
+> All of it? setting the INTF_CFG2_DCE_DATA_COMPRESS flag at least doesn't 
+> make sense to make a separate patch. And DSI widebus is only used with 
+> DSC (and always used when available), so IMO also in the scope of this 
+> commit.
 
-That was a previous boot in dmesg where I failed to turn off the module,
-but I was mostly interested in showing the errors of all the firmware
-missing and nouveau failing to start, which those logs do show.
+Excuse me for being not precise. I'm more concerned about 
+INTF_CFG2_DATA_HCTL_EN change. They way you have added it doesn't have 
+anything to do with the DSC support. If we ever want to revert just that 
+clause to check anything, we wil have to revert the whole DSC-DSI-video 
+commit, which doesn't seem correct.
 
-Separely, both 6.4 and 6.6 are hanging after a few hours of runtime with
-networking dying or other issues that require reboot
-
-See below
-
-6.4:
-> [55647.774842] vgaarb: client 0x00000000c24cb19e called 'target'
-> [55647.774852] vgaarb: PCI:0000:00:02.0 ==> 0000:00:02.0 pdev 00000000bfa35d85
-> [55647.774854] vgaarb: vgadev 000000008ea0fc7d
-> [55825.318992] INFO: task NetworkManager:3372 blocked for more than 120 seconds.
-> [55825.318999]       Tainted: G     U     OE      6.4.9-amd64-preempt-sysrq-20220227 #2
-> [55825.319000] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> [55825.319002] task:NetworkManager  state:D stack:0     pid:3372  ppid:1      flags:0x00000002
-> [55825.319005] Call Trace:
-> [55825.319006]  <TASK>
-> [55825.319009]  __schedule+0xba5/0xc17
-> [55825.319015]  schedule+0x95/0xce
-> [55825.319017]  schedule_preempt_disabled+0x15/0x22
-> [55825.319020]  __mutex_lock.constprop.0+0x18b/0x291
-> [55825.319025]  nl80211_prepare_wdev_dump+0x8b/0x19f [cfg80211 d0c23c84d531afea8d4a2711c5c3e691cbb9587f]
-> [55825.319065]  nl80211_dump_station+0x49/0x1d0 [cfg80211 d0c23c84d531afea8d4a2711c5c3e691cbb9587f]
-> [55825.319091]  ? __mod_lruvec_page_state+0x4c/0x86
-> [55825.319093]  ? mod_lruvec_page_state.constprop.0+0x1c/0x2e
-> [55825.319096]  ? __kmalloc_large_node+0xd5/0xfb
-> [55825.319099]  ? __kmalloc_node_track_caller+0x5a/0xad
-> [55825.319101]  ? kmalloc_reserve+0xa7/0xe2
-> [55825.319104]  ? __alloc_skb+0xe9/0x148
-> [55825.319106]  netlink_dump+0x143/0x2b2
-> [55825.319109]  __netlink_dump_start+0x125/0x177
-> [55825.319111]  genl_family_rcv_msg_dumpit+0xf1/0x110
-> [55825.319114]  ? poll_freewait+0x72/0x91
-> [55825.319117]  ? __pfx_genl_start+0x40/0x40
-> [55825.319119]  ? __pfx_nl80211_dump_station+0x40/0x40 [cfg80211 d0c23c84d531afea8d4a2711c5c3e691cbb9587f]
-> [55825.319143]  ? __pfx_genl_parallel_done+0x40/0x40
-> [55825.319146]  genl_rcv_msg+0x189/0x1e2
-> [55825.319148]  ? __pfx_nl80211_dump_station+0x40/0x40 [cfg80211 d0c23c84d531afea8d4a2711c5c3e691cbb9587f]
-> [55825.319172]  ? __pfx_genl_rcv_msg+0x40/0x40
-> [55825.319173]  netlink_rcv_skb+0x89/0xe3
-> [55825.319176]  genl_rcv+0x24/0x31
-> [55825.319178]  netlink_unicast+0x10e/0x1ae
-> [55825.319180]  netlink_sendmsg+0x321/0x361
-> [55825.319182]  sock_sendmsg_nosec+0x35/0x64
-> [55825.319186]  ____sys_sendmsg+0x13e/0x1ef
-> [55825.319188]  ___sys_sendmsg+0x76/0xb3
-> [55825.319190]  ? __fget_light+0x41/0x50
-> [55825.319193]  ? do_epoll_wait+0x49b/0x4d4
-> [55825.319196]  ? __pfx_pollwake+0x40/0x40
-> [55825.319198]  ? __rseq_handle_notify_resume+0x2a0/0x4bd
-> [55825.319200]  ? __fget+0x38/0x47
-> [55825.319202]  __sys_sendmsg+0x60/0x97
-> [55825.319204]  do_syscall_64+0x7e/0xa7
-> [55825.319208]  ? syscall_exit_to_user_mode+0x18/0x27
-> [55825.319210]  ? __task_pid_nr_ns+0x5f/0x6d
-> [55825.319213]  ? syscall_exit_to_user_mode+0x18/0x27
-> [55825.319214]  ? do_syscall_64+0x9d/0xa7
-> [55825.319216]  ? do_syscall_64+0x9d/0xa7
-> [55825.319218]  ? do_syscall_64+0x9d/0xa7
-> [55825.319220]  ? do_syscall_64+0x9d/0xa7
-> [55825.319222]  entry_SYSCALL_64_after_hwframe+0x77/0xe1
-> [55825.319224] RIP: 0033:0x7f1fdc79e9bd
-> [55825.319226] RSP: 002b:00007ffeb6460900 EFLAGS: 00000293 ORIG_RAX: 000000000000002e
-> [55825.319228] RAX: ffffffffffffffda RBX: 000055e0a9ce1d90 RCX: 00007f1fdc79e9bd
-> [55825.319229] RDX: 0000000000000000 RSI: 00007ffeb6460950 RDI: 000000000000000b
-> [55825.319230] RBP: 00007ffeb6460950 R08: 0000000000000000 R09: 0000000000000300
-> [55825.319231] R10: 0000000000000000 R11: 0000000000000293 R12: 00007ffeb6460a30
-> [55825.319232] R13: 00007f1fd0038690 R14: 00007ffeb6460c60 R15: 000055e0aa210400
-> [55825.319234]  </TASK>
-
-6.6.3:
-[  443.613095] BTRFS info (device dm-2): scrub: started on devid 1
-[  484.778344] INFO: task kworker/2:1:106 blocked for more than 120 seconds.
-[  484.778352]       Tainted: G     U             6.6.3-amd64-preempt-sysrq-20220227 #4
-[  484.778353] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-[  484.778354] task:kworker/2:1     state:D stack:0     pid:106   ppid:2      flags:0x00004000
-[  484.778358] Workqueue: ipv6_addrconf addrconf_verify_work
-[  484.778365] Call Trace:
-[  484.778367]  <TASK>
-[  484.778369]  __schedule+0xba0/0xc05
-[  484.778373]  schedule+0x95/0xce
-[  484.778375]  schedule_preempt_disabled+0x15/0x22
-[  484.778376]  __mutex_lock.constprop.0+0x18b/0x291
-[  484.778379]  addrconf_verify_work+0xe/0x20
-[  484.778381]  process_scheduled_works+0x1da/0x2e0
-[  484.778385]  worker_thread+0x1ca/0x224
-[  484.778388]  ? __pfx_worker_thread+0x40/0x40
-[  484.778390]  kthread+0xe9/0xf4
-[  484.778393]  ? __pfx_kthread+0x40/0x40
-[  484.778395]  ret_from_fork+0x21/0x38
-[  484.778397]  ? __pfx_kthread+0x40/0x40
-[  484.778399]  ret_from_fork_asm+0x1b/0x80
-[  484.778403]  </TASK>
-[  484.778409] INFO: task kworker/4:2:388 blocked for more than 120 seconds.
-[  484.778410]       Tainted: G     U             6.6.3-amd64-preempt-sysrq-20220227 #4
-[  484.778411] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-[  484.778412] task:kworker/4:2     state:D stack:0     pid:388   ppid:2      flags:0x00004000
-[  484.778415] Workqueue: ipv6_addrconf addrconf_verify_work
-[  484.778417] Call Trace:
-[  484.778418]  <TASK>
-[  484.778420]  __schedule+0xba0/0xc05
-[  484.778422]  schedule+0x95/0xce
-[  484.778423]  schedule_preempt_disabled+0x15/0x22
-[  484.778425]  __mutex_lock.constprop.0+0x18b/0x291
-[  484.778427]  addrconf_verify_work+0xe/0x20
-[  484.778429]  process_scheduled_works+0x1da/0x2e0
-[  484.778431]  worker_thread+0x1ca/0x224
-[  484.778433]  ? __pfx_worker_thread+0x40/0x40
-[  484.778436]  kthread+0xe9/0xf4
-[  484.778437]  ? __pfx_kthread+0x40/0x40
-[  484.778439]  ret_from_fork+0x21/0x38
-[  484.778440]  ? __pfx_kthread+0x40/0x40
-[  484.778442]  ret_from_fork_asm+0x1b/0x80
-[  484.778444]  </TASK>
-[  484.778468] INFO: task NetworkManager:3372 blocked for more than 120 seconds.
-[  484.778469]       Tainted: G     U             6.6.3-amd64-preempt-sysrq-20220227 #4
-[  484.778470] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-[  484.778471] task:NetworkManager  state:D stack:0     pid:3372  ppid:1      flags:0x00000002
-[  484.778473] Call Trace:
-[  484.778474]  <TASK>
-[  484.778475]  __schedule+0xba0/0xc05
-[  484.778477]  schedule+0x95/0xce
-[  484.778478]  schedule_preempt_disabled+0x15/0x22
-[  484.778480]  __mutex_lock.constprop.0+0x18b/0x291
-[  484.778483]  nl80211_prepare_wdev_dump+0x8b/0x19f [cfg80211 443448ea372df5c5c09782a3fb412c115f1aa45a]
-[  484.778526]  nl80211_dump_station+0x49/0x1d0 [cfg80211 443448ea372df5c5c09782a3fb412c115f1aa45a]
-[  484.778555]  ? __alloc_pages+0x131/0x1e8
-[  484.778558]  ? __mod_lruvec_page_state+0x4c/0x86
-[  484.778561]  ? mod_lruvec_page_state.constprop.0+0x1c/0x2e
-[  484.778564]  ? __kmalloc_large_node+0xd5/0xfb
-[  484.778566]  ? __alloc_skb+0xad/0x148
-[  484.778569]  ? __kmalloc_node_track_caller+0x5b/0xb2
-[  484.778571]  ? kmalloc_reserve+0xab/0xe6
-[  484.778573]  genl_dumpit+0x32/0x4d
-[  484.778576]  netlink_dump+0x143/0x2b2
-[  484.778579]  __netlink_dump_start+0x145/0x197
-[  484.778583]  genl_family_rcv_msg_dumpit+0xa3/0xd1
-[  484.778585]  ? __pfx_genl_start+0x40/0x40
-[  484.778586]  ? __pfx_genl_dumpit+0x40/0x40
-[  484.778588]  ? __pfx_genl_done+0x40/0x40
-[  484.778589]  genl_rcv_msg+0x1a0/0x1f2
-[  484.778591]  ? __pfx_nl80211_dump_station+0x40/0x40 [cfg80211 443448ea372df5c5c09782a3fb412c115f1aa45a]
-[  484.778619]  ? __pfx_genl_rcv_msg+0x40/0x40
-[  484.778620]  netlink_rcv_skb+0x89/0xe3
-[  484.778623]  genl_rcv+0x24/0x31
-[  484.778625]  netlink_unicast+0x114/0x1b4
-[  484.778627]  netlink_sendmsg+0x321/0x361
-[  484.778630]  sock_sendmsg_nosec+0x46/0x70
-[  484.778633]  ____sys_sendmsg+0x144/0x1f5
-[  484.778635]  ___sys_sendmsg+0x76/0xb3
-[  484.778637]  ? __fget+0x38/0x47
-[  484.778640]  ? __fget_light+0x41/0x50
-[  484.778642]  ? do_epoll_wait+0x49e/0x4d7
-[  484.778645]  ? __pfx_pollwake+0x40/0x40
-[  484.778647]  ? __fget+0x38/0x47
-[  484.778649]  __sys_sendmsg+0x60/0x97
-[  484.778652]  do_syscall_64+0x7e/0xa7
-[  484.778655]  ? do_syscall_64+0x9d/0xa7
-[  484.778656]  ? do_syscall_64+0x9d/0xa7
-[  484.778657]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-[  484.778661] RIP: 0033:0x7fad667fe9bd
-[  484.778663] RSP: 002b:00007ffd9d5a4f00 EFLAGS: 00000293 ORIG_RAX: 000000000000002e
-[  484.778665] RAX: ffffffffffffffda RBX: 000055d7ea4dad90 RCX: 00007fad667fe9bd
-[  484.778666] RDX: 0000000000000000 RSI: 00007ffd9d5a4f50 RDI: 000000000000000b
-[  484.778667] RBP: 00007ffd9d5a4f50 R08: 0000000000000000 R09: 0000000000000300
-[  484.778669] R10: 0000000000000000 R11: 0000000000000293 R12: 00007ffd9d5a5030
-[  484.778670] R13: 000055d7ea9f9050 R14: 00007ffd9d5a5260 R15: 000055d7eaa03050
-[  484.778671]  </TASK>
-
+> 
+>>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h 
+>>> b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h
+>>> index c539025c418b..15a5fdadd0a0 100644
+>>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h
+>>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h
+>>> @@ -33,6 +33,7 @@ struct dpu_hw_intf_timing_params {
+>>>          u32 hsync_skew;
+>>>
+>>>          bool wide_bus_en;
+>>> +       bool compression_en;
+>>>   };
+>>>
+>>>   struct dpu_hw_intf_prog_fetch {
+>>> -- 
+>>> 2.26.1
+>>>
+>>
+>>
 
 -- 
-"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
- 
-Home page: http://marc.merlins.org/                       | PGP 7F55D5F27AAF9D08
+With best wishes
+Dmitry
+
