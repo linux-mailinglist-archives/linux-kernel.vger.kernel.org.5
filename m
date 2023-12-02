@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E57EA801B9D
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 10:11:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47BCC801B9E
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 10:11:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231816AbjLBJLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 04:11:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37592 "EHLO
+        id S231538AbjLBJKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 04:10:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjLBJKm (ORCPT
+        with ESMTP id S229514AbjLBJKm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 2 Dec 2023 04:10:42 -0500
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C38FD9;
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE7BB11C;
         Sat,  2 Dec 2023 01:10:47 -0800 (PST)
-Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Sj3w71gq7z1P8b8;
-        Sat,  2 Dec 2023 17:07:03 +0800 (CST)
+Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Sj3vP3VCHzShK4;
+        Sat,  2 Dec 2023 17:06:25 +0800 (CST)
 Received: from huawei.com (10.175.127.227) by dggpeml500021.china.huawei.com
  (7.185.36.21) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Sat, 2 Dec
- 2023 17:10:44 +0800
+ 2023 17:10:45 +0800
 From:   Baokun Li <libaokun1@huawei.com>
 To:     <linux-mm@kvack.org>, <linux-ext4@vger.kernel.org>
 CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
@@ -29,10 +29,12 @@ CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
         <ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
         <yi.zhang@huawei.com>, <yangerkun@huawei.com>,
         <yukuai3@huawei.com>, <libaokun1@huawei.com>
-Subject: [PATCH -RFC 0/2] mm/ext4: avoid data corruption when extending DIO write race with buffered read
-Date:   Sat, 2 Dec 2023 17:14:30 +0800
-Message-ID: <20231202091432.8349-1-libaokun1@huawei.com>
+Subject: [PATCH -RFC 1/2] mm: avoid data corruption when extending DIO write race with buffered read
+Date:   Sat, 2 Dec 2023 17:14:31 +0800
+Message-ID: <20231202091432.8349-2-libaokun1@huawei.com>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20231202091432.8349-1-libaokun1@huawei.com>
+References: <20231202091432.8349-1-libaokun1@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
@@ -50,45 +52,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello everyone!
+When DIO write and buffered read are performed on the same file on two
+CPUs, the following race may occur:
 
-Recently, while running some pressure tests on MYSQL, noticed that
-occasionally a "corrupted data in log event" error would be reported.
-After analyzing the error, I found that extending DIO write and buffered
-read were competing, resulting in some zero-filled page end being read.
-Since ext4 buffered read doesn't hold an inode lock, and there is no
-field in the page to indicate the valid data size, it seems to me that
-it is impossible to solve this problem perfectly without changing these
-two things.
+          cpu1                           cpu2
+ Direct write 1024 from 4096 | Buffered read 8192 from 0
+-----------------------------|----------------------------
+...                           ...
+ ext4_file_write_iter
+  ext4_dio_write_iter
+   iomap_dio_rw
+   ...
+                               ext4_file_read_iter
+                                generic_file_read_iter
+                                 filemap_read
+                                  filemap_get_pages
+                                   ...
+                                    ext4_mpage_readpages
+                                     ext4_readpage_limit(inode)
+                                      i_size_read(inode) // 4096
+    ext4_dio_write_end_io
+     i_size_write(inode, 5120)
+                                   i_size_read(inode) // 5120
 
-In this series, the first patch reads the inode size twice, and takes the
-smaller of the two values as the copyout limit to avoid copying data that
-was not actually read (0-padding) into the user buffer and causing data
-corruption. This greatly reduces the probability of problems under 4k
-page. However, the problem is still easily triggered under 64k page.
+1. read alloc 8192
 
-The second patch waits for the existing dio write to complete and
-invalidate the stale page cache before performing a new buffered read
-in ext4, avoiding data corruption by copying the stale page cache to
-the user buffer. This makes it much less likely that the problem will
-be triggered in a 64k page.
+  0                                      8192
+  |-------------------|-------------------|
 
-Do we have a plan to add a lock to the ext4 buffered read or a field in
-the page that indicates the size of the valid data in the page? Or does
-anyone have a better idea?
+2. read form disk (i_size 4096)
 
-Comments and questions are, as always, welcome.
+  0   filled data   4096  filled zero    8192
+  |-------------------|-------------------|
 
-Baokun Li (2):
-  mm: avoid data corruption when extending DIO write race with buffered
-    read
-  ext4: avoid data corruption when extending DIO write race with
-    buffered read
+3. copyout (i_size 5120)
 
- fs/ext4/file.c | 3 +++
- mm/filemap.c   | 5 +++--
- 2 files changed, 6 insertions(+), 2 deletions(-)
+  0 copyout to uset buffer 5120          8192
+  |------------------------|--------------|
+                      |~~~~|
+                   Inconsistent data
 
+In the above race, because of the change of inode_size, the actual data
+read from the disk is only 4096 bytes, but copied to the user's buffer
+5120 bytes, including 1024 bytes of zero-filled tail page, which results
+in the data read by the user is not consistent with the data on the disk.
+
+To solve this problem completely, we should take the lesser of the number
+of bytes actually read or the inode_size and use that as the final read
+size. The problem here is that we don't know how many bytes of valid data
+filemap_get_pages() reads, or how many bytes of valid data are in a page,
+so we have to rely on inode_size to determine the range of valid data.
+
+So we read the inode_size before and after filemap_get_pages(), and take
+the smaller of the two as the size of the copyout to reduce the
+probability of the above issue being triggered.
+
+Signed-off-by: Baokun Li <libaokun1@huawei.com>
+---
+ mm/filemap.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/mm/filemap.c b/mm/filemap.c
+index 71f00539ac00..47c1729afbb4 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -2587,7 +2587,8 @@ ssize_t filemap_read(struct kiocb *iocb, struct iov_iter *iter,
+ 		if ((iocb->ki_flags & IOCB_WAITQ) && already_read)
+ 			iocb->ki_flags |= IOCB_NOWAIT;
+ 
+-		if (unlikely(iocb->ki_pos >= i_size_read(inode)))
++		isize = i_size_read(inode);
++		if (unlikely(iocb->ki_pos >= isize))
+ 			break;
+ 
+ 		error = filemap_get_pages(iocb, iter->count, &fbatch, false);
+@@ -2602,7 +2603,7 @@ ssize_t filemap_read(struct kiocb *iocb, struct iov_iter *iter,
+ 		 * part of the page is not copied back to userspace (unless
+ 		 * another truncate extends the file - this is desired though).
+ 		 */
+-		isize = i_size_read(inode);
++		isize = min_t(loff_t, isize, i_size_read(inode));
+ 		if (unlikely(iocb->ki_pos >= isize))
+ 			goto put_folios;
+ 		end_offset = min_t(loff_t, isize, iocb->ki_pos + iter->count);
 -- 
 2.31.1
 
