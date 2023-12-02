@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E637801C1B
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 11:05:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7751E801C1E
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 11:05:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232583AbjLBKE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 05:04:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38450 "EHLO
+        id S232598AbjLBKF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 05:05:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232527AbjLBKEz (ORCPT
+        with ESMTP id S232527AbjLBKFZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 05:04:55 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 507AB197;
-        Sat,  2 Dec 2023 02:05:01 -0800 (PST)
+        Sat, 2 Dec 2023 05:05:25 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E366B1A6;
+        Sat,  2 Dec 2023 02:05:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701511501; x=1733047501;
+  t=1701511531; x=1733047531;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references;
-  bh=salWrsDL9dpOvmr91p0gKRVzj1lK++JFGh51YeQPB6Q=;
-  b=oIzpXtFmjMjZ3HkDSzsUvWt8FnfccUhdTn+CskBij29VX6Pa2Cdt+7XY
-   sXFVClfmOJGKMiHUAKtJCuWs3M1Tp3NHMBrSYNanNEqhAbMzDrebyCwPU
-   MSNJlY9i7tGr1IJ6DjJ+9/HYNHCYvKHAx+hUYiH4ZJzCaQtIsCZ1diHMy
-   8+aKynWhtMI3dO2AAC7Hn2hZgnbI9xatq8N2HvPmdZ1B3mQLRKnsO4IEH
-   +sMC1c8TvLqj22F7DUNOIBoOmnlSSqK9cduzkVIyCE2X7hXwYwWwSEFLD
-   0mdc3DQgWhDNVUJvhwiKqmMnE8J2jg9rYpdGbfF8nQLNqDRDPvz4DORJC
+  bh=2TvSYcYyRxZJXd7jYUAEf7Q9pF2z8JkVIapNJrcQxZk=;
+  b=KceNHWxVMoHHTCmvnwDci7v4XGhRA6PCaY/ADkAwT9wtdPMJuhU39Z95
+   lNJ5WhQo/wnsCjMXGFEtTODwDNVqzp9y1mUfL8dRoVhX4WCCqcQvtvaTk
+   4+3CCJHY3NTVG8LQiWyKwqMf1MIzguE8PFYHFVl+EFKwDwbYyLpfCm6Hg
+   5tiZDzi4uOg9vfXeHZispiHtTJHqZ26+4nIzECS3tCMCqJuzCWtS+SaHk
+   khXqUGefse4Nz4Tk7ZRAlBNHgCrZYzDzsK7jtC6kKOKe7JGac1QSwK5mK
+   qbEAKQNj5TDE4m0oIEe+vBaUlu2T/D/LTYsQ4EXVAO3p0pTaTtwDr/lmN
    Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="457913864"
+X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="392459741"
 X-IronPort-AV: E=Sophos;i="6.04,245,1695711600"; 
-   d="scan'208";a="457913864"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2023 02:05:00 -0800
+   d="scan'208";a="392459741"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2023 02:05:31 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="840461606"
+X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="887939973"
 X-IronPort-AV: E=Sophos;i="6.04,245,1695711600"; 
-   d="scan'208";a="840461606"
+   d="scan'208";a="887939973"
 Received: from yzhao56-desk.sh.intel.com ([10.239.159.62])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2023 02:04:57 -0800
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2023 02:05:28 -0800
 From:   Yan Zhao <yan.y.zhao@intel.com>
 To:     iommu@lists.linux.dev, kvm@vger.kernel.org,
         linux-kernel@vger.kernel.org
@@ -47,81 +47,74 @@ Cc:     alex.williamson@redhat.com, jgg@nvidia.com, pbonzini@redhat.com,
         robin.murphy@arm.com, kevin.tian@intel.com,
         baolu.lu@linux.intel.com, dwmw2@infradead.org, yi.l.liu@intel.com,
         Yan Zhao <yan.y.zhao@intel.com>
-Subject: [RFC PATCH 40/42] KVM: VMX: Compose VMX specific meta data for KVM exported TDP
-Date:   Sat,  2 Dec 2023 17:36:01 +0800
-Message-Id: <20231202093601.15931-1-yan.y.zhao@intel.com>
+Subject: [RFC PATCH 41/42] KVM: VMX: Implement ops .flush_remote_tlbs* in VMX when EPT is on
+Date:   Sat,  2 Dec 2023 17:36:33 +0800
+Message-Id: <20231202093633.15991-1-yan.y.zhao@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20231202091211.13376-1-yan.y.zhao@intel.com>
 References: <20231202091211.13376-1-yan.y.zhao@intel.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Compose VMX specific meta data of KVM exported TDP. The format of the meta
-data is defined in "asm/kvm_exported_tdp.h".
+Add VMX implementation of ops of flush_remote_tlbs* in kvm_x86_ops when
+enable_ept is on and CONFIG_HYPERV is off.
 
-Intel VT-d driver can include "asm/kvm_exported_tdp.h" to decode this meta
-data in order to check page table format, level, reserved zero bits before
-loading KVM page tables with root HPA.
+Without ops flush_remote_tlbs* in VMX, kvm_flush_remote_tlbs*() just makes
+all cpus request KVM_REQ_TLB_FLUSH after finding the two ops are
+non-present.
+So, by also making all cpu requests KVM_REQ_TLB_FLUSH in ops
+flush_remote_tlbs* in VMX, no functional changes should be introduced.
+
+The two ops allow vendor code (e.g. VMX) to control when to notify IOMMU
+to flush TLBs. This is useful for contidions when sequence to flush CPU
+TLBs and IOTLBs is important.
 
 Signed-off-by: Yan Zhao <yan.y.zhao@intel.com>
 ---
- arch/x86/kvm/vmx/vmx.c | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+ arch/x86/kvm/vmx/vmx.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
 diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index f290dd3094da6..7965bc32f87de 100644
+index 7965bc32f87de..2fec351a3fa5b 100644
 --- a/arch/x86/kvm/vmx/vmx.c
 +++ b/arch/x86/kvm/vmx/vmx.c
-@@ -48,6 +48,7 @@
- #include <asm/mwait.h>
- #include <asm/spec-ctrl.h>
- #include <asm/vmx.h>
-+#include <asm/kvm_exported_tdp.h>
- 
- #include "capabilities.h"
- #include "cpuid.h"
-@@ -8216,6 +8217,22 @@ static void vmx_vm_destroy(struct kvm *kvm)
- 	free_pages((unsigned long)kvm_vmx->pid_table, vmx_get_pid_table_order(kvm));
+@@ -7544,6 +7544,17 @@ static int vmx_vcpu_create(struct kvm_vcpu *vcpu)
+ 	return err;
  }
  
-+#ifdef CONFIG_KVM_INTEL_EXPORTED_EPT
-+void kvm_exported_tdp_compose_meta(struct kvm_exported_tdp *tdp)
++static int vmx_flush_remote_tlbs_range(struct kvm *kvm, gfn_t gfn, gfn_t nr_pages)
 +{
-+	struct kvm_exported_tdp_meta_vmx *meta = tdp->arch.meta;
-+	struct kvm_mmu_common *context = &tdp->arch.mmu.common;
-+	void *rsvd_bits_mask = context->shadow_zero_check.rsvd_bits_mask;
-+
-+	meta->root_hpa = context->root.hpa;
-+	meta->level = context->root_role.level;
-+	meta->max_huge_page_level = min(ept_caps_to_lpage_level(vmx_capability.ept),
-+					KVM_MAX_HUGEPAGE_LEVEL);
-+	memcpy(meta->rsvd_bits_mask, rsvd_bits_mask, sizeof(meta->rsvd_bits_mask));
-+	meta->type = KVM_TDP_TYPE_EPT;
++	kvm_make_all_cpus_request(kvm, KVM_REQ_TLB_FLUSH);
++	return 0;
 +}
-+#endif
 +
- static struct kvm_x86_ops vmx_x86_ops __initdata = {
- 	.name = KBUILD_MODNAME,
- 
-@@ -8357,6 +8374,11 @@ static struct kvm_x86_ops vmx_x86_ops __initdata = {
- 	.complete_emulated_msr = kvm_complete_insn_gp,
- 
- 	.vcpu_deliver_sipi_vector = kvm_vcpu_deliver_sipi_vector,
++static int vmx_flush_remote_tlbs(struct kvm *kvm)
++{
++	return vmx_flush_remote_tlbs_range(kvm, 0, -1ULL);
++}
 +
-+#ifdef CONFIG_KVM_INTEL_EXPORTED_EPT
-+	.exported_tdp_meta_size = sizeof(struct kvm_exported_tdp_meta_vmx),
-+	.exported_tdp_meta_compose = kvm_exported_tdp_compose_meta,
-+#endif
- };
+ #define L1TF_MSG_SMT "L1TF CPU bug present and SMT on, data leak possible. See CVE-2018-3646 and https://www.kernel.org/doc/html/latest/admin-guide/hw-vuln/l1tf.html for details.\n"
+ #define L1TF_MSG_L1D "L1TF CPU bug present and virtualization mitigation disabled, data leak possible. See CVE-2018-3646 and https://www.kernel.org/doc/html/latest/admin-guide/hw-vuln/l1tf.html for details.\n"
  
- static unsigned int vmx_handle_intel_pt_intr(void)
+@@ -8528,6 +8539,11 @@ static __init int hardware_setup(void)
+ 		vmx_x86_ops.flush_remote_tlbs = hv_flush_remote_tlbs;
+ 		vmx_x86_ops.flush_remote_tlbs_range = hv_flush_remote_tlbs_range;
+ 	}
++#else
++	if (enable_ept) {
++		vmx_x86_ops.flush_remote_tlbs = vmx_flush_remote_tlbs;
++		vmx_x86_ops.flush_remote_tlbs_range = vmx_flush_remote_tlbs_range;
++	}
+ #endif
+ 
+ 	if (!cpu_has_vmx_ple()) {
 -- 
 2.17.1
 
