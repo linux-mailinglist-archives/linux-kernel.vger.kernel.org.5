@@ -2,62 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45167801D0C
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 14:32:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3C09801D28
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 14:51:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232907AbjLBNcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 08:32:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44520 "EHLO
+        id S232768AbjLBNuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 08:50:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjLBNcE (ORCPT
+        with ESMTP id S229671AbjLBNuk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 08:32:04 -0500
-Received: from sender-of-o51.zoho.in (sender-of-o51.zoho.in [103.117.158.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1181107;
-        Sat,  2 Dec 2023 05:32:08 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1701523896; cv=none; 
-        d=zohomail.in; s=zohoarc; 
-        b=GCwTnRFk6e80ShO3FX6v7rdJQSMX0/X1ovgySTMGf+n+RcIoiWf/xObfJcHxnq8gKodT31SK4Q/lMd9etxZXLBSwa+PMq8iEpXzw1lOjDT/YcTsWQF1oU/TKqAK/ZYPpL5HE1+SWyIfiICar7sh2ikKp0IyLwRz34of83WrrwtI=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.in; s=zohoarc; 
-        t=1701523896; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
-        bh=8/lJzpQ0l1BXHMNEoi4VijDBQ6ZH4sNvHefkNZ5BWIg=; 
-        b=J/jZRMh9jwQWchU5mwN1r6kze5pzBmXb0lnERl8FI1Ks+nKKDEvGVlayonl0GyUw1EDoKz0vc/F5S3MCShIcD+iN694l0q3AOWbjjeGz49nu45BRh27UbQ7u9A2MBATQbhoFQ1lKfnNOkpvUGr/T37uIOk+c4jFcldwjrW9QftQ=
-ARC-Authentication-Results: i=1; mx.zohomail.in;
-        dkim=pass  header.i=siddh.me;
-        spf=pass  smtp.mailfrom=code@siddh.me;
-        dmarc=pass header.from=<code@siddh.me>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1701523896;
-        s=zmail; d=siddh.me; i=code@siddh.me;
-        h=Date:Date:From:From:To:To:Cc:Cc:Message-ID:In-Reply-To:References:Subject:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-Id:Reply-To;
-        bh=8/lJzpQ0l1BXHMNEoi4VijDBQ6ZH4sNvHefkNZ5BWIg=;
-        b=nn5VIFBf8sEFJbAUnNZKhWK8SW/lMvGaBuDXlZXoGxJy70UGKOWl4OVuaWxRSYfk
-        C+p8z0l9ReNbOcv7f7uMRR7auhhG+vn1x+2U5UwWAFFaxeI9hz/GzYd5NtMMNJrYntW
-        lyzCgi7hdQgI/4wShA2fUJgjIJhiyd6CLWA57y60=
-Received: from mail.zoho.in by mx.zoho.in
-        with SMTP id 1701523864503746.4314823257985; Sat, 2 Dec 2023 19:01:04 +0530 (IST)
-Date:   Sat, 02 Dec 2023 19:01:04 +0530
-From:   Siddh Raman Pant <code@siddh.me>
-To:     "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        "Eric Dumazet" <edumazet@google.com>,
-        "Jakub Kicinski" <kuba@kernel.org>,
-        "Paolo Abeni" <pabeni@redhat.com>,
-        "netdev" <netdev@vger.kernel.org>,
-        "linux-kernel" <linux-kernel@vger.kernel.org>
-Message-ID: <18c2ab9bba5.26abdb8f38744.5002982123699219766@siddh.me>
-In-Reply-To: <ae2aae77-c194-4924-b698-4a499eabec5d@linaro.org>
-References: <cover.1700943019.git.code@siddh.me>
- <ba18da37e48b5c473e5b8bd76d6460017342f968.1700943019.git.code@siddh.me> <ae2aae77-c194-4924-b698-4a499eabec5d@linaro.org>
-Subject: Re: [PATCH 1/4] nfc: Extract nfc_dev access from
- nfc_alloc_send_skb() into the callers
+        Sat, 2 Dec 2023 08:50:40 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85F08114
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 05:50:46 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD6D0C433C7;
+        Sat,  2 Dec 2023 13:50:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701525046;
+        bh=EkFw389G/HhwarJ7tijLtzRjnzCQCmA31ruY3wZ3Eh0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=LFVwJc/exjGqrxugMF9foxWoZSKoIFt8WzINNplsxOeKiICwJpuuYQmWDvGPnxn3u
+         r4bTL9oW0O5lztiua4MeysgqSAE3KzO8IJR/aqQE7xTaSNf2Vaycs6kPnqcZ+iQL9i
+         hBOUYFotCRax/hdg+tU2I1LfMYysTXRmQpcLbCwCl7YQvW25Lzj+MWus+TG8JGhoil
+         4riGCc+d+XiMsOvrGbxUYrw9RfPuBWl1bPNEz7EcJ5Imps3AukjeH5r0R4ut3clwno
+         cZ8peb+3aSgyDeI/1IXJGHziWaZXSYNbuyNTveLqDOMpgno7Q6BWGep1AF6hi9H+3H
+         C+WZ16FY6rWag==
+From:   Jisheng Zhang <jszhang@kernel.org>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] riscv: Use asm-generic for {read,write}{bwlq} and their relaxed variant
+Date:   Sat,  2 Dec 2023 21:38:13 +0800
+Message-Id: <20231202133813.4003-1-jszhang@kernel.org>
+X-Mailer: git-send-email 2.40.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Importance: Medium
-User-Agent: Zoho Mail
-X-Mailer: Zoho Mail
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -66,41 +48,124 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 27 Nov 2023 15:40:51 +0530, Krzysztof Kozlowski wrote:
-> On 25/11/2023 21:26, Siddh Raman Pant wrote:
-> > The only reason why nfc_dev was accessed inside nfc_alloc_send_skb() is
-> > for getting the headroom and tailroom values.
-> > 
-> > This can cause UAF to be reported from nfc_alloc_send_skb(), but the
-> > callers are responsible for managing the device access, and thus the
-> > UAF being reported, as the callers (like nfc_llcp_send_ui_frame()) may
-> > repeatedly call this function, and this function will repeatedly try
-> > to get the same headroom and tailroom values.
-> 
-> I don't understand this sentence.
-> 
-> "This can cause ..., but ...". But starts another clause which should be
-> in contradictory to previous one.
+The asm-generic implementation is functionally identical to the riscv
+version. At the same time, the readl{q}_relaxed is replaced with the
+raw version for nommu building.
 
-Sorry about that, I should have phrased it better.
+Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+---
 
-> > Thus, put the nfc_dev access responsibility on the callers and accept
-> > the headroom and tailroom values directly.
-> 
-> Is this a fix or improvement? If fix, is the UAF real? If so, you miss
-> Fixes tag.
+Since v1:
+ - fix nommu build
 
-I intended to remove access to nfc_dev (accessing which causes UAF) inside
-this function, as it is used only for fetching headroom and tailroom integral
-values.
+ arch/riscv/include/asm/mmio.h  | 62 +---------------------------------
+ arch/riscv/include/asm/timex.h |  6 ++--
+ 2 files changed, 4 insertions(+), 64 deletions(-)
 
-nfc_llcp_send_ui_frame() called this function in a do-while loop, so
-I thought of extracting the values before the loop, so that in the next
-patch where I used locking, I would have to lock only once*.
+diff --git a/arch/riscv/include/asm/mmio.h b/arch/riscv/include/asm/mmio.h
+index 4c58ee7f95ec..a491590593ca 100644
+--- a/arch/riscv/include/asm/mmio.h
++++ b/arch/riscv/include/asm/mmio.h
+@@ -80,54 +80,7 @@ static inline u64 __raw_readq(const volatile void __iomem *addr)
+ #endif
+ 
+ /*
+- * Unordered I/O memory access primitives.  These are even more relaxed than
+- * the relaxed versions, as they don't even order accesses between successive
+- * operations to the I/O regions.
+- */
+-#define readb_cpu(c)		({ u8  __r = __raw_readb(c); __r; })
+-#define readw_cpu(c)		({ u16 __r = le16_to_cpu((__force __le16)__raw_readw(c)); __r; })
+-#define readl_cpu(c)		({ u32 __r = le32_to_cpu((__force __le32)__raw_readl(c)); __r; })
+-
+-#define writeb_cpu(v, c)	((void)__raw_writeb((v), (c)))
+-#define writew_cpu(v, c)	((void)__raw_writew((__force u16)cpu_to_le16(v), (c)))
+-#define writel_cpu(v, c)	((void)__raw_writel((__force u32)cpu_to_le32(v), (c)))
+-
+-#ifdef CONFIG_64BIT
+-#define readq_cpu(c)		({ u64 __r = le64_to_cpu((__force __le64)__raw_readq(c)); __r; })
+-#define writeq_cpu(v, c)	((void)__raw_writeq((__force u64)cpu_to_le64(v), (c)))
+-#endif
+-
+-/*
+- * Relaxed I/O memory access primitives. These follow the Device memory
+- * ordering rules but do not guarantee any ordering relative to Normal memory
+- * accesses.  These are defined to order the indicated access (either a read or
+- * write) with all other I/O memory accesses to the same peripheral. Since the
+- * platform specification defines that all I/O regions are strongly ordered on
+- * channel 0, no explicit fences are required to enforce this ordering.
+- */
+-/* FIXME: These are now the same as asm-generic */
+-#define __io_rbr()		do {} while (0)
+-#define __io_rar()		do {} while (0)
+-#define __io_rbw()		do {} while (0)
+-#define __io_raw()		do {} while (0)
+-
+-#define readb_relaxed(c)	({ u8  __v; __io_rbr(); __v = readb_cpu(c); __io_rar(); __v; })
+-#define readw_relaxed(c)	({ u16 __v; __io_rbr(); __v = readw_cpu(c); __io_rar(); __v; })
+-#define readl_relaxed(c)	({ u32 __v; __io_rbr(); __v = readl_cpu(c); __io_rar(); __v; })
+-
+-#define writeb_relaxed(v, c)	({ __io_rbw(); writeb_cpu((v), (c)); __io_raw(); })
+-#define writew_relaxed(v, c)	({ __io_rbw(); writew_cpu((v), (c)); __io_raw(); })
+-#define writel_relaxed(v, c)	({ __io_rbw(); writel_cpu((v), (c)); __io_raw(); })
+-
+-#ifdef CONFIG_64BIT
+-#define readq_relaxed(c)	({ u64 __v; __io_rbr(); __v = readq_cpu(c); __io_rar(); __v; })
+-#define writeq_relaxed(v, c)	({ __io_rbw(); writeq_cpu((v), (c)); __io_raw(); })
+-#endif
+-
+-/*
+- * I/O memory access primitives.  Reads are ordered relative to any following
+- * Normal memory read and delay() loop.  Writes are ordered relative to any
+- * prior Normal memory write.  The memory barriers here are necessary as RISC-V
++ * I/O barriers. The memory barriers here are necessary as RISC-V
+  * doesn't define any ordering between the memory space and the I/O space.
+  */
+ #define __io_br()	do {} while (0)
+@@ -135,17 +88,4 @@ static inline u64 __raw_readq(const volatile void __iomem *addr)
+ #define __io_bw()	({ __asm__ __volatile__ ("fence w,o" : : : "memory"); })
+ #define __io_aw()	mmiowb_set_pending()
+ 
+-#define readb(c)	({ u8  __v; __io_br(); __v = readb_cpu(c); __io_ar(__v); __v; })
+-#define readw(c)	({ u16 __v; __io_br(); __v = readw_cpu(c); __io_ar(__v); __v; })
+-#define readl(c)	({ u32 __v; __io_br(); __v = readl_cpu(c); __io_ar(__v); __v; })
+-
+-#define writeb(v, c)	({ __io_bw(); writeb_cpu((v), (c)); __io_aw(); })
+-#define writew(v, c)	({ __io_bw(); writew_cpu((v), (c)); __io_aw(); })
+-#define writel(v, c)	({ __io_bw(); writel_cpu((v), (c)); __io_aw(); })
+-
+-#ifdef CONFIG_64BIT
+-#define readq(c)	({ u64 __v; __io_br(); __v = readq_cpu(c); __io_ar(__v); __v; })
+-#define writeq(v, c)	({ __io_bw(); writeq_cpu((v), (c)); __io_aw(); })
+-#endif
+-
+ #endif /* _ASM_RISCV_MMIO_H */
+diff --git a/arch/riscv/include/asm/timex.h b/arch/riscv/include/asm/timex.h
+index a06697846e69..9ff9f398f61a 100644
+--- a/arch/riscv/include/asm/timex.h
++++ b/arch/riscv/include/asm/timex.h
+@@ -17,18 +17,18 @@ typedef unsigned long cycles_t;
+ #ifdef CONFIG_64BIT
+ static inline cycles_t get_cycles(void)
+ {
+-	return readq_relaxed(clint_time_val);
++	return __raw_readq(clint_time_val);
+ }
+ #else /* !CONFIG_64BIT */
+ static inline u32 get_cycles(void)
+ {
+-	return readl_relaxed(((u32 *)clint_time_val));
++	return __raw_readl(((u32 *)clint_time_val));
+ }
+ #define get_cycles get_cycles
+ 
+ static inline u32 get_cycles_hi(void)
+ {
+-	return readl_relaxed(((u32 *)clint_time_val) + 1);
++	return __raw_readl(((u32 *)clint_time_val) + 1);
+ }
+ #define get_cycles_hi get_cycles_hi
+ #endif /* CONFIG_64BIT */
+-- 
+2.42.0
 
-Since these are two units of changes, I separated them into two patches.
-
-Though since the next patch is shit anyways, this patch is not needed.
-
-Thanks,
-Siddh
