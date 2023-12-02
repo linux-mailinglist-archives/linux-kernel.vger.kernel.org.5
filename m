@@ -2,130 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41DD9801B5E
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 09:05:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47008801B62
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 09:07:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229936AbjLBIEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 03:04:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34478 "EHLO
+        id S229877AbjLBIGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 03:06:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229963AbjLBIEJ (ORCPT
+        with ESMTP id S229379AbjLBIGt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 03:04:09 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1F8AC133;
-        Sat,  2 Dec 2023 00:04:15 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 058B11FB;
-        Sat,  2 Dec 2023 00:05:01 -0800 (PST)
-Received: from [10.57.73.130] (unknown [10.57.73.130])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6DB093F6C4;
-        Sat,  2 Dec 2023 00:04:11 -0800 (PST)
-Message-ID: <cb3d3b12-abf3-4eda-8d9a-944684d05505@arm.com>
-Date:   Sat, 2 Dec 2023 08:04:10 +0000
+        Sat, 2 Dec 2023 03:06:49 -0500
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7C5A133
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 00:06:55 -0800 (PST)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id 9257D5C0185;
+        Sat,  2 Dec 2023 03:06:52 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Sat, 02 Dec 2023 03:06:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+         h=cc:cc:content-type:content-type:date:date:from:from
+        :in-reply-to:message-id:mime-version:reply-to:sender:subject
+        :subject:to:to; s=fm1; t=1701504412; x=1701590812; bh=Q7wf+2tdim
+        +n+AqDdmyvJiyR5NBYgGXoMqHt3aSVxHY=; b=nNH4xFeRpytfe9F4Ft3TffOuEc
+        ZOP7HRK4QT8GByMU+50+4U2zZjxsvRjxTQ1F/ejM/F84bYuVJ5s39n0/1thDdnGN
+        zhs9wvnHiV8RmFfgZwM3rJS0Q4v2eCyXTgbPur336OZ2cdtAdDvwGjDQsyK5JwBS
+        o7vw1QaDvAn4s8Xz+IN9nizpzeQpQ/puOUIBqc/YF7EKtyHAmzkBqo6S161kDJog
+        BlrLoRQDoQJFyvXizjc2w0XEKYce2xhWgG/Jjtjikv9YUDr4sZTDXVNqFnKJosVj
+        xg/AlDIkeGvCH20vU+C8WQQrh6biHhKlf75HciMdacjOisvBBYSH1gdPpWlQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:message-id
+        :mime-version:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+        1701504412; x=1701590812; bh=Q7wf+2tdim+n+AqDdmyvJiyR5NBYgGXoMqH
+        t3aSVxHY=; b=AtXzoSDpjMnPbT5kLNKWsb/rlGEJFqfs0V1rAhz75S9GJke85dl
+        +pLuyfI9PGJ+EgwYGY4oi/TQlTYw3qAN3Oil3syfIj5DyfhgSeEZgXfsVdLwiwng
+        lEDnVwOsPryJYOy8LB7rV5SQgw/1x4dARAYUgfY/PJbkYTTJYyrjX3IErbZz6aBa
+        a/gp4LUbz5wnXUGF6NtaHQoQjtrficvOW38zz0kDFla7CytsT9QNc0/93SmW1e4z
+        WoIBmji9MiSceonZhsQihqmXtMi9UuFcQO39zIi+KxXLmtXdlPimHDdE1O7XJc4Y
+        D0w6kkWnyP9hIVvifdlBzHIxFWo/belHbSg==
+X-ME-Sender: <xms:nOVqZURIlPFU5x7wHpNUCgiqVYjEKAlhjQmOwqHC7VLpfZScz6_sMw>
+    <xme:nOVqZRz5tfOMSCeZEDPD3tF9XlHlCS7u78QeEMCZC68-XEx8GXX6q0ufwQQ4xZpRv
+    vCNcHu3UQ0bFAsxhY4>
+X-ME-Received: <xmr:nOVqZR2Reicg2pX-zq1UplK6qKtcYJwhRuDZNqNQSV23o0LcHuS5S9LA4rnqBkFyx4_-2gvCEvUXvhgRGwW809N8JxgPTiuk2A>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudejtddguddujecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecunecujfgurhepfffhvfevuffkgggtugesthdtre
+    dttddtvdenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqthgrkhgr
+    shhhihesshgrkhgrmhhotggthhhirdhjpheqnecuggftrfgrthhtvghrnhepteefieetfe
+    evgedvgfegffehteeljeekkeelueegfffftdfgtdetteekvedvvdfgnecuffhomhgrihhn
+    pehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
+    grihhlfhhrohhmpehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjhhp
+X-ME-Proxy: <xmx:nOVqZYBDLx_Wz09I-XRYI5JD_HaYcSQEZp1rz22rp7IK3Wo529CUMA>
+    <xmx:nOVqZdiBCDSWuc5iCM0TXz3FLrGiCK5sBLtus4jqYXU2MG29z27M9w>
+    <xmx:nOVqZUr1TVD_uBa41__fb8H-fZhrhqg859nLwqu6-iDgFL7L3iINlw>
+    <xmx:nOVqZdLUa1uuC-3WFeGv8tc9z8-yMsLcf1nnLohZ-oKMB0Q3dgxhNQ>
+Feedback-ID: ie8e14432:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
+ 2 Dec 2023 03:06:51 -0500 (EST)
+Date:   Sat, 2 Dec 2023 17:06:48 +0900
+From:   Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To:     torvalds@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [GIT PULL] firewire fixes for v6.7-rc4
+Message-ID: <20231202080648.GA34377@workstation.local>
+Mail-Followup-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>,
+        torvalds@linux-foundation.org, linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 5/5] selftests/mm: add UFFDIO_MOVE ioctl test
-Content-Language: en-GB
-To:     David Hildenbrand <david@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        akpm@linux-foundation.org
-Cc:     viro@zeniv.linux.org.uk, brauner@kernel.org, shuah@kernel.org,
-        aarcange@redhat.com, lokeshgidra@google.com, peterx@redhat.com,
-        hughd@google.com, mhocko@suse.com, axelrasmussen@google.com,
-        rppt@kernel.org, willy@infradead.org, Liam.Howlett@oracle.com,
-        jannh@google.com, zhangpeng362@huawei.com, bgeffon@google.com,
-        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kernel-team@android.com
-References: <20231121171643.3719880-1-surenb@google.com>
- <20231121171643.3719880-6-surenb@google.com>
- <b3c882d2-0135-430c-8179-784f78be0902@arm.com>
- <a41c759f-78d8-44ed-b708-1bb737a8e6c1@redhat.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <a41c759f-78d8-44ed-b708-1bb737a8e6c1@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/12/2023 20:47, David Hildenbrand wrote:
-> On 01.12.23 10:29, Ryan Roberts wrote:
->> On 21/11/2023 17:16, Suren Baghdasaryan wrote:
->>> Add tests for new UFFDIO_MOVE ioctl which uses uffd to move source
->>> into destination buffer while checking the contents of both after
->>> the move. After the operation the content of the destination buffer
->>> should match the original source buffer's content while the source
->>> buffer should be zeroed. Separate tests are designed for PMD aligned and
->>> unaligned cases because they utilize different code paths in the kernel.
->>>
->>> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
->>> ---
->>>   tools/testing/selftests/mm/uffd-common.c     |  24 +++
->>>   tools/testing/selftests/mm/uffd-common.h     |   1 +
->>>   tools/testing/selftests/mm/uffd-unit-tests.c | 189 +++++++++++++++++++
->>>   3 files changed, 214 insertions(+)
->>>
->>> diff --git a/tools/testing/selftests/mm/uffd-common.c
->>> b/tools/testing/selftests/mm/uffd-common.c
->>> index fb3bbc77fd00..b0ac0ec2356d 100644
->>> --- a/tools/testing/selftests/mm/uffd-common.c
->>> +++ b/tools/testing/selftests/mm/uffd-common.c
->>> @@ -631,6 +631,30 @@ int copy_page(int ufd, unsigned long offset, bool wp)
->>>       return __copy_page(ufd, offset, false, wp);
->>>   }
->>>   +int move_page(int ufd, unsigned long offset, unsigned long len)
->>> +{
->>> +    struct uffdio_move uffdio_move;
->>> +
->>> +    if (offset + len > nr_pages * page_size)
->>> +        err("unexpected offset %lu and length %lu\n", offset, len);
->>> +    uffdio_move.dst = (unsigned long) area_dst + offset;
->>> +    uffdio_move.src = (unsigned long) area_src + offset;
->>> +    uffdio_move.len = len;
->>> +    uffdio_move.mode = UFFDIO_MOVE_MODE_ALLOW_SRC_HOLES;
->>> +    uffdio_move.move = 0;
->>> +    if (ioctl(ufd, UFFDIO_MOVE, &uffdio_move)) {
->>> +        /* real retval in uffdio_move.move */
->>> +        if (uffdio_move.move != -EEXIST)
->>> +            err("UFFDIO_MOVE error: %"PRId64,
->>> +                (int64_t)uffdio_move.move);
->>
->> Hi Suren,
->>
->> FYI this error is triggering in mm-unstable (715b67adf4c8):
->>
->> Testing move-pmd on anon... ERROR: UFFDIO_MOVE error: -16 (errno=16,
->> @uffd-common.c:648)
->>
->> I'm running in a VM on Apple M2 (arm64). I haven't debugged any further, but
->> happy to go deeper if you can direct.
-> 
-> Does it trigger reliably? Which pagesize is that kernel using?
+Hi Linus,
 
-Yep, although very occasionally it fails with EAGAIN. 4K kernel; see other email
-for full config.
+Please take this pull request for v6.7-rc4 release. It includes a slight
+change to fix scarce memory leak.
 
-> 
-> I can spot that uffd_move_pmd_test()/uffd_move_pmd_handle_fault() uses
-> default_huge_page_size(), which reads the default hugetlb size.
+As I noted in pull request for v6.7[1], Linux FireWire subsystem still
+has an issue of unexpected system reboot in AMD Ryzen machine with a
+kind of PCI card. Recently I got a help of AMD developer[2] and got some
+advices to investigate the mechanism of system reboot, but never catch
+its tail yet... I wish to fix it within the development period for v6.8
+kernel.
 
-My kernel command line is explicitly seting the default huge page size to 2M.
+[1] https://lore.kernel.org/lkml/20231105144852.GA165906@workstation.local/
+[2] https://lore.kernel.org/lkml/20231128052429.GA25379@workstation.local/
 
-> 
-> That, however, does not necessarily correspond to the THP size. That one can be
-> obtained using read_pmd_pagesize() in vm_util.c
-> 
-> I quickly scanned the code (still want to take a deeper look), but all PAE
-> checks looked sane to me.
-> 
-> I think the issue is folio split handling. I replied to the patch.
-> 
+----------------------------------------------------------------
 
+The following changes since commit 2cc14f52aeb78ce3f29677c2de1f06c0e91471ab:
+
+  Linux 6.7-rc3 (2023-11-26 19:59:33 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/ieee1394/linux1394.git tags/firewire-fixes-6.7-rc4
+
+for you to fetch changes up to 891e0eab32a57fca4d36c5162628eb0bcb1f0edf:
+
+  firewire: core: fix possible memory leak in create_units() (2023-11-30 09:16:35 +0900)
+
+----------------------------------------------------------------
+firewire fixes for 6.7-rc4
+
+This pull request includes a single patch to fix long-standing issue of
+memory leak at failure of device registration for fw_unit. We rarely
+encounter the issue, while it should be applied to stable releases, since
+it fixes inappropriate API usage.
+
+----------------------------------------------------------------
+Yang Yingliang (1):
+      firewire: core: fix possible memory leak in create_units()
+
+ drivers/firewire/core-device.c | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
