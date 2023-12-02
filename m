@@ -2,99 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07EC8801DCF
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 17:37:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2A2D801DD0
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 17:39:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233081AbjLBQhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 11:37:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36740 "EHLO
+        id S233075AbjLBQjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 11:39:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229671AbjLBQhR (ORCPT
+        with ESMTP id S229451AbjLBQjA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 11:37:17 -0500
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42DC2114
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 08:37:24 -0800 (PST)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-6cdf3e99621so510591b3a.1
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Dec 2023 08:37:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701535044; x=1702139844; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=r/5fy0dH2xzqcER0suoHkQQxma1xoWVm6Ksyzy3Xy6A=;
-        b=ecfQc3LwBlUzvq3P/+j0euPU5HVDjuPKEaKwf7TNTggezOnaCRom40Qu6l2SDUA7vN
-         WKVapiW8WltxwFX1zPT1yFJh0SdyvbMzbAnsJVPV9awBilvw6a3hZKhdX5a+dct4kJ0N
-         jOxac69bFNVZexKsKNgQezvXDe/Mq9ebwEc2rp0IIOLCZjaczjn2iiuHGGfcyvW/K1xT
-         lV7z9mz0qWidkzycR7coiLPOzB7bCbFY6TrVnkPhAvwLHWxMaQ/xWw2ra4hEdaLcacXq
-         LH16CFFBTEHJ2I978J55tZ/j9T/fSfEcTwwDtP8pIkfH6ZfViaD46nCucu94Xwdh0BfK
-         fj1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701535044; x=1702139844;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=r/5fy0dH2xzqcER0suoHkQQxma1xoWVm6Ksyzy3Xy6A=;
-        b=sa7UQzSo0oSzyh07UFQ+K5XeAXoSJOTwpfk9ax281LwfKlDS+BFHJzrJqOttteXR9z
-         dQFh/3qC7ClKrkDkmY4bue1/EyXX0iXuiwaN1NZfBEf5n5SeBHRCluISZm9zyL1wxAQv
-         PEkgfarY8Tjwir4loH1/wgsNcp+7XXlZ7IfXWZpfDE89kscItzTYp/UFPN2XO84gnV9N
-         97wYCz5vnkoyTBrVKa7A6cn4uBgPBVtXsVBB88PBx5r2IH3dv/wFij2eAr9ep13j1jvR
-         I9AIZvJhbTXF5u0T9Cs/anmF8bwAYzCdelmkIVQn9p7n0qYXxgDtjgihfJ8IYo+Q6PwD
-         s2sA==
-X-Gm-Message-State: AOJu0YyKKJRDMlgbf8q8JZ71QYx+d0Hy0CpzN8sPyBCOHc/K3boIaUYJ
-        uzdOh3TuzGJtfr9MebnFpoU=
-X-Google-Smtp-Source: AGHT+IHoTx7tpZwwL4PhXWWb1kuDPXhYpTG2eZ5lRVjIoBiMm8qb3iWLFfxP9AByjn/JlcnOuy7pGg==
-X-Received: by 2002:a17:902:e80b:b0:1cf:a718:384 with SMTP id u11-20020a170902e80b00b001cfa7180384mr29734467plg.6.1701535043733;
-        Sat, 02 Dec 2023 08:37:23 -0800 (PST)
-Received: from localhost.localdomain ([140.116.154.65])
-        by smtp.gmail.com with ESMTPSA id jc15-20020a17090325cf00b001d07d88a71esm812533plb.73.2023.12.02.08.37.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Dec 2023 08:37:23 -0800 (PST)
-From:   Kuan-Wei Chiu <visitorckw@gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, lkml@sdf.org,
-        Kuan-Wei Chiu <visitorckw@gmail.com>
-Subject: [PATCH] lib/sort: Optimize number of calls to comparison function
-Date:   Sun,  3 Dec 2023 00:37:17 +0800
-Message-Id: <20231202163717.687578-1-visitorckw@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Sat, 2 Dec 2023 11:39:00 -0500
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3FFF115
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 08:39:04 -0800 (PST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 23B2240E025A;
+        Sat,  2 Dec 2023 16:39:03 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id tPNwvTI0rU2V; Sat,  2 Dec 2023 16:39:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1701535140; bh=nQmbrfM4qRQXMTfkFquYPysOK9TVsixwOkQpPGJQb7k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HubyHDX5eyo5Q5Icf9JREFefBsVmnCQSUFfqX2L+cKaTPyR3RDANPNRv6LfQcmw2g
+         Lyeg5/6mXNOrVDQxG9lLjxDZYLnk/qjAANYLqCyRsQqouDZwJ1HcoyIuckN/5kMFzr
+         NU50DulKq70pNw1Qavg/XftYyI6yFDEpClhK+3Nb4eO/1is92pbWky/qJirEeWCCE9
+         7lNT30RFErY8XUykrH6RtGtBmNsuRatlrX8vXN0cV/qrvdhVDLeTF653IH3YLTkYQN
+         o9x0Wjs2NXMi1JSFf253Wi7jOqVxKKJgcWspwgGUy5OphSUvqjvYC53e+1D7uzYacX
+         dWwYT0fcqNt7ES16H3DLQeoEnaBLkXqgrYQWhcF7HJZGjggVPBZsM5jHEPGqPwOLT2
+         GOVAgKgbu68MhVEHjBi58z0dFiktyGgKYVpB+bb6NghGwGjjoWpNviXyCVzFiOQ51t
+         4pNVfPj8GWpihQjJoC3qAhU9He+MigAhyAfP/2g0GHhyhl6qy13RmIjGqOREsXJGCc
+         cflLes0ep5UAnZmeSGc90IKUFoDrqkBSLh0984e19V4y5SAH64kyf9yeqG5AFuKURQ
+         Th7IsvLC43at4s6GtUDF6qVI6cYtaY5tXBPvecPe630orUccj3UcpzkSeRgKAnRz0h
+         ifH+J4R16luI/9eDhUAMz4YI=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id EB2A240E0030;
+        Sat,  2 Dec 2023 16:38:55 +0000 (UTC)
+Date:   Sat, 2 Dec 2023 17:38:50 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Ashok Raj <ashok.raj@intel.com>
+Cc:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH 2/2] x86/microcode: Rework early revisions reporting
+Message-ID: <20231202163850.GCZWtdmrMoJqyAiycZ@fat_crate.local>
+References: <20231115210212.9981-1-bp@alien8.de>
+ <20231115210212.9981-3-bp@alien8.de>
+ <ZWjVt5dNRjbcvlzR@a4bf019067fa.jf.intel.com>
+ <20231201163928.GCZWoMQNAAQSA9U12D@fat_crate.local>
+ <ZWpDHgNjhQKLodF6@a4bf019067fa.jf.intel.com>
+ <20231201204146.GGZWpFCqodLUPS27tJ@fat_crate.local>
+ <ZWpQ9Wbb7u4ss0mt@a4bf019067fa.jf.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZWpQ9Wbb7u4ss0mt@a4bf019067fa.jf.intel.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current implementation continues the loop when the comparison
-function returns a non-negative value, which includes the case when it
-returns 0. However, in scenarios where the comparison function returns
-0, further comparisons are unnecessary. By making this adjustment, we
-can potentially reduce the number of comparisons by approximately 50%
-in extreme cases where all elements in the array are equal, and the
-array size is sufficiently large.
+On Fri, Dec 01, 2023 at 01:32:37PM -0800, Ashok Raj wrote:
+> dmesg for the microcode part here below:
+> 
+> https://paste.debian.net/hidden/e911dffc/
 
-Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
+Thanks, it is all clear now.
+
+This should fix it:
+
 ---
- lib/sort.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+From: "Borislav Petkov (AMD)" <bp@alien8.de>
+Date: Fri, 1 Dec 2023 14:35:06 +0100
+Subject: [PATCH] x86/microcode/intel: Set new revision only after a successful update
 
-diff --git a/lib/sort.c b/lib/sort.c
-index b399bf10d675..1e98a62bb2f3 100644
---- a/lib/sort.c
-+++ b/lib/sort.c
-@@ -267,7 +267,7 @@ void sort_r(void *base, size_t num, size_t size,
- 			b = c;
+This was meant to be done only when early microcode got updated
+successfully. Move it into the if-branch.
+
+Also, make sure the current revision is read unconditionally and only
+once.
+
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+---
+ arch/x86/kernel/cpu/microcode/intel.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/arch/x86/kernel/cpu/microcode/intel.c b/arch/x86/kernel/cpu/microcode/intel.c
+index 070426b9895f..334972c097d9 100644
+--- a/arch/x86/kernel/cpu/microcode/intel.c
++++ b/arch/x86/kernel/cpu/microcode/intel.c
+@@ -370,14 +370,14 @@ static __init struct microcode_intel *get_microcode_blob(struct ucode_cpu_info *
+ {
+ 	struct cpio_data cp;
  
- 		/* Now backtrack from "b" to the correct location for "a" */
--		while (b != a && do_cmp(base + a, base + b, cmp_func, priv) >= 0)
-+		while (b != a && do_cmp(base + a, base + b, cmp_func, priv) > 0)
- 			b = parent(b, lsbit, size);
- 		c = b;			/* Where "a" belongs */
- 		while (b != a) {	/* Shift it into place */
++	intel_collect_cpu_info(&uci->cpu_sig);
++
+ 	if (!load_builtin_intel_microcode(&cp))
+ 		cp = find_microcode_in_initrd(ucode_path);
+ 
+ 	if (!(cp.data && cp.size))
+ 		return NULL;
+ 
+-	intel_collect_cpu_info(&uci->cpu_sig);
+-
+ 	return scan_microcode(cp.data, cp.size, uci, save);
+ }
+ 
+@@ -410,13 +410,13 @@ void __init load_ucode_intel_bsp(struct early_load_data *ed)
+ {
+ 	struct ucode_cpu_info uci;
+ 
+-	ed->old_rev = intel_get_microcode_revision();
+-
+ 	uci.mc = get_microcode_blob(&uci, false);
+-	if (uci.mc && apply_microcode_early(&uci) == UCODE_UPDATED)
+-		ucode_patch_va = UCODE_BSP_LOADED;
++	ed->old_rev = uci.cpu_sig.rev;
+ 
+-	ed->new_rev = uci.cpu_sig.rev;
++	if (uci.mc && apply_microcode_early(&uci) == UCODE_UPDATED) {
++		ucode_patch_va = UCODE_BSP_LOADED;
++		ed->new_rev = uci.cpu_sig.rev;
++	}
+ }
+ 
+ void load_ucode_intel_ap(void)
 -- 
-2.25.1
+2.42.0.rc0.25.ga82fb66fed25
 
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
