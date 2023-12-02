@@ -2,85 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1A598019F1
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 03:15:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 431D9801A0D
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 03:29:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231220AbjLBCOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 21:14:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46766 "EHLO
+        id S231250AbjLBC1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 21:27:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231289AbjLBCOl (ORCPT
+        with ESMTP id S229456AbjLBC1w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 21:14:41 -0500
-Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com [209.85.167.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF1BDD48
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 18:14:47 -0800 (PST)
-Received: by mail-oi1-f197.google.com with SMTP id 5614622812f47-3b8b0fb63cbso256603b6e.1
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 18:14:47 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701483287; x=1702088087;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hul+Elo9f6B4+TplkMlf+ft8nPG5pNQ1JFIjGrSDHVw=;
-        b=njydJuVE8P/a7QgIwMS4YRl6B6qkLzBTSa4znKcYBdxjOLpaVekZSMDZTXcGXgkStq
-         LfTwh7ywGhx+CB1myGpykO9ji7bw1wSSdBm03ejG0PLi/8RnE5kQIxRfnVzqI1TmJkP9
-         aHEe9/wKBCtfjsYHGDfo/7CYHV6nEqejvXpyA7mtnnbiftTDkJD9vR6po/QW04BTLFga
-         L1np+l9v2eHSTP5o8guafTllB3R+0YQxlP1ijCsVjBMfx8cmaY1w+LOD0Y6z7lwwZidF
-         6uZI48OLk2SWa7Tb0trmzMWWQVO/DEaLnstqNJnl8ujCKDfMYoGxgb0ttXunWsmH2oRj
-         7cdQ==
-X-Gm-Message-State: AOJu0YwolEc3UsfSreUGq+wcg0QWgvZ0SE53SoZG4a9sJAVsQMuu3MLu
-        i2eS5rNQzRdtmjN4m93L6Y06p5BpLRen7qT6FqkiQ78vMVzpwfw=
-X-Google-Smtp-Source: AGHT+IEcfiDrGCUuZRICRlKd+13SPobNyMwX7vNTqjpeDaHuaR9ZoMyObWbE0Wkn+0jukL884mm9hmRL5PEbDH9jxBfrOauGeJ0L
+        Fri, 1 Dec 2023 21:27:52 -0500
+X-Greylist: delayed 346 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 01 Dec 2023 18:27:56 PST
+Received: from mail-m12810.netease.com (mail-m12810.netease.com [103.209.128.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA638132;
+        Fri,  1 Dec 2023 18:27:56 -0800 (PST)
+Received: from [0.0.0.0] (unknown [IPV6:240e:3b7:3271:7f20:4433:b746:c1de:367])
+        by mail-m12773.qiye.163.com (Hmail) with ESMTPA id ABC322C027E;
+        Sat,  2 Dec 2023 10:21:37 +0800 (CST)
+Message-ID: <db0f5324-a4a8-3ae7-58f5-e82dd24643a9@sangfor.com.cn>
+Date:   Sat, 2 Dec 2023 10:21:37 +0800
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:bc4:b0:3b8:8f2e:5ef0 with SMTP id
- o4-20020a0568080bc400b003b88f2e5ef0mr227520oik.8.1701483286973; Fri, 01 Dec
- 2023 18:14:46 -0800 (PST)
-Date:   Fri, 01 Dec 2023 18:14:46 -0800
-In-Reply-To: <00000000000047eb7e060b652d9a@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e952ff060b7d724d@google.com>
-Subject: Re: [syzbot] [block?] [trace?] INFO: task hung in blk_trace_ioctl
-From:   syzbot <syzbot+ed812ed461471ab17a0c@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v3] net/mlx5e: Fix a race in command alloc flow
+Content-Language: en-US
+To:     Shifeng Li <lishifeng@sangfor.com.cn>, saeedm@nvidia.com,
+        leon@kernel.org, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, eranbe@mellanox.com,
+        moshe@mellanox.com
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lishifeng1992@126.com,
+        Moshe Shemesh <moshe@nvidia.com>
+References: <20231130030559.622165-1-lishifeng@sangfor.com.cn>
+From:   Ding Hui <dinghui@sangfor.com.cn>
+In-Reply-To: <20231130030559.622165-1-lishifeng@sangfor.com.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+        tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVlCS05LVh9DHU9DTk0fSUsaT1UTARMWGhIXJBQOD1
+        lXWRgSC1lBWUlPSx5BSBlMQUhJTEpBTB1JS0FPT0hIQRlMT01BGEofHkFITUxZV1kWGg8SFR0UWU
+        FZT0tIVUpNT0lOSVVKS0tVSkJZBg++
+X-HM-Tid: 0a8c2854d8aeb249kuuuabc322c027e
+X-HM-MType: 1
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6M1E6CCo*DDw4CgstLSwyMkNM
+        SDIaFE1VSlVKTEtKT0NITUJDQk9KVTMWGhIXVR8SFRwTDhI7CBoVHB0UCVUYFBZVGBVFWVdZEgtZ
+        QVlJT0seQUgZTEFISUxKQUwdSUtBT09ISEEZTE9NQRhKHx5BSE1MWVdZCAFZQUhDTkI3Bg++
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org.
+On 2023/11/30 11:05, Shifeng Li wrote:
+> Fix a cmd->ent use after free due to a race on command entry.
+> Such race occurs when one of the commands releases its last refcount and
+> frees its index and entry while another process running command flush
+> flow takes refcount to this command entry. The process which handles
+> commands flush may see this command as needed to be flushed if the other
+> process allocated a ent->idx but didn't set ent to cmd->ent_arr in
+> cmd_work_handler(). Fix it by moving the assignment of cmd->ent_arr into
+> the spin lock.
+> 
+> [70013.081955] BUG: KASAN: use-after-free in mlx5_cmd_trigger_completions+0x1e2/0x4c0 [mlx5_core]
+> [70013.081967] Write of size 4 at addr ffff88880b1510b4 by task kworker/26:1/1433361
+> [70013.081968]
+> [70013.082028] Workqueue: events aer_isr
+> [70013.082053] Call Trace:
+> [70013.082067]  dump_stack+0x8b/0xbb
+> [70013.082086]  print_address_description+0x6a/0x270
+> [70013.082102]  kasan_report+0x179/0x2c0
+> [70013.082173]  mlx5_cmd_trigger_completions+0x1e2/0x4c0 [mlx5_core]
+> [70013.082267]  mlx5_cmd_flush+0x80/0x180 [mlx5_core]
+> [70013.082304]  mlx5_enter_error_state+0x106/0x1d0 [mlx5_core]
+> [70013.082338]  mlx5_try_fast_unload+0x2ea/0x4d0 [mlx5_core]
+> [70013.082377]  remove_one+0x200/0x2b0 [mlx5_core]
+> [70013.082409]  pci_device_remove+0xf3/0x280
+> [70013.082439]  device_release_driver_internal+0x1c3/0x470
+> [70013.082453]  pci_stop_bus_device+0x109/0x160
+> [70013.082468]  pci_stop_and_remove_bus_device+0xe/0x20
+> [70013.082485]  pcie_do_fatal_recovery+0x167/0x550
+> [70013.082493]  aer_isr+0x7d2/0x960
+> [70013.082543]  process_one_work+0x65f/0x12d0
+> [70013.082556]  worker_thread+0x87/0xb50
+> [70013.082571]  kthread+0x2e9/0x3a0
+> [70013.082592]  ret_from_fork+0x1f/0x40
+> 
 
-***
+It is better if you also put the diagram [1] in the commit log, that is easy to understand.
 
-Subject: [block?] [trace?] INFO: task hung in blk_trace_ioctl
-Author: eadavis@qq.com
+[1] https://www.spinics.net/lists/netdev/msg951955.html
 
-please test task hung in blk_trace_ioctl
+> Fixes: 50b2412b7e78 ("net/mlx5: Avoid possible free of command entry while timeout comp handler")
+> Reviewed-by: Moshe Shemesh <moshe@nvidia.com>
+> Signed-off-by: Shifeng Li <lishifeng@sangfor.com.cn>
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git 8c9660f65153
-
-
-diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
-index 54ade89a1ad2..a1b341722693 100644
---- a/kernel/trace/blktrace.c
-+++ b/kernel/trace/blktrace.c
-@@ -735,7 +735,10 @@ int blk_trace_ioctl(struct block_device *bdev, unsigned cmd, char __user *arg)
- 	int ret, start = 0;
- 	char b[BDEVNAME_SIZE];
- 
--	mutex_lock(&q->debugfs_mutex);
-+	if (cmd == BLKTRACESETUP)
-+		mutex_lock_nested(&q->debugfs_mutex, 0);
-+	else
-+		mutex_lock_nested(&q->debugfs_mutex, 1);
- 
- 	switch (cmd) {
- 	case BLKTRACESETUP:
+-- 
+Thanks,
+- Ding Hui
 
