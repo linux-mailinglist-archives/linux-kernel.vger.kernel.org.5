@@ -2,244 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D405A801C71
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 12:30:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C866801C69
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 12:19:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232605AbjLBLas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 06:30:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48532 "EHLO
+        id S232494AbjLBLS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 06:18:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232519AbjLBLap (ORCPT
+        with ESMTP id S229472AbjLBLSz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 06:30:45 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A41F5194
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 03:30:51 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2535CC433C8;
-        Sat,  2 Dec 2023 11:30:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701516651;
-        bh=rkDS2IBecDt7J2zRqqr6JaMkgcMoWUiIilFCMd6Llus=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Xo3h81o4SOsZgewKhvmyTV2Zj/40rxCtOTKddVTpzg9zF4/Zku7mMHWIVqXSWCEgP
-         +CyMJUIOpiyAXr2eCnqWjwvW8NjryddrvUd9dAEaJnwZUnVY2HuXQlKbTd3m5Wuh5n
-         JLBwI9Igz0Cp4Z+U/6VRIBtBHbjOjPHpjutDYrwtiK7HRph7m3hKHJVFpIqTWtEl98
-         W1S70016s/KgRfcks+hGjryvJ/4E3M0XAxaw06bxPNUQqkdy/3RBtVBYQihtJRnjkt
-         hv5RK8JonV/Y6+JHEj2TciJIR+SmaISmeA/v3fkDGvr8auJULIl9sRA9CRsssfsYJN
-         7d/TDDXAgxBYg==
-From:   Jisheng Zhang <jszhang@kernel.org>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] riscv: select DCACHE_WORD_ACCESS for efficient unaligned access HW
-Date:   Sat,  2 Dec 2023 19:18:22 +0800
-Message-Id: <20231202111822.3569-3-jszhang@kernel.org>
-X-Mailer: git-send-email 2.40.0
-In-Reply-To: <20231202111822.3569-1-jszhang@kernel.org>
-References: <20231202111822.3569-1-jszhang@kernel.org>
+        Sat, 2 Dec 2023 06:18:55 -0500
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDDE318C;
+        Sat,  2 Dec 2023 03:19:01 -0800 (PST)
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-50be9e6427dso263849e87.1;
+        Sat, 02 Dec 2023 03:19:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701515940; x=1702120740; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=EJ168aVq5QXOtHooxbH+odPbZ9pENqVHXwP/aZSJoxY=;
+        b=YeVnEhLbgyDw3B1XXHHKA8yp6osJqjS6IR1AHUCfiKPszypzFQ+bKI1Y0IXI0Xha5n
+         R0o7bQDcyc0mbhq2i/KnfP7wYJpmoX6q2oztruhfFr3qD/4WziQTKW/6/xexXKYhcASd
+         nl9bgaDbkrUOzhWPg+bA1dhfZjK8wqP+Nxv8NDLrNsG8NdKU1WYRtMbSs9pwsiJ19MYL
+         n+ZIrIyPHg4X92OGTHMg/nSP+bEociJObRA5VoQ+TP9oDKMhyJ2P9Bek4aD8HozjUcdk
+         61yFU6NqdOmefVywLIA7aH1dE6/B4l5ZZOfrrBdzheFry7lIx6IrdeDQWyUT5fcITsRi
+         L/lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701515940; x=1702120740;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EJ168aVq5QXOtHooxbH+odPbZ9pENqVHXwP/aZSJoxY=;
+        b=p1wUj96fQmmKy/hnmFU+p9s/pNc49imNS4KxjxdEW6uNJQ/E+N/oKoTe7KAkT6grpW
+         pclyd8aupC8Fmj4U3W08eJnXdG1YVRMBs7pm8rEg63iIwhGo2c+F1oZWkiqvus7ajx1o
+         AJueupfmwPcWM0SZRGPJrlBnfznFygc0hvMVqOvucdy5DGU9G1JNNhBerIxMD322/4Ra
+         zmRL+w4jYES+8U5Ux/+kCM2i16UlZemtHBtJdRRZnvA94Ae5coW9p+OWwPJ6sNRZJ/7I
+         heCuty4ZN5iUJncHgPRrc+0JDihqza7q4KHVak2OiY2bHrHFBfuBdeBOoVpRVBpoy/FT
+         OhLQ==
+X-Gm-Message-State: AOJu0YweiEk7sphsTYLeFeHDlLA163IuTM5ga8rpz6elOnjY/HAdBhaD
+        XQ1hbsrHFC0SCx5nTb/sYcU=
+X-Google-Smtp-Source: AGHT+IErfZeBgQvhH6+UfukRjO2daCpV0/rvJfCL6UgL0+RAW9RuRhKB9V2J64iiN5h4LjG9319TsQ==
+X-Received: by 2002:ac2:5e63:0:b0:50b:d764:8024 with SMTP id a3-20020ac25e63000000b0050bd7648024mr1399573lfr.87.1701515939941;
+        Sat, 02 Dec 2023 03:18:59 -0800 (PST)
+Received: from localhost ([95.79.203.166])
+        by smtp.gmail.com with ESMTPSA id z10-20020a19f70a000000b0050bc4ed121dsm692406lfe.254.2023.12.02.03.18.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 02 Dec 2023 03:18:59 -0800 (PST)
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-mips@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] mm/mm_init.c: Extend init unavailable range doc info
+Date:   Sat,  2 Dec 2023 14:18:52 +0300
+Message-ID: <20231202111855.18392-1-fancer.lancer@gmail.com>
+X-Mailer: git-send-email 2.42.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PDS_BTC_ID,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DCACHE_WORD_ACCESS uses the word-at-a-time API for optimised string
-comparisons in the vfs layer.
+Besides of the already described reasons the pages backended memory holes
+might present due to having non-memory regions covered by the contiguous
+flatmem mapping. Add such note to the init_unavailable_range() method kdoc
+in order to point out to one more reason of having the function executed
+for such regions.
 
-This patch implements support for load_unaligned_zeropad in much the
-same way as has been done for arm64.
+Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
 
-Here is the test program and step:
-
- $ cat tt.c
- #include <sys/types.h>
- #include <sys/stat.h>
- #include <unistd.h>
-
- #define ITERATIONS 1000000
-
- #define PATH "123456781234567812345678123456781"
-
- int main(void)
- {
-         unsigned long i;
-         struct stat buf;
-
-         for (i = 0; i < ITERATIONS; i++)
-                 stat(PATH, &buf);
-
-         return 0;
- }
-
- $ gcc -O2 tt.c
- $ touch 123456781234567812345678123456781
- $ time ./a.out
-
-Per my test on T-HEAD C910 platforms, the above test performance is
-improved by about 7.5%.
-
-Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
 ---
- arch/riscv/Kconfig                      |  1 +
- arch/riscv/include/asm/asm-extable.h    | 15 ++++++++++++
- arch/riscv/include/asm/word-at-a-time.h | 23 ++++++++++++++++++
- arch/riscv/mm/extable.c                 | 31 +++++++++++++++++++++++++
- 4 files changed, 70 insertions(+)
 
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 0a76209e9b02..bb366eb1870e 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -657,6 +657,7 @@ config RISCV_MISALIGNED
- config RISCV_EFFICIENT_UNALIGNED_ACCESS
- 	bool "Use unaligned access for some functions"
- 	depends on NONPORTABLE
-+	select DCACHE_WORD_ACCESS if MMU
- 	select HAVE_EFFICIENT_UNALIGNED_ACCESS
- 	default n
- 	help
-diff --git a/arch/riscv/include/asm/asm-extable.h b/arch/riscv/include/asm/asm-extable.h
-index 00a96e7a9664..0c8bfd54fc4e 100644
---- a/arch/riscv/include/asm/asm-extable.h
-+++ b/arch/riscv/include/asm/asm-extable.h
-@@ -6,6 +6,7 @@
- #define EX_TYPE_FIXUP			1
- #define EX_TYPE_BPF			2
- #define EX_TYPE_UACCESS_ERR_ZERO	3
-+#define EX_TYPE_LOAD_UNALIGNED_ZEROPAD	4
- 
- #ifdef CONFIG_MMU
- 
-@@ -47,6 +48,11 @@
- #define EX_DATA_REG_ZERO_SHIFT	5
- #define EX_DATA_REG_ZERO	GENMASK(9, 5)
- 
-+#define EX_DATA_REG_DATA_SHIFT	0
-+#define EX_DATA_REG_DATA	GENMASK(4, 0)
-+#define EX_DATA_REG_ADDR_SHIFT	5
-+#define EX_DATA_REG_ADDR	GENMASK(9, 5)
-+
- #define EX_DATA_REG(reg, gpr)						\
- 	"((.L__gpr_num_" #gpr ") << " __stringify(EX_DATA_REG_##reg##_SHIFT) ")"
- 
-@@ -62,6 +68,15 @@
- #define _ASM_EXTABLE_UACCESS_ERR(insn, fixup, err)			\
- 	_ASM_EXTABLE_UACCESS_ERR_ZERO(insn, fixup, err, zero)
- 
-+#define _ASM_EXTABLE_LOAD_UNALIGNED_ZEROPAD(insn, fixup, data, addr)		\
-+	__DEFINE_ASM_GPR_NUMS							\
-+	__ASM_EXTABLE_RAW(#insn, #fixup,					\
-+			  __stringify(EX_TYPE_LOAD_UNALIGNED_ZEROPAD),		\
-+			  "("							\
-+			    EX_DATA_REG(DATA, data) " | "			\
-+			    EX_DATA_REG(ADDR, addr)				\
-+			  ")")
-+
- #endif /* __ASSEMBLY__ */
- 
- #else /* CONFIG_MMU */
-diff --git a/arch/riscv/include/asm/word-at-a-time.h b/arch/riscv/include/asm/word-at-a-time.h
-index 7c086ac6ecd4..5a3865ac3623 100644
---- a/arch/riscv/include/asm/word-at-a-time.h
-+++ b/arch/riscv/include/asm/word-at-a-time.h
-@@ -9,6 +9,7 @@
- #define _ASM_RISCV_WORD_AT_A_TIME_H
- 
- 
-+#include <asm/asm-extable.h>
- #include <linux/kernel.h>
- 
- struct word_at_a_time {
-@@ -45,4 +46,26 @@ static inline unsigned long find_zero(unsigned long mask)
- /* The mask we created is directly usable as a bytemask */
- #define zero_bytemask(mask) (mask)
- 
-+/*
-+ * Load an unaligned word from kernel space.
-+ *
-+ * In the (very unlikely) case of the word being a page-crosser
-+ * and the next page not being mapped, take the exception and
-+ * return zeroes in the non-existing part.
-+ */
-+static inline unsigned long load_unaligned_zeropad(const void *addr)
-+{
-+	unsigned long ret;
-+
-+	/* Load word from unaligned pointer addr */
-+	asm(
-+	"1:	" REG_L " %0, %2\n"
-+	"2:\n"
-+	_ASM_EXTABLE_LOAD_UNALIGNED_ZEROPAD(1b, 2b, %0, %1)
-+	: "=&r" (ret)
-+	: "r" (addr), "m" (*(unsigned long *)addr));
-+
-+	return ret;
-+}
-+
- #endif /* _ASM_RISCV_WORD_AT_A_TIME_H */
-diff --git a/arch/riscv/mm/extable.c b/arch/riscv/mm/extable.c
-index 35484d830fd6..dd1530af3ef1 100644
---- a/arch/riscv/mm/extable.c
-+++ b/arch/riscv/mm/extable.c
-@@ -27,6 +27,14 @@ static bool ex_handler_fixup(const struct exception_table_entry *ex,
- 	return true;
- }
- 
-+static inline unsigned long regs_get_gpr(struct pt_regs *regs, unsigned int offset)
-+{
-+	if (unlikely(!offset || offset > MAX_REG_OFFSET))
-+		return 0;
-+
-+	return *(unsigned long *)((unsigned long)regs + offset);
-+}
-+
- static inline void regs_set_gpr(struct pt_regs *regs, unsigned int offset,
- 				unsigned long val)
- {
-@@ -50,6 +58,27 @@ static bool ex_handler_uaccess_err_zero(const struct exception_table_entry *ex,
- 	return true;
- }
- 
-+static bool
-+ex_handler_load_unaligned_zeropad(const struct exception_table_entry *ex,
-+				  struct pt_regs *regs)
-+{
-+	int reg_data = FIELD_GET(EX_DATA_REG_DATA, ex->data);
-+	int reg_addr = FIELD_GET(EX_DATA_REG_ADDR, ex->data);
-+	unsigned long data, addr, offset;
-+
-+	addr = regs_get_gpr(regs, reg_addr * sizeof(unsigned long));
-+
-+	offset = addr & 0x7UL;
-+	addr &= ~0x7UL;
-+
-+	data = *(unsigned long *)addr >> (offset * 8);
-+
-+	regs_set_gpr(regs, reg_data * sizeof(unsigned long), data);
-+
-+	regs->epc = get_ex_fixup(ex);
-+	return true;
-+}
-+
- bool fixup_exception(struct pt_regs *regs)
- {
- 	const struct exception_table_entry *ex;
-@@ -65,6 +94,8 @@ bool fixup_exception(struct pt_regs *regs)
- 		return ex_handler_bpf(ex, regs);
- 	case EX_TYPE_UACCESS_ERR_ZERO:
- 		return ex_handler_uaccess_err_zero(ex, regs);
-+	case EX_TYPE_LOAD_UNALIGNED_ZEROPAD:
-+		return ex_handler_load_unaligned_zeropad(ex, regs);
- 	}
- 
- 	BUG();
+Link: https://lore.kernel.org/linux-mips/20231122182419.30633-6-fancer.lancer@gmail.com/
+Changelog v2:
+- The holes in the memory are actually justified by having the flatmem
+  mapping model. Change the patch and the log accordingly. (@Mike)
+---
+ mm/mm_init.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/mm/mm_init.c b/mm/mm_init.c
+index 077bfe393b5e..824bf53e8253 100644
+--- a/mm/mm_init.c
++++ b/mm/mm_init.c
+@@ -796,6 +796,7 @@ overlap_memmap_init(unsigned long zone, unsigned long *pfn)
+  * - physical memory bank size is not necessarily the exact multiple of the
+  *   arbitrary section size
+  * - early reserved memory may not be listed in memblock.memory
++ * - non-memory regions covered by the contigious flatmem mapping
+  * - memory layouts defined with memmap= kernel parameter may not align
+  *   nicely with memmap sections
+  *
 -- 
-2.42.0
+2.42.1
 
