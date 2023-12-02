@@ -2,40 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC199801D3D
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 15:16:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 491EE801D38
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 15:16:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229702AbjLBOPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 09:15:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34254 "EHLO
+        id S233017AbjLBOPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 09:15:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232924AbjLBOPn (ORCPT
+        with ESMTP id S232975AbjLBOPo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 09:15:43 -0500
+        Sat, 2 Dec 2023 09:15:44 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D91B89E
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 06:15:49 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 388EDC433C9;
-        Sat,  2 Dec 2023 14:15:48 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8563A12E
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 06:15:51 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E82F8C433C8;
+        Sat,  2 Dec 2023 14:15:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701526549;
-        bh=S2+zqveKrbdhHD/E0gLVDfqMZhNfNga2QuZZLKEkKts=;
-        h=From:To:Cc:Subject:Date:From;
-        b=E9/n4SDNzT+7E/XzeFkmkbteR4trXt4gqLfwdTDooFabkERe72aNvNceCOKnJiIYV
-         w1q2lRB4TxZZ/zydPWbcLvVuaZ0pWcsjOrDyYZeTLao7Tu8hDxlCWHSx6OUOyt2xVF
-         mBovBn2E6dFggfIw8zzWNmgQu+ICALfWlrB8FvBpzDKy5iqXeMuFtKYNaR6sFQXjFU
-         cA8y7YjlJNL+pfYyjKZK6PITtwrbk1V4SJbB7BqdQHa0NyW8mPV4W4g5BgocoxYl8p
-         KuUDlCV+V4KOreLLQyhwwAkc7cFqoOGNxe4bo6aq77YkRcSJ/cSM48jhOAFzOweMwp
-         hGxKuRGbbxaMQ==
+        s=k20201202; t=1701526551;
+        bh=fwdhwt3eDeqZRwcBFACwkkWnjPtptuE2Wu5b5bty77c=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=oQ72I/i6LN9WRbDkrkT9M9kOLmigG1FyWGGpxqvKDzK8Ed7mBok7Xna5Rno92B6gj
+         /XX0nb16HB6UkRBDog/J/WWTPO/5HtSFde3mvKL+Yo4z4M7PJyanFKMRJ0ecX0vpwu
+         kW0h6cCwkSUUIOzNSolHE+92AyLd7syaH+iL98NweXOkA4xA5WEnnmMAVNqHUvYlDN
+         fYOdl/nIa/HYzblmbtfeba1gDN0VzQEY7gta52VNWuc+y4S4MLdaGLanZV9Ne5H8uM
+         yxx/DRCMIs+4u1zB+ol2wV6E7lqNnlKjcWNXa+lYHWlMxDrNxj8nY5kExp7zxqauhT
+         62de3GKfgbhDQ==
 From:   Jisheng Zhang <jszhang@kernel.org>
 To:     Paul Walmsley <paul.walmsley@sifive.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
         Albert Ou <aou@eecs.berkeley.edu>
 Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 0/2] riscv: enable lockless lockref implementation
-Date:   Sat,  2 Dec 2023 22:03:21 +0800
-Message-Id: <20231202140323.315-1-jszhang@kernel.org>
+Subject: [PATCH v2 1/2] riscv: select ARCH_USE_CMPXCHG_LOCKREF
+Date:   Sat,  2 Dec 2023 22:03:22 +0800
+Message-Id: <20231202140323.315-2-jszhang@kernel.org>
 X-Mailer: git-send-email 2.40.0
+In-Reply-To: <20231202140323.315-1-jszhang@kernel.org>
+References: <20231202140323.315-1-jszhang@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -48,35 +50,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series selects ARCH_USE_CMPXCHG_LOCKREF to enable the
-cmpxchg-based lockless lockref implementation for riscv. Then,
-implement arch_cmpxchg64_{relaxed|acquire|release}.
+Select ARCH_USE_CMPXCHG_LOCKREF to enable the cmpxchg-based lockless
+lockref implementation for riscv.
 
-After patch1:
 Using Linus' test case[1] on TH1520 platform, I see a 11.2% improvement.
 On JH7110 platform, I see 12.0% improvement.
 
-After patch2:
-on both TH1520 and JH7110 platforms, I didn't see obvious
-performance improvement with Linus' test case [1]. IMHO, this may
-be related with the fence and lr.d/sc.d hw implementations. In theory,
-lr/sc without fence could give performance improvement over lr/sc plus
-fence, so add the code here to leave performance improvement room on
-newer HW platforms.
-
 Link: http://marc.info/?l=linux-fsdevel&m=137782380714721&w=4 [1]
+Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+---
+ arch/riscv/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-Since v1:
-  - only select ARCH_USE_CMPXCHG_LOCKREF if 64BIT
-
-Jisheng Zhang (2):
-  riscv: select ARCH_USE_CMPXCHG_LOCKREF
-  riscv: cmpxchg: implement arch_cmpxchg64_{relaxed|acquire|release}
-
- arch/riscv/Kconfig               |  1 +
- arch/riscv/include/asm/cmpxchg.h | 18 ++++++++++++++++++
- 2 files changed, 19 insertions(+)
-
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index 433ec617703e..da4ae76a892c 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -51,6 +51,7 @@ config RISCV
+ 	select ARCH_SUPPORTS_PAGE_TABLE_CHECK if MMU
+ 	select ARCH_SUPPORTS_PER_VMA_LOCK if MMU
+ 	select ARCH_SUPPORTS_SHADOW_CALL_STACK if HAVE_SHADOW_CALL_STACK
++	select ARCH_USE_CMPXCHG_LOCKREF if 64BIT
+ 	select ARCH_USE_MEMTEST
+ 	select ARCH_USE_QUEUED_RWLOCKS
+ 	select ARCH_USES_CFI_TRAPS if CFI_CLANG
 -- 
 2.42.0
 
