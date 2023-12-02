@@ -2,107 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C001180190D
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 01:41:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAFA3801919
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 01:44:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441966AbjLBAk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 19:40:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60856 "EHLO
+        id S1441967AbjLBAoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 19:44:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229841AbjLBAk6 (ORCPT
+        with ESMTP id S229456AbjLBAoO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 19:40:58 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23F9B103
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 16:41:05 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 702EDC433C7;
-        Sat,  2 Dec 2023 00:41:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701477664;
-        bh=rISLER/E+7fKsH5Uo4QvBPenL8iXEwDiTGCD2NOxQh0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MmVF1NpKxJ4IAy858mP04qtAtHq31qtlgBQlVJRy8oNJKaVHeFHS8gXyJ9GrlKOrt
-         9uNEPXMEPWLWsOXypOdEh4R98WKaEAnzHfU7fggDmMCsQF11z+UJ1S3kBEcUqQ2ifi
-         F0fTD5kBgQiYC+K3koX9oJnYs7ZwyL4p/StqMhUMm9Q72yRG7QF0cvaLea201cDvwz
-         CzMLnrIA6cMJku6po6wLni+qGhoGt3t7IGI90sgAflKsp3YC5bCJ/07Z/g3FLIVp90
-         63p8taypJCOWpjQ9NBdLKPuYUQcwhz0Go+eFw3fBTdGcqv6LYZz3syp3S4DBqVvVmh
-         uCt7S+ECm1ZEA==
-From:   SeongJae Park <sj@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, allen.lkml@gmail.com, damon@lists.linux.dev,
-        SeongJae Park <sj@kernel.org>
-Subject: Re: [PATCH 5.15 00/68] 5.15.141-rc2 review
-Date:   Sat,  2 Dec 2023 00:41:01 +0000
-Message-Id: <20231202004101.46385-1-sj@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231201082345.123842367@linuxfoundation.org>
-References: 
+        Fri, 1 Dec 2023 19:44:14 -0500
+Received: from mail.rnplus.nl (mail.rnplus.nl [178.251.25.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05051103
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 16:44:20 -0800 (PST)
+Received: from localhost (unknown [127.0.0.1])
+        by mail.rnplus.nl (Postfix) with ESMTP id 334CA37943B
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 00:45:57 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at rnplus.nl
+Received: from mail.rnplus.nl ([127.0.0.1])
+        by localhost (mail.rnplus.nl [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id fWSDXnqFio7T for <linux-kernel@vger.kernel.org>;
+        Sat,  2 Dec 2023 01:45:57 +0100 (CET)
+Received: from werkpc.localnet (87-101-2-254.dsl.cambrium.nl [87.101.2.254])
+        by mail.rnplus.nl (Postfix) with ESMTPSA id B90863793AD;
+        Sat,  2 Dec 2023 01:45:55 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=rnplus.nl; s=dkim;
+        t=1701477956; bh=yRBPEQxU6QTn7AumN8CC7LcN7WuQwY78yyLiGx2740g=;
+        h=From:To:Subject:Date:In-Reply-To:References;
+        b=0W7GSsCGwYC8FMG7Ils5SuWyAqyZJGF8bDINj62Wqb53kV2eBh6mstVrI+f4phf/I
+         6FdLKR168fsp2mZBV1EVnedjh6vFwfmvY2DxrSpFNCbAI8h0q9V3+9AREQe7M4IlYx
+         BYCR+gz0WJ2UOmyxJgVaMMPUQBUSTZuGEyDbk2Xg=
+From:   Renze Nicolai <renze@rnplus.nl>
+To:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-aspeed@lists.ozlabs.org,
+        arnd@arndb.de, olof@lixom.net, soc@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, joel@jms.id.au, andrew@aj.id.au,
+        renze@rnplus.nl
+Subject: Re: [PATCH v3 0/2] ARM: dts: aspeed: asrock: Add ASRock X570D4U BMC
+Date:   Sat, 02 Dec 2023 01:44:17 +0100
+Message-ID: <12332130.O9o76ZdvQC@werkpc>
+In-Reply-To: <20231202003908.3635695-1-renze@rnplus.nl>
+References: <20231202003908.3635695-1-renze@rnplus.nl>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hello again,
 
-On 2023-12-01T08:25:54+00:00 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+A small addition to my cover letter for v3 of the patch:
 
-> This is the start of the stable review cycle for the 5.15.141 release.
-> There are 68 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+I forgot to mention in the changelog from v2 to v3 that I also modified the 
+tachometer configuration to correctly map the tachometer inputs to the fan 
+headers on the board.
+
+Greetings,
+Renze Nicolai
+
+On Saturday, December 2, 2023 1:38:43 AM CET you wrote:
+> Hello,
 > 
-> Responses should be made by Sun, 03 Dec 2023 08:23:33 +0000.
-> Anything received after that time might be too late.
+> These patches add a device-tree (and a bindings update) for the
+> Aspeed BMC on the ASRock X570D4U, so that it can be added as a
+> supported OpenBMC platform.
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.141-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
-> and the diffstat can be found below.
+> Changes since v2:
+>   - Renamed leds to led-0 and led-1 to match
+> Documentation/devicetree/bindings/leds/leds-gpio.yaml - Added aliasses and
+> labels for the i2c-mux on i2c bus 4
+>   - Added the missing blank line between the ehci1 and uhci nodes
+> 
+> Greetings,
+> Renze Nicolai
+> 
+> Renze Nicolai (2):
+>   dt-bindings: arm: aspeed: add Asrock X570D4U board
+>   ARM: dts: aspeed: asrock: Add ASRock X570D4U BMC
+> 
+>  .../bindings/arm/aspeed/aspeed.yaml           |   1 +
+>  arch/arm/boot/dts/aspeed/Makefile             |   1 +
+>  .../dts/aspeed/aspeed-bmc-asrock-x570d4u.dts  | 377 ++++++++++++++++++
+>  3 files changed, 379 insertions(+)
+>  create mode 100644 arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-x570d4u.dts
 
-This rc kernel passes DAMON functionality test[1] on my test machine.
-Attaching the test results summary below.  Please note that I retrieved the
-kernel from linux-stable-rc tree[2].
 
-Tested-by: SeongJae Park <sj@kernel.org>
 
-[1] https://github.com/awslabs/damon-tests/tree/next/corr
-[2] c66b1a8641b0 ("Linux 5.15.141-rc2")
 
-Thanks,
-SJ
-
-[...]
-
----
-
-ok 1 selftests: damon: debugfs_attrs.sh
-ok 1 selftests: damon-tests: kunit.sh
-ok 2 selftests: damon-tests: huge_count_read_write.sh
-ok 3 selftests: damon-tests: buffer_overflow.sh
-ok 4 selftests: damon-tests: rm_contexts.sh
-ok 5 selftests: damon-tests: record_null_deref.sh
-ok 6 selftests: damon-tests: dbgfs_target_ids_read_before_terminate_race.sh
-ok 7 selftests: damon-tests: dbgfs_target_ids_pid_leak.sh
-ok 8 selftests: damon-tests: damo_tests.sh
-ok 9 selftests: damon-tests: masim-record.sh
-ok 10 selftests: damon-tests: build_i386.sh
-ok 11 selftests: damon-tests: build_arm64.sh
-ok 12 selftests: damon-tests: build_i386_idle_flag.sh
-ok 13 selftests: damon-tests: build_i386_highpte.sh
-ok 14 selftests: damon-tests: build_nomemcg.sh
- [33m
- [92mPASS [39m
