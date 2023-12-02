@@ -2,83 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CAFB801E28
+	by mail.lfdr.de (Postfix) with ESMTP id 27065801E27
 	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 20:09:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229800AbjLBS6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 13:58:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53110 "EHLO
+        id S231175AbjLBTCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 14:02:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjLBS6l (ORCPT
+        with ESMTP id S229450AbjLBTCA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 13:58:41 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2C8D119
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 10:58:47 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFE6EC433C7;
-        Sat,  2 Dec 2023 18:58:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701543527;
-        bh=pGZmxg4gMuH9Y/xp6YNdSj3V/YUamxIEYzNm/xMRWhc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=r5yZi5optou1fyuiBv5bgcirRha8rYqhwkAX11o+bLsdJBri1Fmv7k+S5o9F9lJfA
-         isTpc5oXp+nyuu7xLVXXETZby8sI2NMCWrokZ0+gnZbq30UjgodzuG6bCvrrIZftM6
-         4lGBJ7iHwt94DT1YeWwhZ9hQ8pYaabSpMxuRHsX6s2PVwRI37XHV4fyYjBSUvYdLP2
-         tI6GWln+sXwdCT+o4lvbpWZVshBW1fXT2ncZFBFXq969gGcxDO3xerB/Xrwty+dTam
-         9abRCz+Rxabl05bmByuODvkNSB3GAUNWTxdMvrWn9DGk+xLapAQelv8vlNKtlyvwfU
-         dDSaOLegQx/3A==
-Date:   Sat, 2 Dec 2023 10:58:45 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Justin Lai <justinlai0215@realtek.com>, davem@davemloft.net,
-        edumazet@google.com, pabeni@redhat.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        pkshih@realtek.com, larry.chiu@realtek.com
-Subject: Re: [PATCH net-next v13 01/13] rtase: Add pci table supported in
- this module
-Message-ID: <20231202105845.12e27e31@kernel.org>
-In-Reply-To: <27b2b87a-929d-4b97-9265-303391982d27@lunn.ch>
-References: <20231130114327.1530225-1-justinlai0215@realtek.com>
-        <20231130114327.1530225-2-justinlai0215@realtek.com>
-        <20231201203602.7e380716@kernel.org>
-        <27b2b87a-929d-4b97-9265-303391982d27@lunn.ch>
+        Sat, 2 Dec 2023 14:02:00 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30FFC119;
+        Sat,  2 Dec 2023 11:02:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=17v8pwtEO/9J4h+31aN7yWQ25FC4gANK2/bSdLAYPAE=; b=jDJlzbWvQenbWgKJqXxA+N8i1c
+        iSZBWulz0POYLy/Kwj/tCqG0pTBoeXOVvyiFJ46htqAHd2me9MM5UJGk3Fol/W+FgjeLmlyuKcIZ7
+        z7XAOeQ3i+z6nglG3Pbt2qZWjjOFX2QUU3yCDVrLmg0Yezcl40rm/Wk165vGa+zdYiMK0TysBT1sm
+        qGcRH1Ti/SDAj3idiOfUIbiI5VgrI8RK9qjfmUWGRt2JxfWZxIwcDkd4sqsX3IUU10gXlVDEqsEZl
+        9EdATz7UNyvSQV1NMfRJLxcylgNs1ZqswM4KBYLuzuJMpz25ex4mHYqmE5EXeGX3VltSC3ZviPICv
+        LVhxBmDw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1r9VFS-00GhRF-9D; Sat, 02 Dec 2023 19:01:54 +0000
+Date:   Sat, 2 Dec 2023 19:01:54 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     attreyee-muk <tintinm2017@gmail.com>
+Cc:     linkinjeon@kernel.org, sj1557.seo@samsung.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Tried making changes
+Message-ID: <ZWt/IpxyUu+4+bxE@casper.infradead.org>
+References: <20231202043859.356901-1-tintinm2017@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231202043859.356901-1-tintinm2017@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2 Dec 2023 17:27:57 +0100 Andrew Lunn wrote:
-> > > + *  The block of the Realtek RTL90xx series is our entire chip architecture,
-> > > + *  the GMAC is connected to the switch core, and there is no PHY in between.
-> > > + *  In addition, this driver is mainly used to control GMAC, but does not
-> > > + *  control the switch core, so it is not the same as DSA.  
-> > 
-> > Okay, but you seem to only register one netdev.
-> > 
-> > Which MAC is it for?  
+On Sat, Dec 02, 2023 at 10:09:00AM +0530, attreyee-muk wrote:
+> Respected Maintainers, 
 > 
-> The GMAC one. This is going to be a DSA system, and this driver is for
-> the conduit MAC the CPU uses. At some point, i hope there is a DSA
-> driver added, or the existing realtek driver is extended to support
-> this switch.
+> I have tried to solve the bug - UBSAN: shift-out-of-bounds in exfat_fill_super, reported by Syzbot [link - https://syzkaller.appspot.com/bug?extid=d33808a177641a02213e]
 
-Oh, thanks, it even says so in the comment. I blame it on late night
-reviewing. I was confused by the "driver [...] does not control the
-switch core, so it is not the same as DSA." Looking at the discussion
-in v3 it sounds like the switch is controlled by a different PCI
-function? In which case it very much sounds like DSA. Or maybe there
-was a minor misunderstanding there, and the driver will need MFD /
-auxbus, which is still close to DSA.
+Hi Attreyee,
 
-I'm mainly asking to make sure we avoid "implicitly programming" the
-switch, like, IIUC, one of the TI drivers did. And we ended up with
-multiple versions / modes of operation :( Sounds like this driver
-doesn't touch switch registers yet, tho, so all good.
+Working on syzbot reports is quite an art.  The important thing to know
+for solving this one is that syzbot will fuzz filesystems.  That is, it
+will start with a valid filesystem and change bits on disk, then see if
+that creates any issues.
+
+> The issue is in line 503 of fs/exfat/super.c - by analyzing the code, I
+> understood that the it is checking if the calculated size of the exFAT
+> File Allocation Table is very small as compared to the expected
+> size,based on the number of clusters. If the condition is met, then an
+> error will be logged. But here inside the if statement, I believe that
+> the value of number of bits in sbi->num_FAT_sectors ,at some point is
+> coming more than the value of p_boot->sect_size_bits. As a result, a
+> shift-out-of-bounds error is being generated. 
+
+No, that's not what's happening in this report.  p_boot->sect_size_bits
+somehow has value 97.  And it's Undefined Behaviour in C to shift by more
+than the number of bits in the type.  But I don't see how that happens:
+
+fs/exfat/exfat_raw.h:#define EXFAT_MAX_SECT_SIZE_BITS           12
+
+        if (p_boot->sect_size_bits < EXFAT_MIN_SECT_SIZE_BITS ||
+            p_boot->sect_size_bits > EXFAT_MAX_SECT_SIZE_BITS) {
+
+so something weird has happened; probably there's some other bug
+somewhere else that has caused p_boot to be corrupted.  Whatever it is,
+it's unlikely that you'll be able to find it.  Probably this is why
+there's no reproducer.
+
