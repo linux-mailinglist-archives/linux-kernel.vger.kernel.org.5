@@ -2,39 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B087801DF1
+	by mail.lfdr.de (Postfix) with ESMTP id EACF6801DF3
 	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 18:28:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231747AbjLBRNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 12:13:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36516 "EHLO
+        id S233131AbjLBRQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 12:16:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230239AbjLBRNW (ORCPT
+        with ESMTP id S229451AbjLBRQK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 12:13:22 -0500
-Received: from mail1.merlins.org (magic.merlins.org [209.81.13.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C96B7129
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 09:13:27 -0800 (PST)
-Received: from merlin by mail1.merlins.org with local (Exim 4.94.2 #2)
-        id 1r9TYU-0007ZD-K8 by authid <merlin>; Sat, 02 Dec 2023 09:13:26 -0800
-Date:   Sat, 2 Dec 2023 09:13:26 -0800
-From:   Marc MERLIN <marc_nouveau@merlins.org>
-To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux Nouveau <nouveau@lists.freedesktop.org>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>
-Subject: Thinkpad P17 gen 2 kernel 6.4 and 6.6 lack of support for nvidia
- GA104GLM [RTX A5000 Mobile] and missing module firmware
-Message-ID: <20231202171326.GB24486@merlins.org>
+        Sat, 2 Dec 2023 12:16:10 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AB68124
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 09:16:17 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF781C433C9;
+        Sat,  2 Dec 2023 17:16:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701537377;
+        bh=53gQ5QPBeQ1+h1gAjauNWXZ/KuI17gL+1YoqsW1KWKo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jN6ES8a4zqtEydvdGod1EVRG1C3ScEKJp/IsOzbHWP0SBqotp79X9MMxrYd7gC6fg
+         Fd9Vc6vdRLKd7mSwB7BCIJISaTlD9i3ExUF4QUCLuVDh39jnFN2aZmarB9MybBydWK
+         2FLLUZskyd+DSceIs2VdcX1cUIs6Io4ts4GVOpXMR6VmvIypBCl4pwMdrP6Jznp6pJ
+         k2lW2Mqt+o9CtAwG/JZUQtoVYQ53CCjtUDKMoclNfaanASzuWYgJdq1eWcspdm7pdT
+         BFAJl2KldMZfzxekSW6JEIaGZzdzbEZi6RFdQmn+IMyzI4xoAOYubgdHvI7kF8jART
+         1NXT0Q4YFHjsA==
+Date:   Sat, 2 Dec 2023 17:16:12 +0000
+From:   Simon Horman <horms@kernel.org>
+To:     Dmitry Safonov <dima@arista.com>
+Cc:     David Ahern <dsahern@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Francesco Ruggeri <fruggeri05@gmail.com>,
+        Salam Noureddine <noureddine@arista.com>,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH v4 6/7] net/tcp: Store SNEs + SEQs on ao_info
+Message-ID: <20231202171612.GC50400@kernel.org>
+References: <20231129165721.337302-1-dima@arista.com>
+ <20231129165721.337302-7-dima@arista.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Sysadmin: BOFH
-X-URL:  http://marc.merlins.org/
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: <locally generated>
-X-SA-Exim-Mail-From: marc@merlins.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+In-Reply-To: <20231129165721.337302-7-dima@arista.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -43,91 +58,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Howdy,
+On Wed, Nov 29, 2023 at 04:57:20PM +0000, Dmitry Safonov wrote:
+> RFC 5925 (6.2):
+> > TCP-AO emulates a 64-bit sequence number space by inferring when to
+> > increment the high-order 32-bit portion (the SNE) based on
+> > transitions in the low-order portion (the TCP sequence number).
+> 
+> snd_sne and rcv_sne are the upper 4 bytes of extended SEQ number.
+> Unfortunately, reading two 4-bytes pointers can't be performed
+> atomically (without synchronization).
+> 
+> In order to avoid locks on TCP fastpath, let's just double-account for
+> SEQ changes: snd_una/rcv_nxt will be lower 4 bytes of snd_sne/rcv_sne.
+> 
+> Fixes: 64382c71a557 ("net/tcp: Add TCP-AO SNE support")
+> Signed-off-by: Dmitry Safonov <dima@arista.com>
 
-I'm trying a Thnkpad P17 gen2, the last thinkpad that still comes in 17"
-4K (newer ones are 16" only, so I'm looking for other worthwhile linux
-laptops with 17" or bigger LCD that also does 4K, the alienware I saw
-was 18" but not 4K)
+...
 
-Unfortunately I seem to need the nouveau driver to turn off the nvidia
-chip I don't plan on using (intel graphics is fine for me), and bios
-only allows 'bybrid' or nvidia only)
-On my P73, nouveau never really worked in the 3 years I've had it, but
-it could at least turn off the nvidia chip. On P17gen2 it does not seem
-to be able to do so.
+> diff --git a/include/net/tcp_ao.h b/include/net/tcp_ao.h
+> index 647781080613..b8ef25d4b632 100644
+> --- a/include/net/tcp_ao.h
+> +++ b/include/net/tcp_ao.h
+> @@ -121,8 +121,8 @@ struct tcp_ao_info {
+>  	 * - for time-wait sockets the basis is tw_rcv_nxt/tw_snd_nxt.
+>  	 *   tw_snd_nxt is not expected to change, while tw_rcv_nxt may.
+>  	 */
+> -	u32			snd_sne;
+> -	u32			rcv_sne;
+> +	u64			snd_sne;
+> +	u64			rcv_sne;
+>  	refcount_t		refcnt;		/* Protects twsk destruction */
+>  	struct rcu_head		rcu;
+>  };
 
-Firmware is missing even from the latest firmware-linux-nonfree or from upstream
-git https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git
-sauron:~# update-initramfs -v -c -k `uname -r` 2>&1 |grep W:
-W: Possible missing firmware /lib/firmware/nvidia/ga107/acr/ucode_ahesasc.bin for module nouveau
-W: Possible missing firmware /lib/firmware/nvidia/ga106/acr/ucode_ahesasc.bin for module nouveau
-W: Possible missing firmware /lib/firmware/nvidia/ga104/acr/ucode_ahesasc.bin for module nouveau
-W: Possible missing firmware /lib/firmware/nvidia/ga103/acr/ucode_ahesasc.bin for module nouveau
-W: Possible missing firmware /lib/firmware/nvidia/ga107/acr/ucode_asb.bin for module nouveau
-W: Possible missing firmware /lib/firmware/nvidia/ga106/acr/ucode_asb.bin for module nouveau
-W: Possible missing firmware /lib/firmware/nvidia/ga104/acr/ucode_asb.bin for module nouveau
-W: Possible missing firmware /lib/firmware/nvidia/ga103/acr/ucode_asb.bin for module nouveau
-W: Possible missing firmware /lib/firmware/nvidia/ga107/acr/ucode_unload.bin for module nouveau
-W: Possible missing firmware /lib/firmware/nvidia/ga106/acr/ucode_unload.bin for module nouveau
-W: Possible missing firmware /lib/firmware/nvidia/ga104/acr/ucode_unload.bin for module nouveau
-W: Possible missing firmware /lib/firmware/nvidia/ga103/acr/ucode_unload.bin for module nouveau
-W: Possible missing firmware /lib/firmware/nvidia/ga107/nvdec/scrubber.bin for module nouveau
-W: Possible missing firmware /lib/firmware/nvidia/ga106/nvdec/scrubber.bin for module nouveau
-W: Possible missing firmware /lib/firmware/nvidia/ga104/nvdec/scrubber.bin for module nouveau
-W: Possible missing firmware /lib/firmware/nvidia/ga103/nvdec/scrubber.bin for module nouveau
-W: Possible missing firmware /lib/firmware/nvidia/ga107/sec2/hs_bl_sig.bin for module nouveau
-W: Possible missing firmware /lib/firmware/nvidia/ga107/sec2/sig.bin for module nouveau
-W: Possible missing firmware /lib/firmware/nvidia/ga107/sec2/image.bin for module nouveau
-W: Possible missing firmware /lib/firmware/nvidia/ga107/sec2/desc.bin for module nouveau
-W: Possible missing firmware /lib/firmware/nvidia/ga106/sec2/hs_bl_sig.bin for module nouveau
-W: Possible missing firmware /lib/firmware/nvidia/ga106/sec2/sig.bin for module nouveau
-W: Possible missing firmware /lib/firmware/nvidia/ga106/sec2/image.bin for module nouveau
-W: Possible missing firmware /lib/firmware/nvidia/ga106/sec2/desc.bin for module nouveau
-W: Possible missing firmware /lib/firmware/nvidia/ga104/sec2/hs_bl_sig.bin for module nouveau
-W: Possible missing firmware /lib/firmware/nvidia/ga104/sec2/sig.bin for module nouveau
-W: Possible missing firmware /lib/firmware/nvidia/ga104/sec2/image.bin for module nouveau
-W: Possible missing firmware /lib/firmware/nvidia/ga104/sec2/desc.bin for module nouveau
-W: Possible missing firmware /lib/firmware/nvidia/ga103/sec2/hs_bl_sig.bin for module nouveau
-W: Possible missing firmware /lib/firmware/nvidia/ga103/sec2/sig.bin for module nouveau
-W: Possible missing firmware /lib/firmware/nvidia/ga103/sec2/image.bin for module nouveau
-W: Possible missing firmware /lib/firmware/nvidia/ga103/sec2/desc.bin for module nouveau
+Hi Dmitry,
 
-During boot, the nvidia module hangs for 2mn and fails to do any work,
-including being able to turn off the nvidia chip (which it could do
-on P73 without otherwise ever being able to use that chip for proper
-display). I want to turn off the nvidia chip so that I can get multi
-hour runtime on batteries without some useless chip that is using power
-for no reason.
+In tcp_ao.c:tcp_ao_connect_init() there is a local
+variable:
 
-sauron:~# lspci | grep VGA
-00:02.0 VGA compatible controller: Intel Corporation Tiger Lake-H GT1 [UHD Graphics] (rev 01)
-01:00.0 VGA compatible controller: NVIDIA Corporation GA104GLM [RTX A5000 Mobile] (rev a1)
+        struct tcp_ao_info *ao_info;
 
+And the following assignment occurs:
 
-Boot looks like this:
-[    0.210932] Kernel command line: BOOT_IMAGE=/vmlinuz-6.6.3-amd64-preempt-sysrq-20220227 root=/dev/mapper/cryptroot ro rootflags=subvol=root cryptopts=source=/dev/nvme0n1p7,keyscript=/sbin/cryptgetpw usbcore.autosuspend=1 pcie_aspm=force resume=/dev/dm-1 thinkpad-acpi.brightness_enable=1 acpi_backlight=native nouveau.modset=0 systemd.unified_cgroup_hierarchy=0
-[    3.184525] nouveau: unknown parameter 'modset' ignored
-[    3.184800] nouveau: detected PR support, will not use DSM
-[    3.184813] nouveau 0000:01:00.0: vgaarb: pci_notify
-[    3.184816] nouveau 0000:01:00.0: runtime IRQ mapping not provided by arch
-[    3.184821] nouveau 0000:01:00.0: enabling device (0000 -> 0003)
-[    3.184959] nouveau 0000:01:00.0: NVIDIA GA104 (b74000a1)
-[    3.295682] nouveau 0000:01:00.0: bios: version 94.04.51.00.34
-[   64.941381] nouveau 0000:01:00.0: acr: firmware unavailable
-[  126.381361] nouveau 0000:01:00.0: sec2: firmware unavailable
-[  126.381484] nouveau 0000:01:00.0: enabling bus mastering
-[  126.382073] nouveau 0000:01:00.0: fb: 16384 MiB GDDR6
-[  183.695282] nouveau 0000:01:00.0: fb: VPR locked, but no scrubber binary!
-[  183.702321] nouveau 0000:01:00.0: DRM: error initialising bo driver, -12
-[  183.709419] nouveau: probe of 0000:01:00.0 failed with error -12
-[  183.711498] nouveau 0000:01:00.0: vgaarb: pci_notify
+                ao_info->snd_sne = htonl(tp->write_seq);
 
-What is the next recommended step?
+Is this still correct in light of the change of the type of snd_sne?
 
-Thanks,
-Marc
--- 
-"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
- 
-Home page: http://marc.merlins.org/  
+Flagged by Sparse.
+
+...
