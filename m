@@ -2,187 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28938801EA0
+	by mail.lfdr.de (Postfix) with ESMTP id 7CF9E801EA1
 	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 22:22:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231461AbjLBVHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 16:07:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41120 "EHLO
+        id S231589AbjLBVMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 16:12:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjLBVHa (ORCPT
+        with ESMTP id S229450AbjLBVMm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 16:07:30 -0500
-Received: from out203-205-221-210.mail.qq.com (out203-205-221-210.mail.qq.com [203.205.221.210])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF8C0107;
-        Sat,  2 Dec 2023 13:07:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-        s=s201512; t=1701551252;
-        bh=VWfb+Oof5K+/qAsblEllhoGVJptKMJhsPx5j7DgelbA=;
-        h=From:To:Cc:Subject:Date;
-        b=eTNUBpMirTPOzb168hbFitzXTV0rCuYP3RNp7TQ699xf/TP0G149xq/fh+TzEhw2W
-         ttoSB1Wu/Voo1l05NZAU4hLpE2r9S5maaUD3aRE5V1/nue6H9Jv9SO/Yl/b5tGlj7f
-         FmpG1Gn9nyPAss5b7GFryhRqSwcj2RuVW8XZBrF4=
-Received: from rm-workspace.. ([116.128.244.171])
-        by newxmesmtplogicsvrszc5-0.qq.com (NewEsmtp) with SMTP
-        id 1DBA2603; Sun, 03 Dec 2023 05:07:27 +0800
-X-QQ-mid: xmsmtpt1701551247thbhr8aak
-Message-ID: <tencent_03EDD0CAFBF93A9667CFCA1B68EDB4C4A109@qq.com>
-X-QQ-XMAILINFO: MmPNY57tR1XnAJhBNiCUAVr9YIJBvy1yMV2dHgPMD1aC0rNbkcD/tg5g7ycdRu
-         0mHJ7BGScmA71+pO1OwAngMhGWsaOXnWSxo+r4wg71Zgy8KUwOp/rwr8ty/ACUvltuOBciBk0PKy
-         nXhP5DcExj+LrbechxpBcb1T+8+ZgQnFeE+TkZt92z43sZD5a5DCS8OrjMdpAzWmfPjZVQQ4tyfG
-         VuHwz2QO3zoTUipwD6YVud2a9rXkleFS1hHCm7U2/jUgdZFVpAX4h8MyhfTdKQkr+V5i+mTYPZ3D
-         tPOKDnjGt/huw9eGT8FPYKXJNYHu8tRaZXNbFpbPb8aDHMloxOojPaasdi8moPTGTYj3r/iR0f32
-         VJBbtCenwpGwtxngQGZ+q8Is5DOrWTFCz+eWl36wR3/LHisef6LhIn3/4Tqi0Be/xLp/IJVi1h7i
-         ZjejXM7M/QXvl77i721HncndbuIyIUYWMxfgFv99BnXnBdi9suHIE+R6xWLcPgWYjuYExvKVj5fO
-         sF5a8ePLTV5KpczPzTsfrF1Sug+79Ba6n6DKiyBUzAfdL2eV0FLhkWdFXnIBtsFOsJFLKGhQxmCw
-         tGduW+ME3Eg/lEOW1jYQrhHG9+USxxiFkmsUsK64F2qQuRiHVX9/He4sxm1j4YQQuqdZN8yFmlGA
-         n7heHIrj/gf/xPR7XdcH+WV0iwVv4a46Z01tPWElvxZU2sQpwurZhqb1cBDa5vfOoGPiZyhjWLbj
-         DodoSyTJtiBnqu7Sa8Ko4aXeToHOLsOTFUUOcNddYdgx/u6h1/EgPEvL8OQKnOZnMkZWNsMvbqru
-         csVo/mKA670PsRZVQwxfEmHerPHWL2gkJAYLW+0lE34bd1cOAIvM90l9KQQQq4P8QcOkp/+Futd+
-         J3MY6Kfh64dyVjuEWgLYb3cpBUjiiHhzvrnzVdVx8DK3pTEZkP7mG9DawYTBKYBkLGNONyYTWCpX
-         rr+yFjaqCdcvTo9iuekP3KTNtGqD9lUIqg8DizK6ZndwSh0ZRnAeobrvaA+NW8
-X-QQ-XMRINFO: OD9hHCdaPRBwq3WW+NvGbIU=
-From:   chenxiaosongemail@foxmail.com
-To:     trond.myklebust@hammerspace.com, anna@kernel.org,
-        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
-        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com
-Cc:     linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        chenxiaosongemail@foxmail.com, chenxiaosong@kylinos.cn,
-        liuzhengyuan@kylinos.cn, huhai@kylinos.cn, liuyun01@kylinos.cn
-Subject: [PATCH] NFSv4, NFSD: move enum nfs_cb_opnum4 to include/linux/nfs4.h
-Date:   Sat,  2 Dec 2023 21:07:25 +0000
-X-OQ-MSGID: <20231202210725.706925-1-chenxiaosongemail@foxmail.com>
-X-Mailer: git-send-email 2.34.1
+        Sat, 2 Dec 2023 16:12:42 -0500
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB207C8
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 13:12:48 -0800 (PST)
+Received: by mail-pj1-x1029.google.com with SMTP id 98e67ed59e1d1-280cd4e6f47so606253a91.1
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Dec 2023 13:12:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701551568; x=1702156368; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=9QzjFyHuu4z4km46Pkr8ZYovU1LpQ45VCf9QMZMCvCw=;
+        b=XpaBOSuuQqB5cc8vmI/Bgx5YaIQ/tr5+gw58AxvMvAQgtMJIgCNAAEbBfgf4c91F3n
+         ZtwaGRAo+fZ4CsOFzGJPjxK0uKJ+XBrPnyyvv0Pydb2ucm2cYkC12HPpwdBga18NqE1r
+         gUSCvuoP7G/H01JqC91GUAA77934cuXXWRX6gnbuL376BvbCs/JSg0yOrq6yUeoFRvHV
+         AtX7NcnYz4jEc/zXwS6x3mNo5mAub/2IlEVIF4+SY242ed/UlaWvalta/ZI8fANjyDKa
+         2IzcAs2REbXjwwxnWCpXlnvgbQddHBqChJ6SxjGQrB5eruQRB07eegQkZux3WLiW8xca
+         ia4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701551568; x=1702156368;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9QzjFyHuu4z4km46Pkr8ZYovU1LpQ45VCf9QMZMCvCw=;
+        b=S/QqBVQBZolCREZ9QQOhGZcZ72bewVTlrBZFxVBf6WWupgwjLylxFSajpsoowTmTj0
+         khXaBIvIts469AvaAfBprZW1GY8wp/degJhfi0rBtFtZJzwuyYCF7FJxvWl1HzoKZoIj
+         yvqsp+5+A68Cr7oL4LkJxmckN4XDWLMkobabOe/RHj3Aa6YA3157S7LPd0EZHXKxY8r3
+         nNqwqy0nF0yJlIKiwJt3UGd4zIuIMQyMJjx0s5aslaGsXYNSKyATF+xoL7BHjMhbQ2KY
+         AN+cWp0XHm7cfvQtn9uZ45Bnac3CO7gGLJc54PETZc9QkLRk0hxD/8qBZe1VVp06iJx+
+         /ZlA==
+X-Gm-Message-State: AOJu0YzG1vRgSVF7EaGiWWVumC2sDgf/wGK3oGslWsZDN+RFkJ8RQNlu
+        2Kswt3DwL8ty5RNv63jXPQ5hUkwTlNc=
+X-Google-Smtp-Source: AGHT+IGD1Vyu0AzBEb0MZPfnNnBv4EIfVMZw3DbpQ3XIpK/dHj9Y6DxNPeFsPrIeyaxOW7njHJ2YDA==
+X-Received: by 2002:a17:90a:ab8e:b0:285:bc38:b747 with SMTP id n14-20020a17090aab8e00b00285bc38b747mr8895157pjq.4.1701551568360;
+        Sat, 02 Dec 2023 13:12:48 -0800 (PST)
+Received: from sivslab-System-Product-Name ([140.116.154.65])
+        by smtp.gmail.com with ESMTPSA id y24-20020a170902b49800b001cc31dcec49sm5567101plr.146.2023.12.02.13.12.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 02 Dec 2023 13:12:47 -0800 (PST)
+Date:   Sun, 3 Dec 2023 05:12:45 +0800
+From:   Kuan-Wei Chiu <visitorckw@gmail.com>
+To:     akpm@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] lib/sort: Optimize number of calls to comparison function
+Message-ID: <20231202211245.GA2632691@sivslab-System-Product-Name>
+References: <20231202163717.687578-1-visitorckw@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231202163717.687578-1-visitorckw@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ChenXiaoSong <chenxiaosong@kylinos.cn>
+On Sun, Dec 03, 2023 at 12:37:17AM +0800, Kuan-Wei Chiu wrote:
+> The current implementation continues the loop when the comparison
+> function returns a non-negative value, which includes the case when it
+> returns 0. However, in scenarios where the comparison function returns
+> 0, further comparisons are unnecessary. By making this adjustment, we
+> can potentially reduce the number of comparisons by approximately 50%
+> in extreme cases where all elements in the array are equal, and the
+> array size is sufficiently large.
+> 
+> Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
+> ---
+>  lib/sort.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/lib/sort.c b/lib/sort.c
+> index b399bf10d675..1e98a62bb2f3 100644
+> --- a/lib/sort.c
+> +++ b/lib/sort.c
+> @@ -267,7 +267,7 @@ void sort_r(void *base, size_t num, size_t size,
+>  			b = c;
+>  
+>  		/* Now backtrack from "b" to the correct location for "a" */
+> -		while (b != a && do_cmp(base + a, base + b, cmp_func, priv) >= 0)
+> +		while (b != a && do_cmp(base + a, base + b, cmp_func, priv) > 0)
+>  			b = parent(b, lsbit, size);
+>  		c = b;			/* Where "a" belongs */
+>  		while (b != a) {	/* Shift it into place */
+> -- 
+> 2.25.1
+>
 
-Callback operations enum is defined in client and server, move it to
-common header file.
+While the patch decreases the number of comparisons, it simultaneously
+leads to an increase in the number of swaps. As a result, the overall
+performance improvement may not be guaranteed.
 
-Signed-off-by: ChenXiaoSong <chenxiaosong@kylinos.cn>
----
- fs/nfs/callback.h      | 19 -------------------
- fs/nfsd/nfs4callback.c | 26 +-------------------------
- include/linux/nfs4.h   | 22 ++++++++++++++++++++++
- 3 files changed, 23 insertions(+), 44 deletions(-)
+Therefore, I believe it would be more prudent to drop this patch.
+I apologize for any disruption caused on the mailing list.
 
-diff --git a/fs/nfs/callback.h b/fs/nfs/callback.h
-index ccd4f245cae2..0279b78b5fc9 100644
---- a/fs/nfs/callback.h
-+++ b/fs/nfs/callback.h
-@@ -19,25 +19,6 @@ enum nfs4_callback_procnum {
- 	CB_COMPOUND = 1,
- };
- 
--enum nfs4_callback_opnum {
--	OP_CB_GETATTR = 3,
--	OP_CB_RECALL  = 4,
--/* Callback operations new to NFSv4.1 */
--	OP_CB_LAYOUTRECALL  = 5,
--	OP_CB_NOTIFY        = 6,
--	OP_CB_PUSH_DELEG    = 7,
--	OP_CB_RECALL_ANY    = 8,
--	OP_CB_RECALLABLE_OBJ_AVAIL = 9,
--	OP_CB_RECALL_SLOT   = 10,
--	OP_CB_SEQUENCE      = 11,
--	OP_CB_WANTS_CANCELLED = 12,
--	OP_CB_NOTIFY_LOCK   = 13,
--	OP_CB_NOTIFY_DEVICEID = 14,
--/* Callback operations new to NFSv4.2 */
--	OP_CB_OFFLOAD = 15,
--	OP_CB_ILLEGAL = 10044,
--};
--
- struct nfs4_slot;
- struct cb_process_state {
- 	__be32			drc_status;
-diff --git a/fs/nfsd/nfs4callback.c b/fs/nfsd/nfs4callback.c
-index 92bc109dabe6..30aa241038eb 100644
---- a/fs/nfsd/nfs4callback.c
-+++ b/fs/nfsd/nfs4callback.c
-@@ -31,6 +31,7 @@
-  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-  */
- 
-+#include <linux/nfs4.h>
- #include <linux/sunrpc/clnt.h>
- #include <linux/sunrpc/xprt.h>
- #include <linux/sunrpc/svc_xprt.h>
-@@ -101,31 +102,6 @@ static int decode_cb_fattr4(struct xdr_stream *xdr, uint32_t *bitmap,
- 	return 0;
- }
- 
--/*
-- *	nfs_cb_opnum4
-- *
-- *	enum nfs_cb_opnum4 {
-- *		OP_CB_GETATTR		= 3,
-- *		  ...
-- *	};
-- */
--enum nfs_cb_opnum4 {
--	OP_CB_GETATTR			= 3,
--	OP_CB_RECALL			= 4,
--	OP_CB_LAYOUTRECALL		= 5,
--	OP_CB_NOTIFY			= 6,
--	OP_CB_PUSH_DELEG		= 7,
--	OP_CB_RECALL_ANY		= 8,
--	OP_CB_RECALLABLE_OBJ_AVAIL	= 9,
--	OP_CB_RECALL_SLOT		= 10,
--	OP_CB_SEQUENCE			= 11,
--	OP_CB_WANTS_CANCELLED		= 12,
--	OP_CB_NOTIFY_LOCK		= 13,
--	OP_CB_NOTIFY_DEVICEID		= 14,
--	OP_CB_OFFLOAD			= 15,
--	OP_CB_ILLEGAL			= 10044
--};
--
- static void encode_nfs_cb_opnum4(struct xdr_stream *xdr, enum nfs_cb_opnum4 op)
- {
- 	__be32 *p;
-diff --git a/include/linux/nfs4.h b/include/linux/nfs4.h
-index c11c4db34639..ef8d2d618d5b 100644
---- a/include/linux/nfs4.h
-+++ b/include/linux/nfs4.h
-@@ -869,4 +869,26 @@ enum {
- 	RCA4_TYPE_MASK_OTHER_LAYOUT_MAX	= 15,
- };
- 
-+enum nfs_cb_opnum4 {
-+	OP_CB_GETATTR = 3,
-+	OP_CB_RECALL  = 4,
-+
-+	/* Callback operations new to NFSv4.1 */
-+	OP_CB_LAYOUTRECALL  = 5,
-+	OP_CB_NOTIFY        = 6,
-+	OP_CB_PUSH_DELEG    = 7,
-+	OP_CB_RECALL_ANY    = 8,
-+	OP_CB_RECALLABLE_OBJ_AVAIL = 9,
-+	OP_CB_RECALL_SLOT   = 10,
-+	OP_CB_SEQUENCE      = 11,
-+	OP_CB_WANTS_CANCELLED = 12,
-+	OP_CB_NOTIFY_LOCK   = 13,
-+	OP_CB_NOTIFY_DEVICEID = 14,
-+
-+	/* Callback operations new to NFSv4.2 */
-+	OP_CB_OFFLOAD = 15,
-+
-+	OP_CB_ILLEGAL = 10044,
-+};
-+
- #endif
--- 
-2.34.1
-
+Best regards,
+Kuan-Wei Chiu
