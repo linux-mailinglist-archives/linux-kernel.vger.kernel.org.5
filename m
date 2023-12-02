@@ -2,353 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2AE4801BA8
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 10:36:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A247E801C05
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 11:01:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230234AbjLBJcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 04:32:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56390 "EHLO
+        id S232345AbjLBKB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 05:01:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjLBJcL (ORCPT
+        with ESMTP id S232528AbjLBKB2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 04:32:11 -0500
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E71C0133;
-        Sat,  2 Dec 2023 01:32:16 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-54c64316a22so1620957a12.0;
-        Sat, 02 Dec 2023 01:32:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701509535; x=1702114335; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Tjm3Z8e51xh9ur94+JSTarGM/3ngKWUFP0d+MYEouyc=;
-        b=WHnyfBFRNjoH4hG0cK4DwkoEZ2JdixQwMgzITMW5VZbfRzQJgW55/G/4HHCQhBo3ms
-         4esC24cSabnUfPk6V26E2Lt2UbqJOoUG3Rfl/VoJtRBXwN7/j2yiWWH+rRsXGBgBYIis
-         3eA5uExE2kY4imvlPdqjFZxxAzAjNbB1+H4Xmd4VHHnLrmCN0MwGeyMLcTObC8pl9KuL
-         Kl/lEq82CX8AtfTZLex22JoGzsTPIitPZsFNuILP29mxmN5CJi2G/2Yj6C1KsE1VD7Z7
-         7XykgpLkyU7SgiPptE1EXWVqU/4+7m3mjkFP+DtiG4URlsQXGQc5buvTGaxbE+XFXz9F
-         gtCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701509535; x=1702114335;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Tjm3Z8e51xh9ur94+JSTarGM/3ngKWUFP0d+MYEouyc=;
-        b=BItwxwn+U2pizf85kRCcKK/3um2xFUsfVviM6dTka85EfqZz5bCejJL8xAT4ltXvuW
-         nUH8kXR/WJK9+hfWw0tp4SaTbJlgNCDzwMoYiNsxiiz6EGbVhtMn2DBQIfVD/EXoFN9h
-         ZTG88re5qvxlWFU60WKRNjRuepUYxJQHG0tBJPpRAeUZavIDWc2vfsYX+8LFFhj3QRiB
-         If7V65Zkil0wrg2r1WVuiCksMyPps2gwPB0NUGviUrMOlqy3i6zAUkTiUkjup41/XO90
-         v1/4SBoRNYVpgpMVxWB8+3ZJzV5t1DPKYr2c23TaksZHF5K1JuF2PR2kGoUm1jxRa3qm
-         KqmA==
-X-Gm-Message-State: AOJu0YyDTOecrOT0GkxEJ+AiFZSG35fQE6FO0HWUym6N/ohOZhVQlhd+
-        bEyMwPg1e27gGNjdwLey+sU=
-X-Google-Smtp-Source: AGHT+IE3p9+YKRbx421ox6k4SNb3LJTEn/h4ZI0UHwsnCmfmZ6NcHfhYQem3R8Ke+65FcmDGnl1Reg==
-X-Received: by 2002:a50:c251:0:b0:54b:7a1c:6b01 with SMTP id t17-20020a50c251000000b0054b7a1c6b01mr1615286edf.33.1701509535016;
-        Sat, 02 Dec 2023 01:32:15 -0800 (PST)
-Received: from tom-HP-ZBook-Fury-15-G7-Mobile-Workstation (net-2-39-143-167.cust.vodafonedsl.it. [2.39.143.167])
-        by smtp.gmail.com with ESMTPSA id y24-20020a056402135800b00548d649f638sm2433836edw.96.2023.12.02.01.32.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Dec 2023 01:32:14 -0800 (PST)
-Date:   Sat, 2 Dec 2023 10:32:11 +0100
-From:   Tommaso Merciai <tomm.merciai@gmail.com>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     laurent.pinchart@ideasonboard.com, martin.hecht@avnet.eu,
-        michael.roeder@avnet.eu, linuxfancy@googlegroups.com,
-        mhecht73@gmail.com, christophe.jaillet@wanadoo.fr,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Gerald Loacker <gerald.loacker@wolfvision.net>,
-        Nicholas Roth <nicholas@rothemail.net>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
-Subject: Re: [PATCH v14 3/3] media: i2c: Add support for alvium camera
-Message-ID: <ZWr5my7SVKE2HPTZ@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
-References: <20231124093011.2095073-1-tomm.merciai@gmail.com>
- <20231124093011.2095073-4-tomm.merciai@gmail.com>
- <ZWpJcS7aJmnRm1CB@kekkonen.localdomain>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZWpJcS7aJmnRm1CB@kekkonen.localdomain>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Sat, 2 Dec 2023 05:01:28 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C89FD197;
+        Sat,  2 Dec 2023 02:01:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701511293; x=1733047293;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references;
+  bh=uSoSY6TiRDOPE0HLSqzCfFuL+LmvcCuprKj793XIBHM=;
+  b=WwNJySS6Cr0O/UYFtRhXvzlgYvQtaB6XcPn+ZduIu0tpIeOqaHwQ1xiM
+   mgvFNrZtI4XggLjue5kigE/R458Ok89nlcSBPpVf0/hZmiZ2u+tr79+oK
+   NWO0PWHUlatzrwYxnzAN5XVbqDadwO5Pk/X8mG27b13nolLGoNJIZW469
+   20RchAugsiJIO4nB6uvP8pSmlj6BFM7GK9+mRrDSFbPqM3kLp/FT1Zloz
+   j6fRSOGrM+a/O/ptHBydRSEqdPcLsv05bzWkiD1+/mHZ/vbFXmcjDcjSB
+   cs2wmhcv1iBWHZlnHKwGvPkQ10l1h6VT0prNRpHdkziTLFoIlMoOkn506
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="396395349"
+X-IronPort-AV: E=Sophos;i="6.04,245,1695711600"; 
+   d="scan'208";a="396395349"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2023 02:01:33 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="799015715"
+X-IronPort-AV: E=Sophos;i="6.04,245,1695711600"; 
+   d="scan'208";a="799015715"
+Received: from yzhao56-desk.sh.intel.com ([10.239.159.62])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2023 02:01:17 -0800
+From:   Yan Zhao <yan.y.zhao@intel.com>
+To:     iommu@lists.linux.dev, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     alex.williamson@redhat.com, jgg@nvidia.com, pbonzini@redhat.com,
+        seanjc@google.com, joro@8bytes.org, will@kernel.org,
+        robin.murphy@arm.com, kevin.tian@intel.com,
+        baolu.lu@linux.intel.com, dwmw2@infradead.org, yi.l.liu@intel.com,
+        Yan Zhao <yan.y.zhao@intel.com>
+Subject: [RFC PATCH 34/42] KVM: x86/mmu: add extra param "kvm" to tdp_mmu_map_handle_target_level()
+Date:   Sat,  2 Dec 2023 17:32:22 +0800
+Message-Id: <20231202093222.15534-1-yan.y.zhao@intel.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20231202091211.13376-1-yan.y.zhao@intel.com>
+References: <20231202091211.13376-1-yan.y.zhao@intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sakari,
-Thanks for your comments.
+Add an extra param "kvm" to tdp_mmu_map_handle_target_level() to allow for
+mapping in non-vCPU context in future.
 
-On Fri, Dec 01, 2023 at 09:00:33PM +0000, Sakari Ailus wrote:
-> Hi Tommaso,
-> 
-> A few more comments below...
-> 
-> On Fri, Nov 24, 2023 at 10:30:07AM +0100, Tommaso Merciai wrote:
-> 
-> ...
-> 
-> > +static int alvium_get_bcrm_vers(struct alvium_dev *alvium)
-> > +{
-> > +	struct device *dev = &alvium->i2c_client->dev;
-> > +	struct alvium_bcrm_vers *v;
-> > +	u64 val;
-> > +	int ret;
-> > +
-> > +	ret = alvium_read(alvium, REG_BCRM_VERSION_R, &val, NULL);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	v = (struct alvium_bcrm_vers *)&val;
-> 
-> You're still reading the entire struct using a single read. :-( This won't
-> work on a BE machine as while the struct fields are in the same memory
-> locations, the respective data in a single 64-bit value is not.
+"vcpu" is only required in tdp_mmu_map_handle_target_level() for accounting
+of MMIO SPTEs. As kvm_faultin_pfn() now will return error for non-slot
+PFNs, no MMIO SPTEs should be generated and accounted in non-vCPU context.
+So, just let tdp_mmu_map_handle_target_level() warn if MMIO SPTEs are
+encountered in non-vCPU context.
 
-What about splitting REG_BCRM_VERSION_R in:
+This is a preparation patch for later KVM MMU to export TDP.
 
-#define REG_BCRM_MINOR_VERSION_R			CCI_REG16(0x0000)
-#define REG_BCRM_MAJOR_VERSION_R			CCI_REG16(0x0002)
+Signed-off-by: Yan Zhao <yan.y.zhao@intel.com>
+---
+ arch/x86/kvm/mmu/tdp_mmu.c | 26 +++++++++++++++++---------
+ 1 file changed, 17 insertions(+), 9 deletions(-)
 
-and REG_BCRM_DEVICE_FIRMWARE_VERSION_R in:
+diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+index a45d1b71cd62a..5edff3b4698b7 100644
+--- a/arch/x86/kvm/mmu/tdp_mmu.c
++++ b/arch/x86/kvm/mmu/tdp_mmu.c
+@@ -949,7 +949,9 @@ void kvm_tdp_mmu_invalidate_all_roots(struct kvm *kvm)
+  * Installs a last-level SPTE to handle a TDP page fault.
+  * (NPT/EPT violation/misconfiguration)
+  */
+-static int tdp_mmu_map_handle_target_level(struct kvm_vcpu *vcpu,
++static int tdp_mmu_map_handle_target_level(struct kvm *kvm,
++					  struct kvm_vcpu *vcpu,
++					  struct kvm_mmu_common *mmu_common,
+ 					  struct kvm_page_fault *fault,
+ 					  struct tdp_iter *iter)
+ {
+@@ -958,24 +960,26 @@ static int tdp_mmu_map_handle_target_level(struct kvm_vcpu *vcpu,
+ 	int ret = RET_PF_FIXED;
+ 	bool wrprot = false;
+ 
++	WARN_ON(!kvm);
++
+ 	if (WARN_ON_ONCE(sp->role.level != fault->goal_level))
+ 		return RET_PF_RETRY;
+ 
+ 	if (unlikely(!fault->slot))
+ 		new_spte = make_mmio_spte(vcpu->kvm, vcpu, iter->gfn, ACC_ALL);
+ 	else
+-		wrprot = make_spte(vcpu->kvm, vcpu, &vcpu->arch.mmu->common, sp, fault->slot,
++		wrprot = make_spte(kvm, vcpu, mmu_common, sp, fault->slot,
+ 				   ACC_ALL, iter->gfn, fault->pfn, iter->old_spte,
+ 				   fault->prefetch, true, fault->map_writable,
+ 				   &new_spte);
+ 
+ 	if (new_spte == iter->old_spte)
+ 		ret = RET_PF_SPURIOUS;
+-	else if (tdp_mmu_set_spte_atomic(vcpu->kvm, iter, new_spte))
++	else if (tdp_mmu_set_spte_atomic(kvm, iter, new_spte))
+ 		return RET_PF_RETRY;
+ 	else if (is_shadow_present_pte(iter->old_spte) &&
+ 		 !is_last_spte(iter->old_spte, iter->level))
+-		kvm_flush_remote_tlbs_gfn(vcpu->kvm, iter->gfn, iter->level);
++		kvm_flush_remote_tlbs_gfn(kvm, iter->gfn, iter->level);
+ 
+ 	/*
+ 	 * If the page fault was caused by a write but the page is write
+@@ -989,10 +993,13 @@ static int tdp_mmu_map_handle_target_level(struct kvm_vcpu *vcpu,
+ 
+ 	/* If a MMIO SPTE is installed, the MMIO will need to be emulated. */
+ 	if (unlikely(is_mmio_spte(new_spte))) {
+-		vcpu->stat.pf_mmio_spte_created++;
+-		trace_mark_mmio_spte(rcu_dereference(iter->sptep), iter->gfn,
+-				     new_spte);
+-		ret = RET_PF_EMULATE;
++		/* if without vcpu, no mmio spte should be installed */
++		if (!WARN_ON(!vcpu)) {
++			vcpu->stat.pf_mmio_spte_created++;
++			trace_mark_mmio_spte(rcu_dereference(iter->sptep), iter->gfn,
++					new_spte);
++			ret = RET_PF_EMULATE;
++		}
+ 	} else {
+ 		trace_kvm_mmu_set_spte(iter->level, iter->gfn,
+ 				       rcu_dereference(iter->sptep));
+@@ -1114,7 +1121,8 @@ int kvm_tdp_mmu_map(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault)
+ 	goto retry;
+ 
+ map_target_level:
+-	ret = tdp_mmu_map_handle_target_level(vcpu, fault, &iter);
++	ret = tdp_mmu_map_handle_target_level(vcpu->kvm, vcpu, &vcpu->arch.mmu->common,
++					      fault, &iter);
+ 
+ retry:
+ 	rcu_read_unlock();
+-- 
+2.17.1
 
-#define REG_BCRM_DEVICE_FW_SPEC_VERSION_R		REG_BCRM_V4L2_8BIT(0x0010)
-#define REG_BCRM_DEVICE_FW_MAJOR_VERSION_R		REG_BCRM_V4L2_8BIT(0x0011)
-#define REG_BCRM_DEVICE_FW_MINOR_VERSION_R		REG_BCRM_V4L2_16BIT(0x0012)
-#define REG_BCRM_DEVICE_FW_PATCH_VERSION_R		REG_BCRM_V4L2_32BIT(0x0014)
-
-
-Then reading those values as a single values as you suggest:
-
-static int alvium_get_bcrm_vers(struct alvium_dev *alvium)
-{
-	struct device *dev = &alvium->i2c_client->dev;
-	u64 min, maj;
-	int ret = 0;
-
-	ret = alvium_read(alvium, REG_BCRM_MINOR_VERSION_R, &min, &ret);
-	ret = alvium_read(alvium, REG_BCRM_MAJOR_VERSION_R, &maj, &ret);
-	if (ret)
-		return ret;
-
-	dev_info(dev, "bcrm version: %llu.%llu\n", min, maj);
-
-	return 0;
-}
-
-static int alvium_get_fw_version(struct alvium_dev *alvium)
-{
-	struct device *dev = &alvium->i2c_client->dev;
-	u64 spec, maj, min, pat;
-	int ret = 0;
-
-	ret = alvium_read(alvium, REG_BCRM_DEVICE_FW_SPEC_VERSION_R, &spec, &ret);
-	ret = alvium_read(alvium, REG_BCRM_DEVICE_FW_MAJOR_VERSION_R, &maj, &ret);
-	ret = alvium_read(alvium, REG_BCRM_DEVICE_FW_MINOR_VERSION_R, &min, &ret);
-	ret = alvium_read(alvium, REG_BCRM_DEVICE_FW_PATCH_VERSION_R, &pat, &ret);
-	if (ret)
-		return ret;
-
-	dev_info(dev, "fw version: %llu.%llu.%llu.%llu\n", spec, maj, min, pat);
-
-	return 0;
-}
-
-Then I'm going to remove alvium_bcrm_vers and alvium_fw_vers.
-And alvium_is_alive became: 
-
-static int alvium_is_alive(struct alvium_dev *alvium)
-{
-	u64 bcrm, hbeat;
-	int ret = 0;
-
-	alvium_read(alvium, REG_BCRM_MINOR_VERSION_R, &bcrm, &ret);
-	alvium_read(alvium, REG_BCRM_HEARTBEAT_RW, &hbeat, &ret);
-	if (ret)
-		return ret;
-
-	return hbeat;
-}
-
-What do you think? Let me know.
-(Maybe is this that you are trying to explain me but I haven't catch,
-sorry) :)
-
-
-> 
-> > +
-> > +	dev_info(dev, "bcrm version: %u.%u\n", v->minor, v->major);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int alvium_get_fw_version(struct alvium_dev *alvium)
-> > +{
-> > +	struct device *dev = &alvium->i2c_client->dev;
-> > +	struct alvium_fw_vers *fw_v;
-> > +	u64 val;
-> > +	int ret;
-> > +
-> > +	ret = alvium_read(alvium, REG_BCRM_DEVICE_FIRMWARE_VERSION_R, &val, NULL);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	fw_v = (struct alvium_fw_vers *)&val;
-> 
-> Same here.
-> 
-> > +
-> > +	dev_info(dev, "fw version: %u.%u.%u.%u\n", fw_v->special, fw_v->major,
-> > +		 fw_v->minor, fw_v->patch);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int alvium_get_bcrm_addr(struct alvium_dev *alvium)
-> > +{
-> > +	u64 val;
-> > +	int ret;
-> > +
-> > +	ret = alvium_read(alvium, REG_BCRM_REG_ADDR_R, &val, NULL);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	alvium->bcrm_addr = val;
-> > +
-> > +	return 0;
-> > +}
-> 
-> ...
-> 
-> > +static int alvium_setup_mipi_fmt(struct alvium_dev *alvium)
-> > +{
-> > +	unsigned int avail_fmt_cnt = 0;
-> > +	unsigned int fmt = 0;
-> > +	size_t sz = 0;
-> > +
-> > +	alvium->alvium_csi2_fmt = NULL;
-> 
-> This seems to be unnnecessary: the field is assigned below without using it
-> (obviously).
-
-Ok, I will remove this in v15.
-
-> 
-> > +
-> > +	/* calculate fmt array size */
-> > +	for (fmt = 0; fmt < ALVIUM_NUM_SUPP_MIPI_DATA_FMT; fmt++) {
-> > +		if (!alvium->is_mipi_fmt_avail[alvium_csi2_fmts[fmt].fmt_av_bit])
-> > +			continue;
-> > +
-> > +		if ((!alvium_csi2_fmts[fmt].is_raw) ||
-> > +		    (alvium->is_bay_avail[alvium_csi2_fmts[fmt].bay_av_bit]))
-> > +			sz++;
-> > +	}
-> > +
-> > +	/* init alvium_csi2_fmt array */
-> > +	alvium->alvium_csi2_fmt_n = sz;
-> > +	alvium->alvium_csi2_fmt =
-> > +		kmalloc_array(sz, sizeof(struct alvium_pixfmt), GFP_KERNEL);
-> > +	if (!alvium->alvium_csi2_fmt)
-> > +		return -ENOMEM;
-> > +
-> > +	/* Create the alvium_csi2 fmt array from formats available */
-> > +	for (fmt = 0; fmt < ALVIUM_NUM_SUPP_MIPI_DATA_FMT; fmt++) {
-> > +		if (!alvium->is_mipi_fmt_avail[alvium_csi2_fmts[fmt].fmt_av_bit])
-> > +			continue;
-> > +
-> > +		if ((!alvium_csi2_fmts[fmt].is_raw) ||
-> > +		    (alvium->is_bay_avail[alvium_csi2_fmts[fmt].bay_av_bit])) {
-> > +			alvium->alvium_csi2_fmt[avail_fmt_cnt] = alvium_csi2_fmts[fmt];
-> > +			avail_fmt_cnt++;
-> > +		}
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> 
-> ...
-> 
-> > +static const struct alvium_pixfmt *
-> > +alvium_code_to_pixfmt(struct alvium_dev *alvium, u32 code)
-> > +{
-> > +	const struct alvium_pixfmt *formats = alvium->alvium_csi2_fmt;
-> 
-> I'd use alvium->alvium_csi2_fmt and not add a local variable. Up to you.
-
-Ok also for me.
-
-> 
-> > +	unsigned int i;
-> > +
-> > +	for (i = 0; formats[i].code; ++i)
-> > +		if (formats[i].code == code)
-> > +			return &formats[i];
-> > +
-> > +	return &formats[0];
-> > +}
-> > +
-> > +static int alvium_set_mode(struct alvium_dev *alvium,
-> > +			   struct v4l2_subdev_state *state)
-> > +{
-> > +	struct v4l2_mbus_framefmt *fmt;
-> > +	struct v4l2_rect *crop;
-> > +	int ret;
-> > +
-> > +	crop = v4l2_subdev_state_get_crop(state, 0);
-> > +	fmt = v4l2_subdev_state_get_format(state, 0);
-> > +
-> > +	v4l_bound_align_image(&fmt->width, alvium->img_min_width,
-> > +			      alvium->img_max_width, 0,
-> > +			      &fmt->height, alvium->img_min_height,
-> > +			      alvium->img_max_height, 0, 0);
-> > +
-> > +	/* alvium don't accept negative crop left/top */
-> > +	crop->left = clamp((u32)max(0, crop->left), alvium->min_offx,
-> > +			   (u32)(alvium->img_max_width - fmt->width));
-> > +	crop->top = clamp((u32)max(0, crop->top), alvium->min_offy,
-> > +			  (u32)(alvium->img_max_height - fmt->height));
-> > +
-> > +	ret = alvium_set_img_width(alvium, fmt->width);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	ret = alvium_set_img_height(alvium, fmt->height);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	ret = alvium_set_img_offx(alvium, crop->left);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	ret = alvium_set_img_offy(alvium, crop->top);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	return 0;
-> > +}
-
-I'm going to rebase v15 on top of your master branch.
-My plan is moving alvium_init_cfg now alvium_init_state into
-v4l2_subdev_internal_ops.
-
-
-Thanks & Regards,
-Tommaso
-
-> 
-> -- 
-> Kind regards,
-> 
-> Sakari Ailus
