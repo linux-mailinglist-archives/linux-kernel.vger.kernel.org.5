@@ -2,104 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 431D9801A0D
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 03:29:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C7F8801A01
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 03:24:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231250AbjLBC1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 21:27:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43980 "EHLO
+        id S231214AbjLBCWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 21:22:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjLBC1w (ORCPT
+        with ESMTP id S229456AbjLBCWV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 21:27:52 -0500
-X-Greylist: delayed 346 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 01 Dec 2023 18:27:56 PST
-Received: from mail-m12810.netease.com (mail-m12810.netease.com [103.209.128.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA638132;
-        Fri,  1 Dec 2023 18:27:56 -0800 (PST)
-Received: from [0.0.0.0] (unknown [IPV6:240e:3b7:3271:7f20:4433:b746:c1de:367])
-        by mail-m12773.qiye.163.com (Hmail) with ESMTPA id ABC322C027E;
-        Sat,  2 Dec 2023 10:21:37 +0800 (CST)
-Message-ID: <db0f5324-a4a8-3ae7-58f5-e82dd24643a9@sangfor.com.cn>
-Date:   Sat, 2 Dec 2023 10:21:37 +0800
+        Fri, 1 Dec 2023 21:22:21 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA26CD48
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 18:22:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701483747;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iWacCUu2+jQgLRypYgT2he0mdkQUbsb+sKjSsZ4uLUY=;
+        b=diRHECspcGWJ+xxnLzwJQok86MBOlytGyYr/IrN5CEKafCEKd/415lwKV4x6+qGfzdYiUH
+        L3A3F9ISWUn8b0TJySoEqYmeooVjtznMWxfg8cNYiaUKYyuv8Z9znKA0IY7up8Ex9HbNej
+        UMNNF5pvkQCaaKAMYiAraNswLY9X78I=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-621-7v1jVeiSPby4hQqRPG56sw-1; Fri, 01 Dec 2023 21:22:21 -0500
+X-MC-Unique: 7v1jVeiSPby4hQqRPG56sw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4D6F5811E7D;
+        Sat,  2 Dec 2023 02:22:20 +0000 (UTC)
+Received: from localhost (unknown [10.72.113.121])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 682152026D4C;
+        Sat,  2 Dec 2023 02:22:19 +0000 (UTC)
+Date:   Sat, 2 Dec 2023 10:22:15 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        kexec <kexec@lists.infradead.org>
+Subject: Re: linux-next: Tree for Dec 1 (riscv, crash_core)
+Message-ID: <ZWqU1+Xxr6PG+2Ov@MiWiFi-R3L-srv>
+References: <20231201133726.4a4413dd@canb.auug.org.au>
+ <bbd1bbfb-c482-433d-bce9-2b591b8e855e@infradead.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v3] net/mlx5e: Fix a race in command alloc flow
-Content-Language: en-US
-To:     Shifeng Li <lishifeng@sangfor.com.cn>, saeedm@nvidia.com,
-        leon@kernel.org, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, eranbe@mellanox.com,
-        moshe@mellanox.com
-Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lishifeng1992@126.com,
-        Moshe Shemesh <moshe@nvidia.com>
-References: <20231130030559.622165-1-lishifeng@sangfor.com.cn>
-From:   Ding Hui <dinghui@sangfor.com.cn>
-In-Reply-To: <20231130030559.622165-1-lishifeng@sangfor.com.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-        tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVlCS05LVh9DHU9DTk0fSUsaT1UTARMWGhIXJBQOD1
-        lXWRgSC1lBWUlPSx5BSBlMQUhJTEpBTB1JS0FPT0hIQRlMT01BGEofHkFITUxZV1kWGg8SFR0UWU
-        FZT0tIVUpNT0lOSVVKS0tVSkJZBg++
-X-HM-Tid: 0a8c2854d8aeb249kuuuabc322c027e
-X-HM-MType: 1
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6M1E6CCo*DDw4CgstLSwyMkNM
-        SDIaFE1VSlVKTEtKT0NITUJDQk9KVTMWGhIXVR8SFRwTDhI7CBoVHB0UCVUYFBZVGBVFWVdZEgtZ
-        QVlJT0seQUgZTEFISUxKQUwdSUtBT09ISEEZTE9NQRhKHx5BSE1MWVdZCAFZQUhDTkI3Bg++
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bbd1bbfb-c482-433d-bce9-2b591b8e855e@infradead.org>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/11/30 11:05, Shifeng Li wrote:
-> Fix a cmd->ent use after free due to a race on command entry.
-> Such race occurs when one of the commands releases its last refcount and
-> frees its index and entry while another process running command flush
-> flow takes refcount to this command entry. The process which handles
-> commands flush may see this command as needed to be flushed if the other
-> process allocated a ent->idx but didn't set ent to cmd->ent_arr in
-> cmd_work_handler(). Fix it by moving the assignment of cmd->ent_arr into
-> the spin lock.
+On 12/01/23 at 11:53am, Randy Dunlap wrote:
 > 
-> [70013.081955] BUG: KASAN: use-after-free in mlx5_cmd_trigger_completions+0x1e2/0x4c0 [mlx5_core]
-> [70013.081967] Write of size 4 at addr ffff88880b1510b4 by task kworker/26:1/1433361
-> [70013.081968]
-> [70013.082028] Workqueue: events aer_isr
-> [70013.082053] Call Trace:
-> [70013.082067]  dump_stack+0x8b/0xbb
-> [70013.082086]  print_address_description+0x6a/0x270
-> [70013.082102]  kasan_report+0x179/0x2c0
-> [70013.082173]  mlx5_cmd_trigger_completions+0x1e2/0x4c0 [mlx5_core]
-> [70013.082267]  mlx5_cmd_flush+0x80/0x180 [mlx5_core]
-> [70013.082304]  mlx5_enter_error_state+0x106/0x1d0 [mlx5_core]
-> [70013.082338]  mlx5_try_fast_unload+0x2ea/0x4d0 [mlx5_core]
-> [70013.082377]  remove_one+0x200/0x2b0 [mlx5_core]
-> [70013.082409]  pci_device_remove+0xf3/0x280
-> [70013.082439]  device_release_driver_internal+0x1c3/0x470
-> [70013.082453]  pci_stop_bus_device+0x109/0x160
-> [70013.082468]  pci_stop_and_remove_bus_device+0xe/0x20
-> [70013.082485]  pcie_do_fatal_recovery+0x167/0x550
-> [70013.082493]  aer_isr+0x7d2/0x960
-> [70013.082543]  process_one_work+0x65f/0x12d0
-> [70013.082556]  worker_thread+0x87/0xb50
-> [70013.082571]  kthread+0x2e9/0x3a0
-> [70013.082592]  ret_from_fork+0x1f/0x40
 > 
+> On 11/30/23 18:37, Stephen Rothwell wrote:
+> > Hi all,
+> > 
+> > Changes since 20231130:
+> > 
+> 
+> on riscv 32-bit or 64-bit, with
+> # CONFIG_MMU is not set
 
-It is better if you also put the diagram [1] in the commit log, that is easy to understand.
+Can you provide your .config so that I reproduce it? Disabling
+CONFIG_MMU need find all places where it's selected by other config items.
 
-[1] https://www.spinics.net/lists/netdev/msg951955.html
-
-> Fixes: 50b2412b7e78 ("net/mlx5: Avoid possible free of command entry while timeout comp handler")
-> Reviewed-by: Moshe Shemesh <moshe@nvidia.com>
-> Signed-off-by: Shifeng Li <lishifeng@sangfor.com.cn>
-
--- 
-Thanks,
-- Ding Hui
+> 
+> In file included from ../arch/riscv/kernel/crash_core.c:3:
+> ../arch/riscv/kernel/crash_core.c: In function 'arch_crash_save_vmcoreinfo':
+> ../arch/riscv/kernel/crash_core.c:8:27: error: 'VA_BITS' undeclared (first use in this function)
+>     8 |         VMCOREINFO_NUMBER(VA_BITS);
+>       |                           ^~~~~~~
+> ../include/linux/crash_core.h:78:64: note: in definition of macro 'VMCOREINFO_NUMBER'
+>    78 |         vmcoreinfo_append_str("NUMBER(%s)=%ld\n", #name, (long)name)
+>       |                                                                ^~~~
+> ../arch/riscv/kernel/crash_core.c:8:27: note: each undeclared identifier is reported only once for each function it appears in
+>     8 |         VMCOREINFO_NUMBER(VA_BITS);
+>       |                           ^~~~~~~
+> ../include/linux/crash_core.h:78:64: note: in definition of macro 'VMCOREINFO_NUMBER'
+>    78 |         vmcoreinfo_append_str("NUMBER(%s)=%ld\n", #name, (long)name)
+>       |                                                                ^~~~
+> ../arch/riscv/kernel/crash_core.c:12:58: warning: format '%lx' expects argument of type 'long unsigned int', but argument 2 has type 'int' [-Wformat=]
+>    12 |         vmcoreinfo_append_str("NUMBER(VMALLOC_START)=0x%lx\n", VMALLOC_START);
+>       |                                                        ~~^
+>       |                                                          |
+>       |                                                          long unsigned int
+>       |                                                        %x
+> ../arch/riscv/kernel/crash_core.c:14:64: error: 'VMEMMAP_START' undeclared (first use in this function)
+>    14 |         vmcoreinfo_append_str("NUMBER(VMEMMAP_START)=0x%lx\n", VMEMMAP_START);
+>       |                                                                ^~~~~~~~~~~~~
+> ../arch/riscv/kernel/crash_core.c:15:62: error: 'VMEMMAP_END' undeclared (first use in this function); did you mean 'MEMREMAP_ENC'?
+>    15 |         vmcoreinfo_append_str("NUMBER(VMEMMAP_END)=0x%lx\n", VMEMMAP_END);
+>       |                                                              ^~~~~~~~~~~
+>       |                                                              MEMREMAP_ENC
+> 
+> 64-bit only: 
+> 
+> ../arch/riscv/kernel/crash_core.c:17:64: error: 'MODULES_VADDR' undeclared (first use in this function)
+>    17 |         vmcoreinfo_append_str("NUMBER(MODULES_VADDR)=0x%lx\n", MODULES_VADDR);
+>       |                                                                ^~~~~~~~~~~~~
+> ../arch/riscv/kernel/crash_core.c:18:62: error: 'MODULES_END' undeclared (first use in this function)
+>    18 |         vmcoreinfo_append_str("NUMBER(MODULES_END)=0x%lx\n", MODULES_END);
+>       |                                                              ^~~~~~~~~~~
+> 
+> 
+> 
+> -- 
+> ~Randy
+> 
 
