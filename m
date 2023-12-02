@@ -2,59 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BAE25801877
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 01:05:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6C7A80187E
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 01:05:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235262AbjLBAEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 19:04:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42602 "EHLO
+        id S1442062AbjLBAFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 19:05:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1441958AbjLBAEi (ORCPT
+        with ESMTP id S235303AbjLBAEm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 19:04:38 -0500
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82A4F198A
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 16:04:36 -0800 (PST)
-Received: by mail-pg1-x54a.google.com with SMTP id 41be03b00d2f7-5c65e666609so144020a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 16:04:36 -0800 (PST)
+        Fri, 1 Dec 2023 19:04:42 -0500
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7DA319A6
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 16:04:38 -0800 (PST)
+Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1d0663326f2so7803585ad.3
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Dec 2023 16:04:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701475475; x=1702080275; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=2po9gsIH1GemJjlQR8N+Qz1uhCKXgd6uWVlwty8FltY=;
-        b=jHuHvQp+gWhwZYQ8isI68jbM5oQ44a9uJANdH31c0P7WRqGZ6/e90RA2u8g+j5LOar
-         zRPXN5kmT6lr1SUDXPMCauZRzTx9iTMO3ApYaZTO3f/I/IDgctXiIkWuY/NXL6IwZUIO
-         MWWUZb/Q+lLA82ZRlDVpIME+/e0vRy2laxe4aSnTly+RuqFldJPQyK6ZR8SNEa0G8Ylx
-         M8na7vkamr24rH1+5jN+LWjrqpm0wVkWsTYZNd9himM0qy9I+DkaPb4TsBR6pFL6fKO2
-         PJCEMZ6vKkno0L5khY0dsuA/I9BeXNm8sHNWd/n5jndmIh7QNS8+2T9FGHc3Bza6U6rC
-         etDA==
+        d=google.com; s=20230601; t=1701475477; x=1702080277; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:reply-to:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zt7ybhq5WnclmZFElyWqnJvdy+r8HXRtRnLKc3xf2JI=;
+        b=AhvfMxZJDmQitaZHepYxHihsF6EdYpAvt2Nvgb2OLo6PrLmdeZtq/1sb97NXf/FESO
+         lyMQwMgHMTz4WbTl6A2PjFtozqlZ6KAWggccn26qz67pPwaof2UtUZCJSsByHvAH0uAN
+         Yk/iEME2RHRSt0IWLfQUppjB/Dx5+LiGnm6tX2DdJog7GmkxDx60cb/grZ793ELba/a9
+         InZ3invBneXkVEAp+vT0+r1K/d1lCBlWCjNy5U6Kmr8/jhtAFvCoRdzParE5wu9uv0aj
+         KBD9rRHlAx5fadc7iAHPMcIPVKv7KLCDiSTyWxWA4oWReUpGM1t3y65EdX6eADdSCdCt
+         BBcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701475475; x=1702080275;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=2po9gsIH1GemJjlQR8N+Qz1uhCKXgd6uWVlwty8FltY=;
-        b=RgMGldVljqs7z8dqJrLXjqSc/panXzjna+VASWm2V2V5S7sPDY3zRcypqDaN5tIUFA
-         1JmurUR/zUh+fR2ENmazAY4DdYKWiOCsZGFTAKufNED6l4Pcu4YN1A5rmiogbysj6HI8
-         0SMbt78g6el2dTm9hMxPRQho+p/Y5v7Md8w7HzE8FxDTib/0qWaEbbEBDYncDwoa4/p+
-         /+hrADr/WqeKQXw9X8/SLQ00Wzx/37Zi/gkaiWWMTVFqja7GUNAAIxU9U2B3UQBUX61i
-         8jI3WO7f2RTwsafBfaZx6Wp5Xm2IzCc3ZktUw7xnq2CsUCuHYXvGQYx3PsZ9ngMJKn9D
-         sbgA==
-X-Gm-Message-State: AOJu0Yzs2bfJ1iGOBzCmUbDFrkmm9f8c+Qxb5GPlZoKVXLX64Ou32klN
-        06/XbQBVRZNTVQ+oUuohNv/aCQ4hDww=
-X-Google-Smtp-Source: AGHT+IFz7rAL9yNshqMdfqp2kpz3vwVzN2kIVTRWjAwUtwSyjgM640giCvKwhtyYJxazztzI53oSh9QBKrs=
+        d=1e100.net; s=20230601; t=1701475477; x=1702080277;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:reply-to:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=zt7ybhq5WnclmZFElyWqnJvdy+r8HXRtRnLKc3xf2JI=;
+        b=gcHPxwIrnIhgaTenfnk6rSSM91Ylx+w1HoBjblcg6yKh9niUj9QTLn1v4sksVb6Scc
+         OzZosicztoZODNcQGFxtfHPUlyFiggfvE8i6IPSiAdr9skgcToZHwUAgTtwKL94KoxId
+         P+iV3CIftlA6NhQHawJvl3feJkX+K3gqmdxtH5X+0d5LIhZwD5LwXfRCCBQGteMr8KHJ
+         QY9digviHF6zRAQepFhTkZahOHSbckvtVnwwKpTifrXUMvIvok0gurf15uicT+4sXK5T
+         w67slLOHrAhzuqf+f/7KtwW0jTmMJBKwZKsGLX8arlOIJDRzskkFm33C91Id65flr6LD
+         uKig==
+X-Gm-Message-State: AOJu0YyVkvrQ1qYrWiRaIjp9PE0fH9RUtiZsOJRie6TvvGR3gf5w69sO
+        2SOJoIdujUNs/It6AXTkU3yx9cZM++U=
+X-Google-Smtp-Source: AGHT+IHrmOuj3xZAMVZQrh4ZLSKSf2huKkh1Ee3VCjD2CsjPfbnpVQm/QQ8sa80ygAOTJsh0LozVxYb79/w=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a63:1402:0:b0:5bd:bcde:c677 with SMTP id
- u2-20020a631402000000b005bdbcdec677mr4147254pgl.2.1701475475730; Fri, 01 Dec
- 2023 16:04:35 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a17:902:c412:b0:1cf:abb3:eb36 with SMTP id
+ k18-20020a170902c41200b001cfabb3eb36mr5664286plk.8.1701475477554; Fri, 01 Dec
+ 2023 16:04:37 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri,  1 Dec 2023 16:03:57 -0800
+Date:   Fri,  1 Dec 2023 16:03:58 -0800
 In-Reply-To: <20231202000417.922113-1-seanjc@google.com>
 Mime-Version: 1.0
 References: <20231202000417.922113-1-seanjc@google.com>
 X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
-Message-ID: <20231202000417.922113-9-seanjc@google.com>
-Subject: [PATCH v9 08/28] KVM: x86/pmu: Apply "fast" RDPMC only to Intel PMUs
+Message-ID: <20231202000417.922113-10-seanjc@google.com>
+Subject: [PATCH v9 09/28] KVM: x86/pmu: Disallow "fast" RDPMC for
+ architectural Intel PMUs
 From:   Sean Christopherson <seanjc@google.com>
 To:     Sean Christopherson <seanjc@google.com>,
         Paolo Bonzini <pbonzini@redhat.com>
@@ -66,78 +68,105 @@ Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
         Aaron Lewis <aaronlewis@google.com>,
         Like Xu <likexu@tencent.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move the handling of "fast" RDPMC instructions, which drop bits 63:32 of
-the count, to Intel.  The "fast" flag, and all flags for that matter, are
-Intel-only and aren't supported by AMD.
+Inject #GP on RDPMC if the "fast" flag is set for architectural Intel
+PMUs, i.e. if the PMU version is non-zero.  Per Intel's SDM, and confirmed
+on bare metal, the "fast" flag is supported only for non-architectural
+PMUs, and is reserved for architectural PMUs.
 
-Opportunistically replace open coded bit crud with proper #defines.
+  If the processor does not support architectural performance monitoring
+  (CPUID.0AH:EAX[7:0]=3D0), ECX[30:0] specifies the index of the PMC to be
+  read. Setting ECX[31] selects =E2=80=9Cfast=E2=80=9D read mode if support=
+ed. In this mode,
+  RDPMC returns bits 31:0 of the PMC in EAX while clearing EDX to zero.
 
-Fixes: ca724305a2b0 ("KVM: x86/vPMU: Implement AMD vPMU code for KVM")
-Reviewed-by: Dapeng Mi <dapeng1.mi@linux.intel.com>
+  If the processor does support architectural performance monitoring
+  (CPUID.0AH:EAX[7:0] =E2=89=A0 0), ECX[31:16] specifies type of PMC while =
+ECX[15:0]
+  specifies the index of the PMC to be read within that type. The following
+  PMC types are currently defined:
+  =E2=80=94 General-purpose counters use type 0. The index x (to read IA32_=
+PMCx)
+    must be less than the value enumerated by CPUID.0AH.EAX[15:8] (thus
+    ECX[15:8] must be zero).
+  =E2=80=94 Fixed-function counters use type 4000H. The index x (to read
+    IA32_FIXED_CTRx) can be used if either CPUID.0AH.EDX[4:0] > x or
+    CPUID.0AH.ECX[x] =3D 1 (thus ECX[15:5] must be 0).
+  =E2=80=94 Performance metrics use type 2000H. This type can be used only =
+if
+    IA32_PERF_CAPABILITIES.PERF_METRICS_AVAILABLE[bit 15]=3D1. For this typ=
+e,
+    the index in ECX[15:0] is implementation specific.
+
+Opportunistically WARN if KVM ever actually tries to complete RDPMC for a
+non-architectural PMU, and drop the non-existent "support" for fast RDPMC,
+as KVM doesn't support such PMUs, i.e. kvm_pmu_rdpmc() should reject the
+RDPMC before getting to the Intel code.
+
+Fixes: f5132b01386b ("KVM: Expose a version 2 architectural PMU to a guests=
+")
+Fixes: 67f4d4288c35 ("KVM: x86: rdpmc emulation checks the counter incorrec=
+tly")
+Cc: Dapeng Mi <dapeng1.mi@linux.intel.com>
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/pmu.c           |  3 +--
- arch/x86/kvm/vmx/pmu_intel.c | 11 +++++++++--
- 2 files changed, 10 insertions(+), 4 deletions(-)
+ arch/x86/kvm/vmx/pmu_intel.c | 22 ++++++++++++++++++----
+ 1 file changed, 18 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/kvm/pmu.c b/arch/x86/kvm/pmu.c
-index 0b0d804ee239..09b0feb975c3 100644
---- a/arch/x86/kvm/pmu.c
-+++ b/arch/x86/kvm/pmu.c
-@@ -576,10 +576,9 @@ static int kvm_pmu_rdpmc_vmware(struct kvm_vcpu *vcpu, unsigned idx, u64 *data)
- 
- int kvm_pmu_rdpmc(struct kvm_vcpu *vcpu, unsigned idx, u64 *data)
- {
--	bool fast_mode = idx & (1u << 31);
- 	struct kvm_pmu *pmu = vcpu_to_pmu(vcpu);
- 	struct kvm_pmc *pmc;
--	u64 mask = fast_mode ? ~0u : ~0ull;
-+	u64 mask = ~0ull;
- 
- 	if (!pmu->version)
- 		return 1;
 diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
-index 1b1f888ad32b..6903dd9b71ad 100644
+index 6903dd9b71ad..644de27bd48a 100644
 --- a/arch/x86/kvm/vmx/pmu_intel.c
 +++ b/arch/x86/kvm/vmx/pmu_intel.c
-@@ -20,6 +20,10 @@
- #include "nested.h"
- #include "pmu.h"
- 
-+/* Perf's "BASE" is wildly misleading, this is a single-bit flag, not a base. */
-+#define INTEL_RDPMC_FIXED	INTEL_PMC_FIXED_RDPMC_BASE
-+#define INTEL_RDPMC_FAST	BIT(31)
-+
+@@ -22,7 +22,6 @@
+=20
+ /* Perf's "BASE" is wildly misleading, this is a single-bit flag, not a ba=
+se. */
+ #define INTEL_RDPMC_FIXED	INTEL_PMC_FIXED_RDPMC_BASE
+-#define INTEL_RDPMC_FAST	BIT(31)
+=20
  #define MSR_PMC_FULL_WIDTH_BIT      (MSR_IA32_PMC0 - MSR_IA32_PERFCTR0)
- 
- static void reprogram_fixed_counters(struct kvm_pmu *pmu, u64 data)
-@@ -59,11 +63,14 @@ static struct kvm_pmc *intel_rdpmc_ecx_to_pmc(struct kvm_vcpu *vcpu,
- 					    unsigned int idx, u64 *mask)
- {
- 	struct kvm_pmu *pmu = vcpu_to_pmu(vcpu);
--	bool fixed = idx & (1u << 30);
-+	bool fixed = idx & INTEL_RDPMC_FIXED;
+=20
+@@ -67,10 +66,25 @@ static struct kvm_pmc *intel_rdpmc_ecx_to_pmc(struct kv=
+m_vcpu *vcpu,
  	struct kvm_pmc *counters;
  	unsigned int num_counters;
- 
--	idx &= ~(3u << 30);
-+	if (idx & INTEL_RDPMC_FAST)
-+		*mask &= GENMASK_ULL(31, 0);
-+
-+	idx &= ~(INTEL_RDPMC_FIXED | INTEL_RDPMC_FAST);
+=20
+-	if (idx & INTEL_RDPMC_FAST)
+-		*mask &=3D GENMASK_ULL(31, 0);
++	/*
++	 * The encoding of ECX for RDPMC is different for architectural versus
++	 * non-architecturals PMUs (PMUs with version '0').  For architectural
++	 * PMUs, bits 31:16 specify the PMC type and bits 15:0 specify the PMC
++	 * index.  For non-architectural PMUs, bit 31 is a "fast" flag, and
++	 * bits 30:0 specify the PMC index.
++	 *
++	 * Yell and reject attempts to read PMCs for a non-architectural PMU,
++	 * as KVM doesn't support such PMUs.
++	 */
++	if (WARN_ON_ONCE(!pmu->version))
++		return NULL;
+=20
+-	idx &=3D ~(INTEL_RDPMC_FIXED | INTEL_RDPMC_FAST);
++	/*
++	 * Fixed PMCs are supported on all architectural PMUs.  Note, KVM only
++	 * emulates fixed PMCs for PMU v2+, but the flag itself is still valid,
++	 * i.e. let RDPMC fail due to accessing a non-existent counter.
++	 */
++	idx &=3D ~INTEL_RDPMC_FIXED;
  	if (fixed) {
- 		counters = pmu->fixed_counters;
- 		num_counters = pmu->nr_arch_fixed_counters;
--- 
+ 		counters =3D pmu->fixed_counters;
+ 		num_counters =3D pmu->nr_arch_fixed_counters;
+--=20
 2.43.0.rc2.451.g8631bc7472-goog
 
