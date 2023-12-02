@@ -2,118 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58F2E801CB0
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 13:43:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F02A801CB1
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 13:45:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232678AbjLBMnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 07:43:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50402 "EHLO
+        id S232672AbjLBMpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 07:45:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232138AbjLBMnL (ORCPT
+        with ESMTP id S229702AbjLBMpL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 07:43:11 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25C32188
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 04:43:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701520997;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=h4DJq4T+U4J3l6LPK0uojmAyF6LfoimHRqrF4QgIogY=;
-        b=KG77iw4gEsvW24mBlBhdUg9P30FufCmID/o9t9SzhnkVt8YnbdygplZAiZHRcr2UyupV7m
-        zzgLhlHLxGYoSiTl0pf1rKrzF+IhURz61Y3VY7NvJ2XGYU51lSFVKh1UvLxQJr2+WVdxq9
-        Nxn7RY3P/+9YXvGEqn1WnFJ1pxsFk/A=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-567-TWpg7M6QNJCAkJjyyRF_-g-1; Sat, 02 Dec 2023 07:43:15 -0500
-X-MC-Unique: TWpg7M6QNJCAkJjyyRF_-g-1
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-a02cc56af16so272115566b.3
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Dec 2023 04:43:15 -0800 (PST)
+        Sat, 2 Dec 2023 07:45:11 -0500
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A748184
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 04:45:17 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-a1882023bbfso392438466b.3
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Dec 2023 04:45:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701521115; x=1702125915; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1g8MqwHZBgoNHWh+bYkNb6sIC9zXf19tQTXlJc9qQOU=;
+        b=CYkZ+IAixkiWTz0S2FqHBXNvQ6WQ29Wihd3rxHw/7hQSM7xyBki8h23POPGAXRubga
+         x1vQboO7th1i7ZJi6Ou+B099ztmrfy8uL4vtf8NEHIFDtAUkk6rZFlxaZaiK0UwGQB5T
+         DBY8mtehKl+Wn4DneWzIKX24SMy3Ri6PwUyDKZNmrTRE8Ki3Z4cZzSdALxPFnCkIlTgS
+         hw7xZkE4XbLdQftoYWgedK9kyDxIzrV4bXTgrhAO9WDou3c7iJ4cVhTQ7pSgjucD2M+G
+         k5xyotlIxKAEu6vcruUYh3mXSBdkLCUjbfBNh0fn5qrd4p73AgJfE+j0jX4+9ntmfFbh
+         Q6FA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701520994; x=1702125794;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1701521115; x=1702125915;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=h4DJq4T+U4J3l6LPK0uojmAyF6LfoimHRqrF4QgIogY=;
-        b=roFAHQJAWZsJgU7h198t/HmvKtulqa8bJMLEIsl1Ol2107GpTPDBnOYlh2x2O+23I8
-         t3sQZ1HtvMU6BpaY1o5q4z0N/+d7A7Y1mWnPToujyxs/xCarzlvM2phKa7DCHA43WDv3
-         deYWbUp4hkSFr8hmsnYXANvEH/mN6LXtrn/o+YrhX0zc+YqMWYZMLa8JZCs49Io3cOdW
-         1Yb6ccLGdIIIS1F5JrQluHRBbPrpcmZZXqCvDkHzzOC3oMBtLwYrFsVRP3CiZTh5UQV3
-         c3qtzM7Mi6pLqzQYADybjQZ5F++g7unxp+lzJ/VsowplBQpTPaoLkNirQhxinirWwtEC
-         bicA==
-X-Gm-Message-State: AOJu0YySOIdvnEDbV3QMLPGBsF6qqjcZbkBieoTOtBdjhdaMtyxdqZc6
-        IQS5IhKWAPNGmiSL1I7pTdNdOXIuqFDrtHdgPaSBwH8WYVwHTur2vTd4KERyCxTOLo8dckk/gtM
-        Yp3pORLm1s2EcyD8PQmxcs1zI
-X-Received: by 2002:a17:906:d295:b0:a19:a19b:55f6 with SMTP id ay21-20020a170906d29500b00a19a19b55f6mr1716428ejb.134.1701520994691;
-        Sat, 02 Dec 2023 04:43:14 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEkw8ECvyYB005RuSFu+FKenCisiOosr0lIXRvYlHHyXKgGxBCWlDX8Hlv33kA9TEyha+zm5A==
-X-Received: by 2002:a17:906:d295:b0:a19:a19b:55f6 with SMTP id ay21-20020a170906d29500b00a19a19b55f6mr1716421ejb.134.1701520994397;
-        Sat, 02 Dec 2023 04:43:14 -0800 (PST)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id m25-20020a170906235900b009fcb10eecb2sm2985850eja.84.2023.12.02.04.43.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 02 Dec 2023 04:43:13 -0800 (PST)
-Message-ID: <61ef73e6-e633-47e1-b599-ee66aa179227@redhat.com>
-Date:   Sat, 2 Dec 2023 13:43:13 +0100
+        bh=1g8MqwHZBgoNHWh+bYkNb6sIC9zXf19tQTXlJc9qQOU=;
+        b=q7ER4/fg+vOccORWo3TQRMAsDEgtZH9KbGZWeT4xya7Y+eHnTrgyPGIoy3rHPpG75N
+         oc2cRK6X+4OwN2OokUcHfw0bWnc8sBzyon+3IMZzzoa/Ny3ggGFL4peCbdaDpYNcfwdI
+         zbvby/J8j+KyT1Pv/tihuhC1jHlpHVzvsSP20Jg1jYBCquuLq7wa67GwmX/Sb/JgehAW
+         TMF/I9lY5iNiJpLOmliCB86IJQ4VuvII2/cZZKe/sxcUpHHxMzCu6U/HTcvwvn4nZ9XH
+         JxYrbHoWux+2SDxm/dE+kjkQnimjm0TQAS8lejfQjZdQTEE3CGKvpWCxzVo81R5pZ9A7
+         Is3A==
+X-Gm-Message-State: AOJu0Yz5Kr2Vm1Nmv5mEu/FSmC3FsT/j+xgOG97Nt1TrFPc17X3Nw5Fu
+        KRq0fjf448idEmwJqpjPZ0BFI3jdMA==
+X-Google-Smtp-Source: AGHT+IHul/Ty6BFqvibyURDrcuceAwFckVUDN6BYvqsuBva/WwjgWdpw138uePY8i0gIimMn0QDYZw==
+X-Received: by 2002:a17:906:fb99:b0:9e6:38f2:8439 with SMTP id lr25-20020a170906fb9900b009e638f28439mr1457788ejb.60.1701521115337;
+        Sat, 02 Dec 2023 04:45:15 -0800 (PST)
+Received: from p183 ([46.53.252.219])
+        by smtp.gmail.com with ESMTPSA id qz1-20020a170907680100b00a1a25e756d4sm1658139ejc.107.2023.12.02.04.45.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 02 Dec 2023 04:45:14 -0800 (PST)
+Date:   Sat, 2 Dec 2023 15:45:13 +0300
+From:   Alexey Dobriyan <adobriyan@gmail.com>
+To:     Willy Tarreau <w@1wt.eu>,
+        Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] nolibc: optimise _start() on x86_64
+Message-ID: <38183c29-9b7f-4960-8702-d71ce816cf80@p183>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 0/4] ACPI: OSL: acpi_os_execute() improvements
-Content-Language: en-US, nl
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Michal Wilczynski <michal.wilczynski@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Mario Limonciello <mario.limonciello@amd.com>
-References: <3281896.aeNJFYEL58@kreacher>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <3281896.aeNJFYEL58@kreacher>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Just jump into _start_c, it is not going to return anyway.
 
-On 11/29/23 14:45, Rafael J. Wysocki wrote:
-> Hi Everyone,
-> 
-> This series improves acpi_os_execute() on top of
-> 
-> https://patchwork.kernel.org/project/linux-acpi/patch/5745568.DvuYhMxLoT@kreacher/
-> 
-> but only the last patch really depends on it.
-> 
-> The first two patches clean up the code somewhat and the third one modifies
-> the function to allow Notify () handlers to run on all CPUs (not on CPU0 only).
-> 
-> The last patch changes it to use GFP_KERNEL for memory allocations, as it does
-> not run in interrupt context any more after the change linked above.
+Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+---
 
-I have added this series, as well as the preceding
-"ACPI: OSL: Use a threaded interrupt handler for SCI"
-patch to my personal tree now, so that it will get tested on various
-devices when I run my personal tree on them.
+	Also, kernel clears all registers before starting process,
+	I'm not sure why
 
-I'll let you know if I hit any issues caused by this series.
+		xor ebp, ebp
 
-Regards,
+	was added.
 
-Hans
+ tools/include/nolibc/arch-x86_64.h |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-
+--- a/tools/include/nolibc/arch-x86_64.h
++++ b/tools/include/nolibc/arch-x86_64.h
+@@ -167,8 +167,7 @@ void __attribute__((weak, noreturn, optimize("Os", "omit-frame-pointer"))) __no_
+ 		"xor  %ebp, %ebp\n"       /* zero the stack frame                            */
+ 		"mov  %rsp, %rdi\n"       /* save stack pointer to %rdi, as arg1 of _start_c */
+ 		"and  $-16, %rsp\n"       /* %rsp must be 16-byte aligned before call        */
+-		"call _start_c\n"         /* transfer to c runtime                           */
+-		"hlt\n"                   /* ensure it does not return                       */
++		"jmp  _start_c\n"         /* transfer to c runtime                           */
+ 	);
+ 	__builtin_unreachable();
+ }
