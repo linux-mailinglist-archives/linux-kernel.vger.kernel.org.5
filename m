@@ -2,106 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C866801C69
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 12:19:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1906D801C7A
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 12:43:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232494AbjLBLS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 06:18:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36244 "EHLO
+        id S232640AbjLBLkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 06:40:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjLBLSz (ORCPT
+        with ESMTP id S229451AbjLBLki (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 06:18:55 -0500
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDDE318C;
-        Sat,  2 Dec 2023 03:19:01 -0800 (PST)
-Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-50be9e6427dso263849e87.1;
-        Sat, 02 Dec 2023 03:19:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701515940; x=1702120740; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=EJ168aVq5QXOtHooxbH+odPbZ9pENqVHXwP/aZSJoxY=;
-        b=YeVnEhLbgyDw3B1XXHHKA8yp6osJqjS6IR1AHUCfiKPszypzFQ+bKI1Y0IXI0Xha5n
-         R0o7bQDcyc0mbhq2i/KnfP7wYJpmoX6q2oztruhfFr3qD/4WziQTKW/6/xexXKYhcASd
-         nl9bgaDbkrUOzhWPg+bA1dhfZjK8wqP+Nxv8NDLrNsG8NdKU1WYRtMbSs9pwsiJ19MYL
-         n+ZIrIyPHg4X92OGTHMg/nSP+bEociJObRA5VoQ+TP9oDKMhyJ2P9Bek4aD8HozjUcdk
-         61yFU6NqdOmefVywLIA7aH1dE6/B4l5ZZOfrrBdzheFry7lIx6IrdeDQWyUT5fcITsRi
-         L/lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701515940; x=1702120740;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=EJ168aVq5QXOtHooxbH+odPbZ9pENqVHXwP/aZSJoxY=;
-        b=p1wUj96fQmmKy/hnmFU+p9s/pNc49imNS4KxjxdEW6uNJQ/E+N/oKoTe7KAkT6grpW
-         pclyd8aupC8Fmj4U3W08eJnXdG1YVRMBs7pm8rEg63iIwhGo2c+F1oZWkiqvus7ajx1o
-         AJueupfmwPcWM0SZRGPJrlBnfznFygc0hvMVqOvucdy5DGU9G1JNNhBerIxMD322/4Ra
-         zmRL+w4jYES+8U5Ux/+kCM2i16UlZemtHBtJdRRZnvA94Ae5coW9p+OWwPJ6sNRZJ/7I
-         heCuty4ZN5iUJncHgPRrc+0JDihqza7q4KHVak2OiY2bHrHFBfuBdeBOoVpRVBpoy/FT
-         OhLQ==
-X-Gm-Message-State: AOJu0YweiEk7sphsTYLeFeHDlLA163IuTM5ga8rpz6elOnjY/HAdBhaD
-        XQ1hbsrHFC0SCx5nTb/sYcU=
-X-Google-Smtp-Source: AGHT+IErfZeBgQvhH6+UfukRjO2daCpV0/rvJfCL6UgL0+RAW9RuRhKB9V2J64iiN5h4LjG9319TsQ==
-X-Received: by 2002:ac2:5e63:0:b0:50b:d764:8024 with SMTP id a3-20020ac25e63000000b0050bd7648024mr1399573lfr.87.1701515939941;
-        Sat, 02 Dec 2023 03:18:59 -0800 (PST)
-Received: from localhost ([95.79.203.166])
-        by smtp.gmail.com with ESMTPSA id z10-20020a19f70a000000b0050bc4ed121dsm692406lfe.254.2023.12.02.03.18.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Dec 2023 03:18:59 -0800 (PST)
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-mips@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] mm/mm_init.c: Extend init unavailable range doc info
-Date:   Sat,  2 Dec 2023 14:18:52 +0300
-Message-ID: <20231202111855.18392-1-fancer.lancer@gmail.com>
-X-Mailer: git-send-email 2.42.1
+        Sat, 2 Dec 2023 06:40:38 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B82218C
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 03:40:42 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2E4CC433C9;
+        Sat,  2 Dec 2023 11:40:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701517241;
+        bh=DaUNBnJudQtx/0ecN0kp9sHu1Y4tp3r/amh8XiErTXw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XxP7NmO7pW5CZG2wIqTdiWAbz/p7Cb69Elg+6qaP8cxRpDnbg7ygo36gqVDhTE1K/
+         9ky2d7U5rmERCih5gsM/OV7/Euy7yG9zru8jDb1Wo8AaCAmx16YQ8OWUrgYiZbRZU2
+         j3+lowrobiVTpvQ2b6+uTV66aCyeHH+QBwj9f/5P350NydZGYMw+Zqj8RrAblu9VK9
+         5QbS1cVL3ev75+j1EMolBAA/CKFvjCSTTpRLmXILv7TSu/sdW4GQJdCU2fgWr+hTQd
+         frwOzSl7jv2TwAURI820vGSlC+0FQ9hxApvrrEHa/s+BsP9WMC1YSfh+TShW4XOF4M
+         ZdQ7qFC8qFLAw==
+Date:   Sat, 2 Dec 2023 19:28:10 +0800
+From:   Jisheng Zhang <jszhang@kernel.org>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] riscv: enable EFFICIENT_UNALIGNED_ACCESS and
+ DCACHE_WORD_ACCESS
+Message-ID: <ZWsUyjEx1fmXQEfW@xhacker>
+References: <20231202111822.3569-1-jszhang@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231202111822.3569-1-jszhang@kernel.org>
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PDS_BTC_ID,
+        PDS_BTC_MSGID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Besides of the already described reasons the pages backended memory holes
-might present due to having non-memory regions covered by the contiguous
-flatmem mapping. Add such note to the init_unavailable_range() method kdoc
-in order to point out to one more reason of having the function executed
-for such regions.
+On Sat, Dec 02, 2023 at 07:18:20PM +0800, Jisheng Zhang wrote:
+> Some riscv implementations such as T-HEAD's C906, C908, C910 and C920
+> supports efficient unaligned access, for performance reason we want
+> to enable HAVE_EFFICIENT_UNALIGNED_ACCESS on these platforms. To
+> avoid performance regressions on other non efficient unaligned access
+> platforms, HAVE_EFFICIENT_UNALIGNED_ACCESS can't be globaly selected.
+> 
+> To solve this problem, runtime code patching based on the detected
+> speed is a good solution. But that's not easy, it involves lots of
+> work to modify vairous subsystems such as net, mm, lib and so on.
+> This can be done step by step.
 
-Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
+Adding something as below here can make the series more clear:
+So let's take an easier solution: add support to efficient unaligned
+access and hide the support under NONPORTABLE.
 
----
+> 
+> patch1 introduces RISCV_EFFICIENT_UNALIGNED_ACCESS which depends on
+> NONPORTABLE, if users know during config time that the kernel will be
+> only run on those efficient unaligned access hw platforms, they can
+> enable it. Obviously, generic unified kernel Image should enable it.
 
-Link: https://lore.kernel.org/linux-mips/20231122182419.30633-6-fancer.lancer@gmail.com/
-Changelog v2:
-- The holes in the memory are actually justified by having the flatmem
-  mapping model. Change the patch and the log accordingly. (@Mike)
----
- mm/mm_init.c | 1 +
- 1 file changed, 1 insertion(+)
+typo: s/should/shouldn't
 
-diff --git a/mm/mm_init.c b/mm/mm_init.c
-index 077bfe393b5e..824bf53e8253 100644
---- a/mm/mm_init.c
-+++ b/mm/mm_init.c
-@@ -796,6 +796,7 @@ overlap_memmap_init(unsigned long zone, unsigned long *pfn)
-  * - physical memory bank size is not necessarily the exact multiple of the
-  *   arbitrary section size
-  * - early reserved memory may not be listed in memblock.memory
-+ * - non-memory regions covered by the contigious flatmem mapping
-  * - memory layouts defined with memmap= kernel parameter may not align
-  *   nicely with memmap sections
-  *
--- 
-2.42.1
-
+> 
+> patch2 adds support DCACHE_WORD_ACCESS when MMU and
+> RISCV_EFFICIENT_UNALIGNED_ACCESS.
+> 
+> Below test program and step shows how much performance can be improved:
+> 
+>  $ cat tt.c
+>  #include <sys/types.h>
+>  #include <sys/stat.h>
+>  #include <unistd.h>
+> 
+>  #define ITERATIONS 1000000
+> 
+>  #define PATH "123456781234567812345678123456781"
+> 
+>  int main(void)
+>  {
+>          unsigned long i;
+>          struct stat buf;
+> 
+>          for (i = 0; i < ITERATIONS; i++)
+>                  stat(PATH, &buf);
+> 
+>          return 0;
+>  }
+> 
+>  $ gcc -O2 tt.c
+>  $ touch 123456781234567812345678123456781
+>  $ time ./a.out
+> 
+> Per my test on T-HEAD C910 platforms, the above test performance is
+> improved by about 7.5%.
+> 
+> 
+> Jisheng Zhang (2):
+>   riscv: introduce RISCV_EFFICIENT_UNALIGNED_ACCESS
+>   riscv: select DCACHE_WORD_ACCESS for efficient unaligned access HW
+> 
+>  arch/riscv/Kconfig                      | 13 +++++++++++
+>  arch/riscv/include/asm/asm-extable.h    | 15 ++++++++++++
+>  arch/riscv/include/asm/word-at-a-time.h | 23 ++++++++++++++++++
+>  arch/riscv/mm/extable.c                 | 31 +++++++++++++++++++++++++
+>  4 files changed, 82 insertions(+)
+> 
+> -- 
+> 2.42.0
+> 
+> 
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
