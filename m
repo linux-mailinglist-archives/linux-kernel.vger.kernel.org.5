@@ -2,167 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F2868018D1
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 01:18:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB2398018D8
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 01:20:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441949AbjLBARs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Dec 2023 19:17:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35262 "EHLO
+        id S1441924AbjLBAUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Dec 2023 19:20:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjLBARr (ORCPT
+        with ESMTP id S229456AbjLBAUN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Dec 2023 19:17:47 -0500
-Received: from sonic315-27.consmr.mail.ne1.yahoo.com (sonic315-27.consmr.mail.ne1.yahoo.com [66.163.190.153])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9020129
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Dec 2023 16:17:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1701476272; bh=vKch3QidsuxeNNUIf5BQBU9Qu0C1vHbp3o1oqGZ8nvE=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=Hp5te8DHWWiWN6OZAsI5TOQNmHt1bZp00z6SQumtV+OGIkNwxBIvn7LJ14jQhADT/Wm+EdWbpTokg8zGxhSPSusVVD+nlXl/l7yV6L59Ehsq762zMu9plciWEfsAq2ILSWhmswBaqgmlCozM8OJPC3KBp8ZbDk096IQlQGYVENhUyQ9oNmeHFIWQi0UiO1VOWSDsEDuWAKFFOrc71n6JreKfeh87NvYz7w/xjABel3xxf1VoX+UTn/6+cwYN27wOHC8Zr9xa6X2GUAXbqT2Q4sUuviVEamE+tVh/3YPslrLPBG0a64IEv6OsPj74AQ9gYlOC45I0Bb7lMue+xypgMA==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1701476272; bh=M5MduLpj3TKXAOuEBT3K7WOY9u5VRwc9lip4GMKOe1M=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=hwZA+ayTaaF92lfeoHdbwJKQanK9SgWRnSOg6/wn3TqePJdAzVTtTOaH3xNuYURg+UD3KEB8jnXnEta202yQMkPeTPVmN7Bn+ImbII5z22f0t4Tl4ARF/ewJCZYmtkiNs6HLe/BXUDAa0idseWoly3xmRFKipv8Kzm44BSHUKjwD+OkRIfT5ZvYjT8f3AwF62Zc7TZmAbnS4IZcEBvYRiyElZK/L1J2OBRvFyHf9+/FuTN+QRJ3BeWdczaBjCFIGnqf1Vzh92SKAnZC351qij0H0f6Gsa14V4s1B0u64ddNXzP7gwXgGwgVldxkJVeKGKv07F6E6dgIjs0SPocCBtw==
-X-YMail-OSG: t.RdoVYVM1nFBvtuL0drGI2s96ZSFPYGBAuHuvTjYh5rC_Cg_6nI4cwj2zbsmw3
- vjK.3jmTc7yPl5_8JCRwsWzcGZGycG3hBniKi7.ULGasOAeq4OPoCDIot6CbZrBOBsUjKttXWzST
- XIbhh8vrRvMXvjJvcOlpqBPGZLpUAFY6BsT6xU0vTYPZeMN4tZzcHweBl5WRuCh6dLdAARC_GCII
- 8ccdgBatCwwMqTUE8yjHx_.FAcTRcfmkhmMZfR_KYTr2JgjaLzpRAkEa4n89qN10U_RTJ1LVqC_2
- CRbjdlz1MylBuP2VvytpJDjMWkDll5Og2D6r3jCsKjQPXYGUBAf1AW8u4hhqB4AVNYSDqJRFkRx0
- ejvOG55DBaXZlF6b21aAiJhh6otFMOe7bM_UPYXhe3MifQBPho23Q.7glZVfY4QIfmi8DBFuA4Ii
- 8YQ.ndAtrkO0o2eBH3z4reSshKXbKenBp6rU_th9nnywr81muU2ls1EsSl6jq7Do7OrWf7T5d3Ea
- DaaiD2OEA3TVwGBR.Lr4n6xcKjCw6GxQw9NrTUybVG.EsdtKxFLgAOQjfnfk1NkJSetHxfl9Eb3G
- h1be6RfTpFRXWxOmjkaHraVauonRObxoVKMntNdiQnatd8XslCJzY0Xz8Ry_MMJ15DiHWeCMadon
- Y4DDurJki8KwsOKsfBo0ezuRfdgEEGNXbiMU4uAisOwgDKCmBiNZ.JQS6336E4k0D8Wj8oemrJIi
- OCub.H09qVfewPB6OAdsNOGpY1_TXUgew1z56dSHKrS1xsK8XQjyWFxrjVT7fGjFZcuGSD3UO39Z
- _6JWcICfEJV1XYJrHrHG1HRlb80yxo23JGiI.QmmWInKf720ixPWMdNeg6G8yE832VOrQ6v7e4DB
- 3gE.5KABJYTmYLWUzZVucsv_2gxlPVeeuoDJAPixoNpfUgSmAeypKkO.5iWdMQxFb8N.KLYciXpR
- DlE9LoBDDI2iKl7t6lfIEYfRIt3iHivMtVEFJPtLjypzQftwbU8wr3ZRpgPlaXWdEql0jjCk4.gB
- JMRQeKOpa_1yGY_OSVZsSihlJaqC53XFoMQLlspYyKAOEeToKz.GbtOaUwWrl8DzHWgxv0grzAaG
- hoxED2x.mM4G0XoLxul0PHz5s2QpmnvLiy5ddZUqnEK98hKxX1hlbI7yBJckmwDlvOMUx32Dfv6I
- neZmEfhrhSzUJdckF.z2Phfvo1vw_52sQarmRm8Mk63pcqyXEyxWdGaCrxlcVr5euXp_VUqSEi.C
- HupNbNa5g2xrNvIMfLiPo6Fd9BpvskMisatUTK1ITadC29yLq2T_YhJi1RzGv2KwE3oiAsN79q3N
- uwUlUW_rMNyYI_1_NyngPartsWTS2BGr5gd38BP7QOzBMYQXlP0kMG0SbOkBoZ7AWPTZX1gpsvfK
- OLmsd8DEQmtVCow0oqGx4iek1AnrZJF1KqZtB_rSU4q4PGP5gPm2RN2XYLJgAJFgujoRHFdWAhS6
- YCXywgR3NJAng5LRsxzCqtsbj37Nvp4aQ.Loj.1XsHL6e.Z4KbSEbIDeXUu0e5EJyPOlavcTqUsd
- p3Msnp2uNZCRNGQ.RN46_7vIOE3NQdvwnOcA2R6R.LG1rGCdlmIVbVp0OekEJNa.u6E.uwx3tuYw
- mYE1wgojijlGhKeUpvLVLpkjs.pMRtYtcypa19zyvwNiwrjppREs5TSdf3fLfLElU57tWRnNI_sH
- WSZ8M1eDoC6nzY4aggeVaQd4klnxYaa2FLnzaT4hdObE2o5Ma2b.l4BRM2ozYkNkvOUgFIAwkktE
- WGKKEqxcmrsG0LYJXhqka_qwnRSTs_wE5OrHS14z4CvXbDmCLwJLMMHmxSD4MmzZxyZo0O7wFjFw
- 7neY7QGB0kxxbZq7CrKVuSKD4EiG4C_Kvo9IadFIeGuRyhSWXKjxJGdFexnihknGPApOT7Vb9mhX
- SKbnWWkaaIk9w8qjpLxphAsoocIfx.gEg5KcEE3H6VCsIS_sJXcr6ruWeUiS8iH8tfGyklzw7v0z
- 1vWXZeEPTc.PjKsAoRf1WuxOUnBtITGG4b4A.9w3W5bh.ANt.YIUETjWqh1HF5514KiOLlt4nWdE
- vA4Syk5goOMBFhCSt44qT8I68pkzG4eHJhaF7vqYX4QgDsRCoV7G7g3RDq2Z1ujpqNpG9IyCkM4s
- XV_AdSGkwWu24vmh.5rCvaIFFpkov3joqMSNHF0YSm6YdhY_XZvis3cv88KCFlqWUZLR_N5YqO6J
- hDWDt6aiNTRdROnVzdGQrjZwXytHRcVCjxBw_ubrv0Ag2Dn9xyjlGZaen2w--
-X-Sonic-MF: <casey@schaufler-ca.com>
-X-Sonic-ID: 99b119e8-4acb-425f-b796-43590d472285
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic315.consmr.mail.ne1.yahoo.com with HTTP; Sat, 2 Dec 2023 00:17:52 +0000
-Received: by hermes--production-gq1-5cf8f76c44-d5256 (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 686028d743dd20ff6402fe24e5d0e2d9;
-          Sat, 02 Dec 2023 00:17:46 +0000 (UTC)
-Message-ID: <876cdd6b-6082-4503-b2fe-3bb11c30965a@schaufler-ca.com>
-Date:   Fri, 1 Dec 2023 16:17:44 -0800
+        Fri, 1 Dec 2023 19:20:13 -0500
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34B6CCF;
+        Fri,  1 Dec 2023 16:20:19 -0800 (PST)
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2c9b5c12898so34226401fa.2;
+        Fri, 01 Dec 2023 16:20:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701476417; x=1702081217; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=V7H5mtM4rdlF96TurskSVKsv77wngFKN9XzMokfXX3o=;
+        b=Jn43UGKFRFJ0+BEoGYvujtwfUqqKtIr6LDAE+RABaR+aVGqcnIx9X9jdWX7QQ8vIhF
+         E+loP/zR25iuxh77C4btFqjufM4WD3BO2iyr9QdKMy3yGDdswhGhTm5BhnKpzH++fMND
+         zGK4JuVbf316yQGLyUbTcV9WKT/UktTEHsfqJbJUTSbSRn9q/6/p8gjzreGNi/SmfCr3
+         pnE4OHHQKOcPdAIY3UXT0u+zXq3fVybVi4WWzvlKWrVN1lRZ1poPiJ5Lc1qAlyBMy1hf
+         19xNACl2sU2y+boBKntWDxToJ9O9xgm4rJmEJRv0/UPG0I5o8AHMU2uoTIaX3dJFq48F
+         +qdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701476417; x=1702081217;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=V7H5mtM4rdlF96TurskSVKsv77wngFKN9XzMokfXX3o=;
+        b=gIOVEQWQwbhgyaaxtu5zJHX9YrxLDozKa65p7yZFZ3XnQDZ+2UTERbXnoS+q31ndcw
+         P22HAiS1z0JdsQ8D4grM9jZizJEaNRxooKqL7IgBXFMx1sr0dA4/6Q2Tozfhq+lwyvuM
+         MCeABfqJiw3+o83O8Bpd4c3bEV8ToxHoq/Qd1S5qVgdIo1GTzO/4GvOzSPLB/58WkiYr
+         7IvClF9NCAwyr1DyBAOuVG2RtOsb1Tc827OScTX5uFC8519CddvS0SUz0lUrUfD2hbLD
+         ldOnyohNNbT9K72H0U+K+MuHZDRY/8+PpJTjPzGRnHyFT/1ApaN1CsY0akVNxbeWYX/U
+         TUcQ==
+X-Gm-Message-State: AOJu0YyIQYXyB5sJRa0qtUuuTaLChD+qCrslkclMvnKDilrM+kMxyquo
+        4lJR/sdi+eq0zwrodjLs/sM=
+X-Google-Smtp-Source: AGHT+IHIx/W2tOPuzPFRMcUv6dY0UL4yjmePC/SUMhNp+oiMbw0mgLKn5Mr6poXdbiv24WSxMFodQA==
+X-Received: by 2002:a2e:8895:0:b0:2c9:d874:6efc with SMTP id k21-20020a2e8895000000b002c9d8746efcmr1441290lji.89.1701476417363;
+        Fri, 01 Dec 2023 16:20:17 -0800 (PST)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id l13-20020a170906a40d00b00a18a9931dc1sm2365617ejz.105.2023.12.01.16.20.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Dec 2023 16:20:16 -0800 (PST)
+Message-ID: <d2fe8b0593a1009305e90d98a8bff984c1314748.camel@gmail.com>
+Subject: Re: [PATCH ipsec-next v3 5/9] libbpf: selftests: Add verifier tests
+ for CO-RE bitfield writes
+From:   Eduard Zingerman <eddyz87@gmail.com>
+To:     Daniel Xu <dxu@dxuuu.xyz>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, shuah@kernel.org,
+        andrii@kernel.org, steffen.klassert@secunet.com,
+        antony.antony@secunet.com, alexei.starovoitov@gmail.com,
+        yonghong.song@linux.dev, mykolal@fb.com, martin.lau@linux.dev,
+        song@kernel.org, john.fastabend@gmail.com, kpsingh@kernel.org,
+        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, devel@linux-ipsec.org,
+        netdev@vger.kernel.org
+Date:   Sat, 02 Dec 2023 02:20:15 +0200
+In-Reply-To: <ka2irjz53qjkax545o67mvouyytzqw3dvorqixe2q72crgzjpi@he2uiobuelvd>
+References: <cover.1701462010.git.dxu@dxuuu.xyz>
+         <e4d14fb5f07145ff4a367cc01d8dcf6c82581c88.1701462010.git.dxu@dxuuu.xyz>
+         <CAEf4Bzaz+_y=kxBpPmwYsvzaHypmL=ZBfOK12vLom04DRDWyPg@mail.gmail.com>
+         <ka2irjz53qjkax545o67mvouyytzqw3dvorqixe2q72crgzjpi@he2uiobuelvd>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.1 
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 23/23] integrity: Switch from rbtree to LSM-managed
- blob for integrity_iint_cache
-Content-Language: en-US
-To:     "Dr. Greg" <greg@enjellic.com>
-Cc:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
-        Paul Moore <paul@paul-moore.com>, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, chuck.lever@oracle.com, jlayton@kernel.org,
-        neilb@suse.de, kolga@netapp.com, Dai.Ngo@oracle.com,
-        tom@talpey.com, jmorris@namei.org, serge@hallyn.com,
-        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
-        dhowells@redhat.com, jarkko@kernel.org,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        mic@digikod.net, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
-        Casey Schaufler <casey@schaufler-ca.com>
-References: <20231107134012.682009-24-roberto.sassu@huaweicloud.com>
- <17befa132379d37977fc854a8af25f6d.paul@paul-moore.com>
- <2084adba3c27a606cbc5ed7b3214f61427a829dd.camel@huaweicloud.com>
- <CAHC9VhTTKac1o=RnQadu2xqdeKH8C_F+Wh4sY=HkGbCArwc8JQ@mail.gmail.com>
- <b6c51351be3913be197492469a13980ab379e412.camel@huaweicloud.com>
- <CAHC9VhSAryQSeFy0ZMexOiwBG-YdVGRzvh58=heH916DftcmWA@mail.gmail.com>
- <90eb8e9d-c63e-42d6-b951-f856f31590db@huaweicloud.com>
- <20231201010549.GA8923@wind.enjellic.com>
- <660e8516-ec1b-41b4-9e04-2b9fabbe59ca@schaufler-ca.com>
- <20231201235332.GA19345@wind.enjellic.com>
-From:   Casey Schaufler <casey@schaufler-ca.com>
-In-Reply-To: <20231201235332.GA19345@wind.enjellic.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Mailer: WebService/1.1.21896 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/1/2023 3:53 PM, Dr. Greg wrote:
-> On Fri, Dec 01, 2023 at 10:54:54AM -0800, Casey Schaufler wrote:
->
-> Good evening Casey, thanks for taking the time to respond.
->
->> On 11/30/2023 5:05 PM, Dr. Greg wrote:
->>> A suggestion has been made in this thread that there needs to be broad
->>> thinking on this issue, and by extension, other tough problems.  On
->>> that note, we would be interested in any thoughts regarding the notion
->>> of a long term solution for this issue being the migration of EVM to a
->>> BPF based implementation?
->>>
->>> There appears to be consensus that the BPF LSM will always go last, a
->>> BPF implementation would seem to address the EVM ordering issue.
->>>
->>> In a larger context, there have been suggestions in other LSM threads
->>> that BPF is the future for doing LSM's.  Coincident with that has come
->>> some disagreement about whether or not BPF embodies sufficient
->>> functionality for this role.
->>>
->>> The EVM codebase is reasonably modest with a very limited footprint of
->>> hooks that it handles.  A BPF implementation on this scale would seem
->>> to go a long ways in placing BPF sufficiency concerns to rest.
->>>
->>> Thoughts/issues?
->> Converting EVM to BPF looks like a 5 to 10 year process. Creating a
->> EVM design description to work from, building all the support functions
->> required, then getting sufficient reviews and testing isn't going to be
->> a walk in the park. That leaves out the issue of distribution of the
->> EVM-BPF programs. Consider how the rush to convert kernel internals to
->> Rust is progressing. EVM isn't huge, but it isn't trivial, either. Tetsuo
->> had a good hard look at converting TOMOYO to BPF, and concluded that it
->> wasn't practical. TOMOYO is considerably less complicated than EVM.
-> Interesting, thanks for the reflections.
->
-> On a functional line basis, EVM is 14% of the TOMOYO codebase, not
-> counting the IMA code.
+On Fri, 2023-12-01 at 17:10 -0700, Daniel Xu wrote:
+[...]
+> > > +SEC("tc")
+> > > +__description("single CO-RE bitfield roundtrip")
+> > > +__btf_path("btf__core_reloc_bitfields.bpf.o")
+> > > +__success __failure_unpriv
+> >=20
+> > do we want __failure_unpriv at all? Is this failure related to
+> > *bitfield* logic at all?
+>=20
+> Oh, I pre-emptively added it. From the docs, I thought __failure_unpriv
+> meant "don't try to load this as an unprivileged used cuz it'll fail".
+> And since I used the tc hook, I figured it'd fail.
 
-For EVM to be completely converted to BPF you'll need significant, but
-as yet undiscovered, changes in IMA and, most likely, the LSM infrastructure.
+Actually it means:
+"try to load as unprivileged user and expect failure,
+ report error on successful load".
 
-> Given your observations, one would than presume around a decade of
-> development effort to deliver a full featured LSM, ie. SELINUX, SMACK,
-> APPARMOR, TOMOYO in BPF form.
+In general, the meaning of "___xxx" and "___xxx_unpriv" annotations
+is identical, except first instructs to run the test in privileged mode,
+while second instructs to run test in unprivileged mode:
+- if only annotations w/o "*_unpriv" suffix are present the test would
+  be executed as privileged;
+- if only annotations with "*_unpriv" suffix are present the test would
+  be executed as unprivileged;
+- if both kinds of annotations are present the test would be executed
+  in both modes.
 
-That's not quite true. A new, from scratch LSM implementing something
-like SELinux, Smack or AppArmor would take considerably less time. Converting
-an existing LSM and being "bug compatible" is going to be painful.
-
-> Very useful information, we can now return the thread to what appears
-> is going to be the vexing implementation of:
->
-> lsm_set_order(LSM_ORDER_FU_I_REALLY_AM_GOING_TO_BE_THE_LAST_ONE_TO_RUN);
-
-Just so.
-
->
-> :-)
->
-> Have a good weekend.
->
-> As always,
-> Dr. Greg
->
-> The Quixote Project - Flailing at the Travails of Cybersecurity
->
+[...]
