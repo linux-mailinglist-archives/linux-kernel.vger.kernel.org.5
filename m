@@ -2,109 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A17B6801E88
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 21:44:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28938801EA0
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 22:22:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230020AbjLBUnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 15:43:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44952 "EHLO
+        id S231461AbjLBVHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 16:07:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjLBUnx (ORCPT
+        with ESMTP id S229450AbjLBVHa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 15:43:53 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D17E11A;
-        Sat,  2 Dec 2023 12:43:56 -0800 (PST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id E5B291FDC3;
-        Sat,  2 Dec 2023 20:43:54 +0000 (UTC)
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B21C713A23;
-        Sat,  2 Dec 2023 20:43:54 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-        by imap1.dmz-prg2.suse.org with ESMTPSA
-        id UEU0KQqXa2VzLQAAD6G6ig
-        (envelope-from <jdelvare@suse.de>); Sat, 02 Dec 2023 20:43:54 +0000
-Date:   Sat, 2 Dec 2023 21:43:53 +0100
-From:   Jean Delvare <jdelvare@suse.de>
-To:     Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>
-Cc:     linux-leds@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH] leds: rgb: Drop obsolete dependency on COMPILE_TEST
-Message-ID: <20231202214353.7c02f23c@endymion.delvare>
-Organization: SUSE Linux
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.34; x86_64-suse-linux-gnu)
+        Sat, 2 Dec 2023 16:07:30 -0500
+Received: from out203-205-221-210.mail.qq.com (out203-205-221-210.mail.qq.com [203.205.221.210])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF8C0107;
+        Sat,  2 Dec 2023 13:07:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+        s=s201512; t=1701551252;
+        bh=VWfb+Oof5K+/qAsblEllhoGVJptKMJhsPx5j7DgelbA=;
+        h=From:To:Cc:Subject:Date;
+        b=eTNUBpMirTPOzb168hbFitzXTV0rCuYP3RNp7TQ699xf/TP0G149xq/fh+TzEhw2W
+         ttoSB1Wu/Voo1l05NZAU4hLpE2r9S5maaUD3aRE5V1/nue6H9Jv9SO/Yl/b5tGlj7f
+         FmpG1Gn9nyPAss5b7GFryhRqSwcj2RuVW8XZBrF4=
+Received: from rm-workspace.. ([116.128.244.171])
+        by newxmesmtplogicsvrszc5-0.qq.com (NewEsmtp) with SMTP
+        id 1DBA2603; Sun, 03 Dec 2023 05:07:27 +0800
+X-QQ-mid: xmsmtpt1701551247thbhr8aak
+Message-ID: <tencent_03EDD0CAFBF93A9667CFCA1B68EDB4C4A109@qq.com>
+X-QQ-XMAILINFO: MmPNY57tR1XnAJhBNiCUAVr9YIJBvy1yMV2dHgPMD1aC0rNbkcD/tg5g7ycdRu
+         0mHJ7BGScmA71+pO1OwAngMhGWsaOXnWSxo+r4wg71Zgy8KUwOp/rwr8ty/ACUvltuOBciBk0PKy
+         nXhP5DcExj+LrbechxpBcb1T+8+ZgQnFeE+TkZt92z43sZD5a5DCS8OrjMdpAzWmfPjZVQQ4tyfG
+         VuHwz2QO3zoTUipwD6YVud2a9rXkleFS1hHCm7U2/jUgdZFVpAX4h8MyhfTdKQkr+V5i+mTYPZ3D
+         tPOKDnjGt/huw9eGT8FPYKXJNYHu8tRaZXNbFpbPb8aDHMloxOojPaasdi8moPTGTYj3r/iR0f32
+         VJBbtCenwpGwtxngQGZ+q8Is5DOrWTFCz+eWl36wR3/LHisef6LhIn3/4Tqi0Be/xLp/IJVi1h7i
+         ZjejXM7M/QXvl77i721HncndbuIyIUYWMxfgFv99BnXnBdi9suHIE+R6xWLcPgWYjuYExvKVj5fO
+         sF5a8ePLTV5KpczPzTsfrF1Sug+79Ba6n6DKiyBUzAfdL2eV0FLhkWdFXnIBtsFOsJFLKGhQxmCw
+         tGduW+ME3Eg/lEOW1jYQrhHG9+USxxiFkmsUsK64F2qQuRiHVX9/He4sxm1j4YQQuqdZN8yFmlGA
+         n7heHIrj/gf/xPR7XdcH+WV0iwVv4a46Z01tPWElvxZU2sQpwurZhqb1cBDa5vfOoGPiZyhjWLbj
+         DodoSyTJtiBnqu7Sa8Ko4aXeToHOLsOTFUUOcNddYdgx/u6h1/EgPEvL8OQKnOZnMkZWNsMvbqru
+         csVo/mKA670PsRZVQwxfEmHerPHWL2gkJAYLW+0lE34bd1cOAIvM90l9KQQQq4P8QcOkp/+Futd+
+         J3MY6Kfh64dyVjuEWgLYb3cpBUjiiHhzvrnzVdVx8DK3pTEZkP7mG9DawYTBKYBkLGNONyYTWCpX
+         rr+yFjaqCdcvTo9iuekP3KTNtGqD9lUIqg8DizK6ZndwSh0ZRnAeobrvaA+NW8
+X-QQ-XMRINFO: OD9hHCdaPRBwq3WW+NvGbIU=
+From:   chenxiaosongemail@foxmail.com
+To:     trond.myklebust@hammerspace.com, anna@kernel.org,
+        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
+        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com
+Cc:     linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        chenxiaosongemail@foxmail.com, chenxiaosong@kylinos.cn,
+        liuzhengyuan@kylinos.cn, huhai@kylinos.cn, liuyun01@kylinos.cn
+Subject: [PATCH] NFSv4, NFSD: move enum nfs_cb_opnum4 to include/linux/nfs4.h
+Date:   Sat,  2 Dec 2023 21:07:25 +0000
+X-OQ-MSGID: <20231202210725.706925-1-chenxiaosongemail@foxmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spamd-Bar: +++++++++++++
-X-Spam-Score: 13.28
-X-Rspamd-Server: rspamd1
-Authentication-Results: smtp-out2.suse.de;
-        dkim=none;
-        spf=softfail (smtp-out2.suse.de: 2a07:de40:b281:104:10:150:64:97 is neither permitted nor denied by domain of jdelvare@suse.de) smtp.mailfrom=jdelvare@suse.de;
-        dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.de (policy=none)
-X-Rspamd-Queue-Id: E5B291FDC3
-X-Spamd-Result: default: False [13.28 / 50.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         ARC_NA(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         RCPT_COUNT_THREE(0.00)[4];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         NEURAL_SPAM_SHORT(2.99)[0.997];
-         R_SPF_SOFTFAIL(4.60)[~all];
-         HAS_ORG_HEADER(0.00)[];
-         RCVD_COUNT_THREE(0.00)[3];
-         MX_GOOD(-0.01)[];
-         NEURAL_SPAM_LONG(3.50)[1.000];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         R_DKIM_NA(2.20)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_TLS_ALL(0.00)[];
-         BAYES_HAM(-0.00)[29.94%];
-         DMARC_POLICY_SOFTFAIL(0.10)[suse.de : No valid SPF, No valid DKIM,none]
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit 0166dc11be91 ("of: make CONFIG_OF user selectable"), it
-is possible to test-build any driver which depends on OF on any
-architecture by explicitly selecting OF. Therefore depending on
-COMPILE_TEST as an alternative is no longer needed.
+From: ChenXiaoSong <chenxiaosong@kylinos.cn>
 
-Signed-off-by: Jean Delvare <jdelvare@suse.de>
-Cc: Pavel Machek <pavel@ucw.cz>
-Cc: Lee Jones <lee@kernel.org>
+Callback operations enum is defined in client and server, move it to
+common header file.
+
+Signed-off-by: ChenXiaoSong <chenxiaosong@kylinos.cn>
 ---
- drivers/leds/rgb/Kconfig |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/nfs/callback.h      | 19 -------------------
+ fs/nfsd/nfs4callback.c | 26 +-------------------------
+ include/linux/nfs4.h   | 22 ++++++++++++++++++++++
+ 3 files changed, 23 insertions(+), 44 deletions(-)
 
---- linux-6.6.orig/drivers/leds/rgb/Kconfig
-+++ linux-6.6/drivers/leds/rgb/Kconfig
-@@ -4,7 +4,7 @@ if LEDS_CLASS_MULTICOLOR
+diff --git a/fs/nfs/callback.h b/fs/nfs/callback.h
+index ccd4f245cae2..0279b78b5fc9 100644
+--- a/fs/nfs/callback.h
++++ b/fs/nfs/callback.h
+@@ -19,25 +19,6 @@ enum nfs4_callback_procnum {
+ 	CB_COMPOUND = 1,
+ };
  
- config LEDS_GROUP_MULTICOLOR
- 	tristate "LEDs group multi-color support"
--	depends on OF || COMPILE_TEST
-+	depends on OF
- 	help
- 	  This option enables support for monochrome LEDs that are grouped
- 	  into multicolor LEDs which is useful in the case where LEDs of
-
-
+-enum nfs4_callback_opnum {
+-	OP_CB_GETATTR = 3,
+-	OP_CB_RECALL  = 4,
+-/* Callback operations new to NFSv4.1 */
+-	OP_CB_LAYOUTRECALL  = 5,
+-	OP_CB_NOTIFY        = 6,
+-	OP_CB_PUSH_DELEG    = 7,
+-	OP_CB_RECALL_ANY    = 8,
+-	OP_CB_RECALLABLE_OBJ_AVAIL = 9,
+-	OP_CB_RECALL_SLOT   = 10,
+-	OP_CB_SEQUENCE      = 11,
+-	OP_CB_WANTS_CANCELLED = 12,
+-	OP_CB_NOTIFY_LOCK   = 13,
+-	OP_CB_NOTIFY_DEVICEID = 14,
+-/* Callback operations new to NFSv4.2 */
+-	OP_CB_OFFLOAD = 15,
+-	OP_CB_ILLEGAL = 10044,
+-};
+-
+ struct nfs4_slot;
+ struct cb_process_state {
+ 	__be32			drc_status;
+diff --git a/fs/nfsd/nfs4callback.c b/fs/nfsd/nfs4callback.c
+index 92bc109dabe6..30aa241038eb 100644
+--- a/fs/nfsd/nfs4callback.c
++++ b/fs/nfsd/nfs4callback.c
+@@ -31,6 +31,7 @@
+  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  */
+ 
++#include <linux/nfs4.h>
+ #include <linux/sunrpc/clnt.h>
+ #include <linux/sunrpc/xprt.h>
+ #include <linux/sunrpc/svc_xprt.h>
+@@ -101,31 +102,6 @@ static int decode_cb_fattr4(struct xdr_stream *xdr, uint32_t *bitmap,
+ 	return 0;
+ }
+ 
+-/*
+- *	nfs_cb_opnum4
+- *
+- *	enum nfs_cb_opnum4 {
+- *		OP_CB_GETATTR		= 3,
+- *		  ...
+- *	};
+- */
+-enum nfs_cb_opnum4 {
+-	OP_CB_GETATTR			= 3,
+-	OP_CB_RECALL			= 4,
+-	OP_CB_LAYOUTRECALL		= 5,
+-	OP_CB_NOTIFY			= 6,
+-	OP_CB_PUSH_DELEG		= 7,
+-	OP_CB_RECALL_ANY		= 8,
+-	OP_CB_RECALLABLE_OBJ_AVAIL	= 9,
+-	OP_CB_RECALL_SLOT		= 10,
+-	OP_CB_SEQUENCE			= 11,
+-	OP_CB_WANTS_CANCELLED		= 12,
+-	OP_CB_NOTIFY_LOCK		= 13,
+-	OP_CB_NOTIFY_DEVICEID		= 14,
+-	OP_CB_OFFLOAD			= 15,
+-	OP_CB_ILLEGAL			= 10044
+-};
+-
+ static void encode_nfs_cb_opnum4(struct xdr_stream *xdr, enum nfs_cb_opnum4 op)
+ {
+ 	__be32 *p;
+diff --git a/include/linux/nfs4.h b/include/linux/nfs4.h
+index c11c4db34639..ef8d2d618d5b 100644
+--- a/include/linux/nfs4.h
++++ b/include/linux/nfs4.h
+@@ -869,4 +869,26 @@ enum {
+ 	RCA4_TYPE_MASK_OTHER_LAYOUT_MAX	= 15,
+ };
+ 
++enum nfs_cb_opnum4 {
++	OP_CB_GETATTR = 3,
++	OP_CB_RECALL  = 4,
++
++	/* Callback operations new to NFSv4.1 */
++	OP_CB_LAYOUTRECALL  = 5,
++	OP_CB_NOTIFY        = 6,
++	OP_CB_PUSH_DELEG    = 7,
++	OP_CB_RECALL_ANY    = 8,
++	OP_CB_RECALLABLE_OBJ_AVAIL = 9,
++	OP_CB_RECALL_SLOT   = 10,
++	OP_CB_SEQUENCE      = 11,
++	OP_CB_WANTS_CANCELLED = 12,
++	OP_CB_NOTIFY_LOCK   = 13,
++	OP_CB_NOTIFY_DEVICEID = 14,
++
++	/* Callback operations new to NFSv4.2 */
++	OP_CB_OFFLOAD = 15,
++
++	OP_CB_ILLEGAL = 10044,
++};
++
+ #endif
 -- 
-Jean Delvare
-SUSE L3 Support
+2.34.1
+
