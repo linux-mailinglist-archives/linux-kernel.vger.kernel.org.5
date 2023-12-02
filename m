@@ -2,210 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 844BD801BC7
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 10:46:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56771801BAA
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 10:36:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231984AbjLBJqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 04:46:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53504 "EHLO
+        id S231851AbjLBJX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 04:23:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbjLBJqc (ORCPT
+        with ESMTP id S230038AbjLBJX1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 04:46:32 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBAA1181;
-        Sat,  2 Dec 2023 01:46:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701510396; x=1733046396;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references;
-  bh=D/v0y2NA6xRqP9bnDret0xs9lulZFX+zXryP5QvmzLE=;
-  b=fXwYKADO/y9Mdvz1hDolBDulWghnXQkIyDM9NQojKK/7FwEwhyvhVSQD
-   vIeErtLfJZBwbrm99G20ZEbhwF7eB1pRw+JZWnyI8x+NIUHsoUWy7kTEA
-   Lpn/B1KyTbmO6NBybCw4amaFn++gDWH6t0WzfWvPjMy01AhCNvNdFLCxP
-   4k73P6yL4+GD1hFDU9LUuDqTRJl/es68ZPYqt5aPFo0PN8RKQO0tSEi7l
-   B3oErvl5ciBW9if9Dip5Tx+Daq4lmz0grTUE+tUbLz9bS9YG0eAN7CR4P
-   yIFMAxEh79+rXf6pL8Tw9zRt/5uICipT8NbJGtJYeXaRR83OYl3QQcNPz
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="372982756"
-X-IronPort-AV: E=Sophos;i="6.04,245,1695711600"; 
-   d="scan'208";a="372982756"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2023 01:46:36 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10911"; a="773705785"
-X-IronPort-AV: E=Sophos;i="6.04,245,1695711600"; 
-   d="scan'208";a="773705785"
-Received: from yzhao56-desk.sh.intel.com ([10.239.159.62])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2023 01:46:33 -0800
-From:   Yan Zhao <yan.y.zhao@intel.com>
-To:     iommu@lists.linux.dev, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     alex.williamson@redhat.com, jgg@nvidia.com, pbonzini@redhat.com,
-        seanjc@google.com, joro@8bytes.org, will@kernel.org,
-        robin.murphy@arm.com, kevin.tian@intel.com,
-        baolu.lu@linux.intel.com, dwmw2@infradead.org, yi.l.liu@intel.com,
-        Yan Zhao <yan.y.zhao@intel.com>
-Subject: [RFC PATCH 06/42] KVM: Register/Unregister importers to KVM exported TDP
-Date:   Sat,  2 Dec 2023 17:17:38 +0800
-Message-Id: <20231202091738.13770-1-yan.y.zhao@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20231202091211.13376-1-yan.y.zhao@intel.com>
-References: <20231202091211.13376-1-yan.y.zhao@intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Sat, 2 Dec 2023 04:23:27 -0500
+X-Greylist: delayed 314 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 02 Dec 2023 01:23:31 PST
+Received: from mail-m92244.xmail.ntesmail.com (mail-m92244.xmail.ntesmail.com [103.126.92.244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1D689E;
+        Sat,  2 Dec 2023 01:23:31 -0800 (PST)
+DKIM-Signature: a=rsa-sha256;
+        b=Th2v5iV/l2L1wbN87SyMQIQyavtk6yH9CCgzrnj4JP6zyjT9Cr47YT2H0osyJzpzE+e2EQcy66wJfupbGmX62VqJxLyQscUwiG9SfnU9mp9YYYoZXw3NHuTTuJxsm/C6V5OQutvvdavOljHCIh0q2UowQNyqNd20SkvEugytRB8=;
+        s=default; c=relaxed/relaxed; d=rock-chips.com; v=1;
+        bh=vyX/lxSXq2Q5RNwAmsKFUuXJAonqdZmX1UmuleUYFkE=;
+        h=date:mime-version:subject:message-id:from;
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by mail-m11876.qiye.163.com (Hmail) with ESMTPA id EE86B3C030D;
+        Sat,  2 Dec 2023 17:18:07 +0800 (CST)
+From:   David Wu <david.wu@rock-chips.com>
+To:     netdev@vger.kernel.org, sebastian.reichel@collabora.com
+Cc:     davem@davemloft.net, linux-kernel@vger.kernel.org,
+        David Wu <david.wu@rock-chips.com>
+Subject: [PATCH] net: ethernet: stmmac: dwmac-rk: Repair the clock handling
+Date:   Sat,  2 Dec 2023 17:18:06 +0800
+Message-Id: <20231202091806.179512-1-david.wu@rock-chips.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+        tZV1koWUFDSUNOT01LS0k3V1ktWUFJV1kPCRoVCBIfWUFZQ00aHlZMTkJDT09IHh4YShpVEwETFh
+        oSFyQUDg9ZV1kYEgtZQVlOQ1VJSVVMVUpKT1lXWRYaDxIVHRRZQVlPS0hVSk1PSUxOVUpLS1VKQk
+        tLWQY+
+X-HM-Tid: 0a8c29d228ce2eb2kusnee86b3c030d
+X-HM-MType: 1
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PjY6FRw6Ojw4NAsdQxpPMhIZ
+        N0MKCjJVSlVKTEtKTktDTUNDQ09IVTMWGhIXVR8aDRIfVQwOOwkUGBBWGBMSCwhVGBQWRVlXWRIL
+        WUFZTkNVSUlVTFVKSk9ZV1kIAVlBTE5CSTcG
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Each TDP exported by KVM has its own list of importers. External components
-can register/unregister itself as an importer with a unique importer ops.
+It's clarier and simpler to replace devm_clk_bulk_get_optional
+via devm_clk_bulk_get_all. And it may be a different clocks
+combination for different Socs, so for the clk_mac_speed, it is
+more correct to obtain the clock directly by its name.
 
-The sequence for external components to register/unregister as importer is
-like:
-1. call kvm_tdp_fd_get() to get a KVM TDP fd object.
-2. call tdp_fd->ops->register_importer() to register itself as an importer.
-3. call tdp_fd->ops->unregister_importer() to unregister itself as
-   importer.
-4. call kvm_tdp_fd_put() to put the KVM TDP fd object.
-
-When destroying a KVM TDP fd object, all importers are force-unregistered.
-There's no extra notification to the importers at that time because the
-force-unregister should only happen when importers calls kvm_tdp_fd_put()
-without calling tdp_fd->ops->unregister_importer() first.
-
-Signed-off-by: Yan Zhao <yan.y.zhao@intel.com>
+Fixes: ea449f7fa0bf ("net: ethernet: stmmac: dwmac-rk: rework optional clock handling")
+Signed-off-by: David Wu <david.wu@rock-chips.com>
 ---
- include/linux/kvm_host.h |  5 +++
- virt/kvm/tdp_fd.c        | 68 +++++++++++++++++++++++++++++++++++++++-
- 2 files changed, 72 insertions(+), 1 deletion(-)
+ .../net/ethernet/stmicro/stmmac/dwmac-rk.c    | 83 ++++++++-----------
+ 1 file changed, 33 insertions(+), 50 deletions(-)
 
-diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index 5a74b2b0ac81f..f73d32eef8833 100644
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -2334,6 +2334,11 @@ struct kvm_exported_tdp {
- 
- 	struct kvm *kvm;
- 	u32 as_id;
-+
-+	/* protect importers list */
-+	spinlock_t importer_lock;
-+	struct list_head importers;
-+
- 	/* head at kvm->exported_tdp_list */
- 	struct list_head list_node;
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-rk.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-rk.c
+index 382e8de1255d..fff18037e68c 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-rk.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-rk.c
+@@ -39,24 +39,6 @@ struct rk_gmac_ops {
+ 	u32 regs[];
  };
-diff --git a/virt/kvm/tdp_fd.c b/virt/kvm/tdp_fd.c
-index 7e68199ea9643..3271da1a4b2c1 100644
---- a/virt/kvm/tdp_fd.c
-+++ b/virt/kvm/tdp_fd.c
-@@ -13,6 +13,13 @@ static inline int is_tdp_fd_file(struct file *file);
- static const struct file_operations kvm_tdp_fd_fops;
- static const struct kvm_exported_tdp_ops exported_tdp_ops;
  
-+struct kvm_tdp_importer {
-+	struct kvm_tdp_importer_ops *ops;
-+	void *data;
-+	struct list_head node;
-+};
-+static void kvm_tdp_unregister_all_importers(struct kvm_exported_tdp *tdp);
-+
- int kvm_create_tdp_fd(struct kvm *kvm, struct kvm_create_tdp_fd *ct)
+-static const char * const rk_clocks[] = {
+-	"aclk_mac", "pclk_mac", "mac_clk_tx", "clk_mac_speed",
+-};
+-
+-static const char * const rk_rmii_clocks[] = {
+-	"mac_clk_rx", "clk_mac_ref", "clk_mac_refout",
+-};
+-
+-enum rk_clocks_index {
+-	RK_ACLK_MAC = 0,
+-	RK_PCLK_MAC,
+-	RK_MAC_CLK_TX,
+-	RK_CLK_MAC_SPEED,
+-	RK_MAC_CLK_RX,
+-	RK_CLK_MAC_REF,
+-	RK_CLK_MAC_REFOUT,
+-};
+-
+ struct rk_priv_data {
+ 	struct platform_device *pdev;
+ 	phy_interface_t phy_iface;
+@@ -73,6 +55,7 @@ struct rk_priv_data {
+ 	int num_clks;
+ 	struct clk *clk_mac;
+ 	struct clk *clk_phy;
++	struct clk *clk_mac_speed;
+ 
+ 	struct reset_control *phy_reset;
+ 
+@@ -116,12 +99,11 @@ static void px30_set_to_rmii(struct rk_priv_data *bsp_priv)
+ 
+ static void px30_set_rmii_speed(struct rk_priv_data *bsp_priv, int speed)
  {
- 	struct kvm_exported_tdp *tdp;
-@@ -56,6 +63,9 @@ int kvm_create_tdp_fd(struct kvm *kvm, struct kvm_create_tdp_fd *ct)
- 	if (ret)
- 		goto out;
+-	struct clk *clk_mac_speed = bsp_priv->clks[RK_CLK_MAC_SPEED].clk;
+ 	struct device *dev = &bsp_priv->pdev->dev;
+ 	int ret;
  
-+	INIT_LIST_HEAD(&tdp->importers);
-+	spin_lock_init(&tdp->importer_lock);
-+
- 	tdp_fd->file = anon_inode_getfile("tdp_fd", &kvm_tdp_fd_fops,
- 					tdp_fd, O_RDWR | O_CLOEXEC);
- 	if (!tdp_fd->file) {
-@@ -107,6 +117,7 @@ static int kvm_tdp_fd_release(struct inode *inode, struct file *file)
- 	list_del(&tdp->list_node);
- 	spin_unlock(&tdp->kvm->exported_tdplist_lock);
+-	if (!clk_mac_speed) {
+-		dev_err(dev, "%s: Missing clk_mac_speed clock\n", __func__);
++	if (!bsp_priv->clk_mac_speed) {
++		dev_err(dev, "Missing clk_mac_speed clock\n");
+ 		return;
+ 	}
  
-+	kvm_tdp_unregister_all_importers(tdp);
- 	kvm_arch_exported_tdp_destroy(tdp);
- 	kvm_put_kvm(tdp->kvm);
- 	kfree(tdp);
-@@ -141,12 +152,67 @@ static inline int is_tdp_fd_file(struct file *file)
- static int kvm_tdp_register_importer(struct kvm_tdp_fd *tdp_fd,
- 				     struct kvm_tdp_importer_ops *ops, void *data)
+@@ -129,7 +111,7 @@ static void px30_set_rmii_speed(struct rk_priv_data *bsp_priv, int speed)
+ 		regmap_write(bsp_priv->grf, PX30_GRF_GMAC_CON1,
+ 			     PX30_GMAC_SPEED_10M);
+ 
+-		ret = clk_set_rate(clk_mac_speed, 2500000);
++		ret = clk_set_rate(bsp_priv->clk_mac_speed, 2500000);
+ 		if (ret)
+ 			dev_err(dev, "%s: set clk_mac_speed rate 2500000 failed: %d\n",
+ 				__func__, ret);
+@@ -137,7 +119,7 @@ static void px30_set_rmii_speed(struct rk_priv_data *bsp_priv, int speed)
+ 		regmap_write(bsp_priv->grf, PX30_GRF_GMAC_CON1,
+ 			     PX30_GMAC_SPEED_100M);
+ 
+-		ret = clk_set_rate(clk_mac_speed, 25000000);
++		ret = clk_set_rate(bsp_priv->clk_mac_speed, 25000000);
+ 		if (ret)
+ 			dev_err(dev, "%s: set clk_mac_speed rate 25000000 failed: %d\n",
+ 				__func__, ret);
+@@ -1079,11 +1061,15 @@ static void rk3568_set_to_rmii(struct rk_priv_data *bsp_priv)
+ 
+ static void rk3568_set_gmac_speed(struct rk_priv_data *bsp_priv, int speed)
  {
--	return -EOPNOTSUPP;
-+	struct kvm_tdp_importer *importer, *tmp;
-+	struct kvm_exported_tdp *tdp;
-+
-+	if (!tdp_fd || !tdp_fd->priv || !ops)
-+		return -EINVAL;
-+
-+	tdp = tdp_fd->priv;
-+	importer = kzalloc(sizeof(*importer), GFP_KERNEL);
-+	if (!importer)
-+		return -ENOMEM;
-+
-+	spin_lock(&tdp->importer_lock);
-+	list_for_each_entry(tmp, &tdp->importers, node) {
-+		if (tmp->ops != ops)
-+			continue;
-+
-+		kfree(importer);
-+		spin_unlock(&tdp->importer_lock);
-+		return -EBUSY;
-+	}
-+
-+	importer->ops = ops;
-+	importer->data = data;
-+	list_add(&importer->node, &tdp->importers);
-+
-+	spin_unlock(&tdp->importer_lock);
-+
-+	return 0;
- }
+-	struct clk *clk_mac_speed = bsp_priv->clks[RK_CLK_MAC_SPEED].clk;
+ 	struct device *dev = &bsp_priv->pdev->dev;
+ 	unsigned long rate;
+ 	int ret;
  
- static void kvm_tdp_unregister_importer(struct kvm_tdp_fd *tdp_fd,
- 					struct kvm_tdp_importer_ops *ops)
- {
-+	struct kvm_tdp_importer *importer, *n;
-+	struct kvm_exported_tdp *tdp;
-+
-+	if (!tdp_fd || !tdp_fd->priv)
++	if (!bsp_priv->clk_mac_speed) {
++		dev_err(dev, "Missing clk_mac_speed clock\n");
 +		return;
-+
-+	tdp = tdp_fd->priv;
-+	spin_lock(&tdp->importer_lock);
-+	list_for_each_entry_safe(importer, n, &tdp->importers, node) {
-+		if (importer->ops != ops)
-+			continue;
-+
-+		list_del(&importer->node);
-+		kfree(importer);
 +	}
-+	spin_unlock(&tdp->importer_lock);
-+}
 +
-+static void kvm_tdp_unregister_all_importers(struct kvm_exported_tdp *tdp)
-+{
-+	struct kvm_tdp_importer *importer, *n;
-+
-+	spin_lock(&tdp->importer_lock);
-+	list_for_each_entry_safe(importer, n, &tdp->importers, node) {
-+		list_del(&importer->node);
-+		kfree(importer);
+ 	switch (speed) {
+ 	case 10:
+ 		rate = 2500000;
+@@ -1099,7 +1085,7 @@ static void rk3568_set_gmac_speed(struct rk_priv_data *bsp_priv, int speed)
+ 		return;
+ 	}
+ 
+-	ret = clk_set_rate(clk_mac_speed, rate);
++	ret = clk_set_rate(bsp_priv->clk_mac_speed, rate);
+ 	if (ret)
+ 		dev_err(dev, "%s: set clk_mac_speed rate %ld failed %d\n",
+ 			__func__, rate, ret);
+@@ -1385,11 +1371,15 @@ static void rv1126_set_to_rmii(struct rk_priv_data *bsp_priv)
+ 
+ static void rv1126_set_rgmii_speed(struct rk_priv_data *bsp_priv, int speed)
+ {
+-	struct clk *clk_mac_speed = bsp_priv->clks[RK_CLK_MAC_SPEED].clk;
+ 	struct device *dev = &bsp_priv->pdev->dev;
+ 	unsigned long rate;
+ 	int ret;
+ 
++	if (!bsp_priv->clk_mac_speed) {
++		dev_err(dev, "Missing clk_mac_speed clock\n");
++		return;
 +	}
-+	spin_unlock(&tdp->importer_lock);
++
+ 	switch (speed) {
+ 	case 10:
+ 		rate = 2500000;
+@@ -1405,7 +1395,7 @@ static void rv1126_set_rgmii_speed(struct rk_priv_data *bsp_priv, int speed)
+ 		return;
+ 	}
+ 
+-	ret = clk_set_rate(clk_mac_speed, rate);
++	ret = clk_set_rate(bsp_priv->clk_mac_speed, rate);
+ 	if (ret)
+ 		dev_err(dev, "%s: set clk_mac_speed rate %ld failed %d\n",
+ 			__func__, rate, ret);
+@@ -1413,11 +1403,15 @@ static void rv1126_set_rgmii_speed(struct rk_priv_data *bsp_priv, int speed)
+ 
+ static void rv1126_set_rmii_speed(struct rk_priv_data *bsp_priv, int speed)
+ {
+-	struct clk *clk_mac_speed = bsp_priv->clks[RK_CLK_MAC_SPEED].clk;
+ 	struct device *dev = &bsp_priv->pdev->dev;
+ 	unsigned long rate;
+ 	int ret;
+ 
++	if (!bsp_priv->clk_mac_speed) {
++		dev_err(dev, "Missing clk_mac_speed clock\n");
++		return;
++	}
++
+ 	switch (speed) {
+ 	case 10:
+ 		rate = 2500000;
+@@ -1430,7 +1424,7 @@ static void rv1126_set_rmii_speed(struct rk_priv_data *bsp_priv, int speed)
+ 		return;
+ 	}
+ 
+-	ret = clk_set_rate(clk_mac_speed, rate);
++	ret = clk_set_rate(bsp_priv->clk_mac_speed, rate);
+ 	if (ret)
+ 		dev_err(dev, "%s: set clk_mac_speed rate %ld failed %d\n",
+ 			__func__, rate, ret);
+@@ -1492,31 +1486,14 @@ static int rk_gmac_clk_init(struct plat_stmmacenet_data *plat)
+ 	struct rk_priv_data *bsp_priv = plat->bsp_priv;
+ 	struct device *dev = &bsp_priv->pdev->dev;
+ 	int phy_iface = bsp_priv->phy_iface;
+-	int i, j, ret;
++	int ret;
+ 
+ 	bsp_priv->clk_enabled = false;
+ 
+-	bsp_priv->num_clks = ARRAY_SIZE(rk_clocks);
+-	if (phy_iface == PHY_INTERFACE_MODE_RMII)
+-		bsp_priv->num_clks += ARRAY_SIZE(rk_rmii_clocks);
+-
+-	bsp_priv->clks = devm_kcalloc(dev, bsp_priv->num_clks,
+-				      sizeof(*bsp_priv->clks), GFP_KERNEL);
+-	if (!bsp_priv->clks)
+-		return -ENOMEM;
+-
+-	for (i = 0; i < ARRAY_SIZE(rk_clocks); i++)
+-		bsp_priv->clks[i].id = rk_clocks[i];
+-
+-	if (phy_iface == PHY_INTERFACE_MODE_RMII) {
+-		for (j = 0; j < ARRAY_SIZE(rk_rmii_clocks); j++)
+-			bsp_priv->clks[i++].id = rk_rmii_clocks[j];
+-	}
+-
+-	ret = devm_clk_bulk_get_optional(dev, bsp_priv->num_clks,
+-					 bsp_priv->clks);
+-	if (ret)
++	ret = devm_clk_bulk_get_all(dev, &bsp_priv->clks);
++	if (ret <= 0)
+ 		return dev_err_probe(dev, ret, "Failed to get clocks\n");
++	bsp_priv->num_clks = ret;
+ 
+ 	/* "stmmaceth" will be enabled by the core */
+ 	bsp_priv->clk_mac = devm_clk_get(dev, "stmmaceth");
+@@ -1538,6 +1515,12 @@ static int rk_gmac_clk_init(struct plat_stmmacenet_data *plat)
+ 		clk_set_rate(bsp_priv->clk_phy, 50000000);
+ 	}
+ 
++	/* get option clock */
++	bsp_priv->clk_mac_speed = devm_clk_get(dev, "clk_mac_speed");
++	ret = PTR_ERR_OR_ZERO(bsp_priv->clk_mac_speed);
++	if (ret)
++		bsp_priv->clk_mac_speed = NULL;
++
+ 	return 0;
  }
  
- static void *kvm_tdp_get_metadata(struct kvm_tdp_fd *tdp_fd)
 -- 
-2.17.1
+2.25.1
 
