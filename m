@@ -2,156 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E277C801B7B
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 09:21:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 401C0801B82
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 09:31:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230005AbjLBITp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 03:19:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35734 "EHLO
+        id S230211AbjLBI3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 03:29:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjLBITn (ORCPT
+        with ESMTP id S229379AbjLBI3x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 03:19:43 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D8F1198;
-        Sat,  2 Dec 2023 00:19:50 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-a00ac0101d9so419348466b.0;
-        Sat, 02 Dec 2023 00:19:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701505188; x=1702109988; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ngS2ris1InPJCJ/71s9B7T9BRtWlJbWZ8eermDVsAPc=;
-        b=GFhgzukWyDXg7MgnY46Fk/3BnJ5WW7jIrguE3BWfbAs5NSPlxS04R6SzdtvZVx3o4I
-         QLEhUdc805I1Trt3h+GOp5mJWjl/7GI6oJscoHzMqbh7Xty6KdwQK5QDlfCOCBb7t6bJ
-         umMnf3ka3H8D8lilraegnFFK7xJX4SOliNj4Fofyc/SuDu+DWnmzNxWUKzBeP45FYZqr
-         Nb9fmqa/IdmQCrJQnOgeAkQVFz5LZ3Me9EYdqkgFLovZa5HnARtp5m1ZfncT+BFPvGFA
-         EfwzdSHOhhaLY0nlTbX7AgzWGmAATo7Y/EqhhiGjuU2oE5PzzOlaowahxWMTiP27jA6u
-         f7yw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701505188; x=1702109988;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ngS2ris1InPJCJ/71s9B7T9BRtWlJbWZ8eermDVsAPc=;
-        b=Ze30m9oI8c1boZ6E5rFrURt2w1jkmUqB3xeQEEJsMSmGkBw/w1DFaX6qItlOWP5Mk4
-         5fchMO5v/rwyuw2EIJd7uIkA15Q4WJiw0giSbIdBLfaYa6ubW7X3WNtN/NdZSprakUWP
-         zIDf+AAwvmvKrOexWQ8F70TJhVxbwOnJot6yBfW2PobQzLdgYodAj7aVkhU1JXCTSz4q
-         lUOsQH2LcqUkWTtiFbOnHPENRi4isr1/Goy9NFl5pnJ7tp/82xR54EDvbJr/D4NKRUm4
-         KNcFXpuX9vphwTYzeIOjA6af9h7CFS1BKAEk4Ftbv4hPa2pVM9E4jMmhVIY8GxOsZeAh
-         ExKQ==
-X-Gm-Message-State: AOJu0Yw5lb+gQ8Xp2/82oYpaEzqBPmtYVbXbztBI9PdxBGO0oLts8TdU
-        xq39g4INBqFFfVg07T+3rk8=
-X-Google-Smtp-Source: AGHT+IHWXh9VTXKmwGrvfSO853aykEmjVyN78J/yeawbEJQEovLJurQPBXSZ6B3//ZNgrNwLMNLFBA==
-X-Received: by 2002:a17:906:10c8:b0:a19:a1ba:da52 with SMTP id v8-20020a17090610c800b00a19a1bada52mr1277430ejv.121.1701505187903;
-        Sat, 02 Dec 2023 00:19:47 -0800 (PST)
-Received: from ?IPV6:2a01:c23:c5f2:af00:b411:4430:8d9f:2d09? (dynamic-2a01-0c23-c5f2-af00-b411-4430-8d9f-2d09.c23.pool.telefonica.de. [2a01:c23:c5f2:af00:b411:4430:8d9f:2d09])
-        by smtp.googlemail.com with ESMTPSA id re17-20020a170906d8d100b009fc0c42098csm2835546ejb.173.2023.12.02.00.19.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 02 Dec 2023 00:19:47 -0800 (PST)
-Message-ID: <5576d307-36f7-4cb5-80e7-290b659ba573@gmail.com>
-Date:   Sat, 2 Dec 2023 09:19:48 +0100
+        Sat, 2 Dec 2023 03:29:53 -0500
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::227])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C73D196;
+        Sat,  2 Dec 2023 00:29:58 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 66A9820003;
+        Sat,  2 Dec 2023 08:29:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
+        t=1701505797;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=AepG7Sxs6UrlTw5J0jcbOX6uiYe5pZuBTrOV1pLs6ME=;
+        b=pxoYcgmX8xvCrfbGL5CbcvRtmQg/u+oFGkflBsXi9pLvQTIIG0gWUnkW2jkVsUrZkfJWwN
+        4beX9Ut7AitIw+I8urbjgmi5GKJkVnrsV1maxEkEmgJf/wPwIxVEsk/1WnA/3vrvgRRgH4
+        mq5oiyFl0Nkj8rzNV3P9tGuUqUi7LsaO9WrBgT7vFr+YpokyaCRPr2Bahk86afTvRhTul4
+        CAbwb9Etd/0PwIpIdu60zlzgb01rOS65pSi/Q8ldn0bc44iLgdAuYN31RVJY0EVV8ZWv0v
+        BQ4aVE20Ueyo2mwhDdrV2y7dDT90s/DgFONEJ2OEo0/G567/3tPnYYNstmtE6A==
+Message-ID: <ffaa26b3-eb25-47cc-8891-fe3cbcc724da@arinc9.com>
+Date:   Sat, 2 Dec 2023 11:29:18 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net v2] r8169: fix rtl8125b PAUSE frames blasting when
- suspended
+Subject: Re: [PATCH net-next 01/15] net: dsa: mt7530: always trap frames to
+ active CPU port on MT7530
 Content-Language: en-US
-To:     ChunHao Lin <hau@realtek.com>
-Cc:     nic_swsd@realtek.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, grundler@chromium.org,
-        stable@vger.kernel.org
-References: <20231129155350.5843-1-hau@realtek.com>
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Autocrypt: addr=hkallweit1@gmail.com; keydata=
- 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
-In-Reply-To: <20231129155350.5843-1-hau@realtek.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     Daniel Golle <daniel@makrotopia.org>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        DENG Qingfang <dqfext@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Bartel Eerdekens <bartel.eerdekens@constell8.be>,
+        mithat.guner@xeront.com, erkin.bozoglu@xeront.com
+References: <20231118123205.266819-1-arinc.unal@arinc9.com>
+ <20231118123205.266819-2-arinc.unal@arinc9.com>
+ <ZVjLj6/iCL/muzmH@shell.armlinux.org.uk>
+From:   =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+In-Reply-To: <ZVjLj6/iCL/muzmH@shell.armlinux.org.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: arinc.unal@arinc9.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29.11.2023 16:53, ChunHao Lin wrote:
-> When FIFO reaches near full state, device will issue pause frame.
-> If pause slot is enabled(set to 1), in this time, device will issue
-> pause frame only once. But if pause slot is disabled(set to 0), device
-> will keep sending pause frames until FIFO reaches near empty state.
+On 18.11.2023 17:34, Russell King (Oracle) wrote:
+> On Sat, Nov 18, 2023 at 03:31:51PM +0300, Arınç ÜNAL wrote:
+>> +	/* Set the CPU port to trap frames to for MT7530. Trapped frames will be
+>> +	 * forwarded to the numerically smallest CPU port which the DSA conduit
+>> +	 * interface its affine to is up.
+>> +	 */
+>> +	if (priv->id != ID_MT7530 && priv->id != ID_MT7621)
+>> +		return;
+>> +
+>> +	if (operational)
+>> +		priv->active_cpu_ports |= BIT(cpu_dp->index);
+>> +	else
+>> +		priv->active_cpu_ports &= ~BIT(cpu_dp->index);
+>> +
+>> +	if (priv->active_cpu_ports)
+>> +		mt7530_rmw(priv, MT7530_MFC, CPU_EN | CPU_PORT_MASK, CPU_EN |
+>> +			   CPU_PORT(__ffs(priv->active_cpu_ports)));
 > 
-> When pause slot is disabled, if there is no one to handle receive
-> packets, device FIFO will reach near full state and keep sending
-> pause frames. That will impact entire local area network.
+> I would be tempted to write this as:
 > 
-> This issue can be reproduced in Chromebox (not Chromebook) in
-> developer mode running a test image (and v5.10 kernel):
-> 1) ping -f $CHROMEBOX (from workstation on same local network)
-> 2) run "powerd_dbus_suspend" from command line on the $CHROMEBOX
-> 3) ping $ROUTER (wait until ping fails from workstation)
+> 	mask = BIT(cpu_dp->index);
 > 
-> Takes about ~20-30 seconds after step 2 for the local network to
-> stop working.
+> 	if (operational)
+> 		priv->active_cpu_ports |= mask;
+> 	else
+> 		priv->active_cpu_ports &= ~mask;
 > 
-> Fix this issue by enabling pause slot to only send pause frame once
-> when FIFO reaches near full state.
+> Now, what happens when active_cpu_ports is zero? Doesn't that mean there
+> is no active CPU port? In which case, wouldn't disabling the CPU port
+> direction be appropriate, such as:
 > 
-> Fixes: f1bce4ad2f1c ("r8169: add support for RTL8125")
-> Reported-by: Grant Grundler <grundler@chromium.org>
-> Tested-by: Grant Grundler <grundler@chromium.org>
-> Cc: stable@vger.kernel.org
-> Signed-off-by: ChunHao Lin <hau@realtek.com>
-> ---
-> v2:
-> - update comment and title.
-> ---
+> 	if (priv->active_cpu_ports)
+> 		val = CPU_EN | CPU_PORT(__ffs(priv->active_cpu_ports));
+> 	else
+> 		val = 0;
+> 
+> 	mt7530_rmw(priv, MT7530_MFC, CPU_EN | CPU_PORT_MASK, val);	
+> 
+> ?
 
-Reviewed-by: Heiner Kallweit <hkallweit1@gmail.com>
+In practice, it doesn't seem to matter. The CPU_EN bit enables the CPU port
+defined on CPU_PORT_MASK which is used for trapping frames. No active CPU
+ports would mean that all the DSA conduits are down. In that case, all the
+user ports will be down also. So there won't be any traffic. But disabling
+it is of course more appropriate here.
 
+> 
+>>   struct mt7530_priv {
+>>   	struct device		*dev;
+>> @@ -786,6 +787,7 @@ struct mt7530_priv {
+>>   	struct irq_domain *irq_domain;
+>>   	u32 irq_enable;
+>>   	int (*create_sgmii)(struct mt7530_priv *priv, bool dual_sgmii);
+>> +	unsigned long active_cpu_ports;
+> 
+> So this will be 32 or 64 bit in size. Presumably you know how many CPU
+> ports there can be, which looking at this code must be less than 8 as
+> CPU_PORT_MASK is only 3 bits in size. So, maybe use a u8, and check
+> that cpu_dp->index <= 7 ?
 
+Aren't there other mechanisms to check that cpu_dp->index is a valid port?
+At least with phylink_get_caps(), only ports lower than 7 will have proper
+interface modes allowed.
+
+Here's the code after you and Vladimir's review:
+
+static void
+mt753x_conduit_state_change(struct dsa_switch *ds,
+			    const struct net_device *conduit,
+			    bool operational)
+{
+	struct dsa_port *cpu_dp = conduit->dsa_ptr;
+	struct mt7530_priv *priv = ds->priv;
+	u8 mask;
+	int val;
+
+	/* Set the CPU port to trap frames to for MT7530. Trapped frames will be
+	 * forwarded to the numerically smallest CPU port which the DSA conduit
+	 * interface its affine to is up.
+	 */
+	if (priv->id != ID_MT7530 && priv->id != ID_MT7621)
+		return;
+
+	mask = BIT(cpu_dp->index);
+
+	if (operational)
+		priv->active_cpu_ports |= mask;
+	else
+		priv->active_cpu_ports &= ~mask;
+
+	if (priv->active_cpu_ports)
+		val = CPU_EN | CPU_PORT(__ffs(priv->active_cpu_ports));
+	else
+		val = 0;
+
+	mt7530_rmw(priv, MT7530_MFC, CPU_EN | CPU_PORT_MASK, val);
+}
+
+struct mt7530_priv {
+	[...]
+	u8 active_cpu_ports;
+};
+
+> 
+> I would also suggest moving irq_enable after create_sgmii, to avoid
+> holes in the struct.
+
+Sorry, I've got no idea about this. Could you explain why would there
+possibly be holes in the struct with the current ordering of the members of
+the mt7530_priv structure?
+
+Arınç
