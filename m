@@ -2,61 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FC78801C49
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 11:46:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF1D1801C4B
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Dec 2023 11:49:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232480AbjLBKqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 05:46:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47088 "EHLO
+        id S232467AbjLBKtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 05:49:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjLBKqB (ORCPT
+        with ESMTP id S229451AbjLBKti (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 05:46:01 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36BE5123;
-        Sat,  2 Dec 2023 02:46:07 -0800 (PST)
-Date:   Sat, 02 Dec 2023 10:46:03 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1701513964;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=K6kPvZSlBQ8JhN9p8gUC/qjj/w3vTn3U0EtoaGJS2Dg=;
-        b=duD6sljqbJYnjaALP4h1bHbUzsU06Z4KlecwGR+bN4H43hF3vlNs/WBUQdspGTF2aBX7o+
-        k/EKck9rrOFvl7YfN/g7x397hlZCuujf9NT/l84xpFDQHScTRb7U79imKtoOwmwQFltGJd
-        6WlSUn8o9L3DH00Il1PFN+sQ3neCq2LAaA1wHuiTWrmVbxzxgSBRKXd65r5KiphmcX9M5Y
-        L3kwjv7g39XG/ZrH1NzeT4+njPa3zaSozT7fjExP4g1ig/4g2YD/tInEUTYxIfTcQ0A3so
-        LHMZDbI6rteKRhC8hDAhUKk+MMYflF6MCC3Bs27FUSSM7I/XzSCXxuKm9dd16A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1701513964;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=K6kPvZSlBQ8JhN9p8gUC/qjj/w3vTn3U0EtoaGJS2Dg=;
-        b=dlybmCKM0y03bWUQTFPhuS2VNpWCVauxOWtOm+D4qOWiW8zJGHS8Cih/Bzyn6BVdM7Frrg
-        rJbGhlCSr1mgleCA==
-From:   "tip-bot2 for Borislav Petkov (AMD)" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/CPU/AMD: Check vendor in the AMD microcode callback
-Cc:     <stable@kernel.org>, "Borislav Petkov (AMD)" <bp@alien8.de>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20231201184226.16749-1-bp@alien8.de>
-References: <20231201184226.16749-1-bp@alien8.de>
+        Sat, 2 Dec 2023 05:49:38 -0500
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:242:246e::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9D81124;
+        Sat,  2 Dec 2023 02:49:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
+        Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender:Reply-To:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-To:Resent-Cc:
+        Resent-Message-ID:In-Reply-To:References;
+        bh=F8PhHlQpw1agE8e4gUoZBwCoedJwGCZUllve+ZMs9lU=; t=1701514184; x=1702723784; 
+        b=FEcmzQh0bsIjqk6r5t6yevD+khvz0zRxqI/Z8MWgdf23sUSCiyk43o3BM9PqKEyalOwcHEaIfyy
+        DNZqH03AVZbpgEk4oCoBqxwRY2mNAAxwTw16oCn72GLqUUSAXhPbWi3/3VqqAwEHwu1/RQvFryYBs
+        ufe1zCpDMIve+8rsG6ZlGl1hLz8wLrUmHMB+qzi48aIisx7DEF6p66nVf/gi0N+aMHsoxuhtWEW2F
+        dh9SEIR/hNoPEqpYmm6isFSsDvFaUCCVLarxGQocf26lQBR91jv7djvLD0e7wG6MIjLzOXrZ4omev
+        eTAXFa37SnH+v2NgaSEiisljkw/WWrkNh1fQ==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.97)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1r9NZ7-0000000CR3d-3PqU;
+        Sat, 02 Dec 2023 11:49:42 +0100
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-wireless@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Johannes Berg <johannes.berg@intel.com>
+Subject: [PATCH] Revert "debugfs: annotate debugfs handlers vs. removal with lockdep"
+Date:   Sat,  2 Dec 2023 11:49:37 +0100
+Message-ID: <20231202114936.fd55431ab160.I911aa53abeeca138126f690d383a89b13eb05667@changeid>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-Message-ID: <170151396382.398.13488399404074572021.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,58 +53,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+From: Johannes Berg <johannes.berg@intel.com>
 
-Commit-ID:     9b8493dc43044376716d789d07699f17d538a7c4
-Gitweb:        https://git.kernel.org/tip/9b8493dc43044376716d789d07699f17d538a7c4
-Author:        Borislav Petkov (AMD) <bp@alien8.de>
-AuthorDate:    Fri, 01 Dec 2023 19:37:27 +01:00
-Committer:     Borislav Petkov (AMD) <bp@alien8.de>
-CommitterDate: Sat, 02 Dec 2023 11:40:24 +01:00
+This reverts commit f4acfcd4deb1 ("debugfs: annotate debugfs handlers
+vs. removal with lockdep"), it appears to have false positives and
+really shouldn't have been in the -rc series with the fixes anyway.
 
-x86/CPU/AMD: Check vendor in the AMD microcode callback
-
-Commit in Fixes added an AMD-specific microcode callback. However, it
-didn't check the CPU vendor the kernel runs on explicitly.
-
-The only reason the Zenbleed check in it didn't run on other x86 vendors
-hardware was pure coincidental luck:
-
-  if (!cpu_has_amd_erratum(c, amd_zenbleed))
-	  return;
-
-gives true on other vendors because they don't have those families and
-models.
-
-However, with the removal of the cpu_has_amd_erratum() in
-
-  05f5f73936fa ("x86/CPU/AMD: Drop now unused CPU erratum checking function")
-
-that coincidental condition is gone, leading to the zenbleed check
-getting executed on other vendors too.
-
-Add the explicit vendor check for the whole callback as it should've
-been done in the first place.
-
-Fixes: 522b1d69219d ("x86/cpu/amd: Add a Zenbleed fix")
-Cc: <stable@kernel.org>
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Link: https://lore.kernel.org/r/20231201184226.16749-1-bp@alien8.de
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 ---
- arch/x86/kernel/cpu/amd.c | 3 +++
- 1 file changed, 3 insertions(+)
+ fs/debugfs/file.c     | 10 ----------
+ fs/debugfs/inode.c    |  7 -------
+ fs/debugfs/internal.h |  6 ------
+ 3 files changed, 23 deletions(-)
 
-diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
-index a7eab05..f322ebd 100644
---- a/arch/x86/kernel/cpu/amd.c
-+++ b/arch/x86/kernel/cpu/amd.c
-@@ -1320,6 +1320,9 @@ static void zenbleed_check_cpu(void *unused)
+diff --git a/fs/debugfs/file.c b/fs/debugfs/file.c
+index a5ade8c16375..5063434be0fc 100644
+--- a/fs/debugfs/file.c
++++ b/fs/debugfs/file.c
+@@ -108,12 +108,6 @@ int debugfs_file_get(struct dentry *dentry)
+ 			kfree(fsd);
+ 			fsd = READ_ONCE(dentry->d_fsdata);
+ 		}
+-#ifdef CONFIG_LOCKDEP
+-		fsd->lock_name = kasprintf(GFP_KERNEL, "debugfs:%pd", dentry);
+-		lockdep_register_key(&fsd->key);
+-		lockdep_init_map(&fsd->lockdep_map, fsd->lock_name ?: "debugfs",
+-				 &fsd->key, 0);
+-#endif
+ 		INIT_LIST_HEAD(&fsd->cancellations);
+ 		mutex_init(&fsd->cancellations_mtx);
+ 	}
+@@ -132,8 +126,6 @@ int debugfs_file_get(struct dentry *dentry)
+ 	if (!refcount_inc_not_zero(&fsd->active_users))
+ 		return -EIO;
  
- void amd_check_microcode(void)
- {
-+	if (boot_cpu_data.x86_vendor != X86_VENDOR_AMD)
-+		return;
-+
- 	on_each_cpu(zenbleed_check_cpu, NULL, 1);
+-	lock_map_acquire_read(&fsd->lockdep_map);
+-
+ 	return 0;
  }
+ EXPORT_SYMBOL_GPL(debugfs_file_get);
+@@ -151,8 +143,6 @@ void debugfs_file_put(struct dentry *dentry)
+ {
+ 	struct debugfs_fsdata *fsd = READ_ONCE(dentry->d_fsdata);
  
+-	lock_map_release(&fsd->lockdep_map);
+-
+ 	if (refcount_dec_and_test(&fsd->active_users))
+ 		complete(&fsd->active_users_drained);
+ }
+diff --git a/fs/debugfs/inode.c b/fs/debugfs/inode.c
+index e4e7fe1bd9fb..034a617cb1a5 100644
+--- a/fs/debugfs/inode.c
++++ b/fs/debugfs/inode.c
+@@ -243,10 +243,6 @@ static void debugfs_release_dentry(struct dentry *dentry)
+ 
+ 	/* check it wasn't a dir (no fsdata) or automount (no real_fops) */
+ 	if (fsd && fsd->real_fops) {
+-#ifdef CONFIG_LOCKDEP
+-		lockdep_unregister_key(&fsd->key);
+-		kfree(fsd->lock_name);
+-#endif
+ 		WARN_ON(!list_empty(&fsd->cancellations));
+ 		mutex_destroy(&fsd->cancellations_mtx);
+ 	}
+@@ -755,9 +751,6 @@ static void __debugfs_file_removed(struct dentry *dentry)
+ 	if ((unsigned long)fsd & DEBUGFS_FSDATA_IS_REAL_FOPS_BIT)
+ 		return;
+ 
+-	lock_map_acquire(&fsd->lockdep_map);
+-	lock_map_release(&fsd->lockdep_map);
+-
+ 	/* if we hit zero, just wait for all to finish */
+ 	if (!refcount_dec_and_test(&fsd->active_users)) {
+ 		wait_for_completion(&fsd->active_users_drained);
+diff --git a/fs/debugfs/internal.h b/fs/debugfs/internal.h
+index 0c4c68cf161f..dae80c2a469e 100644
+--- a/fs/debugfs/internal.h
++++ b/fs/debugfs/internal.h
+@@ -7,7 +7,6 @@
+ 
+ #ifndef _DEBUGFS_INTERNAL_H_
+ #define _DEBUGFS_INTERNAL_H_
+-#include <linux/lockdep.h>
+ #include <linux/list.h>
+ 
+ struct file_operations;
+@@ -25,11 +24,6 @@ struct debugfs_fsdata {
+ 		struct {
+ 			refcount_t active_users;
+ 			struct completion active_users_drained;
+-#ifdef CONFIG_LOCKDEP
+-			struct lockdep_map lockdep_map;
+-			struct lock_class_key key;
+-			char *lock_name;
+-#endif
+ 
+ 			/* protect cancellations */
+ 			struct mutex cancellations_mtx;
+-- 
+2.43.0
+
