@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 135FE802140
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 07:32:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79F5E802144
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 07:32:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233008AbjLCGbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 01:31:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40968 "EHLO
+        id S233221AbjLCGb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 01:31:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjLCGbl (ORCPT
+        with ESMTP id S229450AbjLCGbn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 01:31:41 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8A2CE5
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 22:31:46 -0800 (PST)
+        Sun, 3 Dec 2023 01:31:43 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57510F3
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 22:31:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701585107; x=1733121107;
+  t=1701585109; x=1733121109;
   h=date:from:to:cc:subject:message-id:mime-version;
-  bh=DG21kFQ0D4JnjKvuNyMguKtjcOw2FeQROhzlMw0eKPY=;
-  b=R0Nofi2Bkh3ch31JflPG0Z4TC15AqPb+wGQzW554/lxuQTLQlly+zofe
-   oSCtX3U7bMiSBCKIqJYXPihaz+97NPuHcS31dxTh2dUcCmAU0R5QdveFc
-   6ASbcrQQqJdSeWnUJAHCTX7xIiuiFkNsk+3te7NP1SQtI/a2nOSIyWY4M
-   T15bLj8M33VEzsoWCN7NkqlkgkZJxceI8/DMN907d/VMw28S1HtLrRq93
-   AsHaJPxhCainqorJPgBaX9Qdj1vOsbXVXZxP9op7HCgX0V5oFbl7dAlk5
-   N5+Y92v/RE2xw+vOYMiadUIE4OA2K9yQaAGTYelBRUkW8jPci+dCd8LKJ
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10912"; a="15180352"
+  bh=DBWET4GQiuRfCBb1fB7SdWA1naylfEFV034G8pPqYl0=;
+  b=ZlyvipBpiqKfPbxChLSi5w9KfqGKFpVN26M1xuehSZIghE8ivT3JtUJl
+   cJNqIT1cnw+1AnMG1mx2ujoxLzyfeqOnv2NjN1kchqiB06sO8nzpe+PDi
+   TkuaqUVpXnwm0VePvzLIZu5YqWYrjlXHxqq37XXa39SPvy43h+TDm8hUP
+   W/lK+hDHy+HahxEdxc7FsCa0xQYxbBoenfOp58I6LipjPBb3jIRvP7G7I
+   Qv1w88cTaIZeo4q7UYbd5EGqWt+DmnVr799gqOPow9IP+WJUEkmKDifva
+   nE2YyAhw5vtdvp+gBLUyaM/e4B1ILcqIN3w+l6oySYHdrI2A7slKtzIMJ
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10912"; a="6942685"
 X-IronPort-AV: E=Sophos;i="6.04,246,1695711600"; 
-   d="scan'208";a="15180352"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2023 22:31:47 -0800
+   d="scan'208";a="6942685"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2023 22:31:48 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10912"; a="943556073"
+X-IronPort-AV: E=McAfee;i="6600,9927,10912"; a="893652731"
 X-IronPort-AV: E=Sophos;i="6.04,246,1695711600"; 
-   d="scan'208";a="943556073"
+   d="scan'208";a="893652731"
 Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 02 Dec 2023 22:31:44 -0800
+  by orsmga004.jf.intel.com with ESMTP; 02 Dec 2023 22:31:46 -0800
 Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1r9g10-0006Jz-1G;
-        Sun, 03 Dec 2023 06:31:42 +0000
-Date:   Sun, 3 Dec 2023 14:31:35 +0800
+        id 1r9g11-0006KQ-2C;
+        Sun, 03 Dec 2023 06:31:43 +0000
+Date:   Sun, 3 Dec 2023 14:31:37 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     Michal Suchanek <hramrach@gmail.com>
+To:     Ondrej Zary <linux@rainbow-software.org>
 Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Brian Norris <computersforpeace@gmail.com>
-Subject: drivers/mtd/mtdpart.c:768:26: warning: '%s' directive argument is
- null
-Message-ID: <202312022333.adC50Ho6-lkp@intel.com>
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: drivers/net/ethernet/dlink/dl2k.c:483:17: sparse: sparse: incorrect
+ type in argument 1 (different base types)
+Message-ID: <202312030058.hfZPTXd7-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -63,114 +63,208 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michal,
-
-FYI, the error/warning still remains.
-
 tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 head:   815fb87b753055df2d9e50f6cd80eb10235fe3e9
-commit: 8e2c992b59fcb5e56e3667f5c30c7d26fbbf14a2 mtd: mtdpart: add debug prints to partition parser.
+commit: c3f45d322cbd379c46466cc2ecab7e2d719b22ed dl2k: Add support for IP1000A-based cards
 date:   8 years ago
-config: x86_64-randconfig-x001-20230722 (https://download.01.org/0day-ci/archive/20231202/202312022333.adC50Ho6-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231202/202312022333.adC50Ho6-lkp@intel.com/reproduce)
+config: s390-randconfig-r121-20231106 (https://download.01.org/0day-ci/archive/20231203/202312030058.hfZPTXd7-lkp@intel.com/config)
+compiler: s390-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231203/202312030058.hfZPTXd7-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312022333.adC50Ho6-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312030058.hfZPTXd7-lkp@intel.com/
 
-All warnings (new ones prefixed by >>):
+sparse warnings: (new ones prefixed by >>)
+>> drivers/net/ethernet/dlink/dl2k.c:483:17: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned short [usertype] value @@     got restricted __le16 [usertype] @@
+   drivers/net/ethernet/dlink/dl2k.c:483:17: sparse:     expected unsigned short [usertype] value
+   drivers/net/ethernet/dlink/dl2k.c:483:17: sparse:     got restricted __le16 [usertype]
+   drivers/net/ethernet/dlink/dl2k.c:366:35: sparse: sparse: restricted __le32 degrades to integer
+   drivers/net/ethernet/dlink/dl2k.c: note: in included file (through arch/s390/include/asm/io.h, include/linux/io.h, include/linux/pci.h, ...):
+   include/asm-generic/io.h:155:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned short [usertype] val @@     got restricted __le16 [usertype] @@
+   include/asm-generic/io.h:155:22: sparse:     expected unsigned short [usertype] val
+   include/asm-generic/io.h:155:22: sparse:     got restricted __le16 [usertype]
+   include/asm-generic/io.h:121:16: sparse: sparse: cast to restricted __le16
+   include/asm-generic/io.h:121:16: sparse: sparse: cast to restricted __le16
+   include/asm-generic/io.h:121:16: sparse: sparse: cast to restricted __le16
+   include/asm-generic/io.h:121:16: sparse: sparse: cast to restricted __le16
+   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:163:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __le32 [usertype] @@
+   include/asm-generic/io.h:163:22: sparse:     expected unsigned int [usertype] val
+   include/asm-generic/io.h:163:22: sparse:     got restricted __le32 [usertype]
+   include/asm-generic/io.h:155:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned short [usertype] val @@     got restricted __le16 [usertype] @@
+   include/asm-generic/io.h:155:22: sparse:     expected unsigned short [usertype] val
+   include/asm-generic/io.h:155:22: sparse:     got restricted __le16 [usertype]
+   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:163:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __le32 [usertype] @@
+   include/asm-generic/io.h:163:22: sparse:     expected unsigned int [usertype] val
+   include/asm-generic/io.h:163:22: sparse:     got restricted __le32 [usertype]
+   include/asm-generic/io.h:155:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned short [usertype] val @@     got restricted __le16 [usertype] @@
+   include/asm-generic/io.h:155:22: sparse:     expected unsigned short [usertype] val
+   include/asm-generic/io.h:155:22: sparse:     got restricted __le16 [usertype]
+   include/asm-generic/io.h:155:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned short [usertype] val @@     got restricted __le16 [usertype] @@
+   include/asm-generic/io.h:155:22: sparse:     expected unsigned short [usertype] val
+   include/asm-generic/io.h:155:22: sparse:     got restricted __le16 [usertype]
+   include/asm-generic/io.h:163:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __le32 [usertype] @@
+   include/asm-generic/io.h:163:22: sparse:     expected unsigned int [usertype] val
+   include/asm-generic/io.h:163:22: sparse:     got restricted __le32 [usertype]
+   include/asm-generic/io.h:163:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __le32 [usertype] @@
+   include/asm-generic/io.h:163:22: sparse:     expected unsigned int [usertype] val
+   include/asm-generic/io.h:163:22: sparse:     got restricted __le32 [usertype]
+   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:163:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __le32 [usertype] @@
+   include/asm-generic/io.h:163:22: sparse:     expected unsigned int [usertype] val
+   include/asm-generic/io.h:163:22: sparse:     got restricted __le32 [usertype]
+   include/asm-generic/io.h:155:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned short [usertype] val @@     got restricted __le16 [usertype] @@
+   include/asm-generic/io.h:155:22: sparse:     expected unsigned short [usertype] val
+   include/asm-generic/io.h:155:22: sparse:     got restricted __le16 [usertype]
+   include/asm-generic/io.h:163:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __le32 [usertype] @@
+   include/asm-generic/io.h:163:22: sparse:     expected unsigned int [usertype] val
+   include/asm-generic/io.h:163:22: sparse:     got restricted __le32 [usertype]
+   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:163:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __le32 [usertype] @@
+   include/asm-generic/io.h:163:22: sparse:     expected unsigned int [usertype] val
+   include/asm-generic/io.h:163:22: sparse:     got restricted __le32 [usertype]
+   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:163:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __le32 [usertype] @@
+   include/asm-generic/io.h:163:22: sparse:     expected unsigned int [usertype] val
+   include/asm-generic/io.h:163:22: sparse:     got restricted __le32 [usertype]
+   include/asm-generic/io.h:155:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned short [usertype] val @@     got restricted __le16 [usertype] @@
+   include/asm-generic/io.h:155:22: sparse:     expected unsigned short [usertype] val
+   include/asm-generic/io.h:155:22: sparse:     got restricted __le16 [usertype]
+   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:163:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __le32 [usertype] @@
+   include/asm-generic/io.h:163:22: sparse:     expected unsigned int [usertype] val
+   include/asm-generic/io.h:163:22: sparse:     got restricted __le32 [usertype]
+   include/asm-generic/io.h:163:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __le32 [usertype] @@
+   include/asm-generic/io.h:163:22: sparse:     expected unsigned int [usertype] val
+   include/asm-generic/io.h:163:22: sparse:     got restricted __le32 [usertype]
+   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:163:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __le32 [usertype] @@
+   include/asm-generic/io.h:163:22: sparse:     expected unsigned int [usertype] val
 
-   In file included from include/linux/kobject.h:21,
-                    from include/linux/module.h:17,
-                    from drivers/mtd/mtdpart.c:24:
-   include/linux/sysfs.h: In function 'sysfs_get_dirent':
-   include/linux/sysfs.h:496:44: warning: pointer targets in passing argument 2 of 'kernfs_find_and_get' differ in signedness [-Wpointer-sign]
-     496 |         return kernfs_find_and_get(parent, name);
-         |                                            ^~~~
-         |                                            |
-         |                                            const unsigned char *
-   In file included from include/linux/sysfs.h:15:
-   include/linux/kernfs.h:428:57: note: expected 'const char *' but argument is of type 'const unsigned char *'
-     428 | kernfs_find_and_get(struct kernfs_node *kn, const char *name)
-         |                                             ~~~~~~~~~~~~^~~~
-   In file included from include/linux/kernel.h:13,
-                    from include/linux/list.h:8,
-                    from include/linux/module.h:9:
-   drivers/mtd/mtdpart.c: In function 'parse_mtd_partitions':
->> drivers/mtd/mtdpart.c:768:26: warning: '%s' directive argument is null [-Wformat-overflow=]
-     768 |                 pr_debug("%s: got parser %s\n", master->name,
-         |                          ^~~~~~~~~~~~~~~~~~~~~
-   include/linux/printk.h:236:21: note: in definition of macro 'pr_fmt'
-     236 | #define pr_fmt(fmt) fmt
-         |                     ^~~
-   include/linux/printk.h:283:9: note: in expansion of macro 'dynamic_pr_debug'
-     283 |         dynamic_pr_debug(fmt, ##__VA_ARGS__)
-         |         ^~~~~~~~~~~~~~~~
-   drivers/mtd/mtdpart.c:768:17: note: in expansion of macro 'pr_debug'
-     768 |                 pr_debug("%s: got parser %s\n", master->name,
-         |                 ^~~~~~~~
-   drivers/mtd/mtdpart.c:768:42: note: format string is defined here
-     768 |                 pr_debug("%s: got parser %s\n", master->name,
-         |                                          ^~
+vim +483 drivers/net/ethernet/dlink/dl2k.c
 
-
-vim +768 drivers/mtd/mtdpart.c
-
-   732	
-   733	/**
-   734	 * parse_mtd_partitions - parse MTD partitions
-   735	 * @master: the master partition (describes whole MTD device)
-   736	 * @types: names of partition parsers to try or %NULL
-   737	 * @pparts: array of partitions found is returned here
-   738	 * @data: MTD partition parser-specific data
-   739	 *
-   740	 * This function tries to find partition on MTD device @master. It uses MTD
-   741	 * partition parsers, specified in @types. However, if @types is %NULL, then
-   742	 * the default list of parsers is used. The default list contains only the
-   743	 * "cmdlinepart" and "ofpart" parsers ATM.
-   744	 * Note: If there are more then one parser in @types, the kernel only takes the
-   745	 * partitions parsed out by the first parser.
-   746	 *
-   747	 * This function may return:
-   748	 * o a negative error code in case of failure
-   749	 * o zero if no partitions were found
-   750	 * o a positive number of found partitions, in which case on exit @pparts will
-   751	 *   point to an array containing this number of &struct mtd_info objects.
-   752	 */
-   753	int parse_mtd_partitions(struct mtd_info *master, const char *const *types,
-   754				 struct mtd_partition **pparts,
-   755				 struct mtd_part_parser_data *data)
-   756	{
-   757		struct mtd_part_parser *parser;
-   758		int ret = 0;
-   759	
-   760		if (!types)
-   761			types = default_mtd_part_types;
-   762	
-   763		for ( ; ret <= 0 && *types; types++) {
-   764			pr_debug("%s: parsing partitions %s\n", master->name, *types);
-   765			parser = get_partition_parser(*types);
-   766			if (!parser && !request_module("%s", *types))
-   767				parser = get_partition_parser(*types);
- > 768			pr_debug("%s: got parser %s\n", master->name,
-   769				 parser ? parser->name : NULL);
-   770			if (!parser)
-   771				continue;
-   772			ret = (*parser->parse_fn)(master, pparts, data);
-   773			pr_debug("%s: parser %s: %i\n",
-   774				 master->name, parser->name, ret);
-   775			put_partition_parser(parser);
-   776			if (ret > 0) {
-   777				printk(KERN_NOTICE "%d %s partitions found on MTD device %s\n",
-   778				       ret, parser->name, master->name);
-   779				break;
-   780			}
-   781		}
-   782		return ret;
-   783	}
-   784	
+   448	
+   449	static int
+   450	rio_open (struct net_device *dev)
+   451	{
+   452		struct netdev_private *np = netdev_priv(dev);
+   453		void __iomem *ioaddr = np->ioaddr;
+   454		const int irq = np->pdev->irq;
+   455		int i;
+   456		u16 macctrl;
+   457	
+   458		i = request_irq(irq, rio_interrupt, IRQF_SHARED, dev->name, dev);
+   459		if (i)
+   460			return i;
+   461	
+   462		/* Reset all logic functions */
+   463		dw16(ASICCtrl + 2,
+   464		     GlobalReset | DMAReset | FIFOReset | NetworkReset | HostReset);
+   465		mdelay(10);
+   466	
+   467		rio_set_led_mode(dev);
+   468	
+   469		/* DebugCtrl bit 4, 5, 9 must set */
+   470		dw32(DebugCtrl, dr32(DebugCtrl) | 0x0230);
+   471	
+   472		/* Jumbo frame */
+   473		if (np->jumbo != 0)
+   474			dw16(MaxFrameSize, MAX_JUMBO+14);
+   475	
+   476		alloc_list (dev);
+   477	
+   478		/* Set station address */
+   479		/* 16 or 32-bit access is required by TC9020 datasheet but 8-bit works
+   480		 * too. However, it doesn't work on IP1000A so we use 16-bit access.
+   481		 */
+   482		for (i = 0; i < 3; i++)
+ > 483			dw16(StationAddr0 + 2 * i,
+   484			     cpu_to_le16(((u16 *)dev->dev_addr)[i]));
+   485	
+   486		set_multicast (dev);
+   487		if (np->coalesce) {
+   488			dw32(RxDMAIntCtrl, np->rx_coalesce | np->rx_timeout << 16);
+   489		}
+   490		/* Set RIO to poll every N*320nsec. */
+   491		dw8(RxDMAPollPeriod, 0x20);
+   492		dw8(TxDMAPollPeriod, 0xff);
+   493		dw8(RxDMABurstThresh, 0x30);
+   494		dw8(RxDMAUrgentThresh, 0x30);
+   495		dw32(RmonStatMask, 0x0007ffff);
+   496		/* clear statistics */
+   497		clear_stats (dev);
+   498	
+   499		/* VLAN supported */
+   500		if (np->vlan) {
+   501			/* priority field in RxDMAIntCtrl  */
+   502			dw32(RxDMAIntCtrl, dr32(RxDMAIntCtrl) | 0x7 << 10);
+   503			/* VLANId */
+   504			dw16(VLANId, np->vlan);
+   505			/* Length/Type should be 0x8100 */
+   506			dw32(VLANTag, 0x8100 << 16 | np->vlan);
+   507			/* Enable AutoVLANuntagging, but disable AutoVLANtagging.
+   508			   VLAN information tagged by TFC' VID, CFI fields. */
+   509			dw32(MACCtrl, dr32(MACCtrl) | AutoVLANuntagging);
+   510		}
+   511	
+   512		setup_timer(&np->timer, rio_timer, (unsigned long)dev);
+   513		np->timer.expires = jiffies + 1*HZ;
+   514		add_timer (&np->timer);
+   515	
+   516		/* Start Tx/Rx */
+   517		dw32(MACCtrl, dr32(MACCtrl) | StatsEnable | RxEnable | TxEnable);
+   518	
+   519		macctrl = 0;
+   520		macctrl |= (np->vlan) ? AutoVLANuntagging : 0;
+   521		macctrl |= (np->full_duplex) ? DuplexSelect : 0;
+   522		macctrl |= (np->tx_flow) ? TxFlowControlEnable : 0;
+   523		macctrl |= (np->rx_flow) ? RxFlowControlEnable : 0;
+   524		dw16(MACCtrl, macctrl);
+   525	
+   526		netif_start_queue (dev);
+   527	
+   528		dl2k_enable_int(np);
+   529		return 0;
+   530	}
+   531	
 
 -- 
 0-DAY CI Kernel Test Service
