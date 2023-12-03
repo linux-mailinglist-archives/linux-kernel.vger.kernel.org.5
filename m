@@ -2,67 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48F8C802625
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 19:12:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1D3B802628
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 19:14:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233828AbjLCSMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 13:12:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34002 "EHLO
+        id S233830AbjLCSOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 13:14:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjLCSMV (ORCPT
+        with ESMTP id S229450AbjLCSOD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 13:12:21 -0500
-Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79EC8EB
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 10:12:27 -0800 (PST)
-Received: by mail-oo1-xc2a.google.com with SMTP id 006d021491bc7-58d54612d9cso2525339eaf.1
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Dec 2023 10:12:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701627147; x=1702231947; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Lg+rYehudk4zCa2J1cWSGcffMXq8x+Mv5QTHznDZ7UE=;
-        b=IItbyqSaslJmRtggyu2MJS+ZvmgLSPiVPVxd2zCgP5su6Rzc0f436I16Kzy2d3iS7C
-         z1e83YjuZ4XHkI0eXQsQcNsF9Q30ABDjm7EAxKQnGUdTRZPUxPKzyArV10HiKD4jnUrR
-         BGjpu/N3DNis4/6iR3DnUlfgQhiw/py8pBKSNjBNEa/0owAG8s3GB2C0/gSN4rEFKxn1
-         5kqxHQ2+Gh35xP8Wk+t8VBLlBf9+L1546BE8iOq/MyFyYvIY7tcSf8jpK+lVMZKAz8ce
-         AxgOx5tKA8F8NJysQmRx06xrpnm7YbBbD5sUQuloYcKh5X7lm08SJYM4OdJh2riv0DF0
-         xoUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701627147; x=1702231947;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Lg+rYehudk4zCa2J1cWSGcffMXq8x+Mv5QTHznDZ7UE=;
-        b=kyzEf51477i9CA7iv9wvOD+APr2ROvIROuGg7j5LwWu8wG2dsnPOfmqSfoUtCsqPY6
-         3PBRs2ga+YbY2DrHU9kGEexzqep/dpR3oUd6jJbWTkGb5ZYcwK7XBYPjvQjDtglnUgvo
-         1x3yag+WNGn9egV+dRQMTh/dzlnPt5CYeUnFXmU1PH4/WBEihMqVxWdtcKX56YmX2TQg
-         bW5YuIWEhfO80uo7QJwyKceoF/PeCZDwJ9U+cjMXppcJ4rGthI8bZo8aoAiOQmHzSY3+
-         P5d0Y+IwrrH3lLEJc9duIChy7VTcM6uus5BsRkncPoAvuN2A0QEYcnO85ZRW6gaP3OnO
-         qHTw==
-X-Gm-Message-State: AOJu0YyJpu2kn0HSv6vCBMX1OCqWtUzT1KQLxMGFU6i5KjMuY/q79a+J
-        QcYNzKpVQCtxJTYSUIfC/OtuOXBcLUnr3k1jZJcHiUxbe3uWDizVBdk=
-X-Google-Smtp-Source: AGHT+IFKiSLUh69bXIrR+MV8gBrvB/vkxWpWEmjwGc5/RbIXCKbbWe0MXg9D42xuTng5Uf6CH97soxZ4iLXLqlDmZLs=
-X-Received: by 2002:a05:6358:10a:b0:170:17eb:b3e with SMTP id
- f10-20020a056358010a00b0017017eb0b3emr2568531rwa.40.1701627146725; Sun, 03
- Dec 2023 10:12:26 -0800 (PST)
+        Sun, 3 Dec 2023 13:14:03 -0500
+Received: from zg8tmtyylji0my4xnjqumte4.icoremail.net (zg8tmtyylji0my4xnjqumte4.icoremail.net [162.243.164.118])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5467FE7;
+        Sun,  3 Dec 2023 10:14:07 -0800 (PST)
+Received: from luzhipeng.223.5.5.5 (unknown [60.186.191.128])
+        by mail-app4 (Coremail) with SMTP id cS_KCgCHjTVnxWxlastEAA--.50948S2;
+        Mon, 04 Dec 2023 02:14:00 +0800 (CST)
+From:   Zhipeng Lu <alexious@zju.edu.cn>
+To:     alexious@zju.edu.cn
+Cc:     Nilesh Javali <njavali@marvell.com>,
+        GR-QLogic-Storage-Upstream@marvell.com,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Giridhar Malavali <gmalavali@marvell.com>,
+        Himanshu Madhani <hmadhani@marvell.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] scsi: qla2xxx: fix a memleak in qla2x00_mem_alloc
+Date:   Mon,  4 Dec 2023 02:13:42 +0800
+Message-Id: <20231203181342.3289136-1-alexious@zju.edu.cn>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20230612133452.47315-1-luhongfei@vivo.com> <3a32ad33-5f0e-4166-a118-1bbbec9c68e0@ixit.cz>
-In-Reply-To: <3a32ad33-5f0e-4166-a118-1bbbec9c68e0@ixit.cz>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Sun, 3 Dec 2023 20:12:16 +0200
-Message-ID: <CAA8EJppC6kGVf2XKu8AWYtJu+p5auei3Mdttae1qvuxRrSa-gQ@mail.gmail.com>
-Subject: Re: [PATCH v3] soc: qcom: pmic: Fix resource leaks in a
- device_for_each_child_node() loop
-To:     David Heidelberg <david@ixit.cz>
-Cc:     luhongfei@vivo.com, agross@kernel.org, andersson@kernel.org,
-        konrad.dybcio@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, opensource.kernel@vivo.com,
-        stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: cS_KCgCHjTVnxWxlastEAA--.50948S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrZF1kCry5XF1xGrW7Jr1DWrg_yoWkWrg_ua
+        1UXFyxuw1qgr4xJw18JrySy39Fv3Wqqr1vkFsYqry3JrW5uw18Wr15XayrZa1fXw4ayFZ8
+        uw47XrW5ZryUtjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbzxFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
+        6F4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Cr
+        1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
+        6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
+        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxAIw28IcxkI7VAK
+        I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
+        xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xII
+        jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
+        0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
+        67AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbXdbUUUUUU==
+X-CM-SenderInfo: qrsrjiarszq6lmxovvfxof0/
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,18 +60,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 3 Dec 2023 at 19:46, David Heidelberg <david@ixit.cz> wrote:
->
-> Heya!
->
-> I think this would be great candidate for backport, at least up to 6.6.
-> What do you think?
+When the dsd allocated in the for loop by kzalloc fails, it should gc
+all the resources allocated before, instead of just return a -ENOMEM.
 
-Yes. Most likely it should have had:
+According to the error-handling behavior of ha->dif_bundl_pool, the
+dsd's failure should free every resources after fail_dif_bundl_dma_pool,
+together with ha->dif_bundl_pool itself. So the error-handling should
+goes to label fail_dma_pool.
 
-Fixes: 080b4e24852b ("soc: qcom: pmic_glink: Introduce altmode support")
+Fixes: 50b812755e97 ("scsi: qla2xxx: Fix DMA error when the DIF sg buffer crosses 4GB boundary")
+Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
+---
+ drivers/scsi/qla2xxx/qla_os.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
+diff --git a/drivers/scsi/qla2xxx/qla_os.c b/drivers/scsi/qla2xxx/qla_os.c
+index 50db08265c51..bdd66f9e8850 100644
+--- a/drivers/scsi/qla2xxx/qla_os.c
++++ b/drivers/scsi/qla2xxx/qla_os.c
+@@ -4252,7 +4252,7 @@ qla2x00_mem_alloc(struct qla_hw_data *ha, uint16_t req_len, uint16_t rsp_len,
+ 					ql_dbg_pci(ql_dbg_init, ha->pdev,
+ 					    0xe0ee, "%s: failed alloc dsd\n",
+ 					    __func__);
+-					return -ENOMEM;
++					goto fail_dma_pool;
+ 				}
+ 				ha->dif_bundle_kallocs++;
+ 
 -- 
-With best wishes
-Dmitry
+2.34.1
+
