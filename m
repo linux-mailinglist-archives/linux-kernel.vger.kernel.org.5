@@ -2,67 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F235B8026F8
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 20:35:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCC10802708
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 20:36:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234294AbjLCTfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 14:35:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55340 "EHLO
+        id S233885AbjLCTgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 14:36:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234207AbjLCTe3 (ORCPT
+        with ESMTP id S233982AbjLCTgU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 14:34:29 -0500
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F5552116;
-        Sun,  3 Dec 2023 11:34:05 -0800 (PST)
-Received: by mail-yb1-xb34.google.com with SMTP id 3f1490d57ef6-db8892a5f96so778827276.2;
-        Sun, 03 Dec 2023 11:34:05 -0800 (PST)
+        Sun, 3 Dec 2023 14:36:20 -0500
+Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17E83211E;
+        Sun,  3 Dec 2023 11:34:06 -0800 (PST)
+Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-5b383b4184fso40874467b3.1;
+        Sun, 03 Dec 2023 11:34:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701632044; x=1702236844; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1701632045; x=1702236845; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=tow+85T+lc+N5QthCRRY7+xksWqAIO8q8vX1kWlFmwA=;
-        b=S8FjXbL+Om07tTWypyRabwgvKQMEr/uxqw3jaqPqfXxvRJasTDSmpGGHFPSbFMiH7V
-         fQBZphDsUWDU+5IQ+a3DtQZcV/UoXX3rXrwSX8HK7A9Dw3nI3VSzBFWivQnH+IzJ3bCn
-         G1CNIAO5gsQ18SvVo34/e1L8lumlzYAS9IlobGLPi2LyRKl21lGv/GrpxiOxNSyNfZVA
-         uJ/7ec2UYYzfA63vLqDjcmqw2+j7Rj2ZKH/JiwCjExh+QYnEZTV6Wx6//6qA6tmjxS5K
-         A8y10wN1cHbYX4fH+IUMPMylobCEZN9swQ6tnKTf70i0d6tNaIS3y1mAJPFv/X5z5euj
-         W25w==
+        bh=QHrqBjURy+mudPJ+6bg27Pk9qQM+xmaxDRnoUP1Py9c=;
+        b=AMI3FW8SVrYuqUOrNt/Ih6iy+WKIu5NgwmqcS/cYpwrdeWj+iIFsYqIjDrA6jvua0g
+         fRmeEIQ6ghQKvsivQ3B89tNJxZDj0lFSHnC6XfmyLBMLqSGF0zY77HqL96leVHRhn81c
+         o7QJh4rfSQNx0OvEytqVcyXH0IWN5mGBGopr5gM/mAj9X9zf/1WUfcUlAA8u9rhOWjIm
+         RJiufNVyEtSI8zOcYPUJoN843PYkwd/SFeA6hLzq3VbBrdNhv9rHL9kGDkwwcjko9EnS
+         2DzN5nIhSOD0DQpSG3ASYiTaX7h4davfHyg91rGaHBAmuHmDfs52D69QqYrQnoXJDavs
+         vuig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701632044; x=1702236844;
+        d=1e100.net; s=20230601; t=1701632045; x=1702236845;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=tow+85T+lc+N5QthCRRY7+xksWqAIO8q8vX1kWlFmwA=;
-        b=lpyO5K6jHutrCWknsNUU2o3mO1Qh5WInAUtBlxFo+BQPcPJVKRqGgA6FYvBnaaOcaK
-         FJN2FDUzN/TgcUr6U4864xmSV7b+ablM2J1XqNeaRWgpp2HCkkNHxeN7dZPZdqMWUzSz
-         MtkTMKdMKRZfvwkt7ESQJj3op7Fw+aRkh62lF1nlvoZyngMfy+GlBni2IYfY3iQJpXzy
-         4IYXHM3VWmF6N7a6f81o9UmKPLhLPJPbteswMtsdi5xiqsLelTsXYv569gOe5hlh7DC7
-         C22vDXomC9ZwdudOtUkI53Ubw0MbqfL2UDDdhHkM9noo5xdi5WFGFtn3VS0+VuJ33x6W
-         B2zQ==
-X-Gm-Message-State: AOJu0Yy1Y/q/wyLQb+Mte8EoOI8GQlh9194IAqoww4XDtOYiZioNuayx
-        /fzQAr15VTjx50Nr77cDLOrlKBnchBt+9A==
-X-Google-Smtp-Source: AGHT+IFdVY+nDvHApuybbKRgPwqo30yRyljr/trWB68rXRo3Ez+hOUZ7Bb+kBQ88sAzhLkZwEbNRpQ==
-X-Received: by 2002:a25:457:0:b0:db7:dacf:6205 with SMTP id 84-20020a250457000000b00db7dacf6205mr1739115ybe.87.1701632044112;
-        Sun, 03 Dec 2023 11:34:04 -0800 (PST)
+        bh=QHrqBjURy+mudPJ+6bg27Pk9qQM+xmaxDRnoUP1Py9c=;
+        b=MZFD38bYEJ5w//08VN3ajRarZBBPhQaG7cSEXMjurQvEw+wjS2aCf1e4F+Yp3oYk9q
+         m3wice9QovlYz94nZ6zEowu0KoSPKST+j5JJRP7FgstupvgBMifj62hiEmqpeqOyxuq1
+         O/UOAiEBqqSVVF/jDhCGSxCRLXCDby7Z+jYe3scX7DpkusQ02ToGTsGWMdmGM+2PH6Yh
+         lpcWfSEjAnGs/e+1vUIzPMBPiEQlNfzozma7TPRXZrnJqEZlC+CbVRwUxmen3rdtdvKb
+         nFY9YSyBtQ7td//EJhBxWStElvaX/R4+37i0QSZF+3ymHU1XxT1zm9P6U28fBBwGjz1X
+         3T7g==
+X-Gm-Message-State: AOJu0YzZuS7L57egk5SEJgTYbp+zv/15vqIJ+znfdNnnbqklRPfkYfrZ
+        pfikPKjmLABuDH4OGiPsVrodSJSOl0Kxuw==
+X-Google-Smtp-Source: AGHT+IGc9OJCrz0Vs7Jwm9KKYJn6cgVwzSJPcWjmn+naJ4Os06xO0RgJu/5QwhQF/G6sjioOlbuV6Q==
+X-Received: by 2002:a05:690c:368a:b0:5d7:1940:7d74 with SMTP id fu10-20020a05690c368a00b005d719407d74mr2240772ywb.75.1701632045662;
+        Sun, 03 Dec 2023 11:34:05 -0800 (PST)
 Received: from localhost ([2601:344:8301:57f0:cb98:c3e:57c:8191])
-        by smtp.gmail.com with ESMTPSA id bt13-20020a056902136d00b00d72176bdc5csm1759016ybb.40.2023.12.03.11.34.03
+        by smtp.gmail.com with ESMTPSA id v127-20020a818585000000b005869fd2b5bcsm2769872ywf.127.2023.12.03.11.34.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Dec 2023 11:34:03 -0800 (PST)
+        Sun, 03 Dec 2023 11:34:05 -0800 (PST)
 From:   Yury Norov <yury.norov@gmail.com>
-To:     linux-kernel@vger.kernel.org, Karsten Graul <kgraul@linux.ibm.com>,
-        Wenjia Zhang <wenjia@linux.ibm.com>,
-        Jan Karcher <jaka@linux.ibm.com>,
-        "D. Wythe" <alibuda@linux.alibaba.com>,
-        Tony Lu <tonylu@linux.alibaba.com>,
-        Wen Gu <guwen@linux.alibaba.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     Yury Norov <yury.norov@gmail.com>, Jan Kara <jack@suse.cz>,
+To:     linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, Daniel Mack <zonque@gmail.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Yury Norov <yury.norov@gmail.com>,
+        Kees Cook <keescook@chromium.org>, linux-sound@vger.kernel.org,
+        alsa-devel@alsa-project.org
+Cc:     Jan Kara <jack@suse.cz>,
         Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
         Matthew Wilcox <willy@infradead.org>,
         Rasmus Villemoes <linux@rasmusvillemoes.dk>,
@@ -71,63 +67,83 @@ Cc:     Yury Norov <yury.norov@gmail.com>, Jan Kara <jack@suse.cz>,
         Alexey Klimov <klimov.linux@gmail.com>,
         Bart Van Assche <bvanassche@acm.org>,
         Sergey Shtylyov <s.shtylyov@omp.ru>,
-        Alexandra Winter <wintera@linux.ibm.com>
-Subject: [PATCH v2 31/35] net: smc: use find_and_set_bit() in smc_wr_tx_get_free_slot_index()
-Date:   Sun,  3 Dec 2023 11:33:03 -0800
-Message-Id: <20231203193307.542794-30-yury.norov@gmail.com>
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH v2 32/35] ALSA: use atomic find_bit() functions where applicable
+Date:   Sun,  3 Dec 2023 11:33:04 -0800
+Message-Id: <20231203193307.542794-31-yury.norov@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231203193307.542794-1-yury.norov@gmail.com>
 References: <20231203192422.539300-1-yury.norov@gmail.com>
  <20231203193307.542794-1-yury.norov@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function opencodes find_and_set_bit() with a for_each() loop. Use
-it, and make the whole function a simple almost one-liner.
+ALSA code tests each bit in bitmaps in a for() loop. Switch it to
+dedicated atomic find_bit() API.
 
-While here, drop explicit initialization of *idx, because it's already
-initialized by the caller in case of ENOLINK, or set properly with
-->wr_tx_mask, if nothing is found, in case of EBUSY.
-
-CC: Tony Lu <tonylu@linux.alibaba.com>
-CC: Alexandra Winter <wintera@linux.ibm.com>
 Signed-off-by: Yury Norov <yury.norov@gmail.com>
+Acked-by: Takashi Iwai <tiwai@suse.de>
 ---
- net/smc/smc_wr.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+ sound/pci/hda/hda_codec.c |  7 +++----
+ sound/usb/caiaq/audio.c   | 13 +++++--------
+ 2 files changed, 8 insertions(+), 12 deletions(-)
 
-diff --git a/net/smc/smc_wr.c b/net/smc/smc_wr.c
-index 0021065a600a..b6f0cfc52788 100644
---- a/net/smc/smc_wr.c
-+++ b/net/smc/smc_wr.c
-@@ -170,15 +170,11 @@ void smc_wr_tx_cq_handler(struct ib_cq *ib_cq, void *cq_context)
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 01718b1fc9a7..29254005f394 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -3275,10 +3275,9 @@ static int get_empty_pcm_device(struct hda_bus *bus, unsigned int type)
  
- static inline int smc_wr_tx_get_free_slot_index(struct smc_link *link, u32 *idx)
- {
--	*idx = link->wr_tx_cnt;
- 	if (!smc_link_sendable(link))
- 		return -ENOLINK;
--	for_each_clear_bit(*idx, link->wr_tx_mask, link->wr_tx_cnt) {
--		if (!test_and_set_bit(*idx, link->wr_tx_mask))
--			return 0;
+ #ifdef CONFIG_SND_DYNAMIC_MINORS
+ 	/* non-fixed slots starting from 10 */
+-	for (i = 10; i < 32; i++) {
+-		if (!test_and_set_bit(i, bus->pcm_dev_bits))
+-			return i;
 -	}
--	*idx = link->wr_tx_cnt;
--	return -EBUSY;
-+
-+	*idx = find_and_set_bit(link->wr_tx_mask, link->wr_tx_cnt);
-+	return *idx < link->wr_tx_cnt ? 0 : -EBUSY;
- }
++	i = find_and_set_next_bit(bus->pcm_dev_bits, 32, 10);
++	if (i < 32)
++		return i;
+ #endif
  
- /**
+ 	dev_warn(bus->card->dev, "Too many %s devices\n",
+diff --git a/sound/usb/caiaq/audio.c b/sound/usb/caiaq/audio.c
+index 4981753652a7..74dfcf32b439 100644
+--- a/sound/usb/caiaq/audio.c
++++ b/sound/usb/caiaq/audio.c
+@@ -610,7 +610,7 @@ static void read_completed(struct urb *urb)
+ 	struct snd_usb_caiaq_cb_info *info = urb->context;
+ 	struct snd_usb_caiaqdev *cdev;
+ 	struct device *dev;
+-	struct urb *out = NULL;
++	struct urb *out;
+ 	int i, frame, len, send_it = 0, outframe = 0;
+ 	unsigned long flags;
+ 	size_t offset = 0;
+@@ -625,17 +625,14 @@ static void read_completed(struct urb *urb)
+ 		return;
+ 
+ 	/* find an unused output urb that is unused */
+-	for (i = 0; i < N_URBS; i++)
+-		if (test_and_set_bit(i, &cdev->outurb_active_mask) == 0) {
+-			out = cdev->data_urbs_out[i];
+-			break;
+-		}
+-
+-	if (!out) {
++	i = find_and_set_bit(&cdev->outurb_active_mask, N_URBS);
++	if (i >= N_URBS) {
+ 		dev_err(dev, "Unable to find an output urb to use\n");
+ 		goto requeue;
+ 	}
+ 
++	out = cdev->data_urbs_out[i];
++
+ 	/* read the recently received packet and send back one which has
+ 	 * the same layout */
+ 	for (frame = 0; frame < FRAMES_PER_URB; frame++) {
 -- 
 2.40.1
 
