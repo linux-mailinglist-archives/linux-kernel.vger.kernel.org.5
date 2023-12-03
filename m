@@ -2,212 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 459B98023F8
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 14:00:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 728CC8023F6
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 14:00:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233434AbjLCM3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 07:29:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46790 "EHLO
+        id S233463AbjLCMbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 07:31:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjLCM3j (ORCPT
+        with ESMTP id S229450AbjLCMbe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 07:29:39 -0500
-Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1AB0AB;
-        Sun,  3 Dec 2023 04:29:44 -0800 (PST)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id E196C3200A51;
-        Sun,  3 Dec 2023 07:29:40 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Sun, 03 Dec 2023 07:29:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
-         h=cc:cc:content-type:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm1; t=1701606580; x=
-        1701692980; bh=GOwoFAR8GHE2hmMC7toWGpEGxnv7HNMn1zEazKgNcs8=; b=O
-        r7RGwxKxaHzN7uXr99A2ovW4Wllkp/CwDBsVjGjl7SZQfTOQc7Z1KyAHbzlreEC1
-        fitroL1mWk50lo6/Q+zluJ/bOVluO9vSuncs4YVSZP8bSKZWlaud2LVOD7u+mRNG
-        opYpcLDXeMxBLZbfqsLgraUsKR/SK5KDCLDz70pMUetYK/TNH1KdzWYJbc34dTQH
-        6IZ350EDssi02JJCzr8SHqVdHjhu5Awqv7KAIjLupai4tQ6NPpFHIRtK7QBAhCBK
-        jLA73sVEce2D9ibOPdJ3666D7OesTjUqtshtkdE7pi3BaMq3qsnFGK7JhVSc14OF
-        2z3+l61sEIvHywqnHseJQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1701606580; x=1701692980; bh=GOwoFAR8GHE2h
-        mMC7toWGpEGxnv7HNMn1zEazKgNcs8=; b=gXlehs3Z9GqnGY4QD4mNHAWgPqRii
-        d0meS63kWnLjZa74xPElKdQkocfy7am7XRT+kFODJaoqWMXZ8Z5CMccGSNJMRxwE
-        nuOv0Ual5t6YsN8pcsZuBc12QuZZkMD4awKy3MEGL6GEXBTXSXv8JpfBmqARVFwg
-        3aoPRdfKSANj4N13pA8WCH+UGalNEBgtKcKBPVcdar45dNNxy65e0RqY5VUsk6kI
-        hMljrWyHx4VYksU/v7V9Zng3Pm0fKiRV19kIpPOnLgrf+kgdy1WjboKRSTftOOBJ
-        BevDj+JC9RNoGIAzECh4ovVVMOjbZxx97x77+dgetG28RQOEqkDo86JWw==
-X-ME-Sender: <xms:s3RsZbPd9qm9jBpE5TY2BiLByymbKlMfoFvEzY3-95y8BnzhmxlHRg>
-    <xme:s3RsZV9TRQyPhnGTgpaNqYD4TooIywoXibHAAg036w0-57kStu3NCrWjbs-n1jwhI
-    ig3LsXGgbjeKdOjkFA>
-X-ME-Received: <xmr:s3RsZaQxYLfiffi_kwxgagaJ1TSBEwuS-BIJ70S4o3zYN7kqJItZWc6yIlWGVnjEfvodAhpfRAODGqEn0EewwnRXOnBKhwR_FI4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudejgedggeduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepvfgrkhgr
-    shhhihcuufgrkhgrmhhothhouceoohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhird
-    hjpheqnecuggftrfgrthhtvghrnheptdetleekheeihfejueefkeejheehleduvddtkeel
-    hfelteekfeegkedufeejfeffnecuffhomhgrihhnpedtqdefjedqghgvnhgvrhhitgdrih
-    htpdgrmhgurdgtohhmpdhgihhthhhusgdrtghomhenucevlhhushhtvghrufhiiigvpedt
-    necurfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghshhhisehsrghkrghmohgttg
-    hhihdrjhhp
-X-ME-Proxy: <xmx:s3RsZfvmocDHNg_LoY9TOFmrRqK_5vA2XPsgwVQiKMDxvwwkgz-QTA>
-    <xmx:s3RsZTefHFBZmqIDLIgcK01_jrTiJg5RNocy4cj9dh_L2lQ8nTprnw>
-    <xmx:s3RsZb3Q1cwk3RzFCOsNm8eGr3Qolj7ZxVU6vNmCBVRytBJ3txsgmg>
-    <xmx:tHRsZVtztgEuY05Svgdt3hfWAmWScTThAsAnAdxb19DAnw-ZZai71g>
-Feedback-ID: ie8e14432:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 3 Dec 2023 07:29:37 -0500 (EST)
-Date:   Sun, 3 Dec 2023 21:29:35 +0900
-From:   Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To:     Mario Limonciello <mario.limonciello@amd.com>
-Cc:     a.mark.broadworth@gmail.com, matthias.schrumpf@freenet.de,
-        LKML <linux-kernel@vger.kernel.org>, aros@gmx.com,
-        bagasdotme@gmail.com,
-        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Borislav Petkov <bp@alien8.de>
-Subject: Re: Regression from dcadfd7f7c74ef9ee415e072a19bdf6c085159eb
-Message-ID: <20231203122935.GA5986@workstation.local>
-Mail-Followup-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        a.mark.broadworth@gmail.com, matthias.schrumpf@freenet.de,
-        LKML <linux-kernel@vger.kernel.org>, aros@gmx.com,
-        bagasdotme@gmail.com,
-        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>, Borislav Petkov <bp@alien8.de>
-References: <f878b188-3fe4-420c-9bcb-b431ac6088dd@amd.com>
- <20231107121756.GA168964@workstation.local>
- <318cc8da-f8d2-4307-866e-8c302dacf094@amd.com>
- <20231108051638.GA194133@workstation.local>
- <20231128052429.GA25379@workstation.local>
- <80dbe1de-c71c-4556-817d-3f06e67f38ba@amd.com>
+        Sun, 3 Dec 2023 07:31:34 -0500
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33022FF;
+        Sun,  3 Dec 2023 04:31:39 -0800 (PST)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-6cddb35ef8bso2838817b3a.2;
+        Sun, 03 Dec 2023 04:31:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701606698; x=1702211498; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=0MUy55F2F+wgLbUaq7AQf9HgfhTQk1XTmdlJL+JJNEo=;
+        b=csWxtsQJ8fK86xkEg0slWx6LRfFx3RCeURlAO7jzi9IkkIrS6kvUJzS5ebdxgL0O0t
+         W7QRC+qqSXlDDME50ZO+qr7U4BiiuAi6sjbvwgBIjqGPrCESPGG9Bqv1Hm3RfaYVud/i
+         OPk1vDUweobowDYGK6tqC/sqBkQeAEjgwv0OX1KP25gS6nubzyT32cRgyVo8A+d5QeZu
+         FW6pnqAWuDZpbQ1XYpMDdyxo3/mH4aD+RNbLFdA0GqhRNCJJnRl9DktWSgjX6EoEZXgY
+         wje/WwyXWIS5nYhsjZSF0fkHIqTHl2eRje/N/FAFxGZkbxRqYJJy87cxwzt6HwyIfGPR
+         fPkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701606698; x=1702211498;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0MUy55F2F+wgLbUaq7AQf9HgfhTQk1XTmdlJL+JJNEo=;
+        b=Uf1tltgz8IT/iAbZ2tT4vHv4h7zeH4w9zisQpk0Sev4TqSyq/ZmSAxypxjCiw0j1iP
+         qmoiuNT8pwpYbWVYK4e3ebYeDA2Gv3jnU/LlyLTnUDiG6F1zoVSbir149OJHw5jSc4Iu
+         zpuEVfEvypv9OHkylMetYYm41CWjpMA+HB49hkQHxMSvVal8xeDIkGVllVCMXzEUwttj
+         8Sio2c8LWRoa4v1uXsa5lhb8uOBqiJbRIx/Ef2uOdAEgOGs8HfEBl9XkXfh4UKiTOSPi
+         XDGty3yUiER+zvPCPRNkM8DmRXBw3itJzh0VFN5BQdhA03hT1XIAo1OlfkfQ20o+YlO9
+         Fv7w==
+X-Gm-Message-State: AOJu0Ywsz0EQNvBV8NjxpaSWqdQy1HbA1bwjxeNvrndhPICI3uh4Jhlw
+        LQPT283/ESf344DEX0wfgiPJwQYm04WhUw==
+X-Google-Smtp-Source: AGHT+IHmLadSlZkgkEbu7BCMhHy54Dhejaw4nkpOT9L4Al3PzBof4xcJ8kA+G2XiA2o5lw1MMiqVvg==
+X-Received: by 2002:a05:6a21:81a9:b0:18b:cd15:b832 with SMTP id pd41-20020a056a2181a900b0018bcd15b832mr777612pzb.42.1701606698415;
+        Sun, 03 Dec 2023 04:31:38 -0800 (PST)
+Received: from archie.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id h12-20020a170902b94c00b001c613b4aa33sm6529854pls.287.2023.12.03.04.31.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 03 Dec 2023 04:31:37 -0800 (PST)
+Received: by archie.me (Postfix, from userid 1000)
+        id 8AE2D1033EDE8; Sun,  3 Dec 2023 19:31:28 +0700 (WIB)
+Date:   Sun, 3 Dec 2023 19:31:28 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux IOMMU <iommu@lists.linux.dev>,
+        Linux Power Management <linux-pm@vger.kernel.org>
+Cc:     David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Oleksandr Natalenko <oleksandr@natalenko.name>,
+        Helge Deller <deller@gmx.de>,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>, kbugreports@proton.me
+Subject: Re: Fwd: Kernels v6.5 and v6.6 break resume from standby (s3) on
+ some Intel systems if VT-d is enabled
+Message-ID: <ZWx1IHBE9KCk6rWj@archie.me>
+References: <4b3c624a-f114-4e39-9e1c-0df18f307e8c@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="dO/hfGGfuReF84Ss"
 Content-Disposition: inline
-In-Reply-To: <80dbe1de-c71c-4556-817d-3f06e67f38ba@amd.com>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <4b3c624a-f114-4e39-9e1c-0df18f307e8c@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mario,
 
-Thanks for the advices.
+--dO/hfGGfuReF84Ss
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I note that In my experiments I use Ubuntu 23.04 amd64 (v6.2 kernel) with
-backported FireWire stack[1]. Except for the stack, the kernel and software
-packages can be retrieved from repositories of Ubuntu project.
+On Tue, Nov 28, 2023 at 08:09:24PM +0700, Bagas Sanjaya wrote:
+> Hi,
+>=20
+> I notice a regression report on Bugzilla [1]. Quoting from it:
+>=20
+> > Note:
+> >=20
+> > I'm just a Linux user, I don't work in IT or even write code, so, I'm p=
+robably using terms to describe the issue that are not the ones someone who=
+ knows code and what the system does under the hood would use.
+> >=20
+> > Affected system:
+> >=20
+> > Thinkpad, Intel Kaby Lake (i7-7600U) chipset / cpu and onboard gpu (Int=
+el HD 620), no separate graphics card, current bios firmware; running Void =
+Linux, xfce / lightdm
+> >=20
+> > Symptom / problem:
+> >=20
+> > Since the upgrade to kernel v6.5.5 (from v6.3.13) my system doesn't wak=
+e up from standby, i.e. resume from s3 fails 100% of the time.
+> > When pressing a key or the power button nothing happens. The LED that i=
+ndicates different states of the system, keeps indicating standby mode.
+> > The only way to use the system again is hard reset by pressing the powe=
+r button for a few seconds.
+> >=20
+> > So, there is no crashing on resume or incomplete resume or only sometim=
+es failing to resume or failing to go into standby in the first place.
+> >=20
+> > Granted, this issue was present with kernels before v6.5, but only occa=
+sionally and it would not re-appear for many many boot cycles. So, I never =
+had any lead as to why it would happen.
+> >=20
+> > I installed kernel v6.4.16 to test for the bug - it's not in there.
+> >=20
+> > For further testing I also installed kernel v6.5.2, as this was the fir=
+st kernel of the 6.5 series available on void linux, (and because the kerne=
+l logs mention VT-d for kernel v6.5.5 and v6.5.3, see below). Result: The b=
+ug is already in v6.5.2, too.
+> >=20
+> > There's only one thing I noticed from comparing logs between kernels v6=
+=2E5/6.6 vs v6.1/6.3/6.4. In the moment the system goes into standby, if ru=
+nning one of the latter three kernel versions the system would print the fo=
+llowing messages:
+> >=20
+> > [elogind-daemon] Entering sleep state 'suspend'...
+> > [kernel] PM: suspend entry (deep)
+> >=20
+> >=20
+> > But with kernels v6.5/6.6, the kernel message is missing, only the elog=
+ind-daemon message shows up in the logs. As if the kernel didn't get the me=
+mo and thus didn't prepare and didn't listen for the wake-up call to resume.
+> >=20
+> >=20
+> > To see, if this is a bug that might be tight to a certain chipset / cpu=
+ generation, I tested kernel v6.5 on my old Thinkpad (Intel Sandy Bridge ch=
+ipset / cpu, and also onboard graphics only). Its BIOS also has VT-d enable=
+d. Interestingly, on that system, resume from standby with kernel v6.5 is n=
+o problem, even though its system is set up the same as the current Thinkpa=
+d.
+> >=20
+> > So, this bug seems to be limited to certain set of chipset / cpu. Which=
+ seems feasible, as I couldn't find a bug report on this - not too many see=
+m to be affected.
+> >=20
+> >=20
+> >=20
+> > There's an older bug report on similar symptoms, but the cure doesn't w=
+ork on my system:
+> >=20
+> > "intel_iommu=3Don breaks resume from suspend on several Thinkpad models"
+> > https://bugzilla.kernel.org/show_bug.cgi?id=3D197029
+> >=20
+> >=20
+> > Although it sounds just like what my system is experiencing - apart fro=
+m the fact that term suspend being sometimes also used to describe hibernat=
+ion and it is not specified which one is meant in the bug report.
+> >=20
+> > So, I was hopeful on the one hand that the (workaround) fix (adding int=
+el_iommu=3Doff to the kernel parameters) would work on my system, too - on =
+the other hand, this bug report was for kernel v4.13, so it's probably not =
+necessarily relevant to similar symptoms with kernel v6.5 and v6.6, respect=
+ively.
+> >=20
+> > Anyway, adding intel_iommu=3Doff to the kernel parameters didn't change=
+ anything on my system. I made, of course, sure once the system was running=
+, that intel_iommu=3Doff was in indeed used as one of the kernel parameters.
+> >=20
+> >=20
+> > With this information in mind I did a regular internet search and found=
+ some information that in case intel_iommu=3Doff in the kernel parameters d=
+oesn't help, disabling VT-d in BIOS might.
+> > And in my case it does indeed help avoiding the bug - for both kernel v=
+ersions, v6.5 and v6.6.
+> >=20
+> > Reading some other bug reports and some changelogs, I noticed that iomm=
+u and vt-s are connected, to I posted this bug report in drivers/iommu. If =
+it is misplaced here, please feel free to move it to the correct category.
+> >=20
+> >=20
+> > I attached a file with the output of some commands I found being used i=
+n several other bug reports on here, just in case they might be needed / he=
+lpful.
+> >=20
+> >=20
+> > Thank you very much for your help in advance!
+>=20
+> See Bugzilla for the full thread.
+>=20
+> Anyway, I'm adding this regression to regzbot:
+>=20
+> #regzbot introduced: v6.3..v6.5 https://bugzilla.kernel.org/show_bug.cgi?=
+id=3D218191
+> #regzbot title: resume from standby fails on Thinkpad with Kaby Lake CPU
+>=20
 
-On Tue, Nov 28, 2023 at 12:09:41AM -0600, Mario Limonciello wrote:
-> On 11/27/2023 23:24, Takashi Sakamoto wrote:
-> > Hi Mario
-> > 
-> > Following up on our last conversation, I purchase some hardware to
-> > attempt to retrieve outputs from serial port. Finally, I bought another
-> > mother board in used market which provides serial port from Super I/O
-> > chip (ASUS TUF Gaming X570-Plus). However, I have retrieved no helpful
-> > outputs yet when encountering the system reboot.
-> 
-> Did you up the loglevel to 8 to make sure you'll get all kernel output on
-> the serial port, not just errors?
+The reporter had done bisection (see Bugzilla for details), so telling
+regzbot:
 
-Even if giving either 'debug' cmdline option or incrementing console
-loglevel via syctl, I receive no useful output from console when loading
-the module at or after booting up.
+#regzbot introduced: 0c7ffa32dbd6b0
 
-```
-$ sysctl kernel.printk
-kernel.printk = 7	7	1	7
-```
+Thanks.
 
-I tried at several difference cases; enabling/disabling IOMMU,
-enabling/disabling SVM in motherboard level. But nothing effective.
+--=20
+An old man doll... just what I always wanted! - Clara
 
-> > As you mentioned, I check whether PCIe AER is enabled or not in the
-> > running kernel (Ubuntu 23.04 linux-image-6.2.0-37-generic). It is
-> > certainly enabled, however I can see nothing in the output as I noted.
-> > 
-> > I experienced extra troubles relevant to AMD Ryzen machine and the issued
-> > PCIe device:
-> > 
-> > * ASRock X570 Phantom Gaming 4 with AMD Ryzen 5 3600X does not detect
-> >    the card. We can see no corresponding entry in lspci.
-> > * After associating the card to vfio-pci, lspci command can reboot the
-> >    system even if firewire-ohci driver is not loaded. I can regenerate it
-> >    in both Gigabyte AX370-Gaming 5/ASUS TUF Gaming X570-plus with AMD
-> >    Ryzen 2400G.
-> 
-> Rather than lspci, is it specifically config space access from sysfs? Does
-> the output from the serial port change with IOMMU enabled vs disabled?
+--dO/hfGGfuReF84Ss
+Content-Type: application/pgp-signature; name="signature.asc"
 
-In lspci case, I can work with debugger and figure out that 'pread(2)' to
-file descriptor for 'config' node in sysfs causes the unexpected system
-reboot. Additionally I can regenerate it by hexdump(1) to the node:
+-----BEGIN PGP SIGNATURE-----
 
-```
-$ lspci
-...
-04:00.0 PCI bridge: ASMedia Technology Inc. ASM1083/1085 PCIe to PCI Bridge [1b21:1080] (rev 03)
-05:00.0 FireWire (IEEE 1394): VIA Technologies, Inc. VT6306/7/8 [Fire II(M)] IEEE 1394 OHCI Controller [1106:3044] (rev 80)
-...
-$ hexdump -C /sys/bus/pci/devices/0000\:05\:00.0/config 
-00000000  06 11 44 30 80 00 10 02  80 10 00 0c 10 20 00 00  |..D0......... ..|
-00000010  00 00 90 fc 01 d0 00 00  00 00 00 00 00 00 00 00  |................|
-00000020  00 00 00 00 00 00 00 00  00 00 00 00 06 11 44 30  |..............D0|
-00000030  00 00 00 00 50 00 00 00  00 00 00 00 ff 01 00 20  |....P.......... |
-00000040
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZWx1HAAKCRD2uYlJVVFO
+o9tkAQD39PHo7FdONECmYZXrv+d6mV48M232+oW13+R1CiakrgEA1d/iKH+VFtPl
+UK+NIN72mc22rpkszIA/Br5ww/0w0gw=
+=tabU
+-----END PGP SIGNATURE-----
 
-$ lsmod | grep firewire
-(no output)
-
-$ sudo -i
-# modprobe vfio-pci
-# echo 1106 3044 > /sys/bus/pci/drivers/vfio-pci/new_id 
-# exit
-
-$ hexdump -C /sys/bus/pci/devices/0000\:05\:00.0/config 
-(reboot)
-```
-
-I can suppress it when disabling IOMMU in motherboard. In this point, the
-issue of lspci is a bit different from the issue of driver issue.
-
-> > I'm plreased to see if you have extra ideas to get helpful output from
-> > the system. But I guess that I should start finding some workaround to
-> > avoid the issued access to register instead of investigating the reboot
-> > mechanism, sigh...
-> > 
-> > Anyway, thanks for your help. >
-> 
-> Can you check FCH::PM::S5_RESET_STATUS on next boot after failure has
-> occurred?  It is available at MMIO FED80300 or through indirect IO access at
-> 0xC0.
-> 
-> If MMIO doesn't work, double check FCH::PM_ISACONTROL bit 1 (described on
-> page 296) to confirm if your system enables it.
-> 
-> The meanings of the different bits can be found in a recent PPR:
-> https://www.amd.com/content/dam/amd/en/documents/processor-tech-docs/programmer-references/55901_B1_pub_053.zip
-> 
-> Indirect IO is described on PDF page 294.
-> 
-> This will at least give us a hint what's going on in this case.
-
-I'll try the above in this week. Thanks.
-
-
-[1] https://github.com/takaswie/linux-firewire-dkms/
-
-Takashi Sakamoto
+--dO/hfGGfuReF84Ss--
