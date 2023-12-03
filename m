@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3908180235F
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 12:44:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF669802365
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 12:44:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229600AbjLCLnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 06:43:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59714 "EHLO
+        id S233507AbjLCLnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 06:43:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233418AbjLCLne (ORCPT
+        with ESMTP id S233427AbjLCLng (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 06:43:34 -0500
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63168125
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 03:43:40 -0800 (PST)
-Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2c9f84533beso5856761fa.1
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Dec 2023 03:43:40 -0800 (PST)
+        Sun, 3 Dec 2023 06:43:36 -0500
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BC03FF
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 03:43:41 -0800 (PST)
+Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2c9b956c68cso37426321fa.1
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Dec 2023 03:43:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701603818; x=1702208618; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1701603819; x=1702208619; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=nMbl5DaTa88R8QWO3ldLiDu8WUCRErATauR7weFBowc=;
-        b=gLkM0epy4TjTQ9rb/vv4KeugA58TmsM4mCO4x+qTPxUA3pANQb3DcprRYlyGiDO1AX
-         V5WahZR7/egHbo5osT+YqIJhLNczkD6aXTX3okTp2jDYqD+iB23nQ/OolXklHNBSY6OW
-         FPdmanhvgJlJw0mglXcaXWGcoc5IsD7jrlcFiK1zF+zzR0N6FazmS1e6GvtMD3nEIS3G
-         FA39cgaoWx4pTmm6jDOq/6T/Rq7K7wmDKCudcUQyIazLTtf2cRmuoEtC/zQFqN8L+SwN
-         jUp0bIyhXNYIw6AUVNHFpnnFUI1da414mVcsNp4YxNiCunsFZmj8ib8TZvMzUNRxlfY/
-         nNyg==
+        bh=UKrvC1va3zOXcp6YVKcTFgaHzs/W3SOKPJn+fUfNRVg=;
+        b=i1CtVHMj1QPOlv60fO4WklXqp9md/WEZC/PBPskl+OMw7P6dtoPu5WYVA+h+/6fsJz
+         wLb36uYV/PIhgsAogmCzM6NB6W1poUmKTcnU7FZwC/3LyqChWvMMBqF2uw/rXBzRrCDW
+         +/v9pBOmTazCAp9iNPhthh/Bfvq/KOq/2Jt0TQm5y1Oo+XmBDxtnOLrIVyIbU8dzc6vH
+         wRzLulK0RBIOAa/P2DE+WtzCsZ5qzYRJOzxKmxuJ5NzXbL4UudCS4+/o6lutqtOpLv71
+         AQlTEjG/X8acvHAEwlKjVmqDMVCYM8InhQKkZFU7wobczH9/SEFYn5GFw+aQH4j4bq39
+         H4AQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701603818; x=1702208618;
+        d=1e100.net; s=20230601; t=1701603819; x=1702208619;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=nMbl5DaTa88R8QWO3ldLiDu8WUCRErATauR7weFBowc=;
-        b=GCkQOrY91q3xxPJyCBaWZ6CS9BMuxqaXEaZbLfZB5559KLPhpM4QmDJJKK/496de94
-         JhUXizI6uxzk+unH/NXQ/MFPpjjP64PpdvatzfRYY4kmvB3ZwWLIfmtH/aKnwRgndmOg
-         sJ9j6ASMg1solBOHqCN3nGfY+xPejUPkaZJHh+hsYht/Q85jF5YieOS0izFS8iADXOCe
-         BoQZqCAqtdFACiFHmBTKWYDpU7YZj+nW664lnB0ZLp9QfaJKqhdsz0eazkvkcM+P0NM7
-         LO28rrbNmhb94rRvFiwxf64xs3h1Dryr8Q2epBnxeMxIpfAX6tau3xLakSIP5Pne9s3j
-         nY2A==
-X-Gm-Message-State: AOJu0YzVdC4kIlzgQ7C24EtRHj72vnrd8tgmQh4i7oY5S2SivxzNOPj8
-        jpUUZExiNw/ex+rg9zCotoMx6g==
-X-Google-Smtp-Source: AGHT+IEtNxbenURZmP44FrTsCAp4qsFXzlCNtSFg4IQrY95AVawx5eoI5ZiIRm8LT7R6121km753XQ==
-X-Received: by 2002:a2e:9d17:0:b0:2c9:fa34:332d with SMTP id t23-20020a2e9d17000000b002c9fa34332dmr220397lji.12.1701603818621;
-        Sun, 03 Dec 2023 03:43:38 -0800 (PST)
+        bh=UKrvC1va3zOXcp6YVKcTFgaHzs/W3SOKPJn+fUfNRVg=;
+        b=HpNWiqahjykbWpQJpNfm4P4TA9YwbMAuA+mb8Ukm+AW4u8XNE4X5YHU4aVfwr99wsp
+         p6E6ZkGfglMoERYdxcL//GnxY1Vw54chn80ZeXT9aoTiSuL4+7l+LJzhe4l4UYOMmnvJ
+         6GBTM85BPANUblma/+43aOX6a+GIjTf09YNE9jiYIDndNPGb77EEmTzRCMkZ3LU+u9ty
+         7wV/aUW3kuT3Lhy+6MmEz6NoEDfH97NA8Imds6/Lb/Ylyd4/FFRlJ5CciLBZrzhtL0Dl
+         52C34uML+pnylHieEoEd2hSzvy3IT9qvXeMDGMufoUt6XmYMzq20gVTnm2xtMMI1d3lt
+         AeAw==
+X-Gm-Message-State: AOJu0YzvoRwyUJLavBrJUKuJgBLlMbgj3syNw4zpkXsdkwtud3BGQKE/
+        RIwYqmGqvi2UKMdwHrrbcCivrA==
+X-Google-Smtp-Source: AGHT+IHlCnMXqlHuC6gKdZ/CQQO1yqOzIBskrtxlMb/o+gHL9SMYk7yhl6JtGqmZs37Q6toY2GUfug==
+X-Received: by 2002:a2e:8751:0:b0:2c9:f8fa:f1cb with SMTP id q17-20020a2e8751000000b002c9f8faf1cbmr520349ljj.23.1701603819537;
+        Sun, 03 Dec 2023 03:43:39 -0800 (PST)
 Received: from umbar.unikie.fi ([192.130.178.91])
-        by smtp.gmail.com with ESMTPSA id o17-20020a2e90d1000000b002c993c5d4c6sm894666ljg.105.2023.12.03.03.43.37
+        by smtp.gmail.com with ESMTPSA id o17-20020a2e90d1000000b002c993c5d4c6sm894666ljg.105.2023.12.03.03.43.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Dec 2023 03:43:37 -0800 (PST)
+        Sun, 03 Dec 2023 03:43:39 -0800 (PST)
 From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         David Airlie <airlied@gmail.com>,
@@ -73,17 +73,17 @@ To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 Cc:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
         linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
         freedreno@lists.freedesktop.org
-Subject: [PATCH RESEND 5/6] soc: qcom: pmic-glink: switch to DRM_AUX_HPD_BRIDGE
-Date:   Sun,  3 Dec 2023 14:43:32 +0300
-Message-Id: <20231203114333.1305826-6-dmitry.baryshkov@linaro.org>
+Subject: [PATCH RESEND 6/6] usb: typec: qcom-pmic-typec: switch to DRM_AUX_HPD_BRIDGE
+Date:   Sun,  3 Dec 2023 14:43:33 +0300
+Message-Id: <20231203114333.1305826-7-dmitry.baryshkov@linaro.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231203114333.1305826-1-dmitry.baryshkov@linaro.org>
 References: <20231203114333.1305826-1-dmitry.baryshkov@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -94,99 +94,109 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 Use the freshly defined DRM_AUX_HPD_BRIDGE instead of open-coding the
 same functionality for the DRM bridge chain termination.
 
-Reviewed-by: Bjorn Andersson <andersson@kernel.org>
-Acked-by: Bjorn Andersson <andersson@kernel.org>
+Acked-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 ---
- drivers/soc/qcom/Kconfig              |  1 +
- drivers/soc/qcom/pmic_glink_altmode.c | 33 ++++++++-------------------
- 2 files changed, 10 insertions(+), 24 deletions(-)
+ drivers/usb/typec/tcpm/Kconfig                |  1 +
+ drivers/usb/typec/tcpm/qcom/qcom_pmic_typec.c | 41 +++----------------
+ 2 files changed, 7 insertions(+), 35 deletions(-)
 
-diff --git a/drivers/soc/qcom/Kconfig b/drivers/soc/qcom/Kconfig
-index b3634e10f6f5..c954001ae79e 100644
---- a/drivers/soc/qcom/Kconfig
-+++ b/drivers/soc/qcom/Kconfig
-@@ -86,6 +86,7 @@ config QCOM_PMIC_GLINK
- 	depends on OF
- 	select AUXILIARY_BUS
- 	select QCOM_PDR_HELPERS
-+	select DRM_AUX_HPD_BRIDGE
+diff --git a/drivers/usb/typec/tcpm/Kconfig b/drivers/usb/typec/tcpm/Kconfig
+index 0b2993fef564..64d5421c69e6 100644
+--- a/drivers/usb/typec/tcpm/Kconfig
++++ b/drivers/usb/typec/tcpm/Kconfig
+@@ -80,6 +80,7 @@ config TYPEC_QCOM_PMIC
+ 	tristate "Qualcomm PMIC USB Type-C Port Controller Manager driver"
+ 	depends on ARCH_QCOM || COMPILE_TEST
+ 	depends on DRM || DRM=n
++	select DRM_AUX_HPD_BRIDGE if DRM_BRIDGE
  	help
- 	  The Qualcomm PMIC GLINK driver provides access, over GLINK, to the
- 	  USB and battery firmware running on one of the coprocessors in
-diff --git a/drivers/soc/qcom/pmic_glink_altmode.c b/drivers/soc/qcom/pmic_glink_altmode.c
-index b78279e2f54c..053b7393e26a 100644
---- a/drivers/soc/qcom/pmic_glink_altmode.c
-+++ b/drivers/soc/qcom/pmic_glink_altmode.c
-@@ -11,7 +11,7 @@
- #include <linux/mutex.h>
- #include <linux/property.h>
- #include <linux/soc/qcom/pdr.h>
+ 	  A Type-C port and Power Delivery driver which aggregates two
+ 	  discrete pieces of silicon in the PM8150b PMIC block: the
+diff --git a/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec.c b/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec.c
+index 581199d37b49..1a2b4bddaa97 100644
+--- a/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec.c
++++ b/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec.c
+@@ -18,7 +18,7 @@
+ #include <linux/usb/tcpm.h>
+ #include <linux/usb/typec_mux.h>
+ 
 -#include <drm/drm_bridge.h>
 +#include <drm/bridge/aux-bridge.h>
  
- #include <linux/usb/typec_altmode.h>
- #include <linux/usb/typec_dp.h>
-@@ -76,7 +76,7 @@ struct pmic_glink_altmode_port {
- 
- 	struct work_struct work;
- 
--	struct drm_bridge bridge;
-+	struct device *bridge;
- 
- 	enum typec_orientation orientation;
- 	u16 svid;
-@@ -230,10 +230,10 @@ static void pmic_glink_altmode_worker(struct work_struct *work)
- 	else
- 		pmic_glink_altmode_enable_usb(altmode, alt_port);
- 
--	if (alt_port->hpd_state)
--		drm_bridge_hpd_notify(&alt_port->bridge, connector_status_connected);
--	else
--		drm_bridge_hpd_notify(&alt_port->bridge, connector_status_disconnected);
-+	drm_aux_hpd_bridge_notify(alt_port->bridge,
-+				  alt_port->hpd_state ?
-+				  connector_status_connected :
-+				  connector_status_disconnected);
- 
- 	pmic_glink_altmode_request(altmode, ALTMODE_PAN_ACK, alt_port->index);
+ #include "qcom_pmic_typec_pdphy.h"
+ #include "qcom_pmic_typec_port.h"
+@@ -36,7 +36,6 @@ struct pmic_typec {
+ 	struct pmic_typec_port	*pmic_typec_port;
+ 	bool			vbus_enabled;
+ 	struct mutex		lock;		/* VBUS state serialization */
+-	struct drm_bridge	bridge;
  };
-@@ -365,16 +365,6 @@ static void pmic_glink_altmode_callback(const void *data, size_t len, void *priv
- 	}
+ 
+ #define tcpc_to_tcpm(_tcpc_) container_of(_tcpc_, struct pmic_typec, tcpc)
+@@ -150,35 +149,6 @@ static int qcom_pmic_typec_init(struct tcpc_dev *tcpc)
+ 	return 0;
  }
  
--static int pmic_glink_altmode_attach(struct drm_bridge *bridge,
+-#if IS_ENABLED(CONFIG_DRM)
+-static int qcom_pmic_typec_attach(struct drm_bridge *bridge,
 -				     enum drm_bridge_attach_flags flags)
 -{
 -	return flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR ? 0 : -EINVAL;
 -}
 -
--static const struct drm_bridge_funcs pmic_glink_altmode_bridge_funcs = {
--	.attach = pmic_glink_altmode_attach,
+-static const struct drm_bridge_funcs qcom_pmic_typec_bridge_funcs = {
+-	.attach = qcom_pmic_typec_attach,
 -};
 -
- static void pmic_glink_altmode_put_retimer(void *data)
- {
- 	typec_retimer_put(data);
-@@ -464,15 +454,10 @@ static int pmic_glink_altmode_probe(struct auxiliary_device *adev,
- 		alt_port->index = port;
- 		INIT_WORK(&alt_port->work, pmic_glink_altmode_worker);
- 
--		alt_port->bridge.funcs = &pmic_glink_altmode_bridge_funcs;
--		alt_port->bridge.of_node = to_of_node(fwnode);
--		alt_port->bridge.ops = DRM_BRIDGE_OP_HPD;
--		alt_port->bridge.type = DRM_MODE_CONNECTOR_DisplayPort;
+-static int qcom_pmic_typec_init_drm(struct pmic_typec *tcpm)
+-{
+-	tcpm->bridge.funcs = &qcom_pmic_typec_bridge_funcs;
+-#ifdef CONFIG_OF
+-	tcpm->bridge.of_node = of_get_child_by_name(tcpm->dev->of_node, "connector");
+-#endif
+-	tcpm->bridge.ops = DRM_BRIDGE_OP_HPD;
+-	tcpm->bridge.type = DRM_MODE_CONNECTOR_DisplayPort;
 -
--		ret = devm_drm_bridge_add(dev, &alt_port->bridge);
--		if (ret) {
-+		alt_port->bridge = drm_dp_hpd_bridge_register(dev, to_of_node(fwnode));
-+		if (IS_ERR(alt_port->bridge)) {
- 			fwnode_handle_put(fwnode);
--			return ret;
-+			return PTR_ERR(alt_port->bridge);
- 		}
+-	return devm_drm_bridge_add(tcpm->dev, &tcpm->bridge);
+-}
+-#else
+-static int qcom_pmic_typec_init_drm(struct pmic_typec *tcpm)
+-{
+-	return 0;
+-}
+-#endif
+-
+ static int qcom_pmic_typec_probe(struct platform_device *pdev)
+ {
+ 	struct pmic_typec *tcpm;
+@@ -186,6 +156,7 @@ static int qcom_pmic_typec_probe(struct platform_device *pdev)
+ 	struct device_node *np = dev->of_node;
+ 	const struct pmic_typec_resources *res;
+ 	struct regmap *regmap;
++	struct device *bridge_dev;
+ 	u32 base[2];
+ 	int ret;
  
- 		alt_port->dp_alt.svid = USB_TYPEC_DP_SID;
+@@ -241,14 +212,14 @@ static int qcom_pmic_typec_probe(struct platform_device *pdev)
+ 	mutex_init(&tcpm->lock);
+ 	platform_set_drvdata(pdev, tcpm);
+ 
+-	ret = qcom_pmic_typec_init_drm(tcpm);
+-	if (ret)
+-		return ret;
+-
+ 	tcpm->tcpc.fwnode = device_get_named_child_node(tcpm->dev, "connector");
+ 	if (!tcpm->tcpc.fwnode)
+ 		return -EINVAL;
+ 
++	bridge_dev = drm_dp_hpd_bridge_register(tcpm->dev, to_of_node(tcpm->tcpc.fwnode));
++	if (IS_ERR(bridge_dev))
++		return PTR_ERR(bridge_dev);
++
+ 	tcpm->tcpm_port = tcpm_register_port(tcpm->dev, &tcpm->tcpc);
+ 	if (IS_ERR(tcpm->tcpm_port)) {
+ 		ret = PTR_ERR(tcpm->tcpm_port);
 -- 
 2.39.2
 
