@@ -2,74 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CDC6802078
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 03:51:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB372802077
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 03:51:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232764AbjLCCtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 21:49:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38916 "EHLO
+        id S232542AbjLCCuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 21:50:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjLCCtc (ORCPT
+        with ESMTP id S229450AbjLCCuS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 21:49:32 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43C2A11A;
-        Sat,  2 Dec 2023 18:49:38 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id 98e67ed59e1d1-2866e4ac34bso962298a91.1;
-        Sat, 02 Dec 2023 18:49:38 -0800 (PST)
+        Sat, 2 Dec 2023 21:50:18 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62C2011F
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 18:50:24 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-54c77e0832cso1311087a12.0
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Dec 2023 18:50:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701571777; x=1702176577; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=dGe2F7cGTUh0qqkd0zgqhOnKjigD2/54N0FZlpwMCw0=;
-        b=JGXq8tgHbpX9DSAGX1XKNcgGp/BhQvrGnUjGv7olG5rtjh4oTDVwNG1XM014dZ7VKz
-         h8JnVFL5WNEvyNiSEPeZzxYlIr7sQfP9fQXPO0LRugCaLfth5njrJYV5kmFwRRsxnsH/
-         7DSenRqE1UiBM9o6kzJAL9mfdwylOE7xesHRB5RNNy36EjxZ4qBDGWsQFlte+4c1hsDC
-         0RUBT7AKKxdHe/88rx/6cOgpAibKWv08l/j27HesJMFR466MvLoGHl7+Zl3iDvbb1OaD
-         o//l7VWdsAMFIKrhJnHz+USVumxxwX3HLHgrcX6JxFK5Y5L6oHdBr707R1hd5BYjv3k6
-         7HkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701571777; x=1702176577;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=cloudflare.com; s=google09082023; t=1701571823; x=1702176623; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=dGe2F7cGTUh0qqkd0zgqhOnKjigD2/54N0FZlpwMCw0=;
-        b=hUWuuRAU8xBDbIkzLWp7yZu9qaao2FUErGDUesIMJ/2bEcWZW3iTGsueuLnkHhj3qI
-         s/Yn1CQfRwy2iM0pNjMwQl6rKZP1baVVwDRyPAyUqzj4lEsGFQqTQemut6Ha12qCspJC
-         hQLJuK67DYZA0dLTazSt/kdjHAjwi6IQZSLOdbH9Ctv58qofgu9P3fZOiXX2qiDGcJCF
-         1TC91GWkcZmLtc9aK8GGWbhGfWx+tCy+xDPnRdSLhMWYDk1kUgVP82esFRXShWxmvnlZ
-         G+dRmCuOmYOXMrg/pzI83D1EHn12QA7csHvg7dBB2+Uo/KFlJCvqqsRHSPxzPN5aFAMy
-         knzg==
-X-Gm-Message-State: AOJu0YwpLLS6dtNqo/igqYwFsWLGK+dDAGqdYiMhkZ/eVZskCxNeHo9p
-        nItLwVciCECsXQCdbzfqz4g=
-X-Google-Smtp-Source: AGHT+IHzROYfXZKYIhNJqzyhfQ0XjCFQr63D1lHq1V+7gD4GCJJ0JPigfk1ciJooizapJm7jOuKqLw==
-X-Received: by 2002:a17:90a:be12:b0:286:6cc0:cae0 with SMTP id a18-20020a17090abe1200b002866cc0cae0mr1234911pjs.87.1701571777633;
-        Sat, 02 Dec 2023 18:49:37 -0800 (PST)
-Received: from archie.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id e12-20020a170902d38c00b001cc8cf4ad16sm1438306pld.246.2023.12.02.18.49.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Dec 2023 18:49:37 -0800 (PST)
-Received: by archie.me (Postfix, from userid 1000)
-        id BCD38102894F8; Sun,  3 Dec 2023 09:49:33 +0700 (WIB)
-Date:   Sun, 3 Dec 2023 09:49:33 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Tsung-Han Lin <tsunghan.tw@gmail.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Dcoumentation/arch/arm64: fix typo
-Message-ID: <ZWvsvXYm5LgaSGLZ@archie.me>
-References: <20231203011804.27694-1-tsunghan.tw@gmail.com>
+        bh=6npRnsWkqBdhZbc6M4dSByEnWkDw3CX1ntQyh6JSYSY=;
+        b=AdS/7VcxZKbx5RzVBPV5c6c0Ffp/QG+7hcDVPDyLONNrUV7cx5JYB6b5bCuFiJrrK6
+         YygSawS6eE5K+jeEmi0iDgcbciMewPuLekLfCQsx58r833Brjg+TNihge5pOdlhYnG6Z
+         x5JN5ol2W6aGTaj/3DJh2VsLsAOYw7VBs+epvoa46jjT53g23Y8mP60ci9IaLlvnJTW7
+         uBfK2YIMhbnH/1EBUx8Fwj8Tvq+fGKIiuqRZE6OBHI0rODKZL8D4NwuBybGQVPT2fyz3
+         sSbAH3Mk/KpygfcMz/SluGnHYizZhVaWi6HoC68/xCBC1M25UpbDY/34uWQWD6KF1fVa
+         +0aQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701571823; x=1702176623;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6npRnsWkqBdhZbc6M4dSByEnWkDw3CX1ntQyh6JSYSY=;
+        b=Ac/8qQJci87RdGZA2Z85i+vCtjKqoZ25NBOoQ6ysJBfmvC/5NQLT0QPsJsMmx1ra/7
+         2jFHUNAhQYsFzZ8tOU2nMbQy9xrhjhqeV4Z7Yg3GYtBvJcDqEzG3IZZw2wNo6IBmZip3
+         B+7qjTYjKgW4Sjf2ZchSN61xhpihNxE0n/bO5CX5q3HUrdLWtGJ000++0lw7/uhJmFYk
+         bAGPpAnupXYfF6i909JePk8ya73EnYudCrvgIQ9m3ClimP2Vf3emnS3RVAhAD5FfWPoP
+         Q4RMoDeIkA/FSF333FdjW+ipWVp7UiC4//+nERrmLIgYMwBHuThG5XD1j+FnKutSwFqB
+         IFMQ==
+X-Gm-Message-State: AOJu0YzDuixtv2QMTiRrmNlccS30TG7hemHsZnAzAGXy0dxTbz1Uy3qw
+        7h8pOHkDPKYfz5PzdkEk9lxWujzO4eGip4p7p/CfKA==
+X-Google-Smtp-Source: AGHT+IHWCKbajPDOzc2EJ1n/RHOirXnZrIM6lY1wrd1As3uj0q5lJQ4NYVZawgsgWNzlvYGzmKItLV0vJmDPjgXNDl8=
+X-Received: by 2002:a17:906:265a:b0:9ff:9db9:1dc0 with SMTP id
+ i26-20020a170906265a00b009ff9db91dc0mr2116273ejc.62.1701571822752; Sat, 02
+ Dec 2023 18:50:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="5h2W3nFBGs7wo8cg"
-Content-Disposition: inline
-In-Reply-To: <20231203011804.27694-1-tsunghan.tw@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+References: <ZWomqO8m4vVcW+ro@debian.debian> <656b3a1bcd212_1a6a2c294db@willemb.c.googlers.com.notmuch>
+In-Reply-To: <656b3a1bcd212_1a6a2c294db@willemb.c.googlers.com.notmuch>
+From:   Yan Zhai <yan@cloudflare.com>
+Date:   Sat, 2 Dec 2023 20:50:11 -0600
+Message-ID: <CAO3-PboYVv6pGm6ZhNs4ArK=3W-V4XY6EJxcYXGyX=YHwdHW6g@mail.gmail.com>
+Subject: Re: [PATCH v3 net-next] packet: add a generic drop reason for receive
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Weongyo Jeong <weongyo.linux@gmail.com>,
+        linux-kernel@vger.kernel.org, kernel-team@cloudflare.com,
+        Jesper Brouer <jesper@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,59 +74,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Dec 2, 2023 at 8:07=E2=80=AFAM Willem de Bruijn
+<willemdebruijn.kernel@gmail.com> wrote:
+>
+> Yan Zhai wrote:
+> > Commit da37845fdce2 ("packet: uses kfree_skb() for errors.") switches
+> > from consume_skb to kfree_skb to improve error handling. However, this
+> > could bring a lot of noises when we monitor real packet drops in
+> > kfree_skb[1], because in tpacket_rcv or packet_rcv only packet clones
+> > can be freed, not actual packets.
+> >
+> > Adding a generic drop reason to allow distinguish these "clone drops".
+> >
+> > [1]: https://lore.kernel.org/netdev/CABWYdi00L+O30Q=3DZah28QwZ_5RU-xcxL=
+FUK2Zj08A8MrLk9jzg@mail.gmail.com/
+> > Fixes: da37845fdce2 ("packet: uses kfree_skb() for errors.")
+> > Suggested-by: Eric Dumazet <edumazet@google.com>
+> > Signed-off-by: Yan Zhai <yan@cloudflare.com>
+> > ---
+> > v2->v3: removed an unused variable
+> > v1->v2: fixups suggested by Eric Dumazet
+> > v2: https://lore.kernel.org/netdev/ZWobMUp22oTpP3FW@debian.debian/
+> > v1: https://lore.kernel.org/netdev/ZU3EZKQ3dyLE6T8z@debian.debian/
+> > ---
+> >  include/net/dropreason-core.h |  6 ++++++
+> >  net/packet/af_packet.c        | 26 +++++++++++++-------------
+> >  2 files changed, 19 insertions(+), 13 deletions(-)
+> >
+> > diff --git a/include/net/dropreason-core.h b/include/net/dropreason-cor=
+e.h
+> > index 3c70ad53a49c..278e4c7d465c 100644
+> > --- a/include/net/dropreason-core.h
+> > +++ b/include/net/dropreason-core.h
+> > @@ -86,6 +86,7 @@
+> >       FN(IPV6_NDISC_NS_OTHERHOST)     \
+> >       FN(QUEUE_PURGE)                 \
+> >       FN(TC_ERROR)                    \
+> > +     FN(PACKET_SOCK_ERROR)           \
+> >       FNe(MAX)
+> >
+> >  /**
+> > @@ -378,6 +379,11 @@ enum skb_drop_reason {
+> >       SKB_DROP_REASON_QUEUE_PURGE,
+> >       /** @SKB_DROP_REASON_TC_ERROR: generic internal tc error. */
+> >       SKB_DROP_REASON_TC_ERROR,
+> > +     /**
+> > +      * @SKB_DROP_REASON_PACKET_SOCK_ERROR: generic packet socket erro=
+rs
+> > +      * after its filter matches an incoming packet.
+> > +      */
+> > +     SKB_DROP_REASON_PACKET_SOCK_ERROR,
+> >       /**
+> >        * @SKB_DROP_REASON_MAX: the maximum of core drop reasons, which
+> >        * shouldn't be used as a real 'reason' - only for tracing code g=
+en
+> > diff --git a/net/packet/af_packet.c b/net/packet/af_packet.c
+> > index a84e00b5904b..933fdfaacc44 100644
+> > --- a/net/packet/af_packet.c
+> > +++ b/net/packet/af_packet.c
+> > @@ -2127,7 +2127,7 @@ static int packet_rcv(struct sk_buff *skb, struct=
+ net_device *dev,
+> >       u8 *skb_head =3D skb->data;
+> >       int skb_len =3D skb->len;
+> >       unsigned int snaplen, res;
+> > -     bool is_drop_n_account =3D false;
+> > +     enum skb_drop_reason drop_reason =3D SKB_CONSUMED;
+>
+> Reverse xmas tree
+>
+oh I didn't know we have requirements on variable ordering. Will pay
+attention in future.
 
---5h2W3nFBGs7wo8cg
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> >
+> >       if (skb->pkt_type =3D=3D PACKET_LOOPBACK)
+> >               goto drop;
+> > @@ -2161,6 +2161,10 @@ static int packet_rcv(struct sk_buff *skb, struc=
+t net_device *dev,
+> >       res =3D run_filter(skb, sk, snaplen);
+> >       if (!res)
+> >               goto drop_n_restore;
+> > +
+> > +     /* skb will only be "consumed" not "dropped" before this */
+> > +     drop_reason =3D SKB_DROP_REASON_PACKET_SOCK_ERROR;
+> > +
+>
+> This can be set in drop_n_account, rather than the common path.
+>
+> Same in tpacket_rcv.
 
-On Sun, Dec 03, 2023 at 09:18:04AM +0800, Tsung-Han Lin wrote:
-> Should be 'if' here.
->=20
-> Signed-off-by: Tsung-Han Lin <tsunghan.tw@gmail.com>
-> ---
->  Documentation/arch/arm64/arm-acpi.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/Documentation/arch/arm64/arm-acpi.rst b/Documentation/arch/a=
-rm64/arm-acpi.rst
-> index a46c34fa9604..e59e4505d0d9 100644
-> --- a/Documentation/arch/arm64/arm-acpi.rst
-> +++ b/Documentation/arch/arm64/arm-acpi.rst
-> @@ -130,7 +130,7 @@ When an Arm system boots, it can either have DT infor=
-mation, ACPI tables,
->  or in some very unusual cases, both.  If no command line parameters are =
-used,
->  the kernel will try to use DT for device enumeration; if there is no DT
->  present, the kernel will try to use ACPI tables, but only if they are pr=
-esent.
-> -In neither is available, the kernel will not boot.  If acpi=3Dforce is u=
-sed
-> +If neither is available, the kernel will not boot.  If acpi=3Dforce is u=
-sed
->  on the command line, the kernel will attempt to use ACPI tables first, b=
-ut
->  fall back to DT if there are no ACPI tables present.  The basic idea is =
-that
->  the kernel will not fail to boot unless it absolutely has no other choic=
-e.
-
-LGTM, thanks!
-
-Reviewed-by: Bagas Sanjaya <bagasdotme@gmail.com>
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---5h2W3nFBGs7wo8cg
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZWvsvQAKCRD2uYlJVVFO
-oxN1AP0X1zno8jcgzO4aJ5n2/YaFYaJZ8NPcXTSAtOIkVK353wD/dW031Lazzzxi
-adLq5PxUvtQ6e7O0YK5tb8bw6xetdgA=
-=NOAU
------END PGP SIGNATURE-----
-
---5h2W3nFBGs7wo8cg--
+Sure, let me shoot a v4 to move it.
