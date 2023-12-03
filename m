@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78A2F802847
+	by mail.lfdr.de (Postfix) with ESMTP id 2449A802846
 	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 23:06:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233976AbjLCWGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 17:06:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49350 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233913AbjLCWGN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S233939AbjLCWGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Sun, 3 Dec 2023 17:06:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49334 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229525AbjLCWGM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 3 Dec 2023 17:06:12 -0500
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2BCDD5
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B263D7
         for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 14:06:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701641180; x=1733177180;
+  t=1701641179; x=1733177179;
   h=date:from:to:cc:subject:message-id:mime-version;
-  bh=uXNasBvzRowqRRsmnni+ArdSWqNdLqDlDPW2xIBFSek=;
-  b=BfnwtbF02m17vtvmzZbWXRnyekwz0rmeFg1UA2/rdQomZlcI01H/XeIi
-   bl4ULRoLGnX58kC9HKofnppf4biJdoUR0D568fD7J4D51A3+QxyjTKCMh
-   Obso297byw9FPS2Z4Ef7mt9Nm9AMrBnQxbzxZm4Kph65zukEDVGPPlZH1
-   sEdP/zS551SKKnESSjCoovcO2Vv475Ktpu57cOv5q8vaNAejXdAeqbhL9
-   yd18eEfuVzOlTNxTZUE9qXJhVx9zhm2ft7JioAX3D8cShl/qfUjuRqpb8
-   Dq4QW1Sw7VcKw2Tv3HZlEsQMo98ODWO/9tDcdgNOkeB+nyqY0eyunWnss
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10913"; a="563354"
+  bh=yQfDWJWHn1Fx7wFk/bbK5kb6fL66cUGrV+bJloSJsEc=;
+  b=bvefN6VG5XTrWkBCFVpO4jRFvX1wDC3E4btbKCUz/vYYMJxF9nFYzvmt
+   F1xXaM+E/Un2n3Hy66FoDmUrw4aQuxb5YanUDeS4UpkuwE4khfmtBf7+t
+   7Fve+t38fuxQhq4QpHlGd0FLoC+gIlGLlqvXnX34brmTjGyW85PlUljiW
+   sO6LbWfnte+utnODzgkCLYGQX1C+3glJtP2Zh+lGoIBGx/bfXI82JDbMP
+   vO3hrixeqtuaRlyEOGMCX/lMBn3hSCnKYYpoQppVkt0Y33Nr65g9bQUhv
+   S3OKNvOADZSKUPiTrHCKyB1bsQNHYTyQJEUV1NH+6pL/hVYlzqn8ct3pN
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10913"; a="563350"
 X-IronPort-AV: E=Sophos;i="6.04,248,1695711600"; 
-   d="scan'208";a="563354"
+   d="scan'208";a="563350"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
   by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2023 14:06:19 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10913"; a="799396610"
+X-IronPort-AV: E=McAfee;i="6600,9927,10913"; a="799396609"
 X-IronPort-AV: E=Sophos;i="6.04,248,1695711600"; 
-   d="scan'208";a="799396610"
+   d="scan'208";a="799396609"
 Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
   by orsmga008.jf.intel.com with ESMTP; 03 Dec 2023 14:06:17 -0800
 Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1r9ubO-0007A2-2c;
+        id 1r9ubO-0007A0-2P;
         Sun, 03 Dec 2023 22:06:14 +0000
-Date:   Mon, 4 Dec 2023 06:05:52 +0800
+Date:   Mon, 4 Dec 2023 06:05:53 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     Ondrej Zary <linux@zary.sk>
 Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Jiri Kosina <jkosina@suse.cz>
-Subject: drivers/hid/intel-ish-hid/ishtp-hid.c:208:24: sparse: sparse: cast
- to restricted __le16
-Message-ID: <202312040545.PKPxVXOu-lkp@intel.com>
+        Damien Le Moal <damien.lemoal@opensource.wdc.com>
+Subject: drivers/ata/pata_parport/frpw.c:210 frpw_test_pnp() warn:
+ inconsistent indenting
+Message-ID: <202312040519.osHxpP8A-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -65,115 +65,46 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 head:   33cc938e65a98f1d29d0a18403dbbee050dcad9a
-commit: 0b28cb4bcb17dcb5fe0763fc3e1a94398b8f6cf6 HID: intel-ish-hid: ISH HID client driver
-date:   7 years ago
-config: x86_64-randconfig-123-20231101 (https://download.01.org/0day-ci/archive/20231204/202312040545.PKPxVXOu-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-12) 11.3.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231204/202312040545.PKPxVXOu-lkp@intel.com/reproduce)
+commit: 72f2b0b2185099dce354c805009f591dda3ab73d drivers/block: Move PARIDE protocol modules to drivers/ata/pata_parport
+date:   10 months ago
+config: arm-randconfig-r071-20231130 (https://download.01.org/0day-ci/archive/20231204/202312040519.osHxpP8A-lkp@intel.com/config)
+compiler: arm-linux-gnueabi-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231204/202312040519.osHxpP8A-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312040545.PKPxVXOu-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312040519.osHxpP8A-lkp@intel.com/
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/hid/intel-ish-hid/ishtp-hid.c:208:24: sparse: sparse: cast to restricted __le16
-   drivers/hid/intel-ish-hid/ishtp-hid.c:209:23: sparse: sparse: cast to restricted __le16
-   drivers/hid/intel-ish-hid/ishtp-hid.c:210:24: sparse: sparse: cast to restricted __le16
-   In file included from include/linux/kobject.h:21,
-                    from include/linux/device.h:17,
-                    from include/linux/input.h:22,
-                    from include/linux/hid.h:35,
-                    from drivers/hid/intel-ish-hid/ishtp-hid.c:16:
-   include/linux/sysfs.h: In function 'sysfs_get_dirent':
-   include/linux/sysfs.h:517:44: warning: pointer targets in passing argument 2 of 'kernfs_find_and_get' differ in signedness [-Wpointer-sign]
-     517 |         return kernfs_find_and_get(parent, name);
-         |                                            ^~~~
-         |                                            |
-         |                                            const unsigned char *
-   In file included from include/linux/sysfs.h:15,
-                    from include/linux/kobject.h:21,
-                    from include/linux/device.h:17,
-                    from include/linux/input.h:22,
-                    from include/linux/hid.h:35,
-                    from drivers/hid/intel-ish-hid/ishtp-hid.c:16:
-   include/linux/kernfs.h:440:57: note: expected 'const char *' but argument is of type 'const unsigned char *'
-     440 | kernfs_find_and_get(struct kernfs_node *kn, const char *name)
-         |                                             ~~~~~~~~~~~~^~~~
-   drivers/hid/intel-ish-hid/ishtp-hid.c: In function 'ishtp_hid_request':
-   drivers/hid/intel-ish-hid/ishtp-hid.c:101:44: warning: pointer targets in passing argument 2 of 'hid_output_report' differ in signedness [-Wpointer-sign]
-     101 |                 hid_output_report(rep, buf + header_size);
-         |                                        ~~~~^~~~~~~~~~~~~
-         |                                            |
-         |                                            char *
-   In file included from drivers/hid/intel-ish-hid/ishtp-hid.c:16:
-   include/linux/hid.h:809:57: note: expected '__u8 *' {aka 'unsigned char *'} but argument is of type 'char *'
-     809 | void hid_output_report(struct hid_report *report, __u8 *data);
-         |                                                   ~~~~~~^~~~
+smatch warnings:
+drivers/ata/pata_parport/frpw.c:210 frpw_test_pnp() warn: inconsistent indenting
 
-vim +208 drivers/hid/intel-ish-hid/ishtp-hid.c
+vim +210 drivers/ata/pata_parport/frpw.c
 
-   168	
-   169	/**
-   170	 * ishtp_hid_probe() - hid register ll driver
-   171	 * @cur_hid_dev:	Index of hid device calling to register
-   172	 * @client_data:	Client data pointer
-   173	 *
-   174	 * This function is used to allocate and add HID device.
-   175	 *
-   176	 * Return: 0 on success, non zero on error
-   177	 */
-   178	int ishtp_hid_probe(unsigned int cur_hid_dev,
-   179			    struct ishtp_cl_data *client_data)
-   180	{
-   181		int rv;
-   182		struct hid_device *hid;
-   183		struct ishtp_hid_data *hid_data;
-   184	
-   185		hid = hid_allocate_device();
-   186		if (IS_ERR(hid)) {
-   187			rv = PTR_ERR(hid);
-   188			return	-ENOMEM;
-   189		}
-   190	
-   191		hid_data = kzalloc(sizeof(*hid_data), GFP_KERNEL);
-   192		if (!hid_data) {
-   193			rv = -ENOMEM;
-   194			goto err_hid_data;
-   195		}
-   196	
-   197		hid_data->index = cur_hid_dev;
-   198		hid_data->client_data = client_data;
-   199		init_waitqueue_head(&hid_data->hid_wait);
-   200	
-   201		hid->driver_data = hid_data;
-   202	
-   203		client_data->hid_sensor_hubs[cur_hid_dev] = hid;
-   204	
-   205		hid->ll_driver = &ishtp_hid_ll_driver;
-   206		hid->bus = BUS_INTEL_ISHTP;
-   207		hid->dev.parent = &client_data->cl_device->dev;
- > 208		hid->version = le16_to_cpu(ISH_HID_VERSION);
-   209		hid->vendor = le16_to_cpu(ISH_HID_VENDOR);
-   210		hid->product = le16_to_cpu(ISH_HID_PRODUCT);
-   211		snprintf(hid->name, sizeof(hid->name), "%s %04hX:%04hX", "hid-ishtp",
-   212			hid->vendor, hid->product);
-   213	
-   214		rv = hid_add_device(hid);
-   215		if (rv)
-   216			goto err_hid_device;
-   217	
-   218		hid_ishtp_trace(client_data,  "%s allocated hid %p\n", __func__, hid);
-   219	
-   220		return 0;
-   221	
-   222	err_hid_device:
-   223		kfree(hid_data);
-   224	err_hid_data:
-   225		kfree(hid);
-   226		return rv;
-   227	}
-   228	
+^1da177e4c3f41 drivers/block/paride/frpw.c Linus Torvalds 2005-04-16  201  
+^1da177e4c3f41 drivers/block/paride/frpw.c Linus Torvalds 2005-04-16  202  	olddelay = pi->delay;
+^1da177e4c3f41 drivers/block/paride/frpw.c Linus Torvalds 2005-04-16  203  	pi->delay = 10;
+^1da177e4c3f41 drivers/block/paride/frpw.c Linus Torvalds 2005-04-16  204  
+^1da177e4c3f41 drivers/block/paride/frpw.c Linus Torvalds 2005-04-16  205  	pi->saved_r0 = r0();
+^1da177e4c3f41 drivers/block/paride/frpw.c Linus Torvalds 2005-04-16  206          pi->saved_r2 = r2();
+^1da177e4c3f41 drivers/block/paride/frpw.c Linus Torvalds 2005-04-16  207  	
+^1da177e4c3f41 drivers/block/paride/frpw.c Linus Torvalds 2005-04-16  208  	w2(4); w0(4); w2(6); w2(7);
+^1da177e4c3f41 drivers/block/paride/frpw.c Linus Torvalds 2005-04-16  209  	a = r1() & 0xff; w2(4); b = r1() & 0xff;
+^1da177e4c3f41 drivers/block/paride/frpw.c Linus Torvalds 2005-04-16 @210  	w2(0xc); w2(0xe); w2(4);
+^1da177e4c3f41 drivers/block/paride/frpw.c Linus Torvalds 2005-04-16  211  
+^1da177e4c3f41 drivers/block/paride/frpw.c Linus Torvalds 2005-04-16  212  	pi->delay = olddelay;
+^1da177e4c3f41 drivers/block/paride/frpw.c Linus Torvalds 2005-04-16  213          w0(pi->saved_r0);
+^1da177e4c3f41 drivers/block/paride/frpw.c Linus Torvalds 2005-04-16  214          w2(pi->saved_r2);
+^1da177e4c3f41 drivers/block/paride/frpw.c Linus Torvalds 2005-04-16  215  
+^1da177e4c3f41 drivers/block/paride/frpw.c Linus Torvalds 2005-04-16  216  	return ((~a&0x40) && (b&0x40));
+^1da177e4c3f41 drivers/block/paride/frpw.c Linus Torvalds 2005-04-16  217  } 
+^1da177e4c3f41 drivers/block/paride/frpw.c Linus Torvalds 2005-04-16  218  
+
+:::::: The code at line 210 was first introduced by commit
+:::::: 1da177e4c3f41524e886b7f1b8a0c1fc7321cac2 Linux-2.6.12-rc2
+
+:::::: TO: Linus Torvalds <torvalds@ppc970.osdl.org>
+:::::: CC: Linus Torvalds <torvalds@ppc970.osdl.org>
 
 -- 
 0-DAY CI Kernel Test Service
