@@ -2,673 +2,583 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C84D8023A5
+	by mail.lfdr.de (Postfix) with ESMTP id 4755E8023A4
 	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 13:15:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233442AbjLCMMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 07:12:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51198 "EHLO
+        id S233454AbjLCMOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 07:14:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbjLCMMt (ORCPT
+        with ESMTP id S229450AbjLCMOh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 07:12:49 -0500
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D4C6DB;
-        Sun,  3 Dec 2023 04:12:54 -0800 (PST)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-40c09f4bea8so2520075e9.1;
-        Sun, 03 Dec 2023 04:12:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701605573; x=1702210373; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=wn+x3zBOfVaqJ6tgmSvBwPQOc/K0lcodJORVTpxMa/c=;
-        b=JQXlg+ZZizFEDjHGiW9VRi1Rt7Un4p6pkWnjMoGj4YYcvq6LnPgHJVp4rQnAGQksr/
-         BBKeA3gbJc1MtiWrH3WdoebnYY4AICiTTmCHZ29CuKDopc8GA7PecY3wD6VQrze2sMn2
-         GSCYrJLCyh7UkRI/8ji4em3E8QwuFU/FE919h5BPsY5SOIy9KdFUJlr9l5TTV7ReuMp3
-         ozGHgAoEGZ5kcbIYnDLl3abM712njq2ZIY+1LsSP14WvTV9ngIy0sv0pcXMaYEIyn4bq
-         LRZztAJiojSJGEKZRKygbvu0dAx/EA0PPAu/9Kor+/sKN+JfP0DWJ8SRE/v1oAp1YWcO
-         6AoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701605573; x=1702210373;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wn+x3zBOfVaqJ6tgmSvBwPQOc/K0lcodJORVTpxMa/c=;
-        b=OYO7dn9glw2vFDdbZmcJJCBzu2hq60lxurKR5GLYAFSNfxQtU1uFk/LNyx3C3jyKIv
-         w40t+sW5uR8UzHESBAH6q5OL9za3pI18ogkvCaAUoN76BRogADVyo+LJaV8NZYaQ6w3y
-         zKh4zHZ+5AzVbSJ0GPS9169+dY4BLneT5IPiplwAB+QkdWEkT95wu8FpfMFZShvcFA9v
-         82C+w/wQhkJA47FgfdTLfmSV+mGVvGK7TXOmI/PRB+WTuI2Fpg9QSo/wM5Bn/m5JZhhf
-         2YvUmyzVn1tOfq9OSIZ+X5J2ch6YwWr5rA6v9M+i5faqvf5Fy+5NrVx5LtSWNnIOeMaw
-         RF1Q==
-X-Gm-Message-State: AOJu0YxnNiDHo7JmztoPmiCiV/njkq23TPW3y9xl+t1S8HD6EyRbdcRg
-        QkTKRpsQCf5fLq6zUxdyhoud44h3nc54rw==
-X-Google-Smtp-Source: AGHT+IEts0iey4/TLNJvuTHhg568YFM9+x9aN6VFpR1x2wiaGKFx13EadOP1ONmmVJWyt8R2EPv9gg==
-X-Received: by 2002:a05:600c:4f47:b0:40b:4a80:6b84 with SMTP id m7-20020a05600c4f4700b0040b4a806b84mr1681982wmq.22.1701605572527;
-        Sun, 03 Dec 2023 04:12:52 -0800 (PST)
-Received: from fedora.. (cable-178-148-234-71.dynamic.sbb.rs. [178.148.234.71])
-        by smtp.gmail.com with ESMTPSA id p23-20020a05600c1d9700b0040b3645a7c2sm15372150wms.40.2023.12.03.04.12.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Dec 2023 04:12:51 -0800 (PST)
-From:   Aleksa Savic <savicaleksa83@gmail.com>
-To:     linux-hwmon@vger.kernel.org
-Cc:     Aleksa Savic <savicaleksa83@gmail.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        linux-doc@vger.kernel.org (open list:DOCUMENTATION),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2] hwmon: Add driver for Gigabyte AORUS Waterforce AIO coolers
-Date:   Sun,  3 Dec 2023 13:06:48 +0100
-Message-ID: <20231203120651.371429-1-savicaleksa83@gmail.com>
-X-Mailer: git-send-email 2.43.0
+        Sun, 3 Dec 2023 07:14:37 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B3D60DB;
+        Sun,  3 Dec 2023 04:14:41 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1593C1688;
+        Sun,  3 Dec 2023 04:15:28 -0800 (PST)
+Received: from raptor (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F364F3F73F;
+        Sun,  3 Dec 2023 04:14:33 -0800 (PST)
+Date:   Sun, 3 Dec 2023 12:14:30 +0000
+From:   Alexandru Elisei <alexandru.elisei@arm.com>
+To:     Hyesoo Yu <hyesoo.yu@samsung.com>
+Cc:     catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev,
+        maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com,
+        yuzenghui@huawei.com, arnd@arndb.de, akpm@linux-foundation.org,
+        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com, mhiramat@kernel.org,
+        rppt@kernel.org, hughd@google.com, pcc@google.com,
+        steven.price@arm.com, anshuman.khandual@arm.com,
+        vincenzo.frascino@arm.com, david@redhat.com, eugenis@google.com,
+        kcc@google.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev,
+        linux-fsdevel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC v2 11/27] arm64: mte: Reserve tag storage memory
+Message-ID: <ZWxxJipc2STxHHKn@raptor>
+References: <20231119165721.9849-1-alexandru.elisei@arm.com>
+ <CGME20231119165840epcas2p2c99f1dd358f716c103c16f47cc23bf2a@epcas2p2.samsung.com>
+ <20231119165721.9849-12-alexandru.elisei@arm.com>
+ <20231129084424.GA2988384@tiffany>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231129084424.GA2988384@tiffany>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver exposes hardware sensors of the Gigabyte AORUS Waterforce
-all-in-one CPU liquid coolers, which communicate through a proprietary
-USB HID protocol. Report offsets were initially discovered in [1] and
-confirmed by me on a Waterforce X240 by observing the sent reports from
-the official software.
+Hi,
 
-Available sensors are pump and fan speed in RPM, as well as coolant
-temperature. Also available through debugfs is the firmware version.
+On Wed, Nov 29, 2023 at 05:44:24PM +0900, Hyesoo Yu wrote:
+> Hello.
+> 
+> On Sun, Nov 19, 2023 at 04:57:05PM +0000, Alexandru Elisei wrote:
+> > Allow the kernel to get the size and location of the MTE tag storage
+> > regions from the DTB. This memory is marked as reserved for now.
+> > 
+> > The DTB node for the tag storage region is defined as:
+> > 
+> >         tags0: tag-storage@8f8000000 {
+> >                 compatible = "arm,mte-tag-storage";
+> >                 reg = <0x08 0xf8000000 0x00 0x4000000>;
+> >                 block-size = <0x1000>;
+> >                 memory = <&memory0>;	// Associated tagged memory node
+> >         };
+> >
+> 
+> How about using compatible = "shared-dma-pool" like below ?
+> 
+> &reserved_memory {
+> 	tags0: tag0@8f8000000 {
+> 		compatible = "arm,mte-tag-storage";
+>         	reg = <0x08 0xf8000000 0x00 0x4000000>;
+> 	};
+> }
+> 
+> tag-storage {
+>         compatible = "arm,mte-tag-storage";
+> 	memory-region = <&tag>;
+>         memory = <&memory0>;
+> 	block-size = <0x1000>;
+> }
+> 
+> And then, the activation of CMA would be performed in the CMA code.
+> We just can get the region information from memory-region and allocate it directly
+> like alloc_contig_range, take_page_off_buddy. It seems like we can remove a lots of code.
 
-Attaching a fan is optional and allows it to be controlled from the
-device. If it's not connected, the fan-related sensors will report
-zeroes.
+Played with reserved_mem a bit. I don't think that's the correct path
+forward.
 
-The addressable RGB LEDs and LCD screen are not supported in this
-driver and should be controlled through userspace tools.
+The location of the tag storage is a hardware property, independent of how
+Linux is configured.
 
-[1]: https://github.com/liquidctl/liquidctl/issues/167
+early_init_fdt_scan_reserved_mem() is called from arm64_memblock_init(),
+**after** the kernel enforces an upper address for various reasons. One of
+the reasons can be that it's been compiled with 39 bits VA.
 
-Signed-off-by: Aleksa Savic <savicaleksa83@gmail.com>
----
-Changes in v2 (fix issues reported by kernel bot):
-- Add driver doc to hwmon doc index
-- Initialize ret value in waterforce_get_status() to 0
----
- Documentation/hwmon/gigabyte_waterforce.rst |  47 +++
- Documentation/hwmon/index.rst               |   1 +
- MAINTAINERS                                 |   7 +
- drivers/hwmon/Kconfig                       |  10 +
- drivers/hwmon/Makefile                      |   1 +
- drivers/hwmon/gigabyte_waterforce.c         | 439 ++++++++++++++++++++
- 6 files changed, 505 insertions(+)
- create mode 100644 Documentation/hwmon/gigabyte_waterforce.rst
- create mode 100644 drivers/hwmon/gigabyte_waterforce.c
+After early_init_fdt_scan_reserved_mem() returns, the kernel sets the
+maximum address, stored in the variable "high_memory".
 
-diff --git a/Documentation/hwmon/gigabyte_waterforce.rst b/Documentation/hwmon/gigabyte_waterforce.rst
-new file mode 100644
-index 000000000000..d47f3e8516ee
---- /dev/null
-+++ b/Documentation/hwmon/gigabyte_waterforce.rst
-@@ -0,0 +1,47 @@
-+.. SPDX-License-Identifier: GPL-2.0-or-later
-+
-+Kernel driver gigabyte_waterforce
-+=================================
-+
-+Supported devices:
-+
-+* Gigabyte AORUS WATERFORCE X240
-+* Gigabyte AORUS WATERFORCE X280
-+* Gigabyte AORUS WATERFORCE X360
-+
-+Author: Aleksa Savic
-+
-+Description
-+-----------
-+
-+This driver enables hardware monitoring support for the listed Gigabyte Waterforce
-+all-in-one CPU liquid coolers. Available sensors are pump and fan speed in RPM, as
-+well as coolant temperature. Also available through debugfs is the firmware version.
-+
-+Attaching a fan is optional and allows it to be controlled from the device. If
-+it's not connected, the fan-related sensors will report zeroes.
-+
-+The addressable RGB LEDs and LCD screen are not supported in this driver and should
-+be controlled through userspace tools.
-+
-+Usage notes
-+-----------
-+
-+As these are USB HIDs, the driver can be loaded automatically by the kernel and
-+supports hot swapping.
-+
-+Sysfs entries
-+-------------
-+
-+=========== =============================================
-+fan1_input  Fan speed (in rpm)
-+fan2_input  Pump speed (in rpm)
-+temp1_input Coolant temperature (in millidegrees Celsius)
-+=========== =============================================
-+
-+Debugfs entries
-+---------------
-+
-+================ =======================
-+firmware_version Device firmware version
-+================ =======================
-diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
-index 095c36f5e8a1..36101e9e38e9 100644
---- a/Documentation/hwmon/index.rst
-+++ b/Documentation/hwmon/index.rst
-@@ -73,6 +73,7 @@ Hardware Monitoring Kernel Drivers
-    ftsteutates
-    g760a
-    g762
-+   gigabyte_waterforce
-    gsc-hwmon
-    gl518sm
-    gxp-fan-ctrl
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 97f51d5ec1cf..b1a69c5042b8 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -8960,6 +8960,13 @@ F:	Documentation/filesystems/gfs2*
- F:	fs/gfs2/
- F:	include/uapi/linux/gfs2_ondisk.h
- 
-+GIGABYTE WATERFORCE SENSOR DRIVER
-+M:	Aleksa Savic <savicaleksa83@gmail.com>
-+L:	linux-hwmon@vger.kernel.org
-+S:	Maintained
-+F:	Documentation/hwmon/gigabyte_waterforce.rst
-+F:	drivers/hwmon/gigabyte_waterforce.c
-+
- GIGABYTE WMI DRIVER
- M:	Thomas Weißschuh <thomas@weissschuh.net>
- L:	platform-driver-x86@vger.kernel.org
-diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
-index 76cb05db1dcf..a608264da87d 100644
---- a/drivers/hwmon/Kconfig
-+++ b/drivers/hwmon/Kconfig
-@@ -664,6 +664,16 @@ config SENSORS_FTSTEUTATES
- 	  This driver can also be built as a module. If so, the module
- 	  will be called ftsteutates.
- 
-+config SENSORS_GIGABYTE_WATERFORCE
-+	tristate "Gigabyte Waterforce X240/X280/X360 AIO CPU coolers"
-+	depends on USB_HID
-+	help
-+	  If you say yes here you get support for hardware monitoring for the
-+	  Gigabyte Waterforce X240/X280/X360 all-in-one CPU liquid coolers.
-+
-+	  This driver can also be built as a module. If so, the module
-+	  will be called gigabyte_waterforce.
-+
- config SENSORS_GL518SM
- 	tristate "Genesys Logic GL518SM"
- 	depends on I2C
-diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
-index e84bd9685b5c..47be39af5c03 100644
---- a/drivers/hwmon/Makefile
-+++ b/drivers/hwmon/Makefile
-@@ -80,6 +80,7 @@ obj-$(CONFIG_SENSORS_FSCHMD)	+= fschmd.o
- obj-$(CONFIG_SENSORS_FTSTEUTATES) += ftsteutates.o
- obj-$(CONFIG_SENSORS_G760A)	+= g760a.o
- obj-$(CONFIG_SENSORS_G762)	+= g762.o
-+obj-$(CONFIG_SENSORS_GIGABYTE_WATERFORCE) += gigabyte_waterforce.o
- obj-$(CONFIG_SENSORS_GL518SM)	+= gl518sm.o
- obj-$(CONFIG_SENSORS_GL520SM)	+= gl520sm.o
- obj-$(CONFIG_SENSORS_GSC)	+= gsc-hwmon.o
-diff --git a/drivers/hwmon/gigabyte_waterforce.c b/drivers/hwmon/gigabyte_waterforce.c
-new file mode 100644
-index 000000000000..5c1084ad340a
---- /dev/null
-+++ b/drivers/hwmon/gigabyte_waterforce.c
-@@ -0,0 +1,439 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * hwmon driver for Gigabyte AORUS Waterforce AIO CPU coolers: X240, X280 and X360.
-+ *
-+ * Copyright 2023 Aleksa Savic <savicaleksa83@gmail.com>
-+ */
-+
-+#include <linux/debugfs.h>
-+#include <linux/hid.h>
-+#include <linux/hwmon.h>
-+#include <linux/jiffies.h>
-+#include <linux/module.h>
-+#include <linux/spinlock.h>
-+#include <asm/unaligned.h>
-+
-+#define DRIVER_NAME	"gigabyte_waterforce"
-+
-+#define USB_VENDOR_ID_GIGABYTE		0x1044
-+#define USB_PRODUCT_ID_WATERFORCE	0x7a4d	/* Gigabyte AORUS WATERFORCE X240, X280 and X360 */
-+
-+#define STATUS_VALIDITY		(2 * 1000)	/* ms */
-+#define MAX_REPORT_LENGTH	6144
-+
-+#define WATERFORCE_TEMP_SENSOR	0xD
-+#define WATERFORCE_FAN_SPEED	0x02
-+#define WATERFORCE_PUMP_SPEED	0x05
-+#define WATERFORCE_FAN_DUTY	0x08
-+#define WATERFORCE_PUMP_DUTY	0x09
-+
-+/* Control commands, inner offsets and lengths */
-+static const u8 get_status_cmd[] = { 0x99, 0xDA };
-+
-+#define FIRMWARE_VER_START_OFFSET_1	2
-+#define FIRMWARE_VER_START_OFFSET_2	3
-+static const u8 get_firmware_ver_cmd[] = { 0x99, 0xD6 };
-+
-+/* Command lengths */
-+#define GET_STATUS_CMD_LENGTH		2
-+#define GET_FIRMWARE_VER_CMD_LENGTH	2
-+
-+static const char *const waterforce_temp_label[] = {
-+	"Coolant temp"
-+};
-+
-+static const char *const waterforce_speed_label[] = {
-+	"Fan speed",
-+	"Pump speed"
-+};
-+
-+struct waterforce_data {
-+	struct hid_device *hdev;
-+	struct device *hwmon_dev;
-+	struct dentry *debugfs;
-+	/* For locking access to buffer */
-+	struct mutex buffer_lock;
-+	/* For queueing multiple readers */
-+	struct mutex status_report_request_mutex;
-+	/* For reinitializing the completion below */
-+	spinlock_t status_report_request_lock;
-+	struct completion status_report_received;
-+	struct completion fw_version_processed;
-+
-+	/* Sensor data */
-+	s32 temp_input[1];
-+	u16 speed_input[2];	/* Fan and pump speed in RPM */
-+	u8 duty_input[2];	/* Fan and pump duty in 0-100% */
-+
-+	u8 *buffer;
-+	int firmware_version;
-+	unsigned long updated;	/* jiffies */
-+};
-+
-+static umode_t waterforce_is_visible(const void *data,
-+				     enum hwmon_sensor_types type, u32 attr, int channel)
-+{
-+	switch (type) {
-+	case hwmon_temp:
-+		switch (attr) {
-+		case hwmon_temp_label:
-+		case hwmon_temp_input:
-+			return 0444;
-+		default:
-+			break;
-+		}
-+		break;
-+	case hwmon_fan:
-+		switch (attr) {
-+		case hwmon_fan_label:
-+		case hwmon_fan_input:
-+			return 0444;
-+		default:
-+			break;
-+		}
-+		break;
-+	case hwmon_pwm:
-+		switch (attr) {
-+		case hwmon_pwm_input:
-+			return 0444;
-+		default:
-+			break;
-+		}
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+/* Writes the command to the device with the rest of the report filled with zeroes */
-+static int waterforce_write_expanded(struct waterforce_data *priv, const u8 *cmd, int cmd_length)
-+{
-+	int ret;
-+
-+	mutex_lock(&priv->buffer_lock);
-+
-+	memset(priv->buffer, 0x00, MAX_REPORT_LENGTH);
-+	memcpy(priv->buffer, cmd, cmd_length);
-+	ret = hid_hw_output_report(priv->hdev, priv->buffer, MAX_REPORT_LENGTH);
-+
-+	mutex_unlock(&priv->buffer_lock);
-+	return ret;
-+}
-+
-+static int waterforce_get_status(struct waterforce_data *priv)
-+{
-+	int ret = 0;
-+
-+	if (!mutex_lock_interruptible(&priv->status_report_request_mutex)) {
-+		if (!time_after(jiffies, priv->updated + msecs_to_jiffies(STATUS_VALIDITY))) {
-+			/* Data is up to date */
-+			goto unlock_and_return;
-+		}
-+
-+		/*
-+		 * Disable raw event parsing for a moment to safely reinitialize the
-+		 * completion. Reinit is done because hidraw could have triggered
-+		 * the raw event parsing and marked the priv->status_report_received
-+		 * completion as done.
-+		 */
-+		spin_lock_bh(&priv->status_report_request_lock);
-+		reinit_completion(&priv->status_report_received);
-+		spin_unlock_bh(&priv->status_report_request_lock);
-+
-+		/* Send command for getting status */
-+		ret = waterforce_write_expanded(priv, get_status_cmd, GET_STATUS_CMD_LENGTH);
-+		if (ret < 0)
-+			return ret;
-+
-+		if (wait_for_completion_interruptible_timeout
-+		    (&priv->status_report_received, msecs_to_jiffies(STATUS_VALIDITY)) <= 0)
-+			ret = -ENODATA;
-+unlock_and_return:
-+		mutex_unlock(&priv->status_report_request_mutex);
-+		if (ret < 0)
-+			return ret;
-+	} else {
-+		return -ENODATA;
-+	}
-+
-+	return 0;
-+}
-+
-+static int waterforce_read(struct device *dev, enum hwmon_sensor_types type,
-+			   u32 attr, int channel, long *val)
-+{
-+	int ret;
-+	struct waterforce_data *priv = dev_get_drvdata(dev);
-+
-+	if (time_after(jiffies, priv->updated + msecs_to_jiffies(STATUS_VALIDITY))) {
-+		/* Request status on demand */
-+		ret = waterforce_get_status(priv);
-+		if (ret < 0)
-+			return -ENODATA;
-+	}
-+
-+	switch (type) {
-+	case hwmon_temp:
-+		*val = priv->temp_input[channel];
-+		break;
-+	case hwmon_fan:
-+		*val = priv->speed_input[channel];
-+		break;
-+	case hwmon_pwm:
-+		switch (attr) {
-+		case hwmon_pwm_input:
-+			*val = DIV_ROUND_CLOSEST(priv->duty_input[channel] * 255, 100);
-+			break;
-+		default:
-+			break;
-+		}
-+		break;
-+	default:
-+		return -EOPNOTSUPP;	/* unreachable */
-+	}
-+
-+	return 0;
-+}
-+
-+static int waterforce_read_string(struct device *dev, enum hwmon_sensor_types type,
-+				  u32 attr, int channel, const char **str)
-+{
-+	switch (type) {
-+	case hwmon_temp:
-+		*str = waterforce_temp_label[channel];
-+		break;
-+	case hwmon_fan:
-+		*str = waterforce_speed_label[channel];
-+		break;
-+	default:
-+		return -EOPNOTSUPP;	/* unreachable */
-+	}
-+
-+	return 0;
-+}
-+
-+static int waterforce_get_fw_ver(struct hid_device *hdev)
-+{
-+	int ret;
-+	struct waterforce_data *priv = hid_get_drvdata(hdev);
-+
-+	ret = waterforce_write_expanded(priv, get_firmware_ver_cmd, GET_FIRMWARE_VER_CMD_LENGTH);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (wait_for_completion_interruptible_timeout
-+	    (&priv->fw_version_processed, msecs_to_jiffies(STATUS_VALIDITY)) <= 0)
-+		return -ENODATA;
-+
-+	return 0;
-+}
-+
-+static const struct hwmon_ops waterforce_hwmon_ops = {
-+	.is_visible = waterforce_is_visible,
-+	.read = waterforce_read,
-+	.read_string = waterforce_read_string
-+};
-+
-+static const struct hwmon_channel_info *waterforce_info[] = {
-+	HWMON_CHANNEL_INFO(temp,
-+			   HWMON_T_INPUT | HWMON_T_LABEL),
-+	HWMON_CHANNEL_INFO(fan,
-+			   HWMON_F_INPUT | HWMON_F_LABEL,
-+			   HWMON_F_INPUT | HWMON_F_LABEL),
-+	HWMON_CHANNEL_INFO(pwm,
-+			   HWMON_PWM_INPUT,
-+			   HWMON_PWM_INPUT),
-+	NULL
-+};
-+
-+static const struct hwmon_chip_info waterforce_chip_info = {
-+	.ops = &waterforce_hwmon_ops,
-+	.info = waterforce_info,
-+};
-+
-+static int waterforce_raw_event(struct hid_device *hdev, struct hid_report *report, u8 *data,
-+				int size)
-+{
-+	struct waterforce_data *priv = hid_get_drvdata(hdev);
-+
-+	if (data[0] == get_firmware_ver_cmd[0] && data[1] == get_firmware_ver_cmd[1]) {
-+		/* Received a firmware version report */
-+		priv->firmware_version =
-+		    data[FIRMWARE_VER_START_OFFSET_1] * 10 + data[FIRMWARE_VER_START_OFFSET_2];
-+
-+		if (!completion_done(&priv->fw_version_processed))
-+			complete_all(&priv->fw_version_processed);
-+		return 0;
-+	}
-+
-+	if (data[0] != get_status_cmd[0] || data[1] != get_status_cmd[1])
-+		return 0;
-+
-+	priv->temp_input[0] = data[WATERFORCE_TEMP_SENSOR] * 1000;
-+	priv->speed_input[0] = get_unaligned_le16(data + WATERFORCE_FAN_SPEED);
-+	priv->speed_input[1] = get_unaligned_le16(data + WATERFORCE_PUMP_SPEED);
-+	priv->duty_input[0] = data[WATERFORCE_FAN_DUTY];
-+	priv->duty_input[1] = data[WATERFORCE_PUMP_DUTY];
-+
-+	if (!completion_done(&priv->status_report_received))
-+		complete_all(&priv->status_report_received);
-+
-+	priv->updated = jiffies;
-+
-+	return 0;
-+}
-+
-+#ifdef CONFIG_DEBUG_FS
-+
-+static int firmware_version_show(struct seq_file *seqf, void *unused)
-+{
-+	struct waterforce_data *priv = seqf->private;
-+
-+	if (!priv->firmware_version)
-+		return -ENODATA;
-+
-+	seq_printf(seqf, "%u\n", priv->firmware_version);
-+
-+	return 0;
-+}
-+DEFINE_SHOW_ATTRIBUTE(firmware_version);
-+
-+static void waterforce_debugfs_init(struct waterforce_data *priv)
-+{
-+	char name[64];
-+
-+	scnprintf(name, sizeof(name), "%s-%s", DRIVER_NAME, dev_name(&priv->hdev->dev));
-+
-+	priv->debugfs = debugfs_create_dir(name, NULL);
-+	debugfs_create_file("firmware_version", 0444, priv->debugfs, priv, &firmware_version_fops);
-+}
-+
-+#else
-+
-+static void waterforce_debugfs_init(struct waterforce_data *priv)
-+{
-+}
-+
-+#endif
-+
-+static int waterforce_probe(struct hid_device *hdev, const struct hid_device_id *id)
-+{
-+	struct waterforce_data *priv;
-+	int ret;
-+
-+	priv = devm_kzalloc(&hdev->dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	priv->hdev = hdev;
-+	hid_set_drvdata(hdev, priv);
-+
-+	/*
-+	 * Initialize priv->updated to STATUS_VALIDITY seconds in the past, making
-+	 * the initial empty data invalid for waterforce_read() without the need for
-+	 * a special case there.
-+	 */
-+	priv->updated = jiffies - msecs_to_jiffies(STATUS_VALIDITY);
-+
-+	ret = hid_parse(hdev);
-+	if (ret) {
-+		hid_err(hdev, "hid parse failed with %d\n", ret);
-+		return ret;
-+	}
-+
-+	/*
-+	 * Enable hidraw so existing user-space tools can continue to work.
-+	 */
-+	ret = hid_hw_start(hdev, HID_CONNECT_HIDRAW);
-+	if (ret) {
-+		hid_err(hdev, "hid hw start failed with %d\n", ret);
-+		goto fail_and_stop;
-+	}
-+
-+	ret = hid_hw_open(hdev);
-+	if (ret) {
-+		hid_err(hdev, "hid hw open failed with %d\n", ret);
-+		goto fail_and_close;
-+	}
-+
-+	priv->buffer = devm_kzalloc(&hdev->dev, MAX_REPORT_LENGTH, GFP_KERNEL);
-+	if (!priv->buffer) {
-+		ret = -ENOMEM;
-+		goto fail_and_close;
-+	}
-+
-+	mutex_init(&priv->status_report_request_mutex);
-+	mutex_init(&priv->buffer_lock);
-+	spin_lock_init(&priv->status_report_request_lock);
-+	init_completion(&priv->status_report_received);
-+	init_completion(&priv->fw_version_processed);
-+
-+	priv->hwmon_dev = hwmon_device_register_with_info(&hdev->dev, "waterforce",
-+							  priv, &waterforce_chip_info, NULL);
-+	if (IS_ERR(priv->hwmon_dev)) {
-+		ret = PTR_ERR(priv->hwmon_dev);
-+		hid_err(hdev, "hwmon registration failed with %d\n", ret);
-+		goto fail_and_close;
-+	}
-+
-+	hid_device_io_start(hdev);
-+	ret = waterforce_get_fw_ver(hdev);
-+	if (ret < 0)
-+		hid_warn(hdev, "fw version request failed with %d\n", ret);
-+	hid_device_io_stop(hdev);
-+
-+	waterforce_debugfs_init(priv);
-+
-+	return 0;
-+
-+fail_and_close:
-+	hid_hw_close(hdev);
-+fail_and_stop:
-+	hid_hw_stop(hdev);
-+	return ret;
-+}
-+
-+static void waterforce_remove(struct hid_device *hdev)
-+{
-+	struct waterforce_data *priv = hid_get_drvdata(hdev);
-+
-+	hwmon_device_unregister(priv->hwmon_dev);
-+
-+	hid_hw_close(hdev);
-+	hid_hw_stop(hdev);
-+}
-+
-+static const struct hid_device_id waterforce_table[] = {
-+	{ HID_USB_DEVICE(USB_VENDOR_ID_GIGABYTE, USB_PRODUCT_ID_WATERFORCE) },
-+	{ }
-+};
-+
-+MODULE_DEVICE_TABLE(hid, waterforce_table);
-+
-+static struct hid_driver waterforce_driver = {
-+	.name = "waterforce",
-+	.id_table = waterforce_table,
-+	.probe = waterforce_probe,
-+	.remove = waterforce_remove,
-+	.raw_event = waterforce_raw_event,
-+};
-+
-+static int __init waterforce_init(void)
-+{
-+	return hid_register_driver(&waterforce_driver);
-+}
-+
-+static void __exit waterforce_exit(void)
-+{
-+	hid_unregister_driver(&waterforce_driver);
-+}
-+
-+/* When compiled into the kernel, initialize after the HID bus */
-+late_initcall(waterforce_init);
-+module_exit(waterforce_exit);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("Aleksa Savic <savicaleksa83@gmail.com>");
-+MODULE_DESCRIPTION("Hwmon driver for Gigabyte AORUS Waterforce AIO coolers");
--- 
-2.43.0
+What can happen is that tag storage is present at an address above the
+maximum addressable by the kernel, and the CMA code will trigger an
+unrecovrable page fault.
+
+I was able to trigger this with the dts change:
+
+diff --git a/arch/arm64/boot/dts/arm/fvp-base-revc.dts b/arch/arm64/boot/dts/arm/fvp-base-revc.dts
+index 60472d65a355..201359d014e4 100644
+--- a/arch/arm64/boot/dts/arm/fvp-base-revc.dts
++++ b/arch/arm64/boot/dts/arm/fvp-base-revc.dts
+@@ -183,6 +183,13 @@ vram: vram@18000000 {
+                        reg = <0x00000000 0x18000000 0 0x00800000>;
+                        no-map;
+                };
++
++
++               linux,cma {
++                       compatible = "shared-dma-pool";
++                       reg = <0x100 0x0 0x00 0x4000000>;
++                       reusable;
++               };
+        };
+
+        gic: interrupt-controller@2f000000 {
+
+And the error I got:
+
+[    0.000000] Reserved memory: created CMA memory pool at 0x0000010000000000, size 64 MiB
+[    0.000000] OF: reserved mem: initialized node linux,cma, compatible id shared-dma-pool
+[    0.000000] OF: reserved mem: 0x0000010000000000..0x0000010003ffffff (65536 KiB) map reusable linux,cma
+[..]
+[    0.793193] WARNING: CPU: 0 PID: 1 at mm/cma.c:111 cma_init_reserved_areas+0xa8/0x378
+[..]
+[    0.806945] Unable to handle kernel paging request at virtual address 00000001fe000000
+[    0.807277] Mem abort info:
+[    0.807277]   ESR = 0x0000000096000005
+[    0.807693]   EC = 0x25: DABT (current EL), IL = 32 bits
+[    0.808110]   SET = 0, FnV = 0
+[    0.808443]   EA = 0, S1PTW = 0
+[    0.808526]   FSC = 0x05: level 1 translation fault
+[    0.808943] Data abort info:
+[    0.808943]   ISV = 0, ISS = 0x00000005, ISS2 = 0x00000000
+[    0.809360]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
+[    0.809776]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
+[    0.810221] [00000001fe000000] user address but active_mm is swapper
+[..]
+[    0.820887] Call trace:
+[    0.821027]  cma_init_reserved_areas+0xc4/0x378
+[    0.821443]  do_one_initcall+0x7c/0x1c0
+[    0.821860]  kernel_init_freeable+0x1bc/0x284
+[    0.822277]  kernel_init+0x24/0x1dc
+[    0.822693]  ret_from_fork+0x10/0x20
+[    0.823554] Code: 9127a29a cb813321 d37ae421 8b030020 (f8636822)
+[    0.823554] ---[ end trace 0000000000000000 ]---
+[    0.824360] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+[    0.824443] SMP: stopping secondary CPUs
+[    0.825193] ---[ end Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b ]---
+
+Should reserved mem check if the reserved memory is actually addressable by
+the kernel if it's not "no-map"? Should cma fail gracefully if
+!pfn_valid(base_pfn)? Shold early_init_fdt_scan_reserved_mem() be moved
+because arm64_bootmem_init()? I don't have the answer to any of those. And
+I got a kernel panic because the kernel cannot address that memory (39 bits
+VA). I don't know what would happen if the upper limit is reduced for
+another reason.
+
+What I think should happen:
+
+1. Add the tag storage memory before any limits are enforced by
+arm64_bootmem_init().
+
+2. Call cma_declare_contiguous_nid() after arm64_bootmem_init(), because
+the function will check the memory limit.
+
+3. Have an arch initcall that checks that the CMA regions corresponding to
+the tag storage have been activated successfully (cma_init_reserved_areas()
+is a core initcall). If not, then don't enable tag storage.
+
+How does that sound to you?
+
+Thanks,
+Alex
+
+> 
+> > The tag storage region represents the largest contiguous memory region that
+> > holds all the tags for the associated contiguous memory region which can be
+> > tagged. For example, for a 32GB contiguous tagged memory the corresponding
+> > tag storage region is 1GB of contiguous memory, not two adjacent 512M of
+> > tag storage memory.
+> > 
+> > "block-size" represents the minimum multiple of 4K of tag storage where all
+> > the tags stored in the block correspond to a contiguous memory region. This
+> > is needed for platforms where the memory controller interleaves tag writes
+> > to memory. For example, if the memory controller interleaves tag writes for
+> > 256KB of contiguous memory across 8K of tag storage (2-way interleave),
+> > then the correct value for "block-size" is 0x2000. This value is a hardware
+> > property, independent of the selected kernel page size.
+> >
+> 
+> Is it considered for kernel page size like 16K page, 64K page ? The comment says
+> it should be a multiple of 4K, but it should be a multiple of the "page size" more accurately.
+> Please let me know if there's anything I misunderstood. :-)
+> 
+> 
+> > Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
+> > ---
+> >  arch/arm64/Kconfig                       |  12 ++
+> >  arch/arm64/include/asm/mte_tag_storage.h |  15 ++
+> >  arch/arm64/kernel/Makefile               |   1 +
+> >  arch/arm64/kernel/mte_tag_storage.c      | 256 +++++++++++++++++++++++
+> >  arch/arm64/kernel/setup.c                |   7 +
+> >  5 files changed, 291 insertions(+)
+> >  create mode 100644 arch/arm64/include/asm/mte_tag_storage.h
+> >  create mode 100644 arch/arm64/kernel/mte_tag_storage.c
+> > 
+> > diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> > index 7b071a00425d..fe8276fdc7a8 100644
+> > --- a/arch/arm64/Kconfig
+> > +++ b/arch/arm64/Kconfig
+> > @@ -2062,6 +2062,18 @@ config ARM64_MTE
+> >  
+> >  	  Documentation/arch/arm64/memory-tagging-extension.rst.
+> >  
+> > +if ARM64_MTE
+> > +config ARM64_MTE_TAG_STORAGE
+> > +	bool "Dynamic MTE tag storage management"
+> > +	help
+> > +	  Adds support for dynamic management of the memory used by the hardware
+> > +	  for storing MTE tags. This memory, unlike normal memory, cannot be
+> > +	  tagged. When it is used to store tags for another memory location it
+> > +	  cannot be used for any type of allocation.
+> > +
+> > +	  If unsure, say N
+> > +endif # ARM64_MTE
+> > +
+> >  endmenu # "ARMv8.5 architectural features"
+> >  
+> >  menu "ARMv8.7 architectural features"
+> > diff --git a/arch/arm64/include/asm/mte_tag_storage.h b/arch/arm64/include/asm/mte_tag_storage.h
+> > new file mode 100644
+> > index 000000000000..8f86c4f9a7c3
+> > --- /dev/null
+> > +++ b/arch/arm64/include/asm/mte_tag_storage.h
+> > @@ -0,0 +1,15 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +/*
+> > + * Copyright (C) 2023 ARM Ltd.
+> > + */
+> > +#ifndef __ASM_MTE_TAG_STORAGE_H
+> > +#define __ASM_MTE_TAG_STORAGE_H
+> > +
+> > +#ifdef CONFIG_ARM64_MTE_TAG_STORAGE
+> > +void mte_tag_storage_init(void);
+> > +#else
+> > +static inline void mte_tag_storage_init(void)
+> > +{
+> > +}
+> > +#endif /* CONFIG_ARM64_MTE_TAG_STORAGE */
+> > +#endif /* __ASM_MTE_TAG_STORAGE_H  */
+> > diff --git a/arch/arm64/kernel/Makefile b/arch/arm64/kernel/Makefile
+> > index d95b3d6b471a..5f031bf9f8f1 100644
+> > --- a/arch/arm64/kernel/Makefile
+> > +++ b/arch/arm64/kernel/Makefile
+> > @@ -70,6 +70,7 @@ obj-$(CONFIG_CRASH_CORE)		+= crash_core.o
+> >  obj-$(CONFIG_ARM_SDE_INTERFACE)		+= sdei.o
+> >  obj-$(CONFIG_ARM64_PTR_AUTH)		+= pointer_auth.o
+> >  obj-$(CONFIG_ARM64_MTE)			+= mte.o
+> > +obj-$(CONFIG_ARM64_MTE_TAG_STORAGE)	+= mte_tag_storage.o
+> >  obj-y					+= vdso-wrap.o
+> >  obj-$(CONFIG_COMPAT_VDSO)		+= vdso32-wrap.o
+> >  obj-$(CONFIG_UNWIND_PATCH_PAC_INTO_SCS)	+= patch-scs.o
+> > diff --git a/arch/arm64/kernel/mte_tag_storage.c b/arch/arm64/kernel/mte_tag_storage.c
+> > new file mode 100644
+> > index 000000000000..fa6267ef8392
+> > --- /dev/null
+> > +++ b/arch/arm64/kernel/mte_tag_storage.c
+> > @@ -0,0 +1,256 @@
+> > +// SPDX-License-Identifier: GPL-2.0-only
+> > +/*
+> > + * Support for dynamic tag storage.
+> > + *
+> > + * Copyright (C) 2023 ARM Ltd.
+> > + */
+> > +
+> > +#include <linux/memblock.h>
+> > +#include <linux/mm.h>
+> > +#include <linux/of_device.h>
+> > +#include <linux/of_fdt.h>
+> > +#include <linux/range.h>
+> > +#include <linux/string.h>
+> > +#include <linux/xarray.h>
+> > +
+> > +#include <asm/mte_tag_storage.h>
+> > +
+> > +struct tag_region {
+> > +	struct range mem_range;	/* Memory associated with the tag storage, in PFNs. */
+> > +	struct range tag_range;	/* Tag storage memory, in PFNs. */
+> > +	u32 block_size;		/* Tag block size, in pages. */
+> > +};
+> > +
+> > +#define MAX_TAG_REGIONS	32
+> > +
+> > +static struct tag_region tag_regions[MAX_TAG_REGIONS];
+> > +static int num_tag_regions;
+> > +
+> > +static int __init tag_storage_of_flat_get_range(unsigned long node, const __be32 *reg,
+> > +						int reg_len, struct range *range)
+> > +{
+> > +	int addr_cells = dt_root_addr_cells;
+> > +	int size_cells = dt_root_size_cells;
+> > +	u64 size;
+> > +
+> > +	if (reg_len / 4 > addr_cells + size_cells)
+> > +		return -EINVAL;
+> > +
+> > +	range->start = PHYS_PFN(of_read_number(reg, addr_cells));
+> > +	size = PHYS_PFN(of_read_number(reg + addr_cells, size_cells));
+> > +	if (size == 0) {
+> > +		pr_err("Invalid node");
+> > +		return -EINVAL;
+> > +	}
+> > +	range->end = range->start + size - 1;
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int __init tag_storage_of_flat_get_tag_range(unsigned long node,
+> > +						    struct range *tag_range)
+> > +{
+> > +	const __be32 *reg;
+> > +	int reg_len;
+> > +
+> > +	reg = of_get_flat_dt_prop(node, "reg", &reg_len);
+> > +	if (reg == NULL) {
+> > +		pr_err("Invalid metadata node");
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	return tag_storage_of_flat_get_range(node, reg, reg_len, tag_range);
+> > +}
+> > +
+> > +static int __init tag_storage_of_flat_get_memory_range(unsigned long node, struct range *mem)
+> > +{
+> > +	const __be32 *reg;
+> > +	int reg_len;
+> > +
+> > +	reg = of_get_flat_dt_prop(node, "linux,usable-memory", &reg_len);
+> > +	if (reg == NULL)
+> > +		reg = of_get_flat_dt_prop(node, "reg", &reg_len);
+> > +
+> > +	if (reg == NULL) {
+> > +		pr_err("Invalid memory node");
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	return tag_storage_of_flat_get_range(node, reg, reg_len, mem);
+> > +}
+> > +
+> > +struct find_memory_node_arg {
+> > +	unsigned long node;
+> > +	u32 phandle;
+> > +};
+> > +
+> > +static int __init fdt_find_memory_node(unsigned long node, const char *uname,
+> > +				       int depth, void *data)
+> > +{
+> > +	const char *type = of_get_flat_dt_prop(node, "device_type", NULL);
+> > +	struct find_memory_node_arg *arg = data;
+> > +
+> > +	if (depth != 1 || !type || strcmp(type, "memory") != 0)
+> > +		return 0;
+> > +
+> > +	if (of_get_flat_dt_phandle(node) == arg->phandle) {
+> > +		arg->node = node;
+> > +		return 1;
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int __init tag_storage_get_memory_node(unsigned long tag_node, unsigned long *mem_node)
+> > +{
+> > +	struct find_memory_node_arg arg = { 0 };
+> > +	const __be32 *memory_prop;
+> > +	u32 mem_phandle;
+> > +	int ret, reg_len;
+> > +
+> > +	memory_prop = of_get_flat_dt_prop(tag_node, "memory", &reg_len);
+> > +	if (!memory_prop) {
+> > +		pr_err("Missing 'memory' property in the tag storage node");
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	mem_phandle = be32_to_cpup(memory_prop);
+> > +	arg.phandle = mem_phandle;
+> > +
+> > +	ret = of_scan_flat_dt(fdt_find_memory_node, &arg);
+> > +	if (ret != 1) {
+> > +		pr_err("Associated memory node not found");
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	*mem_node = arg.node;
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int __init tag_storage_of_flat_read_u32(unsigned long node, const char *propname,
+> > +					       u32 *retval)
+> > +{
+> > +	const __be32 *reg;
+> > +
+> > +	reg = of_get_flat_dt_prop(node, propname, NULL);
+> > +	if (!reg)
+> > +		return -EINVAL;
+> > +
+> > +	*retval = be32_to_cpup(reg);
+> > +	return 0;
+> > +}
+> > +
+> > +static u32 __init get_block_size_pages(u32 block_size_bytes)
+> > +{
+> > +	u32 a = PAGE_SIZE;
+> > +	u32 b = block_size_bytes;
+> > +	u32 r;
+> > +
+> > +	/* Find greatest common divisor using the Euclidian algorithm. */
+> > +	do {
+> > +		r = a % b;
+> > +		a = b;
+> > +		b = r;
+> > +	} while (b != 0);
+> > +
+> > +	return PHYS_PFN(PAGE_SIZE * block_size_bytes / a);
+> > +}
+> > +
+> > +static int __init fdt_init_tag_storage(unsigned long node, const char *uname,
+> > +				       int depth, void *data)
+> > +{
+> > +	struct tag_region *region;
+> > +	unsigned long mem_node;
+> > +	struct range *mem_range;
+> > +	struct range *tag_range;
+> > +	u32 block_size_bytes;
+> > +	u32 nid = 0;
+> > +	int ret;
+> > +
+> > +	if (depth != 1 || !strstr(uname, "tag-storage"))
+> > +		return 0;
+> > +
+> > +	if (!of_flat_dt_is_compatible(node, "arm,mte-tag-storage"))
+> > +		return 0;
+> > +
+> > +	if (num_tag_regions == MAX_TAG_REGIONS) {
+> > +		pr_err("Maximum number of tag storage regions exceeded");
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	region = &tag_regions[num_tag_regions];
+> > +	mem_range = &region->mem_range;
+> > +	tag_range = &region->tag_range;
+> > +
+> > +	ret = tag_storage_of_flat_get_tag_range(node, tag_range);
+> > +	if (ret) {
+> > +		pr_err("Invalid tag storage node");
+> > +		return ret;
+> > +	}
+> > +
+> > +	ret = tag_storage_get_memory_node(node, &mem_node);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	ret = tag_storage_of_flat_get_memory_range(mem_node, mem_range);
+> > +	if (ret) {
+> > +		pr_err("Invalid address for associated data memory node");
+> > +		return ret;
+> > +	}
+> > +
+> > +	/* The tag region must exactly match the corresponding memory. */
+> > +	if (range_len(tag_range) * 32 != range_len(mem_range)) {
+> > +		pr_err("Tag storage region 0x%llx-0x%llx does not cover the memory region 0x%llx-0x%llx",
+> > +		       PFN_PHYS(tag_range->start), PFN_PHYS(tag_range->end),
+> > +		       PFN_PHYS(mem_range->start), PFN_PHYS(mem_range->end));
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	ret = tag_storage_of_flat_read_u32(node, "block-size", &block_size_bytes);
+> > +	if (ret || block_size_bytes == 0) {
+> > +		pr_err("Invalid or missing 'block-size' property");
+> > +		return -EINVAL;
+> > +	}
+> > +	region->block_size = get_block_size_pages(block_size_bytes);
+> > +	if (range_len(tag_range) % region->block_size != 0) {
+> > +		pr_err("Tag storage region size 0x%llx is not a multiple of block size %u",
+> > +		       PFN_PHYS(range_len(tag_range)), region->block_size);
+> > +		return -EINVAL;
+> > +	}
+> > +
+> 
+> I was confused about the variable "block_size", The block size declared in the device tree is
+> in bytes, but the actual block size used is in pages. I think the term "block_size" can cause
+> confusion as it might be interpreted as bytes. If possible, I suggest changing the term "block_size"
+> to something more readable, such as "block_nr_pages" (This is just a example!)
+> 
+> Thanks,
+> Regards.
+> 
+> > +	ret = tag_storage_of_flat_read_u32(mem_node, "numa-node-id", &nid);
+> > +	if (ret)
+> > +		nid = numa_node_id();
+> > +
+> > +	ret = memblock_add_node(PFN_PHYS(tag_range->start), PFN_PHYS(range_len(tag_range)),
+> > +				nid, MEMBLOCK_NONE);
+> > +	if (ret) {
+> > +		pr_err("Error adding tag memblock (%d)", ret);
+> > +		return ret;
+> > +	}
+> > +	memblock_reserve(PFN_PHYS(tag_range->start), PFN_PHYS(range_len(tag_range)));
+> > +
+> > +	pr_info("Found tag storage region 0x%llx-0x%llx, block size %u pages",
+> > +		PFN_PHYS(tag_range->start), PFN_PHYS(tag_range->end), region->block_size);
+> > +
+> > +	num_tag_regions++;
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +void __init mte_tag_storage_init(void)
+> > +{
+> > +	struct range *tag_range;
+> > +	int i, ret;
+> > +
+> > +	ret = of_scan_flat_dt(fdt_init_tag_storage, NULL);
+> > +	if (ret) {
+> > +		for (i = 0; i < num_tag_regions; i++) {
+> > +			tag_range = &tag_regions[i].tag_range;
+> > +			memblock_remove(PFN_PHYS(tag_range->start), PFN_PHYS(range_len(tag_range)));
+> > +		}
+> > +		num_tag_regions = 0;
+> > +		pr_info("MTE tag storage region management disabled");
+> > +	}
+> > +}
+> > diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
+> > index 417a8a86b2db..1b77138c1aa5 100644
+> > --- a/arch/arm64/kernel/setup.c
+> > +++ b/arch/arm64/kernel/setup.c
+> > @@ -42,6 +42,7 @@
+> >  #include <asm/cpufeature.h>
+> >  #include <asm/cpu_ops.h>
+> >  #include <asm/kasan.h>
+> > +#include <asm/mte_tag_storage.h>
+> >  #include <asm/numa.h>
+> >  #include <asm/scs.h>
+> >  #include <asm/sections.h>
+> > @@ -342,6 +343,12 @@ void __init __no_sanitize_address setup_arch(char **cmdline_p)
+> >  			   FW_BUG "Booted with MMU enabled!");
+> >  	}
+> >  
+> > +	/*
+> > +	 * Must be called before memory limits are enforced by
+> > +	 * arm64_memblock_init().
+> > +	 */
+> > +	mte_tag_storage_init();
+> > +
+> >  	arm64_memblock_init();
+> >  
+> >  	paging_init();
+> > -- 
+> > 2.42.1
+> > 
+> > 
+
 
