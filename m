@@ -2,137 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 849D780245B
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 14:48:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A463C802473
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 15:20:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233525AbjLCNrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 08:47:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43238 "EHLO
+        id S233551AbjLCOKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 09:10:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229572AbjLCNrq (ORCPT
+        with ESMTP id S229450AbjLCOKV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 08:47:46 -0500
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E35AF3;
-        Sun,  3 Dec 2023 05:47:51 -0800 (PST)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3B3DlXpk071454;
-        Sun, 3 Dec 2023 07:47:33 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1701611253;
-        bh=xsg/cZcC0C4RBj5/hP3Rl+RIv4uXX6jNJCBDcI6sbsM=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=YpSHBzLFqZlDmVXKm0BcTSuNFrjn4JFnzHvew5OdFiIruybcgRW34OstTfqliCG31
-         vwAGtBkToresUbhr2WnLYcbFWo80D+hIMRmF3YNkvEA8RY++HuPsI/r72uEx2FKy9r
-         whyPqiXowhlzMRuRefK2ZjY1LKxsYUDecJkq7Qfg=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3B3DlXL5052513
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sun, 3 Dec 2023 07:47:33 -0600
-Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Sun, 3
- Dec 2023 07:47:32 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Sun, 3 Dec 2023 07:47:32 -0600
-Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3B3DlWD1048955;
-        Sun, 3 Dec 2023 07:47:32 -0600
-Date:   Sun, 3 Dec 2023 07:47:32 -0600
-From:   Nishanth Menon <nm@ti.com>
-To:     Ravi Gunasekaran <r-gunasekaran@ti.com>
-CC:     <s-vadapalli@ti.com>, <rogerq@kernel.org>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <andrew@lunn.ch>, <f.fainelli@gmail.com>, <horms@kernel.org>,
-        <linux-omap@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <srk@ti.com>
-Subject: Re: [PATCH net-next v3] net: ethernet: ti: davinci_mdio: Update K3
- SoCs list for errata i2329
-Message-ID: <20231203134732.qkvq7t4w7nthfxpx@kobold>
-References: <20231201132033.29576-1-r-gunasekaran@ti.com>
+        Sun, 3 Dec 2023 09:10:21 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C3DA90
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 06:10:28 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F48BC433C9;
+        Sun,  3 Dec 2023 14:10:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701612627;
+        bh=QZ+9c3MhqDU0C1Ei9+Fc5gRRLMVSExYSRe6oAlwtRlM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=sglyprX5e81KPNAgEajlkRuYjgMk4GCbCkUVSK6gfxEzfdj9KE/RvF/zYZqgLpRe/
+         GB3E565v+J9TjzAIgE66mkD9YNMIi7wvJylmWf8SzsYqMpPetVyxDErovpepry7G9f
+         jZvuDMzTz1oIZdrLGIkJa6L3n5a+O47WqNTg5dRbeN5WJSLq8TjFn9Y8uWSCDyfgvh
+         geZSbBmGWVPpYZpjxQ11SXyRwQLIvK7zTDAXfi876Mk+EA6LIOVT8ZKkSXGJspJvU7
+         MDg02EBgqozaU0OZd8mOe24EDDUxykxUrsrYUU0v8A6L/+VIzEjvolKaTRIBo46YKq
+         7P4MW0OkXmXZg==
+From:   Jisheng Zhang <jszhang@kernel.org>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Cc:     Conor Dooley <conor.dooley@microchip.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/2] riscv: enable EFFICIENT_UNALIGNED_ACCESS and DCACHE_WORD_ACCESS
+Date:   Sun,  3 Dec 2023 21:57:51 +0800
+Message-Id: <20231203135753.1575-1-jszhang@kernel.org>
+X-Mailer: git-send-email 2.40.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20231201132033.29576-1-r-gunasekaran@ti.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PDS_BTC_ID,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18:50-20231201, Ravi Gunasekaran wrote:
-> The errata i2329 affects all the currently available silicon revisions of
-> AM62x, AM64x, AM65x, J7200, J721E and J721S2. So remove the revision
-> string from the SoC list.
-> 
-> The silicon revisions affected by the errata i2329 can be found under
-> the MDIO module in the "Advisories by Modules" section of each
-> SoC errata document listed below
-> 
-> AM62x: https://www.ti.com/lit/er/sprz487c/sprz487c.pdf
-> AM64X: https://www.ti.com/lit/er/sprz457g/sprz457g.pdf
-> AM65X: https://www.ti.com/lit/er/sprz452i/sprz452i.pdf
-> J7200: https://www.ti.com/lit/er/sprz491d/sprz491d.pdf
-> J721E: https://www.ti.com/lit/er/sprz455d/sprz455d.pdf
-> J721S2: https://www.ti.com/lit/er/sprz530b/sprz530b.pdf
-> 
-> Signed-off-by: Ravi Gunasekaran <r-gunasekaran@ti.com>
-> ---
-> Changes since v2:
-> * Removed revision string for all the affected SoCs
-> 
-> Changes since v1:
-> * For J721E, retained the incorrect SR ID and added the correct one
-> * Add AM65x SR2.1 to the workaround list
-> 
-> v2: https://lore.kernel.org/all/20231020111738.14671-1-r-gunasekaran@ti.com/
-> v1: https://lore.kernel.org/all/20231018140009.1725-1-r-gunasekaran@ti.com/
-> 
->  drivers/net/ethernet/ti/davinci_mdio.c | 16 ++++++----------
->  1 file changed, 6 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/ti/davinci_mdio.c b/drivers/net/ethernet/ti/davinci_mdio.c
-> index 628c87dc1d28..8e07d4a1b6ba 100644
-> --- a/drivers/net/ethernet/ti/davinci_mdio.c
-> +++ b/drivers/net/ethernet/ti/davinci_mdio.c
-> @@ -511,16 +511,12 @@ static const struct k3_mdio_soc_data am65_mdio_soc_data = {
->  };
->  
->  static const struct soc_device_attribute k3_mdio_socinfo[] = {
-> -	{ .family = "AM62X", .revision = "SR1.0", .data = &am65_mdio_soc_data },
-> -	{ .family = "AM64X", .revision = "SR1.0", .data = &am65_mdio_soc_data },
-> -	{ .family = "AM64X", .revision = "SR2.0", .data = &am65_mdio_soc_data },
-> -	{ .family = "AM65X", .revision = "SR1.0", .data = &am65_mdio_soc_data },
-> -	{ .family = "AM65X", .revision = "SR2.0", .data = &am65_mdio_soc_data },
-> -	{ .family = "J7200", .revision = "SR1.0", .data = &am65_mdio_soc_data },
-> -	{ .family = "J7200", .revision = "SR2.0", .data = &am65_mdio_soc_data },
-> -	{ .family = "J721E", .revision = "SR1.0", .data = &am65_mdio_soc_data },
-> -	{ .family = "J721E", .revision = "SR2.0", .data = &am65_mdio_soc_data },
-> -	{ .family = "J721S2", .revision = "SR1.0", .data = &am65_mdio_soc_data},
-> +	{ .family = "AM62X", .data = &am65_mdio_soc_data },
-> +	{ .family = "AM64X", .data = &am65_mdio_soc_data },
-> +	{ .family = "AM65X", .data = &am65_mdio_soc_data },
-> +	{ .family = "J7200", .data = &am65_mdio_soc_data },
-> +	{ .family = "J721E", .data = &am65_mdio_soc_data },
-> +	{ .family = "J721S2", .data = &am65_mdio_soc_data },
->  	{ /* sentinel */ },
+Some riscv implementations such as T-HEAD's C906, C908, C910 and C920
+support efficient unaligned access, for performance reason we want
+to enable HAVE_EFFICIENT_UNALIGNED_ACCESS on these platforms. To
+avoid performance regressions on non efficient unaligned access
+platforms, HAVE_EFFICIENT_UNALIGNED_ACCESS can't be globally selected.
 
+To solve this problem, runtime code patching based on the detected
+speed is a good solution. But that's not easy, it involves lots of
+work to modify vairous subsystems such as net, mm, lib and so on.
+This can be done step by step.
 
-Much better. Thank you. and will avoid the conflicts we have with fixups
-pending..
+So let's take an easier solution: add support to efficient unaligned
+access and hide the support under NONPORTABLE.
 
-Reviewed-by: Nishanth Menon <nm@ti.com>
+patch1 introduces RISCV_EFFICIENT_UNALIGNED_ACCESS which depends on
+NONPORTABLE, if users know during config time that the kernel will be
+only run on those efficient unaligned access hw platforms, they can
+enable it. Obviously, generic unified kernel Image shouldn't enable it.
+
+patch2 adds support DCACHE_WORD_ACCESS when MMU and
+RISCV_EFFICIENT_UNALIGNED_ACCESS.
+
+Below test program and step shows how much performance can be improved:
+
+ $ cat tt.c
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <unistd.h>
+
+ #define ITERATIONS 1000000
+
+ #define PATH "123456781234567812345678123456781"
+
+ int main(void)
+ {
+         unsigned long i;
+         struct stat buf;
+
+         for (i = 0; i < ITERATIONS; i++)
+                 stat(PATH, &buf);
+
+         return 0;
+ }
+
+ $ gcc -O2 tt.c
+ $ touch 123456781234567812345678123456781
+ $ time ./a.out
+
+Per my test on T-HEAD C910 platforms, the above test performance is
+improved by about 7.5%.
+
+Since v1:
+  - fix typo in commit msg
+  - fix build error if NOMMU
+
+Jisheng Zhang (2):
+  riscv: introduce RISCV_EFFICIENT_UNALIGNED_ACCESS
+  riscv: select DCACHE_WORD_ACCESS for efficient unaligned access HW
+
+ arch/riscv/Kconfig                      | 13 +++++++++++
+ arch/riscv/include/asm/asm-extable.h    | 15 ++++++++++++
+ arch/riscv/include/asm/word-at-a-time.h | 27 +++++++++++++++++++++
+ arch/riscv/mm/extable.c                 | 31 +++++++++++++++++++++++++
+ 4 files changed, 86 insertions(+)
 
 -- 
+2.42.0
 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
