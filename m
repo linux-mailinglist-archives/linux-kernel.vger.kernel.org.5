@@ -2,119 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54A9980258B
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 17:37:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10933802593
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 17:41:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233386AbjLCQhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 11:37:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40502 "EHLO
+        id S229872AbjLCQlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 11:41:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229572AbjLCQhW (ORCPT
+        with ESMTP id S229450AbjLCQlV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 11:37:22 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60F9EC0
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 08:37:29 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1cfc2bcffc7so12898395ad.1
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Dec 2023 08:37:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=protocubo.io; s=google; t=1701621449; x=1702226249; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=oN/yJUhMwL79dfAOb7xMA38chypyQ6z1ZfDrW5oW+IQ=;
-        b=PFZlmOrfgT+TLnLb7o5o36bU+jR6twG5EQPyq78afl/vpKDbEImtVHF4sqAD+AxbKD
-         RMopbk7kCppv7RZZZkLIQNhr1L+gM8ktfIITvdI5fAcfYcjWVp3/O+U78/9nitVruHMK
-         lqizRVhTS9pfe3YP0x0AZktCdmNLGtVkkm/xBb6kPXsC5lbQLXQMMwYC1PcvpSq0xNU3
-         YLgrPX3aOGymBc4hcp2V8YksnBnQt+juV8wG8kpy+g2GvEIlYQscn1S9lVxxWkaVy74y
-         A/5Au4M5vYD2ABVrFVOuMMcLDctL4RUIdgWPON4YLMVf+Hd/4+meaItnuWFpGNb2CrYG
-         ybCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701621449; x=1702226249;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oN/yJUhMwL79dfAOb7xMA38chypyQ6z1ZfDrW5oW+IQ=;
-        b=Oj94esaj9HyJ909srLB8OMBM1dZZyfBQfGx4bMmNtLCJTPS4kuioJv7M1T5nA+TPGl
-         5kTIG57uJdSZ/dPyNhAxzeWoyyK0/asULGGYDDpBiSiz9LngeeuKvVMhY0FSyCPUEZTi
-         QF0LUDczIbDI1ZKFjdwnsMhyCMTtwG8p+HKg4HBkdLLb5s7Ommy2y84j3Kbbv/SAbc6F
-         y0+YUBwpbaSZtMnKVaW7XkCnS0cfES5htNhWvGvydtFEsdv6P41TzNW8DYctVtLFzheh
-         A/t2QJYz+jUMpLYJvuyxcoZcDhny3P4gWPIr+S5PNPGZFJMV0piZF9KkPqqumTsKkODp
-         ADhQ==
-X-Gm-Message-State: AOJu0Yw1AcmrJO+gX0LrHEziXqWJgzxnAKJndduJJwQfzZJD8k34xKaM
-        48x/RG8VUdTl6lnGyrW7k8jrFPLJHO9/a70T1+wfLw==
-X-Google-Smtp-Source: AGHT+IFWA+NXItEk15KRrI3cEY2/hp7KUfcLGuLlC8iP184T/bplNut7AjkaNMhp6lc3+Czi7SkTIw==
-X-Received: by 2002:a17:903:110e:b0:1cf:51f9:197b with SMTP id n14-20020a170903110e00b001cf51f9197bmr1361054plh.23.1701621448844;
-        Sun, 03 Dec 2023 08:37:28 -0800 (PST)
-Received: from calvin.localdomain ([2804:14d:5c5e:6991::1000])
-        by smtp.gmail.com with ESMTPSA id q32-20020a17090a17a300b002860a7acca1sm6998750pja.10.2023.12.03.08.37.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Dec 2023 08:37:28 -0800 (PST)
-Date:   Sun, 3 Dec 2023 13:37:24 -0300
-From:   Jonas Malaco <jonas@protocubo.io>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Aleksa Savic <savicaleksa83@gmail.com>,
-        linux-hwmon@vger.kernel.org
-Subject: Re: [PATCH] hwmon: nzxt: Fix some error handling path in
- kraken2_probe()
-Message-ID: <jhsc6llznv6ba5j73azramykyqfzvoxq7ynv3xxxef4svgs7yh@ccdtwinfvmdn>
-References: <a768e69851a07a1f4e29f270f4e2559063f07343.1701617030.git.christophe.jaillet@wanadoo.fr>
+        Sun, 3 Dec 2023 11:41:21 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85B6CE8
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 08:41:27 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD4D5C433C8;
+        Sun,  3 Dec 2023 16:41:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701621687;
+        bh=26wMpKPKrZag2Orm0i9X0BOac/BjRVT4g0G/xCMIVbA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=juUirD9srFrqrXnYOjDnYd+GqPB4NlmOjL8mdit7pIcQv5v4zPCbZwOAuj/URla8T
+         LF2I2KGM3/3C8DG3KmQMIYBAEJyV7esvk+KfO6rEoNzEsP9OgkKEM8Has0b0XY1fw+
+         f6rjAhOkVcskFLMxQwmCsGh05Vo7Tx04fZrfoR6mJ9NrDrXT2sRKBhHes3gGhzcyxm
+         ZKgkuh5mNHiM/JnNp3wAb3WVAZMXbmln0OngrDtYv4svXtrH7STz+xI0IiYIZapTj2
+         dNHZCjNWY3fOI4+O9cXxnT/fGUeN2C7xBH/rrb4ru/QzSzGclP5KSSRIM8ir5PUpUv
+         OzchAtbJXHGnQ==
+Date:   Sun, 3 Dec 2023 16:41:21 +0000
+From:   Simon Horman <horms@kernel.org>
+To:     Geetha sowjanya <gakula@marvell.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kuba@kernel.org, davem@davemloft.net, pabeni@redhat.com,
+        edumazet@google.com, sgoutham@marvell.com, lcherian@marvell.com,
+        jerinj@marvell.com, sbhatta@marvell.com, hkelam@marvell.com
+Subject: Re: [net v3 PATCH 1/5] octeontx2-af: Adjust Tx credits when MCS
+ external bypass is disabled
+Message-ID: <20231203164121.GK50400@kernel.org>
+References: <20231130075818.18401-1-gakula@marvell.com>
+ <20231130075818.18401-2-gakula@marvell.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a768e69851a07a1f4e29f270f4e2559063f07343.1701617030.git.christophe.jaillet@wanadoo.fr>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231130075818.18401-2-gakula@marvell.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 03, 2023 at 04:24:05PM +0100, Christophe JAILLET wrote:
-> There is no point in calling hid_hw_stop() if hid_hw_start() has failed.
-> There is no point in calling hid_hw_close() if hid_hw_open() has failed.
+On Thu, Nov 30, 2023 at 01:28:14PM +0530, Geetha sowjanya wrote:
+> From: Nithin Dabilpuram <ndabilpuram@marvell.com>
 > 
-> Update the error handling path accordingly.
+> When MCS external bypass is disabled, MCS returns additional
+> 2 credits(32B) for every packet Tx'ed on LMAC. To account for
+> these extra credits, NIX_AF_TX_LINKX_NORM_CREDIT.CC_MCS_CNT
+> needs to be configured as otherwise NIX Tx credits would overflow
+> and will never be returned to idle state credit count
+> causing issues with credit control and MTU change.
 > 
-> Fixes: 82e3430dfa8c ("hwmon: add driver for NZXT Kraken X42/X52/X62/X72")
-> Reported-by: Aleksa Savic <savicaleksa83@gmail.com>
-> Closes: https://lore.kernel.org/all/121470f0-6c1f-418a-844c-7ec2e8a54b8e@gmail.com/
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> This patch fixes the same by configuring CC_MCS_CNT at probe
+> time for MCS enabled SoC's
+> 
+> Fixes: bd69476e86fc ("octeontx2-af: cn10k: mcs: Install a default TCAM for normal traffic")
+> Signed-off-by: Nithin Dabilpuram <ndabilpuram@marvell.com>
+> Signed-off-by: Geetha sowjanya <gakula@marvell.com>
+> Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
+> Reviewed-by: Wojciech Drewek <wojciech.drewek@intel.com>
+
+Hi Geetha and Nithin,
+
+some minor feedback from my side.
+
 > ---
-> Closes added to please checkpatch, not sure if relevant here.
-> ---
->  drivers/hwmon/nzxt-kraken2.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  drivers/net/ethernet/marvell/octeontx2/af/mcs.c     | 12 ++++++++++++
+>  drivers/net/ethernet/marvell/octeontx2/af/mcs.h     |  2 ++
+>  drivers/net/ethernet/marvell/octeontx2/af/rvu.h     |  1 +
+>  drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c |  8 ++++++++
+>  4 files changed, 23 insertions(+)
 > 
-> diff --git a/drivers/hwmon/nzxt-kraken2.c b/drivers/hwmon/nzxt-kraken2.c
-> index 428c77b5fce5..7caf387eb144 100644
-> --- a/drivers/hwmon/nzxt-kraken2.c
-> +++ b/drivers/hwmon/nzxt-kraken2.c
-> @@ -161,13 +161,13 @@ static int kraken2_probe(struct hid_device *hdev,
->  	ret = hid_hw_start(hdev, HID_CONNECT_HIDRAW);
->  	if (ret) {
->  		hid_err(hdev, "hid hw start failed with %d\n", ret);
-> -		goto fail_and_stop;
-> +		return ret;
+> diff --git a/drivers/net/ethernet/marvell/octeontx2/af/mcs.c b/drivers/net/ethernet/marvell/octeontx2/af/mcs.c
+> index c43f19dfbd74..d6effbe46208 100644
+> --- a/drivers/net/ethernet/marvell/octeontx2/af/mcs.c
+> +++ b/drivers/net/ethernet/marvell/octeontx2/af/mcs.c
+> @@ -1219,6 +1219,17 @@ struct mcs *mcs_get_pdata(int mcs_id)
+>  	return NULL;
+>  }
+>  
+> +bool is_mcs_bypass(int mcs_id)
+> +{
+> +	struct mcs *mcs_dev;
+> +
+> +	list_for_each_entry(mcs_dev, &mcs_list, mcs_list) {
+> +		if (mcs_dev->mcs_id == mcs_id)
+> +			return mcs_dev->bypass;
+> +	}
+> +	return true;
+> +}
+> +
+>  void mcs_set_port_cfg(struct mcs *mcs, struct mcs_port_cfg_set_req *req)
+>  {
+>  	u64 val = 0;
+> @@ -1447,6 +1458,7 @@ static void mcs_set_external_bypass(struct mcs *mcs, u8 bypass)
+>  	else
+>  		val &= ~BIT_ULL(6);
+>  	mcs_reg_write(mcs, MCSX_MIL_GLOBAL, val);
+> +	mcs->bypass = bypass;
+
+I think that bool would be a more appropriate type than u8 for:
+
+* The bypass parameter of mcs_set_external_bypass()
+* The bypass field of struct mcs
+
+>  }
+>  
+>  static void mcs_global_cfg(struct mcs *mcs)
+> diff --git a/drivers/net/ethernet/marvell/octeontx2/af/mcs.h b/drivers/net/ethernet/marvell/octeontx2/af/mcs.h
+> index 0f89dcb76465..ccd43c3f3460 100644
+> --- a/drivers/net/ethernet/marvell/octeontx2/af/mcs.h
+> +++ b/drivers/net/ethernet/marvell/octeontx2/af/mcs.h
+> @@ -149,6 +149,7 @@ struct mcs {
+>  	u16			num_vec;
+>  	void			*rvu;
+>  	u16			*tx_sa_active;
+> +	u8                      bypass;
+>  };
+>  
+>  struct mcs_ops {
+> @@ -206,6 +207,7 @@ void mcs_get_custom_tag_cfg(struct mcs *mcs, struct mcs_custom_tag_cfg_get_req *
+>  int mcs_alloc_ctrlpktrule(struct rsrc_bmap *rsrc, u16 *pf_map, u16 offset, u16 pcifunc);
+>  int mcs_free_ctrlpktrule(struct mcs *mcs, struct mcs_free_ctrl_pkt_rule_req *req);
+>  int mcs_ctrlpktrule_write(struct mcs *mcs, struct mcs_ctrl_pkt_rule_write_req *req);
+> +bool is_mcs_bypass(int mcs_id);
+>  
+>  /* CN10K-B APIs */
+>  void cn10kb_mcs_set_hw_capabilities(struct mcs *mcs);
+> diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu.h b/drivers/net/ethernet/marvell/octeontx2/af/rvu.h
+> index c4d999ef5ab4..9887edccadf7 100644
+> --- a/drivers/net/ethernet/marvell/octeontx2/af/rvu.h
+> +++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu.h
+> @@ -345,6 +345,7 @@ struct nix_hw {
+>  	struct nix_txvlan txvlan;
+>  	struct nix_ipolicer *ipolicer;
+>  	u64    *tx_credits;
+> +	u64 cc_mcs_cnt;
+>  };
+>  
+>  /* RVU block's capabilities or functionality,
+> diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
+> index c112c71ff576..daafce5fef46 100644
+> --- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
+> +++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
+> @@ -12,6 +12,7 @@
+>  #include "rvu_reg.h"
+>  #include "rvu.h"
+>  #include "npc.h"
+> +#include "mcs.h"
+>  #include "cgx.h"
+>  #include "lmac_common.h"
+>  #include "rvu_npc_hash.h"
+> @@ -4389,6 +4390,12 @@ static void nix_link_config(struct rvu *rvu, int blkaddr,
+>  			    SDP_HW_MAX_FRS << 16 | NIC_HW_MIN_FRS);
 >  	}
 >  
->  	ret = hid_hw_open(hdev);
->  	if (ret) {
->  		hid_err(hdev, "hid hw open failed with %d\n", ret);
-> -		goto fail_and_close;
-> +		goto fail_and_stop;
->  	}
+> +	/* Get MCS external bypass status for CN10K-B */
+> +	if (mcs_get_blkcnt() == 1) {
+> +		/* Adjust for 2 credits when external bypass is disabled */
+> +		nix_hw->cc_mcs_cnt = is_mcs_bypass(0) ? 0 : 2;
+
+Perhaps it doesn't matter, but to me it seems a bit excessive to use a
+64-bit field to store such small values.
+
+> +	}
+> +
+>  	/* Set credits for Tx links assuming max packet length allowed.
+>  	 * This will be reconfigured based on MTU set for PF/VF.
+>  	 */
+> @@ -4412,6 +4419,7 @@ static void nix_link_config(struct rvu *rvu, int blkaddr,
+>  			tx_credits = (lmac_fifo_len - lmac_max_frs) / 16;
+>  			/* Enable credits and set credit pkt count to max allowed */
+>  			cfg =  (tx_credits << 12) | (0x1FF << 2) | BIT_ULL(1);
+> +			cfg |= (nix_hw->cc_mcs_cnt << 32);
+
+I do see that cc_mcs_cnt needs to be 64-bit here to avoid truncation.
+But overall I think this function could benefit from the use
+of FIELD_PREP(), which I think would side-step that problem.
+
 >  
->  	priv->hwmon_dev = hwmon_device_register_with_info(&hdev->dev, "kraken2",
+>  			link = iter + slink;
+>  			nix_hw->tx_credits[link] = tx_credits;
 > -- 
-> 2.34.1
+> 2.25.1
 > 
-
-That was a silly mistake from me. Thanks for finding and fixing it.
-
-Reviewed-by: Jonas Malaco <jonas@protocubo.io>
