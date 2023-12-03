@@ -2,108 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DA4380260B
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 18:48:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EFEC802612
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 18:52:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233807AbjLCRql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 12:46:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35904 "EHLO
+        id S233801AbjLCRsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 12:48:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjLCRqj (ORCPT
+        with ESMTP id S229450AbjLCRsp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 12:46:39 -0500
-Received: from ixit.cz (ip-89-177-23-149.bb.vodafone.cz [89.177.23.149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8DC4EA;
-        Sun,  3 Dec 2023 09:46:43 -0800 (PST)
-Received: from [10.0.0.200] (unknown [10.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ixit.cz (Postfix) with ESMTPSA id 52CF5161141;
-        Sun,  3 Dec 2023 18:46:40 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-        t=1701625600;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=/0uABy5p+lD1/t8pLC8a1UTZg8b9mPTQ0FRBl/mwsVg=;
-        b=o0iagnjmhHvdCaV5lzHQSenVOcIWFHj+qxGESPGjVaXTkyQ8jIlqz7E4esWAU0vjB8YjBG
-        TsMPTC7Lz4jIukDlq7SOfXyOjg0RKbR8zt1rC+6l5MqG0Ii7W0wQdIUhtZ/a6Np7P9DBR1
-        Fise9q5guGz3sFspXBh06L0jS+Ob9GA=
-Message-ID: <3a32ad33-5f0e-4166-a118-1bbbec9c68e0@ixit.cz>
-Date:   Sun, 3 Dec 2023 18:46:40 +0100
+        Sun, 3 Dec 2023 12:48:45 -0500
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2079.outbound.protection.outlook.com [40.107.8.79])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 733B8DB;
+        Sun,  3 Dec 2023 09:48:48 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=av5tfB7za9jS5VFx6OA7KD08EJsLVMsiHJdbTPQQ5gkOLGmB2IVdN/cLYN/meNvktSquGpd+LYpLVcG1xM3Ch+s5x/adqJWUfFgJjVFCTJKkzgttSumOdhb0jdtxoOLlrVcizMEir+A0mSrphwt5t8zQMccpXKwgwgpUOxNJ2ZDHYAR3xIilK7hFtwWJl89mjyNqIb7vpk4x572HnIXkVaL5idHMoJm8ODXeE5cFGr6JcFuWDqmDDJT+fCogAdaPzsO27d0U4A3vyhF6xWFKQqlNK8Rzaj+5Dffu40oCfQGXOPPbqa8WwIDr7lgfZcJBrWAxLy4rvNfkDZO1jTiKPg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=j5nHb9sal9bcQjBvQ/izjHiyH/Uu0h1CELyuZtNDuEg=;
+ b=OX+Kxg98VVJlN44ZKeQbZke4Y7mSTEULsQyHBJhKTcinhWWpXKV87S0I7sec+sdJDsOFDubkxs66lVyvjiAoxrURixSJGyBnPXHVZOnWxao02LXCqC4i8/lvvLU4Uw7Nc7Uq8t3Z7uKwB5QG9+GP8Ng/74rny3ObZV9vNcwGnnbzRCqnLa5oEjCTlQr8bPbFJ47FHqR2TUKb2V2HcbwhrerDH+n3lE3ZNZONgboq/KeDtFTXKiWgTrOt5ZGWvuLLTAFQ4yd2yTZMO4V39NyhODL5cfjJGcqubKbyRh9niIcgYzTII4TC6ijwZsxgASlOK3BSAjIw/LBP4DIE1sTmaQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=j5nHb9sal9bcQjBvQ/izjHiyH/Uu0h1CELyuZtNDuEg=;
+ b=h3fLXSymJfR+K9jDx/6K9zGGJ1DHzTJNsZxUAfwwcH+b6atHnMpivpdyW/KuFlpIp2vcDGxVDQT707AXG/SwWUNLUEL3vNwfS5KERiEurdCsF+CDemfbemEj7c7JVxw1HZlnX/m8R5x8q6L3yzb8x665PpKXYkOl2Kku1gOztKk=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AM0PR04MB6452.eurprd04.prod.outlook.com (2603:10a6:208:16d::21)
+ by PA4PR04MB9711.eurprd04.prod.outlook.com (2603:10a6:102:267::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.21; Sun, 3 Dec
+ 2023 17:48:44 +0000
+Received: from AM0PR04MB6452.eurprd04.prod.outlook.com
+ ([fe80::dd33:f07:7cfd:afa4]) by AM0PR04MB6452.eurprd04.prod.outlook.com
+ ([fe80::dd33:f07:7cfd:afa4%7]) with mapi id 15.20.7068.012; Sun, 3 Dec 2023
+ 17:48:44 +0000
+Date:   Sun, 3 Dec 2023 19:48:41 +0200
+From:   Vladimir Oltean <vladimir.oltean@nxp.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-kernel@vger.kernel.org, Wasim Khan <wasim.khan@nxp.com>,
+        Wei Fang <wei.fang@nxp.com>, Clark Wang <xiaoning.wang@nxp.com>
+Subject: Re: [PATCH pci] PCI: remove the PCI_VENDOR_ID_NXP alias
+Message-ID: <20231203174841.uj6ixj7ap2hzlvey@skbuf>
+References: <20231122154241.1371647-1-vladimir.oltean@nxp.com>
+ <20231129233827.GA444332@bhelgaas>
+ <2023113014-preflight-roundish-d796@gregkh>
+ <20231203151654.nh4ta7vtzwpwg4ss@skbuf>
+ <2023120354-expansion-frequency-f991@gregkh>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2023120354-expansion-frequency-f991@gregkh>
+X-ClientProxiedBy: VI1PR08CA0273.eurprd08.prod.outlook.com
+ (2603:10a6:803:dc::46) To AM0PR04MB6452.eurprd04.prod.outlook.com
+ (2603:10a6:208:16d::21)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To:     luhongfei@vivo.com
-Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        opensource.kernel@vivo.com, stable@vger.kernel.org
-References: <20230612133452.47315-1-luhongfei@vivo.com>
-Subject: Re: [PATCH v3] soc: qcom: pmic: Fix resource leaks in a
- device_for_each_child_node() loop
-Content-Language: en-US
-From:   David Heidelberg <david@ixit.cz>
-Autocrypt: addr=david@ixit.cz; keydata=
- xsFNBF5v1x4BEADS3EddwsNsvVAI1XF8uQKbdYPY/GhjaSLziwVnbwv5BGwqB1tfXoHnccoA
- 9kTgKAbiXG/CiZFhD6l4WCIskQDKzyQN3JhCUIxh16Xyw0lECI7iqoW9LmMoN1dNKcUmCO9g
- lZxQaOl+1bY/7ttd7DapLh9rmBXJ2lKiMEaIpUwb/Nw0d7Enp4Jy2TpkhPywIpUn8CoJCv3/
- 61qbvI9y5utB/UhfMAUXsaAgwEJyGPAqHlC0YZjaTwOu+YQUE3AFzhCbksq95CwDz4U4gdls
- dmv9tkATfu2OmzERZQ6vJTehK0Pu4l5KmCAzYg42I9Dy4E6b17x6NncKbcByQFOXMtG0qVUk
- F1yeeOQUHwu+8t3ZDMBUhCkRL/juuoqLmyDWKMc0hKNNeZ9BNXgB8fXkRLWEUfgDXsFyEkKp
- NxUy5bDRlivf6XfExnikk5kj9l2gGlNQwqROti/46bfbmlmc/a2GM4k8ZyalHNEAdwtXYSpP
- 8JJmlbQ7hNTLkc3HQLRsIocN5th/ur7pPMz1Beyp0gbE9GcOceqmdZQB80vJ01XDyCAihf6l
- AMnzwpXZsjqIqH9r7T7tM6tVEVbPSwPt4eZYXSoJijEBC/43TBbmxDX+5+3txRaSCRQrG9dY
- k3mMGM3xJLCps2KnaqMcgUnvb1KdTgEFUZQaItw7HyRd6RppewARAQABzSBEYXZpZCBIZWlk
- ZWxiZXJnIDxkYXZpZEBpeGl0LmN6PsLBlAQTAQgAPhYhBNd6Cc/u3Cu9U6cEdGACP8TTSSBy
- BQJeb9ceAhsDBQkHhM4ABQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAAoJEGACP8TTSSByFucP
- /iu03BSrScw/FnyMjDHoQ6fOLNLbMoDFSBZJA5eZl3Fv0M9wcdTjQQrOVl1qDzcO1HeOS8Gz
- 3KFtT49lgvNHYIm1p75Eng4BBBzQ0wxzLL9haSdJlxDGY2VEvDHQ4h8FqhKhPyWUVya741yB
- o/jUSkdqiBvrEVqwK9U7lR/C2B6Yotwhp8i1QdG6qSFZNWDuofMhtMQcYpdEUyC6dteOcRDb
- u1ktBLuYNjUvFSl5/NLzpNNo+bJ/hD4htvpQD0jLg0rtc6TMoP22mzC1zH6e6wITPqyLBvPf
- fAXc31i98DPCRu4vKhQBkHNbxVquDASMepTZUF5Gthzt3mBw/+MkxlR3tCwdx1L+CxCGxjsk
- /GjW3beY/Z77FhOss4fB6AlD/Dq+wxOQlaZr5C8SX7a8FgqRVaIjeoLcRaVfOnLGfZAEGcxe
- ahdUMr1LkVRWuUZxhOJk01JVYp2GzgdGdcvJ8dXfyhMKRhE9VuB/VykEtOlfc41mrCZ6rz3G
- ep4TPTHtClYAohGYNunjoImYYp0ScvlHbtRz8UvRCCRGYMBh5rBhilF2gqLcjaRProon/KVv
- 52kAsTHUqw8Ldf5tPJwPLhV6aFI5DkU9cRoFr8ib3ZGDva5LxZUf1fuiGRyDNXMJmsW5/9Dp
- 3Dt7FUMvZvcrSmPIsZXIQ2QD/mUeuXftINQVzsFNBF5v1x4BEADnlrbta2WL87BlEOotZUh0
- zXANMrNV15WxexsirLetfqbs0AGCaTRNj+uWlTUDJRXOVIwzmF76Us3I2796+Od2ocNpLheZ
- 7EIkq8budtLVd1c06qJ+GMraz51zfgSIazVInNMPk9T6fz0lembji5yEcNPNNBA4sHiFmXfo
- IhepHFOBApjS0CiOPqowYxSTPe/DLcJ/LDwWpTi37doKPhBwlHev1BwVCbrLEIFjY0MLM0aT
- jiBBlyLJaTqvE48gblonu2SGaNmGtkC3VoQUQFcVYDXtlL9CVbNo7BAt5gwPcNqEqkUL60Jh
- FtvVSKyQh6gn7HHsyMtgltjZ3NKjv8S3yQd7zxvCn79tCKwoeNevsvoMq/bzlKxc9QiKaRPO
- aDj3FtW7R/3XoKJBY8Hckyug6uc2qYWRpnuXc0as6S0wfek6gauExUttBKrtSbPPHiuTeNHt
- NsT4+dyvaJtQKPBTbPHkXpTO8e1+YAg7kPj3aKFToE/dakIh8iqUHLNxywDAamRVn8Ha67WO
- AEAA3iklJ49QQk2ZyS1RJ2Ul28ePFDZ3QSr9LoJiOBZv9XkbhXS164iRB7rBZk6ZRVgCz3V6
- hhhjkipYvpJ/fpjXNsVL8jvel1mYNf0a46T4QQDQx4KQj0zXJbC2fFikAtu1AULktF4iEXEI
- rSjFoqhd4euZ+QARAQABwsF8BBgBCAAmFiEE13oJz+7cK71TpwR0YAI/xNNJIHIFAl5v1x4C
- GwwFCQeEzgAACgkQYAI/xNNJIHJTZg/+NqA4kGauw0qAR1bm2VVaDJjajjJerDLr/uMEgBCo
- DXiDu0obZ3XwMDe2ohXxV4L875B7q/lzgWR/YrJNU3CkMFknPZl++gVhkBZ0xQhMs0HsIEgD
- TKgX3bKCIy7niHVMq6S8tYs2eTnK6NEQFWr2Vq6fAT8NjYMhaAbIMvZfz/hCkwzWD5QTejZi
- ulP6Cl4AVa4mun6FzMpHAcXk/NdSgWYO0f7AtW+KzIKKrcT2HcDBGM2OaPuEajHFX/1lyyRO
- LiGcgz9E/5WfzvaBrqWy6CdIzJWtGsOKWMyjry5227UOwqPTqIWAs10XgaYsevES0ljDDA0y
- wX/adCrlOaNQaBcB/bIKjrrsHg+5XnanET7PbB75cDmd0AT0DNeCs/AZXDn2O7gKmPq3GokU
- zCw7l/b5I49Zp1zybEwVy+TYC0e/d05geyjQN7e2i0RcElGaHQ+82iRIJD3cvDfrk4+HPzeE
- 8udw5/rKxFMHhti1wgtklyJBc64JK2vgB6xJz9Zc4WoNnifc8QjyhsQ7K0UI9jykBXrb1ZZO
- DYlcrAqh9Sx4vNTmdi6pJWSsrhDtfmDIw81GIW5pc0QpZPqGeKMi5xEU8se5fQ21DuE5LRKF
- Zd4Uq64igWvLAgHIcJHgNbc5BruuZm9p1+S5SfQGfnOYxJM1PkY/E32H52iV/Babj30=
-In-Reply-To: <20230612133452.47315-1-luhongfei@vivo.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM0PR04MB6452:EE_|PA4PR04MB9711:EE_
+X-MS-Office365-Filtering-Correlation-Id: ff25b082-7c74-4364-95ea-08dbf42817ff
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: KEzfpI+mXv2b96EerVwsV8wD6CEXZsEH4nOv6amKNxF/y7W9svHy2cICr576vxGY+vRZ7aby0z/afmZkFprfMGWJQA2f367i9b/HLAaSQ91bqg4UQBYVGvjqabrjtTfC/DiCLjz1Y+3qw4whlk1J0psz/mjA3/wmFz3BFAnYZ4dD04nLnvQu8Ji4Ck+2eOJG2RKrWpgx63y09CSFkh6dlTrcmQ7a90YFHRzb+qKaE8OJp23T3j0hJCDPzHBBub3sa3OIy0CZT/wKmQ+8jZ6uy0F98XEZLOLTKwCBxkl6vHb16GfsRVFxVL4rLOE+5mactrVSwJ11rcOE2QC3lpztVc2VAW4zPjb+eopxHDrPqNUCrTsB8Tx092bqWSqdh2tEZFStWX5iJlggGZskPI1kok+x8Z1HAUE1H+KuJwiP132ayWEa5bbwH7L3NKKTR3uHRh/rLctpE58rwvxhBc9J1wU5RRKHrd1MI+bQqQ0SixmTmXTQaxpBum+Wt0pqj7xS7VRWFWQpHRxowqzTB4VcoV9ENCEaV6IrBTvKhX/98CDYsJuaVVRWpJqiuxzE35Hl
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6452.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(376002)(39860400002)(136003)(396003)(366004)(346002)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(66476007)(6916009)(66556008)(44832011)(54906003)(316002)(66946007)(5660300002)(4326008)(8936002)(8676002)(6486002)(33716001)(38100700002)(83380400001)(86362001)(478600001)(2906002)(6666004)(1076003)(26005)(6506007)(6512007)(9686003)(41300700001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?RFCPSOaQpTL91H2/BE4tyAz73n+GrSCMpieh3HCdPIesokl05K2LjnUrfOxS?=
+ =?us-ascii?Q?EuhypBcwT7a1ORdmwXRZkp/2OYQsOhZwAVOCQvgDOuJAaPaN7Yppv08kr04L?=
+ =?us-ascii?Q?RHM9FutUd3IW845z9eeFxZ5cSAlZSfmBetfie9R7sSSnrQ3BXCsQdybHsJRH?=
+ =?us-ascii?Q?qtaRX89vQEbOxogpT8+wydnKTdo9kE5twmtlqfytIKRanREp3/+LilWRO0BQ?=
+ =?us-ascii?Q?ZkX+08acVuU7y6vi5ASUG9Q6dhEwwgq1BYlurVhfUcUWOgkWOvv3zzeP0a5u?=
+ =?us-ascii?Q?nhLCdKPeM/0TyQZ6P4oHeiJCYY+k1sjDjlyM4/QFoHHdBBE/IkuTAePvL0pP?=
+ =?us-ascii?Q?Lb6ueeuk3IvMqvbmD47RfZiPappjQ/ZkMiDWY43yfSZF5fx9m6MvOtjZzx/k?=
+ =?us-ascii?Q?MVTFVu0WbsVhuaEghmhZJIUvBNn9QIQpIrYMVq+f5WvL7BljTfDprTHNhwUo?=
+ =?us-ascii?Q?je9a54uRRYEO0ciDRpe+Y1kSgHQKyR02O8kFMW7Kf7SZ4H+XeBV4pa2SJSBX?=
+ =?us-ascii?Q?knrU/mHGDdMRY71Bxo2YGIr5D8QW/RLNxR2HIg7MwBFSTZH3rB0KDdI3jWgW?=
+ =?us-ascii?Q?01PhEjDUBBYLwpS1kuZcNBCeNy+Ol+NzCWwN0+NR8vEQwAl2HmTiIs5CLKQ1?=
+ =?us-ascii?Q?hR6tIajq2uIYaxsXIALq3bx4UIClF2xmSkH2MvBEqSrNAVkPBCZAmcHjKKnQ?=
+ =?us-ascii?Q?PI0um2t2xQCxvBQ4fLcCKPMrPJcHEA4IL5BVCkufmdaQNagT+XZzu8S9xOE9?=
+ =?us-ascii?Q?sdddMXbdHH/azBvOjIJcXnfMBarLmfYT6+fVqJSgG/Gw0ETDmf3F5WrglQh+?=
+ =?us-ascii?Q?6khgnCGnQoScCKUkqEhObdCxBY+QyKv8hOzeLXM+LQQtnX0yh/vrq+pvjN5T?=
+ =?us-ascii?Q?7eEpPz9HcPFyr+iXubou/JF/+lyI9hNYJv8qOa1Ne0DvuRDJqr6Q2f+15J8x?=
+ =?us-ascii?Q?VXMrOfwEAatYJi58GsKArwv8UJ9DPj2EW70Z4x4LLJW1503dqlyr/VnnezkL?=
+ =?us-ascii?Q?vUK2SmiO7cymAFd0eOLGE9eW1EOG8JLUsJMLlzbiJ3+SRp4OBD8EQQkgXKrF?=
+ =?us-ascii?Q?EzkfAzO+clCctd1sHFBLBV1Dc+e5YHWPmOFC9lw4JXWX852mzfB0o8MwIg25?=
+ =?us-ascii?Q?kibf8qqZLR6DrDJwEBnMQr68hr0mptKWW6q8QcucPyZzmh1XjwRvlb701eaC?=
+ =?us-ascii?Q?RGbfPAljL76/gVCHrrN8eq/+b7JzOh69Q2x8UK/G5KxpdLsKWqfRaDMcdBSB?=
+ =?us-ascii?Q?Jtqy9aeBMiJjKVVfqMhpfp/bcTAXKxXeYQGgtYzEytxfiA/cF0vWpJhQiW7b?=
+ =?us-ascii?Q?/FNexO2gV/lZP6hJDFIu/iuj2+ChBJb845E55h959BjzoAOFNnVzJk2DvrUH?=
+ =?us-ascii?Q?ApkP5DMomBAYf6VHfncJh29XvEXFblEYlNHWbhFAXXeoUmlz5f5SZgk4T1vl?=
+ =?us-ascii?Q?Xw4+Xdlq1umVghH/Mt09YP69CtSu03sJ+CFApfiwyH3fJlOHtff1Togs8xWc?=
+ =?us-ascii?Q?lfM0oqxHnip9PS06z+gAW7+ye1qTiMdImH+fK8l47Dy7HfiySabp5rQehoeo?=
+ =?us-ascii?Q?D2RU1ieHNFckXoWnEW7rnZ5t24ZWcK/Xl3pZgwZKCHdQdyRoU/I7RzbAebmZ?=
+ =?us-ascii?Q?GQ=3D=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ff25b082-7c74-4364-95ea-08dbf42817ff
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB6452.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Dec 2023 17:48:44.3575
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: NTtoAxVqZbGut3TYly60gif9kgkedJXFUJLnnggiUD4lm79WyJ6RDKBvOTWvFV+NujOnIpH6TWeWITdS9533gw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR04MB9711
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RDNS_DYNAMIC,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Heya!
+On Sun, Dec 03, 2023 at 06:30:13PM +0100, Greg Kroah-Hartman wrote:
+> On Sun, Dec 03, 2023 at 05:16:54PM +0200, Vladimir Oltean wrote:
+> > On Thu, Nov 30, 2023 at 11:10:19AM +0000, Greg Kroah-Hartman wrote:
+> > > > Why would we remove name of the current company and use the name of a
+> > > > company that doesn't exist any more?
+> > > 
+> > > Yes, this seems very odd.  What is the reason for any of this other than
+> > > marketing?  Kernel code doesn't do marketing :)
+> > 
+> > I'm not sure who is doing the marketing; not me, that's for sure.
+> > The patch that I'm proposing undoes these strange aliases.
+> 
+> Why?
 
-I think this would be great candidate for backport, at least up to 6.6. 
-What do you think?
+Why am I undoing the aliases? It's in my commit message. NXP now
+produces PCI devices with a different vendor ID. If aliasing is the way
+to go, then are we supposed to add a new PCI_VENDOR_ID_NXP2,
+PCI_VENDOR_ID_NXP3 etc?
 
-David
+Mellanox was bought by Nvidia and I don't see its PCI ID aliased to
+Nvidia. There are probably countless of other examples.
 
+> Who did it originally in what commit id and what was wrong with them
+> then?
+
+Does it really matter? "Git blame" on the line with #define PCI_VENDOR_ID_NXP
+will point to a random commit by Wasim Khan (also CCed). The usage of
+PCI_VENDOR_ID_NXP is not widespread, it's only that commit. Everywhere
+else in the kernel, 0x1957 is referred to as PCI_VENDOR_ID_FREESCALE.
+I can't comment on what was wrong with Wasim.
