@@ -2,601 +2,610 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04C9A802528
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 16:32:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4409802529
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 16:34:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233622AbjLCPb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 10:31:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43178 "EHLO
+        id S233634AbjLCPdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 10:33:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjLCPb5 (ORCPT
+        with ESMTP id S229450AbjLCPdw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 10:31:57 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8001AE5
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 07:32:02 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3EDCAC433C8;
-        Sun,  3 Dec 2023 15:31:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701617522;
-        bh=ikY3kGS6/5LCob7U3NuJB2jFoVIR3+BCSeMMAubf6W0=;
+        Sun, 3 Dec 2023 10:33:52 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20283EB;
+        Sun,  3 Dec 2023 07:33:57 -0800 (PST)
+Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 423A975A;
+        Sun,  3 Dec 2023 16:33:16 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1701617596;
+        bh=sXD1x7l8ZsFQcyiLnJeNgq7HsyWjiKF+MG8pIWTT40E=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hZXL+RsL0zIEBX3h2u11eHg4C8kXPlv6+XZXPzRlqA1NmrPs8agvs7FDEKZDNVWP7
-         puGxRdufpNbvyGFsOrhWxSe0lgnLrn3/k29aPQlR5OBqGL7UATx18ZZNS7VZgRKsZ6
-         Os7UPdGI6dteuNMbndNLhuV8br9kX9U2ZsWVQNVEhJNRS0Xgs6VVO/yFob8puYHlhQ
-         q9mYFuhko9g10rC3fBy8k0GarIeC8Mb5dKFk3gJOapEKSwrUFaP07V3h91eQI+XtuP
-         0n2jICJ3hu+ePh3MM0wuuLlRpAHQdjI+/W8pji21R8bPIOGvF/ZlsHfVtZS/8NZ5di
-         6OkjRHiKt6szQ==
-Date:   Sun, 3 Dec 2023 10:31:51 -0500
-From:   Guo Ren <guoren@kernel.org>
-To:     guoren@kernel.org
-Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Subject: Re: [RFC PATCH V2 00/38] rv64ilp32: Running ILP32 on RV64 ISA
-Message-ID: <ZWyfZy0V5shq+nsb@gmail.com>
-References: <20231112061514.2306187-1-guoren@kernel.org>
+        b=wjoxpOpTHQFgviHPe90pLs1dZV/m8teb8YvV7q38daBejKqcXqG/l1LKtnj/qyxZa
+         FM+qFo3lr2AJw/jWhBciUymed52R/SyWJosBYqRRc7aWOnNSUUk6UgkCwG9YxSCOSo
+         NFmfMB6e+wVcBma0qS2K4WvhY1zzF+cysRRw02YI=
+Date:   Sun, 3 Dec 2023 17:34:01 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Simon Glass <sjg@chromium.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        U-Boot Mailing List <u-boot@lists.denx.de>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Tom Rini <trini@konsulko.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Terrell <terrelln@fb.com>, Will Deacon <will@kernel.org>,
+        linux-doc@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, workflows@vger.kernel.org
+Subject: Re: [PATCH v9 2/2] arm64: boot: Support Flat Image Tree
+Message-ID: <20231203153401.GV8402@pendragon.ideasonboard.com>
+References: <20231202035511.487946-1-sjg@chromium.org>
+ <20231202035511.487946-3-sjg@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231112061514.2306187-1-guoren@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231202035511.487946-3-sjg@chromium.org>
+X-Spam-Status: No, score=-0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_PDS_OTHER_BAD_TLD,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLACK autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 12, 2023 at 01:14:36AM -0500, guoren@kernel.org wrote:
-> From: Guo Ren <guoren@linux.alibaba.com>
+Hi Simon,
+
+Thank you for the patch.
+
+On Fri, Dec 01, 2023 at 08:54:42PM -0700, Simon Glass wrote:
+> Add a script which produces a Flat Image Tree (FIT), a single file
+> containing the built kernel and associated devicetree files.
+> Compression defaults to gzip which gives a good balance of size and
+> performance.
 > 
-> This patch series adds s64ilp32 & u64ilp32 support to riscv. The term
-> s64ilp32 means smode-xlen=64 and -mabi=ilp32 (ints, longs, and pointers
-> are all 32-bit) and u64ilp32 means umode-xlen=64 and -mabi=ilp32, i.e.,
-> running 32-bit Linux kernel on 64-bit supervisor mode or running 32-bit
-> Linux applications on 32-bit user mode. There have been many 64ilp32
-> abis existing, such as mips-n32 [1], arm-aarch64ilp32 [2], and x86-x32
-> [3], but they are all about userspace. Thus, this should be the first
-> time running a 32-bit Linux kernel with the 64ilp32 ABI at supervisor
-> mode (If not, correct me).
+> The files compress from about 86MB to 24MB using this approach.
 > 
->  +--------------------------------+------------+
->  | +-------------------+--------+ | +--------+ |
->  | |           (compat)|(compat)| | |        | |
->  | |u64lp64    u64ilp32|u32ilp32| | |u32ilp32| | ABI
->  | |           ^^^^^^^^|        | | |        | |
->  | +-------------------+--------+ | +--------+ |
->  | +-------------------+--------+ | +--------+ |
->  | |       UXL=64      | UXL=32 | | | UXL=32 | | ISA
->  | +-------------------+--------+ | +--------+ |
->  +--------------------------------+------------+-------
->  | +----------------------------+ | +--------+ |
->  | |            64BIT           | | |   32BIT| | Kernel
->  | |     s64lp64 & s64ilp32     | | |s32ilp32| | ABI
->  | |               ^^^^^^^^     | | |        | |
->  | +----------------------------+ | +--------+ |
->  | +----------------------------+ | +--------+ |
->  | |            SXL=64          | | | SXL=32 | | ISA
->  | +----------------------------+ | +--------+ |
->  +--------------------------------+------------+
+> The FIT can be used by bootloaders which support it, such as U-Boot
+> and Linuxboot. It permits automatic selection of the correct
+> devicetree, matching the compatible string of the running board with
+> the closest compatible string in the FIT. There is no need for
+> filenames or other workarounds.
 > 
-> Motivation:
-> ===========
-> The current RISC-V has the 64-bit ISA profiles of RVA20, RVA22, and RVA23
-> (ongoing) [4], but no 32-bit RVA profile exists or any ongoing plan. That
-> means when a vendor wants to produce a 32-bit ISA RISC-V Application
-> Processor, they have no shape to follow. Therefore, many cheap riscv
-> chips have come out but follow the 64-bit RVA profiles, such as Allwinner
-> D1/D1s/F133 [5], SOPHGO CV1800B [6], Canaan Kendryte k230 [7], and
-> Bouffalo Lab BL808[3] which are typically cortex-a7 (arm 32-bit) product
-> scenarios. So running ILP32 on rv64 ISA is the only choice for these
-> chips.
+> Add a 'make image.fit' build target for arm64, as well. Use
+> FIT_COMPRESSION to select a different algorithm.
 > 
-> The ilp32 and lp64 have different scenarios, but if the address space
-> and data range are under 2GB. The ilp32, compared to the lp64, has three
-> advantages:
->  - Better memory footprint cost.
->  - Better benchmark performance (SPEC CPU 2006/2017).
->  - Compatible with ilp32 code.
+> The FIT can be examined using 'dumpimage -l'.
 > 
-> Memory Footprint
-> ================
-> rv64lp64 has 25% more memory footprint than rv64ilp32!
+> This features requires pylibfdt (use 'pip install libfdt'). It also
+> requires compression utilities for the algorithm being used. Supported
+> compression options are the same as the Image.xxx files. For now there
+> is no way to change the compression other than by editing the rule for
+> $(obj)/image.fit
 > 
-> Calculation Process:
->  rv64lp64  = (4096 - 3407) = 689
->  rv64ilp32 = (4096 - 3231) = 865
->  (865 - 689)/689 = 25.54426%
+> While FIT supports a ramdisk / initrd, no attempt is made to support
+> this here, since it must be built separately from the Linux build.
+
+FIT images are very useful, so I think this is a very welcome addition
+to the kernel build system. It can get tricky though: given the
+versatile nature of FIT images, there can't be any
+one-size-fits-them-all solution to build them, and striking the right
+balance between what makes sense for the kernel and the features that
+users may request will probably lead to bikeshedding. As we all love
+bikeshedding, I thought I would start selfishly, with a personal use
+case :-) This isn't a yak-shaving request though, I don't see any reason
+to delay merging this series.
+
+Have you envisioned building FIT images with a subset of DTBs, or adding
+DTBOs ? Both would be fairly trivial extensions to this script by
+extending the supported command line arguments. It would perhaps be more
+difficult to integrate in the kernel build system though. This leads me
+to a second question: would you consider merging extensions to this
+script if they are not used by the kernel build system, but meant for
+users who manually invoke the script ? More generally, is the script
+meant to be used stand-alone as well, in which case its command line
+arguments need to remain backward-compatible, or do you see it as being
+internal to the kernel ?
+
+> Signed-off-by: Simon Glass <sjg@chromium.org>
+> ---
 > 
-> Here are the ILP32 v.s. LP64 Linux kernel data type comparison:
-> 			32-bit		64-bit
-> sizeof(page):		32bytes		64bytes
-> sizeof(list_head):	8bytes		16bytes
-> sizeof(hlist_head):	8bytes		16bytes
-> sizeof(vm_area):	68bytes		136bytes
-> ...
+> Changes in v9:
+> - Move the compression control into Makefile.lib
 > 
-> The size of ilp32's long & pointer is just half of lp64's (rv64 default
-> abi - longs and pointers are all 64-bit). This significant difference
-> in data type causes different memory & cache footprint costs. Here is
-> the comparison log between rv64ilp32 and rv64lp64 in the same 20MB(16MB
-> for Linux) qemu system environment:
+> Changes in v8:
+> - Drop compatible string in FDT node
+> - Correct sorting of MAINTAINERS to before ARM64 PORT
+> - Turn compress part of the make_fit.py comment in to a sentence
+> - Add two blank lines before parse_args() and setup_fit()
+> - Use 'image.fit: dtbs' instead of BUILD_DTBS var
+> - Use '$(<D)/dts' instead of '$(dir $<)dts'
+> - Add 'mkimage' details Documentation/process/changes.rst
+> - Allow changing the compression used
+> - Tweak cover letter since there is only one clean-up patch
 > 
-> rv64ilp32:
->  Memory: 14008K/16384K available (1253K kernel code, 474K rwdata, 114K
->  rodata, 134K init, 192K bss, 2376K reserved, 0K cma-reserved)
->  Mem-Info:
->  active_anon:0 inactive_anon:0 isolated_anon:0
->   active_file:0 inactive_file:0 isolated_file:0
->   unevictable:0 dirty:0 writeback:0
->   slab_reclaimable:0 slab_unreclaimable:47
->   mapped:0 shmem:0 pagetables:0
->   sec_pagetables:0 bounce:0
->   kernel_misc_reclaimable:0
->   free:3407 free_pcp:45 free_cma:0
->   ^^^^^^^^^
->  Node 0 active_anon:0kB inactive_anon:0kB active_file:0kB
->  inactive_file:0kB unevictable:0kB isolated(anon):0kB isolated(file):0kB
->  mapped:0kB dirty:0kB writeback:0kB shmem:0kB writeback_tmp:0kB
->  kernel_stack:104kB pagetables:0kB sec_pagetabl
->  es:0kB all_unreclaimable? no
->  Normal free:13628kB boost:0kB min:472kB low:588kB high:704kB
->  reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB
->  active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB
->  present:16384kB managed:14140kB mlocked:0kB bounce:0
->  kB free_pcp:180kB local_pcp:180kB free_cma:0kB
->  lowmem_reserve[]: 0 0
->  Normal: 3*4kB (UM) 2*8kB (M) 2*16kB (M) 2*32kB (M) 3*64kB (M) 2*128kB
->  (UM) 3*256kB (M) 4*512kB (UM) 2*1024kB (UM) 2*2048kB (UM) 1*4096kB (M) =
->  13628kB
->  0 total pagecache pages
->  4096 pages RAM
->  0 pages HighMem/MovableOnly
->  561 pages reserved
+> Changes in v7:
+> - Add Image as a dependency of image.fit
+> - Drop kbuild tag
+> - Add dependency on dtbs
+> - Drop unnecessary path separator for dtbs
+> - Rebase to -next
 > 
-> rv64lp64:
->  Memory: 13776K/16384K available (1234K kernel code, 539K rwdata, 129K
->  rodata, 161K init, 207K bss, 2608K reserved, 0K cma-reserved)
->  Mem-Info:
->  active_anon:0 inactive_anon:0 isolated_anon:0
->   active_file:0 inactive_file:0 isolated_file:0
->   unevictable:0 dirty:0 writeback:0
->   slab_reclaimable:0 slab_unreclaimable:69
->   mapped:0 shmem:0 pagetables:1
->   sec_pagetables:0 bounce:0
->   kernel_misc_reclaimable:0
->   free:3231 free_pcp:55 free_cma:0
->   ^^^^^^^^^
->  Node 0 active_anon:0kB inactive_anon:0kB active_file:0kB
->  inactive_file:0kB unevictable:0kB isolated(anon):0kB isolated(file):0kB
->  mapped:0kB dirty:0kB writeback:0kB shmem:0kB writeback_tmp:0kB
->  kernel_stack:208kB pagetables:4kB sec_pagetabl
->  es:0kB all_unreclaimable? no
->  Normal free:12924kB boost:0kB min:468kB low:584kB high:700kB
->  reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB
->  active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB
->  present:16384kB managed:13936kB mlocked:0kB bounce:0
->  kB free_pcp:220kB local_pcp:220kB free_cma:0kB
->  lowmem_reserve[]: 0 0
->  Normal: 3*4kB (UM) 4*8kB (UM) 3*16kB (M) 3*32kB (UM) 1*64kB (M) 3*128kB
->  (UM) 2*256kB (M) 3*512kB (M) 2*1024kB (UM) 2*2048kB (UM) 1*4096kB (M) =
->  12924kB
->  0 total pagecache pages
->  4096 pages RAM
->  0 pages HighMem/MovableOnly
->  612 pages reserved
+> Changes in v5:
+> - Drop patch previously applied
+> - Correct compression rule which was broken in v4
 > 
-> Why rv64 isa?
-> ==============
-> Generally speaking, we should build a 32-bit hardware s-mode to run
-> 32-bit Linux on a 64/32-bit processor (such as cortex-a35/a53).
-> But, it can't reuse performance-related features and instructions of
-> the 64-bit hardware, such as 64-bit ALU, AMO, and LD/SD, which would
-> cause significant performance gaps on many Linux kernel features:
+> Changes in v4:
+> - Use single quotes for UIMAGE_NAME
 > 
->  - memcpy/memset/strcmp (s64ilp32 has half of the instructions count
->    and double the bandwidth of load/store instructions than s32ilp32.)
+> Changes in v3:
+> - Drop temporary file image.itk
+> - Drop patch 'Use double quotes for image name'
+> - Drop double quotes in use of UIMAGE_NAME
+> - Drop unnecessary CONFIG_EFI_ZBOOT condition for help
+> - Avoid hard-coding "arm64" for the DT architecture
 > 
->  - ebpf JIT is a 64-bit Language virtual machine ISA, which is not
->    suitable for mapping to s32ilp32.
+> Changes in v2:
+> - Drop patch previously applied
+> - Add .gitignore file
+> - Move fit rule to Makefile.lib using an intermediate file
+> - Drop dependency on CONFIG_EFI_ZBOOT
+> - Pick up .dtb files separately from the kernel
+> - Correct pylint too-many-args warning for write_kernel()
+> - Include the kernel image in the file count
+> - Add a pointer to the FIT spec and mention of its wide industry usage
+> - Mention the kernel version in the FIT description
 > 
->  - Atomic64 (s64ilp32 has the exact native instructions mapping as
->    s64lp64, but s32ilp32 only uses generic_atomic64, a tradeoff &
->    limited software solution.)
+>  Documentation/process/changes.rst |   9 +
+>  MAINTAINERS                       |   7 +
+>  arch/arm64/Makefile               |   7 +-
+>  arch/arm64/boot/.gitignore        |   1 +
+>  arch/arm64/boot/Makefile          |   6 +-
+>  scripts/Makefile.lib              |  16 ++
+>  scripts/make_fit.py               | 291 ++++++++++++++++++++++++++++++
+>  7 files changed, 334 insertions(+), 3 deletions(-)
+>  create mode 100755 scripts/make_fit.py
 > 
->  - Support cmxchg_double for slub (The 2nd 32-bit Linux
->    supports the feature, the 1st is i386.)
-> 
->  - ...
-> 
-> Compared with the user space ecosystem, the 32-bit Linux kernel is more
-> eager to need 64ilp32 to improve performance because the Linux kernel
-> can't utilize float-point/vector features of the ISA.
-> 
-> Simplifies CPU Design
-> =====================
-> Yes, there are a lot of runing 32-bit Linux on 64-bit hardware examples
-> in history, such as arm cortex a35/a53/a55, which implements the 32-bit
-> EL1/EL2/EL3 hardware mode to support 32-bit Linux. We could follow Arm's
-> style, but riscv could choose another better way. Compared to UXL=32,
-> the MXL=SXL=32 has many CSR-related hardware functionalities, which
-> causes a lot of effort to mix them into 64-bit hardware. The s64ilp32
-> works on MXL=SXL=64 mode, so the CPU vendors needn't implement 32-bit
-> machine and supervisor modes.
-> 
-> How does rv64ilp32 work?
-> ========================
-> The s64ilp32 is the same as the s64lp64 compat mode from a hardware
-> view, i.e., MXL=SXL=64 + UXL=32. Because the s64ilp32 uses CONFIG_32BIT
-> of Linux, it only supports u32ilp32 abi user space, the current standard
-> rv32 software ecosystem, and it can't work with u64lp64 abi (I don't
-> want that complex and useless stuff). But it may work with u64ilp32 in the
-> future; now, the s64ilp32 depends on the UXL=32 feature of the hardware.
-> 
-> The 64ilp32 gcc still uses sign-extend lw & auipc to generate address
-> variables because inserting zero-extend instructions to mask the highest
-> 32-bit would cause significant code size and performance problems. Thus,
-> we invented an OS approach to solve the problem:
->  - When satp=bare and start physical address < 2GB, there is no sign-extend
->    address problem.
->  - When satp=bare and start physical address > 2GB, we need zjpm liked
->    hardware extensions to mask high 32bit.
->    (Fortunately, all existed SoCs' (D1/D1s/F133, CV1800B, k230, BL808)
->     start physical address < 2GB.)
->  - When satp=sv39, we invent double mapping to make the sign-extended
->    virtual address the same as the zero-extended virtual address.
-Update diagram:
- 
-    +--------+      +---------+      +--------+      +--------+
-    |        |   +--| PMDP511 |      |        |      |        |
-    |        |   |  +---------+      |        |      |        |
-    |        |   |  | PMDP510 |--+   |        |      |        |
-    |        |   |  +---------+  |   |        |      |        |
-    |        |   |  |         |  |   |        |      |        |
-    |        |   |  |         |  |   |        |      |        |
-    |        |   |  |         |  |   |        |      |        |
-    |        |   |  | INVALID |  |   |        |      |        |
-    |        |   |  |         |  |   |        |      |        |
-    |  ....  |   |  |         |  |   |  ....  |      |  ....  |
-    |        |   |  |         |  |   |        |      |        |
-    |        |   |  +---------+  |   |        |      |        |
-    |        |   +--|  PMDP3  |  |   |        |      |        |
-    |        |   |  +---------+  |   |        |      |        |
-    |        |   |  |  PMDP2  |--+   |        |      |        |
-    |        |   |  +---------+  |   |        |      |        |
-    |        |   |  |  PMDP1  |  |   |        |      |        |
-    |        |   |  +---------+  |   +--------+      +--------+
-    |        |   |  |  PMDP0  |  |   |  PTP0  |--+   |  PTE0  |-->4KB
-    +--------+<--+  +---------+  +-->+--------+  +-->+--------+
-       PMD3         ^   PGD             PMD2            PT0 
-       1GB          |   4GB             1GB             2MB
-                    +---------+      
-                    |   PGDP  |
-                    +---------+      
-                      SATP (Sv39)
- 
-> The size of xlen was always equal to the pointer/long size before
-> s64ilp32 emerged. So we need to introduce a new type of data - xlen_t,
-> which could deal with CSR-related and callee-save/restore operations.
-> 
-> Some kernel features use 32BIT/64BIT to determine the exact ISA, such as
-> ebpf JIT would map to rv32 ISA when CONFIG_32BIT=y. But s64ilp32 needs
-> the ebpf JIT map to rv64 ISA when CONFIG_32BIT=y and we need to use
-> another config to distinguish the difference.
-> 
-> More detials, please review the path series.
-> 
-> How to run s64ilp32?
-> ====================
-> 
-> GNU toolchain
-> -------------
-> git clone https://github.com/Liaoshihua/riscv-gnu-toolchain.git
-> cd riscv-gnu-toolchain
-> ./configure --prefix="$PWD/opt-rv64-ilp32/" --with-arch=rv64imac --with-abi=ilp32
-> make linux
-> export PATH=$PATH:$PWD/opt-rv64-ilp32/bin/
-> 
-> Opensbi
-> -------
-> git clone https://github.com/riscv-software-src/opensbi.git
-> CROSS_COMPILE=riscv64-unknown-linux-gnu- make PLATFORM=generic
-> 
-> Linux kernel
-> ------------
-> v6.5-rc1 + patches
-> cd linux
-> make ARCH=riscv CROSS_COMPILE=riscv64-unknown-linux-gnu- rv64ilp32_defconfig
-> make ARCH=riscv CROSS_COMPILE=riscv64-unknown-linux-gnu- all
-> 
-> Qemu
-> ----
-> git clone https://github.com/plctlab/plct-qemu.git -b plct-s64ilp32-dev
-> cd plct-qemu
-> mkdir build
-> cd build
-> ../qemu/configure --target-list="riscv64-softmmu riscv32-softmmu"
-> make
-> 
-> Patch organization
-> ==================
-> PATCH [ 1-11] u64ilp32: User space support
-> PATCH [12-36] adds time-related vDSO common flow for vdso32
-> PATCH [37] Add tiny defconfig for ilp32 v.s. lp64
-> PATCH [38] Unify ilp32 & lp64 configs and memory 
-> 
-> Open issues
-> ===========
-> 
-> Callee saved the register width
-> -------------------------------
-> For 64-bit ISA (including 64lp64, 64ilp32), callee can't determine the
-> correct width used in the register, so they saved the maximum width of
-> the ISA register, i.e., xlen size. We also found this rule in x86-x32,
-> mips-n32, and aarch64ilp32, which comes from 64lp64. See PATCH [20]
-> 
-> Here are two downsides of this:
->  - It would cause a difference with 32ilp32's stack frame, and s64ilp32
->    reuses 32ilp32 software stack. Thus, many additional compatible
->    problems would happen during the porting of 64ilp32 software.
->  - It also increases the budget of the stack usage.
->    <setup_vm>:
->      auipc   a3,0xff3fb
->      add     a3,a3,1234 # c0000000
->      li      a5,-1
->      lui     a4,0xc0000
->      addw    sp,sp,-96
->      srl     a5,a5,0x20
->      subw    a4,a4,a3
->      auipc   a2,0x111a
->      add     a2,a2,1212 # c1d1f000
->      sd      s0,80(sp)----+
->      sd      s1,72(sp)    |
->      sd      s2,64(sp)    |
->      sd      s7,24(sp)    |
->      sd      s8,16(sp)    |
->      sd      s9,8(sp)     |-> All <= 32b widths, but occupy 64b
->      sd      ra,88(sp)    |   stack space.
->      sd      s3,56(sp)    |   Affect memory footprint & cache
->      sd      s4,48(sp)    |   performance.
->      sd      s5,40(sp)    |
->      sd      s6,32(sp)    |
->      sd      s10,0(sp)----+
->      sll     a1,a4,0x20
->      subw    a2,a2,a3
->      and     a4,a4,a5
-> 
-> So here is a proposal to riscv 64ilp32 ABI:
->  - Let the compiler prevent callee saving ">32b variables" in
->    callee-registers. (Q: We need to measure, how the influence of
->    64b variables cross function call?)
-> 
-> EF_RISCV_X32
-> ------------
-> We add an e_flag (EF_RISCV_X32) to distinguish the 32-bit ELF, which
-> occupies BIT[6] of the e_flags layout.
-> 
-> ELF Header:
->   Magic:   7f 45 4c 46 01 01 01 00 00 00 00 00 00 00 00 00
->   Class:                             ELF32
->   Data:                              2's complement, little endian
->   Version:                           1 (current)
->   OS/ABI:                            UNIX - System V
->   ABI Version:                       0
->   Type:                              REL (Relocatable file)
->   Machine:                           RISC-V
->   Version:                           0x1
->   Entry point address:               0x0
->   Start of program headers:          0 (bytes into file)
->   Start of section headers:          24620 (bytes into file)
->   Flags:                             0x21, RVC, X32, soft-float ABI
->                                                 ^^^
-> 64-bit Optimization problem
-> ---------------------------
-> There is an existing problem in 64ilp32 gcc that combines two pointers
-> in one register. Liao is solving that problem. Before he finishes the
-> job, we could prevent it with a simple noinline attribute, fortunately.
->     struct path {
->             struct vfsmount *mnt;
->             struct dentry *dentry;
->     } __randomize_layout;
-> 
->     struct nameidata {
->             struct path     path;
->             ...
->             struct path     root;
->     ...
->     } __randomize_layout;
-> 
->             struct nameidata *nd
->             ...
->             nd->path = nd->root;
->     6c88                    ld      a0,24(s1)
->                                     ^^ // a0 contains two pointers
->     e088                    sd      a0,0(s1)
->             mntget(path->mnt);
->             // Need "lw a0,0(s1)" or "a0 << 32; a0 >> 32"
->     2a6150ef                jal     c01ce946 <mntget> // bug!
-> 
-> Acknowledge
-> ===========
->  - GNU:			LiaoShihua <shihua@iscas.ac.cn>
-> 			Jiawe Chen<jiawei@iscas.ac.cn>
->  - Qemu:		Weiwei Li <liweiwei@iscas.ac.cn>
->  - Benchmark:		Junqiang Wang <wangjunqiang@iscas.ac.cn> 
-> 			XiaoOu Chen <chenxiaoou@iscas.ac.cn>
->  - Fedora:		Wei Fu <wefu@redhat.com>
-> 			Songsong Zhang <U2FsdGVkX1@gmail.com>
-> 
-> References
-> ==========
-> [1] https://techpubs.jurassic.nl/manuals/0630/developer/Mpro_...
-> [2] https://wiki.debian.org/Arm64ilp32Port
-> [3] https://lwn.net/Articles/456731/
-> [4] https://github.com/riscv/riscv-profiles/releases
-> [5] https://www.cnx-software.com/2021/10/25/allwinner-d1s-f13...
-> [6] https://milkv.io/duo/
-> [7] https://twitter.com/tphuang/status/1631308330256801793
-> [8] https://www.cnx-software.com/2022/12/02/pine64-ox64-sbc-b...
-> 
-> Changelog:
-> V2:
->  - Add u64ilp32 support
->  - Rebase v6.5-rc1
->  - Enable 64ilp32 vgettimeofday for benchmarking
-> 
-> V1:
-> https://lore.kernel.org/linux-riscv/20230518131013.3366406-1-guoren@kernel.org/
-> 
-> Guo Ren (38):
->   riscv: u64ilp32: Unify vdso32 & compat_vdso into vdso/Makefile
->   riscv: u64ilp32: Remove compat_vdso/
->   riscv: u64ilp32: Add time-related vDSO common flow for vdso32
->   riscv: u64ilp32: Introduce ILP32 vdso for UXL=64
->   riscv: u64ilp32: Adjust vDSO kernel flow for 64ilp32 abi
->   riscv: u64ilp32: Add signal support for compat
->   riscv: u64ilp32: Add ptrace interface support
->   riscv: u64ilp32: Adjust vDSO alternative for 64ilp32 abi
->   riscv: u64ilp32: Add xlen_t in user_regs_struct
->   riscv: u64ilp32: Remove the restriction of UXL=32
->   riscv: u64ilp32: Enable user space runtime switch
->   riscv: s64ilp32: Unify ULL & UL into UXL in csr
->   riscv: s64ilp32: Introduce xlen_t for 64ILP32 kernel
->   riscv: s64ilp32: Add sbi support
->   riscv: s64ilp32: Add asid support
->   riscv: s64ilp32: Introduce PTR_L and PTR_S
->   riscv: s64ilp32: Adjust TASK_SIZE for s64ilp32 kernel
->   riscv: s64ilp32: Add ebpf jit support
->   riscv: s64ilp32: Add ELF32 support
->   riscv: s64ilp32: Add ARCH_RV64ILP32 Kconfig option
->   riscv: s64ilp32: Add MMU_SV32 mode support
->   riscv: s64ilp32: Add MMU_SV39 mode support
->   riscv: s64ilp32: Enable native atomic64
->   riscv: s64ilp32: Add TImode (128 int) support
->   riscv: s64ilp32: Implement cmpxchg_double
->   riscv: s64ilp32: Disable KVM
->   riscv: s64ilp32: Correct the rv64ilp32 stackframe layout
->   riscv: s64ilp32: Temporary workaround solution to gcc problem
->   riscv: s64ilp32: Introduce ARCH_HAS_64ILP32_KERNEL for syscall
->   riscv: s64ilp32: Add u32ilp32 ptrace support
->   riscv: s64ilp32: Add u32ilp32 signal support
->   riscv: s64ilp32: Validate harts by architecture name
->   riscv: s64ilp32: Add rv64ilp32_defconfig
->   riscv: Cleanup rv32_defconfig
->   clocksource: riscv: s64ilp32: Use __riscv_xlen instead of CONFIG_32BIT
->   irqchip: riscv: s64ilp32: Use __riscv_xlen instead of CONFIG_32BIT
->   add tinylab defconfig
->   64ilp32 v.s. 64lp64
-> 
->  arch/Kconfig                                  |  10 +
->  arch/riscv/Kconfig                            |  49 +++-
->  arch/riscv/Kconfig.errata                     |   2 +-
->  arch/riscv/Makefile                           |  28 ++-
->  arch/riscv/configs/32-bit.config              |   2 -
->  arch/riscv/configs/64ilp32.config             |   2 +
->  arch/riscv/configs/tinylab32ilp32_defconfig   |  88 +++++++
->  arch/riscv/configs/tinylab64ilp32_defconfig   |  89 +++++++
->  arch/riscv/configs/tinylab_defconfig          |  89 +++++++
->  arch/riscv/include/asm/asm.h                  |   5 +
->  arch/riscv/include/asm/atomic.h               |   6 +
->  arch/riscv/include/asm/cmpxchg.h              |  53 ++++
->  arch/riscv/include/asm/cpu_ops_sbi.h          |   4 +-
->  arch/riscv/include/asm/csr.h                  | 189 +++++++-------
->  arch/riscv/include/asm/elf.h                  |   7 +-
->  arch/riscv/include/asm/extable.h              |   2 +-
->  arch/riscv/include/asm/module.h               |  30 +++
->  arch/riscv/include/asm/page.h                 |  26 +-
->  arch/riscv/include/asm/pgtable-64.h           |  50 ++--
->  arch/riscv/include/asm/pgtable.h              |  26 +-
->  arch/riscv/include/asm/processor.h            |   8 +-
->  arch/riscv/include/asm/ptrace.h               |  96 ++++----
->  arch/riscv/include/asm/sbi.h                  |  24 +-
->  arch/riscv/include/asm/signal32.h             |  11 +-
->  arch/riscv/include/asm/stacktrace.h           |   6 +
->  arch/riscv/include/asm/syscall.h              |   2 +-
->  arch/riscv/include/asm/thread_info.h          |   1 +
->  arch/riscv/include/asm/timex.h                |  10 +-
->  arch/riscv/include/asm/tlbflush.h             |   2 +-
->  arch/riscv/include/asm/vdso.h                 |  34 ++-
->  arch/riscv/include/asm/vdso/gettimeofday.h    |  95 +++++++
->  arch/riscv/include/uapi/asm/elf.h             |   2 +-
->  arch/riscv/include/uapi/asm/ptrace.h          |  72 +++---
->  arch/riscv/include/uapi/asm/unistd.h          |   1 +
->  arch/riscv/kernel/Makefile                    |   5 +-
->  arch/riscv/kernel/alternative.c               |  50 +++-
->  arch/riscv/kernel/compat_signal.c             |  23 +-
->  arch/riscv/kernel/compat_vdso/.gitignore      |   2 -
->  arch/riscv/kernel/compat_vdso/compat_vdso.S   |   8 -
->  .../kernel/compat_vdso/compat_vdso.lds.S      |   3 -
->  arch/riscv/kernel/compat_vdso/flush_icache.S  |   3 -
->  arch/riscv/kernel/compat_vdso/getcpu.S        |   3 -
->  arch/riscv/kernel/compat_vdso/note.S          |   3 -
->  arch/riscv/kernel/compat_vdso/rt_sigreturn.S  |   3 -
->  arch/riscv/kernel/cpu.c                       |   9 +-
->  arch/riscv/kernel/cpu_ops_sbi.c               |   4 +-
->  arch/riscv/kernel/entry.S                     |  24 +-
->  arch/riscv/kernel/head.S                      |   8 +-
->  arch/riscv/kernel/process.c                   |  10 +-
->  arch/riscv/kernel/ptrace.c                    |   9 +-
->  arch/riscv/kernel/sbi.c                       |  24 +-
->  arch/riscv/kernel/signal.c                    |  79 ++++--
->  arch/riscv/kernel/traps.c                     |   4 +-
->  arch/riscv/kernel/vdso.c                      | 102 ++++++--
->  arch/riscv/kernel/vdso/Makefile               | 232 ++++++++++++++----
->  ..._vdso_offsets.sh => gen_vdso32_offsets.sh} |   2 +-
->  .../gen_vdso64_offsets.sh}                    |   2 +-
->  .../kernel/vdso/gen_vdso64ilp32_offsets.sh    |   5 +
->  arch/riscv/kernel/vdso/vdso.lds.S             |   2 -
->  arch/riscv/kernel/vdso/vgettimeofday.c        |  39 ++-
->  arch/riscv/kernel/vdso32.S                    |   8 +
->  arch/riscv/kernel/{vdso/vdso.S => vdso64.S}   |   8 +-
->  arch/riscv/kernel/vdso64ilp32.S               |   8 +
->  arch/riscv/kernel/vector.c                    |   2 +-
->  arch/riscv/kvm/Kconfig                        |   1 +
->  arch/riscv/lib/Makefile                       |   1 +
->  arch/riscv/lib/memset.S                       |   4 +-
->  arch/riscv/mm/context.c                       |  16 +-
->  arch/riscv/mm/fault.c                         |  13 +-
->  arch/riscv/mm/init.c                          |  24 +-
->  arch/riscv/net/Makefile                       |   6 +-
->  arch/riscv/net/bpf_jit_comp64.c               |   6 +-
->  drivers/clocksource/timer-riscv.c             |   2 +-
->  drivers/irqchip/irq-riscv-intc.c              |   9 +-
->  fs/namei.c                                    |   2 +-
->  fs/open.c                                     |  22 ++
->  fs/read_write.c                               |  17 ++
->  fs/sync.c                                     |  22 ++
->  include/linux/syscalls.h                      |  35 ++-
->  init/main.c                                   |   2 +
->  kernel/signal.c                               |  24 +-
->  mm/fadvise.c                                  |  24 ++
->  82 files changed, 1526 insertions(+), 509 deletions(-)
->  create mode 100644 arch/riscv/configs/64ilp32.config
->  create mode 100644 arch/riscv/configs/tinylab32ilp32_defconfig
->  create mode 100644 arch/riscv/configs/tinylab64ilp32_defconfig
->  create mode 100644 arch/riscv/configs/tinylab_defconfig
->  delete mode 100644 arch/riscv/kernel/compat_vdso/.gitignore
->  delete mode 100644 arch/riscv/kernel/compat_vdso/compat_vdso.S
->  delete mode 100644 arch/riscv/kernel/compat_vdso/compat_vdso.lds.S
->  delete mode 100644 arch/riscv/kernel/compat_vdso/flush_icache.S
->  delete mode 100644 arch/riscv/kernel/compat_vdso/getcpu.S
->  delete mode 100644 arch/riscv/kernel/compat_vdso/note.S
->  delete mode 100644 arch/riscv/kernel/compat_vdso/rt_sigreturn.S
->  rename arch/riscv/kernel/vdso/{gen_vdso_offsets.sh => gen_vdso32_offsets.sh} (78%)
->  rename arch/riscv/kernel/{compat_vdso/gen_compat_vdso_offsets.sh => vdso/gen_vdso64_offsets.sh} (77%)
->  create mode 100755 arch/riscv/kernel/vdso/gen_vdso64ilp32_offsets.sh
->  create mode 100644 arch/riscv/kernel/vdso32.S
->  rename arch/riscv/kernel/{vdso/vdso.S => vdso64.S} (73%)
->  create mode 100644 arch/riscv/kernel/vdso64ilp32.S
-> 
-> -- 
-> 2.36.1
-> 
-> 
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
-> 
+> diff --git a/Documentation/process/changes.rst b/Documentation/process/changes.rst
+> index bb96ca0f774b..cad51bd5bd62 100644
+> --- a/Documentation/process/changes.rst
+> +++ b/Documentation/process/changes.rst
+> @@ -62,6 +62,7 @@ Sphinx\ [#f1]_         1.7              sphinx-build --version
+>  cpio                   any              cpio --version
+>  GNU tar                1.28             tar --version
+>  gtags (optional)       6.6.5            gtags --version
+> +mkimage (optional)     2017.01          mkimage --version
+>  ====================== ===============  ========================================
+>  
+>  .. [#f1] Sphinx is needed only to build the Kernel documentation
+> @@ -189,6 +190,14 @@ The kernel build requires GNU GLOBAL version 6.6.5 or later to generate
+>  tag files through ``make gtags``.  This is due to its use of the gtags
+>  ``-C (--directory)`` flag.
+>  
+> +mkimage
+> +-------
+> +
+> +This tool is used when building a Flat Image Tree (FIT), commonly used on ARM
+> +platforms. The tool is available via the ``u-boot-tools`` package or can be
+> +built from the U-Boot source code. See the instructions at
+> +https://docs.u-boot.org/en/latest/build/tools.html#building-tools-for-linux
+> +
+>  System utilities
+>  ****************
+>  
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 9d46229fe21b..d2d17f0d6e64 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -3037,6 +3037,13 @@ F:	drivers/mmc/host/sdhci-of-arasan.c
+>  N:	zynq
+>  N:	xilinx
+>  
+> +ARM64 FIT SUPPORT
+> +M:	Simon Glass <sjg@chromium.org>
+> +L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+> +S:	Maintained
+> +F:	arch/arm64/boot/Makefile
+> +F:	scripts/make_fit.py
+> +
+>  ARM64 PORT (AARCH64 ARCHITECTURE)
+>  M:	Catalin Marinas <catalin.marinas@arm.com>
+>  M:	Will Deacon <will@kernel.org>
+> diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
+> index 1bd4fae6e806..6b893dc454b7 100644
+> --- a/arch/arm64/Makefile
+> +++ b/arch/arm64/Makefile
+> @@ -150,7 +150,7 @@ libs-$(CONFIG_EFI_STUB) += $(objtree)/drivers/firmware/efi/libstub/lib.a
+>  # Default target when executing plain make
+>  boot		:= arch/arm64/boot
+>  
+> -BOOT_TARGETS	:= Image vmlinuz.efi
+> +BOOT_TARGETS	:= Image vmlinuz.efi image.fit
+>  
+>  PHONY += $(BOOT_TARGETS)
+>  
+> @@ -162,7 +162,9 @@ endif
+>  
+>  all:	$(notdir $(KBUILD_IMAGE))
+>  
+> -vmlinuz.efi: Image
+> +image.fit: dtbs
+> +
+> +vmlinuz.efi image.fit: Image
+>  $(BOOT_TARGETS): vmlinux
+>  	$(Q)$(MAKE) $(build)=$(boot) $(boot)/$@
+>  
+> @@ -215,6 +217,7 @@ virtconfig:
+>  define archhelp
+>    echo  '* Image.gz      - Compressed kernel image (arch/$(ARCH)/boot/Image.gz)'
+>    echo  '  Image         - Uncompressed kernel image (arch/$(ARCH)/boot/Image)'
+> +  echo  '  image.fit     - Flat Image Tree (arch/$(ARCH)/boot/image.fit)'
+>    echo  '  install       - Install uncompressed kernel'
+>    echo  '  zinstall      - Install compressed kernel'
+>    echo  '                  Install using (your) ~/bin/installkernel or'
+> diff --git a/arch/arm64/boot/.gitignore b/arch/arm64/boot/.gitignore
+> index af5dc61f8b43..abaae9de1bdd 100644
+> --- a/arch/arm64/boot/.gitignore
+> +++ b/arch/arm64/boot/.gitignore
+> @@ -2,3 +2,4 @@
+>  Image
+>  Image.gz
+>  vmlinuz*
+> +image.fit
+> diff --git a/arch/arm64/boot/Makefile b/arch/arm64/boot/Makefile
+> index 1761f5972443..b835c0880d1c 100644
+> --- a/arch/arm64/boot/Makefile
+> +++ b/arch/arm64/boot/Makefile
+> @@ -16,7 +16,8 @@
+>  
+>  OBJCOPYFLAGS_Image :=-O binary -R .note -R .note.gnu.build-id -R .comment -S
+>  
+> -targets := Image Image.bz2 Image.gz Image.lz4 Image.lzma Image.lzo Image.zst
+> +targets := Image Image.bz2 Image.gz Image.lz4 Image.lzma Image.lzo \
+> +	Image.zst image.fit
+>  
+>  $(obj)/Image: vmlinux FORCE
+>  	$(call if_changed,objcopy)
+> @@ -39,6 +40,9 @@ $(obj)/Image.lzo: $(obj)/Image FORCE
+>  $(obj)/Image.zst: $(obj)/Image FORCE
+>  	$(call if_changed,zstd)
+>  
+> +$(obj)/image.fit: $(obj)/Image FORCE
+> +	$(call cmd,fit)
+> +
+>  EFI_ZBOOT_PAYLOAD	:= Image
+>  EFI_ZBOOT_BFD_TARGET	:= elf64-littleaarch64
+>  EFI_ZBOOT_MACH_TYPE	:= ARM64
+> diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+> index 1a965fe68e01..1c60d594932c 100644
+> --- a/scripts/Makefile.lib
+> +++ b/scripts/Makefile.lib
+> @@ -496,6 +496,22 @@ quiet_cmd_uimage = UIMAGE  $@
+>  			-a $(UIMAGE_LOADADDR) -e $(UIMAGE_ENTRYADDR) \
+>  			-n '$(UIMAGE_NAME)' -d $< $@
+>  
+> +# Flat Image Tree (FIT)
+> +# This allows for packaging of a kernel and all devicetrees files, using
+> +# compression.
+> +# ---------------------------------------------------------------------------
+> +
+> +MAKE_FIT := $(srctree)/scripts/make_fit.py
+> +
+> +# Use this to override the compression algorithm
+> +FIT_COMPRESSION ?= gzip
+> +
+> +quiet_cmd_fit = FIT     $@
+> +      cmd_fit = $(MAKE_FIT) -f $@ --arch $(UIMAGE_ARCH) --os linux \
+> +			--name '$(UIMAGE_NAME)' \
+> +			--compress $(FIT_COMPRESSION) -k $< \
+> +			$(<D)/dts
+> +
+>  # XZ
+>  # ---------------------------------------------------------------------------
+>  # Use xzkern to compress the kernel image and xzmisc to compress other things.
+> diff --git a/scripts/make_fit.py b/scripts/make_fit.py
+> new file mode 100755
+> index 000000000000..e616b0d7a84a
+> --- /dev/null
+> +++ b/scripts/make_fit.py
+> @@ -0,0 +1,291 @@
+> +#!/usr/bin/env python3
+> +# SPDX-License-Identifier: GPL-2.0+
+> +#
+> +# Copyright 2023 Google LLC
+> +# Written by Simon Glass <sjg@chromium.org>
+> +#
+> +
+> +"""Build a FIT containing a lot of devicetree files
+> +
+> +Usage:
+> +    make_fit.py -A arm64 -n 'Linux-6.6' -O linux
+> +        -f arch/arm64/boot/image.fit -k /tmp/kern/arch/arm64/boot/image.itk
+> +        /tmp/kern/arch/arm64/boot/dts/ -E -c gzip
+> +
+> +Creates a FIT containing the supplied kernel and a directory containing the
+> +devicetree files.
+> +
+> +Use -E to generate an external FIT (where the data is placed after the
+> +FIT data structure). This allows parsing of the data without loading
+> +the entire FIT.
+> +
+> +Use -c to compress the data, using bzip2, gzip, lz4, lzma, lzo and
+> +zstd algorithms.
+> +
+> +The resulting FIT can be booted by bootloaders which support FIT, such
+> +as U-Boot, Linuxboot, Tianocore, etc.
+> +
+> +Note that this tool does not yet support adding a ramdisk / initrd.
+> +"""
+> +
+> +import argparse
+> +import collections
+> +import os
+> +import subprocess
+> +import sys
+> +import tempfile
+> +import time
+> +
+> +import libfdt
+> +
+> +
+> +# Tool extension and the name of the command-line tools
+> +CompTool = collections.namedtuple('CompTool', 'ext,tools')
+> +
+> +COMP_TOOLS = {
+> +    'bzip2': CompTool('.bz2', 'bzip2'),
+> +    'gzip': CompTool('.gz', 'pigz,gzip'),
+> +    'lz4': CompTool('.lz4', 'lz4'),
+> +    'lzma': CompTool('.lzma', 'lzma'),
+> +    'lzo': CompTool('.lzo', 'lzop'),
+> +    'zstd': CompTool('.zstd', 'zstd'),
+> +}
+> +
+> +
+> +def parse_args():
+> +    """Parse the program ArgumentParser
+> +
+> +    Returns:
+> +        Namespace object containing the arguments
+> +    """
+> +    epilog = 'Build a FIT from a directory tree containing .dtb files'
+> +    parser = argparse.ArgumentParser(epilog=epilog)
+> +    parser.add_argument('-A', '--arch', type=str, required=True,
+> +          help='Specifies the architecture')
+> +    parser.add_argument('-c', '--compress', type=str, default='none',
+> +          help='Specifies the compression')
+> +    parser.add_argument('-E', '--external', action='store_true',
+> +          help='Convert the FIT to use external data')
+> +    parser.add_argument('-n', '--name', type=str, required=True,
+> +          help='Specifies the name')
+> +    parser.add_argument('-O', '--os', type=str, required=True,
+> +          help='Specifies the operating system')
+> +    parser.add_argument('-f', '--fit', type=str, required=True,
+> +          help='Specifies the output file (.fit)')
+> +    parser.add_argument('-k', '--kernel', type=str, required=True,
+> +          help='Specifies the (uncompressed) kernel input file (.itk)')
+> +    parser.add_argument('srcdir', type=str, nargs='*',
+> +          help='Specifies the directory tree that contains .dtb files')
+> +
+> +    return parser.parse_args()
+> +
+> +
+> +def setup_fit(fsw, name):
+> +    """Make a start on writing the FIT
+> +
+> +    Outputs the root properties and the 'images' node
+> +
+> +    Args:
+> +        fsw (libfdt.FdtSw): Object to use for writing
+> +        name (str): Name of kernel image
+> +    """
+> +    fsw.INC_SIZE = 65536
+> +    fsw.finish_reservemap()
+> +    fsw.begin_node('')
+> +    fsw.property_string('description', f'{name} with devicetree set')
+> +    fsw.property_u32('#address-cells', 1)
+> +
+> +    fsw.property_u32('timestamp', int(time.time()))
+> +    fsw.begin_node('images')
+> +
+> +
+> +def write_kernel(fsw, data, args):
+> +    """Write out the kernel image
+> +
+> +    Writes a kernel node along with the required properties
+> +
+> +    Args:
+> +        fsw (libfdt.FdtSw): Object to use for writing
+> +        data (bytes): Data to write (possibly compressed)
+> +        args (Namespace): Contains necessary strings:
+> +            arch: FIT architecture, e.g. 'arm64'
+> +            fit_os: Operating Systems, e.g. 'linux'
+> +            name: Name of OS, e.g. 'Linux-6.6.0-rc7'
+> +            compress: Compression algorithm to use, e.g. 'gzip'
+> +    """
+> +    with fsw.add_node('kernel'):
+> +        fsw.property_string('description', args.name)
+> +        fsw.property_string('type', 'kernel_noload')
+> +        fsw.property_string('arch', args.arch)
+> +        fsw.property_string('os', args.os)
+> +        fsw.property_string('compression', args.compress)
+> +        fsw.property('data', data)
+> +        fsw.property_u32('load', 0)
+> +        fsw.property_u32('entry', 0)
+> +
+> +
+> +def finish_fit(fsw, entries):
+> +    """Finish the FIT ready for use
+> +
+> +    Writes the /configurations node and subnodes
+> +
+> +    Args:
+> +        fsw (libfdt.FdtSw): Object to use for writing
+> +        entries (list of tuple): List of configurations:
+> +            str: Description of model
+> +            str: Compatible stringlist
+> +    """
+> +    fsw.end_node()
+> +    seq = 0
+> +    with fsw.add_node('configurations'):
+> +        for model, compat in entries:
+> +            seq += 1
+> +            with fsw.add_node(f'conf-{seq}'):
+> +                fsw.property('compatible', bytes(compat))
+> +                fsw.property_string('description', model)
+> +                fsw.property_string('fdt', f'fdt-{seq}')
+> +                fsw.property_string('kernel', 'kernel')
+> +    fsw.end_node()
+> +
+> +
+> +def compress_data(inf, compress):
+> +    """Compress data using a selected algorithm
+> +
+> +    Args:
+> +        inf (IOBase): Filename containing the data to compress
+> +        compress (str): Compression algorithm, e.g. 'gzip'
+> +
+> +    Return:
+> +        bytes: Compressed data
+> +    """
+> +    if compress == 'none':
+> +        return inf.read()
+> +
+> +    comp = COMP_TOOLS.get(compress)
+> +    if not comp:
+> +        raise ValueError(f"Unknown compression algorithm '{compress}'")
+> +
+> +    with tempfile.NamedTemporaryFile() as comp_fname:
+> +        with open(comp_fname.name, 'wb') as outf:
+> +            done = False
+> +            for tool in comp.tools.split(','):
+> +                try:
+> +                    subprocess.call([tool, '-c'], stdin=inf, stdout=outf)
+> +                    done = True
+> +                    break
+> +                except FileNotFoundError:
+> +                    pass
+> +            if not done:
+> +                raise ValueError(f'Missing tool(s): {comp.tools}\n')
+> +            with open(comp_fname.name, 'rb') as compf:
+> +                comp_data = compf.read()
+> +    return comp_data
+> +
+> +
+> +def output_dtb(fsw, seq, fname, arch, compress):
+> +    """Write out a single devicetree to the FIT
+> +
+> +    Args:
+> +        fsw (libfdt.FdtSw): Object to use for writing
+> +        seq (int): Sequence number (1 for first)
+> +        fmame (str): Filename containing the DTB
+> +        arch: FIT architecture, e.g. 'arm64'
+> +        compress (str): Compressed algorithm, e.g. 'gzip'
+> +
+> +    Returns:
+> +        tuple:
+> +            str: Model name
+> +            bytes: Compatible stringlist
+> +    """
+> +    with fsw.add_node(f'fdt-{seq}'):
+> +        # Get the compatible / model information
+> +        with open(fname, 'rb') as inf:
+> +            data = inf.read()
+> +        fdt = libfdt.FdtRo(data)
+> +        model = fdt.getprop(0, 'model').as_str()
+> +        compat = fdt.getprop(0, 'compatible')
+> +
+> +        fsw.property_string('description', model)
+> +        fsw.property_string('type', 'flat_dt')
+> +        fsw.property_string('arch', arch)
+> +        fsw.property_string('compression', compress)
+> +        fsw.property('compatible', bytes(compat))
+> +
+> +        with open(fname, 'rb') as inf:
+> +            compressed = compress_data(inf, compress)
+> +        fsw.property('data', compressed)
+> +    return model, compat
+> +
+> +
+> +def build_fit(args):
+> +    """Build the FIT from the provided files and arguments
+> +
+> +    Args:
+> +        args (Namespace): Program arguments
+> +
+> +    Returns:
+> +        tuple:
+> +            bytes: FIT data
+> +            int: Number of configurations generated
+> +            size: Total uncompressed size of data
+> +    """
+> +    fsw = libfdt.FdtSw()
+> +    setup_fit(fsw, args.name)
+> +    seq = 0
+> +    size = 0
+> +    entries = []
+> +
+> +    # Handle the kernel
+> +    with open(args.kernel, 'rb') as inf:
+> +        comp_data = compress_data(inf, args.compress)
+> +    size += os.path.getsize(args.kernel)
+> +    write_kernel(fsw, comp_data, args)
+> +
+> +    for path in args.srcdir:
+> +        # Handle devicetree files
+> +        if os.path.isdir(path):
+> +            for dirpath, _, fnames in os.walk(path):
+> +                for fname in fnames:
+> +                    if os.path.splitext(fname)[1] != '.dtb':
+> +                        continue
+> +                    pathname = os.path.join(dirpath, fname)
+> +                    seq += 1
+> +                    size += os.path.getsize(pathname)
+> +                    model, compat = output_dtb(fsw, seq, pathname,
+> +                                               args.arch, args.compress)
+> +                    entries.append([model, compat])
+> +
+> +    finish_fit(fsw, entries)
+> +
+> +    # Include the kernel itself in the returned file count
+> +    return fsw.as_fdt().as_bytearray(), seq + 1, size
+> +
+> +
+> +def run_make_fit():
+> +    """Run the tool's main logic"""
+> +    args = parse_args()
+> +
+> +    out_data, count, size = build_fit(args)
+> +    with open(args.fit, 'wb') as outf:
+> +        outf.write(out_data)
+> +
+> +    ext_fit_size = None
+> +    if args.external:
+> +        mkimage = os.environ.get('MKIMAGE', 'mkimage')
+> +        subprocess.check_call([mkimage, '-E', '-F', args.fit],
+> +                              stdout=subprocess.DEVNULL)
+> +
+> +        with open(args.fit, 'rb') as inf:
+> +            data = inf.read()
+> +        ext_fit = libfdt.FdtRo(data)
+> +        ext_fit_size = ext_fit.totalsize()
+> +
+> +    comp_size = len(out_data)
+> +    print(f'FIT size {comp_size:#x}/{comp_size / 1024 / 1024:.1f} MB', end='')
+> +    if ext_fit_size:
+> +        print(f', header {ext_fit_size:#x}/{ext_fit_size / 1024:.1f} KB', end='')
+> +    print(f', {count} files, uncompressed {size / 1024 / 1024:.1f} MB')
+> +
+> +
+> +if __name__ == "__main__":
+> +    sys.exit(run_make_fit())
+
+-- 
+Regards,
+
+Laurent Pinchart
