@@ -2,116 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF24B80284F
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 23:12:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B577F802851
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 23:15:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234009AbjLCWME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 17:12:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40858 "EHLO
+        id S233945AbjLCWPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 17:15:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233951AbjLCWL7 (ORCPT
+        with ESMTP id S229450AbjLCWPi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 17:11:59 -0500
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E26B1D5
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 14:12:05 -0800 (PST)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-40c0a03eb87so6160455e9.3
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Dec 2023 14:12:05 -0800 (PST)
+        Sun, 3 Dec 2023 17:15:38 -0500
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6436D7;
+        Sun,  3 Dec 2023 14:15:44 -0800 (PST)
+Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-6cb74a527ceso2619716b3a.2;
+        Sun, 03 Dec 2023 14:15:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701641524; x=1702246324; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1701641744; x=1702246544; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=DIsCrkxdL3+P74omPdT684tv0k/I5V1A9sE1nd9EGUY=;
-        b=cxQB0EMBcScTJ6+qad4ZPyrEbXWTVSE34X64H68hHkuTFibL2c89FwAfA9l7li6v/Z
-         QSZ6b5e6L7yvGDJ7ZcAYLW1yvE/aQsk9LHqhhWg5xzyd7++XMlBUbeD0I1sIDW4ccrk0
-         x7Sj9yK003j6F/bnZhWZ75UiBB6kxnn6hQ95iq9fnwukIw/iyFAKV2F7+IPqj+1Kdh6z
-         vvPqaWPcg4cZ4S0Ptj//0Hayi/Arg50R7wfogiNFTwrtV0JSSy/T7J0hpcCW3Q1SzCfo
-         sTMvntbLff/xSlo9N3VYNrNNMQODOocB9AvAAiZwxy6YsabwX03R9VMuBxD4VfVx8Yr4
-         jsHA==
+        bh=Tp4hrKRCxPQEfU5u2oM3FN+8Te5fEZUyhu2s23erNVg=;
+        b=ScaX2Gk2moa4uz1OkmY2GyYQIhHris3i78cwsOarJqLHkIu+Q20irZmLnKt6vRCR09
+         wfzirAGvikCPbWKqKf60D0wxLKBCd9c2mKKyZDoGpgiOcoj/E8i6JN0NAXPpRLWChC85
+         asdo/pGMq10n0yInk9loBlYsmF7kunG0oblii71cX9wP5GcsE5y1qL9yIO1Tg/6/Ibit
+         39FDSEgqcRshg0PiyugzFPJuQFUUqg1CzKuK6BSKqVbTIUKZw1SR4n5oRAXm8qKUHfLd
+         NLEHmRBbeP0x/dJGUOaRz/klCldbz5d0pjsH/uv2ThlPL8as6M987taj5DClmtEEBXFi
+         F2ww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701641524; x=1702246324;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1701641744; x=1702246544;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=DIsCrkxdL3+P74omPdT684tv0k/I5V1A9sE1nd9EGUY=;
-        b=uymJj9+llHjODyxmH7974hEhuX4aMMQVd+SgEh8JfFKiBsUyQeeNeGUXAv7AXoDmJe
-         zrw49hln75GZJk8AMw475H/oGSZbglExk3GOB6bymc/orraRKM+fACkhS723c9pUnLZi
-         cbU6N7vL3hEBXLuXPcDCRqsK2v5IzlvW7syqy90pLbqcArxBucULQUlGE/GgFE8gybsO
-         PZY17NGqZELRIRCABweksQmrsvrtmXHQB5nj4nO2Njfj4pkZ0dUTC7XBxmU+KtU33Jl2
-         Rv8FPGJ78w01DuLiHpGwJvdGhXdNkTlM3t7OQhwTwuVC+C1AXbfTHDymyykDILZza51f
-         P/Tg==
-X-Gm-Message-State: AOJu0YxcIdE84H3D9H1+mkzFPxHkkjH0k81zWfCU1KyQy6diwwBc5UxS
-        LY66/x1zbkOdLlGeVLEMvVg=
-X-Google-Smtp-Source: AGHT+IFNOQfipqO6R9CgGxonCq6Hk37UjxpbaasEIFcin3RUO4wj4xzTs3ZmVl4E4+EMrhj7OOJlJA==
-X-Received: by 2002:a05:600c:4f87:b0:40b:5f03:b3b1 with SMTP id n7-20020a05600c4f8700b0040b5f03b3b1mr978076wmq.211.1701641524194;
-        Sun, 03 Dec 2023 14:12:04 -0800 (PST)
-Received: from localhost.localdomain ([46.248.82.114])
-        by smtp.gmail.com with ESMTPSA id ay10-20020a05600c1e0a00b0040b397787d3sm16589181wmb.24.2023.12.03.14.12.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Dec 2023 14:12:04 -0800 (PST)
-From:   Uros Bizjak <ubizjak@gmail.com>
-To:     x86@kernel.org, linux-kernel@vger.kernel.org
-Cc:     Uros Bizjak <ubizjak@gmail.com>, kernel test robot <lkp@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: [PATCH -tip 3/3] x86/percpu: Avoid sparse warning with cast to named address space
-Date:   Sun,  3 Dec 2023 23:10:54 +0100
-Message-ID: <20231203221151.794615-3-ubizjak@gmail.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231203221151.794615-1-ubizjak@gmail.com>
-References: <20231203221151.794615-1-ubizjak@gmail.com>
+        bh=Tp4hrKRCxPQEfU5u2oM3FN+8Te5fEZUyhu2s23erNVg=;
+        b=Ifdt+fUKQChj8ChnxYHj3YI7aJgrUPWvCuxyJcIa02WVJlE19rnnXWb0VqjUX3R6Ge
+         JrtT2rU/jAIcA74Uy7PavnOy5zGKF++eerabe8X/n1NU3HFZxxYZQ9xDwAPPXf55fyR0
+         W0OL+63NVPExVzlb+UOgNKofOk8mfLc2CyK4HStiWIKuE9TKXTyWImr4iLDHHhwh10Xv
+         L2OR4TYTkL9NsSzHAQ7n+KJe5/wXKNwsDFSBkgM2ok0NPC1ryB1MgB6ueuZCcFtAgEt0
+         6ra7efVM6nErUWkcogJwb/QnB1yzWPxLQNbXLqyMwcIiRLkcsDK4mTWotf/9DsXPngOR
+         4jCw==
+X-Gm-Message-State: AOJu0YwYM8m++cjd90tvz6ILKbOQsk2puUDJbcEEzespTBWUFT5YlVuY
+        +ML/5vk2Su+J3AfgsBz/xUshPVF7iZiYpweQDUc=
+X-Google-Smtp-Source: AGHT+IG9fXsgYtF5Q83KAQ/ZHKML1h06g8JjnFlhn6kr4ka+AxbSdTBrabtFPHHC62d1QbOWDqvRyCFc6ayf+h5bOtc=
+X-Received: by 2002:a17:90a:fa8e:b0:286:811c:c3b5 with SMTP id
+ cu14-20020a17090afa8e00b00286811cc3b5mr930976pjb.2.1701641743977; Sun, 03 Dec
+ 2023 14:15:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231129092759.242641-1-paul.elder@ideasonboard.com>
+ <20231129092759.242641-12-paul.elder@ideasonboard.com> <CAHCN7xLihh_r=zn+2EsqZvsOumeJY52DHmrkVv0+A7Grib8AhQ@mail.gmail.com>
+In-Reply-To: <CAHCN7xLihh_r=zn+2EsqZvsOumeJY52DHmrkVv0+A7Grib8AhQ@mail.gmail.com>
+From:   Adam Ford <aford173@gmail.com>
+Date:   Sun, 3 Dec 2023 16:15:32 -0600
+Message-ID: <CAHCN7xK8prNL8HGUCGpUW0-NLWvCphjGrUz_5D2CpyPFa0vG8Q@mail.gmail.com>
+Subject: Re: [PATCH v4 11/11] media: rkisp1: Add UYVY as an output format
+To:     Paul Elder <paul.elder@ideasonboard.com>
+Cc:     linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        devicetree@vger.kernel.org, kieran.bingham@ideasonboard.com,
+        tomi.valkeinen@ideasonboard.com, umang.jain@ideasonboard.com,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Dafna Hirschfeld <dafna@fastmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        "moderated list:ARM/Rockchip SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Fabio Estevam <festevam@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently sparse does not know about __seg_fs and __seg_fs named
-address space qualifiers. Avoid thousands of warnings about unexpected
-keyword at the end of cast operator by removing named address space
-qualifier from __my_cpu_type() when __CHECKER__ is defined.
+On Sun, Dec 3, 2023 at 3:32=E2=80=AFPM Adam Ford <aford173@gmail.com> wrote=
+:
+>
+> On Wed, Nov 29, 2023 at 3:29=E2=80=AFAM Paul Elder <paul.elder@ideasonboa=
+rd.com> wrote:
+> >
+> > Add support for UYVY as an output format. The uv_swap bit in the
+> > MI_XTD_FORMAT_CTRL register that is used for the NV formats does not
+> > work for packed YUV formats. Thus, UYVY support is implemented via
+> > byte-swapping. This method clearly does not work for implementing
+> > support for YVYU and VYUY.
+> >
+> > Signed-off-by: Paul Elder <paul.elder@ideasonboard.com>
+> > Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> > Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> > ---
+> >  .../platform/rockchip/rkisp1/rkisp1-capture.c | 41 +++++++++++++++++++
+> >  1 file changed, 41 insertions(+)
+>
+>
+> Paul,
+>
+> I tested this patch series from one of the older submissions and I was
+> able to get it working, but I could not get the video to capture to
+> work no matter what resolution or video format I tried.  Each time, I
+> get the same error message:  rkisp1 32e10000.isp: start pipeline
+> failed -32
+>
+> Do you have an example of how you configured the pipeline and how you
+> invoked the video capture?
 
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202310080853.UhMe5iWa-lkp@intel.com/
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
----
- arch/x86/include/asm/percpu.h | 9 +++++++++
- 1 file changed, 9 insertions(+)
+I have it working now but I had to apply the patch [1]  provided by
+Tomi in order for it to work properly
 
-diff --git a/arch/x86/include/asm/percpu.h b/arch/x86/include/asm/percpu.h
-index 7f6e978e21b1..07ee2aedb1f6 100644
---- a/arch/x86/include/asm/percpu.h
-+++ b/arch/x86/include/asm/percpu.h
-@@ -96,6 +96,15 @@
- 
- #endif /* CONFIG_SMP */
- 
-+/*
-+ * FIXME: Drop this hack once sparse learns how to ignore
-+ * __seg_fs and __seg_gs named address space qualifiers.
-+ */
-+#ifdef __CHECKER__
-+#undef __percpu_seg_override
-+#define __percpu_seg_override
-+#endif
-+
- #define __my_cpu_type(var)	typeof(var) __percpu_seg_override
- #define __my_cpu_ptr(ptr)	(__my_cpu_type(*ptr) *)(uintptr_t)(ptr)
- #define __my_cpu_var(var)	(*__my_cpu_ptr(&var))
--- 
-2.42.0
+Can you send another revision with his patch included in the series?
 
+With that, you can add
+
+Tested-by: Adam Ford <aford173@gmail.com> #imx8mp-beacon-kit
+
+Thank you.
+
+adam
+[1] - https://gitlab.com/ideasonboard/nxp/linux/-/commit/d6477fe673b1c0d05d=
+12ae21d8db9a03b07e7fea
+
+>
+> thanks
+>
+> adam
+>
+> >
+> > diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c b/=
+drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c
+> > index a352893308b6..b50b044d22af 100644
+> > --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c
+> > +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c
+> > @@ -97,6 +97,12 @@ static const struct rkisp1_capture_fmt_cfg rkisp1_mp=
+_fmts[] =3D {
+> >                 .uv_swap =3D 0,
+> >                 .write_format =3D RKISP1_MI_CTRL_MP_WRITE_YUVINT,
+> >                 .mbus =3D MEDIA_BUS_FMT_YUYV8_2X8,
+> > +       }, {
+> > +               .fourcc =3D V4L2_PIX_FMT_UYVY,
+> > +               .uv_swap =3D 0,
+> > +               .yc_swap =3D 1,
+> > +               .write_format =3D RKISP1_MI_CTRL_MP_WRITE_YUVINT,
+> > +               .mbus =3D MEDIA_BUS_FMT_YUYV8_2X8,
+> >         }, {
+> >                 .fourcc =3D V4L2_PIX_FMT_YUV422P,
+> >                 .uv_swap =3D 0,
+> > @@ -231,6 +237,13 @@ static const struct rkisp1_capture_fmt_cfg rkisp1_=
+sp_fmts[] =3D {
+> >                 .write_format =3D RKISP1_MI_CTRL_SP_WRITE_INT,
+> >                 .output_format =3D RKISP1_MI_CTRL_SP_OUTPUT_YUV422,
+> >                 .mbus =3D MEDIA_BUS_FMT_YUYV8_2X8,
+> > +       }, {
+> > +               .fourcc =3D V4L2_PIX_FMT_UYVY,
+> > +               .uv_swap =3D 0,
+> > +               .yc_swap =3D 1,
+> > +               .write_format =3D RKISP1_MI_CTRL_SP_WRITE_INT,
+> > +               .output_format =3D RKISP1_MI_CTRL_SP_OUTPUT_YUV422,
+> > +               .mbus =3D MEDIA_BUS_FMT_YUYV8_2X8,
+> >         }, {
+> >                 .fourcc =3D V4L2_PIX_FMT_YUV422P,
+> >                 .uv_swap =3D 0,
+> > @@ -464,6 +477,20 @@ static void rkisp1_mp_config(struct rkisp1_capture=
+ *cap)
+> >                 rkisp1_write(rkisp1, RKISP1_CIF_MI_XTD_FORMAT_CTRL, reg=
+);
+> >         }
+> >
+> > +       /*
+> > +        * U/V swapping with the MI_XTD_FORMAT_CTRL register only works=
+ for
+> > +        * NV12/NV21 and NV16/NV61, so instead use byte swap to support=
+ UYVY.
+> > +        * YVYU and VYUY cannot be supported with this method.
+> > +        */
+> > +       if (rkisp1->info->features & RKISP1_FEATURE_MI_OUTPUT_ALIGN) {
+> > +               reg =3D rkisp1_read(rkisp1, RKISP1_CIF_MI_OUTPUT_ALIGN_=
+FORMAT);
+> > +               if (cap->pix.cfg->yc_swap)
+> > +                       reg |=3D RKISP1_CIF_OUTPUT_ALIGN_FORMAT_MP_BYTE=
+_SWAP_BYTES;
+> > +               else
+> > +                       reg &=3D ~RKISP1_CIF_OUTPUT_ALIGN_FORMAT_MP_BYT=
+E_SWAP_BYTES;
+> > +               rkisp1_write(rkisp1, RKISP1_CIF_MI_OUTPUT_ALIGN_FORMAT,=
+ reg);
+> > +       }
+> > +
+> >         rkisp1_mi_config_ctrl(cap);
+> >
+> >         reg =3D rkisp1_read(rkisp1, RKISP1_CIF_MI_CTRL);
+> > @@ -507,6 +534,20 @@ static void rkisp1_sp_config(struct rkisp1_capture=
+ *cap)
+> >                 rkisp1_write(rkisp1, RKISP1_CIF_MI_XTD_FORMAT_CTRL, reg=
+);
+> >         }
+> >
+> > +       /*
+> > +        * U/V swapping with the MI_XTD_FORMAT_CTRL register only works=
+ for
+> > +        * NV12/NV21 and NV16/NV61, so instead use byte swap to support=
+ UYVY.
+> > +        * YVYU and VYUY cannot be supported with this method.
+> > +        */
+> > +       if (rkisp1->info->features & RKISP1_FEATURE_MI_OUTPUT_ALIGN) {
+> > +               reg =3D rkisp1_read(rkisp1, RKISP1_CIF_MI_OUTPUT_ALIGN_=
+FORMAT);
+> > +               if (cap->pix.cfg->yc_swap)
+> > +                       reg |=3D RKISP1_CIF_OUTPUT_ALIGN_FORMAT_SP_BYTE=
+_SWAP_BYTES;
+> > +               else
+> > +                       reg &=3D ~RKISP1_CIF_OUTPUT_ALIGN_FORMAT_SP_BYT=
+E_SWAP_BYTES;
+> > +               rkisp1_write(rkisp1, RKISP1_CIF_MI_OUTPUT_ALIGN_FORMAT,=
+ reg);
+> > +       }
+> > +
+> >         rkisp1_mi_config_ctrl(cap);
+> >
+> >         mi_ctrl =3D rkisp1_read(rkisp1, RKISP1_CIF_MI_CTRL);
+> > --
+> > 2.39.2
+> >
