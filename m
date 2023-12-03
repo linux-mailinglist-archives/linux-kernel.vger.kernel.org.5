@@ -2,181 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3520C802711
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 20:39:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA8AD802723
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 20:52:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234134AbjLCTiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 14:38:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36920 "EHLO
+        id S230039AbjLCTs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 14:48:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234065AbjLCTik (ORCPT
+        with ESMTP id S234047AbjLCTsr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 14:38:40 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A5C218A
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 11:37:48 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E697C433C8;
-        Sun,  3 Dec 2023 19:37:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701632268;
-        bh=zpmUNVwx3eN/sMGL2XuHjExRiDp+GF7SBd2lpzktD3w=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=R5KWV1kB8aQPhXpkQtSa2PKnVrkqiemTIiCSUaLmtURKjxX2D8lOeaa55ItuqOmHw
-         khmxJIWzIw8Z6tewelPOqzOzL2NxBBjXSmVg3+eC7Q+eKJXijxq1xxP4AVNenxm0aM
-         yZjF1BgbM6qoMKYhEv0xEk5wD7chUM1PQPqZiwUslc/PTxieAOKyd/AcdnDluGFuZL
-         2opSKM6pkP4MrClouQD2AoFgsmkCn5kP91slgWr1S0qE5HtESM7rWR5TF9ztU/47fy
-         zH/h1upJeGpZOxPyaNm0cECPBknF62noMnsYIBD+uBEATPQWD+UdrM/cySgP5NHMRT
-         FtShUmuCqvVbg==
-From:   SeongJae Park <sj@kernel.org>
-To:     cuiyangpei <cuiyangpei@gmail.com>
-Cc:     SeongJae Park <sj@kernel.org>, akpm@linux-foundation.org,
-        damon@lists.linux.dev, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, xiongping1@xiaomi.com
-Subject: Re: [PATCH 1/2] mm/damon/sysfs: Implement recording feature
-Date:   Sun,  3 Dec 2023 19:37:45 +0000
-Message-Id: <20231203193745.57035-1-sj@kernel.org>
+        Sun, 3 Dec 2023 14:48:47 -0500
+Received: from smtp.smtpout.orange.fr (smtp-15.smtpout.orange.fr [80.12.242.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B18A0A0
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 11:48:15 -0800 (PST)
+Received: from pop-os.home ([92.140.202.140])
+        by smtp.orange.fr with ESMTPA
+        id 9sRor2SAvaCTP9sRprMITc; Sun, 03 Dec 2023 20:48:14 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1701632894;
+        bh=TtuieOqB3d5/4LucYB7b5rnfDifiCNhm6IjslDyNUYo=;
+        h=From:To:Cc:Subject:Date;
+        b=MS4EngJtRAiKHXOhDy56XDRMvJvD38MihZwlUI9BM1bvLFwWgSWqc7ARwSYqGx4+M
+         9aUEU2XHOXW/zTqWH9JCKxmxNHJqJOi6GyXM8jZA6tdC9Cm0RpQRZC/vKOThwNyhkc
+         Kk4pdzOxdqhd3Z16ftNUZtK0cgW9wgUHfqwoAFiG2A6AlCS/+r0dl0Bc4h1rKonw3P
+         83axw2HhH/MCu290ZmatMZIFnHJCOjU4SZEmumRe7klgCZ2mtKqQ1s4+9T34CmsWr7
+         54WEOyacF3tDZjfJ25dy/AyUsd4z/ETkLBuXJ6B3tHjWfObNnjv3GCNEWKLe5t5wmg
+         5uqzNG4j/Cthg==
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 03 Dec 2023 20:48:14 +0100
+X-ME-IP: 92.140.202.140
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     Song Liu <song@kernel.org>, Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        linux-raid@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: [PATCH] md/md-multipath: Convert "struct mpconf" to flexible array
+Date:   Sun,  3 Dec 2023 20:48:06 +0100
+Message-Id: <03dd7de1cecdb7084814f2fab300c9bc716aff3e.1701632867.git.christophe.jaillet@wanadoo.fr>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231203054313.GA14316@cuiyangpei>
-References: 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-12-03T13:43:13+08:00 cuiyangpei <cuiyangpei@gmail.com> wrote:
+The 'multipaths' field of 'struct mpconf' can be declared as a flexible
+array.
 
-> On Fri, Dec 01, 2023 at 05:31:12PM +0000, SeongJae Park wrote:
-> > Hi Cuiyangpei,
-> > 
-> > On Fri, 1 Dec 2023 20:25:07 +0800 cuiyangpei <cuiyangpei@gmail.com> wrote:
-> > 
-> > > On Thu, Nov 30, 2023 at 07:44:20PM +0000, SeongJae Park wrote:
-> > > > Hi Cuiyangpei,
-> > > > 
-> > > > On Thu, 30 Nov 2023 17:14:26 +0800 cuiyangpei <cuiyangpei@gmail.com> wrote:
-> > > > 
-> > > > > Hi SeongJae,
-> > > > > 
-> > > > > We also investigated the operation schemes you mentioned, but we don't
-> > > > > think it can fit our needs.
-> > > > > 
-> > > > > On android, user will open many apps and switch between these apps as
-> > > > > needs. We hope to monitor apps' memory access only when they are on
-> > > > > foreground and record the memory access pattern when they are switched
-> > > > > to the background. 
-> > > > > 
-> > > > > When avaliable memory reaches a threshold, we will use these access
-> > > > > patterns with some strategies to recognize those memory that will have
-> > > > > little impact on user experience and to reclaim them proactively.  
-> > > > > 
-> > > > > I'm not sure I have clarified it clearly, if you still have questions
-> > > > > on this, please let us know.
-> > > > 
-> > > > So, to my understanding, you expect applications may keep similar access
-> > > > pattern when they are in foreground, but have a different, less aggressive
-> > > > access pattern in background, and therefore reclaim memory based on the
-> > > > foreground-access pattern, right?
-> > > >
-> > > 
-> > > Different apps may have different access pattern. On android, the apps will
-> > > join in freeze cgroup and be frozen after switch to the background. So we 
-> > > monitor apps' memory access only when they are in foreground.
-> > 
-> > Thank you for this enlightening me :)
-> > 
-> > > > Very interesting idea, thank you for sharing!
-> > > > 
-> > > > Then, yes, I agree current DAMOS might not that helpful for the situation, and
-> > > > this record feature could be useful for your case.
-> > > > 
-> > > > That said, do you really need full recording of the monitoring results?  If
-> > > > not, DAMOS provides DAMOS tried regions feature[1], which allows users get the
-> > > > monitoring results snapshot that include both frequency and recency of all
-> > > > regions in an efficient way.  If single snapshot is not having enough
-> > > > information for you, you could collect multiple snapshots.
-> > > > 
-> > > > You mentioned absence of Python on Android as a blocker of DAMOS use on the
-> > > > previous reply[2], but DAMOS tried regions feature is not depend on tracepoints
-> > > > or Python.
-> > > > 
-> > > > Of course, I think you might already surveyed it but found some problems.
-> > > > Could you please share that in detail if so?
-> > > > 
-> > > DAMOS tried regions feature you mentioned is not fully applicable. It needs to
-> > > apply schemes on regions. There is no available scheme we can use for our use
-> > > case. What we need is to return regions with access frequency and recency to
-> > > userspace for later use.
-> > 
-> > 
-> > Thank you for the answer, I understand your concern.  One of the available
-> > DAMOS action is 'stat'[1], which does nothing but just count the statistic.
-> > Using DAMOS scheme for any access pattern with 'stat' action, you can extract
-> > the access pattern via DAMOS tried regions feature of DAMON sysfs interface,
-> > without making any unnecessary impact to the workload.
-> > 
-> > Quote from [2]:
-> > 
-> >     The expected usage of this directory is investigations of schemes' behaviors,
-> >     and query-like efficient data access monitoring results retrievals. For the
-> >     latter use case, in particular, users can set the action as stat and set the
-> >     access pattern as their interested pattern that they want to query.
-> > 
-> > For example, you could
-> > 
-> > # cd /sys/kernel/mm/damon/admin
-> > #
-> > # # populate directories
-> > # echo 1 > kdamonds/nr_kdamonds; echo 1 > kdamonds/0/contexts/nr_contexts;
-> > # echo 1 > kdamonds/0/contexts/0/schemes/nr_schemes
-> > # cd kdamonds/0/contexts/0/schemes/0
-> > #
-> > # # set the access pattern for any case (max as 2**64 - 1), and action as stat
-> > # echo 0 > access_pattern/sz/min
-> > # echo 18446744073709551615 > access_pattern/sz/max
-> > # echo 0 > access_pattern/nr_accesses/min
-> > # echo 18446744073709551615 > access_pattern/nr_accesses/max
-> > # echo 0 > access_pattern/age/min
-> > # echo 18446744073709551615 > access_pattern/age/max
-> > # echo stat > action
-> > 
-> > And this is how DAMON user-space tool is getting the snapshot with 'damo show'
-> > command[3].
-> > 
-> > Could this be used for your case?  Please ask any question if you have :)
-> > 
-> > [1] https://docs.kernel.org/admin-guide/mm/damon/usage.html#schemes-n
-> > [2] https://docs.kernel.org/admin-guide/mm/damon/usage.html#schemes-n-tried-regions,
-> > [3] https://github.com/awslabs/damo/blob/next/USAGE.md#damo-show
-> 
-> Thank you for your detailed response, it is very helpful to us. We will look into it
-> and contact you if we have any questions.
+The advantages are:
+   - 1 less indirection when accessing to the 'multipaths' array
+   - save 1 pointer in the structure
+   - improve memory usage
+   - give the opportunity to use __counted_by() for additional safety
 
-So glad to hear this.  Please let me know if you have any questions or need any
-help :)
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+On my x86_64 system, with configured with allmodconfig, I have:
+
+Before the change:
+=================
+struct mpconf {
+	struct mddev *             mddev;                /*     0     8 */
+	struct multipath_info *    multipaths;           /*     8     8 */
+	int                        raid_disks;           /*    16     4 */
+
+	/* XXX 4 bytes hole, try to pack */
+
+	spinlock_t                 device_lock;          /*    24    72 */
+	/* --- cacheline 1 boundary (64 bytes) was 32 bytes ago --- */
+	struct list_head           retry_list;           /*    96    16 */
+	mempool_t                  pool;                 /*   112   200 */
+
+	/* size: 312, cachelines: 5, members: 6 */
+	/* sum members: 308, holes: 1, sum holes: 4 */
+	/* last cacheline: 56 bytes */
+};
+
+struct multipath_info {
+	struct md_rdev *           rdev;                 /*     0     8 */
+
+	/* size: 8, cachelines: 1, members: 1 */
+	/* last cacheline: 8 bytes */
+};
+
+size drivers/md/md-multipath.o
+   text	   data	    bss	    dec	    hex	filename
+  12863	   1041	     16	  13920	   3660	drivers/md/md-multipath.o
 
 
-Thanks,
-SJ
+After the change:
+================
+struct mpconf {
+	struct mddev *             mddev;                /*     0     8 */
+	int                        raid_disks;           /*     8     4 */
 
-> 
-> > 
-> > 
-> > Thanks,
-> > SJ
-> > 
-> > > > [1] https://docs.kernel.org/admin-guide/mm/damon/usage.html#schemes-n-tried-regions 
-> > > > [2] https://lore.kernel.org/damon/20231129131315.GB12957@cuiyangpei/
-> > > > 
-> > > > 
-> > > > Thanks,
-> > > > SJ
-> > > > 
-> > > > > 
-> > > > > Thanks.
+	/* XXX 4 bytes hole, try to pack */
+
+	spinlock_t                 device_lock;          /*    16    72 */
+	/* --- cacheline 1 boundary (64 bytes) was 24 bytes ago --- */
+	struct list_head           retry_list;           /*    88    16 */
+	mempool_t                  pool;                 /*   104   200 */
+	/* --- cacheline 4 boundary (256 bytes) was 48 bytes ago --- */
+	struct multipath_info      multipaths[];         /*   304     0 */
+
+	/* size: 304, cachelines: 5, members: 6 */
+	/* sum members: 300, holes: 1, sum holes: 4 */
+	/* last cacheline: 48 bytes */
+};
+
+struct multipath_info {
+	struct md_rdev *           rdev;                 /*     0     8 */
+
+	/* size: 8, cachelines: 1, members: 1 */
+	/* last cacheline: 8 bytes */
+};
+
+size drivers/md/md-multipath.o
+   text	   data	    bss	    dec	    hex	filename
+  12470	   1041	     16	  13527	   34d7	drivers/md/md-multipath.o
+
+
+So:
+  - about 400 bytes of code are saved.
+  - because of the way memory allocation works, 'struct mpconf' really
+    uses 512 bytes of memory when allocated. So the "extra" memory that is
+    allocated (512-304 = 208) can be used to store up to 26 multipaths,
+    for free.
+
+Finally, several places use pointer arithmetic to access the desired
+structure, such as:
+	for (i = 0; i < conf->raid_disks; i++) {
+		tmp = conf->multipaths + i;
+		if (tmp->rdev)
+
+Should this be rewritten as:
+	for (i = 0; i < conf->raid_disks; i++) {
+		if (tmpconf->multipaths[i]->rdev)
+in order to have the compiler be able to check boundaries defined by
+__counted_by()?
+---
+ drivers/md/md-multipath.c | 12 +++---------
+ drivers/md/md-multipath.h |  3 ++-
+ 2 files changed, 5 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/md/md-multipath.c b/drivers/md/md-multipath.c
+index d22276870283..6a23065a65f7 100644
+--- a/drivers/md/md-multipath.c
++++ b/drivers/md/md-multipath.c
+@@ -357,16 +357,13 @@ static int multipath_run (struct mddev *mddev)
+ 	 * should be freed in multipath_free()]
+ 	 */
+ 
+-	conf = kzalloc(sizeof(struct mpconf), GFP_KERNEL);
++	conf = kzalloc(struct_size(conf, multipaths, mddev->raid_disks),
++		       GFP_KERNEL);
+ 	mddev->private = conf;
+ 	if (!conf)
+ 		goto out;
+ 
+-	conf->multipaths = kcalloc(mddev->raid_disks,
+-				   sizeof(struct multipath_info),
+-				   GFP_KERNEL);
+-	if (!conf->multipaths)
+-		goto out_free_conf;
++	conf->raid_disks = mddev->raid_disks;
+ 
+ 	working_disks = 0;
+ 	rdev_for_each(rdev, mddev) {
+@@ -384,7 +381,6 @@ static int multipath_run (struct mddev *mddev)
+ 			working_disks++;
+ 	}
+ 
+-	conf->raid_disks = mddev->raid_disks;
+ 	conf->mddev = mddev;
+ 	spin_lock_init(&conf->device_lock);
+ 	INIT_LIST_HEAD(&conf->retry_list);
+@@ -421,7 +417,6 @@ static int multipath_run (struct mddev *mddev)
+ 
+ out_free_conf:
+ 	mempool_exit(&conf->pool);
+-	kfree(conf->multipaths);
+ 	kfree(conf);
+ 	mddev->private = NULL;
+ out:
+@@ -433,7 +428,6 @@ static void multipath_free(struct mddev *mddev, void *priv)
+ 	struct mpconf *conf = priv;
+ 
+ 	mempool_exit(&conf->pool);
+-	kfree(conf->multipaths);
+ 	kfree(conf);
+ }
+ 
+diff --git a/drivers/md/md-multipath.h b/drivers/md/md-multipath.h
+index b3099e5fc4d7..fb49e151ac94 100644
+--- a/drivers/md/md-multipath.h
++++ b/drivers/md/md-multipath.h
+@@ -8,12 +8,13 @@ struct multipath_info {
+ 
+ struct mpconf {
+ 	struct mddev			*mddev;
+-	struct multipath_info	*multipaths;
+ 	int			raid_disks;
+ 	spinlock_t		device_lock;
+ 	struct list_head	retry_list;
+ 
+ 	mempool_t		pool;
++
++	struct multipath_info	multipaths[] __counted_by(raid_disks);
+ };
+ 
+ /*
+-- 
+2.34.1
+
