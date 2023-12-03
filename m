@@ -2,165 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C672B802512
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 16:17:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D45C4802515
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 16:17:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233619AbjLCPFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 10:05:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38438 "EHLO
+        id S233562AbjLCPPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 10:15:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233593AbjLCPFA (ORCPT
+        with ESMTP id S229450AbjLCPPF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 10:05:00 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52362EA
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 07:05:03 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-54ca43031d1so535528a12.0
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Dec 2023 07:05:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701615901; x=1702220701; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=jX9IpjfH+8GSToZOwniHDWJpuDtqbu6qE49XYEJKFo0=;
-        b=DFOxKVf4qKVLK1Z6Sz14Rfh+wa6P6MfdOTuCvvr1bdph7DrHjRvaUz1kucHJF757eI
-         IahQb855qxPiHOsRk3BpyjN6Kttc91V4+nVmDaWHCOFmqyeGfZj2E5/jiQQtBnINakfY
-         rYxtq9+b5bRMGjhDJiJZZdNV7yRtJidJm0M7QtIdowtWsiL9Yv34T05F/4re59vyZ4io
-         l8mjQ7n60PJgWwVBkgGJUpYG97pWK92SsbQ/FHSuRUVtnybelJCd4hzNSMM1iqVXFCNF
-         9sjw1cLEhFSCjlnBsVA9EMYBZooC1fnNb6y34iur4vgBCZMTeyD8JRdGn1EVbcXnF4+4
-         c9bA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701615901; x=1702220701;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jX9IpjfH+8GSToZOwniHDWJpuDtqbu6qE49XYEJKFo0=;
-        b=TRrw7VZKsRohG0fDFBwv4cuqkkyovBq/WWlYHJbDWqSUgEDwcY7CTjAk3Lme5ZeC/y
-         XiGpK/wsT2AvdXwXpNUdKV6GTMjH5Y6Ry1BMSJuhVyEf+AuRzPi+YijaCEVapcq7KSxP
-         du7KrULxn9jCxEDj/F7y2ygeKPL7X0r542WA/Q24NK4qz0cm0ple1ZqNFCC+EW+jLiOs
-         j4DFfrlexSNAVpSvYENh1/YueWzQ9ujlzkDRcXwzPR+tr11yBgo7UFv01m62oltbuLyc
-         no0brmx51pU6hgqTAvFceLzv12YsJjJYNXoZGfHd0p+fTtS4XnVBLoleYKuCzK45D64e
-         79Zw==
-X-Gm-Message-State: AOJu0YyHb12bB0hi+7IYjK+Znsd39+CyB9e89+ovHuOnxG9WyiBqscRn
-        3u3ereiQs9Bx5964IBf+X+cQXQ==
-X-Google-Smtp-Source: AGHT+IGQ1+iWj4Zm3C0MotW8aRjAqAfAjC4NQ6okmWTo+v8E+ZjrO2wEs5E0CmVkS55FxkOCg4TV7g==
-X-Received: by 2002:a50:cd0d:0:b0:54a:f8d9:8023 with SMTP id z13-20020a50cd0d000000b0054af8d98023mr2461518edi.37.1701615901194;
-        Sun, 03 Dec 2023 07:05:01 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.223.109])
-        by smtp.gmail.com with ESMTPSA id n28-20020a5099dc000000b0054c9d0436a6sm1272080edb.45.2023.12.03.07.04.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 03 Dec 2023 07:05:00 -0800 (PST)
-Message-ID: <6250c57b-6d38-4085-9a79-58e4e5ed1e3d@linaro.org>
-Date:   Sun, 3 Dec 2023 16:04:58 +0100
+        Sun, 3 Dec 2023 10:15:05 -0500
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2070.outbound.protection.outlook.com [40.107.7.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58E10C2;
+        Sun,  3 Dec 2023 07:15:11 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jejWIvalseW87T79Xdyn8CfCfQV5t0DdyNYSDxw4yeFWhKtX+X8yMy3/OjJ4gSKocS4yOwrYrsAUeNZZUOr7z7KWhXOv2W/uJaj7OQsEgYg0rneQzh9uQtRJNiUAlEIF8nbkbXnraB4IjjyN6WlE6hjyzUM2p/FDex635cw0rxQdAVz3L117zIjavs3kgBph/6ZyBxfaSNmxDZLxZO/snXWgaU/1PTz/ik+7TxdEaYH3BzizE8cKhPD7cw6LE4W8uaqfrBMlqlUMzPDEVohlkMgLJsaj2yiT09ziv1bqB/WTiYnl8Bl/6UYOWc3fBRFWfrE3IsLW6FWAJ1GBN3EZZg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=E1KCHI5LSky5YF8CsEt52+OIW3Ex+33j3yCE8gtY1DQ=;
+ b=ee0PzXYdqD7zwvf/5gBh6j0Gm+KzWKUNytEw/WI4WFmnu1LYpt7bPY3YELFIdEVkqAoxP+91/kco4hSAWol4XMZ6ZPBl0P1p8fEJ6fMxkUdUy/Tv5pfI0b2Flp3PVOKEzqiNRtgLF3ZaA2iZsaw761YITL7brNa2aAP8t36NpBWFM2T6Ks17D/gnA8WLEW1cwZa3v6a7/b3VO84y5F+mftKgSUnhKfjxA1+rWz+ebKrQGO95q/U9L2HYuqpGLG5eFmdLl1ZknyBtMwxrPwxdIvYdsZuVGUzyGF74DjNqOu19LlKTv70zur2WCF2CfgAF3KWJniyKpwzuR+LltB0dQw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=E1KCHI5LSky5YF8CsEt52+OIW3Ex+33j3yCE8gtY1DQ=;
+ b=RFwfYZrzelPYwV6B/3ejbIgL0WWXUtgF93yNG3EOwSLoKEM0HE5fScL8WAE0rlzkMlrfJRzOM8nEAwbAgjdduShLxo1KgQ2TJJXbqLQMvSA3ppSQkwmxtsEFKDtS4NtHRZjwurLQVlUOoI0GIk+sDUmjnY27U81lHinj7kF/Q+I=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AM0PR04MB6452.eurprd04.prod.outlook.com (2603:10a6:208:16d::21)
+ by VI1PR04MB9740.eurprd04.prod.outlook.com (2603:10a6:800:1d3::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.22; Sun, 3 Dec
+ 2023 15:15:08 +0000
+Received: from AM0PR04MB6452.eurprd04.prod.outlook.com
+ ([fe80::dd33:f07:7cfd:afa4]) by AM0PR04MB6452.eurprd04.prod.outlook.com
+ ([fe80::dd33:f07:7cfd:afa4%7]) with mapi id 15.20.7068.012; Sun, 3 Dec 2023
+ 15:15:07 +0000
+Date:   Sun, 3 Dec 2023 17:15:03 +0200
+From:   Vladimir Oltean <vladimir.oltean@nxp.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        linux-kernel@vger.kernel.org, Wasim Khan <wasim.khan@nxp.com>,
+        Wei Fang <wei.fang@nxp.com>,
+        Clark Wang <xiaoning.wang@nxp.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH pci] PCI: remove the PCI_VENDOR_ID_NXP alias
+Message-ID: <20231203151503.vgyy7kidk7xhlles@skbuf>
+References: <20231122154241.1371647-1-vladimir.oltean@nxp.com>
+ <20231129233827.GA444332@bhelgaas>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231129233827.GA444332@bhelgaas>
+X-ClientProxiedBy: FR4P281CA0059.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:cc::7) To AM0PR04MB6452.eurprd04.prod.outlook.com
+ (2603:10a6:208:16d::21)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/6] dt-bindings: interrupt-controller: Add support for
- Realtek DHC SoCs
-Content-Language: en-US
-To:     =?UTF-8?B?SmFtZXMgVGFpIFvmiLTlv5fls7Bd?= <james.tai@realtek.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-References: <20231117162709.1096585-1-james.tai@realtek.com>
- <20231117162709.1096585-2-james.tai@realtek.com>
- <c3a98e2c-ba62-4798-a0d0-a8bc1fe5bb6b@linaro.org>
- <7959920acf004f3cb8072de1e17439fa@realtek.com>
- <e1490203387d4c48a5f8c4040ece038a@realtek.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
- cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
- JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
- gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
- J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
- NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
- BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
- vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
- Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
- TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
- S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
- m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
- HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
- XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
- mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
- v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
- cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
- rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
- qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
- aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
- gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
- dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
- NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
- hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
- oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
- H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
- yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
- 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
- 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
- +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
- FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
- 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
- DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
- oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
- 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
- Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
- qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
- /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
- qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
- EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
- KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
- fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <e1490203387d4c48a5f8c4040ece038a@realtek.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM0PR04MB6452:EE_|VI1PR04MB9740:EE_
+X-MS-Office365-Filtering-Correlation-Id: ed4bbf1c-f387-4716-b28a-08dbf412a237
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: k1px7kwtkG3VNsYYajbDBJkpZULzyOODNYYPVQ3PghyjptBsc/uG3yv8b08PBhD42cduErRTsFeF0JPBy7eV4RouMPMkmEE7WFBspNlaz3qZqbvwZjoRZI9YYUMheTg/NDonzpk9nI5EzUxZWynWU02aArk16+eVAjuc5aKECst/xMZqdcVKIjUBVlw0S/rnEgO2yY9qIgvxJs1NhcAWyU8JWiYra8xUFqeHMLeTkIlJA87Y8XqMsL7JLCfdpwKanZ0p1xYz9OjCJA/zrgY56+ewjPbICseC9gViW+GkGesAfBuBi3GCy5T+JId25ssvAFfEL0Axo73KOQhYkpwYedLC7Gtv3oAsNMYZXclfLPTNPJrs2YMt4ohK8AS5ggvVoH9xjzqcBVskFRfcF/jRZZxtP6tXYkoDLVBUZMtNY6o0pfElo90epvbLjz+13NpN/8Hibs9F7FqZRT2woHCVgaO9g0ee0Zsug4hS8FVThGbhfb5q7RUxsuZ6F58gCtKd8WJQpEmVe+4M8WvUgnlhivXzn2HPfh5C7515eMmWzCY=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6452.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(136003)(346002)(39850400004)(376002)(396003)(366004)(230922051799003)(1800799012)(451199024)(64100799003)(186009)(83380400001)(1076003)(86362001)(44832011)(8936002)(4326008)(9686003)(6506007)(6512007)(8676002)(38100700002)(26005)(6486002)(478600001)(966005)(6666004)(316002)(6916009)(66946007)(54906003)(66476007)(66556008)(41300700001)(5660300002)(2906002)(33716001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?yw1QiRbsfUTeQd8QThBnBIMDLPC7bgMJCKp1Fco+FbzCZYn/XNcedoQSM9nZ?=
+ =?us-ascii?Q?EQnl5H6fAPPh8lyIRpuI++5vlGIerEtw3hu0jIlmu4/daOkyndMZnsnNrJiH?=
+ =?us-ascii?Q?rozOt/agSBaNuDGoDwA44Ypq4pHqmPG93H7lxk5nuE6HwIS1EhrNNBSscA+6?=
+ =?us-ascii?Q?qsykGq+/RKToXWFXoBh5Jw26ycPrCN4t8hke0RMOct++bJ8/yKsrNsHHPVW7?=
+ =?us-ascii?Q?GviENf24DusO5QX/Hw8umxPVikFlwiqo0Fo4QEJf8twdgQmDGbs97tM2Wa2T?=
+ =?us-ascii?Q?saI4CC/tRxKK6dhFC5Hibj03nKkZdwLnnxoE+8lU/L5qZoe5syHd9y93uO1f?=
+ =?us-ascii?Q?tH5d174VmP8N7XNKRlGtRzaWq5qyY4RP82TQdETgk8wjlhkkpUzRd48z6HpL?=
+ =?us-ascii?Q?M+4fugUbhDEIV1UNBsE4lXwqt//e/UC+Ykf/L/5FAgk5YIaypJ8rb60e28UC?=
+ =?us-ascii?Q?Uk2CulG5HAOa7pAzsj2darcHH4V2WyWrR8tZIIsfLCEtSDU5xe9rtOUNeOFM?=
+ =?us-ascii?Q?mCjgd4ZwnqHVW1IE9Fmwl9YZIwKBt0r2o/q0ttlP8DLnHvdMT9WTAPk18TD3?=
+ =?us-ascii?Q?rJvO/SnzvDijHNLDX3+Zs0QGgfzEoCgca3FlqayGV1sZYuAhmWNJF+td4B86?=
+ =?us-ascii?Q?oPC12hk9wCWXB9q0+W1F3imxbcAvexTCjemSOoyBadi69U4lLkED1++GLPYj?=
+ =?us-ascii?Q?jRLX2kjl/Z+ZQWluJ46pzpr1bwJZfMKSv8RrWgmUksYCVuK6HEIsExogBPJf?=
+ =?us-ascii?Q?1pQM+Ex+Qrh8LmAMLb2aXaNH4ngl6E7HWl2T62dBH8o4k1ahI+nXUB81r/8H?=
+ =?us-ascii?Q?M23TpFVunwLZ0VutOU5N5nue7D722DnPaFmS1+RH4RfyxRiOHwcQlhyduyMq?=
+ =?us-ascii?Q?miqciMEK1qUSfY0xSXVmj7wWTPKA83xMCyc5PqaQLX0EO2qfhzVuq5CX/AOl?=
+ =?us-ascii?Q?rktjkLw61YDioAlNzooecgKbTz764s+XPiLLhJi7yeXnkAr7tCEXuNZ1tUzr?=
+ =?us-ascii?Q?RvJ3Z9jg7yJk1ULI7WTJzNWQl5UMPR64yPOU8nvSJm9Y+pZGEJLNBCJRW3Xz?=
+ =?us-ascii?Q?aZMlVk8l9PxYlMcSwGJOWaVtKsPNUCqzEw0QavUYI0UIQumvVBgyFkYWU/a8?=
+ =?us-ascii?Q?brBV0ktwbfGfbkNzA9rDfb4/zeIODKbtX6PaRXTqi1P2LjjPVzObwTKKV96H?=
+ =?us-ascii?Q?audsWcVH59ZKJ5klEEmZPS6BhPiMM4zUVAf7ZlrSJ6KtKsmlc1OjwmF6zLU2?=
+ =?us-ascii?Q?UcxH6czgkRzXUDSV48d+/yU6cNWwpdeLwk3ycSl7/KJM/veqMsQ3bE2SPxRR?=
+ =?us-ascii?Q?gPZ17SFeKN52ctowRrW070r6yFdUMM9siFq8Oti/61OHWMIAmppQSeiJDWCX?=
+ =?us-ascii?Q?/n2uJXP6hX2NwOYxCawgVcYGEUyehYkNk7g/9LmxqoXHJruLR8gvrMkdsw7g?=
+ =?us-ascii?Q?upMJoijg6jy3fExEjd4smzbapRGwCLHAeGDHzThW7jVdZ7OKKKf2pdSRB0ah?=
+ =?us-ascii?Q?1VXeigWxKcFCSTE+rYyLIlPAaVjoT6Lq1cROTsoosbEJ2esND1C0LOwq6dHJ?=
+ =?us-ascii?Q?4qVq7tD7zxao3RgL1FZsiLmLetacE55ESBI7tYmtczYKeqexmazjBIrQNa6/?=
+ =?us-ascii?Q?LQ=3D=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ed4bbf1c-f387-4716-b28a-08dbf412a237
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB6452.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Dec 2023 15:15:07.3060
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: fXCJM+EwA/v6HM33DP5Q7xJr+cvXDF/6eCBJPplSiYpxyNC/lS2RGVcm5WmMFlY/VmzJtsy5YC1ZKXJraGsSwg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB9740
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/12/2023 17:18, James Tai [戴志峰] wrote:
-> Hi Krzysztof,
+On Wed, Nov 29, 2023 at 05:38:27PM -0600, Bjorn Helgaas wrote:
+> Hmm.  I can't find the 0x1957 Vendor ID here:
+> https://pcisig.com/membership/member-companies which is supposed to
+> be the authoritative source AFAICS.
 > 
->>>> +
->>>> +  compatible:
->>>> +    enum:
->>>> +      - realtek,rtd1319-intc-iso
->>>> +      - realtek,rtd1319-intc-misc
->>>> +
->>>> +  "#address-cells":
->>>> +    const: 0
->>>> +
->>>> +  interrupt-controller: true
->>>> +
->>>> +  interrupts-extended:
->>>
->>> interrupts instead.
->>>
->>> Anyway, you must describe the items. Why this is not fixed but flexible?
->>> Hardware has different number of pins? That's unlikely.
->>>
->> I will replace it with 'interrupts'. Since our Interrupt controller architecture
->> doesn't involve multiple interrupt sources, using 'interrupts' should suffice.
->>
+> Also, that page lists 0x1131 as "NXP Semiconductors".
 > 
-> Due to changes in hardware design, some peripheral interrupts pin initially connected to the Realtek interrupt controller were redirected to the GIC. 
-> However, the associated fields and statuses in the Realtek interrupt controller registers were not removed.
-> As a result, these interrupts cannot be cleared by peripheral register, and their status clearing is still needing the Realtek interrupt controller driver to manage.
+> There's a contact email on that page if it needs updates.
+
+Sorry, I've no clue what's with that list of PCI SIG member companies.
+Of course a company which no longer has a legal status cannot be a
+member of the PCI SIG.
+
+FWIW, the lspci tool uses this database: https://pci-ids.ucw.cz/
+
+> I don't quite understand the goal here.  The company is now called
+> "NXP", and this patch removes PCI_VENDOR_ID_NXP (the only instance of
+> "NXP" in pci_ids.h) and uses PCI_VENDOR_ID_FREESCALE (which apparently
+> does not exist any more)?
 > 
-> That's why flexibility is necessary.
+> Why would we remove name of the current company and use the name of a
+> company that doesn't exist any more?
 
-This does not explain why this is not fixed per variant.
+Because that company doesn't produce new equipment with the old vendor id.
 
-Best regards,
-Krzysztof
+Aliasing the old vendor id to the current company name is polluting the
+Linux definitions.
 
+The goal, quite simply, is to call the Freescale PCI ID "Freescale".
