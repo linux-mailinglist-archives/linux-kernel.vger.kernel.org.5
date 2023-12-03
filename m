@@ -2,217 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 841CD802281
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 11:26:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B8B4802285
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 11:36:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233345AbjLCK0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 05:26:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38932 "EHLO
+        id S233316AbjLCKeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 05:34:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230256AbjLCK0q (ORCPT
+        with ESMTP id S232736AbjLCKeT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 05:26:46 -0500
-Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF822F3
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 02:26:51 -0800 (PST)
-Message-ID: <af74599e-6384-4bcc-9773-d37b061eabdf@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1701599210;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qrtEfm+ABJ7wZDXABUJNQSB06ZVHq0EffLwzkPVkelA=;
-        b=INAAscK9yQN+V7BQYtKeEpCT1C17m2Hca1J8hrYp/Z1bDiwW77I/C1hELG0uwf+s8Z4oIr
-        5ICSXQIcAgKxXakvUgG553J6mAuRjw75+HroH/joXRoT7C8sx9nNPoZvG2YopXQzbqklLW
-        mKTRmMY4LzeQYS01TV7ECoNApQ7OFQs=
-Date:   Sun, 3 Dec 2023 18:26:20 +0800
+        Sun, 3 Dec 2023 05:34:19 -0500
+Received: from smtp.smtpout.orange.fr (smtp-21.smtpout.orange.fr [80.12.242.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44955F3
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 02:34:24 -0800 (PST)
+Received: from [192.168.1.18] ([92.140.202.140])
+        by smtp.orange.fr with ESMTPA
+        id 9jnnrzqJl1Jmd9jnnrQmaj; Sun, 03 Dec 2023 11:34:22 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1701599662;
+        bh=SpJ1CYeXnFol7k9kyFWf28kKK7//pxX9y3k8iQStw7U=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=iQl/hqLb9G5a3dwXg5GPC1loCFNzjKZuTaENg+/o1uwROK63L5mBXyEUOcbj2GQqb
+         ZvnWY5tyroWmM4F3Gzcz6rIwC+7CWbjJYMZmTF5S4btTCGZqnwc785FmRCX2ZThh2C
+         mgrlgvCc1Z4w1R1wMsg+2ee42qCY7coH63usmo4nQPr0UOOF12gYmwi17Fussts3dh
+         y5HYtTqi4CJV0ZvT5PyeknO5DYAltSgUjz2Dn1AfoooCJsGdrd6feSTvqsTn1zQ59A
+         6d/SKU0kDXhspKyJNXa6BTcPGqTRmcV7iXCLT0dKngGptR++ft8yK2vyTFPZoGXJT4
+         /6NMNvqqk2wOQ==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 03 Dec 2023 11:34:22 +0100
+X-ME-IP: 92.140.202.140
+Message-ID: <87d394e4-e290-41a6-aaf2-92cf6b5ad919@wanadoo.fr>
+Date:   Sun, 3 Dec 2023 11:34:19 +0100
 MIME-Version: 1.0
-Subject: Re: [PATCH v5 7/9] slub: Optimize deactivate_slab()
-Content-Language: en-US
-To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Cc:     vbabka@suse.cz, cl@linux.com, penberg@kernel.org,
-        rientjes@google.com, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, roman.gushchin@linux.dev,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Chengming Zhou <zhouchengming@bytedance.com>
-References: <20231102032330.1036151-1-chengming.zhou@linux.dev>
- <20231102032330.1036151-8-chengming.zhou@linux.dev>
- <CAB=+i9RR-n4q5NU6LFqmhM8ys4kM0SPqwj0zYtr4twu=yYmPPA@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Chengming Zhou <chengming.zhou@linux.dev>
-In-Reply-To: <CAB=+i9RR-n4q5NU6LFqmhM8ys4kM0SPqwj0zYtr4twu=yYmPPA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/3] scsi: aic7xxx: return negative error codes in
+ aic7770_probe()
+To:     Su Hui <suhui@nfschina.com>, dan.carpenter@linaro.org,
+        hare@suse.com, jejb@linux.ibm.com, martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+References: <20231201025955.1584260-1-suhui@nfschina.com>
+ <20231201025955.1584260-4-suhui@nfschina.com>
+Content-Language: fr, en-US
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <20231201025955.1584260-4-suhui@nfschina.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/12/3 17:23, Hyeonggon Yoo wrote:
-> On Thu, Nov 2, 2023 at 12:25 PM <chengming.zhou@linux.dev> wrote:
->>
->> From: Chengming Zhou <zhouchengming@bytedance.com>
->>
->> Since the introduce of unfrozen slabs on cpu partial list, we don't
->> need to synchronize the slab frozen state under the node list_lock.
->>
->> The caller of deactivate_slab() and the caller of __slab_free() won't
->> manipulate the slab list concurrently.
->>
->> So we can get node list_lock in the last stage if we really need to
->> manipulate the slab list in this path.
->>
->> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
->> Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
->> Tested-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
->> ---
->>  mm/slub.c | 79 ++++++++++++++++++-------------------------------------
->>  1 file changed, 26 insertions(+), 53 deletions(-)
->>
->> diff --git a/mm/slub.c b/mm/slub.c
->> index bcb5b2c4e213..d137468fe4b9 100644
->> --- a/mm/slub.c
->> +++ b/mm/slub.c
->> @@ -2468,10 +2468,8 @@ static void init_kmem_cache_cpus(struct kmem_cache *s)
->>  static void deactivate_slab(struct kmem_cache *s, struct slab *slab,
->>                             void *freelist)
->>  {
->> -       enum slab_modes { M_NONE, M_PARTIAL, M_FREE, M_FULL_NOLIST };
->>         struct kmem_cache_node *n = get_node(s, slab_nid(slab));
->>         int free_delta = 0;
->> -       enum slab_modes mode = M_NONE;
->>         void *nextfree, *freelist_iter, *freelist_tail;
->>         int tail = DEACTIVATE_TO_HEAD;
->>         unsigned long flags = 0;
->> @@ -2509,65 +2507,40 @@ static void deactivate_slab(struct kmem_cache *s, struct slab *slab,
->>         /*
->>          * Stage two: Unfreeze the slab while splicing the per-cpu
->>          * freelist to the head of slab's freelist.
->> -        *
->> -        * Ensure that the slab is unfrozen while the list presence
->> -        * reflects the actual number of objects during unfreeze.
->> -        *
->> -        * We first perform cmpxchg holding lock and insert to list
->> -        * when it succeed. If there is mismatch then the slab is not
->> -        * unfrozen and number of objects in the slab may have changed.
->> -        * Then release lock and retry cmpxchg again.
->>          */
->> -redo:
->> -
->> -       old.freelist = READ_ONCE(slab->freelist);
->> -       old.counters = READ_ONCE(slab->counters);
->> -       VM_BUG_ON(!old.frozen);
->> -
->> -       /* Determine target state of the slab */
->> -       new.counters = old.counters;
->> -       if (freelist_tail) {
->> -               new.inuse -= free_delta;
->> -               set_freepointer(s, freelist_tail, old.freelist);
->> -               new.freelist = freelist;
->> -       } else
->> -               new.freelist = old.freelist;
->> -
->> -       new.frozen = 0;
->> +       do {
->> +               old.freelist = READ_ONCE(slab->freelist);
->> +               old.counters = READ_ONCE(slab->counters);
->> +               VM_BUG_ON(!old.frozen);
->> +
->> +               /* Determine target state of the slab */
->> +               new.counters = old.counters;
->> +               new.frozen = 0;
->> +               if (freelist_tail) {
->> +                       new.inuse -= free_delta;
->> +                       set_freepointer(s, freelist_tail, old.freelist);
->> +                       new.freelist = freelist;
->> +               } else {
->> +                       new.freelist = old.freelist;
->> +               }
->> +       } while (!slab_update_freelist(s, slab,
->> +               old.freelist, old.counters,
->> +               new.freelist, new.counters,
->> +               "unfreezing slab"));
->>
->> +       /*
->> +        * Stage three: Manipulate the slab list based on the updated state.
->> +        */
+Le 01/12/2023 à 03:59, Su Hui a écrit :
+> aic7770_config() returns both negative and positive error code.
+> it's better to make aic7770_probe() only return negative error codes.
 > 
-> deactivate_slab() might unconsciously put empty slabs into partial list, like:
+> And the previous patch made ahc_linux_register_host() return negative error
+> codes, which makes sure aic7770_probe() returns negative error codes.
 > 
-> deactivate_slab()                    __slab_free()
-> cmpxchg(), slab's not empty
->                                                cmpxchg(), slab's empty
-> and unfrozen
+> Signed-off-by: Su Hui <suhui@nfschina.com>
+> ---
+>   drivers/scsi/aic7xxx/aic7770_osm.c | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/scsi/aic7xxx/aic7770_osm.c b/drivers/scsi/aic7xxx/aic7770_osm.c
+> index bdd177e3d762..a19cdd87c453 100644
+> --- a/drivers/scsi/aic7xxx/aic7770_osm.c
+> +++ b/drivers/scsi/aic7xxx/aic7770_osm.c
+> @@ -87,17 +87,17 @@ aic7770_probe(struct device *dev)
+>   	sprintf(buf, "ahc_eisa:%d", eisaBase >> 12);
+>   	name = kstrdup(buf, GFP_ATOMIC);
+>   	if (name == NULL)
+> -		return (ENOMEM);
+> +		return -ENOMEM;
+>   	ahc = ahc_alloc(&aic7xxx_driver_template, name);
+>   	if (ahc == NULL)
 
-Hi,
+Unrelated to your fix, but 'name' is leaking here.
 
-Sorry, but I don't get it here how __slab_free() can see the slab empty,
-since the slab is not empty from deactivate_slab() path, and it can't be
-used by any CPU at that time?
+Also, kasprintf() could be used to avoid buf+sprintf()+kstrdup()
 
-Thanks for review!
+The GFP_ATOMIC in the allocation could certainly also be just a GFP_KERNEL.
 
->                                                spin_lock(&n->list_lock)
->                                                (slab's empty but not
-> on partial list,
-> 
-> spin_unlock(&n->list_lock) and return)
-> spin_lock(&n->list_lock)
-> put slab into partial list
-> spin_unlock(&n->list_lock)
-> 
-> IMHO it should be fine in the real world, but just wanted to
-> mention as it doesn't seem to be intentional.
-> 
-> Otherwise it looks good to me!
-> 
->>         if (!new.inuse && n->nr_partial >= s->min_partial) {
->> -               mode = M_FREE;
->> +               stat(s, DEACTIVATE_EMPTY);
->> +               discard_slab(s, slab);
->> +               stat(s, FREE_SLAB);
->>         } else if (new.freelist) {
->> -               mode = M_PARTIAL;
->> -               /*
->> -                * Taking the spinlock removes the possibility that
->> -                * acquire_slab() will see a slab that is frozen
->> -                */
->>                 spin_lock_irqsave(&n->list_lock, flags);
->> -       } else {
->> -               mode = M_FULL_NOLIST;
->> -       }
->> -
->> -
->> -       if (!slab_update_freelist(s, slab,
->> -                               old.freelist, old.counters,
->> -                               new.freelist, new.counters,
->> -                               "unfreezing slab")) {
->> -               if (mode == M_PARTIAL)
->> -                       spin_unlock_irqrestore(&n->list_lock, flags);
->> -               goto redo;
->> -       }
->> -
->> -
->> -       if (mode == M_PARTIAL) {
->>                 add_partial(n, slab, tail);
->>                 spin_unlock_irqrestore(&n->list_lock, flags);
->>                 stat(s, tail);
->> -       } else if (mode == M_FREE) {
->> -               stat(s, DEACTIVATE_EMPTY);
->> -               discard_slab(s, slab);
->> -               stat(s, FREE_SLAB);
->> -       } else if (mode == M_FULL_NOLIST) {
->> +       } else {
->>                 stat(s, DEACTIVATE_FULL);
->>         }
->>  }
->> --
->> 2.20.1
->>
+CJ
+
+> -		return (ENOMEM);
+> +		return -ENOMEM;
+>   	ahc->dev = dev;
+>   	error = aic7770_config(ahc, aic7770_ident_table + edev->id.driver_data,
+>   			       eisaBase);
+>   	if (error != 0) {
+>   		ahc->bsh.ioport = 0;
+>   		ahc_free(ahc);
+> -		return (error);
+> +		return error < 0 ? error : -error;
+>   	}
+>   
+>    	dev_set_drvdata(dev, ahc);
+
