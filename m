@@ -2,55 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ADCE802150
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 07:34:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D5F7802152
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 07:34:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233336AbjLCGeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 01:34:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53978 "EHLO
+        id S233234AbjLCGe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 01:34:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233235AbjLCGeH (ORCPT
+        with ESMTP id S233331AbjLCGeL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 01:34:07 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7CADF3
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 22:33:46 -0800 (PST)
+        Sun, 3 Dec 2023 01:34:11 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D587114
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 22:33:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701585227; x=1733121227;
+  t=1701585228; x=1733121228;
   h=date:from:to:cc:subject:message-id:mime-version;
-  bh=qcGTDv1hL3kyszllXdke3SRrbh/jMXcCd/YcpqMQ4c8=;
-  b=DHLbfPGCbEHsBoqxkecy9LyHHjHxmHfFiHKLBLeiqx8SrZDv25Br5F/D
-   +OzUEQgE834m2Rum5JdRKy+sgA3urDbHMl1mTvMioHXGtWVYgw6LtbOhK
-   tVwdRhcUVKKseQjOBTdQzt+/0YUP6PltcPAWpap8axjQ2HMq5hqTEhP9Z
-   AgVytTVzHKnZ0G3MBqgRMlmhQS/BesOBqbkjcBaMOBCQiTEwde3fCd7/J
-   XOknMnkLyHVUGyzbzSzlAjHAxG8T0lN2GoVGC2UkMg0gTyrmPQkKzKzN2
-   gPbiSK/52IzTt3TuQ9XVjJkjBTVjeL9Wo+yk9KUXthMsjzZ2YeHkDiKfW
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10912"; a="15180426"
+  bh=PdSZvTWOsgnLqAmy0wUew8zktWnmi9+byJvOUyraLuA=;
+  b=lfmeTAQ3rjmKD7k0FJkqjWiLbstCwM4ggpwt6cMw//M6DfI8TfLzX1Yy
+   i2nxiYAOaXLK0ImxsobAatqTNDgbF6uCAbpkMDEbONwPhLrua2hNcaFtx
+   ZMIYFxCbtRGJpJFMFYNNQNWRiAEmKkby76N2e37TU39ss+PdoU+jWaI92
+   AgQurAykNFby37uG53mI9mvBYd7yKQ0wCwVnHriPP1CaZepyuTGHHB4Vq
+   y+qJozT7NzrtjI1ocYpnorWcoP2JYzyyrb60lqqWKPmgz6vNYy2vxPxiP
+   AFIPwxJWSSC31QKNJgsfoqZfaJRNUcCyZbR1zwY/n+9X6fELSfO+nlf8V
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10912"; a="6906541"
 X-IronPort-AV: E=Sophos;i="6.04,246,1695711600"; 
-   d="scan'208";a="15180426"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2023 22:32:49 -0800
+   d="scan'208";a="6906541"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2023 22:32:50 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10912"; a="914081649"
+X-IronPort-AV: E=McAfee;i="6600,9927,10912"; a="770191168"
 X-IronPort-AV: E=Sophos;i="6.04,246,1695711600"; 
-   d="scan'208";a="914081649"
+   d="scan'208";a="770191168"
 Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga001.fm.intel.com with ESMTP; 02 Dec 2023 22:32:46 -0800
+  by orsmga002.jf.intel.com with ESMTP; 02 Dec 2023 22:32:47 -0800
 Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1r9g20-0006Lq-2I;
-        Sun, 03 Dec 2023 06:32:44 +0000
-Date:   Sun, 3 Dec 2023 14:31:45 +0800
+        id 1r9g21-0006MQ-0I;
+        Sun, 03 Dec 2023 06:32:45 +0000
+Date:   Sun, 3 Dec 2023 14:31:46 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     Marco Elver <elver@google.com>
+To:     Sascha Hauer <s.hauer@pengutronix.de>
 Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Subject: drivers/char/tpm/tpm_ibmvtpm.c:126:9: sparse: sparse: incorrect type
- in argument 1 (different address spaces)
-Message-ID: <202312030323.INGDtNZn-lkp@intel.com>
+        Richard Weinberger <richard@nod.at>
+Subject: fs/ubifs/auth.c:30: warning: expecting prototype for
+ ubifs_node_calc_hash(). Prototype was for __ubifs_node_calc_hash() instead
+Message-ID: <202312030417.66c5PwHj-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -64,94 +63,197 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Sascha,
+
+FYI, the error/warning still remains.
+
 tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 head:   815fb87b753055df2d9e50f6cd80eb10235fe3e9
-commit: 90db9dbedd26ce029f3a0f8d2cbd3a142f452408 kasan, powerpc: don't rename memintrinsics if compiler adds prefixes
-date:   8 months ago
-config: powerpc64-randconfig-r112-20231120 (https://download.01.org/0day-ci/archive/20231203/202312030323.INGDtNZn-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-reproduce: (https://download.01.org/0day-ci/archive/20231203/202312030323.INGDtNZn-lkp@intel.com/reproduce)
+commit: d8a22773a12c6d78ee758c9e530f3a488bb7cb29 ubifs: Enable authentication support
+date:   5 years ago
+config: x86_64-randconfig-x051-20230728 (https://download.01.org/0day-ci/archive/20231203/202312030417.66c5PwHj-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231203/202312030417.66c5PwHj-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312030323.INGDtNZn-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312030417.66c5PwHj-lkp@intel.com/
 
-sparse warnings: (new ones prefixed by >>)
-   drivers/char/tpm/tpm_ibmvtpm.c:125:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/char/tpm/tpm_ibmvtpm.c:125:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/char/tpm/tpm_ibmvtpm.c:125:9: sparse: sparse: cast removes address space '__iomem' of expression
->> drivers/char/tpm/tpm_ibmvtpm.c:126:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got void [noderef] __iomem *rtce_buf @@
-   drivers/char/tpm/tpm_ibmvtpm.c:126:9: sparse:     expected void const *
-   drivers/char/tpm/tpm_ibmvtpm.c:126:9: sparse:     got void [noderef] __iomem *rtce_buf
->> drivers/char/tpm/tpm_ibmvtpm.c:126:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got void [noderef] __iomem *rtce_buf @@
-   drivers/char/tpm/tpm_ibmvtpm.c:126:9: sparse:     expected void const *
-   drivers/char/tpm/tpm_ibmvtpm.c:126:9: sparse:     got void [noderef] __iomem *rtce_buf
->> drivers/char/tpm/tpm_ibmvtpm.c:126:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *p @@     got void [noderef] __iomem *rtce_buf @@
-   drivers/char/tpm/tpm_ibmvtpm.c:126:9: sparse:     expected void *p
-   drivers/char/tpm/tpm_ibmvtpm.c:126:9: sparse:     got void [noderef] __iomem *rtce_buf
-   drivers/char/tpm/tpm_ibmvtpm.c:229:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/char/tpm/tpm_ibmvtpm.c:229:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/char/tpm/tpm_ibmvtpm.c:229:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/char/tpm/tpm_ibmvtpm.c:366:30: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const *objp @@     got void [noderef] __iomem *rtce_buf @@
-   drivers/char/tpm/tpm_ibmvtpm.c:366:30: sparse:     expected void const *objp
-   drivers/char/tpm/tpm_ibmvtpm.c:366:30: sparse:     got void [noderef] __iomem *rtce_buf
-   drivers/char/tpm/tpm_ibmvtpm.c:525:43: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void [noderef] __iomem *rtce_buf @@     got void * @@
-   drivers/char/tpm/tpm_ibmvtpm.c:525:43: sparse:     expected void [noderef] __iomem *rtce_buf
-   drivers/char/tpm/tpm_ibmvtpm.c:525:43: sparse:     got void *
-   drivers/char/tpm/tpm_ibmvtpm.c:532:52: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void *ptr @@     got void [noderef] __iomem *rtce_buf @@
-   drivers/char/tpm/tpm_ibmvtpm.c:532:52: sparse:     expected void *ptr
-   drivers/char/tpm/tpm_ibmvtpm.c:532:52: sparse:     got void [noderef] __iomem *rtce_buf
-   drivers/char/tpm/tpm_ibmvtpm.c:538:46: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const *objp @@     got void [noderef] __iomem *rtce_buf @@
-   drivers/char/tpm/tpm_ibmvtpm.c:538:46: sparse:     expected void const *objp
-   drivers/char/tpm/tpm_ibmvtpm.c:538:46: sparse:     got void [noderef] __iomem *rtce_buf
+All warnings (new ones prefixed by >>):
 
-vim +126 drivers/char/tpm/tpm_ibmvtpm.c
+   fs/ubifs/auth.c:158:5: warning: no previous prototype for '__ubifs_shash_final' [-Wmissing-prototypes]
+     158 | int __ubifs_shash_final(const struct ubifs_info *c, struct shash_desc *desc,
+         |     ^~~~~~~~~~~~~~~~~~~
+>> fs/ubifs/auth.c:30: warning: expecting prototype for ubifs_node_calc_hash(). Prototype was for __ubifs_node_calc_hash() instead
+   fs/ubifs/auth.c:80: warning: Function parameter or member 'inhash' not described in 'ubifs_prepare_auth_node'
+   fs/ubifs/auth.c:80: warning: Excess function parameter 'hash' description in 'ubifs_prepare_auth_node'
+   fs/ubifs/auth.o: warning: objtool: ubifs_init_authentication()+0x219: sibling call from callable instruction with modified stack frame
 
-132f7629474424 Ashley Lai        2012-08-22   94  
-132f7629474424 Ashley Lai        2012-08-22   95  /**
-132f7629474424 Ashley Lai        2012-08-22   96   * tpm_ibmvtpm_recv - Receive data after send
-93c12f293f8798 Winkler, Tomas    2016-11-23   97   *
-132f7629474424 Ashley Lai        2012-08-22   98   * @chip:	tpm chip struct
-132f7629474424 Ashley Lai        2012-08-22   99   * @buf:	buffer to read
-93c12f293f8798 Winkler, Tomas    2016-11-23  100   * @count:	size of buffer
-132f7629474424 Ashley Lai        2012-08-22  101   *
-93c12f293f8798 Winkler, Tomas    2016-11-23  102   * Return:
-132f7629474424 Ashley Lai        2012-08-22  103   *	Number of bytes read
-132f7629474424 Ashley Lai        2012-08-22  104   */
-132f7629474424 Ashley Lai        2012-08-22  105  static int tpm_ibmvtpm_recv(struct tpm_chip *chip, u8 *buf, size_t count)
-132f7629474424 Ashley Lai        2012-08-22  106  {
-9e0d39d8a6a0a8 Christophe Ricard 2016-03-31  107  	struct ibmvtpm_dev *ibmvtpm = dev_get_drvdata(&chip->dev);
-132f7629474424 Ashley Lai        2012-08-22  108  	u16 len;
-132f7629474424 Ashley Lai        2012-08-22  109  
-132f7629474424 Ashley Lai        2012-08-22  110  	if (!ibmvtpm->rtce_buf) {
-132f7629474424 Ashley Lai        2012-08-22  111  		dev_err(ibmvtpm->dev, "ibmvtpm device is not ready\n");
-132f7629474424 Ashley Lai        2012-08-22  112  		return 0;
-132f7629474424 Ashley Lai        2012-08-22  113  	}
-132f7629474424 Ashley Lai        2012-08-22  114  
-b5666502700855 Ashley Lai        2012-09-12  115  	len = ibmvtpm->res_len;
-132f7629474424 Ashley Lai        2012-08-22  116  
-b5666502700855 Ashley Lai        2012-09-12  117  	if (count < len) {
-132f7629474424 Ashley Lai        2012-08-22  118  		dev_err(ibmvtpm->dev,
-37ab03414829e5 Jason Gunthorpe   2013-09-14  119  			"Invalid size in recv: count=%zd, crq_size=%d\n",
-b5666502700855 Ashley Lai        2012-09-12  120  			count, len);
-132f7629474424 Ashley Lai        2012-08-22  121  		return -EIO;
-132f7629474424 Ashley Lai        2012-08-22  122  	}
-132f7629474424 Ashley Lai        2012-08-22  123  
-132f7629474424 Ashley Lai        2012-08-22  124  	spin_lock(&ibmvtpm->rtce_lock);
-b5666502700855 Ashley Lai        2012-09-12 @125  	memcpy((void *)buf, (void *)ibmvtpm->rtce_buf, len);
-b5666502700855 Ashley Lai        2012-09-12 @126  	memset(ibmvtpm->rtce_buf, 0, len);
-b5666502700855 Ashley Lai        2012-09-12  127  	ibmvtpm->res_len = 0;
-132f7629474424 Ashley Lai        2012-08-22  128  	spin_unlock(&ibmvtpm->rtce_lock);
-132f7629474424 Ashley Lai        2012-08-22  129  	return len;
-132f7629474424 Ashley Lai        2012-08-22  130  }
-132f7629474424 Ashley Lai        2012-08-22  131  
+Kconfig warnings: (for reference only)
+   WARNING: unmet direct dependencies detected for BACKLIGHT_CLASS_DEVICE
+   Depends on [n]: HAS_IOMEM [=y] && BACKLIGHT_LCD_SUPPORT [=n]
+   Selected by [y]:
+   - ACPI_CMPC [=y] && X86 [=y] && X86_PLATFORM_DEVICES [=y] && ACPI [=y] && INPUT [=y] && (RFKILL [=n] || RFKILL [=n]=n)
+   - SAMSUNG_Q10 [=y] && X86 [=y] && X86_PLATFORM_DEVICES [=y] && ACPI [=y]
 
-:::::: The code at line 126 was first introduced by commit
-:::::: b5666502700855a1eb1a15482005b22478b9460e drivers/char/tpm: remove tasklet and cleanup
 
-:::::: TO: Ashley Lai <adlai@linux.vnet.ibm.com>
-:::::: CC: Kent Yoder <key@linux.vnet.ibm.com>
+vim +30 fs/ubifs/auth.c
+
+49525e5eecca5e Sascha Hauer 2018-09-07   19  
+49525e5eecca5e Sascha Hauer 2018-09-07   20  /**
+49525e5eecca5e Sascha Hauer 2018-09-07   21   * ubifs_node_calc_hash - calculate the hash of a UBIFS node
+49525e5eecca5e Sascha Hauer 2018-09-07   22   * @c: UBIFS file-system description object
+49525e5eecca5e Sascha Hauer 2018-09-07   23   * @node: the node to calculate a hash for
+49525e5eecca5e Sascha Hauer 2018-09-07   24   * @hash: the returned hash
+49525e5eecca5e Sascha Hauer 2018-09-07   25   *
+49525e5eecca5e Sascha Hauer 2018-09-07   26   * Returns 0 for success or a negative error code otherwise.
+49525e5eecca5e Sascha Hauer 2018-09-07   27   */
+49525e5eecca5e Sascha Hauer 2018-09-07   28  int __ubifs_node_calc_hash(const struct ubifs_info *c, const void *node,
+49525e5eecca5e Sascha Hauer 2018-09-07   29  			    u8 *hash)
+49525e5eecca5e Sascha Hauer 2018-09-07  @30  {
+49525e5eecca5e Sascha Hauer 2018-09-07   31  	const struct ubifs_ch *ch = node;
+49525e5eecca5e Sascha Hauer 2018-09-07   32  	SHASH_DESC_ON_STACK(shash, c->hash_tfm);
+49525e5eecca5e Sascha Hauer 2018-09-07   33  	int err;
+49525e5eecca5e Sascha Hauer 2018-09-07   34  
+49525e5eecca5e Sascha Hauer 2018-09-07   35  	shash->tfm = c->hash_tfm;
+49525e5eecca5e Sascha Hauer 2018-09-07   36  	shash->flags = CRYPTO_TFM_REQ_MAY_SLEEP;
+49525e5eecca5e Sascha Hauer 2018-09-07   37  
+49525e5eecca5e Sascha Hauer 2018-09-07   38  	err = crypto_shash_digest(shash, node, le32_to_cpu(ch->len), hash);
+49525e5eecca5e Sascha Hauer 2018-09-07   39  	if (err < 0)
+49525e5eecca5e Sascha Hauer 2018-09-07   40  		return err;
+49525e5eecca5e Sascha Hauer 2018-09-07   41  	return 0;
+49525e5eecca5e Sascha Hauer 2018-09-07   42  }
+49525e5eecca5e Sascha Hauer 2018-09-07   43  
+49525e5eecca5e Sascha Hauer 2018-09-07   44  /**
+49525e5eecca5e Sascha Hauer 2018-09-07   45   * ubifs_hash_calc_hmac - calculate a HMAC from a hash
+49525e5eecca5e Sascha Hauer 2018-09-07   46   * @c: UBIFS file-system description object
+49525e5eecca5e Sascha Hauer 2018-09-07   47   * @hash: the node to calculate a HMAC for
+49525e5eecca5e Sascha Hauer 2018-09-07   48   * @hmac: the returned HMAC
+49525e5eecca5e Sascha Hauer 2018-09-07   49   *
+49525e5eecca5e Sascha Hauer 2018-09-07   50   * Returns 0 for success or a negative error code otherwise.
+49525e5eecca5e Sascha Hauer 2018-09-07   51   */
+49525e5eecca5e Sascha Hauer 2018-09-07   52  static int ubifs_hash_calc_hmac(const struct ubifs_info *c, const u8 *hash,
+49525e5eecca5e Sascha Hauer 2018-09-07   53  				 u8 *hmac)
+49525e5eecca5e Sascha Hauer 2018-09-07   54  {
+49525e5eecca5e Sascha Hauer 2018-09-07   55  	SHASH_DESC_ON_STACK(shash, c->hmac_tfm);
+49525e5eecca5e Sascha Hauer 2018-09-07   56  	int err;
+49525e5eecca5e Sascha Hauer 2018-09-07   57  
+49525e5eecca5e Sascha Hauer 2018-09-07   58  	shash->tfm = c->hmac_tfm;
+49525e5eecca5e Sascha Hauer 2018-09-07   59  	shash->flags = CRYPTO_TFM_REQ_MAY_SLEEP;
+49525e5eecca5e Sascha Hauer 2018-09-07   60  
+49525e5eecca5e Sascha Hauer 2018-09-07   61  	err = crypto_shash_digest(shash, hash, c->hash_len, hmac);
+49525e5eecca5e Sascha Hauer 2018-09-07   62  	if (err < 0)
+49525e5eecca5e Sascha Hauer 2018-09-07   63  		return err;
+49525e5eecca5e Sascha Hauer 2018-09-07   64  	return 0;
+49525e5eecca5e Sascha Hauer 2018-09-07   65  }
+49525e5eecca5e Sascha Hauer 2018-09-07   66  
+49525e5eecca5e Sascha Hauer 2018-09-07   67  /**
+49525e5eecca5e Sascha Hauer 2018-09-07   68   * ubifs_prepare_auth_node - Prepare an authentication node
+49525e5eecca5e Sascha Hauer 2018-09-07   69   * @c: UBIFS file-system description object
+49525e5eecca5e Sascha Hauer 2018-09-07   70   * @node: the node to calculate a hash for
+49525e5eecca5e Sascha Hauer 2018-09-07   71   * @hash: input hash of previous nodes
+49525e5eecca5e Sascha Hauer 2018-09-07   72   *
+49525e5eecca5e Sascha Hauer 2018-09-07   73   * This function prepares an authentication node for writing onto flash.
+49525e5eecca5e Sascha Hauer 2018-09-07   74   * It creates a HMAC from the given input hash and writes it to the node.
+49525e5eecca5e Sascha Hauer 2018-09-07   75   *
+49525e5eecca5e Sascha Hauer 2018-09-07   76   * Returns 0 for success or a negative error code otherwise.
+49525e5eecca5e Sascha Hauer 2018-09-07   77   */
+49525e5eecca5e Sascha Hauer 2018-09-07   78  int ubifs_prepare_auth_node(struct ubifs_info *c, void *node,
+49525e5eecca5e Sascha Hauer 2018-09-07   79  			     struct shash_desc *inhash)
+49525e5eecca5e Sascha Hauer 2018-09-07   80  {
+49525e5eecca5e Sascha Hauer 2018-09-07   81  	SHASH_DESC_ON_STACK(hash_desc, c->hash_tfm);
+49525e5eecca5e Sascha Hauer 2018-09-07   82  	struct ubifs_auth_node *auth = node;
+49525e5eecca5e Sascha Hauer 2018-09-07   83  	u8 *hash;
+49525e5eecca5e Sascha Hauer 2018-09-07   84  	int err;
+49525e5eecca5e Sascha Hauer 2018-09-07   85  
+49525e5eecca5e Sascha Hauer 2018-09-07   86  	hash = kmalloc(crypto_shash_descsize(c->hash_tfm), GFP_NOFS);
+49525e5eecca5e Sascha Hauer 2018-09-07   87  	if (!hash)
+49525e5eecca5e Sascha Hauer 2018-09-07   88  		return -ENOMEM;
+49525e5eecca5e Sascha Hauer 2018-09-07   89  
+49525e5eecca5e Sascha Hauer 2018-09-07   90  	hash_desc->tfm = c->hash_tfm;
+49525e5eecca5e Sascha Hauer 2018-09-07   91  	hash_desc->flags = CRYPTO_TFM_REQ_MAY_SLEEP;
+49525e5eecca5e Sascha Hauer 2018-09-07   92  	ubifs_shash_copy_state(c, inhash, hash_desc);
+49525e5eecca5e Sascha Hauer 2018-09-07   93  
+49525e5eecca5e Sascha Hauer 2018-09-07   94  	err = crypto_shash_final(hash_desc, hash);
+49525e5eecca5e Sascha Hauer 2018-09-07   95  	if (err)
+49525e5eecca5e Sascha Hauer 2018-09-07   96  		goto out;
+49525e5eecca5e Sascha Hauer 2018-09-07   97  
+49525e5eecca5e Sascha Hauer 2018-09-07   98  	err = ubifs_hash_calc_hmac(c, hash, auth->hmac);
+49525e5eecca5e Sascha Hauer 2018-09-07   99  	if (err)
+49525e5eecca5e Sascha Hauer 2018-09-07  100  		goto out;
+49525e5eecca5e Sascha Hauer 2018-09-07  101  
+49525e5eecca5e Sascha Hauer 2018-09-07  102  	auth->ch.node_type = UBIFS_AUTH_NODE;
+49525e5eecca5e Sascha Hauer 2018-09-07  103  	ubifs_prepare_node(c, auth, ubifs_auth_node_sz(c), 0);
+49525e5eecca5e Sascha Hauer 2018-09-07  104  
+49525e5eecca5e Sascha Hauer 2018-09-07  105  	err = 0;
+49525e5eecca5e Sascha Hauer 2018-09-07  106  out:
+49525e5eecca5e Sascha Hauer 2018-09-07  107  	kfree(hash);
+49525e5eecca5e Sascha Hauer 2018-09-07  108  
+49525e5eecca5e Sascha Hauer 2018-09-07  109  	return err;
+49525e5eecca5e Sascha Hauer 2018-09-07  110  }
+49525e5eecca5e Sascha Hauer 2018-09-07  111  
+49525e5eecca5e Sascha Hauer 2018-09-07  112  static struct shash_desc *ubifs_get_desc(const struct ubifs_info *c,
+49525e5eecca5e Sascha Hauer 2018-09-07  113  					 struct crypto_shash *tfm)
+49525e5eecca5e Sascha Hauer 2018-09-07  114  {
+49525e5eecca5e Sascha Hauer 2018-09-07  115  	struct shash_desc *desc;
+49525e5eecca5e Sascha Hauer 2018-09-07  116  	int err;
+49525e5eecca5e Sascha Hauer 2018-09-07  117  
+49525e5eecca5e Sascha Hauer 2018-09-07  118  	if (!ubifs_authenticated(c))
+49525e5eecca5e Sascha Hauer 2018-09-07  119  		return NULL;
+49525e5eecca5e Sascha Hauer 2018-09-07  120  
+49525e5eecca5e Sascha Hauer 2018-09-07  121  	desc = kmalloc(sizeof(*desc) + crypto_shash_descsize(tfm), GFP_KERNEL);
+49525e5eecca5e Sascha Hauer 2018-09-07  122  	if (!desc)
+49525e5eecca5e Sascha Hauer 2018-09-07  123  		return ERR_PTR(-ENOMEM);
+49525e5eecca5e Sascha Hauer 2018-09-07  124  
+49525e5eecca5e Sascha Hauer 2018-09-07  125  	desc->tfm = tfm;
+49525e5eecca5e Sascha Hauer 2018-09-07  126  	desc->flags = CRYPTO_TFM_REQ_MAY_SLEEP;
+49525e5eecca5e Sascha Hauer 2018-09-07  127  
+49525e5eecca5e Sascha Hauer 2018-09-07  128  	err = crypto_shash_init(desc);
+49525e5eecca5e Sascha Hauer 2018-09-07  129  	if (err) {
+49525e5eecca5e Sascha Hauer 2018-09-07  130  		kfree(desc);
+49525e5eecca5e Sascha Hauer 2018-09-07  131  		return ERR_PTR(err);
+49525e5eecca5e Sascha Hauer 2018-09-07  132  	}
+49525e5eecca5e Sascha Hauer 2018-09-07  133  
+49525e5eecca5e Sascha Hauer 2018-09-07  134  	return desc;
+49525e5eecca5e Sascha Hauer 2018-09-07  135  }
+49525e5eecca5e Sascha Hauer 2018-09-07  136  
+49525e5eecca5e Sascha Hauer 2018-09-07  137  /**
+49525e5eecca5e Sascha Hauer 2018-09-07  138   * __ubifs_hash_get_desc - get a descriptor suitable for hashing a node
+49525e5eecca5e Sascha Hauer 2018-09-07  139   * @c: UBIFS file-system description object
+49525e5eecca5e Sascha Hauer 2018-09-07  140   *
+49525e5eecca5e Sascha Hauer 2018-09-07  141   * This function returns a descriptor suitable for hashing a node. Free after use
+49525e5eecca5e Sascha Hauer 2018-09-07  142   * with kfree.
+49525e5eecca5e Sascha Hauer 2018-09-07  143   */
+49525e5eecca5e Sascha Hauer 2018-09-07  144  struct shash_desc *__ubifs_hash_get_desc(const struct ubifs_info *c)
+49525e5eecca5e Sascha Hauer 2018-09-07  145  {
+49525e5eecca5e Sascha Hauer 2018-09-07  146  	return ubifs_get_desc(c, c->hash_tfm);
+49525e5eecca5e Sascha Hauer 2018-09-07  147  }
+49525e5eecca5e Sascha Hauer 2018-09-07  148  
+49525e5eecca5e Sascha Hauer 2018-09-07  149  /**
+49525e5eecca5e Sascha Hauer 2018-09-07  150   * __ubifs_shash_final - finalize shash
+49525e5eecca5e Sascha Hauer 2018-09-07  151   * @c: UBIFS file-system description object
+49525e5eecca5e Sascha Hauer 2018-09-07  152   * @desc: the descriptor
+49525e5eecca5e Sascha Hauer 2018-09-07  153   * @out: the output hash
+49525e5eecca5e Sascha Hauer 2018-09-07  154   *
+49525e5eecca5e Sascha Hauer 2018-09-07  155   * Simple wrapper around crypto_shash_final(), safe to be called with
+49525e5eecca5e Sascha Hauer 2018-09-07  156   * disabled authentication.
+49525e5eecca5e Sascha Hauer 2018-09-07  157   */
+49525e5eecca5e Sascha Hauer 2018-09-07 @158  int __ubifs_shash_final(const struct ubifs_info *c, struct shash_desc *desc,
+49525e5eecca5e Sascha Hauer 2018-09-07  159  			u8 *out)
+49525e5eecca5e Sascha Hauer 2018-09-07  160  {
+49525e5eecca5e Sascha Hauer 2018-09-07  161  	if (ubifs_authenticated(c))
+49525e5eecca5e Sascha Hauer 2018-09-07  162  		return crypto_shash_final(desc, out);
+49525e5eecca5e Sascha Hauer 2018-09-07  163  
+49525e5eecca5e Sascha Hauer 2018-09-07  164  	return 0;
+49525e5eecca5e Sascha Hauer 2018-09-07  165  }
+49525e5eecca5e Sascha Hauer 2018-09-07  166  
+
+:::::: The code at line 30 was first introduced by commit
+:::::: 49525e5eecca5e1b4a83ac217868e8d8b843539f ubifs: Add helper functions for authentication support
+
+:::::: TO: Sascha Hauer <s.hauer@pengutronix.de>
+:::::: CC: Richard Weinberger <richard@nod.at>
 
 -- 
 0-DAY CI Kernel Test Service
