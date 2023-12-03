@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79F5E802144
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 07:32:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F322802145
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 07:32:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233221AbjLCGb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 01:31:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45354 "EHLO
+        id S229551AbjLCGcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 01:32:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjLCGbn (ORCPT
+        with ESMTP id S233074AbjLCGbo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 01:31:43 -0500
+        Sun, 3 Dec 2023 01:31:44 -0500
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57510F3
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 22:31:49 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0650DEB
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 22:31:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701585109; x=1733121109;
+  t=1701585110; x=1733121110;
   h=date:from:to:cc:subject:message-id:mime-version;
-  bh=DBWET4GQiuRfCBb1fB7SdWA1naylfEFV034G8pPqYl0=;
-  b=ZlyvipBpiqKfPbxChLSi5w9KfqGKFpVN26M1xuehSZIghE8ivT3JtUJl
-   cJNqIT1cnw+1AnMG1mx2ujoxLzyfeqOnv2NjN1kchqiB06sO8nzpe+PDi
-   TkuaqUVpXnwm0VePvzLIZu5YqWYrjlXHxqq37XXa39SPvy43h+TDm8hUP
-   W/lK+hDHy+HahxEdxc7FsCa0xQYxbBoenfOp58I6LipjPBb3jIRvP7G7I
-   Qv1w88cTaIZeo4q7UYbd5EGqWt+DmnVr799gqOPow9IP+WJUEkmKDifva
-   nE2YyAhw5vtdvp+gBLUyaM/e4B1ILcqIN3w+l6oySYHdrI2A7slKtzIMJ
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10912"; a="6942685"
+  bh=fKojD+begd9fNLiV+pruerl7tyA7hg+P7ZFniOQjnzY=;
+  b=BNxqbNk5UV02Eaj1WdGL4ntP/JKC75PWoXQi5vX6yaJVToWSKKqZL9Wv
+   cMiVQ9AhrgBpI5FvqzseqVZV6p94f3rAA6dK+2PsutsNJ7v++Fp5PhYYp
+   YqYT0AUcG2MrXt9dZQlgt1ZOW4/3+KySZ5SzEZ0Q99/NdHgKjqbgbv035
+   +xGXbgJNctErGRwJ94H9z54AEwmq1kVEhe6+U3q9CLxH1mEqXOOhrsbYN
+   pOdZBHZkzcEG1lqTc/Ljk1eN69psL2tHXQksjZ8/a98rQSFQ3crQHeF2U
+   Zk9nqXYXPHr0c91s6K3cnd5taksIftWDoXVAH85hdfRxr8oMQo9VqTK3u
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10912"; a="6942693"
 X-IronPort-AV: E=Sophos;i="6.04,246,1695711600"; 
-   d="scan'208";a="6942685"
+   d="scan'208";a="6942693"
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
   by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2023 22:31:48 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10912"; a="893652731"
+X-IronPort-AV: E=McAfee;i="6600,9927,10912"; a="893652740"
 X-IronPort-AV: E=Sophos;i="6.04,246,1695711600"; 
-   d="scan'208";a="893652731"
+   d="scan'208";a="893652740"
 Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
   by orsmga004.jf.intel.com with ESMTP; 02 Dec 2023 22:31:46 -0800
 Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1r9g11-0006KQ-2C;
-        Sun, 03 Dec 2023 06:31:43 +0000
-Date:   Sun, 3 Dec 2023 14:31:37 +0800
+        id 1r9g12-0006Kc-04;
+        Sun, 03 Dec 2023 06:31:44 +0000
+Date:   Sun, 3 Dec 2023 14:31:38 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     Ondrej Zary <linux@rainbow-software.org>
+To:     Ben Skeggs <bskeggs@redhat.com>
 Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: drivers/net/ethernet/dlink/dl2k.c:483:17: sparse: sparse: incorrect
- type in argument 1 (different base types)
-Message-ID: <202312030058.hfZPTXd7-lkp@intel.com>
+        Lyude Paul <lyude@redhat.com>
+Subject: drivers/gpu/drm/nouveau/nvkm/subdev/top/ga100.c:82 ga100_top_parse()
+ warn: inconsistent indenting
+Message-ID: <202312030044.q1SxyCnu-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -65,206 +65,103 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 head:   815fb87b753055df2d9e50f6cd80eb10235fe3e9
-commit: c3f45d322cbd379c46466cc2ecab7e2d719b22ed dl2k: Add support for IP1000A-based cards
-date:   8 years ago
-config: s390-randconfig-r121-20231106 (https://download.01.org/0day-ci/archive/20231203/202312030058.hfZPTXd7-lkp@intel.com/config)
-compiler: s390-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231203/202312030058.hfZPTXd7-lkp@intel.com/reproduce)
+commit: eec3f6dfedc0b8c5aef7619667dee61a77a37e35 drm/nouveau/top: parse device topology right after devinit
+date:   1 year, 1 month ago
+config: i386-randconfig-141-20231105 (https://download.01.org/0day-ci/archive/20231203/202312030044.q1SxyCnu-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231203/202312030044.q1SxyCnu-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312030058.hfZPTXd7-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312030044.q1SxyCnu-lkp@intel.com/
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/net/ethernet/dlink/dl2k.c:483:17: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned short [usertype] value @@     got restricted __le16 [usertype] @@
-   drivers/net/ethernet/dlink/dl2k.c:483:17: sparse:     expected unsigned short [usertype] value
-   drivers/net/ethernet/dlink/dl2k.c:483:17: sparse:     got restricted __le16 [usertype]
-   drivers/net/ethernet/dlink/dl2k.c:366:35: sparse: sparse: restricted __le32 degrades to integer
-   drivers/net/ethernet/dlink/dl2k.c: note: in included file (through arch/s390/include/asm/io.h, include/linux/io.h, include/linux/pci.h, ...):
-   include/asm-generic/io.h:155:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned short [usertype] val @@     got restricted __le16 [usertype] @@
-   include/asm-generic/io.h:155:22: sparse:     expected unsigned short [usertype] val
-   include/asm-generic/io.h:155:22: sparse:     got restricted __le16 [usertype]
-   include/asm-generic/io.h:121:16: sparse: sparse: cast to restricted __le16
-   include/asm-generic/io.h:121:16: sparse: sparse: cast to restricted __le16
-   include/asm-generic/io.h:121:16: sparse: sparse: cast to restricted __le16
-   include/asm-generic/io.h:121:16: sparse: sparse: cast to restricted __le16
-   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:163:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __le32 [usertype] @@
-   include/asm-generic/io.h:163:22: sparse:     expected unsigned int [usertype] val
-   include/asm-generic/io.h:163:22: sparse:     got restricted __le32 [usertype]
-   include/asm-generic/io.h:155:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned short [usertype] val @@     got restricted __le16 [usertype] @@
-   include/asm-generic/io.h:155:22: sparse:     expected unsigned short [usertype] val
-   include/asm-generic/io.h:155:22: sparse:     got restricted __le16 [usertype]
-   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:163:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __le32 [usertype] @@
-   include/asm-generic/io.h:163:22: sparse:     expected unsigned int [usertype] val
-   include/asm-generic/io.h:163:22: sparse:     got restricted __le32 [usertype]
-   include/asm-generic/io.h:155:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned short [usertype] val @@     got restricted __le16 [usertype] @@
-   include/asm-generic/io.h:155:22: sparse:     expected unsigned short [usertype] val
-   include/asm-generic/io.h:155:22: sparse:     got restricted __le16 [usertype]
-   include/asm-generic/io.h:155:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned short [usertype] val @@     got restricted __le16 [usertype] @@
-   include/asm-generic/io.h:155:22: sparse:     expected unsigned short [usertype] val
-   include/asm-generic/io.h:155:22: sparse:     got restricted __le16 [usertype]
-   include/asm-generic/io.h:163:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __le32 [usertype] @@
-   include/asm-generic/io.h:163:22: sparse:     expected unsigned int [usertype] val
-   include/asm-generic/io.h:163:22: sparse:     got restricted __le32 [usertype]
-   include/asm-generic/io.h:163:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __le32 [usertype] @@
-   include/asm-generic/io.h:163:22: sparse:     expected unsigned int [usertype] val
-   include/asm-generic/io.h:163:22: sparse:     got restricted __le32 [usertype]
-   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:163:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __le32 [usertype] @@
-   include/asm-generic/io.h:163:22: sparse:     expected unsigned int [usertype] val
-   include/asm-generic/io.h:163:22: sparse:     got restricted __le32 [usertype]
-   include/asm-generic/io.h:155:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned short [usertype] val @@     got restricted __le16 [usertype] @@
-   include/asm-generic/io.h:155:22: sparse:     expected unsigned short [usertype] val
-   include/asm-generic/io.h:155:22: sparse:     got restricted __le16 [usertype]
-   include/asm-generic/io.h:163:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __le32 [usertype] @@
-   include/asm-generic/io.h:163:22: sparse:     expected unsigned int [usertype] val
-   include/asm-generic/io.h:163:22: sparse:     got restricted __le32 [usertype]
-   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:163:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __le32 [usertype] @@
-   include/asm-generic/io.h:163:22: sparse:     expected unsigned int [usertype] val
-   include/asm-generic/io.h:163:22: sparse:     got restricted __le32 [usertype]
-   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:163:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __le32 [usertype] @@
-   include/asm-generic/io.h:163:22: sparse:     expected unsigned int [usertype] val
-   include/asm-generic/io.h:163:22: sparse:     got restricted __le32 [usertype]
-   include/asm-generic/io.h:155:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned short [usertype] val @@     got restricted __le16 [usertype] @@
-   include/asm-generic/io.h:155:22: sparse:     expected unsigned short [usertype] val
-   include/asm-generic/io.h:155:22: sparse:     got restricted __le16 [usertype]
-   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:163:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __le32 [usertype] @@
-   include/asm-generic/io.h:163:22: sparse:     expected unsigned int [usertype] val
-   include/asm-generic/io.h:163:22: sparse:     got restricted __le32 [usertype]
-   include/asm-generic/io.h:163:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __le32 [usertype] @@
-   include/asm-generic/io.h:163:22: sparse:     expected unsigned int [usertype] val
-   include/asm-generic/io.h:163:22: sparse:     got restricted __le32 [usertype]
-   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:129:16: sparse: sparse: cast to restricted __le32
-   include/asm-generic/io.h:163:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __le32 [usertype] @@
-   include/asm-generic/io.h:163:22: sparse:     expected unsigned int [usertype] val
+smatch warnings:
+drivers/gpu/drm/nouveau/nvkm/subdev/top/ga100.c:82 ga100_top_parse() warn: inconsistent indenting
 
-vim +483 drivers/net/ethernet/dlink/dl2k.c
+vim +82 drivers/gpu/drm/nouveau/nvkm/subdev/top/ga100.c
 
-   448	
-   449	static int
-   450	rio_open (struct net_device *dev)
-   451	{
-   452		struct netdev_private *np = netdev_priv(dev);
-   453		void __iomem *ioaddr = np->ioaddr;
-   454		const int irq = np->pdev->irq;
-   455		int i;
-   456		u16 macctrl;
-   457	
-   458		i = request_irq(irq, rio_interrupt, IRQF_SHARED, dev->name, dev);
-   459		if (i)
-   460			return i;
-   461	
-   462		/* Reset all logic functions */
-   463		dw16(ASICCtrl + 2,
-   464		     GlobalReset | DMAReset | FIFOReset | NetworkReset | HostReset);
-   465		mdelay(10);
-   466	
-   467		rio_set_led_mode(dev);
-   468	
-   469		/* DebugCtrl bit 4, 5, 9 must set */
-   470		dw32(DebugCtrl, dr32(DebugCtrl) | 0x0230);
-   471	
-   472		/* Jumbo frame */
-   473		if (np->jumbo != 0)
-   474			dw16(MaxFrameSize, MAX_JUMBO+14);
-   475	
-   476		alloc_list (dev);
-   477	
-   478		/* Set station address */
-   479		/* 16 or 32-bit access is required by TC9020 datasheet but 8-bit works
-   480		 * too. However, it doesn't work on IP1000A so we use 16-bit access.
-   481		 */
-   482		for (i = 0; i < 3; i++)
- > 483			dw16(StationAddr0 + 2 * i,
-   484			     cpu_to_le16(((u16 *)dev->dev_addr)[i]));
-   485	
-   486		set_multicast (dev);
-   487		if (np->coalesce) {
-   488			dw32(RxDMAIntCtrl, np->rx_coalesce | np->rx_timeout << 16);
-   489		}
-   490		/* Set RIO to poll every N*320nsec. */
-   491		dw8(RxDMAPollPeriod, 0x20);
-   492		dw8(TxDMAPollPeriod, 0xff);
-   493		dw8(RxDMABurstThresh, 0x30);
-   494		dw8(RxDMAUrgentThresh, 0x30);
-   495		dw32(RmonStatMask, 0x0007ffff);
-   496		/* clear statistics */
-   497		clear_stats (dev);
-   498	
-   499		/* VLAN supported */
-   500		if (np->vlan) {
-   501			/* priority field in RxDMAIntCtrl  */
-   502			dw32(RxDMAIntCtrl, dr32(RxDMAIntCtrl) | 0x7 << 10);
-   503			/* VLANId */
-   504			dw16(VLANId, np->vlan);
-   505			/* Length/Type should be 0x8100 */
-   506			dw32(VLANTag, 0x8100 << 16 | np->vlan);
-   507			/* Enable AutoVLANuntagging, but disable AutoVLANtagging.
-   508			   VLAN information tagged by TFC' VID, CFI fields. */
-   509			dw32(MACCtrl, dr32(MACCtrl) | AutoVLANuntagging);
-   510		}
-   511	
-   512		setup_timer(&np->timer, rio_timer, (unsigned long)dev);
-   513		np->timer.expires = jiffies + 1*HZ;
-   514		add_timer (&np->timer);
-   515	
-   516		/* Start Tx/Rx */
-   517		dw32(MACCtrl, dr32(MACCtrl) | StatsEnable | RxEnable | TxEnable);
-   518	
-   519		macctrl = 0;
-   520		macctrl |= (np->vlan) ? AutoVLANuntagging : 0;
-   521		macctrl |= (np->full_duplex) ? DuplexSelect : 0;
-   522		macctrl |= (np->tx_flow) ? TxFlowControlEnable : 0;
-   523		macctrl |= (np->rx_flow) ? RxFlowControlEnable : 0;
-   524		dw16(MACCtrl, macctrl);
-   525	
-   526		netif_start_queue (dev);
-   527	
-   528		dl2k_enable_int(np);
-   529		return 0;
-   530	}
-   531	
+f6df392dddbb9e Ben Skeggs 2021-02-08  23  
+f6df392dddbb9e Ben Skeggs 2021-02-08  24  static int
+eec3f6dfedc0b8 Ben Skeggs 2022-06-01  25  ga100_top_parse(struct nvkm_top *top)
+f6df392dddbb9e Ben Skeggs 2021-02-08  26  {
+f6df392dddbb9e Ben Skeggs 2021-02-08  27  	struct nvkm_subdev *subdev = &top->subdev;
+f6df392dddbb9e Ben Skeggs 2021-02-08  28  	struct nvkm_device *device = subdev->device;
+f6df392dddbb9e Ben Skeggs 2021-02-08  29  	struct nvkm_top_device *info = NULL;
+f6df392dddbb9e Ben Skeggs 2021-02-08  30  	u32 data, type, inst;
+f6df392dddbb9e Ben Skeggs 2021-02-08  31  	int i, n, size = nvkm_rd32(device, 0x0224fc) >> 20;
+f6df392dddbb9e Ben Skeggs 2021-02-08  32  
+f6df392dddbb9e Ben Skeggs 2021-02-08  33  	for (i = 0, n = 0; i < size; i++) {
+f6df392dddbb9e Ben Skeggs 2021-02-08  34  		if (!info) {
+f6df392dddbb9e Ben Skeggs 2021-02-08  35  			if (!(info = nvkm_top_device_new(top)))
+f6df392dddbb9e Ben Skeggs 2021-02-08  36  				return -ENOMEM;
+f6df392dddbb9e Ben Skeggs 2021-02-08  37  			type = ~0;
+f6df392dddbb9e Ben Skeggs 2021-02-08  38  			inst = 0;
+f6df392dddbb9e Ben Skeggs 2021-02-08  39  		}
+f6df392dddbb9e Ben Skeggs 2021-02-08  40  
+f6df392dddbb9e Ben Skeggs 2021-02-08  41  		data = nvkm_rd32(device, 0x022800 + (i * 0x04));
+f6df392dddbb9e Ben Skeggs 2021-02-08  42  		nvkm_trace(subdev, "%02x: %08x\n", i, data);
+f6df392dddbb9e Ben Skeggs 2021-02-08  43  		if (!data && n == 0)
+f6df392dddbb9e Ben Skeggs 2021-02-08  44  			continue;
+f6df392dddbb9e Ben Skeggs 2021-02-08  45  
+f6df392dddbb9e Ben Skeggs 2021-02-08  46  		switch (n++) {
+f6df392dddbb9e Ben Skeggs 2021-02-08  47  		case 0:
+f6df392dddbb9e Ben Skeggs 2021-02-08  48  			type	      = (data & 0x3f000000) >> 24;
+f6df392dddbb9e Ben Skeggs 2021-02-08  49  			inst	      = (data & 0x000f0000) >> 16;
+f6df392dddbb9e Ben Skeggs 2021-02-08  50  			info->fault   = (data & 0x0000007f);
+f6df392dddbb9e Ben Skeggs 2021-02-08  51  			break;
+f6df392dddbb9e Ben Skeggs 2021-02-08  52  		case 1:
+f6df392dddbb9e Ben Skeggs 2021-02-08  53  			info->addr    = (data & 0x00fff000);
+f6df392dddbb9e Ben Skeggs 2021-02-08  54  			info->reset   = (data & 0x0000001f);
+f6df392dddbb9e Ben Skeggs 2021-02-08  55  			break;
+f6df392dddbb9e Ben Skeggs 2021-02-08  56  		case 2:
+49b2dfc0818268 Ben Skeggs 2021-09-17  57  			info->runlist = (data & 0x00fffc00);
+f6df392dddbb9e Ben Skeggs 2021-02-08  58  			info->engine  = (data & 0x00000003);
+f6df392dddbb9e Ben Skeggs 2021-02-08  59  			break;
+f6df392dddbb9e Ben Skeggs 2021-02-08  60  		default:
+f6df392dddbb9e Ben Skeggs 2021-02-08  61  			break;
+f6df392dddbb9e Ben Skeggs 2021-02-08  62  		}
+f6df392dddbb9e Ben Skeggs 2021-02-08  63  
+f6df392dddbb9e Ben Skeggs 2021-02-08  64  		if (data & 0x80000000)
+f6df392dddbb9e Ben Skeggs 2021-02-08  65  			continue;
+f6df392dddbb9e Ben Skeggs 2021-02-08  66  		n = 0;
+f6df392dddbb9e Ben Skeggs 2021-02-08  67  
+f6df392dddbb9e Ben Skeggs 2021-02-08  68  		/* Translate engine type to NVKM engine identifier. */
+f6df392dddbb9e Ben Skeggs 2021-02-08  69  #define I_(T,I) do { info->type = (T); info->inst = (I); } while(0)
+f6df392dddbb9e Ben Skeggs 2021-02-08  70  #define O_(T,I) do { WARN_ON(inst); I_(T, I); } while (0)
+f6df392dddbb9e Ben Skeggs 2021-02-08  71  		switch (type) {
+f6df392dddbb9e Ben Skeggs 2021-02-08  72  		case 0x00000000: O_(NVKM_ENGINE_GR    ,    0); break;
+f6df392dddbb9e Ben Skeggs 2021-02-08  73  		case 0x0000000d: O_(NVKM_ENGINE_SEC2  ,    0); break;
+f6df392dddbb9e Ben Skeggs 2021-02-08  74  		case 0x0000000e: I_(NVKM_ENGINE_NVENC , inst); break;
+f6df392dddbb9e Ben Skeggs 2021-02-08  75  		case 0x00000010: I_(NVKM_ENGINE_NVDEC , inst); break;
+f6df392dddbb9e Ben Skeggs 2021-02-08  76  		case 0x00000012: I_(NVKM_SUBDEV_IOCTRL, inst); break;
+f6df392dddbb9e Ben Skeggs 2021-02-08  77  		case 0x00000013: I_(NVKM_ENGINE_CE    , inst); break;
+f6df392dddbb9e Ben Skeggs 2021-02-08  78  		case 0x00000014: O_(NVKM_SUBDEV_GSP   ,    0); break;
+f6df392dddbb9e Ben Skeggs 2021-02-08  79  		case 0x00000015: O_(NVKM_ENGINE_NVJPG ,    0); break;
+f6df392dddbb9e Ben Skeggs 2021-02-08  80  		case 0x00000016: O_(NVKM_ENGINE_OFA   ,    0); break;
+f6df392dddbb9e Ben Skeggs 2021-02-08  81  		case 0x00000017: O_(NVKM_SUBDEV_FLA   ,    0); break;
+f6df392dddbb9e Ben Skeggs 2021-02-08 @82  			break;
+f6df392dddbb9e Ben Skeggs 2021-02-08  83  		default:
+f6df392dddbb9e Ben Skeggs 2021-02-08  84  			break;
+f6df392dddbb9e Ben Skeggs 2021-02-08  85  		}
+f6df392dddbb9e Ben Skeggs 2021-02-08  86  
+f6df392dddbb9e Ben Skeggs 2021-02-08  87  		nvkm_debug(subdev, "%02x.%d (%8s): addr %06x fault %2d "
+49b2dfc0818268 Ben Skeggs 2021-09-17  88  				   "runlist %6x engine %2d reset %2d\n", type, inst,
+f6df392dddbb9e Ben Skeggs 2021-02-08  89  			   info->type == NVKM_SUBDEV_NR ? "????????" : nvkm_subdev_type[info->type],
+49b2dfc0818268 Ben Skeggs 2021-09-17  90  			   info->addr, info->fault, info->runlist < 0 ? 0 : info->runlist,
+49b2dfc0818268 Ben Skeggs 2021-09-17  91  			   info->engine, info->reset);
+f6df392dddbb9e Ben Skeggs 2021-02-08  92  		info = NULL;
+f6df392dddbb9e Ben Skeggs 2021-02-08  93  	}
+f6df392dddbb9e Ben Skeggs 2021-02-08  94  
+f6df392dddbb9e Ben Skeggs 2021-02-08  95  	return 0;
+f6df392dddbb9e Ben Skeggs 2021-02-08  96  }
+f6df392dddbb9e Ben Skeggs 2021-02-08  97  
+
+:::::: The code at line 82 was first introduced by commit
+:::::: f6df392dddbb9e637b785e7e3d9337a74923dc10 drm/nouveau/top/ga100: initial support
+
+:::::: TO: Ben Skeggs <bskeggs@redhat.com>
+:::::: CC: Ben Skeggs <bskeggs@redhat.com>
 
 -- 
 0-DAY CI Kernel Test Service
