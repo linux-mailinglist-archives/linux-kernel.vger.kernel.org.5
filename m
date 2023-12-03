@@ -2,42 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A12A7802107
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 05:54:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 006C4802104
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 05:54:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233358AbjLCEyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 23:54:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41256 "EHLO
+        id S232931AbjLCEx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 23:53:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233005AbjLCExm (ORCPT
+        with ESMTP id S233027AbjLCExN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 23:53:42 -0500
+        Sat, 2 Dec 2023 23:53:13 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB08E269A
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 20:52:17 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DBDAC433CC;
-        Sun,  3 Dec 2023 04:52:08 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D40461FEF
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 20:52:10 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 130FEC433AB;
+        Sun,  3 Dec 2023 04:52:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701579128;
-        bh=/JIJeJzuxeJJ1m3C+LL4Awa3Szm2BbtZgt962q8P8W8=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=oabxSzuTpg7EPUTh4mYPRrzf8f803JrCuDC6Fd+TM7osPWEXIyPwBgc/lT8nr5cVK
-         tOzgljsD1U8YwqD2xXQCq85ONuca72sefG5P3b9QG4IXtgDUZ1VdKVEkY5x08FqIFv
-         ZyEdi4EW7cudTKzIgwT/LZzVLCAM1gI3z2vPe2mEaWNfNKeINbr8FnLcsg1qPDOT/E
-         nOq0Bwc+aMLP6Mfj+RZju5YDDfrnorFxv6bmn78jmRVa71CW9HRS4n25kw2jzkiEpE
-         yPeUvocZTIhBIwLrdsZzLGrv2yi+3BAPLHkoYAMV3dSGY0GHk9C3kbRggqL1pEmhQ6
-         Ieq7+4QDWa5Mg==
+        s=k20201202; t=1701579130;
+        bh=YeuRHBoPNkVCSPmwTY3GoodEH4nWjPlyCrxZ54RUWYc=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=m9Uuz6pbGx11AvtiMJ4etSscKGbgihUgEEV3+UHNl3bp/VgPl8B+NO1t2xzo3rgEZ
+         U7hmQhb4QZREGGcc0vPGOlZ6Y6eLuSJxpJHu1mQm2lyq9kGaGRuyF5iQbURpAsNhO0
+         I8nf38lV1BZotOFB1+s86bGNOJXpfQ9EP6PcTSC3QkG+x/h16Lu9DIMcLLFoUxqrVP
+         PhlLDGKJw35bLbOnPciW7mLHTwHLcnI2J1XyHA5EGBtYSV+Wo6r/Dqg45cJ3ZGgXYq
+         aFjVFwlFWI81d35Lvcht6Sd0NLVVXMUAHzCQAmiTut7oodWJEiW3X/XsvdXXnx/Vzn
+         Mi3L4RUHJsLbw==
 From:   Bjorn Andersson <andersson@kernel.org>
-To:     agross@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
+To:     agross@kernel.org, konrad.dybcio@linaro.org,
+        mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
         krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Robert Marko <robimarko@gmail.com>
-Subject: Re: [PATCH v2] arm64: dts: qcom: ipq6018: use CPUFreq NVMEM
-Date:   Sat,  2 Dec 2023 20:54:54 -0800
-Message-ID: <170157925830.1717511.5547305071355382777.b4-ty@kernel.org>
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Robert Marko <robimarko@gmail.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: (subset) [PATCH v3 1/2] dt-bindings: clocks: qcom,gcc-ipq8074: allow QMP PCI PHY PIPE clocks
+Date:   Sat,  2 Dec 2023 20:54:55 -0800
+Message-ID: <170157925810.1717511.14579487412126117705.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231021120048.231239-1-robimarko@gmail.com>
-References: <20231021120048.231239-1-robimarko@gmail.com>
+In-Reply-To: <20231013164025.3541606-1-robimarko@gmail.com>
+References: <20231013164025.3541606-1-robimarko@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -52,20 +55,20 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Sat, 21 Oct 2023 14:00:07 +0200, Robert Marko wrote:
-> IPQ6018 comes in multiple SKU-s and some of them dont support all of the
-> OPP-s that are current set, so lets utilize CPUFreq NVMEM to allow only
-> supported OPP-s based on the SoC dynamically.
+On Fri, 13 Oct 2023 18:39:33 +0200, Robert Marko wrote:
+> QMP PCI PHY PIPE clocks are inputs for the GCC clock controller.
+> In order to describe this in DTS, allow passing them as the inputs to GCC.
 > 
-> As an example, IPQ6018 is generaly rated at 1.8GHz but some silicon only
-> goes up to 1.5GHz and is marked as such via an eFuse.
+> This has a benefit that it avoids doing a global matching by name.
 > 
-> [...]
+> 
 
 Applied, thanks!
 
-[1/1] arm64: dts: qcom: ipq6018: use CPUFreq NVMEM
-      commit: 83afcf14edb9217e58837eb119da96d734a4b3b1
+[1/2] dt-bindings: clocks: qcom,gcc-ipq8074: allow QMP PCI PHY PIPE clocks
+      commit: afc4f14be33c50f066392f1e9671473419ba7ded
+[2/2] arm64: dts: qcom: ipq8074: pass QMP PCI PHY PIPE clocks to GCC
+      commit: 591da388c344f934601548cb44f54eab012c6c94
 
 Best regards,
 -- 
