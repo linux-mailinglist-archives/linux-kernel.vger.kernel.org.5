@@ -2,151 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09207802221
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 10:04:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 288ED802225
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 10:06:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233238AbjLCJDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 04:03:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54646 "EHLO
+        id S233233AbjLCJFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 04:05:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjLCJDm (ORCPT
+        with ESMTP id S229450AbjLCJFF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 04:03:42 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 711BACD
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 01:03:48 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D46F0C433C9;
-        Sun,  3 Dec 2023 09:03:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701594227;
-        bh=/m4mHtHGOL+crjtJjRxsecSylMbkbNNuLEgBcv9uqug=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=JqlW4WzzYiQA8IvJvRyJCoQjfBevizDkHFUMPIL9/3WNjpjhZKlu9GgdEXwasOwub
-         T2A34KhkC/iN4CKEYXdCSH92MBvYeONoB2lFvVd27sDIZJXUC30nTuzCrRVAd4ulsr
-         xDuAKAwzL+CEKxRxsnzAjlceMvVOQR97JDax4J61h9p+rHyrbGm9dndqiqwe57ZPhB
-         RPsF17XTsSaZ0FpMC9cPPjlHH2A//ytpPOjpB3xFXfV1txNqnaO5XwjFAdzBMAn0yZ
-         S+sO+hvbyyoWd5kOT112kjTNP+iOGu/cnCJhPW56gWzj4DBCwm3t7DOlHM4+wfQ0YF
-         5Pa5Bx36kH0Ig==
-Received: by mail-oa1-f41.google.com with SMTP id 586e51a60fabf-1f5da5df68eso1820430fac.2;
-        Sun, 03 Dec 2023 01:03:47 -0800 (PST)
-X-Gm-Message-State: AOJu0Yz/SFYQzt2IhlaDya3Ffx8/2aXRmOZeS37H1cLKaUKJBF54Chfc
-        iQSVcE9G872sOP2SoRDgniKFgOHzJO2LNwXq/zw=
-X-Google-Smtp-Source: AGHT+IEK0YYoGdnJuRe2barg1po45t9xG9ZcnazYxO+P3J1BffAVP254RUwPnAMxc9GjG/xjk2K145tZn/vXZ1VjIrA=
-X-Received: by 2002:a05:6871:2314:b0:1fb:75b:12fb with SMTP id
- sf20-20020a056871231400b001fb075b12fbmr2808307oab.77.1701594227210; Sun, 03
- Dec 2023 01:03:47 -0800 (PST)
-MIME-Version: 1.0
-References: <20231125103116.797608-1-masahiroy@kernel.org> <20231125103116.797608-3-masahiroy@kernel.org>
- <20231130003207.GD2513828@dev-arch.thelio-3990X>
-In-Reply-To: <20231130003207.GD2513828@dev-arch.thelio-3990X>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sun, 3 Dec 2023 18:03:10 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATxdJ6b1RYjOin2Ni991LU68rOd=OonRemrardTWMZ=Pg@mail.gmail.com>
-Message-ID: <CAK7LNATxdJ6b1RYjOin2Ni991LU68rOd=OonRemrardTWMZ=Pg@mail.gmail.com>
-Subject: Re: [PATCH 3/3] modpost: move exit(1) for fatal() to modpost.h
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Nicolas Schier <nicolas@fjasle.eu>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Sun, 3 Dec 2023 04:05:05 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15D7FCD
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 01:05:11 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 99F9C1FE00;
+        Sun,  3 Dec 2023 09:05:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1701594308; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QUQkMSGDlg7cS17sfLdWXqdFy/NR/mww5ITfoMP17/k=;
+        b=MUHxxr0jTRD9DtwmJH8DPIEFptN3ZcGIOvjv0knucgPk6GqShNRLY7rwYhhrXgumwQ9RHO
+        wKybs2urmm7bm/8e2c6DH8kdeBmQ+fTloyeyGDwV5jB5AqkuivnQPxEd5FHSz++DhX0ivL
+        FWAZwEgHkhCzqHY8VOpN8QwgD5u9fr0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1701594308;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QUQkMSGDlg7cS17sfLdWXqdFy/NR/mww5ITfoMP17/k=;
+        b=HnFXMDV7oKuI5ZhUK59xQ2ytTbqDHwyforkjfV5WVjheA6zWF0sLLkC22PzTFTSaIcVeFP
+        hFCSVQ5exBtJ2uDA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 257D91399F;
+        Sun,  3 Dec 2023 09:05:08 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+        by imap1.dmz-prg2.suse.org with ESMTPSA
+        id cGUJB8REbGWoTAAAD6G6ig
+        (envelope-from <tiwai@suse.de>); Sun, 03 Dec 2023 09:05:08 +0000
+Date:   Sun, 03 Dec 2023 10:05:07 +0100
+Message-ID: <878r6bac70.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Pascal =?ISO-8859-1?Q?No=EBl?= <pascal@pascalcompiles.com>
+Cc:     perex@perex.cz, tiwai@suse.com, kailang@realtek.com,
+        sbinding@opensource.cirrus.com, luke@ljones.dev,
+        andy.chi@canonical.com, shenghao-ding@ti.com, l.guzenko@web.de,
+        ruinairas1992@gmail.com, yangyuchi66@gmail.com,
+        vitalyr@opensource.cirrus.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ALSA: hda/realtek: Apply quirk for ASUS UM3504DA
+In-Reply-To: <20231202013744.12369-1-pascal@pascalcompiles.com>
+References: <20231202013744.12369-1-pascal@pascalcompiles.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
+Authentication-Results: smtp-out2.suse.de;
+        none
+X-Spam-Level: 
+X-Spamd-Result: default: False [-0.35 / 50.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         TO_DN_SOME(0.00)[];
+         RCVD_COUNT_THREE(0.00)[3];
+         NEURAL_HAM_SHORT(-0.20)[-1.000];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         BAYES_HAM(-0.05)[59.87%];
+         ARC_NA(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com,web.de];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         NEURAL_HAM_LONG(-1.00)[-1.000];
+         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+         RCPT_COUNT_TWELVE(0.00)[14];
+         MID_CONTAINS_FROM(1.00)[];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FREEMAIL_CC(0.00)[perex.cz,suse.com,realtek.com,opensource.cirrus.com,ljones.dev,canonical.com,ti.com,web.de,gmail.com,alsa-project.org,vger.kernel.org];
+         RCVD_TLS_ALL(0.00)[]
+X-Spam-Score: -0.35
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 30, 2023 at 9:32=E2=80=AFAM Nathan Chancellor <nathan@kernel.or=
-g> wrote:
->
-> On Sat, Nov 25, 2023 at 07:31:16PM +0900, Masahiro Yamada wrote:
-> > fatal() never returns, but compilers are not aware of this fact because
-> > exit(1) is called within the modpost_log() definition.
-> >
-> > Move exit(1) to the fatal() macro so that compilers can identify
-> > unreachable code flows.
-> >
-> > Remove the initializer for 'taddr' in section_rel(), as compilers now
-> > recognize this is not an uninitialized bug.
-> >
-> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
->
-> While I did not see any warnings when testing, it seems like this patch
-> should come before patch 2 to avoid any potential problems from dropping
-> the unreachable code (since the compiler won't be able to infer that
-> fatal() is __noreturn without this change); doesn't really matter though
-> so:
+On Sat, 02 Dec 2023 02:37:44 +0100,
+Pascal Noël wrote:
+> 
+> The ASUS UM3504DA uses a Realtek HDA codec and two CS35L41 amplifiers via I2C.
+> Apply existing quirk to model.
+> 
+> Signed-off-by: Pascal Noël <pascal@pascalcompiles.com>
+
+Thanks, applied.
 
 
-My eyes spotted 2/3, but I can swap the patch order
-and rephase the patch description because clang can
-detect the unreachable code.
-
-
-
-
-
-
-
-
-
-
-
-
-
-> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
->
-> > ---
-> >
-> >  scripts/mod/modpost.c | 4 +---
-> >  scripts/mod/modpost.h | 2 +-
-> >  2 files changed, 2 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
-> > index 013fc5031bc7..696c583a14ec 100644
-> > --- a/scripts/mod/modpost.c
-> > +++ b/scripts/mod/modpost.c
-> > @@ -84,8 +84,6 @@ void modpost_log(enum loglevel loglevel, const char *=
-fmt, ...)
-> >       vfprintf(stderr, fmt, arglist);
-> >       va_end(arglist);
-> >
-> > -     if (loglevel =3D=3D LOG_FATAL)
-> > -             exit(1);
-> >       if (loglevel =3D=3D LOG_ERROR)
-> >               error_occurred =3D true;
-> >  }
-> > @@ -1415,7 +1413,7 @@ static void section_rel(struct module *mod, struc=
-t elf_info *elf,
-> >
-> >       for (rel =3D start; rel < stop; rel++) {
-> >               Elf_Sym *tsym;
-> > -             Elf_Addr taddr =3D 0, r_offset;
-> > +             Elf_Addr taddr, r_offset;
-> >               unsigned int r_type, r_sym;
-> >               void *loc;
-> >
-> > diff --git a/scripts/mod/modpost.h b/scripts/mod/modpost.h
-> > index 9fe974dc1a52..aaa67b24775e 100644
-> > --- a/scripts/mod/modpost.h
-> > +++ b/scripts/mod/modpost.h
-> > @@ -215,4 +215,4 @@ modpost_log(enum loglevel loglevel, const char *fmt=
-, ...);
-> >   */
-> >  #define warn(fmt, args...)   modpost_log(LOG_WARN, fmt, ##args)
-> >  #define error(fmt, args...)  modpost_log(LOG_ERROR, fmt, ##args)
-> > -#define fatal(fmt, args...)  modpost_log(LOG_FATAL, fmt, ##args)
-> > +#define fatal(fmt, args...)  do { modpost_log(LOG_FATAL, fmt, ##args);=
- exit(1); } while (1)
-> > --
-> > 2.40.1
-> >
->
-
-
---=20
-Best Regards
-Masahiro Yamada
+Takashi
