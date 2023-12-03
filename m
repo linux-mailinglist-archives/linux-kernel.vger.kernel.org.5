@@ -2,46 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61BFD8020C4
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 05:52:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59D398020BF
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 05:52:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232856AbjLCEvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 23:51:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40746 "EHLO
+        id S232913AbjLCEvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 23:51:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjLCEvc (ORCPT
+        with ESMTP id S229450AbjLCEve (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 23:51:32 -0500
+        Sat, 2 Dec 2023 23:51:34 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E61DE114
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 20:51:38 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE563C433C9;
-        Sun,  3 Dec 2023 04:51:37 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD74D114
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 20:51:40 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73C80C433CD;
+        Sun,  3 Dec 2023 04:51:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701579098;
-        bh=PMGhfJKILDRGAquDVmC5ECWv+atrPXjObH+Arp7fiXs=;
+        s=k20201202; t=1701579100;
+        bh=ryt2h7SkbYQcn12xnCcjVqqS+Lbdhr5WerU/Zo8DJWY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PmwWiRZf06siAYWOH7J/IWFLdXE5GLQpOuligc/9BJo83QdqQ+haOxC9f127YvjNG
-         Jym4dGZ/000RjENSxEzvvxB3Y+Rueu4Tyr6/Nr3M9+rtGJoHsEriy6t/r95CX49b2i
-         nM5ET0MpaiRJw+DLzEzU1N1lT/93y9OWnNBmXEhw68JsbbtjyNUbJ2BqhAYhSNhM4E
-         dTGJFwI2CqQRgHFM4JsywfR9fI+Qfz8T6jurfrrJfYgphqGmPERmjwp6IelVOIKF8K
-         DQRIwWEBcE+FXMMG8VX8YNCnJ8kddmr6l/TaYnUdB5CW0nfGjInZL0gy+DKR6S0vn3
-         VznCPgpt1lH3g==
+        b=OfmrlXWlhbIE7h6iKf2cASBdiB80r7n697VPkclNShPdg/V9W7MCrF86RpO8cy3en
+         sof730zloJV/UmoDUtxDSGQ/nTon0w+LgiWxCpG4y1qn5W/dS0icFU5EbSTDJWuSlJ
+         jtKKDyC9EIK/INYJx+13z7evbfw67J/LQFDPUsZAQaZ4SST1IWIwlhjj+Q3FKXNCLo
+         56oj4/EXlAZ8qnVfMwzjXpBhlSsVhtBWPB4ZxsBz6SgJP8Rl0PPlSQqgrcoxBH+k/C
+         gOAduZNCwFotwCQu6W0BVlJzFjMwSXiYmpANvxucu9qfG1QFuc8yBsIlHuP8w6Pq6+
+         lMCOJU9LKxN/g==
 From:   Bjorn Andersson <andersson@kernel.org>
 To:     Andy Gross <agross@kernel.org>,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Abel Vesa <abel.vesa@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Avinash Philip <quic_avinashp@quicinc.com>,
-        Unnathi Chalicheemala <quic_uchalich@quicinc.com>,
-        Satya Durga Srinivasu Prabhala <quic_satyap@quicinc.com>
-Subject: Re: [PATCH v2] soc: qcom: llcc: Fix LLCC_TRP_ATTR2_CFGn offset
-Date:   Sat,  2 Dec 2023 20:54:29 -0800
-Message-ID: <170157925799.1717511.7839634771829753246.b4-ty@kernel.org>
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        =?UTF-8?q?Andr=C3=A9=20Apitzsch?= <git@apitzsch.eu>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org
+Subject: Re: [PATCH v2] arm64: dts: qcom: msm8939-longcheer-l9100: Add proximity-near-level
+Date:   Sat,  2 Dec 2023 20:54:31 -0800
+Message-ID: <170157925819.1717511.9438209599308488014.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231012160509.184891-1-abel.vesa@linaro.org>
-References: <20231012160509.184891-1-abel.vesa@linaro.org>
+In-Reply-To: <20231126-bqm5_prox-v2-1-b7defc3979ac@apitzsch.eu>
+References: <20231126-bqm5_prox-v2-1-b7defc3979ac@apitzsch.eu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -56,15 +57,16 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Thu, 12 Oct 2023 19:05:09 +0300, Abel Vesa wrote:
-> According to documentation, it has increments of 4, not 8.
+On Sun, 26 Nov 2023 22:46:20 +0100, André Apitzsch wrote:
+> Consider an object near to the sensor when their distance is about 4 cm
+> or below.
 > 
 > 
 
 Applied, thanks!
 
-[1/1] soc: qcom: llcc: Fix LLCC_TRP_ATTR2_CFGn offset
-      commit: 03970d2fa35497d5a5812d67ce94ca5836335159
+[1/1] arm64: dts: qcom: msm8939-longcheer-l9100: Add proximity-near-level
+      commit: fbe0870c48ac84f117860096048055a4f078a976
 
 Best regards,
 -- 
