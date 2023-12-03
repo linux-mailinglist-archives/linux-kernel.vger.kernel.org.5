@@ -2,77 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE75B802587
+	by mail.lfdr.de (Postfix) with ESMTP id 03A06802585
 	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 17:35:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233682AbjLCQcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 11:32:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57714 "EHLO
+        id S233693AbjLCQdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 11:33:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjLCQco (ORCPT
+        with ESMTP id S229450AbjLCQdl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 11:32:44 -0500
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B93FC0
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 08:32:48 -0800 (PST)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-a1a0fedd3a1so268523666b.1
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Dec 2023 08:32:48 -0800 (PST)
+        Sun, 3 Dec 2023 11:33:41 -0500
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAE73EA
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 08:33:47 -0800 (PST)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-a1b68ae40efso44955266b.0
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Dec 2023 08:33:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701621167; x=1702225967; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=Sw/OQA/5t6AP/KeqDlpGdFAhMqoZGJl2vX8fKi94LXU=;
-        b=nAfqwfs8MQK1I4pvaUhBBCP+93hW3kJE11Nm3j7Xu40Iv1VoAErnlhjoCYQKer9COW
-         ZnJo2mv15Pls4pt3Sm0ekK52bjFOuFHbssZtuZZTuWN9DjunwNE+G72U7Thu5v74dl8r
-         NS1wHYOGdBMfPFVuobeRh0lwjgLvbpOcKiVaU0GZ2pq70CTBVswN+/1gCaH0miSOfKdA
-         2GyoxK2Xf/P7YiPozIenOFp+uw1tIl1GRKvKu7quY9ZcJygr6xCPiIzKWb5Q24bIEQh/
-         YOIV1lI3vKIehvkljOVsXTjAmZtoHaYcx620p3z/nnWgB8Pivr9noQWOUcgtYT7VWykf
-         zw7A==
+        d=linaro.org; s=google; t=1701621226; x=1702226026; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=LD4myhxFv1aMiSYLqC9ASJD82XriEC9rJCJ/sLaBe4E=;
+        b=X0ZqQTffpaM9SJBceY6UfPdVbXUrB4a2NUZ9NP4T+cfsVtYiyns8D/KZvYIbBmXsUc
+         C4g5X9VIrEpkQ/vDXTHZXf06XtWsdEmH0bHcD9zixGuy/WGEnRfL5PBRSbHFTFUR+GB8
+         kQFQNR7QUOfhIeh2i4Thqvu59PmnKmsSU9NKwUbVKZ/xLaPJHO2FYmbKAd98czDmFZCt
+         5CUNjcz6g2vhnGM5b6EwscoSh9S+cKq0dyJxKhSbGoZ8hu3byMDo5A+u5v1AlFrgHpSh
+         tFEzhIcguK8uZw5CWl3nRHCMFbGYiDq+0R+AH2irke3UziVyc3RXwBjC0pPJ0u+l9PX0
+         dDuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701621167; x=1702225967;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Sw/OQA/5t6AP/KeqDlpGdFAhMqoZGJl2vX8fKi94LXU=;
-        b=itezRUxanXVYsGOSW5EtMZjs1f1VdjdxIMZEPacIeLqmVsXy0gY6MX/jK+L9o2G/vr
-         94YY1nsq/EYNb735cytaJhbYbb05+7kiPwq7VTrk0mSUxsb1WZOfIK7QOpPvJIXsVCt0
-         /i7qYjGR/5QhkpbQB881zNoGkdGI+1nDIghBSz2OquQ4r2BmYXy73Welm+iDlh1c81Dj
-         ewNVpHIywoBS13etzuP0709Xy6BNzD5IYaYv7qcqlHvXafrhcntWsZ64HnPoB8nvKG5p
-         FC1wNQ0ubyeNrR+Vr/xLQXMN8N3oc4GNOwPqZ5TA2cF+8X2u2ItEgQ7HrsU070oqUnAo
-         pJFA==
-X-Gm-Message-State: AOJu0YyW8M75HrCoTTA0ZcLTLE1LA+YHK90TBI8ohxVdOGy51WmgDOD7
-        BeBl//2DhZVbEkN7dBYoOvN0pw==
-X-Google-Smtp-Source: AGHT+IHjA/HMIhhyEKsOHbobGNaz9KME19V31MweRQNO8YK9nStfhzc+UWVv7xi30wuwZAIx8as8nA==
-X-Received: by 2002:a17:907:7618:b0:a12:5e2e:d27a with SMTP id jx24-20020a170907761800b00a125e2ed27amr3353041ejc.0.1701621166676;
-        Sun, 03 Dec 2023 08:32:46 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701621226; x=1702226026;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LD4myhxFv1aMiSYLqC9ASJD82XriEC9rJCJ/sLaBe4E=;
+        b=FQ/US6EHw8zCaYvkURbyLV5R3h7NrfUWHNDQAfs4S0eFNRtMCZuz9jukhD1ouHVkyl
+         BWTbccVOVarnxcUqMe0ikbHCwdt29iFC5oy8nm1nmatBkiV/UkrGh2Dixv74W+88k72r
+         /1rIC1TWPwvGRRGjBAqBzN4QK3azKaSgH063Qelk1YSB3WmYNQ6G1MaqA5LvF4CiVJz7
+         WUGBnCkYtkMOykx6UMJBHppZ+lL8FcUQx8HrsNDkZMZav/Whbt1aT4F+Ed4SQpLq4+z1
+         qnodnV1F4vqWx+Ul6Zx6CIEOd2F70AR5jxlHEb7ABjlG5KKSzPfCUvhnr8w8zyy7nLck
+         U/jg==
+X-Gm-Message-State: AOJu0Ywyla9essBr6JBzZ8W87097aOghaQhRYb9AKGhdrsr7j8ZQWm4m
+        oG9zfBqX8ETPgICDf+ab5BegVQ==
+X-Google-Smtp-Source: AGHT+IEjCXRFvxlwnxceMKE2GE6drMxM44wMjN7pXLKY3+/LRfLHMDr/GphB3Wr78M5SjmKWRxMUNA==
+X-Received: by 2002:a17:906:1c6:b0:a19:a1ba:da48 with SMTP id 6-20020a17090601c600b00a19a1bada48mr2725900ejj.111.1701621226338;
+        Sun, 03 Dec 2023 08:33:46 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.223.109])
-        by smtp.gmail.com with ESMTPSA id sa12-20020a1709076d0c00b009fd585a2155sm4272210ejc.0.2023.12.03.08.32.44
+        by smtp.gmail.com with ESMTPSA id sa12-20020a1709076d0c00b009fd585a2155sm4272210ejc.0.2023.12.03.08.33.44
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 03 Dec 2023 08:32:46 -0800 (PST)
-Message-ID: <5134d2c7-b499-400d-bec8-ae0de1eff7db@linaro.org>
-Date:   Sun, 3 Dec 2023 17:32:42 +0100
+        Sun, 03 Dec 2023 08:33:45 -0800 (PST)
+Message-ID: <6f4f7903-c112-428b-8082-a8eca7c5981d@linaro.org>
+Date:   Sun, 3 Dec 2023 17:33:43 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/6] dt-bindings: interrupt-controller: Add support for
- Realtek DHC SoCs
-To:     =?UTF-8?B?SmFtZXMgVGFpIFvmiLTlv5fls7Bd?= <james.tai@realtek.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-References: <20231117162709.1096585-1-james.tai@realtek.com>
- <20231117162709.1096585-2-james.tai@realtek.com>
- <c3a98e2c-ba62-4798-a0d0-a8bc1fe5bb6b@linaro.org>
- <7959920acf004f3cb8072de1e17439fa@realtek.com>
- <e1490203387d4c48a5f8c4040ece038a@realtek.com>
- <6250c57b-6d38-4085-9a79-58e4e5ed1e3d@linaro.org>
- <cf2f9fd124514cb9832e942e16b8fa6e@realtek.com>
+Subject: Re: [PATCH v2 1/1] arm64: dts: qcom: ipq6018: fix clock rates for
+ GCC_USB0_MOCK_UTMI_CLK
 Content-Language: en-US
+To:     Chukun Pan <amadeus@jmu.edu.cn>,
+        Bjorn Andersson <andersson@kernel.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+References: <20231203154030.532880-1-amadeus@jmu.edu.cn>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -118,12 +112,12 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <cf2f9fd124514cb9832e942e16b8fa6e@realtek.com>
+In-Reply-To: <20231203154030.532880-1-amadeus@jmu.edu.cn>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -131,38 +125,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/12/2023 16:56, James Tai [戴志峰] wrote:
->>>>>> +  interrupts-extended:
->>>>>
->>>>> interrupts instead.
->>>>>
->>>>> Anyway, you must describe the items. Why this is not fixed but flexible?
->>>>> Hardware has different number of pins? That's unlikely.
->>>>>
->>>> I will replace it with 'interrupts'. Since our Interrupt controller
->>>> architecture doesn't involve multiple interrupt sources, using 'interrupts'
->> should suffice.
->>>>
->>>
->>> Due to changes in hardware design, some peripheral interrupts pin initially
->> connected to the Realtek interrupt controller were redirected to the GIC.
->>> However, the associated fields and statuses in the Realtek interrupt controller
->> registers were not removed.
->>> As a result, these interrupts cannot be cleared by peripheral register, and their
->> status clearing is still needing the Realtek interrupt controller driver to manage.
->>>
->>> That's why flexibility is necessary.
->>
->> This does not explain why this is not fixed per variant.
->>
+On 03/12/2023 16:40, Chukun Pan wrote:
+> The clock provided by XO is 24MHz, not 20MHz.
+
+That does not look like XO, but GCC_USB0_MOCK_UTMI_CLK
+
 > 
-> Does the definition of "fixed" you mentioned refer to fixed interrupt pins? If not, could you please give me an example and let me know what you mean by "fixed"?
-
-Number of the interrupts per each device or variant should be strictly
-defined, not variable.
-
-Please wrap your emails according to mail netiquette.
-
+> Fixes: 5726079cd486 ("arm64: dts: ipq6018: Use reference clock to set dwc3 period")
+> Signed-off-by: Chukun Pan <amadeus@jmu.edu.cn>
 Best regards,
 Krzysztof
 
