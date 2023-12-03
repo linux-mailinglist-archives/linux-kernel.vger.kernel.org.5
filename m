@@ -2,45 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79A3E802288
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 11:36:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 841CD802281
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 11:26:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233695AbjLCK0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 05:26:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36834 "EHLO
+        id S233345AbjLCK0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 05:26:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233375AbjLCKZe (ORCPT
+        with ESMTP id S230256AbjLCK0q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 05:25:34 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A02DDFE
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 02:25:40 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A04F0C433C8;
-        Sun,  3 Dec 2023 10:25:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701599140;
-        bh=Lnc3/O+6CGAEAS2bB5Go5eHeE+xwqLvuu2/DPt0BL5g=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cO6ViyxeBuYd4k0wYeSUZ2wRRCgCArk8SlgrIlhwtkOCQuajWRfPbcE/PA68owivB
-         qzSGcHRasVodTIV5akKFFbHJJerXJTboGgemSWzDxbcQWyj2BEUVp6Iytzg+doS3ci
-         ChiV5qQaogDbCC4R/vZTLgoXSxUVHmqzpD1NO94CUSyUrtvWsVnCTVXSr1m0dyFhZc
-         XBQwGJl7icuvWAQ3CSoyGadulYrl3B8bt+pFfA4qfQmW6GmZqNF2bT9ZtuSQM3p5gB
-         AR4QDeP2XKfr5Fe3QfTWUWV8UGFNa1FeIapCUTirBFC+D+sr6GWALN7w/7cghSoXf2
-         r48aKdBWseT4g==
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 6/6] kconfig: remove redundant NULL pointer check before free()
-Date:   Sun,  3 Dec 2023 19:25:28 +0900
-Message-Id: <20231203102528.1913822-6-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231203102528.1913822-1-masahiroy@kernel.org>
-References: <20231203102528.1913822-1-masahiroy@kernel.org>
+        Sun, 3 Dec 2023 05:26:46 -0500
+Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF822F3
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 02:26:51 -0800 (PST)
+Message-ID: <af74599e-6384-4bcc-9773-d37b061eabdf@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1701599210;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qrtEfm+ABJ7wZDXABUJNQSB06ZVHq0EffLwzkPVkelA=;
+        b=INAAscK9yQN+V7BQYtKeEpCT1C17m2Hca1J8hrYp/Z1bDiwW77I/C1hELG0uwf+s8Z4oIr
+        5ICSXQIcAgKxXakvUgG553J6mAuRjw75+HroH/joXRoT7C8sx9nNPoZvG2YopXQzbqklLW
+        mKTRmMY4LzeQYS01TV7ECoNApQ7OFQs=
+Date:   Sun, 3 Dec 2023 18:26:20 +0800
 MIME-Version: 1.0
+Subject: Re: [PATCH v5 7/9] slub: Optimize deactivate_slab()
+Content-Language: en-US
+To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Cc:     vbabka@suse.cz, cl@linux.com, penberg@kernel.org,
+        rientjes@google.com, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org, roman.gushchin@linux.dev,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Chengming Zhou <zhouchengming@bytedance.com>
+References: <20231102032330.1036151-1-chengming.zhou@linux.dev>
+ <20231102032330.1036151-8-chengming.zhou@linux.dev>
+ <CAB=+i9RR-n4q5NU6LFqmhM8ys4kM0SPqwj0zYtr4twu=yYmPPA@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Chengming Zhou <chengming.zhou@linux.dev>
+In-Reply-To: <CAB=+i9RR-n4q5NU6LFqmhM8ys4kM0SPqwj0zYtr4twu=yYmPPA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -49,45 +55,164 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Passing NULL to free() is allowed and is a no-op.
+On 2023/12/3 17:23, Hyeonggon Yoo wrote:
+> On Thu, Nov 2, 2023 at 12:25 PM <chengming.zhou@linux.dev> wrote:
+>>
+>> From: Chengming Zhou <zhouchengming@bytedance.com>
+>>
+>> Since the introduce of unfrozen slabs on cpu partial list, we don't
+>> need to synchronize the slab frozen state under the node list_lock.
+>>
+>> The caller of deactivate_slab() and the caller of __slab_free() won't
+>> manipulate the slab list concurrently.
+>>
+>> So we can get node list_lock in the last stage if we really need to
+>> manipulate the slab list in this path.
+>>
+>> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+>> Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+>> Tested-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+>> ---
+>>  mm/slub.c | 79 ++++++++++++++++++-------------------------------------
+>>  1 file changed, 26 insertions(+), 53 deletions(-)
+>>
+>> diff --git a/mm/slub.c b/mm/slub.c
+>> index bcb5b2c4e213..d137468fe4b9 100644
+>> --- a/mm/slub.c
+>> +++ b/mm/slub.c
+>> @@ -2468,10 +2468,8 @@ static void init_kmem_cache_cpus(struct kmem_cache *s)
+>>  static void deactivate_slab(struct kmem_cache *s, struct slab *slab,
+>>                             void *freelist)
+>>  {
+>> -       enum slab_modes { M_NONE, M_PARTIAL, M_FREE, M_FULL_NOLIST };
+>>         struct kmem_cache_node *n = get_node(s, slab_nid(slab));
+>>         int free_delta = 0;
+>> -       enum slab_modes mode = M_NONE;
+>>         void *nextfree, *freelist_iter, *freelist_tail;
+>>         int tail = DEACTIVATE_TO_HEAD;
+>>         unsigned long flags = 0;
+>> @@ -2509,65 +2507,40 @@ static void deactivate_slab(struct kmem_cache *s, struct slab *slab,
+>>         /*
+>>          * Stage two: Unfreeze the slab while splicing the per-cpu
+>>          * freelist to the head of slab's freelist.
+>> -        *
+>> -        * Ensure that the slab is unfrozen while the list presence
+>> -        * reflects the actual number of objects during unfreeze.
+>> -        *
+>> -        * We first perform cmpxchg holding lock and insert to list
+>> -        * when it succeed. If there is mismatch then the slab is not
+>> -        * unfrozen and number of objects in the slab may have changed.
+>> -        * Then release lock and retry cmpxchg again.
+>>          */
+>> -redo:
+>> -
+>> -       old.freelist = READ_ONCE(slab->freelist);
+>> -       old.counters = READ_ONCE(slab->counters);
+>> -       VM_BUG_ON(!old.frozen);
+>> -
+>> -       /* Determine target state of the slab */
+>> -       new.counters = old.counters;
+>> -       if (freelist_tail) {
+>> -               new.inuse -= free_delta;
+>> -               set_freepointer(s, freelist_tail, old.freelist);
+>> -               new.freelist = freelist;
+>> -       } else
+>> -               new.freelist = old.freelist;
+>> -
+>> -       new.frozen = 0;
+>> +       do {
+>> +               old.freelist = READ_ONCE(slab->freelist);
+>> +               old.counters = READ_ONCE(slab->counters);
+>> +               VM_BUG_ON(!old.frozen);
+>> +
+>> +               /* Determine target state of the slab */
+>> +               new.counters = old.counters;
+>> +               new.frozen = 0;
+>> +               if (freelist_tail) {
+>> +                       new.inuse -= free_delta;
+>> +                       set_freepointer(s, freelist_tail, old.freelist);
+>> +                       new.freelist = freelist;
+>> +               } else {
+>> +                       new.freelist = old.freelist;
+>> +               }
+>> +       } while (!slab_update_freelist(s, slab,
+>> +               old.freelist, old.counters,
+>> +               new.freelist, new.counters,
+>> +               "unfreezing slab"));
+>>
+>> +       /*
+>> +        * Stage three: Manipulate the slab list based on the updated state.
+>> +        */
+> 
+> deactivate_slab() might unconsciously put empty slabs into partial list, like:
+> 
+> deactivate_slab()                    __slab_free()
+> cmpxchg(), slab's not empty
+>                                                cmpxchg(), slab's empty
+> and unfrozen
 
-Remove redundant NULL pointer checks.
+Hi,
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+Sorry, but I don't get it here how __slab_free() can see the slab empty,
+since the slab is not empty from deactivate_slab() path, and it can't be
+used by any CPU at that time?
 
- scripts/kconfig/confdata.c | 3 +--
- scripts/kconfig/util.c     | 3 +--
- 2 files changed, 2 insertions(+), 4 deletions(-)
+Thanks for review!
 
-diff --git a/scripts/kconfig/confdata.c b/scripts/kconfig/confdata.c
-index bd14aae1db58..f1197e672431 100644
---- a/scripts/kconfig/confdata.c
-+++ b/scripts/kconfig/confdata.c
-@@ -432,8 +432,7 @@ int conf_read_simple(const char *name, int def)
- 		case S_INT:
- 		case S_HEX:
- 		case S_STRING:
--			if (sym->def[def].val)
--				free(sym->def[def].val);
-+			free(sym->def[def].val);
- 			/* fall through */
- 		default:
- 			sym->def[def].val = NULL;
-diff --git a/scripts/kconfig/util.c b/scripts/kconfig/util.c
-index b78f114ad48c..92e5b2b9761d 100644
---- a/scripts/kconfig/util.c
-+++ b/scripts/kconfig/util.c
-@@ -42,8 +42,7 @@ struct gstr str_new(void)
- /* Free storage for growable string */
- void str_free(struct gstr *gs)
- {
--	if (gs->s)
--		free(gs->s);
-+	free(gs->s);
- 	gs->s = NULL;
- 	gs->len = 0;
- }
--- 
-2.40.1
-
+>                                                spin_lock(&n->list_lock)
+>                                                (slab's empty but not
+> on partial list,
+> 
+> spin_unlock(&n->list_lock) and return)
+> spin_lock(&n->list_lock)
+> put slab into partial list
+> spin_unlock(&n->list_lock)
+> 
+> IMHO it should be fine in the real world, but just wanted to
+> mention as it doesn't seem to be intentional.
+> 
+> Otherwise it looks good to me!
+> 
+>>         if (!new.inuse && n->nr_partial >= s->min_partial) {
+>> -               mode = M_FREE;
+>> +               stat(s, DEACTIVATE_EMPTY);
+>> +               discard_slab(s, slab);
+>> +               stat(s, FREE_SLAB);
+>>         } else if (new.freelist) {
+>> -               mode = M_PARTIAL;
+>> -               /*
+>> -                * Taking the spinlock removes the possibility that
+>> -                * acquire_slab() will see a slab that is frozen
+>> -                */
+>>                 spin_lock_irqsave(&n->list_lock, flags);
+>> -       } else {
+>> -               mode = M_FULL_NOLIST;
+>> -       }
+>> -
+>> -
+>> -       if (!slab_update_freelist(s, slab,
+>> -                               old.freelist, old.counters,
+>> -                               new.freelist, new.counters,
+>> -                               "unfreezing slab")) {
+>> -               if (mode == M_PARTIAL)
+>> -                       spin_unlock_irqrestore(&n->list_lock, flags);
+>> -               goto redo;
+>> -       }
+>> -
+>> -
+>> -       if (mode == M_PARTIAL) {
+>>                 add_partial(n, slab, tail);
+>>                 spin_unlock_irqrestore(&n->list_lock, flags);
+>>                 stat(s, tail);
+>> -       } else if (mode == M_FREE) {
+>> -               stat(s, DEACTIVATE_EMPTY);
+>> -               discard_slab(s, slab);
+>> -               stat(s, FREE_SLAB);
+>> -       } else if (mode == M_FULL_NOLIST) {
+>> +       } else {
+>>                 stat(s, DEACTIVATE_FULL);
+>>         }
+>>  }
+>> --
+>> 2.20.1
+>>
