@@ -2,133 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F6678022A7
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 12:16:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ACC48022AD
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 12:20:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233351AbjLCLP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 06:15:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38722 "EHLO
+        id S232873AbjLCLTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 06:19:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjLCLPz (ORCPT
+        with ESMTP id S229450AbjLCLT3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 06:15:55 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFA3CA2;
-        Sun,  3 Dec 2023 03:16:00 -0800 (PST)
-Date:   Sun, 03 Dec 2023 11:15:56 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1701602158;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YQ+VBXklhmVch7Sg2vc0ARJ1AeCnK1tBH54ISC203KI=;
-        b=aCiqE0gJlIwkgJbAP7VryY/SfHO2newtiJlJsbMsBdAnC/qthTaU+JRoXoakp9XrGLjxVD
-        UnEILmt5H9vLjrjwuv/w3P572/pbDUrEx1aC6aqsWx3NMCsARcVf8No7J1Cce392F5Q89t
-        GbK2ZTyP4MzgKOewnNDxuGFQLNaxIjCH2J82hTiZQjh5Pt7UqQ1QjFAhb7mGVbBVsrX5Pd
-        8l/roLWkOqK9opU9Au0KWdgqseAbZnezB4Hchmmz75LJFsiH9sMK+Y7dbwYHPDMTUCBEo7
-        qpm4yooV0Eh0WzlflzZ03nNxibLdmfSAf7Ti6aqMiUJozc/utyPXHaYj0XMvww==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1701602158;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YQ+VBXklhmVch7Sg2vc0ARJ1AeCnK1tBH54ISC203KI=;
-        b=8JGd6ffJHHd6dgW56m4o+GfX6/Rt1zNYXkDBMR1PopCo2xT98Ho9XXGQBYkgWUfimrFjgN
-        nOiqMeAHSH4LWkCA==
-From:   "tip-bot2 for Borislav Petkov (AMD)" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/microcode] x86/microcode/intel: Set new revision only after
- a successful update
-Cc:     Ashok Raj <ashok.raj@intel.com>,
-        "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <ZWjVt5dNRjbcvlzR@a4bf019067fa.jf.intel.com>
-References: <ZWjVt5dNRjbcvlzR@a4bf019067fa.jf.intel.com>
+        Sun, 3 Dec 2023 06:19:29 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C8FFA2
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 03:19:35 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63A2DC433C8;
+        Sun,  3 Dec 2023 11:19:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701602375;
+        bh=khbZlB+CudlpWOtcypC7aIzJI1JQViaEerLoXBkjgWQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jNmBJZNvjRJCnN+ObC8oLMUvyhaVt+0R8AseNwAN+iRBv99qvZeOI5D3CLwYyBTeh
+         cyPIuheJ9y1AxJv2ArZyfzVggoM+ipgiEP/QW82jYbzQJQ0qnLEs7uEAEnqoEk8lRb
+         V24AlYKPLAwcmAiQadAxTNx3wQvxfK3PDCz2uLyBiXA1krhcWSkc1+YBpUEIFs0Qcm
+         XRKOmTVe+rePAA/R/yQd/W49W94uF2BRpaF6G8yYh/tagnNCPf711ENN8oJWVyUklk
+         av0Y3/sDQjZyCRs1hn4AL9VNio5GtZ5R0bGo9R53BPMEI9NY0Ba+huHD+H7OIjRz7A
+         MkuYtYlpPmi/A==
+Date:   Sun, 3 Dec 2023 11:19:30 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Karel Balej <karelb@gimli.ms.mff.cuni.cz>
+Cc:     Markuss Broks <markuss.broks@gmail.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Duje =?utf-8?Q?Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
+        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        Karel Balej <balejk@matfyz.cz>
+Subject: Re: [PATCH v3 4/5] dt-bindings: input/touchscreen: imagis: add
+ compatible for IST3032C
+Message-ID: <20231203-mundane-riches-b6e4ef157384@spud>
+References: <20231202125948.10345-1-karelb@gimli.ms.mff.cuni.cz>
+ <20231202125948.10345-5-karelb@gimli.ms.mff.cuni.cz>
 MIME-Version: 1.0
-Message-ID: <170160215680.398.309337215455167122.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="BTVe8SmajlARbciW"
+Content-Disposition: inline
+In-Reply-To: <20231202125948.10345-5-karelb@gimli.ms.mff.cuni.cz>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/microcode branch of tip:
 
-Commit-ID:     9c21ea53e6bd1104c637b80a0688040f184cc761
-Gitweb:        https://git.kernel.org/tip/9c21ea53e6bd1104c637b80a0688040f184cc761
-Author:        Borislav Petkov (AMD) <bp@alien8.de>
-AuthorDate:    Fri, 01 Dec 2023 14:35:06 +01:00
-Committer:     Borislav Petkov (AMD) <bp@alien8.de>
-CommitterDate: Sun, 03 Dec 2023 11:49:53 +01:00
+--BTVe8SmajlARbciW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-x86/microcode/intel: Set new revision only after a successful update
+On Sat, Dec 02, 2023 at 01:48:35PM +0100, Karel Balej wrote:
+> From: Karel Balej <balejk@matfyz.cz>
+>=20
+> Document possible usage of the Imagis driver with the IST3032C
+> touchscreen.
 
-This was meant to be done only when early microcode got updated
-successfully. Move it into the if-branch.
+Please leave mention of the driver out of the binding patch (we deal
+only with the hardware here) and instead describe what is incompatibly
+different between these two devices.
 
-Also, make sure the current revision is read unconditionally and only
-once.
+Thanks,
+Conor.
 
-Fixes: 080990aa3344 ("x86/microcode: Rework early revisions reporting")
-Reported-by: Ashok Raj <ashok.raj@intel.com>
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Tested-by: Ashok Raj <ashok.raj@intel.com>
-Link: https://lore.kernel.org/r/ZWjVt5dNRjbcvlzR@a4bf019067fa.jf.intel.com
----
- arch/x86/kernel/cpu/microcode/intel.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+>=20
+> Signed-off-by: Karel Balej <balejk@matfyz.cz>
+> ---
+>  .../devicetree/bindings/input/touchscreen/imagis,ist3038c.yaml   | 1 +
+>  1 file changed, 1 insertion(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/input/touchscreen/imagis,i=
+st3038c.yaml b/Documentation/devicetree/bindings/input/touchscreen/imagis,i=
+st3038c.yaml
+> index b5372c4eae56..2af71cbcc97d 100644
+> --- a/Documentation/devicetree/bindings/input/touchscreen/imagis,ist3038c=
+=2Eyaml
+> +++ b/Documentation/devicetree/bindings/input/touchscreen/imagis,ist3038c=
+=2Eyaml
+> @@ -18,6 +18,7 @@ properties:
+> =20
+>    compatible:
+>      enum:
+> +      - imagis,ist3032c
+>        - imagis,ist3038b
+>        - imagis,ist3038c
+> =20
+> --=20
+> 2.43.0
+>=20
 
-diff --git a/arch/x86/kernel/cpu/microcode/intel.c b/arch/x86/kernel/cpu/microcode/intel.c
-index 5d6ea87..857e608 100644
---- a/arch/x86/kernel/cpu/microcode/intel.c
-+++ b/arch/x86/kernel/cpu/microcode/intel.c
-@@ -370,14 +370,14 @@ static __init struct microcode_intel *get_microcode_blob(struct ucode_cpu_info *
- {
- 	struct cpio_data cp;
- 
-+	intel_collect_cpu_info(&uci->cpu_sig);
-+
- 	if (!load_builtin_intel_microcode(&cp))
- 		cp = find_microcode_in_initrd(ucode_path);
- 
- 	if (!(cp.data && cp.size))
- 		return NULL;
- 
--	intel_collect_cpu_info(&uci->cpu_sig);
--
- 	return scan_microcode(cp.data, cp.size, uci, save);
- }
- 
-@@ -410,13 +410,13 @@ void __init load_ucode_intel_bsp(struct early_load_data *ed)
- {
- 	struct ucode_cpu_info uci;
- 
--	ed->old_rev = intel_get_microcode_revision();
--
- 	uci.mc = get_microcode_blob(&uci, false);
--	if (uci.mc && apply_microcode_early(&uci) == UCODE_UPDATED)
--		ucode_patch_va = UCODE_BSP_LOADED;
-+	ed->old_rev = uci.cpu_sig.rev;
- 
--	ed->new_rev = uci.cpu_sig.rev;
-+	if (uci.mc && apply_microcode_early(&uci) == UCODE_UPDATED) {
-+		ucode_patch_va = UCODE_BSP_LOADED;
-+		ed->new_rev = uci.cpu_sig.rev;
-+	}
- }
- 
- void load_ucode_intel_ap(void)
+--BTVe8SmajlARbciW
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZWxkQQAKCRB4tDGHoIJi
+0uU4AQDTvFOKjE2bh6MzjfwEJnPy0DVF+pBxGiHPa9Xd1r4gMwEAyprc91Hn2MfG
+eWzTwFa8NMflUIYdHWmrAXPq84fGVA8=
+=7rqZ
+-----END PGP SIGNATURE-----
+
+--BTVe8SmajlARbciW--
