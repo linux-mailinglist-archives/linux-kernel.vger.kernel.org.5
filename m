@@ -2,164 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB372802077
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 03:51:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3784980208F
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 04:25:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232542AbjLCCuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 21:50:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43038 "EHLO
+        id S232077AbjLCDZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 22:25:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjLCCuS (ORCPT
+        with ESMTP id S229450AbjLCDY6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 21:50:18 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62C2011F
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 18:50:24 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-54c77e0832cso1311087a12.0
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Dec 2023 18:50:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1701571823; x=1702176623; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6npRnsWkqBdhZbc6M4dSByEnWkDw3CX1ntQyh6JSYSY=;
-        b=AdS/7VcxZKbx5RzVBPV5c6c0Ffp/QG+7hcDVPDyLONNrUV7cx5JYB6b5bCuFiJrrK6
-         YygSawS6eE5K+jeEmi0iDgcbciMewPuLekLfCQsx58r833Brjg+TNihge5pOdlhYnG6Z
-         x5JN5ol2W6aGTaj/3DJh2VsLsAOYw7VBs+epvoa46jjT53g23Y8mP60ci9IaLlvnJTW7
-         uBfK2YIMhbnH/1EBUx8Fwj8Tvq+fGKIiuqRZE6OBHI0rODKZL8D4NwuBybGQVPT2fyz3
-         sSbAH3Mk/KpygfcMz/SluGnHYizZhVaWi6HoC68/xCBC1M25UpbDY/34uWQWD6KF1fVa
-         +0aQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701571823; x=1702176623;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6npRnsWkqBdhZbc6M4dSByEnWkDw3CX1ntQyh6JSYSY=;
-        b=Ac/8qQJci87RdGZA2Z85i+vCtjKqoZ25NBOoQ6ysJBfmvC/5NQLT0QPsJsMmx1ra/7
-         2jFHUNAhQYsFzZ8tOU2nMbQy9xrhjhqeV4Z7Yg3GYtBvJcDqEzG3IZZw2wNo6IBmZip3
-         B+7qjTYjKgW4Sjf2ZchSN61xhpihNxE0n/bO5CX5q3HUrdLWtGJ000++0lw7/uhJmFYk
-         bAGPpAnupXYfF6i909JePk8ya73EnYudCrvgIQ9m3ClimP2Vf3emnS3RVAhAD5FfWPoP
-         Q4RMoDeIkA/FSF333FdjW+ipWVp7UiC4//+nERrmLIgYMwBHuThG5XD1j+FnKutSwFqB
-         IFMQ==
-X-Gm-Message-State: AOJu0YzDuixtv2QMTiRrmNlccS30TG7hemHsZnAzAGXy0dxTbz1Uy3qw
-        7h8pOHkDPKYfz5PzdkEk9lxWujzO4eGip4p7p/CfKA==
-X-Google-Smtp-Source: AGHT+IHWCKbajPDOzc2EJ1n/RHOirXnZrIM6lY1wrd1As3uj0q5lJQ4NYVZawgsgWNzlvYGzmKItLV0vJmDPjgXNDl8=
-X-Received: by 2002:a17:906:265a:b0:9ff:9db9:1dc0 with SMTP id
- i26-20020a170906265a00b009ff9db91dc0mr2116273ejc.62.1701571822752; Sat, 02
- Dec 2023 18:50:22 -0800 (PST)
+        Sat, 2 Dec 2023 22:24:58 -0500
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2082.outbound.protection.outlook.com [40.107.96.82])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD2C5125;
+        Sat,  2 Dec 2023 19:25:02 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iHbaRV9J0wV3Z90DXa2Whr7Si00sBNpUqU+Ubk995Wnk1MhDVyTSf30Lf1bwTlMDVeIvXkFM65GL/tBB2TusxXpdM/EtUCl8c/lReFv28BnlpiGbZwFY/+NM/+dQI/aJ8/xdOPyuPLTB/0NOwlEkMaMfiJIb2pqFVVOI/AarpoqOTf4Xmwj+XRj/en3rjhnET3C5g6Jp6yKGq+PMXgsmILDNWElzEEbUYssCOhIDtbp3h4W/1Oa0J+ClN5+L9k5S/BGGwxNet+h0qgUWLTOpiAO/npNIkMipMbJjP227p+N6pk27aIe74qqshl3OKa/CGm4NQMHEwyofjFOsTHF/mw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=1XmUoPsG8niYFGZjKrINLXOukbBatwwVbBIm2AsGTm8=;
+ b=dAfOWf5jG8PPpuryiMdJn2c/VUIRLovtdRl/MPHeAw6ezPnp+52jZfBfZgpaBDhWrcOTOFb26HDCJ6RDqCuuuSZsR7JM/EiBlt8IY7fx9+w+G5X1h05U5Ci9f75NJOR+6PQxnq/9bLUPlOea2I3L9XqajDJkKBh33TB2oGYbKUYR11qJ4rjsfzyNb4dTfE9yGshh0vFPJAacLLhOfKEU+nFyRNXpOzgQ0bY1u1Uzy3BoECb2h4IVMrDbmJkYAnlvrlPVJEM8dHKeRcNj2lBV45p8tYJ3FtOoxe/L8aS8bEiPVIJ6dekKM0vO6VT8ScjAIGlUQNFsb1ntn8UiUdFHdA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=linaro.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1XmUoPsG8niYFGZjKrINLXOukbBatwwVbBIm2AsGTm8=;
+ b=M11J0p3mOiTeLWTlUb8loKBXfOJGxsgOBSADvAyZy8yF4eo/dBqgVK11hJqXyqWXbsEiZmvDpVlIMuSfNxZrXaI1QkVXZJ1FdatiXhRf/liavad74u8LnJYCryMVBPmQ94dlUIf5fbMs2XGUGmH3PCFpJw/jy2hnJaRE+pcd3yI=
+Received: from MN2PR11CA0024.namprd11.prod.outlook.com (2603:10b6:208:23b::29)
+ by DS0PR12MB8366.namprd12.prod.outlook.com (2603:10b6:8:f9::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.32; Sun, 3 Dec
+ 2023 03:24:59 +0000
+Received: from BL6PEPF0001AB50.namprd04.prod.outlook.com
+ (2603:10b6:208:23b:cafe::1d) by MN2PR11CA0024.outlook.office365.com
+ (2603:10b6:208:23b::29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.30 via Frontend
+ Transport; Sun, 3 Dec 2023 03:24:59 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ BL6PEPF0001AB50.mail.protection.outlook.com (10.167.242.74) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7068.20 via Frontend Transport; Sun, 3 Dec 2023 03:24:59 +0000
+Received: from AUS-P9-MLIMONCI.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Sat, 2 Dec
+ 2023 21:24:58 -0600
+From:   Mario Limonciello <mario.limonciello@amd.com>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>
+CC:     "open list:PIN CONTROL SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Basavaraj Natikar <Basavaraj.Natikar@amd.com>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        Mario Limonciello <mario.limonciello@amd.com>
+Subject: [PATCH 0/2] Fixes for spurious wakeups on some Lenovo laptops
+Date:   Sat, 2 Dec 2023 21:24:29 -0600
+Message-ID: <20231203032431.30277-1-mario.limonciello@amd.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <ZWomqO8m4vVcW+ro@debian.debian> <656b3a1bcd212_1a6a2c294db@willemb.c.googlers.com.notmuch>
-In-Reply-To: <656b3a1bcd212_1a6a2c294db@willemb.c.googlers.com.notmuch>
-From:   Yan Zhai <yan@cloudflare.com>
-Date:   Sat, 2 Dec 2023 20:50:11 -0600
-Message-ID: <CAO3-PboYVv6pGm6ZhNs4ArK=3W-V4XY6EJxcYXGyX=YHwdHW6g@mail.gmail.com>
-Subject: Re: [PATCH v3 net-next] packet: add a generic drop reason for receive
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Weongyo Jeong <weongyo.linux@gmail.com>,
-        linux-kernel@vger.kernel.org, kernel-team@cloudflare.com,
-        Jesper Brouer <jesper@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB50:EE_|DS0PR12MB8366:EE_
+X-MS-Office365-Filtering-Correlation-Id: 846072bf-b488-49f7-06b2-08dbf3af6df7
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: iSIStPZjfPQvLeeolZSzRHPs2orW8ArOKN5Jyi6WX+mnfjA6YnwbmFCshJE5ynUGZY9SuOPXZZzSXGPZflyoKo04IuN/bCZ9MYUDKvV7qGZBD2StW/YYQt4NMrQR6LQkkHA1gvaQ/7xSUJqk/m80uqqNEcWef4EGvYheRqPn4jrD622bA5kh+ZdnlkzBO87PSHrkxxjTSXz3toTrHZZPdGXMAunFOaj/eSuV3iwpGF29ymnJRXUwLpeIBMN6ado43W5Ks6M34dvpa9mTvNLJcogo2j5/zOlkex/VCwadvoiONpTR69oTgMHhndwfCL9vbaBShls4X9ZC06MJLDBPTr/7LoykOkq3Bl4Xea78g27s/A0zAIFo2N4Gu/hlRsKj6mjyGK8QNhaH3YCgGlYMA5Md5SwW7096rTV021l/vPGEPtQEB45OoPCLIzUDHeNbi20fRf3fbz3Vw9nkPUFoA/OLgL23F8Kd4cOcyqt1/IOAwxTjIU8KzHb1mm2Kdr5rLxAdN1hHfBBsbEGT35a8qFom0IpNlVdSxVMfhfjKQI2srNxknm0vEkmWw77jb4/sBQS9aNlD1XT9v4U0z7zRqh6DbWNZGIXdpWCapqJIoxhuuzGsZPSJBll/Hm7r3J4xyNoP4648XRBYHmPYTdfd2I4YELkg99GTbViYAy5W4AFRS3vMDwhug3TR9KAL3tz9Yg+bhDXSeG7sFVTy9wPeB/1MwMU4/nWa0POQ4JGwz8OJ54kD9VXcvHdUPOBTNez3NhzPYJYr/HjWbLNuVm0fyg==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(396003)(39860400002)(346002)(376002)(230922051799003)(186009)(64100799003)(451199024)(82310400011)(1800799012)(36840700001)(40470700004)(46966006)(5660300002)(40460700003)(44832011)(4744005)(86362001)(4326008)(8676002)(8936002)(2906002)(41300700001)(36756003)(2616005)(40480700001)(1076003)(356005)(81166007)(82740400003)(426003)(83380400001)(16526019)(336012)(478600001)(26005)(7696005)(6666004)(47076005)(36860700001)(110136005)(316002)(54906003)(70586007)(70206006)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Dec 2023 03:24:59.2320
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 846072bf-b488-49f7-06b2-08dbf3af6df7
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: BL6PEPF0001AB50.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB8366
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 2, 2023 at 8:07=E2=80=AFAM Willem de Bruijn
-<willemdebruijn.kernel@gmail.com> wrote:
->
-> Yan Zhai wrote:
-> > Commit da37845fdce2 ("packet: uses kfree_skb() for errors.") switches
-> > from consume_skb to kfree_skb to improve error handling. However, this
-> > could bring a lot of noises when we monitor real packet drops in
-> > kfree_skb[1], because in tpacket_rcv or packet_rcv only packet clones
-> > can be freed, not actual packets.
-> >
-> > Adding a generic drop reason to allow distinguish these "clone drops".
-> >
-> > [1]: https://lore.kernel.org/netdev/CABWYdi00L+O30Q=3DZah28QwZ_5RU-xcxL=
-FUK2Zj08A8MrLk9jzg@mail.gmail.com/
-> > Fixes: da37845fdce2 ("packet: uses kfree_skb() for errors.")
-> > Suggested-by: Eric Dumazet <edumazet@google.com>
-> > Signed-off-by: Yan Zhai <yan@cloudflare.com>
-> > ---
-> > v2->v3: removed an unused variable
-> > v1->v2: fixups suggested by Eric Dumazet
-> > v2: https://lore.kernel.org/netdev/ZWobMUp22oTpP3FW@debian.debian/
-> > v1: https://lore.kernel.org/netdev/ZU3EZKQ3dyLE6T8z@debian.debian/
-> > ---
-> >  include/net/dropreason-core.h |  6 ++++++
-> >  net/packet/af_packet.c        | 26 +++++++++++++-------------
-> >  2 files changed, 19 insertions(+), 13 deletions(-)
-> >
-> > diff --git a/include/net/dropreason-core.h b/include/net/dropreason-cor=
-e.h
-> > index 3c70ad53a49c..278e4c7d465c 100644
-> > --- a/include/net/dropreason-core.h
-> > +++ b/include/net/dropreason-core.h
-> > @@ -86,6 +86,7 @@
-> >       FN(IPV6_NDISC_NS_OTHERHOST)     \
-> >       FN(QUEUE_PURGE)                 \
-> >       FN(TC_ERROR)                    \
-> > +     FN(PACKET_SOCK_ERROR)           \
-> >       FNe(MAX)
-> >
-> >  /**
-> > @@ -378,6 +379,11 @@ enum skb_drop_reason {
-> >       SKB_DROP_REASON_QUEUE_PURGE,
-> >       /** @SKB_DROP_REASON_TC_ERROR: generic internal tc error. */
-> >       SKB_DROP_REASON_TC_ERROR,
-> > +     /**
-> > +      * @SKB_DROP_REASON_PACKET_SOCK_ERROR: generic packet socket erro=
-rs
-> > +      * after its filter matches an incoming packet.
-> > +      */
-> > +     SKB_DROP_REASON_PACKET_SOCK_ERROR,
-> >       /**
-> >        * @SKB_DROP_REASON_MAX: the maximum of core drop reasons, which
-> >        * shouldn't be used as a real 'reason' - only for tracing code g=
-en
-> > diff --git a/net/packet/af_packet.c b/net/packet/af_packet.c
-> > index a84e00b5904b..933fdfaacc44 100644
-> > --- a/net/packet/af_packet.c
-> > +++ b/net/packet/af_packet.c
-> > @@ -2127,7 +2127,7 @@ static int packet_rcv(struct sk_buff *skb, struct=
- net_device *dev,
-> >       u8 *skb_head =3D skb->data;
-> >       int skb_len =3D skb->len;
-> >       unsigned int snaplen, res;
-> > -     bool is_drop_n_account =3D false;
-> > +     enum skb_drop_reason drop_reason =3D SKB_CONSUMED;
->
-> Reverse xmas tree
->
-oh I didn't know we have requirements on variable ordering. Will pay
-attention in future.
+Users have reported the inability to properly suspend on
+Lenovo Yoga Slim 7 Gen 8 14APU8 and Lenovo YogaAir 14s APU8
 
-> >
-> >       if (skb->pkt_type =3D=3D PACKET_LOOPBACK)
-> >               goto drop;
-> > @@ -2161,6 +2161,10 @@ static int packet_rcv(struct sk_buff *skb, struc=
-t net_device *dev,
-> >       res =3D run_filter(skb, sk, snaplen);
-> >       if (!res)
-> >               goto drop_n_restore;
-> > +
-> > +     /* skb will only be "consumed" not "dropped" before this */
-> > +     drop_reason =3D SKB_DROP_REASON_PACKET_SOCK_ERROR;
-> > +
->
-> This can be set in drop_n_account, rather than the common path.
->
-> Same in tpacket_rcv.
+Analyzing the problem there are two issues where HID devices connected
+over I2C cause spurious wakeup events or high power consumption.
 
-Sure, let me shoot a v4 to move it.
+One of the HID devices isn't configured as a wakeup source so the APU
+if the interrupt fires over suspend it will wake the APU from a hardware
+sleep state but will not return control to the OS.
+
+The second HID device is configured as a wakeup source and continually
+fires both at runtime and suspend.
+
+This series mitigates the impact from both of these devices.
+
+Mario Limonciello (2):
+  HID: i2c-hid: Add IDEA5002 to i2c_hid_acpi_blacklist[]
+  pinctrl: amd: Mask non-wake source pins with interrupt enabled at
+    suspend
+
+ drivers/hid/i2c-hid/i2c-hid-acpi.c | 5 +++++
+ drivers/pinctrl/pinctrl-amd.c      | 9 +++++++++
+ drivers/pinctrl/pinctrl-amd.h      | 5 +++++
+ 3 files changed, 19 insertions(+)
+
+-- 
+2.34.1
+
