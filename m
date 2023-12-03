@@ -2,177 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E84BD80262B
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 19:15:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6896F802632
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 19:20:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233886AbjLCSPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 13:15:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39292 "EHLO
+        id S233826AbjLCSTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 13:19:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjLCSPH (ORCPT
+        with ESMTP id S229450AbjLCSTv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 13:15:07 -0500
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2047.outbound.protection.outlook.com [40.107.6.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFD25E7;
-        Sun,  3 Dec 2023 10:15:13 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nn4VMl/e/iuV2rtCjqEDgV8AqUDbO9O53IZFFM+uSWbXkiLze0UJ7EIuRByMFfj5aotyza/+H/5I7ss8yGd9h0tR38HwknfxGRRtZGm1OO+LBIPZEBkkNiIAGseLviWVY8pQElJbhZ3hY3EnVQJASYDHVwjvJlplMIab/4vykECwu3YveEg1CaGfyL3g0NBSWnYLVg9/m8NoKqetOr1YQEPZbywVAVPyFZS0auYMpT4QMf5N2MTTmQQLMUdf7RgyuEcqa6cOgNDUTmUs0u1LMyZSojMP7aVRzzBvLW6CA2/0GB4ynlwgvPK4njFl2CPCSXIYeRXJaApYvlXNMYSw3Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hE1iOXIL9nlSt5cJ0k46CQwmZJOgVvDbL36UCMAx7bM=;
- b=kq2LPRelq2Aqzls5dLV3Lz9+m2uqJvlcmeRShegy6fPgyjILKeDLc01q+8YVT/y6ifVTIzyIz2wawX7m9xgbyOQf88rR8sMnVJ99Bu5lWm6j5kM5TcGVFWEPzcCNIivtS9+9BWins1XQ5aCouQIxfWyVQiWapogXWGFuXvCawRl+CWDdE/juAyWOfck18qq+hCiFFSi/hnq7zXyqeJBFEzOXsq5Ewd3SIXH36cQA9JSDkwF9qFmfXwHGD72rwbbzev4QaQN+cIFC/jKrVccL+JrrJikM5YVGjAPD3a+Coi3tkz33CmvLzvDOR57/5D72p/LYFrPZEkkaSULEMG2Yuw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hE1iOXIL9nlSt5cJ0k46CQwmZJOgVvDbL36UCMAx7bM=;
- b=HJMy6G+vzH7BpOE//NS9UXBdCKVA/2z7DG6HY2Xq/PxX/NPDRKYYWxtZlcDFhmPuftJt5K2KTldV8jLkPrR9v0bLObqe9fFrT9bjS1C10SYtDVJ7u26IF/oedAJZIaoEvzesv3B6YWBS9gUtUPBrOsb9K4fiHRCAZCUY+PPuAmI=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM0PR04MB6452.eurprd04.prod.outlook.com (2603:10a6:208:16d::21)
- by DBAPR04MB7461.eurprd04.prod.outlook.com (2603:10a6:10:1a6::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.21; Sun, 3 Dec
- 2023 18:15:11 +0000
-Received: from AM0PR04MB6452.eurprd04.prod.outlook.com
- ([fe80::dd33:f07:7cfd:afa4]) by AM0PR04MB6452.eurprd04.prod.outlook.com
- ([fe80::dd33:f07:7cfd:afa4%7]) with mapi id 15.20.7068.012; Sun, 3 Dec 2023
- 18:15:11 +0000
-Date:   Sun, 3 Dec 2023 20:15:08 +0200
-From:   Vladimir Oltean <vladimir.oltean@nxp.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-kernel@vger.kernel.org, Wasim Khan <wasim.khan@nxp.com>,
-        Wei Fang <wei.fang@nxp.com>, Clark Wang <xiaoning.wang@nxp.com>
-Subject: Re: [PATCH pci] PCI: remove the PCI_VENDOR_ID_NXP alias
-Message-ID: <20231203181508.n2hxjnoeuydnzyeo@skbuf>
-References: <20231122154241.1371647-1-vladimir.oltean@nxp.com>
- <20231129233827.GA444332@bhelgaas>
- <2023113014-preflight-roundish-d796@gregkh>
- <20231203151654.nh4ta7vtzwpwg4ss@skbuf>
- <2023120354-expansion-frequency-f991@gregkh>
- <20231203174841.uj6ixj7ap2hzlvey@skbuf>
- <2023120318-creme-cold-206b@gregkh>
+        Sun, 3 Dec 2023 13:19:51 -0500
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACFEBE7;
+        Sun,  3 Dec 2023 10:19:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=yGXjs7wEKgueS6v+FaTEskIskjzuTLjEstmKQFfF4KI=; b=AOv5N8a0gDtiB1XPqQSL5e54BQ
+        6cK49RzBb0pl59+o5C/iDENlLQvAnuK0L6NtQ3gamsyfIQuy9UhmwLq5rN9F06IAX0oHvYz8GZH5E
+        yLEG+vgp+xG1DQl6ivhg2x1KwPkx5dU3/oXZKSh5Ff04Z52YsNb9E67Uee6BG2vcy3h0=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1r9r3z-001uKd-LD; Sun, 03 Dec 2023 19:19:31 +0100
+Date:   Sun, 3 Dec 2023 19:19:31 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Kory Maincent <kory.maincent@bootlin.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Russ Weight <russ.weight@linux.dev>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, devicetree@vger.kernel.org,
+        Dent Project <dentproject@linuxfoundation.org>
+Subject: Re: [PATCH net-next v2 1/8] net: pse-pd: Rectify and adapt the
+ naming of admin_cotrol member of struct pse_control_config
+Message-ID: <97ac9982-9cb1-47b7-9bad-80db69287c6c@lunn.ch>
+References: <20231201-feature_poe-v2-0-56d8cac607fa@bootlin.com>
+ <20231201-feature_poe-v2-1-56d8cac607fa@bootlin.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2023120318-creme-cold-206b@gregkh>
-X-ClientProxiedBy: FR0P281CA0045.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:48::14) To AM0PR04MB6452.eurprd04.prod.outlook.com
- (2603:10a6:208:16d::21)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM0PR04MB6452:EE_|DBAPR04MB7461:EE_
-X-MS-Office365-Filtering-Correlation-Id: f085488a-526b-4ef6-8fc1-08dbf42bca12
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: V5KiIq6O/9WOm6MgH8UJn7I+zB2GFYGL0TLWtX8pbHCLVYCjvfFeik3DdCgyF70Lx2cSadFSyiM2MW98UzkDdJmJa1E1ft/NK/eXhJbjhd4I1YJsds7fA5gnm9O4t4r7JMaxfRPnqOXsr5n4P9aYCyi4+SXSNy2aso4WIw0ByYRyuibwZc96L4of1o6ZCE4vb3mp7argAAlbGvw62PJdinvpnenWMSHTxIGR3To7LTIVHNg/5XDc05Ca5OlmOCmPLp/xBY9t8F6HmR1/nnQHR+UOmqT23VS5/djtc1bKRI8tkMkianm12nPqOsbAwwnWK/krtrgbZ6YW0aSRgYF2oCf/JTNlQnpMAQq6ILE9gL/QKLyDjif/vENru1yXozOygq+3muD9ZFv0Md38lmjAyUQXfJLmq9TvTAMIiQBMft8Geg/+XoRvpDlyxUIiIcKC0YAc46SlxdRGE+uahg2bpmD3RR4ST6T1dUn+1dfJnZDzmAjTzvRuK/1ZXoJmHve15ofUVOFXFoRU434IJWpg1/MpBDwKzglbShJ+BNncntY=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6452.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(376002)(39850400004)(346002)(366004)(396003)(136003)(230922051799003)(1800799012)(64100799003)(186009)(451199024)(478600001)(26005)(966005)(6486002)(83380400001)(6666004)(6506007)(9686003)(6512007)(1076003)(316002)(6916009)(66476007)(54906003)(66946007)(66556008)(38100700002)(5660300002)(4326008)(86362001)(2906002)(8936002)(8676002)(44832011)(41300700001)(33716001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?hAvDpQDJvFh+b+UzvHn0u7eoBKrhDfgGHUTSMOTkOTz36BNMcu8wHi5RnHmu?=
- =?us-ascii?Q?6MqnRl41S3BVNLV8vgpIGdVi50s5jz5T1MEERtQuMrTyIXs3iStOvNVMpwPQ?=
- =?us-ascii?Q?eBq9KWj9PPozTnUO+3o5nbAEYV1BxOmUyAXLeG9W0k0PFOpasBG56GXCtuHQ?=
- =?us-ascii?Q?IPQsSUgzdWzOJXxsePdCZttFB4bq1r33NUulrnsliZLag0FLVJYKotfAaPSl?=
- =?us-ascii?Q?Z+HztEGaqvfe7ukyzPA+v3qtV/+hfGKoFHRWe53FlR3hCXVnopGb+BWUy7R2?=
- =?us-ascii?Q?HkNrJbxA9+qXhDDQiu98Zog63bBYiY9JCJ9x/rzoVJJM/QRGDIAaZjjH6GF+?=
- =?us-ascii?Q?FEPqc4F+gxMoHHnSJL3AXO/kRSzCLZcbVNk7kHb4L+nqAoIuQGFUcUO8gWJk?=
- =?us-ascii?Q?PFIzyjf4M9Bcl7mw6GKnKKsKj04kvWTh14md8ggI7Y7He1xbLq9/CGahO2/j?=
- =?us-ascii?Q?8JS9TQXdx+cwnfTC8+jes/OU3CQ7usyONXTZgqfC7bzCVxTZ/sQmCLk/mEKt?=
- =?us-ascii?Q?KAd1839NDSLQMsmWoBOaYMYVfN6FY9AwLcW7MgYpn5pUFENzNJ7lDl8goYXg?=
- =?us-ascii?Q?gl8AaxwjFf+5TE4L6cybxDqJOKlobHx7zs1/OCJWUOIyRUI41GCiLkJB1ozY?=
- =?us-ascii?Q?/jZrHG5WdTv+R7bJDGhY52wOq56PbWYsz+w2sqWtGdoDiUuECD0Cagx3pOzi?=
- =?us-ascii?Q?OVyyjL6VWF/OTh/lp3XAdaFiM9gZEYob6Gbs/8aJOAgEiaVSGpbJ/6fUkefr?=
- =?us-ascii?Q?KDia5DarzVOclsrYMUh0y1wbz3t1wcfW2JB2e3+jC739YxOIhRNBSr8nA54f?=
- =?us-ascii?Q?mPcvlHuD26BhKUaaW0Bjbz9E5E4mbGvZvDD0cIq9s2ncU4yTxcb2ezjM+xSG?=
- =?us-ascii?Q?ODLeYGfE/0nvI+NR4Trq+xAMK+6pIX3fHQhQzNYKpxnE4FljJLZ12aYpJHua?=
- =?us-ascii?Q?7+S2DUehDxgMsjW11zNbWJq2koBg8muzX08xoYyJ6WZ6bM1aAGDebCEYSOBl?=
- =?us-ascii?Q?t60xwhFrw+DFzPWNDTaakO520DXvKReujzkKSSPmoxa+WcrfMog2oyn+ENg8?=
- =?us-ascii?Q?Xz6rSWpZdxJ69hEPyndaXvRX74nan2DZSV2R2X5tK1KyGa3FDeIqtD6VkAQK?=
- =?us-ascii?Q?lKE6geA9HVkI6Z5i7/d8IAyKVZauTIerd9+mO8VlpPfTUZCW9cdh+DqLA2M9?=
- =?us-ascii?Q?o77W2dWuN6Mnc6U48duwl541KyQne0IIDuaCq71w+CkLnlKxuXq3vYddHPNv?=
- =?us-ascii?Q?oe/4L6CNrsVUkj4I3ieSUOLlSx1gAnmgC0HULJnXvrRfRm4OAo8VyOHJaJJE?=
- =?us-ascii?Q?f4iEx6CP2PI/PfM+SbSSOJHZgCVgZu8OzucRhKSsvEDwe8V8q7okT5aRGny8?=
- =?us-ascii?Q?2zpuvXQyXPxVjNlessaBXzskmLMidWelEoYgwfzmXrMrr+bgHLDN28AAhiHU?=
- =?us-ascii?Q?7mcb5waTwyZngB6w+ohalyuJWJZEhS4yquBZRM7DRgZkLYzsnkiRUbZ3uwsV?=
- =?us-ascii?Q?UUgYuIMa83TNvbDOmfTYJ6u2GHkAh+GoOIf9jKhZrjXkZPG2t8jJ/rMx0DFQ?=
- =?us-ascii?Q?JV88ie2yVN9T2AXUhm4DywI/hwe4aqHdHvKLkRe6g2FF6bgop4lBwEOV+Ip0?=
- =?us-ascii?Q?dg=3D=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f085488a-526b-4ef6-8fc1-08dbf42bca12
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB6452.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Dec 2023 18:15:11.5246
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /it39+IVlW6TW9Dn9r7mXwz6GkM13gyFTa7S2njKqw3tBi/Vmzs1v5XbE5kZeE0addFHiFsdcWTSk1OntfRHbQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBAPR04MB7461
+In-Reply-To: <20231201-feature_poe-v2-1-56d8cac607fa@bootlin.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 03, 2023 at 06:59:04PM +0100, Greg Kroah-Hartman wrote:
-> > > > > > Why would we remove name of the current company and use the name of a
-> > > > > > company that doesn't exist any more?
-> > > > > 
-> > > > > Yes, this seems very odd.  What is the reason for any of this other than
-> > > > > marketing?  Kernel code doesn't do marketing :)
-> > > > 
-> > > > I'm not sure who is doing the marketing; not me, that's for sure.
-> > > > The patch that I'm proposing undoes these strange aliases.
-> > > 
-> > > Why?
-> > 
-> > Why am I undoing the aliases? It's in my commit message.
+On Fri, Dec 01, 2023 at 06:10:23PM +0100, Kory Maincent wrote:
+> In commit 18ff0bcda6d1 ("ethtool: add interface to interact with Ethernet
+> Power Equipment"), the 'pse_control_config' structure was introduced,
+> housing a single member labeled 'admin_cotrol' responsible for maintaining
+> the operational state of the PoDL PSE functions.
 > 
-> Which is long gone from this email thread, sorry.
+> A noticeable typographical error exists in the naming of this field
+> ('cotrol' should be corrected to 'control'), which this commit aims to
+> rectify.
 > 
-> > NXP now produces PCI devices with a different vendor ID.
+> Furthermore, with upcoming extensions of this structure to encompass PoE
+> functionalities, the field is being renamed to 'podl_admin_state' to
+> distinctly indicate that this state is tailored specifically for PoDL."
 > 
-> "Different" from what, the old one?
-> 
-> > If aliasing is the way
-> > to go, then are we supposed to add a new PCI_VENDOR_ID_NXP2,
-> > PCI_VENDOR_ID_NXP3 etc?
-> > 
-> > Mellanox was bought by Nvidia and I don't see its PCI ID aliased to
-> > Nvidia. There are probably countless of other examples.
-> 
-> I'm not asking why anything is being aliased, I'm asking why change the
-> existing names.
+> Sponsored-by: Dent Project <dentproject@linuxfoundation.org>
+> Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
 
-With all due respect, I can continue responding and this discussion
-will go nowhere, or you can go and actually read the change.
-https://lore.kernel.org/linux-pci/20231122154241.1371647-1-vladimir.oltean@nxp.com/
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-There is nothing more to it than "I think it's confusing and inconsistent
-to have multiple PCI vendor IDs for NXP, especially when they even weren't
-NXP's to begin with". I've said that once in the original commit and
-once to you directly. I don't think we even disagree about this basic fact.
-
-> > > Who did it originally in what commit id and what was wrong with them
-> > > then?
-> > 
-> > Does it really matter? "Git blame" on the line with #define PCI_VENDOR_ID_NXP
-> > will point to a random commit by Wasim Khan (also CCed). The usage of
-> > PCI_VENDOR_ID_NXP is not widespread, it's only that commit.
-> 
-> So does your change here just revert the change in that commit, or does
-> it do it in other places?
-
-A tree-wide grep for PCI_VENDOR_ID_NXP will show that the naming
-introduced in 2021 commit d08c8b855140 ("PCI: Add ACS quirks for NXP
-LX2xx0 and LX2xx2 platforms") is also the only place where 0x1957 is
-referred to as NXP rather than Freescale. My change eliminates that
-localized NXP alias, and makes the kernel consistently refer to 0x1957
-as Freescale everywhere, as a result.
+    Andrew
