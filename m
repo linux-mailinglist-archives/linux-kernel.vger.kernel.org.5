@@ -2,301 +2,714 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 946C48025FF
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 18:32:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10E06802600
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 18:36:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233770AbjLCRcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 12:32:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48570 "EHLO
+        id S229972AbjLCRgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 12:36:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjLCRck (ORCPT
+        with ESMTP id S229450AbjLCRgf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 12:32:40 -0500
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6D7FB6;
-        Sun,  3 Dec 2023 09:32:44 -0800 (PST)
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B3HEntV013841;
-        Sun, 3 Dec 2023 17:32:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2023-11-20;
- bh=znYH7snNbK+SzcTrUI8CY1p78VVhQKtgUG6KTjNNRNU=;
- b=JkMJQvDuLOi+8D52bbMBywMfciLZt2RGdyiqrd6gNofL1xJJrDplWdBVWijNFeVS09hI
- B4/IOuZ98VK9Tj7RRqto0j4+1NRtjRNgVB8p91QDyBSl8d9+mBSPb7k3gpH6AWgmxQtD
- 8mpZa0YLKVJxaaIgWNH0BNqdw1uoJKxwILXTo6t3Njo7Mpx8IJ9ZWESJFt3Yup3YTQ/V
- Wt8IqtmagAu+mvLxvMw9hOPlM1/6n05/mZdmBUAB+nn0vUYmIfOkq8YaZZPsDCCpNvWl
- cA7a6nVj3iaQWNUTwAcPBxzI+rPpPz2sJw4nP7W4OyQ+gz9XZfT52h0FlDZHh2IMW1Ku dw== 
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3urvmd82xp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 03 Dec 2023 17:32:25 +0000
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3B3F0xc7034400;
-        Sun, 3 Dec 2023 17:32:23 GMT
-Received: from nam04-dm6-obe.outbound.protection.outlook.com (mail-dm6nam04lp2040.outbound.protection.outlook.com [104.47.73.40])
-        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3uqu14t62j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 03 Dec 2023 17:32:23 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WLoCcwH4GVP4EClqBa5BQeYw3CNeadYuS62NvQGCtBPqFLYzcRgDmwgb7/FIAzyOWOF0KK8PWo+qfobPH2cwhkWAkFVAx19wFqBERI+xc5EDewAsM5dfotG4IWOw7EWcRWkqSwz696X3lNmzhpaUqURchZEGUjHdS3px3waKvuJCuIgDBJUQRA6qiTUHQpO0Qufx79srErixG0RrBe3Dxe9y84CfxUiOhQFZF1tYPQlToJEuw2wdm3LOBBLyITQiz10mxRJaeIaIQsPj0sknzIAQMmaVlMKdJ8+uXyB0KQkysHbyY0WmDDX4Oh+2zAlkpmth+c7Udwo7AAIZOquZ4w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=znYH7snNbK+SzcTrUI8CY1p78VVhQKtgUG6KTjNNRNU=;
- b=TrUnBKf/WVoYnbmDIkd+DcM0rPeawTx/93oAZEQf+mUmbyI+tTFCMDaEgS25J2lfsx/dMP7ymXPFOjeuoAx1CNCIbGavuo3G+YRsEkfwESeOi7XS9eIIRFvNJmuc79xsVgQZH2I3SppjtTkhhHpWLZ7QQUoFhsEcf2O7FDCq1beorVpPp3DOItXJUB59A3e/ICNamqmPj4fmH14zGT3UNyvwlK0A+2QYjdWMA+FYvph+olvHdVRxB12f6hvcCLCdhhOA57rj9D2tPjOhihmKWvGhMcSGBaQ07uRQZxE4tLKn1YuQbtNgCAMcnJt8D8lP3PMxYqThvtCUso8EZGdWHA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Sun, 3 Dec 2023 12:36:35 -0500
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F089D3;
+        Sun,  3 Dec 2023 09:36:38 -0800 (PST)
+Received: by mail-oi1-x22e.google.com with SMTP id 5614622812f47-3b8b80cec8fso607197b6e.0;
+        Sun, 03 Dec 2023 09:36:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=znYH7snNbK+SzcTrUI8CY1p78VVhQKtgUG6KTjNNRNU=;
- b=SN1LJ0S6dQ1LzS6Cf3OeWhVGLuF2P4q7WQazJOQlyCll+6dU7w8ImVG12EjQiM6oJyvOLLSZ9U1mfICBrYsr0b2d7uDLfk/zJBhYevtdNeUjElWqhUqJKJI5WycwXqM0ZdaFxq9Oee14AteEUYtIWInRXpZ5DNs7C2PTvLpDZCk=
-Received: from BN0PR10MB5128.namprd10.prod.outlook.com (2603:10b6:408:117::24)
- by PH8PR10MB6480.namprd10.prod.outlook.com (2603:10b6:510:22c::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.32; Sun, 3 Dec
- 2023 17:32:21 +0000
-Received: from BN0PR10MB5128.namprd10.prod.outlook.com
- ([fe80::360b:b3c0:c5a9:3b3c]) by BN0PR10MB5128.namprd10.prod.outlook.com
- ([fe80::360b:b3c0:c5a9:3b3c%4]) with mapi id 15.20.7046.033; Sun, 3 Dec 2023
- 17:32:21 +0000
-Date:   Sun, 3 Dec 2023 12:32:17 -0500
-From:   Chuck Lever <chuck.lever@oracle.com>
-To:     chenxiaosongemail@foxmail.com
-Cc:     trond.myklebust@hammerspace.com, anna@kernel.org,
-        jlayton@kernel.org, neilb@suse.de, kolga@netapp.com,
-        Dai.Ngo@oracle.com, tom@talpey.com, linux-nfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, chenxiaosong@kylinos.cn,
-        liuzhengyuan@kylinos.cn, huhai@kylinos.cn, liuyun01@kylinos.cn
-Subject: Re: [PATCH] NFSv4, NFSD: move enum nfs_cb_opnum4 to
- include/linux/nfs4.h
-Message-ID: <ZWy7ob2HhNRX7Z1b@tissot.1015granger.net>
-References: <tencent_03EDD0CAFBF93A9667CFCA1B68EDB4C4A109@qq.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <tencent_03EDD0CAFBF93A9667CFCA1B68EDB4C4A109@qq.com>
-X-ClientProxiedBy: CH0PR03CA0031.namprd03.prod.outlook.com
- (2603:10b6:610:b3::6) To BN0PR10MB5128.namprd10.prod.outlook.com
- (2603:10b6:408:117::24)
+        d=gmail.com; s=20230601; t=1701624997; x=1702229797; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=kr523lRBe8IV4pq/uiBDJFcnMQHibNgt7yO0lESf8Sk=;
+        b=mxi5olRy5FyhqN4HhnGgx12/doM+L+k7TwG/nPSBix3K3TCCwt9tSUpOUKA1FkegU0
+         iMr1a7lrKTcwIS8lkEQtAeV4WRq9XztUjkbTdy2z/WjRRXr4LZcHSChLYsbGhWCgLsOs
+         O+vqoj5Wm+2zbFm5fvV1hehdr8AJaWsND+eC8LrRrzx+TootLJN6DVpObVMiTY8Dsi3b
+         ootfN4RdvUx1iiVXJudBxHgYxCkHSwBOnukIZbFWdvV75uPegzU4uvyOqLHqDxfo+XPe
+         W+Q90Z82hx1q3195SYq5NDu/2yFT5lntEeKGbNPnmLDOcPffMUHDZfd5v24Y9FlI7Pow
+         hKMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701624997; x=1702229797;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=kr523lRBe8IV4pq/uiBDJFcnMQHibNgt7yO0lESf8Sk=;
+        b=DISEL7jlwJXTrivi3DqoU3ym0SYVu+hFGsc0PdbAIqihc+psajmyASS5AhV6JvJJdF
+         xdNy3xIrUb6rK9hez6f2S5MOCP3YaoQiIa6nUIZGhdbJQ9hUIvDYgdbGqC0yaQD+KQko
+         JcEqK8EF1oHYHp0NJHW3jzF5ruV9PiY3b8llHqE+AeMjgDDPpQIJbVU3dd373pp+rl+m
+         zVeS+6Jeaj8Y9Cp3BXplt8I+myODzK+ptNFdlapPpf0Z/cNiiKiTsCx60jQfuXpYkCrh
+         Awt3Zc4nS2lpDB1b1g+jMwC01c+qp+irjULcOwymhKnschkO36TwmEhEUxmMA3QO5WYj
+         fZzw==
+X-Gm-Message-State: AOJu0YxZi/Dy+pvYTmXXt7imvyD8akMC1MdOl538Z3xu+yz9H4lXYUGg
+        GjElkDG0rBM5iV0icTZN50LnhNvULh0=
+X-Google-Smtp-Source: AGHT+IFH1k+H9pcE9nrhC+gdTIbxooFtrYFTHQfzU+Jm1p7jeVQBlTZW0oHtPjzCSbjq8EKBLeO/0Q==
+X-Received: by 2002:a05:6870:818c:b0:1fb:165c:473a with SMTP id k12-20020a056870818c00b001fb165c473amr3077496oae.57.1701624997201;
+        Sun, 03 Dec 2023 09:36:37 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id se6-20020a05687122c600b001faf09f0899sm1653654oab.24.2023.12.03.09.36.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 03 Dec 2023 09:36:36 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Sun, 3 Dec 2023 09:36:35 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Aleksa Savic <savicaleksa83@gmail.com>
+Cc:     linux-hwmon@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] hwmon: Add driver for Gigabyte AORUS Waterforce AIO
+ coolers
+Message-ID: <b45529ba-619c-41d7-a890-3b81cf699ebe@roeck-us.net>
+References: <20231203120651.371429-1-savicaleksa83@gmail.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN0PR10MB5128:EE_|PH8PR10MB6480:EE_
-X-MS-Office365-Filtering-Correlation-Id: 434b12ae-1d73-44a1-dada-08dbf425cdac
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Dbk3IjO1n7NBw3t675L1ryKG9b72a2/3rN3OMFBs5v7MGXAaqPYR9R1FDrJ8Mwsb/C4C5givxigE9FMyVWhXYjGpR3QxAVZL/hVPKFFjQTjBNZUeIwmYpVx9u5T9Sn1Ns4RQtOdDOJmIieL1Q4blI6+zVu8MI69xjlDEctzBvENuDc3p33Irrk7ncDYXSQ7sRwijg5mdjGrIxcpcys5CPyBHDk7VoE6Xj20sMIgqkgY5sJ/KPvWA5BtP7m3izrxDiJS8lpSy+uR8qyhi6kOXUilLwUXBSTP2cwzr138ngWVVGa7B9C67gh7RsTv+BdYyZ91z+/+spUOp2DUsI8U9cGiR1OslWkqNvbyhWCZx+vCZ9pokn4JVoU+5sMg0PMUHbuBQgOOxxCvxv08CHKy3t3PQCg3EOf1TSFtS57+yUqIEBp8H92Y1/DqBpe+tSPa/DKDZ2OlVH8UkQ1aB9RYruW6UaDf9rO7woPlYiydD1gNPqHaSe0g6A9Szwx3a9/YnoYanjP+huWn++GCvTfX2/OLBXBB2yzGr0ECa2FBasfh8wzxu3JgB5op8L9baO1nd4mYQaQWhw2HQXWjYo3K2rs7OJnhqlZLWfxYVaPRxQ5XOIVlCqdyEt5y3JbeajIMK
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN0PR10MB5128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(396003)(39860400002)(346002)(136003)(230922051799003)(64100799003)(451199024)(186009)(1800799012)(38100700002)(26005)(66946007)(66556008)(66476007)(6916009)(316002)(6506007)(6512007)(9686003)(83380400001)(41300700001)(2906002)(478600001)(6486002)(6666004)(7416002)(4326008)(8936002)(8676002)(5660300002)(86362001)(44832011)(48020200002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?GNfAFjJXzjoW8yGHYXa6IrLjFYhi1GkaImlko+rd5EZ2PDqZ2wbM3yqRsdbD?=
- =?us-ascii?Q?BSiYmFd+LdsZkDbpbVbVhJX6iqRpYK4OuAswqM/hax3gORkrz1U8efnvBhda?=
- =?us-ascii?Q?sMeKBFLadBf7FQz3zSQzIpXAtQyoIVNpZ/p4irQIsDCpEBsKgpj/sB18RAuq?=
- =?us-ascii?Q?mtKAa9Hk5kTkk9WnBQkvX/ifbdp/QMIay4XMVBIKs/aCkj/fNkKIp5YELCTb?=
- =?us-ascii?Q?0Ibck/E9dJw+wueozDS+Z9cB3Fp7Sm7VMK3zfGZNaiotOOt5qSJ/gHQSFpAb?=
- =?us-ascii?Q?n14yOYyPgv7M6KqTEK+vB4L2PtednpjcSd69yO42XsHIqLuDdoyRCEsLlj2N?=
- =?us-ascii?Q?JZg8kMBF6uAWfy7LBWEY08lvI9nbheu9KUQH/HKNSPDTglNYdpMf3a1LcQWx?=
- =?us-ascii?Q?lUfZtF4YBtIsFseelXKneP8XUVEXplfCE2KaqYn3bFcwzhOS/WMNaLN2kk+U?=
- =?us-ascii?Q?Wear2TIPdb/WbBBTFKgUuiiMCVQwyJqGmPXAHSAcZcneuItr4sw/v/hG0jIg?=
- =?us-ascii?Q?NkKcwysgvSKUEJvONsJdO9+5nFmOzm2kkuxvfHnfZt3IMyAUDfl7G3nfjbvH?=
- =?us-ascii?Q?RfhtwU0o8Za9M03A+dLwj2JrOJSq/G9t95NHqpBXjlLrzYMFwzWqUyyHOw1a?=
- =?us-ascii?Q?mZh4Fle+glf7Uivpa8dgCByEHrCaKraXX6FYxSJxZVWSyKALXQJMByY3X6k1?=
- =?us-ascii?Q?KoZstigO/M2XPvdCKhxjhpHsXdry9K6CUWvEeHEZziPWDnoYel68VX5FORij?=
- =?us-ascii?Q?xj2sKB94VdWxN6/DarJIgmkr5WwaiA7jLVhduiR7UjpxqjKoHHXeB/GSOyY7?=
- =?us-ascii?Q?nUHvHz1K3r4XsfF4o7SkihmimjeneGDZAHHAhnUbWniI0JyXnkpLoP+3p+/m?=
- =?us-ascii?Q?3d+Th+y50sD2QdC4mPgp2WQqrTadHJhMCucQ4JXlOViVv7kDDYYK14Z08zcw?=
- =?us-ascii?Q?/fbCihaoWKDBFM+E27XHn4fuLYDeFGyNFl0IdYIIZ+XbpYNgcYt37dPor4gX?=
- =?us-ascii?Q?5QOCPDOhB1dIRTByBKp5AtWqa49KuFHk5IBVfRH+KeB0siwM8EXMtLdCvGPd?=
- =?us-ascii?Q?7D2Hu9pWc99hlsCxnwtVWCO0VfH62nkjY7aTAxgNZl1Yf134TbF3O5D7ZVYB?=
- =?us-ascii?Q?amnDbXYZwSXmBUnhPUQLHBk75EVQhMtdf/8wltr4oj8IY8DqP/xjRSxfxGy2?=
- =?us-ascii?Q?S4pck4rkdBS1NrCjlUQ8Z7xqaE01yMfBavbrEJvRWVsAmnY3fxjvL+QKtpya?=
- =?us-ascii?Q?/yI8LB5WwF10vkNR5Yr5jSwSexlT0J+IBnbH9JBp6sJvcI8eZaIEfKawSKHt?=
- =?us-ascii?Q?LH/lfzRC3QN3IawxKustgjMEpT9EsaqHEdyNWrXnjbSqBO8UG5aIVYKv/UVA?=
- =?us-ascii?Q?ut3DGtrTOO7Z7P2gg8/l0pAdyHSAu9OzD8pVoCoBPq8UJXzmh0jGC9CgMkXJ?=
- =?us-ascii?Q?TuVcFyDf9fIjws8OHD9skIAC3g2i5yDUZVYRkb2CHfKjtc6MWCtGfqUWGdSj?=
- =?us-ascii?Q?dbO1EnntexR2iXkP8rJNjdu37GIXU8jKuX2PyivA/2RiGjn0DorPDSuPSpbJ?=
- =?us-ascii?Q?NF4NwdkAGhbt/nKNgvDgxwBT+O3X736M/tn6lCpu2lpJFaefSeQf0rvmaSHz?=
- =?us-ascii?Q?DQ=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?wLZKEf/LEMMsOOBM9P178z/Hq24Cd89rxh/Ifi5X2g7kHPL0QAASJvlCeFCf?=
- =?us-ascii?Q?or547dlnGoqT5a450LiyyBvJoCzHVRR5loPsxcEVxGvO1Qhk+h5EoK5+Ow0u?=
- =?us-ascii?Q?GK8+wgjQOzagLswkSwO1Qms5jxw4R4gv+q17wzRX8zTOf1lkVEWvj7x6iow7?=
- =?us-ascii?Q?bCZfugR8ZtjmX2B94yNRDaaFoJ/3KRUguaoxzrMzZAudPyjxQAx2YKVQh9Xu?=
- =?us-ascii?Q?NPtMPBNIneKmii04+/KTi8yuZJTSJ6tVfMrU7+/Kg5J1Zw/KUMk3llcBEXUF?=
- =?us-ascii?Q?Fd92lGD+VdvuA0mp8XMrqEDqZmaLUCot8jEmazqzLOXTcdLbhC0sTPiRjHVn?=
- =?us-ascii?Q?BZamQPE6jB+ltsToT4zdJ3zEoXiGc2mGHFQFomxmummRIE8wqJxCkT1z//ZI?=
- =?us-ascii?Q?lw/6LQPaC91FNTHXwjRKgBCPvLTYAdXsolnW8gf0Dco85wwHdz5Uo4NB2gr/?=
- =?us-ascii?Q?t3iVok48ZYQySElnmGm6gRzczbHOKGVsQPikPj23D1B386pgG3O/TqYNRATh?=
- =?us-ascii?Q?73V9zXA9ljq48yFJpPbRaFPSEKduZpd4s/0WiMAfWGPayeTYwo+YlNonBs4A?=
- =?us-ascii?Q?waOVOVO3Hk6g0SuoweVM5Y2vxuUctJfcvHtIJZaoFbytimQUsGl8tSoam2RF?=
- =?us-ascii?Q?CU9y8sjeIM7tU8CDItD4O1/xv0VuUoxIe/PbQ7ZRpbc3cxlIi/hnzOtWvXNL?=
- =?us-ascii?Q?B3k8TaBYrCRpNoTpfX10rEQphnTXfdWnzmYJXEexCwgeEIN1bIB5jZSW5czd?=
- =?us-ascii?Q?Euevlff+et/94s52i0RADTAtrwRrxRiuGFb4dHrSrqlCGVzkfIuLgAD05GhL?=
- =?us-ascii?Q?01S9fK7ebxjwycZ9BbCouFdnK/rJIwV1/FJf8XDlzenAq85ss5ZQh+XrIA4H?=
- =?us-ascii?Q?14y7uuhuRPTu/M52aAsejS6NU+KGlXYakF0fzVxxbyNDxTYIMrEf2U+UhZij?=
- =?us-ascii?Q?NnPDo9KjRZVaixg72b/JL49lZZ6bTnACvdodqMtKttw=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 434b12ae-1d73-44a1-dada-08dbf425cdac
-X-MS-Exchange-CrossTenant-AuthSource: BN0PR10MB5128.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Dec 2023 17:32:20.5976
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: bDX0udI3AhKEo32kJaBGgCFeces/Tr/MoR3vzq/Kq8TNAmL5gIqjA6PpWpHvUJX1l0JqH4JTwKuFLh9THrj2nA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR10MB6480
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-03_15,2023-11-30_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=867 mlxscore=0
- bulkscore=0 malwarescore=0 phishscore=0 suspectscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
- definitions=main-2312030138
-X-Proofpoint-ORIG-GUID: QSMAtLXo3fFRsVfhxpXDb1HsYUThUuhZ
-X-Proofpoint-GUID: QSMAtLXo3fFRsVfhxpXDb1HsYUThUuhZ
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231203120651.371429-1-savicaleksa83@gmail.com>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 02, 2023 at 09:07:25PM +0000, chenxiaosongemail@foxmail.com wrote:
-> From: ChenXiaoSong <chenxiaosong@kylinos.cn>
+On Sun, Dec 03, 2023 at 01:06:48PM +0100, Aleksa Savic wrote:
+> This driver exposes hardware sensors of the Gigabyte AORUS Waterforce
+> all-in-one CPU liquid coolers, which communicate through a proprietary
+> USB HID protocol. Report offsets were initially discovered in [1] and
+> confirmed by me on a Waterforce X240 by observing the sent reports from
+> the official software.
 > 
-> Callback operations enum is defined in client and server, move it to
-> common header file.
+> Available sensors are pump and fan speed in RPM, as well as coolant
+> temperature. Also available through debugfs is the firmware version.
 > 
-> Signed-off-by: ChenXiaoSong <chenxiaosong@kylinos.cn>
-
-LGTM.
-
-I can take this through the nfsd-next tree if I get an Acked-by:
-from the NFS client maintainers. If they would like to take this
-through the NFS client tree, let me know, and I will send my
-Acked-by.
-
-
+> Attaching a fan is optional and allows it to be controlled from the
+> device. If it's not connected, the fan-related sensors will report
+> zeroes.
+> 
+> The addressable RGB LEDs and LCD screen are not supported in this
+> driver and should be controlled through userspace tools.
+> 
+> [1]: https://github.com/liquidctl/liquidctl/issues/167
+> 
+> Signed-off-by: Aleksa Savic <savicaleksa83@gmail.com>
 > ---
->  fs/nfs/callback.h      | 19 -------------------
->  fs/nfsd/nfs4callback.c | 26 +-------------------------
->  include/linux/nfs4.h   | 22 ++++++++++++++++++++++
->  3 files changed, 23 insertions(+), 44 deletions(-)
+> Changes in v2 (fix issues reported by kernel bot):
+> - Add driver doc to hwmon doc index
+> - Initialize ret value in waterforce_get_status() to 0
+> ---
+>  Documentation/hwmon/gigabyte_waterforce.rst |  47 +++
+>  Documentation/hwmon/index.rst               |   1 +
+>  MAINTAINERS                                 |   7 +
+>  drivers/hwmon/Kconfig                       |  10 +
+>  drivers/hwmon/Makefile                      |   1 +
+>  drivers/hwmon/gigabyte_waterforce.c         | 439 ++++++++++++++++++++
+>  6 files changed, 505 insertions(+)
+>  create mode 100644 Documentation/hwmon/gigabyte_waterforce.rst
+>  create mode 100644 drivers/hwmon/gigabyte_waterforce.c
 > 
-> diff --git a/fs/nfs/callback.h b/fs/nfs/callback.h
-> index ccd4f245cae2..0279b78b5fc9 100644
-> --- a/fs/nfs/callback.h
-> +++ b/fs/nfs/callback.h
-> @@ -19,25 +19,6 @@ enum nfs4_callback_procnum {
->  	CB_COMPOUND = 1,
->  };
->  
-> -enum nfs4_callback_opnum {
-> -	OP_CB_GETATTR = 3,
-> -	OP_CB_RECALL  = 4,
-> -/* Callback operations new to NFSv4.1 */
-> -	OP_CB_LAYOUTRECALL  = 5,
-> -	OP_CB_NOTIFY        = 6,
-> -	OP_CB_PUSH_DELEG    = 7,
-> -	OP_CB_RECALL_ANY    = 8,
-> -	OP_CB_RECALLABLE_OBJ_AVAIL = 9,
-> -	OP_CB_RECALL_SLOT   = 10,
-> -	OP_CB_SEQUENCE      = 11,
-> -	OP_CB_WANTS_CANCELLED = 12,
-> -	OP_CB_NOTIFY_LOCK   = 13,
-> -	OP_CB_NOTIFY_DEVICEID = 14,
-> -/* Callback operations new to NFSv4.2 */
-> -	OP_CB_OFFLOAD = 15,
-> -	OP_CB_ILLEGAL = 10044,
-> -};
-> -
->  struct nfs4_slot;
->  struct cb_process_state {
->  	__be32			drc_status;
-> diff --git a/fs/nfsd/nfs4callback.c b/fs/nfsd/nfs4callback.c
-> index 92bc109dabe6..30aa241038eb 100644
-> --- a/fs/nfsd/nfs4callback.c
-> +++ b/fs/nfsd/nfs4callback.c
-> @@ -31,6 +31,7 @@
->   *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
->   */
->  
-> +#include <linux/nfs4.h>
->  #include <linux/sunrpc/clnt.h>
->  #include <linux/sunrpc/xprt.h>
->  #include <linux/sunrpc/svc_xprt.h>
-> @@ -101,31 +102,6 @@ static int decode_cb_fattr4(struct xdr_stream *xdr, uint32_t *bitmap,
->  	return 0;
->  }
->  
-> -/*
-> - *	nfs_cb_opnum4
-> - *
-> - *	enum nfs_cb_opnum4 {
-> - *		OP_CB_GETATTR		= 3,
-> - *		  ...
-> - *	};
-> - */
-> -enum nfs_cb_opnum4 {
-> -	OP_CB_GETATTR			= 3,
-> -	OP_CB_RECALL			= 4,
-> -	OP_CB_LAYOUTRECALL		= 5,
-> -	OP_CB_NOTIFY			= 6,
-> -	OP_CB_PUSH_DELEG		= 7,
-> -	OP_CB_RECALL_ANY		= 8,
-> -	OP_CB_RECALLABLE_OBJ_AVAIL	= 9,
-> -	OP_CB_RECALL_SLOT		= 10,
-> -	OP_CB_SEQUENCE			= 11,
-> -	OP_CB_WANTS_CANCELLED		= 12,
-> -	OP_CB_NOTIFY_LOCK		= 13,
-> -	OP_CB_NOTIFY_DEVICEID		= 14,
-> -	OP_CB_OFFLOAD			= 15,
-> -	OP_CB_ILLEGAL			= 10044
-> -};
-> -
->  static void encode_nfs_cb_opnum4(struct xdr_stream *xdr, enum nfs_cb_opnum4 op)
->  {
->  	__be32 *p;
-> diff --git a/include/linux/nfs4.h b/include/linux/nfs4.h
-> index c11c4db34639..ef8d2d618d5b 100644
-> --- a/include/linux/nfs4.h
-> +++ b/include/linux/nfs4.h
-> @@ -869,4 +869,26 @@ enum {
->  	RCA4_TYPE_MASK_OTHER_LAYOUT_MAX	= 15,
->  };
->  
-> +enum nfs_cb_opnum4 {
-> +	OP_CB_GETATTR = 3,
-> +	OP_CB_RECALL  = 4,
+> diff --git a/Documentation/hwmon/gigabyte_waterforce.rst b/Documentation/hwmon/gigabyte_waterforce.rst
+> new file mode 100644
+> index 000000000000..d47f3e8516ee
+> --- /dev/null
+> +++ b/Documentation/hwmon/gigabyte_waterforce.rst
+> @@ -0,0 +1,47 @@
+> +.. SPDX-License-Identifier: GPL-2.0-or-later
 > +
-> +	/* Callback operations new to NFSv4.1 */
-> +	OP_CB_LAYOUTRECALL  = 5,
-> +	OP_CB_NOTIFY        = 6,
-> +	OP_CB_PUSH_DELEG    = 7,
-> +	OP_CB_RECALL_ANY    = 8,
-> +	OP_CB_RECALLABLE_OBJ_AVAIL = 9,
-> +	OP_CB_RECALL_SLOT   = 10,
-> +	OP_CB_SEQUENCE      = 11,
-> +	OP_CB_WANTS_CANCELLED = 12,
-> +	OP_CB_NOTIFY_LOCK   = 13,
-> +	OP_CB_NOTIFY_DEVICEID = 14,
+> +Kernel driver gigabyte_waterforce
+> +=================================
 > +
-> +	/* Callback operations new to NFSv4.2 */
-> +	OP_CB_OFFLOAD = 15,
+> +Supported devices:
 > +
-> +	OP_CB_ILLEGAL = 10044,
+> +* Gigabyte AORUS WATERFORCE X240
+> +* Gigabyte AORUS WATERFORCE X280
+> +* Gigabyte AORUS WATERFORCE X360
+> +
+> +Author: Aleksa Savic
+> +
+> +Description
+> +-----------
+> +
+> +This driver enables hardware monitoring support for the listed Gigabyte Waterforce
+> +all-in-one CPU liquid coolers. Available sensors are pump and fan speed in RPM, as
+> +well as coolant temperature. Also available through debugfs is the firmware version.
+> +
+> +Attaching a fan is optional and allows it to be controlled from the device. If
+> +it's not connected, the fan-related sensors will report zeroes.
+> +
+> +The addressable RGB LEDs and LCD screen are not supported in this driver and should
+> +be controlled through userspace tools.
+> +
+> +Usage notes
+> +-----------
+> +
+> +As these are USB HIDs, the driver can be loaded automatically by the kernel and
+> +supports hot swapping.
+> +
+> +Sysfs entries
+> +-------------
+> +
+> +=========== =============================================
+> +fan1_input  Fan speed (in rpm)
+> +fan2_input  Pump speed (in rpm)
+> +temp1_input Coolant temperature (in millidegrees Celsius)
+> +=========== =============================================
+> +
+> +Debugfs entries
+> +---------------
+> +
+> +================ =======================
+> +firmware_version Device firmware version
+> +================ =======================
+> diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
+> index 095c36f5e8a1..36101e9e38e9 100644
+> --- a/Documentation/hwmon/index.rst
+> +++ b/Documentation/hwmon/index.rst
+> @@ -73,6 +73,7 @@ Hardware Monitoring Kernel Drivers
+>     ftsteutates
+>     g760a
+>     g762
+> +   gigabyte_waterforce
+>     gsc-hwmon
+>     gl518sm
+>     gxp-fan-ctrl
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 97f51d5ec1cf..b1a69c5042b8 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -8960,6 +8960,13 @@ F:	Documentation/filesystems/gfs2*
+>  F:	fs/gfs2/
+>  F:	include/uapi/linux/gfs2_ondisk.h
+>  
+> +GIGABYTE WATERFORCE SENSOR DRIVER
+> +M:	Aleksa Savic <savicaleksa83@gmail.com>
+> +L:	linux-hwmon@vger.kernel.org
+> +S:	Maintained
+> +F:	Documentation/hwmon/gigabyte_waterforce.rst
+> +F:	drivers/hwmon/gigabyte_waterforce.c
+> +
+>  GIGABYTE WMI DRIVER
+>  M:	Thomas Weiﬂschuh <thomas@weissschuh.net>
+>  L:	platform-driver-x86@vger.kernel.org
+> diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
+> index 76cb05db1dcf..a608264da87d 100644
+> --- a/drivers/hwmon/Kconfig
+> +++ b/drivers/hwmon/Kconfig
+> @@ -664,6 +664,16 @@ config SENSORS_FTSTEUTATES
+>  	  This driver can also be built as a module. If so, the module
+>  	  will be called ftsteutates.
+>  
+> +config SENSORS_GIGABYTE_WATERFORCE
+> +	tristate "Gigabyte Waterforce X240/X280/X360 AIO CPU coolers"
+> +	depends on USB_HID
+> +	help
+> +	  If you say yes here you get support for hardware monitoring for the
+> +	  Gigabyte Waterforce X240/X280/X360 all-in-one CPU liquid coolers.
+> +
+> +	  This driver can also be built as a module. If so, the module
+> +	  will be called gigabyte_waterforce.
+> +
+>  config SENSORS_GL518SM
+>  	tristate "Genesys Logic GL518SM"
+>  	depends on I2C
+> diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
+> index e84bd9685b5c..47be39af5c03 100644
+> --- a/drivers/hwmon/Makefile
+> +++ b/drivers/hwmon/Makefile
+> @@ -80,6 +80,7 @@ obj-$(CONFIG_SENSORS_FSCHMD)	+= fschmd.o
+>  obj-$(CONFIG_SENSORS_FTSTEUTATES) += ftsteutates.o
+>  obj-$(CONFIG_SENSORS_G760A)	+= g760a.o
+>  obj-$(CONFIG_SENSORS_G762)	+= g762.o
+> +obj-$(CONFIG_SENSORS_GIGABYTE_WATERFORCE) += gigabyte_waterforce.o
+>  obj-$(CONFIG_SENSORS_GL518SM)	+= gl518sm.o
+>  obj-$(CONFIG_SENSORS_GL520SM)	+= gl520sm.o
+>  obj-$(CONFIG_SENSORS_GSC)	+= gsc-hwmon.o
+> diff --git a/drivers/hwmon/gigabyte_waterforce.c b/drivers/hwmon/gigabyte_waterforce.c
+> new file mode 100644
+> index 000000000000..5c1084ad340a
+> --- /dev/null
+> +++ b/drivers/hwmon/gigabyte_waterforce.c
+> @@ -0,0 +1,439 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +/*
+> + * hwmon driver for Gigabyte AORUS Waterforce AIO CPU coolers: X240, X280 and X360.
+> + *
+> + * Copyright 2023 Aleksa Savic <savicaleksa83@gmail.com>
+> + */
+> +
+> +#include <linux/debugfs.h>
+> +#include <linux/hid.h>
+> +#include <linux/hwmon.h>
+> +#include <linux/jiffies.h>
+> +#include <linux/module.h>
+> +#include <linux/spinlock.h>
+> +#include <asm/unaligned.h>
+> +
+> +#define DRIVER_NAME	"gigabyte_waterforce"
+> +
+> +#define USB_VENDOR_ID_GIGABYTE		0x1044
+> +#define USB_PRODUCT_ID_WATERFORCE	0x7a4d	/* Gigabyte AORUS WATERFORCE X240, X280 and X360 */
+> +
+> +#define STATUS_VALIDITY		(2 * 1000)	/* ms */
+> +#define MAX_REPORT_LENGTH	6144
+> +
+> +#define WATERFORCE_TEMP_SENSOR	0xD
+> +#define WATERFORCE_FAN_SPEED	0x02
+> +#define WATERFORCE_PUMP_SPEED	0x05
+> +#define WATERFORCE_FAN_DUTY	0x08
+> +#define WATERFORCE_PUMP_DUTY	0x09
+> +
+> +/* Control commands, inner offsets and lengths */
+> +static const u8 get_status_cmd[] = { 0x99, 0xDA };
+> +
+> +#define FIRMWARE_VER_START_OFFSET_1	2
+> +#define FIRMWARE_VER_START_OFFSET_2	3
+> +static const u8 get_firmware_ver_cmd[] = { 0x99, 0xD6 };
+> +
+> +/* Command lengths */
+> +#define GET_STATUS_CMD_LENGTH		2
+> +#define GET_FIRMWARE_VER_CMD_LENGTH	2
+> +
+> +static const char *const waterforce_temp_label[] = {
+> +	"Coolant temp"
 > +};
 > +
->  #endif
-> -- 
-> 2.34.1
-> 
-> 
+> +static const char *const waterforce_speed_label[] = {
+> +	"Fan speed",
+> +	"Pump speed"
+> +};
+> +
+> +struct waterforce_data {
+> +	struct hid_device *hdev;
+> +	struct device *hwmon_dev;
+> +	struct dentry *debugfs;
+> +	/* For locking access to buffer */
+> +	struct mutex buffer_lock;
+> +	/* For queueing multiple readers */
+> +	struct mutex status_report_request_mutex;
+> +	/* For reinitializing the completion below */
+> +	spinlock_t status_report_request_lock;
+> +	struct completion status_report_received;
+> +	struct completion fw_version_processed;
+> +
+> +	/* Sensor data */
+> +	s32 temp_input[1];
+> +	u16 speed_input[2];	/* Fan and pump speed in RPM */
+> +	u8 duty_input[2];	/* Fan and pump duty in 0-100% */
+> +
+> +	u8 *buffer;
+> +	int firmware_version;
+> +	unsigned long updated;	/* jiffies */
+> +};
+> +
+> +static umode_t waterforce_is_visible(const void *data,
+> +				     enum hwmon_sensor_types type, u32 attr, int channel)
+> +{
+> +	switch (type) {
+> +	case hwmon_temp:
+> +		switch (attr) {
+> +		case hwmon_temp_label:
+> +		case hwmon_temp_input:
+> +			return 0444;
+> +		default:
+> +			break;
+> +		}
+> +		break;
+> +	case hwmon_fan:
+> +		switch (attr) {
+> +		case hwmon_fan_label:
+> +		case hwmon_fan_input:
+> +			return 0444;
+> +		default:
+> +			break;
+> +		}
+> +		break;
+> +	case hwmon_pwm:
+> +		switch (attr) {
+> +		case hwmon_pwm_input:
+> +			return 0444;
+> +		default:
+> +			break;
+> +		}
+> +		break;
+> +	default:
+> +		break;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +/* Writes the command to the device with the rest of the report filled with zeroes */
+> +static int waterforce_write_expanded(struct waterforce_data *priv, const u8 *cmd, int cmd_length)
+> +{
+> +	int ret;
+> +
+> +	mutex_lock(&priv->buffer_lock);
+> +
+> +	memset(priv->buffer, 0x00, MAX_REPORT_LENGTH);
+> +	memcpy(priv->buffer, cmd, cmd_length);
+> +	ret = hid_hw_output_report(priv->hdev, priv->buffer, MAX_REPORT_LENGTH);
+> +
+> +	mutex_unlock(&priv->buffer_lock);
+> +	return ret;
+> +}
+> +
+> +static int waterforce_get_status(struct waterforce_data *priv)
+> +{
+> +	int ret = 0;
+> +
+> +	if (!mutex_lock_interruptible(&priv->status_report_request_mutex)) {
+> +		if (!time_after(jiffies, priv->updated + msecs_to_jiffies(STATUS_VALIDITY))) {
+> +			/* Data is up to date */
+> +			goto unlock_and_return;
+> +		}
 
--- 
-Chuck Lever
+What is the point of this check ? The calling code already checks it.
+Checking it twice, once inside and once outside the lock, seems
+excessive.
+
+> +
+> +		/*
+> +		 * Disable raw event parsing for a moment to safely reinitialize the
+> +		 * completion. Reinit is done because hidraw could have triggered
+> +		 * the raw event parsing and marked the priv->status_report_received
+> +		 * completion as done.
+> +		 */
+> +		spin_lock_bh(&priv->status_report_request_lock);
+> +		reinit_completion(&priv->status_report_received);
+> +		spin_unlock_bh(&priv->status_report_request_lock);
+> +
+> +		/* Send command for getting status */
+> +		ret = waterforce_write_expanded(priv, get_status_cmd, GET_STATUS_CMD_LENGTH);
+> +		if (ret < 0)
+> +			return ret;
+> +
+> +		if (wait_for_completion_interruptible_timeout
+> +		    (&priv->status_report_received, msecs_to_jiffies(STATUS_VALIDITY)) <= 0)
+> +			ret = -ENODATA;
+
+-ETIMEDOUT if timed out, or error code if one was reported.
+
+> +unlock_and_return:
+> +		mutex_unlock(&priv->status_report_request_mutex);
+> +		if (ret < 0)
+> +			return ret;
+> +	} else {
+> +		return -ENODATA;
+> +	}
+
+This should be something like
+
+	rc = mutex_lock_interruptible(&priv->status_report_request_mutex);
+	if (rc)
+		return rc;
+
+The returned error code should not be overwritten. If you want to make the mutex
+interruptible, report the interrupt event to the caller.
+
+> +
+> +	return 0;
+> +}
+> +
+> +static int waterforce_read(struct device *dev, enum hwmon_sensor_types type,
+> +			   u32 attr, int channel, long *val)
+> +{
+> +	int ret;
+> +	struct waterforce_data *priv = dev_get_drvdata(dev);
+
+I don't enfore it, but declaring variables in reverse christmas tree order
+(longer variables first) does look nicer.
+> +
+> +	if (time_after(jiffies, priv->updated + msecs_to_jiffies(STATUS_VALIDITY))) {
+> +		/* Request status on demand */
+> +		ret = waterforce_get_status(priv);
+> +		if (ret < 0)
+> +			return -ENODATA;
+
+Again, please do not overwrite error codes. Here you are overwriting it twice,
+which is really not appropriate.
+
+> +	}
+> +
+> +	switch (type) {
+> +	case hwmon_temp:
+> +		*val = priv->temp_input[channel];
+> +		break;
+> +	case hwmon_fan:
+> +		*val = priv->speed_input[channel];
+> +		break;
+> +	case hwmon_pwm:
+> +		switch (attr) {
+> +		case hwmon_pwm_input:
+> +			*val = DIV_ROUND_CLOSEST(priv->duty_input[channel] * 255, 100);
+> +			break;
+> +		default:
+> +			break;
+> +		}
+> +		break;
+> +	default:
+> +		return -EOPNOTSUPP;	/* unreachable */
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int waterforce_read_string(struct device *dev, enum hwmon_sensor_types type,
+> +				  u32 attr, int channel, const char **str)
+> +{
+> +	switch (type) {
+> +	case hwmon_temp:
+> +		*str = waterforce_temp_label[channel];
+> +		break;
+> +	case hwmon_fan:
+> +		*str = waterforce_speed_label[channel];
+> +		break;
+> +	default:
+> +		return -EOPNOTSUPP;	/* unreachable */
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int waterforce_get_fw_ver(struct hid_device *hdev)
+> +{
+> +	int ret;
+> +	struct waterforce_data *priv = hid_get_drvdata(hdev);
+> +
+> +	ret = waterforce_write_expanded(priv, get_firmware_ver_cmd, GET_FIRMWARE_VER_CMD_LENGTH);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	if (wait_for_completion_interruptible_timeout
+> +	    (&priv->fw_version_processed, msecs_to_jiffies(STATUS_VALIDITY)) <= 0)
+> +		return -ENODATA;
+
+Another overwritten error code.
+
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct hwmon_ops waterforce_hwmon_ops = {
+> +	.is_visible = waterforce_is_visible,
+> +	.read = waterforce_read,
+> +	.read_string = waterforce_read_string
+> +};
+> +
+> +static const struct hwmon_channel_info *waterforce_info[] = {
+> +	HWMON_CHANNEL_INFO(temp,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL),
+> +	HWMON_CHANNEL_INFO(fan,
+> +			   HWMON_F_INPUT | HWMON_F_LABEL,
+> +			   HWMON_F_INPUT | HWMON_F_LABEL),
+> +	HWMON_CHANNEL_INFO(pwm,
+> +			   HWMON_PWM_INPUT,
+> +			   HWMON_PWM_INPUT),
+> +	NULL
+> +};
+> +
+> +static const struct hwmon_chip_info waterforce_chip_info = {
+> +	.ops = &waterforce_hwmon_ops,
+> +	.info = waterforce_info,
+> +};
+> +
+> +static int waterforce_raw_event(struct hid_device *hdev, struct hid_report *report, u8 *data,
+> +				int size)
+> +{
+> +	struct waterforce_data *priv = hid_get_drvdata(hdev);
+> +
+> +	if (data[0] == get_firmware_ver_cmd[0] && data[1] == get_firmware_ver_cmd[1]) {
+> +		/* Received a firmware version report */
+> +		priv->firmware_version =
+> +		    data[FIRMWARE_VER_START_OFFSET_1] * 10 + data[FIRMWARE_VER_START_OFFSET_2];
+> +
+> +		if (!completion_done(&priv->fw_version_processed))
+> +			complete_all(&priv->fw_version_processed);
+> +		return 0;
+> +	}
+> +
+> +	if (data[0] != get_status_cmd[0] || data[1] != get_status_cmd[1])
+> +		return 0;
+> +
+> +	priv->temp_input[0] = data[WATERFORCE_TEMP_SENSOR] * 1000;
+> +	priv->speed_input[0] = get_unaligned_le16(data + WATERFORCE_FAN_SPEED);
+> +	priv->speed_input[1] = get_unaligned_le16(data + WATERFORCE_PUMP_SPEED);
+> +	priv->duty_input[0] = data[WATERFORCE_FAN_DUTY];
+> +	priv->duty_input[1] = data[WATERFORCE_PUMP_DUTY];
+> +
+> +	if (!completion_done(&priv->status_report_received))
+> +		complete_all(&priv->status_report_received);
+> +
+> +	priv->updated = jiffies;
+> +
+> +	return 0;
+> +}
+> +
+> +#ifdef CONFIG_DEBUG_FS
+> +
+
+Those ifdefs are unnecessary.
+
+> +static int firmware_version_show(struct seq_file *seqf, void *unused)
+> +{
+> +	struct waterforce_data *priv = seqf->private;
+> +
+> +	if (!priv->firmware_version)
+> +		return -ENODATA;
+
+Maybe don't create the file in the firmware version is not reported.
+Returning an error when trying to read it seems pointless (and confusing).
+
+> +
+> +	seq_printf(seqf, "%u\n", priv->firmware_version);
+> +
+> +	return 0;
+> +}
+> +DEFINE_SHOW_ATTRIBUTE(firmware_version);
+> +
+> +static void waterforce_debugfs_init(struct waterforce_data *priv)
+> +{
+> +	char name[64];
+> +
+> +	scnprintf(name, sizeof(name), "%s-%s", DRIVER_NAME, dev_name(&priv->hdev->dev));
+> +
+> +	priv->debugfs = debugfs_create_dir(name, NULL);
+> +	debugfs_create_file("firmware_version", 0444, priv->debugfs, priv, &firmware_version_fops);
+> +}
+> +
+> +#else
+> +
+> +static void waterforce_debugfs_init(struct waterforce_data *priv)
+> +{
+> +}
+> +
+> +#endif
+> +
+> +static int waterforce_probe(struct hid_device *hdev, const struct hid_device_id *id)
+> +{
+> +	struct waterforce_data *priv;
+> +	int ret;
+> +
+> +	priv = devm_kzalloc(&hdev->dev, sizeof(*priv), GFP_KERNEL);
+> +	if (!priv)
+> +		return -ENOMEM;
+> +
+> +	priv->hdev = hdev;
+> +	hid_set_drvdata(hdev, priv);
+> +
+> +	/*
+> +	 * Initialize priv->updated to STATUS_VALIDITY seconds in the past, making
+> +	 * the initial empty data invalid for waterforce_read() without the need for
+> +	 * a special case there.
+> +	 */
+> +	priv->updated = jiffies - msecs_to_jiffies(STATUS_VALIDITY);
+> +
+> +	ret = hid_parse(hdev);
+> +	if (ret) {
+> +		hid_err(hdev, "hid parse failed with %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	/*
+> +	 * Enable hidraw so existing user-space tools can continue to work.
+> +	 */
+> +	ret = hid_hw_start(hdev, HID_CONNECT_HIDRAW);
+> +	if (ret) {
+> +		hid_err(hdev, "hid hw start failed with %d\n", ret);
+> +		goto fail_and_stop;
+> +	}
+> +
+> +	ret = hid_hw_open(hdev);
+> +	if (ret) {
+> +		hid_err(hdev, "hid hw open failed with %d\n", ret);
+> +		goto fail_and_close;
+> +	}
+> +
+> +	priv->buffer = devm_kzalloc(&hdev->dev, MAX_REPORT_LENGTH, GFP_KERNEL);
+> +	if (!priv->buffer) {
+> +		ret = -ENOMEM;
+> +		goto fail_and_close;
+> +	}
+> +
+> +	mutex_init(&priv->status_report_request_mutex);
+> +	mutex_init(&priv->buffer_lock);
+> +	spin_lock_init(&priv->status_report_request_lock);
+> +	init_completion(&priv->status_report_received);
+> +	init_completion(&priv->fw_version_processed);
+> +
+> +	priv->hwmon_dev = hwmon_device_register_with_info(&hdev->dev, "waterforce",
+> +							  priv, &waterforce_chip_info, NULL);
+> +	if (IS_ERR(priv->hwmon_dev)) {
+> +		ret = PTR_ERR(priv->hwmon_dev);
+> +		hid_err(hdev, "hwmon registration failed with %d\n", ret);
+> +		goto fail_and_close;
+> +	}
+> +
+> +	hid_device_io_start(hdev);
+> +	ret = waterforce_get_fw_ver(hdev);
+> +	if (ret < 0)
+> +		hid_warn(hdev, "fw version request failed with %d\n", ret);
+> +	hid_device_io_stop(hdev);
+
+Doesn't this interfere with normal hwmon operation if a hwmon request
+is made immediately after hwmon device registration ?
+
+> +
+> +	waterforce_debugfs_init(priv);
+> +
+> +	return 0;
+> +
+> +fail_and_close:
+> +	hid_hw_close(hdev);
+> +fail_and_stop:
+> +	hid_hw_stop(hdev);
+> +	return ret;
+> +}
+> +
+> +static void waterforce_remove(struct hid_device *hdev)
+> +{
+> +	struct waterforce_data *priv = hid_get_drvdata(hdev);
+> +
+> +	hwmon_device_unregister(priv->hwmon_dev);
+> +
+> +	hid_hw_close(hdev);
+> +	hid_hw_stop(hdev);
+> +}
+> +
+> +static const struct hid_device_id waterforce_table[] = {
+> +	{ HID_USB_DEVICE(USB_VENDOR_ID_GIGABYTE, USB_PRODUCT_ID_WATERFORCE) },
+> +	{ }
+> +};
+> +
+> +MODULE_DEVICE_TABLE(hid, waterforce_table);
+> +
+> +static struct hid_driver waterforce_driver = {
+> +	.name = "waterforce",
+> +	.id_table = waterforce_table,
+> +	.probe = waterforce_probe,
+> +	.remove = waterforce_remove,
+> +	.raw_event = waterforce_raw_event,
+> +};
+> +
+> +static int __init waterforce_init(void)
+> +{
+> +	return hid_register_driver(&waterforce_driver);
+> +}
+> +
+> +static void __exit waterforce_exit(void)
+> +{
+> +	hid_unregister_driver(&waterforce_driver);
+> +}
+> +
+> +/* When compiled into the kernel, initialize after the HID bus */
+> +late_initcall(waterforce_init);
+> +module_exit(waterforce_exit);
+> +
+> +MODULE_LICENSE("GPL");
+> +MODULE_AUTHOR("Aleksa Savic <savicaleksa83@gmail.com>");
+> +MODULE_DESCRIPTION("Hwmon driver for Gigabyte AORUS Waterforce AIO coolers");
