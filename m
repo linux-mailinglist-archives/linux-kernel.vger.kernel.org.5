@@ -2,97 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5AD980265F
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 19:46:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1A1A802661
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 19:47:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233863AbjLCSqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 13:46:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48806 "EHLO
+        id S233999AbjLCSrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 13:47:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjLCSqe (ORCPT
+        with ESMTP id S229450AbjLCSrM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 13:46:34 -0500
-Received: from hua.moonlit-rail.com (hua.moonlit-rail.com [45.79.167.250])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 329AEDA;
-        Sun,  3 Dec 2023 10:46:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=moonlit-rail.com; s=rsa2021a; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=70zUFPke+a19wKXS4my6rjAuXUg8y4bgDDqcvhJdy1w=; t=1701629196; x=1704221196; 
-        b=KK0SUSi1yUNnLKYbNOMc9tSJk0ga0LOSL1KenY+2DT9DrzfIU93Gx+lyv/UMH32cDH/ywaopk//
-        IulSqRnmLQH7l4Kvoyb/YVEkAWTXqdjh14mxTTK0wMYZV5Surr0HnxfWOArtBdk8QdX8EokEAQL01
-        G4OHMb3zNe94xt2uEgktVKbIj/DPnki5b/Av/AUsrzYF6x+tZhY79WMmWlLDmlQVS8kowf8xx33JI
-        SnZpINifYp82hmO0h+l8wc8jmTFyO4QKGAkqYQ6EqYW7nzvR3tXCeY3s/7KnRH5UQlKpnQjNQMD8R
-        JXPf0A+ahexl7zIGBjGF+Lo9yVfywpaL1u7w==;
-DKIM-Signature: v=1; a=ed25519-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=moonlit-rail.com; s=edd2021a; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=70zUFPke+a19wKXS4my6rjAuXUg8y4bgDDqcvhJdy1w=; t=1701629196; x=1704221196; 
-        b=292S7UbIiK8DsG7o4rFr8uYpS0HOuwP6XGuE+e+mU2r1oJvLFBWawurIwo4O73rum/1lX3ytw3R
-        /QgvEr9AIBg==;
-Message-ID: <808556e5-46b9-41fe-9aeb-2c4782fd5a66@moonlit-rail.com>
-Date:   Sun, 3 Dec 2023 13:46:36 -0500
+        Sun, 3 Dec 2023 13:47:12 -0500
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80ABADA;
+        Sun,  3 Dec 2023 10:47:17 -0800 (PST)
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id BBC151C006F; Sun,  3 Dec 2023 19:47:14 +0100 (CET)
+Date:   Sun, 3 Dec 2023 19:47:14 +0100
+From:   Pavel Machek <pavel@denx.de>
+To:     Clark Williams <williams@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Carsten Emde <C.Emde@osadl.org>,
+        John Kacur <jkacur@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Daniel Wagner <daniel.wagner@suse.com>,
+        Tom Zanussi <tom.zanussi@linux.intel.com>,
+        Pavel Machek <pavel@denx.de>,
+        Joseph Salisbury <joseph.salisbury@canonical.com>
+Subject: Re: [ANNOUNCE] 6.1.64-rt17
+Message-ID: <ZWzNMjnF4NgNoKTu@duo.ucw.cz>
+References: <170147003175.315432.12322961896739098066@demetrius>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Regression: Inoperative bluetooth, Intel chipset, mainline kernel
- 6.6.2+
-To:     Oleksandr Natalenko <oleksandr@natalenko.name>,
-        Linux Bluetooth <linux-bluetooth@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Basavaraj Natikar <Basavaraj.Natikar@amd.com>
-Cc:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Zach <zacheryvig@outlook.com>,
-        Paul Menzel <pmenzel@molgen.mpg.de>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-References: <ee109942-ef8e-45b9-8cb9-a98a787fe094@moonlit-rail.com>
- <ZWl82n695TIC7nUO@archie.me>
- <115e819b-0271-403c-b034-ef3aebbb85cd@moonlit-rail.com>
- <2709774.mvXUDI8C0e@natalenko.name>
-Content-Language: en-US, en-GB
-From:   "Kris Karas (Bug Reporting)" <bugs-a21@moonlit-rail.com>
-In-Reply-To: <2709774.mvXUDI8C0e@natalenko.name>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="otRBZchght9PPm+Z"
+Content-Disposition: inline
+In-Reply-To: <170147003175.315432.12322961896739098066@demetrius>
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NEUTRAL,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[ Replying to both Oleksandr and Basavaraj ]
 
-Oleksandr Natalenko wrote:
-> Does passing `btusb.enable_autosuspend=N` via a kernel cmdline help? [1]
+--otRBZchght9PPm+Z
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Yes, this works around the problem.  Should be a good short-term 
-solution for those folks who need to wait for distro kernels to catch 
-up.  Thanks.
+Hi!
 
-Basavaraj Natikar wrote:
->> Can we enable RPM on specific controllers for AMD xHC 1.1
->> instead to cover all AMD xHC 1.1? 
->>
->> Please find below the proposed changes and let me know if it is OK?
-> 
-> sorry its 
-> pdev->device == 0x43f7
+> I'm pleased to announce the 6.1.64-rt17 stable release.
+>=20
+> You can get this release via the git tree at:
+>=20
+>   git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
+>=20
+>   branch: v6.1-rt
+>   Head SHA1: 10278c5eac700351db2dbfcce88be2df51725931
 
-Thanks, Basavaraj!  Yes, this fixes the problem on my hardware (by 
-making application of PM more selective).  Running successfully at the 
-moment using your (pdev->device amended) patch.
+Thanks a lot, perfect timing and made my life easier.
 
-Kris
+Best regards,
+								Pavel
+--=20
+DENX Software Engineering GmbH,        Managing Director: Erika Unter
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--otRBZchght9PPm+Z
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZWzNMgAKCRAw5/Bqldv6
+8rHxAJoDk030JPpDySEGISF17uV4iqK1LgCfX14sondzZnIg3de8DiE1uoMgy2I=
+=VU4F
+-----END PGP SIGNATURE-----
+
+--otRBZchght9PPm+Z--
