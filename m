@@ -2,65 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 990D58021A4
+	by mail.lfdr.de (Postfix) with ESMTP id 1E1958021A2
 	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 09:15:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233035AbjLCHxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 02:53:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46884 "EHLO
+        id S233218AbjLCIDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 03:03:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjLCHxX (ORCPT
+        with ESMTP id S229450AbjLCIDc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 02:53:23 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE8BD125
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 23:53:28 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-5c66988c2eeso451386a12.1
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Dec 2023 23:53:28 -0800 (PST)
+        Sun, 3 Dec 2023 03:03:32 -0500
+Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83EF1C0
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 00:03:38 -0800 (PST)
+Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-5cdc0b3526eso28842847b3.1
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Dec 2023 00:03:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701590008; x=1702194808; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=A333Tym+pDimr9g/5OsWQd95HIDuYjW7G190dYNC2Ek=;
-        b=KxDyVxoboefOxuSxAYiIDyltHrH5ASB00L9n3FUaxO0w2UmfZ7/PJX8M7gN7fnH9sA
-         UwVN9ZeE4qy0yqvX+7KU03rXbxo4VBnJs64qSzf3b4DE21c2L/A55hMsQcabft7J0yEX
-         4ERprTFr2PFYZr8cy1CKlAigywawgCV3KGsDRnxErHdMxMWC/cJqF7Fnfkp9LPFwqVwM
-         5WXVD1jDrmPiVKfdQdTV7mcOS3XSENKbUU11vOStr3Pq8rwr/L6vvubgJGtjYMLxu5OG
-         qUGRT8mO5IVtUREaxJO/PccbjoJ+yht5mm6Xq2RHBEKzxbSoGxfKarhqpHtptq6Z0V7K
-         HqJw==
+        d=gmail.com; s=20230601; t=1701590617; x=1702195417; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dTVJVIDBZaj5fzzMVjd2zG2bVjzxreayrJVae6FjjUs=;
+        b=K00nUIPcuRc0mhcPWlO4ECajga3brX6qTM8kN32qE+MhAlV5NhHmOEDaDHM2JUYxDg
+         sI6UhGmB8OXTYH4Pfz7gFoLy4yaeQwa82l9WgYEPG2A/rFf06WKgOAzuKPo+PI6eQA0Y
+         sFeMrvtWWaYipBZ7yqHUBaABUcqj/ufnDnB9hdmQ7xq7QSNBMlIx8ucfo2nYukf84oAj
+         BgpJegmCGxZhTPGN46yYcxVzz7sPjQ5LfY4e6AWbVua1J0X/+L4wvui3/LKghreRl9uO
+         oD4Gk3ErCHUV00DDBQ9aoWWgc4YbN72X7H/YV5S6n2amDp+wFJJCP1X92KEK4F87VQL4
+         e3+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701590008; x=1702194808;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=A333Tym+pDimr9g/5OsWQd95HIDuYjW7G190dYNC2Ek=;
-        b=bFTXr8O1MCyW9CFX3wVRvIvJTL6OSEPfeGBHTkKjoYSv2SSZITKPg5tvnAK54eDTVT
-         lU7DdGrk0Rn+tqKlynDBuPL+z41vyeNV2j8c48OefGTkMfGxL6UtwC/cnwSRar7ERq69
-         SQZ1+7s/q2r8DnwZ9GT0PuR9cW7z+QHuCrT3pJXfu75+3HwDKFyYjn5mpY+h40qG1SxN
-         xU3w3gHhbjm9G0ExO7UNuGp68+djU0Erm5W4HQQRd0kL35oHmb37uU2cISV+co0c31MR
-         AoM20QdKPPNgSmCJjr7/7DDg6k5J5kDiuI3ENtos1zHrIc+nR9wEUW2BylDtWEFIIVdT
-         kERQ==
-X-Gm-Message-State: AOJu0YxL7Wqv3bEUT8XYZzr6D8B/ijU2fgdv3PvFICOn/3fUJR/RZq+S
-        ZA9m9wmT+DOeTUWfueuRAWBEK33iezE=
-X-Google-Smtp-Source: AGHT+IEaeL/QJUdEdhw/TrA3CYikpm+3TLZXcxTxVLYZN1Kjy15Y7lh8gDlEDa6EJxRaf7uouhxGYQ==
-X-Received: by 2002:a05:6a20:8427:b0:18a:e4ed:cc41 with SMTP id c39-20020a056a20842700b0018ae4edcc41mr2910284pzd.23.1701590008172;
-        Sat, 02 Dec 2023 23:53:28 -0800 (PST)
-Received: from toolbox.. ([2401:4900:1f3e:53bf:50c7:2988:e019:4b97])
-        by smtp.gmail.com with ESMTPSA id e15-20020aa78c4f000000b006ce4c7ba448sm280491pfd.25.2023.12.02.23.53.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Dec 2023 23:53:27 -0800 (PST)
-From:   Ayush Singh <ayushdevel1325@gmail.com>
-To:     greybus-dev@lists.linaro.org
-Cc:     Ayush Singh <ayushdevel1325@gmail.com>, johan@kernel.org,
-        elder@kernel.org, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, jkridner@beagleboard.org,
-        kernel test robot <yujie.liu@intel.com>
-Subject: [PATCH V2] greybus: gb-beagleplay: Ensure le for values in transport
-Date:   Sun,  3 Dec 2023 13:23:10 +0530
-Message-ID: <20231203075312.255233-1-ayushdevel1325@gmail.com>
-X-Mailer: git-send-email 2.43.0
+        d=1e100.net; s=20230601; t=1701590617; x=1702195417;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dTVJVIDBZaj5fzzMVjd2zG2bVjzxreayrJVae6FjjUs=;
+        b=Pj2XBg34F9owXr0q5hI+jOzdUDkBStNNZ98PmchMJMZho2m2HtiuS70OF+d1+DXE8G
+         mkclIchE+KTEKIT7OdSVg4tJhF2Mm1egfOzb33Ew/nWF5t7dYEuf2RSQ2m3r9eBtLTWp
+         RMjax0W0QPofoCUdWXbyOXxTTH8K0rK2hBvTJRkZTg/5xwC1SrZpBZxBnh59lVjF8LP1
+         /N0NYn8YFGv2yd43VvB7fq/ttrhFea15M4FD51FDvGTD94pwKu2RfzanAZ6Bp8zMVdae
+         Yov6g8iCsTsP5wHrcADhfJ51ISBGHNFaewlMRtvZaoOmNdHLJF5trawlJtNeNSqc8WJn
+         ZrqQ==
+X-Gm-Message-State: AOJu0Yw6iJjXYprCF8Y5qReUDg9lKeg8XTHnfiZuQtKfcRrltbeGropY
+        CDhfj/TeQzKCbFDzhOIWUSS6/lqwlc2ApXpBcyY=
+X-Google-Smtp-Source: AGHT+IHcEsvhAqzzte4Z0+Bz3jNOY3S3+INoFR0W03gvySiM3WRw+Id8CGrsKCAdKWXtpofj72CzGEYimkoSDnUwFiI=
+X-Received: by 2002:a81:99d3:0:b0:5d3:a63b:88f7 with SMTP id
+ q202-20020a8199d3000000b005d3a63b88f7mr1157215ywg.25.1701590617445; Sun, 03
+ Dec 2023 00:03:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20231102002453.1299195-1-william@wkennington.com>
+ <20231102101009.15104-1-william@wkennington.com> <CAD_4BXgmCdc_H-XfmGnW3fa6H=cbONma6QzUiofNVZWJtcBwOg@mail.gmail.com>
+In-Reply-To: <CAD_4BXgmCdc_H-XfmGnW3fa6H=cbONma6QzUiofNVZWJtcBwOg@mail.gmail.com>
+From:   Tomer Maimon <tmaimon77@gmail.com>
+Date:   Sun, 3 Dec 2023 10:03:26 +0200
+Message-ID: <CAP6Zq1gG8d8AEPQZ0izrYdY66fxE3ec57jFDzBK5q6Zrji74qA@mail.gmail.com>
+Subject: Re: [PATCH v2] ARM: npcm: Add CPU hotplug callbacks for kexec support
+To:     William Kennington <william@wkennington.com>
+Cc:     tali.perry1@gmail.com, avifishman70@gmail.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        openbmc@lists.ozlabs.org, Brian Ma <chma0@nuvoton.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
         FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
@@ -71,56 +71,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ensure that the following values are little-endian:
-- header->pad (which is used for cport_id)
-- header->size
+Hi William,
 
-Fixes: ec558bbfea67 ("greybus: Add BeaglePlay Linux Driver")
-Reported-by: kernel test robot <yujie.liu@intel.com>
-Closes: https://lore.kernel.org/r/202311072329.Xogj7hGW-lkp@intel.com/
-Signed-off-by: Ayush Singh <ayushdevel1325@gmail.com>
----
-V2:
-- Ensure endianess for header->pad
-V1: https://lists.linaro.org/archives/list/greybus-dev@lists.linaro.org/message/K7UJ6PEAWBLNDMHLT2IO6OP5LQISHRUO/
+On Sat, 2 Dec 2023 at 01:51, William Kennington <william@wkennington.com> w=
+rote:
+>
+> On Thu, Nov 2, 2023 at 3:10=E2=80=AFAM William A. Kennington III
+> <william@wkennington.com> wrote:
+> >
+> > From: Brian Ma <chma0@nuvoton.com>
+> >
+> > Add callbacks required for kexec to function. The NPCM7xx does
+> > not expose controls for powering down CPU cores, so just wait in idle
+> > loop.
+> >
+> > Signed-off-by: Brian Ma <chma0@nuvoton.com>
+> > Signed-off-by: William A. Kennington III <william@wkennington.com>
+> > ---
+> >  arch/arm/mach-npcm/platsmp.c | 17 +++++++++++++++++
+> >  1 file changed, 17 insertions(+)
+> >
+> > diff --git a/arch/arm/mach-npcm/platsmp.c b/arch/arm/mach-npcm/platsmp.=
+c
+> > index 41891d3aa124..6cc7b5894f08 100644
+> > --- a/arch/arm/mach-npcm/platsmp.c
+> > +++ b/arch/arm/mach-npcm/platsmp.c
+> > @@ -69,10 +69,27 @@ static void __init npcm7xx_smp_prepare_cpus(unsigne=
+d int max_cpus)
+> >
+> >         iounmap(scu_base);
+> >  }
+> > +#ifdef CONFIG_HOTPLUG_CPU
+> > +static void npcm7xx_cpu_die(unsigned int cpu)
+> > +{
+> > +       while (1)
+> > +               cpu_do_idle();
+> > +}
+> > +
+> > +static int npcm7xx_cpu_kill(unsigned int l_cpu)
+> > +{
+> > +       return 1;
+> > +}
+> > +#endif
+> > +
+> >
+> >  static struct smp_operations npcm7xx_smp_ops __initdata =3D {
+> >         .smp_prepare_cpus =3D npcm7xx_smp_prepare_cpus,
+> >         .smp_boot_secondary =3D npcm7xx_smp_boot_secondary,
+> > +#ifdef CONFIG_HOTPLUG_CPU
+> > +       .cpu_die                        =3D npcm7xx_cpu_die,
+> > +       .cpu_kill                       =3D npcm7xx_cpu_kill,
+> > +#endif
+> >  };
+> >
+> >  CPU_METHOD_OF_DECLARE(npcm7xx_smp, "nuvoton,npcm750-smp", &npcm7xx_smp=
+_ops);
+> > --
+> > 2.42.0.820.g83a721a137-goog
+> >'
+>
+> Mind taking another look? This should be updated accordingly.
 
- drivers/greybus/gb-beagleplay.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+Reviewed-by: Tomer Maimon <tmaimon77@gmail.com>
 
-diff --git a/drivers/greybus/gb-beagleplay.c b/drivers/greybus/gb-beagleplay.c
-index 43318c1993ba..1e70ff7e3da4 100644
---- a/drivers/greybus/gb-beagleplay.c
-+++ b/drivers/greybus/gb-beagleplay.c
-@@ -93,9 +93,9 @@ static void hdlc_rx_greybus_frame(struct gb_beagleplay *bg, u8 *buf, u16 len)
- 	memcpy(&cport_id, hdr->pad, sizeof(cport_id));
- 
- 	dev_dbg(&bg->sd->dev, "Greybus Operation %u type %X cport %u status %u received",
--		hdr->operation_id, hdr->type, cport_id, hdr->result);
-+		hdr->operation_id, hdr->type, le16_to_cpu(cport_id), hdr->result);
- 
--	greybus_data_rcvd(bg->gb_hd, cport_id, buf, len);
-+	greybus_data_rcvd(bg->gb_hd, le16_to_cpu(cport_id), buf, len);
- }
- 
- static void hdlc_rx_dbg_frame(const struct gb_beagleplay *bg, const char *buf, u16 len)
-@@ -340,14 +340,15 @@ static int gb_message_send(struct gb_host_device *hd, u16 cport, struct gb_messa
- {
- 	struct gb_beagleplay *bg = dev_get_drvdata(&hd->dev);
- 	struct hdlc_payload payloads[2];
-+	__le16 cport_id = le16_to_cpu(cport);
- 
- 	dev_dbg(&hd->dev, "Sending greybus message with Operation %u, Type: %X on Cport %u",
- 		msg->header->operation_id, msg->header->type, cport);
- 
--	if (msg->header->size > RX_HDLC_PAYLOAD)
-+	if (le16_to_cpu(msg->header->size) > RX_HDLC_PAYLOAD)
- 		return dev_err_probe(&hd->dev, -E2BIG, "Greybus message too big");
- 
--	memcpy(msg->header->pad, &cport, sizeof(cport));
-+	memcpy(msg->header->pad, &cport_id, sizeof(cport_id));
- 
- 	payloads[0].buf = msg->header;
- 	payloads[0].len = sizeof(*msg->header);
--- 
-2.43.0
+Best regards,
 
+Tomer
