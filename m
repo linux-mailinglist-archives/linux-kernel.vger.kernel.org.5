@@ -2,60 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03A06802585
+	by mail.lfdr.de (Postfix) with ESMTP id 58DC6802586
 	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 17:35:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233693AbjLCQdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 11:33:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35406 "EHLO
+        id S233709AbjLCQeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 11:34:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjLCQdl (ORCPT
+        with ESMTP id S229450AbjLCQeW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 11:33:41 -0500
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAE73EA
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 08:33:47 -0800 (PST)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-a1b68ae40efso44955266b.0
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Dec 2023 08:33:47 -0800 (PST)
+        Sun, 3 Dec 2023 11:34:22 -0500
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBE48C0
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 08:34:28 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-a1a496a73ceso300661066b.2
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Dec 2023 08:34:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701621226; x=1702226026; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1701621267; x=1702226067; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=LD4myhxFv1aMiSYLqC9ASJD82XriEC9rJCJ/sLaBe4E=;
-        b=X0ZqQTffpaM9SJBceY6UfPdVbXUrB4a2NUZ9NP4T+cfsVtYiyns8D/KZvYIbBmXsUc
-         C4g5X9VIrEpkQ/vDXTHZXf06XtWsdEmH0bHcD9zixGuy/WGEnRfL5PBRSbHFTFUR+GB8
-         kQFQNR7QUOfhIeh2i4Thqvu59PmnKmsSU9NKwUbVKZ/xLaPJHO2FYmbKAd98czDmFZCt
-         5CUNjcz6g2vhnGM5b6EwscoSh9S+cKq0dyJxKhSbGoZ8hu3byMDo5A+u5v1AlFrgHpSh
-         tFEzhIcguK8uZw5CWl3nRHCMFbGYiDq+0R+AH2irke3UziVyc3RXwBjC0pPJ0u+l9PX0
-         dDuQ==
+        bh=JZc7WfjaB2ZO2aboTBI45OdkxPzclEBBZASLm6NWu6s=;
+        b=DcI6QIl/jB7c18ghz4zOAhG34coGmeyOHf2jOw3DJGAbaf35uxOIJKeA37VjkMljTj
+         epv9EJAQHPiuykB77l72QGyRcEsYt5VmlFbj6ldXOqUA9QJCe+pGP4uOfgjrAoufojXc
+         a+8IXyp7prBU8IUyPrj+qyIcsLVjJOVpljJsCommdMO6MYVQHZ0ZKHAaiDPBGipws1H8
+         3/mrTGigomjGYMXOmoKVwy2XxNy3s3r3D0NxwGfpcN6M9mZEyFqv8qS178pQUvdjsLgO
+         w9CwlZYH19QEZhylDnFCm0DmDUmjUS9jXpMNEzQKlQp8h2WhJieqTwU6VAkN/hq7q+Ab
+         NbWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701621226; x=1702226026;
+        d=1e100.net; s=20230601; t=1701621267; x=1702226067;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LD4myhxFv1aMiSYLqC9ASJD82XriEC9rJCJ/sLaBe4E=;
-        b=FQ/US6EHw8zCaYvkURbyLV5R3h7NrfUWHNDQAfs4S0eFNRtMCZuz9jukhD1ouHVkyl
-         BWTbccVOVarnxcUqMe0ikbHCwdt29iFC5oy8nm1nmatBkiV/UkrGh2Dixv74W+88k72r
-         /1rIC1TWPwvGRRGjBAqBzN4QK3azKaSgH063Qelk1YSB3WmYNQ6G1MaqA5LvF4CiVJz7
-         WUGBnCkYtkMOykx6UMJBHppZ+lL8FcUQx8HrsNDkZMZav/Whbt1aT4F+Ed4SQpLq4+z1
-         qnodnV1F4vqWx+Ul6Zx6CIEOd2F70AR5jxlHEb7ABjlG5KKSzPfCUvhnr8w8zyy7nLck
-         U/jg==
-X-Gm-Message-State: AOJu0Ywyla9essBr6JBzZ8W87097aOghaQhRYb9AKGhdrsr7j8ZQWm4m
-        oG9zfBqX8ETPgICDf+ab5BegVQ==
-X-Google-Smtp-Source: AGHT+IEjCXRFvxlwnxceMKE2GE6drMxM44wMjN7pXLKY3+/LRfLHMDr/GphB3Wr78M5SjmKWRxMUNA==
-X-Received: by 2002:a17:906:1c6:b0:a19:a1ba:da48 with SMTP id 6-20020a17090601c600b00a19a1bada48mr2725900ejj.111.1701621226338;
-        Sun, 03 Dec 2023 08:33:46 -0800 (PST)
+        bh=JZc7WfjaB2ZO2aboTBI45OdkxPzclEBBZASLm6NWu6s=;
+        b=eXXwyT6pELayi55+YgWB9yGqaG6WBh+TFqbEGCt/tjWYUQt5HpRsFRKcT9BflKLPnm
+         ZUOfYAsDPrrCGDEzMox9FgFyYu9rjG3lmf4ikg4278lgZ0eSMr+lvAcJp8kO2TBR974P
+         r0Xq9cmTNlJEB1Aj2imixXCjJxGKfJJ20Yw+vmp9TZG1rzkOp7cr4NIoUTm5sDkAQFq7
+         Pa2JR4gFD/Slanh4OOC6JlOePZchEkGg8qvblkolrNoiq0b7swvb3oY7Add8zaBe9ZK5
+         VPW/usnxVGMP5UycvfPflgr0NBgaQnSLXBZfpXuhJ3DjiNO8n1V5DLWTK0gDB5UGHj8K
+         NkBQ==
+X-Gm-Message-State: AOJu0YzpITCc8mi9831PUOLrhrW2N2oLJ5o3sBZ53U8olgIEW2dRWUPs
+        +O7zGnXaHdEIKTTHE6uzSZZUkw==
+X-Google-Smtp-Source: AGHT+IGMwvHqjNHtEfM1uwKc7VtAYA35h34m5rRtJlKSUeyGCL/w7kxasjv1qcPwbLB2Bc6P7WxeqQ==
+X-Received: by 2002:a17:906:5ac3:b0:a17:3097:3f6e with SMTP id x3-20020a1709065ac300b00a1730973f6emr2261207ejs.30.1701621267442;
+        Sun, 03 Dec 2023 08:34:27 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.223.109])
-        by smtp.gmail.com with ESMTPSA id sa12-20020a1709076d0c00b009fd585a2155sm4272210ejc.0.2023.12.03.08.33.44
+        by smtp.gmail.com with ESMTPSA id sa12-20020a1709076d0c00b009fd585a2155sm4272210ejc.0.2023.12.03.08.34.25
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 03 Dec 2023 08:33:45 -0800 (PST)
-Message-ID: <6f4f7903-c112-428b-8082-a8eca7c5981d@linaro.org>
-Date:   Sun, 3 Dec 2023 17:33:43 +0100
+        Sun, 03 Dec 2023 08:34:26 -0800 (PST)
+Message-ID: <67ecd9c3-40e3-40c6-b904-9898556af409@linaro.org>
+Date:   Sun, 3 Dec 2023 17:34:24 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/1] arm64: dts: qcom: ipq6018: fix clock rates for
- GCC_USB0_MOCK_UTMI_CLK
+Subject: Re: [PATCH v2 1/1] arm64: dts: qcom: ipq6018: Add QUP5 SPI node
 Content-Language: en-US
 To:     Chukun Pan <amadeus@jmu.edu.cn>,
         Bjorn Andersson <andersson@kernel.org>
@@ -66,7 +65,7 @@ Cc:     Andy Gross <agross@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
         linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org
-References: <20231203154030.532880-1-amadeus@jmu.edu.cn>
+References: <20231203154003.532765-1-amadeus@jmu.edu.cn>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -112,7 +111,7 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231203154030.532880-1-amadeus@jmu.edu.cn>
+In-Reply-To: <20231203154003.532765-1-amadeus@jmu.edu.cn>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -126,13 +125,16 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 03/12/2023 16:40, Chukun Pan wrote:
-> The clock provided by XO is 24MHz, not 20MHz.
-
-That does not look like XO, but GCC_USB0_MOCK_UTMI_CLK
-
+> Add node to support the QUP5 SPI controller inside of IPQ6018.
+> Some routers use this bus to connect SPI TPM chips.
 > 
-> Fixes: 5726079cd486 ("arm64: dts: ipq6018: Use reference clock to set dwc3 period")
 > Signed-off-by: Chukun Pan <amadeus@jmu.edu.cn>
+> ---
+> Changes in v2:
+> * No changes, resend due to error link to other threads.
+
+Why are you sending this separately from the UART patch?
+
 Best regards,
 Krzysztof
 
