@@ -2,143 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E06580212E
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 07:05:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34006802130
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 07:05:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232941AbjLCGBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 01:01:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60044 "EHLO
+        id S232891AbjLCGEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 01:04:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbjLCGBa (ORCPT
+        with ESMTP id S229450AbjLCGEw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 01:01:30 -0500
-Received: from mail-vk1-xa36.google.com (mail-vk1-xa36.google.com [IPv6:2607:f8b0:4864:20::a36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C6BFFE
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 22:01:37 -0800 (PST)
-Received: by mail-vk1-xa36.google.com with SMTP id 71dfb90a1353d-4b2881aa3d6so1135927e0c.0
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Dec 2023 22:01:37 -0800 (PST)
+        Sun, 3 Dec 2023 01:04:52 -0500
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08EF4107;
+        Sat,  2 Dec 2023 22:04:59 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1d075392ff6so6194565ad.1;
+        Sat, 02 Dec 2023 22:04:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701583296; x=1702188096; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=75GAc10of+yuuWhZkJ7UEiM6igGIu13so7TnNv3aMVo=;
-        b=GSzgX36THss1mrdmzMx57swX8PpbZR1MxYCDwIG5lYn6LrQTRIbiFO/mAzpStWzkCm
-         jGuKBGY2LMwnnvUz3URHLQF+VVKsGOM7CtQrP6ZaZJ8QGGxdJ+leF58iLwGqmIBkMk3q
-         A/Cw5jEpp5UwZzmSLBofH10EytIxAuWHQSTXf2CVqsGEUjruQw9VMDL8SrwqqY7RaNmr
-         lcR1YdNuMFkUjPUaB20w92/fWbcBYpiRRdYTTGHW0KFvYoMABGUH9ORq/zcCbY/oo82F
-         h1i25rszCbrDp0JVWLtH4bZbthamgmb0PJZ4WzEg8wIU3G9sahRa4p7qHM8gGxDviGgH
-         8gXw==
+        d=gmail.com; s=20230601; t=1701583498; x=1702188298; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=nVXjD/L9/cbkwMY3wbB+hh1LGOMERcZLOKnsHF24pTg=;
+        b=Cb5gtGMVxk+8TCCOQTWwbOq7G6hWcoCoM41P4GdnvAReblLtlJth3igGQJrhUSo43a
+         4ew6K/5sApYhf7luoeeksv6yMnkzh4mcGT5UbHOZ5qiY/veuySK+VoxgX243IBML0tmQ
+         xwPqQ629SYbRT/KaiJ64CW8M4Q7QxnvpU1QO4k6Atn+nPbOw99SEMhsgRYj+CXP1QAp9
+         b9phUbSvu2lxqvDY+Al3PoXRdrWGyOEsRrhBubiQqOYsZW/EAfFKPoLtkaUcwK+6aqBU
+         gzGVxq/gRKMbWLFXkFh+wLZD11PNivj/EDtBnA5yfWKYU8u7pcjvdQGXRiNrTt/vOJRl
+         E0+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701583296; x=1702188096;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=75GAc10of+yuuWhZkJ7UEiM6igGIu13so7TnNv3aMVo=;
-        b=nq/25i4cEc6UPFuDXBcNkMj49X1MTFJx8nKd9n339TNFHnBXrsP6+Hq2V7Q7maLXdu
-         sQ2rC27jX95V5QNWrJpEfmRdKU8qKu4FOkOwrWfYU72Br1fURa9tlrN8rS+Es4FK4miF
-         oP/651wQV3f1o1MDTgRR6Ncj5P6z2AODDPyPXx0qveH242ajYA5d/KbVZpjBBjW7gXs4
-         qxTQXvmk9ZZmKQX8Pvjv0Bu3fBLrbGiUg+qjNuGQ3pthInlqtTVE534T2hMb9iVTWwS9
-         6ZBNEMxSUC5bPrCX4r6KQJsE6W0Q2P+we6Tbgv2YL4tuWh9qXVMTWSSxEMAgVksUYN+L
-         Zhog==
-X-Gm-Message-State: AOJu0Yyf/tQPdRwXvMG4piMnqyQYqKYaF43qwExO5fPuVcRi/ZykimMO
-        yrneQM3292zsSKU54i1w/FBTq5PNZ5ruSlwVmps=
-X-Google-Smtp-Source: AGHT+IEp5JZH8xZObiQXhK2t0jgFnkMGZl0S0e9vnimECJPXHXmaw10Ahfs9E6984/48y7eqU+m+L9O3B/IjI5b1vS0=
-X-Received: by 2002:a67:ec43:0:b0:464:63dc:bcea with SMTP id
- z3-20020a67ec43000000b0046463dcbceamr718817vso.16.1701583296187; Sat, 02 Dec
- 2023 22:01:36 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701583498; x=1702188298;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nVXjD/L9/cbkwMY3wbB+hh1LGOMERcZLOKnsHF24pTg=;
+        b=AM23+Xc3WpL+sfLTZpFqxWCE2h6HczX8Y3rGMAbTXzm1PQW3G+UdkX/e7eSCXBsOAr
+         nYryl2GNDDMHw7TRqTctv09j9FDkwCev7qVnE8zzVu1EkY8fWMQy1/bhxYJgBI/kcVWf
+         62TIP+mqztO/cNpJ1+WpqhzY8rzYKWrAZHtDApdjMJy/r9TmznLfg0iCRHG5BmF+egvN
+         aJyEbMmz1GzLxpX2V2xH2mtyw5m7+iMcCqI18ROdfHWkYFM3gI2kq4xDJ4+1WTHQkPnQ
+         Kv2Cw6zBTQqTzQrYbyJPMyUPSvSsdTCb/5p1MXm+KRf3e1XXLSSdlOlXiSAPqj2/T2nE
+         c8iA==
+X-Gm-Message-State: AOJu0YyqDHFc327iixVG5uVgDsFm8WCY7Zie+XIwAuIYofOakNMdQ0SY
+        FPB+HzFRwcNX+qa+k6Cbqa12Vfi9Y5wjhg==
+X-Google-Smtp-Source: AGHT+IHFrkj5B2svdEzIFIBX7O9ZktHdg5OzqYIA+mN9yeCRen+kK9pdRJeir+OSL+xiNKQfbfE3ZA==
+X-Received: by 2002:a17:902:e892:b0:1d0:700b:3f69 with SMTP id w18-20020a170902e89200b001d0700b3f69mr2491101plg.35.1701583498291;
+        Sat, 02 Dec 2023 22:04:58 -0800 (PST)
+Received: from archie.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id q1-20020a17090311c100b001cfc9c926b7sm2487339plh.75.2023.12.02.22.04.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 02 Dec 2023 22:04:57 -0800 (PST)
+Received: by archie.me (Postfix, from userid 1000)
+        id E6E851033EDEB; Sun,  3 Dec 2023 13:04:53 +0700 (WIB)
+Date:   Sun, 3 Dec 2023 13:04:53 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Luca Ceresoli <luca.ceresoli@bootlin.com>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Linux Documentation <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] docs: nvmem: generate kernel-doc API documentation
+Message-ID: <ZWwahc1PSY6Uj6_J@archie.me>
+References: <20231201-nvmem-docs-kerneldoc-v1-0-3e8f2b706ce6@bootlin.com>
+ <20231201-nvmem-docs-kerneldoc-v1-1-3e8f2b706ce6@bootlin.com>
 MIME-Version: 1.0
-References: <20231102032330.1036151-1-chengming.zhou@linux.dev> <20231102032330.1036151-5-chengming.zhou@linux.dev>
-In-Reply-To: <20231102032330.1036151-5-chengming.zhou@linux.dev>
-From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Date:   Sun, 3 Dec 2023 15:01:23 +0900
-Message-ID: <CAB=+i9SDzPNSL03U9T6XAhfW8oed42yhc9F0ou5-2bqWkUJ=ZQ@mail.gmail.com>
-Subject: Re: [PATCH v5 4/9] slub: Prepare __slab_free() for unfrozen partial
- slab out of node partial list
-To:     chengming.zhou@linux.dev
-Cc:     vbabka@suse.cz, cl@linux.com, penberg@kernel.org,
-        rientjes@google.com, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, roman.gushchin@linux.dev,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Chengming Zhou <zhouchengming@bytedance.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="uCTGfMDxg/6CCkGF"
+Content-Disposition: inline
+In-Reply-To: <20231201-nvmem-docs-kerneldoc-v1-1-3e8f2b706ce6@bootlin.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 2, 2023 at 12:24=E2=80=AFPM <chengming.zhou@linux.dev> wrote:
->
-> From: Chengming Zhou <zhouchengming@bytedance.com>
->
-> Now the partially empty slub will be frozen when taken out of node partia=
-l
-> list, so the __slab_free() will know from "was_frozen" that the partially
-> empty slab is not on node partial list and is a cpu or cpu partial slab
-> of some cpu.
->
-> But we will change this, make partial slabs leave the node partial list
-> with unfrozen state, so we need to change __slab_free() to use the new
-> slab_test_node_partial() we just introduced.
->
-> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
-> Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
-> Tested-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+
+--uCTGfMDxg/6CCkGF
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Dec 01, 2023 at 02:10:42PM +0100, Luca Ceresoli wrote:
+> This is useful on its own, and it also enables hyperlink generation for
+> functions mentioned in ReST documentation.
+>=20
+> Signed-off-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
 > ---
->  mm/slub.c | 11 +++++++++++
->  1 file changed, 11 insertions(+)
->
-> diff --git a/mm/slub.c b/mm/slub.c
-> index eed8ae0dbaf9..1880b483350e 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -3631,6 +3631,7 @@ static void __slab_free(struct kmem_cache *s, struc=
-t slab *slab,
->         unsigned long counters;
->         struct kmem_cache_node *n =3D NULL;
->         unsigned long flags;
-> +       bool on_node_partial;
->
->         stat(s, FREE_SLOWPATH);
->
-> @@ -3678,6 +3679,7 @@ static void __slab_free(struct kmem_cache *s, struc=
-t slab *slab,
->                                  */
->                                 spin_lock_irqsave(&n->list_lock, flags);
->
-> +                               on_node_partial =3D slab_test_node_partia=
-l(slab);
->                         }
->                 }
->
-> @@ -3706,6 +3708,15 @@ static void __slab_free(struct kmem_cache *s, stru=
-ct slab *slab,
->                 return;
->         }
->
-> +       /*
-> +        * This slab was partially empty but not on the per-node partial =
-list,
-> +        * in which case we shouldn't manipulate its list, just return.
-> +        */
-> +       if (prior && !on_node_partial) {
-> +               spin_unlock_irqrestore(&n->list_lock, flags);
-> +               return;
-> +       }
+>  Documentation/driver-api/nvmem.rst | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>=20
+> diff --git a/Documentation/driver-api/nvmem.rst b/Documentation/driver-ap=
+i/nvmem.rst
+> index de221e91c8e3..d5655b95c0f4 100644
+> --- a/Documentation/driver-api/nvmem.rst
+> +++ b/Documentation/driver-api/nvmem.rst
+> @@ -200,3 +200,9 @@ and let you add cells dynamically.
+>  Another use case for layouts is the post processing of cells. With layou=
+ts,
+>  it is possible to associate a custom post processing hook to a cell. It
+>  even possible to add this hook to cells not created by the layout itself.
 > +
->         if (unlikely(!new.inuse && n->nr_partial >=3D s->min_partial))
->                 goto slab_empty;
->
+> +9. Internal kernel API
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +
+> +.. kernel-doc:: drivers/nvmem/core.c
+> +   :export:
+>=20
 
-Looks good to me,
-Reviewed-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+LGTM, thanks!
 
-> --
-> 2.20.1
->
+Reviewed-by: Bagas Sanjaya <bagasdotme@gmail.com>
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--uCTGfMDxg/6CCkGF
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZWwaggAKCRD2uYlJVVFO
+o9c5AP4jnH8NopKOR8cw3bjDvuA5mR1FVyJBkvglnpeDdknxtQEAwacGaItumATx
++A9i7rvGsdhEO/dbT3H1W2LzWrP41g4=
+=qIT7
+-----END PGP SIGNATURE-----
+
+--uCTGfMDxg/6CCkGF--
