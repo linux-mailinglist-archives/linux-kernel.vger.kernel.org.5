@@ -2,49 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 114738020D3
+	by mail.lfdr.de (Postfix) with ESMTP id 8EE248020D6
 	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 05:52:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233163AbjLCEwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 23:52:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51450 "EHLO
+        id S233145AbjLCEwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 23:52:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232971AbjLCEvt (ORCPT
+        with ESMTP id S233121AbjLCEvu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 23:51:49 -0500
+        Sat, 2 Dec 2023 23:51:50 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E7EA198
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 20:51:49 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 640B5C433D9;
-        Sun,  3 Dec 2023 04:51:48 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54850D40
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 20:51:51 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9EC07C433C9;
+        Sun,  3 Dec 2023 04:51:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701579109;
-        bh=/k3GHFIjLKIEJGyjTW6+pmhuxqAPdfix7jA0G957+Oc=;
+        s=k20201202; t=1701579110;
+        bh=jQ9uX2NqNz2mpAo8MQUUZUsit67Uq9hXoV0xcPByrrI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VJBVSdpCYr4w+VT2ZZw9L9YjI1AnC9QkkD74+oyAt6lxQZQGtq7HW79iuSp+tZs+Q
-         m3uucki5o931FGDbE7oyDQLJVadjdKpfYoOXDTzkqDXuyXOglfEYiZIVUkPK4DvqDZ
-         eRzF79a3MGuypEza+a+M6ZQ1up28zDmQ7mCe6p83cWj+muQcjpscvlTXeyxbA+cxvj
-         HxLWPnaE4hALBq+hlCO6H2mpPZyMpeefEXgycUEYKBnCSgwdb9qJJCsLW7fcW97dcY
-         /b/Qvc11ix/btRbL5AKEgrqkV/rap1mdlwhOA9eBiUrA8KtF+/7wRnPu2jCD46SuCt
-         iPaz0IiY+1hog==
+        b=fT+DR9C31YjC0vlS5Hl8QELS1xzDeDvaK/VDnXa6sjFObpuNaTayaa+6CLba6dodz
+         r7asff2T4SHC+xlwg93vsXZcV3yV3SffUicMK/LIOqRP/ljhBcv+7PKhfM51FcB2TD
+         oOwRNMsv2fSl97GfMIz4Oa3CKrt6fcAbFrGu68WM+NFzowNMY/sDLM6ov9oNApJiMO
+         OILF2QWW4FaZ2MPRsEGs+N5QJjG994FcVRNYp1mjbug+l5DN5z9DDce1xi8l6keBrn
+         5D4bASjicEO5qoDzvjxtA+gI93vhFPfTaS369X+qOoDDercrsVzMEfks7lc9DyS2fz
+         Yy/E4y/DlMK2Q==
 From:   Bjorn Andersson <andersson@kernel.org>
-To:     Andy Gross <agross@kernel.org>,
+To:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        Andy Gross <agross@kernel.org>,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Luca Weiss <luca.weiss@fairphone.com>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH 0/4] Add Fairphone 5 thermals (PMK7325, PM7250B, PM7325)
-Date:   Sat,  2 Dec 2023 20:54:38 -0800
-Message-ID: <170157925809.1717511.3113832457495825027.b4-ty@kernel.org>
+        Sai Prakash Ranjan <quic_saipraka@quicinc.com>,
+        Luca Weiss <luca@z3ntu.xyz>
+Cc:     linux-arm-msm@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Matti=20Lehtim=C3=A4ki?= <matti.lehtimaki@gmail.com>
+Subject: Re: (subset) [PATCH 0/3] Add watchdog nodes to msm8226 & msm8974
+Date:   Sat,  2 Dec 2023 20:54:39 -0800
+Message-ID: <170157925797.1717511.7301998654173050568.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231013-fp5-thermals-v1-0-f14df01922e6@fairphone.com>
-References: <20231013-fp5-thermals-v1-0-f14df01922e6@fairphone.com>
+In-Reply-To: <20231011-msm8226-msm8974-watchdog-v1-0-2c472818fbce@z3ntu.xyz>
+References: <20231011-msm8226-msm8974-watchdog-v1-0-2c472818fbce@z3ntu.xyz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -59,26 +61,25 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Fri, 13 Oct 2023 10:09:52 +0200, Luca Weiss wrote:
-> Configure the necessary components to register some thermal zones in
-> Linux for the different thermistors found on the Fairphone 5.
+On Wed, 11 Oct 2023 18:33:12 +0200, Luca Weiss wrote:
+> Document the compatible for the watchdog found on both SoCs, and add
+> them to the SoC dtsi file. And especially for the case where the
+> bootloader has already enabled the watchdog we need to start petting it
+> on time, otherwise the system gets rebooted.
 > 
-> The names for the thermal zones and ADCs were taken from the downstream
-> kernel but double checked against hardware schematics.
-> 
+> It's worth noting that the watchdog behaves a bit unexpectedly.
+> It appears the watchdog counts down significantly slower when there's no
+> load on the system and can last far longer than 30 seconds until they
+> bark. Only when putting load on the system, e.g. with stress-ng does the
+> watchdog interrupt fire and kill the system within an expected amount of
+> time.
 > 
 > [...]
 
 Applied, thanks!
 
-[1/4] iio: adc: Add PM7325 PMIC7 ADC bindings
-      commit: 18c74d56fe6070c7c38058d7b43ccf2102abebcd
-[2/4] arm64: dts: qcom: qcm6490-fairphone-fp5: Add PM7250B thermals
-      commit: 4c343fe9b68adeca1aa3a851bd06e62ecdaed180
-[3/4] arm64: dts: qcom: qcm6490-fairphone-fp5: Add PMK7325 thermals
-      commit: 46a2f77e1eb81990d303a94ab62f1bf79d0c9926
-[4/4] arm64: dts: qcom: qcm6490-fairphone-fp5: Add PM7325 thermals
-      commit: ae1122c375707a36c8fecebba745421a1e0ff93f
+[3/3] ARM: dts: qcom: msm8974: Add watchdog node
+      commit: 95053f6bc8ffca438a261400d7c06bd74e3f106e
 
 Best regards,
 -- 
