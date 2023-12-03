@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C641E802410
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 14:18:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2680F802412
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 14:18:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233603AbjLCNSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 08:18:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48886 "EHLO
+        id S233679AbjLCNSK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 08:18:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233559AbjLCNR7 (ORCPT
+        with ESMTP id S233551AbjLCNSB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 08:17:59 -0500
+        Sun, 3 Dec 2023 08:18:01 -0500
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 670A0189
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 05:18:01 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07FFA10FD
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 05:18:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701609481; x=1733145481;
+  t=1701609485; x=1733145485;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=cJdGxmzajRRQz6VtsFZACeu7sS9itYjQTzis7aoFYwU=;
-  b=RQg7DJAJCXHMBpeuo3qU218KfQEM3NfMavqV7/F37KsecZtVuPWxlods
-   2oKcKUfrVcQiOimAc5yqMQKHfH8hdTdt/Z9tn0Biz77vY33l3dTp8N9+F
-   /MDbg3fBxkNfrqgGGKDRkkQVEFiAOqa2qhNIebi5DIbAizaXPRaHn8wYY
-   0An+hpemBqT8FbhcZshL1znxDUOagHk9k9d/WW7zhkmBoIbBXAv7z8+di
-   uMtpkWOaLfPd3TWUUgiLmcb4bFbDU7bskix4zV+WWNbqor1Ky5z9LZsX7
-   4Mwg14J42Ae/lagO0d+eqFucefplioBZDApiRZnUGbaxo4nm55YF1TkFN
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10912"; a="498234"
+  bh=09wp7qEie3hPA9tmFNTCYBM6WHJ7/7jxnVGZAD5l5W4=;
+  b=lrm/hR5hpRqpudchOcSjnmPOSqPJ9eDK84FNkZwpWkb9TiIL1Yxvlgys
+   J5q6HcYOovnWgAD90CGrS2Ihi9VGVTaAqFpv+KCpeYKh2v7xPRDbg5lbR
+   MNulsPjgTgxwA0U7PpL3OgCXIiuChfcdxvgu0lyRk0m0LpdN8P8oZtHXq
+   98Igxy1jvu+n8CXWhRZSzHbufpqZjKOxalKxyn1+NeER/Tob8sKhFdS4J
+   sDABQMSBjOVhH7pZyrIoQ5ixuRFSvWsSFX042+p/dCGiltcgRoBYvFff1
+   uHockDwE27s0g1+J6swPCgvhYPDaeVnc4uLAoHtqHI7XUiqkiCX4kWBbE
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10912"; a="498241"
 X-IronPort-AV: E=Sophos;i="6.04,247,1695711600"; 
-   d="scan'208";a="498234"
+   d="scan'208";a="498241"
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2023 05:18:00 -0800
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2023 05:18:04 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10912"; a="770262401"
+X-IronPort-AV: E=McAfee;i="6600,9927,10912"; a="770262426"
 X-IronPort-AV: E=Sophos;i="6.04,247,1695711600"; 
-   d="scan'208";a="770262401"
+   d="scan'208";a="770262426"
 Received: from liuzhao-optiplex-7080.sh.intel.com ([10.239.160.36])
-  by orsmga002.jf.intel.com with ESMTP; 03 Dec 2023 05:17:56 -0800
+  by orsmga002.jf.intel.com with ESMTP; 03 Dec 2023 05:18:00 -0800
 From:   Zhao Liu <zhao1.liu@linux.intel.com>
 To:     Jani Nikula <jani.nikula@linux.intel.com>,
         Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
@@ -53,9 +53,9 @@ To:     Jani Nikula <jani.nikula@linux.intel.com>,
 Cc:     Dave Hansen <dave.hansen@intel.com>,
         Zhenyu Wang <zhenyu.z.wang@intel.com>,
         Zhao Liu <zhao1.liu@intel.com>
-Subject: [PATCH v3 4/9] drm/i915: Use kmap_local_page() in gem/selftests/huge_pages.c
-Date:   Sun,  3 Dec 2023 21:29:42 +0800
-Message-Id: <20231203132947.2328805-5-zhao1.liu@linux.intel.com>
+Subject: [PATCH v3 5/9] drm/i915: Use kmap_local_page() in gem/selftests/i915_gem_coherency.c
+Date:   Sun,  3 Dec 2023 21:29:43 +0800
+Message-Id: <20231203132947.2328805-6-zhao1.liu@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231203132947.2328805-1-zhao1.liu@linux.intel.com>
 References: <20231203132947.2328805-1-zhao1.liu@linux.intel.com>
@@ -79,17 +79,17 @@ kmap_atomic() to kmap_local_page().
 
 The main difference between atomic and local mappings is that local
 mappings doesn't disable page faults or preemption (the preemption is
-disabled for !PREEMPT_RT case, otherwise it only disables migration).
+disabled for !PREEMPT_RT case, otherwise it only disables migration)..
 
 With kmap_local_page(), we can avoid the often unwanted side effect of
 unnecessary page faults or preemption disables.
 
-In drm/i915/gem/selftests/huge_pages.c, function __cpu_check_shmem()
-mainly uses mapping to flush cache and check the value. There're
-2 reasons why __cpu_check_shmem() doesn't need to disable pagefaults
-and preemption for mapping:
+In drm/i915/gem/selftests/i915_gem_coherency.c, functions cpu_set()
+and cpu_get() mainly uses mapping to flush cache and assign the value.
+There're 2 reasons why cpu_set() and cpu_get() don't need to disable
+pagefaults and preemption for mapping:
 
-1. The flush operation is safe. Function __cpu_check_shmem() calls
+1. The flush operation is safe. cpu_set() and cpu_get() call
 drm_clflush_virt_range() to use CLFLUSHOPT or WBINVD to flush. Since
 CLFLUSHOPT is global on x86 and WBINVD is called on each cpu in
 drm_clflush_virt_range(), the flush operation is global.
@@ -97,7 +97,7 @@ drm_clflush_virt_range(), the flush operation is global.
 2. Any context switch caused by preemption or page faults (page fault
 may cause sleep) doesn't affect the validity of local mapping.
 
-Therefore, __cpu_check_shmem() is a function where the use of
+Therefore, cpu_set() and cpu_get() are functions where the use of
 kmap_local_page() in place of kmap_atomic() is correctly suited.
 
 Convert the calls of kmap_atomic() / kunmap_atomic() to
@@ -119,37 +119,66 @@ Suggested by credits:
   Fabio: Referred to his boiler plate commit message and his description
          about why kmap_local_page() should be preferred.
 ---
- drivers/gpu/drm/i915/gem/selftests/huge_pages.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ .../gpu/drm/i915/gem/selftests/i915_gem_coherency.c  | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/gpu/drm/i915/gem/selftests/huge_pages.c b/drivers/gpu/drm/i915/gem/selftests/huge_pages.c
-index 6b9f6cf50bf6..c9e6d77abab0 100644
---- a/drivers/gpu/drm/i915/gem/selftests/huge_pages.c
-+++ b/drivers/gpu/drm/i915/gem/selftests/huge_pages.c
-@@ -1082,7 +1082,7 @@ __cpu_check_shmem(struct drm_i915_gem_object *obj, u32 dword, u32 val)
- 		goto err_unlock;
+diff --git a/drivers/gpu/drm/i915/gem/selftests/i915_gem_coherency.c b/drivers/gpu/drm/i915/gem/selftests/i915_gem_coherency.c
+index 3bef1beec7cb..beeb3e12eccc 100644
+--- a/drivers/gpu/drm/i915/gem/selftests/i915_gem_coherency.c
++++ b/drivers/gpu/drm/i915/gem/selftests/i915_gem_coherency.c
+@@ -24,7 +24,6 @@ static int cpu_set(struct context *ctx, unsigned long offset, u32 v)
+ {
+ 	unsigned int needs_clflush;
+ 	struct page *page;
+-	void *map;
+ 	u32 *cpu;
+ 	int err;
  
- 	for (n = 0; n < obj->base.size >> PAGE_SHIFT; ++n) {
--		u32 *ptr = kmap_atomic(i915_gem_object_get_page(obj, n));
-+		u32 *ptr = kmap_local_page(i915_gem_object_get_page(obj, n));
+@@ -34,8 +33,7 @@ static int cpu_set(struct context *ctx, unsigned long offset, u32 v)
+ 		goto out;
  
- 		if (needs_flush & CLFLUSH_BEFORE)
- 			drm_clflush_virt_range(ptr, PAGE_SIZE);
-@@ -1090,12 +1090,12 @@ __cpu_check_shmem(struct drm_i915_gem_object *obj, u32 dword, u32 val)
- 		if (ptr[dword] != val) {
- 			pr_err("n=%lu ptr[%u]=%u, val=%u\n",
- 			       n, dword, ptr[dword], val);
--			kunmap_atomic(ptr);
-+			kunmap_local(ptr);
- 			err = -EINVAL;
- 			break;
- 		}
+ 	page = i915_gem_object_get_page(ctx->obj, offset >> PAGE_SHIFT);
+-	map = kmap_atomic(page);
+-	cpu = map + offset_in_page(offset);
++	cpu = kmap_local_page(page) + offset_in_page(offset);
  
--		kunmap_atomic(ptr);
-+		kunmap_local(ptr);
- 	}
+ 	if (needs_clflush & CLFLUSH_BEFORE)
+ 		drm_clflush_virt_range(cpu, sizeof(*cpu));
+@@ -45,7 +43,7 @@ static int cpu_set(struct context *ctx, unsigned long offset, u32 v)
+ 	if (needs_clflush & CLFLUSH_AFTER)
+ 		drm_clflush_virt_range(cpu, sizeof(*cpu));
  
- 	i915_gem_object_finish_access(obj);
+-	kunmap_atomic(map);
++	kunmap_local(cpu);
+ 	i915_gem_object_finish_access(ctx->obj);
+ 
+ out:
+@@ -57,7 +55,6 @@ static int cpu_get(struct context *ctx, unsigned long offset, u32 *v)
+ {
+ 	unsigned int needs_clflush;
+ 	struct page *page;
+-	void *map;
+ 	u32 *cpu;
+ 	int err;
+ 
+@@ -67,15 +64,14 @@ static int cpu_get(struct context *ctx, unsigned long offset, u32 *v)
+ 		goto out;
+ 
+ 	page = i915_gem_object_get_page(ctx->obj, offset >> PAGE_SHIFT);
+-	map = kmap_atomic(page);
+-	cpu = map + offset_in_page(offset);
++	cpu = kmap_local_page(page) + offset_in_page(offset);
+ 
+ 	if (needs_clflush & CLFLUSH_BEFORE)
+ 		drm_clflush_virt_range(cpu, sizeof(*cpu));
+ 
+ 	*v = *cpu;
+ 
+-	kunmap_atomic(map);
++	kunmap_local(cpu);
+ 	i915_gem_object_finish_access(ctx->obj);
+ 
+ out:
 -- 
 2.34.1
 
