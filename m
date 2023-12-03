@@ -2,190 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88CC280243B
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 14:34:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CDB1802448
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 14:38:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233485AbjLCNd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 08:33:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49696 "EHLO
+        id S233489AbjLCNhd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 08:37:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjLCNdY (ORCPT
+        with ESMTP id S229450AbjLCNhb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 08:33:24 -0500
-Received: from FRA01-MR2-obe.outbound.protection.outlook.com (mail-mr2fra01on2070.outbound.protection.outlook.com [40.107.9.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57ABEFF
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 05:33:28 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZdEkLcU3sFkJuTHNVlmFLXujMawpUJpGSxSXCI7SZfrkKq+/HlmiLFyFnWpkBE+DL82qfv6rjDAu8z8suvn23HTS5mW3dv7WdUt183wNuiSIYr/JiG1I+w4LcQB11QMZ9431STkldFbHdMmyLhS2kdTD+cmfMePTckMvYDxXJCml217XefeyaVbkcwv8Vm0WS3/kOBXvPM8W0irJn/rbL7lEtNgKsTYrW9s3MPU5eQH9y1ozlFzZuGIpehR1gbGSLsX4ms6XB4yMfwfScHW3+h+x/Ri6mbC5B65a6Y6yHyb0xdGi80j4nsTh488Md+rFxO9U5Gn8rv4VsriEWXV77g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=KvU+5TO4kt+bXBtN5OElsCV1H6CKZzh7l+ov1pDyLBE=;
- b=JipQzq5zO0YAID4YX1KlO4ql+DoU38RwhEmAA6nSoH66XEO/LudeZJhAiElfDBIAaTFfeYyJKxUGdwtdHuAbEckusUoQfh4uUUYEtmhW3bAujgM9pMOm68p8iYD7l3Rp9WNv9wYFMbV9SmnCtNzZQuiwCGtOT2B+5m2IFwWnQWsIzGRVV00JZYQ01pKRX9kWtVuBdyOVuyTE+BbzAkoCMXQSMrIlmt8l61PKe6XB3x9BMTlPHhKzCniMMp+jflF0dbPa1yGZPhDMLrQ8CNH5ffl+OQJrf2avvjhFCkDoYiKKxCcfH6N/yNrT9WRxP//UCwYvm0tweqH2q5pJd5KNtQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
- dkim=pass header.d=csgroup.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KvU+5TO4kt+bXBtN5OElsCV1H6CKZzh7l+ov1pDyLBE=;
- b=O6Uv7ayQGAyfgRda5obnzrDXRm2LspOAFFe1jJdEHqfA3tMdjCCOjNFiXz9ctQZJTBgKG0mbzehGQrzjCpu8FIuejz4iTNMdtBfqYZT5RdPCl4qFA0r6GHLw+Y1sxuKlh3a/Ryqgie+hSzqqLliPJ5ebGToZlncKR8ib6/cbYqyI1EQeT1FMQasLZ/LNiVSb3Y6SVsKcn3omsM0VcdFRjV7sEh2jWrWz5LNdgQTc+jYdbn3oCQtKDjnMOSiobrof0YHw/q2eg7lbFAc30jnX2PbdigTQ81Rtr3VpMb29b7hZNJKZpVSIsDRNKGZWerY+0xz/jwzaHwyn/itBA7ItKw==
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
- by PR0P264MB3435.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:14a::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.21; Sun, 3 Dec
- 2023 13:33:25 +0000
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::5bfe:e2f2:6d89:8d97]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::5bfe:e2f2:6d89:8d97%3]) with mapi id 15.20.7068.022; Sun, 3 Dec 2023
- 13:33:25 +0000
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Peter Xu <peterx@redhat.com>, Ryan Roberts <ryan.roberts@arm.com>
-CC:     Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        James Houghton <jthoughton@google.com>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        David Hildenbrand <david@redhat.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Rik van Riel <riel@surriel.com>,
-        Hugh Dickins <hughd@google.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>
-Subject: Re: [PATCH RFC 06/12] mm/gup: Drop folio_fast_pin_allowed() in hugepd
- processing
-Thread-Topic: [PATCH RFC 06/12] mm/gup: Drop folio_fast_pin_allowed() in
- hugepd processing
-Thread-Index: AQHaGCxakejDChMrKU+uwfinjAsKCLCC5iYAgAIQ84CAAQxzAIACFO2AgAAaXYCAAB5+gIAACegAgADfT4CAAHXcgIAJyEQAgAQxj4A=
-Date:   Sun, 3 Dec 2023 13:33:25 +0000
-Message-ID: <283da12c-14f1-4255-b3c4-ab933f3373c4@csgroup.eu>
-References: <20231116012908.392077-7-peterx@redhat.com>
- <ZVsYMMJpmFV2T/Zc@infradead.org> <ZVzT5_3Zn-Y-6xth@x1n>
- <ZV21GCbG48nTLDzn@infradead.org> <ZV90JcnQ1RGud/0R@casper.infradead.org>
- <ZV-KQ0e0y9BTsHGv@x1n> <d2313c1d-1e50-49b7-bed7-840431af799a@arm.com>
- <ZV-sJsdFfXiCkylv@x1n> <510adc26-9aed-4745-8807-dba071fadbbe@arm.com>
- <ZWDKV0XNjplc_vUP@x1n> <ZWj_EgljG3NwS5r1@x1n>
-In-Reply-To: <ZWj_EgljG3NwS5r1@x1n>
-Accept-Language: fr-FR, en-US
-Content-Language: fr-FR
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla Thunderbird
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=csgroup.eu;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MRZP264MB2988:EE_|PR0P264MB3435:EE_
-x-ms-office365-filtering-correlation-id: f8b67f10-de61-4196-5f65-08dbf4046d45
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Q21IKGUDh0LLEz2ilp+P3wQVRRH3QADmM1LG8KdFFTs07dzo2weZalH+f8unmq+XedNc+h7rltNA7ShQY6eIlRxDg5FGonc+SxotM444jjqETumfwR+gkyhCh5ZDBJI1N2oLR8w8mN8/xe/w46SeCCnEzfJ2vP0TDkjgftS6W758QcxY7LZKX/OzNKbzoOT1KjvVUInQ3ECqdY91xhXImWEB7l/QglB/Wd3LLZodcNpECfz07LlWcW9vIorZ/a/7o1JNFohQHZLKKfUyNEhyrYEbFX/peHH33R29Ct/M2QQkDsomqteCn9J8bSIwjEfgSVQ0OzFxxI0PCxJ1pZLTwFj3DEgWOhEXuZ4fS4df49/JYAlgiT/b75BCc0GJnMVxoqq65iquXj1v9msXK5uSrrKumbvQ254DA1LrLjvhyetT+RgIr9Pzi1n8SVoUEjYu3be33X6XvQ/AlxREwr1ooEp/A/zN7IQntSpGh+WtKW8VR+/N21R6FpR41aVhWfRZ1jew4aC9V1+RVkLy/TeozlCDfhjlqG1fzyr+a6iwb5HkPCgxRy0VCWbL+2iTL/1HuMOE2pi0MRwiLOwnd1Swrs0eFIcbZtV0enw/vbA7V5z1f6vLrBP20dlWdStXTQZ9YlGTZsj8K6o+sawho+WrD0kFt5XhUGT4wX2e0wtZV2CJup5CicWF6v4Vq52t/7oR
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(396003)(346002)(376002)(39840400004)(230922051799003)(64100799003)(451199024)(186009)(1800799012)(31696002)(5660300002)(44832011)(7416002)(86362001)(4326008)(8676002)(8936002)(2906002)(38070700009)(41300700001)(36756003)(2616005)(6512007)(6506007)(66574015)(83380400001)(6486002)(478600001)(26005)(71200400001)(38100700002)(31686004)(122000001)(110136005)(316002)(91956017)(54906003)(64756008)(66446008)(66476007)(66556008)(76116006)(66946007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?aDlDYlErc1YyaUVsQ1hZMjRnM3d2M1FqUG8yaGhwQllBMis3TW5yOXJCR3Vm?=
- =?utf-8?B?bXpPQVpxdGhBdlNzV0FFdlU1RnRFbjk5SWxFZVRnTW1iNnhtMWU4Y2pwaHpp?=
- =?utf-8?B?ZGJ3aGpHTXc4RVFWbTd1eGJHNS9oYU02KzRxMUJ6OEcrbDFWRHNXb0JKckNZ?=
- =?utf-8?B?eHdaMnIwMkdKek5JUy9pNUhVRGl2QTVmRnE0ekRUZmc2Mkp6TG15UHRJL01o?=
- =?utf-8?B?N2hMS1JRTDMwa3Z3YVY2dXJsVnBMSFVWRFhMRkIzZzJPQVpSS3VKZnIzbGJl?=
- =?utf-8?B?K1h0WjNScFlQOUNlRUpJZkpWallQVVhRKzhHVFYxZ0ZrR3Z1OXN2Z2tNQU4w?=
- =?utf-8?B?YmFyMGZPUytTUkpPd3l2TTdIZExjTCtGcXJVZllJR0YwTzE3YStFR2pCZTMv?=
- =?utf-8?B?WnIvOXhweDlVaTFqY01hejZOUTB3L0FvOHhqc1JlUW03NWt6OGtIL0dxRmFT?=
- =?utf-8?B?dE16Wkx4a1JCMENXbU42Rm1VY2JjNUt3ZXRRNnE1QUtKYnBhNVBRTFVmbFBX?=
- =?utf-8?B?Ty9lNy9Sc2xmQTlHdVJrbk83RzFzbVpkMTdCZE5RVUQ2UDFUd2I5ckFqNU9l?=
- =?utf-8?B?dm04TmVFNThaWm5HUE1vL09Kdk1RZzdDQUZnb3VtaGZEZGRGRi8vdFE1ZGh3?=
- =?utf-8?B?RlN6Y1Jrb0E1MnBoRzBaZmhNT2JaVE1ab3BsRG5LSTRDSGpKenpqYkozU1Qv?=
- =?utf-8?B?Qk0zbnR4cEd2eitqelNkODZkY0ZBV05QSVNycWhJTUtId0tlRmRueTFUNlgy?=
- =?utf-8?B?WTRadzJ3WjM0RHNrRDc5WWUrTExNRzROcENIWEFxYk9OOUNDdEVRY3R2WVJj?=
- =?utf-8?B?a045bXNLcTJoL2crNHFCbVc4czlTRmNLdWhUSnJTNXJhMElHU09qRXdwYTZL?=
- =?utf-8?B?OWhlbm1nWmZadndLQ1R5Sjd0WGpyZzlieUxQUUZYa2k1QTFjeU9mSDZJNDVz?=
- =?utf-8?B?ZHZhK1ZxM24xR2E5cHhyOEtOT21PbWFiWm41VUxSYjlhREpjRVFWMWhYYjV2?=
- =?utf-8?B?TlFQWXErYi9paTNKRWU0SUhkUVdiK1hUTEN0UFlOaWRHcWo4OTE5cy9SV3Zv?=
- =?utf-8?B?bUU5K05SelloTUVETFhQc3FrMll1Z0pFOWtWakFmV1lvbkZNRFBHN05lZUJP?=
- =?utf-8?B?OWpIVjFhU0xQa0pBQ1pnb3JPTWw3TlVHejRRQXhxbWE2cjBBWlZLMTg4WEkr?=
- =?utf-8?B?bDRwdStqSkMvNnNxRkxicGpWa3VTTzZJRDZTT08zVmZ0dE5kMXAwdWNMcjBR?=
- =?utf-8?B?Uk1BdGNlajVheDBiajJuMjgxTTQ5WmYvdUVpVm1YMUZ5S3IyMHVwVEpLZVM5?=
- =?utf-8?B?UGlaNkdLT3ZBTHBYK2VLSElTU3FJWmFNTUgwUjNBelVEbVRnVmFjMHJOek9L?=
- =?utf-8?B?RzV5UHI0ZTF6UFdLMGpiWUQ1ajlHa3ZPY1BrR0M0VEQ3T1VPZUx3M21MYVRt?=
- =?utf-8?B?bDV4ei84ZHJJcFB5M0pNQnYyM2orRC9TWEpXZzhXUDdkOGNhYTYzMFlBSm9E?=
- =?utf-8?B?WnJoMU1iSTFSRU1sSFFvWERqOTZ4Y1pBQTd5RXhRUmM2dGUrTGpabmtWNVV4?=
- =?utf-8?B?K1VvOTlCVVNMZmpkL05Cb3R0WWgwb3RKSHdnei9iTkl4K3lyYUt2MVN2dENJ?=
- =?utf-8?B?aEovNXNuYU1VUExGNjk4ZCtKdXFOZUZVWlZja0dscGcrV2tPS00vNkVhc2NG?=
- =?utf-8?B?MU9ncWcvU3IrTERmUTZSMkc5ckVlR2x1Z3ZLYjFESUpDU2hJK054L1h2ZS8w?=
- =?utf-8?B?UVVObmk0K1hoSDlXNm10VjVkbGVzeFlBV3JXTkJhamJJSGZldXNxQXk5eE53?=
- =?utf-8?B?UUdDUlhIVmVhcHNOSmYyOEpWY3NIMmx2WGJVU01YN3NRVGtJUHNaSVZNcmxK?=
- =?utf-8?B?TXBnUFdvV0x2M2xRUXI3eEtDczFGVGtSRmFXcFlSZkY1L3ZadkJtSlBNUEFw?=
- =?utf-8?B?N3ZKVHNmYjZEdUVxWVA3YVZyNE9nNUFzOWcySzM1S2wzdHB1MWw5Q1NWcXBS?=
- =?utf-8?B?d2pVYTd4YUFuNzBlOUUyMWlMRVI2dnVNRXF4Z0NLa0hndExJbmE1YUFkWGRl?=
- =?utf-8?B?TjVnMWtWd0ZLRlBaMUtZbTFPWktick82dTNLTXNUREdJZm1kZzAxNXp5V2Nn?=
- =?utf-8?Q?ow8oGIJdET1r54FSQU3HpTo9e?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <84871B4A2571B8439BB1D28BAF3A8F50@FRAP264.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: base64
+        Sun, 3 Dec 2023 08:37:31 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F371CE7
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 05:37:37 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2935BC433C7;
+        Sun,  3 Dec 2023 13:37:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701610657;
+        bh=g6VF/OawWYAUDmEECQlX5bMPHLfMffyKwRch+Y1hphI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JjxMu+Q75WHV/aMFVXU3gJ9a2JXzUIcX82TQk84XWQKEXEGIgNhzWL4IKvetxx06d
+         ecDoecFR9FqIAYW2tMslc4NL1GjxE0Oc5h02D7AYk7f0KoEGyVAtSczpBpCWkULln1
+         k3HD9MPfgGz+76fTYlKfn8qtezeMc0oo3G6NM1ONXZ1eKHX7XsKte03TfxQKhyQzeR
+         a5tXoujlG1kxXt0Fvh3etMnOkT6gBKmnkJQ56LkNGw2k5wE73yunRH9al+NGwGWKgl
+         5JnZVjCA6U4TW33YSQS0w94jWQQ34OMiqt4Z1uq5KGu4CVSHnyESY+C4N+WPeNGvQI
+         GIMQEQIVEhudw==
+Date:   Sun, 3 Dec 2023 14:37:33 +0100
+From:   Andi Shyti <andi.shyti@kernel.org>
+To:     Elad Nachman <enachman@marvell.com>
+Cc:     gregory.clement@bootlin.com, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org, cyuval@marvell.com
+Subject: Re: [PATCH] i2c: busses: i2c-mv64xxx: fix arb-loss i2c lock
+Message-ID: <20231203133733.eatne2i6eycbiomi@zenone.zhora.eu>
+References: <20231130162522.3306136-1-enachman@marvell.com>
 MIME-Version: 1.0
-X-OriginatorOrg: csgroup.eu
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: f8b67f10-de61-4196-5f65-08dbf4046d45
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Dec 2023 13:33:25.3050
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: r9kzlwcwU0exiuSViyFheSQdGFfSinaPsqAOJmD4FtPs0i+eiiMMRT5eDgndQP2yxP6VAeV7UxiksjeqGSD6PLUd+9UXSKGzo0Zr3HKOVnA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR0P264MB3435
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231130162522.3306136-1-enachman@marvell.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCkxlIDMwLzExLzIwMjMgw6AgMjI6MzAsIFBldGVyIFh1IGEgw6ljcml0wqA6DQo+IE9uIEZy
-aSwgTm92IDI0LCAyMDIzIGF0IDExOjA3OjUxQU0gLTA1MDAsIFBldGVyIFh1IHdyb3RlOg0KPj4g
-T24gRnJpLCBOb3YgMjQsIDIwMjMgYXQgMDk6MDY6MDFBTSArMDAwMCwgUnlhbiBSb2JlcnRzIHdy
-b3RlOg0KPj4+IEkgZG9uJ3QgaGF2ZSBhbnkgbWljcm8tYmVuY2htYXJrcyBmb3IgR1VQIHRob3Vn
-aCwgaWYgdGhhdCdzIHlvdXIgcXVlc3Rpb24uIElzDQo+Pj4gdGhlcmUgYW4gZWFzeS10by11c2Ug
-dGVzdCBJIGNhbiBydW4gdG8gZ2V0IHNvbWUgbnVtYmVycz8gSSdkIGJlIGhhcHB5IHRvIHRyeSBp
-dCBvdXQuDQo+Pg0KPj4gVGhhbmtzIFJ5YW4uICBUaGVuIG5vdGhpbmcgaXMgbmVlZGVkIHRvIGJl
-IHRlc3RlZCBpZiBndXAgaXMgbm90IHlldCB0b3VjaGVkDQo+PiBmcm9tIHlvdXIgc2lkZSwgYWZh
-aWN0LiAgSSdsbCBzZWUgd2hldGhlciBJIGNhbiBwcm92aWRlIHNvbWUgcm91Z2ggbnVtYmVycw0K
-Pj4gaW5zdGVhZCBpbiB0aGUgbmV4dCBwb3N0IChJJ2xsIHByb2JhYmx5IG9ubHkgYmUgYWJsZSB0
-byB0ZXN0IGl0IGluIGEgVk0sDQo+PiB0aG91Z2gsIGJ1dCBob3BlZnVsbHkgdGhhdCBzaG91bGQg
-c3RpbGwgcmVmbGVjdCBtb3N0bHkgdGhlIHRydXRoKS4NCj4gDQo+IEFuIHVwZGF0ZTogSSBmaW5p
-c2hlZCBhIHJvdW5kIG9mIDY0SyBjb250X3B0ZSB0ZXN0LCBpbiB0aGUgc2xvdyBndXAgbWljcm8N
-Cj4gYmVuY2htYXJrIEkgc2VlIH4xNSUgcGVyZiBkZWdyYWRlIHdpdGggdGhpcyBwYXRjaHNldCBh
-cHBsaWVkIG9uIGEgVk0gb24gdG9wDQo+IG9mIEFwcGxlIE0xLg0KPiANCj4gRnJhbmtseSB0aGF0
-J3MgZXZlbiBsZXNzIHRoYW4gSSBleHBlY3RlZCwgY29uc2lkZXJpbmcgbm90IG9ubHkgaG93IHNs
-b3cgZ3VwDQo+IFRIUCB1c2VkIHRvIGJlLCBidXQgYWxzbyBvbiB0aGUgZmFjdCB0aGF0IHRoYXQn
-cyBhIHRpZ2h0IGxvb3Agb3ZlciBzbG93DQo+IGd1cCwgd2hpY2ggaW4gbm9ybWFsIGNhc2VzIHNo
-b3VsZG4ndCBoYXBwZW46ICJwcmVzZW50IiBwdGVzIG5vcm1hbGx5IGdvZXMNCj4gdG8gZmFzdC1n
-dXAsIHdoaWxlICFwcmVzZW50IGdvZXMgaW50byBhIGZhdWx0IGZvbGxvd2luZyBpdC4gIEkgYXNz
-dW1lDQo+IHRoYXQncyB3aHkgbm9ib2R5IGNhcmVkIHNsb3cgZ3VwIGZvciBUSFAgYmVmb3JlLiAg
-SSB0aGluayBhZGRpbmcgY29udF9wdGUNCj4gc3VwcG9ydCBzaG91bGRuJ3QgYmUgdmVyeSBoYXJk
-LCBidXQgdGhhdCB3aWxsIGluY2x1ZGUgbWFraW5nIGNvbnRfcHRlIGlkZWENCj4gZ2xvYmFsIGp1
-c3QgZm9yIGFybTY0IGFuZCByaXNjdiBTdm5hcG90Lg0KDQpJcyB0aGVyZSBhbnkgZG9jdW1lbnRh
-dGlvbiBvbiB3aGF0IGNvbnRfcHRlIGlzID8gSSBoYXZlIGFsd2F5cyB3b25kZXJlZCANCmlmIGl0
-IGNvdWxkIGFsc28gZml0IHBvd2VycGMgOHh4IG5lZWQgPw0KDQpPbiBwb3dlcnBjLCBmb3IgMTZr
-IHBhZ2VzLCB3ZSBoYXZlIHRvIGRlZmluZSA0IGNvbnNlY3V0aXZlIFBURXMuIEFsbCA0IA0KUFRF
-IGFyZSBmbGFnZ2VkIHdpdGggdGhlIFNQUyBiaXQgdGVsbGluZyBpdCdzIGEgMTZrIHBhZ2VzLCBi
-dXQgZm9yIFRMQiANCm1pc3NlcyB0aGUgSFcgbmVlZHMgb25lIGVudHJpZSBmb3IgZWFjaCA0ayBm
-cmFnbWVudC4NCg0KVGhlcmUgaXMgYWxzbyBhIHNpbWlsYXIgYXBwcm9hY2ggZm9yIDUxMmsgcGFn
-ZXMsIHdlIGhhdmUgMTI4IGNvbnRpZ3VvdXMgDQppZGVudGljYWwgUFRFcyBmb3IgdGhlbS4NCg0K
-QW5kIHdoYXRldmVyIFBBR0VfU0laRSBpcyAoZWl0aGVyIDRrIG9yIDE2ayksIHRoZSBIVyBuZWVk
-cyBvbmUgJ3Vuc2lnbmVkIA0KbG9uZycgcHRlIGZvciBlYWNoIDRrIGZyYWdtZW50LiBTbyBhdCB0
-aGUgdGltZSBiZWluZyB3aGVuIHdlIGRlZmluZSANClBBR0VfU0laRSBhcyAxNmssIHdlIG5lZWQg
-YSBzcGVjaWFsIHB0ZV90IHdoaWNoIGlzIGEgdGFibGUgb2YgNHggDQp1bnNpZ25lZCBsb25nLg0K
-DQpXb25kZXJpbmcgaWYgdGhlIGNvbnRfcHRlIGNvbmNlcHQgaXMgc2ltaWxhciBhbmQgd2hldGhl
-ciBpdCBjb3VsZCBoZWxwLg0KDQpUaGFua3MNCkNocmlzdG9waGUNCg==
+Hi Elad,
+
+On Thu, Nov 30, 2023 at 06:25:22PM +0200, Elad Nachman wrote:
+> From: Elad Nachman <enachman@marvell.com>
+> 
+> Some i2c slaves, mainly SFPs, might cause the bus to lose arbitration
+> while slave is in the middle of responding.
+
+Can you be more specific about how this is happening?
+
+> The solution is to change the I2C mode from mpps to gpios, and toggle
+> the i2c_scl gpio to emulate bus clock toggling, so slave will finish
+> its transmission, driven by the manual clock toggling, and will release
+> the i2c bus.
+> 
+> Signed-off-by: Elad Nachman <enachman@marvell.com>
+> ---
+>  drivers/i2c/busses/i2c-mv64xxx.c | 81 ++++++++++++++++++++++++++++++++
+>  1 file changed, 81 insertions(+)
+> 
+> diff --git a/drivers/i2c/busses/i2c-mv64xxx.c b/drivers/i2c/busses/i2c-mv64xxx.c
+> index dc160cbc3155..21715f31dc29 100644
+> --- a/drivers/i2c/busses/i2c-mv64xxx.c
+> +++ b/drivers/i2c/busses/i2c-mv64xxx.c
+> @@ -26,6 +26,7 @@
+>  #include <linux/clk.h>
+>  #include <linux/err.h>
+>  #include <linux/delay.h>
+> +#include <linux/of_gpio.h>
+>  
+>  #define MV64XXX_I2C_ADDR_ADDR(val)			((val & 0x7f) << 1)
+>  #define MV64XXX_I2C_BAUD_DIV_N(val)			(val & 0x7)
+> @@ -104,6 +105,7 @@ enum {
+>  	MV64XXX_I2C_ACTION_RCV_DATA,
+>  	MV64XXX_I2C_ACTION_RCV_DATA_STOP,
+>  	MV64XXX_I2C_ACTION_SEND_STOP,
+> +	MV64XXX_I2C_ACTION_UNLOCK_BUS
+>  };
+>  
+>  struct mv64xxx_i2c_regs {
+> @@ -150,6 +152,11 @@ struct mv64xxx_i2c_data {
+>  	bool			clk_n_base_0;
+>  	struct i2c_bus_recovery_info	rinfo;
+>  	bool			atomic;
+> +	/* I2C mpp states & gpios needed for arbitration lost recovery */
+> +	int			scl_gpio, sda_gpio;
+> +	bool			arb_lost_recovery_ena;
+
+mmhhh... this name here looks quite ugly, something like
+"soft_reset" or "clock_stretch"?
+
+> +	struct pinctrl_state *i2c_mpp_state;
+> +	struct pinctrl_state *i2c_gpio_state;
+>  };
+>  
+>  static struct mv64xxx_i2c_regs mv64xxx_i2c_regs_mv64xxx = {
+> @@ -318,6 +325,11 @@ mv64xxx_i2c_fsm(struct mv64xxx_i2c_data *drv_data, u32 status)
+>  		drv_data->state = MV64XXX_I2C_STATE_IDLE;
+>  		break;
+>  
+> +	case MV64XXX_I2C_STATUS_MAST_LOST_ARB: /*0x38*/
+
+Please, leave a space between the comments: /* 0x38 */
+
+> +		drv_data->action = MV64XXX_I2C_ACTION_UNLOCK_BUS;
+> +		drv_data->state = MV64XXX_I2C_STATE_IDLE;
+> +		break;
+> +
+>  	case MV64XXX_I2C_STATUS_MAST_WR_ADDR_NO_ACK: /* 0x20 */
+>  	case MV64XXX_I2C_STATUS_MAST_WR_NO_ACK: /* 30 */
+>  	case MV64XXX_I2C_STATUS_MAST_RD_ADDR_NO_ACK: /* 48 */
+> @@ -356,6 +368,9 @@ static void mv64xxx_i2c_send_start(struct mv64xxx_i2c_data *drv_data)
+>  static void
+>  mv64xxx_i2c_do_action(struct mv64xxx_i2c_data *drv_data)
+>  {
+> +	struct pinctrl *pc;
+> +	int i, ret;
+> +
+>  	switch(drv_data->action) {
+>  	case MV64XXX_I2C_ACTION_SEND_RESTART:
+>  		/* We should only get here if we have further messages */
+> @@ -409,6 +424,48 @@ mv64xxx_i2c_do_action(struct mv64xxx_i2c_data *drv_data)
+>  			drv_data->reg_base + drv_data->reg_offsets.control);
+>  		break;
+>  
+> +	case MV64XXX_I2C_ACTION_UNLOCK_BUS:
+> +
+
+for consistency, don't add a blank line here.
+
+> +		if (!drv_data->arb_lost_recovery_ena)
+> +			break;
+> +
+> +		pc = devm_pinctrl_get(drv_data->adapter.dev.parent);
+> +		if (IS_ERR(pc))
+> +			break;
+
+I would add here some error message
+
+> +
+> +		/* Change i2c MPPs state to act as GPIOs: */
+> +		if (pinctrl_select_state(pc, drv_data->i2c_gpio_state) >= 0) {
+> +			ret = devm_gpio_request_one(drv_data->adapter.dev.parent,
+> +					 drv_data->scl_gpio, GPIOF_DIR_OUT, NULL);
+> +			ret |= devm_gpio_request_one(drv_data->adapter.dev.parent,
+> +					 drv_data->sda_gpio, GPIOF_DIR_OUT, NULL);
+
+mmhhh... these are requested everytime we do an UNLOCK_BUS and
+freed only when the driver exits.
+
+Why don't you request them in the probe()?
+
+> +			if (!ret) {
+> +				/* Toggle i2c scl (serial clock) 10 times.
+> +				 * This allows the slave that occupies
+> +				 * the bus to transmit its remaining data,
+> +				 * so it can release the i2c bus:
+> +				 */
+
+The proper commenting style is:
+
+	/*
+	 * Toggle i2c scl (serial clock) 10 times.
+	 * This allows the slave that occupies
+	 * the bus to transmit its remaining data,
+	 * so it can release the i2c bus:
+	 */
+
+Why 10 times? What is the requested time?
+
+> +				for (i = 0; i < 10; i++) {
+> +					gpio_set_value(drv_data->scl_gpio, 1);
+> +					mdelay(1);
+
+Please, no mdelay!
+
+> +					gpio_set_value(drv_data->scl_gpio, 0);
+> +				};
+> +
+> +				devm_gpiod_put(drv_data->adapter.dev.parent,
+> +					gpio_to_desc(drv_data->scl_gpio));
+> +				devm_gpiod_put(drv_data->adapter.dev.parent,
+> +					gpio_to_desc(drv_data->sda_gpio));
+> +			}
+> +
+> +			/* restore i2c pin state to MPPs: */
+> +			pinctrl_select_state(pc, drv_data->i2c_mpp_state);
+> +		}
+> +
+> +		/* Trigger controller soft reset: */
+> +		writel(0x1, drv_data->reg_base + drv_data->reg_offsets.soft_reset);
+
+0x1 stands for... ?
+
+> +		mdelay(1);
+
+Please, no mdelay and if there is a need to wait explain it in a
+comment.
+
+I need a very strong reason for using mdelay() at this point.
+
+> +		fallthrough;
+
+What is the rationale behind this fallthrough? Are we moving to
+get a data stop later on?
+
+> +
+>  	case MV64XXX_I2C_ACTION_RCV_DATA_STOP:
+>  		drv_data->msg->buf[drv_data->byte_posn++] =
+>  			readl(drv_data->reg_base + drv_data->reg_offsets.data);
+> @@ -985,6 +1042,7 @@ mv64xxx_i2c_probe(struct platform_device *pd)
+>  {
+>  	struct mv64xxx_i2c_data		*drv_data;
+>  	struct mv64xxx_i2c_pdata	*pdata = dev_get_platdata(&pd->dev);
+> +	struct pinctrl *pc;
+>  	int	rc;
+>  
+>  	if ((!pdata && !pd->dev.of_node))
+> @@ -1040,6 +1098,29 @@ mv64xxx_i2c_probe(struct platform_device *pd)
+>  	if (rc == -EPROBE_DEFER)
+>  		return rc;
+>  
+> +	drv_data->arb_lost_recovery_ena = false;
+> +	pc = devm_pinctrl_get(&pd->dev);
+> +	if (!IS_ERR(pc)) {
+
+Is this optional? Please consider using
+"i2c-scl-clk-low-timeout-us" in the devicetree.
+
+Andi
