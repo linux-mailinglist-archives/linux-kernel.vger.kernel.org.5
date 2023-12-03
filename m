@@ -2,127 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50009802472
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 15:20:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFFC8802471
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 15:20:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233514AbjLCOH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 09:07:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52314 "EHLO
+        id S233536AbjLCOOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 09:14:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjLCOHy (ORCPT
+        with ESMTP id S229450AbjLCOOG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 09:07:54 -0500
-Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFA6FF4
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 06:07:58 -0800 (PST)
-Received: by mail-qv1-xf31.google.com with SMTP id 6a1803df08f44-67ab5e015aaso6751036d6.0
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Dec 2023 06:07:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1701612478; x=1702217278; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=CiMNgzFr7xNUwBtnhCHdgoiuX87pimcKNL7aMsL6fgY=;
-        b=OKzguQkSABjtxWcOMcm+Qbmet+nHku05O6x23HTlp1qxdIcYZhiIeX07SPUb1E2IF/
-         kYP/aC1uzAYZHJX6YNAFeYWxjkGz87iG6PM5xB8mIeskDKJW2Jd1oz2mWRNywi13ddRb
-         rL5cnPtHr04ZcvHCFcbbh1FJ3/i2ih0Z2s8KEqc8CV1X69q2fEzRg9NPvGRmq1DUEy2L
-         I01Fz22rSLoLI7+p4usNhV5XZetpCquDVJjGgygKl8tZYmK2sYyXfqyqacbQwAyEVJci
-         zescEoj/ayE/KRPps3Qc6uCwyA3DUXhbQJpwWZtn7ppvYg52EJ+lhK/mbycRZIl2Jn2J
-         sZIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701612478; x=1702217278;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CiMNgzFr7xNUwBtnhCHdgoiuX87pimcKNL7aMsL6fgY=;
-        b=rNEZxx6sux7oM1JbwIzUQXTGQnR7Eamu1rhnsTSrAR4K0XhaLS65X1SwgxkXSPII5q
-         zs5k22ddfy2UtDDElIdFH5z2qyexa6KmNFHAxgzZ7MSXODk457cTOoSb2GGrPqOvFIq6
-         mVOBdpFbSu8fyw1koGTVEvAORZgmUwAOEpDMUgZZofb/YQKMva7SY0uQ77U7luou/VFT
-         88lNA/hyae0A/G+fdMHsfcsHnU06VnycGs9tGjAiN4pek9tctcqDjIaTeU+okZUnz4Tf
-         mjQSHtYWK1m/wmv/qCwicJMlOyla6tlPTPmhNGh/EGMDdJ+XNO+669qlCOUULFAfXHAJ
-         Wwng==
-X-Gm-Message-State: AOJu0Yzb0ZcY5TgZ1l1+uAJmhei9Pl1yH/y7Uc1y0Qqi0lTEMnfkyjK4
-        EqiYC5iehr+kXmUuI4XYtUbxHw==
-X-Google-Smtp-Source: AGHT+IHLblrSR9v9mU82kXzYVsIygmNXeBVbxztP2WE72q1qjIUsHC92qYjoWB74bCqvYp2tHSpE/Q==
-X-Received: by 2002:a05:622a:7148:b0:423:e4f1:4958 with SMTP id jc8-20020a05622a714800b00423e4f14958mr3926493qtb.56.1701612477906;
-        Sun, 03 Dec 2023 06:07:57 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-134-23-187.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.134.23.187])
-        by smtp.gmail.com with ESMTPSA id z9-20020ac87109000000b00419c40a0d70sm3402958qto.54.2023.12.03.06.07.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Dec 2023 06:07:56 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1r9n8W-009HdE-5C;
-        Sun, 03 Dec 2023 10:07:56 -0400
-Date:   Sun, 3 Dec 2023 10:07:56 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Tony Krowiak <akrowiak@linux.ibm.com>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        Jason Herne <jjherne@linux.ibm.com>,
-        Harald Freudenberger <freude@linux.ibm.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Anish Ghulati <aghulati@google.com>,
-        Venkatesh Srinivas <venkateshs@chromium.org>,
-        Andrew Thornton <andrewth@google.com>
-Subject: Re: [PATCH 05/26] vfio: KVM: Pass get/put helpers from KVM to VFIO,
- don't do circular lookup
-Message-ID: <20231203140756.GI1489931@ziepe.ca>
-References: <20230916003118.2540661-1-seanjc@google.com>
- <20230916003118.2540661-6-seanjc@google.com>
- <20230918152110.GI13795@ziepe.ca>
- <ZQhxpesyXeG+qbS6@google.com>
- <20230918160258.GL13795@ziepe.ca>
- <ZWp_q1w01NCZi8KX@google.com>
+        Sun, 3 Dec 2023 09:14:06 -0500
+Received: from smtp.smtpout.orange.fr (smtp-16.smtpout.orange.fr [80.12.242.16])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5129F3
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 06:14:11 -0800 (PST)
+Received: from [192.168.1.18] ([92.140.202.140])
+        by smtp.orange.fr with ESMTPA
+        id 9nEUrOgUx2dY39nEUruSbe; Sun, 03 Dec 2023 15:14:08 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1701612849;
+        bh=vHH2Bjj48Djz2RY9cadX3OGXazgeoGZS6s9g0Hw2khU=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=JvV19AXC2mDarEzEI3CJF4WQd0A/kKs9PeYNCmInPJQ4gT1ta96UZOjrU9I26rjyN
+         bZGNokqYmrPnECPZJ+EFxhEM9CCeAzslkSyLamP0M5MCPbZCiYT7PyPkNXHnsBq74W
+         BvzQAJ4ag08L/SapDPDBykUuMngmi3BSakO4McFQ6XY6CsqvJIKw2KQZntmrlGntLj
+         WEwkYG4RViURq0vkuH94nk6/ca6b9DRuFQ+nalLvlfUbVhnKT8eA7l2Q0/kj9zUFRK
+         npMUFKikdXjUVvILHelWDTj5RtsYZfs7igJbMKY0+Q4nSy60Lj+cLdIXcE05wslK0Q
+         zTqia6ZWn9IOA==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 03 Dec 2023 15:14:08 +0100
+X-ME-IP: 92.140.202.140
+Message-ID: <2a89f0b4-990a-4d0d-8e54-c4215579c23c@wanadoo.fr>
+Date:   Sun, 3 Dec 2023 15:14:05 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZWp_q1w01NCZi8KX@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] hwmon: Add driver for Gigabyte AORUS Waterforce AIO
+ coolers
+Content-Language: fr
+To:     Aleksa Savic <savicaleksa83@gmail.com>, linux-hwmon@vger.kernel.org
+Cc:     Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20231203120651.371429-1-savicaleksa83@gmail.com>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <20231203120651.371429-1-savicaleksa83@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 01, 2023 at 04:51:55PM -0800, Sean Christopherson wrote:
+Le 03/12/2023 à 13:06, Aleksa Savic a écrit :
+> This driver exposes hardware sensors of the Gigabyte AORUS Waterforce
+> all-in-one CPU liquid coolers, which communicate through a proprietary
+> USB HID protocol. Report offsets were initially discovered in [1] and
+> confirmed by me on a Waterforce X240 by observing the sent reports from
+> the official software.
+> 
+> Available sensors are pump and fan speed in RPM, as well as coolant
+> temperature. Also available through debugfs is the firmware version.
+> 
+> Attaching a fan is optional and allows it to be controlled from the
+> device. If it's not connected, the fan-related sensors will report
+> zeroes.
+> 
+> The addressable RGB LEDs and LCD screen are not supported in this
+> driver and should be controlled through userspace tools.
+> 
+> [1]: https://github.com/liquidctl/liquidctl/issues/167
+> 
+> Signed-off-by: Aleksa Savic <savicaleksa83@gmail.com>
+> ---
 
-> There's one more wrinkle: this patch is buggy in that it doesn't ensure the liveliness
-> of KVM-the-module, i.e. nothing prevents userspace from unloading kvm.ko while VFIO
-> still holds a reference to a kvm structure, and so invoking ->put_kvm() could jump
-> into freed code.  To fix that, KVM would also need to pass along a module pointer :-(
+Hi,
+...
 
-Maybe we should be refcounting the struct file not the struct kvm?
+> +/* Writes the command to the device with the rest of the report filled with zeroes */
+> +static int waterforce_write_expanded(struct waterforce_data *priv, const u8 *cmd, int cmd_length)
+> +{
+> +	int ret;
+> +
+> +	mutex_lock(&priv->buffer_lock);
+> +
+> +	memset(priv->buffer, 0x00, MAX_REPORT_LENGTH);
+> +	memcpy(priv->buffer, cmd, cmd_length);
 
-Then we don't need special helpers and it keeps the module alive correctly.
+Is memcpy_and_pad() useful here?
 
-Jason
+> +	ret = hid_hw_output_report(priv->hdev, priv->buffer, MAX_REPORT_LENGTH);
+> +
+> +	mutex_unlock(&priv->buffer_lock);
+> +	return ret;
+> +}
+
+...
+
+> +static int waterforce_read(struct device *dev, enum hwmon_sensor_types type,
+> +			   u32 attr, int channel, long *val)
+> +{
+> +	int ret;
+> +	struct waterforce_data *priv = dev_get_drvdata(dev);
+> +
+> +	if (time_after(jiffies, priv->updated + msecs_to_jiffies(STATUS_VALIDITY))) {
+> +		/* Request status on demand */
+> +		ret = waterforce_get_status(priv);
+> +		if (ret < 0)
+> +			return -ENODATA;
+> +	}
+> +
+> +	switch (type) {
+> +	case hwmon_temp:
+> +		*val = priv->temp_input[channel];
+> +		break;
+> +	case hwmon_fan:
+> +		*val = priv->speed_input[channel];
+> +		break;
+> +	case hwmon_pwm:
+> +		switch (attr) {
+> +		case hwmon_pwm_input:
+> +			*val = DIV_ROUND_CLOSEST(priv->duty_input[channel] * 255, 100);
+> +			break;
+> +		default:
+> +			break;
+
+Should we return an error here?
+
+> +		}
+> +		break;
+> +	default:
+> +		return -EOPNOTSUPP;	/* unreachable */
+> +	}
+> +
+> +	return 0;
+> +}
+
+...
+
+> +static int waterforce_probe(struct hid_device *hdev, const struct hid_device_id *id)
+> +{
+> +	struct waterforce_data *priv;
+> +	int ret;
+> +
+> +	priv = devm_kzalloc(&hdev->dev, sizeof(*priv), GFP_KERNEL);
+> +	if (!priv)
+> +		return -ENOMEM;
+> +
+> +	priv->hdev = hdev;
+> +	hid_set_drvdata(hdev, priv);
+> +
+> +	/*
+> +	 * Initialize priv->updated to STATUS_VALIDITY seconds in the past, making
+> +	 * the initial empty data invalid for waterforce_read() without the need for
+> +	 * a special case there.
+> +	 */
+> +	priv->updated = jiffies - msecs_to_jiffies(STATUS_VALIDITY);
+> +
+> +	ret = hid_parse(hdev);
+> +	if (ret) {
+> +		hid_err(hdev, "hid parse failed with %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	/*
+> +	 * Enable hidraw so existing user-space tools can continue to work.
+> +	 */
+> +	ret = hid_hw_start(hdev, HID_CONNECT_HIDRAW);
+> +	if (ret) {
+> +		hid_err(hdev, "hid hw start failed with %d\n", ret);
+> +		goto fail_and_stop;
+
+Should this be 'return ret;' (the _start has failed, so why stop?)
+
+> +	}
+> +
+> +	ret = hid_hw_open(hdev);
+> +	if (ret) {
+> +		hid_err(hdev, "hid hw open failed with %d\n", ret);
+> +		goto fail_and_close;
+
+Should this be 'fail_and_stop' (the _open has failed, so why close?)
+
+> +	}
+> +
+> +	priv->buffer = devm_kzalloc(&hdev->dev, MAX_REPORT_LENGTH, GFP_KERNEL);
+> +	if (!priv->buffer) {
+> +		ret = -ENOMEM;
+> +		goto fail_and_close;
+> +	}
+> +
+> +	mutex_init(&priv->status_report_request_mutex);
+> +	mutex_init(&priv->buffer_lock);
+> +	spin_lock_init(&priv->status_report_request_lock);
+> +	init_completion(&priv->status_report_received);
+> +	init_completion(&priv->fw_version_processed);
+> +
+> +	priv->hwmon_dev = hwmon_device_register_with_info(&hdev->dev, "waterforce",
+> +							  priv, &waterforce_chip_info, NULL);
+> +	if (IS_ERR(priv->hwmon_dev)) {
+> +		ret = PTR_ERR(priv->hwmon_dev);
+> +		hid_err(hdev, "hwmon registration failed with %d\n", ret);
+> +		goto fail_and_close;
+> +	}
+> +
+> +	hid_device_io_start(hdev);
+> +	ret = waterforce_get_fw_ver(hdev);
+> +	if (ret < 0)
+> +		hid_warn(hdev, "fw version request failed with %d\n", ret);
+> +	hid_device_io_stop(hdev);
+> +
+> +	waterforce_debugfs_init(priv);
+> +
+> +	return 0;
+> +
+> +fail_and_close:
+> +	hid_hw_close(hdev);
+> +fail_and_stop:
+> +	hid_hw_stop(hdev);
+> +	return ret;
+> +}
+> +
+> +static void waterforce_remove(struct hid_device *hdev)
+> +{
+> +	struct waterforce_data *priv = hid_get_drvdata(hdev);
+> +
+> +	hwmon_device_unregister(priv->hwmon_dev);
+
+Should debugfs_remove_recursive(() be called?
+(if CONFIG_DEBUG_FS is defined)
+
+CJ
+
+> +
+> +	hid_hw_close(hdev);
+> +	hid_hw_stop(hdev);
+> +}
+
+...
+
