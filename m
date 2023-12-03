@@ -2,62 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3451380270A
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 20:37:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B3AA8026F2
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 20:34:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234207AbjLCTgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 14:36:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54010 "EHLO
+        id S234143AbjLCTem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 14:34:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234212AbjLCTg1 (ORCPT
+        with ESMTP id S233974AbjLCTeN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 14:36:27 -0500
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E31BD19BF
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 11:33:42 -0800 (PST)
-Received: by mail-yb1-xb30.google.com with SMTP id 3f1490d57ef6-dae0ab8ac3eso2144098276.0
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Dec 2023 11:33:42 -0800 (PST)
+        Sun, 3 Dec 2023 14:34:13 -0500
+Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 939D01BD7;
+        Sun,  3 Dec 2023 11:33:44 -0800 (PST)
+Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-5d05ff42db0so42210827b3.2;
+        Sun, 03 Dec 2023 11:33:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701632021; x=1702236821; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1701632022; x=1702236822; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=cRG7J1XhtxmqjKk8mPyX2ntR1/BM7lRJBdNSI5UPjng=;
-        b=V0bB9EgE9geKKLnK8shvWe1KUQ78kOoFIJSqNIz2okIgocck0oiDan1ruNwgwzDzsw
-         l+afX/Faw6bmf1iU5/bIqq/RSqkOjs5Hk6OjyUQFTgsuLXxLz/n9BwLssePi8Xyl+/zh
-         WoAGrecvh1TT1RB2XanU9IVfi1Eb8ics7PrJccDN1DwQHbX26hFjjZKWSM2mx6fp2jDM
-         M3uaeIWNt3kdL+YQq4eLdOiAgPC0axq8ysmte5hJ1HawT51swXF00MG+siItAsEuwvRm
-         dZIl6CSLgzMU2L+Lsy/0LjotYBUEpHCmY7TkGws/+qwr8yLdQ7HSXuB6o5pi3SsybpKh
-         4mVA==
+        bh=vguNRNHZWUrDOSu/TVKVOPIB86L1io3LlGEpKJkKhiw=;
+        b=BnlSM+sEOduvbEUrrvCDcvg+vYlF5hKVKUkmiSk20y+NXZ9rlfSFBC/XxwGXu5FxnQ
+         OlZgRkfBLkFgr05ufkOc0kNxcSpiDLoBYJxmjX3oSyl1DVw8mQ+OrQmgaiWTm34E5oSX
+         a5vBPq/t9S2WHl3qKcrmyrK1l+TTV4/nll23ZlhcEAw0Mz6zRG5M6wqOAnHkWIPNGFuq
+         baLJeW9UzP7qWRaTB2MYyBJ2ieydGukGKUviNHKT4/tf1za6SsgC1TyhNh4Z80T01saR
+         h4Mi5/Pmmf7FYTLEHZ/rYDlmpZ2PBZOqLYv8EQyDOPMyfkSiHuEz+Fnurd1cu8dfpDJL
+         lEHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701632021; x=1702236821;
+        d=1e100.net; s=20230601; t=1701632022; x=1702236822;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=cRG7J1XhtxmqjKk8mPyX2ntR1/BM7lRJBdNSI5UPjng=;
-        b=l5EutowARjFSIHm3cNVwRGvwZ1SnpO1+W6Dxz4g7l46wVQQr2dUadI56iXcRb0nzHS
-         ebOD2CJoWluQ5+D0c1z9F+OA78M6WU+KhOWW1nXzo+ebsA1nBQ2s1rcKjHgqxdoa7fYR
-         H1ttQ2/U0m13RwEhqmtIubnXvBMZuvyisSlhZ96+0ONskK2ZMbaxrAsYZv3Sr0A635t8
-         MiBE0ZFeWr4HNdyJYXLg5ii3HqOR2oosGnDwVoLRQVFw7RncJBjUo7weQCk6u8ZW1vEM
-         pBtLiMe64IpzBRaIWZqemjVnPGydZR0mEG0BAb/4bba+9QhZJp/5uGOGV3peEwT2V3n9
-         hp1Q==
-X-Gm-Message-State: AOJu0YzzeSeRn5xLBd463U8nkeRZ0rHy/9/RJek5zMQuUI158CuJNEo9
-        2LioiZLe0hh0aQ9RwTc+F9b0MLTHCCCw5Q==
-X-Google-Smtp-Source: AGHT+IH/zAr/IRLH41uf8GyRu75RL5p41k4FNgdJhjBLXJc/pBGsG9eMP2VGrFV3emuPx11G2UwLSw==
-X-Received: by 2002:a5b:bce:0:b0:db5:42eb:3efd with SMTP id c14-20020a5b0bce000000b00db542eb3efdmr2164135ybr.2.1701632020812;
-        Sun, 03 Dec 2023 11:33:40 -0800 (PST)
+        bh=vguNRNHZWUrDOSu/TVKVOPIB86L1io3LlGEpKJkKhiw=;
+        b=gVhYNGIpHnlP0Swz4VKfhieUzc1u1Sn7WBUKlE0/GDvT8vHe1IuMmbJrZcYJvirVZJ
+         ZNNd0u5c483ckzVfRkZ7QKSsSRHYgU/rcsO9+HbuFNTRI1SzWMQmYnZuiHfER/NRo4eB
+         hyREQEwisSG6Elyi6KI0MFtDtmwRNTbEL4eZbPiXyLgoJbW240PBf8vxqDU1DIGSoh3n
+         5HpN2vICySn0mncf9o4YXZ5QrifCyuu1XFmHf5h8fXTbVoXdViA+D6x4PXhutaoOvlD7
+         M0oX6xtMoLtkTD0St/mQu2aFUzqpQPnpISuJXmFEKBI/O46FKXKhFBd6vnmk5LKNpDYO
+         K6eA==
+X-Gm-Message-State: AOJu0Yw1guZMuv8NCiiuvpWm1KOmExUEo4o/ClUHhU5JVHnFxbTT7gGg
+        5ejSiDR7AcyghB9FGx9pAIQInWumTTk75Q==
+X-Google-Smtp-Source: AGHT+IFSv+65IiQiN8WCGcLVQvQiuR6hHdW5qXQ7nf6ECXpLpXmmUxxmzvhwBggjw2vBz5nonWlXlg==
+X-Received: by 2002:a05:690c:3745:b0:5d8:5fad:8dcc with SMTP id fw5-20020a05690c374500b005d85fad8dccmr507589ywb.29.1701632022542;
+        Sun, 03 Dec 2023 11:33:42 -0800 (PST)
 Received: from localhost ([2601:344:8301:57f0:cb98:c3e:57c:8191])
-        by smtp.gmail.com with ESMTPSA id 132-20020a25028a000000b00d7497467d36sm1820247ybc.45.2023.12.03.11.33.39
+        by smtp.gmail.com with ESMTPSA id m190-20020a0dfcc7000000b005463e45458bsm2765478ywf.123.2023.12.03.11.33.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Dec 2023 11:33:39 -0800 (PST)
+        Sun, 03 Dec 2023 11:33:41 -0800 (PST)
 From:   Yury Norov <yury.norov@gmail.com>
-To:     linux-kernel@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
+To:     linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
         Yury Norov <yury.norov@gmail.com>,
-        Colin Ian King <colin.i.king@gmail.com>,
-        linuxppc-dev@lists.ozlabs.org
+        linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
+        linux-arm-msm@vger.kernel.org
 Cc:     Jan Kara <jack@suse.cz>,
         Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
         Matthew Wilcox <willy@infradead.org>,
@@ -67,9 +68,9 @@ Cc:     Jan Kara <jack@suse.cz>,
         Alexey Klimov <klimov.linux@gmail.com>,
         Bart Van Assche <bvanassche@acm.org>,
         Sergey Shtylyov <s.shtylyov@omp.ru>
-Subject: [PATCH v2 18/35] powerpc: use atomic find_bit() API where appropriate
-Date:   Sun,  3 Dec 2023 11:32:50 -0800
-Message-Id: <20231203193307.542794-17-yury.norov@gmail.com>
+Subject: [PATCH v2 19/35] iommu: use atomic find_bit() API where appropriate
+Date:   Sun,  3 Dec 2023 11:32:51 -0800
+Message-Id: <20231203193307.542794-18-yury.norov@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231203193307.542794-1-yury.norov@gmail.com>
 References: <20231203192422.539300-1-yury.norov@gmail.com>
@@ -86,142 +87,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use find_and_{set,clear}_bit() where appropriate and simplify the logic.
+Switch opencoded find_and_set_next_bit() in __arm_smmu_alloc_bitmap()
+and msm_iommu_alloc_ctx() to use dedicated API, and make them nice
+one-liner wrappers.
+
+While here, refactor msm_iommu_attach_dev() and msm_iommu_alloc_ctx()
+so that error codes don't mismatch.
 
 Signed-off-by: Yury Norov <yury.norov@gmail.com>
 ---
- arch/powerpc/mm/book3s32/mmu_context.c     | 10 ++---
- arch/powerpc/platforms/pasemi/dma_lib.c    | 45 +++++-----------------
- arch/powerpc/platforms/powernv/pci-sriov.c | 12 ++----
- 3 files changed, 17 insertions(+), 50 deletions(-)
+ drivers/iommu/arm/arm-smmu/arm-smmu.h | 10 ++--------
+ drivers/iommu/msm_iommu.c             | 18 ++++--------------
+ 2 files changed, 6 insertions(+), 22 deletions(-)
 
-diff --git a/arch/powerpc/mm/book3s32/mmu_context.c b/arch/powerpc/mm/book3s32/mmu_context.c
-index 1922f9a6b058..7db19f173c2e 100644
---- a/arch/powerpc/mm/book3s32/mmu_context.c
-+++ b/arch/powerpc/mm/book3s32/mmu_context.c
-@@ -50,13 +50,11 @@ static unsigned long context_map[LAST_CONTEXT / BITS_PER_LONG + 1];
+diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.h b/drivers/iommu/arm/arm-smmu/arm-smmu.h
+index 703fd5817ec1..004a4704ebf1 100644
+--- a/drivers/iommu/arm/arm-smmu/arm-smmu.h
++++ b/drivers/iommu/arm/arm-smmu/arm-smmu.h
+@@ -453,15 +453,9 @@ struct arm_smmu_impl {
  
- unsigned long __init_new_context(void)
+ static inline int __arm_smmu_alloc_bitmap(unsigned long *map, int start, int end)
  {
--	unsigned long ctx = next_mmu_context;
-+	unsigned long ctx;
- 
--	while (test_and_set_bit(ctx, context_map)) {
--		ctx = find_next_zero_bit(context_map, LAST_CONTEXT+1, ctx);
--		if (ctx > LAST_CONTEXT)
--			ctx = 0;
--	}
-+	ctx = find_and_set_next_bit(context_map, LAST_CONTEXT + 1, next_mmu_context);
-+	if (ctx > LAST_CONTEXT)
-+		ctx = 0;
- 	next_mmu_context = (ctx + 1) & LAST_CONTEXT;
- 
- 	return ctx;
-diff --git a/arch/powerpc/platforms/pasemi/dma_lib.c b/arch/powerpc/platforms/pasemi/dma_lib.c
-index 1be1f18f6f09..906dabee0132 100644
---- a/arch/powerpc/platforms/pasemi/dma_lib.c
-+++ b/arch/powerpc/platforms/pasemi/dma_lib.c
-@@ -118,14 +118,9 @@ static int pasemi_alloc_tx_chan(enum pasemi_dmachan_type type)
- 		limit = MAX_TXCH;
- 		break;
- 	}
--retry:
--	bit = find_next_bit(txch_free, MAX_TXCH, start);
--	if (bit >= limit)
--		return -ENOSPC;
--	if (!test_and_clear_bit(bit, txch_free))
--		goto retry;
--
--	return bit;
-+
-+	bit = find_and_clear_next_bit(txch_free, MAX_TXCH, start);
-+	return bit < limit ? bit : -ENOSPC;
- }
- 
- static void pasemi_free_tx_chan(int chan)
-@@ -136,15 +131,9 @@ static void pasemi_free_tx_chan(int chan)
- 
- static int pasemi_alloc_rx_chan(void)
- {
--	int bit;
--retry:
--	bit = find_first_bit(rxch_free, MAX_RXCH);
--	if (bit >= MAX_TXCH)
--		return -ENOSPC;
--	if (!test_and_clear_bit(bit, rxch_free))
--		goto retry;
--
--	return bit;
-+	int bit = find_and_clear_bit(rxch_free, MAX_RXCH);
-+
-+	return bit < MAX_TXCH ? bit : -ENOSPC;
- }
- 
- static void pasemi_free_rx_chan(int chan)
-@@ -374,16 +363,9 @@ EXPORT_SYMBOL(pasemi_dma_free_buf);
-  */
- int pasemi_dma_alloc_flag(void)
- {
--	int bit;
-+	int bit = find_and_clear_bit(flags_free, MAX_FLAGS);
- 
--retry:
--	bit = find_first_bit(flags_free, MAX_FLAGS);
--	if (bit >= MAX_FLAGS)
--		return -ENOSPC;
--	if (!test_and_clear_bit(bit, flags_free))
--		goto retry;
--
--	return bit;
-+	return bit < MAX_FLAGS ? bit : -ENOSPC;
- }
- EXPORT_SYMBOL(pasemi_dma_alloc_flag);
- 
-@@ -439,16 +421,9 @@ EXPORT_SYMBOL(pasemi_dma_clear_flag);
-  */
- int pasemi_dma_alloc_fun(void)
- {
--	int bit;
--
--retry:
--	bit = find_first_bit(fun_free, MAX_FLAGS);
--	if (bit >= MAX_FLAGS)
--		return -ENOSPC;
--	if (!test_and_clear_bit(bit, fun_free))
--		goto retry;
-+	int bit = find_and_clear_bit(fun_free, MAX_FLAGS);
- 
--	return bit;
-+	return bit < MAX_FLAGS ? bit : -ENOSPC;
- }
- EXPORT_SYMBOL(pasemi_dma_alloc_fun);
- 
-diff --git a/arch/powerpc/platforms/powernv/pci-sriov.c b/arch/powerpc/platforms/powernv/pci-sriov.c
-index 59882da3e742..640e387e6d83 100644
---- a/arch/powerpc/platforms/powernv/pci-sriov.c
-+++ b/arch/powerpc/platforms/powernv/pci-sriov.c
-@@ -397,18 +397,12 @@ static int64_t pnv_ioda_map_m64_single(struct pnv_phb *phb,
- 
- static int pnv_pci_alloc_m64_bar(struct pnv_phb *phb, struct pnv_iov_data *iov)
- {
--	int win;
-+	int win = find_and_set_bit(&phb->ioda.m64_bar_alloc, phb->ioda.m64_bar_idx + 1);
+-	int idx;
++	int idx = find_and_set_next_bit(map, end, start);
  
 -	do {
--		win = find_next_zero_bit(&phb->ioda.m64_bar_alloc,
--				phb->ioda.m64_bar_idx + 1, 0);
+-		idx = find_next_zero_bit(map, end, start);
+-		if (idx == end)
+-			return -ENOSPC;
+-	} while (test_and_set_bit(idx, map));
 -
--		if (win >= phb->ioda.m64_bar_idx + 1)
--			return -1;
--	} while (test_and_set_bit(win, &phb->ioda.m64_bar_alloc));
-+	if (win >= phb->ioda.m64_bar_idx + 1)
-+		return -1;
- 
- 	set_bit(win, iov->used_m64_bar_mask);
--
- 	return win;
+-	return idx;
++	return idx < end ? idx : -ENOSPC;
  }
  
+ static inline void __iomem *arm_smmu_page(struct arm_smmu_device *smmu, int n)
+diff --git a/drivers/iommu/msm_iommu.c b/drivers/iommu/msm_iommu.c
+index f86af9815d6f..67124f4228b1 100644
+--- a/drivers/iommu/msm_iommu.c
++++ b/drivers/iommu/msm_iommu.c
+@@ -185,17 +185,9 @@ static const struct iommu_flush_ops msm_iommu_flush_ops = {
+ 	.tlb_add_page = __flush_iotlb_page,
+ };
+ 
+-static int msm_iommu_alloc_ctx(unsigned long *map, int start, int end)
++static int msm_iommu_alloc_ctx(struct msm_iommu_dev *iommu)
+ {
+-	int idx;
+-
+-	do {
+-		idx = find_next_zero_bit(map, end, start);
+-		if (idx == end)
+-			return -ENOSPC;
+-	} while (test_and_set_bit(idx, map));
+-
+-	return idx;
++	return find_and_set_bit(iommu->context_map, iommu->ncb);
+ }
+ 
+ static void msm_iommu_free_ctx(unsigned long *map, int idx)
+@@ -418,10 +410,8 @@ static int msm_iommu_attach_dev(struct iommu_domain *domain, struct device *dev)
+ 					ret = -EEXIST;
+ 					goto fail;
+ 				}
+-				master->num =
+-					msm_iommu_alloc_ctx(iommu->context_map,
+-							    0, iommu->ncb);
+-				if (IS_ERR_VALUE(master->num)) {
++				master->num = msm_iommu_alloc_ctx(iommu);
++				if (master->num >= iommu->ncb) {
+ 					ret = -ENODEV;
+ 					goto fail;
+ 				}
 -- 
 2.40.1
 
