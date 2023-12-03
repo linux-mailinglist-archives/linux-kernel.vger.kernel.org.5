@@ -2,51 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF6A180252D
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 16:37:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 475F880252E
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 16:38:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233632AbjLCPhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 10:37:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49608 "EHLO
+        id S233644AbjLCPiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 10:38:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjLCPhA (ORCPT
+        with ESMTP id S229450AbjLCPiV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 10:37:00 -0500
-Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D796ED;
-        Sun,  3 Dec 2023 07:37:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-        s=mail; t=1701617821;
-        bh=TTuJ6Udpup4SD2uOIIkzQFANYG602HzCvVFlx6oIxmU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=At/6BHR4M88kALlZGhzJHgia2zi9meV3s9btRZolmf8OfDUgm5k8rRxnOtxj0P4P5
-         KpQGfIGWnRTO31UjJlE/Z036mRD981Bn6ML6JFK4fFtqyeJXvz5cmKFUvcbP9GGfAK
-         o8jTs+2NLEMimrtxexKppnkD1zETQnrWpwkluJ3E=
-Date:   Sun, 3 Dec 2023 16:37:01 +0100
-From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-To:     Joel Granados <j.granados@samsung.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH RFC 0/7] sysctl: constify sysctl ctl_tables
-Message-ID: <e3932680-d284-4e13-9c0c-f202d588bf60@t-8ch.de>
-References: <CGME20231125125305eucas1p2ebdf870dd8ef46ea9d346f727b832439@eucas1p2.samsung.com>
- <20231125-const-sysctl-v1-0-5e881b0e0290@weissschuh.net>
- <20231127101323.sdnibmf7c3d5ovye@localhost>
- <475cd5fa-f0cc-4b8b-9e04-458f6d143178@t-8ch.de>
- <20231201163120.depfyngsxdiuchvc@localhost>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231201163120.depfyngsxdiuchvc@localhost>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        Sun, 3 Dec 2023 10:38:21 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77F54F3
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 07:38:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701617907;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pYQxOP9Pb/F6NHproH1Uh8UYxD4u/gyzAwpumhp9pq4=;
+        b=IqUtv0NFHDnc2ziLUGJDgLu2F4qbkZUXDe599xyupao2u0amtYeEK33Xw9BJE8kTik/cNz
+        BqbX7essc0ydXVWsVkoudxlHxjfR80So1cBHr93ddx7Q+aEqOW1OfkgtPGTBJCsEXAP8bo
+        oTh7xs+XuTPXXGyaGWP3w/6WCR56a/Q=
+Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
+ [209.85.210.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-55-NvZZ5NY0M_qm4mGclSDL-w-1; Sun, 03 Dec 2023 10:38:26 -0500
+X-MC-Unique: NvZZ5NY0M_qm4mGclSDL-w-1
+Received: by mail-pf1-f200.google.com with SMTP id d2e1a72fcca58-6ce45f91324so130948b3a.3
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Dec 2023 07:38:26 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701617905; x=1702222705;
+        h=content-transfer-encoding:mime-version:references:in-reply-to:from
+         :subject:cc:to:message-id:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=pYQxOP9Pb/F6NHproH1Uh8UYxD4u/gyzAwpumhp9pq4=;
+        b=LhuiUY66vjqtw95gTnh4gNXEUgli30MOetJh7BMge7fOz1k5lE7pQlvIx+sIHBtQp5
+         j7bUAyfdPwjf1yTpSbMVydCGqdr4C1Nj6Nb1zJTPzmEGc0gEkvcXJO1uOAg11Im2L7kf
+         XflhZ06VT3nNRUKLlbFcsLYcbqvX3LCDg49KEuZEFCodQPnQ+KBFTXTQhXAR63MIM3bb
+         jUGA882LHP6QjK7n3B7pEAQO2n6tGhmXXna6AhtsyWSGBqVMYQ/bGE256UByePur9NUQ
+         Dc0lz+f+4mbyUCZfVC2KuQZE9oIOjntbApDx7NMOgaXv2Fb4ZrJFtDERCjaFYAfrpLV8
+         e/lQ==
+X-Gm-Message-State: AOJu0YwRbT05EM4iQ/YMlxN7CXojUWhH8CwO3XaWyNP2Ugd+knTLVh7K
+        FRTMkxNT1eiFFf8OOXSm3ixqiGdaSYgOOhe8dI0wkr9/n3ip3oXIu0bRl4Hgp3SD76B9VtgOv0f
+        A8PQNpG0lgKiJorT9PFywOmuJ
+X-Received: by 2002:a05:6a00:982:b0:6ce:2731:c236 with SMTP id u2-20020a056a00098200b006ce2731c236mr693782pfg.37.1701617905330;
+        Sun, 03 Dec 2023 07:38:25 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGou+fj2OrEkNfHTzexvyH52JZHlxwieUtPewwjCMmxRNdu9UXfHcNAzyl51tOVvTcSD/vPSw==
+X-Received: by 2002:a05:6a00:982:b0:6ce:2731:c236 with SMTP id u2-20020a056a00098200b006ce2731c236mr693770pfg.37.1701617905019;
+        Sun, 03 Dec 2023 07:38:25 -0800 (PST)
+Received: from localhost ([240d:1a:c0d:9f00:c5d9:5358:537b:93e4])
+        by smtp.gmail.com with ESMTPSA id t9-20020a62d149000000b006cb8e394574sm6372961pfl.21.2023.12.03.07.38.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 03 Dec 2023 07:38:24 -0800 (PST)
+Date:   Mon, 04 Dec 2023 00:38:19 +0900 (JST)
+Message-Id: <20231204.003819.166258252408944062.syoshida@redhat.com>
+To:     sumang@marvell.com
+Cc:     davem@davemloft.net, dsahern@kernel.org, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [EXT] [PATCH net v2] ipv4: ip_gre: Avoid skb_pull() failure in
+ ipgre_xmit()
+From:   Shigeru Yoshida <syoshida@redhat.com>
+In-Reply-To: <SJ0PR18MB5216005BB27035DE7C37CAA4DB87A@SJ0PR18MB5216.namprd18.prod.outlook.com>
+References: <SJ0PR18MB5216A25BD74AE376FB1E536BDB87A@SJ0PR18MB5216.namprd18.prod.outlook.com>
+        <20231203.205409.646024453190363727.syoshida@redhat.com>
+        <SJ0PR18MB5216005BB27035DE7C37CAA4DB87A@SJ0PR18MB5216.namprd18.prod.outlook.com>
+X-Mailer: Mew version 6.9 on Emacs 29.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,213 +84,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joel,
+On Sun, 3 Dec 2023 15:17:09 +0000, Suman Ghosh wrote:
+>>>> 	}
+>>>>
+>>>> 	if (dev->header_ops) {
+>>>>+		int pull_len = tunnel->hlen + sizeof(struct iphdr);
+>>>>+
+>>>> 		if (skb_cow_head(skb, 0))
+>>>> 			goto free_skb;
+>>>>
+>>>> 		tnl_params = (const struct iphdr *)skb->data;
+>>>>
+>>>>-		/* Pull skb since ip_tunnel_xmit() needs skb->data pointing
+>>>>-		 * to gre header.
+>>>>-		 */
+>>>>-		skb_pull(skb, tunnel->hlen + sizeof(struct iphdr));
+>>>>+		if (!pskb_network_may_pull(skb, pull_len))
+>>> [Suman] Since this is transmit path, should we add unlikely() here?
+>>
+>>Thanks for your comment.
+>>
+>>I traced this function and found that pskb_may_pull_reason() seems to
+>>have appropriate likely() and unlikely() as Eric says.
+>>
+>>I'm new to Linux networking. Could you kindly explain the background of
+>>your suggestion?
+>>
+>>I understand that a transmit path must be as fast as possible, so we
+>>should use unlikely() for rare cases such like this error path. Am I
+>>correct?
+>>
+>>Thanks,
+>>Shigeru
+> [Suman] Yes. Likely()/unlikely() helps the compiler for branch prediction and we use it mostly on the data path.
+> But I cross checked that this is static inline and the function pskb_may_pull() already have likely()/unlikely() in place.
+> So, you can ignore my comment here.
 
-On 2023-12-01 17:31:20+0100, Joel Granados wrote:
-> Hey Thomas.
+Thank you for your explanation. It is very informative. And thanks for
+the review as well.
+
+Shigeru
+
+>>
+>>>>+			goto free_skb;
+>>>>+
+>>>>+		/* ip_tunnel_xmit() needs skb->data pointing to gre header. */
+>>>>+		skb_pull(skb, pull_len);
+>>>> 		skb_reset_mac_header(skb);
+>>>>
+>>>> 		if (skb->ip_summed == CHECKSUM_PARTIAL &&
+>>>>--
+>>>>2.41.0
+>>>>
+>>>
 > 
-> Thx for the clarifications. I did more of a deep dive into your set and
-> have additional comments (in line). I think const-ing all this is a good
-> approach. The way forward is to be able to see the entire patch set of
-> changes in a V1 or a shared repo somewhere to have a better picture of
-> what is going on. By the "entire patchset" I mean all the changes that
-> you described in the "full process".
 
-All the changes will be a lot. I don't think the incremental value to
-migrate all proc_handlers versus the work is useful for the discussion.
-I can however write up my proposed changes for the sysctl core properly
-and submit them as part of the next revision.
-
-> On Tue, Nov 28, 2023 at 09:18:30AM +0100, Thomas Weißschuh wrote:
-> > Hi Joel,
-> > 
-> > On 2023-11-27 11:13:23+0100, Joel Granados wrote:
-> > > In general I would like to see more clarity with the motivation and I
-> > > would also expect some system testing. My comments inline:
-> > 
-> > Thanks for your feedback, response are below.
-> > 
-> > > On Sat, Nov 25, 2023 at 01:52:49PM +0100, Thomas Weißschuh wrote:
-> > > > Problem description:
-> > > > 
-> > > > The kernel contains a lot of struct ctl_table throught the tree.
-> > > > These are very often 'static' definitions.
-> > > > It would be good to mark these tables const to avoid accidental or
-> > > > malicious modifications.
-> > 
-> > > It is unclear to me what you mean here with accidental or malicious
-> > > modifications. Do you have a specific attack vector in mind? Do you
-> > > have an example of how this could happen maliciously? With
-> > > accidental, do you mean in proc/sysctl.c? Can you expand more on the
-> > > accidental part?
-> > 
-> > There is no specific attack vector I have in mind. The goal is to remove
-> > mutable data, especially if it contains pointers, that could be used by
-> > an attacker as a step in an exploit. See for example [0], [1].
-
-> I think you should work "remove mutable data" as part of you main
-> motivation when you send the non-RFC patch. I would also including [0]
-> and [1] (and any other previous work) to help contextualize.
-
-Ack.
-
-> 
-> > 
-> > Accidental can be any out-of-bounds write throughout the kernel.
-> > 
-> > > What happens with the code that modifies these outside the sysctl core?
-> > > Like for example in sysctl_route_net_init where the table is modified
-> > > depending on the net->user_ns? Would these non-const ctl_table pointers
-> > > be ok? would they be handled differently?
-> > 
-> > It is still completely fine to modify the tables before registering,
-> > like sysctl_route_net_init is doing. That code should not need any
-> > changes.
-> > 
-> > Modifying the table inside the handler function would bypass the
-> > validation done when registering so sounds like a bad idea in general.
-
-> This is done before registering. So the approach *is* sound.
-
-Absolutely. Though, I wouldn't be surprised if some other subsystem is
-doing this stuff in the handler.
-
-> > It would still be possible however for a subsystem to do so by just not
-> > making their sysctl table const and then modifying the table directly.
-
-> Indeed. Which might be intended or migth be someone that just forgets to
-> put const. I think you mentioned that there would be some sort of static
-> check for this (coccinelle or smach, or something else)? 
-
-My intention was to put the struct into scripts/const_structs.checkpatch
-so checkpatch.pl warns about non-const instances.
-
-> >  
-> > > > Unfortunately the tables can not be made const because the core
-> > > > registration functions expect mutable tables.
-> > > > 
-> > > > This is for two reasons:
-> > > > 
-> > > > 1) sysctl_{set,clear}_perm_empty_ctl_header in the sysctl core modify
-> > > >    the table. This should be fixable by only modifying the header
-> > > >    instead of the table itself.
-> > > > 2) The table is passed to the handler function as a non-const pointer.
-> > > > 
-> > > > This series is an aproach on fixing reason 2).
-> > 
-> > > So number 2 will be sent in another set?
-
-> Sorry, this was supposed to be "number 1", but you got my meaning :)
-
-I was not entirely sure :-)
-As mentioned above I do have a proposal for 1) and will submit this as
-part of the next revision.
-Or maybe as a standalone non-RFC patchset, because IMHO this is valuable
-on its own.
-
-> > 
-> > If the initial feedback to the RFC and general process is positive, yes.
-
-> Off the top of my head, putting  that type in the header instead of the
-> ctl_table seems ok. I would include it in non-RFC version together with
-> 2.
-> 
-> > 
-> > > > 
-> > > > Full process:
-> > > > 
-> > > > * Introduce field proc_handler_new for const handlers (this series)
-
-> I don't understand why we need a new handler. Couldn't we just change
-> the existing handler to receive `const struct ctl_table` and change all
-> the `proc_do*` handlers?
-
-The idea was that there are a lot of nonstandard proc handlers.
-By doing it in steps we would avoid having to change all nonstandard
-handlers in one go.
-I looked a bit around and it seems that only 20% of sysctls use
-nonstandard handlers.
-Let's see if it's feasible to do those in one step.
-It would indeed avoid a bunch of complexity all over the place.
-
-> I'm guessing its because you want to do this in steps? if that is the
-> case, it would be very helpfull to see (in some repo or V1) the steps
-> to change all the handlers in the non-RFC version 
-> 
-> > > > * Migrate all core handlers to proc_handler_new (this series, partial)
-> > > >   This can hopefully be done in a big switch, as it only involves
-> > > >   functions and structures owned by the core sysctl code.
-> It would be helpful to see what the "big switch" would look like. If it
-> is all sysctl code and cannot be chunked up because of dependencies,
-> then it should be ok to do it in one go.
-> 
-> > > > * Migrate all other sysctl handlers to proc_handler_new.
-> > > > * Drop the old proc_handler_field.
-> > > > * Fix the sysctl core to not modify the tables anymore.
-> > > > * Adapt public sysctl APIs to take "const struct ctl_table *".
-> > > > * Teach checkpatch.pl to warn on non-const "struct ctl_table"
-> > > >   definitions.
-
-> Have you considered how to ignore the cases where the ctl_tables are
-> supposed to be non-const when they are defined (like in the network
-> code that we were discussing earlier)
-
-As it would be a checkpatch warning it can be ignore while writing the
-patch and it won't trigger afterwards.
-
-> > > > * Migrate definitions of "struct ctl_table" to "const" where applicable.
-> These migrations are treewide and are usually reviewed by a wider
-> audience. You might need to chunk it up to make the review more palpable
-> for the other maintainers.
-
-Ack.
-
-> > > >  
-> > > > 
-> > > > Notes:
-> > > > 
-> > > > Just casting the function pointers around would trigger
-> > > > CFI (control flow integrity) warnings.
-> > > > 
-> > > > The name of the new handler "proc_handler_new" is a bit too long messing
-> > > > up the alignment of the table definitions.
-> > > > Maybe "proc_handler2" or "proc_handler_c" for (const) would be better.
-> > 
-> > > indeed the name does not say much. "_new" looses its meaning quite fast
-> > > :)
-> > 
-> > Hopefully somebody comes up with a better name!
-
-> I would like to avoid this all together and just do add the const to the
-> existing "proc_handler"
-
-Ack.
-
-> > 
-> > > In my experience these tree wide modifications are quite tricky. Have you
-> > > run any tests to see that everything is as it was? sysctl selftests and
-> > > 0-day come to mind.
-> > 
-> > I managed to miss one change in my initial submission:
-> > With the hunk below selftests and typing emails work.
-> > 
-> > --- a/fs/proc/proc_sysctl.c
-> > +++ b/fs/proc/proc_sysctl.c
-> > @@ -1151,7 +1151,7 @@ static int sysctl_check_table(const char *path, struct ctl_table_header *header)
-> >                         else
-> >                                 err |= sysctl_check_table_array(path, entry);
-> >                 }
-> > -               if (!entry->proc_handler)
-> > +               if (!entry->proc_handler && !entry->proc_handler_new)
-> >                         err |= sysctl_err(path, entry, "No proc_handler");
-> >  
-> >                 if ((entry->mode & (S_IRUGO|S_IWUGO)) != entry->mode)
-> > 
-> > > [..]
-> > 
-> > [0] 43a7206b0963 ("driver core: class: make class_register() take a const *")
-> > [1] https://lore.kernel.org/lkml/20230930050033.41174-1-wedsonaf@gmail.com/
-
-Thanks for the feedback!
-
-Thomas
