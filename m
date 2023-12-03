@@ -2,205 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DA198027DA
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 22:33:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1B5D8027F6
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 22:37:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229903AbjLCVdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 16:33:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40200 "EHLO
+        id S233928AbjLCVhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 16:37:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjLCVc6 (ORCPT
+        with ESMTP id S229450AbjLCVhG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 16:32:58 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5933C2;
-        Sun,  3 Dec 2023 13:33:04 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id 98e67ed59e1d1-28655c04da3so1932667a91.0;
-        Sun, 03 Dec 2023 13:33:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701639184; x=1702243984; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4uUY1W5jCT30owrQ3sG0UVyxY52rhXE7pduVYPg+ahQ=;
-        b=UzHR5xJZnGO464U1Le00F2cg42NM95OzLpJu4Pvg1yvCFG2aBy2M0aCHfEWkquOZN/
-         2zMf6DUzEyKdKoiRbRQCsOzg/hlySHtVU5buo2Uf9HZ6fuK33rKF6z8WqPjG/hQE/QV/
-         /XLdfqJzG3F+/IbOgNg3kNJiktP4+vn0w9NTOefzEDVCCFbYz+Tzbpz25k4bePjWgZUP
-         yt/uTRd2qKh2iMxwSAe6NAwzagNTjr1cTop9CnSW68Tou0/vpFxD0yAq9HGZAhTE0T4Y
-         eOXwv+iSE19GVRTCOLzLqRGmh3+qLsKQJQx71RRbSPR207pD1TVEepdW1tzPgzGK+nqf
-         CL6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701639184; x=1702243984;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4uUY1W5jCT30owrQ3sG0UVyxY52rhXE7pduVYPg+ahQ=;
-        b=nqbtjn4RcgcclDuI7tjQo0SHhINXdOzzJSjxt1MqhS1OJkb43ICfacLa2uzm8hYSjq
-         VhC72gYQUco7lmj8b8EZa7norZIbFt4EvGlJthWLNTLSNIuIuxqx5/x0RujMcwIVPkMM
-         cGrgAqFCvlVJMdN3tHm5D1aRUWoSHpLCL+XpUDHFVv325gyc0kWWtdfzlfI78tTr35kv
-         MugtWahlKEfrX1T1snjGTZhfAroCpTZpThFSRrWa21qNizmovPHfIfMr965TuXGD2f8A
-         eaSDAW8G0+Tu8BxXmiNhVuszdXOnZdeLJsQivIuZkHXLv8dpc5b5gX1l4eT44BgjQZGF
-         oGYw==
-X-Gm-Message-State: AOJu0YxaEKEtzGnY4C/9hVWChNP6RWT414W7QBrR442GKzzRxR3p+y5O
-        ADy8zxcg63ByNWnZbGaYqj0x3tjLId0j2MKW4IQ=
-X-Google-Smtp-Source: AGHT+IGPWxeHkfwcW6s5frHbR04baTe/Cp+skA++exMPU/AmVPvdrLFK7lu4L+64Z6AB2cWvsAJbNDtD219dx28KB1E=
-X-Received: by 2002:a17:90a:b005:b0:286:6cc0:62a3 with SMTP id
- x5-20020a17090ab00500b002866cc062a3mr3345815pjq.34.1701639183857; Sun, 03 Dec
- 2023 13:33:03 -0800 (PST)
+        Sun, 3 Dec 2023 16:37:06 -0500
+Received: from mx-out.tlen.pl (mx-out.tlen.pl [193.222.135.158])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FDBED3
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 13:37:12 -0800 (PST)
+Received: (wp-smtpd smtp.tlen.pl 32920 invoked from network); 3 Dec 2023 22:37:10 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=o2.pl; s=1024a;
+          t=1701639430; bh=+rQu7l/pbfMMyV2FY5VUMOYxCiJezsxSJr4sXOEoc9w=;
+          h=From:Subject:To:Cc;
+          b=tDPM+sCTOeVMZGraRZfr4/xEJtaxOIWQefj1+FIW2wxSq1FWtnye72jB1EXCBPg5Z
+           BU8WG2ANlXPNbgcqyiA37zDahNCq4Xwfgm0J69uyr70UjfTTe7eaGWo0nf2VyH7Y+d
+           NHbdadEHcgFckml6vXT8L0K2fDFuLL4EK6U+kWm0=
+Received: from aaez25.neoplus.adsl.tpnet.pl (HELO [192.168.1.22]) (mat.jonczyk@o2.pl@[83.4.129.25])
+          (envelope-sender <mat.jonczyk@o2.pl>)
+          by smtp.tlen.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
+          for <mario.limonciello@amd.com>; 3 Dec 2023 22:37:10 +0100
+Message-ID: <c497547f-a718-4aa9-915f-208b92a3b30d@o2.pl>
+Date:   Sun, 3 Dec 2023 22:37:08 +0100
 MIME-Version: 1.0
-References: <20231129092759.242641-1-paul.elder@ideasonboard.com> <20231129092759.242641-12-paul.elder@ideasonboard.com>
-In-Reply-To: <20231129092759.242641-12-paul.elder@ideasonboard.com>
-From:   Adam Ford <aford173@gmail.com>
-Date:   Sun, 3 Dec 2023 15:32:52 -0600
-Message-ID: <CAHCN7xLihh_r=zn+2EsqZvsOumeJY52DHmrkVv0+A7Grib8AhQ@mail.gmail.com>
-Subject: Re: [PATCH v4 11/11] media: rkisp1: Add UYVY as an output format
-To:     Paul Elder <paul.elder@ideasonboard.com>
-Cc:     linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        devicetree@vger.kernel.org, kieran.bingham@ideasonboard.com,
-        tomi.valkeinen@ideasonboard.com, umang.jain@ideasonboard.com,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Dafna Hirschfeld <dafna@fastmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        "moderated list:ARM/Rockchip SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
+User-Agent: Mozilla Thunderbird
+From:   =?UTF-8?Q?Mateusz_Jo=C5=84czyk?= <mat.jonczyk@o2.pl>
+Subject: Re: [PATCH v4 3/4] rtc: Add support for configuring the UIP timeout
+ for RTC reads
+To:     Mario Limonciello <mario.limonciello@amd.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     "open list:REAL TIME CLOCK (RTC) SUBSYSTEM" 
+        <linux-rtc@vger.kernel.org>,
         open list <linux-kernel@vger.kernel.org>,
-        Fabio Estevam <festevam@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        linux-pm@vger.kernel.org, tobrohl@gmail.com, aalsing@gmail.com,
+        Dhaval.Giani@amd.com, xmb8dsv4@gmail.com, x86@kernel.org,
+        dhaval.giani@gmail.com, Dave Hansen <dave.hansen@linux.intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>
+References: <20231128053653.101798-1-mario.limonciello@amd.com>
+ <20231128053653.101798-4-mario.limonciello@amd.com>
+Content-Language: en-GB
+Autocrypt: addr=mat.jonczyk@o2.pl; keydata=
+ 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
+ TANkZ3QqXNX2
+In-Reply-To: <20231128053653.101798-4-mario.limonciello@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-WP-MailID: 8458a1fba8034dd3ef93f7855e8347ed
+X-WP-AV: skaner antywirusowy Poczty o2
+X-WP-SPAM: NO 0000000 [0VMy]                               
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 3:29=E2=80=AFAM Paul Elder <paul.elder@ideasonboard=
-.com> wrote:
+// resending - first message was rejected as HTML-formatted
+
+W dniu 28.11.2023 o 06:36, Mario Limonciello pisze:
+> The UIP timeout is hardcoded to 10ms for all RTC reads, but in some
+> contexts this might not be enough time. Add a timeout parameter to
+> mc146818_get_time() and mc146818_get_time_callback().
 >
-> Add support for UYVY as an output format. The uv_swap bit in the
-> MI_XTD_FORMAT_CTRL register that is used for the NV formats does not
-> work for packed YUV formats. Thus, UYVY support is implemented via
-> byte-swapping. This method clearly does not work for implementing
-> support for YVYU and VYUY.
+> If UIP timeout is configured by caller to be >=100 ms and a call
+> takes this long, log a warning.
 >
-> Signed-off-by: Paul Elder <paul.elder@ideasonboard.com>
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Make all callers use 10ms to ensure no functional changes.
+>
+> Cc: stable@vger.kernel.org # 6.1.y
+> Fixes: ec5895c0f2d8 ("rtc: mc146818-lib: extract mc146818_avoid_UIP")
+> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
 > ---
->  .../platform/rockchip/rkisp1/rkisp1-capture.c | 41 +++++++++++++++++++
->  1 file changed, 41 insertions(+)
-
-
-Paul,
-
-I tested this patch series from one of the older submissions and I was
-able to get it working, but I could not get the video to capture to
-work no matter what resolution or video format I tried.  Each time, I
-get the same error message:  rkisp1 32e10000.isp: start pipeline
-failed -32
-
-Do you have an example of how you configured the pipeline and how you
-invoked the video capture?
-
-thanks
-
-adam
-
+> v3->v4:
+>  * Change label
+>  * Logic adjustment for for loop
+>  * Fix pr_warn variable
+> v2->v3:
+>  * Logic adjustments
+>  * Clarify warning message
+> v1->v2:
+>  * Add a warning if 100ms or more
+>  * Add stable and fixes tags
 >
-> diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c b/dr=
-ivers/media/platform/rockchip/rkisp1/rkisp1-capture.c
-> index a352893308b6..b50b044d22af 100644
-> --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c
-> +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c
-> @@ -97,6 +97,12 @@ static const struct rkisp1_capture_fmt_cfg rkisp1_mp_f=
-mts[] =3D {
->                 .uv_swap =3D 0,
->                 .write_format =3D RKISP1_MI_CTRL_MP_WRITE_YUVINT,
->                 .mbus =3D MEDIA_BUS_FMT_YUYV8_2X8,
-> +       }, {
-> +               .fourcc =3D V4L2_PIX_FMT_UYVY,
-> +               .uv_swap =3D 0,
-> +               .yc_swap =3D 1,
-> +               .write_format =3D RKISP1_MI_CTRL_MP_WRITE_YUVINT,
-> +               .mbus =3D MEDIA_BUS_FMT_YUYV8_2X8,
->         }, {
->                 .fourcc =3D V4L2_PIX_FMT_YUV422P,
->                 .uv_swap =3D 0,
-> @@ -231,6 +237,13 @@ static const struct rkisp1_capture_fmt_cfg rkisp1_sp=
-_fmts[] =3D {
->                 .write_format =3D RKISP1_MI_CTRL_SP_WRITE_INT,
->                 .output_format =3D RKISP1_MI_CTRL_SP_OUTPUT_YUV422,
->                 .mbus =3D MEDIA_BUS_FMT_YUYV8_2X8,
-> +       }, {
-> +               .fourcc =3D V4L2_PIX_FMT_UYVY,
-> +               .uv_swap =3D 0,
-> +               .yc_swap =3D 1,
-> +               .write_format =3D RKISP1_MI_CTRL_SP_WRITE_INT,
-> +               .output_format =3D RKISP1_MI_CTRL_SP_OUTPUT_YUV422,
-> +               .mbus =3D MEDIA_BUS_FMT_YUYV8_2X8,
->         }, {
->                 .fourcc =3D V4L2_PIX_FMT_YUV422P,
->                 .uv_swap =3D 0,
-> @@ -464,6 +477,20 @@ static void rkisp1_mp_config(struct rkisp1_capture *=
-cap)
->                 rkisp1_write(rkisp1, RKISP1_CIF_MI_XTD_FORMAT_CTRL, reg);
->         }
->
-> +       /*
-> +        * U/V swapping with the MI_XTD_FORMAT_CTRL register only works f=
-or
-> +        * NV12/NV21 and NV16/NV61, so instead use byte swap to support U=
-YVY.
-> +        * YVYU and VYUY cannot be supported with this method.
-> +        */
-> +       if (rkisp1->info->features & RKISP1_FEATURE_MI_OUTPUT_ALIGN) {
-> +               reg =3D rkisp1_read(rkisp1, RKISP1_CIF_MI_OUTPUT_ALIGN_FO=
-RMAT);
-> +               if (cap->pix.cfg->yc_swap)
-> +                       reg |=3D RKISP1_CIF_OUTPUT_ALIGN_FORMAT_MP_BYTE_S=
-WAP_BYTES;
-> +               else
-> +                       reg &=3D ~RKISP1_CIF_OUTPUT_ALIGN_FORMAT_MP_BYTE_=
-SWAP_BYTES;
-> +               rkisp1_write(rkisp1, RKISP1_CIF_MI_OUTPUT_ALIGN_FORMAT, r=
-eg);
-> +       }
-> +
->         rkisp1_mi_config_ctrl(cap);
->
->         reg =3D rkisp1_read(rkisp1, RKISP1_CIF_MI_CTRL);
-> @@ -507,6 +534,20 @@ static void rkisp1_sp_config(struct rkisp1_capture *=
-cap)
->                 rkisp1_write(rkisp1, RKISP1_CIF_MI_XTD_FORMAT_CTRL, reg);
->         }
->
-> +       /*
-> +        * U/V swapping with the MI_XTD_FORMAT_CTRL register only works f=
-or
-> +        * NV12/NV21 and NV16/NV61, so instead use byte swap to support U=
-YVY.
-> +        * YVYU and VYUY cannot be supported with this method.
-> +        */
-> +       if (rkisp1->info->features & RKISP1_FEATURE_MI_OUTPUT_ALIGN) {
-> +               reg =3D rkisp1_read(rkisp1, RKISP1_CIF_MI_OUTPUT_ALIGN_FO=
-RMAT);
-> +               if (cap->pix.cfg->yc_swap)
-> +                       reg |=3D RKISP1_CIF_OUTPUT_ALIGN_FORMAT_SP_BYTE_S=
-WAP_BYTES;
-> +               else
-> +                       reg &=3D ~RKISP1_CIF_OUTPUT_ALIGN_FORMAT_SP_BYTE_=
-SWAP_BYTES;
-> +               rkisp1_write(rkisp1, RKISP1_CIF_MI_OUTPUT_ALIGN_FORMAT, r=
-eg);
-> +       }
-> +
->         rkisp1_mi_config_ctrl(cap);
->
->         mi_ctrl =3D rkisp1_read(rkisp1, RKISP1_CIF_MI_CTRL);
-> --
-> 2.39.2
->
+Hello,
+
+Tested-by: Mateusz Jończyk <mat.jonczyk@o2.pl>
+Reviewed-by: Mateusz Jończyk <mat.jonczyk@o2.pl>
+Acked-by: Mateusz Jończyk <mat.jonczyk@o2.pl>
+
+I have retested the whole series on 2 computers
+(not affected by the bug, resp. with / without HPET IRQ emulation).
+
+Thank you for this patch series.
+
+@Alexandre would it be possible to submit it for Linux 6.7?
+There were several problem reports and it is marked for stable.
+
+Greetings,
+
+Mateusz
+
