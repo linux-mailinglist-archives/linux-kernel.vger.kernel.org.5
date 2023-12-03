@@ -2,71 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D662980279C
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 21:55:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0982580279D
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 21:55:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229817AbjLCUkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 15:40:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55238 "EHLO
+        id S233900AbjLCUvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 15:51:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjLCUkB (ORCPT
+        with ESMTP id S229875AbjLCUvK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 15:40:01 -0500
-Received: from vps.thesusis.net (vps.thesusis.net [34.202.238.73])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 290099C
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 12:40:06 -0800 (PST)
-Received: by vps.thesusis.net (Postfix, from userid 1000)
-        id 511D314BC1E; Sun,  3 Dec 2023 15:40:05 -0500 (EST)
-From:   Phillip Susi <phill@thesusis.net>
-To:     Alex Deucher <alexdeucher@gmail.com>,
-        Luben Tuikov <ltuikov89@gmail.com>
-Cc:     Linux regressions mailing list <regressions@lists.linux.dev>,
-        Christian =?utf-8?Q?K=C3=B6nig?= 
-        <ckoenig.leichtzumerken@gmail.com>, linux-kernel@vger.kernel.org,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        dri-devel@lists.freedesktop.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Christian =?utf-8?Q?K=C3=B6nig?= <christian.koenig@amd.com>,
-        Danilo Krummrich <dakr@redhat.com>
-Subject: Re: Radeon regression in 6.6 kernel
-In-Reply-To: <CADnq5_Oy6RMyJ52TbsxVjZ=0p=wYJHduE4X8B3DiYnqHYJUAvw@mail.gmail.com>
-References: <87edgv4x3i.fsf@vps.thesusis.net>
- <559d0fa5-953a-4a97-b03b-5eb1287c83d8@leemhuis.info>
- <CAPM=9tw-8pQWFso0zuLqpsqd5BSHWtc4As9ttdjY-DDr70EMqQ@mail.gmail.com>
- <bdb238b6-60c7-4f26-81d0-9e62cd5dd326@gmail.com>
- <CADnq5_NVGS1XykxGxpcu_bpPbzboCUJQkcCF3r+0N9a23KUgiQ@mail.gmail.com>
- <96e2e13c-f01c-4baf-a9a3-cbaa48fb10c7@amd.com>
- <CADnq5_NBfeAXEyQw0gnSd67=tR-bUKg8w=10+4z9pGGuRnP9uw@mail.gmail.com>
- <87jzq2ixtm.fsf@vps.thesusis.net>
- <CADnq5_Ou-MVVm0rdWDmDnJNLkWUayXzO26uCEtz3ucNa4Ghy2w@mail.gmail.com>
- <95fe9b5b-05ce-4462-9973-9aca306bc44f@gmail.com>
- <CADnq5_MYEWx=e1LBLeVs0UbR5_xEScjDyw_-75mLe8RAMnqh6g@mail.gmail.com>
- <CADnq5_OC=JFpGcN0oGbTF5xYEt4X3r0=jEY6hJ12W8CzYq1+cA@mail.gmail.com>
- <9595b8bf-e64d-4926-9263-97e18bcd7d05@gmail.com>
- <CADnq5_N6DF-huOzgaVygvS5N_j_oNUEC1aa4zRsZTzx8GOD_aw@mail.gmail.com>
- <CADnq5_PgMxoW=4iabtgeHydwye-6DvwvCyETdfBToEpuYWocmA@mail.gmail.com>
- <CADnq5_P0S7Jem0e4K6mG2+bboG8P56nELaGC1p4Pfx-8eV-BjQ@mail.gmail.com>
- <CADnq5_Oy6RMyJ52TbsxVjZ=0p=wYJHduE4X8B3DiYnqHYJUAvw@mail.gmail.com>
-Date:   Sun, 03 Dec 2023 15:40:05 -0500
-Message-ID: <87edg3koka.fsf@vps.thesusis.net>
+        Sun, 3 Dec 2023 15:51:10 -0500
+Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E2A6CF;
+        Sun,  3 Dec 2023 12:51:16 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id 1FE0E32004E7;
+        Sun,  3 Dec 2023 15:51:13 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Sun, 03 Dec 2023 15:51:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm3; t=
+        1701636672; x=1701723072; bh=mkoL5GRW1yQRxowg4OvJz3ED7Ey6jz21dth
+        CJqqVr+U=; b=dLvCS2kcTUwS9N4Xm5V+Ixe/ePgUeMixtxKJf6bEK8zUMcZGQHk
+        ihibKZJnuFVA0v76C7DNwXB8RbrZdA2z8QJUhbFwKIa839NgpObO4CnVS22/n4UO
+        QE9fk/dvYOBy2HUTEqb8BMa5/WcJl/dD2QNkL7V7nHsxjotSDl+owVhCjjLJtPjr
+        ovNMAjv0sLXUcIfL9buo0+YcB8gV84cVcMgQEwaK7ZZ9oUXeSxOwHWH+oia7ib6u
+        xX2KbQfx9FR7mRrx8klT4bvZ7DFS+yPlFNEglfBCAB+FXawMFrHMYpNB7U8Z1qtj
+        vmFR7fU4VioOlLM5lJc9KldGa5nn1kXNDXg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+        1701636672; x=1701723072; bh=mkoL5GRW1yQRxowg4OvJz3ED7Ey6jz21dth
+        CJqqVr+U=; b=Z3FUh2joJ1dbaU9RDz9StRNo6WbzpMM2RNCmYusIJP4eVk9yP/z
+        CasVYXX8XXAbdfgyx2Q08w1X13OMg6hxfXCSUt+d1u54y+s4EPvZQKqtwW6syjIN
+        JZ1NkiwsXcHPTAn215EPuc9x86iITXaPjkkzYBBf1oP91yTxSuRhveJBJv1kz5AR
+        OdrlHJQ8XlhX6F+rTT9v0/mtpBygAbBPQXlrbIDLwOv4/h6Rb978hQlXt8nG29w1
+        WZF3M9nPft2prjyQtr3jIDZpyFckO4VFNJ/jSvpx+KMNcqyq9L9x5Rt0XPqFSCmK
+        qVlgXkOPxNwtDJuVle2iUK3pY0aaisxopsw==
+X-ME-Sender: <xms:QOpsZYHs0OwSGa7EubYD9zNO7Ok40cmOuVYrK306vyUTUN6MOCT1PQ>
+    <xme:QOpsZRW1UrbkXKYesxG3MGW-ai-cbrcbrzUeFq664RHUR-UgecYz0pDOA2GidyDkN
+    Dzabj9EWrhw0NQoj1c>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudejgedgudegvdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedf
+    tehrnhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrf
+    grthhtvghrnhepgeefjeehvdelvdffieejieejiedvvdfhleeivdelveehjeelteegudek
+    tdfgjeevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    eprghrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:QOpsZSJQpAwxp8q__I9nN2JHe5GdnAFofplzqxH4jJyIf2hU1W0Gtw>
+    <xmx:QOpsZaEWMKLUkFkerTtNabH1mQ9kqcZ7UNfH8PdQlKYZd7BH6Om_Ww>
+    <xmx:QOpsZeUMfvkCWJpfq6aBG7ZtDRxQljPcspglDCX1u5q9DNfEPicVXQ>
+    <xmx:QOpsZQeWZkK8Zpt40IfxooiIgNXINL8-8uawybNvvPWg-xW8plK7bQ>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 58C5DB60089; Sun,  3 Dec 2023 15:51:12 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1178-geeaf0069a7-fm-20231114.001-geeaf0069
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Message-Id: <d180f06b-64b0-4885-9794-5127c297a0f0@app.fastmail.com>
+In-Reply-To: <ZWzLvctpo1nNTMOo@google.com>
+References: <20231127204206.3593559-1-zack@kde.org>
+ <ZWzLvctpo1nNTMOo@google.com>
+Date:   Sun, 03 Dec 2023 21:50:51 +0100
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Dmitry Torokhov" <dmitry.torokhov@gmail.com>,
+        "Zack Rusin" <zackr@vmware.com>
+Cc:     linux-kernel@vger.kernel.org,
+        "VMware Graphics Reviewers" <linux-graphics-maintainer@vmware.com>,
+        "Robert Jarzmik" <robert.jarzmik@free.fr>,
+        "Raul Rangel" <rrangel@chromium.org>, linux-input@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] input/vmmouse: Fix device name copies
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alex Deucher <alexdeucher@gmail.com> writes:
-
-> Phillip,
+On Sun, Dec 3, 2023, at 19:41, Dmitry Torokhov wrote:
+> On Mon, Nov 27, 2023 at 03:42:06PM -0500, Zack Rusin wrote:
+>> From: Zack Rusin <zackr@vmware.com>
+>>=20
+>> Make sure vmmouse_data::phys can hold serio::phys (which is 32 bytes)
+>> plus an extra string, extend it to 64.
+>>=20
+>> Fixes gcc13 warnings:
+>> drivers/input/mouse/vmmouse.c: In function =E2=80=98vmmouse_init=E2=80=
+=99:
+>> drivers/input/mouse/vmmouse.c:455:53: warning: =E2=80=98/input1=E2=80=
+=99 directive output may be truncated writing 7 bytes into a region of s=
+ize between 1 and 32 [-Wformat-truncation=3D]
+>>   455 |         snprintf(priv->phys, sizeof(priv->phys), "%s/input1",
+>>       |                                                     ^~~~~~~
+>> drivers/input/mouse/vmmouse.c:455:9: note: =E2=80=98snprintf=E2=80=99=
+ output between 8 and 39 bytes into a destination of size 32
+>>   455 |         snprintf(priv->phys, sizeof(priv->phys), "%s/input1",
+>>       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>>   456 |                  psmouse->ps2dev.serio->phys);
+>>       |                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 >
-> Can you test this patch?  I was not able to repro the issue on the
-> navi2x card I had handy, but I think it should fix it.
+> This simply wastes 32 bytes. It is perfectly fine to truncate phys
+> (which does not happen in real life).
+>
+> -Wformat-truncation is disabled in normal builds, folks should stop
+> using it with W=3D1 as well.
 
-I pulled -rc4 and it still had the problem.  I applied this patch, and
-yes, it fixed it!
+It does find real bugs, and we are fairly close to being able
+to enable it by default once the remaining warnings are all
+fixed.
 
+It also doesn't waste any memory in this specific case since
+vmmouse_data is currently at 168 bytes, which gets rounded
+up to either 192 or 256 bytes anyway. I'd suggest using
+the minimum size that is large enough though, in this case
+39 bytes for the string I guess.
+
+     Arnd
