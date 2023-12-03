@@ -2,88 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B1B18025A0
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 17:47:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24ACA8025AB
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 17:52:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233715AbjLCQrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 11:47:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32832 "EHLO
+        id S233726AbjLCQvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 11:51:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjLCQrN (ORCPT
+        with ESMTP id S229450AbjLCQvs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 11:47:13 -0500
-Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CC771D0;
-        Sun,  3 Dec 2023 08:47:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=XqEhjdCUEhgSRQMHNm
-        7WceDAtyAPDpPFSop9FAZXPDQ=; b=k2eki61HONGLHP5P3jPJgr+HDZgJgFbz+J
-        V20VHim35C0ePeAy/mfx5Cma/mzQEXnR310bOJMqT+/Ae+iA04qnnspBy4Prk/za
-        1+hdeltfrNVipyu3VMABXOwb/SCchzVFpaZqcfHkzHlZr8eYkUBXovXPZ/aveuYW
-        ntUJs9RG4=
-Received: from localhost.localdomain (unknown [39.144.190.5])
-        by zwqz-smtp-mta-g3-0 (Coremail) with SMTP id _____wD3f80JsWxlMsRBEg--.16729S2;
-        Mon, 04 Dec 2023 00:47:07 +0800 (CST)
-From:   Haoran Liu <liuhaoran14@163.com>
-To:     dmitry.torokhov@gmail.com
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Haoran Liu <liuhaoran14@163.com>
-Subject: [PATCH] ipaq-micro-keys: Add error handling for devm_kmemdup
-Date:   Sun,  3 Dec 2023 08:46:53 -0800
-Message-Id: <20231203164653.38983-1-liuhaoran14@163.com>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: _____wD3f80JsWxlMsRBEg--.16729S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7Cw48CF43XrWktw1xtF17Awb_yoW8WrWxpa
-        y5G390k3yUWw47Aw1DtF1kuryYya95XF4a9FyDK393uanxWFyktrn0krWSgF1kGrn093W2
-        q3W09rs8C3WYvrUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0pRn2-nUUUUU=
-X-Originating-IP: [39.144.190.5]
-X-CM-SenderInfo: xolxxtxrud0iqu6rljoofrz/xtbBchY7gletkAhV1wABs8
-X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_BL,
-        RCVD_IN_MSPIKE_L4,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+        Sun, 3 Dec 2023 11:51:48 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEA96E5;
+        Sun,  3 Dec 2023 08:51:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701622315; x=1733158315;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=lTyXJMsSPVluiy97P4qSM7nDpEehwOMAB+SjdzyXSkI=;
+  b=kUG7p1KEz2nSZlXDuzwckmoVWIuFxDYmMgWSjtrK9xM7332MBNrXE8p8
+   nX0Jr3ciCKIkBqyaBkt5Ts3YKvTN4AdtTdV1MjYfgKRjlbOnFP8liyqCE
+   sP7f5Hb01KgNbit1DhW5ENJO8eGRvHGj6Y8kBGDBlPtijfvx7HDAlkDz9
+   8Z7NJANubRWyOoZqN2G3lfOyh3Cq6mr5bBECIHTHV0/XotOFdJgWxDbWN
+   s3ciFVOdq+/rqeGRUYmb9azqiobDiGScik8fXkdJT4TfsmXiQWVPKDK+p
+   bD0X3MyxXck9XXgnPyorqfA5ATjC+ztn5TipZel/LjTNb6/OR/tMOaHJ5
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10913"; a="706802"
+X-IronPort-AV: E=Sophos;i="6.04,247,1695711600"; 
+   d="scan'208";a="706802"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2023 08:51:54 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10913"; a="799345384"
+X-IronPort-AV: E=Sophos;i="6.04,247,1695711600"; 
+   d="scan'208";a="799345384"
+Received: from p12ill20yoongsia.png.intel.com ([10.88.227.28])
+  by orsmga008.jf.intel.com with ESMTP; 03 Dec 2023 08:51:44 -0800
+From:   Song Yoong Siang <yoong.siang.song@intel.com>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Bjorn Topel <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, bpf@vger.kernel.org,
+        xdp-hints@xdp-project.net,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-kselftest@vger.kernel.org,
+        Song Yoong Siang <yoong.siang.song@intel.com>
+Subject: [PATCH bpf-next v3 0/3] xsk: TX metadata Launch Time support
+Date:   Mon,  4 Dec 2023 00:51:26 +0800
+Message-Id: <20231203165129.1740512-1-yoong.siang.song@intel.com>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.4 required=5.0 tests=AC_FROM_MANY_DOTS,BAYES_00,
+        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Check the return value of i2c_add_adapter. Static analysis revealed that
-the function did not properly handle potential failures of
-i2c_add_adapter, which could lead to partial initialization of the I2C
-adapter and unstable operation.
+This series expands XDP TX metadata framework to include ETF HW offload.
 
-Signed-off-by: Haoran Liu <liuhaoran14@163.com>
----
-Although the error addressed by this patch may not occur in the current
-environment, I still suggest implementing these error handling routines
-if the function is not highly time-sensitive. As the environment evolves
-or the code gets reused in different contexts, there's a possibility that
-these errors might occur. In case you find this addition unnecessary, I
-completely understand and respect your perspective. My intention was to
-enhance the robustness of the code, but I acknowledge that practical
-considerations and current functionality might not warrant this change
-at this point.
----
- drivers/input/keyboard/ipaq-micro-keys.c | 3 +++
- 1 file changed, 3 insertions(+)
+Changes since v1: (Willem)
+- rename Time-Based Scheduling (TBS) to Earliest TxTime First (ETF)
+- rename launch-time to txtime
 
-diff --git a/drivers/input/keyboard/ipaq-micro-keys.c b/drivers/input/keyboard/ipaq-micro-keys.c
-index 7b509bce2b33..1d71dd79ffd2 100644
---- a/drivers/input/keyboard/ipaq-micro-keys.c
-+++ b/drivers/input/keyboard/ipaq-micro-keys.c
-@@ -105,6 +105,9 @@ static int micro_key_probe(struct platform_device *pdev)
- 	keys->codes = devm_kmemdup(&pdev->dev, micro_keycodes,
- 			   keys->input->keycodesize * keys->input->keycodemax,
- 			   GFP_KERNEL);
-+	if (!keys->codes)
-+		return -ENOMEM;
-+
- 	keys->input->keycode = keys->codes;
- 
- 	__set_bit(EV_KEY, keys->input->evbit);
+Changes since v2: (Jesper & Willem)
+- rename to use launch time
+- change the default launch time in xdp_hw_metadata apps from 1s to 0.1s
+  because some NICs do not support such a large future time.
+
+v1: https://patchwork.kernel.org/project/netdevbpf/cover/20231130162028.852006-1-yoong.siang.song@intel.com/
+v2: https://patchwork.kernel.org/project/netdevbpf/cover/20231201062421.1074768-1-yoong.siang.song@intel.com/
+
+Song Yoong Siang (3):
+  xsk: add Launch Time HW offload to XDP Tx metadata
+  net: stmmac: add Launch Time support to XDP ZC
+  selftests/bpf: add Launch Time request to xdp_hw_metadata
+
+ Documentation/netlink/specs/netdev.yaml       |  4 ++++
+ Documentation/networking/xsk-tx-metadata.rst  |  4 ++++
+ drivers/net/ethernet/stmicro/stmmac/stmmac.h  |  2 ++
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c | 13 +++++++++++++
+ include/net/xdp_sock.h                        | 10 ++++++++++
+ include/net/xdp_sock_drv.h                    |  1 +
+ include/uapi/linux/if_xdp.h                   |  9 +++++++++
+ include/uapi/linux/netdev.h                   |  3 +++
+ net/core/netdev-genl.c                        |  2 ++
+ net/xdp/xsk.c                                 |  3 +++
+ tools/include/uapi/linux/if_xdp.h             |  9 +++++++++
+ tools/include/uapi/linux/netdev.h             |  3 +++
+ tools/net/ynl/generated/netdev-user.c         |  1 +
+ tools/testing/selftests/bpf/xdp_hw_metadata.c | 19 ++++++++++++++++++-
+ 14 files changed, 82 insertions(+), 1 deletion(-)
+
 -- 
-2.17.1
+2.34.1
 
