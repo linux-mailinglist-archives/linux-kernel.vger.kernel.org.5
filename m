@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88FEA802272
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 11:14:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7999802273
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 11:14:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233326AbjLCKOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 05:14:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52922 "EHLO
+        id S233348AbjLCKO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 05:14:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232339AbjLCKOV (ORCPT
+        with ESMTP id S233265AbjLCKOW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 05:14:21 -0500
+        Sun, 3 Dec 2023 05:14:22 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 149EEFD
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 02:14:27 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1361C433CA;
-        Sun,  3 Dec 2023 10:14:25 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70BACF3
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 02:14:28 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DE71C433C8;
+        Sun,  3 Dec 2023 10:14:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701598466;
-        bh=rjTEorOKOasXmLsA7k46njF60U2EzdHdA3xtay0TA6w=;
+        s=k20201202; t=1701598468;
+        bh=y6guoQ7JWLb6nFfFVlYe/P/b7whl0hnphrJFPbci+gk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iV9ihJQ5p1xKzK8ySsg8JXWHcEecEpA1RX9Fvd73XsKS6JgW9SjvRSh/waEcC8Mqt
-         hMB6WklR0jm3+7NQBemBJInVupiZfbolUzX3vHTj29b/Agf2NZKgbh2aBb4Iloo7AH
-         DSoslmN4dUJ1PS4Lc5baA05psWDIvsOJk4CuoZphaf3WIgKQ7b9dH+Qjk0VZ/fTSrh
-         yyVBAmfMqWyp5xt4HcW05xWDgfh8qn/aZeLkYqCU4ziBwRS8SZmLFg20f62jL9JsxO
-         OmsA/o1Amqbs2HG/SEEc/MDxiaieHp/RhFfglXTTLpn7aKm5e4GXjtkNNOM00OtVP0
-         N77fJzoP/ZQRw==
+        b=ANc3f6u9EJ1ssuxlufhHFIfCJXuS+5oWXzSwIs67To6kWkn4rM1AnGhiZ8OET+DzD
+         BJ0ThA4/ZrHd8ZdZuOP7SgL+PaY62RFymEtlgn6DvuxLngtM/RcjMGvia/dCb5GAY2
+         xRIWJGXwJpWSBf9S1v38Ux5kfOPwOvoNc5tBznfjUbCEnViqTDZSXeVp0UBfvNiC6o
+         G2JoRJPw9ZkD8Cka9somYHgg4zMQmsyHtvMuIKNySqyOxNtB4HuegMnJnqD2pR1O40
+         DBUYwHtlTBHiDQ0ECMWhWsSHnZ26BNrN8+Vcj7yl3mqVlC5iN5fD91fWFJqnYorXBW
+         OID75cthdk4VA==
 From:   Masahiro Yamada <masahiroy@kernel.org>
 To:     linux-kbuild@vger.kernel.org
 Cc:     Masahiro Yamada <masahiroy@kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
         linux-kernel@vger.kernel.org, sparclinux@vger.kernel.org
-Subject: [PATCH 2/3] sparc: vdso: simplify obj-y addition
-Date:   Sun,  3 Dec 2023 19:14:17 +0900
-Message-Id: <20231203101418.1910661-2-masahiroy@kernel.org>
+Subject: [PATCH 3/3] sparc: vdso: use $(addprefix ) instead of $(foreach )
+Date:   Sun,  3 Dec 2023 19:14:18 +0900
+Message-Id: <20231203101418.1910661-3-masahiroy@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231203101418.1910661-1-masahiroy@kernel.org>
 References: <20231203101418.1910661-1-masahiroy@kernel.org>
@@ -50,49 +50,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add objects to obj-y in a more straightforward way.
+$(addprefix ) is slightly shorter and more intuitive.
 
 Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
 
- arch/sparc/vdso/Makefile | 11 ++---------
- 1 file changed, 2 insertions(+), 9 deletions(-)
+ arch/sparc/vdso/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/sparc/vdso/Makefile b/arch/sparc/vdso/Makefile
-index eb52d0666ffc..03a32b6156ee 100644
+index 03a32b6156ee..7f5eedf1f5e0 100644
 --- a/arch/sparc/vdso/Makefile
 +++ b/arch/sparc/vdso/Makefile
-@@ -3,9 +3,6 @@
- # Building vDSO images for sparc.
- #
+@@ -13,7 +13,7 @@ obj-y				+= vma.o
+ obj-$(CONFIG_SPARC64)		+= vdso-image-64.o
+ obj-$(CONFIG_COMPAT)		+= vdso-image-32.o
  
--VDSO64-$(CONFIG_SPARC64)	:= y
--VDSOCOMPAT-$(CONFIG_COMPAT)	:= y
--
- # files to link into the vdso
- vobjs-y := vdso-note.o vclock_gettime.o
- 
-@@ -13,18 +10,14 @@ vobjs-y := vdso-note.o vclock_gettime.o
- obj-y				+= vma.o
- 
- # vDSO images to build
--vdso_img-$(VDSO64-y)		+= 64
--vdso_img-$(VDSOCOMPAT-y)	+= 32
-+obj-$(CONFIG_SPARC64)		+= vdso-image-64.o
-+obj-$(CONFIG_COMPAT)		+= vdso-image-32.o
- 
- vobjs := $(foreach F,$(vobjs-y),$(obj)/$F)
+-vobjs := $(foreach F,$(vobjs-y),$(obj)/$F)
++vobjs := $(addprefix $(obj)/, $(vobjs-y))
  
  $(obj)/vdso.o: $(obj)/vdso.so
  
- targets += vdso.lds $(vobjs-y)
--
--# Build the vDSO image C files and link them in.
--vdso_img_objs := $(vdso_img-y:%=vdso-image-%.o)
--obj-y += $(vdso_img_objs)
- targets += $(foreach x, 32 64, vdso-image-$(x).c vdso$(x).so vdso$(x).so.dbg)
- 
- CPPFLAGS_vdso.lds += -P -C
 -- 
 2.40.1
 
