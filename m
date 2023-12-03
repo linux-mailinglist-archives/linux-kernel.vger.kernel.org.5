@@ -2,127 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49AF1802636
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 19:22:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25577802638
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 19:25:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233881AbjLCSWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 13:22:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60924 "EHLO
+        id S233888AbjLCSZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 13:25:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbjLCSWb (ORCPT
+        with ESMTP id S233820AbjLCSZb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 13:22:31 -0500
-Received: from sender-of-o51.zoho.in (sender-of-o51.zoho.in [103.117.158.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88B96EA
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 10:22:36 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1701627744; cv=none; 
-        d=zohomail.in; s=zohoarc; 
-        b=Fw7k7UJwknaw7oRn3rgQwZ0Xwok4RCDstVXQeB9ZmoxabJGvQLGwB6ZBmLm5GhvOTi8hee9gEU+PeaM6OgK3ehLxvLXOHD8igdL0qkJ4WJR/QS9fHZzmWWM2rH2Vptycht4uFF89SWgWTBOEkCH4o6Wj9hXSrcn78Y3KN5jJDwM=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.in; s=zohoarc; 
-        t=1701627744; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
-        bh=he8+CQnFdhRGU96QfM/CG8zus2XOa0vQnyKBNkZ1cY0=; 
-        b=AWKctc7jRKGxqUBPXWGGmG3hC4oFjVodFX2EAH4blciSPpLpJhr/Z1YCxV9mkoy6nhu0UK2vJxmylqFU2UNWKtOmHSATJ/ZQabZm5X8AWKarHRlijS4cbgab5mZXMiNwnGT1VeYp87hkJF93AsBexAwz+FmmavLcfwqM0RZqGqk=
-ARC-Authentication-Results: i=1; mx.zohomail.in;
-        dkim=pass  header.i=siddh.me;
-        spf=pass  smtp.mailfrom=code@siddh.me;
-        dmarc=pass header.from=<code@siddh.me>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1701627744;
-        s=zmail; d=siddh.me; i=code@siddh.me;
-        h=Message-ID:Date:Date:MIME-Version:To:To:Cc:Cc:References:Subject:Subject:From:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:Message-Id:Reply-To;
-        bh=he8+CQnFdhRGU96QfM/CG8zus2XOa0vQnyKBNkZ1cY0=;
-        b=Ouxf1P7Zvt92PHWmGTh6hfX+uDVUhXdy1SSIuLEeeR4CAAsYt+5X/QB3eNiv9mHP
-        WkMvotfvb2LcBSLhfELUFm3o8QYtkSeF/tuwg0WU050UWn3eXtyL2Q9on/0+O4fmLWH
-        jodDtzH+JID9JkF0KHvTKlQyCfeiZftxQLeiWBzA=
-Received: from [192.168.1.12] (122.170.35.155 [122.170.35.155]) by mx.zoho.in
-        with SMTPS id 1701627743346100.15525689527851; Sun, 3 Dec 2023 23:52:23 +0530 (IST)
-Message-ID: <6b24a73f-095b-462c-8354-1cb606ea2f1d@siddh.me>
-Date:   Sun, 3 Dec 2023 23:52:19 +0530
+        Sun, 3 Dec 2023 13:25:31 -0500
+Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C27F8DA
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 10:25:37 -0800 (PST)
+Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-5d3758fdd2eso33138677b3.0
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Dec 2023 10:25:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701627936; x=1702232736; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=2VVLLIlLkmNI0mv7eEUR+9w9xY97OpPTAaLk8ksTAds=;
+        b=EIwjxkVypr9gsdUbZY+2+CuKXm2DiTdSy8qtemtIAnMUMXLU6qD+5tXL80HBd+rWpj
+         mLEutcdUtyGhZia5ga/VeIIdetNk7FuuvRmsVVCpWLvDdIvZAdev3BSqHMfVo8No7BUF
+         WYqVgmLPJBqwCPzIkZ0oGKULBn1PpVz4C0zjgCKhN96nz2vavicomjmVIBjcBe/qmeuo
+         /r8iAobtynJX0d2XhrIFyHfxmG9j8RzzjJU6JjSeQ3y2BCaFFOV94tL4EgXGbB7j33Ht
+         LNqIk//YckENa464gBaTY5oYyMzmxq626gV+o+OHT40nOFLvK9+Gn4IbChMv/cnvgPD8
+         kwog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701627936; x=1702232736;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2VVLLIlLkmNI0mv7eEUR+9w9xY97OpPTAaLk8ksTAds=;
+        b=HPwWJns7B11Ks/PnG7ttedR7grrUd3tal783FUdIpcYRPiri2otjPC6drcZow9chM9
+         AKo4RqSlXvqYLaUVh9UpN1o2wpNb/0sDGPQ7+QWMpprSdsgo5mxU9qIKzLAeJNVkdAr5
+         ptnFes3HzNf26krYm4C1AHGq64Jv8X+GVJiXuYVYEMw8yXbsXjobDNKa8jat4lAvETDT
+         ZjaGL56Ynds8TVs+YPovAvdonemT+PmAcdo6XupOJH1D8wa3mBMTvqN8cHfeR3e4U4lg
+         jLIDGElErtUJ0zAjtCvHI9bo+KUlpWAoVzAbgjPgzhPm68JwgmuPhxaREfB35IW7h67j
+         97qQ==
+X-Gm-Message-State: AOJu0YyNAF41OaY4ysBaoiNmj2hrW1PaY7d7uXtTigHpEBLsQL6K15Pz
+        Es+K3BIiQ8iQqE8dJOdSL0wqM0BZGWQ=
+X-Google-Smtp-Source: AGHT+IEoIWR7LaPGZbq6G1NF01GwM9q59uaQWXlL7reyrRVwAl/YZmgMS+GscvwC2D+FyxsPAvj/5w==
+X-Received: by 2002:a0d:cc53:0:b0:5d3:464d:18d0 with SMTP id o80-20020a0dcc53000000b005d3464d18d0mr8208914ywd.22.1701627935984;
+        Sun, 03 Dec 2023 10:25:35 -0800 (PST)
+Received: from localhost ([2601:344:8301:57f0:cb98:c3e:57c:8191])
+        by smtp.gmail.com with ESMTPSA id g190-20020a0df6c7000000b005d4229e8fb9sm2033921ywf.30.2023.12.03.10.25.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 03 Dec 2023 10:25:34 -0800 (PST)
+Date:   Sun, 3 Dec 2023 10:25:33 -0800
+From:   Yury Norov <yury.norov@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: Re: [PATCH] lib/find: optimize find_*_bit_wrap
+Message-ID: <ZWzIHRqj1h9VaLSA@yury-ThinkPad>
+References: <20231028190530.286300-1-yury.norov@gmail.com>
+ <ZU2Tmav832NIeJQk@yury-ThinkPad>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To:     syzbot+bbe84a4010eeea00982d@syzkaller.appspotmail.com
-Cc:     linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-References: <000000000000cb112e0609b419d3@google.com>
-Subject: Re: [syzbot] [net?] [nfc?] KASAN: slab-use-after-free Read in
- nfc_alloc_send_skb
-Content-Language: en-US, en-GB, hi-IN
-From:   Siddh Raman Pant <code@siddh.me>
-In-Reply-To: <000000000000cb112e0609b419d3@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ZohoMailClient: External
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZU2Tmav832NIeJQk@yury-ThinkPad>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git main
+OK, taking in bitmap-for-next
 
----
- net/nfc/llcp_core.c | 24 ++++++++++++++++++++++--
- 1 file changed, 22 insertions(+), 2 deletions(-)
-
-diff --git a/net/nfc/llcp_core.c b/net/nfc/llcp_core.c
-index 1dac28136e6a..9d45ce6dcdca 100644
---- a/net/nfc/llcp_core.c
-+++ b/net/nfc/llcp_core.c
-@@ -145,6 +145,9 @@ static void nfc_llcp_socket_release(struct nfc_llcp_local *local, bool device,
- 
- static struct nfc_llcp_local *nfc_llcp_local_get(struct nfc_llcp_local *local)
- {
-+	if (!nfc_get_device(local->dev->idx))
-+		return NULL;
-+
- 	kref_get(&local->ref);
- 
- 	return local;
-@@ -180,6 +183,7 @@ int nfc_llcp_local_put(struct nfc_llcp_local *local)
- 	if (local == NULL)
- 		return 0;
- 
-+	nfc_put_device(local->dev);
- 	return kref_put(&local->ref, local_release);
- }
- 
-@@ -959,8 +963,18 @@ static void nfc_llcp_recv_connect(struct nfc_llcp_local *local,
- 	}
- 
- 	new_sock = nfc_llcp_sock(new_sk);
--	new_sock->dev = local->dev;
-+
- 	new_sock->local = nfc_llcp_local_get(local);
-+	if (!new_sock->local) {
-+		reason = LLCP_DM_REJ;
-+		release_sock(&sock->sk);
-+		sock_put(&sock->sk);
-+		sock_put(&new_sock->sk);
-+		nfc_llcp_sock_free(new_sock);
-+		goto fail;
-+	}
-+
-+	new_sock->dev = local->dev;
- 	new_sock->rw = sock->rw;
- 	new_sock->miux = sock->miux;
- 	new_sock->nfc_protocol = sock->nfc_protocol;
-@@ -1597,7 +1611,13 @@ int nfc_llcp_register_device(struct nfc_dev *ndev)
- 	if (local == NULL)
- 		return -ENOMEM;
- 
--	local->dev = ndev;
-+	/* Hold a reference to the device. */
-+	local->dev = nfc_get_device(ndev->idx);
-+	if (!local->dev) {
-+		kfree(local);
-+		return -ENODEV;
-+	}
-+
- 	INIT_LIST_HEAD(&local->list);
- 	kref_init(&local->ref);
- 	mutex_init(&local->sdp_lock);
--- 
-2.42.0
-
+On Thu, Nov 09, 2023 at 06:21:18PM -0800, Yury Norov wrote:
+> Ping?
+> 
+> On Sat, Oct 28, 2023 at 12:05:29PM -0700, Yury Norov wrote:
+> > When an offset is 0, there's no need to search a bitmap from the
+> > beginning after the 1st search failed, because each bit has already
+> > been tested.
+> > 
+> > Signed-off-by: Yury Norov <yury.norov@gmail.com>
+> > ---
+> >  include/linux/find.h | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/include/linux/find.h b/include/linux/find.h
+> > index 5e4f39ef2e72..241b6d028eda 100644
+> > --- a/include/linux/find.h
+> > +++ b/include/linux/find.h
+> > @@ -405,7 +405,7 @@ unsigned long find_next_and_bit_wrap(const unsigned long *addr1,
+> >  {
+> >  	unsigned long bit = find_next_and_bit(addr1, addr2, size, offset);
+> >  
+> > -	if (bit < size)
+> > +	if (bit < size || offset == 0)
+> >  		return bit;
+> >  
+> >  	bit = find_first_and_bit(addr1, addr2, offset);
+> > @@ -427,7 +427,7 @@ unsigned long find_next_bit_wrap(const unsigned long *addr,
+> >  {
+> >  	unsigned long bit = find_next_bit(addr, size, offset);
+> >  
+> > -	if (bit < size)
+> > +	if (bit < size || offset == 0)
+> >  		return bit;
+> >  
+> >  	bit = find_first_bit(addr, offset);
+> > -- 
+> > 2.39.2
