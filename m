@@ -2,79 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A17A1801FEF
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 01:08:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E218801FFA
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 01:18:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232683AbjLCAI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Dec 2023 19:08:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40192 "EHLO
+        id S232717AbjLCAQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 19:16:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjLCAIY (ORCPT
+        with ESMTP id S229451AbjLCAQV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 19:08:24 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44938E3
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 16:08:30 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-50bd8efb765so2790553e87.1
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Dec 2023 16:08:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701562108; x=1702166908; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zdl2HKrC6VDqcQMieLin647Q0Xn6ap4MwvU9WaW0Y5Q=;
-        b=GNl5uClE/anAmjp7JeAmYnV6SXAADbIPjPF7zlrprW5H+9xjbfKA/2KEElqwDjgqfv
-         pdVHjgQ7twesp966VXRJJIqC5z2PBLxb/4ipPw8xIJAEavcgy1X/8pMLCUdWRUQw/rR2
-         puCOZHM48lWXGjNY79VDkswAkUjiOl9MX5W3X4MZ3ZaCZlU5PS/vcQnSk/ZgC1LXP6Ew
-         r7i4drC4aRCHjiQgH/RcB9KWN9g/6q3V3plrGEc9Ug9Ca6SkaI4FO5H74e0Fa0KQmcFg
-         kwV129Aqj5NWSrNFBzKJUkAkb9AcLFapkjqXtbrneFupuoan0Wf68trRv2cgxxU/CquT
-         2MLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701562108; x=1702166908;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zdl2HKrC6VDqcQMieLin647Q0Xn6ap4MwvU9WaW0Y5Q=;
-        b=jtajmuL89X1hE9GqKHd8vHM7joeamaEzlEBuqcqbHHNr/HxP+W3AJa7+u+L1l4TYGI
-         SAhjeBvfRN+HphWc+QSba+gtyv/cPS+OYZ1DoGNHItKJKY5GOid1E8NriFQwQvhCBwv1
-         qDkhQnbeTKvPLcU9AsC+dFxn08j6vs4lREl9YQYKarc36SII+8g8vN0wdYin3Nx8LDcS
-         gsAr6oI6SXSz6Yz09DSFubY1dMUOfY8Jxgc4KCpe9vjIglE1UortQMJkAktLoYvWgJCE
-         LWzUnmu8WqNT1e6kBSnJlq1oO5ZLEBUroAXSwVyLZHGQGt/XF7yLlgdaxxwQAoSHbloy
-         fU1g==
-X-Gm-Message-State: AOJu0YzpnlNmNo5TUQ3cwOOHO7X4dOe9cxKiZIHIv2P6zfYmv3LvW9TL
-        n4Op+ya8X337KKrCwnDdRKTm5g==
-X-Google-Smtp-Source: AGHT+IGKKKovG+G/EKvfWVyIsAtKAdovDgxSn7t9v9ctBMOdpY6B633LhdgxF9RCRhAKLajhX41/FA==
-X-Received: by 2002:a05:6512:b20:b0:50b:d764:969c with SMTP id w32-20020a0565120b2000b0050bd764969cmr2043149lfu.128.1701562108507;
-        Sat, 02 Dec 2023 16:08:28 -0800 (PST)
-Received: from ?IPV6:2001:14ba:a0db:1f00::8a5? (dzdqv0yyyyyyyyyyybcwt-3.rev.dnainternet.fi. [2001:14ba:a0db:1f00::8a5])
-        by smtp.gmail.com with ESMTPSA id e14-20020ac2546e000000b0050bbcd68e8bsm830211lfn.47.2023.12.02.16.08.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 02 Dec 2023 16:08:27 -0800 (PST)
-Message-ID: <fa10b293-9c7f-4904-88bf-4ec6528bd0ef@linaro.org>
-Date:   Sun, 3 Dec 2023 02:08:26 +0200
+        Sat, 2 Dec 2023 19:16:21 -0500
+Received: from pv50p00im-hyfv10011601.me.com (pv50p00im-hyfv10011601.me.com [17.58.6.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B567EE5
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 16:16:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
+        t=1701562585; bh=hF8kiVLJHBpf67kh/bV2U/McuMXTWTZgUR/BlE4R/Sc=;
+        h=From:To:Subject:Date:Message-Id:MIME-Version;
+        b=uoGiDmvi7E+APKfOYDhHwXTaXvgiIPx2MF43zldniimOkyx8QiOUNrDKiNaJANJJ5
+         lvdl9uODrRgAfxUJNlyHUCnm1gTUAmKKgRk1apIrsaK+Y4BR3TGEL/WbgkvD0TWWiK
+         JZq4UXkfL4lU1K4vMt9De+fC/O7P9TMCvEQ8Ud8mJyKbnCCW/4fo06vnSWJgyZjhZh
+         vSgPKRVCD1FGTDyAd910+FV92KJZeqRiF2OZInItgTO1YSh63cZQTP+ykIhUKIu0s1
+         ndpkCPV302eZ8w/eoL+Voc5Yf/4x54zGUm6kERb4ZvDKXeO02rKRFKwfgRZH+hYYMv
+         EFn0ZHTnBoDXQ==
+Received: from xiongwei.. (pv50p00im-dlb-asmtp-mailmevip.me.com [17.56.9.10])
+        by pv50p00im-hyfv10011601.me.com (Postfix) with ESMTPSA id 08EFFC800E4;
+        Sun,  3 Dec 2023 00:16:19 +0000 (UTC)
+From:   sxwjean@me.com
+To:     vbabka@suse.cz, 42.hyeyoo@gmail.com, cl@linux.com,
+        linux-mm@kvack.org
+Cc:     penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
+        roman.gushchin@linux.dev, corbet@lwn.net, keescook@chromium.org,
+        arnd@arndb.de, akpm@linux-foundation.org,
+        gregkh@linuxfoundation.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Xiongwei Song <xiongwei.song@windriver.com>
+Subject: [PATCH v2 0/3] supplement of slab allocator removal
+Date:   Sun,  3 Dec 2023 08:14:58 +0800
+Message-Id: <20231203001501.126339-1-sxwjean@me.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC] drm/msm/rd: Check PT_PTRACED for cmdstream dumping
-Content-Language: en-GB
-To:     Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org
-Cc:     freedreno@lists.freedesktop.org,
-        Rob Clark <robdclark@chromium.org>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20230914172453.9707-1-robdclark@gmail.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-In-Reply-To: <20230914172453.9707-1-robdclark@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-GUID: njOinpEGGVhRmbARrDjPc8Mc-j2hKAQ8
+X-Proofpoint-ORIG-GUID: njOinpEGGVhRmbARrDjPc8Mc-j2hKAQ8
+X-Proofpoint-Virus-Version: =?UTF-8?Q?vendor=3Dfsecure_engine=3D1.1.170-22c6f66c430a71ce266a39bfe25bc?=
+ =?UTF-8?Q?2903e8d5c8f:6.0.517,18.0.883,17.0.605.474.0000000_definitions?=
+ =?UTF-8?Q?=3D2022-06-21=5F08:2022-06-21=5F01,2022-06-21=5F08,2020-01-23?=
+ =?UTF-8?Q?=5F02_signatures=3D0?=
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 bulkscore=0
+ adultscore=0 mlxscore=0 mlxlogscore=999 clxscore=1015 malwarescore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2312030000
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,43 +63,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/09/2023 20:24, Rob Clark wrote:
-> From: Rob Clark <robdclark@chromium.org>
-> 
-> So, when you want to get a cmdstream trace of some deqp or piglit test,
-> but you happen to be running it on the same laptop with full desktop
-> env, the current dump-everything firehose of `cat $debugfs/dri/n/rd` is
-> quite a bit too much.  Ptrace seemed kind of a natural way to control
-> it, ie. either run what you want to trace under gdb or hack in a
-> ptrace(PTRACE_TRACEME) call.
-> 
-> Signed-off-by: Rob Clark <robdclark@chromium.org>
-> ---
->   drivers/gpu/drm/msm/msm_gem_submit.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
+From: Xiongwei Song <xiongwei.song@windriver.com>
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Hi,
 
-I think this is a good idea, to be able to separate process being 
-debugged and all other tasks.
+Patch 1 is to remove an unused parameter. This patch actually is v3, but
+it is not reasonable to add v3 tag in the cover letter, so I put the
+change history inside the patch.
 
-> 
-> diff --git a/drivers/gpu/drm/msm/msm_gem_submit.c b/drivers/gpu/drm/msm/msm_gem_submit.c
-> index a908373cf34b..a105ca1f2102 100644
-> --- a/drivers/gpu/drm/msm/msm_gem_submit.c
-> +++ b/drivers/gpu/drm/msm/msm_gem_submit.c
-> @@ -979,7 +979,8 @@ int msm_ioctl_gem_submit(struct drm_device *dev, void *data,
->   	/* The scheduler owns a ref now: */
->   	msm_gem_submit_get(submit);
->   
-> -	msm_rd_dump_submit(priv->rd, submit, NULL);
-> +	if (current->ptrace & PT_PTRACED)
-> +		msm_rd_dump_submit(priv->rd, submit, NULL);
->   
->   	pm_runtime_get_sync(&gpu->pdev->dev);
->   
+---
+Patch 2 is to replace slub_$params with slab_$params.
+Vlastimil Babka pointed out we should use "slab_$param" as the primary
+prefix for long-term plan. Please see [1] for more information.
+
+This patch is to do that. However, the patch is big, I'm not sure if
+everything is proper in it, so I added "RFC" in the patch title. For more
+information please see the commit message of patch.
+
+I did the basic tests with qemu, which passed values by sl[au]b_max_order,
+sl[au]b_min_order, sl[au]b_min_objects and sl[au]b_debug in command line.
+The values looks correct by printing them out before calculating orders.
+
+One thing I'm not sure about the forth parameter of __setup_param(),
+Is it correct to set the parameter to 0 directly?
+
+---
+Patch 3 is not related to slab allocator removal. It's to correct the
+description of default value of slub_min_objects in
+Documentation/mm/slub.rst. 
+
+---
+CHANGES
+v2:
+- patch 1: Collect Reviewed-by tag.
+- patch 3: Correct spelling mistakes in commit message.
+
+v1: https://lore.kernel.org/linux-mm/20231201031505.286117-1-sxwjean@me.com/
+
+---
+Regards,
+Xiongwei
+
+[1] https://lore.kernel.org/linux-mm/7512b350-4317-21a0-fab3-4101bc4d8f7a@suse.cz/
+
+Xiongwei Song (3):
+  Documentation: kernel-parameters: remove noaliencache
+  mm/slub: unify all sl[au]b parameters with "slab_$param"
+  mm/slub: correct the default value of slub_min_objects in doc
+
+ .../admin-guide/kernel-parameters.txt         |  48 +++---
+ Documentation/mm/slub.rst                     |   2 +-
+ drivers/misc/lkdtm/heap.c                     |   2 +-
+ mm/Kconfig.debug                              |   6 +-
+ mm/slab.h                                     |  16 +-
+ mm/slab_common.c                              |   8 +-
+ mm/slub.c                                     | 142 +++++++++---------
+ 7 files changed, 110 insertions(+), 114 deletions(-)
 
 -- 
-With best wishes
-Dmitry
+2.34.1
 
