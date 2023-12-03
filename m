@@ -2,94 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7CE380265A
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 19:45:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C54A980265E
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 19:46:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233853AbjLCSpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 13:45:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46710 "EHLO
+        id S233866AbjLCSqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 13:46:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjLCSpV (ORCPT
+        with ESMTP id S229450AbjLCSp7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 13:45:21 -0500
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB764E8;
-        Sun,  3 Dec 2023 10:45:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=3WBhCpBWX37N5cjsNg5ZZZtJtBisSM0dTRcPh0wLMNg=; b=nNkCBi1dmJQaCQreznDoIHAM7M
-        to2LbakVF7BzVfPaFkiceQOIYt7M97/8rXDzKlfs7dlR4YGmWtuvhv/G6Vl6OHlGM3q0Tmhqf65W6
-        3Fbp8LMQ+Dqhq+gzxn9MVRhBhyaPCvQbh/JATVqV1WYZDvzWG4H8+CkVkdpYqzTIN/sw=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1r9rSw-001uSE-4o; Sun, 03 Dec 2023 19:45:18 +0100
-Date:   Sun, 3 Dec 2023 19:45:18 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Kory Maincent <kory.maincent@bootlin.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Russ Weight <russ.weight@linux.dev>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, devicetree@vger.kernel.org,
-        Dent Project <dentproject@linuxfoundation.org>
-Subject: Re: [PATCH net-next v2 4/8] net: ethtool: pse-pd: Expand pse
- commands with the PSE PoE interface
-Message-ID: <e0b143dc-ca7e-4762-bd0b-3acffad0932b@lunn.ch>
-References: <20231201-feature_poe-v2-0-56d8cac607fa@bootlin.com>
- <20231201-feature_poe-v2-4-56d8cac607fa@bootlin.com>
+        Sun, 3 Dec 2023 13:45:59 -0500
+Received: from mail-oa1-f69.google.com (mail-oa1-f69.google.com [209.85.160.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90ED6E8
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 10:46:03 -0800 (PST)
+Received: by mail-oa1-f69.google.com with SMTP id 586e51a60fabf-1fb2f8f7eceso410338fac.3
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Dec 2023 10:46:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701629163; x=1702233963;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XLCa/XGzGC+73V+4mDlZPATeIzNNpXWej9TaKHlQ4kM=;
+        b=LAY+APQF7f2NvH96fGhqCiis2fsE3NDSqAiMukOyL0COOqactRw53QzxW7/PZDWmTR
+         2oFDkNG10vxhteyQaYior4oAm/kW7bw7/8Q9WpugWoVaXow0r9scAOgBKqxfIvoGsqIv
+         32cwhv7HfQRFE3pzwrtheX1LoPCI/lpy2c6Az8h1ijs/hdwNNob+2MpyJHpvYSozLimL
+         r1/3mXHGg9421ZQ6rcQ8aWdofCx/pm7G3JOPNDSMqrqBUiUQEgS26FCmqYmdcb7M1CR/
+         OCPL/91gO9geG9PLJimlLUtJe+qQz1NRXqs4FECxL5bGjij+Z2iF6+btgn5+uelbBU2y
+         GoNg==
+X-Gm-Message-State: AOJu0YzpoNUtPl+IKZ+Xtq4N2Tm+YO1LkhDQLaMojRpn8aOlAEnYNded
+        oeXhJ1eiIrxucmWQI2oSllRqJvHqJ1dXyGIkKReyQkJMMz3R
+X-Google-Smtp-Source: AGHT+IHnuFyrMLpO64Ow1BiQLZ9NYGB9COSZm/Nv5NybEYJDKC2JgXP8MLbqkNOONYuwRTX4OozlKaMZf0u2sYXXs7+eu6qNxGPq
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231201-feature_poe-v2-4-56d8cac607fa@bootlin.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6808:150:b0:3a7:2434:615a with SMTP id
+ h16-20020a056808015000b003a72434615amr1397610oie.4.1701629162840; Sun, 03 Dec
+ 2023 10:46:02 -0800 (PST)
+Date:   Sun, 03 Dec 2023 10:46:02 -0800
+In-Reply-To: <6b24a73f-095b-462c-8354-1cb606ea2f1d@siddh.me>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ca6c7f060b9f6977@google.com>
+Subject: Re: [syzbot] [net?] [nfc?] KASAN: slab-use-after-free Read in nfc_alloc_send_skb
+From:   syzbot <syzbot+bbe84a4010eeea00982d@syzkaller.appspotmail.com>
+To:     code@siddh.me, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> @@ -143,6 +150,43 @@ ethnl_set_pse(struct ethnl_req_info *req_info, struct genl_info *info)
->  		return -EOPNOTSUPP;
->  	}
->  
-> +	if (!tb[ETHTOOL_A_PODL_PSE_ADMIN_CONTROL] &&
-> +	    !tb[ETHTOOL_A_C33_PSE_ADMIN_CONTROL])
-> +		return 0;
+Hello,
 
--EINVAL? Is there a real use case for not passing either of them?
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-> +
-> +	if (tb[ETHTOOL_A_PODL_PSE_ADMIN_CONTROL] &&
-> +	    !(pse_get_types(phydev->psec) & PSE_PODL)) {
-> +		NL_SET_ERR_MSG_ATTR(info->extack,
-> +				    tb[ETHTOOL_A_PODL_PSE_ADMIN_CONTROL],
-> +				    "setting PSE PoDL admin control not supported");
-> +		return -EOPNOTSUPP;
-> +	}
-> +	if (tb[ETHTOOL_A_C33_PSE_ADMIN_CONTROL] &&
-> +	    !(pse_get_types(phydev->psec) & PSE_C33)) {
-> +		NL_SET_ERR_MSG_ATTR(info->extack,
-> +				    tb[ETHTOOL_A_C33_PSE_ADMIN_CONTROL],
-> +				    "setting PSE PoE admin control not supported");
+Reported-and-tested-by: syzbot+bbe84a4010eeea00982d@syzkaller.appspotmail.com
 
-This probably should be C33, not PoE?
+Tested on:
 
-I guess it depends on what the user space tools are using. 
+commit:         8470e436 Merge branch 'net-cacheline-optimizations'
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git main
+console output: https://syzkaller.appspot.com/x/log.txt?x=135600d2e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=94286555cac4ea49
+dashboard link: https://syzkaller.appspot.com/bug?extid=bbe84a4010eeea00982d
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=119eca30e80000
 
-	Andrew
+Note: testing is done by a robot and is best-effort only.
