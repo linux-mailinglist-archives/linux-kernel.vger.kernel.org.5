@@ -2,157 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2636A802561
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 17:23:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28E44802563
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 17:24:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233704AbjLCQWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 11:22:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44758 "EHLO
+        id S233718AbjLCQXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 11:23:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233694AbjLCQWs (ORCPT
+        with ESMTP id S233694AbjLCQXw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 11:22:48 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBDC7113
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 08:22:53 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93742C433C7;
-        Sun,  3 Dec 2023 16:22:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701620573;
-        bh=b+HQxmADgxcaKYfeScRrPsfKr0PQRdIqvtndccl3ae4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YmaC0b9Q3y99uYWwDy4aWaK9FS3j8sGI8mDZMM0SvvBB0fEePNO9ybiMgkdbL4S1s
-         OBNwyiiu8/CgZY6HObBKsCai9VmIx3JfLI3vTZ6nriF2+0bjCez+Cu1KvbOeMFLXSG
-         UZS68FQA/2EU/gGoeEO4oo6c6Rh54yEAHZYby+3BKnsPH4OgZVAyMGeDRTCGDpCNqy
-         t56n8URjbEiMfsMHTXvwGHduSi3gkicJGtIAiVHQ9EWu/LIXJbSCTm1yY/ZctljnyG
-         6Vt3kEPjHYHvGYqsgqv6vFEzwqbB440vE6uu8ieZ699NfXH1pmxl6eKZj2eqstIgib
-         D6GqmzTo61q2Q==
-Date:   Sun, 3 Dec 2023 16:22:48 +0000
-From:   Simon Horman <horms@kernel.org>
-To:     Ivan Vecera <ivecera@redhat.com>
-Cc:     intel-wired-lan@lists.osuosl.org,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Wojciech Drewek <wojciech.drewek@intel.com>,
-        mschmidt@redhat.com, netdev@vger.kernel.org
-Subject: Re: [PATCH v5 5/5] i40e: Remove VEB recursion
-Message-ID: <20231203162248.GJ50400@kernel.org>
-References: <20231124150343.81520-1-ivecera@redhat.com>
- <20231124150343.81520-6-ivecera@redhat.com>
+        Sun, 3 Dec 2023 11:23:52 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EB22B0
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 08:23:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701620638;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lnZvOG5O1XML8m5bdEgP0BLaNE6m6L+TFl+VYXFF/Gc=;
+        b=ab++o12sFhMNsdMoEG4uQ5u68DU26VUfNwal9n72Ha1HHZzQcX+pqEZeIRXOOTvuCxacFp
+        +7wxOTfJJ/tWbbHEKtMEwsot2inc7rh+w0jzTGhaa1YMLt39WicG7ammZP6PKAtPs/GQQy
+        cOlI/lx0+AVZ731IGC/GxjCpicsPCoY=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-687-ChLXa-OBNW-NblGto0vqdQ-1; Sun, 03 Dec 2023 11:23:57 -0500
+X-MC-Unique: ChLXa-OBNW-NblGto0vqdQ-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-33334e370d3so1308119f8f.2
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Dec 2023 08:23:56 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701620636; x=1702225436;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lnZvOG5O1XML8m5bdEgP0BLaNE6m6L+TFl+VYXFF/Gc=;
+        b=fBhe5DPTiCW4IKjkeYxGz4jcuHpvHdl9tkJgWFo10thtdZ1mJqOMzzpYXdopyvpL4J
+         SfkxnWQOXgyB0csBtxbvbH2Op/4oJDD0bD3FwPDffwY67ErG4BLS9oYQIi6D7eXw2mUw
+         bTYZnrzFXxJKftevOA4TjoHiJgSfkGKLxc+srlzC6TxdLrZeYl9Cl9oUuyOHdEFCxzud
+         TGDl72SgjP0+7YlQx/06VB0dZXndMP7omLGxE+4OvSrJ3zVIN8YZseh3Nyupbo4gxL+p
+         QAYUn2A8IoCgq+eKUo5Fuji/2RwikUuoJ72RbcwnaXA3mgC4MHk3o2xUHWf1odq3b792
+         KlGg==
+X-Gm-Message-State: AOJu0YynCtNSQgQrqBmA1IAGVw6gVrvQamiD48jl6Kb00AEmasI7ll9u
+        +KU/J7LRcUmcaiy/yS5/fIp+yxtCxG88WkNYmstfOo3wSJjyXuntMPJALA/b8sTJNRycTENhpMg
+        b8s/kcaDGSHVCrqLw8jUKj+4Q
+X-Received: by 2002:a05:600c:705:b0:40b:5e21:dd4f with SMTP id i5-20020a05600c070500b0040b5e21dd4fmr1874536wmn.125.1701620635913;
+        Sun, 03 Dec 2023 08:23:55 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGKP9eXqXIJINqxrVU9tyc8Z3UHQwADTnS0+oYOUt7wpJ1p/7gUBKwhI0K0i3D0cbqq7yqUBw==
+X-Received: by 2002:a05:600c:705:b0:40b:5e21:dd4f with SMTP id i5-20020a05600c070500b0040b5e21dd4fmr1874523wmn.125.1701620635528;
+        Sun, 03 Dec 2023 08:23:55 -0800 (PST)
+Received: from redhat.com ([2.55.11.133])
+        by smtp.gmail.com with ESMTPSA id jg23-20020a05600ca01700b0040b30be6244sm12148007wmb.24.2023.12.03.08.23.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 03 Dec 2023 08:23:54 -0800 (PST)
+Date:   Sun, 3 Dec 2023 11:23:50 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Dragos Tatulea <dtatulea@nvidia.com>
+Cc:     "xuanzhuo@linux.alibaba.com" <xuanzhuo@linux.alibaba.com>,
+        Parav Pandit <parav@nvidia.com>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "eperezma@redhat.com" <eperezma@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "si-wei.liu@oracle.com" <si-wei.liu@oracle.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        "galp@nvidia.com" <galp@nvidia.com>,
+        "leon@kernel.org" <leon@kernel.org>
+Subject: Re: [PATCH vhost 0/7] vdpa/mlx5: Add support for resumable vqs
+Message-ID: <20231203112324-mutt-send-email-mst@kernel.org>
+References: <20231201104857.665737-1-dtatulea@nvidia.com>
+ <20231202152523-mutt-send-email-mst@kernel.org>
+ <aff0361edcb0fd0c384bf297e71d25fb77570e15.camel@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231124150343.81520-6-ivecera@redhat.com>
+In-Reply-To: <aff0361edcb0fd0c384bf297e71d25fb77570e15.camel@nvidia.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 24, 2023 at 04:03:43PM +0100, Ivan Vecera wrote:
-> The VEB (virtual embedded switch) as a switch element can be
-> connected according datasheet though its uplink to:
-> - Physical port
-> - Port Virtualizer (not used directly by i40e driver but can
->   be present in MFP mode where the physical port is shared
->   between PFs)
-> - No uplink (aka floating VEB)
+On Sun, Dec 03, 2023 at 03:21:01PM +0000, Dragos Tatulea wrote:
+> On Sat, 2023-12-02 at 15:26 -0500, Michael S. Tsirkin wrote:
+> > On Fri, Dec 01, 2023 at 12:48:50PM +0200, Dragos Tatulea wrote:
+> > > Add support for resumable vqs in the driver. This is a firmware feature
+> > > that can be used for the following benefits:
+> > > - Full device .suspend/.resume.
+> > > - .set_map doesn't need to destroy and create new vqs anymore just to
+> > >   update the map. When resumable vqs are supported it is enough to
+> > >   suspend the vqs, set the new maps, and then resume the vqs.
+> > > 
+> > > The first patch exposes the relevant bits in mlx5_ifc.h. That means it
+> > > needs to be applied to the mlx5-vhost tree [0] first.
+> > 
+> > I didn't get this. Why does this need to go through that tree?
+> > Is there a dependency on some other commit from that tree?
+> > 
+> To avoid merge issues in Linus's tree in mlx5_ifc.h. The idea is the same as for
+> the "vq descriptor mappings" patchset [1].
 > 
-> But VEB uplink cannot be connected to another VEB and any attempt
-> to do so results in:
-> 
-> "i40e 0000:02:00.0: couldn't add VEB, err -EIO aq_err I40E_AQ_RC_ENOENT"
-> 
-> that indicates "the uplink SEID does not point to valid element".
-> 
-> Remove this logic from the driver code this way:
-> 
-> 1) For debugfs only allow to build floating VEB (uplink_seid == 0)
->    or main VEB (uplink_seid == mac_seid)
-> 2) Do not recurse in i40e_veb_link_event() as no VEB cannot have
->    sub-VEBs
-> 3) Ditto for i40e_veb_rebuild() + simplify the function as we know
->    that the VEB for rebuild can be only the main LAN VEB or some
->    of the floating VEBs
-> 4) In i40e_rebuild() there is no need to check veb->uplink_seid
->    as the possible ones are 0 and MAC SEID
-> 5) In i40e_vsi_release() do not take into account VEBs whose
->    uplink is another VEB as this is not possible
-> 6) Remove veb_idx field from i40e_veb as a VEB cannot have
->    sub-VEBs
-> 
-> Tested using i40e debugfs interface:
-> 1) Initial state
-> [root@cnb-03 net-next]# CMD="/sys/kernel/debug/i40e/0000:02:00.0/command"
-> [root@cnb-03 net-next]# echo dump switch > $CMD
-> [root@cnb-03 net-next]# dmesg -c
-> [   98.440641] i40e 0000:02:00.0: header: 3 reported 3 total
-> [   98.446053] i40e 0000:02:00.0: type=19 seid=392 uplink=160 downlink=16
-> [   98.452593] i40e 0000:02:00.0: type=17 seid=160 uplink=2 downlink=0
-> [   98.458856] i40e 0000:02:00.0: type=19 seid=390 uplink=160 downlink=16
-> 
-> 2) Add floating VEB
-> [root@cnb-03 net-next]# echo add relay > $CMD
-> [root@cnb-03 net-next]# dmesg -c
-> [  122.745630] i40e 0000:02:00.0: added relay 162
-> [root@cnb-03 net-next]# echo dump switch > $CMD
-> [root@cnb-03 net-next]# dmesg -c
-> [  136.650049] i40e 0000:02:00.0: header: 4 reported 4 total
-> [  136.655466] i40e 0000:02:00.0: type=19 seid=392 uplink=160 downlink=16
-> [  136.661994] i40e 0000:02:00.0: type=17 seid=160 uplink=2 downlink=0
-> [  136.668264] i40e 0000:02:00.0: type=19 seid=390 uplink=160 downlink=16
-> [  136.674787] i40e 0000:02:00.0: type=17 seid=162 uplink=0 downlink=0
-> 
-> 3) Add VMDQ2 VSI to this new VEB
-> [root@cnb-03 net-next]# dmesg -c
-> [  168.351763] i40e 0000:02:00.0: added VSI 394 to relay 162
-> [  168.374652] enp2s0f0np0v0: NIC Link is Up, 40 Gbps Full Duplex, Flow Control: None
-> [root@cnb-03 net-next]# echo dump switch > $CMD
-> [root@cnb-03 net-next]# dmesg -c
-> [  195.683204] i40e 0000:02:00.0: header: 5 reported 5 total
-> [  195.688611] i40e 0000:02:00.0: type=19 seid=394 uplink=162 downlink=16
-> [  195.695143] i40e 0000:02:00.0: type=17 seid=162 uplink=0 downlink=0
-> [  195.701410] i40e 0000:02:00.0: type=19 seid=392 uplink=160 downlink=16
-> [  195.707935] i40e 0000:02:00.0: type=17 seid=160 uplink=2 downlink=0
-> [  195.714201] i40e 0000:02:00.0: type=19 seid=390 uplink=160 downlink=16
-> 
-> 4) Try to delete the VEB
-> [root@cnb-03 net-next]# echo del relay 162 > $CMD
-> [root@cnb-03 net-next]# dmesg -c
-> [  239.260901] i40e 0000:02:00.0: deleting relay 162
-> [  239.265621] i40e 0000:02:00.0: can't remove VEB 162 with 1 VSIs left
-> 
-> 5) Do PF reset and check switch status after rebuild
-> [root@cnb-03 net-next]# echo pfr > $CMD
-> [root@cnb-03 net-next]# echo dump switch > $CMD
-> [root@cnb-03 net-next]# dmesg -c
-> ...
-> [  272.333655] i40e 0000:02:00.0: header: 5 reported 5 total
-> [  272.339066] i40e 0000:02:00.0: type=19 seid=394 uplink=162 downlink=16
-> [  272.345599] i40e 0000:02:00.0: type=17 seid=162 uplink=0 downlink=0
-> [  272.351862] i40e 0000:02:00.0: type=19 seid=392 uplink=160 downlink=16
-> [  272.358387] i40e 0000:02:00.0: type=17 seid=160 uplink=2 downlink=0
-> [  272.364654] i40e 0000:02:00.0: type=19 seid=390 uplink=160 downlink=16
-> 
-> 6) Delete VSI and delete VEB
-> [  297.199116] i40e 0000:02:00.0: deleting VSI 394
-> [  299.807580] i40e 0000:02:00.0: deleting relay 162
-> [  309.767905] i40e 0000:02:00.0: header: 3 reported 3 total
-> [  309.773318] i40e 0000:02:00.0: type=19 seid=392 uplink=160 downlink=16
-> [  309.779845] i40e 0000:02:00.0: type=17 seid=160 uplink=2 downlink=0
-> [  309.786111] i40e 0000:02:00.0: type=19 seid=390 uplink=160 downlink=16
-> 
-> Reviewed-by: Wojciech Drewek <wojciech.drewek@intel.com>
-> Signed-off-by: Ivan Vecera <ivecera@redhat.com>
+> Thanks,
+> Dragos
 
-Reviewed-by: Simon Horman <horms@kernel.org>
+Are there other changes in that area that will cause non-trivial merge
+conflicts?
+
+> > > Once applied
+> > > there, the change has to be pulled from mlx5-vhost into the vhost tree
+> > > and only then the remaining patches can be applied. Same flow as the vq
+> > > descriptor mappings patchset [1].
+> > > 
+> > > To be able to use resumable vqs properly, support for selectively modifying
+> > > vq parameters was needed. This is what the middle part of the series
+> > > consists of.
+> > > 
+> > > [0] https://git.kernel.org/pub/scm/linux/kernel/git/mellanox/linux.git/log/?h=mlx5-vhost
+> > > [1] https://lore.kernel.org/virtualization/20231018171456.1624030-2-dtatulea@nvidia.com/
+> > > 
+> > > Dragos Tatulea (7):
+> > >   vdpa/mlx5: Expose resumable vq capability
+> > >   vdpa/mlx5: Split function into locked and unlocked variants
+> > >   vdpa/mlx5: Allow modifying multiple vq fields in one modify command
+> > >   vdpa/mlx5: Introduce per vq and device resume
+> > >   vdpa/mlx5: Mark vq addrs for modification in hw vq
+> > >   vdpa/mlx5: Mark vq state for modification in hw vq
+> > >   vdpa/mlx5: Use vq suspend/resume during .set_map
+> > > 
+> > >  drivers/vdpa/mlx5/core/mr.c        |  31 +++---
+> > >  drivers/vdpa/mlx5/net/mlx5_vnet.c  | 172 +++++++++++++++++++++++++----
+> > >  include/linux/mlx5/mlx5_ifc.h      |   3 +-
+> > >  include/linux/mlx5/mlx5_ifc_vdpa.h |   4 +
+> > >  4 files changed, 174 insertions(+), 36 deletions(-)
+> > > 
+> > > -- 
+> > > 2.42.0
+> > 
+> 
 
