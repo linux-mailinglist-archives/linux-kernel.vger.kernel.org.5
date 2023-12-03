@@ -2,60 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 452A080270B
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 20:37:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 972568026F7
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 20:35:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234232AbjLCThC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 14:37:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56886 "EHLO
+        id S234244AbjLCTfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 14:35:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233925AbjLCTgi (ORCPT
+        with ESMTP id S234208AbjLCTe3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 14:36:38 -0500
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D19B1FEF;
-        Sun,  3 Dec 2023 11:33:54 -0800 (PST)
-Received: by mail-yb1-xb2a.google.com with SMTP id 3f1490d57ef6-da819902678so1798521276.1;
-        Sun, 03 Dec 2023 11:33:54 -0800 (PST)
+        Sun, 3 Dec 2023 14:34:29 -0500
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5884919F;
+        Sun,  3 Dec 2023 11:33:56 -0800 (PST)
+Received: by mail-yb1-xb33.google.com with SMTP id 3f1490d57ef6-daf4f0e3a0fso1923328276.1;
+        Sun, 03 Dec 2023 11:33:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701632033; x=1702236833; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1701632034; x=1702236834; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=mMYRsf2KUQS5uwQ6urvBpybENsSrVhN/8XcMm7CzDDE=;
-        b=fla16aY/YuRlrnmExwMcprcZzfGgUqAsre8kjf55bttl3EH4eCr70ZlYvTUnb9LzYr
-         ThQd/RIz/EbmFydVpaW69jCRfYR4wzRalg4MSF4Alkm7I4xlHD7cF5OIz4tzAutVss0N
-         hwh5/QlzddAGwRBlYTq9s2ljQDq4ZrCAw0Md0VY8/935KIipZq8ZdDduVwq66qAxessq
-         MI+C7j17an+6p75bbbcw+MAEkvg0rfu+K319CRJ9pAsACCvdThUwP3qn5YNWY0nGgFtn
-         YELcGzJo6MWrUN/7EAA/mOCJLVdQEWcgq+9TJc6Bg1cbQ0FsLSJBNWyvFFGbyjPMaCR7
-         lKww==
+        bh=umylsjeSPs0cDBz7+FTUGH2Vn0LO0b26GddccWPu0Jc=;
+        b=INmutiGknFZp4otivmEjEN6U5i9K+DYuNAAwT4RR6E6MHxetNGsWEjpz4PFZZ3NewE
+         XoKmhzornVPQikoYdYEKbY0/ENZMcQNcbTSwLpRGFI+8ruV0Xm9BKJ64Jqxn27jK5u4v
+         F4MphdmtdPwA6l/hAJcLIgbq15egqT9GYh6fAJ9uteezJ3DFwfqJ2TKc3d0XCR5IFTQH
+         eSp8g1BkM4R+thZ3DYoDIsO+5JEY8faCXPyWKqK+yjzdenQdE5P+JPtH/bJAcOib480v
+         1CKY9k6RMfd/HfancmSlu0slSrXlX7zyKSu+vuigYABNaVGhOPLTw21ZcPCy0tiBj7WD
+         LUzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701632033; x=1702236833;
+        d=1e100.net; s=20230601; t=1701632034; x=1702236834;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=mMYRsf2KUQS5uwQ6urvBpybENsSrVhN/8XcMm7CzDDE=;
-        b=hNs+yHmIy70jLrl8dgnzsIyB4ywklhgMRQGtY6FByWS7l3M8MfjPnT3XZpolYpfBHx
-         2JNNFUwcp/QtUOoqPHbHhXPwZgYWIm7rH2aWkYmUrjaDMeQpViaGTIYH0ZTKKRrOmNph
-         lXFnUKubcySBWRpR+0oI9yDDkk92U2bbVvXSQ19ealC4cnciWbdTkiCqbWoVbR7WGg9H
-         024BSVZHS4q3cP7XwOsr/UTTxqnybvzaq3radYcLCgYh3URD8FhoNCM+ni2VgQsw4PDU
-         tmSJraT77yzrp/xHRkhruCmjdNSmhvQRNCOHgNl7dv/PpaHKccb8VdxCIKJyzgxuMqKa
-         lHuw==
-X-Gm-Message-State: AOJu0YwjghAjfN3DTmHXBznB1DvwArF/KutgsMQLnwvfDvhh1wQMReVn
-        S44nZDiZvAq2aJmd4fXdUkkGZfi+lBi2Gw==
-X-Google-Smtp-Source: AGHT+IGduPg2sefAjk91T8uEcsf30VtqsMKGSFuvvW7gch00T0bY9HWrkg6qeFiGnN+s5O99T9BAWw==
-X-Received: by 2002:a25:94d:0:b0:d80:68d1:b826 with SMTP id u13-20020a25094d000000b00d8068d1b826mr1828079ybm.6.1701632032837;
-        Sun, 03 Dec 2023 11:33:52 -0800 (PST)
+        bh=umylsjeSPs0cDBz7+FTUGH2Vn0LO0b26GddccWPu0Jc=;
+        b=UTFgThxl5cLW5H480WHyvTltiuI1rEDZJj+XSsd5lmaSlVM/5wwZ6iFOuH5SYqVzp0
+         SH43b3k9NVnziXWgEuWqh/QzAsklti0sV+HUFxOjE4Z5pi2jzTyafEfxyjQejwOUvSe7
+         iPjBJICEq+W+nduJmCV2wIPMaunAr0QFEOkpwLjbOa66eWJOq1o51+43Bsh65vYnMjqb
+         l6Ap2nZuWxvh8QlzMwj0WXrFuzTYdcPsRYPcnUQvNjJ591NJ27CnILxpCE7hqV/J4g4A
+         i7148fVLvS8fij6tm/Cj9JxvruXv56FnOsJOIFT6SO3JWbTOLBCngqQ2tcX170rVmJ7z
+         pIdA==
+X-Gm-Message-State: AOJu0YzgsN/84LRH1P435owWM29qOW8iSSsXH4+rY11skcq8wOtoerdg
+        lykASl1wZX1Sqs0mTG5NB/p1Z6qbL9OCkA==
+X-Google-Smtp-Source: AGHT+IEMrAskXkIWksgXiWbXkBl3jPfPd1x1T+uOqGjr26YyA+tnyIwo24cYyzJVLZxKOZWy5dfEjA==
+X-Received: by 2002:a5b:28c:0:b0:d9b:87f3:54f9 with SMTP id x12-20020a5b028c000000b00d9b87f354f9mr2129725ybl.28.1701632034561;
+        Sun, 03 Dec 2023 11:33:54 -0800 (PST)
 Received: from localhost ([2601:344:8301:57f0:cb98:c3e:57c:8191])
-        by smtp.gmail.com with ESMTPSA id r11-20020a25844b000000b00d9a43500f1dsm1751830ybm.28.2023.12.03.11.33.52
+        by smtp.gmail.com with ESMTPSA id o145-20020a257397000000b00d9caecd5c86sm1810336ybc.62.2023.12.03.11.33.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Dec 2023 11:33:52 -0800 (PST)
+        Sun, 03 Dec 2023 11:33:53 -0800 (PST)
 From:   Yury Norov <yury.norov@gmail.com>
-To:     linux-kernel@vger.kernel.org,
-        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
-        Jack Wang <jinpu.wang@ionos.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, Karsten Keil <isdn@linux-pingi.de>,
+        netdev@vger.kernel.org
 Cc:     Yury Norov <yury.norov@gmail.com>, Jan Kara <jack@suse.cz>,
         Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
         Matthew Wilcox <willy@infradead.org>,
@@ -65,9 +62,9 @@ Cc:     Yury Norov <yury.norov@gmail.com>, Jan Kara <jack@suse.cz>,
         Alexey Klimov <klimov.linux@gmail.com>,
         Bart Van Assche <bvanassche@acm.org>,
         Sergey Shtylyov <s.shtylyov@omp.ru>
-Subject: [PATCH v2 25/35] RDMA/rtrs: fix opencoded find_and_set_bit_lock() in __rtrs_get_permit()
-Date:   Sun,  3 Dec 2023 11:32:57 -0800
-Message-Id: <20231203193307.542794-24-yury.norov@gmail.com>
+Subject: [PATCH v2 26/35] mISDN: optimize get_free_devid()
+Date:   Sun,  3 Dec 2023 11:32:58 -0800
+Message-Id: <20231203193307.542794-25-yury.norov@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231203193307.542794-1-yury.norov@gmail.com>
 References: <20231203192422.539300-1-yury.norov@gmail.com>
@@ -84,40 +81,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function opencodes find_and_set_bit_lock() with a while-loop polling
-on test_and_set_bit_lock(). Use the dedicated function instead.
+get_free_devid() traverses each bit in device_ids in an open-coded loop.
+We can do it faster by using dedicated find_and_set_bit().
+
+It makes the whole function a nice one-liner, and because MAX_DEVICE_ID
+is a small constant-time value (63), on 64-bit platforms find_and_set_bit()
+call will be optimized to:
+
+	ffs();
+	test_and_set_bit().
 
 Signed-off-by: Yury Norov <yury.norov@gmail.com>
 ---
- drivers/infiniband/ulp/rtrs/rtrs-clt.c | 15 +++------------
- 1 file changed, 3 insertions(+), 12 deletions(-)
+ drivers/isdn/mISDN/core.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-index 07261523c554..2f3b0ad42e8a 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-@@ -72,18 +72,9 @@ __rtrs_get_permit(struct rtrs_clt_sess *clt, enum rtrs_clt_con_type con_type)
- 	struct rtrs_permit *permit;
- 	int bit;
+diff --git a/drivers/isdn/mISDN/core.c b/drivers/isdn/mISDN/core.c
+index ab8513a7acd5..3f97db006cf3 100644
+--- a/drivers/isdn/mISDN/core.c
++++ b/drivers/isdn/mISDN/core.c
+@@ -197,14 +197,9 @@ get_mdevice_count(void)
+ static int
+ get_free_devid(void)
+ {
+-	u_int	i;
++	u_int i = find_and_set_bit((u_long *)&device_ids, MAX_DEVICE_ID + 1);
  
--	/*
--	 * Adapted from null_blk get_tag(). Callers from different cpus may
--	 * grab the same bit, since find_first_zero_bit is not atomic.
--	 * But then the test_and_set_bit_lock will fail for all the
--	 * callers but one, so that they will loop again.
--	 * This way an explicit spinlock is not required.
--	 */
--	do {
--		bit = find_first_zero_bit(clt->permits_map, max_depth);
--		if (bit >= max_depth)
--			return NULL;
--	} while (test_and_set_bit_lock(bit, clt->permits_map));
-+	bit = find_and_set_bit_lock(clt->permits_map, max_depth);
-+	if (bit >= max_depth)
-+		return NULL;
+-	for (i = 0; i <= MAX_DEVICE_ID; i++)
+-		if (!test_and_set_bit(i, (u_long *)&device_ids))
+-			break;
+-	if (i > MAX_DEVICE_ID)
+-		return -EBUSY;
+-	return i;
++	return i <= MAX_DEVICE_ID ? i : -EBUSY;
+ }
  
- 	permit = get_permit(clt, bit);
- 	WARN_ON(permit->mem_id != bit);
+ int
 -- 
 2.40.1
 
