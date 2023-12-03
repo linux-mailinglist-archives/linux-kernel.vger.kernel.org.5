@@ -2,64 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DC028026E4
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 20:34:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E78258026E5
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 20:34:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234121AbjLCTeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 14:34:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53798 "EHLO
+        id S234071AbjLCTeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 14:34:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234117AbjLCTdt (ORCPT
+        with ESMTP id S234137AbjLCTdw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 14:33:49 -0500
-Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82EDB109;
-        Sun,  3 Dec 2023 11:33:36 -0800 (PST)
-Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-5d7346442d4so9640527b3.2;
-        Sun, 03 Dec 2023 11:33:36 -0800 (PST)
+        Sun, 3 Dec 2023 14:33:52 -0500
+Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F02EB129;
+        Sun,  3 Dec 2023 11:33:37 -0800 (PST)
+Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-5d226f51f71so41159657b3.3;
+        Sun, 03 Dec 2023 11:33:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701632012; x=1702236812; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1701632014; x=1702236814; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=IEaUDtVEXhS2xSrmOtKVY2kz6kMUS/zN4/Y90wQZFHs=;
-        b=kpXNJ8kG88GPN/GZxBXgTw8UcxjPNB/NZksq4B8wRRjAkeLjxfknRYp0tErs6RvmsG
-         U0J+A5sWZs/FMw1GZZz2ZJMgvNpr9EaC6Gf/E43UDsnklcbrx4Exa00xG1go6y18Zrst
-         iLyNFj4vahdrbt1ZxS4jH7HrNK8k5JeMe49+LWINmzroKkbQGl9ZTye/GPRkxFq4O8HJ
-         8m3PGAFkt2rC88HHTJ2zjFf5fZu6rWTNckDs+0Q3rQNyOcrGJhjJByHY+GIjrDMOGLAw
-         wpLRmJDsv8rkdIr/wvdvIE8H3lWuvoxJiFR3AEwAU1xYLVp/whrMyQiP7l24IDuuZ2f6
-         aUtg==
+        bh=mr02jQnghvPlVXTkXMq03CUtxqFWGozfMvZEVXjbV24=;
+        b=PxCKx8n3mr7Tnk580mPbfA6DuyfCw4+JhiGxgocEYk/WF+w1/OTXdN1o9CVeAa9roU
+         5MIztvN8MSGWx25InfIQDq+4SNa8es62XGIHpMscY/pe2iPaFtc5ci0g3PwFlFDnpBxb
+         r/RbSnI7BNqoCjgAhYkxzC0G1zy5zaoOHnOxclslOFjIJuGKw01+hjW5lBv+ige5auRi
+         chxyKaor421hkqdNIaj4ZBV7df6tqzyIUjq/LZfgNSgaZ2nhXTO/80OC8zqIC4MdrsIF
+         uwua/Td00cMVLYAM0/EAIZ35q4goTTWFwBexKETflU6gz0hqQXANqYBf6C/otidhfOpa
+         F5dw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701632012; x=1702236812;
+        d=1e100.net; s=20230601; t=1701632014; x=1702236814;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=IEaUDtVEXhS2xSrmOtKVY2kz6kMUS/zN4/Y90wQZFHs=;
-        b=TYK5BVxSWmfDsx8qrqY81jHxxCZwzMihC7qwAMg36rTDxNmppmxpVkeXJCPmcCu1PY
-         hwUgVV3QbHIC0Sv0iV8KzOuUNTxBmLElrDHlJPRh3/wRDEgANTe9bgNy2mxJoRY2Bj/q
-         CUFw+MavXZKx+3hsZmPgaBLEN/exNP+iKUsIYFzSipA+9da4eFkrGIjbJ3pKxWrea/tj
-         JDXFC9Tx9zFHr8FzuZ7Rwb8jQ/vi7HC7BThJPUZ5nGmDbH1K5IiI9/CEVGI2ag8OcIBL
-         P50FGjTIMu7Oa995tYW/Xm83Pjo14F/ieu7tCEEVfZLa1q2O65+1RMtDPGuw8Mqf7XqB
-         7OpA==
-X-Gm-Message-State: AOJu0Yy3/SyaRlAsOOGLEGusQpShOyFmhxLc6vFlcFw/tIZK0/2CE/Y1
-        2bWS7jsJnxRea9/HTbl4rF0rhI/1w1sGDQ==
-X-Google-Smtp-Source: AGHT+IFwlxbZmbVc92xt+VMP3rP0BOnEAVGzjU8EWbb35CAGKD2MV1oUsEubzmorbR3mspDtYKW6Og==
-X-Received: by 2002:a05:690c:70a:b0:5d7:70a0:ea01 with SMTP id bs10-20020a05690c070a00b005d770a0ea01mr1159765ywb.7.1701632012538;
-        Sun, 03 Dec 2023 11:33:32 -0800 (PST)
+        bh=mr02jQnghvPlVXTkXMq03CUtxqFWGozfMvZEVXjbV24=;
+        b=hJNvn7mBvS1ZNwuLlK9DMfMybtTzJ+uDHoTVtaVsNDSoInmLHCMfQ3HfDYG2MskCmv
+         s3wwkfrTEXpsoEZ7AVLsoLczFiyhxOVXtTug8HsKqJPl63Wt7OI+0pFBnglEOn1985FM
+         Ig8IRpVj0fzx0ujzdBS6MszFS8gcNn063zGzo2genUNVEm0hmBNKramXukgaksaesG6U
+         7Q/980o/2QDk6DLswQR021u9cyi7A7bR8Snj3ByX5lK8Wc/MFoBM5/9H6gOqhDKybpv1
+         zEeypRzXWJjIMBTyVmS07EyQxv5A2b69cwBjJ0j8ivL5NEoetW855ZRvBWxe1y/s9cmt
+         9IGw==
+X-Gm-Message-State: AOJu0YzwxHaIBvVR9o9f7urLDNTL5CrgsIXq9qgm08R2xNS/VFKB8cOj
+        S8VbR/Qf45WlIRBGuuptD7hEyqxALdpliQ==
+X-Google-Smtp-Source: AGHT+IEbqmm9rCxeBNlYH2F2vKM++82aNyf5b8oYOzBQ8qa8l9/PZh/0h3fEXihc5rVCTJK2NjjiHw==
+X-Received: by 2002:a81:b622:0:b0:5d7:1940:dd63 with SMTP id u34-20020a81b622000000b005d71940dd63mr1863452ywh.57.1701632014299;
+        Sun, 03 Dec 2023 11:33:34 -0800 (PST)
 Received: from localhost ([2601:344:8301:57f0:cb98:c3e:57c:8191])
-        by smtp.gmail.com with ESMTPSA id v184-20020a0dd3c1000000b005ccdfce2860sm2753736ywd.98.2023.12.03.11.33.31
+        by smtp.gmail.com with ESMTPSA id j139-20020a819291000000b005d7f46f6ccdsm700161ywg.23.2023.12.03.11.33.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Dec 2023 11:33:32 -0800 (PST)
+        Sun, 03 Dec 2023 11:33:33 -0800 (PST)
 From:   Yury Norov <yury.norov@gmail.com>
 To:     linux-kernel@vger.kernel.org,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org
+        Sathya Prakash Veerichetty <sathya.prakash@broadcom.com>,
+        Kashyap Desai <kashyap.desai@broadcom.com>,
+        Sumit Saxena <sumit.saxena@broadcom.com>,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Nilesh Javali <njavali@marvell.com>,
+        Manish Rangankar <mrangankar@marvell.com>,
+        GR-QLogic-Storage-Upstream@marvell.com,
+        mpi3mr-linuxdrv.pdl@broadcom.com, linux-scsi@vger.kernel.org
 Cc:     Yury Norov <yury.norov@gmail.com>, Jan Kara <jack@suse.cz>,
         Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
         Matthew Wilcox <willy@infradead.org>,
@@ -68,11 +70,10 @@ Cc:     Yury Norov <yury.norov@gmail.com>, Jan Kara <jack@suse.cz>,
         Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
         Alexey Klimov <klimov.linux@gmail.com>,
         Bart Van Assche <bvanassche@acm.org>,
-        Sergey Shtylyov <s.shtylyov@omp.ru>,
-        Michael Kelley <mhklinux@outlook.com>
-Subject: [PATCH v2 14/35] PCI: hv: switch hv_get_dom_num() to use atomic find_bit()
-Date:   Sun,  3 Dec 2023 11:32:46 -0800
-Message-Id: <20231203193307.542794-13-yury.norov@gmail.com>
+        Sergey Shtylyov <s.shtylyov@omp.ru>
+Subject: [PATCH v2 15/35] scsi: core: use atomic find_bit() API where appropriate
+Date:   Sun,  3 Dec 2023 11:32:47 -0800
+Message-Id: <20231203193307.542794-14-yury.norov@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231203193307.542794-1-yury.norov@gmail.com>
 References: <20231203192422.539300-1-yury.norov@gmail.com>
@@ -81,7 +82,7 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -89,34 +90,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function traverses bitmap with for_each_clear_bit() just to allocate
-a bit atomically. We can do it better with a dedicated find_and_set_bit().
+A plain loop in scsi_evt_thread() opencodes optimized atomic bit traversing
+macro. Switch it to using the dedicated iterator.
 
+CC: Bart Van Assche <bvanassche@acm.org>
 Signed-off-by: Yury Norov <yury.norov@gmail.com>
-Reviewed-by: Michael Kelley <mhklinux@outlook.com>
 ---
- drivers/pci/controller/pci-hyperv.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ drivers/scsi/scsi_lib.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller/pci-hyperv.c
-index 30c7dfeccb16..033b1fb7f4eb 100644
---- a/drivers/pci/controller/pci-hyperv.c
-+++ b/drivers/pci/controller/pci-hyperv.c
-@@ -3605,12 +3605,9 @@ static u16 hv_get_dom_num(u16 dom)
- 	if (test_and_set_bit(dom, hvpci_dom_map) == 0)
- 		return dom;
+diff --git a/drivers/scsi/scsi_lib.c b/drivers/scsi/scsi_lib.c
+index cf3864f72093..a4c5c9b4bfc9 100644
+--- a/drivers/scsi/scsi_lib.c
++++ b/drivers/scsi/scsi_lib.c
+@@ -2494,14 +2494,13 @@ static void scsi_evt_emit(struct scsi_device *sdev, struct scsi_event *evt)
+ void scsi_evt_thread(struct work_struct *work)
+ {
+ 	struct scsi_device *sdev;
+-	enum scsi_device_event evt_type;
++	enum scsi_device_event evt_type = SDEV_EVT_FIRST;
+ 	LIST_HEAD(event_list);
  
--	for_each_clear_bit(i, hvpci_dom_map, HVPCI_DOM_MAP_SIZE) {
--		if (test_and_set_bit(i, hvpci_dom_map) == 0)
--			return i;
--	}
-+	i = find_and_set_bit(hvpci_dom_map, HVPCI_DOM_MAP_SIZE);
+ 	sdev = container_of(work, struct scsi_device, event_work);
  
--	return HVPCI_DOM_INVALID;
-+	return i < HVPCI_DOM_MAP_SIZE ? i : HVPCI_DOM_INVALID;
- }
+-	for (evt_type = SDEV_EVT_FIRST; evt_type <= SDEV_EVT_LAST; evt_type++)
+-		if (test_and_clear_bit(evt_type, sdev->pending_events))
+-			sdev_evt_send_simple(sdev, evt_type, GFP_KERNEL);
++	for_each_test_and_clear_bit_from(evt_type, sdev->pending_events, SDEV_EVT_LAST + 1)
++		sdev_evt_send_simple(sdev, evt_type, GFP_KERNEL);
  
- /**
+ 	while (1) {
+ 		struct scsi_event *evt;
 -- 
 2.40.1
 
