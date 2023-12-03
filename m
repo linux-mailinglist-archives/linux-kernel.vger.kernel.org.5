@@ -2,197 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10933802593
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 17:41:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CEAD802597
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 17:43:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229872AbjLCQlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 11:41:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33284 "EHLO
+        id S233698AbjLCQnH convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 3 Dec 2023 11:43:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjLCQlV (ORCPT
+        with ESMTP id S229450AbjLCQnG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 11:41:21 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85B6CE8
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 08:41:27 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD4D5C433C8;
-        Sun,  3 Dec 2023 16:41:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701621687;
-        bh=26wMpKPKrZag2Orm0i9X0BOac/BjRVT4g0G/xCMIVbA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=juUirD9srFrqrXnYOjDnYd+GqPB4NlmOjL8mdit7pIcQv5v4zPCbZwOAuj/URla8T
-         LF2I2KGM3/3C8DG3KmQMIYBAEJyV7esvk+KfO6rEoNzEsP9OgkKEM8Has0b0XY1fw+
-         f6rjAhOkVcskFLMxQwmCsGh05Vo7Tx04fZrfoR6mJ9NrDrXT2sRKBhHes3gGhzcyxm
-         ZKgkuh5mNHiM/JnNp3wAb3WVAZMXbmln0OngrDtYv4svXtrH7STz+xI0IiYIZapTj2
-         dNHZCjNWY3fOI4+O9cXxnT/fGUeN2C7xBH/rrb4ru/QzSzGclP5KSSRIM8ir5PUpUv
-         OzchAtbJXHGnQ==
-Date:   Sun, 3 Dec 2023 16:41:21 +0000
-From:   Simon Horman <horms@kernel.org>
-To:     Geetha sowjanya <gakula@marvell.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kuba@kernel.org, davem@davemloft.net, pabeni@redhat.com,
-        edumazet@google.com, sgoutham@marvell.com, lcherian@marvell.com,
-        jerinj@marvell.com, sbhatta@marvell.com, hkelam@marvell.com
-Subject: Re: [net v3 PATCH 1/5] octeontx2-af: Adjust Tx credits when MCS
- external bypass is disabled
-Message-ID: <20231203164121.GK50400@kernel.org>
-References: <20231130075818.18401-1-gakula@marvell.com>
- <20231130075818.18401-2-gakula@marvell.com>
+        Sun, 3 Dec 2023 11:43:06 -0500
+Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03788DF;
+        Sun,  3 Dec 2023 08:43:11 -0800 (PST)
+Received: from i53875b61.versanet.de ([83.135.91.97] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <heiko@sntech.de>)
+        id 1r9pYU-0004oL-79; Sun, 03 Dec 2023 17:42:54 +0100
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Alex Bee <knaerzche@gmail.com>
+Cc:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-pm@vger.kernel.org
+Subject: Re: [PATCH v2 2/5] ARM: dts: rockchip: Add power-controller for RK3128
+Date:   Sun, 03 Dec 2023 17:42:52 +0100
+Message-ID: <9588573.jRhZ6ZUK3Y@diego>
+In-Reply-To: <4dec2316-f840-44ab-a07a-3d7f0e5e6d8f@gmail.com>
+References: <20231202125144.66052-1-knaerzche@gmail.com> <4891026.6YUMPnJmAY@diego>
+ <4dec2316-f840-44ab-a07a-3d7f0e5e6d8f@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231130075818.18401-2-gakula@marvell.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="iso-8859-1"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        T_SPF_HELO_TEMPERROR autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 30, 2023 at 01:28:14PM +0530, Geetha sowjanya wrote:
-> From: Nithin Dabilpuram <ndabilpuram@marvell.com>
+Hi Alex,
+
+Am Sonntag, 3. Dezember 2023, 17:05:47 CET schrieb Alex Bee:
+> Am 02.12.23 um 18:46 schrieb Heiko Stübner:
+> > Am Samstag, 2. Dezember 2023, 17:36:15 CET schrieb Alex Bee:
+> >> Am 02.12.23 um 16:51 schrieb Heiko Stübner:
+> >>> Am Samstag, 2. Dezember 2023, 13:51:41 CET schrieb Alex Bee:
+> >>>> Add power controller and qos nodes for RK3128 in order to use
+> >>>> them as powerdomains.
+> >>> does the power-domain controller work with the incomplete set of
+> >>> pm-domains too?
+> >> Yes, it does - the missing domains can request idle only and can't be
+> >> powered on/off - if no one requests idle they are just up all the time.
+> >>
+> >>> What I have in mind is
+> >>> - adding the power-controller node with the existing set of power-domains
+> >>> - the gpu pm-domain is in there
+> >>> - adding the gpu parts
+> >> My main concern about adding them later was the change of the ABI after
+> >> they've been exposed in the SoC DT. If that's not an issue - sure: I can
+> >> add them in a separate series.
+> > An ABI change would be _changing_ the domain-ids in the rk3128-power.h
+> > I think :-) .
+> Well, an addition is still a change.
+> > Right now the existing domain ids in the header are already exposed to the
+> > world, so someone could already use them, but not the new ones.
 > 
-> When MCS external bypass is disabled, MCS returns additional
-> 2 credits(32B) for every packet Tx'ed on LMAC. To account for
-> these extra credits, NIX_AF_TX_LINKX_NORM_CREDIT.CC_MCS_CNT
-> needs to be configured as otherwise NIX Tx credits would overflow
-> and will never be returned to idle state credit count
-> causing issues with credit control and MTU change.
+> I'm fully aware that nothing would ever hard fail anywhere if the new 
+> domain ids get added later.
 > 
-> This patch fixes the same by configuring CC_MCS_CNT at probe
-> time for MCS enabled SoC's
+> Nevertheless we start using here an ABI which is known to be incomplete. 
+> For no reason, as the patches (which I am now asked to remove from this 
+> series) for completion are already there (here).
 > 
-> Fixes: bd69476e86fc ("octeontx2-af: cn10k: mcs: Install a default TCAM for normal traffic")
-> Signed-off-by: Nithin Dabilpuram <ndabilpuram@marvell.com>
-> Signed-off-by: Geetha sowjanya <gakula@marvell.com>
-> Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
-> Reviewed-by: Wojciech Drewek <wojciech.drewek@intel.com>
+> Anyway, if you prefer it this way: I'm pleased to do so.
 
-Hi Geetha and Nithin,
+I was more thinking of accelerating the gpu-part of the series, as that
+really is just waiting for the power-domain node that already has driver
+support and domain-ids present.
 
-some minor feedback from my side.
+It looks like you're feeling more strongly about that though, so I'll
+definitly not pressure you ;-) .
 
-> ---
->  drivers/net/ethernet/marvell/octeontx2/af/mcs.c     | 12 ++++++++++++
->  drivers/net/ethernet/marvell/octeontx2/af/mcs.h     |  2 ++
->  drivers/net/ethernet/marvell/octeontx2/af/rvu.h     |  1 +
->  drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c |  8 ++++++++
->  4 files changed, 23 insertions(+)
+But I guess the split into IDs and driver change should still be
+done, especially as the dt-binding-header likely will want an Ack
+from the DT maintainers.
+
+And the power-domain change will go through the new pmdomain
+subsystem.
+
+
+Heiko
+
+
+> >>> And a second series with
+> >>> - patch1 from here
+> >>> - a dts patch adding the additional pm-domains to rk3128.dtsi
+> >>> - I guess patch1 also should be split into a patch adding the binding-ids
+> >>>     and a separate patch for the code addition.
+> >> Yeah, I noticed this also :)
+> >>
+> >> Regards,
+> >>
+> >> Alex
+> >>
+> >>>
+> >>> Heiko
+> >>>
+> >>>> Signed-off-by: Alex Bee <knaerzche@gmail.com>
+> >>>> ---
+> >>>>    arch/arm/boot/dts/rockchip/rk3128.dtsi | 101 +++++++++++++++++++++++++
+> >>>>    1 file changed, 101 insertions(+)
+> >>>>
+> >>>> diff --git a/arch/arm/boot/dts/rockchip/rk3128.dtsi b/arch/arm/boot/dts/rockchip/rk3128.dtsi
+> >>>> index 4e8b38604ecd..b72905db04f7 100644
+> >>>> --- a/arch/arm/boot/dts/rockchip/rk3128.dtsi
+> >>>> +++ b/arch/arm/boot/dts/rockchip/rk3128.dtsi
+> >>>> @@ -8,6 +8,7 @@
+> >>>>    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> >>>>    #include <dt-bindings/interrupt-controller/irq.h>
+> >>>>    #include <dt-bindings/pinctrl/rockchip.h>
+> >>>> +#include <dt-bindings/power/rk3128-power.h>
+> >>>>    
+> >>>>    / {
+> >>>>    	compatible = "rockchip,rk3128";
+> >>>> @@ -133,6 +134,106 @@ smp-sram@0 {
+> >>>>    	pmu: syscon@100a0000 {
+> >>>>    		compatible = "rockchip,rk3128-pmu", "syscon", "simple-mfd";
+> >>>>    		reg = <0x100a0000 0x1000>;
+> >>>> +
+> >>>> +		power: power-controller {
+> >>>> +			compatible = "rockchip,rk3128-power-controller";
+> >>>> +			#power-domain-cells = <1>;
+> >>>> +			#address-cells = <1>;
+> >>>> +			#size-cells = <0>;
+> >>>> +
+> >>>> +			power-domain@RK3128_PD_VIO {
+> >>>> +				reg = <RK3128_PD_VIO>;
+> >>>> +				clocks = <&cru ACLK_CIF>,
+> >>>> +					 <&cru HCLK_CIF>,
+> >>>> +					 <&cru DCLK_EBC>,
+> >>>> +					 <&cru HCLK_EBC>,
+> >>>> +					 <&cru ACLK_IEP>,
+> >>>> +					 <&cru HCLK_IEP>,
+> >>>> +					 <&cru ACLK_LCDC0>,
+> >>>> +					 <&cru HCLK_LCDC0>,
+> >>>> +					 <&cru PCLK_MIPI>,
+> >>>> +					 <&cru ACLK_RGA>,
+> >>>> +					 <&cru HCLK_RGA>,
+> >>>> +					 <&cru ACLK_VIO0>,
+> >>>> +					 <&cru ACLK_VIO1>,
+> >>>> +					 <&cru HCLK_VIO>,
+> >>>> +					 <&cru HCLK_VIO_H2P>,
+> >>>> +					 <&cru DCLK_VOP>,
+> >>>> +					 <&cru SCLK_VOP>;
+> >>>> +				pm_qos = <&qos_ebc>,
+> >>>> +					 <&qos_iep>,
+> >>>> +					 <&qos_lcdc>,
+> >>>> +					 <&qos_rga>,
+> >>>> +					 <&qos_vip>;
+> >>>> +				#power-domain-cells = <0>;
+> >>>> +			};
+> >>>> +
+> >>>> +			power-domain@RK3128_PD_VIDEO {
+> >>>> +				reg = <RK3128_PD_VIDEO>;
+> >>>> +				clocks = <&cru ACLK_VDPU>,
+> >>>> +					 <&cru HCLK_VDPU>,
+> >>>> +					 <&cru ACLK_VEPU>,
+> >>>> +					 <&cru HCLK_VEPU>,
+> >>>> +					 <&cru SCLK_HEVC_CORE>;
+> >>>> +				pm_qos = <&qos_vpu>;
+> >>>> +				#power-domain-cells = <0>;
+> >>>> +			};
+> >>>> +
+> >>>> +			power-domain@RK3128_PD_GPU {
+> >>>> +				reg = <RK3128_PD_GPU>;
+> >>>> +				clocks = <&cru ACLK_GPU>;
+> >>>> +				pm_qos = <&qos_gpu>;
+> >>>> +				#power-domain-cells = <0>;
+> >>>> +			};
+> >>>> +
+> >>>> +			power-domain@RK3128_PD_CRYPTO {
+> >>>> +				reg = <RK3128_PD_CRYPTO>;
+> >>>> +				clocks = <&cru HCLK_CRYPTO>,
+> >>>> +					 <&cru SCLK_CRYPTO>;
+> >>>> +				pm_qos = <&qos_crypto>;
+> >>>> +				#power-domain-cells = <0>;
+> >>>> +			};
+> >>>> +		};
+> >>>> +	};
+> >>>> +
+> >>>> +	qos_crypto: qos@10128080 {
+> >>>> +		compatible = "rockchip,rk3128-qos", "syscon";
+> >>>> +		reg = <0x10128080 0x20>;
+> >>>> +	};
+> >>>> +
+> >>>> +	qos_gpu: qos@1012d000 {
+> >>>> +		compatible = "rockchip,rk3128-qos", "syscon";
+> >>>> +		reg = <0x1012d000 0x20>;
+> >>>> +	};
+> >>>> +
+> >>>> +	qos_vpu: qos@1012e000 {
+> >>>> +		compatible = "rockchip,rk3128-qos", "syscon";
+> >>>> +		reg = <0x1012e000 0x20>;
+> >>>> +	};
+> >>>> +
+> >>>> +	qos_rga: qos@1012f000 {
+> >>>> +		compatible = "rockchip,rk3128-qos", "syscon";
+> >>>> +		reg = <0x1012f000 0x20>;
+> >>>> +	};
+> >>>> +
+> >>>> +	qos_ebc: qos@1012f080 {
+> >>>> +		compatible = "rockchip,rk3128-qos", "syscon";
+> >>>> +		reg = <0x1012f080 0x20>;
+> >>>> +	};
+> >>>> +
+> >>>> +	qos_iep: qos@1012f100 {
+> >>>> +		compatible = "rockchip,rk3128-qos", "syscon";
+> >>>> +		reg = <0x1012f100 0x20>;
+> >>>> +	};
+> >>>> +
+> >>>> +	qos_lcdc: qos@1012f180 {
+> >>>> +		compatible = "rockchip,rk3128-qos", "syscon";
+> >>>> +		reg = <0x1012f180 0x20>;
+> >>>> +	};
+> >>>> +
+> >>>> +	qos_vip: qos@1012f200 {
+> >>>> +		compatible = "rockchip,rk3128-qos", "syscon";
+> >>>> +		reg = <0x1012f200 0x20>;
+> >>>>    	};
+> >>>>    
+> >>>>    	gic: interrupt-controller@10139000 {
+> >>>>
+> >>>
+> >>>
+> >
+> >
+> >
 > 
-> diff --git a/drivers/net/ethernet/marvell/octeontx2/af/mcs.c b/drivers/net/ethernet/marvell/octeontx2/af/mcs.c
-> index c43f19dfbd74..d6effbe46208 100644
-> --- a/drivers/net/ethernet/marvell/octeontx2/af/mcs.c
-> +++ b/drivers/net/ethernet/marvell/octeontx2/af/mcs.c
-> @@ -1219,6 +1219,17 @@ struct mcs *mcs_get_pdata(int mcs_id)
->  	return NULL;
->  }
->  
-> +bool is_mcs_bypass(int mcs_id)
-> +{
-> +	struct mcs *mcs_dev;
-> +
-> +	list_for_each_entry(mcs_dev, &mcs_list, mcs_list) {
-> +		if (mcs_dev->mcs_id == mcs_id)
-> +			return mcs_dev->bypass;
-> +	}
-> +	return true;
-> +}
-> +
->  void mcs_set_port_cfg(struct mcs *mcs, struct mcs_port_cfg_set_req *req)
->  {
->  	u64 val = 0;
-> @@ -1447,6 +1458,7 @@ static void mcs_set_external_bypass(struct mcs *mcs, u8 bypass)
->  	else
->  		val &= ~BIT_ULL(6);
->  	mcs_reg_write(mcs, MCSX_MIL_GLOBAL, val);
-> +	mcs->bypass = bypass;
 
-I think that bool would be a more appropriate type than u8 for:
 
-* The bypass parameter of mcs_set_external_bypass()
-* The bypass field of struct mcs
 
->  }
->  
->  static void mcs_global_cfg(struct mcs *mcs)
-> diff --git a/drivers/net/ethernet/marvell/octeontx2/af/mcs.h b/drivers/net/ethernet/marvell/octeontx2/af/mcs.h
-> index 0f89dcb76465..ccd43c3f3460 100644
-> --- a/drivers/net/ethernet/marvell/octeontx2/af/mcs.h
-> +++ b/drivers/net/ethernet/marvell/octeontx2/af/mcs.h
-> @@ -149,6 +149,7 @@ struct mcs {
->  	u16			num_vec;
->  	void			*rvu;
->  	u16			*tx_sa_active;
-> +	u8                      bypass;
->  };
->  
->  struct mcs_ops {
-> @@ -206,6 +207,7 @@ void mcs_get_custom_tag_cfg(struct mcs *mcs, struct mcs_custom_tag_cfg_get_req *
->  int mcs_alloc_ctrlpktrule(struct rsrc_bmap *rsrc, u16 *pf_map, u16 offset, u16 pcifunc);
->  int mcs_free_ctrlpktrule(struct mcs *mcs, struct mcs_free_ctrl_pkt_rule_req *req);
->  int mcs_ctrlpktrule_write(struct mcs *mcs, struct mcs_ctrl_pkt_rule_write_req *req);
-> +bool is_mcs_bypass(int mcs_id);
->  
->  /* CN10K-B APIs */
->  void cn10kb_mcs_set_hw_capabilities(struct mcs *mcs);
-> diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu.h b/drivers/net/ethernet/marvell/octeontx2/af/rvu.h
-> index c4d999ef5ab4..9887edccadf7 100644
-> --- a/drivers/net/ethernet/marvell/octeontx2/af/rvu.h
-> +++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu.h
-> @@ -345,6 +345,7 @@ struct nix_hw {
->  	struct nix_txvlan txvlan;
->  	struct nix_ipolicer *ipolicer;
->  	u64    *tx_credits;
-> +	u64 cc_mcs_cnt;
->  };
->  
->  /* RVU block's capabilities or functionality,
-> diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
-> index c112c71ff576..daafce5fef46 100644
-> --- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
-> +++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
-> @@ -12,6 +12,7 @@
->  #include "rvu_reg.h"
->  #include "rvu.h"
->  #include "npc.h"
-> +#include "mcs.h"
->  #include "cgx.h"
->  #include "lmac_common.h"
->  #include "rvu_npc_hash.h"
-> @@ -4389,6 +4390,12 @@ static void nix_link_config(struct rvu *rvu, int blkaddr,
->  			    SDP_HW_MAX_FRS << 16 | NIC_HW_MIN_FRS);
->  	}
->  
-> +	/* Get MCS external bypass status for CN10K-B */
-> +	if (mcs_get_blkcnt() == 1) {
-> +		/* Adjust for 2 credits when external bypass is disabled */
-> +		nix_hw->cc_mcs_cnt = is_mcs_bypass(0) ? 0 : 2;
 
-Perhaps it doesn't matter, but to me it seems a bit excessive to use a
-64-bit field to store such small values.
-
-> +	}
-> +
->  	/* Set credits for Tx links assuming max packet length allowed.
->  	 * This will be reconfigured based on MTU set for PF/VF.
->  	 */
-> @@ -4412,6 +4419,7 @@ static void nix_link_config(struct rvu *rvu, int blkaddr,
->  			tx_credits = (lmac_fifo_len - lmac_max_frs) / 16;
->  			/* Enable credits and set credit pkt count to max allowed */
->  			cfg =  (tx_credits << 12) | (0x1FF << 2) | BIT_ULL(1);
-> +			cfg |= (nix_hw->cc_mcs_cnt << 32);
-
-I do see that cc_mcs_cnt needs to be 64-bit here to avoid truncation.
-But overall I think this function could benefit from the use
-of FIELD_PREP(), which I think would side-step that problem.
-
->  
->  			link = iter + slink;
->  			nix_hw->tx_credits[link] = tx_credits;
-> -- 
-> 2.25.1
-> 
