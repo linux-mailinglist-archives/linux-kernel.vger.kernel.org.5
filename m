@@ -2,94 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B572580220F
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 09:51:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5330E802214
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 09:58:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230390AbjLCItp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 03:49:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43892 "EHLO
+        id S233192AbjLCI5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 03:57:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjLCIto (ORCPT
+        with ESMTP id S229450AbjLCI5h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 03:49:44 -0500
-Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.220])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8F9F9E8;
-        Sun,  3 Dec 2023 00:49:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=5gnjsR58uLKw7gz+U7
-        2thLU6153WYL0zgBBSFibHDu8=; b=a3lRV4buP5pEicX3B9gJobyP1seYkpWgIw
-        YCY7oeTJuVxQivao21/ryjqRdjgGhQ3Dabt/4aKbXdT8EN8+D6M66erEQM5/BsRA
-        OMuTyqNiqFehkcyJvM+jZE3oDCy2N59vXWnynLXECUuDnwh9M3m3vXdaBK2lFuab
-        neXIi5gAE=
-Received: from localhost.localdomain (unknown [39.144.190.5])
-        by zwqz-smtp-mta-g2-3 (Coremail) with SMTP id _____wDXf_QcQWxlgb0tEg--.8205S2;
-        Sun, 03 Dec 2023 16:49:33 +0800 (CST)
-From:   Haoran Liu <liuhaoran14@163.com>
-To:     till@harbaum.org
-Cc:     andi.shyti@kernel.org, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Haoran Liu <liuhaoran14@163.com>
-Subject: [PATCH] [i2c] tiny-usb: Add error handling in i2c_tiny_usb_probe
-Date:   Sun,  3 Dec 2023 00:49:29 -0800
-Message-Id: <20231203084929.38168-1-liuhaoran14@163.com>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: _____wDXf_QcQWxlgb0tEg--.8205S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7tr1UXr48Kr4rCrWDAF1kKrg_yoW8CF45p3
-        97K39xCr4UJw1SqrsrXa4IgFy5u3yrK3yjkFyDKwsruan8JF9rtrW3tryS9Fy8Gr97uw4D
-        tryjq343CF1UCF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0piWrW5UUUUU=
-X-Originating-IP: [39.144.190.5]
-X-CM-SenderInfo: xolxxtxrud0iqu6rljoofrz/1tbiZQQ7gl8ZaX4EJQAAso
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        Sun, 3 Dec 2023 03:57:37 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B15FE8;
+        Sun,  3 Dec 2023 00:57:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701593863; x=1733129863;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=fIgYj/pz0YnU67OHlSdQgp575vg0zeIleAakheq2FcQ=;
+  b=NNUgbv1m7ZUfK/wCJbtcTbqOaRyetYLyJBsM1mKdaj9vrSw0KRgLHwFP
+   l081F5ZIJgZMdC/8XWkdiV13rEthI5XrVerabzjY5yFPHQPCFt2w1dY7j
+   OWz0yxu4mUxmsriouYFM3lKkbU3fyiJNRXPjyd80DHZMx/hlKG5WPYkID
+   qCCvJzfiltZG7td2wmyWIWPkVE9vM897TS4VHPcAxuXQX3GhieqwcUrHt
+   EAvubm4H+prvCDkd4a+XgVhPGykCMrCEwQLCIp5psUL5Eriw/73RelHf/
+   dBFq0wcV9ZZ5WPnW2Rj8NDqte1aanyjnWu32xJj1LcvL0QO5Bs4xtPM1o
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10912"; a="373827076"
+X-IronPort-AV: E=Sophos;i="6.04,247,1695711600"; 
+   d="scan'208";a="373827076"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2023 00:57:43 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10912"; a="1101771107"
+X-IronPort-AV: E=Sophos;i="6.04,247,1695711600"; 
+   d="scan'208";a="1101771107"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
+  by fmsmga005.fm.intel.com with ESMTP; 03 Dec 2023 00:57:39 -0800
+Message-ID: <a0ef3a4f-88fc-40fe-9891-495d1b6b365b@linux.intel.com>
+Date:   Sun, 3 Dec 2023 16:53:08 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Cc:     baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
+        Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        Yi Liu <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Yan Zhao <yan.y.zhao@intel.com>, iommu@lists.linux.dev,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 12/12] iommu: Improve iopf_queue_flush_dev()
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+References: <20231115030226.16700-1-baolu.lu@linux.intel.com>
+ <20231115030226.16700-13-baolu.lu@linux.intel.com>
+ <20231201203536.GG1489931@ziepe.ca>
+Content-Language: en-US
+From:   Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <20231201203536.GG1489931@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds error handling for the i2c_add_adapter. The need for this
-error handling was identified through static analysis, which revealed that
-the function did not properly address potential failures of
-i2c_add_adapter. Previously, a failure in this call could lead to an
-incomplete initialization of the I2C adapter, causing unpredictable
-behavior.
+On 12/2/23 4:35 AM, Jason Gunthorpe wrote:
+> On Wed, Nov 15, 2023 at 11:02:26AM +0800, Lu Baolu wrote:
+>> The iopf_queue_flush_dev() is called by the iommu driver before releasing
+>> a PASID. It ensures that all pending faults for this PASID have been
+>> handled or cancelled, and won't hit the address space that reuses this
+>> PASID. The driver must make sure that no new fault is added to the queue.
+> This needs more explanation, why should anyone care?
+> 
+> More importantly, why is*discarding*  the right thing to do?
+> Especially why would we discard a partial page request group?
+> 
+> After we change a translation we may have PRI requests in a
+> queue. They need to be acknowledged, not discarded. The DMA in the
+> device should be restarted and the device should observe the new
+> translation - if it is blocking then it should take a DMA error.
+> 
+> More broadly, we should just let things run their normal course. The
+> domain to deliver the fault to should be determined very early. If we
+> get a fault and there is no fault domain currently assigned then just
+> restart it.
+> 
+> The main reason to fence would be to allow the domain to become freed
+> as the faults should be holding pointers to it. But I feel there are
+> simpler options for that then this..
 
-Although the error addressed by this patch may not occur in the current
-environment, I still suggest implementing these error handling routines
-if the function is not highly time-sensitive. As the environment evolves
-or the code gets reused in different contexts, there's a possibility that
-these errors might occur. In case you find this addition unnecessary, I
-completely understand and respect your perspective. My intention was to
-enhance the robustness of the code, but I acknowledge that practical
-considerations and current functionality might not warrant this change
-at this point.
+In the iommu_detach_device_pasid() path, the domain is about to be
+removed from the pasid of device. The IOMMU driver performs the
+following steps sequentially:
 
-Signed-off-by: Haoran Liu <liuhaoran14@163.com>
----
- drivers/i2c/busses/i2c-tiny-usb.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+1. Clears the pasid translation entry. Thus, all subsequent DMA
+    transactions (translation requests, translated requests or page
+    requests) targeting the iommu domain will be blocked.
 
-diff --git a/drivers/i2c/busses/i2c-tiny-usb.c b/drivers/i2c/busses/i2c-tiny-usb.c
-index 1bffe36c40ad..f165e20fea53 100644
---- a/drivers/i2c/busses/i2c-tiny-usb.c
-+++ b/drivers/i2c/busses/i2c-tiny-usb.c
-@@ -264,7 +264,12 @@ static int i2c_tiny_usb_probe(struct usb_interface *interface,
- 	dev->adapter.dev.parent = &dev->interface->dev;
- 
- 	/* and finally attach to i2c layer */
--	i2c_add_adapter(&dev->adapter);
-+	retval = i2c_add_adapter(&dev->adapter);
-+	if (retval) {
-+		dev_err(&interface->dev, "i2c_add_adapter failed: %d\n",
-+			retval);
-+		goto error;
-+	}
- 
- 	/* inform user about successful attachment to i2c layer */
- 	dev_info(&dev->adapter.dev, "connected i2c-tiny-usb device\n");
--- 
-2.17.1
+2. Waits until all pending page requests for the device's PASID have
+    been reported to upper layers via the iommu_report_device_fault().
+    However, this does not guarantee that all page requests have been
+    responded.
 
+3. Free all partial page requests for this pasid since the page request
+    response is only needed for a complete request group. There's no
+    action required for the page requests which are not last of a request
+    group.
+
+4. Iterate through the list of pending page requests and identifies
+    those originating from the device's PASID. For each identified
+    request, the driver responds to the hardware with the
+    IOMMU_PAGE_RESP_INVALID code, indicating that the request cannot be
+    handled and retries should not be attempted. This response code
+    corresponds to the "Invalid Request" status defined in the PCI PRI
+    specification.
+
+5. Follow the IOMMU hardware requirements (for example, VT-d sepc,
+    section 7.10, Software Steps to Drain Page Requests & Responses) to
+    drain in-flight page requests and page group responses between the
+    remapping hardware queues and the endpoint device.
+
+With above steps done in iommu_detach_device_pasid(), the pasid could be
+re-used for any other address space.
+
+The iopf_queue_discard_dev_pasid() helper does step 3 and 4.
+
+> 
+>> The SMMUv3 driver doesn't use it because it only implements the
+>> Arm-specific stall fault model where DMA transactions are held in the SMMU
+>> while waiting for the OS to handle iopf's. Since a device driver must
+>> complete all DMA transactions before detaching domain, there are no
+>> pending iopf's with the stall model. PRI support requires adding a call to
+>> iopf_queue_flush_dev() after flushing the hardware page fault queue.
+> This explanation doesn't make much sense, from a device driver
+> perspective both PRI and stall cause the device to not complete DMAs.
+> 
+> The difference between stall and PRI is fairly small, stall causes an
+> internal bus to lock up while PRI does not.
+> 
+>> -int iopf_queue_flush_dev(struct device *dev)
+>> +int iopf_queue_discard_dev_pasid(struct device *dev, ioasid_t pasid)
+>>   {
+>>   	struct iommu_fault_param *iopf_param = iopf_get_dev_fault_param(dev);
+>> +	const struct iommu_ops *ops = dev_iommu_ops(dev);
+>> +	struct iommu_page_response resp;
+>> +	struct iopf_fault *iopf, *next;
+>> +	int ret = 0;
+>>   
+>>   	if (!iopf_param)
+>>   		return -ENODEV;
+>>   
+>>   	flush_workqueue(iopf_param->queue->wq);
+>> +
+> A naked flush_workqueue like this is really suspicious, it needs a
+> comment explaining why the queue can't get more work queued at this
+> point.
+> 
+> I suppose the driver is expected to stop calling
+> iommu_report_device_fault() before calling this function, but that
+> doesn't seem like it is going to be possible. Drivers should be
+> implementing atomic replace for the PASID updates and in that case
+> there is no momement when it can say the HW will stop generating PRI.
+
+Atomic domain replacement for a PASID is not currently implemented in
+the core or driver. Even if atomic replacement were to be implemented,
+it would be necessary to ensure that all translation requests,
+translated requests, page requests and responses for the old domain are
+drained before switching to the new domain. I am not sure whether the
+existing iommu hardware architecture supports this functionality.
+
+Best regards,
+baolu
