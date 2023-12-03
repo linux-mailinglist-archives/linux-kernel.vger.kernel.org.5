@@ -2,73 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C54A980265E
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 19:46:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5AD980265F
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 19:46:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233866AbjLCSqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 13:46:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43276 "EHLO
+        id S233863AbjLCSqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 13:46:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjLCSp7 (ORCPT
+        with ESMTP id S229450AbjLCSqe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 13:45:59 -0500
-Received: from mail-oa1-f69.google.com (mail-oa1-f69.google.com [209.85.160.69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90ED6E8
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 10:46:03 -0800 (PST)
-Received: by mail-oa1-f69.google.com with SMTP id 586e51a60fabf-1fb2f8f7eceso410338fac.3
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Dec 2023 10:46:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701629163; x=1702233963;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XLCa/XGzGC+73V+4mDlZPATeIzNNpXWej9TaKHlQ4kM=;
-        b=LAY+APQF7f2NvH96fGhqCiis2fsE3NDSqAiMukOyL0COOqactRw53QzxW7/PZDWmTR
-         2oFDkNG10vxhteyQaYior4oAm/kW7bw7/8Q9WpugWoVaXow0r9scAOgBKqxfIvoGsqIv
-         32cwhv7HfQRFE3pzwrtheX1LoPCI/lpy2c6Az8h1ijs/hdwNNob+2MpyJHpvYSozLimL
-         r1/3mXHGg9421ZQ6rcQ8aWdofCx/pm7G3JOPNDSMqrqBUiUQEgS26FCmqYmdcb7M1CR/
-         OCPL/91gO9geG9PLJimlLUtJe+qQz1NRXqs4FECxL5bGjij+Z2iF6+btgn5+uelbBU2y
-         GoNg==
-X-Gm-Message-State: AOJu0YzpoNUtPl+IKZ+Xtq4N2Tm+YO1LkhDQLaMojRpn8aOlAEnYNded
-        oeXhJ1eiIrxucmWQI2oSllRqJvHqJ1dXyGIkKReyQkJMMz3R
-X-Google-Smtp-Source: AGHT+IHnuFyrMLpO64Ow1BiQLZ9NYGB9COSZm/Nv5NybEYJDKC2JgXP8MLbqkNOONYuwRTX4OozlKaMZf0u2sYXXs7+eu6qNxGPq
+        Sun, 3 Dec 2023 13:46:34 -0500
+Received: from hua.moonlit-rail.com (hua.moonlit-rail.com [45.79.167.250])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 329AEDA;
+        Sun,  3 Dec 2023 10:46:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=moonlit-rail.com; s=rsa2021a; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=70zUFPke+a19wKXS4my6rjAuXUg8y4bgDDqcvhJdy1w=; t=1701629196; x=1704221196; 
+        b=KK0SUSi1yUNnLKYbNOMc9tSJk0ga0LOSL1KenY+2DT9DrzfIU93Gx+lyv/UMH32cDH/ywaopk//
+        IulSqRnmLQH7l4Kvoyb/YVEkAWTXqdjh14mxTTK0wMYZV5Surr0HnxfWOArtBdk8QdX8EokEAQL01
+        G4OHMb3zNe94xt2uEgktVKbIj/DPnki5b/Av/AUsrzYF6x+tZhY79WMmWlLDmlQVS8kowf8xx33JI
+        SnZpINifYp82hmO0h+l8wc8jmTFyO4QKGAkqYQ6EqYW7nzvR3tXCeY3s/7KnRH5UQlKpnQjNQMD8R
+        JXPf0A+ahexl7zIGBjGF+Lo9yVfywpaL1u7w==;
+DKIM-Signature: v=1; a=ed25519-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=moonlit-rail.com; s=edd2021a; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=70zUFPke+a19wKXS4my6rjAuXUg8y4bgDDqcvhJdy1w=; t=1701629196; x=1704221196; 
+        b=292S7UbIiK8DsG7o4rFr8uYpS0HOuwP6XGuE+e+mU2r1oJvLFBWawurIwo4O73rum/1lX3ytw3R
+        /QgvEr9AIBg==;
+Message-ID: <808556e5-46b9-41fe-9aeb-2c4782fd5a66@moonlit-rail.com>
+Date:   Sun, 3 Dec 2023 13:46:36 -0500
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:150:b0:3a7:2434:615a with SMTP id
- h16-20020a056808015000b003a72434615amr1397610oie.4.1701629162840; Sun, 03 Dec
- 2023 10:46:02 -0800 (PST)
-Date:   Sun, 03 Dec 2023 10:46:02 -0800
-In-Reply-To: <6b24a73f-095b-462c-8354-1cb606ea2f1d@siddh.me>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ca6c7f060b9f6977@google.com>
-Subject: Re: [syzbot] [net?] [nfc?] KASAN: slab-use-after-free Read in nfc_alloc_send_skb
-From:   syzbot <syzbot+bbe84a4010eeea00982d@syzkaller.appspotmail.com>
-To:     code@siddh.me, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: Regression: Inoperative bluetooth, Intel chipset, mainline kernel
+ 6.6.2+
+To:     Oleksandr Natalenko <oleksandr@natalenko.name>,
+        Linux Bluetooth <linux-bluetooth@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Basavaraj Natikar <Basavaraj.Natikar@amd.com>
+Cc:     Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Zach <zacheryvig@outlook.com>,
+        Paul Menzel <pmenzel@molgen.mpg.de>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Greg KH <gregkh@linuxfoundation.org>
+References: <ee109942-ef8e-45b9-8cb9-a98a787fe094@moonlit-rail.com>
+ <ZWl82n695TIC7nUO@archie.me>
+ <115e819b-0271-403c-b034-ef3aebbb85cd@moonlit-rail.com>
+ <2709774.mvXUDI8C0e@natalenko.name>
+Content-Language: en-US, en-GB
+From:   "Kris Karas (Bug Reporting)" <bugs-a21@moonlit-rail.com>
+In-Reply-To: <2709774.mvXUDI8C0e@natalenko.name>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+[ Replying to both Oleksandr and Basavaraj ]
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Oleksandr Natalenko wrote:
+> Does passing `btusb.enable_autosuspend=N` via a kernel cmdline help? [1]
 
-Reported-and-tested-by: syzbot+bbe84a4010eeea00982d@syzkaller.appspotmail.com
+Yes, this works around the problem.  Should be a good short-term 
+solution for those folks who need to wait for distro kernels to catch 
+up.  Thanks.
 
-Tested on:
+Basavaraj Natikar wrote:
+>> Can we enable RPM on specific controllers for AMD xHC 1.1
+>> instead to cover all AMD xHC 1.1? 
+>>
+>> Please find below the proposed changes and let me know if it is OK?
+> 
+> sorry its 
+> pdev->device == 0x43f7
 
-commit:         8470e436 Merge branch 'net-cacheline-optimizations'
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git main
-console output: https://syzkaller.appspot.com/x/log.txt?x=135600d2e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=94286555cac4ea49
-dashboard link: https://syzkaller.appspot.com/bug?extid=bbe84a4010eeea00982d
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=119eca30e80000
+Thanks, Basavaraj!  Yes, this fixes the problem on my hardware (by 
+making application of PM more selective).  Running successfully at the 
+moment using your (pdev->device amended) patch.
 
-Note: testing is done by a robot and is best-effort only.
+Kris
