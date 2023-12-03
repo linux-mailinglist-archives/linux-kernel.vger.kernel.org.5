@@ -2,116 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3E8D802882
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 23:46:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 355AE802883
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 23:46:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234033AbjLCWq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 17:46:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47756 "EHLO
+        id S230050AbjLCWqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 17:46:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229868AbjLCWqZ (ORCPT
+        with ESMTP id S234004AbjLCWqq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 17:46:25 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31950D7;
-        Sun,  3 Dec 2023 14:46:32 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1d053c45897so22335125ad.2;
-        Sun, 03 Dec 2023 14:46:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701643591; x=1702248391; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=a9yYONdg2NO4nh9SwUqz66EGVIpRiF7l/11wqLgxgto=;
-        b=gspeQB1AC+E5jB06IJYpN81wo4NleeGNGWkMCS8by5aoyx9y9FP2TYHvI/R2ICS/oY
-         HTEE2d6+CtKj2da5k35a1KUmsTL/ljsdn9wmMavyrURAN/zswV+dNQh7JAA6+Atgj+wa
-         wfdGDVwgH20+6c5adcG83KdbqyBvOnwMJrhcSDBbxj5Bhi352eOj62Fxi6+8oHc3Y3l9
-         n9l/vxIXtHKjW4WNM2SIJrj//px+uIwMCxK3GWs6/McC+DRWQraqGgjqtd21HdvdsXfJ
-         a6sZ+/RuZTMpI4UWDNZ2xtBGEWScxADuM6HU2wtk6MyVYNyM9pNxjHjG0F5siUXrQyuV
-         QZHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701643591; x=1702248391;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=a9yYONdg2NO4nh9SwUqz66EGVIpRiF7l/11wqLgxgto=;
-        b=OPY6zQn7cS8YkXOy0BaaG5RsPwkgxVRAI2Yp3lz3ht4imLeYw3g8y9e6xHGFwDqO7H
-         6HWHZWRxiyOqGEDbZtUOYLWzPyJZrtQFOCJGbny9/W38t/MYiFUkRsgwUlKfghWRFmXl
-         9AmIwp0oFFPjsHgZPg14lf0oOELHzcCg1SmeDasicqYdXTm0zs+CvQt4/n//UmxGcvH+
-         fW9uIjF/kxLvWBL5Rp/Fl4NZ5VnkmusyQIjrC9C+6clo3pfRIDxInfD9jdOfvhc8YQiY
-         QijnureN9jlwWF8RaOEXad9SZGVB7xDkN7iDaHw3THWoYnVORyiLeDQBfptyoJsEPtmx
-         YjSQ==
-X-Gm-Message-State: AOJu0Yz5kczmOGDvsJ5eL1WLn+q5ABUzv0b1Qd4XDmdltvYcHL7aTddv
-        4er42WLhQrdAP+RnWd1rOIM1/uJqQxfq8gmp4cw=
-X-Google-Smtp-Source: AGHT+IGIYGYNaILDYg6nfCqYpRevWDCbo4e4c39ggc8YqYCNFvBaEcEMjzwrFwffKQKCyB+h1sGb+qWLnYYHmSM2kH8=
-X-Received: by 2002:a17:902:f545:b0:1d0:9a64:e511 with SMTP id
- h5-20020a170902f54500b001d09a64e511mr1106028plf.73.1701643591576; Sun, 03 Dec
- 2023 14:46:31 -0800 (PST)
-MIME-Version: 1.0
-References: <20231203222903.343711-1-andreas@kemnade.info> <20231203222903.343711-7-andreas@kemnade.info>
-In-Reply-To: <20231203222903.343711-7-andreas@kemnade.info>
-From:   Adam Ford <aford173@gmail.com>
-Date:   Sun, 3 Dec 2023 16:46:20 -0600
-Message-ID: <CAHCN7xKG6-vgnJ+mA8xt0aFK-jCBWOX-GkVmJGNERH43N0ikaw@mail.gmail.com>
-Subject: Re: [PATCH v3 6/6] ARM: dts: omap: gta04: standardize system-power-controller
-To:     Andreas Kemnade <andreas@kemnade.info>
-Cc:     lee@kernel.org, robh+dt@kernel.org,
+        Sun, 3 Dec 2023 17:46:46 -0500
+Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a02:c205:3004:2154::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9576DE7;
+        Sun,  3 Dec 2023 14:46:51 -0800 (PST)
+Received: from p200301077700c3001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:107:7700:c300:1a3d:a2ff:febf:d33a] helo=aktux)
+        by mail.andi.de1.cc with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <andreas@kemnade.info>)
+        id 1r9vEf-006zIj-1l; Sun, 03 Dec 2023 23:46:49 +0100
+Date:   Sun, 3 Dec 2023 23:46:45 +0100
+From:   Andreas Kemnade <andreas@kemnade.info>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
         krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        bcousson@baylibre.com, tony@atomide.com,
+        kristo@kernel.org, linux-clk@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-omap@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH] dt-bindings: clock: ti: Convert interface.txt to
+ json-schema
+Message-ID: <20231203234645.331d6efc@aktux>
+In-Reply-To: <48cf2111-46a0-4907-8d55-5ce80b585111@linaro.org>
+References: <20231127202359.145778-1-andreas@kemnade.info>
+        <7a62ed8a-b0e3-4881-90d7-b8f5d38e482e@linaro.org>
+        <20231128093241.707a4fa0@aktux>
+        <7361082a-f271-4ef4-9dad-06ee7445c749@linaro.org>
+        <20231128214116.22dfff1e@akair>
+        <221ba6a3-c4c2-40cd-b1d8-8170af78c784@linaro.org>
+        <20231201150937.3631ee99@akair>
+        <7aaea1e4-b7bd-47e4-a6e6-32b8195ea1bf@linaro.org>
+        <20231201154112.2ecfdab2@aktux>
+        <48cf2111-46a0-4907-8d55-5ce80b585111@linaro.org>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 3, 2023 at 4:29=E2=80=AFPM Andreas Kemnade <andreas@kemnade.inf=
-o> wrote:
->
-> Replace TI-specific property by generic one.
->
-> Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
-> ---
-> cannot be applied independently of the other ones, so maybe simply delay
-> it.
->
->  arch/arm/boot/dts/ti/omap/omap3-gta04.dtsi | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/arm/boot/dts/ti/omap/omap3-gta04.dtsi b/arch/arm/boot/d=
-ts/ti/omap/omap3-gta04.dtsi
-> index 3661340009e7a..5001c4ea35658 100644
-> --- a/arch/arm/boot/dts/ti/omap/omap3-gta04.dtsi
-> +++ b/arch/arm/boot/dts/ti/omap/omap3-gta04.dtsi
-> @@ -476,6 +476,7 @@ twl: twl@48 {
->                 reg =3D <0x48>;
->                 interrupts =3D <7>; /* SYS_NIRQ cascaded to intc */
->                 interrupt-parent =3D <&intc>;
-> +               system-power-controller;
+On Fri, 1 Dec 2023 15:45:06 +0100
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
 
-Could this go into the twl4030.dtsi file so we don't have every omap3
-board with this part duplicating this line?
+> On 01/12/2023 15:41, Andreas Kemnade wrote:
+> > On Fri, 1 Dec 2023 15:17:46 +0100
+> > Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
+> >   
+> >> On 01/12/2023 15:09, Andreas Kemnade wrote:  
+> >>> Am Wed, 29 Nov 2023 09:15:57 +0100
+> >>> schrieb Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>:
+> >>>     
+> >>>> On 28/11/2023 21:41, Andreas Kemnade wrote:    
+> >>>>> Am Tue, 28 Nov 2023 09:41:23 +0100
+> >>>>> schrieb Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>:      
+> >>>>>>> If the interface clock is not below a ti,clksel then we have reg.
+> >>>>>>>        
+> >>>>>>
+> >>>>>> This should be expressed in the bindings. It's fine to make the reg
+> >>>>>> optional (skip the description, it's confusing), but the ti,clksel
+> >>>>>> should reference this schema and enforce it on the children.
+> >>>>>>      
+> >>>>> Well there are other compatibles below ti,clksel, too, so should we
+> >>>>> rather add them when the other .txt files are converted?      
+> >>>>
+> >>>> This binding should already be referenced by ti,clksel. When the other
+> >>>> are ready, you will change additionalProperties from object to false.
+> >>>>    
+> >>> I played around with it:
+> >>>
+> >>> --- a/Documentation/devicetree/bindings/clock/ti/ti,clksel.yaml
+> >>> +++ b/Documentation/devicetree/bindings/clock/ti/ti,clksel.yaml
+> >>> @@ -33,6 +33,11 @@ properties:
+> >>>      const: 2
+> >>>      description: The CLKSEL register and bit offset
+> >>>  
+> >>> +patternProperties:
+> >>> +  "-ick$":
+> >>> +    $ref: /schemas/clock/ti/ti,interface-clock.yaml#
+> >>> +    type: object
+> >>> +
+> >>>  required:
+> >>>    - compatible
+> >>>    - reg
+> >>>
+> >>>  
+> >>> That generates warnings, which look more serious than just a
+> >>> non-converted compatible, so lowering the overall "signal-noise-ratio".
+> >>>
+> >>> e.g.
+> >>> from schema $id:
+> >>> http://devicetree.org/schemas/clock/ti/ti,clksel.yaml#
+> >>> /home/andi/linux-dtbs/arch/arm/boot/dts/ti/omap/omap3-overo-tobiduo.dtb:
+> >>> clock@c40: clock-rm-ick: 'ti,index-starts-at-one', 'ti,max-div' do not
+> >>> match any of the regexes: 'pinctrl-[0-9]+'
+> >>>
+> >>> I think we should rather postpone such referencing.    
+> >>
+> >> Are you sure in such case that your binding is correct? The warnings
+> >> suggest that not, therefore please do not postpone.
+> >>  
+> > well, there is not only stuff from clock/ti/ti,interface.yaml but also from
+> > clock/ti/divider.txt below ti,clksel. So I have one warning about the missing
+> > compatible there and also about the properties belonging to that compatible.  
+> 
+> Ah, you have other bindings for the "-ick" nodes? Then you cannot match
+> by pattern now, indeed. Maybe skipping ref but adding "compatible" into
+> node, like we do for Qualcomm mdss bindings, would work. But in general
+> all these should be converted at the same time.
+> 
+Yes, there are other bindings for the "-ick" nodes. But these bindings
+are not exclusive to the "-ick" nodes. I personally would prefer not
+having to do the whole clock/ti/*.txt directory at once.
 
-adam
->
->                 clocks =3D <&hfclk_26m>;
->                 clock-names =3D "fck";
-> @@ -490,7 +491,6 @@ codec {
->
->                 twl_power: power {
->                         compatible =3D "ti,twl4030-power-idle";
-> -                       ti,system-power-controller;
->                 };
->         };
->  };
-> --
-> 2.39.2
->
->
+Regards,
+Andreas
