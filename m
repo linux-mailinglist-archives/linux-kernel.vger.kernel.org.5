@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F322802145
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 07:32:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B81A802146
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 07:32:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229551AbjLCGcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 01:32:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45362 "EHLO
+        id S233255AbjLCGcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 01:32:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233074AbjLCGbo (ORCPT
+        with ESMTP id S233141AbjLCGbq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 01:31:44 -0500
+        Sun, 3 Dec 2023 01:31:46 -0500
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0650DEB
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 22:31:50 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A254EE6
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 22:31:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701585110; x=1733121110;
+  t=1701585109; x=1733121109;
   h=date:from:to:cc:subject:message-id:mime-version;
-  bh=fKojD+begd9fNLiV+pruerl7tyA7hg+P7ZFniOQjnzY=;
-  b=BNxqbNk5UV02Eaj1WdGL4ntP/JKC75PWoXQi5vX6yaJVToWSKKqZL9Wv
-   cMiVQ9AhrgBpI5FvqzseqVZV6p94f3rAA6dK+2PsutsNJ7v++Fp5PhYYp
-   YqYT0AUcG2MrXt9dZQlgt1ZOW4/3+KySZ5SzEZ0Q99/NdHgKjqbgbv035
-   +xGXbgJNctErGRwJ94H9z54AEwmq1kVEhe6+U3q9CLxH1mEqXOOhrsbYN
-   pOdZBHZkzcEG1lqTc/Ljk1eN69psL2tHXQksjZ8/a98rQSFQ3crQHeF2U
-   Zk9nqXYXPHr0c91s6K3cnd5taksIftWDoXVAH85hdfRxr8oMQo9VqTK3u
+  bh=9iIKMldLf+Jdo9wVkfM9XtyWYOWsJSK0lnBCdpCwgWc=;
+  b=OYL8SN1skGzauqcG2tBlh/Wmm47Xi+HwcrjmxvJJrnwBZERvJs0dwXrT
+   dKeEtQBLAKpwxHtaY8Bn4V8GYpXycfB8Q32PKPx2770Rm0DMAh9zw1L5d
+   9dkm2dweVLcnQT74xDnhtG7TuV7abe9cgqKl1lA2IztxDMHHw5rTY/S5v
+   YS16aINovshZMvMk9Mt5rRyB170HHRWOeaaa6xZlC6+Qay3HRQizoekWa
+   r99RyoDbcfSwfR/dwKOrtic05MXb+bPyYOh53tBBdT1FQejCjFVXkFksO
+   WeDoT2BcngbV4rkLmmLIYIYiy304pMz2yk55TcUfbPSpW+o99Gy8Ho1Ub
    w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10912"; a="6942693"
+X-IronPort-AV: E=McAfee;i="6600,9927,10912"; a="6942691"
 X-IronPort-AV: E=Sophos;i="6.04,246,1695711600"; 
-   d="scan'208";a="6942693"
+   d="scan'208";a="6942691"
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
   by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2023 22:31:48 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10912"; a="893652740"
+X-IronPort-AV: E=McAfee;i="6600,9927,10912"; a="893652735"
 X-IronPort-AV: E=Sophos;i="6.04,246,1695711600"; 
-   d="scan'208";a="893652740"
+   d="scan'208";a="893652735"
 Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
   by orsmga004.jf.intel.com with ESMTP; 02 Dec 2023 22:31:46 -0800
 Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1r9g12-0006Kc-04;
-        Sun, 03 Dec 2023 06:31:44 +0000
-Date:   Sun, 3 Dec 2023 14:31:38 +0800
+        id 1r9g11-0006KW-2j;
+        Sun, 03 Dec 2023 06:31:43 +0000
+Date:   Sun, 3 Dec 2023 14:31:39 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     Ben Skeggs <bskeggs@redhat.com>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
 Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Lyude Paul <lyude@redhat.com>
-Subject: drivers/gpu/drm/nouveau/nvkm/subdev/top/ga100.c:82 ga100_top_parse()
- warn: inconsistent indenting
-Message-ID: <202312030044.q1SxyCnu-lkp@intel.com>
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: drivers/scsi/mvumi.c:407:40: sparse: sparse: incorrect type in
+ argument 1 (different address spaces)
+Message-ID: <202312030158.IhncfyOd-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -65,103 +65,440 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 head:   815fb87b753055df2d9e50f6cd80eb10235fe3e9
-commit: eec3f6dfedc0b8c5aef7619667dee61a77a37e35 drm/nouveau/top: parse device topology right after devinit
-date:   1 year, 1 month ago
-config: i386-randconfig-141-20231105 (https://download.01.org/0day-ci/archive/20231203/202312030044.q1SxyCnu-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231203/202312030044.q1SxyCnu-lkp@intel.com/reproduce)
+commit: 894fa235eb4ca0bfa692dbe4932c2f940cdc8c1e powerpc: inline iomap accessors
+date:   3 years ago
+config: powerpc-randconfig-r121-20231107 (https://download.01.org/0day-ci/archive/20231203/202312030158.IhncfyOd-lkp@intel.com/config)
+compiler: powerpc-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231203/202312030158.IhncfyOd-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312030044.q1SxyCnu-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312030158.IhncfyOd-lkp@intel.com/
 
-smatch warnings:
-drivers/gpu/drm/nouveau/nvkm/subdev/top/ga100.c:82 ga100_top_parse() warn: inconsistent indenting
+sparse warnings: (new ones prefixed by >>)
+   drivers/scsi/mvumi.c:81:52: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void * @@
+   drivers/scsi/mvumi.c:81:52: sparse:     expected void [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:81:52: sparse:     got void *
+   drivers/scsi/mvumi.c:90:39: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void * @@     got void [noderef] __iomem * @@
+   drivers/scsi/mvumi.c:90:39: sparse:     expected void *
+   drivers/scsi/mvumi.c:90:39: sparse:     got void [noderef] __iomem *
+   drivers/scsi/mvumi.c:210:34: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] baseaddr_l @@     got restricted __le32 [usertype] @@
+   drivers/scsi/mvumi.c:210:34: sparse:     expected unsigned int [usertype] baseaddr_l
+   drivers/scsi/mvumi.c:210:34: sparse:     got restricted __le32 [usertype]
+   drivers/scsi/mvumi.c:211:34: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] baseaddr_h @@     got restricted __le32 [usertype] @@
+   drivers/scsi/mvumi.c:211:34: sparse:     expected unsigned int [usertype] baseaddr_h
+   drivers/scsi/mvumi.c:211:34: sparse:     got restricted __le32 [usertype]
+   drivers/scsi/mvumi.c:213:17: sparse: sparse: invalid assignment: |=
+   drivers/scsi/mvumi.c:213:17: sparse:    left side has type unsigned int
+   drivers/scsi/mvumi.c:213:17: sparse:    right side has type restricted __le32
+   drivers/scsi/mvumi.c:213:17: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] size @@     got restricted __le32 [usertype] @@
+   drivers/scsi/mvumi.c:213:17: sparse:     expected unsigned int [usertype] size
+   drivers/scsi/mvumi.c:213:17: sparse:     got restricted __le32 [usertype]
+   drivers/scsi/mvumi.c:242:26: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] baseaddr_l @@     got restricted __le32 [usertype] @@
+   drivers/scsi/mvumi.c:242:26: sparse:     expected unsigned int [usertype] baseaddr_l
+   drivers/scsi/mvumi.c:242:26: sparse:     got restricted __le32 [usertype]
+   drivers/scsi/mvumi.c:243:26: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] baseaddr_h @@     got restricted __le32 [usertype] @@
+   drivers/scsi/mvumi.c:243:26: sparse:     expected unsigned int [usertype] baseaddr_h
+   drivers/scsi/mvumi.c:243:26: sparse:     got restricted __le32 [usertype]
+   drivers/scsi/mvumi.c:245:9: sparse: sparse: invalid assignment: |=
+   drivers/scsi/mvumi.c:245:9: sparse:    left side has type unsigned int
+   drivers/scsi/mvumi.c:245:9: sparse:    right side has type restricted __le32
+   drivers/scsi/mvumi.c:245:9: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] size @@     got restricted __le32 [usertype] @@
+   drivers/scsi/mvumi.c:245:9: sparse:     expected unsigned int [usertype] size
+   drivers/scsi/mvumi.c:245:9: sparse:     got restricted __le32 [usertype]
+>> drivers/scsi/mvumi.c:407:40: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void *inb_read_pointer @@
+   drivers/scsi/mvumi.c:407:40: sparse:     expected void const volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:407:40: sparse:     got void *inb_read_pointer
+>> drivers/scsi/mvumi.c:429:30: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void *ib_shadow @@
+   drivers/scsi/mvumi.c:429:30: sparse:     expected void const volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:429:30: sparse:     got void *ib_shadow
+>> drivers/scsi/mvumi.c:458:31: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *ib_shadow @@
+   drivers/scsi/mvumi.c:458:31: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:458:31: sparse:     got void *ib_shadow
+>> drivers/scsi/mvumi.c:459:48: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *inb_write_pointer @@
+   drivers/scsi/mvumi.c:459:48: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:459:48: sparse:     got void *inb_write_pointer
+>> drivers/scsi/mvumi.c:496:41: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void *outb_copy_pointer @@
+   drivers/scsi/mvumi.c:496:41: sparse:     expected void const volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:496:41: sparse:     got void *outb_copy_pointer
+>> drivers/scsi/mvumi.c:497:48: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void *ob_shadow @@
+   drivers/scsi/mvumi.c:497:48: sparse:     expected void const volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:497:48: sparse:     got void *ob_shadow
+>> drivers/scsi/mvumi.c:516:33: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void *outb_read_pointer @@
+   drivers/scsi/mvumi.c:516:33: sparse:     expected void const volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:516:33: sparse:     got void *outb_read_pointer
+   drivers/scsi/mvumi.c:517:33: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void *outb_copy_pointer @@
+   drivers/scsi/mvumi.c:517:33: sparse:     expected void const volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:517:33: sparse:     got void *outb_copy_pointer
+>> drivers/scsi/mvumi.c:578:42: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *outb_read_pointer @@
+   drivers/scsi/mvumi.c:578:42: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:578:42: sparse:     got void *outb_read_pointer
+>> drivers/scsi/mvumi.c:585:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *enpointa_mask_reg @@
+   drivers/scsi/mvumi.c:585:26: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:585:26: sparse:     got void *enpointa_mask_reg
+>> drivers/scsi/mvumi.c:586:26: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void *arm_to_pciea_msg1 @@
+   drivers/scsi/mvumi.c:586:26: sparse:     expected void const volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:586:26: sparse:     got void *arm_to_pciea_msg1
+>> drivers/scsi/mvumi.c:589:40: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *pciea_to_arm_drbl_reg @@
+   drivers/scsi/mvumi.c:589:40: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:589:40: sparse:     got void *pciea_to_arm_drbl_reg
+>> drivers/scsi/mvumi.c:1281:28: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void *arm_to_pciea_drbl_reg @@
+   drivers/scsi/mvumi.c:1281:28: sparse:     expected void const volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:1281:28: sparse:     got void *arm_to_pciea_drbl_reg
+>> drivers/scsi/mvumi.c:1282:28: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *arm_to_pciea_drbl_reg @@
+   drivers/scsi/mvumi.c:1282:28: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:1282:28: sparse:     got void *arm_to_pciea_drbl_reg
+>> drivers/scsi/mvumi.c:1284:48: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *arm_to_pciea_mask_reg @@
+   drivers/scsi/mvumi.c:1284:48: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:1284:48: sparse:     got void *arm_to_pciea_mask_reg
+>> drivers/scsi/mvumi.c:1285:28: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void *enpointa_mask_reg @@
+   drivers/scsi/mvumi.c:1285:28: sparse:     expected void const volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:1285:28: sparse:     got void *enpointa_mask_reg
+   drivers/scsi/mvumi.c:1286:28: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *enpointa_mask_reg @@
+   drivers/scsi/mvumi.c:1286:28: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:1286:28: sparse:     got void *enpointa_mask_reg
+   drivers/scsi/mvumi.c:612:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *enpointa_mask_reg @@
+   drivers/scsi/mvumi.c:612:26: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:612:26: sparse:     got void *enpointa_mask_reg
+   drivers/scsi/mvumi.c:613:28: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void *arm_to_pciea_msg1 @@
+   drivers/scsi/mvumi.c:613:28: sparse:     expected void const volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:613:28: sparse:     got void *arm_to_pciea_msg1
+   drivers/scsi/mvumi.c:615:46: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *pciea_to_arm_drbl_reg @@
+   drivers/scsi/mvumi.c:615:46: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:615:46: sparse:     got void *pciea_to_arm_drbl_reg
+   drivers/scsi/mvumi.c:624:36: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void *arm_to_pciea_msg1 @@
+   drivers/scsi/mvumi.c:624:36: sparse:     expected void const volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:624:36: sparse:     got void *arm_to_pciea_msg1
+>> drivers/scsi/mvumi.c:670:32: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *reset_enable @@
+   drivers/scsi/mvumi.c:670:32: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:670:32: sparse:     got void *reset_enable
+>> drivers/scsi/mvumi.c:671:34: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *reset_request @@
+   drivers/scsi/mvumi.c:671:34: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:671:34: sparse:     got void *reset_request
+   drivers/scsi/mvumi.c:673:35: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *reset_enable @@
+   drivers/scsi/mvumi.c:673:35: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:673:35: sparse:     got void *reset_enable
+   drivers/scsi/mvumi.c:674:35: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *reset_request @@
+   drivers/scsi/mvumi.c:674:35: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:674:35: sparse:     got void *reset_request
+>> drivers/scsi/mvumi.c:1100:36: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void *arm_to_pciea_msg0 @@
+   drivers/scsi/mvumi.c:1100:36: sparse:     expected void const volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:1100:36: sparse:     got void *arm_to_pciea_msg0
+>> drivers/scsi/mvumi.c:1115:52: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *pciea_to_arm_msg1 @@
+   drivers/scsi/mvumi.c:1115:52: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:1115:52: sparse:     got void *pciea_to_arm_msg1
+>> drivers/scsi/mvumi.c:1116:39: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *pciea_to_arm_msg0 @@
+   drivers/scsi/mvumi.c:1116:39: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:1116:39: sparse:     got void *pciea_to_arm_msg0
+   drivers/scsi/mvumi.c:1117:47: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *pciea_to_arm_drbl_reg @@
+   drivers/scsi/mvumi.c:1117:47: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:1117:47: sparse:     got void *pciea_to_arm_drbl_reg
+   drivers/scsi/mvumi.c:1122:45: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *pciea_to_arm_msg1 @@
+   drivers/scsi/mvumi.c:1122:45: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:1122:45: sparse:     got void *pciea_to_arm_msg1
+>> drivers/scsi/mvumi.c:1124:45: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *arm_to_pciea_msg1 @@
+   drivers/scsi/mvumi.c:1124:45: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:1124:45: sparse:     got void *arm_to_pciea_msg1
+   drivers/scsi/mvumi.c:1127:39: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *pciea_to_arm_msg0 @@
+   drivers/scsi/mvumi.c:1127:39: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:1127:39: sparse:     got void *pciea_to_arm_msg0
+   drivers/scsi/mvumi.c:1128:47: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *pciea_to_arm_drbl_reg @@
+   drivers/scsi/mvumi.c:1128:47: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:1128:47: sparse:     got void *pciea_to_arm_drbl_reg
+   drivers/scsi/mvumi.c:1168:39: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *pciea_to_arm_msg0 @@
+   drivers/scsi/mvumi.c:1168:39: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:1168:39: sparse:     got void *pciea_to_arm_msg0
+   drivers/scsi/mvumi.c:1169:47: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *pciea_to_arm_drbl_reg @@
+   drivers/scsi/mvumi.c:1169:47: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:1169:47: sparse:     got void *pciea_to_arm_drbl_reg
+   drivers/scsi/mvumi.c:1174:36: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void *enpointa_mask_reg @@
+   drivers/scsi/mvumi.c:1174:36: sparse:     expected void const volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:1174:36: sparse:     got void *enpointa_mask_reg
+   drivers/scsi/mvumi.c:1176:36: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *enpointa_mask_reg @@
+   drivers/scsi/mvumi.c:1176:36: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:1176:36: sparse:     got void *enpointa_mask_reg
+   drivers/scsi/mvumi.c:1177:50: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *ib_shadow @@
+   drivers/scsi/mvumi.c:1177:50: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:1177:50: sparse:     got void *ib_shadow
+>> drivers/scsi/mvumi.c:1180:45: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *inb_aval_count_basel @@
+   drivers/scsi/mvumi.c:1180:45: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:1180:45: sparse:     got void *inb_aval_count_basel
+>> drivers/scsi/mvumi.c:1182:45: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *inb_aval_count_baseh @@
+   drivers/scsi/mvumi.c:1182:45: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:1182:45: sparse:     got void *inb_aval_count_baseh
+>> drivers/scsi/mvumi.c:1188:61: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *ob_shadow @@
+   drivers/scsi/mvumi.c:1188:61: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:1188:61: sparse:     got void *ob_shadow
+>> drivers/scsi/mvumi.c:1190:61: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *outb_copy_basel @@
+   drivers/scsi/mvumi.c:1190:61: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:1190:61: sparse:     got void *outb_copy_basel
+>> drivers/scsi/mvumi.c:1192:61: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *outb_copy_baseh @@
+   drivers/scsi/mvumi.c:1192:61: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:1192:61: sparse:     got void *outb_copy_baseh
+   drivers/scsi/mvumi.c:1244:34: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void *arm_to_pciea_msg1 @@
+   drivers/scsi/mvumi.c:1244:34: sparse:     expected void const volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:1244:34: sparse:     got void *arm_to_pciea_msg1
+   drivers/scsi/mvumi.c:1248:51: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *pciea_to_arm_drbl_reg @@
+   drivers/scsi/mvumi.c:1248:51: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:1248:51: sparse:     got void *pciea_to_arm_drbl_reg
+   drivers/scsi/mvumi.c:1256:42: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void *arm_to_pciea_msg1 @@
+   drivers/scsi/mvumi.c:1256:42: sparse:     expected void const volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:1256:42: sparse:     got void *arm_to_pciea_msg1
+   drivers/scsi/mvumi.c:1849:35: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] src_low_addr @@     got restricted __le32 [usertype] @@
+   drivers/scsi/mvumi.c:1849:35: sparse:     expected unsigned int [usertype] src_low_addr
+   drivers/scsi/mvumi.c:1849:35: sparse:     got restricted __le32 [usertype]
+   drivers/scsi/mvumi.c:1851:36: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] src_high_addr @@     got restricted __le32 [usertype] @@
+   drivers/scsi/mvumi.c:1851:36: sparse:     expected unsigned int [usertype] src_high_addr
+   drivers/scsi/mvumi.c:1851:36: sparse:     got restricted __le32 [usertype]
+   drivers/scsi/mvumi.c:1903:48: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *arm_to_pciea_mask_reg @@
+   drivers/scsi/mvumi.c:1903:48: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:1903:48: sparse:     got void *arm_to_pciea_mask_reg
+   drivers/scsi/mvumi.c:1904:29: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void *enpointa_mask_reg @@
+   drivers/scsi/mvumi.c:1904:29: sparse:     expected void const volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:1904:29: sparse:     got void *enpointa_mask_reg
+   drivers/scsi/mvumi.c:1906:29: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *enpointa_mask_reg @@
+   drivers/scsi/mvumi.c:1906:29: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:1906:29: sparse:     got void *enpointa_mask_reg
+   drivers/scsi/mvumi.c:1918:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *arm_to_pciea_mask_reg @@
+   drivers/scsi/mvumi.c:1918:26: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:1918:26: sparse:     got void *arm_to_pciea_mask_reg
+   drivers/scsi/mvumi.c:1919:29: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void *enpointa_mask_reg @@
+   drivers/scsi/mvumi.c:1919:29: sparse:     expected void const volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:1919:29: sparse:     got void *enpointa_mask_reg
+   drivers/scsi/mvumi.c:1922:29: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *enpointa_mask_reg @@
+   drivers/scsi/mvumi.c:1922:29: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:1922:29: sparse:     got void *enpointa_mask_reg
+>> drivers/scsi/mvumi.c:1931:31: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void *main_int_cause_reg @@
+   drivers/scsi/mvumi.c:1931:31: sparse:     expected void const volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:1931:31: sparse:     got void *main_int_cause_reg
+>> drivers/scsi/mvumi.c:1935:36: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void *outb_isr_cause @@
+   drivers/scsi/mvumi.c:1935:36: sparse:     expected void const volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:1935:36: sparse:     got void *outb_isr_cause
+>> drivers/scsi/mvumi.c:1939:61: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *outb_isr_cause @@
+   drivers/scsi/mvumi.c:1939:61: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:1939:61: sparse:     got void *outb_isr_cause
+   drivers/scsi/mvumi.c:1945:53: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *outb_isr_cause @@
+   drivers/scsi/mvumi.c:1945:53: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:1945:53: sparse:     got void *outb_isr_cause
+   drivers/scsi/mvumi.c:1951:36: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void *outb_isr_cause @@
+   drivers/scsi/mvumi.c:1951:36: sparse:     expected void const volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:1951:36: sparse:     got void *outb_isr_cause
+   drivers/scsi/mvumi.c:1953:61: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *outb_isr_cause @@
+   drivers/scsi/mvumi.c:1953:61: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:1953:61: sparse:     got void *outb_isr_cause
+   drivers/scsi/mvumi.c:1956:43: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void *arm_to_pciea_drbl_reg @@
+   drivers/scsi/mvumi.c:1956:43: sparse:     expected void const volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:1956:43: sparse:     got void *arm_to_pciea_drbl_reg
+   drivers/scsi/mvumi.c:1958:51: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *arm_to_pciea_drbl_reg @@
+   drivers/scsi/mvumi.c:1958:51: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:1958:51: sparse:     got void *arm_to_pciea_drbl_reg
+   drivers/scsi/mvumi.c:1975:37: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void *arm_to_pciea_drbl_reg @@
+   drivers/scsi/mvumi.c:1975:37: sparse:     expected void const volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:1975:37: sparse:     got void *arm_to_pciea_drbl_reg
+   drivers/scsi/mvumi.c:1977:45: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *arm_to_pciea_drbl_reg @@
+   drivers/scsi/mvumi.c:1977:45: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/scsi/mvumi.c:1977:45: sparse:     got void *arm_to_pciea_drbl_reg
 
-vim +82 drivers/gpu/drm/nouveau/nvkm/subdev/top/ga100.c
+vim +407 drivers/scsi/mvumi.c
 
-f6df392dddbb9e Ben Skeggs 2021-02-08  23  
-f6df392dddbb9e Ben Skeggs 2021-02-08  24  static int
-eec3f6dfedc0b8 Ben Skeggs 2022-06-01  25  ga100_top_parse(struct nvkm_top *top)
-f6df392dddbb9e Ben Skeggs 2021-02-08  26  {
-f6df392dddbb9e Ben Skeggs 2021-02-08  27  	struct nvkm_subdev *subdev = &top->subdev;
-f6df392dddbb9e Ben Skeggs 2021-02-08  28  	struct nvkm_device *device = subdev->device;
-f6df392dddbb9e Ben Skeggs 2021-02-08  29  	struct nvkm_top_device *info = NULL;
-f6df392dddbb9e Ben Skeggs 2021-02-08  30  	u32 data, type, inst;
-f6df392dddbb9e Ben Skeggs 2021-02-08  31  	int i, n, size = nvkm_rd32(device, 0x0224fc) >> 20;
-f6df392dddbb9e Ben Skeggs 2021-02-08  32  
-f6df392dddbb9e Ben Skeggs 2021-02-08  33  	for (i = 0, n = 0; i < size; i++) {
-f6df392dddbb9e Ben Skeggs 2021-02-08  34  		if (!info) {
-f6df392dddbb9e Ben Skeggs 2021-02-08  35  			if (!(info = nvkm_top_device_new(top)))
-f6df392dddbb9e Ben Skeggs 2021-02-08  36  				return -ENOMEM;
-f6df392dddbb9e Ben Skeggs 2021-02-08  37  			type = ~0;
-f6df392dddbb9e Ben Skeggs 2021-02-08  38  			inst = 0;
-f6df392dddbb9e Ben Skeggs 2021-02-08  39  		}
-f6df392dddbb9e Ben Skeggs 2021-02-08  40  
-f6df392dddbb9e Ben Skeggs 2021-02-08  41  		data = nvkm_rd32(device, 0x022800 + (i * 0x04));
-f6df392dddbb9e Ben Skeggs 2021-02-08  42  		nvkm_trace(subdev, "%02x: %08x\n", i, data);
-f6df392dddbb9e Ben Skeggs 2021-02-08  43  		if (!data && n == 0)
-f6df392dddbb9e Ben Skeggs 2021-02-08  44  			continue;
-f6df392dddbb9e Ben Skeggs 2021-02-08  45  
-f6df392dddbb9e Ben Skeggs 2021-02-08  46  		switch (n++) {
-f6df392dddbb9e Ben Skeggs 2021-02-08  47  		case 0:
-f6df392dddbb9e Ben Skeggs 2021-02-08  48  			type	      = (data & 0x3f000000) >> 24;
-f6df392dddbb9e Ben Skeggs 2021-02-08  49  			inst	      = (data & 0x000f0000) >> 16;
-f6df392dddbb9e Ben Skeggs 2021-02-08  50  			info->fault   = (data & 0x0000007f);
-f6df392dddbb9e Ben Skeggs 2021-02-08  51  			break;
-f6df392dddbb9e Ben Skeggs 2021-02-08  52  		case 1:
-f6df392dddbb9e Ben Skeggs 2021-02-08  53  			info->addr    = (data & 0x00fff000);
-f6df392dddbb9e Ben Skeggs 2021-02-08  54  			info->reset   = (data & 0x0000001f);
-f6df392dddbb9e Ben Skeggs 2021-02-08  55  			break;
-f6df392dddbb9e Ben Skeggs 2021-02-08  56  		case 2:
-49b2dfc0818268 Ben Skeggs 2021-09-17  57  			info->runlist = (data & 0x00fffc00);
-f6df392dddbb9e Ben Skeggs 2021-02-08  58  			info->engine  = (data & 0x00000003);
-f6df392dddbb9e Ben Skeggs 2021-02-08  59  			break;
-f6df392dddbb9e Ben Skeggs 2021-02-08  60  		default:
-f6df392dddbb9e Ben Skeggs 2021-02-08  61  			break;
-f6df392dddbb9e Ben Skeggs 2021-02-08  62  		}
-f6df392dddbb9e Ben Skeggs 2021-02-08  63  
-f6df392dddbb9e Ben Skeggs 2021-02-08  64  		if (data & 0x80000000)
-f6df392dddbb9e Ben Skeggs 2021-02-08  65  			continue;
-f6df392dddbb9e Ben Skeggs 2021-02-08  66  		n = 0;
-f6df392dddbb9e Ben Skeggs 2021-02-08  67  
-f6df392dddbb9e Ben Skeggs 2021-02-08  68  		/* Translate engine type to NVKM engine identifier. */
-f6df392dddbb9e Ben Skeggs 2021-02-08  69  #define I_(T,I) do { info->type = (T); info->inst = (I); } while(0)
-f6df392dddbb9e Ben Skeggs 2021-02-08  70  #define O_(T,I) do { WARN_ON(inst); I_(T, I); } while (0)
-f6df392dddbb9e Ben Skeggs 2021-02-08  71  		switch (type) {
-f6df392dddbb9e Ben Skeggs 2021-02-08  72  		case 0x00000000: O_(NVKM_ENGINE_GR    ,    0); break;
-f6df392dddbb9e Ben Skeggs 2021-02-08  73  		case 0x0000000d: O_(NVKM_ENGINE_SEC2  ,    0); break;
-f6df392dddbb9e Ben Skeggs 2021-02-08  74  		case 0x0000000e: I_(NVKM_ENGINE_NVENC , inst); break;
-f6df392dddbb9e Ben Skeggs 2021-02-08  75  		case 0x00000010: I_(NVKM_ENGINE_NVDEC , inst); break;
-f6df392dddbb9e Ben Skeggs 2021-02-08  76  		case 0x00000012: I_(NVKM_SUBDEV_IOCTRL, inst); break;
-f6df392dddbb9e Ben Skeggs 2021-02-08  77  		case 0x00000013: I_(NVKM_ENGINE_CE    , inst); break;
-f6df392dddbb9e Ben Skeggs 2021-02-08  78  		case 0x00000014: O_(NVKM_SUBDEV_GSP   ,    0); break;
-f6df392dddbb9e Ben Skeggs 2021-02-08  79  		case 0x00000015: O_(NVKM_ENGINE_NVJPG ,    0); break;
-f6df392dddbb9e Ben Skeggs 2021-02-08  80  		case 0x00000016: O_(NVKM_ENGINE_OFA   ,    0); break;
-f6df392dddbb9e Ben Skeggs 2021-02-08  81  		case 0x00000017: O_(NVKM_SUBDEV_FLA   ,    0); break;
-f6df392dddbb9e Ben Skeggs 2021-02-08 @82  			break;
-f6df392dddbb9e Ben Skeggs 2021-02-08  83  		default:
-f6df392dddbb9e Ben Skeggs 2021-02-08  84  			break;
-f6df392dddbb9e Ben Skeggs 2021-02-08  85  		}
-f6df392dddbb9e Ben Skeggs 2021-02-08  86  
-f6df392dddbb9e Ben Skeggs 2021-02-08  87  		nvkm_debug(subdev, "%02x.%d (%8s): addr %06x fault %2d "
-49b2dfc0818268 Ben Skeggs 2021-09-17  88  				   "runlist %6x engine %2d reset %2d\n", type, inst,
-f6df392dddbb9e Ben Skeggs 2021-02-08  89  			   info->type == NVKM_SUBDEV_NR ? "????????" : nvkm_subdev_type[info->type],
-49b2dfc0818268 Ben Skeggs 2021-09-17  90  			   info->addr, info->fault, info->runlist < 0 ? 0 : info->runlist,
-49b2dfc0818268 Ben Skeggs 2021-09-17  91  			   info->engine, info->reset);
-f6df392dddbb9e Ben Skeggs 2021-02-08  92  		info = NULL;
-f6df392dddbb9e Ben Skeggs 2021-02-08  93  	}
-f6df392dddbb9e Ben Skeggs 2021-02-08  94  
-f6df392dddbb9e Ben Skeggs 2021-02-08  95  	return 0;
-f6df392dddbb9e Ben Skeggs 2021-02-08  96  }
-f6df392dddbb9e Ben Skeggs 2021-02-08  97  
+f0c568a478f035 Jianyun Li 2011-05-11  401  
+bd756ddea18e02 Shun Fu    2012-09-23  402  static unsigned int mvumi_check_ib_list_9143(struct mvumi_hba *mhba)
+f0c568a478f035 Jianyun Li 2011-05-11  403  {
+bd756ddea18e02 Shun Fu    2012-09-23  404  	unsigned int ib_rp_reg;
+bd756ddea18e02 Shun Fu    2012-09-23  405  	struct mvumi_hw_regs *regs = mhba->regs;
+bd756ddea18e02 Shun Fu    2012-09-23  406  
+bd756ddea18e02 Shun Fu    2012-09-23 @407  	ib_rp_reg = ioread32(mhba->regs->inb_read_pointer);
+f0c568a478f035 Jianyun Li 2011-05-11  408  
+bd756ddea18e02 Shun Fu    2012-09-23  409  	if (unlikely(((ib_rp_reg & regs->cl_slot_num_mask) ==
+bd756ddea18e02 Shun Fu    2012-09-23  410  			(mhba->ib_cur_slot & regs->cl_slot_num_mask)) &&
+bd756ddea18e02 Shun Fu    2012-09-23  411  			((ib_rp_reg & regs->cl_pointer_toggle)
+bd756ddea18e02 Shun Fu    2012-09-23  412  			 != (mhba->ib_cur_slot & regs->cl_pointer_toggle)))) {
+bd756ddea18e02 Shun Fu    2012-09-23  413  		dev_warn(&mhba->pdev->dev, "no free slot to use.\n");
+bd756ddea18e02 Shun Fu    2012-09-23  414  		return 0;
+bd756ddea18e02 Shun Fu    2012-09-23  415  	}
+f0c568a478f035 Jianyun Li 2011-05-11  416  	if (atomic_read(&mhba->fw_outstanding) >= mhba->max_io) {
+f0c568a478f035 Jianyun Li 2011-05-11  417  		dev_warn(&mhba->pdev->dev, "firmware io overflow.\n");
+bd756ddea18e02 Shun Fu    2012-09-23  418  		return 0;
+bd756ddea18e02 Shun Fu    2012-09-23  419  	} else {
+bd756ddea18e02 Shun Fu    2012-09-23  420  		return mhba->max_io - atomic_read(&mhba->fw_outstanding);
+bd756ddea18e02 Shun Fu    2012-09-23  421  	}
+f0c568a478f035 Jianyun Li 2011-05-11  422  }
+f0c568a478f035 Jianyun Li 2011-05-11  423  
+bd756ddea18e02 Shun Fu    2012-09-23  424  static unsigned int mvumi_check_ib_list_9580(struct mvumi_hba *mhba)
+bd756ddea18e02 Shun Fu    2012-09-23  425  {
+bd756ddea18e02 Shun Fu    2012-09-23  426  	unsigned int count;
+bd756ddea18e02 Shun Fu    2012-09-23  427  	if (atomic_read(&mhba->fw_outstanding) >= (mhba->max_io - 1))
+bd756ddea18e02 Shun Fu    2012-09-23  428  		return 0;
+bd756ddea18e02 Shun Fu    2012-09-23 @429  	count = ioread32(mhba->ib_shadow);
+bd756ddea18e02 Shun Fu    2012-09-23  430  	if (count == 0xffff)
+bd756ddea18e02 Shun Fu    2012-09-23  431  		return 0;
+bd756ddea18e02 Shun Fu    2012-09-23  432  	return count;
+f0c568a478f035 Jianyun Li 2011-05-11  433  }
+f0c568a478f035 Jianyun Li 2011-05-11  434  
+bd756ddea18e02 Shun Fu    2012-09-23  435  static void mvumi_get_ib_list_entry(struct mvumi_hba *mhba, void **ib_entry)
+bd756ddea18e02 Shun Fu    2012-09-23  436  {
+bd756ddea18e02 Shun Fu    2012-09-23  437  	unsigned int cur_ib_entry;
+bd756ddea18e02 Shun Fu    2012-09-23  438  
+bd756ddea18e02 Shun Fu    2012-09-23  439  	cur_ib_entry = mhba->ib_cur_slot & mhba->regs->cl_slot_num_mask;
+f0c568a478f035 Jianyun Li 2011-05-11  440  	cur_ib_entry++;
+f0c568a478f035 Jianyun Li 2011-05-11  441  	if (cur_ib_entry >= mhba->list_num_io) {
+f0c568a478f035 Jianyun Li 2011-05-11  442  		cur_ib_entry -= mhba->list_num_io;
+bd756ddea18e02 Shun Fu    2012-09-23  443  		mhba->ib_cur_slot ^= mhba->regs->cl_pointer_toggle;
+f0c568a478f035 Jianyun Li 2011-05-11  444  	}
+bd756ddea18e02 Shun Fu    2012-09-23  445  	mhba->ib_cur_slot &= ~mhba->regs->cl_slot_num_mask;
+bd756ddea18e02 Shun Fu    2012-09-23  446  	mhba->ib_cur_slot |= (cur_ib_entry & mhba->regs->cl_slot_num_mask);
+bd756ddea18e02 Shun Fu    2012-09-23  447  	if (mhba->hba_capability & HS_CAPABILITY_SUPPORT_DYN_SRC) {
+bd756ddea18e02 Shun Fu    2012-09-23  448  		*ib_entry = mhba->ib_list + cur_ib_entry *
+bd756ddea18e02 Shun Fu    2012-09-23  449  				sizeof(struct mvumi_dyn_list_entry);
+bd756ddea18e02 Shun Fu    2012-09-23  450  	} else {
+f0c568a478f035 Jianyun Li 2011-05-11  451  		*ib_entry = mhba->ib_list + cur_ib_entry * mhba->ib_max_size;
+bd756ddea18e02 Shun Fu    2012-09-23  452  	}
+f0c568a478f035 Jianyun Li 2011-05-11  453  	atomic_inc(&mhba->fw_outstanding);
+f0c568a478f035 Jianyun Li 2011-05-11  454  }
+f0c568a478f035 Jianyun Li 2011-05-11  455  
+f0c568a478f035 Jianyun Li 2011-05-11  456  static void mvumi_send_ib_list_entry(struct mvumi_hba *mhba)
+f0c568a478f035 Jianyun Li 2011-05-11  457  {
+bd756ddea18e02 Shun Fu    2012-09-23 @458  	iowrite32(0xffff, mhba->ib_shadow);
+bd756ddea18e02 Shun Fu    2012-09-23 @459  	iowrite32(mhba->ib_cur_slot, mhba->regs->inb_write_pointer);
+f0c568a478f035 Jianyun Li 2011-05-11  460  }
+f0c568a478f035 Jianyun Li 2011-05-11  461  
+f0c568a478f035 Jianyun Li 2011-05-11  462  static char mvumi_check_ob_frame(struct mvumi_hba *mhba,
+f0c568a478f035 Jianyun Li 2011-05-11  463  		unsigned int cur_obf, struct mvumi_rsp_frame *p_outb_frame)
+f0c568a478f035 Jianyun Li 2011-05-11  464  {
+f0c568a478f035 Jianyun Li 2011-05-11  465  	unsigned short tag, request_id;
+f0c568a478f035 Jianyun Li 2011-05-11  466  
+f0c568a478f035 Jianyun Li 2011-05-11  467  	udelay(1);
+f0c568a478f035 Jianyun Li 2011-05-11  468  	p_outb_frame = mhba->ob_list + cur_obf * mhba->ob_max_size;
+f0c568a478f035 Jianyun Li 2011-05-11  469  	request_id = p_outb_frame->request_id;
+f0c568a478f035 Jianyun Li 2011-05-11  470  	tag = p_outb_frame->tag;
+f0c568a478f035 Jianyun Li 2011-05-11  471  	if (tag > mhba->tag_pool.size) {
+f0c568a478f035 Jianyun Li 2011-05-11  472  		dev_err(&mhba->pdev->dev, "ob frame data error\n");
+f0c568a478f035 Jianyun Li 2011-05-11  473  		return -1;
+f0c568a478f035 Jianyun Li 2011-05-11  474  	}
+f0c568a478f035 Jianyun Li 2011-05-11  475  	if (mhba->tag_cmd[tag] == NULL) {
+f0c568a478f035 Jianyun Li 2011-05-11  476  		dev_err(&mhba->pdev->dev, "tag[0x%x] with NO command\n", tag);
+f0c568a478f035 Jianyun Li 2011-05-11  477  		return -1;
+f0c568a478f035 Jianyun Li 2011-05-11  478  	} else if (mhba->tag_cmd[tag]->request_id != request_id &&
+f0c568a478f035 Jianyun Li 2011-05-11  479  						mhba->request_id_enabled) {
+f0c568a478f035 Jianyun Li 2011-05-11  480  			dev_err(&mhba->pdev->dev, "request ID from FW:0x%x,"
+f0c568a478f035 Jianyun Li 2011-05-11  481  					"cmd request ID:0x%x\n", request_id,
+f0c568a478f035 Jianyun Li 2011-05-11  482  					mhba->tag_cmd[tag]->request_id);
+f0c568a478f035 Jianyun Li 2011-05-11  483  			return -1;
+f0c568a478f035 Jianyun Li 2011-05-11  484  	}
+f0c568a478f035 Jianyun Li 2011-05-11  485  
+f0c568a478f035 Jianyun Li 2011-05-11  486  	return 0;
+f0c568a478f035 Jianyun Li 2011-05-11  487  }
+f0c568a478f035 Jianyun Li 2011-05-11  488  
+bd756ddea18e02 Shun Fu    2012-09-23  489  static int mvumi_check_ob_list_9143(struct mvumi_hba *mhba,
+bd756ddea18e02 Shun Fu    2012-09-23  490  			unsigned int *cur_obf, unsigned int *assign_obf_end)
+f0c568a478f035 Jianyun Li 2011-05-11  491  {
+bd756ddea18e02 Shun Fu    2012-09-23  492  	unsigned int ob_write, ob_write_shadow;
+bd756ddea18e02 Shun Fu    2012-09-23  493  	struct mvumi_hw_regs *regs = mhba->regs;
+f0c568a478f035 Jianyun Li 2011-05-11  494  
+f0c568a478f035 Jianyun Li 2011-05-11  495  	do {
+bd756ddea18e02 Shun Fu    2012-09-23 @496  		ob_write = ioread32(regs->outb_copy_pointer);
+bd756ddea18e02 Shun Fu    2012-09-23 @497  		ob_write_shadow = ioread32(mhba->ob_shadow);
+bd756ddea18e02 Shun Fu    2012-09-23  498  	} while ((ob_write & regs->cl_slot_num_mask) != ob_write_shadow);
+f0c568a478f035 Jianyun Li 2011-05-11  499  
+bd756ddea18e02 Shun Fu    2012-09-23  500  	*cur_obf = mhba->ob_cur_slot & mhba->regs->cl_slot_num_mask;
+bd756ddea18e02 Shun Fu    2012-09-23  501  	*assign_obf_end = ob_write & mhba->regs->cl_slot_num_mask;
+f0c568a478f035 Jianyun Li 2011-05-11  502  
+bd756ddea18e02 Shun Fu    2012-09-23  503  	if ((ob_write & regs->cl_pointer_toggle) !=
+bd756ddea18e02 Shun Fu    2012-09-23  504  			(mhba->ob_cur_slot & regs->cl_pointer_toggle)) {
+bd756ddea18e02 Shun Fu    2012-09-23  505  		*assign_obf_end += mhba->list_num_io;
+bd756ddea18e02 Shun Fu    2012-09-23  506  	}
+bd756ddea18e02 Shun Fu    2012-09-23  507  	return 0;
+f0c568a478f035 Jianyun Li 2011-05-11  508  }
+f0c568a478f035 Jianyun Li 2011-05-11  509  
+bd756ddea18e02 Shun Fu    2012-09-23  510  static int mvumi_check_ob_list_9580(struct mvumi_hba *mhba,
+bd756ddea18e02 Shun Fu    2012-09-23  511  			unsigned int *cur_obf, unsigned int *assign_obf_end)
+bd756ddea18e02 Shun Fu    2012-09-23  512  {
+bd756ddea18e02 Shun Fu    2012-09-23  513  	unsigned int ob_write;
+bd756ddea18e02 Shun Fu    2012-09-23  514  	struct mvumi_hw_regs *regs = mhba->regs;
+bd756ddea18e02 Shun Fu    2012-09-23  515  
+bd756ddea18e02 Shun Fu    2012-09-23 @516  	ob_write = ioread32(regs->outb_read_pointer);
+bd756ddea18e02 Shun Fu    2012-09-23  517  	ob_write = ioread32(regs->outb_copy_pointer);
+bd756ddea18e02 Shun Fu    2012-09-23  518  	*cur_obf = mhba->ob_cur_slot & mhba->regs->cl_slot_num_mask;
+bd756ddea18e02 Shun Fu    2012-09-23  519  	*assign_obf_end = ob_write & mhba->regs->cl_slot_num_mask;
+bd756ddea18e02 Shun Fu    2012-09-23  520  	if (*assign_obf_end < *cur_obf)
+bd756ddea18e02 Shun Fu    2012-09-23  521  		*assign_obf_end += mhba->list_num_io;
+bd756ddea18e02 Shun Fu    2012-09-23  522  	else if (*assign_obf_end == *cur_obf)
+bd756ddea18e02 Shun Fu    2012-09-23  523  		return -1;
+bd756ddea18e02 Shun Fu    2012-09-23  524  	return 0;
+bd756ddea18e02 Shun Fu    2012-09-23  525  }
+bd756ddea18e02 Shun Fu    2012-09-23  526  
+bd756ddea18e02 Shun Fu    2012-09-23  527  static void mvumi_receive_ob_list_entry(struct mvumi_hba *mhba)
+bd756ddea18e02 Shun Fu    2012-09-23  528  {
+bd756ddea18e02 Shun Fu    2012-09-23  529  	unsigned int cur_obf, assign_obf_end, i;
+bd756ddea18e02 Shun Fu    2012-09-23  530  	struct mvumi_ob_data *ob_data;
+bd756ddea18e02 Shun Fu    2012-09-23  531  	struct mvumi_rsp_frame *p_outb_frame;
+bd756ddea18e02 Shun Fu    2012-09-23  532  	struct mvumi_hw_regs *regs = mhba->regs;
+bd756ddea18e02 Shun Fu    2012-09-23  533  
+bd756ddea18e02 Shun Fu    2012-09-23  534  	if (mhba->instancet->check_ob_list(mhba, &cur_obf, &assign_obf_end))
+bd756ddea18e02 Shun Fu    2012-09-23  535  		return;
+bd756ddea18e02 Shun Fu    2012-09-23  536  
+f0c568a478f035 Jianyun Li 2011-05-11  537  	for (i = (assign_obf_end - cur_obf); i != 0; i--) {
+f0c568a478f035 Jianyun Li 2011-05-11  538  		cur_obf++;
+f0c568a478f035 Jianyun Li 2011-05-11  539  		if (cur_obf >= mhba->list_num_io) {
+f0c568a478f035 Jianyun Li 2011-05-11  540  			cur_obf -= mhba->list_num_io;
+bd756ddea18e02 Shun Fu    2012-09-23  541  			mhba->ob_cur_slot ^= regs->cl_pointer_toggle;
+f0c568a478f035 Jianyun Li 2011-05-11  542  		}
+f0c568a478f035 Jianyun Li 2011-05-11  543  
+f0c568a478f035 Jianyun Li 2011-05-11  544  		p_outb_frame = mhba->ob_list + cur_obf * mhba->ob_max_size;
+f0c568a478f035 Jianyun Li 2011-05-11  545  
+f0c568a478f035 Jianyun Li 2011-05-11  546  		/* Copy pointer may point to entry in outbound list
+f0c568a478f035 Jianyun Li 2011-05-11  547  		*  before entry has valid data
+f0c568a478f035 Jianyun Li 2011-05-11  548  		*/
+f0c568a478f035 Jianyun Li 2011-05-11  549  		if (unlikely(p_outb_frame->tag > mhba->tag_pool.size ||
+f0c568a478f035 Jianyun Li 2011-05-11  550  			mhba->tag_cmd[p_outb_frame->tag] == NULL ||
+f0c568a478f035 Jianyun Li 2011-05-11  551  			p_outb_frame->request_id !=
+f0c568a478f035 Jianyun Li 2011-05-11  552  				mhba->tag_cmd[p_outb_frame->tag]->request_id))
+f0c568a478f035 Jianyun Li 2011-05-11  553  			if (mvumi_check_ob_frame(mhba, cur_obf, p_outb_frame))
+f0c568a478f035 Jianyun Li 2011-05-11  554  				continue;
+f0c568a478f035 Jianyun Li 2011-05-11  555  
+f0c568a478f035 Jianyun Li 2011-05-11  556  		if (!list_empty(&mhba->ob_data_list)) {
+f0c568a478f035 Jianyun Li 2011-05-11  557  			ob_data = (struct mvumi_ob_data *)
+f0c568a478f035 Jianyun Li 2011-05-11  558  				list_first_entry(&mhba->ob_data_list,
+f0c568a478f035 Jianyun Li 2011-05-11  559  					struct mvumi_ob_data, list);
+f0c568a478f035 Jianyun Li 2011-05-11  560  			list_del_init(&ob_data->list);
+f0c568a478f035 Jianyun Li 2011-05-11  561  		} else {
+f0c568a478f035 Jianyun Li 2011-05-11  562  			ob_data = NULL;
+f0c568a478f035 Jianyun Li 2011-05-11  563  			if (cur_obf == 0) {
+f0c568a478f035 Jianyun Li 2011-05-11  564  				cur_obf = mhba->list_num_io - 1;
+bd756ddea18e02 Shun Fu    2012-09-23  565  				mhba->ob_cur_slot ^= regs->cl_pointer_toggle;
+f0c568a478f035 Jianyun Li 2011-05-11  566  			} else
+f0c568a478f035 Jianyun Li 2011-05-11  567  				cur_obf -= 1;
+f0c568a478f035 Jianyun Li 2011-05-11  568  			break;
+f0c568a478f035 Jianyun Li 2011-05-11  569  		}
+f0c568a478f035 Jianyun Li 2011-05-11  570  
+f0c568a478f035 Jianyun Li 2011-05-11  571  		memcpy(ob_data->data, p_outb_frame, mhba->ob_max_size);
+f0c568a478f035 Jianyun Li 2011-05-11  572  		p_outb_frame->tag = 0xff;
+f0c568a478f035 Jianyun Li 2011-05-11  573  
+f0c568a478f035 Jianyun Li 2011-05-11  574  		list_add_tail(&ob_data->list, &mhba->free_ob_list);
+f0c568a478f035 Jianyun Li 2011-05-11  575  	}
+bd756ddea18e02 Shun Fu    2012-09-23  576  	mhba->ob_cur_slot &= ~regs->cl_slot_num_mask;
+bd756ddea18e02 Shun Fu    2012-09-23  577  	mhba->ob_cur_slot |= (cur_obf & regs->cl_slot_num_mask);
+bd756ddea18e02 Shun Fu    2012-09-23 @578  	iowrite32(mhba->ob_cur_slot, regs->outb_read_pointer);
+f0c568a478f035 Jianyun Li 2011-05-11  579  }
+f0c568a478f035 Jianyun Li 2011-05-11  580  
+bd756ddea18e02 Shun Fu    2012-09-23  581  static void mvumi_reset(struct mvumi_hba *mhba)
+f0c568a478f035 Jianyun Li 2011-05-11  582  {
+bd756ddea18e02 Shun Fu    2012-09-23  583  	struct mvumi_hw_regs *regs = mhba->regs;
+bd756ddea18e02 Shun Fu    2012-09-23  584  
+bd756ddea18e02 Shun Fu    2012-09-23 @585  	iowrite32(0, regs->enpointa_mask_reg);
+bd756ddea18e02 Shun Fu    2012-09-23 @586  	if (ioread32(regs->arm_to_pciea_msg1) != HANDSHAKE_DONESTATE)
+f0c568a478f035 Jianyun Li 2011-05-11  587  		return;
+f0c568a478f035 Jianyun Li 2011-05-11  588  
+bd756ddea18e02 Shun Fu    2012-09-23 @589  	iowrite32(DRBL_SOFT_RESET, regs->pciea_to_arm_drbl_reg);
+f0c568a478f035 Jianyun Li 2011-05-11  590  }
+f0c568a478f035 Jianyun Li 2011-05-11  591  
 
-:::::: The code at line 82 was first introduced by commit
-:::::: f6df392dddbb9e637b785e7e3d9337a74923dc10 drm/nouveau/top/ga100: initial support
+:::::: The code at line 407 was first introduced by commit
+:::::: bd756ddea18e02ccea8b29496b2fe3bd91af8eb7 [SCSI] mvumi: Add support for Marvell SAS/SATA RAID-on-Chip(ROC) 88RC9580
 
-:::::: TO: Ben Skeggs <bskeggs@redhat.com>
-:::::: CC: Ben Skeggs <bskeggs@redhat.com>
+:::::: TO: Shun Fu <fushun@gmail.com>
+:::::: CC: James Bottomley <JBottomley@Parallels.com>
 
 -- 
 0-DAY CI Kernel Test Service
