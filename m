@@ -2,122 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BCD5802589
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 17:37:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54A9980258B
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 17:37:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233732AbjLCQgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 11:36:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50844 "EHLO
+        id S233386AbjLCQhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 11:37:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233711AbjLCQgo (ORCPT
+        with ESMTP id S229572AbjLCQhW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 11:36:44 -0500
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72B99C1
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 08:36:50 -0800 (PST)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-50bee606265so902474e87.2
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Dec 2023 08:36:50 -0800 (PST)
+        Sun, 3 Dec 2023 11:37:22 -0500
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60F9EC0
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 08:37:29 -0800 (PST)
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1cfc2bcffc7so12898395ad.1
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Dec 2023 08:37:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701621409; x=1702226209; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=jpl6jo/axkXaMBEUtW9IVZIjZ8AqWBn3Q0mmjv9jaDw=;
-        b=yPqRWPnMKfnI9CqwjbPledn5ZaP5Hrl8YljrMzOznZ39K91nMVUN6uJqAb7yx4/kb7
-         qXoiN9ShzxgJNZ/8EBrD5GYsElQAuN6FxqqkO8RkpOPidvpwMUDf+Da5qvLVfweHbrF7
-         WANW3VGwUfSr03YqmmTa+i30aISoN4mSiqAZAFTecr7p7tdx7N6xnLDSKIFuj1ed0K65
-         FX4LWpRfh32wZ39fnC1SvjkXIFI/NkKfEmesHl0qEMZLJI3W43lrqkq7+/t20TA/UWL0
-         A4ZAz2kUMCWZCZaDsAnCYyTUSV2acFuKmP3IP5cajGlc2pnTU/8DzdP3Fn2SElxMjF3X
-         Sq6Q==
+        d=protocubo.io; s=google; t=1701621449; x=1702226249; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=oN/yJUhMwL79dfAOb7xMA38chypyQ6z1ZfDrW5oW+IQ=;
+        b=PFZlmOrfgT+TLnLb7o5o36bU+jR6twG5EQPyq78afl/vpKDbEImtVHF4sqAD+AxbKD
+         RMopbk7kCppv7RZZZkLIQNhr1L+gM8ktfIITvdI5fAcfYcjWVp3/O+U78/9nitVruHMK
+         lqizRVhTS9pfe3YP0x0AZktCdmNLGtVkkm/xBb6kPXsC5lbQLXQMMwYC1PcvpSq0xNU3
+         YLgrPX3aOGymBc4hcp2V8YksnBnQt+juV8wG8kpy+g2GvEIlYQscn1S9lVxxWkaVy74y
+         A/5Au4M5vYD2ABVrFVOuMMcLDctL4RUIdgWPON4YLMVf+Hd/4+meaItnuWFpGNb2CrYG
+         ybCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701621409; x=1702226209;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jpl6jo/axkXaMBEUtW9IVZIjZ8AqWBn3Q0mmjv9jaDw=;
-        b=L19y/3mVThxQCcTB1GxLK5kcNof8p1REDfnrdkJjANDnf+AESILWrv/mAQiDfvJOLV
-         lNbN1Hgchb1d1//rWeMUAVxDg3Iu0x3/rUSIAF85EgBI+bgp5bYqPQi6avhMHMlWrRtj
-         FfEVWRhiTa/Ua+rABOO/fLnXE1Pcrl3jZ0XJCP00zjEQiAJuZroUgNJqQNApXCahLWcd
-         rWQyp/rF6H4dZRSGGb+PHJgcDsIjERBPe4sJxQsY8EI4qigtVap5Fph3fbMwbOaDr2S9
-         8ZZShD2I//f5QTiavGeYx1mHbtprOR/TU/9WoidnFYQhEksIkhKfbV1tQp8OTlcXxLQs
-         t3DQ==
-X-Gm-Message-State: AOJu0Yy0a0Ecph4HZH7QF4tjV+JPPk1KyRSEwZbJ6umpRHXjeGU4t1/o
-        lFmjOjgGnyra30Z/7pE7jDabTur+VoiSS70QlTMKMw==
-X-Google-Smtp-Source: AGHT+IH6KHHD+dmYYS8B/gqJhZureFmIfadLSDuitVYzjKtrrrRXfPfDKitTZbLgwQB4B+F07bMerg==
-X-Received: by 2002:a05:6512:2c95:b0:50b:d764:8013 with SMTP id dw21-20020a0565122c9500b0050bd7648013mr2218530lfb.70.1701621408680;
-        Sun, 03 Dec 2023 08:36:48 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.223.109])
-        by smtp.gmail.com with ESMTPSA id h11-20020a17090634cb00b00a0f770ae91bsm4243825ejb.89.2023.12.03.08.36.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 03 Dec 2023 08:36:48 -0800 (PST)
-Message-ID: <6238731a-fdb0-4ded-b5ff-60bfc521ecbd@linaro.org>
-Date:   Sun, 3 Dec 2023 17:36:45 +0100
+        d=1e100.net; s=20230601; t=1701621449; x=1702226249;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oN/yJUhMwL79dfAOb7xMA38chypyQ6z1ZfDrW5oW+IQ=;
+        b=Oj94esaj9HyJ909srLB8OMBM1dZZyfBQfGx4bMmNtLCJTPS4kuioJv7M1T5nA+TPGl
+         5kTIG57uJdSZ/dPyNhAxzeWoyyK0/asULGGYDDpBiSiz9LngeeuKvVMhY0FSyCPUEZTi
+         QF0LUDczIbDI1ZKFjdwnsMhyCMTtwG8p+HKg4HBkdLLb5s7Ommy2y84j3Kbbv/SAbc6F
+         y0+YUBwpbaSZtMnKVaW7XkCnS0cfES5htNhWvGvydtFEsdv6P41TzNW8DYctVtLFzheh
+         A/t2QJYz+jUMpLYJvuyxcoZcDhny3P4gWPIr+S5PNPGZFJMV0piZF9KkPqqumTsKkODp
+         ADhQ==
+X-Gm-Message-State: AOJu0Yw1AcmrJO+gX0LrHEziXqWJgzxnAKJndduJJwQfzZJD8k34xKaM
+        48x/RG8VUdTl6lnGyrW7k8jrFPLJHO9/a70T1+wfLw==
+X-Google-Smtp-Source: AGHT+IFWA+NXItEk15KRrI3cEY2/hp7KUfcLGuLlC8iP184T/bplNut7AjkaNMhp6lc3+Czi7SkTIw==
+X-Received: by 2002:a17:903:110e:b0:1cf:51f9:197b with SMTP id n14-20020a170903110e00b001cf51f9197bmr1361054plh.23.1701621448844;
+        Sun, 03 Dec 2023 08:37:28 -0800 (PST)
+Received: from calvin.localdomain ([2804:14d:5c5e:6991::1000])
+        by smtp.gmail.com with ESMTPSA id q32-20020a17090a17a300b002860a7acca1sm6998750pja.10.2023.12.03.08.37.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 03 Dec 2023 08:37:28 -0800 (PST)
+Date:   Sun, 3 Dec 2023 13:37:24 -0300
+From:   Jonas Malaco <jonas@protocubo.io>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Aleksa Savic <savicaleksa83@gmail.com>,
+        linux-hwmon@vger.kernel.org
+Subject: Re: [PATCH] hwmon: nzxt: Fix some error handling path in
+ kraken2_probe()
+Message-ID: <jhsc6llznv6ba5j73azramykyqfzvoxq7ynv3xxxef4svgs7yh@ccdtwinfvmdn>
+References: <a768e69851a07a1f4e29f270f4e2559063f07343.1701617030.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/3] dt-bindings: riscv: starfive: add Milkv Mars board
-Content-Language: en-US
-To:     Jisheng Zhang <jszhang@kernel.org>,
-        Conor Dooley <conor@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-References: <20231202153353.635-1-jszhang@kernel.org>
- <20231202153353.635-3-jszhang@kernel.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231202153353.635-3-jszhang@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <a768e69851a07a1f4e29f270f4e2559063f07343.1701617030.git.christophe.jaillet@wanadoo.fr>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -126,15 +75,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/12/2023 16:33, Jisheng Zhang wrote:
-> Add device tree bindings for the Milkv Mars board which is
-> equipped with StarFive JH7110 SoC.
+On Sun, Dec 03, 2023 at 04:24:05PM +0100, Christophe JAILLET wrote:
+> There is no point in calling hid_hw_stop() if hid_hw_start() has failed.
+> There is no point in calling hid_hw_close() if hid_hw_open() has failed.
 > 
-> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+> Update the error handling path accordingly.
+> 
+> Fixes: 82e3430dfa8c ("hwmon: add driver for NZXT Kraken X42/X52/X62/X72")
+> Reported-by: Aleksa Savic <savicaleksa83@gmail.com>
+> Closes: https://lore.kernel.org/all/121470f0-6c1f-418a-844c-7ec2e8a54b8e@gmail.com/
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 > ---
+> Closes added to please checkpatch, not sure if relevant here.
+> ---
+>  drivers/hwmon/nzxt-kraken2.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/hwmon/nzxt-kraken2.c b/drivers/hwmon/nzxt-kraken2.c
+> index 428c77b5fce5..7caf387eb144 100644
+> --- a/drivers/hwmon/nzxt-kraken2.c
+> +++ b/drivers/hwmon/nzxt-kraken2.c
+> @@ -161,13 +161,13 @@ static int kraken2_probe(struct hid_device *hdev,
+>  	ret = hid_hw_start(hdev, HID_CONNECT_HIDRAW);
+>  	if (ret) {
+>  		hid_err(hdev, "hid hw start failed with %d\n", ret);
+> -		goto fail_and_stop;
+> +		return ret;
+>  	}
+>  
+>  	ret = hid_hw_open(hdev);
+>  	if (ret) {
+>  		hid_err(hdev, "hid hw open failed with %d\n", ret);
+> -		goto fail_and_close;
+> +		goto fail_and_stop;
+>  	}
+>  
+>  	priv->hwmon_dev = hwmon_device_register_with_info(&hdev->dev, "kraken2",
+> -- 
+> 2.34.1
+> 
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+That was a silly mistake from me. Thanks for finding and fixing it.
 
-Best regards,
-Krzysztof
-
+Reviewed-by: Jonas Malaco <jonas@protocubo.io>
