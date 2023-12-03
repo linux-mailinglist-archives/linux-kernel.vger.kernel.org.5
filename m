@@ -2,86 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19BA280264B
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 19:38:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AC1C80264F
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 19:40:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233841AbjLCSiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 13:38:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48178 "EHLO
+        id S229572AbjLCSkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 13:40:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjLCSiG (ORCPT
+        with ESMTP id S229548AbjLCSkf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 13:38:06 -0500
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D029ADA;
-        Sun,  3 Dec 2023 10:38:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=HLV8YOVDigNgWOz0plPakVj5s9mqkHpb2at7e7OE9i8=; b=maVOiZenfrED7JgoNTkfQoYl6E
-        xnjzKhI7F2GN6XDMO1Dy2rjMf3sVIlFb1qsKR6FYxdxRR46ZRliG+7ekpTyC40QnvmRBMUT7Ze6Md
-        aFoKgrKfZGMWlHEHSndFe/iVqCgjt1O4OpTznUqPS0iA7cYAt0plIPyUSxW1MEjsAtb0=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1r9rLw-001uPa-IS; Sun, 03 Dec 2023 19:38:04 +0100
-Date:   Sun, 3 Dec 2023 19:38:04 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Kory Maincent <kory.maincent@bootlin.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Russ Weight <russ.weight@linux.dev>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
+        Sun, 3 Dec 2023 13:40:35 -0500
+Received: from mail11.truemail.it (mail11.truemail.it [IPv6:2001:4b7e:0:8::81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E07EDA;
+        Sun,  3 Dec 2023 10:40:38 -0800 (PST)
+Received: from gaggiata.pivistrello.it (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
+        by mail11.truemail.it (Postfix) with ESMTPA id 5DE06201D4;
+        Sun,  3 Dec 2023 19:40:31 +0100 (CET)
+Received: from livingston (unknown [192.168.42.11])
+        by gaggiata.pivistrello.it (Postfix) with ESMTP id 0C5E67F9C0;
+        Sun,  3 Dec 2023 19:40:31 +0100 (CET)
+Received: from pivi by livingston with local (Exim 4.96)
+        (envelope-from <francesco@dolcini.it>)
+        id 1r9rOI-0000pW-2v;
+        Sun, 03 Dec 2023 19:40:30 +0100
+Date:   Sun, 3 Dec 2023 19:40:30 +0100
+From:   Francesco Dolcini <francesco@dolcini.it>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, devicetree@vger.kernel.org,
-        Dent Project <dentproject@linuxfoundation.org>
-Subject: Re: [PATCH net-next v2 3/8] net: pse-pd: Introduce PSE types
- enumeration
-Message-ID: <69292ed5-63d3-4316-9bab-630bd00ce807@lunn.ch>
-References: <20231201-feature_poe-v2-0-56d8cac607fa@bootlin.com>
- <20231201-feature_poe-v2-3-56d8cac607fa@bootlin.com>
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, Andrew Davis <afd@ti.com>,
+        Andrew Lunn <andrew@lunn.ch>, Arnd Bergmann <arnd@arndb.de>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Chen-Yu Tsai <wens@kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michal Simek <michal.simek@amd.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Nishanth Menon <nm@ti.com>, Olof Johansson <olof@lixom.net>,
+        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Konrad Dybcio <konradybcio@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-rockchip@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org,
+        linux-amlogic@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        workflows@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v4] docs: dt-bindings: add DTS Coding Style document
+Message-ID: <ZWzLns9CPK3xeTzG@livingston.pivistrello.it>
+References: <20231203174622.18402-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231201-feature_poe-v2-3-56d8cac607fa@bootlin.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231203174622.18402-1-krzysztof.kozlowski@linaro.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +/**
-> + * enum - Types of PSE controller.
-> + *
-> + * @PSE_UNKNOWN: Type of PSE controller is unknown
-> + * @PSE_PODL: PSE controller which support PoDL
-> + * @PSE_C33: PSE controller which support Clause 33 (PoE)
-> + */
-> +enum {
-> +	PSE_UNKNOWN = BIT(0),
-> +	PSE_PODL = BIT(1),
-> +	PSE_C33 = BIT(2),
-> +};
+Hello Krzysztof,
 
-Maybe this should be in the netlink API?
+On Sun, Dec 03, 2023 at 06:46:22PM +0100, Krzysztof Kozlowski wrote:
+> Document preferred coding style for Devicetree sources (DTS and DTSI),
+> to bring consistency among all (sub)architectures and ease in reviews.
+> 
+> Cc: Andrew Davis <afd@ti.com>
+> cc: Andrew Lunn <andrew@lunn.ch>
+> Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Bjorn Andersson <andersson@kernel.org>
+> Cc: Chen-Yu Tsai <wens@kernel.org>
+> Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Cc: Matthias Brugger <matthias.bgg@gmail.com>
+> Cc: Michal Simek <michal.simek@amd.com>
+> Cc: Neil Armstrong <neil.armstrong@linaro.org>
+> Cc: Nishanth Menon <nm@ti.com>
+> Cc: Olof Johansson <olof@lixom.net>
+> Cc: Rafał Miłecki <zajec5@gmail.com>
+> Acked-by: Neil Armstrong <neil.armstrong@linaro.org>
+> Acked-by: Heiko Stuebner <heiko@sntech.de>
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Acked-by: Konrad Dybcio <konradybcio@kernel.org>
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-I think you can imply it by looking at what properties are in the
-netlink reply, but having it explicitly is probably better.
-ethtool(1) can default to PSE_PODL if the property is missing for an
-older kernel.
+Reviewed-by: Francesco Dolcini <francesco.dolcini@toradex.com>
 
-      Andrew
+Francesco
+
