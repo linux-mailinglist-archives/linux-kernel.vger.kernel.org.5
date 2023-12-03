@@ -2,60 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FC938026D5
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 20:33:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D4C98026D7
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 20:33:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234023AbjLCTdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 14:33:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53764 "EHLO
+        id S234077AbjLCTdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 14:33:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233996AbjLCTdX (ORCPT
+        with ESMTP id S233944AbjLCTd3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 14:33:23 -0500
-Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A67111A
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 11:33:26 -0800 (PST)
-Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-5c8c26cf056so42215287b3.1
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Dec 2023 11:33:26 -0800 (PST)
+        Sun, 3 Dec 2023 14:33:29 -0500
+Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBF771AA;
+        Sun,  3 Dec 2023 11:33:28 -0800 (PST)
+Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-5d279bcce64so42084617b3.3;
+        Sun, 03 Dec 2023 11:33:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20230601; t=1701632005; x=1702236805; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Ngf7R2trkvhy5az0BJAYMgMmwp9GyrCv5kj64azD/XY=;
-        b=IwKOPKag07y4huwL4cYByFMZ4ox6UM2TxGUgmyL7qXkNd4B7hk/1v3OP3uTVD45TUl
-         6KRVs0b5ttTlv8O5W1j3phXev8jg+zHmAoJ0BopucQxDnAOxjcJFU5V49926lpD6MtZE
-         8vQET7xJBeOxn9bpPOA4PffBWwA9jV2s0gx0BBbRvwcn3+f95geuyT3QQtdfGDkJ0DN7
-         dw4WAy0A9a0uzFQjFGygqKOfnBPdf8vfREUnqO5Tjjk16Zf2zcJwcAYrTS1vU0qKKc1m
-         QAkmnJgTVxG/eFZy6PW1SoXROBd+mQCRGwiBlZMVjLdxESyXXYkv4GeEeLLcbpqsGIhr
-         RRCA==
+        bh=Bi6EtRexnxsYKFo0M3vY7B0gbt3XJMUCNtf5IqfsGHw=;
+        b=EkpNMf9DpQ7W8Mp6QjkU0cIPZuVbJ16SAG8Xg+8rjko6MSuYFCiW1yipNzJ89BaIa8
+         JXtNqUX/OPRL5gb+ti+X4b8W0ZMDRw2i2iWWObtL+nh4tU9IF93a6tvK4uqYjNgRCrFQ
+         wrFH0rN8N4HUXeervioH+IaoN/fPV67x9dKnaGdV/gfS2WZRioFfFj4q687Po3FPxhIl
+         WNnlhRkAUAKmWUMJrjFHNxTT/8HlrxYxYbiTVzP249rkR4JsMsc6IhXxHbvNHTWtx3IJ
+         d4VJLXVQFMK9JvrT5H2wZQasJMq9c4M0Z0T/YxzxbTrIeLNM1KK2T2j8aFfl6zqhcpeU
+         1SjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1701632005; x=1702236805;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Ngf7R2trkvhy5az0BJAYMgMmwp9GyrCv5kj64azD/XY=;
-        b=KRdfzlhDkbdWLogLJJhRPaE8voIIyd88qjKSKJ1m29er7d/DTo5N7vzxn8fl+MoKOA
-         tPWRJ4iNnJpPc7U0uRdGwlctisxh1fxy5CcKG94oPJWua7mXbZ57dYRDzELg2CkMhL7m
-         oXzw6UcFB6v8WhUeQAoMtGlv3WjTJOUShawUrjrRR8bOuZZFSU6dEZ/4o0xbOcEHPD6V
-         9zCwVCPvt9RcuF1g33NMZIvCyocdBxDnbWNoS2MuVpg0zjoz6S2Ee1QP9oYU2ErF58tb
-         oyt82QH3+y5c93zFQc1u+TVbkFlEpQV6uHxTbil2wCDgDvFIhc7iifZHCjAbwTCOkS4/
-         w0iQ==
-X-Gm-Message-State: AOJu0Yzs37z+mZG2/b2FDxN/eonWUiSUMEzWPtXi5VlwJClU5ico1r2o
-        P148ucVkYobeLseSJvYgqBdEB2VbhjOSgg==
-X-Google-Smtp-Source: AGHT+IGAhPIRobNSBd8Xh5ROPApH6LYXWQ7wTkKlfC05Y42RMAU/7AhplYR/16C573v1Ku+fj2bMHA==
-X-Received: by 2002:a81:af4c:0:b0:5d7:1941:2c1e with SMTP id x12-20020a81af4c000000b005d719412c1emr2165207ywj.75.1701632003638;
-        Sun, 03 Dec 2023 11:33:23 -0800 (PST)
+        bh=Bi6EtRexnxsYKFo0M3vY7B0gbt3XJMUCNtf5IqfsGHw=;
+        b=svpMYiwALevcZgRp5d91HBH8b9w7lfX0oHaB5NgSiWK6Khetj9AvEYnJScYAapFYTN
+         rKLksaB8JBTe3bN2JYby7sMxgYExgoLKmbX+OAkoQm8Dvkjlbz9r8479dZ1EXioro1s4
+         LlJc72DJdlHfmRaAyLlL4Bm3f3RkVR/fzbfMzoCvcJ5PlyiEnVVgMMEHt9Vpy9JVUqkv
+         BUm6DngnWEoUJ6df5UnsvUQmlYl+6JCtxO7CZHux0y48hNy3BTmjTGIVrkix4Ywp3Fxn
+         ct1HCPD5nxuZnnIOprN0tBQOS7/QOKUQRLk6Yxra1hxKVowffMhyjyp4Ela+z1LTmUAm
+         rezw==
+X-Gm-Message-State: AOJu0YxvXl2HaNV3SKWANWxoKVq+fIWm4dPoP5V6cllbx1kQWm74ZMHX
+        EtzWmoiaE6DVT8O/r6tQraD7ge8sSykUfg==
+X-Google-Smtp-Source: AGHT+IFhD23ll2GtzppIVNMZfHEwsNDR4k5+P3y4tWDr9NcAD1wxCeSFg7SG3St40uUjOOI2P8JViQ==
+X-Received: by 2002:a81:b725:0:b0:5d7:eb34:5bf with SMTP id v37-20020a81b725000000b005d7eb3405bfmr933036ywh.3.1701632005220;
+        Sun, 03 Dec 2023 11:33:25 -0800 (PST)
 Received: from localhost ([2601:344:8301:57f0:cb98:c3e:57c:8191])
-        by smtp.gmail.com with ESMTPSA id z14-20020a814c0e000000b005d14e254367sm2752264ywa.80.2023.12.03.11.33.22
+        by smtp.gmail.com with ESMTPSA id c22-20020a814e16000000b005d875372a84sm300300ywb.38.2023.12.03.11.33.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Dec 2023 11:33:22 -0800 (PST)
+        Sun, 03 Dec 2023 11:33:24 -0800 (PST)
 From:   Yury Norov <yury.norov@gmail.com>
-To:     linux-kernel@vger.kernel.org,
-        Shuai Xue <xueshuai@linux.alibaba.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-arm-kernel@lists.infradead.org
+To:     linux-kernel@vger.kernel.org, Fenghua Yu <fenghua.yu@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org
 Cc:     Yury Norov <yury.norov@gmail.com>, Jan Kara <jack@suse.cz>,
         Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
         Matthew Wilcox <willy@infradead.org>,
@@ -65,9 +63,9 @@ Cc:     Yury Norov <yury.norov@gmail.com>, Jan Kara <jack@suse.cz>,
         Alexey Klimov <klimov.linux@gmail.com>,
         Bart Van Assche <bvanassche@acm.org>,
         Sergey Shtylyov <s.shtylyov@omp.ru>
-Subject: [PATCH v2 09/35] drivers/perf: optimize ali_drw_get_counter_idx() by using find_bit()
-Date:   Sun,  3 Dec 2023 11:32:41 -0800
-Message-Id: <20231203193307.542794-8-yury.norov@gmail.com>
+Subject: [PATCH v2 10/35] dmaengine: idxd: optimize perfmon_assign_event()
+Date:   Sun,  3 Dec 2023 11:32:42 -0800
+Message-Id: <20231203193307.542794-9-yury.norov@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231203193307.542794-1-yury.norov@gmail.com>
 References: <20231203192422.539300-1-yury.norov@gmail.com>
@@ -88,33 +86,32 @@ The function searches used_mask for a set bit in a for-loop bit by bit.
 We can do it faster by using atomic find_and_set_bit().
 
 Signed-off-by: Yury Norov <yury.norov@gmail.com>
-Acked-by: Will Deacon <will@kernel.org>
+Reviewed-by: Dave Jiang <dave.jiang@intel.com>
+Acked-by: Vinod Koul <vkoul@kernel.org>
 ---
- drivers/perf/alibaba_uncore_drw_pmu.c | 10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
+ drivers/dma/idxd/perfmon.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/perf/alibaba_uncore_drw_pmu.c b/drivers/perf/alibaba_uncore_drw_pmu.c
-index 19d459a36be5..2a3b7701d568 100644
---- a/drivers/perf/alibaba_uncore_drw_pmu.c
-+++ b/drivers/perf/alibaba_uncore_drw_pmu.c
-@@ -274,15 +274,9 @@ static const struct attribute_group *ali_drw_pmu_attr_groups[] = {
- static int ali_drw_get_counter_idx(struct perf_event *event)
+diff --git a/drivers/dma/idxd/perfmon.c b/drivers/dma/idxd/perfmon.c
+index fdda6d604262..4dd9c0d979c3 100644
+--- a/drivers/dma/idxd/perfmon.c
++++ b/drivers/dma/idxd/perfmon.c
+@@ -134,13 +134,9 @@ static void perfmon_assign_hw_event(struct idxd_pmu *idxd_pmu,
+ static int perfmon_assign_event(struct idxd_pmu *idxd_pmu,
+ 				struct perf_event *event)
  {
- 	struct ali_drw_pmu *drw_pmu = to_ali_drw_pmu(event->pmu);
--	int idx;
-+	int idx = find_and_set_bit(drw_pmu->used_mask, ALI_DRW_PMU_COMMON_MAX_COUNTERS);
- 
--	for (idx = 0; idx < ALI_DRW_PMU_COMMON_MAX_COUNTERS; ++idx) {
--		if (!test_and_set_bit(idx, drw_pmu->used_mask))
--			return idx;
--	}
+-	int i;
 -
--	/* The counters are all in use. */
--	return -EBUSY;
-+	return idx < ALI_DRW_PMU_COMMON_MAX_COUNTERS ? idx : -EBUSY;
+-	for (i = 0; i < IDXD_PMU_EVENT_MAX; i++)
+-		if (!test_and_set_bit(i, idxd_pmu->used_mask))
+-			return i;
++	int i = find_and_set_bit(idxd_pmu->used_mask, IDXD_PMU_EVENT_MAX);
+ 
+-	return -EINVAL;
++	return i < IDXD_PMU_EVENT_MAX ? i : -EINVAL;
  }
  
- static u64 ali_drw_pmu_read_counter(struct perf_event *event)
+ /*
 -- 
 2.40.1
 
