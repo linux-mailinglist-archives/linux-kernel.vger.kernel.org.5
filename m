@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37F4F80234E
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 12:43:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBF3980234B
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 12:43:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233448AbjLCLnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 06:43:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59686 "EHLO
+        id S230256AbjLCLng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 06:43:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjLCLnc (ORCPT
+        with ESMTP id S233393AbjLCLnc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 3 Dec 2023 06:43:32 -0500
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EA68FF
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7667BCB
         for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 03:43:38 -0800 (PST)
-Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-50bc053a9a7so4880277e87.1
+Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2c9fe0b5b28so2374881fa.1
         for <linux-kernel@vger.kernel.org>; Sun, 03 Dec 2023 03:43:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701603816; x=1702208616; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1701603817; x=1702208617; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Aam3IeZZYou7qOiCLTfYpnFJoW7z3fkJsLhT2kv0/so=;
-        b=aubHynUWayLjEk/toIzXpDUGsLaop4D0ZeEQydzx4oSX1bBhe9k2d85a545W/cuao9
-         RgdzqLWgJxdG/6LKlAkQX3hFUF4Slh2pwYbFSbO/CK+QJnVyoxO+Yfxn/gKfCPuIBab/
-         jdmSOrkNxQo8O93KavUU0tOJOdwMQpgKMg+z+iTpT2SOrN2ngc494rDAIuXRtsSqOPF5
-         n92ffSh0y8oI+pSCOxP0opBwVmLQ1x8EDjQ7IHXrog61UceTGYT67PAmLG5SNCmw5hIM
-         Ujkuws2pr04zo1CRngKsoHzBcDiQnIA0Bz2CoV1d/nduRNsJ8OgSrA9LB2VqePTqKeSX
-         Y3dA==
+        bh=Vgu14wOUYfk/aPZS3WEVtfQrsxZGJfAenmY4bb1CTCI=;
+        b=ZTldTEWjWGqZvbGUdzbsS/7n6xPBHQ0Ok8MwF7aqrrgUdtL2XXSxDBqngAOs2XJXxE
+         F/qr2JvgMWptJvtat6f+rmPDxrLIIj8lxyYRzI1TCyWISGFozLdYpOSLiNLeHkNf5MAx
+         KZYV0+CG6uOjDNAhzvyV2Lbsmwcl8RYF4zujX4UHdqj36u1U085I/HBZSMHcLQOns7ca
+         G84JHSMf2IHRvkKLZwepgbMQa6zNbfRAGXvEmgO6n1YNYY4lzBHI3Mc8TqCQaKKc2bAp
+         AG9eI9fiDWDdLo9w4UfJB61SYCZU1faa/kHNzkZPn6xl4HGl9T6UTSnfF+UZUaplbkPU
+         9oWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701603816; x=1702208616;
+        d=1e100.net; s=20230601; t=1701603817; x=1702208617;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Aam3IeZZYou7qOiCLTfYpnFJoW7z3fkJsLhT2kv0/so=;
-        b=NaDccJtl5LGWR7W6uVi3LV7n/mddtmPp0yIoYOPywEZr5P1E3Fx5Tt9g8Jixwo98Lv
-         Yd5nzw77glH5Aqz6YZlOMKqzCVZTkrYpefVNCbgmGIgBye5n0E/17RFpWy9A6A0hnLFy
-         SqsHAmoz3olYPmj7yNStYfkBUuN6ejgpLLoFhbH+nwW1TBFGH03w5yOoiMhxzp17h3Xg
-         f6akvy0dXXOk0Gu0oZJP8ltNEsYFfzByJowjup2zx+6xR/ibBwFB9xRIk3BmItqtfUzY
-         i7z4wC0mt5+yfAY5weTQGNfxlYmzGqSQsryyQZOScYCWt1SpNWWEmWZP5zfAYEGTWHVu
-         ZTBQ==
-X-Gm-Message-State: AOJu0YxgleWMM+Y2FkVoeLF8Fyw4SIgm57Sl+aN53t7L5iqsVuVPuloP
-        i3Eo+QjVPqeULYxIgS60586RxQ==
-X-Google-Smtp-Source: AGHT+IGQOl1f6KMGAm7kO5TDXZyrRAW/4peDnzvo3+EM4Ij4eFCpMQ47UXHc7VDNe3+gkvzZ/FZ8Dg==
-X-Received: by 2002:a19:2d05:0:b0:50b:f0e5:70fd with SMTP id k5-20020a192d05000000b0050bf0e570fdmr191998lfj.103.1701603816108;
+        bh=Vgu14wOUYfk/aPZS3WEVtfQrsxZGJfAenmY4bb1CTCI=;
+        b=smTyzG1dg969CXgHFcpSPRiu+Jy9uaRanR3VH7o+0iG1cJ3DhYfo4OHVR+k+VoID91
+         Jf08pWrSrJg44/D6Cy7oO0TH7A8Na5bQFeyJ9SpAJIftmY4JciWDnDuEp2B55HQ5WO6z
+         YIreAVlgxXo+M0Mg2sWH6NaBPvjr7vFyaSkKT+Fvv19rbIaaqaFex6u3UO42GrxJDSvH
+         mIw8nUPJOBYzCpzMybDYrDjpcOsP6CKgSMseQ97DdTjXvcSqUnQ+nCelzVatE7LijE+h
+         h6nqpu47DF3G8Ol9GvPVYaKWxoMuaZ+ovo5GuqkWySfOncubM3Trn2KSuOzmgzzA8xdb
+         IBSA==
+X-Gm-Message-State: AOJu0YzFLxlxwj5mUFudStDPymTwobBCgt1z+/wSkS176eQibDpP+SgL
+        M9FFQiRCfhqA607yFqShvuEAQQ==
+X-Google-Smtp-Source: AGHT+IGpdl7fWJQIGxRsBqrjE7aHBfv9IPEeR4THl/btbgpbWHaLxkg6rn7d/QZw8P7QZDpNwlZcTA==
+X-Received: by 2002:a2e:a3c6:0:b0:2c9:d862:c64a with SMTP id w6-20020a2ea3c6000000b002c9d862c64amr2041950lje.55.1701603816803;
         Sun, 03 Dec 2023 03:43:36 -0800 (PST)
 Received: from umbar.unikie.fi ([192.130.178.91])
-        by smtp.gmail.com with ESMTPSA id o17-20020a2e90d1000000b002c993c5d4c6sm894666ljg.105.2023.12.03.03.43.35
+        by smtp.gmail.com with ESMTPSA id o17-20020a2e90d1000000b002c993c5d4c6sm894666ljg.105.2023.12.03.03.43.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Dec 2023 03:43:35 -0800 (PST)
+        Sun, 03 Dec 2023 03:43:36 -0800 (PST)
 From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         David Airlie <airlied@gmail.com>,
@@ -72,10 +72,10 @@ To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Konrad Dybcio <konrad.dybcio@linaro.org>
 Cc:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
         linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        freedreno@lists.freedesktop.org, Vinod Koul <vkoul@kernel.org>
-Subject: [PATCH RESEND 2/6] phy: qcom: qmp-combo: switch to DRM_AUX_BRIDGE
-Date:   Sun,  3 Dec 2023 14:43:29 +0300
-Message-Id: <20231203114333.1305826-3-dmitry.baryshkov@linaro.org>
+        freedreno@lists.freedesktop.org
+Subject: [PATCH RESEND 3/6] usb: typec: nb7vpq904m: switch to DRM_AUX_BRIDGE
+Date:   Sun,  3 Dec 2023 14:43:30 +0300
+Message-Id: <20231203114333.1305826-4-dmitry.baryshkov@linaro.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231203114333.1305826-1-dmitry.baryshkov@linaro.org>
 References: <20231203114333.1305826-1-dmitry.baryshkov@linaro.org>
@@ -95,65 +95,66 @@ Switch to using the new DRM_AUX_BRIDGE helper to create the
 transparent DRM bridge device instead of handcoding corresponding
 functionality.
 
-Acked-by: Vinod Koul <vkoul@kernel.org>
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 ---
- drivers/phy/qualcomm/Kconfig              |  2 +-
- drivers/phy/qualcomm/phy-qcom-qmp-combo.c | 44 ++---------------------
+ drivers/usb/typec/mux/Kconfig      |  2 +-
+ drivers/usb/typec/mux/nb7vpq904m.c | 44 ++----------------------------
  2 files changed, 3 insertions(+), 43 deletions(-)
 
-diff --git a/drivers/phy/qualcomm/Kconfig b/drivers/phy/qualcomm/Kconfig
-index d891058b7c39..846f8c99547f 100644
---- a/drivers/phy/qualcomm/Kconfig
-+++ b/drivers/phy/qualcomm/Kconfig
-@@ -63,7 +63,7 @@ config PHY_QCOM_QMP_COMBO
+diff --git a/drivers/usb/typec/mux/Kconfig b/drivers/usb/typec/mux/Kconfig
+index 816b9bd08355..5120942f309d 100644
+--- a/drivers/usb/typec/mux/Kconfig
++++ b/drivers/usb/typec/mux/Kconfig
+@@ -40,7 +40,7 @@ config TYPEC_MUX_NB7VPQ904M
+ 	tristate "On Semiconductor NB7VPQ904M Type-C redriver driver"
+ 	depends on I2C
  	depends on DRM || DRM=n
- 	select GENERIC_PHY
- 	select MFD_SYSCON
 -	select DRM_PANEL_BRIDGE if DRM
 +	select DRM_AUX_BRIDGE if DRM_BRIDGE
+ 	select REGMAP_I2C
  	help
- 	  Enable this to support the QMP Combo PHY transceiver that is used
- 	  with USB3 and DisplayPort controllers on Qualcomm chips.
-diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-combo.c b/drivers/phy/qualcomm/phy-qcom-qmp-combo.c
-index 0417856b8e7b..435cd849e82e 100644
---- a/drivers/phy/qualcomm/phy-qcom-qmp-combo.c
-+++ b/drivers/phy/qualcomm/phy-qcom-qmp-combo.c
-@@ -21,7 +21,7 @@
- #include <linux/usb/typec.h>
- #include <linux/usb/typec_mux.h>
- 
+ 	  Say Y or M if your system has a On Semiconductor NB7VPQ904M Type-C
+diff --git a/drivers/usb/typec/mux/nb7vpq904m.c b/drivers/usb/typec/mux/nb7vpq904m.c
+index cda206cf0c38..b17826713753 100644
+--- a/drivers/usb/typec/mux/nb7vpq904m.c
++++ b/drivers/usb/typec/mux/nb7vpq904m.c
+@@ -11,7 +11,7 @@
+ #include <linux/regmap.h>
+ #include <linux/bitfield.h>
+ #include <linux/of_graph.h>
 -#include <drm/drm_bridge.h>
 +#include <drm/bridge/aux-bridge.h>
- 
- #include <dt-bindings/phy/phy-qcom-qmp.h>
- 
-@@ -1419,8 +1419,6 @@ struct qmp_combo {
- 	struct clk_hw dp_link_hw;
- 	struct clk_hw dp_pixel_hw;
+ #include <linux/usb/typec_dp.h>
+ #include <linux/usb/typec_mux.h>
+ #include <linux/usb/typec_retimer.h>
+@@ -70,8 +70,6 @@ struct nb7vpq904m {
+ 	bool swap_data_lanes;
+ 	struct typec_switch *typec_switch;
  
 -	struct drm_bridge bridge;
 -
- 	struct typec_switch_dev *sw;
- 	enum typec_orientation orientation;
- };
-@@ -3191,44 +3189,6 @@ static int qmp_combo_typec_switch_register(struct qmp_combo *qmp)
- }
- #endif
+ 	struct mutex lock; /* protect non-concurrent retimer & switch */
  
--#if IS_ENABLED(CONFIG_DRM)
--static int qmp_combo_bridge_attach(struct drm_bridge *bridge,
--				   enum drm_bridge_attach_flags flags)
+ 	enum typec_orientation orientation;
+@@ -297,44 +295,6 @@ static int nb7vpq904m_retimer_set(struct typec_retimer *retimer, struct typec_re
+ 	return ret;
+ }
+ 
+-#if IS_ENABLED(CONFIG_OF) && IS_ENABLED(CONFIG_DRM_PANEL_BRIDGE)
+-static int nb7vpq904m_bridge_attach(struct drm_bridge *bridge,
+-				    enum drm_bridge_attach_flags flags)
 -{
--	struct qmp_combo *qmp = container_of(bridge, struct qmp_combo, bridge);
+-	struct nb7vpq904m *nb7 = container_of(bridge, struct nb7vpq904m, bridge);
 -	struct drm_bridge *next_bridge;
 -
 -	if (!(flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR))
 -		return -EINVAL;
 -
--	next_bridge = devm_drm_of_get_bridge(qmp->dev, qmp->dev->of_node, 0, 0);
+-	next_bridge = devm_drm_of_get_bridge(&nb7->client->dev, nb7->client->dev.of_node, 0, 0);
 -	if (IS_ERR(next_bridge)) {
--		dev_err(qmp->dev, "failed to acquire drm_bridge: %pe\n", next_bridge);
+-		dev_err(&nb7->client->dev, "failed to acquire drm_bridge: %pe\n", next_bridge);
 -		return PTR_ERR(next_bridge);
 -	}
 -
@@ -161,35 +162,35 @@ index 0417856b8e7b..435cd849e82e 100644
 -				 DRM_BRIDGE_ATTACH_NO_CONNECTOR);
 -}
 -
--static const struct drm_bridge_funcs qmp_combo_bridge_funcs = {
--	.attach	= qmp_combo_bridge_attach,
+-static const struct drm_bridge_funcs nb7vpq904m_bridge_funcs = {
+-	.attach	= nb7vpq904m_bridge_attach,
 -};
 -
--static int qmp_combo_dp_register_bridge(struct qmp_combo *qmp)
+-static int nb7vpq904m_register_bridge(struct nb7vpq904m *nb7)
 -{
--	qmp->bridge.funcs = &qmp_combo_bridge_funcs;
--	qmp->bridge.of_node = qmp->dev->of_node;
+-	nb7->bridge.funcs = &nb7vpq904m_bridge_funcs;
+-	nb7->bridge.of_node = nb7->client->dev.of_node;
 -
--	return devm_drm_bridge_add(qmp->dev, &qmp->bridge);
+-	return devm_drm_bridge_add(&nb7->client->dev, &nb7->bridge);
 -}
 -#else
--static int qmp_combo_dp_register_bridge(struct qmp_combo *qmp)
+-static int nb7vpq904m_register_bridge(struct nb7vpq904m *nb7)
 -{
 -	return 0;
 -}
 -#endif
 -
- static int qmp_combo_parse_dt_lecacy_dp(struct qmp_combo *qmp, struct device_node *np)
- {
- 	struct device *dev = qmp->dev;
-@@ -3440,7 +3400,7 @@ static int qmp_combo_probe(struct platform_device *pdev)
- 	if (ret)
- 		return ret;
+ static const struct regmap_config nb7_regmap = {
+ 	.max_register = 0x1f,
+ 	.reg_bits = 8,
+@@ -461,7 +421,7 @@ static int nb7vpq904m_probe(struct i2c_client *client)
  
--	ret = qmp_combo_dp_register_bridge(qmp);
+ 	gpiod_set_value(nb7->enable_gpio, 1);
+ 
+-	ret = nb7vpq904m_register_bridge(nb7);
 +	ret = drm_aux_bridge_register(dev);
  	if (ret)
- 		return ret;
+ 		goto err_disable_gpio;
  
 -- 
 2.39.2
