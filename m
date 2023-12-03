@@ -2,181 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5330E802214
+	by mail.lfdr.de (Postfix) with ESMTP id A996E802215
 	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 09:58:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233192AbjLCI5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 03:57:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60068 "EHLO
+        id S233235AbjLCI6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 03:58:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjLCI5h (ORCPT
+        with ESMTP id S229600AbjLCI6E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 03:57:37 -0500
+        Sun, 3 Dec 2023 03:58:04 -0500
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B15FE8;
-        Sun,  3 Dec 2023 00:57:43 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55626118;
+        Sun,  3 Dec 2023 00:58:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701593863; x=1733129863;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=fIgYj/pz0YnU67OHlSdQgp575vg0zeIleAakheq2FcQ=;
-  b=NNUgbv1m7ZUfK/wCJbtcTbqOaRyetYLyJBsM1mKdaj9vrSw0KRgLHwFP
-   l081F5ZIJgZMdC/8XWkdiV13rEthI5XrVerabzjY5yFPHQPCFt2w1dY7j
-   OWz0yxu4mUxmsriouYFM3lKkbU3fyiJNRXPjyd80DHZMx/hlKG5WPYkID
-   qCCvJzfiltZG7td2wmyWIWPkVE9vM897TS4VHPcAxuXQX3GhieqwcUrHt
-   EAvubm4H+prvCDkd4a+XgVhPGykCMrCEwQLCIp5psUL5Eriw/73RelHf/
-   dBFq0wcV9ZZ5WPnW2Rj8NDqte1aanyjnWu32xJj1LcvL0QO5Bs4xtPM1o
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10912"; a="373827076"
+  t=1701593890; x=1733129890;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=pwxgIp8PdDhunUKpsg8CBBPWBv/FLnmU8LNT4gluTEA=;
+  b=JEBsNm6ZpjD6vdJlocbNo1BLa7QQ6+Smd20TCKIyIzdTMhUzVkaueDnN
+   PjQr0losMXDNcmEw40ZnjDPoCV14e+rp4qfdMpUCtQCSWFcUU3SZihfsu
+   r36b/fDzapz24My+ugLG1TSyo0P0v0qdscTRNq+XxVdfn4bETHQaLJkH1
+   i6JHGlvizDutjJEfIPFBeEy2hAUmkc/eFbV+nQly/JSwLInGIwUJaGVkT
+   xKrdQM+3lVEr1HhrJdyMOF49cVEbHGSFANeTMIaRTweE8emyc3x0haVpn
+   Yq9kNNjd2BGBVB2XKo8sxn6p0S/Fmw/u+t/f97lELG/ajuQs8Jhmc5T8O
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10912"; a="373827132"
 X-IronPort-AV: E=Sophos;i="6.04,247,1695711600"; 
-   d="scan'208";a="373827076"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2023 00:57:43 -0800
+   d="scan'208";a="373827132"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2023 00:58:09 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10912"; a="1101771107"
+X-IronPort-AV: E=McAfee;i="6600,9927,10912"; a="893671241"
 X-IronPort-AV: E=Sophos;i="6.04,247,1695711600"; 
-   d="scan'208";a="1101771107"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
-  by fmsmga005.fm.intel.com with ESMTP; 03 Dec 2023 00:57:39 -0800
-Message-ID: <a0ef3a4f-88fc-40fe-9891-495d1b6b365b@linux.intel.com>
-Date:   Sun, 3 Dec 2023 16:53:08 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc:     baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
-        Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        Yi Liu <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Yan Zhao <yan.y.zhao@intel.com>, iommu@lists.linux.dev,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 12/12] iommu: Improve iopf_queue_flush_dev()
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-References: <20231115030226.16700-1-baolu.lu@linux.intel.com>
- <20231115030226.16700-13-baolu.lu@linux.intel.com>
- <20231201203536.GG1489931@ziepe.ca>
+   d="scan'208";a="893671241"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orsmga004.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 03 Dec 2023 00:58:09 -0800
+Received: from orsmsx603.amr.corp.intel.com (10.22.229.16) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Sun, 3 Dec 2023 00:58:09 -0800
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Sun, 3 Dec 2023 00:58:09 -0800
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.169)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Sun, 3 Dec 2023 00:58:08 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lTo7oNaScwMC5VxjD08uomzIOpSmixBX7Yz0WZwcu0i62efeOEH4gPw7rmW22pb9pJOlcrsuKPt5pL0NXw1F4vH/4QYYsK+GKyRfCROtEj0uVDonruOjrgDzg9h+yfn7QmXvll/RuEp8O3rGm26b09PdTQV4rWueBX32VAf0QnXN6oBbNcxf/oJYpVeGFwa/XW4TDgPmCYrnXharIWuVWZaBUfMrZOXm2Bh0DYNTCI66iTWPISqwZAfTqhHcltS3/ogczHTRKP8TkSkbLFKlHpFg3qjV5mMCwq6d+BoFvw6vb1BzRZqBDJuJFk+kPpLfGbmrHO0ilmhS1dslkjpFhg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=vST5jH8Th6pejsNd1nllkEi1xyyaAd3mI/KIZ2ihFX8=;
+ b=ST+FSaa2YBDdMFgK3C957PggqKP636WkMk+fmrJ1xAXPcEL95EVAYPqshckeN375LGT2yPvGrgRwY2//TLU1NOJYx4AOf09J80LO64n2zGJC0kmrnuUlCIxaZyYP1RfE//TAtLmZ/JZL7I1B6oae/W2C+x2U8dv4OEQ9eZNyrbwo9EqugacTOx7CLriPWD+HbocHVuWD12TkBiC4l7U6gdezdyJ/5/jrTyqNLE+07hyG3cmU9j1lLdnC8zt2sgtu9p3B8V+ZF5ptG213jNlDkuMnjALB5TZqjMXzIodcSXYm+tKuVa/tqcXvufs7mGa1AdpQnKm2Hup1REW1vHb1Pg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from PH0PR11MB5830.namprd11.prod.outlook.com (2603:10b6:510:129::20)
+ by SJ0PR11MB5816.namprd11.prod.outlook.com (2603:10b6:a03:427::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.32; Sun, 3 Dec
+ 2023 08:58:06 +0000
+Received: from PH0PR11MB5830.namprd11.prod.outlook.com
+ ([fe80::6ffc:93a3:6d7f:383c]) by PH0PR11MB5830.namprd11.prod.outlook.com
+ ([fe80::6ffc:93a3:6d7f:383c%6]) with mapi id 15.20.7046.028; Sun, 3 Dec 2023
+ 08:58:05 +0000
+From:   "Song, Yoong Siang" <yoong.siang.song@intel.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Bjorn Topel <bjorn@kernel.org>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        "Lorenzo Bianconi" <lorenzo@kernel.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        "Willem de Bruijn" <willemb@google.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
+        "Martin KaFai Lau" <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        "Jose Abreu" <joabreu@synopsys.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "xdp-hints@xdp-project.net" <xdp-hints@xdp-project.net>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>
+Subject: RE: [PATCH bpf-next 1/3] xsk: add launch time support to XDP Tx
+ metadata
+Thread-Topic: [PATCH bpf-next 1/3] xsk: add launch time support to XDP Tx
+ metadata
+Thread-Index: AQHaI6lNhMbclA0v6kGITaNu3vmUTbCVV/0AgAHtsgA=
+Date:   Sun, 3 Dec 2023 08:58:05 +0000
+Message-ID: <PH0PR11MB5830B462F82BFFE7E8958B64D887A@PH0PR11MB5830.namprd11.prod.outlook.com>
+References: <20231130162028.852006-1-yoong.siang.song@intel.com>
+        <20231130162028.852006-2-yoong.siang.song@intel.com>
+ <20231201192846.15c9e64e@kernel.org>
+In-Reply-To: <20231201192846.15c9e64e@kernel.org>
+Accept-Language: en-US
 Content-Language: en-US
-From:   Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <20231201203536.GG1489931@ziepe.ca>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH0PR11MB5830:EE_|SJ0PR11MB5816:EE_
+x-ms-office365-filtering-correlation-id: 3de4b8aa-5cd1-415e-54a9-08dbf3ddf687
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: UtVUbBKLL5nQwEdhO7304zYkUBWWivPFpmu9KgCwKeiL0Bt+wTSDUcOkKO81F0q1bd4b1yMTELBlu++xvoCgzpFr7bZIcswiMiK4YbquNTcGPTbgv9DimvjPxaaZ5Y56MRnYRtDmpq6ftLoTOcRL7z73bPPxSprVCLNF2JAGv0+75ThJ69ckvZs3Aimvs5Ft2H0Ig86EvxLh9G6j3RMlJDLsi7A9qZCAwSNMINuz4uS046uOGoKa5FbPInPfqVcZANJNs39CWdM4kWIbS5RKjhUaFbF2njgN1BUW+Ei8a347QWpPM+69FQRkjuJkhfOf2/JHkt7qd6nB2GR0wEl2igJGQalSQY/4euDFapPIXKJ7AFngfDZNNDM+gQXwTr572Tafheb/pmA3J5HGIMD3I7nuLRxXMvW0IFkbOaxsp8K3rwMRFMgC1Ed9L6JdpL1r6lI3g99z0DQzOJ2Advfs0FEvYWPLhBd96V2FyyrI055TW9Vy6B4h7GEkCLsyRSLxQmT02RV91uRpE/IfcrLTTpUW+0oagxH57UV+mi7m0bVcpLUqlWyaGczdDk8uM62VT1iHgwxKyLRfzjHSlGjK6UUA6K7ZYCyt+xYbXeoQE4o/AzqImSqAlYBc8l8pN08N
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5830.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(39860400002)(366004)(346002)(376002)(230922051799003)(186009)(64100799003)(451199024)(1800799012)(7406005)(5660300002)(52536014)(4744005)(7416002)(86362001)(4326008)(8676002)(8936002)(2906002)(38070700009)(41300700001)(33656002)(9686003)(6506007)(53546011)(82960400001)(83380400001)(26005)(478600001)(7696005)(71200400001)(38100700002)(55016003)(122000001)(316002)(54906003)(64756008)(66446008)(66476007)(6916009)(66556008)(66946007)(76116006);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?vWA602wIlieTI+umq1ZnVC5MbgqZpdXWkX3irI97PkoWBW+v0RRgbOcvkmjT?=
+ =?us-ascii?Q?pBqjpp+3q4lqzvYv7UAbXqDCN3D1cKdrZxfXY3l0nTBFI6BgDXdqqCtIdfbY?=
+ =?us-ascii?Q?7k2Z9rnoKr07kH/uZ5QYdGWeMoimuapBNwjKaCxhIBKSl17E8uzNhF2rs4OY?=
+ =?us-ascii?Q?AxrqP22yQhBZt0T9jrMGcXGrOc0q6XSMIzfYbI+UWwx7qu4hUlhmcOIJXq9W?=
+ =?us-ascii?Q?B9oO/GpZWjkozVCCKPB0HQpCLpT970w+d69Z4/qqLrWrRn+RWnejXvT9gA7J?=
+ =?us-ascii?Q?ojEGjtBNIMqV/KE9Pze0rHNy/VA+ouCaJV6ST5vNL0+wJ/UtjabxUlyCUqBB?=
+ =?us-ascii?Q?azmawYuZoA/xeRggqF6GepWAQ3SEniIrsn7HH5y2zLeGCsZHhUI6P++/jzKb?=
+ =?us-ascii?Q?+WBt0Tukp5yCPdbReh7IXkAGB75RWQ/zYY3xtRh1JM064SI7VLJ1Vo1eWKTm?=
+ =?us-ascii?Q?A/3+5e8BAI9JR4lCitH7P4Q4LwhIkT7vrrlsjUvD0VHhgH+Buzb698gaZ8hl?=
+ =?us-ascii?Q?6r055XfgWyGtmkQCXZoHxVp24/mqVlj2zUto32pV6UQp9JHB+rvyb8oQlA0A?=
+ =?us-ascii?Q?klIQYUCndW2Yr096p7km6E1h8rvkvSFo2hyxNMqDPzuqNko/becTvfIh1hnJ?=
+ =?us-ascii?Q?6qsBvD1I8yZoGKmKy+lOmo97aNRQ3I7GKudTqyy1nrcSR01Xo+K6JstZXled?=
+ =?us-ascii?Q?1u5gYojotVCKj3v8ym5QxAPh1T8uzpri99yuk3f8wzP2/oNvHrBb1dDGFdKa?=
+ =?us-ascii?Q?wVSekYyW5DlxRgY0lTzO/MvdMF7MuNC1Gr/qr0ZUWNn4WyhlNbOx2Njv+18L?=
+ =?us-ascii?Q?i1zqFsKyZvnhomLdq2Wz13tnxLHnn7r8VCUYxb9yPiGnrK1bQIqxBc20S1nd?=
+ =?us-ascii?Q?ZsrnIv5JBuMNcYWFh/oXeiO4s2ZMUuCRytPQX/FP6Q3SMbAoWbhR0S3WY5So?=
+ =?us-ascii?Q?NwmaI+WRTH7/nOyHQN17Oiu3w7W8P89P96LPzZRz4XnsutVbAKsx8sDXCOx5?=
+ =?us-ascii?Q?zi8oxcqanqozksOygMoEIzVQLaH6lSzvBmKqAHq1yIjsHWMMZTue3++dx05Y?=
+ =?us-ascii?Q?zKOz4azAT9q77ae+nfS3fNWQC+lkmyKx/10oQSd+NBN3qsiLi9ghx3tqdE8l?=
+ =?us-ascii?Q?mBZPL7MVX6fTjzfY2UsdxEOS32yriIjcFv/xazIdCF1DIvMBkE9LFDq0y5EU?=
+ =?us-ascii?Q?q/G44aN8leepZ6uYx8c6krndGesZhtxS/TIIde1K7fISnGhdhLDTiKxsgENT?=
+ =?us-ascii?Q?yHk/mws9BGv6vKgrpxkkT8Gn5RXnNDBRmM24nyXQVtuDbA1QeHL4A5iOfJbE?=
+ =?us-ascii?Q?gJkBLH2GaicON3hQD48ogLUCfm0DG6xYOJoHBo3GnOHBNB72sKb9RT3msjtP?=
+ =?us-ascii?Q?Uj027C+yXJQ0ErIs49lHAH0AACB6Nq9Z5REIQOE14DwiH7hOs8NZL+VEhUPh?=
+ =?us-ascii?Q?0ZPOZAQET6wbALGtMeJjAVkAxob4QF1aOZ6MyUXEGvEG9/LBW4QtglfvLeTG?=
+ =?us-ascii?Q?zqFYTBoCLV2HjpK13yNEeSHImrA8JIOIeK7T16bmZUwvID53D8bCxxik9/bk?=
+ =?us-ascii?Q?WPRTMdoxIvKbSjeBuL2PzYZbbzfznmuk5wDKlVitx8eWts78Ad13zGaC2HI4?=
+ =?us-ascii?Q?aw=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5830.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3de4b8aa-5cd1-415e-54a9-08dbf3ddf687
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Dec 2023 08:58:05.2423
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: rEBG7JkmexeHzxek2sLS7ocRwxl3EBKH9EX8ZFF/+Q3+4r4N757cxfT9r9Ym87fWq0ajnhcEv+0YHj6xaVE9Ck9jHzNJAjf+LXpFaNzCwRE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB5816
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/2/23 4:35 AM, Jason Gunthorpe wrote:
-> On Wed, Nov 15, 2023 at 11:02:26AM +0800, Lu Baolu wrote:
->> The iopf_queue_flush_dev() is called by the iommu driver before releasing
->> a PASID. It ensures that all pending faults for this PASID have been
->> handled or cancelled, and won't hit the address space that reuses this
->> PASID. The driver must make sure that no new fault is added to the queue.
-> This needs more explanation, why should anyone care?
-> 
-> More importantly, why is*discarding*  the right thing to do?
-> Especially why would we discard a partial page request group?
-> 
-> After we change a translation we may have PRI requests in a
-> queue. They need to be acknowledged, not discarded. The DMA in the
-> device should be restarted and the device should observe the new
-> translation - if it is blocking then it should take a DMA error.
-> 
-> More broadly, we should just let things run their normal course. The
-> domain to deliver the fault to should be determined very early. If we
-> get a fault and there is no fault domain currently assigned then just
-> restart it.
-> 
-> The main reason to fence would be to allow the domain to become freed
-> as the faults should be holding pointers to it. But I feel there are
-> simpler options for that then this..
+On Saturday, December 2, 2023 11:29 AM, Jakub Kicinski wrote:
+>On Fri,  1 Dec 2023 00:20:26 +0800 Song Yoong Siang wrote:
+>> +        name: launch-time
+>> +        doc:
+>> +          HW Time-Based Scheduling (TBS) is supported by the driver.
+>
+>Does this mean fifo "gating" or HW can do reordering?
 
-In the iommu_detach_device_pasid() path, the domain is about to be
-removed from the pasid of device. The IOMMU driver performs the
-following steps sequentially:
-
-1. Clears the pasid translation entry. Thus, all subsequent DMA
-    transactions (translation requests, translated requests or page
-    requests) targeting the iommu domain will be blocked.
-
-2. Waits until all pending page requests for the device's PASID have
-    been reported to upper layers via the iommu_report_device_fault().
-    However, this does not guarantee that all page requests have been
-    responded.
-
-3. Free all partial page requests for this pasid since the page request
-    response is only needed for a complete request group. There's no
-    action required for the page requests which are not last of a request
-    group.
-
-4. Iterate through the list of pending page requests and identifies
-    those originating from the device's PASID. For each identified
-    request, the driver responds to the hardware with the
-    IOMMU_PAGE_RESP_INVALID code, indicating that the request cannot be
-    handled and retries should not be attempted. This response code
-    corresponds to the "Invalid Request" status defined in the PCI PRI
-    specification.
-
-5. Follow the IOMMU hardware requirements (for example, VT-d sepc,
-    section 7.10, Software Steps to Drain Page Requests & Responses) to
-    drain in-flight page requests and page group responses between the
-    remapping hardware queues and the endpoint device.
-
-With above steps done in iommu_detach_device_pasid(), the pasid could be
-re-used for any other address space.
-
-The iopf_queue_discard_dev_pasid() helper does step 3 and 4.
-
-> 
->> The SMMUv3 driver doesn't use it because it only implements the
->> Arm-specific stall fault model where DMA transactions are held in the SMMU
->> while waiting for the OS to handle iopf's. Since a device driver must
->> complete all DMA transactions before detaching domain, there are no
->> pending iopf's with the stall model. PRI support requires adding a call to
->> iopf_queue_flush_dev() after flushing the hardware page fault queue.
-> This explanation doesn't make much sense, from a device driver
-> perspective both PRI and stall cause the device to not complete DMAs.
-> 
-> The difference between stall and PRI is fairly small, stall causes an
-> internal bus to lock up while PRI does not.
-> 
->> -int iopf_queue_flush_dev(struct device *dev)
->> +int iopf_queue_discard_dev_pasid(struct device *dev, ioasid_t pasid)
->>   {
->>   	struct iommu_fault_param *iopf_param = iopf_get_dev_fault_param(dev);
->> +	const struct iommu_ops *ops = dev_iommu_ops(dev);
->> +	struct iommu_page_response resp;
->> +	struct iopf_fault *iopf, *next;
->> +	int ret = 0;
->>   
->>   	if (!iopf_param)
->>   		return -ENODEV;
->>   
->>   	flush_workqueue(iopf_param->queue->wq);
->> +
-> A naked flush_workqueue like this is really suspicious, it needs a
-> comment explaining why the queue can't get more work queued at this
-> point.
-> 
-> I suppose the driver is expected to stop calling
-> iommu_report_device_fault() before calling this function, but that
-> doesn't seem like it is going to be possible. Drivers should be
-> implementing atomic replace for the PASID updates and in that case
-> there is no momement when it can say the HW will stop generating PRI.
-
-Atomic domain replacement for a PASID is not currently implemented in
-the core or driver. Even if atomic replacement were to be implemented,
-it would be necessary to ensure that all translation requests,
-translated requests, page requests and responses for the old domain are
-drained before switching to the new domain. I am not sure whether the
-existing iommu hardware architecture supports this functionality.
-
-Best regards,
-baolu
+Yes, HW will do reordering according to the value of launch time.
+=20
