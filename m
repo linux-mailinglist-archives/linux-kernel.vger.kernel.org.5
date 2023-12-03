@@ -2,89 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1838801FD6
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 00:57:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A17A1801FEF
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 01:08:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232600AbjLBX4z convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 2 Dec 2023 18:56:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59780 "EHLO
+        id S232683AbjLCAI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Dec 2023 19:08:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjLBX4y (ORCPT
+        with ESMTP id S229451AbjLCAIY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Dec 2023 18:56:54 -0500
-Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 842CDC8;
-        Sat,  2 Dec 2023 15:57:00 -0800 (PST)
-Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-58e30de3933so161782eaf.3;
-        Sat, 02 Dec 2023 15:57:00 -0800 (PST)
+        Sat, 2 Dec 2023 19:08:24 -0500
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44938E3
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Dec 2023 16:08:30 -0800 (PST)
+Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-50bd8efb765so2790553e87.1
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Dec 2023 16:08:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701562108; x=1702166908; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zdl2HKrC6VDqcQMieLin647Q0Xn6ap4MwvU9WaW0Y5Q=;
+        b=GNl5uClE/anAmjp7JeAmYnV6SXAADbIPjPF7zlrprW5H+9xjbfKA/2KEElqwDjgqfv
+         pdVHjgQ7twesp966VXRJJIqC5z2PBLxb/4ipPw8xIJAEavcgy1X/8pMLCUdWRUQw/rR2
+         puCOZHM48lWXGjNY79VDkswAkUjiOl9MX5W3X4MZ3ZaCZlU5PS/vcQnSk/ZgC1LXP6Ew
+         r7i4drC4aRCHjiQgH/RcB9KWN9g/6q3V3plrGEc9Ug9Ca6SkaI4FO5H74e0Fa0KQmcFg
+         kwV129Aqj5NWSrNFBzKJUkAkb9AcLFapkjqXtbrneFupuoan0Wf68trRv2cgxxU/CquT
+         2MLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701561420; x=1702166220;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dyAFX5VXBNLiHxSUJrFaDK1h2Fd8kYr2nkmMBD96klk=;
-        b=nyLE8eGts8o1gZtnxXDKop+gHfI9GfKD5FVATuhA5ovkRXyJdsbviah2rCwgLytfJI
-         Tcen5yRkuQUG9g334YrPAPuFumU6BU12zJl2Xl4sEHe0iy3v7cNO6DVFRUQRGLpOBkZL
-         EThsFcuDbgM/Vlf95ykrOGx4FNFslZEabS0yuZFxPfFViRL/+8xaDYVEwbzE+HHPEqoO
-         /8Jw+4jChcFoKyXwUB4p6X0i3BwTVd4nziXfHmXMZE7/AX0rlreexS5Ed6+nbe9Q6XQB
-         uLkRzNbM5tm+z3MQELeD0m2iP+oIYJCM3LNt+OZwiWiOPFxfMkXi5ES/uelJFhNSTdHf
-         ZhDg==
-X-Gm-Message-State: AOJu0YzXTkJNsyvDFvor7cQ0+0SpNNEMTC2kUPItAzVkmy2Q3fFuU6YF
-        iZ4qvTqghlJN613RxKb6LL7n0CctAC/aAej52wk=
-X-Google-Smtp-Source: AGHT+IHvzJ/yen72Iq8iWvF0CMtoAph2WUTrNZS2EDd04xg31B8EzlS/DS+gvHK+cUyAQ9O0zdwCNzqeBe/vXF4cNFo=
-X-Received: by 2002:a05:6358:5e14:b0:16f:ffd6:7cd3 with SMTP id
- q20-20020a0563585e1400b0016fffd67cd3mr2207633rwn.6.1701561419684; Sat, 02 Dec
- 2023 15:56:59 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701562108; x=1702166908;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zdl2HKrC6VDqcQMieLin647Q0Xn6ap4MwvU9WaW0Y5Q=;
+        b=jtajmuL89X1hE9GqKHd8vHM7joeamaEzlEBuqcqbHHNr/HxP+W3AJa7+u+L1l4TYGI
+         SAhjeBvfRN+HphWc+QSba+gtyv/cPS+OYZ1DoGNHItKJKY5GOid1E8NriFQwQvhCBwv1
+         qDkhQnbeTKvPLcU9AsC+dFxn08j6vs4lREl9YQYKarc36SII+8g8vN0wdYin3Nx8LDcS
+         gsAr6oI6SXSz6Yz09DSFubY1dMUOfY8Jxgc4KCpe9vjIglE1UortQMJkAktLoYvWgJCE
+         LWzUnmu8WqNT1e6kBSnJlq1oO5ZLEBUroAXSwVyLZHGQGt/XF7yLlgdaxxwQAoSHbloy
+         fU1g==
+X-Gm-Message-State: AOJu0YzpnlNmNo5TUQ3cwOOHO7X4dOe9cxKiZIHIv2P6zfYmv3LvW9TL
+        n4Op+ya8X337KKrCwnDdRKTm5g==
+X-Google-Smtp-Source: AGHT+IGKKKovG+G/EKvfWVyIsAtKAdovDgxSn7t9v9ctBMOdpY6B633LhdgxF9RCRhAKLajhX41/FA==
+X-Received: by 2002:a05:6512:b20:b0:50b:d764:969c with SMTP id w32-20020a0565120b2000b0050bd764969cmr2043149lfu.128.1701562108507;
+        Sat, 02 Dec 2023 16:08:28 -0800 (PST)
+Received: from ?IPV6:2001:14ba:a0db:1f00::8a5? (dzdqv0yyyyyyyyyyybcwt-3.rev.dnainternet.fi. [2001:14ba:a0db:1f00::8a5])
+        by smtp.gmail.com with ESMTPSA id e14-20020ac2546e000000b0050bbcd68e8bsm830211lfn.47.2023.12.02.16.08.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 02 Dec 2023 16:08:27 -0800 (PST)
+Message-ID: <fa10b293-9c7f-4904-88bf-4ec6528bd0ef@linaro.org>
+Date:   Sun, 3 Dec 2023 02:08:26 +0200
 MIME-Version: 1.0
-References: <20231127220902.1315692-1-irogers@google.com> <20231127220902.1315692-9-irogers@google.com>
- <CAM9d7cjpYHN_Q63sW70vTCisdW=-SzjsrryUUJjgtZ3+9jdxfA@mail.gmail.com> <CAP-5=fXjReF38T_GKohtWd7_7fZjYVnKBj-Fwt+agi1vSWAEdQ@mail.gmail.com>
-In-Reply-To: <CAP-5=fXjReF38T_GKohtWd7_7fZjYVnKBj-Fwt+agi1vSWAEdQ@mail.gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Sat, 2 Dec 2023 15:56:48 -0800
-Message-ID: <CAM9d7chU1Jyurb6bmZOSmeuFky9eN+2Ty7kMrQxyUXN=r0FKvg@mail.gmail.com>
-Subject: Re: [PATCH v5 08/50] perf record: Be lazier in allocating lost
- samples buffer
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Nick Terrell <terrelln@fb.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        "Steinar H. Gunderson" <sesse@google.com>,
-        Liam Howlett <liam.howlett@oracle.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Colin Ian King <colin.i.king@gmail.com>,
-        Dmitrii Dolgov <9erthalion6@gmail.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Ming Wang <wangming01@loongson.cn>,
-        James Clark <james.clark@arm.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        German Gomez <german.gomez@arm.com>,
-        Changbin Du <changbin.du@huawei.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, Li Dong <lidong@vivo.com>,
-        Sandipan Das <sandipan.das@amd.com>,
-        liuwenyu <liuwenyu7@huawei.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
-        Guilherme Amadio <amadio@gentoo.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC] drm/msm/rd: Check PT_PTRACED for cmdstream dumping
+Content-Language: en-GB
+To:     Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org
+Cc:     freedreno@lists.freedesktop.org,
+        Rob Clark <robdclark@chromium.org>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20230914172453.9707-1-robdclark@gmail.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+In-Reply-To: <20230914172453.9707-1-robdclark@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -92,49 +82,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 30, 2023 at 10:29 AM Ian Rogers <irogers@google.com> wrote:
->
-> On Wed, Nov 29, 2023 at 6:09 PM Namhyung Kim <namhyung@kernel.org> wrote:
-> >
-> > On Mon, Nov 27, 2023 at 2:09 PM Ian Rogers <irogers@google.com> wrote:
-> > >
-> > > Wait until a lost sample occurs to allocate the lost samples buffer,
-> > > often the buffer isn't necessary. This saves a 64kb allocation and
-> > > 5.3kb of peak memory consumption.
-> > >
-> > > Signed-off-by: Ian Rogers <irogers@google.com>
-> > > ---
-> > >  tools/perf/builtin-record.c | 29 +++++++++++++++++++----------
-> > >  1 file changed, 19 insertions(+), 10 deletions(-)
-> > >
-> > > diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-> > > index 9b4f3805ca92..b6c8c1371b39 100644
-> > > --- a/tools/perf/builtin-record.c
-> > > +++ b/tools/perf/builtin-record.c
-> > > @@ -1924,21 +1924,13 @@ static void __record__save_lost_samples(struct record *rec, struct evsel *evsel,
-> > >  static void record__read_lost_samples(struct record *rec)
-> > >  {
-> > >         struct perf_session *session = rec->session;
-> > > -       struct perf_record_lost_samples *lost;
-> > > +       struct perf_record_lost_samples *lost = NULL;
-> > >         struct evsel *evsel;
-> > >
-> > >         /* there was an error during record__open */
-> > >         if (session->evlist == NULL)
-> > >                 return;
-> > >
-> > > -       lost = zalloc(PERF_SAMPLE_MAX_SIZE);
-> >
-> > To minimize the allocation size, this can be
-> > sizeof(*lost) + session->machines.host.id_hdr_size
-> > instead of PERF_SAMPLE_MAX_SIZE.
->
-> Sounds good, should probably be a follow up. The current size is
-> PERF_SAMPLE_MAX_SIZE.
+On 14/09/2023 20:24, Rob Clark wrote:
+> From: Rob Clark <robdclark@chromium.org>
+> 
+> So, when you want to get a cmdstream trace of some deqp or piglit test,
+> but you happen to be running it on the same laptop with full desktop
+> env, the current dump-everything firehose of `cat $debugfs/dri/n/rd` is
+> quite a bit too much.  Ptrace seemed kind of a natural way to control
+> it, ie. either run what you want to trace under gdb or hack in a
+> ptrace(PTRACE_TRACEME) call.
+> 
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
+> ---
+>   drivers/gpu/drm/msm/msm_gem_submit.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
 
-Yep, I'm ok with having it as a follow-up.
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-Acked-by: Namhyung Kim <namhyung@kernel.org>
+I think this is a good idea, to be able to separate process being 
+debugged and all other tasks.
 
-Thanks,
-Namhyung
+> 
+> diff --git a/drivers/gpu/drm/msm/msm_gem_submit.c b/drivers/gpu/drm/msm/msm_gem_submit.c
+> index a908373cf34b..a105ca1f2102 100644
+> --- a/drivers/gpu/drm/msm/msm_gem_submit.c
+> +++ b/drivers/gpu/drm/msm/msm_gem_submit.c
+> @@ -979,7 +979,8 @@ int msm_ioctl_gem_submit(struct drm_device *dev, void *data,
+>   	/* The scheduler owns a ref now: */
+>   	msm_gem_submit_get(submit);
+>   
+> -	msm_rd_dump_submit(priv->rd, submit, NULL);
+> +	if (current->ptrace & PT_PTRACED)
+> +		msm_rd_dump_submit(priv->rd, submit, NULL);
+>   
+>   	pm_runtime_get_sync(&gpu->pdev->dev);
+>   
+
+-- 
+With best wishes
+Dmitry
+
