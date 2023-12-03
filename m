@@ -2,74 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 321A98022DA
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 12:27:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 362058022E6
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 12:27:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233578AbjLCL0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 06:26:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52942 "EHLO
+        id S233597AbjLCL06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 06:26:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233477AbjLCL0i (ORCPT
+        with ESMTP id S233507AbjLCL0j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 06:26:38 -0500
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25766FF
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 03:26:44 -0800 (PST)
-Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2c9eca5bbaeso12852651fa.3
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Dec 2023 03:26:44 -0800 (PST)
+        Sun, 3 Dec 2023 06:26:39 -0500
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3267710E
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 03:26:45 -0800 (PST)
+Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2c9f572c4c5so10412961fa.2
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Dec 2023 03:26:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701602802; x=1702207602; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1701602803; x=1702207603; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=2WSOjrDN/6/FPqqfnjx8kzs7rgpm6bARfoNrfKT8u5o=;
-        b=wY6DJRqd7I9nU/n0JJVBF07JVrKVCfdeWjtfUxL0fUI7aJfdYuNcO0trvhvUtsKG1I
-         bSoKMoRpffuSabhkSrx7Zz5JMTV/oQh1Xt3Ubh6f4vinX9vLgruq7nu3J2CW7M71iS1h
-         mzoP/ZELBlkO7KY4Z/4rMViZH8d2gZmnpPKZR041SzKKrwbVFLykbJu6GN9lWqZpPtoz
-         Ewe+xWTIHWVB4VCHl5AiSZCA4lmwG2j2P18oo96B2fkLYBZbgky+NLUAMbjanHyAJHMc
-         CixagGyMSeJGAV8CJZnktnkxeF1U/7cHezcGud+z0Eh3UWJuvkUdai1e6ll7RTXco/Ko
-         T3xA==
+        bh=TYIyCDkC/kqd/JcF0O3oBfyGO8lhYZEcVarBXABCrBw=;
+        b=z3GgnW1zBXtX8GUsY3VMT/iYFhJgt5Evr++/HawDhuw647Obg68L8xyYvUqt4VxfEG
+         l4ZgcWU3jej5yo4836ZuH9m1U3r7amPJ7uXrK0IhnA7Qx5Oy5uIyjuJ58KdhdgEOFkAh
+         XaMRs6sT75GmhoRuCuM8bLVKCcsVBfsxuhOVgT+1inxCZnva5Wywi6+3QD+iWpHDTo/A
+         wl2iGzwAwL+0Zze9hs1l8BiKe10eEhR/qMLS5AfdvSnE47fqUQeC9jtondaY6/VhS9tv
+         e4Tt6IAzmbn/Lvgz/NXkX1SNvhEPylVvlD6ZELvDGb+xu91Od+fmTdE/0xP7carkSU0K
+         ZNHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701602802; x=1702207602;
+        d=1e100.net; s=20230601; t=1701602803; x=1702207603;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=2WSOjrDN/6/FPqqfnjx8kzs7rgpm6bARfoNrfKT8u5o=;
-        b=K34Sw8oHnYtUGQ0e4iCS76qk1r4tsGnI3QMwvMI/N/+02wiP2ZciLWh4ko2jezB7jN
-         hBZmwA+DiHqcBWjnHNAgxr1s51O/6zV1QKDh7YxI8atqYrZ8Tx7x1o47H971+L5YV7e4
-         rocl/Wcngqao3k7B+QFfNh0FWs+2iXm5366YugYeHjNmUeJWyRSAwdMLnEl64kheN0H4
-         +V/qQ8mOf2e3vvjtbb2X58rEVTpigjo6kLepryCB/C+f/biPaSsvEW1SmhC7esoVQ3e4
-         jyLf+HcgtdRvJ7CSK8VJTu3N1y6//0pGYdDilIi8KdvPGKSXlm6/uVGJe6RN0CcjAnz9
-         5ssQ==
-X-Gm-Message-State: AOJu0YzMz6Tm80tFpjnVQA0lgd9uLXHgpuUjZ9lakt4D6y+FwekkfREE
-        QR5pk1GO7HEsaf8J+tBbDTABXg==
-X-Google-Smtp-Source: AGHT+IHynZOlSfJkcuHWfgzZaQed2kczEHlHE2eWDEQkdE5lbgHNM141ZJ4rYNfMifeay+hwSL6g0w==
-X-Received: by 2002:a05:6512:4894:b0:50b:e88a:1092 with SMTP id eq20-20020a056512489400b0050be88a1092mr290454lfb.174.1701602802514;
-        Sun, 03 Dec 2023 03:26:42 -0800 (PST)
+        bh=TYIyCDkC/kqd/JcF0O3oBfyGO8lhYZEcVarBXABCrBw=;
+        b=s4Ng6Qa0FnjrdDNMuvpOGfALIltPa1Ny37VEpvvYZnKehgpKigPVZxDB3CMz9BaTkk
+         e2zRW95z0wnNfpZFC+RA7vsqv+ASrQQlg2fwS8KRpcTRbmT3K9sEbGrUJoOUYSn2xcuo
+         gvo0IP5QZEO508KSShHiDc0F6HAoZbaUu0cruKnP4cN1QFj+1lCYVOeZrR2RJa1tk9/a
+         1AkN7I2ZVnT4PQPuEnLP78DUF9g2Jt8lQn/IoCAcUcblSd0MOkRJBtq9oye+c/Tl5Flf
+         yqe3TR52siQqCwbdAv7u2WTI0G5g1n6/AHkAc7ScBTfGduT3sdZwPto/kZw6lfS7b3ve
+         fpqw==
+X-Gm-Message-State: AOJu0YwM+/pvpDiOxZl7PWtzvHE/Kk46R5N+9xWKKzhjlnkMYZDMo0mn
+        kRcbVSq9S44jOf9i2MEmLgG7fw==
+X-Google-Smtp-Source: AGHT+IGkd+42bCTta1PfLIbw2fWVI0/Gsi2Zxy2u8tGHbjUtLnbjt5NNhDwljHVNXb84baNOjl2LcQ==
+X-Received: by 2002:a05:6512:23a1:b0:50b:d764:76ef with SMTP id c33-20020a05651223a100b0050bd76476efmr3048680lfv.126.1701602803553;
+        Sun, 03 Dec 2023 03:26:43 -0800 (PST)
 Received: from umbar.unikie.fi ([192.130.178.91])
-        by smtp.gmail.com with ESMTPSA id b9-20020ac25629000000b0050bf01760a1sm241224lff.295.2023.12.03.03.26.41
+        by smtp.gmail.com with ESMTPSA id b9-20020ac25629000000b0050bf01760a1sm241224lff.295.2023.12.03.03.26.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Sun, 03 Dec 2023 03:26:42 -0800 (PST)
 From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-To:     freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
+To:     Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
         Sean Paul <sean@poorly.run>,
         Marijn Suijten <marijn.suijten@somainline.org>,
         David Airlie <airlied@gmail.com>,
         Daniel Vetter <daniel@ffwll.ch>,
-        Archit Taneja <architt@codeaurora.org>,
-        Chandan Uddaraju <chandanu@codeaurora.org>,
-        Jeykumar Sankaran <jsanka@codeaurora.org>,
-        Rajesh Yadav <ryadav@codeaurora.org>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>
-Cc:     dri-devel@lists.freedesktop.org, quic_jesszhan@quicinc.com,
-        quic_parellan@quicinc.com, nespera@igalia.com,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] drm/msm/dpu: fail dpu_plane_atomic_check() based on mdp clk limits
-Date:   Sun,  3 Dec 2023 14:26:27 +0300
-Message-Id: <170160265549.1305159.13000009091015495983.b4-ty@linaro.org>
+        Bjorn Andersson <andersson@kernel.org>,
+        Bjorn Andersson <quic_bjorande@quicinc.com>
+Cc:     linux-arm-msm@vger.kernel.org, Rob Clark <robdclark@chromium.org>,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/msm/dpu: Add missing safe_lut_tbl in sc8180x catalog
+Date:   Sun,  3 Dec 2023 14:26:28 +0300
+Message-Id: <170160265538.1305159.8059575871895403270.b4-ty@linaro.org>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230911221627.9569-1-quic_abhinavk@quicinc.com>
-References: <20230911221627.9569-1-quic_abhinavk@quicinc.com>
+In-Reply-To: <20231130-sc8180x-dpu-safe-lut-v1-1-a8a6bbac36b8@quicinc.com>
+References: <20231130-sc8180x-dpu-safe-lut-v1-1-a8a6bbac36b8@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -84,22 +82,20 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Mon, 11 Sep 2023 15:16:26 -0700, Abhinav Kumar wrote:
-> Currently, dpu_plane_atomic_check() does not check whether the
-> plane can process the image without exceeding the per chipset
-> limits for MDP clock. This leads to underflow issues because the
-> SSPP is not able to complete the processing for the data rate of
-> the display.
+On Thu, 30 Nov 2023 16:35:01 -0800, Bjorn Andersson wrote:
+> Similar to SC8280XP, the misconfigured SAFE logic causes rather
+> significant delays in __arm_smmu_tlb_sync(), resulting in poor
+> performance for things such as USB.
 > 
-> Fail the dpu_plane_atomic_check() if the SSPP cannot process the
-> image without exceeding the MDP clock limits.
+> Introduce appropriate SAFE values for SC8180X to correct this.
+> 
 > 
 > [...]
 
 Applied, thanks!
 
-[2/2] drm/msm/dpu: try multirect based on mdp clock limits
-      https://gitlab.freedesktop.org/lumag/msm/-/commit/e6c0de5f4450
+[1/1] drm/msm/dpu: Add missing safe_lut_tbl in sc8180x catalog
+      https://gitlab.freedesktop.org/lumag/msm/-/commit/7cc2621f16b6
 
 Best regards,
 -- 
