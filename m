@@ -2,58 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C152F8026D8
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 20:33:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0926A8026DE
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 20:34:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233987AbjLCTdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 14:33:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56938 "EHLO
+        id S234132AbjLCTdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 14:33:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233978AbjLCTda (ORCPT
+        with ESMTP id S234025AbjLCTdd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 14:33:30 -0500
-Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BE3F1B9;
-        Sun,  3 Dec 2023 11:33:29 -0800 (PST)
-Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-5cdc0b3526eso31270867b3.1;
-        Sun, 03 Dec 2023 11:33:29 -0800 (PST)
+        Sun, 3 Dec 2023 14:33:33 -0500
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED178FC;
+        Sun,  3 Dec 2023 11:33:30 -0800 (PST)
+Received: by mail-yb1-xb2d.google.com with SMTP id 3f1490d57ef6-db539ab8e02so2126318276.0;
+        Sun, 03 Dec 2023 11:33:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701632007; x=1702236807; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1701632009; x=1702236809; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=GfnViHUiQRdwcyME4SHx6F8gnhZe+b7onoGZNvEd7Lo=;
-        b=CLVoDE06/t7TFnnUngsr17zC9Qcw6Vmyt2yrp9ryZaZN7Sx7Ew2VX4izCIgSrXanMz
-         xIx0/FOjQ53WIVrAdpFetdOy1B1FWe76LqL8tjXuj/ZpuVqcl++zOORBlBXG+3y/mt0O
-         sS7XlBLi0TcSniDEwXKMd9UELELXhnvEOaHsuBPTqN07jzqo6LMksM6qJyZJdT7R0TwN
-         EdvNzik6dW0z+nCFCXCwgHM/BVmw8uS6HeFc5hpBvKTM7rJ3raazptCS+/oqM3LoKQnE
-         LsYUrNlheIDlFe9q4D5mNTwKMdcfaLMsNNsyJ47cKj5k+1uNq7uyuEhJcG4czt56nB33
-         AhGg==
+        bh=S2bgHWfqDyO3lNVNF7Er5ockraMzuQx9Kc/cYil1cOo=;
+        b=mXM/GQNhSGvUH5dY0iRIV7P63pGxaAk57QQSDEZP+DAM7nTnnmYpXmPEB+TLQhRz1s
+         67hsLViH79+OO15fdCSSIvuna1YnDa2Ezj26WVDWYUdnPHVhYz0h/mXmDyy459y/ZM+F
+         bI5Hs28bPXYrt99IQlrRzwtZxhuwi72wTGspqpolISMr93m3a4sX/5QXCZ5P3diAvyzx
+         xuONh6botTUHc9jJuZPq3xat1pKD1DlfHl0l5h2LvkVeYFDqijSjCuK3KvUGQEMXEmGz
+         32LiKzIrtYl+2QeYqRsSl9JUh2uCtSCSd2hkT0bNXqoMqX4tNKG9YZcyUdIr10CVpc8x
+         UUJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701632007; x=1702236807;
+        d=1e100.net; s=20230601; t=1701632009; x=1702236809;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=GfnViHUiQRdwcyME4SHx6F8gnhZe+b7onoGZNvEd7Lo=;
-        b=Ps3jD5MCHdfRWZj4+7Fo51+GyagCp3tlxdoxdF7UX1tmoYUubxurvuVt6E9Vdd0+SR
-         MWL/7ZTuKqXHzygJq3qJUMoAGA1spqjFwb2gRbbEXT1uIk1iBR57obm8VoMkXkbQuQUD
-         jFpmcG7W9PGf65XgTz83K3B04E/QWGOFp6OVaTlp57VyJYFND+vphWRi16pQ98saKccq
-         gT0mjq4dZZh7HcEIb9lXsZP0jQLFIlgcIozVIzHheL7xU3R8f6l6X4tV5BdSuEAf8Hig
-         oFtCL413+ar+t2s03DX0XCFJgm3TtR9P2ivkSP7W8zgatqtByk0e84kYH1IJfUy2s+AD
-         3E/g==
-X-Gm-Message-State: AOJu0YzGt5Ul1Qsz0N22sug7KVzmOfwMQXRTNzyo9RXCs2K/LbrydL7S
-        rCkLHUwsWl+9anJjI78ECO4z529MKdGKcA==
-X-Google-Smtp-Source: AGHT+IG6vqhh+2ikOpv4+3EIQGSuGL/ROzm2e227H32GQng8dg5JFKm7uLPR9UVsyHGBiPnhm3niaQ==
-X-Received: by 2002:a81:af07:0:b0:5d4:90a:566d with SMTP id n7-20020a81af07000000b005d4090a566dmr1786895ywh.4.1701632007152;
-        Sun, 03 Dec 2023 11:33:27 -0800 (PST)
+        bh=S2bgHWfqDyO3lNVNF7Er5ockraMzuQx9Kc/cYil1cOo=;
+        b=FHIrlkrUq++h7nYPmoSDrOGgzW0ivBekkTWvkmdFvzcQQMIOdaLU/o72C4CLV5Gau3
+         043v8oscl3R+BdccFP4WiQa/K7DtWz6Ea94lhQycftGm0zVB2e9ySgT9hmFIsR+Fc3qk
+         xfa9+I8cII59K2rG9UkBksXBl4mjzUoQdniyqXl2lJh23SwpOO0j1udhh8IoLAz46Zy/
+         6lQaKEkeIE1vrk2WbPaEs7gFbFqKyt6uPvjZuBPywFzVcdXykJgDtPLcbyscDz6DrtS2
+         MNElcOU9Un0ArbFy//bYxqFt8/4M4UnrmXaYjJEqn4m0hbYgLQMguAt8/lE4INFCrnhY
+         xe4w==
+X-Gm-Message-State: AOJu0YzxtMpeqJvAnqoMoeJfiH+Unb6nJeczrufc0FIaKA9Xd6UyxgA0
+        j9ai5kwxgxe8WyRIshAubxsg4jzGw7vCAw==
+X-Google-Smtp-Source: AGHT+IETTzlb51Pnj/XyEVoHB9AyqyMCKMnSKLn74ys+Zqx8CWiQjFdSiKyVyEzB+LTTNvzxPlUbxQ==
+X-Received: by 2002:a25:cf14:0:b0:db7:dacf:ed7f with SMTP id f20-20020a25cf14000000b00db7dacfed7fmr1778995ybg.96.1701632008700;
+        Sun, 03 Dec 2023 11:33:28 -0800 (PST)
 Received: from localhost ([2601:344:8301:57f0:cb98:c3e:57c:8191])
-        by smtp.gmail.com with ESMTPSA id t9-20020a817809000000b005d3500ea9fasm2730455ywc.10.2023.12.03.11.33.25
+        by smtp.gmail.com with ESMTPSA id v18-20020a259112000000b00d9cbf2aabc6sm1763099ybl.14.2023.12.03.11.33.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Dec 2023 11:33:26 -0800 (PST)
+        Sun, 03 Dec 2023 11:33:28 -0800 (PST)
 From:   Yury Norov <yury.norov@gmail.com>
-To:     linux-kernel@vger.kernel.org, Kalle Valo <kvalo@kernel.org>,
-        Jeff Johnson <quic_jjohnson@quicinc.com>,
-        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, Ping-Ke Shih <pkshih@realtek.com>,
+        Kalle Valo <kvalo@kernel.org>, linux-wireless@vger.kernel.org
 Cc:     Yury Norov <yury.norov@gmail.com>, Jan Kara <jack@suse.cz>,
         Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
         Matthew Wilcox <willy@infradead.org>,
@@ -63,9 +62,9 @@ Cc:     Yury Norov <yury.norov@gmail.com>, Jan Kara <jack@suse.cz>,
         Alexey Klimov <klimov.linux@gmail.com>,
         Bart Van Assche <bvanassche@acm.org>,
         Sergey Shtylyov <s.shtylyov@omp.ru>
-Subject: [PATCH v2 11/35] ath10k: optimize ath10k_snoc_napi_poll() by using find_bit()
-Date:   Sun,  3 Dec 2023 11:32:43 -0800
-Message-Id: <20231203193307.542794-10-yury.norov@gmail.com>
+Subject: [PATCH v2 12/35] wifi: rtw88: optimize rtw_pci_tx_kick_off() by using find_bit()
+Date:   Sun,  3 Dec 2023 11:32:44 -0800
+Message-Id: <20231203193307.542794-11-yury.norov@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231203193307.542794-1-yury.norov@gmail.com>
 References: <20231203192422.539300-1-yury.norov@gmail.com>
@@ -82,34 +81,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ath10k_snoc_napi_poll() traverses pending_ce_irqs bitmap bit by bit.
-We can do it faster by using for_each_test_and_clear_bit() iterator.
+rtw_pci_tx_kick_off() traverses tx_queued bitmap bit by bit. We can do it
+faster by using atomic for_each_test_and_clear_bit() iterator.
 
 Signed-off-by: Yury Norov <yury.norov@gmail.com>
 ---
- drivers/net/wireless/ath/ath10k/snoc.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ drivers/net/wireless/realtek/rtw88/pci.c | 5 ++---
+ drivers/net/wireless/realtek/rtw89/pci.c | 5 +----
+ 2 files changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
-index 2c39bad7ebfb..a1db5a973780 100644
---- a/drivers/net/wireless/ath/ath10k/snoc.c
-+++ b/drivers/net/wireless/ath/ath10k/snoc.c
-@@ -1237,11 +1237,10 @@ static int ath10k_snoc_napi_poll(struct napi_struct *ctx, int budget)
- 		return done;
+diff --git a/drivers/net/wireless/realtek/rtw88/pci.c b/drivers/net/wireless/realtek/rtw88/pci.c
+index 2bfc0e822b8d..a0d69c75a381 100644
+--- a/drivers/net/wireless/realtek/rtw88/pci.c
++++ b/drivers/net/wireless/realtek/rtw88/pci.c
+@@ -789,9 +789,8 @@ static void rtw_pci_tx_kick_off(struct rtw_dev *rtwdev)
+ 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+ 	enum rtw_tx_queue_type queue;
+ 
+-	for (queue = 0; queue < RTK_MAX_TX_QUEUE_NUM; queue++)
+-		if (test_and_clear_bit(queue, rtwpci->tx_queued))
+-			rtw_pci_tx_kick_off_queue(rtwdev, queue);
++	for_each_test_and_clear_bit(queue, rtwpci->tx_queued, RTK_MAX_TX_QUEUE_NUM)
++		rtw_pci_tx_kick_off_queue(rtwdev, queue);
+ }
+ 
+ static int rtw_pci_tx_write_data(struct rtw_dev *rtwdev,
+diff --git a/drivers/net/wireless/realtek/rtw89/pci.c b/drivers/net/wireless/realtek/rtw89/pci.c
+index 14ddb0d39e63..184d41b774d7 100644
+--- a/drivers/net/wireless/realtek/rtw89/pci.c
++++ b/drivers/net/wireless/realtek/rtw89/pci.c
+@@ -1077,10 +1077,7 @@ static void rtw89_pci_tx_kick_off_pending(struct rtw89_dev *rtwdev)
+ 	struct rtw89_pci_tx_ring *tx_ring;
+ 	int txch;
+ 
+-	for (txch = 0; txch < RTW89_TXCH_NUM; txch++) {
+-		if (!test_and_clear_bit(txch, rtwpci->kick_map))
+-			continue;
+-
++	for_each_test_and_clear_bit(txch, rtwpci->kick_map, RTW89_TXCH_NUM) {
+ 		tx_ring = &rtwpci->tx_rings[txch];
+ 		__rtw89_pci_tx_kick_off(rtwdev, tx_ring);
  	}
- 
--	for (ce_id = 0; ce_id < CE_COUNT; ce_id++)
--		if (test_and_clear_bit(ce_id, ar_snoc->pending_ce_irqs)) {
--			ath10k_ce_per_engine_service(ar, ce_id);
--			ath10k_ce_enable_interrupt(ar, ce_id);
--		}
-+	for_each_test_and_clear_bit(ce_id, ar_snoc->pending_ce_irqs, CE_COUNT) {
-+		ath10k_ce_per_engine_service(ar, ce_id);
-+		ath10k_ce_enable_interrupt(ar, ce_id);
-+	}
- 
- 	done = ath10k_htt_txrx_compl_task(ar, budget);
- 
 -- 
 2.40.1
 
