@@ -2,50 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71DCC802268
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 11:12:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A593880226D
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 11:14:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232504AbjLCKMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 05:12:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44684 "EHLO
+        id S232628AbjLCKOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 05:14:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjLCKMN (ORCPT
+        with ESMTP id S229450AbjLCKOU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 05:12:13 -0500
-Received: from ahti.lucaweiss.eu (ahti.lucaweiss.eu [128.199.32.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFEC1F3;
-        Sun,  3 Dec 2023 02:12:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=z3ntu.xyz; s=s1;
-        t=1701598336; bh=D98OLD1PzU0av069+SEqgQFkN/5n2xG9ugwljKPGRv4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=YVpST0YXbsjwdBdARgyDVsq31Bsq3mJCmHCXc43oKUXYpvhJymXCPUSHgVxUoSSS7
-         MwmEdqKh5KpfwnKvd9+51+IoQdn7H+ERRpBUQZrRYvtEtT0A+EbWfo8r49po5ZQENi
-         2zGTEIj0lViDIFGbCY4dlpMpozKltr4ik5wieMYw=
-From:   Luca Weiss <luca@z3ntu.xyz>
-To:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Sai Prakash Ranjan <quic_saipraka@quicinc.com>,
-        Bjorn Andersson <andersson@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Matti =?ISO-8859-1?Q?Lehtim=E4ki?= <matti.lehtimaki@gmail.com>
-Subject: Re: (subset) [PATCH 0/3] Add watchdog nodes to msm8226 & msm8974
-Date:   Sun, 03 Dec 2023 11:12:15 +0100
-Message-ID: <8630951.T7Z3S40VBb@z3ntu.xyz>
-In-Reply-To: <170157925797.1717511.7301998654173050568.b4-ty@kernel.org>
-References: <20231011-msm8226-msm8974-watchdog-v1-0-2c472818fbce@z3ntu.xyz>
- <170157925797.1717511.7301998654173050568.b4-ty@kernel.org>
+        Sun, 3 Dec 2023 05:14:20 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7371F3
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 02:14:25 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68FB5C433C7;
+        Sun,  3 Dec 2023 10:14:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701598465;
+        bh=SGw12HvAh6TeQkpp7+yNIE4rnwWaTLqwCH5qBGJLnPo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=NmJ1avpbXG/IdCjt2tV9705sdIZXNYxaRNYb0NrLDWYjC2HRPhwatyCll0V5oRvIC
+         LRcqvi1UI1OApssEtcpQgzI5myhiaDRfGWy9iHvusH5/eFZFyM8WP21OerrNKTtflB
+         k1edi6XjHZFpY4Rh3JzXO7EFua+u/OtTZeTowPwFn5mXQFSkTfHDLGmmjQCkN2Zriz
+         jGLr344AvH2DLlh9vvhYOWDrKZIZeDNCOcrWtOCPrC6788/UTmfAqP+ptVgZDpcYD9
+         scHM14/olcPuel7rjRcG4MlezAJszmFQBcTgGVGSqtmpA0bLOKUXduV8agxgo3ALUk
+         tb3irtm0FktYQ==
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org, sparclinux@vger.kernel.org
+Subject: [PATCH 1/3] sparc: vdso: clean up build artifacts in arch/sparc/vdso/
+Date:   Sun,  3 Dec 2023 19:14:16 +0900
+Message-Id: <20231203101418.1910661-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -54,39 +48,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sonntag, 3. Dezember 2023 05:54:39 CET Bjorn Andersson wrote:
-> On Wed, 11 Oct 2023 18:33:12 +0200, Luca Weiss wrote:
-> > Document the compatible for the watchdog found on both SoCs, and add
-> > them to the SoC dtsi file. And especially for the case where the
-> > bootloader has already enabled the watchdog we need to start petting it
-> > on time, otherwise the system gets rebooted.
-> > 
-> > It's worth noting that the watchdog behaves a bit unexpectedly.
-> > It appears the watchdog counts down significantly slower when there's no
-> > load on the system and can last far longer than 30 seconds until they
-> > bark. Only when putting load on the system, e.g. with stress-ng does the
-> > watchdog interrupt fire and kill the system within an expected amount of
-> > time.
-> > 
-> > [...]
-> 
-> Applied, thanks!
-> 
-> [3/3] ARM: dts: qcom: msm8974: Add watchdog node
->       commit: 95053f6bc8ffca438a261400d7c06bd74e3f106e
+Currently, vdso-image-*.c, vdso*.so, vdso*.so.dbg are not cleaned
+because 'make clean' does not include include/config/auto.conf,
+resulting in $(vdso_img-y) being empty.
 
-Hi Bjorn,
+Add the build artifacts to 'targets' unconditionally.
 
-Any reason you didn't pick up the msm8226 patch? Doesn't seem to be just your
-ty email, I only see the msm8974 patch in 
-https://git.kernel.org/pub/scm/linux/kernel/git/qcom/linux.git/log/?h=arm32-for-6.8
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
 
-Regards
-Luca
+ arch/sparc/vdso/Makefile | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-> 
-> Best regards,
-
-
-
+diff --git a/arch/sparc/vdso/Makefile b/arch/sparc/vdso/Makefile
+index d08c3a0443f3..eb52d0666ffc 100644
+--- a/arch/sparc/vdso/Makefile
++++ b/arch/sparc/vdso/Makefile
+@@ -24,11 +24,8 @@ targets += vdso.lds $(vobjs-y)
+ 
+ # Build the vDSO image C files and link them in.
+ vdso_img_objs := $(vdso_img-y:%=vdso-image-%.o)
+-vdso_img_cfiles := $(vdso_img-y:%=vdso-image-%.c)
+-vdso_img_sodbg := $(vdso_img-y:%=vdso%.so.dbg)
+ obj-y += $(vdso_img_objs)
+-targets += $(vdso_img_cfiles)
+-targets += $(vdso_img_sodbg) $(vdso_img-y:%=vdso%.so)
++targets += $(foreach x, 32 64, vdso-image-$(x).c vdso$(x).so vdso$(x).so.dbg)
+ 
+ CPPFLAGS_vdso.lds += -P -C
+ 
+-- 
+2.40.1
 
