@@ -2,219 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C1338027DE
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 22:33:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0775B8027D9
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Dec 2023 22:33:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233914AbjLCVLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 16:11:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52158 "EHLO
+        id S233930AbjLCVPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 16:15:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjLCVLw (ORCPT
+        with ESMTP id S229450AbjLCVPD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 16:11:52 -0500
-Received: from smtp.smtpout.orange.fr (smtp-27.smtpout.orange.fr [80.12.242.27])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5AC7D0
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 13:11:55 -0800 (PST)
-Received: from [192.168.1.18] ([92.140.202.140])
-        by smtp.orange.fr with ESMTPA
-        id 9tkhrjQzbnYhw9tkhrWksH; Sun, 03 Dec 2023 22:11:53 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1701637913;
-        bh=/iWSzUSCtFxSRa7nJPgd9T8NZlrqaIvJ6JJK7oUVfkU=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=lNeuh7iw0dmLd7K5RcK/cw56GO34h3LHTskBM0f9tZZQQAx7Av1Z3uQFkqwpmbHsv
-         ypXPbhrtsL5+vQMNPwbP+ckmaGZioLgfr9l2wIpMw6S+JRyytKA5+/YpijhJHnxHxf
-         08GD5f04SFs2kw12PjEc1BiU4IGkB9x+RVYu6X5hF3UyzNoZPX03B01rtFy6G3LA0l
-         Gv1ytpLjnipBqwaO4IEl0/6VlQ6TRtDFAfsMlkGgcvZpXtIxG3E5mtzr+PipsrEPBV
-         IgDH0dws3sqVBqjsRQM9aTxwb5bDhtzEthUKjTJ3sJq6Ywq4ROKvs4dDC/ep7/QTHg
-         IXhysDhb5Q1hQ==
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 03 Dec 2023 22:11:53 +0100
-X-ME-IP: 92.140.202.140
-Message-ID: <6eeead27-e1b1-48e4-8a3b-857e1c33496b@wanadoo.fr>
-Date:   Sun, 3 Dec 2023 22:11:46 +0100
+        Sun, 3 Dec 2023 16:15:03 -0500
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C724CD6
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 13:15:08 -0800 (PST)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-304-X4AvT-tEMg2K4WwiKTdRmw-1; Sun, 03 Dec 2023 21:15:05 +0000
+X-MC-Unique: X4AvT-tEMg2K4WwiKTdRmw-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sun, 3 Dec
+ 2023 21:14:49 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Sun, 3 Dec 2023 21:14:49 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Arnd Bergmann' <arnd@arndb.de>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Zack Rusin <zackr@vmware.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "VMware Graphics Reviewers" <linux-graphics-maintainer@vmware.com>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Raul Rangel <rrangel@chromium.org>,
+        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: RE: [PATCH] input/vmmouse: Fix device name copies
+Thread-Topic: [PATCH] input/vmmouse: Fix device name copies
+Thread-Index: AQHaJipxBM/uGJI7Q0K7wjneTI1KYbCYDPww
+Date:   Sun, 3 Dec 2023 21:14:49 +0000
+Message-ID: <f3e6cab719c646bf91265b6fd2887061@AcuMS.aculab.com>
+References: <20231127204206.3593559-1-zack@kde.org>
+ <ZWzLvctpo1nNTMOo@google.com>
+ <d180f06b-64b0-4885-9794-5127c297a0f0@app.fastmail.com>
+In-Reply-To: <d180f06b-64b0-4885-9794-5127c297a0f0@app.fastmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v2 8/8] net: pse-pd: Add PD692x0 PSE controller
- driver
-Content-Language: fr
-To:     Kory Maincent <kory.maincent@bootlin.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Russ Weight <russ.weight@linux.dev>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, devicetree@vger.kernel.org,
-        Dent Project <dentproject@linuxfoundation.org>
-References: <20231201-feature_poe-v2-0-56d8cac607fa@bootlin.com>
- <20231201-feature_poe-v2-8-56d8cac607fa@bootlin.com>
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <20231201-feature_poe-v2-8-56d8cac607fa@bootlin.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 01/12/2023 à 18:10, Kory Maincent a écrit :
-> Add a new driver for the PD692x0 I2C Power Sourcing Equipment controller.
-> This driver only support i2c communication for now.
-> 
-> Sponsored-by: Dent Project <dentproject@linuxfoundation.org>
-> Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
-> ---
-> 
-> This driver is based on the patch merged in an immutable branch from Jakub
-> repo. It is Tagged at:
-> git://git.kernel.org/pub/scm/linux/kernel/git/kuba/linux.git firmware_loader-add-upload-error
-> 
-> Change in v2:
-> - Drop of_match_ptr
-> - Follow the "c33" PoE prefix naming change.
-> - Remove unused delay_recv variable. Then, remove struct pd692x0_msg_content
->    which is similar to struct pd692x0_msg.
-> - Fix a weird sleep loop.
-> - Improve pd692x0_recv_msg for better readability.
-> - Fix a warning reported by Simon on a pd692x0_fw_write_line call.
-> ---
-
-...
-
-> +static int pd692x0_fw_get_next_line(const u8 *data,
-> +				    char *line, size_t size)
-> +{
-> +	size_t line_size;
-> +	int i;
-> +
-> +	line_size = min_t(size_t, size, (size_t)PD692X0_FW_LINE_MAX_SZ);
-
-Nit: useless size_t cast
-> +
-> +	memset(line, 0, PD692X0_FW_LINE_MAX_SZ);
-> +	for (i = 0; i < line_size - 1; i++) {
-> +		if (*data == '\r' && *(data + 1) == '\n') {
-> +			line[i] = '\r';
-> +			line[i + 1] = '\n';
-> +			return i + 2;
-> +		}
-> +		line[i] = *data;
-> +		data++;
-> +	}
-> +
-> +	return 0;
-> +}
-
-...
-
-> +static int pd692x0_i2c_probe(struct i2c_client *client)
-> +{
-> +	struct device *dev = &client->dev;
-> +	struct pd692x0_msg buf = {0};
-> +	struct pd692x0_msg_ver ver;
-> +	struct pd692x0_priv *priv;
-> +	struct fw_upload *fwl;
-> +	int ret;
-> +
-> +	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {
-> +		dev_err(dev, "i2c check functionality failed\n");
-> +		return -ENXIO;
-> +	}
-> +
-> +	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-> +	if (!priv)
-> +		return -ENOMEM;
-> +
-> +	priv->client = client;
-> +	i2c_set_clientdata(client, priv);
-> +
-> +	priv->pcdev.owner = THIS_MODULE;
-> +	priv->pcdev.ops = &pd692x0_ops;
-> +	priv->pcdev.dev = dev;
-> +	priv->pcdev.types = PSE_C33;
-> +	priv->pcdev.of_pse_n_cells = 1;
-> +	priv->pcdev.nr_lines = PD692X0_MAX_LOGICAL_PORTS;
-> +	ret = devm_pse_controller_register(dev, &priv->pcdev);
-> +	if (ret) {
-> +		return dev_err_probe(dev, ret,
-> +				     "failed to register PSE controller\n");
-> +	}
-
-Nit: un-needed {}
-
-> +
-> +	fwl = firmware_upload_register(THIS_MODULE, dev, dev_name(dev),
-> +				       &pd692x0_fw_ops, priv);
-> +	if (IS_ERR(fwl)) {
-> +		dev_err(dev, "Failed to register to the Firmware Upload API\n");
-> +		ret = PTR_ERR(fwl);
-> +		return ret;
-
-Nit: return dev_err_probe()?
-
-> +	}
-> +	priv->fwl = fwl;
-> +
-> +	ret = i2c_master_recv(client, (u8 *)&buf, sizeof(buf));
-> +	if (ret != sizeof(buf)) {
-> +		dev_err(dev, "Failed to get device status\n");
-> +		ret = -EIO;
-> +		goto err_fw_unregister;
-> +	}
-> +
-> +	if (buf.key != 0x03 || buf.echo != 0xff || buf.sub[0] & 0x01) {
-> +		dev_err(dev, "PSE controller error\n");
-> +		ret = -EIO;
-> +		goto err_fw_unregister;
-> +	}
-> +
-> +	if (buf.sub[0] & 0x02) {
-> +		dev_err(dev, "PSE firmware error. Please update it.\n");
-> +		priv->fw_state = PD692X0_FW_BROKEN;
-> +		return 0;
-> +	}
-> +
-> +	ver = pd692x0_get_sw_version(priv);
-> +	dev_info(&client->dev, "Software version %d.%02d.%d.%d\n", ver.prod,
-> +		 ver.maj_sw_ver, ver.min_sw_ver, ver.pa_sw_ver);
-> +
-> +	if (ver.maj_sw_ver != PD692X0_FW_MAJ_VER) {
-> +		dev_err(dev, "Too old firmware version. Please update it\n");
-> +		priv->fw_state = PD692X0_FW_NEED_UPDATE;
-> +		return 0;
-> +	}
-> +
-> +	ret = pd692x0_update_matrix(priv);
-> +	if (ret < 0) {
-> +		dev_err(dev, "Error configuring ports matrix (%pe)\n",
-> +			ERR_PTR(ret));
-> +		goto err_fw_unregister;
-> +	}
-> +
-> +	priv->fw_state = PD692X0_FW_OK;
-> +	return 0;
-> +
-> +err_fw_unregister:
-> +	firmware_upload_unregister(priv->fwl);
-> +	return ret;
-> +}
-
-...
+RnJvbTogQXJuZCBCZXJnbWFubg0KPiBTZW50OiAwMyBEZWNlbWJlciAyMDIzIDIwOjUxDQo+IE9u
+IFN1biwgRGVjIDMsIDIwMjMsIGF0IDE5OjQxLCBEbWl0cnkgVG9yb2tob3Ygd3JvdGU6DQo+ID4g
+T24gTW9uLCBOb3YgMjcsIDIwMjMgYXQgMDM6NDI6MDZQTSAtMDUwMCwgWmFjayBSdXNpbiB3cm90
+ZToNCj4gPj4gRnJvbTogWmFjayBSdXNpbiA8emFja3JAdm13YXJlLmNvbT4NCj4gPj4NCj4gPj4g
+TWFrZSBzdXJlIHZtbW91c2VfZGF0YTo6cGh5cyBjYW4gaG9sZCBzZXJpbzo6cGh5cyAod2hpY2gg
+aXMgMzIgYnl0ZXMpDQo+ID4+IHBsdXMgYW4gZXh0cmEgc3RyaW5nLCBleHRlbmQgaXQgdG8gNjQu
+DQo+ID4+DQo+ID4+IEZpeGVzIGdjYzEzIHdhcm5pbmdzOg0KPiA+PiBkcml2ZXJzL2lucHV0L21v
+dXNlL3ZtbW91c2UuYzogSW4gZnVuY3Rpb24g4oCYdm1tb3VzZV9pbml04oCZOg0KPiA+PiBkcml2
+ZXJzL2lucHV0L21vdXNlL3ZtbW91c2UuYzo0NTU6NTM6IHdhcm5pbmc6IOKAmC9pbnB1dDHigJkg
+ZGlyZWN0aXZlIG91dHB1dCBtYXkgYmUgdHJ1bmNhdGVkIHdyaXRpbmcNCj4gNyBieXRlcyBpbnRv
+IGEgcmVnaW9uIG9mIHNpemUgYmV0d2VlbiAxIGFuZCAzMiBbLVdmb3JtYXQtdHJ1bmNhdGlvbj1d
+DQo+ID4+ICAgNDU1IHwgICAgICAgICBzbnByaW50Zihwcml2LT5waHlzLCBzaXplb2YocHJpdi0+
+cGh5cyksICIlcy9pbnB1dDEiLA0KPiA+PiAgICAgICB8ICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBefn5+fn5+DQo+ID4+IGRyaXZlcnMvaW5wdXQv
+bW91c2Uvdm1tb3VzZS5jOjQ1NTo5OiBub3RlOiDigJhzbnByaW50ZuKAmSBvdXRwdXQgYmV0d2Vl
+biA4IGFuZCAzOSBieXRlcyBpbnRvIGENCj4gZGVzdGluYXRpb24gb2Ygc2l6ZSAzMg0KPiA+PiAg
+IDQ1NSB8ICAgICAgICAgc25wcmludGYocHJpdi0+cGh5cywgc2l6ZW9mKHByaXYtPnBoeXMpLCAi
+JXMvaW5wdXQxIiwNCj4gPj4gICAgICAgfCAgICAgICAgIF5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+
+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+DQo+ID4+ICAgNDU2IHwgICAgICAgICAgICAg
+ICAgICBwc21vdXNlLT5wczJkZXYuc2VyaW8tPnBoeXMpOw0KPiA+PiAgICAgICB8ICAgICAgICAg
+ICAgICAgICAgfn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fg0KPiA+DQo+ID4gVGhpcyBzaW1w
+bHkgd2FzdGVzIDMyIGJ5dGVzLiBJdCBpcyBwZXJmZWN0bHkgZmluZSB0byB0cnVuY2F0ZSBwaHlz
+DQo+ID4gKHdoaWNoIGRvZXMgbm90IGhhcHBlbiBpbiByZWFsIGxpZmUpLg0KPiA+DQo+ID4gLVdm
+b3JtYXQtdHJ1bmNhdGlvbiBpcyBkaXNhYmxlZCBpbiBub3JtYWwgYnVpbGRzLCBmb2xrcyBzaG91
+bGQgc3RvcA0KPiA+IHVzaW5nIGl0IHdpdGggVz0xIGFzIHdlbGwuDQo+IA0KPiBJdCBkb2VzIGZp
+bmQgcmVhbCBidWdzLCBhbmQgd2UgYXJlIGZhaXJseSBjbG9zZSB0byBiZWluZyBhYmxlDQo+IHRv
+IGVuYWJsZSBpdCBieSBkZWZhdWx0IG9uY2UgdGhlIHJlbWFpbmluZyB3YXJuaW5ncyBhcmUgYWxs
+DQo+IGZpeGVkLg0KPiANCj4gSXQgYWxzbyBkb2Vzbid0IHdhc3RlIGFueSBtZW1vcnkgaW4gdGhp
+cyBzcGVjaWZpYyBjYXNlIHNpbmNlDQo+IHZtbW91c2VfZGF0YSBpcyBjdXJyZW50bHkgYXQgMTY4
+IGJ5dGVzLCB3aGljaCBnZXRzIHJvdW5kZWQNCj4gdXAgdG8gZWl0aGVyIDE5MiBvciAyNTYgYnl0
+ZXMgYW55d2F5LiBJJ2Qgc3VnZ2VzdCB1c2luZw0KPiB0aGUgbWluaW11bSBzaXplIHRoYXQgaXMg
+bGFyZ2UgZW5vdWdoIHRob3VnaCwgaW4gdGhpcyBjYXNlDQo+IDM5IGJ5dGVzIGZvciB0aGUgc3Ry
+aW5nIEkgZ3Vlc3MuDQoNClRoYXQgcmF0aGVyIGRlcGVuZHMgb24gd2hldGhlciBhbnkgb2YgdGhl
+IGVhcmxpZXIgY2hhcltdIGxlbmd0aHMNCmhhdmUgYmVlbiByb3VuZGVkIHVwIHRvIGEgJ25pY2Un
+IHZhbHVlLg0KDQpJJ2QgYWxzbyBoYXZlIHRob3VnaHQgdGhhdCBkYW5nZXJvdXMgb3ZlcmZsb3dz
+IHdvdWxkIGNvbWUgZnJvbQ0KdW5ib3VuZGVkICVzIGZvcm1hdHMsIG5vdCBmaXhlZCBzaXplIHN0
+cmluZ3Mgb3IgaW50ZWdlcnMgdGhhdCBhcmUNCmFsd2F5cyBzbWFsbC4NCg0KVGhlcmUgcmVhbGx5
+IG91Z2h0IHRvIGJlIGEgc2FuZSBtZXRob2Qgb2YgdGVsbGluZyBnY2Mgbm90IHRvIGJsZWF0DQph
+Ym91dCBzbnByaW50ZigpIHBvdGVudGlhbGx5IG92ZXJmbG93aW5nIHRoZSB0YXJnZXQuDQoNCkkn
+dmUgdHJpZWQgYSBmZXcgdGhpbmcgYnV0IG5vbmUgb2YgdGhlbSB3b3JrLg0KSUlSQyB1c2luZyB0
+aGUgcmVzdWx0IChpbiBzb21lIHdheXMpIGlzIGVub3VnaCwgYnV0IG5laXRoZXINCih2b2lkKXNu
+cHJpbnRmKC4uLik7IG9yIGlmIChzbnByaW50ZiguLi4pKTsgaXMgZW5vdWdoDQooYnV0IHRoZXkg
+J2ZpeCcgJ3dhcm4gdW51c2VkIHJlc3VsdCcpLg0KDQoJRGF2aWQNCg0KPiANCj4gICAgICBBcm5k
+DQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBG
+YXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2
+IChXYWxlcykNCg==
 
