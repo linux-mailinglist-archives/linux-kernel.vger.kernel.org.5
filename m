@@ -2,384 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D40F8802E5E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:18:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F994802E1C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:13:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232530AbjLDJSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 04:18:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47708 "EHLO
+        id S232071AbjLDJDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 04:03:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbjLDJSB (ORCPT
+        with ESMTP id S229446AbjLDJDM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 04:18:01 -0500
-X-Greylist: delayed 951 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 04 Dec 2023 01:18:06 PST
-Received: from HK2P15301CU002.outbound.protection.outlook.com (unknown [52.101.128.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91E61CD;
-        Mon,  4 Dec 2023 01:18:06 -0800 (PST)
+        Mon, 4 Dec 2023 04:03:12 -0500
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A50CA8;
+        Mon,  4 Dec 2023 01:03:18 -0800 (PST)
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B48wdo8031622;
+        Mon, 4 Dec 2023 09:03:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-11-20;
+ bh=6Ax4+f+MwzV4DGnyjMmazCBeZFOZlZjsyNBYtb0jBaA=;
+ b=o0GKZPumoQOIdK1O0iUHEL3UKABDHzazxssS6ZYf3rTLKCpfdyt3rUevQRfcef4Oo2Wq
+ FKMu+rXaytpKOqozvDELlWZkhyJ8vijCS6pu5vSS/vSG+XRsliMxb5Gnn1pJzxcbpMAb
+ NMOl8YAQmDWjhT8zCqzPioTFyo7MugJGGCrsSntD/wCLBm3kdk9JsotD5N7X/tNIzmr9
+ FsboE6jPnZ/c6GD1NNlvCA/7NB2HyeUJTIAZ1auF+JvEGcPqIjWCT9P68ocyznK8TjR/
+ ijFs/mGNe/JvUq9bzhZlOWIlecZ2tmdUBHtQ5eXLYBnVw208VQyxhLU4bgkV3sXD6ica hA== 
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3usavx86pb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 04 Dec 2023 09:03:03 +0000
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3B47MAcd020749;
+        Mon, 4 Dec 2023 09:03:02 GMT
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2100.outbound.protection.outlook.com [104.47.55.100])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3uqu15htpj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 04 Dec 2023 09:03:02 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bFhx9EE1qlIX+Q7Zyf2D4ZpCzZMNr3lRbCIKNwsDTtJJM87BAH8zaAnoNt51L0PxpUgNGQ6zCNqbma3SLPM0s1s0hWbBfkG8BrI/lvUcLgRjYbt/7OZUwHXgBXkh8en77OT95TxuFa449qZCqPGPi0qqVVdj3Svw6FQ700tMKMoniOudvKi0LSdsEu2PxeRvQbBtCqoLNJV1MqkVucV5EJaeIgQO6akkv7d0+egWQEwllddGSRnja2kd9HosN5Z1Xm1RCc00ESydsNyX9iAcLwF8MPsyFPvR95HqrA2oHqiw6Nl1VkFIfw+xRWewBLALmEhHLIPO4DYHbxshw796jA==
+ b=N4T5j9CY8Tjgi1E8Qb7mi7gxtpNYWzrszsyAg8Ay4cfq6S2vDdzwNNvnBtQvNu9wO3/wOb24nZ0Q11NYPXSiO51nVZQfvWGilHeIME1TAwXFZ0uB5jEYm131XCQn83ZF/tXe4m3yXRrIssQQho2lmOXVIPsAi6HBiWIjKHR8Xvm3MxPGtTscgwWvlkgtCxJg8O6IBMsGGzihYkQ31/ksiouyh3ZibWF6ESNrOBxQdkJDFkAwPOR7gWks1UJktycQXroWpVYx/rQbnk0fQphBPKYxJ3ztMnms5BCIuwE51lHZxrDJjBGeiwc6RQJ3jLiTsE/DsDStIYTN5VEXTrnkVw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FPRXQ7jqmtZEeskhRlZXacQginW086HeJwETaGRIRxk=;
- b=jD0Q+UqaV7BdLrdc29FMYpA8rWOICQYTJg8jZjKOg0GORtISmBV7ySUvdzz2SBFXYr0ApWaUilLJHOar2gngkPBucVNncIB8BPTtw4G3NkPMIbFMuU4t/gORiXiD9yFSUCP5INDqeeoUv6e6/PZkjVRFY8t2HMceSul5yJZnaNcqaTLj5uQFv+r88VxudpKlymx872iuaYGkt+svt3jedpEhI0ymLCQ6lhs+/NW2d/6XWgatdnL1Bja7HDyyWFWo+ZLGfLqJSWPP74YIjrz/QzjMog8d8brYZWjpyePUTLQuH6OJ1cn3KPs7DoTBQWQWnEmnfk0MeRdYrL6V2hSaqg==
+ bh=6Ax4+f+MwzV4DGnyjMmazCBeZFOZlZjsyNBYtb0jBaA=;
+ b=es0ETo2owEnUzOJYFgM4lHko1lbHJxQYC26ch7Bi8OGEIPNIv31auBZqH+NrgbN3Xx+pQFs9bgOZil6iYn3HNwlY0XDcbwHnxVxp19/ujM0IRcLVMxyjEHHGweiXIexiNahj04hlMriUQSYE6p7wz4/22PLZh6UgCVrHUKkYUfgwzTVO8/2j7NQCpzDbG7/7kkkz/0QTz7f4HvAAcXKCIp/edgw31pPK+BCCWF4RZy7dPqYK8QtChnhI6mCN5USgfZzUGbAsjSg4zuY6QtGhyIBRiv3PILb8mVOdcfSb0RmKDhIqYjpndP2S3gSket7BX8YBocqgXnpmVPaJcOLVww==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FPRXQ7jqmtZEeskhRlZXacQginW086HeJwETaGRIRxk=;
- b=P86MHjwHSLnKhJreAOndXGb4UtB+iqaMRFXl+0uXKywffS5JpEy8bXkX89lUNRd/DqGtkXrqVqP/IhDH0aCxVIzBExhtKAHGYBesBR+7nsnpTGpoZydZlqFlZqVdYsWAGGS8boBUo4p4YEN/8oDxrjUdDJmMyaC/DFqV91IknBk=
-Received: from PUZP153MB0788.APCP153.PROD.OUTLOOK.COM (2603:1096:301:fc::10)
- by SI2P153MB0656.APCP153.PROD.OUTLOOK.COM (2603:1096:4:1fb::6) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7091.5; Mon, 4 Dec 2023 09:02:09 +0000
-Received: from PUZP153MB0788.APCP153.PROD.OUTLOOK.COM
- ([fe80::a516:f38b:f94e:b77a]) by PUZP153MB0788.APCP153.PROD.OUTLOOK.COM
- ([fe80::a516:f38b:f94e:b77a%7]) with mapi id 15.20.7091.001; Mon, 4 Dec 2023
- 09:02:08 +0000
-From:   Souradeep Chakrabarti <schakrabarti@microsoft.com>
-To:     Yury Norov <yury.norov@gmail.com>,
-        Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-CC:     Jakub Kicinski <kuba@kernel.org>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        Long Li <longli@microsoft.com>,
-        "sharmaajay@microsoft.com" <sharmaajay@microsoft.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "cai.huoqing@linux.dev" <cai.huoqing@linux.dev>,
-        "ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Paul Rosswurm <paulros@microsoft.com>
-Subject: RE: [EXTERNAL] Re: [PATCH V2 net-next] net: mana: Assigning IRQ
- affinity on HT cores
-Thread-Topic: [EXTERNAL] Re: [PATCH V2 net-next] net: mana: Assigning IRQ
- affinity on HT cores
-Thread-Index: AQHaHIJKVWtqOkYgZ0uGtD+z/VnogLCFcX6AgAh9zECABD4XgIAApIsAgABRp4CABcJ08A==
-Date:   Mon, 4 Dec 2023 09:02:08 +0000
-Message-ID: <PUZP153MB078896BF398A5879FC4B3E61CC86A@PUZP153MB0788.APCP153.PROD.OUTLOOK.COM>
-References: <1700574877-6037-1-git-send-email-schakrabarti@linux.microsoft.com>
- <20231121154841.7fc019c8@kernel.org>
- <PUZP153MB0788476CD22D5AA2ECDC11ABCCBDA@PUZP153MB0788.APCP153.PROD.OUTLOOK.COM>
- <ZWfwcYPLVo+4V8Ps@yury-ThinkPad>
- <20231130120512.GA15408@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <ZWi+94B+N03pItJl@yury-ThinkPad>
-In-Reply-To: <ZWi+94B+N03pItJl@yury-ThinkPad>
-Accept-Language: en-US
+ bh=6Ax4+f+MwzV4DGnyjMmazCBeZFOZlZjsyNBYtb0jBaA=;
+ b=GVl05G3qmWGZ+TXD3GM1PPlqIYhOUnqelRPA9YeR15tPh152T9bEfspkPT/kc2HcHkGBVVDHJS43lrHjdW7rwaCRh+k5W1YgDVpJePCzSJARG+y/RwoZJhxDke09tsz0UfugrTC7aq47GYv34JZXpuhsEuiy39a9P+HTg+b4+gk=
+Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
+ by PH7PR10MB7107.namprd10.prod.outlook.com (2603:10b6:510:27a::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.33; Mon, 4 Dec
+ 2023 09:03:00 +0000
+Received: from DM6PR10MB4313.namprd10.prod.outlook.com
+ ([fe80::102a:f31:30c6:3187]) by DM6PR10MB4313.namprd10.prod.outlook.com
+ ([fe80::102a:f31:30c6:3187%4]) with mapi id 15.20.7046.033; Mon, 4 Dec 2023
+ 09:02:59 +0000
+Message-ID: <2aced048-4d4b-4a48-9a45-049f73763697@oracle.com>
+Date:   Mon, 4 Dec 2023 09:02:56 +0000
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC 1/7] iomap: Don't fall back to buffered write if the write
+ is atomic
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Ojaswin Mujoo <ojaswin@linux.ibm.com>, linux-ext4@vger.kernel.org,
+        Theodore Ts'o <tytso@mit.edu>,
+        Ritesh Harjani <ritesh.list@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        linux-block@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, dchinner@redhat.com
+References: <cover.1701339358.git.ojaswin@linux.ibm.com>
+ <09ec4c88b565c85dee91eccf6e894a0c047d9e69.1701339358.git.ojaswin@linux.ibm.com>
+ <ZWj6Tt1zKUL4WPGr@dread.disaster.area>
+ <85d1b27c-f4ef-43dd-8eed-f497817ab86d@oracle.com>
+ <ZWpZJicSjW2XqMmp@dread.disaster.area>
 Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=070f56b3-0de0-4fd4-8c66-df808ea91856;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-12-04T08:54:43Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PUZP153MB0788:EE_|SI2P153MB0656:EE_
-x-ms-office365-filtering-correlation-id: 5b4fe50c-633d-402f-d335-08dbf4a7b1d3
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 4/ih3uNkuqIOS8zbfvbRD+W6oUtjJjT07PXR3m4nRN3NsZacoep6pw6rIL2qvfsd0XZjRifTgyxUoJg+X3B46gCmT3U/bdG5UaGcHmyBtCGaDoJWQTVY0ugNqDvkTIeXzj5nNnmUiYEKG4jKgkl68qhbFdor6qmnASZs2l/L+71qSWmyQqIhqKTG05lAxTx+UU7rpBWPx7REW07tZbQVPrTvHq2dqrGdZneSWG5BR9tC+sRq67Y50IUMkF3nBCqQthejjMvPOwjHTRBKtJ7K+nc41sCtrEBHNKUhYlj7hXqgRCitvI/Aw4jmOtXQs1perhQuxYmGjFBPkslVjy+snFnonDDxxWSsNtszXWLcYmDsqzk3hY077Y8bKC2U9nrtJNkWbFXeZdXMgg34UlxVwyoEDRiBKjBHlnH/blPifk7IgTjTcPS0+SyAoRoajTkrTMK+2jid+hHnmfaMsi6Ss7DdEBOseqb4rovZSl9cSPBt1Z8KTQciiWbVKA/Kr6uO+6RX26Jq3zpumaApOyAgphIMsl9Y/MKzMnaLdlIFOZoojKmYDI4ueS3q+vjj8WN/7i1jxv11bIhT1SuYi3ZRU0W/jEEaWLWneBCwk87uXvJ46lDf2myqsyUEOlk22SEgoFzhhdv9GrxgvoxTpgIoq2jt5+BtWneYnCLiF4oCXDeeIk8j67CKFr/EUmKWcWmMaWcMxYinEwPZMtArsHtrvTDAwStTWEOuzvZ3vzLgp/qiEMQ/uf/YHQIHEgHDcFbx
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PUZP153MB0788.APCP153.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(376002)(366004)(346002)(136003)(230173577357003)(230273577357003)(230373577357003)(230922051799003)(230473577357003)(1800799012)(186009)(64100799003)(451199024)(55016003)(6506007)(9686003)(7696005)(33656002)(86362001)(966005)(10290500003)(38070700009)(83380400001)(478600001)(107886003)(54906003)(316002)(64756008)(110136005)(76116006)(66556008)(66476007)(66446008)(66946007)(71200400001)(52536014)(8936002)(8676002)(4326008)(7416002)(41300700001)(5660300002)(122000001)(8990500004)(2906002)(38100700002)(82950400001)(82960400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?5pu/+Kuj0ocApqRNTubJ6YkA28nKo/lcDn6K7usHpo66FfHDTzdthEDC5Ntf?=
- =?us-ascii?Q?zdSMKV8D927s4cMwCK9hy5xUfRsZKdca1cvhbhGmWM2KFRALwirvZgzl2OCL?=
- =?us-ascii?Q?gjpAF5KpTutslu+5ZHi1KT0F4jvZXY7590HZ9BT/6MLQxnGgBBnQtgwQ0tH4?=
- =?us-ascii?Q?iZj70h4EO+4EJJcUf9GML7KI64vLFpL6npCZMUqpbpZY6KAM3HKAJmQNAl/Q?=
- =?us-ascii?Q?Qy2Sl+R4oW3A4ZXH6ehcfw9Fwr7wwQBPi1JGzaOCkfqDQupLANHDvzoADb5P?=
- =?us-ascii?Q?yyHL4m3o+HGZLwReG08ZTB3lw8iw6+6SQA+pipGBPO3Nmm7AXtH0UH6Idsmr?=
- =?us-ascii?Q?QTFY5XMMHwz9orZG9xlqhmO42FVKmDM8NcekcSgueDgsn88vLbR+e0s4vPk2?=
- =?us-ascii?Q?zQenGSc+QmzoIOEobxE51pC1ZYifT0D3wOXQqY2N67VqAMKiUmNj0KtYFVyz?=
- =?us-ascii?Q?ip4nR0YTbv03xEf704887MQap6FSeI17qe47a94DcYv1dzkgH5iXr1oN2zBS?=
- =?us-ascii?Q?qO9o01lV/xUDVk+HM+/vCSyC3VTd6CjE/hNg0/qpdB3oKJx09EruITZcyPLr?=
- =?us-ascii?Q?cnzUQv6PvhIH541ePFR3zDuuvxQGpLfr7DBdNiC+pOl2R2hEYv/pJMGbgYo1?=
- =?us-ascii?Q?ndvoIFOhAgSNmhNfqfoF8MQ0tbgVCWzr4Ga+qux0vsCvB19tqosuZE2CJO8S?=
- =?us-ascii?Q?5uKgHyUSLWkD1vhgiHzPBBQV8RnH1WVg8lrssgNCKnX3PegUJpTS0wQdS4gs?=
- =?us-ascii?Q?N3ZHW3SA7t1ifBlLyITB6iKK4s+n3t8u0jc4ry2w0EbIkpl5Wx3Ip5TKkL9R?=
- =?us-ascii?Q?fxtLE6pYt1c5or3I37VB+h1eu2Swi5vmll9BIrgfyaiGH63yOwarMVmIh1//?=
- =?us-ascii?Q?XrFomZbV4ZSp6uFrbokiZ/OkuvKrUejUmf/a/aLELnUnbW3dH1+h5KGwD4s8?=
- =?us-ascii?Q?p0HZwg2acLcXtldkcOFj6xP87Qz38wUePiJagZ6UzX1X5R027laNUawtnqEu?=
- =?us-ascii?Q?CMMn1WbEVfFbuZm2bK4SOeD59WgbBQETo/+Trtf8dEaBmowLZvBNeKS2cbUA?=
- =?us-ascii?Q?GIXwOW9UCTrC5kt8vclXtYZEmBjctWxfXcdTYy/ytrgjgF/ywA2oR5P6Lqze?=
- =?us-ascii?Q?SRFKqwnW7AcmvoWHI7tIaRe8UgtX9J7Rojyf4kpeEPuGAy5DOTy21ovP85zV?=
- =?us-ascii?Q?ShswwkQ/59jljjvIIpg1vWADDWxLBj26XmMfNKnDJ6MVqQRAW0YpzZmCJrP+?=
- =?us-ascii?Q?pxth7vok9twn1s0IDgjXSYjySEdmi3wg902TZHoWUNd3dKJWTsgGOXMmLEK7?=
- =?us-ascii?Q?EX53lf9vWjU8jOG3cSFLnUI1oU9DVh9lnhzWHKm3qCZOXB0jclmDwnAbn80P?=
- =?us-ascii?Q?G2j2vdjPuVHxQDoVX94ZBVBAmkDrLmYTBkxdLOd+Hp6wGH3/jgi/CP72J89x?=
- =?us-ascii?Q?KxT4zIdw9fgJ8o2e4XZxztAjGH9T8qZibwhVBik7mVHjIE9tVQlH6J+9NcuO?=
- =?us-ascii?Q?AlJhubPwcbwvPMsJoz2UVFhxKQPjOi5l5Zbr5wP9Tmj/4/eFaNyNIQw0vPKY?=
- =?us-ascii?Q?bFMt7nkCnN1PLtQGtUCf5O1bBL1H/GelcfsUD9zq?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+From:   John Garry <john.g.garry@oracle.com>
+Organization: Oracle Corporation
+In-Reply-To: <ZWpZJicSjW2XqMmp@dread.disaster.area>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: LO6P265CA0004.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:339::20) To DM6PR10MB4313.namprd10.prod.outlook.com
+ (2603:10b6:5:212::20)
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|PH7PR10MB7107:EE_
+X-MS-Office365-Filtering-Correlation-Id: bc519ff0-dd37-48a7-b69d-08dbf4a7d06e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 34r7fgvcSxvBEOtjCKGY6ZcWe18g4W+OHUfGvoDv8JhxbVXFffJUvWOWMTMfwA75m6R4VxYBoXEoIXzsPQ23AjGsJaDp72BoS27tZEORL6htCRCG6VixrnEEkzsm5MkozsRRIb5SlEJrnXJn4/+4HnTh/NwS7yPtzTsDct7tky+2cl2Io+8TqJA1kqX1rSL7FOxW7fLnTu1SThZJuj7SoPOyfON37cazREAJQfF9LwP3bFY4bjCKFFepxnvQheSs+74ZXGdFBpwO9kl8c1VW16uh1r3ENcaxqUCKhxgtzkvO9GpIhtfkZbHZbJsIAsPzsw7vPW2mWn3C3B90kyPYqAp8FFglLqsuLKoqLMQKX1aFjJaxLAXOuQ1FSHHzGG667yOFpkW6m1YItCO1VtHLSKUFzMjg6ftMUsKxTqpUNnLarRKMMzdX81w7p0HJnqbj+LJKAcNTHHTPOr7ysii22rJJ/BkhCMtyVsZ7Y/PRWrCM4j+P3tztqealLvz1JiNwCY0kZvXiIXpMYkWIAyg3OcwVi4dRfRgfDuDvbFd7rzYWn8fxdhTrV40jfyIyrG3Olpaf3F06/Bb9pqYP1FBHfbSSAQJj0hoyfjMOtox2Nd3zIZeYAZ/tI34PSHkjyG9kOpfZjzmVddlqatox3p1xvQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(366004)(376002)(396003)(136003)(230922051799003)(64100799003)(1800799012)(186009)(451199024)(31686004)(2616005)(4326008)(8936002)(8676002)(6512007)(6506007)(36916002)(53546011)(83380400001)(26005)(6486002)(478600001)(6666004)(66476007)(54906003)(66946007)(66556008)(316002)(6916009)(2906002)(41300700001)(36756003)(38100700002)(86362001)(31696002)(7416002)(5660300002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?djhHUzlHcEowRXNXNjBlcFdMMDRhOHBrM0tTU0hrUWJJcFFkUlRNR09ZaUtT?=
+ =?utf-8?B?dHhNaXQ0dDVVeGhLa2NSMi9oWWx6YVE0R0FkcjVkb3Y0am9URTR1NjZrdExs?=
+ =?utf-8?B?ZkZMUE9ITmF1QnJPRGNtSEpvbHhtZGlzM0tabmVkV2xBMkhiVW0vaWQ5bDdY?=
+ =?utf-8?B?MWVKdW5YQmwxSEd5RXFEcDdUS0s1QXI4b3N4eis5elhBS1h6SytyNkMwM0RZ?=
+ =?utf-8?B?MjRlOXArTkM3RVpPNHYrczdmN1lMMEVFdUlNTi82Uy82ZjBUT3ovMzhEa2lC?=
+ =?utf-8?B?SVlzY01kWU9PV2J1d1Bka1k5SnNRcktmU29rWTV2U1diYXZGNCtiMjdaanJC?=
+ =?utf-8?B?Y25YQW50VXJ1NmdaMG9Ia21WMis5blVLblhUbVhmVk5rTVhDRGJ5VFErbU9R?=
+ =?utf-8?B?azdFdWtsREdzUlNINXBoUlB1Q2NzSEx1YmlUejNiUEFSdWNIcmFKSjFtZ2xX?=
+ =?utf-8?B?WXYyKzRxSGxZY1o2T0hqcy95KzcxazUzM2JHNStFMGJLL0VhajkvN0tudnNl?=
+ =?utf-8?B?U3NSS1dUeWw3RDUrdEtPaWM0eXlnS0ZKZUM1a04wdy9FbGNaQlRWb1lSTmRV?=
+ =?utf-8?B?N1JXU2NFbUpQOWFIZ1JxMWZUeE5adVU0M1FPVTZJRVVqTCtLeXUySDZURGNQ?=
+ =?utf-8?B?ZzgvV2ozSllnYTdPQ2tJdkRSREVvaDYvMTNRNmlrM0MybW0zMS9IRHJJMWc5?=
+ =?utf-8?B?ekMyNitIQXhZTjRaVWsvNlQ5ZDhaV0JaQUhVTDd5RTVOYTBCUHQzdk5OdTQz?=
+ =?utf-8?B?NWhYMTRjMG1qNTdJR3U5TXlJRDlYbS9rMytqQTJ4a05rOUxnTjJBNkhDWTNE?=
+ =?utf-8?B?U0dnTzhFUkxnai9XKzVOYXN4N0p0UERWWVVuQTJaSWRZclkyTnhuUkMyd0hl?=
+ =?utf-8?B?Nk1iZnhqdy8xdERaRkp3UEpCcVNLQW9EbE9ZWGhVN0pNdUE5MlBWeVY1aDgy?=
+ =?utf-8?B?eG9IN3FJQlgxcVZxNzBDUnFsdXJybjc2S2llSnJZMm1HekVUeVVHS2tUZHBR?=
+ =?utf-8?B?azdsSVV0VlJxZUwyb1NCMXVseVJOTkZRV1VTdWxHallwaVV3anZma052bElP?=
+ =?utf-8?B?Q0RseEgzenFhaFVIdWV6RU1NZi80dHZoOFJZeUdVMTBvY2ZPODFxK2VDSTd0?=
+ =?utf-8?B?V3FRRWtZbDcxSTB3NDVpeTNmQ1VIUmdJWVVSQkQxTkhrTWpva1ZnMElvdmpF?=
+ =?utf-8?B?a2Q4RXpSMnhBeXk5eGtNU2RPcmpFelRRTCtxZEExcTh2MFNuM3RlNUUzZE1u?=
+ =?utf-8?B?S3ZnRlJKaGMzaTF0K280VmI4elllZW9rdXJBc0xNb3EwVS9QNVZYOHJ0SHo2?=
+ =?utf-8?B?YTBleEd2UTVDT3RFcEtvYXkzeFQ3cm5qYlpWVkMvbGNuS2MzaW02Wnp4dDdl?=
+ =?utf-8?B?cWEvV0g1SVc4L2RvZDdpQXExRVJlYjRGUmZxM3NqYVA1b0xYRTh1eHFja25B?=
+ =?utf-8?B?ZEJxWVh4UE9sOU9acjJNNDRZWVNHV2ViVUpNb0VXUVMzUHB0cnRsVUI0aFpN?=
+ =?utf-8?B?OERpeGZFYUF1YS9TeDd2WElrMEVFU1NoMVFka0Y3SEZsVml6UXNRcUJabEQ1?=
+ =?utf-8?B?VFdqNmtEQkIyVnhMNzk2eXpFc3ZHR1oySWdYMDU0ejZKZGNEbURWcWpFK2F6?=
+ =?utf-8?B?bTViLzVMOExWTjhmNVVEajVWU281Y0ZONlg3NEZtL2c0RGtCUEZiOEhrbklp?=
+ =?utf-8?B?S21FNDZLd3pxNHFVZksyT01aMjBVUXFFdTRjc0F1SFkwMlVaYUFaZmNmZVQ5?=
+ =?utf-8?B?cHdjaEZWQVNxYzlwbFJGK2M4SE5WQU53ZUdWV29RTzR4YmsrdlNKRFJ0disx?=
+ =?utf-8?B?VmM4VmJac21ndys2dG4yR2VQUTJGYWp2ZFVmd25DcWV1bi9KY2pPTWVtdDRK?=
+ =?utf-8?B?Z3NSY2swc2N6TlBEcUhBRHE4SzUzeERvdUxJYTV3Uy9IWHhNNGdRYy95NTBV?=
+ =?utf-8?B?MDVaRFhpejZ3ZHpHUFRPYmVsSFZyaFZxcTdhREZmLzRLdEo5TU83WS9oUk84?=
+ =?utf-8?B?QldDcFFZRVE4ck8xSWZyS2VNeFZjQmFnT002d3dGazdHbHc2U0VPSDQyQyty?=
+ =?utf-8?B?UGh1TEJXSG9WTHBKcDRqTFJ5d09CeEhlS2xxM1MxQW8rWVA5UzdhWkJhVXNT?=
+ =?utf-8?Q?AFLxnEj6WCeHqZGgsURXyWxdh?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?utf-8?B?aENpZTlKcEV6Y2w2dWcza05Idm01Q3hMdFJoQW1Ra1ZRcDAwN0FnbXFETWl2?=
+ =?utf-8?B?YVUvRisvWStKbVAxVzlaK2c1Szc1Z3NZV3B3VVNNdWwxSEFJSGpTbUVqdHdl?=
+ =?utf-8?B?OCs2UmQxVTkweDJCNTI5RExMc0NFRUJZOVNVdWg3V3JhSWM2ZjdIem5VSlBi?=
+ =?utf-8?B?dGZzanhyZnFmZE4vSmlYTUd3SHhiVkdzai9semdrVFhxTDdzdnVoaXhkZHFy?=
+ =?utf-8?B?VXpDYStlYVdWYWFGeGIwNk1aYjRtR0NCZDludStqTzhVTUtYdXR0aHFscDZr?=
+ =?utf-8?B?QStVTkJFR3dIUnlIMFpvaEM3REI2UW43eHkwVHptdFMzSmxDS09ybHJ5SHFD?=
+ =?utf-8?B?M3pIUllKNlhMYnl6MXpHY2RQM1ZXRi9mb2grNHljKzRpcU1XY1lCRExlblcx?=
+ =?utf-8?B?SDIwWk41aWxkRlRrQ3RicEtlQlduMkg4bmtRM2lORWt2dldJcHg5NXRTbWNT?=
+ =?utf-8?B?dlRPY2drdnNTU0dEOFB3dURyTmFEU1B2V0R5bkJnVHZ4K1V0ajRkb3l1alpt?=
+ =?utf-8?B?YThmWm5VeEQ3R1NUL3oyekRpUDZnWllWZWZGUjlBa2NXZTVnTUtOeENBMnJU?=
+ =?utf-8?B?TW1DZFNzOGlnWE5lSnVBcC9QbktMT2lOU1o2L2RXUEdSWWpTanhxZ0V1QnE4?=
+ =?utf-8?B?SWdZUHd0M0YveU8xbTZDeTRWT2tkbUFqVjRiUTc2cWFkUG5GZXdqMjRsNnh1?=
+ =?utf-8?B?b25VUWYxZkdhWllrNDZvOUd2K3BMNTRDYU9aS1B4Rzl3Mkx6cHNyQjhMWXdZ?=
+ =?utf-8?B?L3huRnRIeDBaSXEzNVdaTmZQTURxc2NUVkl2TWhXenpJazMrOUhZWDRpVTZv?=
+ =?utf-8?B?NUZIM0JRdG1lK0QwZXR6Wmk4YlBMTldET0ZlNVh3NlFOZUhMQSt0NlErelJ1?=
+ =?utf-8?B?VlZyWEFpMno1U09uclZVQm9EU2FBaDVzVHphdjEzSTNkVm5GOU5UcUhjcEpw?=
+ =?utf-8?B?VmtRdlIxZWN1UE1KcHhGT0owR09sNzJiNTlXS09rUW9vc0NPUFNnb0hVU1BG?=
+ =?utf-8?B?TzJmUVVqTjNzVlpWZ3cvcExCNzBqYXA0aGRCY3k1WDBHZGpqZEZaL2IyWkZr?=
+ =?utf-8?B?eEU5Q1ZRTHVRUzh4MGpRRHROaElyWG1OVmlqMkFwRjduMXdLWFdsNjdYMktO?=
+ =?utf-8?B?NTNlS3lYOVNSOHRmdk9kTFNacEh5ek9WbUg3enRDREZjTExiQ2ZDZGpuR1hZ?=
+ =?utf-8?B?NUtzTDM2WEZ1UW53bUR6aHFMUlpMZElCY0RsR3ZUbVJTaWpya2duczViMkdu?=
+ =?utf-8?Q?ewAtyOUlEWQ3JvV?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bc519ff0-dd37-48a7-b69d-08dbf4a7d06e
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PUZP153MB0788.APCP153.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5b4fe50c-633d-402f-d335-08dbf4a7b1d3
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Dec 2023 09:02:08.2929
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Dec 2023 09:02:59.8968
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Swgt/7UqyRojm2u5X+YsNbwD7XjnjvD3474LTn8lu0HYXdAgaF8tq9YSQdbFAzaCsXmWfQBJOb2QAChnEw+ip8eFC/cijYzfp57LLiZDwYs=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SI2P153MB0656
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PDS_HP_HELO_NORDNS,
-        RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: FZ5RVT2qvDZV9b0xK+hFtByKHc0PBtPxKZ+T8WYjEaSLG7pz1gH0BRu/nszQzYOf/sygJdD/Tjtz2TAtgK7ABw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR10MB7107
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-04_06,2023-11-30_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 spamscore=0
+ malwarescore=0 phishscore=0 bulkscore=0 adultscore=0 mlxscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2312040067
+X-Proofpoint-GUID: zTPwP9m2Uqz7j2Co8mc3eUPLRVA4Qj8U
+X-Proofpoint-ORIG-GUID: zTPwP9m2Uqz7j2Co8mc3eUPLRVA4Qj8U
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 01/12/2023 22:07, Dave Chinner wrote:
+>> Sure, and I think that we need a better story for supporting buffered IO for
+>> atomic writes.
+>>
+>> Currently we have:
+>> - man pages tell us RWF_ATOMIC is only supported for direct IO
+>> - statx gives atomic write unit min/max, not explicitly telling us it's for
+>> direct IO
+>> - RWF_ATOMIC is ignored for !O_DIRECT
+>>
+>> So I am thinking of expanding statx support to enable querying of atomic
+>> write capabilities for buffered IO and direct IO separately.
+> You're over complicating this way too much by trying to restrict the
+> functionality down to just what you want to implement right now.
+> 
+> RWF_ATOMIC is no different to RWF_NOWAIT. The API doesn't decide
+> what can be supported - the filesystems themselves decide what part
+> of the API they can support and implement those pieces.
+
+Sure, but for RWF_ATOMIC we still have the associated statx call to tell 
+us whether atomic writes are supported for a file and the specific range 
+capability.
+
+> 
+> TO go back to RWF_NOWAIT, for a long time we (XFS) only supported
+> RWF_NOWAIT on DIO, and buffered reads and writes were given
+> -EOPNOTSUPP by the filesystem. Then other filesystems started
+> supporting DIO with RWF_NOWAIT. Then buffered read support was added
+> to the page cache and XFS, and as other filesystems were converted
+> they removed the RWF_NOWAIT exclusion check from their read IO
+> paths.
+> 
+> We are now in the same place with buffered write support for
+> RWF_NOWAIT. XFS, the page cache and iomap allow buffered writes w/
+> RWF_NOWAIT, but ext4, btrfs and f2fs still all return -EOPNOTSUPP
+> because they don't support non-blocking buffered writes yet.
+> 
+> This is the same model we should be applying with RWF_ATOMIC - we
+> know that over time we'll be able to expand support for atomic
+> writes across both direct and buffered IO, so we should not be
+> restricting the API or infrastructure to only allow RWF_ATOMIC w/
+> DIO.
+
+Agreed.
+
+> Just have the filesystems reject RWF_ATOMIC w/ -EOPNOTSUPP if
+> they don't support it,
+
+Yes, I was going to add this regardless.
+
+> and for those that do it is conditional on
+> whther the filesystem supports it for the given type of IO being
+> done.
+> 
+> Seriously - an application can easily probe for RWF_ATOMIC support
+> without needing information to be directly exposed in statx() - just
+> open a O_TMPFILE, issue the type of RWF_ATOMIC IO you require to be
+> supported, and if it returns -EOPNOTSUPP then it you can't use
+> RWF_ATOMIC optimisations in the application....
+
+ok, if that is the done thing.
+
+So I can't imagine that atomic write unit range will be different for 
+direct IO and buffered IO (ignoring for a moment Christoph's idea for 
+CoW always for no HW offload) when supported. But it seems that we may 
+have a scenario where statx tells is that atomic writes are supported 
+for a file, and a DIO write succeeds and a buffered IO write may return 
+-EOPNOTSUPP. If that's acceptable then I'll work towards that.
+
+If we could just run statx on a file descriptor here then that would be 
+simpler...
+
+Thanks,
+John
 
 
->-----Original Message-----
->From: Yury Norov <yury.norov@gmail.com>
->Sent: Thursday, November 30, 2023 10:27 PM
->To: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
->Cc: Souradeep Chakrabarti <schakrabarti@microsoft.com>; Jakub Kicinski
-><kuba@kernel.org>; KY Srinivasan <kys@microsoft.com>; Haiyang Zhang
-><haiyangz@microsoft.com>; wei.liu@kernel.org; Dexuan Cui
-><decui@microsoft.com>; davem@davemloft.net; edumazet@google.com;
->pabeni@redhat.com; Long Li <longli@microsoft.com>;
->sharmaajay@microsoft.com; leon@kernel.org; cai.huoqing@linux.dev;
->ssengar@linux.microsoft.com; vkuznets@redhat.com; tglx@linutronix.de;
->linux-hyperv@vger.kernel.org; netdev@vger.kernel.org; linux-
->kernel@vger.kernel.org; linux-rdma@vger.kernel.org; Paul Rosswurm
-><paulros@microsoft.com>
->Subject: Re: [EXTERNAL] Re: [PATCH V2 net-next] net: mana: Assigning IRQ
->affinity on HT cores
->
->[You don't often get email from yury.norov@gmail.com. Learn why this is
->important at https://aka.ms/LearnAboutSenderIdentification ]
->
->On Thu, Nov 30, 2023 at 04:05:12AM -0800, Souradeep Chakrabarti wrote:
->> On Wed, Nov 29, 2023 at 06:16:17PM -0800, Yury Norov wrote:
->> > On Mon, Nov 27, 2023 at 09:36:38AM +0000, Souradeep Chakrabarti
->wrote:
->> > >
->> > >
->> > > >-----Original Message-----
->> > > >From: Jakub Kicinski <kuba@kernel.org>
->> > > >Sent: Wednesday, November 22, 2023 5:19 AM
->> > > >To: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
->> > > >Cc: KY Srinivasan <kys@microsoft.com>; Haiyang Zhang
->> > > ><haiyangz@microsoft.com>; wei.liu@kernel.org; Dexuan Cui
->> > > ><decui@microsoft.com>; davem@davemloft.net;
->edumazet@google.com;
->> > > >pabeni@redhat.com; Long Li <longli@microsoft.com>;
->> > > >sharmaajay@microsoft.com; leon@kernel.org; cai.huoqing@linux.dev;
->> > > >ssengar@linux.microsoft.com; vkuznets@redhat.com;
->> > > >tglx@linutronix.de; linux- hyperv@vger.kernel.org;
->> > > >netdev@vger.kernel.org; linux-kernel@vger.kernel.org;
->> > > >linux-rdma@vger.kernel.org; Souradeep Chakrabarti
->> > > ><schakrabarti@microsoft.com>; Paul Rosswurm
->> > > ><paulros@microsoft.com>
->> > > >Subject: [EXTERNAL] Re: [PATCH V2 net-next] net: mana: Assigning
->> > > >IRQ affinity on HT cores
->> > > >
->> > > >On Tue, 21 Nov 2023 05:54:37 -0800 Souradeep Chakrabarti wrote:
->> > > >> Existing MANA design assigns IRQ to every CPUs, including
->> > > >> sibling hyper-threads in a core. This causes multiple IRQs to
->> > > >> work on same CPU and may reduce the network performance with RSS.
->> > > >>
->> > > >> Improve the performance by adhering the configuration for RSS,
->> > > >> which assigns IRQ on HT cores.
->> > > >
->> > > >Drivers should not have to carry 120 LoC for something as basic as
->spreading IRQs.
->> > > >Please take a look at include/linux/topology.h and if there's
->> > > >nothing that fits your needs there - add it. That way other drivers=
- can
->reuse it.
->> > > Because of the current design idea, it is easier to keep things
->> > > inside the mana driver code here. As the idea of IRQ distribution he=
-re is :
->> > > 1)Loop through interrupts to assign CPU 2)Find non sibling online
->> > > CPU from local NUMA and assign the IRQs on them.
->> > > 3)If number of IRQs is more than number of non-sibling CPU in that
->> > > NUMA node, then assign on sibling CPU of that node.
->> > > 4)Keep doing it till all the online CPUs are used or no more IRQs.
->> > > 5)If all CPUs in that node are used, goto next NUMA node with CPU.
->> > > Keep doing 2 and 3.
->> > > 6) If all CPUs in all NUMA nodes are used, but still there are
->> > > IRQs then wrap over from first local NUMA node and continue doing
->> > > 2, 3 4 till all IRQs are assigned.
->> >
->> > Hi Souradeep,
->> >
->> > (Thanks Jakub for sharing this thread with me)
->> >
->> > If I understand your intention right, you can leverage the existing
->> > cpumask_local_spread().
->> >
->> > But I think I've got something better for you. The below series adds
->> > a for_each_numa_cpu() iterator, which may help you doing most of the
->> > job without messing with nodes internals.
->> >
->> > https://nam06.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Flo
->> > re.kernel.org%2Fnetdev%2FZD3l6FBnUh9vTIGc%40yury-
->ThinkPad%2FT%2F&dat
->> >
->a=3D05%7C01%7Cschakrabarti%40microsoft.com%7C79dfb421db6f463627250
->8dbf
->> >
->1c5c19e%7C72f988bf86f141af91ab2d7cd011db47%7C1%7C0%7C6383696
->04095521
->> >
->996%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2lu
->MzIiLCJB
->> >
->TiI6Ik1haWwiLCJXVCI6Mn0%3D%7C2000%7C%7C%7C&sdata=3DpDUpYWo3K7
->uoz2q50GQ
->> > 1UKuPF2PwFagiT5pwrXhQXPk%3D&reserved=3D0
->> >
->> Thanks Yur and Jakub. I was trying to find this patch, but unable to fin=
-d it on
->that thread.
->> Also in net-next I am unable to find it. Can you please tell, if it has =
-been
->committed?
->> If not can you please point me out the correct patch for this macro.
->> It will be really helpful.
->
->Try this branch. I just rebased it on top of bitmap-for-next, but didn't r=
-e-test.
->You may need to exclude the "sched: drop for_each_numa_hop_mask()" patch.
->
->https://nam06.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fgithu
->b.com%2Fnorov%2Flinux%2Fcommits%2Ffor_each_numa_cpu&data=3D05%7C0
->1%7Cschakrabarti%40microsoft.com%7C79dfb421db6f4636272508dbf1c5c1
->9e%7C72f988bf86f141af91ab2d7cd011db47%7C1%7C0%7C638369604095
->529277%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV
->2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C2000%7C%7C%7C&sdata=3DW
->wmd%2BvQS7YHIwFKyL9OLd8iYttJ4ZIqQyxU3Ex8UOkY%3D&reserved=3D0
->
->> > By using it, the pseudocode implementing your algorithm may look
->> > like this:
->> >
->> >         unsigned int cpu, hop;
->> >         unsigned int irq =3D 0;
->> >
->> > again:
->> >         cpu =3D get_cpu();
->> >         node =3D cpu_to_node(cpu);
->> >         cpumask_copy(cpus, cpu_online_mask);
->> >
->> >         for_each_numa_cpu(cpu, hop, node, cpus) {
->> >                 /* All siblings are the same for IRQ spreading purpose=
- */
->> >                 irq_set_affinity_and_hint(irq,
->> > topology_sibling_cpumask());
->> >
->> >                 /* One IRQ per sibling group */
->> >                 cpumask_andnot(cpus, cpus,
->> > topology_sibling_cpumask());
->> >
->> >                 if (++irq =3D=3D num_irqs)
->> >                         break;
->> >         }
->> >
->> >         if (irq < num_irqs)
->> >                 goto again;
->> >
->> > (Completely not tested, just an idea.)
->> >
->> I have done similar kind of change for our driver, but constraint here
->> is that total number of IRQs can be equal to the total number of
->> online CPUs, in some setup. It is either equal to the number of online C=
-PUs or
->maximum 64 IRQs if online CPUs are more than that.
->
->Not sure I understand you. If you're talking about my proposal, there's
->seemingly no constraints on number of CPUs/IRQs.
->
->> So my proposed change is following:
->>
->> +static int irq_setup(int *irqs, int nvec, int start_numa_node) {
->> +       cpumask_var_t node_cpumask;
->> +       int i, cpu, err =3D 0;
->> +       unsigned int  next_node;
->> +       cpumask_t visited_cpus;
->> +       unsigned int start_node =3D start_numa_node;
->> +       i =3D 0;
->> +       if (!alloc_cpumask_var(&node_cpumask, GFP_KERNEL)) {
->> +               err =3D -ENOMEM;
->> +               goto free_mask;
->> +       }
->> +       cpumask_andnot(&visited_cpus, &visited_cpus, &visited_cpus);
->> +       start_node =3D 1;
->> +       for_each_next_node_with_cpus(start_node, next_node) {
->
->If your goal is to maximize locality, this doesn't seem to be correct.
->for_each_next_node_with_cpus() is based on next_node(), and so enumerates
->nodes in a numerically increasing order. On real machines, it's possible t=
-hat
->numerically adjacent node is not the topologically nearest.
->
->To approach that, for every node kernel maintains a list of equally distan=
-t nodes
->grouped into hops. You may likely want to use for_each_numa_hop_mask
->iterator, which iterated over hops in increasing distance order, instead o=
-f
->NUMA node numbers.
->
->But I would like to see for_each_numa_cpu() finally merged as a simpler an=
-d
->nicer alternative.
->
->> +               cpumask_copy(node_cpumask, cpumask_of_node(next_node));
->> +               for_each_cpu(cpu, node_cpumask) {
->> +                       cpumask_andnot(node_cpumask, node_cpumask,
->> +                                      topology_sibling_cpumask(cpu));
->> +                       irq_set_affinity_and_hint(irqs[i], cpumask_of(cp=
-u));
->> +                       if(++i =3D=3D nvec)
->> +                               goto free_mask;
->> +                       cpumask_set_cpu(cpu, &visited_cpus);
->> +                       if (cpumask_empty(node_cpumask) &&
->cpumask_weight(&visited_cpus) <
->> +                           nr_cpus_node(next_node)) {
->> +                               cpumask_copy(node_cpumask,
->cpumask_of_node(next_node));
->> +                               cpumask_andnot(node_cpumask, node_cpumas=
-k,
->&visited_cpus);
->> +                               cpu =3D cpumask_first(node_cpumask);
->> +                       }
->> +               }
->> +               if (next_online_node(next_node) =3D=3D MAX_NUMNODES)
->> +                       next_node =3D first_online_node;
->> +       }
->> +free_mask:
->> +       free_cpumask_var(node_cpumask);
->> +       return err;
->> +}
->>
->> I can definitely use the for_each_numa_cpu() instead of my proposed
->> for_each_next_node_with_cpus() macro here and that will make it cleaner.
->> Thanks for the suggestion.
->
->Sure.
->
->Can you please share performance measurements for a solution you'll finall=
-y
->choose? Would be interesting to compare different approaches.
-I have compared spreading IRQs across numa  with IRQs spread inside local
-NUMA, and the performance was 14 percent better for later.
-I have shared the V4 patch with for_each_numa_hop_mask() macro.
->
->Thanks,
->Yury
