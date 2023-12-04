@@ -2,224 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C151C803B82
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 18:27:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63555803B84
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 18:28:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343823AbjLDR1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 12:27:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36472 "EHLO
+        id S231777AbjLDR2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 12:28:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234834AbjLDR1I (ORCPT
+        with ESMTP id S229485AbjLDR2A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 12:27:08 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2389CD7
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 09:27:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701710834;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=tsKdHmjP3jKe+gcRqJMG/+fEJNRcoaZo0qzvmy398hw=;
-        b=aw1Pg3tU/jevQUyT3xERhVl/aavZWxj1b+k6JfSbVB1nRRocNsqF45YXdFkzO7vNsVW6wH
-        W/9LhlYNa9+sv3/NklQPbNsYi6tg6ttvgTtQvyqOa25o8zD6At3yfN3TAZvk2iWAMyyVqh
-        oaBGiwUpJQ0xT5QFPWyRAGr6wG6NVF8=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-362-L1jZ8oqsPMOaoaxYwVqKGQ-1; Mon, 04 Dec 2023 12:27:12 -0500
-X-MC-Unique: L1jZ8oqsPMOaoaxYwVqKGQ-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-40b39377136so35079855e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 09:27:11 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701710831; x=1702315631;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:from:content-language:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=tsKdHmjP3jKe+gcRqJMG/+fEJNRcoaZo0qzvmy398hw=;
-        b=Q0f2F5dHa7dxQlfC4KDKDV+k//CD3rgKca9sUQ1GFUvAo2brzclUMV82iVSs79osWm
-         4DxBvECF/ixOfJw0Xj312jmqUYfexRE7yK8zv6DQ+3Vdi0gx2wQvc5Mw6NupTmajnq8e
-         QBzsBnf1dijNqIGQd/YtbAuTiuWZLbH5FWulRtEdd7dV+L2xK7UHEIg1HSjGeLpR4Y2W
-         ZOGSb6s7egpYpBqNZIovlHcxkxwzfZzdUXENmzDIwteR6Qy4pViU3qHdWSMDRpiTHqiw
-         itdX/zbQwx9jW5KekCtXSxU3jR1BOknCi96cNqF2tVCYe9mPlyD1QwUeGLfggiiE4ACT
-         VtkQ==
-X-Gm-Message-State: AOJu0YyaS/Mi0gBUo8ccbZUuneRyBwNYHV1/e2ANI0g3SUwqBgDe5oY6
-        OtaVznihSI9IegfzddQqfmyjC0YWwZHdlFK2FKD6K+l5VCj0ch6NsOk1niC29x1GWAKmPtGanG5
-        Jozlg/f75GvE3f1Tmp45+tpvl
-X-Received: by 2002:a05:600c:4f56:b0:40b:5e21:ec2e with SMTP id m22-20020a05600c4f5600b0040b5e21ec2emr2624245wmq.96.1701710830953;
-        Mon, 04 Dec 2023 09:27:10 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFZpppk/Ek5hiplry8oPh7cMDdu9VjtAaLpqrqvMOOnVRVoE15yBSoajHa8oW0LNlDUiX4nsA==
-X-Received: by 2002:a05:600c:4f56:b0:40b:5e21:ec2e with SMTP id m22-20020a05600c4f5600b0040b5e21ec2emr2624237wmq.96.1701710830576;
-        Mon, 04 Dec 2023 09:27:10 -0800 (PST)
-Received: from ?IPV6:2003:cb:c722:3700:6501:8925:6f9:fcdc? (p200300cbc72237006501892506f9fcdc.dip0.t-ipconnect.de. [2003:cb:c722:3700:6501:8925:6f9:fcdc])
-        by smtp.gmail.com with ESMTPSA id h6-20020a05600c350600b0040b43da0bbasm15709934wmq.30.2023.12.04.09.27.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Dec 2023 09:27:10 -0800 (PST)
-Message-ID: <5b8b9f8c-8e9b-42a5-b8b2-9b96903f3ada@redhat.com>
-Date:   Mon, 4 Dec 2023 18:27:08 +0100
+        Mon, 4 Dec 2023 12:28:00 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD0EDA1;
+        Mon,  4 Dec 2023 09:28:06 -0800 (PST)
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B4GpuMU000330;
+        Mon, 4 Dec 2023 17:27:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=O/w7GgStHBiYsuRqEUagQ6Lk0QgWtx1hIjwEQICjYDI=;
+ b=W2T82SdSr+YG7fUQz6sBvLVxXTDrulmbLYhB/MGvElTEHyrkZiNvngrMxvNeLmOUn28F
+ vGf8seq6p9gu4zEWYUArgcOnsWPegW+af4bPZ06wJ3URPTuGzYW3nA5HueW0rYwyLpPg
+ RaTiKSZHeON4FYhmA+AhJVw1yFzhkFLjlMc/7Z+aFPnEO2jAfIqbdGkUk6Eeh04ncqr/
+ jZuIdMX8/sW6lTTT4ezMd/n0G4xnru+rRIiCDFZe4pHkMtGsdGJnDmOWrTDsCLmMQxXx
+ yhdaTzxyQr1DY4WzXJCmIyOzyYfjrmZuUM52GlAIGcMQuK93afO/kUGDQHdQM7jtCvaW dg== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3usjnqg33p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Dec 2023 17:27:48 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B4HRlsS017881
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 4 Dec 2023 17:27:47 GMT
+Received: from [10.50.1.19] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 4 Dec
+ 2023 09:27:42 -0800
+Message-ID: <e16ac596-353c-385b-a331-78c9261474a3@quicinc.com>
+Date:   Mon, 4 Dec 2023 22:57:38 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 01/15] mm: Batch-copy PTE ranges during fork()
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.2
+Subject: Re: [PATCH v5 2/3] arm64: dts: qcom: sc7280: Add UFS nodes for sc7280
+ soc
 Content-Language: en-US
-From:   David Hildenbrand <david@redhat.com>
-To:     Ryan Roberts <ryan.roberts@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yu Zhao <yuzhao@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        John Hubbard <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>,
-        Barry Song <21cnbao@gmail.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Yang Shi <shy828301@gmail.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20231204105440.61448-1-ryan.roberts@arm.com>
- <20231204105440.61448-2-ryan.roberts@arm.com>
- <a12ce4f8-feb0-4e35-8f55-9270fe5a808b@redhat.com>
- <104de2d6-ecf9-4b0c-a982-5bd8e1aea758@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <104de2d6-ecf9-4b0c-a982-5bd8e1aea758@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Luca Weiss <luca.weiss@fairphone.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        <cros-qcom-dts-watchers@chromium.org>
+CC:     <~postmarketos/upstreaming@lists.sr.ht>,
+        <phone-devel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-scsi@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20231204-sc7280-ufs-v5-0-926ceed550da@fairphone.com>
+ <20231204-sc7280-ufs-v5-2-926ceed550da@fairphone.com>
+ <621388b9-dcee-4af2-9763-e5d623d722b7@quicinc.com>
+ <CXFJNBNKTRHH.2CS6TO2MEGJWL@fairphone.com>
+From:   Nitin Rawat <quic_nitirawa@quicinc.com>
+In-Reply-To: <CXFJNBNKTRHH.2CS6TO2MEGJWL@fairphone.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: oYCufc3jdikH9TciXY79BHDKGbAsylrl
+X-Proofpoint-GUID: oYCufc3jdikH9TciXY79BHDKGbAsylrl
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-04_16,2023-12-04_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
+ lowpriorityscore=0 clxscore=1015 mlxscore=0 suspectscore=0
+ priorityscore=1501 spamscore=0 impostorscore=0 mlxlogscore=999
+ phishscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2311060000 definitions=main-2312040133
+X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+
+
+On 12/4/2023 5:51 PM, Luca Weiss wrote:
+> On Mon Dec 4, 2023 at 1:15 PM CET, Nitin Rawat wrote:
+>>
+>>
+>> On 12/4/2023 3:54 PM, Luca Weiss wrote:
+>>> From: Nitin Rawat <quic_nitirawa@quicinc.com>
+>>>
+>>> Add UFS host controller and PHY nodes for sc7280 soc.
+>>>
+>>> Signed-off-by: Nitin Rawat <quic_nitirawa@quicinc.com>
+>>> Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+>>> Tested-by: Konrad Dybcio <konrad.dybcio@linaro.org> # QCM6490 FP5
+>>> [luca: various cleanups and additions as written in the cover letter]
+>>> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+>>> ---
+>>>    arch/arm64/boot/dts/qcom/sc7280.dtsi | 74 +++++++++++++++++++++++++++++++++++-
+>>>    1 file changed, 73 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>>> index 04bf85b0399a..8b08569f2191 100644
+>>> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>>> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>>> @@ -15,6 +15,7 @@
+>>>    #include <dt-bindings/dma/qcom-gpi.h>
+>>>    #include <dt-bindings/firmware/qcom,scm.h>
+>>>    #include <dt-bindings/gpio/gpio.h>
+>>> +#include <dt-bindings/interconnect/qcom,icc.h>
+>>>    #include <dt-bindings/interconnect/qcom,osm-l3.h>
+>>>    #include <dt-bindings/interconnect/qcom,sc7280.h>
+>>>    #include <dt-bindings/interrupt-controller/arm-gic.h>
+>>> @@ -906,7 +907,7 @@ gcc: clock-controller@100000 {
+>>>    			clocks = <&rpmhcc RPMH_CXO_CLK>,
+>>>    				 <&rpmhcc RPMH_CXO_CLK_A>, <&sleep_clk>,
+>>>    				 <0>, <&pcie1_phy>,
+>>> -				 <0>, <0>, <0>,
+>>> +				 <&ufs_mem_phy 0>, <&ufs_mem_phy 1>, <&ufs_mem_phy 2>,
+>>>    				 <&usb_1_qmpphy QMP_USB43DP_USB3_PIPE_CLK>;
+>>>    			clock-names = "bi_tcxo", "bi_tcxo_ao", "sleep_clk",
+>>>    				      "pcie_0_pipe_clk", "pcie_1_pipe_clk",
+>>> @@ -2238,6 +2239,77 @@ pcie1_phy: phy@1c0e000 {
+>>>    			status = "disabled";
+>>>    		};
+>>>    
+>>> +		ufs_mem_hc: ufs@1d84000 {
+>>> +			compatible = "qcom,sc7280-ufshc", "qcom,ufshc",
+>>> +				     "jedec,ufs-2.0";
+>>> +			reg = <0x0 0x01d84000 0x0 0x3000>;
+>>> +			interrupts = <GIC_SPI 265 IRQ_TYPE_LEVEL_HIGH>;
+>>> +			phys = <&ufs_mem_phy>;
+>>> +			phy-names = "ufsphy";
+>>> +			lanes-per-direction = <2>;
+>>> +			#reset-cells = <1>;
+>>> +			resets = <&gcc GCC_UFS_PHY_BCR>;
+>>> +			reset-names = "rst";
+>>> +
+>>> +			power-domains = <&gcc GCC_UFS_PHY_GDSC>;
+>>> +			required-opps = <&rpmhpd_opp_nom>;
+>>> +
+>>> +			iommus = <&apps_smmu 0x80 0x0>;
+>>> +			dma-coherent;
+>>> +
+>>> +			interconnects = <&aggre1_noc MASTER_UFS_MEM QCOM_ICC_TAG_ALWAYS
+>>> +					 &mc_virt SLAVE_EBI1 QCOM_ICC_TAG_ALWAYS>,
+>>> +					<&gem_noc MASTER_APPSS_PROC QCOM_ICC_TAG_ALWAYS
+>>> +					 &cnoc2 SLAVE_UFS_MEM_CFG QCOM_ICC_TAG_ALWAYS>;
+>>> +			interconnect-names = "ufs-ddr", "cpu-ufs";
+>>> +
+>>> +			clocks = <&gcc GCC_UFS_PHY_AXI_CLK>,
+>>> +				 <&gcc GCC_AGGRE_UFS_PHY_AXI_CLK>,
+>>> +				 <&gcc GCC_UFS_PHY_AHB_CLK>,
+>>> +				 <&gcc GCC_UFS_PHY_UNIPRO_CORE_CLK>,
+>>> +				 <&rpmhcc RPMH_CXO_CLK>,
+>>> +				 <&gcc GCC_UFS_PHY_TX_SYMBOL_0_CLK>,
+>>> +				 <&gcc GCC_UFS_PHY_RX_SYMBOL_0_CLK>,
+>>> +				 <&gcc GCC_UFS_PHY_RX_SYMBOL_1_CLK>;
+>>> +			clock-names = "core_clk",
+>>> +				      "bus_aggr_clk",
+>>> +				      "iface_clk",
+>>> +				      "core_clk_unipro",
+>>> +				      "ref_clk",
+>>> +				      "tx_lane0_sync_clk",
+>>> +				      "rx_lane0_sync_clk",
+>>> +				      "rx_lane1_sync_clk";
+>>> +			freq-table-hz =
+>>> +				<75000000 300000000>,
+>>> +				<0 0>,
+>>> +				<0 0>,
+>>> +				<75000000 300000000>,
+>>> +				<0 0>,
+>>> +				<0 0>,
+>>> +				<0 0>,
+>>> +				<0 0>;
+>>> +			status = "disabled";
+>>> +		};
+>>> +
+>>> +		ufs_mem_phy: phy@1d87000 {
+>>> +			compatible = "qcom,sc7280-qmp-ufs-phy";
+>>> +			reg = <0x0 0x01d87000 0x0 0xe00>;
+>>> +			clocks = <&rpmhcc RPMH_CXO_CLK>,
+>>> +				 <&gcc GCC_UFS_PHY_PHY_AUX_CLK>,
+>>> +				 <&gcc GCC_UFS_1_CLKREF_EN>;
+>>> +			clock-names = "ref", "ref_aux", "qref";
+>>> +
+>>> +			power-domains = <&gcc GCC_UFS_PHY_GDSC>;
 > 
-> With rmap batching from [1] -- rebased+changed on top of that -- we could turn
-> that into an effective (untested):
+> Hi Nitin,
 > 
->           if (page && folio_test_anon(folio)) {
-> +               nr = folio_nr_pages_cont_mapped(folio, page, src_pte, addr, end,
-> +                                               pte, enforce_uffd_wp, &nr_dirty,
-> +                                               &nr_writable);
->                   /*
->                    * If this page may have been pinned by the parent process,
->                    * copy the page immediately for the child so that we'll always
->                    * guarantee the pinned page won't be randomly replaced in the
->                    * future.
->                    */
-> -               folio_get(folio);
-> -               if (unlikely(folio_try_dup_anon_rmap_pte(folio, page, src_vma))) {
-> +               folio_ref_add(folio, nr);
-> +               if (unlikely(folio_try_dup_anon_rmap_ptes(folio, page, nr, src_vma))) {
->                           /* Page may be pinned, we have to copy. */
-> -                       folio_put(folio);
-> -                       return copy_present_page(dst_vma, src_vma, dst_pte, src_pte,
-> -                                                addr, rss, prealloc, page);
-> +                       folio_ref_sub(folio, nr);
-> +                       ret = copy_present_page(dst_vma, src_vma, dst_pte,
-> +                                               src_pte, addr, rss, prealloc,
-> +                                               page);
-> +                       return ret == 0 ? 1 : ret;
->                   }
-> -               rss[MM_ANONPAGES]++;
-> +               rss[MM_ANONPAGES] += nr;
->           } else if (page) {
-> -               folio_get(folio);
-> -               folio_dup_file_rmap_pte(folio, page);
-> -               rss[mm_counter_file(page)]++;
-> +               nr = folio_nr_pages_cont_mapped(folio, page, src_pte, addr, end,
-> +                                               pte, enforce_uffd_wp, &nr_dirty,
-> +                                               &nr_writable);
-> +               folio_ref_add(folio, nr);
-> +               folio_dup_file_rmap_ptes(folio, page, nr);
-> +               rss[mm_counter_file(page)] += nr;
->           }
+>>
+>> GCC_UFS_PHY_GDSC is UFS controller GDSC. For sc7280 Phy we don't need this.
 > 
+> In the current dt-bindings the power-domains property is required.
 > 
-> We'll have to test performance, but it could be that we want to specialize
-> more on !folio_test_large(). That code is very performance-sensitive.
+> Is there another power-domain for the PHY to use, or do we need to
+> adjust the bindings to not require power-domains property for ufs phy on
+> sc7280?
 > 
+> Also, with "PHY" in the name, it's interesting that this is not for the
+> phy ;)
 > 
-> [1] https://lkml.kernel.org/r/20231204142146.91437-1-david@redhat.com
+> Regards
+> Luca
+> 
 
-So, on top of [1] without rmap batching but with a slightly modified 
-version of yours (that keeps the existing code structure as pointed out 
-and e.g., updates counter updates), running my fork() microbenchmark 
-with a 1 GiB of memory:
+Hi Luca,
 
-Compared to [1], with all order-0 pages it gets 13--14% _slower_ and 
-with all PTE-mapped THP (order-9) it gets ~29--30% _faster_.
+For sc7280 there is no PHY GDSC and only controller GDSC is there.
+Hence, I would suggest to update the binding to reflect that 
+power-domains is not a required field.
 
-So looks like we really want to have a completely seprate code path for 
-"!folio_test_large()" to keep that case as fast as possible. And 
-"Likely" we want to use "likely(!folio_test_large()". ;)
+Regards,
+Nitin
 
-Performing rmap batching on top of that code only slightly (another 1% 
-or so) improves performance in the PTE-mapped THP (order-9) case right 
-now, in contrast to other rmap batching. Reason is as all rmap code gets 
-inlined here and we're only doing subpage mapcount updates + PAE handling.
 
--- 
-Cheers,
 
-David / dhildenb
-
+>>
+>>> +
+>>> +			resets = <&ufs_mem_hc 0>;
+>>> +			reset-names = "ufsphy";
+>>> +
+>>> +			#clock-cells = <1>;
+>>> +			#phy-cells = <0>;
+>>> +
+>>> +			status = "disabled";
+>>> +		};
+>>> +
+>>>    		ipa: ipa@1e40000 {
+>>>    			compatible = "qcom,sc7280-ipa";
+>>>    
+>>>
+> 
