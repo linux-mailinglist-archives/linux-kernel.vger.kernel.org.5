@@ -2,266 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94587803BF4
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 18:48:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E203803BF5
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 18:49:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230520AbjLDRsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 12:48:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44994 "EHLO
+        id S229960AbjLDRtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 12:49:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230480AbjLDRsa (ORCPT
+        with ESMTP id S230426AbjLDRs7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 12:48:30 -0500
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 822F8E6
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 09:48:36 -0800 (PST)
-Received: by mail-ot1-x32f.google.com with SMTP id 46e09a7af769-6d7f68b059fso346107a34.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 09:48:36 -0800 (PST)
+        Mon, 4 Dec 2023 12:48:59 -0500
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAD22125;
+        Mon,  4 Dec 2023 09:49:04 -0800 (PST)
+Received: by mail-io1-xd2b.google.com with SMTP id ca18e2360f4ac-7b06844971dso145861439f.2;
+        Mon, 04 Dec 2023 09:49:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1701712115; x=1702316915; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1701712144; x=1702316944; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=wcVLusmLSrs9AkT8FMUp6dSDeCayjrBTTW9J6mB7iK0=;
-        b=p7JV8Y/caMj/APmX9TQww3gp1MqcfKw640XWFOTITkrvHvKPlsJSEgDTGGu+RhcFQK
-         p9AJxipdLG4lfrjwRGPXAQpPup50BgTFtJLtX6JUK34QTchhzA6PqFuh7VVjhyhYOv7U
-         qp8DvyqX212vmtK2mBhcIOywjYRtSyk/BFpiQoiI6xrSNqYBcEDvusqab0aRemETWEiM
-         5IGO1bwHFx65NbzFXMwNdotjIyVCRaFOleDCKpmSAp1D8Ij6na/yfJiutaXRwTPQvUDC
-         CrZ0Fk12YEA2f1+3fZSu3CcvKCpLJQeQJ6jOCrqnRKLwpxxH+qCHqysPgfepWgubSg/I
-         Owdg==
+        bh=Q67gi0sVaKsqnMZLHzOOPDUWGyW46YeGeCa+WMG6ae8=;
+        b=lzqq2MCmo16dQevrm3H5gbkgCmsNMRLuNKrKgeZWktFoT5H6Sh4goh2QbdR8mdz94K
+         74V4a52TE+zxhUDb3KEK35uqOtWM8/xr6jWySHq2lAC3Sq8ObwQO0l3jnT2goSEVvuPh
+         gIFSq3LW5uak0ewh2gAa78Vm9xSUDWqyea0qr7UJMuQ4jP0QRzg6xip5Jkpvbs9COV/v
+         IVDkpmHL4/cl4WCgqoJjrpG6tkpoFcDiP8eOO8RYxUxeaMYPIoU19kVgbWWZCEh80E7I
+         +/OVXyQs3oUO5iNL7oy2Ca9nQY9CVgrC6RnFiCCeNA6w6tdfeItApyAjr6jVAQK4ehm8
+         ZG5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701712115; x=1702316915;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1701712144; x=1702316944;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=wcVLusmLSrs9AkT8FMUp6dSDeCayjrBTTW9J6mB7iK0=;
-        b=SkHqXLN9q7VlLkiRd3ZOFMByChB6ocwuiFBBGQVICRwz3PExgD2ATjpBKWAmwPkGy9
-         IzdTTU6pDTTi6FdOiXd9YRcAhxQZaAxoHznt95+ivkqbTiCB4nAxXAUboc5zUCSZ063Z
-         biySJEhdbYnb8IfBjyWOPvqrmkRdq8PPWOELhLLapNj94HV11Q8vrFP+47fj6ARm7dVK
-         BFzGRckW68p0sxNgw4yDZH+i7W0+K0Paowg3yPt7gQo09NEjDBl+lBTw521K55b9TPXT
-         ZIlimawHc6bDrYPGPU9rPQ4Wk00mmt5JsNtlYuAixQnVV5OObWi+SyGfRD08fWLYRl6z
-         l33w==
-X-Gm-Message-State: AOJu0YyoLniAe4LXT9VEuTPfBVzDje7X09XR2bP6NYF9ylkvEzWdXUw7
-        KGa+TsoDByro07mJXLAYWCN+iKUCr5JAo7BxvbaFGg==
-X-Google-Smtp-Source: AGHT+IFwwDT3dr17ePNHc3E+3xSrdIz18L6eQUk3Fg9nNq0+KGjvlZav4WVn/0HnBS3ScCibRl1xTQ==
-X-Received: by 2002:a05:6830:1b6a:b0:6d8:7e05:8e27 with SMTP id d10-20020a0568301b6a00b006d87e058e27mr7223708ote.3.1701712115402;
-        Mon, 04 Dec 2023 09:48:35 -0800 (PST)
-Received: from m2max.tfbnw.net ([2620:10d:c091:400::5:2355])
-        by smtp.gmail.com with ESMTPSA id hg15-20020a05622a610f00b00424059fe96esm3670981qtb.89.2023.12.04.09.48.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Dec 2023 09:48:34 -0800 (PST)
-From:   Jens Axboe <axboe@kernel.dk>
-To:     linux-kernel@vger.kernel.org
-Cc:     viro@zeniv.linux.org.uk, brauner@kernel.org,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 2/2] iov_iter: replace import_single_range() with import_ubuf()
-Date:   Mon,  4 Dec 2023 10:47:50 -0700
-Message-ID: <20231204174827.1258875-3-axboe@kernel.dk>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231204174827.1258875-1-axboe@kernel.dk>
-References: <20231204174827.1258875-1-axboe@kernel.dk>
+        bh=Q67gi0sVaKsqnMZLHzOOPDUWGyW46YeGeCa+WMG6ae8=;
+        b=wV/sGW9vt5qfoozMvRzPsMBQq4V517YKqE5GmtkxDANWRDitCZTuxernCW4NtJzw1g
+         lkIQro6/oHFoASCY4nxoBZw+aiVdlfKnuqvKf6APtZXlDKIfLWOKieYMWk7l8wAfT2zA
+         eHtapq5qjCQEBq6MjC/PPgrby2EEeT4700xIKJ7rKiGZn3qrwht/bLPabGg6aMwh0/1v
+         QgQTiBe7O96bqcC4XXRDqWw4UuQlGj0sfbuypl/BDIZ1uwHSjTHbPv6CEO+MXHuoTE0E
+         QJoK17ED0a01V1+UonfaUWunlLCeU8prG2qXaELjcdjuStWV7q6maXrvNSEfyGbo862K
+         VcaA==
+X-Gm-Message-State: AOJu0YxDvHv6EscVSQYbDdgIv5lxqdZdeXXIFgLYxn9eDZfwHLQRhJVB
+        a0c65yIWVDRjtCWVPQxMhBw7xYSn8f6is0byjow=
+X-Google-Smtp-Source: AGHT+IFt8GSzYZxVi1Z4SafwJMjDfy5IZvFf41ASLqOjmQPOc+b/WfHB3rutmq2iGSn8FSt0XVivG4D4QRvU+UeeVQg=
+X-Received: by 2002:a6b:c408:0:b0:7b4:2af4:479e with SMTP id
+ y8-20020a6bc408000000b007b42af4479emr2378483ioa.24.1701712143938; Mon, 04 Dec
+ 2023 09:49:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231130194023.4102148-1-nphamcs@gmail.com> <20231130194023.4102148-2-nphamcs@gmail.com>
+ <ZWjpNr3ZzvU4TDC8@casper.infradead.org> <CAKEwX=MV-F50i_=sZ0unfbgjrdxSTio00c4xTM19113BAN3-wA@mail.gmail.com>
+ <20231130203522.GC543908@cmpxchg.org> <e3e319f5-9bcd-4c35-92e6-6fdb33eaa080@linux.dev>
+In-Reply-To: <e3e319f5-9bcd-4c35-92e6-6fdb33eaa080@linux.dev>
+From:   Nhat Pham <nphamcs@gmail.com>
+Date:   Mon, 4 Dec 2023 09:48:52 -0800
+Message-ID: <CAKEwX=OBHe12R6fTbRn_dNGrz+T4ekE4MSo5w+7i_NNoprmnkw@mail.gmail.com>
+Subject: Re: [PATCH v8 1/6] list_lru: allows explicit memcg and NUMA node selection
+To:     Chengming Zhou <chengming.zhou@linux.dev>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        akpm@linux-foundation.org, cerasuolodomenico@gmail.com,
+        yosryahmed@google.com, sjenning@redhat.com, ddstreet@ieee.org,
+        vitaly.wool@konsulko.com, mhocko@kernel.org,
+        roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, chrisl@kernel.org, linux-mm@kvack.org,
+        kernel-team@meta.com, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, shuah@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With the removal of the 'iov' argument to import_single_range(), the two
-functions are now fully identical. Convert the import_single_range()
-callers to import_ubuf(), and remove the former fully.
+On Mon, Dec 4, 2023 at 12:30=E2=80=AFAM Chengming Zhou <chengming.zhou@linu=
+x.dev> wrote:
+>
+> On 2023/12/1 04:35, Johannes Weiner wrote:
+> > On Thu, Nov 30, 2023 at 12:07:41PM -0800, Nhat Pham wrote:
+> >> On Thu, Nov 30, 2023 at 11:57=E2=80=AFAM Matthew Wilcox <willy@infrade=
+ad.org> wrote:
+> >>>
+> >>> On Thu, Nov 30, 2023 at 11:40:18AM -0800, Nhat Pham wrote:
+> >>>> This patch changes list_lru interface so that the caller must explic=
+itly
+> >>>> specify numa node and memcg when adding and removing objects. The ol=
+d
+> >>>> list_lru_add() and list_lru_del() are renamed to list_lru_add_obj() =
+and
+> >>>> list_lru_del_obj(), respectively.
+> >>>
+> >>> Wouldn't it be better to add list_lru_add_memcg() and
+> >>> list_lru_del_memcg() and have:
+> >>>
+> >>> +bool list_lru_del(struct list_lru *lru, struct list_head *item)
+> >>> +{
+> >>> +       int nid =3D page_to_nid(virt_to_page(item));
+> >>> +       struct mem_cgroup *memcg =3D list_lru_memcg_aware(lru) ?
+> >>> +               mem_cgroup_from_slab_obj(item) : NULL;
+> >>> +
+> >>> +       return list_lru_del_memcg(lru, item, nid, memcg);
+> >>> +}
+> >>>
+> >>> Seems like _most_ callers will want the original versions and only
+> >>> a few will want the explicit memcg/nid versions.  No?
+> >>>
+> >>
+> >> I actually did something along that line in earlier iterations of this
+> >> patch series (albeit with poorer naming - __list_lru_add() instead of
+> >> list_lru_add_memcg()). The consensus after some back and forth was
+> >> that the original list_lru_add() was not a very good design (the
+> >> better one was this new version that allows for explicit numa/memcg
+> >> selection). So I agreed to fix it everywhere as a prep patch.
+> >>
+> >> I don't have strong opinions here to be completely honest, but I do
+> >> think this new API makes more sense (at the cost of quite a bit of
+> >> elbow grease to fix every callsites and extra reviewing).
+> >
+> > Maybe I can shed some light since I was pushing for doing it this way.
+> >
+> > The quiet assumption that 'struct list_head *item' is (embedded in) a
+> > slab object that is also charged to a cgroup is a bit much, given that
+> > nothing in the name or documentation of the function points to that.
+> >
+> > It bit us in the THP shrinker where that list head is embedded in a
+> > tailpage (virt_to_page(page) is fun to debug). And it caused some
+> > confusion in this case as well, where the zswap entry is a slab object
+> > but not charged (the entry descriptor is not attractive for cgroup
+> > accounting, only the backing memory it points to.)
+>
+> Hi,
+>
+> I have a question, maybe I missed something since I haven't read all
+> the earlier versions.
+>
+> IIUC, the problem here is that "zswap_entry" has different memcg and node
+> than the "page", so I wonder if we can just charge "zswap_entry" to the
+> same memcg of the "page".
+>
+> Like we can do these when allocating the "zswap_entry":
+>
+>         old_memcg =3D set_active_memcg(memcg)
+>         kmem_cache_alloc_lru(zswap_entry_cache, lru, gfp)
+>         set_active_memcg(old_memcg)
+>
+> The good points are:
+>
+> 1. "zswap_entry" is charged to the memcg of "page", which is more sensibl=
+e?
+>
+> 2. We can reuse the kmem_cache_alloc_lru() interface, which makes code si=
+mpler
+>    since we don't need to manage list_lru_memcg by ourselves.
+>
+> 3. Maybe the new list_lru_add() and list_lru_del() are not needed anymore=
+?
+>    Since the "zswap_entry" is of the same memcg and node with the "page".
+>    But don't know if THP shrinker still need it.
+>
+> Thanks!
 
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
----
- drivers/block/ublk_drv.c         |  7 ++-----
- drivers/char/random.c            |  4 ++--
- fs/aio.c                         |  2 +-
- include/linux/uio.h              |  2 --
- kernel/trace/trace_events_user.c |  3 +--
- lib/iov_iter.c                   | 13 -------------
- net/ipv4/tcp.c                   |  8 ++++----
- net/socket.c                     |  4 ++--
- security/keys/keyctl.c           |  4 ++--
- 9 files changed, 14 insertions(+), 33 deletions(-)
+That idea was considered in earlier iterations/discussions of the
+patch series as well. Charging things is not free - there is an
+overhead associated with it, which is why we are usually selective
+about whether to charge something. We were not super keen to do this
+for zswap_entry just to plumb around the list_lru's restriction. Might
+as well pay the price of extending the list_lru interface now.
 
-diff --git a/drivers/block/ublk_drv.c b/drivers/block/ublk_drv.c
-index 5656b0a1233d..3eaf02ebeebe 100644
---- a/drivers/block/ublk_drv.c
-+++ b/drivers/block/ublk_drv.c
-@@ -895,9 +895,7 @@ static int ublk_map_io(const struct ublk_queue *ubq, const struct request *req,
- 		struct iov_iter iter;
- 		const int dir = ITER_DEST;
- 
--		import_single_range(dir, u64_to_user_ptr(io->addr), rq_bytes,
--					&iter);
--
-+		import_ubuf(dir, u64_to_user_ptr(io->addr), rq_bytes, &iter);
- 		return ublk_copy_user_pages(req, 0, &iter, dir);
- 	}
- 	return rq_bytes;
-@@ -918,8 +916,7 @@ static int ublk_unmap_io(const struct ublk_queue *ubq,
- 
- 		WARN_ON_ONCE(io->res > rq_bytes);
- 
--		import_single_range(dir, u64_to_user_ptr(io->addr), io->res,
--					&iter);
-+		import_ubuf(dir, u64_to_user_ptr(io->addr), io->res, &iter);
- 		return ublk_copy_user_pages(req, 0, &iter, dir);
- 	}
- 	return rq_bytes;
-diff --git a/drivers/char/random.c b/drivers/char/random.c
-index e79ae238b30d..456be28ba67c 100644
---- a/drivers/char/random.c
-+++ b/drivers/char/random.c
-@@ -1384,7 +1384,7 @@ SYSCALL_DEFINE3(getrandom, char __user *, ubuf, size_t, len, unsigned int, flags
- 			return ret;
- 	}
- 
--	ret = import_single_range(ITER_DEST, ubuf, len, &iter);
-+	ret = import_ubuf(ITER_DEST, ubuf, len, &iter);
- 	if (unlikely(ret))
- 		return ret;
- 	return get_random_bytes_user(&iter);
-@@ -1501,7 +1501,7 @@ static long random_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
- 			return -EINVAL;
- 		if (get_user(len, p++))
- 			return -EFAULT;
--		ret = import_single_range(ITER_SOURCE, p, len, &iter);
-+		ret = import_ubuf(ITER_SOURCE, p, len, &iter);
- 		if (unlikely(ret))
- 			return ret;
- 		ret = write_pool_user(&iter);
-diff --git a/fs/aio.c b/fs/aio.c
-index 251eeaef7fbf..4ea639509d41 100644
---- a/fs/aio.c
-+++ b/fs/aio.c
-@@ -1498,7 +1498,7 @@ static ssize_t aio_setup_rw(int rw, const struct iocb *iocb,
- 	size_t len = iocb->aio_nbytes;
- 
- 	if (!vectored) {
--		ssize_t ret = import_single_range(rw, buf, len, iter);
-+		ssize_t ret = import_ubuf(rw, buf, len, iter);
- 		*iovec = NULL;
- 		return ret;
- 	}
-diff --git a/include/linux/uio.h b/include/linux/uio.h
-index bfafd3542fa7..bea9c89922d9 100644
---- a/include/linux/uio.h
-+++ b/include/linux/uio.h
-@@ -347,8 +347,6 @@ ssize_t import_iovec(int type, const struct iovec __user *uvec,
- ssize_t __import_iovec(int type, const struct iovec __user *uvec,
- 		 unsigned nr_segs, unsigned fast_segs, struct iovec **iovp,
- 		 struct iov_iter *i, bool compat);
--int import_single_range(int type, void __user *buf, size_t len,
--		 struct iov_iter *i);
- int import_ubuf(int type, void __user *buf, size_t len, struct iov_iter *i);
- 
- static inline void iov_iter_ubuf(struct iov_iter *i, unsigned int direction,
-diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
-index 4efc75d90a0d..e76f5e1efdf2 100644
---- a/kernel/trace/trace_events_user.c
-+++ b/kernel/trace/trace_events_user.c
-@@ -2182,8 +2182,7 @@ static ssize_t user_events_write(struct file *file, const char __user *ubuf,
- 	if (unlikely(*ppos != 0))
- 		return -EFAULT;
- 
--	if (unlikely(import_single_range(ITER_SOURCE, (char __user *)ubuf,
--					 count, &i)))
-+	if (unlikely(import_ubuf(ITER_SOURCE, (char __user *)ubuf, count, &i)))
- 		return -EFAULT;
- 
- 	return user_events_write_core(file, &i);
-diff --git a/lib/iov_iter.c b/lib/iov_iter.c
-index d60c73354e1f..009875bc95aa 100644
---- a/lib/iov_iter.c
-+++ b/lib/iov_iter.c
-@@ -1369,19 +1369,6 @@ ssize_t import_iovec(int type, const struct iovec __user *uvec,
- }
- EXPORT_SYMBOL(import_iovec);
- 
--int import_single_range(int rw, void __user *buf, size_t len,
--			struct iov_iter *i)
--{
--	if (len > MAX_RW_COUNT)
--		len = MAX_RW_COUNT;
--	if (unlikely(!access_ok(buf, len)))
--		return -EFAULT;
--
--	iov_iter_ubuf(i, rw, buf, len);
--	return 0;
--}
--EXPORT_SYMBOL(import_single_range);
--
- int import_ubuf(int rw, void __user *buf, size_t len, struct iov_iter *i)
- {
- 	if (len > MAX_RW_COUNT)
-diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
-index 57cf3adb191a..54d3c762d400 100644
---- a/net/ipv4/tcp.c
-+++ b/net/ipv4/tcp.c
-@@ -1857,8 +1857,8 @@ static int receive_fallback_to_copy(struct sock *sk,
- 	if (copy_address != zc->copybuf_address)
- 		return -EINVAL;
- 
--	err = import_single_range(ITER_DEST, (void __user *)copy_address,
--				  inq, &msg.msg_iter);
-+	err = import_ubuf(ITER_DEST, (void __user *)copy_address, inq,
-+			  &msg.msg_iter);
- 	if (err)
- 		return err;
- 
-@@ -1890,8 +1890,8 @@ static int tcp_copy_straggler_data(struct tcp_zerocopy_receive *zc,
- 	if (copy_address != zc->copybuf_address)
- 		return -EINVAL;
- 
--	err = import_single_range(ITER_DEST, (void __user *)copy_address,
--				  copylen, &msg.msg_iter);
-+	err = import_ubuf(ITER_DEST, (void __user *)copy_address, copylen,
-+			  &msg.msg_iter);
- 	if (err)
- 		return err;
- 	err = skb_copy_datagram_msg(skb, *offset, &msg, copylen);
-diff --git a/net/socket.c b/net/socket.c
-index 1f0d0e8d0a50..5d49ae0c1b79 100644
---- a/net/socket.c
-+++ b/net/socket.c
-@@ -2163,7 +2163,7 @@ int __sys_sendto(int fd, void __user *buff, size_t len, unsigned int flags,
- 	struct msghdr msg;
- 	int fput_needed;
- 
--	err = import_single_range(ITER_SOURCE, buff, len, &msg.msg_iter);
-+	err = import_ubuf(ITER_SOURCE, buff, len, &msg.msg_iter);
- 	if (unlikely(err))
- 		return err;
- 	sock = sockfd_lookup_light(fd, &err, &fput_needed);
-@@ -2228,7 +2228,7 @@ int __sys_recvfrom(int fd, void __user *ubuf, size_t size, unsigned int flags,
- 	int err, err2;
- 	int fput_needed;
- 
--	err = import_single_range(ITER_DEST, ubuf, size, &msg.msg_iter);
-+	err = import_ubuf(ITER_DEST, ubuf, size, &msg.msg_iter);
- 	if (unlikely(err))
- 		return err;
- 	sock = sockfd_lookup_light(fd, &err, &fput_needed);
-diff --git a/security/keys/keyctl.c b/security/keys/keyctl.c
-index 193df7ca3ca8..10ba439968f7 100644
---- a/security/keys/keyctl.c
-+++ b/security/keys/keyctl.c
-@@ -1255,8 +1255,8 @@ long keyctl_instantiate_key(key_serial_t id,
- 		struct iov_iter from;
- 		int ret;
- 
--		ret = import_single_range(ITER_SOURCE, (void __user *)_payload, plen,
--					  &from);
-+		ret = import_ubuf(ITER_SOURCE, (void __user *)_payload, plen,
-+				  &from);
- 		if (unlikely(ret))
- 			return ret;
- 
--- 
-2.42.0
+If in the future, not charging the zswap entry causes a separate
+isolation issue, we could revisit this decision and charge it.
+Otherwise, IMHO we should just stick with this for now.
 
+>
+> >
+> > Yes, for most users - at least right now - the current assumption is
+> > accurate. The thinking was just that if we do have to differentiate
+> > callers now anyway, we might as well make the interface a bit more
+> > self-documenting and harder to misuse going forward, even if it's a
+> > bit more churn now.
+> >
+> >
