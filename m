@@ -2,54 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26721803564
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 14:50:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDB84803566
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 14:50:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344409AbjLDNuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 08:50:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45914 "EHLO
+        id S1344446AbjLDNuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 08:50:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234237AbjLDNuQ (ORCPT
+        with ESMTP id S234041AbjLDNud (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 08:50:16 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07F5FD8;
-        Mon,  4 Dec 2023 05:50:21 -0800 (PST)
-Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SkQ5L2jDdzvRY4;
-        Mon,  4 Dec 2023 21:49:42 +0800 (CST)
-Received: from [10.174.177.174] (10.174.177.174) by
- dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 4 Dec 2023 21:50:19 +0800
-Message-ID: <b524ccf7-e5a0-4a55-db6e-b67989055a05@huawei.com>
-Date:   Mon, 4 Dec 2023 21:50:18 +0800
+        Mon, 4 Dec 2023 08:50:33 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3D0DFF
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 05:50:39 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-3333131e08dso2979771f8f.2
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 05:50:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701697838; x=1702302638; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=eAuYi+CP8FnDvl1/9mJlyIJtR24fsmGGBMNOB1G00HM=;
+        b=QO+9BzVpqrgcAjVH4KIBQzTyMMLF05hN0BF5rJdBHwKyGOL/OduoeIkO+yEwBQya/v
+         W3oUSG6IElhRfBABlyn1gpL5GP8IvC+DI/b94pK3lJqAo+Vwfl/0iknXVbxpOr99PYRv
+         qiQfLwdSUQ+iPq55YyeGABMd3HxfyU765rfT8DrzDe9OYBXcJbhna9IYBPUrmQ4jo8CM
+         i8+Rd84tRK19j4uULeuMrcoISxM3G8AwTbJFTWY6r8e2a7fAKNdp6Pa5w/n4KVDNb1Vy
+         tAW4OnyeYDoob15RFsCA+adxNUGMtcca/3tqdXdQpGL2ezFI9TrcTZf1ir3t4VFl1Z8q
+         1MxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701697838; x=1702302638;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=eAuYi+CP8FnDvl1/9mJlyIJtR24fsmGGBMNOB1G00HM=;
+        b=GTpZMJrPx9HjB5Lai0EQ+DrCopQmZmtfsYeBvmYdpqliofUb9NWYp2XmRy2ZGNMCnD
+         kVfhW51KYRXCgDhddByoBAFU6NYirgSKkbEOb/zVvbgMh6hxB7/Bg8T5trBj20vBWfPu
+         pcyFw1rb7pdn7UTpnoutd+QykqSEO+dqTfPLUKxIlUO83IbktzIFRZj9MYZJ+5ujYMGQ
+         rwswdEyfphL6+AwBLifoRgsmoBt5lS/Gv+2buDpnoxa2Gva61Qxf1y18EkMLXj720yCb
+         4vxw00vd3DT3446EakMZ8HqyaeBEUHveEPBswxR2Hw0lcVyY0tByYd9H7Hz6LFbtpZpY
+         Sj1g==
+X-Gm-Message-State: AOJu0Yz6tiP+/jYRY10ge+uHtuoxtnd2R0cnSO/Z+kjFElIvPrMq2fbh
+        c4/IAuABWHOTGyo1FnDSgufzHQ==
+X-Google-Smtp-Source: AGHT+IGi4e3DED/9yTz6CQ5jSU6WrggjZ7YH99yV7/7tpCLqmYsyGhKNkD/u/aBxbEgr9z5+byR+qA==
+X-Received: by 2002:a05:6000:110f:b0:333:39c1:b7b8 with SMTP id z15-20020a056000110f00b0033339c1b7b8mr1872523wrw.119.1701697838164;
+        Mon, 04 Dec 2023 05:50:38 -0800 (PST)
+Received: from [127.0.1.1] ([82.77.85.67])
+        by smtp.gmail.com with ESMTPSA id w12-20020a5d680c000000b003333e09990dsm5908553wru.8.2023.12.04.05.50.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Dec 2023 05:50:37 -0800 (PST)
+From:   Abel Vesa <abel.vesa@linaro.org>
+Subject: [PATCH v2 0/2] phy: qcom: qmp-usb: Add support for X1E80100 USB3
+ PHY
+Date:   Mon, 04 Dec 2023 15:50:26 +0200
+Message-Id: <20231122-phy-qualcomm-usb3-uniphy-x1e80100-v2-0-1a3e1d98564e@linaro.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.2
-Subject: Re: [PATCH -RFC 0/2] mm/ext4: avoid data corruption when extending
- DIO write race with buffered read
-Content-Language: en-US
-To:     Jan Kara <jack@suse.cz>
-CC:     <linux-mm@kvack.org>, <linux-ext4@vger.kernel.org>,
-        <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <willy@infradead.org>,
-        <akpm@linux-foundation.org>, <ritesh.list@gmail.com>,
-        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>,
-        <yangerkun@huawei.com>, <yukuai3@huawei.com>,
-        Baokun Li <libaokun1@huawei.com>
-References: <20231202091432.8349-1-libaokun1@huawei.com>
- <20231204121120.mpxntey47rluhcfi@quack3>
-From:   Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <20231204121120.mpxntey47rluhcfi@quack3>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.174]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpeml500021.china.huawei.com (7.185.36.21)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-B4-Tracking: v=1; b=H4sIACLZbWUC/5WOSw6DIBRFt9Iw7mv41FQ76j4aB4AoL0GwUIzGu
+ PeiO+jwnME9dyPJRDSJPC8biWbGhMEX4NcL0Vb6wQB2hQmnXDDGOUx2hU+WTodxhJyUgOzxkAs
+ zNWWUQvMQuq551TDTk7KjZDKgovTaliWfnStyiqbH5Qy/28IW0zfE9fwxs8P+k5wZUBB9pTrOR
+ Vep+8uhlzHcQhxIu+/7DzIw7tzoAAAA
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Johan Hovold <johan@kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Abel Vesa <abel.vesa@linaro.org>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1186; i=abel.vesa@linaro.org;
+ h=from:subject:message-id; bh=bq12H4LhIOP0hqLRSHiVZk4lQQxtWa9RmciRWDla0xI=;
+ b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBlbdkkc7kZeVKqZ0M198ktPur8uAhz993joSY47
+ DXYu62EB0KJAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZW3ZJAAKCRAbX0TJAJUV
+ VhBfEADEHcWM3kW6D8c+Ye+Sr62piQRou48rb7TvAxtP/L9wDjU6rfaiVE9LwMdbIjNnhQl4r5x
+ Ff3W/FlqdXLJWIbdhQZRpllk/9eF4i/pZvlnMEjDS8/3OwZAu5D7ehkkpfGifQk+Gu+O2IbxLQU
+ ++NK/ailb4Q7f8o2asuHlXxz52W4u25LaikRAF+X6qivYSeST45h39h9HS1opv4jag4wWwX3vUT
+ mJv5DpERnIAD0T62EoJauFqnQj9NnmeaNuZOtSrzELJbfUsYlV5JEmOrkN5eS/H/1GsYRJXfGXa
+ oa9wNVRJ0n5MzniPh5Gv4hZZQOQmJLTKXHgBIVYiuTt0aW7wnflbWRJJ6HOLNeYxWI8naz6U/PS
+ i7pzBfiSdgDhmTurwES5ZREOtzAGiD60z0qMMSnP24I7KDJhiN7xAGuH+fEqrnCH9D4IW5D6Qwp
+ nEZ/7zdsqo6QCKE1HsRjL8IBzkI4c5DcMulonTj9AEy5RLKoUSU98QII/Z/0fj5KweISJ2O6/xK
+ wqy/DiCdJPdLLMDvh7GIltFEph+iXcqFLE7K8BaY3YMILlWpPW6Tljp4NoiLrAyRM11FtYqp9wM
+ YRdtF/cUb9HFiG2o7eTJ6/Ddk65qGYK/MmX5VhZ5FwgHFc1iG6jNTlwwImL16x89qoTrQFBLd14
+ 3UIbFGLJtAFUaiQ==
+X-Developer-Key: i=abel.vesa@linaro.org; a=openpgp;
+ fpr=6AFF162D57F4223A8770EF5AF7BF214136F41FAE
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,81 +101,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/12/4 20:11, Jan Kara wrote:
-> Hello!
-Thank you for your reply!
->
-> On Sat 02-12-23 17:14:30, Baokun Li wrote:
->> Recently, while running some pressure tests on MYSQL, noticed that
->> occasionally a "corrupted data in log event" error would be reported.
->> After analyzing the error, I found that extending DIO write and buffered
->> read were competing, resulting in some zero-filled page end being read.
->> Since ext4 buffered read doesn't hold an inode lock, and there is no
->> field in the page to indicate the valid data size, it seems to me that
->> it is impossible to solve this problem perfectly without changing these
->> two things.
-> Yes, combining buffered reads with direct IO writes is a recipe for
-> problems and pretty much in the "don't do it" territory. So honestly I'd
-> consider this a MYSQL bug. Were you able to identify why does MYSQL use
-> buffered read in this case? It is just something specific to the test
-> you're doing?
-The problem is with a one-master-twoslave MYSQL database with three
-physical machines, and using sysbench pressure testing on each of the
-three machines, the problem occurs about once every two to three hours.
+This patchset adds support for USB3 PHYs instances found on X1E80100.
+It depends on the v7 register offsets added by the following patchset:
 
-The problem is with the relay log file, and when the problem occurs, the
-middle dozens of bytes of the file are read as all zeros, while the data on
-disk is not. This is a journal-like file where a write process gets the 
-data from
-the master node and writes it locally, and another replay process reads the
-file and performs the replay operation accordingly (some SQL statements).
-The problem is that when replaying, it finds that the data read is 
-corrupted,
-not valid SQL data, while the data on disk is normal.
+https://lore.kernel.org/all/20231122-phy-qualcomm-v6-v6-20-v7-new-offsets-v1-0-d9340d362664@linaro.org/
 
-It's not confirmed that buffered reads vs direct IO writes is actually 
-causing
-this issue, but this is the only scenario that we can reproduce with our 
-local
-simplified scripts. Also, after merging in patch 1, the MYSQL pressure test
-scenario has now been tested for 5 days and has not been reproduced.
+Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+---
+Changes in v2:
+- Added qmp_usb_offsets_v7, as Dmitry suggested
+- Properly sorted the init tables, cfg struct and compatible entry, as
+  suggested by Johan
+- Add entries to allOf section in the schema, as suggested by Krzysztof
+- Link to v1: https://lore.kernel.org/r/20231122-phy-qualcomm-usb3-uniphy-x1e80100-v1-0-3f5bd223d5b4@linaro.org
 
-I'll double-check the problem scenario, although buffered reads with 
-buffered
-writes doesn't seem to have this problem.
->> In this series, the first patch reads the inode size twice, and takes the
->> smaller of the two values as the copyout limit to avoid copying data that
->> was not actually read (0-padding) into the user buffer and causing data
->> corruption. This greatly reduces the probability of problems under 4k
->> page. However, the problem is still easily triggered under 64k page.
->>
->> The second patch waits for the existing dio write to complete and
->> invalidate the stale page cache before performing a new buffered read
->> in ext4, avoiding data corruption by copying the stale page cache to
->> the user buffer. This makes it much less likely that the problem will
->> be triggered in a 64k page.
->>
->> Do we have a plan to add a lock to the ext4 buffered read or a field in
->> the page that indicates the size of the valid data in the page? Or does
->> anyone have a better idea?
-> No, there are no plans to address this AFAIK. Because such locking will
-> slow down all the well behaved applications to fix a corner case for
-> application doing unsupported things. Sure we must not crash the kernel,
-> corrupt the filesystem or leak sensitive (e.g. uninitialized) data if app
-> combines buffered and direct IO but returning zeros instead of valid data
-> is in my opinion fully within the range of acceptable behavior for such
-> case.
->
-> 								Honza
-I also feel that a scenario like buffered reads + DIO writes is strange. But
-theoretically when read doesn't return an error, the data read shouldn't 
-be wrong.
-And I tested that xfs guarantees data consistency in this scenario, 
-which is why I
-thought it might be buggy.
+---
+Abel Vesa (2):
+      dt-bindings: phy: qcom,sc8280xp-qmp-usb3-uni: Add X1E80100 USB PHY binding
+      phy: qcom-qmp-usb: Add Qualcomm X1E80100 USB3 PHY support
 
-Thanks!
+ .../phy/qcom,sc8280xp-qmp-usb3-uni-phy.yaml        |   3 +
+ drivers/phy/qualcomm/phy-qcom-qmp-usb.c            | 160 +++++++++++++++++++++
+ 2 files changed, 163 insertions(+)
+---
+base-commit: cf0b28e02cfac455b54f1a29fe907931d2b0bb9d
+change-id: 20231122-phy-qualcomm-usb3-uniphy-x1e80100-973c882591ef
+
+Best regards,
 -- 
-With Best Regards,
-Baokun Li
-.
+Abel Vesa <abel.vesa@linaro.org>
+
