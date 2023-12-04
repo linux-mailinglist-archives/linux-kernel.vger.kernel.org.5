@@ -2,105 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6C83803E39
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 20:18:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0C6A803E45
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 20:22:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231529AbjLDTSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 14:18:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42912 "EHLO
+        id S232731AbjLDTWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 14:22:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229983AbjLDTSe (ORCPT
+        with ESMTP id S231368AbjLDTWp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 14:18:34 -0500
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A030DE6
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 11:18:40 -0800 (PST)
-Received: by mail-ot1-x332.google.com with SMTP id 46e09a7af769-6d880219f01so786010a34.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 11:18:40 -0800 (PST)
+        Mon, 4 Dec 2023 14:22:45 -0500
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79F04CA
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 11:22:51 -0800 (PST)
+Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1cf74396cbeso19820325ad.2
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 11:22:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701717520; x=1702322320; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VWNzZv699g9WmaMge8Xt2XGWr8M2fBvBoGU1E608xn8=;
-        b=ogvbZv288l9hOeOHP58Zsi8eOI/g8vnxaXwHTjoqELNgUGTZgezgFk8KTjOp/RoZmW
-         BUgwfSSHi+95sYPbKRxXNe3SBZHlJV5b8I4OyPrFAII4FClPXkyvp+sucAIs5ATbMw1p
-         m1iQJ/9Pl1KNn6Ye0XjtCFzhIKMLx6f5mF5bwrFR9dyEgPoq82kZzZiDmGuFFu/pOn2o
-         A+PcH7g7LKPt8qT+J2SAOxG5++6Iut2Fbt7iV71mBD2pOt2p3XqPEeexJiFraWg1/Wz7
-         bvsRLwqVld+vT2Z7FUQQlIFANn00FnRQ+2td9V1obTI2aXDM9boRIyJoNZGEaW3qlf7W
-         WrEA==
+        d=google.com; s=20230601; t=1701717771; x=1702322571; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=rzYon50ijdZ64vLfYd4avKup56gTUfCE1fyLL3+Ev1w=;
+        b=bZgeXv/YyCEkCqbZs65CYjZ9SzOzkdRkCutj4QF5dvJNjb//TNlkzgdIJVikqzxXL9
+         riWvDBjDJ6hpiGP04YKAAS6xrZwqauI7rYKNH4Lu1roLBtOiYNw56ySugfQ+08Bfg2wT
+         mMTpl2uwF/nhxMf6fZ/4NEyagEq0mcioxnPsP5nVyQMQVIg6jFwV6h8bu4UkgdaqUucR
+         Mcem0YS90e3XDxdnbzrDbAA7hCtF46hXAUK2luO4P8z3W9r9vTaUIvGi3AfD6g61Ha3+
+         ysJ7pFnAaVLjQOKKzg0byEIs83y3C1LNyk2UIppdQK8cusFAH5Ll96CYpZwUwucLqWdx
+         8Gsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701717520; x=1702322320;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VWNzZv699g9WmaMge8Xt2XGWr8M2fBvBoGU1E608xn8=;
-        b=Os419G1ar6IuyfS+Vm6Ovsv7xWK1ZXRs7m+boq5Mt8n/ia8aQ+L0eB+VfoQln3zAN4
-         TPkc/Gskmne47eITlACX/htZ/QdljVD26rIn9NfQULmRO3w7pEekettveigDLzfRYcn+
-         PlapsRLWHs3pWPVIXFKq661RyIYN8zDphXQW19thpQRkQfpwfGL5/O3IUa/EfYNvY6td
-         qH1KXdIZd+PhUrrCUR3hXMS264liqfEZP4zIjeqBCF/+4YB1fM8qH+2vAvHPzHlpCt2E
-         Jnst5opDCNfqL/zzVs7r3TSgUqrpcoUGNA/e2F+jZhUB73dd2pk5P25Fw8QdTSfyCGUC
-         cldw==
-X-Gm-Message-State: AOJu0YxV2ByHcMTzZAGA89Yz2b/+XRRvsX0CeQ2sWzKUIGXRNOOBiyjy
-        fSdiAus9ZRQscSrcH6OLtZOXJO0leEFS9Q1dxWkCvA==
-X-Google-Smtp-Source: AGHT+IHyqGlUNEc09zfk+7C7spFR2KrAlLytNjHQMZMVaTcBh0jkMo0aAva0Taxeji7L30FkvzDde4ybRx0p4piiiZw=
-X-Received: by 2002:a9d:4d02:0:b0:6d8:75a8:8455 with SMTP id
- n2-20020a9d4d02000000b006d875a88455mr2668679otf.50.1701717519644; Mon, 04 Dec
- 2023 11:18:39 -0800 (PST)
-MIME-Version: 1.0
-References: <20231130133630.192490507@infradead.org> <20231130134204.026354676@infradead.org>
-In-Reply-To: <20231130134204.026354676@infradead.org>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Mon, 4 Dec 2023 11:18:03 -0800
-Message-ID: <CABCJKufv1z0-+an7iws8J2v-c_Jg1Nfu47Um9rhCnVLxQfC6ug@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] cfi: Flip headers
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
-        hpa@zytor.com, davem@davemloft.net, dsahern@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        keescook@chromium.org, nathan@kernel.org, ndesaulniers@google.com,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-arch@vger.kernel.org, llvm@lists.linux.dev,
-        jpoimboe@kernel.org, joao@overdrivepizza.com, mark.rutland@arm.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        d=1e100.net; s=20230601; t=1701717771; x=1702322571;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rzYon50ijdZ64vLfYd4avKup56gTUfCE1fyLL3+Ev1w=;
+        b=XNaAWPM8zMx4BN+obX1yQ/lnzT62QKEnWj8h1pF97KKKLkFayBu8THrGgIGFk/Cq9k
+         //RoOl6Z1MujXXRRORORI3h76XO7dunV1/IDCKAPReYaCoC4/dVGN0jo7Ck58jZp6LHF
+         d5mvtmH34RvrlX5y43fD8E8LgsAkfuP94sPWLkwqwks0TntCfYQ/O0NqRQ6oyHiqdIMK
+         JFEer3QAofudpXerblwTM5hCPYfoB4XAGxmBF0HOCgvK8Rjwbc/8c6YyYP0wsiIyw0Ya
+         epeKQGAF2xHDi7NNcTwxiFFNFRIrpZtGgowc1bSCqUhgGe6QuEk7xabMTRGKYi/aBVSC
+         AJjg==
+X-Gm-Message-State: AOJu0Yy785jMZK70dOCEiiYUc2FZYaYOd53VrwfcFOmJZ7bMrU/8I+c5
+        y2d0EVt4RuSDic9G40jbbCw0DWtZMx4=
+X-Google-Smtp-Source: AGHT+IHwiH2yIBCj6IVLmcajU2NRBrNBME27Mu1fSkIQ3Aaq4ybFPtVXMRcqgFPD7s4W02NYEoOpQU7IvwE=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:903:1251:b0:1cc:f1fe:9f60 with SMTP id
+ u17-20020a170903125100b001ccf1fe9f60mr5888189plh.8.1701717770926; Mon, 04 Dec
+ 2023 11:22:50 -0800 (PST)
+Date:   Mon, 4 Dec 2023 11:22:49 -0800
+In-Reply-To: <20231204173028.GJ1493156@nvidia.com>
+Mime-Version: 1.0
+References: <20231202091211.13376-1-yan.y.zhao@intel.com> <ZW4Fx2U80L1PJKlh@google.com>
+ <20231204173028.GJ1493156@nvidia.com>
+Message-ID: <ZW4nCUS9VDk0DycG@google.com>
+Subject: Re: [RFC PATCH 00/42] Sharing KVM TDP to IOMMU
+From:   Sean Christopherson <seanjc@google.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Yan Zhao <yan.y.zhao@intel.com>, iommu@lists.linux.dev,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alex.williamson@redhat.com, pbonzini@redhat.com, joro@8bytes.org,
+        will@kernel.org, robin.murphy@arm.com, kevin.tian@intel.com,
+        baolu.lu@linux.intel.com, dwmw2@infradead.org, yi.l.liu@intel.com
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 30, 2023 at 5:43=E2=80=AFAM Peter Zijlstra <peterz@infradead.or=
-g> wrote:
+On Mon, Dec 04, 2023, Jason Gunthorpe wrote:
+> On Mon, Dec 04, 2023 at 09:00:55AM -0800, Sean Christopherson wrote:
+> 
+> > There are more approaches beyond having IOMMUFD and KVM be
+> > completely separate entities.  E.g. extract the bulk of KVM's "TDP
+> > MMU" implementation to common code so that IOMMUFD doesn't need to
+> > reinvent the wheel.
+> 
+> We've pretty much done this already, it is called "hmm" and it is what
+> the IO world uses. Merging/splitting huge page is just something that
+> needs some coding in the page table code, that people want for other
+> reasons anyhow.
+
+Not really.  HMM is a wildly different implementation than KVM's TDP MMU.  At a
+glance, HMM is basically a variation on the primary MMU, e.g. deals with VMAs,
+runs under mmap_lock (or per-VMA locks?), and faults memory into the primary MMU
+while walking the "secondary" HMM page tables.
+
+KVM's TDP MMU (and all of KVM's flavors of MMUs) is much more of a pure secondary
+MMU.  The core of a KVM MMU maps GFNs to PFNs, the intermediate steps that involve
+the primary MMU are largely orthogonal.  E.g. getting a PFN from guest_memfd
+instead of the primary MMU essentially boils down to invoking kvm_gmem_get_pfn()
+instead of __gfn_to_pfn_memslot(), the MMU proper doesn't care how the PFN was
+resolved.  I.e. 99% of KVM's MMU logic has no interaction with the primary MMU.
+
+> > - Subjects IOMMUFD to all of KVM's historical baggage, e.g. the memslot deletion
+> >   mess, the truly nasty MTRR emulation (which I still hope to delete), the NX
+> >   hugepage mitigation, etc.
+> 
+> Does it? I think that just remains isolated in kvm. The output from
+> KVM is only a radix table top pointer, it is up to KVM how to manage
+> it still.
+
+Oh, I didn't mean from a code perspective, I meant from a behaviorial perspective.
+E.g. there's no reason to disallow huge mappings in the IOMMU because the CPU is
+vulnerable to the iTLB multi-hit mitigation.
+
+> > I'm not convinced that memory consumption is all that interesting.  If a VM is
+> > mapping the majority of memory into a device, then odds are good that the guest
+> > is backed with at least 2MiB page, if not 1GiB pages, at which point the memory
+> > overhead for pages tables is quite small, especially relative to the total amount
+> > of memory overheads for such systems.
+> 
+> AFAIK the main argument is performance. It is similar to why we want
+> to do IOMMU SVA with MM page table sharing.
+> 
+> If IOMMU mirrors/shadows/copies a page table using something like HMM
+> techniques then the invalidations will mark ranges of IOVA as
+> non-present and faults will occur to trigger hmm_range_fault to do the
+> shadowing.
 >
-> Normal include order is that linux/foo.h should include asm/foo.h, CFI ha=
-s it
-> the wrong way around.
->
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->  arch/riscv/include/asm/cfi.h |    3 ++-
->  arch/riscv/kernel/cfi.c      |    2 +-
->  arch/x86/include/asm/cfi.h   |    3 ++-
->  arch/x86/kernel/cfi.c        |    4 ++--
->  include/asm-generic/Kbuild   |    1 +
->  include/asm-generic/cfi.h    |    5 +++++
->  include/linux/cfi.h          |    1 +
->  7 files changed, 14 insertions(+), 5 deletions(-)
+> This means that pretty much all IO will always encounter a non-present
+> fault, certainly at the start and maybe worse while ongoing.
+> 
+> On the other hand, if we share the exact page table then natural CPU
+> touches will usually make the page present before an IO happens in
+> almost all cases and we don't have to take the horribly expensive IO
+> page fault at all.
 
-Looks good to me, thanks!
+I'm not advocating mirroring/copying/shadowing page tables between KVM and the
+IOMMU.  I'm suggesting managing IOMMU page tables mostly independently, but reusing
+KVM code to do so.
 
-Reviewed-by: Sami Tolvanen <samitolvanen@google.com>
+I wouldn't even be opposed to KVM outright managing the IOMMU's page tables.  E.g.
+add an "iommu" flag to "union kvm_mmu_page_role" and then the implementation looks
+rather similar to this series.
 
-Sami
+What terrifies is me sharing page tables between the CPU and the IOMMU verbatim. 
+
+Yes, sharing page tables will Just Work for faulting in memory, but the downside
+is that _when_, not if, KVM modifies PTEs for whatever reason, those modifications
+will also impact the IO path.  My understanding is that IO page faults are at least
+an order of magnitude more expensive than CPU page faults.  That means that what's
+optimal for CPU page tables may not be optimal, or even _viable_, for IOMMU page
+tables.
+
+E.g. based on our conversation at LPC, write-protecting guest memory to do dirty
+logging is not a viable option for the IOMMU because the latency of the resulting
+IOPF is too high.  Forcing KVM to use D-bit dirty logging for CPUs just because
+the VM has passthrough (mediated?) devices would be likely a non-starter.
+
+One of my biggest concerns with sharing page tables between KVM and IOMMUs is that
+we will end up having to revert/reject changes that benefit KVM's usage due to
+regressing the IOMMU usage.
+
+If instead KVM treats IOMMU page tables as their own thing, then we can have
+divergent behavior as needed, e.g. different dirty logging algorithms, different
+software-available bits, etc.  It would also allow us to define new ABI instead
+of trying to reconcile the many incompatibilies and warts in KVM's existing ABI.
+E.g. off the top of my head:
+
+ - The virtual APIC page shouldn't be visible to devices, as it's not "real" guest
+   memory.
+
+ - Access tracking, i.e. page aging, by making PTEs !PRESENT because the CPU
+   doesn't support A/D bits or because the admin turned them off via KVM's
+   enable_ept_ad_bits module param.
+
+ - Write-protecting GFNs for shadow paging when L1 is running nested VMs.  KVM's
+   ABI can be that device writes to L1's page tables are exempt.
+
+ - KVM can exempt IOMMU page tables from KVM's awful "drop all page tables if
+   any memslot is deleted" ABI.
+
+> We were not able to make bi-dir notifiers with with the CPU mm, I'm
+> not sure that is "relatively easy" :(
+
+I'm not suggesting full blown mirroring, all I'm suggesting is a fire-and-forget
+notifier for KVM to tell IOMMUFD "I've faulted in GFN A, you might want to do the
+same".
+
+It wouldn't even necessarily need to be a notifier per se, e.g. if we taught KVM
+to manage IOMMU page tables, then KVM could simply install mappings for multiple
+sets of page tables as appropriate.
