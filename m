@@ -2,97 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F304803782
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 15:51:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 241C0803787
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 15:51:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234387AbjLDOux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 09:50:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39790 "EHLO
+        id S1345973AbjLDOvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 09:51:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233871AbjLDOuv (ORCPT
+        with ESMTP id S233871AbjLDOv2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 09:50:51 -0500
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EAC5D3;
-        Mon,  4 Dec 2023 06:50:58 -0800 (PST)
-Received: from kwepemm000007.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4SkRLz181JzShMs;
-        Mon,  4 Dec 2023 22:46:35 +0800 (CST)
-Received: from [10.67.120.192] (10.67.120.192) by
- kwepemm000007.china.huawei.com (7.193.23.189) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 4 Dec 2023 22:50:55 +0800
-Message-ID: <7df7cfcb-d39b-4643-a378-a18b8d2b5b35@huawei.com>
-Date:   Mon, 4 Dec 2023 22:50:55 +0800
+        Mon, 4 Dec 2023 09:51:28 -0500
+Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F23DB3;
+        Mon,  4 Dec 2023 06:51:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+        s=20170329; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=6g6yadi8+CXH2sU93oASaWjbxQGcWTNsZoAE3ZBa6s0=; b=j22NLa1pTn3kBvy7vKnoKczEAn
+        MPU1KJIfVHjFlIbF51rexMEyRVkazkb7YxEiGsFnh8Rn77knd8ZjnqP2g/sA9YjycG7lyixTEDIOu
+        JQqF4D6SedfsWxMguFx0HhH13ZD4Uf3Sqp4iBgs62cuSH+H2b54YO39jtsajzTVlwKpIcwWsB1Bmi
+        FDnquM4RLEkYPRzu4wTuUh3m3XoWwl+ZakPeqtn9lKab7b2sNDzenXpSgFff9HMrLBwi2Z98fO31i
+        zFYsiuXouXjJ+KTGtMKhGlS2zbGdJmZTNMYeWzv7/Dej+uUfQ7oc36zCjFJCzoSkSvHS2Y/FXDRn4
+        7HD4UKYA==;
+Received: from [102.213.205.115] (helo=mail.igalia.com)
+        by fanzine2.igalia.com with esmtpsa 
+        (Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
+        id 1rAAHw-00ADH1-69; Mon, 04 Dec 2023 15:51:12 +0100
+Date:   Mon, 4 Dec 2023 13:50:59 -0100
+From:   Melissa Wen <mwen@igalia.com>
+To:     Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+Cc:     Emma Anholt <emma@anholt.net>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        dan.carpenter@linaro.org, kernel-janitors@vger.kernel.org,
+        error27@gmail.com
+Subject: Re: [PATCH next] drm/v3d: Fix missing error code in
+ v3d_submit_cpu_ioctl()
+Message-ID: <20231204145059.3ewtpuhiq4xq4ifv@mail.igalia.com>
+References: <20231204122102.181298-1-harshit.m.mogalapalli@oracle.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-CC:     <shaojijie@huawei.com>, Arnd Bergmann <arnd@arndb.de>,
-        Hao Chen <chenhao418@huawei.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] [v2] net: hns3: reduce stack usage in
- hclge_dbg_dump_tm_pri()
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-References: <20231204085735.4112882-1-arnd@kernel.org>
-From:   Jijie Shao <shaojijie@huawei.com>
-In-Reply-To: <20231204085735.4112882-1-arnd@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.120.192]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemm000007.china.huawei.com (7.193.23.189)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231204122102.181298-1-harshit.m.mogalapalli@oracle.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-on 2023/12/4 16:57, Arnd Bergmann wrote:
-> s already allocated by debugfs,
-> but that is a much larger change.
->
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+On 12/04, Harshit Mogalapalli wrote:
+> Smatch warns:
+> 	drivers/gpu/drm/v3d/v3d_submit.c:1222 v3d_submit_cpu_ioctl()
+> 	warn: missing error code 'ret'
+> 
+> When there is no job type or job is submitted with wrong number of BOs
+> it is an error path, ret is zero at this point which is incorrect
+> return.
+> 
+> Fix this by changing it to -EINVAL.
+> 
+> Fixes: aafc1a2bea67 ("drm/v3d: Add a CPU job submission")
+> Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
 > ---
-> v2: fix error handling leak
+> This is based on static analysis and only compile tested.
 > ---
->   .../hisilicon/hns3/hns3pf/hclge_debugfs.c     | 21 ++++++++++++-------
->   1 file changed, 14 insertions(+), 7 deletions(-)
->
-> diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c
-> index ff3f8f424ad9..8f94e13c1edf 100644
-> --- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c
-> +++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c
-> @@ -981,7 +981,7 @@ static const struct hclge_dbg_item tm_pri_items[] = {
->   
->   static int hclge_dbg_dump_tm_pri(struct hclge_dev *hdev, char *buf, int len)
->   {
-> -	char data_str[ARRAY_SIZE(tm_pri_items)][HCLGE_DBG_DATA_STR_LEN];
-> +	char *data_str;
+>  drivers/gpu/drm/v3d/v3d_submit.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/v3d/v3d_submit.c b/drivers/gpu/drm/v3d/v3d_submit.c
+> index d7a9da2484fd..fcff41dd2315 100644
+> --- a/drivers/gpu/drm/v3d/v3d_submit.c
+> +++ b/drivers/gpu/drm/v3d/v3d_submit.c
+> @@ -1219,11 +1219,13 @@ v3d_submit_cpu_ioctl(struct drm_device *dev, void *data,
+>  	/* Every CPU job must have a CPU job user extension */
+>  	if (!cpu_job->job_type) {
+>  		DRM_DEBUG("CPU job must have a CPU job user extension.\n");
+> +		ret = -EINVAL;
+>  		goto fail;
+>  	}
+>  
+>  	if (args->bo_handle_count != cpu_job_bo_handle_count[cpu_job->job_type]) {
+>  		DRM_DEBUG("This CPU job was not submitted with the proper number of BOs.\n");
+> +		ret = -EINVAL;
 
-We want to define variables in an inverted triangle based on the code length.
-so, "char *data_str" should move four lines down.
+Nice catch. Thanks!
 
-   	struct hclge_tm_shaper_para c_shaper_para, p_shaper_para;
-	char *result[ARRAY_SIZE(tm_pri_items)], *sch_mode_str;
-	char content[HCLGE_DBG_TM_INFO_LEN];
-	u8 pri_num, sch_mode, weight, i, j;
-	char *data_str;
-	int pos, ret;
+Reviewed-by: Melissa Wen <mwen@igalia.com>
 
->   	struct hclge_tm_shaper_para c_shaper_para, p_shaper_para;
->   	char *result[ARRAY_SIZE(tm_pri_items)], *sch_mode_str;
->   	char content[HCLGE_DBG_TM_INFO_LEN];
-> @@ -992,8 +992,13 @@ static int hclge_dbg_dump_tm_pri(struct hclge_dev *hdev, char *buf, int len)
->   	if (ret)
->   		return ret;
->
+I'll apply to drm-misc-next.
+
+>  		goto fail;
+>  	}
+>  
+> -- 
+> 2.39.3
+> 
