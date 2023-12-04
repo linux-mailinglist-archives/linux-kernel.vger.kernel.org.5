@@ -2,95 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8598D80379D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 15:54:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E12BA8037A1
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 15:54:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346010AbjLDOyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 09:54:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36926 "EHLO
+        id S1346041AbjLDOyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 09:54:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234155AbjLDOyP (ORCPT
+        with ESMTP id S234155AbjLDOyg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 09:54:15 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62EFFA1;
-        Mon,  4 Dec 2023 06:54:21 -0800 (PST)
-Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B4Eq96E020640;
-        Mon, 4 Dec 2023 14:54:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=0H1CuKAYogqCZsn/ksRFsa0G5IRLpU8w0lcNqSiLkgI=;
- b=J5nDe2bJY8810A2POgau07YJ+6BBhLAgOgcvI2Ci205uilYsK9d+daXaH84IKWe5itOG
- C1AR894X1yKWRJ+YVYFUH6SyrQlFUuRoToPOerVgjfLQvyHuw+X7J4Cu1K+7TzN46a/a
- AExr1ZZhPzYlfxdNxp/+c2YJxq/X9ycZQNiXgIcIONv3kIChUNDWX7Io8QZelrjqEFBm
- BWHwFCDvEcuzzc/1948Y8fvO7EBS6e7GZtGFUu7X2NPLbBSPzJ2jnU+ZPOSO/c6PBL7T
- reBo+H4mJ8+jMAP/h+53DWgoXiL/UbeyTMGW0MitQ6PfEv6dQhiTtiqPvoj+peEXBgqB 6w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3usekcdq5c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Dec 2023 14:54:18 +0000
-Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3B4ERj1B026528;
-        Mon, 4 Dec 2023 14:54:06 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3usekcdpwg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Dec 2023 14:54:06 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3B4EJSev020522;
-        Mon, 4 Dec 2023 14:53:52 GMT
-Received: from smtprelay03.wdc07v.mail.ibm.com ([172.16.1.70])
-        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3urv8dnjc2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Dec 2023 14:53:52 +0000
-Received: from smtpav03.dal12v.mail.ibm.com (smtpav03.dal12v.mail.ibm.com [10.241.53.102])
-        by smtprelay03.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3B4Erp3R24707688
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 4 Dec 2023 14:53:51 GMT
-Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 888815805A;
-        Mon,  4 Dec 2023 14:53:51 +0000 (GMT)
-Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BE24C5803F;
-        Mon,  4 Dec 2023 14:53:50 +0000 (GMT)
-Received: from [9.61.175.228] (unknown [9.61.175.228])
-        by smtpav03.dal12v.mail.ibm.com (Postfix) with ESMTP;
-        Mon,  4 Dec 2023 14:53:50 +0000 (GMT)
-Message-ID: <1f4720d7-93f1-4e38-a3ad-abaf99596e7c@linux.ibm.com>
-Date:   Mon, 4 Dec 2023 09:53:50 -0500
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] s390/vfio-ap: handle response code 01 on queue reset
-Content-Language: en-US
-To:     Christian Borntraeger <borntraeger@linux.ibm.com>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     jjherne@linux.ibm.com, pasic@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        frankja@linux.ibm.com, imbrenda@linux.ibm.com, david@redhat.com
-References: <20231129143529.260264-1-akrowiak@linux.ibm.com>
- <b43414ef-7aa4-9e5c-a706-41861f0d346c@linux.ibm.com>
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-Organization: IBM
-In-Reply-To: <b43414ef-7aa4-9e5c-a706-41861f0d346c@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: LiPqEQEffht9-OMuMmPGu4mqf9N3NKXc
-X-Proofpoint-ORIG-GUID: FusNM78Gsy9mHp2FC5kLwwcm7lUPOau7
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-04_13,2023-12-04_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- spamscore=0 impostorscore=0 mlxscore=0 clxscore=1015 malwarescore=0
- bulkscore=0 suspectscore=0 adultscore=0 lowpriorityscore=0 mlxlogscore=999
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2312040112
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        Mon, 4 Dec 2023 09:54:36 -0500
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA174B2;
+        Mon,  4 Dec 2023 06:54:42 -0800 (PST)
+Received: by mail-qk1-x72e.google.com with SMTP id af79cd13be357-77f04969d2eso118246985a.1;
+        Mon, 04 Dec 2023 06:54:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701701682; x=1702306482; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Bg3OAjxlhkHVroLExkyXrSp7hB9PGqxL9CSH3f9aKos=;
+        b=djGA3vkYo8G+q2TTThXo9BVdxjoCSq+LWK32Jr+vl6pAMG9MOC8vm26p6saOT8DAz3
+         T61gB42MXGBvCKb92s0QN7eu/XtT3XKvcDdPOjXoOdPjBT1n0hUmNHqMQKG3oa9fgM6W
+         Po0NF3ZvhXwUuSQ05HSensVvaeMvtP64e6orfyw3FTn8N1BMsIgqVGmZd3tlTmPQZFMl
+         n50KiMFXX+BBC/rvzuQamRBuXRwyEA54sR4wYHyakTJ1WoWoGSTmLMs4mTddMg4ym2OJ
+         qOwmlzXYUDNdJ0TMd4fSeOdOLoD9oo8OfpTV/PSKWBVXm4OEdNqejvHN++Hdfr9nQuQd
+         MKpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701701682; x=1702306482;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Bg3OAjxlhkHVroLExkyXrSp7hB9PGqxL9CSH3f9aKos=;
+        b=hco7fJrQvU4px6ozxo+5xYz2P5p68Xo0gdYChioSRFte/VK3gCMWWRQ7y7+n9Gc12h
+         oxf/jwjEfvqRIFNeVY2SXKXyxOkV30amrp5y9JuFN14qfqCWQZMELmpZKysCfsDD/Ntz
+         cctLaHLXi5rQBbnD/tUnW4rlI1l6iifFJMqzBTzYa2pGZ6MpGEj8BHaFCdFiIYufEOl0
+         6U4M6IB2Z6AbwPk1/nT8VnjqsNZHgp1qReQEvw9+HIuhb4SGcJO2xnpTsxYma/k4Sxtj
+         CaioBTfcws3dSp8LMsdrMGZc2qSef0R/feoHHvDrOOK7U5A+XQihBNZ+3lzdirzwE8F4
+         /B7Q==
+X-Gm-Message-State: AOJu0YyeVMq7tMvB+EbPmnyQO/Ilvr3h0xbbGrfAesGtXOrap7SR8BpC
+        1Zl8DVy2VdNMQpto4/W0548=
+X-Google-Smtp-Source: AGHT+IHmGk8EW1nYxUJzot/wHNOP9alDTyqyX08Vu4COc7aS8T/1IoLrhxMpc+DSC3CEsmazSLPpyg==
+X-Received: by 2002:a05:6214:11a4:b0:67a:ad71:ce63 with SMTP id u4-20020a05621411a400b0067aad71ce63mr4980388qvv.90.1701701681739;
+        Mon, 04 Dec 2023 06:54:41 -0800 (PST)
+Received: from localhost (114.66.194.35.bc.googleusercontent.com. [35.194.66.114])
+        by smtp.gmail.com with ESMTPSA id l4-20020ac84584000000b00421b14f7e7csm4356420qtn.48.2023.12.04.06.54.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Dec 2023 06:54:41 -0800 (PST)
+Date:   Mon, 04 Dec 2023 09:54:40 -0500
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To:     Jesper Dangaard Brouer <hawk@kernel.org>,
+        Song Yoong Siang <yoong.siang.song@intel.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Bjorn Topel <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, bpf@vger.kernel.org,
+        xdp-hints@xdp-project.net,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-kselftest@vger.kernel.org
+Message-ID: <656de830e8d70_2e983e294ca@willemb.c.googlers.com.notmuch>
+In-Reply-To: <43b01013-e78b-417e-b169-91909c7309b1@kernel.org>
+References: <20231203165129.1740512-1-yoong.siang.song@intel.com>
+ <20231203165129.1740512-3-yoong.siang.song@intel.com>
+ <43b01013-e78b-417e-b169-91909c7309b1@kernel.org>
+Subject: Re: [PATCH bpf-next v3 2/3] net: stmmac: add Launch Time support to
+ XDP ZC
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -98,92 +107,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/29/23 12:12, Christian Borntraeger wrote:
-> Am 29.11.23 um 15:35 schrieb Tony Krowiak:
->> In the current implementation, response code 01 (AP queue number not 
->> valid)
->> is handled as a default case along with other response codes returned 
->> from
->> a queue reset operation that are not handled specifically. Barring a bug,
->> response code 01 will occur only when a queue has been externally removed
->> from the host's AP configuration; nn this case, the queue must
->> be reset by the machine in order to avoid leaking crypto data if/when the
->> queue is returned to the host's configuration. The response code 01 case
->> will be handled specifically by logging a WARN message followed by 
->> cleaning
->> up the IRQ resources.
->>
-> 
-> To me it looks like this can be triggered by the LPAR admin, correct? So it
-> is not desireable but possible.
-> In that case I prefer to not use WARN, maybe use dev_warn or dev_err 
-> instead.
-> WARN can be a disruptive event if panic_on_warn is set.
-
-Yes, it can be triggered by the LPAR admin. I can't use dev_warn here 
-because we don't have a reference to any device, but I can use pr_warn 
-if that suffices.
-
+Jesper Dangaard Brouer wrote:
 > 
 > 
->> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
->> ---
->>   drivers/s390/crypto/vfio_ap_ops.c | 31 +++++++++++++++++++++++++++++++
->>   1 file changed, 31 insertions(+)
->>
->> diff --git a/drivers/s390/crypto/vfio_ap_ops.c 
->> b/drivers/s390/crypto/vfio_ap_ops.c
->> index 4db538a55192..91d6334574d8 100644
->> --- a/drivers/s390/crypto/vfio_ap_ops.c
->> +++ b/drivers/s390/crypto/vfio_ap_ops.c
->> @@ -1652,6 +1652,21 @@ static int apq_status_check(int apqn, struct 
->> ap_queue_status *status)
->>            * a value indicating a reset needs to be performed again.
->>            */
->>           return -EAGAIN;
->> +    case AP_RESPONSE_Q_NOT_AVAIL:
->> +        /*
->> +         * This response code indicates the queue is not available.
->> +         * Barring a bug, response code 01 will occur only when a queue
->> +         * has been externally removed from the host's AP configuration;
->> +         * in which case, the queue must be reset by the machine in
->> +         * order to avoid leaking crypto data if/when the queue is
->> +         * returned to the host's configuration. In this case, let's go
->> +         * ahead and log a warning message and return 0 so the AQIC
->> +         * resources get cleaned up by the caller.
->> +         */
->> +        WARN(true,
->> +             "Unable to reset queue %02x.%04x: not in host AP 
->> configuration\n",
->> +             AP_QID_CARD(apqn), AP_QID_QUEUE(apqn));
->> +            return 0;
->>       default:
->>           WARN(true,
->>                "failed to verify reset of queue %02x.%04x: TAPQ rc=%u\n",
->> @@ -1736,6 +1751,22 @@ static void vfio_ap_mdev_reset_queue(struct 
->> vfio_ap_queue *q)
->>           q->reset_status.response_code = 0;
->>           vfio_ap_free_aqic_resources(q);
->>           break;
->> +    case AP_RESPONSE_Q_NOT_AVAIL:
->> +        /*
->> +         * This response code indicates the queue is not available.
->> +         * Barring a bug, response code 01 will occur only when a queue
->> +         * has been externally removed from the host's AP configuration;
->> +         * in which case, the queue must be reset by the machine in
->> +         * order to avoid leaking crypto data if/when the queue is
->> +         * returned to the host's configuration. In this case, let's go
->> +         * ahead and log a warning message then clean up the AQIC
->> +         * resources.
->> +         */
->> +        WARN(true,
->> +             "Unable to reset queue %02x.%04x: not in host AP 
->> configuration\n",
->> +             AP_QID_CARD(q->apqn), AP_QID_QUEUE(q->apqn));
->> +        vfio_ap_free_aqic_resources(q);
->> +        break;
->>       default:
->>           WARN(true,
->>                "PQAP/ZAPQ for %02x.%04x failed with invalid rc=%u\n",
+> On 12/3/23 17:51, Song Yoong Siang wrote:
+> > This patch enables Launch Time (Time-Based Scheduling) support to XDP zero
+> > copy via XDP Tx metadata framework.
+> > 
+> > Signed-off-by: Song Yoong Siang<yoong.siang.song@intel.com>
+> > ---
+> >   drivers/net/ethernet/stmicro/stmmac/stmmac.h      |  2 ++
+> 
+> As requested before, I think we need to see another driver implementing 
+> this.
+> 
+> I propose driver igc and chip i225.
+> 
+> The interesting thing for me is to see how the LaunchTime max 1 second
+> into the future[1] is handled code wise. One suggestion is to add a 
+> section to Documentation/networking/xsk-tx-metadata.rst per driver that 
+> mentions/documents these different hardware limitations.  It is natural 
+> that different types of hardware have limitations.  This is a close-to 
+> hardware-level abstraction/API, and IMHO as long as we document the 
+> limitations we can expose this API without too many limitations for more 
+> capable hardware.
+
+I would assume that the kfunc will fail when a value is passed that
+cannot be programmed.
+
+What is being implemented here already exists for qdiscs. The FQ
+qdisc takes a horizon attribute and
+
+    "
+    when a packet is beyond the horizon
+        at enqueue() time:
+        - either drop the packet (default policy)
+        - or cap its delivery time to the horizon.
+    "
+    commit 39d010504e6b ("net_sched: sch_fq: add horizon attribute")
+
+Having the admin manually configure this on the qdisc based on
+off-line knowledge of the device is more fragile than if the device
+would somehow signal its limit to the stack.
+
+But I don't think we should add enforcement of that as a requirement
+for this xdp extension of pacing.
