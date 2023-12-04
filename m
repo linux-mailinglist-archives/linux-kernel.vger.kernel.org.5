@@ -2,122 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFA0A8038FD
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 16:39:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD4F6803901
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 16:39:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234629AbjLDPjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 10:39:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40286 "EHLO
+        id S234760AbjLDPjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 10:39:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234647AbjLDPjA (ORCPT
+        with ESMTP id S234728AbjLDPjK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 10:39:00 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E7E1F3
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 07:39:06 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB0F8C433C8;
-        Mon,  4 Dec 2023 15:39:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701704346;
-        bh=G3X+vmde+cr11/lAMlOMQHfGd+SQv6ekjh9J8L55ZRY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=CVZpLFeqSXJ+oqgWCvDcEICrbiSZaOdS+ZZIIYPJPyEynaYyEaqQBTFia3KGSAvQM
-         LeA522/+DiQBb67g6AqvgJxMZBGqLnwdqey1BuqYfanwfE7HIyAFqZ4VtZaedSgHW7
-         wDysUfO7qMGadjo3YCWhj26TQx25+SnUbP1EGwAfc/7m8xr7G20oA8+EoubfK9eqAw
-         AkduxD8F9Tkm1jEW9+WUTo5mRhBMImuICHbMqFzYahEJ4CBdo9v7p9ac0dBvnFRzDF
-         3GA01P9uc1n7CknA2RYxzjDIB7thFxTfDFeKSXPkvhM5IZwJ7zNO8xBfNZzTautCgc
-         ZPzhPGWeyeFqw==
-Date:   Mon, 4 Dec 2023 15:38:55 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Nuno Sa via B4 Relay <devnull+nuno.sa.analog.com@kernel.org>
-Cc:     <nuno.sa@analog.com>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-iio@vger.kernel.org,
-        Olivier MOYSAN <olivier.moysan@foss.st.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>
-Subject: Re: [PATCH 03/12] iio: add the IIO backend framework
-Message-ID: <20231204153855.71c9926f@jic23-huawei>
-In-Reply-To: <20231121-dev-iio-backend-v1-3-6a3d542eba35@analog.com>
-References: <20231121-dev-iio-backend-v1-0-6a3d542eba35@analog.com>
-        <20231121-dev-iio-backend-v1-3-6a3d542eba35@analog.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Mon, 4 Dec 2023 10:39:10 -0500
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4578FFD;
+        Mon,  4 Dec 2023 07:39:16 -0800 (PST)
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 59D36227A8E; Mon,  4 Dec 2023 16:39:12 +0100 (CET)
+Date:   Mon, 4 Dec 2023 16:39:12 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     John Garry <john.g.garry@oracle.com>
+Cc:     Christoph Hellwig <hch@lst.de>, axboe@kernel.dk, kbusch@kernel.org,
+        sagi@grimberg.me, jejb@linux.ibm.com, martin.petersen@oracle.com,
+        djwong@kernel.org, viro@zeniv.linux.org.uk, brauner@kernel.org,
+        chandan.babu@oracle.com, dchinner@redhat.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
+        linux-api@vger.kernel.org
+Subject: Re: [PATCH 17/21] fs: xfs: iomap atomic write support
+Message-ID: <20231204153912.GA3580@lst.de>
+References: <20230929102726.2985188-1-john.g.garry@oracle.com> <20230929102726.2985188-18-john.g.garry@oracle.com> <20231109152615.GB1521@lst.de> <a50a16ca-d4b9-a4d8-4230-833d82752bd2@oracle.com> <c78bcca7-8f09-41c7-adf0-03b42cde70d6@oracle.com> <20231128135619.GA12202@lst.de> <e4fb6875-e552-45aa-b193-58f15d9a786c@oracle.com> <20231204134509.GA25834@lst.de> <a87d48a7-f2a8-40ae-8d9b-e4534ccc29b1@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a87d48a7-f2a8-40ae-8d9b-e4534ccc29b1@oracle.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 21 Nov 2023 11:20:16 +0100
-Nuno Sa via B4 Relay <devnull+nuno.sa.analog.com@kernel.org> wrote:
+On Mon, Dec 04, 2023 at 03:19:15PM +0000, John Garry wrote:
+> On 04/12/2023 13:45, Christoph Hellwig wrote:
+>> On Tue, Nov 28, 2023 at 05:42:10PM +0000, John Garry wrote:
+>>> ok, fine, it would not be required for XFS with CoW. Some concerns still:
+>>> a. device atomic write boundary, if any
+>>> b. other FSes which do not have CoW support. ext4 is already being used for
+>>> "atomic writes" in the field - see dubious amazon torn-write prevention.
+>>
+>> What is the 'dubious amazon torn-write prevention'?
+>
+> https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/storage-twp.html
+>
+> AFAICS, this is without any kernel changes, so no guarantee of unwanted 
+> splitting or merging of bios.
+>
+> Anyway, there will still be !CoW FSes which people want to support.
 
-> From: Nuno Sa <nuno.sa@analog.com>
-> 
-> This is a Framework to handle complex IIO aggregate devices.
-> 
-> The typical architecture is to have one device as the frontend device which
-> can be "linked" against one or multiple backend devices. All the IIO and
-> userspace interface is expected to be registers/managed by the frontend
-> device which will callback into the backends when needed (to get/set
-> some configuration that it does not directly control).
+Ugg, so they badly reimplement NVMe atomic write support and use it
+without software stack enablement.  Calling it dubious is way to
+gentle..
 
-As this is first place backend / frontend terminology used (I think), make
-sure to give an example so people understand what sorts of IP / devices thes
-might be.
+>> Relying just on the hardware seems very limited, especially as there is
+>> plenty of hardware that won't guarantee anything larger than 4k, and
+>> plenty of NVMe hardware without has some other small limit like 32k
+>> because it doesn't support multiple atomicy mode.
+>
+> So what would you propose as the next step? Would it to be first achieve 
+> atomic write support for XFS with HW support + CoW to ensure contiguous 
+> extents (and without XFS forcealign)?
 
-> 
-> The basic framework interface is pretty simple:
->  - Backends should register themselves with @devm_iio_backend_register()
->  - Frontend devices should get backends with @devm_iio_backend_get()
-> 
-> Signed-off-by: Nuno Sa <nuno.sa@analog.com>
+I think the very first priority is just block device support without
+any fs enablement.  We just need to make sure the API isn't too limited
+for additional use cases.
 
-Looks good to me in general.  I'll need to have a really close read though
-before we merge this as there may be sticky corners! (hopefully not)
+> Ignoring FSes, then how is this supposed to work for block devices? We just 
+> always need HW support, right?
 
-
-...
-
-> +static LIST_HEAD(iio_back_list);
-> +static DEFINE_MUTEX(iio_back_lock);
-> +
-> +/*
-> + * Helper macros to properly call backend ops. The main point for these macros
-> + * is to properly lock the backend mutex on every call plus checking if the
-> + * backend device is still around (by looking at the *ops pointer).
-If just checking if it is around rather thank looking for a bug, then
-I'd suggest a lighter choice than WARN_ON_x 
-
-Btw, there were some interesting discussions on lifetimes and consumer / provider
-models at plumbers. I think https://www.youtube.com/watch?v=bHaMMnIH6AM will be
-the video.   Suggested the approach of not refcounting but instead allowing for
-a deliberate removal of access similar to your check on ops here (and the one
-we do in core IIO for similar purposes).  Sounded interesting but I've not
-explored what it would really mean to switch to that model yet.
-
-> + */
-> +#define iio_backend_op_call(back, op, args...) ({ \
-> +	struct iio_backend *__back = back; \
-> +	int __ret; \
-> +			\
-> +	guard(mutex)(&__back->lock); \
-> +	if (WARN_ON_ONCE(!__back->ops)) \
-> +		__ret = -ENODEV; \
-> +	else if (!__back->ops->op) \
-> +		__ret = -EOPNOTSUPP; \
-> +	else \
-> +		__ret = __back->ops->op(__back, ##args); \
-> +	\
-> +	__ret; \
-> +})
-
+Yes.
