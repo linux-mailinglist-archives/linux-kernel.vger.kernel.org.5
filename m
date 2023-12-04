@@ -2,158 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 184698041CF
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 23:45:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 883FA8041D3
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 23:46:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231560AbjLDWpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 17:45:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35162 "EHLO
+        id S234285AbjLDWqp convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 4 Dec 2023 17:46:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232693AbjLDWpj (ORCPT
+        with ESMTP id S234255AbjLDWqn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 17:45:39 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 660B0FF
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 14:45:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701729944; x=1733265944;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=bOiAPgJ6UUeg0EVVF/4cIAQhHZbYPMzWYd6hguMwvQk=;
-  b=KZhqyPR3xv5tsb3zvUjsRehLgQGFM8KEXEy0EG/Onbx+vOz3R6DdrZD6
-   5n886P6t+neYxNrscbVqJ3VENJb6D8OwadjSzFddOluk6D56HfBm5TlVD
-   cH+R7ikKp1oqsBVstWc0lgKNRtleX4UVhsKbDMPsOq8JDTUokkic+3wiT
-   4QFPaWExTN/FroDRGzo3f4N9R37KSvpyiaQ9PadmDy1JdbjzH91ByBaYW
-   5nT0DUzF2B2D8j1bC4i1esNrMqdfINeYe+NAl4UjCrDuRopzgyooG4HM+
-   5FzyvzPYYYbQY4xAFJPzjj2lNv5XQ4nEI2Z/ABzm5kO7IfNw0iIlMXfs9
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="378834885"
-X-IronPort-AV: E=Sophos;i="6.04,250,1695711600"; 
-   d="scan'208";a="378834885"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 14:45:43 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="894149118"
-X-IronPort-AV: E=Sophos;i="6.04,250,1695711600"; 
-   d="scan'208";a="894149118"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 04 Dec 2023 14:45:41 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rAHh4-00089E-2V;
-        Mon, 04 Dec 2023 22:45:38 +0000
-Date:   Tue, 5 Dec 2023 06:45:20 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Guenter Roeck <linux@roeck-us.net>,
-        Michael Schmitz <schmitzmic@gmail.com>
-Subject: drivers/comedi/drivers/ni_daq_700.c:163:17: sparse: sparse: cast to
- restricted __le16
-Message-ID: <202312050650.CCViprhz-lkp@intel.com>
+        Mon, 4 Dec 2023 17:46:43 -0500
+Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9138A9B;
+        Mon,  4 Dec 2023 14:46:49 -0800 (PST)
+Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-5c229dabbb6so1901720a12.0;
+        Mon, 04 Dec 2023 14:46:49 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701730009; x=1702334809;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LwdYS3W7LrNgkr4g+R3rXOTMxy7LyncKsnMZAwvDxzA=;
+        b=OSHrbVPDciijAzOaY3+sreYE3LmiSUC3WFrGdv9aku/jm0RaxNNommO3PnVczzHxGX
+         vcT/OWOV6gGXceQDzIOJlzGW7Nf/NQI9MZe+1Wr8/gXutBrsMmf+meLnR9ZU7cycm4G5
+         P6QOmGBCxX6Ujzcjquvz9Sk2TXGl8kSUQqsALOV5YNmwJisGnPEO+HH1NnbbWb00wMd7
+         o1DfPx7qVKzc92i6pYoTEWXUwzxYVDCXCJX/QQbb8TXX4eoVq0I69vhTh4Rc0vXbrX4u
+         sEPt78mHMTPbq6K2sA8JTnoSCieqT47yusu5KteG+KblMHkK6qRuwGh2uK1swShyJtoY
+         GaAQ==
+X-Gm-Message-State: AOJu0YyHHXUNehOvQcT9tqvHq0g+uwGzxTiDjfgA7AVN5T8aBJZi/vtv
+        TPlcfOfWVyoIVUYTEj+pQgZYrk6HN760SlQZ+oQ=
+X-Google-Smtp-Source: AGHT+IGUFco2rR/+xB69zGaID+AA+8euhHgTNPvXTxjMib4H74P51lc8L80pWnSmaEW0XTIenuSeqbXh6fE8vtkDrzU=
+X-Received: by 2002:a05:6a20:8f15:b0:18c:159b:777 with SMTP id
+ b21-20020a056a208f1500b0018c159b0777mr31046328pzk.26.1701730008727; Mon, 04
+ Dec 2023 14:46:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20231128175441.721579-1-namhyung@kernel.org> <CAP-5=fWfKqgT60TFRALw8vTDQT7VFV+0+eo1rFSSH3eVrjzPmA@mail.gmail.com>
+ <CAM9d7chKmDETK6Ea2wyR8L21jyHWcPHbKavarnq-JmNA-AoUnQ@mail.gmail.com> <CAP-5=fUf6R=bsfg7i8atFApJBY-=zWUBMq7inFsCPZhB+w2==Q@mail.gmail.com>
+In-Reply-To: <CAP-5=fUf6R=bsfg7i8atFApJBY-=zWUBMq7inFsCPZhB+w2==Q@mail.gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Mon, 4 Dec 2023 14:46:37 -0800
+Message-ID: <CAM9d7cjDiu=dksnhboJFT4uPQJcvGMB-vBt96v3i7Kqy5LKRMw@mail.gmail.com>
+Subject: Re: [PATCHSET 0/8] perf annotate: Make annotation_options global (v1)
+To:     Ian Rogers <irogers@google.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   33cc938e65a98f1d29d0a18403dbbee050dcad9a
-commit: 30b5e6ef4a32ea4985b99200e06d6660a69f9246 m68k: atari: Make Atari ROM port I/O write macros return void
-date:   1 year, 6 months ago
-config: m68k-randconfig-r131-20231119 (https://download.01.org/0day-ci/archive/20231205/202312050650.CCViprhz-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231205/202312050650.CCViprhz-lkp@intel.com/reproduce)
+On Thu, Nov 30, 2023 at 10:37 AM Ian Rogers <irogers@google.com> wrote:
+>
+> On Wed, Nov 29, 2023 at 3:56 PM Namhyung Kim <namhyung@kernel.org> wrote:
+> >
+> > Hi Ian,
+> >
+> > On Tue, Nov 28, 2023 at 11:14 AM Ian Rogers <irogers@google.com> wrote:
+> > >
+> > > On Tue, Nov 28, 2023 at 9:54 AM Namhyung Kim <namhyung@kernel.org> wrote:
+> > > >
+> > > > Hello,
+> > > >
+> > > > It used to have annotation_options for each command separately (for
+> > > > example, perf report, annotate, and top), but we can make it global as
+> > > > they never used together (with different settings).  This would save
+> > > > some memory for each symbol when annotation is enabled.
+> > > >
+> > > > This code is available at 'perf/annotate-option-v1' branch in
+> > > >
+> > > >   git://git.kernel.org/pub/scm/linux/kernel/git/namhyung/linux-perf.git
+> > > >
+> > > > Thanks,
+> > > > Namhyung
+> > >
+> > > Thanks for doing this and I think it is progress. I think there is a
+> > > common problem with having things be an option rather than say part of
+> > > session. Having a global variable seems unfortunate but I'm not sure
+> > > if in all locations we have easy access to the session.
+> >
+> > That's not the case when you deal with hist entry or TUI browser.
+> > I think that's the reason we have the option in the annotation.
+> >
+> >
+> > > The rough
+> > > structure with annotations as I understand it is:
+> > >
+> > > session has machines
+> > > a machine has dsos
+> > > a dso has symbols
+> > > a symbol has an annotation
+> >
+> > That's true.  But the annotation struct is used only if
+> > symbol__annotation_init() is called.
+>
+> Right. I find this approach likely to lead to errors, such as a symbol
+> created globally before symbol__annotation_init() was called breaking
+> the container_of assumptions.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312050650.CCViprhz-lkp@intel.com/
+Sure, but that's a different issue.  Maybe we can add a hash table
+to map a symbol to annotation or annotated_source directly.  But
+I don't think we need annotation_option for each symbol/annotation.
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/comedi/drivers/ni_daq_700.c:163:17: sparse: sparse: cast to restricted __le16
->> drivers/comedi/drivers/ni_daq_700.c:163:17: sparse: sparse: cast to restricted __le16
->> drivers/comedi/drivers/ni_daq_700.c:163:17: sparse: sparse: cast to restricted __le16
->> drivers/comedi/drivers/ni_daq_700.c:163:17: sparse: sparse: cast to restricted __le16
-   drivers/comedi/drivers/ni_daq_700.c:173:21: sparse: sparse: cast to restricted __le16
-   drivers/comedi/drivers/ni_daq_700.c:173:21: sparse: sparse: cast to restricted __le16
-   drivers/comedi/drivers/ni_daq_700.c:173:21: sparse: sparse: cast to restricted __le16
-   drivers/comedi/drivers/ni_daq_700.c:173:21: sparse: sparse: cast to restricted __le16
-   drivers/comedi/drivers/ni_daq_700.c:205:9: sparse: sparse: cast to restricted __le16
-   drivers/comedi/drivers/ni_daq_700.c:205:9: sparse: sparse: cast to restricted __le16
-   drivers/comedi/drivers/ni_daq_700.c:205:9: sparse: sparse: cast to restricted __le16
-   drivers/comedi/drivers/ni_daq_700.c:205:9: sparse: sparse: cast to restricted __le16
+>
+> > >
+> > > Annotation is something of unfortunate abstraction as it covers things
+> > > like an IPC per symbol (why hard code to just IPC?) and things like
+> > > source files and line numbers.
+> >
+> > Right, that's why I splitted the struct annotated_branch.
+> >
+> > >
+> > > A recent success story where we got rid of a configuration variable
+> > > was by switching to lazy allocation with sorting by name for symbols
+> > > within a dso. If we could have a lazy allocation model with
+> > > annotations then maybe we can do away with large hammers like global
+> > > options.
+> >
+> > Maybe I can move the pointer to option into the annotated_source
+> > which is allocated lazily.  But I don't think it needs to keep the option
+> > for each symbol or annotation.  It's usually to control some display
+> > behaviors in the disasm output globally.  So I think it's better to have
+> > a global variable.
+>
+> Sgtm. My point wasn't to criticize, I think this is a good change, I
+> was just trying to imagine doing things in a way that could overall
+> reduce complexity
 
-vim +163 drivers/comedi/drivers/ni_daq_700.c
-
-a9f9d8314541144 drivers/staging/comedi/drivers/ni_daq_700.c H Hartley Sweeten 2014-02-10  129  
-198b0fa48b25b60 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  130  static int daq700_ai_rinsn(struct comedi_device *dev,
-198b0fa48b25b60 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  131  			   struct comedi_subdevice *s,
-198b0fa48b25b60 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  132  			   struct comedi_insn *insn, unsigned int *data)
-198b0fa48b25b60 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  133  {
-cf695df834efc71 drivers/staging/comedi/drivers/ni_daq_700.c Fred Brooks       2014-06-20  134  	int n;
-198b0fa48b25b60 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  135  	int d;
-a9f9d8314541144 drivers/staging/comedi/drivers/ni_daq_700.c H Hartley Sweeten 2014-02-10  136  	int ret;
-cf695df834efc71 drivers/staging/comedi/drivers/ni_daq_700.c Fred Brooks       2014-06-20  137  	unsigned int chan	= CR_CHAN(insn->chanspec);
-cf695df834efc71 drivers/staging/comedi/drivers/ni_daq_700.c Fred Brooks       2014-06-20  138  	unsigned int aref	= CR_AREF(insn->chanspec);
-cf695df834efc71 drivers/staging/comedi/drivers/ni_daq_700.c Fred Brooks       2014-06-20  139  	unsigned int range	= CR_RANGE(insn->chanspec);
-cf695df834efc71 drivers/staging/comedi/drivers/ni_daq_700.c Fred Brooks       2014-06-20  140  	unsigned int r3_bits	= 0;
-cf695df834efc71 drivers/staging/comedi/drivers/ni_daq_700.c Fred Brooks       2014-06-20  141  
-cf695df834efc71 drivers/staging/comedi/drivers/ni_daq_700.c Fred Brooks       2014-06-20  142  	/* set channel input modes */
-cf695df834efc71 drivers/staging/comedi/drivers/ni_daq_700.c Fred Brooks       2014-06-20  143  	if (aref == AREF_DIFF)
-cf695df834efc71 drivers/staging/comedi/drivers/ni_daq_700.c Fred Brooks       2014-06-20  144  		r3_bits |= CMD_R3_DIFF;
-cf695df834efc71 drivers/staging/comedi/drivers/ni_daq_700.c Fred Brooks       2014-06-20  145  	/* write channel mode/range */
-cf695df834efc71 drivers/staging/comedi/drivers/ni_daq_700.c Fred Brooks       2014-06-20  146  	if (range >= 1)
-cf695df834efc71 drivers/staging/comedi/drivers/ni_daq_700.c Fred Brooks       2014-06-20  147  		range++;        /* convert range to hardware value */
-cf695df834efc71 drivers/staging/comedi/drivers/ni_daq_700.c Fred Brooks       2014-06-20  148  	outb(r3_bits | (range & 0x03), dev->iobase + CMD_R3);
-198b0fa48b25b60 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  149  
-198b0fa48b25b60 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  150  	/* write channel to multiplexer */
-198b0fa48b25b60 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  151  	/* set mask scan bit high to disable scanning */
-198b0fa48b25b60 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  152  	outb(chan | 0x80, dev->iobase + CMD_R1);
-ffed54dced86723 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2014-05-19  153  	/* mux needs 2us to really settle [Fred Brooks]. */
-ffed54dced86723 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2014-05-19  154  	udelay(2);
-198b0fa48b25b60 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  155  
-198b0fa48b25b60 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  156  	/* convert n samples */
-198b0fa48b25b60 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  157  	for (n = 0; n < insn->n; n++) {
-198b0fa48b25b60 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  158  		/* trigger conversion with out0 L to H */
-198b0fa48b25b60 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  159  		outb(0x00, dev->iobase + CMD_R2); /* enable ADC conversions */
-198b0fa48b25b60 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  160  		outb(0x30, dev->iobase + CMO_R); /* mode 0 out0 L, from H */
-cf695df834efc71 drivers/staging/comedi/drivers/ni_daq_700.c Fred Brooks       2014-06-20  161  		outb(0x00, dev->iobase + ADCLEAR_R);	/* clear the ADC FIFO */
-cf695df834efc71 drivers/staging/comedi/drivers/ni_daq_700.c Fred Brooks       2014-06-20  162  		/* read 16bit junk from FIFO to clear */
-cf695df834efc71 drivers/staging/comedi/drivers/ni_daq_700.c Fred Brooks       2014-06-20 @163  		inw(dev->iobase + ADFIFO_R);
-198b0fa48b25b60 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  164  		/* mode 1 out0 H, L to H, start conversion */
-198b0fa48b25b60 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  165  		outb(0x32, dev->iobase + CMO_R);
-a9f9d8314541144 drivers/staging/comedi/drivers/ni_daq_700.c H Hartley Sweeten 2014-02-10  166  
-198b0fa48b25b60 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  167  		/* wait for conversion to end */
-a9f9d8314541144 drivers/staging/comedi/drivers/ni_daq_700.c H Hartley Sweeten 2014-02-10  168  		ret = comedi_timeout(dev, s, insn, daq700_ai_eoc, 0);
-22ca19d93d92c79 drivers/staging/comedi/drivers/ni_daq_700.c H Hartley Sweeten 2014-02-10  169  		if (ret)
-a9f9d8314541144 drivers/staging/comedi/drivers/ni_daq_700.c H Hartley Sweeten 2014-02-10  170  			return ret;
-a9f9d8314541144 drivers/staging/comedi/drivers/ni_daq_700.c H Hartley Sweeten 2014-02-10  171  
-198b0fa48b25b60 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  172  		/* read data */
-198b0fa48b25b60 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  173  		d = inw(dev->iobase + ADFIFO_R);
-198b0fa48b25b60 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  174  		/* mangle the data as necessary */
-198b0fa48b25b60 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  175  		/* Bipolar Offset Binary: 0 to 4095 for -10 to +10 */
-198b0fa48b25b60 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  176  		d &= 0x0fff;
-198b0fa48b25b60 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  177  		d ^= 0x0800;
-198b0fa48b25b60 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  178  		data[n] = d;
-198b0fa48b25b60 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  179  	}
-198b0fa48b25b60 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  180  	return n;
-198b0fa48b25b60 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  181  }
-198b0fa48b25b60 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  182  
-
-:::::: The code at line 163 was first introduced by commit
-:::::: cf695df834efc718b2ed17e9c83e127fd63c9033 staging: comedi: ni_daq_700: add AI range and input mode switching
-
-:::::: TO: Fred Brooks <frederick.brooks@microchip.com>
-:::::: CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Yep, thanks for your review.  Can I get your ACKs? :)
+Namhyung
