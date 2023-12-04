@@ -2,238 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B01E803936
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 16:52:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4B15803942
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 16:55:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343651AbjLDPwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 10:52:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34462 "EHLO
+        id S234776AbjLDPzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 10:55:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231328AbjLDPwA (ORCPT
+        with ESMTP id S234774AbjLDPzL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 10:52:00 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27B64A4
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 07:52:06 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C08EFC433C8;
-        Mon,  4 Dec 2023 15:52:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701705125;
-        bh=sLrwXKlgpUH4XcLJWMQP/dKn9qdJ9bPMqLmWrNS2VyM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=b3FSjTKQpOQlFLB2G8k+Q9wkA2RQBQttVjE1w79xEwSgkSVHp3u8g055qfRUhlGel
-         5TGTUWtcI84zFkKCY8pK/LlGhlWjGdiZn7ViI3S7uydkeM/YGzqEVvjkWpYhAGJmst
-         zq5JI2OX0HsWYrTOvM3UqOvoXl2G1m1fIftKuHM/D11fbFxwMMhB52ukFaSCS0LcHp
-         0j18raVLP1+9jvOPJiQGW9mQEoZ6ocwippWqvFqyrKj600H8M7O+BRWZFx6In4WUdG
-         UIYCmH0/eiuKaCgzezMqADPFrjXNThC47xSxLsFjQLTdZygoEUNJmINYXvD/e5i/k3
-         lvmJD4Hw5wsQQ==
-Date:   Mon, 4 Dec 2023 15:51:58 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Nuno Sa via B4 Relay <devnull+nuno.sa.analog.com@kernel.org>
-Cc:     <nuno.sa@analog.com>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-iio@vger.kernel.org,
-        Olivier MOYSAN <olivier.moysan@foss.st.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>
-Subject: Re: [PATCH 11/12] iio: adc: adi-axi-adc: convert to regmap
-Message-ID: <20231204155158.411b4bbd@jic23-huawei>
-In-Reply-To: <20231121-dev-iio-backend-v1-11-6a3d542eba35@analog.com>
-References: <20231121-dev-iio-backend-v1-0-6a3d542eba35@analog.com>
-        <20231121-dev-iio-backend-v1-11-6a3d542eba35@analog.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Mon, 4 Dec 2023 10:55:11 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4779DFF;
+        Mon,  4 Dec 2023 07:55:18 -0800 (PST)
+Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B4Fc39m014565;
+        Mon, 4 Dec 2023 15:55:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=UO8TBtetr+3y4KPTWx2Mhw6wIQnBNZu5oEvShmWfUEY=;
+ b=BalrrVvnZZJAcfUm4StBcC9y3l4kAKMknCzXW4hK5NM3tNytr29BOtZkosIBeSgC+E2j
+ 1G/uNLQ2Qn+ZC2mUCPI+fJYQ89BlxwpQJIp7zX9ucNgliEat+/AVzZ43Z0QzrP16gpvP
+ BcTZpxwnTMAmtDnluP3dUTV+UcAK2wI7/MwiVnEHTvJFa6s/79GJNdb3vWRiWrR1KcOm
+ UqHTIxBJEFSAERmmmzXwHiKhFRmV8p4E6PJWbCA1HprcHJZhCwXqECpkm7RHBzl81aIv
+ S31yF2g5yZCepTXubLsY0Y0lBjb9Nckvj8EmvzZlNTrdngqwNmtqZZzwjapT53xaj3cK Uw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ushk38g1h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Dec 2023 15:55:17 +0000
+Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3B4Fd7xC017049;
+        Mon, 4 Dec 2023 15:55:16 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ushk38fpj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Dec 2023 15:55:14 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3B4EJRJj020507;
+        Mon, 4 Dec 2023 15:52:08 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3urv8dnvkt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Dec 2023 15:52:08 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+        by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3B4Fq4Ub28181060
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 4 Dec 2023 15:52:05 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E35612004B;
+        Mon,  4 Dec 2023 15:52:04 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 57CE320040;
+        Mon,  4 Dec 2023 15:52:04 +0000 (GMT)
+Received: from [9.171.80.190] (unknown [9.171.80.190])
+        by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Mon,  4 Dec 2023 15:52:04 +0000 (GMT)
+Message-ID: <8072b7b6-adc9-476d-bbfa-87be13442131@linux.ibm.com>
+Date:   Mon, 4 Dec 2023 16:52:04 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 3/4] KVM: s390: cpu model: Use proper define for
+ facility mask size
+Content-Language: en-US
+To:     Nina Schoetterl-Glausch <nsg@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>
+Cc:     David Hildenbrand <david@redhat.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>,
+        kvm@vger.kernel.org
+References: <20231108171229.3404476-1-nsg@linux.ibm.com>
+ <20231108171229.3404476-4-nsg@linux.ibm.com>
+From:   Janosch Frank <frankja@linux.ibm.com>
+Autocrypt: addr=frankja@linux.ibm.com; keydata=
+ xsFNBFubpD4BEADX0uhkRhkj2AVn7kI4IuPY3A8xKat0ihuPDXbynUC77mNox7yvK3X5QBO6
+ qLqYr+qrG3buymJJRD9xkp4mqgasHdB5WR9MhXWKH08EvtvAMkEJLnqxgbqf8td3pCQ2cEpv
+ 15mH49iKSmlTcJ+PvJpGZcq/jE42u9/0YFHhozm8GfQdb9SOI/wBSsOqcXcLTUeAvbdqSBZe
+ zuMRBivJQQI1esD9HuADmxdE7c4AeMlap9MvxvUtWk4ZJ/1Z3swMVCGzZb2Xg/9jZpLsyQzb
+ lDbbTlEeyBACeED7DYLZI3d0SFKeJZ1SUyMmSOcr9zeSh4S4h4w8xgDDGmeDVygBQZa1HaoL
+ Esb8Y4avOYIgYDhgkCh0nol7XQ5i/yKLtnNThubAcxNyryw1xSstnKlxPRoxtqTsxMAiSekk
+ 0m3WJwvwd1s878HrQNK0orWd8BzzlSswzjNfQYLF466JOjHPWFOok9pzRs+ucrs6MUwDJj0S
+ cITWU9Rxb04XyigY4XmZ8dywaxwi2ZVTEg+MD+sPmRrTw+5F+sU83cUstuymF3w1GmyofgsU
+ Z+/ldjToHnq21MNa1wx0lCEipCCyE/8K9B9bg9pUwy5lfx7yORP3JuAUfCYb8DVSHWBPHKNj
+ HTOLb2g2UT65AjZEQE95U2AY9iYm5usMqaWD39pAHfhC09/7NQARAQABzSVKYW5vc2NoIEZy
+ YW5rIDxmcmFua2phQGxpbnV4LmlibS5jb20+wsF3BBMBCAAhBQJbm6Q+AhsjBQsJCAcCBhUI
+ CQoLAgQWAgMBAh4BAheAAAoJEONU5rjiOLn4p9gQALjkdj5euJVI2nNT3/IAxAhQSmRhPEt0
+ AmnCYnuTcHRWPujNr5kqgtyER9+EMQ0ZkX44JU2q7OWxTdSNSAN/5Z7qmOR9JySvDOf4d3mS
+ bMB5zxL9d8SbnSs1uW96H9ZBTlTQnmLfsiM9TetAjSrR8nUmjGhe2YUhJLR1v1LguME+YseT
+ eXnLzIzqqpu311/eYiiIGcmaOjPCE+vFjcXL5oLnGUE73qSYiujwhfPCCUK0850o1fUAYq5p
+ CNBCoKT4OddZR+0itKc/cT6NwEDwdokeg0+rAhxb4Rv5oFO70lziBplEjOxu3dqgIKbHbjza
+ EXTb+mr7VI9O4tTdqrwJo2q9zLqqOfDBi7NDvZFLzaCewhbdEpDYVu6/WxprAY94hY3F4trT
+ rQMHJKQENtF6ZTQc9fcT5I3gAmP+OEvDE5hcTALpWm6Z6SzxO7gEYCnF+qGXqp8sJVrweMub
+ UscyLqHoqdZC2UG4LQ1OJ97nzDpIRe0g6oJ9ZIYHKmfw5jjwH6rASTld5MFWajWdNsqK15k/
+ RZnHAGICKVIBOBsq26m4EsBlfCdt3b/6emuBjUXR1pyjHMz2awWzCq6/6OWs5eANZ0sdosNq
+ dq2v0ULYTazJz2rlCXV89qRa7ukkNwdBSZNEwsD4eEMicj1LSrqWDZMAALw50L4jxaMD7lPL
+ jJbazsFNBFubpD4BEADAcUTRqXF/aY53OSH7IwIK9lFKxIm0IoFkOEh7LMfp7FGzaP7ANrZd
+ cIzhZi38xyOkcaFY+npGEWvko7rlIAn0JpBO4x3hfhmhBD/WSY8LQIFQNNjEm3vzrMo7b9Jb
+ JAqQxfbURY3Dql3GUzeWTG9uaJ00u+EEPlY8zcVShDltIl5PLih20e8xgTnNzx5c110lQSu0
+ iZv2lAE6DM+2bJQTsMSYiwKlwTuv9LI9Chnoo6+tsN55NqyMxYqJgElk3VzlTXSr3+rtSCwf
+ tq2cinETbzxc1XuhIX6pu/aCGnNfuEkM34b7G1D6CPzDMqokNFbyoO6DQ1+fW6c5gctXg/lZ
+ 602iEl4C4rgcr3+EpfoPUWzKeM8JXv5Kpq4YDxhvbitr8Dm8gr38+UKFZKlWLlwhQ56r/zAU
+ v6LIsm11GmFs2/cmgD1bqBTNHHcTWwWtRTLgmnqJbVisMJuYJt4KNPqphTWsPY8SEtbufIlY
+ HXOJ2lqUzOReTrie2u0qcSvGAbSfec9apTFl2Xko/ddqPcZMpKhBiXmY8tJzSPk3+G4tqur4
+ 6TYAm5ouitJsgAR61Cu7s+PNuq/pTLDhK+6/Njmc94NGBcRA4qTuysEGE79vYWP2oIAU4Fv6
+ gqaWHZ4MEI2XTqH8wiwzPdCQPYsSE0fXWiYu7ObeErT6iLSTZGx4rQARAQABwsFfBBgBCAAJ
+ BQJbm6Q+AhsMAAoJEONU5rjiOLn4DDEP/RuyckW65SZcPG4cMfNgWxZF8rVjeVl/9PBfy01K
+ 8R0hajU40bWtXSMiby7j0/dMjz99jN6L+AJHJvrLz4qYRzn2Ys843W+RfXj62Zde4YNBE5SL
+ jJweRCbMWKaJLj6499fctxTyeb9+AMLQS4yRSwHuAZLmAb5AyCW1gBcTWZb8ON5BmWnRqeGm
+ IgC1EvCnHy++aBnHTn0m+zV89BhTLTUal35tcjUFwluBY39R2ux/HNlBO1GY3Z+WYXhBvq7q
+ katThLjaQSmnOrMhzqYmdShP1leFTVbzXUUIYv/GbynO/YrL2gaQpaP1bEUEi8lUAfXJbEWG
+ dnHFkciryi092E8/9j89DJg4mmZqOau7TtUxjRMlBcIliXkzSLUk+QvD4LK1kWievJse4mte
+ FBdkWHfP4BH/+8DxapRcG1UAheSnSRQ5LiO50annOB7oXF+vgKIaie2TBfZxQNGAs3RQ+bga
+ DchCqFm5adiSP5+OT4NjkKUeGpBe/aRyQSle/RropTgCi85pje/juYEn2P9UAgkfBJrOHvQ9
+ Z+2Sva8FRd61NJLkCJ4LFumRn9wQlX2icFbi8UDV3do0hXJRRYTWCxrHscMhkrFWLhYiPF4i
+ phX7UNdOWBQ90qpHyAxHmDazdo27gEjfvsgYMdveKknEOTEb5phwxWgg7BcIDoJf9UMC
+In-Reply-To: <20231108171229.3404476-4-nsg@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 4EHbCyiiM9YD0z9OVXdZ4GS3HKe3ZQ8s
+X-Proofpoint-GUID: RXXY4FslaGooaIRIoo3Wnl0-T-U8Q7di
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-04_15,2023-12-04_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
+ lowpriorityscore=0 adultscore=0 mlxscore=0 phishscore=0 mlxlogscore=420
+ suspectscore=0 priorityscore=1501 clxscore=1015 spamscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
+ definitions=main-2312040120
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 21 Nov 2023 11:20:24 +0100
-Nuno Sa via B4 Relay <devnull+nuno.sa.analog.com@kernel.org> wrote:
-
-> From: Nuno Sa <nuno.sa@analog.com>
+On 11/8/23 18:12, Nina Schoetterl-Glausch wrote:
+> Use the previously unused S390_ARCH_FAC_MASK_SIZE_U64 instead of
+> S390_ARCH_FAC_LIST_SIZE_U64 for defining the fac_mask array.
+> Note that both values are the same, there is no functional change.
 > 
-> Use MMIO regmap interface. It makes things easier for manipulating bits.
-> 
-> Signed-off-by: Nuno Sa <nuno.sa@analog.com>
-Perhaps put this in the precursor set as well. Looks fine to me and will just
-be noise in the main discussion.
+> Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+> Signed-off-by: Nina Schoetterl-Glausch <nsg@linux.ibm.com>
 
-Jonathan
-
-> ---
->  drivers/iio/adc/adi-axi-adc.c | 85 ++++++++++++++++++++++++++-----------------
->  1 file changed, 52 insertions(+), 33 deletions(-)
-> 
-> diff --git a/drivers/iio/adc/adi-axi-adc.c b/drivers/iio/adc/adi-axi-adc.c
-> index ae83ada7f9f2..c247ff1541d2 100644
-> --- a/drivers/iio/adc/adi-axi-adc.c
-> +++ b/drivers/iio/adc/adi-axi-adc.c
-> @@ -14,6 +14,7 @@
->  #include <linux/of.h>
->  #include <linux/platform_device.h>
->  #include <linux/property.h>
-> +#include <linux/regmap.h>
->  #include <linux/slab.h>
->  
->  #include <linux/iio/iio.h>
-> @@ -62,7 +63,7 @@ struct adi_axi_adc_state {
->  	struct mutex				lock;
->  
->  	struct adi_axi_adc_client		*client;
-> -	void __iomem				*regs;
-> +	struct regmap				*regmap;
->  };
->  
->  struct adi_axi_adc_client {
-> @@ -90,19 +91,6 @@ void *adi_axi_adc_conv_priv(struct adi_axi_adc_conv *conv)
->  }
->  EXPORT_SYMBOL_NS_GPL(adi_axi_adc_conv_priv, IIO_ADI_AXI);
->  
-> -static void adi_axi_adc_write(struct adi_axi_adc_state *st,
-> -			      unsigned int reg,
-> -			      unsigned int val)
-> -{
-> -	iowrite32(val, st->regs + reg);
-> -}
-> -
-> -static unsigned int adi_axi_adc_read(struct adi_axi_adc_state *st,
-> -				     unsigned int reg)
-> -{
-> -	return ioread32(st->regs + reg);
-> -}
-> -
->  static int adi_axi_adc_config_dma_buffer(struct device *dev,
->  					 struct iio_dev *indio_dev)
->  {
-> @@ -163,17 +151,20 @@ static int adi_axi_adc_update_scan_mode(struct iio_dev *indio_dev,
->  {
->  	struct adi_axi_adc_state *st = iio_priv(indio_dev);
->  	struct adi_axi_adc_conv *conv = &st->client->conv;
-> -	unsigned int i, ctrl;
-> +	unsigned int i;
-> +	int ret;
->  
->  	for (i = 0; i < conv->chip_info->num_channels; i++) {
-> -		ctrl = adi_axi_adc_read(st, ADI_AXI_REG_CHAN_CTRL(i));
-> -
->  		if (test_bit(i, scan_mask))
-> -			ctrl |= ADI_AXI_REG_CHAN_CTRL_ENABLE;
-> +			ret = regmap_set_bits(st->regmap,
-> +					      ADI_AXI_REG_CHAN_CTRL(i),
-> +					      ADI_AXI_REG_CHAN_CTRL_ENABLE);
->  		else
-> -			ctrl &= ~ADI_AXI_REG_CHAN_CTRL_ENABLE;
-> -
-> -		adi_axi_adc_write(st, ADI_AXI_REG_CHAN_CTRL(i), ctrl);
-> +			ret = regmap_clear_bits(st->regmap,
-> +						ADI_AXI_REG_CHAN_CTRL(i),
-> +						ADI_AXI_REG_CHAN_CTRL_ENABLE);
-> +		if (ret)
-> +			return ret;
->  	}
->  
->  	return 0;
-> @@ -310,21 +301,32 @@ static int adi_axi_adc_setup_channels(struct device *dev,
->  	}
->  
->  	for (i = 0; i < conv->chip_info->num_channels; i++) {
-> -		adi_axi_adc_write(st, ADI_AXI_REG_CHAN_CTRL(i),
-> -				  ADI_AXI_REG_CHAN_CTRL_DEFAULTS);
-> +		ret = regmap_write(st->regmap, ADI_AXI_REG_CHAN_CTRL(i),
-> +				   ADI_AXI_REG_CHAN_CTRL_DEFAULTS);
-> +		if (ret)
-> +			return ret;
->  	}
->  
->  	return 0;
->  }
->  
-> -static void axi_adc_reset(struct adi_axi_adc_state *st)
-> +static int axi_adc_reset(struct adi_axi_adc_state *st)
->  {
-> -	adi_axi_adc_write(st, ADI_AXI_REG_RSTN, 0);
-> +	int ret;
-> +
-> +	ret = regmap_write(st->regmap, ADI_AXI_REG_RSTN, 0);
-> +	if (ret)
-> +		return ret;
-> +
->  	mdelay(10);
-> -	adi_axi_adc_write(st, ADI_AXI_REG_RSTN, ADI_AXI_REG_RSTN_MMCM_RSTN);
-> +	ret = regmap_write(st->regmap, ADI_AXI_REG_RSTN,
-> +			   ADI_AXI_REG_RSTN_MMCM_RSTN);
-> +	if (ret)
-> +		return ret;
-> +
->  	mdelay(10);
-> -	adi_axi_adc_write(st, ADI_AXI_REG_RSTN,
-> -			  ADI_AXI_REG_RSTN_RSTN | ADI_AXI_REG_RSTN_MMCM_RSTN);
-> +	return regmap_write(st->regmap, ADI_AXI_REG_RSTN,
-> +			    ADI_AXI_REG_RSTN_RSTN | ADI_AXI_REG_RSTN_MMCM_RSTN);
->  }
->  
->  static void adi_axi_adc_cleanup(void *data)
-> @@ -335,12 +337,20 @@ static void adi_axi_adc_cleanup(void *data)
->  	module_put(cl->dev->driver->owner);
->  }
->  
-> +static const struct regmap_config axi_adc_regmap_config = {
-> +	.val_bits = 32,
-> +	.reg_bits = 32,
-> +	.reg_stride = 4,
-> +	.max_register = 0x0800,
-> +};
-> +
->  static int adi_axi_adc_probe(struct platform_device *pdev)
->  {
->  	struct adi_axi_adc_conv *conv;
->  	struct iio_dev *indio_dev;
->  	struct adi_axi_adc_client *cl;
->  	struct adi_axi_adc_state *st;
-> +	void __iomem *base;
->  	unsigned int ver;
->  	int ret;
->  
-> @@ -361,15 +371,24 @@ static int adi_axi_adc_probe(struct platform_device *pdev)
->  	cl->state = st;
->  	mutex_init(&st->lock);
->  
-> -	st->regs = devm_platform_ioremap_resource(pdev, 0);
-> -	if (IS_ERR(st->regs))
-> -		return PTR_ERR(st->regs);
-> +	base = devm_platform_ioremap_resource(pdev, 0);
-> +	if (IS_ERR(base))
-> +		return PTR_ERR(base);
-> +
-> +	st->regmap = devm_regmap_init_mmio(&pdev->dev, base,
-> +					   &axi_adc_regmap_config);
-> +	if (IS_ERR(st->regmap))
-> +		return PTR_ERR(st->regmap);
->  
->  	conv = &st->client->conv;
->  
-> -	axi_adc_reset(st);
-> +	ret = axi_adc_reset(st);
-> +	if (ret)
-> +		return ret;
->  
-> -	ver = adi_axi_adc_read(st, ADI_AXI_REG_VERSION);
-> +	ret = regmap_read(st->regmap, ADI_AXI_REG_VERSION, &ver);
-> +	if (ret)
-> +		return ret;
->  
->  	if (cl->info->version > ver) {
->  		dev_err(&pdev->dev,
-> 
-
+Reviewed-by: Janosch Frank <frankja@linux.ibm.com>
