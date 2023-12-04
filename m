@@ -2,52 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63E64803FDA
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 21:36:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E659B803FE1
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 21:36:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345638AbjLDUgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 15:36:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56270 "EHLO
+        id S235566AbjLDUgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 15:36:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235513AbjLDUfw (ORCPT
+        with ESMTP id S235562AbjLDUgF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 15:35:52 -0500
+        Mon, 4 Dec 2023 15:36:05 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35F851FD5
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 12:34:38 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00B29C433C9;
-        Mon,  4 Dec 2023 20:34:33 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1E4E26B6
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 12:34:43 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB67CC433CC;
+        Mon,  4 Dec 2023 20:34:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701722077;
-        bh=MSCtdeEdKkvBszFXyIq/cq2Ltze/85xunx06r+SSqWE=;
+        s=k20201202; t=1701722083;
+        bh=k/eO7LGISg54yqT0LpW/yAwLh4UIjlzQkCpseZx4mv4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DBwsJiNMB1LmqgIHg78UwxXjSfPXRno8zc3h3L9WmfyI6pb5KCedEu9bjqX5m4DAl
-         FJavvHl9n9aLeNN8MVe+olC16m7EtFLI4aSYO2JqnUW1icsUTTZT2uSk+yNXxuOhWD
-         8ZgBzVqmNKojaUnl3qvtUV5Hw0bpOCFcSQYu825ccoHRctNCWkuqj+vsR++pHHy34f
-         FJt4oKdUFFomh1ZhZ+pQltfCE4pWF7dVJatNvZhFUCjPdkrXNw9X5Cd9Tj4Z448TuN
-         X9kg2nlFCOnQ/PmVO28tWyfMBo9wM55cBwL35B9cOT9oqJJFtvX63FrR6FpTRPn16N
-         B3TpxL+6/iKcA==
+        b=ljKnSPqNKZvfOO1I7xScvuX6VeZp1LyeuklkFsi1MYpUbSqdNoTJ7a91v1SmKavZR
+         eCmzjuKVXihmFwAB+fAj19zSPnU9Pp4U81YyxmMg9VPQ317tSHKXngmAZL1r0boKav
+         FR+3+YFuzbtFzwzTenHIBe1BeqFL90yB5mCdloAxnXgnZp4+TtVYLEWyt8IyLc15y8
+         zICBXhf7W/CKiEqmlblbeTKisXEJt53RrEq1w4UCaWfXdRuM2dv26KNdzfTepeXTad
+         0GTUQmPCn+zZiwAgdEnfIq6xr9+A//xCwYLE3B0fy9xe0BnYyJG0LhRujCOm35/6es
+         nItgzCEw9yg8Q==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Dmytro Laktyushkin <dmytro.laktyushkin@amd.com>,
-        Charlene Liu <charlene.liu@amd.com>,
-        Tom Chung <chiahsuan.chung@amd.com>,
-        Daniel Wheeler <daniel.wheeler@amd.com>,
+Cc:     Lu Yao <yaolu@kylinos.cn>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
         Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>, harry.wentland@amd.com,
-        sunpeng.li@amd.com, Rodrigo.Siqueira@amd.com,
-        christian.koenig@amd.com, Xinhui.Pan@amd.com, airlied@gmail.com,
-        daniel@ffwll.ch, qingqing.zhuo@amd.com,
-        Nicholas.Kazlauskas@amd.com, Jingwen.Zhu@amd.com, aric.cyr@amd.com,
-        trix@redhat.com, wenjing.liu@amd.com,
+        Sasha Levin <sashal@kernel.org>, Xinhui.Pan@amd.com,
+        airlied@gmail.com, daniel@ffwll.ch, shashank.sharma@amd.com,
+        Hawking.Zhang@amd.com, srinivasan.shanmugam@amd.com,
+        dan.carpenter@linaro.org, suhui@nfschina.com,
+        andrealmeid@igalia.com, tom.stdenis@amd.com, le.ma@amd.com,
         amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 6.6 25/32] drm/amd/display: update dcn315 lpddr pstate latency
-Date:   Mon,  4 Dec 2023 15:32:45 -0500
-Message-ID: <20231204203317.2092321-25-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.6 26/32] drm/amdgpu: Fix cat debugfs amdgpu_regs_didt causes kernel null pointer
+Date:   Mon,  4 Dec 2023 15:32:46 -0500
+Message-ID: <20231204203317.2092321-26-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231204203317.2092321-1-sashal@kernel.org>
 References: <20231204203317.2092321-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.4
@@ -62,63 +60,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmytro Laktyushkin <dmytro.laktyushkin@amd.com>
+From: Lu Yao <yaolu@kylinos.cn>
 
-[ Upstream commit c92da0403d373c03ea5c65c0260c7db6762013b0 ]
+[ Upstream commit 2161e09cd05a50d80736fe397145340d2e8f6c05 ]
 
-[WHY/HOW]
-Increase the pstate latency to improve ac/dc transition
+For 'AMDGPU_FAMILY_SI' family cards, in 'si_common_early_init' func, init
+'didt_rreg' and 'didt_wreg' to 'NULL'. But in func
+'amdgpu_debugfs_regs_didt_read/write', using 'RREG32_DIDT' 'WREG32_DIDT'
+lacks of relevant judgment. And other 'amdgpu_ip_block_version' that use
+these two definitions won't be added for 'AMDGPU_FAMILY_SI'.
 
-Reviewed-by: Charlene Liu <charlene.liu@amd.com>
-Acked-by: Tom Chung <chiahsuan.chung@amd.com>
-Signed-off-by: Dmytro Laktyushkin <dmytro.laktyushkin@amd.com>
-Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+So, add null pointer judgment before calling.
+
+Reviewed-by: Christian König <christian.koenig@amd.com>
+Signed-off-by: Lu Yao <yaolu@kylinos.cn>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../drm/amd/display/dc/clk_mgr/dcn315/dcn315_clk_mgr.c    | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn315/dcn315_clk_mgr.c b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn315/dcn315_clk_mgr.c
-index b2c4f97afc8b4..8776055bbeaae 100644
---- a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn315/dcn315_clk_mgr.c
-+++ b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn315/dcn315_clk_mgr.c
-@@ -334,7 +334,7 @@ static struct wm_table lpddr5_wm_table = {
- 		{
- 			.wm_inst = WM_A,
- 			.wm_type = WM_TYPE_PSTATE_CHG,
--			.pstate_latency_us = 11.65333,
-+			.pstate_latency_us = 129.0,
- 			.sr_exit_time_us = 11.5,
- 			.sr_enter_plus_exit_time_us = 14.5,
- 			.valid = true,
-@@ -342,7 +342,7 @@ static struct wm_table lpddr5_wm_table = {
- 		{
- 			.wm_inst = WM_B,
- 			.wm_type = WM_TYPE_PSTATE_CHG,
--			.pstate_latency_us = 11.65333,
-+			.pstate_latency_us = 129.0,
- 			.sr_exit_time_us = 11.5,
- 			.sr_enter_plus_exit_time_us = 14.5,
- 			.valid = true,
-@@ -350,7 +350,7 @@ static struct wm_table lpddr5_wm_table = {
- 		{
- 			.wm_inst = WM_C,
- 			.wm_type = WM_TYPE_PSTATE_CHG,
--			.pstate_latency_us = 11.65333,
-+			.pstate_latency_us = 129.0,
- 			.sr_exit_time_us = 11.5,
- 			.sr_enter_plus_exit_time_us = 14.5,
- 			.valid = true,
-@@ -358,7 +358,7 @@ static struct wm_table lpddr5_wm_table = {
- 		{
- 			.wm_inst = WM_D,
- 			.wm_type = WM_TYPE_PSTATE_CHG,
--			.pstate_latency_us = 11.65333,
-+			.pstate_latency_us = 129.0,
- 			.sr_exit_time_us = 11.5,
- 			.sr_enter_plus_exit_time_us = 14.5,
- 			.valid = true,
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
+index 05405da51e7a2..3f2126f99923e 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
+@@ -638,6 +638,9 @@ static ssize_t amdgpu_debugfs_regs_didt_read(struct file *f, char __user *buf,
+ 	if (size & 0x3 || *pos & 0x3)
+ 		return -EINVAL;
+ 
++	if (!adev->didt_rreg)
++		return -EOPNOTSUPP;
++
+ 	r = pm_runtime_get_sync(adev_to_drm(adev)->dev);
+ 	if (r < 0) {
+ 		pm_runtime_put_autosuspend(adev_to_drm(adev)->dev);
+@@ -694,6 +697,9 @@ static ssize_t amdgpu_debugfs_regs_didt_write(struct file *f, const char __user
+ 	if (size & 0x3 || *pos & 0x3)
+ 		return -EINVAL;
+ 
++	if (!adev->didt_wreg)
++		return -EOPNOTSUPP;
++
+ 	r = pm_runtime_get_sync(adev_to_drm(adev)->dev);
+ 	if (r < 0) {
+ 		pm_runtime_put_autosuspend(adev_to_drm(adev)->dev);
 -- 
 2.42.0
 
