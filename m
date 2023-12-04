@@ -2,82 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B138B8038E0
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 16:32:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 544008038E3
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 16:32:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234642AbjLDPcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 10:32:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55150 "EHLO
+        id S234677AbjLDPc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 10:32:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231328AbjLDPcF (ORCPT
+        with ESMTP id S234702AbjLDPcZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 10:32:05 -0500
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A715DA5
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 07:32:11 -0800 (PST)
-Received: by mail-qt1-x82e.google.com with SMTP id d75a77b69052e-4254ad7b967so16858591cf.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 07:32:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1701703931; x=1702308731; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=QNErOhF1qMkgPNVpHAnyVSyCwAUX/1YSBmZDFvsm8OU=;
-        b=altJvCMFqLnz0th385qoKkCef9KpcoT97a66K2T11evxL+qQgeN04sZF2sJciPhIxa
-         MTCpLAlzXQ/Et3m8eJlcuazUcWUcPNwH0ennEkeVk1j/pe55zuDf4BAdLOYazfOsm/ul
-         6jWn5e7ZlaEMc+SMDee03zgbkmhj7ScXWJj83JUVDYdKDCHtDxCdzZBFbB061egcWZT1
-         qlYYWu+paNhGEAf6akyznZHBoEUZgESyjTDVFcJYgBtmRDRCBjy9/DLfwjCpeZZKTPT6
-         OOxQOSIzAcCJOINEVcKdvFNrhOLXwom8QBrCJ3e8yNm8jfNxfqC+SGJ4O+Dc00TtsKnK
-         6VRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701703931; x=1702308731;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QNErOhF1qMkgPNVpHAnyVSyCwAUX/1YSBmZDFvsm8OU=;
-        b=A8UH6sUrRjeestY7N2YPw10DHct3fzWRqtYAy3aVZN0yOhIapM+8EK1G1mmO0oH5rs
-         9fNDdxA/qzr6Da4vyaGCSxufSYKuHhR4aArVSoE/de6ygvDmHJHzJuKvA7KIhvT+D85b
-         NV1NsiW0z6fPV65n0jcfinndhCT2oEQubDae2jzxXdf1a/a9mu90UgjPomScUJDXBNxb
-         oKODDnTJyL25AgODqOIrKQs0qYNYHwG0d5w3YLsuhJsXNWD2Wkv8qvdXlRLglKuvMYCE
-         NVSFfFN/6ahc3Z/5N6oXMv29BTUINIdb17jkEn/jdEXuMLJCVicLQbrZvuF6is3A0rcL
-         hePA==
-X-Gm-Message-State: AOJu0YwxOXOlaf64K/6wABv84Xaw9f6ctEve5GWWp4h6t1xzpFD5Eanu
-        HwGFxrowDYaT47Hn4G/VIuk3UQ==
-X-Google-Smtp-Source: AGHT+IEnloh+umt8D2CaTqj/3erJ8LZq5gKurAnArFiVByvdfAGoIgyiu/VWyqqDTZ8kj1dh4ApCGQ==
-X-Received: by 2002:a05:622a:1c8:b0:425:4043:96e2 with SMTP id t8-20020a05622a01c800b00425404396e2mr6614490qtw.111.1701703930810;
-        Mon, 04 Dec 2023 07:32:10 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-134-23-187.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.134.23.187])
-        by smtp.gmail.com with ESMTPSA id df15-20020a05622a0ecf00b00423da75b0f4sm4371928qtb.71.2023.12.04.07.32.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Dec 2023 07:32:10 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1rAAvZ-00B2r2-ML;
-        Mon, 04 Dec 2023 11:32:09 -0400
-Date:   Mon, 4 Dec 2023 11:32:09 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Joel Granados <j.granados@samsung.com>
-Cc:     Lu Baolu <baolu.lu@linux.intel.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        Yi Liu <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        iommu@lists.linux.dev, linux-kselftest@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/6] IOMMUFD: Deliver IO page faults to user space
-Message-ID: <20231204153209.GN1489931@ziepe.ca>
-References: <20231026024930.382898-1-baolu.lu@linux.intel.com>
- <CGME20231204150747eucas1p2365e92a7ac33ba99b801d7c800acaf6a@eucas1p2.samsung.com>
- <20231204150744.db3hfpq4v55cuavn@localhost>
+        Mon, 4 Dec 2023 10:32:25 -0500
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE370E6
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 07:32:30 -0800 (PST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 0028840E0275;
+        Mon,  4 Dec 2023 15:32:28 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id W7tZGXmaD_gW; Mon,  4 Dec 2023 15:32:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1701703947; bh=sJMPaBTq2W+d+UnYz3q+JxTewGqmmAbRBZQqH1UMueU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hikvEk9hU5gIRNewGnoEp72aSxXz+VEn8myfUufxidLmAeHZqUlvJjg/glDX1/PK6
+         i2cl+JrWTp7FPfhV8wBFDZ4wJsQ7fHpO4OlSQWR5OXGDJLuPwkWglI9QdfhgNfzFgR
+         niSRpw422dlUJsuwSZUVg1AT5A3N7RnIKZd3OB4WTHIA0YAW8pED7gMRaLLWagore7
+         aI6NtCFje70tKFntGjidvj+/piNfT69cCCTNQfXWxv+y2qaS/66jRmrtyOAtuZkFis
+         AI2Bj9w5mpiitMp/r/KUoayuIRqqCz6ZkFcJBPX3djwpH6/beXBEVlTbsoXk+HKVQ1
+         iYkG1L7Aj+Aa7xzrhLw9XpcRTFritKQQkjbMSLO7xQ7yz2B8u/SBmjq4W4mP0UfnvR
+         0ez7l5+Ul9Bc0scjZXN4m1Q808/bgCivlmMtYEc+/4T5lbDVS6UJtxPuxKakjuLsgE
+         DRNP6a9PSuGSvhLj3Rhq758nIvWgkXsLD8YCTcwaC/Pea9aCLZUpDtFKS58/Ty49bH
+         pGU4aW0rXLG1vmp9O3ANC7QAFTGFH+wPZ3vYSC28cezJViXdjIyvkNoOcDUF1C7ZOp
+         2qceu1myQbeDjJo55jbHve4K29/XlP8hEM1Mu+HSgM9EftKKig1be4g8EocR2PwrHq
+         0N9ZYxZW2VayWfqlGrTvu7tk=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 156EC40E014B;
+        Mon,  4 Dec 2023 15:32:23 +0000 (UTC)
+Date:   Mon, 4 Dec 2023 16:32:17 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     Brian Gerst <brgerst@gmail.com>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] x86/CPU/AMD: Add X86_FEATURE_ZEN1
+Message-ID: <20231204153217.GBZW3xAbH36zBxPZIM@fat_crate.local>
+References: <20231120104152.13740-1-bp@alien8.de>
+ <20231120104152.13740-2-bp@alien8.de>
+ <dc3835e3-0731-4230-bbb9-336bbe3d042b@amd.com>
+ <20231130171316.GLZWjCrHGHl+VVp724@fat_crate.local>
+ <16400d3d-8264-4f3f-96ca-168064944462@amd.com>
+ <20231130185048.GMZWjZiIjhpjrv4rPf@fat_crate.local>
+ <20231202124901.GBZWsnvQct4PxsUsXK@fat_crate.local>
+ <255f23c8-5c89-47cd-ad97-7f5f0b07d645@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231204150744.db3hfpq4v55cuavn@localhost>
+In-Reply-To: <255f23c8-5c89-47cd-ad97-7f5f0b07d645@amd.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -86,16 +73,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 04, 2023 at 04:07:44PM +0100, Joel Granados wrote:
-> On Thu, Oct 26, 2023 at 10:49:24AM +0800, Lu Baolu wrote:
-> > Hi folks,
-> > 
-> > This series implements the functionality of delivering IO page faults to
-> > user space through the IOMMUFD framework for nested translation. Nested
-> Does this mean the IOPF_CAPABLE HWPT needs to be parented by a HWPT
-> created with IOMMU_HWPT_ALLOC_NEST_PARENT set?
+On Mon, Dec 04, 2023 at 08:36:04AM -0600, Tom Lendacky wrote:
+> Should this be renamed to init_amd_zen1(), just to avoid confusion?
 
-I would expect no. Both a nested and un-nested configuration should
-work.
+Done.
 
-Jason
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
