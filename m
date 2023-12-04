@@ -2,323 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3079803A41
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 17:28:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E561F803A54
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 17:32:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344675AbjLDQ2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 11:28:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37554 "EHLO
+        id S1344706AbjLDQcs convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 4 Dec 2023 11:32:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234809AbjLDQ23 (ORCPT
+        with ESMTP id S230496AbjLDQcr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 11:28:29 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE04899
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 08:28:35 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5BBC2C433C9;
-        Mon,  4 Dec 2023 16:28:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701707315;
-        bh=dKDKr3gvolScXhXGPFpnjQmlMO642TbJVWqWievKFhc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=f3KwE9Rscpf9FC+mLKjKbovT28jw+vIXOZj6gBgjLVekxsoJi5A6Do+OBDJyEEwoJ
-         zHlAohZsNUdLhgs6MwEDHj4hWPpefc2/40EtAC7c47iEUpdls0tV/r9AKQmUqSMDxy
-         kT8YRNxVuKwyJ1EiRr4lJTZ9V5rwp5w/sRidaJudvLKc+do/OIx4h//55aFuPcDL4p
-         r/7qq+wKSCuAUdGWVy8s8Ym/34Y0hMXVV0G/+BsJ0ZYppkuX7D8YsPS3PftmzILpIZ
-         bFLPoC2HPS2Q5Q5jUvo3OpiWQXIAatEpVxO0s28C2TDKr5tZBWc/JxidPDY8fiaTr6
-         l1tlf8eOICSOA==
-Date:   Mon, 4 Dec 2023 08:31:57 -0800
-From:   Bjorn Andersson <andersson@kernel.org>
-To:     Sneh Shah <quic_snehshah@quicinc.com>
-Cc:     Vinod Koul <vkoul@kernel.org>,
-        Bhupesh Sharma <bhupesh.sharma@linaro.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        netdev@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel@quicinc.com, Andrew Halaney <ahalaney@redhat.com>
-Subject: Re: [PATCH net-next] net: stmmac: qcom-ethqos: Add sysfs nodes for
- qcom ethqos
-Message-ID: <t36qr4ihbwf73sghpy4an6udbzbuz3nuksyvbpg6p2mfqgojnh@ktqjuwkuvigd>
-References: <20231204084854.31543-1-quic_snehshah@quicinc.com>
+        Mon, 4 Dec 2023 11:32:47 -0500
+Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B25CE99;
+        Mon,  4 Dec 2023 08:32:53 -0800 (PST)
+Received: by mail-ot1-f53.google.com with SMTP id 46e09a7af769-6d7ea8b4581so492351a34.1;
+        Mon, 04 Dec 2023 08:32:53 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701707573; x=1702312373;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Yn4pD1gA2GtmA9HlH0C0U9ulVAJ/43nKIwnaRGSr6IQ=;
+        b=V75jmcQJiNVacjtVlHzbh9Q8YhtAXXD0Z3B1ez9f4FXhu+XOsKGi1OFAY5GMUSAoO7
+         69BryOzOR+M2N28knJj9y8xOlHNl4/wcXkBj0iXu31SXiqjwQb+yt4NaMwESqD8XC6pX
+         yf6C7SohNyo+Ig1H5+kz39Qr5VcmvKWbvfAtvXDagkyjxKM5egrCbVckQ0jYbDq08SZX
+         pxyktez0P7fvY55LwNYntRcly3Vy0cwojQFJRJ9F1Fjfrfici9lJuLnnrrsOVkGK3+qh
+         KYTUZKacTGOa3DKpfIWiSWqkiJgd9YT5p6sgJ6Sh8pcDDyP1ikQ2tYdM6wPDuxhOk0b2
+         LBwg==
+X-Gm-Message-State: AOJu0Yxwvro5KyJU4FVW4B9TTsr38xmx6V0MGMNp9Upa8RHUAHCxZs9c
+        ZojFvUCyOOIwe0rspUWP1ImX1eB+wHfidwt9mlg=
+X-Google-Smtp-Source: AGHT+IG6HzJNK+5zbjAVWt3hnnTgEX1LXL/Hj5C1l5v8CgJzaA0RFK6zejwqjK5B0wbjpLqeH/kjVGFBKb900kCTFBI=
+X-Received: by 2002:a05:6871:528a:b0:1fa:f404:b958 with SMTP id
+ hu10-20020a056871528a00b001faf404b958mr12686542oac.3.1701707572969; Mon, 04
+ Dec 2023 08:32:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231204084854.31543-1-quic_snehshah@quicinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <3281896.aeNJFYEL58@kreacher> <61ef73e6-e633-47e1-b599-ee66aa179227@redhat.com>
+In-Reply-To: <61ef73e6-e633-47e1-b599-ee66aa179227@redhat.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 4 Dec 2023 17:32:41 +0100
+Message-ID: <CAJZ5v0j1fHebN0w0oYFv0CapkF1XvQ-0xWtQtuLtx0So50hzsw@mail.gmail.com>
+Subject: Re: [PATCH v1 0/4] ACPI: OSL: acpi_os_execute() improvements
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Michal Wilczynski <michal.wilczynski@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Mario Limonciello <mario.limonciello@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 04, 2023 at 02:18:54PM +0530, Sneh Shah wrote:
-> Add sysfs nodes to conifigure routing of specific vlan id to GVM queue.
-> GVM queue is not exposed to PVM stmmac, so TC ops can't configure routing.
-> 
+Hi Hans,
 
-Perhaps I'm just not familiar enough with the details of stmmac, but can
-you please describe what PVM and GVM is?
+On Sat, Dec 2, 2023 at 3:31 PM Hans de Goede <hdegoede@redhat.com> wrote:
+>
+> Hi,
+>
+> On 11/29/23 14:45, Rafael J. Wysocki wrote:
+> > Hi Everyone,
+> >
+> > This series improves acpi_os_execute() on top of
+> >
+> > https://patchwork.kernel.org/project/linux-acpi/patch/5745568.DvuYhMxLoT@kreacher/
+> >
+> > but only the last patch really depends on it.
+> >
+> > The first two patches clean up the code somewhat and the third one modifies
+> > the function to allow Notify () handlers to run on all CPUs (not on CPU0 only).
+> >
+> > The last patch changes it to use GFP_KERNEL for memory allocations, as it does
+> > not run in interrupt context any more after the change linked above.
+>
+> I have added this series, as well as the preceding
+> "ACPI: OSL: Use a threaded interrupt handler for SCI"
+> patch to my personal tree now, so that it will get tested on various
+> devices when I run my personal tree on them.
+>
+> I'll let you know if I hit any issues caused by this series.
 
-Regards,
-Bjorn
+As stated here
 
-> Signed-off-by: Sneh Shah <quic_snehshah@quicinc.com>
-> ---
->  .../stmicro/stmmac/dwmac-qcom-ethqos.c        | 216 +++++++++++++++++-
->  1 file changed, 215 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-> index d3bf42d0fceb..ea89045a90a1 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-> @@ -109,6 +109,8 @@ struct qcom_ethqos {
->  	unsigned int num_por;
->  	bool rgmii_config_loopback_en;
->  	bool has_emac_ge_3;
-> +	int gvm_vlan_prio;
-> +	int gvm_queue;
->  };
->  
->  static int rgmii_readl(struct qcom_ethqos *ethqos, unsigned int offset)
-> @@ -710,6 +712,214 @@ static void ethqos_ptp_clk_freq_config(struct stmmac_priv *priv)
->  	netdev_dbg(priv->dev, "PTP rate %d\n", plat_dat->clk_ptp_rate);
->  }
->  
-> +static ssize_t gvm_vlan_routing_store(struct device *dev,
-> +				      struct device_attribute *attr,
-> +				      const char *user_buf, size_t size)
-> +{
-> +	struct net_device *netdev = to_net_dev(dev);
-> +	struct stmmac_priv *priv;
-> +	struct qcom_ethqos *ethqos;
-> +	u32 prio;
-> +	s8 input = 0;
-> +
-> +	if (!netdev) {
-> +		pr_err("netdev is NULL\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	priv = netdev_priv(netdev);
-> +	if (!priv) {
-> +		pr_err("priv is NULL\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	ethqos = priv->plat->bsp_priv;
-> +	if (!ethqos) {
-> +		pr_err("ethqos is NULL\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (kstrtos8(user_buf, 0, &input)) {
-> +		pr_err("Error in reading option from user\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (input < 1 || input > 7) {
-> +		pr_err("Invalid option set by user\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (input == ethqos->gvm_vlan_prio)
-> +		pr_err("No effect as duplicate input\n");
-> +
-> +	ethqos->gvm_vlan_prio = input;
-> +	prio  = 1 << input;
-> +
-> +	stmmac_rx_queue_prio(priv, priv->hw, prio, ethqos->gvm_queue);
-> +
-> +	return size;
-> +}
-> +
-> +static ssize_t gvm_queue_mapping_store(struct device *dev,
-> +				       struct device_attribute *attr,
-> +				       const char *user_buf, size_t size)
-> +{
-> +	struct net_device *netdev = to_net_dev(dev);
-> +	struct stmmac_priv *priv;
-> +	struct qcom_ethqos *ethqos;
-> +	u32 prio;
-> +	s8 input = 0;
-> +
-> +	if (!netdev) {
-> +		pr_err("netdev is NULL\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	priv = netdev_priv(netdev);
-> +	if (!priv) {
-> +		pr_err("priv is NULL\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	ethqos = priv->plat->bsp_priv;
-> +	if (!ethqos) {
-> +		pr_err("ethqos is NULL\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (kstrtos8(user_buf, 0, &input)) {
-> +		pr_err("Error in reading option from user\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (input == ethqos->gvm_queue)
-> +		pr_err("No effect as duplicate input\n");
-> +
-> +	ethqos->gvm_queue = input;
-> +	prio  = 1 << input;
-> +
-> +	return size;
-> +}
-> +
-> +static ssize_t gvm_queue_mapping_show(struct device *dev,
-> +				      struct device_attribute *attr, char *user_buf)
-> +{
-> +	struct net_device *netdev = to_net_dev(dev);
-> +	struct stmmac_priv *priv;
-> +	struct qcom_ethqos *ethqos;
-> +
-> +	if (!netdev) {
-> +		pr_err("netdev is NULL\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	priv = netdev_priv(netdev);
-> +	if (!priv) {
-> +		pr_err("priv is NULL\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	ethqos = priv->plat->bsp_priv;
-> +	if (!ethqos) {
-> +		pr_err("ethqos is NULL\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	return scnprintf(user_buf, 256, "%d\n", ethqos->gvm_queue);
-> +}
-> +
-> +static ssize_t gvm_vlan_routing_show(struct device *dev,
-> +				     struct device_attribute *attr, char *user_buf)
-> +{
-> +	struct net_device *netdev = to_net_dev(dev);
-> +	struct stmmac_priv *priv;
-> +	struct qcom_ethqos *ethqos;
-> +
-> +	if (!netdev) {
-> +		pr_err("netdev is NULL\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	priv = netdev_priv(netdev);
-> +	if (!priv) {
-> +		pr_err("priv is NULL\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	ethqos = priv->plat->bsp_priv;
-> +	if (!ethqos) {
-> +		pr_err("ethqos is NULL\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	return scnprintf(user_buf, 256, "%d\n", ethqos->gvm_vlan_prio);
-> +}
-> +
-> +static DEVICE_ATTR_RW(gvm_queue_mapping);
-> +
-> +static DEVICE_ATTR_RW(gvm_vlan_routing);
-> +
-> +static int ethqos_remove_sysfs(struct qcom_ethqos *ethqos)
-> +{
-> +	struct net_device *net_dev;
-> +
-> +	if (!ethqos) {
-> +		pr_err("ethqos is NULL\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	net_dev = platform_get_drvdata(ethqos->pdev);
-> +	if (!net_dev) {
-> +		pr_err("netdev is NULL\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	sysfs_remove_file(&net_dev->dev.kobj,
-> +			  &dev_attr_gvm_queue_mapping.attr);
-> +	sysfs_remove_file(&net_dev->dev.kobj,
-> +			  &dev_attr_gvm_vlan_routing.attr);
-> +
-> +	return 0;
-> +}
-> +
-> +static int ethqos_create_sysfs(struct qcom_ethqos *ethqos)
-> +{
-> +	int ret;
-> +	struct net_device *net_dev;
-> +
-> +	if (!ethqos) {
-> +		pr_err("ethqos is NULL\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	net_dev = platform_get_drvdata(ethqos->pdev);
-> +	if (!net_dev) {
-> +		pr_err("netdev is NULL\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	ret = sysfs_create_file(&net_dev->dev.kobj,
-> +				&dev_attr_gvm_queue_mapping.attr);
-> +	if (ret) {
-> +		pr_err("unable to create passthrough_en sysfs node\n");
-> +		goto fail;
-> +	}
-> +
-> +	ret = sysfs_create_file(&net_dev->dev.kobj,
-> +				&dev_attr_gvm_vlan_routing.attr);
-> +	if (ret) {
-> +		pr_err("unable to create cv2x_priority sysfs node\n");
-> +		goto fail;
-> +	}
-> +
-> +	return ret;
-> +
-> +fail:
-> +	ethqos_remove_sysfs(ethqos);
-> +
-> +	return ret;
-> +}
-> +
->  static int qcom_ethqos_probe(struct platform_device *pdev)
->  {
->  	struct device_node *np = pdev->dev.of_node;
-> @@ -812,7 +1022,11 @@ static int qcom_ethqos_probe(struct platform_device *pdev)
->  		plat_dat->serdes_powerdown  = qcom_ethqos_serdes_powerdown;
->  	}
->  
-> -	return devm_stmmac_pltfr_probe(pdev, plat_dat, &stmmac_res);
-> +	ret = devm_stmmac_pltfr_probe(pdev, plat_dat, &stmmac_res);
-> +	if (ret)
-> +		return ret;
-> +
-> +	return ethqos_create_sysfs(ethqos);
->  }
->  
->  static const struct of_device_id qcom_ethqos_match[] = {
-> -- 
-> 2.17.1
-> 
-> 
+https://lore.kernel.org/linux-acpi/CAJZ5v0jkHLGa2XxB4TMqzrBBdZYXY79+sh1Z0ZF6keYdLDyfkg@mail.gmail.com/
+
+the last patch in this series is not really a good idea just yet, so
+please drop it.
+
+Thanks!
