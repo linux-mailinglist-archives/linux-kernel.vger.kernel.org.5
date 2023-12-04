@@ -2,86 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 622EE802A63
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 03:41:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F77E802A60
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 03:40:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234362AbjLDClD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 21:41:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36446 "EHLO
+        id S230232AbjLDCkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 21:40:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbjLDClB (ORCPT
+        with ESMTP id S229510AbjLDCkX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 21:41:01 -0500
-Received: from zju.edu.cn (mail.zju.edu.cn [61.164.42.155])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 298D5D9;
-        Sun,  3 Dec 2023 18:41:05 -0800 (PST)
-Received: from localhost.localdomain (unknown [10.190.71.14])
-        by mail-app4 (Coremail) with SMTP id cS_KCgBHEKcUPG1l68lGAA--.17176S4;
-        Mon, 04 Dec 2023 10:40:30 +0800 (CST)
-From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
-To:     dinghao.liu@zju.edu.cn
-Cc:     Michael Chan <michael.chan@broadcom.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] net: bnxt: fix a potential use-after-free in bnxt_init_tc
-Date:   Mon,  4 Dec 2023 10:40:04 +0800
-Message-Id: <20231204024004.8245-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: cS_KCgBHEKcUPG1l68lGAA--.17176S4
-X-Coremail-Antispam: 1UD129KBjvdXoWrZry3uFWfWw1UZw43JF13Jwb_yoWDuFb_Cr
-        4UXFnxK3yUK3929r1jvr45Z345uFWDXrWxWF1xKFW3try7Gr18W3yvv3Z7Jw15GrWxAFyD
-        Gr1aqryIv34SkjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb7AFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
-        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
-        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26rxl6s0DM28EF7xvwVC2z280
-        aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07
-        x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18
-        McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr4
-        1lF7I21c0EjII2zVCS5cI20VAGYxC7MxAIw28IcxkI7VAKI48JMxAIw28IcVCjz48v1sIE
-        Y20_GFWkJr1UJwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI
-        8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41l
-        IxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIx
-        AIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2
-        jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VUbXdbUUUUUU==
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgoSBmVsUQgQAgAEsa
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Sun, 3 Dec 2023 21:40:23 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50D4DC3
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 18:40:30 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8DE94C433C7;
+        Mon,  4 Dec 2023 02:40:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701657630;
+        bh=+1h7orpNR6s8aU7j2WouWuvwhoBP56nu407wmiCjx6o=;
+        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+        b=sqWUdAghbTGgJmbgMKCZNEYQLXSRx8zdfcx1nDdIJqXu+okcOeYaOIg/8c30Q6Kjv
+         upHpZS/ldRcH3EASHRlREI3D4FKPti1iHTYJsYcBbGj7XRSHMDNaYYai9laZbyds7s
+         t2cxOLLWckmgK/D7yFCHaVeR1dMsExdzTyg5+TPgPVbbq1oBH0z7Oi9CjlsAOyDCYt
+         qHIKdpX5M4SrCvntX1kV3zkdHREgQclWKGvdGIgYsxfwTRnaL2V9MS32TfVaofsIa1
+         3z+TeriMuScbayosVDhERIhhVn+2zWATcGcjKb1eOyvPVmZ4VOjeI23S+zCIGid4yk
+         11SnCC11JKZsg==
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Mon, 04 Dec 2023 04:40:24 +0200
+Message-Id: <CXF7A8PSEKNX.SM7LV367AYHW@suppilovahvero>
+Subject: Re: [PATCH v6 4/8] tpm: Update struct tpm_buf documentation
+ comments
+From:   "Jarkko Sakkinen" <jarkko@kernel.org>
+To:     "Stefan Berger" <stefanb@linux.ibm.com>,
+        <linux-integrity@vger.kernel.org>
+Cc:     <linux-kernel@vger.kernel.org>,
+        "James Bottomley" <James.Bottomley@HansenPartnership.com>,
+        "William Roberts" <bill.c.roberts@gmail.com>,
+        "David Howells" <dhowells@redhat.com>,
+        "Jason Gunthorpe" <jgg@ziepe.ca>,
+        "Mimi Zohar" <zohar@linux.ibm.com>,
+        "Mario Limonciello" <mario.limonciello@amd.com>,
+        "Jerry Snitselaar" <jsnitsel@redhat.com>
+X-Mailer: aerc 0.15.2
+References: <20231124020237.27116-1-jarkko@kernel.org>
+ <20231124020237.27116-5-jarkko@kernel.org>
+ <ba84a7c1-f397-45f3-b76c-7faed89a005d@linux.ibm.com>
+In-Reply-To: <ba84a7c1-f397-45f3-b76c-7faed89a005d@linux.ibm.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When flow_indr_dev_register() fails, bnxt_init_tc will free
-bp->tc_info through kfree(). However, the caller function
-bnxt_init_one() will ignore this failure and call
-bnxt_shutdown_tc() on failure of bnxt_dl_register(), where
-a use-after-free happens. Fix this issue by setting
-bp->tc_info to NULL after kfree().
+On Mon Nov 27, 2023 at 10:41 PM EET, Stefan Berger wrote:
+>
+>
+> On 11/23/23 21:02, Jarkko Sakkinen wrote:
+> > Remove deprecated portions and document enum values.
+> >=20
+> > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+> > ---
+> > v1 [2023-11-21]: A new patch.
+> > v2 [2023-11-24]: Refined the commit message a bit.
+> > ---
+> >   include/linux/tpm.h | 9 ++++-----
+> >   1 file changed, 4 insertions(+), 5 deletions(-)
+> >=20
+> > diff --git a/include/linux/tpm.h b/include/linux/tpm.h
+> > index bb0e8718a432..0a8c1351adc2 100644
+> > --- a/include/linux/tpm.h
+> > +++ b/include/linux/tpm.h
+> > @@ -297,15 +297,14 @@ struct tpm_header {
+> >   	};
+> >   } __packed;
+> >  =20
+> > -/* A string buffer type for constructing TPM commands. This is based o=
+n the
+> > - * ideas of string buffer code in security/keys/trusted.h but is heap =
+based
+> > - * in order to keep the stack usage minimal.
+> > - */
+> > -
+> >   enum tpm_buf_flags {
+> > +	/* the capacity exceeded: */
+>
+> was exceeded
 
-Fixes: 627c89d00fb9 ("bnxt_en: flow_offload: offload tunnel decap rules via indirect callbacks")
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
----
- drivers/net/ethernet/broadcom/bnxt/bnxt_tc.c | 1 +
- 1 file changed, 1 insertion(+)
++1, agreed a better form :-)
 
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_tc.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_tc.c
-index 38d89d80b4a9..273c9ba48f09 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt_tc.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_tc.c
-@@ -2075,6 +2075,7 @@ int bnxt_init_tc(struct bnxt *bp)
- 	rhashtable_destroy(&tc_info->flow_table);
- free_tc_info:
- 	kfree(tc_info);
-+	bp->tc_info = NULL;
- 	return rc;
- }
- 
--- 
-2.17.1
+>
+> >   	TPM_BUF_OVERFLOW	=3D BIT(0),
+> >   };
+> >  =20
+> > +/*
+> > + * A string buffer type for constructing TPM commands.
+> > + */
+> >   struct tpm_buf {
+> >   	unsigned int flags;
+> >   	u8 *data;
+>
+> Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
 
+If possible give this to the James' patch set, thank you for the review.
+
+BR, Jarkko
