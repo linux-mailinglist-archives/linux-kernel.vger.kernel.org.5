@@ -2,209 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 969DA80303B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 11:26:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4167F80303C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 11:26:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343958AbjLDKZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 05:25:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50184 "EHLO
+        id S232837AbjLDK0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 05:26:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235400AbjLDKZK (ORCPT
+        with ESMTP id S1344079AbjLDK0B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 05:25:10 -0500
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05olkn2045.outbound.protection.outlook.com [40.92.90.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4041ED64
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 02:25:03 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cSp0XJVMFER4VhbzkPHrYXGgAMSW1DxNX22JFxa1A5hYiFIaj21iaWA3PE2ksWfUymHDgoGLKpL2PKECUxnO7fiR3Z8UvT3o7q8qorC3ynYkmFf2tadiDgL/AeqR5OqaR7HKHg72nAvAJAFYRFDYpmSFiM0G5fj5XAKhqo62pDuGfK7+yWR5ReV38oz8jgJi2EbdsK8QdP5nAdlp+XYP8VEUVJGuk5cvP4sG+3P7Duh5MgGKw5LVavPel6JGeK1zMDs3JSJtjElmMsK+y0/+wxxZUq0AmkpdiJ2UTISCg6OWmTRud56WrxyMhPgfCWrSLqELedEOhoOCSwGaZujuVw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7S1XkJ12r3tYiK+krXdX8A5bV5jNuPbqBXyZ46qgkd0=;
- b=nGnHyBEUsbE7r/LN/BcGJVCPmhv5OxnJ1aCN4gSgZQahQfEoyP1s0q3KSDYnt9Fv7rD1ym3SZaJxD7rVXo/vgHjIS/11obwldJ+ZmAkfrbB2nIf8b3ScWHrdCSCaEynyrkt9YnaMzPVrxJPF3jFNexAet19QfSqOvJ3GNssgXdgDDTAkvK0rHuvzStYBPUxP0pc7eX53Ju+yYzFp3N3FcgBtFVdhiri9G5yV984bkgLM+Vx8FDKJNSXxnA76aqo++jr51SuFG0dDBLkI2tDaKyXKqvVuYQiUpr73jo/z7rJYaJJdhZzsbs+E2ScOEgnTCNtevTJUlGtzByfxe/ZHKA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7S1XkJ12r3tYiK+krXdX8A5bV5jNuPbqBXyZ46qgkd0=;
- b=oMUnfWDkn9jnV89H2rz+OdZ2eu0sao2KIPcMyAUpUVef6xIG3ZPowoBdEDMkj/+2Gl2HhjfNa7vccPj7f4l6HywjH0u0m5r5d0tl08EuyPgZcd78ydK19aWWet3HY8TStl23s0AmmC3uGzbejIP7Qe0+I1Aea0F/wDuxvCsjjQmu5xa8KQMV8REOQ/6XG+m4w7xhZm/iorbvXPOdZvSau7wlxo07uE7vpJ6E1tK6GFIjvDLeGsGiulEiBoKEgDScNuXt+Gt6C7+K9H8gBV6P9nSCoXAFAnjl0Yt5Oa248Xp47QWHnxKSt+l+jUu9nYmmRPbhi9dLOsqL+e1Qxjy8uw==
-Received: from AM7PR10MB3923.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:172::24)
- by AS8PR10MB6844.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:5b6::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.33; Mon, 4 Dec
- 2023 10:25:01 +0000
-Received: from AM7PR10MB3923.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::1fc4:7df9:3d95:eb28]) by AM7PR10MB3923.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::1fc4:7df9:3d95:eb28%6]) with mapi id 15.20.7046.033; Mon, 4 Dec 2023
- 10:25:01 +0000
-Message-ID: <AM7PR10MB392310DEF1A19822E722843D8E86A@AM7PR10MB3923.EURPRD10.PROD.OUTLOOK.COM>
-Date:   Mon, 4 Dec 2023 11:25:00 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: Kernel problem with multiseat on one card
-Content-Language: nl
-From:   Gert Vanhaerents <gert.vanhaerents@hotmail.com>
-To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux Nouveau <nouveau@lists.freedesktop.org>
-References: <AM7PR10MB39235DD53D163910E88FDB938E82A@AM7PR10MB3923.EURPRD10.PROD.OUTLOOK.COM>
- <AM7PR10MB3923E07D6024434077E95EBA8E82A@AM7PR10MB3923.EURPRD10.PROD.OUTLOOK.COM>
- <ZWsuiq7zrYS-pDli@archie.me>
- <AM7PR10MB39234D1B9700492A3D10DB1C8E86A@AM7PR10MB3923.EURPRD10.PROD.OUTLOOK.COM>
-In-Reply-To: <AM7PR10MB39234D1B9700492A3D10DB1C8E86A@AM7PR10MB3923.EURPRD10.PROD.OUTLOOK.COM>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-TMN:  [EqRXoId7wOjnKdngLk9hTyB03hr9lLCy]
-X-ClientProxiedBy: AS4P191CA0030.EURP191.PROD.OUTLOOK.COM
- (2603:10a6:20b:5d9::16) To AM7PR10MB3923.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:20b:172::24)
-X-Microsoft-Original-Message-ID: <93f79670-bc25-44fa-b829-60efb7820d72@hotmail.com>
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM7PR10MB3923:EE_|AS8PR10MB6844:EE_
-X-MS-Office365-Filtering-Correlation-Id: b17ecebc-3e71-4c38-54dc-08dbf4b34599
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: etDJT3BT74Ag4Mq1HqNubnnj3pB3VQ0lxP/y61h+MI5BMLtRLk0FpShIQiBXPH0edOfjC5qRfBuzlT2jehq9s2qgP2bvU7ZNALfaezjZhlrOMowMOy1yHjBRT4H6oNgII8gE8XagtsnSXTUrnLjqTZKL5dOIh8KYzudH7MLJTH9IuA8tFh/nMYGRQv54JjFf6YmTE26rMG0UUhRZg0FMDIeOL3BsN+Iyx3OdPJSaNjF0nwqK3uyzTH+l66vLGwiSCAHZZen/oXIdQ7IKbTJ4dE8fMifSeurplmaI7BP1j0KTK2RaBwcjcg7HjW1F9RzVbEeYOqr3APzT1k0fybJH1+daau0ru6OsCiRrWMMkpz3YtodkVxVEtDA9nB1DkrYNHQqjeKUvPUctfr2PV4wBKGRJl7i+5ffWIzvFjaX6XOtuOOygTdur1ppXWmOMEvgPsWFgSgY7VeBzQ+CQW3rXSkYXep7hsPNu8uoS+wyON939JFb2101O+MJHaapnRxOnd0fQ+k0ZpL0A93lZiZpsZ5d1Dqp+6e1HFiab0AM0WMmf1IKU0YxP/yaoyrR2C3q3opwRQ3vO7p6r1g0YoD4/XT6sZkL+2SZ+of97rBicEhY=
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MkxFYk5HbVJYWjBGcWdSN1hkclBDbjY2NS9KSFB6K3hKMnJEYnlMN0k2YTBw?=
- =?utf-8?B?OFBmQWcvVWZzd1BSNy94WlpBYUl0dnlqRnpJRE01WmJMOTVFamk4aWxPOWM1?=
- =?utf-8?B?cXA5cXQ4b1FXSmFsQXVGb2tVeFI3WUNjL2dpd0VMYXNVekJINW8zSm5xa3Fv?=
- =?utf-8?B?R3RXWVk5Z2xycjFmQ3JGQmtqS3UxREdid2FwRTI0Rk05WW5NV0NKYXBSNUJ3?=
- =?utf-8?B?eStPN2JmZjQ2R1pDVm1tcHlQVHJlVVh0Z2NIUFFWdzlMT0tQbUVLazhmbVdM?=
- =?utf-8?B?ejh3UmtYTWZmNjNQZDF2MWRhNHJVY09lSXR5c1RXRmZsWFFrVjh3b0lOM1JF?=
- =?utf-8?B?R0N6WFFHQWllckJhb3U3OEgrUWo1ZFFGRE9rNFZyWFpRWU0wa2dldGlnemtv?=
- =?utf-8?B?a0RHdzZWMlhySTJhSzNLZGJCczJYNDVIY29Nd2w2ZEdBNmRlT2VTTTBQSS9Q?=
- =?utf-8?B?NXNCUW9sdFAyV1JlRUZwdHB1ZlVhaXNwMmNhaDJpODlGOWZBczZPL05CSlky?=
- =?utf-8?B?ZFZkYmFoSStzVDBRUlEyZTEybUp6K1BWVEhBY3R6NVE3Skk1cndueUFyMjdy?=
- =?utf-8?B?eFlsYzJFeTBGK3kzMzhLNHIxOGdITWs5RFJTSVUvTERZZWFMMzVNbi9ybEMv?=
- =?utf-8?B?Q0hDcW5PZ1FCaGQrODZWVGVyYkdqT3prNlhad3ErRnVhNlJ4WDZDS2VkSENC?=
- =?utf-8?B?NWZPY2p2ZXpWUVpua0QrWDlLVSsrRXc0emRkMUt4ZEFOTEtTVDkxcXBubnQy?=
- =?utf-8?B?VHNUOHNsaFBrcTJQMFJvTFVWdFVRZ1FCcFJKeld4ZldCNmVuU1N5a2ljL2x1?=
- =?utf-8?B?eFlpcEZjVys4Y1NzR3RrQi8xMlRWWGh4K2ZqSXpRREJCN0Z3bkgwSUNPdGlE?=
- =?utf-8?B?LzZ0aldSNlJHRTB2cVRDYkVHQzVjQ0IvRVg4dWZKK000L1J1VGRzL2RCVmxZ?=
- =?utf-8?B?MUFTVGdGYldHQTM0a1pHdVlLWjBIaU5GeHZlWUJOUW9NV3l0T0kxZlZSb0ty?=
- =?utf-8?B?K3pKQk9oRnRJODVXb00zVVN4T2JCNCsxVGNaSWhuQTZsdVVBZkttaDhNYXhI?=
- =?utf-8?B?ZFh6emFjUHc2TVVNR2MvVzArbVAwYnlGZmpJMy9NUkp5ZVN1cDBBUitzYjgx?=
- =?utf-8?B?Z20raFY2RTJDOUxaWE5xMTRjMjR5QjBBa1BkRmFwVnFLUCtreHd0aWRqQ0Iz?=
- =?utf-8?B?T1MwT1BmZnEwS3MrcXM1N2JBd1lPaE4vU0k0dms3VThIcG56Q1ZnRXk2YlFH?=
- =?utf-8?B?Y25NUUNaTmZTSGp4Q2lUUFhrek5PMHVqaXRiK0hJdVhDRXNwL0N5WWtBTDRF?=
- =?utf-8?B?UFlLOCtTSWJQU1lsbDRuMmM5bnNPYUV2ZldhbDdncXlaRHA2NDZFSWkvYmxB?=
- =?utf-8?B?Qngyd2hQblRWSUpiRFhEUTdEdHJLUmlTNHVMWGlDbEo5UnBzdU5CYTZoTk1a?=
- =?utf-8?B?OEpVVkxGMmlYWS9QbDFWem5PalV4eTFFdUlqME5HMTVmSjRsL08wSHRnUiti?=
- =?utf-8?B?VmFHdldURGhKcXFsSzdLS3duSUZKNkx0bTc2TTlQMHllYVBiVjVNclZKck5m?=
- =?utf-8?B?aFRuaXRkVTNubG1XQTR3ckNWeHNGS1dIbjVSVlFETm9HRTBLd2kvdzlVVC9a?=
- =?utf-8?Q?+VuSk1h665XGHemJTJWk/CctQ8oR3I8Y22PktBjIR8PY=3D?=
-X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-6b909.templateTenant
-X-MS-Exchange-CrossTenant-Network-Message-Id: b17ecebc-3e71-4c38-54dc-08dbf4b34599
-X-MS-Exchange-CrossTenant-AuthSource: AM7PR10MB3923.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Dec 2023 10:25:00.9926
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR10MB6844
-X-Spam-Status: No, score=0.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_MUA_MOZILLA,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+        Mon, 4 Dec 2023 05:26:01 -0500
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8497D41
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 02:25:20 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-a1a0bc1e415so341629066b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 02:25:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fairphone.com; s=fair; t=1701685519; x=1702290319; darn=vger.kernel.org;
+        h=in-reply-to:references:subject:cc:to:from:message-id:date
+         :content-transfer-encoding:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aq+xirBYpOKkgca1eZSuL+2A1j9+CgouYiCwrjD1giM=;
+        b=v7gGEBmE+kCZFnoVPEa45r2ReOx+/1p2IILLp95HhqJ5wcVZBJ3tJfB0yqTEjU7tOM
+         DCZFTZJsQM6dWbHwltdAPTFM/OzVH09HZfF9JhZpReE+H1ZGRu7sze3tbREPpcvxy5oB
+         U2LxVkzgF9aHcDXRmBa06YUYGvx1JuA8rgDAYL+vaE7CNzStC5fUNpcwOungj/NLMkc8
+         3dj+JC/AfDMZbbR8YU3X3FRRnm+lb0966bAlcLofXMJtB3OsqpTsRVb9pEkbuK529nbF
+         1Gq49X0Sp+v/3su+dXdG2wlVa3Mkpft6dYynt9LRNf62nIk5cMIIQ5cEQU0hgeqfKIy5
+         gcUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701685519; x=1702290319;
+        h=in-reply-to:references:subject:cc:to:from:message-id:date
+         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=aq+xirBYpOKkgca1eZSuL+2A1j9+CgouYiCwrjD1giM=;
+        b=kaperdZGO2iLYoM8h3uCEtSbkdd0ypi5x2aZA9cd0YVC7wR1S1+aMFY+ypGwRRRLMd
+         vRSdvlcx6kw7+B73CleS9YvF5UuGtU1Kr5NkIHSFAcZrBpK3tJQZFsmrj0j7usuShQPj
+         wBTE/95dSzHU0lPWZXEe+bB7j488HgNO6jzxYBNweBuW2kJwg26AQL7wfmXwCwrvnfH9
+         Q7oGa+pdE/f5Vb8qAosyhUYevludMGHuwtRpNxoyzvs3OaX9TJr1k4jvP7cG8z3s8ek7
+         Co+2qgfhnP7qJjlnL17igMV0QCS8/nd0lMZ0ZC0feENLxTCzC0L3HDIh3G5LfWWp/QAK
+         DSKQ==
+X-Gm-Message-State: AOJu0YwelSAlbZxhA+oCDAbsqhIL05aCvTecVNwVfMp24PbEgoCZ+hX/
+        qRVpeGH0Lg6o4V1kqPfl6FjaFg==
+X-Google-Smtp-Source: AGHT+IGXQXao7rNTBZHQgJuB0+45+KeoiPwj8lhmQ5FXfr08n7j/ar6GYkc4R2qZf+xv/FEM23ln4w==
+X-Received: by 2002:a17:906:3f58:b0:a1a:60e6:a1a3 with SMTP id f24-20020a1709063f5800b00a1a60e6a1a3mr1963513ejj.24.1701685519006;
+        Mon, 04 Dec 2023 02:25:19 -0800 (PST)
+Received: from localhost (144-178-202-138.static.ef-service.nl. [144.178.202.138])
+        by smtp.gmail.com with ESMTPSA id ef10-20020a17090697ca00b00a1b6ec7a88asm1291759ejb.113.2023.12.04.02.25.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Dec 2023 02:25:18 -0800 (PST)
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Mon, 04 Dec 2023 11:25:18 +0100
+Message-Id: <CXFH66Y6MBZE.1YDXWOFV4MY7Z@fairphone.com>
+From:   "Luca Weiss" <luca.weiss@fairphone.com>
+To:     "Bjorn Andersson" <andersson@kernel.org>
+Cc:     "Andy Gross" <agross@kernel.org>,
+        "Konrad Dybcio" <konrad.dybcio@linaro.org>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        "Conor Dooley" <conor+dt@kernel.org>,
+        "Nitin Rawat" <quic_nitirawa@quicinc.com>,
+        <~postmarketos/upstreaming@lists.sr.ht>,
+        <phone-devel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] arm64: dts: qcom: qcm6490-fairphone-fp5: Enable UFS
+X-Mailer: aerc 0.15.2
+References: <20231002-fp5-ufs-v2-1-e2d7de522134@fairphone.com>
+ <dutd7zn5avelyujiyb6k64luzu2pqccy6ywhfj52i4g2m6ld47@2aqstxoekqrq>
+In-Reply-To: <dutd7zn5avelyujiyb6k64luzu2pqccy6ywhfj52i4g2m6ld47@2aqstxoekqrq>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun Dec 3, 2023 at 5:41 AM CET, Bjorn Andersson wrote:
+> On Mon, Oct 02, 2023 at 02:30:41PM +0200, Luca Weiss wrote:
+> > Enable the UFS phy and controller so that we can access the internal
+> > storage of the phone.
+> >=20
+> > At the same time we need to bump the minimum voltage used for UFS VCC,
+> > otherwise it doesn't initialize properly. The 2.952V is taken from the
+> > vcc-voltage-level property downstream.
+> >=20
+> > See also the following link for more information about the VCCQ/VCCQ2:
+> > https://gerrit-public.fairphone.software/plugins/gitiles/kernel/msm-ext=
+ra/devicetree/+/1590a3739e7dc29d2597307881553236d492f188/fp5/yupik-idp-pm72=
+50b.dtsi#207
+> >=20
+> > Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+> > ---
+> > Depends on: https://lore.kernel.org/linux-arm-msm/20230927081858.15961-=
+1-quic_nitirawa@quicinc.com/
+>
+> I'd love to merge this patch, but this dependency doesn't seem to make
+> progress, please consider fixing up the outstanding feedback and posting
+> v5.
 
->>> Hi Kernel list,
->>> I'm the IT person of a school, earlier we used multiseatcomputers 
->>> for the
->>> school, i have maded with a XGL implementation and it works fine but 
->>> not so
->>> fantastic. The school wants that i build new computers but the XGL 
->>> project
->>> is too outdated so i can't use it anymore.
->>>
->>> How can i make a multiseatcomputer with more then one user on one 
->>> card with
->>> systemd? I have asked already to the makers of systemd but they said 
->>> it's a
->>> kernel problem.
->>>
->>> With Systemd loginctl and the nouveau drivers you have this:
->>>
->>> ─/sys/devices/pci0000:00/0000:00:03.1/0000:08:00.0/drm/card0
->>>            │ [MASTER] drm:card0
->>>            │
->>> ├─/sys/devices/pci0000:00/0000:00:03.1/0000:08:00.0/drm/card0/card0-DVI-D-1 
->>>
->>>            │ │ [MASTER] drm:card0-DVI-D-1
->>>            │
->>> ├─/sys/devices/pci0000:00/0000:00:03.1/0000:08:00.0/drm/card0/card0-HDMI-A-1 
->>>
->>>            │ │ [MASTER] drm:card0-HDMI-A-1
->>>            │
->>> └─/sys/devices/pci0000:00/0000:00:03.1/0000:08:00.0/drm/card0/card0-VGA-1 
->>>
->>>            │   [MASTER] drm:card0-VGA-1
->>> ├─/sys/devices/pci0000:00/0000:00:03.1/0000:08:00.0/drm/renderD128
->>>            │ drm:renderD128
->>> ├─/sys/devices/pci0000:00/0000:00:03.1/0000:08:00.0/graphics/fb0
->>>            │ graphics:fb0 "nouveaudrmfb"
->>>
->>> So it will be:
->>>
->>> loginctl attach seat1 
->>> /sys/devices/pci0000:00/0000:00:03.1/0000:08:00.0/drm/card0/card0-VGA-1
->>>
->>> For the seat1 (the VGA d-sub output for seat1 and the other HDMI 
->>> output for
->>> seat0) and of course the mouse and keyboard.
->>>
->>> When you do this, all the graphics outputs are on the second seat 
->>> (seat1)
->>> and not anymore on the first seat. So i need to move only the VGA 
->>> output to
->>> seat1 and not all the outputs.
->> Do you expect that GUI output is on both seats?
+Right, it's been a while since the last revision there.
+
+I've just sent v5, hopefully the various feedbacks should be addressed
+there :)
+
+Regards
+Luca
+
 >
-> I want the result that i have one seat (seat0) on the VGA/D-sub output 
-> of the graphic card
->
-> a second seat (seat1) on the HDMI output of the graphic card
->
-> and a third seat (seat2) on the DVI output of the graphic card
->
-> In theory it should work with the following:
-> loginctl attach seat1 
-> /sys/devices/pci0000:00/0000:00:03.1/0000:08:00.0/drm/card0/card0-HDMI-A-1
->
-> loginctl attach seat2 
-> /sys/devices/pci0000:00/0000:00:03.1/0000:08:00.0/drm/card0/card0-DVI-D-1
->
-> But when i do this all the outputs will be used on seat2 (because they 
-> do all the outputs automaticly to the latest attached seat)
->
->
->>>
->>> When i install the proprietary Nvidia drivers, i have the following:
->>>
->>> [MASTER] pci:0000:08:00.0
->>>            │ 
->>> ├─/sys/devices/pci0000:00/0000:00:03.1/0000:08:00.0/drm/card0
->>>            │ │ [MASTER] drm:card0
->>>            │
->>> └─/sys/devices/pci0000:00/0000:00:03.1/0000:08:00.0/drm/renderD128
->>>            │   drm:renderD128
->>>
->>> ─/sys/devices/platform/efi-framebuffer.0/graphics/fb0
->>>            │ graphics:fb0 "EFI VGA"
->>>
->>> So no VGA, DVI or HDMI items.
->> Then report to the GitHub tracker [1].
->>
->> Thanks.
->>
->> [1]: https://github.com/NVIDIA/open-gpu-kernel-modules/issues
->>
+> Regards,
+> Bjorn
+
