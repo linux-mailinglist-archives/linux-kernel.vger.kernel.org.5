@@ -2,94 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADAF3803016
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 11:22:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01EB9803017
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 11:22:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234824AbjLDKWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 05:22:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45136 "EHLO
+        id S1343811AbjLDKWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 05:22:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235334AbjLDKWG (ORCPT
+        with ESMTP id S234833AbjLDKWR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 05:22:06 -0500
-Received: from zg8tmja2lje4os4yms4ymjma.icoremail.net (zg8tmja2lje4os4yms4ymjma.icoremail.net [206.189.21.223])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DA315119
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 02:22:09 -0800 (PST)
-Received: from luzhipeng.223.5.5.5 (unknown [125.120.155.9])
-        by mail-app4 (Coremail) with SMTP id cS_KCgBnbDRCqG1lCtdIAA--.53467S2;
-        Mon, 04 Dec 2023 18:21:55 +0800 (CST)
-From:   Zhipeng Lu <alexious@zju.edu.cn>
-To:     alexious@zju.edu.cn
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] [v2] drm/radeon/trinity_dpm: fix a memleak in trinity_parse_power_table
-Date:   Mon,  4 Dec 2023 18:21:54 +0800
-Message-Id: <20231204102154.3309670-1-alexious@zju.edu.cn>
-X-Mailer: git-send-email 2.34.1
+        Mon, 4 Dec 2023 05:22:17 -0500
+Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBB4585;
+        Mon,  4 Dec 2023 02:22:20 -0800 (PST)
+Received: from i53875b61.versanet.de ([83.135.91.97] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <heiko@sntech.de>)
+        id 1rA65V-0003dC-Mw; Mon, 04 Dec 2023 11:22:05 +0100
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     Florian Fainelli <f.fainelli@gmail.com>, andrew@lunn.ch,
+        hkallweit1@gmail.com,
+        Quentin Schulz <quentin.schulz@theobroma-systems.com>
+Cc:     linux@armlinux.org.uk, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Heiko Stuebner <heiko.stuebner@cherry.de>
+Subject: Re: [PATCH] net: mdio: enable optional clock when registering a phy from
+ devicetree
+Date:   Mon, 04 Dec 2023 11:22:04 +0100
+Message-ID: <13590315.F0gNSz5aLb@diego>
+In-Reply-To: <10f8e599-940b-4b7c-8c82-8d505007f19b@theobroma-systems.com>
+References: <20231201142453.324697-1-heiko@sntech.de>
+ <ecbdcfb7-32ab-45cc-991a-982c52bf4b14@gmail.com>
+ <10f8e599-940b-4b7c-8c82-8d505007f19b@theobroma-systems.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: cS_KCgBnbDRCqG1lCtdIAA--.53467S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7KF1kur48WFyktF1DuF15Arb_yoW8Gr1kpr
-        s5GF90krW5Ja42gFZrKF1IvrWrWa17GayUGFZ7uwnrG343G3WjkFZYk3yjvr90vrs29F15
-        tF47KrWxZFyj93DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkv14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r4D
-        MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr
-        0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0E
-        wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJV
-        W8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAI
-        cVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUd-B_UUUUU=
-X-CM-SenderInfo: qrsrjiarszq6lmxovvfxof0/
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,T_SPF_HELO_TEMPERROR autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The rdev->pm.dpm.ps allocated by kcalloc should be freed in every
-following error-handling path. However, in the error-handling of
-rdev->pm.power_state[i].clock_info the rdev->pm.dpm.ps is not freed,
-resulting in a memleak in this function.
+Am Montag, 4. Dezember 2023, 11:14:12 CET schrieb Quentin Schulz:
+> Hi Florian, Heiko,
+> 
+> On 12/1/23 23:41, Florian Fainelli wrote:
+> > On 12/1/23 06:24, Heiko Stuebner wrote:
+> >> From: Heiko Stuebner <heiko.stuebner@cherry.de>
+> >>
+> >> The ethernet-phy binding (now) specifys that phys can declare a clock
+> >> supply. Phy driver itself will handle this when probing the phy-driver.
+> >>
+> >> But there is a gap when trying to detect phys, because the mdio-bus needs
+> >> to talk to the phy to get its phy-id. Using actual phy-ids in the dt like
+> >>         compatible = "ethernet-phy-id0022.1640",
+> >>                      "ethernet-phy-ieee802.3-c22";
+> >> of course circumvents this, but in turn hard-codes the phy.
+> > 
+> > But it is the established practice for situations like those where you 
+> > need specific resources to be available in order to identify the device 
+> > you are trying to probe/register.
+> > 
+> > You can get away here with the clock API because it can operate on 
+> > device_node, and you might be able with a bunch of other "resources" 
+> > subsystems, but for instance with regulators, that won't work, we need a 
+> > "struct device" which won't be created because that is exactly what we 
+> > are trying to do.
+> > 
+> > Also this only works for OF, not for ACPI or other yet to come firmware 
+> > interface.
+> > 
+> > Sorry but NACK.
+> > 
+> > I am sympathetic to the idea that if you have multiple boards and you 
+> > may have multiple PHY vendors this may not really scale, but in 2023 you 
+> > have boot loaders aware of the Device Tree which can do all sorts of 
+> > live DTB patching to provide the kernel with a "perfect" view of the world.
+> 
+> There's a strong push towards unifying the device tree across all pieces 
+> of SW involved, sometimes going as far as only having one binary passed 
+> between SW stages (e.g. U-Boot passes its own DT to TF-A, and then to 
+> the Linux kernel without actually loading anything aside from the Linux 
+> kernel Image binary) if I remember correctly (haven't really followed 
+> tbh). So, this is kinda a step backward for this effort. I don't like 
+> relying on bootloader to make the kernel work, this is usually not a 
+> great thing. I understand the reasons but am still a bit sad to not see 
+> this done in the kernel.
+> 
+> Heiko, I would personally put the ID of the PHY to be the most likely 
+> encountered in the Linux kernel Device Tree so that if we somehow have a 
+> broken bootloader, there's a chance some devices still work properly. HW 
+> department said ksz9131 so we can go forward with this.
 
-Fixes: d70229f70447 ("drm/radeon/kms: add dpm support for trinity asics")
-Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
----
+hmm, I was more of the mind of having either all or none work ;-) 
+[i.e. keeping the c.22 compatible in the main dt and having firmware
+ add the phy-id]
 
-Changelog:
+I.e. a bootloader doing the correct detection and fixup would insert the
+matching phy-id and a broken bootloader would not do this.
 
-v2: Adding {} to correct the if statement.
----
- drivers/gpu/drm/radeon/trinity_dpm.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Having some boards work that by chance have the right phy and others break
+would possibly create a wild goose chase if the bootloader support for
+phy-id-handling breaks somewhere down the line.
 
-diff --git a/drivers/gpu/drm/radeon/trinity_dpm.c b/drivers/gpu/drm/radeon/trinity_dpm.c
-index 08ea1c864cb2..ef1cc7bad20a 100644
---- a/drivers/gpu/drm/radeon/trinity_dpm.c
-+++ b/drivers/gpu/drm/radeon/trinity_dpm.c
-@@ -1726,8 +1726,10 @@ static int trinity_parse_power_table(struct radeon_device *rdev)
- 		non_clock_array_index = power_state->v2.nonClockInfoIndex;
- 		non_clock_info = (struct _ATOM_PPLIB_NONCLOCK_INFO *)
- 			&non_clock_info_array->nonClockInfo[non_clock_array_index];
--		if (!rdev->pm.power_state[i].clock_info)
-+		if (!rdev->pm.power_state[i].clock_info) {
-+			kfree(rdev->pm.dpm.ps);
- 			return -EINVAL;
-+		}
- 		ps = kzalloc(sizeof(struct sumo_ps), GFP_KERNEL);
- 		if (ps == NULL) {
- 			kfree(rdev->pm.dpm.ps);
--- 
-2.34.1
+
+Heiko
+
+> In U-Boot DT, we 
+> would need a -u-boot.dtsi we change to the auto-detection compatible and 
+> we do the magic the Linux kernel doesn't want to do and hope it's fine 
+> for U-Boot maintainers. Once properly detected, we fixup the DT before 
+> booting the kernel.
+
+
+
 
