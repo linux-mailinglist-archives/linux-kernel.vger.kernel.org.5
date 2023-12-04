@@ -2,139 +2,304 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DAD6803775
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 15:49:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA7AA803796
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 15:53:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345920AbjLDOtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 09:49:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49680 "EHLO
+        id S1346002AbjLDOwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 09:52:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233871AbjLDOte (ORCPT
+        with ESMTP id S234481AbjLDOwv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 09:49:34 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DCC2C1;
-        Mon,  4 Dec 2023 06:49:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701701381; x=1733237381;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=OyK5xaD2gXFqzuWV1aJ86M25ufVghrDbW/job7rkqCU=;
-  b=Q4IcTeDjeXpM0Ct2d8lWqp13TfLfbNE5dkv0JJx2N6M4r+WAIogE+gYi
-   SGub6xk+nijfHK4Xh/rRBZgWHB8GtEr3blBSunOgn4Bp6vxgRpCcIOdWV
-   adS5/Q8l2Vg1hIVNshlRzohricjXChG++qmN8MMc0RthtGUl65/ASliKn
-   sUGVmlSNUzFX0W7A6SZHmG0FfGZk0WaBhw+7ES7Ew6qZcZYfoHo3DHYP4
-   E+ft2/rxVHfYv//rKl7G33vPeOSsEJ0/HogVqTCk6efF4TvjZ1l4f+6Om
-   j6VqtHZ9rGQZaPGKao1EbxWoYsE6zx4zXpN2E2t0A/uaqKGWtbwTFNroT
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="591897"
-X-IronPort-AV: E=Sophos;i="6.04,249,1695711600"; 
-   d="scan'208";a="591897"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 06:49:41 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="841075936"
-X-IronPort-AV: E=Sophos;i="6.04,249,1695711600"; 
-   d="scan'208";a="841075936"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga004.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 06:49:33 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1rAAGG-00000001mUw-3BG5;
-        Mon, 04 Dec 2023 16:49:28 +0200
-Date:   Mon, 4 Dec 2023 16:49:28 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
-        Jianlong Huang <jianlong.huang@starfivetech.com>,
-        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        openbmc@lists.ozlabs.org, linux-mips@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>, Jacky Bai <ping.bai@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sean Wang <sean.wang@kernel.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Hal Feng <hal.feng@starfivetech.com>
-Subject: Re: [PATCH v4 00/23] pinctrl: Convert struct group_desc to use
- struct pingroup
-Message-ID: <ZW3m-KDhs39i0E5n@smile.fi.intel.com>
-References: <20231129161459.1002323-1-andriy.shevchenko@linux.intel.com>
- <CACRpkdZhpXcx2FZYKM69j3x4dP5Nu-=3sXW+BQAw3k6c5aRrWw@mail.gmail.com>
+        Mon, 4 Dec 2023 09:52:51 -0500
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6844BB3;
+        Mon,  4 Dec 2023 06:52:56 -0800 (PST)
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
+ id c1a7933d2ff66a7c; Mon, 4 Dec 2023 15:52:54 +0100
+Received: from kreacher.localnet (unknown [195.136.19.94])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by cloudserver094114.home.pl (Postfix) with ESMTPSA id 6F9EC66875B;
+        Mon,  4 Dec 2023 15:52:54 +0100 (CET)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Lukasz Luba <lukasz.luba@arm.com>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>
+Subject: [PATCH v3 1/2] thermal: sysfs: Rework the handling of trip point updates
+Date:   Mon, 04 Dec 2023 15:50:11 +0100
+Message-ID: <4883151.31r3eYUQgx@kreacher>
+In-Reply-To: <12338384.O9o76ZdvQC@kreacher>
+References: <12338384.O9o76ZdvQC@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACRpkdZhpXcx2FZYKM69j3x4dP5Nu-=3sXW+BQAw3k6c5aRrWw@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrudejiedgjeduucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepiedprhgtphhtthhopegurghnihgvlhdrlhgviigtrghnoheslhhinhgrrhhordhorhhgpdhrtghpthhtoheplhhukhgrshiirdhluhgsrgesrghrmhdrtghomhdprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehsrhhi
+ nhhivhgrshdrphgrnhgurhhuvhgruggrsehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthhtoheprhhuihdriihhrghnghesihhnthgvlhdrtghomh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=6 Fuz1=6 Fuz2=6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 04, 2023 at 03:38:43PM +0100, Linus Walleij wrote:
-> Hi Andy,
-> 
-> due to compile errors on arm32 and arm64 I had to drop most of the
-> patches again but I kept the preparatory patches so your
-> patch stack don't need to be so deep.
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Thank you!
+Both trip_point_temp_store() and trip_point_hyst_store() use
+thermal_zone_set_trip() to update a given trip point, but none of them
+actually needs to change more than one field in struct thermal_trip
+representing it.  However, each of them effectively calls
+__thermal_zone_get_trip() twice in a row for the same trip index value,
+once directly and once via thermal_zone_set_trip(), which is not
+particularly efficient, and the way in which thermal_zone_set_trip()
+carries out the update is not particularly straightforward.
 
-...
+Moreover, input processing need not be done under the thermal zone lock
+in any of these functions.
 
-> >   pinctrl: core: Make pins const unsigned int pointer in struct
-> >     group_desc
-> >   pinctrl: equilibrium: Convert to use struct pingroup
-> >   pinctrl: keembay: Convert to use struct pingroup
-> >   pinctrl: nuvoton: Convert to use struct pingroup and
-> >     PINCTRL_PINGROUP()
+Rework trip_point_temp_store() and trip_point_hyst_store() to address
+the above, move the part of thermal_zone_set_trip() that is still
+useful to a new function called thermal_zone_trip_updated() and drop
+the rest of it.
 
-Hmm... Why these to be dropped?
+While at it, make trip_point_hyst_store() reject negative hysteresis
+values.
 
-> >   pinctrl: core: Add a convenient define PINCTRL_GROUP_DESC()
-> >   pinctrl: ingenic: Make use of PINCTRL_GROUP_DESC()
-> >   pinctrl: mediatek: Make use of PINCTRL_GROUP_DESC()
-> >   pinctrl: core: Embed struct pingroup into struct group_desc
-> >   pinctrl: bcm: Convert to use grp member
-> >   pinctrl: equilibrium: Convert to use grp member
-> >   pinctrl: imx: Convert to use grp member
-> >   pinctrl: ingenic: Convert to use grp member
-> >   pinctrl: keembay: Convert to use grp member
-> >   pinctrl: mediatek: Convert to use grp member
-> >   pinctrl: renesas: Convert to use grp member
-> >   pinctrl: starfive: Convert to use grp member
-> >   pinctrl: core: Remove unused members from struct group_desc
-> 
-> I dropped these (because they all cross-depend...)
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
 
--- 
-With Best Regards,
-Andy Shevchenko
+v2 -> v3: No changes
+
+v1 -> v2: Still check device_is_registered() under the zone lock
+
+---
+ drivers/thermal/thermal_core.h  |    2 +
+ drivers/thermal/thermal_sysfs.c |   75 ++++++++++++++++++++++++++++------------
+ drivers/thermal/thermal_trip.c  |   45 ++++--------------------
+ include/linux/thermal.h         |    4 --
+ 4 files changed, 64 insertions(+), 62 deletions(-)
+
+Index: linux-pm/drivers/thermal/thermal_sysfs.c
+===================================================================
+--- linux-pm.orig/drivers/thermal/thermal_sysfs.c
++++ linux-pm/drivers/thermal/thermal_sysfs.c
+@@ -78,6 +78,19 @@ mode_store(struct device *dev, struct de
+ 	return count;
+ }
+ 
++static int check_thermal_zone_and_trip_id(struct device *dev,
++					  struct thermal_zone_device *tz,
++					  int trip_id)
++{
++	if (!device_is_registered(dev))
++		return -ENODEV;
++
++	if (trip_id < 0 || trip_id >= tz->num_trips)
++		return -EINVAL;
++
++	return 0;
++}
++
+ static ssize_t
+ trip_point_type_show(struct device *dev, struct device_attribute *attr,
+ 		     char *buf)
+@@ -120,28 +133,37 @@ trip_point_temp_store(struct device *dev
+ 		      const char *buf, size_t count)
+ {
+ 	struct thermal_zone_device *tz = to_thermal_zone(dev);
+-	struct thermal_trip trip;
++	struct thermal_trip *trip;
+ 	int trip_id, ret;
++	int temp;
++
++	ret = kstrtoint(buf, 10, &temp);
++	if (ret)
++		return -EINVAL;
+ 
+ 	if (sscanf(attr->attr.name, "trip_point_%d_temp", &trip_id) != 1)
+ 		return -EINVAL;
+ 
+ 	mutex_lock(&tz->lock);
+ 
+-	if (!device_is_registered(dev)) {
+-		ret = -ENODEV;
+-		goto unlock;
+-	}
+-
+-	ret = __thermal_zone_get_trip(tz, trip_id, &trip);
++	ret = check_thermal_zone_and_trip_id(dev, tz, trip_id);
+ 	if (ret)
+ 		goto unlock;
+ 
+-	ret = kstrtoint(buf, 10, &trip.temperature);
+-	if (ret)
+-		goto unlock;
++	trip = &tz->trips[trip_id];
++
++	if (temp != trip->temperature) {
++		if (tz->ops->set_trip_temp) {
++			ret = tz->ops->set_trip_temp(tz, trip_id, temp);
++			if (ret)
++				goto unlock;
++		}
++
++		trip->temperature = temp;
++
++		thermal_zone_trip_updated(tz, trip);
++	}
+ 
+-	ret = thermal_zone_set_trip(tz, trip_id, &trip);
+ unlock:
+ 	mutex_unlock(&tz->lock);
+ 	
+@@ -179,28 +201,37 @@ trip_point_hyst_store(struct device *dev
+ 		      const char *buf, size_t count)
+ {
+ 	struct thermal_zone_device *tz = to_thermal_zone(dev);
+-	struct thermal_trip trip;
++	struct thermal_trip *trip;
+ 	int trip_id, ret;
++	int hyst;
++
++	ret = kstrtoint(buf, 10, &hyst);
++	if (ret || hyst < 0)
++		return -EINVAL;
+ 
+ 	if (sscanf(attr->attr.name, "trip_point_%d_hyst", &trip_id) != 1)
+ 		return -EINVAL;
+ 
+ 	mutex_lock(&tz->lock);
+ 
+-	if (!device_is_registered(dev)) {
+-		ret = -ENODEV;
+-		goto unlock;
+-	}
+-
+-	ret = __thermal_zone_get_trip(tz, trip_id, &trip);
++	ret = check_thermal_zone_and_trip_id(dev, tz, trip_id);
+ 	if (ret)
+ 		goto unlock;
+ 
+-	ret = kstrtoint(buf, 10, &trip.hysteresis);
+-	if (ret)
+-		goto unlock;
++	trip = &tz->trips[trip_id];
++
++	if (hyst != trip->hysteresis) {
++		if (tz->ops->set_trip_hyst) {
++			ret = tz->ops->set_trip_hyst(tz, trip_id, hyst);
++			if (ret)
++				goto unlock;
++		}
++
++		trip->hysteresis = hyst;
++
++		thermal_zone_trip_updated(tz, trip);
++	}
+ 
+-	ret = thermal_zone_set_trip(tz, trip_id, &trip);
+ unlock:
+ 	mutex_unlock(&tz->lock);
+ 
+Index: linux-pm/drivers/thermal/thermal_core.h
+===================================================================
+--- linux-pm.orig/drivers/thermal/thermal_core.h
++++ linux-pm/drivers/thermal/thermal_core.h
+@@ -124,6 +124,8 @@ int __thermal_zone_get_trip(struct therm
+ 			    struct thermal_trip *trip);
+ int thermal_zone_trip_id(struct thermal_zone_device *tz,
+ 			 const struct thermal_trip *trip);
++void thermal_zone_trip_updated(struct thermal_zone_device *tz,
++			       const struct thermal_trip *trip);
+ int __thermal_zone_get_temp(struct thermal_zone_device *tz, int *temp);
+ 
+ /* sysfs I/F */
+Index: linux-pm/drivers/thermal/thermal_trip.c
+===================================================================
+--- linux-pm.orig/drivers/thermal/thermal_trip.c
++++ linux-pm/drivers/thermal/thermal_trip.c
+@@ -147,42 +147,6 @@ int thermal_zone_get_trip(struct thermal
+ }
+ EXPORT_SYMBOL_GPL(thermal_zone_get_trip);
+ 
+-int thermal_zone_set_trip(struct thermal_zone_device *tz, int trip_id,
+-			  const struct thermal_trip *trip)
+-{
+-	struct thermal_trip t;
+-	int ret;
+-
+-	ret = __thermal_zone_get_trip(tz, trip_id, &t);
+-	if (ret)
+-		return ret;
+-
+-	if (t.type != trip->type)
+-		return -EINVAL;
+-
+-	if (t.temperature != trip->temperature && tz->ops->set_trip_temp) {
+-		ret = tz->ops->set_trip_temp(tz, trip_id, trip->temperature);
+-		if (ret)
+-			return ret;
+-	}
+-
+-	if (t.hysteresis != trip->hysteresis && tz->ops->set_trip_hyst) {
+-		ret = tz->ops->set_trip_hyst(tz, trip_id, trip->hysteresis);
+-		if (ret)
+-			return ret;
+-	}
+-
+-	if (tz->trips && (t.temperature != trip->temperature || t.hysteresis != trip->hysteresis))
+-		tz->trips[trip_id] = *trip;
+-
+-	thermal_notify_tz_trip_change(tz->id, trip_id, trip->type,
+-				      trip->temperature, trip->hysteresis);
+-
+-	__thermal_zone_device_update(tz, THERMAL_TRIP_CHANGED);
+-
+-	return 0;
+-}
+-
+ int thermal_zone_trip_id(struct thermal_zone_device *tz,
+ 			 const struct thermal_trip *trip)
+ {
+@@ -192,3 +156,12 @@ int thermal_zone_trip_id(struct thermal_
+ 	 */
+ 	return trip - tz->trips;
+ }
++
++void thermal_zone_trip_updated(struct thermal_zone_device *tz,
++			       const struct thermal_trip *trip)
++{
++	thermal_notify_tz_trip_change(tz->id, thermal_zone_trip_id(tz, trip),
++				      trip->type, trip->temperature,
++				      trip->hysteresis);
++	__thermal_zone_device_update(tz, THERMAL_TRIP_CHANGED);
++}
+Index: linux-pm/include/linux/thermal.h
+===================================================================
+--- linux-pm.orig/include/linux/thermal.h
++++ linux-pm/include/linux/thermal.h
+@@ -282,10 +282,6 @@ int __thermal_zone_get_trip(struct therm
+ 			    struct thermal_trip *trip);
+ int thermal_zone_get_trip(struct thermal_zone_device *tz, int trip_id,
+ 			  struct thermal_trip *trip);
+-
+-int thermal_zone_set_trip(struct thermal_zone_device *tz, int trip_id,
+-			  const struct thermal_trip *trip);
+-
+ int for_each_thermal_trip(struct thermal_zone_device *tz,
+ 			  int (*cb)(struct thermal_trip *, void *),
+ 			  void *data);
+
 
 
